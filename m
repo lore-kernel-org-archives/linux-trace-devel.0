@@ -1,34 +1,41 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wm0-f65.google.com ([74.125.82.65]:44046 "EHLO
-        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752847AbdLRPfH (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:33620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1752279AbdLRPmB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 18 Dec 2017 10:35:07 -0500
-Received: by mail-wm0-f65.google.com with SMTP id t8so29869525wmc.3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Dec 2017 07:35:06 -0800 (PST)
-Message-ID: <1513611304.2904.7.camel@gmail.com>
-Subject: Re: [RFC PATCH v3 0/9] trace-cmd: restructure of the source tree
- [incomplete]
-From: Vladislav Valtchev <vladislav.valtchev@gmail.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: y.karadz@gmail.com, linux-trace-devel@vger.kernel.org
-Date: Mon, 18 Dec 2017 17:35:04 +0200
-In-Reply-To: <20171213105318.5d8b3056@gandalf.local.home>
-References: <20171212162534.31144-1-vladislav.valtchev@gmail.com>
-         <20171212193004.05efce2e@gandalf.local.home>
-         <1513173368.2565.64.camel@gmail.com>
-         <20171213105318.5d8b3056@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+        Mon, 18 Dec 2017 10:42:01 -0500
+Date: Mon, 18 Dec 2017 10:41:58 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v1] trace-cmd: introduce --initital-delay for record
+ command
+Message-ID: <20171218104158.22519a7e@gandalf.local.home>
+In-Reply-To: <20171218112412.11898-1-david@redhat.com>
+References: <20171218112412.11898-1-david@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 2017-12-13 at 10:53 -0500, Steven Rostedt wrote:
-> Do it in the next non-RFC patch set. I think you are starting to get
-> the idea of what I want. And there's no reason to have it RFC. The next
-> series may still not be ready to go in, but that's why we have v2, v3,
-> v4... notations ;-)
-> 
+On Mon, 18 Dec 2017 12:24:12 +0100
+David Hildenbrand <david@redhat.com> wrote:
 
-Sure, no problem. I'm working on it.
+> If recording a big number of events to a big buffer, one might want to
+> minimize the trace-cmd activity for a certain period in time.
+> Especially, don't see any trace-cmd activity for some time. If there are
+> a lot of events, the loop might actually never sleep, resulting in the
+> "-s" option never becomming active.
+> 
+> E.g. I am using scheduler events to trace thread activity per CPU. Esp.
+> sched:sched_wakeup and sched:sched_stat_runtime. Even when setting the
+> sleep time to something huge like 30 seconds, I can see constant activity
+> from the trace-cmd tasks.
+
+Thanks for reporting this. Honestly, I believe this is fixing a symptom
+of a real problem. I'd like to investigate why trace-cmd is running
+with a sleep time of 30 seconds. I think that should be fixed.
+
+-- Steve
