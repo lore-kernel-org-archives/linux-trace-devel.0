@@ -1,56 +1,37 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail.kernel.org ([198.145.29.99]:42116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1752995AbdLMPxV (ORCPT
+Received: from mail-wr0-f195.google.com ([209.85.128.195]:43617 "EHLO
+        mail-wr0-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752708AbdLRP3R (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 13 Dec 2017 10:53:21 -0500
-Date: Wed, 13 Dec 2017 10:53:18 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Vladislav Valtchev <vladislav.valtchev@gmail.com>
+        Mon, 18 Dec 2017 10:29:17 -0500
+Received: by mail-wr0-f195.google.com with SMTP id w68so2013920wrc.10
+        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Dec 2017 07:29:17 -0800 (PST)
+Message-ID: <1513610954.2904.1.camel@gmail.com>
+Subject: Re: [RFC PATCH v3 4/9] trace-cmd: Extract part of Makefile in
+ utils.mk
+From: Vladislav Valtchev <vladislav.valtchev@gmail.com>
+To: Steven Rostedt <rostedt@goodmis.org>
 Cc: y.karadz@gmail.com, linux-trace-devel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 0/9] trace-cmd: restructure of the source tree
- [incomplete]
-Message-ID: <20171213105318.5d8b3056@gandalf.local.home>
-In-Reply-To: <1513173368.2565.64.camel@gmail.com>
+Date: Mon, 18 Dec 2017 17:29:14 +0200
+In-Reply-To: <20171213104704.77a77f9c@gandalf.local.home>
 References: <20171212162534.31144-1-vladislav.valtchev@gmail.com>
-        <20171212193004.05efce2e@gandalf.local.home>
-        <1513173368.2565.64.camel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+         <20171212162534.31144-5-vladislav.valtchev@gmail.com>
+         <20171212190037.53710fa2@gandalf.local.home>
+         <1513171955.2565.42.camel@gmail.com>
+         <20171213104704.77a77f9c@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 13 Dec 2017 15:56:08 +0200
-Vladislav Valtchev <vladislav.valtchev@gmail.com> wrote:
+On Wed, 2017-12-13 at 10:47 -0500, Steven Rostedt wrote:
+> 
+> I'm just following what we do in the Linux kernel. It has a directory
+> called "scripts" to help with the build process. As trace-cmd is very
+> tied to the Linux kernel, I want to keep as close to it as possible.
+> Hence, why we are doing all this crazy stuff with make and not any
+> other tool.
+> 
 
-> On Tue, 2017-12-12 at 19:30 -0500, Steven Rostedt wrote:
-> > Hi Vlad,
-> > 
-> > The patches look decent. I made a few comments, but I think you can
-> > send then non RFC next time after incorporating what I suggested.
-> >   
-> 
-> I'm so happy that you liked them!
-> Sure, I can make the next iteration non-RFC. Just, I was planning to add
-> also the last 3 patches for:
-> 
-> src/plugins
-> src/trace-cmd/include
-> src/trace-cmd
-> 
-> As part of the same series. The alternative is calling this series:
-> 
-> "trace-cmd: restructure of the source tree [part 1]".
-> 
-> and the next one "... [part 2]".
-> 
-> 
-> Which do you think is better?
-
-Do it in the next non-RFC patch set. I think you are starting to get
-the idea of what I want. And there's no reason to have it RFC. The next
-series may still not be ready to go in, but that's why we have v2, v3,
-v4... notations ;-)
-
--- Steve
+Alright. I've already done the change utils.mk -> scripts/utils.mk in my repo.
