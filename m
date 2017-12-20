@@ -1,123 +1,56 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wm0-f67.google.com ([74.125.82.67]:38431 "EHLO
+Received: from mail-wm0-f67.google.com ([74.125.82.67]:45376 "EHLO
         mail-wm0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932308AbdLTSIM (ORCPT
+        with ESMTP id S1756029AbdLTSIU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 20 Dec 2017 13:08:12 -0500
+        Wed, 20 Dec 2017 13:08:20 -0500
 From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
 To: rostedt@goodmis.org
 Cc: y.karadz@gmail.com, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH 09/18] trace-cmd: Move GUI headers in kernel-shark/include
-Date: Wed, 20 Dec 2017 20:07:39 +0200
-Message-Id: <20171220180748.17273-10-vladislav.valtchev@gmail.com>
+Subject: [PATCH 17/18] trace-cmd: Fix the logic behind SWIG_DEFINED in the Makefile
+Date: Wed, 20 Dec 2017 20:07:47 +0200
+Message-Id: <20171220180748.17273-18-vladislav.valtchev@gmail.com>
 In-Reply-To: <20171220180748.17273-1-vladislav.valtchev@gmail.com>
 References: <20171220180748.17273-1-vladislav.valtchev@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch moves, as part of a bigger code base restructuring, all the header
-files of kernelshark in a dedicated directory. The next patch will move all
-of kernelshark's source files in kernel-shark/.
+At least on Ubuntu, the $(shell ...) command used in the master Makefile to test
+for the existence of the 'swig' command does not work in the negative case.
+That causes the build to report ugly errors in case 'swig' is not installed on
+the system.
+This one-line patch, fixes the problem by using the POSIX 'comamnd -v {CMD}'
+in $(shell ...) to detect the presence of the swig and restores this way the
+fake report_noswig target.
 
 Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
 ---
- Makefile                                                        | 3 ++-
- cpu.h => kernel-shark/include/cpu.h                             | 0
- kernel-shark.h => kernel-shark/include/kernel-shark.h           | 0
- kshark-plugin.h => kernel-shark/include/kshark-plugin.h         | 0
- trace-capture.h => kernel-shark/include/trace-capture.h         | 0
- trace-compat.h => kernel-shark/include/trace-compat.h           | 0
- trace-filter-hash.h => kernel-shark/include/trace-filter-hash.h | 0
- trace-filter.h => kernel-shark/include/trace-filter.h           | 0
- trace-graph.h => kernel-shark/include/trace-graph.h             | 0
- trace-gui.h => kernel-shark/include/trace-gui.h                 | 0
- trace-view-store.h => kernel-shark/include/trace-view-store.h   | 0
- trace-view.h => kernel-shark/include/trace-view.h               | 0
- trace-xml.h => kernel-shark/include/trace-xml.h                 | 0
- 13 files changed, 2 insertions(+), 1 deletion(-)
- rename cpu.h => kernel-shark/include/cpu.h (100%)
- rename kernel-shark.h => kernel-shark/include/kernel-shark.h (100%)
- rename kshark-plugin.h => kernel-shark/include/kshark-plugin.h (100%)
- rename trace-capture.h => kernel-shark/include/trace-capture.h (100%)
- rename trace-compat.h => kernel-shark/include/trace-compat.h (100%)
- rename trace-filter-hash.h => kernel-shark/include/trace-filter-hash.h (100%)
- rename trace-filter.h => kernel-shark/include/trace-filter.h (100%)
- rename trace-graph.h => kernel-shark/include/trace-graph.h (100%)
- rename trace-gui.h => kernel-shark/include/trace-gui.h (100%)
- rename trace-view-store.h => kernel-shark/include/trace-view-store.h (100%)
- rename trace-view.h => kernel-shark/include/trace-view.h (100%)
- rename trace-xml.h => kernel-shark/include/trace-xml.h (100%)
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 8b34705..a72a2c9 100644
+index c5da7c8..0a2a78d 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -242,6 +242,7 @@ INCLUDES += -I$(src)/include/traceevent
- INCLUDES += -I$(src)/include/trace-cmd
- INCLUDES += -I$(src)/lib/traceevent/include
- INCLUDES += -I$(src)/lib/trace-cmd/include
-+INCLUDES += -I$(src)/kernel-shark/include
+@@ -102,7 +102,7 @@ ifndef VERBOSE
+   VERBOSE = 0
+ endif
  
- include $(src)/features.mk
+-SWIG_DEFINED := $(shell if swig -help &> /dev/null; then echo 1; else echo 0; fi)
++SWIG_DEFINED := $(shell if command -v swig; then echo 1; else echo 0; fi)
+ ifeq ($(SWIG_DEFINED), 0)
+ BUILD_PYTHON := report_noswig
+ NO_PYTHON = 1
+@@ -115,7 +115,7 @@ PYTHON_GUI	:= ctracecmd.so ctracecmdgui.so
+ PYTHON_VERS ?= python
  
-@@ -596,7 +597,7 @@ ctracecmd.so: $(TCMD_LIB_OBJS) ctracecmd.i
- 	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so
- 
- ctracecmdgui.so: $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC)
--	swig -Wall -python -noproxy ctracecmdgui.i
-+	swig -Wall -python -noproxy -I$(src)/kernel-shark/include ctracecmdgui.i
- 	$(CC) -fpic -c  $(CPPFLAGS) $(CFLAGS) $(INCLUDES) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) ctracecmdgui_wrap.c
- 	$(CC) --shared $^ $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so
- 
-diff --git a/cpu.h b/kernel-shark/include/cpu.h
-similarity index 100%
-rename from cpu.h
-rename to kernel-shark/include/cpu.h
-diff --git a/kernel-shark.h b/kernel-shark/include/kernel-shark.h
-similarity index 100%
-rename from kernel-shark.h
-rename to kernel-shark/include/kernel-shark.h
-diff --git a/kshark-plugin.h b/kernel-shark/include/kshark-plugin.h
-similarity index 100%
-rename from kshark-plugin.h
-rename to kernel-shark/include/kshark-plugin.h
-diff --git a/trace-capture.h b/kernel-shark/include/trace-capture.h
-similarity index 100%
-rename from trace-capture.h
-rename to kernel-shark/include/trace-capture.h
-diff --git a/trace-compat.h b/kernel-shark/include/trace-compat.h
-similarity index 100%
-rename from trace-compat.h
-rename to kernel-shark/include/trace-compat.h
-diff --git a/trace-filter-hash.h b/kernel-shark/include/trace-filter-hash.h
-similarity index 100%
-rename from trace-filter-hash.h
-rename to kernel-shark/include/trace-filter-hash.h
-diff --git a/trace-filter.h b/kernel-shark/include/trace-filter.h
-similarity index 100%
-rename from trace-filter.h
-rename to kernel-shark/include/trace-filter.h
-diff --git a/trace-graph.h b/kernel-shark/include/trace-graph.h
-similarity index 100%
-rename from trace-graph.h
-rename to kernel-shark/include/trace-graph.h
-diff --git a/trace-gui.h b/kernel-shark/include/trace-gui.h
-similarity index 100%
-rename from trace-gui.h
-rename to kernel-shark/include/trace-gui.h
-diff --git a/trace-view-store.h b/kernel-shark/include/trace-view-store.h
-similarity index 100%
-rename from trace-view-store.h
-rename to kernel-shark/include/trace-view-store.h
-diff --git a/trace-view.h b/kernel-shark/include/trace-view.h
-similarity index 100%
-rename from trace-view.h
-rename to kernel-shark/include/trace-view.h
-diff --git a/trace-xml.h b/kernel-shark/include/trace-xml.h
-similarity index 100%
-rename from trace-xml.h
-rename to kernel-shark/include/trace-xml.h
+ # Can build python?
+-ifeq ($(shell sh -c "pkg-config --cflags $(PYTHON_VERS) > /dev/null 2>&1 && which swig && echo y"), y)
++ifeq ($(shell sh -c "pkg-config --cflags $(PYTHON_VERS) > /dev/null 2>&1 && echo y"), y)
+ 	PYTHON_PLUGINS := plugin_python.so
+ 	BUILD_PYTHON := $(PYTHON) $(PYTHON_PLUGINS)
+ 	BUILD_PYTHON_WORKS := 1
 -- 
 2.14.1
