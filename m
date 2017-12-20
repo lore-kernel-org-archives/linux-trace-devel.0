@@ -1,487 +1,214 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wm0-f66.google.com ([74.125.82.66]:44320 "EHLO
-        mail-wm0-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755268AbdLTSIN (ORCPT
+Received: from mail-wm0-f65.google.com ([74.125.82.65]:33650 "EHLO
+        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755946AbdLTSIK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 20 Dec 2017 13:08:13 -0500
+        Wed, 20 Dec 2017 13:08:10 -0500
 From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
 To: rostedt@goodmis.org
 Cc: y.karadz@gmail.com, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH 10/18] trace-cmd: Move GUI *.c files in kernel-shark/
-Date: Wed, 20 Dec 2017 20:07:40 +0200
-Message-Id: <20171220180748.17273-11-vladislav.valtchev@gmail.com>
+Subject: [PATCH 08/18] trace-cmd: Move libtracecmd *.c files in lib/trace-cmd
+Date: Wed, 20 Dec 2017 20:07:38 +0200
+Message-Id: <20171220180748.17273-9-vladislav.valtchev@gmail.com>
 In-Reply-To: <20171220180748.17273-1-vladislav.valtchev@gmail.com>
 References: <20171220180748.17273-1-vladislav.valtchev@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch moves all the source files belonging to the GUI (kernelshark,
-trace-view and trace-graph) into the dedicated directory kernel-shark/.
-The build system has been updated to support this new directory structure by
-adding a separate Makefile in kernel-shark/ and by making the parent Makefile
-to invoke it.
+This patch moves all the source files belonging to the trace-cmd library into
+the dedicated directory lib/trace-cmd. The build system has been updated to
+support this new directory structure by adding a dedicated Makefile in
+lib/trace-cmd and by making the parent Makefile to invoke it.
 
 Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
 ---
- Makefile                                           | 190 ++++-----------------
- kernel-shark/Makefile                              |  84 +++++++++
- kernel-shark.c => kernel-shark/kernel-shark.c      |   0
- trace-capture.c => kernel-shark/trace-capture.c    |   0
- trace-compat.c => kernel-shark/trace-compat.c      |   0
- trace-dialog.c => kernel-shark/trace-dialog.c      |   0
- .../trace-filter-hash.c                            |   0
- trace-filter.c => kernel-shark/trace-filter.c      |   0
- .../trace-graph-main.c                             |   0
- trace-graph.c => kernel-shark/trace-graph.c        |   0
- trace-plot-cpu.c => kernel-shark/trace-plot-cpu.c  |   0
- .../trace-plot-task.c                              |   0
- trace-plot.c => kernel-shark/trace-plot.c          |   0
- .../trace-view-main.c                              |   0
- .../trace-view-store.c                             |   0
- trace-view.c => kernel-shark/trace-view.c          |   0
- trace-xml.c => kernel-shark/trace-xml.c            |   0
- scripts/utils.mk                                   |  21 +++
- 18 files changed, 140 insertions(+), 155 deletions(-)
- create mode 100644 kernel-shark/Makefile
- rename kernel-shark.c => kernel-shark/kernel-shark.c (100%)
- rename trace-capture.c => kernel-shark/trace-capture.c (100%)
- rename trace-compat.c => kernel-shark/trace-compat.c (100%)
- rename trace-dialog.c => kernel-shark/trace-dialog.c (100%)
- rename trace-filter-hash.c => kernel-shark/trace-filter-hash.c (100%)
- rename trace-filter.c => kernel-shark/trace-filter.c (100%)
- rename trace-graph-main.c => kernel-shark/trace-graph-main.c (100%)
- rename trace-graph.c => kernel-shark/trace-graph.c (100%)
- rename trace-plot-cpu.c => kernel-shark/trace-plot-cpu.c (100%)
- rename trace-plot-task.c => kernel-shark/trace-plot-task.c (100%)
- rename trace-plot.c => kernel-shark/trace-plot.c (100%)
- rename trace-view-main.c => kernel-shark/trace-view-main.c (100%)
- rename trace-view-store.c => kernel-shark/trace-view-store.c (100%)
- rename trace-view.c => kernel-shark/trace-view.c (100%)
- rename trace-xml.c => kernel-shark/trace-xml.c (100%)
+ Makefile                                           | 54 ++++++++++------------
+ lib/trace-cmd/Makefile                             | 45 ++++++++++++++++++
+ trace-blk-hack.c => lib/trace-cmd/trace-blk-hack.c |  0
+ trace-ftrace.c => lib/trace-cmd/trace-ftrace.c     |  0
+ trace-hash.c => lib/trace-cmd/trace-hash.c         |  0
+ trace-hooks.c => lib/trace-cmd/trace-hooks.c       |  0
+ trace-input.c => lib/trace-cmd/trace-input.c       |  0
+ trace-recorder.c => lib/trace-cmd/trace-recorder.c |  0
+ trace-util.c => lib/trace-cmd/trace-util.c         |  0
+ 9 files changed, 70 insertions(+), 29 deletions(-)
+ create mode 100644 lib/trace-cmd/Makefile
+ rename trace-blk-hack.c => lib/trace-cmd/trace-blk-hack.c (100%)
+ rename trace-ftrace.c => lib/trace-cmd/trace-ftrace.c (100%)
+ rename trace-hash.c => lib/trace-cmd/trace-hash.c (100%)
+ rename trace-hooks.c => lib/trace-cmd/trace-hooks.c (100%)
+ rename trace-input.c => lib/trace-cmd/trace-input.c (100%)
+ rename trace-recorder.c => lib/trace-cmd/trace-recorder.c (100%)
+ rename trace-util.c => lib/trace-cmd/trace-util.c (100%)
 
 diff --git a/Makefile b/Makefile
-index a72a2c9..aaf7c72 100644
+index a3cce82..8b34705 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -3,11 +3,6 @@ TC_VERSION = 2
- TC_PATCHLEVEL = 7
- TC_EXTRAVERSION = dev
- 
--# Kernel Shark version
--KS_VERSION = 0
--KS_PATCHLEVEL = 2
--KS_EXTRAVERSION =
--
- # file format version
- FILE_VERSION = 6
- 
-@@ -146,27 +141,9 @@ BUILD_OUTPUT := $(shell cd $(BUILD_OUTPUT) && /bin/pwd)
- $(if $(BUILD_OUTPUT),, \
-      $(error output directory "$(saved-output)" does not exist))
- 
--all: sub-make
--
--gui: force
--	$(call build_output, all_cmd)
--	$(call build_output, BUILDGUI=1 all_gui)
--
--$(filter-out gui,$(MAKECMDGOALS)): sub-make
--
--sub-make: force
--	$(call build_output, $(MAKECMDGOALS))
--
--
--# Leave processing to above invocation of make
--skip-makefile := 1
--
- endif # BUILD_OUTPUT
- endif # BUILD_SRC
- 
--# We process the rest of the Makefile if this is the final invocation of make
--ifeq ($(skip-makefile),)
--
- srctree		:= $(if $(BUILD_SRC),$(BUILD_SRC),$(CURDIR))
- objtree		:= $(CURDIR)
- src		:= $(srctree)
-@@ -180,7 +157,8 @@ bindir_relative_SQ = $(subst ','\'',$(bindir_relative))
- plugin_dir_SQ = $(subst ','\'',$(plugin_dir))
- python_dir_SQ = $(subst ','\'',$(python_dir))
- 
--LIBS = -L. -ldl
-+LIBS = -ldl
-+
- LIBTRACEEVENT_DIR = $(obj)/lib/traceevent
+@@ -185,7 +185,9 @@ LIBTRACEEVENT_DIR = $(obj)/lib/traceevent
  LIBTRACEEVENT_STATIC = $(LIBTRACEEVENT_DIR)/libtraceevent.a
  LIBTRACEEVENT_SHARED = $(LIBTRACEEVENT_DIR)/libtraceevent.so
-@@ -189,32 +167,8 @@ LIBTRACECMD_DIR = $(obj)/lib/trace-cmd
- LIBTRACECMD_STATIC = $(LIBTRACECMD_DIR)/libtracecmd.a
- LIBTRACECMD_SHARED = $(LIBTRACECMD_DIR)/libtracecmd.so
  
--PACKAGES= gtk+-2.0 libxml-2.0 gthread-2.0
--
--ifndef BUILDGUI
-- BUILDGUI = 0
--endif
--
--ifeq ($(BUILDGUI), 1)
--
--CONFIG_INCLUDES = $(shell pkg-config --cflags $(PACKAGES)) -I$(obj)
--
--CONFIG_FLAGS = -DBUILDGUI \
--	-DGTK_VERSION=$(shell pkg-config --modversion gtk+-2.0 | \
--	awk 'BEGIN{FS="."}{ a = ($$1 * (2^16)) + $$2 * (2^8) + $$3; printf ("%d", a);}')
--
--CONFIG_LIBS = $(shell pkg-config --libs $(PACKAGES))
--
--VERSION		= $(KS_VERSION)
--PATCHLEVEL	= $(KS_PATCHLEVEL)
--EXTRAVERSION	= $(KS_EXTRAVERSION)
--
--REBUILD_GUI	= /bin/true
--G		=
--N 		= @/bin/true ||
--
--CONFIG_FLAGS	+= $(HELP_DIR_SQ)
--else
-+export LIBS
-+export LIBTRACEEVENT_DIR LIBTRACECMD_DIR
+-LIB_FILE = libtracecmd.a
++LIBTRACECMD_DIR = $(obj)/lib/trace-cmd
++LIBTRACECMD_STATIC = $(LIBTRACECMD_DIR)/libtracecmd.a
++LIBTRACECMD_SHARED = $(LIBTRACECMD_DIR)/libtracecmd.so
  
- CONFIG_INCLUDES = 
- CONFIG_LIBS	=
-@@ -224,18 +178,14 @@ VERSION		= $(TC_VERSION)
- PATCHLEVEL	= $(TC_PATCHLEVEL)
- EXTRAVERSION	= $(TC_EXTRAVERSION)
+ PACKAGES= gtk+-2.0 libxml-2.0 gthread-2.0
  
--REBUILD_GUI	= $(MAKE) -f $(src)/Makefile BUILDGUI=1 $@
--G		= $(REBUILD_GUI); /bin/true ||
- N		=
--endif
- 
--export Q VERBOSE
-+export Q VERBOSE EXT
- 
- # Include the utils
- include scripts/utils.mk
- 
- TRACECMD_VERSION = $(TC_VERSION).$(TC_PATCHLEVEL).$(TC_EXTRAVERSION)
--KERNELSHARK_VERSION = $(KS_VERSION).$(KS_PATCHLEVEL).$(KS_EXTRAVERSION)
- 
- INCLUDES = -I$(src) -I $(src)/include -I $(srctree)/../../include $(CONFIG_INCLUDES)
- INCLUDES += -I$(src)/include/traceevent
-@@ -252,6 +202,7 @@ CPPFLAGS ?=
- LDFLAGS ?=
- 
- export CFLAGS
-+export INCLUDES
- 
- # Required CFLAGS
- override CFLAGS += -D_GNU_SOURCE
-@@ -284,34 +235,21 @@ endif
- override CFLAGS += $(CONFIG_FLAGS) $(INCLUDES) $(PLUGIN_DIR_SQ) $(VAR_DIR)
- override CFLAGS += $(udis86-flags) $(blk-flags)
- 
--define check_gui
--	if [ $(BUILDGUI) -ne 1 -a ! -z "$(filter $(gui_objs),$(@))" ];	then	\
--		$(REBUILD_GUI);							\
--	else									\
--		$(print_compile)						\
--		$(CC) -c $(CPPFLAGS) $(CFLAGS) $(EXT) $< -o $(obj)/$@;		\
--	fi;
--endef
--
- $(obj)/%.o: $(src)/%.c
--	$(Q)$(call check_gui)
-+	$(Q)$(call do_compile)
- 
- %.o: $(src)/%.c
--	$(Q)$(call check_gui)
-+	$(Q)$(call do_compile)
-+
-+TRACE_VIEW_OBJS =
-+TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view.o
-+TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view-store.o
- 
--TRACE_GUI_OBJS = trace-filter.o trace-compat.o trace-filter-hash.o trace-dialog.o \
--		trace-xml.o
+@@ -300,8 +302,9 @@ TRACE_GUI_OBJS = trace-filter.o trace-compat.o trace-filter-hash.o trace-dialog.
+ 		trace-xml.o
  TRACE_CMD_OBJS = trace-cmd.o trace-record.o trace-read.o trace-split.o trace-listen.o \
  	 trace-stack.o trace-hist.o trace-mem.o trace-snapshot.o trace-stat.o \
- 	 trace-profile.o trace-stream.o trace-record.o trace-restore.o \
- 	 trace-check-events.o trace-show.o trace-list.o  \
- 	 trace-output.o trace-usage.o trace-msg.o
--TRACE_VIEW_OBJS = trace-view.o trace-view-store.o
--TRACE_GRAPH_OBJS = trace-graph.o trace-plot.o trace-plot-cpu.o trace-plot-task.o
--TRACE_VIEW_MAIN_OBJS = trace-view-main.o $(TRACE_VIEW_OBJS) $(TRACE_GUI_OBJS)
--TRACE_GRAPH_MAIN_OBJS = trace-graph-main.o $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS)
--KERNEL_SHARK_OBJS = $(TRACE_VIEW_OBJS) $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS) \
--	trace-capture.o kernel-shark.o
+-	 trace-hash.o trace-profile.o trace-stream.o trace-record.o trace-restore.o \
+-	 trace-check-events.o trace-show.o trace-list.o
++	 trace-profile.o trace-stream.o trace-record.o trace-restore.o \
++	 trace-check-events.o trace-show.o trace-list.o  \
++	 trace-output.o trace-usage.o trace-msg.o
+ TRACE_VIEW_OBJS = trace-view.o trace-view-store.o
+ TRACE_GRAPH_OBJS = trace-graph.o trace-plot.o trace-plot-cpu.o trace-plot-task.o
+ TRACE_VIEW_MAIN_OBJS = trace-view-main.o $(TRACE_VIEW_OBJS) $(TRACE_GUI_OBJS)
+@@ -309,11 +312,6 @@ TRACE_GRAPH_MAIN_OBJS = trace-graph-main.o $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS)
+ KERNEL_SHARK_OBJS = $(TRACE_VIEW_OBJS) $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS) \
+ 	trace-capture.o kernel-shark.o
  
+-TCMD_LIB_OBJS = trace-util.o trace-input.o trace-ftrace.o \
+-			trace-output.o trace-recorder.o \
+-			trace-usage.o trace-blk-hack.o \
+-			trace-hooks.o trace-msg.o
+-
  PLUGIN_OBJS =
  PLUGIN_OBJS += plugin_jbd2.o
-@@ -329,15 +267,13 @@ PLUGIN_OBJS += plugin_tlb.o
- 
+ PLUGIN_OBJS += plugin_hrtimer.o
+@@ -331,9 +329,9 @@ PLUGIN_OBJS += plugin_tlb.o
  PLUGINS := $(PLUGIN_OBJS:.o=.so)
  
--ALL_OBJS = $(TRACE_CMD_OBJS) $(KERNEL_SHARK_OBJS) $(TRACE_VIEW_MAIN_OBJS) \
--	$(TRACE_GRAPH_MAIN_OBJS) $(PLUGIN_OBJS)
-+ALL_OBJS = $(TRACE_CMD_OBJS) $(PLUGIN_OBJS)
+ ALL_OBJS = $(TRACE_CMD_OBJS) $(KERNEL_SHARK_OBJS) $(TRACE_VIEW_MAIN_OBJS) \
+-	$(TRACE_GRAPH_MAIN_OBJS) $(TCMD_LIB_OBJS) $(PLUGIN_OBJS)
++	$(TRACE_GRAPH_MAIN_OBJS) $(PLUGIN_OBJS)
  
- CMD_TARGETS = trace_plugin_dir trace_python_dir tc_version.h \
+-CMD_TARGETS = trace_plugin_dir trace_python_dir tc_version.h $(LIB_FILE) \
++CMD_TARGETS = trace_plugin_dir trace_python_dir tc_version.h \
  	trace-cmd  $(PLUGINS) $(BUILD_PYTHON)
  
--GUI_TARGETS = ks_version.h trace-graph trace-view kernelshark
+ GUI_TARGETS = ks_version.h trace-graph trace-view kernelshark
+@@ -374,10 +372,10 @@ trace-view: $(TRACE_VIEW_MAIN_OBJS)
+ trace-graph: $(TRACE_GRAPH_MAIN_OBJS)
+ 	$(Q)$(G)$(do_app_build)
  
--TARGETS = $(CMD_TARGETS) $(GUI_TARGETS)
-+TARGETS = $(CMD_TARGETS)
- 
- 
- #	cpp $(INCLUDES)
-@@ -352,31 +288,23 @@ all: all_cmd show_gui_make
- 
- all_cmd: $(CMD_TARGETS)
- 
--gui: $(CMD_TARGETS)
--	$(Q)$(MAKE) -f $(src)/Makefile BUILDGUI=1 all_gui
--
--all_gui: $(GUI_TARGETS) show_gui_done
--
--GUI_OBJS = $(KERNEL_SHARK_OBJS) $(TRACE_VIEW_MAIN_OBJS) $(TRACE_GRAPH_MAIN_OBJS)
--
--gui_objs := $(sort $(GUI_OBJS))
-+gui: force $(CMD_TARGETS)
-+	$(Q)$(MAKE) -C $(src)/kernel-shark; \
-+	echo "gui build complete"
- 
- trace-cmd: $(TRACE_CMD_OBJS)
- 	$(Q)$(do_app_build)
- 
--kernelshark: $(KERNEL_SHARK_OBJS)
--	$(Q)$(G)$(do_app_build)
--
--trace-view: $(TRACE_VIEW_MAIN_OBJS)
--	$(Q)$(G)$(do_app_build)
--
--trace-graph: $(TRACE_GRAPH_MAIN_OBJS)
--	$(Q)$(G)$(do_app_build)
--
- trace-cmd: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
--kernelshark: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
--trace-view: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
--trace-graph: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
-+
-+kernelshark: force $(CMD_TARGETS)
-+	$(Q)$(MAKE) -C $(src)/kernel-shark $@
-+
-+trace-view: force $(CMD_TARGETS)
-+	$(Q)$(MAKE) -C $(src)/kernel-shark $@
-+
-+trace-graph: force $(CMD_TARGETS)
-+	$(Q)$(MAKE) -C $(src)/kernel-shark $@
+-trace-cmd: libtracecmd.a $(LIBTRACEEVENT_STATIC)
+-kernelshark: libtracecmd.a $(LIBTRACEEVENT_STATIC)
+-trace-view: libtracecmd.a $(LIBTRACEEVENT_STATIC)
+-trace-graph: libtracecmd.a $(LIBTRACEEVENT_STATIC)
++trace-cmd: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
++kernelshark: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
++trace-view: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
++trace-graph: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
  
  $(LIBTRACEEVENT_SHARED): force
  	$(Q)$(MAKE) -C $(src)/lib/traceevent libtraceevent.so
-@@ -403,29 +331,6 @@ $(PLUGIN_OBJS): %.o : $(src)/%.c
- $(PLUGINS): %.so: %.o
- 	$(Q)$(do_plugin_build)
+@@ -385,21 +383,18 @@ $(LIBTRACEEVENT_SHARED): force
+ $(LIBTRACEEVENT_STATIC): force
+ 	$(Q)$(MAKE) -C $(src)/lib/traceevent libtraceevent.a
  
--define make_version.h
--	(echo '/* This file is automatically generated. Do not modify. */';		\
--	echo \#define VERSION_CODE $(shell						\
--	expr $(VERSION) \* 256 + $(PATCHLEVEL));					\
--	echo '#define EXTRAVERSION ' $(EXTRAVERSION);					\
--	echo '#define VERSION_STRING "'$(VERSION).$(PATCHLEVEL).$(EXTRAVERSION)'"';	\
--	echo '#define FILE_VERSION '$(FILE_VERSION);					\
--	) > $1
--endef
++$(LIBTRACECMD_STATIC): force trace_plugin_dir
++	$(Q)$(MAKE) -C $(src)/lib/trace-cmd libtracecmd.a
++
++$(LIBTRACECMD_SHARED): force trace_plugin_dir
++	$(Q)$(MAKE) -C $(src)/lib/trace-cmd libtracecmd.so
++
+ libtraceevent.so: $(LIBTRACEEVENT_SHARED)
+ libtraceevent.a: $(LIBTRACEEVENT_STATIC)
++libtracecmd.a: $(LIBTRACECMD_STATIC)
++libtracecmd.so: $(LIBTRACECMD_SHARED)
+ 
+-$(TCMD_LIB_OBJS): %.o: $(src)/%.c
+-	$(Q)$(do_fpic_compile)
 -
--define update_version.h
--	($(call make_version.h, $@.tmp);		\
--	if [ -r $@ ] && cmp -s $@ $@.tmp; then		\
--		rm -f $@.tmp;				\
--	else						\
--		echo '  UPDATE                 $@';	\
--		mv -f $@.tmp $@;			\
--	fi);
--endef
+-libtracecmd.so: $(TCMD_LIB_OBJS)
+-	$(Q)$(do_compile_shared_library)
 -
--ks_version.h: force
--	$(Q)$(G)$(call update_version.h)
+-libtracecmd.a: $(TCMD_LIB_OBJS)
+-	$(Q)$(do_build_static_lib)
 -
- tc_version.h: force
- 	$(Q)$(N)$(call update_version.h)
- 
-@@ -449,36 +354,15 @@ trace_python_dir: force
- 
- all_objs := $(sort $(ALL_OBJS))
- all_deps := $(all_objs:%.o=.%.d)
--gui_deps := $(gui_objs:%.o=.%.d)
--non_gui_deps = $(filter-out $(gui_deps),$(all_deps))
- 
--define check_gui_deps
--	if [ ! -z "$(filter $(gui_deps),$(@))" ];	then	\
--		if [ $(BUILDGUI) -ne 1 ]; then			\
--			$(REBUILD_GUI);				\
--		else						\
--			$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@;	\
--		fi						\
--	elif [ $(BUILDGUI) -eq 0 ]; then			\
--		$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@;		\
--	else							\
--		echo SKIPPING $@;				\
--	fi;
--endef
+-libs: libtracecmd.so $(LIBTRACEEVENT_SHARED)
 -
--$(gui_deps): ks_version.h
--$(non_gui_deps): tc_version.h
-+$(all_deps): tc_version.h
+-trace-util.o: trace_plugin_dir
++libs: $(LIBTRACECMD_SHARED) $(LIBTRACEEVENT_SHARED)
  
- $(all_deps): .%.d: $(src)/%.c
--	$(Q)$(call check_gui_deps)
-+	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@;
- 
- $(all_objs) : %.o : .%.d
- 
--ifeq ($(BUILDGUI), 1)
--dep_includes := $(wildcard $(gui_deps))
--else
--dep_includes := $(wildcard $(non_gui_deps))
--endif
-+dep_includes := $(wildcard $(all_deps))
- 
- ifneq ($(dep_includes),)
-  include $(dep_includes)
-@@ -488,9 +372,6 @@ show_gui_make:
- 	@echo "Note: to build the gui, type \"make gui\""
- 	@echo "      to build man pages, type \"make doc\""
- 
--show_gui_done:
--	@echo "gui build complete"
--
- PHONY += show_gui_make
- 
- tags:	force
-@@ -553,9 +434,9 @@ install: install_cmd
- 	@echo "      to install man pages, type \"make install_doc\""
- 
- install_gui: install_cmd gui
--	$(Q)$(call do_install,trace-view,$(bindir_SQ))
--	$(Q)$(call do_install,trace-graph,$(bindir_SQ))
--	$(Q)$(call do_install,kernelshark,$(bindir_SQ))
-+	$(Q)$(call do_install,$(obj)/kernel-shark/trace-view,$(bindir_SQ))
-+	$(Q)$(call do_install,$(obj)/kernel-shark/trace-graph,$(bindir_SQ))
-+	$(Q)$(call do_install,$(obj)/kernel-shark/kernelshark,$(bindir_SQ))
+ $(PLUGIN_OBJS): %.o : $(src)/%.c
+ 	$(Q)$(do_compile_plugin_obj)
+@@ -562,7 +557,7 @@ install_gui: install_cmd gui
+ 	$(Q)$(call do_install,kernelshark,$(bindir_SQ))
  
  install_libs: libs
- 	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ))
-@@ -577,6 +458,7 @@ clean:
+-	$(Q)$(call do_install,libtracecmd.so,$(libdir_SQ))
++	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ))
+ 	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ))
+ 	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ))
+ 	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ))
+@@ -580,6 +575,7 @@ clean:
+ 	$(RM) *.o *~ $(TARGETS) *.a *.so ctracecmd_wrap.c .*.d
  	$(RM) tags TAGS cscope*
  	$(MAKE) -C $(src)/lib/traceevent clean
- 	$(MAKE) -C $(src)/lib/trace-cmd clean
-+	$(MAKE) -C $(src)/kernel-shark clean
++	$(MAKE) -C $(src)/lib/trace-cmd clean
  
  
  ##### PYTHON STUFF #####
-@@ -596,10 +478,10 @@ ctracecmd.so: $(TCMD_LIB_OBJS) ctracecmd.i
+@@ -597,9 +593,9 @@ PYGTK_CFLAGS = `pkg-config --cflags pygtk-2.0`
+ ctracecmd.so: $(TCMD_LIB_OBJS) ctracecmd.i
+ 	swig -Wall -python -noproxy -I$(src)/include/traceevent -I$(src)/include/trace-cmd ctracecmd.i
  	$(CC) -fpic -c $(CPPFLAGS) $(CFLAGS) $(PYTHON_INCLUDES)  ctracecmd_wrap.c
- 	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so
+-	$(CC) --shared $(TCMD_LIB_OBJS) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so
++	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so
  
--ctracecmdgui.so: $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC)
-+ctracecmdgui.so: trace-view $(LIBTRACECMD_STATIC)
- 	swig -Wall -python -noproxy -I$(src)/kernel-shark/include ctracecmdgui.i
+-ctracecmdgui.so: $(TRACE_VIEW_OBJS) $(LIB_FILE)
++ctracecmdgui.so: $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC)
+ 	swig -Wall -python -noproxy ctracecmdgui.i
  	$(CC) -fpic -c  $(CPPFLAGS) $(CFLAGS) $(INCLUDES) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) ctracecmdgui_wrap.c
--	$(CC) --shared $^ $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so
-+	$(CC) --shared $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC) $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so
- 
- PHONY += python
- python: $(PYTHON)
-@@ -626,8 +508,6 @@ plugin_python.o: %.o : $(src)/%.c trace_python_dir
- plugin_python.so: %.so: %.o
- 	$(Q)$(do_python_plugin_build)
- 
--endif # skip-makefile
--
- dist:
- 	git archive --format=tar --prefix=trace-cmd-$(TRACECMD_VERSION)/ HEAD \
- 		> ../trace-cmd-$(TRACECMD_VERSION).tar
-diff --git a/kernel-shark/Makefile b/kernel-shark/Makefile
+ 	$(CC) --shared $^ $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
 new file mode 100644
-index 0000000..247f4d1
+index 0000000..dcb5cd5
 --- /dev/null
-+++ b/kernel-shark/Makefile
-@@ -0,0 +1,84 @@
-+# Kernel Shark version
++++ b/lib/trace-cmd/Makefile
+@@ -0,0 +1,45 @@
 +
-+VERSION		= 0
-+PATCHLEVEL	= 2
-+EXTRAVERSION	=
-+KERNELSHARK_VERSION = $(VERSION).$(PATCHLEVEL).$(EXTRAVERSION)
 +
-+BUILDGUI := 1
 +include $(src)/scripts/utils.mk
 +
++DEFAULT_TARGET = libtracecmd.a
 +
-+PACKAGES = gtk+-2.0 libxml-2.0 gthread-2.0
++OBJS =
++OBJS += trace-hash.o
++OBJS += trace-hooks.o
++OBJS += trace-input.o
++OBJS += trace-recorder.o
++OBJS += trace-util.o
 +
-+CONFIG_INCLUDES = $(shell pkg-config --cflags $(PACKAGES)) -I$(obj)
++# Additional util objects
++OBJS += trace-blk-hack.o
++OBJS += trace-ftrace.o
 +
-+CONFIG_FLAGS = -DBUILDGUI \
-+	-DGTK_VERSION=$(shell pkg-config --modversion gtk+-2.0 | \
-+	awk 'BEGIN{FS="."}{ a = ($$1 * (2^16)) + $$2 * (2^8) + $$3; printf ("%d", a);}')
++DEPS := $(OBJS:%.o=.%.d)
 +
-+CONFIG_LIBS = $(shell pkg-config --libs $(PACKAGES))
++all: $(DEFAULT_TARGET)
 +
-+CONFIG_FLAGS += $(HELP_DIR_SQ)
++libtracecmd.a: $(OBJS)
++	$(Q)$(call do_build_static_lib)
 +
-+KS_VERSION := $(obj)/kernel-shark/include/ks_version.h
-+
-+GUI_TARGETS = $(KS_VERSION) trace-graph trace-view kernelshark
-+
-+TRACE_GUI_OBJS = trace-filter.o trace-compat.o trace-filter-hash.o \
-+		 trace-dialog.o trace-xml.o
-+TRACE_VIEW_OBJS = trace-view.o trace-view-store.o
-+TRACE_GRAPH_OBJS = trace-graph.o trace-plot.o trace-plot-cpu.o trace-plot-task.o
-+TRACE_VIEW_MAIN_OBJS = trace-view-main.o $(TRACE_VIEW_OBJS) $(TRACE_GUI_OBJS)
-+TRACE_GRAPH_MAIN_OBJS = trace-graph-main.o $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS)
-+KERNEL_SHARK_OBJS = $(TRACE_VIEW_OBJS) $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS) \
-+	trace-capture.o kernel-shark.o
-+
-+GUI_OBJS = $(KERNEL_SHARK_OBJS) $(TRACE_VIEW_MAIN_OBJS) $(TRACE_GRAPH_MAIN_OBJS)
-+
-+all_objs := $(sort $(GUI_OBJS))
-+all_deps := $(all_objs:%.o=.%.d)
-+
-+# Temporary HACK!
-+# This hack is OK only until the non-gui builds do not have any config_includes
-+# nor config flags. In case they do, keeping this hack might be a problem.
-+override CFLAGS += $(CONFIG_INCLUDES) $(CONFIG_FLAGS)
-+
-+LIBS += -L$(LIBTRACEEVENT_DIR) -L$(LIBTRACECMD_DIR)
-+LIBS += -ltracecmd -ltraceevent -ldl
-+
-+all: $(GUI_TARGETS)
-+
-+$(KS_VERSION): force
-+	$(Q)$(call update_version.h)
-+
-+kernelshark: $(KERNEL_SHARK_OBJS)
-+	$(Q)$(do_app_build)
-+
-+trace-view: $(TRACE_VIEW_MAIN_OBJS)
-+	$(Q)$(do_app_build)
-+
-+trace-graph: $(TRACE_GRAPH_MAIN_OBJS)
-+	$(Q)$(do_app_build)
++libtracecmd.so: $(OBJS)
++	$(Q)$(call do_compile_shared_library)
 +
 +%.o: %.c
-+	$(Q)$(call do_compile)
++	$(Q)$(call do_fpic_compile)
 +
-+$(all_deps): .%.d: %.c
++$(DEPS): .%.d: %.c
 +	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
 +
-+$(all_deps): $(KS_VERSION)
-+
-+$(GUI_OBJS): %.o : .%.d
++$(OBJS): %.o : .%.d
 +
 +dep_includes := $(wildcard $(DEPS))
 +
@@ -490,98 +217,36 @@ index 0000000..247f4d1
 +endif
 +
 +clean:
-+	$(RM) *.a *.so *.o .*.d $(GUI_TARGETS)
++	$(RM) *.a *.so *.o .*.d
 +
-+force:
 +.PHONY: clean
-diff --git a/kernel-shark.c b/kernel-shark/kernel-shark.c
+diff --git a/trace-blk-hack.c b/lib/trace-cmd/trace-blk-hack.c
 similarity index 100%
-rename from kernel-shark.c
-rename to kernel-shark/kernel-shark.c
-diff --git a/trace-capture.c b/kernel-shark/trace-capture.c
+rename from trace-blk-hack.c
+rename to lib/trace-cmd/trace-blk-hack.c
+diff --git a/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
 similarity index 100%
-rename from trace-capture.c
-rename to kernel-shark/trace-capture.c
-diff --git a/trace-compat.c b/kernel-shark/trace-compat.c
+rename from trace-ftrace.c
+rename to lib/trace-cmd/trace-ftrace.c
+diff --git a/trace-hash.c b/lib/trace-cmd/trace-hash.c
 similarity index 100%
-rename from trace-compat.c
-rename to kernel-shark/trace-compat.c
-diff --git a/trace-dialog.c b/kernel-shark/trace-dialog.c
+rename from trace-hash.c
+rename to lib/trace-cmd/trace-hash.c
+diff --git a/trace-hooks.c b/lib/trace-cmd/trace-hooks.c
 similarity index 100%
-rename from trace-dialog.c
-rename to kernel-shark/trace-dialog.c
-diff --git a/trace-filter-hash.c b/kernel-shark/trace-filter-hash.c
+rename from trace-hooks.c
+rename to lib/trace-cmd/trace-hooks.c
+diff --git a/trace-input.c b/lib/trace-cmd/trace-input.c
 similarity index 100%
-rename from trace-filter-hash.c
-rename to kernel-shark/trace-filter-hash.c
-diff --git a/trace-filter.c b/kernel-shark/trace-filter.c
+rename from trace-input.c
+rename to lib/trace-cmd/trace-input.c
+diff --git a/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
 similarity index 100%
-rename from trace-filter.c
-rename to kernel-shark/trace-filter.c
-diff --git a/trace-graph-main.c b/kernel-shark/trace-graph-main.c
+rename from trace-recorder.c
+rename to lib/trace-cmd/trace-recorder.c
+diff --git a/trace-util.c b/lib/trace-cmd/trace-util.c
 similarity index 100%
-rename from trace-graph-main.c
-rename to kernel-shark/trace-graph-main.c
-diff --git a/trace-graph.c b/kernel-shark/trace-graph.c
-similarity index 100%
-rename from trace-graph.c
-rename to kernel-shark/trace-graph.c
-diff --git a/trace-plot-cpu.c b/kernel-shark/trace-plot-cpu.c
-similarity index 100%
-rename from trace-plot-cpu.c
-rename to kernel-shark/trace-plot-cpu.c
-diff --git a/trace-plot-task.c b/kernel-shark/trace-plot-task.c
-similarity index 100%
-rename from trace-plot-task.c
-rename to kernel-shark/trace-plot-task.c
-diff --git a/trace-plot.c b/kernel-shark/trace-plot.c
-similarity index 100%
-rename from trace-plot.c
-rename to kernel-shark/trace-plot.c
-diff --git a/trace-view-main.c b/kernel-shark/trace-view-main.c
-similarity index 100%
-rename from trace-view-main.c
-rename to kernel-shark/trace-view-main.c
-diff --git a/trace-view-store.c b/kernel-shark/trace-view-store.c
-similarity index 100%
-rename from trace-view-store.c
-rename to kernel-shark/trace-view-store.c
-diff --git a/trace-view.c b/kernel-shark/trace-view.c
-similarity index 100%
-rename from trace-view.c
-rename to kernel-shark/trace-view.c
-diff --git a/trace-xml.c b/kernel-shark/trace-xml.c
-similarity index 100%
-rename from trace-xml.c
-rename to kernel-shark/trace-xml.c
-diff --git a/scripts/utils.mk b/scripts/utils.mk
-index 39cb387..abfe115 100644
---- a/scripts/utils.mk
-+++ b/scripts/utils.mk
-@@ -62,3 +62,24 @@ do_plugin_build =				\
- 	($(print_plugin_build)			\
- 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -nostartfiles -o $@ $<)
- 
-+
-+define make_version.h
-+	(echo '/* This file is automatically generated. Do not modify. */';		\
-+	echo \#define VERSION_CODE $(shell						\
-+	expr $(VERSION) \* 256 + $(PATCHLEVEL));					\
-+	echo '#define EXTRAVERSION ' $(EXTRAVERSION);					\
-+	echo '#define VERSION_STRING "'$(VERSION).$(PATCHLEVEL).$(EXTRAVERSION)'"';	\
-+	echo '#define FILE_VERSION '$(FILE_VERSION);					\
-+	) > $1
-+endef
-+
-+define update_version.h
-+	($(call make_version.h, $@.tmp);		\
-+	if [ -r $@ ] && cmp -s $@ $@.tmp; then		\
-+		rm -f $@.tmp;				\
-+	else						\
-+		echo '  UPDATE                 $@';	\
-+		mv -f $@.tmp $@;			\
-+	fi);
-+endef
-+
+rename from trace-util.c
+rename to lib/trace-cmd/trace-util.c
 -- 
 2.14.1
