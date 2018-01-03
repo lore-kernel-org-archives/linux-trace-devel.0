@@ -1,161 +1,239 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail.kernel.org ([198.145.29.99]:35536 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:35560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751241AbeACRxk (ORCPT
+        id S1751243AbeACRxl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 3 Jan 2018 12:53:40 -0500
-Message-Id: <20180103175339.488423180@goodmis.org>
-Date: Wed, 03 Jan 2018 12:52:34 -0500
+        Wed, 3 Jan 2018 12:53:41 -0500
+Message-Id: <20180103175339.779446639@goodmis.org>
+Date: Wed, 03 Jan 2018 12:52:36 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 32/38] tracecmd listen: Have pagesize passed as return not parameter
+Subject: [PATCH 34/38] trace-cmd: Add option CPUCOUNT to buffer instance options
 References: <20180103175202.044283643@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
-Content-Disposition: inline; filename=0032-tracecmd-listen-Have-pagesize-passed-as-return-not-p.patch
+Content-Disposition: inline; filename=0034-trace-cmd-Add-option-CPUCOUNT-to-buffer-instance-opt.patch
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
 
-Return pagesize as the return function and not as a pointer that is passed
-by reference. This will simplify the modification of the process_client()
-code to let the listener do a handshake before forking.
+Add a new trace.dat option that allows buffer instances to have a different
+number of CPUS than what the top level buffers have.
 
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 ---
- trace-cmd.h    |  3 +--
- trace-listen.c | 23 +++++++++++++----------
- trace-msg.c    | 12 ++++++------
- 3 files changed, 20 insertions(+), 18 deletions(-)
+ trace-cmd.h    |  3 ++-
+ trace-input.c  | 27 +++++++++++++++++++++++++++
+ trace-output.c | 11 ++++++++++-
+ trace-record.c | 55 +++++++++++++++++++++++++++++++++++++++++--------------
+ 4 files changed, 80 insertions(+), 16 deletions(-)
 
 diff --git a/trace-cmd.h b/trace-cmd.h
-index 1204bb307431..ca030fc0df01 100644
+index a3d38ec27556..a5409887e6dd 100644
 --- a/trace-cmd.h
 +++ b/trace-cmd.h
-@@ -335,8 +335,7 @@ int tracecmd_msg_finish_sending_metadata(struct tracecmd_msg_handle *msg_handle)
- void tracecmd_msg_send_close_msg(struct tracecmd_msg_handle *msg_handle);
+@@ -93,6 +93,7 @@ enum {
+ 	TRACECMD_OPTION_UNAME,
+ 	TRACECMD_OPTION_HOOK,
+ 	TRACECMD_OPTION_OFFSET,
++	TRACECMD_OPTION_CPUCOUNT,
+ };
  
- /* for server */
--int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle,
--				 int *pagesize);
-+int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle);
- int tracecmd_msg_send_port_array(struct tracecmd_msg_handle *msg_handle,
- 				 int *ports);
- int tracecmd_msg_collect_metadata(struct tracecmd_msg_handle *msg_handle, int ofd);
-diff --git a/trace-listen.c b/trace-listen.c
-index c7c0afc5bbee..52021af9e574 100644
---- a/trace-listen.c
-+++ b/trace-listen.c
-@@ -372,12 +372,12 @@ static int open_udp(const char *node, const char *port, int *pid,
- 	return num_port;
+ enum {
+@@ -257,7 +258,7 @@ struct tracecmd_option *tracecmd_add_option(struct tracecmd_output *handle,
+ 					    unsigned short id, int size,
+ 					    const void *data);
+ struct tracecmd_option *tracecmd_add_buffer_option(struct tracecmd_output *handle,
+-						   const char *name);
++						   const char *name, int cpus);
+ int tracecmd_update_option(struct tracecmd_output *handle,
+ 			   struct tracecmd_option *option, int size,
+ 			   const void *data);
+diff --git a/trace-input.c b/trace-input.c
+index 15d8c1b0b6d6..30b16bab43d7 100644
+--- a/trace-input.c
++++ b/trace-input.c
+@@ -2102,6 +2102,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 	struct input_buffer_instance *buffer;
+ 	struct hook_list *hook;
+ 	char *buf;
++	int cpus;
+ 
+ 	for (;;) {
+ 		if (do_read_check(handle, &option, 2))
+@@ -2183,6 +2184,10 @@ static int handle_options(struct tracecmd_input *handle)
+ 			hook->next = handle->hooks;
+ 			handle->hooks = hook;
+ 			break;
++		case TRACECMD_OPTION_CPUCOUNT:
++			cpus = *(int *)buf;
++			handle->cpus = __data2host4(handle->pevent, cpus);
++			break;
+ 		default:
+ 			warning("unknown option %d", option);
+ 			break;
+@@ -2206,11 +2211,14 @@ static int read_cpu_data(struct tracecmd_input *handle)
+ 	unsigned long long max_size = 0;
+ 	unsigned long long pages;
+ 	char buf[10];
++	int cpus;
+ 	int cpu;
+ 
+ 	if (do_read_check(handle, buf, 10))
+ 		return -1;
+ 
++	cpus = handle->cpus;
++
+ 	/* check if this handles options */
+ 	if (strncmp(buf, "options", 7) == 0) {
+ 		if (handle_options(handle) < 0)
+@@ -2293,6 +2301,25 @@ static int read_cpu_data(struct tracecmd_input *handle)
+ 			goto out_free;
+ 	}
+ 
++	/*
++	 * It is possible that an option changed the number of CPUs.
++	 * If that happened, then there's "empty" cpu data saved for
++	 * backward compatibility.
++	 */
++	if (cpus < handle->cpus) {
++		unsigned long long ignore;
++		int once = 0;
++
++		read8(handle, &ignore); /* offset */
++		read8(handle, &ignore); /* size */
++		if (ignore != 0) {
++			if (!once) {
++				warning("ignored CPU data not zero size");
++				once++;
++			}
++		}
++	}
++
+ 	return 0;
+ 
+  out_free:
+diff --git a/trace-output.c b/trace-output.c
+index cbacd5426963..02efeeb669d6 100644
+--- a/trace-output.c
++++ b/trace-output.c
+@@ -1029,7 +1029,8 @@ int tracecmd_update_option(struct tracecmd_output *handle,
  }
  
--static int communicate_with_client(struct tracecmd_msg_handle *msg_handle,
--				   int *pagesize)
-+static int communicate_with_client(struct tracecmd_msg_handle *msg_handle)
+ struct tracecmd_option *
+-tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name)
++tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name,
++			   int cpus)
  {
- 	char *last_proto = NULL;
- 	char buf[BUFSIZ];
- 	char *option;
-+	int pagesize = 0;
- 	int options;
- 	int size;
- 	int cpus;
-@@ -438,7 +438,7 @@ static int communicate_with_client(struct tracecmd_msg_handle *msg_handle,
- 		msg_handle->version = V2_PROTOCOL;
+ 	struct tracecmd_option *option;
+ 	char *buf;
+@@ -1046,6 +1047,14 @@ tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name)
+ 	option = tracecmd_add_option(handle, TRACECMD_OPTION_BUFFER, size, buf);
+ 	free(buf);
  
- 		/* read the CPU count, the page size, and options */
--		if (tracecmd_msg_initial_setting(msg_handle, pagesize) < 0)
-+		if ((pagesize = tracecmd_msg_initial_setting(msg_handle)) < 0)
- 			goto out;
- 	} else {
- 		/* The client is using the v1 protocol */
-@@ -455,10 +455,10 @@ static int communicate_with_client(struct tracecmd_msg_handle *msg_handle,
- 			/** ERROR **/
- 			goto out;
- 
--		*pagesize = atoi(buf);
-+		pagesize = atoi(buf);
- 
--		plog("pagesize=%d\n", *pagesize);
--		if (*pagesize <= 0)
-+		plog("pagesize=%d\n", pagesize);
-+		if (pagesize <= 0)
- 			goto out;
- 
- 		/* Now the number of options */
-@@ -508,7 +508,7 @@ static int communicate_with_client(struct tracecmd_msg_handle *msg_handle,
- 	if (msg_handle->flags & TRACECMD_MSG_FL_USE_TCP)
- 		plog("Using TCP for live connection\n");
- 
--	ret = 0;
-+	ret = pagesize;
-  out:
- 	free(last_proto);
- 
-@@ -558,6 +558,9 @@ static int *create_all_readers(const char *node, const char *port,
- 	int cpu;
- 	int pid;
- 
-+	if (!pagesize)
-+		return NULL;
++	/*
++	 * In case a buffer instance has different number of CPUs as the
++	 * local machine.
++	 */
++	if (cpus)
++		tracecmd_add_option(handle, TRACECMD_OPTION_CPUCOUNT,
++				    sizeof(int), &cpus);
 +
- 	port_array = malloc(sizeof(int) * cpus);
- 	if (!port_array)
- 		return NULL;
-@@ -688,9 +691,9 @@ static int process_client(struct tracecmd_msg_handle *msg_handle,
- 	int ofd;
- 	int ret;
+ 	return option;
+ }
  
--	ret = communicate_with_client(msg_handle, &pagesize);
--	if (ret < 0)
--		return ret;
-+	pagesize = communicate_with_client(msg_handle);
-+	if (pagesize < 0)
-+		return pagesize;
+diff --git a/trace-record.c b/trace-record.c
+index bcc6f2e79cb3..9b389e7d9134 100644
+--- a/trace-record.c
++++ b/trace-record.c
+@@ -2970,21 +2970,53 @@ static struct tracecmd_msg_handle *start_threads(enum trace_type type, int globa
+ 	return msg_handle;
+ }
  
- 	ofd = create_client_file(node, port);
- 
-diff --git a/trace-msg.c b/trace-msg.c
-index 55fb2e8baabb..a439c8f030a4 100644
---- a/trace-msg.c
-+++ b/trace-msg.c
-@@ -478,11 +478,11 @@ static void error_operation_for_server(struct tracecmd_msg *msg)
- 
- #define MAX_OPTION_SIZE 4096
- 
--int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle,
--				 int *pagesize)
-+int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle)
++static void touch_file(const char *file)
++{
++	int fd;
++
++	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
++	if (fd < 0)
++		die("could not create file %s\n", file);
++	close(fd);
++}
++
+ static void append_buffer(struct tracecmd_output *handle,
+ 			  struct tracecmd_option *buffer_option,
+ 			  struct buffer_instance *instance,
+ 			  char **temp_files)
  {
- 	struct tracecmd_msg_opt *opt;
- 	struct tracecmd_msg msg;
-+	int pagesize;
- 	int options, i, s;
- 	int cpus;
- 	int ret;
-@@ -512,9 +512,9 @@ int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle,
++	int cpu_count = instance->cpu_count;
+ 	int i;
  
- 	msg_handle->cpu_count = cpus;
+-	for (i = 0; i < instance->cpu_count; i++)
++	/*
++	 * Since we can record remote and virtual machines in the same file
++	 * as the host, the buffers may no longer have matching number of
++	 * CPU data as the host. For backward compatibility for older
++	 * trace-cmd versions, which will blindly read the number of CPUs
++	 * for each buffer instance as there are for the host, if there are
++	 * fewer CPUs on the remote machine than on the host, an "empty"
++	 * CPU is needed for each CPU that the host has that the remote does
++	 * not. If there are more CPUs on the remote, older executables will
++	 * simply ignore them (which is OK, we only need to guarantee that
++	 * old executables don't crash).
++	 */
++	if (instance->cpu_count < local_cpu_count)
++		cpu_count = local_cpu_count;
++
++	for (i = 0; i < cpu_count; i++) {
+ 		temp_files[i] = get_temp_file(instance, i);
++		if (i >= instance->cpu_count)
++			touch_file(temp_files[i]);
++	}
  
--	*pagesize = ntohl(msg.tinit.page_size);
--	plog("pagesize=%d\n", *pagesize);
--	if (*pagesize <= 0) {
-+	pagesize = ntohl(msg.tinit.page_size);
-+	plog("pagesize=%d\n", pagesize);
-+	if (pagesize <= 0) {
- 		ret = -EINVAL;
- 		goto error;
- 	}
-@@ -550,7 +550,7 @@ int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle,
+ 	tracecmd_append_buffer_cpu_data(handle, buffer_option,
+-					instance->cpu_count, temp_files);
++					cpu_count, temp_files);
+ 
+-	for (i = 0; i < instance->cpu_count; i++)
++	for (i = 0; i < instance->cpu_count; i++) {
++		if (i >= instance->cpu_count)
++			delete_temp_file(instance, i);
+ 		put_temp_file(temp_files[i]);
++	}
+ }
+ 
+ static void
+@@ -3039,16 +3071,6 @@ static void add_uname(struct tracecmd_output *handle)
+ 	free(str);
+ }
+ 
+-static void touch_file(const char *file)
+-{
+-	int fd;
+-
+-	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+-	if (fd < 0)
+-		die("could not create file %s\n", file);
+-	close(fd);
+-}
+-
+ static void print_stat(struct buffer_instance *instance)
+ {
+ 	int cpu;
+@@ -3150,7 +3172,12 @@ static void record_data(struct tracecmd_msg_handle *msg_handle,
+ 				die("Failed to allocate buffer options");
+ 			i = 0;
+ 			for_each_instance(instance) {
+-				buffer_options[i++] = tracecmd_add_buffer_option(handle, instance->name);
++				int cpus = instance->cpu_count != local_cpu_count ?
++					instance->cpu_count : 0;
++
++				buffer_options[i++] = tracecmd_add_buffer_option(handle,
++										 instance->name,
++										 cpus);
+ 				add_buffer_stat(handle, instance);
+ 			}
  		}
- 	}
- 
--	return 0;
-+	return pagesize;
- 
- error:
- 	error_operation_for_server(&msg);
 -- 
 2.13.2
