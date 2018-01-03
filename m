@@ -1,173 +1,69 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wr0-f194.google.com ([209.85.128.194]:43398 "EHLO
-        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751206AbdLUPZu (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:35428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751024AbeACRxg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 21 Dec 2017 10:25:50 -0500
-From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-To: rostedt@goodmis.org
-Cc: y.karadz@gmail.com, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH v2 1/3] trace-cmd: Make read_proc() to return int status via OUT arg
-Date: Thu, 21 Dec 2017 17:25:18 +0200
-Message-Id: <20171221152520.25867-2-vladislav.valtchev@gmail.com>
-In-Reply-To: <20171221152520.25867-1-vladislav.valtchev@gmail.com>
-References: <20171221152520.25867-1-vladislav.valtchev@gmail.com>
+        Wed, 3 Jan 2018 12:53:36 -0500
+Message-Id: <20180103175335.005689291@goodmis.org>
+Date: Wed, 03 Jan 2018 12:52:04 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-trace-devel@vger.kernel.org
+Subject: [PATCH 02/38] pevent: Simplify pointer print logic and fix %pF
+References: <20180103175202.044283643@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Disposition: inline; filename=0002-pevent-Simplify-pointer-print-logic-and-fix-pF.patch
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch changes both the implementation and the interface of read_proc()
-in trace-stack.c. First, it makes the function to read a string from the proc
-file and then parse it as an integer using strtol(). Then, it makes the function
-to return the integer read from the proc file using the int *status OUT
-parameter, in order to make possible its return value to be used by the caller
-to check if the operation succeeded.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-This new implementation relaxes the external contraints the function relies on,
-making it possible to be used by trace stat. The point is that 'stat' should not
-fail in case there is something wrong with the stack tracer. Only the call to
-die() in case the file is empty has been left in this patch: it will be removed
-as well in a separate commit.
+When processing %pX in pretty_print(), simplify the logic slightly by
+incrementing the ptr to the format string if isalnum(ptr[1]) is true. This
+follows the logic a bit more closely to what is in the kernel.
 
-Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
+Also, this fixes a small bug where %pF was not giving the offset of the
+function.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- trace-stack.c | 79 +++++++++++++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 63 insertions(+), 16 deletions(-)
+ event-parse.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/trace-stack.c b/trace-stack.c
-index aa79ae3..c1058ca 100644
---- a/trace-stack.c
-+++ b/trace-stack.c
-@@ -20,6 +20,7 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-+#include <limits.h>
- #include <getopt.h>
- #include <sys/types.h>
- #include <sys/stat.h>
-@@ -49,37 +50,79 @@ static void test_available(void)
- 		die("stack tracer not configured on running kernel");
- }
+diff --git a/event-parse.c b/event-parse.c
+index 7ef66f853b75..2a6b9ffaa4aa 100644
+--- a/event-parse.c
++++ b/event-parse.c
+@@ -4935,21 +4935,22 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct event
+ 				else
+ 					ls = 2;
  
--static char read_proc(void)
-+/*
-+ * Returns:
-+ *   -1 - Something went wrong
-+ *    0 - File does not exist (stack tracer not enabled)
-+ *    1 - Success
-+ */
-+static int read_proc(int *status)
- {
--	char buf[1];
-+	struct stat stat_buf;
-+	char buf[64];
-+	long num;
- 	int fd;
- 	int n;
+-				if (*(ptr+1) == 'F' || *(ptr+1) == 'f' ||
+-				    *(ptr+1) == 'S' || *(ptr+1) == 's') {
++				if (isalnum(ptr[1]))
+ 					ptr++;
++
++				if (*ptr == 'F' || *ptr == 'f' ||
++				    *ptr == 'S' || *ptr == 's') {
+ 					show_func = *ptr;
+-				} else if (*(ptr+1) == 'M' || *(ptr+1) == 'm') {
+-					print_mac_arg(s, *(ptr+1), data, size, event, arg);
+-					ptr++;
++				} else if (*ptr == 'M' || *ptr == 'm') {
++					print_mac_arg(s, *ptr, data, size, event, arg);
+ 					arg = arg->next;
+ 					break;
+-				} else if (*(ptr+1) == 'I' || *(ptr+1) == 'i') {
++				} else if (*ptr == 'I' || *ptr == 'i') {
+ 					int n;
  
-+	if (stat(PROC_FILE, &stat_buf) < 0) {
-+		/* stack tracer not configured on running kernel */
-+		*status = 0; /* not configured means disabled */
-+		return 0;
-+	}
-+
- 	fd = open(PROC_FILE, O_RDONLY);
--	if (fd < 0)
--		die("reading %s", PROC_FILE);
--	n = read(fd, buf, 1);
--	close(fd);
--	if (n != 1)
-+
-+	if (fd < 0) {
-+		/* we cannot open the file: likely a permission problem. */
-+		return -1;
-+	}
-+
-+	n = read(fd, buf, sizeof(buf));
-+
-+	/* We assume that the file is never empty we got no errors. */
-+	if (n <= 0)
- 		die("error reading %s", PROC_FILE);
- 
--	return buf[0];
-+	/* Does this file have more than 63 characters?? */
-+	if (n >= sizeof(buf))
-+		return -1;
-+
-+	/* n is guaranteed to be in the range [1, sizeof(buf)-1]. */
-+	buf[n] = 0;
-+	close(fd);
-+
-+	errno = 0;
-+
-+	/* Read an integer from buf ignoring any non-digit trailing characters. */
-+	num = strtol(buf, NULL, 10);
-+
-+	/* strtol() returned 0: we have to check for errors */
-+	if (!num && (errno == EINVAL || errno == ERANGE))
-+		return -1;
-+
-+	if (num > INT_MAX || num < INT_MIN)
-+		return -1; /* the number is good but does not fit in 'int' */
-+
-+	*status = num;
-+	return 1; /* full success */
- }
- 
--static void start_stop_trace(char val)
-+/* NOTE: this implementation only accepts new_status in the range [0..9]. */
-+static void change_stack_tracer_status(int new_status)
- {
- 	char buf[1];
-+	int status;
- 	int fd;
- 	int n;
- 
--	buf[0] = read_proc();
--	if (buf[0] == val)
--		return;
-+	if (read_proc(&status) > 0 && status == new_status)
-+		return; /* nothing to do */
- 
- 	fd = open(PROC_FILE, O_WRONLY);
-+
- 	if (fd < 0)
- 		die("writing %s", PROC_FILE);
--	buf[0] = val;
-+	buf[0] = new_status + '0';
- 	n = write(fd, buf, 1);
- 	if (n < 0)
- 		die("writing into %s", PROC_FILE);
-@@ -88,12 +131,12 @@ static void start_stop_trace(char val)
- 
- static void start_trace(void)
- {
--	start_stop_trace('1');
-+	change_stack_tracer_status(1);
- }
- 
- static void stop_trace(void)
- {
--	start_stop_trace('0');
-+	change_stack_tracer_status(0);
- }
- 
- static void reset_trace(void)
-@@ -123,8 +166,12 @@ static void read_trace(void)
- 	char *buf = NULL;
- 	size_t n;
- 	int r;
-+	int status;
- 
--	if (read_proc() == '1')
-+	if (read_proc(&status) <= 0)
-+		die("Invalid stack tracer state");
-+
-+	if (status > 0)
- 		printf("(stack tracer running)\n");
- 	else
- 		printf("(stack tracer not running)\n");
+-					n = print_ip_arg(s, ptr+1, data, size, event, arg);
++					n = print_ip_arg(s, ptr, data, size, event, arg);
+ 					if (n > 0) {
+-						ptr += n;
++						ptr += n - 1;
+ 						arg = arg->next;
+ 						break;
+ 					}
 -- 
-2.14.1
+2.13.2
