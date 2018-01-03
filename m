@@ -1,173 +1,216 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail.kernel.org ([198.145.29.99]:35508 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:35522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751087AbeACRxk (ORCPT
+        id S1751235AbeACRxk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 3 Jan 2018 12:53:40 -0500
-Message-Id: <20180103175339.226570025@goodmis.org>
-Date: Wed, 03 Jan 2018 12:52:32 -0500
+Message-Id: <20180103175339.371012628@goodmis.org>
+Date: Wed, 03 Jan 2018 12:52:33 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 30/38] trace-cmd: Move protocol version into msg_handler
+Subject: [PATCH 31/38] tracecmd: Clean up handling of cpu_count
 References: <20180103175202.044283643@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
-Content-Disposition: inline; filename=0030-trace-cmd-Move-protocol-version-into-msg_handler.patch
+Content-Disposition: inline; filename=0031-tracecmd-Clean-up-handling-of-cpu_count.patch
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
 
-In order to have trace-listen be able to perform the handshake with the
-client before forking, the protocol version can not be global. Move it to
-the msg_handler.
+Instead of passing around a pointer to a cpus variable, have the
+msg_handle->cpu_count set up when the total cpus are discovered.
 
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 ---
- trace-cmd.h    |  3 ++-
- trace-listen.c |  8 +++-----
- trace-record.c | 27 ++++++++++++++++-----------
- 3 files changed, 21 insertions(+), 17 deletions(-)
+ trace-cmd.h    |  7 ++++---
+ trace-listen.c | 26 ++++++++++++++++----------
+ trace-msg.c    | 15 +++++++++------
+ 3 files changed, 29 insertions(+), 19 deletions(-)
 
 diff --git a/trace-cmd.h b/trace-cmd.h
-index 30badbd47cc6..526634fd674b 100644
+index 526634fd674b..1204bb307431 100644
 --- a/trace-cmd.h
 +++ b/trace-cmd.h
-@@ -314,8 +314,9 @@ enum tracecmd_msg_flags {
- 
+@@ -315,7 +315,8 @@ enum tracecmd_msg_flags {
  /* for both client and server */
  struct tracecmd_msg_handle {
--	unsigned long		flags;
  	int			fd;
-+	int			version;	/* Current protocol version */
-+	unsigned long		flags;
+-	int			version;	/* Current protocol version */
++	short			cpu_count;
++	short			version;	/* Current protocol version */
+ 	unsigned long		flags;
  };
  
- struct tracecmd_msg_handle *
+@@ -335,9 +336,9 @@ void tracecmd_msg_send_close_msg(struct tracecmd_msg_handle *msg_handle);
+ 
+ /* for server */
+ int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle,
+-				 int *cpus, int *pagesize);
++				 int *pagesize);
+ int tracecmd_msg_send_port_array(struct tracecmd_msg_handle *msg_handle,
+-				 int total_cpus, int *ports);
++				 int *ports);
+ int tracecmd_msg_collect_metadata(struct tracecmd_msg_handle *msg_handle, int ofd);
+ bool tracecmd_msg_done(struct tracecmd_msg_handle *msg_handle);
+ void tracecmd_msg_set_done(struct tracecmd_msg_handle *msg_handle);
 diff --git a/trace-listen.c b/trace-listen.c
-index a1e35ef19761..93cae4c793fa 100644
+index 93cae4c793fa..c7c0afc5bbee 100644
 --- a/trace-listen.c
 +++ b/trace-listen.c
-@@ -51,8 +51,6 @@ static FILE *logfp;
+@@ -373,13 +373,14 @@ static int open_udp(const char *node, const char *port, int *pid,
+ }
  
- static int backlog = 5;
+ static int communicate_with_client(struct tracecmd_msg_handle *msg_handle,
+-				   int *cpus, int *pagesize)
++				   int *pagesize)
+ {
+ 	char *last_proto = NULL;
+ 	char buf[BUFSIZ];
+ 	char *option;
+ 	int options;
+ 	int size;
++	int cpus;
+ 	int n, s, t, i;
+ 	int ret = -EINVAL;
+ 	int fd = msg_handle->fd;
+@@ -394,10 +395,10 @@ static int communicate_with_client(struct tracecmd_msg_handle *msg_handle,
+ 		/** ERROR **/
+ 		return -EINVAL;
  
--static int proto_ver;
--
- static int do_daemon;
+-	*cpus = atoi(buf);
++	cpus = atoi(buf);
  
- /* Used for signaling INT to finish */
-@@ -436,7 +434,7 @@ static int communicate_with_client(struct tracecmd_msg_handle *msg_handle,
- 		/* We're off! */
- 		write(fd, "OK", 2);
- 
--		proto_ver = V2_PROTOCOL;
-+		msg_handle->version = V2_PROTOCOL;
+ 	/* Is the client using the new protocol? */
+-	if (*cpus == -1) {
++	if (cpus == -1) {
+ 		if (memcmp(buf, V2_CPU, n) != 0) {
+ 			/* If it did not send a version, then bail */
+ 			if (memcmp(buf, "-1V", 3)) {
+@@ -437,15 +438,17 @@ static int communicate_with_client(struct tracecmd_msg_handle *msg_handle,
+ 		msg_handle->version = V2_PROTOCOL;
  
  		/* read the CPU count, the page size, and options */
- 		if (tracecmd_msg_initial_setting(msg_handle, cpus, pagesize) < 0)
-@@ -585,7 +583,7 @@ static int *create_all_readers(int cpus, const char *node, const char *port,
- 		start_port = udp_port + 1;
- 	}
- 
--	if (proto_ver == V2_PROTOCOL) {
-+	if (msg_handle->version == V2_PROTOCOL) {
- 		/* send set of port numbers to the client */
- 		if (tracecmd_msg_send_port_array(msg_handle, cpus, port_array) < 0) {
- 			plog("Failed sending port array\n");
-@@ -700,7 +698,7 @@ static int process_client(struct tracecmd_msg_handle *msg_handle,
- 	stop_msg_handle = msg_handle;
- 
- 	/* Now we are ready to start reading data from the client */
--	if (proto_ver == V2_PROTOCOL)
-+	if (msg_handle->version == V2_PROTOCOL)
- 		tracecmd_msg_collect_metadata(msg_handle, ofd);
- 	else
- 		collect_metadata_from_client(msg_handle, ofd);
-diff --git a/trace-record.c b/trace-record.c
-index 9512fd9853ad..90e344d5c0c8 100644
---- a/trace-record.c
-+++ b/trace-record.c
-@@ -112,7 +112,6 @@ static unsigned recorder_flags;
- /* Try a few times to get an accurate date */
- static int date2ts_tries = 5;
- 
--static int proto_ver = V2_PROTOCOL;
- static struct func_list *graph_funcs;
- 
- static int func_stack;
-@@ -2791,7 +2790,7 @@ static void check_protocol_version(struct tracecmd_msg_handle *msg_handle)
- 
- 	if (n < 0 || !buf[0]) {
- 		/* the server uses the v1 protocol, so we'll use it */
--		proto_ver = V1_PROTOCOL;
-+		msg_handle->version = V1_PROTOCOL;
- 		plog("Use the v1 protocol\n");
+-		if (tracecmd_msg_initial_setting(msg_handle, cpus, pagesize) < 0)
++		if (tracecmd_msg_initial_setting(msg_handle, pagesize) < 0)
+ 			goto out;
  	} else {
- 		if (memcmp(buf, "V2", n) != 0)
-@@ -2811,7 +2810,7 @@ static void check_protocol_version(struct tracecmd_msg_handle *msg_handle)
+ 		/* The client is using the v1 protocol */
  
- static struct tracecmd_msg_handle *setup_network(void)
- {
--	struct tracecmd_msg_handle *msg_handle;
-+	struct tracecmd_msg_handle *msg_handle = NULL;
- 	struct addrinfo hints;
- 	struct addrinfo *result, *rp;
- 	int sfd, s;
-@@ -2858,16 +2857,22 @@ again:
+-		plog("cpus=%d\n", *cpus);
+-		if (*cpus < 0)
++		plog("cpus=%d\n", cpus);
++		if (cpus < 0)
+ 			goto out;
  
- 	freeaddrinfo(result);
- 
--	msg_handle = tracecmd_msg_handle_alloc(sfd, TRACECMD_MSG_FL_CLIENT);
--	if (!msg_handle)
--		die("Failed to allocate message handle");
-+	if (msg_handle) {
-+		msg_handle->fd = sfd;
-+	} else {
-+		msg_handle = tracecmd_msg_handle_alloc(sfd, TRACECMD_MSG_FL_CLIENT);
-+		if (!msg_handle)
-+			die("Failed to allocate message handle");
++		msg_handle->cpu_count = cpus;
 +
-+		msg_handle->version = V2_PROTOCOL;
-+	}
+ 		/* next read the page size */
+ 		n = read_string(fd, buf, BUFSIZ);
+ 		if (n == BUFSIZ)
+@@ -542,7 +545,7 @@ static void destroy_all_readers(int cpus, int *pid_array, const char *node,
+ 	free(pid_array);
+ }
  
- 	if (use_tcp)
- 		msg_handle->flags |= TRACECMD_MSG_FL_USE_TCP;
+-static int *create_all_readers(int cpus, const char *node, const char *port,
++static int *create_all_readers(const char *node, const char *port,
+ 			       int pagesize, struct tracecmd_msg_handle *msg_handle)
+ {
+ 	int use_tcp = msg_handle->flags & TRACECMD_MSG_FL_USE_TCP;
+@@ -551,6 +554,7 @@ static int *create_all_readers(int cpus, const char *node, const char *port,
+ 	int *pid_array;
+ 	int start_port;
+ 	int udp_port;
++	int cpus = msg_handle->cpu_count;
+ 	int cpu;
+ 	int pid;
  
--	if (proto_ver == V2_PROTOCOL) {
-+	if (msg_handle->version == V2_PROTOCOL) {
- 		check_protocol_version(msg_handle);
--		if (proto_ver == V1_PROTOCOL) {
-+		if (msg_handle->version == V1_PROTOCOL) {
- 			/* reconnect to the server for using the v1 protocol */
- 			close(sfd);
- 			goto again;
-@@ -2875,7 +2880,7 @@ again:
- 		communicate_with_listener_v2(msg_handle);
+@@ -585,7 +589,7 @@ static int *create_all_readers(int cpus, const char *node, const char *port,
+ 
+ 	if (msg_handle->version == V2_PROTOCOL) {
+ 		/* send set of port numbers to the client */
+-		if (tracecmd_msg_send_port_array(msg_handle, cpus, port_array) < 0) {
++		if (tracecmd_msg_send_port_array(msg_handle, port_array) < 0) {
+ 			plog("Failed sending port array\n");
+ 			goto out_free;
+ 		}
+@@ -684,13 +688,13 @@ static int process_client(struct tracecmd_msg_handle *msg_handle,
+ 	int ofd;
+ 	int ret;
+ 
+-	ret = communicate_with_client(msg_handle, &cpus, &pagesize);
++	ret = communicate_with_client(msg_handle, &pagesize);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	ofd = create_client_file(node, port);
+ 
+-	pid_array = create_all_readers(cpus, node, port, pagesize, msg_handle);
++	pid_array = create_all_readers(node, port, pagesize, msg_handle);
+ 	if (!pid_array)
+ 		return -ENOMEM;
+ 
+@@ -708,6 +712,8 @@ static int process_client(struct tracecmd_msg_handle *msg_handle,
+ 	/* wait a little to let our readers finish reading */
+ 	sleep(1);
+ 
++	cpus = msg_handle->cpu_count;
++
+ 	/* stop our readers */
+ 	stop_all_readers(cpus, pid_array);
+ 
+diff --git a/trace-msg.c b/trace-msg.c
+index 0d564c4aee32..55fb2e8baabb 100644
+--- a/trace-msg.c
++++ b/trace-msg.c
+@@ -479,11 +479,12 @@ static void error_operation_for_server(struct tracecmd_msg *msg)
+ #define MAX_OPTION_SIZE 4096
+ 
+ int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle,
+-				 int *cpus, int *pagesize)
++				 int *pagesize)
+ {
+ 	struct tracecmd_msg_opt *opt;
+ 	struct tracecmd_msg msg;
+ 	int options, i, s;
++	int cpus;
+ 	int ret;
+ 	int offset = 0;
+ 	u32 size = MIN_TINIT_SIZE;
+@@ -502,13 +503,15 @@ int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle,
+ 		goto error;
  	}
  
--	if (proto_ver == V1_PROTOCOL)
-+	if (msg_handle->version == V1_PROTOCOL)
- 		communicate_with_listener_v1(msg_handle);
+-	*cpus = ntohl(msg.tinit.cpus);
+-	plog("cpus=%d\n", *cpus);
+-	if (*cpus < 0) {
++	cpus = ntohl(msg.tinit.cpus);
++	plog("cpus=%d\n", cpus);
++	if (cpus < 0) {
+ 		ret = -EINVAL;
+ 		goto error;
+ 	}
  
- 	return msg_handle;
-@@ -2888,7 +2893,7 @@ static struct tracecmd_msg_handle *setup_connection(void)
- 	msg_handle = setup_network();
++	msg_handle->cpu_count = cpus;
++
+ 	*pagesize = ntohl(msg.tinit.page_size);
+ 	plog("pagesize=%d\n", *pagesize);
+ 	if (*pagesize <= 0) {
+@@ -555,13 +558,13 @@ error:
+ }
  
- 	/* Now create the handle through this socket */
--	if (proto_ver == V2_PROTOCOL) {
-+	if (msg_handle->version == V2_PROTOCOL) {
- 		network_handle = tracecmd_create_init_fd_msg(msg_handle, listed_events);
- 		tracecmd_msg_finish_sending_metadata(msg_handle);
- 	} else
-@@ -2901,7 +2906,7 @@ static struct tracecmd_msg_handle *setup_connection(void)
- 
- static void finish_network(struct tracecmd_msg_handle *msg_handle)
+ int tracecmd_msg_send_port_array(struct tracecmd_msg_handle *msg_handle,
+-				 int total_cpus, int *ports)
++				 int *ports)
  {
--	if (proto_ver == V2_PROTOCOL)
-+	if (msg_handle->version == V2_PROTOCOL)
- 		tracecmd_msg_send_close_msg(msg_handle);
- 	tracecmd_msg_handle_close(msg_handle);
- 	free(host);
+ 	struct tracecmd_msg msg;
+ 	int ret;
+ 
+ 	tracecmd_msg_init(MSG_RINIT, &msg);
+-	ret = make_rinit(&msg, total_cpus, ports);
++	ret = make_rinit(&msg, msg_handle->cpu_count, ports);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.13.2
