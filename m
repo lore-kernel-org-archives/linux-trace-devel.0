@@ -1,82 +1,91 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail.kernel.org ([198.145.29.99]:35420 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:35432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750913AbeACRxg (ORCPT
+        id S1751037AbeACRxg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 3 Jan 2018 12:53:36 -0500
-Message-Id: <20180103175202.044283643@goodmis.org>
-Date: Wed, 03 Jan 2018 12:52:02 -0500
+Message-Id: <20180103175335.152275812@goodmis.org>
+Date: Wed, 03 Jan 2018 12:52:05 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 00/38] trace-cmd: Simplify the msg handling
+Subject: [PATCH 03/38] pevent: Handle new pointer processing of bprint strings
+References: <20180103175202.044283643@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Disposition: inline; filename=0003-pevent-Handle-new-pointer-processing-of-bprint-strin.patch
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-The msg handling of trace-cmd for the listen and record code is
-overly complex due to the multiplexing functions. Rewrite the code
-such that it is easier to understand. This will allow us to extend
-it in the future for the virt-server work.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
--- Steve
+The Linux kernel printf() has some extended use cases that dereference the
+pointer. This is dangerouse for tracing because the pointer that is
+dereferenced can change or even be unmapped. It also causes issues when the
+trace data is extracted, because user space does not have access to the
+contents of the pointer even if it still exists.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-trace-cmd
+To handle this, the kernel was updated to process these dereferenced
+pointers at the time they are recorded, and not post processed. Now they
+exist in the tracing buffer, and no dereference is needed at the time of
+reading the trace.
 
-Head SHA1: 9420ffed51b5a1a28c175efc41fdd49507acda89
+The event parsing library needs to handle this new case.
 
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ event-parse.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-Steven Rostedt (Red Hat) (34):
-      trace-cmd: Remove the creating of msg out of tracecmd_msg_send()
-      trace-cmd: Move tracecmd_msg_send_and_wait_for_msg() into its only user
-      trace-cmd: Turn tracecmd_msg data into an anonymous union
-      trace-cmd: Remove unused structure tracecmd_msg_error
-      trace-cmd: Move size and cmd in tracecmd_msg into its own header struct
-      trace-cmd: Move the tracecmd_msg pointers into their own union
-      trace-cmd: Just use the buf field for sending pointers
-      trace-cmd: Use an array to map msg types and min sizes
-      trace-cmd: Merge msg_do_write_check() into msg_write()
-      trace-cmd: Simplify msg_free() by using min sizes
-      trace-cmd: Add tracecmd_msg_init() helper function
-      trace-cmd: Remove mulitplexer tracecmd_msg_create()
-      trace-cmd: Simplify msg_read_extra()
-      trace-cmd: Have msg_free() zero out msg contents
-      trace-cmd: Verify RINIT was received after TINIT msg sent
-      trace-cmd: Make send_metadata a flag in the output handle
-      trace-cmd: Pass cpu count and port array to make_rinit()
-      trace-cmd: Pass cpu_count instead of having it as a global
-      trace-cmd: Pass in client_ports instead of using a global variable
-      trace-cmd msg: Add debug prints of messages sent and received
-      trace-cmd msg: Move the saved closing fd to the caller
-      trace-cmd listen: Add better output on error of connections
-      trace-cmd msg: Create a msg_handle to pass around for saved state
-      trace-cmd msg: Add server structure of msg_handler
-      trace-cmd: Remove global use_tcp variable
-      trace-cmd: Move protocol version into msg_handler
-      tracecmd: Clean up handling of cpu_count
-      tracecmd listen: Have pagesize passed as return not parameter
-      trace-cmd: Have cpu_count reside in instances and not be global
-      trace-cmd: Add option CPUCOUNT to buffer instance options
-      trace-cmd: Have msg_handle part of the buffer instance
-      trace-cmd record: Allow instances to be recorded over the network
-      trace-cmd: Have keep and profile be flags of buffer instance
-      trace-cmd: Add network handle into buffer instance
-
-Steven Rostedt (VMware) (4):
-      trace-cmd recorder: Check if pipe_size was modified by fcntl(F_GETPIPE_SZ)
-      pevent: Simplify pointer print logic and fix %pF
-      pevent: Handle new pointer processing of bprint strings
-      trace-cmd record: Fix clearing out the ctx->instance when used in for_all_instances()
-
-----
- event-parse.c    |  43 ++++-
- trace-cmd.h      |  52 +++++-
- trace-input.c    |  27 ++++
- trace-listen.c   | 138 +++++++++++-----
- trace-local.h    |  15 +-
- trace-msg.c      | 486 ++++++++++++++++++++++++++++---------------------------
- trace-msg.h      |  10 --
- trace-output.c   |  38 ++++-
- trace-record.c   | 391 +++++++++++++++++++++++++++-----------------
- trace-recorder.c |   7 +-
- trace-stat.c     |   2 +-
- 11 files changed, 741 insertions(+), 468 deletions(-)
+diff --git a/event-parse.c b/event-parse.c
+index 2a6b9ffaa4aa..bd288c184d20 100644
+--- a/event-parse.c
++++ b/event-parse.c
+@@ -4279,6 +4279,26 @@ static struct print_arg *make_bprint_args(char *fmt, void *data, int size, struc
+ 				goto process_again;
+ 			case 'p':
+ 				ls = 1;
++				if (isalnum(ptr[1])) {
++					ptr++;
++					/* Check for special pointers */
++					switch (*ptr) {
++					case 's':
++					case 'S':
++					case 'f':
++					case 'F':
++						break;
++					default:
++						/*
++						 * Older kernels do not process
++						 * dereferenced pointers.
++						 * Only process if the pointer
++						 * value is a printable.
++						 */
++						if (isprint(*(char *)bptr))
++							goto process_string;
++					}
++				}
+ 				/* fall through */
+ 			case 'd':
+ 			case 'u':
+@@ -4331,6 +4351,7 @@ static struct print_arg *make_bprint_args(char *fmt, void *data, int size, struc
+ 
+ 				break;
+ 			case 's':
++ process_string:
+ 				arg = alloc_arg();
+ 				if (!arg) {
+ 					do_warning_event(event, "%s(%d): not enough memory!",
+@@ -4938,6 +4959,11 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct event
+ 				if (isalnum(ptr[1]))
+ 					ptr++;
+ 
++				if (arg->type == PRINT_BSTRING) {
++					trace_seq_puts(s, arg->string.string);
++					break;
++				}
++
+ 				if (*ptr == 'F' || *ptr == 'f' ||
+ 				    *ptr == 'S' || *ptr == 's') {
+ 					show_func = *ptr;
+-- 
+2.13.2
