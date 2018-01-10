@@ -1,44 +1,120 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wm0-f50.google.com ([74.125.82.50]:42933 "EHLO
-        mail-wm0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S964976AbeAJP64 (ORCPT
+Received: from mail-wr0-f193.google.com ([209.85.128.193]:44365 "EHLO
+        mail-wr0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S964976AbeAJP66 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Jan 2018 10:58:56 -0500
-Received: by mail-wm0-f50.google.com with SMTP id b141so27906558wme.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2018 07:58:55 -0800 (PST)
+        Wed, 10 Jan 2018 10:58:58 -0500
+Received: by mail-wr0-f193.google.com with SMTP id w50so8612017wrc.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2018 07:58:58 -0800 (PST)
 From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH 0/6] trace-cmd: Make out-of-tree builds to work
-Date: Wed, 10 Jan 2018 17:58:26 +0200
-Message-Id: <20180110155832.15928-1-vladislav.valtchev@gmail.com>
+Subject: [PATCH 3/6] trace-cmd: Make libtracecmd buildable out-of-tree
+Date: Wed, 10 Jan 2018 17:58:29 +0200
+Message-Id: <20180110155832.15928-4-vladislav.valtchev@gmail.com>
+In-Reply-To: <20180110155832.15928-1-vladislav.valtchev@gmail.com>
+References: <20180110155832.15928-1-vladislav.valtchev@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This small series makes out-of-tree builds to work. In order to do that, it's
-enough to set the 'O' variable while calling make like: make -O=build_dir.
+This patch allows the libtracecmd to be buildable out-of-tree when the 'O'
+variable is set at command line while invoking make.
 
-NOTE[1]: this series has to be applied after the series called:
-"trace-cmd: restructure the project's source tree"
+At this stage, when the 'O' variable is set, the out-of-tree build will fail (as
+it *already* does on the master branch) but with errors unrelated with
+libtracecmd: with this patch the final goal of a fully working out-of-tree build
+gets closer.
 
-Vladislav Valtchev (VMware) (6):
-  trace-cmd: Make libtraceevent builable out-of-tree
-  trace-cmd: Make the plugins buildable out-of-tree
-  trace-cmd: Make libtracecmd buildable out-of-tree
-  trace-cmd: Make the trace-cmd target buildable out-of-tree
-  trace-cmd: Make the python targets buildable out-of-tree
-  trace-cmd: Make the GUI targets buildable out-of-tree
+In successive steps, the remaining Makefiles will be made to support out-of-tree
+builds, until everything works.
 
- Makefile                | 57 ++++++++++++++++++++++---------------------------
- kernel-shark/Makefile   | 40 ++++++++++++++++++++++------------
- lib/trace-cmd/Makefile  | 27 +++++++++++++++--------
- lib/traceevent/Makefile | 25 +++++++++++++++-------
- plugins/Makefile        | 37 +++++++++++++++++++-------------
- python/Makefile         | 30 +++++++++++++++-----------
- scripts/utils.mk        |  2 +-
- tracecmd/Makefile       | 33 ++++++++++++++++++----------
- 8 files changed, 148 insertions(+), 103 deletions(-)
+NOTE: the regular in-tree build of all targets clearly continues to work.
+Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
+---
+ Makefile               |  4 ++--
+ lib/trace-cmd/Makefile | 27 ++++++++++++++++++---------
+ 2 files changed, 20 insertions(+), 11 deletions(-)
 
+diff --git a/Makefile b/Makefile
+index 73e14e8..3b71206 100644
+--- a/Makefile
++++ b/Makefile
+@@ -266,10 +266,10 @@ $(LIBTRACEEVENT_STATIC): force
+ 	$(Q)$(MAKE) -C $(src)/lib/traceevent $@
+ 
+ $(LIBTRACECMD_STATIC): force $(obj)/plugins/trace_plugin_dir
+-	$(Q)$(MAKE) -C $(src)/lib/trace-cmd libtracecmd.a
++	$(Q)$(MAKE) -C $(src)/lib/trace-cmd $@
+ 
+ $(LIBTRACECMD_SHARED): force $(obj)/plugins/trace_plugin_dir
+-	$(Q)$(MAKE) -C $(src)/lib/trace-cmd libtracecmd.so
++	$(Q)$(MAKE) -C $(src)/lib/trace-cmd $@
+ 
+ libtraceevent.so: $(LIBTRACEEVENT_SHARED)
+ libtraceevent.a: $(LIBTRACEEVENT_STATIC)
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index e8fb088..ee09099 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -2,7 +2,9 @@
+ 
+ include $(src)/scripts/utils.mk
+ 
+-DEFAULT_TARGET = libtracecmd.a
++bdir:=$(obj)/lib/trace-cmd
++
++DEFAULT_TARGET = $(bdir)/libtracecmd.a
+ 
+ OBJS =
+ OBJS += trace-hash.o
+@@ -15,25 +17,32 @@ OBJS += trace-util.o
+ OBJS += trace-blk-hack.o
+ OBJS += trace-ftrace.o
+ 
+-DEPS := $(OBJS:%.o=.%.d)
++OBJS := $(OBJS:%.o=$(bdir)/%.o)
++DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
+ 
+ all: $(DEFAULT_TARGET)
+ 
+-libtracecmd.a: $(OBJS)
++$(bdir):
++	@mkdir -p $(bdir)
++
++$(OBJS): | $(bdir)
++$(DEPS): | $(bdir)
++
++$(bdir)/libtracecmd.a: $(OBJS)
+ 	$(Q)$(call do_build_static_lib)
+ 
+-libtracecmd.so: $(OBJS)
++$(bdir)/libtracecmd.so: $(OBJS)
+ 	$(Q)$(call do_compile_shared_library)
+ 
+-%.o: %.c
++$(bdir)/%.o: %.c
+ 	$(Q)$(call do_fpic_compile)
+ 
+-trace-util.o: $(obj)/plugins/trace_plugin_dir
++$(bdir)/trace-util.o: $(obj)/plugins/trace_plugin_dir
+ 
+-$(DEPS): .%.d: %.c
++$(DEPS): $(bdir)/.%.d: %.c
+ 	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
+ 
+-$(OBJS): %.o : .%.d
++$(OBJS): $(bdir)/%.o : $(bdir)/.%.d
+ 
+ dep_includes := $(wildcard $(DEPS))
+ 
+@@ -42,6 +51,6 @@ ifneq ($(dep_includes),)
+ endif
+ 
+ clean:
+-	$(RM) *.a *.so *.o .*.d
++	$(RM) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.o $(bdir)/.*.d
+ 
+ .PHONY: clean
 -- 
 2.14.1
