@@ -1,138 +1,118 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wm0-f68.google.com ([74.125.82.68]:37527 "EHLO
-        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S965652AbeAJP7A (ORCPT
+Received: from mail-wr0-f196.google.com ([209.85.128.196]:39163 "EHLO
+        mail-wr0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S965900AbeAJP7A (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 10 Jan 2018 10:59:00 -0500
-Received: by mail-wm0-f68.google.com with SMTP id f140so27907632wmd.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2018 07:58:59 -0800 (PST)
+Received: by mail-wr0-f196.google.com with SMTP id z48so12101265wrz.6
+        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Jan 2018 07:59:00 -0800 (PST)
 From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH 4/6] trace-cmd: Make the trace-cmd target buildable out-of-tree
-Date: Wed, 10 Jan 2018 17:58:30 +0200
-Message-Id: <20180110155832.15928-5-vladislav.valtchev@gmail.com>
+Subject: [PATCH 5/6] trace-cmd: Make the python targets buildable out-of-tree
+Date: Wed, 10 Jan 2018 17:58:31 +0200
+Message-Id: <20180110155832.15928-6-vladislav.valtchev@gmail.com>
 In-Reply-To: <20180110155832.15928-1-vladislav.valtchev@gmail.com>
 References: <20180110155832.15928-1-vladislav.valtchev@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch allows the trace-cmd app to be buildable out-of-tree when the 'O'
+This patch allows the python targets to be buildable out-of-tree when the 'O'
 variable is set at command line while invoking make.
 
 At this stage, when the 'O' variable is set, the out-of-tree build will fail
-for some targets like 'gui' (as it *already* happens on the master branch): with
-this patch the final goal of a fully working out-of-tree build gets closer.
+for some targets like 'gui' (as it *already* happens on the master branch):
+with this patch the final goal of a fully working out-of-tree build gets closer.
 
-In successive steps, the remaining Makefiles will be made to support out-of-tree
-builds, until everything works.
+In successive steps, the remaining Makefiles will be made to support
+out-of-tree builds, until everything works.
 
 NOTE: the regular in-tree build of all targets clearly continues to work.
 Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
 ---
- Makefile          |  3 ++-
- tracecmd/Makefile | 33 ++++++++++++++++++++++-----------
- 2 files changed, 24 insertions(+), 12 deletions(-)
+ Makefile        |  4 ++--
+ python/Makefile | 30 +++++++++++++++++-------------
+ 2 files changed, 19 insertions(+), 15 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 3b71206..c42bea0 100644
+index c42bea0..88f252e 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -188,6 +188,7 @@ INCLUDES += -I$(src)/lib/traceevent/include
- INCLUDES += -I$(src)/lib/trace-cmd/include
- INCLUDES += -I$(src)/kernel-shark/include
- INCLUDES += -I$(src)/tracecmd/include
-+INCLUDES += -I$(obj)/tracecmd/include
+@@ -375,10 +375,10 @@ export PYTHON_LDFLAGS
+ export PYGTK_CFLAGS
  
- include $(src)/features.mk
+ ctracecmd.so: force $(LIBTRACECMD_STATIC)
+-	$(Q)$(MAKE) -C $(src)/python $@
++	$(Q)$(MAKE) -C $(src)/python $(obj)/python/ctracecmd.so
  
-@@ -248,7 +249,7 @@ gui: force $(CMD_TARGETS)
- 	echo "gui build complete"
+ ctracecmdgui.so: force $(LIBTRACECMD_STATIC) trace-view
+-	$(Q)$(MAKE) -C $(src)/python $@
++	$(Q)$(MAKE) -C $(src)/python $(obj)/python/ctracecmdgui.so
  
- trace-cmd: force $(LIBTRACEEVENT_STATIC) $(LIBTRACECMD_STATIC)
--	$(Q)$(MAKE) -C $(src)/tracecmd $@
-+	$(Q)$(MAKE) -C $(src)/tracecmd $(obj)/tracecmd/$@
- 
- kernelshark: force $(CMD_TARGETS)
- 	$(Q)$(MAKE) -C $(src)/kernel-shark $@
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index 860dc89..3a11024 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -3,8 +3,10 @@ VERSION := $(TC_VERSION)
- PATCHLEVEL := $(TC_PATCHLEVEL)
- EXTRAVERSION := $(TC_EXTRAVERSION)
- 
--TC_VERSION := $(obj)/tracecmd/include/tc_version.h
--TARGETS = trace-cmd $(TC_VERSION)
-+bdir:=$(obj)/tracecmd
-+
-+TC_VERSION := $(bdir)/include/tc_version.h
-+TARGETS = $(bdir)/trace-cmd $(TC_VERSION)
- 
- BUILDGUI := 0
+ PHONY += python
+ python: $(PYTHON)
+diff --git a/python/Makefile b/python/Makefile
+index b07c0d8..f8e7328 100644
+--- a/python/Makefile
++++ b/python/Makefile
+@@ -1,40 +1,44 @@
  include $(src)/scripts/utils.mk
-@@ -31,10 +33,10 @@ TRACE_CMD_OBJS += trace-output.o
- TRACE_CMD_OBJS += trace-usage.o
- TRACE_CMD_OBJS += trace-msg.o
  
--ALL_OBJS = $(TRACE_CMD_OBJS)
-+ALL_OBJS := $(TRACE_CMD_OBJS:%.o=$(bdir)/%.o)
- 
- all_objs := $(sort $(ALL_OBJS))
--all_deps := $(all_objs:%.o=.%.d)
-+all_deps := $(all_objs:$(bdir)/%.o=$(bdir)/.%.d)
- 
- CONFIG_INCLUDES =
- CONFIG_LIBS	=
-@@ -42,23 +44,32 @@ CONFIG_FLAGS	=
- 
- all: $(TARGETS)
- 
--$(TC_VERSION): force
-+$(bdir):
-+	@mkdir -p $(bdir)
++bdir:=$(obj)/python
 +
-+$(bdir)/include: | $(bidr)
-+	@mkdir -p $(bdir)/include
-+
-+$(TC_VERSION): force | $(bdir)/include
- 	$(Q)$(call update_version.h)
+ TRACE_VIEW_OBJS =
+ TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view.o
+ TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view-store.o
  
--trace-cmd: $(ALL_OBJS)
-+$(all_deps): | $(bdir)
-+$(all_objs): | $(bdir)
-+
-+$(bdir)/trace-cmd: $(ALL_OBJS)
- 	$(Q)$(do_app_build)
- 
--trace-cmd: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
-+$(bdir)/trace-cmd: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
- 
--%.o: %.c
-+$(bdir)/%.o: %.c
- 	$(Q)$(call do_compile)
- 
--$(all_deps): .%.d: %.c
-+$(all_deps): $(bdir)/.%.d: %.c
- 	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
- 
- $(all_deps): $(TC_VERSION)
- 
--$(all_objs): %.o : .%.d
-+$(all_objs): $(bdir)/%.o : $(bdir)/.%.d
- 
- dep_includes := $(wildcard $(DEPS))
- 
-@@ -67,7 +78,7 @@ ifneq ($(dep_includes),)
+ ifdef BUILD_PYTHON_WORKS
+-PYTHON_SO_INSTALL := ctracecmd.install
+-PYTHON_PY_PROGS := event-viewer.install
+-PYTHON_PY_LIBS := tracecmd.install tracecmdgui.install
++PYTHON_SO_INSTALL := $(bdir)/ctracecmd.install
++PYTHON_PY_PROGS := $(bdir)/event-viewer.install
++PYTHON_PY_LIBS := $(bdir)/tracecmd.install $(bdir)/tracecmdgui.install
  endif
  
+-ctracecmd.so: ctracecmd.i $(LIBTRACECMD_STATIC)
++$(bdir)/ctracecmd.so: ctracecmd.i $(LIBTRACECMD_STATIC) | $(bdir)
+ 	swig -Wall -python -noproxy -I$(src)/include/traceevent -I$(src)/include/trace-cmd ctracecmd.i
+-	$(CC) -fpic -c $(CPPFLAGS) $(CFLAGS) $(PYTHON_INCLUDES)  ctracecmd_wrap.c
+-	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so
++	$(CC) -fpic -c $(CPPFLAGS) $(CFLAGS) $(PYTHON_INCLUDES) -o $(bdir)/ctracecmd_wrap.o ctracecmd_wrap.c
++	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) $(bdir)/ctracecmd_wrap.o -o $(bdir)/ctracecmd.so
+ 
+-ctracecmdgui.so: ctracecmdgui.i $(LIBTRACECMD_STATIC) $(TRACE_VIEW_OBJS)
++$(bdir)/ctracecmdgui.so: ctracecmdgui.i $(LIBTRACECMD_STATIC) $(TRACE_VIEW_OBJS) | $(bdir)
+ 	swig -Wall -python -noproxy -I$(src)/kernel-shark/include ctracecmdgui.i
+-	$(CC) -fpic -c  $(CPPFLAGS) $(CFLAGS) $(INCLUDES) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) ctracecmdgui_wrap.c
+-	$(CC) --shared $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC) $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so
++	$(CC) -fpic -c  $(CPPFLAGS) $(CFLAGS) $(INCLUDES) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) -o $(bdir)/ctracecmdgui_wrap.o ctracecmdgui_wrap.c
++	$(CC) --shared $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC) $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) $(bdir)/ctracecmdgui_wrap.o -o $(bdir)/ctracecmdgui.so
+ 
++$(bdir):
++	@mkdir -p $(bdir)
+ 
+-$(PYTHON_SO_INSTALL): %.install : %.so force
++$(PYTHON_SO_INSTALL): $(bdir)/%.install : $(bdir)/%.so force
+ 	$(Q)$(call do_install_data,$<,$(python_dir_SQ))
+ 
+-$(PYTHON_PY_PROGS): %.install : %.py force
++$(PYTHON_PY_PROGS): $(bdir)/%.install : %.py force
+ 	$(Q)$(call do_install,$<,$(python_dir_SQ))
+ 
+-$(PYTHON_PY_LIBS): %.install : %.py force
++$(PYTHON_PY_LIBS): $(bdir)/%.install : %.py force
+ 	$(Q)$(call do_install_data,$<,$(python_dir_SQ))
+ 
+ install_python: $(PYTHON_SO_INSTALL) $(PYTHON_PY_PROGS) $(PYTHON_PY_LIBS)
+ 
+ 
  clean:
--	$(RM) *.a *.so *.o .*.d $(TARGETS)
-+	$(RM) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.o $(bdir)/.*.d $(TARGETS)
+-	$(RM) *.a *.so *.o .*.d ctracecmd_wrap.* ctracecmdgui_wrap.*
++	$(RM) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.o $(bdir)/.*.d $(bdir)/ctracecmd_wrap.* $(bdir)/ctracecmdgui_wrap.*
  
  force:
- .PHONY: clean
+ .PHONY: clean force
 -- 
 2.14.1
