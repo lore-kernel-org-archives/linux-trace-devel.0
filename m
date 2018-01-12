@@ -1,211 +1,189 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wr0-f193.google.com ([209.85.128.193]:35903 "EHLO
-        mail-wr0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S964776AbeAKQPa (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S933917AbeALPN0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Jan 2018 11:15:30 -0500
-From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH v2 13/18] trace-cmd: Move python-related files in python/
-Date: Thu, 11 Jan 2018 18:15:11 +0200
-Message-Id: <20180111161511.10549-1-vladislav.valtchev@gmail.com>
+        Fri, 12 Jan 2018 10:13:26 -0500
+Date: Fri, 12 Jan 2018 10:13:23 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
+Cc: y.karadz@gmail.com, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] trace-cmd: Make read_proc() to return int status
+ via OUT arg
+Message-ID: <20180112101323.547a026e@gandalf.local.home>
+In-Reply-To: <20171221152520.25867-2-vladislav.valtchev@gmail.com>
+References: <20171221152520.25867-1-vladislav.valtchev@gmail.com>
+        <20171221152520.25867-2-vladislav.valtchev@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch moves all the files related with trace-cmd's python support to a
-dedicated directory, as part of a bigger restructuring plan of trace-cmd's code
-base. The build system has been updated to support this new directory structure
-by adding a separate Makefile in python/ and by making the parent Makefile to
-invoke it.
+On Thu, 21 Dec 2017 17:25:18 +0200
+"Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com> wrote:
 
-Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
----
- Makefile                                  | 42 +++++++++----------------------
- python/Makefile                           | 40 +++++++++++++++++++++++++++++
- ctracecmd.i => python/ctracecmd.i         |  0
- ctracecmdgui.i => python/ctracecmdgui.i   |  0
- event-viewer.py => python/event-viewer.py |  0
- tracecmd.py => python/tracecmd.py         |  0
- tracecmdgui.py => python/tracecmdgui.py   |  0
- 7 files changed, 52 insertions(+), 30 deletions(-)
- create mode 100644 python/Makefile
- rename ctracecmd.i => python/ctracecmd.i (100%)
- rename ctracecmdgui.i => python/ctracecmdgui.i (100%)
- rename event-viewer.py => python/event-viewer.py (100%)
- rename tracecmd.py => python/tracecmd.py (100%)
- rename tracecmdgui.py => python/tracecmdgui.py (100%)
+> -static char read_proc(void)
+> +/*
+> + * Returns:
+> + *   -1 - Something went wrong
+> + *    0 - File does not exist (stack tracer not enabled)
+> + *    1 - Success
+> + */
+> +static int read_proc(int *status)
+>  {
+> -	char buf[1];
+> +	struct stat stat_buf;
+> +	char buf[64];
+> +	long num;
+>  	int fd;
+>  	int n;
+>  
+> +	if (stat(PROC_FILE, &stat_buf) < 0) {
+> +		/* stack tracer not configured on running kernel */
+> +		*status = 0; /* not configured means disabled */
+> +		return 0;
+> +	}
+> +
+>  	fd = open(PROC_FILE, O_RDONLY);
+> -	if (fd < 0)
+> -		die("reading %s", PROC_FILE);
+> -	n = read(fd, buf, 1);
+> -	close(fd);
+> -	if (n != 1)
+> +
+> +	if (fd < 0) {
+> +		/* we cannot open the file: likely a permission problem. */
+> +		return -1;
+> +	}
+> +
+> +	n = read(fd, buf, sizeof(buf));
+> +
+> +	/* We assume that the file is never empty we got no errors. */
 
-diff --git a/Makefile b/Makefile
-index 7a8ca84..8e3d787 100644
---- a/Makefile
-+++ b/Makefile
-@@ -112,13 +112,12 @@ PYTHON_VERS ?= python
- ifeq ($(shell sh -c "pkg-config --cflags $(PYTHON_VERS) > /dev/null 2>&1 && which swig && echo y"), y)
- 	PYTHON_PLUGINS := plugin_python.so
- 	BUILD_PYTHON := $(PYTHON) $(PYTHON_PLUGINS)
--	PYTHON_SO_INSTALL := ctracecmd.install
--	PYTHON_PY_PROGS := event-viewer.install
--	PYTHON_PY_LIBS := tracecmd.install tracecmdgui.install
-+	BUILD_PYTHON_WORKS := 1
- endif
- endif # NO_PYTHON
- 
- export PYTHON_PLUGINS
-+export BUILD_PYTHON_WORKS
- 
- # $(call test-build, snippet, ret) -> ret if snippet compiles
- #                                  -> empty otherwise
-@@ -175,6 +174,7 @@ LIBTRACECMD_SHARED = $(LIBTRACECMD_DIR)/libtracecmd.so
- 
- export LIBS
- export LIBTRACEEVENT_DIR LIBTRACECMD_DIR
-+export LIBTRACECMD_STATIC LIBTRACECMD_SHARED
- 
- CONFIG_INCLUDES = 
- CONFIG_LIBS	=
-@@ -247,10 +247,6 @@ $(obj)/%.o: $(src)/%.c
- %.o: $(src)/%.c
- 	$(Q)$(call do_compile)
- 
--TRACE_VIEW_OBJS =
--TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view.o
--TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view-store.o
--
- TRACE_CMD_OBJS = trace-cmd.o trace-record.o trace-read.o trace-split.o trace-listen.o \
- 	 trace-stack.o trace-hist.o trace-mem.o trace-snapshot.o trace-stat.o \
- 	 trace-profile.o trace-stream.o trace-record.o trace-restore.o \
-@@ -366,19 +362,8 @@ cscope: force
- install_plugins: force
- 	$(Q)$(MAKE) -C $(src)/plugins $@
- 
--$(PYTHON_SO_INSTALL): %.install : %.so force
--	$(Q)$(call do_install_data,$<,$(python_dir_SQ))
--
--$(PYTHON_PY_PROGS): %.install : %.py force
--	$(Q)$(call do_install,$<,$(python_dir_SQ))
--
--$(PYTHON_PY_LIBS): %.install : %.py force
--	$(Q)$(call do_install_data,$<,$(python_dir_SQ))
--
--$(PYTHON_PY_PLUGINS): %.install : %.py force
--	$(Q)$(call do_install_data,$<,$(plugin_dir_SQ))
--
--install_python: $(PYTHON_SO_INSTALL) $(PYTHON_PY_PROGS) $(PYTHON_PY_LIBS) $(PYTHON_PY_PLUGINS)
-+install_python: force
-+	$(Q)$(MAKE) -C $(src)/python $@
- 
- install_bash_completion: force
- 	$(Q)$(call do_install_data,trace-cmd.bash,$(BASH_COMPLETE_DIR))
-@@ -411,19 +396,20 @@ install_doc:
- 	$(MAKE) -C $(src)/Documentation install
- 
- clean:
--	$(RM) *.o *~ $(TARGETS) *.a *.so ctracecmd_wrap.c .*.d
-+	$(RM) *.o *~ $(TARGETS) *.a *.so .*.d
- 	$(RM) tags TAGS cscope*
- 	$(MAKE) -C $(src)/lib/traceevent clean
- 	$(MAKE) -C $(src)/lib/trace-cmd clean
- 	$(MAKE) -C $(src)/kernel-shark clean
- 	$(MAKE) -C $(src)/plugins clean
-+	$(MAKE) -C $(src)/python clean
- 
- 
- ##### PYTHON STUFF #####
- 
- report_noswig: force
- 	$(Q)echo
--	$(Q)echo "    NO_PYTHON forced: swig not installed, not compling python plugins"
-+	$(Q)echo "    NO_PYTHON forced: swig not installed, not compiling python plugins"
- 	$(Q)echo
- 
- PYTHON_INCLUDES = `pkg-config --cflags $(PYTHON_VERS)`
-@@ -435,15 +421,11 @@ export PYTHON_INCLUDES
- export PYTHON_LDFLAGS
- export PYGTK_CFLAGS
- 
--ctracecmd.so: $(TCMD_LIB_OBJS) ctracecmd.i
--	swig -Wall -python -noproxy -I$(src)/include/traceevent -I$(src)/include/trace-cmd ctracecmd.i
--	$(CC) -fpic -c $(CPPFLAGS) $(CFLAGS) $(PYTHON_INCLUDES)  ctracecmd_wrap.c
--	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so
-+ctracecmd.so: force $(LIBTRACECMD_STATIC)
-+	$(Q)$(MAKE) -C $(src)/python $@
- 
--ctracecmdgui.so: trace-view $(LIBTRACECMD_STATIC)
--	swig -Wall -python -noproxy -I$(src)/kernel-shark/include ctracecmdgui.i
--	$(CC) -fpic -c  $(CPPFLAGS) $(CFLAGS) $(INCLUDES) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) ctracecmdgui_wrap.c
--	$(CC) --shared $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC) $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so
-+ctracecmdgui.so: force $(LIBTRACECMD_STATIC) trace-view
-+	$(Q)$(MAKE) -C $(src)/python $@
- 
- PHONY += python
- python: $(PYTHON)
-diff --git a/python/Makefile b/python/Makefile
-new file mode 100644
-index 0000000..b07c0d8
---- /dev/null
-+++ b/python/Makefile
-@@ -0,0 +1,40 @@
-+include $(src)/scripts/utils.mk
-+
-+TRACE_VIEW_OBJS =
-+TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view.o
-+TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view-store.o
-+
-+ifdef BUILD_PYTHON_WORKS
-+PYTHON_SO_INSTALL := ctracecmd.install
-+PYTHON_PY_PROGS := event-viewer.install
-+PYTHON_PY_LIBS := tracecmd.install tracecmdgui.install
-+endif
-+
-+ctracecmd.so: ctracecmd.i $(LIBTRACECMD_STATIC)
-+	swig -Wall -python -noproxy -I$(src)/include/traceevent -I$(src)/include/trace-cmd ctracecmd.i
-+	$(CC) -fpic -c $(CPPFLAGS) $(CFLAGS) $(PYTHON_INCLUDES)  ctracecmd_wrap.c
-+	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so
-+
-+ctracecmdgui.so: ctracecmdgui.i $(LIBTRACECMD_STATIC) $(TRACE_VIEW_OBJS)
-+	swig -Wall -python -noproxy -I$(src)/kernel-shark/include ctracecmdgui.i
-+	$(CC) -fpic -c  $(CPPFLAGS) $(CFLAGS) $(INCLUDES) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) ctracecmdgui_wrap.c
-+	$(CC) --shared $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC) $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so
-+
-+
-+$(PYTHON_SO_INSTALL): %.install : %.so force
-+	$(Q)$(call do_install_data,$<,$(python_dir_SQ))
-+
-+$(PYTHON_PY_PROGS): %.install : %.py force
-+	$(Q)$(call do_install,$<,$(python_dir_SQ))
-+
-+$(PYTHON_PY_LIBS): %.install : %.py force
-+	$(Q)$(call do_install_data,$<,$(python_dir_SQ))
-+
-+install_python: $(PYTHON_SO_INSTALL) $(PYTHON_PY_PROGS) $(PYTHON_PY_LIBS)
-+
-+
-+clean:
-+	$(RM) *.a *.so *.o .*.d ctracecmd_wrap.* ctracecmdgui_wrap.*
-+
-+force:
-+.PHONY: clean force
-diff --git a/ctracecmd.i b/python/ctracecmd.i
-similarity index 100%
-rename from ctracecmd.i
-rename to python/ctracecmd.i
-diff --git a/ctracecmdgui.i b/python/ctracecmdgui.i
-similarity index 100%
-rename from ctracecmdgui.i
-rename to python/ctracecmdgui.i
-diff --git a/event-viewer.py b/python/event-viewer.py
-similarity index 100%
-rename from event-viewer.py
-rename to python/event-viewer.py
-diff --git a/tracecmd.py b/python/tracecmd.py
-similarity index 100%
-rename from tracecmd.py
-rename to python/tracecmd.py
-diff --git a/tracecmdgui.py b/python/tracecmdgui.py
-similarity index 100%
-rename from tracecmdgui.py
-rename to python/tracecmdgui.py
--- 
-2.14.1
+The above comment does not parse.
+
+> +	if (n <= 0)
+>  		die("error reading %s", PROC_FILE);
+>  
+> -	return buf[0];
+> +	/* Does this file have more than 63 characters?? */
+> +	if (n >= sizeof(buf))
+> +		return -1;
+
+We need to close fd before returning, otherwise we leak a file
+descriptor.
+
+We can move the close right after the read up above.
+
+> +
+> +	/* n is guaranteed to be in the range [1, sizeof(buf)-1]. */
+> +	buf[n] = 0;
+> +	close(fd);
+> +
+> +	errno = 0;
+> +
+> +	/* Read an integer from buf ignoring any non-digit trailing characters. */
+
+We don't really need to comment what strtol() does ;-) That's what man
+pages are for.
+
+> +	num = strtol(buf, NULL, 10);
+> +
+> +	/* strtol() returned 0: we have to check for errors */
+
+Actually, a better comment is, why would strtol return zero and this
+not be an error?
+
+> +	if (!num && (errno == EINVAL || errno == ERANGE))
+> +		return -1;
+> +
+> +	if (num > INT_MAX || num < INT_MIN)
+> +		return -1; /* the number is good but does not fit in 'int' */
+
+Don't need the comment after the above return. The INT_MAX and INT_MIN
+are self describing.
+
+> +
+> +	*status = num;
+> +	return 1; /* full success */
+>  }
+>  
+> -static void start_stop_trace(char val)
+> +/* NOTE: this implementation only accepts new_status in the range [0..9]. */
+> +static void change_stack_tracer_status(int new_status)
+>  {
+>  	char buf[1];
+> +	int status;
+>  	int fd;
+>  	int n;
+>  
+> -	buf[0] = read_proc();
+> -	if (buf[0] == val)
+> -		return;
+> +	if (read_proc(&status) > 0 && status == new_status)
+> +		return; /* nothing to do */
+>  
+>  	fd = open(PROC_FILE, O_WRONLY);
+> +
+
+Don't add a new line here. It's common to have the error check
+immediately after the function.
+
+>  	if (fd < 0)
+>  		die("writing %s", PROC_FILE);
+
+If you want a new line, you can add it here.
+
+> -	buf[0] = val;
+> +	buf[0] = new_status + '0';
+
+If you are paranoid, we can make new_status unsigned int, or even
+unsigned char, and add at the beginning of the function:
+
+	if (new_status > 9) {
+		warning("invalid status %d\n", new_status);
+		return;
+	}
+
+>  	n = write(fd, buf, 1);
+>  	if (n < 0)
+>  		die("writing into %s", PROC_FILE);
+> @@ -88,12 +131,12 @@ static void start_stop_trace(char val)
+>  
+>  static void start_trace(void)
+>  {
+> -	start_stop_trace('1');
+> +	change_stack_tracer_status(1);
+>  }
+>  
+>  static void stop_trace(void)
+>  {
+> -	start_stop_trace('0');
+> +	change_stack_tracer_status(0);
+>  }
+>  
+>  static void reset_trace(void)
+> @@ -123,8 +166,12 @@ static void read_trace(void)
+>  	char *buf = NULL;
+>  	size_t n;
+>  	int r;
+> +	int status;
+
+Remember, upside down x-mas trees.
+
+	int status;
+	int r;
+
+-- Steve
+
+>  
+> -	if (read_proc() == '1')
+> +	if (read_proc(&status) <= 0)
+> +		die("Invalid stack tracer state");
+> +
+> +	if (status > 0)
+>  		printf("(stack tracer running)\n");
+>  	else
+>  		printf("(stack tracer not running)\n");
