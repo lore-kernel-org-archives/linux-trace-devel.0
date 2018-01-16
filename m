@@ -1,202 +1,96 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail.kernel.org ([198.145.29.99]:37170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750817AbeAPRaa (ORCPT
+Received: from mail-wm0-f53.google.com ([74.125.82.53]:45037 "EHLO
+        mail-wm0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751412AbeAPStZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Jan 2018 12:30:30 -0500
-Date: Tue, 16 Jan 2018 12:30:27 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        y.karadz@gmail.com
-Subject: Re: [PATCH v3 1/3] trace-cmd: Make read_proc() to return int status
+        Tue, 16 Jan 2018 13:49:25 -0500
+Message-ID: <1516128562.4042.12.camel@gmail.com>
+Subject: Re: [PATCH v2 1/3] trace-cmd: Make read_proc() to return int status
  via OUT arg
-Message-ID: <20180116123027.397e732f@gandalf.local.home>
-In-Reply-To: <20180116074744.5522-2-vladislav.valtchev@gmail.com>
-References: <20180116074744.5522-1-vladislav.valtchev@gmail.com>
-        <20180116074744.5522-2-vladislav.valtchev@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From: Vladislav Valtchev <vladislav.valtchev@gmail.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: y.karadz@gmail.com, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date: Tue, 16 Jan 2018 20:49:22 +0200
+In-Reply-To: <20180116112710.283b90f4@gandalf.local.home>
+References: <20171221152520.25867-1-vladislav.valtchev@gmail.com>
+         <20171221152520.25867-2-vladislav.valtchev@gmail.com>
+         <20180112101323.547a026e@gandalf.local.home>
+         <1516114053.12026.20.camel@gmail.com>
+         <20180116112710.283b90f4@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 16 Jan 2018 09:47:42 +0200
-"Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com> wrote:
+On Tue, 2018-01-16 at 11:27 -0500, Steven Rostedt wrote:
+> 
+> 
+> :-)  That was totally lost in translation. :-)
+> 
+> No, I didn't mean to have a comment literally saying "why would strtol
+> return zero and this not be an error", I meant for the comment to
+> explain it.
+> 
+> Actually, looking at the man page which states:
+> 
 
-> diff --git a/trace-stack.c b/trace-stack.c
-> index aa79ae3..c1058ca 100644
-> --- a/trace-stack.c
-> +++ b/trace-stack.c
-> @@ -20,6 +20,7 @@
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <string.h>
-> +#include <limits.h>
->  #include <getopt.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
-> @@ -49,37 +50,79 @@ static void test_available(void)
->  		die("stack tracer not configured on running kernel");
->  }
->  
-> -static char read_proc(void)
-> +/*
-> + * Returns:
-> + *   -1 - Something went wrong
-> + *    0 - File does not exist (stack tracer not enabled)
-> + *    1 - Success
-> + */
-> +static int read_proc(int *status)
->  {
-> -	char buf[1];
-> +	struct stat stat_buf;
-> +	char buf[64];
-> +	long num;
->  	int fd;
->  	int n;
->  
-> +	if (stat(PROC_FILE, &stat_buf) < 0) {
-> +		/* stack tracer not configured on running kernel */
-> +		*status = 0; /* not configured means disabled */
-> +		return 0;
-> +	}
-> +
->  	fd = open(PROC_FILE, O_RDONLY);
-> -	if (fd < 0)
-> -		die("reading %s", PROC_FILE);
-> -	n = read(fd, buf, 1);
-> -	close(fd);
-> -	if (n != 1)
-> +
-> +	if (fd < 0) {
-> +		/* we cannot open the file: likely a permission problem. */
-> +		return -1;
-> +	}
-
-Let's follow Linux coding style. The comment is obvious and can be
-removed, and we can remove the braces.
-
-	if (fd < 0)
-		return -1;
-
-> +
-> +	n = read(fd, buf, sizeof(buf));
-> +
-> +	/* We assume that the file is never empty we got no errors. */
-> +	if (n <= 0)
->  		die("error reading %s", PROC_FILE);
->  
-> -	return buf[0];
-> +	/* Does this file have more than 63 characters?? */
-
-The comment is too verbose, and not needed.
-
-> +	if (n >= sizeof(buf))
-> +		return -1;
-> +
-> +	/* n is guaranteed to be in the range [1, sizeof(buf)-1]. */
-
-The comment is not needed. It would be a bug if it were not true, and
-the code directly above the comment shows this guarantee.
-
-> +	buf[n] = 0;
-> +	close(fd);
-> +
-> +	errno = 0;
-> +
-> +	/* Read an integer from buf ignoring any non-digit trailing characters. */
-
-Don't need to describe what strtol() does. Remove the comment please.
-
-> +	num = strtol(buf, NULL, 10);
-> +
-> +	/* strtol() returned 0: we have to check for errors */
-
-Already commented about this code in my last email.
-
-> +	if (!num && (errno == EINVAL || errno == ERANGE))
-> +		return -1;
-> +
-> +	if (num > INT_MAX || num < INT_MIN)
-> +		return -1; /* the number is good but does not fit in 'int' */
-
-Comment is redundant and unnecessary, please remove it.
-
-Comments are good, but not if they are at the level of describing the
-code for a beginner programmer. That is, if the code isn't obvious what
-it is doing, it should be commented. But comments that describe the
-definition of the code end up causing more noise than being helpful.
+Yep, I got it.
+Sometimes I interpret words too literally. My fault :-)
 
 
-> +
-> +	*status = num;
-> +	return 1; /* full success */
->  }
->  
-> -static void start_stop_trace(char val)
-> +/* NOTE: this implementation only accepts new_status in the range [0..9]. */
+> I say we simply remove the comment. Or say what the man page example
+> says:
+> 
+> 	/* Check for various possible errors */
+> 
+> and leave it at that.
 
-For example, the above comment is good. It explicitly states that this
-function requires the parameter new_status be in the range of 0-9, and
-a reviewer or new developer doesn't have to go read the function to
-figure that out.
+Sure, "Check for various possible errors" sounds good to me.
+
+> 
+> Sure it could be negative. The point was, you don't want it to be if
+> you do:
+> 
+> 	buf[0] = new_status + '0';
+> 
+> As that will break if new_status is negative or greater than 9.
+> 
+> Also, whether you use unsigned, or do the above, they both have the
+> same result. A negative produces a warning. Which is fine. As long as
+> it doesn't kill the program. It's only an implementation detail.
+> 
+> That is, using unsigned char as new_status, and checking
+> 
+> 	if (new_status > 9)
+> 
+> Is no different than using int and checking
+> 
+> 	if (new_status < 0 || new_status > 9)
+> 
+> except that you use more instructions to accomplish the same thing.
+> 
+
+Sure, using two checks with 'int' is less efficient then using the 'unsigned trick',
+but my point is that such a function (at interface level) should accept exactly
+the same type 'returned' (via OUT param) by read_proc(). It should be symmetric,
+as if instead of 'int/unsigned' we used an opaque type 'value_t' for which we cannot
+make assumptions. Clearly, the implementation may in practice accept a subset of the values
+allowed by the parameter type. 
+
+What about accepting 'int' but doing the check this way:
+
+	if ((unsigned)new_status > 9) {
+		warning(...);
+		return;
+	}
+
+This way, we'll keep the interface symmetric (with read_proc()) but, at the same time,
+we use a more efficient check.
 
 
-> +static void change_stack_tracer_status(int new_status)
->  {
->  	char buf[1];
-> +	int status;
->  	int fd;
->  	int n;
->  
 
-Should enforce that new_status is between 0 and 9, by one of the
-methods I discussed in the other email.
-
--- Steve
-
-> -	buf[0] = read_proc();
-> -	if (buf[0] == val)
-> -		return;
-> +	if (read_proc(&status) > 0 && status == new_status)
-> +		return; /* nothing to do */
->  
->  	fd = open(PROC_FILE, O_WRONLY);
-> +
->  	if (fd < 0)
->  		die("writing %s", PROC_FILE);
-> -	buf[0] = val;
-> +	buf[0] = new_status + '0';
->  	n = write(fd, buf, 1);
->  	if (n < 0)
->  		die("writing into %s", PROC_FILE);
-> @@ -88,12 +131,12 @@ static void start_stop_trace(char val)
->  
->  static void start_trace(void)
->  {
-> -	start_stop_trace('1');
-> +	change_stack_tracer_status(1);
->  }
->  
->  static void stop_trace(void)
->  {
-> -	start_stop_trace('0');
-> +	change_stack_tracer_status(0);
->  }
->  
->  static void reset_trace(void)
-> @@ -123,8 +166,12 @@ static void read_trace(void)
->  	char *buf = NULL;
->  	size_t n;
->  	int r;
-> +	int status;
->  
-> -	if (read_proc() == '1')
-> +	if (read_proc(&status) <= 0)
-> +		die("Invalid stack tracer state");
-> +
-> +	if (status > 0)
->  		printf("(stack tracer running)\n");
->  	else
->  		printf("(stack tracer not running)\n");
+-- 
+Vladislav Valtchev
+VMware Open Source Technology Center
