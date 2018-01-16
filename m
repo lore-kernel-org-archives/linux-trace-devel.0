@@ -1,94 +1,111 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wm0-f53.google.com ([74.125.82.53]:45037 "EHLO
-        mail-wm0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751412AbeAPStZ (ORCPT
+Received: from mail-wr0-f194.google.com ([209.85.128.194]:35064 "EHLO
+        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750811AbeAPTKj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Jan 2018 13:49:25 -0500
-Message-ID: <1516128562.4042.12.camel@gmail.com>
-Subject: Re: [PATCH v2 1/3] trace-cmd: Make read_proc() to return int status
+        Tue, 16 Jan 2018 14:10:39 -0500
+Message-ID: <1516129836.4042.23.camel@gmail.com>
+Subject: Re: [PATCH v3 1/3] trace-cmd: Make read_proc() to return int status
  via OUT arg
 From: Vladislav Valtchev <vladislav.valtchev@gmail.com>
 To: Steven Rostedt <rostedt@goodmis.org>
-Cc: y.karadz@gmail.com, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date: Tue, 16 Jan 2018 20:49:22 +0200
-In-Reply-To: <20180116112710.283b90f4@gandalf.local.home>
-References: <20171221152520.25867-1-vladislav.valtchev@gmail.com>
-         <20171221152520.25867-2-vladislav.valtchev@gmail.com>
-         <20180112101323.547a026e@gandalf.local.home>
-         <1516114053.12026.20.camel@gmail.com>
-         <20180116112710.283b90f4@gandalf.local.home>
+Cc: linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        y.karadz@gmail.com
+Date: Tue, 16 Jan 2018 21:10:36 +0200
+In-Reply-To: <20180116121913.42d09aea@gandalf.local.home>
+References: <20180116074744.5522-1-vladislav.valtchev@gmail.com>
+         <20180116074744.5522-2-vladislav.valtchev@gmail.com>
+         <20180116121913.42d09aea@gandalf.local.home>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 2018-01-16 at 11:27 -0500, Steven Rostedt wrote:
+On Tue, 2018-01-16 at 12:19 -0500, Steven Rostedt wrote:
+> On Tue, 16 Jan 2018 09:47:42 +0200
+> "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com> wrote:
 > 
+> > +	errno = 0;
+> > +
+> > +	/* Read an integer from buf ignoring any non-digit trailing characters. */
+> > +	num = strtol(buf, NULL, 10);
+> > +
+> > +	/* strtol() returned 0: we have to check for errors */
+> > +	if (!num && (errno == EINVAL || errno == ERANGE))
+> > +		return -1;
 > 
-> :-)  That was totally lost in translation. :-)
-> 
-> No, I didn't mean to have a comment literally saying "why would strtol
-> return zero and this not be an error", I meant for the comment to
-> explain it.
-> 
-> Actually, looking at the man page which states:
-> 
+> Repeating again here. According to the man page of strtol():
 
-Yep, I got it.
-Sometimes I interpret words too literally. My fault :-)
-
-
-> I say we simply remove the comment. Or say what the man page example
-> says:
-> 
-> 	/* Check for various possible errors */
-> 
-> and leave it at that.
-
-Sure, "Check for various possible errors" sounds good to me.
+v3 addresses only the comments for patch 3/3.
+I'm sorry for that. All the other comments will be addressed in v4.
 
 > 
-> Sure it could be negative. The point was, you don't want it to be if
-> you do:
+> RETURN VALUE
+>        The  strtol() function returns the result of the conversion, unless the
+>        value would underflow or overflow.  If an  underflow  occurs,  strtol()
+>        returns  LONG_MIN.   If  an overflow occurs, strtol() returns LONG_MAX.
+>        In both cases, errno is set to ERANGE.  Precisely the  same  holds  for
+>        strtoll()  (with  LLONG_MIN  and  LLONG_MAX  instead  of  LONG_MIN  and
+>        LONG_MAX).
 > 
-> 	buf[0] = new_status + '0';
+> and this:
 > 
-> As that will break if new_status is negative or greater than 9.
+>        The implementation may also set errno to EINVAL in case  no  conversion
+>        was performed (no digits seen, and 0 returned).
 > 
-> Also, whether you use unsigned, or do the above, they both have the
-> same result. A negative produces a warning. Which is fine. As long as
-> it doesn't kill the program. It's only an implementation detail.
+> Thus, !num is not enough. The example in the man page has:
 > 
-> That is, using unsigned char as new_status, and checking
+>            errno = 0;    /* To distinguish success/failure after call */
+>            val = strtol(str, &endptr, base);
 > 
-> 	if (new_status > 9)
+>            /* Check for various possible errors */
 > 
-> Is no different than using int and checking
+>            if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
+>                    || (errno != 0 && val == 0)) {
+>                perror("strtol");
+>                exit(EXIT_FAILURE);
+>            }
 > 
-> 	if (new_status < 0 || new_status > 9)
+> Let's follow this.
 > 
-> except that you use more instructions to accomplish the same thing.
-> 
+> -- Steve
 
-Sure, using two checks with 'int' is less efficient then using the 'unsigned trick',
-but my point is that such a function (at interface level) should accept exactly
-the same type 'returned' (via OUT param) by read_proc(). It should be symmetric,
-as if instead of 'int/unsigned' we used an opaque type 'value_t' for which we cannot
-make assumptions. Clearly, the implementation may in practice accept a subset of the values
-allowed by the parameter type. 
+Sure, I thought that:
 
-What about accepting 'int' but doing the check this way:
+	errno = 0;
+	num = strtol(buf, NULL, 10);
 
-	if ((unsigned)new_status > 9) {
-		warning(...);
-		return;
-	}
+	/* strtol() returned 0: we have to check for errors */
+	if (!num && (errno == EINVAL || errno == ERANGE))
+		return -1;
 
-This way, we'll keep the interface symmetric (with read_proc()) but, at the same time,
-we use a more efficient check.
+	if (num > INT_MAX || num < INT_MIN)
+		return -1;
 
+covered all the cases because the case:
+(val == LONG_MAX || val == LONG_MIN)
+
+is covered by: if (num > INT_MAX || num < INT_MIN)
+[no matter the errno]
+
+but that's not true for 32 bit systems where sizeof(long) == sizeof(int).
+It had to be: if (num >= INT_MAX || num <= INT_MIN), but in that
+case it would exclude two valid int32 values.
+
+Therefore, let's go with:
+	if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
+            || (errno != 0 && val == 0))
+
+
+Just let me keep also the following check:
+
+	if (num > INT_MAX || num < INT_MIN)
+		return -1;
+
+since [INT_MIN, INT_MAX] is a subset of [LONG_MIN, LONG_MAX].
+
+Vlad
 
 
 -- 
