@@ -1,65 +1,87 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wr0-f196.google.com ([209.85.128.196]:36904 "EHLO
+Received: from mail-wr0-f196.google.com ([209.85.128.196]:41944 "EHLO
         mail-wr0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751628AbeAPTyw (ORCPT
+        with ESMTP id S1750941AbeAPTyx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Jan 2018 14:54:52 -0500
+        Tue, 16 Jan 2018 14:54:53 -0500
 From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         y.karadz@gmail.com,
         "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH v4 2/3] trace-cmd: Remove the die() call from read_proc()
-Date: Tue, 16 Jan 2018 21:53:42 +0200
-Message-Id: <20180116195343.12800-3-vladislav.valtchev@gmail.com>
+Subject: [PATCH v4 3/3] trace-cmd: Making stat to report when the stack tracer is ON
+Date: Tue, 16 Jan 2018 21:53:43 +0200
+Message-Id: <20180116195343.12800-4-vladislav.valtchev@gmail.com>
 In-Reply-To: <20180116195343.12800-1-vladislav.valtchev@gmail.com>
 References: <20180116195343.12800-1-vladislav.valtchev@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-As trace-stack.c's read_proc() function is going to be used by trace-cmd stat,
-we don't want it to make the program die in case something went wrong.
-Therefore, this simple patch makes read_proc() to just return -1 in case the
-proc file was empty or read() failed with an error, instead of using die().
+trace-cmd stat is a handy way for users to see what tracing is currently going
+on, but currently it does not say anything about the stack tracing. This patch
+makes the command to show a message when the stack tracer is ON.
 
 Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
 ---
- trace-stack.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ trace-cmd.h   | 2 ++
+ trace-stack.c | 6 ++++++
+ trace-stat.c  | 8 ++++++++
+ 3 files changed, 16 insertions(+)
 
+diff --git a/trace-cmd.h b/trace-cmd.h
+index 6fd34d7..9704b2e 100644
+--- a/trace-cmd.h
++++ b/trace-cmd.h
+@@ -358,6 +358,8 @@ void tracecmd_free_hooks(struct hook_list *hooks);
+ /* --- Hack! --- */
+ int tracecmd_blk_hack(struct tracecmd_input *handle);
+ 
++/* --- Stack tracer functions --- */
++int tracecmd_stack_tracer_status(int *status);
+ 
+ /* --- Debugging --- */
+ struct kbuffer *tracecmd_record_kbuf(struct tracecmd_input *handle,
 diff --git a/trace-stack.c b/trace-stack.c
-index fada62d..3e1e41b 100644
+index 3e1e41b..65a74ad 100644
 --- a/trace-stack.c
 +++ b/trace-stack.c
-@@ -79,7 +79,7 @@ static int read_proc(int *status)
- 	close(fd);
+@@ -96,6 +96,12 @@ static int read_proc(int *status)
+ 	return 1; /* full success */
+ }
  
- 	if (n <= 0)
--		die("error reading %s", PROC_FILE);
-+		return -1;
- 
- 	if (n >= sizeof(buf))
- 		return -1;
-@@ -101,6 +101,7 @@ static void change_stack_tracer_status(unsigned new_status)
++/* Public wrapper of read_proc() */
++int tracecmd_stack_tracer_status(int *status)
++{
++	return read_proc(status);
++}
++
+ /* NOTE: this implementation only accepts new_status in the range [0..9]. */
+ static void change_stack_tracer_status(unsigned new_status)
  {
- 	char buf[1];
- 	int status;
-+	int ret;
- 	int fd;
- 	int n;
+diff --git a/trace-stat.c b/trace-stat.c
+index fd16354..23d7dd4 100644
+--- a/trace-stat.c
++++ b/trace-stat.c
+@@ -893,6 +893,7 @@ void trace_stat (int argc, char **argv)
+ {
+ 	struct buffer_instance *instance = &top_instance;
+ 	int topt = 0;
++	int status;
+ 	int c;
  
-@@ -109,7 +110,11 @@ static void change_stack_tracer_status(unsigned new_status)
- 		return;
+ 	for (;;) {
+@@ -928,5 +929,12 @@ void trace_stat (int argc, char **argv)
+ 		stat_instance(instance);
  	}
  
--	if (read_proc(&status) > 0 && status == new_status)
-+	ret = read_proc(&status);
-+	if (ret < 0)
-+		die("error reading %s", PROC_FILE);
++	if (tracecmd_stack_tracer_status(&status) >= 0) {
++		if (status > 0)
++			printf("Stack tracing is enabled\n\n");
++	} else {
++		printf("Error reading stack tracer status\n\n");
++	}
 +
-+	if (ret > 0 && status == new_status)
- 		return; /* nothing to do */
- 
- 	fd = open(PROC_FILE, O_WRONLY);
+ 	exit(0);
+ }
 -- 
 2.14.1
