@@ -1,113 +1,57 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wr0-f194.google.com ([209.85.128.194]:35064 "EHLO
-        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750811AbeAPTKj (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:32956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751760AbeAPTef (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Jan 2018 14:10:39 -0500
-Message-ID: <1516129836.4042.23.camel@gmail.com>
-Subject: Re: [PATCH v3 1/3] trace-cmd: Make read_proc() to return int status
+        Tue, 16 Jan 2018 14:34:35 -0500
+Date: Tue, 16 Jan 2018 14:34:32 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Vladislav Valtchev <vladislav.valtchev@gmail.com>
+Cc: y.karadz@gmail.com, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] trace-cmd: Make read_proc() to return int status
  via OUT arg
-From: Vladislav Valtchev <vladislav.valtchev@gmail.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        y.karadz@gmail.com
-Date: Tue, 16 Jan 2018 21:10:36 +0200
-In-Reply-To: <20180116121913.42d09aea@gandalf.local.home>
-References: <20180116074744.5522-1-vladislav.valtchev@gmail.com>
-         <20180116074744.5522-2-vladislav.valtchev@gmail.com>
-         <20180116121913.42d09aea@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Message-ID: <20180116143432.5b7d9219@gandalf.local.home>
+In-Reply-To: <1516128562.4042.12.camel@gmail.com>
+References: <20171221152520.25867-1-vladislav.valtchev@gmail.com>
+        <20171221152520.25867-2-vladislav.valtchev@gmail.com>
+        <20180112101323.547a026e@gandalf.local.home>
+        <1516114053.12026.20.camel@gmail.com>
+        <20180116112710.283b90f4@gandalf.local.home>
+        <1516128562.4042.12.camel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 2018-01-16 at 12:19 -0500, Steven Rostedt wrote:
-> On Tue, 16 Jan 2018 09:47:42 +0200
-> "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com> wrote:
+On Tue, 16 Jan 2018 20:49:22 +0200
+Vladislav Valtchev <vladislav.valtchev@gmail.com> wrote:
+
+
+> Sure, using two checks with 'int' is less efficient then using the 'unsigned trick',
+> but my point is that such a function (at interface level) should accept exactly
+> the same type 'returned' (via OUT param) by read_proc(). It should be symmetric,
+> as if instead of 'int/unsigned' we used an opaque type 'value_t' for which we cannot
+> make assumptions. Clearly, the implementation may in practice accept a subset of the values
+> allowed by the parameter type. 
 > 
-> > +	errno = 0;
-> > +
-> > +	/* Read an integer from buf ignoring any non-digit trailing characters. */
-> > +	num = strtol(buf, NULL, 10);
-> > +
-> > +	/* strtol() returned 0: we have to check for errors */
-> > +	if (!num && (errno == EINVAL || errno == ERANGE))
-> > +		return -1;
+> What about accepting 'int' but doing the check this way:
 > 
-> Repeating again here. According to the man page of strtol():
-
-v3 addresses only the comments for patch 3/3.
-I'm sorry for that. All the other comments will be addressed in v4.
-
+> 	if ((unsigned)new_status > 9) {
+> 		warning(...);
+> 		return;
+> 	}
 > 
-> RETURN VALUE
->        The  strtol() function returns the result of the conversion, unless the
->        value would underflow or overflow.  If an  underflow  occurs,  strtol()
->        returns  LONG_MIN.   If  an overflow occurs, strtol() returns LONG_MAX.
->        In both cases, errno is set to ERANGE.  Precisely the  same  holds  for
->        strtoll()  (with  LLONG_MIN  and  LLONG_MAX  instead  of  LONG_MIN  and
->        LONG_MAX).
-> 
-> and this:
-> 
->        The implementation may also set errno to EINVAL in case  no  conversion
->        was performed (no digits seen, and 0 returned).
-> 
-> Thus, !num is not enough. The example in the man page has:
-> 
->            errno = 0;    /* To distinguish success/failure after call */
->            val = strtol(str, &endptr, base);
-> 
->            /* Check for various possible errors */
-> 
->            if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
->                    || (errno != 0 && val == 0)) {
->                perror("strtol");
->                exit(EXIT_FAILURE);
->            }
-> 
-> Let's follow this.
-> 
-> -- Steve
+> This way, we'll keep the interface symmetric (with read_proc()) but, at the same time,
+> we use a more efficient check.
 
-Sure, I thought that:
+The thing is, since we only accept new_status to be 0-9, it can never
+be negative. Thus we should make it unsigned. Yes read_proc() is
+signed, but that's because it can be negative.
 
-	errno = 0;
-	num = strtol(buf, NULL, 10);
+We are keeping the variables the same as the values they represent,
+nothing more. One variable shouldn't affect what the other variable is,
+as the ranges are indeed different.
 
-	/* strtol() returned 0: we have to check for errors */
-	if (!num && (errno == EINVAL || errno == ERANGE))
-		return -1;
-
-	if (num > INT_MAX || num < INT_MIN)
-		return -1;
-
-covered all the cases because the case:
-(val == LONG_MAX || val == LONG_MIN)
-
-is covered by: if (num > INT_MAX || num < INT_MIN)
-[no matter the errno]
-
-but that's not true for 32 bit systems where sizeof(long) == sizeof(int).
-It had to be: if (num >= INT_MAX || num <= INT_MIN), but in that
-case it would exclude two valid int32 values.
-
-Therefore, let's go with:
-	if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
-            || (errno != 0 && val == 0))
-
-
-Just let me keep also the following check:
-
-	if (num > INT_MAX || num < INT_MIN)
-		return -1;
-
-since [INT_MIN, INT_MAX] is a subset of [LONG_MIN, LONG_MAX].
-
-Vlad
-
-
--- 
-Vladislav Valtchev
-VMware Open Source Technology Center
+-- Steve
