@@ -1,191 +1,240 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-pl0-f67.google.com ([209.85.160.67]:38201 "EHLO
-        mail-pl0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752403AbeBFItR (ORCPT
+Received: from mail-pl0-f65.google.com ([209.85.160.65]:37000 "EHLO
+        mail-pl0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752335AbeBFItT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Feb 2018 03:49:17 -0500
-Received: by mail-pl0-f67.google.com with SMTP id 13so848755plb.5
-        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Feb 2018 00:49:16 -0800 (PST)
+        Tue, 6 Feb 2018 03:49:19 -0500
+Received: by mail-pl0-f65.google.com with SMTP id ay8so847058plb.4
+        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Feb 2018 00:49:19 -0800 (PST)
 From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
         "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH v2 05/24] trace-cmd: Extract part of Makefile in scripts/utils.mk
-Date: Tue,  6 Feb 2018 10:48:47 +0200
-Message-Id: <20180206084906.9854-6-vladislav.valtchev@gmail.com>
+Subject: [PATCH v2 06/24] trace-cmd: Move libtraceevent *.c files in lib/traceevent
+Date: Tue,  6 Feb 2018 10:48:48 +0200
+Message-Id: <20180206084906.9854-7-vladislav.valtchev@gmail.com>
 In-Reply-To: <20180206084906.9854-1-vladislav.valtchev@gmail.com>
 References: <20180206084906.9854-1-vladislav.valtchev@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch extracts useful functions for Makefile in order to allow the new
-Makefiles that will be introduced in the next steps to reuse them.
+This patch moves all the files belonging to the traceevent lib in a dedicated
+directory. The build system has been updated to support this by introducing
+a Makefile in lib/traceevent and by making the parent Makefile to run it with
+the classic recursive make approach.
 
 Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
 ---
- Makefile         | 57 +++----------------------------------------------
- scripts/utils.mk | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 67 insertions(+), 54 deletions(-)
- create mode 100644 scripts/utils.mk
+ Makefile                                          | 42 ++++++++++++---------
+ lib/traceevent/Makefile                           | 45 +++++++++++++++++++++++
+ event-parse.c => lib/traceevent/event-parse.c     |  0
+ event-plugin.c => lib/traceevent/event-plugin.c   |  0
+ kbuffer-parse.c => lib/traceevent/kbuffer-parse.c |  0
+ parse-filter.c => lib/traceevent/parse-filter.c   |  0
+ parse-utils.c => lib/traceevent/parse-utils.c     |  0
+ str_error_r.c => lib/traceevent/str_error_r.c     |  0
+ trace-seq.c => lib/traceevent/trace-seq.c         |  0
+ 9 files changed, 70 insertions(+), 17 deletions(-)
+ create mode 100644 lib/traceevent/Makefile
+ rename event-parse.c => lib/traceevent/event-parse.c (100%)
+ rename event-plugin.c => lib/traceevent/event-plugin.c (100%)
+ rename kbuffer-parse.c => lib/traceevent/kbuffer-parse.c (100%)
+ rename parse-filter.c => lib/traceevent/parse-filter.c (100%)
+ rename parse-utils.c => lib/traceevent/parse-utils.c (100%)
+ rename str_error_r.c => lib/traceevent/str_error_r.c (100%)
+ rename trace-seq.c => lib/traceevent/trace-seq.c (100%)
 
 diff --git a/Makefile b/Makefile
-index 3c21a27..3b5045e 100644
+index 3b5045e..c18bf2f 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -204,10 +204,6 @@ VERSION		= $(KS_VERSION)
- PATCHLEVEL	= $(KS_PATCHLEVEL)
- EXTRAVERSION	= $(KS_EXTRAVERSION)
+@@ -181,7 +181,11 @@ bindir_relative_SQ = $(subst ','\'',$(bindir_relative))
+ plugin_dir_SQ = $(subst ','\'',$(plugin_dir))
+ python_dir_SQ = $(subst ','\'',$(python_dir))
  
--GUI		= 'GUI '
--GOBJ		= $@
--GSPACE		=
--
- REBUILD_GUI	= /bin/true
- G		=
- N 		= @/bin/true ||
-@@ -223,10 +219,6 @@ VERSION		= $(TC_VERSION)
- PATCHLEVEL	= $(TC_PATCHLEVEL)
- EXTRAVERSION	= $(TC_EXTRAVERSION)
- 
--GUI		=
--GSPACE		= "    "
--GOBJ		= $(GSPACE)$@
--
- REBUILD_GUI	= $(MAKE) -f $(src)/Makefile BUILDGUI=1 $@
- G		= $(REBUILD_GUI); /bin/true ||
- N		=
-@@ -234,6 +226,9 @@ endif
- 
- export Q VERBOSE
- 
-+# Include the utils
-+include scripts/utils.mk
+-LIBS = -L. -ltracecmd -ldl
++LIBS = -L. -ldl
++LIBTRACEEVENT_DIR = $(obj)/lib/traceevent
++LIBTRACEEVENT_STATIC = $(LIBTRACEEVENT_DIR)/libtraceevent.a
++LIBTRACEEVENT_SHARED = $(LIBTRACEEVENT_DIR)/libtraceevent.so
 +
+ LIB_FILE = libtracecmd.a
+ 
+ PACKAGES= gtk+-2.0 libxml-2.0 gthread-2.0
+@@ -232,7 +236,7 @@ include scripts/utils.mk
  TRACECMD_VERSION = $(TC_VERSION).$(TC_PATCHLEVEL).$(TC_EXTRAVERSION)
  KERNELSHARK_VERSION = $(KS_VERSION).$(KS_PATCHLEVEL).$(KS_EXTRAVERSION)
  
-@@ -280,52 +275,6 @@ endif
- override CFLAGS += $(CONFIG_FLAGS) $(INCLUDES) $(PLUGIN_DIR_SQ) $(VAR_DIR)
- override CFLAGS += $(udis86-flags) $(blk-flags)
+-INCLUDES = -I. -I ./include -I $(srctree)/../../include $(CONFIG_INCLUDES)
++INCLUDES = -I$(src) -I $(src)/include -I $(srctree)/../../include $(CONFIG_INCLUDES)
+ INCLUDES += -I$(src)/include/traceevent
+ INCLUDES += -I$(src)/include/trace-cmd
+ INCLUDES += -I$(src)/lib/traceevent/include
+@@ -244,6 +248,8 @@ CFLAGS ?= -g -Wall
+ CPPFLAGS ?=
+ LDFLAGS ?=
  
--ifeq ($(VERBOSE),1)
--  Q =
--  print_compile =
--  print_app_build =
--  print_fpic_compile =
--  print_shared_lib_compile =
--  print_plugin_obj_compile =
--  print_plugin_build =
--  print_install =
--else
--  Q = @
--  print_compile =		echo '  $(GUI)COMPILE            '$(GOBJ);
--  print_app_build =		echo '  $(GUI)BUILD              '$(GOBJ);
--  print_fpic_compile =		echo '  $(GUI)COMPILE FPIC       '$(GOBJ);
--  print_shared_lib_compile =	echo '  $(GUI)COMPILE SHARED LIB '$(GOBJ);
--  print_plugin_obj_compile =	echo '  $(GUI)COMPILE PLUGIN OBJ '$(GOBJ);
--  print_plugin_build =		echo '  $(GUI)BUILD PLUGIN       '$(GOBJ);
--  print_static_lib_build =	echo '  $(GUI)BUILD STATIC LIB   '$(GOBJ);
--  print_install =		echo '  $(GUI)INSTALL     '$(GSPACE)$1'	to	$(DESTDIR_SQ)$2';
--endif
--
--do_fpic_compile =					\
--	($(print_fpic_compile)				\
--	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(EXT) -fPIC $< -o $@)
--
--do_app_build =						\
--	($(print_app_build)				\
--	$(CC) $^ -rdynamic -o $@ $(LDFLAGS) $(CONFIG_LIBS) $(LIBS))
--
--do_compile_shared_library =			\
--	($(print_shared_lib_compile)		\
--	$(CC) --shared $^ -o $@)
--
--do_compile_plugin_obj =				\
--	($(print_plugin_obj_compile)		\
--	$(CC) -c $(CPPFLAGS) $(CFLAGS) -fPIC -o $@ $<)
--
--do_plugin_build =				\
--	($(print_plugin_build)			\
--	$(CC) $(CFLAGS) $(LDFLAGS) -shared -nostartfiles -o $@ $<)
--
--do_build_static_lib =				\
--	($(print_static_lib_build)		\
--	$(RM) $@;  $(AR) rcs $@ $^)
--
--
- define check_gui
- 	if [ $(BUILDGUI) -ne 1 -a ! -z "$(filter $(gui_objs),$(@))" ];	then	\
- 		$(REBUILD_GUI);							\
-diff --git a/scripts/utils.mk b/scripts/utils.mk
++export CFLAGS
++
+ # Required CFLAGS
+ override CFLAGS += -D_GNU_SOURCE
+ 
+@@ -303,12 +309,10 @@ TRACE_GRAPH_MAIN_OBJS = trace-graph-main.o $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS)
+ KERNEL_SHARK_OBJS = $(TRACE_VIEW_OBJS) $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS) \
+ 	trace-capture.o kernel-shark.o
+ 
+-TRACEEVENT_LIB_OBJS = event-parse.o trace-seq.o parse-filter.o parse-utils.o str_error_r.o
+-TCMD_LIB_OBJS = $(TRACEEVENT_LIB_OBJS) trace-util.o trace-input.o trace-ftrace.o \
++TCMD_LIB_OBJS = trace-util.o trace-input.o trace-ftrace.o \
+ 			trace-output.o trace-recorder.o \
+ 			trace-usage.o trace-blk-hack.o \
+-			kbuffer-parse.o event-plugin.o trace-hooks.o \
+-			trace-msg.o
++			trace-hooks.o trace-msg.o
+ 
+ PLUGIN_OBJS =
+ PLUGIN_OBJS += plugin_jbd2.o
+@@ -329,7 +333,7 @@ PLUGINS := $(PLUGIN_OBJS:.o=.so)
+ ALL_OBJS = $(TRACE_CMD_OBJS) $(KERNEL_SHARK_OBJS) $(TRACE_VIEW_MAIN_OBJS) \
+ 	$(TRACE_GRAPH_MAIN_OBJS) $(TCMD_LIB_OBJS) $(PLUGIN_OBJS)
+ 
+-CMD_TARGETS = trace_plugin_dir trace_python_dir tc_version.h libtraceevent.a $(LIB_FILE) \
++CMD_TARGETS = trace_plugin_dir trace_python_dir tc_version.h $(LIB_FILE) \
+ 	trace-cmd  $(PLUGINS) $(BUILD_PYTHON)
+ 
+ GUI_TARGETS = ks_version.h trace-graph trace-view kernelshark
+@@ -370,16 +374,19 @@ trace-view: $(TRACE_VIEW_MAIN_OBJS)
+ trace-graph: $(TRACE_GRAPH_MAIN_OBJS)
+ 	$(Q)$(G)$(do_app_build)
+ 
+-trace-cmd: libtracecmd.a
+-kernelshark: libtracecmd.a
+-trace-view: libtracecmd.a
+-trace-graph: libtracecmd.a
++trace-cmd: libtracecmd.a $(LIBTRACEEVENT_STATIC)
++kernelshark: libtracecmd.a $(LIBTRACEEVENT_STATIC)
++trace-view: libtracecmd.a $(LIBTRACEEVENT_STATIC)
++trace-graph: libtracecmd.a $(LIBTRACEEVENT_STATIC)
+ 
+-libtraceevent.so: $(TRACEEVENT_LIB_OBJS)
+-	$(Q)$(do_compile_shared_library)
++$(LIBTRACEEVENT_SHARED): force
++	$(Q)$(MAKE) -C $(src)/lib/traceevent libtraceevent.so
+ 
+-libtraceevent.a: $(TRACEEVENT_LIB_OBJS)
+-	$(Q)$(do_build_static_lib)
++$(LIBTRACEEVENT_STATIC): force
++	$(Q)$(MAKE) -C $(src)/lib/traceevent libtraceevent.a
++
++libtraceevent.so: $(LIBTRACEEVENT_SHARED)
++libtraceevent.a: $(LIBTRACEEVENT_STATIC)
+ 
+ $(TCMD_LIB_OBJS): %.o: $(src)/%.c
+ 	$(Q)$(do_fpic_compile)
+@@ -390,7 +397,7 @@ libtracecmd.so: $(TCMD_LIB_OBJS)
+ libtracecmd.a: $(TCMD_LIB_OBJS)
+ 	$(Q)$(do_build_static_lib)
+ 
+-libs: libtracecmd.so libtraceevent.so
++libs: libtracecmd.so $(LIBTRACEEVENT_SHARED)
+ 
+ trace-util.o: trace_plugin_dir
+ 
+@@ -561,7 +568,7 @@ install_gui: install_cmd gui
+ 
+ install_libs: libs
+ 	$(Q)$(call do_install,libtracecmd.so,$(libdir_SQ))
+-	$(Q)$(call do_install,libtraceevent.so,$(libdir_SQ))
++	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ))
+ 	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ))
+ 	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ))
+ 
+@@ -577,6 +584,7 @@ install_doc:
+ clean:
+ 	$(RM) *.o *~ $(TARGETS) *.a *.so ctracecmd_wrap.c .*.d
+ 	$(RM) tags TAGS cscope*
++	$(MAKE) -C $(src)/lib/traceevent clean
+ 
+ 
+ ##### PYTHON STUFF #####
+diff --git a/lib/traceevent/Makefile b/lib/traceevent/Makefile
 new file mode 100644
-index 0000000..39cb387
+index 0000000..f9c595c
 --- /dev/null
-+++ b/scripts/utils.mk
-@@ -0,0 +1,64 @@
++++ b/lib/traceevent/Makefile
+@@ -0,0 +1,45 @@
 +
-+# Utils
 +
-+ifeq ($(BUILDGUI), 1)
-+  GUI		= 'GUI '
-+  GOBJ		= $@
-+  GSPACE	=
-+else
-+  GUI		=
-+  GSPACE	= "    "
-+  GOBJ		= $(GSPACE)$@
++include $(src)/scripts/utils.mk
++
++DEFAULT_TARGET = libtraceevent.a
++
++OBJS =
++OBJS += event-parse.o
++OBJS += event-plugin.o
++OBJS += kbuffer-parse.o
++OBJS += trace-seq.o
++OBJS += parse-filter.o
++OBJS += parse-utils.o
++
++# Additional util objects
++OBJS += str_error_r.o
++
++DEPS := $(OBJS:%.o=.%.d)
++
++all: $(DEFAULT_TARGET)
++
++libtraceevent.a: $(OBJS)
++	$(Q)$(call do_build_static_lib)
++
++libtraceevent.so: $(OBJS)
++	$(Q)$(call do_compile_shared_library)
++
++%.o: %.c
++	$(Q)$(call do_fpic_compile)
++
++$(DEPS): .%.d: %.c
++	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
++
++$(OBJS): %.o : .%.d
++
++dep_includes := $(wildcard $(DEPS))
++
++ifneq ($(dep_includes),)
++  include $(dep_includes)
 +endif
 +
++clean:
++	$(RM) *.a *.so *.o .*.d
 +
-+ifeq ($(VERBOSE),1)
-+  Q =
-+  print_compile =
-+  print_app_build =
-+  print_fpic_compile =
-+  print_shared_lib_compile =
-+  print_plugin_obj_compile =
-+  print_plugin_build =
-+  print_install =
-+else
-+  Q = @
-+  print_compile =		echo '  $(GUI)COMPILE            '$(GOBJ);
-+  print_app_build =		echo '  $(GUI)BUILD              '$(GOBJ);
-+  print_fpic_compile =		echo '  $(GUI)COMPILE FPIC       '$(GOBJ);
-+  print_shared_lib_compile =	echo '  $(GUI)COMPILE SHARED LIB '$(GOBJ);
-+  print_plugin_obj_compile =	echo '  $(GUI)COMPILE PLUGIN OBJ '$(GOBJ);
-+  print_plugin_build =		echo '  $(GUI)BUILD PLUGIN       '$(GOBJ);
-+  print_static_lib_build =	echo '  $(GUI)BUILD STATIC LIB   '$(GOBJ);
-+  print_install =		echo '  $(GUI)INSTALL     '$(GSPACE)$1'	to	$(DESTDIR_SQ)$2';
-+endif
-+
-+
-+do_compile =				\
-+	($(print_compile)			\
-+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(EXT) $< -o $@)
-+
-+do_fpic_compile =					\
-+	($(print_fpic_compile)				\
-+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(EXT) -fPIC $< -o $@)
-+
-+do_app_build =						\
-+	($(print_app_build)				\
-+	$(CC) $^ -rdynamic -o $@ $(LDFLAGS) $(CONFIG_LIBS) $(LIBS))
-+
-+do_build_static_lib =				\
-+	($(print_static_lib_build)		\
-+	$(RM) $@;  $(AR) rcs $@ $^)
-+
-+do_compile_shared_library =			\
-+	($(print_shared_lib_compile)		\
-+	$(CC) --shared $^ -o $@)
-+
-+do_compile_plugin_obj =				\
-+	($(print_plugin_obj_compile)		\
-+	$(CC) -c $(CPPFLAGS) $(CFLAGS) -fPIC -o $@ $<)
-+
-+do_plugin_build =				\
-+	($(print_plugin_build)			\
-+	$(CC) $(CFLAGS) $(LDFLAGS) -shared -nostartfiles -o $@ $<)
-+
++.PHONY: clean
+diff --git a/event-parse.c b/lib/traceevent/event-parse.c
+similarity index 100%
+rename from event-parse.c
+rename to lib/traceevent/event-parse.c
+diff --git a/event-plugin.c b/lib/traceevent/event-plugin.c
+similarity index 100%
+rename from event-plugin.c
+rename to lib/traceevent/event-plugin.c
+diff --git a/kbuffer-parse.c b/lib/traceevent/kbuffer-parse.c
+similarity index 100%
+rename from kbuffer-parse.c
+rename to lib/traceevent/kbuffer-parse.c
+diff --git a/parse-filter.c b/lib/traceevent/parse-filter.c
+similarity index 100%
+rename from parse-filter.c
+rename to lib/traceevent/parse-filter.c
+diff --git a/parse-utils.c b/lib/traceevent/parse-utils.c
+similarity index 100%
+rename from parse-utils.c
+rename to lib/traceevent/parse-utils.c
+diff --git a/str_error_r.c b/lib/traceevent/str_error_r.c
+similarity index 100%
+rename from str_error_r.c
+rename to lib/traceevent/str_error_r.c
+diff --git a/trace-seq.c b/lib/traceevent/trace-seq.c
+similarity index 100%
+rename from trace-seq.c
+rename to lib/traceevent/trace-seq.c
 -- 
 2.14.1
