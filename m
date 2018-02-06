@@ -1,202 +1,258 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail.kernel.org ([198.145.29.99]:44430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751735AbeBAWu7 (ORCPT
+Received: from mail-pf0-f169.google.com ([209.85.192.169]:42905 "EHLO
+        mail-pf0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752263AbeBFItH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 1 Feb 2018 17:50:59 -0500
-Date: Thu, 1 Feb 2018 17:50:56 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>,
-        "linux-trace-users@vger.kernel.org"
-        <linux-trace-users@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Yordan Karadzhov <y.karadz@gmail.com>,
-        Vladislav Valtchev <vladislav.valtchev@gmail.com>
-Subject: [ANNOUNCE] trace-cmd v2.7
-Message-ID: <20180201175056.319d575c@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Tue, 6 Feb 2018 03:49:07 -0500
+Received: by mail-pf0-f169.google.com with SMTP id b25so317351pfd.9
+        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Feb 2018 00:49:07 -0800 (PST)
+From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
+        "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
+Subject: [PATCH v2 00/24] trace-cmd: restructure the project's source tree
+Date: Tue,  6 Feb 2018 10:48:42 +0200
+Message-Id: <20180206084906.9854-1-vladislav.valtchev@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Features since 2.6:
+This series restructures trace-cmd's source tree in a way that each
+component inside the repo has its own directory. Now the two libraries, the
+GUI apps, the plugins, the python C modules, the trace-cmd's application
+and all of their headers are organized in dedicated directories. Almost all
+of the effort in this series has been spent on updating the build system to
+support the new structure. The side-effect of that is a simpler and easier
+to maintain build system.
 
- - Add "--quiet" (-q) to trace-cmd record to surpress output
+NOTE: this rebased v2 series embeds now the previous mini-series called
+"trace-cmd: Make out-of-tree builds to work" which, as the title suggests,
+restores the out-of-tree build feature that is currently broken on the
+master branch.
 
- - trace-cmd stat has some more data
+Vladislav Valtchev (VMware) (24):
+  trace-cmd: Rename libparsevent to libtraceevent
+  trace-cmd: Move libtraceevent headers in include/traceevent
+  trace-cmd: Move trace-cmd headers in include/trace-cmd
+  trace-cmd: Move event-utils.h in lib/traceevent/include
+  trace-cmd: Extract part of Makefile in scripts/utils.mk
+  trace-cmd: Move libtraceevent *.c files in lib/traceevent
+  trace-cmd: Move trace-hash-local.h in lib/trace-cmd/include
+  trace-cmd: Move libtracecmd *.c files in lib/trace-cmd
+  trace-cmd: Move GUI headers in kernel-shark/include
+  trace-cmd: Move GUI *.c files in kernel-shark/
+  trace-cmd: Move plugin_* files in plugins/
+  trace-cmd: Fix the broken target ctracecmdgui.so
+  trace-cmd: Move python-related files in python/
+  trace-cmd: Move tracecmd headers in tracecmd/include
+  trace-cmd: Move version.h in include/
+  trace-cmd: Move trace-cmd app files in tracecmd/
+  trace-cmd: Fix the logic behind SWIG_DEFINED in the Makefile
+  trace-cmd: Make the build to tell when python-dev is missing
+  trace-cmd: Make libtraceevent builable out-of-tree
+  trace-cmd: Make the plugins buildable out-of-tree
+  trace-cmd: Make libtracecmd buildable out-of-tree
+  trace-cmd: Make the trace-cmd target buildable out-of-tree
+  trace-cmd: Make the python targets buildable out-of-tree
+  trace-cmd: Make the GUI targets buildable out-of-tree
 
- - trace-cmd record splice() how handles more than one page
+ Makefile                                           | 543 +++++----------------
+ trace-cmd.h => include/trace-cmd/trace-cmd.h       |   0
+ trace-hash.h => include/trace-cmd/trace-hash.h     |   0
+ event-parse.h => include/traceevent/event-parse.h  |   0
+ kbuffer.h => include/traceevent/kbuffer.h          |   0
+ version.h => include/version.h                     |   0
+ kernel-shark/Makefile                              | 100 ++++
+ cpu.h => kernel-shark/include/cpu.h                |   0
+ .../include/kernel-shark.h                         |   0
+ .../include/kshark-plugin.h                        |   0
+ .../include/trace-capture.h                        |   0
+ .../include/trace-compat.h                         |   0
+ .../include/trace-filter-hash.h                    |   0
+ .../include/trace-filter.h                         |   0
+ .../include/trace-graph.h                          |   0
+ trace-gui.h => kernel-shark/include/trace-gui.h    |   0
+ .../include/trace-view-store.h                     |   0
+ trace-view.h => kernel-shark/include/trace-view.h  |   0
+ trace-xml.h => kernel-shark/include/trace-xml.h    |   0
+ kernel-shark.c => kernel-shark/kernel-shark.c      |   0
+ trace-capture.c => kernel-shark/trace-capture.c    |   0
+ trace-compat.c => kernel-shark/trace-compat.c      |   0
+ trace-dialog.c => kernel-shark/trace-dialog.c      |   0
+ .../trace-filter-hash.c                            |   0
+ trace-filter.c => kernel-shark/trace-filter.c      |   0
+ .../trace-graph-main.c                             |   0
+ trace-graph.c => kernel-shark/trace-graph.c        |   0
+ trace-plot-cpu.c => kernel-shark/trace-plot-cpu.c  |   0
+ .../trace-plot-task.c                              |   0
+ trace-plot.c => kernel-shark/trace-plot.c          |   0
+ .../trace-view-main.c                              |   0
+ .../trace-view-store.c                             |   0
+ trace-view.c => kernel-shark/trace-view.c          |   0
+ trace-xml.c => kernel-shark/trace-xml.c            |   0
+ lib/trace-cmd/Makefile                             |  56 +++
+ .../trace-cmd/include/trace-hash-local.h           |   0
+ trace-blk-hack.c => lib/trace-cmd/trace-blk-hack.c |   0
+ trace-ftrace.c => lib/trace-cmd/trace-ftrace.c     |   0
+ trace-hash.c => lib/trace-cmd/trace-hash.c         |   0
+ trace-hooks.c => lib/trace-cmd/trace-hooks.c       |   0
+ trace-input.c => lib/trace-cmd/trace-input.c       |   0
+ trace-recorder.c => lib/trace-cmd/trace-recorder.c |   0
+ trace-util.c => lib/trace-cmd/trace-util.c         |   0
+ lib/traceevent/Makefile                            |  54 ++
+ event-parse.c => lib/traceevent/event-parse.c      |   0
+ event-plugin.c => lib/traceevent/event-plugin.c    |   0
+ .../traceevent/include/event-utils.h               |   0
+ kbuffer-parse.c => lib/traceevent/kbuffer-parse.c  |   0
+ parse-filter.c => lib/traceevent/parse-filter.c    |   0
+ parse-utils.c => lib/traceevent/parse-utils.c      |   0
+ str_error_r.c => lib/traceevent/str_error_r.c      |   0
+ trace-seq.c => lib/traceevent/trace-seq.c          |   0
+ plugins/Makefile                                   |  76 +++
+ plugin_blk.c => plugins/plugin_blk.c               |   0
+ plugin_cfg80211.c => plugins/plugin_cfg80211.c     |   0
+ plugin_function.c => plugins/plugin_function.c     |   0
+ plugin_hrtimer.c => plugins/plugin_hrtimer.c       |   0
+ plugin_jbd2.c => plugins/plugin_jbd2.c             |   0
+ plugin_kmem.c => plugins/plugin_kmem.c             |   0
+ plugin_kvm.c => plugins/plugin_kvm.c               |   0
+ plugin_mac80211.c => plugins/plugin_mac80211.c     |   0
+ plugin_python.c => plugins/plugin_python.c         |   0
+ .../plugin_sched_switch.c                          |   0
+ plugin_scsi.c => plugins/plugin_scsi.c             |   0
+ plugin_tlb.c => plugins/plugin_tlb.c               |   0
+ plugin_xen.c => plugins/plugin_xen.c               |   0
+ python/Makefile                                    |  44 ++
+ ctracecmd.i => python/ctracecmd.i                  |   0
+ ctracecmdgui.i => python/ctracecmdgui.i            |   0
+ event-viewer.py => python/event-viewer.py          |   0
+ tracecmd.py => python/tracecmd.py                  |   0
+ tracecmdgui.py => python/tracecmdgui.py            |   0
+ scripts/utils.mk                                   | 117 +++++
+ tracecmd/Makefile                                  |  84 ++++
+ bug.h => tracecmd/include/bug.h                    |   0
+ list.h => tracecmd/include/list.h                  |   0
+ .../include/trace-cmd-local.h                      |   0
+ trace-local.h => tracecmd/include/trace-local.h    |   0
+ trace-msg.h => tracecmd/include/trace-msg.h        |   0
+ .../trace-check-events.c                           |   0
+ trace-cmd.bash => tracecmd/trace-cmd.bash          |   0
+ trace-cmd.c => tracecmd/trace-cmd.c                |   0
+ trace-hist.c => tracecmd/trace-hist.c              |   0
+ trace-list.c => tracecmd/trace-list.c              |   0
+ trace-listen.c => tracecmd/trace-listen.c          |   0
+ trace-mem.c => tracecmd/trace-mem.c                |   0
+ trace-msg.c => tracecmd/trace-msg.c                |   0
+ trace-output.c => tracecmd/trace-output.c          |   0
+ trace-profile.c => tracecmd/trace-profile.c        |   0
+ trace-read.c => tracecmd/trace-read.c              |   0
+ trace-record.c => tracecmd/trace-record.c          |   0
+ trace-restore.c => tracecmd/trace-restore.c        |   0
+ trace-show.c => tracecmd/trace-show.c              |   0
+ trace-snapshot.c => tracecmd/trace-snapshot.c      |   0
+ trace-split.c => tracecmd/trace-split.c            |   0
+ trace-stack.c => tracecmd/trace-stack.c            |   0
+ trace-stat.c => tracecmd/trace-stat.c              |   0
+ trace-stream.c => tracecmd/trace-stream.c          |   0
+ trace-usage.c => tracecmd/trace-usage.c            |   0
+ 99 files changed, 664 insertions(+), 410 deletions(-)
+ rename trace-cmd.h => include/trace-cmd/trace-cmd.h (100%)
+ rename trace-hash.h => include/trace-cmd/trace-hash.h (100%)
+ rename event-parse.h => include/traceevent/event-parse.h (100%)
+ rename kbuffer.h => include/traceevent/kbuffer.h (100%)
+ rename version.h => include/version.h (100%)
+ create mode 100644 kernel-shark/Makefile
+ rename cpu.h => kernel-shark/include/cpu.h (100%)
+ rename kernel-shark.h => kernel-shark/include/kernel-shark.h (100%)
+ rename kshark-plugin.h => kernel-shark/include/kshark-plugin.h (100%)
+ rename trace-capture.h => kernel-shark/include/trace-capture.h (100%)
+ rename trace-compat.h => kernel-shark/include/trace-compat.h (100%)
+ rename trace-filter-hash.h => kernel-shark/include/trace-filter-hash.h (100%)
+ rename trace-filter.h => kernel-shark/include/trace-filter.h (100%)
+ rename trace-graph.h => kernel-shark/include/trace-graph.h (100%)
+ rename trace-gui.h => kernel-shark/include/trace-gui.h (100%)
+ rename trace-view-store.h => kernel-shark/include/trace-view-store.h (100%)
+ rename trace-view.h => kernel-shark/include/trace-view.h (100%)
+ rename trace-xml.h => kernel-shark/include/trace-xml.h (100%)
+ rename kernel-shark.c => kernel-shark/kernel-shark.c (100%)
+ rename trace-capture.c => kernel-shark/trace-capture.c (100%)
+ rename trace-compat.c => kernel-shark/trace-compat.c (100%)
+ rename trace-dialog.c => kernel-shark/trace-dialog.c (100%)
+ rename trace-filter-hash.c => kernel-shark/trace-filter-hash.c (100%)
+ rename trace-filter.c => kernel-shark/trace-filter.c (100%)
+ rename trace-graph-main.c => kernel-shark/trace-graph-main.c (100%)
+ rename trace-graph.c => kernel-shark/trace-graph.c (100%)
+ rename trace-plot-cpu.c => kernel-shark/trace-plot-cpu.c (100%)
+ rename trace-plot-task.c => kernel-shark/trace-plot-task.c (100%)
+ rename trace-plot.c => kernel-shark/trace-plot.c (100%)
+ rename trace-view-main.c => kernel-shark/trace-view-main.c (100%)
+ rename trace-view-store.c => kernel-shark/trace-view-store.c (100%)
+ rename trace-view.c => kernel-shark/trace-view.c (100%)
+ rename trace-xml.c => kernel-shark/trace-xml.c (100%)
+ create mode 100644 lib/trace-cmd/Makefile
+ rename trace-hash-local.h => lib/trace-cmd/include/trace-hash-local.h (100%)
+ rename trace-blk-hack.c => lib/trace-cmd/trace-blk-hack.c (100%)
+ rename trace-ftrace.c => lib/trace-cmd/trace-ftrace.c (100%)
+ rename trace-hash.c => lib/trace-cmd/trace-hash.c (100%)
+ rename trace-hooks.c => lib/trace-cmd/trace-hooks.c (100%)
+ rename trace-input.c => lib/trace-cmd/trace-input.c (100%)
+ rename trace-recorder.c => lib/trace-cmd/trace-recorder.c (100%)
+ rename trace-util.c => lib/trace-cmd/trace-util.c (100%)
+ create mode 100644 lib/traceevent/Makefile
+ rename event-parse.c => lib/traceevent/event-parse.c (100%)
+ rename event-plugin.c => lib/traceevent/event-plugin.c (100%)
+ rename event-utils.h => lib/traceevent/include/event-utils.h (100%)
+ rename kbuffer-parse.c => lib/traceevent/kbuffer-parse.c (100%)
+ rename parse-filter.c => lib/traceevent/parse-filter.c (100%)
+ rename parse-utils.c => lib/traceevent/parse-utils.c (100%)
+ rename str_error_r.c => lib/traceevent/str_error_r.c (100%)
+ rename trace-seq.c => lib/traceevent/trace-seq.c (100%)
+ create mode 100644 plugins/Makefile
+ rename plugin_blk.c => plugins/plugin_blk.c (100%)
+ rename plugin_cfg80211.c => plugins/plugin_cfg80211.c (100%)
+ rename plugin_function.c => plugins/plugin_function.c (100%)
+ rename plugin_hrtimer.c => plugins/plugin_hrtimer.c (100%)
+ rename plugin_jbd2.c => plugins/plugin_jbd2.c (100%)
+ rename plugin_kmem.c => plugins/plugin_kmem.c (100%)
+ rename plugin_kvm.c => plugins/plugin_kvm.c (100%)
+ rename plugin_mac80211.c => plugins/plugin_mac80211.c (100%)
+ rename plugin_python.c => plugins/plugin_python.c (100%)
+ rename plugin_sched_switch.c => plugins/plugin_sched_switch.c (100%)
+ rename plugin_scsi.c => plugins/plugin_scsi.c (100%)
+ rename plugin_tlb.c => plugins/plugin_tlb.c (100%)
+ rename plugin_xen.c => plugins/plugin_xen.c (100%)
+ create mode 100644 python/Makefile
+ rename ctracecmd.i => python/ctracecmd.i (100%)
+ rename ctracecmdgui.i => python/ctracecmdgui.i (100%)
+ rename event-viewer.py => python/event-viewer.py (100%)
+ rename tracecmd.py => python/tracecmd.py (100%)
+ rename tracecmdgui.py => python/tracecmdgui.py (100%)
+ create mode 100644 scripts/utils.mk
+ create mode 100644 tracecmd/Makefile
+ rename bug.h => tracecmd/include/bug.h (100%)
+ rename list.h => tracecmd/include/list.h (100%)
+ rename trace-cmd-local.h => tracecmd/include/trace-cmd-local.h (100%)
+ rename trace-local.h => tracecmd/include/trace-local.h (100%)
+ rename trace-msg.h => tracecmd/include/trace-msg.h (100%)
+ rename trace-check-events.c => tracecmd/trace-check-events.c (100%)
+ rename trace-cmd.bash => tracecmd/trace-cmd.bash (100%)
+ rename trace-cmd.c => tracecmd/trace-cmd.c (100%)
+ rename trace-hist.c => tracecmd/trace-hist.c (100%)
+ rename trace-list.c => tracecmd/trace-list.c (100%)
+ rename trace-listen.c => tracecmd/trace-listen.c (100%)
+ rename trace-mem.c => tracecmd/trace-mem.c (100%)
+ rename trace-msg.c => tracecmd/trace-msg.c (100%)
+ rename trace-output.c => tracecmd/trace-output.c (100%)
+ rename trace-profile.c => tracecmd/trace-profile.c (100%)
+ rename trace-read.c => tracecmd/trace-read.c (100%)
+ rename trace-record.c => tracecmd/trace-record.c (100%)
+ rename trace-restore.c => tracecmd/trace-restore.c (100%)
+ rename trace-show.c => tracecmd/trace-show.c (100%)
+ rename trace-snapshot.c => tracecmd/trace-snapshot.c (100%)
+ rename trace-split.c => tracecmd/trace-split.c (100%)
+ rename trace-stack.c => tracecmd/trace-stack.c (100%)
+ rename trace-stat.c => tracecmd/trace-stat.c (100%)
+ rename trace-stream.c => tracecmd/trace-stream.c (100%)
+ rename trace-usage.c => tracecmd/trace-usage.c (100%)
 
- - Add --module filtering option to associate modules to filters
-
- - New -O offset for function plugin
-
- - Bash completion for -O options.
-
- - Bash completion for -B instance buffers
-
- - New trace-cmd clear to simply clear out the trace-cmd buffers
-
-And lots of internal churn to prepare for bigger features in the
-future.
-
-Short log:
-
-Baruch Siach (1):
-      trace-cmd: use the standard PATH_MAX macro
-
-Cheng Jian (1):
-      tools/lib/traceevent/parse-filter.c: clean up clang build warning
-
-Daniel Borkmann (1):
-      lib, traceevent: add PRINT_HEX_STR variant
-
-Deepak Das (1):
-      trace-cmd record: Add module filtering option
-
-Federico Vaga (2):
-      trace-cmd record: Use direname instead of custom code
-      trace-cmd: Use asprintf when possible
-
-Greg Kroah-Hartman (1):
-      License cleanup: add SPDX GPL-2.0 license identifier to files with no license
-
-Jan Kiszka (3):
-      trace-cmd record: Don't set wildcard filter for non-existing module
-      event-parse: Print value of unknown symbolic fields
-      trace-view: Pick up sched_wakeup_new event
-
-Masahiro Yamada (1):
-      scripts/spelling.txt: add "overide" pattern and fix typo instances
-
-Michael Sartain (13):
-      event-parse: Fix bad force_token escape sequence
-      trace-cmd: Fix unsigned return values being error checked as negative
-      trace-cmd: Fix read / write data offsets in read / write loops
-      trace-cmd: Fix function prototypes for __vwarning, __vpr_stat, and __vdie
-      kernelshark: Fix cases where string literals were passed as string format args
-      trace-cmd: Fix incorrect malloc size arg: *item instead of item
-      trace-cmd: Fix NULL pointer being passed to memcpy
-      trace-cmd: Add UL suffix to MISSING_EVENTS since ints shouldn't be left shifted by 31
-      trace-cmd: Use unsigned values in Hsieh's trace_hash fast hash function
-      trace-cmd: Fix use after free for recorder global
-      trace-cmd: Replace normalize_size loop with branchless previous pow2 algorithm
-      trace-cmd: Fix reading of overrun / commit_overrun cpu stat fields
-      trace-cmd: Add trace-cmd clear command
-
-Mike Rapoport (1):
-      trace-cmd-record: Update documentation for "-c" option
-
-Namhyung Kim (1):
-      tools lib traceevent: Fix kbuffer_read_at_offset()
-
-Steven Rostedt (Red Hat) (15):
-      trace-cmd msg: Add debug prints of messages sent and received
-      trace-cmd msg: Move the saved closing fd to the caller
-      trace-cmd listen: Add better output on error of connections
-      trace-cmd msg: Create a msg_handle to pass around for saved state
-      trace-cmd msg: Add server structure of msg_handler
-      trace-cmd: Remove global use_tcp variable
-      trace-cmd: Move protocol version into msg_handler
-      tracecmd: Clean up handling of cpu_count
-      tracecmd listen: Have pagesize passed as return not parameter
-      trace-cmd: Have cpu_count reside in instances and not be global
-      trace-cmd: Add option CPUCOUNT to buffer instance options
-      trace-cmd: Have msg_handle part of the buffer instance
-      trace-cmd record: Allow instances to be recorded over the network
-      trace-cmd: Have keep and profile be flags of buffer instance
-      trace-cmd: Add network handle into buffer instance
-
-Steven Rostedt (VMware) (55):
-      trace-cmd-v2.7.dev
-      trace-cmd: Fix completions
-      trace-cmd: Fix the fix for completions
-      trace-cmd: Have trace-cmd start, profile and stream use record completion
-      trace-cmd: Add trace-cmd show completion for bash
-      trace-cmd: Add bash completions for instance buffers for -B option
-      trace-cmd: Have bash completions look at all options by default
-      trace-cmd: Add bash completion for trace-cmd report -O
-      trace-cmd report: Fix pointer check in option -r
-      trace-cmd listen: Replace tab with spaces in help output
-      trace-cmd report: Add -O offset for function plugin
-      event-parse: Show contents (in hex) of data of unrecognized type records
-      parse-events: Fix get_field_str() for dynamic strings
-      trace-cmd record: Update man pages for some missing options
-      trace-cmd record: Have --module affect function filters listed after it
-      trace-cmd record: Update documentation for -c with -P
-      event-parse: Show value of flags that have not been parsed
-      trace-cmd msg: Remove unused tracecmd_msg_str
-      trace-cmd recorder: Always return if the read splice() does not read anything
-      trace-cmd record: Only write what was read in splice_data()
-      trace-cmd record: Make sure all is written in splice_data()
-      trace-cmd recorder: Use full pipe size in splice_data()
-      trace-cmd report: Add offsets and record sizes to --debug option
-      trace-cmd recorder: Make sure to write as much as was read in read_data()
-      trace-cmd listen: Do not kill client recorders
-      trace-cmd listen: Make sure to write everything that was read
-      trace-cmd recorder: Add define of F_GETPIPE_SZ if not already defined
-      trace-cmd build: Do not build python code if swig is not installed
-      trace-cmd recorder: Check if pipe_size was modified by fcntl(F_GETPIPE_SZ)
-      pevent: Simplify pointer print logic and fix %pF
-      pevent: Handle new pointer processing of bprint strings
-      trace-cmd record: Fix clearing out the ctx->instance when used in for_all_instances()
-      trace-cmd: Remove the creating of msg out of tracecmd_msg_send()
-      trace-cmd: Move tracecmd_msg_send_and_wait_for_msg() into its only user
-      trace-cmd: Turn tracecmd_msg data into an anonymous union
-      trace-cmd: Remove unused structure tracecmd_msg_error
-      trace-cmd: Move size and cmd in tracecmd_msg into its own header struct
-      trace-cmd: Move the tracecmd_msg pointers into their own union
-      trace-cmd: Just use the buf field for sending pointers
-      trace-cmd: Use an array to map msg types and min sizes
-      trace-cmd: Merge msg_do_write_check() into msg_write()
-      trace-cmd: Simplify msg_free() by using min sizes
-      trace-cmd: Add tracecmd_msg_init() helper function
-      trace-cmd: Remove mulitplexer tracecmd_msg_create()
-      trace-cmd: Simplify msg_read_extra()
-      trace-cmd: Have msg_free() zero out msg contents
-      trace-cmd: Verify RINIT was received after TINIT msg sent
-      trace-cmd: Make send_metadata a flag in the output handle
-      trace-cmd: Pass cpu count and port array to make_rinit()
-      trace-cmd: Pass cpu_count instead of having it as a global
-      trace-cmd: Pass in client_ports instead of using a global variable
-      trace-cmd: Fix leaking of port_array memory
-      trace-cmd msg: Set the min size of a message on init
-      trace-cmd TAGS: Fix tags to not parse .pc directory of patch
-      trace-cmd: Version 2.7
-
-Vladislav Valtchev (VMware) (20):
-      trace-cmd: Fix err msg for record w/o the -e option
-      trace-cmd: s/plugin/tracer/ in record's man page
-      trace-cmd: Extract trace_stop() from trace_record()
-      trace-cmd: Extract trace_restart() from trace_record()
-      trace-cmd: Extract trace_reset() from trace_record()
-      trace-cmd: Consolidate ARRAY_SIZE() in trace-cmd.h
-      trace-cmd: Making the "die" functions noreturn
-      trace-cmd: Extract parse_record_options() from trace_record()
-      trace-cmd: Replacing cmd flags w/ a trace_cmd enum
-      trace-cmd: Extracting record_trace()
-      trace-cmd: Rename trace_profile() to do_trace_profile()
-      trace-cmd: Making start,extract,stream,profile separate funcs
-      trace-cmd: Extract profile-specific code from record_trace
-      trace-cmd: Move init_common_record_context() into parse_record_options()
-      trace-cmd: Introducing get_trace_cmd_type()
-      trace-cmd: Extract finalize_record_trace()
-      trace-cmd: Fork record_trace() for the extract case
-      trace-cmd: Make read_proc() to return int status via OUT arg
-      trace-cmd: Remove the die() call from read_proc()
-      trace-cmd: Making stat to report when the stack tracer is ON
-
-Will Hawkins (2):
-      trace-cmd record: Add --quiet (-q) option
-      trace-cmd record: Fix syntax in make_pid_filter
-
-Yordan Karadzhov (VMware) (1):
-      kernelshark: Fix the GUI plugin loading
-
-Ziqian SUN (Zamir) (1):
-      trace-cmd report: Fix hash.key in option -w
-
-Enjoy,
-
--- Steve
+-- 
+2.14.1
