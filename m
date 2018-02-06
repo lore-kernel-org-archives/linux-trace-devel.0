@@ -1,303 +1,182 @@
 Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-pl0-f67.google.com ([209.85.160.67]:39368 "EHLO
+Received: from mail-pl0-f67.google.com ([209.85.160.67]:46904 "EHLO
         mail-pl0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752335AbeBFIt1 (ORCPT
+        with ESMTP id S1752263AbeBFIta (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Feb 2018 03:49:27 -0500
-Received: by mail-pl0-f67.google.com with SMTP id o13so847849pli.6
-        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Feb 2018 00:49:27 -0800 (PST)
+        Tue, 6 Feb 2018 03:49:30 -0500
+Received: by mail-pl0-f67.google.com with SMTP id 36so834623ple.13
+        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Feb 2018 00:49:29 -0800 (PST)
 From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
         "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH v2 10/24] trace-cmd: Move GUI *.c files in kernel-shark/
-Date: Tue,  6 Feb 2018 10:48:52 +0200
-Message-Id: <20180206084906.9854-11-vladislav.valtchev@gmail.com>
+Subject: [PATCH v2 11/24] trace-cmd: Move plugin_* files in plugins/
+Date: Tue,  6 Feb 2018 10:48:53 +0200
+Message-Id: <20180206084906.9854-12-vladislav.valtchev@gmail.com>
 In-Reply-To: <20180206084906.9854-1-vladislav.valtchev@gmail.com>
 References: <20180206084906.9854-1-vladislav.valtchev@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch moves all the source files belonging to the GUI (kernelshark,
-trace-view and trace-graph) into the dedicated directory kernel-shark/.
+This patch moves the source files of all plugins to a dedicated directory, as
+part of a bigger restructuring plan of trace-cmd's code base.
 The build system has been updated to support this new directory structure by
-adding a separate Makefile in kernel-shark/ and by making the parent Makefile
+adding a separate Makefile in plugins/ and by making the parent Makefile
 to invoke it.
 
 Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
 ---
- Makefile                                           | 190 ++++-----------------
- kernel-shark/Makefile                              |  84 +++++++++
- kernel-shark.c => kernel-shark/kernel-shark.c      |   0
- trace-capture.c => kernel-shark/trace-capture.c    |   0
- trace-compat.c => kernel-shark/trace-compat.c      |   0
- trace-dialog.c => kernel-shark/trace-dialog.c      |   0
- .../trace-filter-hash.c                            |   0
- trace-filter.c => kernel-shark/trace-filter.c      |   0
- .../trace-graph-main.c                             |   0
- trace-graph.c => kernel-shark/trace-graph.c        |   0
- trace-plot-cpu.c => kernel-shark/trace-plot-cpu.c  |   0
- .../trace-plot-task.c                              |   0
- trace-plot.c => kernel-shark/trace-plot.c          |   0
- .../trace-view-main.c                              |   0
- .../trace-view-store.c                             |   0
- trace-view.c => kernel-shark/trace-view.c          |   0
- trace-xml.c => kernel-shark/trace-xml.c            |   0
- scripts/utils.mk                                   |  21 +++
- 18 files changed, 140 insertions(+), 155 deletions(-)
- create mode 100644 kernel-shark/Makefile
- rename kernel-shark.c => kernel-shark/kernel-shark.c (100%)
- rename trace-capture.c => kernel-shark/trace-capture.c (100%)
- rename trace-compat.c => kernel-shark/trace-compat.c (100%)
- rename trace-dialog.c => kernel-shark/trace-dialog.c (100%)
- rename trace-filter-hash.c => kernel-shark/trace-filter-hash.c (100%)
- rename trace-filter.c => kernel-shark/trace-filter.c (100%)
- rename trace-graph-main.c => kernel-shark/trace-graph-main.c (100%)
- rename trace-graph.c => kernel-shark/trace-graph.c (100%)
- rename trace-plot-cpu.c => kernel-shark/trace-plot-cpu.c (100%)
- rename trace-plot-task.c => kernel-shark/trace-plot-task.c (100%)
- rename trace-plot.c => kernel-shark/trace-plot.c (100%)
- rename trace-view-main.c => kernel-shark/trace-view-main.c (100%)
- rename trace-view-store.c => kernel-shark/trace-view-store.c (100%)
- rename trace-view.c => kernel-shark/trace-view.c (100%)
- rename trace-xml.c => kernel-shark/trace-xml.c (100%)
+ Makefile                                           | 115 ++++++---------------
+ lib/trace-cmd/Makefile                             |   2 +
+ plugins/Makefile                                   |  69 +++++++++++++
+ plugin_blk.c => plugins/plugin_blk.c               |   0
+ plugin_cfg80211.c => plugins/plugin_cfg80211.c     |   0
+ plugin_function.c => plugins/plugin_function.c     |   0
+ plugin_hrtimer.c => plugins/plugin_hrtimer.c       |   0
+ plugin_jbd2.c => plugins/plugin_jbd2.c             |   0
+ plugin_kmem.c => plugins/plugin_kmem.c             |   0
+ plugin_kvm.c => plugins/plugin_kvm.c               |   0
+ plugin_mac80211.c => plugins/plugin_mac80211.c     |   0
+ plugin_python.c => plugins/plugin_python.c         |   0
+ .../plugin_sched_switch.c                          |   0
+ plugin_scsi.c => plugins/plugin_scsi.c             |   0
+ plugin_tlb.c => plugins/plugin_tlb.c               |   0
+ plugin_xen.c => plugins/plugin_xen.c               |   0
+ scripts/utils.mk                                   |  32 ++++++
+ 17 files changed, 135 insertions(+), 83 deletions(-)
+ create mode 100644 plugins/Makefile
+ rename plugin_blk.c => plugins/plugin_blk.c (100%)
+ rename plugin_cfg80211.c => plugins/plugin_cfg80211.c (100%)
+ rename plugin_function.c => plugins/plugin_function.c (100%)
+ rename plugin_hrtimer.c => plugins/plugin_hrtimer.c (100%)
+ rename plugin_jbd2.c => plugins/plugin_jbd2.c (100%)
+ rename plugin_kmem.c => plugins/plugin_kmem.c (100%)
+ rename plugin_kvm.c => plugins/plugin_kvm.c (100%)
+ rename plugin_mac80211.c => plugins/plugin_mac80211.c (100%)
+ rename plugin_python.c => plugins/plugin_python.c (100%)
+ rename plugin_sched_switch.c => plugins/plugin_sched_switch.c (100%)
+ rename plugin_scsi.c => plugins/plugin_scsi.c (100%)
+ rename plugin_tlb.c => plugins/plugin_tlb.c (100%)
+ rename plugin_xen.c => plugins/plugin_xen.c (100%)
 
 diff --git a/Makefile b/Makefile
-index 2269a96..b6a023a 100644
+index b6a023a..2dfb8fd 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -4,11 +4,6 @@ TC_VERSION = 2
- TC_PATCHLEVEL = 7
- TC_EXTRAVERSION =
+@@ -66,6 +66,12 @@ PYTHON_DIR_SQ = '$(subst ','\'',$(PYTHON_DIR))'
+ var_dir = /var
+ endif
  
--# Kernel Shark version
--KS_VERSION = 0
--KS_PATCHLEVEL = 2
--KS_EXTRAVERSION =
--
- # file format version
- FILE_VERSION = 6
- 
-@@ -147,27 +142,9 @@ BUILD_OUTPUT := $(shell cd $(BUILD_OUTPUT) && /bin/pwd)
- $(if $(BUILD_OUTPUT),, \
-      $(error output directory "$(saved-output)" does not exist))
- 
--all: sub-make
--
--gui: force
--	$(call build_output, all_cmd)
--	$(call build_output, BUILDGUI=1 all_gui)
--
--$(filter-out gui,$(MAKECMDGOALS)): sub-make
--
--sub-make: force
--	$(call build_output, $(MAKECMDGOALS))
--
--
--# Leave processing to above invocation of make
--skip-makefile := 1
--
- endif # BUILD_OUTPUT
- endif # BUILD_SRC
- 
--# We process the rest of the Makefile if this is the final invocation of make
--ifeq ($(skip-makefile),)
--
- srctree		:= $(if $(BUILD_SRC),$(BUILD_SRC),$(CURDIR))
- objtree		:= $(CURDIR)
- src		:= $(srctree)
-@@ -181,7 +158,8 @@ bindir_relative_SQ = $(subst ','\'',$(bindir_relative))
- plugin_dir_SQ = $(subst ','\'',$(plugin_dir))
- python_dir_SQ = $(subst ','\'',$(python_dir))
- 
--LIBS = -L. -ldl
-+LIBS = -ldl
++# Shell quotes
++bindir_SQ = $(subst ','\'',$(bindir))
++bindir_relative_SQ = $(subst ','\'',$(bindir_relative))
++plugin_dir_SQ = $(subst ','\'',$(plugin_dir))
++python_dir_SQ = $(subst ','\'',$(python_dir))
 +
+ VAR_DIR = -DVAR_DIR="$(var_dir)"
+ VAR_DIR_SQ = '$(subst ','\'',$(VAR_DIR))'
+ var_dir_SQ = '$(subst ','\'',$(var_dir))'
+@@ -76,6 +82,10 @@ HELP_DIR_SQ = '$(subst ','\'',$(HELP_DIR))'
+ 
+ BASH_COMPLETE_DIR ?= /etc/bash_completion.d
+ 
++export PLUGIN_DIR
++export PYTHON_DIR
++export PYTHON_DIR_SQ
++export plugin_dir_SQ
+ export var_dir
+ 
+ # copy a bit from Linux kbuild
+@@ -109,6 +119,8 @@ ifeq ($(shell sh -c "pkg-config --cflags $(PYTHON_VERS) > /dev/null 2>&1 && whic
+ endif
+ endif # NO_PYTHON
+ 
++export PYTHON_PLUGINS
++
+ # $(call test-build, snippet, ret) -> ret if snippet compiles
+ #                                  -> empty otherwise
+ test-build = $(if $(shell sh -c 'echo "$(1)" | \
+@@ -152,12 +164,6 @@ obj		:= $(objtree)
+ 
+ export prefix bindir src obj
+ 
+-# Shell quotes
+-bindir_SQ = $(subst ','\'',$(bindir))
+-bindir_relative_SQ = $(subst ','\'',$(bindir_relative))
+-plugin_dir_SQ = $(subst ','\'',$(plugin_dir))
+-python_dir_SQ = $(subst ','\'',$(python_dir))
+-
+ LIBS = -ldl
+ 
  LIBTRACEEVENT_DIR = $(obj)/lib/traceevent
- LIBTRACEEVENT_STATIC = $(LIBTRACEEVENT_DIR)/libtraceevent.a
- LIBTRACEEVENT_SHARED = $(LIBTRACEEVENT_DIR)/libtraceevent.so
-@@ -190,32 +168,8 @@ LIBTRACECMD_DIR = $(obj)/lib/trace-cmd
- LIBTRACECMD_STATIC = $(LIBTRACECMD_DIR)/libtracecmd.a
- LIBTRACECMD_SHARED = $(LIBTRACECMD_DIR)/libtracecmd.so
- 
--PACKAGES= gtk+-2.0 libxml-2.0 gthread-2.0
--
--ifndef BUILDGUI
-- BUILDGUI = 0
--endif
--
--ifeq ($(BUILDGUI), 1)
--
--CONFIG_INCLUDES = $(shell pkg-config --cflags $(PACKAGES)) -I$(obj)
--
--CONFIG_FLAGS = -DBUILDGUI \
--	-DGTK_VERSION=$(shell pkg-config --modversion gtk+-2.0 | \
--	awk 'BEGIN{FS="."}{ a = ($$1 * (2^16)) + $$2 * (2^8) + $$3; printf ("%d", a);}')
--
--CONFIG_LIBS = $(shell pkg-config --libs $(PACKAGES))
--
--VERSION		= $(KS_VERSION)
--PATCHLEVEL	= $(KS_PATCHLEVEL)
--EXTRAVERSION	= $(KS_EXTRAVERSION)
--
--REBUILD_GUI	= /bin/true
--G		=
--N 		= @/bin/true ||
--
--CONFIG_FLAGS	+= $(HELP_DIR_SQ)
--else
-+export LIBS
-+export LIBTRACEEVENT_DIR LIBTRACECMD_DIR
- 
- CONFIG_INCLUDES = 
- CONFIG_LIBS	=
-@@ -225,18 +179,14 @@ VERSION		= $(TC_VERSION)
- PATCHLEVEL	= $(TC_PATCHLEVEL)
- EXTRAVERSION	= $(TC_EXTRAVERSION)
- 
--REBUILD_GUI	= $(MAKE) -f $(src)/Makefile BUILDGUI=1 $@
--G		= $(REBUILD_GUI); /bin/true ||
- N		=
--endif
- 
--export Q VERBOSE
-+export Q VERBOSE EXT
- 
- # Include the utils
- include scripts/utils.mk
- 
- TRACECMD_VERSION = $(TC_VERSION).$(TC_PATCHLEVEL).$(TC_EXTRAVERSION)
--KERNELSHARK_VERSION = $(KS_VERSION).$(KS_PATCHLEVEL).$(KS_EXTRAVERSION)
- 
- INCLUDES = -I$(src) -I $(src)/include -I $(srctree)/../../include $(CONFIG_INCLUDES)
- INCLUDES += -I$(src)/include/traceevent
-@@ -253,6 +203,7 @@ CPPFLAGS ?=
- LDFLAGS ?=
- 
- export CFLAGS
-+export INCLUDES
- 
- # Required CFLAGS
- override CFLAGS += -D_GNU_SOURCE
-@@ -285,34 +236,21 @@ endif
- override CFLAGS += $(CONFIG_FLAGS) $(INCLUDES) $(PLUGIN_DIR_SQ) $(VAR_DIR)
- override CFLAGS += $(udis86-flags) $(blk-flags)
- 
--define check_gui
--	if [ $(BUILDGUI) -ne 1 -a ! -z "$(filter $(gui_objs),$(@))" ];	then	\
--		$(REBUILD_GUI);							\
--	else									\
--		$(print_compile)						\
--		$(CC) -c $(CPPFLAGS) $(CFLAGS) $(EXT) $< -o $(obj)/$@;		\
--	fi;
--endef
--
- $(obj)/%.o: $(src)/%.c
--	$(Q)$(call check_gui)
-+	$(Q)$(call do_compile)
- 
- %.o: $(src)/%.c
--	$(Q)$(call check_gui)
-+	$(Q)$(call do_compile)
-+
-+TRACE_VIEW_OBJS =
-+TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view.o
-+TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view-store.o
- 
--TRACE_GUI_OBJS = trace-filter.o trace-compat.o trace-filter-hash.o trace-dialog.o \
--		trace-xml.o
- TRACE_CMD_OBJS = trace-cmd.o trace-record.o trace-read.o trace-split.o trace-listen.o \
- 	 trace-stack.o trace-hist.o trace-mem.o trace-snapshot.o trace-stat.o \
- 	 trace-profile.o trace-stream.o trace-record.o trace-restore.o \
+@@ -252,26 +258,9 @@ TRACE_CMD_OBJS = trace-cmd.o trace-record.o trace-read.o trace-split.o trace-lis
  	 trace-check-events.o trace-show.o trace-list.o  \
  	 trace-output.o trace-usage.o trace-msg.o
--TRACE_VIEW_OBJS = trace-view.o trace-view-store.o
--TRACE_GRAPH_OBJS = trace-graph.o trace-plot.o trace-plot-cpu.o trace-plot-task.o
--TRACE_VIEW_MAIN_OBJS = trace-view-main.o $(TRACE_VIEW_OBJS) $(TRACE_GUI_OBJS)
--TRACE_GRAPH_MAIN_OBJS = trace-graph-main.o $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS)
--KERNEL_SHARK_OBJS = $(TRACE_VIEW_OBJS) $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS) \
--	trace-capture.o kernel-shark.o
  
- PLUGIN_OBJS =
- PLUGIN_OBJS += plugin_jbd2.o
-@@ -330,15 +268,13 @@ PLUGIN_OBJS += plugin_tlb.o
+-PLUGIN_OBJS =
+-PLUGIN_OBJS += plugin_jbd2.o
+-PLUGIN_OBJS += plugin_hrtimer.o
+-PLUGIN_OBJS += plugin_kmem.o
+-PLUGIN_OBJS += plugin_kvm.o
+-PLUGIN_OBJS += plugin_mac80211.o
+-PLUGIN_OBJS += plugin_sched_switch.o
+-PLUGIN_OBJS += plugin_function.o
+-PLUGIN_OBJS += plugin_xen.o
+-PLUGIN_OBJS += plugin_scsi.o
+-PLUGIN_OBJS += plugin_cfg80211.o
+-PLUGIN_OBJS += plugin_blk.o
+-PLUGIN_OBJS += plugin_tlb.o
++ALL_OBJS = $(TRACE_CMD_OBJS)
  
- PLUGINS := $(PLUGIN_OBJS:.o=.so)
- 
--ALL_OBJS = $(TRACE_CMD_OBJS) $(KERNEL_SHARK_OBJS) $(TRACE_VIEW_MAIN_OBJS) \
--	$(TRACE_GRAPH_MAIN_OBJS) $(PLUGIN_OBJS)
-+ALL_OBJS = $(TRACE_CMD_OBJS) $(PLUGIN_OBJS)
- 
- CMD_TARGETS = trace_plugin_dir trace_python_dir tc_version.h \
- 	trace-cmd  $(PLUGINS) $(BUILD_PYTHON)
- 
--GUI_TARGETS = ks_version.h trace-graph trace-view kernelshark
- 
--TARGETS = $(CMD_TARGETS) $(GUI_TARGETS)
-+TARGETS = $(CMD_TARGETS)
+-PLUGINS := $(PLUGIN_OBJS:.o=.so)
+-
+-ALL_OBJS = $(TRACE_CMD_OBJS) $(PLUGIN_OBJS)
+-
+-CMD_TARGETS = trace_plugin_dir trace_python_dir tc_version.h \
+-	trace-cmd  $(PLUGINS) $(BUILD_PYTHON)
++CMD_TARGETS = tc_version.h trace-cmd $(BUILD_PYTHON)
  
  
- #	cpp $(INCLUDES)
-@@ -353,31 +289,23 @@ all: all_cmd show_gui_make
+ TARGETS = $(CMD_TARGETS)
+@@ -285,7 +274,7 @@ TARGETS = $(CMD_TARGETS)
+ #    If you want kernelshark, then do:  make gui
+ ###
+ 
+-all: all_cmd show_gui_make
++all: all_cmd plugins show_gui_make
  
  all_cmd: $(CMD_TARGETS)
  
--gui: $(CMD_TARGETS)
--	$(Q)$(MAKE) -f $(src)/Makefile BUILDGUI=1 all_gui
--
--all_gui: $(GUI_TARGETS) show_gui_done
--
--GUI_OBJS = $(KERNEL_SHARK_OBJS) $(TRACE_VIEW_MAIN_OBJS) $(TRACE_GRAPH_MAIN_OBJS)
--
--gui_objs := $(sort $(GUI_OBJS))
-+gui: force $(CMD_TARGETS)
-+	$(Q)$(MAKE) -C $(src)/kernel-shark; \
-+	echo "gui build complete"
+@@ -313,10 +302,10 @@ $(LIBTRACEEVENT_SHARED): force
+ $(LIBTRACEEVENT_STATIC): force
+ 	$(Q)$(MAKE) -C $(src)/lib/traceevent libtraceevent.a
  
- trace-cmd: $(TRACE_CMD_OBJS)
- 	$(Q)$(do_app_build)
+-$(LIBTRACECMD_STATIC): force trace_plugin_dir
++$(LIBTRACECMD_STATIC): force $(obj)/plugins/trace_plugin_dir
+ 	$(Q)$(MAKE) -C $(src)/lib/trace-cmd libtracecmd.a
  
--kernelshark: $(KERNEL_SHARK_OBJS)
--	$(Q)$(G)$(do_app_build)
--
--trace-view: $(TRACE_VIEW_MAIN_OBJS)
--	$(Q)$(G)$(do_app_build)
--
--trace-graph: $(TRACE_GRAPH_MAIN_OBJS)
--	$(Q)$(G)$(do_app_build)
--
- trace-cmd: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
--kernelshark: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
--trace-view: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
--trace-graph: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC)
-+
-+kernelshark: force $(CMD_TARGETS)
-+	$(Q)$(MAKE) -C $(src)/kernel-shark $@
-+
-+trace-view: force $(CMD_TARGETS)
-+	$(Q)$(MAKE) -C $(src)/kernel-shark $@
-+
-+trace-graph: force $(CMD_TARGETS)
-+	$(Q)$(MAKE) -C $(src)/kernel-shark $@
+-$(LIBTRACECMD_SHARED): force trace_plugin_dir
++$(LIBTRACECMD_SHARED): force $(obj)/plugins/trace_plugin_dir
+ 	$(Q)$(MAKE) -C $(src)/lib/trace-cmd libtracecmd.so
  
- $(LIBTRACEEVENT_SHARED): force
- 	$(Q)$(MAKE) -C $(src)/lib/traceevent libtraceevent.so
-@@ -404,29 +332,6 @@ $(PLUGIN_OBJS): %.o : $(src)/%.c
- $(PLUGINS): %.so: %.o
- 	$(Q)$(do_plugin_build)
+ libtraceevent.so: $(LIBTRACEEVENT_SHARED)
+@@ -326,30 +315,18 @@ libtracecmd.so: $(LIBTRACECMD_SHARED)
  
--define make_version.h
--	(echo '/* This file is automatically generated. Do not modify. */';		\
--	echo \#define VERSION_CODE $(shell						\
--	expr $(VERSION) \* 256 + $(PATCHLEVEL));					\
--	echo '#define EXTRAVERSION ' $(EXTRAVERSION);					\
--	echo '#define VERSION_STRING "'$(VERSION).$(PATCHLEVEL).$(EXTRAVERSION)'"';	\
--	echo '#define FILE_VERSION '$(FILE_VERSION);					\
--	) > $1
--endef
+ libs: $(LIBTRACECMD_SHARED) $(LIBTRACEEVENT_SHARED)
+ 
+-$(PLUGIN_OBJS): %.o : $(src)/%.c
+-	$(Q)$(do_compile_plugin_obj)
 -
--define update_version.h
--	($(call make_version.h, $@.tmp);		\
+-$(PLUGINS): %.so: %.o
+-	$(Q)$(do_plugin_build)
++plugins: force $(obj)/plugins/trace_plugin_dir $(obj)/plugins/trace_python_dir
++	$(Q)$(MAKE) -C $(src)/plugins
+ 
+ tc_version.h: force
+ 	$(Q)$(N)$(call update_version.h)
+ 
+-define update_dir
+-	(echo $1 > $@.tmp;	\
 -	if [ -r $@ ] && cmp -s $@ $@.tmp; then		\
 -		rm -f $@.tmp;				\
 -	else						\
@@ -305,184 +184,169 @@ index 2269a96..b6a023a 100644
 -		mv -f $@.tmp $@;			\
 -	fi);
 -endef
++$(obj)/plugins/trace_plugin_dir: force
++	$(Q)$(MAKE) -C $(src)/plugins trace_plugin_dir
+ 
+-trace_plugin_dir: force
+-	$(Q)$(N)$(call update_dir, 'PLUGIN_DIR=$(PLUGIN_DIR)')
++$(obj)/plugins/trace_python_dir: force
++	$(Q)$(MAKE) -C $(src)/plugins trace_python_dir
+ 
+-trace_python_dir: force
+-	$(Q)$(N)$(call update_dir, 'PYTHON_DIR=$(PYTHON_DIR)')
+ 
+ ## make deps
+ 
+@@ -392,28 +369,8 @@ cscope: force
+ 	$(RM) cscope*
+ 	$(call find_tag_files) | cscope -b -q
+ 
+-PLUGINS_INSTALL = $(subst .so,.install,$(PLUGINS)) $(subst .so,.install,$(PYTHON_PLUGINS))
 -
--ks_version.h: force
--	$(Q)$(G)$(call update_version.h)
--
- tc_version.h: force
- 	$(Q)$(N)$(call update_version.h)
- 
-@@ -450,36 +355,15 @@ trace_python_dir: force
- 
- all_objs := $(sort $(ALL_OBJS))
- all_deps := $(all_objs:%.o=.%.d)
--gui_deps := $(gui_objs:%.o=.%.d)
--non_gui_deps = $(filter-out $(gui_deps),$(all_deps))
- 
--define check_gui_deps
--	if [ ! -z "$(filter $(gui_deps),$(@))" ];	then	\
--		if [ $(BUILDGUI) -ne 1 ]; then			\
--			$(REBUILD_GUI);				\
--		else						\
--			$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@;	\
--		fi						\
--	elif [ $(BUILDGUI) -eq 0 ]; then			\
--		$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@;		\
--	else							\
--		echo SKIPPING $@;				\
--	fi;
+-define do_install
+-	$(print_install)				\
+-	if [ ! -d '$(DESTDIR_SQ)$2' ]; then		\
+-		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2';	\
+-	fi;						\
+-	$(INSTALL) $1 '$(DESTDIR_SQ)$2'
 -endef
 -
--$(gui_deps): ks_version.h
--$(non_gui_deps): tc_version.h
-+$(all_deps): tc_version.h
- 
- $(all_deps): .%.d: $(src)/%.c
--	$(Q)$(call check_gui_deps)
-+	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@;
- 
- $(all_objs) : %.o : .%.d
- 
--ifeq ($(BUILDGUI), 1)
--dep_includes := $(wildcard $(gui_deps))
--else
--dep_includes := $(wildcard $(non_gui_deps))
--endif
-+dep_includes := $(wildcard $(all_deps))
- 
- ifneq ($(dep_includes),)
-  include $(dep_includes)
-@@ -489,9 +373,6 @@ show_gui_make:
- 	@echo "Note: to build the gui, type \"make gui\""
- 	@echo "      to build man pages, type \"make doc\""
- 
--show_gui_done:
--	@echo "gui build complete"
+-define do_install_data
+-	$(print_install)				\
+-	if [ ! -d '$(DESTDIR_SQ)$2' ]; then		\
+-		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2';	\
+-	fi;						\
+-	$(INSTALL) -m 644 $1 '$(DESTDIR_SQ)$2'
+-endef
 -
- PHONY += show_gui_make
+-$(PLUGINS_INSTALL): %.install : %.so force
+-	$(Q)$(call do_install_data,$<,$(plugin_dir_SQ))
+-
+-install_plugins: $(PLUGINS_INSTALL)
++install_plugins: force
++	$(Q)$(MAKE) -C $(src)/plugins $@
  
- define find_tag_files
-@@ -559,9 +440,9 @@ install: install_cmd
- 	@echo "      to install man pages, type \"make install_doc\""
- 
- install_gui: install_cmd gui
--	$(Q)$(call do_install,trace-view,$(bindir_SQ))
--	$(Q)$(call do_install,trace-graph,$(bindir_SQ))
--	$(Q)$(call do_install,kernelshark,$(bindir_SQ))
-+	$(Q)$(call do_install,$(obj)/kernel-shark/trace-view,$(bindir_SQ))
-+	$(Q)$(call do_install,$(obj)/kernel-shark/trace-graph,$(bindir_SQ))
-+	$(Q)$(call do_install,$(obj)/kernel-shark/kernelshark,$(bindir_SQ))
- 
- install_libs: libs
- 	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ))
-@@ -583,6 +464,7 @@ clean:
- 	$(RM) tags TAGS cscope*
+ $(PYTHON_SO_INSTALL): %.install : %.so force
+ 	$(Q)$(call do_install_data,$<,$(python_dir_SQ))
+@@ -465,6 +422,7 @@ clean:
  	$(MAKE) -C $(src)/lib/traceevent clean
  	$(MAKE) -C $(src)/lib/trace-cmd clean
-+	$(MAKE) -C $(src)/kernel-shark clean
+ 	$(MAKE) -C $(src)/kernel-shark clean
++	$(MAKE) -C $(src)/plugins clean
  
  
  ##### PYTHON STUFF #####
-@@ -602,10 +484,10 @@ ctracecmd.so: $(TCMD_LIB_OBJS) ctracecmd.i
+@@ -479,6 +437,10 @@ PYTHON_LDFLAGS = `pkg-config --libs $(PYTHON_VERS)` \
+ 		$(shell python2 -c "import distutils.sysconfig; print distutils.sysconfig.get_config_var('LINKFORSHARED')")
+ PYGTK_CFLAGS = `pkg-config --cflags pygtk-2.0`
+ 
++export PYTHON_INCLUDES
++export PYTHON_LDFLAGS
++export PYGTK_CFLAGS
++
+ ctracecmd.so: $(TCMD_LIB_OBJS) ctracecmd.i
+ 	swig -Wall -python -noproxy -I$(src)/include/traceevent -I$(src)/include/trace-cmd ctracecmd.i
  	$(CC) -fpic -c $(CPPFLAGS) $(CFLAGS) $(PYTHON_INCLUDES)  ctracecmd_wrap.c
- 	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so
+@@ -498,21 +460,8 @@ python-gui: $(PYTHON_GUI)
+ PHONY += python-plugin
+ python-plugin: $(PYTHON_PLUGINS)
  
--ctracecmdgui.so: $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC)
-+ctracecmdgui.so: trace-view $(LIBTRACECMD_STATIC)
- 	swig -Wall -python -noproxy -I$(src)/kernel-shark/include ctracecmdgui.i
- 	$(CC) -fpic -c  $(CPPFLAGS) $(CFLAGS) $(INCLUDES) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) ctracecmdgui_wrap.c
--	$(CC) --shared $^ $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so
-+	$(CC) --shared $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC) $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so
- 
- PHONY += python
- python: $(PYTHON)
-@@ -632,8 +514,6 @@ plugin_python.o: %.o : $(src)/%.c trace_python_dir
- plugin_python.so: %.so: %.o
- 	$(Q)$(do_python_plugin_build)
- 
--endif # skip-makefile
+-CFLAGS_plugin_python.o += $(PYTHON_DIR_SQ)
 -
+-do_compile_python_plugin_obj =			\
+-	($(print_plugin_obj_compile)		\
+-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(CFLAGS_$@) $(PYTHON_INCLUDES) -fPIC -o $@ $<)
+-
+-do_python_plugin_build =			\
+-	($(print_plugin_build)			\
+-	$(CC) $< -shared $(LDFLAGS) $(PYTHON_LDFLAGS) -o $@)
+-
+-plugin_python.o: %.o : $(src)/%.c trace_python_dir
+-	$(Q)$(do_compile_python_plugin_obj)
+-
+-plugin_python.so: %.so: %.o
+-	$(Q)$(do_python_plugin_build)
++plugin_python.so: force $(obj)/plugins/trace_python_dir
++	$(Q)$(MAKE) -C $(src)/plugins plugin_python.so
+ 
  dist:
  	git archive --format=tar --prefix=trace-cmd-$(TRACECMD_VERSION)/ HEAD \
- 		> ../trace-cmd-$(TRACECMD_VERSION).tar
-diff --git a/kernel-shark/Makefile b/kernel-shark/Makefile
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index dcb5cd5..e8fb088 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -28,6 +28,8 @@ libtracecmd.so: $(OBJS)
+ %.o: %.c
+ 	$(Q)$(call do_fpic_compile)
+ 
++trace-util.o: $(obj)/plugins/trace_plugin_dir
++
+ $(DEPS): .%.d: %.c
+ 	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
+ 
+diff --git a/plugins/Makefile b/plugins/Makefile
 new file mode 100644
-index 0000000..247f4d1
+index 0000000..7a09b82
 --- /dev/null
-+++ b/kernel-shark/Makefile
-@@ -0,0 +1,84 @@
-+# Kernel Shark version
-+
-+VERSION		= 0
-+PATCHLEVEL	= 2
-+EXTRAVERSION	=
-+KERNELSHARK_VERSION = $(VERSION).$(PATCHLEVEL).$(EXTRAVERSION)
-+
-+BUILDGUI := 1
++++ b/plugins/Makefile
+@@ -0,0 +1,69 @@
 +include $(src)/scripts/utils.mk
 +
++PLUGIN_OBJS =
++PLUGIN_OBJS += plugin_jbd2.o
++PLUGIN_OBJS += plugin_hrtimer.o
++PLUGIN_OBJS += plugin_kmem.o
++PLUGIN_OBJS += plugin_kvm.o
++PLUGIN_OBJS += plugin_mac80211.o
++PLUGIN_OBJS += plugin_sched_switch.o
++PLUGIN_OBJS += plugin_function.o
++PLUGIN_OBJS += plugin_xen.o
++PLUGIN_OBJS += plugin_scsi.o
++PLUGIN_OBJS += plugin_cfg80211.o
++PLUGIN_OBJS += plugin_blk.o
++PLUGIN_OBJS += plugin_tlb.o
 +
-+PACKAGES = gtk+-2.0 libxml-2.0 gthread-2.0
++PLUGINS := $(PLUGIN_OBJS:.o=.so)
++DEPS := $(PLUGIN_OBJS:%.o=.%.d)
 +
-+CONFIG_INCLUDES = $(shell pkg-config --cflags $(PACKAGES)) -I$(obj)
++all: $(PLUGINS)
 +
-+CONFIG_FLAGS = -DBUILDGUI \
-+	-DGTK_VERSION=$(shell pkg-config --modversion gtk+-2.0 | \
-+	awk 'BEGIN{FS="."}{ a = ($$1 * (2^16)) + $$2 * (2^8) + $$3; printf ("%d", a);}')
++$(PLUGIN_OBJS): %.o : %.c
++	$(Q)$(do_compile_plugin_obj)
 +
-+CONFIG_LIBS = $(shell pkg-config --libs $(PACKAGES))
++$(PLUGINS): %.so: %.o
++	$(Q)$(do_plugin_build)
 +
-+CONFIG_FLAGS += $(HELP_DIR_SQ)
-+
-+KS_VERSION := $(obj)/kernel-shark/include/ks_version.h
-+
-+GUI_TARGETS = $(KS_VERSION) trace-graph trace-view kernelshark
-+
-+TRACE_GUI_OBJS = trace-filter.o trace-compat.o trace-filter-hash.o \
-+		 trace-dialog.o trace-xml.o
-+TRACE_VIEW_OBJS = trace-view.o trace-view-store.o
-+TRACE_GRAPH_OBJS = trace-graph.o trace-plot.o trace-plot-cpu.o trace-plot-task.o
-+TRACE_VIEW_MAIN_OBJS = trace-view-main.o $(TRACE_VIEW_OBJS) $(TRACE_GUI_OBJS)
-+TRACE_GRAPH_MAIN_OBJS = trace-graph-main.o $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS)
-+KERNEL_SHARK_OBJS = $(TRACE_VIEW_OBJS) $(TRACE_GRAPH_OBJS) $(TRACE_GUI_OBJS) \
-+	trace-capture.o kernel-shark.o
-+
-+GUI_OBJS = $(KERNEL_SHARK_OBJS) $(TRACE_VIEW_MAIN_OBJS) $(TRACE_GRAPH_MAIN_OBJS)
-+
-+all_objs := $(sort $(GUI_OBJS))
-+all_deps := $(all_objs:%.o=.%.d)
-+
-+# Temporary HACK!
-+# This hack is OK only until the non-gui builds do not have any config_includes
-+# nor config flags. In case they do, keeping this hack might be a problem.
-+override CFLAGS += $(CONFIG_INCLUDES) $(CONFIG_FLAGS)
-+
-+LIBS += -L$(LIBTRACEEVENT_DIR) -L$(LIBTRACECMD_DIR)
-+LIBS += -ltracecmd -ltraceevent -ldl
-+
-+all: $(GUI_TARGETS)
-+
-+$(KS_VERSION): force
-+	$(Q)$(call update_version.h)
-+
-+kernelshark: $(KERNEL_SHARK_OBJS)
-+	$(Q)$(do_app_build)
-+
-+trace-view: $(TRACE_VIEW_MAIN_OBJS)
-+	$(Q)$(do_app_build)
-+
-+trace-graph: $(TRACE_GRAPH_MAIN_OBJS)
-+	$(Q)$(do_app_build)
-+
-+%.o: %.c
-+	$(Q)$(call do_compile)
-+
-+$(all_deps): .%.d: %.c
++$(DEPS): .%.d: %.c
 +	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
 +
-+$(all_deps): $(KS_VERSION)
++$(PLUGIN_OBJS): %.o : .%.d
 +
-+$(GUI_OBJS): %.o : .%.d
++CFLAGS_plugin_python.o += $(PYTHON_DIR_SQ)
++
++plugin_python.o: %.o : %.c trace_python_dir
++	$(Q)$(do_compile_python_plugin_obj)
++
++plugin_python.so: %.so: %.o
++	$(Q)$(do_python_plugin_build)
++
++PLUGINS_INSTALL = $(subst .so,.install,$(PLUGINS)) $(subst .so,.install,$(PYTHON_PLUGINS))
++
++$(PLUGINS_INSTALL): %.install : %.so force
++	$(Q)$(call do_install_data,$<,$(plugin_dir_SQ))
++
++install_plugins: $(PLUGINS_INSTALL)
++
++# The following targets are necessary to trigger a rebuild when $(PLUGIN_DIR)
++# and $(PYTHON_DIR) change. Without them, a full clean build would necessary
++# in order to get the binaries updated.
++
++trace_plugin_dir: force
++	$(Q)$(N)$(call update_dir, 'PLUGIN_DIR=$(PLUGIN_DIR)')
++
++trace_python_dir: force
++	$(Q)$(N)$(call update_dir, 'PYTHON_DIR=$(PYTHON_DIR)')
++
 +
 +dep_includes := $(wildcard $(DEPS))
 +
@@ -491,91 +355,87 @@ index 0000000..247f4d1
 +endif
 +
 +clean:
-+	$(RM) *.a *.so *.o .*.d $(GUI_TARGETS)
++	$(RM) *.a *.so *.o .*.d trace_plugin_dir trace_python_dir
 +
 +force:
-+.PHONY: clean
-diff --git a/kernel-shark.c b/kernel-shark/kernel-shark.c
++.PHONY: clean force
+\ No newline at end of file
+diff --git a/plugin_blk.c b/plugins/plugin_blk.c
 similarity index 100%
-rename from kernel-shark.c
-rename to kernel-shark/kernel-shark.c
-diff --git a/trace-capture.c b/kernel-shark/trace-capture.c
+rename from plugin_blk.c
+rename to plugins/plugin_blk.c
+diff --git a/plugin_cfg80211.c b/plugins/plugin_cfg80211.c
 similarity index 100%
-rename from trace-capture.c
-rename to kernel-shark/trace-capture.c
-diff --git a/trace-compat.c b/kernel-shark/trace-compat.c
+rename from plugin_cfg80211.c
+rename to plugins/plugin_cfg80211.c
+diff --git a/plugin_function.c b/plugins/plugin_function.c
 similarity index 100%
-rename from trace-compat.c
-rename to kernel-shark/trace-compat.c
-diff --git a/trace-dialog.c b/kernel-shark/trace-dialog.c
+rename from plugin_function.c
+rename to plugins/plugin_function.c
+diff --git a/plugin_hrtimer.c b/plugins/plugin_hrtimer.c
 similarity index 100%
-rename from trace-dialog.c
-rename to kernel-shark/trace-dialog.c
-diff --git a/trace-filter-hash.c b/kernel-shark/trace-filter-hash.c
+rename from plugin_hrtimer.c
+rename to plugins/plugin_hrtimer.c
+diff --git a/plugin_jbd2.c b/plugins/plugin_jbd2.c
 similarity index 100%
-rename from trace-filter-hash.c
-rename to kernel-shark/trace-filter-hash.c
-diff --git a/trace-filter.c b/kernel-shark/trace-filter.c
+rename from plugin_jbd2.c
+rename to plugins/plugin_jbd2.c
+diff --git a/plugin_kmem.c b/plugins/plugin_kmem.c
 similarity index 100%
-rename from trace-filter.c
-rename to kernel-shark/trace-filter.c
-diff --git a/trace-graph-main.c b/kernel-shark/trace-graph-main.c
+rename from plugin_kmem.c
+rename to plugins/plugin_kmem.c
+diff --git a/plugin_kvm.c b/plugins/plugin_kvm.c
 similarity index 100%
-rename from trace-graph-main.c
-rename to kernel-shark/trace-graph-main.c
-diff --git a/trace-graph.c b/kernel-shark/trace-graph.c
+rename from plugin_kvm.c
+rename to plugins/plugin_kvm.c
+diff --git a/plugin_mac80211.c b/plugins/plugin_mac80211.c
 similarity index 100%
-rename from trace-graph.c
-rename to kernel-shark/trace-graph.c
-diff --git a/trace-plot-cpu.c b/kernel-shark/trace-plot-cpu.c
+rename from plugin_mac80211.c
+rename to plugins/plugin_mac80211.c
+diff --git a/plugin_python.c b/plugins/plugin_python.c
 similarity index 100%
-rename from trace-plot-cpu.c
-rename to kernel-shark/trace-plot-cpu.c
-diff --git a/trace-plot-task.c b/kernel-shark/trace-plot-task.c
+rename from plugin_python.c
+rename to plugins/plugin_python.c
+diff --git a/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
 similarity index 100%
-rename from trace-plot-task.c
-rename to kernel-shark/trace-plot-task.c
-diff --git a/trace-plot.c b/kernel-shark/trace-plot.c
+rename from plugin_sched_switch.c
+rename to plugins/plugin_sched_switch.c
+diff --git a/plugin_scsi.c b/plugins/plugin_scsi.c
 similarity index 100%
-rename from trace-plot.c
-rename to kernel-shark/trace-plot.c
-diff --git a/trace-view-main.c b/kernel-shark/trace-view-main.c
+rename from plugin_scsi.c
+rename to plugins/plugin_scsi.c
+diff --git a/plugin_tlb.c b/plugins/plugin_tlb.c
 similarity index 100%
-rename from trace-view-main.c
-rename to kernel-shark/trace-view-main.c
-diff --git a/trace-view-store.c b/kernel-shark/trace-view-store.c
+rename from plugin_tlb.c
+rename to plugins/plugin_tlb.c
+diff --git a/plugin_xen.c b/plugins/plugin_xen.c
 similarity index 100%
-rename from trace-view-store.c
-rename to kernel-shark/trace-view-store.c
-diff --git a/trace-view.c b/kernel-shark/trace-view.c
-similarity index 100%
-rename from trace-view.c
-rename to kernel-shark/trace-view.c
-diff --git a/trace-xml.c b/kernel-shark/trace-xml.c
-similarity index 100%
-rename from trace-xml.c
-rename to kernel-shark/trace-xml.c
+rename from plugin_xen.c
+rename to plugins/plugin_xen.c
 diff --git a/scripts/utils.mk b/scripts/utils.mk
-index 39cb387..abfe115 100644
+index abfe115..31fc9e9 100644
 --- a/scripts/utils.mk
 +++ b/scripts/utils.mk
-@@ -62,3 +62,24 @@ do_plugin_build =				\
+@@ -62,6 +62,13 @@ do_plugin_build =				\
  	($(print_plugin_build)			\
  	$(CC) $(CFLAGS) $(LDFLAGS) -shared -nostartfiles -o $@ $<)
  
++do_compile_python_plugin_obj =			\
++	($(print_plugin_obj_compile)		\
++	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(CFLAGS_$@) $(PYTHON_INCLUDES) -fPIC -o $@ $<)
 +
-+define make_version.h
-+	(echo '/* This file is automatically generated. Do not modify. */';		\
-+	echo \#define VERSION_CODE $(shell						\
-+	expr $(VERSION) \* 256 + $(PATCHLEVEL));					\
-+	echo '#define EXTRAVERSION ' $(EXTRAVERSION);					\
-+	echo '#define VERSION_STRING "'$(VERSION).$(PATCHLEVEL).$(EXTRAVERSION)'"';	\
-+	echo '#define FILE_VERSION '$(FILE_VERSION);					\
-+	) > $1
-+endef
-+
-+define update_version.h
-+	($(call make_version.h, $@.tmp);		\
++do_python_plugin_build =			\
++	($(print_plugin_build)			\
++	$(CC) $< -shared $(LDFLAGS) $(PYTHON_LDFLAGS) -o $@)
+ 
+ define make_version.h
+ 	(echo '/* This file is automatically generated. Do not modify. */';		\
+@@ -83,3 +90,28 @@ define update_version.h
+ 	fi);
+ endef
+ 
++define update_dir
++	(echo $1 > $@.tmp;	\
 +	if [ -r $@ ] && cmp -s $@ $@.tmp; then		\
 +		rm -f $@.tmp;				\
 +	else						\
@@ -584,5 +444,20 @@ index 39cb387..abfe115 100644
 +	fi);
 +endef
 +
++define do_install
++	$(print_install)				\
++	if [ ! -d '$(DESTDIR_SQ)$2' ]; then		\
++		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2';	\
++	fi;						\
++	$(INSTALL) $1 '$(DESTDIR_SQ)$2'
++endef
++
++define do_install_data
++	$(print_install)				\
++	if [ ! -d '$(DESTDIR_SQ)$2' ]; then		\
++		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2';	\
++	fi;						\
++	$(INSTALL) -m 644 $1 '$(DESTDIR_SQ)$2'
++endef
 -- 
 2.14.1
