@@ -1,99 +1,53 @@
-Return-Path: linux-trace-devel-owner@vger.kernel.org
-Received: from mail-wr0-f194.google.com ([209.85.128.194]:39175 "EHLO
-        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S933741AbeBMIyD (ORCPT
+Return-Path: <SRS0=1RmU=JB=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-wr0-f193.google.com ([209.85.128.193]:40525 "EHLO
+        mail-wr0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752884AbeFOVZD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 13 Feb 2018 03:54:03 -0500
-Received: by mail-wr0-f194.google.com with SMTP id w77so3319602wrc.6
-        for <linux-trace-devel@vger.kernel.org>; Tue, 13 Feb 2018 00:54:02 -0800 (PST)
-From: "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
+        Fri, 15 Jun 2018 17:25:03 -0400
+Received: by mail-wr0-f193.google.com with SMTP id l41-v6so11159498wre.7
+        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Jun 2018 14:25:03 -0700 (PDT)
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
-        "Vladislav Valtchev (VMware)" <vladislav.valtchev@gmail.com>
-Subject: [PATCH] trace-cmd: virt-server: fix snprintf-related warnings
-Date: Tue, 13 Feb 2018 10:54:07 +0200
-Message-Id: <20180213085407.10660-1-vladislav.valtchev@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 0/4]trace-filter: Detach trace-filter-hash from KS GUI.
+Date: Sat, 16 Jun 2018 00:21:27 +0300
+Message-Id: <20180615212131.28121-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Currently the build of trace-cmd in the virt-server branch produces
-warnings like:
+In this series of patches, the implementation of the trace-filter-hash gets
+detached from the Ker GUI, allowing the tools to be used by an user
+application. This modifications are a preparation for the introduction of the
+Qt-base version of KernelShark. 
 
-- format not a string literal and no format arguments [-Wformat-security]
-- ‘%s’ directive output may be truncated writing up to 255 bytes into a
-  region of size 233 [-Wformat-truncation=]
+Yordan Karadzhov (VMware) (4):
+  trace-cmd: Header files management in trace-hash.h
+  trace-filter: Remove the Gtk dependency in trace-filter-hash.
+  trace-filter: Change the naming convention used in trace-filter-hash
+  trace-filter: Change the hashing function used when filtering
 
-Compiler's concerns are reasonable.
-In particular, the statement at trace-listen.c:1468:
+ include/trace-cmd/trace-hash.h           |   3 -
+ kernel-shark/include/kernel-shark.h      |   4 +-
+ kernel-shark/include/trace-filter-hash.h |  73 +++++++---
+ kernel-shark/include/trace-filter.h      |  12 +-
+ kernel-shark/include/trace-graph.h       |  16 +--
+ kernel-shark/include/trace-view-store.h  |  12 +-
+ kernel-shark/include/trace-view.h        |   4 +-
+ kernel-shark/kernel-shark.c              | 100 +++++++-------
+ kernel-shark/trace-filter-hash.c         | 162 ++++++++++++-----------
+ kernel-shark/trace-filter.c              |  18 +--
+ kernel-shark/trace-graph.c               |  49 +++----
+ kernel-shark/trace-plot-cpu.c            |   1 +
+ kernel-shark/trace-plot-task.c           |   1 +
+ kernel-shark/trace-plot.c                |   1 +
+ kernel-shark/trace-view-main.c           |  22 +--
+ kernel-shark/trace-view-store.c          |  30 ++---
+ kernel-shark/trace-view.c                |   4 +-
+ tracecmd/trace-hist.c                    |   1 +
+ tracecmd/trace-profile.c                 |   2 +
+ tracecmd/trace-read.c                    |   1 +
+ 20 files changed, 278 insertions(+), 238 deletions(-)
 
-	snprintf(un_server->sun_path, strlen(file)+1, file);
-
-Contains two bugs:
-	- it is dangerous to use a string instead of a format string
-	- the 2nd argument should be buffer's size, not the size of the
-	  source string.
-
-The first kind of warnings (2 cases) have been fixed by using strncpy()
-instead of snprintf() [+ the right buffer size].
-
-The second kind of warnings (1 case) instead, appears because of the
-statement:
-
-[trace-listen.c:954]
-
-	snprintf(file_name, NAME_MAX, LIBVIRT_DOMAIN_PATH"%s",
-        	 dirent->d_name);
-
-And has been fixed by using a pair of strcpy() + strncat() with the 'size'
-argument of strncat() being:
-
-	sizeof(file_name) - strlen(LIBVIRT_DOMAIN_PATH) - 1
-
-NOTE: sizeof(file_name) == NAME_MAX.
-Signed-off-by: Vladislav Valtchev (VMware) <vladislav.valtchev@gmail.com>
----
- trace-listen.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/trace-listen.c b/trace-listen.c
-index afe6084..744c6fb 100644
---- a/trace-listen.c
-+++ b/trace-listen.c
-@@ -954,8 +954,12 @@ static char *get_guest_domain_from_pid_libvirt(int pid)
- 	}
- 
- 	for (dirent = readdir(dir); dirent != NULL; dirent = readdir(dir)) {
--		snprintf(file_name, NAME_MAX, LIBVIRT_DOMAIN_PATH"%s",
--			 dirent->d_name);
-+
-+		strcpy(file_name, LIBVIRT_DOMAIN_PATH);
-+		strncat(file_name,
-+			dirent->d_name,
-+			sizeof(file_name) - strlen(LIBVIRT_DOMAIN_PATH) - 1);
-+
- 		file_name_ret = strstr(file_name, ".pid");
- 		if (file_name_ret) {
- 			fd = open(file_name, O_RDONLY);
-@@ -1468,7 +1472,7 @@ static int create_socket(struct sockaddr_un *un_server,
- 		return sfd;
- 
- 	un_server->sun_family = AF_UNIX;
--	snprintf(un_server->sun_path, strlen(file)+1, file);
-+	strncpy(un_server->sun_path, file, sizeof(un_server->sun_path) - 1);
- 
- 	return sfd;
- }
-@@ -2301,7 +2305,7 @@ static int set_up_socket(const char *file)
- 		pdie("socket");
- 
- 	un_server.sun_family = AF_UNIX;
--	snprintf(un_server.sun_path, PATH_MAX, file);
-+	strncpy(un_server.sun_path, file, sizeof(un_server.sun_path) - 1);
- 
- 	if (bind(sfd, (struct sockaddr *)&un_server, slen) < 0)
- 		pdie("bind");
 -- 
-2.14.1
+2.17.1
