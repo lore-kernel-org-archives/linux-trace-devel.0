@@ -1,112 +1,74 @@
-Return-Path: <SRS0=txqx=JE=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:39994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754110AbeFRP2O (ORCPT
+Return-Path: <SRS0=01Tb=JF=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-wm0-f68.google.com ([74.125.82.68]:34130 "EHLO
+        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1757239AbeFSNNr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 18 Jun 2018 11:28:14 -0400
-Date: Mon, 18 Jun 2018 11:28:12 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+        Tue, 19 Jun 2018 09:13:47 -0400
+Received: by mail-wm0-f68.google.com with SMTP id l15-v6so18813071wmc.1
+        for <linux-trace-devel@vger.kernel.org>; Tue, 19 Jun 2018 06:13:47 -0700 (PDT)
+Subject: Re: [PATCH 3/4] trace-filter: Change the naming convention used in
+ trace-filter-hash
+To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 4/4] trace-filter: Change the hashing function used when
- filtering
-Message-ID: <20180618112812.2d566ea8@gandalf.local.home>
-In-Reply-To: <20180615212131.28121-5-y.karadz@gmail.com>
 References: <20180615212131.28121-1-y.karadz@gmail.com>
-        <20180615212131.28121-5-y.karadz@gmail.com>
+ <20180615212131.28121-4-y.karadz@gmail.com>
+ <20180618112427.4a5c318e@gandalf.local.home>
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <71d0f8d4-a3d8-0845-77ed-534206d0f258@gmail.com>
+Date: Tue, 19 Jun 2018 16:13:42 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180618112427.4a5c318e@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Sat, 16 Jun 2018 00:21:31 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+Hi Steve,
 
-> The hashing function used in trace-filter-hash is changed.
-> The new hashing functions is based on the Donald E. Knuth's
-> Multiplicative hashing suggested in his book "The Art of
-> Computer Programming". This improves the performance, but
-> also removes the restrictions resulting  from using the
-> Paul Hsieh's super fast hash, published under the terms of
-> the GPL 2.0 license.
+On 18.06.2018 18:24, Steven Rostedt wrote:
 > 
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  kernel-shark/include/trace-filter-hash.h | 37 +++++++++++++++++++++++-
->  kernel-shark/trace-filter-hash.c         |  6 ++--
->  kernel-shark/trace-graph.c               |  1 +
->  kernel-shark/trace-plot-cpu.c            |  1 +
->  kernel-shark/trace-plot-task.c           |  1 +
->  kernel-shark/trace-plot.c                |  1 +
->  6 files changed, 43 insertions(+), 4 deletions(-)
+> Hi Yordan,
 > 
-> diff --git a/kernel-shark/include/trace-filter-hash.h b/kernel-shark/include/trace-filter-hash.h
-> index 5cc39dc..98c9ab3 100644
-> --- a/kernel-shark/include/trace-filter-hash.h
-> +++ b/kernel-shark/include/trace-filter-hash.h
-> @@ -20,7 +20,7 @@
->  #ifndef _TRACE_FILTER_HASH_H
->  #define _TRACE_FILTER_HASH_H
->  
-> -#include "trace-hash-local.h"
-> +#include <stdint.h>
->  
+> I pulled in the first two patches.
+> 
+> On Sat, 16 Jun 2018 00:21:30 +0300
+> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+> 
+>> trace-filter-hash implements a set of hashing tools, used when
+>> filtering the trace data. So far these tools are used for a task
+>> filtering exploiting the unique Id of the task (pid). The same
+>> instruments can be used by an application for event filtering,
+>> using the unique Id of the trace event. In this patch the naming
+>> convention used in trace-filter-hash is changed, in order to avoid
+>> confusion in the case when the tools are used for event filtering.
+>>
+> 
+> I'm not against this patch, and it makes sense. The change log could
+> use a little improvement though. I had to read it twice to figure out
+> what you were trying to do. What about something like this:
+> 
+> ===
+> The trace-filter-hash code implements a set of hashing utilities for
+> filtering the trace data. Currently, only tasks are filtered with this
+> utility via its pid. To use this tool for filtering other items such as
+> events, a name change is required for the structures and functions
+> used. Instead of using the term "task", use the term "id", which is
+> more generic, and will be less confusing when using the
+> trace-filter-hash for filtering events and such.
+> ===
+> 
 
+Indeed, your version of the log message explains this patch much better.
+Thank you very much!
+Yordan
 
-> diff --git a/kernel-shark/trace-graph.c b/kernel-shark/trace-graph.c
-> index b652297..1aba417 100644
-> --- a/kernel-shark/trace-graph.c
-> +++ b/kernel-shark/trace-graph.c
-> @@ -33,6 +33,7 @@
->  #include "trace-graph.h"
->  #include "trace-filter-hash.h"
->  #include "trace-filter.h"
-> +#include "trace-hash-local.h"
->  #include "trace-gui.h"
->  
->  #include "event-utils.h"
-> diff --git a/kernel-shark/trace-plot-cpu.c b/kernel-shark/trace-plot-cpu.c
-> index 8374809..d2a0523 100644
-> --- a/kernel-shark/trace-plot-cpu.c
-> +++ b/kernel-shark/trace-plot-cpu.c
-> @@ -22,6 +22,7 @@
->  
->  #include "trace-graph.h"
->  #include "trace-local.h"
-> +#include "trace-hash-local.h"
->  #include "cpu.h"
->  
->  struct cpu_plot_info {
-> diff --git a/kernel-shark/trace-plot-task.c b/kernel-shark/trace-plot-task.c
-> index 3b7e81f..c846221 100644
-> --- a/kernel-shark/trace-plot-task.c
-> +++ b/kernel-shark/trace-plot-task.c
-> @@ -23,6 +23,7 @@
->  #include "trace-graph.h"
->  #include "trace-filter.h"
->  #include "trace-local.h"
-> +#include "trace-hash-local.h"
->  
->  #define RED 0xff
->  #define GREEN (0xff<<16)
-> diff --git a/kernel-shark/trace-plot.c b/kernel-shark/trace-plot.c
-> index dc5b3af..bf2cec0 100644
-> --- a/kernel-shark/trace-plot.c
-> +++ b/kernel-shark/trace-plot.c
-> @@ -21,6 +21,7 @@
->  #include <string.h>
->  #include "trace-graph.h"
->  #include "trace-local.h"
-> +#include "trace-hash-local.h"
-
-The change log doesn't explain the header modifications needed here.
-Please include that.
-
-Thanks Yordan!
-
--- Steve
-
->  
->  void trace_graph_plot_free(struct graph_info *ginfo)
->  {
+> Or something similar to the above. Again, the patch is fine, just the
+> change log was hard to understand.
+> 
+> -- Steve
+> 
+> 
+>> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+>> ---
+>>
