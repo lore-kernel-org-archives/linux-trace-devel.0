@@ -1,22 +1,23 @@
 Return-Path: <SRS0=k4No=JM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr0-f194.google.com ([209.85.128.194]:41876 "EHLO
-        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S965359AbeFZOrQ (ORCPT
+Received: from mail-wm0-f68.google.com ([74.125.82.68]:55728 "EHLO
+        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750863AbeFZOvL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Jun 2018 10:47:16 -0400
-Received: by mail-wr0-f194.google.com with SMTP id h10-v6so17536903wrq.8
-        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Jun 2018 07:47:16 -0700 (PDT)
-Subject: Re: [PATCH 3/7] kernel-shark-qt: Add API for loading trace.dat files
+        Tue, 26 Jun 2018 10:51:11 -0400
+Received: by mail-wm0-f68.google.com with SMTP id v16-v6so2300105wmv.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Jun 2018 07:51:11 -0700 (PDT)
+Subject: Re: [PATCH 5/7] kernel-shark-qt: Add a README file to
+ trace-cmd/kernel-shark-qt
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-trace-devel@vger.kernel.org
 References: <20180625150121.14291-1-y.karadz@gmail.com>
- <20180625150121.14291-4-y.karadz@gmail.com>
- <20180625143006.6b2cbad3@gandalf.local.home>
+ <20180625150121.14291-6-y.karadz@gmail.com>
+ <20180625143810.6c1c5189@gandalf.local.home>
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <aaaaab86-51c0-506e-939e-1604274e09fc@gmail.com>
-Date: Tue, 26 Jun 2018 17:47:13 +0300
+Message-ID: <d336e69a-0e95-4cba-d8a5-0756a150b2c2@gmail.com>
+Date: Tue, 26 Jun 2018 17:51:07 +0300
 MIME-Version: 1.0
-In-Reply-To: <20180625143006.6b2cbad3@gandalf.local.home>
+In-Reply-To: <20180625143810.6c1c5189@gandalf.local.home>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -25,61 +26,70 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 
 
-On 25.06.2018 21:30, Steven Rostedt wrote:
->> +/** Linked list of tasks. */
-> Note, the Linux kernel doc way of doing these types of comments is like
-> this:
+On 25.06.2018 21:38, Steven Rostedt wrote:
+> On Mon, 25 Jun 2018 18:01:19 +0300
+> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 > 
-> /**
->   * kshark_task_list - Linked list of tasks
->   * @next:	Pointer to the text task's PID
->   * @pid:	PID of a task.
->   */
+>> +++ b/kernel-shark-qt/README
+>> @@ -0,0 +1,37 @@
+>> +
+>> +This directory contains the new Qt-based version of the KernelShark GUI.
+>> +
+>> +
+>> +Third Party Software:
+>> +------------------------------------------------------------
+>> +The external dependencies:
+>> +1. In order to install the packages on Ubuntu do the following:
+>> +    sudo apt-get install build-essential git cmake -y
+>> +
+>> +2. In order to install the packages on Fedora, as root do the following:
+>> +    dnf install gcc gcc-c++ git cmake -y
+> 
+> I'm not so sure how useful this "third party software" section is. I
+> think it's pretty obvious that gcc, c++ and cmake will be needed.
 > 
 
-If we want to be able to produce Doxygen documentation for the code we 
-have to stick to the Doxygen syntax for comments.
+I would like to have here instructions how to build the code on a 
+default out-of-the-box installation of Ubuntu or Fedora. I agree that it 
+doesn't make sense as it is right now, but it will start making sense 
+when we start adding more and more dependencies.
 
->> +struct kshark_task_list {
->> +	/** Pointer to the next task's PID. */
->> +	struct kshark_task_list	*next;
->> +
->> +	/** PID of a task. */
->> +	int			 pid;
->> +};
->> +
->> +/** Structure representing a kshark session. */
->> +struct kshark_context {
->> +	/** Input handle for the trace data file. */
->> +	struct tracecmd_input	*handle;
->> +
->> +	/** Page event used to parse the page. */
->> +	struct pevent		*pevt;
->> +
->> +	/** List of task's PIDs. */
->> +	struct kshark_task_list	*tasks;
->> +
->> +	/** A mutex, used to protect the access to the input file. */
->> +	pthread_mutex_t input_mutex;
->> +};
->> +
->> +/**
->> + * @brief Initialize a kshark session. This function must be called before calling any
->> + * other kshark function. If the session has been initialized, this function can be used
->> + * to obtain the session's context.
->> + * @param kshark_ctx: Optional input/output location for context pointer. Only valid on
->> + * return true.
->> + * @returns true on success, or false on failure.
-> Looks like you have a different set of commands for the doxygen
-> comments than the kernel uses. Of course, the kernel may be using
-> "kernel doc" format. I'm not an expert on this. But I would prefer to
-> keep it more like what the kernel does.
 > 
-> How hard would it be to switch over?
+>> +
+>> +
+>> +Building:
+>> +------------------------------------------------------------
+>> +1. Follow the instructions given in trace-cmd/README and build
+>> +the original trace-cmd end traceevent libraries.
+>> +
+>> +2. Do:
+>> +    cd kernel-shark-qt/build
+>> +    cmake ../
+>> +    make
+>> +
+>> +2.1 In order to create a Doxygen documentation add -D_DOXYGEN_DOC=1
+>> +as a CMake Command-Line option.
+>> +    cd kernel-shark-qt/build
+>> +    cmake -D_DOXYGEN_DOC=1 ../
+>> +    make
+>> +
+>> +2.2.1 Use "make clean" if you want to delete all already compiled object.
+>> +
+>> +2.2.2 Use the script "cmake_clean.sh" if you want to delete all already
+>> +compiled object and all files generated by CMake.
+>> +
+>> +3. After building the code "kernel-shark-qt/lib" will contain all libraries
+>> +and "kernel-shark-qt/bin" will contain all executables.
+> 
+> Note, after all the code is in the repo, I expect to have the top level
+> Makefile, do all the cmake work for the user.
+> 
 
-I have no experience with "kernel doc", so I have no idea if it will be 
-easy or hard. I can try to investigate, but this will take some time.
-I this the way to go?
+Do you mean, you want to completely remove this README file?
 
 Thanks!
 Yordan
+
+
+> -- Steve
+> 
