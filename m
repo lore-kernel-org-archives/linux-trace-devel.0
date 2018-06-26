@@ -1,52 +1,60 @@
 Return-Path: <SRS0=k4No=JM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:51456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750914AbeFZPS2 (ORCPT
+Received: from mail-wr0-f194.google.com ([209.85.128.194]:38114 "EHLO
+        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751054AbeFZP1B (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Jun 2018 11:18:28 -0400
-Date: Tue, 26 Jun 2018 11:18:26 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+        Tue, 26 Jun 2018 11:27:01 -0400
+Received: by mail-wr0-f194.google.com with SMTP id e18-v6so17697034wrs.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Jun 2018 08:27:01 -0700 (PDT)
+Subject: Re: [PATCH 3/7] kernel-shark-qt: Add API for loading trace.dat files
+To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 5/7] kernel-shark-qt: Add a README file to
- trace-cmd/kernel-shark-qt
-Message-ID: <20180626111826.0a19b441@gandalf.local.home>
-In-Reply-To: <d336e69a-0e95-4cba-d8a5-0756a150b2c2@gmail.com>
 References: <20180625150121.14291-1-y.karadz@gmail.com>
-        <20180625150121.14291-6-y.karadz@gmail.com>
-        <20180625143810.6c1c5189@gandalf.local.home>
-        <d336e69a-0e95-4cba-d8a5-0756a150b2c2@gmail.com>
+ <20180625150121.14291-4-y.karadz@gmail.com>
+ <20180625143006.6b2cbad3@gandalf.local.home>
+ <aaaaab86-51c0-506e-939e-1604274e09fc@gmail.com>
+ <20180626111611.67bae931@gandalf.local.home>
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <c602693b-c352-e670-ab1b-394f603744d5@gmail.com>
+Date: Tue, 26 Jun 2018 18:26:57 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180626111611.67bae931@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 26 Jun 2018 17:51:07 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
 
-> > I'm not so sure how useful this "third party software" section is. I
-> > think it's pretty obvious that gcc, c++ and cmake will be needed.
-> >   
+On 26.06.2018 18:16, Steven Rostedt wrote:
+> On Tue, 26 Jun 2018 17:47:13 +0300
+> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 > 
-> I would like to have here instructions how to build the code on a 
-> default out-of-the-box installation of Ubuntu or Fedora. I agree that it 
-> doesn't make sense as it is right now, but it will start making sense 
-> when we start adding more and more dependencies.
-
-OK, I'm just worried about maintaining it.
-
-> > Note, after all the code is in the repo, I expect to have the top level
-> > Makefile, do all the cmake work for the user.
-> >   
+>>> How hard would it be to switch over?
+>>
+>> I have no experience with "kernel doc", so I have no idea if it will be
+>> easy or hard. I can try to investigate, but this will take some time.
+>> I this the way to go?
 > 
-> Do you mean, you want to completely remove this README file?
+> Doing a search, I found this link:
+> 
+> https://groups.google.com/forum/#!topic/jailhouse-dev/mkfNiU3epaY
+> 
+> It's from Jan Kiszka (you may have met him in Prague. He gave one of
+> the keynotes, and is the author of Jailhouse). Seems he finds
+> kernel-doc limiting, and prefers doxygen. I respect Jan's opinion in
+> this (oh, and he was on the Alps with me too). Let's follow the
+> jailhouse use of doxygen. Would that do?
 > 
 
-We may not need to, if it can still be built separately. But ideally, I
-want people to simply type "make gui" at the top level and it does
-everything (cmake and all). I don't think that will be to difficult to
-implement. I was actually planning on doing the implementation myself.
+OK, great!
+I have been using Doxygen documentation as a user (to learn new 
+libraries) so I feel a bit attached to it. It is really useful. That why 
+I wanted to use Doxygen to document our code.
+Thanks!
+Yordan
 
--- Steve
+
+> -- Steve
+> 
