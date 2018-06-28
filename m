@@ -1,60 +1,79 @@
-Return-Path: <SRS0=k4No=JM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr0-f194.google.com ([209.85.128.194]:38114 "EHLO
-        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751054AbeFZP1B (ORCPT
+Return-Path: <SRS0=5iTX=JO=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-wr0-f196.google.com ([209.85.128.196]:44624 "EHLO
+        mail-wr0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751740AbeF1Qas (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Jun 2018 11:27:01 -0400
-Received: by mail-wr0-f194.google.com with SMTP id e18-v6so17697034wrs.5
-        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Jun 2018 08:27:01 -0700 (PDT)
-Subject: Re: [PATCH 3/7] kernel-shark-qt: Add API for loading trace.dat files
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org
-References: <20180625150121.14291-1-y.karadz@gmail.com>
- <20180625150121.14291-4-y.karadz@gmail.com>
- <20180625143006.6b2cbad3@gandalf.local.home>
- <aaaaab86-51c0-506e-939e-1604274e09fc@gmail.com>
- <20180626111611.67bae931@gandalf.local.home>
+        Thu, 28 Jun 2018 12:30:48 -0400
+Received: by mail-wr0-f196.google.com with SMTP id p12-v6so6138133wrn.11
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Jun 2018 09:30:48 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <c602693b-c352-e670-ab1b-394f603744d5@gmail.com>
-Date: Tue, 26 Jun 2018 18:26:57 +0300
-MIME-Version: 1.0
-In-Reply-To: <20180626111611.67bae931@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v2 0/9] Introduce the basic part of the C API of KS-1.0
+Date: Thu, 28 Jun 2018 19:30:03 +0300
+Message-Id: <20180628163012.21477-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
+This series of patches introduces the first part of the C API used
+by the Qt-based version of KernelShark. This part of the API is
+responsible for loading trace data files and for filtering of this
+data. Examples, demonstrationg the usage of this part of the API are
+added as well.
+
+This is the second version of this series of patches.
+Major changes from v1 are:
+
+[2/9] The Doxygen documentation shows the source code. The huge template
+configuration file is replaced by a short file containing only the
+parameters, having non-default values.
+
+[6/9] This version of the patch contains a number of improvements
+suggested by Steven Rostedt in his review. Thanks Steven!
+
+[8/9] New patch introducing the Advanced filtering. This is a
+sophisticated filtering, based on the content of the trace event.
+
+[9/9] New patche adding an example how to use the Advanced filtering.
 
 
-On 26.06.2018 18:16, Steven Rostedt wrote:
-> On Tue, 26 Jun 2018 17:47:13 +0300
-> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
-> 
->>> How hard would it be to switch over?
->>
->> I have no experience with "kernel doc", so I have no idea if it will be
->> easy or hard. I can try to investigate, but this will take some time.
->> I this the way to go?
-> 
-> Doing a search, I found this link:
-> 
-> https://groups.google.com/forum/#!topic/jailhouse-dev/mkfNiU3epaY
-> 
-> It's from Jan Kiszka (you may have met him in Prague. He gave one of
-> the keynotes, and is the author of Jailhouse). Seems he finds
-> kernel-doc limiting, and prefers doxygen. I respect Jan's opinion in
-> this (oh, and he was on the Alps with me too). Let's follow the
-> jailhouse use of doxygen. Would that do?
-> 
+Yordan Karadzhov (VMware) (9):
+  kernel-shark-qt: Add Cmake build system for the Qt based KernelShark
+  kernel-shark-qt: Automatic generation of doxygen documentation
+  kernel-shark-qt: Add API for loading trace.dat files
+  kernel-shark-qt: Add an example showing how to load trace data
+  kernel-shark-qt: Add a README file to trace-cmd/kernel-shark-qt
+  kernel-shark-qt: Add filtering to the C API of KernelShark
+  kernel-shark-qt: Add an example showing how to filter trace data
+  kernel-shark-qt: Add Advanced filter to the session context.
+  kernel-shark-qt: Add example of advanded filtering
 
-OK, great!
-I have been using Doxygen documentation as a user (to learn new 
-libraries) so I feel a bit attached to it. It is really useful. That why 
-I wanted to use Doxygen to document our code.
-Thanks!
-Yordan
+ kernel-shark-qt/CMakeLists.txt           |  53 ++
+ kernel-shark-qt/README                   |  44 ++
+ kernel-shark-qt/build/FindTraceCmd.cmake |  70 +++
+ kernel-shark-qt/build/cmake_clean.sh     |  11 +
+ kernel-shark-qt/build/deff.h.cmake       |  20 +
+ kernel-shark-qt/doc/dox_config           |  15 +
+ kernel-shark-qt/examples/CMakeLists.txt  |   9 +
+ kernel-shark-qt/examples/datafilter.c    | 148 +++++
+ kernel-shark-qt/examples/dataload.c      |  83 +++
+ kernel-shark-qt/src/CMakeLists.txt       |  13 +
+ kernel-shark-qt/src/libkshark.c          | 654 +++++++++++++++++++++++
+ kernel-shark-qt/src/libkshark.h          | 273 ++++++++++
+ 12 files changed, 1393 insertions(+)
+ create mode 100644 kernel-shark-qt/CMakeLists.txt
+ create mode 100644 kernel-shark-qt/README
+ create mode 100644 kernel-shark-qt/build/FindTraceCmd.cmake
+ create mode 100755 kernel-shark-qt/build/cmake_clean.sh
+ create mode 100644 kernel-shark-qt/build/deff.h.cmake
+ create mode 100644 kernel-shark-qt/doc/dox_config
+ create mode 100644 kernel-shark-qt/examples/CMakeLists.txt
+ create mode 100644 kernel-shark-qt/examples/datafilter.c
+ create mode 100644 kernel-shark-qt/examples/dataload.c
+ create mode 100644 kernel-shark-qt/src/CMakeLists.txt
+ create mode 100644 kernel-shark-qt/src/libkshark.c
+ create mode 100644 kernel-shark-qt/src/libkshark.h
 
-
-> -- Steve
-> 
+-- 
+2.17.1
