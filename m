@@ -1,61 +1,65 @@
 Return-Path: <SRS0=5iTX=JO=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:55880 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:33628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1752178AbeF1X3I (ORCPT
+        id S935624AbeF1Xhz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Jun 2018 19:29:08 -0400
-Date: Thu, 28 Jun 2018 19:29:05 -0400
+        Thu, 28 Jun 2018 19:37:55 -0400
+Date: Thu, 28 Jun 2018 19:37:52 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 6/9] kernel-shark-qt: Add filtering to the C API of
- KernelShark
-Message-ID: <20180628192905.7773b9fa@gandalf.local.home>
-In-Reply-To: <20180628163012.21477-7-y.karadz@gmail.com>
+Subject: Re: [PATCH v2 8/9] kernel-shark-qt: Add Advanced filter to the
+ session context.
+Message-ID: <20180628193752.6cd17bfe@gandalf.local.home>
+In-Reply-To: <20180628163012.21477-9-y.karadz@gmail.com>
 References: <20180628163012.21477-1-y.karadz@gmail.com>
-        <20180628163012.21477-7-y.karadz@gmail.com>
+        <20180628163012.21477-9-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Thu, 28 Jun 2018 19:30:09 +0300
+On Thu, 28 Jun 2018 19:30:11 +0300
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> +static void unset_event_filter_flag(struct kshark_context *kshark_ctx,
-> +				    struct kshark_entry *e)
-> +{
-> +	/*
-> +	 * All entries, filtered-out by the event filters, will be treated
-> +	 * differently, when visualized. Because of this, ignore the value
-> +	 * of the GRAPH_VIEW flag provided by the user via
-> +	 * kshark_ctx->filter_mask and unset the EVENT_VIEW flag.
-> +	 */
-> +	int event_mask = kshark_ctx->filter_mask;
+> @@ -306,9 +315,23 @@ void kshark_filter_entries(struct kshark_context *kshark_ctx,
+>  			   size_t n_entries)
+>  {
+>  	int i;
 
-Just to get you use to Linux kernel coding style. Always add a space
-between the declaration and the code. Even when the declaration has
-code.
+Also add a space here.
 
-There's a few places where this requirement is not strictly forced, but
-we'll discuss that later.
+> +	if (kshark_ctx->advanced_event_filter->filters) {
 
-> +	event_mask &= ~KS_GRAPH_VIEW_FILTER_MASK;
-> +	event_mask |= KS_EVENT_VIEW_FILTER_MASK;
-> +	e->visible &= ~event_mask;
-> +}
+Can this be called with kshark_ctx->advanced_event_filter == NULL?
+
+> +		/*
+> +		 * The advanced filter is set but applying it requires
+> +		 * access to prevent_record, hence the data has to be
+> +		 * reloaded.
+> +		 */
+
+I'm a little confused by the comment above. So if this is called with
+advanced filters, then it is an error?
+
+> +		fprintf(stderr,
+> +			"Failed to filter!\n");
+> +		fprintf(stderr,
+> +			"Reset the Advanced filter or reload the data.\n");
+> +		return;
+> +	}
 > +
-> +void kshark_filter_entries(struct kshark_context *kshark_ctx,
-> +			   struct kshark_entry **data,
-> +			   size_t n_entries)
-> +{
-> +	int i;
+>  	if (!kshark_filter_is_set(kshark_ctx))
+>  		return;
+>  
+> +	/* No need to reload the data. Apply the Id filters. */
 
-Here too, and any other places that has declarations.
+Why is this comment added here? Would it make sense to add it in the
+original patch? Does advanced filters make this different?
 
 -- Steve
 
-> +	if (!kshark_filter_is_set(kshark_ctx))
-> +		return;
-> +
+>  	for (i = 0; i < n_entries; ++i) {
+>  		/* Start with and entry which is visible everywhere. */
+>  		data[i]->visible = 0xFF;
