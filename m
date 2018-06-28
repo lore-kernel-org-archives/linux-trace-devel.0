@@ -1,173 +1,155 @@
 Return-Path: <SRS0=5iTX=JO=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr0-f193.google.com ([209.85.128.193]:41153 "EHLO
-        mail-wr0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754362AbeF1QbO (ORCPT
+Received: from mail-wm0-f65.google.com ([74.125.82.65]:54527 "EHLO
+        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754373AbeF1QbQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Jun 2018 12:31:14 -0400
-Received: by mail-wr0-f193.google.com with SMTP id h10-v6so6136071wrq.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Jun 2018 09:31:13 -0700 (PDT)
+        Thu, 28 Jun 2018 12:31:16 -0400
+Received: by mail-wm0-f65.google.com with SMTP id i139-v6so10356841wmf.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Jun 2018 09:31:15 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 7/9] kernel-shark-qt: Add an example showing how to filter trace data
-Date: Thu, 28 Jun 2018 19:30:10 +0300
-Message-Id: <20180628163012.21477-8-y.karadz@gmail.com>
+Subject: [PATCH v2 8/9] kernel-shark-qt: Add Advanced filter to the session context.
+Date: Thu, 28 Jun 2018 19:30:11 +0300
+Message-Id: <20180628163012.21477-9-y.karadz@gmail.com>
 In-Reply-To: <20180628163012.21477-1-y.karadz@gmail.com>
 References: <20180628163012.21477-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch introduces a basic example, showing how to use the
-C API of KernelShark in order to filter trace data.
+This patch adds to the KernelShark session's context instrumentation
+for sophisticated filtering based on the content of the trace event.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/examples/CMakeLists.txt |   4 +
- kernel-shark-qt/examples/datafilter.c   | 123 ++++++++++++++++++++++++
- 2 files changed, 127 insertions(+)
- create mode 100644 kernel-shark-qt/examples/datafilter.c
+ kernel-shark-qt/src/libkshark.c | 36 ++++++++++++++++++++++++++++++---
+ kernel-shark-qt/src/libkshark.h | 11 +++++++++-
+ 2 files changed, 43 insertions(+), 4 deletions(-)
 
-diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/examples/CMakeLists.txt
-index 98df9d8..009fd1e 100644
---- a/kernel-shark-qt/examples/CMakeLists.txt
-+++ b/kernel-shark-qt/examples/CMakeLists.txt
-@@ -3,3 +3,7 @@ message("\n examples ...")
- message(STATUS "dataload")
- add_executable(dload          dataload.c)
- target_link_libraries(dload   kshark)
+diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
+index 22f82a9..7d70142 100644
+--- a/kernel-shark-qt/src/libkshark.c
++++ b/kernel-shark-qt/src/libkshark.c
+@@ -118,6 +118,9 @@ bool kshark_open(struct kshark_context *kshark_ctx, const char *file)
+ 	kshark_ctx->handle = handle;
+ 	kshark_ctx->pevent = tracecmd_get_pevent(handle);
+ 
++	kshark_ctx->advanced_event_filter =
++		pevent_filter_alloc(kshark_ctx->pevent);
 +
-+message(STATUS "datafilter")
-+add_executable(dfilter          datafilter.c)
-+target_link_libraries(dfilter   kshark)
-diff --git a/kernel-shark-qt/examples/datafilter.c b/kernel-shark-qt/examples/datafilter.c
-new file mode 100644
-index 0000000..e766f3d
---- /dev/null
-+++ b/kernel-shark-qt/examples/datafilter.c
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ */
-+
-+// C
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+// KernelShark
-+#include "libkshark.h"
-+
-+const char *default_file = "trace.dat";
-+
-+int main(int argc, char **argv)
-+{
-+	char *entry_str;
-+	struct kshark_entry **data = NULL;
-+	size_t i, n_rows, count, n_evts;
-+	bool status;
-+	struct kshark_task_list* task;
-+
-+	/* Create a new kshark session. */
-+	struct kshark_context *kshark_ctx = NULL;
-+	if(!kshark_instance(&kshark_ctx))
-+		return 1;
-+
-+	/* Open a trace data file produced by trace-cmd. */
-+	if (argc > 1)
-+		status = kshark_open(kshark_ctx, argv[1]);
-+	else
-+		status = kshark_open(kshark_ctx, default_file);
-+
-+	if (!status) {
-+		kshark_free(kshark_ctx);
-+		return 1;
+ 	/*
+ 	 * Turn off function trace indent and turn on show parent
+ 	 * if possible.
+@@ -134,7 +137,7 @@ void kshark_close(struct kshark_context *kshark_ctx)
+ 		return;
+ 
+ 	/*
+-	 * All Id filters are file specific. Make sure that the Pids and Event Ids
++	 * All filters are file specific. Make sure that the Pids and Event Ids
+ 	 * from this file are not going to be used with another file.
+ 	 */
+ 	tracecmd_filter_id_clear(kshark_ctx->show_task_filter);
+@@ -142,6 +145,12 @@ void kshark_close(struct kshark_context *kshark_ctx)
+ 	tracecmd_filter_id_clear(kshark_ctx->show_event_filter);
+ 	tracecmd_filter_id_clear(kshark_ctx->hide_event_filter);
+ 
++	if (kshark_ctx->advanced_event_filter) {
++		pevent_filter_reset(kshark_ctx->advanced_event_filter);
++		pevent_filter_free(kshark_ctx->advanced_event_filter);
++		kshark_ctx->advanced_event_filter = NULL;
 +	}
 +
-+	/* Load the content of the file into an array of entries. */
-+	n_rows = kshark_load_data_entries(kshark_ctx, &data);
-+
-+	/* Filter the trace data coming from trace-cmd. */
-+	task = kshark_ctx->tasks;
-+	while (task) {
-+		const char *task_str =
-+			pevent_data_comm_from_pid(kshark_ctx->pevent,
-+						  task->pid);
-+
-+		if (strcmp(task_str, "trace-cmd") == 0)
-+			kshark_filter_add_id(kshark_ctx, KS_HIDE_TASK_FILTER,
-+							 task->pid);
-+
-+		task = task->next;
+ 	tracecmd_close(kshark_ctx->handle);
+ 	kshark_ctx->handle = NULL;
+ 	kshark_ctx->pevent = NULL;
+@@ -306,9 +315,23 @@ void kshark_filter_entries(struct kshark_context *kshark_ctx,
+ 			   size_t n_entries)
+ {
+ 	int i;
++	if (kshark_ctx->advanced_event_filter->filters) {
++		/*
++		 * The advanced filter is set but applying it requires
++		 * access to prevent_record, hence the data has to be
++		 * reloaded.
++		 */
++		fprintf(stderr,
++			"Failed to filter!\n");
++		fprintf(stderr,
++			"Reset the Advanced filter or reload the data.\n");
++		return;
 +	}
 +
-+	/*
-+	 * Set the Filter Mask. In this case we want to avoid showing the filterd
-+	 * entris in text format.
+ 	if (!kshark_filter_is_set(kshark_ctx))
+ 		return;
+ 
++	/* No need to reload the data. Apply the Id filters. */
+ 	for (i = 0; i < n_entries; ++i) {
+ 		/* Start with and entry which is visible everywhere. */
+ 		data[i]->visible = 0xFF;
+@@ -353,7 +376,7 @@ size_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+ 				struct kshark_entry ***data_rows)
+ {
+ 	int n_cpus = tracecmd_cpus(kshark_ctx->handle);
+-	int cpu, next_cpu;
++	int cpu, next_cpu, ret;
+ 	size_t count, total = 0;
+ 	uint64_t ts;
+ 	
+@@ -361,6 +384,7 @@ size_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+ 	struct kshark_entry *entry, **next;
+ 	struct kshark_entry **cpu_list, **rows;
+ 	struct kshark_task_list *task;
++	struct event_filter *adv_filter = kshark_ctx->advanced_event_filter;
+ 
+ 	if (*data_rows)
+ 		free(*data_rows);
+@@ -384,8 +408,14 @@ size_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+ 				goto fail;
+ 
+ 			/* Apply event filtering. */
+-			if (!kshark_show_event(kshark_ctx, entry->event_id))
++			ret = FILTER_NONE;
++			if (adv_filter->filters)
++				ret = pevent_filter_match(adv_filter, rec);
++
++			if (!kshark_show_event(kshark_ctx, entry->event_id) ||
++			    ret != FILTER_MATCH) {
+ 				unset_event_filter_flag(kshark_ctx, entry);
++			}
+ 
+ 			/* Apply task filtering. */
+ 			if (!kshark_show_task(kshark_ctx, entry->pid)) {
+diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
+index 2b79bc8..2ec8450 100644
+--- a/kernel-shark-qt/src/libkshark.h
++++ b/kernel-shark-qt/src/libkshark.h
+@@ -103,6 +103,12 @@ struct kshark_context {
+ 	 * have this bit unset in their "visible" fields.
+ 	 */
+ 	uint8_t				filter_mask;
++
++	/**
++	 * Filter allowing sophisticated filtering based on the content of
++	 * the event.
 +	 */
-+	kshark_ctx->filter_mask = KS_TEXT_VIEW_FILTER_MASK;
-+	kshark_filter_entries(kshark_ctx, data, n_rows);
-+
-+	/* Print to the screen the first 10 visible entries. */
-+	count = 0;
-+	i = 0;
-+	for (i = 0; i < n_rows; ++i) {
-+		if (data[i]->visible & KS_TEXT_VIEW_FILTER_MASK) {
-+			entry_str = kshark_dump_entry(data[i]);
-+			puts(entry_str);
-+			free(entry_str);
-+
-+			if (++count > 10)
-+				break;
-+		}
-+
-+		++i;
-+	}
-+
-+	puts("\n\n");
-+
-+	/* Show only "sched" events. */
-+	struct event_format *event;
-+	n_evts = kshark_ctx->pevent->nr_events;
-+	for (i = 0; i < n_evts; ++i) {
-+		event = kshark_ctx->pevent->events[i];
-+		if (strcmp(event->system, "sched") == 0)
-+			kshark_filter_add_id(kshark_ctx, KS_SHOW_EVENT_FILTER,
-+							 event->id);
-+	}
-+
-+	kshark_filter_entries(kshark_ctx, data, n_rows);
-+
-+	/* Print to the screen the first 10 visible entries. */
-+	count = 0;
-+	i = 0;
-+	for (i = 0; i < n_rows; ++i) {
-+		if (data[i]->visible & KS_TEXT_VIEW_FILTER_MASK) {
-+			entry_str = kshark_dump_entry(data[i]);
-+			puts(entry_str);
-+			free(entry_str);
-+
-+			if (++count > 10)
-+				break;
-+		}
-+
-+		++i;
-+	}
-+
-+	/* Free the memory. */
-+	for (i = 0; i < n_rows; ++i)
-+		free(data[i]);
-+
-+	free(data);
-+
-+	/* Close the file. */
-+	kshark_close(kshark_ctx);
-+
-+	/* Close the session. */
-+	kshark_free(kshark_ctx);
-+
-+	return 0;
-+}
++	struct event_filter		*advanced_event_filter;
+ };
+ 
+ /**
+@@ -245,9 +251,12 @@ void kshark_filter_clear(struct kshark_context *kshark_ctx, int filter_id);
+ /**
+  * @brief This function loops over the array of entries specified by "data"
+  * and "n_entries" and sets the "visible" fields of each entry according to
+- * the criteria provided by the filters of the session's context. The field
++ * the criteria provided by the Id filters of the session's context. The field
+  * "filter_mask" of the session's context is used to control the level of
+  * visibility/invisibility of the entries which are filtered-out.
++ * WARNING: Do not use this function if the advanced filter is set. Applying
++ * the advanced filter requires access to prevent_record, hence the data has
++ * to be reloaded using kshark_load_data_entries().
+  * @param kshark_ctx: kshark_ctx: Input location for the session context
+  * pointer.
+  * @param data: Input location for the trace data to be filtered.
 -- 
 2.17.1
