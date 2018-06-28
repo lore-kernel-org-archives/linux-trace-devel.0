@@ -1,161 +1,81 @@
 Return-Path: <SRS0=5iTX=JO=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f68.google.com ([74.125.82.68]:37666 "EHLO
-        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S965000AbeF1QbG (ORCPT
+Received: from mail-wm0-f67.google.com ([74.125.82.67]:54517 "EHLO
+        mail-wm0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754342AbeF1QbJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Jun 2018 12:31:06 -0400
-Received: by mail-wm0-f68.google.com with SMTP id n17-v6so9211212wmh.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Jun 2018 09:31:06 -0700 (PDT)
+        Thu, 28 Jun 2018 12:31:09 -0400
+Received: by mail-wm0-f67.google.com with SMTP id i139-v6so10356456wmf.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Jun 2018 09:31:08 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 4/9] kernel-shark-qt: Add an example showing how to load trace data
-Date: Thu, 28 Jun 2018 19:30:07 +0300
-Message-Id: <20180628163012.21477-5-y.karadz@gmail.com>
+Subject: [PATCH v2 5/9] kernel-shark-qt: Add a README file to trace-cmd/kernel-shark-qt
+Date: Thu, 28 Jun 2018 19:30:08 +0300
+Message-Id: <20180628163012.21477-6-y.karadz@gmail.com>
 In-Reply-To: <20180628163012.21477-1-y.karadz@gmail.com>
 References: <20180628163012.21477-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch introduces a basic example, showing how to use the
-C API of KernelShark and open a new session, load a trace data
-file, produced by trace-cmd, print some data to the screen,
-cleanup and then exit.
+The README file contains instructions for building and using the Qt-based
+version of KernelShark.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/CMakeLists.txt          |  1 +
- kernel-shark-qt/build/cmake_clean.sh    |  1 +
- kernel-shark-qt/examples/CMakeLists.txt |  5 ++
- kernel-shark-qt/examples/dataload.c     | 83 +++++++++++++++++++++++++
- 4 files changed, 90 insertions(+)
- create mode 100644 kernel-shark-qt/examples/CMakeLists.txt
- create mode 100644 kernel-shark-qt/examples/dataload.c
+ kernel-shark-qt/README | 44 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 kernel-shark-qt/README
 
-diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
-index 9929937..9ff12a1 100644
---- a/kernel-shark-qt/CMakeLists.txt
-+++ b/kernel-shark-qt/CMakeLists.txt
-@@ -33,6 +33,7 @@ message(STATUS "CXX flags    : " ${CMAKE_CXX_FLAGS})
- message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS})
- 
- add_subdirectory(${KS_DIR}/src)
-+add_subdirectory(${KS_DIR}/examples)
- 
- if (_DOXYGEN_DOC AND DOXYGEN_FOUND)
- 
-diff --git a/kernel-shark-qt/build/cmake_clean.sh b/kernel-shark-qt/build/cmake_clean.sh
-index 57c40a4..acdbb43 100755
---- a/kernel-shark-qt/build/cmake_clean.sh
-+++ b/kernel-shark-qt/build/cmake_clean.sh
-@@ -4,6 +4,7 @@ rm cmake_install.cmake
- rm Makefile
- rm -rf CMakeFiles/
- rm -rf src/
-+rm -rf examples/
- rm -f ../lib/*
- rm -f ../src/KsDeff.h
- rm -f CMakeDoxyfile.in
-diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/examples/CMakeLists.txt
+diff --git a/kernel-shark-qt/README b/kernel-shark-qt/README
 new file mode 100644
-index 0000000..98df9d8
+index 0000000..6ff77a5
 --- /dev/null
-+++ b/kernel-shark-qt/examples/CMakeLists.txt
-@@ -0,0 +1,5 @@
-+message("\n examples ...")
++++ b/kernel-shark-qt/README
+@@ -0,0 +1,44 @@
 +
-+message(STATUS "dataload")
-+add_executable(dload          dataload.c)
-+target_link_libraries(dload   kshark)
-diff --git a/kernel-shark-qt/examples/dataload.c b/kernel-shark-qt/examples/dataload.c
-new file mode 100644
-index 0000000..5a66765
---- /dev/null
-+++ b/kernel-shark-qt/examples/dataload.c
-@@ -0,0 +1,83 @@
-+// SPDX-License-Identifier: GPL-2.0
++This directory contains the new Qt-based version of the KernelShark GUI.
 +
-+/*
-+ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ */
 +
-+// C
-+#include <stdio.h>
-+#include <stdlib.h>
++Third Party Software:
++------------------------------------------------------------
++The external dependencies:
++1. In order to install the packages on Ubuntu do the following:
++    sudo apt-get install build-essential git cmake -y
 +
-+// KernelShark
-+#include "libkshark.h"
++1.1 I you want to be able to generate Doxygen documentation:
++    sudo apt-get install graphviz doxygen-gui -y
 +
-+const char *default_file = "trace.dat";
 +
-+int main(int argc, char **argv)
-+{
-+	char *entry_str;
-+	struct kshark_entry **data = NULL;
-+	size_t r, n_rows;
-+	bool status;
-+	struct kshark_task_list* task;
++2. In order to install the packages on Fedora, as root do the following:
++    dnf install gcc gcc-c++ git cmake -y
 +
-+	/* Create a new kshark session. */
-+	struct kshark_context *kshark_ctx = NULL;
-+	if(!kshark_instance(&kshark_ctx))
-+		return 1;
++2.1 I you want to be able to generate Doxygen documentation:
++    dnf install graphviz doxygen -y
 +
-+	/* Open a trace data file produced by trace-cmd. */
-+	if (argc > 1)
-+		status = kshark_open(kshark_ctx, argv[1]);
-+	else
-+		status = kshark_open(kshark_ctx, default_file);
 +
-+	if (!status) {
-+		kshark_free(kshark_ctx);
-+		return 1;
-+	}
++Building:
++------------------------------------------------------------
++1. Follow the instructions given in trace-cmd/README and build
++the original trace-cmd end traceevent libraries.
 +
-+	/* Load the content of the file into an array of entries. */
-+	n_rows = kshark_load_data_entries(kshark_ctx, &data);
++2. Do:
++    cd kernel-shark-qt/build
++    cmake ../
++    make
 +
-+	/* Print to the screen the list of all tasks. */
-+	for (task = kshark_ctx->tasks; task; task = task->next) {
-+		const char *task_str =
-+			pevent_data_comm_from_pid(kshark_ctx->pevent,
-+						  task->pid);
++2.1 In order to create a Doxygen documentation add -D_DOXYGEN_DOC=1
++as a CMake Command-Line option.
++    cd kernel-shark-qt/build
++    cmake -D_DOXYGEN_DOC=1 ../
++    make
 +
-+		printf("task: %s-%i\n", task_str, task->pid);
-+	}
++2.2.1 Use "make clean" if you want to delete all already compiled object.
 +
-+	puts("\n\n");
++2.2.2 Use the script "cmake_clean.sh" if you want to delete all already
++compiled object and all files generated by CMake.
 +
-+	/* Print to the screen the first 10 entries. */
-+	for (r = 0; r < 10; ++r) {
-+		entry_str = kshark_dump_entry(data[r]);
-+		puts(entry_str);
-+		free(entry_str);
-+	}
-+
-+	puts("\n...\n");
-+
-+	/* Print the last 10 entries. */
-+	for (r = n_rows - 10; r < n_rows; ++r) {
-+		entry_str = kshark_dump_entry(data[r]);
-+		puts(entry_str);
-+		free(entry_str);
-+	}
-+
-+	/* Free the memory. */
-+	for (r = 0; r < n_rows; ++r)
-+		free(data[r]);
-+
-+	free(data);
-+
-+	/* Close the file. */
-+	kshark_close(kshark_ctx);
-+
-+	/* Close the session. */
-+	kshark_free(kshark_ctx);
-+
-+	return 0;
-+}
++3. After building the code "kernel-shark-qt/lib" will contain all libraries
++and "kernel-shark-qt/bin" will contain all executables.
 -- 
 2.17.1
