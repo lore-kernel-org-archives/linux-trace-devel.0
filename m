@@ -1,174 +1,370 @@
 Return-Path: <SRS0=8H7y=JS=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f68.google.com ([74.125.82.68]:39154 "EHLO
-        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752320AbeGBOFJ (ORCPT
+Received: from mail-wr0-f194.google.com ([209.85.128.194]:42849 "EHLO
+        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752372AbeGBOFI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 2 Jul 2018 10:05:09 -0400
-Received: by mail-wm0-f68.google.com with SMTP id p11-v6so8839366wmc.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Jul 2018 07:05:09 -0700 (PDT)
+        Mon, 2 Jul 2018 10:05:08 -0400
+Received: by mail-wr0-f194.google.com with SMTP id p1-v6so15705883wrs.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Jul 2018 07:05:07 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v4 7/9] kernel-shark-qt: Add an example showing how to filter trace data
-Date: Mon,  2 Jul 2018 17:04:22 +0300
-Message-Id: <20180702140424.23221-7-y.karadz@gmail.com>
+Subject: [PATCH v4 6/9] kernel-shark-qt: Add filtering to the C API of KernelShark
+Date: Mon,  2 Jul 2018 17:04:21 +0300
+Message-Id: <20180702140424.23221-6-y.karadz@gmail.com>
 In-Reply-To: <20180702140424.23221-1-y.karadz@gmail.com>
 References: <20180702140424.23221-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch introduces a basic example, showing how to use the
-C API of KernelShark in order to filter trace data.
+Instruments for trace data filtering are added to the C API of
+the Qt-based version of KernelShark. The following patch will
+introduces an example, demonstrating the usage of this instruments.
+
+This version of the patch contains a number of improvements suggested
+by Steven Rostedt. Thanks Steven!
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/examples/CMakeLists.txt |   4 +
- kernel-shark-qt/examples/datafilter.c   | 124 ++++++++++++++++++++++++
- 2 files changed, 128 insertions(+)
- create mode 100644 kernel-shark-qt/examples/datafilter.c
+ kernel-shark-qt/src/libkshark.c | 178 ++++++++++++++++++++++++++++++++
+ kernel-shark-qt/src/libkshark.h |  79 +++++++++++++-
+ 2 files changed, 256 insertions(+), 1 deletion(-)
 
-diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/examples/CMakeLists.txt
-index 98df9d8..009fd1e 100644
---- a/kernel-shark-qt/examples/CMakeLists.txt
-+++ b/kernel-shark-qt/examples/CMakeLists.txt
-@@ -3,3 +3,7 @@ message("\n examples ...")
- message(STATUS "dataload")
- add_executable(dload          dataload.c)
- target_link_libraries(dload   kshark)
+diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
+index a5349ed..4d86f9c 100644
+--- a/kernel-shark-qt/src/libkshark.c
++++ b/kernel-shark-qt/src/libkshark.c
+@@ -33,6 +33,14 @@ static bool kshark_default_context(struct kshark_context **context)
+ 	if (!kshark_ctx)
+ 		return false;
+ 
++	kshark_ctx->show_task_filter = tracecmd_filter_id_hash_alloc();
++	kshark_ctx->hide_task_filter = tracecmd_filter_id_hash_alloc();
 +
-+message(STATUS "datafilter")
-+add_executable(dfilter          datafilter.c)
-+target_link_libraries(dfilter   kshark)
-diff --git a/kernel-shark-qt/examples/datafilter.c b/kernel-shark-qt/examples/datafilter.c
-new file mode 100644
-index 0000000..e2039ca
---- /dev/null
-+++ b/kernel-shark-qt/examples/datafilter.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0
++	kshark_ctx->show_event_filter = tracecmd_filter_id_hash_alloc();
++	kshark_ctx->hide_event_filter = tracecmd_filter_id_hash_alloc();
 +
-+/*
-+ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ */
++	kshark_ctx->filter_mask = 0x0;
 +
-+// C
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+// KernelShark
-+#include "libkshark.h"
-+
-+const char *default_file = "trace.dat";
-+
-+int main(int argc, char **argv)
-+{
-+	size_t i, n_rows, n_tasks, n_evts, count;
-+	struct kshark_context *kshark_ctx;
-+	struct kshark_entry **data = NULL;
-+	char *entry_str;
-+	bool status;
-+	int *pids;
-+
-+	/* Create a new kshark session. */
-+	kshark_ctx = NULL;
-+	if (!kshark_instance(&kshark_ctx))
-+		return 1;
-+
-+	/* Open a trace data file produced by trace-cmd. */
-+	if (argc > 1)
-+		status = kshark_open(kshark_ctx, argv[1]);
-+	else
-+		status = kshark_open(kshark_ctx, default_file);
-+
-+	if (!status) {
-+		kshark_free(kshark_ctx);
-+		return 1;
-+	}
-+
-+	/* Load the content of the file into an array of entries. */
-+	n_rows = kshark_load_data_entries(kshark_ctx, &data);
-+
-+	/* Filter the trace data coming from trace-cmd. */
-+	n_tasks = kshark_get_task_pids(kshark_ctx, &pids);
-+	for (i = 0; i < n_tasks; ++i) {
-+		const char *task_str =
-+			pevent_data_comm_from_pid(kshark_ctx->pevent,
-+						  pids[i]);
-+
-+		if (strcmp(task_str, "trace-cmd") == 0)
-+			kshark_filter_add_id(kshark_ctx, KS_HIDE_TASK_FILTER,
-+							 pids[i]);
-+	}
-+
-+	free(pids);
-+
+ 	/* Will free kshark_context_handler. */
+ 	kshark_free(NULL);
+ 
+@@ -154,6 +162,15 @@ void kshark_close(struct kshark_context *kshark_ctx)
+ 	if (!kshark_ctx || !kshark_ctx->handle)
+ 		return;
+ 
 +	/*
-+	 * Set the Filter Mask. In this case we want to avoid showing the
-+	 * filterd entris in text format.
++	 * All Id filters are file specific. Make sure that the Pids and Event Ids
++	 * from this file are not going to be used with another file.
 +	 */
-+	kshark_ctx->filter_mask = KS_TEXT_VIEW_FILTER_MASK;
-+	kshark_filter_entries(kshark_ctx, data, n_rows);
++	tracecmd_filter_id_clear(kshark_ctx->show_task_filter);
++	tracecmd_filter_id_clear(kshark_ctx->hide_task_filter);
++	tracecmd_filter_id_clear(kshark_ctx->show_event_filter);
++	tracecmd_filter_id_clear(kshark_ctx->hide_event_filter);
 +
-+	/* Print to the screen the first 10 visible entries. */
-+	count = 0;
-+	i = 0;
-+	for (i = 0; i < n_rows; ++i) {
-+		if (data[i]->visible & KS_TEXT_VIEW_FILTER_MASK) {
-+			entry_str = kshark_dump_entry(data[i]);
-+			puts(entry_str);
-+			free(entry_str);
+ 	tracecmd_close(kshark_ctx->handle);
+ 	kshark_ctx->handle = NULL;
+ 	kshark_ctx->pevent = NULL;
+@@ -179,6 +196,12 @@ void kshark_free(struct kshark_context *kshark_ctx)
+ 		/* kshark_ctx_handler will be set to NULL below. */
+ 	}
+ 
++	tracecmd_filter_id_hash_free(kshark_ctx->show_task_filter);
++	tracecmd_filter_id_hash_free(kshark_ctx->hide_task_filter);
 +
-+			if (++count > 10)
-+				break;
-+		}
++	tracecmd_filter_id_hash_free(kshark_ctx->show_event_filter);
++	tracecmd_filter_id_hash_free(kshark_ctx->hide_event_filter);
 +
-+		++i;
-+	}
-+
-+	puts("\n\n");
-+
-+	/* Show only "sched" events. */
-+	struct event_format *event;
-+	n_evts = kshark_ctx->pevent->nr_events;
-+	for (i = 0; i < n_evts; ++i) {
-+		event = kshark_ctx->pevent->events[i];
-+		if (strcmp(event->system, "sched") == 0)
-+			kshark_filter_add_id(kshark_ctx, KS_SHOW_EVENT_FILTER,
-+							 event->id);
-+	}
-+
-+	kshark_filter_entries(kshark_ctx, data, n_rows);
-+
-+	/* Print to the screen the first 10 visible entries. */
-+	count = 0;
-+	i = 0;
-+	for (i = 0; i < n_rows; ++i) {
-+		if (data[i]->visible & KS_TEXT_VIEW_FILTER_MASK) {
-+			entry_str = kshark_dump_entry(data[i]);
-+			puts(entry_str);
-+			free(entry_str);
-+
-+			if (++count > 10)
-+				break;
-+		}
-+
-+		++i;
-+	}
-+
-+	/* Free the memory. */
-+	for (i = 0; i < n_rows; ++i)
-+		free(data[i]);
-+
-+	free(data);
-+
-+	/* Close the file. */
-+	kshark_close(kshark_ctx);
-+
-+	/* Close the session. */
-+	kshark_free(kshark_ctx);
-+
-+	return 0;
+ 	kshark_free_task_list(kshark_ctx);
+ 
+ 	if (seq.buffer)
+@@ -284,6 +307,148 @@ fail:
+ 	return -ENOMEM;
+ }
+ 
++static bool filter_find(struct tracecmd_filter_id *filter, int pid,
++			bool test)
++{
++	return !filter || !filter->count ||
++		!!(unsigned long)tracecmd_filter_id_find(filter, pid) == test;
 +}
++
++static bool kshark_show_task(struct kshark_context *kshark_ctx, int pid)
++{
++	return filter_find(kshark_ctx->show_task_filter, pid, true) &&
++	       filter_find(kshark_ctx->hide_task_filter, pid, false);
++}
++
++static bool kshark_show_event(struct kshark_context *kshark_ctx, int pid)
++{
++	return filter_find(kshark_ctx->show_event_filter, pid, true) &&
++	       filter_find(kshark_ctx->hide_event_filter, pid, false);
++}
++
++/**
++ * @brief Add an Id value to the filster specified by "filter_id".
++ * @param kshark_ctx: Input location for the session context pointer.
++ * @param filter_id: Identifier of the filter.
++ * @param id: Id value to be added to the filter.
++ */
++void kshark_filter_add_id(struct kshark_context *kshark_ctx,
++			  int filter_id, int id)
++{
++	struct tracecmd_filter_id *filter;
++
++	switch (filter_id) {
++		case KS_SHOW_EVENT_FILTER:
++			filter = kshark_ctx->show_event_filter;
++			break;
++		case KS_HIDE_EVENT_FILTER:
++			filter = kshark_ctx->hide_event_filter;
++			break;
++		case KS_SHOW_TASK_FILTER:
++			filter = kshark_ctx->show_task_filter;
++			break;
++		case KS_HIDE_TASK_FILTER:
++			filter = kshark_ctx->hide_task_filter;
++			break;
++		default:
++			return;
++	}
++
++	tracecmd_filter_id_add(filter, id);
++}
++
++/**
++ * @brief Clear (reset) the filster specified by "filter_id".
++ * @param kshark_ctx: Input location for the session context pointer.
++ * @param filter_id: Identifier of the filter.
++ */
++void kshark_filter_clear(struct kshark_context *kshark_ctx, int filter_id)
++{
++	struct tracecmd_filter_id *filter;
++
++	switch (filter_id) {
++		case KS_SHOW_EVENT_FILTER:
++			filter = kshark_ctx->show_event_filter;
++			break;
++		case KS_HIDE_EVENT_FILTER:
++			filter = kshark_ctx->hide_event_filter;
++			break;
++		case KS_SHOW_TASK_FILTER:
++			filter = kshark_ctx->show_task_filter;
++			break;
++		case KS_HIDE_TASK_FILTER:
++			filter = kshark_ctx->hide_task_filter;
++			break;
++		default:
++			return;
++	}
++
++	tracecmd_filter_id_clear(filter);
++}
++
++static bool filter_is_set(struct tracecmd_filter_id *filter)
++{
++	return filter && filter->count;
++}
++
++static bool kshark_filter_is_set(struct kshark_context *kshark_ctx)
++{
++	return filter_is_set(kshark_ctx->show_task_filter) ||
++	       filter_is_set(kshark_ctx->hide_task_filter) ||
++	       filter_is_set(kshark_ctx->show_event_filter) ||
++	       filter_is_set(kshark_ctx->hide_event_filter);
++}
++
++static void unset_event_filter_flag(struct kshark_context *kshark_ctx,
++				    struct kshark_entry *e)
++{
++	/*
++	 * All entries, filtered-out by the event filters, will be treated
++	 * differently, when visualized. Because of this, ignore the value
++	 * of the GRAPH_VIEW flag provided by the user via
++	 * kshark_ctx->filter_mask and unset the EVENT_VIEW flag.
++	 */
++	int event_mask = kshark_ctx->filter_mask;
++
++	event_mask &= ~KS_GRAPH_VIEW_FILTER_MASK;
++	event_mask |= KS_EVENT_VIEW_FILTER_MASK;
++	e->visible &= ~event_mask;
++}
++
++/**
++ * @brief This function loops over the array of entries specified by "data"
++ *	  and "n_entries" and sets the "visible" fields of each entry
++ *	  according to the criteria provided by the filters of the session's
++ *	  context. The field "filter_mask" of the session's context is used to
++ *	  control the level of visibility/invisibility of the entries which
++ *	  are filtered-out.
++ * @param kshark_ctx: Input location for the session context pointer.
++ * @param data: Input location for the trace data to be filtered.
++ * @param n_entries: The size of the inputted data.
++ */
++void kshark_filter_entries(struct kshark_context *kshark_ctx,
++			   struct kshark_entry **data,
++			   size_t n_entries)
++{
++	int i;
++
++	if (!kshark_filter_is_set(kshark_ctx))
++		return;
++
++	for (i = 0; i < n_entries; ++i) {
++		/* Start with and entry which is visible everywhere. */
++		data[i]->visible = 0xFF;
++
++		/* Apply event filtering. */
++		if (!kshark_show_event(kshark_ctx, data[i]->event_id))
++			unset_event_filter_flag(kshark_ctx, data[i]);
++
++		/* Apply task filtering. */
++		if (!kshark_show_task(kshark_ctx, data[i]->pid))
++			data[i]->visible &= ~kshark_ctx->filter_mask;
++	}
++}
++
+ static void kshark_set_entry_values(struct kshark_context *kshark_ctx,
+ 				    struct pevent_record *record,
+ 				    struct kshark_entry *entry)
+@@ -316,6 +481,10 @@ static void kshark_set_entry_values(struct kshark_context *kshark_ctx,
+  *	  "latency" and the "info" fields can be accessed only via the offset
+  *	  into the file. This makes the access to these two fields much
+  *	  slower.
++ *	  If one or more filters are set, the "visible" fields of each entry
++ *	  is updated according to the criteria provided by the filters. The
++ *	  field "filter_mask" of the session's context is used to control the
++ *	  level of visibility/invisibility of the filtered entries.
+  * @param kshark_ctx: Input location for context pointer.
+  * @param data_rows: Output location for the trace data. The user is
+  *		     responsible for freeing the elements of the outputted
+@@ -356,6 +525,15 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+ 			if (!task)
+ 				goto fail;
+ 
++			/* Apply event filtering. */
++			if (!kshark_show_event(kshark_ctx, entry->event_id))
++				unset_event_filter_flag(kshark_ctx, entry);
++
++			/* Apply task filtering. */
++			if (!kshark_show_task(kshark_ctx, entry->pid)) {
++				entry->visible &= ~kshark_ctx->filter_mask;
++			}
++
+ 			entry->next = NULL;
+ 			next = &entry->next;
+ 			free_record(rec);
+diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
+index b59c94c..dfb1be5 100644
+--- a/kernel-shark-qt/src/libkshark.h
++++ b/kernel-shark-qt/src/libkshark.h
+@@ -22,6 +22,7 @@ extern "C" {
+ 
+ // trace-cmd
+ #include "trace-cmd.h"
++#include "trace-filter-hash.h"
+ #include "event-parse.h"
+ #include "trace-filter-hash.h"
+ 
+@@ -34,7 +35,9 @@ extern "C" {
+ struct kshark_entry {
+ 	/**
+ 	 * A bit mask controlling the visibility of the entry. A value of OxFF
+-	 * would mean that the entry is visible everywhere.
++	 * would mean that the entry is visible everywhere. Use
++	 * kshark_filter_masks to check the level of visibility/invisibility
++	 * of the entry.
+ 	 */
+ 	uint8_t		visible;
+ 
+@@ -87,6 +90,25 @@ struct kshark_context {
+ 
+ 	/** A mutex, used to protect the access to the input file. */
+ 	pthread_mutex_t		input_mutex;
++
++	/** Hash of tasks to filter on. */
++	struct tracecmd_filter_id	*show_task_filter;
++
++	/** Hash of tasks to not display. */
++	struct tracecmd_filter_id	*hide_task_filter;
++
++	/** Hash of events to filter on. */
++	struct tracecmd_filter_id	*show_event_filter;
++
++	/** Hash of events to not display. */
++	struct tracecmd_filter_id	*hide_event_filter;
++
++	/**
++	 * Bit mask, controlling the visibility of the entries after filtering.
++	 * If given bit is set here, all entries which are filtered-out will
++	 * have this bit unset in their "visible" fields.
++	 */
++	uint8_t				filter_mask;
+ };
+ 
+ bool kshark_instance(struct kshark_context **kshark_ctx);
+@@ -107,6 +129,61 @@ void kshark_free(struct kshark_context *kshark_ctx);
+ 
+ char* kshark_dump_entry(struct kshark_entry *entry);
+ 
++/** Bit masks used to control the visibility of the entry after filtering. */
++enum kshark_filter_masks {
++	/**
++	 * Use this mask to check the visibility of the entry in the text
++	 * view.
++	 */
++	KS_TEXT_VIEW_FILTER_MASK	= 1 << 0,
++
++	/**
++	 * Use this mask to check the visibility of the entry in the graph
++	 * view.
++	 */
++	KS_GRAPH_VIEW_FILTER_MASK	= 1 << 1,
++
++	/** Special mask used whene filtering events. */
++	KS_EVENT_VIEW_FILTER_MASK	= 1 << 2,
++};
++
++/** Filter type identifier. */
++enum kshark_filter_type {
++	/** Dummy filter identifier reserved for future use. */
++	KS_NO_FILTER,
++
++	/**
++	 * Identifier of the filter, used to specified the events to be shown.
++	 */
++	KS_SHOW_EVENT_FILTER,
++
++	/**
++	 * Identifier of the filter, used to specified the events to be
++	 * filtered-out.
++	 */
++	KS_HIDE_EVENT_FILTER,
++
++	/**
++	 * Identifier of the filter, used to specified the tasks to be shown.
++	 */
++	KS_SHOW_TASK_FILTER,
++
++	/**
++	 * Identifier of the filter, used to specified the tasks to be
++	 * filtered-out.
++	 */
++	KS_HIDE_TASK_FILTER,
++};
++
++void kshark_filter_add_id(struct kshark_context *kshark_ctx,
++			  int filter_id, int id);
++
++void kshark_filter_clear(struct kshark_context *kshark_ctx, int filter_id);
++
++void kshark_filter_entries(struct kshark_context *kshark_ctx,
++			   struct kshark_entry **data,
++			   size_t n_entries);
++
+ #ifdef __cplusplus
+ }
+ #endif
 -- 
 2.17.1
