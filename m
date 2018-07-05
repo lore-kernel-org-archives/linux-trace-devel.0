@@ -1,59 +1,46 @@
 Return-Path: <SRS0=lN8X=JV=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f68.google.com ([74.125.82.68]:36940 "EHLO
-        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753606AbeGEQJB (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:56988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753677AbeGEQ0C (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 5 Jul 2018 12:09:01 -0400
-Received: by mail-wm0-f68.google.com with SMTP id n17-v6so11852905wmh.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 05 Jul 2018 09:09:01 -0700 (PDT)
+        Thu, 5 Jul 2018 12:26:02 -0400
+Date: Thu, 5 Jul 2018 12:25:59 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org
 Subject: Re: [PATCH 2/3] kernel-shark-qt: Consolidate load_data_entries and
  load_data_records
-From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To: Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org
+Message-ID: <20180705122559.6e7d6efe@gandalf.local.home>
+In-Reply-To: <c76e5486-1431-7a81-63e8-cac67858d5e8@gmail.com>
 References: <20180703162432.316240087@goodmis.org>
- <993cf66c-316a-1b7a-59a6-a5f607476667@gmail.com>
-Message-ID: <c76e5486-1431-7a81-63e8-cac67858d5e8@gmail.com>
-Date: Thu, 5 Jul 2018 19:08:58 +0300
+        <993cf66c-316a-1b7a-59a6-a5f607476667@gmail.com>
+        <c76e5486-1431-7a81-63e8-cac67858d5e8@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <993cf66c-316a-1b7a-59a6-a5f607476667@gmail.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Hi Steve,
-I am still learning how to answer to patches, and I guess because of 
-this you didn't notice my comment at the bottom. I think you have to 
-remove the line
+On Thu, 5 Jul 2018 19:08:58 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-   free_record(rec);
-
-You don't have to send me another patch.
-Thanks!
-Yordan
-
-On  4.07.2018 14:39, Yordan Karadzhov (VMware) wrote:
->>
->> +            rec = rec_list[next_cpu]->rec;
->> +            rows[count] = rec;
->> -        ++count;
->> +            pid = pevent_data_pid(kshark_ctx->pevent, rec);
->> +            task = kshark_add_task(kshark_ctx, pid);
->> +            if (!task)
->> +                goto fail;
->> +
->> +            temp_rec = rec_list[next_cpu];
->> +            rec_list[next_cpu] = rec_list[next_cpu]->next;
->> +            free(temp_rec);
->> +            free_record(rec);
+> Hi Steve,
+> I am still learning how to answer to patches, and I guess because of 
+> this you didn't notice my comment at the bottom. I think you have to 
+> remove the line
 > 
-> You have to free only the element of the list.
-> The user is responsible for freeing the record.
+>    free_record(rec);
+
+My fault, I should have looked further down. This is why I usually
+clean up my replies. By removing functions I'm not commenting on and
+replacing them with: [..]
+
+Even with that said, it was my fault for missing it. Thanks for the
+review.
+
 > 
->> +        }
->>       }
->> -    free(cpu_list);
->> +    free_rec_list(rec_list, n_cpus);
->>       *data_rows = rows; 
+> You don't have to send me another patch.
+
+OK, I'll fix it up and push it out.
+
+-- Steve
