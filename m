@@ -1,206 +1,385 @@
 Return-Path: <SRS0=lN8X=JV=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f66.google.com ([74.125.82.66]:50371 "EHLO
-        mail-wm0-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753264AbeGEPit (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:37666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753992AbeGEPsj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 5 Jul 2018 11:38:49 -0400
-Received: by mail-wm0-f66.google.com with SMTP id v25-v6so12046095wmc.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 05 Jul 2018 08:38:48 -0700 (PDT)
-From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [RFC 3/3] kernel-shark-qt: Add an example showing how to manipulate the Vis. model.
-Date: Thu,  5 Jul 2018 18:37:44 +0300
-Message-Id: <20180705153744.28356-3-y.karadz@gmail.com>
-In-Reply-To: <20180705153744.28356-1-y.karadz@gmail.com>
-References: <20180705153744.28356-1-y.karadz@gmail.com>
+        Thu, 5 Jul 2018 11:48:39 -0400
+Date: Thu, 5 Jul 2018 11:48:36 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 2/3] kernel-shark-qt: Consolidate load_data_entries and
+ load_data_records
+Message-ID: <20180705114836.66605ebc@gandalf.local.home>
+In-Reply-To: <128ec518-fcc1-a807-542d-0e140fdb430f@gmail.com>
+References: <20180703162432.316240087@goodmis.org>
+        <993cf66c-316a-1b7a-59a6-a5f607476667@gmail.com>
+        <20180705104740.188490bb@gandalf.local.home>
+        <128ec518-fcc1-a807-542d-0e140fdb430f@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch introduces a basic example, showing how to initialize the
-Visualization model and to use the API to perform some of the basic
-operations.
+On Thu, 5 Jul 2018 17:53:12 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+> > "This function provides an abstraction of the entries from the raw data
+> > that is read." ?  
+> 
+> Yes,
+
+Here's the new patch:
+
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH] kernel-shark-qt: Consolidate load_data_entries and load_data_records
+
+The two functions kshark_load_data_entries() and
+kshark_load_data_records() contain a lot of similar code. Adding helper
+functions can simplify it, and keep bugs from happening in one and not
+the other (bugs will happen in both! but they will be consistent).
+
+Add some helper functions used by the two functions above.
+
+Note, this does create a performance digression to kshark_load_data_entries().
+Up to 20%! But consolidating the code will make maintaining easier and we
+can add more functions that use the helper functions. Update the comments
+to reflect the slowdown. In the future, we may revisit this to see if
+we can bring back the performance.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel-shark-qt/examples/CMakeLists.txt |   4 +
- kernel-shark-qt/examples/datahisto.c    | 155 ++++++++++++++++++++++++
- 2 files changed, 159 insertions(+)
- create mode 100644 kernel-shark-qt/examples/datahisto.c
+ kernel-shark-qt/src/libkshark.c | 244 ++++++++++++++++++++++++----------------
+ 1 file changed, 147 insertions(+), 97 deletions(-)
 
-diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/examples/CMakeLists.txt
-index 009fd1e..6906eba 100644
---- a/kernel-shark-qt/examples/CMakeLists.txt
-+++ b/kernel-shark-qt/examples/CMakeLists.txt
-@@ -7,3 +7,7 @@ target_link_libraries(dload   kshark)
- message(STATUS "datafilter")
- add_executable(dfilter          datafilter.c)
- target_link_libraries(dfilter   kshark)
+diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
+index e38ddebb..86bd8789 100644
+--- a/kernel-shark-qt/src/libkshark.c
++++ b/kernel-shark-qt/src/libkshark.c
+@@ -500,10 +500,77 @@ static void kshark_set_entry_values(struct kshark_context *kshark_ctx,
+ 	entry->pid = pevent_data_pid(kshark_ctx->pevent, record);
+ }
+ 
++struct rec_list {
++	struct pevent_record	*rec;
++	struct rec_list		*next;
++};
 +
-+message(STATUS "datahisto")
-+add_executable(dhisto          datahisto.c)
-+target_link_libraries(dhisto   kshark)
-diff --git a/kernel-shark-qt/examples/datahisto.c b/kernel-shark-qt/examples/datahisto.c
-new file mode 100644
-index 0000000..1db2b02
---- /dev/null
-+++ b/kernel-shark-qt/examples/datahisto.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ */
-+
-+// C
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+// KernelShark
-+#include "libkshark.h"
-+#include "libkshark-model.h"
-+
-+#define N_BINS 5
-+
-+const char *default_file = "trace.dat";
-+
-+void dump_bin(struct kshark_trace_histo *histo, int bin,
-+	      const char *type, int val)
++static void free_rec_list(struct rec_list **rec_list, int n_cpus)
 +{
-+	const struct kshark_entry *e_front, *e_back;
-+	char *entry_str;
-+	ssize_t i_front, i_back;
++	struct rec_list *temp_rec;
++	int cpu;
 +
-+	printf("bin %i {\n", bin);
-+	if (strcmp(type, "cpu") == 0) {
-+		e_front = ksmodel_get_entry_front(histo, bin, true,
-+						  kshark_check_cpu, val,
-+						  &i_front);
-+
-+		e_back = ksmodel_get_entry_back(histo, bin, true,
-+						kshark_check_cpu, val,
-+						&i_back);
-+	} else if (strcmp(type, "task") == 0) {
-+		e_front = ksmodel_get_entry_front(histo, bin, true,
-+						  kshark_check_pid, val,
-+						  &i_front);
-+
-+		e_back = ksmodel_get_entry_back(histo, bin, true,
-+						kshark_check_pid, val,
-+						&i_back);
-+	} else {
-+		i_front = ksmodel_first_index_at_bin(histo, bin);
-+		e_front = histo->data[i_front];
-+
-+		i_back = ksmodel_last_index_at_bin(histo, bin);
-+		e_back = histo->data[i_back];
++	for (cpu = 0; cpu < n_cpus; ++cpu) {
++		while (rec_list[cpu]) {
++			temp_rec = rec_list[cpu];
++			rec_list[cpu] = temp_rec->next;
++			free(temp_rec);
++		}
 +	}
-+
-+	if (i_front == KS_EMPTY_BIN) {
-+		puts ("EMPTY BIN");
-+	} else {
-+		entry_str = kshark_dump_entry(e_front);
-+		printf("%li -> %s\n", i_front, entry_str);
-+		free(entry_str);
-+
-+		entry_str = kshark_dump_entry(e_back);
-+		printf("%li -> %s\n", i_back, entry_str);
-+		free(entry_str);
-+	}
-+
-+	puts("}\n");
++	free(rec_list);
 +}
 +
-+void dump_histo(struct kshark_trace_histo *histo, const char *type, int val)
++static size_t get_records(struct kshark_context *kshark_ctx,
++			  struct rec_list ***rec_list)
 +{
-+	size_t bin;
++	struct pevent_record *rec;
++	struct rec_list **temp_next;
++	struct rec_list **cpu_list;
++	struct rec_list *temp_rec;
++	size_t count, total = 0;
++	int n_cpus;
++	int cpu;
 +
-+	for (bin = 0; bin < histo->n_bins; ++bin)
-+		dump_bin(histo, bin, type, val);
-+}
++	n_cpus = tracecmd_cpus(kshark_ctx->handle);
++	cpu_list = calloc(n_cpus, sizeof(*cpu_list));
++	if (!cpu_list)
++		return -ENOMEM;
 +
-+int main(int argc, char **argv)
-+{
-+	struct kshark_context *kshark_ctx;
-+	struct kshark_entry **data = NULL;
-+	struct kshark_trace_histo histo;
-+	size_t i, n_rows, n_tasks;
-+	bool status;
-+	int *pids;
++	for (cpu = 0; cpu < n_cpus; ++cpu) {
++		count = 0;
++		cpu_list[cpu] = NULL;
++		temp_next = &cpu_list[cpu];
 +
-+	/* Create a new kshark session. */
-+	kshark_ctx = NULL;
-+	if (!kshark_instance(&kshark_ctx))
-+		return 1;
++		rec = tracecmd_read_cpu_first(kshark_ctx->handle, cpu);
++		while (rec) {
++			*temp_next = temp_rec = malloc(sizeof(*temp_rec));
++			if (!temp_rec)
++				goto fail;
 +
-+	/* Open a trace data file produced by trace-cmd. */
-+	if (argc > 1)
-+		status = kshark_open(kshark_ctx, argv[1]);
-+	else
-+		status = kshark_open(kshark_ctx, default_file);
++			temp_rec->rec = rec;
++			temp_rec->next = NULL;
++			temp_next = &temp_rec->next;
 +
-+	if (!status) {
-+		kshark_free(kshark_ctx);
-+		return 1;
++			++count;
++			rec = tracecmd_read_data(kshark_ctx->handle, cpu);
++		}
++
++		total += count;
 +	}
 +
-+	/* Load the content of the file into an array of entries. */
-+	n_rows = kshark_load_data_entries(kshark_ctx, &data);
++	*rec_list = cpu_list;
++	return total;
 +
-+	/* Get a list of all tasks. */
-+	n_tasks = kshark_get_task_pids(kshark_ctx, &pids);
++ fail:
++	free_rec_list(cpu_list, n_cpus);
++	return -ENOMEM;
++}
 +
-+	/* Initialize the Visualization Model. */
-+	ksmodel_init(&histo);
-+	ksmodel_set_bining(&histo, N_BINS, data[0]->ts,
-+					   data[n_rows - 1]->ts);
-+
-+	/* Fill the model with data and calculate its state. */
-+	ksmodel_fill(&histo, data, n_rows);
-+
-+	/* Dump the raw bins. */
-+	dump_histo(&histo, "", 0);
-+
-+	puts("\n...\n\n");
-+
+ /**
+  * @brief Load the content of the trace data file into an array of
+- *	  kshark_entries. This function provides fast loading, however the
+- *	  "latency" and the "info" fields can be accessed only via the offset
++ *	  kshark_entries. This function provides an abstraction of the
++ *	  entries from the raw data that is read, however the "latency"
++ *	  and the "info" fields can be accessed only via the offset
+  *	  into the file. This makes the access to these two fields much
+  *	  slower.
+  *	  If one or more filters are set, the "visible" fields of each entry
+@@ -521,9 +588,11 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+ 				struct kshark_entry ***data_rows)
+ {
+ 	struct event_filter *adv_filter = kshark_ctx->advanced_event_filter;
+-	struct kshark_entry **cpu_list, **rows;
+-	struct kshark_entry *entry, **next;
+ 	struct kshark_task_list *task;
++	struct kshark_entry **rows;
++	struct kshark_entry *entry;
++	struct rec_list **rec_list;
++	struct rec_list *temp_rec;
+ 	struct pevent_record *rec;
+ 	int cpu, n_cpus, next_cpu;
+ 	size_t count, total = 0;
+@@ -533,24 +602,48 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+ 	if (*data_rows)
+ 		free(*data_rows);
+ 
 +	/*
-+	 * Change the state of the model. Do 50% Zoom-In and dump only CPU 0.
++	 * TODO: Getting the records separately slows this function
++	 *       down, instead of just accessing the records when
++	 *	 setting up the kernel entries. But this keeps the
++	 *	 code simplier. We should revisit to see if we can
++	 *	 bring back the performance.
 +	 */
-+	ksmodel_zoom_in(&histo, .50, -1);
-+	dump_histo(&histo, "cpu", 0);
++	total = get_records(kshark_ctx, &rec_list);
++	if (total < 0)
++		goto fail;
 +
-+	puts("\n...\n\n");
++	rows = calloc(total, sizeof(struct kshark_entry *));
++	if(!rows)
++		goto fail;
 +
-+	/* Shift forward by two bins and this time dump only CPU 1. */
-+	ksmodel_shift_forward(&histo, 2);
-+	dump_histo(&histo, "cpu", 1);
+ 	n_cpus = tracecmd_cpus(kshark_ctx->handle);
+-	cpu_list = calloc(n_cpus, sizeof(struct kshark_entry *));
+ 
+-	for (cpu = 0; cpu < n_cpus; ++cpu) {
+-		count = 0;
+-		cpu_list[cpu] = NULL;
+-		next = &cpu_list[cpu];
++	for (count = 0; count < total; count++) {
++		ts = 0;
++		next_cpu = -1;
++		for (cpu = 0; cpu < n_cpus; ++cpu) {
++			if (!rec_list[cpu])
++				continue;
+ 
+-		rec = tracecmd_read_cpu_first(kshark_ctx->handle, cpu);
+-		while (rec) {
+-			*next = entry = malloc(sizeof(struct kshark_entry));
++			if (!ts || rec_list[cpu]->rec->ts < ts) {
++				ts = rec_list[cpu]->rec->ts;
++				next_cpu = cpu;
++			}
++		}
 +
-+	puts("\n...\n\n");
++		if (next_cpu >= 0) {
++			entry = malloc(sizeof(struct kshark_entry));
+ 			if (!entry)
+-				goto fail;
++				goto fail_free;
 +
-+	/*
-+	 * Do 10% Zoom-Out, using the last bin as a focal point. Dump the last
-+	 * Task.
-+	 */
-+	ksmodel_zoom_out(&histo, .10, N_BINS - 1);
-+	dump_histo(&histo, "task", pids[n_tasks - 1]);
++			rec = rec_list[next_cpu]->rec;
++			rows[count] = entry;
+ 
+ 			kshark_set_entry_values(kshark_ctx, rec, entry);
+ 			task = kshark_add_task(kshark_ctx, entry->pid);
+ 			if (!task)
+-				goto fail;
++				goto fail_free;
+ 
+ 			/* Apply event filtering. */
+ 			ret = FILTER_NONE;
+@@ -567,47 +660,26 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+ 				entry->visible &= ~kshark_ctx->filter_mask;
+ 			}
+ 
+-			entry->next = NULL;
+-			next = &entry->next;
++			temp_rec = rec_list[next_cpu];
++			rec_list[next_cpu] = rec_list[next_cpu]->next;
++			free(temp_rec);
+ 			free_record(rec);
+-
+-			++count;
+-			rec = tracecmd_read_data(kshark_ctx->handle, cpu);
+ 		}
+-
+-		total += count;
+ 	}
+ 
+-	rows = calloc(total, sizeof(struct kshark_entry *));
+-	if (!rows)
+-		goto fail;
+-
+-	count = 0;
+-	while (count < total) {
+-		ts = 0;
+-		next_cpu = -1;
+-		for (cpu = 0; cpu < n_cpus; ++cpu) {
+-			if (!cpu_list[cpu])
+-				continue;
+-
+-			if (!ts || cpu_list[cpu]->ts < ts) {
+-				ts = cpu_list[cpu]->ts;
+-				next_cpu = cpu;
+-			}
+-		}
+-
+-		if (next_cpu >= 0) {
+-			rows[count] = cpu_list[next_cpu];
+-			cpu_list[next_cpu] = cpu_list[next_cpu]->next;
+-		}
+-		++count;
+-	}
+-
+-	free(cpu_list);
++	free_rec_list(rec_list, n_cpus);
+ 	*data_rows = rows;
+ 	return total;
+ 
+-fail:
++ fail_free:
++	free_rec_list(rec_list, n_cpus);
++	for (count = 0; count < total; count++) {
++		if (!rows[count])
++			break;
++		free(rows[count]);
++	}
++	free(rows);
++ fail:
+ 	fprintf(stderr, "Failed to allocate memory during data loading.\n");
+ 	return -ENOMEM;
+ }
+@@ -625,82 +697,60 @@ fail:
+ ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
+ 				struct pevent_record ***data_rows)
+ {
+-	struct temp {
+-		struct pevent_record	*rec;
+-		struct temp		*next;
+-	} **cpu_list, **temp_next, *temp_rec;
+-
+ 	struct kshark_task_list *task;
+ 	struct pevent_record **rows;
+-	struct pevent_record *data;
++	struct pevent_record *rec;
++	struct rec_list **rec_list;
++	struct rec_list *temp_rec;
+ 	int cpu, n_cpus, next_cpu;
+ 	size_t count, total = 0;
+ 	uint64_t ts;
+ 	int pid;
+ 
+-	n_cpus = tracecmd_cpus(kshark_ctx->handle);
+-	cpu_list = calloc(n_cpus, sizeof(struct temp *));
+-
+-	for (cpu = 0; cpu < n_cpus; ++cpu) {
+-		count = 0;
+-		cpu_list[cpu] = NULL;
+-		temp_next = &cpu_list[cpu];
+-
+-		data = tracecmd_read_cpu_first(kshark_ctx->handle, cpu);
+-		while (data) {
+-			*temp_next = temp_rec = malloc(sizeof(*temp_rec));
+-			if (!temp_rec)
+-				goto fail;
+-
+-			pid = pevent_data_pid(kshark_ctx->pevent, data);
+-			task = kshark_add_task(kshark_ctx, pid);
+-			if (!task)
+-				goto fail;
+-
+-			temp_rec->rec = data;
+-			temp_rec->next = NULL;
+-			temp_next = &(temp_rec->next);
+-
+-			++count;
+-			data = tracecmd_read_data(kshark_ctx->handle, cpu);
+-		}
+-
+-		total += count;
+-	}
++	total = get_records(kshark_ctx, &rec_list);
++	if (total < 0)
++		goto fail;
+ 
+ 	rows = calloc(total, sizeof(struct pevent_record *));
+-	if (!rows)
++	if(!rows)
+ 		goto fail;
+ 
+-	count = 0;
+-	while (count < total) {
++	n_cpus = tracecmd_cpus(kshark_ctx->handle);
 +
-+	/* Reset (clear) the model. */
-+	ksmodel_clear(&histo);
++	for (count = 0; count < total; count++) {
+ 		ts = 0;
+ 		next_cpu = -1;
+ 		for (cpu = 0; cpu < n_cpus; ++cpu) {
+-			if (!cpu_list[cpu])
++			if (!rec_list[cpu])
+ 				continue;
+ 
+-			if (!ts || cpu_list[cpu]->rec->ts < ts) {
+-				ts = cpu_list[cpu]->rec->ts;
++			if (!ts || rec_list[cpu]->rec->ts < ts) {
++				ts = rec_list[cpu]->rec->ts;
+ 				next_cpu = cpu;
+ 			}
+ 		}
+ 
+ 		if (next_cpu >= 0) {
+-			rows[count] = cpu_list[next_cpu]->rec;
+-			temp_rec = cpu_list[next_cpu];
+-			cpu_list[next_cpu] = cpu_list[next_cpu]->next;
+-			free (temp_rec);
+-		}
++			rec = rec_list[next_cpu]->rec;
++			rows[count] = rec;
+ 
+-		++count;
++			pid = pevent_data_pid(kshark_ctx->pevent, rec);
++			task = kshark_add_task(kshark_ctx, pid);
++			if (!task)
++				goto fail;
 +
-+	/* Free the memory. */
-+	for (i = 0; i < n_rows; ++i)
-+		free(data[i]);
-+
-+	free(data);
-+
-+	/* Close the file. */
-+	kshark_close(kshark_ctx);
-+
-+	/* Close the session. */
-+	kshark_free(kshark_ctx);
-+
-+	return 0;
-+}
++			temp_rec = rec_list[next_cpu];
++			rec_list[next_cpu] = rec_list[next_cpu]->next;
++			free(temp_rec);
++			free_record(rec);
++		}
+ 	}
+ 
+-	free(cpu_list);
++	free_rec_list(rec_list, n_cpus);
+ 	*data_rows = rows;
+ 	return total;
+ 
+-fail:
++ fail:
+ 	fprintf(stderr, "Failed to allocate memory during data loading.\n");
+ 	return -ENOMEM;
+ }
 -- 
-2.17.1
+2.13.6
