@@ -1,34 +1,45 @@
-Return-Path: <SRS0=W9vN=J2=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:55210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S933796AbeGJQGS (ORCPT
+Return-Path: <SRS0=D2WB=J3=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-wm0-f66.google.com ([74.125.82.66]:39985 "EHLO
+        mail-wm0-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387878AbeGKNmE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 10 Jul 2018 12:06:18 -0400
-Date: Tue, 10 Jul 2018 12:06:16 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] kernel-shark-qt: Make helper functions recognize data
- type to improve performance
-Message-ID: <20180710120616.5c8b1cb3@gandalf.local.home>
-In-Reply-To: <20180710113308.1a4d3eaa@gandalf.local.home>
-References: <20180709123823.695b653a@gandalf.local.home>
-        <57671316-1391-763c-0a9e-1345d8f0deb8@gmail.com>
-        <20180710113308.1a4d3eaa@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Wed, 11 Jul 2018 09:42:04 -0400
+Received: by mail-wm0-f66.google.com with SMTP id z13-v6so2592911wma.5
+        for <linux-trace-devel@vger.kernel.org>; Wed, 11 Jul 2018 06:37:40 -0700 (PDT)
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 1/2] kernel-shark-qt: Deal with the "no tasks" case in kshark_get_task_pids()
+Date: Wed, 11 Jul 2018 16:37:08 +0300
+Message-Id: <20180711133709.26788-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 10 Jul 2018 11:33:08 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+kshark_get_task_pids() should not return a "memory allocation" error
+in the case when it is called before having trace data loaded.
 
-> > 
-> > Please push this a.s.a.p  
-> 
-> Will do. Thanks!
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel-shark-qt/src/libkshark.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Pushed.
-
--- Steve
+diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
+index 668b6df..75b88c9 100644
+--- a/kernel-shark-qt/src/libkshark.c
++++ b/kernel-shark-qt/src/libkshark.c
+@@ -303,6 +303,12 @@ ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int **pids)
+ 		}
+ 	}
+ 
++	if (!pid_count) {
++		free(*pids);
++		*pids = NULL;
++		return pid_count;
++	}
++
+ 	temp_pids = realloc(*pids, pid_count * sizeof(int));
+ 	if (!temp_pids)
+ 		goto fail;
+-- 
+2.17.1
