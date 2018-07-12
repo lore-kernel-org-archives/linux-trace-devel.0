@@ -1,171 +1,222 @@
 Return-Path: <SRS0=efs/=J4=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:55088 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:55396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729331AbeGLOkc (ORCPT
+        id S1727094AbeGLOoA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Jul 2018 10:40:32 -0400
-Date: Thu, 12 Jul 2018 10:30:41 -0400
+        Thu, 12 Jul 2018 10:44:00 -0400
+Date: Thu, 12 Jul 2018 10:34:08 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 2/6] kernel-shark-qt: Introduce the visualization model
- used by the Qt-based KS
-Message-ID: <20180712103041.58f41fed@gandalf.local.home>
-In-Reply-To: <20180711133814.26854-3-y.karadz@gmail.com>
+Subject: Re: [PATCH 3/6] kernel-shark-qt: Add an example showing how to
+ manipulate the Vis. model.
+Message-ID: <20180712103408.0268e3d7@gandalf.local.home>
+In-Reply-To: <20180711133814.26854-4-y.karadz@gmail.com>
 References: <20180711133814.26854-1-y.karadz@gmail.com>
-        <20180711133814.26854-3-y.karadz@gmail.com>
+        <20180711133814.26854-4-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 11 Jul 2018 16:38:10 +0300
+On Wed, 11 Jul 2018 16:38:11 +0300
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-I just noticed these helper functions:
-
-> +static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
-> +				      int bin)
+> This patch introduces a basic example, showing how to initialize the
+> Visualization model and to use the API to perform some of the basic
+> operations.
+> 
+> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+> ---
+>  kernel-shark-qt/examples/CMakeLists.txt |   4 +
+>  kernel-shark-qt/examples/datahisto.c    | 155 ++++++++++++++++++++++++
+>  2 files changed, 159 insertions(+)
+>  create mode 100644 kernel-shark-qt/examples/datahisto.c
+> 
+> diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/examples/CMakeLists.txt
+> index 009fd1e..6906eba 100644
+> --- a/kernel-shark-qt/examples/CMakeLists.txt
+> +++ b/kernel-shark-qt/examples/CMakeLists.txt
+> @@ -7,3 +7,7 @@ target_link_libraries(dload   kshark)
+>  message(STATUS "datafilter")
+>  add_executable(dfilter          datafilter.c)
+>  target_link_libraries(dfilter   kshark)
+> +
+> +message(STATUS "datahisto")
+> +add_executable(dhisto          datahisto.c)
+> +target_link_libraries(dhisto   kshark)
+> diff --git a/kernel-shark-qt/examples/datahisto.c b/kernel-shark-qt/examples/datahisto.c
+> new file mode 100644
+> index 0000000..1db2b02
+> --- /dev/null
+> +++ b/kernel-shark-qt/examples/datahisto.c
+> @@ -0,0 +1,155 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
+> + */
+> +
+> +// C
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +
+> +// KernelShark
+> +#include "libkshark.h"
+> +#include "libkshark-model.h"
+> +
+> +#define N_BINS 5
+> +
+> +const char *default_file = "trace.dat";
+> +
+> +void dump_bin(struct kshark_trace_histo *histo, int bin,
+> +	      const char *type, int val)
 > +{
-> +	return (histo->min + bin*histo->bin_size) * 1e-9;
-> +}
+> +	const struct kshark_entry *e_front, *e_back;
+> +	char *entry_str;
+> +	ssize_t i_front, i_back;
 > +
-> +static inline uint64_t ksmodel_bin_ts(struct kshark_trace_histo *histo,
-> +				      int bin)
-> +{
-> +	return (histo->min + bin*histo->bin_size);
-> +}
+> +	printf("bin %i {\n", bin);
+> +	if (strcmp(type, "cpu") == 0) {
+> +		e_front = ksmodel_get_entry_front(histo, bin, true,
+> +						  kshark_check_cpu, val,
+> +						  &i_front);
 > +
-
-Also, add a space around the '*' between 'bin' and 'histo'.
-
-
-> +static size_t ksmodel_set_lower_edge(struct kshark_trace_histo *histo)
-> +{
-> +	/*
-> +	 * Find the index of the first entry inside
-> +	 * the range (timestamp > min).
-> +	 */
-> +	size_t row = kshark_find_entry_by_time(histo->min,
-> +					       histo->data,
-> +					       0,
-> +					       histo->data_size - 1);
+> +		e_back = ksmodel_get_entry_back(histo, bin, true,
+> +						kshark_check_cpu, val,
+> +						&i_back);
+> +	} else if (strcmp(type, "task") == 0) {
+> +		e_front = ksmodel_get_entry_front(histo, bin, true,
+> +						  kshark_check_pid, val,
+> +						  &i_front);
 > +
-> +	if (row != 0) {
-> +		/*
-> +		 * The first entry inside the range is not the first entry
-> +		 * of the dataset. This means that the Lower Overflow bin
-> +		 * contains data.
-> +		 */
-> +
-> +		/* Lower Overflow bin starts at "0". */
-> +		histo->map[histo->n_bins + 1] = 0;
-> +
-> +		/*
-> +		 * The number of entries inside the Lower Overflow bin is
-> +		 * equal to the index of the first entry inside the range.
-> +		 */
-> +		histo->bin_count[histo->n_bins + 1] = row;
-> +	}  else {
-> +		/*
-> +		 * Lower Overflow bin is empty. The number of entries is
-> +		 * already set to "0".
-> +		 */
-> +		histo->map[histo->n_bins + 1] = KS_EMPTY_BIN;
-> +	}
-> +
-> +	/*
-> +	 * Now check if the first entry inside the range falls into the
-> +	 * first bin.
-> +	 */
-> +	if (histo->data[row]->ts  < histo->min + histo->bin_size) {
+> +		e_back = ksmodel_get_entry_back(histo, bin, true,
+> +						kshark_check_pid, val,
 
-Why not:
+Yeah, I think we need to rename the functions to:
 
-	if (histo->data[row]->ts < ksmodel_bin_ts(histo, 1)) {
+ kshark_match_cpu() and kshark_match_pid()
 
-> +		/*
-> +		 * It is inside the fisrs bin. Set the beginning
-> +		 * of the fisrs bin.
-> +		 */
-> +		histo->map[0] = row;
+
+> +						&i_back);
 > +	} else {
-> +		/* The fisrs bin is empty. */
-> +		histo->map[0] = KS_EMPTY_BIN;
+> +		i_front = ksmodel_first_index_at_bin(histo, bin);
+> +		e_front = histo->data[i_front];
+> +
+> +		i_back = ksmodel_last_index_at_bin(histo, bin);
+> +		e_back = histo->data[i_back];
 > +	}
 > +
-> +	return row;
-> +}
+> +	if (i_front == KS_EMPTY_BIN) {
+> +		puts ("EMPTY BIN");
+> +	} else {
+> +		entry_str = kshark_dump_entry(e_front);
+> +		printf("%li -> %s\n", i_front, entry_str);
+> +		free(entry_str);
 > +
-> +static size_t ksmodel_set_upper_edge(struct kshark_trace_histo *histo)
-> +{
-> +	/*
-> +	 * Find the index of the first entry outside
-> +	 * the range (timestamp > max).
-> +	 */
-> +	size_t row = kshark_find_entry_by_time(histo->max,
-> +					       histo->data,
-> +					       0,
-> +					       histo->data_size - 1);
-> +
-> +	if (row < histo->data_size - 1 ||
-> +	    (row == histo->data_size - 1 &&
-> +	     histo->data[histo->data_size - 1]->ts > histo->max)) {
-> +		/*
-> +		 * The Upper Overflow bin contains data. Set its beginning
-> +		 * and the number of entries.
-> +		 */
-> +		histo->map[histo->n_bins] = row;
-> +		histo->bin_count[histo->n_bins] = histo->data_size - row;
-> +	}  else {
-> +		/*
-> +		 * Upper Overflow bin is empty. The number of entries is
-> +		 * already set to "0".
-> +		 */
-> +		histo->map[histo->n_bins] = KS_EMPTY_BIN;
+> +		entry_str = kshark_dump_entry(e_back);
+> +		printf("%li -> %s\n", i_back, entry_str);
+> +		free(entry_str);
 > +	}
 > +
-> +	return row;
+> +	puts("}\n");
 > +}
 > +
-> +static void ksmodel_set_next_bin_edge(struct kshark_trace_histo *histo,
-> +				      size_t bin)
+> +void dump_histo(struct kshark_trace_histo *histo, const char *type, int val)
 > +{
-> +	size_t time, row, next_bin = bin + 1;
+> +	size_t bin;
 > +
-> +	/* Calculate the beginning of the next bin. */
-> +	time = histo->min + next_bin * histo->bin_size;
+> +	for (bin = 0; bin < histo->n_bins; ++bin)
+> +		dump_bin(histo, bin, type, val);
+> +}
+> +
+> +int main(int argc, char **argv)
+> +{
+> +	struct kshark_context *kshark_ctx;
+> +	struct kshark_entry **data = NULL;
+> +	struct kshark_trace_histo histo;
+> +	size_t i, n_rows, n_tasks;
+> +	bool status;
+> +	int *pids;
 
-	time = ksmodel_bin_ts(histo, next_bin);
+See how nice the upside-down-xmas tree format looks :-)
+
+The rest of this patch looks fine.
 
 -- Steve
 
 > +
-> +	/*
-> +	 * Find the index of the first entry inside
-> +	 * the next bin (timestamp > time).
-> +	 */
-> +	row = kshark_find_entry_by_time(time,histo->data, 0,
-> +					histo->data_size - 1);
+> +	/* Create a new kshark session. */
+> +	kshark_ctx = NULL;
+> +	if (!kshark_instance(&kshark_ctx))
+> +		return 1;
 > +
-> +	/*
-> +	 * The timestamp of the very last entry of the dataset can be exactly
-> +	 * equal to the value of the upper edge of the range. This is very
-> +	 * likely to happen when we use ksmodel_set_in_range_bining(). In this
-> +	 * case we have to increase the size of the very last bin in order to
-> +	 * make sure that the last entry of the dataset will fall into it.
-> +	 */
-> +	if (next_bin == histo->n_bins - 1)
-> +		++time;
+> +	/* Open a trace data file produced by trace-cmd. */
+> +	if (argc > 1)
+> +		status = kshark_open(kshark_ctx, argv[1]);
+> +	else
+> +		status = kshark_open(kshark_ctx, default_file);
 > +
-> +	if (histo->data[row]->ts  >= time + histo->bin_size) {
-> +		/* The bin is empty. */
-> +		histo->map[next_bin] = KS_EMPTY_BIN;
-> +		return;
+> +	if (!status) {
+> +		kshark_free(kshark_ctx);
+> +		return 1;
 > +	}
 > +
-> +	/* Set the index of the first entry. */
-> +	histo->map[next_bin] = row;
-> +}
+> +	/* Load the content of the file into an array of entries. */
+> +	n_rows = kshark_load_data_entries(kshark_ctx, &data);
 > +
+> +	/* Get a list of all tasks. */
+> +	n_tasks = kshark_get_task_pids(kshark_ctx, &pids);
+> +
+> +	/* Initialize the Visualization Model. */
+> +	ksmodel_init(&histo);
+> +	ksmodel_set_bining(&histo, N_BINS, data[0]->ts,
+> +					   data[n_rows - 1]->ts);
+> +
+> +	/* Fill the model with data and calculate its state. */
+> +	ksmodel_fill(&histo, data, n_rows);
+> +
+> +	/* Dump the raw bins. */
+> +	dump_histo(&histo, "", 0);
+> +
+> +	puts("\n...\n\n");
+> +
+> +	/*
+> +	 * Change the state of the model. Do 50% Zoom-In and dump only CPU 0.
+> +	 */
+> +	ksmodel_zoom_in(&histo, .50, -1);
+> +	dump_histo(&histo, "cpu", 0);
+> +
+> +	puts("\n...\n\n");
+> +
+> +	/* Shift forward by two bins and this time dump only CPU 1. */
+> +	ksmodel_shift_forward(&histo, 2);
+> +	dump_histo(&histo, "cpu", 1);
+> +
+> +	puts("\n...\n\n");
+> +
+> +	/*
+> +	 * Do 10% Zoom-Out, using the last bin as a focal point. Dump the last
+> +	 * Task.
+> +	 */
+> +	ksmodel_zoom_out(&histo, .10, N_BINS - 1);
+> +	dump_histo(&histo, "task", pids[n_tasks - 1]);
+> +
+> +	/* Reset (clear) the model. */
+> +	ksmodel_clear(&histo);
+> +
+> +	/* Free the memory. */
+> +	for (i = 0; i < n_rows; ++i)
+> +		free(data[i]);
+> +
+> +	free(data);
+> +
+> +	/* Close the file. */
+> +	kshark_close(kshark_ctx);
+> +
+> +	/* Close the session. */
+> +	kshark_free(kshark_ctx);
+> +
+> +	return 0;
+> +}
