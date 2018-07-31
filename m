@@ -1,60 +1,56 @@
 Return-Path: <SRS0=gflo=KP=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f68.google.com ([74.125.82.68]:52631 "EHLO
-        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732160AbeGaPdo (ORCPT
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:35981 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732127AbeGaPd5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 31 Jul 2018 11:33:44 -0400
-Received: by mail-wm0-f68.google.com with SMTP id o11-v6so3170037wmh.2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 31 Jul 2018 06:53:18 -0700 (PDT)
+        Tue, 31 Jul 2018 11:33:57 -0400
+Received: by mail-wr1-f65.google.com with SMTP id h9-v6so16771451wro.3
+        for <linux-trace-devel@vger.kernel.org>; Tue, 31 Jul 2018 06:53:31 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 0/7]  Add visualization model for the Qt-based KernelShark
-Date: Tue, 31 Jul 2018 16:52:41 +0300
-Message-Id: <20180731135248.30587-1-y.karadz@gmail.com>
+Subject: [PATCH v2 1/7] kernel-shark-qt: Change the type of the fields in struct kshark_entry
+Date: Tue, 31 Jul 2018 16:52:42 +0300
+Message-Id: <20180731135248.30587-2-y.karadz@gmail.com>
+In-Reply-To: <20180731135248.30587-1-y.karadz@gmail.com>
+References: <20180731135248.30587-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This series of patches introduces the second part of the C API used by
-the Qt-based version of KernelShark. This part of the API is responsible
-for the visual navigation and browsing inside the trace data.
+This patch aims to increase the max value limits of the "pid" and
+"cpu" fields of struct kshark_entry. The type of the "visible" is
+changed as well, but this is done just to provide optimal packing.
 
-This is the second version of this series of patches.
-Major changes from v1 are:
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel-shark-qt/src/libkshark.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-[1/7] New patch. Changes the type of the fields of struct kshark_entry.
-
-[2/7], [3/7] and [5/7 ] This version of the patchs contains a number of
-improvements suggested by Steven Rostedt in his review. Thanks Steven!
-
-
-Yordan Karadzhov (VMware) (7):
-  kernel-shark-qt: Change the type of the fields in struct kshark_entry
-  kernel-shark-qt: Add generic instruments for searching inside the
-    trace data
-  kernel-shark-qt: Introduce the visualization model used by the
-    Qt-based KS
-  kernel-shark-qt: Add an example showing how to manipulate the Vis.
-    model.
-  kernel-shark-qt: Define Data collections
-  kernel-shark-qt: Make the Vis. model use Data collections.
-  kernel-shark-qt: Changed the KernelShark version identifier.
-
- kernel-shark-qt/CMakeLists.txt             |    2 +-
- kernel-shark-qt/examples/CMakeLists.txt    |    4 +
- kernel-shark-qt/examples/datahisto.c       |  159 +++
- kernel-shark-qt/src/CMakeLists.txt         |    4 +-
- kernel-shark-qt/src/libkshark-collection.c |  828 ++++++++++++++
- kernel-shark-qt/src/libkshark-model.c      | 1174 ++++++++++++++++++++
- kernel-shark-qt/src/libkshark-model.h      |  152 +++
- kernel-shark-qt/src/libkshark.c            |  250 ++++-
- kernel-shark-qt/src/libkshark.h            |  173 ++-
- 9 files changed, 2738 insertions(+), 8 deletions(-)
- create mode 100644 kernel-shark-qt/examples/datahisto.c
- create mode 100644 kernel-shark-qt/src/libkshark-collection.c
- create mode 100644 kernel-shark-qt/src/libkshark-model.c
- create mode 100644 kernel-shark-qt/src/libkshark-model.h
-
+diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
+index 2e26552..0ad31c0 100644
+--- a/kernel-shark-qt/src/libkshark.h
++++ b/kernel-shark-qt/src/libkshark.h
+@@ -42,16 +42,16 @@ struct kshark_entry {
+ 	 * kshark_filter_masks to check the level of visibility/invisibility
+ 	 * of the entry.
+ 	 */
+-	uint8_t		visible;
++	uint16_t	visible;
+ 
+ 	/** The CPU core of the record. */
+-	uint8_t		cpu;
++	int16_t		cpu;
+ 
+ 	/** The PID of the task the record was generated. */
+-	int16_t		pid;
++	int32_t		pid;
+ 
+ 	/** Unique Id ot the trace event type. */
+-	int		event_id;
++	int32_t		event_id;
+ 
+ 	/** The offset into the trace file, used to find the record. */
+ 	uint64_t	offset;
 -- 
 2.17.1
