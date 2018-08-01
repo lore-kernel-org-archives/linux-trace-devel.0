@@ -1,299 +1,87 @@
 Return-Path: <SRS0=FUMn=KQ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:36300 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732901AbeHAD01 (ORCPT
+Received: from mail-wm0-f68.google.com ([74.125.82.68]:37802 "EHLO
+        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730355AbeHAO17 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 31 Jul 2018 23:26:27 -0400
-Date: Tue, 31 Jul 2018 21:43:19 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] kernel-shark-qt: Introduce the visualization
- model used by the Qt-based KS
-Message-ID: <20180731214319.060378be@gandalf.local.home>
-In-Reply-To: <20180731135248.30587-4-y.karadz@gmail.com>
-References: <20180731135248.30587-1-y.karadz@gmail.com>
-        <20180731135248.30587-4-y.karadz@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Wed, 1 Aug 2018 10:27:59 -0400
+Received: by mail-wm0-f68.google.com with SMTP id n11-v6so6871181wmc.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 01 Aug 2018 05:42:21 -0700 (PDT)
+From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org,
+        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Subject: [PATCH 00/24] Rename variables, data structures and functions in libtraceevent
+Date: Wed,  1 Aug 2018 15:41:32 +0300
+Message-Id: <20180801124156.20894-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 31 Jul 2018 16:52:44 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+In order to make libtraceevent into a proper library, variables, data
+structures and functions require a unique prefix to prevent name space
+conflicts. That prefix will be "tep_" and not "pevent_". 
+This series of patches perform the renaming. 
 
-> +static void ksmodel_set_next_bin_edge(struct kshark_trace_histo *histo,
-> +				      size_t bin)
-> +{
-> +	size_t time, row, next_bin = bin + 1;
-> +
-> +	/* Calculate the beginning of the next bin. */
-> +	time = histo->min + next_bin * histo->bin_size;
-> +
-> +	/*
-> +	 * Find the index of the first entry inside
-> +	 * the next bin (timestamp > time).
-> +	 */
-> +	row = kshark_find_entry_by_time(time, histo->data, 0,
-> +					histo->data_size - 1);
+Tzvetomir Stoyanov (VMware) (24):
+  tools/lib/traceevent, tools/perf: Rename struct pevent
+  tools/lib/traceevent, tools/perf: Rename struct pevent_record
+  tools/lib/traceevent, tools/perf: Rename pevent plugin related APIs
+  tools/lib/traceevent, tools/perf: Rename pevent alloc / free APIs
+  tools/lib/traceevent, tools/perf: Rename pevent find APIs
+  tools/lib/traceevent, tools/perf: Rename pevent parse APIs
+  tools/lib/traceevent, tools/perf: Rename pevent print APIs
+  tools/lib/traceevent, tools/perf: Rename pevent_read_number_* APIs
+  tools/lib/traceevent, tools/perf: Rename pevent_register_* APIs
+  tools/lib/traceevent, tools/perf: Rename pevent_set_* APIs
+  tools/lib/traceevent, tools/perf: Rename traceevent_* APIs
+  tools/lib/traceevent, tools/perf: Rename enum pevent_flag
+  tools/lib/traceevent, tools/lib/lockdep/: Rename enunm pevent_errno
+  tools/lib/traceevent: Rename pevent_function* APIs
+  tools/lib/traceevent, tools/perf: Rename traceevent_* APIs
+  tools/lib/traceevent: Rename pevent_filter* APIs
+  tools/lib/traceevent: Rename pevent_register / unregister APIs
+  tools/lib/traceevent: Rename pevent_data_ APIs
+  tools/lib/traceevent: Rename pevent filed APIs
+  tools/lib/traceevent: Rename pevent_find_* APIs
+  tools/lib/traceevent: Rename various pevent get/set/is APIs
+  tools/lib/traceevent: Rename internal parser related APIs
+  tools/lib/traceevent: Rename various pevent APIs
+  tools/lib/traceevent: Rename static variables and functions in
+    event-parse.c
 
-Hmm, I see this used as this:
+ tools/lib/lockdep/Makefile                    |   4 +-
+ tools/lib/traceevent/Makefile                 |   4 +-
+ tools/lib/traceevent/event-parse.c            | 606 +++++++++---------
+ tools/lib/traceevent/event-parse.h            | 366 +++++------
+ tools/lib/traceevent/event-plugin.c           |  66 +-
+ tools/lib/traceevent/parse-filter.c           | 270 ++++----
+ tools/lib/traceevent/plugin_cfg80211.c        |  14 +-
+ tools/lib/traceevent/plugin_function.c        |  30 +-
+ tools/lib/traceevent/plugin_hrtimer.c         |  34 +-
+ tools/lib/traceevent/plugin_jbd2.c            |  24 +-
+ tools/lib/traceevent/plugin_kmem.c            |  38 +-
+ tools/lib/traceevent/plugin_kvm.c             | 110 ++--
+ tools/lib/traceevent/plugin_mac80211.c        |  20 +-
+ tools/lib/traceevent/plugin_sched_switch.c    |  48 +-
+ tools/lib/traceevent/plugin_scsi.c            |  18 +-
+ tools/lib/traceevent/plugin_xen.c             |  14 +-
+ tools/perf/builtin-kmem.c                     |   6 +-
+ tools/perf/builtin-report.c                   |   2 +-
+ tools/perf/builtin-script.c                   |   2 +-
+ tools/perf/util/data-convert-bt.c             |   4 +-
+ tools/perf/util/evsel.c                       |   2 +-
+ tools/perf/util/header.c                      |   6 +-
+ tools/perf/util/machine.h                     |   2 +-
+ tools/perf/util/python.c                      |   8 +-
+ .../util/scripting-engines/trace-event-perl.c |   2 +-
+ .../scripting-engines/trace-event-python.c    |   4 +-
+ tools/perf/util/sort.c                        |  14 +-
+ tools/perf/util/sort.h                        |   2 +-
+ tools/perf/util/trace-event-parse.c           |  34 +-
+ tools/perf/util/trace-event-read.c            |  42 +-
+ tools/perf/util/trace-event-scripting.c       |   4 +-
+ tools/perf/util/trace-event.c                 |  28 +-
+ tools/perf/util/trace-event.h                 |  20 +-
+ 33 files changed, 924 insertions(+), 924 deletions(-)
 
-       for (bin = 0; bin < histo->n_bins; ++bin)
-               ksmodel_set_next_bin_edge(histo, bin);
-
-A lot. Thus we should be able to optimize this with:
-
-static void ksmodel_set_next_bin_edge(struct kshark_trace_histo *histo,
-				size_t bin, size_t *last_row)
-{
-
-	row = kshark_find_entry_by_time(time, histo->data, *last_row,
-					histo->data_size - 1);
-
-	*last_row = row;
-
-And the caller can be:
-
-	last_row = 0;
-	for (bin = 0; bin < histo->n_bins; ++bin)
-		ksmodel_set_next_bin_edge(histo, bin, &last_row);
-
-Then we wont be doing the search from 0 each time. It should help speed
-it up a little.
-
-> +
-> +	/*
-> +	 * The timestamp of the very last entry of the dataset can be exactly
-> +	 * equal to the value of the upper edge of the range. This is very
-> +	 * likely to happen when we use ksmodel_set_in_range_bining(). In this
-> +	 * case we have to increase the size of the very last bin in order to
-> +	 * make sure that the last entry of the dataset will fall into it.
-> +	 */
-> +	if (next_bin == histo->n_bins - 1)
-> +		++time;
-> +
-> +	if (histo->data[row]->ts >= time + histo->bin_size) {
-> +		/* The bin is empty. */
-> +		histo->map[next_bin] = KS_EMPTY_BIN;
-> +		return;
-> +	}
-> +
-> +	/* Set the index of the first entry. */
-> +	histo->map[next_bin] = row;
-> +}
-> +
-
-
-[..]
-
-> +/**
-> + * @brief Provide the Visualization model with data. Calculate the current
-> + *	  state of the model.
-> + * @param histo: Input location for the model descriptor.
-> + * @param data: Input location for the trace data.
-> + * @param n: Number of bins.
-> + */
-> +void ksmodel_fill(struct kshark_trace_histo *histo,
-> +		  struct kshark_entry **data, size_t n)
-> +{
-> +	int bin;
-> +
-> +	histo->data_size = n;
-> +	histo->data = data;
-> +
-> +	if (histo->n_bins == 0 ||
-> +	    histo->bin_size == 0 ||
-> +	    histo->data_size == 0) {
-> +		/*
-> +		 * Something is wrong with this histo.
-> +		 * Most likely the binning is not set.
-> +		 */
-> +		ksmodel_clear(histo);
-> +		fprintf(stderr,
-> +			"Unable to fill the model with data.\n");
-> +		fprintf(stderr,
-> +			"Try to set the bining of the model first.\n");
-> +
-> +		return;
-> +	}
-> +
-> +	/* Set the Lower Overflow bin */
-> +	ksmodel_set_lower_edge(histo);
-> +
-> +	/*
-> +	 * Loop over the dataset and set the beginning of all individual bins.
-> +	 */
-> +	bin = 0;
-
-Superfluous bin assignment above.
-
-> +	for (bin = 0; bin < histo->n_bins; ++bin)
-> +		ksmodel_set_next_bin_edge(histo, bin);
-> +
-> +	/* Set the Upper Overflow bin. */
-> +	ksmodel_set_upper_edge(histo);
-> +
-> +	/* Calculate the number of entries in each bin. */
-> +	ksmodel_set_bin_counts(histo);
-> +}
-> +
-> +/**
-> + * @brief Get the total number of entries in a given bin.
-> + * @param histo: Input location for the model descriptor.
-> + * @param bin: Bin id.
-> + * @returns The number of entries in this bin.
-> + */
-> +size_t ksmodel_bin_count(struct kshark_trace_histo *histo, int bin)
-> +{
-> +	if (bin >= 0 && bin < histo->n_bins)
-> +		return histo->bin_count[bin];
-> +
-> +	if (bin == UPPER_OVERFLOW_BIN)
-> +		return histo->bin_count[UOB(histo)];
-> +
-> +	if (bin == LOWER_OVERFLOW_BIN)
-> +		return histo->bin_count[LOB(histo)];
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * @brief Shift the time-window of the model forward. Recalculate the current
-> + *	  state of the model.
-> + * @param histo: Input location for the model descriptor.
-> + * @param n: Number of bins to shift.
-> + */
-> +void ksmodel_shift_forward(struct kshark_trace_histo *histo, size_t n)
-> +{
-> +	int bin;
-> +	
-> +	if (!histo->data_size)
-> +		return;
-> +
-> +	if (histo->bin_count[UOB(histo)] == 0) {
-> +		/*
-> +		 * The Upper Overflow bin is empty. This means that we are at
-> +		 * the upper edge of the dataset already. Do nothing in this
-> +		 * case.
-> +		 */
-> +		return;
-> +	}
-> +
-> +	histo->min += n * histo->bin_size;
-> +	histo->max += n * histo->bin_size;
-> +
-> +	if (n >= histo->n_bins) {
-> +		/*
-> +		 * No overlap between the new and the old ranges. Recalculate
-> +		 * all bins from scratch. First calculate the new range.
-> +		 */
-> +		ksmodel_set_bining(histo, histo->n_bins, histo->min,
-> +							 histo->max);
-> +
-> +		ksmodel_fill(histo, histo->data, histo->data_size);
-> +		return;
-> +	}
-> +
-> +	/* Set the new Lower Overflow bin. */
-> +	ksmodel_set_lower_edge(histo);
-> +
-> +	/*
-> +	 * Copy the the mapping indexes of all overlaping bins starting from
-> +	 * bin "0" of the new histo. Note that the number of overlaping bins
-> +	 * is histo->n_bins - n.
-> +	 */
-> +	memmove(&histo->map[0], &histo->map[n],
-> +		sizeof(histo->map[0]) * (histo->n_bins - n));
-> +
-> +	/*
-> +	 * The the mapping index pf the old Upper Overflow bin is now index
-
-"The the" and "pf"?
-
-> +	 * of the first new bin.
-> +	 */
-> +	bin = UOB(histo) - n;
-> +	histo->map[bin] = histo->map[UOB(histo)];
-> +
-> +	/* Calculate only the content of the new (non-overlapping) bins. */
-> +	for (; bin < histo->n_bins; ++bin)
-> +		ksmodel_set_next_bin_edge(histo, bin);
-> +
-> +	/*
-> +	 * Set the new Upper Overflow bin and calculate the number of entries
-> +	 * in each bin.
-> +	 */
-> +	ksmodel_set_upper_edge(histo);
-> +	ksmodel_set_bin_counts(histo);
-> +}
-> +
-> +/**
-> + * @brief Shift the time-window of the model backward. Recalculate the current
-> + *	  state of the model.
-> + * @param histo: Input location for the model descriptor.
-> + * @param n: Number of bins to shift.
-> + */
-> +void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n)
-> +{
-> +	int bin;
-> +
-> +	if (!histo->data_size)
-> +		return;
-> +
-> +	if (histo->bin_count[LOB(histo)] == 0) {
-> +		/*
-> +		 * The Lower Overflow bin is empty. This means that we are at
-> +		 * the Lower edge of the dataset already. Do nothing in this
-> +		 * case.
-> +		 */
-> +		return;
-> +	}
-> +
-> +	histo->min -= n * histo->bin_size;
-> +	histo->max -= n * histo->bin_size;
-> +
-> +	if (n >= histo->n_bins) {
-> +		/*
-> +		 * No overlap between the new and the old range. Recalculate
-> +		 * all bins from scratch. First calculate the new range.
-> +		 */
-> +		ksmodel_set_bining(histo, histo->n_bins, histo->min,
-> +							 histo->max);
-> +
-> +		ksmodel_fill(histo, histo->data, histo->data_size);
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * Copy the the mapping indexes of all overlaping bins starting from
-> +	 * bin "0" of the old histo. Note that the number of overlaping bins
-> +	 * is histo->n_bins - n.
-> +	 */
-> +	memmove(&histo->map[n], &histo->map[0],
-> +		sizeof(histo->map[0]) * (histo->n_bins - n));
-> +
-> +	/* Set the new Lower Overflow bin. */
-> +	ksmodel_set_lower_edge(histo);
-> +
-> +	/* Calculate only the content of the new (non-overlapping) bins. */
-> +	bin = 0;
-> +	while (bin < n) {
-
-Convert this to a for loop please.
-
--- Steve
-
-> +		ksmodel_set_next_bin_edge(histo, bin);
-> +		++bin;
-> +	}
-> +
-> +	/*
-> +	 * Set the new Upper Overflow bin and calculate the number of entries
-> +	 * in each bin.
-> +	 */
-> +	ksmodel_set_upper_edge(histo);
-> +	ksmodel_set_bin_counts(histo);
-> +}
-> 
+-- 
+2.17.1
