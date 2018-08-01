@@ -1,154 +1,604 @@
 Return-Path: <SRS0=FUMn=KQ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f66.google.com ([74.125.82.66]:35657 "EHLO
-        mail-wm0-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732937AbeHAR5O (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:34136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731500AbeHAUJq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 1 Aug 2018 13:57:14 -0400
-Received: by mail-wm0-f66.google.com with SMTP id o18-v6so7720996wmc.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 01 Aug 2018 09:10:47 -0700 (PDT)
-From: Yordan Karadzhov <y.karadz@gmail.com>
-Subject: Re: [PATCH v2 3/7] kernel-shark-qt: Introduce the visualization model
- used by the Qt-based KS
-To: Steven Rostedt <rostedt@goodmis.org>
+        Wed, 1 Aug 2018 16:09:46 -0400
+Date: Wed, 1 Aug 2018 14:22:44 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v2 3/7] kernel-shark-qt: Introduce the visualization
+ model used by the Qt-based KS
+Message-ID: <20180801142244.3ed8a35c@gandalf.local.home>
+In-Reply-To: <20180731135248.30587-4-y.karadz@gmail.com>
 References: <20180731135248.30587-1-y.karadz@gmail.com>
- <20180731135248.30587-4-y.karadz@gmail.com>
- <20180731205113.2fe79e72@gandalf.local.home>
-Message-ID: <735f8de7-0a46-18c6-0665-378de46b68f1@Gmail.com>
-Date: Wed, 1 Aug 2018 19:10:46 +0300
+        <20180731135248.30587-4-y.karadz@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20180731205113.2fe79e72@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
+On Tue, 31 Jul 2018 16:52:44 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
 
-On 1.08.2018 03:51, Steven Rostedt wrote:
->> +static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
->> +					size_t n, uint64_t min, uint64_t max,
->> +					bool force_in_range)
->> +{
->> +	uint64_t corrected_range, delta_range, range = max - min;
->> +	struct kshark_entry *last;
->> +
->> +	/* The size of the bin must be >= 1, hence the range must be >= n. */
->> +	if (n == 0 || range < n)
->> +		return;
->> +
->> +	/*
->> +	 * If the number of bins changes, allocate memory for the descriptor
->> +	 * of the model.
->> +	 */
->> +	if (n != histo->n_bins) {
->> +		if (!ksmodel_histo_alloc(histo, n)) {
->> +			ksmodel_clear(histo);
->> +			return;
->> +		}
->> +	}
->> +
->> +	/* Reset the content of all bins (including overflow bins) to zero. */
->> +	ksmodel_reset_bins(histo, 0, histo->n_bins + 1);
-> Here we could then have:
->
-> 	ksmodel_reset_bins(histo, 0, ALLB(histo));
->
->> +
->> +	if (range % n == 0) {
->> +		/*
->> +		 * The range is multiple of the number of bin and needs no
->> +		 * adjustment. This is very unlikely to happen but still ...
->> +		 */
->> +		histo->min = min;
->> +		histo->max = max;
->> +		histo->bin_size = range / n;
->> +	} else {
->> +		/*
->> +		 * The range needs adjustment. The new range will be slightly
->> +		 * bigger, compared to the requested one.
->> +		 */
->> +		histo->bin_size = range / n + 1;
->> +		corrected_range = histo->bin_size * n;
->> +		delta_range = corrected_range - range;
->> +		histo->min = min - delta_range / 2;
->> +		histo->max = histo->min + corrected_range;
->> +
->> +		if (!force_in_range)
->> +			return;
->> +
->> +		/*
->> +		 * Make sure that the new range doesn't go outside of the time
->> +		 * interval of the dataset.
->> +		 */
->> +		last = histo->data[histo->data_size - 1];
->> +		if (histo->min < histo->data[0]->ts) {
->> +			histo->min = histo->data[0]->ts;
->> +			histo->max = histo->min + corrected_range;
->> +		} else if (histo->max > last->ts) {
->> +			histo->max = last->ts;
->> +			histo->min = histo->max - corrected_range;
->> +		}
-> Hmm, Let's say the range of the data is 0..1,000,001 and we picked a
-> range of 999,999 starting at 0. And there's 1024 buckets. This would
-> have:
->
-> min = 0; max = 999999; n = 1024; range = 999999;
->
-> bin_size = 999999 / 1024 + 1 = 977;
-> correct_range = 977 * 1024 = 1000448;
-> delta_rang = 1000448 - 999999 = 449;
-> histo->min = 0 - 449 / 2 = -224;
-> histo->max = -224 + 1000448 = 1000224;
->
-> Now histo->min (-224) < histo->data[0]->ts (0) so
->
-> histo->min = 0;
-> histo->max = 0 + 1000448 = 1000448;
->
-> Thus we get max greater than the data set.
->
-> Actually, we would always get a range greater than the data set, if the
-> data set itself is not divisible by the bin size. This that a problem?
-Hi Steven,
-In your example you consider the case when we want to visualize the 
-entire data-set.
-Indeed in this case the true range of the histo will be slightly bigger. 
-This is not a problem.
+I'd add a comment above this function (yes static functions may have
+header comments, just doesn't need to be doxygen like).
 
-The "force_in_range" part of the logic in this function deals with 
-another case.
-Let's stick to your example but say that the current range is from 0 to 
-10,000.
-Now if the user hits the "Zoom Out" for a second, this function will be 
-called several hundred times
-and each call of the function will add its own small negative correction 
-to the value of histo->min (initially 0).
-At the end we will have a significant part of the graph outside of the 
-data-set.
+/*
+ * Fill in the bin_count array, which maps the number of data rows that
+ * exist within each bin.
+ */
 
-Thanks!
-Yordan
+Or something like that.
 
->
-> -- Steve
->
->> +	}
->> +}
->> +
->> +/**
->> + * @brief Prepare the bining of the Visualization model.
->> + * @param histo: Input location for the model descriptor.
->> + * @param n: Number of bins.
->> + * @param min: Lower edge of the time-window to be visualized.
->> + * @param max: Upper edge of the time-window to be visualized.
->> + */
->> +void ksmodel_set_bining(struct kshark_trace_histo *histo,
->> +			size_t n, uint64_t min, uint64_t max)
->> +{
->> +	ksmodel_set_in_range_bining(histo, n, min, max, false);
->> +}
->> +
->>
+> +static void ksmodel_set_bin_counts(struct kshark_trace_histo *histo)
+> +{
+> +	int i = 0, prev_not_empty;
+> +
+> +	memset(&histo->bin_count[0], 0,
+> +	       (histo->n_bins) * sizeof(histo->bin_count[0]));
+> +	/*
+> +	 * Find the first bin which contains data. Start by checking the
+> +	 * Lower Overflow bin.
+> +	 */
+> +	if (histo->map[histo->n_bins + 1] != KS_EMPTY_BIN) {
+
+Hmm, shouldn't that be:
+
+	if (histo->map[LOB(histo)] != KS_EMPTY_BIN) ?
+
+> +		prev_not_empty = LOB(histo);
+> +	} else {
+
+Add a comment here:
+
+		/* Find the first non-empty bin */
+
+> +		while (histo->map[i] < 0) {
+
+Can map[i] be a negative other than KS_EMPTY_BIN? 
+
+> +			++i;
+> +		}
+> +
+> +		prev_not_empty = i++;
+> +	}
+> +
+> +	/*
+> +	 * Starting from the first not empty bin, loop over all bins and fill
+> +	 * in the bin_count array to hold the number of entries in each bin.
+> +	 */
+> +	while (i < histo->n_bins) {
+
+The above should be a for loop:
+
+	for (; i < histo->n_bins; i++) {
+
+
+> +		if (histo->map[i] != KS_EMPTY_BIN) {
+> +			/*
+> +			 * Here we set the number of entries in
+> +			 * "prev_not_empty" bin.
+
+The above comment needs to be changed:
+
+			/*
+			 * The current bin is not empty, take its data
+			 * row and subtract it from the data row of the
+			 * previous not empty bin, which will give us
+			 * the number of data rows in that bin.
+
+Or something like that.
+
+> +			 */
+> +			histo->bin_count[prev_not_empty] =
+> +				histo->map[i] - histo->map[prev_not_empty];
+> +	
+> +			prev_not_empty = i;
+> +		}
+> +
+> +		++i;
+> +	}
+> +
+> +	/* Check if the Upper Overflow bin contains data. */
+> +	if (histo->map[UOB(histo)] == KS_EMPTY_BIN) {
+> +		/*
+> +		 * The Upper Overflow bin is empty. Use the size of the
+> +		 * dataset to calculate the content of the previouse not
+> +		 * empty bin.
+> +		 */
+> +		histo->bin_count[prev_not_empty] = histo->data_size -
+> +						   histo->map[prev_not_empty];
+> +	} else {
+> +		/*
+> +		 * Use the index of the first entry inside the Upper Overflow
+> +		 * bin to calculate the content of the previouse not empty
+> +		 * bin.
+> +		 */
+> +		histo->bin_count[prev_not_empty] = histo->map[UOB(histo)] -
+> +						   histo->map[prev_not_empty];
+> +	}
+> +}
+> +
+> +/**
+> + * @brief Provide the Visualization model with data. Calculate the current
+> + *	  state of the model.
+> + * @param histo: Input location for the model descriptor.
+> + * @param data: Input location for the trace data.
+> + * @param n: Number of bins.
+> + */
+> +void ksmodel_fill(struct kshark_trace_histo *histo,
+> +		  struct kshark_entry **data, size_t n)
+> +{
+> +	int bin;
+> +
+> +	histo->data_size = n;
+> +	histo->data = data;
+> +
+> +	if (histo->n_bins == 0 ||
+> +	    histo->bin_size == 0 ||
+> +	    histo->data_size == 0) {
+> +		/*
+> +		 * Something is wrong with this histo.
+> +		 * Most likely the binning is not set.
+> +		 */
+> +		ksmodel_clear(histo);
+> +		fprintf(stderr,
+> +			"Unable to fill the model with data.\n");
+> +		fprintf(stderr,
+> +			"Try to set the bining of the model first.\n");
+> +
+> +		return;
+> +	}
+> +
+> +	/* Set the Lower Overflow bin */
+> +	ksmodel_set_lower_edge(histo);
+> +
+> +	/*
+> +	 * Loop over the dataset and set the beginning of all individual bins.
+> +	 */
+> +	bin = 0;
+
+As stated before, superfluous bin.
+
+> +	for (bin = 0; bin < histo->n_bins; ++bin)
+> +		ksmodel_set_next_bin_edge(histo, bin);
+> +
+> +	/* Set the Upper Overflow bin. */
+> +	ksmodel_set_upper_edge(histo);
+> +
+> +	/* Calculate the number of entries in each bin. */
+> +	ksmodel_set_bin_counts(histo);
+> +}
+> +
+> +/**
+> + * @brief Get the total number of entries in a given bin.
+> + * @param histo: Input location for the model descriptor.
+> + * @param bin: Bin id.
+> + * @returns The number of entries in this bin.
+> + */
+> +size_t ksmodel_bin_count(struct kshark_trace_histo *histo, int bin)
+> +{
+> +	if (bin >= 0 && bin < histo->n_bins)
+> +		return histo->bin_count[bin];
+> +
+> +	if (bin == UPPER_OVERFLOW_BIN)
+> +		return histo->bin_count[UOB(histo)];
+> +
+> +	if (bin == LOWER_OVERFLOW_BIN)
+> +		return histo->bin_count[LOB(histo)];
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * @brief Shift the time-window of the model forward. Recalculate the current
+> + *	  state of the model.
+> + * @param histo: Input location for the model descriptor.
+> + * @param n: Number of bins to shift.
+> + */
+> +void ksmodel_shift_forward(struct kshark_trace_histo *histo, size_t n)
+> +{
+> +	int bin;
+> +	
+> +	if (!histo->data_size)
+> +		return;
+> +
+> +	if (histo->bin_count[UOB(histo)] == 0) {
+
+Or should this be:
+
+	if (histo->map[UOB(histo)] == KS_EMPTY_BIN)  ?
+
+I know it should mean the same, but we use map below, and I like to be
+more consistent.
+
+> +		/*
+> +		 * The Upper Overflow bin is empty. This means that we are at
+> +		 * the upper edge of the dataset already. Do nothing in this
+> +		 * case.
+> +		 */
+> +		return;
+> +	}
+> +
+> +	histo->min += n * histo->bin_size;
+> +	histo->max += n * histo->bin_size;
+> +
+> +	if (n >= histo->n_bins) {
+> +		/*
+> +		 * No overlap between the new and the old ranges. Recalculate
+> +		 * all bins from scratch. First calculate the new range.
+> +		 */
+> +		ksmodel_set_bining(histo, histo->n_bins, histo->min,
+> +							 histo->max);
+> +
+> +		ksmodel_fill(histo, histo->data, histo->data_size);
+> +		return;
+> +	}
+> +
+> +	/* Set the new Lower Overflow bin. */
+> +	ksmodel_set_lower_edge(histo);
+> +
+
+Hmm, the above also sets histo->map[0]. This should then equal
+histo->map[n] right? I wonder if we should have a sanity check here
+making sure that's the case.
+
+> +	/*
+> +	 * Copy the the mapping indexes of all overlaping bins starting from
+> +	 * bin "0" of the new histo. Note that the number of overlaping bins
+> +	 * is histo->n_bins - n.
+> +	 */
+> +	memmove(&histo->map[0], &histo->map[n],
+> +		sizeof(histo->map[0]) * (histo->n_bins - n));
+> +
+> +	/*
+> +	 * The the mapping index pf the old Upper Overflow bin is now index
+> +	 * of the first new bin.
+> +	 */
+> +	bin = UOB(histo) - n;
+> +	histo->map[bin] = histo->map[UOB(histo)];
+> +
+> +	/* Calculate only the content of the new (non-overlapping) bins. */
+> +	for (; bin < histo->n_bins; ++bin)
+> +		ksmodel_set_next_bin_edge(histo, bin);
+> +
+> +	/*
+> +	 * Set the new Upper Overflow bin and calculate the number of entries
+> +	 * in each bin.
+> +	 */
+> +	ksmodel_set_upper_edge(histo);
+> +	ksmodel_set_bin_counts(histo);
+> +}
+> +
+> +/**
+> + * @brief Shift the time-window of the model backward. Recalculate the current
+> + *	  state of the model.
+> + * @param histo: Input location for the model descriptor.
+> + * @param n: Number of bins to shift.
+> + */
+> +void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n)
+> +{
+> +	int bin;
+> +
+> +	if (!histo->data_size)
+> +		return;
+> +
+> +	if (histo->bin_count[LOB(histo)] == 0) {
+
+Again, this probably should be:
+
+	if (histo->map[LOB(histo)] == KS_EMPTY_BIN) {
+
+
+> +		/*
+> +		 * The Lower Overflow bin is empty. This means that we are at
+> +		 * the Lower edge of the dataset already. Do nothing in this
+> +		 * case.
+> +		 */
+> +		return;
+> +	}
+> +
+> +	histo->min -= n * histo->bin_size;
+> +	histo->max -= n * histo->bin_size;
+> +
+> +	if (n >= histo->n_bins) {
+> +		/*
+> +		 * No overlap between the new and the old range. Recalculate
+> +		 * all bins from scratch. First calculate the new range.
+> +		 */
+> +		ksmodel_set_bining(histo, histo->n_bins, histo->min,
+> +							 histo->max);
+> +
+> +		ksmodel_fill(histo, histo->data, histo->data_size);
+> +		return;
+> +	}
+> +
+> +	/*
+> +	 * Copy the the mapping indexes of all overlaping bins starting from
+> +	 * bin "0" of the old histo. Note that the number of overlaping bins
+> +	 * is histo->n_bins - n.
+> +	 */
+> +	memmove(&histo->map[n], &histo->map[0],
+> +		sizeof(histo->map[0]) * (histo->n_bins - n));
+> +
+> +	/* Set the new Lower Overflow bin. */
+> +	ksmodel_set_lower_edge(histo);
+> +
+> +	/* Calculate only the content of the new (non-overlapping) bins. */
+> +	bin = 0;
+> +	while (bin < n) {
+
+This needs to be a for loop.
+
+> +		ksmodel_set_next_bin_edge(histo, bin);
+> +		++bin;
+> +	}
+> +
+> +	/*
+> +	 * Set the new Upper Overflow bin and calculate the number of entries
+> +	 * in each bin.
+> +	 */
+> +	ksmodel_set_upper_edge(histo);
+> +	ksmodel_set_bin_counts(histo);
+> +}
+> +
+> +/**
+> + * @brief Move the time-window of the model to a given location. Recalculate
+> + *	  the current state of the model.
+> + * @param histo: Input location for the model descriptor.
+> + * @param ts: position in time to be visualized.
+> + */
+> +void ksmodel_jump_to(struct kshark_trace_histo *histo, size_t ts)
+> +{
+> +	size_t min, max, range_min;
+> +
+> +	if (ts > histo->min && ts < histo->max) {
+> +		/*
+> +		 * The new position is already inside the range.
+> +		 * Do nothing in this case.
+> +		 */
+> +		return;
+> +	}
+> +
+> +	/*
+> +	 * Calculate the new range without changing the size and the number
+> +	 * of bins.
+> +	 */
+> +	min = ts - histo->n_bins * histo->bin_size / 2;
+> +
+> +	/* Make sure that the range does not go outside of the dataset. */
+> +	if (min < histo->data[0]->ts)
+> +		min = histo->data[0]->ts;
+> +
+
+I wonder if we should make this an else
+
+	else {
+
+> +	range_min = histo->data[histo->data_size - 1]->ts -
+> +		   histo->n_bins * histo->bin_size;
+> +
+> +	if (min > range_min)
+> +		min = range_min;
+
+	}
+
+Making sure min isn't less than the data set?
+
+> +
+> +	max = min + histo->n_bins * histo->bin_size;
+> +
+> +	/* Use the new range to recalculate all bins from scratch. */
+> +	ksmodel_set_bining(histo, histo->n_bins, min, max);
+> +	ksmodel_fill(histo, histo->data, histo->data_size);
+> +}
+> +
+> +/**
+> + * @brief Extend the time-window of the model. Recalculate the current state
+> + *	  of the model.
+> + * @param histo: Input location for the model descriptor.
+> + * @param r: Scale factor of the zoom-out.
+> + * @param mark: Focus point of the zoom-out.
+> + */
+> +void ksmodel_zoom_out(struct kshark_trace_histo *histo,
+> +		      double r, int mark)
+> +{
+> +	size_t range, min, max, delta_min;
+> +	double delta_tot;
+> +
+> +	if (!histo->data_size)
+> +		return;
+> +
+> +	/*
+> +	 * If the marker is not set, assume that the focal point of the zoom
+> +	 * is the center of the range.
+> +	 */
+> +	if (mark < 0)
+> +		mark = histo->n_bins / 2;
+> +
+> +	/*
+> +	 * Calculate the new range of the histo. Use the bin of the marker
+> +	 * as a focal point for the zoomout. With this the maker will stay
+> +	 * inside the same bin in the new histo.
+> +	 */
+> +	range = histo->max - histo->min;
+> +	delta_tot = range * r;
+> +	delta_min = delta_tot * mark / histo->n_bins;
+> +
+> +	min = histo->min - delta_min;
+> +	max = histo->max + (size_t) delta_tot - delta_min;
+
+Took me a bit to figure out what exactly the above is doing. Let me
+explain what I think it is doing and you can correct me if I'm wrong.
+
+We set delta_tot to increase by the percentage requested (easy).
+
+Now we make delta_min equal to a percentage of delta_tot based on where
+mark is in the original bins. If mark is zero, then mark was at 0% of
+the original bins, if it was at histo->n_bins - 1, it was at (almost)
+100%. If it is half way, then we place delta_min at %50 of delta_tot.
+
+Then we subtract the original min by the delta_tot * mark/n_bins
+percentage, and add the max by delta_tot * (1 - mark/n_bins).
+
+Sound right? Maybe we can add a comment saying such?
+
+> +
+> +	/* Make sure the new range doesn't go outside of the dataset. */
+> +	if (min < histo->data[0]->ts)
+> +		min = histo->data[0]->ts;
+> +
+> +	if (max > histo->data[histo->data_size - 1]->ts)
+> +		max = histo->data[histo->data_size - 1]->ts;
+> +
+> +	/*
+> +	 * Use the new range to recalculate all bins from scratch. Enforce
+> +	 * "In Range" adjustment of the range of the model, in order to avoid
+> +	 * slowly drifting outside of the data-set in the case when the very
+> +	 * first or the very last entry is used as a focal point.
+> +	 */
+> +	ksmodel_set_in_range_bining(histo, histo->n_bins, min, max, true);
+> +	ksmodel_fill(histo, histo->data, histo->data_size);
+> +}
+> +
+> +/**
+> + * @brief Shrink the time-window of the model. Recalculate the current state
+> + *	  of the model.
+> + * @param histo: Input location for the model descriptor.
+> + * @param r: Scale factor of the zoom-in.
+> + * @param mark: Focus point of the zoom-in.
+> + */
+> +void ksmodel_zoom_in(struct kshark_trace_histo *histo,
+> +		     double r, int mark)
+> +{
+> +	size_t range, min, max, delta_min;
+> +	double delta_tot;
+> +
+> +	if (!histo->data_size)
+> +		return;
+> +
+> +	/*
+> +	 * If the marker is not set, assume that the focal point of the zoom
+> +	 * is the center of the range.
+> +	 */
+> +	if (mark < 0)
+> +		mark = histo->n_bins / 2;
+> +
+> +	range = histo->max - histo->min;
+> +
+> +	/* Avoid overzooming. */
+> +	if (range < histo->n_bins * 4)
+> +		return;
+> +
+> +	/*
+> +	 * Calculate the new range of the histo. Use the bin of the marker
+> +	 * as a focal point for the zoomin. With this the maker will stay
+> +	 * inside the same bin in the new histo.
+> +	 */
+> +	delta_tot =  range * r;
+> +	if (mark == (int)histo->n_bins - 1)
+> +		delta_min = delta_tot;
+
+
+> +	else if (mark == 0)
+> +		delta_min = 0;
+> +	else
+> +		delta_min = delta_tot * mark / histo->n_bins;
+
+The above two are equivalent:
+
+	if (mark == 0)
+Then
+	delta_min = delta_tot * mark / histo->n_bins = 0
+
+
+> +
+> +	min = histo->min + delta_min;
+> +	max = histo->max - (size_t) delta_tot + delta_min;
+> +
+> +	/*
+> +	 * Use the new range to recalculate all bins from scratch. Enforce
+> +	 * "In Range" adjustment of the range of the model, in order to avoid
+> +	 * slowly drifting outside of the data-set in the case when the very
+> +	 * first or the very last entry is used as a focal point.
+> +	 */
+> +	ksmodel_set_in_range_bining(histo, histo->n_bins, min, max, true);
+> +	ksmodel_fill(histo, histo->data, histo->data_size);
+> +}
+
+Hmm, I think zoom_out and zoom_in could be combined:
+
+static void ksmodel_zoom(struct kshark_trace_histo *histo,
+			 double r, int mark, bool zoom_in)
+{
+	size_t range, min, max, delta_min;
+	double delta_tot;
+
+	if (!histo->data_size)
+		return;
+
+	/*
+	 * If the marker is not set, assume that the focal point of the zoom
+	 * is the center of the range.
+	 */
+	if (mark < 0)
+		mark = histo->n_bins / 2;
+
+	range = histo->max - histo->min;
+
+	/* Avoid overzooming. */
+	if (range < histo->n_bins * 4)
+		return;
+
+	/*
+	 * Calculate the new range of the histo. Use the bin of the marker
+	 * as a focal point for the zoomout. With this the maker will stay
+	 * inside the same bin in the new histo.
+	 */
+	delta_tot = range * r;
+	if (mark == (int)histo->n_bins - 1)
+		delta_min = delta_tot;
+	else
+		delta_min = delta_tot * mark / histo->n_bins;
+
+	
+	min = zoom_in ? histo->min + delta_min : histo->min - delta_min;
+	max = zoom_in ? histo->max - (size_t) delta_tot + delta_min :
+		        histo->max + (size_t) delta_tot - delta_min;
+
+
+	/* Make sure the new range doesn't go outside of the dataset. */
+	if (min < histo->data[0]->ts)
+		min = histo->data[0]->ts;
+
+	if (max > histo->data[histo->data_size - 1]->ts)
+		max = histo->data[histo->data_size - 1]->ts;
+
+	/*
+	 * Use the new range to recalculate all bins from scratch. Enforce
+	 * "In Range" adjustment of the range of the model, in order to avoid
+	 * slowly drifting outside of the data-set in the case when the very
+	 * first or the very last entry is used as a focal point.
+	 */
+	ksmodel_set_in_range_bining(histo, histo->n_bins, min, max, true);
+	ksmodel_fill(histo, histo->data, histo->data_size);
+}
+
+void ksmodel_zoom_out(struct kshark_trace_histo *histo,
+		      double r, int mark)
+{
+	ksmodel_zoom(histo, r, mark, false);
+}
+
+void ksmodel_zoom_in(struct kshark_trace_histo *histo,
+		     double r, int mark)
+{
+	ksmodel_zoom(histo, r, mark, true);
+}
+
+-- Steve
