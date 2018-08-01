@@ -1,18 +1,18 @@
 Return-Path: <SRS0=FUMn=KQ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:32995 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389121AbeHAO2T (ORCPT
+Received: from mail-wm0-f42.google.com ([74.125.82.42]:53684 "EHLO
+        mail-wm0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389121AbeHAO2W (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 1 Aug 2018 10:28:19 -0400
-Received: by mail-wr1-f65.google.com with SMTP id g6-v6so19988943wrp.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 01 Aug 2018 05:42:41 -0700 (PDT)
+        Wed, 1 Aug 2018 10:28:22 -0400
+Received: by mail-wm0-f42.google.com with SMTP id s9-v6so6820387wmh.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 01 Aug 2018 05:42:43 -0700 (PDT)
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 12/24] tools/lib/traceevent, tools/perf: Rename enum pevent_flag
-Date: Wed,  1 Aug 2018 15:41:44 +0300
-Message-Id: <20180801124156.20894-13-tz.stoyanov@gmail.com>
+Subject: [PATCH 14/24] tools/lib/traceevent: Rename pevent_function* APIs
+Date: Wed,  1 Aug 2018 15:41:46 +0300
+Message-Id: <20180801124156.20894-15-tz.stoyanov@gmail.com>
 In-Reply-To: <20180801124156.20894-1-tz.stoyanov@gmail.com>
 References: <20180801124156.20894-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -21,119 +21,368 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
 conflicts. That prefix will be "tep_" and not "pevent_". This changes
-pevent_get_page_size API and enum pevent_flag
+APIs: pevent_function_handler, pevent_func_handler, pevent_func_arg_type,
+PEVENT_FUNC_ARG_VOID, PEVENT_FUNC_ARG_INT, PEVENT_FUNC_ARG_LONG,
+PEVENT_FUNC_ARG_STRING, PEVENT_FUNC_ARG_PTRS, PEVENT_FUNC_ARG_MAX_TYPES
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tools/lib/traceevent/event-parse.c  |  2 +-
- tools/lib/traceevent/event-parse.h  | 10 +++++-----
- tools/lib/traceevent/event-plugin.c |  4 ++--
- tools/perf/builtin-kmem.c           |  2 +-
- tools/perf/util/trace-event-read.c  |  2 +-
- tools/perf/util/trace-event.c       |  2 +-
- 6 files changed, 11 insertions(+), 11 deletions(-)
+ tools/lib/traceevent/event-parse.c     | 62 +++++++++++++-------------
+ tools/lib/traceevent/event-parse.h     | 28 ++++++------
+ tools/lib/traceevent/plugin_cfg80211.c |  6 +--
+ tools/lib/traceevent/plugin_jbd2.c     | 12 ++---
+ tools/lib/traceevent/plugin_kvm.c      |  6 +--
+ tools/lib/traceevent/plugin_scsi.c     | 10 ++---
+ tools/lib/traceevent/plugin_xen.c      |  6 +--
+ 7 files changed, 65 insertions(+), 65 deletions(-)
 
 diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index 175f207aa94e..4366a821d2c7 100644
+index 3212f5cedcd8..9967c9a58359 100644
 --- a/tools/lib/traceevent/event-parse.c
 +++ b/tools/lib/traceevent/event-parse.c
-@@ -5515,7 +5515,7 @@ void tep_print_event_time(struct tep_handle *pevent, struct trace_seq *s,
- 	}
+@@ -94,14 +94,14 @@ struct event_handler {
  
- 	if (use_usec_format) {
--		if (pevent->flags & PEVENT_NSEC_OUTPUT) {
-+		if (pevent->flags & TEP_NSEC_OUTPUT) {
- 			usecs = nsecs;
- 			p = 9;
- 		} else {
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index 58eae964e485..7f0f69ebb952 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -373,10 +373,10 @@ enum pevent_func_arg_type {
- 	PEVENT_FUNC_ARG_MAX_TYPES
+ struct pevent_func_params {
+ 	struct pevent_func_params	*next;
+-	enum pevent_func_arg_type	type;
++	enum tep_func_arg_type	type;
  };
  
--enum pevent_flag {
--	PEVENT_NSEC_OUTPUT		= 1,	/* output in NSECS */
--	PEVENT_DISABLE_SYS_PLUGINS	= 1 << 1,
--	PEVENT_DISABLE_PLUGINS		= 1 << 2,
-+enum tep_flag {
-+	TEP_NSEC_OUTPUT		= 1,	/* output in NSECS */
-+	TEP_DISABLE_SYS_PLUGINS	= 1 << 1,
-+	TEP_DISABLE_PLUGINS		= 1 << 2,
+-struct pevent_function_handler {
+-	struct pevent_function_handler	*next;
+-	enum pevent_func_arg_type	ret_type;
++struct tep_function_handler {
++	struct tep_function_handler	*next;
++	enum tep_func_arg_type	ret_type;
+ 	char				*name;
+-	pevent_func_handler		func;
++	tep_func_handler		func;
+ 	struct pevent_func_params	*params;
+ 	int				nr_args;
  };
+@@ -110,7 +110,7 @@ static unsigned long long
+ process_defined_func(struct trace_seq *s, void *data, int size,
+ 		     struct event_format *event, struct print_arg *arg);
  
- #define PEVENT_ERRORS 							      \
-@@ -751,7 +751,7 @@ static inline void tep_set_long_size(struct tep_handle *pevent, int long_size)
- 	pevent->long_size = long_size;
+-static void free_func_handle(struct pevent_function_handler *func);
++static void free_func_handle(struct tep_function_handler *func);
+ 
+ /**
+  * pevent_buffer_init - init buffer for parsing
+@@ -2914,10 +2914,10 @@ process_bitmask(struct event_format *event __maybe_unused, struct print_arg *arg
+ 	return EVENT_ERROR;
  }
  
--static inline int pevent_get_page_size(struct tep_handle *pevent)
-+static inline int tep_get_page_size(struct tep_handle *pevent)
+-static struct pevent_function_handler *
++static struct tep_function_handler *
+ find_func_handler(struct tep_handle *pevent, char *func_name)
  {
- 	return pevent->page_size;
+-	struct pevent_function_handler *func;
++	struct tep_function_handler *func;
+ 
+ 	if (!pevent)
+ 		return NULL;
+@@ -2932,8 +2932,8 @@ find_func_handler(struct tep_handle *pevent, char *func_name)
+ 
+ static void remove_func_handler(struct tep_handle *pevent, char *func_name)
+ {
+-	struct pevent_function_handler *func;
+-	struct pevent_function_handler **next;
++	struct tep_function_handler *func;
++	struct tep_function_handler **next;
+ 
+ 	next = &pevent->func_handlers;
+ 	while ((func = *next)) {
+@@ -2947,7 +2947,7 @@ static void remove_func_handler(struct tep_handle *pevent, char *func_name)
  }
-diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index 39859cee7712..c837a73c03e6 100644
---- a/tools/lib/traceevent/event-plugin.c
-+++ b/tools/lib/traceevent/event-plugin.c
-@@ -390,7 +390,7 @@ load_plugins(struct tep_handle *pevent, const char *suffix,
- 	char *envdir;
+ 
+ static enum event_type
+-process_func_handler(struct event_format *event, struct pevent_function_handler *func,
++process_func_handler(struct event_format *event, struct tep_function_handler *func,
+ 		     struct print_arg *arg, char **tok)
+ {
+ 	struct print_arg **next_arg;
+@@ -3008,7 +3008,7 @@ static enum event_type
+ process_function(struct event_format *event, struct print_arg *arg,
+ 		 char *token, char **tok)
+ {
+-	struct pevent_function_handler *func;
++	struct tep_function_handler *func;
+ 
+ 	if (strcmp(token, "__print_flags") == 0) {
+ 		free_token(token);
+@@ -4132,7 +4132,7 @@ static unsigned long long
+ process_defined_func(struct trace_seq *s, void *data, int size,
+ 		     struct event_format *event, struct print_arg *arg)
+ {
+-	struct pevent_function_handler *func_handle = arg->func.func;
++	struct tep_function_handler *func_handle = arg->func.func;
+ 	struct pevent_func_params *param;
+ 	unsigned long long *args;
+ 	unsigned long long ret;
+@@ -4159,12 +4159,12 @@ process_defined_func(struct trace_seq *s, void *data, int size,
+ 
+ 	for (i = 0; i < func_handle->nr_args; i++) {
+ 		switch (param->type) {
+-		case PEVENT_FUNC_ARG_INT:
+-		case PEVENT_FUNC_ARG_LONG:
+-		case PEVENT_FUNC_ARG_PTR:
++		case TEP_FUNC_ARG_INT:
++		case TEP_FUNC_ARG_LONG:
++		case TEP_FUNC_ARG_PTR:
+ 			args[i] = eval_num_arg(data, size, event, farg);
+ 			break;
+-		case PEVENT_FUNC_ARG_STRING:
++		case TEP_FUNC_ARG_STRING:
+ 			trace_seq_init(&str);
+ 			print_str_arg(&str, data, size, event, "%s", -1, farg);
+ 			trace_seq_terminate(&str);
+@@ -6461,7 +6461,7 @@ int tep_print_func_field(struct trace_seq *s, const char *fmt,
+ 	return -1;
+ }
+ 
+-static void free_func_handle(struct pevent_function_handler *func)
++static void free_func_handle(struct tep_function_handler *func)
+ {
+ 	struct pevent_func_params *params;
+ 
+@@ -6482,24 +6482,24 @@ static void free_func_handle(struct pevent_function_handler *func)
+  * @func: the function to process the helper function
+  * @ret_type: the return type of the helper function
+  * @name: the name of the helper function
+- * @parameters: A list of enum pevent_func_arg_type
++ * @parameters: A list of enum tep_func_arg_type
+  *
+  * Some events may have helper functions in the print format arguments.
+  * This allows a plugin to dynamically create a way to process one
+  * of these functions.
+  *
+- * The @parameters is a variable list of pevent_func_arg_type enums that
+- * must end with PEVENT_FUNC_ARG_VOID.
++ * The @parameters is a variable list of tep_func_arg_type enums that
++ * must end with TEP_FUNC_ARG_VOID.
+  */
+ int pevent_register_print_function(struct tep_handle *pevent,
+-				   pevent_func_handler func,
+-				   enum pevent_func_arg_type ret_type,
++				   tep_func_handler func,
++				   enum tep_func_arg_type ret_type,
+ 				   char *name, ...)
+ {
+-	struct pevent_function_handler *func_handle;
++	struct tep_function_handler *func_handle;
+ 	struct pevent_func_params **next_param;
+ 	struct pevent_func_params *param;
+-	enum pevent_func_arg_type type;
++	enum tep_func_arg_type type;
+ 	va_list ap;
  	int ret;
  
--	if (pevent->flags & PEVENT_DISABLE_PLUGINS)
-+	if (pevent->flags & TEP_DISABLE_PLUGINS)
- 		return;
+@@ -6532,11 +6532,11 @@ int pevent_register_print_function(struct tep_handle *pevent,
+ 	next_param = &(func_handle->params);
+ 	va_start(ap, name);
+ 	for (;;) {
+-		type = va_arg(ap, enum pevent_func_arg_type);
+-		if (type == PEVENT_FUNC_ARG_VOID)
++		type = va_arg(ap, enum tep_func_arg_type);
++		if (type == TEP_FUNC_ARG_VOID)
+ 			break;
  
- 	/*
-@@ -398,7 +398,7 @@ load_plugins(struct tep_handle *pevent, const char *suffix,
- 	 * check that first.
- 	 */
- #ifdef PLUGIN_DIR
--	if (!(pevent->flags & PEVENT_DISABLE_SYS_PLUGINS))
-+	if (!(pevent->flags & TEP_DISABLE_SYS_PLUGINS))
- 		load_plugins_dir(pevent, suffix, PLUGIN_DIR,
- 				 load_plugin, data);
- #endif
-diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
-index 73c073ade71c..b63bca4b0c2a 100644
---- a/tools/perf/builtin-kmem.c
-+++ b/tools/perf/builtin-kmem.c
-@@ -1974,7 +1974,7 @@ int cmd_kmem(int argc, const char **argv)
- 			goto out_delete;
- 		}
+-		if (type >= PEVENT_FUNC_ARG_MAX_TYPES) {
++		if (type >= TEP_FUNC_ARG_MAX_TYPES) {
+ 			do_warning("Invalid argument type %d", type);
+ 			ret = TEP_ERRNO__INVALID_ARG_TYPE;
+ 			goto out_free;
+@@ -6579,9 +6579,9 @@ int pevent_register_print_function(struct tep_handle *pevent,
+  * Returns 0 if the handler was removed successully, -1 otherwise.
+  */
+ int pevent_unregister_print_function(struct tep_handle *pevent,
+-				     pevent_func_handler func, char *name)
++				     tep_func_handler func, char *name)
+ {
+-	struct pevent_function_handler *func_handle;
++	struct tep_function_handler *func_handle;
  
--		kmem_page_size = pevent_get_page_size(evsel->tp_format->pevent);
-+		kmem_page_size = tep_get_page_size(evsel->tp_format->pevent);
- 		symbol_conf.use_callchain = true;
- 	}
+ 	func_handle = find_func_handler(pevent, name);
+ 	if (func_handle && func_handle->func == func) {
+@@ -6819,7 +6819,7 @@ void tep_free(struct tep_handle *pevent)
+ 	struct cmdline_list *cmdlist, *cmdnext;
+ 	struct func_list *funclist, *funcnext;
+ 	struct printk_list *printklist, *printknext;
+-	struct pevent_function_handler *func_handler;
++	struct tep_function_handler *func_handler;
+ 	struct event_handler *handle;
+ 	int i;
  
-diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-event-read.c
-index 68a8ceded9fa..5df69956484f 100644
---- a/tools/perf/util/trace-event-read.c
-+++ b/tools/perf/util/trace-event-read.c
-@@ -439,7 +439,7 @@ ssize_t trace_report(int fd, struct trace_event *tevent, bool __repipe)
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
+index c77de181885e..3a4cd6824ff7 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -269,10 +269,10 @@ struct print_arg_op {
+ 	struct print_arg	*right;
+ };
  
- 	pevent = tevent->pevent;
+-struct pevent_function_handler;
++struct tep_function_handler;
  
--	tep_set_flag(pevent, PEVENT_NSEC_OUTPUT);
-+	tep_set_flag(pevent, TEP_NSEC_OUTPUT);
- 	tep_set_file_bigendian(pevent, file_bigendian);
- 	tep_set_host_bigendian(pevent, host_bigendian);
+ struct print_arg_func {
+-	struct pevent_function_handler	*func;
++	struct tep_function_handler	*func;
+ 	struct print_arg		*args;
+ };
  
-diff --git a/tools/perf/util/trace-event.c b/tools/perf/util/trace-event.c
-index 3102e8be81f5..58bb72f266f3 100644
---- a/tools/perf/util/trace-event.c
-+++ b/tools/perf/util/trace-event.c
-@@ -47,7 +47,7 @@ static int trace_event__init2(void)
- 		return -1;
+@@ -361,16 +361,16 @@ enum event_type {
+ 	EVENT_SQUOTE,
+ };
  
- 	pevent = tevent.pevent;
--	tep_set_flag(pevent, PEVENT_NSEC_OUTPUT);
-+	tep_set_flag(pevent, TEP_NSEC_OUTPUT);
- 	tep_set_file_bigendian(pevent, be);
- 	tep_set_host_bigendian(pevent, be);
- 	tevent_initialized = true;
+-typedef unsigned long long (*pevent_func_handler)(struct trace_seq *s,
++typedef unsigned long long (*tep_func_handler)(struct trace_seq *s,
+ 					     unsigned long long *args);
+ 
+-enum pevent_func_arg_type {
+-	PEVENT_FUNC_ARG_VOID,
+-	PEVENT_FUNC_ARG_INT,
+-	PEVENT_FUNC_ARG_LONG,
+-	PEVENT_FUNC_ARG_STRING,
+-	PEVENT_FUNC_ARG_PTR,
+-	PEVENT_FUNC_ARG_MAX_TYPES
++enum tep_func_arg_type {
++	TEP_FUNC_ARG_VOID,
++	TEP_FUNC_ARG_INT,
++	TEP_FUNC_ARG_LONG,
++	TEP_FUNC_ARG_STRING,
++	TEP_FUNC_ARG_PTR,
++	TEP_FUNC_ARG_MAX_TYPES
+ };
+ 
+ enum tep_flag {
+@@ -524,7 +524,7 @@ struct tep_handle {
+ 	struct format_field *bprint_buf_field;
+ 
+ 	struct event_handler *handlers;
+-	struct pevent_function_handler *func_handlers;
++	struct tep_function_handler *func_handlers;
+ 
+ 	/* cache */
+ 	struct event_format *last_event;
+@@ -680,11 +680,11 @@ int pevent_unregister_event_handler(struct tep_handle *pevent, int id,
+ 				    const char *sys_name, const char *event_name,
+ 				    tep_event_handler_func func, void *context);
+ int pevent_register_print_function(struct tep_handle *pevent,
+-				   pevent_func_handler func,
+-				   enum pevent_func_arg_type ret_type,
++				   tep_func_handler func,
++				   enum tep_func_arg_type ret_type,
+ 				   char *name, ...);
+ int pevent_unregister_print_function(struct tep_handle *pevent,
+-				     pevent_func_handler func, char *name);
++				     tep_func_handler func, char *name);
+ 
+ struct format_field *tep_find_common_field(struct event_format *event, const char *name);
+ struct format_field *tep_find_field(struct event_format *event, const char *name);
+diff --git a/tools/lib/traceevent/plugin_cfg80211.c b/tools/lib/traceevent/plugin_cfg80211.c
+index c189bbc9fa18..e0421e31509f 100644
+--- a/tools/lib/traceevent/plugin_cfg80211.c
++++ b/tools/lib/traceevent/plugin_cfg80211.c
+@@ -29,10 +29,10 @@ int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
+ {
+ 	pevent_register_print_function(pevent,
+ 				       process___le16_to_cpup,
+-				       PEVENT_FUNC_ARG_INT,
++				       TEP_FUNC_ARG_INT,
+ 				       "__le16_to_cpup",
+-				       PEVENT_FUNC_ARG_PTR,
+-				       PEVENT_FUNC_ARG_VOID);
++				       TEP_FUNC_ARG_PTR,
++				       TEP_FUNC_ARG_VOID);
+ 	return 0;
+ }
+ 
+diff --git a/tools/lib/traceevent/plugin_jbd2.c b/tools/lib/traceevent/plugin_jbd2.c
+index 9b88aebb48a9..6da955ff037e 100644
+--- a/tools/lib/traceevent/plugin_jbd2.c
++++ b/tools/lib/traceevent/plugin_jbd2.c
+@@ -51,17 +51,17 @@ int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
+ {
+ 	pevent_register_print_function(pevent,
+ 				       process_jbd2_dev_to_name,
+-				       PEVENT_FUNC_ARG_STRING,
++				       TEP_FUNC_ARG_STRING,
+ 				       "jbd2_dev_to_name",
+-				       PEVENT_FUNC_ARG_INT,
+-				       PEVENT_FUNC_ARG_VOID);
++				       TEP_FUNC_ARG_INT,
++				       TEP_FUNC_ARG_VOID);
+ 
+ 	pevent_register_print_function(pevent,
+ 				       process_jiffies_to_msecs,
+-				       PEVENT_FUNC_ARG_LONG,
++				       TEP_FUNC_ARG_LONG,
+ 				       "jiffies_to_msecs",
+-				       PEVENT_FUNC_ARG_LONG,
+-				       PEVENT_FUNC_ARG_VOID);
++				       TEP_FUNC_ARG_LONG,
++				       TEP_FUNC_ARG_VOID);
+ 	return 0;
+ }
+ 
+diff --git a/tools/lib/traceevent/plugin_kvm.c b/tools/lib/traceevent/plugin_kvm.c
+index 9f640fe9b878..bf49926f9715 100644
+--- a/tools/lib/traceevent/plugin_kvm.c
++++ b/tools/lib/traceevent/plugin_kvm.c
+@@ -479,10 +479,10 @@ int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
+ 
+ 	pevent_register_print_function(pevent,
+ 				       process_is_writable_pte,
+-				       PEVENT_FUNC_ARG_INT,
++				       TEP_FUNC_ARG_INT,
+ 				       "is_writable_pte",
+-				       PEVENT_FUNC_ARG_LONG,
+-				       PEVENT_FUNC_ARG_VOID);
++				       TEP_FUNC_ARG_LONG,
++				       TEP_FUNC_ARG_VOID);
+ 	return 0;
+ }
+ 
+diff --git a/tools/lib/traceevent/plugin_scsi.c b/tools/lib/traceevent/plugin_scsi.c
+index bb9aea6fb000..ce38df7ed4d8 100644
+--- a/tools/lib/traceevent/plugin_scsi.c
++++ b/tools/lib/traceevent/plugin_scsi.c
+@@ -417,12 +417,12 @@ int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
+ {
+ 	pevent_register_print_function(pevent,
+ 				       process_scsi_trace_parse_cdb,
+-				       PEVENT_FUNC_ARG_STRING,
++				       TEP_FUNC_ARG_STRING,
+ 				       "scsi_trace_parse_cdb",
+-				       PEVENT_FUNC_ARG_PTR,
+-				       PEVENT_FUNC_ARG_PTR,
+-				       PEVENT_FUNC_ARG_INT,
+-				       PEVENT_FUNC_ARG_VOID);
++				       TEP_FUNC_ARG_PTR,
++				       TEP_FUNC_ARG_PTR,
++				       TEP_FUNC_ARG_INT,
++				       TEP_FUNC_ARG_VOID);
+ 	return 0;
+ }
+ 
+diff --git a/tools/lib/traceevent/plugin_xen.c b/tools/lib/traceevent/plugin_xen.c
+index 1973dd8abbfd..2ffbd91d5bb7 100644
+--- a/tools/lib/traceevent/plugin_xen.c
++++ b/tools/lib/traceevent/plugin_xen.c
+@@ -123,10 +123,10 @@ int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
+ {
+ 	pevent_register_print_function(pevent,
+ 				       process_xen_hypercall_name,
+-				       PEVENT_FUNC_ARG_STRING,
++				       TEP_FUNC_ARG_STRING,
+ 				       "xen_hypercall_name",
+-				       PEVENT_FUNC_ARG_INT,
+-				       PEVENT_FUNC_ARG_VOID);
++				       TEP_FUNC_ARG_INT,
++				       TEP_FUNC_ARG_VOID);
+ 	return 0;
+ }
+ 
 -- 
 2.17.1
