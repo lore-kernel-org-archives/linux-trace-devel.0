@@ -1,436 +1,250 @@
-Return-Path: <SRS0=gflo=KP=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:52466 "EHLO mail.kernel.org"
+Return-Path: <SRS0=FUMn=KQ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail.kernel.org ([198.145.29.99]:59254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732251AbeGaXZe (ORCPT
+        id S1732863AbeHACeL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 31 Jul 2018 19:25:34 -0400
-Date: Tue, 31 Jul 2018 17:43:11 -0400
+        Tue, 31 Jul 2018 22:34:11 -0400
+Date: Tue, 31 Jul 2018 20:51:13 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [PATCH v2 2/7] kernel-shark-qt: Add generic instruments for
- searching inside the trace data
-Message-ID: <20180731174311.7815e373@gandalf.local.home>
-In-Reply-To: <20180731135248.30587-3-y.karadz@gmail.com>
+Subject: Re: [PATCH v2 3/7] kernel-shark-qt: Introduce the visualization
+ model used by the Qt-based KS
+Message-ID: <20180731205113.2fe79e72@gandalf.local.home>
+In-Reply-To: <20180731135248.30587-4-y.karadz@gmail.com>
 References: <20180731135248.30587-1-y.karadz@gmail.com>
-        <20180731135248.30587-3-y.karadz@gmail.com>
+        <20180731135248.30587-4-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 31 Jul 2018 16:52:43 +0300
+On Tue, 31 Jul 2018 16:52:44 +0300
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> This patch introduces the instrumentation for data extraction used by the
-> visualization model of the Qt-based KernelShark. The effectiveness of these
-> instruments for searching has a dominant effect over the performance of the
-> model, so let's spend some time and explain this in detail.
-> 
-> The first type of instruments provide binary search inside a sorted in time
-> arrays of kshark_entries or trace_records. The search returns the first
-> element of the array, having timestamp bigger than a reference time value.
-> The time complexity of these searches is log(n).
-> 
-> The second type of instruments provide searching for the first (in time)
-> entry, satisfying an abstract Matching condition. Since the array is sorted
-> in time, but we search for an abstract property, for this search the array
-> is considered unsorted, thus we have to iterate and check all elements of the
-> array one by one. If we search for a type of entries, which are well presented
-> in the array, the time complexity of the search is constant, because no matter
-> how big is the array the search only goes through small number of entries at
-> the beginning of the array (or at the end, if we search backwards), before it
-> finds the first match. However if we search for sparse, or even nonexistent
-> entries, the time complexity becomes linear.
-> 
-> These explanations will start making more sense with the following patches.
-> 
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  kernel-shark-qt/src/libkshark.c | 233 +++++++++++++++++++++++++++++++-
->  kernel-shark-qt/src/libkshark.h |  86 +++++++++++-
->  2 files changed, 317 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
-> index 3299752..1796bf8 100644
-> --- a/kernel-shark-qt/src/libkshark.c
-> +++ b/kernel-shark-qt/src/libkshark.c
-> @@ -861,7 +861,7 @@ static const char *kshark_get_info(struct pevent *pe,
->   * @returns The returned string contains a semicolon-separated list of data
->   *	    fields.
->   */
-> -char* kshark_dump_entry(struct kshark_entry *entry)
-> +char* kshark_dump_entry(const struct kshark_entry *entry)
-
-Hmm, is this a separate change? It looks like it should be a separate
-patch.
-
->  {
->  	const char *event_name, *task, *lat, *info;
->  	struct kshark_context *kshark_ctx;
-> @@ -908,3 +908,234 @@ char* kshark_dump_entry(struct kshark_entry *entry)
+> diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
+> index ed3c60e..ec22f63 100644
+> --- a/kernel-shark-qt/src/CMakeLists.txt
+> +++ b/kernel-shark-qt/src/CMakeLists.txt
+> @@ -1,7 +1,8 @@
+>  message("\n src ...")
 >  
->  	return NULL;
->  }
+>  message(STATUS "libkshark")
+> -add_library(kshark SHARED libkshark.c)
+> +add_library(kshark SHARED libkshark.c
+> +                          libkshark-model.c)
+>  
+>  target_link_libraries(kshark ${CMAKE_DL_LIBS}
+>                               ${TRACEEVENT_LIBRARY}
+> diff --git a/kernel-shark-qt/src/libkshark-model.c b/kernel-shark-qt/src/libkshark-model.c
+> new file mode 100644
+> index 0000000..4a4e910
+> --- /dev/null
+> +++ b/kernel-shark-qt/src/libkshark-model.c
+> @@ -0,0 +1,1135 @@
+> +// SPDX-License-Identifier: LGPL-2.1
+> +
+> +/*
+> + * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
+> + */
+> +
+> + /**
+> +  *  @file    libkshark.c
+> +  *  @brief   Visualization model for FTRACE (trace-cmd) data.
+> +  */
+> +
+> +// C
+> +#include <stdlib.h>
+> +
+> +// KernelShark
+> +#include "libkshark-model.h"
+> +
+
+Needs comment here explaining what these are.
+
+> +#define UOB(histo) (histo->n_bins)
+> +#define LOB(histo) (histo->n_bins + 1)
+
+Perhaps add:
+
+/* For all bins */
+# define ALLB(histo) LOB(histo)
+
 > +
 > +/**
-> + * @brief Binary search inside a time-sorted array of kshark_entries.
-
-Yeah having a space here would be nice.
-
-> + * @param time: The value of time to search for.
-> + * @param data: Input location for the trace data.
-> + * @param l: Array index specifying the lower edge of the range to search in.
-> + * @param h: Array index specifying the upper edge of the range to search in.
-
-And here (and for others)
-
-> + * @returns On success, the first kshark_entry inside the range, having a
-> +	    timestamp equal or bigger than "time". In the case when no
-> +	    kshark_entry has been found inside the range, the function will
-> +	    return the value of "l" or "h".
-
-Looks like 'l' or 'h' have a different meaning when it is returned.
-Please comment it here as for what it means if it returns 'l' or 'h'.
-
-Also, it looks like there's no difference if it found an entry at time
-'l' or 'h' or if it found no entry at all.
-
-
+> + * @brief Initialize the Visualization model.
+> + * @param histo: Input location for the model descriptor.
 > + */
-> +size_t kshark_find_entry_by_time(uint64_t time,
-> +				 struct kshark_entry **data,
-> +				 size_t l, size_t h)
+> +void ksmodel_init(struct kshark_trace_histo *histo)
 > +{
-> +	if (data[l]->ts >= time)
-> +		return l;
+> +	/*
+> +	 * Initialize an empty histo. The histo will have no bins and will
+> +	 * contain no data.
+> +	 */
+> +	histo->bin_size = 0;
+> +	histo->min = 0;
+> +	histo->max = 0;
+> +	histo->n_bins = 0;
 > +
-> +	if (data[h]->ts < time)
-> +		return h;
-> +
-> +	size_t mid;
-> +	BSEARCH(h, l, data[mid]->ts < time);
-> +	return h;
+> +	histo->bin_count = NULL;
+> +	histo->map = NULL;
 > +}
 > +
 > +/**
-> + * @brief Binary search inside a time-sorted array of pevent_records.
-> + * @param time: The value of time to search for.
-> + * @param data: Input location for the trace data.
-> + * @param l: Array index specifying the lower edge of the range to search in.
-> + * @param h: Array index specifying the upper edge of the range to search in.
-> + * @returns On success, the first pevent_record inside the range, having a
-> +	    timestamp equal or bigger than "time". In the case when no
-> +	    pevent_record has been found inside the range, the function will
-> +	    return the value of "l" or "h".
+> + * @brief Clear (reset) the Visualization model.
+> + * @param histo: Input location for the model descriptor.
+> + */
+> +void ksmodel_clear(struct kshark_trace_histo *histo)
+> +{
+> +	/* Reset the histo. It will have no bins and will contain no data. */
+> +	free(histo->map);
+> +	free(histo->bin_count);
+> +	ksmodel_init(histo);
+> +}
+> +
+> +static void ksmodel_reset_bins(struct kshark_trace_histo *histo,
+> +			       size_t first, size_t last)
+> +{
+> +	/* Reset the content of the bins. */
+> +	memset(&histo->map[first], KS_EMPTY_BIN,
+> +	       (last - first + 1) * sizeof(histo->map[0]));
 
-Same here.
+This patch should add a comment here and by KS_EMPTY_BIN stating that
+KS_EMPTY_BIN is expected to be -1, as it is used to reset the entire
+array with memset(). As memset() only updates an array to a single
+byte, that byte must be the same throughout. Which works for zero and
+-1.
 
-> + */
-> +size_t kshark_find_record_by_time(uint64_t time,
-> +				  struct pevent_record **data,
-> +				  size_t l, size_t h)
-> +{
-> +	if (data[l]->ts >= time)
-> +		return l;
 > +
-> +	if (data[h]->ts < time)
-> +		return h;
-> +
-> +	size_t mid;
-> +	BSEARCH(h, l, data[mid]->ts < time);
-> +	return h;
+> +	memset(&histo->bin_count[first], 0,
+> +	       (last - first + 1) * sizeof(histo->bin_count[0]));
 > +}
 > +
-> +/**
-> + * @brief Simple Pid matching function to be user for data requests.
-> + * @param kshark_ctx: Input location for the session context pointer.
-> + * @param e: kshark_entry to be checked.
-> + * @param pid: Matching condition value.
-> + * @returns True if the Pid of the entry matches the value of "pid".
-> + *	    Else false.
-> + */
-> +bool kshark_match_pid(struct kshark_context *kshark_ctx,
-> +		      struct kshark_entry *e, int pid)
+> +static bool ksmodel_histo_alloc(struct kshark_trace_histo *histo, size_t n)
 > +{
-> +	if (e->pid == pid)
-> +		return true;
+> +	free(histo->bin_count);
+> +	free(histo->map);
 > +
-> +	return false;
-> +}
+> +	/* Create bins. Two overflow bins are added. */
+> +	histo->map = calloc(n + 2, sizeof(*histo->map));
+> +	histo->bin_count = calloc(n + 2, sizeof(*histo->bin_count));
 > +
-> +/**
-> + * @brief Simple Cpu matching function to be user for data requests.
-> + * @param kshark_ctx: Input location for the session context pointer.
-> + * @param e: kshark_entry to be checked.
-> + * @param cpu: Matching condition value.
-> + * @returns True if the Cpu of the entry matches the value of "cpu".
-> + *	    Else false.
-> + */
-> +bool kshark_match_cpu(struct kshark_context *kshark_ctx,
-> +		      struct kshark_entry *e, int cpu)
-> +{
-> +	if (e->cpu == cpu)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +/**
-> + * @brief Create Data request. The request defines the properties of the
-> + *	  requested kshark_entry.
-> + * @param first: Array index specifying the position inside the array from
-> + *		 where the search starts.
-> + * @param n: Number of array elements to search in.
-> + * @param cond: Matching condition function.
-> + * @param val: Matching condition value, used by the Matching condition
-> + *	       function.
-> + * @param vis_only: If true, a visible entry is requested.
-> + * @param vis_mask: If "vis_only" is true, use this mask to specify the level
-> + *		    of visibility of the requested entry
-> + * @returns Pointer to kshark_entry_request on success, or NULL on failure.
-> + * 	    The user is responsible for freeing the returned
-> + *	    kshark_entry_request.
-> + */
-> +struct kshark_entry_request *
-> +kshark_entry_request_alloc(size_t first, size_t n,
-> +			   matching_condition_func cond, int val,
-> +			   bool vis_only, int vis_mask)
-> +{
-> +	struct kshark_entry_request *req = malloc(sizeof(*req));
-> +
-> +	if (!req) {
-> +		fprintf(stderr,
-> +			"Failed to allocate memory for entry request.\n");
-> +		return NULL;
+> +	if (!histo->map || !histo->bin_count) {
+> +		ksmodel_clear(histo);
+> +		fprintf(stderr, "Failed to allocate memory for a histo.\n");
+> +		return false;
 > +	}
 > +
-> +	req->first = first;
-> +	req->n = n;
-> +	req->cond = cond;
-> +	req->val = val;
-> +	req->vis_only = vis_only;
-> +	req->vis_mask = vis_mask;
+> +	histo->n_bins = n;
 > +
-> +	return req;
+> +	return true;
 > +}
 > +
-> +/** Dummy entry, used to indicate the existence of filtered entries. */
-> +const struct kshark_entry dummy_entry = {
-> +	.next		= NULL,
-> +	.visible	= 0x00,
-> +	.cpu		= KS_FILTERED_BIN,
-> +	.pid		= KS_FILTERED_BIN,
-> +	.event_id	= -1,
-> +	.offset		= 0,
-> +	.ts		= 0
-> +};
-> +
-> +static const struct kshark_entry *
-> +get_entry(const struct kshark_entry_request *req,
-> +          struct kshark_entry **data,
-> +          ssize_t *index, size_t start, ssize_t end, int inc)
+> +static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
+> +					size_t n, uint64_t min, uint64_t max,
+> +					bool force_in_range)
 > +{
-> +	struct kshark_context *kshark_ctx = NULL;
-> +	const struct kshark_entry *e = NULL;
-> +	ssize_t i;
+> +	uint64_t corrected_range, delta_range, range = max - min;
+> +	struct kshark_entry *last;
 > +
-> +	if (index)
-> +		*index = KS_EMPTY_BIN;
+> +	/* The size of the bin must be >= 1, hence the range must be >= n. */
+> +	if (n == 0 || range < n)
+> +		return;
 > +
-> +	if (!kshark_instance(&kshark_ctx))
-> +		return e;
-> +
-> +	for (i = start; i != end; i += inc) {
-> +		if (req->cond(kshark_ctx, data[i], req->val)) {
-> +			/*
-> +			 * Data satisfying the condition has been found.
-> +			 */
-> +			if (req->vis_only &&
-> +			    !(data[i]->visible & req->vis_mask)) {
-> +				/* This data entry has been filtered. */
-> +				e = &dummy_entry;
-> +			} else {
-> +				e = data[i];
-> +				break;
-> +			}
+> +	/*
+> +	 * If the number of bins changes, allocate memory for the descriptor
+> +	 * of the model.
+> +	 */
+> +	if (n != histo->n_bins) {
+> +		if (!ksmodel_histo_alloc(histo, n)) {
+> +			ksmodel_clear(histo);
+> +			return;
 > +		}
 > +	}
 > +
-> +	if (index) {
-> +		if (e)
-> +			*index = (e->event_id >= 0)? i : KS_FILTERED_BIN;
-> +		else
-> +			*index = KS_EMPTY_BIN;
-> +	}
-> +
-> +	return e;
-> +}
-> +
-> +/**
-> + * @brief Search for an entry satisfying the requirements of a given Data
-> + *	  request. Start from the position provided by the request and go
-> + *	  searching in the direction of the increasing timestamps (front).
-> + * @param req: Input location for Data request.
-> + * @param data: Input location for the trace data.
-> + * @param index: Optional output location for the index of the returned
-> + *		 entry inside the array.
-> + * @returns Pointer to the first entry satisfying the matching conditionon
-> + *	    success, or NULL on failure.
-> + *	    In the special case when some entries, satisfying the Matching
-> + *	    condition function have been found, but all these entries have
-> + *	    been discarded because of the visibility criteria (filtered
-> + *	    entries), the function returns a pointer to a special
-> + *	    "Dummy entry".
-> + */
-> +const struct kshark_entry *
-> +kshark_get_entry_front(const struct kshark_entry_request *req,
-> +                       struct kshark_entry **data,
-> +                       ssize_t *index)
-> +{
-> +	ssize_t end = req->first + req->n;
-> +
-> +	return get_entry(req, data, index, req->first, end, +1);
+> +	/* Reset the content of all bins (including overflow bins) to zero. */
+> +	ksmodel_reset_bins(histo, 0, histo->n_bins + 1);
 
-You don't need the "+" in the +1 ;-)
+Here we could then have:
 
-> +}
-> +
-> +/**
-> + * @brief Search for an entry satisfying the requirements of a given Data
-> + *	  request. Start from the position provided by the request and go
-> + *	  searching in the direction of the decreasing timestamps (back).
-> + * @param req: Input location for Data request.
-> + * @param data: Input location for the trace data.
-> + * @param index: Optional output location for the index of the returned
-> + *		 entry inside the array.
-> + * @returns Pointer to the first entry satisfying the matching conditionon
-> + *	    success, or NULL on failure.
-> + *	    In the special case when some entries, satisfying the Matching
-> + *	    condition function have been found, but all these entries have
-> + *	    been discarded because of the visibility criteria (filtered
-> + *	    entries), the function returns a pointer to a special
-> + *	    "Dummy entry".
-> + */
-> +const struct kshark_entry *
-> +kshark_get_entry_back(const struct kshark_entry_request *req,
-> +                      struct kshark_entry **data,
-> +                      ssize_t *index)
-> +{
-> +	ssize_t end = req->first - req->n;
-> +	if (end < 0)
-> +		end = -1;
-> +
-> +	return get_entry(req, data, index, req->first, end, -1);
-> +}
-> diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
-> index 0ad31c0..adbd392 100644
-> --- a/kernel-shark-qt/src/libkshark.h
-> +++ b/kernel-shark-qt/src/libkshark.h
-> @@ -133,7 +133,7 @@ void kshark_close(struct kshark_context *kshark_ctx);
->  
->  void kshark_free(struct kshark_context *kshark_ctx);
->  
-> -char* kshark_dump_entry(struct kshark_entry *entry);
-> +char* kshark_dump_entry(const struct kshark_entry *entry);
+	ksmodel_reset_bins(histo, 0, ALLB(histo));
 
-Again, shouldn't this be in its own patch?
+> +
+> +	if (range % n == 0) {
+> +		/*
+> +		 * The range is multiple of the number of bin and needs no
+> +		 * adjustment. This is very unlikely to happen but still ...
+> +		 */
+> +		histo->min = min;
+> +		histo->max = max;
+> +		histo->bin_size = range / n;
+> +	} else {
+> +		/*
+> +		 * The range needs adjustment. The new range will be slightly
+> +		 * bigger, compared to the requested one.
+> +		 */
+> +		histo->bin_size = range / n + 1;
+> +		corrected_range = histo->bin_size * n;
+> +		delta_range = corrected_range - range;
+> +		histo->min = min - delta_range / 2;
+> +		histo->max = histo->min + corrected_range;
+> +
+> +		if (!force_in_range)
+> +			return;
+> +
+> +		/*
+> +		 * Make sure that the new range doesn't go outside of the time
+> +		 * interval of the dataset.
+> +		 */
+> +		last = histo->data[histo->data_size - 1];
+> +		if (histo->min < histo->data[0]->ts) {
+> +			histo->min = histo->data[0]->ts;
+> +			histo->max = histo->min + corrected_range;
+> +		} else if (histo->max > last->ts) {
+> +			histo->max = last->ts;
+> +			histo->min = histo->max - corrected_range;
+> +		}
+
+Hmm, Let's say the range of the data is 0..1,000,001 and we picked a
+range of 999,999 starting at 0. And there's 1024 buckets. This would
+have:
+
+min = 0; max = 999999; n = 1024; range = 999999;
+
+bin_size = 999999 / 1024 + 1 = 977;
+correct_range = 977 * 1024 = 1000448;
+delta_rang = 1000448 - 999999 = 449;
+histo->min = 0 - 449 / 2 = -224;
+histo->max = -224 + 1000448 = 1000224;
+
+Now histo->min (-224) < histo->data[0]->ts (0) so
+
+histo->min = 0;
+histo->max = 0 + 1000448 = 1000448;
+
+Thus we get max greater than the data set.
+
+Actually, we would always get a range greater than the data set, if the
+data set itself is not divisible by the bin size. This that a problem?
 
 -- Steve
 
->  
->  /** Bit masks used to control the visibility of the entry after filtering. */
->  enum kshark_filter_masks {
-> @@ -190,6 +190,90 @@ void kshark_filter_entries(struct kshark_context *kshark_ctx,
->  			   struct kshark_entry **data,
->  			   size_t n_entries);
->  
-> +/** General purpose Binary search macro. */
-> +#define BSEARCH(h, l, cond) 			\
-> +	({						\
-> +		while (h - l > 1) {			\
-> +			mid = (l + h) / 2;		\
-> +			if (cond)	\
-> +				l = mid;		\
-> +			else				\
-> +				h = mid;		\
-> +		}					\
-> +	})
-> +
-> +size_t kshark_find_entry_by_time(uint64_t time,
-> +				 struct kshark_entry **data_rows,
-> +				 size_t l, size_t h);
-> +
-> +size_t kshark_find_record_by_time(uint64_t time,
-> +				  struct pevent_record **data_rows,
-> +				  size_t l, size_t h);
-> +
-> +bool kshark_match_pid(struct kshark_context *kshark_ctx,
-> +		      struct kshark_entry *e, int pid);
-> +
-> +bool kshark_match_cpu(struct kshark_context *kshark_ctx,
-> +		      struct kshark_entry *e, int cpu);
-> +
-> +/** Empty bin identifier. */
-> +#define KS_EMPTY_BIN		-1
-> +
-> +/** Filtered bin identifier. */
-> +#define KS_FILTERED_BIN		-2
-> +
-> +/** Matching condition function type. To be user for data requests */
-> +typedef bool (matching_condition_func)(struct kshark_context*,
-> +				       struct kshark_entry*,
-> +				       int);
+> +	}
+> +}
 > +
 > +/**
-> + * Data request structure, defining the properties of the required
-> + * kshark_entry.
+> + * @brief Prepare the bining of the Visualization model.
+> + * @param histo: Input location for the model descriptor.
+> + * @param n: Number of bins.
+> + * @param min: Lower edge of the time-window to be visualized.
+> + * @param max: Upper edge of the time-window to be visualized.
 > + */
-> +struct kshark_entry_request {
-> +	/**
-> +	 * Array index specifying the position inside the array from where
-> +	 * the search starts.
-> +	 */
-> +	size_t first;
+> +void ksmodel_set_bining(struct kshark_trace_histo *histo,
+> +			size_t n, uint64_t min, uint64_t max)
+> +{
+> +	ksmodel_set_in_range_bining(histo, n, min, max, false);
+> +}
 > +
-> +	/** Number of array elements to search in. */
-> +	size_t n;
-> +
-> +	/** Matching condition function. */
-> +	matching_condition_func *cond;
-> +
-> +	/**
-> +	 * Matching condition value, used by the Matching condition function.
-> +	 */
-> +	int val;
-> +
-> +	/** If true, a visible entry is requested. */
-> +	bool vis_only;
-> +
-> +	/**
-> +	 * If "vis_only" is true, use this mask to specify the level of
-> +	 * visibility of the requested entry.
-> +	 */
-> +	uint8_t vis_mask;
-> +};
-> +
-> +struct kshark_entry_request *
-> +kshark_entry_request_alloc(size_t first, size_t n,
-> +			   matching_condition_func cond, int val,
-> +			   bool vis_only, int vis_mask);
-> +
-> +const struct kshark_entry *
-> +kshark_get_entry_front(const struct kshark_entry_request *req,
-> +		       struct kshark_entry **data,
-> +		       ssize_t *index);
-> +
-> +const struct kshark_entry *
-> +kshark_get_entry_back(const struct kshark_entry_request *req,
-> +		      struct kshark_entry **data,
-> +		      ssize_t *index);
-> +
->  #ifdef __cplusplus
->  }
->  #endif
+>
