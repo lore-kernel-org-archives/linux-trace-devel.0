@@ -1,78 +1,61 @@
-Return-Path: <SRS0=FUMn=KQ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:50208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727608AbeHAVKP (ORCPT
+Return-Path: <SRS0=xHrW=KR=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-wm0-f65.google.com ([74.125.82.65]:34788 "EHLO
+        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732276AbeHBOuh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 1 Aug 2018 17:10:15 -0400
-Date: Wed, 1 Aug 2018 15:22:57 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 03/24] tools/lib/traceevent, tools/perf: Rename pevent
- plugin related APIs
-Message-ID: <20180801152257.430e6682@gandalf.local.home>
-In-Reply-To: <20180801124156.20894-4-tz.stoyanov@gmail.com>
-References: <20180801124156.20894-1-tz.stoyanov@gmail.com>
-        <20180801124156.20894-4-tz.stoyanov@gmail.com>
+        Thu, 2 Aug 2018 10:50:37 -0400
+Received: by mail-wm0-f65.google.com with SMTP id l2-v6so2243311wme.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Aug 2018 05:59:31 -0700 (PDT)
+Subject: Re: [PATCH v2 3/7] kernel-shark-qt: Introduce the visualization model
+ used by the Qt-based KS
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+References: <20180731135248.30587-1-y.karadz@gmail.com>
+ <20180731135248.30587-4-y.karadz@gmail.com>
+ <20180801142244.3ed8a35c@gandalf.local.home>
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <a886af06-9a25-7c4a-e147-d970e9b9fd08@gmail.com>
+Date: Thu, 2 Aug 2018 15:59:39 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180801142244.3ed8a35c@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed,  1 Aug 2018 15:41:35 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> In order to make libtraceevent into a proper library, variables, data
-> structures and functions require a unique prefix to prevent name space
-> conflicts. That prefix will be "tep_" and not "pevent_". This changes
-> the pevent plugin related API.
+
+On  1.08.2018 21:22, Steven Rostedt wrote:
+>> +	/*
+>> +	 * Calculate the new range of the histo. Use the bin of the marker
+>> +	 * as a focal point for the zoomout. With this the maker will stay
+>> +	 * inside the same bin in the new histo.
+>> +	 */
+>> +	range = histo->max - histo->min;
+>> +	delta_tot = range * r;
+>> +	delta_min = delta_tot * mark / histo->n_bins;
+>> +
+>> +	min = histo->min - delta_min;
+>> +	max = histo->max + (size_t) delta_tot - delta_min;
+> Took me a bit to figure out what exactly the above is doing. Let me
+> explain what I think it is doing and you can correct me if I'm wrong.
 > 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  tools/lib/traceevent/event-parse.c         |  8 ++--
->  tools/lib/traceevent/event-parse.h         | 50 +++++++++++-----------
->  tools/lib/traceevent/event-plugin.c        | 24 +++++------
->  tools/lib/traceevent/plugin_cfg80211.c     |  4 +-
->  tools/lib/traceevent/plugin_function.c     | 10 ++---
->  tools/lib/traceevent/plugin_hrtimer.c      |  4 +-
->  tools/lib/traceevent/plugin_jbd2.c         |  4 +-
->  tools/lib/traceevent/plugin_kmem.c         |  4 +-
->  tools/lib/traceevent/plugin_kvm.c          |  4 +-
->  tools/lib/traceevent/plugin_mac80211.c     |  4 +-
->  tools/lib/traceevent/plugin_sched_switch.c |  4 +-
->  tools/lib/traceevent/plugin_scsi.c         |  4 +-
->  tools/lib/traceevent/plugin_xen.c          |  4 +-
->  13 files changed, 64 insertions(+), 64 deletions(-)
+> We set delta_tot to increase by the percentage requested (easy).
 > 
-> diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-> index 90f30f9dde14..5f8019773673 100644
-> --- a/tools/lib/traceevent/event-parse.c
-> +++ b/tools/lib/traceevent/event-parse.c
-> @@ -88,7 +88,7 @@ struct event_handler {
->  	int				id;
->  	const char			*sys_name;
->  	const char			*event_name;
-> -	pevent_event_handler_func	func;
-> +	tep_event_handler_func	func;
+> Now we make delta_min equal to a percentage of delta_tot based on where
+> mark is in the original bins. If mark is zero, then mark was at 0% of
+> the original bins, if it was at histo->n_bins - 1, it was at (almost)
+> 100%. If it is half way, then we place delta_min at %50 of delta_tot.
+> 
+> Then we subtract the original min by the delta_tot * mark/n_bins
+> percentage, and add the max by delta_tot * (1 - mark/n_bins).
+> 
+> Sound right? Maybe we can add a comment saying such?
+> 
 
-You want to make sure that when things change, you keep the formatting
-in sync. This makes it a bit more tedious, as you need to scan the
-code. The above causes "func" to no longer be in line with the rest of
-the data structure. Note, this is a common error with changes like
-this, especially when they affect a lot of files like this change set
-does.
-
-You may want to scan all the code that was changed to make sure that
-there's no other modifications of formats caused by name changes.
+Yes, this is a correct explanation. I will use it as a comment in the code.
 
 Thanks!
-
--- Steve
-
-
-
->  	void				*context;
->  };
->  
-> @@ -6633,7 +6633,7 @@ static struct event_format *pevent_search_event(struct tep_handle *pevent, int i
+Yordan
