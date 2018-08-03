@@ -1,425 +1,1421 @@
 Return-Path: <SRS0=opg7=KS=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46211 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732302AbeHCQ0j (ORCPT
+Received: from mail-wm0-f65.google.com ([74.125.82.65]:55257 "EHLO
+        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732188AbeHCQ0q (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 Aug 2018 12:26:39 -0400
-Received: by mail-wr1-f66.google.com with SMTP id h14-v6so5577574wrw.13
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 Aug 2018 07:30:01 -0700 (PDT)
+        Fri, 3 Aug 2018 12:26:46 -0400
+Received: by mail-wm0-f65.google.com with SMTP id c14-v6so6496636wmb.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 Aug 2018 07:30:08 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3 1/6] kernel-shark-qt: Add generic instruments for searching inside the trace data
-Date: Fri,  3 Aug 2018 17:29:32 +0300
-Message-Id: <20180803142937.3970-2-y.karadz@gmail.com>
+Subject: [PATCH v3 2/6] kernel-shark-qt: Introduce the visualization model used by the Qt-based KS
+Date: Fri,  3 Aug 2018 17:29:33 +0300
+Message-Id: <20180803142937.3970-3-y.karadz@gmail.com>
 In-Reply-To: <20180803142937.3970-1-y.karadz@gmail.com>
 References: <20180803142937.3970-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch introduces the instrumentation for data extraction used by the
-visualization model of the Qt-based KernelShark. The effectiveness of these
-instruments for searching has a dominant effect over the performance of the
-model, so let's spend some time and explain this in detail.
+The model, used by the Qt-based KernelShark for visualization of trace data
+is build over the concept of "Data Bins". When visualizing a large data-set
+of trace records, we are limited by the number of screen pixels available for
+drawing. The model divides the data-set into data-units, also called Bins.
+The Bin has to be defined in such a way that the entire content of one Bin
+can be summarized and visualized by a single graphical element.
+This model uses the timestamp of the trace records, as a criteria for forming
+Bins. When the Model has to visualize all records inside a given time-window,
+it divides this time-window into N smaller, uniformly sized subintervals and
+then defines that one Bin contains all trace records, having timestamps
+falling into one of this subintervals. Because the model operates over an
+array of trace records, sorted in time, the content of each Bin can be
+retrieved by simply knowing the index of the first element inside this Bin
+and the index of the first element of the next Bin. This means that knowing
+the index of the first element in each Bin is enough to determine the State
+of the model.
 
-The first type of instruments provide binary search inside a sorted in time
-arrays of kshark_entries or trace_records. The search returns the first
-element of the array, having timestamp bigger than a reference time value.
-The time complexity of these searches is log(n).
+The State of the model can be modified by its five basic operations: Zoon-In,
+Zoom-Out, Shift-Forward, Shift-Backward and Jump-To. After each of these
+operations, the new State of the model is retrieved, by using binary search
+to find the index of the first element in each Bin. This means that each one
+of the five basic operations of the model has log(n) time complexity (see
+previous change log).
 
-The second type of instruments provide searching for the first (in time)
-entry, satisfying an abstract Matching condition. Since the array is sorted
-in time, but we search for an abstract property, for this search the array
-is considered unsorted, thus we have to iterate and check all elements of the
-array one by one. If we search for a type of entries, which are well presented
-in the array, the time complexity of the search is constant, because no matter
-how big is the array the search only goes through small number of entries at
-the beginning of the array (or at the end, if we search backwards), before it
-finds the first match. However if we search for sparse, or even nonexistent
-entries, the time complexity becomes linear.
-
-These explanations will start making more sense with the following patches.
+In order to keep the visualization of the new state of the model as efficient
+as possible, the model needs a way to summarize and visualize the content of
+the Bins in constant time. This is achieved by limiting ourself to only
+checking the content of the records at the beginning and at the end of the
+Bin. As explaned in the previous change log, this approach has the very
+counter-intuitive effect of making the update of the sparse (or empty) Graphs
+much slower. The problem of the Sparse Graphs will be addressed in another
+patch, where "Data Collections" will be introduced.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/libkshark.c | 262 ++++++++++++++++++++++++++++++++
- kernel-shark-qt/src/libkshark.h |  93 ++++++++++++
- 2 files changed, 355 insertions(+)
+ kernel-shark-qt/src/CMakeLists.txt    |    3 +-
+ kernel-shark-qt/src/libkshark-model.c | 1182 +++++++++++++++++++++++++
+ kernel-shark-qt/src/libkshark-model.h |  149 ++++
+ 3 files changed, 1333 insertions(+), 1 deletion(-)
+ create mode 100644 kernel-shark-qt/src/libkshark-model.c
+ create mode 100644 kernel-shark-qt/src/libkshark-model.h
 
-diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
-index c829aa9..879946b 100644
---- a/kernel-shark-qt/src/libkshark.c
-+++ b/kernel-shark-qt/src/libkshark.c
-@@ -925,3 +925,265 @@ char* kshark_dump_entry(const struct kshark_entry *entry)
+diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
+index ed3c60e..ec22f63 100644
+--- a/kernel-shark-qt/src/CMakeLists.txt
++++ b/kernel-shark-qt/src/CMakeLists.txt
+@@ -1,7 +1,8 @@
+ message("\n src ...")
  
- 	return NULL;
- }
+ message(STATUS "libkshark")
+-add_library(kshark SHARED libkshark.c)
++add_library(kshark SHARED libkshark.c
++                          libkshark-model.c)
+ 
+ target_link_libraries(kshark ${CMAKE_DL_LIBS}
+                              ${TRACEEVENT_LIBRARY}
+diff --git a/kernel-shark-qt/src/libkshark-model.c b/kernel-shark-qt/src/libkshark-model.c
+new file mode 100644
+index 0000000..d750886
+--- /dev/null
++++ b/kernel-shark-qt/src/libkshark-model.c
+@@ -0,0 +1,1182 @@
++// SPDX-License-Identifier: LGPL-2.1
++
++/*
++ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ */
++
++ /**
++  *  @file    libkshark.c
++  *  @brief   Visualization model for FTRACE (trace-cmd) data.
++  */
++
++// C
++#include <stdlib.h>
++#include <assert.h>
++
++// KernelShark
++#include "libkshark-model.h"
++
++/* The index of the Upper Overflow bin. */
++#define UOB(histo) (histo->n_bins)
++
++/* The index of the Lower Overflow bin. */
++#define LOB(histo) (histo->n_bins + 1)
++
++/* For all bins */
++# define ALLB(histo) LOB(histo)
 +
 +/**
-+ * @brief Binary search inside a time-sorted array of kshark_entries.
++ * @brief Initialize the Visualization model.
 + *
-+ * @param time: The value of time to search for.
-+ * @param data: Input location for the trace data.
-+ * @param l: Array index specifying the lower edge of the range to search in.
-+ * @param h: Array index specifying the upper edge of the range to search in.
-+ *
-+ * @returns On success, the first kshark_entry inside the range, having a
-+	    timestamp equal or bigger than "time".
-+	    If all entries inside the range have timestamps greater than "time"
-+	    the function returns BSEARCH_ALL_GREATER (negative value).
-+	    If all entries inside the range have timestamps smaller than "time"
-+	    the function returns BSEARCH_ALL_SMALLER (negative value).
++ * @param histo: Input location for the model descriptor.
 + */
-+ssize_t kshark_find_entry_by_time(uint64_t time,
-+				 struct kshark_entry **data,
-+				 size_t l, size_t h)
++void ksmodel_init(struct kshark_trace_histo *histo)
 +{
-+	size_t mid;
-+
-+	if (data[l]->ts > time)
-+		return BSEARCH_ALL_GREATER;
-+
-+	if (data[h]->ts < time)
-+		return BSEARCH_ALL_SMALLER;
-+
 +	/*
-+	 * After executing the BSEARCH macro, "l" will be the index of the last
-+	 * entry having timestamp < time and "h" will be the index of the first
-+	 * entry having timestamp >= time.
++	 * Initialize an empty histo. The histo will have no bins and will
++	 * contain no data.
 +	 */
-+	BSEARCH(h, l, data[mid]->ts < time);
-+	return h;
++	histo->bin_size = 0;
++	histo->min = 0;
++	histo->max = 0;
++	histo->n_bins = 0;
++
++	histo->bin_count = NULL;
++	histo->map = NULL;
 +}
 +
 +/**
-+ * @brief Binary search inside a time-sorted array of pevent_records.
++ * @brief Clear (reset) the Visualization model.
 + *
-+ * @param time: The value of time to search for.
-+ * @param data: Input location for the trace data.
-+ * @param l: Array index specifying the lower edge of the range to search in.
-+ * @param h: Array index specifying the upper edge of the range to search in.
-+ *
-+ * @returns On success, the first pevent_record inside the range, having a
-+	    timestamp equal or bigger than "time".
-+	    If all entries inside the range have timestamps greater than "time"
-+	    the function returns BSEARCH_ALL_GREATER (negative value).
-+	    If all entries inside the range have timestamps smaller than "time"
-+	    the function returns BSEARCH_ALL_SMALLER (negative value).
++ * @param histo: Input location for the model descriptor.
 + */
-+ssize_t kshark_find_record_by_time(uint64_t time,
-+				   struct pevent_record **data,
-+				   size_t l, size_t h)
++void ksmodel_clear(struct kshark_trace_histo *histo)
 +{
-+	size_t mid;
++	/* Reset the histo. It will have no bins and will contain no data. */
++	free(histo->map);
++	free(histo->bin_count);
++	ksmodel_init(histo);
++}
 +
-+	if (data[l]->ts > time)
-+		return BSEARCH_ALL_GREATER;
-+
-+	if (data[h]->ts < time)
-+		return BSEARCH_ALL_SMALLER;
-+
++static void ksmodel_reset_bins(struct kshark_trace_histo *histo,
++			       size_t first, size_t last)
++{
 +	/*
-+	 * After executing the BSEARCH macro, "l" will be the index of the last
-+	 * record having timestamp < time and "h" will be the index of the
-+	 * first record having timestamp >= time.
++	 * Reset the content of the bins.
++	 * Be careful here! Resetting the entire array of signed integers with
++	 * memset() will work only for values of "0" and "-1". Hence
++	 * KS_EMPTY_BIN is expected to be "-1".
 +	 */
-+	BSEARCH(h, l, data[mid]->ts < time);
-+	return h;
++	memset(&histo->map[first], KS_EMPTY_BIN,
++	       (last - first + 1) * sizeof(histo->map[0]));
++
++	memset(&histo->bin_count[first], 0,
++	       (last - first + 1) * sizeof(histo->bin_count[0]));
 +}
 +
-+/**
-+ * @brief Simple Pid matching function to be user for data requests.
-+ *
-+ * @param kshark_ctx: Input location for the session context pointer.
-+ * @param e: kshark_entry to be checked.
-+ * @param pid: Matching condition value.
-+ *
-+ * @returns True if the Pid of the entry matches the value of "pid".
-+ *	    Else false.
-+ */
-+bool kshark_match_pid(struct kshark_context *kshark_ctx,
-+		      struct kshark_entry *e, int pid)
++static bool ksmodel_histo_alloc(struct kshark_trace_histo *histo, size_t n)
 +{
-+	if (e->pid == pid)
-+		return true;
++	free(histo->bin_count);
++	free(histo->map);
 +
-+	return false;
-+}
++	/* Create bins. Two overflow bins are added. */
++	histo->map = calloc(n + 2, sizeof(*histo->map));
++	histo->bin_count = calloc(n + 2, sizeof(*histo->bin_count));
 +
-+/**
-+ * @brief Simple Cpu matching function to be user for data requests.
-+ *
-+ * @param kshark_ctx: Input location for the session context pointer.
-+ * @param e: kshark_entry to be checked.
-+ * @param cpu: Matching condition value.
-+ *
-+ * @returns True if the Cpu of the entry matches the value of "cpu".
-+ *	    Else false.
-+ */
-+bool kshark_match_cpu(struct kshark_context *kshark_ctx,
-+		      struct kshark_entry *e, int cpu)
-+{
-+	if (e->cpu == cpu)
-+		return true;
-+
-+	return false;
-+}
-+
-+/**
-+ * @brief Create Data request. The request defines the properties of the
-+ *	  requested kshark_entry.
-+ *
-+ * @param first: Array index specifying the position inside the array from
-+ *		 where the search starts.
-+ * @param n: Number of array elements to search in.
-+ * @param cond: Matching condition function.
-+ * @param val: Matching condition value, used by the Matching condition
-+ *	       function.
-+ * @param vis_only: If true, a visible entry is requested.
-+ * @param vis_mask: If "vis_only" is true, use this mask to specify the level
-+ *		    of visibility of the requested entry.
-+ *
-+ * @returns Pointer to kshark_entry_request on success, or NULL on failure.
-+ *	    The user is responsible for freeing the returned
-+ *	    kshark_entry_request.
-+ */
-+struct kshark_entry_request *
-+kshark_entry_request_alloc(size_t first, size_t n,
-+			   matching_condition_func cond, int val,
-+			   bool vis_only, int vis_mask)
-+{
-+	struct kshark_entry_request *req = malloc(sizeof(*req));
-+
-+	if (!req) {
-+		fprintf(stderr,
-+			"Failed to allocate memory for entry request.\n");
-+		return NULL;
++	if (!histo->map || !histo->bin_count) {
++		ksmodel_clear(histo);
++		fprintf(stderr, "Failed to allocate memory for a histo.\n");
++		return false;
 +	}
 +
-+	req->first = first;
-+	req->n = n;
-+	req->cond = cond;
-+	req->val = val;
-+	req->vis_only = vis_only;
-+	req->vis_mask = vis_mask;
++	histo->n_bins = n;
 +
-+	return req;
++	return true;
 +}
 +
-+/** Dummy entry, used to indicate the existence of filtered entries. */
-+const struct kshark_entry dummy_entry = {
-+	.next		= NULL,
-+	.visible	= 0x00,
-+	.cpu		= KS_FILTERED_BIN,
-+	.pid		= KS_FILTERED_BIN,
-+	.event_id	= -1,
-+	.offset		= 0,
-+	.ts		= 0
-+};
-+
-+static const struct kshark_entry *
-+get_entry(const struct kshark_entry_request *req,
-+          struct kshark_entry **data,
-+          ssize_t *index, size_t start, ssize_t end, int inc)
++static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
++					size_t n, uint64_t min, uint64_t max,
++					bool force_in_range)
 +{
-+	struct kshark_context *kshark_ctx = NULL;
-+	const struct kshark_entry *e = NULL;
-+	ssize_t i;
++	uint64_t corrected_range, delta_range, range = max - min;
++	struct kshark_entry *last;
++
++	/* The size of the bin must be >= 1, hence the range must be >= n. */
++	if (n == 0 || range < n)
++		return;
++
++	/*
++	 * If the number of bins changes, allocate memory for the descriptor
++	 * of the model.
++	 */
++	if (n != histo->n_bins) {
++		if (!ksmodel_histo_alloc(histo, n)) {
++			ksmodel_clear(histo);
++			return;
++		}
++	}
++
++	/* Reset the content of all bins (including overflow bins) to zero. */
++	ksmodel_reset_bins(histo, 0, ALLB(histo));
++
++	if (range % n == 0) {
++		/*
++		 * The range is multiple of the number of bin and needs no
++		 * adjustment. This is very unlikely to happen but still ...
++		 */
++		histo->min = min;
++		histo->max = max;
++		histo->bin_size = range / n;
++	} else {
++		/*
++		 * The range needs adjustment. The new range will be slightly
++		 * bigger, compared to the requested one.
++		 */
++		histo->bin_size = range / n + 1;
++		corrected_range = histo->bin_size * n;
++		delta_range = corrected_range - range;
++		histo->min = min - delta_range / 2;
++		histo->max = histo->min + corrected_range;
++
++		if (!force_in_range)
++			return;
++
++		/*
++		 * Make sure that the new range doesn't go outside of the time
++		 * interval of the dataset.
++		 */
++		last = histo->data[histo->data_size - 1];
++		if (histo->min < histo->data[0]->ts) {
++			histo->min = histo->data[0]->ts;
++			histo->max = histo->min + corrected_range;
++		} else if (histo->max > last->ts) {
++			histo->max = last->ts;
++			histo->min = histo->max - corrected_range;
++		}
++	}
++}
++
++/**
++ * @brief Prepare the bining of the Visualization model.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param n: Number of bins.
++ * @param min: Lower edge of the time-window to be visualized.
++ * @param max: Upper edge of the time-window to be visualized.
++ */
++void ksmodel_set_bining(struct kshark_trace_histo *histo,
++			size_t n, uint64_t min, uint64_t max)
++{
++	ksmodel_set_in_range_bining(histo, n, min, max, false);
++}
++
++static size_t ksmodel_set_lower_edge(struct kshark_trace_histo *histo)
++{
++	/*
++	 * Find the index of the first entry inside
++	 * the range (timestamp > min).
++	 */
++	ssize_t row = kshark_find_entry_by_time(histo->min,
++						histo->data,
++						0,
++						histo->data_size - 1);
++
++	assert(row != BSEARCH_ALL_SMALLER);
++
++	if (row == BSEARCH_ALL_GREATER || row == 0) {
++		/* Lower Overflow bin is empty. */
++		histo->map[LOB(histo)] = KS_EMPTY_BIN;
++		histo->bin_count[LOB(histo)] = 0;
++		row = 0;
++	} else {
++		/*
++		 * The first entry inside the range is not the first entry
++		 * of the dataset. This means that the Lower Overflow bin
++		 * contains data.
++		 */
++
++		/* Lower Overflow bin starts at "0". */
++		histo->map[LOB(histo)] = 0;
++
++		/*
++		 * The number of entries inside the Lower Overflow bin is
++		 * equal to the index of the first entry inside the range.
++		 */
++		histo->bin_count[LOB(histo)] = row;
++	}
++
++	/*
++	 * Now check if the first entry inside the range falls into the
++	 * first bin.
++	 */
++	if (histo->data[row]->ts < histo->min + histo->bin_size) {
++		/*
++		 * It is inside the first bin. Set the beginning
++		 * of the first bin.
++		 */
++		histo->map[0] = row;
++	} else {
++		/* The first bin is empty. */
++		histo->map[0] = KS_EMPTY_BIN;
++	}
++
++	return row;
++}
++
++static size_t ksmodel_set_upper_edge(struct kshark_trace_histo *histo)
++{
++	/*
++	 * Find the index of the first entry outside the range
++	 * (timestamp > max). Remember that kshark_find_entry_by_time returns
++	 * the first entry which is equal or greater than the reference time.
++	 */
++	ssize_t row = kshark_find_entry_by_time(histo->max + 1,
++						histo->data,
++						0,
++						histo->data_size - 1);
++
++	assert(row != BSEARCH_ALL_GREATER);
++
++	if (row == BSEARCH_ALL_SMALLER || row == histo->data_size - 1) {
++		/* Upper Overflow bin is empty. */
++		histo->map[UOB(histo)] = KS_EMPTY_BIN;
++		histo->bin_count[UOB(histo)] = 0;
++	} else {
++		/*
++		 * The Upper Overflow bin contains data. Set its beginning
++		 * and the number of entries.
++		 */
++		histo->map[UOB(histo)] = row;
++		histo->bin_count[UOB(histo)] = histo->data_size - row;
++	}
++
++	return row;
++}
++
++static void ksmodel_set_next_bin_edge(struct kshark_trace_histo *histo,
++				      size_t bin, size_t last_row)
++{
++	size_t time, next_bin = bin + 1;
++	ssize_t row;
++
++	/* Calculate the beginning of the next bin. */
++	time = histo->min + next_bin * histo->bin_size;
++
++	/*
++	 * The timestamp of the very last entry of the dataset can be exactly
++	 * equal to the value of the upper edge of the range. This is very
++	 * likely to happen when we use ksmodel_set_in_range_bining(). In this
++	 * case we have to increase the size of the very last bin in order to
++	 * make sure that the last entry of the dataset will fall into it.
++	 */
++	if (next_bin == histo->n_bins - 1)
++		++time;
++	/*
++	 * Find the index of the first entry inside
++	 * the next bin (timestamp > time).
++	 */
++	row = kshark_find_entry_by_time(time, histo->data, last_row,
++					histo->data_size - 1);
++
++	if (row < 0 || histo->data[row]->ts >= time + histo->bin_size) {
++		/* The bin is empty. */
++		histo->map[next_bin] = KS_EMPTY_BIN;
++		return;
++	}
++
++	/* Set the index of the first entry. */
++	histo->map[next_bin] = row;
++}
++
++/*
++ * Fill in the bin_count array, which maps the number of entries within each
++ * bin.
++ */
++static void ksmodel_set_bin_counts(struct kshark_trace_histo *histo)
++{
++	int i = 0, prev_not_empty;
++
++	memset(&histo->bin_count[0], 0,
++	       (histo->n_bins) * sizeof(histo->bin_count[0]));
++	/*
++	 * Find the first bin which contains data. Start by checking the
++	 * Lower Overflow bin.
++	 */
++	if (histo->map[LOB(histo)] != KS_EMPTY_BIN) {
++		prev_not_empty = LOB(histo);
++	} else {
++		/* Loop till the first non-empty bin. */
++		while (histo->map[i] < 0) {
++			++i;
++		}
++
++		prev_not_empty = i++;
++	}
++
++	/*
++	 * Starting from the first not empty bin, loop over all bins and fill
++	 * in the bin_count array to hold the number of entries in each bin.
++	 */
++	for (; i < histo->n_bins; ++i) {
++		if (histo->map[i] != KS_EMPTY_BIN) {
++			/* The current bin is not empty, take its data row and
++			 * subtract it from the data row of the previous not
++			 * empty bin, which will give us the number of data
++			 * rows in the "prev_not_empty" bin.
++			 */
++			histo->bin_count[prev_not_empty] =
++				histo->map[i] - histo->map[prev_not_empty];
++	
++			prev_not_empty = i;
++		}
++	}
++
++	/* Check if the Upper Overflow bin contains data. */
++	if (histo->map[UOB(histo)] == KS_EMPTY_BIN) {
++		/*
++		 * The Upper Overflow bin is empty. Use the size of the
++		 * dataset to calculate the content of the previouse not
++		 * empty bin.
++		 */
++		histo->bin_count[prev_not_empty] = histo->data_size -
++						   histo->map[prev_not_empty];
++	} else {
++		/*
++		 * Use the index of the first entry inside the Upper Overflow
++		 * bin to calculate the content of the previouse not empty
++		 * bin.
++		 */
++		histo->bin_count[prev_not_empty] = histo->map[UOB(histo)] -
++						   histo->map[prev_not_empty];
++	}
++}
++
++/**
++ * @brief Provide the Visualization model with data. Calculate the current
++ *	  state of the model.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param data: Input location for the trace data.
++ * @param n: Number of bins.
++ */
++void ksmodel_fill(struct kshark_trace_histo *histo,
++		  struct kshark_entry **data, size_t n)
++{
++	size_t last_row = 0;
++	int bin;
++
++	histo->data_size = n;
++	histo->data = data;
++
++	if (histo->n_bins == 0 ||
++	    histo->bin_size == 0 ||
++	    histo->data_size == 0) {
++		/*
++		 * Something is wrong with this histo.
++		 * Most likely the binning is not set.
++		 */
++		ksmodel_clear(histo);
++		fprintf(stderr,
++			"Unable to fill the model with data.\n");
++		fprintf(stderr,
++			"Try to set the bining of the model first.\n");
++
++		return;
++	}
++
++	/* Set the Lower Overflow bin */
++	ksmodel_set_lower_edge(histo);
++
++	/*
++	 * Loop over the dataset and set the beginning of all individual bins.
++	 */
++	for (bin = 0; bin < histo->n_bins; ++bin) {
++		ksmodel_set_next_bin_edge(histo, bin, last_row);
++		if (histo->map[bin + 1] > 0)
++			last_row = histo->map[bin + 1];
++	}
++
++	/* Set the Upper Overflow bin. */
++	ksmodel_set_upper_edge(histo);
++
++	/* Calculate the number of entries in each bin. */
++	ksmodel_set_bin_counts(histo);
++}
++
++/**
++ * @brief Get the total number of entries in a given bin.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ *
++ * @returns The number of entries in this bin.
++ */
++size_t ksmodel_bin_count(struct kshark_trace_histo *histo, int bin)
++{
++	if (bin >= 0 && bin < histo->n_bins)
++		return histo->bin_count[bin];
++
++	if (bin == UPPER_OVERFLOW_BIN)
++		return histo->bin_count[UOB(histo)];
++
++	if (bin == LOWER_OVERFLOW_BIN)
++		return histo->bin_count[LOB(histo)];
++
++	return 0;
++}
++
++/**
++ * @brief Shift the time-window of the model forward. Recalculate the current
++ *	  state of the model.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param n: Number of bins to shift.
++ */
++void ksmodel_shift_forward(struct kshark_trace_histo *histo, size_t n)
++{
++	size_t last_row = 0;
++	int bin;
++	
++	if (!histo->data_size)
++		return;
++
++	if (histo->map[UOB(histo)] == KS_EMPTY_BIN) {
++		/*
++		 * The Upper Overflow bin is empty. This means that we are at
++		 * the upper edge of the dataset already. Do nothing in this
++		 * case.
++		 */
++		return;
++	}
++
++	histo->min += n * histo->bin_size;
++	histo->max += n * histo->bin_size;
++
++	if (n >= histo->n_bins) {
++		/*
++		 * No overlap between the new and the old ranges. Recalculate
++		 * all bins from scratch. First calculate the new range.
++		 */
++		ksmodel_set_bining(histo, histo->n_bins, histo->min,
++							 histo->max);
++
++		ksmodel_fill(histo, histo->data, histo->data_size);
++		return;
++	}
++
++	/* Set the new Lower Overflow bin. */
++	ksmodel_set_lower_edge(histo);
++
++	/*
++	 * Copy the the mapping indexes of all overlaping bins starting from
++	 * bin "0" of the new histo. Note that the number of overlaping bins
++	 * is histo->n_bins - n.
++	 * We will do a sanity check. ksmodel_set_lower_edge() sets map[0]
++	 * index of the new histo. This index should then be equal to map[n]
++	 * index of the old histo.
++	 */
++	assert (histo->map[0] == histo->map[n]);
++	memmove(&histo->map[0], &histo->map[n],
++		sizeof(histo->map[0]) * (histo->n_bins - n));
++
++	/*
++	 * The mapping index of the old Upper Overflow bin is now index of the
++	 * first new bin.
++	 */
++	bin = UOB(histo) - n;
++	histo->map[bin] = histo->map[UOB(histo)];
++
++	/* Calculate only the content of the new (non-overlapping) bins. */
++	for (; bin < histo->n_bins; ++bin) {
++		ksmodel_set_next_bin_edge(histo, bin, last_row);
++		if (histo->map[bin + 1] > 0)
++			last_row = histo->map[bin + 1];
++	}
++
++	/*
++	 * Set the new Upper Overflow bin and calculate the number of entries
++	 * in each bin.
++	 */
++	ksmodel_set_upper_edge(histo);
++	ksmodel_set_bin_counts(histo);
++}
++
++/**
++ * @brief Shift the time-window of the model backward. Recalculate the current
++ *	  state of the model.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param n: Number of bins to shift.
++ */
++void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n)
++{
++	size_t last_row = 0;
++	int bin;
++
++	if (!histo->data_size)
++		return;
++
++	if (histo->map[LOB(histo)] == KS_EMPTY_BIN) {
++		/*
++		 * The Lower Overflow bin is empty. This means that we are at
++		 * the Lower edge of the dataset already. Do nothing in this
++		 * case.
++		 */
++		return;
++	}
++
++	histo->min -= n * histo->bin_size;
++	histo->max -= n * histo->bin_size;
++
++	if (n >= histo->n_bins) {
++		/*
++		 * No overlap between the new and the old range. Recalculate
++		 * all bins from scratch. First calculate the new range.
++		 */
++		ksmodel_set_bining(histo, histo->n_bins, histo->min,
++							 histo->max);
++
++		ksmodel_fill(histo, histo->data, histo->data_size);
++		return;
++	}
++	/* Set the new Lower Overflow bin. */
++	ksmodel_set_lower_edge(histo);
++
++	/*
++	 * Copy the the mapping indexes of all overlaping bins starting from
++	 * bin "0" of the old histo. Note that the number of overlaping bins
++	 * is histo->n_bins - n.
++	 */
++	memmove(&histo->map[n], &histo->map[0],
++		sizeof(histo->map[0]) * (histo->n_bins - n));
++
++	/* Calculate only the content of the new (non-overlapping) bins. */
++	for (bin = 0; bin < n; ++bin) {
++		ksmodel_set_next_bin_edge(histo, bin, last_row);
++		if (histo->map[bin + 1] > 0)
++			last_row = histo->map[bin + 1];
++	}
++
++	/*
++	 * Set the new Upper Overflow bin and calculate the number of entries
++	 * in each bin.
++	 */
++	ksmodel_set_upper_edge(histo);
++	ksmodel_set_bin_counts(histo);
++}
++
++/**
++ * @brief Move the time-window of the model to a given location. Recalculate
++ *	  the current state of the model.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param ts: position in time to be visualized.
++ */
++void ksmodel_jump_to(struct kshark_trace_histo *histo, size_t ts)
++{
++	size_t min, max, range_min;
++
++	if (ts > histo->min && ts < histo->max) {
++		/*
++		 * The new position is already inside the range.
++		 * Do nothing in this case.
++		 */
++		return;
++	}
++
++	/*
++	 * Calculate the new range without changing the size and the number
++	 * of bins.
++	 */
++	min = ts - histo->n_bins * histo->bin_size / 2;
++
++	/* Make sure that the range does not go outside of the dataset. */
++	if (min < histo->data[0]->ts) {
++		min = histo->data[0]->ts;
++	} else {
++		range_min = histo->data[histo->data_size - 1]->ts -
++			    histo->n_bins * histo->bin_size;
++
++		if (min > range_min)
++			min = range_min;
++	}
++
++	max = min + histo->n_bins * histo->bin_size;
++
++	/* Use the new range to recalculate all bins from scratch. */
++	ksmodel_set_bining(histo, histo->n_bins, min, max);
++	ksmodel_fill(histo, histo->data, histo->data_size);
++}
++
++static void ksmodel_zoom(struct kshark_trace_histo *histo,
++			 double r, int mark, bool zoom_in)
++{
++	size_t range, min, max, delta_min;
++	double delta_tot;
++
++	if (!histo->data_size)
++		return;
++
++	/*
++	 * If the marker is not set, assume that the focal point of the zoom
++	 * is the center of the range.
++	 */
++	if (mark < 0)
++		mark = histo->n_bins / 2;
++
++	range = histo->max - histo->min;
++
++	/*
++	 * Avoid overzooming. If needed, adjust the Scale factor to a the value
++	 * which provides bin_size >= 5.
++	 */
++	if (zoom_in && range * (1 - r) < histo->n_bins * 5)
++		r = 1 - (histo->n_bins * 5) / range;
++
++	/*
++	 * Now calculate the new range of the histo. Use the bin of the marker
++	 * as a focal point for the zoomout. With this the maker will stay
++	 * inside the same bin in the new histo.
++	 *
++	 * First we set delta_tot to increase by the percentage requested (r).
++	 * Then we make delta_min equal to a percentage of delta_tot based on
++	 * where the position of the mark is. After this we add / subtract the
++	 * original min by the delta_min and subtract / add the max by
++	 * delta_tot - delta_min.
++	 */
++	delta_tot = range * r;
++
++	if (mark == (int)histo->n_bins - 1)
++		delta_min = delta_tot;
++	else
++		delta_min = delta_tot * mark / histo->n_bins;
++
++	min = zoom_in ? histo->min + delta_min :
++			histo->min - delta_min;
++
++	max = zoom_in ? histo->max - (size_t) delta_tot + delta_min :
++			histo->max + (size_t) delta_tot - delta_min;
++
++
++	/* Make sure the new range doesn't go outside of the dataset. */
++	if (min < histo->data[0]->ts)
++		min = histo->data[0]->ts;
++
++	if (max > histo->data[histo->data_size - 1]->ts)
++		max = histo->data[histo->data_size - 1]->ts;
++
++	/*
++	 * Use the new range to recalculate all bins from scratch. Enforce
++	 * "In Range" adjustment of the range of the model, in order to avoid
++	 * slowly drifting outside of the data-set in the case when the very
++	 * first or the very last entry is used as a focal point.
++	 */
++	ksmodel_set_in_range_bining(histo, histo->n_bins, min, max, true);
++	ksmodel_fill(histo, histo->data, histo->data_size);
++}
++
++/**
++ * @brief Extend the time-window of the model. Recalculate the current state
++ *	  of the model.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param r: Scale factor of the zoom-out.
++ * @param mark: Focus point of the zoom-out.
++ */
++void ksmodel_zoom_out(struct kshark_trace_histo *histo,
++		      double r, int mark)
++{
++	ksmodel_zoom(histo, r, mark, false);
++}
++
++/**
++ * @brief Shrink the time-window of the model. Recalculate the current state
++ *	  of the model.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param r: Scale factor of the zoom-in.
++ * @param mark: Focus point of the zoom-in.
++ */
++void ksmodel_zoom_in(struct kshark_trace_histo *histo,
++		     double r, int mark)
++{
++	ksmodel_zoom(histo, r, mark, true);
++}
++
++/**
++ * @brief Get the index of the first entry in a given bin.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ *
++ * @returns Index of the first entry in this bin. If the bin is empty the
++ *	    function returns negative error identifier (KS_EMPTY_BIN).
++ */
++ssize_t ksmodel_first_index_at_bin(struct kshark_trace_histo *histo, int bin)
++{
++	if (bin >= 0 && bin < (int) histo->n_bins)
++		return histo->map[bin];
++
++	if (bin == UPPER_OVERFLOW_BIN)
++		return histo->map[UOB(histo)];
++
++	if (bin == LOWER_OVERFLOW_BIN)
++		return histo->map[LOB(histo)];
++
++	return KS_EMPTY_BIN;
++}
++
++/**
++ * @brief Get the index of the last entry in a given bin.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ *
++ * @returns Index of the last entry in this bin. If the bin is empty the
++ *	    function returns negative error identifier (KS_EMPTY_BIN).
++ */
++ssize_t ksmodel_last_index_at_bin(struct kshark_trace_histo *histo, int bin)
++{
++	ssize_t index = ksmodel_first_index_at_bin(histo, bin);
++	size_t count = ksmodel_bin_count(histo, bin);
++
++	if (index >= 0 && count)
++		index += count - 1;
++
++	return index;
++}
++
++static bool ksmodel_is_visible(struct kshark_entry *e)
++{
++	if ((e->visible & KS_GRAPH_VIEW_FILTER_MASK) &&
++	    (e->visible & KS_EVENT_VIEW_FILTER_MASK))
++		return true;
++
++	return false;
++}
++
++static struct kshark_entry_request *
++ksmodel_entry_front_request_alloc(struct kshark_trace_histo *histo,
++				  int bin, bool vis_only,
++				  matching_condition_func func, int val)
++{
++	size_t first, n;
++
++	/* Get the number of entries in this bin. */
++	n = ksmodel_bin_count(histo, bin);
++	if (!n)
++		return NULL;
++
++	first = ksmodel_first_index_at_bin(histo, bin);
++
++	return kshark_entry_request_alloc(first, n,
++					  func, val,
++					  vis_only, KS_GRAPH_VIEW_FILTER_MASK);
++}
++
++static struct kshark_entry_request *
++ksmodel_entry_back_request_alloc(struct kshark_trace_histo *histo,
++				 int bin, bool vis_only,
++				 matching_condition_func func, int val)
++{
++	size_t first, n;
++
++	/* Get the number of entries in this bin. */
++	n = ksmodel_bin_count(histo, bin);
++	if (!n)
++		return NULL;
++
++	first = ksmodel_last_index_at_bin(histo, bin);
++
++	return kshark_entry_request_alloc(first, n,
++					  func, val,
++					  vis_only, KS_GRAPH_VIEW_FILTER_MASK);
++}
++
++/**
++ * @brief Get the index of the first entry from a given Cpu in a given bin.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param cpu: Cpu Id.
++ *
++ * @returns Index of the first entry from a given Cpu in this bin.
++ */
++ssize_t ksmodel_first_index_at_cpu(struct kshark_trace_histo *histo,
++				   int bin, int cpu)
++{
++	size_t i, n, first, not_found = KS_EMPTY_BIN;
++
++	n = ksmodel_bin_count(histo, bin);
++	if (!n)
++		return not_found;
++
++	first = ksmodel_first_index_at_bin(histo, bin);
++
++	for (i = first; i < first + n; ++i) {
++		if (histo->data[i]->cpu == cpu) {
++			if (ksmodel_is_visible(histo->data[i]))
++				return i;
++			else
++				not_found = KS_FILTERED_BIN;
++		}
++	}
++
++	return not_found;
++}
++
++/**
++ * @brief Get the index of the first entry from a given Task in a given bin.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param pid: Process Id of a task.
++ *
++ * @returns Index of the first entry from a given Task in this bin.
++ */
++ssize_t ksmodel_first_index_at_pid(struct kshark_trace_histo *histo,
++				   int bin, int pid)
++{
++	size_t i, n, first, not_found = KS_EMPTY_BIN;
++
++	n = ksmodel_bin_count(histo, bin);
++	if (!n)
++		return not_found;
++
++	first = ksmodel_first_index_at_bin(histo, bin);
++	
++	for (i = first; i < first + n; ++i) {
++		if (histo->data[i]->pid == pid) {
++			if (ksmodel_is_visible(histo->data[i]))
++				return i;
++			else
++				not_found = KS_FILTERED_BIN;
++		}
++	}
++
++	return not_found;
++}
++
++/**
++ * @brief In a given bin, start from the front end of the bin and go towards
++ *	  the back end, searching for an entry satisfying the Matching
++ *	  condition defined by a Matching condition function.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param vis_only: If true, a visible entry is requested.
++ * @param func: Matching condition function.
++ * @param val: Matching condition value, used by the Matching condition
++ *	       function.
++ * @param index: Optional output location for the index of the requested
++ *		 entry inside the array.
++ *
++ * @returns Pointer ot a kshark_entry, if an entry has been found. Else NULL.
++ */
++const struct kshark_entry *
++ksmodel_get_entry_front(struct kshark_trace_histo *histo,
++			int bin, bool vis_only,
++			matching_condition_func func, int val,
++			ssize_t *index)
++{
++	struct kshark_entry_request *req;
++	const struct kshark_entry *entry;
 +
 +	if (index)
 +		*index = KS_EMPTY_BIN;
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return e;
++	/* Set the position at the beginning of the bin and go forward. */
++	req = ksmodel_entry_front_request_alloc(histo, bin, vis_only,
++							    func, val);
++	if (!req)
++		return NULL;
 +
-+	for (i = start; i != end; i += inc) {
-+		if (req->cond(kshark_ctx, data[i], req->val)) {
-+			/*
-+			 * Data satisfying the condition has been found.
-+			 */
-+			if (req->vis_only &&
-+			    !(data[i]->visible & req->vis_mask)) {
-+				/* This data entry has been filtered. */
-+				e = &dummy_entry;
-+			} else {
-+				e = data[i];
-+				break;
-+			}
-+		}
-+	}
++	entry = kshark_get_entry_front(req, histo->data, index);
++	free(req);
 +
-+	if (index) {
-+		if (e)
-+			*index = (e->event_id >= 0)? i : KS_FILTERED_BIN;
-+		else
-+			*index = KS_EMPTY_BIN;
-+	}
-+
-+	return e;
++	return entry;
 +}
 +
 +/**
-+ * @brief Search for an entry satisfying the requirements of a given Data
-+ *	  request. Start from the position provided by the request and go
-+ *	  searching in the direction of the increasing timestamps (front).
++ * @brief In a given bin, start from the back end of the bin and go towards
++ *	  the front end, searching for an entry satisfying the Matching
++ *	  condition defined by a Matching condition function.
 + *
-+ * @param req: Input location for Data request.
-+ * @param data: Input location for the trace data.
-+ * @param index: Optional output location for the index of the returned
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param vis_only: If true, a visible entry is requested.
++ * @param func: Matching condition function.
++ * @param val: Matching condition value, used by the Matching condition
++ *	       function.
++ * @param index: Optional output location for the index of the requested
 + *		 entry inside the array.
 + *
-+ * @returns Pointer to the first entry satisfying the matching conditionon
-+ *	    success, or NULL on failure.
-+ *	    In the special case when some entries, satisfying the Matching
-+ *	    condition function have been found, but all these entries have
-+ *	    been discarded because of the visibility criteria (filtered
-+ *	    entries), the function returns a pointer to a special
-+ *	    "Dummy entry".
++ * @returns Pointer ot a kshark_entry, if an entry has been found. Else NULL.
 + */
 +const struct kshark_entry *
-+kshark_get_entry_front(const struct kshark_entry_request *req,
-+                       struct kshark_entry **data,
-+                       ssize_t *index)
++ksmodel_get_entry_back(struct kshark_trace_histo *histo,
++		       int bin, bool vis_only,
++		       matching_condition_func func, int val,
++		       ssize_t *index)
 +{
-+	ssize_t end = req->first + req->n;
++	struct kshark_entry_request *req;
++	const struct kshark_entry *entry;
 +
-+	return get_entry(req, data, index, req->first, end, +1);
++	if (index)
++		*index = KS_EMPTY_BIN;
++
++	/* Set the position at the end of the bin and go backwards. */
++	req = ksmodel_entry_back_request_alloc(histo, bin, vis_only,
++							   func, val);
++	if (!req)
++		return NULL;
++
++	entry = kshark_get_entry_back(req, histo->data, index);
++	free(req);
++
++	return entry;
++}
++
++static int ksmodel_get_entry_pid(const struct kshark_entry *entry)
++{
++	if (!entry) {
++		/* No data has been found. */
++		return KS_EMPTY_BIN;
++	}
++
++	/*
++	 * Note that if some data has been found, but this data is
++	 * filtered-outa, the Dummy entry is returned. The PID of the Dummy
++	 * entry is KS_FILTERED_BIN.
++	 */
++
++	return entry->pid;
 +}
 +
 +/**
-+ * @brief Search for an entry satisfying the requirements of a given Data
-+ *	  request. Start from the position provided by the request and go
-+ *	  searching in the direction of the decreasing timestamps (back).
++ * @brief In a given bin, start from the front end of the bin and go towards
++ *	  the back end, searching for an entry from a given CPU. Return
++ *	  the Process Id of the task of the entry found.
 + *
-+ * @param req: Input location for Data request.
-+ * @param data: Input location for the trace data.
-+ * @param index: Optional output location for the index of the returned
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param cpu: CPU Id.
++ * @param vis_only: If true, a visible entry is requested.
++ * @param index: Optional output location for the index of the requested
 + *		 entry inside the array.
 + *
-+ * @returns Pointer to the first entry satisfying the matching conditionon
-+ *	    success, or NULL on failure.
-+ *	    In the special case when some entries, satisfying the Matching
-+ *	    condition function have been found, but all these entries have
-+ *	    been discarded because of the visibility criteria (filtered
-+ *	    entries), the function returns a pointer to a special
-+ *	    "Dummy entry".
++ * @returns Process Id of the task if an entry has been found. Else a negative
++ *	    Identifier (KS_EMPTY_BIN or KS_FILTERED_BIN).
 + */
-+const struct kshark_entry *
-+kshark_get_entry_back(const struct kshark_entry_request *req,
-+                      struct kshark_entry **data,
-+                      ssize_t *index)
++int ksmodel_get_pid_front(struct kshark_trace_histo *histo,
++			  int bin, int cpu, bool vis_only,
++			  ssize_t *index)
 +{
-+	ssize_t end = req->first - req->n;
++	const struct kshark_entry *entry;
 +
-+	if (end < 0)
-+		end = -1;
++	if (cpu < 0)
++		return KS_EMPTY_BIN;
 +
-+	return get_entry(req, data, index, req->first, end, -1);
++	entry = ksmodel_get_entry_front(histo, bin, vis_only,
++					       kshark_match_cpu, cpu,
++					       index);
++	return ksmodel_get_entry_pid(entry);
 +}
-diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
-index eda0a83..4860e74 100644
---- a/kernel-shark-qt/src/libkshark.h
-+++ b/kernel-shark-qt/src/libkshark.h
-@@ -190,6 +190,99 @@ void kshark_filter_entries(struct kshark_context *kshark_ctx,
- 			   struct kshark_entry **data,
- 			   size_t n_entries);
- 
-+/** Search failed identifiers. */
-+enum kshark_search_failed {
-+	/** All entries have timestamps greater timestamps. */
-+	BSEARCH_ALL_GREATER = -1,
-+
-+	/** All entries have timestamps smaller timestamps. */
-+	BSEARCH_ALL_SMALLER = -2,
-+};
-+
-+/** General purpose Binary search macro. */
-+#define BSEARCH(h, l, cond) 				\
-+	({						\
-+		while (h - l > 1) {			\
-+			mid = (l + h) / 2;		\
-+			if (cond)			\
-+				l = mid;		\
-+			else				\
-+				h = mid;		\
-+		}					\
-+	})
-+
-+ssize_t kshark_find_entry_by_time(uint64_t time,
-+				  struct kshark_entry **data_rows,
-+				  size_t l, size_t h);
-+
-+ssize_t kshark_find_record_by_time(uint64_t time,
-+				   struct pevent_record **data_rows,
-+				   size_t l, size_t h);
-+
-+bool kshark_match_pid(struct kshark_context *kshark_ctx,
-+		      struct kshark_entry *e, int pid);
-+
-+bool kshark_match_cpu(struct kshark_context *kshark_ctx,
-+		      struct kshark_entry *e, int cpu);
-+
-+/** Empty bin identifier. */
-+#define KS_EMPTY_BIN		-1
-+
-+/** Filtered bin identifier. */
-+#define KS_FILTERED_BIN		-2
-+
-+/** Matching condition function type. To be user for data requests */
-+typedef bool (matching_condition_func)(struct kshark_context*,
-+				       struct kshark_entry*,
-+				       int);
 +
 +/**
-+ * Data request structure, defining the properties of the required
-+ * kshark_entry.
++ * @brief In a given bin, start from the back end of the bin and go towards
++ *	  the front end, searching for an entry from a given CPU. Return
++ *	  the Process Id of the task of the entry found.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param cpu: CPU Id.
++ * @param vis_only: If true, a visible entry is requested.
++ * @param index: Optional output location for the index of the requested
++ *		 entry inside the array.
++ *
++ * @returns Process Id of the task if an entry has been found. Else a negative
++ *	    Identifier (KS_EMPTY_BIN or KS_FILTERED_BIN).
 + */
-+struct kshark_entry_request {
-+	/**
-+	 * Array index specifying the position inside the array from where
-+	 * the search starts.
++int ksmodel_get_pid_back(struct kshark_trace_histo *histo,
++			 int bin, int cpu, bool vis_only,
++			 ssize_t *index)
++{
++	const struct kshark_entry *entry;
++
++	if (cpu < 0)
++		return KS_EMPTY_BIN;
++
++	entry = ksmodel_get_entry_back(histo, bin, vis_only,
++					      kshark_match_cpu, cpu,
++					      index);
++
++	return ksmodel_get_entry_pid(entry);
++}
++
++static int ksmodel_get_entry_cpu(const struct kshark_entry *entry)
++{
++	if (!entry) {
++		/* No data has been found. */
++		return KS_EMPTY_BIN;
++	}
++
++	/*
++	 * Note that if some data has been found, but this data is
++	 * filtered-outa, the Dummy entry is returned. The CPU Id of the Dummy
++	 * entry is KS_FILTERED_BIN.
 +	 */
-+	size_t first;
 +
-+	/** Number of array elements to search in. */
-+	size_t n;
++	return entry->cpu;
++}
 +
-+	/** Matching condition function. */
-+	matching_condition_func *cond;
++/**
++ * @brief In a given bin, start from the front end of the bin and go towards
++ *	  the back end, searching for an entry from a given PID. Return
++ *	  the CPU Id of the entry found.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param pid: Process Id.
++ * @param vis_only: If true, a visible entry is requested.
++ * @param index: Optional output location for the index of the requested
++ *		 entry inside the array.
++ *
++ * @returns Process Id of the task if an entry has been found. Else a negative
++ *	    Identifier (KS_EMPTY_BIN or KS_FILTERED_BIN).
++ */
++int ksmodel_get_cpu_front(struct kshark_trace_histo *histo,
++			  int bin, int pid, bool vis_only,
++			  ssize_t *index)
++{
++	const struct kshark_entry *entry;
 +
-+	/**
-+	 * Matching condition value, used by the Matching condition function.
++	if (pid < 0)
++		return KS_EMPTY_BIN;
++
++	entry = ksmodel_get_entry_front(histo, bin, vis_only,
++					       kshark_match_pid, pid,
++					       index);
++	return ksmodel_get_entry_cpu(entry);
++}
++
++/**
++ * @brief In a given bin, start from the back end of the bin and go towards
++ *	  the front end, searching for an entry from a given PID. Return
++ *	  the CPU Id of the entry found.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param pid: Process Id.
++ * @param vis_only: If true, a visible entry is requested.
++ * @param index: Optional output location for the index of the requested
++ *		 entry inside the array.
++ *
++ * @returns Process Id of the task if an entry has been found. Else a negative
++ *	    Identifier (KS_EMPTY_BIN or KS_FILTERED_BIN).
++ */
++int ksmodel_get_cpu_back(struct kshark_trace_histo *histo,
++			 int bin, int pid, bool vis_only,
++			 ssize_t *index)
++{
++	const struct kshark_entry *entry;
++
++	if (pid < 0)
++		return KS_EMPTY_BIN;
++
++	entry = ksmodel_get_entry_back(histo, bin, vis_only,
++					      kshark_match_pid, pid,
++					      index);
++
++	return ksmodel_get_entry_cpu(entry);
++}
++
++/**
++ * @brief Check if a visible trace event from a given Cpu exists in this bin.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param cpu: Cpu Id.
++ * @param index: Optional output location for the index of the requested
++ *		 entry inside the array.
++ *
++ * @returns True, if a visible entry exists in this bin. Else false.
++ */
++bool ksmodel_cpu_visible_event_exist(struct kshark_trace_histo *histo,
++				     int bin, int cpu, ssize_t *index)
++{
++	struct kshark_entry_request *req;
++	const struct kshark_entry *entry;
++
++	if (index)
++		*index = KS_EMPTY_BIN;
++
++	/* Set the position at the beginning of the bin and go forward. */
++	req = ksmodel_entry_front_request_alloc(histo,
++						bin, true,
++						kshark_match_cpu, cpu);
++	if (!req)
++		return false;
++
++	/*
++	 * The default visibility mask of the Model Data request is
++	 * KS_GRAPH_VIEW_FILTER_MASK. Change the mask to
++	 * KS_EVENT_VIEW_FILTER_MASK because we want to find a visible event.
 +	 */
-+	int val;
++	req->vis_mask = KS_EVENT_VIEW_FILTER_MASK;
 +
-+	/** If true, a visible entry is requested. */
-+	bool vis_only;
++	entry = kshark_get_entry_front(req, histo->data, index);
++	free(req);
 +
-+	/**
-+	 * If "vis_only" is true, use this mask to specify the level of
-+	 * visibility of the requested entry.
++	if (!entry || !entry->visible) {
++		/* No visible entry has been found. */
++		return false;
++	}
++
++	return true;
++}
++
++/**
++ * @brief Check if a visible trace event from a given Task exists in this bin.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param pid: Process Id of the task.
++ * @param index: Optional output location for the index of the requested
++ *		 entry inside the array.
++ *
++ * @returns True, if a visible entry exists in this bin. Else false.
++ */
++bool ksmodel_task_visible_event_exist(struct kshark_trace_histo *histo,
++				      int bin, int pid, ssize_t *index)
++{
++	struct kshark_entry_request *req;
++	const struct kshark_entry *entry;
++
++	if (index)
++		*index = KS_EMPTY_BIN;
++
++	/* Set the position at the beginning of the bin and go forward. */
++	req = ksmodel_entry_front_request_alloc(histo,
++						bin, true,
++						kshark_match_pid, pid);
++	if (!req)
++		return false;
++
++	/*
++	 * The default visibility mask of the Model Data request is
++	 * KS_GRAPH_VIEW_FILTER_MASK. Change the mask to
++	 * KS_EVENT_VIEW_FILTER_MASK because we want to find a visible event.
 +	 */
-+	uint8_t vis_mask;
++	req->vis_mask = KS_EVENT_VIEW_FILTER_MASK;
++
++	entry = kshark_get_entry_front(req, histo->data, index);
++	free(req);
++
++	if (!entry || !entry->visible) {
++		/* No visible entry has been found. */
++		return false;
++	}
++
++	return true;
++}
+diff --git a/kernel-shark-qt/src/libkshark-model.h b/kernel-shark-qt/src/libkshark-model.h
+new file mode 100644
+index 0000000..b99d9d1
+--- /dev/null
++++ b/kernel-shark-qt/src/libkshark-model.h
+@@ -0,0 +1,149 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++
++/*
++ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ */
++
++ /**
++  *  @file    libkshark-model.h
++  *  @brief   Visualization model for FTRACE (trace-cmd) data.
++  */
++
++#ifndef _LIB_KSHARK_MODEL_H
++#define _LIB_KSHARK_MODEL_H
++
++// KernelShark
++#include "libkshark.h"
++
++#ifdef __cplusplus
++extern "C" {
++#endif // __cplusplus
++
++/**
++ * Overflow Bin identifiers. The two overflow bins are used to hold the data
++ * outside the visualized range.
++ */
++enum OverflowBin {
++	/**
++	 * Identifier of the Upper Overflow Bin. This bin is used to hold the data
++	 * before (in time) the beginning of the visualized range.
++	 */
++	UPPER_OVERFLOW_BIN = -1,
++
++	/** Identifier of the Lower Overflow Bin. This bin is used to hold the data
++	 * after (in time) the end of the visualized range.*/
++	LOWER_OVERFLOW_BIN = -2,
 +};
 +
-+struct kshark_entry_request *
-+kshark_entry_request_alloc(size_t first, size_t n,
-+			   matching_condition_func cond, int val,
-+			   bool vis_only, int vis_mask);
++/** Structure describing the current state of the visualization model. */
++struct kshark_trace_histo {
++	/** Trace data array. */
++	struct kshark_entry	**data;
++
++	/** The size of the data array. */
++	size_t			data_size;
++
++	/** The first entry (index of data array) in each bin. */
++	ssize_t			*map;
++
++	/** Number of entries in each bin. */
++	size_t			*bin_count;
++
++	/** Lower edge of the time-window to be visualized. */
++	uint64_t		min;
++
++	/** Upper edge of the time-window to be visualized. */
++	uint64_t		max;
++
++	/** The size in time for each bin. */
++	uint64_t		bin_size;
++
++	/** Number of bins. */
++	int			n_bins;
++};
++
++void ksmodel_init(struct kshark_trace_histo *histo);
++
++void ksmodel_clear(struct kshark_trace_histo *histo);
++
++void ksmodel_set_bining(struct kshark_trace_histo *histo,
++			size_t n, uint64_t min, uint64_t max);
++
++void ksmodel_fill(struct kshark_trace_histo *histo,
++		  struct kshark_entry **data, size_t n);
++
++size_t ksmodel_bin_count(struct kshark_trace_histo *histo, int bin);
++
++void ksmodel_shift_forward(struct kshark_trace_histo *histo, size_t n);
++
++void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n);
++
++void ksmodel_jump_to(struct kshark_trace_histo *histo, size_t ts);
++
++void ksmodel_zoom_out(struct kshark_trace_histo *histo,
++		      double r, int mark);
++
++void ksmodel_zoom_in(struct kshark_trace_histo *histo,
++		     double r, int mark);
++
++ssize_t ksmodel_first_index_at_bin(struct kshark_trace_histo *histo, int bin);
++
++ssize_t ksmodel_last_index_at_bin(struct kshark_trace_histo *histo, int bin);
++
++ssize_t ksmodel_first_index_at_cpu(struct kshark_trace_histo *histo,
++				   int bin, int cpu);
++
++ssize_t ksmodel_first_index_at_pid(struct kshark_trace_histo *histo,
++				   int bin, int pid);
 +
 +const struct kshark_entry *
-+kshark_get_entry_front(const struct kshark_entry_request *req,
-+		       struct kshark_entry **data,
++ksmodel_get_entry_front(struct kshark_trace_histo *histo,
++			int bin, bool vis_only,
++			matching_condition_func func, int val,
++			ssize_t *index);
++
++const struct kshark_entry *
++ksmodel_get_entry_back(struct kshark_trace_histo *histo,
++		       int bin, bool vis_only,
++		       matching_condition_func func, int val,
 +		       ssize_t *index);
 +
-+const struct kshark_entry *
-+kshark_get_entry_back(const struct kshark_entry_request *req,
-+		      struct kshark_entry **data,
-+		      ssize_t *index);
++int ksmodel_get_pid_front(struct kshark_trace_histo *histo,
++			  int bin, int cpu, bool vis_only,
++			  ssize_t *index);
 +
- #ifdef __cplusplus
- }
- #endif
++int ksmodel_get_pid_back(struct kshark_trace_histo *histo,
++			 int bin, int cpu, bool vis_only,
++			 ssize_t *index);
++
++int ksmodel_get_cpu_front(struct kshark_trace_histo *histo,
++			  int bin, int pid, bool vis_only,
++			  ssize_t *index);
++
++int ksmodel_get_cpu_back(struct kshark_trace_histo *histo,
++			 int bin, int pid, bool vis_only,
++			 ssize_t *index);
++
++bool ksmodel_cpu_visible_event_exist(struct kshark_trace_histo *histo,
++				     int bin, int cpu, ssize_t *index);
++
++bool ksmodel_task_visible_event_exist(struct kshark_trace_histo *histo,
++				      int bin, int pid, ssize_t *index);
++
++static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
++				      int bin)
++{
++	return (histo->min + bin*histo->bin_size) * 1e-9;
++}
++
++static inline uint64_t ksmodel_bin_ts(struct kshark_trace_histo *histo,
++				      int bin)
++{
++	return (histo->min + bin*histo->bin_size);
++}
++
++#ifdef __cplusplus
++}
++#endif // __cplusplus
++
++#endif
 -- 
 2.17.1
