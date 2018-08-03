@@ -1,138 +1,68 @@
 Return-Path: <SRS0=opg7=KS=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:42011 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731083AbeHCP6N (ORCPT
+Received: from mail-wm0-f68.google.com ([74.125.82.68]:40372 "EHLO
+        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732330AbeHCQ0b (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 Aug 2018 11:58:13 -0400
-Received: by mail-wr1-f67.google.com with SMTP id e7-v6so5506978wrs.9
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 Aug 2018 07:01:43 -0700 (PDT)
-Subject: Re: [PATCH v2 3/7] kernel-shark-qt: Introduce the visualization model
- used by the Qt-based KS
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-References: <20180731135248.30587-1-y.karadz@gmail.com>
- <20180731135248.30587-4-y.karadz@gmail.com>
- <20180801144413.227e0dea@gandalf.local.home>
+        Fri, 3 Aug 2018 12:26:31 -0400
+Received: by mail-wm0-f68.google.com with SMTP id y9-v6so6668593wma.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 Aug 2018 07:29:54 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <f89ed00a-2411-7540-bfea-8c40a6d3dcac@gmail.com>
-Date: Fri, 3 Aug 2018 17:01:45 +0300
-MIME-Version: 1.0
-In-Reply-To: <20180801144413.227e0dea@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v3 0/6] Add visualization model for the Qt-based KernelShark
+Date: Fri,  3 Aug 2018 17:29:31 +0300
+Message-Id: <20180803142937.3970-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
+This series of patches introduces the second part of the C API used by
+the Qt-based version of KernelShark. This part of the API is responsible
+for the visual navigation and browsing inside the trace data.
+
+This is the third version of this series of patches.
+Major changes from v2 are:
+
+[old 1/7] The "Changes type of the fields" is now a separate patch and isn't
+part of this series.
+
+[1/7] As suggested by Steven Rostedt, the binary search functions are modified
+in order to avoid the ambiguity of the returned value in the case when no
+kshark_entry has been found inside the range.
+
+[2/7] The change above affects the logic in ksmodel_set_lower_edge(),
+ksmodel_set_upper_edge() and ksmodel_set_next_bin_edge().
+
+[4/7] General revision (debugging and simplification) of the logic,
+responsible for mapping the primary data request into a list of
+collection-compatible data requests.
 
 
-On  1.08.2018 21:44, Steven Rostedt wrote:
->> +
->> +/**
->> + * @brief In a given bin, start from the front end of the bin and go towards
->> + *	  the back end, searching for an entry satisfying the Matching
->> + *	  condition defined by a Matching condition function.
->> + * @param histo: Input location for the model descriptor.
->> + * @param bin: Bin id.
->> + * @param vis_only: If true, a visible entry is requested.
->> + * @param func: Matching condition function.
->> + * @param val: Matching condition value, used by the Matching condition
->> + *	       function.
->> + * @param index: Optional output location for the index of the requested
->> + *		 entry inside the array.
->> + * @returns Pointer ot a kshark_entry, if an entry has been found. Else NULL.
->> + */
->> +const struct kshark_entry *
->> +ksmodel_get_entry_front(struct kshark_trace_histo *histo,
->> +			int bin, bool vis_only,
->> +			matching_condition_func func, int val,
->> +			ssize_t *index)
->> +{
->> +	struct kshark_entry_request *req;
->> +	const struct kshark_entry *entry;
->> +
->> +	if (index)
->> +		*index = KS_EMPTY_BIN;
->> +
->> +	/* Set the position at the beginning of the bin and go forward. */
->> +	req = ksmodel_entry_front_request_alloc(histo, bin, vis_only,
->> +							    func, val);
->> +	if (!req)
->> +		return NULL;
->> +
->> +	entry = kshark_get_entry_front(req, histo->data, index);
->> +	free(req);
->> +
->> +	return entry;
->> +}
-> We could save on the allocation if we were to create the following:
-> 
-> void
-> kshark_entry_request_set(struct kshark_entry_request *req,
-> 			 size_t first, size_t n,
-> 			 matching_condition_func cond, int val,
-> 			 bool vis_only, int vis_mask)
-> {
-> 	req->first = first;
-> 	req->n = n;
-> 	req->cond = cond;
-> 	req->val = val;
-> 	req->vis_only = vis_only;
-> 	req->vis_mask = vis_mask;
-> }
-> 
-> bool
-> ksmodel_entry_front_request_set(struct kshark_trace_histo *histo,
-> 				struct kshark_entry_request *req,
-> 				int bin, bool vis_only,
-> 				matching_condition_func func, int val)
-> {
-> 	size_t first, n;
-> 
-> 	/* Get the number of entries in this bin. */
-> 	n = ksmodel_bin_count(histo, bin);
-> 	if (!n)
-> 		return false;
-> 
-> 	first = ksmodel_first_index_at_bin(histo, bin);
-> 
-> 	kshark_entry_request_set(first, n,
-> 			       func, val,
-> 			       vis_only, KS_GRAPH_VIEW_FILTER_MASK);
-> 
-> 	return true;
-> }
-> 
-> const struct kshark_entry *
-> ksmodel_get_entry_front(struct kshark_trace_histo *histo,
-> 			int bin, bool vis_only,
-> 			matching_condition_func func, int val,
-> 			ssize_t *index)
-> {
-> 	struct kshark_entry_request req;
-> 	const struct kshark_entry *entry;
-> 	bool ret;
-> 
-> 	if (index)
-> 		*index = KS_EMPTY_BIN;
-> 
-> 	/* Set the position at the beginning of the bin and go forward. */
-> 	ret = ksmodel_entry_front_request_set(histo, bin, vis_only,
-> 							    func, val);
-> 	if (!ret)
-> 		return NULL;
-> 
-> 	entry = kshark_get_entry_front(req, histo->data, index);
-> 
-> 	return entry;
-> }
-> 
+Yordan Karadzhov (VMware) (6):
+  kernel-shark-qt: Add generic instruments for searching inside the
+    trace data
+  kernel-shark-qt: Introduce the visualization model used by the
+    Qt-based KS
+  kernel-shark-qt: Add an example showing how to manipulate the Vis.
+    model.
+  kernel-shark-qt: Define Data collections
+  kernel-shark-qt: Make the Vis. model use Data collections.
+  kernel-shark-qt: Changed the KernelShark version identifier.
 
-Hi Steven,
-I have tried implementing this, but it becomes a bit ugly in the 
-following patches where the single request is transformed into a linked 
-list of requests.
+ kernel-shark-qt/CMakeLists.txt             |    2 +-
+ kernel-shark-qt/examples/CMakeLists.txt    |    4 +
+ kernel-shark-qt/examples/datahisto.c       |  159 +++
+ kernel-shark-qt/src/CMakeLists.txt         |    4 +-
+ kernel-shark-qt/src/libkshark-collection.c |  805 +++++++++++++
+ kernel-shark-qt/src/libkshark-model.c      | 1223 ++++++++++++++++++++
+ kernel-shark-qt/src/libkshark-model.h      |  159 +++
+ kernel-shark-qt/src/libkshark.c            |  278 +++++
+ kernel-shark-qt/src/libkshark.h            |  172 +++
+ 9 files changed, 2804 insertions(+), 2 deletions(-)
+ create mode 100644 kernel-shark-qt/examples/datahisto.c
+ create mode 100644 kernel-shark-qt/src/libkshark-collection.c
+ create mode 100644 kernel-shark-qt/src/libkshark-model.c
+ create mode 100644 kernel-shark-qt/src/libkshark-model.h
 
-Thanks!
-Yordan
+-- 
+2.17.1
