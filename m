@@ -1,208 +1,138 @@
 Return-Path: <SRS0=PkBc=KX=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:51006 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:50672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730383AbeHHU1z (ORCPT
+        id S1727295AbeHHU1v (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 8 Aug 2018 16:27:55 -0400
-Message-Id: <20180808180703.575392642@goodmis.org>
-Date: Wed, 08 Aug 2018 14:03:09 -0400
+        Wed, 8 Aug 2018 16:27:51 -0400
+Message-Id: <20180808180245.352784763@goodmis.org>
+Date: Wed, 08 Aug 2018 14:02:45 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [RFC][PATCH v2 24/24] tools/lib/traceevent: Rename static variables and functions in
- event-parse.c
-References: <20180808180245.352784763@goodmis.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [RFC][PATCH v2 00/24] tools lib traceevent: Rename pevent to tep for preparation for library
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+[
+  Resending as quilt mail threading was broken, but luckily was fixed by
+ http://git.savannah.nongnu.org/cgit/quilt.git/commit/?id=360b85e1f6b6d1aff5ada942fcee816e1ad7a13c
+  And has been reported to Debian:
+   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=900784
+]
+  
+Having libtraceevent turn into a proper library has long been asked for.
+I never had time to do it before. Luckily, Tzvetomir was able to spend
+the time to start the preparation. The first thing that needs to be done
+is to handle namespace collisions. "pevent" was the prefix I chose, but
+many people were displeased by it, as it didn't express what the functions
+were used for. After discussing with many people at many conferences
+I've come up with "tep", which means "Trace Event Parser". Please don't
+question this. The bikeshed has been painted and I'm not changing the
+color.
 
-In order to make libtraceevent into a proper library, variables, data
-structures and functions require a unique prefix to prevent name space
-conflicts. That prefix will be "tep_" and not "pevent_". This changes
-static variables and functions in event-parse.c: pevent_func_params,
-__pevent_parse_format, __pevent_parse_event, pevent_error_str, pevent_search_event
+This series changes all the function names and data structures from the
+"pevent_" prefix to the "tep_" prefix. Note, it does not change the
+names of local variables or even parameters. "pevent" variables and
+parameters still exist. We can change those later, but for now, I want
+all global references to "pevent" to be "tep_" instead.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- tools/lib/traceevent/event-parse.c | 54 +++++++++++++++---------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
+This is not complete. It is only one of many preparations to make
+libtraceevent into a legitimate library. There's other naming conventions
+that will be made. But for now, I would like to hear thoughts about
+this change before we proceed further.
 
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index f723c088acca..6313e32680ff 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -92,9 +92,9 @@ struct event_handler {
- 	void				*context;
- };
- 
--struct pevent_func_params {
--	struct pevent_func_params	*next;
--	enum tep_func_arg_type		type;
-+struct func_params {
-+	struct func_params	*next;
-+	enum tep_func_arg_type	type;
- };
- 
- struct tep_function_handler {
-@@ -102,7 +102,7 @@ struct tep_function_handler {
- 	enum tep_func_arg_type		ret_type;
- 	char				*name;
- 	tep_func_handler		func;
--	struct pevent_func_params	*params;
-+	struct func_params		*params;
- 	int				nr_args;
- };
- 
-@@ -1161,7 +1161,7 @@ static enum event_type read_token(char **tok)
-  * @tok: The token to return
-  *
-  * This will parse tokens from the string given by
-- * pevent_init_data().
-+ * tep_init_data().
-  *
-  * Returns the token type.
-  */
-@@ -4133,7 +4133,7 @@ process_defined_func(struct trace_seq *s, void *data, int size,
- 		     struct event_format *event, struct print_arg *arg)
- {
- 	struct tep_function_handler *func_handle = arg->func.func;
--	struct pevent_func_params *param;
-+	struct func_params *param;
- 	unsigned long long *args;
- 	unsigned long long ret;
- 	struct print_arg *farg;
-@@ -6023,7 +6023,7 @@ static int find_event_handle(struct tep_handle *pevent, struct event_format *eve
- }
- 
- /**
-- * __pevent_parse_format - parse the event format
-+ * __tep_parse_format - parse the event format
-  * @buf: the buffer storing the event format string
-  * @size: the size of @buf
-  * @sys: the system the event belongs to
-@@ -6035,9 +6035,9 @@ static int find_event_handle(struct tep_handle *pevent, struct event_format *eve
-  *
-  * /sys/kernel/debug/tracing/events/.../.../format
-  */
--enum tep_errno __pevent_parse_format(struct event_format **eventp,
--				     struct tep_handle *pevent, const char *buf,
--				     unsigned long size, const char *sys)
-+enum tep_errno __tep_parse_format(struct event_format **eventp,
-+				  struct tep_handle *pevent, const char *buf,
-+				  unsigned long size, const char *sys)
- {
- 	struct event_format *event;
- 	int ret;
-@@ -6143,12 +6143,12 @@ enum tep_errno __pevent_parse_format(struct event_format **eventp,
- }
- 
- static enum tep_errno
--__pevent_parse_event(struct tep_handle *pevent,
--		     struct event_format **eventp,
--		     const char *buf, unsigned long size,
--		     const char *sys)
-+__parse_event(struct tep_handle *pevent,
-+	      struct event_format **eventp,
-+	      const char *buf, unsigned long size,
-+	      const char *sys)
- {
--	int ret = __pevent_parse_format(eventp, pevent, buf, size, sys);
-+	int ret = __tep_parse_format(eventp, pevent, buf, size, sys);
- 	struct event_format *event = *eventp;
- 
- 	if (event == NULL)
-@@ -6190,7 +6190,7 @@ enum tep_errno tep_parse_format(struct tep_handle *pevent,
- 				const char *buf,
- 				unsigned long size, const char *sys)
- {
--	return __pevent_parse_event(pevent, eventp, buf, size, sys);
-+	return __parse_event(pevent, eventp, buf, size, sys);
- }
- 
- /**
-@@ -6211,12 +6211,12 @@ enum tep_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
- 			       unsigned long size, const char *sys)
- {
- 	struct event_format *event = NULL;
--	return __pevent_parse_event(pevent, &event, buf, size, sys);
-+	return __parse_event(pevent, &event, buf, size, sys);
- }
- 
- #undef _PE
- #define _PE(code, str) str
--static const char * const pevent_error_str[] = {
-+static const char * const tep_error_str[] = {
- 	TEP_ERRORS
- };
- #undef _PE
-@@ -6237,7 +6237,7 @@ int tep_strerror(struct tep_handle *pevent __maybe_unused,
- 		return -1;
- 
- 	idx = errnum - __TEP_ERRNO__START - 1;
--	msg = pevent_error_str[idx];
-+	msg = tep_error_str[idx];
- 	snprintf(buf, buflen, "%s", msg);
- 
- 	return 0;
-@@ -6463,7 +6463,7 @@ int tep_print_func_field(struct trace_seq *s, const char *fmt,
- 
- static void free_func_handle(struct tep_function_handler *func)
- {
--	struct pevent_func_params *params;
-+	struct func_params *params;
- 
- 	free(func->name);
- 
-@@ -6497,8 +6497,8 @@ int tep_register_print_function(struct tep_handle *pevent,
- 				char *name, ...)
- {
- 	struct tep_function_handler *func_handle;
--	struct pevent_func_params **next_param;
--	struct pevent_func_params *param;
-+	struct func_params **next_param;
-+	struct func_params *param;
- 	enum tep_func_arg_type type;
- 	va_list ap;
- 	int ret;
-@@ -6591,9 +6591,9 @@ int tep_unregister_print_function(struct tep_handle *pevent,
- 	return -1;
- }
- 
--static struct event_format *pevent_search_event(struct tep_handle *pevent, int id,
--						const char *sys_name,
--						const char *event_name)
-+static struct event_format *search_event(struct tep_handle *pevent, int id,
-+					 const char *sys_name,
-+					 const char *event_name)
- {
- 	struct event_format *event;
- 
-@@ -6638,7 +6638,7 @@ int tep_register_event_handler(struct tep_handle *pevent, int id,
- 	struct event_format *event;
- 	struct event_handler *handle;
- 
--	event = pevent_search_event(pevent, id, sys_name, event_name);
-+	event = search_event(pevent, id, sys_name, event_name);
- 	if (event == NULL)
- 		goto not_found;
- 
-@@ -6723,7 +6723,7 @@ int tep_unregister_event_handler(struct tep_handle *pevent, int id,
- 	struct event_handler *handle;
- 	struct event_handler **next;
- 
--	event = pevent_search_event(pevent, id, sys_name, event_name);
-+	event = search_event(pevent, id, sys_name, event_name);
- 	if (event == NULL)
- 		goto not_found;
- 
--- 
-2.18.0
+Instead of doing one big update, Tzvetomir grouped changes together.
+I compiled each patch to make sure perf still builds without errors
+at each step. I only used my own configuration, thus there may be
+cases that perf might fail to build. Here's what I had:
+
+Auto-detecting system features:
+...                         dwarf: [ on  ]
+...            dwarf_getlocations: [ on  ]
+...                         glibc: [ on  ]
+...                          gtk2: [ on  ]
+...                      libaudit: [ OFF ]
+...                        libbfd: [ on  ]
+...                        libelf: [ on  ]
+...                       libnuma: [ OFF ]
+...        numa_num_possible_cpus: [ OFF ]
+...                       libperl: [ OFF ]
+...                     libpython: [ on  ]
+...                      libslang: [ OFF ]
+...                     libcrypto: [ on  ]
+...                     libunwind: [ OFF ]
+...            libdw-dwarf-unwind: [ on  ]
+...                          zlib: [ on  ]
+...                          lzma: [ on  ]
+...                     get_cpuid: [ on  ]
+...                           bpf: [ on  ]
+
+The above is the config I used for testing the build.
+
+-- Steve
+
+Tzvetomir Stoyanov (VMware) (24):
+      tools/lib/traceevent, tools/perf: Rename struct pevent to struct tep_handle
+      tools/lib/traceevent, tools/perf: Rename struct pevent_record to struct tep_record
+      tools/lib/traceevent, tools/perf: Rename pevent plugin related APIs
+      tools/lib/traceevent, tools/perf: Rename pevent alloc / free APIs
+      tools/lib/traceevent, tools/perf: Rename pevent find APIs
+      tools/lib/traceevent, tools/perf: Rename pevent parse APIs
+      tools/lib/traceevent, tools/perf: Rename pevent print APIs
+      tools/lib/traceevent, tools/perf: Rename pevent_read_number_* APIs
+      tools/lib/traceevent, tools/perf: Rename pevent_register_* APIs
+      tools/lib/traceevent, tools/perf: Rename pevent_set_* APIs
+      tools/lib/traceevent, tools/perf: Rename traceevent_* APIs
+      tools/lib/traceevent, tools/perf: Rename enum pevent_flag to enum tep_flag
+      tools/lib/traceevent, tools/lib/lockdep/: Rename enunm pevent_errno to enum tep_errno
+      tools/lib/traceevent: Rename pevent_function* APIs
+      tools/lib/traceevent, tools/perf: Rename traceevent_plugin_* APIs
+      tools/lib/traceevent: Rename pevent_filter* APIs
+      tools/lib/traceevent: Rename pevent_register / unregister APIs
+      tools/lib/traceevent: Rename pevent_data_ APIs
+      tools/lib/traceevent: Rename pevent field APIs
+      tools/lib/traceevent: Rename pevent_find_* APIs
+      tools/lib/traceevent: Rename various pevent get/set/is APIs
+      tools/lib/traceevent: Rename internal parser related APIs
+      tools/lib/traceevent: Rename various pevent APIs
+      tools/lib/traceevent: Rename static variables and functions in event-parse.c
+
+----
+ tools/lib/lockdep/Makefile                         |   4 +-
+ tools/lib/traceevent/Makefile                      |   4 +-
+ tools/lib/traceevent/event-parse.c                 | 696 ++++++++++-----------
+ tools/lib/traceevent/event-parse.h                 | 458 +++++++-------
+ tools/lib/traceevent/event-plugin.c                |  70 +--
+ tools/lib/traceevent/parse-filter.c                | 288 ++++-----
+ tools/lib/traceevent/plugin_cfg80211.c             |  20 +-
+ tools/lib/traceevent/plugin_function.c             |  34 +-
+ tools/lib/traceevent/plugin_hrtimer.c              |  56 +-
+ tools/lib/traceevent/plugin_jbd2.c                 |  36 +-
+ tools/lib/traceevent/plugin_kmem.c                 |  66 +-
+ tools/lib/traceevent/plugin_kvm.c                  | 154 ++---
+ tools/lib/traceevent/plugin_mac80211.c             |  28 +-
+ tools/lib/traceevent/plugin_sched_switch.c         |  60 +-
+ tools/lib/traceevent/plugin_scsi.c                 |  24 +-
+ tools/lib/traceevent/plugin_xen.c                  |  20 +-
+ tools/perf/builtin-kmem.c                          |   6 +-
+ tools/perf/builtin-report.c                        |   6 +-
+ tools/perf/builtin-script.c                        |   6 +-
+ tools/perf/util/data-convert-bt.c                  |   6 +-
+ tools/perf/util/evsel.c                            |   2 +-
+ tools/perf/util/header.c                           |   6 +-
+ tools/perf/util/machine.h                          |   2 +-
+ tools/perf/util/python.c                           |  10 +-
+ .../perf/util/scripting-engines/trace-event-perl.c |   2 +-
+ .../util/scripting-engines/trace-event-python.c    |   6 +-
+ tools/perf/util/sort.c                             |  16 +-
+ tools/perf/util/sort.h                             |   2 +-
+ tools/perf/util/trace-event-parse.c                |  34 +-
+ tools/perf/util/trace-event-read.c                 |  44 +-
+ tools/perf/util/trace-event-scripting.c            |   4 +-
+ tools/perf/util/trace-event.c                      |  28 +-
+ tools/perf/util/trace-event.h                      |  20 +-
+ 33 files changed, 1109 insertions(+), 1109 deletions(-)
