@@ -1,12 +1,12 @@
 Return-Path: <SRS0=xDRx=KY=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mx3-rdu2.redhat.com ([66.187.233.73]:47682 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727371AbeHIKft (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:57198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730634AbeHIQFv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 9 Aug 2018 06:35:49 -0400
-Date: Thu, 9 Aug 2018 10:12:02 +0200
-From: Jiri Olsa <jolsa@redhat.com>
-To: Steven Rostedt <rostedt@goodmis.org>
+        Thu, 9 Aug 2018 12:05:51 -0400
+Date: Thu, 9 Aug 2018 09:40:51 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jiri Olsa <jolsa@redhat.com>
 Cc: linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
@@ -19,28 +19,29 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
 Subject: Re: [RFC][PATCH 00/24] tools lib traceevent: Rename pevent to tep
  for preparation for library
-Message-ID: <20180809081202.GC19243@krava>
+Message-ID: <20180809094051.543eda0e@gandalf.local.home>
+In-Reply-To: <20180809081202.GC19243@krava>
 References: <20180808155548.510187543@goodmis.org>
+        <20180809081202.GC19243@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180808155548.510187543@goodmis.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, Aug 08, 2018 at 11:55:48AM -0400, Steven Rostedt wrote:
-> Having libtraceevent turn into a proper library has long been asked for.
-> I never had time to do it before. Luckily, Tzvetomir was able to spend
-> the time to start the preparation. The first thing that needs to be done
-> is to handle namespace collisions. "pevent" was the prefix I chose, but
-> many people were displeased by it, as it didn't express what the functions
-> were used for. After discussing with many people at many conferences
-> I've come up with "tep", which means "Trace Event Parser". Please don't
-> question this. The bikeshed has been painted and I'm not changing the
-> color.
+On Thu, 9 Aug 2018 10:12:02 +0200
+Jiri Olsa <jolsa@redhat.com> wrote:
 
-nah... now when I see it 'te' actualy sounds better ;)))) just kidding,
-great we finaly got to this.. is there a branch somewhere with this?
+> nah... now when I see it 'te' actualy sounds better ;)))) just kidding,
+> great we finaly got to this.. is there a branch somewhere with this?
 
-thanks,
-jirka
+I just pushed it to my repo:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+
+  branch: tip/perf/core
+
+Based off of commit ec2cb7a526d49b65576301e183448fb51ee543a6 from tip's
+perf/core tree.
+
+-- Steve
