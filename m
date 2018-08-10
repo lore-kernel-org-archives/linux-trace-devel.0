@@ -1,142 +1,80 @@
 Return-Path: <SRS0=GMWY=KZ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:38162 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728415AbeHJPr4 (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:57358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727570AbeHJT1t (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Aug 2018 11:47:56 -0400
-Received: by mail-wr1-f65.google.com with SMTP id v14-v6so8277155wro.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Aug 2018 06:18:03 -0700 (PDT)
-From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 14/14] tools/lib/traceevent: Rename struct plugin_list to struct tep_plugin_list
-Date: Fri, 10 Aug 2018 16:17:32 +0300
-Message-Id: <20180810131732.24677-15-tz.stoyanov@gmail.com>
-In-Reply-To: <20180810131732.24677-1-tz.stoyanov@gmail.com>
-References: <20180810131732.24677-1-tz.stoyanov@gmail.com>
+        Fri, 10 Aug 2018 15:27:49 -0400
+Date: Fri, 10 Aug 2018 13:57:06 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Jiri Olsa <jolsa@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Yordan Karadzhov <y.karadz@gmail.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [RFC][PATCH 00/24] tools lib traceevent: Rename pevent to tep
+ for preparation for library
+Message-ID: <20180810165706.GH5395@kernel.org>
+References: <20180808155548.510187543@goodmis.org>
+ <20180810092137.GB14485@krava>
+ <20180810090010.4537e14a@gandalf.local.home>
+ <20180810131401.GB4162@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180810131401.GB4162@krava>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-In order to make libtraceevent into a proper library, variables, data
-structures and functions require a unique prefix to prevent name space
-conflicts. That prefix will be "tep_". This renames struct plugin_list
-to struct tep_plugin_list
+Em Fri, Aug 10, 2018 at 03:14:01PM +0200, Jiri Olsa escreveu:
+> On Fri, Aug 10, 2018 at 09:00:10AM -0400, Steven Rostedt wrote:
+> > On Fri, 10 Aug 2018 11:21:37 +0200
+> > Jiri Olsa <jolsa@redhat.com> wrote:
+> > 
+> > 
+> > > > This is not complete. It is only one of many preparations to make
+> > > > libtraceevent into a legitimate library. There's other naming conventions
+> > > > that will be made. But for now, I would like to hear thoughts about
+> > > > this change before we proceed further.  
+> > > 
+> > > right, I can see more things that needs rename, like in print_arg*,
+> > > trace_* stuff and others
+> > 
+> > We are working on renaming the other data structures. As for the
+> > "trace_" it is really "trace_seq_*" That's not going to get renamed. We
+> > may move it to another header file. It matches the trace_seq_* code in
+> > the kernel, and I would like to keep that the same.
+> > 
+> > > 
+> > > I'm also getting weird make error when compiling in libtraceevent dir:
+> > > 
+> > >   [jolsa@krava traceevent]$ make
+> > >     GEN      libtraceevent-dynamic-list
+> > >   Either missing one of [ plugin_jbd2.so plugin_hrtimer.so plugin_kmem.so plugin_kvm.so plugin_mac80211.so plugin_sched_switch.so plugin_function.so plugin_xen.so plugin_scsi.so plugin_cfg80211.so] or bad version of nm
+> > > 
+> > > but that seems to be there even without your patchset,
+> > > so probably something we should look into
+> > 
+> > Hmm, OK, I'll try to look into that later.
+> > 
+> > > 
+> > > other than that it looks ok to me
+> > 
+> > Great!
+> > 
+> > > 
+> > > once this is done, we can move forward to put this
+> > > to kernel-tools-libs-devel rpm
+> > 
+> > For this patch series, do you want to take the patch set, or just pull
+> > from my branch?
+> 
+> Arnaldo takes care of that, but I guess pulling from branch is the prefered way
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- tools/lib/traceevent/event-parse.h  |  8 ++++----
- tools/lib/traceevent/event-plugin.c | 18 +++++++++---------
- tools/perf/util/trace-event.h       |  4 ++--
- 3 files changed, 15 insertions(+), 15 deletions(-)
+I'll try pulling and building it automatically patch by patch,
 
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index 4b0ab69f6b3a..c8d911bed12a 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -431,12 +431,12 @@ enum tep_errno {
- };
- #undef _PE
- 
--struct plugin_list;
-+struct tep_plugin_list;
- 
- #define INVALID_PLUGIN_LIST_OPTION	((char **)((unsigned long)-1))
- 
--struct plugin_list *tep_load_plugins(struct tep_handle *pevent);
--void tep_unload_plugins(struct plugin_list *plugin_list,
-+struct tep_plugin_list *tep_load_plugins(struct tep_handle *pevent);
-+void tep_unload_plugins(struct tep_plugin_list *plugin_list,
- 			struct tep_handle *pevent);
- char **tep_plugin_list_options(void);
- void tep_plugin_free_options_list(char **list);
-@@ -445,7 +445,7 @@ int tep_plugin_add_options(const char *name,
- void tep_plugin_remove_options(struct tep_plugin_option *options);
- void tep_print_plugins(struct trace_seq *s,
- 			const char *prefix, const char *suffix,
--			const struct plugin_list *list);
-+			const struct tep_plugin_list *list);
- 
- struct cmdline;
- struct cmdline_list;
-diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index 8e324ed46547..f6a9f9363c8d 100644
---- a/tools/lib/traceevent/event-plugin.c
-+++ b/tools/lib/traceevent/event-plugin.c
-@@ -44,8 +44,8 @@ static struct trace_plugin_options {
- 	char				*value;
- } *trace_plugin_options;
- 
--struct plugin_list {
--	struct plugin_list	*next;
-+struct tep_plugin_list {
-+	struct tep_plugin_list	*next;
- 	char			*name;
- 	void			*handle;
- };
-@@ -272,7 +272,7 @@ void tep_plugin_remove_options(struct tep_plugin_option *options)
-  */
- void tep_print_plugins(struct trace_seq *s,
- 		       const char *prefix, const char *suffix,
--		       const struct plugin_list *list)
-+		       const struct tep_plugin_list *list)
- {
- 	while (list) {
- 		trace_seq_printf(s, "%s%s%s", prefix, list->name, suffix);
-@@ -284,9 +284,9 @@ static void
- load_plugin(struct tep_handle *pevent, const char *path,
- 	    const char *file, void *data)
- {
--	struct plugin_list **plugin_list = data;
-+	struct tep_plugin_list **plugin_list = data;
- 	tep_plugin_load_func func;
--	struct plugin_list *list;
-+	struct tep_plugin_list *list;
- 	const char *alias;
- 	char *plugin;
- 	void *handle;
-@@ -430,20 +430,20 @@ load_plugins(struct tep_handle *pevent, const char *suffix,
- 	free(path);
- }
- 
--struct plugin_list*
-+struct tep_plugin_list*
- tep_load_plugins(struct tep_handle *pevent)
- {
--	struct plugin_list *list = NULL;
-+	struct tep_plugin_list *list = NULL;
- 
- 	load_plugins(pevent, ".so", load_plugin, &list);
- 	return list;
- }
- 
- void
--tep_unload_plugins(struct plugin_list *plugin_list, struct tep_handle *pevent)
-+tep_unload_plugins(struct tep_plugin_list *plugin_list, struct tep_handle *pevent)
- {
- 	tep_plugin_unload_func func;
--	struct plugin_list *list;
-+	struct tep_plugin_list *list;
- 
- 	while (plugin_list) {
- 		list = plugin_list;
-diff --git a/tools/perf/util/trace-event.h b/tools/perf/util/trace-event.h
-index dfbe0db9212d..c47e0200688a 100644
---- a/tools/perf/util/trace-event.h
-+++ b/tools/perf/util/trace-event.h
-@@ -10,11 +10,11 @@ struct perf_sample;
- union perf_event;
- struct perf_tool;
- struct thread;
--struct plugin_list;
-+struct tep_plugin_list;
- 
- struct trace_event {
- 	struct tep_handle	*pevent;
--	struct plugin_list	*plugin_list;
-+	struct tep_plugin_list	*plugin_list;
- };
- 
- int trace_event__init(struct trace_event *t);
--- 
-2.17.1
+- Arnaldo
