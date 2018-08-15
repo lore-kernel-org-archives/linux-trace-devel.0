@@ -1,452 +1,585 @@
 Return-Path: <SRS0=+9rX=K6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:49456 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729329AbeHOR7d (ORCPT
+        id S1729386AbeHOR7x (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 15 Aug 2018 13:59:33 -0400
+        Wed, 15 Aug 2018 13:59:53 -0400
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Ingo Molnar <mingo@kernel.org>
 Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
         linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Kapshuk <alexander.kapshuk@gmail.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
+        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        Benno Evers <bevers@mesosphere.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Dongjiu Geng <gengdongjiu@huawei.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kim Phillips <kim.phillips@arm.com>,
-        Krister Johansen <kjlx@templeofstupid.com>,
-        linux-trace-devel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>, stable@vger.kernel.org,
+        Yordan Karadzhov <y.karadz@gmail.com>,
+        linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Wang Nan <wangnan0@huawei.com>, x86@kernel.org,
-        Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [GIT PULL 00/35] perf/core improvements and fixes
-Date: Wed, 15 Aug 2018 12:05:36 -0300
-Message-Id: <20180815150611.32080-1-acme@kernel.org>
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 06/35] tools lib traceevent, perf tools: Rename pevent find APIs
+Date: Wed, 15 Aug 2018 12:05:42 -0300
+Message-Id: <20180815150611.32080-7-acme@kernel.org>
+In-Reply-To: <20180815150611.32080-1-acme@kernel.org>
+References: <20180815150611.32080-1-acme@kernel.org>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-Hi Ingo,
+In order to make libtraceevent into a proper library, variables, data
+structures and functions require a unique prefix to prevent name space
+conflicts. That prefix will be "tep_" and not "pevent_". This changes
+APIs: pevent_find_any_field, pevent_find_common_field,
+pevent_find_event, pevent_find_field
 
-	Please consider pulling, this is on top of
-perf-core-for-mingo-4.19-20180809, that is not yet in tip.
-
-Thanks,
-
-- Arnaldo
-
-Test results at the end of this message, as usual.
-
-The following changes since commit 6a9405b56c274024564f9014bba97b92c91b34d6:
-
-  perf map: Optimize maps__fixup_overlappings() (2018-08-08 15:56:00 -0300)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-core-for-mingo-4.19-20180815
-
-for you to fetch changes up to 6855dc41b24619c3d1de3dbd27dd0546b0e45272:
-
-  x86: Add entry trampolines to kcore (2018-08-14 19:13:26 -0300)
-
-----------------------------------------------------------------
-perf/core improvements ad fixes:
-
-kernel:
-
-. kallsyms, x86: Export addresses of PTI entry trampolines (Alexander Shishkin)
-
-. kallsyms: Simplify update_iter_mod() (Adrian Hunter)
-
-. x86: Add entry trampolines to kcore (Adrian Hunter)
-
-Hardware tracing:
-
-. Fix auxtrace queue resize (Adrian Hunter)
-
-Arch specific:
-
-. Fix uninitialized ARM SPE record error variable (Kim Phillips)
-
-. Fix trace event post-processing in powerpc (Sandipan Das)
-
-Build:
-
-. Fix check-headers.sh AND list path of execution (Alexander Kapshuk)
-
-. Remove -mcet and -fcf-protection when building the python binding
-  with older clang versions (Arnaldo Carvalho de Melo)
-
-. Make check-headers.sh check based on kernel dir (Jiri Olsa)
-
-. Move syscall_64.tbl check into check-headers.sh (Jiri Olsa)
-
-Infrastructure:
-
-. Check for null when copying nsinfo.  (Benno Evers)
-
-Libraries:
-
-. Rename libtraceevent prefixes, prep work for making it a shared
-  library generaly available (Tzvetomir Stoyanov (VMware))
-
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org
+Link: http://lkml.kernel.org/r/20180808180700.316995920@goodmis.org
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/lib/traceevent/event-parse.c         | 76 +++++++++++++++---------------
+ tools/lib/traceevent/event-parse.h         |  8 ++--
+ tools/lib/traceevent/parse-filter.c        |  4 +-
+ tools/lib/traceevent/plugin_kmem.c         |  2 +-
+ tools/lib/traceevent/plugin_mac80211.c     |  2 +-
+ tools/lib/traceevent/plugin_sched_switch.c |  6 +--
+ tools/perf/util/evsel.c                    |  2 +-
+ tools/perf/util/header.c                   |  2 +-
+ tools/perf/util/python.c                   |  2 +-
+ tools/perf/util/sort.c                     |  4 +-
+ tools/perf/util/trace-event-parse.c        |  4 +-
+ tools/perf/util/trace-event.c              |  2 +-
+ 12 files changed, 57 insertions(+), 57 deletions(-)
 
-----------------------------------------------------------------
-Adrian Hunter (3):
-      perf auxtrace: Fix queue resize
-      kallsyms: Simplify update_iter_mod()
-      x86: Add entry trampolines to kcore
-
-Alexander Kapshuk (1):
-      perf tools: Fix check-headers.sh AND list path of execution
-
-Alexander Shishkin (1):
-      kallsyms, x86: Export addresses of PTI entry trampolines
-
-Arnaldo Carvalho de Melo (1):
-      perf python: Remove -mcet and -fcf-protection when building with clang
-
-Benno Evers (1):
-      perf tools: Check for null when copying nsinfo.
-
-Jiri Olsa (2):
-      perf tools: Make check-headers.sh check based on kernel dir
-      perf tools: Move syscall_64.tbl check into check-headers.sh
-
-Kim Phillips (1):
-      perf arm spe: Fix uninitialized record error variable
-
-Sandipan Das (1):
-      perf probe powerpc: Fix trace event post-processing
-
-Tzvetomir Stoyanov (VMware) (24):
-      tools lib traceevent, perf tools: Rename struct pevent to struct tep_handle
-      tools lib traceevent, perf tools: Rename 'struct pevent_record' to 'struct tep_record'
-      tools lib traceevent, perf tools: Rename pevent plugin related APIs
-      tools lib traceevent, perf tools: Rename pevent alloc / free APIs
-      tools lib traceevent, perf tools: Rename pevent find APIs
-      tools lib traceevent, perf tools: Rename pevent parse APIs
-      tools lib traceevent, perf tools: Rename pevent print APIs
-      tools lib traceevent, perf tools: Rename pevent_read_number_* APIs
-      tools lib traceevent, perf tools: Rename pevent_register_* APIs
-      tools lib traceevent, perf tools: Rename pevent_set_* APIs
-      tools lib traceevent, perf tools: Rename traceevent_* APIs
-      tools lib traceevent, perf tools: Rename 'enum pevent_flag' to 'enum tep_flag'
-      tools lib traceevent, tools lib lockdep: Rename 'enum pevent_errno' to 'enum tep_errno'
-      tools lib traceevent: Rename pevent_function* APIs
-      tools lib traceevent,  perf tools: Rename traceevent_plugin_* APIs
-      tools lib traceevent: Rename pevent_filter* APIs
-      tools lib traceevent: Rename pevent_register / unregister APIs
-      tools lib traceevent: Rename pevent_data_ APIs
-      tools lib traceevent: Rename pevent field APIs
-      tools lib traceevent: Rename pevent_find_* APIs
-      tools lib traceevent: Rename various pevent get/set/is APIs
-      tools lib traceevent: Rename internal parser related APIs
-      tools lib traceevent: Rename various pevent APIs
-      tools lib traceevent: Rename static variables and functions in event-parse.c
-
- arch/x86/mm/cpu_entry_area.c                       |  33 +
- fs/proc/kcore.c                                    |   7 +-
- include/linux/kcore.h                              |  13 +
- kernel/kallsyms.c                                  |  51 +-
- tools/lib/lockdep/Makefile                         |   4 +-
- tools/lib/traceevent/Makefile                      |   4 +-
- tools/lib/traceevent/event-parse.c                 | 696 ++++++++++-----------
- tools/lib/traceevent/event-parse.h                 | 458 +++++++-------
- tools/lib/traceevent/event-plugin.c                |  70 +--
- tools/lib/traceevent/parse-filter.c                | 288 ++++-----
- tools/lib/traceevent/plugin_cfg80211.c             |  20 +-
- tools/lib/traceevent/plugin_function.c             |  34 +-
- tools/lib/traceevent/plugin_hrtimer.c              |  56 +-
- tools/lib/traceevent/plugin_jbd2.c                 |  36 +-
- tools/lib/traceevent/plugin_kmem.c                 |  66 +-
- tools/lib/traceevent/plugin_kvm.c                  | 154 ++---
- tools/lib/traceevent/plugin_mac80211.c             |  28 +-
- tools/lib/traceevent/plugin_sched_switch.c         |  60 +-
- tools/lib/traceevent/plugin_scsi.c                 |  24 +-
- tools/lib/traceevent/plugin_xen.c                  |  20 +-
- tools/perf/arch/arm64/util/arm-spe.c               |   1 +
- tools/perf/arch/powerpc/util/sym-handling.c        |   4 +-
- tools/perf/arch/x86/Makefile                       |   3 -
- tools/perf/builtin-kmem.c                          |   6 +-
- tools/perf/builtin-report.c                        |   6 +-
- tools/perf/builtin-script.c                        |   6 +-
- tools/perf/check-headers.sh                        |  17 +-
- tools/perf/util/auxtrace.c                         |   3 +
- tools/perf/util/data-convert-bt.c                  |   6 +-
- tools/perf/util/evsel.c                            |   2 +-
- tools/perf/util/header.c                           |   6 +-
- tools/perf/util/machine.h                          |   2 +-
- tools/perf/util/namespaces.c                       |   3 +
- tools/perf/util/python.c                           |  10 +-
- .../perf/util/scripting-engines/trace-event-perl.c |   2 +-
- .../util/scripting-engines/trace-event-python.c    |   6 +-
- tools/perf/util/setup.py                           |  10 +-
- tools/perf/util/sort.c                             |  16 +-
- tools/perf/util/sort.h                             |   2 +-
- tools/perf/util/trace-event-parse.c                |  34 +-
- tools/perf/util/trace-event-read.c                 |  44 +-
- tools/perf/util/trace-event-scripting.c            |   4 +-
- tools/perf/util/trace-event.c                      |  28 +-
- tools/perf/util/trace-event.h                      |  20 +-
- 44 files changed, 1230 insertions(+), 1133 deletions(-)
-
-Test results:
-
-The first ones are container (docker) based builds of tools/perf with
-and without libelf support.  Where clang is available, it is also used
-to build perf with/without libelf, and building with LIBCLANGLLVM=1
-(built-in clang) with gcc and clang when clang and its devel libraries
-are installed.
-
-The objtool and samples/bpf/ builds are disabled now that I'm switching from
-using the sources in a local volume to fetching them from a http server to
-build it inside the container, to make it easier to build in a container cluster.
-Those will come back later.
-
-Several are cross builds, the ones with -x-ARCH and the android one, and those
-may not have all the features built, due to lack of multi-arch devel packages,
-available and being used so far on just a few, like
-debian:experimental-x-{arm64,mipsel}.
-
-The 'perf test' one will perform a variety of tests exercising
-tools/perf/util/, tools/lib/{bpf,traceevent,etc}, as well as run perf commands
-with a variety of command line event specifications to then intercept the
-sys_perf_event syscall to check that the perf_event_attr fields are set up as
-expected, among a variety of other unit tests.
-
-Then there is the 'make -C tools/perf build-test' ones, that build tools/perf/
-with a variety of feature sets, exercising the build with an incomplete set of
-features as well as with a complete one. It is planned to have it run on each
-of the containers mentioned above, using some container orchestration
-infrastructure. Get in contact if interested in helping having this in place.
-
-  # dm
-   1 alpine:3.4                    : Ok   gcc (Alpine 5.3.0) 5.3.0
-   2 alpine:3.5                    : Ok   gcc (Alpine 6.2.1) 6.2.1 20160822
-   3 alpine:3.6                    : Ok   gcc (Alpine 6.3.0) 6.3.0
-   4 alpine:3.7                    : Ok   gcc (Alpine 6.4.0) 6.4.0
-   5 alpine:3.8                    : Ok   gcc (Alpine 6.4.0) 6.4.0
-   6 alpine:edge                   : Ok   gcc (Alpine 6.4.0) 6.4.0
-   7 amazonlinux:1                 : Ok   gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-28)
-   8 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180303 (Red Hat 7.3.1-5)
-   9 android-ndk:r12b-arm          : Ok   arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
-  10 android-ndk:r15c-arm          : Ok   arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
-  11 centos:5                      : Ok   gcc (GCC) 4.1.2 20080704 (Red Hat 4.1.2-55)
-  12 centos:6                      : Ok   gcc (GCC) 4.4.7 20120313 (Red Hat 4.4.7-23)
-  13 centos:7                      : Ok   gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-28)
-  14 debian:7                      : Ok   gcc (Debian 4.7.2-5) 4.7.2
-  15 debian:8                      : Ok   gcc (Debian 4.9.2-10+deb8u1) 4.9.2
-  16 debian:9                      : Ok   gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
-  17 debian:experimental           : Ok   gcc (Debian 8.2.0-1) 8.2.0
-  18 debian:experimental-x-arm64   : Ok   aarch64-linux-gnu-gcc (Debian 8.1.0-12) 8.1.0
-  19 debian:experimental-x-mips    : Ok   mips-linux-gnu-gcc (Debian 8.1.0-12) 8.1.0
-  20 debian:experimental-x-mips64  : Ok   mips64-linux-gnuabi64-gcc (Debian 8.1.0-12) 8.1.0
-  21 debian:experimental-x-mipsel  : Ok   mipsel-linux-gnu-gcc (Debian 8.1.0-12) 8.1.0
-  22 fedora:20                     : Ok   gcc (GCC) 4.8.3 20140911 (Red Hat 4.8.3-7)
-  23 fedora:21                     : Ok   gcc (GCC) 4.9.2 20150212 (Red Hat 4.9.2-6)
-  24 fedora:22                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6)
-  25 fedora:23                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6)
-  26 fedora:24                     : Ok   gcc (GCC) 6.3.1 20161221 (Red Hat 6.3.1-1)
-  27 fedora:24-x-ARC-uClibc        : Ok   arc-linux-gcc (ARCompact ISA Linux uClibc toolchain 2017.09-rc2) 7.1.1 20170710
-  28 fedora:25                     : Ok   gcc (GCC) 6.4.1 20170727 (Red Hat 6.4.1-1)
-  29 fedora:26                     : Ok   gcc (GCC) 7.3.1 20180130 (Red Hat 7.3.1-2)
-  30 fedora:27                     : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-6)
-  31 fedora:28                     : Ok   gcc (GCC) 8.1.1 20180712 (Red Hat 8.1.1-5)
-  32 fedora:rawhide                : Ok   gcc (GCC) 8.0.1 20180324 (Red Hat 8.0.1-0.20)
-  33 gentoo-stage3-amd64:latest    : Ok   gcc (Gentoo 7.3.0-r3 p1.4) 7.3.0
-  34 mageia:5                      : Ok   gcc (GCC) 4.9.2
-  35 mageia:6                      : Ok   gcc (Mageia 5.5.0-1.mga6) 5.5.0
-  36 opensuse:13.2                 : Ok   gcc (SUSE Linux) 4.8.3 20140627 [gcc-4_8-branch revision 212064]
-  37 opensuse:42.1                 : Ok   gcc (SUSE Linux) 4.8.5
-  38 opensuse:42.2                 : Ok   gcc (SUSE Linux) 4.8.5
-  39 opensuse:42.3                 : Ok   gcc (SUSE Linux) 4.8.5
-  40 opensuse:tumbleweed           : Ok   gcc (SUSE Linux) 7.3.1 20180323 [gcc-7-branch revision 258812]
-  41 oraclelinux:6                 : Ok   gcc (GCC) 4.4.7 20120313 (Red Hat 4.4.7-23.0.1)
-  42 oraclelinux:7                 : Ok   gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-28.0.1)
-  43 ubuntu:12.04.5                : Ok   gcc (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3
-  44 ubuntu:14.04.4                : Ok   gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4
-  45 ubuntu:14.04.4-x-linaro-arm64 : Ok   aarch64-linux-gnu-gcc (Linaro GCC 5.5-2017.10) 5.5.0
-  46 ubuntu:16.04                  : Ok   gcc (Ubuntu 5.4.0-6ubuntu1~16.04.10) 5.4.0 20160609
-  47 ubuntu:16.04-x-arm            : Ok   arm-linux-gnueabihf-gcc (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
-  48 ubuntu:16.04-x-arm64          : Ok   aarch64-linux-gnu-gcc (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
-  49 ubuntu:16.04-x-powerpc        : Ok   powerpc-linux-gnu-gcc (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
-  50 ubuntu:16.04-x-powerpc64      : Ok   powerpc64-linux-gnu-gcc (Ubuntu/IBM 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
-  51 ubuntu:16.04-x-powerpc64el    : Ok   powerpc64le-linux-gnu-gcc (Ubuntu/IBM 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
-  52 ubuntu:16.04-x-s390           : Ok   s390x-linux-gnu-gcc (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
-  53 ubuntu:16.10                  : Ok   gcc (Ubuntu 6.2.0-5ubuntu12) 6.2.0 20161005
-  54 ubuntu:17.10                  : Ok   gcc (Ubuntu 7.2.0-8ubuntu3.2) 7.2.0
-  55 ubuntu:18.04                  : Ok   gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
-  56 ubuntu:18.04-x-arm            : Ok   arm-linux-gnueabihf-gcc (Ubuntu/Linaro 7.3.0-16ubuntu3) 7.3.0
-  57 ubuntu:18.04-x-arm64          : Ok   aarch64-linux-gnu-gcc (Ubuntu/Linaro 7.3.0-16ubuntu3) 7.3.0
-  58 ubuntu:18.04-x-m68k           : Ok   m68k-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
-  59 ubuntu:18.04-x-powerpc        : Ok   powerpc-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
-  60 ubuntu:18.04-x-powerpc64      : Ok   powerpc64-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
-  61 ubuntu:18.04-x-powerpc64el    : Ok   powerpc64le-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
-  62 ubuntu:18.04-x-riscv64        : Ok   riscv64-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
-  63 ubuntu:18.04-x-s390           : Ok   s390x-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
-  64 ubuntu:18.04-x-sh4            : Ok   sh4-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
-  65 ubuntu:18.04-x-sparc64        : Ok   sparc64-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
-  66 ubuntu:18.10                  : Ok   gcc (Ubuntu 8.2.0-1ubuntu2) 8.2.0
-  # 
-
-  # uname -a
-  Linux seventh 4.18.0-rc8-00002-g1236568ee3cb #1 SMP Wed Aug 8 09:39:17 -03 2018 x86_64 x86_64 x86_64 GNU/Linux
-  # git log --oneline -1
-  6855dc41b246 (HEAD -> perf/core) x86: Add entry trampolines to kcore
-  # perf version --build-options
-  perf version 4.18.rc7.g6855dc
-                   dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
-      dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
-                   glibc: [ on  ]  # HAVE_GLIBC_SUPPORT
-                    gtk2: [ on  ]  # HAVE_GTK2_SUPPORT
-           syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
-                  libbfd: [ on  ]  # HAVE_LIBBFD_SUPPORT
-                  libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
-                 libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-  numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-                 libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
-               libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
-                libslang: [ on  ]  # HAVE_SLANG_SUPPORT
-               libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
-               libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
-      libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
-                    zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
-                    lzma: [ on  ]  # HAVE_LZMA_SUPPORT
-               get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
-                     bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
-  # perf test
-   1: vmlinux symtab matches kallsyms                       : Ok
-   2: Detect openat syscall event                           : Ok
-   3: Detect openat syscall event on all cpus               : Ok
-   4: Read samples using the mmap interface                 : Ok
-   5: Test data source output                               : Ok
-   6: Parse event definition strings                        : Ok
-   7: Simple expression parser                              : Ok
-   8: PERF_RECORD_* events & perf_sample fields             : Ok
-   9: Parse perf pmu format                                 : Ok
-  10: DSO data read                                         : Ok
-  11: DSO data cache                                        : Ok
-  12: DSO data reopen                                       : Ok
-  13: Roundtrip evsel->name                                 : Ok
-  14: Parse sched tracepoints fields                        : Ok
-  15: syscalls:sys_enter_openat event fields                : Ok
-  16: Setup struct perf_event_attr                          : Ok
-  17: Match and link multiple hists                         : Ok
-  18: 'import perf' in python                               : Ok
-  19: Breakpoint overflow signal handler                    : Ok
-  20: Breakpoint overflow sampling                          : Ok
-  21: Breakpoint accounting                                 : Ok
-  22: Number of exit events of a simple workload            : Ok
-  23: Software clock events period values                   : Ok
-  24: Object code reading                                   : Ok
-  25: Sample parsing                                        : Ok
-  26: Use a dummy software event to keep tracking           : Ok
-  27: Parse with no sample_id_all bit set                   : Ok
-  28: Filter hist entries                                   : Ok
-  29: Lookup mmap thread                                    : Ok
-  30: Share thread mg                                       : Ok
-  31: Sort output of hist entries                           : Ok
-  32: Cumulate child hist entries                           : Ok
-  33: Track with sched_switch                               : Ok
-  34: Filter fds with revents mask in a fdarray             : Ok
-  35: Add fd to a fdarray, making it autogrow               : Ok
-  36: kmod_path__parse                                      : Ok
-  37: Thread map                                            : Ok
-  38: LLVM search and compile                               :
-  38.1: Basic BPF llvm compile                              : Ok
-  38.2: kbuild searching                                    : Ok
-  38.3: Compile source for BPF prologue generation          : Ok
-  38.4: Compile source for BPF relocation                   : Ok
-  39: Session topology                                      : Ok
-  40: BPF filter                                            :
-  40.1: Basic BPF filtering                                 : Ok
-  40.2: BPF pinning                                         : Ok
-  40.3: BPF prologue generation                             : Ok
-  40.4: BPF relocation checker                              : Ok
-  41: Synthesize thread map                                 : Ok
-  42: Remove thread map                                     : Ok
-  43: Synthesize cpu map                                    : Ok
-  44: Synthesize stat config                                : Ok
-  45: Synthesize stat                                       : Ok
-  46: Synthesize stat round                                 : Ok
-  47: Synthesize attr update                                : Ok
-  48: Event times                                           : Ok
-  49: Read backward ring buffer                             : Ok
-  50: Print cpu map                                         : Ok
-  51: Probe SDT events                                      : Ok
-  52: is_printable_array                                    : Ok
-  53: Print bitmap                                          : Ok
-  54: perf hooks                                            : Ok
-  55: builtin clang support                                 : Skip (not compiled in)
-  56: unit_number__scnprintf                                : Ok
-  57: mem2node                                              : Ok
-  58: x86 rdpmc                                             : Ok
-  59: Convert perf time to TSC                              : Ok
-  60: DWARF unwind                                          : Ok
-  61: x86 instruction decoder - new instructions            : Ok
-  62: probe libc's inet_pton & backtrace it with ping       : Ok
-  63: Check open filename arg using perf trace + vfs_getname: Ok
-  64: Use vfs_getname probe to get syscall args filenames   : Ok
-  65: Add vfs_getname probe to get syscall args filenames   : Ok
-  # 
-  
-  $ make -C tools/perf build-test
-  make: Entering directory '/home/acme/git/perf/tools/perf'
-  - tarpkg: ./tests/perf-targz-src-pkg .
-            make_no_libaudit_O: make NO_LIBAUDIT=1
-                   make_tags_O: make tags
-                make_minimal_O: make NO_LIBPERL=1 NO_LIBPYTHON=1 NO_NEWT=1 NO_GTK2=1 NO_DEMANGLE=1 NO_LIBELF=1 NO_LIBUNWIND=1 NO_BACKTRACE=1 NO_LIBNUMA=1 NO_LIBAUDIT=1 NO_LIBBIONIC=1 NO_LIBDW_DWARF_UNWIND=1 NO_AUXTRACE=1 NO_LIBBPF=1 NO_LIBCRYPTO=1 NO_SDT=1 NO_JVMTI=1
-              make_no_libelf_O: make NO_LIBELF=1
-              make_no_libbpf_O: make NO_LIBBPF=1
-             make_util_map_o_O: make util/map.o
-                    make_doc_O: make doc
-   make_install_prefix_slash_O: make install prefix=/tmp/krava/
-  make_no_libdw_dwarf_unwind_O: make NO_LIBDW_DWARF_UNWIND=1
-            make_no_demangle_O: make NO_DEMANGLE=1
-                 make_static_O: make LDFLAGS=-static
-                make_install_O: make install
-         make_with_clangllvm_O: make LIBCLANGLLVM=1
-            make_install_bin_O: make install-bin
-           make_no_libunwind_O: make NO_LIBUNWIND=1
-                  make_no_ui_O: make NO_NEWT=1 NO_SLANG=1 NO_GTK2=1
-               make_no_slang_O: make NO_SLANG=1
-           make_no_libpython_O: make NO_LIBPYTHON=1
-                make_no_gtk2_O: make NO_GTK2=1
-           make_no_libbionic_O: make NO_LIBBIONIC=1
-         make_install_prefix_O: make install prefix=/tmp/krava
-                  make_debug_O: make DEBUG=1
-             make_no_libperl_O: make NO_LIBPERL=1
-                   make_pure_O: make
-             make_no_libnuma_O: make NO_LIBNUMA=1
-       make_util_pmu_bison_o_O: make util/pmu-bison.o
-                   make_help_O: make help
-                make_no_newt_O: make NO_NEWT=1
-           make_no_backtrace_O: make NO_BACKTRACE=1
-              make_clean_all_O: make clean all
-            make_no_auxtrace_O: make NO_AUXTRACE=1
-             make_no_scripts_O: make NO_LIBPYTHON=1 NO_LIBPERL=1
-                 make_perf_o_O: make perf.o
-        make_with_babeltrace_O: make LIBBABELTRACE=1
-  OK
-  make: Leaving directory '/home/acme/git/perf/tools/perf'
-  $ 
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index 040180f6ed74..29f22e432084 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -2101,11 +2101,11 @@ process_entry(struct event_format *event __maybe_unused, struct print_arg *arg,
+ 	arg->field.name = field;
+ 
+ 	if (is_flag_field) {
+-		arg->field.field = pevent_find_any_field(event, arg->field.name);
++		arg->field.field = tep_find_any_field(event, arg->field.name);
+ 		arg->field.field->flags |= FIELD_IS_FLAG;
+ 		is_flag_field = 0;
+ 	} else if (is_symbolic_field) {
+-		arg->field.field = pevent_find_any_field(event, arg->field.name);
++		arg->field.field = tep_find_any_field(event, arg->field.name);
+ 		arg->field.field->flags |= FIELD_IS_SYMBOLIC;
+ 		is_symbolic_field = 0;
+ 	}
+@@ -2714,7 +2714,7 @@ process_dynamic_array(struct event_format *event, struct print_arg *arg, char **
+ 
+ 	/* Find the field */
+ 
+-	field = pevent_find_field(event, token);
++	field = tep_find_field(event, token);
+ 	if (!field)
+ 		goto out_free;
+ 
+@@ -2771,7 +2771,7 @@ process_dynamic_array_len(struct event_format *event, struct print_arg *arg,
+ 	arg->type = PRINT_DYNAMIC_ARRAY_LEN;
+ 
+ 	/* Find the field */
+-	field = pevent_find_field(event, token);
++	field = tep_find_field(event, token);
+ 	if (!field)
+ 		goto out_free;
+ 
+@@ -3265,7 +3265,7 @@ static int event_read_print(struct event_format *event)
+ }
+ 
+ /**
+- * pevent_find_common_field - return a common field by event
++ * tep_find_common_field - return a common field by event
+  * @event: handle for the event
+  * @name: the name of the common field to return
+  *
+@@ -3273,7 +3273,7 @@ static int event_read_print(struct event_format *event)
+  * This only searchs the common fields and not all field.
+  */
+ struct format_field *
+-pevent_find_common_field(struct event_format *event, const char *name)
++tep_find_common_field(struct event_format *event, const char *name)
+ {
+ 	struct format_field *format;
+ 
+@@ -3287,7 +3287,7 @@ pevent_find_common_field(struct event_format *event, const char *name)
+ }
+ 
+ /**
+- * pevent_find_field - find a non-common field
++ * tep_find_field - find a non-common field
+  * @event: handle for the event
+  * @name: the name of the non-common field
+  *
+@@ -3295,7 +3295,7 @@ pevent_find_common_field(struct event_format *event, const char *name)
+  * This does not search common fields.
+  */
+ struct format_field *
+-pevent_find_field(struct event_format *event, const char *name)
++tep_find_field(struct event_format *event, const char *name)
+ {
+ 	struct format_field *format;
+ 
+@@ -3309,7 +3309,7 @@ pevent_find_field(struct event_format *event, const char *name)
+ }
+ 
+ /**
+- * pevent_find_any_field - find any field by name
++ * tep_find_any_field - find any field by name
+  * @event: handle for the event
+  * @name: the name of the field
+  *
+@@ -3318,14 +3318,14 @@ pevent_find_field(struct event_format *event, const char *name)
+  * the non-common ones if a common one was not found.
+  */
+ struct format_field *
+-pevent_find_any_field(struct event_format *event, const char *name)
++tep_find_any_field(struct event_format *event, const char *name)
+ {
+ 	struct format_field *format;
+ 
+-	format = pevent_find_common_field(event, name);
++	format = tep_find_common_field(event, name);
+ 	if (format)
+ 		return format;
+-	return pevent_find_field(event, name);
++	return tep_find_field(event, name);
+ }
+ 
+ /**
+@@ -3400,7 +3400,7 @@ static int get_common_info(struct tep_handle *pevent,
+ 	}
+ 
+ 	event = pevent->events[0];
+-	field = pevent_find_common_field(event, type);
++	field = tep_find_common_field(event, type);
+ 	if (!field)
+ 		return -1;
+ 
+@@ -3468,13 +3468,13 @@ static int parse_common_migrate_disable(struct tep_handle *pevent, void *data)
+ static int events_id_cmp(const void *a, const void *b);
+ 
+ /**
+- * pevent_find_event - find an event by given id
++ * tep_find_event - find an event by given id
+  * @pevent: a handle to the pevent
+  * @id: the id of the event
+  *
+  * Returns an event that has a given @id.
+  */
+-struct event_format *pevent_find_event(struct tep_handle *pevent, int id)
++struct event_format *tep_find_event(struct tep_handle *pevent, int id)
+ {
+ 	struct event_format **eventptr;
+ 	struct event_format key;
+@@ -3553,7 +3553,7 @@ eval_num_arg(void *data, int size, struct event_format *event, struct print_arg
+ 		return strtoull(arg->atom.atom, NULL, 0);
+ 	case PRINT_FIELD:
+ 		if (!arg->field.field) {
+-			arg->field.field = pevent_find_any_field(event, arg->field.name);
++			arg->field.field = tep_find_any_field(event, arg->field.name);
+ 			if (!arg->field.field)
+ 				goto out_warning_field;
+ 			
+@@ -3619,7 +3619,7 @@ eval_num_arg(void *data, int size, struct event_format *event, struct print_arg
+ 			case PRINT_FIELD:
+ 				if (!larg->field.field) {
+ 					larg->field.field =
+-						pevent_find_any_field(event, larg->field.name);
++						tep_find_any_field(event, larg->field.name);
+ 					if (!larg->field.field) {
+ 						arg = larg;
+ 						goto out_warning_field;
+@@ -3899,7 +3899,7 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
+ 	case PRINT_FIELD:
+ 		field = arg->field.field;
+ 		if (!field) {
+-			field = pevent_find_any_field(event, arg->field.name);
++			field = tep_find_any_field(event, arg->field.name);
+ 			if (!field) {
+ 				str = arg->field.name;
+ 				goto out_warning_field;
+@@ -4000,7 +4000,7 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
+ 			field = arg->hex.field->field.field;
+ 			if (!field) {
+ 				str = arg->hex.field->field.name;
+-				field = pevent_find_any_field(event, str);
++				field = tep_find_any_field(event, str);
+ 				if (!field)
+ 					goto out_warning_field;
+ 				arg->hex.field->field.field = field;
+@@ -4031,7 +4031,7 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
+ 			field = arg->int_array.field->field.field;
+ 			if (!field) {
+ 				str = arg->int_array.field->field.name;
+-				field = pevent_find_any_field(event, str);
++				field = tep_find_any_field(event, str);
+ 				if (!field)
+ 					goto out_warning_field;
+ 				arg->int_array.field->field.field = field;
+@@ -4071,7 +4071,7 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
+ 		if (arg->string.offset == -1) {
+ 			struct format_field *f;
+ 
+-			f = pevent_find_any_field(event, arg->string.string);
++			f = tep_find_any_field(event, arg->string.string);
+ 			arg->string.offset = f->offset;
+ 		}
+ 		str_offset = data2host4(pevent, data + arg->string.offset);
+@@ -4089,7 +4089,7 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
+ 		if (arg->bitmask.offset == -1) {
+ 			struct format_field *f;
+ 
+-			f = pevent_find_any_field(event, arg->bitmask.bitmask);
++			f = tep_find_any_field(event, arg->bitmask.bitmask);
+ 			arg->bitmask.offset = f->offset;
+ 		}
+ 		bitmask_offset = data2host4(pevent, data + arg->bitmask.offset);
+@@ -4239,12 +4239,12 @@ static struct print_arg *make_bprint_args(char *fmt, void *data, int size, struc
+ 	ip_field = pevent->bprint_ip_field;
+ 
+ 	if (!field) {
+-		field = pevent_find_field(event, "buf");
++		field = tep_find_field(event, "buf");
+ 		if (!field) {
+ 			do_warning_event(event, "can't find buffer field for binary printk");
+ 			return NULL;
+ 		}
+-		ip_field = pevent_find_field(event, "ip");
++		ip_field = tep_find_field(event, "ip");
+ 		if (!ip_field) {
+ 			do_warning_event(event, "can't find ip field for binary printk");
+ 			return NULL;
+@@ -4413,7 +4413,7 @@ get_bprint_format(void *data, int size __maybe_unused,
+ 	field = pevent->bprint_fmt_field;
+ 
+ 	if (!field) {
+-		field = pevent_find_field(event, "fmt");
++		field = tep_find_field(event, "fmt");
+ 		if (!field) {
+ 			do_warning_event(event, "can't find format field for binary printk");
+ 			return NULL;
+@@ -4457,7 +4457,7 @@ static void print_mac_arg(struct trace_seq *s, int mac, void *data, int size,
+ 		fmt = "%.2x%.2x%.2x%.2x%.2x%.2x";
+ 	if (!arg->field.field) {
+ 		arg->field.field =
+-			pevent_find_any_field(event, arg->field.name);
++			tep_find_any_field(event, arg->field.name);
+ 		if (!arg->field.field) {
+ 			do_warning_event(event, "%s: field %s not found",
+ 					 __func__, arg->field.name);
+@@ -4607,7 +4607,7 @@ static int print_ipv4_arg(struct trace_seq *s, const char *ptr, char i,
+ 
+ 	if (!arg->field.field) {
+ 		arg->field.field =
+-			pevent_find_any_field(event, arg->field.name);
++			tep_find_any_field(event, arg->field.name);
+ 		if (!arg->field.field) {
+ 			do_warning("%s: field %s not found",
+ 				   __func__, arg->field.name);
+@@ -4653,7 +4653,7 @@ static int print_ipv6_arg(struct trace_seq *s, const char *ptr, char i,
+ 
+ 	if (!arg->field.field) {
+ 		arg->field.field =
+-			pevent_find_any_field(event, arg->field.name);
++			tep_find_any_field(event, arg->field.name);
+ 		if (!arg->field.field) {
+ 			do_warning("%s: field %s not found",
+ 				   __func__, arg->field.name);
+@@ -4711,7 +4711,7 @@ static int print_ipsa_arg(struct trace_seq *s, const char *ptr, char i,
+ 
+ 	if (!arg->field.field) {
+ 		arg->field.field =
+-			pevent_find_any_field(event, arg->field.name);
++			tep_find_any_field(event, arg->field.name);
+ 		if (!arg->field.field) {
+ 			do_warning("%s: field %s not found",
+ 				   __func__, arg->field.name);
+@@ -5243,7 +5243,7 @@ int pevent_data_type(struct tep_handle *pevent, struct tep_record *rec)
+  */
+ struct event_format *pevent_data_event_from_type(struct tep_handle *pevent, int type)
+ {
+-	return pevent_find_event(pevent, type);
++	return tep_find_event(pevent, type);
+ }
+ 
+ /**
+@@ -5452,7 +5452,7 @@ pevent_find_event_by_record(struct tep_handle *pevent, struct tep_record *record
+ 
+ 	type = trace_parse_common_type(pevent, record->data);
+ 
+-	return pevent_find_event(pevent, type);
++	return tep_find_event(pevent, type);
+ }
+ 
+ /**
+@@ -6288,7 +6288,7 @@ void *pevent_get_field_raw(struct trace_seq *s, struct event_format *event,
+ 	if (!event)
+ 		return NULL;
+ 
+-	field = pevent_find_field(event, name);
++	field = tep_find_field(event, name);
+ 
+ 	if (!field) {
+ 		if (err)
+@@ -6332,7 +6332,7 @@ int pevent_get_field_val(struct trace_seq *s, struct event_format *event,
+ 	if (!event)
+ 		return -1;
+ 
+-	field = pevent_find_field(event, name);
++	field = tep_find_field(event, name);
+ 
+ 	return get_field_val(s, field, name, record, val, err);
+ }
+@@ -6357,7 +6357,7 @@ int pevent_get_common_field_val(struct trace_seq *s, struct event_format *event,
+ 	if (!event)
+ 		return -1;
+ 
+-	field = pevent_find_common_field(event, name);
++	field = tep_find_common_field(event, name);
+ 
+ 	return get_field_val(s, field, name, record, val, err);
+ }
+@@ -6382,7 +6382,7 @@ int pevent_get_any_field_val(struct trace_seq *s, struct event_format *event,
+ 	if (!event)
+ 		return -1;
+ 
+-	field = pevent_find_any_field(event, name);
++	field = tep_find_any_field(event, name);
+ 
+ 	return get_field_val(s, field, name, record, val, err);
+ }
+@@ -6402,7 +6402,7 @@ int pevent_print_num_field(struct trace_seq *s, const char *fmt,
+ 			   struct event_format *event, const char *name,
+ 			   struct tep_record *record, int err)
+ {
+-	struct format_field *field = pevent_find_field(event, name);
++	struct format_field *field = tep_find_field(event, name);
+ 	unsigned long long val;
+ 
+ 	if (!field)
+@@ -6434,7 +6434,7 @@ int pevent_print_func_field(struct trace_seq *s, const char *fmt,
+ 			    struct event_format *event, const char *name,
+ 			    struct tep_record *record, int err)
+ {
+-	struct format_field *field = pevent_find_field(event, name);
++	struct format_field *field = tep_find_field(event, name);
+ 	struct tep_handle *pevent = event->pevent;
+ 	unsigned long long val;
+ 	struct func_map *func;
+@@ -6599,7 +6599,7 @@ static struct event_format *pevent_search_event(struct tep_handle *pevent, int i
+ 
+ 	if (id >= 0) {
+ 		/* search by id */
+-		event = pevent_find_event(pevent, id);
++		event = tep_find_event(pevent, id);
+ 		if (!event)
+ 			return NULL;
+ 		if (event_name && (strcmp(event_name, event->name) != 0))
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
+index c229240666b7..83c78290061e 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -686,9 +686,9 @@ int pevent_register_print_function(struct tep_handle *pevent,
+ int pevent_unregister_print_function(struct tep_handle *pevent,
+ 				     pevent_func_handler func, char *name);
+ 
+-struct format_field *pevent_find_common_field(struct event_format *event, const char *name);
+-struct format_field *pevent_find_field(struct event_format *event, const char *name);
+-struct format_field *pevent_find_any_field(struct event_format *event, const char *name);
++struct format_field *tep_find_common_field(struct event_format *event, const char *name);
++struct format_field *tep_find_field(struct event_format *event, const char *name);
++struct format_field *tep_find_any_field(struct event_format *event, const char *name);
+ 
+ const char *pevent_find_function(struct tep_handle *pevent, unsigned long long addr);
+ unsigned long long
+@@ -697,7 +697,7 @@ unsigned long long pevent_read_number(struct tep_handle *pevent, const void *ptr
+ int pevent_read_number_field(struct format_field *field, const void *data,
+ 			     unsigned long long *value);
+ 
+-struct event_format *pevent_find_event(struct tep_handle *pevent, int id);
++struct event_format *tep_find_event(struct tep_handle *pevent, int id);
+ 
+ struct event_format *
+ pevent_find_event_by_name(struct tep_handle *pevent, const char *sys, const char *name);
+diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
+index 784ccac90999..7b6bab1ab0cd 100644
+--- a/tools/lib/traceevent/parse-filter.c
++++ b/tools/lib/traceevent/parse-filter.c
+@@ -167,7 +167,7 @@ add_filter_type(struct event_filter *filter, int id)
+ 
+ 	filter_type = &filter->event_filters[i];
+ 	filter_type->event_id = id;
+-	filter_type->event = pevent_find_event(filter->pevent, id);
++	filter_type->event = tep_find_event(filter->pevent, id);
+ 	filter_type->filter = NULL;
+ 
+ 	filter->filters++;
+@@ -382,7 +382,7 @@ create_arg_item(struct event_format *event, const char *token,
+ 			break;
+ 		}
+ 		/* Consider this a field */
+-		field = pevent_find_any_field(event, token);
++		field = tep_find_any_field(event, token);
+ 		if (!field) {
+ 			/* If token is 'COMM' or 'CPU' then it is special */
+ 			if (strcmp(token, COMM) == 0) {
+diff --git a/tools/lib/traceevent/plugin_kmem.c b/tools/lib/traceevent/plugin_kmem.c
+index 0a56562d0645..a5f8641495f3 100644
+--- a/tools/lib/traceevent/plugin_kmem.c
++++ b/tools/lib/traceevent/plugin_kmem.c
+@@ -31,7 +31,7 @@ static int call_site_handler(struct trace_seq *s, struct tep_record *record,
+ 	void *data = record->data;
+ 	const char *func;
+ 
+-	field = pevent_find_field(event, "call_site");
++	field = tep_find_field(event, "call_site");
+ 	if (!field)
+ 		return 1;
+ 
+diff --git a/tools/lib/traceevent/plugin_mac80211.c b/tools/lib/traceevent/plugin_mac80211.c
+index 61eea3543cf1..dd5c7fc0193f 100644
+--- a/tools/lib/traceevent/plugin_mac80211.c
++++ b/tools/lib/traceevent/plugin_mac80211.c
+@@ -28,7 +28,7 @@
+ static void print_string(struct trace_seq *s, struct event_format *event,
+ 			 const char *name, const void *data)
+ {
+-	struct format_field *f = pevent_find_field(event, name);
++	struct format_field *f = tep_find_field(event, name);
+ 	int offset;
+ 	int length;
+ 
+diff --git a/tools/lib/traceevent/plugin_sched_switch.c b/tools/lib/traceevent/plugin_sched_switch.c
+index 24dc2bca8e67..90d2ef293cf9 100644
+--- a/tools/lib/traceevent/plugin_sched_switch.c
++++ b/tools/lib/traceevent/plugin_sched_switch.c
+@@ -74,7 +74,7 @@ static int sched_wakeup_handler(struct trace_seq *s,
+ 	if (pevent_get_field_val(s, event, "pid", record, &val, 1))
+ 		return trace_seq_putc(s, '!');
+ 
+-	field = pevent_find_any_field(event, "comm");
++	field = tep_find_any_field(event, "comm");
+ 	if (field) {
+ 		write_and_save_comm(field, record, s, val);
+ 		trace_seq_putc(s, ':');
+@@ -103,7 +103,7 @@ static int sched_switch_handler(struct trace_seq *s,
+ 	if (pevent_get_field_val(s, event, "prev_pid", record, &val, 1))
+ 		return trace_seq_putc(s, '!');
+ 
+-	field = pevent_find_any_field(event, "prev_comm");
++	field = tep_find_any_field(event, "prev_comm");
+ 	if (field) {
+ 		write_and_save_comm(field, record, s, val);
+ 		trace_seq_putc(s, ':');
+@@ -121,7 +121,7 @@ static int sched_switch_handler(struct trace_seq *s,
+ 	if (pevent_get_field_val(s, event, "next_pid", record, &val, 1))
+ 		return trace_seq_putc(s, '!');
+ 
+-	field = pevent_find_any_field(event, "next_comm");
++	field = tep_find_any_field(event, "next_comm");
+ 	if (field) {
+ 		write_and_save_comm(field, record, s, val);
+ 		trace_seq_putc(s, ':');
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index ddf84b941abf..c980bbff6353 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2683,7 +2683,7 @@ int perf_event__synthesize_sample(union perf_event *event, u64 type,
+ 
+ struct format_field *perf_evsel__field(struct perf_evsel *evsel, const char *name)
+ {
+-	return pevent_find_field(evsel->tp_format, name);
++	return tep_find_field(evsel->tp_format, name);
+ }
+ 
+ void *perf_evsel__rawptr(struct perf_evsel *evsel, struct perf_sample *sample,
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index c669896de98a..3cadc252dd89 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -3218,7 +3218,7 @@ static int perf_evsel__prepare_tracepoint_event(struct perf_evsel *evsel,
+ 		return -1;
+ 	}
+ 
+-	event = pevent_find_event(pevent, evsel->attr.config);
++	event = tep_find_event(pevent, evsel->attr.config);
+ 	if (event == NULL) {
+ 		pr_debug("cannot find event format for %d\n", (int)evsel->attr.config);
+ 		return -1;
+diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+index fd72cce6599c..ff01cd53eddd 100644
+--- a/tools/perf/util/python.c
++++ b/tools/perf/util/python.c
+@@ -394,7 +394,7 @@ get_tracepoint_field(struct pyrf_event *pevent, PyObject *attr_name)
+ 		evsel->tp_format = tp_format;
+ 	}
+ 
+-	field = pevent_find_any_field(evsel->tp_format, str);
++	field = tep_find_any_field(evsel->tp_format, str);
+ 	if (!field)
+ 		return NULL;
+ 
+diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
+index 08cdaf2be1af..f27087d06f52 100644
+--- a/tools/perf/util/sort.c
++++ b/tools/perf/util/sort.c
+@@ -2311,7 +2311,7 @@ static int add_all_matching_fields(struct perf_evlist *evlist,
+ 		if (evsel->attr.type != PERF_TYPE_TRACEPOINT)
+ 			continue;
+ 
+-		field = pevent_find_any_field(evsel->tp_format, field_name);
++		field = tep_find_any_field(evsel->tp_format, field_name);
+ 		if (field == NULL)
+ 			continue;
+ 
+@@ -2378,7 +2378,7 @@ static int add_dynamic_entry(struct perf_evlist *evlist, const char *tok,
+ 	if (!strcmp(field_name, "*")) {
+ 		ret = add_evsel_fields(evsel, raw_trace, level);
+ 	} else {
+-		field = pevent_find_any_field(evsel->tp_format, field_name);
++		field = tep_find_any_field(evsel->tp_format, field_name);
+ 		if (field == NULL) {
+ 			pr_debug("Cannot find event field for %s.%s\n",
+ 				 event_name, field_name);
+diff --git a/tools/perf/util/trace-event-parse.c b/tools/perf/util/trace-event-parse.c
+index 630d0e81fe87..0a769a340fc9 100644
+--- a/tools/perf/util/trace-event-parse.c
++++ b/tools/perf/util/trace-event-parse.c
+@@ -41,7 +41,7 @@ static int get_common_field(struct scripting_context *context,
+ 			return 0;
+ 
+ 		event = pevent->events[0];
+-		field = pevent_find_common_field(event, type);
++		field = tep_find_common_field(event, type);
+ 		if (!field)
+ 			return 0;
+ 		*offset = field->offset;
+@@ -99,7 +99,7 @@ raw_field_value(struct event_format *event, const char *name, void *data)
+ 	struct format_field *field;
+ 	unsigned long long val;
+ 
+-	field = pevent_find_any_field(event, name);
++	field = tep_find_any_field(event, name);
+ 	if (!field)
+ 		return 0ULL;
+ 
+diff --git a/tools/perf/util/trace-event.c b/tools/perf/util/trace-event.c
+index 11066ed43ca4..116fffa788b9 100644
+--- a/tools/perf/util/trace-event.c
++++ b/tools/perf/util/trace-event.c
+@@ -116,5 +116,5 @@ struct event_format *trace_event__tp_format_id(int id)
+ 	if (!tevent_initialized && trace_event__init2())
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	return pevent_find_event(tevent.pevent, id);
++	return tep_find_event(tevent.pevent, id);
+ }
+-- 
+2.14.4
