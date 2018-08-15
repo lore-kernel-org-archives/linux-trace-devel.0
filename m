@@ -1,9 +1,9 @@
 Return-Path: <SRS0=+9rX=K6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:50166 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:50062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729293AbeHOSAO (ORCPT
+        id S1729293AbeHOSAJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 15 Aug 2018 14:00:14 -0400
+        Wed, 15 Aug 2018 14:00:09 -0400
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Ingo Molnar <mingo@kernel.org>
 Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
@@ -15,9 +15,9 @@ Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 13/35] tools lib traceevent, perf tools: Rename 'enum pevent_flag' to 'enum tep_flag'
-Date: Wed, 15 Aug 2018 12:05:49 -0300
-Message-Id: <20180815150611.32080-14-acme@kernel.org>
+Subject: [PATCH 11/35] tools lib traceevent, perf tools: Rename pevent_set_* APIs
+Date: Wed, 15 Aug 2018 12:05:47 -0300
+Message-Id: <20180815150611.32080-12-acme@kernel.org>
 In-Reply-To: <20180815150611.32080-1-acme@kernel.org>
 References: <20180815150611.32080-1-acme@kernel.org>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -28,126 +28,233 @@ From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
 conflicts. That prefix will be "tep_" and not "pevent_". This changes
-pevent_get_page_size API and enum pevent_flag to enum tep_flag
+APIs: pevent_set_file_bigendian, pevent_set_flag,
+pevent_set_function_resolver, pevent_set_host_bigendian,
+pevent_set_long_size, pevent_set_page_size and pevent_get_long_size
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180808180701.623942406@goodmis.org
+Link: http://lkml.kernel.org/r/20180808180701.256265951@goodmis.org
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/lib/traceevent/event-parse.c  |  2 +-
- tools/lib/traceevent/event-parse.h  | 10 +++++-----
- tools/lib/traceevent/event-plugin.c |  4 ++--
- tools/perf/builtin-kmem.c           |  2 +-
- tools/perf/util/trace-event-read.c  |  2 +-
- tools/perf/util/trace-event.c       |  2 +-
- 6 files changed, 11 insertions(+), 11 deletions(-)
+ tools/lib/traceevent/event-parse.c |  6 +++---
+ tools/lib/traceevent/event-parse.h | 16 ++++++++--------
+ tools/perf/builtin-report.c        |  6 +++---
+ tools/perf/builtin-script.c        |  6 +++---
+ tools/perf/util/machine.h          |  2 +-
+ tools/perf/util/trace-event-read.c | 14 +++++++-------
+ tools/perf/util/trace-event.c      |  8 ++++----
+ 7 files changed, 29 insertions(+), 29 deletions(-)
 
 diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index 2667c18db27c..cfb86b789da6 100644
+index cab411b99087..2667c18db27c 100644
 --- a/tools/lib/traceevent/event-parse.c
 +++ b/tools/lib/traceevent/event-parse.c
-@@ -5515,7 +5515,7 @@ void tep_print_event_time(struct tep_handle *pevent, struct trace_seq *s,
- 	}
+@@ -444,7 +444,7 @@ struct func_resolver {
+ };
  
- 	if (use_usec_format) {
--		if (pevent->flags & PEVENT_NSEC_OUTPUT) {
-+		if (pevent->flags & TEP_NSEC_OUTPUT) {
- 			usecs = nsecs;
- 			p = 9;
- 		} else {
+ /**
+- * pevent_set_function_resolver - set an alternative function resolver
++ * tep_set_function_resolver - set an alternative function resolver
+  * @pevent: handle for the pevent
+  * @resolver: function to be used
+  * @priv: resolver function private state.
+@@ -453,8 +453,8 @@ struct func_resolver {
+  * keep using it instead of duplicating all the entries inside
+  * pevent->funclist.
+  */
+-int pevent_set_function_resolver(struct tep_handle *pevent,
+-				 tep_func_resolver_t *func, void *priv)
++int tep_set_function_resolver(struct tep_handle *pevent,
++			      tep_func_resolver_t *func, void *priv)
+ {
+ 	struct func_resolver *resolver = malloc(sizeof(*resolver));
+ 
 diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index 97abeaced9c3..97deb15f5355 100644
+index 399dea66b80e..a68591c8dec3 100644
 --- a/tools/lib/traceevent/event-parse.h
 +++ b/tools/lib/traceevent/event-parse.h
-@@ -373,10 +373,10 @@ enum pevent_func_arg_type {
- 	PEVENT_FUNC_ARG_MAX_TYPES
+@@ -532,7 +532,7 @@ struct tep_handle {
+ 	char *trace_clock;
  };
  
--enum pevent_flag {
--	PEVENT_NSEC_OUTPUT		= 1,	/* output in NSECS */
--	PEVENT_DISABLE_SYS_PLUGINS	= 1 << 1,
--	PEVENT_DISABLE_PLUGINS		= 1 << 2,
-+enum tep_flag {
-+	TEP_NSEC_OUTPUT		= 1,	/* output in NSECS */
-+	TEP_DISABLE_SYS_PLUGINS	= 1 << 1,
-+	TEP_DISABLE_PLUGINS	= 1 << 2,
+-static inline void pevent_set_flag(struct tep_handle *pevent, int flag)
++static inline void tep_set_flag(struct tep_handle *pevent, int flag)
+ {
+ 	pevent->flags |= flag;
+ }
+@@ -615,8 +615,8 @@ enum trace_flag_type {
+ 	TRACE_FLAG_SOFTIRQ		= 0x10,
  };
  
- #define PEVENT_ERRORS 							      \
-@@ -751,7 +751,7 @@ static inline void tep_set_long_size(struct tep_handle *pevent, int long_size)
+-int pevent_set_function_resolver(struct tep_handle *pevent,
+-				 tep_func_resolver_t *func, void *priv);
++int tep_set_function_resolver(struct tep_handle *pevent,
++			      tep_func_resolver_t *func, void *priv);
+ void pevent_reset_function_resolver(struct tep_handle *pevent);
+ int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid);
+ int pevent_register_trace_clock(struct tep_handle *pevent, const char *trace_clock);
+@@ -741,12 +741,12 @@ static inline void pevent_set_cpus(struct tep_handle *pevent, int cpus)
+ 	pevent->cpus = cpus;
+ }
+ 
+-static inline int pevent_get_long_size(struct tep_handle *pevent)
++static inline int tep_get_long_size(struct tep_handle *pevent)
+ {
+ 	return pevent->long_size;
+ }
+ 
+-static inline void pevent_set_long_size(struct tep_handle *pevent, int long_size)
++static inline void tep_set_long_size(struct tep_handle *pevent, int long_size)
+ {
  	pevent->long_size = long_size;
  }
- 
--static inline int pevent_get_page_size(struct tep_handle *pevent)
-+static inline int tep_get_page_size(struct tep_handle *pevent)
- {
+@@ -756,7 +756,7 @@ static inline int pevent_get_page_size(struct tep_handle *pevent)
  	return pevent->page_size;
  }
-diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index 39859cee7712..c837a73c03e6 100644
---- a/tools/lib/traceevent/event-plugin.c
-+++ b/tools/lib/traceevent/event-plugin.c
-@@ -390,7 +390,7 @@ load_plugins(struct tep_handle *pevent, const char *suffix,
- 	char *envdir;
- 	int ret;
  
--	if (pevent->flags & PEVENT_DISABLE_PLUGINS)
-+	if (pevent->flags & TEP_DISABLE_PLUGINS)
- 		return;
+-static inline void pevent_set_page_size(struct tep_handle *pevent, int _page_size)
++static inline void tep_set_page_size(struct tep_handle *pevent, int _page_size)
+ {
+ 	pevent->page_size = _page_size;
+ }
+@@ -766,7 +766,7 @@ static inline int pevent_is_file_bigendian(struct tep_handle *pevent)
+ 	return pevent->file_bigendian;
+ }
  
- 	/*
-@@ -398,7 +398,7 @@ load_plugins(struct tep_handle *pevent, const char *suffix,
- 	 * check that first.
- 	 */
- #ifdef PLUGIN_DIR
--	if (!(pevent->flags & PEVENT_DISABLE_SYS_PLUGINS))
-+	if (!(pevent->flags & TEP_DISABLE_SYS_PLUGINS))
- 		load_plugins_dir(pevent, suffix, PLUGIN_DIR,
- 				 load_plugin, data);
- #endif
-diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
-index 73c073ade71c..b63bca4b0c2a 100644
---- a/tools/perf/builtin-kmem.c
-+++ b/tools/perf/builtin-kmem.c
-@@ -1974,7 +1974,7 @@ int cmd_kmem(int argc, const char **argv)
- 			goto out_delete;
- 		}
+-static inline void pevent_set_file_bigendian(struct tep_handle *pevent, int endian)
++static inline void tep_set_file_bigendian(struct tep_handle *pevent, int endian)
+ {
+ 	pevent->file_bigendian = endian;
+ }
+@@ -776,7 +776,7 @@ static inline int pevent_is_host_bigendian(struct tep_handle *pevent)
+ 	return pevent->host_bigendian;
+ }
  
--		kmem_page_size = pevent_get_page_size(evsel->tp_format->pevent);
-+		kmem_page_size = tep_get_page_size(evsel->tp_format->pevent);
- 		symbol_conf.use_callchain = true;
+-static inline void pevent_set_host_bigendian(struct tep_handle *pevent, int endian)
++static inline void tep_set_host_bigendian(struct tep_handle *pevent, int endian)
+ {
+ 	pevent->host_bigendian = endian;
+ }
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 143542ffac20..76e12bcd1765 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -1369,9 +1369,9 @@ int cmd_report(int argc, const char **argv)
  	}
  
+ 	if (session->tevent.pevent &&
+-	    pevent_set_function_resolver(session->tevent.pevent,
+-					 machine__resolve_kernel_addr,
+-					 &session->machines.host) < 0) {
++	    tep_set_function_resolver(session->tevent.pevent,
++				      machine__resolve_kernel_addr,
++				      &session->machines.host) < 0) {
+ 		pr_err("%s: failed to set libtraceevent function resolver\n",
+ 		       __func__);
+ 		return -1;
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 568ddfac3213..ba481d73f910 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -3429,9 +3429,9 @@ int cmd_script(int argc, const char **argv)
+ 		symbol_conf.use_callchain = false;
+ 
+ 	if (session->tevent.pevent &&
+-	    pevent_set_function_resolver(session->tevent.pevent,
+-					 machine__resolve_kernel_addr,
+-					 &session->machines.host) < 0) {
++	    tep_set_function_resolver(session->tevent.pevent,
++				      machine__resolve_kernel_addr,
++				      &session->machines.host) < 0) {
+ 		pr_err("%s: failed to set libtraceevent function resolver\n", __func__);
+ 		err = -1;
+ 		goto out_delete;
+diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
+index 1de7660d93e9..d856b85862e2 100644
+--- a/tools/perf/util/machine.h
++++ b/tools/perf/util/machine.h
+@@ -265,7 +265,7 @@ pid_t machine__get_current_tid(struct machine *machine, int cpu);
+ int machine__set_current_tid(struct machine *machine, int cpu, pid_t pid,
+ 			     pid_t tid);
+ /*
+- * For use with libtraceevent's pevent_set_function_resolver()
++ * For use with libtraceevent's tep_set_function_resolver()
+  */
+ char *machine__resolve_kernel_addr(void *vmachine, unsigned long long *addrp, char **modp);
+ 
 diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-event-read.c
-index d970163f0145..3dfc1db6b25b 100644
+index 850f7bf0eced..d970163f0145 100644
 --- a/tools/perf/util/trace-event-read.c
 +++ b/tools/perf/util/trace-event-read.c
-@@ -439,7 +439,7 @@ ssize_t trace_report(int fd, struct trace_event *tevent, bool __repipe)
+@@ -236,12 +236,12 @@ static int read_header_files(struct tep_handle *pevent)
+ 	}
+ 
+ 	if (!tep_parse_header_page(pevent, header_page, size,
+-				   pevent_get_long_size(pevent))) {
++				   tep_get_long_size(pevent))) {
+ 		/*
+ 		 * The commit field in the page is of type long,
+ 		 * use that instead, since it represents the kernel.
+ 		 */
+-		pevent_set_long_size(pevent, pevent->header_page_size_size);
++		tep_set_long_size(pevent, pevent->header_page_size_size);
+ 	}
+ 	free(header_page);
+ 
+@@ -439,9 +439,9 @@ ssize_t trace_report(int fd, struct trace_event *tevent, bool __repipe)
  
  	pevent = tevent->pevent;
  
--	tep_set_flag(pevent, PEVENT_NSEC_OUTPUT);
-+	tep_set_flag(pevent, TEP_NSEC_OUTPUT);
- 	tep_set_file_bigendian(pevent, file_bigendian);
- 	tep_set_host_bigendian(pevent, host_bigendian);
+-	pevent_set_flag(pevent, PEVENT_NSEC_OUTPUT);
+-	pevent_set_file_bigendian(pevent, file_bigendian);
+-	pevent_set_host_bigendian(pevent, host_bigendian);
++	tep_set_flag(pevent, PEVENT_NSEC_OUTPUT);
++	tep_set_file_bigendian(pevent, file_bigendian);
++	tep_set_host_bigendian(pevent, host_bigendian);
  
+ 	if (do_read(buf, 1) < 0)
+ 		goto out;
+@@ -451,8 +451,8 @@ ssize_t trace_report(int fd, struct trace_event *tevent, bool __repipe)
+ 	if (!file_page_size)
+ 		goto out;
+ 
+-	pevent_set_long_size(pevent, file_long_size);
+-	pevent_set_page_size(pevent, file_page_size);
++	tep_set_long_size(pevent, file_long_size);
++	tep_set_page_size(pevent, file_page_size);
+ 
+ 	err = read_header_files(pevent);
+ 	if (err)
 diff --git a/tools/perf/util/trace-event.c b/tools/perf/util/trace-event.c
-index 3102e8be81f5..58bb72f266f3 100644
+index eed1c11c1915..679c93644a08 100644
 --- a/tools/perf/util/trace-event.c
 +++ b/tools/perf/util/trace-event.c
-@@ -47,7 +47,7 @@ static int trace_event__init2(void)
+@@ -47,9 +47,9 @@ static int trace_event__init2(void)
  		return -1;
  
  	pevent = tevent.pevent;
--	tep_set_flag(pevent, PEVENT_NSEC_OUTPUT);
-+	tep_set_flag(pevent, TEP_NSEC_OUTPUT);
- 	tep_set_file_bigendian(pevent, be);
- 	tep_set_host_bigendian(pevent, be);
+-	pevent_set_flag(pevent, PEVENT_NSEC_OUTPUT);
+-	pevent_set_file_bigendian(pevent, be);
+-	pevent_set_host_bigendian(pevent, be);
++	tep_set_flag(pevent, PEVENT_NSEC_OUTPUT);
++	tep_set_file_bigendian(pevent, be);
++	tep_set_host_bigendian(pevent, be);
  	tevent_initialized = true;
+ 	return 0;
+ }
+@@ -60,7 +60,7 @@ int trace_event__register_resolver(struct machine *machine,
+ 	if (!tevent_initialized && trace_event__init2())
+ 		return -1;
+ 
+-	return pevent_set_function_resolver(tevent.pevent, func, machine);
++	return tep_set_function_resolver(tevent.pevent, func, machine);
+ }
+ 
+ void trace_event__cleanup(struct trace_event *t)
 -- 
 2.14.4
