@@ -1,46 +1,1679 @@
-Return-Path: <SRS0=HiQF=K5=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:49984 "EHLO mail.kernel.org"
+Return-Path: <SRS0=+9rX=K6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail.kernel.org ([198.145.29.99]:60438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727835AbeHOAy2 (ORCPT
+        id S1726003AbeHOFhH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Aug 2018 20:54:28 -0400
-Date: Tue, 14 Aug 2018 18:05:13 -0400
+        Wed, 15 Aug 2018 01:37:07 -0400
+Date: Tue, 14 Aug 2018 22:46:55 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 05/14] tools/lib/traceevent: Add prefix TEP_ to all
- members of nameless enum EVENT_FL_*
-Message-ID: <20180814180513.457b128d@gandalf.local.home>
-In-Reply-To: <20180810131732.24677-6-tz.stoyanov@gmail.com>
-References: <20180810131732.24677-1-tz.stoyanov@gmail.com>
-        <20180810131732.24677-6-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v2 2/3] kernel-shark-qt: Add I/O for configuration data.
+Message-ID: <20180814224655.0d50667d@vmware.local.home>
+In-Reply-To: <20180814180348.17236-2-y.karadz@gmail.com>
+References: <20180814180348.17236-1-y.karadz@gmail.com>
+        <20180814180348.17236-2-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
+On Tue, 14 Aug 2018 21:03:47 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-FYI,
+> Add to the C API of KernelShark instruments for importing/exporting
+> configuration settings to/from Json files. A wrapper is added in order
+> to abstract out completely the use of Json. This can be useful in the
+> future if we want to support multiple formats (YAML for example).
+> 
+> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+> ---
+>  kernel-shark-qt/src/CMakeLists.txt       |    1 +
+>  kernel-shark-qt/src/libkshark-configio.c | 1276 ++++++++++++++++++++++
+>  kernel-shark-qt/src/libkshark.h          |  152 +++
+>  3 files changed, 1429 insertions(+)
+>  create mode 100644 kernel-shark-qt/src/libkshark-configio.c
+> 
+> diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
+> index ea5dbda..a762da1 100644
+> --- a/kernel-shark-qt/src/CMakeLists.txt
+> +++ b/kernel-shark-qt/src/CMakeLists.txt
+> @@ -3,6 +3,7 @@ message("\n src ...")
+>  message(STATUS "libkshark")
+>  add_library(kshark SHARED libkshark.c
+>                            libkshark-model.c
+> +                          libkshark-configio.c
+>                            libkshark-collection.c)
+>  
+>  target_link_libraries(kshark ${CMAKE_DL_LIBS}
+> diff --git a/kernel-shark-qt/src/libkshark-configio.c b/kernel-shark-qt/src/libkshark-configio.c
+> new file mode 100644
+> index 0000000..20f183f
+> --- /dev/null
+> +++ b/kernel-shark-qt/src/libkshark-configio.c
+> @@ -0,0 +1,1276 @@
+> +// SPDX-License-Identifier: LGPL-2.1
+> +
+> +/*
+> + * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
+> + */
+> +
+> + /**
+> +  *  @file    libkshark-configio.c
+> +  *  @brief   Json Configuration I/O.
+> +  */
+> +
+> +// C
+> +/** Use GNU C Library. */
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <sys/stat.h>
+> +
+> +// KernelShark
+> +#include "libkshark.h"
+> +#include "libkshark-model.h"
+> +
+> +/**
+> + * @brief Create an empty Json document and set its type description.
+> + *
+> + * @param type: String describing the type of the document,
+> + *		e.g. "kshark.record.config" or "kshark.filter.config".
+> + *
+> + * @returns json_object instance. Use json_object_put() to free the object.
+> + */
+> +struct json_object *kshark_json_config_alloc(const char *type)
 
-I renamed the subject to:
+Hmm, I thought you were going to make the json functons static?
 
- tools/lib/traceevent: Add prefix TEP_ to all EVENT_FL_* flags
+Is this needed to be global?
+
+> +{
+> +	json_object *jobj, *jtype;
+> +
+> +	jobj = json_object_new_object();
+> +	jtype = json_object_new_string(type);
+> +
+> +	if (!jobj || !jtype)
+> +		goto fail;
+> +
+> +	/* Set the type of this Json document. */
+> +	json_object_object_add(jobj, "type", jtype);
+> +
+> +	return jobj;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to allocate memory for json_object.\n");
+> +	json_object_put(jobj);
+> +	json_object_put(jtype);
+> +
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * @brief Allocate kshark_config_doc and set its format.
+> + *
+> + * @param format: Input location for the Configuration format identifier.
+> + *		  Currently only Json and String formats are supported.
+> + *
+> + * @returns kshark_config_doc instance on success. Else NULL. Use
+> + *	    free() to free the object.
+> + */
+> +struct kshark_config_doc *kshark_config_alloc(int format)
+
+Have the format parameter be of type enum kshark_config_formats.
+
+> +{
+> +	struct kshark_config_doc *doc = NULL;
+> +
+> +	if (format == KS_JSON_CONFIG ||
+> +	    format == KS_STRING_CONFIG) {
+> +		doc = malloc(sizeof(*doc));
+> +		doc->format = format;
+> +		doc->conf_doc = NULL;
+> +	}
+> +
+> +	return doc;
+> +}
+> +
+> +/**
+> + * @brief Create an empty Configuration document and set its format and type.
+> + *
+> + * @param type: String describing the type of the document,
+> + *		e.g. "kshark.record.config" or "kshark.filter.config".
+> + * @param format: Input location for the Configuration format identifier.
+> + *		  Currently only Json format is supported.
+> + *
+> + * @returns kshark_config_doc instance on success. Else NULL. Use
+> + *	    kshark_free_config_doc() to free the object.
+> + */
+> +struct kshark_config_doc *kshark_config_new(const char *type, int format)
+> +{
+> +	struct kshark_config_doc *doc = NULL;
+> +
+> +	if (format == KS_JSON_CONFIG) {
+> +		doc = kshark_config_alloc(format);
+
+Need to test if doc is NULL.
+
+> +		doc->conf_doc = kshark_json_config_alloc(type);
+
+And doc->conf_doc. If it is, then free doc and return NULL.
+
+> +	}
+> +
+> +	return doc;
+> +}
+> +
+> +/**
+> + * @brief Free the Configuration document.
+> + *
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json and String formats are supported. It is safe to pass
+> + *		a NULL value.
+> + */
+> +void kshark_free_config_doc(struct kshark_config_doc *conf)
+> +{
+> +	if (!conf)
+> +		return;
+> +
+
+Use a switch statement here:
+
+	switch(conf->format) {
+	case KS_JSON_CONFIG:
+
+> +	if (conf->format == KS_JSON_CONFIG)
+> +		json_object_put(conf->conf_doc);
+
+		break;
+
+	case KS_STRING_CONFIG:
+
+Also, these should not be KS_*_CONFIG, but KS_CONFIG_*.
+
+	KS_CONFIG_JSON
+	KS_CONFIG_STRING
+
+etc.
+
+> +
+> +	if (conf->format == KS_STRING_CONFIG)
+> +		free(conf->conf_doc);
+> +
+> +	free(conf);
+> +}
+> +
+> +/**
+> + * @brief Use an existing Json document to create a new KernelShark
+> + *	  Configuration document.
+> + *
+> + * @param jobj: Input location for the json_object instance.
+> + *
+> + * @returns shark_config_doc instance. Use kshark_free_config_doc() to free
+> + *	    the object.
+> + */
+> +struct kshark_config_doc *kshark_json_to_conf(struct json_object *jobj)
+> +{
+> +	struct kshark_config_doc *conf = malloc(sizeof(*conf));
+> +
+
+Need to test if conf is NULL.
+
+> +	conf->format = KS_JSON_CONFIG;
+> +	conf->conf_doc = jobj;
+> +
+> +	return conf;
+> +}
+> +
+> +/**
+> + * @brief Use an existing string to create a new KernelShark Configuration
+> + * document.
+> + *
+> + * @param val: Input location for the string.
+> + *
+> + * @returns kshark_config_doc instance. Use kshark_free_config_doc() to free
+> + *	    the object.
+
+		or NULL on error.
+
+> + */
+> +struct kshark_config_doc *kshark_string_to_conf(const char* val)
+> +{
+> +	struct kshark_config_doc *conf = malloc(sizeof(*conf));
+> +	char *str;
+
+Need to test if conf is NULL.
+
+> +
+> +	asprintf(&str, "%s", val);
+
+Need to test the return value of asprintf().
+
+> +	conf->conf_doc = str;
+> +	conf->format = KS_STRING_CONFIG;
+> +
+> +	return conf;
+> +}
+> +
+> +/**
+> + * @brief Add a field to a KernelShark Configuration document.
+> + *
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + * @param key: The name of the field.
+> + * @param val: Input location for the kshark_config_doc to be added.
+> + *	       Currently only Json and String formats are supported.
+> + */
+> +void kshark_config_doc_add(struct kshark_config_doc *conf,
+> +			   const char *key,
+> +			   struct kshark_config_doc *val)
+
+Hmm, this seems a bit low level on the abstract area. I guess in need
+to see the code that uses this (do you have a branch that converted to
+this already?).
+
+Ideally, we would want our kshark_config_doc to take something
+directly, and not have it add another kshark_config_doc. That is, where
+the creation of the val is, should probably be able to add to the conf
+directly. Know what I mean?
+
+> +{
+> +	struct json_object *jobj;
+> +
+> +	if (!conf || !val)
+> +		return;
+> +
+> +	if (val->format == KS_NOFORMAT_CONFIG)
+> +		val->format = conf->format;
+> +
+> +	if (conf->format == KS_JSON_CONFIG) {
+> +		if (val->format == KS_JSON_CONFIG) {
+> +			json_object_object_add(conf->conf_doc, key,
+> +					       val->conf_doc);
+> +		}
+> +
+> +		if (val->format == KS_STRING_CONFIG) {
+> +			jobj = json_object_new_string(val->conf_doc);
+> +			json_object_object_add(conf->conf_doc, key, jobj);
+> +		}
+> +
+> +		free(val);
+> +	}
+> +}
+> +
+> +static bool get_jval(struct kshark_config_doc *conf,
+> +		     const char *key, void **val)
+> +{
+> +	return json_object_object_get_ex(conf->conf_doc, key,
+> +					 (json_object **) val);
+> +}
+> +
+> +/**
+> + * @brief Get the KernelShark Configuration document associate with a given
+> + *	  field name.
+> + *
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + * @param key: The name of the field.
+> + * @param val: Output location for the kshark_config_doc instance containing
+> + *	       the field. Currently only Json and String formats are supported.
+> + *
+> + * @returns True, if the key exists. Else False.
+> + */
+> +bool kshark_config_doc_get(struct kshark_config_doc *conf,
+> +			   const char *key,
+> +			   struct kshark_config_doc *val)
+
+I feel this is the same as add. Too low level. Again, I'll have to take
+a look at how these are used in the finished product.
+
+> +{
+> +	if (!conf || !val)
+> +		return false;
+> +
+> +	if (val->format == KS_NOFORMAT_CONFIG)
+> +		val->format = conf->format;
+> +
+> +	if (conf->format == KS_JSON_CONFIG) {
+> +		if (val->format == KS_JSON_CONFIG) {
+> +			json_object_put(val->conf_doc);
+> +			return get_jval(conf, key, &val->conf_doc);
+> +		}
+> +
+> +		if (val->format == KS_STRING_CONFIG) {
+> +			struct kshark_config_doc *tmp;
+> +
+> +			free(val->conf_doc);
+> +
+> +			tmp = kshark_config_alloc(KS_JSON_CONFIG);
+> +			if (!get_jval(conf, key, &tmp->conf_doc))
+
+Do we really want to return false after freeing an input parameter? If
+anything, we should add:
+
+			val->conf_doc = NULL;
+
+right after it is freed.
+
+> +				return false;
+> +
+> +			val->conf_doc =
+> +				(char *) json_object_get_string(tmp->conf_doc);
+> +			free(tmp);
+> +
+> +			return true;
+> +		}
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +/**
+> + * @brief Create an empty Record Configuration document. The type description
+> + *	  is set to "kshark.record.config".
+> + *
+> + * @returns kshark_config_doc instance. Use kshark_free_config_doc() to free
+> + *	    the object.
+> + */
+> +struct kshark_config_doc *kshark_record_config_new(int format)
+> +{
+> +	return kshark_config_new("kshark.record.config", format);
+> +}
+> +
+> +/**
+> + * @brief Create an empty Filter Configuration document. The type description
+> + *	  is set to "kshark.filter.config".
+> + *
+> + * @returns kshark_config_doc instance. Use kshark_free_config_doc() to free
+> + *	    the object.
+> + */
+> +struct kshark_config_doc *kshark_filter_config_new(int format)
+> +{
+> +	return kshark_config_new("kshark.filter.config", format);
+> +}
+> +
+> +/**
+> + * @brief Create an empty Data File Configuration document. The type
+> + *	  description is set to "kshark.data.config".
+> + *
+> + * @returns kshark_config._doc instance. Use kshark_free_config_doc() to free
+> + *	    the object
+> + */
+> +struct kshark_config_doc *kshark_data_config_alloc(int format)
+> +{
+> +	return kshark_config_new("kshark.data.config", format);
+> +}
+> +
+> +/**
+> + * @brief Create an empty Text Configuration document. The Text Configuration
+> + *	  documents do not use type descriptions.
+> + *
+> + * @returns kshark_config_doc instance. Use free() to free the object.
+> + */
+> +struct kshark_config_doc *kshark_string_config_alloc()
+> +{
+> +	return kshark_config_alloc(KS_STRING_CONFIG);
+> +}
+> +
+> +static void json_del_if_exist(struct json_object *jobj, const char *key)
+> +{
+> +	struct json_object *temp;
+> +	if (json_object_object_get_ex(jobj, key, &temp))
+> +	    json_object_object_del(jobj, key);
+> +}
+> +
+> +static bool json_check_type(struct json_object *jobj, const char *type)
+> +{
+> +	struct json_object *jtype;
+> +	const char *type_str;
+> +
+> +	if (!json_object_object_get_ex(jobj, "type", &jtype))
+> +		return false;
+> +
+> +	type_str = json_object_get_string(jtype);
+> +	if (strcmp(type_str, type) != 0)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static void kshark_trace_file_to_json(const char *file,
+
+Should we have a state that gets returned to know if fails or not.
+
+> +				      struct json_object *jobj)
+> +{
+> +	struct json_object *jdata, *jfile_name, *jtime;
+> +	struct stat st;
+> +
+> +	if (!file || !jobj)
+> +		return;
+> +
+> +	/*
+> +	 * If this Json document already contains a descriprion of the data
+> +	 * source, delete this descriprion.
+> +	 */
+> +	json_del_if_exist(jobj, KS_DATA_SOURCE_NAME);
+> +
+> +	if (stat(file, &st) != 0) {
+> +		fprintf(stderr, "Unable to find file %s\n", file);
+> +		return;
+> +	}
+> +
+> +	jdata = kshark_json_config_alloc("kshark.data.config");
+> +	jfile_name = json_object_new_string(file);
+> +	jtime = json_object_new_int64(st.st_mtime);
+> +
+> +	if (!jdata || !jfile_name || !jtime)
+> +		goto fail;
+> +
+> +	json_object_object_add(jdata, "file", jfile_name);
+> +	json_object_object_add(jdata, "time", jtime);
+> +
+> +	json_object_object_add(jobj, KS_DATA_SOURCE_NAME, jdata);
+> +
+> +	return;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to allocate memory for json_object.\n");
+> +	json_object_put(jdata);
+> +	json_object_put(jfile_name);
+> +	json_object_put(jtime);
+> +}
+> +
+> +/**
+> + * @brief Record the name of a trace data file and its timestamp into a
+> + *	  Configuration document.
+> + *
+> + * @param file: The name of the file.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + */
+> +void kshark_export_trace_file(const char *file,
+> +			      struct kshark_config_doc *conf)
+
+Should have a return value to return state.
+
+> +{
+> +	if (conf->format == KS_JSON_CONFIG)
+> +		kshark_trace_file_to_json(file, conf->conf_doc);
+
+This could fail.
+
+And if format is not JSON we should return failure for that too.
+
+> +}
+> +
+> +static bool kshark_trace_file_from_json(const char **file,
+> +					struct json_object *jobj)
+> +{
+> +	struct json_object *jdata, *jfile_name, *jtime;
+> +	const char *file_str;
+> +	struct stat st;
+> +	int64_t time;
+> +
+> +	if (!jobj)
+> +		return false;
+> +
+> +	if (!json_object_object_get_ex(jobj, KS_DATA_SOURCE_NAME, &jdata) ||
+> +	    !json_check_type(jdata, "kshark.data.config") ||
+> +	    !json_object_object_get_ex(jdata, "file", &jfile_name) ||
+> +	    !json_object_object_get_ex(jdata, "time", &jtime)) {
+> +		fprintf(stderr,
+> +			"Failed to retrieve data file from json_object.\n");
+> +		goto fail;
+> +	}
+> +
+> +	file_str = json_object_get_string(jfile_name);
+
+Can file_str be NULL?
+
+> +	time = json_object_get_int64(jtime);
+> +
+> +	if (stat(file_str, &st) != 0) {
+> +		fprintf(stderr, "Unable to find file %s\n", file_str);
+> +		goto fail;
+> +	}
+> +
+> +	if (st.st_mtime != time) {
+> +		fprintf(stderr,"Timestamp mismatch!\nFile %s", file_str);
+> +		fprintf(stderr," has been modified.\n");
+> +		goto fail;
+> +	}
+> +
+> +	*file = file_str;
+> +	printf("file_from_json: %s\n", *file);
+> +	return true;
+> +
+> + fail:
+> +	json_object_put(jdata);
+> +	json_object_put(jfile_name);
+> +	json_object_put(jtime);
+> +
+> +	return false;
+> +}
+> +
+> +/**
+> + * @brief Read the name of a trace data file and its timestamp from a
+> + *	  Configuration document and check if this file exists.
+> + *
+> + * @param file: Output location for the name of the file.
+
+Hmm, file ends up pointing to the object that came from json. What
+happens if that object is freed? This pointer may become corrupted,
+right?
+
+I don't like returning string pointers to objects that can be destroyed
+internally.
+
+Usually what I do is to malloc() the string, and document that it is up
+to the caller to free it. Or have the string passed in along with a
+length, and we fill the string.
+
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + *
+> + * @returns True, if the Configuration document contains a trace data file
+> + *	    record and if such a file exists. Else False.
+> + */
+> +bool kshark_import_trace_file(const char **file,
+> +			      struct kshark_config_doc *conf)
+> +{
+> +	if (conf->format == KS_JSON_CONFIG) {
+> +		if (kshark_trace_file_from_json(file, conf->conf_doc))
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +static void kshark_model_to_json(struct kshark_trace_histo *histo,
+> +				 struct json_object *jobj)
+> +{
+> +	struct json_object *jmodel, *jrange, *jmin, *jmax, *jn_bins;
+> +	if (!histo || !jobj)
+> +		return;
+> +
+> +	/*
+> +	 * If this Json document already contains a descriprion of the model,
+> +	 * delete this descripron.
+
+	"description"
+
+> +	 */
+> +	json_del_if_exist(jobj, KS_HISTO_NAME);
+> +
+> +	jmodel = kshark_json_config_alloc("kshark.model.config");
+> +	jrange = json_object_new_array();
+> +
+> +	jmin = json_object_new_int64(histo->min);
+> +	jmax = json_object_new_int64(histo->max);
+> +	jn_bins = json_object_new_int(histo->n_bins);
+> +
+> +	if (!jmodel || !jrange || !jmin || !jmax || !jn_bins)
+> +		goto fail;
+> +
+> +	json_object_array_put_idx(jrange, 0, jmin);
+> +	json_object_array_put_idx(jrange, 1, jmax);
+> +
+> +	json_object_object_add(jmodel, "range", jrange);
+> +	json_object_object_add(jmodel, "bins", jn_bins);
+> +
+> +	json_object_object_add(jobj, KS_HISTO_NAME, jmodel);
+> +
+> +	return;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to allocate memory for json_object.\n");
+> +	json_object_put(jmodel);
+> +	json_object_put(jrange);
+> +	json_object_put(jmin);
+> +	json_object_put(jmax);
+> +	json_object_put(jn_bins);
+> +}
+> +
+> +/**
+> + * @brief Record the current configuration of the Vis. model into a
+> + *	  Configuration document.
+> + * Load the configuration of the Vis. model from a Configuration
+> + *	  document.
+> + *
+> + * @param histo: Input location for the Vis. model descriptor.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + */
+> +void kshark_export_model(struct kshark_trace_histo *histo,
+> +			 struct kshark_config_doc *conf)
+> +{
+> +	if (conf->format == KS_JSON_CONFIG)
+> +		kshark_model_to_json(histo, conf->conf_doc);
+
+We probably want to create a switch statement for all tests for
+conf->format. The above could work like this:
+
+	switch(conf->format) {
+	case KS_JSON_CONFIG:
+		kshark_model_to_json(histo, conf->conf_doc);
+		break;
+	default:
+		fprintf(stderr, "Format %d not supported\n",
+			conf->format);
+	}
+
+
+> +}
+> +
+> +static bool kshark_model_from_json(struct kshark_trace_histo *histo,
+> +				   struct json_object *jobj)
+> +{
+> +	struct json_object *jmodel, *jrange, *jmin, *jmax, *jn_bins;
+> +	uint64_t min, max;
+> +	int n_bins;
+> +
+> +	if (!histo || !jobj)
+> +		return false;
+> +
+> +	if (!json_object_object_get_ex(jobj, KS_HISTO_NAME, &jmodel))
+> +		goto fail;
+> +
+> +	if (!json_check_type(jmodel, "kshark.model.config"))
+> +		goto fail;
+> +
+> +	if (!json_object_object_get_ex(jmodel, "range", &jrange))
+> +		goto fail;
+> +
+> +	if (json_object_get_type(jrange) != json_type_array)
+> +		goto fail;
+> +
+> +	jmin = json_object_array_get_idx(jrange, 0);
+> +	jmax = json_object_array_get_idx(jrange, 1);
+> +	if (!jmin || !jmax)
+> +		goto fail;
+> +
+> +	if (!json_object_object_get_ex(jmodel, "bins", &jn_bins))
+> +		goto fail;
+> +
+> +	min = json_object_get_int64(jmin);
+> +	max = json_object_get_int64(jmax);
+> +	n_bins = json_object_get_int(jn_bins);
+> +	ksmodel_set_bining(histo, n_bins, min, max);
+> +
+> +	if (histo->data && histo->data_size)
+> +		ksmodel_fill(histo, histo->data, histo->data_size);
+> +
+> +	return true;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to load event filter from json_object.\n");
+> +	return false;
+> +}
+> +
+> +/**
+> + * @brief Load the configuration of the Vis. model from a Configuration
+> + *	  document.
+> + *
+> + * @param histo: Input location for the Vis. model descriptor.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + */
+> +void kshark_import_model(struct kshark_trace_histo *histo,
+> +			 struct kshark_config_doc *conf)
+> +{
+> +	if (conf->format == KS_JSON_CONFIG)
+
+Use switch statement here too.
+
+> +		kshark_model_from_json(histo, conf->conf_doc);
+> +}
+> +
+> +static void kshark_event_filter_to_json(struct pevent *pevent,
+> +					struct tracecmd_filter_id *filter,
+> +					const char *filter_name,
+> +					struct json_object *jobj)
+> +{
+> +	json_object *jfilter_data, *jevent, *jsystem, *jname;
+> +	int i, evt, *ids;
+> +	char *temp;
+> +
+> +	/*
+> +	 * If this Json document already contains a descriprion of the filter,
+> +	 * delete this descriprion.
+> +	 */
+> +	json_del_if_exist(jobj, filter_name);
+> +
+> +
+> +	/* Get the array of Ids to be fitered. */
+> +	ids = tracecmd_filter_ids(filter);
+> +	if (!ids)
+> +		return;
+> +
+> +	/* Create a Json array and fill the Id values into it. */
+> +	jfilter_data = json_object_new_array();
+> +	if (!jfilter_data)
+> +		goto fail;
+> +
+> +	for (i = 0; i < filter->count; ++i) {
+> +		for (evt = 0; evt < pevent->nr_events; ++evt) {
+> +			if (pevent->events[evt]->id == ids[i]) {
+> +				jevent = json_object_new_object();
+> +
+> +				temp = pevent->events[evt]->system;
+> +				jsystem = json_object_new_string(temp);
+> +
+> +				temp = pevent->events[evt]->name;
+> +				jname = json_object_new_string(temp);
+> +
+> +				if (!jevent || !jsystem || !jname)
+> +					goto fail;
+> +
+> +				json_object_object_add(jevent, "system",
+> +							       jsystem);
+> +
+> +				json_object_object_add(jevent, "name",
+> +							       jname);
+> +
+> +				json_object_array_add(jfilter_data, jevent);
+> +
+> +				break;
+> +			}
+> +		}
+> +	}
+> +
+> +	free(ids);
+> +
+> +	/* Add the array of Ids to the filter config document. */
+> +	json_object_object_add(jobj, filter_name, jfilter_data);
+> +
+> +	return;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to allocate memory for json_object.\n");
+> +	json_object_put(jfilter_data);
+> +	json_object_put(jevent);
+> +	json_object_put(jsystem);
+> +	json_object_put(jname);
+> +	free(ids);
+> +}
+> +
+> +/**
+> + * @brief Record the current configuration of an Event Id filter into a
+> + *	  Configuration document.
+> + *
+> + * @param pevent: Input location for the Page event.
+> + * @param filter: Input location for an Id filter.
+> + * @param filter_name: The name of the filter to show up in the Json document.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + */
+> +void kshark_export_event_filter(struct pevent *pevent,
+> +				struct tracecmd_filter_id *filter,
+> +				const char *filter_name,
+> +				struct kshark_config_doc *conf)
+> +{
+> +	if (conf->format == KS_JSON_CONFIG)
+
+switch statement here too.
+
+> +		kshark_event_filter_to_json(pevent, filter, filter_name,
+> +					    conf->conf_doc);
+> +}
+> +
+> +static bool kshark_event_filter_from_json(struct pevent *pevent,
+> +					  struct tracecmd_filter_id *filter,
+> +					  const char *filter_name,
+> +					  struct json_object *jobj)
+> +{
+> +	json_object *jfilter, *jevent, *jsystem, *jname;
+> +	const char *system_str, *name_str;
+> +	struct event_format *event;
+> +	int i, length;
+> +
+> +	/*
+> +	 * Use the name of the filter to find the array of events associated
+> +	 * with this filter. Notice that the filter config document may
+> +	 * contain no data for this particular filter.
+> +	 */
+> +	if (!json_object_object_get_ex(jobj, filter_name, &jfilter))
+> +		return false;
+> +
+> +	if (!json_check_type(jobj, "kshark.filter.config") ||
+> +	    json_object_get_type(jfilter) != json_type_array)
+> +		goto fail;
+> +
+> +	/* Set the filter. */
+> +	length = json_object_array_length(jfilter);
+> +	for (i = 0; i < length; ++i) {
+> +		jevent = json_object_array_get_idx(jfilter, i);
+> +
+> +		if (!json_object_object_get_ex(jevent, "system", &jsystem))
+> +			goto fail;
+> +
+> +		if (!json_object_object_get_ex(jevent, "name", &jname))
+> +			goto fail;
+> +
+> +		system_str = json_object_get_string(jsystem);
+> +		name_str = json_object_get_string(jname);
+> +
+> +		event = pevent_find_event_by_name(pevent, system_str, name_str);
+> +		if (!event)
+> +			goto fail;
+> +
+> +		tracecmd_filter_id_add(filter, event->id);
+> +	}
+> +
+> +	return true;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to load event filter from json_object.\n");
+> +	return false;
+> +}
+> +
+> +/**
+> + * @brief Load from Configuration document the configuration of an Event Id filter.
+> + *
+> + * @param pevent: Input location for the Page event.
+> + * @param filter: Input location for an Id filter.
+> + * @param filter_name: The name of the filter as showing up in the Config.
+> + *	               document.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + *
+> + * @returns True, if a filter has been loaded. If the filter configuration
+> + *	    document contains no data for this particular filter or in a case
+> + *	    of an error, the function returns False.
+> + */
+> +bool kshark_import_event_filter(struct pevent *pevent,
+> +				struct tracecmd_filter_id *filter,
+> +				const char *filter_name,
+> +				struct kshark_config_doc *conf)
+> +{
+> +	if (conf->format == KS_JSON_CONFIG)
+
+switch here too.
+
+> +		return kshark_event_filter_from_json(pevent, filter,
+> +						     filter_name,
+> +						     conf->conf_doc);
+> +
+> +	return false;
+> +}
+> +
+> +static void kshark_task_filter_to_json(struct tracecmd_filter_id *filter,
+> +				       const char *filter_name,
+> +				       struct json_object *jobj)
+> +{
+> +	json_object *jfilter_data, *jpid;
+> +	int i, *ids;
+> +
+> +	/*
+> +	 * If this Json document already contains a descriprion of the model,
+> +	 * delete this descriprion.
+> +	 */
+> +	json_del_if_exist(jobj, filter_name);
+> +
+> +	/* Get the array of Ids to be fitered. */
+> +	ids = tracecmd_filter_ids(filter);
+> +	if (!ids)
+> +		return;
+> +
+> +	/* Create a Json array and fill the Id values into it. */
+> +	jfilter_data = json_object_new_array();
+> +	if (!jfilter_data)
+> +		goto fail;
+> +
+> +	for (i = 0; i < filter->count; ++i) {
+> +		jpid = json_object_new_int(ids[i]);
+> +		if (!jpid)
+> +			goto fail;
+> +
+> +		json_object_array_add(jfilter_data, jpid);
+> +	}
+> +
+> +	free(ids);
+> +
+> +	/* Add the array of Ids to the filter config document. */
+> +	json_object_object_add(jobj, filter_name, jfilter_data);
+> +
+> +	return;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to allocate memory for json_object.\n");
+> +	json_object_put(jfilter_data);
+> +	json_object_put(jpid);
+> +	free(ids);
+> +}
+> +
+> +/**
+> + * @brief Record the current configuration of a Task Id filter into a
+> + *	  Configuration document.
+> + *
+> + * @param filter: Input location for an Id filter.
+> + * @param filter_name: The name of the filter to show up in the Json document.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + */
+> +void kshark_export_task_filter(struct tracecmd_filter_id *filter,
+> +			       const char *filter_name,
+> +			       struct kshark_config_doc *conf)
+> +{
+> +	if (conf->format == KS_JSON_CONFIG)
+
+switch here too.
+
+> +		kshark_task_filter_to_json(filter, filter_name,
+> +					   conf->conf_doc);
+> +}
+> +
+> +static bool kshark_task_filter_from_json(struct tracecmd_filter_id *filter,
+> +					 const char *filter_name,
+> +					 struct json_object *jobj)
+> +{
+> +	json_object *jfilter, *jpid;
+> +	int i, length;
+> +
+> +	/*
+> +	 * Use the name of the filter to find the array of events associated
+> +	 * with this filter. Notice that the filter config document may
+> +	 * contain no data for this particular filter.
+> +	 */
+> +	if (!json_object_object_get_ex(jobj, filter_name, &jfilter))
+> +		return false;
+> +
+> +	if (!json_check_type(jobj, "kshark.filter.config") ||
+> +	    json_object_get_type(jfilter) != json_type_array)
+> +		goto fail;
+> +
+> +	/* Set the filter. */
+> +	length = json_object_array_length(jfilter);
+> +	for (i = 0; i < length; ++i) {
+> +		jpid = json_object_array_get_idx(jfilter, i);
+> +		if (!jpid)
+> +			goto fail;
+> +
+> +		tracecmd_filter_id_add(filter, json_object_get_int(jpid));
+> +	}
+> +
+> +	return true;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to load task filter from json_object.\n");
+> +	return false;
+> +}
+> +
+> +/**
+> + * @brief Load from Configuration document the configuration of a Task Id filter.
+> + *
+> + * @param filter: Input location for an Id filter.
+> + * @param filter_name: The name of the filter as showing up in the Config.
+> + *	               document.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + *
+> + * @returns True, if a filter has been loaded. If the filter configuration
+> + *	    document contains no data for this particular filter or in a case
+> + *	    of an error, the function returns False.
+> + */
+> +bool kshark_import_task_filter(struct tracecmd_filter_id *filter,
+> +			       const char *filter_name,
+> +			       struct kshark_config_doc *conf)
+> +{
+> +	if (conf->format == KS_JSON_CONFIG)
+
+switch here too.
+
+> +		return kshark_task_filter_from_json(filter, filter_name,
+> +						    conf->conf_doc);
+> +
+> +	return false;
+> +}
+> +
+> +static void kshark_adv_filters_to_json(struct kshark_context *kshark_ctx,
+> +				       struct json_object *jobj)
+> +{
+> +	struct event_filter *adv_filter = kshark_ctx->advanced_event_filter;
+> +	json_object *jfilter_data, *jevent, *jsystem, *jname, *jfilter;
+> +	struct event_format **events;
+> +	char *str;
+> +	int i;
+> +
+> +	/*
+> +	 * If this Json document already contains a descriprion of the model,
+> +	 * delete this descriprion.
+> +	 */
+> +	json_del_if_exist(jobj, KS_ADV_EVENT_FILTER_NAME);
+> +
+> +	if (!kshark_ctx->advanced_event_filter ||
+> +	    !kshark_ctx->advanced_event_filter->filters)
+> +		return;
+> +
+> +	/* Create a Json array and fill the Id values into it. */
+> +	jfilter_data = json_object_new_array();
+> +	if (!jfilter_data)
+> +		goto fail;
+> +
+> +	events = pevent_list_events(kshark_ctx->pevent, EVENT_SORT_SYSTEM);
+> +	if (!events)
+> +		return;
+> +
+> +	for (i = 0; events[i]; i++) {
+> +		str = pevent_filter_make_string(adv_filter,
+> +						events[i]->id);
+> +		if (!str)
+> +			continue;
+> +
+> +		jevent = json_object_new_object();
+> +		jsystem = json_object_new_string(events[i]->system);
+> +		jname = json_object_new_string(events[i]->name);
+> +		jfilter = json_object_new_string(str);
+> +		if (!jevent || !jsystem || !jname || !jfilter)
+> +			goto fail;
+> +
+> +		json_object_object_add(jevent, "system", jsystem);
+> +		json_object_object_add(jevent, "name", jname);
+> +		json_object_object_add(jevent, "condition", jfilter);
+> +
+> +		json_object_array_add(jfilter_data, jevent);
+> +	}
+> +
+> +	/* Add the array of advanced filters to the filter config document. */
+> +	json_object_object_add(jobj, KS_ADV_EVENT_FILTER_NAME, jfilter_data);
+> +
+> +	return;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to allocate memory for json_object.\n");
+> +	json_object_put(jfilter_data);
+> +	json_object_put(jevent);
+> +	json_object_put(jsystem);
+> +	json_object_put(jname);
+> +	json_object_put(jfilter);
+> +}
+> +
+> +/**
+> + * @brief Record the current configuration of the advanced filter into a
+> + *	  Configuration document.
+> + *
+> + * @param kshark_ctx: Input location for session context pointer.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported. If NULL, a new Adv. Filter
+> + *		Configuration document will be created.
+
+We should have a format parameter here, where they can specify what
+type to create (currently only KS_JSON_CONFIG is supported). Otherwise,
+how would one pass something else in when if we support something else?
+
+> + */
+> +void kshark_export_adv_filters(struct kshark_context *kshark_ctx,
+> +			       struct kshark_config_doc **conf)
+> +{
+> +	if (!*conf)
+> +		*conf = kshark_filter_config_new(KS_JSON_CONFIG);
+> +
+> +	if ((*conf)->format == KS_JSON_CONFIG)
+> +		kshark_adv_filters_to_json(kshark_ctx, (*conf)->conf_doc);
+> +}
+> +
+> +static bool kshark_adv_filters_from_json(struct kshark_context *kshark_ctx,
+> +					 struct json_object *jobj)
+> +{
+> +	struct event_filter *adv_filter = kshark_ctx->advanced_event_filter;
+> +	json_object *jfilter, *jsystem, *jname, *jcond;
+> +	int i, length, ret;
+> +	char *filter_str;
+> +
+> +	/*
+> +	 * Use the name of the filter to find the array of events associated
+> +	 * with this filter. Notice that the filter config document may
+> +	 * contain no data for this particular filter.
+> +	 */
+> +	if (!json_object_object_get_ex(jobj, KS_ADV_EVENT_FILTER_NAME,
+> +				       &jfilter))
+> +		return false;
+> +
+> +	if (!json_check_type(jobj, "kshark.filter.config") ||
+> +	    json_object_get_type(jfilter) != json_type_array)
+> +		goto fail;
+> +
+> +	/* Set the filter. */
+> +	length = json_object_array_length(jfilter);
+> +	for (i = 0; i < length; ++i) {
+> +		jfilter = json_object_array_get_idx(jfilter, i);
+> +
+> +		if (!json_object_object_get_ex(jfilter, "system", &jsystem))
+> +			goto fail;
+> +
+> +		if (!json_object_object_get_ex(jfilter, "name", &jname))
+> +			goto fail;
+> +
+> +		if (!json_object_object_get_ex(jfilter, "condition", &jcond))
+> +			goto fail;
+> +
+> +		asprintf(&filter_str, "%s/%s:%s",
+> +			 json_object_get_string(jsystem),
+> +			 json_object_get_string(jname),
+> +			 json_object_get_string(jcond));
+> +
+> +		ret = pevent_filter_add_filter_str(adv_filter,
+> +						   filter_str);
+> +		if (ret < 0)
+> +			goto fail;
+> +	}
+> +
+> +	return true;
+> +
+> + fail:
+> +	fprintf(stderr, "Failed to laod Advanced filters.\n");
+> +	char error_str[200];
+> +	int error_status =
+> +		pevent_strerror(kshark_ctx->pevent, ret, error_str,
+> +							 sizeof(error_str));
+> +
+> +	if (error_status == 0)
+> +		fprintf(stderr, "filter failed due to: %s\n", error_str);
+> +
+> +	free(filter_str);
+> +	return false;
+> +}
+> +
+> +/**
+> + * @brief Load from Configuration document the configuration of the advanced
+> + *	  filter.
+> + *
+> + * @param kshark_ctx: Input location for session context pointer.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+
+I don't think you need to document that only Json format is supported
+at every function. Just the ones that create it. Other than that,
+these functions shouldn't care about what is supported behind the
+scenes. If someone was able to create a kshark_config_doc, then they
+should be able to use it.
+
+
+> + *
+> + * @returns True, if a filter has been loaded. If the filter configuration
+> + *	    document contains no data for this particular filter or in a case
+> + *	    of an error, the function returns False.
+> + */
+> +bool kshark_import_adv_filters(struct kshark_context *kshark_ctx,
+> +			       struct kshark_config_doc *conf)
+> +{
+> +	if (conf->format == KS_JSON_CONFIG)
+> +		return kshark_adv_filters_from_json(kshark_ctx,
+> +						    conf->conf_doc);
+> +
+> +	return false;
+> +}
+> +
+> +static bool filter_is_set(struct tracecmd_filter_id *filter)
+> +{
+> +	return filter && filter->count;
+> +}
+> +
+> +/**
+> + * @brief Record the current configuration of "show task" and "hide task"
+> + *	  filters into a Json document.
+> + *
+> + * @param kshark_ctx: Input location for session context pointer.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported. If NULL, a new Filter
+> + *		Configuration document will be created.
+> + */
+> +void kshark_export_all_event_filters(struct kshark_context *kshark_ctx,
+> +				     struct kshark_config_doc **conf)
+> +{
+> +	if (!*conf)
+> +		*conf = kshark_filter_config_new(KS_JSON_CONFIG);
+> +
+> +	/* Save a filter only if it contains Id values. */
+> +	if (filter_is_set(kshark_ctx->show_event_filter))
+> +		kshark_export_event_filter(kshark_ctx->pevent,
+> +					   kshark_ctx->show_event_filter,
+> +					   KS_SHOW_EVENT_FILTER_NAME,
+> +					   *conf);
+> +
+> +	if (filter_is_set(kshark_ctx->hide_event_filter))
+> +		kshark_export_event_filter(kshark_ctx->pevent,
+> +					   kshark_ctx->hide_event_filter,
+> +					   KS_HIDE_EVENT_FILTER_NAME,
+> +					   *conf);
+> +}
+> +
+> +/**
+> + * @brief Record the current configuration of "show task" and "hide task"
+> + *	  filters into a Configuration document.
+> + *
+> + * @param kshark_ctx: Input location for session context pointer.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported. If NULL, a new Filter
+> + *		Configuration document will be created.
+
+Again, we should allow a format parameter to let the user decide what
+type of format to use. Currently only Json.
+
+Allow a zero or KS_
+
+> + */
+> +void kshark_export_all_task_filters(struct kshark_context *kshark_ctx,
+> +				    struct kshark_config_doc **conf)
+> +{
+> +	if (!*conf)
+> +		*conf = kshark_filter_config_new(KS_JSON_CONFIG);
+> +
+> +	/* Save a filter only if it contains Id values. */
+> +	if (filter_is_set(kshark_ctx->show_task_filter))
+> +		kshark_export_task_filter(kshark_ctx->show_task_filter,
+> +					  KS_SHOW_TASK_FILTER_NAME,
+> +					  *conf);
+> +
+> +	if (filter_is_set(kshark_ctx->hide_task_filter))
+> +		kshark_export_task_filter(kshark_ctx->hide_task_filter,
+> +					  KS_HIDE_TASK_FILTER_NAME,
+> +					  *conf);
+> +}
+> +
+> +/**
+> + * @brief Load from a Configuration document the configuration of "show event"
+> + *	  and "hide event" filters.
+> + *
+> + * @param kshark_ctx: Input location for session context pointer.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + *
+> + * @returns True, if a filter has been loaded. If the filter configuration
+> + *	    document contains no data for any event filter or in a case
+> + *	    of an error, the function returns False.
+> + */
+> +bool kshark_import_all_event_filters(struct kshark_context *kshark_ctx,
+> +				     struct kshark_config_doc *conf)
+> +{
+> +	bool status;
+> +
+> +	status = kshark_import_event_filter(kshark_ctx->pevent,
+> +					    kshark_ctx->hide_event_filter,
+> +					    KS_HIDE_EVENT_FILTER_NAME,
+> +					    conf);
+> +
+> +	status |= kshark_import_event_filter(kshark_ctx->pevent,
+> +					     kshark_ctx->show_event_filter,
+> +					     KS_SHOW_EVENT_FILTER_NAME,
+> +					     conf);
+> +
+> +	return status;
+> +}
+> +
+> +/**
+> + * @brief Load from Configuration document the configuration of "show task"
+> + *	  and "hide task" filters.
+> + *
+> + * @param kshark_ctx: Input location for session context pointer.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + *
+> + * @returns True, if a filter has been loaded. If the filter configuration
+> + *	    document contains no data for any task filter or in a case of an
+> + *	    error, the function returns False.
+> + */
+> +bool kshark_import_all_task_filters(struct kshark_context *kshark_ctx,
+> +				    struct kshark_config_doc *conf)
+> +{
+> +	bool status;
+> +
+> +	status = kshark_import_task_filter(kshark_ctx->hide_task_filter,
+> +					   KS_HIDE_TASK_FILTER_NAME,
+> +					   conf);
+> +
+> +	status |= kshark_import_task_filter(kshark_ctx->show_task_filter,
+> +					    KS_SHOW_TASK_FILTER_NAME,
+> +					    conf);
+> +
+> +	return status;
+> +}
+> +
+> +/**
+> + * @brief Create a Filter Configuration document containing the current
+> + *	  configuration of all filters.
+> + *
+> + * @param kshark_ctx: Input location for session context pointer.
+
+Here we should also pass in a format to choose JSON, to allow other
+formats to be exported later.
+
+
+> + *
+> + * @returns kshark_config_doc instance. Use kshark_free_config_doc() to free
+> + *	    the object.
+> + */
+> +struct kshark_config_doc *
+> +kshark_export_all_filters(struct kshark_context *kshark_ctx)
+> +{
+> +	/*  Create a new Configuration document. */
+> +	struct kshark_config_doc *conf =
+> +		kshark_filter_config_new(KS_JSON_CONFIG);
+> +
+> +	/* Save a filter only if it contains Id values. */
+> +	kshark_export_all_event_filters(kshark_ctx, &conf);
+> +	kshark_export_all_task_filters(kshark_ctx, &conf);
+> +	kshark_export_adv_filters(kshark_ctx, &conf);
+> +
+> +	return conf;
+> +}
+> +
+> +/**
+> + * @brief Load from a Configuration document the configuration of all filters.
+> + *
+> + * @param kshark_ctx: Input location for session context pointer.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + *
+> + * @returns True, if a filter has been loaded. If the filter configuration
+> + *	    document contains no data for any filter or in a case of an error,
+> + *	    the function returns False.
+> + */
+> +bool kshark_import_all_filters(struct kshark_context *kshark_ctx,
+> +			       struct kshark_config_doc *conf)
+> +{
+> +	bool status;
+> +	status = kshark_import_all_task_filters(kshark_ctx, conf);
+> +	status |= kshark_import_all_event_filters(kshark_ctx, conf);
+> +	status |= kshark_import_adv_filters(kshark_ctx, conf);
+> +
+> +	return status;
+> +}
+> +
+> +static void kshark_save_json_file(const char *file_name,
+> +				  struct json_object *jobj)
+> +{
+> +	int flags;
+> +
+> +	/* Save the file in a human-readable form. */
+> +	flags = JSON_C_TO_STRING_SPACED | JSON_C_TO_STRING_PRETTY;
+> +	json_object_to_file_ext(file_name, jobj, flags);
+> +}
+> +
+> +/**
+> + * @brief Save a Configuration document into a file.
+> + *
+> + * @param file_name: The name of the file.
+> + * @param conf: Input location for the kshark_config_doc instance. Currently
+> + *		only Json format is supported.
+> + */
+> +void kshark_save_config_file(const char *file_name,
+> +			     struct kshark_config_doc *conf)
+> +{
+> +	if (conf->format == KS_JSON_CONFIG)
+> +		kshark_save_json_file(file_name, conf->conf_doc);
+> +}
+> +
+> +static struct json_object *kshark_open_json_file(const char *file_name,
+> +						 const char *type)
+> +{
+> +	struct json_object *jobj, *var;
+> +	const char *type_var;
+> +
+> +	jobj = json_object_from_file(file_name);
+> +
+> +	if (!jobj)
+> +		return NULL;
+> +
+> +	/* Get the type of the document. */
+> +	if (!json_object_object_get_ex(jobj, "type", &var))
+> +		goto fail;
+> +
+> +	type_var = json_object_get_string(var);
+> +
+> +	if (strcmp(type, type_var) != 0)
+> +		goto fail;
+> +
+> +	return jobj;
+> +
+> + fail:
+> +	/* The document has a wrong type. */
+> +	fprintf(stderr, "Failed to open Json file %s\n.", file_name);
+> +	fprintf(stderr, "The document has a wrong type.\n");
+> +
+> +	json_object_put(jobj);
+> +	return NULL;
+> +}
+> +
+> +static const char *get_ext(const char *filename)
+> +{
+> +	const char *dot = strrchr(filename, '.');
+> +
+> +	if(!dot)
+> +		return "unknown";
+> +
+> +	return dot + 1;
+> +}
+> +
+> +/**
+> + * @brief Open a for read a Configuration file and check if it has the
+> + *	  expected type.
+> + *
+> + * @param file_name: The name of the file. Currently only Json files are
+> + *		     supported.
+> + * @param type: String describing the expected type of the document,
+> + *		e.g. "kshark.record.config" or "kshark.filter.config".
+> + *
+> + * @returns kshark_config_doc instance on success, or NULL on failure. Use
+> + *	    kshark_free_config_doc() to free the object.
+> + */
+> +struct kshark_config_doc *kshark_open_config_file(const char *file_name,
+> +						  const char *type)
+> +{
+> +	struct kshark_config_doc *conf = NULL;
+> +
+> +	if (strcmp(get_ext(file_name), "json") == 0) {
+> +		struct json_object *jobj =
+> +			kshark_open_json_file(file_name, type);
+> +
+> +		if (jobj) {
+> +			conf = malloc(sizeof(*conf));
+> +			conf->conf_doc = jobj;
+> +			conf->format = KS_JSON_CONFIG;
+> +		}
+> +	}
+> +
+> +	return conf;
+> +}
+> diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
+> index ff09da3..4fe4420 100644
+> --- a/kernel-shark-qt/src/libkshark.h
+> +++ b/kernel-shark-qt/src/libkshark.h
+> @@ -16,6 +16,9 @@
+>  #include <stdint.h>
+>  #include <pthread.h>
+>  
+> +// Json-C
+> +#include <json.h>
+> +
+>  #ifdef __cplusplus
+>  extern "C" {
+>  #endif
+> @@ -367,6 +370,155 @@ kshark_get_collection_entry_back(struct kshark_entry_request **req,
+>  				 const struct kshark_entry_collection *col,
+>  				 ssize_t *index);
+>  
+> +/** Structure representing a KernelShark Configuration document. */
+> +struct kshark_config_doc {
+> +	/** Document format identifier. */
+> +	int	format;
+> +
+> +	/** Configuration document instance. */
+> +	void	*conf_doc;
+> +};
+> +
+> +/** Configuration format identifiers. */
+> +enum kshark_config_formats {
+> +	/** Unformatted Configuration document identifier. */
+> +	KS_NOFORMAT_CONFIG = 0,
+
+Perhaps we should rename this to
+
+	KS_CONFIG_DEFAULT = 0,
+
+so that it can be passed above as the format parameter to allow the
+application to use the default format, if the developer doesn't care
+what it uses. It would also be the option to use if a conf is defined,
+where we could create one if it wasn't.
+
+> +
+> +	/**
+> +	 * String Configuration document identifier. The String format is
+> +	 * meant to be used only by kshark_config_doc_add() and
+> +	 * kshark_config_doc_get(), when adding/getting simple string fields.
+> +	 */
+> +	KS_STRING_CONFIG,
+
+Rename to:
+
+	KS_CONFIG_STRING
+
+> +
+> +	/** Json Configuration document identifier. */
+> +	KS_JSON_CONFIG,
+
+Rename to:
+
+	KS_CONFIG_JSON
+
+This way it's easier to define and see what they are.
+
+Note, I looked at this pretty late at night, so I may not be making
+much sense above. But hopefully you understood at least 50% of what I
+said ;-)
+
 
 -- Steve
 
 
-On Fri, 10 Aug 2018 16:17:23 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-
-> In order to make libtraceevent into a proper library, variables, data
-> structures and functions require a unique prefix to prevent name space
-> conflicts. That prefix will be "tep_". This adds prefix TEP_
-> to all members of nameless enum EVENT_FL_*
-> 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  tools/lib/traceevent/event-parse.c | 42 +++++++++++++++---------------
->  tools/lib/traceevent/event-parse.h | 18 ++++++-------
->  2 files changed, 30 insertions(+), 30 deletions(-)
-> 
+> +};
+> +
+> +/**
+> + * Field name for the Configuration document describing the Hide Event filter.
+> + */
+> +#define KS_HIDE_EVENT_FILTER_NAME	"hide event filter"
+> +
+> +/**
+> + * Field name for the Configuration document describing the Show Event filter.
+> + */
+> +#define KS_SHOW_EVENT_FILTER_NAME	"show event filter"
+> +
+> +/**
+> + * Field name for the Configuration document describing the Hide Task filter.
+> + */
+> +#define KS_HIDE_TASK_FILTER_NAME	"hide task filter"
+> +
+> +/**
+> + * Field name for the Configuration document describing the Show Task filter.
+> + */
+> +#define KS_SHOW_TASK_FILTER_NAME	"show task filter"
+> +
+> +/**
+> + * Field name for the Configuration document describing the Advanced event
+> + * filter.
+> + */
+> +#define KS_ADV_EVENT_FILTER_NAME	"adv event filter"
+> +
+> +/**
+> + * Field name for the Configuration document describing the state of the Vis.
+> + * model.
+> + */
+> +#define KS_HISTO_NAME			"vis. model"
+> +
+> +/**
+> + * Field name for the Configuration document describing the currently loaded
+> + * trace data file.
+> + */
+> +#define KS_DATA_SOURCE_NAME		"trace data"
+> +
+> +struct json_object *kshark_json_config_alloc(const char *type);
+> +
+> +struct kshark_config_doc *kshark_config_alloc(int format);
+> +
+> +struct kshark_config_doc *kshark_config_new(const char *type, int format);
+> +
+> +void kshark_free_config_doc(struct kshark_config_doc *conf);
+> +
+> +struct kshark_config_doc *kshark_record_config_new(int format);
+> +
+> +struct kshark_config_doc *kshark_filter_config_new(int format);
+> +
+> +struct kshark_config_doc *kshark_string_config_alloc();
+> +
+> +void kshark_config_doc_add(struct kshark_config_doc *conf,
+> +			   const char *key,
+> +			   struct kshark_config_doc *val);
+> +
+> +bool kshark_config_doc_get(struct kshark_config_doc *conf,
+> +			   const char *key,
+> +			   struct kshark_config_doc *val);
+> +
+> +struct kshark_trace_histo;
+> +
+> +void kshark_export_trace_file(const char *file,
+> +			      struct kshark_config_doc *conf);
+> +
+> +bool kshark_import_trace_file(const char **file,
+> +			      struct kshark_config_doc *conf);
+> +
+> +void kshark_export_model(struct kshark_trace_histo *histo,
+> +			 struct kshark_config_doc *conf);
+> +
+> +void kshark_import_model(struct kshark_trace_histo *histo,
+> +			 struct kshark_config_doc *conf);
+> +
+> +void kshark_export_adv_filters(struct kshark_context *kshark_ctx,
+> +			       struct kshark_config_doc **conf);
+> +
+> +bool kshark_import_adv_filters(struct kshark_context *kshark_ctx,
+> +			       struct kshark_config_doc *conf);
+> +
+> +void kshark_export_event_filter(struct pevent *pevent,
+> +				struct tracecmd_filter_id *filter,
+> +				const char *filter_name,
+> +				struct kshark_config_doc *conf);
+> +
+> +bool kshark_import_event_filter(struct pevent *pevent,
+> +				struct tracecmd_filter_id *filter,
+> +				const char *filter_name,
+> +				struct kshark_config_doc *conf);
+> +
+> +void kshark_export_task_filter(struct tracecmd_filter_id *filter,
+> +			       const char *filter_name,
+> +			       struct kshark_config_doc *conf);
+> +
+> +bool kshark_import_task_filter(struct tracecmd_filter_id *filter,
+> +			       const char *filter_name,
+> +			       struct kshark_config_doc *conf);
+> +
+> +void kshark_export_all_event_filters(struct kshark_context *kshark_ctx,
+> +				     struct kshark_config_doc **conf);
+> +
+> +void kshark_export_all_task_filters(struct kshark_context *kshark_ctx,
+> +				    struct kshark_config_doc **conf);
+> +
+> +struct kshark_config_doc *
+> +kshark_export_all_filters(struct kshark_context *kshark_ctx);
+> +
+> +bool kshark_import_all_event_filters(struct kshark_context *kshark_ctx,
+> +				     struct kshark_config_doc *conf);
+> +
+> +bool kshark_import_all_task_filters(struct kshark_context *kshark_ctx,
+> +				    struct kshark_config_doc *conf);
+> +
+> +bool kshark_import_all_filters(struct kshark_context *kshark_ctx,
+> +			       struct kshark_config_doc *conf);
+> +
+> +void kshark_save_config_file(const char *file_name,
+> +			     struct kshark_config_doc *conf);
+> +
+> +struct kshark_config_doc *kshark_open_config_file(const char *file_name,
+> +						  const char *type);
+> +
+> +struct kshark_config_doc *kshark_json_to_conf(struct json_object *jobj);
+> +
+>  #ifdef __cplusplus
+>  }
+>  #endif
