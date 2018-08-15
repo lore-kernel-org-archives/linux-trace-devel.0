@@ -1,11 +1,11 @@
 Return-Path: <SRS0=+9rX=K6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f68.google.com ([74.125.82.68]:40606 "EHLO
-        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729125AbeHOREN (ORCPT
+Received: from mail-wm0-f65.google.com ([74.125.82.65]:35547 "EHLO
+        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728957AbeHORI2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 15 Aug 2018 13:04:13 -0400
-Received: by mail-wm0-f68.google.com with SMTP id y9-v6so1477414wma.5
-        for <linux-trace-devel@vger.kernel.org>; Wed, 15 Aug 2018 07:11:52 -0700 (PDT)
+        Wed, 15 Aug 2018 13:08:28 -0400
+Received: by mail-wm0-f65.google.com with SMTP id o18-v6so1501214wmc.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 Aug 2018 07:16:07 -0700 (PDT)
 Subject: Re: [PATCH v2 2/3] kernel-shark-qt: Add I/O for configuration data.
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-trace-devel@vger.kernel.org
@@ -13,8 +13,8 @@ References: <20180814180348.17236-1-y.karadz@gmail.com>
  <20180814180348.17236-2-y.karadz@gmail.com>
  <20180814224655.0d50667d@vmware.local.home>
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <770ffe04-3a04-a276-0411-997f0015a158@gmail.com>
-Date: Wed, 15 Aug 2018 17:11:49 +0300
+Message-ID: <82ea4075-415e-ed99-56e2-c281c6c5d2c2@gmail.com>
+Date: Wed, 15 Aug 2018 17:16:04 +0300
 MIME-Version: 1.0
 In-Reply-To: <20180814224655.0d50667d@vmware.local.home>
 Content-Type: text/plain; charset=utf-8; format=flowed
@@ -26,156 +26,39 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 Hi Steven,
 
 On 15.08.2018 05:46, Steven Rostedt wrote:
->> +
 >> +/**
->> + * @brief Add a field to a KernelShark Configuration document.
+>> + * @brief Record the current configuration of the advanced filter into a
+>> + *	  Configuration document.
 >> + *
+>> + * @param kshark_ctx: Input location for session context pointer.
 >> + * @param conf: Input location for the kshark_config_doc instance. Currently
->> + *		only Json format is supported.
->> + * @param key: The name of the field.
->> + * @param val: Input location for the kshark_config_doc to be added.
->> + *	       Currently only Json and String formats are supported.
->> + */
->> +void kshark_config_doc_add(struct kshark_config_doc *conf,
->> +			   const char *key,
->> +			   struct kshark_config_doc *val)
-> Hmm, this seems a bit low level on the abstract area. I guess in need
-> to see the code that uses this (do you have a branch that converted to
-> this already?).
-> 
-> Ideally, we would want our kshark_config_doc to take something
-> directly, and not have it add another kshark_config_doc. That is, where
-> the creation of the val is, should probably be able to add to the conf
-> directly. Know what I mean?
+>> + *		only Json format is supported. If NULL, a new Adv. Filter
+>> + *		Configuration document will be created.
+> We should have a format parameter here, where they can specify what
+> type to create (currently only KS_JSON_CONFIG is supported). Otherwise,
+> how would one pass something else in when if we support something else?
 > 
 
-I would prefer to keep the *doc_add and *doc_get functions. I need ADD 
-and GET because of the way the information gets structured in the 
-configuration document. See an example of a Session description file below:
+The idea here is that the user is expected to provide an instance of 
+kshark_config_doc and this instance already has a format.
 
-{
-    "type": "kshark.session.config",
-    "MainWindow": [
-      898,
-      538
-    ],
-    "Markers": {
-      "type": "kshark.markers.config",
-      "markA": {
-        "isSet": false
-      },
-      "markB": {
-        "isSet": false
-      },
-      "Active": "A"
-    },
-    "Filters": {
-      "type": "kshark.filter.config",
-      "show task filter": [
-        314,
-        42
-      ]
-    },
-    "ViewTop": 16988720,
-    "ColorScheme": 0.75,
-    "trace data": {
-      "type": "kshark.data.config",
-      "file": 
-"\/home\/yordan\/Workspace\/trace-cmd_qtdev\/kernel-shark-qt\/bin\/trace_very_big.dat",
-      "time": 1520425749
-    },
-    "vis. model": {
-      "type": "kshark.model.config",
-      "range": [
-        119984624152884,
-        119984638388301
-      ],
-      "bins": 777
-    },
-    "CpuPlots": [
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7
-    ],
-    "TaskPlots": [
-    ]
-  }
+A new instance will be created only in the case of passing conf = NULL.
+In this case the new instance will have the default format (Json).
 
-In this example we have the top level document having
-  "type": "kshark.session.config"
-
-This top level document contains some simple field like:
-"MainWindow", "ViewTop", "ColorScheme" etc.
-
-but it also contains other documents, having there own types.
-Like "Markers", "Filters", "vis. model" etc.
-
-If the user only wants to export the filtering settings the 
-"kshark.filter.config" documents is enough.
-However when we want to save the entire session, we first create
-"kshark.filter.config" and then we ADD this document to 
-kshark.session.config
-
-I've tried to demonstrate the way all this works in the example added in 
-the following patch.
-
-What do you think?
+I agree that it looks peculiar, because we support only one format for 
+the moment. ;-)
 
 Thanks!
 Yordan
 
 
->> +{
->> +	struct json_object *jobj;
->> +
->> +	if (!conf || !val)
->> +		return;
->> +
->> +	if (val->format == KS_NOFORMAT_CONFIG)
->> +		val->format = conf->format;
->> +
->> +	if (conf->format == KS_JSON_CONFIG) {
->> +		if (val->format == KS_JSON_CONFIG) {
->> +			json_object_object_add(conf->conf_doc, key,
->> +					       val->conf_doc);
->> +		}
->> +
->> +		if (val->format == KS_STRING_CONFIG) {
->> +			jobj = json_object_new_string(val->conf_doc);
->> +			json_object_object_add(conf->conf_doc, key, jobj);
->> +		}
->> +
->> +		free(val);
->> +	}
->> +}
->> +
->> +static bool get_jval(struct kshark_config_doc *conf,
->> +		     const char *key, void **val)
->> +{
->> +	return json_object_object_get_ex(conf->conf_doc, key,
->> +					 (json_object **) val);
->> +}
->> +
->> +/**
->> + * @brief Get the KernelShark Configuration document associate with a given
->> + *	  field name.
->> + *
->> + * @param conf: Input location for the kshark_config_doc instance. Currently
->> + *		only Json format is supported.
->> + * @param key: The name of the field.
->> + * @param val: Output location for the kshark_config_doc instance containing
->> + *	       the field. Currently only Json and String formats are supported.
->> + *
->> + * @returns True, if the key exists. Else False.
 >> + */
->> +bool kshark_config_doc_get(struct kshark_config_doc *conf,
->> +			   const char *key,
->> +			   struct kshark_config_doc *val)
-> I feel this is the same as add. Too low level. Again, I'll have to take
-> a look at how these are used in the finished product.
-> 
+>> +void kshark_export_adv_filters(struct kshark_context *kshark_ctx,
+>> +			       struct kshark_config_doc **conf)
+>> +{
+>> +	if (!*conf)
+>> +		*conf = kshark_filter_config_new(KS_JSON_CONFIG);
+>> +
+>> +	if ((*conf)->format == KS_JSON_CONFIG)
+>> +		kshark_adv_filters_to_json(kshark_ctx, (*conf)->conf_doc);
+>> +}
