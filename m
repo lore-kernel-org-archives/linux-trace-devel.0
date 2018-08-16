@@ -1,130 +1,115 @@
 Return-Path: <SRS0=QeEN=K7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38585 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbeHPSGt (ORCPT
+Received: from mail-wm0-f67.google.com ([74.125.82.67]:36249 "EHLO
+        mail-wm0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388180AbeHPSHA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Aug 2018 14:06:49 -0400
-Received: by mail-wr1-f66.google.com with SMTP id w11-v6so1896322wrc.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Aug 2018 08:07:45 -0700 (PDT)
+        Thu, 16 Aug 2018 14:07:00 -0400
+Received: by mail-wm0-f67.google.com with SMTP id w24-v6so4656748wmc.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Aug 2018 08:07:56 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3 1/3] kernel-shark-qt: Add Json-C as a third party dependency.
-Date: Thu, 16 Aug 2018 18:07:27 +0300
-Message-Id: <20180816150729.4680-1-y.karadz@gmail.com>
+Subject: [PATCH v3 3/3] kernel-shark-qt: Add an example showing how to import/export config. data
+Date: Thu, 16 Aug 2018 18:07:29 +0300
+Message-Id: <20180816150729.4680-3-y.karadz@gmail.com>
+In-Reply-To: <20180816150729.4680-1-y.karadz@gmail.com>
+References: <20180816150729.4680-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch prepares the Cmake build infrastructure for the
-introduction of a Json I/O for filter configurations. The Json I/O will
-be added to the C API of KernelShark in the following patch.
+This patch introduces a basic example, showing how to use the
+C API of KernelShark to import/export configuration data.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/CMakeLists.txt        |  2 ++
- kernel-shark-qt/README                |  4 +--
- kernel-shark-qt/build/FindJSONC.cmake | 38 +++++++++++++++++++++++++++
- kernel-shark-qt/src/CMakeLists.txt    |  1 +
- 4 files changed, 43 insertions(+), 2 deletions(-)
- create mode 100644 kernel-shark-qt/build/FindJSONC.cmake
+ kernel-shark-qt/examples/CMakeLists.txt |  4 ++
+ kernel-shark-qt/examples/configio.c     | 65 +++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+)
+ create mode 100644 kernel-shark-qt/examples/configio.c
 
-diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
-index 7a802cd..3516caa 100644
---- a/kernel-shark-qt/CMakeLists.txt
-+++ b/kernel-shark-qt/CMakeLists.txt
-@@ -13,6 +13,7 @@ message("\n project: Kernel Shark: (version: ${KS_VERSION_STRING})\n")
- set(KS_DIR ${CMAKE_SOURCE_DIR})
- 
- include(${KS_DIR}/build/FindTraceCmd.cmake)
-+include(${KS_DIR}/build/FindJSONC.cmake)
- 
- find_package(Doxygen)
- 
-@@ -24,6 +25,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread")
- 
- include_directories(${KS_DIR}/src/
-                     ${KS_DIR}/build/src/
-+                    ${JSONC_INCLUDE_DIR}
-                     ${TRACECMD_INCLUDE_DIR}
-                     ${TRACEEVENT_INCLUDE_DIR})
- 
-diff --git a/kernel-shark-qt/README b/kernel-shark-qt/README
-index 6ff77a5..e6818fc 100644
---- a/kernel-shark-qt/README
-+++ b/kernel-shark-qt/README
-@@ -6,14 +6,14 @@ Third Party Software:
- ------------------------------------------------------------
- The external dependencies:
- 1. In order to install the packages on Ubuntu do the following:
--    sudo apt-get install build-essential git cmake -y
-+    sudo apt-get install build-essential git cmake libjson-c-dev -y
- 
- 1.1 I you want to be able to generate Doxygen documentation:
-     sudo apt-get install graphviz doxygen-gui -y
- 
- 
- 2. In order to install the packages on Fedora, as root do the following:
--    dnf install gcc gcc-c++ git cmake -y
-+    dnf install gcc gcc-c++ git cmake json-c-devel -y
- 
- 2.1 I you want to be able to generate Doxygen documentation:
-     dnf install graphviz doxygen -y
-diff --git a/kernel-shark-qt/build/FindJSONC.cmake b/kernel-shark-qt/build/FindJSONC.cmake
+diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/examples/CMakeLists.txt
+index 6906eba..a3745fa 100644
+--- a/kernel-shark-qt/examples/CMakeLists.txt
++++ b/kernel-shark-qt/examples/CMakeLists.txt
+@@ -11,3 +11,7 @@ target_link_libraries(dfilter   kshark)
+ message(STATUS "datahisto")
+ add_executable(dhisto          datahisto.c)
+ target_link_libraries(dhisto   kshark)
++
++message(STATUS "confogio")
++add_executable(confio          configio.c)
++target_link_libraries(confio   kshark)
+diff --git a/kernel-shark-qt/examples/configio.c b/kernel-shark-qt/examples/configio.c
 new file mode 100644
-index 0000000..3bae20f
+index 0000000..3b1928f
 --- /dev/null
-+++ b/kernel-shark-qt/build/FindJSONC.cmake
-@@ -0,0 +1,38 @@
-+# - Try to find json-c
-+# https://cmake.org/Wiki/CMake:How_To_Find_Libraries
-+# Once done this will define
-+#  JSONC_FOUND - System has json-c
-+#  JSONC_INCLUDE_DIRS - The json-c include directories
-+#  JSONC_LIBRARIES - The libraries needed to use json-c
-+#  JSONC_DEFINITIONS - Compiler switches required for using json-c
++++ b/kernel-shark-qt/examples/configio.c
+@@ -0,0 +1,65 @@
++#include <stdio.h>
++#include <stdlib.h>
 +
-+find_package(PkgConfig)
-+pkg_check_modules(PC_JSONC QUIET json-c)
-+set(JSONC_DEFINITIONS ${PC_JSONC_CFLAGS_OTHER})
++#include "libkshark.h"
 +
-+find_path(JSONC_INCLUDE_DIR json.h
-+          HINTS ${PC_JSONC_INCLUDEDIR} ${PC_JSONC_INCLUDE_DIRS}
-+          PATH_SUFFIXES json-c)
++int main(int argc, char **argv)
++{
++	struct kshark_config_doc *conf, *filter, *hello;
++	struct kshark_context *kshark_ctx;
++	int *ids, i;
 +
-+find_library(JSONC_LIBRARY NAMES json-c libjson-c
-+             HINTS ${PC_JSONC_LIBDIR} ${PC_JSONC_LIBRARY_DIRS})
++	/* Create a new kshark session. */
++	kshark_ctx = NULL;
++	if (!kshark_instance(&kshark_ctx))
++		return 1;
 +
-+find_library(JSONC_LIBRARY NAMES json-c libjson-c
-+             HINTS ${PC_JSON-C_LIBDIR} ${PC_JSON-C_LIBRARY_DIRS})
++	if (argc == 1) {
++		tracecmd_filter_id_add(kshark_ctx->show_task_filter, 314);
++		tracecmd_filter_id_add(kshark_ctx->show_task_filter, 42);
 +
-+include(FindPackageHandleStandardArgs)
-+# handle the QUIETLY and REQUIRED arguments and set JSONC_FOUND to TRUE
-+# if all listed variables are TRUE
-+find_package_handle_standard_args(JSONC DEFAULT_MSG
-+                                  JSONC_LIBRARY JSONC_INCLUDE_DIR)
++		/* Create a new Confog. doc. */
++		conf = kshark_config_new("foo.bar.config", KS_CONFIG_JSON);
 +
-+if (NOT JSONC_FOUND)
++		/* Add filter's info. */
++		filter = kshark_export_all_filters(kshark_ctx, KS_CONFIG_JSON);
++		kshark_config_doc_add(conf, "Filters" ,filter);
 +
-+  message(FATAL_ERROR "Json-C is Required!\n")
++		/* Add "Hello Kernel" message. */
++		hello = kshark_string_config_alloc();
++		hello->conf_doc = "Hello Kernel";
++		kshark_config_doc_add(conf, "Message" ,hello);
 +
-+endif (NOT JSONC_FOUND)
++		/* Save to file. */
++		kshark_save_config_file("conf.json", conf);
++	} else {
++		/* Open a Config. file. */
++		conf = kshark_open_config_file(argv[1], "foo.bar.config");
 +
-+mark_as_advanced(JSONC_INCLUDE_DIR JSONC_LIBRARY)
++		/* Retrieve the filter's info. */
++		filter = kshark_config_alloc(KS_CONFIG_JSON);
++		if (kshark_config_doc_get(conf, "Filters" ,filter)) {
++			kshark_import_all_filters(kshark_ctx, filter);
 +
-+set(JSONC_LIBRARIES    ${JSONC_LIBRARY})
-+set(JSONC_INCLUDE_DIRS ${JSONC_INCLUDE_DIR})
-diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
-index cd42920..ea5dbda 100644
---- a/kernel-shark-qt/src/CMakeLists.txt
-+++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -6,6 +6,7 @@ add_library(kshark SHARED libkshark.c
-                           libkshark-collection.c)
- 
- target_link_libraries(kshark ${CMAKE_DL_LIBS}
-+                             ${JSONC_LIBRARY}
-                              ${TRACEEVENT_LIBRARY}
-                              ${TRACECMD_LIBRARY})
- 
++			/* Get the array of Ids to be fitered. */
++			ids = tracecmd_filter_ids(kshark_ctx->show_task_filter);
++			for (i = 0; i < kshark_ctx->show_task_filter->count; ++i)
++				printf("pid: %i\n", ids[i]);
++		}
++
++		/* Retrieve the message. */
++		hello = kshark_string_config_alloc();
++		if (kshark_config_doc_get(conf, "Message" ,hello))
++			puts((char *) hello->conf_doc);
++
++		free(filter);
++		free(hello);
++		free(ids);
++	}
++
++	kshark_free_config_doc(conf);
++
++	kshark_free(kshark_ctx);
++
++	return 0;
++}
 -- 
 2.17.1
