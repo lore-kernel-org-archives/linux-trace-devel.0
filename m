@@ -1,87 +1,231 @@
-Return-Path: <SRS0=+9rX=K6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:41594 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729388AbeHOSNw (ORCPT
+Return-Path: <SRS0=QeEN=K7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail.kernel.org ([198.145.29.99]:35346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726022AbeHPSEW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 15 Aug 2018 14:13:52 -0400
-Received: by mail-pg1-f194.google.com with SMTP id z8-v6so645112pgu.8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 15 Aug 2018 08:21:18 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (1.0)
-Subject: Re: [GIT PULL 00/35] perf/core improvements and fixes
-From: Andy Lutomirski <luto@amacapital.net>
-In-Reply-To: <20180815150611.32080-1-acme@kernel.org>
-Date: Wed, 15 Aug 2018 08:21:15 -0700
-Cc: Ingo Molnar <mingo@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Kapshuk <alexander.kapshuk@gmail.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        Benno Evers <bevers@mesosphere.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Dongjiu Geng <gengdongjiu@huawei.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kim Phillips <kim.phillips@arm.com>,
-        Krister Johansen <kjlx@templeofstupid.com>,
-        linux-trace-devel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>, stable@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Wang Nan <wangnan0@huawei.com>, x86@kernel.org,
-        Yordan Karadzhov <y.karadz@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BA2DD2BE-2EBB-415A-9171-8CC90F3E7F31@amacapital.net>
-References: <20180815150611.32080-1-acme@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
+        Thu, 16 Aug 2018 14:04:22 -0400
+Date: Thu, 16 Aug 2018 11:05:17 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] tools lib traceevent: Change to SPDX License format
+Message-ID: <20180816110517.6f3e6b3e@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
+[ Tzvetomir, I'm going to add this patch to my repo, you can build on
+  top of it. (for the trace-cmd to upstream code) ]
 
-> On Aug 15, 2018, at 8:05 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wr=
-ote:
->=20
-> From: Arnaldo Carvalho de Melo <acme@redhat.com>
->=20
-> Hi Ingo,
->=20
->    Please consider pulling, this is on top of
-> perf-core-for-mingo-4.19-20180809, that is not yet in tip.
->=20
-> Thanks,
->=20
-> - Arnaldo
->=20
-> Test results at the end of this message, as usual.
->=20
-> The following changes since commit 6a9405b56c274024564f9014bba97b92c91b34d=
-6:
->=20
->  perf map: Optimize maps__fixup_overlappings() (2018-08-08 15:56:00 -0300)=
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
->=20
-> are available in the Git repository at:
->=20
->  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-co=
-re-for-mingo-4.19-20180815
->=20
-> for you to fetch changes up to 6855dc41b24619c3d1de3dbd27dd0546b0e45272:
->=20
->  x86: Add entry trampolines to kcore
+Replaced COPYING with a description of how the SPDX identifiers are used.
+Added a GPL-2.0 and LGPL-2.1 license file in the new LICENSES directory.
+Then removed all the license templates from the source files and replaced
+them with the corresponding SPDX identifier.
 
-I don=E2=80=99t object per se, but once I finish rebasing and testing my ent=
-ry trampoline removal code, this will probably have to go.=
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ tools/lib/traceevent/event-parse.c   | 16 +---------------
+ tools/lib/traceevent/event-plugin.c  | 16 +---------------
+ tools/lib/traceevent/event-utils.h   | 16 +---------------
+ tools/lib/traceevent/kbuffer-parse.c | 17 +----------------
+ tools/lib/traceevent/parse-filter.c  | 16 +---------------
+ tools/lib/traceevent/parse-utils.c   | 16 +---------------
+ tools/lib/traceevent/trace-seq.c     | 16 +---------------
+ 7 files changed, 7 insertions(+), 106 deletions(-)
+
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index 6313e32680ff..ce1e20227c64 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -1,21 +1,7 @@
++// SPDX-License-Identifier: LGPL-2.1
+ /*
+  * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Lesser General Public
+- * License as published by the Free Software Foundation;
+- * version 2.1 of the License (not later!)
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this program; if not,  see <http://www.gnu.org/licenses>
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  *
+  *  The parts for function graph printing was taken and modified from the
+  *  Linux Kernel that were written by
+diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
+index 8e324ed46547..f17e25097e1e 100644
+--- a/tools/lib/traceevent/event-plugin.c
++++ b/tools/lib/traceevent/event-plugin.c
+@@ -1,21 +1,7 @@
++// SPDX-License-Identifier: LGPL-2.1
+ /*
+  * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Lesser General Public
+- * License as published by the Free Software Foundation;
+- * version 2.1 of the License (not later!)
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this program; if not,  see <http://www.gnu.org/licenses>
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  */
+ 
+ #include <ctype.h>
+diff --git a/tools/lib/traceevent/event-utils.h b/tools/lib/traceevent/event-utils.h
+index d1dc2170e402..0560b96a31d1 100644
+--- a/tools/lib/traceevent/event-utils.h
++++ b/tools/lib/traceevent/event-utils.h
+@@ -1,21 +1,7 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
+ /*
+  * Copyright (C) 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Lesser General Public
+- * License as published by the Free Software Foundation;
+- * version 2.1 of the License (not later!)
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this program; if not,  see <http://www.gnu.org/licenses>
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  */
+ #ifndef __UTIL_H
+ #define __UTIL_H
+diff --git a/tools/lib/traceevent/kbuffer-parse.c b/tools/lib/traceevent/kbuffer-parse.c
+index ca424b157e46..af2a1f3b7424 100644
+--- a/tools/lib/traceevent/kbuffer-parse.c
++++ b/tools/lib/traceevent/kbuffer-parse.c
+@@ -1,22 +1,7 @@
++// SPDX-License-Identifier: LGPL-2.1
+ /*
+  * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Lesser General Public
+- * License as published by the Free Software Foundation;
+- * version 2.1 of the License (not later!)
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this program; if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  */
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
+index 682a50e8b5f7..e76154c02ee7 100644
+--- a/tools/lib/traceevent/parse-filter.c
++++ b/tools/lib/traceevent/parse-filter.c
+@@ -1,21 +1,7 @@
++// SPDX-License-Identifier: LGPL-2.1
+ /*
+  * Copyright (C) 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Lesser General Public
+- * License as published by the Free Software Foundation;
+- * version 2.1 of the License (not later!)
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this program; if not,  see <http://www.gnu.org/licenses>
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  */
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/lib/traceevent/parse-utils.c b/tools/lib/traceevent/parse-utils.c
+index eda07fa31dca..77e4ec6402dd 100644
+--- a/tools/lib/traceevent/parse-utils.c
++++ b/tools/lib/traceevent/parse-utils.c
+@@ -1,21 +1,7 @@
++// SPDX-License-Identifier: LGPL-2.1
+ /*
+  * Copyright (C) 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Lesser General Public
+- * License as published by the Free Software Foundation;
+- * version 2.1 of the License (not later!)
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this program; if not,  see <http://www.gnu.org/licenses>
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  */
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/lib/traceevent/trace-seq.c b/tools/lib/traceevent/trace-seq.c
+index 292dc9f1d233..e3bac4543d3b 100644
+--- a/tools/lib/traceevent/trace-seq.c
++++ b/tools/lib/traceevent/trace-seq.c
+@@ -1,21 +1,7 @@
++// SPDX-License-Identifier: LGPL-2.1
+ /*
+  * Copyright (C) 2009 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Lesser General Public
+- * License as published by the Free Software Foundation;
+- * version 2.1 of the License (not later!)
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this program; if not,  see <http://www.gnu.org/licenses>
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  */
+ #include <stdio.h>
+ #include <stdlib.h>
+-- 
+2.13.6
