@@ -1,231 +1,130 @@
 Return-Path: <SRS0=QeEN=K7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:35346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726022AbeHPSEW (ORCPT
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:38585 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbeHPSGt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Aug 2018 14:04:22 -0400
-Date: Thu, 16 Aug 2018 11:05:17 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] tools lib traceevent: Change to SPDX License format
-Message-ID: <20180816110517.6f3e6b3e@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Thu, 16 Aug 2018 14:06:49 -0400
+Received: by mail-wr1-f66.google.com with SMTP id w11-v6so1896322wrc.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Aug 2018 08:07:45 -0700 (PDT)
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v3 1/3] kernel-shark-qt: Add Json-C as a third party dependency.
+Date: Thu, 16 Aug 2018 18:07:27 +0300
+Message-Id: <20180816150729.4680-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-[ Tzvetomir, I'm going to add this patch to my repo, you can build on
-  top of it. (for the trace-cmd to upstream code) ]
+This patch prepares the Cmake build infrastructure for the
+introduction of a Json I/O for filter configurations. The Json I/O will
+be added to the C API of KernelShark in the following patch.
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-
-Replaced COPYING with a description of how the SPDX identifiers are used.
-Added a GPL-2.0 and LGPL-2.1 license file in the new LICENSES directory.
-Then removed all the license templates from the source files and replaced
-them with the corresponding SPDX identifier.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- tools/lib/traceevent/event-parse.c   | 16 +---------------
- tools/lib/traceevent/event-plugin.c  | 16 +---------------
- tools/lib/traceevent/event-utils.h   | 16 +---------------
- tools/lib/traceevent/kbuffer-parse.c | 17 +----------------
- tools/lib/traceevent/parse-filter.c  | 16 +---------------
- tools/lib/traceevent/parse-utils.c   | 16 +---------------
- tools/lib/traceevent/trace-seq.c     | 16 +---------------
- 7 files changed, 7 insertions(+), 106 deletions(-)
+ kernel-shark-qt/CMakeLists.txt        |  2 ++
+ kernel-shark-qt/README                |  4 +--
+ kernel-shark-qt/build/FindJSONC.cmake | 38 +++++++++++++++++++++++++++
+ kernel-shark-qt/src/CMakeLists.txt    |  1 +
+ 4 files changed, 43 insertions(+), 2 deletions(-)
+ create mode 100644 kernel-shark-qt/build/FindJSONC.cmake
 
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index 6313e32680ff..ce1e20227c64 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -1,21 +1,7 @@
-+// SPDX-License-Identifier: LGPL-2.1
- /*
-  * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-  *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU Lesser General Public
-- * License as published by the Free Software Foundation;
-- * version 2.1 of the License (not later!)
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Lesser General Public License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-- *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  *
-  *  The parts for function graph printing was taken and modified from the
-  *  Linux Kernel that were written by
-diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index 8e324ed46547..f17e25097e1e 100644
---- a/tools/lib/traceevent/event-plugin.c
-+++ b/tools/lib/traceevent/event-plugin.c
-@@ -1,21 +1,7 @@
-+// SPDX-License-Identifier: LGPL-2.1
- /*
-  * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-  *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU Lesser General Public
-- * License as published by the Free Software Foundation;
-- * version 2.1 of the License (not later!)
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Lesser General Public License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-- *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
+diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
+index 7a802cd..3516caa 100644
+--- a/kernel-shark-qt/CMakeLists.txt
++++ b/kernel-shark-qt/CMakeLists.txt
+@@ -13,6 +13,7 @@ message("\n project: Kernel Shark: (version: ${KS_VERSION_STRING})\n")
+ set(KS_DIR ${CMAKE_SOURCE_DIR})
  
- #include <ctype.h>
-diff --git a/tools/lib/traceevent/event-utils.h b/tools/lib/traceevent/event-utils.h
-index d1dc2170e402..0560b96a31d1 100644
---- a/tools/lib/traceevent/event-utils.h
-+++ b/tools/lib/traceevent/event-utils.h
-@@ -1,21 +1,7 @@
-+/* SPDX-License-Identifier: LGPL-2.1 */
- /*
-  * Copyright (C) 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-  *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU Lesser General Public
-- * License as published by the Free Software Foundation;
-- * version 2.1 of the License (not later!)
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Lesser General Public License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-- *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- #ifndef __UTIL_H
- #define __UTIL_H
-diff --git a/tools/lib/traceevent/kbuffer-parse.c b/tools/lib/traceevent/kbuffer-parse.c
-index ca424b157e46..af2a1f3b7424 100644
---- a/tools/lib/traceevent/kbuffer-parse.c
-+++ b/tools/lib/traceevent/kbuffer-parse.c
-@@ -1,22 +1,7 @@
-+// SPDX-License-Identifier: LGPL-2.1
- /*
-  * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-  *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU Lesser General Public
-- * License as published by the Free Software Foundation;
-- * version 2.1 of the License (not later!)
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Lesser General Public License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- #include <stdio.h>
- #include <stdlib.h>
-diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
-index 682a50e8b5f7..e76154c02ee7 100644
---- a/tools/lib/traceevent/parse-filter.c
-+++ b/tools/lib/traceevent/parse-filter.c
-@@ -1,21 +1,7 @@
-+// SPDX-License-Identifier: LGPL-2.1
- /*
-  * Copyright (C) 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-  *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU Lesser General Public
-- * License as published by the Free Software Foundation;
-- * version 2.1 of the License (not later!)
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Lesser General Public License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-- *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- #include <stdio.h>
- #include <stdlib.h>
-diff --git a/tools/lib/traceevent/parse-utils.c b/tools/lib/traceevent/parse-utils.c
-index eda07fa31dca..77e4ec6402dd 100644
---- a/tools/lib/traceevent/parse-utils.c
-+++ b/tools/lib/traceevent/parse-utils.c
-@@ -1,21 +1,7 @@
-+// SPDX-License-Identifier: LGPL-2.1
- /*
-  * Copyright (C) 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-  *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU Lesser General Public
-- * License as published by the Free Software Foundation;
-- * version 2.1 of the License (not later!)
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Lesser General Public License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-- *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- #include <stdio.h>
- #include <stdlib.h>
-diff --git a/tools/lib/traceevent/trace-seq.c b/tools/lib/traceevent/trace-seq.c
-index 292dc9f1d233..e3bac4543d3b 100644
---- a/tools/lib/traceevent/trace-seq.c
-+++ b/tools/lib/traceevent/trace-seq.c
-@@ -1,21 +1,7 @@
-+// SPDX-License-Identifier: LGPL-2.1
- /*
-  * Copyright (C) 2009 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-  *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU Lesser General Public
-- * License as published by the Free Software Foundation;
-- * version 2.1 of the License (not later!)
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Lesser General Public License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-- *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- #include <stdio.h>
- #include <stdlib.h>
+ include(${KS_DIR}/build/FindTraceCmd.cmake)
++include(${KS_DIR}/build/FindJSONC.cmake)
+ 
+ find_package(Doxygen)
+ 
+@@ -24,6 +25,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread")
+ 
+ include_directories(${KS_DIR}/src/
+                     ${KS_DIR}/build/src/
++                    ${JSONC_INCLUDE_DIR}
+                     ${TRACECMD_INCLUDE_DIR}
+                     ${TRACEEVENT_INCLUDE_DIR})
+ 
+diff --git a/kernel-shark-qt/README b/kernel-shark-qt/README
+index 6ff77a5..e6818fc 100644
+--- a/kernel-shark-qt/README
++++ b/kernel-shark-qt/README
+@@ -6,14 +6,14 @@ Third Party Software:
+ ------------------------------------------------------------
+ The external dependencies:
+ 1. In order to install the packages on Ubuntu do the following:
+-    sudo apt-get install build-essential git cmake -y
++    sudo apt-get install build-essential git cmake libjson-c-dev -y
+ 
+ 1.1 I you want to be able to generate Doxygen documentation:
+     sudo apt-get install graphviz doxygen-gui -y
+ 
+ 
+ 2. In order to install the packages on Fedora, as root do the following:
+-    dnf install gcc gcc-c++ git cmake -y
++    dnf install gcc gcc-c++ git cmake json-c-devel -y
+ 
+ 2.1 I you want to be able to generate Doxygen documentation:
+     dnf install graphviz doxygen -y
+diff --git a/kernel-shark-qt/build/FindJSONC.cmake b/kernel-shark-qt/build/FindJSONC.cmake
+new file mode 100644
+index 0000000..3bae20f
+--- /dev/null
++++ b/kernel-shark-qt/build/FindJSONC.cmake
+@@ -0,0 +1,38 @@
++# - Try to find json-c
++# https://cmake.org/Wiki/CMake:How_To_Find_Libraries
++# Once done this will define
++#  JSONC_FOUND - System has json-c
++#  JSONC_INCLUDE_DIRS - The json-c include directories
++#  JSONC_LIBRARIES - The libraries needed to use json-c
++#  JSONC_DEFINITIONS - Compiler switches required for using json-c
++
++find_package(PkgConfig)
++pkg_check_modules(PC_JSONC QUIET json-c)
++set(JSONC_DEFINITIONS ${PC_JSONC_CFLAGS_OTHER})
++
++find_path(JSONC_INCLUDE_DIR json.h
++          HINTS ${PC_JSONC_INCLUDEDIR} ${PC_JSONC_INCLUDE_DIRS}
++          PATH_SUFFIXES json-c)
++
++find_library(JSONC_LIBRARY NAMES json-c libjson-c
++             HINTS ${PC_JSONC_LIBDIR} ${PC_JSONC_LIBRARY_DIRS})
++
++find_library(JSONC_LIBRARY NAMES json-c libjson-c
++             HINTS ${PC_JSON-C_LIBDIR} ${PC_JSON-C_LIBRARY_DIRS})
++
++include(FindPackageHandleStandardArgs)
++# handle the QUIETLY and REQUIRED arguments and set JSONC_FOUND to TRUE
++# if all listed variables are TRUE
++find_package_handle_standard_args(JSONC DEFAULT_MSG
++                                  JSONC_LIBRARY JSONC_INCLUDE_DIR)
++
++if (NOT JSONC_FOUND)
++
++  message(FATAL_ERROR "Json-C is Required!\n")
++
++endif (NOT JSONC_FOUND)
++
++mark_as_advanced(JSONC_INCLUDE_DIR JSONC_LIBRARY)
++
++set(JSONC_LIBRARIES    ${JSONC_LIBRARY})
++set(JSONC_INCLUDE_DIRS ${JSONC_INCLUDE_DIR})
+diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
+index cd42920..ea5dbda 100644
+--- a/kernel-shark-qt/src/CMakeLists.txt
++++ b/kernel-shark-qt/src/CMakeLists.txt
+@@ -6,6 +6,7 @@ add_library(kshark SHARED libkshark.c
+                           libkshark-collection.c)
+ 
+ target_link_libraries(kshark ${CMAKE_DL_LIBS}
++                             ${JSONC_LIBRARY}
+                              ${TRACEEVENT_LIBRARY}
+                              ${TRACECMD_LIBRARY})
+ 
 -- 
-2.13.6
+2.17.1
