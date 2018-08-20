@@ -1,18 +1,18 @@
 Return-Path: <SRS0=Itc8=LD=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:44080 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726595AbeHTRvN (ORCPT
+Received: from mail-wm0-f68.google.com ([74.125.82.68]:37412 "EHLO
+        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726766AbeHTRve (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 20 Aug 2018 13:51:13 -0400
-Received: by mail-wr1-f67.google.com with SMTP id r16-v6so13166286wrt.11
-        for <linux-trace-devel@vger.kernel.org>; Mon, 20 Aug 2018 07:35:19 -0700 (PDT)
+        Mon, 20 Aug 2018 13:51:34 -0400
+Received: by mail-wm0-f68.google.com with SMTP id n11-v6so14086080wmc.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 20 Aug 2018 07:35:40 -0700 (PDT)
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 06/24] trace-cmd: Rename pevent parse APIs
-Date: Mon, 20 Aug 2018 17:34:47 +0300
-Message-Id: <20180820143505.11525-7-tz.stoyanov@gmail.com>
+Subject: [PATCH 24/24] trace-cmd: Rename static variables and functions in event-parse.c
+Date: Mon, 20 Aug 2018 17:35:05 +0300
+Message-Id: <20180820143505.11525-25-tz.stoyanov@gmail.com>
 In-Reply-To: <20180820143505.11525-1-tz.stoyanov@gmail.com>
 References: <20180820143505.11525-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -21,200 +21,181 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
 conflicts. That prefix will be "tep_" and not "pevent_". This changes
-APIs: pevent_parse_event, pevent_parse_format, pevent_parse_header_page
+static variables and functions in event-parse.c: pevent_func_params,
+__pevent_parse_format, __pevent_parse_event, pevent_error_str, pevent_search_event
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/traceevent/event-parse.h | 18 +++++++++---------
- lib/trace-cmd/trace-blk-hack.c   |  2 +-
- lib/trace-cmd/trace-input.c      |  6 +++---
- lib/trace-cmd/trace-util.c       |  4 ++--
- lib/traceevent/event-parse.c     | 22 +++++++++++-----------
- tracecmd/trace-record.c          |  4 ++--
- 6 files changed, 28 insertions(+), 28 deletions(-)
+ lib/traceevent/event-parse.c | 54 ++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index db910b5..93b040e 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -627,15 +627,15 @@ void pevent_print_event_data(struct tep_handle *pevent, struct trace_seq *s,
- void pevent_print_event(struct tep_handle *pevent, struct trace_seq *s,
- 			struct tep_record *record, bool use_trace_clock);
- 
--int pevent_parse_header_page(struct tep_handle *pevent, char *buf, unsigned long size,
--			     int long_size);
--
--enum pevent_errno pevent_parse_event(struct tep_handle *pevent, const char *buf,
--				     unsigned long size, const char *sys);
--enum pevent_errno pevent_parse_format(struct tep_handle *pevent,
--				      struct event_format **eventp,
--				      const char *buf,
--				      unsigned long size, const char *sys);
-+int tep_parse_header_page(struct tep_handle *pevent, char *buf, unsigned long size,
-+			  int long_size);
-+
-+enum pevent_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
-+				  unsigned long size, const char *sys);
-+enum pevent_errno tep_parse_format(struct tep_handle *pevent,
-+				   struct event_format **eventp,
-+				   const char *buf,
-+				   unsigned long size, const char *sys);
- void pevent_free_format(struct event_format *event);
- void pevent_free_format_field(struct format_field *field);
- 
-diff --git a/lib/trace-cmd/trace-blk-hack.c b/lib/trace-cmd/trace-blk-hack.c
-index 9dec648..2883c68 100644
---- a/lib/trace-cmd/trace-blk-hack.c
-+++ b/lib/trace-cmd/trace-blk-hack.c
-@@ -139,7 +139,7 @@ int tracecmd_blk_hack(struct tracecmd_input *handle)
- 
- 	/* Parse this event */
- 	l += r;
--	pevent_parse_event(pevent, buf, l, "ftrace");
-+	tep_parse_event(pevent, buf, l, "ftrace");
- 
- 	return 0;
- 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index ad6fc90..ef55177 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -333,7 +333,7 @@ static int read_header_files(struct tracecmd_input *handle)
- 	if (do_read_check(handle, header, size))
- 		goto failed_read;
- 
--	pevent_parse_header_page(pevent, header, size, handle->long_size);
-+	tep_parse_header_page(pevent, header, size, handle->long_size);
- 	free(header);
- 
- 	/*
-@@ -421,7 +421,7 @@ static int read_ftrace_file(struct tracecmd_input *handle,
- 		if (print || regex_event_buf(buf, size, epreg))
- 			printf("%.*s\n", (int)size, buf);
- 	} else {
--		if (pevent_parse_event(pevent, buf, size, "ftrace"))
-+		if (tep_parse_event(pevent, buf, size, "ftrace"))
- 			pevent->parsing_failures = 1;
- 	}
- 	free(buf);
-@@ -455,7 +455,7 @@ static int read_event_file(struct tracecmd_input *handle,
- 			printf("%.*s\n", (int)size, buf);
- 		}
- 	} else {
--		if (pevent_parse_event(pevent, buf, size, system))
-+		if (tep_parse_event(pevent, buf, size, system))
- 			pevent->parsing_failures = 1;
- 	}
- 	free(buf);
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 2058dc3..7d4a2a4 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -1077,7 +1077,7 @@ static int load_events(struct tep_handle *pevent, const char *system,
- 		if (len < 0)
- 			goto free_format;
- 
--		ret = pevent_parse_event(pevent, buf, len, system);
-+		ret = tep_parse_event(pevent, buf, len, system);
- 		free(buf);
-  free_format:
- 		free(format);
-@@ -1109,7 +1109,7 @@ static int read_header(struct tep_handle *pevent, const char *events_dir)
- 	if (len < 0)
- 		goto out;
- 
--	pevent_parse_header_page(pevent, buf, len, sizeof(long));
-+	tep_parse_header_page(pevent, buf, len, sizeof(long));
- 
- 	free(buf);
- 
 diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 9142f28..49689b2 100644
+index 51932b8..ce1e202 100644
 --- a/lib/traceevent/event-parse.c
 +++ b/lib/traceevent/event-parse.c
-@@ -5916,7 +5916,7 @@ static void parse_header_field(const char *field,
- }
+@@ -78,9 +78,9 @@ struct event_handler {
+ 	void				*context;
+ };
  
- /**
-- * pevent_parse_header_page - parse the data stored in the header page
-+ * tep_parse_header_page - parse the data stored in the header page
-  * @pevent: the handle to the pevent
-  * @buf: the buffer storing the header page format string
-  * @size: the size of @buf
-@@ -5927,8 +5927,8 @@ static void parse_header_field(const char *field,
+-struct pevent_func_params {
+-	struct pevent_func_params	*next;
+-	enum tep_func_arg_type		type;
++struct func_params {
++	struct func_params	*next;
++	enum tep_func_arg_type	type;
+ };
+ 
+ struct tep_function_handler {
+@@ -88,7 +88,7 @@ struct tep_function_handler {
+ 	enum tep_func_arg_type		ret_type;
+ 	char				*name;
+ 	tep_func_handler		func;
+-	struct pevent_func_params	*params;
++	struct func_params		*params;
+ 	int				nr_args;
+ };
+ 
+@@ -1147,7 +1147,7 @@ static enum event_type read_token(char **tok)
+  * @tok: The token to return
   *
-  * /sys/kernel/debug/tracing/events/header_page
+  * This will parse tokens from the string given by
+- * pevent_init_data().
++ * tep_init_data().
+  *
+  * Returns the token type.
   */
--int pevent_parse_header_page(struct tep_handle *pevent, char *buf, unsigned long size,
--			     int long_size)
-+int tep_parse_header_page(struct tep_handle *pevent, char *buf, unsigned long size,
-+			  int long_size)
+@@ -4119,7 +4119,7 @@ process_defined_func(struct trace_seq *s, void *data, int size,
+ 		     struct event_format *event, struct print_arg *arg)
  {
- 	int ignore;
- 
-@@ -6157,7 +6157,7 @@ event_add_failed:
+ 	struct tep_function_handler *func_handle = arg->func.func;
+-	struct pevent_func_params *param;
++	struct func_params *param;
+ 	unsigned long long *args;
+ 	unsigned long long ret;
+ 	struct print_arg *farg;
+@@ -6009,7 +6009,7 @@ static int find_event_handle(struct tep_handle *pevent, struct event_format *eve
  }
  
  /**
-- * pevent_parse_format - parse the event format
-+ * tep_parse_format - parse the event format
-  * @pevent: the handle to the pevent
-  * @eventp: returned format
+- * __pevent_parse_format - parse the event format
++ * __tep_parse_format - parse the event format
   * @buf: the buffer storing the event format string
-@@ -6171,16 +6171,16 @@ event_add_failed:
+  * @size: the size of @buf
+  * @sys: the system the event belongs to
+@@ -6021,9 +6021,9 @@ static int find_event_handle(struct tep_handle *pevent, struct event_format *eve
   *
   * /sys/kernel/debug/tracing/events/.../.../format
   */
--enum pevent_errno pevent_parse_format(struct tep_handle *pevent,
--				      struct event_format **eventp,
--				      const char *buf,
--				      unsigned long size, const char *sys)
-+enum pevent_errno tep_parse_format(struct tep_handle *pevent,
-+				   struct event_format **eventp,
-+				   const char *buf,
-+				   unsigned long size, const char *sys)
- {
- 	return __pevent_parse_event(pevent, eventp, buf, size, sys);
- }
- 
- /**
-- * pevent_parse_event - parse the event format
-+ * tep_parse_event - parse the event format
-  * @pevent: the handle to the pevent
-  * @buf: the buffer storing the event format string
-  * @size: the size of @buf
-@@ -6193,8 +6193,8 @@ enum pevent_errno pevent_parse_format(struct tep_handle *pevent,
-  *
-  * /sys/kernel/debug/tracing/events/.../.../format
-  */
--enum pevent_errno pevent_parse_event(struct tep_handle *pevent, const char *buf,
+-enum tep_errno __pevent_parse_format(struct event_format **eventp,
+-				     struct tep_handle *pevent, const char *buf,
 -				     unsigned long size, const char *sys)
-+enum pevent_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
++enum tep_errno __tep_parse_format(struct event_format **eventp,
++				  struct tep_handle *pevent, const char *buf,
 +				  unsigned long size, const char *sys)
  {
+ 	struct event_format *event;
+ 	int ret;
+@@ -6129,12 +6129,12 @@ enum tep_errno __pevent_parse_format(struct event_format **eventp,
+ }
+ 
+ static enum tep_errno
+-__pevent_parse_event(struct tep_handle *pevent,
+-		     struct event_format **eventp,
+-		     const char *buf, unsigned long size,
+-		     const char *sys)
++__parse_event(struct tep_handle *pevent,
++	      struct event_format **eventp,
++	      const char *buf, unsigned long size,
++	      const char *sys)
+ {
+-	int ret = __pevent_parse_format(eventp, pevent, buf, size, sys);
++	int ret = __tep_parse_format(eventp, pevent, buf, size, sys);
+ 	struct event_format *event = *eventp;
+ 
+ 	if (event == NULL)
+@@ -6176,7 +6176,7 @@ enum tep_errno tep_parse_format(struct tep_handle *pevent,
+ 				const char *buf,
+ 				unsigned long size, const char *sys)
+ {
+-	return __pevent_parse_event(pevent, eventp, buf, size, sys);
++	return __parse_event(pevent, eventp, buf, size, sys);
+ }
+ 
+ /**
+@@ -6197,12 +6197,12 @@ enum tep_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
+ 			       unsigned long size, const char *sys)
+ {
  	struct event_format *event = NULL;
- 	return __pevent_parse_event(pevent, &event, buf, size, sys);
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 5e57f4a..6952492 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3506,7 +3506,7 @@ static char *get_date_to_ts(void)
- 	buf = read_file("events/header_page", &size);
- 	if (!buf)
- 		goto out_pevent;
--	ret = pevent_parse_header_page(pevent, buf, size, sizeof(unsigned long));
-+	ret = tep_parse_header_page(pevent, buf, size, sizeof(unsigned long));
- 	free(buf);
- 	if (ret < 0) {
- 		warning("Can't parse header page, --date ignored");
-@@ -3517,7 +3517,7 @@ static char *get_date_to_ts(void)
- 	buf = read_file("events/ftrace/print/format", &size);
- 	if (!buf)
- 		goto out_pevent;
--	ret = pevent_parse_event(pevent, buf, size, "ftrace");
-+	ret = tep_parse_event(pevent, buf, size, "ftrace");
- 	free(buf);
- 	if (ret < 0) {
- 		warning("Can't parse print event, --date ignored");
+-	return __pevent_parse_event(pevent, &event, buf, size, sys);
++	return __parse_event(pevent, &event, buf, size, sys);
+ }
+ 
+ #undef _PE
+ #define _PE(code, str) str
+-static const char * const pevent_error_str[] = {
++static const char * const tep_error_str[] = {
+ 	TEP_ERRORS
+ };
+ #undef _PE
+@@ -6223,7 +6223,7 @@ int tep_strerror(struct tep_handle *pevent __maybe_unused,
+ 		return -1;
+ 
+ 	idx = errnum - __TEP_ERRNO__START - 1;
+-	msg = pevent_error_str[idx];
++	msg = tep_error_str[idx];
+ 	snprintf(buf, buflen, "%s", msg);
+ 
+ 	return 0;
+@@ -6449,7 +6449,7 @@ int tep_print_func_field(struct trace_seq *s, const char *fmt,
+ 
+ static void free_func_handle(struct tep_function_handler *func)
+ {
+-	struct pevent_func_params *params;
++	struct func_params *params;
+ 
+ 	free(func->name);
+ 
+@@ -6483,8 +6483,8 @@ int tep_register_print_function(struct tep_handle *pevent,
+ 				char *name, ...)
+ {
+ 	struct tep_function_handler *func_handle;
+-	struct pevent_func_params **next_param;
+-	struct pevent_func_params *param;
++	struct func_params **next_param;
++	struct func_params *param;
+ 	enum tep_func_arg_type type;
+ 	va_list ap;
+ 	int ret;
+@@ -6577,9 +6577,9 @@ int tep_unregister_print_function(struct tep_handle *pevent,
+ 	return -1;
+ }
+ 
+-static struct event_format *pevent_search_event(struct tep_handle *pevent, int id,
+-						const char *sys_name,
+-						const char *event_name)
++static struct event_format *search_event(struct tep_handle *pevent, int id,
++					 const char *sys_name,
++					 const char *event_name)
+ {
+ 	struct event_format *event;
+ 
+@@ -6624,7 +6624,7 @@ int tep_register_event_handler(struct tep_handle *pevent, int id,
+ 	struct event_format *event;
+ 	struct event_handler *handle;
+ 
+-	event = pevent_search_event(pevent, id, sys_name, event_name);
++	event = search_event(pevent, id, sys_name, event_name);
+ 	if (event == NULL)
+ 		goto not_found;
+ 
+@@ -6709,7 +6709,7 @@ int tep_unregister_event_handler(struct tep_handle *pevent, int id,
+ 	struct event_handler *handle;
+ 	struct event_handler **next;
+ 
+-	event = pevent_search_event(pevent, id, sys_name, event_name);
++	event = search_event(pevent, id, sys_name, event_name);
+ 	if (event == NULL)
+ 		goto not_found;
+ 
 -- 
 2.17.1
