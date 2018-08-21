@@ -1,11 +1,11 @@
 Return-Path: <SRS0=yn/p=LE=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f68.google.com ([74.125.82.68]:52009 "EHLO
+Received: from mail-wm0-f68.google.com ([74.125.82.68]:52034 "EHLO
         mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726590AbeHUQxu (ORCPT
+        with ESMTP id S1727046AbeHUQyD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 21 Aug 2018 12:53:50 -0400
-Received: by mail-wm0-f68.google.com with SMTP id y2-v6so2967604wma.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 21 Aug 2018 06:33:36 -0700 (PDT)
+        Tue, 21 Aug 2018 12:54:03 -0400
+Received: by mail-wm0-f68.google.com with SMTP id y2-v6so2968459wma.1
+        for <linux-trace-devel@vger.kernel.org>; Tue, 21 Aug 2018 06:33:50 -0700 (PDT)
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
@@ -13,9 +13,9 @@ Cc: linux-trace-devel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Yordan Karadzhov <y.karadz@gmail.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 03/24] tools lib traceevent, perf tools: Rename pevent plugin related APIs
-Date: Tue, 21 Aug 2018 16:33:07 +0300
-Message-Id: <20180821133328.3249-4-tz.stoyanov@gmail.com>
+Subject: [PATCH 13/24] tools lib traceevent, tools lib lockdep: Rename 'enum pevent_errno' to 'enum tep_errno'
+Date: Tue, 21 Aug 2018 16:33:17 +0300
+Message-Id: <20180821133328.3249-14-tz.stoyanov@gmail.com>
 In-Reply-To: <20180821133328.3249-1-tz.stoyanov@gmail.com>
 References: <20180821133328.3249-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -24,817 +24,952 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
 conflicts. That prefix will be "tep_" and not "pevent_". This changes
-the pevent plugin related API.
+'enum pevent_errno' to 'enum tep_errno'.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180808180700.005287044@goodmis.org
+Link: http://lkml.kernel.org/r/20180808180701.770475059@goodmis.org
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/trace-cmd/trace-cmd.h    | 10 +++---
- include/traceevent/event-parse.h | 56 ++++++++++++++---------------
- lib/trace-cmd/trace-ftrace.c     |  6 ++--
- lib/trace-cmd/trace-util.c       | 62 ++++++++++++++++----------------
- lib/traceevent/event-parse.c     |  8 ++---
- lib/traceevent/event-plugin.c    | 24 ++++++-------
- plugins/plugin_cfg80211.c        |  4 +--
- plugins/plugin_function.c        | 12 +++----
- plugins/plugin_hrtimer.c         |  4 +--
- plugins/plugin_jbd2.c            |  4 +--
- plugins/plugin_kmem.c            |  4 +--
- plugins/plugin_kvm.c             |  4 +--
- plugins/plugin_mac80211.c        |  2 +-
- plugins/plugin_sched_switch.c    |  4 +--
- plugins/plugin_scsi.c            |  4 +--
- plugins/plugin_xen.c             |  4 +--
- 16 files changed, 106 insertions(+), 106 deletions(-)
+ include/traceevent/event-parse.h |  48 +++++-----
+ lib/traceevent/event-parse.c     |  60 ++++++-------
+ lib/traceevent/parse-filter.c    | 150 +++++++++++++++----------------
+ 3 files changed, 129 insertions(+), 129 deletions(-)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index ade21b1..1f5ef81 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -330,10 +330,10 @@ bool tracecmd_msg_done(struct tracecmd_msg_handle *msg_handle);
- void tracecmd_msg_set_done(struct tracecmd_msg_handle *msg_handle);
- 
- /* --- Plugin handling --- */
--extern struct pevent_plugin_option trace_ftrace_options[];
-+extern struct tep_plugin_option trace_ftrace_options[];
- 
--int trace_util_add_options(const char *name, struct pevent_plugin_option *options);
--void trace_util_remove_options(struct pevent_plugin_option *options);
-+int trace_util_add_options(const char *name, struct tep_plugin_option *options);
-+void trace_util_remove_options(struct tep_plugin_option *options);
- int trace_util_add_option(const char *name, const char *val);
- int trace_util_load_plugins(struct tep_handle *pevent, const char *suffix,
- 			    int (*load_plugin)(struct tep_handle *pevent,
-@@ -341,8 +341,8 @@ int trace_util_load_plugins(struct tep_handle *pevent, const char *suffix,
- 					       const char *name,
- 					       void *data),
- 			    void *data);
--struct pevent_plugin_option *trace_util_read_plugin_options(void);
--void trace_util_free_options(struct pevent_plugin_option *options);
-+struct tep_plugin_option *trace_util_read_plugin_options(void);
-+void trace_util_free_options(struct tep_plugin_option *options);
- char **trace_util_find_plugin_files(const char *suffix);
- void trace_util_free_plugin_files(char **files);
- void trace_util_print_plugins(struct trace_seq *s, const char *prefix, const char *suffix,
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 3b99120..ada1efa 100644
+index 3df714f..4d4637d 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -87,16 +87,16 @@ extern int trace_seq_do_printf(struct trace_seq *s);
- struct tep_handle;
- struct event_format;
- 
--typedef int (*pevent_event_handler_func)(struct trace_seq *s,
--					 struct tep_record *record,
--					 struct event_format *event,
--					 void *context);
-+typedef int (*tep_event_handler_func)(struct trace_seq *s,
-+				      struct tep_record *record,
-+				      struct event_format *event,
-+				      void *context);
- 
--typedef int (*pevent_plugin_load_func)(struct tep_handle *pevent);
--typedef int (*pevent_plugin_unload_func)(struct tep_handle *pevent);
-+typedef int (*tep_plugin_load_func)(struct tep_handle *pevent);
-+typedef int (*tep_plugin_unload_func)(struct tep_handle *pevent);
- 
--struct pevent_plugin_option {
--	struct pevent_plugin_option	*next;
-+struct tep_plugin_option {
-+	struct tep_plugin_option	*next;
- 	void				*handle;
- 	char				*file;
- 	char				*name;
-@@ -110,20 +110,20 @@ struct pevent_plugin_option {
- /*
-  * Plugin hooks that can be called:
-  *
-- * PEVENT_PLUGIN_LOADER:  (required)
-+ * TEP_PLUGIN_LOADER:  (required)
-  *   The function name to initialized the plugin.
-  *
-- *   int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+ *   int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
-  *
-- * PEVENT_PLUGIN_UNLOADER:  (optional)
-+ * TEP_PLUGIN_UNLOADER:  (optional)
-  *   The function called just before unloading
-  *
-- *   int PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+ *   int TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
-  *
-- * PEVENT_PLUGIN_OPTIONS:  (optional)
-+ * TEP_PLUGIN_OPTIONS:  (optional)
-  *   Plugin options that can be set before loading
-  *
-- *   struct pevent_plugin_option PEVENT_PLUGIN_OPTIONS[] = {
-+ *   struct tep_plugin_option TEP_PLUGIN_OPTIONS[] = {
-  *	{
-  *		.name = "option-name",
-  *		.plugin_alias = "override-file-name", (optional)
-@@ -144,19 +144,19 @@ struct pevent_plugin_option {
-  *   .set will be processed. If .value is defined, then it is considered
-  *   a string option and .set will be ignored.
-  *
-- * PEVENT_PLUGIN_ALIAS: (optional)
-+ * TEP_PLUGIN_ALIAS: (optional)
-  *   The name to use for finding options (uses filename if not defined)
-  */
--#define PEVENT_PLUGIN_LOADER pevent_plugin_loader
--#define PEVENT_PLUGIN_UNLOADER pevent_plugin_unloader
--#define PEVENT_PLUGIN_OPTIONS pevent_plugin_options
--#define PEVENT_PLUGIN_ALIAS pevent_plugin_alias
-+#define TEP_PLUGIN_LOADER tep_plugin_loader
-+#define TEP_PLUGIN_UNLOADER tep_plugin_unloader
-+#define TEP_PLUGIN_OPTIONS tep_plugin_options
-+#define TEP_PLUGIN_ALIAS tep_plugin_alias
- #define _MAKE_STR(x)	#x
- #define MAKE_STR(x)	_MAKE_STR(x)
--#define PEVENT_PLUGIN_LOADER_NAME MAKE_STR(PEVENT_PLUGIN_LOADER)
--#define PEVENT_PLUGIN_UNLOADER_NAME MAKE_STR(PEVENT_PLUGIN_UNLOADER)
--#define PEVENT_PLUGIN_OPTIONS_NAME MAKE_STR(PEVENT_PLUGIN_OPTIONS)
--#define PEVENT_PLUGIN_ALIAS_NAME MAKE_STR(PEVENT_PLUGIN_ALIAS)
-+#define TEP_PLUGIN_LOADER_NAME MAKE_STR(TEP_PLUGIN_LOADER)
-+#define TEP_PLUGIN_UNLOADER_NAME MAKE_STR(TEP_PLUGIN_UNLOADER)
-+#define TEP_PLUGIN_OPTIONS_NAME MAKE_STR(TEP_PLUGIN_OPTIONS)
-+#define TEP_PLUGIN_ALIAS_NAME MAKE_STR(TEP_PLUGIN_ALIAS)
- 
- enum format_flags {
- 	FIELD_IS_ARRAY		= 1,
-@@ -313,7 +313,7 @@ struct event_format {
- 	struct format		format;
- 	struct print_fmt	print_fmt;
- 	char			*system;
--	pevent_event_handler_func handler;
-+	tep_event_handler_func	handler;
- 	void			*context;
+@@ -365,7 +365,7 @@ enum tep_flag {
+ 	TEP_DISABLE_PLUGINS	= 1 << 2,
  };
  
-@@ -427,8 +427,8 @@ void traceevent_unload_plugins(struct plugin_list *plugin_list,
- char **traceevent_plugin_list_options(void);
- void traceevent_plugin_free_options_list(char **list);
- int traceevent_plugin_add_options(const char *name,
--				  struct pevent_plugin_option *options);
--void traceevent_plugin_remove_options(struct pevent_plugin_option *options);
-+				  struct tep_plugin_option *options);
-+void traceevent_plugin_remove_options(struct tep_plugin_option *options);
- void traceevent_print_plugins(struct trace_seq *s,
- 			      const char *prefix, const char *suffix,
- 			      const struct plugin_list *list);
-@@ -663,10 +663,10 @@ int pevent_print_func_field(struct trace_seq *s, const char *fmt,
+-#define PEVENT_ERRORS 							      \
++#define TEP_ERRORS 							      \
+ 	_PE(MEM_ALLOC_FAILED,	"failed to allocate memory"),		      \
+ 	_PE(PARSE_EVENT_FAILED,	"failed to parse event"),		      \
+ 	_PE(READ_ID_FAILED,	"failed to read event id"),		      \
+@@ -397,10 +397,10 @@ enum tep_flag {
+ 	_PE(FILTER_MISS,	"record does not match to filter")
  
- int pevent_register_event_handler(struct tep_handle *pevent, int id,
- 				  const char *sys_name, const char *event_name,
--				  pevent_event_handler_func func, void *context);
-+				  tep_event_handler_func func, void *context);
- int pevent_unregister_event_handler(struct tep_handle *pevent, int id,
- 				    const char *sys_name, const char *event_name,
--				    pevent_event_handler_func func, void *context);
-+				    tep_event_handler_func func, void *context);
- int pevent_register_print_function(struct tep_handle *pevent,
- 				   pevent_func_handler func,
- 				   enum pevent_func_arg_type ret_type,
-diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
-index 3b87071..8c706f3 100644
---- a/lib/trace-cmd/trace-ftrace.c
-+++ b/lib/trace-cmd/trace-ftrace.c
-@@ -10,7 +10,7 @@
+ #undef _PE
+-#define _PE(__code, __str) PEVENT_ERRNO__ ## __code
+-enum pevent_errno {
+-	PEVENT_ERRNO__SUCCESS			= 0,
+-	PEVENT_ERRNO__FILTER_MATCH		= PEVENT_ERRNO__SUCCESS,
++#define _PE(__code, __str) TEP_ERRNO__ ## __code
++enum tep_errno {
++	TEP_ERRNO__SUCCESS			= 0,
++	TEP_ERRNO__FILTER_MATCH			= TEP_ERRNO__SUCCESS,
  
- #include "trace-cmd.h"
+ 	/*
+ 	 * Choose an arbitrary negative big number not to clash with standard
+@@ -409,11 +409,11 @@ enum pevent_errno {
+ 	 *
+ 	 * http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/errno.h.html
+ 	 */
+-	__PEVENT_ERRNO__START			= -100000,
++	__TEP_ERRNO__START			= -100000,
  
--struct pevent_plugin_option trace_ftrace_options[] = {
-+struct tep_plugin_option trace_ftrace_options[] = {
- 	{
- 		.name = "tailprint",
- 		.plugin_alias = "fgraph",
-@@ -28,8 +28,8 @@ struct pevent_plugin_option trace_ftrace_options[] = {
- 	}
+-	PEVENT_ERRORS,
++	TEP_ERRORS,
+ 
+-	__PEVENT_ERRNO__END,
++	__TEP_ERRNO__END,
+ };
+ #undef _PE
+ 
+@@ -630,12 +630,12 @@ void tep_print_event(struct tep_handle *pevent, struct trace_seq *s,
+ int tep_parse_header_page(struct tep_handle *pevent, char *buf, unsigned long size,
+ 			  int long_size);
+ 
+-enum pevent_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
+-				  unsigned long size, const char *sys);
+-enum pevent_errno tep_parse_format(struct tep_handle *pevent,
+-				   struct event_format **eventp,
+-				   const char *buf,
+-				   unsigned long size, const char *sys);
++enum tep_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
++			       unsigned long size, const char *sys);
++enum tep_errno tep_parse_format(struct tep_handle *pevent,
++				struct event_format **eventp,
++				const char *buf,
++				unsigned long size, const char *sys);
+ void pevent_free_format(struct event_format *event);
+ void pevent_free_format_field(struct format_field *field);
+ 
+@@ -712,7 +712,7 @@ void tep_print_fields(struct trace_seq *s, void *data,
+ 		      int size __maybe_unused, struct event_format *event);
+ void tep_event_info(struct trace_seq *s, struct event_format *event,
+ 		       struct tep_record *record);
+-int pevent_strerror(struct tep_handle *pevent, enum pevent_errno errnum,
++int pevent_strerror(struct tep_handle *pevent, enum tep_errno errnum,
+ 		    char *buf, size_t buflen);
+ 
+ struct event_format **pevent_list_events(struct tep_handle *pevent, enum event_sort_type);
+@@ -930,10 +930,10 @@ struct event_filter {
+ struct event_filter *pevent_filter_alloc(struct tep_handle *pevent);
+ 
+ /* for backward compatibility */
+-#define FILTER_NONE		PEVENT_ERRNO__NO_FILTER
+-#define FILTER_NOEXIST		PEVENT_ERRNO__FILTER_NOT_FOUND
+-#define FILTER_MISS		PEVENT_ERRNO__FILTER_MISS
+-#define FILTER_MATCH		PEVENT_ERRNO__FILTER_MATCH
++#define FILTER_NONE		TEP_ERRNO__NO_FILTER
++#define FILTER_NOEXIST		TEP_ERRNO__FILTER_NOT_FOUND
++#define FILTER_MISS		TEP_ERRNO__FILTER_MISS
++#define FILTER_MATCH		TEP_ERRNO__FILTER_MATCH
+ 
+ enum filter_trivial_type {
+ 	FILTER_TRIVIAL_FALSE,
+@@ -941,13 +941,13 @@ enum filter_trivial_type {
+ 	FILTER_TRIVIAL_BOTH,
  };
  
--static struct pevent_plugin_option *fgraph_tail = &trace_ftrace_options[0];
--static struct pevent_plugin_option *fgraph_depth = &trace_ftrace_options[1];
-+static struct tep_plugin_option *fgraph_tail = &trace_ftrace_options[0];
-+static struct tep_plugin_option *fgraph_depth = &trace_ftrace_options[1];
+-enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
+-					       const char *filter_str);
++enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
++					    const char *filter_str);
  
- static void find_long_size(struct tracecmd_ftrace *finfo)
- {
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index ed1c008..4a66457 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -30,7 +30,7 @@ int tracecmd_disable_plugins;
+-enum pevent_errno pevent_filter_match(struct event_filter *filter,
+-				      struct tep_record *record);
++enum tep_errno pevent_filter_match(struct event_filter *filter,
++				   struct tep_record *record);
  
- static struct registered_plugin_options {
- 	struct registered_plugin_options	*next;
--	struct pevent_plugin_option			*options;
-+	struct tep_plugin_option			*options;
- } *registered_options;
+-int pevent_filter_strerror(struct event_filter *filter, enum pevent_errno err,
++int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
+ 			   char *buf, size_t buflen);
  
- static struct trace_plugin_options {
-@@ -63,7 +63,7 @@ struct plugin_list {
- char **trace_util_list_plugin_options(void)
- {
- 	struct registered_plugin_options *reg;
--	struct pevent_plugin_option *op;
-+	struct tep_plugin_option *op;
- 	char **list = NULL;
- 	char *name;
- 	int count = 0;
-@@ -101,7 +101,7 @@ void trace_util_free_plugin_options_list(char **list)
- }
- 
- static int process_option(const char *plugin, const char *option, const char *val);
--static int update_option(const char *file, struct pevent_plugin_option *option);
-+static int update_option(const char *file, struct tep_plugin_option *option);
- 
- /**
-  * trace_util_add_options - Add a set of options by a plugin
-@@ -110,7 +110,7 @@ static int update_option(const char *file, struct pevent_plugin_option *option);
+ int pevent_event_filtered(struct event_filter *filter,
+diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+index 004ac88..b717eb8 100644
+--- a/lib/traceevent/event-parse.c
++++ b/lib/traceevent/event-parse.c
+@@ -6021,9 +6021,9 @@ static int find_event_handle(struct tep_handle *pevent, struct event_format *eve
   *
-  * Sets the options with the values that have been added by user.
+  * /sys/kernel/debug/tracing/events/.../.../format
   */
--int trace_util_add_options(const char *name, struct pevent_plugin_option *options)
-+int trace_util_add_options(const char *name, struct tep_plugin_option *options)
+-enum pevent_errno __pevent_parse_format(struct event_format **eventp,
+-					struct tep_handle *pevent, const char *buf,
+-					unsigned long size, const char *sys)
++enum tep_errno __pevent_parse_format(struct event_format **eventp,
++				     struct tep_handle *pevent, const char *buf,
++				     unsigned long size, const char *sys)
  {
- 	struct registered_plugin_options *reg;
+ 	struct event_format *event;
  	int ret;
-@@ -135,7 +135,7 @@ int trace_util_add_options(const char *name, struct pevent_plugin_option *option
-  * trace_util_remove_options - remove plugin options that were registered
-  * @options: Options to removed that were registered with trace_util_add_options
-  */
--void trace_util_remove_options(struct pevent_plugin_option *options)
-+void trace_util_remove_options(struct tep_plugin_option *options)
- {
- 	struct registered_plugin_options **last;
- 	struct registered_plugin_options *reg;
-@@ -187,11 +187,11 @@ static void parse_option_name(char **option, char **plugin)
- 	}
- }
+@@ -6032,12 +6032,12 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
  
--static struct pevent_plugin_option *
-+static struct tep_plugin_option *
- find_registered_option(const char *plugin, const char *option)
- {
- 	struct registered_plugin_options *reg;
--	struct pevent_plugin_option *op;
-+	struct tep_plugin_option *op;
- 	const char *op_plugin;
+ 	*eventp = event = alloc_event();
+ 	if (!event)
+-		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		return TEP_ERRNO__MEM_ALLOC_FAILED;
  
- 	for (reg = registered_options; reg; reg = reg->next) {
-@@ -213,10 +213,10 @@ find_registered_option(const char *plugin, const char *option)
- 	return NULL;
- }
- 
--static struct pevent_plugin_option *
-+static struct tep_plugin_option *
- find_registered_option_parse(const char *name)
- {
--	struct pevent_plugin_option *option;
-+	struct tep_plugin_option *option;
- 	char *option_str;
- 	char *plugin;
- 
-@@ -243,7 +243,7 @@ find_registered_option_parse(const char *name)
-  */
- const char *trace_util_plugin_option_value(const char *name)
- {
--	struct pevent_plugin_option *option;
-+	struct tep_plugin_option *option;
- 
- 	option = find_registered_option_parse(name);
- 	if (!option)
-@@ -345,7 +345,7 @@ static void print_op_data(struct trace_seq *s, const char *name,
- void trace_util_print_plugin_options(struct trace_seq *s)
- {
- 	struct registered_plugin_options *reg;
--	struct pevent_plugin_option *op;
-+	struct tep_plugin_option *op;
- 
- 	for (reg = registered_options; reg; reg = reg->next) {
- 		if (reg != registered_options)
-@@ -486,7 +486,7 @@ static void lower_case(char *str)
- 		*str = tolower(*str);
- }
- 
--static int update_option_value(struct pevent_plugin_option *op, const char *val)
-+static int update_option_value(struct tep_plugin_option *op, const char *val)
- {
- 	char *op_val;
- 	int ret = 1;
-@@ -530,7 +530,7 @@ static int update_option_value(struct pevent_plugin_option *op, const char *val)
- 
- static int process_option(const char *plugin, const char *option, const char *val)
- {
--	struct pevent_plugin_option *op;
-+	struct tep_plugin_option *op;
- 
- 	op = find_registered_option(plugin, option);
- 	if (!op)
-@@ -539,7 +539,7 @@ static int process_option(const char *plugin, const char *option, const char *va
- 	return update_option_value(op, val);
- }
- 
--static int update_option(const char *file, struct pevent_plugin_option *option)
-+static int update_option(const char *file, struct tep_plugin_option *option)
- {
- 	struct trace_plugin_options *op;
- 	char *plugin;
-@@ -593,9 +593,9 @@ static int load_plugin(struct tep_handle *pevent, const char *path,
- 		       const char *file, void *data)
- {
- 	struct plugin_list **plugin_list = data;
--	pevent_plugin_load_func func;
-+	tep_plugin_load_func func;
- 	struct plugin_list *list;
--	struct pevent_plugin_option *options;
-+	struct tep_plugin_option *options;
- 	const char *alias;
- 	char *plugin;
- 	void *handle;
-@@ -612,11 +612,11 @@ static int load_plugin(struct tep_handle *pevent, const char *path,
- 		goto out_free;
+ 	event->name = event_read_name();
+ 	if (!event->name) {
+ 		/* Bad event? */
+-		ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		ret = TEP_ERRNO__MEM_ALLOC_FAILED;
+ 		goto event_alloc_failed;
  	}
  
--	alias = dlsym(handle, PEVENT_PLUGIN_ALIAS_NAME);
-+	alias = dlsym(handle, TEP_PLUGIN_ALIAS_NAME);
- 	if (!alias)
- 		alias = file;
+@@ -6050,7 +6050,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
+ 		
+ 	event->id = event_read_id();
+ 	if (event->id < 0) {
+-		ret = PEVENT_ERRNO__READ_ID_FAILED;
++		ret = TEP_ERRNO__READ_ID_FAILED;
+ 		/*
+ 		 * This isn't an allocation error actually.
+ 		 * But as the ID is critical, just bail out.
+@@ -6060,7 +6060,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
  
--	options = dlsym(handle, PEVENT_PLUGIN_OPTIONS_NAME);
-+	options = dlsym(handle, TEP_PLUGIN_OPTIONS_NAME);
- 	if (options) {
- 		while (options->name) {
- 			ret = update_option(alias, options);
-@@ -626,10 +626,10 @@ static int load_plugin(struct tep_handle *pevent, const char *path,
+ 	event->system = strdup(sys);
+ 	if (!event->system) {
+-		ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		ret = TEP_ERRNO__MEM_ALLOC_FAILED;
+ 		goto event_alloc_failed;
+ 	}
+ 
+@@ -6069,7 +6069,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
+ 
+ 	ret = event_read_format(event);
+ 	if (ret < 0) {
+-		ret = PEVENT_ERRNO__READ_FORMAT_FAILED;
++		ret = TEP_ERRNO__READ_FORMAT_FAILED;
+ 		goto event_parse_failed;
+ 	}
+ 
+@@ -6084,7 +6084,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
+ 	show_warning = 1;
+ 
+ 	if (ret < 0) {
+-		ret = PEVENT_ERRNO__READ_PRINT_FAILED;
++		ret = TEP_ERRNO__READ_PRINT_FAILED;
+ 		goto event_parse_failed;
+ 	}
+ 
+@@ -6098,14 +6098,14 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
+ 			arg = alloc_arg();
+ 			if (!arg) {
+ 				event->flags |= EVENT_FL_FAILED;
+-				return PEVENT_ERRNO__OLD_FTRACE_ARG_FAILED;
++				return TEP_ERRNO__OLD_FTRACE_ARG_FAILED;
+ 			}
+ 			arg->type = PRINT_FIELD;
+ 			arg->field.name = strdup(field->name);
+ 			if (!arg->field.name) {
+ 				event->flags |= EVENT_FL_FAILED;
+ 				free_arg(arg);
+-				return PEVENT_ERRNO__OLD_FTRACE_ARG_FAILED;
++				return TEP_ERRNO__OLD_FTRACE_ARG_FAILED;
+ 			}
+ 			arg->field.field = field;
+ 			*list = arg;
+@@ -6128,7 +6128,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
+ 	return ret;
+ }
+ 
+-static enum pevent_errno
++static enum tep_errno
+ __pevent_parse_event(struct tep_handle *pevent,
+ 		     struct event_format **eventp,
+ 		     const char *buf, unsigned long size,
+@@ -6141,7 +6141,7 @@ __pevent_parse_event(struct tep_handle *pevent,
+ 		return ret;
+ 
+ 	if (pevent && add_event(pevent, event)) {
+-		ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		ret = TEP_ERRNO__MEM_ALLOC_FAILED;
+ 		goto event_add_failed;
+ 	}
+ 
+@@ -6171,10 +6171,10 @@ event_add_failed:
+  *
+  * /sys/kernel/debug/tracing/events/.../.../format
+  */
+-enum pevent_errno tep_parse_format(struct tep_handle *pevent,
+-				   struct event_format **eventp,
+-				   const char *buf,
+-				   unsigned long size, const char *sys)
++enum tep_errno tep_parse_format(struct tep_handle *pevent,
++				struct event_format **eventp,
++				const char *buf,
++				unsigned long size, const char *sys)
+ {
+ 	return __pevent_parse_event(pevent, eventp, buf, size, sys);
+ }
+@@ -6193,8 +6193,8 @@ enum pevent_errno tep_parse_format(struct tep_handle *pevent,
+  *
+  * /sys/kernel/debug/tracing/events/.../.../format
+  */
+-enum pevent_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
+-				  unsigned long size, const char *sys)
++enum tep_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
++			       unsigned long size, const char *sys)
+ {
+ 	struct event_format *event = NULL;
+ 	return __pevent_parse_event(pevent, &event, buf, size, sys);
+@@ -6203,12 +6203,12 @@ enum pevent_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
+ #undef _PE
+ #define _PE(code, str) str
+ static const char * const pevent_error_str[] = {
+-	PEVENT_ERRORS
++	TEP_ERRORS
+ };
+ #undef _PE
+ 
+ int pevent_strerror(struct tep_handle *pevent __maybe_unused,
+-		    enum pevent_errno errnum, char *buf, size_t buflen)
++		    enum tep_errno errnum, char *buf, size_t buflen)
+ {
+ 	int idx;
+ 	const char *msg;
+@@ -6218,11 +6218,11 @@ int pevent_strerror(struct tep_handle *pevent __maybe_unused,
+ 		return 0;
+ 	}
+ 
+-	if (errnum <= __PEVENT_ERRNO__START ||
+-	    errnum >= __PEVENT_ERRNO__END)
++	if (errnum <= __TEP_ERRNO__START ||
++	    errnum >= __TEP_ERRNO__END)
+ 		return -1;
+ 
+-	idx = errnum - __PEVENT_ERRNO__START - 1;
++	idx = errnum - __TEP_ERRNO__START - 1;
+ 	msg = pevent_error_str[idx];
+ 	snprintf(buf, buflen, "%s", msg);
+ 
+@@ -6503,7 +6503,7 @@ int pevent_register_print_function(struct tep_handle *pevent,
+ 	func_handle = calloc(1, sizeof(*func_handle));
+ 	if (!func_handle) {
+ 		do_warning("Failed to allocate function handler");
+-		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 	}
+ 
+ 	func_handle->ret_type = ret_type;
+@@ -6512,7 +6512,7 @@ int pevent_register_print_function(struct tep_handle *pevent,
+ 	if (!func_handle->name) {
+ 		do_warning("Failed to allocate function name");
+ 		free(func_handle);
+-		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 	}
+ 
+ 	next_param = &(func_handle->params);
+@@ -6524,14 +6524,14 @@ int pevent_register_print_function(struct tep_handle *pevent,
+ 
+ 		if (type >= PEVENT_FUNC_ARG_MAX_TYPES) {
+ 			do_warning("Invalid argument type %d", type);
+-			ret = PEVENT_ERRNO__INVALID_ARG_TYPE;
++			ret = TEP_ERRNO__INVALID_ARG_TYPE;
+ 			goto out_free;
+ 		}
+ 
+ 		param = malloc(sizeof(*param));
+ 		if (!param) {
+ 			do_warning("Failed to allocate function param");
+-			ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
++			ret = TEP_ERRNO__MEM_ALLOC_FAILED;
+ 			goto out_free;
+ 		}
+ 		param->type = type;
+@@ -6640,7 +6640,7 @@ int pevent_register_event_handler(struct tep_handle *pevent, int id,
+ 	handle = calloc(1, sizeof(*handle));
+ 	if (!handle) {
+ 		do_warning("Failed to allocate event handler");
+-		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 	}
+ 
+ 	handle->id = id;
+@@ -6655,7 +6655,7 @@ int pevent_register_event_handler(struct tep_handle *pevent, int id,
+ 		free((void *)handle->event_name);
+ 		free((void *)handle->sys_name);
+ 		free(handle);
+-		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 	}
+ 
+ 	handle->func = func;
+diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
+index bfdaec1..2241523 100644
+--- a/lib/traceevent/parse-filter.c
++++ b/lib/traceevent/parse-filter.c
+@@ -254,7 +254,7 @@ static int event_match(struct event_format *event,
+ 		!regexec(ereg, event->name, 0, NULL, 0);
+ }
+ 
+-static enum pevent_errno
++static enum tep_errno
+ find_event(struct tep_handle *pevent, struct event_list **events,
+ 	   char *sys_name, char *event_name)
+ {
+@@ -275,26 +275,26 @@ find_event(struct tep_handle *pevent, struct event_list **events,
+ 
+ 	ret = asprintf(&reg, "^%s$", event_name);
+ 	if (ret < 0)
+-		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 
+ 	ret = regcomp(&ereg, reg, REG_ICASE|REG_NOSUB);
+ 	free(reg);
+ 
+ 	if (ret)
+-		return PEVENT_ERRNO__INVALID_EVENT_NAME;
++		return TEP_ERRNO__INVALID_EVENT_NAME;
+ 
+ 	if (sys_name) {
+ 		ret = asprintf(&reg, "^%s$", sys_name);
+ 		if (ret < 0) {
+ 			regfree(&ereg);
+-			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++			return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 		}
+ 
+ 		ret = regcomp(&sreg, reg, REG_ICASE|REG_NOSUB);
+ 		free(reg);
+ 		if (ret) {
+ 			regfree(&ereg);
+-			return PEVENT_ERRNO__INVALID_EVENT_NAME;
++			return TEP_ERRNO__INVALID_EVENT_NAME;
  		}
  	}
  
--	func = dlsym(handle, PEVENT_PLUGIN_LOADER_NAME);
-+	func = dlsym(handle, TEP_PLUGIN_LOADER_NAME);
- 	if (!func) {
- 		warning("cound not find func '%s' in plugin '%s'\n%s\n",
--			PEVENT_PLUGIN_LOADER_NAME, plugin, dlerror());
-+			TEP_PLUGIN_LOADER_NAME, plugin, dlerror());
- 		goto out_free;
- 	}
+@@ -314,9 +314,9 @@ find_event(struct tep_handle *pevent, struct event_list **events,
+ 		regfree(&sreg);
  
-@@ -1453,14 +1453,14 @@ void trace_util_free_plugin_files(char **files)
+ 	if (!match)
+-		return PEVENT_ERRNO__EVENT_NOT_FOUND;
++		return TEP_ERRNO__EVENT_NOT_FOUND;
+ 	if (fail)
+-		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 
+ 	return 0;
+ }
+@@ -332,7 +332,7 @@ static void free_events(struct event_list *events)
+ 	}
  }
  
- struct plugin_option_read {
--	struct pevent_plugin_option	*options;
-+	struct tep_plugin_option	*options;
- };
- 
- static int append_option(struct plugin_option_read *options,
--			 struct pevent_plugin_option *option,
-+			 struct tep_plugin_option *option,
- 			 const char *alias, void *handle)
+-static enum pevent_errno
++static enum tep_errno
+ create_arg_item(struct event_format *event, const char *token,
+ 		enum event_type type, struct filter_arg **parg, char *error_str)
  {
--	struct pevent_plugin_option *op;
-+	struct tep_plugin_option *op;
- 
- 	while (option->name) {
- 		op = malloc(sizeof(*op));
-@@ -1480,7 +1480,7 @@ static int read_options(struct tep_handle *pevent, const char *path,
- 			 const char *file, void *data)
- {
- 	struct plugin_option_read *options = data;
--	struct pevent_plugin_option *option;
-+	struct tep_plugin_option *option;
- 	const char *alias;
- 	int unload = 0;
- 	char *plugin;
-@@ -1498,11 +1498,11 @@ static int read_options(struct tep_handle *pevent, const char *path,
- 		goto out_free;
+@@ -342,7 +342,7 @@ create_arg_item(struct event_format *event, const char *token,
+ 	arg = allocate_arg();
+ 	if (arg == NULL) {
+ 		show_error(error_str, "failed to allocate filter arg");
+-		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		return TEP_ERRNO__MEM_ALLOC_FAILED;
  	}
  
--	alias = dlsym(handle, PEVENT_PLUGIN_ALIAS_NAME);
-+	alias = dlsym(handle, TEP_PLUGIN_ALIAS_NAME);
- 	if (!alias)
- 		alias = file;
+ 	switch (type) {
+@@ -356,7 +356,7 @@ create_arg_item(struct event_format *event, const char *token,
+ 		if (!arg->value.str) {
+ 			free_arg(arg);
+ 			show_error(error_str, "failed to allocate string filter arg");
+-			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++			return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 		}
+ 		break;
+ 	case EVENT_ITEM:
+@@ -388,7 +388,7 @@ create_arg_item(struct event_format *event, const char *token,
+ 	default:
+ 		free_arg(arg);
+ 		show_error(error_str, "expected a value but found %s", token);
+-		return PEVENT_ERRNO__UNEXPECTED_TYPE;
++		return TEP_ERRNO__UNEXPECTED_TYPE;
+ 	}
+ 	*parg = arg;
+ 	return 0;
+@@ -440,7 +440,7 @@ create_arg_cmp(enum filter_cmp_type ctype)
+ 	return arg;
+ }
  
--	option = dlsym(handle, PEVENT_PLUGIN_OPTIONS_NAME);
-+	option = dlsym(handle, TEP_PLUGIN_OPTIONS_NAME);
- 	if (!option) {
- 		unload = 1;
- 		goto out_unload;
-@@ -1518,7 +1518,7 @@ static int read_options(struct tep_handle *pevent, const char *path,
+-static enum pevent_errno
++static enum tep_errno
+ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ {
+ 	struct filter_arg *left;
+@@ -473,7 +473,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 			break;
+ 		default:
+ 			show_error(error_str, "Illegal rvalue");
+-			return PEVENT_ERRNO__ILLEGAL_RVALUE;
++			return TEP_ERRNO__ILLEGAL_RVALUE;
+ 		}
+ 
+ 		/*
+@@ -520,7 +520,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 			if (left->type != FILTER_ARG_FIELD) {
+ 				show_error(error_str,
+ 					   "Illegal lvalue for string comparison");
+-				return PEVENT_ERRNO__ILLEGAL_LVALUE;
++				return TEP_ERRNO__ILLEGAL_LVALUE;
+ 			}
+ 
+ 			/* Make sure this is a valid string compare */
+@@ -539,13 +539,13 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 					show_error(error_str,
+ 						   "RegEx '%s' did not compute",
+ 						   str);
+-					return PEVENT_ERRNO__INVALID_REGEX;
++					return TEP_ERRNO__INVALID_REGEX;
+ 				}
+ 				break;
+ 			default:
+ 				show_error(error_str,
+ 					   "Illegal comparison for string");
+-				return PEVENT_ERRNO__ILLEGAL_STRING_CMP;
++				return TEP_ERRNO__ILLEGAL_STRING_CMP;
+ 			}
+ 
+ 			op->type = FILTER_ARG_STR;
+@@ -554,7 +554,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 			op->str.val = strdup(str);
+ 			if (!op->str.val) {
+ 				show_error(error_str, "Failed to allocate string filter");
+-				return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++				return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 			}
+ 			/*
+ 			 * Need a buffer to copy data for tests
+@@ -562,7 +562,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 			op->str.buffer = malloc(op->str.field->size + 1);
+ 			if (!op->str.buffer) {
+ 				show_error(error_str, "Failed to allocate string filter");
+-				return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++				return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 			}
+ 			/* Null terminate this buffer */
+ 			op->str.buffer[op->str.field->size] = 0;
+@@ -581,7 +581,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 			case FILTER_CMP_NOT_REGEX:
+ 				show_error(error_str,
+ 					   "Op not allowed with integers");
+-				return PEVENT_ERRNO__ILLEGAL_INTEGER_CMP;
++				return TEP_ERRNO__ILLEGAL_INTEGER_CMP;
+ 
+ 			default:
+ 				break;
+@@ -602,7 +602,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 
+  out_fail:
+ 	show_error(error_str, "Syntax error");
+-	return PEVENT_ERRNO__SYNTAX_ERROR;
++	return TEP_ERRNO__SYNTAX_ERROR;
+ }
+ 
+ static struct filter_arg *
+@@ -615,7 +615,7 @@ rotate_op_right(struct filter_arg *a, struct filter_arg *b)
+ 	return arg;
+ }
+ 
+-static enum pevent_errno add_left(struct filter_arg *op, struct filter_arg *arg)
++static enum tep_errno add_left(struct filter_arg *op, struct filter_arg *arg)
+ {
+ 	switch (op->type) {
+ 	case FILTER_ARG_EXP:
+@@ -634,11 +634,11 @@ static enum pevent_errno add_left(struct filter_arg *op, struct filter_arg *arg)
+ 		/* left arg of compares must be a field */
+ 		if (arg->type != FILTER_ARG_FIELD &&
+ 		    arg->type != FILTER_ARG_BOOLEAN)
+-			return PEVENT_ERRNO__INVALID_ARG_TYPE;
++			return TEP_ERRNO__INVALID_ARG_TYPE;
+ 		op->num.left = arg;
+ 		break;
+ 	default:
+-		return PEVENT_ERRNO__INVALID_ARG_TYPE;
++		return TEP_ERRNO__INVALID_ARG_TYPE;
+ 	}
+ 	return 0;
+ }
+@@ -751,7 +751,7 @@ enum filter_vals {
+ 	FILTER_VAL_TRUE,
+ };
+ 
+-static enum pevent_errno
++static enum tep_errno
+ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
+ 		struct filter_arg *arg, char *error_str)
+ {
+@@ -761,7 +761,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
+ 	if (parent->type != FILTER_ARG_OP &&
+ 	    arg->type != FILTER_ARG_OP) {
+ 		show_error(error_str, "can not reparent other than OP");
+-		return PEVENT_ERRNO__REPARENT_NOT_OP;
++		return TEP_ERRNO__REPARENT_NOT_OP;
+ 	}
+ 
+ 	/* Get the sibling */
+@@ -773,7 +773,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
+ 		other_child = old_child->op.right;
+ 	} else {
+ 		show_error(error_str, "Error in reparent op, find other child");
+-		return PEVENT_ERRNO__REPARENT_FAILED;
++		return TEP_ERRNO__REPARENT_FAILED;
+ 	}
+ 
+ 	/* Detach arg from old_child */
+@@ -794,7 +794,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
+ 		ptr = &parent->op.left;
+ 	else {
+ 		show_error(error_str, "Error in reparent op");
+-		return PEVENT_ERRNO__REPARENT_FAILED;
++		return TEP_ERRNO__REPARENT_FAILED;
+ 	}
+ 
+ 	*ptr = arg;
+@@ -803,7 +803,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
  	return 0;
  }
  
--struct pevent_plugin_option *trace_util_read_plugin_options(void)
-+struct tep_plugin_option *trace_util_read_plugin_options(void)
+-/* Returns either filter_vals (success) or pevent_errno (failfure) */
++/* Returns either filter_vals (success) or tep_errno (failfure) */
+ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
+ 		    char *error_str)
  {
- 	struct plugin_option_read option = {
- 		.options = NULL,
-@@ -1531,9 +1531,9 @@ struct pevent_plugin_option *trace_util_read_plugin_options(void)
- 	return option.options;
+@@ -898,7 +898,7 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
+ 		return rval;
+ 	default:
+ 		show_error(error_str, "bad arg in filter tree");
+-		return PEVENT_ERRNO__BAD_FILTER_ARG;
++		return TEP_ERRNO__BAD_FILTER_ARG;
+ 	}
+ 	return FILTER_VAL_NORM;
+ }
+@@ -923,7 +923,7 @@ static int collapse_tree(struct filter_arg *arg,
+ 			arg->boolean.value = ret == FILTER_VAL_TRUE;
+ 		} else {
+ 			show_error(error_str, "Failed to allocate filter arg");
+-			ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
++			ret = TEP_ERRNO__MEM_ALLOC_FAILED;
+ 		}
+ 		break;
+ 
+@@ -938,7 +938,7 @@ static int collapse_tree(struct filter_arg *arg,
+ 	return ret;
  }
  
--void trace_util_free_options(struct pevent_plugin_option *options)
-+void trace_util_free_options(struct tep_plugin_option *options)
+-static enum pevent_errno
++static enum tep_errno
+ process_filter(struct event_format *event, struct filter_arg **parg,
+ 	       char *error_str, int not)
  {
--	struct pevent_plugin_option *op;
-+	struct tep_plugin_option *op;
- 	void *last_handle = NULL;
+@@ -952,7 +952,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
+ 	enum filter_op_type btype;
+ 	enum filter_exp_type etype;
+ 	enum filter_cmp_type ctype;
+-	enum pevent_errno ret;
++	enum tep_errno ret;
  
- 	while (options) {
-@@ -1560,13 +1560,13 @@ struct plugin_list *tracecmd_load_plugins(struct tep_handle *pevent)
- void
- tracecmd_unload_plugins(struct plugin_list *plugin_list, struct tep_handle *pevent)
+ 	*parg = NULL;
+ 
+@@ -990,7 +990,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
+ 		case EVENT_DELIM:
+ 			if (*token == ',') {
+ 				show_error(error_str, "Illegal token ','");
+-				ret = PEVENT_ERRNO__ILLEGAL_TOKEN;
++				ret = TEP_ERRNO__ILLEGAL_TOKEN;
+ 				goto fail;
+ 			}
+ 
+@@ -998,22 +998,22 @@ process_filter(struct event_format *event, struct filter_arg **parg,
+ 				if (left_item) {
+ 					show_error(error_str,
+ 						   "Open paren can not come after item");
+-					ret = PEVENT_ERRNO__INVALID_PAREN;
++					ret = TEP_ERRNO__INVALID_PAREN;
+ 					goto fail;
+ 				}
+ 				if (current_exp) {
+ 					show_error(error_str,
+ 						   "Open paren can not come after expression");
+-					ret = PEVENT_ERRNO__INVALID_PAREN;
++					ret = TEP_ERRNO__INVALID_PAREN;
+ 					goto fail;
+ 				}
+ 
+ 				ret = process_filter(event, &arg, error_str, 0);
+-				if (ret != PEVENT_ERRNO__UNBALANCED_PAREN) {
++				if (ret != TEP_ERRNO__UNBALANCED_PAREN) {
+ 					if (ret == 0) {
+ 						show_error(error_str,
+ 							   "Unbalanced number of '('");
+-						ret = PEVENT_ERRNO__UNBALANCED_PAREN;
++						ret = TEP_ERRNO__UNBALANCED_PAREN;
+ 					}
+ 					goto fail;
+ 				}
+@@ -1050,7 +1050,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
+ 				else
+ 					*parg = current_exp;
+ 				free(token);
+-				return PEVENT_ERRNO__UNBALANCED_PAREN;
++				return TEP_ERRNO__UNBALANCED_PAREN;
+ 			}
+ 			break;
+ 
+@@ -1077,7 +1077,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
+ 			case OP_NONE:
+ 				show_error(error_str,
+ 					   "Unknown op token %s", token);
+-				ret = PEVENT_ERRNO__UNKNOWN_TOKEN;
++				ret = TEP_ERRNO__UNKNOWN_TOKEN;
+ 				goto fail;
+ 			}
+ 
+@@ -1165,11 +1165,11 @@ process_filter(struct event_format *event, struct filter_arg **parg,
+ 
+  fail_alloc:
+ 	show_error(error_str, "failed to allocate filter arg");
+-	ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
++	ret = TEP_ERRNO__MEM_ALLOC_FAILED;
+ 	goto fail;
+  fail_syntax:
+ 	show_error(error_str, "Syntax error");
+-	ret = PEVENT_ERRNO__SYNTAX_ERROR;
++	ret = TEP_ERRNO__SYNTAX_ERROR;
+  fail:
+ 	free_arg(current_op);
+ 	free_arg(current_exp);
+@@ -1178,7 +1178,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
+ 	return ret;
+ }
+ 
+-static enum pevent_errno
++static enum tep_errno
+ process_event(struct event_format *event, const char *filter_str,
+ 	      struct filter_arg **parg, char *error_str)
  {
--	pevent_plugin_unload_func func;
-+	tep_plugin_unload_func func;
- 	struct plugin_list *list;
+@@ -1194,7 +1194,7 @@ process_event(struct event_format *event, const char *filter_str,
+ 	if (!*parg) {
+ 		*parg = allocate_arg();
+ 		if (*parg == NULL)
+-			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++			return TEP_ERRNO__MEM_ALLOC_FAILED;
  
- 	while (plugin_list) {
- 		list = plugin_list;
- 		plugin_list = list->next;
--		func = dlsym(list->handle, PEVENT_PLUGIN_UNLOADER_NAME);
-+		func = dlsym(list->handle, TEP_PLUGIN_UNLOADER_NAME);
- 		if (func)
- 			func(pevent);
- 		dlclose(list->handle);
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 9088b99..f00a02b 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -74,7 +74,7 @@ struct event_handler {
- 	int				id;
- 	const char			*sys_name;
- 	const char			*event_name;
--	pevent_event_handler_func	func;
-+	tep_event_handler_func		func;
- 	void				*context;
- };
+ 		(*parg)->type = FILTER_ARG_BOOLEAN;
+ 		(*parg)->boolean.value = FILTER_FALSE;
+@@ -1203,13 +1203,13 @@ process_event(struct event_format *event, const char *filter_str,
+ 	return 0;
+ }
  
-@@ -6619,7 +6619,7 @@ static struct event_format *pevent_search_event(struct tep_handle *pevent, int i
+-static enum pevent_errno
++static enum tep_errno
+ filter_event(struct event_filter *filter, struct event_format *event,
+ 	     const char *filter_str, char *error_str)
+ {
+ 	struct filter_type *filter_type;
+ 	struct filter_arg *arg;
+-	enum pevent_errno ret;
++	enum tep_errno ret;
+ 
+ 	if (filter_str) {
+ 		ret = process_event(event, filter_str, &arg, error_str);
+@@ -1220,7 +1220,7 @@ filter_event(struct event_filter *filter, struct event_format *event,
+ 		/* just add a TRUE arg */
+ 		arg = allocate_arg();
+ 		if (arg == NULL)
+-			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++			return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 
+ 		arg->type = FILTER_ARG_BOOLEAN;
+ 		arg->boolean.value = FILTER_TRUE;
+@@ -1228,7 +1228,7 @@ filter_event(struct event_filter *filter, struct event_format *event,
+ 
+ 	filter_type = add_filter_type(filter, event->id);
+ 	if (filter_type == NULL)
+-		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++		return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 
+ 	if (filter_type->filter)
+ 		free_arg(filter_type->filter);
+@@ -1253,7 +1253,7 @@ static void filter_init_error_buf(struct event_filter *filter)
+  * negative error code.  Use pevent_filter_strerror() to see
+  * actual error message in case of error.
   */
- int pevent_register_event_handler(struct tep_handle *pevent, int id,
- 				  const char *sys_name, const char *event_name,
--				  pevent_event_handler_func func, void *context)
-+				  tep_event_handler_func func, void *context)
+-enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
++enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
+ 					       const char *filter_str)
  {
- 	struct event_format *event;
- 	struct event_handler *handle;
-@@ -6668,7 +6668,7 @@ int pevent_register_event_handler(struct tep_handle *pevent, int id,
+ 	struct tep_handle *pevent = filter->pevent;
+@@ -1265,7 +1265,7 @@ enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
+ 	char *event_name = NULL;
+ 	char *sys_name = NULL;
+ 	char *sp;
+-	enum pevent_errno rtn = 0; /* PEVENT_ERRNO__SUCCESS */
++	enum tep_errno rtn = 0; /* TEP_ERRNO__SUCCESS */
+ 	int len;
+ 	int ret;
  
- static int handle_matches(struct event_handler *handler, int id,
- 			  const char *sys_name, const char *event_name,
--			  pevent_event_handler_func func, void *context)
-+			  tep_event_handler_func func, void *context)
+@@ -1291,7 +1291,7 @@ enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
+ 		if (this_event == NULL) {
+ 			/* This can only happen when events is NULL, but still */
+ 			free_events(events);
+-			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
++			return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 		}
+ 		memcpy(this_event, filter_str, len);
+ 		this_event[len] = 0;
+@@ -1308,7 +1308,7 @@ enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
+ 			/* This can only happen when events is NULL, but still */
+ 			free_events(events);
+ 			free(this_event);
+-			return PEVENT_ERRNO__FILTER_NOT_FOUND;
++			return TEP_ERRNO__FILTER_NOT_FOUND;
+ 		}
+ 
+ 		/* Find this event */
+@@ -1365,10 +1365,10 @@ static void free_filter_type(struct filter_type *filter_type)
+  *
+  * Returns 0 if message was filled successfully, -1 if error
+  */
+-int pevent_filter_strerror(struct event_filter *filter, enum pevent_errno err,
++int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
+ 			   char *buf, size_t buflen)
  {
- 	if (id >= 0 && id != handler->id)
+-	if (err <= __PEVENT_ERRNO__START || err >= __PEVENT_ERRNO__END)
++	if (err <= __TEP_ERRNO__START || err >= __TEP_ERRNO__END)
+ 		return -1;
+ 
+ 	if (strlen(filter->error_buffer) > 0) {
+@@ -1683,7 +1683,7 @@ int pevent_filter_event_has_trivial(struct event_filter *filter,
+ }
+ 
+ static int test_filter(struct event_format *event, struct filter_arg *arg,
+-		       struct tep_record *record, enum pevent_errno *err);
++		       struct tep_record *record, enum tep_errno *err);
+ 
+ static const char *
+ get_comm(struct event_format *event, struct tep_record *record)
+@@ -1734,11 +1734,11 @@ get_value(struct event_format *event,
+ 
+ static unsigned long long
+ get_arg_value(struct event_format *event, struct filter_arg *arg,
+-	      struct tep_record *record, enum pevent_errno *err);
++	      struct tep_record *record, enum tep_errno *err);
+ 
+ static unsigned long long
+ get_exp_value(struct event_format *event, struct filter_arg *arg,
+-	      struct tep_record *record, enum pevent_errno *err)
++	      struct tep_record *record, enum tep_errno *err)
+ {
+ 	unsigned long long lval, rval;
+ 
+@@ -1786,14 +1786,14 @@ get_exp_value(struct event_format *event, struct filter_arg *arg,
+ 	case FILTER_EXP_NOT:
+ 	default:
+ 		if (!*err)
+-			*err = PEVENT_ERRNO__INVALID_EXP_TYPE;
++			*err = TEP_ERRNO__INVALID_EXP_TYPE;
+ 	}
+ 	return 0;
+ }
+ 
+ static unsigned long long
+ get_arg_value(struct event_format *event, struct filter_arg *arg,
+-	      struct tep_record *record, enum pevent_errno *err)
++	      struct tep_record *record, enum tep_errno *err)
+ {
+ 	switch (arg->type) {
+ 	case FILTER_ARG_FIELD:
+@@ -1802,7 +1802,7 @@ get_arg_value(struct event_format *event, struct filter_arg *arg,
+ 	case FILTER_ARG_VALUE:
+ 		if (arg->value.type != FILTER_NUMBER) {
+ 			if (!*err)
+-				*err = PEVENT_ERRNO__NOT_A_NUMBER;
++				*err = TEP_ERRNO__NOT_A_NUMBER;
+ 		}
+ 		return arg->value.val;
+ 
+@@ -1811,13 +1811,13 @@ get_arg_value(struct event_format *event, struct filter_arg *arg,
+ 
+ 	default:
+ 		if (!*err)
+-			*err = PEVENT_ERRNO__INVALID_ARG_TYPE;
++			*err = TEP_ERRNO__INVALID_ARG_TYPE;
+ 	}
+ 	return 0;
+ }
+ 
+ static int test_num(struct event_format *event, struct filter_arg *arg,
+-		    struct tep_record *record, enum pevent_errno *err)
++		    struct tep_record *record, enum tep_errno *err)
+ {
+ 	unsigned long long lval, rval;
+ 
+@@ -1852,7 +1852,7 @@ static int test_num(struct event_format *event, struct filter_arg *arg,
+ 
+ 	default:
+ 		if (!*err)
+-			*err = PEVENT_ERRNO__ILLEGAL_INTEGER_CMP;
++			*err = TEP_ERRNO__ILLEGAL_INTEGER_CMP;
  		return 0;
-@@ -6703,7 +6703,7 @@ static int handle_matches(struct event_handler *handler, int id,
-  */
- int pevent_unregister_event_handler(struct tep_handle *pevent, int id,
- 				    const char *sys_name, const char *event_name,
--				    pevent_event_handler_func func, void *context)
-+				    tep_event_handler_func func, void *context)
- {
- 	struct event_format *event;
- 	struct event_handler *handle;
-diff --git a/lib/traceevent/event-plugin.c b/lib/traceevent/event-plugin.c
-index b2ef017..ccda700 100644
---- a/lib/traceevent/event-plugin.c
-+++ b/lib/traceevent/event-plugin.c
-@@ -20,7 +20,7 @@
- 
- static struct registered_plugin_options {
- 	struct registered_plugin_options	*next;
--	struct pevent_plugin_option		*options;
-+	struct tep_plugin_option		*options;
- } *registered_options;
- 
- static struct trace_plugin_options {
-@@ -44,7 +44,7 @@ static void lower_case(char *str)
- 		*str = tolower(*str);
- }
- 
--static int update_option_value(struct pevent_plugin_option *op, const char *val)
-+static int update_option_value(struct tep_plugin_option *op, const char *val)
- {
- 	char *op_val;
- 
-@@ -97,7 +97,7 @@ static int update_option_value(struct pevent_plugin_option *op, const char *val)
- char **traceevent_plugin_list_options(void)
- {
- 	struct registered_plugin_options *reg;
--	struct pevent_plugin_option *op;
-+	struct tep_plugin_option *op;
- 	char **list = NULL;
- 	char *name;
- 	int count = 0;
-@@ -149,7 +149,7 @@ void traceevent_plugin_free_options_list(char **list)
- }
- 
- static int
--update_option(const char *file, struct pevent_plugin_option *option)
-+update_option(const char *file, struct tep_plugin_option *option)
- {
- 	struct trace_plugin_options *op;
- 	char *plugin;
-@@ -208,7 +208,7 @@ update_option(const char *file, struct pevent_plugin_option *option)
-  * Sets the options with the values that have been added by user.
-  */
- int traceevent_plugin_add_options(const char *name,
--				  struct pevent_plugin_option *options)
-+				  struct tep_plugin_option *options)
- {
- 	struct registered_plugin_options *reg;
- 
-@@ -230,7 +230,7 @@ int traceevent_plugin_add_options(const char *name,
-  * traceevent_plugin_remove_options - remove plugin options that were registered
-  * @options: Options to removed that were registered with traceevent_plugin_add_options
-  */
--void traceevent_plugin_remove_options(struct pevent_plugin_option *options)
-+void traceevent_plugin_remove_options(struct tep_plugin_option *options)
- {
- 	struct registered_plugin_options **last;
- 	struct registered_plugin_options *reg;
-@@ -271,7 +271,7 @@ load_plugin(struct tep_handle *pevent, const char *path,
- 	    const char *file, void *data)
- {
- 	struct plugin_list **plugin_list = data;
--	pevent_plugin_load_func func;
-+	tep_plugin_load_func func;
- 	struct plugin_list *list;
- 	const char *alias;
- 	char *plugin;
-@@ -291,14 +291,14 @@ load_plugin(struct tep_handle *pevent, const char *path,
- 		goto out_free;
  	}
+ }
+@@ -1908,7 +1908,7 @@ static const char *get_field_str(struct filter_arg *arg, struct tep_record *reco
+ }
  
--	alias = dlsym(handle, PEVENT_PLUGIN_ALIAS_NAME);
-+	alias = dlsym(handle, TEP_PLUGIN_ALIAS_NAME);
- 	if (!alias)
- 		alias = file;
+ static int test_str(struct event_format *event, struct filter_arg *arg,
+-		    struct tep_record *record, enum pevent_errno *err)
++		    struct tep_record *record, enum tep_errno *err)
+ {
+ 	const char *val;
  
--	func = dlsym(handle, PEVENT_PLUGIN_LOADER_NAME);
-+	func = dlsym(handle, TEP_PLUGIN_LOADER_NAME);
- 	if (!func) {
- 		warning("could not find func '%s' in plugin '%s'\n%s\n",
--			PEVENT_PLUGIN_LOADER_NAME, plugin, dlerror());
-+			TEP_PLUGIN_LOADER_NAME, plugin, dlerror());
- 		goto out_free;
+@@ -1933,13 +1933,13 @@ static int test_str(struct event_format *event, struct filter_arg *arg,
+ 
+ 	default:
+ 		if (!*err)
+-			*err = PEVENT_ERRNO__ILLEGAL_STRING_CMP;
++			*err = TEP_ERRNO__ILLEGAL_STRING_CMP;
+ 		return 0;
  	}
- 
-@@ -428,13 +428,13 @@ traceevent_load_plugins(struct tep_handle *pevent)
- void
- traceevent_unload_plugins(struct plugin_list *plugin_list, struct tep_handle *pevent)
- {
--	pevent_plugin_unload_func func;
-+	tep_plugin_unload_func func;
- 	struct plugin_list *list;
- 
- 	while (plugin_list) {
- 		list = plugin_list;
- 		plugin_list = list->next;
--		func = dlsym(list->handle, PEVENT_PLUGIN_UNLOADER_NAME);
-+		func = dlsym(list->handle, TEP_PLUGIN_UNLOADER_NAME);
- 		if (func)
- 			func(pevent);
- 		dlclose(list->handle);
-diff --git a/plugins/plugin_cfg80211.c b/plugins/plugin_cfg80211.c
-index 959d94f..c189bbc 100644
---- a/plugins/plugin_cfg80211.c
-+++ b/plugins/plugin_cfg80211.c
-@@ -25,7 +25,7 @@ process___le16_to_cpup(struct trace_seq *s, unsigned long long *args)
- 	return val ? (long long) le16toh(*val) : 0;
  }
  
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
+ static int test_op(struct event_format *event, struct filter_arg *arg,
+-		   struct tep_record *record, enum pevent_errno *err)
++		   struct tep_record *record, enum tep_errno *err)
  {
- 	pevent_register_print_function(pevent,
- 				       process___le16_to_cpup,
-@@ -36,7 +36,7 @@ int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- 	return 0;
- }
+ 	switch (arg->op.type) {
+ 	case FILTER_OP_AND:
+@@ -1955,13 +1955,13 @@ static int test_op(struct event_format *event, struct filter_arg *arg,
  
--void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	pevent_unregister_print_function(pevent, process___le16_to_cpup,
- 					 "__le16_to_cpup");
-diff --git a/plugins/plugin_function.c b/plugins/plugin_function.c
-index 058144e..5434a5f 100644
---- a/plugins/plugin_function.c
-+++ b/plugins/plugin_function.c
-@@ -18,7 +18,7 @@ static int cpus = -1;
- 
- #define STK_BLK 10
- 
--struct pevent_plugin_option plugin_options[] =
-+struct tep_plugin_option plugin_options[] =
- {
- 	{
- 		.name = "parent",
-@@ -45,9 +45,9 @@ struct pevent_plugin_option plugin_options[] =
+ 	default:
+ 		if (!*err)
+-			*err = PEVENT_ERRNO__INVALID_OP_TYPE;
++			*err = TEP_ERRNO__INVALID_OP_TYPE;
+ 		return 0;
  	}
- };
- 
--static struct pevent_plugin_option *ftrace_parent = &plugin_options[0];
--static struct pevent_plugin_option *ftrace_indent = &plugin_options[1];
--static struct pevent_plugin_option *ftrace_offset = &plugin_options[2];
-+static struct tep_plugin_option *ftrace_parent = &plugin_options[0];
-+static struct tep_plugin_option *ftrace_indent = &plugin_options[1];
-+static struct tep_plugin_option *ftrace_offset = &plugin_options[2];
- 
- static void add_child(struct func_stack *stack, const char *child, int pos)
- {
-@@ -168,7 +168,7 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
- 	return 0;
  }
  
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
+ static int test_filter(struct event_format *event, struct filter_arg *arg,
+-		       struct tep_record *record, enum pevent_errno *err)
++		       struct tep_record *record, enum tep_errno *err)
  {
- 	pevent_register_event_handler(pevent, -1, "ftrace", "function",
- 				      function_handler, NULL);
-@@ -178,7 +178,7 @@ int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- 	return 0;
+ 	if (*err) {
+ 		/*
+@@ -1995,7 +1995,7 @@ static int test_filter(struct event_format *event, struct filter_arg *arg,
+ 
+ 	default:
+ 		if (!*err)
+-			*err = PEVENT_ERRNO__INVALID_ARG_TYPE;
++			*err = TEP_ERRNO__INVALID_ARG_TYPE;
+ 		return 0;
+ 	}
+ }
+@@ -2025,38 +2025,38 @@ int pevent_event_filtered(struct event_filter *filter, int event_id)
+  * @filter: filter struct with filter information
+  * @record: the record to test against the filter
+  *
+- * Returns: match result or error code (prefixed with PEVENT_ERRNO__)
++ * Returns: match result or error code (prefixed with TEP_ERRNO__)
+  * FILTER_MATCH - filter found for event and @record matches
+  * FILTER_MISS  - filter found for event and @record does not match
+  * FILTER_NOT_FOUND - no filter found for @record's event
+  * NO_FILTER - if no filters exist
+  * otherwise - error occurred during test
+  */
+-enum pevent_errno pevent_filter_match(struct event_filter *filter,
+-				      struct tep_record *record)
++enum tep_errno pevent_filter_match(struct event_filter *filter,
++				   struct tep_record *record)
+ {
+ 	struct tep_handle *pevent = filter->pevent;
+ 	struct filter_type *filter_type;
+ 	int event_id;
+ 	int ret;
+-	enum pevent_errno err = 0;
++	enum tep_errno err = 0;
+ 
+ 	filter_init_error_buf(filter);
+ 
+ 	if (!filter->filters)
+-		return PEVENT_ERRNO__NO_FILTER;
++		return TEP_ERRNO__NO_FILTER;
+ 
+ 	event_id = pevent_data_type(pevent, record);
+ 
+ 	filter_type = find_filter_type(filter, event_id);
+ 	if (!filter_type)
+-		return PEVENT_ERRNO__FILTER_NOT_FOUND;
++		return TEP_ERRNO__FILTER_NOT_FOUND;
+ 
+ 	ret = test_filter(filter_type->event, filter_type->filter, record, &err);
+ 	if (err)
+ 		return err;
+ 
+-	return ret ? PEVENT_ERRNO__FILTER_MATCH : PEVENT_ERRNO__FILTER_MISS;
++	return ret ? TEP_ERRNO__FILTER_MATCH : TEP_ERRNO__FILTER_MISS;
  }
  
--void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	int i, x;
- 
-diff --git a/plugins/plugin_hrtimer.c b/plugins/plugin_hrtimer.c
-index 176788c..fd067e0 100644
---- a/plugins/plugin_hrtimer.c
-+++ b/plugins/plugin_hrtimer.c
-@@ -46,7 +46,7 @@ static int timer_start_handler(struct trace_seq *s, struct tep_record *record,
- 	return 0;
- }
- 
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
- 	pevent_register_event_handler(pevent, -1, "timer", "hrtimer_expire_entry",
- 				      timer_expire_handler, NULL);
-@@ -57,7 +57,7 @@ int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- 	return 0;
- }
- 
--void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	pevent_unregister_event_handler(pevent, -1,
- 					"timer", "hrtimer_expire_entry",
-diff --git a/plugins/plugin_jbd2.c b/plugins/plugin_jbd2.c
-index a29a0af..c942229 100644
---- a/plugins/plugin_jbd2.c
-+++ b/plugins/plugin_jbd2.c
-@@ -34,7 +34,7 @@ process_jiffies_to_msecs(struct trace_seq *s,
- 	return jiffies;
- }
- 
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
- 	pevent_register_print_function(pevent,
- 				       process_jbd2_dev_to_name,
-@@ -52,7 +52,7 @@ int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- 	return 0;
- }
- 
--void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	pevent_unregister_print_function(pevent, process_jbd2_dev_to_name,
- 					 "jbd2_dev_to_name");
-diff --git a/plugins/plugin_kmem.c b/plugins/plugin_kmem.c
-index c913cc7..d4478f5 100644
---- a/plugins/plugin_kmem.c
-+++ b/plugins/plugin_kmem.c
-@@ -33,7 +33,7 @@ static int call_site_handler(struct trace_seq *s, struct tep_record *record,
- 	return 1;
- }
- 
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
- 	pevent_register_event_handler(pevent, -1, "kmem", "kfree",
- 				      call_site_handler, NULL);
-@@ -56,7 +56,7 @@ int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- 	return 0;
- }
- 
--void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	pevent_unregister_event_handler(pevent, -1, "kmem", "kfree",
- 					call_site_handler, NULL);
-diff --git a/plugins/plugin_kvm.c b/plugins/plugin_kvm.c
-index f5024db..686ba6a 100644
---- a/plugins/plugin_kvm.c
-+++ b/plugins/plugin_kvm.c
-@@ -438,7 +438,7 @@ process_is_writable_pte(struct trace_seq *s, unsigned long long *args)
- 	return pte & PT_WRITABLE_MASK;
- }
- 
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
- 	init_disassembler();
- 
-@@ -479,7 +479,7 @@ int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- 	return 0;
- }
- 
--void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	pevent_unregister_event_handler(pevent, -1, "kvm", "kvm_exit",
- 					kvm_exit_handler, NULL);
-diff --git a/plugins/plugin_mac80211.c b/plugins/plugin_mac80211.c
-index b98803b..a830b25 100644
---- a/plugins/plugin_mac80211.c
-+++ b/plugins/plugin_mac80211.c
-@@ -176,7 +176,7 @@ static int drv_config(struct trace_seq *s, struct tep_record *record,
- 	return 0;
- }
- 
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
- 	pevent_register_event_handler(pevent, -1, "mac80211", "drv_bss_info_changed",
- 				      drv_bss_info_changed, NULL);
-diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-index 6c6e9f5..26fa5c8 100644
---- a/plugins/plugin_sched_switch.c
-+++ b/plugins/plugin_sched_switch.c
-@@ -117,7 +117,7 @@ static int sched_switch_handler(struct trace_seq *s, struct tep_record *record,
- 	return 0;
- }
- 
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
- 	pevent_register_event_handler(pevent, -1, "sched", "sched_switch",
- 				      sched_switch_handler, NULL);
-@@ -131,7 +131,7 @@ int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- 	return 0;
- }
- 
--void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	pevent_unregister_event_handler(pevent, -1, "sched", "sched_switch",
- 					sched_switch_handler, NULL);
-diff --git a/plugins/plugin_scsi.c b/plugins/plugin_scsi.c
-index e430a49..bb9aea6 100644
---- a/plugins/plugin_scsi.c
-+++ b/plugins/plugin_scsi.c
-@@ -413,7 +413,7 @@ unsigned long long process_scsi_trace_parse_cdb(struct trace_seq *s,
- 	return 0;
- }
- 
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
- 	pevent_register_print_function(pevent,
- 				       process_scsi_trace_parse_cdb,
-@@ -426,7 +426,7 @@ int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- 	return 0;
- }
- 
--void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	pevent_unregister_print_function(pevent, process_scsi_trace_parse_cdb,
- 					 "scsi_trace_parse_cdb");
-diff --git a/plugins/plugin_xen.c b/plugins/plugin_xen.c
-index 11dbddd..1973dd8 100644
---- a/plugins/plugin_xen.c
-+++ b/plugins/plugin_xen.c
-@@ -119,7 +119,7 @@ unsigned long long process_xen_hypercall_name(struct trace_seq *s,
- 	return 0;
- }
- 
--int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
-+int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
- 	pevent_register_print_function(pevent,
- 				       process_xen_hypercall_name,
-@@ -130,7 +130,7 @@ int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- 	return 0;
- }
- 
--void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	pevent_unregister_print_function(pevent, process_xen_hypercall_name,
- 					 "xen_hypercall_name");
+ static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
 -- 
 2.17.1
