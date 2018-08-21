@@ -1,11 +1,11 @@
 Return-Path: <SRS0=yn/p=LE=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37504 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726981AbeHUQx4 (ORCPT
+Received: from mail-wm0-f67.google.com ([74.125.82.67]:37665 "EHLO
+        mail-wm0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726981AbeHUQx6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 21 Aug 2018 12:53:56 -0400
-Received: by mail-wr1-f66.google.com with SMTP id u12-v6so15869370wrr.4
-        for <linux-trace-devel@vger.kernel.org>; Tue, 21 Aug 2018 06:33:45 -0700 (PDT)
+        Tue, 21 Aug 2018 12:53:58 -0400
+Received: by mail-wm0-f67.google.com with SMTP id n11-v6so2877457wmc.2
+        for <linux-trace-devel@vger.kernel.org>; Tue, 21 Aug 2018 06:33:47 -0700 (PDT)
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
@@ -13,9 +13,9 @@ Cc: linux-trace-devel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Yordan Karadzhov <y.karadz@gmail.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 09/24] tools lib traceevent, perf tools: Rename pevent_register_* APIs
-Date: Tue, 21 Aug 2018 16:33:13 +0300
-Message-Id: <20180821133328.3249-10-tz.stoyanov@gmail.com>
+Subject: [PATCH 11/24] tools lib traceevent, perf tools: Rename traceevent_* APIs
+Date: Tue, 21 Aug 2018 16:33:15 +0300
+Message-Id: <20180821133328.3249-12-tz.stoyanov@gmail.com>
 In-Reply-To: <20180821133328.3249-1-tz.stoyanov@gmail.com>
 References: <20180821133328.3249-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -23,167 +23,83 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
-conflicts. That prefix will be "tep_" and not "pevent_". This changes
-APIs: pevent_register_comm, pevent_register_print_string
+conflicts. That prefix will be "tep_" and not "traceevent_". This
+changes APIs: traceevent_host_bigendian, traceevent_load_plugins and
+traceevent_unload_plugins
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180808180700.948980691@goodmis.org
+Link: http://lkml.kernel.org/r/20180808180701.484691639@goodmis.org
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h |  6 +++---
- kernel-shark/trace-graph.c       |  4 ++--
- lib/trace-cmd/trace-util.c       |  4 ++--
- lib/traceevent/event-parse.c     | 10 +++++-----
- plugins/plugin_sched_switch.c    |  2 +-
- tracecmd/trace-hist.c            |  6 +++---
- 6 files changed, 16 insertions(+), 16 deletions(-)
+ include/traceevent/event-parse.h | 8 ++++----
+ lib/traceevent/event-plugin.c    | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 97eb42d..c368a55 100644
+index ea5b9f5..979ac97 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -606,12 +606,12 @@ enum trace_flag_type {
- int pevent_set_function_resolver(struct tep_handle *pevent,
- 				 tep_func_resolver_t *func, void *priv);
- void pevent_reset_function_resolver(struct tep_handle *pevent);
--int pevent_register_comm(struct tep_handle *pevent, const char *comm, int pid);
-+int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid);
- int pevent_register_trace_clock(struct tep_handle *pevent, const char *trace_clock);
- int pevent_register_function(struct tep_handle *pevent, char *name,
- 			     unsigned long long addr, char *mod);
--int pevent_register_print_string(struct tep_handle *pevent, const char *fmt,
--				 unsigned long long addr);
-+int tep_register_print_string(struct tep_handle *pevent, const char *fmt,
-+			      unsigned long long addr);
- int pevent_pid_is_registered(struct tep_handle *pevent, int pid);
+@@ -421,9 +421,9 @@ struct plugin_list;
  
- void tep_print_event_task(struct tep_handle *pevent, struct trace_seq *s,
-diff --git a/kernel-shark/trace-graph.c b/kernel-shark/trace-graph.c
-index 04f58f1..3fe0f83 100644
---- a/kernel-shark/trace-graph.c
-+++ b/kernel-shark/trace-graph.c
-@@ -1134,8 +1134,8 @@ int trace_graph_check_sched_switch(struct graph_info *ginfo,
- 		 *  comm / pid mappings.
- 		 */
- 		if (!pevent_pid_is_registered(ginfo->pevent, *pid))
--			pevent_register_comm(ginfo->pevent,
--					     *comm, *pid);
-+			tep_register_comm(ginfo->pevent,
-+					  *comm, *pid);
- 	}
+ #define INVALID_PLUGIN_LIST_OPTION	((char **)((unsigned long)-1))
  
- 	return ret;
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 7d4a2a4..877907d 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -374,7 +374,7 @@ void tracecmd_parse_cmdlines(struct tep_handle *pevent,
- 	line = strtok_r(file, "\n", &next);
- 	while (line) {
- 		sscanf(line, "%d %ms", &pid, &comm);
--		pevent_register_comm(pevent, comm, pid);
-+		tep_register_comm(pevent, comm, pid);
- 		free(comm);
- 		line = strtok_r(NULL, "\n", &next);
- 	}
-@@ -473,7 +473,7 @@ void tracecmd_parse_ftrace_printk(struct tep_handle *pevent,
- 		/* fmt still has a space, skip it */
- 		printk = strdup(fmt+1);
- 		line = strtok_r(NULL, "\n", &next);
--		pevent_register_print_string(pevent, printk, addr);
-+		tep_register_print_string(pevent, printk, addr);
- 		free(printk);
- 	}
- }
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 3bcdde8..fcde4d1 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -274,7 +274,7 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
- }
+-struct plugin_list *traceevent_load_plugins(struct tep_handle *pevent);
+-void traceevent_unload_plugins(struct plugin_list *plugin_list,
+-			       struct tep_handle *pevent);
++struct plugin_list *tep_load_plugins(struct tep_handle *pevent);
++void tep_unload_plugins(struct plugin_list *plugin_list,
++			struct tep_handle *pevent);
+ char **traceevent_plugin_list_options(void);
+ void traceevent_plugin_free_options_list(char **list);
+ int traceevent_plugin_add_options(const char *name,
+@@ -585,7 +585,7 @@ __data2host8(struct tep_handle *pevent, unsigned long long data)
+ 	__data2host8(pevent, __val);				\
+ })
  
- /**
-- * pevent_register_comm - register a pid / comm mapping
-+ * tep_register_comm - register a pid / comm mapping
-  * @pevent: handle for the pevent
-  * @comm: the command line to register
-  * @pid: the pid to map the command line to
-@@ -282,7 +282,7 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
-  * This adds a mapping to search for command line names with
-  * a given pid. The comm is duplicated.
-  */
--int pevent_register_comm(struct tep_handle *pevent, const char *comm, int pid)
-+int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
+-static inline int traceevent_host_bigendian(void)
++static inline int tep_host_bigendian(void)
  {
- 	struct cmdline_list *item;
- 
-@@ -671,7 +671,7 @@ find_printk(struct tep_handle *pevent, unsigned long long addr)
- }
- 
- /**
-- * pevent_register_print_string - register a string by its address
-+ * tep_register_print_string - register a string by its address
-  * @pevent: handle for the pevent
-  * @fmt: the string format to register
-  * @addr: the address the string was located at
-@@ -679,8 +679,8 @@ find_printk(struct tep_handle *pevent, unsigned long long addr)
-  * This registers a string by the address it was stored in the kernel.
-  * The @fmt passed in is duplicated.
+ 	unsigned char str[] = { 0x1, 0x2, 0x3, 0x4 };
+ 	unsigned int val;
+diff --git a/lib/traceevent/event-plugin.c b/lib/traceevent/event-plugin.c
+index ccda700..35b35dc 100644
+--- a/lib/traceevent/event-plugin.c
++++ b/lib/traceevent/event-plugin.c
+@@ -250,10 +250,10 @@ void traceevent_plugin_remove_options(struct tep_plugin_option *options)
+  * @s: the trace_seq descripter to write to
+  * @prefix: The prefix string to add before listing the option name
+  * @suffix: The suffix string ot append after the option name
+- * @list: The list of plugins (usually returned by traceevent_load_plugins()
++ * @list: The list of plugins (usually returned by tep_load_plugins()
+  *
+  * Writes to the trace_seq @s the list of plugins (files) that is
+- * returned by traceevent_load_plugins(). Use @prefix and @suffix for formating:
++ * returned by tep_load_plugins(). Use @prefix and @suffix for formating:
+  * @prefix = "  ", @suffix = "\n".
   */
--int pevent_register_print_string(struct tep_handle *pevent, const char *fmt,
--				 unsigned long long addr)
-+int tep_register_print_string(struct tep_handle *pevent, const char *fmt,
-+			      unsigned long long addr)
+ void traceevent_print_plugins(struct trace_seq *s,
+@@ -417,7 +417,7 @@ load_plugins(struct tep_handle *pevent, const char *suffix,
+ }
+ 
+ struct plugin_list*
+-traceevent_load_plugins(struct tep_handle *pevent)
++tep_load_plugins(struct tep_handle *pevent)
  {
- 	struct printk_list *item = malloc(sizeof(*item));
- 	char *p;
-diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-index fa3add1..534e99c 100644
---- a/plugins/plugin_sched_switch.c
-+++ b/plugins/plugin_sched_switch.c
-@@ -46,7 +46,7 @@ static void write_and_save_comm(struct format_field *field,
- 	comm = &s->buffer[len];
+ 	struct plugin_list *list = NULL;
  
- 	/* Help out the comm to ids. This will handle dups */
--	pevent_register_comm(field->event->pevent, comm, pid);
-+	tep_register_comm(field->event->pevent, comm, pid);
+@@ -426,7 +426,7 @@ traceevent_load_plugins(struct tep_handle *pevent)
  }
  
- static int sched_wakeup_handler(struct trace_seq *s, struct tep_record *record,
-diff --git a/tracecmd/trace-hist.c b/tracecmd/trace-hist.c
-index 87f96d8..e8bf434 100644
---- a/tracecmd/trace-hist.c
-+++ b/tracecmd/trace-hist.c
-@@ -501,7 +501,7 @@ process_sched_wakeup(struct tep_handle *pevent, struct tep_record *record, int t
- 
- 	pid = val;
- 
--	pevent_register_comm(pevent, comm, pid);
-+	tep_register_comm(pevent, comm, pid);
- }
- 
- static void
-@@ -517,14 +517,14 @@ process_sched_switch(struct tep_handle *pevent, struct tep_record *record)
- 	if (ret < 0)
- 		die("no prev_pid field in sched_switch?");
- 	pid = val;
--	pevent_register_comm(pevent, comm, pid);
-+	tep_register_comm(pevent, comm, pid);
- 
- 	comm = (char *)(record->data + sched_switch_next_field->offset);
- 	ret = tep_read_number_field(sched_switch_next_pid_field, record->data, &val);
- 	if (ret < 0)
- 		die("no next_pid field in sched_switch?");
- 	pid = val;
--	pevent_register_comm(pevent, comm, pid);
-+	tep_register_comm(pevent, comm, pid);
- }
- 
- static void
+ void
+-traceevent_unload_plugins(struct plugin_list *plugin_list, struct tep_handle *pevent)
++tep_unload_plugins(struct plugin_list *plugin_list, struct tep_handle *pevent)
+ {
+ 	tep_plugin_unload_func func;
+ 	struct plugin_list *list;
 -- 
 2.17.1
