@@ -1,11 +1,11 @@
 Return-Path: <SRS0=yn/p=LE=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f68.google.com ([74.125.82.68]:52034 "EHLO
-        mail-wm0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727046AbeHUQyD (ORCPT
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:40749 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727051AbeHUQyH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 21 Aug 2018 12:54:03 -0400
-Received: by mail-wm0-f68.google.com with SMTP id y2-v6so2968459wma.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 21 Aug 2018 06:33:50 -0700 (PDT)
+        Tue, 21 Aug 2018 12:54:07 -0400
+Received: by mail-wr1-f50.google.com with SMTP id n2-v6so5408262wrw.7
+        for <linux-trace-devel@vger.kernel.org>; Tue, 21 Aug 2018 06:33:54 -0700 (PDT)
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
@@ -13,9 +13,9 @@ Cc: linux-trace-devel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Yordan Karadzhov <y.karadz@gmail.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 13/24] tools lib traceevent, tools lib lockdep: Rename 'enum pevent_errno' to 'enum tep_errno'
-Date: Tue, 21 Aug 2018 16:33:17 +0300
-Message-Id: <20180821133328.3249-14-tz.stoyanov@gmail.com>
+Subject: [PATCH 16/24] tools lib traceevent: Rename pevent_filter* APIs
+Date: Tue, 21 Aug 2018 16:33:20 +0300
+Message-Id: <20180821133328.3249-17-tz.stoyanov@gmail.com>
 In-Reply-To: <20180821133328.3249-1-tz.stoyanov@gmail.com>
 References: <20180821133328.3249-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -24,952 +24,814 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
 conflicts. That prefix will be "tep_" and not "pevent_". This changes
-'enum pevent_errno' to 'enum tep_errno'.
+APIs: PEVENT_FILTER_ERROR_BUFSZ, pevent_filter_alloc,
+pevent_filter_add_filter_str, pevent_filter_match, pevent_filter_strerror,
+pevent_event_filtered, pevent_filter_reset, pevent_filter_clear_trivial,
+pevent_filter_free, pevent_filter_make_string, pevent_filter_remove_event,
+pevent_filter_event_has_trivial, pevent_filter_copy, pevent_update_trivial,
+pevent_filter_compare
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180808180701.770475059@goodmis.org
+Link: http://lkml.kernel.org/r/20180808180702.370659353@goodmis.org
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h |  48 +++++-----
- lib/traceevent/event-parse.c     |  60 ++++++-------
- lib/traceevent/parse-filter.c    | 150 +++++++++++++++----------------
- 3 files changed, 129 insertions(+), 129 deletions(-)
+ include/traceevent/event-parse.h      | 50 ++++++++--------
+ kernel-shark-qt/examples/datafilter.c |  4 +-
+ kernel-shark-qt/src/libkshark.c       |  8 +--
+ kernel-shark/kernel-shark.c           |  4 +-
+ kernel-shark/trace-filter.c           | 38 ++++++------
+ kernel-shark/trace-graph.c            | 22 +++----
+ kernel-shark/trace-view-store.c       | 12 ++--
+ kernel-shark/trace-view.c             |  6 +-
+ lib/traceevent/parse-filter.c         | 84 +++++++++++++--------------
+ tracecmd/trace-read.c                 |  8 +--
+ 10 files changed, 118 insertions(+), 118 deletions(-)
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 3df714f..4d4637d 100644
+index 5a630cc..812ef18 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -365,7 +365,7 @@ enum tep_flag {
- 	TEP_DISABLE_PLUGINS	= 1 << 2,
+@@ -918,16 +918,16 @@ struct filter_type {
+ 	struct filter_arg	*filter;
  };
  
--#define PEVENT_ERRORS 							      \
-+#define TEP_ERRORS 							      \
- 	_PE(MEM_ALLOC_FAILED,	"failed to allocate memory"),		      \
- 	_PE(PARSE_EVENT_FAILED,	"failed to parse event"),		      \
- 	_PE(READ_ID_FAILED,	"failed to read event id"),		      \
-@@ -397,10 +397,10 @@ enum tep_flag {
- 	_PE(FILTER_MISS,	"record does not match to filter")
+-#define PEVENT_FILTER_ERROR_BUFSZ  1024
++#define TEP_FILTER_ERROR_BUFSZ  1024
  
- #undef _PE
--#define _PE(__code, __str) PEVENT_ERRNO__ ## __code
--enum pevent_errno {
--	PEVENT_ERRNO__SUCCESS			= 0,
--	PEVENT_ERRNO__FILTER_MATCH		= PEVENT_ERRNO__SUCCESS,
-+#define _PE(__code, __str) TEP_ERRNO__ ## __code
-+enum tep_errno {
-+	TEP_ERRNO__SUCCESS			= 0,
-+	TEP_ERRNO__FILTER_MATCH			= TEP_ERRNO__SUCCESS,
- 
- 	/*
- 	 * Choose an arbitrary negative big number not to clash with standard
-@@ -409,11 +409,11 @@ enum pevent_errno {
- 	 *
- 	 * http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/errno.h.html
- 	 */
--	__PEVENT_ERRNO__START			= -100000,
-+	__TEP_ERRNO__START			= -100000,
- 
--	PEVENT_ERRORS,
-+	TEP_ERRORS,
- 
--	__PEVENT_ERRNO__END,
-+	__TEP_ERRNO__END,
+ struct event_filter {
+ 	struct tep_handle	*pevent;
+ 	int			filters;
+ 	struct filter_type	*event_filters;
+-	char			error_buffer[PEVENT_FILTER_ERROR_BUFSZ];
++	char			error_buffer[TEP_FILTER_ERROR_BUFSZ];
  };
- #undef _PE
  
-@@ -630,12 +630,12 @@ void tep_print_event(struct tep_handle *pevent, struct trace_seq *s,
- int tep_parse_header_page(struct tep_handle *pevent, char *buf, unsigned long size,
- 			  int long_size);
- 
--enum pevent_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
--				  unsigned long size, const char *sys);
--enum pevent_errno tep_parse_format(struct tep_handle *pevent,
--				   struct event_format **eventp,
--				   const char *buf,
--				   unsigned long size, const char *sys);
-+enum tep_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
-+			       unsigned long size, const char *sys);
-+enum tep_errno tep_parse_format(struct tep_handle *pevent,
-+				struct event_format **eventp,
-+				const char *buf,
-+				unsigned long size, const char *sys);
- void pevent_free_format(struct event_format *event);
- void pevent_free_format_field(struct format_field *field);
- 
-@@ -712,7 +712,7 @@ void tep_print_fields(struct trace_seq *s, void *data,
- 		      int size __maybe_unused, struct event_format *event);
- void tep_event_info(struct trace_seq *s, struct event_format *event,
- 		       struct tep_record *record);
--int pevent_strerror(struct tep_handle *pevent, enum pevent_errno errnum,
-+int pevent_strerror(struct tep_handle *pevent, enum tep_errno errnum,
- 		    char *buf, size_t buflen);
- 
- struct event_format **pevent_list_events(struct tep_handle *pevent, enum event_sort_type);
-@@ -930,10 +930,10 @@ struct event_filter {
- struct event_filter *pevent_filter_alloc(struct tep_handle *pevent);
+-struct event_filter *pevent_filter_alloc(struct tep_handle *pevent);
++struct event_filter *tep_filter_alloc(struct tep_handle *pevent);
  
  /* for backward compatibility */
--#define FILTER_NONE		PEVENT_ERRNO__NO_FILTER
--#define FILTER_NOEXIST		PEVENT_ERRNO__FILTER_NOT_FOUND
--#define FILTER_MISS		PEVENT_ERRNO__FILTER_MISS
--#define FILTER_MATCH		PEVENT_ERRNO__FILTER_MATCH
-+#define FILTER_NONE		TEP_ERRNO__NO_FILTER
-+#define FILTER_NOEXIST		TEP_ERRNO__FILTER_NOT_FOUND
-+#define FILTER_MISS		TEP_ERRNO__FILTER_MISS
-+#define FILTER_MATCH		TEP_ERRNO__FILTER_MATCH
- 
- enum filter_trivial_type {
- 	FILTER_TRIVIAL_FALSE,
-@@ -941,13 +941,13 @@ enum filter_trivial_type {
+ #define FILTER_NONE		TEP_ERRNO__NO_FILTER
+@@ -941,39 +941,39 @@ enum filter_trivial_type {
  	FILTER_TRIVIAL_BOTH,
  };
  
--enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
--					       const char *filter_str);
-+enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
-+					    const char *filter_str);
+-enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
+-					    const char *filter_str);
++enum tep_errno tep_filter_add_filter_str(struct event_filter *filter,
++					 const char *filter_str);
  
--enum pevent_errno pevent_filter_match(struct event_filter *filter,
--				      struct tep_record *record);
-+enum tep_errno pevent_filter_match(struct event_filter *filter,
-+				   struct tep_record *record);
+-enum tep_errno pevent_filter_match(struct event_filter *filter,
+-				   struct tep_record *record);
++enum tep_errno tep_filter_match(struct event_filter *filter,
++				struct tep_record *record);
  
--int pevent_filter_strerror(struct event_filter *filter, enum pevent_errno err,
-+int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
- 			   char *buf, size_t buflen);
+-int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
+-			   char *buf, size_t buflen);
++int tep_filter_strerror(struct event_filter *filter, enum tep_errno err,
++			char *buf, size_t buflen);
  
- int pevent_event_filtered(struct event_filter *filter,
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 004ac88..b717eb8 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -6021,9 +6021,9 @@ static int find_event_handle(struct tep_handle *pevent, struct event_format *eve
-  *
-  * /sys/kernel/debug/tracing/events/.../.../format
-  */
--enum pevent_errno __pevent_parse_format(struct event_format **eventp,
--					struct tep_handle *pevent, const char *buf,
--					unsigned long size, const char *sys)
-+enum tep_errno __pevent_parse_format(struct event_format **eventp,
-+				     struct tep_handle *pevent, const char *buf,
-+				     unsigned long size, const char *sys)
- {
- 	struct event_format *event;
- 	int ret;
-@@ -6032,12 +6032,12 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
+-int pevent_event_filtered(struct event_filter *filter,
+-			  int event_id);
++int tep_event_filtered(struct event_filter *filter,
++		       int event_id);
  
- 	*eventp = event = alloc_event();
- 	if (!event)
--		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		return TEP_ERRNO__MEM_ALLOC_FAILED;
+-void pevent_filter_reset(struct event_filter *filter);
++void tep_filter_reset(struct event_filter *filter);
  
- 	event->name = event_read_name();
- 	if (!event->name) {
- 		/* Bad event? */
--		ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		ret = TEP_ERRNO__MEM_ALLOC_FAILED;
- 		goto event_alloc_failed;
+-int pevent_filter_clear_trivial(struct event_filter *filter,
+-				 enum filter_trivial_type type);
++int tep_filter_clear_trivial(struct event_filter *filter,
++			     enum filter_trivial_type type);
+ 
+-void pevent_filter_free(struct event_filter *filter);
++void tep_filter_free(struct event_filter *filter);
+ 
+-char *pevent_filter_make_string(struct event_filter *filter, int event_id);
++char *tep_filter_make_string(struct event_filter *filter, int event_id);
+ 
+-int pevent_filter_remove_event(struct event_filter *filter,
+-			       int event_id);
++int tep_filter_remove_event(struct event_filter *filter,
++			    int event_id);
+ 
+-int pevent_filter_event_has_trivial(struct event_filter *filter,
+-				    int event_id,
+-				    enum filter_trivial_type type);
++int tep_filter_event_has_trivial(struct event_filter *filter,
++				 int event_id,
++				 enum filter_trivial_type type);
+ 
+-int pevent_filter_copy(struct event_filter *dest, struct event_filter *source);
++int tep_filter_copy(struct event_filter *dest, struct event_filter *source);
+ 
+-int pevent_update_trivial(struct event_filter *dest, struct event_filter *source,
+-			  enum filter_trivial_type type);
++int tep_update_trivial(struct event_filter *dest, struct event_filter *source,
++			enum filter_trivial_type type);
+ 
+-int pevent_filter_compare(struct event_filter *filter1, struct event_filter *filter2);
++int tep_filter_compare(struct event_filter *filter1, struct event_filter *filter2);
+ 
+ #endif /* _PARSE_EVENTS_H */
+diff --git a/kernel-shark-qt/examples/datafilter.c b/kernel-shark-qt/examples/datafilter.c
+index 1c04ce5..4b1e1e9 100644
+--- a/kernel-shark-qt/examples/datafilter.c
++++ b/kernel-shark-qt/examples/datafilter.c
+@@ -117,8 +117,8 @@ int main(int argc, char **argv)
+ 
+ 	/* Use the Advanced filter to do event content based filtering. */
+ 	adv_filter = kshark_ctx->advanced_event_filter;
+-	pevent_filter_add_filter_str(adv_filter,
+-				     "sched/sched_wakeup:target_cpu==1");
++	tep_filter_add_filter_str(adv_filter,
++				  "sched/sched_wakeup:target_cpu==1");
+ 
+ 	/* The Advanced filter requires reloading the data. */
+ 	for (i = 0; i < n_rows; ++i)
+diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
+index bb23afe..4f8da8a 100644
+--- a/kernel-shark-qt/src/libkshark.c
++++ b/kernel-shark-qt/src/libkshark.c
+@@ -148,7 +148,7 @@ bool kshark_open(struct kshark_context *kshark_ctx, const char *file)
+ 	kshark_ctx->pevent = tracecmd_get_pevent(handle);
+ 
+ 	kshark_ctx->advanced_event_filter =
+-		pevent_filter_alloc(kshark_ctx->pevent);
++		tep_filter_alloc(kshark_ctx->pevent);
+ 
+ 	/*
+ 	 * Turn off function trace indent and turn on show parent
+@@ -180,8 +180,8 @@ void kshark_close(struct kshark_context *kshark_ctx)
+ 	tracecmd_filter_id_clear(kshark_ctx->hide_event_filter);
+ 
+ 	if (kshark_ctx->advanced_event_filter) {
+-		pevent_filter_reset(kshark_ctx->advanced_event_filter);
+-		pevent_filter_free(kshark_ctx->advanced_event_filter);
++		tep_filter_reset(kshark_ctx->advanced_event_filter);
++		tep_filter_free(kshark_ctx->advanced_event_filter);
+ 		kshark_ctx->advanced_event_filter = NULL;
  	}
  
-@@ -6050,7 +6050,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
- 		
- 	event->id = event_read_id();
- 	if (event->id < 0) {
--		ret = PEVENT_ERRNO__READ_ID_FAILED;
-+		ret = TEP_ERRNO__READ_ID_FAILED;
- 		/*
- 		 * This isn't an allocation error actually.
- 		 * But as the ID is critical, just bail out.
-@@ -6060,7 +6060,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
+@@ -612,7 +612,7 @@ static size_t get_records(struct kshark_context *kshark_ctx,
+ 				/* Apply event filtering. */
+ 				ret = FILTER_MATCH;
+ 				if (adv_filter->filters)
+-					ret = pevent_filter_match(adv_filter, rec);
++					ret = tep_filter_match(adv_filter, rec);
  
- 	event->system = strdup(sys);
- 	if (!event->system) {
--		ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		ret = TEP_ERRNO__MEM_ALLOC_FAILED;
- 		goto event_alloc_failed;
- 	}
+ 				if (!kshark_show_event(kshark_ctx, entry->event_id) ||
+ 				    ret != FILTER_MATCH) {
+diff --git a/kernel-shark/kernel-shark.c b/kernel-shark/kernel-shark.c
+index 6b43296..8a512fc 100644
+--- a/kernel-shark/kernel-shark.c
++++ b/kernel-shark/kernel-shark.c
+@@ -460,7 +460,7 @@ static void load_filter(struct shark_info *info, const char *filename)
+ 	store = TRACE_VIEW_STORE(model);
+ 	event_filter = trace_view_store_get_event_filter(store);
  
-@@ -6069,7 +6069,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
- 
- 	ret = event_read_format(event);
- 	if (ret < 0) {
--		ret = PEVENT_ERRNO__READ_FORMAT_FAILED;
-+		ret = TEP_ERRNO__READ_FORMAT_FAILED;
- 		goto event_parse_failed;
- 	}
- 
-@@ -6084,7 +6084,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
- 	show_warning = 1;
- 
- 	if (ret < 0) {
--		ret = PEVENT_ERRNO__READ_PRINT_FAILED;
-+		ret = TEP_ERRNO__READ_PRINT_FAILED;
- 		goto event_parse_failed;
- 	}
- 
-@@ -6098,14 +6098,14 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
- 			arg = alloc_arg();
- 			if (!arg) {
- 				event->flags |= EVENT_FL_FAILED;
--				return PEVENT_ERRNO__OLD_FTRACE_ARG_FAILED;
-+				return TEP_ERRNO__OLD_FTRACE_ARG_FAILED;
- 			}
- 			arg->type = PRINT_FIELD;
- 			arg->field.name = strdup(field->name);
- 			if (!arg->field.name) {
- 				event->flags |= EVENT_FL_FAILED;
- 				free_arg(arg);
--				return PEVENT_ERRNO__OLD_FTRACE_ARG_FAILED;
-+				return TEP_ERRNO__OLD_FTRACE_ARG_FAILED;
- 			}
- 			arg->field.field = field;
- 			*list = arg;
-@@ -6128,7 +6128,7 @@ enum pevent_errno __pevent_parse_format(struct event_format **eventp,
- 	return ret;
+-	if (pevent_filter_compare(event_filter, ginfo->event_filter))
++	if (tep_filter_compare(event_filter, ginfo->event_filter))
+ 		sync_event_filters(info);
  }
  
--static enum pevent_errno
-+static enum tep_errno
- __pevent_parse_event(struct tep_handle *pevent,
- 		     struct event_format **eventp,
- 		     const char *buf, unsigned long size,
-@@ -6141,7 +6141,7 @@ __pevent_parse_event(struct tep_handle *pevent,
- 		return ret;
+@@ -843,7 +843,7 @@ sync_events_filter_clicked (GtkWidget *subitem, gpointer data)
+ 	event_filter = trace_view_store_get_event_filter(store);
  
- 	if (pevent && add_event(pevent, event)) {
--		ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		ret = TEP_ERRNO__MEM_ALLOC_FAILED;
- 		goto event_add_failed;
+ 	/* If they are already equal, then just perminently sync them */
+-	if (pevent_filter_compare(event_filter, ginfo->event_filter))
++	if (tep_filter_compare(event_filter, ginfo->event_filter))
+ 		result = 2;
+ 	else
+ 		/* Ask user which way to sync */
+diff --git a/kernel-shark/trace-filter.c b/kernel-shark/trace-filter.c
+index 7216702..3145f99 100644
+--- a/kernel-shark/trace-filter.c
++++ b/kernel-shark/trace-filter.c
+@@ -470,7 +470,7 @@ create_tree_filter_model(struct tep_handle *pevent,
+ 		return GTK_TREE_MODEL(treestore);
+ 
+ 	for (i = 0; events[i]; i++) {
+-		str = pevent_filter_make_string(event_filter, events[i]->id);
++		str = tep_filter_make_string(event_filter, events[i]->id);
+ 		if (!str)
+ 			continue;
+ 
+@@ -1125,12 +1125,12 @@ create_tree_event_model(struct tep_handle *pevent,
+ 
+ 		normal = TRUE;
+ 		if (active && filter) {
+-			if (pevent_event_filtered(filter, event->id) &&
+-			    !pevent_filter_event_has_trivial(filter, event->id,
++			if (tep_event_filtered(filter, event->id) &&
++			    !tep_filter_event_has_trivial(filter, event->id,
+ 							     FILTER_TRIVIAL_BOTH))
+ 				normal = FALSE;
+ 			/* Make trivial false not selected */
+-			else if (pevent_filter_event_has_trivial(filter, event->id,
++			else if (tep_filter_event_has_trivial(filter, event->id,
+ 								 FILTER_TRIVIAL_FALSE))
+ 				active = FALSE;
+ 		}
+@@ -1950,7 +1950,7 @@ void trace_filter_convert_filter_to_names(struct event_filter *filter,
+ 			all_selected = 1;
+ 		}
+ 
+-		if (pevent_filter_event_has_trivial(filter, event->id,
++		if (tep_filter_event_has_trivial(filter, event->id,
+ 						    FILTER_TRIVIAL_TRUE)) {
+ 			if (!all_selected || !systems)
+ 				*event_ids = tracecmd_add_id(*event_ids, event->id, event_count++);
+@@ -1964,7 +1964,7 @@ void trace_filter_convert_filter_to_names(struct event_filter *filter,
+ 			all_selected = 0;
+ 
+ 			/* If this event is filtered, still add it */
+-			if (pevent_event_filtered(filter, event->id))
++			if (tep_event_filtered(filter, event->id))
+ 				*event_ids = tracecmd_add_id(*event_ids, event->id, event_count++);
+ 		}
+ 		last_system = event->system;
+@@ -1992,28 +1992,28 @@ void trace_filter_convert_char_to_filter(struct event_filter *filter,
+ 	pevent = filter->pevent;
+ 
+ 	/* Make a copy to use later */
+-	copy = pevent_filter_alloc(pevent);
+-	pevent_filter_copy(copy, filter);
+-	pevent_filter_reset(filter);
++	copy = tep_filter_alloc(pevent);
++	tep_filter_copy(copy, filter);
++	tep_filter_reset(filter);
+ 
+ 	if (systems) {
+ 		for (i = 0; systems[i]; i++)
+-			pevent_filter_add_filter_str(filter,
+-						     systems[i]);
++			tep_filter_add_filter_str(filter,
++						  systems[i]);
  	}
  
-@@ -6171,10 +6171,10 @@ event_add_failed:
-  *
-  * /sys/kernel/debug/tracing/events/.../.../format
-  */
--enum pevent_errno tep_parse_format(struct tep_handle *pevent,
--				   struct event_format **eventp,
--				   const char *buf,
--				   unsigned long size, const char *sys)
-+enum tep_errno tep_parse_format(struct tep_handle *pevent,
-+				struct event_format **eventp,
-+				const char *buf,
-+				unsigned long size, const char *sys)
- {
- 	return __pevent_parse_event(pevent, eventp, buf, size, sys);
+ 	if (events) {
+ 		for (i = 0; events[i] >= 0; i++) {
+ 			event = tep_find_event(filter->pevent, events[i]);
+ 			if (event)
+-				pevent_filter_add_filter_str(filter,
+-							     event->name);
++				tep_filter_add_filter_str(filter,
++							  event->name);
+ 		}
+ 	}
+ 
+-	pevent_update_trivial(filter, copy, FILTER_TRIVIAL_BOTH);
++	tep_update_trivial(filter, copy, FILTER_TRIVIAL_BOTH);
+ 
+-	pevent_filter_free(copy);
++	tep_filter_free(copy);
  }
-@@ -6193,8 +6193,8 @@ enum pevent_errno tep_parse_format(struct tep_handle *pevent,
-  *
-  * /sys/kernel/debug/tracing/events/.../.../format
-  */
--enum pevent_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
--				  unsigned long size, const char *sys)
-+enum tep_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
-+			       unsigned long size, const char *sys)
- {
- 	struct event_format *event = NULL;
- 	return __pevent_parse_event(pevent, &event, buf, size, sys);
-@@ -6203,12 +6203,12 @@ enum pevent_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
- #undef _PE
- #define _PE(code, str) str
- static const char * const pevent_error_str[] = {
--	PEVENT_ERRORS
-+	TEP_ERRORS
- };
- #undef _PE
  
- int pevent_strerror(struct tep_handle *pevent __maybe_unused,
--		    enum pevent_errno errnum, char *buf, size_t buflen)
-+		    enum tep_errno errnum, char *buf, size_t buflen)
- {
- 	int idx;
- 	const char *msg;
-@@ -6218,11 +6218,11 @@ int pevent_strerror(struct tep_handle *pevent __maybe_unused,
- 		return 0;
+ int trace_filter_save_events(struct tracecmd_xml_handle *handle,
+@@ -2032,7 +2032,7 @@ int trace_filter_save_events(struct tracecmd_xml_handle *handle,
+ 		tracecmd_xml_write_element(handle, "System", "%s", systems[i]);
+ 
+ 	for (i = 0; event_ids && event_ids[i] > 0; i++) {
+-		str = pevent_filter_make_string(filter, event_ids[i]);
++		str = tep_filter_make_string(filter, event_ids[i]);
+ 		if (!str)
+ 			continue;
+ 
+@@ -2098,7 +2098,7 @@ int trace_filter_load_events(struct event_filter *event_filter,
+ 
+ 		if (strcmp(name, "System") == 0) {
+ 			system = tracecmd_xml_node_value(handle, node);
+-			pevent_filter_add_filter_str(event_filter,
++			tep_filter_add_filter_str(event_filter,
+ 						     system);
+ 		} else if (strcmp(name, "Event") == 0) {
+ 			system = NULL;
+@@ -2145,8 +2145,8 @@ int trace_filter_load_events(struct event_filter *event_filter,
+ 						sprintf(buffer, "%s", event);
+ 					}
+ 				}
+-				pevent_filter_add_filter_str(event_filter,
+-							     buffer);
++				tep_filter_add_filter_str(event_filter,
++							  buffer);
+ 				free(buffer);
+ 			}
+ 		}
+diff --git a/kernel-shark/trace-graph.c b/kernel-shark/trace-graph.c
+index 3fe0f83..53f5e39 100644
+--- a/kernel-shark/trace-graph.c
++++ b/kernel-shark/trace-graph.c
+@@ -279,7 +279,7 @@ gboolean trace_graph_filter_on_event(struct graph_info *ginfo, struct tep_record
+ 	if (ginfo->all_events)
+ 		return FALSE;
+ 
+-	ret = pevent_filter_match(ginfo->event_filter, record);
++	ret = tep_filter_match(ginfo->event_filter, record);
+ 	return ret == FILTER_MATCH ? FALSE : TRUE;
+ }
+ 
+@@ -2235,14 +2235,14 @@ void trace_graph_event_filter_callback(gboolean accept,
+ 	if (all_events) {
+ 		ginfo->all_events = TRUE;
+ 		/* filter is no longer used */
+-		pevent_filter_reset(ginfo->event_filter);
++		tep_filter_reset(ginfo->event_filter);
+ 		redraw_graph(ginfo);
+ 		return;
  	}
  
--	if (errnum <= __PEVENT_ERRNO__START ||
--	    errnum >= __PEVENT_ERRNO__END)
-+	if (errnum <= __TEP_ERRNO__START ||
-+	    errnum >= __TEP_ERRNO__END)
+ 	ginfo->all_events = FALSE;
+ 
+-	pevent_filter_clear_trivial(ginfo->event_filter, FILTER_TRIVIAL_BOTH);
++	tep_filter_clear_trivial(ginfo->event_filter, FILTER_TRIVIAL_BOTH);
+ 
+ 	trace_filter_convert_char_to_filter(ginfo->event_filter,
+ 					    systems, events);
+@@ -2271,17 +2271,17 @@ void trace_graph_adv_filter_callback(gboolean accept,
+ 
+ 	if (event_ids) {
+ 		for (i = 0; event_ids[i] >= 0; i++)
+-			pevent_filter_remove_event(event_filter, event_ids[i]);
++			tep_filter_remove_event(event_filter, event_ids[i]);
+ 	}
+ 
+ 	if (has_text(text)) {
+ 
+ 		ginfo->all_events = FALSE;
+ 
+-		pevent_filter_clear_trivial(event_filter,
++		tep_filter_clear_trivial(event_filter,
+ 					    FILTER_TRIVIAL_BOTH);
+ 
+-		ret = pevent_filter_add_filter_str(event_filter, text);
++		ret = tep_filter_add_filter_str(event_filter, text);
+ 		if (ret < 0) {
+ 			pevent_strerror(event_filter->pevent, ret,
+ 					error_str, sizeof(error_str));
+@@ -2300,14 +2300,14 @@ void trace_graph_copy_filter(struct graph_info *ginfo,
+ 	if (all_events) {
+ 		ginfo->all_events = TRUE;
+ 		/* filter is no longer used */
+-		pevent_filter_reset(ginfo->event_filter);
++		tep_filter_reset(ginfo->event_filter);
+ 		redraw_graph(ginfo);
+ 		return;
+ 	}
+ 
+ 	ginfo->all_events = FALSE;
+ 
+-	pevent_filter_copy(ginfo->event_filter, event_filter);
++	tep_filter_copy(ginfo->event_filter, event_filter);
+ 
+ 	redraw_graph(ginfo);
+ }
+@@ -2515,7 +2515,7 @@ static void free_int_array(int **array)
+ void trace_graph_free_info(struct graph_info *ginfo)
+ {
+ 	if (ginfo->handle) {
+-		pevent_filter_free(ginfo->event_filter);
++		tep_filter_free(ginfo->event_filter);
+ 		trace_graph_plot_free(ginfo);
+ 		tracecmd_close(ginfo->handle);
+ 		free_task_hash(ginfo);
+@@ -2552,7 +2552,7 @@ static int load_handle(struct graph_info *ginfo,
+ 	ginfo->cpus = tracecmd_cpus(handle);
+ 	ginfo->all_events = TRUE;
+ 
+-	ginfo->event_filter = pevent_filter_alloc(ginfo->pevent);
++	ginfo->event_filter = tep_filter_alloc(ginfo->pevent);
+ 
+ 	ginfo->start_time = -1ULL;
+ 	ginfo->end_time = 0;
+@@ -2645,7 +2645,7 @@ static int load_event_filter(struct graph_info *ginfo,
+ 	if (!node)
  		return -1;
  
--	idx = errnum - __PEVENT_ERRNO__START - 1;
-+	idx = errnum - __TEP_ERRNO__START - 1;
- 	msg = pevent_error_str[idx];
- 	snprintf(buf, buflen, "%s", msg);
+-	pevent_filter_clear_trivial(event_filter, FILTER_TRIVIAL_BOTH);
++	tep_filter_clear_trivial(event_filter, FILTER_TRIVIAL_BOTH);
+ 	ginfo->all_events = FALSE;
  
-@@ -6503,7 +6503,7 @@ int pevent_register_print_function(struct tep_handle *pevent,
- 	func_handle = calloc(1, sizeof(*func_handle));
- 	if (!func_handle) {
- 		do_warning("Failed to allocate function handler");
--		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 	trace_filter_load_events(event_filter, handle, node);
+diff --git a/kernel-shark/trace-view-store.c b/kernel-shark/trace-view-store.c
+index 61d0157..8d4e05f 100644
+--- a/kernel-shark/trace-view-store.c
++++ b/kernel-shark/trace-view-store.c
+@@ -224,7 +224,7 @@ trace_view_store_finalize (GObject *object)
+ 		store->spin = NULL;
  	}
  
- 	func_handle->ret_type = ret_type;
-@@ -6512,7 +6512,7 @@ int pevent_register_print_function(struct tep_handle *pevent,
- 	if (!func_handle->name) {
- 		do_warning("Failed to allocate function name");
- 		free(func_handle);
--		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		return TEP_ERRNO__MEM_ALLOC_FAILED;
+-	pevent_filter_free(store->event_filter);
++	tep_filter_free(store->event_filter);
+ 	tracecmd_close(store->handle);
+ 
+ 	/* must chain up - finalize parent */
+@@ -512,7 +512,7 @@ void trace_view_store_clear_all_events_enabled(TraceViewStore *store)
+ {
+ 	g_return_if_fail (TRACE_VIEW_IS_LIST (store));
+ 
+-	pevent_filter_clear_trivial(store->event_filter, FILTER_TRIVIAL_BOTH);
++	tep_filter_clear_trivial(store->event_filter, FILTER_TRIVIAL_BOTH);
+ 	store->all_events = 0;
+ }
+ 
+@@ -527,7 +527,7 @@ void trace_view_store_set_all_events_enabled(TraceViewStore *store)
+ 	 * All enabled means that we don't need to look at 
+ 	 * the system events, so free those arrays.
+ 	 */
+-	pevent_filter_reset(store->event_filter);
++	tep_filter_reset(store->event_filter);
+ 
+ 	store->all_events = 1;
+ }
+@@ -855,7 +855,7 @@ trace_view_store_new (struct tracecmd_input *handle)
+ 	newstore->handle = handle;
+ 	newstore->cpus = tracecmd_cpus(handle);
+ 	tracecmd_ref(handle);
+-	newstore->event_filter = pevent_filter_alloc(tracecmd_get_pevent(handle));
++	newstore->event_filter = tep_filter_alloc(tracecmd_get_pevent(handle));
+ 
+ 	newstore->cpu_list = g_new(TraceViewRecord *, newstore->cpus);
+ 	g_assert(newstore->cpu_list != NULL);
+@@ -1257,8 +1257,8 @@ static void update_filter_tasks(TraceViewStore *store)
+ 			/* The record may be filtered by the events */
+ 			if (!store->all_events) {
+ 				int ret;
+-				ret = pevent_filter_match(store->event_filter,
+-							  record);
++				ret = tep_filter_match(store->event_filter,
++						       record);
+ 				if (ret != FILTER_MATCH) {
+ 					store->cpu_list[cpu][i].visible = 0;
+ 					goto skip;
+diff --git a/kernel-shark/trace-view.c b/kernel-shark/trace-view.c
+index a1e0b47..fdf8290 100644
+--- a/kernel-shark/trace-view.c
++++ b/kernel-shark/trace-view.c
+@@ -463,14 +463,14 @@ void trace_view_adv_filter_callback(gboolean accept,
+ 
+ 	if (event_ids) {
+ 		for (i = 0; event_ids[i] >= 0; i++)
+-			pevent_filter_remove_event(event_filter, event_ids[i]);
++			tep_filter_remove_event(event_filter, event_ids[i]);
  	}
  
- 	next_param = &(func_handle->params);
-@@ -6524,14 +6524,14 @@ int pevent_register_print_function(struct tep_handle *pevent,
+ 	if (has_text(text)) {
  
- 		if (type >= PEVENT_FUNC_ARG_MAX_TYPES) {
- 			do_warning("Invalid argument type %d", type);
--			ret = PEVENT_ERRNO__INVALID_ARG_TYPE;
-+			ret = TEP_ERRNO__INVALID_ARG_TYPE;
- 			goto out_free;
- 		}
+ 		trace_view_store_clear_all_events_enabled(store);
  
- 		param = malloc(sizeof(*param));
- 		if (!param) {
- 			do_warning("Failed to allocate function param");
--			ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+			ret = TEP_ERRNO__MEM_ALLOC_FAILED;
- 			goto out_free;
- 		}
- 		param->type = type;
-@@ -6640,7 +6640,7 @@ int pevent_register_event_handler(struct tep_handle *pevent, int id,
- 	handle = calloc(1, sizeof(*handle));
- 	if (!handle) {
- 		do_warning("Failed to allocate event handler");
--		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		return TEP_ERRNO__MEM_ALLOC_FAILED;
+-		ret = pevent_filter_add_filter_str(event_filter, text);
++		ret = tep_filter_add_filter_str(event_filter, text);
+ 		if (ret < 0) {
+ 			pevent_strerror(event_filter->pevent, ret,
+ 					error_str, sizeof(error_str));
+@@ -509,7 +509,7 @@ void trace_view_copy_filter(GtkWidget *treeview,
+ 
+ 		event_filter = trace_view_store_get_event_filter(store);
+ 
+-		pevent_filter_copy(event_filter, src_event_filter);
++		tep_filter_copy(event_filter, src_event_filter);
  	}
  
- 	handle->id = id;
-@@ -6655,7 +6655,7 @@ int pevent_register_event_handler(struct tep_handle *pevent, int id,
- 		free((void *)handle->event_name);
- 		free((void *)handle->sys_name);
- 		free(handle);
--		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		return TEP_ERRNO__MEM_ALLOC_FAILED;
- 	}
- 
- 	handle->func = func;
+ 	update_rows(trace_tree, store);
 diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
-index bfdaec1..2241523 100644
+index 2241523..df42e04 100644
 --- a/lib/traceevent/parse-filter.c
 +++ b/lib/traceevent/parse-filter.c
-@@ -254,7 +254,7 @@ static int event_match(struct event_format *event,
- 		!regexec(ereg, event->name, 0, NULL, 0);
- }
- 
--static enum pevent_errno
-+static enum tep_errno
- find_event(struct tep_handle *pevent, struct event_list **events,
- 	   char *sys_name, char *event_name)
- {
-@@ -275,26 +275,26 @@ find_event(struct tep_handle *pevent, struct event_list **events,
- 
- 	ret = asprintf(&reg, "^%s$", event_name);
- 	if (ret < 0)
--		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		return TEP_ERRNO__MEM_ALLOC_FAILED;
- 
- 	ret = regcomp(&ereg, reg, REG_ICASE|REG_NOSUB);
- 	free(reg);
- 
- 	if (ret)
--		return PEVENT_ERRNO__INVALID_EVENT_NAME;
-+		return TEP_ERRNO__INVALID_EVENT_NAME;
- 
- 	if (sys_name) {
- 		ret = asprintf(&reg, "^%s$", sys_name);
- 		if (ret < 0) {
- 			regfree(&ereg);
--			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+			return TEP_ERRNO__MEM_ALLOC_FAILED;
- 		}
- 
- 		ret = regcomp(&sreg, reg, REG_ICASE|REG_NOSUB);
- 		free(reg);
- 		if (ret) {
- 			regfree(&ereg);
--			return PEVENT_ERRNO__INVALID_EVENT_NAME;
-+			return TEP_ERRNO__INVALID_EVENT_NAME;
- 		}
+@@ -52,7 +52,7 @@ static void show_error(char *error_buf, const char *fmt, ...)
  	}
  
-@@ -314,9 +314,9 @@ find_event(struct tep_handle *pevent, struct event_list **events,
- 		regfree(&sreg);
- 
- 	if (!match)
--		return PEVENT_ERRNO__EVENT_NOT_FOUND;
-+		return TEP_ERRNO__EVENT_NOT_FOUND;
- 	if (fail)
--		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		return TEP_ERRNO__MEM_ALLOC_FAILED;
- 
- 	return 0;
- }
-@@ -332,7 +332,7 @@ static void free_events(struct event_list *events)
- 	}
+ 	va_start(ap, fmt);
+-	vsnprintf(error_buf + len, PEVENT_FILTER_ERROR_BUFSZ - len, fmt, ap);
++	vsnprintf(error_buf + len, TEP_FILTER_ERROR_BUFSZ - len, fmt, ap);
+ 	va_end(ap);
  }
  
--static enum pevent_errno
-+static enum tep_errno
- create_arg_item(struct event_format *event, const char *token,
- 		enum event_type type, struct filter_arg **parg, char *error_str)
+@@ -162,10 +162,10 @@ add_filter_type(struct event_filter *filter, int id)
+ }
+ 
+ /**
+- * pevent_filter_alloc - create a new event filter
++ * tep_filter_alloc - create a new event filter
+  * @pevent: The pevent that this filter is associated with
+  */
+-struct event_filter *pevent_filter_alloc(struct tep_handle *pevent)
++struct event_filter *tep_filter_alloc(struct tep_handle *pevent)
  {
-@@ -342,7 +342,7 @@ create_arg_item(struct event_format *event, const char *token,
- 	arg = allocate_arg();
- 	if (arg == NULL) {
- 		show_error(error_str, "failed to allocate filter arg");
--		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		return TEP_ERRNO__MEM_ALLOC_FAILED;
- 	}
+ 	struct event_filter *filter;
  
- 	switch (type) {
-@@ -356,7 +356,7 @@ create_arg_item(struct event_format *event, const char *token,
- 		if (!arg->value.str) {
- 			free_arg(arg);
- 			show_error(error_str, "failed to allocate string filter arg");
--			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+			return TEP_ERRNO__MEM_ALLOC_FAILED;
- 		}
- 		break;
- 	case EVENT_ITEM:
-@@ -388,7 +388,7 @@ create_arg_item(struct event_format *event, const char *token,
- 	default:
- 		free_arg(arg);
- 		show_error(error_str, "expected a value but found %s", token);
--		return PEVENT_ERRNO__UNEXPECTED_TYPE;
-+		return TEP_ERRNO__UNEXPECTED_TYPE;
- 	}
- 	*parg = arg;
- 	return 0;
-@@ -440,7 +440,7 @@ create_arg_cmp(enum filter_cmp_type ctype)
- 	return arg;
+@@ -1245,16 +1245,16 @@ static void filter_init_error_buf(struct event_filter *filter)
  }
  
--static enum pevent_errno
-+static enum tep_errno
- add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- {
- 	struct filter_arg *left;
-@@ -473,7 +473,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 			break;
- 		default:
- 			show_error(error_str, "Illegal rvalue");
--			return PEVENT_ERRNO__ILLEGAL_RVALUE;
-+			return TEP_ERRNO__ILLEGAL_RVALUE;
- 		}
- 
- 		/*
-@@ -520,7 +520,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 			if (left->type != FILTER_ARG_FIELD) {
- 				show_error(error_str,
- 					   "Illegal lvalue for string comparison");
--				return PEVENT_ERRNO__ILLEGAL_LVALUE;
-+				return TEP_ERRNO__ILLEGAL_LVALUE;
- 			}
- 
- 			/* Make sure this is a valid string compare */
-@@ -539,13 +539,13 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 					show_error(error_str,
- 						   "RegEx '%s' did not compute",
- 						   str);
--					return PEVENT_ERRNO__INVALID_REGEX;
-+					return TEP_ERRNO__INVALID_REGEX;
- 				}
- 				break;
- 			default:
- 				show_error(error_str,
- 					   "Illegal comparison for string");
--				return PEVENT_ERRNO__ILLEGAL_STRING_CMP;
-+				return TEP_ERRNO__ILLEGAL_STRING_CMP;
- 			}
- 
- 			op->type = FILTER_ARG_STR;
-@@ -554,7 +554,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 			op->str.val = strdup(str);
- 			if (!op->str.val) {
- 				show_error(error_str, "Failed to allocate string filter");
--				return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+				return TEP_ERRNO__MEM_ALLOC_FAILED;
- 			}
- 			/*
- 			 * Need a buffer to copy data for tests
-@@ -562,7 +562,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 			op->str.buffer = malloc(op->str.field->size + 1);
- 			if (!op->str.buffer) {
- 				show_error(error_str, "Failed to allocate string filter");
--				return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+				return TEP_ERRNO__MEM_ALLOC_FAILED;
- 			}
- 			/* Null terminate this buffer */
- 			op->str.buffer[op->str.field->size] = 0;
-@@ -581,7 +581,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 			case FILTER_CMP_NOT_REGEX:
- 				show_error(error_str,
- 					   "Op not allowed with integers");
--				return PEVENT_ERRNO__ILLEGAL_INTEGER_CMP;
-+				return TEP_ERRNO__ILLEGAL_INTEGER_CMP;
- 
- 			default:
- 				break;
-@@ -602,7 +602,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 
-  out_fail:
- 	show_error(error_str, "Syntax error");
--	return PEVENT_ERRNO__SYNTAX_ERROR;
-+	return TEP_ERRNO__SYNTAX_ERROR;
- }
- 
- static struct filter_arg *
-@@ -615,7 +615,7 @@ rotate_op_right(struct filter_arg *a, struct filter_arg *b)
- 	return arg;
- }
- 
--static enum pevent_errno add_left(struct filter_arg *op, struct filter_arg *arg)
-+static enum tep_errno add_left(struct filter_arg *op, struct filter_arg *arg)
- {
- 	switch (op->type) {
- 	case FILTER_ARG_EXP:
-@@ -634,11 +634,11 @@ static enum pevent_errno add_left(struct filter_arg *op, struct filter_arg *arg)
- 		/* left arg of compares must be a field */
- 		if (arg->type != FILTER_ARG_FIELD &&
- 		    arg->type != FILTER_ARG_BOOLEAN)
--			return PEVENT_ERRNO__INVALID_ARG_TYPE;
-+			return TEP_ERRNO__INVALID_ARG_TYPE;
- 		op->num.left = arg;
- 		break;
- 	default:
--		return PEVENT_ERRNO__INVALID_ARG_TYPE;
-+		return TEP_ERRNO__INVALID_ARG_TYPE;
- 	}
- 	return 0;
- }
-@@ -751,7 +751,7 @@ enum filter_vals {
- 	FILTER_VAL_TRUE,
- };
- 
--static enum pevent_errno
-+static enum tep_errno
- reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
- 		struct filter_arg *arg, char *error_str)
- {
-@@ -761,7 +761,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
- 	if (parent->type != FILTER_ARG_OP &&
- 	    arg->type != FILTER_ARG_OP) {
- 		show_error(error_str, "can not reparent other than OP");
--		return PEVENT_ERRNO__REPARENT_NOT_OP;
-+		return TEP_ERRNO__REPARENT_NOT_OP;
- 	}
- 
- 	/* Get the sibling */
-@@ -773,7 +773,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
- 		other_child = old_child->op.right;
- 	} else {
- 		show_error(error_str, "Error in reparent op, find other child");
--		return PEVENT_ERRNO__REPARENT_FAILED;
-+		return TEP_ERRNO__REPARENT_FAILED;
- 	}
- 
- 	/* Detach arg from old_child */
-@@ -794,7 +794,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
- 		ptr = &parent->op.left;
- 	else {
- 		show_error(error_str, "Error in reparent op");
--		return PEVENT_ERRNO__REPARENT_FAILED;
-+		return TEP_ERRNO__REPARENT_FAILED;
- 	}
- 
- 	*ptr = arg;
-@@ -803,7 +803,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
- 	return 0;
- }
- 
--/* Returns either filter_vals (success) or pevent_errno (failfure) */
-+/* Returns either filter_vals (success) or tep_errno (failfure) */
- static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
- 		    char *error_str)
- {
-@@ -898,7 +898,7 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
- 		return rval;
- 	default:
- 		show_error(error_str, "bad arg in filter tree");
--		return PEVENT_ERRNO__BAD_FILTER_ARG;
-+		return TEP_ERRNO__BAD_FILTER_ARG;
- 	}
- 	return FILTER_VAL_NORM;
- }
-@@ -923,7 +923,7 @@ static int collapse_tree(struct filter_arg *arg,
- 			arg->boolean.value = ret == FILTER_VAL_TRUE;
- 		} else {
- 			show_error(error_str, "Failed to allocate filter arg");
--			ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+			ret = TEP_ERRNO__MEM_ALLOC_FAILED;
- 		}
- 		break;
- 
-@@ -938,7 +938,7 @@ static int collapse_tree(struct filter_arg *arg,
- 	return ret;
- }
- 
--static enum pevent_errno
-+static enum tep_errno
- process_filter(struct event_format *event, struct filter_arg **parg,
- 	       char *error_str, int not)
- {
-@@ -952,7 +952,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
- 	enum filter_op_type btype;
- 	enum filter_exp_type etype;
- 	enum filter_cmp_type ctype;
--	enum pevent_errno ret;
-+	enum tep_errno ret;
- 
- 	*parg = NULL;
- 
-@@ -990,7 +990,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
- 		case EVENT_DELIM:
- 			if (*token == ',') {
- 				show_error(error_str, "Illegal token ','");
--				ret = PEVENT_ERRNO__ILLEGAL_TOKEN;
-+				ret = TEP_ERRNO__ILLEGAL_TOKEN;
- 				goto fail;
- 			}
- 
-@@ -998,22 +998,22 @@ process_filter(struct event_format *event, struct filter_arg **parg,
- 				if (left_item) {
- 					show_error(error_str,
- 						   "Open paren can not come after item");
--					ret = PEVENT_ERRNO__INVALID_PAREN;
-+					ret = TEP_ERRNO__INVALID_PAREN;
- 					goto fail;
- 				}
- 				if (current_exp) {
- 					show_error(error_str,
- 						   "Open paren can not come after expression");
--					ret = PEVENT_ERRNO__INVALID_PAREN;
-+					ret = TEP_ERRNO__INVALID_PAREN;
- 					goto fail;
- 				}
- 
- 				ret = process_filter(event, &arg, error_str, 0);
--				if (ret != PEVENT_ERRNO__UNBALANCED_PAREN) {
-+				if (ret != TEP_ERRNO__UNBALANCED_PAREN) {
- 					if (ret == 0) {
- 						show_error(error_str,
- 							   "Unbalanced number of '('");
--						ret = PEVENT_ERRNO__UNBALANCED_PAREN;
-+						ret = TEP_ERRNO__UNBALANCED_PAREN;
- 					}
- 					goto fail;
- 				}
-@@ -1050,7 +1050,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
- 				else
- 					*parg = current_exp;
- 				free(token);
--				return PEVENT_ERRNO__UNBALANCED_PAREN;
-+				return TEP_ERRNO__UNBALANCED_PAREN;
- 			}
- 			break;
- 
-@@ -1077,7 +1077,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
- 			case OP_NONE:
- 				show_error(error_str,
- 					   "Unknown op token %s", token);
--				ret = PEVENT_ERRNO__UNKNOWN_TOKEN;
-+				ret = TEP_ERRNO__UNKNOWN_TOKEN;
- 				goto fail;
- 			}
- 
-@@ -1165,11 +1165,11 @@ process_filter(struct event_format *event, struct filter_arg **parg,
- 
-  fail_alloc:
- 	show_error(error_str, "failed to allocate filter arg");
--	ret = PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+	ret = TEP_ERRNO__MEM_ALLOC_FAILED;
- 	goto fail;
-  fail_syntax:
- 	show_error(error_str, "Syntax error");
--	ret = PEVENT_ERRNO__SYNTAX_ERROR;
-+	ret = TEP_ERRNO__SYNTAX_ERROR;
-  fail:
- 	free_arg(current_op);
- 	free_arg(current_exp);
-@@ -1178,7 +1178,7 @@ process_filter(struct event_format *event, struct filter_arg **parg,
- 	return ret;
- }
- 
--static enum pevent_errno
-+static enum tep_errno
- process_event(struct event_format *event, const char *filter_str,
- 	      struct filter_arg **parg, char *error_str)
- {
-@@ -1194,7 +1194,7 @@ process_event(struct event_format *event, const char *filter_str,
- 	if (!*parg) {
- 		*parg = allocate_arg();
- 		if (*parg == NULL)
--			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+			return TEP_ERRNO__MEM_ALLOC_FAILED;
- 
- 		(*parg)->type = FILTER_ARG_BOOLEAN;
- 		(*parg)->boolean.value = FILTER_FALSE;
-@@ -1203,13 +1203,13 @@ process_event(struct event_format *event, const char *filter_str,
- 	return 0;
- }
- 
--static enum pevent_errno
-+static enum tep_errno
- filter_event(struct event_filter *filter, struct event_format *event,
- 	     const char *filter_str, char *error_str)
- {
- 	struct filter_type *filter_type;
- 	struct filter_arg *arg;
--	enum pevent_errno ret;
-+	enum tep_errno ret;
- 
- 	if (filter_str) {
- 		ret = process_event(event, filter_str, &arg, error_str);
-@@ -1220,7 +1220,7 @@ filter_event(struct event_filter *filter, struct event_format *event,
- 		/* just add a TRUE arg */
- 		arg = allocate_arg();
- 		if (arg == NULL)
--			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+			return TEP_ERRNO__MEM_ALLOC_FAILED;
- 
- 		arg->type = FILTER_ARG_BOOLEAN;
- 		arg->boolean.value = FILTER_TRUE;
-@@ -1228,7 +1228,7 @@ filter_event(struct event_filter *filter, struct event_format *event,
- 
- 	filter_type = add_filter_type(filter, event->id);
- 	if (filter_type == NULL)
--		return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+		return TEP_ERRNO__MEM_ALLOC_FAILED;
- 
- 	if (filter_type->filter)
- 		free_arg(filter_type->filter);
-@@ -1253,7 +1253,7 @@ static void filter_init_error_buf(struct event_filter *filter)
-  * negative error code.  Use pevent_filter_strerror() to see
+ /**
+- * pevent_filter_add_filter_str - add a new filter
++ * tep_filter_add_filter_str - add a new filter
+  * @filter: the event filter to add to
+  * @filter_str: the filter string that contains the filter
+  *
+  * Returns 0 if the filter was successfully added or a
+- * negative error code.  Use pevent_filter_strerror() to see
++ * negative error code.  Use tep_filter_strerror() to see
   * actual error message in case of error.
   */
--enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
-+enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
- 					       const char *filter_str)
+-enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
+-					       const char *filter_str)
++enum tep_errno tep_filter_add_filter_str(struct event_filter *filter,
++					 const char *filter_str)
  {
  	struct tep_handle *pevent = filter->pevent;
-@@ -1265,7 +1265,7 @@ enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
- 	char *event_name = NULL;
- 	char *sys_name = NULL;
- 	char *sp;
--	enum pevent_errno rtn = 0; /* PEVENT_ERRNO__SUCCESS */
-+	enum tep_errno rtn = 0; /* TEP_ERRNO__SUCCESS */
- 	int len;
- 	int ret;
+ 	struct event_list *event;
+@@ -1335,7 +1335,7 @@ enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
  
-@@ -1291,7 +1291,7 @@ enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
- 		if (this_event == NULL) {
- 			/* This can only happen when events is NULL, but still */
- 			free_events(events);
--			return PEVENT_ERRNO__MEM_ALLOC_FAILED;
-+			return TEP_ERRNO__MEM_ALLOC_FAILED;
- 		}
- 		memcpy(this_event, filter_str, len);
- 		this_event[len] = 0;
-@@ -1308,7 +1308,7 @@ enum pevent_errno pevent_filter_add_filter_str(struct event_filter *filter,
- 			/* This can only happen when events is NULL, but still */
- 			free_events(events);
- 			free(this_event);
--			return PEVENT_ERRNO__FILTER_NOT_FOUND;
-+			return TEP_ERRNO__FILTER_NOT_FOUND;
- 		}
+ 		if (ret >= 0 && pevent->test_filters) {
+ 			char *test;
+-			test = pevent_filter_make_string(filter, event->event->id);
++			test = tep_filter_make_string(filter, event->event->id);
+ 			if (test) {
+ 				printf(" '%s: %s'\n", event->event->name, test);
+ 				free(test);
+@@ -1357,7 +1357,7 @@ static void free_filter_type(struct filter_type *filter_type)
+ }
  
- 		/* Find this event */
-@@ -1365,10 +1365,10 @@ static void free_filter_type(struct filter_type *filter_type)
+ /**
+- * pevent_filter_strerror - fill error message in a buffer
++ * tep_filter_strerror - fill error message in a buffer
+  * @filter: the event filter contains error
+  * @err: the error code
+  * @buf: the buffer to be filled in
+@@ -1365,8 +1365,8 @@ static void free_filter_type(struct filter_type *filter_type)
   *
   * Returns 0 if message was filled successfully, -1 if error
   */
--int pevent_filter_strerror(struct event_filter *filter, enum pevent_errno err,
-+int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
- 			   char *buf, size_t buflen)
+-int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
+-			   char *buf, size_t buflen)
++int tep_filter_strerror(struct event_filter *filter, enum tep_errno err,
++			char *buf, size_t buflen)
  {
--	if (err <= __PEVENT_ERRNO__START || err >= __PEVENT_ERRNO__END)
-+	if (err <= __TEP_ERRNO__START || err >= __TEP_ERRNO__END)
+ 	if (err <= __TEP_ERRNO__START || err >= __TEP_ERRNO__END)
  		return -1;
- 
- 	if (strlen(filter->error_buffer) > 0) {
-@@ -1683,7 +1683,7 @@ int pevent_filter_event_has_trivial(struct event_filter *filter,
+@@ -1383,7 +1383,7 @@ int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
  }
  
- static int test_filter(struct event_format *event, struct filter_arg *arg,
--		       struct tep_record *record, enum pevent_errno *err);
-+		       struct tep_record *record, enum tep_errno *err);
- 
- static const char *
- get_comm(struct event_format *event, struct tep_record *record)
-@@ -1734,11 +1734,11 @@ get_value(struct event_format *event,
- 
- static unsigned long long
- get_arg_value(struct event_format *event, struct filter_arg *arg,
--	      struct tep_record *record, enum pevent_errno *err);
-+	      struct tep_record *record, enum tep_errno *err);
- 
- static unsigned long long
- get_exp_value(struct event_format *event, struct filter_arg *arg,
--	      struct tep_record *record, enum pevent_errno *err)
-+	      struct tep_record *record, enum tep_errno *err)
+ /**
+- * pevent_filter_remove_event - remove a filter for an event
++ * tep_filter_remove_event - remove a filter for an event
+  * @filter: the event filter to remove from
+  * @event_id: the event to remove a filter for
+  *
+@@ -1393,8 +1393,8 @@ int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
+  * Returns 1: if an event was removed
+  *   0: if the event was not found
+  */
+-int pevent_filter_remove_event(struct event_filter *filter,
+-			       int event_id)
++int tep_filter_remove_event(struct event_filter *filter,
++			    int event_id)
  {
- 	unsigned long long lval, rval;
- 
-@@ -1786,14 +1786,14 @@ get_exp_value(struct event_format *event, struct filter_arg *arg,
- 	case FILTER_EXP_NOT:
- 	default:
- 		if (!*err)
--			*err = PEVENT_ERRNO__INVALID_EXP_TYPE;
-+			*err = TEP_ERRNO__INVALID_EXP_TYPE;
- 	}
- 	return 0;
+ 	struct filter_type *filter_type;
+ 	unsigned long len;
+@@ -1423,12 +1423,12 @@ int pevent_filter_remove_event(struct event_filter *filter,
  }
  
- static unsigned long long
- get_arg_value(struct event_format *event, struct filter_arg *arg,
--	      struct tep_record *record, enum pevent_errno *err)
-+	      struct tep_record *record, enum tep_errno *err)
+ /**
+- * pevent_filter_reset - clear all filters in a filter
++ * tep_filter_reset - clear all filters in a filter
+  * @filter: the event filter to reset
+  *
+  * Removes all filters from a filter and resets it.
+  */
+-void pevent_filter_reset(struct event_filter *filter)
++void tep_filter_reset(struct event_filter *filter)
  {
- 	switch (arg->type) {
- 	case FILTER_ARG_FIELD:
-@@ -1802,7 +1802,7 @@ get_arg_value(struct event_format *event, struct filter_arg *arg,
- 	case FILTER_ARG_VALUE:
- 		if (arg->value.type != FILTER_NUMBER) {
- 			if (!*err)
--				*err = PEVENT_ERRNO__NOT_A_NUMBER;
-+				*err = TEP_ERRNO__NOT_A_NUMBER;
+ 	int i;
+ 
+@@ -1440,11 +1440,11 @@ void pevent_filter_reset(struct event_filter *filter)
+ 	filter->event_filters = NULL;
+ }
+ 
+-void pevent_filter_free(struct event_filter *filter)
++void tep_filter_free(struct event_filter *filter)
+ {
+ 	pevent_unref(filter->pevent);
+ 
+-	pevent_filter_reset(filter);
++	tep_filter_reset(filter);
+ 
+ 	free(filter);
+ }
+@@ -1501,18 +1501,18 @@ static int copy_filter_type(struct event_filter *filter,
+ }
+ 
+ /**
+- * pevent_filter_copy - copy a filter using another filter
++ * tep_filter_copy - copy a filter using another filter
+  * @dest - the filter to copy to
+  * @source - the filter to copy from
+  *
+  * Returns 0 on success and -1 if not all filters were copied
+  */
+-int pevent_filter_copy(struct event_filter *dest, struct event_filter *source)
++int tep_filter_copy(struct event_filter *dest, struct event_filter *source)
+ {
+ 	int ret = 0;
+ 	int i;
+ 
+-	pevent_filter_reset(dest);
++	tep_filter_reset(dest);
+ 
+ 	for (i = 0; i < source->filters; i++) {
+ 		if (copy_filter_type(dest, source, &source->event_filters[i]))
+@@ -1523,7 +1523,7 @@ int pevent_filter_copy(struct event_filter *dest, struct event_filter *source)
+ 
+ 
+ /**
+- * pevent_update_trivial - update the trivial filters with the given filter
++ * tep_update_trivial - update the trivial filters with the given filter
+  * @dest - the filter to update
+  * @source - the filter as the source of the update
+  * @type - the type of trivial filter to update.
+@@ -1533,8 +1533,8 @@ int pevent_filter_copy(struct event_filter *dest, struct event_filter *source)
+  * Returns 0 on success and -1 if there was a problem updating, but
+  *   events may have still been updated on error.
+  */
+-int pevent_update_trivial(struct event_filter *dest, struct event_filter *source,
+-			  enum filter_trivial_type type)
++int tep_update_trivial(struct event_filter *dest, struct event_filter *source,
++		       enum filter_trivial_type type)
+ {
+ 	struct tep_handle *src_pevent;
+ 	struct tep_handle *dest_pevent;
+@@ -1571,7 +1571,7 @@ int pevent_update_trivial(struct event_filter *dest, struct event_filter *source
+ 				return -1;
  		}
- 		return arg->value.val;
  
-@@ -1811,13 +1811,13 @@ get_arg_value(struct event_format *event, struct filter_arg *arg,
+-		str = pevent_filter_make_string(source, event->id);
++		str = tep_filter_make_string(source, event->id);
+ 		if (!str)
+ 			continue;
  
- 	default:
- 		if (!*err)
--			*err = PEVENT_ERRNO__INVALID_ARG_TYPE;
-+			*err = TEP_ERRNO__INVALID_ARG_TYPE;
- 	}
+@@ -1584,7 +1584,7 @@ int pevent_update_trivial(struct event_filter *dest, struct event_filter *source
+ }
+ 
+ /**
+- * pevent_filter_clear_trivial - clear TRUE and FALSE filters
++ * tep_filter_clear_trivial - clear TRUE and FALSE filters
+  * @filter: the filter to remove trivial filters from
+  * @type: remove only true, false, or both
+  *
+@@ -1592,8 +1592,8 @@ int pevent_update_trivial(struct event_filter *dest, struct event_filter *source
+  *
+  * Returns 0 on success and -1 if there was a problem.
+  */
+-int pevent_filter_clear_trivial(struct event_filter *filter,
+-				 enum filter_trivial_type type)
++int tep_filter_clear_trivial(struct event_filter *filter,
++			     enum filter_trivial_type type)
+ {
+ 	struct filter_type *filter_type;
+ 	int count = 0;
+@@ -1639,14 +1639,14 @@ int pevent_filter_clear_trivial(struct event_filter *filter,
+ 		return 0;
+ 
+ 	for (i = 0; i < count; i++)
+-		pevent_filter_remove_event(filter, ids[i]);
++		tep_filter_remove_event(filter, ids[i]);
+ 
+ 	free(ids);
  	return 0;
  }
  
- static int test_num(struct event_format *event, struct filter_arg *arg,
--		    struct tep_record *record, enum pevent_errno *err)
-+		    struct tep_record *record, enum tep_errno *err)
+ /**
+- * pevent_filter_event_has_trivial - return true event contains trivial filter
++ * tep_filter_event_has_trivial - return true event contains trivial filter
+  * @filter: the filter with the information
+  * @event_id: the id of the event to test
+  * @type: trivial type to test for (TRUE, FALSE, EITHER)
+@@ -1654,9 +1654,9 @@ int pevent_filter_clear_trivial(struct event_filter *filter,
+  * Returns 1 if the event contains a matching trivial type
+  *  otherwise 0.
+  */
+-int pevent_filter_event_has_trivial(struct event_filter *filter,
+-				    int event_id,
+-				    enum filter_trivial_type type)
++int tep_filter_event_has_trivial(struct event_filter *filter,
++				 int event_id,
++				 enum filter_trivial_type type)
  {
- 	unsigned long long lval, rval;
+ 	struct filter_type *filter_type;
  
-@@ -1852,7 +1852,7 @@ static int test_num(struct event_format *event, struct filter_arg *arg,
- 
- 	default:
- 		if (!*err)
--			*err = PEVENT_ERRNO__ILLEGAL_INTEGER_CMP;
-+			*err = TEP_ERRNO__ILLEGAL_INTEGER_CMP;
- 		return 0;
- 	}
- }
-@@ -1908,7 +1908,7 @@ static const char *get_field_str(struct filter_arg *arg, struct tep_record *reco
+@@ -2001,14 +2001,14 @@ static int test_filter(struct event_format *event, struct filter_arg *arg,
  }
  
- static int test_str(struct event_format *event, struct filter_arg *arg,
--		    struct tep_record *record, enum pevent_errno *err)
-+		    struct tep_record *record, enum tep_errno *err)
+ /**
+- * pevent_event_filtered - return true if event has filter
++ * tep_event_filtered - return true if event has filter
+  * @filter: filter struct with filter information
+  * @event_id: event id to test if filter exists
+  *
+  * Returns 1 if filter found for @event_id
+  *   otherwise 0;
+  */
+-int pevent_event_filtered(struct event_filter *filter, int event_id)
++int tep_event_filtered(struct event_filter *filter, int event_id)
  {
- 	const char *val;
+ 	struct filter_type *filter_type;
  
-@@ -1933,13 +1933,13 @@ static int test_str(struct event_format *event, struct filter_arg *arg,
- 
- 	default:
- 		if (!*err)
--			*err = PEVENT_ERRNO__ILLEGAL_STRING_CMP;
-+			*err = TEP_ERRNO__ILLEGAL_STRING_CMP;
- 		return 0;
- 	}
+@@ -2021,7 +2021,7 @@ int pevent_event_filtered(struct event_filter *filter, int event_id)
  }
  
- static int test_op(struct event_format *event, struct filter_arg *arg,
--		   struct tep_record *record, enum pevent_errno *err)
-+		   struct tep_record *record, enum tep_errno *err)
- {
- 	switch (arg->op.type) {
- 	case FILTER_OP_AND:
-@@ -1955,13 +1955,13 @@ static int test_op(struct event_format *event, struct filter_arg *arg,
- 
- 	default:
- 		if (!*err)
--			*err = PEVENT_ERRNO__INVALID_OP_TYPE;
-+			*err = TEP_ERRNO__INVALID_OP_TYPE;
- 		return 0;
- 	}
- }
- 
- static int test_filter(struct event_format *event, struct filter_arg *arg,
--		       struct tep_record *record, enum pevent_errno *err)
-+		       struct tep_record *record, enum tep_errno *err)
- {
- 	if (*err) {
- 		/*
-@@ -1995,7 +1995,7 @@ static int test_filter(struct event_format *event, struct filter_arg *arg,
- 
- 	default:
- 		if (!*err)
--			*err = PEVENT_ERRNO__INVALID_ARG_TYPE;
-+			*err = TEP_ERRNO__INVALID_ARG_TYPE;
- 		return 0;
- 	}
- }
-@@ -2025,38 +2025,38 @@ int pevent_event_filtered(struct event_filter *filter, int event_id)
+ /**
+- * pevent_filter_match - test if a record matches a filter
++ * tep_filter_match - test if a record matches a filter
   * @filter: filter struct with filter information
   * @record: the record to test against the filter
   *
-- * Returns: match result or error code (prefixed with PEVENT_ERRNO__)
-+ * Returns: match result or error code (prefixed with TEP_ERRNO__)
-  * FILTER_MATCH - filter found for event and @record matches
-  * FILTER_MISS  - filter found for event and @record does not match
-  * FILTER_NOT_FOUND - no filter found for @record's event
+@@ -2032,8 +2032,8 @@ int pevent_event_filtered(struct event_filter *filter, int event_id)
   * NO_FILTER - if no filters exist
   * otherwise - error occurred during test
   */
--enum pevent_errno pevent_filter_match(struct event_filter *filter,
--				      struct tep_record *record)
-+enum tep_errno pevent_filter_match(struct event_filter *filter,
-+				   struct tep_record *record)
+-enum tep_errno pevent_filter_match(struct event_filter *filter,
+-				   struct tep_record *record)
++enum tep_errno tep_filter_match(struct event_filter *filter,
++				struct tep_record *record)
  {
  	struct tep_handle *pevent = filter->pevent;
  	struct filter_type *filter_type;
- 	int event_id;
- 	int ret;
--	enum pevent_errno err = 0;
-+	enum tep_errno err = 0;
- 
- 	filter_init_error_buf(filter);
- 
- 	if (!filter->filters)
--		return PEVENT_ERRNO__NO_FILTER;
-+		return TEP_ERRNO__NO_FILTER;
- 
- 	event_id = pevent_data_type(pevent, record);
- 
- 	filter_type = find_filter_type(filter, event_id);
- 	if (!filter_type)
--		return PEVENT_ERRNO__FILTER_NOT_FOUND;
-+		return TEP_ERRNO__FILTER_NOT_FOUND;
- 
- 	ret = test_filter(filter_type->event, filter_type->filter, record, &err);
- 	if (err)
- 		return err;
- 
--	return ret ? PEVENT_ERRNO__FILTER_MATCH : PEVENT_ERRNO__FILTER_MISS;
-+	return ret ? TEP_ERRNO__FILTER_MATCH : TEP_ERRNO__FILTER_MISS;
+@@ -2350,7 +2350,7 @@ static char *arg_to_str(struct event_filter *filter, struct filter_arg *arg)
  }
  
- static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
+ /**
+- * pevent_filter_make_string - return a string showing the filter
++ * tep_filter_make_string - return a string showing the filter
+  * @filter: filter struct with filter information
+  * @event_id: the event id to return the filter string with
+  *
+@@ -2359,7 +2359,7 @@ static char *arg_to_str(struct event_filter *filter, struct filter_arg *arg)
+  *  NULL is returned if no filter is found or allocation failed.
+  */
+ char *
+-pevent_filter_make_string(struct event_filter *filter, int event_id)
++tep_filter_make_string(struct event_filter *filter, int event_id)
+ {
+ 	struct filter_type *filter_type;
+ 
+@@ -2375,7 +2375,7 @@ pevent_filter_make_string(struct event_filter *filter, int event_id)
+ }
+ 
+ /**
+- * pevent_filter_compare - compare two filters and return if they are the same
++ * tep_filter_compare - compare two filters and return if they are the same
+  * @filter1: Filter to compare with @filter2
+  * @filter2: Filter to compare with @filter1
+  *
+@@ -2383,7 +2383,7 @@ pevent_filter_make_string(struct event_filter *filter, int event_id)
+  *  1 if the two filters hold the same content.
+  *  0 if they do not.
+  */
+-int pevent_filter_compare(struct event_filter *filter1, struct event_filter *filter2)
++int tep_filter_compare(struct event_filter *filter1, struct event_filter *filter2)
+ {
+ 	struct filter_type *filter_type1;
+ 	struct filter_type *filter_type2;
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 74059a0..352ff11 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -503,11 +503,11 @@ static void process_filters(struct handle_list *handles)
+ 		if (!event_filter)
+ 			die("Failed to allocate for event filter");
+ 		event_filter->next = NULL;
+-		event_filter->filter = pevent_filter_alloc(pevent);
++		event_filter->filter = tep_filter_alloc(pevent);
+ 		if (!event_filter->filter)
+ 			die("malloc");
+ 
+-		ret = pevent_filter_add_filter_str(event_filter->filter,
++		ret = tep_filter_add_filter_str(event_filter->filter,
+ 						   filter->filter);
+ 		if (ret < 0) {
+ 			pevent_strerror(pevent, ret, errstr, sizeof(errstr));
+@@ -891,7 +891,7 @@ test_filters(struct tep_handle *pevent, struct filter *event_filters,
+ 	}
+ 
+ 	while (event_filters) {
+-		ret = pevent_filter_match(event_filters->filter, record);
++		ret = tep_filter_match(event_filters->filter, record);
+ 		switch (ret) {
+ 			case FILTER_NONE:
+ 			case FILTER_MATCH: 
+@@ -1099,7 +1099,7 @@ static void free_filters(struct filter *event_filter)
+ 		filter = event_filter;
+ 		event_filter = filter->next;
+ 
+-		pevent_filter_free(filter->filter);
++		tep_filter_free(filter->filter);
+ 		free(filter);
+ 	}
+ }
 -- 
 2.17.1
