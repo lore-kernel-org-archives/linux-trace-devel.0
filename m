@@ -1,11 +1,11 @@
 Return-Path: <SRS0=yn/p=LE=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39454 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727100AbeHUQyN (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:46547 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727100AbeHUQyP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 21 Aug 2018 12:54:13 -0400
-Received: by mail-wr1-f65.google.com with SMTP id o37-v6so7003152wrf.6
-        for <linux-trace-devel@vger.kernel.org>; Tue, 21 Aug 2018 06:34:02 -0700 (PDT)
+        Tue, 21 Aug 2018 12:54:15 -0400
+Received: by mail-wr1-f67.google.com with SMTP id a108-v6so13223973wrc.13
+        for <linux-trace-devel@vger.kernel.org>; Tue, 21 Aug 2018 06:34:04 -0700 (PDT)
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
@@ -13,9 +13,9 @@ Cc: linux-trace-devel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Yordan Karadzhov <y.karadz@gmail.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 22/24] tools lib traceevent: Rename internal parser related APIs
-Date: Tue, 21 Aug 2018 16:33:26 +0300
-Message-Id: <20180821133328.3249-23-tz.stoyanov@gmail.com>
+Subject: [PATCH 24/24] tools lib traceevent: Rename static variables and functions in event-parse.c
+Date: Tue, 21 Aug 2018 16:33:28 +0300
+Message-Id: <20180821133328.3249-25-tz.stoyanov@gmail.com>
 In-Reply-To: <20180821133328.3249-1-tz.stoyanov@gmail.com>
 References: <20180821133328.3249-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -24,193 +24,188 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
 conflicts. That prefix will be "tep_" and not "pevent_". This changes
-APIs: pevent_buffer_init, pevent_read_token, pevent_free_token,
-pevent_peek_char, pevent_get_input_buf, pevent_get_input_buf_ptr
+static variables and functions in event-parse.c: pevent_func_params,
+__pevent_parse_format, __pevent_parse_event, pevent_error_str, pevent_search_event
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180808180703.275281085@goodmis.org
+Link: http://lkml.kernel.org/r/20180808180703.575392642@goodmis.org
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h | 12 ++++++------
- lib/traceevent/event-parse.c     | 24 ++++++++++++------------
- lib/traceevent/parse-filter.c    | 16 ++++++++--------
- 3 files changed, 26 insertions(+), 26 deletions(-)
+ lib/traceevent/event-parse.c | 54 ++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 328d0d3..1da291e 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -785,12 +785,12 @@ void pevent_ref(struct tep_handle *pevent);
- void pevent_unref(struct tep_handle *pevent);
- 
- /* access to the internal parser */
--void pevent_buffer_init(const char *buf, unsigned long long size);
--enum event_type pevent_read_token(char **tok);
--void pevent_free_token(char *token);
--int pevent_peek_char(void);
--const char *pevent_get_input_buf(void);
--unsigned long long pevent_get_input_buf_ptr(void);
-+void tep_buffer_init(const char *buf, unsigned long long size);
-+enum event_type tep_read_token(char **tok);
-+void tep_free_token(char *token);
-+int tep_peek_char(void);
-+const char *tep_get_input_buf(void);
-+unsigned long long tep_get_input_buf_ptr(void);
- 
- /* for debugging */
- void tep_print_funcs(struct tep_handle *pevent);
 diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 8264309..b41608e 100644
+index 51932b8..ce1e202 100644
 --- a/lib/traceevent/event-parse.c
 +++ b/lib/traceevent/event-parse.c
-@@ -59,12 +59,12 @@ static void init_input_buf(const char *buf, unsigned long long size)
- 	input_buf_ptr = 0;
- }
+@@ -78,9 +78,9 @@ struct event_handler {
+ 	void				*context;
+ };
  
--const char *pevent_get_input_buf(void)
-+const char *tep_get_input_buf(void)
- {
- 	return input_buf;
- }
+-struct pevent_func_params {
+-	struct pevent_func_params	*next;
+-	enum tep_func_arg_type		type;
++struct func_params {
++	struct func_params	*next;
++	enum tep_func_arg_type	type;
+ };
  
--unsigned long long pevent_get_input_buf_ptr(void)
-+unsigned long long tep_get_input_buf_ptr(void)
- {
- 	return input_buf_ptr;
- }
-@@ -99,14 +99,14 @@ process_defined_func(struct trace_seq *s, void *data, int size,
- static void free_func_handle(struct tep_function_handler *func);
+ struct tep_function_handler {
+@@ -88,7 +88,7 @@ struct tep_function_handler {
+ 	enum tep_func_arg_type		ret_type;
+ 	char				*name;
+ 	tep_func_handler		func;
+-	struct pevent_func_params	*params;
++	struct func_params		*params;
+ 	int				nr_args;
+ };
  
- /**
-- * pevent_buffer_init - init buffer for parsing
-+ * tep_buffer_init - init buffer for parsing
-  * @buf: buffer to parse
-  * @size: the size of the buffer
-  *
-- * For use with pevent_read_token(), this initializes the internal
-- * buffer that pevent_read_token() will parse.
-+ * For use with tep_read_token(), this initializes the internal
-+ * buffer that tep_read_token() will parse.
-  */
--void pevent_buffer_init(const char *buf, unsigned long long size)
-+void tep_buffer_init(const char *buf, unsigned long long size)
- {
- 	init_input_buf(buf, size);
- }
-@@ -899,11 +899,11 @@ static int __peek_char(void)
- }
- 
- /**
-- * pevent_peek_char - peek at the next character that will be read
-+ * tep_peek_char - peek at the next character that will be read
-  *
-  * Returns the next character read, or -1 if end of buffer.
-  */
--int pevent_peek_char(void)
-+int tep_peek_char(void)
- {
- 	return __peek_char();
- }
-@@ -1143,7 +1143,7 @@ static enum event_type read_token(char **tok)
- }
- 
- /**
-- * pevent_read_token - access to utilites to use the pevent parser
-+ * tep_read_token - access to utilites to use the pevent parser
+@@ -1147,7 +1147,7 @@ static enum event_type read_token(char **tok)
   * @tok: The token to return
   *
   * This will parse tokens from the string given by
-@@ -1151,16 +1151,16 @@ static enum event_type read_token(char **tok)
+- * pevent_init_data().
++ * tep_init_data().
   *
   * Returns the token type.
   */
--enum event_type pevent_read_token(char **tok)
-+enum event_type tep_read_token(char **tok)
+@@ -4119,7 +4119,7 @@ process_defined_func(struct trace_seq *s, void *data, int size,
+ 		     struct event_format *event, struct print_arg *arg)
  {
- 	return read_token(tok);
+ 	struct tep_function_handler *func_handle = arg->func.func;
+-	struct pevent_func_params *param;
++	struct func_params *param;
+ 	unsigned long long *args;
+ 	unsigned long long ret;
+ 	struct print_arg *farg;
+@@ -6009,7 +6009,7 @@ static int find_event_handle(struct tep_handle *pevent, struct event_format *eve
  }
  
  /**
-- * pevent_free_token - free a token returned by pevent_read_token
-+ * tep_free_token - free a token returned by tep_read_token
-  * @token: the token to free
+- * __pevent_parse_format - parse the event format
++ * __tep_parse_format - parse the event format
+  * @buf: the buffer storing the event format string
+  * @size: the size of @buf
+  * @sys: the system the event belongs to
+@@ -6021,9 +6021,9 @@ static int find_event_handle(struct tep_handle *pevent, struct event_format *eve
+  *
+  * /sys/kernel/debug/tracing/events/.../.../format
   */
--void pevent_free_token(char *token)
-+void tep_free_token(char *token)
+-enum tep_errno __pevent_parse_format(struct event_format **eventp,
+-				     struct tep_handle *pevent, const char *buf,
+-				     unsigned long size, const char *sys)
++enum tep_errno __tep_parse_format(struct event_format **eventp,
++				  struct tep_handle *pevent, const char *buf,
++				  unsigned long size, const char *sys)
  {
- 	free_token(token);
- }
-diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
-index a1d0e3a..1ff488d 100644
---- a/lib/traceevent/parse-filter.c
-+++ b/lib/traceevent/parse-filter.c
-@@ -37,8 +37,8 @@ static void show_error(char *error_buf, const char *fmt, ...)
- 	int len;
- 	int i;
- 
--	input = pevent_get_input_buf();
--	index = pevent_get_input_buf_ptr();
-+	input = tep_get_input_buf();
-+	index = tep_get_input_buf_ptr();
- 	len = input ? strlen(input) : 0;
- 
- 	if (len) {
-@@ -58,7 +58,7 @@ static void show_error(char *error_buf, const char *fmt, ...)
- 
- static void free_token(char *token)
- {
--	pevent_free_token(token);
-+	tep_free_token(token);
- }
- 
- static enum event_type read_token(char **tok)
-@@ -68,13 +68,13 @@ static enum event_type read_token(char **tok)
- 
- 	do {
- 		free_token(token);
--		type = pevent_read_token(&token);
-+		type = tep_read_token(&token);
- 	} while (type == EVENT_NEWLINE || type == EVENT_SPACE);
- 
- 	/* If token is = or ! check to see if the next char is ~ */
- 	if (token &&
- 	    (strcmp(token, "=") == 0 || strcmp(token, "!") == 0) &&
--	    pevent_peek_char() == '~') {
-+	    tep_peek_char() == '~') {
- 		/* append it */
- 		*tok = malloc(3);
- 		if (*tok == NULL) {
-@@ -84,7 +84,7 @@ static enum event_type read_token(char **tok)
- 		sprintf(*tok, "%c%c", *token, '~');
- 		free_token(token);
- 		/* Now remove the '~' from the buffer */
--		pevent_read_token(&token);
-+		tep_read_token(&token);
- 		free_token(token);
- 	} else
- 		*tok = token;
-@@ -1184,7 +1184,7 @@ process_event(struct event_format *event, const char *filter_str,
- {
+ 	struct event_format *event;
  	int ret;
- 
--	pevent_buffer_init(filter_str, strlen(filter_str));
-+	tep_buffer_init(filter_str, strlen(filter_str));
- 
- 	ret = process_filter(event, parg, error_str, 0);
- 	if (ret < 0)
-@@ -1240,7 +1240,7 @@ filter_event(struct event_filter *filter, struct event_format *event,
- static void filter_init_error_buf(struct event_filter *filter)
- {
- 	/* clear buffer to reset show error */
--	pevent_buffer_init("", 0);
-+	tep_buffer_init("", 0);
- 	filter->error_buffer[0] = '\0';
+@@ -6129,12 +6129,12 @@ enum tep_errno __pevent_parse_format(struct event_format **eventp,
  }
+ 
+ static enum tep_errno
+-__pevent_parse_event(struct tep_handle *pevent,
+-		     struct event_format **eventp,
+-		     const char *buf, unsigned long size,
+-		     const char *sys)
++__parse_event(struct tep_handle *pevent,
++	      struct event_format **eventp,
++	      const char *buf, unsigned long size,
++	      const char *sys)
+ {
+-	int ret = __pevent_parse_format(eventp, pevent, buf, size, sys);
++	int ret = __tep_parse_format(eventp, pevent, buf, size, sys);
+ 	struct event_format *event = *eventp;
+ 
+ 	if (event == NULL)
+@@ -6176,7 +6176,7 @@ enum tep_errno tep_parse_format(struct tep_handle *pevent,
+ 				const char *buf,
+ 				unsigned long size, const char *sys)
+ {
+-	return __pevent_parse_event(pevent, eventp, buf, size, sys);
++	return __parse_event(pevent, eventp, buf, size, sys);
+ }
+ 
+ /**
+@@ -6197,12 +6197,12 @@ enum tep_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
+ 			       unsigned long size, const char *sys)
+ {
+ 	struct event_format *event = NULL;
+-	return __pevent_parse_event(pevent, &event, buf, size, sys);
++	return __parse_event(pevent, &event, buf, size, sys);
+ }
+ 
+ #undef _PE
+ #define _PE(code, str) str
+-static const char * const pevent_error_str[] = {
++static const char * const tep_error_str[] = {
+ 	TEP_ERRORS
+ };
+ #undef _PE
+@@ -6223,7 +6223,7 @@ int tep_strerror(struct tep_handle *pevent __maybe_unused,
+ 		return -1;
+ 
+ 	idx = errnum - __TEP_ERRNO__START - 1;
+-	msg = pevent_error_str[idx];
++	msg = tep_error_str[idx];
+ 	snprintf(buf, buflen, "%s", msg);
+ 
+ 	return 0;
+@@ -6449,7 +6449,7 @@ int tep_print_func_field(struct trace_seq *s, const char *fmt,
+ 
+ static void free_func_handle(struct tep_function_handler *func)
+ {
+-	struct pevent_func_params *params;
++	struct func_params *params;
+ 
+ 	free(func->name);
+ 
+@@ -6483,8 +6483,8 @@ int tep_register_print_function(struct tep_handle *pevent,
+ 				char *name, ...)
+ {
+ 	struct tep_function_handler *func_handle;
+-	struct pevent_func_params **next_param;
+-	struct pevent_func_params *param;
++	struct func_params **next_param;
++	struct func_params *param;
+ 	enum tep_func_arg_type type;
+ 	va_list ap;
+ 	int ret;
+@@ -6577,9 +6577,9 @@ int tep_unregister_print_function(struct tep_handle *pevent,
+ 	return -1;
+ }
+ 
+-static struct event_format *pevent_search_event(struct tep_handle *pevent, int id,
+-						const char *sys_name,
+-						const char *event_name)
++static struct event_format *search_event(struct tep_handle *pevent, int id,
++					 const char *sys_name,
++					 const char *event_name)
+ {
+ 	struct event_format *event;
+ 
+@@ -6624,7 +6624,7 @@ int tep_register_event_handler(struct tep_handle *pevent, int id,
+ 	struct event_format *event;
+ 	struct event_handler *handle;
+ 
+-	event = pevent_search_event(pevent, id, sys_name, event_name);
++	event = search_event(pevent, id, sys_name, event_name);
+ 	if (event == NULL)
+ 		goto not_found;
+ 
+@@ -6709,7 +6709,7 @@ int tep_unregister_event_handler(struct tep_handle *pevent, int id,
+ 	struct event_handler *handle;
+ 	struct event_handler **next;
+ 
+-	event = pevent_search_event(pevent, id, sys_name, event_name);
++	event = search_event(pevent, id, sys_name, event_name);
+ 	if (event == NULL)
+ 		goto not_found;
  
 -- 
 2.17.1
