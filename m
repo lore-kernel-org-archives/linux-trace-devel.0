@@ -1,66 +1,47 @@
 Return-Path: <SRS0=wogL=LF=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f65.google.com ([74.125.82.65]:37256 "EHLO
-        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728958AbeHVTH0 (ORCPT
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:46114 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728958AbeHVTHT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 22 Aug 2018 15:07:26 -0400
-Received: by mail-wm0-f65.google.com with SMTP id n11-v6so2655746wmc.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 22 Aug 2018 08:42:02 -0700 (PDT)
+        Wed, 22 Aug 2018 15:07:19 -0400
+Received: by mail-wr1-f66.google.com with SMTP id a108-v6so1965984wrc.13
+        for <linux-trace-devel@vger.kernel.org>; Wed, 22 Aug 2018 08:41:55 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/5] kernel-shark-qt: Add OpenGL/GLUT as a third party dependency.
-Date: Wed, 22 Aug 2018 18:41:36 +0300
-Message-Id: <20180822154140.3748-2-y.karadz@gmail.com>
-In-Reply-To: <20180822154140.3748-1-y.karadz@gmail.com>
-References: <20180822154140.3748-1-y.karadz@gmail.com>
+Subject: [PATCH 0/5] Add drawing instrumentation to be used by the Qt-based KernelShark
+Date: Wed, 22 Aug 2018 18:41:35 +0300
+Message-Id: <20180822154140.3748-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch prepares the Cmake build infrastructure for the
-introduction of a KernelShark Ploting library, baset on OpenGl.
-The Ploting library will be added in the following patch.
+The KernelShark plotting library is introduced in this series of patches.
+The library will be used  by the GUI to draw CPU and Task Graphs. This is
+also the first time KernelShark enters the world of C++.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- kernel-shark-qt/CMakeLists.txt | 3 +++
- kernel-shark-qt/README         | 2 ++
- 2 files changed, 5 insertions(+)
+Yordan Karadzhov (VMware) (5):
+  kernel-shark-qt: Add OpenGL/GLUT as a third party dependency.
+  kernel-shark-qt: Add basic instruments for OpenGL plotting.
+  kernel-shark-qt: Add C++ API for drawing of Graphs
+  kernel-shark-qt: Add an example showing how to draw shapes and Graphs.
+  kernel-shark-qt: Version 0.8.0
 
-diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
-index 3516caa..0187eb4 100644
---- a/kernel-shark-qt/CMakeLists.txt
-+++ b/kernel-shark-qt/CMakeLists.txt
-@@ -17,6 +17,9 @@ include(${KS_DIR}/build/FindJSONC.cmake)
- 
- find_package(Doxygen)
- 
-+find_package(OpenGL)
-+find_package(GLUT)
-+
- set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
- set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
- 
-diff --git a/kernel-shark-qt/README b/kernel-shark-qt/README
-index e6818fc..f03288c 100644
---- a/kernel-shark-qt/README
-+++ b/kernel-shark-qt/README
-@@ -7,6 +7,7 @@ Third Party Software:
- The external dependencies:
- 1. In order to install the packages on Ubuntu do the following:
-     sudo apt-get install build-essential git cmake libjson-c-dev -y
-+    sudo apt-get install freeglut3-dev libxmu-dev libxi-dev -y
- 
- 1.1 I you want to be able to generate Doxygen documentation:
-     sudo apt-get install graphviz doxygen-gui -y
-@@ -14,6 +15,7 @@ The external dependencies:
- 
- 2. In order to install the packages on Fedora, as root do the following:
-     dnf install gcc gcc-c++ git cmake json-c-devel -y
-+    dnf install freeglut-devel redhat-rpm-config -y
- 
- 2.1 I you want to be able to generate Doxygen documentation:
-     dnf install graphviz doxygen -y
+ kernel-shark-qt/CMakeLists.txt          |    7 +-
+ kernel-shark-qt/README                  |    2 +
+ kernel-shark-qt/examples/CMakeLists.txt |    4 +
+ kernel-shark-qt/examples/dataplot.cpp   |  213 +++++
+ kernel-shark-qt/src/CMakeLists.txt      |   14 +
+ kernel-shark-qt/src/KsPlotTools.cpp     | 1009 +++++++++++++++++++++++
+ kernel-shark-qt/src/KsPlotTools.hpp     |  440 ++++++++++
+ kernel-shark-qt/src/libkshark-plot.c    |  212 +++++
+ kernel-shark-qt/src/libkshark-plot.h    |   69 ++
+ 9 files changed, 1968 insertions(+), 2 deletions(-)
+ create mode 100644 kernel-shark-qt/examples/dataplot.cpp
+ create mode 100644 kernel-shark-qt/src/KsPlotTools.cpp
+ create mode 100644 kernel-shark-qt/src/KsPlotTools.hpp
+ create mode 100644 kernel-shark-qt/src/libkshark-plot.c
+ create mode 100644 kernel-shark-qt/src/libkshark-plot.h
+
 -- 
 2.17.1
