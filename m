@@ -1,264 +1,351 @@
 Return-Path: <SRS0=wogL=LF=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:35833 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729208AbeHVTHl (ORCPT
+Received: from mail-wm0-f65.google.com ([74.125.82.65]:39903 "EHLO
+        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728958AbeHVTHh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 22 Aug 2018 15:07:41 -0400
-Received: by mail-wr1-f68.google.com with SMTP id j26-v6so2005618wre.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 22 Aug 2018 08:42:16 -0700 (PDT)
+        Wed, 22 Aug 2018 15:07:37 -0400
+Received: by mail-wm0-f65.google.com with SMTP id q8-v6so2668091wmq.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 22 Aug 2018 08:42:12 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 4/5] kernel-shark-qt: Add an example showing how to draw shapes and Graphs.
-Date: Wed, 22 Aug 2018 18:41:39 +0300
-Message-Id: <20180822154140.3748-5-y.karadz@gmail.com>
+Subject: [PATCH 2/5] kernel-shark-qt: Add basic instruments for OpenGL plotting.
+Date: Wed, 22 Aug 2018 18:41:37 +0300
+Message-Id: <20180822154140.3748-3-y.karadz@gmail.com>
 In-Reply-To: <20180822154140.3748-1-y.karadz@gmail.com>
 References: <20180822154140.3748-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch introduces a basic example, showing how to initialize OpenGL
-and how to use the C++ API in order to draw simple shapes or to show
-animated Graphs.
+This patch introduces tools for initializing OpenGL and for drawing
+the three basic geometrical primitives (point, line and polygon)
+used when plotting KernelShark's graphs.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/examples/CMakeLists.txt |   4 +
- kernel-shark-qt/examples/dataplot.cpp   | 213 ++++++++++++++++++++++++
- 2 files changed, 217 insertions(+)
- create mode 100644 kernel-shark-qt/examples/dataplot.cpp
+ kernel-shark-qt/src/CMakeLists.txt   |  13 ++
+ kernel-shark-qt/src/libkshark-plot.c | 212 +++++++++++++++++++++++++++
+ kernel-shark-qt/src/libkshark-plot.h |  69 +++++++++
+ 3 files changed, 294 insertions(+)
+ create mode 100644 kernel-shark-qt/src/libkshark-plot.c
+ create mode 100644 kernel-shark-qt/src/libkshark-plot.h
 
-diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/examples/CMakeLists.txt
-index a3745fa..0c83293 100644
---- a/kernel-shark-qt/examples/CMakeLists.txt
-+++ b/kernel-shark-qt/examples/CMakeLists.txt
-@@ -15,3 +15,7 @@ target_link_libraries(dhisto   kshark)
- message(STATUS "confogio")
- add_executable(confio          configio.c)
- target_link_libraries(confio   kshark)
+diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
+index a762da1..9c74bc0 100644
+--- a/kernel-shark-qt/src/CMakeLists.txt
++++ b/kernel-shark-qt/src/CMakeLists.txt
+@@ -13,5 +13,18 @@ target_link_libraries(kshark ${CMAKE_DL_LIBS}
+ 
+ set_target_properties(kshark  PROPERTIES SUFFIX	".so.${KS_VERSION_STRING}")
+ 
++if (OPENGL_FOUND AND GLUT_FOUND)
 +
-+message(STATUS "dataplot")
-+add_executable(dplot          dataplot.cpp)
-+target_link_libraries(dplot   kshark-plot)
-diff --git a/kernel-shark-qt/examples/dataplot.cpp b/kernel-shark-qt/examples/dataplot.cpp
++    message(STATUS "libkshark-plot")
++    add_library(kshark-plot  SHARED  libkshark-plot.c)
++
++    target_link_libraries(kshark-plot  kshark
++                                       ${OPENGL_LIBRARIES}
++                                       ${GLUT_LIBRARY})
++
++    set_target_properties(kshark-plot PROPERTIES  SUFFIX ".so.${KS_VERSION_STRING}")
++
++endif (OPENGL_FOUND AND GLUT_FOUND)
++
+ configure_file( ${KS_DIR}/build/deff.h.cmake
+                 ${KS_DIR}/src/KsDeff.h)
+diff --git a/kernel-shark-qt/src/libkshark-plot.c b/kernel-shark-qt/src/libkshark-plot.c
 new file mode 100644
-index 0000000..9c1eeca
+index 0000000..17d3b90
 --- /dev/null
-+++ b/kernel-shark-qt/examples/dataplot.cpp
-@@ -0,0 +1,213 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/kernel-shark-qt/src/libkshark-plot.c
+@@ -0,0 +1,212 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
 +
 +/*
 + * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
 + */
 +
-+// C
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+
-+// C++
-+#include <vector>
++ /**
++  *  @file    libkshark-plot.c
++  *  @brief   Basic tools for OpenGL plotting.
++  */
 +
 +// OpenGL
 +#include <GL/freeglut.h>
++#include <GL/gl.h>
 +
 +// KernelShark
-+#include "libkshark.h"
-+#include "KsPlotTools.hpp"
++#include "libkshark-plot.h"
 +
-+using namespace std;
-+
-+#define GRAPH_HEIGHT	40   // width of the graph in pixels
-+#define GRAPH_H_MARGIN	50   // size of the white space surrounding the graph
-+#define WINDOW_WIDTH	800  // width of the screen window in pixels
-+#define WINDOW_HEIGHT	480  // height of the scrren window in pixels
-+
-+#define default_file (char*)"trace.dat"
-+
-+struct kshark_trace_histo	histo;
-+vector<KsPlot::Graph *>		graphs;
-+
-+/* An example function drawing something. */
-+void drawShapes()
++/**
++ * @brief Create an empty scene for drawing.
++ *
++ * @param width: Width of the screen window in pixels.
++ * @param height: Height of the screen window in pixels.
++ */
++void ksplot_make_scene(int width, int height)
 +{
-+	/* Clear the screen. */
-+	glClear(GL_COLOR_BUFFER_BIT);
++	/* Set Display mode. */
++	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 +
-+	KsPlot::Triangle t;
-+	KsPlot::Point a(200, 100), b(200, 300), c(400, 100);
-+	t.setPoint(0, a);
-+	t.setPoint(1, b);
-+	t.setPoint(2, c);
++	/* Prevent the program from exiting when a window is closed. */
++	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
++		      GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 +
-+	/* Set RGB color. */
-+	t._color = {100, 200, 50};
-+	t.draw();
++	/* Set window size. */
++	glutInitWindowSize(width, height);
 +
-+	KsPlot::Rectangle r;
-+	KsPlot::Point d(400, 200), e(400, 300), f(500, 300), g(500, 200);
-+	r.setPoint(0, d);
-+	r.setPoint(1, e);
-+	r.setPoint(2, f);
-+	r.setPoint(3, g);
++	/* Set window position on screen. */
++	glutInitWindowPosition(50, 50);
 +
-+	/* Set RGB color. */
-+	r._color = {150, 50, 250};
++	/* Open the screen window. */
++	glutCreateWindow("KernelShark Plot");
 +
-+	/** Do not fiil the rectangle. Draw the contour only. */
-+	r.setFill(false);
-+	r.draw();
++	/*
++	 * Set the origin of the coordinate system to be the top left corner.
++	 * The "Y" coordinate is inverted.
++	 */
++	gluOrtho2D(0, width, height, 0);
++	glViewport(0, 0, width, height);
 +
-+	glFlush();
++	glMatrixMode(GL_PROJECTION);
++	glLoadIdentity();
 +}
 +
-+/* An example function demonstrating Zoom In and Zoom Out. */
-+void play()
++/**
++ * @brief Initialize OpenGL.
++ *
++ * @param dpr: Device Pixel Ratio.
++ */
++void ksplot_init_opengl(int dpr)
 +{
-+	KsPlot::ColorTable colors = KsPlot::getColorTable();
-+	vector<int> CPUs, Tasks;
-+	KsPlot::Graph *graph;
-+	bool zoom_in(true);
-+
-+	CPUs = {3, 4, 6};
-+	Tasks = {}; // Add valid pids here, if you want task plots.
-+
-+	auto init_graph = [&graph, &colors] (int i) {
-+		int base;
-+
-+		/* Make a new Graph. */
-+		graph = new KsPlot::Graph(&histo, &colors);
-+
-+		/* Set the dimensions of the Graph. */
-+		graph->setHeight(GRAPH_HEIGHT);
-+		graph->setHMargin(GRAPH_H_MARGIN);
-+
-+		/*
-+		 * Set the Y coordinate of the Graph's base.
-+		 * Remember that the "Y" coordinate is inverted.
-+		 */
-+		base = 1.7 * GRAPH_HEIGHT * (i + 1);
-+		graph->setBase(base);
-+
-+		/* Add the Graph. */
-+		graphs.push_back(graph);
-+	};
-+
-+	for (size_t i = 0; i < CPUs.size() + Tasks.size(); ++i)
-+		init_graph(i);
-+
-+	auto draw_graphs = [&CPUs, &Tasks] () {
-+		vector<KsPlot::Graph *>::iterator it = graphs.begin();
-+
-+		for (int const &cpu: CPUs)
-+			(*it++)->fillCPUGraph(cpu);
-+
-+		for (int const &pid: Tasks)
-+			(*it++)->fillTaskGraph(pid);
-+
-+		/* Clear the screen. */
-+		glClear(GL_COLOR_BUFFER_BIT);
-+
-+		/* Draw all graphs. */
-+		for (auto &g: graphs)
-+			g->draw();
-+
-+		glFlush();
-+	};
-+
-+	for (int i = 1; i < 1000; ++i) {
-+		if (!(i % 250))
-+			zoom_in = !zoom_in;
-+
-+		draw_graphs();
-+
-+		if (zoom_in)
-+			ksmodel_zoom_in(&histo, .01, -1);
-+		else
-+			ksmodel_zoom_out(&histo, .01, -1);
-+	}
++	glDisable(GL_TEXTURE_2D);
++	glDisable(GL_DEPTH_TEST);
++	glDisable(GL_COLOR_MATERIAL);
++	glEnable(GL_BLEND);
++	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
++	glEnable(GL_POLYGON_SMOOTH);
++	glLineWidth(1.5 * dpr);
++	glPointSize(2.5 * dpr);
++	glClearColor(1, 1, 1, 1);
 +}
 +
-+int main(int argc, char **argv)
++/**
++ * @brief To be called whenever the OpenGL window has been resized.
++ *
++ * @param width: Width of the screen window in pixels.
++ * @param height: Height of the screen window in pixels.
++ */
++void ksplot_resize_opengl(int width, int height)
 +{
-+	struct kshark_context *kshark_ctx(nullptr);
-+	struct kshark_entry **data(nullptr);
-+	static char *input_file;
-+	bool status, shapes(false);
-+	size_t r, n_rows;
-+	int c, nBins;
++	glViewport(0, 0, width, height);
++	glMatrixMode(GL_PROJECTION);
++	glLoadIdentity();
 +
-+	while ((c = getopt(argc, argv, "si")) != -1) {
-+		switch(c) {
-+		case 'i':
-+			input_file = optarg;
-+			break;
-+		case 's':
-+			shapes = true;
++	/*
++	 * Set the origin of the coordinate system to be the top left corner.
++	 * The "Y" coordinate is inverted.
++	 */
++	gluOrtho2D(0, width, height, 0);
 +
-+		default:
-+			break;
-+		}
-+	}
-+
-+	/* Create a new kshark session. */
-+	if (!kshark_instance(&kshark_ctx))
-+		return 1;
-+
-+	/* Open a trace data file produced by trace-cmd. */
-+	if (input_file)
-+		status = kshark_open(kshark_ctx, input_file);
-+	else
-+		status = kshark_open(kshark_ctx, default_file);
-+
-+	if (!status) {
-+		kshark_free(kshark_ctx);
-+		return 1;
-+	}
-+
-+	/* Load the content of the file into an array of entries. */
-+	n_rows = kshark_load_data_entries(kshark_ctx, &data);
-+
-+	/* Initialize the Visualization Model. */
-+	ksmodel_init(&histo);
-+
-+	nBins = WINDOW_WIDTH - 2 * GRAPH_HEIGHT;
-+	ksmodel_set_bining(&histo, nBins, data[0]->ts,
-+					  data[n_rows - 1]->ts);
-+
-+	/* Fill the model with data and calculate its state. */
-+	ksmodel_fill(&histo, data, n_rows);
-+
-+	/* Initialize OpenGL/Glut. */
-+	glutInit(&argc, argv);
-+	ksplot_make_scene(WINDOW_WIDTH, WINDOW_HEIGHT);
-+	ksplot_init_opengl(1);
-+
-+	/* Display something. */
-+	if (shapes)
-+		glutDisplayFunc(drawShapes);
-+	else
-+		glutDisplayFunc(play);
-+
-+	glutMainLoop();
-+
-+	/* Free the memory. */
-+	for (auto &g: graphs)
-+		delete g;
-+
-+	for (r = 0; r < n_rows; ++r)
-+		free(data[r]);
-+	free(data);
-+
-+	/* Close the file. */
-+	kshark_close(kshark_ctx);
-+
-+	/* Close the session. */
-+	kshark_free(kshark_ctx);
-+
-+	return 0;
++	glMatrixMode(GL_MODELVIEW);
++	glLoadIdentity();
 +}
++
++/**
++ * @brief Draw a point.
++ *
++ * @param p: Input location for the point object.
++ * @param col: The color of the point.
++ * @param size: The size of the point.
++ */
++void ksplot_draw_point(const struct ksplot_point *p,
++		       const struct ksplot_color *col,
++		       float size)
++{
++	if (!p || !col || size < .5f)
++		return;
++
++	glPointSize(size);
++	glBegin(GL_POINTS);
++	glColor3ub(col->red, col->green, col->blue);
++	glVertex2i(p->x, p->y);
++	glEnd();
++}
++
++/**
++ * @brief Draw a line.
++ *
++ * @param a: Input location for the first finishing point of the line.
++ * @param b: Input location for the second finishing point of the line.
++ * @param col: The color of the line.
++ * @param size: The size of the line.
++ */
++void ksplot_draw_line(const struct ksplot_point *a,
++		      const struct ksplot_point *b,
++		      const struct ksplot_color *col,
++		      float size)
++{
++	if (!a || !b || !col || size < .5f)
++		return;
++
++	glLineWidth(size);
++	glBegin(GL_LINES);
++	glColor3ub(col->red, col->green, col->blue);
++	glVertex2i(a->x, a->y);
++	glVertex2i(b->x, b->y);
++	glEnd();
++}
++
++/**
++ * @brief Draw a polygon.
++ *
++ * @param points: Input location for the array of points defining the polygon.
++ * @param n_points: The size of the array of points.
++ * @param col: The color of the polygon.
++ * @param size: The size of the polygon.
++ */
++void ksplot_draw_polygon(const struct ksplot_point *points,
++			 size_t n_points,
++			 const struct ksplot_color *col,
++			 float size)
++{
++	if (!points || !n_points || !col || size < .5f)
++		return;
++
++	if (n_points == 1) {
++		ksplot_draw_point(points, col, size);
++		return;
++	}
++
++	if (n_points == 2) {
++		ksplot_draw_line(points, points + 1, col, size);
++		return;
++	}
++
++	/* Obtain a point inside the surface of the polygon. */
++	struct ksplot_point in_point;
++	in_point.x = (points[0].x + points[2].x) / 2;
++	in_point.y = (points[0].y + points[2].y) / 2;
++
++	/*
++	 * Draw a Triangle Fan using the internal point as a central
++	 * vertex.
++	 */
++	glBegin(GL_TRIANGLE_FAN);
++	glColor3ub(col->red, col->green, col->blue);
++	glVertex2i(in_point.x, in_point.y);
++	for (size_t i = 0; i < n_points; ++i)
++		glVertex2i(points[i].x, points[i].y);
++
++	glVertex2i(points[0].x, points[0].y);
++	glEnd();
++}
++
++/**
++ * @brief Draw the contour of a polygon.
++ *
++ * @param points: Input location for the array of points defining the polygon.
++ * @param n_points: The size of the array of points.
++ * @param col: The color of the polygon.
++ * @param size: The size of the polygon.
++ */
++void ksplot_draw_polygon_contour(const struct ksplot_point *points,
++				 size_t n_points,
++				 const struct ksplot_color *col,
++				 float size)
++{
++	if (!points || !n_points || !col || size < .5f)
++		return;
++
++	/* Loop over the points of the polygon and draw connecting lines. */
++	for(size_t i = 1; i < n_points; ++i)
++		ksplot_draw_line(&points[i - 1],
++				 &points[i],
++				 col,
++				 size);
++
++	/* Close the contour. */
++	ksplot_draw_line(&points[0],
++			 &points[n_points - 1],
++			 col,
++			 size);
++}
+diff --git a/kernel-shark-qt/src/libkshark-plot.h b/kernel-shark-qt/src/libkshark-plot.h
+new file mode 100644
+index 0000000..9a4dbc0
+--- /dev/null
++++ b/kernel-shark-qt/src/libkshark-plot.h
+@@ -0,0 +1,69 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++
++/*
++ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ */
++
++ /**
++  *  @file    libkshark-plot.h
++  *  @brief   Basic tools for OpenGL plotting.
++  */
++
++#ifndef _LIB_KSHARK_PLOT_H
++#define _LIB_KSHARK_PLOT_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/** Structure defining a RGB color. */
++struct ksplot_color {
++	/** The Red component of the color. */
++	uint8_t red;
++
++	/** The Green component of the color. */
++	uint8_t green;
++
++	/** The Blue component of the color. */
++	uint8_t blue;
++};
++
++/** Structure defining a 2D point. */
++struct ksplot_point {
++	/** The horizontal coordinate of the point in pixels. */
++	int x;
++
++	/** The vertical coordinate of the pointin in pixels. */
++	int y;
++};
++
++void ksplot_make_scene(int width, int height);
++
++void ksplot_init_opengl(int dpr);
++
++void ksplot_resize_opengl(int width, int height);
++
++void ksplot_draw_point(const struct ksplot_point *p,
++		       const struct ksplot_color *col,
++		       float size);
++
++void ksplot_draw_line(const struct ksplot_point *a,
++		      const struct ksplot_point *b,
++		      const struct ksplot_color *col,
++		      float size);
++
++void ksplot_draw_polygon(const struct ksplot_point *points,
++			 size_t n_points,
++			 const struct ksplot_color *col,
++			 float size);
++
++void ksplot_draw_polygon_contour(const struct ksplot_point *points,
++				 size_t n_points,
++				 const struct ksplot_color *col,
++				 float size);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
 -- 
 2.17.1
