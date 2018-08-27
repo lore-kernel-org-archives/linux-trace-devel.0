@@ -1,17 +1,17 @@
 Return-Path: <SRS0=/uS6=LK=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39865 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726868AbeH0MEB (ORCPT
+Received: from mail-wm0-f54.google.com ([74.125.82.54]:35534 "EHLO
+        mail-wm0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbeH0MED (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 27 Aug 2018 08:04:01 -0400
-Received: by mail-wr1-f65.google.com with SMTP id o37-v6so12743168wrf.6
-        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Aug 2018 01:18:23 -0700 (PDT)
+        Mon, 27 Aug 2018 08:04:03 -0400
+Received: by mail-wm0-f54.google.com with SMTP id o18-v6so7436140wmc.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Aug 2018 01:18:24 -0700 (PDT)
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 19/24] tools lib traceevent: Rename pevent field APIs
-Date: Mon, 27 Aug 2018 11:17:54 +0300
-Message-Id: <20180827081759.17297-20-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 20/24] tools lib traceevent: Rename pevent_find_* APIs
+Date: Mon, 27 Aug 2018 11:17:55 +0300
+Message-Id: <20180827081759.17297-21-tz.stoyanov@gmail.com>
 In-Reply-To: <20180827081759.17297-1-tz.stoyanov@gmail.com>
 References: <20180827081759.17297-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -20,564 +20,685 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
 conflicts. That prefix will be "tep_" and not "pevent_". This changes
-APIs: pevent_free_format, pevent_free_format_field, pevent_get_field_raw,
-pevent_get_field_val, pevent_get_common_field_val, pevent_get_any_field_val
+APIs: pevent_find_function, pevent_find_function_address,
+pevent_find_event_by_name, pevent_find_event_by_record
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180808180702.821244942@goodmis.org
+Link: http://lkml.kernel.org/r/20180808180702.966965051@goodmis.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/traceevent/event-parse.h | 28 ++++++++++-----------
- lib/trace-cmd/trace-ftrace.c     | 34 +++++++++++++-------------
- lib/traceevent/event-parse.c     | 42 ++++++++++++++++----------------
- plugins/plugin_function.c        |  4 +--
- plugins/plugin_futex.c           | 12 ++++-----
- plugins/plugin_kvm.c             | 28 ++++++++++-----------
- plugins/plugin_sched_switch.c    | 18 +++++++-------
- plugins/plugin_tlb.c             |  2 +-
- 8 files changed, 84 insertions(+), 84 deletions(-)
+ include/traceevent/event-parse.h         |  8 +++---
+ kernel-shark-qt/src/libkshark-configio.c |  2 +-
+ kernel-shark/trace-capture.c             |  2 +-
+ kernel-shark/trace-filter.c              |  2 +-
+ kernel-shark/trace-graph.c               | 32 ++++++++++++------------
+ kernel-shark/trace-view-store.c          |  6 ++---
+ lib/trace-cmd/trace-blk-hack.c           |  6 ++---
+ lib/trace-cmd/trace-ftrace.c             | 16 ++++++------
+ lib/traceevent/event-parse.c             | 24 +++++++++---------
+ lib/traceevent/parse-filter.c            | 10 ++++----
+ plugins/plugin_function.c                |  6 ++---
+ plugins/plugin_kmem.c                    |  4 +--
+ python/ctracecmd.i                       |  2 +-
+ tracecmd/trace-hist.c                    | 10 ++++----
+ tracecmd/trace-mem.c                     |  4 +--
+ tracecmd/trace-profile.c                 | 10 ++++----
+ tracecmd/trace-read.c                    | 14 +++++------
+ 17 files changed, 79 insertions(+), 79 deletions(-)
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 9ad3208..e1628f5 100644
+index e1628f5..87777c2 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -636,22 +636,22 @@ enum tep_errno tep_parse_format(struct tep_handle *pevent,
- 				struct event_format **eventp,
- 				const char *buf,
- 				unsigned long size, const char *sys);
--void pevent_free_format(struct event_format *event);
--void pevent_free_format_field(struct format_field *field);
--
--void *pevent_get_field_raw(struct trace_seq *s, struct event_format *event,
--			   const char *name, struct tep_record *record,
--			   int *len, int err);
--
--int pevent_get_field_val(struct trace_seq *s, struct event_format *event,
--			 const char *name, struct tep_record *record,
--			 unsigned long long *val, int err);
--int pevent_get_common_field_val(struct trace_seq *s, struct event_format *event,
--				const char *name, struct tep_record *record,
--				unsigned long long *val, int err);
--int pevent_get_any_field_val(struct trace_seq *s, struct event_format *event,
-+void tep_free_format(struct event_format *event);
-+void tep_free_format_field(struct format_field *field);
-+
-+void *tep_get_field_raw(struct trace_seq *s, struct event_format *event,
-+			const char *name, struct tep_record *record,
-+			int *len, int err);
-+
-+int tep_get_field_val(struct trace_seq *s, struct event_format *event,
-+		      const char *name, struct tep_record *record,
-+		      unsigned long long *val, int err);
-+int tep_get_common_field_val(struct trace_seq *s, struct event_format *event,
- 			     const char *name, struct tep_record *record,
- 			     unsigned long long *val, int err);
-+int tep_get_any_field_val(struct trace_seq *s, struct event_format *event,
-+			  const char *name, struct tep_record *record,
-+			  unsigned long long *val, int err);
+@@ -678,9 +678,9 @@ struct format_field *tep_find_common_field(struct event_format *event, const cha
+ struct format_field *tep_find_field(struct event_format *event, const char *name);
+ struct format_field *tep_find_any_field(struct event_format *event, const char *name);
  
- int tep_print_num_field(struct trace_seq *s, const char *fmt,
- 			   struct event_format *event, const char *name,
+-const char *pevent_find_function(struct tep_handle *pevent, unsigned long long addr);
++const char *tep_find_function(struct tep_handle *pevent, unsigned long long addr);
+ unsigned long long
+-pevent_find_function_address(struct tep_handle *pevent, unsigned long long addr);
++tep_find_function_address(struct tep_handle *pevent, unsigned long long addr);
+ unsigned long long tep_read_number(struct tep_handle *pevent, const void *ptr, int size);
+ int tep_read_number_field(struct format_field *field, const void *data,
+ 			  unsigned long long *value);
+@@ -688,10 +688,10 @@ int tep_read_number_field(struct format_field *field, const void *data,
+ struct event_format *tep_find_event(struct tep_handle *pevent, int id);
+ 
+ struct event_format *
+-pevent_find_event_by_name(struct tep_handle *pevent, const char *sys, const char *name);
++tep_find_event_by_name(struct tep_handle *pevent, const char *sys, const char *name);
+ 
+ struct event_format *
+-pevent_find_event_by_record(struct tep_handle *pevent, struct tep_record *record);
++tep_find_event_by_record(struct tep_handle *pevent, struct tep_record *record);
+ 
+ void tep_data_lat_fmt(struct tep_handle *pevent,
+ 		      struct trace_seq *s, struct tep_record *record);
+diff --git a/kernel-shark-qt/src/libkshark-configio.c b/kernel-shark-qt/src/libkshark-configio.c
+index d7c1a06..9bdd2c0 100644
+--- a/kernel-shark-qt/src/libkshark-configio.c
++++ b/kernel-shark-qt/src/libkshark-configio.c
+@@ -819,7 +819,7 @@ static bool kshark_event_filter_from_json(struct tep_handle *pevent,
+ 		system_str = json_object_get_string(jsystem);
+ 		name_str = json_object_get_string(jname);
+ 
+-		event = pevent_find_event_by_name(pevent, system_str, name_str);
++		event = tep_find_event_by_name(pevent, system_str, name_str);
+ 		if (!event)
+ 			goto fail;
+ 
+diff --git a/kernel-shark/trace-capture.c b/kernel-shark/trace-capture.c
+index 27cea40..4bfec6a 100644
+--- a/kernel-shark/trace-capture.c
++++ b/kernel-shark/trace-capture.c
+@@ -841,7 +841,7 @@ static int load_events(struct trace_capture *cap,
+ 			continue;
+ 		event_name = tracecmd_xml_node_value(handle, event_node);
+ 
+-		event = pevent_find_event_by_name(pevent, system, event_name);
++		event = tep_find_event_by_name(pevent, system, event_name);
+ 
+ 		if (!event)
+ 			continue;
+diff --git a/kernel-shark/trace-filter.c b/kernel-shark/trace-filter.c
+index b762d97..d9b1563 100644
+--- a/kernel-shark/trace-filter.c
++++ b/kernel-shark/trace-filter.c
+@@ -194,7 +194,7 @@ static void update_field_combo(struct tep_handle *pevent,
+ 		return;
+ 
+ 	if (event_name) {
+-		event = pevent_find_event_by_name(pevent, system, event_name);
++		event = tep_find_event_by_name(pevent, system, event_name);
+ 		if (!event)
+ 			return;
+ 	} else {
+diff --git a/kernel-shark/trace-graph.c b/kernel-shark/trace-graph.c
+index b6890e9..808b2f3 100644
+--- a/kernel-shark/trace-graph.c
++++ b/kernel-shark/trace-graph.c
+@@ -1016,8 +1016,8 @@ int trace_graph_check_sched_wakeup(struct graph_info *ginfo,
+ 
+ 		found = FALSE;
+ 
+-		event = pevent_find_event_by_name(ginfo->pevent,
+-						  NULL, "sched_wakeup");
++		event = tep_find_event_by_name(ginfo->pevent,
++					       NULL, "sched_wakeup");
+ 		if (event) {
+ 			found = TRUE;
+ 			ginfo->event_wakeup_id = event->id;
+@@ -1026,8 +1026,8 @@ int trace_graph_check_sched_wakeup(struct graph_info *ginfo,
+ 		}
+ 
+ 
+-		event = pevent_find_event_by_name(ginfo->pevent,
+-						  NULL, "sched_wakeup_new");
++		event = tep_find_event_by_name(ginfo->pevent,
++					       NULL, "sched_wakeup_new");
+ 		if (event) {
+ 			found = TRUE;
+ 			ginfo->event_wakeup_new_id = event->id;
+@@ -1086,8 +1086,8 @@ int trace_graph_check_sched_switch(struct graph_info *ginfo,
+ 	}
+ 
+ 	if (ginfo->event_sched_switch_id < 0) {
+-		event = pevent_find_event_by_name(ginfo->pevent,
+-						  NULL, "sched_switch");
++		event = tep_find_event_by_name(ginfo->pevent,
++					       NULL, "sched_switch");
+ 		if (!event)
+ 			return 0;
+ 
+@@ -1096,8 +1096,8 @@ int trace_graph_check_sched_switch(struct graph_info *ginfo,
+ 		ginfo->event_pid_field = tep_find_field(event, "next_pid");
+ 		ginfo->event_comm_field = tep_find_field(event, "next_comm");
+ 
+-		event = pevent_find_event_by_name(ginfo->pevent,
+-						  "ftrace", "context_switch");
++		event = tep_find_event_by_name(ginfo->pevent,
++					       "ftrace", "context_switch");
+ 		if (event) {
+ 			ginfo->ftrace_sched_switch_id = event->id;
+ 			ginfo->ftrace_pid_field = tep_find_field(event, "next_pid");
+@@ -1164,32 +1164,32 @@ trace_graph_check_irq(struct graph_info *ginfo,
+ 		gint soft_irq_entry_len = 0;
+ 		gint soft_irq_exit_len = 0;
+ 
+-		event = pevent_find_event_by_name(ginfo->pevent,
+-						  NULL, "irq_handler_exit");
++		event = tep_find_event_by_name(ginfo->pevent,
++					       NULL, "irq_handler_exit");
+ 		if (event)
+ 			enter_id(&ginfo->hard_irq_exit_ids, event->id,
+ 				 &hard_irq_exit_len);
+ 		else
+ 			ginfo->hard_irq_exit_ids = null_int_array;
+ 
+-		event = pevent_find_event_by_name(ginfo->pevent,
+-						  NULL, "irq_handler_entry");
++		event = tep_find_event_by_name(ginfo->pevent,
++					       NULL, "irq_handler_entry");
+ 		if (event)
+ 			enter_id(&ginfo->hard_irq_entry_ids, event->id,
+ 				 &hard_irq_entry_len);
+ 		else
+ 			ginfo->hard_irq_entry_ids = null_int_array;
+ 
+-		event = pevent_find_event_by_name(ginfo->pevent,
+-						  NULL, "softirq_exit");
++		event = tep_find_event_by_name(ginfo->pevent,
++					       NULL, "softirq_exit");
+ 		if (event)
+ 			enter_id(&ginfo->soft_irq_exit_ids, event->id,
+ 				 &soft_irq_exit_len);
+ 		else
+ 			ginfo->soft_irq_exit_ids = null_int_array;
+ 
+-		event = pevent_find_event_by_name(ginfo->pevent,
+-						  NULL, "softirq_entry");
++		event = tep_find_event_by_name(ginfo->pevent,
++					       NULL, "softirq_entry");
+ 		if (event)
+ 			enter_id(&ginfo->soft_irq_entry_ids, event->id,
+ 				 &soft_irq_entry_len);
+diff --git a/kernel-shark/trace-view-store.c b/kernel-shark/trace-view-store.c
+index 92ddf7e..a798804 100644
+--- a/kernel-shark/trace-view-store.c
++++ b/kernel-shark/trace-view-store.c
+@@ -1227,20 +1227,20 @@ static void update_filter_tasks(TraceViewStore *store)
+ 
+ 	if (!store->sched_switch_event) {
+ 		store->sched_switch_event =
+-			pevent_find_event_by_name(pevent, "sched", "sched_switch");
++			tep_find_event_by_name(pevent, "sched", "sched_switch");
+ 		if (store->sched_switch_event)
+ 			store->sched_switch_next_field =
+ 				tep_find_any_field(store->sched_switch_event,
+ 						      "next_pid");
+ 		store->sched_wakeup_event =
+-			pevent_find_event_by_name(pevent, "sched", "sched_wakeup");
++			tep_find_event_by_name(pevent, "sched", "sched_wakeup");
+ 		if (store->sched_wakeup_event)
+ 			store->sched_wakeup_pid_field =
+ 				tep_find_any_field(store->sched_wakeup_event,
+ 						      "pid");
+ 
+ 		store->sched_wakeup_new_event =
+-			pevent_find_event_by_name(pevent, "sched", "sched_wakeup_new");
++			tep_find_event_by_name(pevent, "sched", "sched_wakeup_new");
+ 		if (store->sched_wakeup_new_event)
+ 			store->sched_wakeup_new_pid_field =
+ 				tep_find_any_field(store->sched_wakeup_new_event,
+diff --git a/lib/trace-cmd/trace-blk-hack.c b/lib/trace-cmd/trace-blk-hack.c
+index 2883c68..dbeedab 100644
+--- a/lib/trace-cmd/trace-blk-hack.c
++++ b/lib/trace-cmd/trace-blk-hack.c
+@@ -48,7 +48,7 @@ int tracecmd_blk_hack(struct tracecmd_input *handle)
+ 	 */
+ 
+ 	/* It was originally behind the "power" event */
+-	event = pevent_find_event_by_name(pevent, "ftrace", "power");
++	event = tep_find_event_by_name(pevent, "ftrace", "power");
+ 	if (event) {
+ 		id = event->id + 1;
+ 		goto found;
+@@ -58,7 +58,7 @@ int tracecmd_blk_hack(struct tracecmd_input *handle)
+ 	 * But the power tracer is now in perf.
+ 	 * Then it was after kmem_free
+ 	 */
+-	event = pevent_find_event_by_name(pevent, "ftrace", "kmem_free");
++	event = tep_find_event_by_name(pevent, "ftrace", "kmem_free");
+ 	if (event) {
+ 		id = event->id + 1;
+ 		goto found;
+@@ -68,7 +68,7 @@ int tracecmd_blk_hack(struct tracecmd_input *handle)
+ 	 * But that then went away.
+ 	 * Currently it should be behind the user stack.
+ 	 */
+-	event = pevent_find_event_by_name(pevent, "ftrace", "user_stack");
++	event = tep_find_event_by_name(pevent, "ftrace", "user_stack");
+ 	if (event) {
+ 		id = event->id + 1;
+ 		goto found;
 diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
-index 01a2a7c..05e1200 100644
+index 05e1200..09fd40f 100644
 --- a/lib/trace-cmd/trace-ftrace.c
 +++ b/lib/trace-cmd/trace-ftrace.c
-@@ -69,7 +69,7 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
- 	unsigned long long function;
- 	const char *func;
+@@ -47,7 +47,7 @@ static int find_ret_event(struct tracecmd_ftrace *finfo, struct tep_handle *peve
+ 	struct event_format *event;
  
--	if (pevent_get_field_val(s, event, "ip", record, &function, 1))
-+	if (tep_get_field_val(s, event, "ip", record, &function, 1))
+ 	/* Store the func ret id and event for later use */
+-	event = pevent_find_event_by_name(pevent, "ftrace", "funcgraph_exit");
++	event = tep_find_event_by_name(pevent, "ftrace", "funcgraph_exit");
+ 	if (!event)
+ 		return -1;
+ 
+@@ -72,7 +72,7 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
+ 	if (tep_get_field_val(s, event, "ip", record, &function, 1))
  		return trace_seq_putc(s, '!');
  
- 	func = pevent_find_function(pevent, function);
-@@ -78,7 +78,7 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
+-	func = pevent_find_function(pevent, function);
++	func = tep_find_function(pevent, function);
+ 	if (func)
+ 		trace_seq_printf(s, "%s <-- ", func);
  	else
- 		trace_seq_printf(s, "0x%llx", function);
- 
--	if (pevent_get_field_val(s, event, "parent_ip", record, &function, 1))
-+	if (tep_get_field_val(s, event, "parent_ip", record, &function, 1))
+@@ -81,7 +81,7 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
+ 	if (tep_get_field_val(s, event, "parent_ip", record, &function, 1))
  		return trace_seq_putc(s, '!');
  
- 	func = pevent_find_function(pevent, function);
-@@ -102,20 +102,20 @@ get_return_for_leaf(struct trace_seq *s, int cpu, int cur_pid,
- 	unsigned long long pid;
+-	func = pevent_find_function(pevent, function);
++	func = tep_find_function(pevent, function);
+ 	if (func)
+ 		trace_seq_printf(s, "%s", func);
+ 	else
+@@ -223,7 +223,7 @@ print_graph_entry_leaf(struct trace_seq *s,
  
- 	/* Searching a common field, can use any event */
--	if (pevent_get_common_field_val(s, finfo->fgraph_ret_event, "common_type", next, &type, 1))
-+	if (tep_get_common_field_val(s, finfo->fgraph_ret_event, "common_type", next, &type, 1))
- 		return NULL;
+ 	if (tep_get_field_val(s, event, "func", record, &val, 1))
+ 		return trace_seq_putc(s, '!');
+-	func = pevent_find_function(pevent, val);
++	func = tep_find_function(pevent, val);
  
- 	if (type != finfo->fgraph_ret_id)
- 		return NULL;
- 
--	if (pevent_get_common_field_val(s, finfo->fgraph_ret_event, "common_pid", next, &pid, 1))
-+	if (tep_get_common_field_val(s, finfo->fgraph_ret_event, "common_pid", next, &pid, 1))
- 		return NULL;
- 
- 	if (cur_pid != pid)
- 		return NULL;
- 
- 	/* We aleady know this is a funcgraph_ret_event */
--	if (pevent_get_field_val(s, finfo->fgraph_ret_event, "func", next, &val, 1))
-+	if (tep_get_field_val(s, finfo->fgraph_ret_event, "func", next, &val, 1))
- 		return NULL;
- 
- 	if (cur_func != val)
-@@ -200,10 +200,10 @@ print_graph_entry_leaf(struct trace_seq *s,
- 	int ret;
- 	int i;
- 
--	if (pevent_get_field_val(s, finfo->fgraph_ret_event, "rettime", ret_rec, &rettime, 1))
-+	if (tep_get_field_val(s, finfo->fgraph_ret_event, "rettime", ret_rec, &rettime, 1))
+ 	if (func)
+ 		ret = trace_seq_printf(s, "%s();", func);
+@@ -263,7 +263,7 @@ static int print_graph_nested(struct trace_seq *s,
+ 	if (tep_get_field_val(s, event, "func", record, &val, 1))
  		return trace_seq_putc(s, '!');
  
--	if (pevent_get_field_val(s, finfo->fgraph_ret_event, "calltime", ret_rec, &calltime, 1))
-+	if (tep_get_field_val(s, finfo->fgraph_ret_event, "calltime", ret_rec, &calltime, 1))
- 		return trace_seq_putc(s, '!');
+-	func = pevent_find_function(pevent, val);
++	func = tep_find_function(pevent, val);
  
- 	duration = rettime - calltime;
-@@ -214,14 +214,14 @@ print_graph_entry_leaf(struct trace_seq *s,
- 	/* Duration */
- 	print_graph_duration(s, duration);
- 
--	if (pevent_get_field_val(s, event, "depth", record, &depth, 1))
-+	if (tep_get_field_val(s, event, "depth", record, &depth, 1))
- 		return trace_seq_putc(s, '!');
- 
- 	/* Function */
- 	for (i = 0; i < (int)(depth * TRACE_GRAPH_INDENT); i++)
- 		trace_seq_putc(s, ' ');
- 
--	if (pevent_get_field_val(s, event, "func", record, &val, 1))
-+	if (tep_get_field_val(s, event, "func", record, &val, 1))
- 		return trace_seq_putc(s, '!');
- 	func = pevent_find_function(pevent, val);
- 
-@@ -253,14 +253,14 @@ static int print_graph_nested(struct trace_seq *s,
- 	/* No time */
- 	trace_seq_puts(s, "           |  ");
- 
--	if (pevent_get_field_val(s, event, "depth", record, &depth, 1))
-+	if (tep_get_field_val(s, event, "depth", record, &depth, 1))
- 		return trace_seq_putc(s, '!');
- 
- 	/* Function */
- 	for (i = 0; i < (int)(depth * TRACE_GRAPH_INDENT); i++)
- 		trace_seq_putc(s, ' ');
- 
--	if (pevent_get_field_val(s, event, "func", record, &val, 1))
-+	if (tep_get_field_val(s, event, "func", record, &val, 1))
- 		return trace_seq_putc(s, '!');
- 
- 	func = pevent_find_function(pevent, val);
-@@ -287,10 +287,10 @@ fgraph_ent_handler(struct trace_seq *s, struct tep_record *record,
- 
- 	ret_event_check(finfo, event->pevent);
- 
--	if (pevent_get_common_field_val(s, event, "common_pid", record, &pid, 1))
-+	if (tep_get_common_field_val(s, event, "common_pid", record, &pid, 1))
- 		return trace_seq_putc(s, '!');
- 
--	if (pevent_get_field_val(s, event, "func", record, &val, 1))
-+	if (tep_get_field_val(s, event, "func", record, &val, 1))
- 		return trace_seq_putc(s, '!');
- 
- 	rec = tracecmd_peek_next_data(tracecmd_curr_thread_handle, &cpu);
-@@ -323,10 +323,10 @@ fgraph_ret_handler(struct trace_seq *s, struct tep_record *record,
- 
- 	ret_event_check(finfo, event->pevent);
- 
--	if (pevent_get_field_val(s, event, "rettime", record, &rettime, 1))
-+	if (tep_get_field_val(s, event, "rettime", record, &rettime, 1))
- 		return trace_seq_putc(s, '!');
- 
--	if (pevent_get_field_val(s, event, "calltime", record, &calltime, 1))
-+	if (tep_get_field_val(s, event, "calltime", record, &calltime, 1))
- 		return trace_seq_putc(s, '!');
- 
- 	duration = rettime - calltime;
-@@ -337,7 +337,7 @@ fgraph_ret_handler(struct trace_seq *s, struct tep_record *record,
- 	/* Duration */
- 	print_graph_duration(s, duration);
- 
--	if (pevent_get_field_val(s, event, "depth", record, &depth, 1))
-+	if (tep_get_field_val(s, event, "depth", record, &depth, 1))
- 		return trace_seq_putc(s, '!');
- 
- 	/* Function */
-@@ -347,7 +347,7 @@ fgraph_ret_handler(struct trace_seq *s, struct tep_record *record,
- 	trace_seq_putc(s, '}');
- 
+ 	if (func)
+ 		ret = trace_seq_printf(s, "%s() {", func);
+@@ -349,7 +349,7 @@ fgraph_ret_handler(struct trace_seq *s, struct tep_record *record,
  	if (fgraph_tail->set) {
--		if (pevent_get_field_val(s, event, "func", record, &val, 0))
-+		if (tep_get_field_val(s, event, "func", record, &val, 0))
+ 		if (tep_get_field_val(s, event, "func", record, &val, 0))
  			return 0;
- 		func = pevent_find_function(event->pevent, val);
+-		func = pevent_find_function(event->pevent, val);
++		func = tep_find_function(event->pevent, val);
  		if (!func)
+ 			return 0;
+ 		trace_seq_printf(s, " /* %s */", func);
+@@ -389,7 +389,7 @@ trace_stack_handler(struct trace_seq *s, struct tep_record *record,
+ 		    ((int)addr == -1))
+ 			break;
+ 
+-		func = pevent_find_function(event->pevent, addr);
++		func = tep_find_function(event->pevent, addr);
+ 		if (func)
+ 			trace_seq_printf(s, "=> %s (%llx)\n", func, addr);
+ 		else
+@@ -436,7 +436,7 @@ int tracecmd_ftrace_overrides(struct tracecmd_input *handle,
+ 	trace_util_add_options("ftrace", trace_ftrace_options);
+ 
+ 	/* Store the func ret id and event for later use */
+-	event = pevent_find_event_by_name(pevent, "ftrace", "funcgraph_exit");
++	event = tep_find_event_by_name(pevent, "ftrace", "funcgraph_exit");
+ 	if (!event)
+ 		return 0;
+ 
 diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index a140fbc..63c3e76 100644
+index 63c3e76..5d2f738 100644
 --- a/lib/traceevent/event-parse.c
 +++ b/lib/traceevent/event-parse.c
-@@ -6152,7 +6152,7 @@ __pevent_parse_event(struct tep_handle *pevent,
- 	return 0;
- 
- event_add_failed:
--	pevent_free_format(event);
-+	tep_free_format(event);
- 	return ret;
- }
- 
-@@ -6249,7 +6249,7 @@ int get_field_val(struct trace_seq *s, struct format_field *field,
+@@ -489,7 +489,7 @@ find_func(struct tep_handle *pevent, unsigned long long addr)
  }
  
  /**
-- * pevent_get_field_raw - return the raw pointer into the data field
-+ * tep_get_field_raw - return the raw pointer into the data field
-  * @s: The seq to print to on error
-  * @event: the event that the field is for
-  * @name: The name of the field
-@@ -6262,9 +6262,9 @@ int get_field_val(struct trace_seq *s, struct format_field *field,
+- * pevent_find_function - find a function by a given address
++ * tep_find_function - find a function by a given address
+  * @pevent: handle for the pevent
+  * @addr: the address to find the function with
   *
-  * On failure, it returns NULL.
+@@ -497,7 +497,7 @@ find_func(struct tep_handle *pevent, unsigned long long addr)
+  * address. Note, the address does not have to be exact, it
+  * will select the function that would contain the address.
   */
--void *pevent_get_field_raw(struct trace_seq *s, struct event_format *event,
--			   const char *name, struct tep_record *record,
--			   int *len, int err)
-+void *tep_get_field_raw(struct trace_seq *s, struct event_format *event,
-+			const char *name, struct tep_record *record,
-+			int *len, int err)
+-const char *pevent_find_function(struct tep_handle *pevent, unsigned long long addr)
++const char *tep_find_function(struct tep_handle *pevent, unsigned long long addr)
  {
- 	struct format_field *field;
- 	void *data = record->data;
-@@ -6299,7 +6299,7 @@ void *pevent_get_field_raw(struct trace_seq *s, struct event_format *event,
+ 	struct func_map *map;
+ 
+@@ -509,16 +509,16 @@ const char *pevent_find_function(struct tep_handle *pevent, unsigned long long a
  }
  
  /**
-- * pevent_get_field_val - find a field and return its value
-+ * tep_get_field_val - find a field and return its value
-  * @s: The seq to print to on error
-  * @event: the event that the field is for
-  * @name: The name of the field
-@@ -6309,9 +6309,9 @@ void *pevent_get_field_raw(struct trace_seq *s, struct event_format *event,
+- * pevent_find_function_address - find a function address by a given address
++ * tep_find_function_address - find a function address by a given address
+  * @pevent: handle for the pevent
+  * @addr: the address to find the function with
   *
-  * Returns 0 on success -1 on field not found.
+  * Returns the address the function starts at. This can be used in
+- * conjunction with pevent_find_function to print both the function
++ * conjunction with tep_find_function to print both the function
+  * name and the function offset.
   */
--int pevent_get_field_val(struct trace_seq *s, struct event_format *event,
--			 const char *name, struct tep_record *record,
--			 unsigned long long *val, int err)
-+int tep_get_field_val(struct trace_seq *s, struct event_format *event,
-+		      const char *name, struct tep_record *record,
-+		      unsigned long long *val, int err)
+ unsigned long long
+-pevent_find_function_address(struct tep_handle *pevent, unsigned long long addr)
++tep_find_function_address(struct tep_handle *pevent, unsigned long long addr)
  {
- 	struct format_field *field;
+ 	struct func_map *map;
  
-@@ -6324,7 +6324,7 @@ int pevent_get_field_val(struct trace_seq *s, struct event_format *event,
+@@ -3484,7 +3484,7 @@ struct event_format *tep_find_event(struct tep_handle *pevent, int id)
  }
  
  /**
-- * pevent_get_common_field_val - find a common field and return its value
-+ * tep_get_common_field_val - find a common field and return its value
-  * @s: The seq to print to on error
-  * @event: the event that the field is for
-  * @name: The name of the field
-@@ -6334,9 +6334,9 @@ int pevent_get_field_val(struct trace_seq *s, struct event_format *event,
-  *
-  * Returns 0 on success -1 on field not found.
+- * pevent_find_event_by_name - find an event by given name
++ * tep_find_event_by_name - find an event by given name
+  * @pevent: a handle to the pevent
+  * @sys: the system name to search for
+  * @name: the name of the event to search for
+@@ -3493,8 +3493,8 @@ struct event_format *tep_find_event(struct tep_handle *pevent, int id)
+  * @sys. If @sys is NULL the first event with @name is returned.
   */
--int pevent_get_common_field_val(struct trace_seq *s, struct event_format *event,
--				const char *name, struct tep_record *record,
--				unsigned long long *val, int err)
-+int tep_get_common_field_val(struct trace_seq *s, struct event_format *event,
-+			     const char *name, struct tep_record *record,
-+			     unsigned long long *val, int err)
+ struct event_format *
+-pevent_find_event_by_name(struct tep_handle *pevent,
+-			  const char *sys, const char *name)
++tep_find_event_by_name(struct tep_handle *pevent,
++		       const char *sys, const char *name)
  {
- 	struct format_field *field;
- 
-@@ -6349,7 +6349,7 @@ int pevent_get_common_field_val(struct trace_seq *s, struct event_format *event,
+ 	struct event_format *event;
+ 	int i;
+@@ -5419,7 +5419,7 @@ static bool is_timestamp_in_us(char *trace_clock, bool use_trace_clock)
  }
  
  /**
-- * pevent_get_any_field_val - find a any field and return its value
-+ * tep_get_any_field_val - find a any field and return its value
-  * @s: The seq to print to on error
-  * @event: the event that the field is for
-  * @name: The name of the field
-@@ -6359,9 +6359,9 @@ int pevent_get_common_field_val(struct trace_seq *s, struct event_format *event,
+- * pevent_find_event_by_record - return the event from a given record
++ * tep_find_event_by_record - return the event from a given record
+  * @pevent: a handle to the pevent
+  * @record: The record to get the event from
   *
-  * Returns 0 on success -1 on field not found.
+@@ -5427,7 +5427,7 @@ static bool is_timestamp_in_us(char *trace_clock, bool use_trace_clock)
+  * is found.
   */
--int pevent_get_any_field_val(struct trace_seq *s, struct event_format *event,
--			     const char *name, struct tep_record *record,
--			     unsigned long long *val, int err)
-+int tep_get_any_field_val(struct trace_seq *s, struct event_format *event,
-+			  const char *name, struct tep_record *record,
-+			  unsigned long long *val, int err)
+ struct event_format *
+-pevent_find_event_by_record(struct tep_handle *pevent, struct tep_record *record)
++tep_find_event_by_record(struct tep_handle *pevent, struct tep_record *record)
  {
- 	struct format_field *field;
+ 	int type;
  
-@@ -6757,7 +6757,7 @@ void pevent_ref(struct tep_handle *pevent)
- 	pevent->ref_count++;
- }
- 
--void pevent_free_format_field(struct format_field *field)
-+void tep_free_format_field(struct format_field *field)
+@@ -5550,7 +5550,7 @@ void tep_print_event(struct tep_handle *pevent, struct trace_seq *s,
  {
- 	free(field->type);
- 	if (field->alias != field->name)
-@@ -6772,7 +6772,7 @@ static void free_format_fields(struct format_field *field)
+ 	struct event_format *event;
  
- 	while (field) {
- 		next = field->next;
--		pevent_free_format_field(field);
-+		tep_free_format_field(field);
- 		field = next;
+-	event = pevent_find_event_by_record(pevent, record);
++	event = tep_find_event_by_record(pevent, record);
+ 	if (!event) {
+ 		int i;
+ 		int type = trace_parse_common_type(pevent, record->data);
+@@ -6593,7 +6593,7 @@ static struct event_format *pevent_search_event(struct tep_handle *pevent, int i
+ 		if (sys_name && (strcmp(sys_name, event->system) != 0))
+ 			return NULL;
+ 	} else {
+-		event = pevent_find_event_by_name(pevent, sys_name, event_name);
++		event = tep_find_event_by_name(pevent, sys_name, event_name);
+ 		if (!event)
+ 			return NULL;
  	}
- }
-@@ -6783,7 +6783,7 @@ static void free_formats(struct format *format)
- 	free_format_fields(format->fields);
- }
+diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
+index 4cc539c..a1d0e3a 100644
+--- a/lib/traceevent/parse-filter.c
++++ b/lib/traceevent/parse-filter.c
+@@ -1464,7 +1464,7 @@ static int copy_filter_type(struct event_filter *filter,
+ 	/* Can't assume that the pevent's are the same */
+ 	sys = filter_type->event->system;
+ 	name = filter_type->event->name;
+-	event = pevent_find_event_by_name(filter->pevent, sys, name);
++	event = tep_find_event_by_name(filter->pevent, sys, name);
+ 	if (!event)
+ 		return -1;
  
--void pevent_free_format(struct event_format *event)
-+void tep_free_format(struct event_format *event)
- {
- 	free(event->name);
- 	free(event->system);
-@@ -6869,7 +6869,7 @@ void tep_free(struct tep_handle *pevent)
- 	}
+@@ -1564,9 +1564,9 @@ int tep_update_trivial(struct event_filter *dest, struct event_filter *source,
  
- 	for (i = 0; i < pevent->nr_events; i++)
--		pevent_free_format(pevent->events[i]);
-+		tep_free_format(pevent->events[i]);
+ 		if (src_pevent != dest_pevent) {
+ 			/* do a look up */
+-			event = pevent_find_event_by_name(src_pevent,
+-							  event->system,
+-							  event->name);
++			event = tep_find_event_by_name(src_pevent,
++						       event->system,
++						       event->name);
+ 			if (!event)
+ 				return -1;
+ 		}
+@@ -1895,7 +1895,7 @@ static const char *get_field_str(struct filter_arg *arg, struct tep_record *reco
  
- 	while (pevent->handlers) {
- 		handle = pevent->handlers;
+ 		if (arg->str.field->flags & (FIELD_IS_POINTER | FIELD_IS_LONG))
+ 			/* convert to a kernel symbol */
+-			val = pevent_find_function(pevent, addr);
++			val = tep_find_function(pevent, addr);
+ 
+ 		if (val == NULL) {
+ 			/* just use the hex of the string name */
 diff --git a/plugins/plugin_function.c b/plugins/plugin_function.c
-index f88da43..0e1f13a 100644
+index 0e1f13a..9efa01c 100644
 --- a/plugins/plugin_function.c
 +++ b/plugins/plugin_function.c
-@@ -137,12 +137,12 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
- 	const char *parent;
- 	int index = 0;
+@@ -122,7 +122,7 @@ static void show_function(struct trace_seq *s, struct tep_handle *pevent,
  
--	if (pevent_get_field_val(s, event, "ip", record, &function, 1))
-+	if (tep_get_field_val(s, event, "ip", record, &function, 1))
+ 	trace_seq_printf(s, "%s", func);
+ 	if (ftrace_offset->set) {
+-		offset = pevent_find_function_address(pevent, function);
++		offset = tep_find_function_address(pevent, function);
+ 		trace_seq_printf(s, "+0x%x ", (int)(function - offset));
+ 	}
+ }
+@@ -140,12 +140,12 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
+ 	if (tep_get_field_val(s, event, "ip", record, &function, 1))
  		return trace_seq_putc(s, '!');
  
- 	func = pevent_find_function(pevent, function);
+-	func = pevent_find_function(pevent, function);
++	func = tep_find_function(pevent, function);
  
--	if (pevent_get_field_val(s, event, "parent_ip", record, &pfunction, 1))
-+	if (tep_get_field_val(s, event, "parent_ip", record, &pfunction, 1))
+ 	if (tep_get_field_val(s, event, "parent_ip", record, &pfunction, 1))
  		return trace_seq_putc(s, '!');
  
- 	parent = pevent_find_function(pevent, pfunction);
-diff --git a/plugins/plugin_futex.c b/plugins/plugin_futex.c
-index d060bd0..988b093 100644
---- a/plugins/plugin_futex.c
-+++ b/plugins/plugin_futex.c
-@@ -71,22 +71,22 @@ static int futex_handler(struct trace_seq *s, struct tep_record *record,
- 	struct futex_args args;
- 	unsigned long long cmd;
+-	parent = pevent_find_function(pevent, pfunction);
++	parent = tep_find_function(pevent, pfunction);
  
--	if (pevent_get_field_val(s, event, "uaddr", record, &args.uaddr, 1))
-+	if (tep_get_field_val(s, event, "uaddr", record, &args.uaddr, 1))
+ 	if (parent && ftrace_indent->set)
+ 		index = add_and_get_index(parent, func, record->cpu);
+diff --git a/plugins/plugin_kmem.c b/plugins/plugin_kmem.c
+index 3088d3a..79e3d3b 100644
+--- a/plugins/plugin_kmem.c
++++ b/plugins/plugin_kmem.c
+@@ -23,10 +23,10 @@ static int call_site_handler(struct trace_seq *s, struct tep_record *record,
+ 	if (tep_read_number_field(field, data, &val))
  		return 1;
  
--	if (pevent_get_field_val(s, event, "op", record, &args.op, 1))
-+	if (tep_get_field_val(s, event, "op", record, &args.op, 1))
+-	func = pevent_find_function(event->pevent, val);
++	func = tep_find_function(event->pevent, val);
+ 	if (!func)
  		return 1;
+-	addr = pevent_find_function_address(event->pevent, val);
++	addr = tep_find_function_address(event->pevent, val);
  
--	if (pevent_get_field_val(s, event, "val", record, &args.val, 1))
-+	if (tep_get_field_val(s, event, "val", record, &args.val, 1))
- 		return 1;
+ 	trace_seq_printf(s, "(%s+0x%x) ", func, (int)(val - addr));
  
--	if (pevent_get_field_val(s, event, "utime", record, &args.utime, 1))
-+	if (tep_get_field_val(s, event, "utime", record, &args.utime, 1))
- 		return 1;
+diff --git a/python/ctracecmd.i b/python/ctracecmd.i
+index e29581e..e826679 100644
+--- a/python/ctracecmd.i
++++ b/python/ctracecmd.i
+@@ -107,7 +107,7 @@ static PyObject *py_field_get_stack(struct tep_handle *pevent,
+ 		if ((long_size == 8 && addr == (unsigned long long)-1) ||
+ 		    ((int)addr == -1))
+ 			break;
+-		func = pevent_find_function(event->pevent, addr);
++		func = tep_find_function(event->pevent, addr);
+ 		if (PyList_Append(list, PyString_FromString(func))) {
+ 			Py_DECREF(list);
+ 			return NULL;
+diff --git a/tracecmd/trace-hist.c b/tracecmd/trace-hist.c
+index 08e0449..324b20d 100644
+--- a/tracecmd/trace-hist.c
++++ b/tracecmd/trace-hist.c
+@@ -276,8 +276,8 @@ process_function(struct tep_handle *pevent, struct tep_record *record)
  
--	if (pevent_get_field_val(s, event, "uaddr2", record, &args.uaddr2, 1))
-+	if (tep_get_field_val(s, event, "uaddr2", record, &args.uaddr2, 1))
- 		return 1;
+ 	pid = val;
  
--	if (pevent_get_field_val(s, event, "val3", record, &args.val3, 1))
-+	if (tep_get_field_val(s, event, "val3", record, &args.val3, 1))
- 		return 1;
+-	func = pevent_find_function(pevent, ip);
+-	parent = pevent_find_function(pevent, parent_ip);
++	func = tep_find_function(pevent, ip);
++	parent = tep_find_function(pevent, parent_ip);
  
- 	cmd = args.op & FUTEX_CMD_MASK;
-diff --git a/plugins/plugin_kvm.c b/plugins/plugin_kvm.c
-index 2c1a8a7..b19311d 100644
---- a/plugins/plugin_kvm.c
-+++ b/plugins/plugin_kvm.c
-@@ -255,10 +255,10 @@ static int print_exit_reason(struct trace_seq *s, struct tep_record *record,
- 	unsigned long long val;
- 	const char *reason;
+ 	if (current_pid >= 0 && pid != current_pid) {
+ 		save_stack();
+@@ -334,7 +334,7 @@ process_function_graph_entry(struct tep_handle *pevent, struct tep_record *recor
  
--	if (pevent_get_field_val(s, event, field, record, &val, 1) < 0)
-+	if (tep_get_field_val(s, event, field, record, &val, 1) < 0)
- 		return -1;
+ 	pid = val;
  
--	if (pevent_get_field_val(s, event, "isa", record, &isa, 0) < 0)
-+	if (tep_get_field_val(s, event, "isa", record, &isa, 0) < 0)
- 		isa = 1;
+-	func = pevent_find_function(pevent, ip);
++	func = tep_find_function(pevent, ip);
  
- 	reason = find_exit_reason(isa, val);
-@@ -279,8 +279,8 @@ static int kvm_exit_handler(struct trace_seq *s, struct tep_record *record,
+ 	if (current_pid >= 0 && pid != current_pid) {
+ 		save_stack();
+@@ -465,7 +465,7 @@ process_kernel_stack(struct tep_handle *pevent, struct tep_record *record)
+ 		const char *func;
  
- 	tep_print_num_field(s, " rip 0x%lx", event, "guest_rip", record, 1);
- 
--	if (pevent_get_field_val(s, event, "info1", record, &info1, 0) >= 0
--	    && pevent_get_field_val(s, event, "info2", record, &info2, 0) >= 0)
-+	if (tep_get_field_val(s, event, "info1", record, &info1, 0) >= 0
-+	    && tep_get_field_val(s, event, "info2", record, &info2, 0) >= 0)
- 		trace_seq_printf(s, " info %llx %llx\n", info1, info2);
- 
- 	return 0;
-@@ -299,22 +299,22 @@ static int kvm_emulate_insn_handler(struct trace_seq *s, struct tep_record *reco
- 	uint8_t *insn;
- 	const char *disasm;
- 
--	if (pevent_get_field_val(s, event, "rip", record, &rip, 1) < 0)
-+	if (tep_get_field_val(s, event, "rip", record, &rip, 1) < 0)
- 		return -1;
- 
--	if (pevent_get_field_val(s, event, "csbase", record, &csbase, 1) < 0)
-+	if (tep_get_field_val(s, event, "csbase", record, &csbase, 1) < 0)
- 		return -1;
- 
--	if (pevent_get_field_val(s, event, "len", record, &len, 1) < 0)
-+	if (tep_get_field_val(s, event, "len", record, &len, 1) < 0)
- 		return -1;
- 
--	if (pevent_get_field_val(s, event, "flags", record, &flags, 1) < 0)
-+	if (tep_get_field_val(s, event, "flags", record, &flags, 1) < 0)
- 		return -1;
- 
--	if (pevent_get_field_val(s, event, "failed", record, &failed, 1) < 0)
-+	if (tep_get_field_val(s, event, "failed", record, &failed, 1) < 0)
- 		return -1;
- 
--	insn = pevent_get_field_raw(s, event, "insn", record, &llen, 1);
-+	insn = tep_get_field_raw(s, event, "insn", record, &llen, 1);
- 	if (!insn)
- 		return -1;
- 
-@@ -376,7 +376,7 @@ static int kvm_mmu_print_role(struct trace_seq *s, struct tep_record *record,
- 		{ "---", "--x", "w--", "w-x", "-u-", "-ux", "wu-", "wux" };
- 	union kvm_mmu_page_role role;
- 
--	if (pevent_get_field_val(s, event, "role", record, &val, 1) < 0)
-+	if (tep_get_field_val(s, event, "role", record, &val, 1) < 0)
- 		return -1;
- 
- 	role.word = (int)val;
-@@ -403,7 +403,7 @@ static int kvm_mmu_print_role(struct trace_seq *s, struct tep_record *record,
- 	tep_print_num_field(s, " root %u ",  event,
- 			    "root_count", record, 1);
- 
--	if (pevent_get_field_val(s, event, "unsync", record, &val, 1) < 0)
-+	if (tep_get_field_val(s, event, "unsync", record, &val, 1) < 0)
- 		return -1;
- 
- 	trace_seq_printf(s, "%s%c",  val ? "unsync" : "sync", 0);
-@@ -415,12 +415,12 @@ static int kvm_mmu_get_page_handler(struct trace_seq *s, struct tep_record *reco
+ 		addr = tep_read_number(pevent, data, long_size);
+-		func = pevent_find_function(pevent, addr);
++		func = tep_find_function(pevent, addr);
+ 		if (func)
+ 			push_stack_func(func);
+ 	}
+@@ -598,7 +598,7 @@ update_event(struct tep_handle *pevent,
  {
- 	unsigned long long val;
+ 	struct event_format *event;
  
--	if (pevent_get_field_val(s, event, "created", record, &val, 1) < 0)
-+	if (tep_get_field_val(s, event, "created", record, &val, 1) < 0)
- 		return -1;
+-	event = pevent_find_event_by_name(pevent, sys, name);
++	event = tep_find_event_by_name(pevent, sys, name);
+ 	if (!event)
+ 		return NULL;
  
- 	trace_seq_printf(s, "%s ", val ? "new" : "existing");
+diff --git a/tracecmd/trace-mem.c b/tracecmd/trace-mem.c
+index c4edc06..8dfa285 100644
+--- a/tracecmd/trace-mem.c
++++ b/tracecmd/trace-mem.c
+@@ -67,7 +67,7 @@ update_event(struct tep_handle *pevent,
+ {
+ 	struct event_format *event;
  
--	if (pevent_get_field_val(s, event, "gfn", record, &val, 1) < 0)
-+	if (tep_get_field_val(s, event, "gfn", record, &val, 1) < 0)
- 		return -1;
+-	event = pevent_find_event_by_name(pevent, sys, name);
++	event = tep_find_event_by_name(pevent, sys, name);
+ 	if (!event)
+ 		return NULL;
  
- 	trace_seq_printf(s, "sp gfn %llx ", val);
-diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-index f1229b8..715587a 100644
---- a/plugins/plugin_sched_switch.c
-+++ b/plugins/plugin_sched_switch.c
-@@ -55,7 +55,7 @@ static int sched_wakeup_handler(struct trace_seq *s, struct tep_record *record,
- 	struct format_field *field;
- 	unsigned long long val;
+@@ -347,7 +347,7 @@ process_kmalloc(struct tep_handle *pevent, struct tep_record *record,
+ 	alloc = val;
+ 	tep_read_number_field(ptr_field, record->data, &ptr);
  
--	if (pevent_get_field_val(s, event, "pid", record, &val, 1))
-+	if (tep_get_field_val(s, event, "pid", record, &val, 1))
- 		return trace_seq_putc(s, '!');
+-	func = pevent_find_function(pevent, callsite);
++	func = tep_find_function(pevent, callsite);
  
- 	field = tep_find_any_field(event, "comm");
-@@ -65,13 +65,13 @@ static int sched_wakeup_handler(struct trace_seq *s, struct tep_record *record,
- 	}
- 	trace_seq_printf(s, "%lld", val);
+ 	add_kmalloc(func, ptr, req, alloc);
+ }
+diff --git a/tracecmd/trace-profile.c b/tracecmd/trace-profile.c
+index cf0eace..6d56093 100644
+--- a/tracecmd/trace-profile.c
++++ b/tracecmd/trace-profile.c
+@@ -798,7 +798,7 @@ add_event(struct handle_data *h, const char *system, const char *event_name,
+ 	struct event_format *event;
+ 	struct event_data *event_data;
  
--	if (pevent_get_field_val(s, event, "prio", record, &val, 0) == 0)
-+	if (tep_get_field_val(s, event, "prio", record, &val, 0) == 0)
- 		trace_seq_printf(s, " [%lld]", val);
+-	event = pevent_find_event_by_name(h->pevent, system, event_name);
++	event = tep_find_event_by_name(h->pevent, system, event_name);
+ 	if (!event)
+ 		return NULL;
  
--	if (pevent_get_field_val(s, event, "success", record, &val, 1) == 0)
-+	if (tep_get_field_val(s, event, "success", record, &val, 1) == 0)
- 		trace_seq_printf(s, " success=%lld", val);
+@@ -904,8 +904,8 @@ static void func_print(struct trace_seq *s, struct event_hash *event_hash)
+ {
+ 	const char *func;
  
--	if (pevent_get_field_val(s, event, "target_cpu", record, &val, 0) == 0)
-+	if (tep_get_field_val(s, event, "target_cpu", record, &val, 0) == 0)
- 		trace_seq_printf(s, " CPU:%03llu", val);
+-	func = pevent_find_function(event_hash->event_data->event->pevent,
+-				    event_hash->val);
++	func = tep_find_function(event_hash->event_data->event->pevent,
++				 event_hash->val);
+ 	if (func)
+ 		trace_seq_printf(s, "func: %s()", func);
+ 	else
+@@ -1555,7 +1555,7 @@ static void output_event_stack(struct tep_handle *pevent, struct stack_data *sta
+ 		}
+ 		if (val == stop)
+ 			break;
+-		func = pevent_find_function(pevent, val);
++		func = tep_find_function(pevent, val);
+ 		if (func)
+ 			printf("       => %s (0x%llx)\n", func, val);
+ 		else
+@@ -1777,7 +1777,7 @@ static void print_chain_func(struct tep_handle *pevent, struct stack_chain *chai
+ 	unsigned long long val = chain->val;
+ 	const char *func;
  
- 	return 0;
-@@ -83,7 +83,7 @@ static int sched_switch_handler(struct trace_seq *s, struct tep_record *record,
- 	struct format_field *field;
- 	unsigned long long val;
+-	func = pevent_find_function(pevent, val);
++	func = tep_find_function(pevent, val);
+ 	if (func)
+ 		printf("%s (0x%llx)\n", func, val);
+ 	else
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index fd5567e..b6c4c90 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -540,7 +540,7 @@ static void init_wakeup(struct tracecmd_input *handle)
  
--	if (pevent_get_field_val(s, event, "prev_pid", record, &val, 1))
-+	if (tep_get_field_val(s, event, "prev_pid", record, &val, 1))
- 		return trace_seq_putc(s, '!');
+ 	trace_hash_init(&wakeup_hash, WAKEUP_HASH_SIZE);
  
- 	field = tep_find_any_field(event, "prev_comm");
-@@ -93,15 +93,15 @@ static int sched_switch_handler(struct trace_seq *s, struct tep_record *record,
- 	}
- 	trace_seq_printf(s, "%lld ", val);
+-	event = pevent_find_event_by_name(pevent, "sched", "sched_wakeup");
++	event = tep_find_event_by_name(pevent, "sched", "sched_wakeup");
+ 	if (!event)
+ 		goto fail;
+ 	wakeup_id = event->id;
+@@ -549,7 +549,7 @@ static void init_wakeup(struct tracecmd_input *handle)
+ 		goto fail;
+ 	wakeup_success = tep_find_field(event, "success");
  
--	if (pevent_get_field_val(s, event, "prev_prio", record, &val, 0) == 0)
-+	if (tep_get_field_val(s, event, "prev_prio", record, &val, 0) == 0)
- 		trace_seq_printf(s, "[%lld] ", val);
+-	event = pevent_find_event_by_name(pevent, "sched", "sched_switch");
++	event = tep_find_event_by_name(pevent, "sched", "sched_switch");
+ 	if (!event)
+ 		goto fail;
+ 	sched_id = event->id;
+@@ -564,7 +564,7 @@ static void init_wakeup(struct tracecmd_input *handle)
  
--	if (pevent_get_field_val(s,  event, "prev_state", record, &val, 0) == 0)
-+	if (tep_get_field_val(s,  event, "prev_state", record, &val, 0) == 0)
- 		write_state(s, val);
+ 	wakeup_new_id = -1;
  
- 	trace_seq_puts(s, " ==> ");
+-	event = pevent_find_event_by_name(pevent, "sched", "sched_wakeup_new");
++	event = tep_find_event_by_name(pevent, "sched", "sched_wakeup_new");
+ 	if (!event)
+ 		goto skip;
+ 	wakeup_new_id = event->id;
+@@ -793,7 +793,7 @@ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
+ 		struct event_format *event;
+ 		unsigned long long rec_ts = record->ts;
  
--	if (pevent_get_field_val(s, event, "next_pid", record, &val, 1))
-+	if (tep_get_field_val(s, event, "next_pid", record, &val, 1))
- 		return trace_seq_putc(s, '!');
+-		event = pevent_find_event_by_record(pevent, record);
++		event = tep_find_event_by_record(pevent, record);
+ 		tep_print_event_task(pevent, &s, event, record);
+ 		tep_print_event_time(pevent, &s, event, record,
+ 					use_trace_clock);
+@@ -950,8 +950,8 @@ test_stacktrace(struct handle_list *handles, struct tep_record *record,
+ 			memset(info->cpus, 0, sizeof(*info->cpus));
  
- 	field = tep_find_any_field(event, "next_comm");
-@@ -111,7 +111,7 @@ static int sched_switch_handler(struct trace_seq *s, struct tep_record *record,
- 	}
- 	trace_seq_printf(s, "%lld", val);
+ 			pevent = tracecmd_get_pevent(h->handle);
+-			event = pevent_find_event_by_name(pevent, "ftrace",
+-							  "kernel_stack");
++			event = tep_find_event_by_name(pevent, "ftrace",
++						       "kernel_stack");
+ 			if (event)
+ 				info->stacktrace_id = event->id;
+ 			else
+@@ -1161,7 +1161,7 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
  
--	if (pevent_get_field_val(s, event, "next_prio", record, &val, 0) == 0)
-+	if (tep_get_field_val(s, event, "next_prio", record, &val, 0) == 0)
- 		trace_seq_printf(s, " [%lld]", val);
+ 		/* Find the kernel_stacktrace if available */
+ 		pevent = tracecmd_get_pevent(handles->handle);
+-		event = pevent_find_event_by_name(pevent, "ftrace", "kernel_stack");
++		event = tep_find_event_by_name(pevent, "ftrace", "kernel_stack");
+ 		if (event)
+ 			stacktrace_id = event->id;
  
- 	return 0;
-diff --git a/plugins/plugin_tlb.c b/plugins/plugin_tlb.c
-index 9f1a70a..14afa18 100644
---- a/plugins/plugin_tlb.c
-+++ b/plugins/plugin_tlb.c
-@@ -25,7 +25,7 @@ static int tlb_flush_handler(struct trace_seq *s, struct tep_record *record,
- 
- 	tep_print_num_field(s, "%ld", event, "pages", record, 1);
- 
--	if (pevent_get_field_val(s, event, "reason", record, &val, 1) < 0)
-+	if (tep_get_field_val(s, event, "reason", record, &val, 1) < 0)
- 		return -1;
- 
- 	trace_seq_puts(s, " reason=");
 -- 
 2.17.1
