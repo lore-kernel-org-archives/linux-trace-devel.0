@@ -1,17 +1,17 @@
 Return-Path: <SRS0=/uS6=LK=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:38872 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726868AbeH0MD5 (ORCPT
+Received: from mail-wm0-f65.google.com ([74.125.82.65]:34064 "EHLO
+        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbeH0MD6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 27 Aug 2018 08:03:57 -0400
-Received: by mail-wr1-f68.google.com with SMTP id w11-v6so12743590wrc.5
-        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Aug 2018 01:18:20 -0700 (PDT)
+        Mon, 27 Aug 2018 08:03:58 -0400
+Received: by mail-wm0-f65.google.com with SMTP id m199-v6so9148432wma.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Aug 2018 01:18:19 -0700 (PDT)
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 17/24] tools lib traceevent: Rename pevent_register / unregister APIs
-Date: Mon, 27 Aug 2018 11:17:52 +0300
-Message-Id: <20180827081759.17297-18-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 16/24] tools lib traceevent: Rename pevent_filter* APIs
+Date: Mon, 27 Aug 2018 11:17:51 +0300
+Message-Id: <20180827081759.17297-17-tz.stoyanov@gmail.com>
 In-Reply-To: <20180827081759.17297-1-tz.stoyanov@gmail.com>
 References: <20180827081759.17297-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -20,793 +20,837 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
 conflicts. That prefix will be "tep_" and not "pevent_". This changes
-APIs: pevent_register_print_function, pevent_unregister_print_function,
-pevent_register_event_handler, pevent_unregister_event_handler,
-pevent_register_function, pevent_register_trace_clock
+APIs: PEVENT_FILTER_ERROR_BUFSZ, pevent_filter_alloc,
+pevent_filter_add_filter_str, pevent_filter_match, pevent_filter_strerror,
+pevent_event_filtered, pevent_filter_reset, pevent_filter_clear_trivial,
+pevent_filter_free, pevent_filter_make_string, pevent_filter_remove_event,
+pevent_filter_event_has_trivial, pevent_filter_copy, pevent_update_trivial,
+pevent_filter_compare
 
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180808180702.524813185@goodmis.org
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Link: http://lkml.kernel.org/r/20180808180702.370659353@goodmis.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/traceevent/event-parse.h | 30 +++++------
- lib/trace-cmd/trace-ftrace.c     |  8 +--
- lib/trace-cmd/trace-util.c       |  4 +-
- lib/traceevent/event-parse.c     | 40 +++++++--------
- plugins/plugin_blk.c             |  4 +-
- plugins/plugin_cfg80211.c        | 16 +++---
- plugins/plugin_function.c        |  8 +--
- plugins/plugin_futex.c           |  8 +--
- plugins/plugin_hrtimer.c         | 18 +++----
- plugins/plugin_jbd2.c            | 34 ++++++-------
- plugins/plugin_kmem.c            | 50 +++++++++----------
- plugins/plugin_kvm.c             | 86 ++++++++++++++++----------------
- plugins/plugin_mac80211.c        |  8 +--
- plugins/plugin_sched_switch.c    | 24 ++++-----
- plugins/plugin_scsi.c            | 20 ++++----
- plugins/plugin_tlb.c             | 10 ++--
- plugins/plugin_xen.c             | 16 +++---
- python/ctracecmd.i               |  4 +-
- 18 files changed, 194 insertions(+), 194 deletions(-)
+ include/traceevent/event-parse.h         | 50 +++++++-------
+ kernel-shark-qt/examples/datafilter.c    |  4 +-
+ kernel-shark-qt/src/libkshark-configio.c |  4 +-
+ kernel-shark-qt/src/libkshark.c          |  8 +--
+ kernel-shark/kernel-shark.c              |  4 +-
+ kernel-shark/trace-filter.c              | 38 +++++------
+ kernel-shark/trace-graph.c               | 22 +++----
+ kernel-shark/trace-view-store.c          | 12 ++--
+ kernel-shark/trace-view.c                |  6 +-
+ lib/traceevent/parse-filter.c            | 84 ++++++++++++------------
+ tracecmd/trace-read.c                    |  8 +--
+ 11 files changed, 120 insertions(+), 120 deletions(-)
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 812ef18..9523143 100644
+index 5a630cc..812ef18 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -607,9 +607,9 @@ int tep_set_function_resolver(struct tep_handle *pevent,
- 			      tep_func_resolver_t *func, void *priv);
- void pevent_reset_function_resolver(struct tep_handle *pevent);
- int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid);
--int pevent_register_trace_clock(struct tep_handle *pevent, const char *trace_clock);
--int pevent_register_function(struct tep_handle *pevent, char *name,
--			     unsigned long long addr, char *mod);
-+int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_clock);
-+int tep_register_function(struct tep_handle *pevent, char *name,
-+			  unsigned long long addr, char *mod);
- int tep_register_print_string(struct tep_handle *pevent, const char *fmt,
- 			      unsigned long long addr);
- int pevent_pid_is_registered(struct tep_handle *pevent, int pid);
-@@ -661,18 +661,18 @@ int tep_print_func_field(struct trace_seq *s, const char *fmt,
- 			 struct event_format *event, const char *name,
- 			 struct tep_record *record, int err);
+@@ -918,16 +918,16 @@ struct filter_type {
+ 	struct filter_arg	*filter;
+ };
  
--int pevent_register_event_handler(struct tep_handle *pevent, int id,
--				  const char *sys_name, const char *event_name,
--				  tep_event_handler_func func, void *context);
--int pevent_unregister_event_handler(struct tep_handle *pevent, int id,
--				    const char *sys_name, const char *event_name,
--				    tep_event_handler_func func, void *context);
--int pevent_register_print_function(struct tep_handle *pevent,
--				   tep_func_handler func,
--				   enum tep_func_arg_type ret_type,
--				   char *name, ...);
--int pevent_unregister_print_function(struct tep_handle *pevent,
--				     tep_func_handler func, char *name);
-+int tep_register_event_handler(struct tep_handle *pevent, int id,
-+			       const char *sys_name, const char *event_name,
-+			       tep_event_handler_func func, void *context);
-+int tep_unregister_event_handler(struct tep_handle *pevent, int id,
-+				 const char *sys_name, const char *event_name,
-+				 tep_event_handler_func func, void *context);
-+int tep_register_print_function(struct tep_handle *pevent,
-+				tep_func_handler func,
-+				enum tep_func_arg_type ret_type,
-+				char *name, ...);
-+int tep_unregister_print_function(struct tep_handle *pevent,
-+				  tep_func_handler func, char *name);
+-#define PEVENT_FILTER_ERROR_BUFSZ  1024
++#define TEP_FILTER_ERROR_BUFSZ  1024
  
- struct format_field *tep_find_common_field(struct event_format *event, const char *name);
- struct format_field *tep_find_field(struct event_format *event, const char *name);
-diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
-index 90770fc..01a2a7c 100644
---- a/lib/trace-cmd/trace-ftrace.c
-+++ b/lib/trace-cmd/trace-ftrace.c
-@@ -421,16 +421,16 @@ int tracecmd_ftrace_overrides(struct tracecmd_input *handle,
+ struct event_filter {
+ 	struct tep_handle	*pevent;
+ 	int			filters;
+ 	struct filter_type	*event_filters;
+-	char			error_buffer[PEVENT_FILTER_ERROR_BUFSZ];
++	char			error_buffer[TEP_FILTER_ERROR_BUFSZ];
+ };
  
- 	pevent = tracecmd_get_pevent(handle);
+-struct event_filter *pevent_filter_alloc(struct tep_handle *pevent);
++struct event_filter *tep_filter_alloc(struct tep_handle *pevent);
  
--	pevent_register_event_handler(pevent, -1, "ftrace", "function",
-+	tep_register_event_handler(pevent, -1, "ftrace", "function",
- 				      function_handler, NULL);
+ /* for backward compatibility */
+ #define FILTER_NONE		TEP_ERRNO__NO_FILTER
+@@ -941,39 +941,39 @@ enum filter_trivial_type {
+ 	FILTER_TRIVIAL_BOTH,
+ };
  
--	pevent_register_event_handler(pevent, -1, "ftrace", "funcgraph_entry",
-+	tep_register_event_handler(pevent, -1, "ftrace", "funcgraph_entry",
- 				      fgraph_ent_handler, finfo);
+-enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
+-					    const char *filter_str);
++enum tep_errno tep_filter_add_filter_str(struct event_filter *filter,
++					 const char *filter_str);
  
--	pevent_register_event_handler(pevent, -1, "ftrace", "funcgraph_exit",
-+	tep_register_event_handler(pevent, -1, "ftrace", "funcgraph_exit",
- 				      fgraph_ret_handler, finfo);
+-enum tep_errno pevent_filter_match(struct event_filter *filter,
+-				   struct tep_record *record);
++enum tep_errno tep_filter_match(struct event_filter *filter,
++				struct tep_record *record);
  
--	pevent_register_event_handler(pevent, -1, "ftrace", "kernel_stack",
-+	tep_register_event_handler(pevent, -1, "ftrace", "kernel_stack",
- 				      trace_stack_handler, finfo);
+-int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
+-			   char *buf, size_t buflen);
++int tep_filter_strerror(struct event_filter *filter, enum tep_errno err,
++			char *buf, size_t buflen);
  
- 	trace_util_add_options("ftrace", trace_ftrace_options);
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 877907d..0760815 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -388,7 +388,7 @@ static void extract_trace_clock(struct tep_handle *pevent, char *line)
+-int pevent_event_filtered(struct event_filter *filter,
+-			  int event_id);
++int tep_event_filtered(struct event_filter *filter,
++		       int event_id);
  
- 	data = strtok_r(line, "[]", &next);
- 	sscanf(data, "%ms", &clock);
--	pevent_register_trace_clock(pevent, clock);
-+	tep_register_trace_clock(pevent, clock);
- 	free(clock);
+-void pevent_filter_reset(struct event_filter *filter);
++void tep_filter_reset(struct event_filter *filter);
+ 
+-int pevent_filter_clear_trivial(struct event_filter *filter,
+-				 enum filter_trivial_type type);
++int tep_filter_clear_trivial(struct event_filter *filter,
++			     enum filter_trivial_type type);
+ 
+-void pevent_filter_free(struct event_filter *filter);
++void tep_filter_free(struct event_filter *filter);
+ 
+-char *pevent_filter_make_string(struct event_filter *filter, int event_id);
++char *tep_filter_make_string(struct event_filter *filter, int event_id);
+ 
+-int pevent_filter_remove_event(struct event_filter *filter,
+-			       int event_id);
++int tep_filter_remove_event(struct event_filter *filter,
++			    int event_id);
+ 
+-int pevent_filter_event_has_trivial(struct event_filter *filter,
+-				    int event_id,
+-				    enum filter_trivial_type type);
++int tep_filter_event_has_trivial(struct event_filter *filter,
++				 int event_id,
++				 enum filter_trivial_type type);
+ 
+-int pevent_filter_copy(struct event_filter *dest, struct event_filter *source);
++int tep_filter_copy(struct event_filter *dest, struct event_filter *source);
+ 
+-int pevent_update_trivial(struct event_filter *dest, struct event_filter *source,
+-			  enum filter_trivial_type type);
++int tep_update_trivial(struct event_filter *dest, struct event_filter *source,
++			enum filter_trivial_type type);
+ 
+-int pevent_filter_compare(struct event_filter *filter1, struct event_filter *filter2);
++int tep_filter_compare(struct event_filter *filter1, struct event_filter *filter2);
+ 
+ #endif /* _PARSE_EVENTS_H */
+diff --git a/kernel-shark-qt/examples/datafilter.c b/kernel-shark-qt/examples/datafilter.c
+index 1c04ce5..4b1e1e9 100644
+--- a/kernel-shark-qt/examples/datafilter.c
++++ b/kernel-shark-qt/examples/datafilter.c
+@@ -117,8 +117,8 @@ int main(int argc, char **argv)
+ 
+ 	/* Use the Advanced filter to do event content based filtering. */
+ 	adv_filter = kshark_ctx->advanced_event_filter;
+-	pevent_filter_add_filter_str(adv_filter,
+-				     "sched/sched_wakeup:target_cpu==1");
++	tep_filter_add_filter_str(adv_filter,
++				  "sched/sched_wakeup:target_cpu==1");
+ 
+ 	/* The Advanced filter requires reloading the data. */
+ 	for (i = 0; i < n_rows; ++i)
+diff --git a/kernel-shark-qt/src/libkshark-configio.c b/kernel-shark-qt/src/libkshark-configio.c
+index 026ad50..d7c1a06 100644
+--- a/kernel-shark-qt/src/libkshark-configio.c
++++ b/kernel-shark-qt/src/libkshark-configio.c
+@@ -1033,7 +1033,7 @@ static bool kshark_adv_filters_to_json(struct kshark_context *kshark_ctx,
+ 		return false;
+ 
+ 	for (i = 0; events[i]; i++) {
+-		str = pevent_filter_make_string(adv_filter,
++		str = tep_filter_make_string(adv_filter,
+ 						events[i]->id);
+ 		if (!str)
+ 			continue;
+@@ -1136,7 +1136,7 @@ static bool kshark_adv_filters_from_json(struct kshark_context *kshark_ctx,
+ 			 json_object_get_string(jname),
+ 			 json_object_get_string(jcond));
+ 
+-		ret = pevent_filter_add_filter_str(adv_filter,
++		ret = tep_filter_add_filter_str(adv_filter,
+ 						   filter_str);
+ 		if (ret < 0)
+ 			goto fail;
+diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
+index bb23afe..4f8da8a 100644
+--- a/kernel-shark-qt/src/libkshark.c
++++ b/kernel-shark-qt/src/libkshark.c
+@@ -148,7 +148,7 @@ bool kshark_open(struct kshark_context *kshark_ctx, const char *file)
+ 	kshark_ctx->pevent = tracecmd_get_pevent(handle);
+ 
+ 	kshark_ctx->advanced_event_filter =
+-		pevent_filter_alloc(kshark_ctx->pevent);
++		tep_filter_alloc(kshark_ctx->pevent);
+ 
+ 	/*
+ 	 * Turn off function trace indent and turn on show parent
+@@ -180,8 +180,8 @@ void kshark_close(struct kshark_context *kshark_ctx)
+ 	tracecmd_filter_id_clear(kshark_ctx->hide_event_filter);
+ 
+ 	if (kshark_ctx->advanced_event_filter) {
+-		pevent_filter_reset(kshark_ctx->advanced_event_filter);
+-		pevent_filter_free(kshark_ctx->advanced_event_filter);
++		tep_filter_reset(kshark_ctx->advanced_event_filter);
++		tep_filter_free(kshark_ctx->advanced_event_filter);
+ 		kshark_ctx->advanced_event_filter = NULL;
+ 	}
+ 
+@@ -612,7 +612,7 @@ static size_t get_records(struct kshark_context *kshark_ctx,
+ 				/* Apply event filtering. */
+ 				ret = FILTER_MATCH;
+ 				if (adv_filter->filters)
+-					ret = pevent_filter_match(adv_filter, rec);
++					ret = tep_filter_match(adv_filter, rec);
+ 
+ 				if (!kshark_show_event(kshark_ctx, entry->event_id) ||
+ 				    ret != FILTER_MATCH) {
+diff --git a/kernel-shark/kernel-shark.c b/kernel-shark/kernel-shark.c
+index 6b43296..8a512fc 100644
+--- a/kernel-shark/kernel-shark.c
++++ b/kernel-shark/kernel-shark.c
+@@ -460,7 +460,7 @@ static void load_filter(struct shark_info *info, const char *filename)
+ 	store = TRACE_VIEW_STORE(model);
+ 	event_filter = trace_view_store_get_event_filter(store);
+ 
+-	if (pevent_filter_compare(event_filter, ginfo->event_filter))
++	if (tep_filter_compare(event_filter, ginfo->event_filter))
+ 		sync_event_filters(info);
  }
  
-@@ -444,7 +444,7 @@ void tracecmd_parse_proc_kallsyms(struct tep_handle *pevent,
- 		 *  - x86-64 that reports per-cpu variable offsets as absolute
- 		 */
- 		if (func[0] != '$' && ch != 'A' && ch != 'a')
--			pevent_register_function(pevent, func, addr, mod);
-+			tep_register_function(pevent, func, addr, mod);
- 		free(func);
- 		free(mod);
+@@ -843,7 +843,7 @@ sync_events_filter_clicked (GtkWidget *subitem, gpointer data)
+ 	event_filter = trace_view_store_get_event_filter(store);
  
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 5e4f493..7f9c0b3 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -310,7 +310,7 @@ int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
- 	return 0;
+ 	/* If they are already equal, then just perminently sync them */
+-	if (pevent_filter_compare(event_filter, ginfo->event_filter))
++	if (tep_filter_compare(event_filter, ginfo->event_filter))
+ 		result = 2;
+ 	else
+ 		/* Ask user which way to sync */
+diff --git a/kernel-shark/trace-filter.c b/kernel-shark/trace-filter.c
+index 7216702..3145f99 100644
+--- a/kernel-shark/trace-filter.c
++++ b/kernel-shark/trace-filter.c
+@@ -470,7 +470,7 @@ create_tree_filter_model(struct tep_handle *pevent,
+ 		return GTK_TREE_MODEL(treestore);
+ 
+ 	for (i = 0; events[i]; i++) {
+-		str = pevent_filter_make_string(event_filter, events[i]->id);
++		str = tep_filter_make_string(event_filter, events[i]->id);
+ 		if (!str)
+ 			continue;
+ 
+@@ -1125,12 +1125,12 @@ create_tree_event_model(struct tep_handle *pevent,
+ 
+ 		normal = TRUE;
+ 		if (active && filter) {
+-			if (pevent_event_filtered(filter, event->id) &&
+-			    !pevent_filter_event_has_trivial(filter, event->id,
++			if (tep_event_filtered(filter, event->id) &&
++			    !tep_filter_event_has_trivial(filter, event->id,
+ 							     FILTER_TRIVIAL_BOTH))
+ 				normal = FALSE;
+ 			/* Make trivial false not selected */
+-			else if (pevent_filter_event_has_trivial(filter, event->id,
++			else if (tep_filter_event_has_trivial(filter, event->id,
+ 								 FILTER_TRIVIAL_FALSE))
+ 				active = FALSE;
+ 		}
+@@ -1950,7 +1950,7 @@ void trace_filter_convert_filter_to_names(struct event_filter *filter,
+ 			all_selected = 1;
+ 		}
+ 
+-		if (pevent_filter_event_has_trivial(filter, event->id,
++		if (tep_filter_event_has_trivial(filter, event->id,
+ 						    FILTER_TRIVIAL_TRUE)) {
+ 			if (!all_selected || !systems)
+ 				*event_ids = tracecmd_add_id(*event_ids, event->id, event_count++);
+@@ -1964,7 +1964,7 @@ void trace_filter_convert_filter_to_names(struct event_filter *filter,
+ 			all_selected = 0;
+ 
+ 			/* If this event is filtered, still add it */
+-			if (pevent_event_filtered(filter, event->id))
++			if (tep_event_filtered(filter, event->id))
+ 				*event_ids = tracecmd_add_id(*event_ids, event->id, event_count++);
+ 		}
+ 		last_system = event->system;
+@@ -1992,28 +1992,28 @@ void trace_filter_convert_char_to_filter(struct event_filter *filter,
+ 	pevent = filter->pevent;
+ 
+ 	/* Make a copy to use later */
+-	copy = pevent_filter_alloc(pevent);
+-	pevent_filter_copy(copy, filter);
+-	pevent_filter_reset(filter);
++	copy = tep_filter_alloc(pevent);
++	tep_filter_copy(copy, filter);
++	tep_filter_reset(filter);
+ 
+ 	if (systems) {
+ 		for (i = 0; systems[i]; i++)
+-			pevent_filter_add_filter_str(filter,
+-						     systems[i]);
++			tep_filter_add_filter_str(filter,
++						  systems[i]);
+ 	}
+ 
+ 	if (events) {
+ 		for (i = 0; events[i] >= 0; i++) {
+ 			event = tep_find_event(filter->pevent, events[i]);
+ 			if (event)
+-				pevent_filter_add_filter_str(filter,
+-							     event->name);
++				tep_filter_add_filter_str(filter,
++							  event->name);
+ 		}
+ 	}
+ 
+-	pevent_update_trivial(filter, copy, FILTER_TRIVIAL_BOTH);
++	tep_update_trivial(filter, copy, FILTER_TRIVIAL_BOTH);
+ 
+-	pevent_filter_free(copy);
++	tep_filter_free(copy);
  }
  
--int pevent_register_trace_clock(struct tep_handle *pevent, const char *trace_clock)
-+int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_clock)
+ int trace_filter_save_events(struct tracecmd_xml_handle *handle,
+@@ -2032,7 +2032,7 @@ int trace_filter_save_events(struct tracecmd_xml_handle *handle,
+ 		tracecmd_xml_write_element(handle, "System", "%s", systems[i]);
+ 
+ 	for (i = 0; event_ids && event_ids[i] > 0; i++) {
+-		str = pevent_filter_make_string(filter, event_ids[i]);
++		str = tep_filter_make_string(filter, event_ids[i]);
+ 		if (!str)
+ 			continue;
+ 
+@@ -2098,7 +2098,7 @@ int trace_filter_load_events(struct event_filter *event_filter,
+ 
+ 		if (strcmp(name, "System") == 0) {
+ 			system = tracecmd_xml_node_value(handle, node);
+-			pevent_filter_add_filter_str(event_filter,
++			tep_filter_add_filter_str(event_filter,
+ 						     system);
+ 		} else if (strcmp(name, "Event") == 0) {
+ 			system = NULL;
+@@ -2145,8 +2145,8 @@ int trace_filter_load_events(struct event_filter *event_filter,
+ 						sprintf(buffer, "%s", event);
+ 					}
+ 				}
+-				pevent_filter_add_filter_str(event_filter,
+-							     buffer);
++				tep_filter_add_filter_str(event_filter,
++							  buffer);
+ 				free(buffer);
+ 			}
+ 		}
+diff --git a/kernel-shark/trace-graph.c b/kernel-shark/trace-graph.c
+index 3fe0f83..53f5e39 100644
+--- a/kernel-shark/trace-graph.c
++++ b/kernel-shark/trace-graph.c
+@@ -279,7 +279,7 @@ gboolean trace_graph_filter_on_event(struct graph_info *ginfo, struct tep_record
+ 	if (ginfo->all_events)
+ 		return FALSE;
+ 
+-	ret = pevent_filter_match(ginfo->event_filter, record);
++	ret = tep_filter_match(ginfo->event_filter, record);
+ 	return ret == FILTER_MATCH ? FALSE : TRUE;
+ }
+ 
+@@ -2235,14 +2235,14 @@ void trace_graph_event_filter_callback(gboolean accept,
+ 	if (all_events) {
+ 		ginfo->all_events = TRUE;
+ 		/* filter is no longer used */
+-		pevent_filter_reset(ginfo->event_filter);
++		tep_filter_reset(ginfo->event_filter);
+ 		redraw_graph(ginfo);
+ 		return;
+ 	}
+ 
+ 	ginfo->all_events = FALSE;
+ 
+-	pevent_filter_clear_trivial(ginfo->event_filter, FILTER_TRIVIAL_BOTH);
++	tep_filter_clear_trivial(ginfo->event_filter, FILTER_TRIVIAL_BOTH);
+ 
+ 	trace_filter_convert_char_to_filter(ginfo->event_filter,
+ 					    systems, events);
+@@ -2271,17 +2271,17 @@ void trace_graph_adv_filter_callback(gboolean accept,
+ 
+ 	if (event_ids) {
+ 		for (i = 0; event_ids[i] >= 0; i++)
+-			pevent_filter_remove_event(event_filter, event_ids[i]);
++			tep_filter_remove_event(event_filter, event_ids[i]);
+ 	}
+ 
+ 	if (has_text(text)) {
+ 
+ 		ginfo->all_events = FALSE;
+ 
+-		pevent_filter_clear_trivial(event_filter,
++		tep_filter_clear_trivial(event_filter,
+ 					    FILTER_TRIVIAL_BOTH);
+ 
+-		ret = pevent_filter_add_filter_str(event_filter, text);
++		ret = tep_filter_add_filter_str(event_filter, text);
+ 		if (ret < 0) {
+ 			pevent_strerror(event_filter->pevent, ret,
+ 					error_str, sizeof(error_str));
+@@ -2300,14 +2300,14 @@ void trace_graph_copy_filter(struct graph_info *ginfo,
+ 	if (all_events) {
+ 		ginfo->all_events = TRUE;
+ 		/* filter is no longer used */
+-		pevent_filter_reset(ginfo->event_filter);
++		tep_filter_reset(ginfo->event_filter);
+ 		redraw_graph(ginfo);
+ 		return;
+ 	}
+ 
+ 	ginfo->all_events = FALSE;
+ 
+-	pevent_filter_copy(ginfo->event_filter, event_filter);
++	tep_filter_copy(ginfo->event_filter, event_filter);
+ 
+ 	redraw_graph(ginfo);
+ }
+@@ -2515,7 +2515,7 @@ static void free_int_array(int **array)
+ void trace_graph_free_info(struct graph_info *ginfo)
  {
- 	pevent->trace_clock = strdup(trace_clock);
- 	if (!pevent->trace_clock) {
-@@ -530,7 +530,7 @@ pevent_find_function_address(struct tep_handle *pevent, unsigned long long addr)
+ 	if (ginfo->handle) {
+-		pevent_filter_free(ginfo->event_filter);
++		tep_filter_free(ginfo->event_filter);
+ 		trace_graph_plot_free(ginfo);
+ 		tracecmd_close(ginfo->handle);
+ 		free_task_hash(ginfo);
+@@ -2552,7 +2552,7 @@ static int load_handle(struct graph_info *ginfo,
+ 	ginfo->cpus = tracecmd_cpus(handle);
+ 	ginfo->all_events = TRUE;
+ 
+-	ginfo->event_filter = pevent_filter_alloc(ginfo->pevent);
++	ginfo->event_filter = tep_filter_alloc(ginfo->pevent);
+ 
+ 	ginfo->start_time = -1ULL;
+ 	ginfo->end_time = 0;
+@@ -2645,7 +2645,7 @@ static int load_event_filter(struct graph_info *ginfo,
+ 	if (!node)
+ 		return -1;
+ 
+-	pevent_filter_clear_trivial(event_filter, FILTER_TRIVIAL_BOTH);
++	tep_filter_clear_trivial(event_filter, FILTER_TRIVIAL_BOTH);
+ 	ginfo->all_events = FALSE;
+ 
+ 	trace_filter_load_events(event_filter, handle, node);
+diff --git a/kernel-shark/trace-view-store.c b/kernel-shark/trace-view-store.c
+index 61d0157..8d4e05f 100644
+--- a/kernel-shark/trace-view-store.c
++++ b/kernel-shark/trace-view-store.c
+@@ -224,7 +224,7 @@ trace_view_store_finalize (GObject *object)
+ 		store->spin = NULL;
+ 	}
+ 
+-	pevent_filter_free(store->event_filter);
++	tep_filter_free(store->event_filter);
+ 	tracecmd_close(store->handle);
+ 
+ 	/* must chain up - finalize parent */
+@@ -512,7 +512,7 @@ void trace_view_store_clear_all_events_enabled(TraceViewStore *store)
+ {
+ 	g_return_if_fail (TRACE_VIEW_IS_LIST (store));
+ 
+-	pevent_filter_clear_trivial(store->event_filter, FILTER_TRIVIAL_BOTH);
++	tep_filter_clear_trivial(store->event_filter, FILTER_TRIVIAL_BOTH);
+ 	store->all_events = 0;
+ }
+ 
+@@ -527,7 +527,7 @@ void trace_view_store_set_all_events_enabled(TraceViewStore *store)
+ 	 * All enabled means that we don't need to look at 
+ 	 * the system events, so free those arrays.
+ 	 */
+-	pevent_filter_reset(store->event_filter);
++	tep_filter_reset(store->event_filter);
+ 
+ 	store->all_events = 1;
+ }
+@@ -855,7 +855,7 @@ trace_view_store_new (struct tracecmd_input *handle)
+ 	newstore->handle = handle;
+ 	newstore->cpus = tracecmd_cpus(handle);
+ 	tracecmd_ref(handle);
+-	newstore->event_filter = pevent_filter_alloc(tracecmd_get_pevent(handle));
++	newstore->event_filter = tep_filter_alloc(tracecmd_get_pevent(handle));
+ 
+ 	newstore->cpu_list = g_new(TraceViewRecord *, newstore->cpus);
+ 	g_assert(newstore->cpu_list != NULL);
+@@ -1257,8 +1257,8 @@ static void update_filter_tasks(TraceViewStore *store)
+ 			/* The record may be filtered by the events */
+ 			if (!store->all_events) {
+ 				int ret;
+-				ret = pevent_filter_match(store->event_filter,
+-							  record);
++				ret = tep_filter_match(store->event_filter,
++						       record);
+ 				if (ret != FILTER_MATCH) {
+ 					store->cpu_list[cpu][i].visible = 0;
+ 					goto skip;
+diff --git a/kernel-shark/trace-view.c b/kernel-shark/trace-view.c
+index a1e0b47..fdf8290 100644
+--- a/kernel-shark/trace-view.c
++++ b/kernel-shark/trace-view.c
+@@ -463,14 +463,14 @@ void trace_view_adv_filter_callback(gboolean accept,
+ 
+ 	if (event_ids) {
+ 		for (i = 0; event_ids[i] >= 0; i++)
+-			pevent_filter_remove_event(event_filter, event_ids[i]);
++			tep_filter_remove_event(event_filter, event_ids[i]);
+ 	}
+ 
+ 	if (has_text(text)) {
+ 
+ 		trace_view_store_clear_all_events_enabled(store);
+ 
+-		ret = pevent_filter_add_filter_str(event_filter, text);
++		ret = tep_filter_add_filter_str(event_filter, text);
+ 		if (ret < 0) {
+ 			pevent_strerror(event_filter->pevent, ret,
+ 					error_str, sizeof(error_str));
+@@ -509,7 +509,7 @@ void trace_view_copy_filter(GtkWidget *treeview,
+ 
+ 		event_filter = trace_view_store_get_event_filter(store);
+ 
+-		pevent_filter_copy(event_filter, src_event_filter);
++		tep_filter_copy(event_filter, src_event_filter);
+ 	}
+ 
+ 	update_rows(trace_tree, store);
+diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
+index 2241523..df42e04 100644
+--- a/lib/traceevent/parse-filter.c
++++ b/lib/traceevent/parse-filter.c
+@@ -52,7 +52,7 @@ static void show_error(char *error_buf, const char *fmt, ...)
+ 	}
+ 
+ 	va_start(ap, fmt);
+-	vsnprintf(error_buf + len, PEVENT_FILTER_ERROR_BUFSZ - len, fmt, ap);
++	vsnprintf(error_buf + len, TEP_FILTER_ERROR_BUFSZ - len, fmt, ap);
+ 	va_end(ap);
+ }
+ 
+@@ -162,10 +162,10 @@ add_filter_type(struct event_filter *filter, int id)
  }
  
  /**
-- * pevent_register_function - register a function with a given address
-+ * tep_register_function - register a function with a given address
-  * @pevent: handle for the pevent
-  * @function: the function name to register
-  * @addr: the address the function starts at
-@@ -539,8 +539,8 @@ pevent_find_function_address(struct tep_handle *pevent, unsigned long long addr)
-  * This registers a function name with an address and module.
-  * The @func passed in is duplicated.
+- * pevent_filter_alloc - create a new event filter
++ * tep_filter_alloc - create a new event filter
+  * @pevent: The pevent that this filter is associated with
   */
--int pevent_register_function(struct tep_handle *pevent, char *func,
--			     unsigned long long addr, char *mod)
-+int tep_register_function(struct tep_handle *pevent, char *func,
-+			  unsigned long long addr, char *mod)
+-struct event_filter *pevent_filter_alloc(struct tep_handle *pevent)
++struct event_filter *tep_filter_alloc(struct tep_handle *pevent)
  {
- 	struct func_list *item = malloc(sizeof(*item));
+ 	struct event_filter *filter;
  
-@@ -6463,7 +6463,7 @@ static void free_func_handle(struct tep_function_handler *func)
+@@ -1245,16 +1245,16 @@ static void filter_init_error_buf(struct event_filter *filter)
  }
  
  /**
-- * pevent_register_print_function - register a helper function
-+ * tep_register_print_function - register a helper function
-  * @pevent: the handle to the pevent
-  * @func: the function to process the helper function
-  * @ret_type: the return type of the helper function
-@@ -6477,10 +6477,10 @@ static void free_func_handle(struct tep_function_handler *func)
-  * The @parameters is a variable list of tep_func_arg_type enums that
-  * must end with TEP_FUNC_ARG_VOID.
-  */
--int pevent_register_print_function(struct tep_handle *pevent,
--				   tep_func_handler func,
--				   enum tep_func_arg_type ret_type,
--				   char *name, ...)
-+int tep_register_print_function(struct tep_handle *pevent,
-+				tep_func_handler func,
-+				enum tep_func_arg_type ret_type,
-+				char *name, ...)
- {
- 	struct tep_function_handler *func_handle;
- 	struct pevent_func_params **next_param;
-@@ -6555,7 +6555,7 @@ int pevent_register_print_function(struct tep_handle *pevent,
- }
- 
- /**
-- * pevent_unregister_print_function - unregister a helper function
-+ * tep_unregister_print_function - unregister a helper function
-  * @pevent: the handle to the pevent
-  * @func: the function to process the helper function
-  * @name: the name of the helper function
-@@ -6564,8 +6564,8 @@ int pevent_register_print_function(struct tep_handle *pevent,
+- * pevent_filter_add_filter_str - add a new filter
++ * tep_filter_add_filter_str - add a new filter
+  * @filter: the event filter to add to
+  * @filter_str: the filter string that contains the filter
   *
-  * Returns 0 if the handler was removed successully, -1 otherwise.
+  * Returns 0 if the filter was successfully added or a
+- * negative error code.  Use pevent_filter_strerror() to see
++ * negative error code.  Use tep_filter_strerror() to see
+  * actual error message in case of error.
   */
--int pevent_unregister_print_function(struct tep_handle *pevent,
--				     tep_func_handler func, char *name)
-+int tep_unregister_print_function(struct tep_handle *pevent,
-+				  tep_func_handler func, char *name)
+-enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
+-					       const char *filter_str)
++enum tep_errno tep_filter_add_filter_str(struct event_filter *filter,
++					 const char *filter_str)
  {
- 	struct tep_function_handler *func_handle;
+ 	struct tep_handle *pevent = filter->pevent;
+ 	struct event_list *event;
+@@ -1335,7 +1335,7 @@ enum tep_errno pevent_filter_add_filter_str(struct event_filter *filter,
  
-@@ -6601,7 +6601,7 @@ static struct event_format *pevent_search_event(struct tep_handle *pevent, int i
+ 		if (ret >= 0 && pevent->test_filters) {
+ 			char *test;
+-			test = pevent_filter_make_string(filter, event->event->id);
++			test = tep_filter_make_string(filter, event->event->id);
+ 			if (test) {
+ 				printf(" '%s: %s'\n", event->event->name, test);
+ 				free(test);
+@@ -1357,7 +1357,7 @@ static void free_filter_type(struct filter_type *filter_type)
  }
  
  /**
-- * pevent_register_event_handler - register a way to parse an event
-+ * tep_register_event_handler - register a way to parse an event
-  * @pevent: the handle to the pevent
-  * @id: the id of the event to register
-  * @sys_name: the system name the event belongs to
-@@ -6617,9 +6617,9 @@ static struct event_format *pevent_search_event(struct tep_handle *pevent, int i
-  * If @id is >= 0, then it is used to find the event.
-  * else @sys_name and @event_name are used.
-  */
--int pevent_register_event_handler(struct tep_handle *pevent, int id,
--				  const char *sys_name, const char *event_name,
--				  tep_event_handler_func func, void *context)
-+int tep_register_event_handler(struct tep_handle *pevent, int id,
-+			       const char *sys_name, const char *event_name,
-+			       tep_event_handler_func func, void *context)
- {
- 	struct event_format *event;
- 	struct event_handler *handle;
-@@ -6686,7 +6686,7 @@ static int handle_matches(struct event_handler *handler, int id,
- }
- 
- /**
-- * pevent_unregister_event_handler - unregister an existing event handler
-+ * tep_unregister_event_handler - unregister an existing event handler
-  * @pevent: the handle to the pevent
-  * @id: the id of the event to unregister
-  * @sys_name: the system name the handler belongs to
-@@ -6701,9 +6701,9 @@ static int handle_matches(struct event_handler *handler, int id,
+- * pevent_filter_strerror - fill error message in a buffer
++ * tep_filter_strerror - fill error message in a buffer
+  * @filter: the event filter contains error
+  * @err: the error code
+  * @buf: the buffer to be filled in
+@@ -1365,8 +1365,8 @@ static void free_filter_type(struct filter_type *filter_type)
   *
-  * Returns 0 if handler was removed successfully, -1 if event was not found.
+  * Returns 0 if message was filled successfully, -1 if error
   */
--int pevent_unregister_event_handler(struct tep_handle *pevent, int id,
--				    const char *sys_name, const char *event_name,
--				    tep_event_handler_func func, void *context)
-+int tep_unregister_event_handler(struct tep_handle *pevent, int id,
-+				 const char *sys_name, const char *event_name,
-+				 tep_event_handler_func func, void *context)
+-int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
+-			   char *buf, size_t buflen)
++int tep_filter_strerror(struct event_filter *filter, enum tep_errno err,
++			char *buf, size_t buflen)
  {
- 	struct event_format *event;
- 	struct event_handler *handle;
-diff --git a/plugins/plugin_blk.c b/plugins/plugin_blk.c
-index 5070af2..0e92546 100644
---- a/plugins/plugin_blk.c
-+++ b/plugins/plugin_blk.c
-@@ -365,7 +365,7 @@ static int blktrace_handler(struct trace_seq *s, struct tep_record *record,
- 
- int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_event_handler(pevent, -1, "ftrace", "blktrace",
--				      blktrace_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "ftrace", "blktrace",
-+				   blktrace_handler, NULL);
- 	return 0;
- }
-diff --git a/plugins/plugin_cfg80211.c b/plugins/plugin_cfg80211.c
-index e0421e3..a51b366 100644
---- a/plugins/plugin_cfg80211.c
-+++ b/plugins/plugin_cfg80211.c
-@@ -27,17 +27,17 @@ process___le16_to_cpup(struct trace_seq *s, unsigned long long *args)
- 
- int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_print_function(pevent,
--				       process___le16_to_cpup,
--				       TEP_FUNC_ARG_INT,
--				       "__le16_to_cpup",
--				       TEP_FUNC_ARG_PTR,
--				       TEP_FUNC_ARG_VOID);
-+	tep_register_print_function(pevent,
-+				    process___le16_to_cpup,
-+				    TEP_FUNC_ARG_INT,
-+				    "__le16_to_cpup",
-+				    TEP_FUNC_ARG_PTR,
-+				    TEP_FUNC_ARG_VOID);
- 	return 0;
+ 	if (err <= __TEP_ERRNO__START || err >= __TEP_ERRNO__END)
+ 		return -1;
+@@ -1383,7 +1383,7 @@ int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
  }
  
- void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
+ /**
+- * pevent_filter_remove_event - remove a filter for an event
++ * tep_filter_remove_event - remove a filter for an event
+  * @filter: the event filter to remove from
+  * @event_id: the event to remove a filter for
+  *
+@@ -1393,8 +1393,8 @@ int pevent_filter_strerror(struct event_filter *filter, enum tep_errno err,
+  * Returns 1: if an event was removed
+  *   0: if the event was not found
+  */
+-int pevent_filter_remove_event(struct event_filter *filter,
+-			       int event_id)
++int tep_filter_remove_event(struct event_filter *filter,
++			    int event_id)
  {
--	pevent_unregister_print_function(pevent, process___le16_to_cpup,
--					 "__le16_to_cpup");
-+	tep_unregister_print_function(pevent, process___le16_to_cpup,
-+				      "__le16_to_cpup");
- }
-diff --git a/plugins/plugin_function.c b/plugins/plugin_function.c
-index 5434a5f..f88da43 100644
---- a/plugins/plugin_function.c
-+++ b/plugins/plugin_function.c
-@@ -170,8 +170,8 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
- 
- int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_event_handler(pevent, -1, "ftrace", "function",
--				      function_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "ftrace", "function",
-+				   function_handler, NULL);
- 
- 	trace_util_add_options("ftrace", plugin_options);
- 
-@@ -182,8 +182,8 @@ void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
- 	int i, x;
- 
--	pevent_unregister_event_handler(pevent, -1, "ftrace", "function",
--					function_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "ftrace", "function",
-+				     function_handler, NULL);
- 
- 	for (i = 0; i <= cpus; i++) {
- 		for (x = 0; x < fstack[i].size && fstack[i].stack[x]; x++)
-diff --git a/plugins/plugin_futex.c b/plugins/plugin_futex.c
-index 60babce..d060bd0 100644
---- a/plugins/plugin_futex.c
-+++ b/plugins/plugin_futex.c
-@@ -109,13 +109,13 @@ static int futex_handler(struct trace_seq *s, struct tep_record *record,
- 
- int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_event_handler(pevent, -1, "syscalls", "sys_enter_futex",
--				      futex_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "syscalls", "sys_enter_futex",
-+				   futex_handler, NULL);
- 	return 0;
+ 	struct filter_type *filter_type;
+ 	unsigned long len;
+@@ -1423,12 +1423,12 @@ int pevent_filter_remove_event(struct event_filter *filter,
  }
  
- void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
+ /**
+- * pevent_filter_reset - clear all filters in a filter
++ * tep_filter_reset - clear all filters in a filter
+  * @filter: the event filter to reset
+  *
+  * Removes all filters from a filter and resets it.
+  */
+-void pevent_filter_reset(struct event_filter *filter)
++void tep_filter_reset(struct event_filter *filter)
  {
--	pevent_unregister_event_handler(pevent, -1, "syscalls", "sys_enter_futex",
--					futex_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "syscalls", "sys_enter_futex",
-+				     futex_handler, NULL);
- }
-diff --git a/plugins/plugin_hrtimer.c b/plugins/plugin_hrtimer.c
-index f3a0ceb..a2edb69 100644
---- a/plugins/plugin_hrtimer.c
-+++ b/plugins/plugin_hrtimer.c
-@@ -48,21 +48,21 @@ static int timer_start_handler(struct trace_seq *s, struct tep_record *record,
+ 	int i;
  
- int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_event_handler(pevent, -1, "timer", "hrtimer_expire_entry",
--				      timer_expire_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "timer", "hrtimer_expire_entry",
-+				   timer_expire_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "timer", "hrtimer_start",
--				      timer_start_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "timer", "hrtimer_start",
-+				   timer_start_handler, NULL);
- 
- 	return 0;
+@@ -1440,11 +1440,11 @@ void pevent_filter_reset(struct event_filter *filter)
+ 	filter->event_filters = NULL;
  }
  
- void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
+-void pevent_filter_free(struct event_filter *filter)
++void tep_filter_free(struct event_filter *filter)
  {
--	pevent_unregister_event_handler(pevent, -1,
--					"timer", "hrtimer_expire_entry",
--					timer_expire_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1,
-+				     "timer", "hrtimer_expire_entry",
-+				     timer_expire_handler, NULL);
+ 	pevent_unref(filter->pevent);
  
--	pevent_unregister_event_handler(pevent, -1, "timer", "hrtimer_start",
--					timer_start_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "timer", "hrtimer_start",
-+				     timer_start_handler, NULL);
+-	pevent_filter_reset(filter);
++	tep_filter_reset(filter);
+ 
+ 	free(filter);
  }
-diff --git a/plugins/plugin_jbd2.c b/plugins/plugin_jbd2.c
-index 0dd1633..fe95f3e 100644
---- a/plugins/plugin_jbd2.c
-+++ b/plugins/plugin_jbd2.c
-@@ -36,27 +36,27 @@ process_jiffies_to_msecs(struct trace_seq *s,
+@@ -1501,18 +1501,18 @@ static int copy_filter_type(struct event_filter *filter,
+ }
  
- int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
+ /**
+- * pevent_filter_copy - copy a filter using another filter
++ * tep_filter_copy - copy a filter using another filter
+  * @dest - the filter to copy to
+  * @source - the filter to copy from
+  *
+  * Returns 0 on success and -1 if not all filters were copied
+  */
+-int pevent_filter_copy(struct event_filter *dest, struct event_filter *source)
++int tep_filter_copy(struct event_filter *dest, struct event_filter *source)
  {
--	pevent_register_print_function(pevent,
--				       process_jbd2_dev_to_name,
--				       TEP_FUNC_ARG_STRING,
--				       "jbd2_dev_to_name",
--				       TEP_FUNC_ARG_INT,
--				       TEP_FUNC_ARG_VOID);
--
--	pevent_register_print_function(pevent,
--				       process_jiffies_to_msecs,
--				       TEP_FUNC_ARG_LONG,
--				       "jiffies_to_msecs",
--				       TEP_FUNC_ARG_LONG,
--				       TEP_FUNC_ARG_VOID);
-+	tep_register_print_function(pevent,
-+				    process_jbd2_dev_to_name,
-+				    TEP_FUNC_ARG_STRING,
-+				    "jbd2_dev_to_name",
-+				    TEP_FUNC_ARG_INT,
-+				    TEP_FUNC_ARG_VOID);
-+
-+	tep_register_print_function(pevent,
-+				    process_jiffies_to_msecs,
-+				    TEP_FUNC_ARG_LONG,
-+				    "jiffies_to_msecs",
-+				    TEP_FUNC_ARG_LONG,
-+				    TEP_FUNC_ARG_VOID);
+ 	int ret = 0;
+ 	int i;
+ 
+-	pevent_filter_reset(dest);
++	tep_filter_reset(dest);
+ 
+ 	for (i = 0; i < source->filters; i++) {
+ 		if (copy_filter_type(dest, source, &source->event_filters[i]))
+@@ -1523,7 +1523,7 @@ int pevent_filter_copy(struct event_filter *dest, struct event_filter *source)
+ 
+ 
+ /**
+- * pevent_update_trivial - update the trivial filters with the given filter
++ * tep_update_trivial - update the trivial filters with the given filter
+  * @dest - the filter to update
+  * @source - the filter as the source of the update
+  * @type - the type of trivial filter to update.
+@@ -1533,8 +1533,8 @@ int pevent_filter_copy(struct event_filter *dest, struct event_filter *source)
+  * Returns 0 on success and -1 if there was a problem updating, but
+  *   events may have still been updated on error.
+  */
+-int pevent_update_trivial(struct event_filter *dest, struct event_filter *source,
+-			  enum filter_trivial_type type)
++int tep_update_trivial(struct event_filter *dest, struct event_filter *source,
++		       enum filter_trivial_type type)
+ {
+ 	struct tep_handle *src_pevent;
+ 	struct tep_handle *dest_pevent;
+@@ -1571,7 +1571,7 @@ int pevent_update_trivial(struct event_filter *dest, struct event_filter *source
+ 				return -1;
+ 		}
+ 
+-		str = pevent_filter_make_string(source, event->id);
++		str = tep_filter_make_string(source, event->id);
+ 		if (!str)
+ 			continue;
+ 
+@@ -1584,7 +1584,7 @@ int pevent_update_trivial(struct event_filter *dest, struct event_filter *source
+ }
+ 
+ /**
+- * pevent_filter_clear_trivial - clear TRUE and FALSE filters
++ * tep_filter_clear_trivial - clear TRUE and FALSE filters
+  * @filter: the filter to remove trivial filters from
+  * @type: remove only true, false, or both
+  *
+@@ -1592,8 +1592,8 @@ int pevent_update_trivial(struct event_filter *dest, struct event_filter *source
+  *
+  * Returns 0 on success and -1 if there was a problem.
+  */
+-int pevent_filter_clear_trivial(struct event_filter *filter,
+-				 enum filter_trivial_type type)
++int tep_filter_clear_trivial(struct event_filter *filter,
++			     enum filter_trivial_type type)
+ {
+ 	struct filter_type *filter_type;
+ 	int count = 0;
+@@ -1639,14 +1639,14 @@ int pevent_filter_clear_trivial(struct event_filter *filter,
+ 		return 0;
+ 
+ 	for (i = 0; i < count; i++)
+-		pevent_filter_remove_event(filter, ids[i]);
++		tep_filter_remove_event(filter, ids[i]);
+ 
+ 	free(ids);
  	return 0;
  }
  
- void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
+ /**
+- * pevent_filter_event_has_trivial - return true event contains trivial filter
++ * tep_filter_event_has_trivial - return true event contains trivial filter
+  * @filter: the filter with the information
+  * @event_id: the id of the event to test
+  * @type: trivial type to test for (TRUE, FALSE, EITHER)
+@@ -1654,9 +1654,9 @@ int pevent_filter_clear_trivial(struct event_filter *filter,
+  * Returns 1 if the event contains a matching trivial type
+  *  otherwise 0.
+  */
+-int pevent_filter_event_has_trivial(struct event_filter *filter,
+-				    int event_id,
+-				    enum filter_trivial_type type)
++int tep_filter_event_has_trivial(struct event_filter *filter,
++				 int event_id,
++				 enum filter_trivial_type type)
  {
--	pevent_unregister_print_function(pevent, process_jbd2_dev_to_name,
--					 "jbd2_dev_to_name");
-+	tep_unregister_print_function(pevent, process_jbd2_dev_to_name,
-+				      "jbd2_dev_to_name");
+ 	struct filter_type *filter_type;
  
--	pevent_unregister_print_function(pevent, process_jiffies_to_msecs,
--					 "jiffies_to_msecs");
-+	tep_unregister_print_function(pevent, process_jiffies_to_msecs,
-+				      "jiffies_to_msecs");
- }
-diff --git a/plugins/plugin_kmem.c b/plugins/plugin_kmem.c
-index 0840d6f..3088d3a 100644
---- a/plugins/plugin_kmem.c
-+++ b/plugins/plugin_kmem.c
-@@ -35,45 +35,45 @@ static int call_site_handler(struct trace_seq *s, struct tep_record *record,
- 
- int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_event_handler(pevent, -1, "kmem", "kfree",
--				      call_site_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kmem", "kfree",
-+				   call_site_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kmem", "kmalloc",
--				      call_site_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kmem", "kmalloc",
-+				   call_site_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kmem", "kmalloc_node",
--				      call_site_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kmem", "kmalloc_node",
-+				   call_site_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kmem", "kmem_cache_alloc",
--				      call_site_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kmem", "kmem_cache_alloc",
-+				   call_site_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kmem", "kmem_cache_alloc_node",
--				      call_site_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kmem", "kmem_cache_alloc_node",
-+				   call_site_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kmem", "kmem_cache_free",
--				      call_site_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kmem", "kmem_cache_free",
-+				   call_site_handler, NULL);
- 
- 	return 0;
+@@ -2001,14 +2001,14 @@ static int test_filter(struct event_format *event, struct filter_arg *arg,
  }
  
- void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
+ /**
+- * pevent_event_filtered - return true if event has filter
++ * tep_event_filtered - return true if event has filter
+  * @filter: filter struct with filter information
+  * @event_id: event id to test if filter exists
+  *
+  * Returns 1 if filter found for @event_id
+  *   otherwise 0;
+  */
+-int pevent_event_filtered(struct event_filter *filter, int event_id)
++int tep_event_filtered(struct event_filter *filter, int event_id)
  {
--	pevent_unregister_event_handler(pevent, -1, "kmem", "kfree",
--					call_site_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kmem", "kfree",
-+				     call_site_handler, NULL);
+ 	struct filter_type *filter_type;
  
--	pevent_unregister_event_handler(pevent, -1, "kmem", "kmalloc",
--					call_site_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kmem", "kmalloc",
-+				     call_site_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kmem", "kmalloc_node",
--					call_site_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kmem", "kmalloc_node",
-+				     call_site_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kmem", "kmem_cache_alloc",
--					call_site_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kmem", "kmem_cache_alloc",
-+				     call_site_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kmem",
--					"kmem_cache_alloc_node",
--					call_site_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kmem",
-+				     "kmem_cache_alloc_node",
-+				     call_site_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kmem", "kmem_cache_free",
--					call_site_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kmem", "kmem_cache_free",
-+				     call_site_handler, NULL);
- }
-diff --git a/plugins/plugin_kvm.c b/plugins/plugin_kvm.c
-index a7626ac..2c1a8a7 100644
---- a/plugins/plugin_kvm.c
-+++ b/plugins/plugin_kvm.c
-@@ -442,74 +442,74 @@ int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
- 	init_disassembler();
- 
--	pevent_register_event_handler(pevent, -1, "kvm", "kvm_exit",
--				      kvm_exit_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kvm", "kvm_exit",
-+				   kvm_exit_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kvm", "kvm_emulate_insn",
--				      kvm_emulate_insn_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kvm", "kvm_emulate_insn",
-+				   kvm_emulate_insn_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kvm", "kvm_nested_vmexit",
--				      kvm_nested_vmexit_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kvm", "kvm_nested_vmexit",
-+				   kvm_nested_vmexit_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kvm", "kvm_nested_vmexit_inject",
--				      kvm_nested_vmexit_inject_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kvm", "kvm_nested_vmexit_inject",
-+				   kvm_nested_vmexit_inject_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_get_page",
--				      kvm_mmu_get_page_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_get_page",
-+				   kvm_mmu_get_page_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_sync_page",
--				      kvm_mmu_print_role, NULL);
-+	tep_register_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_sync_page",
-+				   kvm_mmu_print_role, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_unsync_page",
--				      kvm_mmu_print_role, NULL);
-+	tep_register_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_unsync_page",
-+				   kvm_mmu_print_role, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_zap_page",
--				      kvm_mmu_print_role, NULL);
-+	tep_register_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_zap_page",
-+				   kvm_mmu_print_role, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "kvmmmu",
-+	tep_register_event_handler(pevent, -1, "kvmmmu",
- 			"kvm_mmu_prepare_zap_page", kvm_mmu_print_role,
- 			NULL);
- 
--	pevent_register_print_function(pevent,
--				       process_is_writable_pte,
--				       TEP_FUNC_ARG_INT,
--				       "is_writable_pte",
--				       TEP_FUNC_ARG_LONG,
--				       TEP_FUNC_ARG_VOID);
-+	tep_register_print_function(pevent,
-+				    process_is_writable_pte,
-+				    TEP_FUNC_ARG_INT,
-+				    "is_writable_pte",
-+				    TEP_FUNC_ARG_LONG,
-+				    TEP_FUNC_ARG_VOID);
- 	return 0;
+@@ -2021,7 +2021,7 @@ int pevent_event_filtered(struct event_filter *filter, int event_id)
  }
  
- void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
+ /**
+- * pevent_filter_match - test if a record matches a filter
++ * tep_filter_match - test if a record matches a filter
+  * @filter: filter struct with filter information
+  * @record: the record to test against the filter
+  *
+@@ -2032,8 +2032,8 @@ int pevent_event_filtered(struct event_filter *filter, int event_id)
+  * NO_FILTER - if no filters exist
+  * otherwise - error occurred during test
+  */
+-enum tep_errno pevent_filter_match(struct event_filter *filter,
+-				   struct tep_record *record)
++enum tep_errno tep_filter_match(struct event_filter *filter,
++				struct tep_record *record)
  {
--	pevent_unregister_event_handler(pevent, -1, "kvm", "kvm_exit",
--					kvm_exit_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kvm", "kvm_exit",
-+				     kvm_exit_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kvm", "kvm_emulate_insn",
--					kvm_emulate_insn_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kvm", "kvm_emulate_insn",
-+				     kvm_emulate_insn_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kvm", "kvm_nested_vmexit",
--					kvm_nested_vmexit_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kvm", "kvm_nested_vmexit",
-+				     kvm_nested_vmexit_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kvm", "kvm_nested_vmexit_inject",
--					kvm_nested_vmexit_inject_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kvm", "kvm_nested_vmexit_inject",
-+				     kvm_nested_vmexit_inject_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_get_page",
--					kvm_mmu_get_page_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_get_page",
-+				     kvm_mmu_get_page_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_sync_page",
--					kvm_mmu_print_role, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_sync_page",
-+				     kvm_mmu_print_role, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1,
--					"kvmmmu", "kvm_mmu_unsync_page",
--					kvm_mmu_print_role, NULL);
-+	tep_unregister_event_handler(pevent, -1,
-+				     "kvmmmu", "kvm_mmu_unsync_page",
-+				     kvm_mmu_print_role, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_zap_page",
--					kvm_mmu_print_role, NULL);
-+	tep_unregister_event_handler(pevent, -1, "kvmmmu", "kvm_mmu_zap_page",
-+				     kvm_mmu_print_role, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "kvmmmu",
-+	tep_unregister_event_handler(pevent, -1, "kvmmmu",
- 			"kvm_mmu_prepare_zap_page", kvm_mmu_print_role,
- 			NULL);
- 
--	pevent_unregister_print_function(pevent, process_is_writable_pte,
--					 "is_writable_pte");
-+	tep_unregister_print_function(pevent, process_is_writable_pte,
-+				      "is_writable_pte");
- }
-diff --git a/plugins/plugin_mac80211.c b/plugins/plugin_mac80211.c
-index 5fc3170..72f7d7c 100644
---- a/plugins/plugin_mac80211.c
-+++ b/plugins/plugin_mac80211.c
-@@ -178,10 +178,10 @@ static int drv_config(struct trace_seq *s, struct tep_record *record,
- 
- int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_event_handler(pevent, -1, "mac80211", "drv_bss_info_changed",
--				      drv_bss_info_changed, NULL);
--	pevent_register_event_handler(pevent, -1, "mac80211", "drv_config",
--				      drv_config, NULL);
-+	tep_register_event_handler(pevent, -1, "mac80211", "drv_bss_info_changed",
-+				   drv_bss_info_changed, NULL);
-+	tep_register_event_handler(pevent, -1, "mac80211", "drv_config",
-+				   drv_config, NULL);
- 
- 	return 0;
- }
-diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-index 534e99c..f1229b8 100644
---- a/plugins/plugin_sched_switch.c
-+++ b/plugins/plugin_sched_switch.c
-@@ -119,26 +119,26 @@ static int sched_switch_handler(struct trace_seq *s, struct tep_record *record,
- 
- int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_event_handler(pevent, -1, "sched", "sched_switch",
--				      sched_switch_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "sched", "sched_switch",
-+				   sched_switch_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "sched", "sched_wakeup",
--				      sched_wakeup_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "sched", "sched_wakeup",
-+				   sched_wakeup_handler, NULL);
- 
--	pevent_register_event_handler(pevent, -1, "sched", "sched_wakeup_new",
--				      sched_wakeup_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "sched", "sched_wakeup_new",
-+				   sched_wakeup_handler, NULL);
- 
- 	return 0;
+ 	struct tep_handle *pevent = filter->pevent;
+ 	struct filter_type *filter_type;
+@@ -2350,7 +2350,7 @@ static char *arg_to_str(struct event_filter *filter, struct filter_arg *arg)
  }
  
- void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
+ /**
+- * pevent_filter_make_string - return a string showing the filter
++ * tep_filter_make_string - return a string showing the filter
+  * @filter: filter struct with filter information
+  * @event_id: the event id to return the filter string with
+  *
+@@ -2359,7 +2359,7 @@ static char *arg_to_str(struct event_filter *filter, struct filter_arg *arg)
+  *  NULL is returned if no filter is found or allocation failed.
+  */
+ char *
+-pevent_filter_make_string(struct event_filter *filter, int event_id)
++tep_filter_make_string(struct event_filter *filter, int event_id)
  {
--	pevent_unregister_event_handler(pevent, -1, "sched", "sched_switch",
--					sched_switch_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "sched", "sched_switch",
-+				     sched_switch_handler, NULL);
+ 	struct filter_type *filter_type;
  
--	pevent_unregister_event_handler(pevent, -1, "sched", "sched_wakeup",
--					sched_wakeup_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "sched", "sched_wakeup",
-+				     sched_wakeup_handler, NULL);
- 
--	pevent_unregister_event_handler(pevent, -1, "sched", "sched_wakeup_new",
--					sched_wakeup_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1, "sched", "sched_wakeup_new",
-+				     sched_wakeup_handler, NULL);
- }
-diff --git a/plugins/plugin_scsi.c b/plugins/plugin_scsi.c
-index ce38df7..5ec346f 100644
---- a/plugins/plugin_scsi.c
-+++ b/plugins/plugin_scsi.c
-@@ -415,19 +415,19 @@ unsigned long long process_scsi_trace_parse_cdb(struct trace_seq *s,
- 
- int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_print_function(pevent,
--				       process_scsi_trace_parse_cdb,
--				       TEP_FUNC_ARG_STRING,
--				       "scsi_trace_parse_cdb",
--				       TEP_FUNC_ARG_PTR,
--				       TEP_FUNC_ARG_PTR,
--				       TEP_FUNC_ARG_INT,
--				       TEP_FUNC_ARG_VOID);
-+	tep_register_print_function(pevent,
-+				    process_scsi_trace_parse_cdb,
-+				    TEP_FUNC_ARG_STRING,
-+				    "scsi_trace_parse_cdb",
-+				    TEP_FUNC_ARG_PTR,
-+				    TEP_FUNC_ARG_PTR,
-+				    TEP_FUNC_ARG_INT,
-+				    TEP_FUNC_ARG_VOID);
- 	return 0;
+@@ -2375,7 +2375,7 @@ pevent_filter_make_string(struct event_filter *filter, int event_id)
  }
  
- void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
+ /**
+- * pevent_filter_compare - compare two filters and return if they are the same
++ * tep_filter_compare - compare two filters and return if they are the same
+  * @filter1: Filter to compare with @filter2
+  * @filter2: Filter to compare with @filter1
+  *
+@@ -2383,7 +2383,7 @@ pevent_filter_make_string(struct event_filter *filter, int event_id)
+  *  1 if the two filters hold the same content.
+  *  0 if they do not.
+  */
+-int pevent_filter_compare(struct event_filter *filter1, struct event_filter *filter2)
++int tep_filter_compare(struct event_filter *filter1, struct event_filter *filter2)
  {
--	pevent_unregister_print_function(pevent, process_scsi_trace_parse_cdb,
--					 "scsi_trace_parse_cdb");
-+	tep_unregister_print_function(pevent, process_scsi_trace_parse_cdb,
-+				      "scsi_trace_parse_cdb");
- }
-diff --git a/plugins/plugin_tlb.c b/plugins/plugin_tlb.c
-index 86f4cba..9f1a70a 100644
---- a/plugins/plugin_tlb.c
-+++ b/plugins/plugin_tlb.c
-@@ -52,15 +52,15 @@ static int tlb_flush_handler(struct trace_seq *s, struct tep_record *record,
+ 	struct filter_type *filter_type1;
+ 	struct filter_type *filter_type2;
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 74059a0..352ff11 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -503,11 +503,11 @@ static void process_filters(struct handle_list *handles)
+ 		if (!event_filter)
+ 			die("Failed to allocate for event filter");
+ 		event_filter->next = NULL;
+-		event_filter->filter = pevent_filter_alloc(pevent);
++		event_filter->filter = tep_filter_alloc(pevent);
+ 		if (!event_filter->filter)
+ 			die("malloc");
  
- int PEVENT_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_event_handler(pevent, -1, "tlb", "tlb_flush",
--				      tlb_flush_handler, NULL);
-+	tep_register_event_handler(pevent, -1, "tlb", "tlb_flush",
-+				   tlb_flush_handler, NULL);
+-		ret = pevent_filter_add_filter_str(event_filter->filter,
++		ret = tep_filter_add_filter_str(event_filter->filter,
+ 						   filter->filter);
+ 		if (ret < 0) {
+ 			pevent_strerror(pevent, ret, errstr, sizeof(errstr));
+@@ -891,7 +891,7 @@ test_filters(struct tep_handle *pevent, struct filter *event_filters,
+ 	}
  
- 	return 0;
- }
+ 	while (event_filters) {
+-		ret = pevent_filter_match(event_filters->filter, record);
++		ret = tep_filter_match(event_filters->filter, record);
+ 		switch (ret) {
+ 			case FILTER_NONE:
+ 			case FILTER_MATCH: 
+@@ -1099,7 +1099,7 @@ static void free_filters(struct filter *event_filter)
+ 		filter = event_filter;
+ 		event_filter = filter->next;
  
- void PEVENT_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
--	pevent_unregister_event_handler(pevent, -1,
--					"tlb", "tlb_flush",
--					tlb_flush_handler, NULL);
-+	tep_unregister_event_handler(pevent, -1,
-+				     "tlb", "tlb_flush",
-+				     tlb_flush_handler, NULL);
+-		pevent_filter_free(filter->filter);
++		tep_filter_free(filter->filter);
+ 		free(filter);
+ 	}
  }
-diff --git a/plugins/plugin_xen.c b/plugins/plugin_xen.c
-index 2ffbd91..b2acbd6 100644
---- a/plugins/plugin_xen.c
-+++ b/plugins/plugin_xen.c
-@@ -121,17 +121,17 @@ unsigned long long process_xen_hypercall_name(struct trace_seq *s,
- 
- int TEP_PLUGIN_LOADER(struct tep_handle *pevent)
- {
--	pevent_register_print_function(pevent,
--				       process_xen_hypercall_name,
--				       TEP_FUNC_ARG_STRING,
--				       "xen_hypercall_name",
--				       TEP_FUNC_ARG_INT,
--				       TEP_FUNC_ARG_VOID);
-+	tep_register_print_function(pevent,
-+				    process_xen_hypercall_name,
-+				    TEP_FUNC_ARG_STRING,
-+				    "xen_hypercall_name",
-+				    TEP_FUNC_ARG_INT,
-+				    TEP_FUNC_ARG_VOID);
- 	return 0;
- }
- 
- void TEP_PLUGIN_UNLOADER(struct tep_handle *pevent)
- {
--	pevent_unregister_print_function(pevent, process_xen_hypercall_name,
--					 "xen_hypercall_name");
-+	tep_unregister_print_function(pevent, process_xen_hypercall_name,
-+				      "xen_hypercall_name");
- }
-diff --git a/python/ctracecmd.i b/python/ctracecmd.i
-index 0a3b84a..e29581e 100644
---- a/python/ctracecmd.i
-+++ b/python/ctracecmd.i
-@@ -76,8 +76,8 @@ void py_pevent_register_event_handler(struct tep_handle *pevent, int id,
- 				      PyObject *pyfunc)
- {
- 	Py_INCREF(pyfunc);
--	pevent_register_event_handler(pevent, id, subsys, evname,
--				      python_callback, pyfunc);
-+	tep_register_event_handler(pevent, id, subsys, evname,
-+				   python_callback, pyfunc);
- }
- 
- static PyObject *py_field_get_stack(struct tep_handle *pevent,
 -- 
 2.17.1
