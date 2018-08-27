@@ -1,17 +1,17 @@
 Return-Path: <SRS0=/uS6=LK=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f49.google.com ([74.125.82.49]:34185 "EHLO
-        mail-wm0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726872AbeH0MEF (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:44244 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726872AbeH0MEC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 27 Aug 2018 08:04:05 -0400
-Received: by mail-wm0-f49.google.com with SMTP id m199-v6so9148694wma.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Aug 2018 01:18:27 -0700 (PDT)
+        Mon, 27 Aug 2018 08:04:02 -0400
+Received: by mail-wr1-f67.google.com with SMTP id v16-v6so12733537wro.11
+        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Aug 2018 01:18:25 -0700 (PDT)
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 23/24] tools lib traceevent: Rename various pevent APIs
-Date: Mon, 27 Aug 2018 11:17:58 +0300
-Message-Id: <20180827081759.17297-24-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 21/24] tools lib traceevent: Rename various pevent get/set/is APIs
+Date: Mon, 27 Aug 2018 11:17:56 +0300
+Message-Id: <20180827081759.17297-22-tz.stoyanov@gmail.com>
 In-Reply-To: <20180827081759.17297-1-tz.stoyanov@gmail.com>
 References: <20180827081759.17297-1-tz.stoyanov@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -20,434 +20,187 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
 conflicts. That prefix will be "tep_" and not "pevent_". This changes
-APIs: pevent_reset_function_resolver, pevent_strerror, pevent_list_events,
-pevent_event_common_fields, pevent_event_fields, pevent_ref, pevent_unref
+APIs: pevent_pid_is_registered, pevent_get_cpus, pevent_set_cpus,
+pevent_is_file_bigendian, pevent_is_host_bigendian, pevent_is_latency_format,
+pevent_set_latency_format
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180808180703.426198047@goodmis.org
+Link: http://lkml.kernel.org/r/20180808180703.114110715@goodmis.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/traceevent/event-parse.h         | 14 +++++++-------
- kernel-shark-qt/src/libkshark-configio.c |  4 ++--
- kernel-shark/trace-dialog.c              |  2 +-
- kernel-shark/trace-filter.c              | 18 +++++++++---------
- kernel-shark/trace-graph.c               |  6 +++---
- kernel-shark/trace-view.c                |  4 ++--
- lib/traceevent/event-parse.c             | 22 +++++++++++-----------
- lib/traceevent/parse-filter.c            |  6 +++---
- tracecmd/trace-output.c                  |  6 +++---
- tracecmd/trace-profile.c                 |  4 ++--
- tracecmd/trace-read.c                    |  6 +++---
- 11 files changed, 46 insertions(+), 46 deletions(-)
+ include/traceevent/event-parse.h | 14 +++++++-------
+ kernel-shark/trace-graph.c       |  2 +-
+ lib/trace-cmd/trace-input.c      |  2 +-
+ lib/traceevent/event-parse.c     |  4 ++--
+ plugins/plugin_kvm.c             |  4 ++--
+ python/tracecmd.py               |  2 +-
+ tracecmd/trace-read.c            |  6 +++---
+ 7 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 1da291e..713a4e4 100644
+index 87777c2..328d0d3 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -605,7 +605,7 @@ enum trace_flag_type {
+@@ -612,7 +612,7 @@ int tep_register_function(struct tep_handle *pevent, char *name,
+ 			  unsigned long long addr, char *mod);
+ int tep_register_print_string(struct tep_handle *pevent, const char *fmt,
+ 			      unsigned long long addr);
+-int pevent_pid_is_registered(struct tep_handle *pevent, int pid);
++int tep_pid_is_registered(struct tep_handle *pevent, int pid);
  
- int tep_set_function_resolver(struct tep_handle *pevent,
- 			      tep_func_resolver_t *func, void *priv);
--void pevent_reset_function_resolver(struct tep_handle *pevent);
-+void tep_reset_function_resolver(struct tep_handle *pevent);
- int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid);
- int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_clock);
- int tep_register_function(struct tep_handle *pevent, char *name,
-@@ -712,12 +712,12 @@ void tep_print_fields(struct trace_seq *s, void *data,
- 		      int size __maybe_unused, struct event_format *event);
- void tep_event_info(struct trace_seq *s, struct event_format *event,
- 		       struct tep_record *record);
--int pevent_strerror(struct tep_handle *pevent, enum tep_errno errnum,
-+int tep_strerror(struct tep_handle *pevent, enum tep_errno errnum,
- 		    char *buf, size_t buflen);
+ void tep_print_event_task(struct tep_handle *pevent, struct trace_seq *s,
+ 			  struct event_format *event,
+@@ -719,12 +719,12 @@ struct event_format **pevent_list_events(struct tep_handle *pevent, enum event_s
+ struct format_field **pevent_event_common_fields(struct event_format *event);
+ struct format_field **pevent_event_fields(struct event_format *event);
  
--struct event_format **pevent_list_events(struct tep_handle *pevent, enum event_sort_type);
--struct format_field **pevent_event_common_fields(struct event_format *event);
--struct format_field **pevent_event_fields(struct event_format *event);
-+struct event_format **tep_list_events(struct tep_handle *pevent, enum event_sort_type);
-+struct format_field **tep_event_common_fields(struct event_format *event);
-+struct format_field **tep_event_fields(struct event_format *event);
- 
- static inline int tep_get_cpus(struct tep_handle *pevent)
+-static inline int pevent_get_cpus(struct tep_handle *pevent)
++static inline int tep_get_cpus(struct tep_handle *pevent)
  {
-@@ -781,8 +781,8 @@ static inline void tep_set_latency_format(struct tep_handle *pevent, int lat)
+ 	return pevent->cpus;
+ }
  
- struct tep_handle *tep_alloc(void);
- void tep_free(struct tep_handle *pevent);
--void pevent_ref(struct tep_handle *pevent);
--void pevent_unref(struct tep_handle *pevent);
-+void tep_ref(struct tep_handle *pevent);
-+void tep_unref(struct tep_handle *pevent);
+-static inline void pevent_set_cpus(struct tep_handle *pevent, int cpus)
++static inline void tep_set_cpus(struct tep_handle *pevent, int cpus)
+ {
+ 	pevent->cpus = cpus;
+ }
+@@ -749,7 +749,7 @@ static inline void tep_set_page_size(struct tep_handle *pevent, int _page_size)
+ 	pevent->page_size = _page_size;
+ }
  
- /* access to the internal parser */
- void tep_buffer_init(const char *buf, unsigned long long size);
-diff --git a/kernel-shark-qt/src/libkshark-configio.c b/kernel-shark-qt/src/libkshark-configio.c
-index 9bdd2c0..484da93 100644
---- a/kernel-shark-qt/src/libkshark-configio.c
-+++ b/kernel-shark-qt/src/libkshark-configio.c
-@@ -1028,7 +1028,7 @@ static bool kshark_adv_filters_to_json(struct kshark_context *kshark_ctx,
- 	if (!jfilter_data)
- 		goto fail;
+-static inline int pevent_is_file_bigendian(struct tep_handle *pevent)
++static inline int tep_is_file_bigendian(struct tep_handle *pevent)
+ {
+ 	return pevent->file_bigendian;
+ }
+@@ -759,7 +759,7 @@ static inline void tep_set_file_bigendian(struct tep_handle *pevent, int endian)
+ 	pevent->file_bigendian = endian;
+ }
  
--	events = pevent_list_events(kshark_ctx->pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(kshark_ctx->pevent, EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return false;
+-static inline int pevent_is_host_bigendian(struct tep_handle *pevent)
++static inline int tep_is_host_bigendian(struct tep_handle *pevent)
+ {
+ 	return pevent->host_bigendian;
+ }
+@@ -769,12 +769,12 @@ static inline void tep_set_host_bigendian(struct tep_handle *pevent, int endian)
+ 	pevent->host_bigendian = endian;
+ }
  
-@@ -1148,7 +1148,7 @@ static bool kshark_adv_filters_from_json(struct kshark_context *kshark_ctx,
- 	fprintf(stderr, "Failed to laod Advanced filters.\n");
- 	char error_str[200];
- 	int error_status =
--		pevent_strerror(kshark_ctx->pevent, ret, error_str,
-+		tep_strerror(kshark_ctx->pevent, ret, error_str,
- 							 sizeof(error_str));
+-static inline int pevent_is_latency_format(struct tep_handle *pevent)
++static inline int tep_is_latency_format(struct tep_handle *pevent)
+ {
+ 	return pevent->latency_format;
+ }
  
- 	if (error_status == 0)
-diff --git a/kernel-shark/trace-dialog.c b/kernel-shark/trace-dialog.c
-index 50b4daf..3eba62e 100644
---- a/kernel-shark/trace-dialog.c
-+++ b/kernel-shark/trace-dialog.c
-@@ -379,7 +379,7 @@ static void read_raw_events(struct trace_seq *s,
- 	struct format_field **fields;
- 	int i;
- 
--	fields = pevent_event_fields(event);
-+	fields = tep_event_fields(event);
- 	if (!fields)
- 		return;
- 
-diff --git a/kernel-shark/trace-filter.c b/kernel-shark/trace-filter.c
-index d9b1563..8d78b31 100644
---- a/kernel-shark/trace-filter.c
-+++ b/kernel-shark/trace-filter.c
-@@ -92,7 +92,7 @@ static GtkTreeModel *create_event_combo_model(gpointer data)
- 	const char *last_sys = NULL;
- 	int i;
- 
--	events = pevent_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return NULL;
- 
-@@ -150,14 +150,14 @@ static GtkTreeModel *create_field_combo_model(gpointer data)
- 	struct format_field *field;
- 	int i;
- 
--	events = pevent_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return NULL;
- 
- 	list = gtk_list_store_new(1, G_TYPE_STRING);
- 
- 	/* use any event for common fields */
--	fields = pevent_event_common_fields(events[0]);
-+	fields = tep_event_common_fields(events[0]);
- 
- 	for (i = 0; fields[i]; i++) {
- 		field = fields[i];
-@@ -199,7 +199,7 @@ static void update_field_combo(struct tep_handle *pevent,
- 			return;
- 	} else {
- 		/* use any event */
--		events = pevent_list_events(pevent, EVENT_SORT_SYSTEM);
-+		events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
- 		if (!events)
- 			return;
- 		event = events[0];
-@@ -215,7 +215,7 @@ static void update_field_combo(struct tep_handle *pevent,
- 		;
- 
- 	/* always load the common fields first */
--	fields = pevent_event_common_fields(event);
-+	fields = tep_event_common_fields(event);
- 	for (i = 0; fields[i]; i++) {
- 		field = fields[i];
- 		gtk_list_store_append(list, &iter);
-@@ -227,7 +227,7 @@ static void update_field_combo(struct tep_handle *pevent,
- 
- 	/* Now add event specific events */
- 	if (event_name) {
--		fields = pevent_event_fields(event);
-+		fields = tep_event_fields(event);
- 		for (i = 0; fields[i]; i++) {
- 			field = fields[i];
- 			gtk_list_store_append(list, &iter);
-@@ -465,7 +465,7 @@ create_tree_filter_model(struct tep_handle *pevent,
- 				       G_TYPE_STRING, G_TYPE_STRING,
- 				       G_TYPE_INT);
- 
--	events = pevent_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return GTK_TREE_MODEL(treestore);
- 
-@@ -1086,7 +1086,7 @@ create_tree_event_model(struct tep_handle *pevent,
- 			   COL_ACTIVE_START, FALSE,
- 			   -1);
- 
--	events = pevent_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return GTK_TREE_MODEL(treestore);
- 
-@@ -1937,7 +1937,7 @@ void trace_filter_convert_filter_to_names(struct event_filter *filter,
- 	if (event_ids)
- 		*event_ids = NULL;
- 
--	events = pevent_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
- 
- 	for (i = 0; events[i]; i++) {
- 		event = events[i];
+-static inline void pevent_set_latency_format(struct tep_handle *pevent, int lat)
++static inline void tep_set_latency_format(struct tep_handle *pevent, int lat)
+ {
+ 	pevent->latency_format = lat;
+ }
 diff --git a/kernel-shark/trace-graph.c b/kernel-shark/trace-graph.c
-index 88870c1..183f7bd 100644
+index 808b2f3..88870c1 100644
 --- a/kernel-shark/trace-graph.c
 +++ b/kernel-shark/trace-graph.c
-@@ -1196,7 +1196,7 @@ trace_graph_check_irq(struct graph_info *ginfo,
- 		else
- 			ginfo->soft_irq_entry_ids = null_int_array;
+@@ -1133,7 +1133,7 @@ int trace_graph_check_sched_switch(struct graph_info *ginfo,
+ 		 * First time through, register any missing
+ 		 *  comm / pid mappings.
+ 		 */
+-		if (!pevent_pid_is_registered(ginfo->pevent, *pid))
++		if (!tep_find_event_by_record(ginfo->pevent, *pid))
+ 			tep_register_comm(ginfo->pevent,
+ 					  *comm, *pid);
+ 	}
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 20203ad..af812c1 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -2406,7 +2406,7 @@ int tracecmd_init_data(struct tracecmd_input *handle)
+ 		return -1;
+ 	handle->cpus = cpus;
  
--		events = pevent_list_events(ginfo->pevent, EVENT_SORT_SYSTEM);
-+		events = tep_list_events(ginfo->pevent, EVENT_SORT_SYSTEM);
+-	pevent_set_cpus(pevent, handle->cpus);
++	tep_set_cpus(pevent, handle->cpus);
  
- 		for (i = 0; events[i]; i++) {
- 			event = events[i];
-@@ -2283,8 +2283,8 @@ void trace_graph_adv_filter_callback(gboolean accept,
- 
- 		ret = tep_filter_add_filter_str(event_filter, text);
- 		if (ret < 0) {
--			pevent_strerror(event_filter->pevent, ret,
--					error_str, sizeof(error_str));
-+			tep_strerror(event_filter->pevent, ret,
-+				     error_str, sizeof(error_str));
- 			warning("filter failed due to: %s", error_str);
- 			return;
- 		}
-diff --git a/kernel-shark/trace-view.c b/kernel-shark/trace-view.c
-index fdf8290..2f50361 100644
---- a/kernel-shark/trace-view.c
-+++ b/kernel-shark/trace-view.c
-@@ -472,8 +472,8 @@ void trace_view_adv_filter_callback(gboolean accept,
- 
- 		ret = tep_filter_add_filter_str(event_filter, text);
- 		if (ret < 0) {
--			pevent_strerror(event_filter->pevent, ret,
--					error_str, sizeof(error_str));
-+			tep_strerror(event_filter->pevent, ret,
-+				     error_str, sizeof(error_str));
- 			warning("filter failed due to: %s", error_str);
- 			return;
- 		}
+ 	ret = read_cpu_data(handle);
+ 	if (ret < 0)
 diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index b41608e..51932b8 100644
+index 5d2f738..8264309 100644
 --- a/lib/traceevent/event-parse.c
 +++ b/lib/traceevent/event-parse.c
-@@ -457,13 +457,13 @@ int tep_set_function_resolver(struct tep_handle *pevent,
+@@ -197,14 +197,14 @@ static const char *find_cmdline(struct tep_handle *pevent, int pid)
  }
  
  /**
-- * pevent_reset_function_resolver - reset alternative function resolver
-+ * tep_reset_function_resolver - reset alternative function resolver
+- * pevent_pid_is_registered - return if a pid has a cmdline registered
++ * tep_pid_is_registered - return if a pid has a cmdline registered
   * @pevent: handle for the pevent
+  * @pid: The pid to check if it has a cmdline registered with.
   *
-  * Stop using whatever alternative resolver was set, use the default
-  * one instead.
+  * Returns 1 if the pid has a cmdline mapped to it
+  * 0 otherwise.
   */
--void pevent_reset_function_resolver(struct tep_handle *pevent)
-+void tep_reset_function_resolver(struct tep_handle *pevent)
+-int pevent_pid_is_registered(struct tep_handle *pevent, int pid)
++int tep_pid_is_registered(struct tep_handle *pevent, int pid)
  {
- 	free(pevent->func_resolver);
- 	pevent->func_resolver = NULL;
-@@ -5616,7 +5616,7 @@ static int events_system_cmp(const void *a, const void *b)
- 	return events_id_cmp(a, b);
- }
+ 	const struct cmdline *comm;
+ 	struct cmdline key;
+diff --git a/plugins/plugin_kvm.c b/plugins/plugin_kvm.c
+index b19311d..3f4a8c0 100644
+--- a/plugins/plugin_kvm.c
++++ b/plugins/plugin_kvm.c
+@@ -385,8 +385,8 @@ static int kvm_mmu_print_role(struct trace_seq *s, struct tep_record *record,
+ 	 * We can only use the structure if file is of the same
+ 	 * endianess.
+ 	 */
+-	if (pevent_is_file_bigendian(event->pevent) ==
+-	    pevent_is_host_bigendian(event->pevent)) {
++	if (tep_is_file_bigendian(event->pevent) ==
++	    tep_is_host_bigendian(event->pevent)) {
  
--struct event_format **pevent_list_events(struct tep_handle *pevent, enum event_sort_type sort_type)
-+struct event_format **tep_list_events(struct tep_handle *pevent, enum event_sort_type sort_type)
- {
- 	struct event_format **events;
- 	int (*sort)(const void *a, const void *b);
-@@ -5695,13 +5695,13 @@ get_event_fields(const char *type, const char *name,
- }
+ 		trace_seq_printf(s, "%u/%u q%u%s %s%s %spge %snxe",
+ 				 role.level,
+diff --git a/python/tracecmd.py b/python/tracecmd.py
+index bc926c6..1267941 100644
+--- a/python/tracecmd.py
++++ b/python/tracecmd.py
+@@ -166,7 +166,7 @@ class PEvent(object):
  
- /**
-- * pevent_event_common_fields - return a list of common fields for an event
-+ * tep_event_common_fields - return a list of common fields for an event
-  * @event: the event to return the common fields of.
-  *
-  * Returns an allocated array of fields. The last item in the array is NULL.
-  * The array must be freed with free().
-  */
--struct format_field **pevent_event_common_fields(struct event_format *event)
-+struct format_field **tep_event_common_fields(struct event_format *event)
- {
- 	return get_event_fields("common", event->name,
- 				event->format.nr_common,
-@@ -5709,13 +5709,13 @@ struct format_field **pevent_event_common_fields(struct event_format *event)
- }
- 
- /**
-- * pevent_event_fields - return a list of event specific fields for an event
-+ * tep_event_fields - return a list of event specific fields for an event
-  * @event: the event to return the fields of.
-  *
-  * Returns an allocated array of fields. The last item in the array is NULL.
-  * The array must be freed with free().
-  */
--struct format_field **pevent_event_fields(struct event_format *event)
-+struct format_field **tep_event_fields(struct event_format *event)
- {
- 	return get_event_fields("event", event->name,
- 				event->format.nr_fields,
-@@ -6207,8 +6207,8 @@ static const char * const pevent_error_str[] = {
- };
- #undef _PE
- 
--int pevent_strerror(struct tep_handle *pevent __maybe_unused,
--		    enum tep_errno errnum, char *buf, size_t buflen)
-+int tep_strerror(struct tep_handle *pevent __maybe_unused,
-+		 enum tep_errno errnum, char *buf, size_t buflen)
- {
- 	int idx;
- 	const char *msg;
-@@ -6752,7 +6752,7 @@ struct tep_handle *tep_alloc(void)
- 	return pevent;
- }
- 
--void pevent_ref(struct tep_handle *pevent)
-+void tep_ref(struct tep_handle *pevent)
- {
- 	pevent->ref_count++;
- }
-@@ -6885,7 +6885,7 @@ void tep_free(struct tep_handle *pevent)
- 	free(pevent);
- }
- 
--void pevent_unref(struct tep_handle *pevent)
-+void tep_unref(struct tep_handle *pevent)
- {
- 	tep_free(pevent);
- }
-diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
-index 1ff488d..e76154c 100644
---- a/lib/traceevent/parse-filter.c
-+++ b/lib/traceevent/parse-filter.c
-@@ -175,7 +175,7 @@ struct event_filter *tep_filter_alloc(struct tep_handle *pevent)
- 
- 	memset(filter, 0, sizeof(*filter));
- 	filter->pevent = pevent;
--	pevent_ref(pevent);
-+	tep_ref(pevent);
- 
- 	return filter;
- }
-@@ -1379,7 +1379,7 @@ int tep_filter_strerror(struct event_filter *filter, enum tep_errno err,
- 		return 0;
- 	}
- 
--	return pevent_strerror(filter->pevent, err, buf, buflen);
-+	return tep_strerror(filter->pevent, err, buf, buflen);
- }
- 
- /**
-@@ -1442,7 +1442,7 @@ void tep_filter_reset(struct event_filter *filter)
- 
- void tep_filter_free(struct event_filter *filter)
- {
--	pevent_unref(filter->pevent);
-+	tep_unref(filter->pevent);
- 
- 	tep_filter_reset(filter);
- 
-diff --git a/tracecmd/trace-output.c b/tracecmd/trace-output.c
-index a0f2898..ff7b198 100644
---- a/tracecmd/trace-output.c
-+++ b/tracecmd/trace-output.c
-@@ -116,7 +116,7 @@ void tracecmd_output_free(struct tracecmd_output *handle)
- 		free(handle->tracing_dir);
- 
- 	if (handle->pevent)
--		pevent_unref(handle->pevent);
-+		tep_unref(handle->pevent);
- 
- 	while (!list_empty(&handle->options)) {
- 		option = container_of(handle->options.next,
-@@ -808,7 +808,7 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
- 		pevent = tracecmd_get_pevent(ihandle);
- 		/* Use the pevent of the ihandle for later writes */
- 		handle->pevent = tracecmd_get_pevent(ihandle);
--		pevent_ref(pevent);
-+		tep_ref(pevent);
- 		if (pevent->file_bigendian)
- 			buf[0] = 1;
- 		else
-@@ -1261,7 +1261,7 @@ int tracecmd_attach_cpu_data_fd(int fd, int cpus, char * const *cpu_data_files)
- 	pevent = tracecmd_get_pevent(ihandle);
- 	/* Use the pevent of the ihandle for later writes */
- 	handle->pevent = tracecmd_get_pevent(ihandle);
--	pevent_ref(pevent);
-+	tep_ref(pevent);
- 	handle->page_size = tracecmd_page_size(ihandle);
- 	list_head_init(&handle->options);
- 
-diff --git a/tracecmd/trace-profile.c b/tracecmd/trace-profile.c
-index 6d56093..5cf0ccd 100644
---- a/tracecmd/trace-profile.c
-+++ b/tracecmd/trace-profile.c
-@@ -1458,7 +1458,7 @@ void trace_init_profile(struct tracecmd_input *handle, struct hook_list *hook,
- 		syscall_exit->print_func = syscall_print;
- 	}
- 
--	events = pevent_list_events(pevent, EVENT_SORT_ID);
-+	events = tep_list_events(pevent, EVENT_SORT_ID);
- 	if (!events)
- 		die("malloc");
- 
-@@ -1497,7 +1497,7 @@ void trace_init_profile(struct tracecmd_input *handle, struct hook_list *hook,
- 		event_data = add_event(h, events[i]->system, events[i]->name,
- 				       EVENT_TYPE_UNDEFINED);
- 
--		fields = pevent_event_fields(events[i]);
-+		fields = tep_event_fields(events[i]);
- 		if (!fields)
- 			die("malloc");
+     @cached_property
+     def file_endian(self):
+-        if pevent_is_file_bigendian(self._pevent):
++        if tep_is_file_bigendian(self._pevent):
+             return '>'
+         return '<'
  
 diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index 5832a8e..02f0ce8 100644
+index b6c4c90..5832a8e 100644
 --- a/tracecmd/trace-read.c
 +++ b/tracecmd/trace-read.c
-@@ -510,7 +510,7 @@ static void process_filters(struct handle_list *handles)
- 		ret = tep_filter_add_filter_str(event_filter->filter,
- 						   filter->filter);
- 		if (ret < 0) {
--			pevent_strerror(pevent, ret, errstr, sizeof(errstr));
-+			tep_strerror(pevent, ret, errstr, sizeof(errstr));
- 			die("Error filtering: %s\n%s",
- 			    filter->filter, errstr);
+@@ -1700,8 +1700,8 @@ void trace_report (int argc, char **argv)
+ 
+ 		if (show_endian) {
+ 			printf("file is %s endian and host is %s endian\n",
+-			       pevent_is_file_bigendian(pevent) ? "big" : "little",
+-			       pevent_is_host_bigendian(pevent) ? "big" : "little");
++			       tep_is_file_bigendian(pevent) ? "big" : "little",
++			       tep_is_host_bigendian(pevent) ? "big" : "little");
+ 			return;
  		}
-@@ -1346,7 +1346,7 @@ static void set_event_flags(struct tep_handle *pevent, struct event_str *list,
- 	if (!list)
- 		return;
  
--	events = pevent_list_events(pevent, 0);
-+	events = tep_list_events(pevent, 0);
+@@ -1755,7 +1755,7 @@ void trace_report (int argc, char **argv)
+ 	}
  
- 	for (str = list; str; str = str->next) {
- 		char *match;
-@@ -1740,7 +1740,7 @@ void trace_report (int argc, char **argv)
- 			struct event_format *event;
- 			int i;
+ 	if (latency_format)
+-		pevent_set_latency_format(pevent, latency_format);
++		tep_set_latency_format(pevent, latency_format);
  
--			events = pevent_list_events(pevent, EVENT_SORT_SYSTEM);
-+			events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
- 			for (i = 0; events[i]; i++) {
- 				event = events[i];
- 				if (event->system)
+ 	otype = OUTPUT_NORMAL;
+ 
 -- 
 2.17.1
