@@ -1,84 +1,49 @@
 Return-Path: <SRS0=NWCu=LL=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f66.google.com ([74.125.82.66]:36201 "EHLO
-        mail-wm0-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727172AbeH1Oa3 (ORCPT
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:41049 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727218AbeH1RA2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 28 Aug 2018 10:30:29 -0400
-Received: by mail-wm0-f66.google.com with SMTP id j192-v6so1477298wmj.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 28 Aug 2018 03:39:26 -0700 (PDT)
-From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+        Tue, 28 Aug 2018 13:00:28 -0400
+Received: by mail-wr1-f65.google.com with SMTP id z96-v6so1527612wrb.8
+        for <linux-trace-devel@vger.kernel.org>; Tue, 28 Aug 2018 06:08:52 -0700 (PDT)
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH] tools lib traceevent: Change to SPDX License format
-Date: Tue, 28 Aug 2018 13:39:24 +0300
-Message-Id: <20180828103924.30563-1-tz.stoyanov@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v3 0/4] Add drawing instrumentation to be used by the Qt-based KernelShark
+Date: Tue, 28 Aug 2018 16:08:34 +0300
+Message-Id: <20180828130838.30790-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Removed the license templates from the event-parse-api.c,
-event-parse-local.h and replaced them with the
-corresponding SPDX identifier.
+The KernelShark plotting library is introduced in this series of patches.
+The library will be used by the GUI to draw CPU and Task Graphs. This is
+also the first time KernelShark enters the world of C++.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- tools/lib/traceevent/event-parse-api.c   | 17 +----------------
- tools/lib/traceevent/event-parse-local.h | 16 +---------------
- 2 files changed, 2 insertions(+), 31 deletions(-)
+This is the 3th version of this series of patches. The major change
+from v2 is the debugging of the example ([PATCH 3/4]).
 
-diff --git a/tools/lib/traceevent/event-parse-api.c b/tools/lib/traceevent/event-parse-api.c
-index 774d3dcc4909..a542593c26b4 100644
---- a/tools/lib/traceevent/event-parse-api.c
-+++ b/tools/lib/traceevent/event-parse-api.c
-@@ -1,22 +1,7 @@
-+// SPDX-License-Identifier: LGPL-2.1
- /*
-  * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-  *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU Lesser General Public
-- * License as published by the Free Software Foundation;
-- * version 2.1 of the License (not later!)
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Lesser General Public License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-- *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- *
-  *  The parts for function graph printing was taken and modified from the
-  *  Linux Kernel that were written by
-  *    - Copyright (C) 2009  Frederic Weisbecker,
-diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
-index a2414e7f3f78..ab827b0cf100 100644
---- a/tools/lib/traceevent/event-parse-local.h
-+++ b/tools/lib/traceevent/event-parse-local.h
-@@ -1,21 +1,7 @@
-+// SPDX-License-Identifier: LGPL-2.1
- /*
-  * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-  *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU Lesser General Public
-- * License as published by the Free Software Foundation;
-- * version 2.1 of the License (not later!)
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Lesser General Public License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-- *
-- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- #ifndef _PARSE_EVENTS_INT_H
- #define _PARSE_EVENTS_INT_H
+Yordan Karadzhov (VMware) (4):
+  kernel-shark-qt: Add OpenGL/GLUT as a third party dependency.
+  kernel-shark-qt: Add basic instruments for OpenGL plotting.
+  kernel-shark-qt: Add C++ API for drawing of Graphs
+  kernel-shark-qt: Add an example showing how to draw shapes and Graphs.
+
+ kernel-shark-qt/CMakeLists.txt          |    3 +
+ kernel-shark-qt/README                  |    2 +
+ kernel-shark-qt/examples/CMakeLists.txt |    4 +
+ kernel-shark-qt/examples/dataplot.cpp   |  231 +++++
+ kernel-shark-qt/src/CMakeLists.txt      |   14 +
+ kernel-shark-qt/src/KsPlotTools.cpp     | 1123 +++++++++++++++++++++++
+ kernel-shark-qt/src/KsPlotTools.hpp     |  485 ++++++++++
+ kernel-shark-qt/src/libkshark-plot.c    |  212 +++++
+ kernel-shark-qt/src/libkshark-plot.h    |   69 ++
+ 9 files changed, 2143 insertions(+)
+ create mode 100644 kernel-shark-qt/examples/dataplot.cpp
+ create mode 100644 kernel-shark-qt/src/KsPlotTools.cpp
+ create mode 100644 kernel-shark-qt/src/KsPlotTools.hpp
+ create mode 100644 kernel-shark-qt/src/libkshark-plot.c
+ create mode 100644 kernel-shark-qt/src/libkshark-plot.h
+
 -- 
 2.17.1
