@@ -1,46 +1,60 @@
-Return-Path: <SRS0=NWCu=LL=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:33944 "EHLO mail.kernel.org"
+Return-Path: <SRS0=cHGG=LM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail.kernel.org ([198.145.29.99]:50616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727125AbeH2CMN (ORCPT
+        id S1727204AbeH2RFp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 28 Aug 2018 22:12:13 -0400
-Date: Tue, 28 Aug 2018 18:18:28 -0400
+        Wed, 29 Aug 2018 13:05:45 -0400
+Date: Wed, 29 Aug 2018 09:08:51 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v3.5 21/24] tools lib traceevent: Rename various pevent
- get/set/is APIs
-Message-ID: <20180828181828.3cc5baf0@gandalf.local.home>
-In-Reply-To: <20180828090910.15665-1-tz.stoyanov@gmail.com>
-References: <20180827081759.17297-22-tz.stoyanov@gmail.com>
-        <20180828090910.15665-1-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v3 0/4] Add drawing instrumentation to be used by the
+ Qt-based KernelShark
+Message-ID: <20180829090851.15b2f1fd@gandalf.local.home>
+In-Reply-To: <20180828130838.30790-1-y.karadz@gmail.com>
+References: <20180828130838.30790-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 28 Aug 2018 12:09:10 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+On Tue, 28 Aug 2018 16:08:34 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> In order to make libtraceevent into a proper library, variables, data
-> structures and functions require a unique prefix to prevent name space
-> conflicts. That prefix will be "tep_" and not "pevent_". This changes
-> APIs: pevent_pid_is_registered, pevent_get_cpus, pevent_set_cpus,
-> pevent_is_file_bigendian, pevent_is_host_bigendian, pevent_is_latency_format,
-> pevent_set_latency_format
+> The KernelShark plotting library is introduced in this series of patches.
+> The library will be used by the GUI to draw CPU and Task Graphs. This is
+> also the first time KernelShark enters the world of C++.
 > 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> Cc: linux-trace-devel@vger.kernel.org
-> Link: http://lkml.kernel.org/r/20180808180703.114110715@goodmis.org
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->
+> This is the 3th version of this series of patches. The major change
+> from v2 is the debugging of the example ([PATCH 3/4]).
+> 
+> Yordan Karadzhov (VMware) (4):
+>   kernel-shark-qt: Add OpenGL/GLUT as a third party dependency.
+>   kernel-shark-qt: Add basic instruments for OpenGL plotting.
+>   kernel-shark-qt: Add C++ API for drawing of Graphs
+>   kernel-shark-qt: Add an example showing how to draw shapes and Graphs.
 
-Thanks, I pulled the entire series with the two updated patches.
+I pulled these and pushed them to my repo.
+
+Thanks Yordan!
 
 -- Steve
+
+> 
+>  kernel-shark-qt/CMakeLists.txt          |    3 +
+>  kernel-shark-qt/README                  |    2 +
+>  kernel-shark-qt/examples/CMakeLists.txt |    4 +
+>  kernel-shark-qt/examples/dataplot.cpp   |  231 +++++
+>  kernel-shark-qt/src/CMakeLists.txt      |   14 +
+>  kernel-shark-qt/src/KsPlotTools.cpp     | 1123 +++++++++++++++++++++++
+>  kernel-shark-qt/src/KsPlotTools.hpp     |  485 ++++++++++
+>  kernel-shark-qt/src/libkshark-plot.c    |  212 +++++
+>  kernel-shark-qt/src/libkshark-plot.h    |   69 ++
+>  9 files changed, 2143 insertions(+)
+>  create mode 100644 kernel-shark-qt/examples/dataplot.cpp
+>  create mode 100644 kernel-shark-qt/src/KsPlotTools.cpp
+>  create mode 100644 kernel-shark-qt/src/KsPlotTools.hpp
+>  create mode 100644 kernel-shark-qt/src/libkshark-plot.c
+>  create mode 100644 kernel-shark-qt/src/libkshark-plot.h
+> 
