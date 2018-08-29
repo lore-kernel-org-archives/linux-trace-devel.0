@@ -1,36 +1,38 @@
 Return-Path: <SRS0=cHGG=LM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:51794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727392AbeH2Ucf (ORCPT
+Received: from mail-wm0-f65.google.com ([74.125.82.65]:39108 "EHLO
+        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727605AbeH2UdS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 29 Aug 2018 16:32:35 -0400
-Date: Wed, 29 Aug 2018 12:34:50 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+        Wed, 29 Aug 2018 16:33:18 -0400
+Received: by mail-wm0-f65.google.com with SMTP id q8-v6so6209854wmq.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 29 Aug 2018 09:35:34 -0700 (PDT)
+Subject: Re: [PATCH 2/4] kernel-shark-qt: Restore the alignment in
+ libkshark-configio.c
+To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 4/4] kernel-shark-qt: Fix Doxygen doc. for
- libkshark-model.c
-Message-ID: <20180829123450.13ccde8a@gandalf.local.home>
-In-Reply-To: <20180829162927.20200-4-y.karadz@gmail.com>
 References: <20180829162927.20200-1-y.karadz@gmail.com>
-        <20180829162927.20200-4-y.karadz@gmail.com>
+ <20180829162927.20200-2-y.karadz@gmail.com>
+ <20180829123227.7ce86b23@gandalf.local.home>
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <bee90c15-5808-d73b-9b59-eb7e1117f90b@gmail.com>
+Date: Wed, 29 Aug 2018 19:35:32 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180829123227.7ce86b23@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 29 Aug 2018 19:29:27 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> This patch corrects some typos in the Doxygen documentation of
-> libkshark-model.c
+
+On 29.08.2018 19:32, Steven Rostedt wrote:
+>> This version of the patch contains a number of improvements suggested
+>> by Steven Rostedt. Thanks Steven!
+> I don't think I need credit for a whitespace fix patch;-)
 > 
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+> -- Steve
+> 
 
-
-I applied all these and pushed them out.
-
-Thanks Yordan!
-
--- Steve
+:-D This patch was automatically generated during the rebase because I 
+made the change when resolving the conflicts.
