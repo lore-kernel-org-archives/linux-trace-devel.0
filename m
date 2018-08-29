@@ -1,70 +1,72 @@
 Return-Path: <SRS0=cHGG=LM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f65.google.com ([74.125.82.65]:35972 "EHLO
-        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727245AbeH2Ukr (ORCPT
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:32817 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727693AbeH2Ukt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 29 Aug 2018 16:40:47 -0400
-Received: by mail-wm0-f65.google.com with SMTP id j192-v6so6228616wmj.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 29 Aug 2018 09:43:01 -0700 (PDT)
+        Wed, 29 Aug 2018 16:40:49 -0400
+Received: by mail-wr1-f65.google.com with SMTP id v90-v6so5470524wrc.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 29 Aug 2018 09:43:03 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 4/7] kernel-shark-qt: Make kshark_read_at() non-static.
-Date: Wed, 29 Aug 2018 19:42:21 +0300
-Message-Id: <20180829164224.20677-5-y.karadz@gmail.com>
+Subject: [PATCH 5/7] kernel-shark-qt: Add src/plugins dir. to hold the source code of the plugins
+Date: Wed, 29 Aug 2018 19:42:22 +0300
+Message-Id: <20180829164224.20677-6-y.karadz@gmail.com>
 In-Reply-To: <20180829164224.20677-1-y.karadz@gmail.com>
 References: <20180829164224.20677-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-kshark_read_at() function provides a thread-safe read of a record from
-a specific offset inside the trace.dat file. So far this function was
-used only in libkshark.c and was defined static. This patch makes the
-function non-static in order to make possible to use it from a plugin.
+Tell Cmake to enter src/plugins. Add a Cmake function for building plugin
+libraries.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/libkshark.c | 12 ++++++++++--
- kernel-shark-qt/src/libkshark.h |  3 +++
- 2 files changed, 13 insertions(+), 2 deletions(-)
+ kernel-shark-qt/src/CMakeLists.txt         |  2 ++
+ kernel-shark-qt/src/plugins/CMakeLists.txt | 22 ++++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
+ create mode 100644 kernel-shark-qt/src/plugins/CMakeLists.txt
 
-diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
-index 3d9f0d5..9070db8 100644
---- a/kernel-shark-qt/src/libkshark.c
-+++ b/kernel-shark-qt/src/libkshark.c
-@@ -833,8 +833,16 @@ ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
- 	return -ENOMEM;
- }
+diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
+index cdc28c4..3365413 100644
+--- a/kernel-shark-qt/src/CMakeLists.txt
++++ b/kernel-shark-qt/src/CMakeLists.txt
+@@ -28,5 +28,7 @@ if (OPENGL_FOUND AND GLUT_FOUND)
  
--static struct tep_record *kshark_read_at(struct kshark_context *kshark_ctx,
--					 uint64_t offset)
-+/**
-+ * @brief A thread-safe read of a record from a specific offset.
-+ *
-+ * @param kshark_ctx: Input location for the session context pointer.
-+ * @param offset: the offset into the file to find the record.
-+ *
-+ * @returns The returned pevent_record must be freed.
-+ */
-+struct tep_record *kshark_read_at(struct kshark_context *kshark_ctx,
-+				  uint64_t offset)
- {
- 	/*
- 	 * It turns that tracecmd_read_at() is not thread-safe.
-diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
-index 203c812..ba5ea6c 100644
---- a/kernel-shark-qt/src/libkshark.h
-+++ b/kernel-shark-qt/src/libkshark.h
-@@ -150,6 +150,9 @@ void kshark_free(struct kshark_context *kshark_ctx);
+ endif (OPENGL_FOUND AND GLUT_FOUND)
  
- char* kshark_dump_entry(const struct kshark_entry *entry);
- 
-+struct tep_record *kshark_read_at(struct kshark_context *kshark_ctx,
-+				  uint64_t offset);
++add_subdirectory(plugins)
 +
- /** Bit masks used to control the visibility of the entry after filtering. */
- enum kshark_filter_masks {
- 	/**
+ configure_file( ${KS_DIR}/build/deff.h.cmake
+                 ${KS_DIR}/src/KsDeff.h)
+diff --git a/kernel-shark-qt/src/plugins/CMakeLists.txt b/kernel-shark-qt/src/plugins/CMakeLists.txt
+new file mode 100644
+index 0000000..d791f00
+--- /dev/null
++++ b/kernel-shark-qt/src/plugins/CMakeLists.txt
+@@ -0,0 +1,22 @@
++message("\n src/plugins ...")
++
++function(ADD_PLUGIN)
++    set(options )
++    set(oneValueArgs NAME)
++    set(multiValueArgs SOURCE)
++    cmake_parse_arguments(ADD_PLUGIN "${options}"
++                                     "${oneValueArgs}"
++                                     "${multiValueArgs}"
++                                     ${ARGN} )
++
++    message(STATUS ${ADD_PLUGIN_NAME})
++
++    add_library(${ADD_PLUGIN_NAME} SHARED ${ADD_PLUGIN_SOURCE})
++    set_target_properties(${ADD_PLUGIN_NAME} PROPERTIES PREFIX "plugin-")
++    target_link_libraries(${ADD_PLUGIN_NAME} kshark)
++
++endfunction()
++
++set(PLUGIN_LIST "")
++
++set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
 -- 
 2.17.1
