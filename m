@@ -1,146 +1,171 @@
 Return-Path: <SRS0=WdLK=LN=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm0-f67.google.com ([74.125.82.67]:38361 "EHLO
-        mail-wm0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728004AbeH3TLj (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:43524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726674AbeH3UUe (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 30 Aug 2018 15:11:39 -0400
-Received: by mail-wm0-f67.google.com with SMTP id t25-v6so2374639wmi.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Aug 2018 08:09:03 -0700 (PDT)
-From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To: rostedt@goodmis.org
+        Thu, 30 Aug 2018 16:20:34 -0400
+Date: Thu, 30 Aug 2018 12:17:38 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH] Introduce new libtracevent API: tep_override_comm()
-Date: Thu, 30 Aug 2018 18:09:00 +0300
-Message-Id: <20180830150900.27412-1-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH 1/7] kernel-shark-qt: Add plugin infrastructure to be
+ used by the Qt-baset KS.
+Message-ID: <20180830121738.26a16812@gandalf.local.home>
+In-Reply-To: <b7b16558-a42f-55d8-7bb1-9f6c868d1897@gmail.com>
+References: <20180829164224.20677-1-y.karadz@gmail.com>
+        <20180829164224.20677-2-y.karadz@gmail.com>
+        <20180829163253.7ba150f5@gandalf.local.home>
+        <b7b16558-a42f-55d8-7bb1-9f6c868d1897@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Added a new API of tracevent library: tep_override_comm()
-It registers a pid / comm mapping. If a mapping with the same
-pid already exists, the entry is updated with the new comm.
+On Thu, 30 Aug 2018 14:45:16 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- include/traceevent/event-parse.h |  1 +
- lib/traceevent/event-parse.c     | 67 +++++++++++++++++++++++++-------
- 2 files changed, 53 insertions(+), 15 deletions(-)
+> On 29.08.2018 23:32, Steven Rostedt wrote:
+> >> +	struct kshark_event_handler **last = handlers;
+> >> +	struct kshark_event_handler *list;
+> >> +
+> >> +	for (list = *handlers; list; list = list->next) {  
+> > You can simplify this to:
+> > 
+> > 	for (last = handlers; *last; last = &(*last)->next) {
+> > 		list = *last;
+> >   
+> >> +		if (list->id == event_id &&
+> >> +		    list->event_func == evt_func &&
+> >> +		    list->draw_func == dw_func) {
+> >> +			*last = list->next;
+> >> +			free(list);
+> >> +			return;
+> >> +		}
+> >> +  
+> >   
+> >> +		last = &list->next;  
+> > Then you can remove the above line.
+> >   
+> 
+> I am confused. For me the two implementations of this for-loop are 
+> identical. Where is the simplification?
+> 
+>
 
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 713a4e4..0dcc024 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -607,6 +607,7 @@ int tep_set_function_resolver(struct tep_handle *pevent,
- 			      tep_func_resolver_t *func, void *priv);
- void tep_reset_function_resolver(struct tep_handle *pevent);
- int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid);
-+int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid);
- int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_clock);
- int tep_register_function(struct tep_handle *pevent, char *name,
- 			  unsigned long long addr, char *mod);
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index ce1e202..e40f63c 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -230,10 +230,11 @@ int tep_pid_is_registered(struct tep_handle *pevent, int pid)
-  * we must add this pid. This is much slower than when cmdlines
-  * are added before the array is initialized.
-  */
--static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
-+static int add_new_comm(struct tep_handle *pevent,
-+			const char *comm, int pid, int overrite)
- {
- 	struct cmdline *cmdlines = pevent->cmdlines;
--	const struct cmdline *cmdline;
-+	struct cmdline *cmdline;
- 	struct cmdline key;
- 
- 	if (!pid)
-@@ -245,8 +246,18 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
- 	cmdline = bsearch(&key, pevent->cmdlines, pevent->cmdline_count,
- 		       sizeof(*pevent->cmdlines), cmdline_cmp);
- 	if (cmdline) {
--		errno = EEXIST;
--		return -1;
-+		if (!overrite) {
-+			errno = EEXIST;
-+			return -1;
-+		}
-+		if (cmdline->comm)
-+			free(cmdline->comm);
-+		cmdline->comm = strdup(comm);
-+		if(!cmdline->comm) {
-+			errno = ENOMEM;
-+			return -1;
-+		}
-+		return 0;
- 	}
- 
- 	cmdlines = realloc(cmdlines, sizeof(*cmdlines) * (pevent->cmdline_count + 1));
-@@ -273,21 +284,13 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
- 	return 0;
- }
- 
--/**
-- * tep_register_comm - register a pid / comm mapping
-- * @pevent: handle for the pevent
-- * @comm: the command line to register
-- * @pid: the pid to map the command line to
-- *
-- * This adds a mapping to search for command line names with
-- * a given pid. The comm is duplicated.
-- */
--int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
-+static int _tep_register_comm(struct tep_handle *pevent,
-+			      const char *comm, int pid, int overrite)
- {
- 	struct cmdline_list *item;
- 
- 	if (pevent->cmdlines)
--		return add_new_comm(pevent, comm, pid);
-+		return add_new_comm(pevent, comm, pid, overrite);
- 
- 	item = malloc(sizeof(*item));
- 	if (!item)
-@@ -310,6 +313,40 @@ int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
- 	return 0;
- }
- 
-+/**
-+ * tep_register_comm - register a pid / comm mapping
-+ * @pevent: handle for the pevent
-+ * @comm: the command line to register
-+ * @pid: the pid to map the command line to
-+ *
-+ * This adds a mapping to search for command line names with
-+ * a given pid. The comm is duplicated. If a command with the same pid
-+ * already exist, -1 is returned and errno is set to EEXIST
-+ */
-+int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
-+{
-+	return _tep_register_comm(pevent, comm, pid, 0);
-+}
-+
-+/**
-+ * tep_override_comm - register a pid / comm mapping
-+ * @pevent: handle for the pevent
-+ * @comm: the command line to register
-+ * @pid: the pid to map the command line to
-+ *
-+ * This adds a mapping to search for command line names with
-+ * a given pid. The comm is duplicated. If a command with the same pid
-+ * already exist, the command string is udapted with the new one
-+ */
-+int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid)
-+{
-+	if (!pevent->cmdlines && cmdline_init(pevent)) {
-+		errno = ENOMEM;
-+		return -1;
-+	}
-+	return _tep_register_comm(pevent, comm, pid, 1);
-+}
-+
- int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_clock)
- {
- 	pevent->trace_clock = strdup(trace_clock);
--- 
-2.17.1
+I'll just re-explaining it here from our phone conf:
+
+>From a compiler point of view the two versions are drastically
+different:
+
+I created this file:
+
+$ cat lists.c 
+#include <stdlib.h>
+
+struct kshark_event_handler {
+	struct kshark_event_handler	*next;
+	int				id;
+};
+
+void func1(struct kshark_event_handler **handlers, int event_id)
+{
+	struct kshark_event_handler **last = handlers;
+	struct kshark_event_handler *list;
+
+	for (list = *handlers; list; list = list->next) {
+		if (list->id == event_id) {
+			*last = list->next;
+			free(list);
+			return;
+		}
+
+		last = &list->next;
+	}
+}
+
+void func2(struct kshark_event_handler **handlers, int event_id)
+{
+	struct kshark_event_handler **last;
+
+	for (*last = *handlers; *last; last = &(*last)->next) {
+		if ((*last)->id == event_id) {
+			struct kshark_event_handler *list;
+			list = *last;
+			*last = list->next;
+			free(list);
+			return;
+		}
+	}
+}
+
+
+And complied it like so:
+
+ $ gcc -O2 -c -o /tmp/lists.o lists.c
+
+And then did an objdump:
+
+ $ objdump -dr /tmp/lists.o
+
+/tmp/lists.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <func1>:
+   0:	48 8b 17             	mov    (%rdi),%rdx
+   3:	48 85 d2             	test   %rdx,%rdx
+   6:	74 18                	je     20 <func1+0x20>
+   8:	3b 72 08             	cmp    0x8(%rdx),%esi
+   b:	75 0b                	jne    18 <func1+0x18>
+   d:	eb 2a                	jmp    39 <func1+0x39>
+   f:	90                   	nop
+  10:	39 70 08             	cmp    %esi,0x8(%rax)
+  13:	74 13                	je     28 <func1+0x28>
+  15:	48 89 c2             	mov    %rax,%rdx
+  18:	48 8b 02             	mov    (%rdx),%rax
+  1b:	48 85 c0             	test   %rax,%rax
+  1e:	75 f0                	jne    10 <func1+0x10>
+  20:	c3                   	retq   
+  21:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+  28:	48 89 d7             	mov    %rdx,%rdi
+  2b:	48 8b 10             	mov    (%rax),%rdx
+  2e:	48 89 17             	mov    %rdx,(%rdi)
+  31:	48 89 c7             	mov    %rax,%rdi
+  34:	e9 00 00 00 00       	jmpq   39 <func1+0x39>
+			35: R_X86_64_PLT32	free-0x4
+  39:	48 89 d0             	mov    %rdx,%rax
+  3c:	eb ed                	jmp    2b <func1+0x2b>
+  3e:	66 90                	xchg   %ax,%ax
+
+0000000000000040 <func2>:
+  40:	48 8b 3f             	mov    (%rdi),%rdi
+  43:	48 89 3c 25 00 00 00 	mov    %rdi,0x0
+  4a:	00 
+  4b:	48 85 ff             	test   %rdi,%rdi
+  4e:	74 1d                	je     6d <func2+0x2d>
+  50:	3b 77 08             	cmp    0x8(%rdi),%esi
+  53:	75 10                	jne    65 <func2+0x25>
+  55:	eb 19                	jmp    70 <func2+0x30>
+  57:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  5e:	00 00 
+  60:	39 77 08             	cmp    %esi,0x8(%rdi)
+  63:	74 0b                	je     70 <func2+0x30>
+  65:	48 8b 3f             	mov    (%rdi),%rdi
+  68:	48 85 ff             	test   %rdi,%rdi
+  6b:	75 f3                	jne    60 <func2+0x20>
+  6d:	c3                   	retq   
+  6e:	66 90                	xchg   %ax,%ax
+  70:	e9 00 00 00 00       	jmpq   75 <func2+0x35>
+			71: R_X86_64_PLT32	free-0x4
+
+
+The first way uses two pointers "list" and "last" to walk down the
+list. The second way uses just the "last" pointer to iterate down the
+list and only uses the list variable to free the object. From the
+source code it doesn't look like there's much difference, but when you
+compile it (with optimization -O2) the difference becomes much more
+apparent.
+
+-- Steve
