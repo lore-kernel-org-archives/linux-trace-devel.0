@@ -1,23 +1,23 @@
 Return-Path: <SRS0=WdLK=LN=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:38935 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727499AbeH3PrF (ORCPT
+Received: from mail-wm0-f65.google.com ([74.125.82.65]:54954 "EHLO
+        mail-wm0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728194AbeH3Pu2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 30 Aug 2018 11:47:05 -0400
-Received: by mail-wr1-f68.google.com with SMTP id o37-v6so7767806wrf.6
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Aug 2018 04:45:19 -0700 (PDT)
-Subject: Re: [PATCH 1/7] kernel-shark-qt: Add plugin infrastructure to be used
- by the Qt-baset KS.
+        Thu, 30 Aug 2018 11:50:28 -0400
+Received: by mail-wm0-f65.google.com with SMTP id c14-v6so1669379wmb.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Aug 2018 04:48:42 -0700 (PDT)
+Subject: Re: [PATCH 7/7] kernel-shark-qt: Add a plugin for sched events.
 To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org
+Cc: linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
 References: <20180829164224.20677-1-y.karadz@gmail.com>
- <20180829164224.20677-2-y.karadz@gmail.com>
- <20180829163253.7ba150f5@gandalf.local.home>
+ <20180829164224.20677-8-y.karadz@gmail.com>
+ <20180829224312.25c7a16e@vmware.local.home>
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <b7b16558-a42f-55d8-7bb1-9f6c868d1897@gmail.com>
-Date: Thu, 30 Aug 2018 14:45:16 +0300
+Message-ID: <5df48f08-af41-ed48-9227-d36528b52734@gmail.com>
+Date: Thu, 30 Aug 2018 14:48:38 +0300
 MIME-Version: 1.0
-In-Reply-To: <20180829163253.7ba150f5@gandalf.local.home>
+In-Reply-To: <20180829224312.25c7a16e@vmware.local.home>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -26,31 +26,36 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 
 
-On 29.08.2018 23:32, Steven Rostedt wrote:
->> +	struct kshark_event_handler **last = handlers;
->> +	struct kshark_event_handler *list;
+On 30.08.2018 05:43, Steven Rostedt wrote:
+>>   set(PLUGIN_LIST "")
+>>   
+>> +ADD_PLUGIN(NAME sched_events
+>> +           SOURCE sched_events.c SchedEvents.cpp)
+> Do all plugins need to be added like this? Is there a way to make a
+> default rule for a "plugin" directory, that we add source files of this
+> type and have them created automatically just by adding in the source
+> files?
+> 
 >> +
->> +	for (list = *handlers; list; list = list->next) {
-> You can simplify this to:
-> 
-> 	for (last = handlers; *last; last = &(*last)->next) {
-> 		list = *last;
-> 
->> +		if (list->id == event_id &&
->> +		    list->event_func == evt_func &&
->> +		    list->draw_func == dw_func) {
->> +			*last = list->next;
->> +			free(list);
->> +			return;
->> +		}
+>> +# list(APPEND PLUGIN_LIST "sched_events default") # This plugin will be loaded by default
+>> +list(APPEND PLUGIN_LIST "sched_events") # This plugin isn't loaded by default
 >> +
-> 
->> +		last = &list->next;
-> Then you can remove the above line.
-> 
 
-I am confused. For me the two implementations of this for-loop are 
-identical. Where is the simplification?
+Yes, in order to add a plugin you have to do two things. First you have 
+call the ADD_PLUGIN function. Second, you have to add the plugin to the 
+list of plugin names, specifying if the plugin will be loaded by default.
+
+It is possible to make it working just by adding the source files but I 
+am not a big fan of this approach. If we go this way we have to enforce 
+very strict rules for naming the files. Note that this plugin is build 
+form one .c file and one .cpp file, however the plugin for renamed 
+threads will have only one .c file. And in the future we may have 
+plugins having .py files.
 
 Thanks!
 Yordan
+
+
+>> +install(TARGETS sched_events
+>> +        LIBRARY DESTINATION/usr/local/lib/kshark/)
+>> +
