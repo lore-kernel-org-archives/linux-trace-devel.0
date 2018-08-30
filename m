@@ -1,148 +1,139 @@
 Return-Path: <SRS0=WdLK=LN=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:46370 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:39314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725844AbeH3GH4 (ORCPT
+        id S1725788AbeH3GnH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 30 Aug 2018 02:07:56 -0400
-Date: Wed, 29 Aug 2018 22:08:08 -0400
+        Thu, 30 Aug 2018 02:43:07 -0400
+Date: Wed, 29 Aug 2018 22:43:12 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 2/7] kernel-shark-qt: Add Plugin event handlers to
- session.
-Message-ID: <20180829220808.5dc8057a@vmware.local.home>
-In-Reply-To: <20180829164224.20677-3-y.karadz@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [PATCH 7/7] kernel-shark-qt: Add a plugin for sched events.
+Message-ID: <20180829224312.25c7a16e@vmware.local.home>
+In-Reply-To: <20180829164224.20677-8-y.karadz@gmail.com>
 References: <20180829164224.20677-1-y.karadz@gmail.com>
-        <20180829164224.20677-3-y.karadz@gmail.com>
+        <20180829164224.20677-8-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 29 Aug 2018 19:42:19 +0300
+On Wed, 29 Aug 2018 19:42:24 +0300
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> Plugin event handlers are added to the Session context descriptor.
-> The handlers are used to execute plugin-specific actions (callback
-> function) during the processing of the trace data.
+> The plugin is responsible for the following actions, specific for
+> "sched" events:
+> 
+> 1. Changes the value of the "pid" field of the "sched_switch" entries.
+>    This alows the sched_switch entrie to be ploted as part of the "next"
+
+				entry		plotted
+
+>    task.
+> 
+> 2. On "sched_switch" event, the plugin registers the "next" task (if not
+>    registered already).
+> 
+> 3. Plots in green the wake up latency of the task and in red the time
+>    the task was preempted by another task.
 > 
 > Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 > ---
->  kernel-shark-qt/src/libkshark.c | 24 ++++++++++++++++++++++++
->  kernel-shark-qt/src/libkshark.h | 12 ++++++++++++
->  2 files changed, 36 insertions(+)
+>  kernel-shark-qt/src/plugins/CMakeLists.txt  |   9 +
+>  kernel-shark-qt/src/plugins/SchedEvents.cpp | 258 +++++++++++++++++
+>  kernel-shark-qt/src/plugins/sched_events.c  | 302 ++++++++++++++++++++
+>  kernel-shark-qt/src/plugins/sched_events.h  |  79 +++++
+>  4 files changed, 648 insertions(+)
+>  create mode 100644 kernel-shark-qt/src/plugins/SchedEvents.cpp
+>  create mode 100644 kernel-shark-qt/src/plugins/sched_events.c
+>  create mode 100644 kernel-shark-qt/src/plugins/sched_events.h
 > 
-> diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
-> index b4a76ae..3d9f0d5 100644
-> --- a/kernel-shark-qt/src/libkshark.c
-> +++ b/kernel-shark-qt/src/libkshark.c
-> @@ -33,6 +33,9 @@ static bool kshark_default_context(struct kshark_context **context)
->  	if (!kshark_ctx)
->  		return false;
+> diff --git a/kernel-shark-qt/src/plugins/CMakeLists.txt b/kernel-shark-qt/src/plugins/CMakeLists.txt
+> index d791f00..fb7a798 100644
+> --- a/kernel-shark-qt/src/plugins/CMakeLists.txt
+> +++ b/kernel-shark-qt/src/plugins/CMakeLists.txt
+> @@ -19,4 +19,13 @@ endfunction()
 >  
-> +	kshark_ctx->event_handlers = NULL;
-> +	kshark_ctx->plugins = NULL;
+>  set(PLUGIN_LIST "")
+>  
+> +ADD_PLUGIN(NAME sched_events
+> +           SOURCE sched_events.c SchedEvents.cpp)
+
+Do all plugins need to be added like this? Is there a way to make a
+default rule for a "plugin" directory, that we add source files of this
+type and have them created automatically just by adding in the source
+files?
+
 > +
->  	kshark_ctx->show_task_filter = tracecmd_filter_id_hash_alloc();
->  	kshark_ctx->hide_task_filter = tracecmd_filter_id_hash_alloc();
->  
-> @@ -217,6 +220,12 @@ void kshark_free(struct kshark_context *kshark_ctx)
->  	tracecmd_filter_id_hash_free(kshark_ctx->show_event_filter);
->  	tracecmd_filter_id_hash_free(kshark_ctx->hide_event_filter);
->  
-> +	if(kshark_ctx->plugins) {
-> +		kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_UNLOAD);
-> +		kshark_free_plugin_list(kshark_ctx->plugins);
-> +		kshark_free_event_handler_list(kshark_ctx->event_handlers);
-> +	}
+> +# list(APPEND PLUGIN_LIST "sched_events default") # This plugin will be loaded by default
+> +list(APPEND PLUGIN_LIST "sched_events") # This plugin isn't loaded by default
 > +
->  	kshark_free_task_list(kshark_ctx);
->  
->  	if (seq.buffer)
-> @@ -564,6 +573,7 @@ static void free_rec_list(struct rec_list **rec_list, int n_cpus,
->  static size_t get_records(struct kshark_context *kshark_ctx,
->  			  struct rec_list ***rec_list, enum rec_type type)
->  {
-> +	struct kshark_event_handler *evt_handler;
->  	struct event_filter *adv_filter;
->  	struct kshark_task_list *task;
->  	struct tep_record *rec;
-> @@ -608,6 +618,20 @@ static size_t get_records(struct kshark_context *kshark_ctx,
->  
->  				entry = &temp_rec->entry;
->  				kshark_set_entry_values(kshark_ctx, rec, entry);
+> +install(TARGETS sched_events
+> +        LIBRARY DESTINATION /usr/local/lib/kshark/)
 > +
-> +				/* Execute all plugin-provided actions (if any). */
-> +				evt_handler = kshark_ctx->event_handlers;
-> +				while ((evt_handler =
-> +						find_event_handler(evt_handler,
-> +								   entry->event_id))) {
-
-Note, the 80 character line limit is a guideline and not a rule. Part
-of that guideline states "If breaking up the line makes the code less
-readable, then it should not be broken up". The above makes the code
-less readable ;-)
-
-				while ((evt_handler = find_event_handler(evt_handler, entry->event_id))) {
-
-Is fine. Or if you do want to break it, it can be broken as:
-
-				while ((evt_handler = find_event_handler(evt_handler,
-									 entry->event_id))) {
-
-
-
-> +					evt_handler->event_func(kshark_ctx,
-> +								rec, entry);
+>  set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
+> diff --git a/kernel-shark-qt/src/plugins/SchedEvents.cpp b/kernel-shark-qt/src/plugins/SchedEvents.cpp
+> new file mode 100644
+> index 0000000..8559df8
+> --- /dev/null
+> +++ b/kernel-shark-qt/src/plugins/SchedEvents.cpp
+> @@ -0,0 +1,258 @@
+> +// SPDX-License-Identifier: LGPL-2.1
 > +
-> +					if ((evt_handler = evt_handler->next))
-> +						entry->visible &=
-> +							~KS_PLUGIN_UNTOUCHED_MASK;
+> +/*
+> + * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
+> + */
+> +
+> +/**
+> + *  @file    SchedEvents.cpp
+> + *  @brief   Plugin for Sched events.
 
-Same here. Don't be too strict with the 80 char limit.
+Probably need a bit more detail in that description.
+
+> + */
+> +
+> +// KernelShark
+> +#include "libkshark.h"
+> +#include "plugins/sched_events.h"
+> +#include "KsPlotTools.hpp"
+> +#include "KsPlugins.hpp"
+> +
+> +extern struct plugin_sched_context *plugin_sched_context_handler;
+> +
+> +static int plugin_get_wakeup_pid_lazy(struct kshark_context *kshark_ctx,
+
+I thought we would use "_simple" ?
+
+> +				      const struct kshark_entry *e)
+> +{
+> +	struct plugin_sched_context *plugin_ctx;
+> +	struct tep_record *record;
+> +	unsigned long long val;
+> +
+> +	plugin_ctx = plugin_sched_context_handler;
+> +	record = kshark_read_at(kshark_ctx, e->offset);
+> +
+> +	tep_read_number_field(plugin_ctx->sched_wakeup_pid_field,
+> +				 record->data, &val);
+> +	free(record);
+
+Records must be freed with:
+
+	free_record(record);
+
+Which also looks like we missed a function that needs to be converted.
+tep_free_record()?
+
+or should we have it be free_tep_record(), although, I'm not sure I
+like this breaking from the prefix way.
+
+I'll look at the rest of this patch tomorrow.
 
 -- Steve
 
-> +				}
 > +
->  				pid = entry->pid;
->  				/* Apply event filtering. */
->  				ret = FILTER_MATCH;
-> diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
-> index fda133c..203c812 100644
-> --- a/kernel-shark-qt/src/libkshark.h
-> +++ b/kernel-shark-qt/src/libkshark.h
-> @@ -29,6 +29,9 @@ extern "C" {
->  #include "event-parse.h"
->  #include "trace-filter-hash.h"
->  
-> +// KernelShark
-> +#include "libkshark-plugin.h"
+> +	return val;
+> +}
 > +
->  /**
->   * Kernel Shark entry contains all information from one trace record needed
->   * in order to  visualize the time-series of trace records. The part of the
-> @@ -124,6 +127,9 @@ struct kshark_context {
->  
->  	/** List of Plugins. */
->  	struct kshark_plugin_list	*plugins;
-> +
-> +	/** List of Plugin Event handlers. */
-> +	struct kshark_event_handler	*event_handlers;
->  };
->  
->  bool kshark_instance(struct kshark_context **kshark_ctx);
-> @@ -160,6 +166,12 @@ enum kshark_filter_masks {
->  
->  	/** Special mask used whene filtering events. */
->  	KS_EVENT_VIEW_FILTER_MASK	= 1 << 2,
-> +
-> +	/**
-> +	 * Use this mask to check if the content of the entry has been accessed
-> +	 * by a plugin-defined function.
-> +	 */
-> +	KS_PLUGIN_UNTOUCHED_MASK	= 1 << 7
->  };
->  
->  /** Filter type identifier. */
