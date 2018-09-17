@@ -1,70 +1,54 @@
 Return-Path: <SRS0=TioG=L7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:51373 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728790AbeIQULI (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:33256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726865AbeIQWnk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 17 Sep 2018 16:11:08 -0400
-Received: by mail-wm1-f65.google.com with SMTP id y2-v6so9963427wma.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 17 Sep 2018 07:43:28 -0700 (PDT)
-From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3 4/7] kernel-shark-qt: Make kshark_read_at() non-static.
-Date: Mon, 17 Sep 2018 17:42:23 +0300
-Message-Id: <20180917144226.8653-5-y.karadz@gmail.com>
-In-Reply-To: <20180917144226.8653-1-y.karadz@gmail.com>
-References: <20180917144226.8653-1-y.karadz@gmail.com>
+        Mon, 17 Sep 2018 18:43:40 -0400
+Date: Mon, 17 Sep 2018 13:15:22 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 1/2] kernel-shark-qt: Add "-O2" compiler flag
+Message-ID: <20180917131522.0c9f6d5e@gandalf.local.home>
+In-Reply-To: <20180917142942.7975-1-y.karadz@gmail.com>
+References: <20180917142942.7975-1-y.karadz@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-kshark_read_at() function provides a thread-safe read of a record from
-a specific offset inside the trace.dat file. So far this function was
-used only in libkshark.c and was defined static. This patch makes the
-function non-static in order to make possible to use it from a plugin.
+On Mon, 17 Sep 2018 17:29:41 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- kernel-shark-qt/src/libkshark.c | 12 ++++++++++--
- kernel-shark-qt/src/libkshark.h |  3 +++
- 2 files changed, 13 insertions(+), 2 deletions(-)
+> "-O2" compiler option is added to both C and C++ compiler flags.
 
-diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
-index eef0236..9113852 100644
---- a/kernel-shark-qt/src/libkshark.c
-+++ b/kernel-shark-qt/src/libkshark.c
-@@ -830,8 +830,16 @@ ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
- 	return -ENOMEM;
- }
- 
--static struct tep_record *kshark_read_at(struct kshark_context *kshark_ctx,
--					 uint64_t offset)
-+/**
-+ * @brief A thread-safe read of a record from a specific offset.
-+ *
-+ * @param kshark_ctx: Input location for the session context pointer.
-+ * @param offset: the offset into the file to find the record.
-+ *
-+ * @returns The returned pevent_record must be freed.
-+ */
-+struct tep_record *kshark_read_at(struct kshark_context *kshark_ctx,
-+				  uint64_t offset)
- {
- 	/*
- 	 * It turns that tracecmd_read_at() is not thread-safe.
-diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
-index 203c812..ba5ea6c 100644
---- a/kernel-shark-qt/src/libkshark.h
-+++ b/kernel-shark-qt/src/libkshark.h
-@@ -150,6 +150,9 @@ void kshark_free(struct kshark_context *kshark_ctx);
- 
- char* kshark_dump_entry(const struct kshark_entry *entry);
- 
-+struct tep_record *kshark_read_at(struct kshark_context *kshark_ctx,
-+				  uint64_t offset);
-+
- /** Bit masks used to control the visibility of the entry after filtering. */
- enum kshark_filter_masks {
- 	/**
--- 
-2.17.1
+Can you add -g as well. I know that somewhat contradicts the -O2 flag,
+but it is also useful for debugging (even with optimization).
+
+We can also add a debug option to not compile with -O2, but that can be
+dealt with later.
+
+-- Steve
+
+> 
+> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+> ---
+>  kernel-shark-qt/CMakeLists.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
+> index 0187eb4..7769604 100644
+> --- a/kernel-shark-qt/CMakeLists.txt
+> +++ b/kernel-shark-qt/CMakeLists.txt
+> @@ -23,8 +23,8 @@ find_package(GLUT)
+>  set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
+>  set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
+>  
+> -set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -pthread")
+> -set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread")
+> +set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -O2 -pthread")
+> +set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 -std=c++11 -pthread")
+>  
+>  include_directories(${KS_DIR}/src/
+>                      ${KS_DIR}/build/src/
