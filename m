@@ -1,54 +1,82 @@
-Return-Path: <SRS0=TioG=L7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:33256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726865AbeIQWnk (ORCPT
+Return-Path: <SRS0=Ut0o=MA=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:40885 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730072AbeIRWmk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 17 Sep 2018 18:43:40 -0400
-Date: Mon, 17 Sep 2018 13:15:22 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 1/2] kernel-shark-qt: Add "-O2" compiler flag
-Message-ID: <20180917131522.0c9f6d5e@gandalf.local.home>
-In-Reply-To: <20180917142942.7975-1-y.karadz@gmail.com>
-References: <20180917142942.7975-1-y.karadz@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Tue, 18 Sep 2018 18:42:40 -0400
+Received: by mail-wr1-f65.google.com with SMTP id n2-v6so2915247wrw.7
+        for <linux-trace-devel@vger.kernel.org>; Tue, 18 Sep 2018 10:09:09 -0700 (PDT)
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v2 1/2] kernel-shark-qt: Add "DEBUG" build mode.
+Date: Tue, 18 Sep 2018 20:08:31 +0300
+Message-Id: <20180918170832.7865-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Mon, 17 Sep 2018 17:29:41 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+"-g" compiler option is added to both C and C++ compiler flags, allowing
+debug information to be generated. If the DEBUG Command-Line option is not
+provided or is set to zero, the "-O2" compiler flag is added as well.
 
-> "-O2" compiler option is added to both C and C++ compiler flags.
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel-shark-qt/CMakeLists.txt | 11 +++++++++--
+ kernel-shark-qt/README         | 15 +++++++++------
+ 2 files changed, 18 insertions(+), 8 deletions(-)
 
-Can you add -g as well. I know that somewhat contradicts the -O2 flag,
-but it is also useful for debugging (even with optimization).
-
-We can also add a debug option to not compile with -O2, but that can be
-dealt with later.
-
--- Steve
-
-> 
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  kernel-shark-qt/CMakeLists.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
-> index 0187eb4..7769604 100644
-> --- a/kernel-shark-qt/CMakeLists.txt
-> +++ b/kernel-shark-qt/CMakeLists.txt
-> @@ -23,8 +23,8 @@ find_package(GLUT)
->  set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
->  set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
->  
-> -set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -pthread")
-> -set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread")
-> +set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -O2 -pthread")
-> +set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 -std=c++11 -pthread")
->  
->  include_directories(${KS_DIR}/src/
->                      ${KS_DIR}/build/src/
+diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
+index 0187eb4..4a40b11 100644
+--- a/kernel-shark-qt/CMakeLists.txt
++++ b/kernel-shark-qt/CMakeLists.txt
+@@ -23,8 +23,15 @@ find_package(GLUT)
+ set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
+ set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
+ 
+-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -pthread")
+-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread")
++set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -g -pthread")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -std=c++11 -pthread")
++
++if (NOT _DEBUG)
++
++	set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -O2")
++	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
++
++endif (NOT _DEBUG)
+ 
+ include_directories(${KS_DIR}/src/
+                     ${KS_DIR}/build/src/
+diff --git a/kernel-shark-qt/README b/kernel-shark-qt/README
+index f03288c..84708bd 100644
+--- a/kernel-shark-qt/README
++++ b/kernel-shark-qt/README
+@@ -31,16 +31,19 @@ the original trace-cmd end traceevent libraries.
+     cmake ../
+     make
+ 
+-2.1 In order to create a Doxygen documentation add -D_DOXYGEN_DOC=1
++2.1.1 In order to create a Doxygen documentation add -D_DOXYGEN_DOC=1
+ as a CMake Command-Line option.
+-    cd kernel-shark-qt/build
+-    cmake -D_DOXYGEN_DOC=1 ../
+-    make
+ 
+-2.2.1 Use "make clean" if you want to delete all already compiled object.
++2.1.2 In order to generates complete debug information to be used by GDB add
++-D_DEBUG=1 as a CMake Command-Line option.
++
++Example:
++    cmake -D_DOXYGEN_DOC=1 -D_DEBUG=1 ../
++
++2.2.1 Use "make clean" if you want to delete all already compiled objects.
+ 
+ 2.2.2 Use the script "cmake_clean.sh" if you want to delete all already
+-compiled object and all files generated by CMake.
++compiled objects and all files generated by CMake.
+ 
+ 3. After building the code "kernel-shark-qt/lib" will contain all libraries
+ and "kernel-shark-qt/bin" will contain all executables.
+-- 
+2.17.1
