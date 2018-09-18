@@ -1,82 +1,130 @@
 Return-Path: <SRS0=Ut0o=MA=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:40885 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730072AbeIRWmk (ORCPT
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:44484 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730072AbeIRWmt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 18 Sep 2018 18:42:40 -0400
-Received: by mail-wr1-f65.google.com with SMTP id n2-v6so2915247wrw.7
-        for <linux-trace-devel@vger.kernel.org>; Tue, 18 Sep 2018 10:09:09 -0700 (PDT)
+        Tue, 18 Sep 2018 18:42:49 -0400
+Received: by mail-wr1-f68.google.com with SMTP id v16-v6so2911818wro.11
+        for <linux-trace-devel@vger.kernel.org>; Tue, 18 Sep 2018 10:09:18 -0700 (PDT)
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 1/2] kernel-shark-qt: Add "DEBUG" build mode.
-Date: Tue, 18 Sep 2018 20:08:31 +0300
-Message-Id: <20180918170832.7865-1-y.karadz@gmail.com>
+Subject: [PATCH v2 2/2] kernel-shark-qt: Fix all problems revealed after adding "-O2" compiler flag
+Date: Tue, 18 Sep 2018 20:08:32 +0300
+Message-Id: <20180918170832.7865-2-y.karadz@gmail.com>
+In-Reply-To: <20180918170832.7865-1-y.karadz@gmail.com>
+References: <20180918170832.7865-1-y.karadz@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-"-g" compiler option is added to both C and C++ compiler flags, allowing
-debug information to be generated. If the DEBUG Command-Line option is not
-provided or is set to zero, the "-O2" compiler flag is added as well.
+This patch fixes all problems detected by the compiler after adding
+the "-O2" flag.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/CMakeLists.txt | 11 +++++++++--
- kernel-shark-qt/README         | 15 +++++++++------
- 2 files changed, 18 insertions(+), 8 deletions(-)
+ kernel-shark-qt/examples/configio.c      |  2 +-
+ kernel-shark-qt/src/libkshark-configio.c | 40 +++++++++++++++---------
+ 2 files changed, 27 insertions(+), 15 deletions(-)
 
-diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
-index 0187eb4..4a40b11 100644
---- a/kernel-shark-qt/CMakeLists.txt
-+++ b/kernel-shark-qt/CMakeLists.txt
-@@ -23,8 +23,15 @@ find_package(GLUT)
- set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
- set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
+diff --git a/kernel-shark-qt/examples/configio.c b/kernel-shark-qt/examples/configio.c
+index 3b1928f..faa116a 100644
+--- a/kernel-shark-qt/examples/configio.c
++++ b/kernel-shark-qt/examples/configio.c
+@@ -7,7 +7,7 @@ int main(int argc, char **argv)
+ {
+ 	struct kshark_config_doc *conf, *filter, *hello;
+ 	struct kshark_context *kshark_ctx;
+-	int *ids, i;
++	int *ids = NULL, i;
  
--set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -pthread")
--set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread")
-+set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -g -pthread")
-+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -std=c++11 -pthread")
+ 	/* Create a new kshark session. */
+ 	kshark_ctx = NULL;
+diff --git a/kernel-shark-qt/src/libkshark-configio.c b/kernel-shark-qt/src/libkshark-configio.c
+index cdc8c76..22a0b70 100644
+--- a/kernel-shark-qt/src/libkshark-configio.c
++++ b/kernel-shark-qt/src/libkshark-configio.c
+@@ -694,6 +694,8 @@ static bool kshark_event_filter_to_json(struct tep_handle *pevent,
+ 	int i, evt, *ids;
+ 	char *temp;
+ 
++	jevent = jsystem = jname = NULL;
 +
-+if (NOT _DEBUG)
+ 	/*
+ 	 * If this Json document already contains a description of the filter,
+ 	 * delete this description.
+@@ -869,7 +871,7 @@ static bool kshark_task_filter_to_json(struct tracecmd_filter_id *filter,
+ 				       const char *filter_name,
+ 				       struct json_object *jobj)
+ {
+-	json_object *jfilter_data, *jpid;
++	json_object *jfilter_data, *jpid = NULL;
+ 	int i, *ids;
+ 
+ 	/*
+@@ -1013,6 +1015,8 @@ static bool kshark_adv_filters_to_json(struct kshark_context *kshark_ctx,
+ 	char *str;
+ 	int i;
+ 
++	jevent = jsystem = jname = jfilter = NULL;
 +
-+	set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -O2")
-+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+ 	/*
+ 	 * If this Json document already contains a description of the model,
+ 	 * delete this description.
+@@ -1105,8 +1109,8 @@ static bool kshark_adv_filters_from_json(struct kshark_context *kshark_ctx,
+ {
+ 	struct event_filter *adv_filter = kshark_ctx->advanced_event_filter;
+ 	json_object *jfilter, *jsystem, *jname, *jcond;
+-	int i, length, ret;
+-	char *filter_str;
++	int i, length, n, ret = 0;
++	char *filter_str = NULL;
+ 
+ 	/*
+ 	 * Use the name of the filter to find the array of events associated
+@@ -1131,10 +1135,15 @@ static bool kshark_adv_filters_from_json(struct kshark_context *kshark_ctx,
+ 		    !json_object_object_get_ex(jfilter, "condition", &jcond))
+ 			goto fail;
+ 
+-		asprintf(&filter_str, "%s/%s:%s",
+-			 json_object_get_string(jsystem),
+-			 json_object_get_string(jname),
+-			 json_object_get_string(jcond));
++		n = asprintf(&filter_str, "%s/%s:%s",
++			     json_object_get_string(jsystem),
++			     json_object_get_string(jname),
++			     json_object_get_string(jcond));
 +
-+endif (NOT _DEBUG)
++		if (n <= 0) {
++			filter_str = NULL;
++			goto fail;
++		}
  
- include_directories(${KS_DIR}/src/
-                     ${KS_DIR}/build/src/
-diff --git a/kernel-shark-qt/README b/kernel-shark-qt/README
-index f03288c..84708bd 100644
---- a/kernel-shark-qt/README
-+++ b/kernel-shark-qt/README
-@@ -31,16 +31,19 @@ the original trace-cmd end traceevent libraries.
-     cmake ../
-     make
+ 		ret = tep_filter_add_filter_str(adv_filter,
+ 						filter_str);
+@@ -1146,13 +1155,16 @@ static bool kshark_adv_filters_from_json(struct kshark_context *kshark_ctx,
  
--2.1 In order to create a Doxygen documentation add -D_DOXYGEN_DOC=1
-+2.1.1 In order to create a Doxygen documentation add -D_DOXYGEN_DOC=1
- as a CMake Command-Line option.
--    cd kernel-shark-qt/build
--    cmake -D_DOXYGEN_DOC=1 ../
--    make
- 
--2.2.1 Use "make clean" if you want to delete all already compiled object.
-+2.1.2 In order to generates complete debug information to be used by GDB add
-+-D_DEBUG=1 as a CMake Command-Line option.
+  fail:
+ 	fprintf(stderr, "Failed to laod Advanced filters.\n");
+-	char error_str[200];
+-	int error_status =
+-		tep_strerror(kshark_ctx->pevent, ret, error_str,
+-						      sizeof(error_str));
+-
+-	if (error_status == 0)
+-		fprintf(stderr, "filter failed due to: %s\n", error_str);
++	if (ret < 0) {
++		char error_str[200];
++		int error_status =
++			tep_strerror(kshark_ctx->pevent, ret, error_str,
++				     sizeof(error_str));
 +
-+Example:
-+    cmake -D_DOXYGEN_DOC=1 -D_DEBUG=1 ../
-+
-+2.2.1 Use "make clean" if you want to delete all already compiled objects.
++		if (error_status == 0)
++			fprintf(stderr, "filter failed due to: %s\n",
++					error_str);
++	}
  
- 2.2.2 Use the script "cmake_clean.sh" if you want to delete all already
--compiled object and all files generated by CMake.
-+compiled objects and all files generated by CMake.
- 
- 3. After building the code "kernel-shark-qt/lib" will contain all libraries
- and "kernel-shark-qt/bin" will contain all executables.
+ 	free(filter_str);
+ 	return false;
 -- 
 2.17.1
