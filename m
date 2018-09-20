@@ -1,72 +1,59 @@
 Return-Path: <SRS0=7BWw=MC=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:40265 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbeITWkr (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:50852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728233AbeIUDva (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 20 Sep 2018 18:40:47 -0400
-Received: by mail-wr1-f66.google.com with SMTP id y8-v6so6482656wrh.7
-        for <linux-trace-devel@vger.kernel.org>; Thu, 20 Sep 2018 09:56:23 -0700 (PDT)
-From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v5 6/8] kernel-shark-qt: Add src/plugins dir. to hold the source code of the plugins
-Date: Thu, 20 Sep 2018 19:55:42 +0300
-Message-Id: <20180920165544.17579-7-y.karadz@gmail.com>
-In-Reply-To: <20180920165544.17579-1-y.karadz@gmail.com>
+        Thu, 20 Sep 2018 23:51:30 -0400
+Date: Thu, 20 Sep 2018 18:05:50 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v5 5/8] kernel-shark-qt: Remove the TODO action in
+ kshark_read_at()
+Message-ID: <20180920180550.15fb7e1d@gandalf.local.home>
+In-Reply-To: <20180920165544.17579-6-y.karadz@gmail.com>
 References: <20180920165544.17579-1-y.karadz@gmail.com>
+        <20180920165544.17579-6-y.karadz@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Tell Cmake to enter src/plugins. Add a Cmake function for building plugin
-libraries.
+On Thu, 20 Sep 2018 19:55:41 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- kernel-shark-qt/src/CMakeLists.txt         |  2 ++
- kernel-shark-qt/src/plugins/CMakeLists.txt | 22 ++++++++++++++++++++++
- 2 files changed, 24 insertions(+)
- create mode 100644 kernel-shark-qt/src/plugins/CMakeLists.txt
+> The TODO message states that we have to understand why racecmd_read_at()
+> is not thread-safe and see if this can be fixed. We now know why and we
+> know that this cannot be fixed.
 
-diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
-index cdc28c4..3365413 100644
---- a/kernel-shark-qt/src/CMakeLists.txt
-+++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -28,5 +28,7 @@ if (OPENGL_FOUND AND GLUT_FOUND)
- 
- endif (OPENGL_FOUND AND GLUT_FOUND)
- 
-+add_subdirectory(plugins)
-+
- configure_file( ${KS_DIR}/build/deff.h.cmake
-                 ${KS_DIR}/src/KsDeff.h)
-diff --git a/kernel-shark-qt/src/plugins/CMakeLists.txt b/kernel-shark-qt/src/plugins/CMakeLists.txt
-new file mode 100644
-index 0000000..565f1cb
---- /dev/null
-+++ b/kernel-shark-qt/src/plugins/CMakeLists.txt
-@@ -0,0 +1,22 @@
-+message("\n src/plugins ...")
-+
-+function(BUILD_PLUGIN)
-+    set(options )
-+    set(oneValueArgs NAME)
-+    set(multiValueArgs SOURCE)
-+    cmake_parse_arguments(ADD_PLUGIN "${options}"
-+                                     ${oneValueArgs}
-+                                     ${multiValueArgs}
-+                                     ${ARGN})
-+
-+    message(STATUS ${ADD_PLUGIN_NAME})
-+
-+    add_library(${ADD_PLUGIN_NAME} SHARED ${ADD_PLUGIN_SOURCE})
-+    set_target_properties(${ADD_PLUGIN_NAME} PROPERTIES PREFIX "plugin-")
-+    target_link_libraries(${ADD_PLUGIN_NAME} kshark)
-+
-+endfunction()
-+
-+set(PLUGIN_LIST "")
-+
-+set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
--- 
-2.17.1
+I wouldn't say that it can not be fixed, but that it's hard to fix.
+
+I'll update the change log.
+
+Thanks!
+
+-- Steve
+
+> 
+> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+> ---
+>  kernel-shark-qt/src/libkshark.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
+> index 3635b48..506511d 100644
+> --- a/kernel-shark-qt/src/libkshark.c
+> +++ b/kernel-shark-qt/src/libkshark.c
+> @@ -842,9 +842,8 @@ struct tep_record *kshark_read_at(struct kshark_context *kshark_ctx,
+>  				  uint64_t offset)
+>  {
+>  	/*
+> -	 * It turns that tracecmd_read_at() is not thread-safe.
+> -	 * TODO: Understand why and see if this can be fixed.
+> -	 * For the time being use a mutex to protect the access.
+> +	 * Calling tracecmd_read_at() is not thread-safe. Use a mutex to
+> +	 * protect the access.
+>  	 */
+>  	pthread_mutex_lock(&kshark_ctx->input_mutex);
+>  
