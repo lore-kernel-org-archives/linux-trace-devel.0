@@ -1,139 +1,52 @@
 Return-Path: <SRS0=7BWw=MC=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:53104 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:53570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727876AbeITJFo (ORCPT
+        id S1727876AbeITJKZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 20 Sep 2018 05:05:44 -0400
-Date: Wed, 19 Sep 2018 23:24:32 -0400
+        Thu, 20 Sep 2018 05:10:25 -0400
+Date: Wed, 19 Sep 2018 23:29:13 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v4 2/7] kernel-shark-qt: Add Plugin event handlers to
- session.
-Message-ID: <20180919232432.52be5d1b@vmware.local.home>
-In-Reply-To: <20180919143657.19472-3-y.karadz@gmail.com>
+Subject: Re: [PATCH v4 4/7] kernel-shark-qt: Make kshark_read_at()
+ non-static.
+Message-ID: <20180919232913.63a73b05@vmware.local.home>
+In-Reply-To: <20180919143657.19472-5-y.karadz@gmail.com>
 References: <20180919143657.19472-1-y.karadz@gmail.com>
-        <20180919143657.19472-3-y.karadz@gmail.com>
+        <20180919143657.19472-5-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 19 Sep 2018 17:36:52 +0300
+On Wed, 19 Sep 2018 17:36:54 +0300
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> Plugin event handlers are added to the Session context descriptor.
-> The handlers are used to execute plugin-specific action (callback
-> function) during the processing of the trace data.
-> 
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  kernel-shark-qt/src/libkshark.c | 21 +++++++++++++++++++++
->  kernel-shark-qt/src/libkshark.h | 12 ++++++++++++
->  2 files changed, 33 insertions(+)
-> 
-> diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshark.c
-> index b4a76ae..6fb08b2 100644
-> --- a/kernel-shark-qt/src/libkshark.c
-> +++ b/kernel-shark-qt/src/libkshark.c
-> @@ -33,6 +33,9 @@ static bool kshark_default_context(struct kshark_context **context)
->  	if (!kshark_ctx)
->  		return false;
->  
-> +	kshark_ctx->event_handlers = NULL;
-> +	kshark_ctx->plugins = NULL;
-> +
->  	kshark_ctx->show_task_filter = tracecmd_filter_id_hash_alloc();
->  	kshark_ctx->hide_task_filter = tracecmd_filter_id_hash_alloc();
->  
-> @@ -217,6 +220,12 @@ void kshark_free(struct kshark_context *kshark_ctx)
->  	tracecmd_filter_id_hash_free(kshark_ctx->show_event_filter);
->  	tracecmd_filter_id_hash_free(kshark_ctx->hide_event_filter);
->  
-> +	if(kshark_ctx->plugins) {
 
-Need space between "if" and "("
-
-> +		kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_CLOSE);
-> +		kshark_free_plugin_list(kshark_ctx->plugins);
-> +		kshark_free_event_handler_list(kshark_ctx->event_handlers);
-> +	}
-> +
->  	kshark_free_task_list(kshark_ctx);
->  
->  	if (seq.buffer)
-> @@ -564,6 +573,7 @@ static void free_rec_list(struct rec_list **rec_list, int n_cpus,
->  static size_t get_records(struct kshark_context *kshark_ctx,
->  			  struct rec_list ***rec_list, enum rec_type type)
+> +/**
+> + * @brief A thread-safe read of a record from a specific offset.
+> + *
+> + * @param kshark_ctx: Input location for the session context pointer.
+> + * @param offset: the offset into the file to find the record.
+> + *
+> + * @returns The returned pevent_record must be freed.
+> + */
+> +struct tep_record *kshark_read_at(struct kshark_context *kshark_ctx,
+> +				  uint64_t offset)
 >  {
-> +	struct kshark_event_handler *evt_handler;
->  	struct event_filter *adv_filter;
->  	struct kshark_task_list *task;
->  	struct tep_record *rec;
-> @@ -608,6 +618,17 @@ static size_t get_records(struct kshark_context *kshark_ctx,
->  
->  				entry = &temp_rec->entry;
->  				kshark_set_entry_values(kshark_ctx, rec, entry);
-> +
-> +				/* Execute all plugin-provided actions (if any). */
-> +				evt_handler = kshark_ctx->event_handlers;
-> +				while ((evt_handler = find_event_handler(evt_handler,
-> +									 entry->event_id))) {
-> +					evt_handler->event_func(kshark_ctx, rec, entry);
-> +
-> +					if ((evt_handler = evt_handler->next))
+>  	/*
+>  	 * It turns that tracecmd_read_at() is not thread-safe.
 
-Please break the above if, to remove the assignment. It's just easier
-to read. That is:
+This code still has:
 
-					event_handler = event_hanndler->next;
-					if (event_handler)
-> +						entry->visible &= ~KS_PLUGIN_UNTOUCHED_MASK;
-> +				}
-> +
->  				pid = entry->pid;
->  				/* Apply event filtering. */
->  				ret = FILTER_MATCH;
-> diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshark.h
-> index fda133c..203c812 100644
-> --- a/kernel-shark-qt/src/libkshark.h
-> +++ b/kernel-shark-qt/src/libkshark.h
-> @@ -29,6 +29,9 @@ extern "C" {
->  #include "event-parse.h"
->  #include "trace-filter-hash.h"
->  
-> +// KernelShark
-> +#include "libkshark-plugin.h"
-> +
->  /**
->   * Kernel Shark entry contains all information from one trace record needed
->   * in order to  visualize the time-series of trace records. The part of the
-> @@ -124,6 +127,9 @@ struct kshark_context {
->  
->  	/** List of Plugins. */
->  	struct kshark_plugin_list	*plugins;
-> +
-> +	/** List of Plugin Event handlers. */
-> +	struct kshark_event_handler	*event_handlers;
->  };
->  
->  bool kshark_instance(struct kshark_context **kshark_ctx);
-> @@ -160,6 +166,12 @@ enum kshark_filter_masks {
->  
->  	/** Special mask used whene filtering events. */
->  	KS_EVENT_VIEW_FILTER_MASK	= 1 << 2,
-> +
-> +	/**
-> +	 * Use this mask to check if the content of the entry has been accessed
-> +	 * by a plugin-defined function.
-> +	 */
-> +	KS_PLUGIN_UNTOUCHED_MASK	= 1 << 7
+	/*
+	 * It turns that tracecmd_read_at() is not thread-safe.
+	 * TODO: Understand why and see if this can be fixed.
+	 * For the time being use a mutex to protect the access.
+	 */
 
-Why the jump to 7?
+Remind me to explain to you why this is the case. It wont be easy to
+have it fixed.
 
 -- Steve
-
->  };
->  
->  /** Filter type identifier. */
