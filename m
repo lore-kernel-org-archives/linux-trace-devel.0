@@ -1,37 +1,92 @@
 Return-Path: <SRS0=4N8R=MD=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f46.google.com ([209.85.221.46]:45066 "EHLO
-        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389651AbeIUQws (ORCPT
+Received: from mail-by2nam01on0086.outbound.protection.outlook.com ([104.47.34.86]:33856
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728100AbeIUSTd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 21 Sep 2018 12:52:48 -0400
-Received: by mail-wr1-f46.google.com with SMTP id 20-v6so12424869wrb.12
-        for <linux-trace-devel@vger.kernel.org>; Fri, 21 Sep 2018 04:04:26 -0700 (PDT)
-MIME-Version: 1.0
-From: Tzvetomir Stoyanov <tzvmware@gmail.com>
-Date: Fri, 21 Sep 2018 14:04:14 +0300
-Message-ID: <CACqStoeTGfJJUL2bm55Te3GBUmS1RoSshTHvPtrTkpegF--5Tg@mail.gmail.com>
-Subject: power top libtraceevent integration
+        Fri, 21 Sep 2018 14:19:33 -0400
+From: Slavomir Kaslev <kaslevs@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH] trace-cmd: Remove unused <pthread.h> includes.
+Date: Fri, 21 Sep 2018 15:30:27 +0300
+Message-Id: <20180921123027.30405-1-kaslevs@vmware.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Hello Steven,
-I started to work on power top integration with the traceevent
-library, most of this is already completed. There are few issues,
-which I'm not sure how to resolve and need an advice:
-  1. Problem with the undefined reference to str_error_r(). As I see,
-it is implemented in tools/lib/str_error_r.c and is not part of the
-traceevent library. How we should handle this ? We can reimplement
-str_error_r() as part of the library, using "__attribute__((weak))",
-but this solution will not be portable. Or we can get rid of this
-function, is it a must to use it ?
-  2. In order to be used by autoconfig, the library requires
-integration with pkg-config framework. We must prepare and install
-relevant .pc file. I think we should do it in trace-cmd tree, and not
-in linux kernel tree.
+There are several <pthread.h> includes lurking eventhough trace-cmd
+makes no use of threading. This patch gets rid of them.
 
---
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
+---
+ tracecmd/trace-output.c  | 1 -
+ tracecmd/trace-read.c    | 1 -
+ tracecmd/trace-record.c  | 1 -
+ tracecmd/trace-restore.c | 1 -
+ tracecmd/trace-split.c   | 1 -
+ 5 files changed, 5 deletions(-)
+
+diff --git a/tracecmd/trace-output.c b/tracecmd/trace-output.c
+index ff7b198..e439c44 100644
+--- a/tracecmd/trace-output.c
++++ b/tracecmd/trace-output.c
+@@ -14,7 +14,6 @@
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ #include <sys/mman.h>
+-#include <pthread.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <ctype.h>
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 02f0ce8..35d70c3 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -14,7 +14,6 @@
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ #include <sys/mman.h>
+-#include <pthread.h>
+ #include <fcntl.h>
+ #include <signal.h>
+ #include <unistd.h>
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 5a1d2a0..ce550a2 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -24,7 +24,6 @@
+ #endif
+ #endif
+ #include <netdb.h>
+-#include <pthread.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <ctype.h>
+diff --git a/tracecmd/trace-restore.c b/tracecmd/trace-restore.c
+index 1544cf2..b649cf4 100644
+--- a/tracecmd/trace-restore.c
++++ b/tracecmd/trace-restore.c
+@@ -14,7 +14,6 @@
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ #include <sys/mman.h>
+-#include <pthread.h>
+ #include <fcntl.h>
+ #include <signal.h>
+ #include <unistd.h>
+diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
+index cabcc3d..5b2fc4f 100644
+--- a/tracecmd/trace-split.c
++++ b/tracecmd/trace-split.c
+@@ -15,7 +15,6 @@
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ #include <sys/mman.h>
+-#include <pthread.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <ctype.h>
+-- 
+2.17.1
