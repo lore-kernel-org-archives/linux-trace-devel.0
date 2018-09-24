@@ -1,9 +1,9 @@
 Return-Path: <SRS0=/bgX=MG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:52686 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:52628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729873AbeIXVHI (ORCPT
+        id S1731935AbeIXVHD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Sep 2018 17:07:08 -0400
+        Mon, 24 Sep 2018 17:07:03 -0400
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Ingo Molnar <mingo@kernel.org>
 Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
@@ -15,9 +15,9 @@ Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 15/27] tools lib traceevent: Add prefix tep_ to struct filter_{arg,value_type}
-Date: Mon, 24 Sep 2018 12:02:30 -0300
-Message-Id: <20180924150242.14235-16-acme@kernel.org>
+Subject: [PATCH 14/27] tools lib traceevent: Add prefix tep_ to enums filter_{exp,arg}_type
+Date: Mon, 24 Sep 2018 12:02:29 -0300
+Message-Id: <20180924150242.14235-15-acme@kernel.org>
 In-Reply-To: <20180924150242.14235-1-acme@kernel.org>
 References: <20180924150242.14235-1-acme@kernel.org>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -27,8 +27,8 @@ From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
-conflicts. That prefix will be "tep_". This adds prefix tep_ to
-struct filter_arg, enum filter_value_type and all enum's members.
+conflicts. That prefix will be "tep_". This adds prefix tep_ to enums
+filter_exp_type, filter_arg_type and all enum's members
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -36,512 +36,682 @@ Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180919185723.972818215@goodmis.org
+Link: http://lkml.kernel.org/r/20180919185723.824559046@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/lib/traceevent/event-parse.h  |  28 ++++-----
- tools/lib/traceevent/parse-filter.c | 120 ++++++++++++++++++------------------
- 2 files changed, 74 insertions(+), 74 deletions(-)
+ tools/lib/traceevent/event-parse.h  |  56 +++++-----
+ tools/lib/traceevent/parse-filter.c | 210 ++++++++++++++++++------------------
+ 2 files changed, 133 insertions(+), 133 deletions(-)
 
 diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index 5e55c83d43fe..64ce3eb0dcbc 100644
+index c9d7c5376fc2..5e55c83d43fe 100644
 --- a/tools/lib/traceevent/event-parse.h
 +++ b/tools/lib/traceevent/event-parse.h
-@@ -819,13 +819,13 @@ enum tep_filter_arg_type {
- 	TEP_FILTER_ARG_STR,
+@@ -793,30 +793,30 @@ enum tep_filter_cmp_type {
+ 	TEP_FILTER_CMP_NOT_REGEX,
  };
  
--enum filter_value_type {
--	FILTER_NUMBER,
--	FILTER_STRING,
--	FILTER_CHAR
-+enum tep_filter_value_type {
-+	TEP_FILTER_NUMBER,
-+	TEP_FILTER_STRING,
-+	TEP_FILTER_CHAR
+-enum filter_exp_type {
+-	FILTER_EXP_NONE,
+-	FILTER_EXP_ADD,
+-	FILTER_EXP_SUB,
+-	FILTER_EXP_MUL,
+-	FILTER_EXP_DIV,
+-	FILTER_EXP_MOD,
+-	FILTER_EXP_RSHIFT,
+-	FILTER_EXP_LSHIFT,
+-	FILTER_EXP_AND,
+-	FILTER_EXP_OR,
+-	FILTER_EXP_XOR,
+-	FILTER_EXP_NOT,
+-};
+-
+-enum filter_arg_type {
+-	FILTER_ARG_NONE,
+-	FILTER_ARG_BOOLEAN,
+-	FILTER_ARG_VALUE,
+-	FILTER_ARG_FIELD,
+-	FILTER_ARG_EXP,
+-	FILTER_ARG_OP,
+-	FILTER_ARG_NUM,
+-	FILTER_ARG_STR,
++enum tep_filter_exp_type {
++	TEP_FILTER_EXP_NONE,
++	TEP_FILTER_EXP_ADD,
++	TEP_FILTER_EXP_SUB,
++	TEP_FILTER_EXP_MUL,
++	TEP_FILTER_EXP_DIV,
++	TEP_FILTER_EXP_MOD,
++	TEP_FILTER_EXP_RSHIFT,
++	TEP_FILTER_EXP_LSHIFT,
++	TEP_FILTER_EXP_AND,
++	TEP_FILTER_EXP_OR,
++	TEP_FILTER_EXP_XOR,
++	TEP_FILTER_EXP_NOT,
++};
++
++enum tep_filter_arg_type {
++	TEP_FILTER_ARG_NONE,
++	TEP_FILTER_ARG_BOOLEAN,
++	TEP_FILTER_ARG_VALUE,
++	TEP_FILTER_ARG_FIELD,
++	TEP_FILTER_ARG_EXP,
++	TEP_FILTER_ARG_OP,
++	TEP_FILTER_ARG_NUM,
++	TEP_FILTER_ARG_STR,
  };
  
--struct fliter_arg;
-+struct tep_filter_arg;
- 
- struct filter_arg_boolean {
- 	enum tep_filter_boolean_type	value;
-@@ -836,7 +836,7 @@ struct filter_arg_field {
- };
- 
- struct filter_arg_value {
--	enum filter_value_type	type;
-+	enum tep_filter_value_type	type;
- 	union {
- 		char			*str;
- 		unsigned long long	val;
-@@ -845,20 +845,20 @@ struct filter_arg_value {
- 
- struct filter_arg_op {
- 	enum tep_filter_op_type	type;
--	struct filter_arg	*left;
--	struct filter_arg	*right;
-+	struct tep_filter_arg	*left;
-+	struct tep_filter_arg	*right;
+ enum filter_value_type {
+@@ -850,9 +850,9 @@ struct filter_arg_op {
  };
  
  struct filter_arg_exp {
- 	enum tep_filter_exp_type	type;
--	struct filter_arg		*left;
--	struct filter_arg		*right;
-+	struct tep_filter_arg		*left;
-+	struct tep_filter_arg		*right;
+-	enum filter_exp_type	type;
+-	struct filter_arg	*left;
+-	struct filter_arg	*right;
++	enum tep_filter_exp_type	type;
++	struct filter_arg		*left;
++	struct filter_arg		*right;
  };
  
  struct filter_arg_num {
- 	enum tep_filter_cmp_type	type;
--	struct filter_arg	*left;
--	struct filter_arg	*right;
-+	struct tep_filter_arg	*left;
-+	struct tep_filter_arg	*right;
+@@ -870,7 +870,7 @@ struct filter_arg_str {
  };
  
- struct filter_arg_str {
-@@ -869,7 +869,7 @@ struct filter_arg_str {
- 	regex_t			reg;
- };
- 
--struct filter_arg {
-+struct tep_filter_arg {
- 	enum tep_filter_arg_type		type;
+ struct filter_arg {
+-	enum filter_arg_type	type;
++	enum tep_filter_arg_type		type;
  	union {
  		struct filter_arg_boolean	boolean;
-@@ -885,7 +885,7 @@ struct filter_arg {
- struct filter_type {
- 	int			event_id;
- 	struct tep_event_format	*event;
--	struct filter_arg	*filter;
-+	struct tep_filter_arg	*filter;
- };
- 
- #define TEP_FILTER_ERROR_BUFSZ  1024
+ 		struct filter_arg_field		field;
 diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
-index d1e0dd5b63ea..b9ca1b9e14e4 100644
+index 55ce8e603485..d1e0dd5b63ea 100644
 --- a/tools/lib/traceevent/parse-filter.c
 +++ b/tools/lib/traceevent/parse-filter.c
-@@ -180,12 +180,12 @@ struct event_filter *tep_filter_alloc(struct tep_handle *pevent)
- 	return filter;
- }
- 
--static struct filter_arg *allocate_arg(void)
-+static struct tep_filter_arg *allocate_arg(void)
- {
--	return calloc(1, sizeof(struct filter_arg));
-+	return calloc(1, sizeof(struct tep_filter_arg));
- }
- 
--static void free_arg(struct filter_arg *arg)
-+static void free_arg(struct tep_filter_arg *arg)
- {
- 	if (!arg)
+@@ -191,33 +191,33 @@ static void free_arg(struct filter_arg *arg)
  		return;
-@@ -212,8 +212,8 @@ static void free_arg(struct filter_arg *arg)
+ 
+ 	switch (arg->type) {
+-	case FILTER_ARG_NONE:
+-	case FILTER_ARG_BOOLEAN:
++	case TEP_FILTER_ARG_NONE:
++	case TEP_FILTER_ARG_BOOLEAN:
  		break;
  
- 	case TEP_FILTER_ARG_VALUE:
--		if (arg->value.type == FILTER_STRING ||
--		    arg->value.type == FILTER_CHAR)
-+		if (arg->value.type == TEP_FILTER_STRING ||
-+		    arg->value.type == TEP_FILTER_CHAR)
+-	case FILTER_ARG_NUM:
++	case TEP_FILTER_ARG_NUM:
+ 		free_arg(arg->num.left);
+ 		free_arg(arg->num.right);
+ 		break;
+ 
+-	case FILTER_ARG_EXP:
++	case TEP_FILTER_ARG_EXP:
+ 		free_arg(arg->exp.left);
+ 		free_arg(arg->exp.right);
+ 		break;
+ 
+-	case FILTER_ARG_STR:
++	case TEP_FILTER_ARG_STR:
+ 		free(arg->str.val);
+ 		regfree(&arg->str.reg);
+ 		free(arg->str.buffer);
+ 		break;
+ 
+-	case FILTER_ARG_VALUE:
++	case TEP_FILTER_ARG_VALUE:
+ 		if (arg->value.type == FILTER_STRING ||
+ 		    arg->value.type == FILTER_CHAR)
  			free(arg->value.str);
  		break;
  
-@@ -334,10 +334,10 @@ static void free_events(struct event_list *events)
+-	case FILTER_ARG_OP:
++	case TEP_FILTER_ARG_OP:
+ 		free_arg(arg->op.left);
+ 		free_arg(arg->op.right);
+ 	default:
+@@ -349,7 +349,7 @@ create_arg_item(struct tep_event_format *event, const char *token,
  
- static enum tep_errno
- create_arg_item(struct tep_event_format *event, const char *token,
--		enum tep_event_type type, struct filter_arg **parg, char *error_str)
-+		enum tep_event_type type, struct tep_filter_arg **parg, char *error_str)
- {
- 	struct tep_format_field *field;
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = allocate_arg();
- 	if (arg == NULL) {
-@@ -351,7 +351,7 @@ create_arg_item(struct tep_event_format *event, const char *token,
+ 	case TEP_EVENT_SQUOTE:
  	case TEP_EVENT_DQUOTE:
- 		arg->type = TEP_FILTER_ARG_VALUE;
+-		arg->type = FILTER_ARG_VALUE;
++		arg->type = TEP_FILTER_ARG_VALUE;
  		arg->value.type =
--			type == TEP_EVENT_DQUOTE ? FILTER_STRING : FILTER_CHAR;
-+			type == TEP_EVENT_DQUOTE ? TEP_FILTER_STRING : TEP_FILTER_CHAR;
+ 			type == TEP_EVENT_DQUOTE ? FILTER_STRING : FILTER_CHAR;
  		arg->value.str = strdup(token);
- 		if (!arg->value.str) {
- 			free_arg(arg);
-@@ -363,7 +363,7 @@ create_arg_item(struct tep_event_format *event, const char *token,
+@@ -362,7 +362,7 @@ create_arg_item(struct tep_event_format *event, const char *token,
+ 	case TEP_EVENT_ITEM:
  		/* if it is a number, then convert it */
  		if (isdigit(token[0])) {
- 			arg->type = TEP_FILTER_ARG_VALUE;
--			arg->value.type = FILTER_NUMBER;
-+			arg->value.type = TEP_FILTER_NUMBER;
+-			arg->type = FILTER_ARG_VALUE;
++			arg->type = TEP_FILTER_ARG_VALUE;
+ 			arg->value.type = FILTER_NUMBER;
  			arg->value.val = strtoull(token, NULL, 0);
  			break;
- 		}
-@@ -394,10 +394,10 @@ create_arg_item(struct tep_event_format *event, const char *token,
- 	return 0;
- }
- 
--static struct filter_arg *
-+static struct tep_filter_arg *
- create_arg_op(enum tep_filter_op_type btype)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = allocate_arg();
- 	if (!arg)
-@@ -409,10 +409,10 @@ create_arg_op(enum tep_filter_op_type btype)
- 	return arg;
- }
- 
--static struct filter_arg *
-+static struct tep_filter_arg *
- create_arg_exp(enum tep_filter_exp_type etype)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = allocate_arg();
- 	if (!arg)
-@@ -424,10 +424,10 @@ create_arg_exp(enum tep_filter_exp_type etype)
- 	return arg;
- }
- 
--static struct filter_arg *
-+static struct tep_filter_arg *
- create_arg_cmp(enum tep_filter_cmp_type ctype)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = allocate_arg();
- 	if (!arg)
-@@ -441,9 +441,9 @@ create_arg_cmp(enum tep_filter_cmp_type ctype)
- }
- 
- static enum tep_errno
--add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
-+add_right(struct tep_filter_arg *op, struct tep_filter_arg *arg, char *error_str)
- {
--	struct filter_arg *left;
-+	struct tep_filter_arg *left;
- 	char *str;
- 	int op_type;
- 	int ret;
-@@ -481,7 +481,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 		 * convert this to a string or regex.
- 		 */
- 		switch (arg->value.type) {
--		case FILTER_CHAR:
-+		case TEP_FILTER_CHAR:
- 			/*
- 			 * A char should be converted to number if
- 			 * the string is 1 byte, and the compare
-@@ -490,11 +490,11 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 			if (strlen(arg->value.str) == 1 &&
- 			    op->num.type != TEP_FILTER_CMP_REGEX &&
- 			    op->num.type != TEP_FILTER_CMP_NOT_REGEX) {
--				arg->value.type = FILTER_NUMBER;
-+				arg->value.type = TEP_FILTER_NUMBER;
- 				goto do_int;
+@@ -377,12 +377,12 @@ create_arg_item(struct tep_event_format *event, const char *token,
+ 				field = &cpu;
+ 			} else {
+ 				/* not a field, Make it false */
+-				arg->type = FILTER_ARG_BOOLEAN;
++				arg->type = TEP_FILTER_ARG_BOOLEAN;
+ 				arg->boolean.value = TEP_FILTER_FALSE;
+ 				break;
  			}
- 			/* fall through */
--		case FILTER_STRING:
-+		case TEP_FILTER_STRING:
+ 		}
+-		arg->type = FILTER_ARG_FIELD;
++		arg->type = TEP_FILTER_ARG_FIELD;
+ 		arg->field.field = field;
+ 		break;
+ 	default:
+@@ -403,14 +403,14 @@ create_arg_op(enum tep_filter_op_type btype)
+ 	if (!arg)
+ 		return NULL;
  
- 			/* convert op to a string arg */
- 			op_type = op->num.type;
-@@ -573,7 +573,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+-	arg->type = FILTER_ARG_OP;
++	arg->type = TEP_FILTER_ARG_OP;
+ 	arg->op.type = btype;
  
- 			break;
- 
--		case FILTER_NUMBER:
-+		case TEP_FILTER_NUMBER:
- 
-  do_int:
- 			switch (op->num.type) {
-@@ -605,17 +605,17 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 	return TEP_ERRNO__SYNTAX_ERROR;
- }
- 
--static struct filter_arg *
--rotate_op_right(struct filter_arg *a, struct filter_arg *b)
-+static struct tep_filter_arg *
-+rotate_op_right(struct tep_filter_arg *a, struct tep_filter_arg *b)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = a->op.right;
- 	a->op.right = b;
  	return arg;
  }
  
--static enum tep_errno add_left(struct filter_arg *op, struct filter_arg *arg)
-+static enum tep_errno add_left(struct tep_filter_arg *op, struct tep_filter_arg *arg)
+ static struct filter_arg *
+-create_arg_exp(enum filter_exp_type etype)
++create_arg_exp(enum tep_filter_exp_type etype)
+ {
+ 	struct filter_arg *arg;
+ 
+@@ -418,7 +418,7 @@ create_arg_exp(enum filter_exp_type etype)
+ 	if (!arg)
+ 		return NULL;
+ 
+-	arg->type = FILTER_ARG_EXP;
++	arg->type = TEP_FILTER_ARG_EXP;
+ 	arg->exp.type = etype;
+ 
+ 	return arg;
+@@ -434,7 +434,7 @@ create_arg_cmp(enum tep_filter_cmp_type ctype)
+ 		return NULL;
+ 
+ 	/* Use NUM and change if necessary */
+-	arg->type = FILTER_ARG_NUM;
++	arg->type = TEP_FILTER_ARG_NUM;
+ 	arg->num.type = ctype;
+ 
+ 	return arg;
+@@ -449,27 +449,27 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 	int ret;
+ 
+ 	switch (op->type) {
+-	case FILTER_ARG_EXP:
++	case TEP_FILTER_ARG_EXP:
+ 		if (op->exp.right)
+ 			goto out_fail;
+ 		op->exp.right = arg;
+ 		break;
+ 
+-	case FILTER_ARG_OP:
++	case TEP_FILTER_ARG_OP:
+ 		if (op->op.right)
+ 			goto out_fail;
+ 		op->op.right = arg;
+ 		break;
+ 
+-	case FILTER_ARG_NUM:
++	case TEP_FILTER_ARG_NUM:
+ 		if (op->op.right)
+ 			goto out_fail;
+ 		/*
+ 		 * The arg must be num, str, or field
+ 		 */
+ 		switch (arg->type) {
+-		case FILTER_ARG_VALUE:
+-		case FILTER_ARG_FIELD:
++		case TEP_FILTER_ARG_VALUE:
++		case TEP_FILTER_ARG_FIELD:
+ 			break;
+ 		default:
+ 			show_error(error_str, "Illegal rvalue");
+@@ -508,16 +508,16 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 			 * If left arg was a field not found then
+ 			 * NULL the entire op.
+ 			 */
+-			if (left->type == FILTER_ARG_BOOLEAN) {
++			if (left->type == TEP_FILTER_ARG_BOOLEAN) {
+ 				free_arg(left);
+ 				free_arg(arg);
+-				op->type = FILTER_ARG_BOOLEAN;
++				op->type = TEP_FILTER_ARG_BOOLEAN;
+ 				op->boolean.value = TEP_FILTER_FALSE;
+ 				break;
+ 			}
+ 
+ 			/* Left arg must be a field */
+-			if (left->type != FILTER_ARG_FIELD) {
++			if (left->type != TEP_FILTER_ARG_FIELD) {
+ 				show_error(error_str,
+ 					   "Illegal lvalue for string comparison");
+ 				return TEP_ERRNO__ILLEGAL_LVALUE;
+@@ -548,7 +548,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 				return TEP_ERRNO__ILLEGAL_STRING_CMP;
+ 			}
+ 
+-			op->type = FILTER_ARG_STR;
++			op->type = TEP_FILTER_ARG_STR;
+ 			op->str.type = op_type;
+ 			op->str.field = left->field.field;
+ 			op->str.val = strdup(str);
+@@ -618,22 +618,22 @@ rotate_op_right(struct filter_arg *a, struct filter_arg *b)
+ static enum tep_errno add_left(struct filter_arg *op, struct filter_arg *arg)
  {
  	switch (op->type) {
- 	case TEP_FILTER_ARG_EXP:
-@@ -720,7 +720,7 @@ static enum op_type process_op(const char *token,
- 	return OP_CMP;
- }
+-	case FILTER_ARG_EXP:
+-		if (arg->type == FILTER_ARG_OP)
++	case TEP_FILTER_ARG_EXP:
++		if (arg->type == TEP_FILTER_ARG_OP)
+ 			arg = rotate_op_right(arg, op);
+ 		op->exp.left = arg;
+ 		break;
  
--static int check_op_done(struct filter_arg *arg)
-+static int check_op_done(struct tep_filter_arg *arg)
+-	case FILTER_ARG_OP:
++	case TEP_FILTER_ARG_OP:
+ 		op->op.left = arg;
+ 		break;
+-	case FILTER_ARG_NUM:
+-		if (arg->type == FILTER_ARG_OP)
++	case TEP_FILTER_ARG_NUM:
++		if (arg->type == TEP_FILTER_ARG_OP)
+ 			arg = rotate_op_right(arg, op);
+ 
+ 		/* left arg of compares must be a field */
+-		if (arg->type != FILTER_ARG_FIELD &&
+-		    arg->type != FILTER_ARG_BOOLEAN)
++		if (arg->type != TEP_FILTER_ARG_FIELD &&
++		    arg->type != TEP_FILTER_ARG_BOOLEAN)
+ 			return TEP_ERRNO__INVALID_ARG_TYPE;
+ 		op->num.left = arg;
+ 		break;
+@@ -654,10 +654,10 @@ enum op_type {
+ static enum op_type process_op(const char *token,
+ 			       enum tep_filter_op_type *btype,
+ 			       enum tep_filter_cmp_type *ctype,
+-			       enum filter_exp_type *etype)
++			       enum tep_filter_exp_type *etype)
+ {
+ 	*btype = TEP_FILTER_OP_NOT;
+-	*etype = FILTER_EXP_NONE;
++	*etype = TEP_FILTER_EXP_NONE;
+ 	*ctype = TEP_FILTER_CMP_NONE;
+ 
+ 	if (strcmp(token, "&&") == 0)
+@@ -672,29 +672,29 @@ static enum op_type process_op(const char *token,
+ 
+ 	/* Check for value expressions */
+ 	if (strcmp(token, "+") == 0) {
+-		*etype = FILTER_EXP_ADD;
++		*etype = TEP_FILTER_EXP_ADD;
+ 	} else if (strcmp(token, "-") == 0) {
+-		*etype = FILTER_EXP_SUB;
++		*etype = TEP_FILTER_EXP_SUB;
+ 	} else if (strcmp(token, "*") == 0) {
+-		*etype = FILTER_EXP_MUL;
++		*etype = TEP_FILTER_EXP_MUL;
+ 	} else if (strcmp(token, "/") == 0) {
+-		*etype = FILTER_EXP_DIV;
++		*etype = TEP_FILTER_EXP_DIV;
+ 	} else if (strcmp(token, "%") == 0) {
+-		*etype = FILTER_EXP_MOD;
++		*etype = TEP_FILTER_EXP_MOD;
+ 	} else if (strcmp(token, ">>") == 0) {
+-		*etype = FILTER_EXP_RSHIFT;
++		*etype = TEP_FILTER_EXP_RSHIFT;
+ 	} else if (strcmp(token, "<<") == 0) {
+-		*etype = FILTER_EXP_LSHIFT;
++		*etype = TEP_FILTER_EXP_LSHIFT;
+ 	} else if (strcmp(token, "&") == 0) {
+-		*etype = FILTER_EXP_AND;
++		*etype = TEP_FILTER_EXP_AND;
+ 	} else if (strcmp(token, "|") == 0) {
+-		*etype = FILTER_EXP_OR;
++		*etype = TEP_FILTER_EXP_OR;
+ 	} else if (strcmp(token, "^") == 0) {
+-		*etype = FILTER_EXP_XOR;
++		*etype = TEP_FILTER_EXP_XOR;
+ 	} else if (strcmp(token, "~") == 0)
+-		*etype = FILTER_EXP_NOT;
++		*etype = TEP_FILTER_EXP_NOT;
+ 
+-	if (*etype != FILTER_EXP_NONE)
++	if (*etype != TEP_FILTER_EXP_NONE)
+ 		return OP_EXP;
+ 
+ 	/* Check for compares */
+@@ -723,20 +723,20 @@ static enum op_type process_op(const char *token,
+ static int check_op_done(struct filter_arg *arg)
  {
  	switch (arg->type) {
- 	case TEP_FILTER_ARG_EXP:
-@@ -752,11 +752,11 @@ enum filter_vals {
- };
+-	case FILTER_ARG_EXP:
++	case TEP_FILTER_ARG_EXP:
+ 		return arg->exp.right != NULL;
  
- static enum tep_errno
--reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
--		struct filter_arg *arg, char *error_str)
-+reparent_op_arg(struct tep_filter_arg *parent, struct tep_filter_arg *old_child,
-+		struct tep_filter_arg *arg, char *error_str)
- {
--	struct filter_arg *other_child;
--	struct filter_arg **ptr;
-+	struct tep_filter_arg *other_child;
-+	struct tep_filter_arg **ptr;
+-	case FILTER_ARG_OP:
++	case TEP_FILTER_ARG_OP:
+ 		return arg->op.right != NULL;
  
- 	if (parent->type != TEP_FILTER_ARG_OP &&
- 	    arg->type != TEP_FILTER_ARG_OP) {
-@@ -804,7 +804,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
- }
+-	case FILTER_ARG_NUM:
++	case TEP_FILTER_ARG_NUM:
+ 		return arg->num.right != NULL;
  
- /* Returns either filter_vals (success) or tep_errno (failfure) */
--static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
-+static int test_arg(struct tep_filter_arg *parent, struct tep_filter_arg *arg,
- 		    char *error_str)
- {
- 	int lval, rval;
-@@ -904,8 +904,8 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
- }
+-	case FILTER_ARG_STR:
++	case TEP_FILTER_ARG_STR:
+ 		/* A string conversion is always done */
+ 		return 1;
  
- /* Remove any unknown event fields */
--static int collapse_tree(struct filter_arg *arg,
--			 struct filter_arg **arg_collapsed, char *error_str)
-+static int collapse_tree(struct tep_filter_arg *arg,
-+			 struct tep_filter_arg **arg_collapsed, char *error_str)
- {
- 	int ret;
+-	case FILTER_ARG_BOOLEAN:
++	case TEP_FILTER_ARG_BOOLEAN:
+ 		/* field not found, is ok */
+ 		return 1;
  
-@@ -939,15 +939,15 @@ static int collapse_tree(struct filter_arg *arg,
- }
+@@ -758,8 +758,8 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
+ 	struct filter_arg *other_child;
+ 	struct filter_arg **ptr;
  
- static enum tep_errno
--process_filter(struct tep_event_format *event, struct filter_arg **parg,
-+process_filter(struct tep_event_format *event, struct tep_filter_arg **parg,
- 	       char *error_str, int not)
- {
- 	enum tep_event_type type;
- 	char *token = NULL;
--	struct filter_arg *current_op = NULL;
--	struct filter_arg *current_exp = NULL;
--	struct filter_arg *left_item = NULL;
--	struct filter_arg *arg = NULL;
-+	struct tep_filter_arg *current_op = NULL;
-+	struct tep_filter_arg *current_exp = NULL;
-+	struct tep_filter_arg *left_item = NULL;
-+	struct tep_filter_arg *arg = NULL;
+-	if (parent->type != FILTER_ARG_OP &&
+-	    arg->type != FILTER_ARG_OP) {
++	if (parent->type != TEP_FILTER_ARG_OP &&
++	    arg->type != TEP_FILTER_ARG_OP) {
+ 		show_error(error_str, "can not reparent other than OP");
+ 		return TEP_ERRNO__REPARENT_NOT_OP;
+ 	}
+@@ -812,16 +812,16 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
+ 	switch (arg->type) {
+ 
+ 		/* bad case */
+-	case FILTER_ARG_BOOLEAN:
++	case TEP_FILTER_ARG_BOOLEAN:
+ 		return FILTER_VAL_FALSE + arg->boolean.value;
+ 
+ 		/* good cases: */
+-	case FILTER_ARG_STR:
+-	case FILTER_ARG_VALUE:
+-	case FILTER_ARG_FIELD:
++	case TEP_FILTER_ARG_STR:
++	case TEP_FILTER_ARG_VALUE:
++	case TEP_FILTER_ARG_FIELD:
+ 		return FILTER_VAL_NORM;
+ 
+-	case FILTER_ARG_EXP:
++	case TEP_FILTER_ARG_EXP:
+ 		lval = test_arg(arg, arg->exp.left, error_str);
+ 		if (lval != FILTER_VAL_NORM)
+ 			return lval;
+@@ -830,7 +830,7 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
+ 			return rval;
+ 		return FILTER_VAL_NORM;
+ 
+-	case FILTER_ARG_NUM:
++	case TEP_FILTER_ARG_NUM:
+ 		lval = test_arg(arg, arg->num.left, error_str);
+ 		if (lval != FILTER_VAL_NORM)
+ 			return lval;
+@@ -839,7 +839,7 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
+ 			return rval;
+ 		return FILTER_VAL_NORM;
+ 
+-	case FILTER_ARG_OP:
++	case TEP_FILTER_ARG_OP:
+ 		if (arg->op.type != TEP_FILTER_OP_NOT) {
+ 			lval = test_arg(arg, arg->op.left, error_str);
+ 			switch (lval) {
+@@ -919,7 +919,7 @@ static int collapse_tree(struct filter_arg *arg,
+ 		free_arg(arg);
+ 		arg = allocate_arg();
+ 		if (arg) {
+-			arg->type = FILTER_ARG_BOOLEAN;
++			arg->type = TEP_FILTER_ARG_BOOLEAN;
+ 			arg->boolean.value = ret == FILTER_VAL_TRUE;
+ 		} else {
+ 			show_error(error_str, "Failed to allocate filter arg");
+@@ -950,7 +950,7 @@ process_filter(struct tep_event_format *event, struct filter_arg **parg,
+ 	struct filter_arg *arg = NULL;
  	enum op_type op_type;
  	enum tep_filter_op_type btype;
- 	enum tep_filter_exp_type etype;
-@@ -1180,7 +1180,7 @@ process_filter(struct tep_event_format *event, struct filter_arg **parg,
- 
- static enum tep_errno
- process_event(struct tep_event_format *event, const char *filter_str,
--	      struct filter_arg **parg, char *error_str)
-+	      struct tep_filter_arg **parg, char *error_str)
- {
- 	int ret;
- 
-@@ -1208,7 +1208,7 @@ filter_event(struct event_filter *filter, struct tep_event_format *event,
- 	     const char *filter_str, char *error_str)
- {
- 	struct filter_type *filter_type;
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
+-	enum filter_exp_type etype;
++	enum tep_filter_exp_type etype;
+ 	enum tep_filter_cmp_type ctype;
  	enum tep_errno ret;
  
- 	if (filter_str) {
-@@ -1449,13 +1449,13 @@ void tep_filter_free(struct event_filter *filter)
- 	free(filter);
- }
+@@ -1196,7 +1196,7 @@ process_event(struct tep_event_format *event, const char *filter_str,
+ 		if (*parg == NULL)
+ 			return TEP_ERRNO__MEM_ALLOC_FAILED;
  
--static char *arg_to_str(struct event_filter *filter, struct filter_arg *arg);
-+static char *arg_to_str(struct event_filter *filter, struct tep_filter_arg *arg);
- 
- static int copy_filter_type(struct event_filter *filter,
- 			     struct event_filter *source,
- 			     struct filter_type *filter_type)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 	struct tep_event_format *event;
- 	const char *sys;
- 	const char *name;
-@@ -1540,7 +1540,7 @@ int tep_update_trivial(struct event_filter *dest, struct event_filter *source,
- 	struct tep_handle *dest_pevent;
- 	struct tep_event_format *event;
- 	struct filter_type *filter_type;
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 	char *str;
- 	int i;
- 
-@@ -1682,7 +1682,7 @@ int tep_filter_event_has_trivial(struct event_filter *filter,
+-		(*parg)->type = FILTER_ARG_BOOLEAN;
++		(*parg)->type = TEP_FILTER_ARG_BOOLEAN;
+ 		(*parg)->boolean.value = TEP_FILTER_FALSE;
  	}
- }
  
--static int test_filter(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_filter(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		       struct tep_record *record, enum tep_errno *err);
+@@ -1222,7 +1222,7 @@ filter_event(struct event_filter *filter, struct tep_event_format *event,
+ 		if (arg == NULL)
+ 			return TEP_ERRNO__MEM_ALLOC_FAILED;
  
- static const char *
-@@ -1733,11 +1733,11 @@ get_value(struct tep_event_format *event,
- }
+-		arg->type = FILTER_ARG_BOOLEAN;
++		arg->type = TEP_FILTER_ARG_BOOLEAN;
+ 		arg->boolean.value = TEP_FILTER_TRUE;
+ 	}
  
- static unsigned long long
--get_arg_value(struct tep_event_format *event, struct filter_arg *arg,
-+get_arg_value(struct tep_event_format *event, struct tep_filter_arg *arg,
- 	      struct tep_record *record, enum tep_errno *err);
+@@ -1478,7 +1478,7 @@ static int copy_filter_type(struct event_filter *filter,
+ 		if (arg == NULL)
+ 			return -1;
  
- static unsigned long long
--get_exp_value(struct tep_event_format *event, struct filter_arg *arg,
-+get_exp_value(struct tep_event_format *event, struct tep_filter_arg *arg,
- 	      struct tep_record *record, enum tep_errno *err)
- {
- 	unsigned long long lval, rval;
-@@ -1792,7 +1792,7 @@ get_exp_value(struct tep_event_format *event, struct filter_arg *arg,
- }
+-		arg->type = FILTER_ARG_BOOLEAN;
++		arg->type = TEP_FILTER_ARG_BOOLEAN;
+ 		if (strcmp(str, "TRUE") == 0)
+ 			arg->boolean.value = 1;
+ 		else
+@@ -1554,7 +1554,7 @@ int tep_update_trivial(struct event_filter *dest, struct event_filter *source,
+ 	for (i = 0; i < dest->filters; i++) {
+ 		filter_type = &dest->event_filters[i];
+ 		arg = filter_type->filter;
+-		if (arg->type != FILTER_ARG_BOOLEAN)
++		if (arg->type != TEP_FILTER_ARG_BOOLEAN)
+ 			continue;
+ 		if ((arg->boolean.value && type == FILTER_TRIVIAL_FALSE) ||
+ 		    (!arg->boolean.value && type == FILTER_TRIVIAL_TRUE))
+@@ -1611,7 +1611,7 @@ int tep_filter_clear_trivial(struct event_filter *filter,
+ 		int *new_ids;
  
- static unsigned long long
--get_arg_value(struct tep_event_format *event, struct filter_arg *arg,
-+get_arg_value(struct tep_event_format *event, struct tep_filter_arg *arg,
+ 		filter_type = &filter->event_filters[i];
+-		if (filter_type->filter->type != FILTER_ARG_BOOLEAN)
++		if (filter_type->filter->type != TEP_FILTER_ARG_BOOLEAN)
+ 			continue;
+ 		switch (type) {
+ 		case FILTER_TRIVIAL_FALSE:
+@@ -1668,7 +1668,7 @@ int tep_filter_event_has_trivial(struct event_filter *filter,
+ 	if (!filter_type)
+ 		return 0;
+ 
+-	if (filter_type->filter->type != FILTER_ARG_BOOLEAN)
++	if (filter_type->filter->type != TEP_FILTER_ARG_BOOLEAN)
+ 		return 0;
+ 
+ 	switch (type) {
+@@ -1753,37 +1753,37 @@ get_exp_value(struct tep_event_format *event, struct filter_arg *arg,
+ 	}
+ 
+ 	switch (arg->exp.type) {
+-	case FILTER_EXP_ADD:
++	case TEP_FILTER_EXP_ADD:
+ 		return lval + rval;
+ 
+-	case FILTER_EXP_SUB:
++	case TEP_FILTER_EXP_SUB:
+ 		return lval - rval;
+ 
+-	case FILTER_EXP_MUL:
++	case TEP_FILTER_EXP_MUL:
+ 		return lval * rval;
+ 
+-	case FILTER_EXP_DIV:
++	case TEP_FILTER_EXP_DIV:
+ 		return lval / rval;
+ 
+-	case FILTER_EXP_MOD:
++	case TEP_FILTER_EXP_MOD:
+ 		return lval % rval;
+ 
+-	case FILTER_EXP_RSHIFT:
++	case TEP_FILTER_EXP_RSHIFT:
+ 		return lval >> rval;
+ 
+-	case FILTER_EXP_LSHIFT:
++	case TEP_FILTER_EXP_LSHIFT:
+ 		return lval << rval;
+ 
+-	case FILTER_EXP_AND:
++	case TEP_FILTER_EXP_AND:
+ 		return lval & rval;
+ 
+-	case FILTER_EXP_OR:
++	case TEP_FILTER_EXP_OR:
+ 		return lval | rval;
+ 
+-	case FILTER_EXP_XOR:
++	case TEP_FILTER_EXP_XOR:
+ 		return lval ^ rval;
+ 
+-	case FILTER_EXP_NOT:
++	case TEP_FILTER_EXP_NOT:
+ 	default:
+ 		if (!*err)
+ 			*err = TEP_ERRNO__INVALID_EXP_TYPE;
+@@ -1796,17 +1796,17 @@ get_arg_value(struct tep_event_format *event, struct filter_arg *arg,
  	      struct tep_record *record, enum tep_errno *err)
  {
  	switch (arg->type) {
-@@ -1800,7 +1800,7 @@ get_arg_value(struct tep_event_format *event, struct filter_arg *arg,
+-	case FILTER_ARG_FIELD:
++	case TEP_FILTER_ARG_FIELD:
  		return get_value(event, arg->field.field, record);
  
- 	case TEP_FILTER_ARG_VALUE:
--		if (arg->value.type != FILTER_NUMBER) {
-+		if (arg->value.type != TEP_FILTER_NUMBER) {
+-	case FILTER_ARG_VALUE:
++	case TEP_FILTER_ARG_VALUE:
+ 		if (arg->value.type != FILTER_NUMBER) {
  			if (!*err)
  				*err = TEP_ERRNO__NOT_A_NUMBER;
  		}
-@@ -1816,7 +1816,7 @@ get_arg_value(struct tep_event_format *event, struct filter_arg *arg,
- 	return 0;
- }
+ 		return arg->value.val;
  
--static int test_num(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_num(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		    struct tep_record *record, enum tep_errno *err)
- {
- 	unsigned long long lval, rval;
-@@ -1857,7 +1857,7 @@ static int test_num(struct tep_event_format *event, struct filter_arg *arg,
+-	case FILTER_ARG_EXP:
++	case TEP_FILTER_ARG_EXP:
+ 		return get_exp_value(event, arg, record, err);
+ 
+ 	default:
+@@ -1971,22 +1971,22 @@ static int test_filter(struct tep_event_format *event, struct filter_arg *arg,
  	}
- }
  
--static const char *get_field_str(struct filter_arg *arg, struct tep_record *record)
-+static const char *get_field_str(struct tep_filter_arg *arg, struct tep_record *record)
- {
- 	struct tep_event_format *event;
- 	struct tep_handle *pevent;
-@@ -1907,7 +1907,7 @@ static const char *get_field_str(struct filter_arg *arg, struct tep_record *reco
- 	return val;
- }
+ 	switch (arg->type) {
+-	case FILTER_ARG_BOOLEAN:
++	case TEP_FILTER_ARG_BOOLEAN:
+ 		/* easy case */
+ 		return arg->boolean.value;
  
--static int test_str(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_str(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		    struct tep_record *record, enum tep_errno *err)
- {
- 	const char *val;
-@@ -1938,7 +1938,7 @@ static int test_str(struct tep_event_format *event, struct filter_arg *arg,
- 	}
- }
+-	case FILTER_ARG_OP:
++	case TEP_FILTER_ARG_OP:
+ 		return test_op(event, arg, record, err);
  
--static int test_op(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_op(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		   struct tep_record *record, enum tep_errno *err)
- {
- 	switch (arg->op.type) {
-@@ -1960,7 +1960,7 @@ static int test_op(struct tep_event_format *event, struct filter_arg *arg,
- 	}
- }
+-	case FILTER_ARG_NUM:
++	case TEP_FILTER_ARG_NUM:
+ 		return test_num(event, arg, record, err);
  
--static int test_filter(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_filter(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		       struct tep_record *record, enum tep_errno *err)
- {
- 	if (*err) {
-@@ -2059,7 +2059,7 @@ enum tep_errno tep_filter_match(struct event_filter *filter,
- 	return ret ? TEP_ERRNO__FILTER_MATCH : TEP_ERRNO__FILTER_MISS;
- }
+-	case FILTER_ARG_STR:
++	case TEP_FILTER_ARG_STR:
+ 		return test_str(event, arg, record, err);
  
--static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *op_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *str = NULL;
- 	char *left = NULL;
-@@ -2163,7 +2163,7 @@ static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
- 	return str;
- }
+-	case FILTER_ARG_EXP:
+-	case FILTER_ARG_VALUE:
+-	case FILTER_ARG_FIELD:
++	case TEP_FILTER_ARG_EXP:
++	case TEP_FILTER_ARG_VALUE:
++	case TEP_FILTER_ARG_FIELD:
+ 		/*
+ 		 * Expressions, fields and values evaluate
+ 		 * to true if they return non zero
+@@ -2190,34 +2190,34 @@ static char *exp_to_str(struct event_filter *filter, struct filter_arg *arg)
+ 		goto out;
  
--static char *val_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *val_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *str = NULL;
- 
-@@ -2172,12 +2172,12 @@ static char *val_to_str(struct event_filter *filter, struct filter_arg *arg)
- 	return str;
- }
- 
--static char *field_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *field_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	return strdup(arg->field.field->name);
- }
- 
--static char *exp_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *exp_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *lstr;
- 	char *rstr;
-@@ -2233,7 +2233,7 @@ static char *exp_to_str(struct event_filter *filter, struct filter_arg *arg)
- 	return str;
- }
- 
--static char *num_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *num_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *lstr;
- 	char *rstr;
-@@ -2283,7 +2283,7 @@ static char *num_to_str(struct event_filter *filter, struct filter_arg *arg)
- 	return str;
- }
- 
--static char *str_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *str_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *str = NULL;
- 	char *op = NULL;
-@@ -2315,7 +2315,7 @@ static char *str_to_str(struct event_filter *filter, struct filter_arg *arg)
- 	return str;
- }
- 
--static char *arg_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *arg_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
+ 	switch (arg->exp.type) {
+-	case FILTER_EXP_ADD:
++	case TEP_FILTER_EXP_ADD:
+ 		op = "+";
+ 		break;
+-	case FILTER_EXP_SUB:
++	case TEP_FILTER_EXP_SUB:
+ 		op = "-";
+ 		break;
+-	case FILTER_EXP_MUL:
++	case TEP_FILTER_EXP_MUL:
+ 		op = "*";
+ 		break;
+-	case FILTER_EXP_DIV:
++	case TEP_FILTER_EXP_DIV:
+ 		op = "/";
+ 		break;
+-	case FILTER_EXP_MOD:
++	case TEP_FILTER_EXP_MOD:
+ 		op = "%";
+ 		break;
+-	case FILTER_EXP_RSHIFT:
++	case TEP_FILTER_EXP_RSHIFT:
+ 		op = ">>";
+ 		break;
+-	case FILTER_EXP_LSHIFT:
++	case TEP_FILTER_EXP_LSHIFT:
+ 		op = "<<";
+ 		break;
+-	case FILTER_EXP_AND:
++	case TEP_FILTER_EXP_AND:
+ 		op = "&";
+ 		break;
+-	case FILTER_EXP_OR:
++	case TEP_FILTER_EXP_OR:
+ 		op = "|";
+ 		break;
+-	case FILTER_EXP_XOR:
++	case TEP_FILTER_EXP_XOR:
+ 		op = "^";
+ 		break;
+ 	default:
+@@ -2320,26 +2320,26 @@ static char *arg_to_str(struct event_filter *filter, struct filter_arg *arg)
  	char *str = NULL;
  
+ 	switch (arg->type) {
+-	case FILTER_ARG_BOOLEAN:
++	case TEP_FILTER_ARG_BOOLEAN:
+ 		asprintf(&str, arg->boolean.value ? "TRUE" : "FALSE");
+ 		return str;
+ 
+-	case FILTER_ARG_OP:
++	case TEP_FILTER_ARG_OP:
+ 		return op_to_str(filter, arg);
+ 
+-	case FILTER_ARG_NUM:
++	case TEP_FILTER_ARG_NUM:
+ 		return num_to_str(filter, arg);
+ 
+-	case FILTER_ARG_STR:
++	case TEP_FILTER_ARG_STR:
+ 		return str_to_str(filter, arg);
+ 
+-	case FILTER_ARG_VALUE:
++	case TEP_FILTER_ARG_VALUE:
+ 		return val_to_str(filter, arg);
+ 
+-	case FILTER_ARG_FIELD:
++	case TEP_FILTER_ARG_FIELD:
+ 		return field_to_str(filter, arg);
+ 
+-	case FILTER_ARG_EXP:
++	case TEP_FILTER_ARG_EXP:
+ 		return exp_to_str(filter, arg);
+ 
+ 	default:
 -- 
 2.14.4
