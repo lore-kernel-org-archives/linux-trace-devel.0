@@ -1,9 +1,9 @@
 Return-Path: <SRS0=/bgX=MG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:52442 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:52388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727498AbeIXVGo (ORCPT
+        id S1730087AbeIXVGi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Sep 2018 17:06:44 -0400
+        Mon, 24 Sep 2018 17:06:38 -0400
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Ingo Molnar <mingo@kernel.org>
 Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
@@ -15,9 +15,9 @@ Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 11/27] tools lib traceevent, perf tools: Add prefix tep_ to all print_* structures
-Date: Mon, 24 Sep 2018 12:02:26 -0300
-Message-Id: <20180924150242.14235-12-acme@kernel.org>
+Subject: [PATCH 10/27] tools lib traceevent: Add prefix TEP_ to all EVENT_FL_* flags
+Date: Mon, 24 Sep 2018 12:02:25 -0300
+Message-Id: <20180924150242.14235-11-acme@kernel.org>
 In-Reply-To: <20180924150242.14235-1-acme@kernel.org>
 References: <20180924150242.14235-1-acme@kernel.org>
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -27,8 +27,8 @@ From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
-conflicts. That prefix will be "tep_". This adds prefix tep_ to all
-print_* structures
+conflicts. That prefix will be "tep_". This adds prefix TEP_
+to all members of nameless enum EVENT_FL_*
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -36,749 +36,220 @@ Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180919185723.381753268@goodmis.org
+Link: http://lkml.kernel.org/r/20180919185723.116643250@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/lib/traceevent/event-parse.c                 | 144 ++++++++++-----------
- tools/lib/traceevent/event-parse.h                 |  98 +++++++-------
- .../perf/util/scripting-engines/trace-event-perl.c |   6 +-
- .../util/scripting-engines/trace-event-python.c    |   4 +-
- 4 files changed, 126 insertions(+), 126 deletions(-)
+ tools/lib/traceevent/event-parse.c | 42 +++++++++++++++++++-------------------
+ tools/lib/traceevent/event-parse.h | 18 ++++++++--------
+ 2 files changed, 30 insertions(+), 30 deletions(-)
 
 diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index a651c3323f2c..3beab91afded 100644
+index 1696dd9534bc..a651c3323f2c 100644
 --- a/tools/lib/traceevent/event-parse.c
 +++ b/tools/lib/traceevent/event-parse.c
-@@ -95,7 +95,7 @@ struct tep_function_handler {
+@@ -1382,7 +1382,7 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
+ 		 * The ftrace fields may still use the "special" name.
+ 		 * Just ignore it.
+ 		 */
+-		if (event->flags & EVENT_FL_ISFTRACE &&
++		if (event->flags & TEP_EVENT_FL_ISFTRACE &&
+ 		    type == TEP_EVENT_ITEM && strcmp(token, "special") == 0) {
+ 			free_token(token);
+ 			type = read_token(&token);
+@@ -1412,7 +1412,7 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
+ 			     * Some of the ftrace fields are broken and have
+ 			     * an illegal "." in them.
+ 			     */
+-			    (event->flags & EVENT_FL_ISFTRACE &&
++			    (event->flags & TEP_EVENT_FL_ISFTRACE &&
+ 			     type == TEP_EVENT_OP && strcmp(token, ".") == 0)) {
  
- static unsigned long long
- process_defined_func(struct trace_seq *s, void *data, int size,
--		     struct tep_event_format *event, struct print_arg *arg);
-+		     struct tep_event_format *event, struct tep_print_arg *arg);
+ 				if (strcmp(token, "*") == 0)
+@@ -1963,7 +1963,7 @@ process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
+ 		arg->op.right = NULL;
  
- static void free_func_handle(struct tep_function_handler *func);
+ 		if (set_op_prio(arg) == -1) {
+-			event->flags |= EVENT_FL_FAILED;
++			event->flags |= TEP_EVENT_FL_FAILED;
+ 			/* arg->op.op (= token) will be freed at out_free */
+ 			arg->op.op = NULL;
+ 			goto out_free;
+@@ -2042,7 +2042,7 @@ process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
  
-@@ -118,9 +118,9 @@ void breakpoint(void)
- 	x++;
- }
- 
--struct print_arg *alloc_arg(void)
-+struct tep_print_arg *alloc_arg(void)
- {
--	return calloc(1, sizeof(struct print_arg));
-+	return calloc(1, sizeof(struct tep_print_arg));
- }
- 
- struct cmdline {
-@@ -781,9 +781,9 @@ static int event_item_type(enum tep_event_type type)
+ 	} else {
+ 		do_warning_event(event, "unknown op '%s'", token);
+-		event->flags |= EVENT_FL_FAILED;
++		event->flags |= TEP_EVENT_FL_FAILED;
+ 		/* the arg is now the left side */
+ 		goto out_free;
  	}
- }
+@@ -4884,13 +4884,13 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 	int len;
+ 	int ls;
  
--static void free_flag_sym(struct print_flag_sym *fsym)
-+static void free_flag_sym(struct tep_print_flag_sym *fsym)
- {
--	struct print_flag_sym *next;
-+	struct tep_print_flag_sym *next;
- 
- 	while (fsym) {
- 		next = fsym->next;
-@@ -794,9 +794,9 @@ static void free_flag_sym(struct print_flag_sym *fsym)
- 	}
- }
- 
--static void free_arg(struct print_arg *arg)
-+static void free_arg(struct tep_print_arg *arg)
- {
--	struct print_arg *farg;
-+	struct tep_print_arg *farg;
- 
- 	if (!arg)
+-	if (event->flags & EVENT_FL_FAILED) {
++	if (event->flags & TEP_EVENT_FL_FAILED) {
+ 		trace_seq_printf(s, "[FAILED TO PARSE]");
+ 		tep_print_fields(s, data, size, event);
  		return;
-@@ -1674,11 +1674,11 @@ static int event_read_format(struct tep_event_format *event)
- }
- 
- static enum tep_event_type
--process_arg_token(struct tep_event_format *event, struct print_arg *arg,
-+process_arg_token(struct tep_event_format *event, struct tep_print_arg *arg,
- 		  char **tok, enum tep_event_type type);
- 
- static enum tep_event_type
--process_arg(struct tep_event_format *event, struct print_arg *arg, char **tok)
-+process_arg(struct tep_event_format *event, struct tep_print_arg *arg, char **tok)
- {
- 	enum tep_event_type type;
- 	char *token;
-@@ -1690,14 +1690,14 @@ process_arg(struct tep_event_format *event, struct print_arg *arg, char **tok)
- }
- 
- static enum tep_event_type
--process_op(struct tep_event_format *event, struct print_arg *arg, char **tok);
-+process_op(struct tep_event_format *event, struct tep_print_arg *arg, char **tok);
- 
- /*
-  * For __print_symbolic() and __print_flags, we need to completely
-  * evaluate the first argument, which defines what to print next.
-  */
- static enum tep_event_type
--process_field_arg(struct tep_event_format *event, struct print_arg *arg, char **tok)
-+process_field_arg(struct tep_event_format *event, struct tep_print_arg *arg, char **tok)
- {
- 	enum tep_event_type type;
- 
-@@ -1711,9 +1711,9 @@ process_field_arg(struct tep_event_format *event, struct print_arg *arg, char **
- }
- 
- static enum tep_event_type
--process_cond(struct tep_event_format *event, struct print_arg *top, char **tok)
-+process_cond(struct tep_event_format *event, struct tep_print_arg *top, char **tok)
- {
--	struct print_arg *arg, *left, *right;
-+	struct tep_print_arg *arg, *left, *right;
- 	enum tep_event_type type;
- 	char *token = NULL;
- 
-@@ -1767,9 +1767,9 @@ process_cond(struct tep_event_format *event, struct print_arg *top, char **tok)
- }
- 
- static enum tep_event_type
--process_array(struct tep_event_format *event, struct print_arg *top, char **tok)
-+process_array(struct tep_event_format *event, struct tep_print_arg *top, char **tok)
- {
--	struct print_arg *arg;
-+	struct tep_print_arg *arg;
- 	enum tep_event_type type;
- 	char *token = NULL;
- 
-@@ -1855,7 +1855,7 @@ static int get_op_prio(char *op)
  	}
- }
  
--static int set_op_prio(struct print_arg *arg)
-+static int set_op_prio(struct tep_print_arg *arg)
- {
+-	if (event->flags & EVENT_FL_ISBPRINT) {
++	if (event->flags & TEP_EVENT_FL_ISBPRINT) {
+ 		bprint_fmt = get_bprint_format(data, size, event);
+ 		args = make_bprint_args(bprint_fmt, data, size, event);
+ 		arg = args;
+@@ -4945,7 +4945,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 				/* The argument is the length. */
+ 				if (!arg) {
+ 					do_warning_event(event, "no argument match");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					goto out_failed;
+ 				}
+ 				len_arg = eval_num_arg(data, size, event, arg);
+@@ -4998,7 +4998,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 			case 'u':
+ 				if (!arg) {
+ 					do_warning_event(event, "no argument match");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					goto out_failed;
+ 				}
  
- 	/* single ops are the greatest */
-@@ -1869,9 +1869,9 @@ static int set_op_prio(struct print_arg *arg)
+@@ -5008,7 +5008,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 				/* should never happen */
+ 				if (len > 31) {
+ 					do_warning_event(event, "bad format!");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					len = 31;
+ 				}
  
- /* Note, *tok does not get freed, but will most likely be saved */
- static enum tep_event_type
--process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
-+process_op(struct tep_event_format *event, struct tep_print_arg *arg, char **tok)
- {
--	struct print_arg *left, *right = NULL;
-+	struct tep_print_arg *left, *right = NULL;
- 	enum tep_event_type type;
- 	char *token;
+@@ -5074,13 +5074,13 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 					break;
+ 				default:
+ 					do_warning_event(event, "bad count (%d)", ls);
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 				}
+ 				break;
+ 			case 's':
+ 				if (!arg) {
+ 					do_warning_event(event, "no matching argument");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					goto out_failed;
+ 				}
  
-@@ -2009,7 +2009,7 @@ process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
+@@ -5090,7 +5090,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 				/* should never happen */
+ 				if (len > 31) {
+ 					do_warning_event(event, "bad format!");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					len = 31;
+ 				}
  
- 		if (right->type == PRINT_OP &&
- 		    get_op_prio(arg->op.op) < get_op_prio(right->op.op)) {
--			struct print_arg tmp;
-+			struct tep_print_arg tmp;
- 
- 			/* rotate ops according to the priority */
- 			arg->op.right = right->op.left;
-@@ -2070,7 +2070,7 @@ process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
- }
- 
- static enum tep_event_type
--process_entry(struct tep_event_format *event __maybe_unused, struct print_arg *arg,
-+process_entry(struct tep_event_format *event __maybe_unused, struct tep_print_arg *arg,
- 	      char **tok)
- {
- 	enum tep_event_type type;
-@@ -2110,9 +2110,9 @@ process_entry(struct tep_event_format *event __maybe_unused, struct print_arg *a
- }
- 
- static int alloc_and_process_delim(struct tep_event_format *event, char *next_token,
--				   struct print_arg **print_arg)
-+				   struct tep_print_arg **print_arg)
- {
--	struct print_arg *field;
-+	struct tep_print_arg *field;
- 	enum tep_event_type type;
- 	char *token;
- 	int ret = 0;
-@@ -2141,7 +2141,7 @@ static int alloc_and_process_delim(struct tep_event_format *event, char *next_to
- 	return ret;
- }
- 
--static char *arg_eval (struct print_arg *arg);
-+static char *arg_eval (struct tep_print_arg *arg);
- 
- static unsigned long long
- eval_type_str(unsigned long long val, const char *type, int pointer)
-@@ -2238,7 +2238,7 @@ eval_type_str(unsigned long long val, const char *type, int pointer)
-  * Try to figure out the type.
-  */
- static unsigned long long
--eval_type(unsigned long long val, struct print_arg *arg, int pointer)
-+eval_type(unsigned long long val, struct tep_print_arg *arg, int pointer)
- {
- 	if (arg->type != PRINT_TYPE) {
- 		do_warning("expected type argument");
-@@ -2248,7 +2248,7 @@ eval_type(unsigned long long val, struct print_arg *arg, int pointer)
- 	return eval_type_str(val, arg->typecast.type, pointer);
- }
- 
--static int arg_num_eval(struct print_arg *arg, long long *val)
-+static int arg_num_eval(struct tep_print_arg *arg, long long *val)
- {
- 	long long left, right;
- 	int ret = 1;
-@@ -2414,7 +2414,7 @@ static int arg_num_eval(struct print_arg *arg, long long *val)
- 	return ret;
- }
- 
--static char *arg_eval (struct print_arg *arg)
-+static char *arg_eval (struct tep_print_arg *arg)
- {
- 	long long val;
- 	static char buf[20];
-@@ -2444,11 +2444,11 @@ static char *arg_eval (struct print_arg *arg)
- }
- 
- static enum tep_event_type
--process_fields(struct tep_event_format *event, struct print_flag_sym **list, char **tok)
-+process_fields(struct tep_event_format *event, struct tep_print_flag_sym **list, char **tok)
- {
- 	enum tep_event_type type;
--	struct print_arg *arg = NULL;
--	struct print_flag_sym *field;
-+	struct tep_print_arg *arg = NULL;
-+	struct tep_print_flag_sym *field;
- 	char *token = *tok;
- 	char *value;
- 
-@@ -2525,9 +2525,9 @@ process_fields(struct tep_event_format *event, struct print_flag_sym **list, cha
- }
- 
- static enum tep_event_type
--process_flags(struct tep_event_format *event, struct print_arg *arg, char **tok)
-+process_flags(struct tep_event_format *event, struct tep_print_arg *arg, char **tok)
- {
--	struct print_arg *field;
-+	struct tep_print_arg *field;
- 	enum tep_event_type type;
- 	char *token = NULL;
- 
-@@ -2578,9 +2578,9 @@ process_flags(struct tep_event_format *event, struct print_arg *arg, char **tok)
- }
- 
- static enum tep_event_type
--process_symbols(struct tep_event_format *event, struct print_arg *arg, char **tok)
-+process_symbols(struct tep_event_format *event, struct tep_print_arg *arg, char **tok)
- {
--	struct print_arg *field;
-+	struct tep_print_arg *field;
- 	enum tep_event_type type;
- 	char *token = NULL;
- 
-@@ -2617,7 +2617,7 @@ process_symbols(struct tep_event_format *event, struct print_arg *arg, char **to
- }
- 
- static enum tep_event_type
--process_hex_common(struct tep_event_format *event, struct print_arg *arg,
-+process_hex_common(struct tep_event_format *event, struct tep_print_arg *arg,
- 		   char **tok, enum print_arg_type type)
- {
- 	memset(arg, 0, sizeof(*arg));
-@@ -2640,20 +2640,20 @@ process_hex_common(struct tep_event_format *event, struct print_arg *arg,
- }
- 
- static enum tep_event_type
--process_hex(struct tep_event_format *event, struct print_arg *arg, char **tok)
-+process_hex(struct tep_event_format *event, struct tep_print_arg *arg, char **tok)
- {
- 	return process_hex_common(event, arg, tok, PRINT_HEX);
- }
- 
- static enum tep_event_type
--process_hex_str(struct tep_event_format *event, struct print_arg *arg,
-+process_hex_str(struct tep_event_format *event, struct tep_print_arg *arg,
- 		char **tok)
- {
- 	return process_hex_common(event, arg, tok, PRINT_HEX_STR);
- }
- 
- static enum tep_event_type
--process_int_array(struct tep_event_format *event, struct print_arg *arg, char **tok)
-+process_int_array(struct tep_event_format *event, struct tep_print_arg *arg, char **tok)
- {
- 	memset(arg, 0, sizeof(*arg));
- 	arg->type = PRINT_INT_ARRAY;
-@@ -2681,7 +2681,7 @@ process_int_array(struct tep_event_format *event, struct print_arg *arg, char **
- }
- 
- static enum tep_event_type
--process_dynamic_array(struct tep_event_format *event, struct print_arg *arg, char **tok)
-+process_dynamic_array(struct tep_event_format *event, struct tep_print_arg *arg, char **tok)
- {
- 	struct tep_format_field *field;
- 	enum tep_event_type type;
-@@ -2745,7 +2745,7 @@ process_dynamic_array(struct tep_event_format *event, struct print_arg *arg, cha
- }
- 
- static enum tep_event_type
--process_dynamic_array_len(struct tep_event_format *event, struct print_arg *arg,
-+process_dynamic_array_len(struct tep_event_format *event, struct tep_print_arg *arg,
- 			  char **tok)
- {
- 	struct tep_format_field *field;
-@@ -2781,9 +2781,9 @@ process_dynamic_array_len(struct tep_event_format *event, struct print_arg *arg,
- }
- 
- static enum tep_event_type
--process_paren(struct tep_event_format *event, struct print_arg *arg, char **tok)
-+process_paren(struct tep_event_format *event, struct tep_print_arg *arg, char **tok)
- {
--	struct print_arg *item_arg;
-+	struct tep_print_arg *item_arg;
- 	enum tep_event_type type;
- 	char *token;
- 
-@@ -2844,7 +2844,7 @@ process_paren(struct tep_event_format *event, struct print_arg *arg, char **tok)
- 
- 
- static enum tep_event_type
--process_str(struct tep_event_format *event __maybe_unused, struct print_arg *arg,
-+process_str(struct tep_event_format *event __maybe_unused, struct tep_print_arg *arg,
- 	    char **tok)
- {
- 	enum tep_event_type type;
-@@ -2873,7 +2873,7 @@ process_str(struct tep_event_format *event __maybe_unused, struct print_arg *arg
- }
- 
- static enum tep_event_type
--process_bitmask(struct tep_event_format *event __maybe_unused, struct print_arg *arg,
-+process_bitmask(struct tep_event_format *event __maybe_unused, struct tep_print_arg *arg,
- 		char **tok)
- {
- 	enum tep_event_type type;
-@@ -2935,10 +2935,10 @@ static void remove_func_handler(struct tep_handle *pevent, char *func_name)
- 
- static enum tep_event_type
- process_func_handler(struct tep_event_format *event, struct tep_function_handler *func,
--		     struct print_arg *arg, char **tok)
-+		     struct tep_print_arg *arg, char **tok)
- {
--	struct print_arg **next_arg;
--	struct print_arg *farg;
-+	struct tep_print_arg **next_arg;
-+	struct tep_print_arg *farg;
- 	enum tep_event_type type;
- 	char *token;
- 	int i;
-@@ -2992,7 +2992,7 @@ process_func_handler(struct tep_event_format *event, struct tep_function_handler
- }
- 
- static enum tep_event_type
--process_function(struct tep_event_format *event, struct print_arg *arg,
-+process_function(struct tep_event_format *event, struct tep_print_arg *arg,
- 		 char *token, char **tok)
- {
- 	struct tep_function_handler *func;
-@@ -3048,7 +3048,7 @@ process_function(struct tep_event_format *event, struct print_arg *arg,
- }
- 
- static enum tep_event_type
--process_arg_token(struct tep_event_format *event, struct print_arg *arg,
-+process_arg_token(struct tep_event_format *event, struct tep_print_arg *arg,
- 		  char **tok, enum tep_event_type type)
- {
- 	char *token;
-@@ -3136,10 +3136,10 @@ process_arg_token(struct tep_event_format *event, struct print_arg *arg,
- 	return type;
- }
- 
--static int event_read_print_args(struct tep_event_format *event, struct print_arg **list)
-+static int event_read_print_args(struct tep_event_format *event, struct tep_print_arg **list)
- {
- 	enum tep_event_type type = TEP_EVENT_ERROR;
--	struct print_arg *arg;
-+	struct tep_print_arg *arg;
- 	char *token;
- 	int args = 0;
- 
-@@ -3522,13 +3522,13 @@ tep_find_event_by_name(struct tep_handle *pevent,
- }
- 
- static unsigned long long
--eval_num_arg(void *data, int size, struct tep_event_format *event, struct print_arg *arg)
-+eval_num_arg(void *data, int size, struct tep_event_format *event, struct tep_print_arg *arg)
- {
- 	struct tep_handle *pevent = event->pevent;
- 	unsigned long long val = 0;
- 	unsigned long long left, right;
--	struct print_arg *typearg = NULL;
--	struct print_arg *larg;
-+	struct tep_print_arg *typearg = NULL;
-+	struct tep_print_arg *larg;
- 	unsigned long offset;
- 	unsigned int field_size;
- 
-@@ -3863,10 +3863,10 @@ static void print_bitmask_to_seq(struct tep_handle *pevent,
- 
- static void print_str_arg(struct trace_seq *s, void *data, int size,
- 			  struct tep_event_format *event, const char *format,
--			  int len_arg, struct print_arg *arg)
-+			  int len_arg, struct tep_print_arg *arg)
- {
- 	struct tep_handle *pevent = event->pevent;
--	struct print_flag_sym *flag;
-+	struct tep_print_flag_sym *flag;
- 	struct tep_format_field *field;
- 	struct printk_map *printk;
- 	long long val, fval;
-@@ -4117,13 +4117,13 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
- 
- static unsigned long long
- process_defined_func(struct trace_seq *s, void *data, int size,
--		     struct tep_event_format *event, struct print_arg *arg)
-+		     struct tep_event_format *event, struct tep_print_arg *arg)
- {
- 	struct tep_function_handler *func_handle = arg->func.func;
- 	struct func_params *param;
- 	unsigned long long *args;
- 	unsigned long long ret;
--	struct print_arg *farg;
-+	struct tep_print_arg *farg;
- 	struct trace_seq str;
- 	struct save_str {
- 		struct save_str *next;
-@@ -4200,9 +4200,9 @@ process_defined_func(struct trace_seq *s, void *data, int size,
- 	return ret;
- }
- 
--static void free_args(struct print_arg *args)
-+static void free_args(struct tep_print_arg *args)
- {
--	struct print_arg *next;
-+	struct tep_print_arg *next;
- 
- 	while (args) {
- 		next = args->next;
-@@ -4212,11 +4212,11 @@ static void free_args(struct print_arg *args)
+@@ -5115,7 +5115,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 			trace_seq_putc(s, *ptr);
  	}
- }
  
--static struct print_arg *make_bprint_args(char *fmt, void *data, int size, struct tep_event_format *event)
-+static struct tep_print_arg *make_bprint_args(char *fmt, void *data, int size, struct tep_event_format *event)
+-	if (event->flags & EVENT_FL_FAILED) {
++	if (event->flags & TEP_EVENT_FL_FAILED) {
+ out_failed:
+ 		trace_seq_printf(s, "[FAILED TO PARSE]");
+ 	}
+@@ -5391,11 +5391,11 @@ void tep_event_info(struct trace_seq *s, struct tep_event_format *event,
  {
- 	struct tep_handle *pevent = event->pevent;
- 	struct tep_format_field *field, *ip_field;
--	struct print_arg *args, *arg, **next;
-+	struct tep_print_arg *args, *arg, **next;
- 	unsigned long long ip, val;
- 	char *ptr;
- 	void *bptr;
-@@ -4424,7 +4424,7 @@ get_bprint_format(void *data, int size __maybe_unused,
- }
+ 	int print_pretty = 1;
  
- static void print_mac_arg(struct trace_seq *s, int mac, void *data, int size,
--			  struct tep_event_format *event, struct print_arg *arg)
-+			  struct tep_event_format *event, struct tep_print_arg *arg)
- {
- 	unsigned char *buf;
- 	const char *fmt = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x";
-@@ -4578,7 +4578,7 @@ static void print_ip6_addr(struct trace_seq *s, char i, unsigned char *buf)
-  */
- static int print_ipv4_arg(struct trace_seq *s, const char *ptr, char i,
- 			  void *data, int size, struct tep_event_format *event,
--			  struct print_arg *arg)
-+			  struct tep_print_arg *arg)
- {
- 	unsigned char *buf;
+-	if (event->pevent->print_raw || (event->flags & EVENT_FL_PRINTRAW))
++	if (event->pevent->print_raw || (event->flags & TEP_EVENT_FL_PRINTRAW))
+ 		tep_print_fields(s, record->data, record->size, event);
+ 	else {
  
-@@ -4615,7 +4615,7 @@ static int print_ipv4_arg(struct trace_seq *s, const char *ptr, char i,
+-		if (event->handler && !(event->flags & EVENT_FL_NOHANDLE))
++		if (event->handler && !(event->flags & TEP_EVENT_FL_NOHANDLE))
+ 			print_pretty = event->handler(s, record, event,
+ 						      event->context);
  
- static int print_ipv6_arg(struct trace_seq *s, const char *ptr, char i,
- 			  void *data, int size, struct tep_event_format *event,
--			  struct print_arg *arg)
-+			  struct tep_print_arg *arg)
- {
- 	char have_c = 0;
- 	unsigned char *buf;
-@@ -4665,7 +4665,7 @@ static int print_ipv6_arg(struct trace_seq *s, const char *ptr, char i,
+@@ -6043,10 +6043,10 @@ enum tep_errno __tep_parse_format(struct tep_event_format **eventp,
+ 	}
  
- static int print_ipsa_arg(struct trace_seq *s, const char *ptr, char i,
- 			  void *data, int size, struct tep_event_format *event,
--			  struct print_arg *arg)
-+			  struct tep_print_arg *arg)
- {
- 	char have_c = 0, have_p = 0;
- 	unsigned char *buf;
-@@ -4747,7 +4747,7 @@ static int print_ipsa_arg(struct trace_seq *s, const char *ptr, char i,
+ 	if (strcmp(sys, "ftrace") == 0) {
+-		event->flags |= EVENT_FL_ISFTRACE;
++		event->flags |= TEP_EVENT_FL_ISFTRACE;
  
- static int print_ip_arg(struct trace_seq *s, const char *ptr,
- 			void *data, int size, struct tep_event_format *event,
--			struct print_arg *arg)
-+			struct tep_print_arg *arg)
- {
- 	char i = *ptr;  /* 'i' or 'I' */
- 	char ver;
-@@ -4868,9 +4868,9 @@ void tep_print_fields(struct trace_seq *s, void *data,
- static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_event_format *event)
- {
- 	struct tep_handle *pevent = event->pevent;
--	struct print_fmt *print_fmt = &event->print_fmt;
--	struct print_arg *arg = print_fmt->args;
--	struct print_arg *args = NULL;
-+	struct tep_print_fmt *print_fmt = &event->print_fmt;
-+	struct tep_print_arg *arg = print_fmt->args;
-+	struct tep_print_arg *args = NULL;
- 	const char *ptr = print_fmt->format;
- 	unsigned long long val;
- 	struct func_map *func;
-@@ -5723,7 +5723,7 @@ struct tep_format_field **tep_event_fields(struct tep_event_format *event)
- 				event->format.fields);
- }
+ 		if (strcmp(event->name, "bprint") == 0)
+-			event->flags |= EVENT_FL_ISBPRINT;
++			event->flags |= TEP_EVENT_FL_ISBPRINT;
+ 	}
+ 		
+ 	event->id = event_read_id();
+@@ -6089,7 +6089,7 @@ enum tep_errno __tep_parse_format(struct tep_event_format **eventp,
+ 		goto event_parse_failed;
+ 	}
  
--static void print_fields(struct trace_seq *s, struct print_flag_sym *field)
-+static void print_fields(struct trace_seq *s, struct tep_print_flag_sym *field)
- {
- 	trace_seq_printf(s, "{ %s, %s }", field->value, field->str);
- 	if (field->next) {
-@@ -5733,7 +5733,7 @@ static void print_fields(struct trace_seq *s, struct print_flag_sym *field)
- }
- 
- /* for debugging */
--static void print_args(struct print_arg *args)
-+static void print_args(struct tep_print_arg *args)
- {
- 	int print_paren = 1;
- 	struct trace_seq s;
-@@ -6091,7 +6091,7 @@ enum tep_errno __tep_parse_format(struct tep_event_format **eventp,
- 
- 	if (!ret && (event->flags & TEP_EVENT_FL_ISFTRACE)) {
+-	if (!ret && (event->flags & EVENT_FL_ISFTRACE)) {
++	if (!ret && (event->flags & TEP_EVENT_FL_ISFTRACE)) {
  		struct tep_format_field *field;
--		struct print_arg *arg, **list;
-+		struct tep_print_arg *arg, **list;
+ 		struct print_arg *arg, **list;
  
- 		/* old ftrace had no args */
- 		list = &event->print_fmt.args;
+@@ -6098,13 +6098,13 @@ enum tep_errno __tep_parse_format(struct tep_event_format **eventp,
+ 		for (field = event->format.fields; field; field = field->next) {
+ 			arg = alloc_arg();
+ 			if (!arg) {
+-				event->flags |= EVENT_FL_FAILED;
++				event->flags |= TEP_EVENT_FL_FAILED;
+ 				return TEP_ERRNO__OLD_FTRACE_ARG_FAILED;
+ 			}
+ 			arg->type = PRINT_FIELD;
+ 			arg->field.name = strdup(field->name);
+ 			if (!arg->field.name) {
+-				event->flags |= EVENT_FL_FAILED;
++				event->flags |= TEP_EVENT_FL_FAILED;
+ 				free_arg(arg);
+ 				return TEP_ERRNO__OLD_FTRACE_ARG_FAILED;
+ 			}
+@@ -6118,7 +6118,7 @@ enum tep_errno __tep_parse_format(struct tep_event_format **eventp,
+ 	return 0;
+ 
+  event_parse_failed:
+-	event->flags |= EVENT_FL_FAILED;
++	event->flags |= TEP_EVENT_FL_FAILED;
+ 	return ret;
+ 
+  event_alloc_failed:
 diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index b7798d91607e..21923a11c9c0 100644
+index 10aaeda34c6b..b7798d91607e 100644
 --- a/tools/lib/traceevent/event-parse.h
 +++ b/tools/lib/traceevent/event-parse.h
-@@ -161,77 +161,77 @@ struct tep_format {
- 	struct tep_format_field	*fields;
+@@ -290,15 +290,15 @@ struct tep_event_format {
  };
  
--struct print_arg_atom {
-+struct tep_print_arg_atom {
- 	char			*atom;
+ enum {
+-	EVENT_FL_ISFTRACE	= 0x01,
+-	EVENT_FL_ISPRINT	= 0x02,
+-	EVENT_FL_ISBPRINT	= 0x04,
+-	EVENT_FL_ISFUNCENT	= 0x10,
+-	EVENT_FL_ISFUNCRET	= 0x20,
+-	EVENT_FL_NOHANDLE	= 0x40,
+-	EVENT_FL_PRINTRAW	= 0x80,
+-
+-	EVENT_FL_FAILED		= 0x80000000
++	TEP_EVENT_FL_ISFTRACE	= 0x01,
++	TEP_EVENT_FL_ISPRINT	= 0x02,
++	TEP_EVENT_FL_ISBPRINT	= 0x04,
++	TEP_EVENT_FL_ISFUNCENT	= 0x10,
++	TEP_EVENT_FL_ISFUNCRET	= 0x20,
++	TEP_EVENT_FL_NOHANDLE	= 0x40,
++	TEP_EVENT_FL_PRINTRAW	= 0x80,
++
++	TEP_EVENT_FL_FAILED	= 0x80000000
  };
  
--struct print_arg_string {
-+struct tep_print_arg_string {
- 	char			*string;
- 	int			offset;
- };
- 
--struct print_arg_bitmask {
-+struct tep_print_arg_bitmask {
- 	char			*bitmask;
- 	int			offset;
- };
- 
--struct print_arg_field {
-+struct tep_print_arg_field {
- 	char			*name;
- 	struct tep_format_field	*field;
- };
- 
--struct print_flag_sym {
--	struct print_flag_sym	*next;
--	char			*value;
--	char			*str;
-+struct tep_print_flag_sym {
-+	struct tep_print_flag_sym	*next;
-+	char				*value;
-+	char				*str;
- };
- 
--struct print_arg_typecast {
-+struct tep_print_arg_typecast {
- 	char 			*type;
--	struct print_arg	*item;
-+	struct tep_print_arg	*item;
- };
- 
--struct print_arg_flags {
--	struct print_arg	*field;
--	char			*delim;
--	struct print_flag_sym	*flags;
-+struct tep_print_arg_flags {
-+	struct tep_print_arg		*field;
-+	char				*delim;
-+	struct tep_print_flag_sym	*flags;
- };
- 
--struct print_arg_symbol {
--	struct print_arg	*field;
--	struct print_flag_sym	*symbols;
-+struct tep_print_arg_symbol {
-+	struct tep_print_arg		*field;
-+	struct tep_print_flag_sym	*symbols;
- };
- 
--struct print_arg_hex {
--	struct print_arg	*field;
--	struct print_arg	*size;
-+struct tep_print_arg_hex {
-+	struct tep_print_arg	*field;
-+	struct tep_print_arg	*size;
- };
- 
--struct print_arg_int_array {
--	struct print_arg	*field;
--	struct print_arg	*count;
--	struct print_arg	*el_size;
-+struct tep_print_arg_int_array {
-+	struct tep_print_arg	*field;
-+	struct tep_print_arg	*count;
-+	struct tep_print_arg	*el_size;
- };
- 
--struct print_arg_dynarray {
-+struct tep_print_arg_dynarray {
- 	struct tep_format_field	*field;
--	struct print_arg	*index;
-+	struct tep_print_arg	*index;
- };
- 
--struct print_arg;
-+struct tep_print_arg;
- 
--struct print_arg_op {
-+struct tep_print_arg_op {
- 	char			*op;
- 	int			prio;
--	struct print_arg	*left;
--	struct print_arg	*right;
-+	struct tep_print_arg	*left;
-+	struct tep_print_arg	*right;
- };
- 
- struct tep_function_handler;
- 
--struct print_arg_func {
-+struct tep_print_arg_func {
- 	struct tep_function_handler	*func;
--	struct print_arg		*args;
-+	struct tep_print_arg		*args;
- };
- 
- enum print_arg_type {
-@@ -253,28 +253,28 @@ enum print_arg_type {
- 	PRINT_HEX_STR,
- };
- 
--struct print_arg {
--	struct print_arg		*next;
-+struct tep_print_arg {
-+	struct tep_print_arg		*next;
- 	enum print_arg_type		type;
- 	union {
--		struct print_arg_atom		atom;
--		struct print_arg_field		field;
--		struct print_arg_typecast	typecast;
--		struct print_arg_flags		flags;
--		struct print_arg_symbol		symbol;
--		struct print_arg_hex		hex;
--		struct print_arg_int_array	int_array;
--		struct print_arg_func		func;
--		struct print_arg_string		string;
--		struct print_arg_bitmask	bitmask;
--		struct print_arg_op		op;
--		struct print_arg_dynarray	dynarray;
-+		struct tep_print_arg_atom	atom;
-+		struct tep_print_arg_field	field;
-+		struct tep_print_arg_typecast	typecast;
-+		struct tep_print_arg_flags	flags;
-+		struct tep_print_arg_symbol	symbol;
-+		struct tep_print_arg_hex	hex;
-+		struct tep_print_arg_int_array	int_array;
-+		struct tep_print_arg_func	func;
-+		struct tep_print_arg_string	string;
-+		struct tep_print_arg_bitmask	bitmask;
-+		struct tep_print_arg_op		op;
-+		struct tep_print_arg_dynarray	dynarray;
- 	};
- };
- 
--struct print_fmt {
-+struct tep_print_fmt {
- 	char			*format;
--	struct print_arg	*args;
-+	struct tep_print_arg	*args;
- };
- 
- struct tep_event_format {
-@@ -283,7 +283,7 @@ struct tep_event_format {
- 	int			id;
- 	int			flags;
- 	struct tep_format	format;
--	struct print_fmt	print_fmt;
-+	struct tep_print_fmt	print_fmt;
- 	char			*system;
- 	tep_event_handler_func	handler;
- 	void			*context;
-diff --git a/tools/perf/util/scripting-engines/trace-event-perl.c b/tools/perf/util/scripting-engines/trace-event-perl.c
-index 5d6a55183ad6..481a1ecb1eaf 100644
---- a/tools/perf/util/scripting-engines/trace-event-perl.c
-+++ b/tools/perf/util/scripting-engines/trace-event-perl.c
-@@ -99,7 +99,7 @@ static void define_symbolic_value(const char *ev_name,
- 	LEAVE;
- }
- 
--static void define_symbolic_values(struct print_flag_sym *field,
-+static void define_symbolic_values(struct tep_print_flag_sym *field,
- 				   const char *ev_name,
- 				   const char *field_name)
- {
-@@ -157,7 +157,7 @@ static void define_flag_value(const char *ev_name,
- 	LEAVE;
- }
- 
--static void define_flag_values(struct print_flag_sym *field,
-+static void define_flag_values(struct tep_print_flag_sym *field,
- 			       const char *ev_name,
- 			       const char *field_name)
- {
-@@ -191,7 +191,7 @@ static void define_flag_field(const char *ev_name,
- 
- static void define_event_symbols(struct tep_event_format *event,
- 				 const char *ev_name,
--				 struct print_arg *args)
-+				 struct tep_print_arg *args)
- {
- 	if (args == NULL)
- 		return;
-diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-index ba191def1ea9..35dc5f3b581b 100644
---- a/tools/perf/util/scripting-engines/trace-event-python.c
-+++ b/tools/perf/util/scripting-engines/trace-event-python.c
-@@ -224,7 +224,7 @@ static void define_value(enum print_arg_type field_type,
- }
- 
- static void define_values(enum print_arg_type field_type,
--			  struct print_flag_sym *field,
-+			  struct tep_print_flag_sym *field,
- 			  const char *ev_name,
- 			  const char *field_name)
- {
-@@ -266,7 +266,7 @@ static void define_field(enum print_arg_type field_type,
- 
- static void define_event_symbols(struct tep_event_format *event,
- 				 const char *ev_name,
--				 struct print_arg *args)
-+				 struct tep_print_arg *args)
- {
- 	if (args == NULL)
- 		return;
+ enum tep_event_sort_type {
 -- 
 2.14.4
