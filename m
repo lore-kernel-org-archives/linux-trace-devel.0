@@ -1,55 +1,49 @@
-Return-Path: <SRS0=/bgX=MG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mx1.redhat.com ([209.132.183.28]:59052 "EHLO mx1.redhat.com"
+Return-Path: <SRS0=uIOE=MH=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail.kernel.org ([198.145.29.99]:51576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbeIXXwG (ORCPT
+        id S1726252AbeIYWmO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Sep 2018 19:52:06 -0400
-Date: Mon, 24 Sep 2018 19:48:46 +0200
-From: Jiri Olsa <jolsa@redhat.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [PATCH 00/15] tools/lib/traceevent: Namespace updates to make
- traceevent into a library
-Message-ID: <20180924174846.GC22809@krava>
-References: <20180919185643.358126338@goodmis.org>
- <20180923185626.GC30923@krava>
- <20180924045523.2c15be13@vmware.local.home>
+        Tue, 25 Sep 2018 18:42:14 -0400
+Date: Tue, 25 Sep 2018 12:33:49 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Yordan Karadzhov <y.karadz@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Some issues I found with KernelShark 1.0 prototype
+Message-ID: <20180925123320.71d0d580@vmware.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180924045523.2c15be13@vmware.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Mon, Sep 24, 2018 at 04:55:23AM -0400, Steven Rostedt wrote:
-> On Sun, 23 Sep 2018 20:56:26 +0200
-> Jiri Olsa <jolsa@redhat.com> wrote:
-> 
-> > 
-> > Steven,
-> > is there still something left to rename, or we can start moving it into public rpm?
-> > 
-> 
-> We're testing it as a external library, and we did find something. Did
-> you get this patch?
-> 
->  https://lore.kernel.org/lkml/20180921152037.1e23c7f4@gandalf.local.home
+Hi Yordan,
 
-ah yep, overlooked this one.. going to check it
+While writing my presentation I found a few slight issues that we need
+to address.
 
-jirka
+ 1. Need to show the task in the info window when hovering over the CPU
+    plot between events, but not idle
 
-> 
-> We're testing it against powertop and mceutils, when we get it working
-> well with them, then I think it's time to start going ahead and making
-> it into an rpm.
-> 
-> Thanks Jiri!
-> 
-> -- Steve
+ 2. Is there a way to do a quick zoom out. When I zoom in with a lot of
+    data, I find that it's quite slow to zoom back out to the original
+    screen.
+
+ 3. We need a "File exists, do you want to overwrite" type dialog box
+    when saving a session over a file that already exists.
+
+ 4. When restoring a session, the full path of the file being loaded
+    should be shown. I noticed this because I was loading a trace.dat
+    file from a different directory, and I wasn't sure which file it
+    found, as I have several trace.dat files.
+
+ 5. I noticed a glitch when loading a session with both the A and B
+    markers are set here only one marker was shown in the list view.
+    I can put the session and trace.dat file someplace that you can
+    test this if you want.
+
+But so far it looks great! Tomorrow I'll be presenting my talk at 11am
+your time. It will hopefully be live streamed if they don't have the
+issues that they had at Embedded Recipes. I'll email the list the link
+when I have it.
+
+-- Steve
