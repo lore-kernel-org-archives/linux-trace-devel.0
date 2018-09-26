@@ -2,15 +2,15 @@ Return-Path: <SRS0=XLZm=MI=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr730062.outbound.protection.outlook.com ([40.107.73.62]:58268
         "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726342AbeIZSbt (ORCPT
+        id S1727411AbeIZSbu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 26 Sep 2018 14:31:49 -0400
+        Wed, 26 Sep 2018 14:31:50 -0400
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 04/16] tools lib traceevent, perf tools: Rename enum format_flags to enum tep_format_flags
-Date: Wed, 26 Sep 2018 15:18:20 +0300
-Message-Id: <20180926121832.16101-5-tstoyanov@vmware.com>
+Subject: [PATCH 06/16] tools lib traceevent: Add prefix TEP_ to all EVENT_FL_* flags
+Date: Wed, 26 Sep 2018 15:18:22 +0300
+Message-Id: <20180926121832.16101-7-tstoyanov@vmware.com>
 In-Reply-To: <20180926121832.16101-1-tstoyanov@vmware.com>
 References: <20180926121832.16101-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
@@ -22,8 +22,8 @@ From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
-conflicts. That prefix will be "tep_". This renames enum format_flags
-to enum tep_format_flags and adds prefix TEP_ to all of its members.
+conflicts. That prefix will be "tep_". This adds prefix TEP_
+to all members of nameless enum EVENT_FL_*
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -31,249 +31,236 @@ Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180919185722.803127871@goodmis.org
+Link: http://lkml.kernel.org/r/20180919185723.116643250@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h | 18 ++++++------
- lib/traceevent/event-parse.c     | 48 ++++++++++++++++----------------
- lib/traceevent/parse-filter.c    |  8 +++---
- 3 files changed, 37 insertions(+), 37 deletions(-)
+ include/traceevent/event-parse.h | 18 +++++++-------
+ lib/traceevent/event-parse.c     | 42 ++++++++++++++++----------------
+ tracecmd/trace-read.c            |  4 +--
+ 3 files changed, 32 insertions(+), 32 deletions(-)
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index bda679a..da7d31b 100644
+index df28163..dc1f1fa 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -116,15 +116,15 @@ struct tep_plugin_option {
- #define TEP_PLUGIN_OPTIONS_NAME MAKE_STR(TEP_PLUGIN_OPTIONS)
- #define TEP_PLUGIN_ALIAS_NAME MAKE_STR(TEP_PLUGIN_ALIAS)
- 
--enum format_flags {
--	FIELD_IS_ARRAY		= 1,
--	FIELD_IS_POINTER	= 2,
--	FIELD_IS_SIGNED		= 4,
--	FIELD_IS_STRING		= 8,
--	FIELD_IS_DYNAMIC	= 16,
--	FIELD_IS_LONG		= 32,
--	FIELD_IS_FLAG		= 64,
--	FIELD_IS_SYMBOLIC	= 128,
-+enum tep_format_flags {
-+	TEP_FIELD_IS_ARRAY	= 1,
-+	TEP_FIELD_IS_POINTER	= 2,
-+	TEP_FIELD_IS_SIGNED	= 4,
-+	TEP_FIELD_IS_STRING	= 8,
-+	TEP_FIELD_IS_DYNAMIC	= 16,
-+	TEP_FIELD_IS_LONG	= 32,
-+	TEP_FIELD_IS_FLAG	= 64,
-+	TEP_FIELD_IS_SYMBOLIC	= 128,
+@@ -276,15 +276,15 @@ struct tep_event_format {
  };
  
- struct tep_format_field {
+ enum {
+-	EVENT_FL_ISFTRACE	= 0x01,
+-	EVENT_FL_ISPRINT	= 0x02,
+-	EVENT_FL_ISBPRINT	= 0x04,
+-	EVENT_FL_ISFUNCENT	= 0x10,
+-	EVENT_FL_ISFUNCRET	= 0x20,
+-	EVENT_FL_NOHANDLE	= 0x40,
+-	EVENT_FL_PRINTRAW	= 0x80,
+-
+-	EVENT_FL_FAILED		= 0x80000000
++	TEP_EVENT_FL_ISFTRACE	= 0x01,
++	TEP_EVENT_FL_ISPRINT	= 0x02,
++	TEP_EVENT_FL_ISBPRINT	= 0x04,
++	TEP_EVENT_FL_ISFUNCENT	= 0x10,
++	TEP_EVENT_FL_ISFUNCRET	= 0x20,
++	TEP_EVENT_FL_NOHANDLE	= 0x40,
++	TEP_EVENT_FL_PRINTRAW	= 0x80,
++
++	TEP_EVENT_FL_FAILED	= 0x80000000
+ };
+ 
+ enum tep_event_sort_type {
 diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 32547ab..508c893 100644
+index 1696dd9..a651c33 100644
 --- a/lib/traceevent/event-parse.c
 +++ b/lib/traceevent/event-parse.c
-@@ -1301,7 +1301,7 @@ static int event_read_id(void)
- 
- static int field_is_string(struct tep_format_field *field)
- {
--	if ((field->flags & FIELD_IS_ARRAY) &&
-+	if ((field->flags & TEP_FIELD_IS_ARRAY) &&
- 	    (strstr(field->type, "char") || strstr(field->type, "u8") ||
- 	     strstr(field->type, "s8")))
- 		return 1;
-@@ -1328,7 +1328,7 @@ static int field_is_long(struct tep_format_field *field)
- 
- static unsigned int type_size(const char *name)
- {
--	/* This covers all FIELD_IS_STRING types. */
-+	/* This covers all TEP_FIELD_IS_STRING types. */
- 	static struct {
- 		const char *type;
- 		unsigned int size;
-@@ -1416,7 +1416,7 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 			     type == EVENT_OP && strcmp(token, ".") == 0)) {
+@@ -1382,7 +1382,7 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
+ 		 * The ftrace fields may still use the "special" name.
+ 		 * Just ignore it.
+ 		 */
+-		if (event->flags & EVENT_FL_ISFTRACE &&
++		if (event->flags & TEP_EVENT_FL_ISFTRACE &&
+ 		    type == TEP_EVENT_ITEM && strcmp(token, "special") == 0) {
+ 			free_token(token);
+ 			type = read_token(&token);
+@@ -1412,7 +1412,7 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
+ 			     * Some of the ftrace fields are broken and have
+ 			     * an illegal "." in them.
+ 			     */
+-			    (event->flags & EVENT_FL_ISFTRACE &&
++			    (event->flags & TEP_EVENT_FL_ISFTRACE &&
+ 			     type == TEP_EVENT_OP && strcmp(token, ".") == 0)) {
  
  				if (strcmp(token, "*") == 0)
--					field->flags |= FIELD_IS_POINTER;
-+					field->flags |= TEP_FIELD_IS_POINTER;
+@@ -1963,7 +1963,7 @@ process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
+ 		arg->op.right = NULL;
  
- 				if (field->type) {
- 					char *new_type;
-@@ -1455,7 +1455,7 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 			char *new_brackets;
- 			int len;
+ 		if (set_op_prio(arg) == -1) {
+-			event->flags |= EVENT_FL_FAILED;
++			event->flags |= TEP_EVENT_FL_FAILED;
+ 			/* arg->op.op (= token) will be freed at out_free */
+ 			arg->op.op = NULL;
+ 			goto out_free;
+@@ -2042,7 +2042,7 @@ process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
  
--			field->flags |= FIELD_IS_ARRAY;
-+			field->flags |= TEP_FIELD_IS_ARRAY;
+ 	} else {
+ 		do_warning_event(event, "unknown op '%s'", token);
+-		event->flags |= EVENT_FL_FAILED;
++		event->flags |= TEP_EVENT_FL_FAILED;
+ 		/* the arg is now the left side */
+ 		goto out_free;
+ 	}
+@@ -4884,13 +4884,13 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 	int len;
+ 	int ls;
  
- 			type = read_token(&token);
- 
-@@ -1544,11 +1544,11 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 		}
- 
- 		if (field_is_string(field))
--			field->flags |= FIELD_IS_STRING;
-+			field->flags |= TEP_FIELD_IS_STRING;
- 		if (field_is_dynamic(field))
--			field->flags |= FIELD_IS_DYNAMIC;
-+			field->flags |= TEP_FIELD_IS_DYNAMIC;
- 		if (field_is_long(field))
--			field->flags |= FIELD_IS_LONG;
-+			field->flags |= TEP_FIELD_IS_LONG;
- 
- 		if (test_type_token(type, token,  EVENT_OP, ";"))
- 			goto fail;
-@@ -1597,7 +1597,7 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 				goto fail;
- 
- 			if (strtoul(token, NULL, 0))
--				field->flags |= FIELD_IS_SIGNED;
-+				field->flags |= TEP_FIELD_IS_SIGNED;
- 
- 			free_token(token);
- 			if (read_expected(EVENT_OP, ";") < 0)
-@@ -1609,14 +1609,14 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 
- 		free_token(token);
- 
--		if (field->flags & FIELD_IS_ARRAY) {
-+		if (field->flags & TEP_FIELD_IS_ARRAY) {
- 			if (field->arraylen)
- 				field->elementsize = field->size / field->arraylen;
--			else if (field->flags & FIELD_IS_DYNAMIC)
-+			else if (field->flags & TEP_FIELD_IS_DYNAMIC)
- 				field->elementsize = size_dynamic;
--			else if (field->flags & FIELD_IS_STRING)
-+			else if (field->flags & TEP_FIELD_IS_STRING)
- 				field->elementsize = 1;
--			else if (field->flags & FIELD_IS_LONG)
-+			else if (field->flags & TEP_FIELD_IS_LONG)
- 				field->elementsize = event->pevent ?
- 						     event->pevent->long_size :
- 						     sizeof(long);
-@@ -2089,11 +2089,11 @@ process_entry(struct tep_event_format *event __maybe_unused, struct print_arg *a
- 
- 	if (is_flag_field) {
- 		arg->field.field = tep_find_any_field(event, arg->field.name);
--		arg->field.field->flags |= FIELD_IS_FLAG;
-+		arg->field.field->flags |= TEP_FIELD_IS_FLAG;
- 		is_flag_field = 0;
- 	} else if (is_symbolic_field) {
- 		arg->field.field = tep_find_any_field(event, arg->field.name);
--		arg->field.field->flags |= FIELD_IS_SYMBOLIC;
-+		arg->field.field->flags |= TEP_FIELD_IS_SYMBOLIC;
- 		is_symbolic_field = 0;
+-	if (event->flags & EVENT_FL_FAILED) {
++	if (event->flags & TEP_EVENT_FL_FAILED) {
+ 		trace_seq_printf(s, "[FAILED TO PARSE]");
+ 		tep_print_fields(s, data, size, event);
+ 		return;
  	}
  
-@@ -3901,7 +3901,7 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
- 		 * and the size is the same as long_size, assume that it
- 		 * is a pointer.
- 		 */
--		if (!(field->flags & FIELD_IS_ARRAY) &&
-+		if (!(field->flags & TEP_FIELD_IS_ARRAY) &&
- 		    field->size == pevent->long_size) {
+-	if (event->flags & EVENT_FL_ISBPRINT) {
++	if (event->flags & TEP_EVENT_FL_ISBPRINT) {
+ 		bprint_fmt = get_bprint_format(data, size, event);
+ 		args = make_bprint_args(bprint_fmt, data, size, event);
+ 		arg = args;
+@@ -4945,7 +4945,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 				/* The argument is the length. */
+ 				if (!arg) {
+ 					do_warning_event(event, "no argument match");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					goto out_failed;
+ 				}
+ 				len_arg = eval_num_arg(data, size, event, arg);
+@@ -4998,7 +4998,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 			case 'u':
+ 				if (!arg) {
+ 					do_warning_event(event, "no argument match");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					goto out_failed;
+ 				}
  
- 			/* Handle heterogeneous recording and processing
-@@ -4794,16 +4794,16 @@ void tep_print_field(struct trace_seq *s, void *data,
- 	unsigned int offset, len, i;
- 	struct tep_handle *pevent = field->event->pevent;
+@@ -5008,7 +5008,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 				/* should never happen */
+ 				if (len > 31) {
+ 					do_warning_event(event, "bad format!");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					len = 31;
+ 				}
  
--	if (field->flags & FIELD_IS_ARRAY) {
-+	if (field->flags & TEP_FIELD_IS_ARRAY) {
- 		offset = field->offset;
- 		len = field->size;
--		if (field->flags & FIELD_IS_DYNAMIC) {
-+		if (field->flags & TEP_FIELD_IS_DYNAMIC) {
- 			val = tep_read_number(pevent, data + offset, len);
- 			offset = val;
- 			len = offset >> 16;
- 			offset &= 0xffff;
- 		}
--		if (field->flags & FIELD_IS_STRING &&
-+		if (field->flags & TEP_FIELD_IS_STRING &&
- 		    is_printable_array(data + offset, len)) {
- 			trace_seq_printf(s, "%s", (char *)data + offset);
- 		} else {
-@@ -4815,21 +4815,21 @@ void tep_print_field(struct trace_seq *s, void *data,
- 						 *((unsigned char *)data + offset + i));
+@@ -5074,13 +5074,13 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 					break;
+ 				default:
+ 					do_warning_event(event, "bad count (%d)", ls);
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 				}
+ 				break;
+ 			case 's':
+ 				if (!arg) {
+ 					do_warning_event(event, "no matching argument");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					goto out_failed;
+ 				}
+ 
+@@ -5090,7 +5090,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 				/* should never happen */
+ 				if (len > 31) {
+ 					do_warning_event(event, "bad format!");
+-					event->flags |= EVENT_FL_FAILED;
++					event->flags |= TEP_EVENT_FL_FAILED;
+ 					len = 31;
+ 				}
+ 
+@@ -5115,7 +5115,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+ 			trace_seq_putc(s, *ptr);
+ 	}
+ 
+-	if (event->flags & EVENT_FL_FAILED) {
++	if (event->flags & TEP_EVENT_FL_FAILED) {
+ out_failed:
+ 		trace_seq_printf(s, "[FAILED TO PARSE]");
+ 	}
+@@ -5391,11 +5391,11 @@ void tep_event_info(struct trace_seq *s, struct tep_event_format *event,
+ {
+ 	int print_pretty = 1;
+ 
+-	if (event->pevent->print_raw || (event->flags & EVENT_FL_PRINTRAW))
++	if (event->pevent->print_raw || (event->flags & TEP_EVENT_FL_PRINTRAW))
+ 		tep_print_fields(s, record->data, record->size, event);
+ 	else {
+ 
+-		if (event->handler && !(event->flags & EVENT_FL_NOHANDLE))
++		if (event->handler && !(event->flags & TEP_EVENT_FL_NOHANDLE))
+ 			print_pretty = event->handler(s, record, event,
+ 						      event->context);
+ 
+@@ -6043,10 +6043,10 @@ enum tep_errno __tep_parse_format(struct tep_event_format **eventp,
+ 	}
+ 
+ 	if (strcmp(sys, "ftrace") == 0) {
+-		event->flags |= EVENT_FL_ISFTRACE;
++		event->flags |= TEP_EVENT_FL_ISFTRACE;
+ 
+ 		if (strcmp(event->name, "bprint") == 0)
+-			event->flags |= EVENT_FL_ISBPRINT;
++			event->flags |= TEP_EVENT_FL_ISBPRINT;
+ 	}
+ 		
+ 	event->id = event_read_id();
+@@ -6089,7 +6089,7 @@ enum tep_errno __tep_parse_format(struct tep_event_format **eventp,
+ 		goto event_parse_failed;
+ 	}
+ 
+-	if (!ret && (event->flags & EVENT_FL_ISFTRACE)) {
++	if (!ret && (event->flags & TEP_EVENT_FL_ISFTRACE)) {
+ 		struct tep_format_field *field;
+ 		struct print_arg *arg, **list;
+ 
+@@ -6098,13 +6098,13 @@ enum tep_errno __tep_parse_format(struct tep_event_format **eventp,
+ 		for (field = event->format.fields; field; field = field->next) {
+ 			arg = alloc_arg();
+ 			if (!arg) {
+-				event->flags |= EVENT_FL_FAILED;
++				event->flags |= TEP_EVENT_FL_FAILED;
+ 				return TEP_ERRNO__OLD_FTRACE_ARG_FAILED;
  			}
- 			trace_seq_putc(s, ']');
--			field->flags &= ~FIELD_IS_STRING;
-+			field->flags &= ~TEP_FIELD_IS_STRING;
- 		}
- 	} else {
- 		val = tep_read_number(pevent, data + field->offset,
- 				      field->size);
--		if (field->flags & FIELD_IS_POINTER) {
-+		if (field->flags & TEP_FIELD_IS_POINTER) {
- 			trace_seq_printf(s, "0x%llx", val);
--		} else if (field->flags & FIELD_IS_SIGNED) {
-+		} else if (field->flags & TEP_FIELD_IS_SIGNED) {
- 			switch (field->size) {
- 			case 4:
- 				/*
- 				 * If field is long then print it in hex.
- 				 * A long usually stores pointers.
- 				 */
--				if (field->flags & FIELD_IS_LONG)
-+				if (field->flags & TEP_FIELD_IS_LONG)
- 					trace_seq_printf(s, "0x%x", (int)val);
- 				else
- 					trace_seq_printf(s, "%d", (int)val);
-@@ -4844,7 +4844,7 @@ void tep_print_field(struct trace_seq *s, void *data,
- 				trace_seq_printf(s, "%lld", val);
+ 			arg->type = PRINT_FIELD;
+ 			arg->field.name = strdup(field->name);
+ 			if (!arg->field.name) {
+-				event->flags |= EVENT_FL_FAILED;
++				event->flags |= TEP_EVENT_FL_FAILED;
+ 				free_arg(arg);
+ 				return TEP_ERRNO__OLD_FTRACE_ARG_FAILED;
  			}
- 		} else {
--			if (field->flags & FIELD_IS_LONG)
-+			if (field->flags & TEP_FIELD_IS_LONG)
- 				trace_seq_printf(s, "0x%llx", val);
- 			else
- 				trace_seq_printf(s, "%llu", val);
-@@ -6288,7 +6288,7 @@ void *tep_get_field_raw(struct trace_seq *s, struct tep_event_format *event,
- 		len = &dummy;
+@@ -6118,7 +6118,7 @@ enum tep_errno __tep_parse_format(struct tep_event_format **eventp,
+ 	return 0;
  
- 	offset = field->offset;
--	if (field->flags & FIELD_IS_DYNAMIC) {
-+	if (field->flags & TEP_FIELD_IS_DYNAMIC) {
- 		offset = tep_read_number(event->pevent,
- 					    data + offset, field->size);
- 		*len = offset >> 16;
-diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
-index a0353f2..dcd97ac 100644
---- a/lib/traceevent/parse-filter.c
-+++ b/lib/traceevent/parse-filter.c
-@@ -1716,7 +1716,7 @@ get_value(struct tep_event_format *event,
+  event_parse_failed:
+-	event->flags |= EVENT_FL_FAILED;
++	event->flags |= TEP_EVENT_FL_FAILED;
+ 	return ret;
  
- 	tep_read_number_field(field, record->data, &val);
+  event_alloc_failed:
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 38b5b1b..9c23bbf 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1750,8 +1750,8 @@ void trace_report (int argc, char **argv)
+ 			return;
+ 		}
  
--	if (!(field->flags & FIELD_IS_SIGNED))
-+	if (!(field->flags & TEP_FIELD_IS_SIGNED))
- 		return val;
+-		set_event_flags(pevent, nohandler_events, EVENT_FL_NOHANDLE);
+-		set_event_flags(pevent, raw_events, EVENT_FL_PRINTRAW);
++		set_event_flags(pevent, nohandler_events, TEP_EVENT_FL_NOHANDLE);
++		set_event_flags(pevent, raw_events, TEP_EVENT_FL_PRINTRAW);
+ 	}
  
- 	switch (field->size) {
-@@ -1867,11 +1867,11 @@ static const char *get_field_str(struct filter_arg *arg, struct tep_record *reco
- 	char hex[64];
- 
- 	/* If the field is not a string convert it */
--	if (arg->str.field->flags & FIELD_IS_STRING) {
-+	if (arg->str.field->flags & TEP_FIELD_IS_STRING) {
- 		val = record->data + arg->str.field->offset;
- 		size = arg->str.field->size;
- 
--		if (arg->str.field->flags & FIELD_IS_DYNAMIC) {
-+		if (arg->str.field->flags & TEP_FIELD_IS_DYNAMIC) {
- 			addr = *(unsigned int *)val;
- 			val = record->data + (addr & 0xffff);
- 			size = addr >> 16;
-@@ -1893,7 +1893,7 @@ static const char *get_field_str(struct filter_arg *arg, struct tep_record *reco
- 		pevent = event->pevent;
- 		addr = get_value(event, arg->str.field, record);
- 
--		if (arg->str.field->flags & (FIELD_IS_POINTER | FIELD_IS_LONG))
-+		if (arg->str.field->flags & (TEP_FIELD_IS_POINTER | TEP_FIELD_IS_LONG))
- 			/* convert to a kernel symbol */
- 			val = tep_find_function(pevent, addr);
- 
+ 	if (latency_format)
 -- 
 2.17.1
