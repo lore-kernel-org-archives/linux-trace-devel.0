@@ -2,15 +2,15 @@ Return-Path: <SRS0=XLZm=MI=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr730058.outbound.protection.outlook.com ([40.107.73.58]:63673
         "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726768AbeIZSb4 (ORCPT
+        id S1726342AbeIZSb6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 26 Sep 2018 14:31:56 -0400
+        Wed, 26 Sep 2018 14:31:58 -0400
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 05/16] tools lib traceevent: Rename enum event_{sort_}type to enum tep_event_{sort_}type
-Date: Wed, 26 Sep 2018 15:18:21 +0300
-Message-Id: <20180926121832.16101-6-tstoyanov@vmware.com>
+Subject: [PATCH 09/16] tools lib traceevent: Add prefix tep_ to enums filter_{boolean,op,cmp}_type
+Date: Wed, 26 Sep 2018 15:18:25 +0300
+Message-Id: <20180926121832.16101-10-tstoyanov@vmware.com>
 In-Reply-To: <20180926121832.16101-1-tstoyanov@vmware.com>
 References: <20180926121832.16101-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
@@ -22,9 +22,8 @@ From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
 In order to make libtraceevent into a proper library, variables, data
 structures and functions require a unique prefix to prevent name space
-conflicts. That prefix will be "tep_". This renames enum event_type to
-enum tep_event_type, enum event_sort_type to enum tep_event_sort_type
-and add prefix TEP_ to all enum's members
+conflicts. That prefix will be "tep_". This adds prefix tep_ to enums
+filter_boolean_type, filter_op_type, filter_cmp_type and all enum's members
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -32,1845 +31,505 @@ Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180919185722.961022207@goodmis.org
+Link: http://lkml.kernel.org/r/20180919185723.680572508@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h         |  34 +-
- kernel-shark-qt/src/libkshark-configio.c |   2 +-
- kernel-shark/trace-filter.c              |  12 +-
- kernel-shark/trace-graph.c               |   2 +-
- lib/traceevent/event-parse.c             | 488 +++++++++++------------
- lib/traceevent/parse-filter.c            |  36 +-
- tracecmd/trace-profile.c                 |   2 +-
- tracecmd/trace-read.c                    |   2 +-
- 8 files changed, 289 insertions(+), 289 deletions(-)
+ include/traceevent/event-parse.h |  46 +++++-----
+ lib/traceevent/parse-filter.c    | 144 +++++++++++++++----------------
+ 2 files changed, 95 insertions(+), 95 deletions(-)
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index da7d31b..df28163 100644
+index fd030f2..0333293 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -287,22 +287,22 @@ enum {
- 	EVENT_FL_FAILED		= 0x80000000
+@@ -756,29 +756,29 @@ void tep_print_printk(struct tep_handle *pevent);
+ 
+ /* ----------------------- filtering ----------------------- */
+ 
+-enum filter_boolean_type {
+-	FILTER_FALSE,
+-	FILTER_TRUE,
++enum tep_filter_boolean_type {
++	TEP_FILTER_FALSE,
++	TEP_FILTER_TRUE,
  };
  
--enum event_sort_type {
--	EVENT_SORT_ID,
--	EVENT_SORT_NAME,
--	EVENT_SORT_SYSTEM,
-+enum tep_event_sort_type {
-+	TEP_EVENT_SORT_ID,
-+	TEP_EVENT_SORT_NAME,
-+	TEP_EVENT_SORT_SYSTEM,
+-enum filter_op_type {
+-	FILTER_OP_AND = 1,
+-	FILTER_OP_OR,
+-	FILTER_OP_NOT,
++enum tep_filter_op_type {
++	TEP_FILTER_OP_AND = 1,
++	TEP_FILTER_OP_OR,
++	TEP_FILTER_OP_NOT,
  };
  
--enum event_type {
--	EVENT_ERROR,
--	EVENT_NONE,
--	EVENT_SPACE,
--	EVENT_NEWLINE,
--	EVENT_OP,
--	EVENT_DELIM,
--	EVENT_ITEM,
--	EVENT_DQUOTE,
--	EVENT_SQUOTE,
-+enum tep_event_type {
-+	TEP_EVENT_ERROR,
-+	TEP_EVENT_NONE,
-+	TEP_EVENT_SPACE,
-+	TEP_EVENT_NEWLINE,
-+	TEP_EVENT_OP,
-+	TEP_EVENT_DELIM,
-+	TEP_EVENT_ITEM,
-+	TEP_EVENT_DQUOTE,
-+	TEP_EVENT_SQUOTE,
+-enum filter_cmp_type {
+-	FILTER_CMP_NONE,
+-	FILTER_CMP_EQ,
+-	FILTER_CMP_NE,
+-	FILTER_CMP_GT,
+-	FILTER_CMP_LT,
+-	FILTER_CMP_GE,
+-	FILTER_CMP_LE,
+-	FILTER_CMP_MATCH,
+-	FILTER_CMP_NOT_MATCH,
+-	FILTER_CMP_REGEX,
+-	FILTER_CMP_NOT_REGEX,
++enum tep_filter_cmp_type {
++	TEP_FILTER_CMP_NONE,
++	TEP_FILTER_CMP_EQ,
++	TEP_FILTER_CMP_NE,
++	TEP_FILTER_CMP_GT,
++	TEP_FILTER_CMP_LT,
++	TEP_FILTER_CMP_GE,
++	TEP_FILTER_CMP_LE,
++	TEP_FILTER_CMP_MATCH,
++	TEP_FILTER_CMP_NOT_MATCH,
++	TEP_FILTER_CMP_REGEX,
++	TEP_FILTER_CMP_NOT_REGEX,
  };
  
- typedef unsigned long long (*tep_func_handler)(struct trace_seq *s,
-@@ -440,7 +440,7 @@ struct tep_handle {
- 	struct tep_event_format **events;
- 	int nr_events;
- 	struct tep_event_format **sort_events;
--	enum event_sort_type last_type;
-+	enum tep_event_sort_type last_type;
- 
- 	int type_offset;
- 	int type_size;
-@@ -673,7 +673,7 @@ void tep_event_info(struct trace_seq *s, struct tep_event_format *event,
- int tep_strerror(struct tep_handle *pevent, enum tep_errno errnum,
- 		    char *buf, size_t buflen);
- 
--struct tep_event_format **tep_list_events(struct tep_handle *pevent, enum event_sort_type);
-+struct tep_event_format **tep_list_events(struct tep_handle *pevent, enum tep_event_sort_type);
- struct tep_format_field **tep_event_common_fields(struct tep_event_format *event);
- struct tep_format_field **tep_event_fields(struct tep_event_format *event);
- 
-@@ -744,7 +744,7 @@ void tep_unref(struct tep_handle *pevent);
- 
- /* access to the internal parser */
- void tep_buffer_init(const char *buf, unsigned long long size);
--enum event_type tep_read_token(char **tok);
-+enum tep_event_type tep_read_token(char **tok);
- void tep_free_token(char *token);
- int tep_peek_char(void);
- const char *tep_get_input_buf(void);
-diff --git a/kernel-shark-qt/src/libkshark-configio.c b/kernel-shark-qt/src/libkshark-configio.c
-index 8fe348b..c7071fb 100644
---- a/kernel-shark-qt/src/libkshark-configio.c
-+++ b/kernel-shark-qt/src/libkshark-configio.c
-@@ -1032,7 +1032,7 @@ static bool kshark_adv_filters_to_json(struct kshark_context *kshark_ctx,
- 	if (!jfilter_data)
- 		goto fail;
- 
--	events = tep_list_events(kshark_ctx->pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return false;
- 
-diff --git a/kernel-shark/trace-filter.c b/kernel-shark/trace-filter.c
-index 8296f61..0428dff 100644
---- a/kernel-shark/trace-filter.c
-+++ b/kernel-shark/trace-filter.c
-@@ -92,7 +92,7 @@ static GtkTreeModel *create_event_combo_model(gpointer data)
- 	const char *last_sys = NULL;
- 	int i;
- 
--	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, TEP_EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return NULL;
- 
-@@ -150,7 +150,7 @@ static GtkTreeModel *create_field_combo_model(gpointer data)
- 	struct tep_format_field *field;
- 	int i;
- 
--	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, TEP_EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return NULL;
- 
-@@ -199,7 +199,7 @@ static void update_field_combo(struct tep_handle *pevent,
- 			return;
- 	} else {
- 		/* use any event */
--		events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
-+		events = tep_list_events(pevent, TEP_EVENT_SORT_SYSTEM);
- 		if (!events)
- 			return;
- 		event = events[0];
-@@ -465,7 +465,7 @@ create_tree_filter_model(struct tep_handle *pevent,
- 				       G_TYPE_STRING, G_TYPE_STRING,
- 				       G_TYPE_INT);
- 
--	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, TEP_EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return GTK_TREE_MODEL(treestore);
- 
-@@ -1086,7 +1086,7 @@ create_tree_event_model(struct tep_handle *pevent,
- 			   COL_ACTIVE_START, FALSE,
- 			   -1);
- 
--	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, TEP_EVENT_SORT_SYSTEM);
- 	if (!events)
- 		return GTK_TREE_MODEL(treestore);
- 
-@@ -1937,7 +1937,7 @@ void trace_filter_convert_filter_to_names(struct event_filter *filter,
- 	if (event_ids)
- 		*event_ids = NULL;
- 
--	events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
-+	events = tep_list_events(pevent, TEP_EVENT_SORT_SYSTEM);
- 
- 	for (i = 0; events[i]; i++) {
- 		event = events[i];
-diff --git a/kernel-shark/trace-graph.c b/kernel-shark/trace-graph.c
-index c591aab..862bdcd 100644
---- a/kernel-shark/trace-graph.c
-+++ b/kernel-shark/trace-graph.c
-@@ -1196,7 +1196,7 @@ trace_graph_check_irq(struct graph_info *ginfo,
- 		else
- 			ginfo->soft_irq_entry_ids = null_int_array;
- 
--		events = tep_list_events(ginfo->pevent, EVENT_SORT_SYSTEM);
-+		events = tep_list_events(ginfo->pevent, TEP_EVENT_SORT_SYSTEM);
- 
- 		for (i = 0; events[i]; i++) {
- 			event = events[i];
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 508c893..1696dd9 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -770,12 +770,12 @@ static int add_event(struct tep_handle *pevent, struct tep_event_format *event)
- 	return 0;
- }
- 
--static int event_item_type(enum event_type type)
-+static int event_item_type(enum tep_event_type type)
- {
- 	switch (type) {
--	case EVENT_ITEM ... EVENT_SQUOTE:
-+	case TEP_EVENT_ITEM ... TEP_EVENT_SQUOTE:
- 		return 1;
--	case EVENT_ERROR ... EVENT_DELIM:
-+	case TEP_EVENT_ERROR ... TEP_EVENT_DELIM:
- 	default:
- 		return 0;
- 	}
-@@ -863,24 +863,24 @@ static void free_arg(struct print_arg *arg)
- 	free(arg);
- }
- 
--static enum event_type get_type(int ch)
-+static enum tep_event_type get_type(int ch)
- {
- 	if (ch == '\n')
--		return EVENT_NEWLINE;
-+		return TEP_EVENT_NEWLINE;
- 	if (isspace(ch))
--		return EVENT_SPACE;
-+		return TEP_EVENT_SPACE;
- 	if (isalnum(ch) || ch == '_')
--		return EVENT_ITEM;
-+		return TEP_EVENT_ITEM;
- 	if (ch == '\'')
--		return EVENT_SQUOTE;
-+		return TEP_EVENT_SQUOTE;
- 	if (ch == '"')
--		return EVENT_DQUOTE;
-+		return TEP_EVENT_DQUOTE;
- 	if (!isprint(ch))
--		return EVENT_NONE;
-+		return TEP_EVENT_NONE;
- 	if (ch == '(' || ch == ')' || ch == ',')
--		return EVENT_DELIM;
-+		return TEP_EVENT_DELIM;
- 
--	return EVENT_OP;
-+	return TEP_EVENT_OP;
- }
- 
- static int __read_char(void)
-@@ -928,38 +928,38 @@ static int extend_token(char **tok, char *buf, int size)
- 	return 0;
- }
- 
--static enum event_type force_token(const char *str, char **tok);
-+static enum tep_event_type force_token(const char *str, char **tok);
- 
--static enum event_type __read_token(char **tok)
-+static enum tep_event_type __read_token(char **tok)
- {
- 	char buf[BUFSIZ];
- 	int ch, last_ch, quote_ch, next_ch;
- 	int i = 0;
- 	int tok_size = 0;
--	enum event_type type;
-+	enum tep_event_type type;
- 
- 	*tok = NULL;
- 
- 
- 	ch = __read_char();
- 	if (ch < 0)
--		return EVENT_NONE;
-+		return TEP_EVENT_NONE;
- 
- 	type = get_type(ch);
--	if (type == EVENT_NONE)
-+	if (type == TEP_EVENT_NONE)
- 		return type;
- 
- 	buf[i++] = ch;
- 
- 	switch (type) {
--	case EVENT_NEWLINE:
--	case EVENT_DELIM:
-+	case TEP_EVENT_NEWLINE:
-+	case TEP_EVENT_DELIM:
- 		if (asprintf(tok, "%c", ch) < 0)
--			return EVENT_ERROR;
-+			return TEP_EVENT_ERROR;
- 
- 		return type;
- 
--	case EVENT_OP:
-+	case TEP_EVENT_OP:
- 		switch (ch) {
- 		case '-':
- 			next_ch = __peek_char();
-@@ -1002,8 +1002,8 @@ static enum event_type __read_token(char **tok)
- 			buf[i++] = __read_char();
- 		goto out;
- 
--	case EVENT_DQUOTE:
--	case EVENT_SQUOTE:
-+	case TEP_EVENT_DQUOTE:
-+	case TEP_EVENT_SQUOTE:
- 		/* don't keep quotes */
- 		i--;
- 		quote_ch = ch;
-@@ -1015,7 +1015,7 @@ static enum event_type __read_token(char **tok)
- 				tok_size += BUFSIZ;
- 
- 				if (extend_token(tok, buf, tok_size) < 0)
--					return EVENT_NONE;
-+					return TEP_EVENT_NONE;
- 				i = 0;
- 			}
- 			last_ch = ch;
-@@ -1032,7 +1032,7 @@ static enum event_type __read_token(char **tok)
- 		 * For strings (double quotes) check the next token.
- 		 * If it is another string, concatinate the two.
- 		 */
--		if (type == EVENT_DQUOTE) {
-+		if (type == TEP_EVENT_DQUOTE) {
- 			unsigned long long save_input_buf_ptr = input_buf_ptr;
- 
- 			do {
-@@ -1045,8 +1045,8 @@ static enum event_type __read_token(char **tok)
- 
- 		goto out;
- 
--	case EVENT_ERROR ... EVENT_SPACE:
--	case EVENT_ITEM:
-+	case TEP_EVENT_ERROR ... TEP_EVENT_SPACE:
-+	case TEP_EVENT_ITEM:
- 	default:
- 		break;
- 	}
-@@ -1057,7 +1057,7 @@ static enum event_type __read_token(char **tok)
- 			tok_size += BUFSIZ;
- 
- 			if (extend_token(tok, buf, tok_size) < 0)
--				return EVENT_NONE;
-+				return TEP_EVENT_NONE;
- 			i = 0;
- 		}
- 		ch = __read_char();
-@@ -1067,9 +1067,9 @@ static enum event_type __read_token(char **tok)
-  out:
- 	buf[i] = 0;
- 	if (extend_token(tok, buf, tok_size + i + 1) < 0)
--		return EVENT_NONE;
-+		return TEP_EVENT_NONE;
- 
--	if (type == EVENT_ITEM) {
-+	if (type == TEP_EVENT_ITEM) {
- 		/*
- 		 * Older versions of the kernel has a bug that
- 		 * creates invalid symbols and will break the mac80211
-@@ -1096,12 +1096,12 @@ static enum event_type __read_token(char **tok)
- 	return type;
- }
- 
--static enum event_type force_token(const char *str, char **tok)
-+static enum tep_event_type force_token(const char *str, char **tok)
- {
- 	const char *save_input_buf;
- 	unsigned long long save_input_buf_ptr;
- 	unsigned long long save_input_buf_siz;
--	enum event_type type;
-+	enum tep_event_type type;
- 	
- 	/* save off the current input pointers */
- 	save_input_buf = input_buf;
-@@ -1126,13 +1126,13 @@ static void free_token(char *tok)
- 		free(tok);
- }
- 
--static enum event_type read_token(char **tok)
-+static enum tep_event_type read_token(char **tok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 
- 	for (;;) {
- 		type = __read_token(tok);
--		if (type != EVENT_SPACE)
-+		if (type != TEP_EVENT_SPACE)
- 			return type;
- 
- 		free_token(*tok);
-@@ -1140,7 +1140,7 @@ static enum event_type read_token(char **tok)
- 
- 	/* not reached */
- 	*tok = NULL;
--	return EVENT_NONE;
-+	return TEP_EVENT_NONE;
- }
- 
- /**
-@@ -1152,7 +1152,7 @@ static enum event_type read_token(char **tok)
-  *
-  * Returns the token type.
-  */
--enum event_type tep_read_token(char **tok)
-+enum tep_event_type tep_read_token(char **tok)
- {
- 	return read_token(tok);
- }
-@@ -1167,13 +1167,13 @@ void tep_free_token(char *token)
- }
- 
- /* no newline */
--static enum event_type read_token_item(char **tok)
-+static enum tep_event_type read_token_item(char **tok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 
- 	for (;;) {
- 		type = __read_token(tok);
--		if (type != EVENT_SPACE && type != EVENT_NEWLINE)
-+		if (type != TEP_EVENT_SPACE && type != TEP_EVENT_NEWLINE)
- 			return type;
- 		free_token(*tok);
- 		*tok = NULL;
-@@ -1181,10 +1181,10 @@ static enum event_type read_token_item(char **tok)
- 
- 	/* not reached */
- 	*tok = NULL;
--	return EVENT_NONE;
-+	return TEP_EVENT_NONE;
- }
- 
--static int test_type(enum event_type type, enum event_type expect)
-+static int test_type(enum tep_event_type type, enum tep_event_type expect)
- {
- 	if (type != expect) {
- 		do_warning("Error: expected type %d but read %d",
-@@ -1194,8 +1194,8 @@ static int test_type(enum event_type type, enum event_type expect)
- 	return 0;
- }
- 
--static int test_type_token(enum event_type type, const char *token,
--		    enum event_type expect, const char *expect_tok)
-+static int test_type_token(enum tep_event_type type, const char *token,
-+		    enum tep_event_type expect, const char *expect_tok)
- {
- 	if (type != expect) {
- 		do_warning("Error: expected type %d but read %d",
-@@ -1211,9 +1211,9 @@ static int test_type_token(enum event_type type, const char *token,
- 	return 0;
- }
- 
--static int __read_expect_type(enum event_type expect, char **tok, int newline_ok)
-+static int __read_expect_type(enum tep_event_type expect, char **tok, int newline_ok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 
- 	if (newline_ok)
- 		type = read_token(tok);
-@@ -1222,15 +1222,15 @@ static int __read_expect_type(enum event_type expect, char **tok, int newline_ok
- 	return test_type(type, expect);
- }
- 
--static int read_expect_type(enum event_type expect, char **tok)
-+static int read_expect_type(enum tep_event_type expect, char **tok)
- {
- 	return __read_expect_type(expect, tok, 1);
- }
- 
--static int __read_expected(enum event_type expect, const char *str,
-+static int __read_expected(enum tep_event_type expect, const char *str,
- 			   int newline_ok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 	int ret;
- 
-@@ -1246,12 +1246,12 @@ static int __read_expected(enum event_type expect, const char *str,
- 	return ret;
- }
- 
--static int read_expected(enum event_type expect, const char *str)
-+static int read_expected(enum tep_event_type expect, const char *str)
- {
- 	return __read_expected(expect, str, 1);
- }
- 
--static int read_expected_item(enum event_type expect, const char *str)
-+static int read_expected_item(enum tep_event_type expect, const char *str)
- {
- 	return __read_expected(expect, str, 0);
- }
-@@ -1260,13 +1260,13 @@ static char *event_read_name(void)
- {
- 	char *token;
- 
--	if (read_expected(EVENT_ITEM, "name") < 0)
-+	if (read_expected(TEP_EVENT_ITEM, "name") < 0)
- 		return NULL;
- 
--	if (read_expected(EVENT_OP, ":") < 0)
-+	if (read_expected(TEP_EVENT_OP, ":") < 0)
- 		return NULL;
- 
--	if (read_expect_type(EVENT_ITEM, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto fail;
- 
- 	return token;
-@@ -1281,13 +1281,13 @@ static int event_read_id(void)
- 	char *token;
- 	int id;
- 
--	if (read_expected_item(EVENT_ITEM, "ID") < 0)
-+	if (read_expected_item(TEP_EVENT_ITEM, "ID") < 0)
- 		return -1;
- 
--	if (read_expected(EVENT_OP, ":") < 0)
-+	if (read_expected(TEP_EVENT_OP, ":") < 0)
- 		return -1;
- 
--	if (read_expect_type(EVENT_ITEM, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto fail;
- 
- 	id = strtoul(token, NULL, 0);
-@@ -1357,7 +1357,7 @@ static unsigned int type_size(const char *name)
- static int event_read_fields(struct tep_event_format *event, struct tep_format_field **fields)
- {
- 	struct tep_format_field *field = NULL;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 	char *last_token;
- 	int count = 0;
-@@ -1366,14 +1366,14 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 		unsigned int size_dynamic = 0;
- 
- 		type = read_token(&token);
--		if (type == EVENT_NEWLINE) {
-+		if (type == TEP_EVENT_NEWLINE) {
- 			free_token(token);
- 			return count;
- 		}
- 
- 		count++;
- 
--		if (test_type_token(type, token, EVENT_ITEM, "field"))
-+		if (test_type_token(type, token, TEP_EVENT_ITEM, "field"))
- 			goto fail;
- 		free_token(token);
- 
-@@ -1383,16 +1383,16 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 		 * Just ignore it.
- 		 */
- 		if (event->flags & EVENT_FL_ISFTRACE &&
--		    type == EVENT_ITEM && strcmp(token, "special") == 0) {
-+		    type == TEP_EVENT_ITEM && strcmp(token, "special") == 0) {
- 			free_token(token);
- 			type = read_token(&token);
- 		}
- 
--		if (test_type_token(type, token, EVENT_OP, ":") < 0)
-+		if (test_type_token(type, token, TEP_EVENT_OP, ":") < 0)
- 			goto fail;
- 
- 		free_token(token);
--		if (read_expect_type(EVENT_ITEM, &token) < 0)
-+		if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 			goto fail;
- 
- 		last_token = token;
-@@ -1406,14 +1406,14 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 		/* read the rest of the type */
- 		for (;;) {
- 			type = read_token(&token);
--			if (type == EVENT_ITEM ||
--			    (type == EVENT_OP && strcmp(token, "*") == 0) ||
-+			if (type == TEP_EVENT_ITEM ||
-+			    (type == TEP_EVENT_OP && strcmp(token, "*") == 0) ||
- 			    /*
- 			     * Some of the ftrace fields are broken and have
- 			     * an illegal "." in them.
- 			     */
- 			    (event->flags & EVENT_FL_ISFTRACE &&
--			     type == EVENT_OP && strcmp(token, ".") == 0)) {
-+			     type == TEP_EVENT_OP && strcmp(token, ".") == 0)) {
- 
- 				if (strcmp(token, "*") == 0)
- 					field->flags |= TEP_FIELD_IS_POINTER;
-@@ -1446,11 +1446,11 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 		}
- 		field->name = field->alias = last_token;
- 
--		if (test_type(type, EVENT_OP))
-+		if (test_type(type, TEP_EVENT_OP))
- 			goto fail;
- 
- 		if (strcmp(token, "[") == 0) {
--			enum event_type last_type = type;
-+			enum tep_event_type last_type = type;
- 			char *brackets = token;
- 			char *new_brackets;
- 			int len;
-@@ -1459,14 +1459,14 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 
- 			type = read_token(&token);
- 
--			if (type == EVENT_ITEM)
-+			if (type == TEP_EVENT_ITEM)
- 				field->arraylen = strtoul(token, NULL, 0);
- 			else
- 				field->arraylen = 0;
- 
- 		        while (strcmp(token, "]") != 0) {
--				if (last_type == EVENT_ITEM &&
--				    type == EVENT_ITEM)
-+				if (last_type == TEP_EVENT_ITEM &&
-+				    type == TEP_EVENT_ITEM)
- 					len = 2;
- 				else
- 					len = 1;
-@@ -1487,7 +1487,7 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 				field->arraylen = strtoul(token, NULL, 0);
- 				free_token(token);
- 				type = read_token(&token);
--				if (type == EVENT_NONE) {
-+				if (type == TEP_EVENT_NONE) {
- 					do_warning_event(event, "failed to find token");
- 					goto fail;
- 				}
-@@ -1510,7 +1510,7 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 			 * If the next token is not an OP, then it is of
- 			 * the format: type [] item;
- 			 */
--			if (type == EVENT_ITEM) {
-+			if (type == TEP_EVENT_ITEM) {
- 				char *new_type;
- 				new_type = realloc(field->type,
- 						   strlen(field->type) +
-@@ -1550,60 +1550,60 @@ static int event_read_fields(struct tep_event_format *event, struct tep_format_f
- 		if (field_is_long(field))
- 			field->flags |= TEP_FIELD_IS_LONG;
- 
--		if (test_type_token(type, token,  EVENT_OP, ";"))
-+		if (test_type_token(type, token,  TEP_EVENT_OP, ";"))
- 			goto fail;
- 		free_token(token);
- 
--		if (read_expected(EVENT_ITEM, "offset") < 0)
-+		if (read_expected(TEP_EVENT_ITEM, "offset") < 0)
- 			goto fail_expect;
- 
--		if (read_expected(EVENT_OP, ":") < 0)
-+		if (read_expected(TEP_EVENT_OP, ":") < 0)
- 			goto fail_expect;
- 
--		if (read_expect_type(EVENT_ITEM, &token))
-+		if (read_expect_type(TEP_EVENT_ITEM, &token))
- 			goto fail;
- 		field->offset = strtoul(token, NULL, 0);
- 		free_token(token);
- 
--		if (read_expected(EVENT_OP, ";") < 0)
-+		if (read_expected(TEP_EVENT_OP, ";") < 0)
- 			goto fail_expect;
- 
--		if (read_expected(EVENT_ITEM, "size") < 0)
-+		if (read_expected(TEP_EVENT_ITEM, "size") < 0)
- 			goto fail_expect;
- 
--		if (read_expected(EVENT_OP, ":") < 0)
-+		if (read_expected(TEP_EVENT_OP, ":") < 0)
- 			goto fail_expect;
- 
--		if (read_expect_type(EVENT_ITEM, &token))
-+		if (read_expect_type(TEP_EVENT_ITEM, &token))
- 			goto fail;
- 		field->size = strtoul(token, NULL, 0);
- 		free_token(token);
- 
--		if (read_expected(EVENT_OP, ";") < 0)
-+		if (read_expected(TEP_EVENT_OP, ";") < 0)
- 			goto fail_expect;
- 
- 		type = read_token(&token);
--		if (type != EVENT_NEWLINE) {
-+		if (type != TEP_EVENT_NEWLINE) {
- 			/* newer versions of the kernel have a "signed" type */
--			if (test_type_token(type, token, EVENT_ITEM, "signed"))
-+			if (test_type_token(type, token, TEP_EVENT_ITEM, "signed"))
- 				goto fail;
- 
- 			free_token(token);
- 
--			if (read_expected(EVENT_OP, ":") < 0)
-+			if (read_expected(TEP_EVENT_OP, ":") < 0)
- 				goto fail_expect;
- 
--			if (read_expect_type(EVENT_ITEM, &token))
-+			if (read_expect_type(TEP_EVENT_ITEM, &token))
- 				goto fail;
- 
- 			if (strtoul(token, NULL, 0))
- 				field->flags |= TEP_FIELD_IS_SIGNED;
- 
- 			free_token(token);
--			if (read_expected(EVENT_OP, ";") < 0)
-+			if (read_expected(TEP_EVENT_OP, ";") < 0)
- 				goto fail_expect;
- 
--			if (read_expect_type(EVENT_NEWLINE, &token))
-+			if (read_expect_type(TEP_EVENT_NEWLINE, &token))
- 				goto fail;
- 		}
- 
-@@ -1646,13 +1646,13 @@ static int event_read_format(struct tep_event_format *event)
- 	char *token;
- 	int ret;
- 
--	if (read_expected_item(EVENT_ITEM, "format") < 0)
-+	if (read_expected_item(TEP_EVENT_ITEM, "format") < 0)
- 		return -1;
- 
--	if (read_expected(EVENT_OP, ":") < 0)
-+	if (read_expected(TEP_EVENT_OP, ":") < 0)
- 		return -1;
- 
--	if (read_expect_type(EVENT_NEWLINE, &token))
-+	if (read_expect_type(TEP_EVENT_NEWLINE, &token))
- 		goto fail;
- 	free_token(token);
- 
-@@ -1673,14 +1673,14 @@ static int event_read_format(struct tep_event_format *event)
- 	return -1;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_arg_token(struct tep_event_format *event, struct print_arg *arg,
--		  char **tok, enum event_type type);
-+		  char **tok, enum tep_event_type type);
- 
--static enum event_type
-+static enum tep_event_type
- process_arg(struct tep_event_format *event, struct print_arg *arg, char **tok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 
- 	type = read_token(&token);
-@@ -1689,32 +1689,32 @@ process_arg(struct tep_event_format *event, struct print_arg *arg, char **tok)
- 	return process_arg_token(event, arg, tok, type);
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_op(struct tep_event_format *event, struct print_arg *arg, char **tok);
- 
- /*
-  * For __print_symbolic() and __print_flags, we need to completely
-  * evaluate the first argument, which defines what to print next.
-  */
--static enum event_type
-+static enum tep_event_type
- process_field_arg(struct tep_event_format *event, struct print_arg *arg, char **tok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 
- 	type = process_arg(event, arg, tok);
- 
--	while (type == EVENT_OP) {
-+	while (type == TEP_EVENT_OP) {
- 		type = process_op(event, arg, tok);
- 	}
- 
- 	return type;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_cond(struct tep_event_format *event, struct print_arg *top, char **tok)
- {
- 	struct print_arg *arg, *left, *right;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token = NULL;
- 
- 	arg = alloc_arg();
-@@ -1737,16 +1737,16 @@ process_cond(struct tep_event_format *event, struct print_arg *top, char **tok)
- 	type = process_arg(event, left, &token);
- 
-  again:
--	if (type == EVENT_ERROR)
-+	if (type == TEP_EVENT_ERROR)
- 		goto out_free;
- 
- 	/* Handle other operations in the arguments */
--	if (type == EVENT_OP && strcmp(token, ":") != 0) {
-+	if (type == TEP_EVENT_OP && strcmp(token, ":") != 0) {
- 		type = process_op(event, left, &token);
- 		goto again;
- 	}
- 
--	if (test_type_token(type, token, EVENT_OP, ":"))
-+	if (test_type_token(type, token, TEP_EVENT_OP, ":"))
- 		goto out_free;
- 
- 	arg->op.op = token;
-@@ -1763,14 +1763,14 @@ out_free:
- 	top->op.right = NULL;
- 	free_token(token);
- 	free_arg(arg);
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_array(struct tep_event_format *event, struct print_arg *top, char **tok)
- {
- 	struct print_arg *arg;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token = NULL;
- 
- 	arg = alloc_arg();
-@@ -1778,12 +1778,12 @@ process_array(struct tep_event_format *event, struct print_arg *top, char **tok)
- 		do_warning_event(event, "%s: not enough memory!", __func__);
- 		/* '*tok' is set to top->op.op.  No need to free. */
- 		*tok = NULL;
--		return EVENT_ERROR;
-+		return TEP_EVENT_ERROR;
- 	}
- 
- 	*tok = NULL;
- 	type = process_arg(event, arg, &token);
--	if (test_type_token(type, token, EVENT_OP, "]"))
-+	if (test_type_token(type, token, TEP_EVENT_OP, "]"))
- 		goto out_free;
- 
- 	top->op.right = arg;
-@@ -1797,7 +1797,7 @@ process_array(struct tep_event_format *event, struct print_arg *top, char **tok)
- out_free:
- 	free_token(token);
- 	free_arg(arg);
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
- static int get_op_prio(char *op)
-@@ -1868,11 +1868,11 @@ static int set_op_prio(struct print_arg *arg)
- }
- 
- /* Note, *tok does not get freed, but will most likely be saved */
--static enum event_type
-+static enum tep_event_type
- process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
- {
- 	struct print_arg *left, *right = NULL;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 
- 	/* the op is passed in via tok */
-@@ -1974,7 +1974,7 @@ process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
- 
- 		/* could just be a type pointer */
- 		if ((strcmp(arg->op.op, "*") == 0) &&
--		    type == EVENT_DELIM && (strcmp(token, ")") == 0)) {
-+		    type == TEP_EVENT_DELIM && (strcmp(token, ")") == 0)) {
- 			char *new_atom;
- 
- 			if (left->type != PRINT_ATOM) {
-@@ -2000,7 +2000,7 @@ process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
- 			goto out_warn_free;
- 
- 		type = process_arg_token(event, right, tok, type);
--		if (type == EVENT_ERROR) {
-+		if (type == TEP_EVENT_ERROR) {
- 			free_arg(right);
- 			/* token was freed in process_arg_token() via *tok */
- 			token = NULL;
-@@ -2047,7 +2047,7 @@ process_op(struct tep_event_format *event, struct print_arg *arg, char **tok)
- 		goto out_free;
- 	}
- 
--	if (type == EVENT_OP && strcmp(*tok, ":") != 0) {
-+	if (type == TEP_EVENT_OP && strcmp(*tok, ":") != 0) {
- 		int prio;
- 
- 		/* higher prios need to be closer to the root */
-@@ -2066,21 +2066,21 @@ out_warn_free:
- out_free:
- 	free_token(token);
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_entry(struct tep_event_format *event __maybe_unused, struct print_arg *arg,
- 	      char **tok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *field;
- 	char *token;
- 
--	if (read_expected(EVENT_OP, "->") < 0)
-+	if (read_expected(TEP_EVENT_OP, "->") < 0)
- 		goto out_err;
- 
--	if (read_expect_type(EVENT_ITEM, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto out_free;
- 	field = token;
- 
-@@ -2106,14 +2106,14 @@ process_entry(struct tep_event_format *event __maybe_unused, struct print_arg *a
- 	free_token(token);
-  out_err:
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
- static int alloc_and_process_delim(struct tep_event_format *event, char *next_token,
- 				   struct print_arg **print_arg)
- {
- 	struct print_arg *field;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 	int ret = 0;
- 
-@@ -2126,7 +2126,7 @@ static int alloc_and_process_delim(struct tep_event_format *event, char *next_to
- 
- 	type = process_arg(event, field, &token);
- 
--	if (test_type_token(type, token, EVENT_DELIM, next_token)) {
-+	if (test_type_token(type, token, TEP_EVENT_DELIM, next_token)) {
- 		errno = EINVAL;
- 		ret = -1;
- 		free_arg(field);
-@@ -2443,10 +2443,10 @@ static char *arg_eval (struct print_arg *arg)
- 	return NULL;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_fields(struct tep_event_format *event, struct print_flag_sym **list, char **tok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 	struct print_arg *arg = NULL;
- 	struct print_flag_sym *field;
- 	char *token = *tok;
-@@ -2455,7 +2455,7 @@ process_fields(struct tep_event_format *event, struct print_flag_sym **list, cha
- 	do {
- 		free_token(token);
- 		type = read_token_item(&token);
--		if (test_type_token(type, token, EVENT_OP, "{"))
-+		if (test_type_token(type, token, TEP_EVENT_OP, "{"))
- 			break;
- 
- 		arg = alloc_arg();
-@@ -2465,13 +2465,13 @@ process_fields(struct tep_event_format *event, struct print_flag_sym **list, cha
- 		free_token(token);
- 		type = process_arg(event, arg, &token);
- 
--		if (type == EVENT_OP)
-+		if (type == TEP_EVENT_OP)
- 			type = process_op(event, arg, &token);
- 
--		if (type == EVENT_ERROR)
-+		if (type == TEP_EVENT_ERROR)
- 			goto out_free;
- 
--		if (test_type_token(type, token, EVENT_DELIM, ","))
-+		if (test_type_token(type, token, TEP_EVENT_DELIM, ","))
- 			goto out_free;
- 
- 		field = calloc(1, sizeof(*field));
-@@ -2492,7 +2492,7 @@ process_fields(struct tep_event_format *event, struct print_flag_sym **list, cha
- 
- 		free_token(token);
- 		type = process_arg(event, arg, &token);
--		if (test_type_token(type, token, EVENT_OP, "}"))
-+		if (test_type_token(type, token, TEP_EVENT_OP, "}"))
- 			goto out_free_field;
- 
- 		value = arg_eval(arg);
-@@ -2509,7 +2509,7 @@ process_fields(struct tep_event_format *event, struct print_flag_sym **list, cha
- 
- 		free_token(token);
- 		type = read_token_item(&token);
--	} while (type == EVENT_DELIM && strcmp(token, ",") == 0);
-+	} while (type == TEP_EVENT_DELIM && strcmp(token, ",") == 0);
- 
- 	*tok = token;
- 	return type;
-@@ -2521,14 +2521,14 @@ out_free:
- 	free_token(token);
- 	*tok = NULL;
- 
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_flags(struct tep_event_format *event, struct print_arg *arg, char **tok)
- {
- 	struct print_arg *field;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token = NULL;
- 
- 	memset(arg, 0, sizeof(*arg));
-@@ -2543,10 +2543,10 @@ process_flags(struct tep_event_format *event, struct print_arg *arg, char **tok)
- 	type = process_field_arg(event, field, &token);
- 
- 	/* Handle operations in the first argument */
--	while (type == EVENT_OP)
-+	while (type == TEP_EVENT_OP)
- 		type = process_op(event, field, &token);
- 
--	if (test_type_token(type, token, EVENT_DELIM, ","))
-+	if (test_type_token(type, token, TEP_EVENT_DELIM, ","))
- 		goto out_free_field;
- 	free_token(token);
- 
-@@ -2558,11 +2558,11 @@ process_flags(struct tep_event_format *event, struct print_arg *arg, char **tok)
- 		type = read_token_item(&token);
- 	}
- 
--	if (test_type_token(type, token, EVENT_DELIM, ","))
-+	if (test_type_token(type, token, TEP_EVENT_DELIM, ","))
- 		goto out_free;
- 
- 	type = process_fields(event, &arg->flags.flags, &token);
--	if (test_type_token(type, token, EVENT_DELIM, ")"))
-+	if (test_type_token(type, token, TEP_EVENT_DELIM, ")"))
- 		goto out_free;
- 
- 	free_token(token);
-@@ -2574,14 +2574,14 @@ out_free_field:
- out_free:
- 	free_token(token);
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_symbols(struct tep_event_format *event, struct print_arg *arg, char **tok)
- {
- 	struct print_arg *field;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token = NULL;
- 
- 	memset(arg, 0, sizeof(*arg));
-@@ -2595,13 +2595,13 @@ process_symbols(struct tep_event_format *event, struct print_arg *arg, char **to
- 
- 	type = process_field_arg(event, field, &token);
- 
--	if (test_type_token(type, token, EVENT_DELIM, ","))
-+	if (test_type_token(type, token, TEP_EVENT_DELIM, ","))
- 		goto out_free_field;
- 
- 	arg->symbol.field = field;
- 
- 	type = process_fields(event, &arg->symbol.symbols, &token);
--	if (test_type_token(type, token, EVENT_DELIM, ")"))
-+	if (test_type_token(type, token, TEP_EVENT_DELIM, ")"))
- 		goto out_free;
- 
- 	free_token(token);
-@@ -2613,10 +2613,10 @@ out_free_field:
- out_free:
- 	free_token(token);
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_hex_common(struct tep_event_format *event, struct print_arg *arg,
- 		   char **tok, enum print_arg_type type)
- {
-@@ -2636,23 +2636,23 @@ free_field:
- 	arg->hex.field = NULL;
- out:
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_hex(struct tep_event_format *event, struct print_arg *arg, char **tok)
- {
- 	return process_hex_common(event, arg, tok, PRINT_HEX);
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_hex_str(struct tep_event_format *event, struct print_arg *arg,
- 		char **tok)
- {
- 	return process_hex_common(event, arg, tok, PRINT_HEX_STR);
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_int_array(struct tep_event_format *event, struct print_arg *arg, char **tok)
- {
- 	memset(arg, 0, sizeof(*arg));
-@@ -2677,14 +2677,14 @@ free_field:
- 	arg->int_array.field = NULL;
- out:
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_dynamic_array(struct tep_event_format *event, struct print_arg *arg, char **tok)
- {
- 	struct tep_format_field *field;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 
- 	memset(arg, 0, sizeof(*arg));
-@@ -2696,7 +2696,7 @@ process_dynamic_array(struct tep_event_format *event, struct print_arg *arg, cha
- 	 */
- 	type = read_token(&token);
- 	*tok = token;
--	if (type != EVENT_ITEM)
-+	if (type != TEP_EVENT_ITEM)
- 		goto out_free;
- 
- 	/* Find the field */
-@@ -2708,13 +2708,13 @@ process_dynamic_array(struct tep_event_format *event, struct print_arg *arg, cha
- 	arg->dynarray.field = field;
- 	arg->dynarray.index = 0;
- 
--	if (read_expected(EVENT_DELIM, ")") < 0)
-+	if (read_expected(TEP_EVENT_DELIM, ")") < 0)
- 		goto out_free;
- 
- 	free_token(token);
- 	type = read_token_item(&token);
- 	*tok = token;
--	if (type != EVENT_OP || strcmp(token, "[") != 0)
-+	if (type != TEP_EVENT_OP || strcmp(token, "[") != 0)
- 		return type;
- 
- 	free_token(token);
-@@ -2722,14 +2722,14 @@ process_dynamic_array(struct tep_event_format *event, struct print_arg *arg, cha
- 	if (!arg) {
- 		do_warning_event(event, "%s: not enough memory!", __func__);
- 		*tok = NULL;
--		return EVENT_ERROR;
-+		return TEP_EVENT_ERROR;
- 	}
- 
- 	type = process_arg(event, arg, &token);
--	if (type == EVENT_ERROR)
-+	if (type == TEP_EVENT_ERROR)
- 		goto out_free_arg;
- 
--	if (!test_type_token(type, token, EVENT_OP, "]"))
-+	if (!test_type_token(type, token, TEP_EVENT_OP, "]"))
- 		goto out_free_arg;
- 
- 	free_token(token);
-@@ -2741,18 +2741,18 @@ process_dynamic_array(struct tep_event_format *event, struct print_arg *arg, cha
-  out_free:
- 	free_token(token);
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_dynamic_array_len(struct tep_event_format *event, struct print_arg *arg,
- 			  char **tok)
- {
- 	struct tep_format_field *field;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 
--	if (read_expect_type(EVENT_ITEM, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto out_free;
- 
- 	arg->type = PRINT_DYNAMIC_ARRAY_LEN;
-@@ -2765,7 +2765,7 @@ process_dynamic_array_len(struct tep_event_format *event, struct print_arg *arg,
- 	arg->dynarray.field = field;
- 	arg->dynarray.index = 0;
- 
--	if (read_expected(EVENT_DELIM, ")") < 0)
-+	if (read_expected(TEP_EVENT_DELIM, ")") < 0)
- 		goto out_err;
- 
- 	type = read_token(&token);
-@@ -2777,28 +2777,28 @@ process_dynamic_array_len(struct tep_event_format *event, struct print_arg *arg,
- 	free_token(token);
-  out_err:
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_paren(struct tep_event_format *event, struct print_arg *arg, char **tok)
- {
- 	struct print_arg *item_arg;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 
- 	type = process_arg(event, arg, &token);
- 
--	if (type == EVENT_ERROR)
-+	if (type == TEP_EVENT_ERROR)
- 		goto out_free;
- 
--	if (type == EVENT_OP)
-+	if (type == TEP_EVENT_OP)
- 		type = process_op(event, arg, &token);
- 
--	if (type == EVENT_ERROR)
-+	if (type == TEP_EVENT_ERROR)
- 		goto out_free;
- 
--	if (test_type_token(type, token, EVENT_DELIM, ")"))
-+	if (test_type_token(type, token, TEP_EVENT_DELIM, ")"))
- 		goto out_free;
- 
- 	free_token(token);
-@@ -2809,7 +2809,7 @@ process_paren(struct tep_event_format *event, struct print_arg *arg, char **tok)
- 	 * this was a typecast.
- 	 */
- 	if (event_item_type(type) ||
--	    (type == EVENT_DELIM && strcmp(token, "(") == 0)) {
-+	    (type == TEP_EVENT_DELIM && strcmp(token, "(") == 0)) {
- 
- 		/* make this a typecast and contine */
- 
-@@ -2839,25 +2839,25 @@ process_paren(struct tep_event_format *event, struct print_arg *arg, char **tok)
-  out_free:
- 	free_token(token);
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
- 
--static enum event_type
-+static enum tep_event_type
- process_str(struct tep_event_format *event __maybe_unused, struct print_arg *arg,
- 	    char **tok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 
--	if (read_expect_type(EVENT_ITEM, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto out_free;
- 
- 	arg->type = PRINT_STRING;
- 	arg->string.string = token;
- 	arg->string.offset = -1;
- 
--	if (read_expected(EVENT_DELIM, ")") < 0)
-+	if (read_expected(TEP_EVENT_DELIM, ")") < 0)
- 		goto out_err;
- 
- 	type = read_token(&token);
-@@ -2869,24 +2869,24 @@ process_str(struct tep_event_format *event __maybe_unused, struct print_arg *arg
- 	free_token(token);
-  out_err:
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_bitmask(struct tep_event_format *event __maybe_unused, struct print_arg *arg,
- 		char **tok)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 
--	if (read_expect_type(EVENT_ITEM, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto out_free;
- 
- 	arg->type = PRINT_BITMASK;
- 	arg->bitmask.bitmask = token;
- 	arg->bitmask.offset = -1;
- 
--	if (read_expected(EVENT_DELIM, ")") < 0)
-+	if (read_expected(TEP_EVENT_DELIM, ")") < 0)
- 		goto out_err;
- 
- 	type = read_token(&token);
-@@ -2898,7 +2898,7 @@ process_bitmask(struct tep_event_format *event __maybe_unused, struct print_arg
- 	free_token(token);
-  out_err:
- 	*tok = NULL;
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
- static struct tep_function_handler *
-@@ -2933,13 +2933,13 @@ static void remove_func_handler(struct tep_handle *pevent, char *func_name)
- 	}
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_func_handler(struct tep_event_format *event, struct tep_function_handler *func,
- 		     struct print_arg *arg, char **tok)
- {
- 	struct print_arg **next_arg;
- 	struct print_arg *farg;
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 	int i;
- 
-@@ -2954,12 +2954,12 @@ process_func_handler(struct tep_event_format *event, struct tep_function_handler
- 		if (!farg) {
- 			do_warning_event(event, "%s: not enough memory!",
- 					 __func__);
--			return EVENT_ERROR;
-+			return TEP_EVENT_ERROR;
- 		}
- 
- 		type = process_arg(event, farg, &token);
- 		if (i < (func->nr_args - 1)) {
--			if (type != EVENT_DELIM || strcmp(token, ",") != 0) {
-+			if (type != TEP_EVENT_DELIM || strcmp(token, ",") != 0) {
- 				do_warning_event(event,
- 					"Error: function '%s()' expects %d arguments but event %s only uses %d",
- 					func->name, func->nr_args,
-@@ -2967,7 +2967,7 @@ process_func_handler(struct tep_event_format *event, struct tep_function_handler
- 				goto err;
- 			}
- 		} else {
--			if (type != EVENT_DELIM || strcmp(token, ")") != 0) {
-+			if (type != TEP_EVENT_DELIM || strcmp(token, ")") != 0) {
- 				do_warning_event(event,
- 					"Error: function '%s()' only expects %d arguments but event %s has more",
- 					func->name, func->nr_args, event->name);
-@@ -2988,10 +2988,10 @@ process_func_handler(struct tep_event_format *event, struct tep_function_handler
- err:
- 	free_arg(farg);
- 	free_token(token);
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_function(struct tep_event_format *event, struct print_arg *arg,
- 		 char *token, char **tok)
- {
-@@ -3044,12 +3044,12 @@ process_function(struct tep_event_format *event, struct print_arg *arg,
- 
- 	do_warning_event(event, "function %s not defined", token);
- 	free_token(token);
--	return EVENT_ERROR;
-+	return TEP_EVENT_ERROR;
- }
- 
--static enum event_type
-+static enum tep_event_type
- process_arg_token(struct tep_event_format *event, struct print_arg *arg,
--		  char **tok, enum event_type type)
-+		  char **tok, enum tep_event_type type)
- {
- 	char *token;
- 	char *atom;
-@@ -3057,7 +3057,7 @@ process_arg_token(struct tep_event_format *event, struct print_arg *arg,
- 	token = *tok;
- 
- 	switch (type) {
--	case EVENT_ITEM:
-+	case TEP_EVENT_ITEM:
- 		if (strcmp(token, "REC") == 0) {
- 			free_token(token);
- 			type = process_entry(event, arg, &token);
-@@ -3071,7 +3071,7 @@ process_arg_token(struct tep_event_format *event, struct print_arg *arg,
- 		 * If the next token is a parenthesis, then this
- 		 * is a function.
- 		 */
--		if (type == EVENT_DELIM && strcmp(token, "(") == 0) {
-+		if (type == TEP_EVENT_DELIM && strcmp(token, "(") == 0) {
- 			free_token(token);
- 			token = NULL;
- 			/* this will free atom. */
-@@ -3079,7 +3079,7 @@ process_arg_token(struct tep_event_format *event, struct print_arg *arg,
- 			break;
- 		}
- 		/* atoms can be more than one token long */
--		while (type == EVENT_ITEM) {
-+		while (type == TEP_EVENT_ITEM) {
- 			char *new_atom;
- 			new_atom = realloc(atom,
- 					   strlen(atom) + strlen(token) + 2);
-@@ -3087,7 +3087,7 @@ process_arg_token(struct tep_event_format *event, struct print_arg *arg,
- 				free(atom);
- 				*tok = NULL;
- 				free_token(token);
--				return EVENT_ERROR;
-+				return TEP_EVENT_ERROR;
- 			}
- 			atom = new_atom;
- 			strcat(atom, " ");
-@@ -3100,19 +3100,19 @@ process_arg_token(struct tep_event_format *event, struct print_arg *arg,
- 		arg->atom.atom = atom;
- 		break;
- 
--	case EVENT_DQUOTE:
--	case EVENT_SQUOTE:
-+	case TEP_EVENT_DQUOTE:
-+	case TEP_EVENT_SQUOTE:
- 		arg->type = PRINT_ATOM;
- 		arg->atom.atom = token;
- 		type = read_token_item(&token);
- 		break;
--	case EVENT_DELIM:
-+	case TEP_EVENT_DELIM:
- 		if (strcmp(token, "(") == 0) {
- 			free_token(token);
- 			type = process_paren(event, arg, &token);
- 			break;
- 		}
--	case EVENT_OP:
-+	case TEP_EVENT_OP:
- 		/* handle single ops */
- 		arg->type = PRINT_OP;
- 		arg->op.op = token;
-@@ -3120,16 +3120,16 @@ process_arg_token(struct tep_event_format *event, struct print_arg *arg,
- 		type = process_op(event, arg, &token);
- 
- 		/* On error, the op is freed */
--		if (type == EVENT_ERROR)
-+		if (type == TEP_EVENT_ERROR)
- 			arg->op.op = NULL;
- 
- 		/* return error type if errored */
- 		break;
- 
--	case EVENT_ERROR ... EVENT_NEWLINE:
-+	case TEP_EVENT_ERROR ... TEP_EVENT_NEWLINE:
- 	default:
- 		do_warning_event(event, "unexpected type %d", type);
--		return EVENT_ERROR;
-+		return TEP_EVENT_ERROR;
- 	}
- 	*tok = token;
- 
-@@ -3138,13 +3138,13 @@ process_arg_token(struct tep_event_format *event, struct print_arg *arg,
- 
- static int event_read_print_args(struct tep_event_format *event, struct print_arg **list)
- {
--	enum event_type type = EVENT_ERROR;
-+	enum tep_event_type type = TEP_EVENT_ERROR;
- 	struct print_arg *arg;
- 	char *token;
- 	int args = 0;
- 
- 	do {
--		if (type == EVENT_NEWLINE) {
-+		if (type == TEP_EVENT_NEWLINE) {
- 			type = read_token_item(&token);
- 			continue;
- 		}
-@@ -3158,7 +3158,7 @@ static int event_read_print_args(struct tep_event_format *event, struct print_ar
- 
- 		type = process_arg(event, arg, &token);
- 
--		if (type == EVENT_ERROR) {
-+		if (type == TEP_EVENT_ERROR) {
- 			free_token(token);
- 			free_arg(arg);
- 			return -1;
-@@ -3167,10 +3167,10 @@ static int event_read_print_args(struct tep_event_format *event, struct print_ar
- 		*list = arg;
- 		args++;
- 
--		if (type == EVENT_OP) {
-+		if (type == TEP_EVENT_OP) {
- 			type = process_op(event, arg, &token);
- 			free_token(token);
--			if (type == EVENT_ERROR) {
-+			if (type == TEP_EVENT_ERROR) {
- 				*list = NULL;
- 				free_arg(arg);
- 				return -1;
-@@ -3179,16 +3179,16 @@ static int event_read_print_args(struct tep_event_format *event, struct print_ar
- 			continue;
- 		}
- 
--		if (type == EVENT_DELIM && strcmp(token, ",") == 0) {
-+		if (type == TEP_EVENT_DELIM && strcmp(token, ",") == 0) {
- 			free_token(token);
- 			*list = arg;
- 			list = &arg->next;
- 			continue;
- 		}
- 		break;
--	} while (type != EVENT_NONE);
-+	} while (type != TEP_EVENT_NONE);
- 
--	if (type != EVENT_NONE && type != EVENT_ERROR)
-+	if (type != TEP_EVENT_NONE && type != TEP_EVENT_ERROR)
- 		free_token(token);
- 
- 	return args;
-@@ -3196,20 +3196,20 @@ static int event_read_print_args(struct tep_event_format *event, struct print_ar
- 
- static int event_read_print(struct tep_event_format *event)
- {
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token;
- 	int ret;
- 
--	if (read_expected_item(EVENT_ITEM, "print") < 0)
-+	if (read_expected_item(TEP_EVENT_ITEM, "print") < 0)
- 		return -1;
- 
--	if (read_expected(EVENT_ITEM, "fmt") < 0)
-+	if (read_expected(TEP_EVENT_ITEM, "fmt") < 0)
- 		return -1;
- 
--	if (read_expected(EVENT_OP, ":") < 0)
-+	if (read_expected(TEP_EVENT_OP, ":") < 0)
- 		return -1;
- 
--	if (read_expect_type(EVENT_DQUOTE, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_DQUOTE, &token) < 0)
- 		goto fail;
- 
-  concat:
-@@ -3219,11 +3219,11 @@ static int event_read_print(struct tep_event_format *event)
- 	/* ok to have no arg */
- 	type = read_token_item(&token);
- 
--	if (type == EVENT_NONE)
-+	if (type == TEP_EVENT_NONE)
- 		return 0;
- 
- 	/* Handle concatenation of print lines */
--	if (type == EVENT_DQUOTE) {
-+	if (type == TEP_EVENT_DQUOTE) {
- 		char *cat;
- 
- 		if (asprintf(&cat, "%s%s", event->print_fmt.format, token) < 0)
-@@ -3235,7 +3235,7 @@ static int event_read_print(struct tep_event_format *event)
- 		goto concat;
- 	}
- 			     
--	if (test_type_token(type, token, EVENT_DELIM, ","))
-+	if (test_type_token(type, token, TEP_EVENT_DELIM, ","))
- 		goto fail;
- 
- 	free_token(token);
-@@ -5617,7 +5617,7 @@ static int events_system_cmp(const void *a, const void *b)
- 	return events_id_cmp(a, b);
- }
- 
--struct tep_event_format **tep_list_events(struct tep_handle *pevent, enum event_sort_type sort_type)
-+struct tep_event_format **tep_list_events(struct tep_handle *pevent, enum tep_event_sort_type sort_type)
- {
- 	struct tep_event_format **events;
- 	int (*sort)(const void *a, const void *b);
-@@ -5638,20 +5638,20 @@ struct tep_event_format **tep_list_events(struct tep_handle *pevent, enum event_
- 		pevent->sort_events = events;
- 
- 		/* the internal events are sorted by id */
--		if (sort_type == EVENT_SORT_ID) {
-+		if (sort_type == TEP_EVENT_SORT_ID) {
- 			pevent->last_type = sort_type;
- 			return events;
- 		}
- 	}
- 
- 	switch (sort_type) {
--	case EVENT_SORT_ID:
-+	case TEP_EVENT_SORT_ID:
- 		sort = events_id_cmp;
- 		break;
--	case EVENT_SORT_NAME:
-+	case TEP_EVENT_SORT_NAME:
- 		sort = events_name_cmp;
- 		break;
--	case EVENT_SORT_SYSTEM:
-+	case TEP_EVENT_SORT_SYSTEM:
- 		sort = events_system_cmp;
- 		break;
- 	default:
-@@ -5834,13 +5834,13 @@ static void parse_header_field(const char *field,
- 	save_input_buf_ptr = input_buf_ptr;
- 	save_input_buf_siz = input_buf_siz;
- 
--	if (read_expected(EVENT_ITEM, "field") < 0)
-+	if (read_expected(TEP_EVENT_ITEM, "field") < 0)
- 		return;
--	if (read_expected(EVENT_OP, ":") < 0)
-+	if (read_expected(TEP_EVENT_OP, ":") < 0)
- 		return;
- 
- 	/* type */
--	if (read_expect_type(EVENT_ITEM, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto fail;
- 	free_token(token);
- 
-@@ -5848,42 +5848,42 @@ static void parse_header_field(const char *field,
- 	 * If this is not a mandatory field, then test it first.
- 	 */
- 	if (mandatory) {
--		if (read_expected(EVENT_ITEM, field) < 0)
-+		if (read_expected(TEP_EVENT_ITEM, field) < 0)
- 			return;
- 	} else {
--		if (read_expect_type(EVENT_ITEM, &token) < 0)
-+		if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 			goto fail;
- 		if (strcmp(token, field) != 0)
- 			goto discard;
- 		free_token(token);
- 	}
- 
--	if (read_expected(EVENT_OP, ";") < 0)
-+	if (read_expected(TEP_EVENT_OP, ";") < 0)
- 		return;
--	if (read_expected(EVENT_ITEM, "offset") < 0)
-+	if (read_expected(TEP_EVENT_ITEM, "offset") < 0)
- 		return;
--	if (read_expected(EVENT_OP, ":") < 0)
-+	if (read_expected(TEP_EVENT_OP, ":") < 0)
- 		return;
--	if (read_expect_type(EVENT_ITEM, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto fail;
- 	*offset = atoi(token);
- 	free_token(token);
--	if (read_expected(EVENT_OP, ";") < 0)
-+	if (read_expected(TEP_EVENT_OP, ";") < 0)
- 		return;
--	if (read_expected(EVENT_ITEM, "size") < 0)
-+	if (read_expected(TEP_EVENT_ITEM, "size") < 0)
- 		return;
--	if (read_expected(EVENT_OP, ":") < 0)
-+	if (read_expected(TEP_EVENT_OP, ":") < 0)
- 		return;
--	if (read_expect_type(EVENT_ITEM, &token) < 0)
-+	if (read_expect_type(TEP_EVENT_ITEM, &token) < 0)
- 		goto fail;
- 	*size = atoi(token);
- 	free_token(token);
--	if (read_expected(EVENT_OP, ";") < 0)
-+	if (read_expected(TEP_EVENT_OP, ";") < 0)
- 		return;
- 	type = read_token(&token);
--	if (type != EVENT_NEWLINE) {
-+	if (type != TEP_EVENT_NEWLINE) {
- 		/* newer versions of the kernel have a "signed" type */
--		if (type != EVENT_ITEM)
-+		if (type != TEP_EVENT_ITEM)
- 			goto fail;
- 
- 		if (strcmp(token, "signed") != 0)
-@@ -5891,17 +5891,17 @@ static void parse_header_field(const char *field,
- 
- 		free_token(token);
- 
--		if (read_expected(EVENT_OP, ":") < 0)
-+		if (read_expected(TEP_EVENT_OP, ":") < 0)
- 			return;
- 
--		if (read_expect_type(EVENT_ITEM, &token))
-+		if (read_expect_type(TEP_EVENT_ITEM, &token))
- 			goto fail;
- 
- 		free_token(token);
--		if (read_expected(EVENT_OP, ";") < 0)
-+		if (read_expected(TEP_EVENT_OP, ";") < 0)
- 			return;
- 
--		if (read_expect_type(EVENT_NEWLINE, &token))
-+		if (read_expect_type(TEP_EVENT_NEWLINE, &token))
- 			goto fail;
- 	}
-  fail:
+ enum filter_exp_type {
+@@ -816,7 +816,7 @@ enum filter_value_type {
+ struct fliter_arg;
+ 
+ struct filter_arg_boolean {
+-	enum filter_boolean_type	value;
++	enum tep_filter_boolean_type	value;
+ };
+ 
+ struct filter_arg_field {
+@@ -832,7 +832,7 @@ struct filter_arg_value {
+ };
+ 
+ struct filter_arg_op {
+-	enum filter_op_type	type;
++	enum tep_filter_op_type	type;
+ 	struct filter_arg	*left;
+ 	struct filter_arg	*right;
+ };
+@@ -844,13 +844,13 @@ struct filter_arg_exp {
+ };
+ 
+ struct filter_arg_num {
+-	enum filter_cmp_type	type;
++	enum tep_filter_cmp_type	type;
+ 	struct filter_arg	*left;
+ 	struct filter_arg	*right;
+ };
+ 
+ struct filter_arg_str {
+-	enum filter_cmp_type	type;
++	enum tep_filter_cmp_type	type;
+ 	struct tep_format_field	*field;
+ 	char			*val;
+ 	char			*buffer;
 diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
-index dcd97ac..153e248 100644
+index 153e248..55ce8e6 100644
 --- a/lib/traceevent/parse-filter.c
 +++ b/lib/traceevent/parse-filter.c
-@@ -61,15 +61,15 @@ static void free_token(char *token)
- 	tep_free_token(token);
+@@ -378,7 +378,7 @@ create_arg_item(struct tep_event_format *event, const char *token,
+ 			} else {
+ 				/* not a field, Make it false */
+ 				arg->type = FILTER_ARG_BOOLEAN;
+-				arg->boolean.value = FILTER_FALSE;
++				arg->boolean.value = TEP_FILTER_FALSE;
+ 				break;
+ 			}
+ 		}
+@@ -395,7 +395,7 @@ create_arg_item(struct tep_event_format *event, const char *token,
  }
  
--static enum event_type read_token(char **tok)
-+static enum tep_event_type read_token(char **tok)
+ static struct filter_arg *
+-create_arg_op(enum filter_op_type btype)
++create_arg_op(enum tep_filter_op_type btype)
  {
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token = NULL;
- 
- 	do {
- 		free_token(token);
- 		type = tep_read_token(&token);
--	} while (type == EVENT_NEWLINE || type == EVENT_SPACE);
-+	} while (type == TEP_EVENT_NEWLINE || type == TEP_EVENT_SPACE);
- 
- 	/* If token is = or ! check to see if the next char is ~ */
- 	if (token &&
-@@ -79,7 +79,7 @@ static enum event_type read_token(char **tok)
- 		*tok = malloc(3);
- 		if (*tok == NULL) {
- 			free_token(token);
--			return EVENT_ERROR;
-+			return TEP_EVENT_ERROR;
- 		}
- 		sprintf(*tok, "%c%c", *token, '~');
- 		free_token(token);
-@@ -334,7 +334,7 @@ static void free_events(struct event_list *events)
- 
- static enum tep_errno
- create_arg_item(struct tep_event_format *event, const char *token,
--		enum event_type type, struct filter_arg **parg, char *error_str)
-+		enum tep_event_type type, struct filter_arg **parg, char *error_str)
- {
- 	struct tep_format_field *field;
  	struct filter_arg *arg;
-@@ -347,11 +347,11 @@ create_arg_item(struct tep_event_format *event, const char *token,
  
- 	switch (type) {
+@@ -425,7 +425,7 @@ create_arg_exp(enum filter_exp_type etype)
+ }
  
--	case EVENT_SQUOTE:
--	case EVENT_DQUOTE:
-+	case TEP_EVENT_SQUOTE:
-+	case TEP_EVENT_DQUOTE:
- 		arg->type = FILTER_ARG_VALUE;
- 		arg->value.type =
--			type == EVENT_DQUOTE ? FILTER_STRING : FILTER_CHAR;
-+			type == TEP_EVENT_DQUOTE ? FILTER_STRING : FILTER_CHAR;
- 		arg->value.str = strdup(token);
- 		if (!arg->value.str) {
- 			free_arg(arg);
-@@ -359,7 +359,7 @@ create_arg_item(struct tep_event_format *event, const char *token,
- 			return TEP_ERRNO__MEM_ALLOC_FAILED;
- 		}
- 		break;
--	case EVENT_ITEM:
-+	case TEP_EVENT_ITEM:
- 		/* if it is a number, then convert it */
- 		if (isdigit(token[0])) {
- 			arg->type = FILTER_ARG_VALUE;
-@@ -942,7 +942,7 @@ static enum tep_errno
- process_filter(struct tep_event_format *event, struct filter_arg **parg,
- 	       char *error_str, int not)
+ static struct filter_arg *
+-create_arg_cmp(enum filter_cmp_type ctype)
++create_arg_cmp(enum tep_filter_cmp_type ctype)
  {
--	enum event_type type;
-+	enum tep_event_type type;
- 	char *token = NULL;
- 	struct filter_arg *current_op = NULL;
- 	struct filter_arg *current_exp = NULL;
-@@ -960,9 +960,9 @@ process_filter(struct tep_event_format *event, struct filter_arg **parg,
- 		free(token);
- 		type = read_token(&token);
- 		switch (type) {
--		case EVENT_SQUOTE:
--		case EVENT_DQUOTE:
--		case EVENT_ITEM:
-+		case TEP_EVENT_SQUOTE:
-+		case TEP_EVENT_DQUOTE:
-+		case TEP_EVENT_ITEM:
- 			ret = create_arg_item(event, token, type, &arg, error_str);
- 			if (ret < 0)
- 				goto fail;
-@@ -987,7 +987,7 @@ process_filter(struct tep_event_format *event, struct filter_arg **parg,
- 			arg = NULL;
- 			break;
+ 	struct filter_arg *arg;
  
--		case EVENT_DELIM:
-+		case TEP_EVENT_DELIM:
- 			if (*token == ',') {
- 				show_error(error_str, "Illegal token ','");
- 				ret = TEP_ERRNO__ILLEGAL_TOKEN;
-@@ -1054,7 +1054,7 @@ process_filter(struct tep_event_format *event, struct filter_arg **parg,
+@@ -488,8 +488,8 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 			 * is not a REGEX.
+ 			 */
+ 			if (strlen(arg->value.str) == 1 &&
+-			    op->num.type != FILTER_CMP_REGEX &&
+-			    op->num.type != FILTER_CMP_NOT_REGEX) {
++			    op->num.type != TEP_FILTER_CMP_REGEX &&
++			    op->num.type != TEP_FILTER_CMP_NOT_REGEX) {
+ 				arg->value.type = FILTER_NUMBER;
+ 				goto do_int;
  			}
+@@ -512,7 +512,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 				free_arg(left);
+ 				free_arg(arg);
+ 				op->type = FILTER_ARG_BOOLEAN;
+-				op->boolean.value = FILTER_FALSE;
++				op->boolean.value = TEP_FILTER_FALSE;
+ 				break;
+ 			}
+ 
+@@ -525,15 +525,15 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 
+ 			/* Make sure this is a valid string compare */
+ 			switch (op_type) {
+-			case FILTER_CMP_EQ:
+-				op_type = FILTER_CMP_MATCH;
++			case TEP_FILTER_CMP_EQ:
++				op_type = TEP_FILTER_CMP_MATCH;
+ 				break;
+-			case FILTER_CMP_NE:
+-				op_type = FILTER_CMP_NOT_MATCH;
++			case TEP_FILTER_CMP_NE:
++				op_type = TEP_FILTER_CMP_NOT_MATCH;
+ 				break;
+ 
+-			case FILTER_CMP_REGEX:
+-			case FILTER_CMP_NOT_REGEX:
++			case TEP_FILTER_CMP_REGEX:
++			case TEP_FILTER_CMP_NOT_REGEX:
+ 				ret = regcomp(&op->str.reg, str, REG_ICASE|REG_NOSUB);
+ 				if (ret) {
+ 					show_error(error_str,
+@@ -577,8 +577,8 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
+ 
+  do_int:
+ 			switch (op->num.type) {
+-			case FILTER_CMP_REGEX:
+-			case FILTER_CMP_NOT_REGEX:
++			case TEP_FILTER_CMP_REGEX:
++			case TEP_FILTER_CMP_NOT_REGEX:
+ 				show_error(error_str,
+ 					   "Op not allowed with integers");
+ 				return TEP_ERRNO__ILLEGAL_INTEGER_CMP;
+@@ -652,22 +652,22 @@ enum op_type {
+ };
+ 
+ static enum op_type process_op(const char *token,
+-			       enum filter_op_type *btype,
+-			       enum filter_cmp_type *ctype,
++			       enum tep_filter_op_type *btype,
++			       enum tep_filter_cmp_type *ctype,
+ 			       enum filter_exp_type *etype)
+ {
+-	*btype = FILTER_OP_NOT;
++	*btype = TEP_FILTER_OP_NOT;
+ 	*etype = FILTER_EXP_NONE;
+-	*ctype = FILTER_CMP_NONE;
++	*ctype = TEP_FILTER_CMP_NONE;
+ 
+ 	if (strcmp(token, "&&") == 0)
+-		*btype = FILTER_OP_AND;
++		*btype = TEP_FILTER_OP_AND;
+ 	else if (strcmp(token, "||") == 0)
+-		*btype = FILTER_OP_OR;
++		*btype = TEP_FILTER_OP_OR;
+ 	else if (strcmp(token, "!") == 0)
+ 		return OP_NOT;
+ 
+-	if (*btype != FILTER_OP_NOT)
++	if (*btype != TEP_FILTER_OP_NOT)
+ 		return OP_BOOL;
+ 
+ 	/* Check for value expressions */
+@@ -699,21 +699,21 @@ static enum op_type process_op(const char *token,
+ 
+ 	/* Check for compares */
+ 	if (strcmp(token, "==") == 0)
+-		*ctype = FILTER_CMP_EQ;
++		*ctype = TEP_FILTER_CMP_EQ;
+ 	else if (strcmp(token, "!=") == 0)
+-		*ctype = FILTER_CMP_NE;
++		*ctype = TEP_FILTER_CMP_NE;
+ 	else if (strcmp(token, "<") == 0)
+-		*ctype = FILTER_CMP_LT;
++		*ctype = TEP_FILTER_CMP_LT;
+ 	else if (strcmp(token, ">") == 0)
+-		*ctype = FILTER_CMP_GT;
++		*ctype = TEP_FILTER_CMP_GT;
+ 	else if (strcmp(token, "<=") == 0)
+-		*ctype = FILTER_CMP_LE;
++		*ctype = TEP_FILTER_CMP_LE;
+ 	else if (strcmp(token, ">=") == 0)
+-		*ctype = FILTER_CMP_GE;
++		*ctype = TEP_FILTER_CMP_GE;
+ 	else if (strcmp(token, "=~") == 0)
+-		*ctype = FILTER_CMP_REGEX;
++		*ctype = TEP_FILTER_CMP_REGEX;
+ 	else if (strcmp(token, "!~") == 0)
+-		*ctype = FILTER_CMP_NOT_REGEX;
++		*ctype = TEP_FILTER_CMP_NOT_REGEX;
+ 	else
+ 		return OP_NONE;
+ 
+@@ -840,13 +840,13 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
+ 		return FILTER_VAL_NORM;
+ 
+ 	case FILTER_ARG_OP:
+-		if (arg->op.type != FILTER_OP_NOT) {
++		if (arg->op.type != TEP_FILTER_OP_NOT) {
+ 			lval = test_arg(arg, arg->op.left, error_str);
+ 			switch (lval) {
+ 			case FILTER_VAL_NORM:
+ 				break;
+ 			case FILTER_VAL_TRUE:
+-				if (arg->op.type == FILTER_OP_OR)
++				if (arg->op.type == TEP_FILTER_OP_OR)
+ 					return FILTER_VAL_TRUE;
+ 				rval = test_arg(arg, arg->op.right, error_str);
+ 				if (rval != FILTER_VAL_NORM)
+@@ -856,7 +856,7 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
+ 						       error_str);
+ 
+ 			case FILTER_VAL_FALSE:
+-				if (arg->op.type == FILTER_OP_AND)
++				if (arg->op.type == TEP_FILTER_OP_AND)
+ 					return FILTER_VAL_FALSE;
+ 				rval = test_arg(arg, arg->op.right, error_str);
+ 				if (rval != FILTER_VAL_NORM)
+@@ -877,18 +877,18 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
  			break;
  
--		case EVENT_OP:
-+		case TEP_EVENT_OP:
- 			op_type = process_op(token, &btype, &ctype, &etype);
+ 		case FILTER_VAL_TRUE:
+-			if (arg->op.type == FILTER_OP_OR)
++			if (arg->op.type == TEP_FILTER_OP_OR)
+ 				return FILTER_VAL_TRUE;
+-			if (arg->op.type == FILTER_OP_NOT)
++			if (arg->op.type == TEP_FILTER_OP_NOT)
+ 				return FILTER_VAL_FALSE;
  
- 			/* All expect a left arg except for NOT */
-@@ -1139,14 +1139,14 @@ process_filter(struct tep_event_format *event, struct filter_arg **parg,
- 			if (ret < 0)
- 				goto fail_syntax;
- 			break;
--		case EVENT_NONE:
-+		case TEP_EVENT_NONE:
- 			break;
--		case EVENT_ERROR:
-+		case TEP_EVENT_ERROR:
- 			goto fail_alloc;
- 		default:
- 			goto fail_syntax;
- 		}
--	} while (type != EVENT_NONE);
-+	} while (type != TEP_EVENT_NONE);
+ 			return reparent_op_arg(parent, arg, arg->op.left,
+ 					       error_str);
  
- 	if (!current_op && !current_exp)
- 		goto fail_syntax;
-diff --git a/tracecmd/trace-profile.c b/tracecmd/trace-profile.c
-index cf9242e..06c66eb 100644
---- a/tracecmd/trace-profile.c
-+++ b/tracecmd/trace-profile.c
-@@ -1458,7 +1458,7 @@ void trace_init_profile(struct tracecmd_input *handle, struct hook_list *hook,
- 		syscall_exit->print_func = syscall_print;
+ 		case FILTER_VAL_FALSE:
+-			if (arg->op.type == FILTER_OP_AND)
++			if (arg->op.type == TEP_FILTER_OP_AND)
+ 				return FILTER_VAL_FALSE;
+-			if (arg->op.type == FILTER_OP_NOT)
++			if (arg->op.type == TEP_FILTER_OP_NOT)
+ 				return FILTER_VAL_TRUE;
+ 
+ 			return reparent_op_arg(parent, arg, arg->op.left,
+@@ -949,9 +949,9 @@ process_filter(struct tep_event_format *event, struct filter_arg **parg,
+ 	struct filter_arg *left_item = NULL;
+ 	struct filter_arg *arg = NULL;
+ 	enum op_type op_type;
+-	enum filter_op_type btype;
++	enum tep_filter_op_type btype;
+ 	enum filter_exp_type etype;
+-	enum filter_cmp_type ctype;
++	enum tep_filter_cmp_type ctype;
+ 	enum tep_errno ret;
+ 
+ 	*parg = NULL;
+@@ -1197,7 +1197,7 @@ process_event(struct tep_event_format *event, const char *filter_str,
+ 			return TEP_ERRNO__MEM_ALLOC_FAILED;
+ 
+ 		(*parg)->type = FILTER_ARG_BOOLEAN;
+-		(*parg)->boolean.value = FILTER_FALSE;
++		(*parg)->boolean.value = TEP_FILTER_FALSE;
  	}
  
--	events = tep_list_events(pevent, EVENT_SORT_ID);
-+	events = tep_list_events(pevent, TEP_EVENT_SORT_ID);
- 	if (!events)
- 		die("malloc");
+ 	return 0;
+@@ -1223,7 +1223,7 @@ filter_event(struct event_filter *filter, struct tep_event_format *event,
+ 			return TEP_ERRNO__MEM_ALLOC_FAILED;
  
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index 60efe09..38b5b1b 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -1740,7 +1740,7 @@ void trace_report (int argc, char **argv)
- 			struct tep_event_format *event;
- 			int i;
+ 		arg->type = FILTER_ARG_BOOLEAN;
+-		arg->boolean.value = FILTER_TRUE;
++		arg->boolean.value = TEP_FILTER_TRUE;
+ 	}
  
--			events = tep_list_events(pevent, EVENT_SORT_SYSTEM);
-+			events = tep_list_events(pevent, TEP_EVENT_SORT_SYSTEM);
- 			for (i = 0; events[i]; i++) {
- 				event = events[i];
- 				if (event->system)
+ 	filter_type = add_filter_type(filter, event->id);
+@@ -1832,22 +1832,22 @@ static int test_num(struct tep_event_format *event, struct filter_arg *arg,
+ 	}
+ 
+ 	switch (arg->num.type) {
+-	case FILTER_CMP_EQ:
++	case TEP_FILTER_CMP_EQ:
+ 		return lval == rval;
+ 
+-	case FILTER_CMP_NE:
++	case TEP_FILTER_CMP_NE:
+ 		return lval != rval;
+ 
+-	case FILTER_CMP_GT:
++	case TEP_FILTER_CMP_GT:
+ 		return lval > rval;
+ 
+-	case FILTER_CMP_LT:
++	case TEP_FILTER_CMP_LT:
+ 		return lval < rval;
+ 
+-	case FILTER_CMP_GE:
++	case TEP_FILTER_CMP_GE:
+ 		return lval >= rval;
+ 
+-	case FILTER_CMP_LE:
++	case TEP_FILTER_CMP_LE:
+ 		return lval <= rval;
+ 
+ 	default:
+@@ -1918,17 +1918,17 @@ static int test_str(struct tep_event_format *event, struct filter_arg *arg,
+ 		val = get_field_str(arg, record);
+ 
+ 	switch (arg->str.type) {
+-	case FILTER_CMP_MATCH:
++	case TEP_FILTER_CMP_MATCH:
+ 		return strcmp(val, arg->str.val) == 0;
+ 
+-	case FILTER_CMP_NOT_MATCH:
++	case TEP_FILTER_CMP_NOT_MATCH:
+ 		return strcmp(val, arg->str.val) != 0;
+ 
+-	case FILTER_CMP_REGEX:
++	case TEP_FILTER_CMP_REGEX:
+ 		/* Returns zero on match */
+ 		return !regexec(&arg->str.reg, val, 0, NULL, 0);
+ 
+-	case FILTER_CMP_NOT_REGEX:
++	case TEP_FILTER_CMP_NOT_REGEX:
+ 		return regexec(&arg->str.reg, val, 0, NULL, 0);
+ 
+ 	default:
+@@ -1942,15 +1942,15 @@ static int test_op(struct tep_event_format *event, struct filter_arg *arg,
+ 		   struct tep_record *record, enum tep_errno *err)
+ {
+ 	switch (arg->op.type) {
+-	case FILTER_OP_AND:
++	case TEP_FILTER_OP_AND:
+ 		return test_filter(event, arg->op.left, record, err) &&
+ 			test_filter(event, arg->op.right, record, err);
+ 
+-	case FILTER_OP_OR:
++	case TEP_FILTER_OP_OR:
+ 		return test_filter(event, arg->op.left, record, err) ||
+ 			test_filter(event, arg->op.right, record, err);
+ 
+-	case FILTER_OP_NOT:
++	case TEP_FILTER_OP_NOT:
+ 		return !test_filter(event, arg->op.right, record, err);
+ 
+ 	default:
+@@ -2070,10 +2070,10 @@ static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
+ 	int val;
+ 
+ 	switch (arg->op.type) {
+-	case FILTER_OP_AND:
++	case TEP_FILTER_OP_AND:
+ 		op = "&&";
+ 		/* fall through */
+-	case FILTER_OP_OR:
++	case TEP_FILTER_OP_OR:
+ 		if (!op)
+ 			op = "||";
+ 
+@@ -2094,8 +2094,8 @@ static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
+ 			right_val = 0;
+ 
+ 		if (left_val >= 0) {
+-			if ((arg->op.type == FILTER_OP_AND && !left_val) ||
+-			    (arg->op.type == FILTER_OP_OR && left_val)) {
++			if ((arg->op.type == TEP_FILTER_OP_AND && !left_val) ||
++			    (arg->op.type == TEP_FILTER_OP_OR && left_val)) {
+ 				/* Just return left value */
+ 				str = left;
+ 				left = NULL;
+@@ -2105,10 +2105,10 @@ static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
+ 				/* just evaluate this. */
+ 				val = 0;
+ 				switch (arg->op.type) {
+-				case FILTER_OP_AND:
++				case TEP_FILTER_OP_AND:
+ 					val = left_val && right_val;
+ 					break;
+-				case FILTER_OP_OR:
++				case TEP_FILTER_OP_OR:
+ 					val = left_val || right_val;
+ 					break;
+ 				default:
+@@ -2119,8 +2119,8 @@ static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
+ 			}
+ 		}
+ 		if (right_val >= 0) {
+-			if ((arg->op.type == FILTER_OP_AND && !right_val) ||
+-			    (arg->op.type == FILTER_OP_OR && right_val)) {
++			if ((arg->op.type == TEP_FILTER_OP_AND && !right_val) ||
++			    (arg->op.type == TEP_FILTER_OP_OR && right_val)) {
+ 				/* Just return right value */
+ 				str = right;
+ 				right = NULL;
+@@ -2135,7 +2135,7 @@ static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
+ 		asprintf(&str, "(%s) %s (%s)", left, op, right);
+ 		break;
+ 
+-	case FILTER_OP_NOT:
++	case TEP_FILTER_OP_NOT:
+ 		op = "!";
+ 		right = arg_to_str(filter, arg->op.right);
+ 		if (!right)
+@@ -2246,26 +2246,26 @@ static char *num_to_str(struct event_filter *filter, struct filter_arg *arg)
+ 		goto out;
+ 
+ 	switch (arg->num.type) {
+-	case FILTER_CMP_EQ:
++	case TEP_FILTER_CMP_EQ:
+ 		op = "==";
+ 		/* fall through */
+-	case FILTER_CMP_NE:
++	case TEP_FILTER_CMP_NE:
+ 		if (!op)
+ 			op = "!=";
+ 		/* fall through */
+-	case FILTER_CMP_GT:
++	case TEP_FILTER_CMP_GT:
+ 		if (!op)
+ 			op = ">";
+ 		/* fall through */
+-	case FILTER_CMP_LT:
++	case TEP_FILTER_CMP_LT:
+ 		if (!op)
+ 			op = "<";
+ 		/* fall through */
+-	case FILTER_CMP_GE:
++	case TEP_FILTER_CMP_GE:
+ 		if (!op)
+ 			op = ">=";
+ 		/* fall through */
+-	case FILTER_CMP_LE:
++	case TEP_FILTER_CMP_LE:
+ 		if (!op)
+ 			op = "<=";
+ 
+@@ -2289,18 +2289,18 @@ static char *str_to_str(struct event_filter *filter, struct filter_arg *arg)
+ 	char *op = NULL;
+ 
+ 	switch (arg->str.type) {
+-	case FILTER_CMP_MATCH:
++	case TEP_FILTER_CMP_MATCH:
+ 		op = "==";
+ 		/* fall through */
+-	case FILTER_CMP_NOT_MATCH:
++	case TEP_FILTER_CMP_NOT_MATCH:
+ 		if (!op)
+ 			op = "!=";
+ 		/* fall through */
+-	case FILTER_CMP_REGEX:
++	case TEP_FILTER_CMP_REGEX:
+ 		if (!op)
+ 			op = "=~";
+ 		/* fall through */
+-	case FILTER_CMP_NOT_REGEX:
++	case TEP_FILTER_CMP_NOT_REGEX:
+ 		if (!op)
+ 			op = "!~";
+ 
 -- 
 2.17.1
