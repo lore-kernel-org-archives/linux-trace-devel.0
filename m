@@ -1,16 +1,16 @@
 Return-Path: <SRS0=XLZm=MI=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr730058.outbound.protection.outlook.com ([40.107.73.58]:63673
+Received: from mail-eopbgr730062.outbound.protection.outlook.com ([40.107.73.62]:58268
         "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726802AbeIZScB (ORCPT
+        id S1727205AbeIZSbl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 26 Sep 2018 14:32:01 -0400
+        Wed, 26 Sep 2018 14:31:41 -0400
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 11/16] tools lib traceevent: Add prefix tep_ to struct filter_{arg,value_type}
-Date: Wed, 26 Sep 2018 15:18:27 +0300
-Message-Id: <20180926121832.16101-12-tstoyanov@vmware.com>
+Subject: [PATCH 01/16] tools lib traceevent, perf tools: Split trace-seq related APIs in a separate header file
+Date: Wed, 26 Sep 2018 15:18:17 +0300
+Message-Id: <20180926121832.16101-2-tstoyanov@vmware.com>
 In-Reply-To: <20180926121832.16101-1-tstoyanov@vmware.com>
 References: <20180926121832.16101-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
@@ -20,523 +20,307 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-In order to make libtraceevent into a proper library, variables, data
-structures and functions require a unique prefix to prevent name space
-conflicts. That prefix will be "tep_". This adds prefix tep_ to
-struct filter_arg, enum filter_value_type and all enum's members.
+In order to make libtraceevent into a proper library, all its APIs
+should be defined in corresponding header files.  This patch splits
+trace-seq related APIs in a separate header file: trace-seq.h
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org
-Link: http://lkml.kernel.org/r/20180919185723.972818215@goodmis.org
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: http://lkml.kernel.org/r/20180828185038.2dcb2743@gandalf.local.home
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h |  28 ++++----
- lib/traceevent/parse-filter.c    | 120 +++++++++++++++----------------
- 2 files changed, 74 insertions(+), 74 deletions(-)
+ include/traceevent/event-parse.h | 46 ++------------------------
+ include/traceevent/trace-seq.h   | 55 ++++++++++++++++++++++++++++++++
+ lib/traceevent/event-parse.c     |  1 +
+ lib/traceevent/event-plugin.c    |  1 +
+ lib/traceevent/trace-seq.c       |  2 ++
+ plugins/plugin_function.c        |  1 +
+ plugins/plugin_hrtimer.c         |  1 +
+ plugins/plugin_jbd2.c            |  1 +
+ plugins/plugin_kmem.c            |  1 +
+ plugins/plugin_kvm.c             |  1 +
+ plugins/plugin_mac80211.c        |  1 +
+ plugins/plugin_sched_switch.c    |  1 +
+ plugins/plugin_scsi.c            |  1 +
+ plugins/plugin_xen.c             |  1 +
+ 14 files changed, 70 insertions(+), 44 deletions(-)
+ create mode 100644 include/traceevent/trace-seq.h
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 81fc609..82310e0 100644
+index 713a4e4..3b6d16d 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -807,13 +807,13 @@ enum tep_filter_arg_type {
- 	TEP_FILTER_ARG_STR,
+@@ -12,17 +12,12 @@
+ #include <regex.h>
+ #include <string.h>
+ 
++#include "trace-seq.h"
++
+ #ifndef __maybe_unused
+ #define __maybe_unused __attribute__((unused))
+ #endif
+ 
+-/* ----------------------- trace_seq ----------------------- */
+-
+-
+-#ifndef TRACE_SEQ_BUF_SIZE
+-#define TRACE_SEQ_BUF_SIZE 4096
+-#endif
+-
+ #ifndef DEBUG_RECORD
+ #define DEBUG_RECORD 0
+ #endif
+@@ -45,43 +40,6 @@ struct tep_record {
+ #endif
  };
  
--enum filter_value_type {
--	FILTER_NUMBER,
--	FILTER_STRING,
--	FILTER_CHAR
-+enum tep_filter_value_type {
-+	TEP_FILTER_NUMBER,
-+	TEP_FILTER_STRING,
-+	TEP_FILTER_CHAR
- };
+-enum trace_seq_fail {
+-	TRACE_SEQ__GOOD,
+-	TRACE_SEQ__BUFFER_POISONED,
+-	TRACE_SEQ__MEM_ALLOC_FAILED,
+-};
+-
+-/*
+- * Trace sequences are used to allow a function to call several other functions
+- * to create a string of data to use (up to a max of PAGE_SIZE).
+- */
+-
+-struct trace_seq {
+-	char			*buffer;
+-	unsigned int		buffer_size;
+-	unsigned int		len;
+-	unsigned int		readpos;
+-	enum trace_seq_fail	state;
+-};
+-
+-void trace_seq_init(struct trace_seq *s);
+-void trace_seq_reset(struct trace_seq *s);
+-void trace_seq_destroy(struct trace_seq *s);
+-
+-extern int trace_seq_printf(struct trace_seq *s, const char *fmt, ...)
+-	__attribute__ ((format (printf, 2, 3)));
+-extern int trace_seq_vprintf(struct trace_seq *s, const char *fmt, va_list args)
+-	__attribute__ ((format (printf, 2, 0)));
+-
+-extern int trace_seq_puts(struct trace_seq *s, const char *str);
+-extern int trace_seq_putc(struct trace_seq *s, unsigned char c);
+-
+-extern void trace_seq_terminate(struct trace_seq *s);
+-
+-extern int trace_seq_do_fprintf(struct trace_seq *s, FILE *fp);
+-extern int trace_seq_do_printf(struct trace_seq *s);
+-
+-
+ /* ----------------------- pevent ----------------------- */
  
--struct fliter_arg;
-+struct tep_filter_arg;
+ struct tep_handle;
+diff --git a/include/traceevent/trace-seq.h b/include/traceevent/trace-seq.h
+new file mode 100644
+index 0000000..d68ec69
+--- /dev/null
++++ b/include/traceevent/trace-seq.h
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
++ *
++ */
++
++#ifndef _TRACE_SEQ_H
++#define _TRACE_SEQ_H
++
++#include <stdarg.h>
++#include <stdio.h>
++
++/* ----------------------- trace_seq ----------------------- */
++
++#ifndef TRACE_SEQ_BUF_SIZE
++#define TRACE_SEQ_BUF_SIZE 4096
++#endif
++
++enum trace_seq_fail {
++	TRACE_SEQ__GOOD,
++	TRACE_SEQ__BUFFER_POISONED,
++	TRACE_SEQ__MEM_ALLOC_FAILED,
++};
++
++/*
++ * Trace sequences are used to allow a function to call several other functions
++ * to create a string of data to use (up to a max of PAGE_SIZE).
++ */
++
++struct trace_seq {
++	char			*buffer;
++	unsigned int		buffer_size;
++	unsigned int		len;
++	unsigned int		readpos;
++	enum trace_seq_fail	state;
++};
++
++void trace_seq_init(struct trace_seq *s);
++void trace_seq_reset(struct trace_seq *s);
++void trace_seq_destroy(struct trace_seq *s);
++
++extern int trace_seq_printf(struct trace_seq *s, const char *fmt, ...)
++	__attribute__ ((format (printf, 2, 3)));
++extern int trace_seq_vprintf(struct trace_seq *s, const char *fmt, va_list args)
++	__attribute__ ((format (printf, 2, 0)));
++
++extern int trace_seq_puts(struct trace_seq *s, const char *str);
++extern int trace_seq_putc(struct trace_seq *s, unsigned char c);
++
++extern void trace_seq_terminate(struct trace_seq *s);
++
++extern int trace_seq_do_fprintf(struct trace_seq *s, FILE *fp);
++extern int trace_seq_do_printf(struct trace_seq *s);
++
++#endif /* _TRACE_SEQ_H */
+diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+index ce1e202..70a42be 100644
+--- a/lib/traceevent/event-parse.c
++++ b/lib/traceevent/event-parse.c
+@@ -24,6 +24,7 @@
+ #include <netinet/in.h>
+ #include "event-parse.h"
+ #include "event-utils.h"
++#include "trace-seq.h"
  
- struct filter_arg_boolean {
- 	enum tep_filter_boolean_type	value;
-@@ -824,7 +824,7 @@ struct filter_arg_field {
- };
+ static const char *input_buf;
+ static unsigned long long input_buf_ptr;
+diff --git a/lib/traceevent/event-plugin.c b/lib/traceevent/event-plugin.c
+index f17e250..ec16a10 100644
+--- a/lib/traceevent/event-plugin.c
++++ b/lib/traceevent/event-plugin.c
+@@ -15,6 +15,7 @@
+ #include <dirent.h>
+ #include "event-parse.h"
+ #include "event-utils.h"
++#include "trace-seq.h"
  
- struct filter_arg_value {
--	enum filter_value_type	type;
-+	enum tep_filter_value_type	type;
- 	union {
- 		char			*str;
- 		unsigned long long	val;
-@@ -833,20 +833,20 @@ struct filter_arg_value {
+ #define LOCAL_PLUGIN_DIR ".traceevent/plugins"
  
- struct filter_arg_op {
- 	enum tep_filter_op_type	type;
--	struct filter_arg	*left;
--	struct filter_arg	*right;
-+	struct tep_filter_arg	*left;
-+	struct tep_filter_arg	*right;
- };
+diff --git a/lib/traceevent/trace-seq.c b/lib/traceevent/trace-seq.c
+index 00cac9f..7f0c2f0 100644
+--- a/lib/traceevent/trace-seq.c
++++ b/lib/traceevent/trace-seq.c
+@@ -3,6 +3,8 @@
+  * Copyright (C) 2009 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  *
+  */
++#include "trace-seq.h"
++
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/plugins/plugin_function.c b/plugins/plugin_function.c
+index 9efa01c..3e0e1b2 100644
+--- a/plugins/plugin_function.c
++++ b/plugins/plugin_function.c
+@@ -8,6 +8,7 @@
  
- struct filter_arg_exp {
- 	enum tep_filter_exp_type	type;
--	struct filter_arg		*left;
--	struct filter_arg		*right;
-+	struct tep_filter_arg		*left;
-+	struct tep_filter_arg		*right;
- };
+ #include "trace-cmd.h"
+ #include "event-utils.h"
++#include "trace-seq.h"
  
- struct filter_arg_num {
- 	enum tep_filter_cmp_type	type;
--	struct filter_arg	*left;
--	struct filter_arg	*right;
-+	struct tep_filter_arg	*left;
-+	struct tep_filter_arg	*right;
- };
+ static struct func_stack {
+ 	int size;
+diff --git a/plugins/plugin_hrtimer.c b/plugins/plugin_hrtimer.c
+index a2edb69..9defa1b 100644
+--- a/plugins/plugin_hrtimer.c
++++ b/plugins/plugin_hrtimer.c
+@@ -8,6 +8,7 @@
+ #include <string.h>
  
- struct filter_arg_str {
-@@ -857,7 +857,7 @@ struct filter_arg_str {
- 	regex_t			reg;
- };
+ #include "event-parse.h"
++#include "trace-seq.h"
  
--struct filter_arg {
-+struct tep_filter_arg {
- 	enum tep_filter_arg_type		type;
- 	union {
- 		struct filter_arg_boolean	boolean;
-@@ -873,7 +873,7 @@ struct filter_arg {
- struct filter_type {
- 	int			event_id;
- 	struct tep_event_format	*event;
--	struct filter_arg	*filter;
-+	struct tep_filter_arg	*filter;
- };
+ static int timer_expire_handler(struct trace_seq *s, struct tep_record *record,
+ 				struct event_format *event, void *context)
+diff --git a/plugins/plugin_jbd2.c b/plugins/plugin_jbd2.c
+index fe95f3e..4b230ad 100644
+--- a/plugins/plugin_jbd2.c
++++ b/plugins/plugin_jbd2.c
+@@ -7,6 +7,7 @@
+ #include <string.h>
  
- #define TEP_FILTER_ERROR_BUFSZ  1024
-diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
-index d1e0dd5..b9ca1b9 100644
---- a/lib/traceevent/parse-filter.c
-+++ b/lib/traceevent/parse-filter.c
-@@ -180,12 +180,12 @@ struct event_filter *tep_filter_alloc(struct tep_handle *pevent)
- 	return filter;
- }
+ #include "event-parse.h"
++#include "trace-seq.h"
  
--static struct filter_arg *allocate_arg(void)
-+static struct tep_filter_arg *allocate_arg(void)
+ #define MINORBITS	20
+ #define MINORMASK	((1U << MINORBITS) - 1)
+diff --git a/plugins/plugin_kmem.c b/plugins/plugin_kmem.c
+index 79e3d3b..29f8e6c 100644
+--- a/plugins/plugin_kmem.c
++++ b/plugins/plugin_kmem.c
+@@ -7,6 +7,7 @@
+ #include <string.h>
+ 
+ #include "trace-cmd.h"
++#include "trace-seq.h"
+ 
+ static int call_site_handler(struct trace_seq *s, struct tep_record *record,
+ 			     struct event_format *event, void *context)
+diff --git a/plugins/plugin_kvm.c b/plugins/plugin_kvm.c
+index 3f4a8c0..ca7d111 100644
+--- a/plugins/plugin_kvm.c
++++ b/plugins/plugin_kvm.c
+@@ -8,6 +8,7 @@
+ #include <stdint.h>
+ 
+ #include "event-parse.h"
++#include "trace-seq.h"
+ 
+ #ifdef HAVE_UDIS86
+ 
+diff --git a/plugins/plugin_mac80211.c b/plugins/plugin_mac80211.c
+index 72f7d7c..c1276c2 100644
+--- a/plugins/plugin_mac80211.c
++++ b/plugins/plugin_mac80211.c
+@@ -7,6 +7,7 @@
+ #include <string.h>
+ 
+ #include "event-parse.h"
++#include "trace-seq.h"
+ 
+ #define INDENT 65
+ 
+diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
+index 715587a..1a5f548 100644
+--- a/plugins/plugin_sched_switch.c
++++ b/plugins/plugin_sched_switch.c
+@@ -7,6 +7,7 @@
+ #include <string.h>
+ 
+ #include "trace-cmd.h"
++#include "trace-seq.h"
+ 
+ static void write_state(struct trace_seq *s, int val)
  {
--	return calloc(1, sizeof(struct filter_arg));
-+	return calloc(1, sizeof(struct tep_filter_arg));
- }
+diff --git a/plugins/plugin_scsi.c b/plugins/plugin_scsi.c
+index 5ec346f..4eba25c 100644
+--- a/plugins/plugin_scsi.c
++++ b/plugins/plugin_scsi.c
+@@ -3,6 +3,7 @@
+ #include <string.h>
+ #include <inttypes.h>
+ #include "event-parse.h"
++#include "trace-seq.h"
  
--static void free_arg(struct filter_arg *arg)
-+static void free_arg(struct tep_filter_arg *arg)
- {
- 	if (!arg)
- 		return;
-@@ -212,8 +212,8 @@ static void free_arg(struct filter_arg *arg)
- 		break;
+ typedef unsigned long sector_t;
+ typedef uint64_t u64;
+diff --git a/plugins/plugin_xen.c b/plugins/plugin_xen.c
+index b2acbd6..bc0496e 100644
+--- a/plugins/plugin_xen.c
++++ b/plugins/plugin_xen.c
+@@ -3,6 +3,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include "event-parse.h"
++#include "trace-seq.h"
  
- 	case TEP_FILTER_ARG_VALUE:
--		if (arg->value.type == FILTER_STRING ||
--		    arg->value.type == FILTER_CHAR)
-+		if (arg->value.type == TEP_FILTER_STRING ||
-+		    arg->value.type == TEP_FILTER_CHAR)
- 			free(arg->value.str);
- 		break;
- 
-@@ -334,10 +334,10 @@ static void free_events(struct event_list *events)
- 
- static enum tep_errno
- create_arg_item(struct tep_event_format *event, const char *token,
--		enum tep_event_type type, struct filter_arg **parg, char *error_str)
-+		enum tep_event_type type, struct tep_filter_arg **parg, char *error_str)
- {
- 	struct tep_format_field *field;
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = allocate_arg();
- 	if (arg == NULL) {
-@@ -351,7 +351,7 @@ create_arg_item(struct tep_event_format *event, const char *token,
- 	case TEP_EVENT_DQUOTE:
- 		arg->type = TEP_FILTER_ARG_VALUE;
- 		arg->value.type =
--			type == TEP_EVENT_DQUOTE ? FILTER_STRING : FILTER_CHAR;
-+			type == TEP_EVENT_DQUOTE ? TEP_FILTER_STRING : TEP_FILTER_CHAR;
- 		arg->value.str = strdup(token);
- 		if (!arg->value.str) {
- 			free_arg(arg);
-@@ -363,7 +363,7 @@ create_arg_item(struct tep_event_format *event, const char *token,
- 		/* if it is a number, then convert it */
- 		if (isdigit(token[0])) {
- 			arg->type = TEP_FILTER_ARG_VALUE;
--			arg->value.type = FILTER_NUMBER;
-+			arg->value.type = TEP_FILTER_NUMBER;
- 			arg->value.val = strtoull(token, NULL, 0);
- 			break;
- 		}
-@@ -394,10 +394,10 @@ create_arg_item(struct tep_event_format *event, const char *token,
- 	return 0;
- }
- 
--static struct filter_arg *
-+static struct tep_filter_arg *
- create_arg_op(enum tep_filter_op_type btype)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = allocate_arg();
- 	if (!arg)
-@@ -409,10 +409,10 @@ create_arg_op(enum tep_filter_op_type btype)
- 	return arg;
- }
- 
--static struct filter_arg *
-+static struct tep_filter_arg *
- create_arg_exp(enum tep_filter_exp_type etype)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = allocate_arg();
- 	if (!arg)
-@@ -424,10 +424,10 @@ create_arg_exp(enum tep_filter_exp_type etype)
- 	return arg;
- }
- 
--static struct filter_arg *
-+static struct tep_filter_arg *
- create_arg_cmp(enum tep_filter_cmp_type ctype)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = allocate_arg();
- 	if (!arg)
-@@ -441,9 +441,9 @@ create_arg_cmp(enum tep_filter_cmp_type ctype)
- }
- 
- static enum tep_errno
--add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
-+add_right(struct tep_filter_arg *op, struct tep_filter_arg *arg, char *error_str)
- {
--	struct filter_arg *left;
-+	struct tep_filter_arg *left;
- 	char *str;
- 	int op_type;
- 	int ret;
-@@ -481,7 +481,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 		 * convert this to a string or regex.
- 		 */
- 		switch (arg->value.type) {
--		case FILTER_CHAR:
-+		case TEP_FILTER_CHAR:
- 			/*
- 			 * A char should be converted to number if
- 			 * the string is 1 byte, and the compare
-@@ -490,11 +490,11 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 			if (strlen(arg->value.str) == 1 &&
- 			    op->num.type != TEP_FILTER_CMP_REGEX &&
- 			    op->num.type != TEP_FILTER_CMP_NOT_REGEX) {
--				arg->value.type = FILTER_NUMBER;
-+				arg->value.type = TEP_FILTER_NUMBER;
- 				goto do_int;
- 			}
- 			/* fall through */
--		case FILTER_STRING:
-+		case TEP_FILTER_STRING:
- 
- 			/* convert op to a string arg */
- 			op_type = op->num.type;
-@@ -573,7 +573,7 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 
- 			break;
- 
--		case FILTER_NUMBER:
-+		case TEP_FILTER_NUMBER:
- 
-  do_int:
- 			switch (op->num.type) {
-@@ -605,17 +605,17 @@ add_right(struct filter_arg *op, struct filter_arg *arg, char *error_str)
- 	return TEP_ERRNO__SYNTAX_ERROR;
- }
- 
--static struct filter_arg *
--rotate_op_right(struct filter_arg *a, struct filter_arg *b)
-+static struct tep_filter_arg *
-+rotate_op_right(struct tep_filter_arg *a, struct tep_filter_arg *b)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 
- 	arg = a->op.right;
- 	a->op.right = b;
- 	return arg;
- }
- 
--static enum tep_errno add_left(struct filter_arg *op, struct filter_arg *arg)
-+static enum tep_errno add_left(struct tep_filter_arg *op, struct tep_filter_arg *arg)
- {
- 	switch (op->type) {
- 	case TEP_FILTER_ARG_EXP:
-@@ -720,7 +720,7 @@ static enum op_type process_op(const char *token,
- 	return OP_CMP;
- }
- 
--static int check_op_done(struct filter_arg *arg)
-+static int check_op_done(struct tep_filter_arg *arg)
- {
- 	switch (arg->type) {
- 	case TEP_FILTER_ARG_EXP:
-@@ -752,11 +752,11 @@ enum filter_vals {
- };
- 
- static enum tep_errno
--reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
--		struct filter_arg *arg, char *error_str)
-+reparent_op_arg(struct tep_filter_arg *parent, struct tep_filter_arg *old_child,
-+		struct tep_filter_arg *arg, char *error_str)
- {
--	struct filter_arg *other_child;
--	struct filter_arg **ptr;
-+	struct tep_filter_arg *other_child;
-+	struct tep_filter_arg **ptr;
- 
- 	if (parent->type != TEP_FILTER_ARG_OP &&
- 	    arg->type != TEP_FILTER_ARG_OP) {
-@@ -804,7 +804,7 @@ reparent_op_arg(struct filter_arg *parent, struct filter_arg *old_child,
- }
- 
- /* Returns either filter_vals (success) or tep_errno (failfure) */
--static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
-+static int test_arg(struct tep_filter_arg *parent, struct tep_filter_arg *arg,
- 		    char *error_str)
- {
- 	int lval, rval;
-@@ -904,8 +904,8 @@ static int test_arg(struct filter_arg *parent, struct filter_arg *arg,
- }
- 
- /* Remove any unknown event fields */
--static int collapse_tree(struct filter_arg *arg,
--			 struct filter_arg **arg_collapsed, char *error_str)
-+static int collapse_tree(struct tep_filter_arg *arg,
-+			 struct tep_filter_arg **arg_collapsed, char *error_str)
- {
- 	int ret;
- 
-@@ -939,15 +939,15 @@ static int collapse_tree(struct filter_arg *arg,
- }
- 
- static enum tep_errno
--process_filter(struct tep_event_format *event, struct filter_arg **parg,
-+process_filter(struct tep_event_format *event, struct tep_filter_arg **parg,
- 	       char *error_str, int not)
- {
- 	enum tep_event_type type;
- 	char *token = NULL;
--	struct filter_arg *current_op = NULL;
--	struct filter_arg *current_exp = NULL;
--	struct filter_arg *left_item = NULL;
--	struct filter_arg *arg = NULL;
-+	struct tep_filter_arg *current_op = NULL;
-+	struct tep_filter_arg *current_exp = NULL;
-+	struct tep_filter_arg *left_item = NULL;
-+	struct tep_filter_arg *arg = NULL;
- 	enum op_type op_type;
- 	enum tep_filter_op_type btype;
- 	enum tep_filter_exp_type etype;
-@@ -1180,7 +1180,7 @@ process_filter(struct tep_event_format *event, struct filter_arg **parg,
- 
- static enum tep_errno
- process_event(struct tep_event_format *event, const char *filter_str,
--	      struct filter_arg **parg, char *error_str)
-+	      struct tep_filter_arg **parg, char *error_str)
- {
- 	int ret;
- 
-@@ -1208,7 +1208,7 @@ filter_event(struct event_filter *filter, struct tep_event_format *event,
- 	     const char *filter_str, char *error_str)
- {
- 	struct filter_type *filter_type;
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 	enum tep_errno ret;
- 
- 	if (filter_str) {
-@@ -1449,13 +1449,13 @@ void tep_filter_free(struct event_filter *filter)
- 	free(filter);
- }
- 
--static char *arg_to_str(struct event_filter *filter, struct filter_arg *arg);
-+static char *arg_to_str(struct event_filter *filter, struct tep_filter_arg *arg);
- 
- static int copy_filter_type(struct event_filter *filter,
- 			     struct event_filter *source,
- 			     struct filter_type *filter_type)
- {
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 	struct tep_event_format *event;
- 	const char *sys;
- 	const char *name;
-@@ -1540,7 +1540,7 @@ int tep_update_trivial(struct event_filter *dest, struct event_filter *source,
- 	struct tep_handle *dest_pevent;
- 	struct tep_event_format *event;
- 	struct filter_type *filter_type;
--	struct filter_arg *arg;
-+	struct tep_filter_arg *arg;
- 	char *str;
- 	int i;
- 
-@@ -1682,7 +1682,7 @@ int tep_filter_event_has_trivial(struct event_filter *filter,
- 	}
- }
- 
--static int test_filter(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_filter(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		       struct tep_record *record, enum tep_errno *err);
- 
- static const char *
-@@ -1733,11 +1733,11 @@ get_value(struct tep_event_format *event,
- }
- 
- static unsigned long long
--get_arg_value(struct tep_event_format *event, struct filter_arg *arg,
-+get_arg_value(struct tep_event_format *event, struct tep_filter_arg *arg,
- 	      struct tep_record *record, enum tep_errno *err);
- 
- static unsigned long long
--get_exp_value(struct tep_event_format *event, struct filter_arg *arg,
-+get_exp_value(struct tep_event_format *event, struct tep_filter_arg *arg,
- 	      struct tep_record *record, enum tep_errno *err)
- {
- 	unsigned long long lval, rval;
-@@ -1792,7 +1792,7 @@ get_exp_value(struct tep_event_format *event, struct filter_arg *arg,
- }
- 
- static unsigned long long
--get_arg_value(struct tep_event_format *event, struct filter_arg *arg,
-+get_arg_value(struct tep_event_format *event, struct tep_filter_arg *arg,
- 	      struct tep_record *record, enum tep_errno *err)
- {
- 	switch (arg->type) {
-@@ -1800,7 +1800,7 @@ get_arg_value(struct tep_event_format *event, struct filter_arg *arg,
- 		return get_value(event, arg->field.field, record);
- 
- 	case TEP_FILTER_ARG_VALUE:
--		if (arg->value.type != FILTER_NUMBER) {
-+		if (arg->value.type != TEP_FILTER_NUMBER) {
- 			if (!*err)
- 				*err = TEP_ERRNO__NOT_A_NUMBER;
- 		}
-@@ -1816,7 +1816,7 @@ get_arg_value(struct tep_event_format *event, struct filter_arg *arg,
- 	return 0;
- }
- 
--static int test_num(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_num(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		    struct tep_record *record, enum tep_errno *err)
- {
- 	unsigned long long lval, rval;
-@@ -1857,7 +1857,7 @@ static int test_num(struct tep_event_format *event, struct filter_arg *arg,
- 	}
- }
- 
--static const char *get_field_str(struct filter_arg *arg, struct tep_record *record)
-+static const char *get_field_str(struct tep_filter_arg *arg, struct tep_record *record)
- {
- 	struct tep_event_format *event;
- 	struct tep_handle *pevent;
-@@ -1907,7 +1907,7 @@ static const char *get_field_str(struct filter_arg *arg, struct tep_record *reco
- 	return val;
- }
- 
--static int test_str(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_str(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		    struct tep_record *record, enum tep_errno *err)
- {
- 	const char *val;
-@@ -1938,7 +1938,7 @@ static int test_str(struct tep_event_format *event, struct filter_arg *arg,
- 	}
- }
- 
--static int test_op(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_op(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		   struct tep_record *record, enum tep_errno *err)
- {
- 	switch (arg->op.type) {
-@@ -1960,7 +1960,7 @@ static int test_op(struct tep_event_format *event, struct filter_arg *arg,
- 	}
- }
- 
--static int test_filter(struct tep_event_format *event, struct filter_arg *arg,
-+static int test_filter(struct tep_event_format *event, struct tep_filter_arg *arg,
- 		       struct tep_record *record, enum tep_errno *err)
- {
- 	if (*err) {
-@@ -2059,7 +2059,7 @@ enum tep_errno tep_filter_match(struct event_filter *filter,
- 	return ret ? TEP_ERRNO__FILTER_MATCH : TEP_ERRNO__FILTER_MISS;
- }
- 
--static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *op_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *str = NULL;
- 	char *left = NULL;
-@@ -2163,7 +2163,7 @@ static char *op_to_str(struct event_filter *filter, struct filter_arg *arg)
- 	return str;
- }
- 
--static char *val_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *val_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *str = NULL;
- 
-@@ -2172,12 +2172,12 @@ static char *val_to_str(struct event_filter *filter, struct filter_arg *arg)
- 	return str;
- }
- 
--static char *field_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *field_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	return strdup(arg->field.field->name);
- }
- 
--static char *exp_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *exp_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *lstr;
- 	char *rstr;
-@@ -2233,7 +2233,7 @@ out:
- 	return str;
- }
- 
--static char *num_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *num_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *lstr;
- 	char *rstr;
-@@ -2283,7 +2283,7 @@ out:
- 	return str;
- }
- 
--static char *str_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *str_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *str = NULL;
- 	char *op = NULL;
-@@ -2315,7 +2315,7 @@ static char *str_to_str(struct event_filter *filter, struct filter_arg *arg)
- 	return str;
- }
- 
--static char *arg_to_str(struct event_filter *filter, struct filter_arg *arg)
-+static char *arg_to_str(struct event_filter *filter, struct tep_filter_arg *arg)
- {
- 	char *str = NULL;
- 
+ #define __HYPERVISOR_set_trap_table			0
+ #define __HYPERVISOR_mmu_update				1
 -- 
 2.17.1
