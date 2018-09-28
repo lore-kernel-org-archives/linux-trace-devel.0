@@ -1,64 +1,100 @@
 Return-Path: <SRS0=W9qh=MK=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-sn1nam02on0069.outbound.protection.outlook.com ([104.47.36.69]:51628
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-sn1nam01on0048.outbound.protection.outlook.com ([104.47.32.48]:52688
+        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728739AbeI1NoO (ORCPT
+        id S1726934AbeI1Odr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 28 Sep 2018 09:44:14 -0400
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/3] tools/lib/traceevent: Implemented new API tep_ref_get()
-Date: Fri, 28 Sep 2018 10:19:38 +0300
-Message-Id: <20180928071940.29810-2-tstoyanov@vmware.com>
-In-Reply-To: <20180928071940.29810-1-tstoyanov@vmware.com>
+        Fri, 28 Sep 2018 10:33:47 -0400
+From: Slavomir Kaslev <kaslevs@vmware.com>
+To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+CC: "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] tools/lib/traceevent: Added support for pkg-config
+Date: Fri, 28 Sep 2018 08:11:11 +0000
+Message-ID: <CAE0o1NsnjH55AQ3grNF3MM43rLZjYeeFrCRzhx1dRE8t15678g@mail.gmail.com>
 References: <20180928071940.29810-1-tstoyanov@vmware.com>
+ <20180928071940.29810-3-tstoyanov@vmware.com>
+In-Reply-To: <20180928071940.29810-3-tstoyanov@vmware.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E7B6D1FCA23D0843AF07C6A32F477AA4@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch implements new API of the tracevent library:
-int tep_ref_get(struct tep_handle *pevent);
-The API returns the reference counter "ref_count" of the tep handler.
-As "struct tep_handle" is internal only, its members cannot be accessed
-by the library users, the API is used to get the reference counter.
-
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- tools/lib/traceevent/event-parse.c | 7 +++++++
- tools/lib/traceevent/event-parse.h | 1 +
- 2 files changed, 8 insertions(+)
-
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index f327c990dedc..aa26d0e7c074 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -6774,6 +6774,13 @@ void tep_ref(struct tep_handle *pevent)
- 	pevent->ref_count++;
- }
- 
-+int tep_ref_get(struct tep_handle *pevent)
-+{
-+	if (pevent)
-+		return pevent->ref_count;
-+	return 0;
-+}
-+
- void tep_free_format_field(struct tep_format_field *field)
- {
- 	free(field->type);
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index 100b0b7b29fc..cda21a67160e 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -577,6 +577,7 @@ struct tep_handle *tep_alloc(void);
- void tep_free(struct tep_handle *pevent);
- void tep_ref(struct tep_handle *pevent);
- void tep_unref(struct tep_handle *pevent);
-+int tep_ref_get(struct tep_handle *pevent);
- 
- /* access to the internal parser */
- void tep_buffer_init(const char *buf, unsigned long long size);
--- 
-2.17.1
+T24gRnJpLCBTZXAgMjgsIDIwMTggYXQgMTA6MjAgQU0gVHp2ZXRvbWlyIFN0b3lhbm92DQo8dHN0
+b3lhbm92QHZtd2FyZS5jb20+IHdyb3RlOg0KPg0KPiBUaGlzIHBhdGNoIGltcGxlbWVudHMgaW50
+ZWdyYXRpb24gd2l0aCBwa2ctY29uZmlnIGZyYW1ld29yay4NCj4gcGtnLWNvbmZpZyBjYW4gYmUg
+dXNlZCBieSB0aGUgbGlicmFyeSB1c2VycyB0byBkZXRlcm1pbmUNCj4gcmVxdWlyZWQgQ0ZMQUdT
+IGFuZCBMREZMQUdTIGluIG9yZGVyIHRvIHVzZSB0aGUgbGlicmFyeQ0KPg0KPiBTaWduZWQtb2Zm
+LWJ5OiBUenZldG9taXIgU3RveWFub3YgPHRzdG95YW5vdkB2bXdhcmUuY29tPg0KPiAtLS0NCj4g
+IHRvb2xzL2xpYi90cmFjZWV2ZW50L01ha2VmaWxlICAgICAgICAgICAgICAgICB8IDI2ICsrKysr
+KysrKysrKysrKystLS0NCj4gIC4uLi9saWIvdHJhY2VldmVudC9saWJ0cmFjZWV2ZW50LnBjLnRl
+bXBsYXRlICB8IDEwICsrKysrKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgMzMgaW5zZXJ0aW9ucygr
+KSwgMyBkZWxldGlvbnMoLSkNCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCB0b29scy9saWIvdHJhY2Vl
+dmVudC9saWJ0cmFjZWV2ZW50LnBjLnRlbXBsYXRlDQo+DQo+IGRpZmYgLS1naXQgYS90b29scy9s
+aWIvdHJhY2VldmVudC9NYWtlZmlsZSBiL3Rvb2xzL2xpYi90cmFjZWV2ZW50L01ha2VmaWxlDQo+
+IGluZGV4IDBiNGU4MzMwODhhNC4uMDVhYzBlYzliY2QxIDEwMDY0NA0KPiAtLS0gYS90b29scy9s
+aWIvdHJhY2VldmVudC9NYWtlZmlsZQ0KPiArKysgYi90b29scy9saWIvdHJhY2VldmVudC9NYWtl
+ZmlsZQ0KPiBAQCAtMjUsNiArMjUsNyBAQCBlbmRlZg0KPiAgJChjYWxsIGFsbG93LW92ZXJyaWRl
+LENDLCQoQ1JPU1NfQ09NUElMRSlnY2MpDQo+ICAkKGNhbGwgYWxsb3ctb3ZlcnJpZGUsQVIsJChD
+Uk9TU19DT01QSUxFKWFyKQ0KPiAgJChjYWxsIGFsbG93LW92ZXJyaWRlLE5NLCQoQ1JPU1NfQ09N
+UElMRSlubSkNCj4gKyQoY2FsbCBhbGxvdy1vdmVycmlkZSxQS0dfQ09ORklHLHBrZy1jb25maWcp
+DQo+DQo+ICBFWFQgPSAtc3RkPWdudTk5DQo+ICBJTlNUQUxMID0gaW5zdGFsbA0KPiBAQCAtNDcs
+NiArNDgsOCBAQCBwcmVmaXggPz0gL3Vzci9sb2NhbA0KPiAgbGliZGlyID0gJChwcmVmaXgpLyQo
+bGliZGlyX3JlbGF0aXZlKQ0KPiAgbWFuX2RpciA9ICQocHJlZml4KS9zaGFyZS9tYW4NCj4gIG1h
+bl9kaXJfU1EgPSAnJChzdWJzdCAnLCdcJycsJChtYW5fZGlyKSknDQo+ICtwa2djb25maWdfZGly
+ID89ICQod29yZCAxLCQoc2hlbGwgJChQS0dfQ09ORklHKSAgICAgICAgICAgICAgICBcDQo+ICsg
+ICAgICAgICAgICAgICAgICAgICAgIC0tdmFyaWFibGUgcGNfcGF0aCBwa2ctY29uZmlnIHwgdHIg
+IjoiICIgIikpDQo+DQo+ICBleHBvcnQgbWFuX2RpciBtYW5fZGlyX1NRIElOU1RBTEwNCj4gIGV4
+cG9ydCBERVNURElSIERFU1RESVJfU1ENCj4gQEAgLTI3MCw3ICsyNzMsMTkgQEAgZGVmaW5lIGRv
+X2dlbmVyYXRlX2R5bmFtaWNfbGlzdF9maWxlDQo+ICAgICAgICAgZmkNCj4gIGVuZGVmDQo+DQo+
+IC1pbnN0YWxsX2xpYjogYWxsX2NtZCBpbnN0YWxsX3BsdWdpbnMNCj4gK1BLR19DT05GSUdfRklM
+RSA9IGxpYnRyYWNlZXZlbnQucGMNCj4gK2RlZmluZSBkb19pbnN0YWxsX3BrZ2NvbmZpZ19maWxl
+DQo+ICsgICAgICAgaWYgWyAtbiAiJHtwa2djb25maWdfZGlyfSIgXTsgdGhlbiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KPiArICAgICAgICAgICAgICAgY3AgLWYgJHtQ
+S0dfQ09ORklHX0ZJTEV9LnRlbXBsYXRlICR7UEtHX0NPTkZJR19GSUxFfTsgICAgICAgICAgIFwN
+Cj4gKyAgICAgICAgICAgICAgIHNlZCAtaSAic3xJTlNUQUxMX1BSRUZJWHwkezF9fGciICR7UEtH
+X0NPTkZJR19GSUxFfTsgICAgICAgICAgICBcDQo+ICsgICAgICAgICAgICAgICBzZWQgLWkgInN8
+TElCX1ZFUlNJT058JHtFVkVOVF9QQVJTRV9WRVJTSU9OfXxnIiAke1BLR19DT05GSUdfRklMRX07
+IFwNCj4gKyAgICAgICAgICAgICAgICQoY2FsbCBkb19pbnN0YWxsLCQoUEtHX0NPTkZJR19GSUxF
+KSwkKHBrZ2NvbmZpZ19kaXIpLDY0NCk7ICAgICBcDQo+ICsgICAgICAgZWxzZSAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+XA0KPiArICAgICAgICAgICAgICAgKGVjaG8gRmFpbGVkIHRvIGxvY2F0ZSBwa2ctY29uZmlnIGRp
+cmVjdG9yeSkgMT4mMjsgICAgICAgICAgICAgIFwNCj4gKyAgICAgICBmaQ0KPiArZW5kZWYNCj4g
+Kw0KPiAraW5zdGFsbF9saWI6IGFsbF9jbWQgaW5zdGFsbF9wbHVnaW5zIGluc3RhbGxfcGtnY29u
+ZmlnDQo+ICAgICAgICAgJChjYWxsIFFVSUVUX0lOU1RBTEwsICQoTElCX1RBUkdFVCkpIFwNCj4g
+ICAgICAgICAgICAgICAgICQoY2FsbCBkb19pbnN0YWxsX21rZGlyLCQobGliZGlyX1NRKSk7IFwN
+Cj4gICAgICAgICAgICAgICAgIGNwIC1mcFIgJChMSUJfSU5TVEFMTCkgJChERVNURElSKSQobGli
+ZGlyX1NRKQ0KPiBAQCAtMjc5LDYgKzI5NCwxMCBAQCBpbnN0YWxsX3BsdWdpbnM6ICQoUExVR0lO
+UykNCj4gICAgICAgICAkKGNhbGwgUVVJRVRfSU5TVEFMTCwgdHJhY2VfcGx1Z2lucykgXA0KPiAg
+ICAgICAgICAgICAgICAgJChjYWxsIGRvX2luc3RhbGxfcGx1Z2lucywgJChQTFVHSU5TKSkNCj4N
+Cj4gK2luc3RhbGxfcGtnY29uZmlnOg0KPiArICAgICAgICQoY2FsbCBRVUlFVF9JTlNUQUxMLCAk
+KFBLR19DT05GSUdfRklMRSkpIFwNCj4gKyAgICAgICAgICAgICAgICQoY2FsbCBkb19pbnN0YWxs
+X3BrZ2NvbmZpZ19maWxlLCQocHJlZml4KSkNCj4gKw0KPiAgaW5zdGFsbF9oZWFkZXJzOg0KPiAg
+ICAgICAgICQoY2FsbCBRVUlFVF9JTlNUQUxMLCBoZWFkZXJzKSBcDQo+ICAgICAgICAgICAgICAg
+ICAkKGNhbGwgZG9faW5zdGFsbCxldmVudC1wYXJzZS5oLCQocHJlZml4KS9pbmNsdWRlL3RyYWNl
+ZXZlbnQsNjQ0KTsgXA0KPiBAQCAtMjg5LDggKzMwOCw5IEBAIGluc3RhbGw6IGluc3RhbGxfbGli
+DQo+DQo+ICBjbGVhbjoNCj4gICAgICAgICAkKGNhbGwgUVVJRVRfQ0xFQU4sIGxpYnRyYWNlZXZl
+bnQpIFwNCj4gLSAgICAgICAgICAgICAgICQoUk0pICoubyAqfiAkKFRBUkdFVFMpICouYSAqLnNv
+ICQoVkVSU0lPTl9GSUxFUykgLiouZCAuKi5jbWQgXA0KPiAtICAgICAgICAgICAgICAgJChSTSkg
+VFJBQ0VFVkVOVC1DRkxBR1MgdGFncyBUQUdTDQo+ICsgICAgICAgICAgICAgICAkKFJNKSAqLm8g
+Kn4gJChUQVJHRVRTKSAqLmEgKi5zbyAkKFZFUlNJT05fRklMRVMpIC4qLmQgLiouY21kOyBcDQo+
+ICsgICAgICAgICAgICAgICAkKFJNKSBUUkFDRUVWRU5ULUNGTEFHUyB0YWdzIFRBR1M7IFwNCj4g
+KyAgICAgICAgICAgICAgICQoUk0pICQoUEtHX0NPTkZJR19GSUxFKQ0KPg0KPiAgUEhPTlkgKz0g
+Zm9yY2UgcGx1Z2lucw0KPiAgZm9yY2U6DQo+IGRpZmYgLS1naXQgYS90b29scy9saWIvdHJhY2Vl
+dmVudC9saWJ0cmFjZWV2ZW50LnBjLnRlbXBsYXRlIGIvdG9vbHMvbGliL3RyYWNlZXZlbnQvbGli
+dHJhY2VldmVudC5wYy50ZW1wbGF0ZQ0KPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiBpbmRleCAw
+MDAwMDAwMDAwMDAuLjdlNTA3OGFhZGY4NQ0KPiAtLS0gL2Rldi9udWxsDQo+ICsrKyBiL3Rvb2xz
+L2xpYi90cmFjZWV2ZW50L2xpYnRyYWNlZXZlbnQucGMudGVtcGxhdGUNCj4gQEAgLTAsMCArMSwx
+MCBAQA0KPiArcHJlZml4PUlOU1RBTExfUFJFRklYDQo+ICtsaWJkaXI9JHtwcmVmaXh9L2xpYjY0
+DQo+ICtpbmNsdWRlZGlyPSR7cHJlZml4fS9pbmNsdWRlL3RyYWNlZXZlbnQNCj4gKw0KPiArTmFt
+ZTogbGlidHJhY2VldmVudA0KPiArVVJMOiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20v
+bGludXgva2VybmVsL2dpdC9yb3N0ZWR0L3RyYWNlLWNtZC5naXQvYWJvdXQvDQoNClNob3VsZG4n
+dCB0aGlzIHJhdGhlciBwb2ludCB0byB0aGUgb2ZmaWNpYWwgcmVwbyBhdA0KaHR0cHM6Ly9naXQu
+a2VybmVsLm9yZy9wdWIvc2NtL3V0aWxzL3RyYWNlLWNtZC90cmFjZS1jbWQuZ2l0L2Fib3V0ID8N
+Cg0KPiArRGVzY3JpcHRpb246IHRyYWNlZXZlbnQgbGlicmFyeQ0KPiArVmVyc2lvbjogTElCX1ZF
+UlNJT04NCj4gK0NmbGFnczogLUkke2luY2x1ZGVkaXJ9DQo+ICtMaWJzOiAtTCR7bGliZGlyfSAt
+bHRyYWNlZXZlbnQNCj4gLS0NCj4gMi4xNy4xDQo+DQo=
