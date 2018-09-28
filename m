@@ -2,15 +2,15 @@ Return-Path: <SRS0=W9qh=MK=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-by2nam03on0049.outbound.protection.outlook.com ([104.47.42.49]:5150
         "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728825AbeI1NnC (ORCPT
+        id S1726106AbeI1NnD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 28 Sep 2018 09:43:02 -0400
+        Fri, 28 Sep 2018 09:43:03 -0400
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/3] tools/lib/traceevent: Added support for pkg-config
-Date: Fri, 28 Sep 2018 10:19:39 +0300
-Message-Id: <20180928071940.29810-3-tstoyanov@vmware.com>
+Subject: [PATCH 3/3] tools/lib/traceevent: Install trace-seq.h API header file
+Date: Fri, 28 Sep 2018 10:19:40 +0300
+Message-Id: <20180928071940.29810-4-tstoyanov@vmware.com>
 In-Reply-To: <20180928071940.29810-1-tstoyanov@vmware.com>
 References: <20180928071940.29810-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
@@ -18,97 +18,33 @@ Content-Type: text/plain
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch implements integration with pkg-config framework.
-pkg-config can be used by the library users to determine
-required CFLAGS and LDFLAGS in order to use the library
+This patch installs trace-seq.h header file on "make install".
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/Makefile                 | 26 ++++++++++++++++---
- .../lib/traceevent/libtraceevent.pc.template  | 10 +++++++
- 2 files changed, 33 insertions(+), 3 deletions(-)
- create mode 100644 tools/lib/traceevent/libtraceevent.pc.template
+ tools/lib/traceevent/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index 0b4e833088a4..05ac0ec9bcd1 100644
+index 05ac0ec9bcd1..f65243137d6d 100644
 --- a/tools/lib/traceevent/Makefile
 +++ b/tools/lib/traceevent/Makefile
-@@ -25,6 +25,7 @@ endef
- $(call allow-override,CC,$(CROSS_COMPILE)gcc)
- $(call allow-override,AR,$(CROSS_COMPILE)ar)
- $(call allow-override,NM,$(CROSS_COMPILE)nm)
-+$(call allow-override,PKG_CONFIG,pkg-config)
- 
- EXT = -std=gnu99
- INSTALL = install
-@@ -47,6 +48,8 @@ prefix ?= /usr/local
- libdir = $(prefix)/$(libdir_relative)
- man_dir = $(prefix)/share/man
- man_dir_SQ = '$(subst ','\'',$(man_dir))'
-+pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
-+			--variable pc_path pkg-config | tr ":" " "))
- 
- export man_dir man_dir_SQ INSTALL
- export DESTDIR DESTDIR_SQ
-@@ -270,7 +273,19 @@ define do_generate_dynamic_list_file
- 	fi
+@@ -285,7 +285,7 @@ define do_install_pkgconfig_file
+ 	fi	
  endef
  
--install_lib: all_cmd install_plugins
-+PKG_CONFIG_FILE = libtraceevent.pc
-+define do_install_pkgconfig_file
-+	if [ -n "${pkgconfig_dir}" ]; then 					\
-+		cp -f ${PKG_CONFIG_FILE}.template ${PKG_CONFIG_FILE}; 		\
-+		sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE}; 		\
-+		sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
-+		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
-+	else 									\
-+		(echo Failed to locate pkg-config directory) 1>&2;		\
-+	fi	
-+endef
-+
-+install_lib: all_cmd install_plugins install_pkgconfig
+-install_lib: all_cmd install_plugins install_pkgconfig
++install_lib: all_cmd install_plugins install_headers install_pkgconfig
  	$(call QUIET_INSTALL, $(LIB_TARGET)) \
  		$(call do_install_mkdir,$(libdir_SQ)); \
  		cp -fpR $(LIB_INSTALL) $(DESTDIR)$(libdir_SQ)
-@@ -279,6 +294,10 @@ install_plugins: $(PLUGINS)
- 	$(call QUIET_INSTALL, trace_plugins) \
- 		$(call do_install_plugins, $(PLUGINS))
- 
-+install_pkgconfig:
-+	$(call QUIET_INSTALL, $(PKG_CONFIG_FILE)) \
-+		$(call do_install_pkgconfig_file,$(prefix))
-+
- install_headers:
+@@ -302,6 +302,7 @@ install_headers:
  	$(call QUIET_INSTALL, headers) \
  		$(call do_install,event-parse.h,$(prefix)/include/traceevent,644); \
-@@ -289,8 +308,9 @@ install: install_lib
+ 		$(call do_install,event-utils.h,$(prefix)/include/traceevent,644); \
++		$(call do_install,trace-seq.h,$(prefix)/include/traceevent,644); \
+ 		$(call do_install,kbuffer.h,$(prefix)/include/traceevent,644)
  
- clean:
- 	$(call QUIET_CLEAN, libtraceevent) \
--		$(RM) *.o *~ $(TARGETS) *.a *.so $(VERSION_FILES) .*.d .*.cmd \
--		$(RM) TRACEEVENT-CFLAGS tags TAGS
-+		$(RM) *.o *~ $(TARGETS) *.a *.so $(VERSION_FILES) .*.d .*.cmd; \
-+		$(RM) TRACEEVENT-CFLAGS tags TAGS; \
-+		$(RM) $(PKG_CONFIG_FILE)
- 
- PHONY += force plugins
- force:
-diff --git a/tools/lib/traceevent/libtraceevent.pc.template b/tools/lib/traceevent/libtraceevent.pc.template
-new file mode 100644
-index 000000000000..7e5078aadf85
---- /dev/null
-+++ b/tools/lib/traceevent/libtraceevent.pc.template
-@@ -0,0 +1,10 @@
-+prefix=INSTALL_PREFIX
-+libdir=${prefix}/lib64
-+includedir=${prefix}/include/traceevent
-+
-+Name: libtraceevent
-+URL: https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git/about/
-+Description: traceevent library
-+Version: LIB_VERSION
-+Cflags: -I${includedir}
-+Libs: -L${libdir} -ltraceevent
+ install: install_lib
 -- 
 2.17.1
