@@ -1,85 +1,71 @@
 Return-Path: <SRS0=ZGqO=MP=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr690067.outbound.protection.outlook.com ([40.107.69.67]:19296
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726672AbeJCOV6 (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:44372 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727001AbeJCPPP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 3 Oct 2018 10:21:58 -0400
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
-To: Steven Rostedt <rostedt@goodmis.org>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>
-CC: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/5] kernel-shark-qt: Add kshark_get_X_easy()
- functions.
-Date: Wed, 3 Oct 2018 07:34:44 +0000
-Message-ID: <dce5ae6d-900e-c612-2bae-81d2ad25a0a3@vmware.com>
-References: <20181001135921.32379-1-ykaradzhov@vmware.com>
- <20181001135921.32379-2-ykaradzhov@vmware.com>
- <20181002164420.37d75e18@gandalf.local.home>
-In-Reply-To: <20181002164420.37d75e18@gandalf.local.home>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7437700D880CCD409E17EA206F9707BE@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        Wed, 3 Oct 2018 11:15:15 -0400
+Received: by mail-wr1-f67.google.com with SMTP id 63-v6so5062716wra.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 03 Oct 2018 01:27:54 -0700 (PDT)
+From: slavomir.kaslev@gmail.com
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org
+Subject: [PATCH] [virt-server] trace-cmd listen: Use sockaddr_storage for client addresses
+Date: Wed,  3 Oct 2018 11:27:43 +0300
+Message-Id: <20181003082743.12526-1-slavomir.kaslev@gmail.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-DQoNCk9uICAyLjEwLjIwMTggMjM6NDQsIFN0ZXZlbiBSb3N0ZWR0IHdyb3RlOg0KPiBPbiBNb24s
-ICAxIE9jdCAyMDE4IDE2OjU5OjE3ICswMzAwDQo+IFlvcmRhbiBLYXJhZHpob3YgPHlrYXJhZHpo
-b3ZAdm13YXJlLmNvbT4gd3JvdGU6DQo+IA0KPj4gRnJvbTogIllvcmRhbiBLYXJhZHpob3YgKFZN
-d2FyZSkiIDx5LmthcmFkekBnbWFpbC5jb20+DQo+Pg0KPj4gVGhlIGtzaGFya19nZXRfWF9lYXN5
-KCkgZnVuY3Rpb25zIGFsbG93IGZvciBhbiBlYXN5IGFjY2VzcyB0byB0aGUNCj4+IHRlcF9yZWNv
-cmQncyBmaWVsZHMuIFVzaW5nIHRoZXNlIGZ1bmN0aW9ucyBjYW4gYmUgaW5lZmZpY2llbnQgaWYg
-eW91DQo+PiBuZWVkIGFjY2VzcyB0byBtb3JlIHRoYW4gb25lIG9mIHRoZSBmaWVsZHMgb2YgdGhl
-IHJlY29yZC4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBZb3JkYW4gS2FyYWR6aG92IChWTXdhcmUp
-IDx5LmthcmFkekBnbWFpbC5jb20+DQo+PiAtLS0NCj4+ICAga2VybmVsLXNoYXJrLXF0L3NyYy9s
-aWJrc2hhcmsuYyB8IDE4NSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPj4gICBr
-ZXJuZWwtc2hhcmstcXQvc3JjL2xpYmtzaGFyay5oIHwgIDEyICsrKw0KPj4gICAyIGZpbGVzIGNo
-YW5nZWQsIDE5NyBpbnNlcnRpb25zKCspDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2tlcm5lbC1zaGFy
-ay1xdC9zcmMvbGlia3NoYXJrLmMgYi9rZXJuZWwtc2hhcmstcXQvc3JjL2xpYmtzaGFyay5jDQo+
-PiBpbmRleCA1MDY1MTFkLi5hNzk4M2ViIDEwMDY0NA0KPj4gLS0tIGEva2VybmVsLXNoYXJrLXF0
-L3NyYy9saWJrc2hhcmsuYw0KPj4gKysrIGIva2VybmVsLXNoYXJrLXF0L3NyYy9saWJrc2hhcmsu
-Yw0KPj4gQEAgLTg4OCw2ICs4ODgsMTkxIEBAIHN0YXRpYyBjb25zdCBjaGFyICprc2hhcmtfZ2V0
-X2luZm8oc3RydWN0IHRlcF9oYW5kbGUgKnBlLA0KPj4gICAJcmV0dXJuIHNlcS5idWZmZXI7DQo+
-PiAgIH0NCj4+ICAgDQo+PiArLyoqDQo+PiArICogQGJyaWVmIFRoaXMgZnVuY3Rpb24gYWxsb3dz
-IGZvciBhbiBlYXN5IGFjY2VzcyB0byB0aGUgb3JpZ2luYWwgdmFsdWUgb2YgdGhlDQo+PiArICoJ
-ICBQcm9jZXNzIElkIGFzIHJlY29yZGVkIGluIHRoZSB0ZXBfcmVjb3JkIG9iamVjdC4gVGhlIHJl
-Y29yZCBpcyByZWFkDQo+PiArICoJICBmcm9tIHRoZSBmaWxlIG9ubHkgaW4gdGhlIGNhc2Ugb2Yg
-YW4gZW50cnkgYmVpbmcgdG91Y2hlZCBieSBhIHBsdWdpbi4NCj4+ICsgKgkgIEJlIGF3YXJlIHRo
-YXQgdXNpbmcgdGhlIGtzaGFya19nZXRfWF9lYXN5IGZ1bmN0aW9ucyBjYW4gYmUNCj4+ICsgKgkg
-IGluZWZmaWNpZW50IGlmIHlvdSBuZWVkIGFuIGFjY2VzcyB0byBtb3JlIHRoYW4gb25lIG9mIHRo
-ZSBkYXRhIGZpZWxkcw0KPj4gKyAqCSAgb2YgdGhlIHJlY29yZC4NCj4+ICsgKg0KPj4gKyAqIEBw
-YXJhbSBlbnRyeTogSW5wdXQgbG9jYXRpb24gZm9yIHRoZSBLZXJuZWxTaGFyayBlbnRyeS4NCj4+
-ICsgKg0KPj4gKyAqIEByZXR1cm5zIFRoZSBvcmlnaW5hbCB2YWx1ZSBvZiB0aGUgUHJvY2VzcyBJ
-ZCBhcyByZWNvcmRlZCBpbiB0aGUNCj4+ICsgKgkgICAgdGVwX3JlY29yZCBvYmplY3Qgb24gc3Vj
-Y2Vzcywgb3RoZXJ3aXNlIG5lZ2F0aXZlIGVycm9yIGNvZGUuDQo+PiArICovDQo+PiAraW50IGtz
-aGFya19nZXRfcGlkX2Vhc3koc3RydWN0IGtzaGFya19lbnRyeSAqZW50cnkpDQo+PiArew0KPj4g
-KwlzdHJ1Y3Qga3NoYXJrX2NvbnRleHQgKmtzaGFya19jdHggPSBOVUxMOw0KPj4gKwlzdHJ1Y3Qg
-dGVwX3JlY29yZCAqZGF0YTsNCj4+ICsJaW50IHBpZDsNCj4+ICsNCj4+ICsJaWYgKCFrc2hhcmtf
-aW5zdGFuY2UoJmtzaGFya19jdHgpKQ0KPj4gKwkJcmV0dXJuIC1FRkFVTFQ7DQo+IA0KPiBQZXJo
-YXBzIHRoaXMgc2hvdWxkIHJldHVybiAtRU5PREVWOw0KPiANCj4+ICsNCj4+ICsJaWYgKGVudHJ5
-LT52aXNpYmxlICYgS1NfUExVR0lOX1VOVE9VQ0hFRF9NQVNLKSB7DQo+IA0KPiBXaGF0J3MgdGhl
-ICJVTlRPVUNIRURfTUFTSyIgbWVhbj8NCg0KV2UgdXNlIHRoZSBLU19QTFVHSU5fVU5UT1VDSEVE
-X01BU0sgdG8gY2hlY2sgdGhlIGZsYWcgKGJpdCkNCndoaWNoIGluZGljYXRlcyBpZiB0aGUgZW50
-cnkgaGFzIGJlZW4gdG91Y2hlZCBhbmQgcG90ZW50aWFsIG1vZGlmaWVkIGJ5IA0KYSBwbHVnaW4g
-Y2FsbGJhY2sgZnVuY3Rpb24uIElmIHRoZSBiaXQgaXMgc2V0IHRoaXMgbWVhbnMgdW50b3VjaGVk
-Lg0KDQpUaGlzIGZsYWcgKGJpdCkgZ2V0cyBzZXQgd2hlbiB3ZSBsb2FkIHRoZSBkYXRhICggbGli
-a3NoYXJrLmMgLyANCmdldF9yZWNvcmRzKCkpDQoNCgllbnRyeS0+dmlzaWJsZSA9IDB4RkY7DQoN
-Ci4uLg0KDQoJLyogRXhlY3V0ZSBhbGwgcGx1Z2luLXByb3ZpZGVkIGFjdGlvbnMgKGlmIGFueSku
-ICovDQoJZXZ0X2hhbmRsZXIgPSBrc2hhcmtfY3R4LT5ldmVudF9oYW5kbGVyczsNCgl3aGlsZSAo
-KGV2dF9oYW5kbGVyID0ga3NoYXJrX2ZpbmRfZXZlbnRfaGFuZGxlcihldnRfaGFuZGxlciwNCgkJ
-CQkJCWVudHJ5LT5ldmVudF9pZCkpKSB7DQoJCWV2dF9oYW5kbGVyLT5ldmVudF9mdW5jKGtzaGFy
-a19jdHgsIHJlYywgZW50cnkpOw0KCQlldnRfaGFuZGxlciA9IGV2dF9oYW5kbGVyLT5uZXh0Ow0K
-CQlpZiAoIWV2dF9oYW5kbGVyKQ0KCQkJZW50cnktPnZpc2libGUgJj0gfktTX1BMVUdJTl9VTlRP
-VUNIRURfTUFTSzsNCgl9DQoNCj4gDQo+PiArCQlwaWQgPSBlbnRyeS0+cGlkOw0KPj4gKwl9IGVs
-c2Ugew0KDQpJbiB0aGlzIGNhc2UgdGhlIGVudHJ5IGhhcyBiZWVuIHRvdWNoZWQgYnkgYSBwbHVn
-aW4uIEJlY2F1c2Ugb2YgdGhpcyB3ZSANCmRvIG5vdCB0cnVzdCB0aGUgdmFsdWUgb2YgImVudHJ5
-LT5waWQiLg0KDQo+PiArCQlkYXRhID0ga3NoYXJrX3JlYWRfYXQoa3NoYXJrX2N0eCwgZW50cnkt
-Pm9mZnNldCk7DQo+PiArCQlwaWQgPSB0ZXBfZGF0YV9waWQoa3NoYXJrX2N0eC0+cGV2ZW50LCBk
-YXRhKTsNCj4+ICsJCWZyZWVfcmVjb3JkKGRhdGEpOw0KPiANCj4gV291bGQgaXQgYmUgcG9zc2li
-bGUgdG8gZG86DQo+IA0KPiAJCWVudHJ5LT52aXNpYmxlIHw9IEtTX1BMVUdJTl9VTlRPVUNIRURf
-TUFTSzsNCj4gCQllbnRyeS0+cGlkID0gcGlkOw0KPiANCj4gPw0KPiANCj4gT2YgY291cnNlIHRo
-aXMgZGVwZW5kcyBvbiB3aGF0IHRoYXQgbWFzayBtZWFucy4NCj4gDQo+PiArCX0NCj4+ICsNCj4+
-ICsJcmV0dXJuIHBpZDsNCj4+ICt9DQo+PiArDQo=
+From: Slavomir Kaslev <kaslevs@vmware.com>
+
+`trace-cmd listen` is passing a pointer to `struct sockaddr` to `accept`
+with `addrlen` larger than its size which may corrupt the stack.
+
+Switching it to `struct sockaddr_storage` provides enough space to store
+both TCP and UNIX sockets address.
+
+Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
+---
+ tracecmd/trace-listen.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+index c05c2d8..2f2cecc 100644
+--- a/tracecmd/trace-listen.c
++++ b/tracecmd/trace-listen.c
+@@ -1956,7 +1956,7 @@ static void release_fds(struct client_list *manager)
+ static void do_accept_loop(int nfd, int vfd, int mfd)
+ {
+ 	struct client_list *client;
+-	struct sockaddr addr;
++	struct sockaddr_storage addr;
+ 	socklen_t addrlen;
+ 	char *domain = NULL;
+ 	int timeout = -1;
+@@ -2024,12 +2024,8 @@ static void do_accept_loop(int nfd, int vfd, int mfd)
+ 				continue;
+ 
+ 			if (i < FD_CONNECTED) {
+-				if (i == FD_NET)
+-					addrlen = sizeof(struct sockaddr_storage);
+-				else
+-					addrlen = sizeof(struct sockaddr_un);
+-
+-				cfd = accept(fds[i].fd, &addr, &addrlen);
++				addrlen = sizeof(addr);
++				cfd = accept(fds[i].fd, (struct sockaddr *)&addr, &addrlen);
+ 				printf("connected!\n");
+ 				if (cfd < 0 && errno == EINTR)
+ 					continue;
+@@ -2106,7 +2102,9 @@ static void do_accept_loop(int nfd, int vfd, int mfd)
+ 			}
+ 
+ 			if (i == FD_NET)
+-				pid = do_connection(cfd, &addr, addrlen, NULL, 0, NET,
++				pid = do_connection(cfd,
++						    (struct sockaddr *)&addr,
++						    addrlen, NULL, 0, NET,
+ 						    NULL);
+ 			else {
+ 				pid = do_connection(cfd, NULL, 0,
+-- 
+2.17.1
