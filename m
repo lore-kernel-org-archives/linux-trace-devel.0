@@ -1,55 +1,60 @@
 Return-Path: <SRS0=ZGqO=MP=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:49936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726966AbeJDBrU (ORCPT
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:44685 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726884AbeJDCAN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 3 Oct 2018 21:47:20 -0400
-Date: Wed, 3 Oct 2018 14:57:40 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Yordan Karadzhov <y.karadz@gmail.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: Some more updates for KernelShark
-Message-ID: <20181003145740.06cd80d6@gandalf.local.home>
-In-Reply-To: <20181003145458.165568c6@gandalf.local.home>
-References: <20181003141552.1600bfa9@gandalf.local.home>
-        <20181003145458.165568c6@gandalf.local.home>
+        Wed, 3 Oct 2018 22:00:13 -0400
+Received: by mail-wr1-f43.google.com with SMTP id 63-v6so7315546wra.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 03 Oct 2018 12:10:32 -0700 (PDT)
+Subject: Re: Still problem with red preempted boxes for tasks
+To: Steven Rostedt <rostedt@goodmis.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+References: <20181003144835.23f09933@gandalf.local.home>
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <b1b4b516-9b6a-87ea-7755-4d1952ce0444@gmail.com>
+Date: Wed, 3 Oct 2018 22:10:30 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20181003144835.23f09933@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 3 Oct 2018 14:54:58 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Steven,
 
-> On Wed, 3 Oct 2018 14:15:52 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
+Thanks a lot for this feedback!
+
+I will try to fix this before the end of the week. Not sure I manage to 
+understand what has to be done for the colors of the task plots but I 
+guess you can show me at our next 1:1.
+
+My talk tomorrow starts at 5 PM Sofia time (10 AM for you). I still 
+don't have the link for the streaming but I hope to have it tomorrow.
+
+cheers,
+Yordan
+
+
+On  3.10.2018 21:48, Steven Rostedt wrote:
+> Hi Yordan,
 > 
-> > Hi Yordan,
-> > 
-> > I'm using your latest KS for doing some real work (sched_deadline patch
-> > review so it's perfect). Two nits:
-> > 
-> > In the event description window, instead of "Cpu" it should be "CPU" as
-> > it is a proper acronym.
-> > 
-> > Second, can you do the same thing in the task plot view that you did in
-> > the CPU view. That is, when the mouse is not over an event, the
-> > description should show what CPU the task is on, like you did for the
-> > CPU plot, where it showed what task the mouse is over.  
+> While looking at my data, I found that the red empty boxes to represent
+> preemption for task plots is still unreliable.
 > 
+> Down load this: http://rostedt.org/private/trace-views.tar.bz2
 > 
-> Another issue I see. The colors of the CPUs for task plots need to stay
-> consistent. That is, CPU-1 should be the same color on all task plots.
-> This is required to see why a task was preempted.
-
-Ah, I see what is done. You have the color of the task in the task
-plot. The colors in the task plots need to be of the CPUs they
-represent, not the color of the task. We need to see how a task is
-migrating.
-
-Another enhancement (not required for 1.0 as the above requests are),
-is to have the designated color of the tasks be the background of the
-text of the tasks name in the left. And we can do the same for the CPUs.
-
--- Steve
+> Then in the /tmp directory:
+> 
+>   /tmp$ tar xvf trace-views.tar.bz2
+> 
+> Start up KernelShark, and import view1.json. Notice the red preemption
+> box and what tasks they are for. Then load view2.json and do the same,
+> the view3.json, and that as well. You'll notice that each one gives
+> different preemption boxes in the same location.
+> 
+> -- Steve
+> 
+> P.S. The session files really help with passing you debugging info like
+> this :-)
+> 
