@@ -1,48 +1,38 @@
 Return-Path: <SRS0=ZGqO=MP=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:51214 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:52440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726884AbeJDCFF (ORCPT
+        id S1726950AbeJDC0Q (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 3 Oct 2018 22:05:05 -0400
-Date: Wed, 3 Oct 2018 15:15:22 -0400
+        Wed, 3 Oct 2018 22:26:16 -0400
+Date: Wed, 3 Oct 2018 15:36:28 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To: Yordan Karadzhov <y.karadz@gmail.com>
 Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: Still problem with red preempted boxes for tasks
-Message-ID: <20181003151522.133a10ca@gandalf.local.home>
-In-Reply-To: <b1b4b516-9b6a-87ea-7755-4d1952ce0444@gmail.com>
-References: <20181003144835.23f09933@gandalf.local.home>
-        <b1b4b516-9b6a-87ea-7755-4d1952ce0444@gmail.com>
+Subject: Re: Some more updates for KernelShark
+Message-ID: <20181003153628.18ca2c24@gandalf.local.home>
+In-Reply-To: <20181003145740.06cd80d6@gandalf.local.home>
+References: <20181003141552.1600bfa9@gandalf.local.home>
+        <20181003145458.165568c6@gandalf.local.home>
+        <20181003145740.06cd80d6@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 3 Oct 2018 22:10:30 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+On Wed, 3 Oct 2018 14:57:40 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> Hi Steven,
-> 
-> Thanks a lot for this feedback!
-> 
-> I will try to fix this before the end of the week. Not sure I manage to 
-> understand what has to be done for the colors of the task plots but I 
-> guess you can show me at our next 1:1.
+> Another enhancement (not required for 1.0 as the above requests are),
+> is to have the designated color of the tasks be the background of the
+> text of the tasks name in the left. And we can do the same for the CPUs.
 
-If you look at what the old kernelshark does, you should see what I'm
-talking about.
+Another non 1.0 enhancement is a "back" button. After doing a zoom with
+a dragging of the mouse, a back button would bring you back to the zoom
+before you did the drag.
 
-For CPU plots, the colors match for what task is running on the CPU.
-
-For task plots, the colors should match for what CPU the task is
-running on. Thus, if a task migrates, it should have a different color.
-
-> 
-> My talk tomorrow starts at 5 PM Sofia time (10 AM for you). I still 
-> don't have the link for the streaming but I hope to have it tomorrow.
-
-Ah, so I shouldn't have canceled our tracing meeting, but instead made
-your talk what we do for it ;-)
+That is, several times I zoom in with the mouse (quick zoom) and then
+want to come back out to where I did before that quick zoom, but
+unfortunately there's no quick way to do that :-/
 
 -- Steve
