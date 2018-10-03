@@ -1,39 +1,82 @@
 Return-Path: <SRS0=ZGqO=MP=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:34183 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727040AbeJCPSd (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:57178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726694AbeJCUmC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 3 Oct 2018 11:18:33 -0400
-Received: by mail-wm1-f67.google.com with SMTP id z25-v6so7103685wmf.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 03 Oct 2018 01:31:11 -0700 (PDT)
-From: slavomir.kaslev@gmail.com
-To: rostedt@goodmis.org
+        Wed, 3 Oct 2018 16:42:02 -0400
+Date: Wed, 3 Oct 2018 09:53:30 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: slavomir.kaslev@gmail.com
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH] [virt-server] trace-cmd: Fix a typo in VIRT_SERVER
-Date: Wed,  3 Oct 2018 11:31:02 +0300
-Message-Id: <20181003083102.12785-1-slavomir.kaslev@gmail.com>
+Subject: Re: [PATCH] [virt-server] trace-cmd listen: Use sockaddr_storage
+ for client addresses
+Message-ID: <20181003095330.6f483e92@gandalf.local.home>
+In-Reply-To: <20181003082743.12526-1-slavomir.kaslev@gmail.com>
+References: <20181003082743.12526-1-slavomir.kaslev@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-From: Slavomir Kaslev <kaslevs@vmware.com>
+On Wed,  3 Oct 2018 11:27:43 +0300
+slavomir.kaslev@gmail.com wrote:
 
-Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
----
- VIRT-SERVER | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> From: Slavomir Kaslev <kaslevs@vmware.com>
+> 
+> `trace-cmd listen` is passing a pointer to `struct sockaddr` to `accept`
+> with `addrlen` larger than its size which may corrupt the stack.
+> 
+> Switching it to `struct sockaddr_storage` provides enough space to store
+> both TCP and UNIX sockets address.
+> 
+> Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
+> ---
+>  tracecmd/trace-listen.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+> index c05c2d8..2f2cecc 100644
+> --- a/tracecmd/trace-listen.c
+> +++ b/tracecmd/trace-listen.c
+> @@ -1956,7 +1956,7 @@ static void release_fds(struct client_list *manager)
+>  static void do_accept_loop(int nfd, int vfd, int mfd)
+>  {
+>  	struct client_list *client;
+> -	struct sockaddr addr;
+> +	struct sockaddr_storage addr;
 
-diff --git a/VIRT-SERVER b/VIRT-SERVER
-index b4ce550..1970cec 100644
---- a/VIRT-SERVER
-+++ b/VIRT-SERVER
-@@ -277,7 +277,7 @@ You can also add host tracing as well.
-  # trace-cmd -e kvm -e irq -A Guest1 -e irq -A Guest2 -e irq
- 
- The above enables kvm and irq events on the host, and irq events on guests
--Gust1 and Gust2. Notice that this is run as root. In order to enable tracing
-+Guest1 and Guest2. Notice that this is run as root. In order to enable tracing
- on the host, root privliges are required.
- 
- 
--- 
-2.17.1
+Bah, nice catch.
+
+-- Steve
+
+
+>  	socklen_t addrlen;
+>  	char *domain = NULL;
+>  	int timeout = -1;
+> @@ -2024,12 +2024,8 @@ static void do_accept_loop(int nfd, int vfd, int mfd)
+>  				continue;
+>  
+>  			if (i < FD_CONNECTED) {
+> -				if (i == FD_NET)
+> -					addrlen = sizeof(struct sockaddr_storage);
+> -				else
+> -					addrlen = sizeof(struct sockaddr_un);
+> -
+> -				cfd = accept(fds[i].fd, &addr, &addrlen);
+> +				addrlen = sizeof(addr);
+> +				cfd = accept(fds[i].fd, (struct sockaddr *)&addr, &addrlen);
+>  				printf("connected!\n");
+>  				if (cfd < 0 && errno == EINTR)
+>  					continue;
+> @@ -2106,7 +2102,9 @@ static void do_accept_loop(int nfd, int vfd, int mfd)
+>  			}
+>  
+>  			if (i == FD_NET)
+> -				pid = do_connection(cfd, &addr, addrlen, NULL, 0, NET,
+> +				pid = do_connection(cfd,
+> +						    (struct sockaddr *)&addr,
+> +						    addrlen, NULL, 0, NET,
+>  						    NULL);
+>  			else {
+>  				pid = do_connection(cfd, NULL, 0,
