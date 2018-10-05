@@ -1,18 +1,18 @@
 Return-Path: <SRS0=Wk/S=MR=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr700082.outbound.protection.outlook.com ([40.107.70.82]:10650
+Received: from mail-eopbgr700068.outbound.protection.outlook.com ([40.107.70.68]:4464
         "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728044AbeJFBdS (ORCPT
+        id S1728044AbeJFBdW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 5 Oct 2018 21:33:18 -0400
+        Fri, 5 Oct 2018 21:33:22 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3 1/5] kernel-shark-qt: Add kshark_get_X_easy() functions.
-Date: Fri, 5 Oct 2018 18:33:20 +0000
-Message-ID: <20181005183241.27026-2-ykaradzhov@vmware.com>
+Subject: [PATCH v3 2/5] kernel-shark-qt: Add kshark_convert_nano() function
+Date: Fri, 5 Oct 2018 18:33:24 +0000
+Message-ID: <20181005183241.27026-3-ykaradzhov@vmware.com>
 References: <20181005183241.27026-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181005183241.27026-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -24,227 +24,41 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 
-The kshark_get_X_easy() functions allow for an easy access to the
-tep_record's fields. Using these functions can be inefficient if you
-need access to more than one of the fields of the record.
+kshark_convert_nano() is used to convert the original value of the
+timestamp of the trace records (having nanosecond precision) into two
+values representing the time in seconds and milliseconds.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/libkshark.c | 196 ++++++++++++++++++++++++++++++++
- kernel-shark-qt/src/libkshark.h |  12 ++
- 2 files changed, 208 insertions(+)
+ kernel-shark-qt/src/libkshark.c | 16 ++++++++++++++++
+ kernel-shark-qt/src/libkshark.h |  2 ++
+ 2 files changed, 18 insertions(+)
 
 diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshar=
 k.c
-index 506511d..ef577e0 100644
+index ef577e0..d9d1929 100644
 --- a/kernel-shark-qt/src/libkshark.c
 +++ b/kernel-shark-qt/src/libkshark.c
-@@ -888,6 +888,202 @@ static const char *kshark_get_info(struct tep_handle =
-*pe,
- 	return seq.buffer;
+@@ -1084,6 +1084,22 @@ const char *kshark_get_info_easy(struct kshark_entry=
+ *entry)
+ 	return info;
  }
 =20
 +/**
-+ * @brief This function allows for an easy access to the original value of=
- the
-+ *	  Process Id as recorded in the tep_record object. The record is read
-+ *	  from the file only in the case of an entry being touched by a plugin.
-+ *	  Be aware that using the kshark_get_X_easy functions can be
-+ *	  inefficient if you need an access to more than one of the data fields
-+ *	  of the record.
++ * @brief Convert the timestamp of the trace record (nanosecond precision)=
+ into
++ *	  seconds and microseconds.
 + *
-+ * @param entry: Input location for the KernelShark entry.
-+ *
-+ * @returns The original value of the Process Id as recorded in the
-+ *	    tep_record object on success, otherwise negative error code.
++ * @param time: Input location for the timestamp.
++ * @param sec: Output location for the value of the seconds.
++ * @param usec: Output location for the value of the microseconds.
 + */
-+int kshark_get_pid_easy(struct kshark_entry *entry)
++void kshark_convert_nano(uint64_t time, uint64_t *sec, uint64_t *usec)
 +{
-+	struct kshark_context *kshark_ctx =3D NULL;
-+	struct tep_record *data;
-+	int pid;
++	uint64_t s;
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return -ENODEV;
-+
-+	if (entry->visible & KS_PLUGIN_UNTOUCHED_MASK) {
-+		pid =3D entry->pid;
-+	} else {
-+		/*
-+		 * The entry has been touched by a plugin callback function.
-+		 * Because of this we do not trust the value of "entry->pid".
-+		 */
-+		data =3D kshark_read_at(kshark_ctx, entry->offset);
-+		pid =3D tep_data_pid(kshark_ctx->pevent, data);
-+		free_record(data);
-+	}
-+
-+	return pid;
-+}
-+
-+/**
-+ * @brief This function allows for an easy access to the original value of=
- the
-+ *	  Task name as recorded in the tep_record object. The record is read
-+ *	  from the file only in the case of an entry being touched by a plugin.
-+ *	  Be aware that using the kshark_get_X_easy functions can be
-+ *	  inefficient if you need an access to more than one of the data fields
-+ *	  of the record.
-+ *
-+ * @param entry: Input location for the KernelShark entry.
-+ *
-+ * @returns The original name of the task, retrieved from the Process Id
-+ *	    recorded in the tep_record object on success, otherwise NULL.
-+ */
-+const char *kshark_get_task_easy(struct kshark_entry *entry)
-+{
-+	struct kshark_context *kshark_ctx =3D NULL;
-+	int pid =3D kshark_get_pid_easy(entry);
-+
-+	if (pid < 0)
-+		return NULL;
-+
-+	kshark_instance(&kshark_ctx);
-+	return tep_data_comm_from_pid(kshark_ctx->pevent, pid);
-+}
-+
-+/**
-+ * @brief This function allows for an easy access to the latency informati=
-on
-+ *	  recorded in the tep_record object. The record is read from the file
-+ *	  using the offset field of kshark_entry. Be aware that using the
-+ *	  kshark_get_X_easy functions can be inefficient if you need an access
-+ *	  to more than one of the data fields of the record.
-+ *
-+ * @param entry: Input location for the KernelShark entry.
-+ *
-+ * @returns On success the function returns a string showing the latency
-+ *	    information, coded into 5 fields:
-+ *	    interrupts disabled, need rescheduling, hard/soft interrupt,
-+ *	    preempt count and lock depth. On failure it returns NULL.
-+ */
-+const char *kshark_get_latency_easy(struct kshark_entry *entry)
-+{
-+	struct kshark_context *kshark_ctx =3D NULL;
-+	struct tep_record *data;
-+	const char *lat;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return NULL;
-+
-+	data =3D kshark_read_at(kshark_ctx, entry->offset);
-+	lat =3D kshark_get_latency(kshark_ctx->pevent, data);
-+	free_record(data);
-+
-+	return lat;
-+}
-+
-+/**
-+ * @brief This function allows for an easy access to the original value of=
- the
-+ *	  Event Id as recorded in the tep_record object. The record is read
-+ *	  from the file only in the case of an entry being touched by a plugin.
-+ *	  Be aware that using the kshark_get_X_easy functions can be
-+ *	  inefficient if you need an access to more than one of the data fields
-+ *	  of the record.
-+ *
-+ * @param entry: Input location for the KernelShark entry.
-+ *
-+ * @returns The original value of the Event Id as recorded in the
-+ *	    tep_record object on success, otherwise negative error code.
-+ */
-+int kshark_get_event_id_easy(struct kshark_entry *entry)
-+{
-+	struct kshark_context *kshark_ctx =3D NULL;
-+	struct tep_record *data;
-+	int event_id;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return -ENODEV;
-+
-+	if (entry->visible & KS_PLUGIN_UNTOUCHED_MASK) {
-+		event_id =3D entry->event_id;
-+	} else {
-+		/*
-+		 * The entry has been touched by a plugin callback function.
-+		 * Because of this we do not trust the value of
-+		 * "entry->event_id".
-+		 */
-+		data =3D kshark_read_at(kshark_ctx, entry->offset);
-+		event_id =3D tep_data_type(kshark_ctx->pevent, data);
-+		free_record(data);
-+	}
-+
-+	return event_id;
-+}
-+
-+/**
-+ * @brief This function allows for an easy access to the original name of =
-the
-+ *	  trace event as recorded in the tep_record object. The record is read
-+ *	  from the file only in the case of an entry being touched by a plugin.
-+ *	  Be aware that using the kshark_get_X_easy functions can be
-+ *	  inefficient if you need an access to more than one of the data fields
-+ *	  of the record.
-+ *
-+ * @param entry: Input location for the KernelShark entry.
-+ *
-+ * @returns The mane of the trace event recorded in the tep_record object =
-on
-+ *	    success, otherwise "[UNKNOWN EVENT]" or NULL.
-+ */
-+const char *kshark_get_event_name_easy(struct kshark_entry *entry)
-+{
-+	struct kshark_context *kshark_ctx =3D NULL;
-+	struct event_format *event;
-+
-+	int event_id =3D kshark_get_event_id_easy(entry);
-+
-+	if (event_id < 0)
-+		return NULL;
-+
-+	kshark_instance(&kshark_ctx);
-+	event =3D tep_data_event_from_type(kshark_ctx->pevent, event_id);
-+	if (event)
-+		return event->name;
-+
-+	return "[UNKNOWN EVENT]";
-+}
-+
-+/**
-+ * @brief This function allows for an easy access to the tep_record's info
-+ *	  streang. The record is read from the file using the offset field of
-+ *	  kshark_entry. Be aware that using the kshark_get_X_easy functions can
-+ *	  be inefficient if you need an access to more than one of the data
-+ *	  fields of the record.
-+ *
-+ * @param entry: Input location for the KernelShark entry.
-+ *
-+ * @returns A string showing the data output of the trace event on success=
-,
-+ *	    otherwise NULL.
-+ */
-+const char *kshark_get_info_easy(struct kshark_entry *entry)
-+{
-+	struct kshark_context *kshark_ctx =3D NULL;
-+	struct event_format *event;
-+	struct tep_record *data;
-+	const char *info =3D NULL;
-+	int event_id;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return NULL;
-+
-+	data =3D kshark_read_at(kshark_ctx, entry->offset);
-+
-+	event_id =3D tep_data_type(kshark_ctx->pevent, data);
-+	event =3D tep_data_event_from_type(kshark_ctx->pevent, event_id);
-+	if (event)
-+		info =3D kshark_get_info(kshark_ctx->pevent, data, event);
-+
-+	free_record(data);
-+
-+	return info;
++	*sec =3D s =3D time / 1000000000ULL;
++	*usec =3D (time - s * 1000000000ULL) / 1000;
 +}
 +
  /**
@@ -253,24 +67,15 @@ tes
   *	  a null terminated string and returns a pointer to this string. The
 diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshar=
 k.h
-index e846c85..f00a584 100644
+index f00a584..d24ed8c 100644
 --- a/kernel-shark-qt/src/libkshark.h
 +++ b/kernel-shark-qt/src/libkshark.h
-@@ -148,6 +148,18 @@ void kshark_close(struct kshark_context *kshark_ctx);
+@@ -160,6 +160,8 @@ const char *kshark_get_event_name_easy(struct kshark_en=
+try *entry);
 =20
- void kshark_free(struct kshark_context *kshark_ctx);
+ const char *kshark_get_info_easy(struct kshark_entry *entry);
 =20
-+int kshark_get_pid_easy(struct kshark_entry *entry);
-+
-+const char *kshark_get_task_easy(struct kshark_entry *entry);
-+
-+const char *kshark_get_latency_easy(struct kshark_entry *entry);
-+
-+int kshark_get_event_id_easy(struct kshark_entry *entry);
-+
-+const char *kshark_get_event_name_easy(struct kshark_entry *entry);
-+
-+const char *kshark_get_info_easy(struct kshark_entry *entry);
++void kshark_convert_nano(uint64_t time, uint64_t *sec, uint64_t *usec);
 +
  char* kshark_dump_entry(const struct kshark_entry *entry);
 =20
