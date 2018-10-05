@@ -1,25 +1,24 @@
 Return-Path: <SRS0=Wk/S=MR=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:45290 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728118AbeJETwV (ORCPT
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37318 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727788AbeJEUaA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 5 Oct 2018 15:52:21 -0400
-Received: by mail-wr1-f65.google.com with SMTP id q5-v6so13427499wrw.12
-        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Oct 2018 05:53:43 -0700 (PDT)
+        Fri, 5 Oct 2018 16:30:00 -0400
+Received: by mail-wm1-f66.google.com with SMTP id 185-v6so1968181wmt.2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Oct 2018 06:31:12 -0700 (PDT)
 From: tzvmware@gmail.com
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
         Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Subject: [PATCH v2] tools/lib/traceevent, tools/perf: Move struct tep_handler definition in a local header file
-Date: Fri,  5 Oct 2018 15:53:40 +0300
-Message-Id: <20181005125340.15853-1-tzvmware@gmail.com>
-In-Reply-To: <20181002200528.3d51e2d7@gandalf.local.home>
-References: <20181002200528.3d51e2d7@gandalf.local.home>
+Date: Fri,  5 Oct 2018 16:31:09 +0300
+Message-Id: <20181005133109.18740-1-tzvmware@gmail.com>
+In-Reply-To: <20181005091709.2bd7abe8@gandalf.local.home>
+References: <20181005091709.2bd7abe8@gandalf.local.home>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+From: "Tzvetomir Stoyanov <tstoyanov@vmware.com>"
 
 As traceevent is going to be transfered into a poper library,
 its local data should be protected from the library users.
