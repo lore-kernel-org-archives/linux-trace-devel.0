@@ -1,78 +1,68 @@
 Return-Path: <SRS0=Wk/S=MR=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-by2nam01on0078.outbound.protection.outlook.com ([104.47.34.78]:4782
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728044AbeJFBda (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:53348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728139AbeJFCU7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 5 Oct 2018 21:33:30 -0400
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
+        Fri, 5 Oct 2018 22:20:59 -0400
+Date: Fri, 5 Oct 2018 15:20:50 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH v3 5/5] kernel-shark-qt: Fix a bug in
- kshark_data_collection_alloc()
-Date: Fri, 5 Oct 2018 18:33:32 +0000
-Message-ID: <20181005183241.27026-6-ykaradzhov@vmware.com>
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: Re: [PATCH v3 1/5] kernel-shark-qt: Add kshark_get_X_easy()
+ functions.
+Message-ID: <20181005152050.06c347af@gandalf.local.home>
+In-Reply-To: <20181005183241.27026-2-ykaradzhov@vmware.com>
 References: <20181005183241.27026-1-ykaradzhov@vmware.com>
-In-Reply-To: <20181005183241.27026-1-ykaradzhov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        <20181005183241.27026-2-ykaradzhov@vmware.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-The margin data added at the end of the data interval of the collection
-may actually include the beginning of another interval. Because of this
-we have to iterate over the margin data and check for "good" entries. In
-the case of a "good" entry being found, we have to continue extending the
-last interval.
+On Fri, 5 Oct 2018 18:33:20 +0000
+Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark-qt/src/libkshark-collection.c | 27 +++++++++++++++-------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+> +/**
+> + * @brief This function allows for an easy access to the original name of the
+> + *	  trace event as recorded in the tep_record object. The record is read
+> + *	  from the file only in the case of an entry being touched by a plugin.
+> + *	  Be aware that using the kshark_get_X_easy functions can be
+> + *	  inefficient if you need an access to more than one of the data fields
+> + *	  of the record.
+> + *
+> + * @param entry: Input location for the KernelShark entry.
+> + *
+> + * @returns The mane of the trace event recorded in the tep_record object on
+> + *	    success, otherwise "[UNKNOWN EVENT]" or NULL.
+> + */
+> +const char *kshark_get_event_name_easy(struct kshark_entry *entry)
+> +{
+> +	struct kshark_context *kshark_ctx = NULL;
+> +	struct event_format *event;
 
-diff --git a/kernel-shark-qt/src/libkshark-collection.c b/kernel-shark-qt/s=
-rc/libkshark-collection.c
-index 79b6fff..9838042 100644
---- a/kernel-shark-qt/src/libkshark-collection.c
-+++ b/kernel-shark-qt/src/libkshark-collection.c
-@@ -157,14 +157,25 @@ kshark_data_collection_alloc(struct kshark_context *k=
-shark_ctx,
- 			 * number of margin entries requested, keep adding
- 			 * until you fill the margin.
- 			 */
--			if (i + margin < j)
--				i =3D j;
--			else
--				i +=3D margin;
--
--			last_added =3D i;
--			collection_add_entry(&temp, i, COLLECTION_BREAK);
--			++break_count;
-+			if (i + margin >=3D j) {
-+				for (;j < i + margin; ++j) {
-+					if (cond(kshark_ctx, data[j], val)) {
-+						/*
-+						 * Good data has been found.
-+						 * Continue extending the
-+						 * previous data interval.
-+						 */
-+						good_data =3D true;
-+						break;
-+					}
-+				}
-+			}
-+
-+			last_added =3D i =3D j;
-+			if (!good_data) {
-+				collection_add_entry(&temp, i, COLLECTION_BREAK);
-+				++break_count;
-+			}
- 		}
- 	}
-=20
---=20
-2.17.1
+I had to fix this up as it is now called tep_event_format.
+
+I applied this series and pushed it out. You may want to rebase and do a
+make clean on your repo.
+
+Thanks!
+
+-- Steve
+
+> +
+> +	int event_id = kshark_get_event_id_easy(entry);
+> +
+> +	if (event_id < 0)
+> +		return NULL;
+> +
+> +	kshark_instance(&kshark_ctx);
+> +	event = tep_data_event_from_type(kshark_ctx->pevent, event_id);
+> +	if (event)
+> +		return event->name;
+> +
+> +	return "[UNKNOWN EVENT]";
+> +}
+> +
