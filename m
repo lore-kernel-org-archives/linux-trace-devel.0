@@ -1,18 +1,19 @@
 Return-Path: <SRS0=Wk/S=MR=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr700068.outbound.protection.outlook.com ([40.107.70.68]:4464
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-by2nam01on0085.outbound.protection.outlook.com ([104.47.34.85]:56048
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728044AbeJFBdW (ORCPT
+        id S1728044AbeJFBdZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 5 Oct 2018 21:33:22 -0400
+        Fri, 5 Oct 2018 21:33:25 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3 2/5] kernel-shark-qt: Add kshark_convert_nano() function
-Date: Fri, 5 Oct 2018 18:33:24 +0000
-Message-ID: <20181005183241.27026-3-ykaradzhov@vmware.com>
+Subject: [PATCH v3 3/5] kernel-shark-qt: Add functions for fast clearing of
+ the filters.
+Date: Fri, 5 Oct 2018 18:33:27 +0000
+Message-ID: <20181005183241.27026-4-ykaradzhov@vmware.com>
 References: <20181005183241.27026-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181005183241.27026-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -24,61 +25,90 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 
-kshark_convert_nano() is used to convert the original value of the
-timestamp of the trace records (having nanosecond precision) into two
-values representing the time in seconds and milliseconds.
+The first added function checks if any Id filter is set.
+
+The second added function is used to reset the "visible" field of each
+entry to the default value of "0xFF" (visible everywhere).
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/libkshark.c | 16 ++++++++++++++++
- kernel-shark-qt/src/libkshark.h |  2 ++
- 2 files changed, 18 insertions(+)
+ kernel-shark-qt/src/libkshark.c | 28 +++++++++++++++++++++++++++-
+ kernel-shark-qt/src/libkshark.h |  6 ++++++
+ 2 files changed, 33 insertions(+), 1 deletion(-)
 
 diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshar=
 k.c
-index ef577e0..d9d1929 100644
+index d9d1929..56ae3ce 100644
 --- a/kernel-shark-qt/src/libkshark.c
 +++ b/kernel-shark-qt/src/libkshark.c
-@@ -1084,6 +1084,22 @@ const char *kshark_get_info_easy(struct kshark_entry=
- *entry)
- 	return info;
+@@ -427,7 +427,14 @@ static bool filter_is_set(struct tracecmd_filter_id *f=
+ilter)
+ 	return filter && filter->count;
+ }
+=20
+-static bool kshark_filter_is_set(struct kshark_context *kshark_ctx)
++/**
++ * @brief Check if an Id filter is set.
++ *
++ * @param kshark_ctx: Input location for the session context pointer.
++ *
++ * @returns True if at least one Id filter is set, otherwise False.
++ */
++bool kshark_filter_is_set(struct kshark_context *kshark_ctx)
+ {
+ 	return filter_is_set(kshark_ctx->show_task_filter) ||
+ 	       filter_is_set(kshark_ctx->hide_task_filter) ||
+@@ -499,6 +506,25 @@ void kshark_filter_entries(struct kshark_context *ksha=
+rk_ctx,
+ 	}
  }
 =20
 +/**
-+ * @brief Convert the timestamp of the trace record (nanosecond precision)=
- into
-+ *	  seconds and microseconds.
++ * @brief This function loops over the array of entries specified by "data=
+"
++ *	  and "n_entries" and resets the "visible" fields of each entry to
++ *	  the default value of "0xFF" (visible everywhere).
 + *
-+ * @param time: Input location for the timestamp.
-+ * @param sec: Output location for the value of the seconds.
-+ * @param usec: Output location for the value of the microseconds.
++ * @param kshark_ctx: Input location for the session context pointer.
++ * @param data: Input location for the trace data to be unfiltered.
++ * @param n_entries: The size of the inputted data.
 + */
-+void kshark_convert_nano(uint64_t time, uint64_t *sec, uint64_t *usec)
++void kshark_clear_all_filters(struct kshark_context *kshark_ctx,
++			      struct kshark_entry **data,
++			      size_t n_entries)
 +{
-+	uint64_t s;
++	int i;
 +
-+	*sec =3D s =3D time / 1000000000ULL;
-+	*usec =3D (time - s * 1000000000ULL) / 1000;
++	for (i =3D 0; i < n_entries; ++i)
++		data[i]->visible =3D 0xFF;
 +}
 +
- /**
-  * @brief Dump into a string the content of one entry. The function alloca=
-tes
-  *	  a null terminated string and returns a pointer to this string. The
+ static void kshark_set_entry_values(struct kshark_context *kshark_ctx,
+ 				    struct tep_record *record,
+ 				    struct kshark_entry *entry)
 diff --git a/kernel-shark-qt/src/libkshark.h b/kernel-shark-qt/src/libkshar=
 k.h
-index f00a584..d24ed8c 100644
+index d24ed8c..a329e08 100644
 --- a/kernel-shark-qt/src/libkshark.h
 +++ b/kernel-shark-qt/src/libkshark.h
-@@ -160,6 +160,8 @@ const char *kshark_get_event_name_easy(struct kshark_en=
-try *entry);
+@@ -226,10 +226,16 @@ void kshark_filter_add_id(struct kshark_context *ksha=
+rk_ctx,
 =20
- const char *kshark_get_info_easy(struct kshark_entry *entry);
+ void kshark_filter_clear(struct kshark_context *kshark_ctx, int filter_id)=
+;
 =20
-+void kshark_convert_nano(uint64_t time, uint64_t *sec, uint64_t *usec);
++bool kshark_filter_is_set(struct kshark_context *kshark_ctx);
 +
- char* kshark_dump_entry(const struct kshark_entry *entry);
+ void kshark_filter_entries(struct kshark_context *kshark_ctx,
+ 			   struct kshark_entry **data,
+ 			   size_t n_entries);
 =20
- struct tep_record *kshark_read_at(struct kshark_context *kshark_ctx,
++void kshark_clear_all_filters(struct kshark_context *kshark_ctx,
++			      struct kshark_entry **data,
++			      size_t n_entries);
++
+ /** Search failed identifiers. */
+ enum kshark_search_failed {
+ 	/** All entries have timestamps greater timestamps. */
 --=20
 2.17.1
