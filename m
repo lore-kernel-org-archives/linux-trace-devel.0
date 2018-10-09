@@ -1,855 +1,374 @@
-Return-Path: <SRS0=f4gm=MU=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:42440 "EHLO mail.kernel.org"
+Return-Path: <SRS0=LhtG=MV=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail.kernel.org ([198.145.29.99]:41846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726391AbeJIDIG (ORCPT
+        id S1725794AbeJIIJG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 8 Oct 2018 23:08:06 -0400
-Date: Mon, 8 Oct 2018 15:54:39 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH] tools/lib/traceevent, tools/perf: Move struct
- tep_handler definition in a local header file
-Message-ID: <20181008155439.3a9cd66e@gandalf.local.home>
-In-Reply-To: <20181008173224.GP3541@kernel.org>
-References: <20181005122225.522155df@gandalf.local.home>
-        <20181005122846.4b974dbd@gandalf.local.home>
-        <20181008173224.GP3541@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+        Tue, 9 Oct 2018 04:09:06 -0400
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Hendrik Brueckner <brueckner@linux.vnet.ibm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        linux trace devel <linux-trace-devel@vger.kernel.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Sanskriti Sharma <sansharm@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Wang Nan <wangnan0@huawei.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [GIT PULL 00/12] perf/core improvements and fixes
+Date: Mon,  8 Oct 2018 21:54:15 -0300
+Message-Id: <20181009005427.6607-1-acme@kernel.org>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Mon, 8 Oct 2018 14:32:24 -0300
-Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+Hi Ingo,
 
-> Em Fri, Oct 05, 2018 at 12:28:46PM -0400, Steven Rostedt escreveu:
-> > On Fri, 5 Oct 2018 12:22:25 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >   
-> > > +/**
-> > > + * tep_get_first_event - returns the first event in the events array
-> > > + * @tep: a handle to the tep_handle
-> > > + *
-> > > + * This returns pointer to the first element of the events array
-> > > + * If @tep is NULL, NULL is returned.
-> > > + */
-> > > +struct tep_event_format *tep_get_first_event(struct tep_handle *tep)
-> > > +{
-> > > +	if(tep && tep->events)
-> > > +		return tep->events[0];
-> > > +
-> > > +	return NULL;
-> > > +}
-> > > +  
-> > 
-> > Hold off on pulling this in. This patch has some whitespace issues that
-> > need to be cleaned up.  
-> 
-> Ah, that if( thing? ?I can fix it here, holler if there is more than
-> that.
+	Please consider pulling,
 
-Well, here's a fixed up version anyway...
+- Arnaldo
 
--- Steve
+Test results at the end of this message, as usual.
 
+The following changes since commit 7c5314b88da6d5af98239786772a1c44cc5eb67d:
 
->From 96dd7937a31d3a715c450c9a67f62a0022cd6a7c Mon Sep 17 00:00:00 2001
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Date: Mon, 8 Oct 2018 15:55:00 +0300
-Subject: [PATCH] tools/lib/traceevent, tools/perf: Move struct tep_handler
- definition in a local header file
+  perf/x86/intel: Add quirk for Goldmont Plus (2018-10-02 10:14:33 +0200)
 
-As traceevent is going to be transferred into a proper library,
-its local data should be protected from the library users.
-This patch capsulates struct tep_handler into a local header,
-not visible outside of the library. It implements also a bunch
-of new APIs, which library users can use to access tep_handler members.
-Version 3 of the patch - fixed whitespace issues.
+are available in the Git repository at:
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- tools/lib/traceevent/Build               |   1 +
+  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-core-for-mingo-4.20-20181008
+
+for you to fetch changes up to bb3dd7e7c4d5e024d607c0ec06c2a2fb9408cc99:
+
+  tools lib traceevent, perf tools: Move struct tep_handler definition in a local header file (2018-10-08 15:05:37 -0300)
+
+----------------------------------------------------------------
+perf/core improvements and fixes:
+
+. Fix building the python bindings with python3, which fixes some
+  problems with building with clang on Clear Linux (Eduardo Habkost)
+
+. Fix coverity warnings, fixing up some error paths and plugging
+  some temporary small buffer leaks (Sanskriti Sharma)
+
+. Adopt a wrapper for strerror_r() for the same reasons as recently
+  for libbpf (Steven Rostedt)
+
+. S390 does not support watchpoints in 'perf test 22', check if
+  that test is supported by the arch. (Thomas Richter)
+
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+----------------------------------------------------------------
+Arnaldo Carvalho de Melo (2):
+      tools include: Adopt linux/bits.h
+      perf auxtrace: Include missing asm/bitsperlong.h to get BITS_PER_LONG
+
+Eduardo Habkost (2):
+      perf python: Make clang_has_option() work on Python 3
+      perf python: More portable way to make CFLAGS work with clang
+
+Sanskriti Sharma (5):
+      perf strbuf: Match va_{add,copy} with va_end
+      perf tools: Cleanup trace-event-info 'tdata' leak
+      perf tools: Free 'printk' string in parse_ftrace_printk()
+      perf tools: Avoid double free in read_event_file()
+      perf tools: Free temporary 'sys' string in read_event_files()
+
+Steven Rostedt (VMware) (1):
+      tools lib traceevent: Separate out tep_strerror() for strerror_r() issues
+
+Thomas Richter (1):
+      perf test: S390 does not support watchpoints in test 22
+
+Tzvetomir Stoyanov (1):
+      tools lib traceevent, perf tools: Move struct tep_handler definition in a local header file
+
+ tools/include/linux/bitops.h             |   7 +-
+ tools/include/linux/bits.h               |  26 +++
+ tools/lib/traceevent/Build               |   2 +
  tools/lib/traceevent/event-parse-api.c   | 275 +++++++++++++++++++++++++++++++
  tools/lib/traceevent/event-parse-local.h |  92 +++++++++++
- tools/lib/traceevent/event-parse.c       |   2 +
- tools/lib/traceevent/event-parse.h       | 230 ++++----------------------
+ tools/lib/traceevent/event-parse.c       |  32 +---
+ tools/lib/traceevent/event-parse.h       | 228 ++++---------------------
  tools/lib/traceevent/event-plugin.c      |   1 +
  tools/lib/traceevent/parse-filter.c      |   1 +
- tools/perf/util/trace-event-parse.c      |  25 +--
- tools/perf/util/trace-event-read.c       |   2 +-
- 9 files changed, 417 insertions(+), 212 deletions(-)
+ tools/lib/traceevent/tep_strerror.c      |  53 ++++++
+ tools/perf/check-headers.sh              |   1 +
+ tools/perf/tests/builtin-test.c          |   1 +
+ tools/perf/tests/tests.h                 |   1 +
+ tools/perf/tests/wp.c                    |  12 ++
+ tools/perf/util/auxtrace.h               |   1 +
+ tools/perf/util/setup.py                 |  16 +-
+ tools/perf/util/strbuf.c                 |  10 +-
+ tools/perf/util/trace-event-info.c       |   2 +
+ tools/perf/util/trace-event-parse.c      |  26 +--
+ tools/perf/util/trace-event-read.c       |  11 +-
+ 20 files changed, 539 insertions(+), 259 deletions(-)
+ create mode 100644 tools/include/linux/bits.h
  create mode 100644 tools/lib/traceevent/event-parse-api.c
  create mode 100644 tools/lib/traceevent/event-parse-local.h
+ create mode 100644 tools/lib/traceevent/tep_strerror.c
 
-diff --git a/tools/lib/traceevent/Build b/tools/lib/traceevent/Build
-index 0050c145d806..ba54bfce0b0b 100644
---- a/tools/lib/traceevent/Build
-+++ b/tools/lib/traceevent/Build
-@@ -5,6 +5,7 @@ libtraceevent-y += parse-filter.o
- libtraceevent-y += parse-utils.o
- libtraceevent-y += kbuffer-parse.o
- libtraceevent-y += tep_strerror.o
-+libtraceevent-y += event-parse-api.o
- 
- plugin_jbd2-y         += plugin_jbd2.o
- plugin_hrtimer-y      += plugin_hrtimer.o
-diff --git a/tools/lib/traceevent/event-parse-api.c b/tools/lib/traceevent/event-parse-api.c
-new file mode 100644
-index 000000000000..3b9371fb41cf
---- /dev/null
-+++ b/tools/lib/traceevent/event-parse-api.c
-@@ -0,0 +1,275 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+/*
-+ * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-+ *
-+ */
-+
-+#include "event-parse.h"
-+#include "event-parse-local.h"
-+#include "event-utils.h"
-+
-+/**
-+ * tep_get_first_event - returns the first event in the events array
-+ * @tep: a handle to the tep_handle
-+ *
-+ * This returns pointer to the first element of the events array
-+ * If @tep is NULL, NULL is returned.
-+ */
-+struct tep_event_format *tep_get_first_event(struct tep_handle *tep)
-+{
-+	if (tep && tep->events)
-+		return tep->events[0];
-+
-+	return NULL;
-+}
-+
-+/**
-+ * tep_get_events_count - get the number of defined events
-+ * @tep: a handle to the tep_handle
-+ *
-+ * This returns number of elements in event array
-+ * If @tep is NULL, 0 is returned.
-+ */
-+int tep_get_events_count(struct tep_handle *tep)
-+{
-+	if (tep)
-+		return tep->nr_events;
-+	return 0;
-+}
-+
-+/**
-+ * tep_set_flag - set event parser flag
-+ * @tep: a handle to the tep_handle
-+ * @flag: flag, or combination of flags to be set
-+ * can be any combination from enum tep_flag
-+ *
-+ * This sets a flag or mbination of flags  from enum tep_flag
-+ */
-+void tep_set_flag(struct tep_handle *tep, int flag)
-+{
-+	if (tep)
-+		tep->flags |= flag;
-+}
-+
-+unsigned short __tep_data2host2(struct tep_handle *pevent, unsigned short data)
-+{
-+	unsigned short swap;
-+
-+	if (!pevent || pevent->host_bigendian == pevent->file_bigendian)
-+		return data;
-+
-+	swap = ((data & 0xffULL) << 8) |
-+		((data & (0xffULL << 8)) >> 8);
-+
-+	return swap;
-+}
-+
-+unsigned int __tep_data2host4(struct tep_handle *pevent, unsigned int data)
-+{
-+	unsigned int swap;
-+
-+	if (!pevent || pevent->host_bigendian == pevent->file_bigendian)
-+		return data;
-+
-+	swap = ((data & 0xffULL) << 24) |
-+		((data & (0xffULL << 8)) << 8) |
-+		((data & (0xffULL << 16)) >> 8) |
-+		((data & (0xffULL << 24)) >> 24);
-+
-+	return swap;
-+}
-+
-+unsigned long long
-+__tep_data2host8(struct tep_handle *pevent, unsigned long long data)
-+{
-+	unsigned long long swap;
-+
-+	if (!pevent || pevent->host_bigendian == pevent->file_bigendian)
-+		return data;
-+
-+	swap = ((data & 0xffULL) << 56) |
-+		((data & (0xffULL << 8)) << 40) |
-+		((data & (0xffULL << 16)) << 24) |
-+		((data & (0xffULL << 24)) << 8) |
-+		((data & (0xffULL << 32)) >> 8) |
-+		((data & (0xffULL << 40)) >> 24) |
-+		((data & (0xffULL << 48)) >> 40) |
-+		((data & (0xffULL << 56)) >> 56);
-+
-+	return swap;
-+}
-+
-+/**
-+ * tep_get_header_page_size - get size of the header page
-+ * @pevent: a handle to the tep_handle
-+ *
-+ * This returns size of the header page
-+ * If @pevent is NULL, 0 is returned.
-+ */
-+int tep_get_header_page_size(struct tep_handle *pevent)
-+{
-+	if (pevent)
-+		return pevent->header_page_size_size;
-+	return 0;
-+}
-+
-+/**
-+ * tep_get_cpus - get the number of CPUs
-+ * @pevent: a handle to the tep_handle
-+ *
-+ * This returns the number of CPUs
-+ * If @pevent is NULL, 0 is returned.
-+ */
-+int tep_get_cpus(struct tep_handle *pevent)
-+{
-+	if (pevent)
-+		return pevent->cpus;
-+	return 0;
-+}
-+
-+/**
-+ * tep_set_cpus - set the number of CPUs
-+ * @pevent: a handle to the tep_handle
-+ *
-+ * This sets the number of CPUs
-+ */
-+void tep_set_cpus(struct tep_handle *pevent, int cpus)
-+{
-+	if (pevent)
-+		pevent->cpus = cpus;
-+}
-+
-+/**
-+ * tep_get_long_size - get the size of a long integer on the current machine
-+ * @pevent: a handle to the tep_handle
-+ *
-+ * This returns the size of a long integer on the current machine
-+ * If @pevent is NULL, 0 is returned.
-+ */
-+int tep_get_long_size(struct tep_handle *pevent)
-+{
-+	if (pevent)
-+		return pevent->long_size;
-+	return 0;
-+}
-+
-+/**
-+ * tep_set_long_size - set the size of a long integer on the current machine
-+ * @pevent: a handle to the tep_handle
-+ * @size: size, in bytes, of a long integer
-+ *
-+ * This sets the size of a long integer on the current machine
-+ */
-+void tep_set_long_size(struct tep_handle *pevent, int long_size)
-+{
-+	if (pevent)
-+		pevent->long_size = long_size;
-+}
-+
-+/**
-+ * tep_get_page_size - get the size of a memory page on the current machine
-+ * @pevent: a handle to the tep_handle
-+ *
-+ * This returns the size of a memory page on the current machine
-+ * If @pevent is NULL, 0 is returned.
-+ */
-+int tep_get_page_size(struct tep_handle *pevent)
-+{
-+	if (pevent)
-+		return pevent->page_size;
-+	return 0;
-+}
-+
-+/**
-+ * tep_set_page_size - set the size of a memory page on the current machine
-+ * @pevent: a handle to the tep_handle
-+ * @_page_size: size of a memory page, in bytes
-+ *
-+ * This sets the size of a memory page on the current machine
-+ */
-+void tep_set_page_size(struct tep_handle *pevent, int _page_size)
-+{
-+	if (pevent)
-+		pevent->page_size = _page_size;
-+}
-+
-+/**
-+ * tep_is_file_bigendian - get if the file is in big endian order
-+ * @pevent: a handle to the tep_handle
-+ *
-+ * This returns if the file is in big endian order
-+ * If @pevent is NULL, 0 is returned.
-+ */
-+int tep_is_file_bigendian(struct tep_handle *pevent)
-+{
-+	if (pevent)
-+		return pevent->file_bigendian;
-+	return 0;
-+}
-+
-+/**
-+ * tep_set_file_bigendian - set if the file is in big endian order
-+ * @pevent: a handle to the tep_handle
-+ * @endian: non zero, if the file is in big endian order
-+ *
-+ * This sets if the file is in big endian order
-+ */
-+void tep_set_file_bigendian(struct tep_handle *pevent, enum tep_endian endian)
-+{
-+	if (pevent)
-+		pevent->file_bigendian = endian;
-+}
-+
-+/**
-+ * tep_is_host_bigendian - get if the order of the current host is big endian
-+ * @pevent: a handle to the tep_handle
-+ *
-+ * This gets if the order of the current host is big endian
-+ * If @pevent is NULL, 0 is returned.
-+ */
-+int tep_is_host_bigendian(struct tep_handle *pevent)
-+{
-+	if (pevent)
-+		return pevent->host_bigendian;
-+	return 0;
-+}
-+
-+/**
-+ * tep_set_host_bigendian - set the order of the local host
-+ * @pevent: a handle to the tep_handle
-+ * @endian: non zero, if the local host has big endian order
-+ *
-+ * This sets the order of the local host
-+ */
-+void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian)
-+{
-+	if (pevent)
-+		pevent->host_bigendian = endian;
-+}
-+
-+/**
-+ * tep_is_latency_format - get if the latency output format is configured
-+ * @pevent: a handle to the tep_handle
-+ *
-+ * This gets if the latency output format is configured
-+ * If @pevent is NULL, 0 is returned.
-+ */
-+int tep_is_latency_format(struct tep_handle *pevent)
-+{
-+	if (pevent)
-+		return pevent->latency_format;
-+	return 0;
-+}
-+
-+/**
-+ * tep_set_latency_format - set the latency output format
-+ * @pevent: a handle to the tep_handle
-+ * @lat: non zero for latency output format
-+ *
-+ * This sets the latency output format
-+ */
-+void tep_set_latency_format(struct tep_handle *pevent, int lat)
-+{
-+	if (pevent)
-+		pevent->latency_format = lat;
-+}
-diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
-new file mode 100644
-index 000000000000..b9bddde577f8
---- /dev/null
-+++ b/tools/lib/traceevent/event-parse-local.h
-@@ -0,0 +1,92 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+/*
-+ * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-+ *
-+ */
-+
-+#ifndef _PARSE_EVENTS_INT_H
-+#define _PARSE_EVENTS_INT_H
-+
-+struct cmdline;
-+struct cmdline_list;
-+struct func_map;
-+struct func_list;
-+struct event_handler;
-+struct func_resolver;
-+
-+struct tep_handle {
-+	int ref_count;
-+
-+	int header_page_ts_offset;
-+	int header_page_ts_size;
-+	int header_page_size_offset;
-+	int header_page_size_size;
-+	int header_page_data_offset;
-+	int header_page_data_size;
-+	int header_page_overwrite;
-+
-+	enum tep_endian file_bigendian;
-+	enum tep_endian host_bigendian;
-+
-+	int latency_format;
-+
-+	int old_format;
-+
-+	int cpus;
-+	int long_size;
-+	int page_size;
-+
-+	struct cmdline *cmdlines;
-+	struct cmdline_list *cmdlist;
-+	int cmdline_count;
-+
-+	struct func_map *func_map;
-+	struct func_resolver *func_resolver;
-+	struct func_list *funclist;
-+	unsigned int func_count;
-+
-+	struct printk_map *printk_map;
-+	struct printk_list *printklist;
-+	unsigned int printk_count;
-+
-+
-+	struct tep_event_format **events;
-+	int nr_events;
-+	struct tep_event_format **sort_events;
-+	enum tep_event_sort_type last_type;
-+
-+	int type_offset;
-+	int type_size;
-+
-+	int pid_offset;
-+	int pid_size;
-+
-+	int pc_offset;
-+	int pc_size;
-+
-+	int flags_offset;
-+	int flags_size;
-+
-+	int ld_offset;
-+	int ld_size;
-+
-+	int print_raw;
-+
-+	int test_filters;
-+
-+	int flags;
-+
-+	struct tep_format_field *bprint_ip_field;
-+	struct tep_format_field *bprint_fmt_field;
-+	struct tep_format_field *bprint_buf_field;
-+
-+	struct event_handler *handlers;
-+	struct tep_function_handler *func_handlers;
-+
-+	/* cache */
-+	struct tep_event_format *last_event;
-+
-+	char *trace_clock;
-+};
-+
-+#endif /* _PARSE_EVENTS_INT_H */
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index 233179a712d6..3692f29fee46 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -22,6 +22,8 @@
- 
- #include <netinet/in.h>
- #include "event-parse.h"
-+
-+#include "event-parse-local.h"
- #include "event-utils.h"
- #include "trace-seq.h"
- 
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index 9c29a5f7aa39..856334677c59 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -405,154 +405,23 @@ void tep_print_plugins(struct trace_seq *s,
- 			const char *prefix, const char *suffix,
- 			const struct tep_plugin_list *list);
- 
--struct cmdline;
--struct cmdline_list;
--struct func_map;
--struct func_list;
--struct event_handler;
--struct func_resolver;
--
-+/* tep_handle */
- typedef char *(tep_func_resolver_t)(void *priv,
- 				    unsigned long long *addrp, char **modp);
-+void tep_set_flag(struct tep_handle *tep, int flag);
-+unsigned short __tep_data2host2(struct tep_handle *pevent, unsigned short data);
-+unsigned int __tep_data2host4(struct tep_handle *pevent, unsigned int data);
-+unsigned long long
-+__tep_data2host8(struct tep_handle *pevent, unsigned long long data);
- 
--struct tep_handle {
--	int ref_count;
--
--	int header_page_ts_offset;
--	int header_page_ts_size;
--	int header_page_size_offset;
--	int header_page_size_size;
--	int header_page_data_offset;
--	int header_page_data_size;
--	int header_page_overwrite;
--
--	int file_bigendian;
--	int host_bigendian;
--
--	int latency_format;
--
--	int old_format;
--
--	int cpus;
--	int long_size;
--	int page_size;
--
--	struct cmdline *cmdlines;
--	struct cmdline_list *cmdlist;
--	int cmdline_count;
--
--	struct func_map *func_map;
--	struct func_resolver *func_resolver;
--	struct func_list *funclist;
--	unsigned int func_count;
--
--	struct printk_map *printk_map;
--	struct printk_list *printklist;
--	unsigned int printk_count;
--
--
--	struct tep_event_format **events;
--	int nr_events;
--	struct tep_event_format **sort_events;
--	enum tep_event_sort_type last_type;
--
--	int type_offset;
--	int type_size;
--
--	int pid_offset;
--	int pid_size;
--
-- 	int pc_offset;
--	int pc_size;
--
--	int flags_offset;
--	int flags_size;
--
--	int ld_offset;
--	int ld_size;
--
--	int print_raw;
--
--	int test_filters;
--
--	int flags;
--
--	struct tep_format_field *bprint_ip_field;
--	struct tep_format_field *bprint_fmt_field;
--	struct tep_format_field *bprint_buf_field;
--
--	struct event_handler *handlers;
--	struct tep_function_handler *func_handlers;
--
--	/* cache */
--	struct tep_event_format *last_event;
--
--	char *trace_clock;
--};
--
--static inline void tep_set_flag(struct tep_handle *pevent, int flag)
--{
--	pevent->flags |= flag;
--}
--
--static inline unsigned short
--__tep_data2host2(struct tep_handle *pevent, unsigned short data)
--{
--	unsigned short swap;
--
--	if (pevent->host_bigendian == pevent->file_bigendian)
--		return data;
--
--	swap = ((data & 0xffULL) << 8) |
--		((data & (0xffULL << 8)) >> 8);
--
--	return swap;
--}
--
--static inline unsigned int
--__tep_data2host4(struct tep_handle *pevent, unsigned int data)
--{
--	unsigned int swap;
--
--	if (pevent->host_bigendian == pevent->file_bigendian)
--		return data;
--
--	swap = ((data & 0xffULL) << 24) |
--		((data & (0xffULL << 8)) << 8) |
--		((data & (0xffULL << 16)) >> 8) |
--		((data & (0xffULL << 24)) >> 24);
--
--	return swap;
--}
--
--static inline unsigned long long
--__tep_data2host8(struct tep_handle *pevent, unsigned long long data)
--{
--	unsigned long long swap;
--
--	if (pevent->host_bigendian == pevent->file_bigendian)
--		return data;
--
--	swap = ((data & 0xffULL) << 56) |
--		((data & (0xffULL << 8)) << 40) |
--		((data & (0xffULL << 16)) << 24) |
--		((data & (0xffULL << 24)) << 8) |
--		((data & (0xffULL << 32)) >> 8) |
--		((data & (0xffULL << 40)) >> 24) |
--		((data & (0xffULL << 48)) >> 40) |
--		((data & (0xffULL << 56)) >> 56);
--
--	return swap;
--}
--
--#define tep_data2host2(pevent, ptr)		__tep_data2host2(pevent, *(unsigned short *)(ptr))
--#define tep_data2host4(pevent, ptr)		__tep_data2host4(pevent, *(unsigned int *)(ptr))
--#define tep_data2host8(pevent, ptr)					\
-+#define tep_data2host2(pevent, ptr)	__tep_data2host2(pevent, *(unsigned short *)(ptr))
-+#define tep_data2host4(pevent, ptr)	__tep_data2host4(pevent, *(unsigned int *)(ptr))
-+#define tep_data2host8(pevent, ptr)	\
- ({								\
- 	unsigned long long __val;				\
- 								\
- 	memcpy(&__val, (ptr), sizeof(unsigned long long));	\
--	__tep_data2host8(pevent, __val);				\
-+	__tep_data2host8(pevent, __val);			\
- })
- 
- static inline int tep_host_bigendian(void)
-@@ -655,11 +524,12 @@ unsigned long long tep_read_number(struct tep_handle *pevent, const void *ptr, i
- int tep_read_number_field(struct tep_format_field *field, const void *data,
- 			  unsigned long long *value);
- 
-+struct tep_event_format *tep_get_first_event(struct tep_handle *tep);
-+int tep_get_events_count(struct tep_handle *tep);
- struct tep_event_format *tep_find_event(struct tep_handle *pevent, int id);
- 
- struct tep_event_format *
- tep_find_event_by_name(struct tep_handle *pevent, const char *sys, const char *name);
--
- struct tep_event_format *
- tep_find_event_by_record(struct tep_handle *pevent, struct tep_record *record);
- 
-@@ -689,65 +559,23 @@ struct tep_event_format **tep_list_events(struct tep_handle *pevent, enum tep_ev
- struct tep_format_field **tep_event_common_fields(struct tep_event_format *event);
- struct tep_format_field **tep_event_fields(struct tep_event_format *event);
- 
--static inline int tep_get_cpus(struct tep_handle *pevent)
--{
--	return pevent->cpus;
--}
--
--static inline void tep_set_cpus(struct tep_handle *pevent, int cpus)
--{
--	pevent->cpus = cpus;
--}
--
--static inline int tep_get_long_size(struct tep_handle *pevent)
--{
--	return pevent->long_size;
--}
--
--static inline void tep_set_long_size(struct tep_handle *pevent, int long_size)
--{
--	pevent->long_size = long_size;
--}
--
--static inline int tep_get_page_size(struct tep_handle *pevent)
--{
--	return pevent->page_size;
--}
--
--static inline void tep_set_page_size(struct tep_handle *pevent, int _page_size)
--{
--	pevent->page_size = _page_size;
--}
--
--static inline int tep_is_file_bigendian(struct tep_handle *pevent)
--{
--	return pevent->file_bigendian;
--}
--
--static inline void tep_set_file_bigendian(struct tep_handle *pevent, int endian)
--{
--	pevent->file_bigendian = endian;
--}
--
--static inline int tep_is_host_bigendian(struct tep_handle *pevent)
--{
--	return pevent->host_bigendian;
--}
--
--static inline void tep_set_host_bigendian(struct tep_handle *pevent, int endian)
--{
--	pevent->host_bigendian = endian;
--}
--
--static inline int tep_is_latency_format(struct tep_handle *pevent)
--{
--	return pevent->latency_format;
--}
--
--static inline void tep_set_latency_format(struct tep_handle *pevent, int lat)
--{
--	pevent->latency_format = lat;
--}
-+enum tep_endian {
-+	TEP_LITTLE_ENDIAN = 0,
-+	TEP_BIG_ENDIAN
-+};
-+int tep_get_cpus(struct tep_handle *pevent);
-+void tep_set_cpus(struct tep_handle *pevent, int cpus);
-+int tep_get_long_size(struct tep_handle *pevent);
-+void tep_set_long_size(struct tep_handle *pevent, int long_size);
-+int tep_get_page_size(struct tep_handle *pevent);
-+void tep_set_page_size(struct tep_handle *pevent, int _page_size);
-+int tep_is_file_bigendian(struct tep_handle *pevent);
-+void tep_set_file_bigendian(struct tep_handle *pevent, enum tep_endian endian);
-+int tep_is_host_bigendian(struct tep_handle *pevent);
-+void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian);
-+int tep_is_latency_format(struct tep_handle *pevent);
-+void tep_set_latency_format(struct tep_handle *pevent, int lat);
-+int tep_get_header_page_size(struct tep_handle *pevent);
- 
- struct tep_handle *tep_alloc(void);
- void tep_free(struct tep_handle *pevent);
-diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index 46eb64eb0c2e..e74f16c88398 100644
---- a/tools/lib/traceevent/event-plugin.c
-+++ b/tools/lib/traceevent/event-plugin.c
-@@ -14,6 +14,7 @@
- #include <unistd.h>
- #include <dirent.h>
- #include "event-parse.h"
-+#include "event-parse-local.h"
- #include "event-utils.h"
- #include "trace-seq.h"
- 
-diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
-index d64b6128fa7d..ed87cb56713d 100644
---- a/tools/lib/traceevent/parse-filter.c
-+++ b/tools/lib/traceevent/parse-filter.c
-@@ -11,6 +11,7 @@
- #include <sys/types.h>
- 
- #include "event-parse.h"
-+#include "event-parse-local.h"
- #include "event-utils.h"
- 
- #define COMM "COMM"
-diff --git a/tools/perf/util/trace-event-parse.c b/tools/perf/util/trace-event-parse.c
-index a4d7de1c96d1..9b78160e23a2 100644
---- a/tools/perf/util/trace-event-parse.c
-+++ b/tools/perf/util/trace-event-parse.c
-@@ -37,10 +37,11 @@ static int get_common_field(struct scripting_context *context,
- 	struct tep_format_field *field;
- 
- 	if (!*size) {
--		if (!pevent->events)
-+
-+		event = tep_get_first_event(pevent);
-+		if (!event)
- 			return 0;
- 
--		event = pevent->events[0];
- 		field = tep_find_common_field(event, type);
- 		if (!field)
- 			return 0;
-@@ -192,25 +193,29 @@ struct tep_event_format *trace_find_next_event(struct tep_handle *pevent,
- 					       struct tep_event_format *event)
- {
- 	static int idx;
-+	int events_count;
-+	struct tep_event_format *all_events;
- 
--	if (!pevent || !pevent->events)
-+	all_events = tep_get_first_event(pevent);
-+	events_count = tep_get_events_count(pevent);
-+	if (!pevent || !all_events || events_count < 1)
- 		return NULL;
- 
- 	if (!event) {
- 		idx = 0;
--		return pevent->events[0];
-+		return all_events;
- 	}
- 
--	if (idx < pevent->nr_events && event == pevent->events[idx]) {
-+	if (idx < events_count && event == (all_events + idx)) {
- 		idx++;
--		if (idx == pevent->nr_events)
-+		if (idx == events_count)
- 			return NULL;
--		return pevent->events[idx];
-+		return (all_events + idx);
- 	}
- 
--	for (idx = 1; idx < pevent->nr_events; idx++) {
--		if (event == pevent->events[idx - 1])
--			return pevent->events[idx];
-+	for (idx = 1; idx < events_count; idx++) {
-+		if (event == (all_events + (idx - 1)))
-+			return (all_events + idx);
- 	}
- 	return NULL;
- }
-diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-event-read.c
-index b98ee2a2eb44..cdf6de82a507 100644
---- a/tools/perf/util/trace-event-read.c
-+++ b/tools/perf/util/trace-event-read.c
-@@ -241,7 +241,7 @@ static int read_header_files(struct tep_handle *pevent)
- 		 * The commit field in the page is of type long,
- 		 * use that instead, since it represents the kernel.
- 		 */
--		tep_set_long_size(pevent, pevent->header_page_size_size);
-+		tep_set_long_size(pevent, tep_get_header_page_size(pevent));
- 	}
- 	free(header_page);
- 
--- 
-2.13.6
+Test results:
+
+The first ones are container (docker) based builds of tools/perf with
+and without libelf support.  Where clang is available, it is also used
+to build perf with/without libelf, and building with LIBCLANGLLVM=1
+(built-in clang) with gcc and clang when clang and its devel libraries
+are installed.
+
+The objtool and samples/bpf/ builds are disabled now that I'm switching from
+using the sources in a local volume to fetching them from a http server to
+build it inside the container, to make it easier to build in a container cluster.
+Those will come back later.
+
+Several are cross builds, the ones with -x-ARCH and the android one, and those
+may not have all the features built, due to lack of multi-arch devel packages,
+available and being used so far on just a few, like
+debian:experimental-x-{arm64,mipsel}.
+
+The 'perf test' one will perform a variety of tests exercising
+tools/perf/util/, tools/lib/{bpf,traceevent,etc}, as well as run perf commands
+with a variety of command line event specifications to then intercept the
+sys_perf_event syscall to check that the perf_event_attr fields are set up as
+expected, among a variety of other unit tests.
+
+Then there is the 'make -C tools/perf build-test' ones, that build tools/perf/
+with a variety of feature sets, exercising the build with an incomplete set of
+features as well as with a complete one. It is planned to have it run on each
+of the containers mentioned above, using some container orchestration
+infrastructure. Get in contact if interested in helping having this in place.
+
+The Clear Linux container is building with NO_CLANG=1, some problem
+preventing its use when building for python3 have been fixed, some more
+have been identified and the next builds will build in ClearLinux with
+both gcc and clang. This time around only gcc was used.
+
+  # dm
+   1 alpine:3.4                    : Ok   gcc (Alpine 5.3.0) 5.3.0
+   2 alpine:3.5                    : Ok   gcc (Alpine 6.2.1) 6.2.1 20160822
+   3 alpine:3.6                    : Ok   gcc (Alpine 6.3.0) 6.3.0
+   4 alpine:3.7                    : Ok   gcc (Alpine 6.4.0) 6.4.0
+   5 alpine:3.8                    : Ok   gcc (Alpine 6.4.0) 6.4.0
+   6 alpine:edge                   : Ok   gcc (Alpine 6.4.0) 6.4.0
+   7 amazonlinux:1                 : Ok   gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-28)
+   8 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180303 (Red Hat 7.3.1-5)
+   9 android-ndk:r12b-arm          : Ok   arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
+  10 android-ndk:r15c-arm          : Ok   arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
+  11 centos:5                      : Ok   gcc (GCC) 4.1.2 20080704 (Red Hat 4.1.2-55)
+  12 centos:6                      : Ok   gcc (GCC) 4.4.7 20120313 (Red Hat 4.4.7-23)
+  13 centos:7                      : Ok   gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-28)
+  14 clearlinux:latest             : Ok   gcc (Clear Linux OS for Intel Architecture) 8.2.1 20180502
+  15 debian:7                      : Ok   gcc (Debian 4.7.2-5) 4.7.2
+  16 debian:8                      : Ok   gcc (Debian 4.9.2-10+deb8u1) 4.9.2
+  17 debian:9                      : Ok   gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
+  18 debian:experimental           : Ok   gcc (Debian 8.2.0-7) 8.2.0
+  19 debian:experimental-x-arm64   : Ok   aarch64-linux-gnu-gcc (Debian 8.2.0-4) 8.2.0
+  20 debian:experimental-x-mips    : Ok   mips-linux-gnu-gcc (Debian 8.1.0-12) 8.1.0
+  21 debian:experimental-x-mips64  : Ok   mips64-linux-gnuabi64-gcc (Debian 8.1.0-12) 8.1.0
+  22 debian:experimental-x-mipsel  : Ok   mipsel-linux-gnu-gcc (Debian 8.1.0-12) 8.1.0
+  23 fedora:20                     : Ok   gcc (GCC) 4.8.3 20140911 (Red Hat 4.8.3-7)
+  24 fedora:21                     : Ok   gcc (GCC) 4.9.2 20150212 (Red Hat 4.9.2-6)
+  25 fedora:22                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6)
+  26 fedora:23                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6)
+  27 fedora:24                     : Ok   gcc (GCC) 6.3.1 20161221 (Red Hat 6.3.1-1)
+  28 fedora:24-x-ARC-uClibc        : Ok   arc-linux-gcc (ARCompact ISA Linux uClibc toolchain 2017.09-rc2) 7.1.1 20170710
+  29 fedora:25                     : Ok   gcc (GCC) 6.4.1 20170727 (Red Hat 6.4.1-1)
+  30 fedora:26                     : Ok   gcc (GCC) 7.3.1 20180130 (Red Hat 7.3.1-2)
+  31 fedora:27                     : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-6)
+  32 fedora:28                     : Ok   gcc (GCC) 8.1.1 20180712 (Red Hat 8.1.1-5)
+  33 fedora:rawhide                : Ok   gcc (GCC) 8.2.1 20180905 (Red Hat 8.2.1-3)
+  34 gentoo-stage3-amd64:latest    : Ok   gcc (Gentoo 7.3.0-r3 p1.4) 7.3.0
+  35 mageia:5                      : Ok   gcc (GCC) 4.9.2
+  36 mageia:6                      : Ok   gcc (Mageia 5.5.0-1.mga6) 5.5.0
+  37 opensuse:13.2                 : Ok   gcc (SUSE Linux) 4.8.3 20140627 [gcc-4_8-branch revision 212064]
+  38 opensuse:42.1                 : Ok   gcc (SUSE Linux) 4.8.5
+  39 opensuse:42.2                 : Ok   gcc (SUSE Linux) 4.8.5
+  40 opensuse:42.3                 : Ok   gcc (SUSE Linux) 4.8.5
+  41 opensuse:tumbleweed           : Ok   gcc (SUSE Linux) 7.3.1 20180323 [gcc-7-branch revision 258812]
+  42 oraclelinux:6                 : Ok   gcc (GCC) 4.4.7 20120313 (Red Hat 4.4.7-23.0.1)
+  43 oraclelinux:7                 : Ok   gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-28.0.1)
+  44 ubuntu:12.04.5                : Ok   gcc (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3
+  45 ubuntu:14.04.4                : Ok   gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4
+  46 ubuntu:14.04.4-x-linaro-arm64 : Ok   aarch64-linux-gnu-gcc (Linaro GCC 5.5-2017.10) 5.5.0
+  47 ubuntu:16.04                  : Ok   gcc (Ubuntu 5.4.0-6ubuntu1~16.04.10) 5.4.0 20160609
+  48 ubuntu:16.04-x-arm            : Ok   arm-linux-gnueabihf-gcc (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
+  49 ubuntu:16.04-x-arm64          : Ok   aarch64-linux-gnu-gcc (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
+  50 ubuntu:16.04-x-powerpc        : Ok   powerpc-linux-gnu-gcc (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
+  51 ubuntu:16.04-x-powerpc64      : Ok   powerpc64-linux-gnu-gcc (Ubuntu/IBM 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
+  52 ubuntu:16.04-x-powerpc64el    : Ok   powerpc64le-linux-gnu-gcc (Ubuntu/IBM 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
+  53 ubuntu:16.04-x-s390           : Ok   s390x-linux-gnu-gcc (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
+  54 ubuntu:16.10                  : Ok   gcc (Ubuntu 6.2.0-5ubuntu12) 6.2.0 20161005
+  55 ubuntu:17.10                  : Ok   gcc (Ubuntu 7.2.0-8ubuntu3.2) 7.2.0
+  56 ubuntu:18.04                  : Ok   gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
+  57 ubuntu:18.04-x-arm            : Ok   arm-linux-gnueabihf-gcc (Ubuntu/Linaro 7.3.0-16ubuntu3) 7.3.0
+  58 ubuntu:18.04-x-arm64          : Ok   aarch64-linux-gnu-gcc (Ubuntu/Linaro 7.3.0-16ubuntu3) 7.3.0
+  59 ubuntu:18.04-x-m68k           : Ok   m68k-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
+  60 ubuntu:18.04-x-powerpc        : Ok   powerpc-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
+  61 ubuntu:18.04-x-powerpc64      : Ok   powerpc64-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
+  62 ubuntu:18.04-x-powerpc64el    : Ok   powerpc64le-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
+  63 ubuntu:18.04-x-riscv64        : Ok   riscv64-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
+  64 ubuntu:18.04-x-s390           : Ok   s390x-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
+  65 ubuntu:18.04-x-sh4            : Ok   sh4-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
+  66 ubuntu:18.04-x-sparc64        : Ok   sparc64-linux-gnu-gcc (Ubuntu 7.3.0-16ubuntu3) 7.3.0
+  67 ubuntu:18.10                  : Ok   gcc (Ubuntu 8.2.0-4ubuntu1) 8.2.0
+  #
+
+  # uname -a
+  Linux jouet 4.19.0-rc4-00022-gad3273d5f1b9 #1 SMP Mon Sep 17 17:18:22 -03 2018 x86_64 x86_64 x86_64 GNU/Linux
+  # git log --oneline -1
+  bb3dd7e7c4d5 tools lib traceevent, perf tools: Move struct tep_handler definition in a local header file
+  # perf version --build-options
+  perf version 4.19.rc5.gbb3dd7
+                   dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
+      dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
+                   glibc: [ on  ]  # HAVE_GLIBC_SUPPORT
+                    gtk2: [ on  ]  # HAVE_GTK2_SUPPORT
+           syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
+                  libbfd: [ on  ]  # HAVE_LIBBFD_SUPPORT
+                  libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
+                 libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+  numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+                 libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
+               libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
+                libslang: [ on  ]  # HAVE_SLANG_SUPPORT
+               libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
+               libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
+      libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
+                    zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
+                    lzma: [ on  ]  # HAVE_LZMA_SUPPORT
+               get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
+                     bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
+  # perf test
+   1: vmlinux symtab matches kallsyms                       : Ok
+   2: Detect openat syscall event                           : Ok
+   3: Detect openat syscall event on all cpus               : Ok
+   4: Read samples using the mmap interface                 : Ok
+   5: Test data source output                               : Ok
+   6: Parse event definition strings                        : Ok
+   7: Simple expression parser                              : Ok
+   8: PERF_RECORD_* events & perf_sample fields             : Ok
+   9: Parse perf pmu format                                 : Ok
+  10: DSO data read                                         : Ok
+  11: DSO data cache                                        : Ok
+  12: DSO data reopen                                       : Ok
+  13: Roundtrip evsel->name                                 : Ok
+  14: Parse sched tracepoints fields                        : Ok
+  15: syscalls:sys_enter_openat event fields                : Ok
+  16: Setup struct perf_event_attr                          : Ok
+  17: Match and link multiple hists                         : Ok
+  18: 'import perf' in python                               : Ok
+  19: Breakpoint overflow signal handler                    : Ok
+  20: Breakpoint overflow sampling                          : Ok
+  21: Breakpoint accounting                                 : Ok
+  22: Watchpoint                                            :
+  22.1: Read Only Watchpoint                                : Skip
+  22.2: Write Only Watchpoint                               : Ok
+  22.3: Read / Write Watchpoint                             : Ok
+  22.4: Modify Watchpoint                                   : Ok
+  23: Number of exit events of a simple workload            : Ok
+  24: Software clock events period values                   : Ok
+  25: Object code reading                                   : Ok
+  26: Sample parsing                                        : Ok
+  27: Use a dummy software event to keep tracking           : Ok
+  28: Parse with no sample_id_all bit set                   : Ok
+  29: Filter hist entries                                   : Ok
+  30: Lookup mmap thread                                    : Ok
+  31: Share thread mg                                       : Ok
+  32: Sort output of hist entries                           : Ok
+  33: Cumulate child hist entries                           : Ok
+  34: Track with sched_switch                               : Ok
+  35: Filter fds with revents mask in a fdarray             : Ok
+  36: Add fd to a fdarray, making it autogrow               : Ok
+  37: kmod_path__parse                                      : Ok
+  38: Thread map                                            : Ok
+  39: LLVM search and compile                               :
+  39.1: Basic BPF llvm compile                              : Ok
+  39.2: kbuild searching                                    : Ok
+  39.3: Compile source for BPF prologue generation          : Ok
+  39.4: Compile source for BPF relocation                   : Ok
+  40: Session topology                                      : Ok
+  41: BPF filter                                            :
+  41.1: Basic BPF filtering                                 : Ok
+  41.2: BPF pinning                                         : Ok
+  41.3: BPF prologue generation                             : Ok
+  41.4: BPF relocation checker                              : Ok
+  42: Synthesize thread map                                 : Ok
+  43: Remove thread map                                     : Ok
+  44: Synthesize cpu map                                    : Ok
+  45: Synthesize stat config                                : Ok
+  46: Synthesize stat                                       : Ok
+  47: Synthesize stat round                                 : Ok
+  48: Synthesize attr update                                : Ok
+  49: Event times                                           : Ok
+  50: Read backward ring buffer                             : Ok
+  51: Print cpu map                                         : Ok
+  52: Probe SDT events                                      : Ok
+  53: is_printable_array                                    : Ok
+  54: Print bitmap                                          : Ok
+  55: perf hooks                                            : Ok
+  56: builtin clang support                                 : Skip (not compiled in)
+  57: unit_number__scnprintf                                : Ok
+  58: mem2node                                              : Ok
+  59: x86 rdpmc                                             : Ok
+  60: Convert perf time to TSC                              : Ok
+  61: DWARF unwind                                          : Ok
+  62: x86 instruction decoder - new instructions            : Ok
+  63: x86 bp modify                                         : Ok
+  64: Use vfs_getname probe to get syscall args filenames   : Ok
+  65: Check open filename arg using perf trace + vfs_getname: Ok
+  66: probe libc's inet_pton & backtrace it with ping       : Ok
+  67: Add vfs_getname probe to get syscall args filenames   : Ok
+
+  $ make -C tools/perf build-test
+  make: Entering directory '/home/acme/git/perf/tools/perf'
+  - tarpkg: ./tests/perf-targz-src-pkg .
+            make_install_bin_O: make install-bin
+                make_minimal_O: make NO_LIBPERL=1 NO_LIBPYTHON=1 NO_NEWT=1 NO_GTK2=1 NO_DEMANGLE=1 NO_LIBELF=1 NO_LIBUNWIND=1 NO_BACKTRACE=1 NO_LIBNUMA=1 NO_LIBAUDIT=1 NO_LIBBIONIC=1 NO_LIBDW_DWARF_UNWIND=1 NO_AUXTRACE=1 NO_LIBBPF=1 NO_LIBCRYPTO=1 NO_SDT=1 NO_JVMTI=1
+                make_no_gtk2_O: make NO_GTK2=1
+  make_no_libdw_dwarf_unwind_O: make NO_LIBDW_DWARF_UNWIND=1
+                make_install_O: make install
+           make_no_backtrace_O: make NO_BACKTRACE=1
+                make_no_newt_O: make NO_NEWT=1
+             make_no_libperl_O: make NO_LIBPERL=1
+             make_util_map_o_O: make util/map.o
+              make_clean_all_O: make clean all
+                 make_static_O: make LDFLAGS=-static
+       make_util_pmu_bison_o_O: make util/pmu-bison.o
+                  make_no_ui_O: make NO_NEWT=1 NO_SLANG=1 NO_GTK2=1
+                    make_doc_O: make doc
+              make_no_libelf_O: make NO_LIBELF=1
+                   make_pure_O: make
+            make_no_auxtrace_O: make NO_AUXTRACE=1
+                 make_perf_o_O: make perf.o
+                   make_tags_O: make tags
+             make_no_scripts_O: make NO_LIBPYTHON=1 NO_LIBPERL=1
+              make_no_libbpf_O: make NO_LIBBPF=1
+           make_no_libpython_O: make NO_LIBPYTHON=1
+            make_no_libaudit_O: make NO_LIBAUDIT=1
+        make_with_babeltrace_O: make LIBBABELTRACE=1
+   make_install_prefix_slash_O: make install prefix=/tmp/krava/
+             make_no_libnuma_O: make NO_LIBNUMA=1
+         make_with_clangllvm_O: make LIBCLANGLLVM=1
+                  make_debug_O: make DEBUG=1
+           make_no_libunwind_O: make NO_LIBUNWIND=1
+           make_no_libbionic_O: make NO_LIBBIONIC=1
+               make_no_slang_O: make NO_SLANG=1
+                   make_help_O: make help
+            make_no_demangle_O: make NO_DEMANGLE=1
+         make_install_prefix_O: make install prefix=/tmp/krava
+  OK
+  make: Leaving directory '/home/acme/git/perf/tools/perf'
+  $
