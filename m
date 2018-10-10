@@ -1,62 +1,48 @@
 Return-Path: <SRS0=XDEQ=MW=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:42060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbeJKC2E (ORCPT
+Received: from mail-dm3nam03on0085.outbound.protection.outlook.com ([104.47.41.85]:42585
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727523AbeJKDeh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Oct 2018 22:28:04 -0400
-Date: Wed, 10 Oct 2018 15:04:33 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Yordan Karadzhov <ykaradzhov@vmware.com>
+        Wed, 10 Oct 2018 23:34:37 -0400
+From: Yordan Karadzhov <ykaradzhov@vmware.com>
+To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 2/4] kernel-shark-qt: Add KernalShark Utils
-Message-ID: <20181010150433.70f38e55@gandalf.local.home>
-In-Reply-To: <008c5da4-1566-b588-180c-afa31b352eb2@vmware.com>
-References: <20181008151629.13973-1-ykaradzhov@vmware.com>
-        <20181008151629.13973-3-ykaradzhov@vmware.com>
-        <20181009123419.22fe49f2@gandalf.local.home>
-        <008c5da4-1566-b588-180c-afa31b352eb2@vmware.com>
+Subject: [PATCH v2 0/4] Add basic components to be used by the Qt GUI
+Date: Wed, 10 Oct 2018 23:10:11 +0300
+Message-Id: <20181010201015.23824-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 10 Oct 2018 18:27:53 +0300
-Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
+This series of patches introduces the first components of the Qt-based
+KernelShark GUI. It includes some basic utils, as well as various small
+widgets and dialogues used by the GUI. The GUI itself will be introdused
+in the following series.
 
-> On  9.10.2018 19:34, Steven Rostedt wrote:
-> > Is this private to libkshark and not going to be exported?
-> > 
-> > In other words, do we need to worry about namespace?  
-> 
-> The namespace here is used mostly for making the code easy to read.
-> C++ people do this because it makes the code look more OO-ish.
-> 
-> Note that
+Yordan Karadzhov (VMware) (4):
+  kernel-shark-qt: Add Qt as a third party dependency.
+  kernel-shark-qt: Add KernalShark Utils
+  kernel-shark-qt: Add Widgets Lib
+  kernel-shark-qt: Add widget demo example.
 
-Never mind. My question was because I *missed* seeing:
+ kernel-shark-qt/CMakeLists.txt          |   8 +
+ kernel-shark-qt/README                  |   6 +-
+ kernel-shark-qt/build/deff.h.cmake      |  16 +
+ kernel-shark-qt/examples/CMakeLists.txt |   4 +
+ kernel-shark-qt/examples/widgetdemo.cpp | 158 +++++
+ kernel-shark-qt/src/CMakeLists.txt      |  22 +
+ kernel-shark-qt/src/KsUtils.cpp         | 594 ++++++++++++++++
+ kernel-shark-qt/src/KsUtils.hpp         | 233 +++++++
+ kernel-shark-qt/src/KsWidgetsLib.cpp    | 878 ++++++++++++++++++++++++
+ kernel-shark-qt/src/KsWidgetsLib.hpp    | 385 +++++++++++
+ 10 files changed, 2303 insertions(+), 1 deletion(-)
+ create mode 100644 kernel-shark-qt/examples/widgetdemo.cpp
+ create mode 100644 kernel-shark-qt/src/KsUtils.cpp
+ create mode 100644 kernel-shark-qt/src/KsUtils.hpp
+ create mode 100644 kernel-shark-qt/src/KsWidgetsLib.cpp
+ create mode 100644 kernel-shark-qt/src/KsWidgetsLib.hpp
 
- +namespace KsUtils {
-
-And was asking if we want to have a namespace.
-
--- Steve
-
-> 
-> namespace Foo
-> {
-> 	bool bar1(int x);
-> 
-> 	void bar2();
-> };
-> 
-> is equivalent to
-> 
-> class Foo {
-> 	static bool bar1(int x);
-> 
-> 	static void bar2();
-> };
-> 
-> Thanks!
-> Yordan
+-- 
+2.17.1
