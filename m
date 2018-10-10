@@ -1,140 +1,211 @@
 Return-Path: <SRS0=XDEQ=MW=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-sn1nam02on0088.outbound.protection.outlook.com ([104.47.36.88]:15392
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-dm3nam03on0085.outbound.protection.outlook.com ([104.47.41.85]:42585
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727783AbeJKDgL (ORCPT
+        id S1727567AbeJKDj5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Oct 2018 23:36:11 -0400
+        Wed, 10 Oct 2018 23:39:57 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH] kernel-shark-qt: Fix the glitches in the preemption time
- visualization
-Date: Wed, 10 Oct 2018 20:12:21 +0000
-Message-ID: <20181010201154.23881-1-ykaradzhov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Subject: [PATCH v2 4/4] kernel-shark-qt: Add widget demo example.
+Date: Wed, 10 Oct 2018 23:10:15 +0300
+Message-Id: <20181010201015.23824-5-ykaradzhov@vmware.com>
+In-Reply-To: <20181010201015.23824-1-ykaradzhov@vmware.com>
+References: <20181010201015.23824-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This problem was reported by Steven Rostedt. The reason for having
-the problem was my wrong assumption that for a given task the
-sched_switch event is always the last record.
+From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+This patch introduces a basic example, showing how to use KsUtils and
+KsWidgetsLib.
+
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/plugins/SchedEvents.cpp | 52 +++++++++++++++++++++
- kernel-shark-qt/src/plugins/sched_events.c  |  3 --
- 2 files changed, 52 insertions(+), 3 deletions(-)
+ kernel-shark-qt/examples/CMakeLists.txt |   4 +
+ kernel-shark-qt/examples/widgetdemo.cpp | 158 ++++++++++++++++++++++++
+ 2 files changed, 162 insertions(+)
+ create mode 100644 kernel-shark-qt/examples/widgetdemo.cpp
 
-diff --git a/kernel-shark-qt/src/plugins/SchedEvents.cpp b/kernel-shark-qt/=
-src/plugins/SchedEvents.cpp
-index 713feb4..7e5c4ad 100644
---- a/kernel-shark-qt/src/plugins/SchedEvents.cpp
-+++ b/kernel-shark-qt/src/plugins/SchedEvents.cpp
-@@ -16,6 +16,7 @@
-=20
- // C++ 11
- #include<functional>
-+#include<unordered_set>
-=20
- // KernelShark
- #include "libkshark.h"
-@@ -29,6 +30,8 @@
-=20
- #define PLUGIN_MAX_ENTRIES_PER_BIN 500
-=20
-+#define KS_TASK_COLLECTION_MARGIN 25
+diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/examples/CMakeLists.txt
+index 0c83293..e16216e 100644
+--- a/kernel-shark-qt/examples/CMakeLists.txt
++++ b/kernel-shark-qt/examples/CMakeLists.txt
+@@ -19,3 +19,7 @@ target_link_libraries(confio   kshark)
+ message(STATUS "dataplot")
+ add_executable(dplot          dataplot.cpp)
+ target_link_libraries(dplot   kshark-plot)
 +
- //! @endcond
-=20
- extern struct plugin_sched_context *plugin_sched_context_handler;
-@@ -215,6 +218,41 @@ static void pluginDraw(plugin_sched_context *plugin_ct=
-x,
- 	return;
- }
-=20
-+static std::unordered_set<int> singlePassDone;
++message(STATUS "widgetdemo")
++add_executable(widgetdemo          widgetdemo.cpp)
++target_link_libraries(widgetdemo   kshark-gui)
+diff --git a/kernel-shark-qt/examples/widgetdemo.cpp b/kernel-shark-qt/examples/widgetdemo.cpp
+new file mode 100644
+index 0000000..73049bf
+--- /dev/null
++++ b/kernel-shark-qt/examples/widgetdemo.cpp
+@@ -0,0 +1,158 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+static void singlePass(kshark_entry **data,
-+		       kshark_entry_collection *col,
-+		       int pid)
++/*
++ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
++ */
++
++// C
++#include <sys/stat.h>
++#include <getopt.h>
++#include <unistd.h>
++
++// C++
++#include <iostream>
++
++// Qt
++#include <QtWidgets>
++
++// KernelShark
++#include "KsUtils.hpp"
++#include "KsWidgetsLib.hpp"
++
++#define default_input_file (char*)"trace.dat"
++
++static char *input_file = nullptr;
++
++using namespace std;
++
++void usage(const char *prog)
 +{
-+	kshark_entry *last;
-+	int first, n;
-+	ssize_t index;
++	cout << "Usage: " << prog << endl
++	     << "  -h	Display this help message\n"
++	     << "  -v	Display version and exit\n"
++	     << "  -i	input_file, default is " << default_input_file << endl
++	     << "  -p	register plugin, use plugin name, absolute or relative path\n"
++	     << "  -u	unregister plugin, use plugin name or absolute path\n";
++}
 +
-+	for (size_t i =3D 0; i < col->size; ++i) {
-+		first =3D col->break_points[i];
-+		n =3D first - col->resume_points[i];
++struct TaskPrint : public QObject
++{
++	tep_handle	*_pevent;
 +
-+		kshark_entry_request *req =3D
-+			kshark_entry_request_alloc(first, n,
-+						   plugin_switch_match_pid, pid,
-+						   true,
-+						   KS_GRAPH_VIEW_FILTER_MASK);
++	void print(QVector<int> pids)
++	{
++		for (auto const &pid: pids)
++			cout << "task: "
++			     << tep_data_comm_from_pid(_pevent, pid)
++			     << "  pid: " << pid << endl;
++	}
++};
 +
-+		if (!kshark_get_entry_back(req, data, &index))
-+			continue;
++int main(int argc, char **argv)
++{
++	kshark_context *kshark_ctx(nullptr);
++	QApplication a(argc, argv);
++	KsPluginManager plugins;
++	KsDataStore data;
++	size_t nRows(0);
++	int c;
 +
-+		for (last =3D data[index]; last->next; last =3D last->next) {
-+			if (last->next->pid !=3D pid) {
-+				last->pid =3D data[index]->pid;
-+				last->visible &=3D ~KS_PLUGIN_UNTOUCHED_MASK;
-+				break;
-+			}
++	if (!kshark_instance(&kshark_ctx))
++		return 1;
++
++	while ((c = getopt(argc, argv, "hvi:p:u:")) != -1) {
++		switch(c) {
++		case 'v':
++			printf("kshark-gui %s\n", KS_VERSION_STRING);
++			return 0;
++
++		case 'i':
++			input_file = optarg;
++			break;
++
++		case 'p':
++			plugins.registerPlugin(QString(optarg));
++			break;
++
++		case 'u':
++			plugins.unregisterPlugin(QString(optarg));
++			break;
++
++		case 'h':
++			usage(argv[0]);
++			return 0;
 +		}
 +	}
 +
-+	singlePassDone.insert(pid);
-+}
-+
- /**
-  * @brief Plugin's draw function.
-  *
-@@ -246,8 +284,22 @@ void plugin_draw(kshark_cpp_argv *argv_c, int pid, int=
- draw_action)
- 	 */
- 	col =3D kshark_find_data_collection(kshark_ctx->collections,
- 					  kshark_match_pid, pid);
-+	if (!col) {
-+		/*
-+		 * If a data collection for this task does not exist,
-+		 * register a new one.
-+		 */
-+		col =3D kshark_register_data_collection(kshark_ctx,
-+						      _data->rows(),
-+						      _data->size(),
-+						      kshark_match_pid, pid,
-+						      KS_TASK_COLLECTION_MARGIN);
++	if (!input_file) {
++			struct stat st;
++			if (stat(default_input_file, &st) == 0)
++				input_file = default_input_file;
 +	}
-=20
- 	try {
-+		if (singlePassDone.find(pid) =3D=3D singlePassDone.end())
-+			singlePass(argvCpp->_histo->data, col, pid);
 +
- 		pluginDraw(plugin_ctx, kshark_ctx,
- 			   argvCpp->_histo, col,
- 			   SchedEvent::Switch, pid,
-diff --git a/kernel-shark-qt/src/plugins/sched_events.c b/kernel-shark-qt/s=
-rc/plugins/sched_events.c
-index 13f3c4a..4bcaa48 100644
---- a/kernel-shark-qt/src/plugins/sched_events.c
-+++ b/kernel-shark-qt/src/plugins/sched_events.c
-@@ -224,9 +224,6 @@ bool plugin_switch_match_pid(struct kshark_context *ksh=
-ark_ctx,
- 	struct tep_record *record =3D NULL;
- 	int switch_pid =3D -1;
-=20
--	if (e->pid =3D=3D pid)
--		return true;
--
- 	plugin_ctx =3D plugin_sched_context_handler;
-=20
- 	if (plugin_ctx->sched_switch_event &&
---=20
++	if (input_file) {
++		data.loadDataFile(input_file);
++		nRows = data.size();
++	} else {
++		cerr << "No input file is provided.\n";
++	}
++
++	cout << nRows << " entries loaded\n";
++
++	auto lamPrintPl = [&]()
++	{
++		kshark_plugin_list *pl;
++		for (pl = kshark_ctx->plugins; pl; pl = pl->next)
++			cout << pl->file << endl;
++	};
++
++	cout << "\n\n";
++	lamPrintPl();
++	sleep(1);
++
++	QVector<bool> registeredPlugins;
++	QStringList pluginsList;
++
++	pluginsList << plugins._ksPluginList
++		    << plugins._userPluginList;
++
++	registeredPlugins << plugins._registeredKsPlugins
++			  << plugins._registeredUserPlugins;
++
++	KsCheckBoxWidget *pluginCBD
++		= new KsPluginCheckBoxWidget(pluginsList);
++
++	pluginCBD->set(registeredPlugins);
++
++	KsCheckBoxDialog *dialog1 = new KsCheckBoxDialog(pluginCBD);
++	QObject::connect(dialog1,	&KsCheckBoxDialog::apply,
++			&plugins,	&KsPluginManager::updatePlugins);
++
++	dialog1->show();
++	a.exec();
++
++	cout << "\n\nYou selected\n";
++	lamPrintPl();
++	sleep(1);
++
++	if (!nRows)
++		return 1;
++
++	KsCheckBoxWidget *tasks_cbd =
++		new KsTasksCheckBoxWidget(data.tep(), true);
++
++	tasks_cbd->setDefault(false);
++
++	TaskPrint p;
++	p._pevent = data.tep();
++
++	KsCheckBoxDialog *dialog2 = new KsCheckBoxDialog(tasks_cbd);
++	QObject::connect(dialog2,	&KsCheckBoxDialog::apply,
++			 &p,		&TaskPrint::print);
++
++	cout << "\n\nYou selected\n";
++	dialog2->show();
++	a.exec();
++
++	return 0;
++}
+-- 
 2.17.1
