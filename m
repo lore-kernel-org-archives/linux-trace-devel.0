@@ -2,16 +2,16 @@ Return-Path: <SRS0=XDEQ=MW=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-dm3nam03on0085.outbound.protection.outlook.com ([104.47.41.85]:42585
         "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727523AbeJKDe7 (ORCPT
+        id S1727351AbeJKDfD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Oct 2018 23:34:59 -0400
+        Wed, 10 Oct 2018 23:35:03 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH v2 2/4] kernel-shark-qt: Add KernalShark Utils
-Date: Wed, 10 Oct 2018 23:10:13 +0300
-Message-Id: <20181010201015.23824-3-ykaradzhov@vmware.com>
+Subject: [PATCH v2 3/4] kernel-shark-qt: Add Widgets Lib
+Date: Wed, 10 Oct 2018 23:10:14 +0300
+Message-Id: <20181010201015.23824-4-ykaradzhov@vmware.com>
 In-Reply-To: <20181010201015.23824-1-ykaradzhov@vmware.com>
 References: <20181010201015.23824-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
@@ -21,85 +21,44 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-This patch introduces the kshark-gui library and defines some basic
-components, like Data Store and Plugin Manager, used under the hood
-of the KernelShark GUI.
+This patch defines various small widgets and dialogues to be used by
+the KernelShark GUI.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/build/deff.h.cmake |  16 +
- kernel-shark-qt/src/CMakeLists.txt |  20 +
- kernel-shark-qt/src/KsUtils.cpp    | 594 +++++++++++++++++++++++++++++
- kernel-shark-qt/src/KsUtils.hpp    | 233 +++++++++++
- 4 files changed, 863 insertions(+)
- create mode 100644 kernel-shark-qt/src/KsUtils.cpp
- create mode 100644 kernel-shark-qt/src/KsUtils.hpp
+ kernel-shark-qt/src/CMakeLists.txt   |   6 +-
+ kernel-shark-qt/src/KsWidgetsLib.cpp | 878 +++++++++++++++++++++++++++
+ kernel-shark-qt/src/KsWidgetsLib.hpp | 385 ++++++++++++
+ 3 files changed, 1267 insertions(+), 2 deletions(-)
+ create mode 100644 kernel-shark-qt/src/KsWidgetsLib.cpp
+ create mode 100644 kernel-shark-qt/src/KsWidgetsLib.hpp
 
-diff --git a/kernel-shark-qt/build/deff.h.cmake b/kernel-shark-qt/build/deff.h.cmake
-index 44ea08b..d1a1bb7 100644
---- a/kernel-shark-qt/build/deff.h.cmake
-+++ b/kernel-shark-qt/build/deff.h.cmake
-@@ -14,7 +14,23 @@
- /** KernelShark source code path. */
- #cmakedefine KS_DIR "@KS_DIR@"
- 
-+/** KernelShark configuration directory path. */
-+#cmakedefine KS_CONF_DIR "@KS_CONF_DIR@"
-+
- /** Location of the trace-cmd executable. */
- #cmakedefine TRACECMD_BIN_DIR "@TRACECMD_BIN_DIR@"
- 
-+#ifdef __cplusplus
-+
-+	#include <QString>
-+
-+	/**
-+	 * String containing semicolon-separated list of plugin names.
-+	 * The plugins to be loaded when KernelShark starts are tagged
-+	 * with "default".
-+	 */
-+	const QString plugins = "@PLUGINS@";
-+
-+#endif /* __cplusplus */
-+
- #endif // _KS_CONFIG_H
 diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
-index 305cea7..e897e9a 100644
+index e897e9a..2ac79ca 100644
 --- a/kernel-shark-qt/src/CMakeLists.txt
 +++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -28,6 +28,26 @@ if (OPENGL_FOUND AND GLUT_FOUND)
+@@ -31,11 +31,13 @@ endif (OPENGL_FOUND AND GLUT_FOUND)
+ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
  
- endif (OPENGL_FOUND AND GLUT_FOUND)
+     message(STATUS "libkshark-gui")
+-    set (ks-guiLib_hdr  KsUtils.hpp)
++    set (ks-guiLib_hdr  KsUtils.hpp
++                        KsWidgetsLib.hpp)
  
-+if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
-+
-+    message(STATUS "libkshark-gui")
-+    set (ks-guiLib_hdr  KsUtils.hpp)
-+
-+    QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
-+
-+    add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp)
-+
-+    target_link_libraries(kshark-gui kshark-plot
-+                                     ${CMAKE_DL_LIBS}
-+                                     ${TRACEEVENT_LIBRARY}
-+                                     ${TRACECMD_LIBRARY}
-+                                     Qt5::Widgets
-+                                     Qt5::Network)
-+
-+    set_target_properties(kshark-gui PROPERTIES  SUFFIX ".so.${KS_VERSION_STRING}")
-+
-+endif (Qt5Widgets_FOUND AND Qt5Network_FOUND)
-+
- add_subdirectory(plugins)
+     QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
  
- configure_file( ${KS_DIR}/build/deff.h.cmake
-diff --git a/kernel-shark-qt/src/KsUtils.cpp b/kernel-shark-qt/src/KsUtils.cpp
+-    add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp)
++    add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp
++                                                            KsWidgetsLib.cpp)
+ 
+     target_link_libraries(kshark-gui kshark-plot
+                                      ${CMAKE_DL_LIBS}
+diff --git a/kernel-shark-qt/src/KsWidgetsLib.cpp b/kernel-shark-qt/src/KsWidgetsLib.cpp
 new file mode 100644
-index 0000000..af2ae60
+index 0000000..905823a
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsUtils.cpp
-@@ -0,0 +1,594 @@
++++ b/kernel-shark-qt/src/KsWidgetsLib.cpp
+@@ -0,0 +1,878 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +
 +/*
@@ -107,830 +66,1266 @@ index 0000000..af2ae60
 + */
 +
 +/**
-+ *  @file    KsUtils.cpp
-+ *  @brief   KernelShark Utils.
++ *  @file    KsWidgetsLib.cpp
++ *  @brief   Defines small widgets and dialogues used by the KernelShark GUI.
 + */
 +
 +// KernelShark
++#include "libkshark.h"
 +#include "KsUtils.hpp"
-+
-+namespace KsUtils {
-+
-+/** @brief Get a sorted vector of Task's Pids. */
-+QVector<int> getPidList()
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+	int nTasks, *tempPids;
-+	QVector<int> pids;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return pids;
-+
-+	nTasks = kshark_get_task_pids(kshark_ctx, &tempPids);
-+	for (int r = 0; r < nTasks; ++r) {
-+		pids.append(tempPids[r]);
-+	}
-+
-+	free(tempPids);
-+
-+	qSort(pids);
-+
-+	return pids;
-+}
++#include "KsCmakeDef.hpp"
++#include "KsPlotTools.hpp"
++#include "KsWidgetsLib.hpp"
 +
 +/**
-+ * Set the bit of the filter mask of the kshark session context responsible
-+ * for the visibility of the events in the Table View.
-+ */
-+void listFilterSync(bool state)
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	if (state) {
-+		kshark_ctx->filter_mask |= KS_TEXT_VIEW_FILTER_MASK;
-+	} else {
-+		kshark_ctx->filter_mask &= ~KS_TEXT_VIEW_FILTER_MASK;
-+	}
-+}
-+
-+/**
-+ * Set the bit of the filter mask of the kshark session context responsible
-+ * for the visibility of the events in the Graph View.
-+ */
-+void graphFilterSync(bool state)
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	if (state) {
-+		kshark_ctx->filter_mask |= KS_GRAPH_VIEW_FILTER_MASK;
-+	} else {
-+		kshark_ctx->filter_mask &= ~KS_GRAPH_VIEW_FILTER_MASK;
-+	}
-+}
-+
-+/**
-+ * @brief Simple CPU matching function to be user for data collections.
++ * @brief Create KsProgressBar.
 + *
-+ * @param kshark_ctx: Input location for the session context pointer.
-+ * @param e: kshark_entry to be checked.
-+ * @param cpu: Matching condition value.
-+ *
-+ * @returns True if the CPU of the entry matches the value of "cpu" and
-+ * 	    the entry is visibility in Graph. Otherwise false.
++ * @param message: Text to be shown.
++ * @param parent: The parent of this widget.
 + */
-+bool matchCPUVisible(struct kshark_context *kshark_ctx,
-+		     struct kshark_entry *e, int cpu)
-+{
-+	return (e->cpu == cpu && (e->visible & KS_GRAPH_VIEW_FILTER_MASK));
++KsProgressBar::KsProgressBar(QString message, QWidget *parent)
++: QWidget(parent),
++  _sb(this),
++  _pb(&_sb) {
++	resize(KS_BROGBAR_WIDTH, KS_BROGBAR_HEIGHT);
++	setWindowTitle("KernelShark");
++	setLayout(new QVBoxLayout);
++
++	_pb.setOrientation(Qt::Horizontal);
++	_pb.setTextVisible(false);
++	_pb.setRange(0, KS_PROGRESS_BAR_MAX);
++	_pb.setValue(1);
++
++	_sb.addPermanentWidget(&_pb, 1);
++
++	layout()->addWidget(new QLabel(message));
++	layout()->addWidget(&_sb);
++
++	setWindowFlags(Qt::WindowStaysOnTopHint);
++
++	show();
 +}
 +
-+}; // KsUtils
-+
-+/** A stream operator for converting QColor into KsPlot::Color. */
-+KsPlot::Color& operator <<(KsPlot::Color &thisColor, const QColor &c)
-+{
-+	thisColor.set(c.red(), c.green(), c.blue());
-+
-+	return thisColor;
++/** @brief Set the state of the progressbar.
++ *
++ * @param i: A value ranging from 0 to KS_PROGRESS_BAR_MAX.
++ */
++void KsProgressBar::setValue(int i) {
++	_pb.setValue(i);
++	QApplication::processEvents();
 +}
 +
-+/** Create a default (empty) KsDataStore. */
-+KsDataStore::KsDataStore(QWidget *parent)
-+: QObject(parent),
-+  _tep(nullptr),
-+  _rows(nullptr),
-+  _dataSize(0)
-+{}
-+
-+/** Destroy the KsDataStore object. */
-+KsDataStore::~KsDataStore()
-+{}
-+
-+/** Load trace data for file. */
-+void KsDataStore::loadDataFile(const QString &file)
++/**
++ * @brief Create KsMessageDialog.
++ *
++ * @param message: Text to be shown.
++ * @param parent: The parent of this widget.
++ */
++KsMessageDialog::KsMessageDialog(QString message, QWidget *parent)
++: QDialog(parent),
++  _text(message, this),
++  _closeButton("Close", this)
 +{
-+	kshark_context *kshark_ctx(nullptr);
++	resize(KS_MSG_DIALOG_WIDTH, KS_MSG_DIALOG_HEIGHT);
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
++	_layout.addWidget(&_text);
++	_layout.addWidget(&_closeButton);
 +
-+	clear();
++	connect(&_closeButton,	&QPushButton::pressed,
++		this,		&QWidget::close);
 +
-+	if (!kshark_open(kshark_ctx, file.toStdString().c_str())) {
-+		qCritical() << "ERROR Loading file " << file;
-+		return;
++	this->setLayout(&_layout);
++}
++
++/**
++ * @brief Create KsCheckBoxWidget.
++ *
++ * @param name: The name of this widget.
++ * @param parent: The parent of this widget.
++ */
++KsCheckBoxWidget::KsCheckBoxWidget(const QString &name, QWidget *parent)
++: QWidget(parent),
++  _tb(this),
++  _allCb("all", &_tb),
++  _cbWidget(this),
++  _cbLayout(&_cbWidget),
++  _topLayout(this),
++  _name(name),
++  _nameLabel(name + ":  ",&_tb)
++{
++	setWindowTitle(_name);
++	setMinimumHeight(SCREEN_HEIGHT / 2);
++
++	connect(&_allCb,	&QCheckBox::clicked,
++		this,		&KsCheckBoxWidget::_checkAll);
++
++	_cbWidget.setLayout(&_cbLayout);
++
++	_tb.addWidget(&_nameLabel);
++	_tb.addWidget(&_allCb);
++	_topLayout.addWidget(&_tb);
++
++	_topLayout.addWidget(&_cbWidget);
++	_topLayout.setContentsMargins(0, 0, 0, 0);
++
++	setLayout(&_topLayout);
++	_allCb.setCheckState(Qt::Checked);
++}
++
++/**
++ * Set the default state for all checkboxes (including the "all" checkbox).
++ */
++void KsCheckBoxWidget::setDefault(bool st)
++{
++	Qt::CheckState state = Qt::Unchecked;
++
++	if (st)
++		state = Qt::Checked;
++
++	_allCb.setCheckState(state);
++	_checkAll(state);
++}
++
++/** Get a vector containing the indexes of all checked boxes. */
++QVector<int> KsCheckBoxWidget::getCheckedIds()
++{
++	QVector<int> vec;
++	int n = _id.size();
++
++	for (int i = 0; i < n; ++i)
++		if (_checkState(i) == Qt::Checked)
++			vec.append(_id[i]);
++
++	return vec;
++}
++
++/**
++ * @brief Set the state of the checkboxes.
++ *
++ * @param v: Vector containing the bool values for all checkboxes.
++ */
++void KsCheckBoxWidget::set(QVector<bool> v)
++{
++	Qt::CheckState state;
++	int nChecks;
++
++	nChecks = (v.size() < _id.size()) ? v.size() : _id.size();
++
++	/* Start with the "all" checkbox being checked. */
++	_allCb.setCheckState(Qt::Checked);
++	for (int i = 0; i < nChecks; ++i) {
++		if (v[i]) {
++			state = Qt::Checked;
++		} else {
++			/*
++			 * At least one checkbox is unchecked. Uncheck
++			 * "all" as well.
++			 */
++			state = Qt::Unchecked;
++			_allCb.setCheckState(state);
++		}
++
++		_setCheckState(i, state);
++	}
++	_verify();
++}
++
++void KsCheckBoxWidget::_checkAll(bool st)
++{
++	Qt::CheckState state = Qt::Unchecked;
++	int n = _id.size();
++
++	if (st) state = Qt::Checked;
++
++	for (int i = 0; i < n; ++i) {
++		_setCheckState(i, state);
 +	}
 +
-+	_tep = kshark_ctx->pevent;
-+
-+	if (kshark_ctx->event_handlers == nullptr)
-+		kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_INIT);
-+	else
-+		kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_UPDATE);
-+
-+	_dataSize = kshark_load_data_entries(kshark_ctx, &_rows);
++	_verify();
 +}
 +
-+void KsDataStore::_freeData()
++/**
++ * @brief Create KsCheckBoxDialog.
++ *
++ * @param cbw: A KsCheckBoxWidget to be nested in this dialog.
++ * @param parent: The parent of this widget.
++ */
++KsCheckBoxDialog::KsCheckBoxDialog(KsCheckBoxWidget *cbw, QWidget *parent)
++: QDialog(parent), _checkBoxWidget(cbw),
++  _applyButton("Apply", this),
++  _cancelButton("Cancel", this)
 +{
-+	if (_dataSize) {
-+		for (size_t r = 0; r < _dataSize; ++r)
-+			free(_rows[r]);
++	int buttonWidth;
 +
-+		free(_rows);
-+		_rows = nullptr;
-+	}
++	setWindowTitle(cbw->name());
++	_topLayout.addWidget(_checkBoxWidget);
++
++	buttonWidth = STRING_WIDTH("--Cancel--");
++	_applyButton.setFixedWidth(buttonWidth);
++	_cancelButton.setFixedWidth(buttonWidth);
++
++	_buttonLayout.addWidget(&_applyButton);
++	_applyButton.setAutoDefault(false);
++
++	_buttonLayout.addWidget(&_cancelButton);
++	_cancelButton.setAutoDefault(false);
++
++	_buttonLayout.setAlignment(Qt::AlignLeft);
++	_topLayout.addLayout(&_buttonLayout);
++
++	_applyButtonConnection =
++		connect(&_applyButton,	&QPushButton::pressed,
++			this,		&KsCheckBoxDialog::_applyPress);
++
++	connect(&_applyButton,	&QPushButton::pressed,
++		this,		&QWidget::close);
++
++	connect(&_cancelButton,	&QPushButton::pressed,
++		this,		&QWidget::close);
++
++	this->setLayout(&_topLayout);
 +}
 +
-+/** Reload the trace data. */
-+void KsDataStore::reload()
++void KsCheckBoxDialog::_applyPress()
 +{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	_freeData();
-+
-+	_dataSize = kshark_load_data_entries(kshark_ctx, &_rows);
-+	_tep = kshark_ctx->pevent;
-+
-+	emit updateWidgets(this);
-+}
-+
-+/** Free the loaded trace data and close the file. */
-+void KsDataStore::clear()
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	_freeData();
-+	_tep = nullptr;
-+
-+	if (kshark_instance(&kshark_ctx) && kshark_ctx->handle)
-+		kshark_close(kshark_ctx);
-+}
-+
-+/** Update the visibility of the entries (filter). */
-+void KsDataStore::update()
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	if (kshark_filter_is_set(kshark_ctx)) {
-+		kshark_filter_entries(kshark_ctx, _rows, _dataSize);
-+		emit updateWidgets(this);
-+	}
-+}
-+
-+/** Register a collection of visible entries for each CPU. */
-+void KsDataStore::registerCPUCollections()
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	if (!kshark_instance(&kshark_ctx) ||
-+	    !kshark_filter_is_set(kshark_ctx))
-+		return;
-+
-+	int nCPUs = _tep->cpus;
-+	for (int cpu = 0; cpu < nCPUs; ++cpu) {
-+		kshark_register_data_collection(kshark_ctx,
-+						_rows, _dataSize,
-+						KsUtils::matchCPUVisible,
-+						cpu,
-+						0);
-+	}
-+}
-+
-+void KsDataStore::_unregisterCPUCollections()
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	int nCPUs = _tep->cpus;
-+	for (int cpu = 0; cpu < nCPUs; ++cpu) {
-+		kshark_unregister_data_collection(&kshark_ctx->collections,
-+						  KsUtils::matchCPUVisible,
-+						  cpu);
-+	}
-+}
-+
-+void KsDataStore::_applyIdFilter(int filterId, QVector<int> vec)
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	switch (filterId) {
-+		case KS_SHOW_EVENT_FILTER:
-+		case KS_HIDE_EVENT_FILTER:
-+			kshark_filter_clear(kshark_ctx, KS_SHOW_EVENT_FILTER);
-+			kshark_filter_clear(kshark_ctx, KS_HIDE_EVENT_FILTER);
-+			break;
-+		case KS_SHOW_TASK_FILTER:
-+		case KS_HIDE_TASK_FILTER:
-+			kshark_filter_clear(kshark_ctx, KS_SHOW_TASK_FILTER);
-+			kshark_filter_clear(kshark_ctx, KS_HIDE_TASK_FILTER);
-+			break;
-+		default:
-+			return;
-+	}
-+
-+	for (auto &&pid: vec)
-+		kshark_filter_add_id(kshark_ctx, filterId, pid);
-+
-+	if (!_tep)
-+		return;
-+
-+	_unregisterCPUCollections();
++	QVector<int> vec = _checkBoxWidget->getCheckedIds();
++	emit apply(vec);
 +
 +	/*
-+	 * If the advanced event filter is set, the data has to be reloaded,
-+	 * because the advanced filter uses tep_records.
++	 * Disconnect _applyButton. This is done in order to protect
++	 * against multiple clicks.
 +	 */
-+	if (kshark_ctx->advanced_event_filter->filters)
-+		reload();
++	disconnect(_applyButtonConnection);
++}
++
++
++/**
++ * @brief Create KsCheckBoxTable.
++ *
++ * @param parent: The parent of this widget.
++ */
++KsCheckBoxTable::KsCheckBoxTable(QWidget *parent)
++: QTableWidget(parent)
++{
++	setShowGrid(false);
++	horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
++	horizontalHeader()->setStretchLastSection(true);
++	setSelectionBehavior(QAbstractItemView::SelectRows);
++	setEditTriggers(QAbstractItemView::NoEditTriggers);
++	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
++	verticalHeader()->setVisible(false);
++
++	connect(this, &QTableWidget::cellDoubleClicked,
++		this, &KsCheckBoxTable::_doubleClicked);
++}
++
++/**
++ * @brief Initialize the table.
++ *
++ * @param headers: The headers of the individual columns.
++ * @param size: The number of rows.
++ */
++void KsCheckBoxTable::init(QStringList headers, int size)
++{
++	QHBoxLayout *cbLayout;
++	QWidget *cbWidget;
++
++	setColumnCount(headers.count());
++	setRowCount(size);
++	setHorizontalHeaderLabels(headers);
++
++	_cb.resize(size);
++
++	for (int i = 0; i < size; ++i) {
++		cbWidget = new QWidget();
++		_cb[i] = new QCheckBox(cbWidget);
++		cbLayout = new QHBoxLayout(cbWidget);
++
++		cbLayout->addWidget(_cb[i]);
++		cbLayout->setAlignment(Qt::AlignCenter);
++		cbLayout->setContentsMargins(0, 0, 0, 0);
++
++		cbWidget->setLayout(cbLayout);
++		setCellWidget(i, 0, cbWidget);
++	}
++}
++
++/** Reimplemented event handler used to receive key press events. */
++void KsCheckBoxTable::keyPressEvent(QKeyEvent *event)
++{
++	if (event->key() == Qt::Key_Return) {
++		for (auto &s: selectedItems()) {
++			if (s->column() == 1)
++				emit changeState(s->row());
++		}
++	}
++
++	QApplication::processEvents();
++	QTableWidget::keyPressEvent(event);
++}
++
++/** Reimplemented event handler used to receive mouse press events. */
++void KsCheckBoxTable::mousePressEvent(QMouseEvent *event)
++{
++	if (event->button() == Qt::RightButton) {
++		for (auto &i: selectedItems())
++			i->setSelected(false);
++
++		return;
++	}
++
++	QApplication::processEvents();
++	QTableWidget::mousePressEvent(event);
++}
++
++void KsCheckBoxTable::_doubleClicked(int row, int col)
++{
++	emit changeState(row);
++	for (auto &i: selectedItems())
++		i->setSelected(false);
++}
++
++/**
++ * @brief Create KsCheckBoxTableWidget.
++ *
++ * @param name: The name of this widget.
++ * @param parent: The parent of this widget.
++ */
++KsCheckBoxTableWidget::KsCheckBoxTableWidget(const QString &name,
++					     QWidget *parent)
++: KsCheckBoxWidget(name, parent),
++  _table(this)
++{
++	connect(&_table,	&KsCheckBoxTable::changeState,
++		this,		&KsCheckBoxTableWidget::_changeState);
++}
++
++/** Initialize the KsCheckBoxTable and its layout. */
++void KsCheckBoxTableWidget::_initTable(QStringList headers, int size)
++{
++	_table.init(headers, size);
++
++	for (auto const & cb: _table._cb) {
++		connect(cb,	&QCheckBox::clicked,
++			this,	&KsCheckBoxTableWidget::_update);
++	}
++
++	_cbLayout.setContentsMargins(1, 1, 1, 1);
++	_cbLayout.addWidget(&_table);
++}
++
++/** Adjust the size of this widget according to its content. */
++void KsCheckBoxTableWidget::_adjustSize()
++{
++	int width;
++
++	_table.setVisible(false);
++	_table.resizeColumnsToContents();
++	_table.setVisible(true);
++
++	width = _table.horizontalHeader()->length() +
++		FONT_WIDTH * 3 +
++		style()->pixelMetric(QStyle::PM_ScrollBarExtent);
++
++	_cbWidget.resize(width, _cbWidget.height());
++
++	setMinimumWidth(_cbWidget.width() +
++			_cbLayout.contentsMargins().left() +
++			_cbLayout.contentsMargins().right() +
++			_topLayout.contentsMargins().left() +
++			_topLayout.contentsMargins().right());
++}
++
++void  KsCheckBoxTableWidget::_update(bool state)
++{
++	/* If a Checkbox is being unchecked. Unchecked "all" as well. */
++	if (!state)
++		_allCb.setCheckState(Qt::Unchecked);
++}
++
++void KsCheckBoxTableWidget::_changeState(int row)
++{
++	if (_table._cb[row]->checkState() == Qt::Checked)
++		_table._cb[row]->setCheckState(Qt::Unchecked);
 +	else
-+		kshark_filter_entries(kshark_ctx, _rows, _dataSize);
++		_table._cb[row]->setCheckState(Qt::Checked);
 +
-+	registerCPUCollections();
-+
-+	emit updateWidgets(this);
-+}
-+
-+/** Apply Show Task filter. */
-+void KsDataStore::applyPosTaskFilter(QVector<int> vec)
-+{
-+	_applyIdFilter(KS_SHOW_TASK_FILTER, vec);
-+}
-+
-+/** Apply Hide Task filter. */
-+void KsDataStore::applyNegTaskFilter(QVector<int> vec)
-+{
-+	_applyIdFilter(KS_HIDE_TASK_FILTER, vec);
-+}
-+
-+/** Apply Show Event filter. */
-+void KsDataStore::applyPosEventFilter(QVector<int> vec)
-+{
-+	_applyIdFilter(KS_SHOW_EVENT_FILTER, vec);
-+}
-+
-+/** Apply Hide Event filter. */
-+void KsDataStore::applyNegEventFilter(QVector<int> vec)
-+{
-+	_applyIdFilter(KS_HIDE_EVENT_FILTER, vec);
-+}
-+
-+/** Disable all filters. */
-+void KsDataStore::clearAllFilters()
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	if (!kshark_instance(&kshark_ctx) || !_tep)
-+		return;
-+
-+	_unregisterCPUCollections();
-+
-+	kshark_filter_clear(kshark_ctx, KS_SHOW_TASK_FILTER);
-+	kshark_filter_clear(kshark_ctx, KS_HIDE_TASK_FILTER);
-+	kshark_filter_clear(kshark_ctx, KS_SHOW_EVENT_FILTER);
-+	kshark_filter_clear(kshark_ctx, KS_HIDE_EVENT_FILTER);
-+
-+	tep_filter_reset(kshark_ctx->advanced_event_filter);
-+	kshark_clear_all_filters(kshark_ctx, _rows, _dataSize);
-+
-+	emit updateWidgets(this);
-+}
-+
-+/**
-+ * @brief Create Plugin Manager. Use list of plugins declared in the
-+ *	  CMake-generated header file.
-+ */
-+KsPluginManager::KsPluginManager(QWidget *parent)
-+: QObject(parent)
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+	_parsePluginList();
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	registerFromList(kshark_ctx);
-+}
-+
-+/** Parse the plugin list declared in the CMake-generated header file. */
-+void KsPluginManager::_parsePluginList()
-+{
-+	_ksPluginList = KsUtils::getPluginList();
-+	int nPlugins = _ksPluginList.count();
-+
-+	_registeredKsPlugins.resize(nPlugins);
-+	for (int i = 0; i < nPlugins; ++i) {
-+		if (_ksPluginList[i].contains(" default", Qt::CaseInsensitive)) {
-+			_ksPluginList[i].remove(" default", Qt::CaseInsensitive);
-+			_registeredKsPlugins[i] = true;
-+		} else {
-+			_registeredKsPlugins[i] = false;
++	_allCb.setCheckState(Qt::Checked);
++	for (auto &c: _table._cb) {
++		if (c->checkState() == Qt::Unchecked) {
++			_allCb.setCheckState(Qt::Unchecked);
++			break;
 +		}
 +	}
 +}
 +
-+/**
-+ * Register the plugins by using the information in "_ksPluginList" and
-+ * "_registeredKsPlugins".
-+ */
-+void KsPluginManager::registerFromList(kshark_context *kshark_ctx)
++static void update_r(QTreeWidgetItem *item, Qt::CheckState state)
 +{
-+	auto lamRegBuiltIn = [&kshark_ctx](const QString &plugin)
-+	{
-+		char *lib;
-+		int n;
-+
-+		n = asprintf(&lib, "%s/lib/plugin-%s.so",
-+			     KS_DIR, plugin.toStdString().c_str());
-+		if (n <= 0)
-+			return;
-+
-+		kshark_register_plugin(kshark_ctx, lib);
-+		free(lib);
-+	};
-+
-+	auto lamRegUser = [&kshark_ctx](const QString &plugin)
-+	{
-+		const char *lib = plugin.toStdString().c_str();
-+		kshark_register_plugin(kshark_ctx, lib);
-+	};
-+
-+	_forEachInList(_ksPluginList,
-+		       _registeredKsPlugins,
-+		       lamRegBuiltIn);
-+
-+	_forEachInList(_userPluginList,
-+		       _registeredUserPlugins,
-+		       lamRegUser);
-+}
-+
-+/**
-+ * Unegister the plugins by using the information in "_ksPluginList" and
-+ * "_registeredKsPlugins".
-+ */
-+void KsPluginManager::unregisterFromList(kshark_context *kshark_ctx)
-+{
-+	auto lamUregBuiltIn = [&kshark_ctx](const QString &plugin)
-+	{
-+		char *lib;
-+		int n;
-+
-+		n = asprintf(&lib, "%s/lib/plugin-%s.so",
-+			     KS_DIR, plugin.toStdString().c_str());
-+		if (n <= 0)
-+			return;
-+
-+		kshark_unregister_plugin(kshark_ctx, lib);
-+		free(lib);
-+	};
-+
-+	auto lamUregUser = [&kshark_ctx](const QString &plugin)
-+	{
-+		const char *lib = plugin.toStdString().c_str();
-+		kshark_unregister_plugin(kshark_ctx, lib);
-+	};
-+
-+	_forEachInList(_ksPluginList,
-+		       _registeredKsPlugins,
-+			lamUregBuiltIn);
-+
-+	_forEachInList(_userPluginList,
-+		       _registeredUserPlugins,
-+			lamUregUser);
-+}
-+
-+/**
-+ * @brief Register a Plugin.
-+ *
-+ * @param plugin: provide here the name of the plugin (as in the CMake-generated
-+ *		  header file) of a name of the plugin's library file (.so).
-+ */
-+void KsPluginManager::registerPlugin(const QString &plugin)
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+	char *lib;
 +	int n;
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
++	item->setCheckState(0, state);
 +
-+	for (int i = 0; i < _ksPluginList.count(); ++i) {
-+		if (_ksPluginList[i] == plugin) {
-+			/*
-+			 * The argument is the name of the plugin. From the
-+			 * name get the library .so file.
-+			 */
-+			n = asprintf(&lib, "%s/lib/plugin-%s.so",
-+					KS_DIR, plugin.toStdString().c_str());
-+			if (n > 0) {
-+				kshark_register_plugin(kshark_ctx, lib);
-+				_registeredKsPlugins[i] = true;
-+				free(lib);
-+			}
-+
-+			return;
-+
-+		} else if (plugin.contains("/lib/plugin-" + _ksPluginList[i],
-+					   Qt::CaseInsensitive)) {
-+			/*
-+			 * The argument is the name of the library .so file.
-+			 */
-+			n = asprintf(&lib, "%s", plugin.toStdString().c_str());
-+			if (n > 0) {
-+				kshark_register_plugin(kshark_ctx, lib);
-+				_registeredKsPlugins[i] = true;
-+				free(lib);
-+			}
-+
-+			return;
-+		}
-+	}
-+
-+	/* No plugin with this name in the list. Try to add it anyway. */
-+	if (plugin.endsWith(".so") && QFileInfo::exists(plugin)) {
-+		kshark_register_plugin(kshark_ctx,
-+				       plugin.toStdString().c_str());
-+
-+		_userPluginList.append(plugin);
-+		_registeredUserPlugins.append(true);
-+	} else {
-+		qCritical() << "ERROR: " << plugin << "cannot be registered!";
-+	}
++	n = item->childCount();
++	for (int i = 0; i < n; ++i)
++		update_r(item->child(i), state);
 +}
 +
-+/** @brief Unregister a Built in KernelShark plugin.
-+ *<br>
-+ * WARNING: Do not use this function to unregister User plugins.
-+ * Instead use directly kshark_unregister_plugin().
++/**
++ * @brief Create KsCheckBoxTree.
 + *
-+ * @param plugin: provide here the name of the plugin (as in the CMake-generated
-+ *		  header file) or a name of the plugin's library file (.so).
-+ *
++ * @param parent: The parent of this widget.
 + */
-+void KsPluginManager::unregisterPlugin(const QString &plugin)
++KsCheckBoxTree::KsCheckBoxTree(QWidget *parent)
++: QTreeWidget(parent)
 +{
-+	kshark_context *kshark_ctx(nullptr);
-+	char *lib;
-+	int n;
++	setColumnCount(2);
++	setHeaderHidden(true);
++	setSelectionBehavior(QAbstractItemView::SelectRows);
++	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	for (int i = 0; i < _ksPluginList.count(); ++i) {
-+		if (_ksPluginList[i] == plugin) {
-+			/*
-+			 * The argument is the name of the plugin. From the
-+			 * name get the library .so file.
-+			 */
-+			n = asprintf(&lib, "%s/lib/plugin-%s.so", KS_DIR,
-+				     plugin.toStdString().c_str());
-+			if (n > 0) {
-+				kshark_unregister_plugin(kshark_ctx, lib);
-+				_registeredKsPlugins[i] = false;
-+				free(lib);
-+			}
-+
-+			return;
-+		} else if  (plugin.contains("/lib/plugin-" +
-+			                   _ksPluginList[i], Qt::CaseInsensitive)) {
-+			/*
-+			 * The argument is the name of the library .so file.
-+			 */
-+			n = asprintf(&lib, "%s", plugin.toStdString().c_str());
-+			if (n > 0) {
-+				kshark_unregister_plugin(kshark_ctx, lib);
-+				_registeredKsPlugins[i] = false;
-+				free(lib);
-+			}
-+
-+			return;
-+		}
-+	}
++	connect(this, &KsCheckBoxTree::itemDoubleClicked,
++		this, &KsCheckBoxTree::_doubleClicked);
 +}
 +
-+/** Unload all plugins. */
-+void KsPluginManager::unloadAll()
++/** Reimplemented event handler used to receive key press events. */
++void KsCheckBoxTree::keyPressEvent(QKeyEvent *event)
 +{
-+	kshark_context *kshark_ctx(nullptr);
++	if (event->key() == Qt::Key_Return) {
++		/* Loop over all selected child items and change
++		* there states. */
++		for (auto &s: selectedItems()) {
++			if(s->childCount()) {
++				if (s->isExpanded())
++					continue;
++			}
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_CLOSE);
-+	kshark_free_plugin_list(kshark_ctx->plugins);
-+	kshark_ctx->plugins = nullptr;
-+	kshark_free_event_handler_list(kshark_ctx->event_handlers);
-+
-+	unregisterFromList(kshark_ctx);
-+}
-+
-+/** @brief Update (change) the Plugins.
-+ *
-+ * @param pluginIds: The indexes of the plugins to be loaded.
-+ */
-+void KsPluginManager::updatePlugins(QVector<int> pluginIds)
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	auto register_plugins = [&] (QVector<int> ids)
-+	{
-+		int nKsPlugins = _registeredKsPlugins.count();
-+
-+		/* First clear all registered plugins. */
-+		for (auto &p: _registeredKsPlugins)
-+			p = false;
-+		for (auto &p: _registeredUserPlugins)
-+			p = false;
-+
-+		/* The vector contains the indexes of those to register. */
-+		for (auto const &p: ids) {
-+			if (p < nKsPlugins)
-+				_registeredKsPlugins[p] = true;
++			if (s->checkState(0) == Qt::Unchecked)
++				s->setCheckState(0, Qt::Checked);
 +			else
-+				_registeredUserPlugins[p - nKsPlugins] = true;
++				s->setCheckState(0, Qt::Unchecked);
++
++			if(s->childCount()) {
++				update_r(s, s->checkState(0));
++			}
 +		}
-+		registerFromList(kshark_ctx);
-+	};
++	}
 +
-+	if (!kshark_ctx->pevent) {
-+		kshark_free_plugin_list(kshark_ctx->plugins);
-+		kshark_ctx->plugins = nullptr;
++	emit verify();
++	QTreeWidget::keyPressEvent(event);
++}
 +
-+		/*
-+		 * No data is loaded. For the moment, just register the
-+		 * plugins. Handling of the plugins will be done after
-+		 * we load a data file.
-+		 */
-+		register_plugins(pluginIds);
++void KsCheckBoxTree::_doubleClicked(QTreeWidgetItem *item, int col)
++{
++	if (item->checkState(0) == Qt::Unchecked)
++		item->setCheckState(0, Qt::Checked);
++	else
++		item->setCheckState(0, Qt::Unchecked);
++
++	for (auto &i: selectedItems())
++		i->setSelected(false);
++
++	emit itemClicked(item, col);
++}
++
++/** Reimplemented event handler used to receive mouse press events. */
++void KsCheckBoxTree::mousePressEvent(QMouseEvent *event)
++{
++	if (event->button() == Qt::RightButton) {
++		for (auto &i: selectedItems())
++			i->setSelected(false);
 +		return;
 +	}
 +
-+	/* Clean up all old plugins first. */
-+	unloadAll();
-+
-+	/* Now load. */
-+	register_plugins(pluginIds);
-+	kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_INIT);
-+
-+	emit dataReload();
++	QApplication::processEvents();
++	QTreeWidget::mousePressEvent(event);
 +}
-diff --git a/kernel-shark-qt/src/KsUtils.hpp b/kernel-shark-qt/src/KsUtils.hpp
++
++/**
++ * @brief Create KsCheckBoxTreeWidget.
++ *
++ * @param name: The name of this widget.
++ * @param parent: The parent of this widget.
++ */
++KsCheckBoxTreeWidget::KsCheckBoxTreeWidget(const QString &name,
++					   QWidget *parent)
++: KsCheckBoxWidget(name, parent),
++  _tree(this)
++{
++	connect(&_tree,	&KsCheckBoxTree::verify,
++		this,	&KsCheckBoxTreeWidget::_verify);
++}
++
++/** Initialize the KsCheckBoxTree and its layout. */
++void KsCheckBoxTreeWidget::_initTree()
++{
++	_tree.setSelectionMode(QAbstractItemView::MultiSelection);
++
++	connect(&_tree, &QTreeWidget::itemClicked,
++		this,	&KsCheckBoxTreeWidget::_update);
++
++	_cbLayout.setContentsMargins(1, 1, 1, 1);
++	_cbLayout.addWidget(&_tree);
++}
++
++/** Adjust the size of this widget according to its content. */
++void KsCheckBoxTreeWidget::_adjustSize()
++{
++	int width, n = _tree.topLevelItemCount();
++
++	if (n == 0)
++		return;
++
++	for (int i = 0; i < n; ++i)
++		_tree.topLevelItem(i)->setExpanded(true);
++
++	_tree.resizeColumnToContents(0);
++	if (_tree.topLevelItem(0)->child(0)) {
++		width = _tree.visualItemRect(_tree.topLevelItem(0)->child(0)).width();
++	} else {
++		width = _tree.visualItemRect(_tree.topLevelItem(0)).width();
++	}
++
++	width += FONT_WIDTH*3 + style()->pixelMetric(QStyle::PM_ScrollBarExtent);
++	_cbWidget.resize(width, _cbWidget.height());
++
++	for (int i = 0; i < n; ++i)
++		_tree.topLevelItem(i)->setExpanded(false);
++
++	setMinimumWidth(_cbWidget.width() +
++			_cbLayout.contentsMargins().left() +
++			_cbLayout.contentsMargins().right() +
++			_topLayout.contentsMargins().left() +
++			_topLayout.contentsMargins().right());
++}
++
++void KsCheckBoxTreeWidget::_update(QTreeWidgetItem *item, int column)
++{
++	/* Get the new state of the item. */
++	Qt::CheckState state = item->checkState(0);
++
++	/* Recursively update all items below this one. */
++	update_r(item, state);
++
++	/*
++	 * Update all items above this one including the "all"
++	 * check box.
++	 */
++	_verify();
++}
++
++void KsCheckBoxTreeWidget::_verify()
++{
++	/*
++	 * Set the state of the top level items according to the
++	 * state of the childs.
++	 */
++	QTreeWidgetItem *topItem, *childItem;
++
++	for(int t = 0; t < _tree.topLevelItemCount(); ++t) {
++		topItem = _tree.topLevelItem(t);
++		if (topItem->childCount() == 0)
++			continue;
++
++		topItem->setCheckState(0, Qt::Checked);
++		for (int c = 0; c < topItem->childCount(); ++c) {
++			childItem = topItem->child(c);
++			if (childItem->checkState(0) == Qt::Unchecked)
++				topItem->setCheckState(0, Qt::Unchecked);
++		}
++	}
++
++	_allCb.setCheckState(Qt::Checked);
++	for (auto &c: _cb) {
++		if (c->checkState(0) == Qt::Unchecked) {
++			_allCb.setCheckState(Qt::Unchecked);
++			break;
++		}
++	}
++}
++
++/**
++ * @brief Create KsCPUCheckBoxWidget.
++ *
++ * @param pevent: Page event used to parse the page.
++ * @param parent: The parent of this widget.
++ */
++KsCPUCheckBoxWidget::KsCPUCheckBoxWidget(struct tep_handle *pevent,
++					 QWidget *parent)
++: KsCheckBoxTreeWidget("CPUs", parent)
++{
++	int nCPUs(0), height(FONT_HEIGHT * 1.5);
++	KsPlot::Color cpuCol;
++	QString style;
++
++	style = QString("QTreeView::item { height: %1 ;}").arg(height);
++	_tree.setStyleSheet(style);
++
++	_initTree();
++
++	if (pevent)
++		nCPUs = pevent->cpus;
++
++	_id.resize(nCPUs);
++	_cb.resize(nCPUs);
++
++	for (int i = 0; i < nCPUs; ++i) {
++		cpuCol.setRainbowColor(i);
++		QTreeWidgetItem *cpuItem = new QTreeWidgetItem;
++		cpuItem->setText(0, "  ");
++		cpuItem->setText(1, QString("CPU %1").arg(i));
++		cpuItem->setCheckState(0, Qt::Checked);
++		cpuItem->setBackgroundColor(0, QColor(cpuCol.r(),
++						      cpuCol.g(),
++						      cpuCol.b()));
++		_tree.addTopLevelItem(cpuItem);
++		_id[i] = i;
++		_cb[i] = cpuItem;
++	}
++
++	_adjustSize();
++}
++
++/**
++ * @brief Create KsEventsCheckBoxWidget.
++ *
++ * @param pevent: Page event used to parse the page.
++ * @param parent: The parent of this widget.
++ */
++KsEventsCheckBoxWidget::KsEventsCheckBoxWidget(struct tep_handle *pevent,
++					       QWidget *parent)
++: KsCheckBoxTreeWidget("Events", parent)
++{
++	QTreeWidgetItem *sysItem, *evtItem;
++	QString sysName, evtName;
++	int nEvts(0), i(0);
++
++	if (pevent)
++		nEvts = pevent->nr_events;
++
++	_initTree();
++	_id.resize(nEvts);
++	_cb.resize(nEvts);
++
++	while (i < nEvts) {
++		sysName = pevent->events[i]->system;
++		sysItem = new QTreeWidgetItem;
++		sysItem->setText(0, sysName);
++		sysItem->setCheckState(0, Qt::Checked);
++		_tree.addTopLevelItem(sysItem);
++
++		while (sysName == pevent->events[i]->system) {
++			evtName = pevent->events[i]->name;
++			evtItem = new QTreeWidgetItem;
++			evtItem->setText(0, evtName);
++			evtItem->setCheckState(0, Qt::Checked);
++			evtItem->setFlags(evtItem->flags() |
++					  Qt::ItemIsUserCheckable);
++
++			sysItem->addChild(evtItem);
++
++			_id[i] = pevent->events[i]->id;
++			_cb[i] = evtItem;
++
++			if (++i == nEvts)
++				break;
++		}
++	}
++
++	_tree.sortItems(0, Qt::AscendingOrder);
++	_adjustSize();
++}
++
++/**
++ * @brief Create KsTasksCheckBoxWidget.
++ *
++ * @param pevent: Page event used to parse the page.
++ * @param cond: If True make a "Show Task" widget. Otherwise make "Hide Task".
++ * @param parent: The parent of this widget.
++ */
++KsTasksCheckBoxWidget::KsTasksCheckBoxWidget(struct tep_handle *pevent,
++					     bool cond, QWidget *parent)
++: KsCheckBoxTableWidget("Tasks", parent)
++{
++	kshark_context *kshark_ctx(nullptr);
++	QTableWidgetItem *pidItem, *comItem;
++	KsPlot::Color pidCol;
++	QStringList headers;
++	const char *comm;
++	int nTasks;
++
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	if (_cond)
++		headers << "Show" << "Pid" << "Task";
++	else
++		headers << "Hide" << "Pid" << "Task";
++
++	_id = KsUtils::getPidList();
++	nTasks = _id.count();
++	_initTable(headers, nTasks);
++
++	for (int i = 0; i < nTasks; ++i) {
++		pidItem	= new QTableWidgetItem(tr("%1").arg(_id[i]));
++		_table.setItem(i, 1, pidItem);
++
++		comm = tep_data_comm_from_pid(kshark_ctx->pevent, _id[i]);
++		comItem = new QTableWidgetItem(tr(comm));
++
++		pidItem->setBackgroundColor(QColor(pidCol.r(),
++						   pidCol.g(),
++						   pidCol.b()));
++
++		if (_id[i] == 0)
++			pidItem->setTextColor(Qt::white);
++
++		_table.setItem(i, 2, comItem);
++
++		pidCol.setRainbowColor(i);
++	}
++
++	_adjustSize();
++}
++
++/**
++ * @brief Create KsPluginCheckBoxWidget.
++ *
++ * @param pluginList: A list of plugin names.
++ * @param parent: The parent of this widget.
++ */
++KsPluginCheckBoxWidget::KsPluginCheckBoxWidget(QStringList pluginList,
++					       QWidget *parent)
++: KsCheckBoxTableWidget("Plugins", parent)
++{
++	QTableWidgetItem *nameItem, *infoItem;
++	QStringList headers;
++	int nPlgins;
++
++	headers << "Load" << "Name" << "Info";
++
++	nPlgins = pluginList.count();
++	_initTable(headers, nPlgins);
++	_id.resize(nPlgins);
++
++	for (int i = 0; i < nPlgins; ++i) {
++		nameItem = new QTableWidgetItem(pluginList[i]);
++		_table.setItem(i, 1, nameItem);
++		infoItem = new QTableWidgetItem(" -- ");
++		_table.setItem(i, 2, infoItem);
++		_id[i] = i;
++	}
++
++	_adjustSize();
++}
++
++/**
++ * @brief Create KsQuickEntryMenu.
++ *
++ * @param data: Input location for the KsDataStore object.
++ * @param row: The index of the entry used to initialize the menu.
++ * @param parent: The parent of this widget.
++ */
++KsQuickEntryMenu::KsQuickEntryMenu(KsDataStore *data, size_t row,
++				   QWidget *parent)
++: QMenu("Entry menu", parent),
++  _data(data),
++  _row(row),
++  _hideTaskAction(this),
++  _showTaskAction(this),
++  _hideEventAction(this),
++  _showEventAction(this),
++  _addTaskPlotAction(this)
++{
++	QString descr;
++
++	addSection("Quick Filter menu");
++
++	descr = "Hide task [";
++	descr += kshark_get_task_easy(_data->rows()[_row]);
++	descr += "-";
++	descr += QString("%1").arg(_data->rows()[_row]->pid);
++	descr += "]";
++
++	_hideTaskAction.setText(descr);
++
++	connect(&_hideTaskAction,	&QAction::triggered,
++		this,			&KsQuickEntryMenu::_hideTask);
++
++	addAction(&_hideTaskAction);
++
++	descr = "Show task [";
++	descr += kshark_get_task_easy(_data->rows()[_row]);
++	descr += "-";
++	descr += QString("%1").arg(_data->rows()[_row]->pid);
++	descr += "] only";
++
++	_showTaskAction.setText(descr);
++
++	connect(&_showTaskAction,	&QAction::triggered,
++		this,			&KsQuickEntryMenu::_showTask);
++
++	addAction(&_showTaskAction);
++
++	descr = "Hide event [";
++	descr += kshark_get_event_name_easy(_data->rows()[_row]);
++	descr += "]";
++
++	_hideEventAction.setText(descr);
++
++	connect(&_hideEventAction,	&QAction::triggered,
++		this,			&KsQuickEntryMenu::_hideEvent);
++
++	addAction(&_hideEventAction);
++
++	descr = "Show event [";
++	descr += kshark_get_event_name_easy(_data->rows()[_row]);
++	descr += "] only";
++
++	_showEventAction.setText(descr);
++
++	connect(&_showEventAction,	&QAction::triggered,
++		this,			&KsQuickEntryMenu::_showEvent);
++
++	addAction(&_showEventAction);
++
++	addSection("Quick Plot menu");
++	descr = "Add [";
++	descr += kshark_get_task_easy(_data->rows()[_row]);
++	descr += "-";
++	descr += QString("%1").arg(_data->rows()[_row]->pid);
++	descr += "] plot";
++
++	_addTaskPlotAction.setText(descr);
++
++	connect(&_addTaskPlotAction,	&QAction::triggered,
++		this,			&KsQuickEntryMenu::_addTaskPlot);
++
++	addAction(&_addTaskPlotAction);
++}
++
++void KsQuickEntryMenu::_hideTask()
++{
++	int pid = kshark_get_pid_easy(_data->rows()[_row]);
++
++	_data->applyNegTaskFilter(QVector<int>(1, pid));
++}
++
++void KsQuickEntryMenu::_showTask()
++{
++	int pid = kshark_get_pid_easy(_data->rows()[_row]);
++
++	_data->applyPosTaskFilter(QVector<int>(1, pid));
++}
++
++void KsQuickEntryMenu::_hideEvent()
++{
++	int eventId = kshark_get_event_id_easy(_data->rows()[_row]);
++
++	_data->applyNegEventFilter(QVector<int>(1, eventId));
++}
++
++void KsQuickEntryMenu::_showEvent()
++{
++	int eventId = kshark_get_event_id_easy(_data->rows()[_row]);
++
++	_data->applyPosEventFilter(QVector<int>(1, eventId));
++}
++
++void KsQuickEntryMenu::_addTaskPlot()
++{
++	int pid = kshark_get_pid_easy(_data->rows()[_row]);
++
++	emit plotTask(pid);
++}
+diff --git a/kernel-shark-qt/src/KsWidgetsLib.hpp b/kernel-shark-qt/src/KsWidgetsLib.hpp
 new file mode 100644
-index 0000000..b14cd6a
+index 0000000..b9ba35a
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsUtils.hpp
-@@ -0,0 +1,233 @@
++++ b/kernel-shark-qt/src/KsWidgetsLib.hpp
+@@ -0,0 +1,385 @@
 +/* SPDX-License-Identifier: LGPL-2.1 */
 +
 +/*
 + * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
 + */
 +
-+/**
-+ *  @file    KsUtils.hpp
-+ *  @brief   KernelShark Utils.
-+ */
++ /**
++  *  @file    KsWidgetsLib.hpp
++  *  @brief   Defines small widgets and dialogues used by the KernelShark GUI.
++  */
 +
-+#ifndef _KS_UTILS_H
-+#define _KS_UTILS_H
-+
-+// C++ 11
-+#include <chrono>
++#ifndef _KS_WIDGETS_LIB_H
++#define _KS_WIDGETS_LIB_H
 +
 +// Qt
 +#include <QtWidgets>
 +
-+// KernelShark
-+#include "libkshark.h"
-+#include "libkshark-model.h"
-+#include "KsCmakeDef.hpp"
-+#include "KsPlotTools.hpp"
-+
-+/** Macro providing the height of the screen in pixels. */
-+#define SCREEN_HEIGHT  QApplication::desktop()->screenGeometry().height()
-+
-+/** Macro providing the width of the screen in pixels. */
-+#define SCREEN_WIDTH   QApplication::desktop()->screenGeometry().width()
-+
-+//! @cond Doxygen_Suppress
-+
-+auto fontHeight = []()
-+{
-+	QFont font;
-+	QFontMetrics fm(font);
-+
-+	return fm.height();
-+};
-+
-+auto stringWidth = [](QString s)
-+{
-+	QFont font;
-+	QFontMetrics fm(font);
-+
-+	return fm.width(s);
-+};
-+
-+//! @endcond
-+
-+/** Macro providing the height of the font in pixels. */
-+#define FONT_HEIGHT		fontHeight()
-+
-+/** Macro providing the width of the font in pixels. */
-+#define FONT_WIDTH 		stringWidth("4")
-+
-+/** Macro providing the width of a string in pixels. */
-+#define STRING_WIDTH(s)		stringWidth(s)
-+
-+/** Macro providing the height of the KernelShark graphs in pixels. */
-+#define KS_GRAPH_HEIGHT	(FONT_HEIGHT*2)
-+
-+//! @cond Doxygen_Suppress
-+
-+#define KS_JSON_CAST(doc) \
-+reinterpret_cast<json_object *>(doc)
-+
-+#define KS_C_STR_CAST(doc) \
-+reinterpret_cast<const char *>(doc)
-+
-+typedef std::chrono::high_resolution_clock::time_point  hd_time;
-+
-+#define GET_TIME std::chrono::high_resolution_clock::now()
-+
-+#define GET_DURATION(t0) \
-+std::chrono::duration_cast<std::chrono::duration<double>>( \
-+std::chrono::high_resolution_clock::now() - t0).count()
-+
-+//! @endcond
-+
-+namespace KsUtils {
-+
-+QVector<int> getPidList();
-+
-+/** @brief Geat the list of plugins. */
-+inline QStringList getPluginList() {return plugins.split(";");}
-+
-+void listFilterSync(bool state);
-+
-+void graphFilterSync(bool state);
-+
-+/** @brief Convert the timestamp of the trace record into a string showing
-+ *	   the time in seconds.
-+ *
-+ * @param ts: Input location for the timestamp.
-+ * @param prec: the number of digits after the decimal point in the return
-+ *		string.
-+ *
-+ * @returns String showing the time in seconds.
++/**
++ * The KsProgressBar class provides a visualization of the progress of a
++ * running job.
 + */
-+inline QString Ts2String(int64_t ts, int prec)
++class KsProgressBar : public QWidget
 +{
-+	return QString::number(ts * 1e-9, 'f', prec);
-+}
++	Q_OBJECT
 +
-+bool matchCPUVisible(struct kshark_context *kshark_ctx,
-+			      struct kshark_entry *e, int cpu);
-+}; // KsUtils
++	QStatusBar	_sb;
 +
-+/** Identifier of the Dual Marker active state. */
-+enum class DualMarkerState {
-+	A,
-+	B
++	QProgressBar	_pb;
++
++public:
++	KsProgressBar(QString message, QWidget *parent = nullptr);
++
++	void setValue(int i);
++};
++
++/** Defines the progress bar's maximum value. */
++#define KS_PROGRESS_BAR_MAX 200
++
++/** The height of the KsProgressBar widget. */
++#define KS_BROGBAR_HEIGHT (FONT_HEIGHT * 5)
++
++/** The width of the KsProgressBar widget. */
++#define KS_BROGBAR_WIDTH  (FONT_WIDTH * 50)
++
++/**
++ * The KsMessageDialog class provides a widget showing a message and having
++ * a "Close" button.
++ */
++class KsMessageDialog : public QDialog
++{
++	QVBoxLayout	_layout;
++
++	QLabel		_text;
++
++	QPushButton	_closeButton;
++
++public:
++	explicit KsMessageDialog(QWidget *parent) = delete;
++
++	KsMessageDialog(QString message, QWidget *parent = nullptr);
++};
++
++/** The height of the KsMessageDialog widget. */
++#define KS_MSG_DIALOG_HEIGHT (FONT_HEIGHT * 8)
++
++/** The width of the KsMessageDialog widget. */
++#define KS_MSG_DIALOG_WIDTH  (SCREEN_WIDTH / 10)
++
++/**
++ * The KsCheckBoxWidget class is the base class of all CheckBox widget used
++ * by KernelShark.
++ */
++class KsCheckBoxWidget : public QWidget
++{
++	Q_OBJECT
++public:
++	KsCheckBoxWidget(const QString &name = "",
++			 QWidget *parent = nullptr);
++
++	/** Get the name of the widget. */
++	QString name() const {return _name;}
++
++	/** Get the state of the "all" checkboxe. */
++	bool all() const
++	{
++		if(_allCb.checkState() == Qt::Checked)
++			return true;
++		return false;
++	}
++
++	void setDefault(bool);
++
++	void set(QVector<bool> v);
++
++	QVector<int> getCheckedIds();
++
++private:
++	QToolBar _tb;
++
++protected:
++	/** The "all" checkboxe. */
++	QCheckBox	_allCb;
++
++	/** A vector of Id numbers coupled to each checkboxe. */
++	QVector<int>	_id;
++
++	/** A nested widget used to position the checkboxes. */
++	QWidget		_cbWidget;
++
++	/** The layout of the nested widget. */
++	QVBoxLayout	_cbLayout;
++
++	/** The top level layout of this widget. */
++	QVBoxLayout	_topLayout;
++
++	/** The name of this widget. */
++	QString		_name;
++
++	/** A label to show the name of the widget. */
++	QLabel		_nameLabel;
++
++private:
++	virtual void _setCheckState(int i, Qt::CheckState st) = 0;
++
++	virtual Qt::CheckState _checkState(int i) const = 0;
++
++	virtual void _verify() {};
++
++	void _checkAll(bool);
 +};
 +
 +/**
-+ * The KsDataStore class provides the access to trace data for all KernelShark
-+ * widgets.
++ * The KsCheckBoxDialog class is the base class of all CheckBox dialogs
++ * used by KernelShark.
 + */
-+class KsDataStore : public QObject
++class KsCheckBoxDialog : public QDialog
 +{
 +	Q_OBJECT
 +public:
-+	explicit KsDataStore(QWidget *parent = nullptr);
++	KsCheckBoxDialog() = delete;
 +
-+	~KsDataStore();
++	KsCheckBoxDialog(KsCheckBoxWidget *cbw, QWidget *parent = nullptr);
 +
-+	void loadDataFile(const QString &file);
++signals:
++	/** Signal emitted when the "Apply" button is pressed. */
++	void apply(QVector<int>);
 +
-+	void clear();
++private:
++	void _applyPress();
 +
-+	/** Get the trace event parser. */
-+	tep_handle *tep() const {return _tep;}
++	QVBoxLayout		_topLayout;
 +
-+	/** Get the trace data array.. */
-+	struct kshark_entry **rows() const {return _rows;}
++	QHBoxLayout		_buttonLayout;
 +
-+	/** Get the size of the data array. */
-+	size_t size() const {return _dataSize;}
++	KsCheckBoxWidget	*_checkBoxWidget;
 +
-+	void reload();
++	QPushButton		_applyButton, _cancelButton;
 +
-+	void update();
++	QMetaObject::Connection		_applyButtonConnection;
++};
 +
-+	void registerCPUCollections();
++/** The KsCheckBoxTable class provides a table of checkboxes. */
++class KsCheckBoxTable : public QTableWidget
++{
++	Q_OBJECT
++public:
++	explicit KsCheckBoxTable(QWidget *parent = nullptr);
 +
-+	void applyPosTaskFilter(QVector<int>);
++	void init(QStringList headers, int size);
 +
-+	void applyNegTaskFilter(QVector<int>);
++	/** A vector of checkboxes. */
++	QVector<QCheckBox*>	_cb;
 +
-+	void applyPosEventFilter(QVector<int>);
++signals:
++	/** Signal emitted when a checkboxes changes state. */
++	void changeState(int row);
 +
-+	void applyNegEventFilter(QVector<int>);
++protected:
++	void keyPressEvent(QKeyEvent *event) override;
 +
-+	void clearAllFilters();
++	void mousePressEvent(QMouseEvent *event) override;
++
++private:
++	void _doubleClicked(int row, int col);
++};
++
++/**
++ * The KsCheckBoxTableWidget class provides a widget to hold a table of
++ * checkboxes.
++ */
++class KsCheckBoxTableWidget : public KsCheckBoxWidget
++{
++	Q_OBJECT
++public:
++	KsCheckBoxTableWidget(const QString &name = "",
++			      QWidget *parent = nullptr);
++
++protected:
++	void _adjustSize();
++
++	void _initTable(QStringList headers, int size);
++
++	/** The KsCheckBoxTable, shown by this widget. */
++	KsCheckBoxTable		_table;
++
++private:
++	void _setCheckState(int i, Qt::CheckState st) override
++	{
++		_table._cb[i]->setCheckState(st);
++	}
++
++	Qt::CheckState _checkState(int i) const override
++	{
++		return _table._cb[i]->checkState();
++	}
++
++	void _update(bool);
++
++	void _changeState(int row);
++};
++
++/** The KsCheckBoxTree class provides a tree of checkboxes. */
++class KsCheckBoxTree : public QTreeWidget
++{
++	Q_OBJECT
++public:
++	explicit KsCheckBoxTree(QWidget *parent = nullptr);
 +
 +signals:
 +	/**
-+	 * This signal is emitted when the data has changed and the View
-+	 * widgets have to update.
++	 * Signal emitted when a checkboxes of the tree changes its state
++	 * and the state of all toplevel and child checkboxes has to be
++	 * reprocesed.
 +	 */
-+	void updateWidgets(KsDataStore *);
++	void verify();
++
++protected:
++	void keyPressEvent(QKeyEvent *event) override;
++
++	void mousePressEvent(QMouseEvent *event) override;
 +
 +private:
-+	/** Page event used to parse the page. */
-+	tep_handle		*_tep;
-+
-+	/** Trace data array. */
-+	struct kshark_entry	**_rows;
-+
-+	/** The size of the data array. */
-+	size_t			_dataSize;
-+
-+	void _freeData();
-+	void _unregisterCPUCollections();
-+	void _applyIdFilter(int filterId, QVector<int> vec);
++	void _doubleClicked(QTreeWidgetItem *item, int col);
 +};
 +
-+/** A Plugin Manage class. */
-+class KsPluginManager : public QObject
++/**
++ * The KsCheckBoxTreeWidget class provides a widget to hold a tree of
++ * checkboxes.
++ */
++class KsCheckBoxTreeWidget : public KsCheckBoxWidget
 +{
 +	Q_OBJECT
 +public:
-+	explicit KsPluginManager(QWidget *parent = nullptr);
++	KsCheckBoxTreeWidget() = delete;
 +
-+	/** A list of available built-in plugins. */
-+	QStringList	_ksPluginList;
++	KsCheckBoxTreeWidget(const QString &name = "",
++			     QWidget *parent = nullptr);
 +
-+	/** A list of registered built-in plugins. */
-+	QVector<bool>	_registeredKsPlugins;
++protected:
++	void _adjustSize();
 +
-+	/** A list of available user plugins. */
-+	QStringList	_userPluginList;
++	void _initTree();
 +
-+	/** A list of registered user plugins. */
-+	QVector<bool>	_registeredUserPlugins;
++	/** The KsCheckBoxTree, shown by this widget. */
++	KsCheckBoxTree			_tree;
 +
-+	void registerFromList(kshark_context *kshark_ctx);
-+	void unregisterFromList(kshark_context *kshark_ctx);
-+
-+	void registerPlugin(const QString &plugin);
-+	void unregisterPlugin(const QString &plugin);
-+	void unloadAll();
-+
-+	void updatePlugins(QVector<int> pluginId);
-+
-+signals:
-+	/** This signal is emitted when a plugin is loaded or unloaded. */
-+	void dataReload();
++	/** A vector of Tree items (checkboxes). */
++	QVector<QTreeWidgetItem*>	_cb;
 +
 +private:
-+	void _parsePluginList();
-+
-+	template <class T>
-+	void _forEachInList(const QStringList &pl,
-+			    const QVector<bool> &reg,
-+			    T action)
++	void _setCheckState(int i, Qt::CheckState st) override
 +	{
-+		int nPlugins;
-+		nPlugins = pl.count();
-+		for (int i = 0; i < nPlugins; ++i) {
-+			if (reg[i]) {
-+				action(pl[i]);
-+			}
-+		}
++		_cb[i]->setCheckState(0, st);
 +	}
++
++	Qt::CheckState _checkState(int i) const override
++	{
++		return _cb[i]->checkState(0);
++	}
++
++	void _update(QTreeWidgetItem *item, int column);
++
++	void _verify();
 +};
 +
-+KsPlot::Color& operator <<(KsPlot::Color &thisColor, const QColor &c);
++/**
++ * The KsCPUCheckBoxWidget class provides a widget for selecting CPU plots to
++ * show.
++ */
++struct KsCPUCheckBoxWidget : public KsCheckBoxTreeWidget
++{
++	KsCPUCheckBoxWidget() = delete;
++
++	KsCPUCheckBoxWidget(struct tep_handle *pe,
++			    QWidget *parent = nullptr);
++};
++
++/**
++ * The KsTasksCheckBoxWidget class provides a widget for selecting Tasks
++ * to show or hide.
++ */
++struct KsTasksCheckBoxWidget : public KsCheckBoxTableWidget
++{
++	KsTasksCheckBoxWidget() = delete;
++
++	KsTasksCheckBoxWidget(struct tep_handle *pe,
++			      bool cond = true,
++			      QWidget *parent = nullptr);
++
++private:
++	/**
++	 * A positive condition means that you want to show Tasks and
++	 * a negative condition means that you want to hide Tasks.
++	 */
++	bool		_cond;
++};
++
++/**
++ * The KsEventsCheckBoxWidget class provides a widget for selecting Trace
++ * events to show or hide.
++ */
++struct KsEventsCheckBoxWidget : public KsCheckBoxTreeWidget
++{
++	KsEventsCheckBoxWidget() = delete;
++
++	KsEventsCheckBoxWidget(struct tep_handle *pe,
++			       QWidget *parent = nullptr);
++};
++
++/**
++ * The KsPluginCheckBoxWidget class provides a widget for selecting plugins.
++ */
++struct KsPluginCheckBoxWidget : public KsCheckBoxTableWidget
++{
++	KsPluginCheckBoxWidget() = delete;
++
++	KsPluginCheckBoxWidget(QStringList pluginList,
++			       QWidget *parent = nullptr);
++};
++
++class KsDataStore;
++class KsGLWidget;
++
++/**
++ * The KsQuickFilterMenu class provides a menu for easy filtering and plotting.
++ * The menu is initialized from a single kshark_entry and uses the content of
++ * this entry to provides quick actions for filtering and plottin.
++ */
++class KsQuickEntryMenu : public QMenu
++{
++	Q_OBJECT
++public:
++	KsQuickEntryMenu() = delete;
++
++	explicit KsQuickEntryMenu(KsDataStore *data,
++				  size_t row,
++				  QWidget *parent = nullptr);
++
++signals:
++	/** Signal to add a task plot. */
++	void plotTask(int);
++
++private:
++	void _hideTask();
++
++	void _showTask();
++
++	void _hideEvent();
++
++	void _showEvent();
++
++	void _addTaskPlot();
++
++	KsDataStore	*_data;
++
++	size_t		 _row;
++
++	QAction _hideTaskAction, _showTaskAction;
++
++	QAction _hideEventAction, _showEventAction;
++
++	QAction _addTaskPlotAction;
++};
 +
 +#endif
 -- 
