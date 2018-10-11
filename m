@@ -1,18 +1,18 @@
 Return-Path: <SRS0=tdNt=MX=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-sn1nam02on0088.outbound.protection.outlook.com ([104.47.36.88]:3680
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr680085.outbound.protection.outlook.com ([40.107.68.85]:53760
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730493AbeJLAZp (ORCPT
+        id S1730510AbeJLAZw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Oct 2018 20:25:45 -0400
+        Thu, 11 Oct 2018 20:25:52 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>,
         Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH v3 1/4] kernel-shark-qt: Add Qt as a third party dependency.
-Date: Thu, 11 Oct 2018 16:57:39 +0000
-Message-ID: <20181011165713.15257-2-ykaradzhov@vmware.com>
+Subject: [PATCH v3 4/4] kernel-shark-qt: Add widget demo example.
+Date: Thu, 11 Oct 2018 16:57:43 +0000
+Message-ID: <20181011165713.15257-5-ykaradzhov@vmware.com>
 References: <20181011165713.15257-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181011165713.15257-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -24,62 +24,194 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-This patch prepares the Cmake build infrastructure for the
-introduction of a KernelShark GUI, baset on Qt.
+This patch introduces a basic example, showing how to use KsUtils and
+KsWidgetsLib.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/CMakeLists.txt | 8 ++++++++
- kernel-shark-qt/README         | 6 +++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ kernel-shark-qt/examples/CMakeLists.txt |   4 +
+ kernel-shark-qt/examples/widgetdemo.cpp | 158 ++++++++++++++++++++++++
+ 2 files changed, 162 insertions(+)
+ create mode 100644 kernel-shark-qt/examples/widgetdemo.cpp
 
-diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.tx=
-t
-index 4a40b11..71a021e 100644
---- a/kernel-shark-qt/CMakeLists.txt
-+++ b/kernel-shark-qt/CMakeLists.txt
-@@ -20,6 +20,14 @@ find_package(Doxygen)
- find_package(OpenGL)
- find_package(GLUT)
-=20
-+find_package(Qt5Widgets 5.7.1)
-+find_package(Qt5Network)
-+if (Qt5Widgets_FOUND)
+diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/exam=
+ples/CMakeLists.txt
+index 0c83293..e16216e 100644
+--- a/kernel-shark-qt/examples/CMakeLists.txt
++++ b/kernel-shark-qt/examples/CMakeLists.txt
+@@ -19,3 +19,7 @@ target_link_libraries(confio   kshark)
+ message(STATUS "dataplot")
+ add_executable(dplot          dataplot.cpp)
+ target_link_libraries(dplot   kshark-plot)
 +
-+    message(STATUS "Found Qt5Widgets:  (version ${Qt5Widgets_VERSION})")
++message(STATUS "widgetdemo")
++add_executable(widgetdemo          widgetdemo.cpp)
++target_link_libraries(widgetdemo   kshark-gui)
+diff --git a/kernel-shark-qt/examples/widgetdemo.cpp b/kernel-shark-qt/exam=
+ples/widgetdemo.cpp
+new file mode 100644
+index 0000000..73049bf
+--- /dev/null
++++ b/kernel-shark-qt/examples/widgetdemo.cpp
+@@ -0,0 +1,158 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+endif (Qt5Widgets_FOUND)
++/*
++ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
++ */
 +
- set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
- set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
-=20
-diff --git a/kernel-shark-qt/README b/kernel-shark-qt/README
-index 84708bd..14bcb77 100644
---- a/kernel-shark-qt/README
-+++ b/kernel-shark-qt/README
-@@ -4,10 +4,13 @@ This directory contains the new Qt-based version of the K=
-ernelShark GUI.
-=20
- Third Party Software:
- ------------------------------------------------------------
--The external dependencies:
-+KernelShark has the following external dependencies:
-+  Cmake, Json-C, OpenGL/Glut, Qt5Base.
++// C
++#include <sys/stat.h>
++#include <getopt.h>
++#include <unistd.h>
 +
- 1. In order to install the packages on Ubuntu do the following:
-     sudo apt-get install build-essential git cmake libjson-c-dev -y
-     sudo apt-get install freeglut3-dev libxmu-dev libxi-dev -y
-+    sudo apt-get install qtbase5-dev -y
-=20
- 1.1 I you want to be able to generate Doxygen documentation:
-     sudo apt-get install graphviz doxygen-gui -y
-@@ -16,6 +19,7 @@ The external dependencies:
- 2. In order to install the packages on Fedora, as root do the following:
-     dnf install gcc gcc-c++ git cmake json-c-devel -y
-     dnf install freeglut-devel redhat-rpm-config -y
-+    dnf install qt5-qtbase-devel -y
-=20
- 2.1 I you want to be able to generate Doxygen documentation:
-     dnf install graphviz doxygen -y
++// C++
++#include <iostream>
++
++// Qt
++#include <QtWidgets>
++
++// KernelShark
++#include "KsUtils.hpp"
++#include "KsWidgetsLib.hpp"
++
++#define default_input_file (char*)"trace.dat"
++
++static char *input_file =3D nullptr;
++
++using namespace std;
++
++void usage(const char *prog)
++{
++	cout << "Usage: " << prog << endl
++	     << "  -h	Display this help message\n"
++	     << "  -v	Display version and exit\n"
++	     << "  -i	input_file, default is " << default_input_file << endl
++	     << "  -p	register plugin, use plugin name, absolute or relative path=
+\n"
++	     << "  -u	unregister plugin, use plugin name or absolute path\n";
++}
++
++struct TaskPrint : public QObject
++{
++	tep_handle	*_pevent;
++
++	void print(QVector<int> pids)
++	{
++		for (auto const &pid: pids)
++			cout << "task: "
++			     << tep_data_comm_from_pid(_pevent, pid)
++			     << "  pid: " << pid << endl;
++	}
++};
++
++int main(int argc, char **argv)
++{
++	kshark_context *kshark_ctx(nullptr);
++	QApplication a(argc, argv);
++	KsPluginManager plugins;
++	KsDataStore data;
++	size_t nRows(0);
++	int c;
++
++	if (!kshark_instance(&kshark_ctx))
++		return 1;
++
++	while ((c =3D getopt(argc, argv, "hvi:p:u:")) !=3D -1) {
++		switch(c) {
++		case 'v':
++			printf("kshark-gui %s\n", KS_VERSION_STRING);
++			return 0;
++
++		case 'i':
++			input_file =3D optarg;
++			break;
++
++		case 'p':
++			plugins.registerPlugin(QString(optarg));
++			break;
++
++		case 'u':
++			plugins.unregisterPlugin(QString(optarg));
++			break;
++
++		case 'h':
++			usage(argv[0]);
++			return 0;
++		}
++	}
++
++	if (!input_file) {
++			struct stat st;
++			if (stat(default_input_file, &st) =3D=3D 0)
++				input_file =3D default_input_file;
++	}
++
++	if (input_file) {
++		data.loadDataFile(input_file);
++		nRows =3D data.size();
++	} else {
++		cerr << "No input file is provided.\n";
++	}
++
++	cout << nRows << " entries loaded\n";
++
++	auto lamPrintPl =3D [&]()
++	{
++		kshark_plugin_list *pl;
++		for (pl =3D kshark_ctx->plugins; pl; pl =3D pl->next)
++			cout << pl->file << endl;
++	};
++
++	cout << "\n\n";
++	lamPrintPl();
++	sleep(1);
++
++	QVector<bool> registeredPlugins;
++	QStringList pluginsList;
++
++	pluginsList << plugins._ksPluginList
++		    << plugins._userPluginList;
++
++	registeredPlugins << plugins._registeredKsPlugins
++			  << plugins._registeredUserPlugins;
++
++	KsCheckBoxWidget *pluginCBD
++		=3D new KsPluginCheckBoxWidget(pluginsList);
++
++	pluginCBD->set(registeredPlugins);
++
++	KsCheckBoxDialog *dialog1 =3D new KsCheckBoxDialog(pluginCBD);
++	QObject::connect(dialog1,	&KsCheckBoxDialog::apply,
++			&plugins,	&KsPluginManager::updatePlugins);
++
++	dialog1->show();
++	a.exec();
++
++	cout << "\n\nYou selected\n";
++	lamPrintPl();
++	sleep(1);
++
++	if (!nRows)
++		return 1;
++
++	KsCheckBoxWidget *tasks_cbd =3D
++		new KsTasksCheckBoxWidget(data.tep(), true);
++
++	tasks_cbd->setDefault(false);
++
++	TaskPrint p;
++	p._pevent =3D data.tep();
++
++	KsCheckBoxDialog *dialog2 =3D new KsCheckBoxDialog(tasks_cbd);
++	QObject::connect(dialog2,	&KsCheckBoxDialog::apply,
++			 &p,		&TaskPrint::print);
++
++	cout << "\n\nYou selected\n";
++	dialog2->show();
++	a.exec();
++
++	return 0;
++}
 --=20
 2.17.1
