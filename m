@@ -1,17 +1,17 @@
 Return-Path: <SRS0=pqkA=MY=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-co1nam03on0041.outbound.protection.outlook.com ([104.47.40.41]:22067
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr680056.outbound.protection.outlook.com ([40.107.68.56]:3297
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728537AbeJLXrV (ORCPT
+        id S1728800AbeJLXrX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Oct 2018 19:47:21 -0400
+        Fri, 12 Oct 2018 19:47:23 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH 02/10] kernel-shark-qt: Add model for showing trace data in a text format.
-Date: Fri, 12 Oct 2018 19:13:10 +0300
-Message-Id: <20181012161318.5302-3-ykaradzhov@vmware.com>
+Subject: [PATCH 04/10] kernel-shark-qt: Add visualization (graph) model
+Date: Fri, 12 Oct 2018 19:13:12 +0300
+Message-Id: <20181012161318.5302-5-ykaradzhov@vmware.com>
 In-Reply-To: <20181012161318.5302-1-ykaradzhov@vmware.com>
 References: <20181012161318.5302-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
@@ -21,603 +21,252 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-This patch defines the model used by the Trace Viewer widget used to
-display trace data in a table-like form.
+This patch defines the class KsGraphModel which provides a model for
+visualization of trace data. This class is a wrapper of kshark_trace_histo
+and is needed only because we want to use the signals defined in
+QAbstractTableModel (a class inherited by KsGraphModel).
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/CMakeLists.txt |   2 +
- kernel-shark-qt/src/KsModels.cpp   | 332 +++++++++++++++++++++++++++++
- kernel-shark-qt/src/KsModels.hpp   | 223 +++++++++++++++++++
- 3 files changed, 557 insertions(+)
- create mode 100644 kernel-shark-qt/src/KsModels.cpp
- create mode 100644 kernel-shark-qt/src/KsModels.hpp
+ kernel-shark-qt/src/KsModels.cpp | 153 +++++++++++++++++++++++++++++++
+ kernel-shark-qt/src/KsModels.hpp |  66 +++++++++++++
+ 2 files changed, 219 insertions(+)
 
-diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
-index dc86cdf..3fd518b 100644
---- a/kernel-shark-qt/src/CMakeLists.txt
-+++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -32,12 +32,14 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
- 
-     message(STATUS "libkshark-gui")
-     set (ks-guiLib_hdr  KsUtils.hpp
-+                        KsModels.hpp
-                         KsDualMarker.hpp
-                         KsWidgetsLib.hpp)
- 
-     QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
- 
-     add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp
-+                                                            KsModels.cpp
-                                                             KsDualMarker.cpp
-                                                             KsWidgetsLib.cpp)
- 
 diff --git a/kernel-shark-qt/src/KsModels.cpp b/kernel-shark-qt/src/KsModels.cpp
-new file mode 100644
-index 0000000..095e26b
---- /dev/null
+index 095e26b..5eb1646 100644
+--- a/kernel-shark-qt/src/KsModels.cpp
 +++ b/kernel-shark-qt/src/KsModels.cpp
-@@ -0,0 +1,332 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+
-+/*
-+ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
-+ */
-+
-+/**
-+ *  @file    KsModels.cpp
-+ *  @brief   Models for data representation.
-+ */
-+
-+// KernelShark
-+#include "KsModels.hpp"
-+#include "KsWidgetsLib.hpp"
-+#include "KsUtils.hpp"
+@@ -330,3 +330,156 @@ size_t KsViewModel::search(int column,
+ 
+ 	return matchList->count();
+ }
 +
 +/** Create a default (empty) KsFilterProxyModel object. */
-+KsFilterProxyModel::KsFilterProxyModel(QObject *parent)
-+: QSortFilterProxyModel(parent),
-+  _searchStop(false),
-+  _source(nullptr)
-+{}
-+
-+/**
-+ * Returns False if the item in the row indicated by the sourceRow and
-+ * sourceParentshould be filtered out. Otherwise returns True.
-+ */
-+bool
-+KsFilterProxyModel::filterAcceptsRow(int sourceRow,
-+				     const QModelIndex &sourceParent) const
++KsGraphModel::KsGraphModel(QObject *parent)
++: QAbstractTableModel(parent)
 +{
-+	if (_data[sourceRow]->visible & KS_TEXT_VIEW_FILTER_MASK)
-+		return true;
-+
-+	return false;
++	ksmodel_init(&_histo);
 +}
 +
-+/** Provide the Proxy model with data. */
-+void KsFilterProxyModel::fill(KsDataStore *data)
++/** Destroy KsFilterProxyModel object. */
++KsGraphModel::~KsGraphModel()
 +{
-+	_data = data->rows();
-+}
-+
-+/** Set the source model for this Proxy model. */
-+void KsFilterProxyModel::setSource(KsViewModel *s)
-+{
-+	QSortFilterProxyModel::setSourceModel(s);
-+	_source = s;
-+}
-+
-+void KsFilterProxyModel::_search(int column,
-+				 const QString &searchText,
-+				 condition_func cond,
-+				 QList<int> *matchList,
-+				 int first, int last,
-+				 QProgressBar *pb,
-+				 QLabel *l,
-+				 bool notify)
-+{
-+	int row, nRows(last - first + 1);
-+	int pbCount(1);
-+	QVariant item;
-+	QString text;
-+
-+	_searchProgress = 0;
-+
-+	if (nRows > KS_PROGRESS_BAR_MAX)
-+		pbCount = nRows / KS_PROGRESS_BAR_MAX;
-+	else
-+		_searchProgress = KS_PROGRESS_BAR_MAX - nRows;
-+
-+	/* Loop over the items of the proxy model. */
-+	for (int r = first; r <= last; ++r) {
-+		/*
-+		 * Use the index of the proxy model to retrieve the value
-+		 * of the row number in the base model.
-+		 */
-+		row = mapRowFromSource(r);
-+		item = _source->getValue(column, row);
-+		if (cond(searchText, item.toString())) {
-+			matchList->append(row);
-+		}
-+
-+		if (_searchStop) {
-+			_searchStop = false;
-+			break;
-+		}
-+
-+		/* Deal with the Progress bar of the seatch. */
-+		if ((r - first) % pbCount == 0) {
-+			if (notify) {
-+				std::lock_guard<std::mutex> lk(_mutex);
-+				++_searchProgress;
-+				_pbCond.notify_one();
-+			} else {
-+				if (pb)
-+					pb->setValue(pb->value() + 1);
-+				if (l)
-+					l->setText(QString(" %1").arg(matchList->count()));
-+				QApplication::processEvents();
-+			}
-+		}
-+	}
-+}
-+
-+/** @brief Search the content of the table for a data satisfying an abstract
-+ *	   condition.
-+ *
-+ * @param column: The number of the column to search in.
-+ * @param searchText: The text to search for.
-+ * @param cond: Matching condition function.
-+ * @param matchList: Output location for a list containing the row indexes of
-+ *		     the cells satisfying matching condition.
-+ * @param pb: Input location for a Progressbar used to visualize the progress
-+ *	      of the search.
-+ * @param l: Input location for a label used to show the number of cells found.
-+ *
-+ * @returns The number of cells satisfying the matching condition.
-+ */
-+size_t KsFilterProxyModel::search(int column,
-+				  const QString &searchText,
-+				  condition_func cond,
-+				  QList<int> *matchList,
-+				  QProgressBar *pb,
-+				  QLabel *l)
-+{
-+	int nRows = rowCount({});
-+
-+	_search(column, searchText, cond, matchList, 0, nRows - 1,
-+		pb, l, false);
-+
-+	return matchList->count();
-+}
-+
-+/** @brief Search the content of the table for a data satisfying an abstract
-+ *	   condition.
-+ *
-+ * @param column: The number of the column to search in.
-+ * @param searchText: The text to search for.
-+ * @param cond: Matching condition function.
-+ * @param first: Row index specifying the position inside the table from
-+ *		 where the search starts.
-+ * @param last:  Row index specifying the position inside the table from
-+ *		 where the search ends.
-+ * @param notify: Input location for flag specifying if the search has to
-+ *		  notify the main thread when to update the progress bar.
-+ *
-+ * @returns A list containing the row indexes of the cells satisfying matching
-+ *	    condition.
-+ */
-+QList<int> KsFilterProxyModel::searchMap(int column,
-+					 const QString &searchText,
-+					 condition_func cond,
-+					 int first,
-+					 int last,
-+					 bool notify)
-+{
-+	QList<int> matchList;
-+	qInfo() << "searchMap" << first << last;
-+	_search(column, searchText, cond, &matchList, first, last,
-+		nullptr, nullptr, notify);
-+
-+	return matchList;
-+}
-+
-+/** Create default (empty) KsViewModel object. */
-+KsViewModel::KsViewModel(QObject *parent)
-+: QAbstractTableModel(parent),
-+  _data(nullptr),
-+  _nRows(0),
-+  _header({"#", "CPU", "Time Stamp", "Task", "PID",
-+	   "Latency", "Event", "Info"}),
-+  _markA(-1),
-+  _markB(-1)
-+{}
-+
-+/**
-+ * Get the data stored under the given role for the item referred to by
-+ * the index. This is an implementation of the pure virtual method of the
-+ * abstract model class.
-+ */
-+QVariant KsViewModel::data(const QModelIndex &index, int role) const
-+{
-+	if (role == Qt::ForegroundRole) {
-+		if (index.row() == _markA)
-+			return QVariant::fromValue(QColor(Qt::white));
-+
-+		if (index.row() == _markB)
-+			return QVariant::fromValue(QColor(Qt::white));
-+	}
-+
-+	if (role == Qt::BackgroundRole) {
-+		if (index.row() == _markA)
-+			return QVariant::fromValue(QColor(_colorMarkA));
-+
-+		if (index.row() == _markB)
-+			return QVariant::fromValue(QColor(_colorMarkB));
-+	}
-+
-+	if (role == Qt::DisplayRole)
-+		return this->getValue(index.column(), index.row());
-+
-+	return {};
-+}
-+
-+/** Get the data stored in a given cell of the table. */
-+QVariant KsViewModel::getValue(int column, int row) const
-+{
-+	switch (column) {
-+		case TRACE_VIEW_COL_INDEX :
-+			return row;
-+
-+		case TRACE_VIEW_COL_CPU:
-+			return _data[row]->cpu;
-+
-+		case TRACE_VIEW_COL_TS:
-+			return KsUtils::Ts2String(_data[row]->ts, 6);
-+
-+		case TRACE_VIEW_COL_COMM:
-+			return kshark_get_task_easy(_data[row]);
-+
-+		case TRACE_VIEW_COL_PID:
-+			return kshark_get_pid_easy(_data[row]);
-+
-+		case TRACE_VIEW_COL_LAT:
-+			return kshark_get_latency_easy(_data[row]);
-+
-+		case TRACE_VIEW_COL_EVENT:
-+			return kshark_get_event_name_easy(_data[row]);
-+
-+		case TRACE_VIEW_COL_INFO :
-+			return kshark_get_info_easy(_data[row]);
-+
-+		default:
-+			return {};
-+	}
++	ksmodel_clear(&_histo);
 +}
 +
 +/**
-+ * Get the header of a column. This is an implementation of the pure virtual
-+ * method of the abstract model class.
-+ */
-+QVariant KsViewModel::headerData(int column,
-+				 Qt::Orientation orientation,
-+				 int role) const
-+{
-+	if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
-+		return {};
-+
-+	if (column < _header.count())
-+		return _header.at(column);
-+
-+	return {};
-+}
-+
-+/** Provide the model with data. */
-+void KsViewModel::fill(KsDataStore *data)
-+{
-+	beginInsertRows(QModelIndex(), 0, data->size() - 1);
-+
-+	_data = data->rows();
-+	_nRows = data->size();
-+
-+	endInsertRows();
-+}
-+
-+/** @brief Select a row in the table.
++ * @brief Provide the Visualization model with data. Calculate the current
++ *	  state of the model.
 + *
-+ * @param state: Identifier of the marker used to select the row.
-+ * @param row: Row index.
++ * @param entries: Input location for the trace data.
++ * @param n: Number of bins.
 + */
-+void KsViewModel::selectRow(DualMarkerState state, int row)
++void KsGraphModel::fill(kshark_entry **entries, size_t n)
 +{
-+	if (state == DualMarkerState::A) {
-+		_markA = row;
-+		_markB = -1;
-+	} else {
-+		_markB = row;
-+		_markA = -1;
-+	}
-+}
++	if (n == 0)
++		return;
 +
-+/** Reset the model. */
-+void KsViewModel::reset()
-+{
 +	beginResetModel();
 +
-+	_data = nullptr;
-+	_nRows = 0;
++	if (_histo.n_bins == 0)
++		ksmodel_set_bining(&_histo,
++				   KS_DEFAULT_NBUNS,
++				   entries[0]->ts,
++				   entries[n-1]->ts);
++
++	ksmodel_fill(&_histo, entries, n);
 +
 +	endResetModel();
 +}
 +
-+/** Update the model. Use this function if the data has changed. */
-+void KsViewModel::update(KsDataStore *data)
++/**
++ * @brief Shift the time-window of the model forward. Recalculate the current
++ *	  state of the model.
++ *
++ * @param n: Number of bins to shift.
++ */
++void KsGraphModel::shiftForward(size_t n)
 +{
-+	/*
-+	 * Do not try to skip the reset(). The row count has to be set to
-+	 * zero before you full.
-+	 */
-+	reset();
-+	fill(data);
++	beginResetModel();
++	ksmodel_shift_forward(&_histo, n);
++	endResetModel();
 +}
 +
-+/** @brief Search the content of the table for a data satisfying an abstract
-+ *	   condition.
++/**
++ * @brief Shift the time-window of the model backward. Recalculate the current
++ *	  state of the model.
 + *
-+ * @param column: The number of the column to search in.
-+ * @param searchText: The text to search for.
-+ * @param cond: Matching condition function.
-+ * @param matchList: Output location for a list containing the row indexes of
-+ *		     the cells satisfying the matching condition.
-+ *
-+ * @returns The number of cells satisfying the matching condition.
++ * @param n: Number of bins to shift.
 + */
-+size_t KsViewModel::search(int column,
-+			   const QString &searchText,
-+			   condition_func cond,
-+			   QList<size_t> *matchList)
++void KsGraphModel::shiftBackward(size_t n)
 +{
-+	int nRows = rowCount({});
-+	QVariant item;
++	beginResetModel();
++	ksmodel_shift_backward(&_histo, n);
++	endResetModel();
++}
 +
-+	for (int r = 0; r < nRows; ++r) {
-+		item = getValue(r, column);
-+		if (cond(searchText, item.toString())) {
-+			matchList->append(r);
-+		}
-+	}
++/**
++ * @brief Move the time-window of the model to a given location. Recalculate
++ *	  the current state of the model.
++ *
++ * @param ts: position in time to be visualized.
++ */
++void KsGraphModel::jumpTo(size_t ts)
++{
++	beginResetModel();
++	ksmodel_jump_to(&_histo, ts);
++	endResetModel();
++}
 +
-+	return matchList->count();
++/**
++ * @brief Extend the time-window of the model. Recalculate the current state
++ *	  of the model.
++ *
++ * @param r: Scale factor of the zoom-out.
++ * @param mark: Focus point of the zoom-out.
++ */
++void KsGraphModel::zoomOut(double r, int mark)
++{
++	beginResetModel();
++	ksmodel_zoom_out(&_histo, r, mark);
++	endResetModel();
++}
++
++/**
++ * @brief Shrink the time-window of the model. Recalculate the current state
++ *	  of the model.
++ *
++ * @param r: Scale factor of the zoom-in.
++ * @param mark: Focus point of the zoom-in.
++ */
++void KsGraphModel::zoomIn(double r, int mark)
++{
++	beginResetModel();
++	ksmodel_zoom_in(&_histo, r, mark);
++	endResetModel();
++}
++
++/** Quick zoom out. The entire data-set will be visualized. */
++void KsGraphModel::quickZoomOut()
++{
++	beginResetModel();
++
++	ksmodel_set_bining(&_histo,
++			   _histo.n_bins,
++			   _histo.data[0]->ts,
++			   _histo.data[_histo.data_size - 1]->ts);
++
++	ksmodel_fill(&_histo, _histo.data, _histo.data_size);
++
++	endResetModel();
++}
++
++/**
++ * @brief Quick zoom in to a state of the Visualization model which has the
++ * given bin size. The actual value of the bin size may en up being slightly
++ * different because of the fine tuning performed by the model.
++ *
++ * @param binSize: an approximate value for the new size of the bins.
++ */
++void KsGraphModel::quickZoomIn(uint64_t binSize)
++{
++	double range, r;
++
++	range =  _histo.max - _histo.min;
++	r = 1 - (binSize * _histo.n_bins) / range;
++	zoomIn(r);
++}
++
++/** Reset the model. */
++void KsGraphModel::reset()
++{
++	beginResetModel();
++	ksmodel_clear(&_histo);
++	endResetModel();
++}
++
++/** Update the model. Use this function if the data has changed. */
++void KsGraphModel::update(KsDataStore *data)
++{
++	beginResetModel();
++	if (data)
++		ksmodel_fill(&_histo, data->rows(), data->size());
++	endResetModel();
 +}
 diff --git a/kernel-shark-qt/src/KsModels.hpp b/kernel-shark-qt/src/KsModels.hpp
-new file mode 100644
-index 0000000..8935fd4
---- /dev/null
+index 8935fd4..00b20b2 100644
+--- a/kernel-shark-qt/src/KsModels.hpp
 +++ b/kernel-shark-qt/src/KsModels.hpp
-@@ -0,0 +1,223 @@
-+/* SPDX-License-Identifier: LGPL-2.1 */
-+
-+/*
-+ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
-+ */
-+
+@@ -220,4 +220,70 @@ private:
+ 		     bool notify);
+ };
+ 
 +/**
-+ *  @file    KsModels.hpp
-+ *  @brief   Models for data representation.
++ * Class KsGraphModel provides a model for visualization of trace data. This
++ * class is a wrapper of kshark_trace_histo and is needed only because we want
++ * to use the signals defined in QAbstractTableModel.
 + */
-+
-+#ifndef _KS_MODELS_H
-+#define _KS_MODELS_H
-+
-+// C++11
-+#include <mutex>
-+#include <condition_variable>
-+
-+// Qt
-+#include <QAbstractTableModel>
-+#include <QSortFilterProxyModel>
-+#include <QProgressBar>
-+#include <QLabel>
-+#include <QColor>
-+
-+// KernelShark
-+#include "libkshark.h"
-+#include "libkshark-model.h"
-+
-+/** Matching condition function type. To be user for searching. */
-+typedef bool (*condition_func)(QString, QString);
-+
-+enum class DualMarkerState;
-+
-+class KsDataStore;
-+
-+/**
-+ * Class KsViewModel provides models for trace data representation in a
-+ * table view.
-+ */
-+class KsViewModel : public QAbstractTableModel
++class KsGraphModel : public QAbstractTableModel
 +{
 +public:
-+	explicit KsViewModel(QObject *parent = nullptr);
++	explicit KsGraphModel(QObject *parent = nullptr);
 +
-+	/** Set the colors of the two markers. */
-+	void setColors(const QColor &colA, const QColor &colB) {
-+		_colorMarkA = colA;
-+		_colorMarkB = colB;
-+	};
++	virtual ~KsGraphModel();
 +
 +	/**
-+	 * Get the number of rows. This is an implementation of the pure
++	 * This dummy function is an implementation of the pure
 +	 * virtual method of the abstract model class.
 +	 */
-+	int rowCount(const QModelIndex &) const override {return _nRows;}
-+
-+	/**
-+	 * Get the number of columns. This is an implementation of the pure
-+	 * virtual method of the abstract model class.
-+	 */
-+	int columnCount(const QModelIndex &) const override
++	int rowCount(const QModelIndex &) const override
 +	{
-+		return _header.count();
++		return _histo.n_bins;
 +	}
 +
-+	QVariant headerData(int section,
-+			    Qt::Orientation orientation,
-+			    int role) const override;
++	/**
++	 * This dummy function is an implementation of the pure
++	 * virtual method of the abstract model class.
++	 */
++	int columnCount(const QModelIndex &) const override {return 0;}
 +
-+	QVariant data(const QModelIndex &index, int role) const override;
++	/**
++	 * This dummy function is an implementation of the pure
++	 * virtual method of the abstract model class.
++	 */
++	QVariant data(const QModelIndex &index, int role) const override
++	{
++		return {};
++	}
 +
-+	void fill(KsDataStore *data);
++	/** Get the kshark_trace_histo object. */
++	kshark_trace_histo *histo() {return &_histo;}
 +
-+	void selectRow(DualMarkerState state, int row);
++	void fill(kshark_entry **entries, size_t n);
++
++	void shiftForward(size_t n);
++
++	void shiftBackward(size_t n);
++
++	void jumpTo(size_t ts);
++
++	void zoomOut(double r, int mark = -1);
++
++	void zoomIn(double r, int mark = -1);
++
++	void quickZoomOut();
++
++	void quickZoomIn(uint64_t binSize);
 +
 +	void reset();
 +
-+	void update(KsDataStore *data);
-+
-+	/** Get the list of column's headers. */
-+	QStringList header() const {return _header;}
-+
-+	QVariant getValue(int column, int row) const;
-+
-+	size_t search(int column,
-+		      const QString &searchText,
-+		      condition_func cond,
-+		      QList<size_t> *matchList);
-+
-+	/** Table columns Identifiers. */
-+	enum {
-+		/** Identifier of the Index column. */
-+		TRACE_VIEW_COL_INDEX,
-+
-+		/** Identifier of the CPU column. */
-+		TRACE_VIEW_COL_CPU,
-+
-+		/** Identifier of the Timestamp column. */
-+		TRACE_VIEW_COL_TS,
-+
-+		/** Identifier of the Task name (command) column. */
-+		TRACE_VIEW_COL_COMM,
-+
-+		/** Identifier of the Process Id column. */
-+		TRACE_VIEW_COL_PID,
-+
-+		/** Identifier of the Latency Id column. */
-+		TRACE_VIEW_COL_LAT,
-+
-+		/** Identifier of the Event name Id column. */
-+		TRACE_VIEW_COL_EVENT,
-+
-+		/** Identifier of the Event name Id column. */
-+		TRACE_VIEW_COL_INFO,
-+
-+		/** Number of column. */
-+		TRACE_VIEW_N_COLUMNS,
-+	};
++	void update(KsDataStore *data = nullptr);
 +
 +private:
-+	/** Trace data array. */
-+	kshark_entry		**_data;
-+
-+	/** The size of the data array. */
-+	size_t			_nRows;
-+
-+	/** The headers of the individual columns. */
-+	QStringList		_header;
-+
-+	/** The index of marker A inside the data array. */
-+	int	_markA;
-+
-+	/** The index of marker A inside the data array. */
-+	int	_markB;
-+
-+	/** The color of the row selected by marker A. */
-+	QColor	_colorMarkA;
-+
-+	/** The color of the row selected by marker B. */
-+	QColor	_colorMarkB;
++	kshark_trace_histo	_histo;
 +};
 +
-+/**
-+ * Class KsFilterProxyModel provides support for filtering trace data in
-+ * table view.
-+ */
-+class KsFilterProxyModel : public QSortFilterProxyModel
-+{
-+	Q_OBJECT
-+public:
-+	explicit KsFilterProxyModel(QObject *parent = nullptr);
++/** Defines a default number of bins to be used by the visualization model. */
++#define KS_DEFAULT_NBUNS	1024
 +
-+	bool filterAcceptsRow(int sourceRow,
-+			      const QModelIndex &sourceParent) const override;
-+
-+	void fill(KsDataStore *data);
-+
-+	void setSource(KsViewModel *s);
-+
-+	size_t search(int column,
-+		      const QString &searchText,
-+		      condition_func cond,
-+		      QList<int> *matchList,
-+		      QProgressBar *pb = nullptr,
-+		      QLabel *l = nullptr);
-+
-+	QList<int> searchMap(int column,
-+			     const QString  &searchText,
-+			     condition_func  cond,
-+			     int first,
-+			     int last,
-+			     bool notify);
-+
-+	/** Get the progress of the search. */
-+	int searchProgress() const {return _searchProgress;}
-+
-+	/** Reset the progress value of the search. */
-+	void searchReset() {_searchProgress = 0;}
-+
-+	/** Stop the serch for all threads. */
-+	void searchStop() {_searchStop = true;}
-+
-+	/**
-+	 * Use the "row" index in the Proxy model to retrieve the "row" index
-+	 * in the source model.
-+	 */
-+	int mapRowFromSource(int r) const
-+	{
-+		/*This works because the row number is shown in column "0". */
-+		return this->data(this->index(r, 0)).toInt();
-+	}
-+
-+	/**
-+	 * A condition variable used to notify the main thread to update the
-+	 * search progressbar.
-+	 */
-+	std::condition_variable	_pbCond;
-+
-+	/** A mutex used by the condition variable. */
-+	std::mutex		_mutex;
-+
-+private:
-+	int			_searchProgress;
-+
-+	bool			_searchStop;
-+
-+	/** Trace data array. */
-+	kshark_entry		**_data;
-+
-+	KsViewModel	 	*_source;
-+
-+	void _search(int column,
-+		     const QString &searchText,
-+		     condition_func cond,
-+		     QList<int> *matchList,
-+		     int first, int last,
-+		     QProgressBar *pb,
-+		     QLabel *l,
-+		     bool notify);
-+};
-+
-+#endif // _KS_MODELS_H
+ #endif // _KS_MODELS_H
 -- 
 2.17.1
