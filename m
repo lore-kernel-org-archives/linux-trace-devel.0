@@ -1,17 +1,17 @@
 Return-Path: <SRS0=pqkA=MY=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-co1nam03on0041.outbound.protection.outlook.com ([104.47.40.41]:22067
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr680056.outbound.protection.outlook.com ([40.107.68.56]:3297
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728821AbeJLXr1 (ORCPT
+        id S1728989AbeJLXr2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Oct 2018 19:47:27 -0400
+        Fri, 12 Oct 2018 19:47:28 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH 05/10] kernel-shark-qt: Add widget for OpenGL rendering
-Date: Fri, 12 Oct 2018 19:13:13 +0300
-Message-Id: <20181012161318.5302-6-ykaradzhov@vmware.com>
+Subject: [PATCH 06/10] kernel-shark-qt: Add Trace Graph widget.
+Date: Fri, 12 Oct 2018 19:13:14 +0300
+Message-Id: <20181012161318.5302-7-ykaradzhov@vmware.com>
 In-Reply-To: <20181012161318.5302-1-ykaradzhov@vmware.com>
 References: <20181012161318.5302-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
@@ -21,410 +21,216 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-This patch defines the widget for rendering OpenGL graphics used
-to plot trace graphs.
+This patch defines widget for interactive visualization of trace data
+shown as time-series. The provides an info panel and a graph plotting
+area (KsGLWidget). The panel and the plotting area are integrated with
+the Dual Marker.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
  kernel-shark-qt/src/CMakeLists.txt   |   2 +
- kernel-shark-qt/src/KsDualMarker.cpp |  12 +-
- kernel-shark-qt/src/KsDualMarker.hpp |   4 +-
- kernel-shark-qt/src/KsGLWidget.cpp   | 913 +++++++++++++++++++++++++++
- kernel-shark-qt/src/KsGLWidget.hpp   | 220 +++++++
- 5 files changed, 1146 insertions(+), 5 deletions(-)
- create mode 100644 kernel-shark-qt/src/KsGLWidget.cpp
- create mode 100644 kernel-shark-qt/src/KsGLWidget.hpp
+ kernel-shark-qt/src/KsTraceGraph.cpp | 690 +++++++++++++++++++++++++++
+ kernel-shark-qt/src/KsTraceGraph.hpp | 137 ++++++
+ 3 files changed, 829 insertions(+)
+ create mode 100644 kernel-shark-qt/src/KsTraceGraph.cpp
+ create mode 100644 kernel-shark-qt/src/KsTraceGraph.hpp
 
 diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
-index 3f40930..2ca5187 100644
+index 2ca5187..d406866 100644
 --- a/kernel-shark-qt/src/CMakeLists.txt
 +++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -33,6 +33,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
-     message(STATUS "libkshark-gui")
-     set (ks-guiLib_hdr  KsUtils.hpp
-                         KsModels.hpp
-+                        KsGLWidget.hpp
+@@ -36,6 +36,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+                         KsGLWidget.hpp
                          KsDualMarker.hpp
                          KsWidgetsLib.hpp
++                        KsTraceGraph.hpp
                          KsTraceViewer.hpp)
-@@ -41,6 +42,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
  
-     add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp
-                                                             KsModels.cpp
-+                                                            KsGLWidget.cpp
+     QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
+@@ -45,6 +46,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+                                                             KsGLWidget.cpp
                                                              KsDualMarker.cpp
                                                              KsWidgetsLib.cpp
++                                                            KsTraceGraph.cpp
                                                              KsTraceViewer.cpp)
-diff --git a/kernel-shark-qt/src/KsDualMarker.cpp b/kernel-shark-qt/src/KsDualMarker.cpp
-index ae637aa..ef126f7 100644
---- a/kernel-shark-qt/src/KsDualMarker.cpp
-+++ b/kernel-shark-qt/src/KsDualMarker.cpp
-@@ -10,6 +10,7 @@
-  */
  
- #include "KsDualMarker.hpp"
-+#include "KsGLWidget.hpp"
- 
- /**
-  * @brief Create KsGraphMark object.
-@@ -287,13 +288,16 @@ void KsDualMarkerSM::setState(DualMarkerState st) {
-  *	  model has changed.
-  *
-  * @param data: Input location for the Data Store object.
-- * @param histo: Input location for the model descriptor.
-+ * @param glw: Input location for the OpenGL widget object.
-  */
- void KsDualMarkerSM::updateMarkers(const KsDataStore &data,
--				   kshark_trace_histo *histo)
-+				   KsGLWidget *glw)
- {
--	_markA.update(data, histo);
--	_markB.update(data, histo);
-+	if(_markA.update(data, glw->model()->histo()))
-+		glw->setMark(&_markA);
-+
-+	if(_markB.update(data, glw->model()->histo()))
-+		glw->setMark(&_markB);
- 
- 	updateLabels();
- }
-diff --git a/kernel-shark-qt/src/KsDualMarker.hpp b/kernel-shark-qt/src/KsDualMarker.hpp
-index 401b41c..73d4f8a 100644
---- a/kernel-shark-qt/src/KsDualMarker.hpp
-+++ b/kernel-shark-qt/src/KsDualMarker.hpp
-@@ -19,6 +19,8 @@
- #include "KsUtils.hpp"
- #include "KsPlotTools.hpp"
- 
-+class KsGLWidget;
-+
- /** The KsGraphMark represents a marker for KernelShark GUI. */
- class KsGraphMark : public QObject
- {
-@@ -124,7 +126,7 @@ public:
- 	QState *stateBPtr() {return _stateB;}
- 
- 	void updateMarkers(const KsDataStore &data,
--			   kshark_trace_histo *histo);
-+			   KsGLWidget *glw);
- 
- 	void updateLabels();
- 
-diff --git a/kernel-shark-qt/src/KsGLWidget.cpp b/kernel-shark-qt/src/KsGLWidget.cpp
+     target_link_libraries(kshark-gui kshark-plot
+diff --git a/kernel-shark-qt/src/KsTraceGraph.cpp b/kernel-shark-qt/src/KsTraceGraph.cpp
 new file mode 100644
-index 0000000..22cbd96
+index 0000000..6994644
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsGLWidget.cpp
-@@ -0,0 +1,913 @@
++++ b/kernel-shark-qt/src/KsTraceGraph.cpp
+@@ -0,0 +1,690 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +
 +/*
 + * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
 + */
 +
-+ /**
-+ *  @file    KsGLWidget.cpp
-+ *  @brief   OpenGL widget for plotting trace graphs.
++/**
++ *  @file    KsTraceGraph.cpp
++ *  @brief   KernelShark Trace Graph.
 + */
-+
-+// OpenGL
-+#include <GL/glut.h>
-+#include <GL/gl.h>
 +
 +// KernelShark
-+#include "KsGLWidget.hpp"
 +#include "KsUtils.hpp"
-+#include "KsPlugins.hpp"
 +#include "KsDualMarker.hpp"
++#include "KsTraceGraph.hpp"
 +
-+/** Create a default (empty) OpenGL widget. */
-+KsGLWidget::KsGLWidget(QWidget *parent)
-+: QOpenGLWidget(parent),
-+  _hMargin(20),
-+  _vMargin(30),
-+  _vSpacing(20),
++/** Create a default (empty) Trace graph widget. */
++KsTraceGraph::KsTraceGraph(QWidget *parent)
++: QWidget(parent),
++  _pointerBar(this),
++  _navigationBar(this),
++  _zoomInButton("+", this),
++  _quickZoomInButton("++", this),
++  _zoomOutButton("-", this),
++  _quickZoomOutButton("- -", this),
++  _scrollLeftButton("<", this),
++  _scrollRightButton(">", this),
++  _labelP1("Pointer: ", this),
++  _labelP2("", this),
++  _labelI1("", this),
++  _labelI2("", this),
++  _labelI3("", this),
++  _labelI4("", this),
++  _labelI5("", this),
++  _scrollArea(this),
++  _drawWindow(&_scrollArea),
++  _legendWindow(&_drawWindow),
++  _legendAxisX(&_drawWindow),
++  _labelXMin("", &_legendAxisX),
++  _labelXMid("", &_legendAxisX),
++  _labelXMax("", &_legendAxisX),
++  _glWindow(&_drawWindow),
 +  _mState(nullptr),
 +  _data(nullptr),
-+  _rubberBand(QRubberBand::Rectangle, this),
-+  _rubberBandOrigin(0, 0),
-+  _dpr(1)
++  _keyPressed(false)
 +{
-+	setMouseTracking(true);
++	auto lamMakeNavButton = [&](QPushButton *b) {
++		b->setMaximumWidth(FONT_WIDTH * 5);
 +
-+	/*
-+	 * Using the old Signal-Slot syntax because QWidget::update has
-+	 * overloads.
-+	 */
-+	connect(&_model, SIGNAL(modelReset()), this, SLOT(update()));
-+}
++		connect(b,	&QPushButton::released,
++			this,	&KsTraceGraph::_stopUpdating);
++		_navigationBar.addWidget(b);
++	};
 +
-+/** Reimplemented function used to set up all required OpenGL resources. */
-+void KsGLWidget::initializeGL()
-+{
-+	_dpr = QApplication::desktop()->devicePixelRatio();
-+	ksplot_init_opengl(_dpr);
-+}
++	_pointerBar.setMaximumHeight(FONT_HEIGHT * 1.75);
++	_pointerBar.setOrientation(Qt::Horizontal);
 +
-+/**
-+ * Reimplemented function used to reprocess all graphs whene the widget has
-+ * been resized.
-+ */
-+void KsGLWidget::resizeGL(int w, int h)
-+{
-+	ksplot_resize_opengl(w, h);
-+	if(!_data)
-+		return;
++	_navigationBar.setMaximumHeight(FONT_HEIGHT * 1.75);
++	_navigationBar.setMinimumWidth(FONT_WIDTH * 90);
++	_navigationBar.setOrientation(Qt::Horizontal);
 +
-+	/*
-+	 * From the size of the widget, calculate the number of bins.
-+	 * One bin will correspond to one pixel.
-+	 */
-+	int nBins = width() - _hMargin * 2;
++	_pointerBar.addWidget(&_labelP1);
++	_labelP2.setFrameStyle(QFrame::Panel | QFrame::Sunken);
++	_labelP2.setStyleSheet("QLabel { background-color : white;}");
++	_labelP2.setTextInteractionFlags(Qt::TextSelectableByMouse);
++	_labelP2.setFixedWidth(FONT_WIDTH * 16);
++	_pointerBar.addWidget(&_labelP2);
++	_pointerBar.addSeparator();
 +
-+	/*
-+	 * Reload the data. The range of the histogram is the same
-+	 * but the number of bins changes.
-+	 */
-+	ksmodel_set_bining(_model.histo(),
-+			   nBins,
-+			   _model.histo()->min,
-+			   _model.histo()->max);
++	_labelI1.setStyleSheet("QLabel {color : blue;}");
++	_labelI2.setStyleSheet("QLabel {color : green;}");
++	_labelI3.setStyleSheet("QLabel {color : red;}");
++	_labelI4.setStyleSheet("QLabel {color : blue;}");
++	_labelI5.setStyleSheet("QLabel {color : green;}");
 +
-+	_model.fill(_data->rows(), _data->size());
-+}
++	_pointerBar.addWidget(&_labelI1);
++	_pointerBar.addSeparator();
++	_pointerBar.addWidget(&_labelI2);
++	_pointerBar.addSeparator();
++	_pointerBar.addWidget(&_labelI3);
++	_pointerBar.addSeparator();
++	_pointerBar.addWidget(&_labelI4);
++	_pointerBar.addSeparator();
++	_pointerBar.addWidget(&_labelI5);
 +
-+/** Reimplemented function used to plot trace graphs. */
-+void KsGLWidget::paintGL()
-+{
-+	glClear(GL_COLOR_BUFFER_BIT);
++	_legendAxisX.setFixedHeight(FONT_HEIGHT * 1.5);
++	_legendAxisX.setLayout(new QHBoxLayout);
++	_legendAxisX.layout()->setSpacing(0);
++	_legendAxisX.layout()->setContentsMargins(0, 0, FONT_WIDTH, 0);
 +
-+	loadColors();
++	_labelXMin.setAlignment(Qt::AlignLeft);
++	_labelXMid.setAlignment(Qt::AlignHCenter);
++	_labelXMax.setAlignment(Qt::AlignRight);
 +
-+	/* Draw the time axis. */
-+	if(_data)
-+		_drawAxisX();
++	_legendAxisX.layout()->addWidget(&_labelXMin);
++	_legendAxisX.layout()->addWidget(&_labelXMid);
++	_legendAxisX.layout()->addWidget(&_labelXMax);
++	_drawWindow.setMinimumSize(100, 100);
++	_drawWindow.setStyleSheet("QWidget {background-color : white;}");
 +
-+	/* Process and draw all graphs by using the built-in logic. */
-+	_makeGraphs(_cpuList, _taskList);
-+	for (auto const &g: _graphs)
-+		g->draw(1.5 * _dpr);
++	_drawLayout.setContentsMargins(0, 0, 0, 0);
++	_drawLayout.setSpacing(0);
++	_drawLayout.addWidget(&_legendAxisX, 0, 1);
++	_drawLayout.addWidget(&_legendWindow, 1, 0);
++	_drawLayout.addWidget(&_glWindow, 1, 1);
++	_drawWindow.setLayout(&_drawLayout);
 +
-+	/* Process and draw all plugin-specific shapes. */
-+	_makePluginShapes(_cpuList, _taskList);
-+	while (!_shapes.empty()) {
-+		auto s = _shapes.front();
-+		s->draw();
-+		delete s;
-+		_shapes.pop_front();
-+	}
++	_drawWindow.installEventFilter(this);
 +
-+	/*
-+	 * Update and draw the markers. Make sure that the active marker
-+	 * is drawn on top.
-+	 */
-+	_mState->updateMarkers(*_data, this);
-+	_mState->passiveMarker().draw();
-+	_mState->activeMarker().draw();
-+}
++	connect(&_glWindow,	&KsGLWidget::select,
++		this,		&KsTraceGraph::markEntry);
 +
-+/** Reimplemented event handler used to receive mouse press events. */
-+void KsGLWidget::mousePressEvent(QMouseEvent *event)
-+{
-+	if (event->button() == Qt::LeftButton) {
-+		_posMousePress = _posInRange(event->pos().x());
-+		_rangeBoundInit(_posMousePress);
-+	} else if (event->button() == Qt::RightButton) {
-+		emit deselect();
-+		_mState->activeMarker().remove();
-+		_mState->updateLabels();
-+		_model.update();
-+	}
-+}
++	connect(&_glWindow,	&KsGLWidget::found,
++		this,		&KsTraceGraph::_setPointerInfo);
 +
-+int KsGLWidget::_getLastTask(struct kshark_trace_histo *histo,
-+			     int bin, int cpu)
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+	kshark_entry_collection *col;
-+	int pid;
++	connect(&_glWindow,	&KsGLWidget::notFound,
++		this,		&KsTraceGraph::_resetPointer);
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return KS_EMPTY_BIN;
++	connect(&_glWindow,	&KsGLWidget::zoomIn,
++		this,		&KsTraceGraph::_zoomIn);
 +
-+	col = kshark_find_data_collection(kshark_ctx->collections,
-+					  KsUtils::matchCPUVisible,
-+					  cpu);
++	connect(&_glWindow,	&KsGLWidget::zoomOut,
++		this,		&KsTraceGraph::_zoomOut);
 +
-+	for (int b = bin; b >= 0; --b) {
-+		pid = ksmodel_get_pid_back(histo, b, cpu, false, col, nullptr);
-+		if (pid >= 0)
-+			return pid;
-+	}
++	connect(&_glWindow,	&KsGLWidget::scrollLeft,
++		this,		&KsTraceGraph::_scrollLeft);
 +
-+	return ksmodel_get_pid_back(histo, LOWER_OVERFLOW_BIN,
-+					   cpu,
-+					   false,
-+					   col,
-+					   nullptr);
-+}
++	connect(&_glWindow,	&KsGLWidget::scrollRight,
++		this,		&KsTraceGraph::_scrollRight);
 +
-+int KsGLWidget::_getLastCPU(struct kshark_trace_histo *histo,
-+			     int bin, int pid)
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+	kshark_entry_collection *col;
-+	int cpu;
++	connect(&_glWindow,	&KsGLWidget::stopUpdating,
++		this,		&KsTraceGraph::_stopUpdating);
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return KS_EMPTY_BIN;
++	connect(_glWindow.model(),	&KsGraphModel::modelReset,
++		this,			&KsTraceGraph::_updateTimeLegends);
 +
-+	col = kshark_find_data_collection(kshark_ctx->collections,
-+					  kshark_match_pid,
-+					  pid);
++	_scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
++	_scrollArea.setWidget(&_drawWindow);
 +
-+	for (int b = bin; b >= 0; --b) {
-+		cpu = ksmodel_get_cpu_back(histo, b, pid, false, col, nullptr);
-+		if (cpu >= 0)
-+			return cpu;
-+	}
++	lamMakeNavButton(&_scrollLeftButton);
++	connect(&_scrollLeftButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_scrollLeft);
 +
-+	return ksmodel_get_cpu_back(histo, LOWER_OVERFLOW_BIN,
-+					   pid,
-+					   false,
-+					   col,
-+					   nullptr);
++	lamMakeNavButton(&_zoomInButton);
++	connect(&_zoomInButton,		&QPushButton::pressed,
++		this,			&KsTraceGraph::_zoomIn);
 +
-+}
++	lamMakeNavButton(&_zoomOutButton);
++	connect(&_zoomOutButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_zoomOut);
 +
-+/** Reimplemented event handler used to receive mouse move events. */
-+void KsGLWidget::mouseMoveEvent(QMouseEvent *event)
-+{
-+	int bin, cpu, pid;
-+	size_t row;
-+	bool ret;
++	lamMakeNavButton(&_scrollRightButton);
++	connect(&_scrollRightButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_scrollRight);
 +
-+	if (_rubberBand.isVisible())
-+		_rangeBoundStretched(_posInRange(event->pos().x()));
++	_navigationBar.addSeparator();
 +
-+	bin = event->pos().x() - _hMargin;
-+	cpu = _getCPU(event->pos().y());
-+	pid = _getPid(event->pos().y());
++	lamMakeNavButton(&_quickZoomInButton);
++	connect(&_quickZoomInButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_quickZoomIn);
 +
-+	ret = _find(bin, cpu, pid, 5, false, &row);
-+	if (ret) {
-+		emit found(row);
-+	} else {
-+		if (cpu >= 0) {
-+			pid = _getLastTask(_model.histo(), bin, cpu);
-+		}
++	lamMakeNavButton(&_quickZoomOutButton);
++	connect(&_quickZoomOutButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_quickZoomOut);
 +
-+		if (pid > 0) {
-+			cpu = _getLastCPU(_model.histo(), bin, pid);
-+		}
-+
-+		emit notFound(ksmodel_bin_ts(_model.histo(), bin), cpu, pid);
-+	}
-+}
-+
-+/** Reimplemented event handler used to receive mouse release events. */
-+void KsGLWidget::mouseReleaseEvent(QMouseEvent *event)
-+{
-+	if (event->button() == Qt::LeftButton) {
-+		size_t posMouseRel = _posInRange(event->pos().x());
-+		int min, max;
-+		if (_posMousePress < posMouseRel) {
-+			min = _posMousePress - _hMargin;
-+			max = posMouseRel - _hMargin;
-+		} else {
-+			max = _posMousePress - _hMargin;
-+			min = posMouseRel - _hMargin;
-+		}
-+
-+		_rangeChanged(min, max);
-+	}
-+}
-+
-+/** Reimplemented event handler used to receive mouse double click events. */
-+void KsGLWidget::mouseDoubleClickEvent(QMouseEvent *event)
-+{
-+	if (event->button() == Qt::LeftButton)
-+		_findAndSelect(event);
-+}
-+
-+/** Reimplemented event handler used to receive mouse wheel events. */
-+void KsGLWidget::wheelEvent(QWheelEvent * event)
-+{
-+	int zoomFocus;
-+
-+	if (_mState->activeMarker()._isSet &&
-+	    _mState->activeMarker().isVisible()) {
-+		/*
-+		 * Use the position of the marker as a focus point for the
-+		 * zoom.
-+		 */
-+		zoomFocus = _mState->activeMarker()._bin;
-+	} else {
-+		/*
-+		 * Use the position of the mouse as a focus point for the
-+		 * zoom.
-+		 */
-+		zoomFocus = event->pos().x() - _hMargin;
-+	}
-+
-+	if (event->delta() > 0) {
-+		_model.zoomIn(.05, zoomFocus);
-+	} else {
-+		_model.zoomOut(.05, zoomFocus);
-+	}
-+
-+	_mState->updateMarkers(*_data, this);
-+}
-+
-+/** Reimplemented event handler used to receive key press events. */
-+void KsGLWidget::keyPressEvent(QKeyEvent *event)
-+{
-+	if (event->isAutoRepeat())
-+		return;
-+
-+	switch (event->key()) {
-+	case Qt::Key_Plus:
-+		emit zoomIn();
-+		return;
-+
-+	case Qt::Key_Minus:
-+		emit zoomOut();
-+		return;
-+
-+	case Qt::Key_Left:
-+		emit scrollLeft();
-+		return;
-+
-+	case Qt::Key_Right:
-+		emit scrollRight();
-+		return;
-+
-+	default:
-+		QOpenGLWidget::keyPressEvent(event);
-+		return;
-+	}
-+}
-+
-+/** Reimplemented event handler used to receive key release events. */
-+void KsGLWidget::keyReleaseEvent(QKeyEvent *event)
-+{
-+	if (event->isAutoRepeat())
-+		return;
-+
-+	if(event->key() == Qt::Key_Plus ||
-+	   event->key() == Qt::Key_Minus ||
-+	   event->key() == Qt::Key_Left ||
-+	   event->key() == Qt::Key_Right) {
-+		emit stopUpdating();
-+		return;
-+	}
-+
-+	QOpenGLWidget::keyPressEvent(event);
-+	return;
++	_layout.addWidget(&_pointerBar);
++	_layout.addWidget(&_navigationBar);
++	_layout.addWidget(&_scrollArea);
++	this->setLayout(&_layout);
++	updateGeom();
 +}
 +
 +/**
@@ -433,827 +239,660 @@ index 0000000..22cbd96
 + * @param data: Input location for the KsDataStore object.
 + *	  KsDataStore::loadDataFile() must be called first.
 + */
-+void KsGLWidget::loadData(KsDataStore *data)
++void KsTraceGraph::loadData(KsDataStore *data)
 +{
-+	uint64_t tMin, tMax;
-+	int nCPUs, nBins;
-+
 +	_data = data;
-+
-+	/*
-+	 * From the size of the widget, calculate the number of bins.
-+	 * One bin will correspond to one pixel.
-+	 */
-+	nBins = width() - _hMargin * 2;
-+	nCPUs = tep_get_cpus(_data->tep());
-+
-+	_model.reset();
-+
-+	/* Now load the entire set of trace data. */
-+	tMin = _data->rows()[0]->ts;
-+	tMax = _data->rows()[_data->size() - 1]->ts;
-+	ksmodel_set_bining(_model.histo(), nBins, tMin, tMax);
-+	_model.fill(_data->rows(), _data->size());
-+
-+	/* Make a default CPU list. All CPUs will be plotted. */
-+	_cpuList = {};
-+	for (int i = 0; i < nCPUs; ++i)
-+		_cpuList.append(i);
-+
-+	/* Make a default task list. No tasks will be plotted. */
-+	_taskList = {};
-+
-+	loadColors();
-+	_makeGraphs(_cpuList, _taskList);
++	_glWindow.loadData(data);
++	_updateGraphLegends();
++	updateGeom();
 +}
 +
-+/**
-+ * Create a Hash table of Rainbow colors. The sorted Pid values are mapped to
-+ * the palette of Rainbow colors.
-+ */
-+void KsGLWidget::loadColors()
++/** Connect the KsGLWidget widget and the State machine of the Dual marker. */
++void KsTraceGraph::setMarkerSM(KsDualMarkerSM *m)
 +{
-+	_pidColors.clear();
-+	_pidColors = KsPlot::getColorTable();
++	_mState = m;
++	_navigationBar.addSeparator();
++	_mState->placeInToolBar(&_navigationBar);
++	_glWindow.setMarkerSM(m);
 +}
 +
-+/**
-+ * Position the graphical elements of the marker according to the current
-+ * position of the graphs inside the GL widget.
-+ */
-+void KsGLWidget::setMark(KsGraphMark *mark)
++/** Reset (empty) the widget. */
++void KsTraceGraph::reset()
 +{
-+	mark->_mark.setDPR(_dpr);
-+	mark->_mark.setX(mark->_bin + _hMargin);
-+	mark->_mark.setY(_vMargin / 2 + 2, height() - _vMargin);
++	/* Clear the all graph lists and update. */
++	_glWindow._cpuList = {};
++	_glWindow._taskList = {};
 +
-+	if (mark->_cpu >= 0) {
-+		mark->_mark.setCPUY(_graphs[mark->_cpu]->getBase());
-+		mark->_mark.setCPUVisible(true);
-+	} else {
-+		mark->_mark.setCPUVisible(false);
-+	}
++	_labelP2.setText("");
++	for (auto l1: {&_labelI1, &_labelI2, &_labelI3, &_labelI4, &_labelI5})
++		l1->setText("");
 +
-+	if (mark->_task >= 0) {
-+		mark->_mark.setTaskY(_graphs[mark->_task]->getBase());
-+		mark->_mark.setTaskVisible(true);
-+	} else {
-+		mark->_mark.setTaskVisible(false);
-+	}
++	_glWindow.model()->reset();
++	_selfUpdate();
++	for (auto l2: {&_labelXMin, &_labelXMid, &_labelXMax})
++		l2->setText("");
 +}
 +
-+/**
-+ * @brief Check if a given KernelShark entry is ploted.
-+ *
-+ * @param e: Input location for the KernelShark entry.
-+ * @param graphCPU: Output location for index of the CPU graph to which this
-+ *		    entry belongs. If such a graph does not exist the outputted
-+ *		    value is "-1".
-+ * @param graphTask: Output location for index of the Task graph to which this
-+ *		     entry belongs. If such a graph does not exist the
-+ *		     outputted value is "-1".
-+ */
-+void KsGLWidget::findGraphIds(const kshark_entry &e,
-+			      int *graphCPU,
-+			      int *graphTask)
++void KsTraceGraph::_selfUpdate()
 +{
-+	int graph(0);
-+	bool cpuFound(false), taskFound(false);
-+
-+	/*
-+	 * Loop over all CPU graphs and try to find the one that
-+	 * contains the entry.
-+	 */
-+	for (auto const &c: _cpuList) {
-+		if (c == e.cpu) {
-+			cpuFound = true;
-+			break;
-+		}
-+		++graph;
-+	}
-+
-+	if (cpuFound)
-+		*graphCPU = graph;
-+	else
-+		*graphCPU = -1;
-+
-+	/*
-+	 * Loop over all Task graphs and try to find the one that
-+	 * contains the entry.
-+	 */
-+	graph = _cpuList.count();
-+	for (auto const &p: _taskList) {
-+		if (p == e.pid) {
-+			taskFound = true;
-+			break;
-+		}
-+		++graph;
-+	}
-+
-+	if (taskFound)
-+		*graphTask = graph;
-+	else
-+		*graphTask = -1;
++	_updateGraphLegends();
++	_updateTimeLegends();
++	_markerReDraw();
++	updateGeom();
 +}
 +
-+void KsGLWidget::_drawAxisX()
++void KsTraceGraph::_zoomIn()
 +{
-+	KsPlot::Point a0(_hMargin, _vMargin / 4), a1(_hMargin, _vMargin / 2);
-+	KsPlot::Point b0(width()/2, _vMargin / 4), b1(width() / 2, _vMargin / 2);
-+	KsPlot::Point c0(width() - _hMargin, _vMargin / 4),
-+			 c1(width() - _hMargin, _vMargin / 2);
-+	int lineSize = 2 * _dpr;
-+
-+	a0._size = c0._size = _dpr;
-+
-+	a0.draw();
-+	c0.draw();
-+	KsPlot::drawLine(a0, a1, {}, lineSize);
-+	KsPlot::drawLine(b0, b1, {}, lineSize);
-+	KsPlot::drawLine(c0, c1, {}, lineSize);
-+	KsPlot::drawLine(a0, c0, {}, lineSize);
++	_updateGraphs(GraphActions::ZoomIn);
 +}
 +
-+void KsGLWidget::_makeGraphs(QVector<int> cpuList, QVector<int> taskList)
++void KsTraceGraph::_zoomOut()
 +{
-+	/* The very first thing to do is to clean up. */
-+	for (auto &g: _graphs)
-+		delete g;
-+	_graphs.resize(0);
-+
-+	if (!_data || !_data->size())
-+		return;
-+
-+	auto lamAddGraph = [&](KsPlot::Graph *graph) {
-+		/*
-+		* Calculate the base level of the CPU graph inside the widget.
-+		* Remember that the "Y" coordinate is inverted.
-+		*/
-+		if (!graph)
-+			return;
-+
-+		int base = _vMargin +
-+			   _vSpacing * _graphs.count() +
-+			   KS_GRAPH_HEIGHT * (_graphs.count() + 1);
-+
-+		graph->setBase(base);
-+		_graphs.append(graph);
-+	};
-+
-+	/* Create CPU graphs according to the cpuList. */
-+	for (auto const &cpu: cpuList)
-+		lamAddGraph(_newCPUGraph(cpu));
-+
-+	/* Create Task graphs taskList to the taskList. */
-+	for (auto const &pid: taskList)
-+		lamAddGraph(_newTaskGraph(pid));
++	_updateGraphs(GraphActions::ZoomOut);
 +}
 +
-+void KsGLWidget::_makePluginShapes(QVector<int> cpuList, QVector<int> taskList)
++void KsTraceGraph::_quickZoomIn()
 +{
-+	kshark_context *kshark_ctx(nullptr);
-+	kshark_event_handler *evt_handlers;
-+	KsCppArgV cppArgv;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	cppArgv._histo = _model.histo();
-+	cppArgv._shapes = &_shapes;
-+
-+	for (int g = 0; g < cpuList.count(); ++g) {
-+		cppArgv._graph = _graphs[g];
-+		evt_handlers = kshark_ctx->event_handlers;
-+		while (evt_handlers) {
-+			evt_handlers->draw_func(cppArgv.toC(),
-+						cpuList[g],
-+						KSHARK_PLUGIN_CPU_DRAW);
-+
-+			evt_handlers = evt_handlers->next;
-+		}
-+	}
-+
-+	for (int g = 0; g < taskList.count(); ++g) {
-+		cppArgv._graph = _graphs[cpuList.count() + g];
-+		evt_handlers = kshark_ctx->event_handlers;
-+		while (evt_handlers) {
-+			evt_handlers->draw_func(cppArgv.toC(),
-+						taskList[g],
-+						KSHARK_PLUGIN_TASK_DRAW);
-+
-+			evt_handlers = evt_handlers->next;
-+		}
-+	}
-+}
-+
-+KsPlot::Graph *KsGLWidget::_newCPUGraph(int cpu)
-+{
-+	KsPlot::Graph *graph = new KsPlot::Graph(_model.histo(),
-+						 &_pidColors);
-+	kshark_context *kshark_ctx(nullptr);
-+	kshark_entry_collection *col;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return nullptr;
-+
-+	graph->setHMargin(_hMargin);
-+	graph->setHeight(KS_GRAPH_HEIGHT);
-+
-+	col = kshark_find_data_collection(kshark_ctx->collections,
-+					  KsUtils::matchCPUVisible,
-+					  cpu);
-+
-+	graph->setDataCollectionPtr(col);
-+	graph->fillCPUGraph(cpu);
-+
-+	return graph;
-+}
-+
-+KsPlot::Graph *KsGLWidget::_newTaskGraph(int pid)
-+{
-+	KsPlot::Graph *graph = new KsPlot::Graph(_model.histo(),
-+						 &_pidColors);
-+	kshark_context *kshark_ctx(nullptr);
-+	kshark_entry_collection *col;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return nullptr;
-+
-+	graph->setHMargin(_hMargin);
-+	graph->setHeight(KS_GRAPH_HEIGHT);
-+
-+	col = kshark_find_data_collection(kshark_ctx->collections,
-+					  kshark_match_pid, pid);
-+	if (!col) {
-+		/*
-+		 * If a data collection for this task does not exist,
-+		 * register a new one.
-+		 */
-+		col = kshark_register_data_collection(kshark_ctx,
-+						      _data->rows(),
-+						      _data->size(),
-+						      kshark_match_pid, pid,
-+						      25);
-+	}
-+
-+	/*
-+	 * Data collections are efficient only when used on graphs, having a
-+	 * lot of empty bins.
-+	 * TODO: Determine the optimal criteria to decide whether to use or
-+	 * not use data collection for this graph.
-+	 */
-+	if (_data->size() < 1e6 &&
-+	    col && col->size &&
-+	    _data->size() / col->size < 100) {
-+		/*
-+		 * No need to use collection in this case. Free the collection
-+		 * data, but keep the collection registered. This will prevent
-+		 * from recalculating the same collection next time when this
-+		 * task is ploted.
-+		 */
-+		kshark_reset_data_collection(col);
-+	}
-+
-+	graph->setDataCollectionPtr(col);
-+	graph->fillTaskGraph(pid);
-+
-+	return graph;
-+}
-+
-+bool KsGLWidget::_find(QMouseEvent *event, int variance, bool joined,
-+		       size_t *row)
-+{
-+	/*
-+	 * Get the bin, pid and cpu numbers.
-+	 * Remember that one bin corresponds to one pixel.
-+	 */
-+	int bin = event->pos().x() - _hMargin;
-+	int cpu = _getCPU(event->pos().y());
-+	int pid = _getPid(event->pos().y());
-+
-+	return _find(bin, cpu, pid, variance, joined, row);
-+}
-+
-+int KsGLWidget::_getNextCPU(int pid, int bin)
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+	kshark_entry_collection *col;
-+	int cpu;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return KS_EMPTY_BIN;
-+
-+	col = kshark_find_data_collection(kshark_ctx->collections,
-+					  kshark_match_pid,
-+					  pid);
-+	if (!col)
-+		return KS_EMPTY_BIN;
-+
-+	for (int i = bin; i < _model.histo()->n_bins; ++i) {
-+		cpu = ksmodel_get_cpu_front(_model.histo(), i, pid,
-+					    false, col, nullptr);
-+		if (cpu >= 0)
-+			return cpu;
-+	}
-+
-+	return KS_EMPTY_BIN;
-+}
-+
-+bool KsGLWidget::_find(int bin, int cpu, int pid,
-+		       int variance, bool joined, size_t *row)
-+{
-+	int hSize = _model.histo()->n_bins;
-+	ssize_t found;
-+
-+	if (bin < 0 || bin > hSize || (cpu < 0 && pid < 0)) {
-+		/*
-+		 * The click is outside of the range of the histogram.
-+		 * Do nothing.
-+		 */
-+		*row = 0;
-+		return false;
-+	}
-+
-+	auto lamGetEntryByCPU = [&](int b) {
-+		/* Get the first data entry in this bin. */
-+		found = ksmodel_first_index_at_cpu(_model.histo(),
-+							   b, cpu);
-+		if (found < 0) {
-+			/*
-+			 * The bin is empty or the entire connect of the bin
-+			 * has been filtered.
-+			 */
-+			return false;
-+		}
-+
-+		*row = found;
-+		return true;
-+	};
-+
-+	auto lamGetEntryByPid = [&](int b) {
-+		/* Get the first data entry in this bin. */
-+		found = ksmodel_first_index_at_pid(_model.histo(),
-+							   b, pid);
-+		if (found < 0) {
-+			/*
-+			 * The bin is empty or the entire connect of the bin
-+			 * has been filtered.
-+			 */
-+			return false;
-+		}
-+
-+		*row = found;
-+		return true;
-+	};
-+
-+	auto lamFindEntryByCPU = [&](int b) {
-+		/*
-+		 * The click is over the CPU graphs. First try the exact
-+		 * match.
-+		 */
-+		if (lamGetEntryByCPU(bin))
-+			return true;
-+
-+		/* Now look for a match, nearby the position of the click. */
-+		for (int i = 1; i < variance; ++i) {
-+			if (bin + i <= hSize && lamGetEntryByCPU(bin + i))
-+				return true;
-+
-+			if (bin - i >= 0 && lamGetEntryByCPU(bin - i))
-+				return true;
-+		}
-+
-+		*row = 0;
-+		return false;
-+	};
-+
-+	auto lamFindEntryByPid = [&](int b) {
-+		/*
-+		 * The click is over the Task graphs. First try the exact
-+		 * match.
-+		 */
-+		if (lamGetEntryByPid(bin))
-+			return true;
-+
-+		/* Now look for a match, nearby the position of the click. */
-+		for (int i = 1; i < variance; ++i) {
-+			if ((bin + i <= hSize) && lamGetEntryByPid(bin + i))
-+				return true;
-+
-+			if ((bin - i >= 0) && lamGetEntryByPid(bin - i))
-+				return true;
-+		}
-+
-+		*row = 0;
-+		return false;
-+	};
-+
-+	if (cpu >= 0)
-+		return lamFindEntryByCPU(bin);
-+
-+	if (pid >= 0) {
-+		bool ret = lamFindEntryByPid(bin);
-+
-+		/*
-+		 * If no entry has been found and we have a joined search, look
-+		 * for an entry on the next CPU used by this task.
-+		 */
-+		if (!ret && joined) {
-+			cpu = _getNextCPU(pid, bin);
-+			ret = lamFindEntryByCPU(bin);
-+		}
-+
-+		return ret;
-+	}
-+
-+	*row = 0;
-+	return false;
-+}
-+
-+bool KsGLWidget::_findAndSelect(QMouseEvent *event)
-+{
-+	size_t row;
-+	bool found = _find(event, 10, true, &row);
-+
-+	emit deselect();
-+	if (found) {
-+		emit select(row);
-+		emit updateView(row, true);
-+	}
-+
-+	return found;
-+}
-+
-+void KsGLWidget::_rangeBoundInit(int x)
-+{
-+	/*
-+	 * Set the origin of the rubber band that shows the new range. Only
-+	 * the X coordinate of the origin matters. The Y coordinate will be
-+	 * set to zero.
-+	 */
-+	_rubberBandOrigin.rx() = x;
-+	_rubberBandOrigin.ry() = 0;
-+
-+	_rubberBand.setGeometry(_rubberBandOrigin.x(),
-+				_rubberBandOrigin.y(),
-+				0, 0);
-+
-+	/* Make the rubber band visible, although its size is zero. */
-+	_rubberBand.show();
-+}
-+
-+void KsGLWidget::_rangeBoundStretched(int x)
-+{
-+	QPoint pos;
-+
-+	pos.rx() = x;
-+	pos.ry() = this->height();
-+
-+	/*
-+	 * Stretch the rubber band between the origin position and the current
-+	 * position of the mouse. Only the X coordinate matters. The Y
-+	 * coordinate will be the height of the widget.
-+	 */
-+	if (_rubberBandOrigin.x() < pos.x()) {
-+		_rubberBand.setGeometry(QRect(_rubberBandOrigin.x(),
-+					      _rubberBandOrigin.y(),
-+					      pos.x() - _rubberBandOrigin.x(),
-+					      pos.y() - _rubberBandOrigin.y()));
-+	} else {
-+		_rubberBand.setGeometry(QRect(pos.x(),
-+					      _rubberBandOrigin.y(),
-+					      _rubberBandOrigin.x() - pos.x(),
-+					      pos.y() - _rubberBandOrigin.y()));
-+	}
-+}
-+
-+void KsGLWidget::_rangeChanged(int binMin, int binMax)
-+{
-+	size_t nBins = _model.histo()->n_bins;
-+	int binMark = _mState->activeMarker()._bin;
-+	uint64_t min, max;
-+
-+	/* The rubber band is no longer needed. Make it invisible. */
-+	_rubberBand.hide();
-+
-+	if ( (binMax - binMin) < 4) {
-+		/* Most likely this is an accidental click. Do nothing. */
-+		return;
-+	}
-+
-+	/*
-+	 * Calculate the new range of the histogram. The number of bins will
-+	 * stay the same.
-+	 */
-+
-+	min = ksmodel_bin_ts(_model.histo(), binMin);
-+	max = ksmodel_bin_ts(_model.histo(), binMax);
-+	if (max - min < nBins) {
-+		/*
-+		 * The range cannot be smaller than the number of bins.
-+		 * Do nothing.
-+		 */
-+		return;
-+	}
-+
-+	/* Recalculate the model and update the markers. */
-+	ksmodel_set_bining(_model.histo(), nBins, min, max);
-+	_model.fill(_data->rows(), _data->size());
-+	_mState->updateMarkers(*_data, this);
-+
-+	/*
-+	 * If the Marker is inside the new range, make sure that it will
-+	 * be visible in the table. Note that for this check we use the
-+	 * bin number of the marker, retrieved before its update.
-+	 */
++	/* Bin size will be 100 ns. */
++	_glWindow.model()->quickZoomIn(100);
 +	if (_mState->activeMarker()._isSet &&
-+	    binMark < binMax && binMark > binMin) {
-+		emit updateView(_mState->activeMarker()._pos, true);
-+		return;
++	    _mState->activeMarker().isVisible()) {
++		/*
++		 * Use the position of the active marker as
++		 * a focus point of the zoom.
++		 */
++		uint64_t ts = _mState->activeMarker()._ts;
++		_glWindow.model()->jumpTo(ts);
 +	}
++}
++
++void KsTraceGraph::_quickZoomOut()
++{
++	_glWindow.model()->quickZoomOut();
++}
++
++void KsTraceGraph::_scrollLeft()
++{
++	_updateGraphs(GraphActions::ScrollLeft);
++}
++
++void KsTraceGraph::_scrollRight()
++{
++	_updateGraphs(GraphActions::ScrollRight);
++}
++
++void KsTraceGraph::_stopUpdating()
++{
++	/*
++	 * The user is no longer pressing the action button. Reset the
++	 * "Key Pressed" flag. This will stop the ongoing user action.
++	 */
++	_keyPressed = false;
++}
++
++void KsTraceGraph::_resetPointer(uint64_t ts, int cpu, int pid)
++{
++	uint64_t sec, usec;
++	QString pointer;
++
++	kshark_convert_nano(ts, &sec, &usec);
++	pointer.sprintf("%lu.%lu", sec, usec);
++	_labelP2.setText(pointer);
++
++	if (pid > 0 && cpu >= 0) {
++		struct kshark_context *kshark_ctx(NULL);
++
++		if (!kshark_instance(&kshark_ctx))
++			return;
++
++		QString comm(tep_data_comm_from_pid(kshark_ctx->pevent, pid));
++		comm.append("-");
++		comm.append(QString("%1").arg(pid));
++		_labelI1.setText(comm);
++		_labelI2.setText(QString("CPU %1").arg(cpu));
++	} else {
++		_labelI1.setText("");
++		_labelI2.setText("");
++	}
++
++	for (auto const &l: {&_labelI3, &_labelI4, &_labelI5}) {
++		l->setText("");
++	}
++}
++
++void KsTraceGraph::_setPointerInfo(size_t i)
++{
++	kshark_entry *e = _data->rows()[i];
++	QString event(kshark_get_event_name_easy(e));
++	QString lat(kshark_get_latency_easy(e));
++	QString info(kshark_get_info_easy(e));
++	QString comm(kshark_get_task_easy(e));
++	QString pointer, elidedText;
++	int labelWidth, width;
++	uint64_t sec, usec;
++
++	kshark_convert_nano(e->ts, &sec, &usec);
++	pointer.sprintf("%lu.%lu", sec, usec);
++	_labelP2.setText(pointer);
++
++	comm.append("-");
++	comm.append(QString("%1").arg(kshark_get_pid_easy(e)));
++
++	_labelI1.setText(comm);
++	_labelI2.setText(QString("CPU %1").arg(e->cpu));
++	_labelI3.setText(lat);
++	_labelI4.setText(event);
++	_labelI5.setText(info);
++	QCoreApplication::processEvents();
++
++	labelWidth =
++		_pointerBar.geometry().right() - _labelI4.geometry().right();
++	if (labelWidth > STRING_WIDTH(info) + FONT_WIDTH * 5)
++		return;
 +
 +	/*
-+	 * Find the first bin which contains unfiltered data and send a signal
-+	 * to the View widget to make this data visible.
++	 * The Info string is too long and cannot be displayed on the toolbar.
++	 * Try to fit the text in the available space.
 +	 */
-+	for (int bin = 0; bin < _model.histo()->n_bins; ++bin) {
-+		int64_t row = ksmodel_first_index_at_bin(_model.histo(), bin);
-+		if (row != KS_EMPTY_BIN &&
-+		    (_data->rows()[row]->visible & KS_TEXT_VIEW_FILTER_MASK)) {
-+			emit updateView(row, false);
-+			return;
-+		}
++	QFontMetrics metrix(_labelI5.font());
++	width = labelWidth - FONT_WIDTH * 3;
++	elidedText = metrix.elidedText(info, Qt::ElideRight, width);
++
++	while(labelWidth < STRING_WIDTH(elidedText) + FONT_WIDTH * 5) {
++		width -= FONT_WIDTH * 3;
++		elidedText = metrix.elidedText(info, Qt::ElideRight, width);
++	}
++
++	_labelI5.setText(elidedText);
++	_labelI5.setVisible(true);
++	QCoreApplication::processEvents();
++}
++
++/**
++ * @brief Use the active marker to select particular entry.
++ *
++ * @param row: The index of the entry to be selected by the marker.
++ */
++void KsTraceGraph::markEntry(size_t row)
++{
++	int graph, cpuGrId, taskGrId;
++
++	_glWindow.findGraphIds(*_data->rows()[row], &cpuGrId, &taskGrId);
++
++	/*
++	 * If a Task graph has been found, this Task graph will be
++	 * visible. If no Task graph has been found, make visible
++	 * the corresponding CPU graph.
++	 */
++	if (taskGrId >= 0)
++		graph = taskGrId;
++	else
++		graph = cpuGrId;
++
++	_scrollArea.ensureVisible(0,
++				  _legendAxisX.height() +
++				  _glWindow.vMargin() +
++				  KS_GRAPH_HEIGHT / 2 +
++				  graph*(KS_GRAPH_HEIGHT + _glWindow.vSpacing()),
++				  50,
++				  KS_GRAPH_HEIGHT / 2 + _glWindow.vSpacing() / 2);
++
++	_glWindow.model()->jumpTo(_data->rows()[row]->ts);
++	_mState->activeMarker().set(*_data,
++				    _glWindow.model()->histo(),
++				    row, cpuGrId, taskGrId);
++
++	_mState->updateMarkers(*_data, &_glWindow);
++}
++
++void KsTraceGraph::_markerReDraw()
++{
++	int cpuGrId, taskGrId;
++	size_t row;
++
++	if (_mState->markerA()._isSet) {
++		row = _mState->markerA()._pos;
++		_glWindow.findGraphIds(*_data->rows()[row], &cpuGrId, &taskGrId);
++		_mState->markerA().set(*_data,
++				       _glWindow.model()->histo(),
++				       row, cpuGrId, taskGrId);
++	}
++
++	if (_mState->markerB()._isSet) {
++		row = _mState->markerB()._pos;
++		_glWindow.findGraphIds(*_data->rows()[row], &cpuGrId, &taskGrId);
++		_mState->markerB().set(*_data,
++				       _glWindow.model()->histo(),
++				       row, cpuGrId, taskGrId);
 +	}
 +}
 +
-+int KsGLWidget::_posInRange(int x)
++/**
++ * @brief Redreaw all CPU graphs.
++ *
++ * @param v: CPU ids to be plotted.
++ */
++void KsTraceGraph::cpuReDraw(QVector<int> v)
 +{
-+	int posX;
-+	if (x < _hMargin)
-+		posX = _hMargin;
-+	else if (x > (width() - _hMargin))
-+		posX = width() - _hMargin;
-+	else
-+		posX = x;
-+
-+	return posX;
++	_glWindow._cpuList = v;
++	_selfUpdate();
 +}
 +
-+int KsGLWidget::_getCPU(int y)
++/**
++ * @brief Redreaw all Task graphs.
++ *
++ * @param v: Process ids of the tasks to be plotted.
++ */
++void KsTraceGraph::taskReDraw(QVector<int> v)
 +{
-+	int cpuId;
-+
-+	if (_cpuList.count() == 0)
-+		return -1;
-+
-+	cpuId = (y - _vMargin + _vSpacing / 2) / (_vSpacing + KS_GRAPH_HEIGHT);
-+	if (cpuId < 0 || cpuId >= _cpuList.count())
-+		return -1;
-+
-+	return _cpuList[cpuId];
++	_glWindow._taskList = v;
++	_selfUpdate();
 +}
 +
-+int KsGLWidget::_getPid(int y)
++/** Add (and plot) a CPU graph to the existing list of CPU graphs. */
++void KsTraceGraph::addCPUPlot(int cpu)
 +{
-+	int pidId;
++	if (_glWindow._cpuList.contains(cpu))
++		return;
 +
-+	if (_taskList.count() == 0)
-+		return -1;
-+
-+	pidId = (y - _vMargin -
-+		     _cpuList.count()*(KS_GRAPH_HEIGHT + _vSpacing) +
-+		     _vSpacing / 2) / (_vSpacing + KS_GRAPH_HEIGHT);
-+
-+	if (pidId < 0 || pidId >= _taskList.count())
-+		return -1;
-+
-+	return _taskList[pidId];
++	_glWindow._cpuList.append(cpu);
++	_selfUpdate();
 +}
-diff --git a/kernel-shark-qt/src/KsGLWidget.hpp b/kernel-shark-qt/src/KsGLWidget.hpp
++
++/** Add (and plot) a Task graph to the existing list of Task graphs. */
++void KsTraceGraph::addTaskPlot(int pid)
++{
++	if (_glWindow._taskList.contains(pid))
++		return;
++
++	_glWindow._taskList.append(pid);
++	_selfUpdate();
++}
++
++/** Update the content of all graphs. */
++void KsTraceGraph::update(KsDataStore *data)
++{
++	_glWindow.model()->update(data);
++	_selfUpdate();
++}
++
++/** Update the geometry of the widget. */
++void KsTraceGraph::updateGeom()
++{
++	int saWidth, saHeight, dwWidth, hMin;
++
++	/* Set the size of the Scroll Area. */
++	saWidth = width() - _layout.contentsMargins().left() -
++			    _layout.contentsMargins().right();
++
++	saHeight = height() - _pointerBar.height() -
++			      _navigationBar.height() -
++			      _layout.spacing() * 2 -
++			      _layout.contentsMargins().top() -
++			      _layout.contentsMargins().bottom();
++
++	_scrollArea.resize(saWidth, saHeight);
++
++	/*
++	 * Calculate the width of the Draw Window, taking into account the size
++	 * of the scroll bar.
++	 */
++	dwWidth = _scrollArea.width();
++	if (_glWindow.height() + _legendAxisX.height() > _scrollArea.height())
++		dwWidth -=
++			qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
++
++	/*
++	 * Set the height of the Draw window according to the number of
++	 * plotted graphs.
++	 */
++	_drawWindow.resize(dwWidth,
++			   _glWindow.height() + _legendAxisX.height());
++
++	/* Set the minimum height of the Graph widget. */
++	hMin = _drawWindow.height() +
++	       _pointerBar.height() +
++	       _navigationBar.height() +
++	       _layout.contentsMargins().top() +
++	       _layout.contentsMargins().bottom();
++
++	if (hMin > KS_GRAPH_HEIGHT * 8)
++		hMin = KS_GRAPH_HEIGHT * 8;
++
++	setMinimumHeight(hMin);
++
++	/*
++	 * Now use the height of the Draw Window to fix the maximum height
++	 * of the Graph widget.
++	 */
++	setMaximumHeight(_drawWindow.height() +
++			 _pointerBar.height() +
++			 _navigationBar.height() +
++			 _layout.spacing() * 2 +
++			 _layout.contentsMargins().top() +
++			 _layout.contentsMargins().bottom() +
++			 2);  /* Just a little bit of extra space. This will
++			       * allow the scroll bar to disappear when the
++			       * widget is extended to maximum.
++			       */
++}
++
++void KsTraceGraph::_updateGraphLegends()
++{
++	QString graphLegends, graphName;
++	QVBoxLayout *layout;
++	int width = 0;
++
++	if (_legendWindow.layout()) {
++		/*
++		 * Remove and delete the existing layout of the legend window.
++		 */
++		QLayoutItem *child;
++		while ((child = _legendWindow.layout()->takeAt(0)) != 0) {
++			delete child->widget();
++			delete child;
++		}
++
++		delete _legendWindow.layout();
++	}
++
++	layout = new QVBoxLayout;
++	layout->setContentsMargins(FONT_WIDTH, 0, 0, 0);
++	layout->setSpacing(_glWindow.vSpacing());
++	layout->setAlignment(Qt::AlignTop);
++	layout->addSpacing(_glWindow.vMargin());
++
++	auto lamMakeName = [&]() {
++		QLabel *name = new QLabel(graphName);
++
++		if (width < STRING_WIDTH(graphName))
++			width = STRING_WIDTH(graphName);
++
++		name->setAlignment(Qt::AlignBottom);
++		name->setStyleSheet("QLabel {background-color : white;}");
++		name->setFixedHeight(KS_GRAPH_HEIGHT);
++		layout->addWidget(name);
++	};
++
++	for (auto const &cpu: _glWindow._cpuList) {
++		graphName = QString("CPU %1").arg(cpu);
++		lamMakeName();
++	}
++
++	for (auto const &pid: _glWindow._taskList) {
++		graphName = QString(tep_data_comm_from_pid(_data->tep(),
++							   pid));
++		graphName.append(QString("-%1").arg(pid));
++		lamMakeName();
++	}
++
++	_legendWindow.setLayout(layout);
++	_legendWindow.setMaximumWidth(width + FONT_WIDTH);
++}
++
++void KsTraceGraph::_updateTimeLegends()
++{
++	uint64_t sec, usec, tsMid;
++	QString tMin, tMid, tMax;
++
++	kshark_convert_nano(_glWindow.model()->histo()->min, &sec, &usec);
++	tMin.sprintf("%lu.%lu", sec, usec);
++	_labelXMin.setText(tMin);
++
++	tsMid = (_glWindow.model()->histo()->min +
++		 _glWindow.model()->histo()->max) / 2;
++	kshark_convert_nano(tsMid, &sec, &usec);
++	tMid.sprintf("%lu.%lu", sec, usec);
++	_labelXMid.setText(tMid);
++
++	kshark_convert_nano(_glWindow.model()->histo()->max, &sec, &usec);
++	tMax.sprintf("%lu.%lu", sec, usec);
++	_labelXMax.setText(tMax);
++}
++
++/**
++ * Reimplemented event handler used to update the geometry of the widget on
++ * resize events.
++ */
++void KsTraceGraph::resizeEvent(QResizeEvent* event)
++{
++	updateGeom();
++}
++
++/**
++ * Reimplemented event handler (overriding a virtual function from QObject)
++ * used to detect the position of the mouse with respect to the Draw window and
++ * according to this position to grab / release the focus of the keyboard. The
++ * function has nothing to do with the filtering of the trace events.
++ */
++bool KsTraceGraph::eventFilter(QObject* obj, QEvent* evt)
++{
++	if (obj == &_drawWindow && evt->type() == QEvent::Enter)
++		_glWindow.setFocus();
++
++	if (obj == &_drawWindow && evt->type() == QEvent::Leave)
++		_glWindow.clearFocus();
++
++	return QWidget::eventFilter(obj, evt);
++}
++
++void KsTraceGraph::_updateGraphs(GraphActions action)
++{
++	double k;
++	int bin;
++
++	/*
++	 * Set the "Key Pressed" flag. The flag will stay set as long as the user
++	 * keeps the corresponding action button pressed.
++	 */
++	_keyPressed = true;
++
++	/* Initialize the zooming factor with a small value. */
++	k = .01;
++	while (_keyPressed) {
++		switch (action) {
++		case GraphActions::ZoomIn:
++			if (_mState->activeMarker()._isSet &&
++			    _mState->activeMarker().isVisible()) {
++				/*
++				 * Use the position of the active marker as
++				 * a focus point of the zoom.
++				 */
++				bin = _mState->activeMarker()._bin;
++				_glWindow.model()->zoomIn(k, bin);
++			} else {
++				/*
++				 * The default focus point is the center of the
++				 * range interval of the model.
++				 */
++				_glWindow.model()->zoomIn(k);
++			}
++
++			break;
++
++		case GraphActions::ZoomOut:
++			if (_mState->activeMarker()._isSet &&
++			    _mState->activeMarker().isVisible()) {
++				/*
++				 * Use the position of the active marker as
++				 * a focus point of the zoom.
++				 */
++				bin = _mState->activeMarker()._bin;
++				_glWindow.model()->zoomOut(k, bin);
++			} else {
++				/*
++				 * The default focus point is the center of the
++				 * range interval of the model.
++				 */
++				_glWindow.model()->zoomOut(k);
++			}
++
++			break;
++
++		case GraphActions::ScrollLeft:
++			_glWindow.model()->shiftBackward(10);
++			break;
++
++		case GraphActions::ScrollRight:
++			_glWindow.model()->shiftForward(10);
++			break;
++		}
++
++		/*
++		 * As long as the action button is pressed, the zooming factor
++		 * will grow smoothly until it reaches a maximum value. This
++		 * will have a visible effect of an accelerating zoom.
++		 */
++		if (k < .25)
++			k  *= 1.02;
++
++		_mState->updateMarkers(*_data, &_glWindow);
++		_updateTimeLegends();
++		QCoreApplication::processEvents();
++	}
++}
+diff --git a/kernel-shark-qt/src/KsTraceGraph.hpp b/kernel-shark-qt/src/KsTraceGraph.hpp
 new file mode 100644
-index 0000000..5b8ff8c
+index 0000000..b57b256
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsGLWidget.hpp
-@@ -0,0 +1,220 @@
++++ b/kernel-shark-qt/src/KsTraceGraph.hpp
+@@ -0,0 +1,137 @@
 +/* SPDX-License-Identifier: LGPL-2.1 */
 +
 +/*
 + * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
 + */
 +
-+ /**
-+ *  @file    KsGLWidget.hpp
-+ *  @brief   OpenGL widget for plotting trace graphs.
++/**
++ *  @file    KsTraceGraph.hpp
++ *  @brief   KernelShark Trace Graph.
 + */
-+
-+#ifndef _KS_GLWIDGET_H
-+#define _KS_GLWIDGET_H
-+
-+// Qt
-+#include <QRubberBand>
++#ifndef _KS_TRACEGRAPH_H
++#define _KS_TRACEGRAPH_H
 +
 +// KernelShark
-+#include "KsUtils.hpp"
-+#include "KsPlotTools.hpp"
-+#include "KsModels.hpp"
-+#include "KsDualMarker.hpp"
++#include "KsGLWidget.hpp"
 +
 +/**
-+ * The KsGLWidget class provides a widget for rendering OpenGL graphics used
-+ * to plot trace graphs.
++ * Scroll Area class, needed in order to reimplemented the handler for mouse
++ * wheel events.
 + */
-+class KsGLWidget : public QOpenGLWidget
++class KsGraphScrollArea : public QScrollArea {
++public:
++	/** Create a default Scroll Area. */
++	explicit KsGraphScrollArea(QWidget *parent = nullptr)
++	: QScrollArea(parent) {}
++
++	/**
++	 * Reimplemented handler for mouse wheel events. All mouse wheel
++	 * events will be ignored.
++	 */
++	void wheelEvent(QWheelEvent *evt) {evt->ignore();}
++};
++
++/**
++ * The KsTraceViewer class provides a widget for interactive visualization of
++ * trace data shown as time-series.
++ */
++class KsTraceGraph : public QWidget
 +{
 +	Q_OBJECT
 +public:
-+	explicit KsGLWidget(QWidget *parent = NULL);
-+
-+	void initializeGL() override;
-+
-+	void resizeGL(int w, int h) override;
-+
-+	void paintGL() override;
-+
-+	void mousePressEvent(QMouseEvent *event);
-+
-+	void mouseMoveEvent(QMouseEvent *event);
-+
-+	void mouseReleaseEvent(QMouseEvent *event);
-+
-+	void mouseDoubleClickEvent(QMouseEvent *event);
-+
-+	void wheelEvent(QWheelEvent * event);
-+
-+	void keyPressEvent(QKeyEvent *event);
-+
-+	void keyReleaseEvent(QKeyEvent *event);
++	explicit KsTraceGraph(QWidget *parent = nullptr);
 +
 +	void loadData(KsDataStore *data);
 +
-+	void loadColors();
++	void setMarkerSM(KsDualMarkerSM *m);
 +
-+	/**
-+	 * Provide the widget with a pointer to the Dual Marker state machine
-+	 * object.
-+	 */
-+	void setMarkerSM(KsDualMarkerSM *m) {_mState = m;}
++	void reset();
 +
-+	/** Get the KsGraphModel object. */
-+	KsGraphModel *model() {return &_model;}
++	/** Get the KsGLWidget object. */
++	KsGLWidget *glPtr() {return &_glWindow;}
 +
-+	/** Get the number of CPU graphs. */
-+	int cpuGraphCount() const {return _cpuList.count();}
++	void markEntry(size_t);
 +
-+	/** Get the number of Task graphs. */
-+	int taskGraphCount() const {return _taskList.count();}
++	void cpuReDraw(QVector<int>);
 +
-+	/** Get the total number of graphs. */
-+	int graphCount() const {return _cpuList.count() + _taskList.count();}
++	void taskReDraw(QVector<int>);
 +
-+	/** Get the height of the widget. */
-+	int height() const
-+	{
-+		return graphCount() * (KS_GRAPH_HEIGHT + _vSpacing) +
-+		       _vMargin * 2;
-+	}
++	void addCPUPlot(int);
 +
-+	/** Get the device pixel ratio. */
-+	int dpr() const {return _dpr;}
++	void addTaskPlot(int);
 +
-+	/** Get the size of the horizontal margin space. */
-+	int hMargin()	const {return _hMargin;}
++	void update(KsDataStore *data);
 +
-+	/** Get the size of the vertical margin space. */
-+	int vMargin()	const {return _vMargin;}
++	void updateGeom();
 +
-+	/** Get the size of the vertical spaceing between the graphs. */
-+	int vSpacing()	const {return _vSpacing;}
++	void resizeEvent(QResizeEvent* event) override;
 +
-+	void setMark(KsGraphMark *mark);
-+
-+	void findGraphIds(const kshark_entry &e,
-+			  int *graphCPU,
-+			  int *graphTask);
-+
-+	/** CPUs to be plotted. */
-+	QVector<int>	_cpuList;
-+
-+	/** Tasks to be plotted. */
-+	QVector<int>	_taskList;
-+
-+signals:
-+	/**
-+	 * This signal is emitted when the mouse moves over a visible
-+	 * KernelShark entry.
-+	 */
-+	void found(size_t pos);
-+
-+	/**
-+	 * This signal is emitted when the mouse moves but there is no visible
-+	 * KernelShark entry under the cursor.
-+	 */
-+	void notFound(uint64_t ts, int cpu, int pid);
-+
-+	/** This signal is emitted when the Plus key is pressed. */
-+	void zoomIn();
-+
-+	/** This signal is emitted when the Minus key is pressed. */
-+	void zoomOut();
-+
-+	/** This signal is emitted when the Left Arrow key is pressed. */
-+	void scrollLeft();
-+
-+	/** This signal is emitted when the Right Arrow key is pressed. */
-+	void scrollRight();
-+
-+	/**
-+	 * This signal is emitted when one of the 4 Action keys is release
-+	 * (after being pressed).
-+	 */
-+	void stopUpdating();
-+
-+	/**
-+	 * This signal is emitted in the case of a double click over a visible
-+	 * KernelShark entry.
-+	 */
-+	void select(size_t pos);
-+
-+	/**
-+	 * This signal is emitted in the case of a right mouse button click or
-+	 * in the case of a double click over an empty area (no visible
-+	 * KernelShark entries).
-+	 */
-+	void deselect();
-+
-+	/**
-+	 * This signal is emitted when the KsTraceViewer widget needs to be
-+	 * updated.
-+	 */
-+	void updateView(size_t pos, bool mark);
++	bool eventFilter(QObject* obj, QEvent* evt) override;
 +
 +private:
-+	QVector<KsPlot::Graph*>	_graphs;
 +
-+	KsPlot::PlotObjList	_shapes;
++	void _zoomIn();
 +
-+	KsPlot::ColorTable	_pidColors;
++	void _zoomOut();
 +
-+	int		_hMargin, _vMargin;
++	void _quickZoomIn();
 +
-+	unsigned int	_vSpacing;
++	void _quickZoomOut();
 +
-+	KsGraphModel	 _model;
++	void _scrollLeft();
++
++	void _scrollRight();
++
++	void _stopUpdating();
++
++	void _resetPointer(uint64_t ts, int cpu, int pid);
++
++	void _setPointerInfo(size_t);
++
++	void _updateTimeLegends();
++
++	void _updateGraphLegends();
++
++	void _selfUpdate();
++
++	void _markerReDraw();
++
++	enum class GraphActions {
++		ZoomIn,
++		ZoomOut,
++		ScrollLeft,
++		ScrollRight
++	};
++
++	void _updateGraphs(GraphActions action);
++
++	QToolBar	_pointerBar, _navigationBar;
++
++	QPushButton	_zoomInButton, _quickZoomInButton;
++	QPushButton	_zoomOutButton, _quickZoomOutButton;
++
++	QPushButton	_scrollLeftButton, _scrollRightButton;
++
++	QLabel	_labelP1, _labelP2,				  // Pointer
++		_labelI1, _labelI2, _labelI3, _labelI4, _labelI5; // Proc. info
++
++	KsGraphScrollArea	_scrollArea;
++
++	QWidget		_drawWindow, _legendWindow, _legendAxisX;
++
++	QLabel		_labelXMin, _labelXMid, _labelXMax;
++
++	KsGLWidget	_glWindow;
++
++	QGridLayout	_drawLayout;
++
++	QVBoxLayout	_layout;
 +
 +	KsDualMarkerSM	*_mState;
 +
-+	KsDataStore	*_data;
++	KsDataStore 	*_data;
 +
-+	QRubberBand	_rubberBand;
-+
-+	QPoint		_rubberBandOrigin;
-+
-+	size_t		_posMousePress;
-+
-+	bool		_keyPressed;
-+
-+	int 		_dpr;
-+
-+	void _drawAxisX();
-+
-+	void _makeGraphs(QVector<int> cpuMask, QVector<int> taskMask);
-+
-+	KsPlot::Graph *_newCPUGraph(int cpu);
-+
-+	KsPlot::Graph *_newTaskGraph(int pid);
-+
-+	void _makePluginShapes(QVector<int> cpuMask, QVector<int> taskMask);
-+
-+	int _posInRange(int x);
-+
-+	int _getCPU(int y);
-+
-+	int _getPid(int y);
-+
-+	void _rangeBoundInit(int x);
-+
-+	void _rangeBoundStretched(int x);
-+
-+	void _rangeChanged(int binMin, int binMax);
-+
-+	bool _findAndSelect(QMouseEvent *event);
-+
-+	bool _find(QMouseEvent *event, int variance, bool joined, size_t *row);
-+
-+	bool _find(int bin, int cpu, int pid,
-+		   int variance, bool joined, size_t *row);
-+
-+	int _getNextCPU(int pid, int bin);
-+
-+	int _getLastTask(struct kshark_trace_histo *histo, int bin, int cpu);
-+
-+	int _getLastCPU(struct kshark_trace_histo *histo, int bin, int pid);
++	bool		 _keyPressed;
 +};
 +
-+#endif
++#endif // _KS_TRACEGRAPH_H
 -- 
 2.17.1
