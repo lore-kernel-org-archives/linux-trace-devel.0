@@ -1,17 +1,17 @@
 Return-Path: <SRS0=pqkA=MY=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-co1nam03on0041.outbound.protection.outlook.com ([104.47.40.41]:22067
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr680080.outbound.protection.outlook.com ([40.107.68.80]:21041
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728821AbeJLXrD (ORCPT
+        id S1728800AbeJLXrR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Oct 2018 19:47:03 -0400
+        Fri, 12 Oct 2018 19:47:17 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH 01/10] kernel-shark-qt: Add Dual Marker for KernelShark GUI.
-Date: Fri, 12 Oct 2018 19:13:09 +0300
-Message-Id: <20181012161318.5302-2-ykaradzhov@vmware.com>
+Subject: [PATCH 03/10] kernel-shark-qt: Add Trace Viewer widget.
+Date: Fri, 12 Oct 2018 19:13:11 +0300
+Message-Id: <20181012161318.5302-4-ykaradzhov@vmware.com>
 In-Reply-To: <20181012161318.5302-1-ykaradzhov@vmware.com>
 References: <20181012161318.5302-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
@@ -21,571 +21,852 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-This patch implements the Dual Marker used by the KernelShark GUI.
-The Dual Marker uses a simple State Machine having only two states
-(A and B). In the following patches the State Machine will connect
-to the Table and Graph widgets (not introduced yet) and will allow
-the user's actions in one of these widgets to have effect in the
-other one.
+This patch defines widget for browsing in the trace data shown in a text
+form. The provides a search panel and a Table view area. The panel and
+the table are integrated with the Dual Marker.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/CMakeLists.txt   |   2 +
- kernel-shark-qt/src/KsDualMarker.cpp | 332 +++++++++++++++++++++++++++
- kernel-shark-qt/src/KsDualMarker.hpp | 188 +++++++++++++++
- 3 files changed, 522 insertions(+)
- create mode 100644 kernel-shark-qt/src/KsDualMarker.cpp
- create mode 100644 kernel-shark-qt/src/KsDualMarker.hpp
+ kernel-shark-qt/src/CMakeLists.txt    |   6 +-
+ kernel-shark-qt/src/KsTraceViewer.cpp | 655 ++++++++++++++++++++++++++
+ kernel-shark-qt/src/KsTraceViewer.hpp | 144 ++++++
+ 3 files changed, 803 insertions(+), 2 deletions(-)
+ create mode 100644 kernel-shark-qt/src/KsTraceViewer.cpp
+ create mode 100644 kernel-shark-qt/src/KsTraceViewer.hpp
 
 diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
-index 2ac79ca..dc86cdf 100644
+index 3fd518b..3f40930 100644
 --- a/kernel-shark-qt/src/CMakeLists.txt
 +++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -32,11 +32,13 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
- 
-     message(STATUS "libkshark-gui")
+@@ -34,14 +34,16 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
      set (ks-guiLib_hdr  KsUtils.hpp
-+                        KsDualMarker.hpp
-                         KsWidgetsLib.hpp)
+                         KsModels.hpp
+                         KsDualMarker.hpp
+-                        KsWidgetsLib.hpp)
++                        KsWidgetsLib.hpp
++                        KsTraceViewer.hpp)
  
      QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
  
      add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp
-+                                                            KsDualMarker.cpp
-                                                             KsWidgetsLib.cpp)
+                                                             KsModels.cpp
+                                                             KsDualMarker.cpp
+-                                                            KsWidgetsLib.cpp)
++                                                            KsWidgetsLib.cpp
++                                                            KsTraceViewer.cpp)
  
      target_link_libraries(kshark-gui kshark-plot
-diff --git a/kernel-shark-qt/src/KsDualMarker.cpp b/kernel-shark-qt/src/KsDualMarker.cpp
+                                      ${CMAKE_DL_LIBS}
+diff --git a/kernel-shark-qt/src/KsTraceViewer.cpp b/kernel-shark-qt/src/KsTraceViewer.cpp
 new file mode 100644
-index 0000000..ae637aa
+index 0000000..6533098
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsDualMarker.cpp
-@@ -0,0 +1,332 @@
++++ b/kernel-shark-qt/src/KsTraceViewer.cpp
+@@ -0,0 +1,655 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +
 +/*
 + * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
 + */
 +
-+/**
-+ *  @file    KsDualMarker.cpp
-+ *  @brief   KernelShark Dual Marker.
-+ */
++// C++11
++#include <thread>
++#include <future>
 +
-+#include "KsDualMarker.hpp"
++// KernelShark
++#include "KsTraceViewer.hpp"
++#include "KsWidgetsLib.hpp"
 +
-+/**
-+ * @brief Create KsGraphMark object.
-+ *
-+ * @param s: The Identifier of the marker (state A or state B).
-+ */
-+KsGraphMark::KsGraphMark(DualMarkerState s)
-+: _color(Qt::darkGreen),
-+  _state(s)
-+{
-+	reset();
-+	_mark._color << _color;
-+}
-+
-+/**
-+ * @brief Create KsGraphMark object.
-+ *
-+ * @param s: The Identifier of the marker (state A or state B).
-+ * @param col: The color of the marker.
-+ */
-+KsGraphMark::KsGraphMark(DualMarkerState s, QColor col)
-+: _color(col),
-+  _state(s)
-+{
-+	reset();
-+	_mark._color << _color;
-+}
-+
-+/** Reset the marker. */
-+void KsGraphMark::reset()
-+{
-+	_isSet = false;
-+	_bin = -1;
-+	_cpu = -1;
-+	_task = -1;
-+	_pos = 0;
-+
-+	_mark._visible = false;
-+}
-+
-+/**
-+ * @brief Set the marker.
-+ *
-+ * @param data: Input location for the Data Store object.
-+ * @param histo: Input location for the model descriptor.
-+ * @param pos: The index inside the data array this marker will points to.
-+ * @param cpuGraph: The index of the CPU Graph this marker points to.
-+ * @param taskGraph: The index of the Task Graph this marker points to.
-+ */
-+bool KsGraphMark::set(const KsDataStore &data,
-+		      kshark_trace_histo *histo,
-+		      size_t pos, int cpuGraph, int taskGraph)
-+{
-+	_isSet = true;
-+	_pos = pos;
-+	_ts = data.rows()[_pos]->ts;
-+	_cpu = cpuGraph;
-+	_task = taskGraph;
-+
-+	if (_ts > histo->max || _ts < histo->min) {
-+		_bin = -1;
-+		_mark._visible = false;
-+		return false;
-+	}
-+
-+	_bin = (_ts - histo->min)/histo->bin_size;
-+	setVisible(true);
-+
-+	return true;
-+}
-+
-+/**
-+ * @brief Use this function to update the marker when the state of the model
-+ *	  has changed.
-+ *
-+ * @param data: Input location for the Data Store object.
-+ * @param histo: Input location for the model descriptor.
-+ */
-+bool KsGraphMark::update(const KsDataStore &data, kshark_trace_histo *histo)
-+{
-+	if (!_isSet)
-+		return false;
-+
-+	return set(data, histo, this->_pos, this->_cpu, this->_task);
-+}
-+
-+/** Unset the Marker and make it invisible. */
-+void KsGraphMark::remove()
-+{
-+	_isSet = false;
-+	setVisible(false);
-+}
-+
-+/** An operator for getting the opposite state of the marker identifier. */
-+DualMarkerState operator!(const DualMarkerState &state)
-+{
-+	if (state == DualMarkerState::B)
-+		return DualMarkerState::A;
-+
-+	return DualMarkerState::B;
-+}
-+
-+/** @brief Create a Dual Marker State Machine. */
-+KsDualMarkerSM::KsDualMarkerSM(QWidget *parent)
++/** Create a default (empty) Trace viewer widget. */
++KsTraceViewer::KsTraceViewer(QWidget *parent)
 +: QWidget(parent),
-+  _buttonA("Marker A", this),
-+  _buttonB("Marker B", this),
-+  _labelDeltaDescr("    A,B Delta: ", this),
-+  _markA(DualMarkerState::A, Qt::darkGreen),
-+  _markB(DualMarkerState::B, Qt::darkCyan),
-+  _scCtrlA(this),
-+  _scCtrlB(this)
++  _view(this),
++  _model(this),
++  _proxyModel(this),
++  _tableHeader(_model.header()),
++  _toolbar(this),
++  _labelSearch("Search: Column", this),
++  _labelGrFollows("Graph follows  ", this),
++  _columnComboBox(this),
++  _selectComboBox(this),
++  _searchLineEdit(this),
++  _prevButton("Prev", this),
++  _nextButton("Next", this),
++  _searchStopButton(QIcon::fromTheme("process-stop"), "", this),
++  _pbAction(nullptr),
++  _graphFollowsCheckBox(this),
++  _searchProgBar(this),
++  _searchCountLabel("", this),
++  _searchDone(false),
++  _graphFollows(true),
++  _mState(nullptr),
++  _data(nullptr)
++{
++	int bWidth;
++
++	this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
++
++	/* Make a search toolbar. */
++	_toolbar.setOrientation(Qt::Horizontal);
++	_toolbar.setMaximumHeight(FONT_HEIGHT * 1.75);
++
++	/* On the toolbar make two Combo boxes for the search settings. */
++	_toolbar.addWidget(&_labelSearch);
++	_columnComboBox.addItems(_tableHeader);
++
++	/*
++	 * Using the old Signal-Slot syntax because
++	 * QComboBox::currentIndexChanged has overloads.
++	 */
++	connect(&_columnComboBox,	SIGNAL(currentIndexChanged(int)),
++		this,			SLOT(_searchEdit(int)));
++
++	_toolbar.addWidget(&_columnComboBox);
++
++	_selectComboBox.addItem("contains");
++	_selectComboBox.addItem("full match");
++	_selectComboBox.addItem("does not have");
++
++	/*
++	 * Using the old Signal-Slot syntax because
++	 * QComboBox::currentIndexChanged has overloads.
++	 */
++	connect(&_selectComboBox,	SIGNAL(currentIndexChanged(int)),
++		this,			SLOT(_searchEdit(int)));
++
++	_toolbar.addWidget(&_selectComboBox);
++
++	/* On the toolbar, make a Line edit field for search. */
++	_searchLineEdit.setMaximumWidth(FONT_WIDTH * 20);
++
++	connect(&_searchLineEdit,	&QLineEdit::returnPressed,
++		this,			&KsTraceViewer::_search);
++
++	connect(&_searchLineEdit,	&QLineEdit::textEdited,
++		this,			&KsTraceViewer::_searchEditText);
++
++	_toolbar.addWidget(&_searchLineEdit);
++	_toolbar.addSeparator();
++
++	/* On the toolbar, add Prev & Next buttons. */
++	bWidth = FONT_WIDTH * 6;
++
++	_nextButton.setFixedWidth(bWidth);
++	_toolbar.addWidget(&_nextButton);
++	connect(&_nextButton,	&QPushButton::pressed,
++		this,		&KsTraceViewer::_next);
++
++	_prevButton.setFixedWidth(bWidth);
++	_toolbar.addWidget(&_prevButton);
++	connect(&_prevButton,	&QPushButton::pressed,
++		this,		&KsTraceViewer::_prev);
++
++	_toolbar.addSeparator();
++	_searchProgBar.setMaximumWidth(FONT_WIDTH * 10);
++	_searchProgBar.setRange(0, 200);
++	_pbAction = _toolbar.addWidget(&_searchProgBar);
++	_pbAction->setVisible(false);
++	_toolbar.addWidget(&_searchCountLabel);
++	_searchStopAction = _toolbar.addWidget(&_searchStopButton);
++	_searchStopAction->setVisible(false);
++	connect(&_searchStopButton,	&QPushButton::pressed,
++		this,			&KsTraceViewer::_searchStop);
++
++	/*
++	 * On the toolbar, make a Check box for connecting the search pannel
++	 * to the Graph widget.
++	 */
++	_toolbar.addSeparator();
++	_toolbar.addWidget(&_graphFollowsCheckBox);
++	_toolbar.addWidget(&_labelGrFollows);
++	_graphFollowsCheckBox.setCheckState(Qt::Checked);
++	connect(&_graphFollowsCheckBox,	&QCheckBox::stateChanged,
++		this,			&KsTraceViewer::_graphFollowsChanged);
++
++	/* Initialize the trace viewer. */
++	_view.horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
++	_view.verticalHeader()->setVisible(false);
++	_view.setEditTriggers(QAbstractItemView::NoEditTriggers);
++	_view.setSelectionBehavior(QAbstractItemView::SelectRows);
++	_view.setSelectionMode(QAbstractItemView::SingleSelection);
++	_view.verticalHeader()->setDefaultSectionSize(FONT_HEIGHT * 1.25);
++
++	 _proxyModel.setSource(&_model);
++	_view.setModel(&_proxyModel);
++	connect(&_proxyModel, &QAbstractItemModel::modelReset,
++		this, &KsTraceViewer::_searchReset);
++
++	_view.setContextMenuPolicy(Qt::CustomContextMenu);
++	connect(&_view,	&QTableView::customContextMenuRequested,
++		this,	&KsTraceViewer::_onCustomContextMenu);
++
++	connect(&_view,	&QTableView::clicked,
++		this,	&KsTraceViewer::_clicked);
++
++	/* Set the layout. */
++	_layout.addWidget(&_toolbar);
++	_layout.addWidget(&_view);
++	this->setLayout(&_layout);
++}
++
++/**
++ * @brief Load and show trace data.
++ *
++ * @param data: Input location for the KsDataStore object.
++ *	  KsDataStore::loadDataFile() must be called first.
++ */
++void KsTraceViewer::loadData(KsDataStore *data)
++{
++	_data = data;
++	_model.reset();
++	_proxyModel.fill(data);
++	_model.fill(data);
++	this->_resizeToContents();
++
++	this->setMinimumHeight(SCREEN_HEIGHT / 5);
++}
++
++/** Connect the QTableView widget and the State machine of the Dual marker. */
++void KsTraceViewer::setMarkerSM(KsDualMarkerSM *m)
 +{
 +	QString styleSheetA, styleSheetB;
 +
-+	_buttonA.setFixedWidth(STRING_WIDTH(" Marker A "));
-+	_buttonB.setFixedWidth(STRING_WIDTH(" Marker B "));
++	_mState = m;
++	_model.setColors(_mState->markerA()._color,
++			 _mState->markerB()._color);
 +
-+	for (auto const &l: {&_labelMA, &_labelMB, &_labelDelta}) {
-+		l->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-+		l->setStyleSheet("QLabel {background-color : white;}");
-+		l->setTextInteractionFlags(Qt::TextSelectableByMouse);
-+		l->setFixedWidth(FONT_WIDTH * 16);
-+	}
++	/*
++	 * Assign a property to State A of the Dual marker state machine. When
++	 * the marker is in State A the background color of the selected row
++	 * will be the same as the color of Marker A.
++	 */
++	styleSheetA = "selection-background-color : " +
++		      _mState->markerA()._color.name() + ";";
 +
-+	styleSheetA = "background : " +
-+		      _markA._color.name() +
-+		      "; color : white";
++	_mState->stateAPtr()->assignProperty(&_view, "styleSheet",
++						     styleSheetA);
 +
-+	_stateA = new QState;
-+	_stateA->setObjectName("A");
-+	_stateA->assignProperty(&_buttonA,
-+				"styleSheet",
-+				styleSheetA);
++	/*
++	 * Assign a property to State B. When the marker is in State B the
++	 * background color of the selected row will be the same as the color
++	 * of Marker B.
++	 */
++	styleSheetB = "selection-background-color : " +
++		      _mState->markerB()._color.name() + ";";
 +
-+	_stateA->assignProperty(&_buttonB,
-+				"styleSheet",
-+				"color : rgb(70, 70, 70)");
-+
-+	styleSheetB = "background : " +
-+		      _markB._color.name() +
-+		      "; color : white";
-+
-+	_stateB = new QState;
-+	_stateB->setObjectName("B");
-+	_stateB->assignProperty(&_buttonA,
-+				"styleSheet",
-+				"color : rgb(70, 70, 70)");
-+
-+	_stateB->assignProperty(&_buttonB,
-+				"styleSheet",
-+				styleSheetB);
-+
-+	/* Define transitions from State A to State B. */
-+	_stateA->addTransition(this,	&KsDualMarkerSM::machineToB, _stateB);
-+
-+	_scCtrlA.setKey(Qt::CTRL + Qt::Key_A);
-+	_stateA->addTransition(&_scCtrlB, &QShortcut::activated, _stateB);
-+
-+	connect(&_scCtrlA,	&QShortcut::activated,
-+		this,		&KsDualMarkerSM::_doStateA);
-+
-+	_stateA->addTransition(&_buttonB, &QPushButton::clicked, _stateB);
-+
-+	connect(&_buttonB,	&QPushButton::clicked,
-+		this,		&KsDualMarkerSM::_doStateB);
-+
-+	/* Define transitions from State B to State A. */
-+	_stateB->addTransition(this,	&KsDualMarkerSM::machineToA, _stateA);
-+
-+	_scCtrlB.setKey(Qt::CTRL + Qt::Key_B);
-+	_stateB->addTransition(&_scCtrlA, &QShortcut::activated, _stateA);
-+
-+	connect(&_scCtrlB,	&QShortcut::activated,
-+		this,		&KsDualMarkerSM::_doStateB);
-+
-+	_stateB->addTransition(&_buttonA, &QPushButton::clicked, _stateA);
-+
-+	connect(&_buttonA,	&QPushButton::clicked,
-+		this,		&KsDualMarkerSM::_doStateA);
-+
-+	_machine.addState(_stateA);
-+	_machine.addState(_stateB);
-+	_machine.setInitialState(_stateA);
-+	_markState = DualMarkerState::A;
-+	_machine.start();
++	_mState->stateBPtr()->assignProperty(&_view, "styleSheet",
++						     styleSheetB);
 +}
 +
-+/**
-+ * Reset the Mark A and Mark B and clear the information shown by the Marker's
-+ * toolbar.
-+ */
-+void KsDualMarkerSM::reset()
++/** Reset (empty) the table. */
++void KsTraceViewer::reset()
 +{
-+	_markA.reset();
-+	_markB.reset();
-+	_labelMA.setText("");
-+	_labelMB.setText("");
-+	_labelDelta.setText("");
++	this->setMinimumHeight(FONT_HEIGHT * 10);
++	_model.reset();
++	_resizeToContents();
 +}
 +
-+/** Restart the Dual Marker State Machine. */
-+void KsDualMarkerSM::restart()
++void KsTraceViewer::_searchReset()
 +{
-+	_machine.stop();
-+	reset();
-+	_markState = DualMarkerState::A;
-+	_machine.start();
++	_searchProgBar.setValue(0);
++	_searchCountLabel.setText("");
++	_proxyModel.searchProgress();
++	_searchDone = false;
 +}
 +
-+void KsDualMarkerSM::_doStateA()
++/** Get the index of the first (top) visible row. */
++size_t  KsTraceViewer::getTopRow() const
 +{
-+	if (_markState !=  DualMarkerState::A) {
-+		_markState = DualMarkerState::A;
-+		emit markSwitchForView();
-+	} else if (activeMarker()._isSet) {
-+		emit updateView(activeMarker()._pos, true);
-+		emit updateGraph(activeMarker()._pos);
++	return _view.indexAt(_view.rect().topLeft()).row();
++}
++
++/** Position given row at the top of the table. */
++void  KsTraceViewer::setTopRow(size_t r)
++{
++	_view.scrollTo(_proxyModel.index(r, 0),
++		       QAbstractItemView::PositionAtTop);
++}
++
++/** Update the content of the table. */
++void KsTraceViewer::update(KsDataStore *data)
++{
++	/* The Proxy model has to be updated first! */
++	_proxyModel.fill(data);
++	_model.update(data);
++	_data = data;
++	if (_mState->activeMarker()._isSet)
++		showRow(_mState->activeMarker()._pos, true);
++}
++
++void KsTraceViewer::_onCustomContextMenu(const QPoint &point)
++{
++	QModelIndex i = _view.indexAt(point);
++
++	if (i.isValid()) {
++		/*
++		 * Use the index of the proxy model to retrieve the value
++		 * of the row number in the source model.
++		 */
++		size_t row = _proxyModel.mapRowFromSource(i.row());
++		KsQuickEntryMenu menu(_data, row, this);
++
++		connect(&menu,	&KsQuickEntryMenu::plotTask,
++			this,	&KsTraceViewer::plotTask);
++
++		menu.exec(mapToGlobal(point));
 +	}
 +}
 +
-+void KsDualMarkerSM::_doStateB()
++void KsTraceViewer::_searchEdit(int index)
 +{
-+	if (_markState !=  DualMarkerState::B) {
-+		_markState = DualMarkerState::B;
-+		emit markSwitchForView();
-+	} else if (activeMarker()._isSet) {
-+		emit updateView(activeMarker()._pos, true);
-+		emit updateGraph(activeMarker()._pos);
++	_searchReset(); // The search has been modified.
++}
++
++void KsTraceViewer::_searchEditText(const QString &text)
++{
++	_searchReset(); // The search has been modified.
++}
++
++void KsTraceViewer::_graphFollowsChanged(int state)
++{
++	_graphFollows = (bool) state;
++
++	if (_graphFollows && _searchDone)
++		emit select(*_it); // Send a signal to the Graph widget.
++}
++
++bool notHaveCond(QString searchText, QString itemText)
++{
++	return !itemText.contains(searchText, Qt::CaseInsensitive);
++}
++
++bool containsCond(QString searchText, QString itemText)
++{
++	return itemText.contains(searchText, Qt::CaseInsensitive);
++}
++
++bool matchCond(QString searchText, QString itemText)
++{
++	if (itemText.compare(searchText, Qt::CaseInsensitive) == 0)
++		return true;
++
++	return false;
++}
++
++void KsTraceViewer::_search()
++{
++	/* Disable the user input until the search is done. */
++	_searchLineEdit.setReadOnly(true);
++	if (!_searchDone) {
++		int xColumn, xSelect;
++		QString xText;
++
++		/*
++		 * The search is not done. This means that the search settings
++		 * have been modified since the last time we searched.
++		 */
++		_matchList.clear();
++		xText = _searchLineEdit.text();
++		xColumn = _columnComboBox.currentIndex();
++		xSelect = _selectComboBox.currentIndex();
++
++		switch (xSelect) {
++			case Condition::Containes:
++				_searchItems(xColumn, xText, &containsCond);
++				break;
++
++			case Condition::Match:
++				_searchItems(xColumn, xText, &matchCond);
++				break;
++
++			case Condition::NotHave:
++				_searchItems(xColumn, xText, &notHaveCond);
++				break;
++
++			default:
++				break;
++		}
++
++		if (!_matchList.empty()) {
++			this->showRow(*_it, true);
++
++			if (_graphFollows)
++				emit select(*_it); // Send a signal to the Graph widget.
++		}
++	} else {
++		/*
++		 * If the search is done, pressing "Enter" is equivalent
++		 * to pressing "Next" button.
++		 */
++		this->_next();
 +	}
++
++	/* Enable the user input. */
++	_searchLineEdit.setReadOnly(false);
 +}
 +
-+/** Get the Graph marker associated with a given state. */ 
-+KsGraphMark &KsDualMarkerSM::getMarker(DualMarkerState s)
++void KsTraceViewer::_next()
 +{
-+	if (s == DualMarkerState::A)
-+		return _markA;
-+
-+	return _markB;
-+}
-+
-+/** Position all buttons and labels of the Dual Marker in a toolbar. */
-+void KsDualMarkerSM::placeInToolBar(QToolBar *tb)
-+{
-+	tb->addWidget(new QLabel("   "));
-+	tb->addWidget(&_buttonA);
-+	tb->addWidget(&_labelMA);
-+	tb->addSeparator();
-+	tb->addWidget(new QLabel("   "));
-+	tb->addWidget(&_buttonB);
-+	tb->addWidget(&_labelMB);
-+	tb->addSeparator();
-+	tb->addWidget(&_labelDeltaDescr);
-+	tb->addWidget(&_labelDelta);
-+}
-+
-+/** Set the state of the Dual Marker State Machine. */
-+void KsDualMarkerSM::setState(DualMarkerState st) {
-+	if (st == _markState)
++	if (!_searchDone) {
++		_search();
 +		return;
-+
-+	if (st == DualMarkerState::A) {
-+		emit machineToA();
-+		_doStateA();
 +	}
 +
-+	if (st == DualMarkerState::B) {
-+		emit machineToB();
-+		_doStateB();
++	if (!_matchList.empty()) { // Items have been found.
++		++_it; // Move the iterator.
++		if (_it == _matchList.end() ) {
++			// This is the last item of the list. Go back to the beginning.
++			_it = _matchList.begin();
++		}
++
++		// Select the row of the item.
++		showRow(*_it, true);
++
++		if (_graphFollows)
++			emit select(*_it); // Send a signal to the Graph widget.
++	}
++}
++
++void KsTraceViewer::_prev()
++{
++	if (!_searchDone) {
++		_search();
++		return;
++	}
++
++	if (!_matchList.empty()) { // Items have been found.
++		if (_it == _matchList.begin()) {
++			// This is the first item of the list. Go to the last item.
++			_it = _matchList.end() - 1;
++		} else {
++			--_it; // Move the iterator.
++		}
++
++		// Select the row of the item.
++		showRow(*_it, true);
++
++		if (_graphFollows)
++			emit select(*_it); // Send a signal to the Graph widget.
++	}
++}
++
++void KsTraceViewer::_searchStop()
++{
++	_searchStopAction->setVisible(false);
++	_proxyModel.searchStop();
++}
++
++void KsTraceViewer::_clicked(const QModelIndex& i)
++{
++	if (_graphFollows) {
++		/*
++		 * Use the index of the proxy model to retrieve the value
++		 * of the row number in the base model.
++		 */
++		size_t row = _proxyModel.mapRowFromSource(i.row());
++		emit select(row); // Send a signal to the Graph widget.
++	}
++}
++
++/** Make a given row of the table visible. */
++void KsTraceViewer::showRow(size_t r, bool mark)
++{
++	/*
++	 * Use the index in the source model to retrieve the value of the row number
++	 * in the proxy model.
++	 */
++	QModelIndex index = _proxyModel.mapFromSource(_model.index(r, 0));
++
++	if (mark) { // The row will be selected (colored).
++		/* Get the first and the last visible rows of the table. */
++		int visiTot = _view.indexAt(_view.rect().topLeft()).row();
++		int visiBottom = _view.indexAt(_view.rect().bottomLeft()).row() - 2;
++
++		/* Scroll only if the row to be shown in not vizible. */
++		if (index.row() < visiTot || index.row() > visiBottom)
++			_view.scrollTo(index, QAbstractItemView::PositionAtCenter);
++
++		_view.selectRow(index.row());
++	} else {
++		/*
++		 * Just make sure that the row is visible. It will show up at
++		 * the top of the visible part of the table.
++		 */
++		_view.scrollTo(index, QAbstractItemView::PositionAtTop);
++	}
++}
++
++/** Deselects the selected items (row) if any. */
++void KsTraceViewer::deselect()
++{
++	_view.clearSelection();
++}
++
++/** Switch the Dual marker. */
++void KsTraceViewer::markSwitch()
++{
++	/* The state of the Dual marker has changed. Get the new active marker. */
++	DualMarkerState state = _mState->getState();
++
++	/* First deal with the passive marker. */
++	if (_mState->getMarker(!state)._isSet) {
++		/*
++		 * The passive marker is set. Use the model to color the row of
++		 * the passive marker.
++		 */
++		_model.selectRow(!state, _mState->getMarker(!state)._pos);
++	}
++	else {
++		/*
++		 * The passive marker is not set.
++		 * Make sure that the model colors nothing.
++		 */
++		_model.selectRow(!state, -1);
++	}
++
++	/*
++	 * Now deal with the active marker. This has to be done after dealing
++	 *  with the model, because changing the model clears the selection.
++	 */
++	if (_mState->getMarker(state)._isSet) {
++		/*
++		 * The active marker is set. Use QTableView to select its row.
++		 * The index in the source model is used to retrieve the value
++		 * of the row number in the proxy model.
++		 */
++		size_t row =_mState->getMarker(state)._pos;
++
++		QModelIndex index = _proxyModel.mapFromSource(_model.index(row, 0));
++
++		/*
++		 * The row of the active marker will be colored according to
++		 * the assigned property of the current state of the Dual marker.
++		 */
++		_view.selectRow(index.row());
++	} else {
++		_view.clearSelection();
 +	}
 +}
 +
 +/**
-+ * @brief Use this function to update the two marker when the state of the
-+ *	  model has changed.
-+ *
-+ * @param data: Input location for the Data Store object.
-+ * @param histo: Input location for the model descriptor.
++ * Reimplemented event handler used to update the geometry of the widget on
++ * resize events.
 + */
-+void KsDualMarkerSM::updateMarkers(const KsDataStore &data,
-+				   kshark_trace_histo *histo)
++void KsTraceViewer::resizeEvent(QResizeEvent* event)
 +{
-+	_markA.update(data, histo);
-+	_markB.update(data, histo);
++	int nColumns = _tableHeader.count();
++	int tableSize(0), viewSize, freeSpace;
 +
-+	updateLabels();
++	for (int c = 0; c < nColumns; ++c) {
++		tableSize += _view.columnWidth(c);
++	}
++
++	viewSize = _view.width() -
++		   qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
++
++	if ((freeSpace = viewSize - tableSize) > 0) {
++		_view.setColumnWidth(nColumns - 1, _view.columnWidth(nColumns - 1) +
++						   freeSpace -
++						   2); /* Just a little bit less space.
++							* This will allow the scroll bar
++							* to disappear when the widget
++							* is extended to maximum. */
++	}
 +}
 +
 +/**
-+ * @brief Use this function to update the labels when the state of the model
-+ *	  has changed.
++ * Reimplemented event handler used to move the active marker.
 + */
-+void KsDualMarkerSM::updateLabels()
++void KsTraceViewer::keyReleaseEvent(QKeyEvent *event)
 +{
-+	QString mark, delta;
++	if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down) {
++		QItemSelectionModel *sm = _view.selectionModel();
++		if (sm->hasSelection()) {
++			/* Only one row at the time can be selected. */
++			int row = sm->selectedRows()[0].row();
++			emit select(row); // Send a signal to the Graph widget.
++		}
 +
-+	// Marker A
-+	if (_markA._isSet) {
-+		mark = KsUtils::Ts2String(_markA._ts, 7);
-+		_labelMA.setText(mark);
-+	} else {
-+		_labelMA.setText("");
++		return;
 +	}
 +
-+	// Marker B
-+	if (_markB._isSet) {
-+		mark = KsUtils::Ts2String(_markB._ts, 7);
-+		_labelMB.setText(mark);
-+	} else {
-+		_labelMB.setText("");
-+	}
-+
-+	// Delta
-+	if (_markA._isSet && _markB._isSet) {
-+		delta = KsUtils::Ts2String(_markB._ts - _markA._ts, 7);
-+		_labelDelta.setText(delta);
-+	} else {
-+		_labelDelta.setText("");
-+	}
++	QWidget::keyReleaseEvent(event);
 +}
-diff --git a/kernel-shark-qt/src/KsDualMarker.hpp b/kernel-shark-qt/src/KsDualMarker.hpp
++
++void KsTraceViewer::_resizeToContents()
++{
++	int rows, columnSize;
++
++	_view.setVisible(false);
++	_view.resizeColumnsToContents();
++	_view.setVisible(true);
++
++	/*
++	 * Because of some unknown reason the first column doesn't get
++	 * resized properly by the code above. We will resize this
++	 * column by hand.
++	 */
++	rows = _model.rowCount({});
++	columnSize = STRING_WIDTH(QString("%1").arg(rows)) + FONT_WIDTH;
++	_view.setColumnWidth(0, columnSize);
++}
++
++size_t KsTraceViewer::_searchItems(int column,
++				   const QString &searchText,
++				   condition_func cond)
++{
++	int count;
++
++	_searchProgBar.show();
++	_pbAction->setVisible(true);
++
++	if (column == KsViewModel::TRACE_VIEW_COL_INFO ||
++	    column == KsViewModel::TRACE_VIEW_COL_LAT) {
++		_searchStopAction->setVisible(true);
++		_proxyModel.search(column, searchText, cond, &_matchList,
++				   &_searchProgBar, &_searchCountLabel);
++
++		_searchStopAction->setVisible(false);
++	} else {
++		_searchItemsMapReduce(column, searchText, cond);
++	}
++
++	count = _matchList.count();
++
++	_pbAction->setVisible(false);
++	_searchCountLabel.setText(QString(" %1").arg(count));
++	_searchDone = true;
++
++	if (count == 0) // No items have been found. Do nothing.
++		return 0;
++
++	QItemSelectionModel *sm = _view.selectionModel();
++	if (sm->hasSelection()) {
++		/* Only one row at the time can be selected. */
++		int row = sm->selectedRows()[0].row();
++
++		_view.clearSelection();
++		_it = _matchList.begin();
++		/*
++		 * Move the iterator to the first element of the match list
++		 * after the selected one.
++		 */
++		while (*_it <= row) {
++			++_it;  // Move the iterator.
++			if (_it == _matchList.end()) {
++				/*
++				 * This is the last item of the list. Go back
++				 * to the beginning.
++				 */
++				_it = _matchList.begin();
++				break;
++			}
++		}
++	} else {
++		/* Move the iterator to the beginning of the match list. */
++		_view.clearSelection();
++		_it = _matchList.begin();
++	}
++
++	return count;
++}
++
++void KsTraceViewer::_searchItemsMapReduce(int column,
++					  const QString &searchText,
++					  condition_func cond)
++{
++	int nThreads = std::thread::hardware_concurrency();
++	std::vector<QPair<int, int>> ranges(nThreads);
++	std::vector<std::future<QList<int>>> maps;
++	int i(0), nRows(_proxyModel.rowCount({}));
++	int delta(nRows / nThreads);
++
++	auto lamSearchMap = [&] (const QPair<int, int> &range,
++				 bool notify) {
++		return _proxyModel.searchMap(column, searchText, cond,
++					     range.first, range.second,
++					     notify);
++	};
++
++	auto lamSearchReduce = [&] (QList<int> &resultList,
++				  const QList<int> &mapList) {
++		resultList << mapList;
++		_searchProgBar.setValue(_searchProgBar.value() + 1);
++	};
++
++	for (auto &r: ranges) {
++		r.first = (i++) * delta;
++		r.second = r.first + delta - 1;
++	}
++
++	/*
++	 * If the range is not multiple of the number of threads, adjust
++	 * the last range interval.
++	 */
++	ranges.back().second = nRows - 1;
++	maps.push_back(std::async(lamSearchMap, ranges[0], true));
++	for (int r = 1; r < nThreads; ++r)
++		maps.push_back(std::async(lamSearchMap, ranges[r], false));
++
++	while (_proxyModel.searchProgress() < KS_PROGRESS_BAR_MAX- nThreads) {
++		std::unique_lock<std::mutex> lk(_proxyModel._mutex);
++		_proxyModel._pbCond.wait(lk);
++		_searchProgBar.setValue(_proxyModel.searchProgress());
++		QApplication::processEvents();
++	}
++
++	for (auto &m: maps)
++		lamSearchReduce(_matchList, m.get());
++}
+diff --git a/kernel-shark-qt/src/KsTraceViewer.hpp b/kernel-shark-qt/src/KsTraceViewer.hpp
 new file mode 100644
-index 0000000..401b41c
+index 0000000..664e97e
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsDualMarker.hpp
-@@ -0,0 +1,188 @@
++++ b/kernel-shark-qt/src/KsTraceViewer.hpp
+@@ -0,0 +1,144 @@
 +/* SPDX-License-Identifier: LGPL-2.1 */
 +
 +/*
 + * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
 + */
 +
-+/**
-+ *  @file    KsDualMarker.hpp
-+ *  @brief   KernelShark Dual Marker.
-+ */
-+
-+#ifndef _KS_DUAL_MARKER_H
-+#define _KS_DUAL_MARKER_H
++#ifndef _KS_TRACEVIEW_H
++#define _KS_TRACEVIEW_H
 +
 +// Qt
-+#include <QtWidgets>
++#include <QTableView>
 +
 +// KernelShark
 +#include "KsUtils.hpp"
-+#include "KsPlotTools.hpp"
++#include "KsModels.hpp"
++#include "KsDualMarker.hpp"
 +
-+/** The KsGraphMark represents a marker for KernelShark GUI. */
-+class KsGraphMark : public QObject
-+{
-+	Q_OBJECT
-+public:
-+	KsGraphMark() = delete;
-+
-+	KsGraphMark(DualMarkerState s);
-+
-+	KsGraphMark(DualMarkerState s, QColor col);
-+
-+	void reset();
-+
-+	bool set(const KsDataStore &data,
-+		 kshark_trace_histo *histo,
-+		 size_t pos,
-+		 int cpuGraph,
-+		 int taskGraph);
-+
-+	bool update(const KsDataStore &data, kshark_trace_histo *histo);
-+
-+	/** Is this marker visible. */
-+	bool isVisible() const {return _mark._visible;}
-+
-+	/** Draw this marker. */
-+	void draw() const {_mark.draw();}
-+
-+	/** Set the visiblity of the marker. */
-+	void setVisible(bool v) {_mark._visible = v;}
-+
-+	void remove();
-+
-+public:
-+	/** Is this marker set. */
-+	bool		_isSet;
-+
-+	/** The number of the bin this marker points to. */
-+	int		_bin;
-+
-+	/** The index of the CPU Graph this marker points to. */
-+	int		_cpu;
-+
-+	/** The  index of the Task Graph this marker points to. */
-+	int		_task;
-+
-+	/** The index inside the data array this marker points to. */
-+	size_t		_pos;
-+
-+	/** The timestamp of the marker. */
-+	uint64_t	_ts;
-+
-+	/** The RGB color of the marker. */
-+	QColor		_color;
-+
-+	/** The Identifier of the marker (A or B). */
-+	const DualMarkerState	_state;
-+
-+	/** The graphical element of this marker. */
-+	KsPlot::Mark		_mark;
-+};
-+
-+DualMarkerState operator !(const DualMarkerState &state);
++/** Matching condition function type. To be user for searchong. */
++typedef bool (*condition_func)(QString, QString);
 +
 +/**
-+ * The DualMarkerState represents the State Machine of the KernelShark GUI
-+ * Dual Marker.
++ * The KsTraceViewer class provides a widget for browsing in the trace data
++ * shown in a text form.
 + */
-+class KsDualMarkerSM : public QWidget
++class KsTraceViewer : public QWidget
 +{
 +	Q_OBJECT
 +public:
-+	explicit KsDualMarkerSM(QWidget *parent = nullptr);
++	explicit KsTraceViewer(QWidget *parent = nullptr);
++
++	void loadData(KsDataStore *data);
++
++	void setMarkerSM(KsDualMarkerSM *m);
 +
 +	void reset();
 +
-+	void restart();
++	size_t getTopRow() const;
 +
-+	void placeInToolBar(QToolBar *tb);
++	void setTopRow(size_t r);
 +
-+	/** Get the Identifier of the current state of the State Machine. */
-+	DualMarkerState getState() const {return _markState;}
++	void resizeEvent(QResizeEvent* event) override;
 +
-+	void setState(DualMarkerState st);
++	void keyReleaseEvent(QKeyEvent *event);
 +
-+	KsGraphMark &getMarker(DualMarkerState s);
++	void markSwitch();
 +
-+	/** Get the active marker. */
-+	KsGraphMark &activeMarker() {return getMarker(_markState);}
++	void showRow(size_t r, bool mark);
 +
-+	/** Get the passive marker. */
-+	KsGraphMark &passiveMarker() {return getMarker(!_markState);}
++	void deselect();
 +
-+	/** Get the marker A. */
-+	KsGraphMark &markerA() {return _markA;}
-+
-+	/** Get the marker B. */
-+	KsGraphMark &markerB() {return _markB;}
-+
-+	/** Get a pointer to the State A object. */
-+	QState *stateAPtr() {return _stateA;}
-+
-+	/** Get a pointer to the State B object. */
-+	QState *stateBPtr() {return _stateB;}
-+
-+	void updateMarkers(const KsDataStore &data,
-+			   kshark_trace_histo *histo);
-+
-+	void updateLabels();
++	void update(KsDataStore *data);
 +
 +signals:
-+	/**
-+	 * This signal is emitted when the Table View has to switch the color
-+	 * of the selected row.
-+	 */
-+	void markSwitchForView();
++	/** Signal emitted when new row is selected. */
++	void select(size_t);
 +
 +	/**
-+	 * This signal is emitted when the Table View has to show a different
-+	 * entry (row).
++	 * This signal is used to re-emitted the plotTask signal of the
++	 * KsQuickEntryMenu.
 +	 */
-+	void updateView(size_t pos, bool mark);
-+
-+	/**
-+	 * This signal is emitted when the Graph mark has to show a different
-+	 * entry.
-+	 */
-+	void updateGraph(size_t pos);
-+
-+	/**
-+	 * This signal is emitted when the State Machine has to switch to
-+	 * state A.
-+	 */
-+	void machineToA();
-+
-+	/**
-+	 * This signal is emitted when the State Machine has to switch to
-+	 * state B.
-+	 */
-+	void machineToB();
++	void plotTask(int pid);
 +
 +private:
-+	QPushButton	 _buttonA;
++	QVBoxLayout	_layout;
 +
-+	QPushButton	 _buttonB;
++	QTableView	_view;
 +
-+	QLabel		 _labelMA, _labelMB, _labelDelta;
++	KsViewModel		_model;
 +
-+	QLabel		 _labelDeltaDescr;
++	KsFilterProxyModel	_proxyModel;
 +
-+	QState		*_stateA;
++	QStringList	_tableHeader;
 +
-+	QState		*_stateB;
++	QToolBar	_toolbar;
 +
-+	QStateMachine	 _machine;
++	QLabel		_labelSearch, _labelGrFollows;
 +
-+	DualMarkerState	 _markState;
++	QComboBox	_columnComboBox;
 +
-+	KsGraphMark	 _markA, _markB;
++	QComboBox	_selectComboBox;
 +
-+	QShortcut        _scCtrlA, _scCtrlB;
++	QLineEdit	_searchLineEdit;
 +
-+	void _doStateA();
++	QPushButton	_prevButton, _nextButton, _searchStopButton;
 +
-+	void _doStateB();
++	QAction		*_pbAction, *_searchStopAction;
++
++	QCheckBox	_graphFollowsCheckBox;
++
++	QProgressBar	_searchProgBar;
++
++	QLabel		_searchCountLabel;
++
++	bool		_searchDone;
++
++	bool		_graphFollows;
++
++	QList<int>		_matchList;
++
++	QList<int>::iterator	_it;
++
++	KsDualMarkerSM		*_mState;
++
++	KsDataStore		*_data;
++
++	enum Condition
++	{
++		Containes = 0,
++		Match = 1,
++		NotHave = 2
++	};
++
++	void _searchReset();
++
++	void _resizeToContents();
++
++	size_t _searchItems(int column, const QString &searchText,
++			    condition_func cond);
++
++	void _searchItemsMapReduce(int column, const QString &searchText,
++				   condition_func cond);
++
++	void _searchEditText(const QString &);
++
++	void _graphFollowsChanged(int);
++
++	void _search();
++
++	void _next();
++
++	void _prev();
++
++	void _searchStop();
++
++	void _clicked(const QModelIndex& i);
++
++	void _onCustomContextMenu(const QPoint &);
++
++private slots:
++
++	void _searchEdit(int);
 +};
 +
-+#endif
++#endif // _KS_TRACEVIEW_H
 -- 
 2.17.1
