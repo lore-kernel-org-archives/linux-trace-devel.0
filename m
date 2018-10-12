@@ -1,17 +1,17 @@
 Return-Path: <SRS0=pqkA=MY=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr680056.outbound.protection.outlook.com ([40.107.68.56]:3297
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+Received: from mail-co1nam03on0041.outbound.protection.outlook.com ([104.47.40.41]:22067
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728821AbeJLXre (ORCPT
+        id S1728989AbeJLXri (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Oct 2018 19:47:34 -0400
+        Fri, 12 Oct 2018 19:47:38 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH 08/10] kernel-shark-qt: Add a manager class for GUI sessions.
-Date: Fri, 12 Oct 2018 19:13:16 +0300
-Message-Id: <20181012161318.5302-9-ykaradzhov@vmware.com>
+Subject: [PATCH 09/10] kernel-shark-qt: Add Main Window widget gir the KernelShark GUI.
+Date: Fri, 12 Oct 2018 19:13:17 +0300
+Message-Id: <20181012161318.5302-10-ykaradzhov@vmware.com>
 In-Reply-To: <20181012161318.5302-1-ykaradzhov@vmware.com>
 References: <20181012161318.5302-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
@@ -21,38 +21,63 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-The KsSession class provides instruments for importing/exporting
-the state of the different components of the GUI from/to Json
-documents. These instruments are used to save/load user session
-in the GUI.
+The KsMainWindow class provides the Main window for the KernelShark
+GUI. It implements the frame used by the two trace data viewing areas
+(Graphs and Table) together withe the system of menus, used to perform
+different actions.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/CMakeLists.txt |   1 +
- kernel-shark-qt/src/KsSession.cpp  | 574 +++++++++++++++++++++++++++++
- kernel-shark-qt/src/KsSession.hpp  | 100 +++++
- 3 files changed, 675 insertions(+)
- create mode 100644 kernel-shark-qt/src/KsSession.cpp
- create mode 100644 kernel-shark-qt/src/KsSession.hpp
+ kernel-shark-qt/CMakeLists.txt       |   5 +
+ kernel-shark-qt/src/CMakeLists.txt   |   2 +
+ kernel-shark-qt/src/KsMainWindow.cpp | 909 +++++++++++++++++++++++++++
+ kernel-shark-qt/src/KsMainWindow.hpp | 191 ++++++
+ 4 files changed, 1107 insertions(+)
+ create mode 100644 kernel-shark-qt/src/KsMainWindow.cpp
+ create mode 100644 kernel-shark-qt/src/KsMainWindow.hpp
 
+diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
+index 71a021e..0ccb61e 100644
+--- a/kernel-shark-qt/CMakeLists.txt
++++ b/kernel-shark-qt/CMakeLists.txt
+@@ -12,6 +12,11 @@ message("\n project: Kernel Shark: (version: ${KS_VERSION_STRING})\n")
+ 
+ set(KS_DIR ${CMAKE_SOURCE_DIR})
+ 
++# Make a directory to hold configuration files. To change this do:
++# cmake .. -DKS_CONF_DIR=/your/preferred/path
++set(KS_CONF_DIR "${KS_DIR}/.ksconf" CACHE STRING "Directory for configuration files.")
++file(MAKE_DIRECTORY ${KS_CONF_DIR})
++
+ include(${KS_DIR}/build/FindTraceCmd.cmake)
+ include(${KS_DIR}/build/FindJSONC.cmake)
+ 
 diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
-index 26b45f4..192cd12 100644
+index 192cd12..d8daada 100644
 --- a/kernel-shark-qt/src/CMakeLists.txt
 +++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -44,6 +44,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+@@ -38,6 +38,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+                         KsWidgetsLib.hpp
+                         KsTraceGraph.hpp
+                         KsTraceViewer.hpp
++                        KsMainWindow.hpp
+                         KsAdvFilteringDialog.hpp)
  
-     add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp
-                                                             KsModels.cpp
-+                                                            KsSession.cpp
-                                                             KsGLWidget.cpp
-                                                             KsDualMarker.cpp
+     QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
+@@ -50,6 +51,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
                                                              KsWidgetsLib.cpp
-diff --git a/kernel-shark-qt/src/KsSession.cpp b/kernel-shark-qt/src/KsSession.cpp
+                                                             KsTraceGraph.cpp
+                                                             KsTraceViewer.cpp
++                                                            KsMainWindow.cpp
+                                                             KsAdvFilteringDialog.cpp)
+ 
+     target_link_libraries(kshark-gui kshark-plot
+diff --git a/kernel-shark-qt/src/KsMainWindow.cpp b/kernel-shark-qt/src/KsMainWindow.cpp
 new file mode 100644
-index 0000000..979bb3f
+index 0000000..38e47e6
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsSession.cpp
-@@ -0,0 +1,574 @@
++++ b/kernel-shark-qt/src/KsMainWindow.cpp
+@@ -0,0 +1,909 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +
 +/*
@@ -61,578 +86,913 @@ index 0000000..979bb3f
 +
 +/**
 + *  @file    KsSession.cpp
-+ *  @brief   KernelShark Session.
++ *  @brief   KernelShark GUI main window.
 + */
++
++// C
++#include <sys/stat.h>
++#include <unistd.h>
++#include <pwd.h>
++
++// C++11
++#include <thread>
++
++// Qt
++#include <QMenu>
++#include <QFileDialog>
++#include <QMenuBar>
++#include <QLabel>
++#include <QLocalSocket>
 +
 +// KernelShark
 +#include "libkshark.h"
-+#include "KsSession.hpp"
++#include "KsCmakeDef.hpp"
++#include "KsMainWindow.hpp"
++#include "KsAdvFilteringDialog.hpp"
 +
-+/** Create a KsSession object. */
-+KsSession::KsSession()
++/** Create KernelShark Main window. */
++KsMainWindow::KsMainWindow(QWidget *parent)
++: QMainWindow(parent),
++  _splitter(Qt::Vertical, this),
++  _data(this),
++  _view(this),
++  _graph(this),
++  _mState(this),
++  _plugins(this),
++  _openAction("Open", this),
++  _restorSessionAction("Restor Last Session", this),
++  _importSessionAction("Import Session", this),
++  _exportSessionAction("Export Sassion", this),
++  _quitAction("Quit", this),
++  _importFilterAction("Import Filter", this),
++  _exportFilterAction("Export Filter", this),
++  _graphFilterSyncAction(this),
++  _listFilterSyncAction(this),
++  _showEventsAction("Show events", this),
++  _showTasksAction("Show tasks", this),
++  _hideTasksAction("Hide tasks", this),
++  _advanceFilterAction("Advance Filtering", this),
++  _clearAllFilters("Clear all filters", this),
++  _cpuSelectAction("CPUs", this),
++  _taskSelectAction("Tasks", this),
++  _pluginsAction("Plugins", this),
++  _colorAction(this),
++  _colSlider(this),
++  _colorPhaseSlider(Qt::Horizontal, this),
++  _fullScreenModeAction("Full Screen Mode", this),
++  _isFullScreen(false),
++  _aboutAction("About", this),
++  _contentsAction("Contents", this)
 +{
-+	_config = kshark_config_new("kshark.config.session",
-+				      KS_CONFIG_JSON);
++	setWindowTitle("Kernel Shark");
++	_createActions();
++	_createMenus();
++
++	_splitter.addWidget(&_graph);
++	_splitter.addWidget(&_view);
++	setCentralWidget(&_splitter);
++	connect(&_splitter,	&QSplitter::splitterMoved,
++		this,		&KsMainWindow::_splitterMoved);
++
++	_view.setMarkerSM(&_mState);
++	connect(&_mState,	&KsDualMarkerSM::markSwitchForView,
++		&_view,		&KsTraceViewer::markSwitch);
++
++	_graph.setMarkerSM(&_mState);
++
++	connect(&_mState,	&KsDualMarkerSM::updateGraph,
++		&_graph,	&KsTraceGraph::markEntry);
++
++	connect(&_mState,	&KsDualMarkerSM::updateView,
++		&_view,		&KsTraceViewer::showRow);
++
++	connect(&_view,		&KsTraceViewer::select,
++		&_graph,	&KsTraceGraph::markEntry);
++
++	connect(&_view,		&KsTraceViewer::plotTask,
++		&_graph,	&KsTraceGraph::addTaskPlot);
++
++	connect(_graph.glPtr(), &KsGLWidget::updateView,
++		&_view,		&KsTraceViewer::showRow);
++
++	connect(_graph.glPtr(), &KsGLWidget::deselect,
++		&_view,		&KsTraceViewer::deselect);
++
++	connect(&_data,		&KsDataStore::updateWidgets,
++		&_view,		&KsTraceViewer::update);
++
++	connect(&_data,		&KsDataStore::updateWidgets,
++		&_graph,	&KsTraceGraph::update);
++
++	connect(&_plugins,	&KsPluginManager::dataReload,
++		&_data,		&KsDataStore::reload);
++
++	_resizeEmpty();
 +}
 +
-+/** Destroy a KsSession object. */
-+KsSession::~KsSession()
++/** Destroy KernelShark Main window. */
++KsMainWindow::~KsMainWindow()
 +{
-+	kshark_free_config_doc(_config);
-+}
++	kshark_context *kshark_ctx(nullptr);
++	QString file = KS_CONF_DIR;
 +
-+/** Import a user session from a Json file. */
-+void KsSession::importFromFile(QString jfileName)
-+{
-+	if (_config)
-+		kshark_free_config_doc(_config);
++	file += "/lastsession.json";
 +
-+	_config = kshark_open_config_file(jfileName.toStdString().c_str(),
-+					  "kshark.config.session");
-+}
++	_updateSession();
++	kshark_save_config_file(file.toLocal8Bit().data(),
++				_session.getConfDocPtr());
 +
-+/** Export the current user session from a Json file. */
-+void KsSession::exportToFile(QString jfileName)
-+{
-+	kshark_save_config_file(jfileName.toStdString().c_str(), _config);
++	_data.clear();
++
++	if (kshark_instance(&kshark_ctx))
++		kshark_free(kshark_ctx);
 +}
 +
 +/**
-+ * @brief Save the state of the visualization model.
-+ *
-+ * @param histo: Input location for the model descriptor.
++ * Reimplemented event handler used to update the geometry of the window on
++ * resize events.
 + */
-+void KsSession::saveVisModel(kshark_trace_histo *histo)
++void KsMainWindow::resizeEvent(QResizeEvent* event)
 +{
-+	kshark_config_doc *model =
-+		kshark_export_model(histo, KS_CONFIG_JSON);
++	QMainWindow::resizeEvent(event);
 +
-+	kshark_config_doc_add(_config, "Model", model);
++	_session.saveMainWindowSize(*this);
++	_session.saveSplitterSize(_splitter);
 +}
 +
-+/**
-+ * @brief Load the state of the visualization model.
-+ *
-+ * @param histo: Input location for the model descriptor.
-+ */
-+void KsSession::loadVisModel(KsGraphModel *model)
++void KsMainWindow::_createActions()
 +{
-+	kshark_config_doc *modelConf = kshark_config_alloc(KS_CONFIG_JSON);
++	/* File menu */
++	_openAction.setIcon(QIcon::fromTheme("document-open"));
++	_openAction.setShortcut(tr("Ctrl+O"));
++	_openAction.setStatusTip("Open an existing data file");
 +
-+	if (!kshark_config_doc_get(_config, "Model", modelConf))
++	connect(&_openAction,	&QAction::triggered,
++		this,		&KsMainWindow::_open);
++
++	_restorSessionAction.setIcon(QIcon::fromTheme("document-open-recent"));
++	connect(&_restorSessionAction,	&QAction::triggered,
++		this,			&KsMainWindow::_restorSession);
++
++	_importSessionAction.setIcon(QIcon::fromTheme("document-send"));
++	_importSessionAction.setStatusTip("Load a session");
++
++	connect(&_importSessionAction,	&QAction::triggered,
++		this,			&KsMainWindow::_importSession);
++
++	_exportSessionAction.setIcon(QIcon::fromTheme("document-revert"));
++	_exportSessionAction.setStatusTip("Export this session");
++
++	connect(&_exportSessionAction,	&QAction::triggered,
++		this,			&KsMainWindow::_exportSession);
++
++	_quitAction.setIcon(QIcon::fromTheme("window-close"));
++	_quitAction.setShortcut(tr("Ctrl+Q"));
++	_quitAction.setStatusTip("Exit KernelShark");
++
++	connect(&_quitAction,	&QAction::triggered,
++		this,		&KsMainWindow::close);
++
++	/* Filter menu */
++	_importFilterAction.setIcon(QIcon::fromTheme("document-send"));
++	_importFilterAction.setStatusTip("Load a filter");
++
++	connect(&_importFilterAction,	&QAction::triggered,
++		this,			&KsMainWindow::_importFilter);
++
++	_exportFilterAction.setIcon(QIcon::fromTheme("document-revert"));
++	_exportFilterAction.setStatusTip("Export a filter");
++
++	connect(&_exportFilterAction,	&QAction::triggered,
++		this,			&KsMainWindow::_exportFilter);
++
++	connect(&_showEventsAction,	&QAction::triggered,
++		this,			&KsMainWindow::_showEvents);
++
++	connect(&_showTasksAction,	&QAction::triggered,
++		this,			&KsMainWindow::_showTasks);
++
++	connect(&_hideTasksAction,	&QAction::triggered,
++		this,			&KsMainWindow::_hideTasks);
++
++	connect(&_advanceFilterAction,	&QAction::triggered,
++		this,			&KsMainWindow::_advancedFiltering);
++
++	connect(&_clearAllFilters,	&QAction::triggered,
++		this,			&KsMainWindow::_clearFilters);
++
++	/* Plot menu */
++	connect(&_cpuSelectAction,	&QAction::triggered,
++		this,			&KsMainWindow::_cpuSelect);
++
++	connect(&_taskSelectAction,	&QAction::triggered,
++		this,			&KsMainWindow::_taskSelect);
++
++	/* Tools menu */
++	_pluginsAction.setShortcut(tr("Ctrl+P"));
++	_pluginsAction.setStatusTip("Manage plugins");
++
++	connect(&_pluginsAction,	&QAction::triggered,
++		this,			&KsMainWindow::_pluginSelect);
++
++	_colorPhaseSlider.setMinimum(20);
++	_colorPhaseSlider.setMaximum(180);
++	_colorPhaseSlider.setValue(KsPlot::Color::getRainbowFrequency() * 100);
++	_colorPhaseSlider.setFixedWidth(FONT_WIDTH * 15);
++
++	connect(&_colorPhaseSlider,	&QSlider::valueChanged,
++		this,			&KsMainWindow::_setColorPhase);
++
++	_colSlider.setLayout(new QHBoxLayout);
++	_colSlider.layout()->addWidget(new QLabel("Color scheme", this));
++	_colSlider.layout()->addWidget(&_colorPhaseSlider);
++	_colorAction.setDefaultWidget(&_colSlider);
++
++	_fullScreenModeAction.setIcon(QIcon::fromTheme("view-fullscreen"));
++	_fullScreenModeAction.setShortcut(tr("Ctrl+Shift+F"));
++	_fullScreenModeAction.setStatusTip("Full Screen Mode");
++
++	connect(&_fullScreenModeAction,	&QAction::triggered,
++		this,			&KsMainWindow::_fullScreenMode);
++
++	/* Help menu */
++	_aboutAction.setIcon(QIcon::fromTheme("help-about"));
++
++	connect(&_aboutAction,		&QAction::triggered,
++		this,			&KsMainWindow::_aboutInfo);
++
++	_contentsAction.setIcon(QIcon::fromTheme("help-contents"));
++	connect(&_contentsAction,	&QAction::triggered,
++		this,			&KsMainWindow::_contents);
++}
++
++void KsMainWindow::_createMenus()
++{
++	QMenu *file, *sessions, *filter, *plots, *tools, *help;
++	kshark_context *kshark_ctx(nullptr);
++	QCheckBox *cbf2g, *cbf2l;
++
++	if (!kshark_instance(&kshark_ctx))
 +		return;
 +
-+	kshark_import_model(model->histo(), modelConf);
-+	model->update();
-+}
++	/* File menu */
++	file = menuBar()->addMenu("File");
++	file->addAction(&_openAction);
 +
-+/** Save the trace data file. */
-+void KsSession::saveDataFile(QString fileName)
-+{
-+	kshark_config_doc *file =
-+		kshark_export_trace_file(fileName.toStdString().c_str(),
-+					 KS_CONFIG_JSON);
++	sessions = file->addMenu("Sessions");
++	sessions->setIcon(QIcon::fromTheme("document-properties"));
++	sessions->addAction(&_restorSessionAction);
++	sessions->addAction(&_importSessionAction);
++	sessions->addAction(&_exportSessionAction);
++	file->addAction(&_quitAction);
 +
-+	kshark_config_doc_add(_config, "Data", file);
-+}
++	/* Filter menu */
++	filter = menuBar()->addMenu("Filter");
++	filter->addAction(&_importFilterAction);
++	filter->addAction(&_exportFilterAction);
 +
-+/** Get the trace data file. */
-+QString KsSession::getDataFile(kshark_context *kshark_ctx)
-+{
-+	kshark_config_doc *file = kshark_config_alloc(KS_CONFIG_JSON);
-+	const char *file_str;
-+
-+	if (!kshark_config_doc_get(_config, "Data", file))
-+		return QString();
-+
-+	file_str = kshark_import_trace_file(kshark_ctx, file);
-+	if (file_str)
-+		return QString(file_str);
-+
-+	return QString();
-+}
-+
-+/**
-+ * @brief Save the configuration of the filters.
-+ *
-+ * @param kshark_ctx: Input location for context pointer.
-+ */
-+void KsSession::saveFilters(kshark_context *kshark_ctx)
-+{
-+	kshark_config_doc *filters =
-+		kshark_export_all_filters(kshark_ctx, KS_CONFIG_JSON);
-+
-+	kshark_config_doc_add(_config, "Filters", filters);
-+}
-+
-+/**
-+ * @brief Load the configuration of the filters and filter the data.
-+ *
-+ * @param kshark_ctx: Input location for context pointer.
-+ * @param data: Input location for KsDataStore object;
-+ */
-+void KsSession::loadFilters(kshark_context *kshark_ctx, KsDataStore *data)
-+{
-+	kshark_config_doc *filters = kshark_config_alloc(KS_CONFIG_JSON);
-+
-+	if (!kshark_config_doc_get(_config, "Filters", filters))
-+		return;
-+
-+	kshark_import_all_filters(kshark_ctx, filters);
-+
-+	if (kshark_ctx->advanced_event_filter->filters)
-+		data->reload();
-+	else
-+		kshark_filter_entries(kshark_ctx, data->rows(), data->size());
-+
-+	data->registerCPUCollections();
-+
-+	emit data->updateWidgets(data);
-+}
-+
-+/**
-+ * @brief Save the state of the table.
-+ *
-+ * @param view: Input location for the KsTraceViewer widget.
-+ */
-+void KsSession::saveTable(const KsTraceViewer &view) {
-+	kshark_config_doc *topRow = kshark_config_alloc(KS_CONFIG_JSON);
-+	int64_t r = view.getTopRow();
-+
-+	topRow->conf_doc = json_object_new_int64(r);
-+	kshark_config_doc_add(_config, "ViewTop",topRow);
-+}
-+
-+/**
-+ * @brief Load the state of the table.
-+ *
-+ * @param view: Input location for the KsTraceViewer widget.
-+ */
-+void KsSession::loadTable(KsTraceViewer *view) {
-+	kshark_config_doc *topRow = kshark_config_alloc(KS_CONFIG_JSON);
-+	size_t r = 0;
-+
-+	if (!kshark_config_doc_get(_config, "ViewTop", topRow))
-+		return;
-+
-+	if (_config->format == KS_CONFIG_JSON)
-+		r = json_object_get_int64(KS_JSON_CAST(topRow->conf_doc));
-+
-+	view->setTopRow(r);
-+}
-+
-+/**
-+ * @brief Save the KernelShark Main window size.
-+ *
-+ * @param window: Input location for the KsMainWindow widget.
-+ */
-+void KsSession::saveMainWindowSize(const QMainWindow &window)
-+{
-+	kshark_config_doc *windowConf = kshark_config_alloc(KS_CONFIG_JSON);
-+	int width = window.width(), height = window.height();
-+	json_object *jwindow = json_object_new_array();
-+
-+	json_object_array_put_idx(jwindow, 0, json_object_new_int(width));
-+	json_object_array_put_idx(jwindow, 1, json_object_new_int(height));
-+
-+	windowConf->conf_doc = jwindow;
-+	kshark_config_doc_add(_config, "MainWindow", windowConf);
-+}
-+
-+/**
-+ * @brief Load the KernelShark Main window size.
-+ *
-+ * @param window: Input location for the KsMainWindow widget.
-+ */
-+void KsSession::loadMainWindowSize(QMainWindow *window)
-+{
-+	kshark_config_doc *windowConf = kshark_config_alloc(KS_CONFIG_JSON);
-+	json_object *jwindow, *jwidth, *jheight;
-+	int width, height;
-+
-+	if (!kshark_config_doc_get(_config, "MainWindow", windowConf))
-+		return;
-+
-+	if (_config->format == KS_CONFIG_JSON) {
-+		jwindow = KS_JSON_CAST(windowConf->conf_doc);
-+		jwidth = json_object_array_get_idx(jwindow, 0);
-+		jheight = json_object_array_get_idx(jwindow, 1);
-+
-+		width = json_object_get_int(jwidth);
-+		height = json_object_get_int(jheight);
-+
-+		window->resize(width, height);
-+	}
-+}
-+
-+/**
-+ * @brief Save the state of the Main window spliter.
-+ *
-+ * @param splitter: Input location for the splitter widget.
-+ */
-+void KsSession::saveSplitterSize(const QSplitter &splitter)
-+{
-+	kshark_config_doc *spl = kshark_config_alloc(KS_CONFIG_JSON);
-+	json_object *jspl = json_object_new_array();
-+	QList<int> sizes = splitter.sizes();
-+
-+	json_object_array_put_idx(jspl, 0, json_object_new_int(sizes[0]));
-+	json_object_array_put_idx(jspl, 1, json_object_new_int(sizes[1]));
-+
-+	spl->conf_doc = jspl;
-+	kshark_config_doc_add(_config, "Splitter", spl);
-+}
-+
-+/**
-+ * @brief Load the state of the Main window spliter.
-+ *
-+ * @param splitter: Input location for the splitter widget.
-+ */
-+void KsSession::loadSplitterSize(QSplitter *splitter)
-+{
-+	kshark_config_doc *spl = kshark_config_alloc(KS_CONFIG_JSON);
-+	json_object *jspl, *jgraphsize, *jviewsize;
-+	int graphSize, viewSize;
-+	QList<int> sizes;
-+
-+	if (!kshark_config_doc_get(_config, "Splitter", spl))
-+		return;
-+
-+	if (_config->format == KS_CONFIG_JSON) {
-+		jspl = KS_JSON_CAST(spl->conf_doc);
-+		jgraphsize = json_object_array_get_idx(jspl, 0);
-+		jviewsize = json_object_array_get_idx(jspl, 1);
-+
-+		graphSize = json_object_get_int(jgraphsize);
-+		viewSize = json_object_get_int(jviewsize);
-+	}
-+
-+	sizes << graphSize << viewSize;
-+	splitter->setSizes(sizes);
-+}
-+
-+/** @brief Save the Color scheme used. */
-+void KsSession::saveColorScheme() {
-+	kshark_config_doc *colSch = kshark_config_alloc(KS_CONFIG_JSON);
-+	double s = KsPlot::Color::getRainbowFrequency();
-+
-+	colSch->conf_doc = json_object_new_double(s);
-+	kshark_config_doc_add(_config, "ColorScheme", colSch);
-+}
-+
-+/** @brief Get the Color scheme used. */
-+float KsSession::getColorScheme() {
-+	kshark_config_doc *colSch = kshark_config_alloc(KS_CONFIG_JSON);
-+
-+	/* Default color scheme. */
-+	float s = 0.75;
-+
-+	if (!kshark_config_doc_get(_config, "ColorScheme", colSch))
-+		return s;
-+
-+	if (_config->format == KS_CONFIG_JSON)
-+		s = json_object_get_double(KS_JSON_CAST(colSch->conf_doc));
-+
-+	return s;
-+}
-+
-+/**
-+ * @brief Save the list of the graphs plotted.
-+ *
-+ * @param glw: Input location for the KsGLWidget widget.
-+ */
-+void KsSession::saveGraphs(const KsGLWidget &glw)
-+{
-+	_saveCPUPlots(glw._cpuList);
-+	_saveTaskPlots(glw._taskList);
-+}
-+
-+/**
-+ * @brief Load the list of the graphs and plot.
-+ *
-+ * @param graphs: Input location for the KsTraceGraph widget.
-+ */
-+void KsSession::loadGraphs(KsTraceGraph *graphs)
-+{
-+	graphs->cpuReDraw(_getCPUPlots());
-+	graphs->taskReDraw(_getTaskPlots());
-+}
-+
-+void KsSession::_saveCPUPlots(const QVector<int> &cpus)
-+{
-+	kshark_config_doc *cpuPlts = kshark_config_alloc(KS_CONFIG_JSON);
-+	json_object *jcpus = json_object_new_array();
-+
-+	for (int i = 0; i < cpus.count(); ++i) {
-+		json_object *jcpu = json_object_new_int(cpus[i]);
-+		json_object_array_put_idx(jcpus, i, jcpu);
-+	}
-+
-+	cpuPlts->conf_doc = jcpus;
-+	kshark_config_doc_add(_config, "CPUPlots", cpuPlts);
-+}
-+
-+QVector<int> KsSession::_getCPUPlots()
-+{
-+	kshark_config_doc *cpuPlts = kshark_config_alloc(KS_CONFIG_JSON);
-+	json_object *jcpus;
-+	QVector<int> cpus;
-+	size_t length;
-+
-+	if (!kshark_config_doc_get(_config, "CPUPlots", cpuPlts))
-+		return cpus;
-+
-+	if (_config->format == KS_CONFIG_JSON) {
-+		jcpus = KS_JSON_CAST(cpuPlts->conf_doc);
-+		length = json_object_array_length(jcpus);
-+		for (size_t i = 0; i < length; ++i) {
-+			int cpu = json_object_get_int(json_object_array_get_idx(jcpus,
-+										i));
-+			cpus.append(cpu);
-+		}
-+	}
-+
-+	return cpus;
-+}
-+
-+void KsSession::_saveTaskPlots(const QVector<int> &tasks)
-+{
-+	kshark_config_doc *taskPlts = kshark_config_alloc(KS_CONFIG_JSON);
-+	json_object *jtasks = json_object_new_array();
-+
-+	for (int i = 0; i < tasks.count(); ++i) {
-+		json_object *jtask = json_object_new_int(tasks[i]);
-+		json_object_array_put_idx(jtasks, i, jtask);
-+	}
-+
-+	taskPlts->conf_doc = jtasks;
-+	kshark_config_doc_add(_config, "TaskPlots", taskPlts);
-+}
-+
-+QVector<int> KsSession::_getTaskPlots()
-+{
-+	kshark_config_doc *taskPlts = kshark_config_alloc(KS_CONFIG_JSON);
-+	json_object *jtasks;
-+	QVector<int> tasks;
-+	size_t length;
-+
-+	if (!kshark_config_doc_get(_config, "TaskPlots", taskPlts))
-+		return tasks;
-+
-+	if (_config->format == KS_CONFIG_JSON) {
-+		jtasks = KS_JSON_CAST(taskPlts->conf_doc);
-+		length = json_object_array_length(jtasks);
-+		for (size_t i = 0; i < length; ++i) {
-+			int pid = json_object_get_int(json_object_array_get_idx(jtasks,
-+										i));
-+			tasks.append(pid);
-+		}
-+	}
-+
-+	return tasks;
-+}
-+
-+/**
-+ * @brief Save the state of the Dual marker.
-+ *
-+ * @param dm: Input location for the KsDualMarkerSM object.
-+ */
-+void KsSession::saveDualMarker(KsDualMarkerSM *dm)
-+{
-+	struct kshark_config_doc *markers =
-+		kshark_config_new("kshark.config.markers", KS_CONFIG_JSON);
-+	json_object *jd_mark = KS_JSON_CAST(markers->conf_doc);
-+
-+	auto save_mark = [&jd_mark] (KsGraphMark *m, const char *name)
++	auto lamMakeCBAction = [&](QWidgetAction *action, QString name)
 +	{
-+		json_object *jmark = json_object_new_object();
-+
-+		if (m->_isSet) {
-+			json_object_object_add(jmark, "isSet",
-+					       json_object_new_boolean(true));
-+
-+			json_object_object_add(jmark, "row",
-+					       json_object_new_int(m->_pos));
-+		} else {
-+			json_object_object_add(jmark, "isSet",
-+					       json_object_new_boolean(false));
-+		}
-+
-+		json_object_object_add(jd_mark, name, jmark);
++		QWidget  *containerWidget = new QWidget(filter);
++		containerWidget->setLayout(new QHBoxLayout());
++		containerWidget->layout()->setContentsMargins(FONT_WIDTH, FONT_HEIGHT/5,
++							      FONT_WIDTH, FONT_HEIGHT/5);
++		QCheckBox *checkBox = new QCheckBox(name, filter);
++		checkBox->setChecked(true);
++		containerWidget->layout()->addWidget(checkBox);
++		action->setDefaultWidget(containerWidget);
++		return checkBox;
 +	};
 +
-+	save_mark(&dm->markerA(), "markA");
-+	save_mark(&dm->markerB(), "markB");
++	/*
++	 * Set the default filter mask. Filter will apply to both View and
++	 * Graph.
++	 */
++	kshark_ctx->filter_mask =
++		KS_TEXT_VIEW_FILTER_MASK | KS_GRAPH_VIEW_FILTER_MASK;
 +
-+	if (dm->getState() == DualMarkerState::A)
-+		json_object_object_add(jd_mark, "Active",
-+				       json_object_new_string("A"));
-+	else
-+		json_object_object_add(jd_mark, "Active",
-+				       json_object_new_string("B"));
++	kshark_ctx->filter_mask |= KS_EVENT_VIEW_FILTER_MASK;
 +
-+	kshark_config_doc_add(_config, "Markers", markers);
++	cbf2g = lamMakeCBAction(&_graphFilterSyncAction,
++				"Apply filters to Graph");
++
++	connect(cbf2g,	&QCheckBox::stateChanged,
++		this,	&KsMainWindow::_graphFilterSync);
++
++	cbf2l = lamMakeCBAction(&_listFilterSyncAction,
++				"Apply filters to List");
++
++	connect(cbf2l,	&QCheckBox::stateChanged,
++		this,	&KsMainWindow::_listFilterSync);
++
++	filter->addAction(&_graphFilterSyncAction);
++	filter->addAction(&_listFilterSyncAction);
++	filter->addAction(&_showEventsAction);
++	filter->addAction(&_showTasksAction);
++	filter->addAction(&_hideTasksAction);
++	filter->addAction(&_advanceFilterAction);
++	filter->addAction(&_clearAllFilters);
++
++	/* Plot menu */
++	plots = menuBar()->addMenu("Plots");
++	plots->addAction(&_cpuSelectAction);
++	plots->addAction(&_taskSelectAction);
++
++	/* Tools menu */
++	tools = menuBar()->addMenu("Tools");
++	tools->addAction(&_pluginsAction);
++	tools->addSeparator();
++	tools->addAction(&_colorAction);
++	tools->addAction(&_fullScreenModeAction);
++
++	/* Help menu */
++	help = menuBar()->addMenu("Help");
++	help->addAction(&_aboutAction);
++	help->addAction(&_contentsAction);
 +}
 +
-+/**
-+ * @brief Load the state of the Dual marker.
-+ *
-+ * @param dm: Input location for the KsDualMarkerSM object.
-+ * @param graphs: Input location for the KsTraceGraph widget.
-+ */
-+void KsSession::loadDualMarker(KsDualMarkerSM *dm, KsTraceGraph *graphs)
++void KsMainWindow::_open()
 +{
-+	uint64_t pos;
++	QString fileName =
++		QFileDialog::getOpenFileName(this,
++					     "Open File",
++					     KS_DIR,
++					     "trace-cmd files (*.dat);;All files (*)");
 +
-+	dm->reset();
-+	dm->setState(DualMarkerState::A);
-+
-+	if (_getMarker("markA", &pos)) {
-+		graphs->markEntry(pos);
-+	} else {
-+		dm->markerA().remove();
-+	}
-+
-+	dm->setState(DualMarkerState::B);
-+	if (_getMarker("markB", &pos)) {
-+		graphs->markEntry(pos);
-+	} else {
-+		dm->markerB().remove();
-+	}
-+
-+	dm->setState(_getMarkerState());
-+	pos = dm->activeMarker()._pos;
-+
-+	emit graphs->glPtr()->updateView(pos, true);
++	if (!fileName.isEmpty())
++		loadDataFile(fileName);
 +}
 +
-+json_object *KsSession::_getMarkerJson()
++void KsMainWindow::_restorSession()
 +{
-+	struct kshark_config_doc *markers =
-+		kshark_config_alloc(KS_CONFIG_JSON);
++	QString file = KS_CONF_DIR;
++	file += "/lastsession.json";
 +
-+	if (!kshark_config_doc_get(_config, "Markers", markers) ||
-+	    !kshark_type_check(markers, "kshark.config.markers"))
-+		return nullptr;
-+
-+	return KS_JSON_CAST(markers->conf_doc);
++	loadSession(file);
++	_graph.updateGeom();
 +}
 +
-+bool KsSession::_getMarker(const char* name, size_t *pos)
++void KsMainWindow::_importSession()
 +{
-+	json_object *jd_mark, *jmark;
++	QString fileName =
++		QFileDialog::getOpenFileName(this,
++					     "Import Session",
++					     KS_DIR,
++					     "Kernel Shark Config files (*.json);;");
 +
-+	*pos = 0;
-+	jd_mark = _getMarkerJson();
-+	if (!jd_mark)
-+		return false;
-+
-+	if (json_object_object_get_ex(jd_mark, name, &jmark)) {
-+		json_object *jis_set;
-+		json_object_object_get_ex(jmark, "isSet", &jis_set);
-+		if (!json_object_get_boolean(jis_set))
-+			return false;
-+
-+		json_object *jpos;
-+		json_object_object_get_ex(jmark, "row", &jpos);
-+		*pos = json_object_get_int64(jpos);
-+	}
-+
-+	return true;
-+}
-+
-+DualMarkerState KsSession::_getMarkerState()
-+{
-+	json_object *jd_mark, *jstate;
-+	const char* state;
-+
-+	jd_mark = _getMarkerJson();
-+	json_object_object_get_ex(jd_mark, "Active", &jstate);
-+	state = json_object_get_string(jstate);
-+
-+	if (strcmp(state, "A") == 0)
-+		return DualMarkerState::A;
-+
-+	return DualMarkerState::B;
-+}
-+
-+/**
-+ * @brief Save the configuration of the plugins.
-+ *
-+ * @param pm: Input location for the KsPluginManager object.
-+ */
-+void KsSession::savePlugins(const KsPluginManager &pm)
-+{
-+	struct kshark_config_doc *plugins =
-+		kshark_config_new("kshark.config.plugins", KS_CONFIG_JSON);
-+	json_object *jplugins = KS_JSON_CAST(plugins->conf_doc);
-+	const QVector<bool> &registeredPlugins = pm._registeredKsPlugins;
-+	const QStringList &pluginList = pm._ksPluginList;
-+	int nPlugins = pluginList.length();
-+	json_object *jlist, *jpl;
-+	QByteArray array;
-+	char* buffer;
-+	bool active;
-+
-+	jlist = json_object_new_array();
-+	for (int i = 0; i < nPlugins; ++i) {
-+		array = pluginList[i].toLocal8Bit();
-+		buffer = array.data();
-+		jpl = json_object_new_array();
-+		json_object_array_put_idx(jpl, 0, json_object_new_string(buffer));
-+
-+		active = registeredPlugins[i];
-+		json_object_array_put_idx(jpl, 1, json_object_new_boolean(active));
-+		json_object_array_put_idx(jlist, i, jpl);
-+	}
-+
-+	json_object_object_add(jplugins, "Plugin List", jlist);
-+	kshark_config_doc_add(_config, "Plugins", plugins);
-+}
-+
-+/**
-+ * @brief Load the configuration of the plugins.
-+ *
-+ * @param kshark_ctx: Input location for context pointer.
-+ * @param pm: Input location for the KsPluginManager object.
-+ */
-+void KsSession::loadPlugins(kshark_context *kshark_ctx, KsPluginManager *pm)
-+{
-+	kshark_config_doc *plugins = kshark_config_alloc(KS_CONFIG_JSON);
-+	json_object *jplugins, *jlist, *jpl;
-+	int length;
-+
-+	if (!kshark_config_doc_get(_config, "Plugins", plugins) ||
-+	    !kshark_type_check(plugins, "kshark.config.plugins"))
++	if (fileName.isEmpty())
 +		return;
 +
-+	if (plugins->format == KS_CONFIG_JSON) {
-+		jplugins = KS_JSON_CAST(plugins->conf_doc);
-+		json_object_object_get_ex(jplugins, "Plugin List", &jlist);
-+		if (!jlist ||
-+	            json_object_get_type(jlist) != json_type_array ||
-+		    !json_object_array_length(jlist))
-+			return;
++	loadSession(fileName);
++	_graph.updateGeom();
++}
 +
-+		length = json_object_array_length(jlist);
-+		for (int i = 0; i < length; ++i) {
-+			jpl = json_object_array_get_idx(jlist, i);
-+			pm->_ksPluginList[i] =
-+				json_object_get_string(json_object_array_get_idx(jpl, 0));
++void KsMainWindow::_updateSession()
++{
++	kshark_context *kshark_ctx(nullptr);
 +
-+			pm->_registeredKsPlugins[i] =
-+				json_object_get_boolean(json_object_array_get_idx(jpl, 1));
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	_session.saveGraphs(*_graph.glPtr());
++	_session.saveVisModel(_graph.glPtr()->model()->histo());
++	_session.saveFilters(kshark_ctx);
++	_session.saveDualMarker(&_mState);
++	_session.saveTable(_view);
++	_session.saveColorScheme();
++	_session.savePlugins(_plugins);
++}
++
++void KsMainWindow::_exportSession()
++{
++	QString fileName =
++		QFileDialog::getSaveFileName(this,
++					     "Export Filter",
++					     KS_DIR,
++					     "Kernel Shark Config files (*.json);;");
++
++	if (fileName.isEmpty())
++		return;
++
++	if (!fileName.endsWith(".json")) {
++		fileName += ".json";
++		if (QFileInfo(fileName).exists()) {
++			QString msg("A file ");
++			QMessageBox msgBox;
++
++			msg += fileName;
++			msg += " already exists.";
++			msgBox.setText(msg);
++			msgBox.setInformativeText("Do you want to replace it?");
++
++			msgBox.setStandardButtons(QMessageBox::Save |
++						  QMessageBox::Cancel);
++
++			msgBox.setDefaultButton(QMessageBox::Cancel);
++
++			if (msgBox.exec() == QMessageBox::Cancel)
++				return;
 +		}
 +	}
 +
-+	pm->registerFromList(kshark_ctx);
++	_updateSession();
++	_session.exportToFile(fileName);
 +}
-diff --git a/kernel-shark-qt/src/KsSession.hpp b/kernel-shark-qt/src/KsSession.hpp
++
++void KsMainWindow::_importFilter()
++{
++	kshark_context *kshark_ctx(nullptr);
++	kshark_config_doc *conf;
++	QString fileName;
++
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	fileName = QFileDialog::getOpenFileName(this, "Import Filter", KS_DIR,
++						"Kernel Shark Config files (*.json);;");
++
++	if (fileName.isEmpty())
++		return;
++
++	conf = kshark_open_config_file(fileName.toStdString().c_str(),
++				       "kshark.config.filter");
++	if (!conf)
++		return;
++
++	kshark_import_all_event_filters(kshark_ctx, conf);
++	kshark_free_config_doc(conf);
++
++	kshark_filter_entries(kshark_ctx, _data.rows(), _data.size());
++	emit _data.updateWidgets(&_data);
++}
++
++void KsMainWindow::_exportFilter()
++{
++	kshark_context *kshark_ctx(nullptr);
++	kshark_config_doc *conf(nullptr);
++	QString fileName;
++
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	fileName = QFileDialog::getSaveFileName(this, "Export Filter", KS_DIR,
++						"Kernel Shark Config files (*.json);;");
++
++	if (fileName.isEmpty())
++		return;
++
++	if (!fileName.endsWith(".json"))
++		fileName += ".json";
++
++	kshark_export_all_event_filters(kshark_ctx, &conf);
++	kshark_save_config_file(fileName.toStdString().c_str(), conf);
++	kshark_free_config_doc(conf);
++}
++
++void KsMainWindow::_listFilterSync(int state)
++{
++	KsUtils::listFilterSync(state);
++	_data.update();
++}
++
++void KsMainWindow::_graphFilterSync(int state)
++{
++	KsUtils::graphFilterSync(state);
++	_data.update();
++}
++
++void KsMainWindow::_showEvents()
++{
++	kshark_context *kshark_ctx(nullptr);
++	KsCheckBoxWidget *events_cb;
++	KsCheckBoxDialog *dialog;
++
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	events_cb = new KsEventsCheckBoxWidget(_data.tep(), this);
++	dialog = new KsCheckBoxDialog(events_cb, this);
++
++	if (!kshark_ctx->show_event_filter ||
++	    !kshark_ctx->show_event_filter->count) {
++		events_cb->setDefault(true);
++	} else {
++		/*
++		 * The event filter contains IDs. Make this visible in the
++		 * CheckBox Widget.
++		 */
++		tep_event_format **events =
++			tep_list_events(_data.tep(), TEP_EVENT_SORT_SYSTEM);
++		int nEvts = tep_get_events_count(_data.tep());
++		QVector<bool> v(nEvts, false);
++
++		for (int i = 0; i < nEvts; ++i) {
++			if (tracecmd_filter_id_find(kshark_ctx->show_event_filter,
++						    events[i]->id))
++				v[i] = true;
++		}
++
++		events_cb->set(v);
++	}
++
++	connect(dialog,		&KsCheckBoxDialog::apply,
++		&_data,		&KsDataStore::applyPosEventFilter);
++
++	dialog->show();
++}
++
++void KsMainWindow::_showTasks()
++{
++	kshark_context *kshark_ctx(nullptr);
++	KsCheckBoxWidget *tasks_cbd;
++	KsCheckBoxDialog *dialog;
++
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	tasks_cbd = new KsTasksCheckBoxWidget(_data.tep(), true, this);
++	dialog = new KsCheckBoxDialog(tasks_cbd, this);
++
++	if (!kshark_ctx->show_task_filter ||
++	    !kshark_ctx->show_task_filter->count) {
++		tasks_cbd->setDefault(true);
++	} else {
++		QVector<int> pids = KsUtils::getPidList();
++		int nPids = pids.count();
++		QVector<bool> v(nPids, false);
++
++		for (int i = 0; i < nPids; ++i) {
++			if (tracecmd_filter_id_find(kshark_ctx->show_task_filter,
++						    pids[i]))
++				v[i] = true;
++		}
++
++		tasks_cbd->set(v);
++	}
++
++	connect(dialog,		&KsCheckBoxDialog::apply,
++		&_data,		&KsDataStore::applyPosTaskFilter);
++
++	dialog->show();
++}
++
++void KsMainWindow::_hideTasks()
++{
++	kshark_context *kshark_ctx(nullptr);
++	KsCheckBoxWidget *tasks_cbd;
++	KsCheckBoxDialog *dialog;
++
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	tasks_cbd = new KsTasksCheckBoxWidget(_data.tep(), false, this);
++	dialog = new KsCheckBoxDialog(tasks_cbd, this);
++
++	if (!kshark_ctx->hide_task_filter ||
++	    !kshark_ctx->hide_task_filter->count) {
++		tasks_cbd->setDefault(false);
++	} else {
++		QVector<int> pids = KsUtils::getPidList();
++		int nPids = pids.count();
++		QVector<bool> v(nPids, false);
++
++		for (int i = 0; i < nPids; ++i) {
++			if (tracecmd_filter_id_find(kshark_ctx->hide_task_filter,
++						    pids[i]))
++				v[i] = true;
++		}
++
++		tasks_cbd->set(v);
++	}
++
++	connect(dialog,		&KsCheckBoxDialog::apply,
++		&_data,		&KsDataStore::applyNegTaskFilter);
++
++	dialog->show();
++}
++
++void KsMainWindow::_advancedFiltering()
++{
++	KsAdvFilteringDialog *dialog;
++
++	if (!_data.tep()) {
++		QErrorMessage *em = new QErrorMessage(this);
++		QString text("Unable to open Advanced filtering dialog.");
++
++		text += " Tracing data has to be loaded first.";
++
++		em->showMessage(text, "advancedFiltering");
++		qCritical() << "ERROR: " << text;
++
++		return;
++	}
++
++	dialog = new KsAdvFilteringDialog(this);
++	connect(dialog,		&KsAdvFilteringDialog::dataReload,
++		&_data,		&KsDataStore::reload);
++
++	dialog->show();
++}
++
++void KsMainWindow::_clearFilters()
++{
++	_data.clearAllFilters();
++}
++
++void KsMainWindow::_cpuSelect()
++{
++	KsCheckBoxWidget *cpus_cbd = new KsCPUCheckBoxWidget(_data.tep(), this);
++	KsCheckBoxDialog *dialog = new KsCheckBoxDialog(cpus_cbd, this);
++
++	if(_data.tep()) {
++		int nCPUs = tep_get_cpus(_data.tep());
++		if (nCPUs == _graph.glPtr()->cpuGraphCount()) {
++			cpus_cbd->setDefault(true);
++		} else {
++			QVector<bool> v(nCPUs, false);
++
++			for (auto const &cpu: _graph.glPtr()->_cpuList)
++				v[cpu] = true;
++
++			cpus_cbd->set(v);
++		}
++	}
++
++	connect(dialog,		&KsCheckBoxDialog::apply,
++		&_graph,	&KsTraceGraph::cpuReDraw);
++
++	dialog->show();
++}
++
++void KsMainWindow::_taskSelect()
++{
++	KsCheckBoxWidget *tasks_cbd = new KsTasksCheckBoxWidget(_data.tep(),
++								true,
++								this);
++	KsCheckBoxDialog *dialog = new KsCheckBoxDialog(tasks_cbd, this);
++	QVector<int> pids = KsUtils::getPidList();
++	int nPids = pids.count();
++
++	if (nPids == _graph.glPtr()->taskGraphCount()) {
++		tasks_cbd->setDefault(true);
++	} else {
++		QVector<bool> v(nPids, false);
++		for (int i = 0; i < nPids; ++i) {
++			for (auto const &pid: _graph.glPtr()->_taskList) {
++				if (pids[i] == pid) {
++					v[i] = true;
++					break;
++				}
++			}
++		}
++
++		tasks_cbd->set(v);
++	}
++
++	connect(dialog,		&KsCheckBoxDialog::apply,
++		&_graph,	&KsTraceGraph::taskReDraw);
++
++	dialog->show();
++}
++
++void KsMainWindow::_pluginSelect()
++{
++	KsCheckBoxWidget *plugin_cbd;
++	KsCheckBoxDialog *dialog;
++	QVector<bool> registeredPlugins;
++	QStringList plugins;
++
++	plugins << _plugins._ksPluginList << _plugins._userPluginList;
++
++	registeredPlugins << _plugins._registeredKsPlugins
++			  << _plugins._registeredUserPlugins;
++
++	plugin_cbd = new KsPluginCheckBoxWidget(plugins, this);
++	plugin_cbd->set(registeredPlugins);
++
++	dialog = new KsCheckBoxDialog(plugin_cbd, this);
++
++	connect(dialog,		&KsCheckBoxDialog::apply,
++		&_plugins,	&KsPluginManager::updatePlugins);
++
++	dialog->show();
++}
++
++void KsMainWindow::_setColorPhase(int f)
++{
++	KsPlot::Color::setRainbowFrequency(f / 100.);
++	_graph.glPtr()->model()->update();
++}
++
++void KsMainWindow::_fullScreenMode()
++{
++	if (_isFullScreen) {
++		_fullScreenModeAction.setText("Full Screen Mode");
++		_fullScreenModeAction.setIcon(QIcon::fromTheme("view-fullscreen"));
++		showNormal();
++		_isFullScreen = false;
++	} else {
++		_fullScreenModeAction.setText("Exit Full Screen Mode");
++		_fullScreenModeAction.setIcon(QIcon::fromTheme("view-restore"));
++		showFullScreen();
++		_isFullScreen = true;
++	}
++}
++
++void KsMainWindow::_aboutInfo()
++{
++	KsMessageDialog *message;
++	QString text;
++
++	text.append(" KernelShark\n\n version: ");
++	text.append(KS_VERSION_STRING);
++	text.append("\n");
++
++	message = new KsMessageDialog(text);
++	message->setWindowTitle("About");
++	message->show();
++}
++
++void KsMainWindow::_contents()
++{
++	QDesktopServices::openUrl(QUrl("https://www.google.bg/search?q=kernelshark",
++				  QUrl::TolerantMode));
++}
++
++/** Load trace data for file. */
++void KsMainWindow::loadDataFile(const QString& fileName)
++{
++	char buff[FILENAME_MAX];
++	QString pbLabel("Loading    ");
++	bool loadDone = false;
++	struct stat st;
++	int ret;
++
++	ret = stat(fileName.toStdString().c_str(), &st);
++	if (ret != 0) {
++		QString text("Unable to find file ");
++
++		text.append(fileName);
++		text.append(".");
++		_error(text, "loadDataErr1", true, true);
++
++		return;
++	}
++
++	qInfo() << "Loading " << fileName;
++
++	_mState.reset();
++	_view.reset();
++	_graph.reset();
++
++	if (fileName.size() < 40) {
++		pbLabel += fileName;
++	} else {
++		pbLabel += "...";
++		pbLabel += fileName.mid(fileName.size() - 37, 37);
++	}
++
++	setWindowTitle("Kernel Shark");
++	KsProgressBar pb(pbLabel);
++	QApplication::processEvents();
++
++	auto lamLoadJob = [&](KsDataStore *d) {
++		d->loadDataFile(fileName);
++		loadDone = true;
++	};
++	std::thread tload(lamLoadJob, &_data);
++
++	for (int i = 0; i < 160; ++i) {
++		/*
++		 * TODO: The way this progress bar gets updated here is a pure
++		 * cheat. See if this can be implemented better.
++		*/
++		if (loadDone)
++			break;
++
++		pb.setValue(i);
++		usleep(150000);
++	}
++
++	tload.join();
++
++	if (!_data.size()) {
++		QString text("File ");
++
++		text.append(fileName);
++		text.append(" contains no data.");
++		_error(text, "loadDataErr2", true, true);
++
++		return;
++	}
++
++	pb.setValue(165);
++	_view.loadData(&_data);
++
++	pb.setValue(180);
++	_graph.loadData(&_data);
++	pb.setValue(195);
++	setWindowTitle("Kernel Shark (" + fileName + ")");
++
++	if (realpath(fileName.toStdString().c_str(), buff)) {
++		QString path(buff);
++		_session.saveDataFile(path);
++	}
++}
++
++void KsMainWindow::_error(const QString &text, const QString &errCode,
++			  bool resize, bool unloadPlugins)
++{
++	QErrorMessage *em = new QErrorMessage(this);
++
++	if (resize)
++		_resizeEmpty();
++
++	if (unloadPlugins)
++		_plugins.unloadAll();
++
++	em->showMessage(text, errCode);
++	qCritical() << "ERROR: " << text;
++}
++
++/**
++ * @brief Load user session.
++ *
++ * @param fileName: Json file containing the description of the session.
++ */
++void KsMainWindow::loadSession(const QString &fileName)
++{
++	kshark_context *kshark_ctx(nullptr);
++	struct stat st;
++	int ret;
++
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	ret = stat(fileName.toStdString().c_str(), &st);
++	if (ret != 0) {
++		QString text("Unable to find session file ");
++
++		text.append(fileName);
++		text.append("\n");
++		_error(text, "loadSessErr0", true, true);
++
++		return;
++	}
++
++	_session.importFromFile(fileName);
++	_session.loadPlugins(kshark_ctx, &_plugins);
++
++	QString dataFile(_session.getDataFile(kshark_ctx));
++	if (dataFile.isEmpty()) {
++		QString text("Unable to open trace data file for session ");
++
++		text.append(fileName);
++		text.append("\n");
++		_error(text, "loadSessErr1", true, true);
++
++		return;
++	}
++
++	loadDataFile(dataFile);
++	if (!_data.tep()) {
++		_plugins.unloadAll();
++		return;
++	}
++
++	KsProgressBar pb("Loading session settings ...");
++	pb.setValue(10);
++
++	_session.loadGraphs(&_graph);
++	pb.setValue(20);
++
++	_session.loadFilters(kshark_ctx, &_data);
++	pb.setValue(130);
++
++	_session.loadSplitterSize(&_splitter);
++	_session.loadMainWindowSize(this);
++	this->show();
++	pb.setValue(140);
++
++	_session.loadDualMarker(&_mState, &_graph);
++	_session.loadVisModel(_graph.glPtr()->model());
++	_mState.updateMarkers(_data, _graph.glPtr());
++	pb.setValue(170);
++
++	_session.loadTable(&_view);
++	_colorPhaseSlider.setValue(_session.getColorScheme() * 100);
++}
++
++void KsMainWindow::_splitterMoved(int pos, int index)
++{
++	_session.saveSplitterSize(_splitter);
++}
+diff --git a/kernel-shark-qt/src/KsMainWindow.hpp b/kernel-shark-qt/src/KsMainWindow.hpp
 new file mode 100644
-index 0000000..4f5a2c4
+index 0000000..cee68db
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsSession.hpp
-@@ -0,0 +1,100 @@
++++ b/kernel-shark-qt/src/KsMainWindow.hpp
+@@ -0,0 +1,191 @@
 +/* SPDX-License-Identifier: LGPL-2.1 */
 +
 +/*
@@ -641,97 +1001,188 @@ index 0000000..4f5a2c4
 +
 +/**
 + *  @file    KsSession.hpp
-+ *  @brief   KernelShark Session.
++ *  @brief   KernelShark GUI main window.
 + */
 +
-+#ifndef _KS_SESSION_H
-+#define _KS_SESSION_H
++#ifndef _KS_MAINWINDOW_H
++#define _KS_MAINWINDOW_H
 +
 +// Qt
-+#include <QtWidgets>
++#include <QMainWindow>
 +
 +// KernelShark
-+#include "KsDualMarker.hpp"
-+#include "KsTraceGraph.hpp"
 +#include "KsTraceViewer.hpp"
++#include "KsTraceGraph.hpp"
++#include "KsSession.hpp"
++#include "KsUtils.hpp"
 +
 +/**
-+ * The KsSession class provides instruments for importing/exporting the state
-+ * of the different components of the GUI from/to Json documents. These
-+ * instruments are used to save/load user session in the GUI.
++ * The KsMainWindow class provides Main window for the KernelShark GUI.
 + */
-+class KsSession
++class KsMainWindow : public QMainWindow
 +{
++	Q_OBJECT
 +public:
-+	KsSession();
++	explicit KsMainWindow(QWidget *parent = nullptr);
 +
-+	virtual ~KsSession();
++	~KsMainWindow();
 +
-+	/** Get the configuration document object. */
-+	kshark_config_doc *getConfDocPtr() const {return _config;}
++	void loadDataFile(const QString &fileName);
 +
-+	void importFromFile(QString jfileName);
++	void loadSession(const QString &fileName);
 +
-+	void exportToFile(QString jfileName);
++	/**
++	 * @brief
++	 *
++	 * @param plugin: can be the name of the plugin or the plugin's library
++	 * file (including absolute or relative path).
++	 */
++	void registerPlugin(const QString &plugin)
++	{
++		_plugins.registerPlugin(plugin);
++	}
 +
-+	void saveDataFile(QString fileName);
++	/**
++	 * @brief
++	 *
++	 * @param plugin: can be the name of the plugin or the plugin's library
++	 * file (including absolute path).
++	 */
++	void unregisterPlugin(const QString &plugin)
++	{
++		_plugins.unregisterPlugin(plugin);
++	}
 +
-+	QString getDataFile(kshark_context *kshark_ctx);
-+
-+	void saveVisModel(kshark_trace_histo *histo);
-+
-+	void loadVisModel(KsGraphModel *model);
-+
-+	void saveGraphs(const KsGLWidget &glw);
-+
-+	void loadGraphs(KsTraceGraph *graphs);
-+
-+	void saveFilters(kshark_context *kshark_ctx);
-+
-+	void loadFilters(kshark_context *kshark_ctx, KsDataStore *data);
-+
-+	void saveMainWindowSize(const QMainWindow &window);
-+
-+	void loadMainWindowSize(QMainWindow *window);
-+
-+	void saveSplitterSize(const QSplitter &splitter);
-+
-+	void loadSplitterSize(QSplitter *splitter);
-+
-+	void saveDualMarker(KsDualMarkerSM *dm);
-+
-+	void loadDualMarker(KsDualMarkerSM *dmm, KsTraceGraph *graphs);
-+
-+	void savePlugins(const KsPluginManager &pm);
-+
-+	void loadPlugins(kshark_context *kshark_ctx, KsPluginManager *pm);
-+
-+	void saveTable(const KsTraceViewer &view);
-+
-+	void loadTable(KsTraceViewer *view);
-+
-+	void saveColorScheme();
-+
-+	float getColorScheme();
++	void resizeEvent(QResizeEvent* event);
 +
 +private:
-+	kshark_config_doc *_config;
++	QSplitter	_splitter;
 +
-+	json_object *_getMarkerJson();
++	/** GUI session. */
++	KsSession	_session;
 +
-+	void _saveCPUPlots(const QVector<int> &cpus);
++	/** Data Manager. */
++	KsDataStore	_data;
 +
-+	QVector<int> _getCPUPlots();
++	/** Widget for reading and searching in the trace data. */
++	KsTraceViewer	_view;
 +
-+	void _saveTaskPlots(const QVector<int> &tasks);
++	/** Widget for graphical visualization of the trace data. */
++	KsTraceGraph	_graph;
 +
-+	QVector<int> _getTaskPlots();
++	/** Dual Marker State Machine. */
++	KsDualMarkerSM	_mState;
 +
-+	bool _getMarker(const char* name, size_t *pos);
++	/** Plugin manager. */
++	KsPluginManager	_plugins;
 +
-+	DualMarkerState _getMarkerState();
++	// File menu.
++	QAction		_openAction;
++
++	QAction		_restorSessionAction;
++
++	QAction		_importSessionAction;
++
++	QAction		_exportSessionAction;
++
++	QAction		_quitAction;
++
++	// Filter menu.
++	QAction		_importFilterAction;
++
++	QAction		_exportFilterAction;
++
++	QWidgetAction	_graphFilterSyncAction;
++
++	QWidgetAction	_listFilterSyncAction;
++
++	QAction		_showEventsAction;
++
++	QAction		_showTasksAction;
++
++	QAction		_hideTasksAction;
++
++	QAction		_advanceFilterAction;
++
++	QAction		_clearAllFilters;
++
++	// Plots menu.
++	QAction		_cpuSelectAction;
++
++	QAction		_taskSelectAction;
++
++	// Tools menu.
++	QAction		_pluginsAction;
++
++	QWidgetAction	_colorAction;
++
++	QWidget		_colSlider;
++
++	QSlider		_colorPhaseSlider;
++
++	QAction		_fullScreenModeAction;
++
++	bool		_isFullScreen;
++
++	// Help menu.
++	QAction		_aboutAction;
++
++	QAction		_contentsAction;
++
++	void _open();
++
++	void _restorSession();
++
++	void _importSession();
++
++	void _exportSession();
++
++	void _importFilter();
++
++	void _exportFilter();
++
++	void _listFilterSync(int state);
++
++	void _graphFilterSync(int state);
++
++	void _showEvents();
++
++	void _showTasks();
++
++	void _hideTasks();
++
++	void _advancedFiltering();
++
++	void _clearFilters();
++
++	void _cpuSelect();
++
++	void _taskSelect();
++
++	void _pluginSelect();
++
++	void _setColorPhase(int);
++
++	void _fullScreenMode();
++
++	void _aboutInfo();
++
++	void _contents();
++
++	void _splitterMoved(int pos, int index);
++
++	void _createActions();
++
++	void _createMenus();
++
++	void _updateSession();
++
++	inline void _resizeEmpty() {resize(SCREEN_WIDTH * .5, FONT_HEIGHT * 3);}
++
++	void _error(const QString &text, const QString &errCode,
++		    bool resize, bool unloadPlugins);
 +};
 +
-+#endif
++#endif // _KS_MAINWINDOW_H
 -- 
 2.17.1
