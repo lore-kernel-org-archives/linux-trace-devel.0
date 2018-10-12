@@ -1,17 +1,17 @@
 Return-Path: <SRS0=pqkA=MY=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr680056.outbound.protection.outlook.com ([40.107.68.56]:3297
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+Received: from mail-co1nam03on0041.outbound.protection.outlook.com ([104.47.40.41]:22067
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728989AbeJLXr2 (ORCPT
+        id S1728800AbeJLXrd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Oct 2018 19:47:28 -0400
+        Fri, 12 Oct 2018 19:47:33 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH 06/10] kernel-shark-qt: Add Trace Graph widget.
-Date: Fri, 12 Oct 2018 19:13:14 +0300
-Message-Id: <20181012161318.5302-7-ykaradzhov@vmware.com>
+Subject: [PATCH 07/10] kernel-shark-qt: Add dialog for Advanced filtering.
+Date: Fri, 12 Oct 2018 19:13:15 +0300
+Message-Id: <20181012161318.5302-8-ykaradzhov@vmware.com>
 In-Reply-To: <20181012161318.5302-1-ykaradzhov@vmware.com>
 References: <20181012161318.5302-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
@@ -21,46 +21,47 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-This patch defines widget for interactive visualization of trace data
-shown as time-series. The provides an info panel and a graph plotting
-area (KsGLWidget). The panel and the plotting area are integrated with
-the Dual Marker.
+This patch defines a dialog for configuring and using Advanced filtering.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/CMakeLists.txt   |   2 +
- kernel-shark-qt/src/KsTraceGraph.cpp | 690 +++++++++++++++++++++++++++
- kernel-shark-qt/src/KsTraceGraph.hpp | 137 ++++++
- 3 files changed, 829 insertions(+)
- create mode 100644 kernel-shark-qt/src/KsTraceGraph.cpp
- create mode 100644 kernel-shark-qt/src/KsTraceGraph.hpp
+ kernel-shark-qt/src/CMakeLists.txt           |   6 +-
+ kernel-shark-qt/src/KsAdvFilteringDialog.cpp | 440 +++++++++++++++++++
+ kernel-shark-qt/src/KsAdvFilteringDialog.hpp |  91 ++++
+ 3 files changed, 535 insertions(+), 2 deletions(-)
+ create mode 100644 kernel-shark-qt/src/KsAdvFilteringDialog.cpp
+ create mode 100644 kernel-shark-qt/src/KsAdvFilteringDialog.hpp
 
 diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
-index 2ca5187..d406866 100644
+index d406866..26b45f4 100644
 --- a/kernel-shark-qt/src/CMakeLists.txt
 +++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -36,6 +36,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
-                         KsGLWidget.hpp
+@@ -37,7 +37,8 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
                          KsDualMarker.hpp
                          KsWidgetsLib.hpp
-+                        KsTraceGraph.hpp
-                         KsTraceViewer.hpp)
+                         KsTraceGraph.hpp
+-                        KsTraceViewer.hpp)
++                        KsTraceViewer.hpp
++                        KsAdvFilteringDialog.hpp)
  
      QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
-@@ -45,6 +46,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
-                                                             KsGLWidget.cpp
+ 
+@@ -47,7 +48,8 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
                                                              KsDualMarker.cpp
                                                              KsWidgetsLib.cpp
-+                                                            KsTraceGraph.cpp
-                                                             KsTraceViewer.cpp)
+                                                             KsTraceGraph.cpp
+-                                                            KsTraceViewer.cpp)
++                                                            KsTraceViewer.cpp
++                                                            KsAdvFilteringDialog.cpp)
  
      target_link_libraries(kshark-gui kshark-plot
-diff --git a/kernel-shark-qt/src/KsTraceGraph.cpp b/kernel-shark-qt/src/KsTraceGraph.cpp
+                                      ${CMAKE_DL_LIBS}
+diff --git a/kernel-shark-qt/src/KsAdvFilteringDialog.cpp b/kernel-shark-qt/src/KsAdvFilteringDialog.cpp
 new file mode 100644
-index 0000000..6994644
+index 0000000..ff5a39d
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsTraceGraph.cpp
-@@ -0,0 +1,690 @@
++++ b/kernel-shark-qt/src/KsAdvFilteringDialog.cpp
+@@ -0,0 +1,440 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +
 +/*
@@ -68,695 +69,445 @@ index 0000000..6994644
 + */
 +
 +/**
-+ *  @file    KsTraceGraph.cpp
-+ *  @brief   KernelShark Trace Graph.
++ *  @file    KsAdvFilteringDialog.cpp
++ *  @brief   GUI Dialog for Advanced filtering settings.
 + */
 +
 +// KernelShark
++#include "KsAdvFilteringDialog.hpp"
++#include "libkshark.h"
 +#include "KsUtils.hpp"
-+#include "KsDualMarker.hpp"
-+#include "KsTraceGraph.hpp"
 +
-+/** Create a default (empty) Trace graph widget. */
-+KsTraceGraph::KsTraceGraph(QWidget *parent)
-+: QWidget(parent),
-+  _pointerBar(this),
-+  _navigationBar(this),
-+  _zoomInButton("+", this),
-+  _quickZoomInButton("++", this),
-+  _zoomOutButton("-", this),
-+  _quickZoomOutButton("- -", this),
-+  _scrollLeftButton("<", this),
-+  _scrollRightButton(">", this),
-+  _labelP1("Pointer: ", this),
-+  _labelP2("", this),
-+  _labelI1("", this),
-+  _labelI2("", this),
-+  _labelI3("", this),
-+  _labelI4("", this),
-+  _labelI5("", this),
-+  _scrollArea(this),
-+  _drawWindow(&_scrollArea),
-+  _legendWindow(&_drawWindow),
-+  _legendAxisX(&_drawWindow),
-+  _labelXMin("", &_legendAxisX),
-+  _labelXMid("", &_legendAxisX),
-+  _labelXMax("", &_legendAxisX),
-+  _glWindow(&_drawWindow),
-+  _mState(nullptr),
-+  _data(nullptr),
-+  _keyPressed(false)
++/** Create dialog for Advanced Filtering. */
++KsAdvFilteringDialog::KsAdvFilteringDialog(QWidget *parent)
++: QDialog(parent),
++  _condToolBar1(this),
++  _condToolBar2(this),
++  _condToolBar3(this),
++  _descrLabel(this),
++  _sysEvLabel("System/Event: ", &_condToolBar1),
++  _opsLabel("Operator: ", this),
++  _fieldLabel("Field: ", this),
++  _systemComboBox(&_condToolBar1),
++  _eventComboBox(&_condToolBar1),
++  _opsComboBox(&_condToolBar2),
++  _fieldComboBox(&_condToolBar3),
++  _filterEdit(this),
++  _helpButton("Show Help", this),
++  _insertEvtButton("Insert", this),
++  _insertOpButton("Insert", this),
++  _insertFieldButton("Insert", this),
++  _applyButton("Apply", this),
++  _cancelButton("Cancel", this)
 +{
-+	auto lamMakeNavButton = [&](QPushButton *b) {
-+		b->setMaximumWidth(FONT_WIDTH * 5);
++	struct kshark_context *kshark_ctx(NULL);
++	int buttonWidth;
 +
-+		connect(b,	&QPushButton::released,
-+			this,	&KsTraceGraph::_stopUpdating);
-+		_navigationBar.addWidget(b);
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	auto lamAddLine = [&] {
++		QFrame* line = new QFrame();
++		line->setFrameShape(QFrame::HLine);
++		line->setFrameShadow(QFrame::Sunken);
++		_topLayout.addWidget(line);
 +	};
 +
-+	_pointerBar.setMaximumHeight(FONT_HEIGHT * 1.75);
-+	_pointerBar.setOrientation(Qt::Horizontal);
++	setMinimumWidth(FONT_WIDTH * 80);
 +
-+	_navigationBar.setMaximumHeight(FONT_HEIGHT * 1.75);
-+	_navigationBar.setMinimumWidth(FONT_WIDTH * 90);
-+	_navigationBar.setOrientation(Qt::Horizontal);
++	buttonWidth = STRING_WIDTH("--Show Help--");
 +
-+	_pointerBar.addWidget(&_labelP1);
-+	_labelP2.setFrameStyle(QFrame::Panel | QFrame::Sunken);
-+	_labelP2.setStyleSheet("QLabel { background-color : white;}");
-+	_labelP2.setTextInteractionFlags(Qt::TextSelectableByMouse);
-+	_labelP2.setFixedWidth(FONT_WIDTH * 16);
-+	_pointerBar.addWidget(&_labelP2);
-+	_pointerBar.addSeparator();
++	_helpButton.setFixedWidth(buttonWidth);
++	_helpButton.setDefault(false);
++	_topLayout.addWidget(&_helpButton);
 +
-+	_labelI1.setStyleSheet("QLabel {color : blue;}");
-+	_labelI2.setStyleSheet("QLabel {color : green;}");
-+	_labelI3.setStyleSheet("QLabel {color : red;}");
-+	_labelI4.setStyleSheet("QLabel {color : blue;}");
-+	_labelI5.setStyleSheet("QLabel {color : green;}");
++	connect(&_helpButton,	&QPushButton::pressed,
++		this,		&KsAdvFilteringDialog::_help);
 +
-+	_pointerBar.addWidget(&_labelI1);
-+	_pointerBar.addSeparator();
-+	_pointerBar.addWidget(&_labelI2);
-+	_pointerBar.addSeparator();
-+	_pointerBar.addWidget(&_labelI3);
-+	_pointerBar.addSeparator();
-+	_pointerBar.addWidget(&_labelI4);
-+	_pointerBar.addSeparator();
-+	_pointerBar.addWidget(&_labelI5);
++	_descrLabel.setText(_description());
++	_topLayout.addWidget(&_descrLabel);
 +
-+	_legendAxisX.setFixedHeight(FONT_HEIGHT * 1.5);
-+	_legendAxisX.setLayout(new QHBoxLayout);
-+	_legendAxisX.layout()->setSpacing(0);
-+	_legendAxisX.layout()->setContentsMargins(0, 0, FONT_WIDTH, 0);
++	/*
++	 * For the moment do not show the syntax description. It will be shown
++	 * only if the "Show Help" button is clicked.
++	 */
++	_descrLabel.hide();
 +
-+	_labelXMin.setAlignment(Qt::AlignLeft);
-+	_labelXMid.setAlignment(Qt::AlignHCenter);
-+	_labelXMax.setAlignment(Qt::AlignRight);
++	lamAddLine();
 +
-+	_legendAxisX.layout()->addWidget(&_labelXMin);
-+	_legendAxisX.layout()->addWidget(&_labelXMid);
-+	_legendAxisX.layout()->addWidget(&_labelXMax);
-+	_drawWindow.setMinimumSize(100, 100);
-+	_drawWindow.setStyleSheet("QWidget {background-color : white;}");
++	_getFilters(kshark_ctx);
 +
-+	_drawLayout.setContentsMargins(0, 0, 0, 0);
-+	_drawLayout.setSpacing(0);
-+	_drawLayout.addWidget(&_legendAxisX, 0, 1);
-+	_drawLayout.addWidget(&_legendWindow, 1, 0);
-+	_drawLayout.addWidget(&_glWindow, 1, 1);
-+	_drawWindow.setLayout(&_drawLayout);
++	if (_filters.count()) {
++		_makeFilterTable(kshark_ctx);
++		lamAddLine();
++	}
 +
-+	_drawWindow.installEventFilter(this);
++	_condToolBar1.addWidget(&_sysEvLabel);
++	_condToolBar1.addWidget(&_systemComboBox);
++	_condToolBar1.addWidget(&_eventComboBox);
 +
-+	connect(&_glWindow,	&KsGLWidget::select,
-+		this,		&KsTraceGraph::markEntry);
++	/*
++	 * Using the old Signal-Slot syntax because QComboBox::currentIndexChanged
++	 * has overloads.
++	 */
++	connect(&_systemComboBox,	SIGNAL(currentIndexChanged(const QString&)),
++		this,			SLOT(_systemChanged(const QString&)));
 +
-+	connect(&_glWindow,	&KsGLWidget::found,
-+		this,		&KsTraceGraph::_setPointerInfo);
++	connect(&_eventComboBox,	SIGNAL(currentIndexChanged(const QString&)),
++		this,			SLOT(_eventChanged(const QString&)));
 +
-+	connect(&_glWindow,	&KsGLWidget::notFound,
-+		this,		&KsTraceGraph::_resetPointer);
++	_setSystemCombo(kshark_ctx);
 +
-+	connect(&_glWindow,	&KsGLWidget::zoomIn,
-+		this,		&KsTraceGraph::_zoomIn);
++	_condToolBar1.addSeparator();
++	_condToolBar1.addWidget(&_insertEvtButton);
++	_topLayout.addWidget(&_condToolBar1);
 +
-+	connect(&_glWindow,	&KsGLWidget::zoomOut,
-+		this,		&KsTraceGraph::_zoomOut);
++	_opsComboBox.addItems(_operators());
 +
-+	connect(&_glWindow,	&KsGLWidget::scrollLeft,
-+		this,		&KsTraceGraph::_scrollLeft);
++	_condToolBar2.addWidget(&_opsLabel);
++	_condToolBar2.addWidget(&_opsComboBox);
 +
-+	connect(&_glWindow,	&KsGLWidget::scrollRight,
-+		this,		&KsTraceGraph::_scrollRight);
++	_condToolBar2.addSeparator();
++	_condToolBar2.addWidget(&_insertOpButton);
++	_topLayout.addWidget(&_condToolBar2);
 +
-+	connect(&_glWindow,	&KsGLWidget::stopUpdating,
-+		this,		&KsTraceGraph::_stopUpdating);
++	_condToolBar3.addWidget(&_fieldLabel);
++	_condToolBar3.addWidget(&_fieldComboBox);
 +
-+	connect(_glWindow.model(),	&KsGraphModel::modelReset,
-+		this,			&KsTraceGraph::_updateTimeLegends);
++	_condToolBar3.addSeparator();
++	_condToolBar3.addWidget(&_insertFieldButton);
++	_topLayout.addWidget(&_condToolBar3);
 +
-+	_scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-+	_scrollArea.setWidget(&_drawWindow);
++	lamAddLine();
 +
-+	lamMakeNavButton(&_scrollLeftButton);
-+	connect(&_scrollLeftButton,	&QPushButton::pressed,
-+		this,			&KsTraceGraph::_scrollLeft);
++	_filterEdit.setMinimumWidth(50 * FONT_WIDTH);
++	_topLayout.addWidget(&_filterEdit);
++	this->setLayout(&_topLayout);
 +
-+	lamMakeNavButton(&_zoomInButton);
-+	connect(&_zoomInButton,		&QPushButton::pressed,
-+		this,			&KsTraceGraph::_zoomIn);
++	buttonWidth = STRING_WIDTH("--Cancel--");
++	_applyButton.setFixedWidth(buttonWidth);
++	_applyButton.setDefault(true);
++	_cancelButton.setFixedWidth(buttonWidth);
++	_buttonLayout.addWidget(&_applyButton);
++	_buttonLayout.addWidget(&_cancelButton);
++	_buttonLayout.setAlignment(Qt::AlignLeft);
++	_topLayout.addLayout(&_buttonLayout);
 +
-+	lamMakeNavButton(&_zoomOutButton);
-+	connect(&_zoomOutButton,	&QPushButton::pressed,
-+		this,			&KsTraceGraph::_zoomOut);
++	connect(&_insertEvtButton,	&QPushButton::pressed,
++		this,			&KsAdvFilteringDialog::_insertEvt);
 +
-+	lamMakeNavButton(&_scrollRightButton);
-+	connect(&_scrollRightButton,	&QPushButton::pressed,
-+		this,			&KsTraceGraph::_scrollRight);
++	connect(&_insertOpButton,	&QPushButton::pressed,
++		this,			&KsAdvFilteringDialog::_insertOperator);
 +
-+	_navigationBar.addSeparator();
++	connect(&_insertFieldButton,	&QPushButton::pressed,
++		this,			&KsAdvFilteringDialog::_insertField);
 +
-+	lamMakeNavButton(&_quickZoomInButton);
-+	connect(&_quickZoomInButton,	&QPushButton::pressed,
-+		this,			&KsTraceGraph::_quickZoomIn);
++	_applyButtonConnection =
++		connect(&_applyButton,	&QPushButton::pressed,
++			this,		&KsAdvFilteringDialog::_applyPress);
 +
-+	lamMakeNavButton(&_quickZoomOutButton);
-+	connect(&_quickZoomOutButton,	&QPushButton::pressed,
-+		this,			&KsTraceGraph::_quickZoomOut);
++	connect(&_applyButton,		&QPushButton::pressed,
++		this,			&QWidget::close);
 +
-+	_layout.addWidget(&_pointerBar);
-+	_layout.addWidget(&_navigationBar);
-+	_layout.addWidget(&_scrollArea);
-+	this->setLayout(&_layout);
-+	updateGeom();
++	connect(&_cancelButton,		&QPushButton::pressed,
++		this,			&QWidget::close);
 +}
 +
-+/**
-+ * @brief Load and show trace data.
-+ *
-+ * @param data: Input location for the KsDataStore object.
-+ *	  KsDataStore::loadDataFile() must be called first.
-+ */
-+void KsTraceGraph::loadData(KsDataStore *data)
++void KsAdvFilteringDialog::_setSystemCombo(struct kshark_context *kshark_ctx)
 +{
-+	_data = data;
-+	_glWindow.loadData(data);
-+	_updateGraphLegends();
-+	updateGeom();
++	tep_event_format **events;
++	QStringList sysList;
++	int i(0), nEvts(0);
++
++	if (kshark_ctx->pevent) {
++		nEvts = tep_get_events_count(kshark_ctx->pevent);
++		events = tep_list_events(kshark_ctx->pevent,
++					 TEP_EVENT_SORT_SYSTEM);
++	}
++
++	while (i < nEvts) {
++		QString sysName(events[i]->system);
++		sysList << sysName;
++		while (sysName == events[i]->system) {
++			if (++i == nEvts)
++				break;
++		}
++	}
++
++	qSort(sysList);
++	_systemComboBox.addItems(sysList);
++
++	i = _systemComboBox.findText("ftrace");
++	if (i >= 0)
++		_systemComboBox.setCurrentIndex(i);
 +}
 +
-+/** Connect the KsGLWidget widget and the State machine of the Dual marker. */
-+void KsTraceGraph::setMarkerSM(KsDualMarkerSM *m)
++QString KsAdvFilteringDialog::_description()
 +{
-+	_mState = m;
-+	_navigationBar.addSeparator();
-+	_mState->placeInToolBar(&_navigationBar);
-+	_glWindow.setMarkerSM(m);
++	QString descrText = "Usage:\n";
++	descrText += " <sys/event>[,<sys/event>] : [!][(]<field><op><val>[)]";
++	descrText += "[&&/|| [(]<field><op><val>[)]]\n\n";
++	descrText += "Examples:\n\n";
++	descrText += "   sched/sched_switch : next_prio < 100 && (prev_prio > 100";
++	descrText += "&& prev_pid != 0)\n\n";
++	descrText += "   irq.* : irq != 38\n\n";
++	descrText += "   .* : common_pid == 1234\n";
++
++	return descrText;
 +}
 +
-+/** Reset (empty) the widget. */
-+void KsTraceGraph::reset()
++QStringList KsAdvFilteringDialog::_operators()
 +{
-+	/* Clear the all graph lists and update. */
-+	_glWindow._cpuList = {};
-+	_glWindow._taskList = {};
++	QStringList OpsList;
++	OpsList << ":" << "," << "==" << "!=" << ">" << "<" << ">=" << "<=";
++	OpsList << "=~" << "!~" << "!" << "(" << ")" << "+" << "-";
++	OpsList << "*" << "/" << "<<" << ">>" << "&&" << "||" << "&";
 +
-+	_labelP2.setText("");
-+	for (auto l1: {&_labelI1, &_labelI2, &_labelI3, &_labelI4, &_labelI5})
-+		l1->setText("");
-+
-+	_glWindow.model()->reset();
-+	_selfUpdate();
-+	for (auto l2: {&_labelXMin, &_labelXMid, &_labelXMax})
-+		l2->setText("");
++	return OpsList;
 +}
 +
-+void KsTraceGraph::_selfUpdate()
++void KsAdvFilteringDialog::_getFilters(struct kshark_context *kshark_ctx)
 +{
-+	_updateGraphLegends();
-+	_updateTimeLegends();
-+	_markerReDraw();
-+	updateGeom();
-+}
++	tep_event_format **events;
++	char *str;
 +
-+void KsTraceGraph::_zoomIn()
-+{
-+	_updateGraphs(GraphActions::ZoomIn);
-+}
++	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
 +
-+void KsTraceGraph::_zoomOut()
-+{
-+	_updateGraphs(GraphActions::ZoomOut);
-+}
++	for (int i = 0; events[i]; i++) {
++		str = tep_filter_make_string(kshark_ctx->advanced_event_filter,
++					     events[i]->id);
++		if (!str)
++			continue;
 +
-+void KsTraceGraph::_quickZoomIn()
-+{
-+	/* Bin size will be 100 ns. */
-+	_glWindow.model()->quickZoomIn(100);
-+	if (_mState->activeMarker()._isSet &&
-+	    _mState->activeMarker().isVisible()) {
-+		/*
-+		 * Use the position of the active marker as
-+		 * a focus point of the zoom.
-+		 */
-+		uint64_t ts = _mState->activeMarker()._ts;
-+		_glWindow.model()->jumpTo(ts);
++		_filters.insert(events[i]->id,
++				QString("%1/%2:%3\n").arg(events[i]->system,
++							  events[i]->name, str));
++
++		free(str);
 +	}
 +}
 +
-+void KsTraceGraph::_quickZoomOut()
++void KsAdvFilteringDialog::_makeFilterTable(struct kshark_context *kshark_ctx)
 +{
-+	_glWindow.model()->quickZoomOut();
++	QMapIterator<int, QString> f(_filters);
++	QTableWidgetItem *i1, *i2, *i3;
++	QStringList headers;
++	int count(0);
++
++	_table = new KsCheckBoxTable(this);
++	_table->setSelectionMode(QAbstractItemView::SingleSelection);
++	headers << "Delete" << "Event" << " Id" << "Filter";
++	_table->init(headers, _filters.count());
++
++	for(auto f : _filters.keys()) {
++		QStringList thisFilter = _filters.value(f).split(":");
++
++		i1 = new QTableWidgetItem(thisFilter[0]);
++		_table->setItem(count, 1, i1);
++
++		i2 = new QTableWidgetItem(tr("%1").arg(f));
++		_table->setItem(count, 2, i2);
++
++		i3 = new QTableWidgetItem(thisFilter[1]);
++		_table->setItem(count, 3, i3);
++
++		++count;
++	}
++
++	_table->setVisible(false);
++	_table->resizeColumnsToContents();
++	_table->setVisible(true);
++
++	_topLayout.addWidget(_table);
 +}
 +
-+void KsTraceGraph::_scrollLeft()
++void KsAdvFilteringDialog::_help()
 +{
-+	_updateGraphs(GraphActions::ScrollLeft);
-+}
++	if (_descrLabel.isVisible()) {
++		_descrLabel.hide();
++		QApplication::processEvents();
 +
-+void KsTraceGraph::_scrollRight()
-+{
-+	_updateGraphs(GraphActions::ScrollRight);
-+}
-+
-+void KsTraceGraph::_stopUpdating()
-+{
-+	/*
-+	 * The user is no longer pressing the action button. Reset the
-+	 * "Key Pressed" flag. This will stop the ongoing user action.
-+	 */
-+	_keyPressed = false;
-+}
-+
-+void KsTraceGraph::_resetPointer(uint64_t ts, int cpu, int pid)
-+{
-+	uint64_t sec, usec;
-+	QString pointer;
-+
-+	kshark_convert_nano(ts, &sec, &usec);
-+	pointer.sprintf("%lu.%lu", sec, usec);
-+	_labelP2.setText(pointer);
-+
-+	if (pid > 0 && cpu >= 0) {
-+		struct kshark_context *kshark_ctx(NULL);
-+
-+		if (!kshark_instance(&kshark_ctx))
-+			return;
-+
-+		QString comm(tep_data_comm_from_pid(kshark_ctx->pevent, pid));
-+		comm.append("-");
-+		comm.append(QString("%1").arg(pid));
-+		_labelI1.setText(comm);
-+		_labelI2.setText(QString("CPU %1").arg(cpu));
++		_helpButton.setText("Show Help");
++		resize(width(), _noHelpHeight);
 +	} else {
-+		_labelI1.setText("");
-+		_labelI2.setText("");
-+	}
-+
-+	for (auto const &l: {&_labelI3, &_labelI4, &_labelI5}) {
-+		l->setText("");
++		_helpButton.setText("Hide Help");
++		_noHelpHeight = height();
++		_descrLabel.show();
 +	}
 +}
 +
-+void KsTraceGraph::_setPointerInfo(size_t i)
++void KsAdvFilteringDialog::_systemChanged(const QString &sysName)
 +{
-+	kshark_entry *e = _data->rows()[i];
-+	QString event(kshark_get_event_name_easy(e));
-+	QString lat(kshark_get_latency_easy(e));
-+	QString info(kshark_get_info_easy(e));
-+	QString comm(kshark_get_task_easy(e));
-+	QString pointer, elidedText;
-+	int labelWidth, width;
-+	uint64_t sec, usec;
++	kshark_context *kshark_ctx(NULL);
++	tep_event_format **events;
++	QStringList evtsList;
++	int i, nEvts;
 +
-+	kshark_convert_nano(e->ts, &sec, &usec);
-+	pointer.sprintf("%lu.%lu", sec, usec);
-+	_labelP2.setText(pointer);
-+
-+	comm.append("-");
-+	comm.append(QString("%1").arg(kshark_get_pid_easy(e)));
-+
-+	_labelI1.setText(comm);
-+	_labelI2.setText(QString("CPU %1").arg(e->cpu));
-+	_labelI3.setText(lat);
-+	_labelI4.setText(event);
-+	_labelI5.setText(info);
-+	QCoreApplication::processEvents();
-+
-+	labelWidth =
-+		_pointerBar.geometry().right() - _labelI4.geometry().right();
-+	if (labelWidth > STRING_WIDTH(info) + FONT_WIDTH * 5)
++	_eventComboBox.clear();
++	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->pevent)
 +		return;
 +
-+	/*
-+	 * The Info string is too long and cannot be displayed on the toolbar.
-+	 * Try to fit the text in the available space.
-+	 */
-+	QFontMetrics metrix(_labelI5.font());
-+	width = labelWidth - FONT_WIDTH * 3;
-+	elidedText = metrix.elidedText(info, Qt::ElideRight, width);
++	nEvts = tep_get_events_count(kshark_ctx->pevent);
++	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
 +
-+	while(labelWidth < STRING_WIDTH(elidedText) + FONT_WIDTH * 5) {
-+		width -= FONT_WIDTH * 3;
-+		elidedText = metrix.elidedText(info, Qt::ElideRight, width);
++	for (i = 0; i < nEvts; ++i) {
++		if (sysName == events[i]->system)
++			evtsList << events[i]->name;
 +	}
 +
-+	_labelI5.setText(elidedText);
-+	_labelI5.setVisible(true);
-+	QCoreApplication::processEvents();
++	qSort(evtsList);
++	_eventComboBox.addItems(evtsList);
++
++	i = _eventComboBox.findText("function");
++	if (i >= 0)
++		_eventComboBox.setCurrentIndex(i);
 +}
 +
-+/**
-+ * @brief Use the active marker to select particular entry.
-+ *
-+ * @param row: The index of the entry to be selected by the marker.
-+ */
-+void KsTraceGraph::markEntry(size_t row)
++QStringList
++KsAdvFilteringDialog::_getEventFormatFields(struct tep_event_format *event)
 +{
-+	int graph, cpuGrId, taskGrId;
++	tep_format_field *field, **fields = tep_event_fields(event);
++	QStringList fieldList;
 +
-+	_glWindow.findGraphIds(*_data->rows()[row], &cpuGrId, &taskGrId);
++	for (field = *fields; field; field = field->next)
++		fieldList << field->name;
 +
-+	/*
-+	 * If a Task graph has been found, this Task graph will be
-+	 * visible. If no Task graph has been found, make visible
-+	 * the corresponding CPU graph.
-+	 */
-+	if (taskGrId >= 0)
-+		graph = taskGrId;
-+	else
-+		graph = cpuGrId;
++	free(fields);
 +
-+	_scrollArea.ensureVisible(0,
-+				  _legendAxisX.height() +
-+				  _glWindow.vMargin() +
-+				  KS_GRAPH_HEIGHT / 2 +
-+				  graph*(KS_GRAPH_HEIGHT + _glWindow.vSpacing()),
-+				  50,
-+				  KS_GRAPH_HEIGHT / 2 + _glWindow.vSpacing() / 2);
-+
-+	_glWindow.model()->jumpTo(_data->rows()[row]->ts);
-+	_mState->activeMarker().set(*_data,
-+				    _glWindow.model()->histo(),
-+				    row, cpuGrId, taskGrId);
-+
-+	_mState->updateMarkers(*_data, &_glWindow);
++	qSort(fieldList);
++	return fieldList;
 +}
 +
-+void KsTraceGraph::_markerReDraw()
++void KsAdvFilteringDialog::_eventChanged(const QString &evtName)
 +{
-+	int cpuGrId, taskGrId;
-+	size_t row;
++	QString sysName = _systemComboBox.currentText();
++	kshark_context *kshark_ctx(NULL);
++	tep_event_format **events;
++	QStringList fieldList;
++	int nEvts;
 +
-+	if (_mState->markerA()._isSet) {
-+		row = _mState->markerA()._pos;
-+		_glWindow.findGraphIds(*_data->rows()[row], &cpuGrId, &taskGrId);
-+		_mState->markerA().set(*_data,
-+				       _glWindow.model()->histo(),
-+				       row, cpuGrId, taskGrId);
-+	}
-+
-+	if (_mState->markerB()._isSet) {
-+		row = _mState->markerB()._pos;
-+		_glWindow.findGraphIds(*_data->rows()[row], &cpuGrId, &taskGrId);
-+		_mState->markerB().set(*_data,
-+				       _glWindow.model()->histo(),
-+				       row, cpuGrId, taskGrId);
-+	}
-+}
-+
-+/**
-+ * @brief Redreaw all CPU graphs.
-+ *
-+ * @param v: CPU ids to be plotted.
-+ */
-+void KsTraceGraph::cpuReDraw(QVector<int> v)
-+{
-+	_glWindow._cpuList = v;
-+	_selfUpdate();
-+}
-+
-+/**
-+ * @brief Redreaw all Task graphs.
-+ *
-+ * @param v: Process ids of the tasks to be plotted.
-+ */
-+void KsTraceGraph::taskReDraw(QVector<int> v)
-+{
-+	_glWindow._taskList = v;
-+	_selfUpdate();
-+}
-+
-+/** Add (and plot) a CPU graph to the existing list of CPU graphs. */
-+void KsTraceGraph::addCPUPlot(int cpu)
-+{
-+	if (_glWindow._cpuList.contains(cpu))
++	_fieldComboBox.clear();
++	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->pevent)
 +		return;
 +
-+	_glWindow._cpuList.append(cpu);
-+	_selfUpdate();
-+}
++	nEvts = tep_get_events_count(kshark_ctx->pevent);
++	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
 +
-+/** Add (and plot) a Task graph to the existing list of Task graphs. */
-+void KsTraceGraph::addTaskPlot(int pid)
-+{
-+	if (_glWindow._taskList.contains(pid))
-+		return;
++	for (int i = 0; i < nEvts; ++i) {
++		if (evtName == events[i]->name &&
++		    sysName == events[i]->system) {
++			fieldList = _getEventFormatFields(events[i]);
++			_fieldComboBox.addItems(fieldList);
 +
-+	_glWindow._taskList.append(pid);
-+	_selfUpdate();
-+}
-+
-+/** Update the content of all graphs. */
-+void KsTraceGraph::update(KsDataStore *data)
-+{
-+	_glWindow.model()->update(data);
-+	_selfUpdate();
-+}
-+
-+/** Update the geometry of the widget. */
-+void KsTraceGraph::updateGeom()
-+{
-+	int saWidth, saHeight, dwWidth, hMin;
-+
-+	/* Set the size of the Scroll Area. */
-+	saWidth = width() - _layout.contentsMargins().left() -
-+			    _layout.contentsMargins().right();
-+
-+	saHeight = height() - _pointerBar.height() -
-+			      _navigationBar.height() -
-+			      _layout.spacing() * 2 -
-+			      _layout.contentsMargins().top() -
-+			      _layout.contentsMargins().bottom();
-+
-+	_scrollArea.resize(saWidth, saHeight);
-+
-+	/*
-+	 * Calculate the width of the Draw Window, taking into account the size
-+	 * of the scroll bar.
-+	 */
-+	dwWidth = _scrollArea.width();
-+	if (_glWindow.height() + _legendAxisX.height() > _scrollArea.height())
-+		dwWidth -=
-+			qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
-+
-+	/*
-+	 * Set the height of the Draw window according to the number of
-+	 * plotted graphs.
-+	 */
-+	_drawWindow.resize(dwWidth,
-+			   _glWindow.height() + _legendAxisX.height());
-+
-+	/* Set the minimum height of the Graph widget. */
-+	hMin = _drawWindow.height() +
-+	       _pointerBar.height() +
-+	       _navigationBar.height() +
-+	       _layout.contentsMargins().top() +
-+	       _layout.contentsMargins().bottom();
-+
-+	if (hMin > KS_GRAPH_HEIGHT * 8)
-+		hMin = KS_GRAPH_HEIGHT * 8;
-+
-+	setMinimumHeight(hMin);
-+
-+	/*
-+	 * Now use the height of the Draw Window to fix the maximum height
-+	 * of the Graph widget.
-+	 */
-+	setMaximumHeight(_drawWindow.height() +
-+			 _pointerBar.height() +
-+			 _navigationBar.height() +
-+			 _layout.spacing() * 2 +
-+			 _layout.contentsMargins().top() +
-+			 _layout.contentsMargins().bottom() +
-+			 2);  /* Just a little bit of extra space. This will
-+			       * allow the scroll bar to disappear when the
-+			       * widget is extended to maximum.
-+			       */
-+}
-+
-+void KsTraceGraph::_updateGraphLegends()
-+{
-+	QString graphLegends, graphName;
-+	QVBoxLayout *layout;
-+	int width = 0;
-+
-+	if (_legendWindow.layout()) {
-+		/*
-+		 * Remove and delete the existing layout of the legend window.
-+		 */
-+		QLayoutItem *child;
-+		while ((child = _legendWindow.layout()->takeAt(0)) != 0) {
-+			delete child->widget();
-+			delete child;
++			return;
 +		}
-+
-+		delete _legendWindow.layout();
 +	}
++}
 +
-+	layout = new QVBoxLayout;
-+	layout->setContentsMargins(FONT_WIDTH, 0, 0, 0);
-+	layout->setSpacing(_glWindow.vSpacing());
-+	layout->setAlignment(Qt::AlignTop);
-+	layout->addSpacing(_glWindow.vMargin());
++void KsAdvFilteringDialog::_insertEvt()
++{
++	QString text = _filterEdit.text();
 +
-+	auto lamMakeName = [&]() {
-+		QLabel *name = new QLabel(graphName);
-+
-+		if (width < STRING_WIDTH(graphName))
-+			width = STRING_WIDTH(graphName);
-+
-+		name->setAlignment(Qt::AlignBottom);
-+		name->setStyleSheet("QLabel {background-color : white;}");
-+		name->setFixedHeight(KS_GRAPH_HEIGHT);
-+		layout->addWidget(name);
++	auto set_evt = [&] ()
++	{
++		text += _systemComboBox.currentText();
++		text += "/";
++		text += _eventComboBox.currentText();
 +	};
 +
-+	for (auto const &cpu: _glWindow._cpuList) {
-+		graphName = QString("CPU %1").arg(cpu);
-+		lamMakeName();
++	if (text == "") {
++		set_evt();
++		text += ":";
++	} else {
++		QString evt = text;
++		text = "";
++		set_evt();
++		text += ",";
++		text += evt;
 +	}
-+
-+	for (auto const &pid: _glWindow._taskList) {
-+		graphName = QString(tep_data_comm_from_pid(_data->tep(),
-+							   pid));
-+		graphName.append(QString("-%1").arg(pid));
-+		lamMakeName();
-+	}
-+
-+	_legendWindow.setLayout(layout);
-+	_legendWindow.setMaximumWidth(width + FONT_WIDTH);
++	_filterEdit.setText(text);
 +}
 +
-+void KsTraceGraph::_updateTimeLegends()
++void KsAdvFilteringDialog::_insertOperator()
 +{
-+	uint64_t sec, usec, tsMid;
-+	QString tMin, tMid, tMax;
++	QString text = _filterEdit.text();
 +
-+	kshark_convert_nano(_glWindow.model()->histo()->min, &sec, &usec);
-+	tMin.sprintf("%lu.%lu", sec, usec);
-+	_labelXMin.setText(tMin);
-+
-+	tsMid = (_glWindow.model()->histo()->min +
-+		 _glWindow.model()->histo()->max) / 2;
-+	kshark_convert_nano(tsMid, &sec, &usec);
-+	tMid.sprintf("%lu.%lu", sec, usec);
-+	_labelXMid.setText(tMid);
-+
-+	kshark_convert_nano(_glWindow.model()->histo()->max, &sec, &usec);
-+	tMax.sprintf("%lu.%lu", sec, usec);
-+	_labelXMax.setText(tMax);
++	text += _opsComboBox.currentText();
++	_filterEdit.setText(text);
 +}
 +
-+/**
-+ * Reimplemented event handler used to update the geometry of the widget on
-+ * resize events.
-+ */
-+void KsTraceGraph::resizeEvent(QResizeEvent* event)
++void KsAdvFilteringDialog::_insertField()
 +{
-+	updateGeom();
++	QString text = _filterEdit.text();
++
++	text += _fieldComboBox.currentText();
++	_filterEdit.setText(text);
 +}
 +
-+/**
-+ * Reimplemented event handler (overriding a virtual function from QObject)
-+ * used to detect the position of the mouse with respect to the Draw window and
-+ * according to this position to grab / release the focus of the keyboard. The
-+ * function has nothing to do with the filtering of the trace events.
-+ */
-+bool KsTraceGraph::eventFilter(QObject* obj, QEvent* evt)
++void KsAdvFilteringDialog::_applyPress()
 +{
-+	if (obj == &_drawWindow && evt->type() == QEvent::Enter)
-+		_glWindow.setFocus();
++	QMapIterator<int, QString> f(_filters);
++	kshark_context *kshark_ctx(NULL);
++	const char *text;
++	tep_errno ret;
++	char *filter;
++	int i(0);
 +
-+	if (obj == &_drawWindow && evt->type() == QEvent::Leave)
-+		_glWindow.clearFocus();
++	if (!kshark_instance(&kshark_ctx))
++		return;
 +
-+	return QWidget::eventFilter(obj, evt);
-+}
-+
-+void KsTraceGraph::_updateGraphs(GraphActions action)
-+{
-+	double k;
-+	int bin;
-+
-+	/*
-+	 * Set the "Key Pressed" flag. The flag will stay set as long as the user
-+	 * keeps the corresponding action button pressed.
-+	 */
-+	_keyPressed = true;
-+
-+	/* Initialize the zooming factor with a small value. */
-+	k = .01;
-+	while (_keyPressed) {
-+		switch (action) {
-+		case GraphActions::ZoomIn:
-+			if (_mState->activeMarker()._isSet &&
-+			    _mState->activeMarker().isVisible()) {
-+				/*
-+				 * Use the position of the active marker as
-+				 * a focus point of the zoom.
-+				 */
-+				bin = _mState->activeMarker()._bin;
-+				_glWindow.model()->zoomIn(k, bin);
-+			} else {
-+				/*
-+				 * The default focus point is the center of the
-+				 * range interval of the model.
-+				 */
-+				_glWindow.model()->zoomIn(k);
-+			}
-+
-+			break;
-+
-+		case GraphActions::ZoomOut:
-+			if (_mState->activeMarker()._isSet &&
-+			    _mState->activeMarker().isVisible()) {
-+				/*
-+				 * Use the position of the active marker as
-+				 * a focus point of the zoom.
-+				 */
-+				bin = _mState->activeMarker()._bin;
-+				_glWindow.model()->zoomOut(k, bin);
-+			} else {
-+				/*
-+				 * The default focus point is the center of the
-+				 * range interval of the model.
-+				 */
-+				_glWindow.model()->zoomOut(k);
-+			}
-+
-+			break;
-+
-+		case GraphActions::ScrollLeft:
-+			_glWindow.model()->shiftBackward(10);
-+			break;
-+
-+		case GraphActions::ScrollRight:
-+			_glWindow.model()->shiftForward(10);
-+			break;
++	while (f.hasNext()) {
++		f.next();
++		if (_table->_cb[i]->checkState() == Qt::Checked) {
++			tep_filter_remove_event(kshark_ctx->advanced_event_filter,
++						f.key());
 +		}
-+
-+		/*
-+		 * As long as the action button is pressed, the zooming factor
-+		 * will grow smoothly until it reaches a maximum value. This
-+		 * will have a visible effect of an accelerating zoom.
-+		 */
-+		if (k < .25)
-+			k  *= 1.02;
-+
-+		_mState->updateMarkers(*_data, &_glWindow);
-+		_updateTimeLegends();
-+		QCoreApplication::processEvents();
++		++i;
 +	}
++
++	auto job_done = [&]() {
++		/*
++		* Disconnect Apply button. This is done in order to protect
++		* against multiple clicks.
++		*/
++		disconnect(_applyButtonConnection);
++		emit dataReload();
++	};
++
++	text = _filterEdit.text().toLocal8Bit().data();
++	if (strlen(text) == 0) {
++		job_done();
++		return;
++	}
++
++	filter = (char*) malloc(strlen(text) + 1);
++	strcpy(filter, text);
++
++	ret = tep_filter_add_filter_str(kshark_ctx->advanced_event_filter,
++					   filter);
++
++	if (ret < 0) {
++		char error_str[200];
++
++		tep_strerror(kshark_ctx->pevent, ret, error_str,
++						       sizeof(error_str));
++
++		fprintf(stderr, "filter failed due to: %s\n", error_str);
++		free(filter);
++
++		return;
++	}
++
++	free(filter);
++
++	job_done();
 +}
-diff --git a/kernel-shark-qt/src/KsTraceGraph.hpp b/kernel-shark-qt/src/KsTraceGraph.hpp
+diff --git a/kernel-shark-qt/src/KsAdvFilteringDialog.hpp b/kernel-shark-qt/src/KsAdvFilteringDialog.hpp
 new file mode 100644
-index 0000000..b57b256
+index 0000000..cde685c
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsTraceGraph.hpp
-@@ -0,0 +1,137 @@
++++ b/kernel-shark-qt/src/KsAdvFilteringDialog.hpp
+@@ -0,0 +1,91 @@
 +/* SPDX-License-Identifier: LGPL-2.1 */
 +
 +/*
@@ -764,135 +515,89 @@ index 0000000..b57b256
 + */
 +
 +/**
-+ *  @file    KsTraceGraph.hpp
-+ *  @brief   KernelShark Trace Graph.
++ *  @file    KsAdvFilteringDialog.hpp
++ *  @brief   GUI Dialog for Advanced filtering settings.
 + */
-+#ifndef _KS_TRACEGRAPH_H
-+#define _KS_TRACEGRAPH_H
++
++#ifndef _KS_ADV_FILTERING_DIALOG_H
++#define _KS_ADV_FILTERING_DIALOG_H
++
++// Qt
++#include <QtWidgets>
 +
 +// KernelShark
-+#include "KsGLWidget.hpp"
++#include "KsWidgetsLib.hpp"
 +
 +/**
-+ * Scroll Area class, needed in order to reimplemented the handler for mouse
-+ * wheel events.
++ * The KsAdvFilteringDialog class provides a dialog for Advanced filtering.
 + */
-+class KsGraphScrollArea : public QScrollArea {
-+public:
-+	/** Create a default Scroll Area. */
-+	explicit KsGraphScrollArea(QWidget *parent = nullptr)
-+	: QScrollArea(parent) {}
-+
-+	/**
-+	 * Reimplemented handler for mouse wheel events. All mouse wheel
-+	 * events will be ignored.
-+	 */
-+	void wheelEvent(QWheelEvent *evt) {evt->ignore();}
-+};
-+
-+/**
-+ * The KsTraceViewer class provides a widget for interactive visualization of
-+ * trace data shown as time-series.
-+ */
-+class KsTraceGraph : public QWidget
++class KsAdvFilteringDialog : public QDialog
 +{
 +	Q_OBJECT
 +public:
-+	explicit KsTraceGraph(QWidget *parent = nullptr);
++	explicit KsAdvFilteringDialog(QWidget *parent = nullptr);
 +
-+	void loadData(KsDataStore *data);
-+
-+	void setMarkerSM(KsDualMarkerSM *m);
-+
-+	void reset();
-+
-+	/** Get the KsGLWidget object. */
-+	KsGLWidget *glPtr() {return &_glWindow;}
-+
-+	void markEntry(size_t);
-+
-+	void cpuReDraw(QVector<int>);
-+
-+	void taskReDraw(QVector<int>);
-+
-+	void addCPUPlot(int);
-+
-+	void addTaskPlot(int);
-+
-+	void update(KsDataStore *data);
-+
-+	void updateGeom();
-+
-+	void resizeEvent(QResizeEvent* event) override;
-+
-+	bool eventFilter(QObject* obj, QEvent* evt) override;
++signals:
++	/** Signal emitted when the _apply button of the dialog is pressed. */
++	void dataReload();
 +
 +private:
++	int 			_noHelpHeight;
 +
-+	void _zoomIn();
++	QMap<int, QString>	_filters;
 +
-+	void _zoomOut();
++	KsCheckBoxTable		*_table;
 +
-+	void _quickZoomIn();
++	QVBoxLayout	_topLayout;
 +
-+	void _quickZoomOut();
++	QHBoxLayout	_buttonLayout;
 +
-+	void _scrollLeft();
++	QToolBar	_condToolBar1, _condToolBar2, _condToolBar3;
 +
-+	void _scrollRight();
++	QLabel		_descrLabel, _sysEvLabel, _opsLabel, _fieldLabel;
 +
-+	void _stopUpdating();
++	QComboBox	_systemComboBox, _eventComboBox;
 +
-+	void _resetPointer(uint64_t ts, int cpu, int pid);
++	QComboBox	_opsComboBox, _fieldComboBox;
 +
-+	void _setPointerInfo(size_t);
++	QLineEdit	_filterEdit;
 +
-+	void _updateTimeLegends();
++	QPushButton	_helpButton;
 +
-+	void _updateGraphLegends();
++	QPushButton	_insertEvtButton, _insertOpButton, _insertFieldButton;
 +
-+	void _selfUpdate();
++	QPushButton	_applyButton, _cancelButton;
 +
-+	void _markerReDraw();
++	QMetaObject::Connection		_applyButtonConnection;
 +
-+	enum class GraphActions {
-+		ZoomIn,
-+		ZoomOut,
-+		ScrollLeft,
-+		ScrollRight
-+	};
++	void _help();
 +
-+	void _updateGraphs(GraphActions action);
++	void _applyPress();
 +
-+	QToolBar	_pointerBar, _navigationBar;
++	void _insertEvt();
 +
-+	QPushButton	_zoomInButton, _quickZoomInButton;
-+	QPushButton	_zoomOutButton, _quickZoomOutButton;
++	void _insertOperator();
 +
-+	QPushButton	_scrollLeftButton, _scrollRightButton;
++	void _insertField();
 +
-+	QLabel	_labelP1, _labelP2,				  // Pointer
-+		_labelI1, _labelI2, _labelI3, _labelI4, _labelI5; // Proc. info
++	QString _description();
 +
-+	KsGraphScrollArea	_scrollArea;
++	QStringList _operators();
 +
-+	QWidget		_drawWindow, _legendWindow, _legendAxisX;
++	void _getFilters(struct kshark_context *kshark_ctx);
 +
-+	QLabel		_labelXMin, _labelXMid, _labelXMax;
++	void _makeFilterTable(struct kshark_context *kshark_ctx);
 +
-+	KsGLWidget	_glWindow;
++	QStringList _getEventFormatFields(struct tep_event_format *event);
 +
-+	QGridLayout	_drawLayout;
++	void _setSystemCombo(struct kshark_context *kshark_ctx);
 +
-+	QVBoxLayout	_layout;
++private slots:
++	void _systemChanged(const QString&);
 +
-+	KsDualMarkerSM	*_mState;
-+
-+	KsDataStore 	*_data;
-+
-+	bool		 _keyPressed;
++	void _eventChanged(const QString&);
 +};
 +
-+#endif // _KS_TRACEGRAPH_H
++#endif // _KS_ADV_FILTERING_DIALOG_H
 -- 
 2.17.1
