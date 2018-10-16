@@ -1,19 +1,18 @@
 Return-Path: <SRS0=XQBu=M4=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-sn1nam01on0073.outbound.protection.outlook.com ([104.47.32.73]:27872
-        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr710064.outbound.protection.outlook.com ([40.107.71.64]:54000
+        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726778AbeJPXoY (ORCPT
+        id S1727223AbeJPXoZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Oct 2018 19:44:24 -0400
+        Tue, 16 Oct 2018 19:44:25 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>,
         Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH v2 14/23] kernel-shark-qt: Add dialog for of trace data
- recording
-Date: Tue, 16 Oct 2018 15:53:13 +0000
-Message-ID: <20181016155232.5257-15-ykaradzhov@vmware.com>
+Subject: [PATCH v2 08/23] kernel-shark-qt: Add dialog for Advanced filtering.
+Date: Tue, 16 Oct 2018 15:53:06 +0000
+Message-ID: <20181016155232.5257-9-ykaradzhov@vmware.com>
 References: <20181016155232.5257-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181016155232.5257-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -25,52 +24,55 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-This patch defines a dialog to be used for trace data recording.
-The dialog has two main areas: a Control panel and a terminal-like
-widget for monitoring the recording process.
+This patch defines a dialog for configuring and using Advanced filtering.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/CMakeLists.txt      |   2 +
- kernel-shark-qt/src/KsCaptureDialog.cpp | 562 ++++++++++++++++++++++++
- kernel-shark-qt/src/KsCaptureDialog.hpp | 185 ++++++++
- 3 files changed, 749 insertions(+)
- create mode 100644 kernel-shark-qt/src/KsCaptureDialog.cpp
- create mode 100644 kernel-shark-qt/src/KsCaptureDialog.hpp
+ kernel-shark-qt/src/CMakeLists.txt           |   6 +-
+ kernel-shark-qt/src/KsAdvFilteringDialog.cpp | 440 +++++++++++++++++++
+ kernel-shark-qt/src/KsAdvFilteringDialog.hpp |  91 ++++
+ 3 files changed, 535 insertions(+), 2 deletions(-)
+ create mode 100644 kernel-shark-qt/src/KsAdvFilteringDialog.cpp
+ create mode 100644 kernel-shark-qt/src/KsAdvFilteringDialog.hpp
 
 diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMake=
 Lists.txt
-index b51980f..3c9e1bf 100644
+index d406866..26b45f4 100644
 --- a/kernel-shark-qt/src/CMakeLists.txt
 +++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -39,6 +39,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+@@ -37,7 +37,8 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+                         KsDualMarker.hpp
+                         KsWidgetsLib.hpp
                          KsTraceGraph.hpp
-                         KsTraceViewer.hpp
-                         KsMainWindow.hpp
-+                        KsCaptureDialog.hpp
-                         KsAdvFilteringDialog.hpp)
+-                        KsTraceViewer.hpp)
++                        KsTraceViewer.hpp
++                        KsAdvFilteringDialog.hpp)
 =20
      QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
-@@ -52,6 +53,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+=20
+@@ -47,7 +48,8 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+                                                             KsDualMarker.c=
+pp
+                                                             KsWidgetsLib.c=
+pp
                                                              KsTraceGraph.c=
 pp
-                                                             KsTraceViewer.=
+-                                                            KsTraceViewer.=
+cpp)
++                                                            KsTraceViewer.=
 cpp
-                                                             KsMainWindow.c=
-pp
-+                                                            KsCaptureDialo=
-g.cpp
-                                                             KsAdvFiltering=
++                                                            KsAdvFiltering=
 Dialog.cpp)
 =20
      target_link_libraries(kshark-gui kshark-plot
-diff --git a/kernel-shark-qt/src/KsCaptureDialog.cpp b/kernel-shark-qt/src/=
-KsCaptureDialog.cpp
+                                      ${CMAKE_DL_LIBS}
+diff --git a/kernel-shark-qt/src/KsAdvFilteringDialog.cpp b/kernel-shark-qt=
+/src/KsAdvFilteringDialog.cpp
 new file mode 100644
-index 0000000..ee1abc3
+index 0000000..ff5a39d
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsCaptureDialog.cpp
-@@ -0,0 +1,562 @@
++++ b/kernel-shark-qt/src/KsAdvFilteringDialog.cpp
+@@ -0,0 +1,440 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +
 +/*
@@ -78,574 +80,452 @@ index 0000000..ee1abc3
 + */
 +
 +/**
-+ *  @file    KsCaptureDialog.cpp
-+ *  @brief   Dialog for trace data recording.
++ *  @file    KsAdvFilteringDialog.cpp
++ *  @brief   GUI Dialog for Advanced filtering settings.
 + */
 +
-+// Qt
-+#include <QLocalSocket>
-+
 +// KernelShark
++#include "KsAdvFilteringDialog.hpp"
 +#include "libkshark.h"
 +#include "KsUtils.hpp"
-+#include "KsCmakeDef.hpp"
-+#include "KsCaptureDialog.hpp"
 +
-+static inline tep_handle *local_events()
++/** Create dialog for Advanced Filtering. */
++KsAdvFilteringDialog::KsAdvFilteringDialog(QWidget *parent)
++: QDialog(parent),
++  _condToolBar1(this),
++  _condToolBar2(this),
++  _condToolBar3(this),
++  _descrLabel(this),
++  _sysEvLabel("System/Event: ", &_condToolBar1),
++  _opsLabel("Operator: ", this),
++  _fieldLabel("Field: ", this),
++  _systemComboBox(&_condToolBar1),
++  _eventComboBox(&_condToolBar1),
++  _opsComboBox(&_condToolBar2),
++  _fieldComboBox(&_condToolBar3),
++  _filterEdit(this),
++  _helpButton("Show Help", this),
++  _insertEvtButton("Insert", this),
++  _insertOpButton("Insert", this),
++  _insertFieldButton("Insert", this),
++  _applyButton("Apply", this),
++  _cancelButton("Cancel", this)
 +{
-+	return tracecmd_local_events(tracecmd_get_tracing_dir());
-+}
++	struct kshark_context *kshark_ctx(NULL);
++	int buttonWidth;
 +
-+/** @brief Create KsCaptureControl widget. */
-+KsCaptureControl::KsCaptureControl(QWidget *parent)
-+: QWidget(parent),
-+  _localTEP(local_events()),
-+  _eventsWidget(_localTEP, this),
-+  _pluginsLabel("Plugin: ", this),
-+  _outputLabel("Output file: ", this),
-+  _commandLabel("Command: ", this),
-+  _outputLineEdit("trace.dat", this),
-+  _commandLineEdit("sleep 0.1", this),
-+  _settingsToolBar(this),
-+  _controlToolBar(this),
-+  _pluginsComboBox(this),
-+  _importSettingsButton("Import Settings", this),
-+  _exportSettingsButton("Export Settings", this),
-+  _outputBrowseButton("Browse", this),
-+  _commandCheckBox("Display output", this),
-+  _captureButton("Capture", &_controlToolBar),
-+  _applyButton("Apply", &_controlToolBar),
-+  _closeButton("Close", &_controlToolBar)
-+{
-+	QStringList pluginList =3D _getPlugins();
-+	int row(0);
++	if (!kshark_instance(&kshark_ctx))
++		return;
 +
 +	auto lamAddLine =3D [&] {
 +		QFrame* line =3D new QFrame();
-+
 +		line->setFrameShape(QFrame::HLine);
 +		line->setFrameShadow(QFrame::Sunken);
 +		_topLayout.addWidget(line);
 +	};
 +
-+	if (pluginList.count() =3D=3D 0) {
-+		/*
-+		 * No plugins have been found. Most likely this is because
-+		 * the process has no Root privileges.
-+		 */
-+		QString message("Error: No events or plugins found.\n");
-+		message +=3D "Root privileges are required.";
-+		QLabel *errorLabel =3D new QLabel(message);
++	setMinimumWidth(FONT_WIDTH * 80);
 +
-+		errorLabel->setStyleSheet("QLabel {color : red;}");
-+		_topLayout.addWidget(errorLabel);
++	buttonWidth =3D STRING_WIDTH("--Show Help--");
 +
++	_helpButton.setFixedWidth(buttonWidth);
++	_helpButton.setDefault(false);
++	_topLayout.addWidget(&_helpButton);
++
++	connect(&_helpButton,	&QPushButton::pressed,
++		this,		&KsAdvFilteringDialog::_help);
++
++	_descrLabel.setText(_description());
++	_topLayout.addWidget(&_descrLabel);
++
++	/*
++	 * For the moment do not show the syntax description. It will be shown
++	 * only if the "Show Help" button is clicked.
++	 */
++	_descrLabel.hide();
++
++	lamAddLine();
++
++	_getFilters(kshark_ctx);
++
++	if (_filters.count()) {
++		_makeFilterTable(kshark_ctx);
 +		lamAddLine();
 +	}
 +
-+	pluginList.prepend("nop");
++	_condToolBar1.addWidget(&_sysEvLabel);
++	_condToolBar1.addWidget(&_systemComboBox);
++	_condToolBar1.addWidget(&_eventComboBox);
 +
-+	_settingsToolBar.addWidget(&_importSettingsButton);
-+	_settingsToolBar.addSeparator();
-+	_settingsToolBar.addWidget(&_exportSettingsButton);
-+	_topLayout.addWidget(&_settingsToolBar);
++	/*
++	 * Using the old Signal-Slot syntax because QComboBox::currentIndexChange=
+d
++	 * has overloads.
++	 */
++	connect(&_systemComboBox,	SIGNAL(currentIndexChanged(const QString&)),
++		this,			SLOT(_systemChanged(const QString&)));
++
++	connect(&_eventComboBox,	SIGNAL(currentIndexChanged(const QString&)),
++		this,			SLOT(_eventChanged(const QString&)));
++
++	_setSystemCombo(kshark_ctx);
++
++	_condToolBar1.addSeparator();
++	_condToolBar1.addWidget(&_insertEvtButton);
++	_topLayout.addWidget(&_condToolBar1);
++
++	_opsComboBox.addItems(_operators());
++
++	_condToolBar2.addWidget(&_opsLabel);
++	_condToolBar2.addWidget(&_opsComboBox);
++
++	_condToolBar2.addSeparator();
++	_condToolBar2.addWidget(&_insertOpButton);
++	_topLayout.addWidget(&_condToolBar2);
++
++	_condToolBar3.addWidget(&_fieldLabel);
++	_condToolBar3.addWidget(&_fieldComboBox);
++
++	_condToolBar3.addSeparator();
++	_condToolBar3.addWidget(&_insertFieldButton);
++	_topLayout.addWidget(&_condToolBar3);
 +
 +	lamAddLine();
 +
-+	_eventsWidget.setDefault(false);
-+	_eventsWidget.setMinimumHeight(25 * FONT_HEIGHT);
-+	_topLayout.addWidget(&_eventsWidget);
++	_filterEdit.setMinimumWidth(50 * FONT_WIDTH);
++	_topLayout.addWidget(&_filterEdit);
++	this->setLayout(&_topLayout);
 +
-+	_pluginsLabel.adjustSize();
-+	_execLayout.addWidget(&_pluginsLabel, row, 0);
++	buttonWidth =3D STRING_WIDTH("--Cancel--");
++	_applyButton.setFixedWidth(buttonWidth);
++	_applyButton.setDefault(true);
++	_cancelButton.setFixedWidth(buttonWidth);
++	_buttonLayout.addWidget(&_applyButton);
++	_buttonLayout.addWidget(&_cancelButton);
++	_buttonLayout.setAlignment(Qt::AlignLeft);
++	_topLayout.addLayout(&_buttonLayout);
 +
-+	_pluginsComboBox.addItems(pluginList);
-+	_execLayout.addWidget(&_pluginsComboBox, row++, 1);
++	connect(&_insertEvtButton,	&QPushButton::pressed,
++		this,			&KsAdvFilteringDialog::_insertEvt);
 +
-+	_outputLabel.adjustSize();
-+	_execLayout.addWidget(&_outputLabel, row, 0);
-+	_outputLineEdit.setFixedWidth(FONT_WIDTH * 30);
-+	_execLayout.addWidget(&_outputLineEdit, row, 1);
-+	_outputBrowseButton.adjustSize();
-+	_execLayout.addWidget(&_outputBrowseButton, row++, 2);
++	connect(&_insertOpButton,	&QPushButton::pressed,
++		this,			&KsAdvFilteringDialog::_insertOperator);
 +
-+	_commandLabel.adjustSize();
-+	_commandLabel.setFixedWidth(_outputLabel.width());
-+	_execLayout.addWidget(&_commandLabel, row, 0);
-+	_commandLineEdit.setFixedWidth(FONT_WIDTH * 30);
-+	_execLayout.addWidget(&_commandLineEdit, row, 1);
-+	_commandCheckBox.setCheckState(Qt::Unchecked);
-+	_commandCheckBox.adjustSize();
-+	_execLayout.addWidget(&_commandCheckBox, row++, 2);
++	connect(&_insertFieldButton,	&QPushButton::pressed,
++		this,			&KsAdvFilteringDialog::_insertField);
 +
-+	_topLayout.addLayout(&_execLayout);
-+
-+	lamAddLine();
-+
-+	_captureButton.setFixedWidth(STRING_WIDTH("_Capture_") + FONT_WIDTH * 2);
-+	_applyButton.setFixedWidth(_captureButton.width());
-+	_closeButton.setFixedWidth(_captureButton.width());
-+
-+	_controlToolBar.addWidget(&_captureButton);
-+	_controlToolBar.addWidget(&_applyButton);
-+	_controlToolBar.addWidget(&_closeButton);
-+	_topLayout.addWidget(&_controlToolBar);
-+
-+	setLayout(&_topLayout);
-+
-+	connect(&_importSettingsButton,	&QPushButton::pressed,
-+		this,			&KsCaptureControl::_importSettings);
-+
-+	connect(&_exportSettingsButton,	&QPushButton::pressed,
-+		this,			&KsCaptureControl::_exportSettings);
-+
-+	connect(&_outputBrowseButton,	&QPushButton::pressed,
-+		this,			&KsCaptureControl::_browse);
++	_applyButtonConnection =3D
++		connect(&_applyButton,	&QPushButton::pressed,
++			this,		&KsAdvFilteringDialog::_applyPress);
 +
 +	connect(&_applyButton,		&QPushButton::pressed,
-+		this,			&KsCaptureControl::_apply);
++		this,			&QWidget::close);
++
++	connect(&_cancelButton,		&QPushButton::pressed,
++		this,			&QWidget::close);
 +}
 +
-+/**
-+ * Use the settings of the Control panel to generate a list of command lin=
-e
-+ * arguments for trace-cmd.
-+ */
-+QStringList KsCaptureControl::getArgs()
++void KsAdvFilteringDialog::_setSystemCombo(struct kshark_context *kshark_c=
+tx)
 +{
-+	QStringList argv;
-+
-+	argv << "record";
-+	argv << "-p" << _pluginsComboBox.currentText();
-+
-+	if (_eventsWidget.all()) {
-+		argv << "-e" << "all";
-+	} else {
-+		QVector<int> evtIds =3D _eventsWidget.getCheckedIds();
-+		tep_event_format *event;
-+
-+		for (auto const &id: evtIds) {
-+			event =3D tep_find_event(_localTEP, id);
-+			if (!event)
-+				continue;
-+
-+			argv << "-e" + QString(event->system) +
-+				":" + QString(event->name);
-+		}
-+	}
-+
-+	argv << "-o" << outputFileName();
-+	argv << _commandLineEdit.text().split(" ");
-+
-+	return argv;
-+}
-+
-+QStringList KsCaptureControl::_getPlugins()
-+{
-+	QStringList pluginList;
-+	char **all_plugins;
-+
-+	all_plugins =3D tracecmd_local_plugins(tracecmd_get_tracing_dir());
-+
-+	if (!all_plugins)
-+		return pluginList;
-+
-+	for (int i =3D 0; all_plugins[i]; ++i) {
-+		/*
-+		 * TODO plugin selection here.
-+		 * printf("plugin %i %s\n", i, all_plugins[i]);
-+		 */
-+		pluginList << all_plugins[i];
-+		free(all_plugins[i]);
-+	}
-+
-+	free (all_plugins);
-+	qSort(pluginList);
-+
-+	return pluginList;
-+}
-+
-+void KsCaptureControl::_importSettings()
-+{
-+	int nEvts =3D tep_get_events_count(_localTEP);
-+	kshark_config_doc *conf, *jevents, *temp;
-+	QVector<bool> v(nEvts, false);
-+	tracecmd_filter_id *eventHash;
 +	tep_event_format **events;
-+	QString fileName;
++	QStringList sysList;
++	int i(0), nEvts(0);
 +
++	if (kshark_ctx->pevent) {
++		nEvts =3D tep_get_events_count(kshark_ctx->pevent);
++		events =3D tep_list_events(kshark_ctx->pevent,
++					 TEP_EVENT_SORT_SYSTEM);
++	}
 +
-+	/** Get all available events. */
-+	events =3D tep_list_events(_localTEP, TEP_EVENT_SORT_SYSTEM);
++	while (i < nEvts) {
++		QString sysName(events[i]->system);
++		sysList << sysName;
++		while (sysName =3D=3D events[i]->system) {
++			if (++i =3D=3D nEvts)
++				break;
++		}
++	}
 +
-+	/* Get the configuration document. */
-+	fileName =3D QFileDialog::getOpenFileName(this,
-+						"Import from Filter",
-+						KS_DIR,
-+						"Kernel Shark Config files (*.json);;");
++	qSort(sysList);
++	_systemComboBox.addItems(sysList);
 +
-+	if (fileName.isEmpty())
++	i =3D _systemComboBox.findText("ftrace");
++	if (i >=3D 0)
++		_systemComboBox.setCurrentIndex(i);
++}
++
++QString KsAdvFilteringDialog::_description()
++{
++	QString descrText =3D "Usage:\n";
++	descrText +=3D " <sys/event>[,<sys/event>] : [!][(]<field><op><val>[)]";
++	descrText +=3D "[&&/|| [(]<field><op><val>[)]]\n\n";
++	descrText +=3D "Examples:\n\n";
++	descrText +=3D "   sched/sched_switch : next_prio < 100 && (prev_prio > 1=
+00";
++	descrText +=3D "&& prev_pid !=3D 0)\n\n";
++	descrText +=3D "   irq.* : irq !=3D 38\n\n";
++	descrText +=3D "   .* : common_pid =3D=3D 1234\n";
++
++	return descrText;
++}
++
++QStringList KsAdvFilteringDialog::_operators()
++{
++	QStringList OpsList;
++	OpsList << ":" << "," << "=3D=3D" << "!=3D" << ">" << "<" << ">=3D" << "<=
+=3D";
++	OpsList << "=3D~" << "!~" << "!" << "(" << ")" << "+" << "-";
++	OpsList << "*" << "/" << "<<" << ">>" << "&&" << "||" << "&";
++
++	return OpsList;
++}
++
++void KsAdvFilteringDialog::_getFilters(struct kshark_context *kshark_ctx)
++{
++	tep_event_format **events;
++	char *str;
++
++	events =3D tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
++
++	for (int i =3D 0; events[i]; i++) {
++		str =3D tep_filter_make_string(kshark_ctx->advanced_event_filter,
++					     events[i]->id);
++		if (!str)
++			continue;
++
++		_filters.insert(events[i]->id,
++				QString("%1/%2:%3\n").arg(events[i]->system,
++							  events[i]->name, str));
++
++		free(str);
++	}
++}
++
++void KsAdvFilteringDialog::_makeFilterTable(struct kshark_context *kshark_=
+ctx)
++{
++	QMapIterator<int, QString> f(_filters);
++	QTableWidgetItem *i1, *i2, *i3;
++	QStringList headers;
++	int count(0);
++
++	_table =3D new KsCheckBoxTable(this);
++	_table->setSelectionMode(QAbstractItemView::SingleSelection);
++	headers << "Delete" << "Event" << " Id" << "Filter";
++	_table->init(headers, _filters.count());
++
++	for(auto f : _filters.keys()) {
++		QStringList thisFilter =3D _filters.value(f).split(":");
++
++		i1 =3D new QTableWidgetItem(thisFilter[0]);
++		_table->setItem(count, 1, i1);
++
++		i2 =3D new QTableWidgetItem(tr("%1").arg(f));
++		_table->setItem(count, 2, i2);
++
++		i3 =3D new QTableWidgetItem(thisFilter[1]);
++		_table->setItem(count, 3, i3);
++
++		++count;
++	}
++
++	_table->setVisible(false);
++	_table->resizeColumnsToContents();
++	_table->setVisible(true);
++
++	_topLayout.addWidget(_table);
++}
++
++void KsAdvFilteringDialog::_help()
++{
++	if (_descrLabel.isVisible()) {
++		_descrLabel.hide();
++		QApplication::processEvents();
++
++		_helpButton.setText("Show Help");
++		resize(width(), _noHelpHeight);
++	} else {
++		_helpButton.setText("Hide Help");
++		_noHelpHeight =3D height();
++		_descrLabel.show();
++	}
++}
++
++void KsAdvFilteringDialog::_systemChanged(const QString &sysName)
++{
++	kshark_context *kshark_ctx(NULL);
++	tep_event_format **events;
++	QStringList evtsList;
++	int i, nEvts;
++
++	_eventComboBox.clear();
++	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->pevent)
 +		return;
 +
-+	conf =3D kshark_open_config_file(fileName.toStdString().c_str(),
-+				       "kshark.config.record");
-+	if (!conf)
++	nEvts =3D tep_get_events_count(kshark_ctx->pevent);
++	events =3D tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
++
++	for (i =3D 0; i < nEvts; ++i) {
++		if (sysName =3D=3D events[i]->system)
++			evtsList << events[i]->name;
++	}
++
++	qSort(evtsList);
++	_eventComboBox.addItems(evtsList);
++
++	i =3D _eventComboBox.findText("function");
++	if (i >=3D 0)
++		_eventComboBox.setCurrentIndex(i);
++}
++
++QStringList
++KsAdvFilteringDialog::_getEventFormatFields(struct tep_event_format *event=
+)
++{
++	tep_format_field *field, **fields =3D tep_event_fields(event);
++	QStringList fieldList;
++
++	for (field =3D *fields; field; field =3D field->next)
++		fieldList << field->name;
++
++	free(fields);
++
++	qSort(fieldList);
++	return fieldList;
++}
++
++void KsAdvFilteringDialog::_eventChanged(const QString &evtName)
++{
++	QString sysName =3D _systemComboBox.currentText();
++	kshark_context *kshark_ctx(NULL);
++	tep_event_format **events;
++	QStringList fieldList;
++	int nEvts;
++
++	_fieldComboBox.clear();
++	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->pevent)
 +		return;
 +
-+	/*
-+	 * Load the hash table of selected events from the configuration
-+	 * document.
-+	 */
-+	jevents =3D kshark_config_alloc(KS_CONFIG_JSON);
-+	if (!kshark_config_doc_get(conf, "Events", jevents))
-+		return;
++	nEvts =3D tep_get_events_count(kshark_ctx->pevent);
++	events =3D tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
 +
-+	eventHash =3D tracecmd_filter_id_hash_alloc();
-+	kshark_import_event_filter(_localTEP, eventHash, "Events", jevents);
 +	for (int i =3D 0; i < nEvts; ++i) {
-+		if (tracecmd_filter_id_find(eventHash, events[i]->id))
-+			v[i] =3D true;
-+	}
++		if (evtName =3D=3D events[i]->name &&
++		    sysName =3D=3D events[i]->system) {
++			fieldList =3D _getEventFormatFields(events[i]);
++			_fieldComboBox.addItems(fieldList);
 +
-+	_eventsWidget.set(v);
-+	tracecmd_filter_id_hash_free(eventHash);
-+
-+	/** Get all available plugins. */
-+	temp =3D kshark_string_config_alloc();
-+
-+	if (kshark_config_doc_get(conf, "Plugin", temp))
-+		_pluginsComboBox.setCurrentText(KS_C_STR_CAST(temp->conf_doc));
-+
-+	if (kshark_config_doc_get(conf, "Output", temp))
-+		_outputLineEdit.setText(KS_C_STR_CAST(temp->conf_doc));
-+
-+	if (kshark_config_doc_get(conf, "Command", temp))
-+		_commandLineEdit.setText(KS_C_STR_CAST(temp->conf_doc));
-+}
-+
-+void KsCaptureControl::_exportSettings()
-+{
-+	kshark_config_doc *conf, *events;
-+	json_object *jplugin;
-+	QString plugin, out, comm;
-+	QVector<int> ids;
-+	QString fileName =3D
-+		QFileDialog::getSaveFileName(this,
-+					     "Export to File",
-+					     KS_DIR,
-+					     "Kernel Shark Config files (*.json);;");
-+
-+	if (fileName.isEmpty())
-+		return;
-+
-+	if (!fileName.endsWith(".json")) {
-+		fileName +=3D ".json";
-+		if (QFileInfo(fileName).exists()) {
-+			if (!KsWidgetsLib::fileExistsDialog(fileName))
-+				return;
++			return;
 +		}
 +	}
-+
-+	/* Create a configuration document. */
-+	conf =3D kshark_record_config_new(KS_CONFIG_JSON);
-+	events =3D kshark_filter_config_new(KS_CONFIG_JSON);
-+
-+	/*
-+	 * Use the tracecmd_filter_id to save all selected events in the
-+	 * configuration file.
-+	 */
-+	ids =3D _eventsWidget.getCheckedIds();
-+	tracecmd_filter_id *eventHash =3D tracecmd_filter_id_hash_alloc();
-+	for (auto const &id: ids)
-+		tracecmd_filter_id_add(eventHash, id);
-+
-+	kshark_export_event_filter(_localTEP, eventHash, "Events", events);
-+	kshark_config_doc_add(conf, "Events", events);
-+
-+	tracecmd_filter_id_hash_free(eventHash);
-+
-+	/* Save the plugin. */
-+	plugin =3D _pluginsComboBox.currentText();
-+	jplugin =3D json_object_new_string(plugin.toStdString().c_str());
-+	kshark_config_doc_add(conf, "Plugin", kshark_json_to_conf(jplugin));
-+
-+	/* Save the output file. */
-+	out =3D outputFileName();
-+	json_object *jout =3D json_object_new_string(out.toStdString().c_str());
-+	kshark_config_doc_add(conf, "Output", kshark_json_to_conf(jout));
-+
-+	/* Save the command. */
-+	comm =3D _commandLineEdit.text();
-+	json_object *jcomm =3D json_object_new_string(comm.toStdString().c_str())=
-;
-+	kshark_config_doc_add(conf, "Command", kshark_json_to_conf(jcomm));
-+
-+	kshark_save_config_file(fileName.toStdString().c_str(), conf);
 +}
 +
-+void KsCaptureControl::_browse()
++void KsAdvFilteringDialog::_insertEvt()
 +{
-+	QString fileName =3D
-+		QFileDialog::getSaveFileName(this,
-+					     "Save File",
-+					     KS_DIR,
-+					     "trace-cmd files (*.dat);;All files (*)");
++	QString text =3D _filterEdit.text();
 +
-+	if (!fileName.isEmpty())
-+		_outputLineEdit.setText(fileName);
++	auto set_evt =3D [&] ()
++	{
++		text +=3D _systemComboBox.currentText();
++		text +=3D "/";
++		text +=3D _eventComboBox.currentText();
++	};
++
++	if (text =3D=3D "") {
++		set_evt();
++		text +=3D ":";
++	} else {
++		QString evt =3D text;
++		text =3D "";
++		set_evt();
++		text +=3D ",";
++		text +=3D evt;
++	}
++	_filterEdit.setText(text);
 +}
 +
-+void KsCaptureControl::_apply()
++void KsAdvFilteringDialog::_insertOperator()
 +{
-+	emit argsReady(getArgs().join(" "));
++	QString text =3D _filterEdit.text();
++
++	text +=3D _opsComboBox.currentText();
++	_filterEdit.setText(text);
 +}
 +
-+/** @brief Create KsCaptureMonitor widget. */
-+KsCaptureMonitor::KsCaptureMonitor(QWidget *parent)
-+: QWidget(parent),
-+  _mergedChannels(false),
-+  _argsModified(false),
-+  _panel(this),
-+  _name("Output display", this),
-+  _space("max size ", this),
-+  _readOnlyCB("read only", this),
-+  _maxLinNumEdit(QString("%1").arg(KS_CAP_MON_MAX_LINE_NUM), this),
-+  _consolOutput("", this)
++void KsAdvFilteringDialog::_insertField()
 +{
-+	_panel.setMaximumHeight(FONT_HEIGHT * 1.75);
-+	_panel.addWidget(&_name);
++	QString text =3D _filterEdit.text();
 +
-+	_space.setAlignment(Qt::AlignRight);
-+	_panel.addWidget(&_space);
-+
-+	_maxLinNumEdit.setFixedWidth(FONT_WIDTH * 7);
-+	_panel.addWidget(&_maxLinNumEdit);
-+	_panel.addSeparator();
-+	_readOnlyCB.setCheckState(Qt::Checked);
-+	_panel.addWidget(&_readOnlyCB);
-+	_layout.addWidget(&_panel);
-+
-+	_consolOutput.setStyleSheet("QLabel {background-color : white;}");
-+	_consolOutput.setMinimumWidth(FONT_WIDTH * 60);
-+	_consolOutput.setMinimumHeight(FONT_HEIGHT * 10);
-+	_consolOutput.setMaximumBlockCount(KS_CAP_MON_MAX_LINE_NUM);
-+
-+	_space.setMinimumWidth(FONT_WIDTH * 50 - _name.width() - _readOnlyCB.widt=
-h());
-+	_consolOutput.setReadOnly(true);
-+	_layout.addWidget(&_consolOutput);
-+
-+	this->setLayout(&_layout);
-+
-+	connect(&_maxLinNumEdit,	&QLineEdit::textChanged,
-+		this,			&KsCaptureMonitor::_maxLineNumber);
-+
-+	connect(&_readOnlyCB,		&QCheckBox::stateChanged,
-+		this,			&KsCaptureMonitor::_readOnly);
-+
-+	connect(&_consolOutput,		&QPlainTextEdit::textChanged,
-+		this,			&KsCaptureMonitor::_argVModified);
-+
-+	this->show();
++	text +=3D _fieldComboBox.currentText();
++	_filterEdit.setText(text);
 +}
 +
-+void KsCaptureMonitor::_maxLineNumber(const QString &test)
++void KsAdvFilteringDialog::_applyPress()
 +{
-+	bool ok;
-+	int max =3D test.toInt(&ok);
++	QMapIterator<int, QString> f(_filters);
++	kshark_context *kshark_ctx(NULL);
++	const char *text;
++	tep_errno ret;
++	char *filter;
++	int i(0);
 +
-+	if (ok)
-+		_consolOutput.setMaximumBlockCount(max);
-+}
-+
-+void KsCaptureMonitor::_readOnly(int state)
-+{
-+	if (state =3D=3D Qt::Checked)
-+		_consolOutput.setReadOnly(true);
-+	else
-+		_consolOutput.setReadOnly(false);
-+}
-+
-+void KsCaptureMonitor::_argsReady(const QString &args)
-+{
-+	_name.setText("Capture options:");
-+	_consolOutput.setPlainText(args);
-+	_argsModified =3D false;
-+}
-+
-+void KsCaptureMonitor::_argVModified()
-+{
-+	_argsModified =3D true;
-+}
-+
-+void KsCaptureMonitor::_printAllStandardError()
-+{
-+	QProcess *_capture =3D (QProcess*) sender();
-+
-+	_consolOutput.moveCursor(QTextCursor::End);
-+	_consolOutput.insertPlainText(_capture->readAllStandardError());
-+	_consolOutput.moveCursor(QTextCursor::End);
-+	QCoreApplication::processEvents();
-+}
-+
-+void KsCaptureMonitor::_printAllStandardOutput()
-+{
-+	QProcess *_capture =3D (QProcess*) sender();
-+
-+	if (!_mergedChannels)
++	if (!kshark_instance(&kshark_ctx))
 +		return;
 +
-+	_consolOutput.appendPlainText(_capture->readAllStandardOutput());
-+	QCoreApplication::processEvents();
-+}
-+
-+/**
-+ * Connect the Capture monitor widget to the signals of the recording proc=
-ess.
-+ */
-+void KsCaptureMonitor::connectMe(QProcess *proc, KsCaptureControl *ctrl)
-+{
-+	connect(proc,	&QProcess::started,
-+		this,	&KsCaptureMonitor::_captureStarted);
-+
-+	/* Using the old Signal-Slot syntax because QProcess::finished has overlo=
-ads. */
-+	connect(proc,	SIGNAL(finished(int, QProcess::ExitStatus)),
-+		this,	SLOT(_captureFinished(int, QProcess::ExitStatus)));
-+
-+	connect(proc,	&QProcess::readyReadStandardError,
-+		this,	&KsCaptureMonitor::_printAllStandardError);
-+
-+	connect(proc,	&QProcess::readyReadStandardOutput,
-+		this,	&KsCaptureMonitor::_printAllStandardOutput);
-+
-+	connect(ctrl,	&KsCaptureControl::argsReady,
-+		this,	&KsCaptureMonitor::_argsReady);
-+}
-+
-+void KsCaptureMonitor::_captureStarted()
-+{
-+	_name.setText("Terminal output:");
-+	_readOnlyCB.setCheckState(Qt::Checked);
-+
-+	QCoreApplication::processEvents();
-+}
-+
-+void KsCaptureMonitor::_captureFinished(int exit, QProcess::ExitStatus sta=
-tus)
-+{
-+	QProcess *_capture =3D (QProcess *)sender();
-+
-+	if (exit !=3D 0 || status !=3D QProcess::NormalExit) {
-+		QString errMessage("Capture process failed: ");
-+
-+		errMessage +=3D _capture->errorString();
-+		_consolOutput.appendPlainText(errMessage);
-+
-+		QCoreApplication::processEvents();
-+	}
-+}
-+
-+/** Print a message. */
-+void KsCaptureMonitor::print(const QString &message)
-+{
-+	_consolOutput.appendPlainText(message);
-+}
-+
-+/** @brief Create KsCaptureDialog widget. */
-+KsCaptureDialog::KsCaptureDialog(QWidget *parent)
-+: QWidget(parent),
-+  _captureCtrl(this),
-+  _captureMon(this),
-+  _captureProc(this)
-+{
-+	QString captureExe(TRACECMD_BIN_DIR);
-+
-+	this->setWindowTitle("Capture");
-+	_layout.addWidget(&_captureCtrl);
-+	_layout.addWidget(&_captureMon);
-+	this->setLayout(&_layout);
-+
-+	connect(&_captureCtrl._commandCheckBox,	&QCheckBox::stateChanged,
-+		this,				&KsCaptureDialog::_setChannelMode);
-+
-+	connect(&_captureCtrl._captureButton,	&QPushButton::pressed,
-+		this,				&KsCaptureDialog::_capture);
-+
-+	connect(&_captureCtrl._closeButton,	&QPushButton::pressed,
-+		this,				&KsCaptureDialog::close);
-+
-+	captureExe +=3D "/trace-cmd";
-+	_captureProc.setProgram(captureExe);
-+
-+	_captureMon.connectMe(&_captureProc, &_captureCtrl);
-+}
-+
-+void KsCaptureDialog::_capture()
-+{
-+	QStringList argv;
-+	int argc;
-+
-+	if(_captureMon._argsModified) {
-+		argv =3D _captureMon.text().split(" ");
-+	} else {
-+		argv =3D _captureCtrl.getArgs();
-+	}
-+
-+	_captureMon.print("\n");
-+	_captureMon.print(QString("trace-cmd " + argv.join(" ") + "\n"));
-+	_captureProc.setArguments(argv);
-+	_captureProc.start();
-+	_captureProc.waitForFinished();
-+
-+	argc =3D argv.count();
-+	for (int i =3D 0; i < argc; ++i) {
-+		if (argv[i] =3D=3D "-o") {
-+			_sendOpenReq(argv[i + 1]);
-+			break;
++	while (f.hasNext()) {
++		f.next();
++		if (_table->_cb[i]->checkState() =3D=3D Qt::Checked) {
++			tep_filter_remove_event(kshark_ctx->advanced_event_filter,
++						f.key());
 +		}
++		++i;
 +	}
 +
-+	/* Reset the _argsModified flag. */
-+	_captureMon._argsModified =3D false;
-+}
++	auto job_done =3D [&]() {
++		/*
++		* Disconnect Apply button. This is done in order to protect
++		* against multiple clicks.
++		*/
++		disconnect(_applyButtonConnection);
++		emit dataReload();
++	};
 +
-+void KsCaptureDialog::_setChannelMode(int state)
-+{
-+	if (state > 0) {
-+		_captureMon._mergedChannels =3D true;
-+	} else {
-+		_captureMon._mergedChannels =3D false;
++	text =3D _filterEdit.text().toLocal8Bit().data();
++	if (strlen(text) =3D=3D 0) {
++		job_done();
++		return;
 +	}
-+}
 +
-+void KsCaptureDialog::_sendOpenReq(const QString &fileName)
-+{
-+	QLocalSocket *socket =3D new QLocalSocket(this);
++	filter =3D (char*) malloc(strlen(text) + 1);
++	strcpy(filter, text);
 +
-+	socket->connectToServer("KSCapture", QIODevice::WriteOnly);
-+	if (socket->waitForConnected()) {
-+		QByteArray block;
-+		QDataStream out(&block, QIODevice::WriteOnly);
-+		const QString message =3D fileName;
++	ret =3D tep_filter_add_filter_str(kshark_ctx->advanced_event_filter,
++					   filter);
 +
-+		out << quint32(message.size());
-+		out << message;
++	if (ret < 0) {
++		char error_str[200];
 +
-+		socket->write(block);
-+		socket->flush();
-+		socket->disconnectFromServer();
-+	} else {
-+		_captureMon.print(socket->errorString());
++		tep_strerror(kshark_ctx->pevent, ret, error_str,
++						       sizeof(error_str));
++
++		fprintf(stderr, "filter failed due to: %s\n", error_str);
++		free(filter);
++
++		return;
 +	}
++
++	free(filter);
++
++	job_done();
 +}
-diff --git a/kernel-shark-qt/src/KsCaptureDialog.hpp b/kernel-shark-qt/src/=
-KsCaptureDialog.hpp
+diff --git a/kernel-shark-qt/src/KsAdvFilteringDialog.hpp b/kernel-shark-qt=
+/src/KsAdvFilteringDialog.hpp
 new file mode 100644
-index 0000000..d65f475
+index 0000000..cde685c
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsCaptureDialog.hpp
-@@ -0,0 +1,185 @@
++++ b/kernel-shark-qt/src/KsAdvFilteringDialog.hpp
+@@ -0,0 +1,91 @@
 +/* SPDX-License-Identifier: LGPL-2.1 */
 +
 +/*
@@ -653,12 +533,12 @@ index 0000000..d65f475
 + */
 +
 +/**
-+ *  @file    KsCaptureDialog.hpp
-+ *  @brief   Dialog for trace data recording.
++ *  @file    KsAdvFilteringDialog.hpp
++ *  @brief   GUI Dialog for Advanced filtering settings.
 + */
 +
-+#ifndef _KS_CAPTURE_H
-+#define _KS_CAPTURE_H
++#ifndef _KS_ADV_FILTERING_DIALOG_H
++#define _KS_ADV_FILTERING_DIALOG_H
 +
 +// Qt
 +#include <QtWidgets>
@@ -667,172 +547,76 @@ index 0000000..d65f475
 +#include "KsWidgetsLib.hpp"
 +
 +/**
-+ * The KsCaptureControl class provides a control panel for the KernelShark
-+ * Capture dialog.
++ * The KsAdvFilteringDialog class provides a dialog for Advanced filtering=
+.
 + */
-+class KsCaptureControl : public QWidget
++class KsAdvFilteringDialog : public QDialog
 +{
 +	Q_OBJECT
 +public:
-+	explicit KsCaptureControl(QWidget *parent =3D 0);
-+
-+	QStringList getArgs();
-+
-+	/** Get the name of the tracing data output file. */
-+	QString outputFileName() const {return _outputLineEdit.text();}
-+
-+	/** Set the name of the tracing data output file. */
-+	void setOutputFileName(const QString &f) {_outputLineEdit.setText(f);}
++	explicit KsAdvFilteringDialog(QWidget *parent =3D nullptr);
 +
 +signals:
-+	/** This signal is emitted when the "Apply" button is pressed. */
-+	void argsReady(const QString &args);
++	/** Signal emitted when the _apply button of the dialog is pressed. */
++	void dataReload();
 +
 +private:
-+	tep_handle		*_localTEP;
++	int 			_noHelpHeight;
 +
-+	KsEventsCheckBoxWidget	_eventsWidget;
++	QMap<int, QString>	_filters;
++
++	KsCheckBoxTable		*_table;
 +
 +	QVBoxLayout	_topLayout;
 +
-+	QGridLayout	_execLayout;
++	QHBoxLayout	_buttonLayout;
 +
-+	QLabel		_pluginsLabel, _outputLabel, _commandLabel;
++	QToolBar	_condToolBar1, _condToolBar2, _condToolBar3;
 +
-+	QLineEdit	_outputLineEdit, _commandLineEdit;
++	QLabel		_descrLabel, _sysEvLabel, _opsLabel, _fieldLabel;
 +
-+	QToolBar	_settingsToolBar, _controlToolBar;
++	QComboBox	_systemComboBox, _eventComboBox;
 +
-+	QComboBox	_pluginsComboBox;
++	QComboBox	_opsComboBox, _fieldComboBox;
 +
-+	QPushButton	_importSettingsButton, _exportSettingsButton;
++	QLineEdit	_filterEdit;
 +
-+	QPushButton	_outputBrowseButton;
++	QPushButton	_helpButton;
 +
-+	QStringList _getPlugins();
++	QPushButton	_insertEvtButton, _insertOpButton, _insertFieldButton;
 +
-+	void _importSettings();
++	QPushButton	_applyButton, _cancelButton;
 +
-+	void _exportSettings();
++	QMetaObject::Connection		_applyButtonConnection;
 +
-+	void _browse();
++	void _help();
 +
-+	void _apply();
++	void _applyPress();
 +
-+public:
-+	/**
-+	 * A Check box used to indicate if the output of the command needs to
-+	 * be shown by the KsCaptureMonitor widget.
-+	 */
-+	QCheckBox	_commandCheckBox;
++	void _insertEvt();
 +
-+	/** Capture button for the control panel. */
-+	QPushButton	_captureButton;
++	void _insertOperator();
 +
-+	/** Apply button for the control panel. */
-+	QPushButton	_applyButton;
++	void _insertField();
 +
-+	/** Close button for the control panel. */
-+	QPushButton	_closeButton;
-+};
++	QString _description();
 +
-+/**
-+ * The KsCaptureMonitor class provides a terminal-like widget for monitori=
-ng
-+ * the tracing data recording process.
-+ */
-+class KsCaptureMonitor : public QWidget
-+{
-+	Q_OBJECT
-+public:
-+	explicit KsCaptureMonitor(QWidget *parent =3D 0);
++	QStringList _operators();
 +
-+	/** Get the text shown by the widget. */
-+	QString text() const {return _consolOutput.toPlainText();}
++	void _getFilters(struct kshark_context *kshark_ctx);
 +
-+	/** Clear the text shown by the widget. */
-+	void clear() {_consolOutput.clear();}
++	void _makeFilterTable(struct kshark_context *kshark_ctx);
 +
-+	void print(const QString &message);
++	QStringList _getEventFormatFields(struct tep_event_format *event);
 +
-+	void connectMe(QProcess *proc, KsCaptureControl *ctrl);
-+
-+	/** A flag indicating if the stdout and stderr channels are _merged. */
-+	bool		_mergedChannels;
-+
-+	/**
-+	 * A flag indicating, if the list of the command line arguments for trace=
--cmd
-+	 * has been edited by the user.
-+	 */
-+	bool		_argsModified;
-+
-+private:
-+	QVBoxLayout	_layout;
-+
-+	QToolBar	_panel;
-+
-+	QLabel		_name, _space;
-+
-+	QCheckBox	_readOnlyCB;
-+
-+	QLineEdit	_maxLinNumEdit;
-+
-+	QPlainTextEdit	_consolOutput;
-+
-+	void _argsReady(const QString &test);
-+
-+	void _maxLineNumber(const QString &test);
-+
-+	void _readOnly(int);
-+
-+	void _argVModified();
-+
-+	void _captureStarted();
-+
-+	void _printAllStandardError();
-+
-+	void _printAllStandardOutput();
++	void _setSystemCombo(struct kshark_context *kshark_ctx);
 +
 +private slots:
-+	void _captureFinished(int, QProcess::ExitStatus);
++	void _systemChanged(const QString&);
++
++	void _eventChanged(const QString&);
 +};
 +
-+/** Default number of lines shown by the KsCaptureMonitor widget. */
-+#define KS_CAP_MON_MAX_LINE_NUM 200
-+
-+/**
-+ * The KsCaptureDialog class provides a dialog for recording of tracing da=
-ta.
-+ */
-+class KsCaptureDialog : public QWidget
-+{
-+	Q_OBJECT
-+public:
-+	explicit KsCaptureDialog(QWidget *parent =3D 0);
-+
-+	/** Set the name of the tracing data output file. */
-+	void setOutputFileName(const QString &f)
-+	{
-+		_captureCtrl.setOutputFileName(f);
-+	}
-+
-+private:
-+	QHBoxLayout		_layout;
-+
-+	KsCaptureControl	_captureCtrl;
-+
-+	KsCaptureMonitor	_captureMon;
-+
-+	QProcess		_captureProc;
-+
-+	void _capture();
-+
-+	void _setChannelMode(int state);
-+
-+	void _sendOpenReq(const QString &fileName);
-+};
-+
-+#endif // _KS_CAPTURE_H
++#endif // _KS_ADV_FILTERING_DIALOG_H
 --=20
 2.17.1
