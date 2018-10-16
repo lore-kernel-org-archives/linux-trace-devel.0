@@ -1,18 +1,18 @@
 Return-Path: <SRS0=XQBu=M4=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-sn1nam01on0073.outbound.protection.outlook.com ([104.47.32.73]:27872
-        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr710064.outbound.protection.outlook.com ([40.107.71.64]:54000
+        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726986AbeJPXoS (ORCPT
+        id S1727223AbeJPXoT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Oct 2018 19:44:18 -0400
+        Tue, 16 Oct 2018 19:44:19 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>,
         Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH v2 04/23] kernel-shark-qt: Add Trace Viewer widget.
-Date: Tue, 16 Oct 2018 15:53:01 +0000
-Message-ID: <20181016155232.5257-5-ykaradzhov@vmware.com>
+Subject: [PATCH v2 07/23] kernel-shark-qt: Add Trace Graph widget.
+Date: Tue, 16 Oct 2018 15:53:05 +0000
+Message-ID: <20181016155232.5257-8-ykaradzhov@vmware.com>
 References: <20181016155232.5257-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181016155232.5257-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -24,54 +24,52 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 
 From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-This patch defines widget for browsing in the trace data shown in a text
-form. The provides a search panel and a Table view area. The panel and
-the table are integrated with the Dual Marker.
+This patch defines widget for interactive visualization of trace data
+shown as time-series. The provides an info panel and a graph plotting
+area (KsGLWidget). The panel and the plotting area are integrated with
+the Dual Marker.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark-qt/src/CMakeLists.txt    |   6 +-
- kernel-shark-qt/src/KsTraceViewer.cpp | 657 ++++++++++++++++++++++++++
- kernel-shark-qt/src/KsTraceViewer.hpp | 149 ++++++
- 3 files changed, 810 insertions(+), 2 deletions(-)
- create mode 100644 kernel-shark-qt/src/KsTraceViewer.cpp
- create mode 100644 kernel-shark-qt/src/KsTraceViewer.hpp
+ kernel-shark-qt/src/CMakeLists.txt   |   2 +
+ kernel-shark-qt/src/KsTraceGraph.cpp | 690 +++++++++++++++++++++++++++
+ kernel-shark-qt/src/KsTraceGraph.hpp | 137 ++++++
+ 3 files changed, 829 insertions(+)
+ create mode 100644 kernel-shark-qt/src/KsTraceGraph.cpp
+ create mode 100644 kernel-shark-qt/src/KsTraceGraph.hpp
 
 diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMake=
 Lists.txt
-index 3fd518b..3f40930 100644
+index 2ca5187..d406866 100644
 --- a/kernel-shark-qt/src/CMakeLists.txt
 +++ b/kernel-shark-qt/src/CMakeLists.txt
-@@ -34,14 +34,16 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
-     set (ks-guiLib_hdr  KsUtils.hpp
-                         KsModels.hpp
+@@ -36,6 +36,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+                         KsGLWidget.hpp
                          KsDualMarker.hpp
--                        KsWidgetsLib.hpp)
-+                        KsWidgetsLib.hpp
-+                        KsTraceViewer.hpp)
+                         KsWidgetsLib.hpp
++                        KsTraceGraph.hpp
+                         KsTraceViewer.hpp)
 =20
      QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
-=20
-     add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp
-                                                             KsModels.cpp
+@@ -45,6 +46,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+                                                             KsGLWidget.cpp
                                                              KsDualMarker.c=
 pp
--                                                            KsWidgetsLib.c=
-pp)
-+                                                            KsWidgetsLib.c=
+                                                             KsWidgetsLib.c=
 pp
-+                                                            KsTraceViewer.=
++                                                            KsTraceGraph.c=
+pp
+                                                             KsTraceViewer.=
 cpp)
 =20
      target_link_libraries(kshark-gui kshark-plot
-                                      ${CMAKE_DL_LIBS}
-diff --git a/kernel-shark-qt/src/KsTraceViewer.cpp b/kernel-shark-qt/src/Ks=
-TraceViewer.cpp
+diff --git a/kernel-shark-qt/src/KsTraceGraph.cpp b/kernel-shark-qt/src/KsT=
+raceGraph.cpp
 new file mode 100644
-index 0000000..7f12365
+index 0000000..21a09d0
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsTraceViewer.cpp
-@@ -0,0 +1,657 @@
++++ b/kernel-shark-qt/src/KsTraceGraph.cpp
+@@ -0,0 +1,690 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +
 +/*
@@ -79,148 +77,169 @@ index 0000000..7f12365
 + */
 +
 +/**
-+ *  @file    KsTraceViewer.cpp
-+ *  @brief   KernelShark Trace Viewer widget.
++ *  @file    KsTraceGraph.cpp
++ *  @brief   KernelShark Trace Graph widget.
 + */
 +
-+// C++11
-+#include <thread>
-+#include <future>
-+
 +// KernelShark
-+#include "KsTraceViewer.hpp"
-+#include "KsWidgetsLib.hpp"
++#include "KsUtils.hpp"
++#include "KsDualMarker.hpp"
++#include "KsTraceGraph.hpp"
 +
-+/** Create a default (empty) Trace viewer widget. */
-+KsTraceViewer::KsTraceViewer(QWidget *parent)
++/** Create a default (empty) Trace graph widget. */
++KsTraceGraph::KsTraceGraph(QWidget *parent)
 +: QWidget(parent),
-+  _view(this),
-+  _model(this),
-+  _proxyModel(this),
-+  _tableHeader(_model.header()),
-+  _toolbar(this),
-+  _labelSearch("Search: Column", this),
-+  _labelGrFollows("Graph follows  ", this),
-+  _columnComboBox(this),
-+  _selectComboBox(this),
-+  _searchLineEdit(this),
-+  _prevButton("Prev", this),
-+  _nextButton("Next", this),
-+  _searchStopButton(QIcon::fromTheme("process-stop"), "", this),
-+  _pbAction(nullptr),
-+  _graphFollowsCheckBox(this),
-+  _searchProgBar(this),
-+  _searchCountLabel("", this),
-+  _searchDone(false),
-+  _graphFollows(true),
++  _pointerBar(this),
++  _navigationBar(this),
++  _zoomInButton("+", this),
++  _quickZoomInButton("++", this),
++  _zoomOutButton("-", this),
++  _quickZoomOutButton("- -", this),
++  _scrollLeftButton("<", this),
++  _scrollRightButton(">", this),
++  _labelP1("Pointer: ", this),
++  _labelP2("", this),
++  _labelI1("", this),
++  _labelI2("", this),
++  _labelI3("", this),
++  _labelI4("", this),
++  _labelI5("", this),
++  _scrollArea(this),
++  _drawWindow(&_scrollArea),
++  _legendWindow(&_drawWindow),
++  _legendAxisX(&_drawWindow),
++  _labelXMin("", &_legendAxisX),
++  _labelXMid("", &_legendAxisX),
++  _labelXMax("", &_legendAxisX),
++  _glWindow(&_drawWindow),
 +  _mState(nullptr),
-+  _data(nullptr)
++  _data(nullptr),
++  _keyPressed(false)
 +{
-+	int bWidth;
++	auto lamMakeNavButton =3D [&](QPushButton *b) {
++		b->setMaximumWidth(FONT_WIDTH * 5);
 +
-+	this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
++		connect(b,	&QPushButton::released,
++			this,	&KsTraceGraph::_stopUpdating);
++		_navigationBar.addWidget(b);
++	};
 +
-+	/* Make a search toolbar. */
-+	_toolbar.setOrientation(Qt::Horizontal);
-+	_toolbar.setMaximumHeight(FONT_HEIGHT * 1.75);
++	_pointerBar.setMaximumHeight(FONT_HEIGHT * 1.75);
++	_pointerBar.setOrientation(Qt::Horizontal);
 +
-+	/* On the toolbar make two Combo boxes for the search settings. */
-+	_toolbar.addWidget(&_labelSearch);
-+	_columnComboBox.addItems(_tableHeader);
++	_navigationBar.setMaximumHeight(FONT_HEIGHT * 1.75);
++	_navigationBar.setMinimumWidth(FONT_WIDTH * 90);
++	_navigationBar.setOrientation(Qt::Horizontal);
 +
-+	/*
-+	 * Using the old Signal-Slot syntax because
-+	 * QComboBox::currentIndexChanged has overloads.
-+	 */
-+	connect(&_columnComboBox,	SIGNAL(currentIndexChanged(int)),
-+		this,			SLOT(_searchEdit(int)));
++	_pointerBar.addWidget(&_labelP1);
++	_labelP2.setFrameStyle(QFrame::Panel | QFrame::Sunken);
++	_labelP2.setStyleSheet("QLabel { background-color : white;}");
++	_labelP2.setTextInteractionFlags(Qt::TextSelectableByMouse);
++	_labelP2.setFixedWidth(FONT_WIDTH * 16);
++	_pointerBar.addWidget(&_labelP2);
++	_pointerBar.addSeparator();
 +
-+	_toolbar.addWidget(&_columnComboBox);
++	_labelI1.setStyleSheet("QLabel {color : blue;}");
++	_labelI2.setStyleSheet("QLabel {color : green;}");
++	_labelI3.setStyleSheet("QLabel {color : red;}");
++	_labelI4.setStyleSheet("QLabel {color : blue;}");
++	_labelI5.setStyleSheet("QLabel {color : green;}");
 +
-+	_selectComboBox.addItem("contains");
-+	_selectComboBox.addItem("full match");
-+	_selectComboBox.addItem("does not have");
++	_pointerBar.addWidget(&_labelI1);
++	_pointerBar.addSeparator();
++	_pointerBar.addWidget(&_labelI2);
++	_pointerBar.addSeparator();
++	_pointerBar.addWidget(&_labelI3);
++	_pointerBar.addSeparator();
++	_pointerBar.addWidget(&_labelI4);
++	_pointerBar.addSeparator();
++	_pointerBar.addWidget(&_labelI5);
 +
-+	/*
-+	 * Using the old Signal-Slot syntax because
-+	 * QComboBox::currentIndexChanged has overloads.
-+	 */
-+	connect(&_selectComboBox,	SIGNAL(currentIndexChanged(int)),
-+		this,			SLOT(_searchEdit(int)));
++	_legendAxisX.setFixedHeight(FONT_HEIGHT * 1.5);
++	_legendAxisX.setLayout(new QHBoxLayout);
++	_legendAxisX.layout()->setSpacing(0);
++	_legendAxisX.layout()->setContentsMargins(0, 0, FONT_WIDTH, 0);
 +
-+	_toolbar.addWidget(&_selectComboBox);
++	_labelXMin.setAlignment(Qt::AlignLeft);
++	_labelXMid.setAlignment(Qt::AlignHCenter);
++	_labelXMax.setAlignment(Qt::AlignRight);
 +
-+	/* On the toolbar, make a Line edit field for search. */
-+	_searchLineEdit.setMaximumWidth(FONT_WIDTH * 20);
++	_legendAxisX.layout()->addWidget(&_labelXMin);
++	_legendAxisX.layout()->addWidget(&_labelXMid);
++	_legendAxisX.layout()->addWidget(&_labelXMax);
++	_drawWindow.setMinimumSize(100, 100);
++	_drawWindow.setStyleSheet("QWidget {background-color : white;}");
 +
-+	connect(&_searchLineEdit,	&QLineEdit::returnPressed,
-+		this,			&KsTraceViewer::_search);
++	_drawLayout.setContentsMargins(0, 0, 0, 0);
++	_drawLayout.setSpacing(0);
++	_drawLayout.addWidget(&_legendAxisX, 0, 1);
++	_drawLayout.addWidget(&_legendWindow, 1, 0);
++	_drawLayout.addWidget(&_glWindow, 1, 1);
++	_drawWindow.setLayout(&_drawLayout);
 +
-+	connect(&_searchLineEdit,	&QLineEdit::textEdited,
-+		this,			&KsTraceViewer::_searchEditText);
++	_drawWindow.installEventFilter(this);
 +
-+	_toolbar.addWidget(&_searchLineEdit);
-+	_toolbar.addSeparator();
++	connect(&_glWindow,	&KsGLWidget::select,
++		this,		&KsTraceGraph::markEntry);
 +
-+	/* On the toolbar, add Prev & Next buttons. */
-+	bWidth =3D FONT_WIDTH * 6;
++	connect(&_glWindow,	&KsGLWidget::found,
++		this,		&KsTraceGraph::_setPointerInfo);
 +
-+	_nextButton.setFixedWidth(bWidth);
-+	_toolbar.addWidget(&_nextButton);
-+	connect(&_nextButton,	&QPushButton::pressed,
-+		this,		&KsTraceViewer::_next);
++	connect(&_glWindow,	&KsGLWidget::notFound,
++		this,		&KsTraceGraph::_resetPointer);
 +
-+	_prevButton.setFixedWidth(bWidth);
-+	_toolbar.addWidget(&_prevButton);
-+	connect(&_prevButton,	&QPushButton::pressed,
-+		this,		&KsTraceViewer::_prev);
++	connect(&_glWindow,	&KsGLWidget::zoomIn,
++		this,		&KsTraceGraph::_zoomIn);
 +
-+	_toolbar.addSeparator();
-+	_searchProgBar.setMaximumWidth(FONT_WIDTH * 10);
-+	_searchProgBar.setRange(0, 200);
-+	_pbAction =3D _toolbar.addWidget(&_searchProgBar);
-+	_pbAction->setVisible(false);
-+	_toolbar.addWidget(&_searchCountLabel);
-+	_searchStopAction =3D _toolbar.addWidget(&_searchStopButton);
-+	_searchStopAction->setVisible(false);
-+	connect(&_searchStopButton,	&QPushButton::pressed,
-+		this,			&KsTraceViewer::_searchStop);
++	connect(&_glWindow,	&KsGLWidget::zoomOut,
++		this,		&KsTraceGraph::_zoomOut);
 +
-+	/*
-+	 * On the toolbar, make a Check box for connecting the search pannel
-+	 * to the Graph widget.
-+	 */
-+	_toolbar.addSeparator();
-+	_toolbar.addWidget(&_graphFollowsCheckBox);
-+	_toolbar.addWidget(&_labelGrFollows);
-+	_graphFollowsCheckBox.setCheckState(Qt::Checked);
-+	connect(&_graphFollowsCheckBox,	&QCheckBox::stateChanged,
-+		this,			&KsTraceViewer::_graphFollowsChanged);
++	connect(&_glWindow,	&KsGLWidget::scrollLeft,
++		this,		&KsTraceGraph::_scrollLeft);
 +
-+	/* Initialize the trace viewer. */
-+	_view.horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-+	_view.verticalHeader()->setVisible(false);
-+	_view.setEditTriggers(QAbstractItemView::NoEditTriggers);
-+	_view.setSelectionBehavior(QAbstractItemView::SelectRows);
-+	_view.setSelectionMode(QAbstractItemView::SingleSelection);
-+	_view.verticalHeader()->setDefaultSectionSize(FONT_HEIGHT * 1.25);
++	connect(&_glWindow,	&KsGLWidget::scrollRight,
++		this,		&KsTraceGraph::_scrollRight);
 +
-+	 _proxyModel.setSource(&_model);
-+	_view.setModel(&_proxyModel);
-+	connect(&_proxyModel, &QAbstractItemModel::modelReset,
-+		this, &KsTraceViewer::_searchReset);
++	connect(&_glWindow,	&KsGLWidget::stopUpdating,
++		this,		&KsTraceGraph::_stopUpdating);
 +
-+	_view.setContextMenuPolicy(Qt::CustomContextMenu);
-+	connect(&_view,	&QTableView::customContextMenuRequested,
-+		this,	&KsTraceViewer::_onCustomContextMenu);
++	connect(_glWindow.model(),	&KsGraphModel::modelReset,
++		this,			&KsTraceGraph::_updateTimeLegends);
 +
-+	connect(&_view,	&QTableView::clicked,
-+		this,	&KsTraceViewer::_clicked);
++	_scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
++	_scrollArea.setWidget(&_drawWindow);
 +
-+	/* Set the layout. */
-+	_layout.addWidget(&_toolbar);
-+	_layout.addWidget(&_view);
++	lamMakeNavButton(&_scrollLeftButton);
++	connect(&_scrollLeftButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_scrollLeft);
++
++	lamMakeNavButton(&_zoomInButton);
++	connect(&_zoomInButton,		&QPushButton::pressed,
++		this,			&KsTraceGraph::_zoomIn);
++
++	lamMakeNavButton(&_zoomOutButton);
++	connect(&_zoomOutButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_zoomOut);
++
++	lamMakeNavButton(&_scrollRightButton);
++	connect(&_scrollRightButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_scrollRight);
++
++	_navigationBar.addSeparator();
++
++	lamMakeNavButton(&_quickZoomInButton);
++	connect(&_quickZoomInButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_quickZoomIn);
++
++	lamMakeNavButton(&_quickZoomOutButton);
++	connect(&_quickZoomOutButton,	&QPushButton::pressed,
++		this,			&KsTraceGraph::_quickZoomOut);
++
++	_layout.addWidget(&_pointerBar);
++	_layout.addWidget(&_navigationBar);
++	_layout.addWidget(&_scrollArea);
 +	this->setLayout(&_layout);
++	updateGeom();
 +}
 +
 +/**
@@ -229,337 +248,416 @@ index 0000000..7f12365
 + * @param data: Input location for the KsDataStore object.
 + *	  KsDataStore::loadDataFile() must be called first.
 + */
-+void KsTraceViewer::loadData(KsDataStore *data)
++void KsTraceGraph::loadData(KsDataStore *data)
 +{
 +	_data =3D data;
-+	_model.reset();
-+	_proxyModel.fill(data);
-+	_model.fill(data);
-+	this->_resizeToContents();
-+
-+	this->setMinimumHeight(SCREEN_HEIGHT / 5);
++	_glWindow.loadData(data);
++	_updateGraphLegends();
++	updateGeom();
 +}
 +
-+/** Connect the QTableView widget and the State machine of the Dual marker=
++/** Connect the KsGLWidget widget and the State machine of the Dual marker=
 . */
-+void KsTraceViewer::setMarkerSM(KsDualMarkerSM *m)
++void KsTraceGraph::setMarkerSM(KsDualMarkerSM *m)
 +{
-+	QString styleSheetA, styleSheetB;
-+
 +	_mState =3D m;
-+	_model.setColors(_mState->markerA()._color,
-+			 _mState->markerB()._color);
-+
-+	/*
-+	 * Assign a property to State A of the Dual marker state machine. When
-+	 * the marker is in State A the background color of the selected row
-+	 * will be the same as the color of Marker A.
-+	 */
-+	styleSheetA =3D "selection-background-color : " +
-+		      _mState->markerA()._color.name() + ";";
-+
-+	_mState->stateAPtr()->assignProperty(&_view, "styleSheet",
-+						     styleSheetA);
-+
-+	/*
-+	 * Assign a property to State B. When the marker is in State B the
-+	 * background color of the selected row will be the same as the color
-+	 * of Marker B.
-+	 */
-+	styleSheetB =3D "selection-background-color : " +
-+		      _mState->markerB()._color.name() + ";";
-+
-+	_mState->stateBPtr()->assignProperty(&_view, "styleSheet",
-+						     styleSheetB);
++	_navigationBar.addSeparator();
++	_mState->placeInToolBar(&_navigationBar);
++	_glWindow.setMarkerSM(m);
 +}
 +
-+/** Reset (empty) the table. */
-+void KsTraceViewer::reset()
++/** Reset (empty) the widget. */
++void KsTraceGraph::reset()
 +{
-+	this->setMinimumHeight(FONT_HEIGHT * 10);
-+	_model.reset();
-+	_resizeToContents();
++	/* Clear the all graph lists and update. */
++	_glWindow._cpuList =3D {};
++	_glWindow._taskList =3D {};
++
++	_labelP2.setText("");
++	for (auto l1: {&_labelI1, &_labelI2, &_labelI3, &_labelI4, &_labelI5})
++		l1->setText("");
++
++	_glWindow.model()->reset();
++	_selfUpdate();
++	for (auto l2: {&_labelXMin, &_labelXMid, &_labelXMax})
++		l2->setText("");
 +}
 +
-+void KsTraceViewer::_searchReset()
++void KsTraceGraph::_selfUpdate()
 +{
-+	_searchProgBar.setValue(0);
-+	_searchCountLabel.setText("");
-+	_proxyModel.searchProgress();
-+	_searchDone =3D false;
++	_updateGraphLegends();
++	_updateTimeLegends();
++	_markerReDraw();
++	updateGeom();
 +}
 +
-+/** Get the index of the first (top) visible row. */
-+size_t  KsTraceViewer::getTopRow() const
++void KsTraceGraph::_zoomIn()
 +{
-+	return _view.indexAt(_view.rect().topLeft()).row();
++	_updateGraphs(GraphActions::ZoomIn);
 +}
 +
-+/** Position given row at the top of the table. */
-+void  KsTraceViewer::setTopRow(size_t r)
++void KsTraceGraph::_zoomOut()
 +{
-+	_view.scrollTo(_proxyModel.index(r, 0),
-+		       QAbstractItemView::PositionAtTop);
++	_updateGraphs(GraphActions::ZoomOut);
 +}
 +
-+/** Update the content of the table. */
-+void KsTraceViewer::update(KsDataStore *data)
++void KsTraceGraph::_quickZoomIn()
 +{
-+	/* The Proxy model has to be updated first! */
-+	_proxyModel.fill(data);
-+	_model.update(data);
-+	_data =3D data;
-+	if (_mState->activeMarker()._isSet)
-+		showRow(_mState->activeMarker()._pos, true);
-+}
-+
-+void KsTraceViewer::_onCustomContextMenu(const QPoint &point)
-+{
-+	QModelIndex i =3D _view.indexAt(point);
-+
-+	if (i.isValid()) {
++	/* Bin size will be 100 ns. */
++	_glWindow.model()->quickZoomIn(100);
++	if (_mState->activeMarker()._isSet &&
++	    _mState->activeMarker().isVisible()) {
 +		/*
-+		 * Use the index of the proxy model to retrieve the value
-+		 * of the row number in the source model.
++		 * Use the position of the active marker as
++		 * a focus point of the zoom.
 +		 */
-+		size_t row =3D _proxyModel.mapRowFromSource(i.row());
-+		KsQuickEntryMenu menu(_data, row, this);
-+
-+		connect(&menu,	&KsQuickEntryMenu::plotTask,
-+			this,	&KsTraceViewer::plotTask);
-+
-+		menu.exec(mapToGlobal(point));
++		uint64_t ts =3D _mState->activeMarker()._ts;
++		_glWindow.model()->jumpTo(ts);
 +	}
 +}
 +
-+void KsTraceViewer::_searchEdit(int index)
++void KsTraceGraph::_quickZoomOut()
 +{
-+	_searchReset(); // The search has been modified.
++	_glWindow.model()->quickZoomOut();
 +}
 +
-+void KsTraceViewer::_searchEditText(const QString &text)
++void KsTraceGraph::_scrollLeft()
 +{
-+	_searchReset(); // The search has been modified.
++	_updateGraphs(GraphActions::ScrollLeft);
 +}
 +
-+void KsTraceViewer::_graphFollowsChanged(int state)
++void KsTraceGraph::_scrollRight()
 +{
-+	_graphFollows =3D (bool) state;
-+
-+	if (_graphFollows && _searchDone)
-+		emit select(*_it); // Send a signal to the Graph widget.
++	_updateGraphs(GraphActions::ScrollRight);
 +}
 +
-+static bool notHaveCond(QString searchText, QString itemText)
++void KsTraceGraph::_stopUpdating()
 +{
-+	return !itemText.contains(searchText, Qt::CaseInsensitive);
++	/*
++	 * The user is no longer pressing the action button. Reset the
++	 * "Key Pressed" flag. This will stop the ongoing user action.
++	 */
++	_keyPressed =3D false;
 +}
 +
-+static bool containsCond(QString searchText, QString itemText)
++void KsTraceGraph::_resetPointer(uint64_t ts, int cpu, int pid)
 +{
-+	return itemText.contains(searchText, Qt::CaseInsensitive);
-+}
++	uint64_t sec, usec;
++	QString pointer;
 +
-+static bool matchCond(QString searchText, QString itemText)
-+{
-+	return (itemText.compare(searchText, Qt::CaseInsensitive) =3D=3D 0);
-+}
++	kshark_convert_nano(ts, &sec, &usec);
++	pointer.sprintf("%lu.%lu", sec, usec);
++	_labelP2.setText(pointer);
 +
-+void KsTraceViewer::_search()
-+{
-+	/* Disable the user input until the search is done. */
-+	_searchLineEdit.setReadOnly(true);
-+	if (!_searchDone) {
-+		int xColumn, xSelect;
-+		QString xText;
++	if (pid > 0 && cpu >=3D 0) {
++		struct kshark_context *kshark_ctx(NULL);
 +
-+		/*
-+		 * The search is not done. This means that the search settings
-+		 * have been modified since the last time we searched.
-+		 */
-+		_matchList.clear();
-+		xText =3D _searchLineEdit.text();
-+		xColumn =3D _columnComboBox.currentIndex();
-+		xSelect =3D _selectComboBox.currentIndex();
++		if (!kshark_instance(&kshark_ctx))
++			return;
 +
-+		switch (xSelect) {
-+			case Condition::Containes:
-+				_searchItems(xColumn, xText, &containsCond);
-+				break;
-+
-+			case Condition::Match:
-+				_searchItems(xColumn, xText, &matchCond);
-+				break;
-+
-+			case Condition::NotHave:
-+				_searchItems(xColumn, xText, &notHaveCond);
-+				break;
-+
-+			default:
-+				break;
-+		}
-+
-+		if (!_matchList.empty()) {
-+			this->showRow(*_it, true);
-+
-+			if (_graphFollows)
-+				emit select(*_it); // Send a signal to the Graph widget.
-+		}
++		QString comm(tep_data_comm_from_pid(kshark_ctx->pevent, pid));
++		comm.append("-");
++		comm.append(QString("%1").arg(pid));
++		_labelI1.setText(comm);
++		_labelI2.setText(QString("CPU %1").arg(cpu));
 +	} else {
-+		/*
-+		 * If the search is done, pressing "Enter" is equivalent
-+		 * to pressing "Next" button.
-+		 */
-+		this->_next();
++		_labelI1.setText("");
++		_labelI2.setText("");
 +	}
 +
-+	/* Enable the user input. */
-+	_searchLineEdit.setReadOnly(false);
++	for (auto const &l: {&_labelI3, &_labelI4, &_labelI5}) {
++		l->setText("");
++	}
 +}
 +
-+void KsTraceViewer::_next()
++void KsTraceGraph::_setPointerInfo(size_t i)
 +{
-+	if (!_searchDone) {
-+		_search();
++	kshark_entry *e =3D _data->rows()[i];
++	QString event(kshark_get_event_name_easy(e));
++	QString lat(kshark_get_latency_easy(e));
++	QString info(kshark_get_info_easy(e));
++	QString comm(kshark_get_task_easy(e));
++	QString pointer, elidedText;
++	int labelWidth, width;
++	uint64_t sec, usec;
++
++	kshark_convert_nano(e->ts, &sec, &usec);
++	pointer.sprintf("%lu.%lu", sec, usec);
++	_labelP2.setText(pointer);
++
++	comm.append("-");
++	comm.append(QString("%1").arg(kshark_get_pid_easy(e)));
++
++	_labelI1.setText(comm);
++	_labelI2.setText(QString("CPU %1").arg(e->cpu));
++	_labelI3.setText(lat);
++	_labelI4.setText(event);
++	_labelI5.setText(info);
++	QCoreApplication::processEvents();
++
++	labelWidth =3D
++		_pointerBar.geometry().right() - _labelI4.geometry().right();
++	if (labelWidth > STRING_WIDTH(info) + FONT_WIDTH * 5)
 +		return;
++
++	/*
++	 * The Info string is too long and cannot be displayed on the toolbar.
++	 * Try to fit the text in the available space.
++	 */
++	QFontMetrics metrix(_labelI5.font());
++	width =3D labelWidth - FONT_WIDTH * 3;
++	elidedText =3D metrix.elidedText(info, Qt::ElideRight, width);
++
++	while(labelWidth < STRING_WIDTH(elidedText) + FONT_WIDTH * 5) {
++		width -=3D FONT_WIDTH * 3;
++		elidedText =3D metrix.elidedText(info, Qt::ElideRight, width);
 +	}
 +
-+	if (!_matchList.empty()) { // Items have been found.
-+		++_it; // Move the iterator.
-+		if (_it =3D=3D _matchList.end() ) {
-+			// This is the last item of the list. Go back to the beginning.
-+			_it =3D _matchList.begin();
-+		}
++	_labelI5.setText(elidedText);
++	_labelI5.setVisible(true);
++	QCoreApplication::processEvents();
++}
 +
-+		// Select the row of the item.
-+		showRow(*_it, true);
++/**
++ * @brief Use the active marker to select particular entry.
++ *
++ * @param row: The index of the entry to be selected by the marker.
++ */
++void KsTraceGraph::markEntry(size_t row)
++{
++	int graph, cpuGrId, taskGrId;
 +
-+		if (_graphFollows)
-+			emit select(*_it); // Send a signal to the Graph widget.
++	_glWindow.findGraphIds(*_data->rows()[row], &cpuGrId, &taskGrId);
++
++	/*
++	 * If a Task graph has been found, this Task graph will be
++	 * visible. If no Task graph has been found, make visible
++	 * the corresponding CPU graph.
++	 */
++	if (taskGrId >=3D 0)
++		graph =3D taskGrId;
++	else
++		graph =3D cpuGrId;
++
++	_scrollArea.ensureVisible(0,
++				  _legendAxisX.height() +
++				  _glWindow.vMargin() +
++				  KS_GRAPH_HEIGHT / 2 +
++				  graph*(KS_GRAPH_HEIGHT + _glWindow.vSpacing()),
++				  50,
++				  KS_GRAPH_HEIGHT / 2 + _glWindow.vSpacing() / 2);
++
++	_glWindow.model()->jumpTo(_data->rows()[row]->ts);
++	_mState->activeMarker().set(*_data,
++				    _glWindow.model()->histo(),
++				    row, cpuGrId, taskGrId);
++
++	_mState->updateMarkers(*_data, &_glWindow);
++}
++
++void KsTraceGraph::_markerReDraw()
++{
++	int cpuGrId, taskGrId;
++	size_t row;
++
++	if (_mState->markerA()._isSet) {
++		row =3D _mState->markerA()._pos;
++		_glWindow.findGraphIds(*_data->rows()[row], &cpuGrId, &taskGrId);
++		_mState->markerA().set(*_data,
++				       _glWindow.model()->histo(),
++				       row, cpuGrId, taskGrId);
++	}
++
++	if (_mState->markerB()._isSet) {
++		row =3D _mState->markerB()._pos;
++		_glWindow.findGraphIds(*_data->rows()[row], &cpuGrId, &taskGrId);
++		_mState->markerB().set(*_data,
++				       _glWindow.model()->histo(),
++				       row, cpuGrId, taskGrId);
 +	}
 +}
 +
-+void KsTraceViewer::_prev()
++/**
++ * @brief Redreaw all CPU graphs.
++ *
++ * @param v: CPU ids to be plotted.
++ */
++void KsTraceGraph::cpuReDraw(QVector<int> v)
 +{
-+	if (!_searchDone) {
-+		_search();
++	_glWindow._cpuList =3D v;
++	_selfUpdate();
++}
++
++/**
++ * @brief Redreaw all Task graphs.
++ *
++ * @param v: Process ids of the tasks to be plotted.
++ */
++void KsTraceGraph::taskReDraw(QVector<int> v)
++{
++	_glWindow._taskList =3D v;
++	_selfUpdate();
++}
++
++/** Add (and plot) a CPU graph to the existing list of CPU graphs. */
++void KsTraceGraph::addCPUPlot(int cpu)
++{
++	if (_glWindow._cpuList.contains(cpu))
 +		return;
-+	}
 +
-+	if (!_matchList.empty()) { // Items have been found.
-+		if (_it =3D=3D _matchList.begin()) {
-+			// This is the first item of the list. Go to the last item.
-+			_it =3D _matchList.end() - 1;
-+		} else {
-+			--_it; // Move the iterator.
++	_glWindow._cpuList.append(cpu);
++	_selfUpdate();
++}
++
++/** Add (and plot) a Task graph to the existing list of Task graphs. */
++void KsTraceGraph::addTaskPlot(int pid)
++{
++	if (_glWindow._taskList.contains(pid))
++		return;
++
++	_glWindow._taskList.append(pid);
++	_selfUpdate();
++}
++
++/** Update the content of all graphs. */
++void KsTraceGraph::update(KsDataStore *data)
++{
++	_glWindow.model()->update(data);
++	_selfUpdate();
++}
++
++/** Update the geometry of the widget. */
++void KsTraceGraph::updateGeom()
++{
++	int saWidth, saHeight, dwWidth, hMin;
++
++	/* Set the size of the Scroll Area. */
++	saWidth =3D width() - _layout.contentsMargins().left() -
++			    _layout.contentsMargins().right();
++
++	saHeight =3D height() - _pointerBar.height() -
++			      _navigationBar.height() -
++			      _layout.spacing() * 2 -
++			      _layout.contentsMargins().top() -
++			      _layout.contentsMargins().bottom();
++
++	_scrollArea.resize(saWidth, saHeight);
++
++	/*
++	 * Calculate the width of the Draw Window, taking into account the size
++	 * of the scroll bar.
++	 */
++	dwWidth =3D _scrollArea.width();
++	if (_glWindow.height() + _legendAxisX.height() > _scrollArea.height())
++		dwWidth -=3D
++			qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
++
++	/*
++	 * Set the height of the Draw window according to the number of
++	 * plotted graphs.
++	 */
++	_drawWindow.resize(dwWidth,
++			   _glWindow.height() + _legendAxisX.height());
++
++	/* Set the minimum height of the Graph widget. */
++	hMin =3D _drawWindow.height() +
++	       _pointerBar.height() +
++	       _navigationBar.height() +
++	       _layout.contentsMargins().top() +
++	       _layout.contentsMargins().bottom();
++
++	if (hMin > KS_GRAPH_HEIGHT * 8)
++		hMin =3D KS_GRAPH_HEIGHT * 8;
++
++	setMinimumHeight(hMin);
++
++	/*
++	 * Now use the height of the Draw Window to fix the maximum height
++	 * of the Graph widget.
++	 */
++	setMaximumHeight(_drawWindow.height() +
++			 _pointerBar.height() +
++			 _navigationBar.height() +
++			 _layout.spacing() * 2 +
++			 _layout.contentsMargins().top() +
++			 _layout.contentsMargins().bottom() +
++			 2);  /* Just a little bit of extra space. This will
++			       * allow the scroll bar to disappear when the
++			       * widget is extended to maximum.
++			       */
++}
++
++void KsTraceGraph::_updateGraphLegends()
++{
++	QString graphLegends, graphName;
++	QVBoxLayout *layout;
++	int width =3D 0;
++
++	if (_legendWindow.layout()) {
++		/*
++		 * Remove and delete the existing layout of the legend window.
++		 */
++		QLayoutItem *child;
++		while ((child =3D _legendWindow.layout()->takeAt(0)) !=3D 0) {
++			delete child->widget();
++			delete child;
 +		}
 +
-+		// Select the row of the item.
-+		showRow(*_it, true);
-+
-+		if (_graphFollows)
-+			emit select(*_it); // Send a signal to the Graph widget.
++		delete _legendWindow.layout();
 +	}
++
++	layout =3D new QVBoxLayout;
++	layout->setContentsMargins(FONT_WIDTH, 0, 0, 0);
++	layout->setSpacing(_glWindow.vSpacing());
++	layout->setAlignment(Qt::AlignTop);
++	layout->addSpacing(_glWindow.vMargin());
++
++	auto lamMakeName =3D [&]() {
++		QLabel *name =3D new QLabel(graphName);
++
++		if (width < STRING_WIDTH(graphName))
++			width =3D STRING_WIDTH(graphName);
++
++		name->setAlignment(Qt::AlignBottom);
++		name->setStyleSheet("QLabel {background-color : white;}");
++		name->setFixedHeight(KS_GRAPH_HEIGHT);
++		layout->addWidget(name);
++	};
++
++	for (auto const &cpu: _glWindow._cpuList) {
++		graphName =3D QString("CPU %1").arg(cpu);
++		lamMakeName();
++	}
++
++	for (auto const &pid: _glWindow._taskList) {
++		graphName =3D QString(tep_data_comm_from_pid(_data->tep(),
++							   pid));
++		graphName.append(QString("-%1").arg(pid));
++		lamMakeName();
++	}
++
++	_legendWindow.setLayout(layout);
++	_legendWindow.setMaximumWidth(width + FONT_WIDTH);
 +}
 +
-+void KsTraceViewer::_searchStop()
++void KsTraceGraph::_updateTimeLegends()
 +{
-+	_searchStopAction->setVisible(false);
-+	_proxyModel.searchStop();
-+}
++	uint64_t sec, usec, tsMid;
++	QString tMin, tMid, tMax;
 +
-+void KsTraceViewer::_clicked(const QModelIndex& i)
-+{
-+	if (_graphFollows) {
-+		/*
-+		 * Use the index of the proxy model to retrieve the value
-+		 * of the row number in the base model.
-+		 */
-+		size_t row =3D _proxyModel.mapRowFromSource(i.row());
-+		emit select(row); // Send a signal to the Graph widget.
-+	}
-+}
++	kshark_convert_nano(_glWindow.model()->histo()->min, &sec, &usec);
++	tMin.sprintf("%lu.%lu", sec, usec);
++	_labelXMin.setText(tMin);
 +
-+/** Make a given row of the table visible. */
-+void KsTraceViewer::showRow(size_t r, bool mark)
-+{
-+	/*
-+	 * Use the index in the source model to retrieve the value of the row num=
-ber
-+	 * in the proxy model.
-+	 */
-+	QModelIndex index =3D _proxyModel.mapFromSource(_model.index(r, 0));
++	tsMid =3D (_glWindow.model()->histo()->min +
++		 _glWindow.model()->histo()->max) / 2;
++	kshark_convert_nano(tsMid, &sec, &usec);
++	tMid.sprintf("%lu.%lu", sec, usec);
++	_labelXMid.setText(tMid);
 +
-+	if (mark) { // The row will be selected (colored).
-+		/* Get the first and the last visible rows of the table. */
-+		int visiTot =3D _view.indexAt(_view.rect().topLeft()).row();
-+		int visiBottom =3D _view.indexAt(_view.rect().bottomLeft()).row() - 2;
-+
-+		/* Scroll only if the row to be shown in not vizible. */
-+		if (index.row() < visiTot || index.row() > visiBottom)
-+			_view.scrollTo(index, QAbstractItemView::PositionAtCenter);
-+
-+		_view.selectRow(index.row());
-+	} else {
-+		/*
-+		 * Just make sure that the row is visible. It will show up at
-+		 * the top of the visible part of the table.
-+		 */
-+		_view.scrollTo(index, QAbstractItemView::PositionAtTop);
-+	}
-+}
-+
-+/** Deselects the selected items (row) if any. */
-+void KsTraceViewer::deselect()
-+{
-+	_view.clearSelection();
-+}
-+
-+/** Switch the Dual marker. */
-+void KsTraceViewer::markSwitch()
-+{
-+	/* The state of the Dual marker has changed. Get the new active marker. *=
-/
-+	DualMarkerState state =3D _mState->getState();
-+
-+	/* First deal with the passive marker. */
-+	if (_mState->getMarker(!state)._isSet) {
-+		/*
-+		 * The passive marker is set. Use the model to color the row of
-+		 * the passive marker.
-+		 */
-+		_model.selectRow(!state, _mState->getMarker(!state)._pos);
-+	}
-+	else {
-+		/*
-+		 * The passive marker is not set.
-+		 * Make sure that the model colors nothing.
-+		 */
-+		_model.selectRow(!state, -1);
-+	}
-+
-+	/*
-+	 * Now deal with the active marker. This has to be done after dealing
-+	 *  with the model, because changing the model clears the selection.
-+	 */
-+	if (_mState->getMarker(state)._isSet) {
-+		/*
-+		 * The active marker is set. Use QTableView to select its row.
-+		 * The index in the source model is used to retrieve the value
-+		 * of the row number in the proxy model.
-+		 */
-+		size_t row =3D_mState->getMarker(state)._pos;
-+
-+		QModelIndex index =3D _proxyModel.mapFromSource(_model.index(row, 0));
-+
-+		/*
-+		 * The row of the active marker will be colored according to
-+		 * the assigned property of the current state of the Dual marker.
-+		 */
-+		_view.selectRow(index.row());
-+	} else {
-+		_view.clearSelection();
-+	}
++	kshark_convert_nano(_glWindow.model()->histo()->max, &sec, &usec);
++	tMax.sprintf("%lu.%lu", sec, usec);
++	_labelXMax.setText(tMax);
 +}
 +
 +/**
@@ -567,179 +665,113 @@ ber
 n
 + * resize events.
 + */
-+void KsTraceViewer::resizeEvent(QResizeEvent* event)
++void KsTraceGraph::resizeEvent(QResizeEvent* event)
 +{
-+	int nColumns =3D _tableHeader.count();
-+	int tableSize(0), viewSize, freeSpace;
-+
-+	for (int c =3D 0; c < nColumns; ++c) {
-+		tableSize +=3D _view.columnWidth(c);
-+	}
-+
-+	viewSize =3D _view.width() -
-+		   qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
-+
-+	if ((freeSpace =3D viewSize - tableSize) > 0) {
-+		_view.setColumnWidth(nColumns - 1, _view.columnWidth(nColumns - 1) +
-+						   freeSpace -
-+						   2); /* Just a little bit less space.
-+							* This will allow the scroll bar
-+							* to disappear when the widget
-+							* is extended to maximum. */
-+	}
++	updateGeom();
 +}
 +
 +/**
-+ * Reimplemented event handler used to move the active marker.
++ * Reimplemented event handler (overriding a virtual function from QObject=
+)
++ * used to detect the position of the mouse with respect to the Draw windo=
+w and
++ * according to this position to grab / release the focus of the keyboard.=
+ The
++ * function has nothing to do with the filtering of the trace events.
 + */
-+void KsTraceViewer::keyReleaseEvent(QKeyEvent *event)
++bool KsTraceGraph::eventFilter(QObject* obj, QEvent* evt)
 +{
-+	if (event->key() =3D=3D Qt::Key_Up || event->key() =3D=3D Qt::Key_Down) {
-+		QItemSelectionModel *sm =3D _view.selectionModel();
-+		if (sm->hasSelection()) {
-+			/* Only one row at the time can be selected. */
-+			int row =3D sm->selectedRows()[0].row();
-+			emit select(row); // Send a signal to the Graph widget.
-+		}
++	if (obj =3D=3D &_drawWindow && evt->type() =3D=3D QEvent::Enter)
++		_glWindow.setFocus();
 +
-+		return;
-+	}
++	if (obj =3D=3D &_drawWindow && evt->type() =3D=3D QEvent::Leave)
++		_glWindow.clearFocus();
 +
-+	QWidget::keyReleaseEvent(event);
++	return QWidget::eventFilter(obj, evt);
 +}
 +
-+void KsTraceViewer::_resizeToContents()
++void KsTraceGraph::_updateGraphs(GraphActions action)
 +{
-+	int rows, columnSize;
-+
-+	_view.setVisible(false);
-+	_view.resizeColumnsToContents();
-+	_view.setVisible(true);
++	double k;
++	int bin;
 +
 +	/*
-+	 * Because of some unknown reason the first column doesn't get
-+	 * resized properly by the code above. We will resize this
-+	 * column by hand.
++	 * Set the "Key Pressed" flag. The flag will stay set as long as the user
++	 * keeps the corresponding action button pressed.
 +	 */
-+	rows =3D _model.rowCount({});
-+	columnSize =3D STRING_WIDTH(QString("%1").arg(rows)) + FONT_WIDTH;
-+	_view.setColumnWidth(0, columnSize);
-+}
++	_keyPressed =3D true;
 +
-+size_t KsTraceViewer::_searchItems(int column,
-+				   const QString &searchText,
-+				   condition_func cond)
-+{
-+	int count;
-+
-+	_searchProgBar.show();
-+	_pbAction->setVisible(true);
-+
-+	if (column =3D=3D KsViewModel::TRACE_VIEW_COL_INFO ||
-+	    column =3D=3D KsViewModel::TRACE_VIEW_COL_LAT) {
-+		_searchStopAction->setVisible(true);
-+		_proxyModel.search(column, searchText, cond, &_matchList,
-+				   &_searchProgBar, &_searchCountLabel);
-+
-+		_searchStopAction->setVisible(false);
-+	} else {
-+		_searchItemsMapReduce(column, searchText, cond);
-+	}
-+
-+	count =3D _matchList.count();
-+
-+	_pbAction->setVisible(false);
-+	_searchCountLabel.setText(QString(" %1").arg(count));
-+	_searchDone =3D true;
-+
-+	if (count =3D=3D 0) // No items have been found. Do nothing.
-+		return 0;
-+
-+	QItemSelectionModel *sm =3D _view.selectionModel();
-+	if (sm->hasSelection()) {
-+		/* Only one row at the time can be selected. */
-+		int row =3D sm->selectedRows()[0].row();
-+
-+		_view.clearSelection();
-+		_it =3D _matchList.begin();
-+		/*
-+		 * Move the iterator to the first element of the match list
-+		 * after the selected one.
-+		 */
-+		while (*_it <=3D row) {
-+			++_it;  // Move the iterator.
-+			if (_it =3D=3D _matchList.end()) {
++	/* Initialize the zooming factor with a small value. */
++	k =3D .01;
++	while (_keyPressed) {
++		switch (action) {
++		case GraphActions::ZoomIn:
++			if (_mState->activeMarker()._isSet &&
++			    _mState->activeMarker().isVisible()) {
 +				/*
-+				 * This is the last item of the list. Go back
-+				 * to the beginning.
++				 * Use the position of the active marker as
++				 * a focus point of the zoom.
 +				 */
-+				_it =3D _matchList.begin();
-+				break;
++				bin =3D _mState->activeMarker()._bin;
++				_glWindow.model()->zoomIn(k, bin);
++			} else {
++				/*
++				 * The default focus point is the center of the
++				 * range interval of the model.
++				 */
++				_glWindow.model()->zoomIn(k);
 +			}
++
++			break;
++
++		case GraphActions::ZoomOut:
++			if (_mState->activeMarker()._isSet &&
++			    _mState->activeMarker().isVisible()) {
++				/*
++				 * Use the position of the active marker as
++				 * a focus point of the zoom.
++				 */
++				bin =3D _mState->activeMarker()._bin;
++				_glWindow.model()->zoomOut(k, bin);
++			} else {
++				/*
++				 * The default focus point is the center of the
++				 * range interval of the model.
++				 */
++				_glWindow.model()->zoomOut(k);
++			}
++
++			break;
++
++		case GraphActions::ScrollLeft:
++			_glWindow.model()->shiftBackward(10);
++			break;
++
++		case GraphActions::ScrollRight:
++			_glWindow.model()->shiftForward(10);
++			break;
 +		}
-+	} else {
-+		/* Move the iterator to the beginning of the match list. */
-+		_view.clearSelection();
-+		_it =3D _matchList.begin();
-+	}
 +
-+	return count;
++		/*
++		 * As long as the action button is pressed, the zooming factor
++		 * will grow smoothly until it reaches a maximum value. This
++		 * will have a visible effect of an accelerating zoom.
++		 */
++		if (k < .25)
++			k  *=3D 1.02;
++
++		_mState->updateMarkers(*_data, &_glWindow);
++		_updateTimeLegends();
++		QCoreApplication::processEvents();
++	}
 +}
-+
-+void KsTraceViewer::_searchItemsMapReduce(int column,
-+					  const QString &searchText,
-+					  condition_func cond)
-+{
-+	int nThreads =3D std::thread::hardware_concurrency();
-+	std::vector<QPair<int, int>> ranges(nThreads);
-+	std::vector<std::future<QList<int>>> maps;
-+	int i(0), nRows(_proxyModel.rowCount({}));
-+	int delta(nRows / nThreads);
-+
-+	auto lamSearchMap =3D [&] (const QPair<int, int> &range,
-+				 bool notify) {
-+		return _proxyModel.searchMap(column, searchText, cond,
-+					     range.first, range.second,
-+					     notify);
-+	};
-+
-+	auto lamSearchReduce =3D [&] (QList<int> &resultList,
-+				  const QList<int> &mapList) {
-+		resultList << mapList;
-+		_searchProgBar.setValue(_searchProgBar.value() + 1);
-+	};
-+
-+	for (auto &r: ranges) {
-+		r.first =3D (i++) * delta;
-+		r.second =3D r.first + delta - 1;
-+	}
-+
-+	/*
-+	 * If the range is not multiple of the number of threads, adjust
-+	 * the last range interval.
-+	 */
-+	ranges.back().second =3D nRows - 1;
-+	maps.push_back(std::async(lamSearchMap, ranges[0], true));
-+	for (int r =3D 1; r < nThreads; ++r)
-+		maps.push_back(std::async(lamSearchMap, ranges[r], false));
-+
-+	while (_proxyModel.searchProgress() < KS_PROGRESS_BAR_MAX- nThreads) {
-+		std::unique_lock<std::mutex> lk(_proxyModel._mutex);
-+		_proxyModel._pbCond.wait(lk);
-+		_searchProgBar.setValue(_proxyModel.searchProgress());
-+		QApplication::processEvents();
-+	}
-+
-+	for (auto &m: maps)
-+		lamSearchReduce(_matchList, m.get());
-+}
-diff --git a/kernel-shark-qt/src/KsTraceViewer.hpp b/kernel-shark-qt/src/Ks=
-TraceViewer.hpp
+diff --git a/kernel-shark-qt/src/KsTraceGraph.hpp b/kernel-shark-qt/src/KsT=
+raceGraph.hpp
 new file mode 100644
-index 0000000..2a85e4f
+index 0000000..395cc1b
 --- /dev/null
-+++ b/kernel-shark-qt/src/KsTraceViewer.hpp
-@@ -0,0 +1,149 @@
++++ b/kernel-shark-qt/src/KsTraceGraph.hpp
+@@ -0,0 +1,137 @@
 +/* SPDX-License-Identifier: LGPL-2.1 */
 +
 +/*
@@ -747,34 +779,43 @@ index 0000000..2a85e4f
 + */
 +
 +/**
-+ *  @file    KsTraceViewer.hpp
-+ *  @brief   KernelShark Trace Viewer widget.
++ *  @file    KsTraceGraph.hpp
++ *  @brief   KernelShark Trace Graph widget.
 + */
-+
-+#ifndef _KS_TRACEVIEW_H
-+#define _KS_TRACEVIEW_H
-+
-+// Qt
-+#include <QTableView>
++#ifndef _KS_TRACEGRAPH_H
++#define _KS_TRACEGRAPH_H
 +
 +// KernelShark
-+#include "KsUtils.hpp"
-+#include "KsModels.hpp"
-+#include "KsDualMarker.hpp"
-+
-+/** Matching condition function type. To be user for searchong. */
-+typedef bool (*condition_func)(QString, QString);
++#include "KsGLWidget.hpp"
 +
 +/**
-+ * The KsTraceViewer class provides a widget for browsing in the trace dat=
-a
-+ * shown in a text form.
++ * Scroll Area class, needed in order to reimplemented the handler for mou=
+se
++ * wheel events.
 + */
-+class KsTraceViewer : public QWidget
++class KsGraphScrollArea : public QScrollArea {
++public:
++	/** Create a default Scroll Area. */
++	explicit KsGraphScrollArea(QWidget *parent =3D nullptr)
++	: QScrollArea(parent) {}
++
++	/**
++	 * Reimplemented handler for mouse wheel events. All mouse wheel
++	 * events will be ignored.
++	 */
++	void wheelEvent(QWheelEvent *evt) {evt->ignore();}
++};
++
++/**
++ * The KsTraceViewer class provides a widget for interactive visualization=
+ of
++ * trace data shown as time-series.
++ */
++class KsTraceGraph : public QWidget
 +{
 +	Q_OBJECT
 +public:
-+	explicit KsTraceViewer(QWidget *parent =3D nullptr);
++	explicit KsTraceGraph(QWidget *parent =3D nullptr);
 +
 +	void loadData(KsDataStore *data);
 +
@@ -782,113 +823,93 @@ a
 +
 +	void reset();
 +
-+	size_t getTopRow() const;
++	/** Get the KsGLWidget object. */
++	KsGLWidget *glPtr() {return &_glWindow;}
 +
-+	void setTopRow(size_t r);
++	void markEntry(size_t);
 +
-+	void resizeEvent(QResizeEvent* event) override;
++	void cpuReDraw(QVector<int>);
 +
-+	void keyReleaseEvent(QKeyEvent *event);
++	void taskReDraw(QVector<int>);
 +
-+	void markSwitch();
++	void addCPUPlot(int);
 +
-+	void showRow(size_t r, bool mark);
-+
-+	void deselect();
++	void addTaskPlot(int);
 +
 +	void update(KsDataStore *data);
 +
-+signals:
-+	/** Signal emitted when new row is selected. */
-+	void select(size_t);
++	void updateGeom();
 +
-+	/**
-+	 * This signal is used to re-emitted the plotTask signal of the
-+	 * KsQuickEntryMenu.
-+	 */
-+	void plotTask(int pid);
++	void resizeEvent(QResizeEvent* event) override;
++
++	bool eventFilter(QObject* obj, QEvent* evt) override;
 +
 +private:
-+	QVBoxLayout	_layout;
 +
-+	QTableView	_view;
++	void _zoomIn();
 +
-+	KsViewModel		_model;
++	void _zoomOut();
 +
-+	KsFilterProxyModel	_proxyModel;
++	void _quickZoomIn();
 +
-+	QStringList	_tableHeader;
++	void _quickZoomOut();
 +
-+	QToolBar	_toolbar;
++	void _scrollLeft();
 +
-+	QLabel		_labelSearch, _labelGrFollows;
++	void _scrollRight();
 +
-+	QComboBox	_columnComboBox;
++	void _stopUpdating();
 +
-+	QComboBox	_selectComboBox;
++	void _resetPointer(uint64_t ts, int cpu, int pid);
 +
-+	QLineEdit	_searchLineEdit;
++	void _setPointerInfo(size_t);
 +
-+	QPushButton	_prevButton, _nextButton, _searchStopButton;
++	void _updateTimeLegends();
 +
-+	QAction		*_pbAction, *_searchStopAction;
++	void _updateGraphLegends();
 +
-+	QCheckBox	_graphFollowsCheckBox;
++	void _selfUpdate();
 +
-+	QProgressBar	_searchProgBar;
++	void _markerReDraw();
 +
-+	QLabel		_searchCountLabel;
-+
-+	bool		_searchDone;
-+
-+	bool		_graphFollows;
-+
-+	QList<int>		_matchList;
-+
-+	QList<int>::iterator	_it;
-+
-+	KsDualMarkerSM		*_mState;
-+
-+	KsDataStore		*_data;
-+
-+	enum Condition
-+	{
-+		Containes =3D 0,
-+		Match =3D 1,
-+		NotHave =3D 2
++	enum class GraphActions {
++		ZoomIn,
++		ZoomOut,
++		ScrollLeft,
++		ScrollRight
 +	};
 +
-+	void _searchReset();
++	void _updateGraphs(GraphActions action);
 +
-+	void _resizeToContents();
++	QToolBar	_pointerBar, _navigationBar;
 +
-+	size_t _searchItems(int column, const QString &searchText,
-+			    condition_func cond);
++	QPushButton	_zoomInButton, _quickZoomInButton;
++	QPushButton	_zoomOutButton, _quickZoomOutButton;
 +
-+	void _searchItemsMapReduce(int column, const QString &searchText,
-+				   condition_func cond);
++	QPushButton	_scrollLeftButton, _scrollRightButton;
 +
-+	void _searchEditText(const QString &);
++	QLabel	_labelP1, _labelP2,				  // Pointer
++		_labelI1, _labelI2, _labelI3, _labelI4, _labelI5; // Proc. info
 +
-+	void _graphFollowsChanged(int);
++	KsGraphScrollArea	_scrollArea;
 +
-+	void _search();
++	QWidget		_drawWindow, _legendWindow, _legendAxisX;
 +
-+	void _next();
++	QLabel		_labelXMin, _labelXMid, _labelXMax;
 +
-+	void _prev();
++	KsGLWidget	_glWindow;
 +
-+	void _searchStop();
++	QGridLayout	_drawLayout;
 +
-+	void _clicked(const QModelIndex& i);
++	QVBoxLayout	_layout;
 +
-+	void _onCustomContextMenu(const QPoint &);
++	KsDualMarkerSM	*_mState;
 +
-+private slots:
++	KsDataStore 	*_data;
 +
-+	void _searchEdit(int);
++	bool		 _keyPressed;
 +};
 +
-+#endif // _KS_TRACEVIEW_H
++#endif // _KS_TRACEGRAPH_H
 --=20
 2.17.1
