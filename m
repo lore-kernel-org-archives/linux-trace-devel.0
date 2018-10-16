@@ -1,299 +1,181 @@
 Return-Path: <SRS0=XQBu=M4=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-cys01nam02on0072.outbound.protection.outlook.com ([104.47.37.72]:24316
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727263AbeJPXq4 (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:52206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727032AbeJQCNw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Oct 2018 19:46:56 -0400
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 21/23] kernel-shark-qt: Add Record dialog to KS GUI.
-Date: Tue, 16 Oct 2018 15:53:22 +0000
-Message-ID: <20181016155232.5257-22-ykaradzhov@vmware.com>
-References: <20181016155232.5257-1-ykaradzhov@vmware.com>
-In-Reply-To: <20181016155232.5257-1-ykaradzhov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 16 Oct 2018 22:13:52 -0400
+Date: Tue, 16 Oct 2018 14:22:08 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ceco <tz.stoyanov@gmail.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v2] Introduce new libtracevent API: tep_override_comm()
+Message-ID: <20181016142208.1a8a46dd@gandalf.local.home>
+In-Reply-To: <CAPpZLN6bvSTVq6NBXHPKqH4cMXTxSKeTxk0VMiTAZJpt4mY_5Q@mail.gmail.com>
+References: <20180830150900.27412-1-tz.stoyanov@gmail.com>
+        <20180831062718.3436-1-tz.stoyanov@gmail.com>
+        <CAPpZLN6bvSTVq6NBXHPKqH4cMXTxSKeTxk0VMiTAZJpt4mY_5Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-A Record dialog is added to the Tools menu of the KernelShark GUI.
-The Record dialog can be used only after installing the project
-(sudo make install).
+On Tue, 16 Oct 2018 09:46:07 +0300
+Ceco <tz.stoyanov@gmail.com> wrote:
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark-qt/src/KsMainWindow.cpp | 128 +++++++++++++++++++++++++++
- kernel-shark-qt/src/KsMainWindow.hpp |  22 +++++
- 2 files changed, 150 insertions(+)
+> ping
+> Hi Steven, is there a problem with this patch ? Yordan needs these
+> changes, he wants to use the new API in KernelShark.
+> 
+> On Fri, Aug 31, 2018 at 9:27 AM Tzvetomir Stoyanov (VMware)
+> <tz.stoyanov@gmail.com> wrote:
+> >
+> > Added a new API of tracevent library: tep_override_comm()
+> > It registers a pid / comm mapping. If a mapping with the same
+> > pid already exists, the entry is updated with the new comm.
+> >
+> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> > ---
+> >  include/traceevent/event-parse.h |  1 +
+> >  lib/traceevent/event-parse.c     | 70 +++++++++++++++++++++++++-------
+> >  2 files changed, 56 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
+> > index 713a4e4..0dcc024 100644
+> > --- a/include/traceevent/event-parse.h
+> > +++ b/include/traceevent/event-parse.h
+> > @@ -607,6 +607,7 @@ int tep_set_function_resolver(struct tep_handle *pevent,
+> >                               tep_func_resolver_t *func, void *priv);
+> >  void tep_reset_function_resolver(struct tep_handle *pevent);
+> >  int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid);
+> > +int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid);
+> >  int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_clock);
+> >  int tep_register_function(struct tep_handle *pevent, char *name,
+> >                           unsigned long long addr, char *mod);
+> > diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+> > index ce1e202..1954908 100644
+> > --- a/lib/traceevent/event-parse.c
+> > +++ b/lib/traceevent/event-parse.c
+> > @@ -230,11 +230,13 @@ int tep_pid_is_registered(struct tep_handle *pevent, int pid)
+> >   * we must add this pid. This is much slower than when cmdlines
+> >   * are added before the array is initialized.
+> >   */
+> > -static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
+> > +static int add_new_comm(struct tep_handle *pevent,
+> > +                       const char *comm, int pid, bool override)
+> >  {
+> >         struct cmdline *cmdlines = pevent->cmdlines;
+> > -       const struct cmdline *cmdline;
+> > +       struct cmdline *cmdline;
+> >         struct cmdline key;
+> > +       char *new_comm;
+> >
+> >         if (!pid)
+> >                 return 0;
+> > @@ -245,8 +247,20 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
+> >         cmdline = bsearch(&key, pevent->cmdlines, pevent->cmdline_count,
+> >                        sizeof(*pevent->cmdlines), cmdline_cmp);
+> >         if (cmdline) {
+> > -               errno = EEXIST;
+> > -               return -1;
+> > +               if (!override) {
+> > +                       errno = EEXIST;
+> > +                       return -1;
+> > +               }
+> > +               new_comm = strdup(comm);
+> > +               if(!new_comm) {
+> > +                       errno = ENOMEM;
+> > +                       return -1;
+> > +               }
+> > +               if (cmdline->comm)
+> > +                       free(cmdline->comm);
 
-diff --git a/kernel-shark-qt/src/KsMainWindow.cpp b/kernel-shark-qt/src/KsM=
-ainWindow.cpp
-index b9fb587..b3cbc3b 100644
---- a/kernel-shark-qt/src/KsMainWindow.cpp
-+++ b/kernel-shark-qt/src/KsMainWindow.cpp
-@@ -28,6 +28,7 @@
- #include "libkshark.h"
- #include "KsCmakeDef.hpp"
- #include "KsMainWindow.hpp"
-+#include "KsCaptureDialog.hpp"
- #include "KsAdvFilteringDialog.hpp"
-=20
- /** Create KernelShark Main window. */
-@@ -39,6 +40,8 @@ KsMainWindow::KsMainWindow(QWidget *parent)
-   _graph(this),
-   _mState(this),
-   _plugins(this),
-+  _capture(this),
-+  _captureLocalServer(this),
-   _openAction("Open", this),
-   _restorSessionAction("Restor Last Session", this),
-   _importSessionAction("Import Session", this),
-@@ -56,6 +59,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
-   _cpuSelectAction("CPUs", this),
-   _taskSelectAction("Tasks", this),
-   _pluginsAction("Plugins", this),
-+  _captureAction("Record", this),
-   _colorAction(this),
-   _colSlider(this),
-   _colorPhaseSlider(Qt::Horizontal, this),
-@@ -67,6 +71,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
- 	setWindowTitle("Kernel Shark");
- 	_createActions();
- 	_createMenus();
-+	_initCapture();
-=20
- 	_splitter.addWidget(&_graph);
- 	_splitter.addWidget(&_view);
-@@ -215,6 +220,13 @@ void KsMainWindow::_createActions()
- 	connect(&_pluginsAction,	&QAction::triggered,
- 		this,			&KsMainWindow::_pluginSelect);
-=20
-+	_captureAction.setIcon(QIcon::fromTheme("media-record"));
-+	_captureAction.setShortcut(tr("Ctrl+R"));
-+	_captureAction.setStatusTip("Capture trace data");
-+
-+	connect(&_captureAction,	&QAction::triggered,
-+		this,			&KsMainWindow::_record);
-+
- 	_colorPhaseSlider.setMinimum(20);
- 	_colorPhaseSlider.setMaximum(180);
- 	_colorPhaseSlider.setValue(KsPlot::Color::getRainbowFrequency() * 100);
-@@ -321,6 +333,7 @@ void KsMainWindow::_createMenus()
- 	/* Tools menu */
- 	tools =3D menuBar()->addMenu("Tools");
- 	tools->addAction(&_pluginsAction);
-+	tools->addAction(&_captureAction);
- 	tools->addSeparator();
- 	tools->addAction(&_colorAction);
- 	tools->addAction(&_fullScreenModeAction);
-@@ -690,6 +703,29 @@ void KsMainWindow::_pluginSelect()
- 	dialog->show();
- }
-=20
-+void KsMainWindow::_record()
-+{
-+#ifndef DO_AS_ROOT
-+
-+	QErrorMessage *em =3D new QErrorMessage(this);
-+	QString message;
-+
-+	message =3D "Record is currently not supported.";
-+	message +=3D " Install \"pkexec\" and then do:<br>";
-+	message +=3D " cd build <br> sudo ./cmake_uninstall.sh <br>";
-+	message +=3D " ./cmake_clean.sh <br> cmake .. <br> make <br>";
-+	message +=3D " sudo make install";
-+
-+	em->showMessage(message);
-+	qCritical() << "ERROR: " << message;
-+
-+	return;
-+
-+#endif
-+
-+	_capture.start();
-+}
-+
- void KsMainWindow::_setColorPhase(int f)
- {
- 	KsPlot::Color::setRainbowFrequency(f / 100.);
-@@ -895,6 +931,98 @@ void KsMainWindow::loadSession(const QString &fileName=
-)
- 	_colorPhaseSlider.setValue(_session.getColorScheme() * 100);
- }
-=20
-+void KsMainWindow::_initCapture()
-+{
-+#ifdef DO_AS_ROOT
-+
-+	_capture.setProgram("kshark-su-record");
-+
-+	connect(&_capture,	&QProcess::started,
-+		this,		&KsMainWindow::_captureStarted);
-+
-+	/*
-+	 * Using the old Signal-Slot syntax because QProcess::finished has
-+	 * overloads.
-+	 */
-+	connect(&_capture,	SIGNAL(finished(int, QProcess::ExitStatus)),
-+		this,		SLOT(_captureFinished(int, QProcess::ExitStatus)));
-+
-+	connect(&_capture,	&QProcess::errorOccurred,
-+		this,		&KsMainWindow::_captureError);
-+
-+	connect(&_captureLocalServer,	&QLocalServer::newConnection,
-+		this,			&KsMainWindow::_readSocket);
-+
-+#endif
-+}
-+
-+void KsMainWindow::_captureStarted()
-+{
-+	_captureLocalServer.listen("KSCapture");
-+}
-+
-+void KsMainWindow::_captureFinished(int exit, QProcess::ExitStatus st)
-+{
-+	QProcess *capture =3D (QProcess *)sender();
-+
-+	_captureLocalServer.close();
-+
-+	if (exit !=3D 0 || st !=3D QProcess::NormalExit) {
-+		QString message =3D "Capture process failed:<br>";
-+
-+		message +=3D capture->errorString();
-+		message +=3D "<br>Try doing:<br> sudo make install";
-+
-+		_error(message, "captureFinishedErr", false, false);
-+	}
-+}
-+
-+void KsMainWindow::_captureError(QProcess::ProcessError error)
-+{
-+	QProcess *capture =3D (QProcess *)sender();
-+	QString message =3D "Capture process failed:<br>";
-+
-+	message +=3D capture->errorString();
-+	message +=3D "<br>Try doing:<br> sudo make install";
-+
-+	_error(message, "captureFinishedErr", false, false);
-+}
-+
-+void KsMainWindow::_readSocket()
-+{
-+	QLocalSocket *socket;
-+	quint32 blockSize;
-+	QString fileName;
-+
-+	auto lamSocketError =3D [&](QString message)
-+	{
-+		message =3D "ERROR from Local Server: " + message;
-+		_error(message, "readSocketErr", false, false);
-+	};
-+
-+	socket =3D _captureLocalServer.nextPendingConnection();
-+	if (!socket) {
-+		lamSocketError("Pending connectio not found!");
-+		return;
-+	}
-+
-+	QDataStream in(socket);
-+	socket->waitForReadyRead();
-+	if (socket->bytesAvailable() < (int)sizeof(quint32)) {
-+		lamSocketError("Message size is corrupted!");
-+		return;
-+	};
-+
-+	in >> blockSize;
-+	if (socket->bytesAvailable() < blockSize || in.atEnd()) {
-+		lamSocketError("Message is corrupted!");
-+		return;
-+	}
-+
-+	in >> fileName;
-+	loadDataFile(fileName);
-+}
-+
- void KsMainWindow::_splitterMoved(int pos, int index)
- {
- 	_session.saveSplitterSize(_splitter);
-diff --git a/kernel-shark-qt/src/KsMainWindow.hpp b/kernel-shark-qt/src/KsM=
-ainWindow.hpp
-index 6e3f864..0e14c80 100644
---- a/kernel-shark-qt/src/KsMainWindow.hpp
-+++ b/kernel-shark-qt/src/KsMainWindow.hpp
-@@ -14,6 +14,7 @@
-=20
- // Qt
- #include <QMainWindow>
-+#include <QLocalServer>
-=20
- // KernelShark
- #include "KsTraceViewer.hpp"
-@@ -81,6 +82,12 @@ private:
- 	/** Plugin manager. */
- 	KsPluginManager	_plugins;
-=20
-+	/** The process used to record trace data. */
-+	QProcess	_capture;
-+
-+	/** Local Server used for comunucation with the Capture process. */
-+	QLocalServer	_captureLocalServer;
-+
- 	// File menu.
- 	QAction		_openAction;
-=20
-@@ -119,6 +126,8 @@ private:
- 	// Tools menu.
- 	QAction		_pluginsAction;
-=20
-+	QAction		_captureAction;
-+
- 	QWidgetAction	_colorAction;
-=20
- 	QWidget		_colSlider;
-@@ -166,6 +175,8 @@ private:
-=20
- 	void _pluginSelect();
-=20
-+	void _record();
-+
- 	void _setColorPhase(int);
-=20
- 	void _fullScreenMode();
-@@ -174,18 +185,29 @@ private:
-=20
- 	void _contents();
-=20
-+	void _captureStarted();
-+
-+	void _captureError(QProcess::ProcessError error);
-+
-+	void _readSocket();
-+
- 	void _splitterMoved(int pos, int index);
-=20
- 	void _createActions();
-=20
- 	void _createMenus();
-=20
-+	void _initCapture();
-+
- 	void _updateSession();
-=20
- 	inline void _resizeEmpty() {resize(SCREEN_WIDTH * .5, FONT_HEIGHT * 3);}
-=20
- 	void _error(const QString &text, const QString &errCode,
- 		    bool resize, bool unloadPlugins);
-+
-+private slots:
-+	void _captureFinished(int, QProcess::ExitStatus);
- };
-=20
- #endif // _KS_MAINWINDOW_H
---=20
-2.17.1
+One nit here. free() can take a NULL parameter without issue, so the if
+isn't necessary.
+
+		free(cmdline->comm);
+		cmdline->comm = new_comm;
+
+Other than that, the rest looks good.
+
+Want to send a v3 (new thread).
+
+Thanks!
+
+-- Steve
+
+> > +               cmdline->comm = new_comm;
+> > +
+> > +               return 0;
+> >         }
+> >
+> >         cmdlines = realloc(cmdlines, sizeof(*cmdlines) * (pevent->cmdline_count + 1));
+> > @@ -273,21 +287,13 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
+> >         return 0;
+> >  }
+> >
+> > -/**
+> > - * tep_register_comm - register a pid / comm mapping
+> > - * @pevent: handle for the pevent
+> > - * @comm: the command line to register
+> > - * @pid: the pid to map the command line to
+> > - *
+> > - * This adds a mapping to search for command line names with
+> > - * a given pid. The comm is duplicated.
+> > - */
+> > -int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
+> > +static int _tep_register_comm(struct tep_handle *pevent,
+> > +                             const char *comm, int pid, bool override)
+> >  {
+> >         struct cmdline_list *item;
+> >
+> >         if (pevent->cmdlines)
+> > -               return add_new_comm(pevent, comm, pid);
+> > +               return add_new_comm(pevent, comm, pid, override);
+> >
+> >         item = malloc(sizeof(*item));
+> >         if (!item)
+> > @@ -310,6 +316,40 @@ int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
+> >         return 0;
+> >  }
+> >
+> > +/**
+> > + * tep_register_comm - register a pid / comm mapping
+> > + * @pevent: handle for the pevent
+> > + * @comm: the command line to register
+> > + * @pid: the pid to map the command line to
+> > + *
+> > + * This adds a mapping to search for command line names with
+> > + * a given pid. The comm is duplicated. If a command with the same pid
+> > + * already exist, -1 is returned and errno is set to EEXIST
+> > + */
+> > +int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
+> > +{
+> > +       return _tep_register_comm(pevent, comm, pid, false);
+> > +}
+> > +
+> > +/**
+> > + * tep_override_comm - register a pid / comm mapping
+> > + * @pevent: handle for the pevent
+> > + * @comm: the command line to register
+> > + * @pid: the pid to map the command line to
+> > + *
+> > + * This adds a mapping to search for command line names with
+> > + * a given pid. The comm is duplicated. If a command with the same pid
+> > + * already exist, the command string is udapted with the new one
+> > + */
+> > +int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid)
+> > +{
+> > +       if (!pevent->cmdlines && cmdline_init(pevent)) {
+> > +               errno = ENOMEM;
+> > +               return -1;
+> > +       }
+> > +       return _tep_register_comm(pevent, comm, pid, true);
+> > +}
+> > +
+> >  int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_clock)
+> >  {
+> >         pevent->trace_clock = strdup(trace_clock);
+> > --
+> > 2.17.1
+> >  
