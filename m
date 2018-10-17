@@ -1,181 +1,171 @@
-Return-Path: <SRS0=XQBu=M4=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:52206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727032AbeJQCNw (ORCPT
+Return-Path: <SRS0=/391=M5=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-eopbgr710081.outbound.protection.outlook.com ([40.107.71.81]:11840
+        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726994AbeJQPhn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Oct 2018 22:13:52 -0400
-Date: Tue, 16 Oct 2018 14:22:08 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Ceco <tz.stoyanov@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2] Introduce new libtracevent API: tep_override_comm()
-Message-ID: <20181016142208.1a8a46dd@gandalf.local.home>
-In-Reply-To: <CAPpZLN6bvSTVq6NBXHPKqH4cMXTxSKeTxk0VMiTAZJpt4mY_5Q@mail.gmail.com>
-References: <20180830150900.27412-1-tz.stoyanov@gmail.com>
-        <20180831062718.3436-1-tz.stoyanov@gmail.com>
-        <CAPpZLN6bvSTVq6NBXHPKqH4cMXTxSKeTxk0VMiTAZJpt4mY_5Q@mail.gmail.com>
+        Wed, 17 Oct 2018 11:37:43 -0400
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To: "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC: "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: [PATCH v2] Introduce new libtracevent API: tep_override_comm()
+Date: Wed, 17 Oct 2018 07:43:15 +0000
+Message-ID: <20181017074302.13767-1-tstoyanov@vmware.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 16 Oct 2018 09:46:07 +0300
-Ceco <tz.stoyanov@gmail.com> wrote:
+From: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 
-> ping
-> Hi Steven, is there a problem with this patch ? Yordan needs these
-> changes, he wants to use the new API in KernelShark.
-> 
-> On Fri, Aug 31, 2018 at 9:27 AM Tzvetomir Stoyanov (VMware)
-> <tz.stoyanov@gmail.com> wrote:
-> >
-> > Added a new API of tracevent library: tep_override_comm()
-> > It registers a pid / comm mapping. If a mapping with the same
-> > pid already exists, the entry is updated with the new comm.
-> >
-> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> > ---
-> >  include/traceevent/event-parse.h |  1 +
-> >  lib/traceevent/event-parse.c     | 70 +++++++++++++++++++++++++-------
-> >  2 files changed, 56 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-> > index 713a4e4..0dcc024 100644
-> > --- a/include/traceevent/event-parse.h
-> > +++ b/include/traceevent/event-parse.h
-> > @@ -607,6 +607,7 @@ int tep_set_function_resolver(struct tep_handle *pevent,
-> >                               tep_func_resolver_t *func, void *priv);
-> >  void tep_reset_function_resolver(struct tep_handle *pevent);
-> >  int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid);
-> > +int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid);
-> >  int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_clock);
-> >  int tep_register_function(struct tep_handle *pevent, char *name,
-> >                           unsigned long long addr, char *mod);
-> > diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-> > index ce1e202..1954908 100644
-> > --- a/lib/traceevent/event-parse.c
-> > +++ b/lib/traceevent/event-parse.c
-> > @@ -230,11 +230,13 @@ int tep_pid_is_registered(struct tep_handle *pevent, int pid)
-> >   * we must add this pid. This is much slower than when cmdlines
-> >   * are added before the array is initialized.
-> >   */
-> > -static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
-> > +static int add_new_comm(struct tep_handle *pevent,
-> > +                       const char *comm, int pid, bool override)
-> >  {
-> >         struct cmdline *cmdlines = pevent->cmdlines;
-> > -       const struct cmdline *cmdline;
-> > +       struct cmdline *cmdline;
-> >         struct cmdline key;
-> > +       char *new_comm;
-> >
-> >         if (!pid)
-> >                 return 0;
-> > @@ -245,8 +247,20 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
-> >         cmdline = bsearch(&key, pevent->cmdlines, pevent->cmdline_count,
-> >                        sizeof(*pevent->cmdlines), cmdline_cmp);
-> >         if (cmdline) {
-> > -               errno = EEXIST;
-> > -               return -1;
-> > +               if (!override) {
-> > +                       errno = EEXIST;
-> > +                       return -1;
-> > +               }
-> > +               new_comm = strdup(comm);
-> > +               if(!new_comm) {
-> > +                       errno = ENOMEM;
-> > +                       return -1;
-> > +               }
-> > +               if (cmdline->comm)
-> > +                       free(cmdline->comm);
+Added a new API of tracevent library: tep_override_comm()
+It registers a pid / comm mapping. If a mapping with the same
+pid already exists, the entry is updated with the new comm.
 
-One nit here. free() can take a NULL parameter without issue, so the if
-isn't necessary.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ include/traceevent/event-parse.h |  1 +
+ lib/traceevent/event-parse.c     | 69 +++++++++++++++++++++++++-------
+ 2 files changed, 55 insertions(+), 15 deletions(-)
 
-		free(cmdline->comm);
-		cmdline->comm = new_comm;
-
-Other than that, the rest looks good.
-
-Want to send a v3 (new thread).
-
-Thanks!
-
--- Steve
-
-> > +               cmdline->comm = new_comm;
-> > +
-> > +               return 0;
-> >         }
-> >
-> >         cmdlines = realloc(cmdlines, sizeof(*cmdlines) * (pevent->cmdline_count + 1));
-> > @@ -273,21 +287,13 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
-> >         return 0;
-> >  }
-> >
-> > -/**
-> > - * tep_register_comm - register a pid / comm mapping
-> > - * @pevent: handle for the pevent
-> > - * @comm: the command line to register
-> > - * @pid: the pid to map the command line to
-> > - *
-> > - * This adds a mapping to search for command line names with
-> > - * a given pid. The comm is duplicated.
-> > - */
-> > -int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
-> > +static int _tep_register_comm(struct tep_handle *pevent,
-> > +                             const char *comm, int pid, bool override)
-> >  {
-> >         struct cmdline_list *item;
-> >
-> >         if (pevent->cmdlines)
-> > -               return add_new_comm(pevent, comm, pid);
-> > +               return add_new_comm(pevent, comm, pid, override);
-> >
-> >         item = malloc(sizeof(*item));
-> >         if (!item)
-> > @@ -310,6 +316,40 @@ int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
-> >         return 0;
-> >  }
-> >
-> > +/**
-> > + * tep_register_comm - register a pid / comm mapping
-> > + * @pevent: handle for the pevent
-> > + * @comm: the command line to register
-> > + * @pid: the pid to map the command line to
-> > + *
-> > + * This adds a mapping to search for command line names with
-> > + * a given pid. The comm is duplicated. If a command with the same pid
-> > + * already exist, -1 is returned and errno is set to EEXIST
-> > + */
-> > +int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid)
-> > +{
-> > +       return _tep_register_comm(pevent, comm, pid, false);
-> > +}
-> > +
-> > +/**
-> > + * tep_override_comm - register a pid / comm mapping
-> > + * @pevent: handle for the pevent
-> > + * @comm: the command line to register
-> > + * @pid: the pid to map the command line to
-> > + *
-> > + * This adds a mapping to search for command line names with
-> > + * a given pid. The comm is duplicated. If a command with the same pid
-> > + * already exist, the command string is udapted with the new one
-> > + */
-> > +int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid)
-> > +{
-> > +       if (!pevent->cmdlines && cmdline_init(pevent)) {
-> > +               errno = ENOMEM;
-> > +               return -1;
-> > +       }
-> > +       return _tep_register_comm(pevent, comm, pid, true);
-> > +}
-> > +
-> >  int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_clock)
-> >  {
-> >         pevent->trace_clock = strdup(trace_clock);
-> > --
-> > 2.17.1
-> >  
+diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-pa=
+rse.h
+index 18652c8..147efbc 100644
+--- a/include/traceevent/event-parse.h
++++ b/include/traceevent/event-parse.h
+@@ -435,6 +435,7 @@ int tep_set_function_resolver(struct tep_handle *pevent=
+,
+ 			      tep_func_resolver_t *func, void *priv);
+ void tep_reset_function_resolver(struct tep_handle *pevent);
+ int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid=
+);
++int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid=
+);
+ int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_=
+clock);
+ int tep_register_function(struct tep_handle *pevent, char *name,
+ 			  unsigned long long addr, char *mod);
+diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+index d889a62..73662d0 100644
+--- a/lib/traceevent/event-parse.c
++++ b/lib/traceevent/event-parse.c
+@@ -233,11 +233,13 @@ int tep_pid_is_registered(struct tep_handle *pevent, =
+int pid)
+  * we must add this pid. This is much slower than when cmdlines
+  * are added before the array is initialized.
+  */
+-static int add_new_comm(struct tep_handle *pevent, const char *comm, int p=
+id)
++static int add_new_comm(struct tep_handle *pevent,
++			const char *comm, int pid, bool override)
+ {
+ 	struct cmdline *cmdlines =3D pevent->cmdlines;
+-	const struct cmdline *cmdline;
++	struct cmdline *cmdline;
+ 	struct cmdline key;
++	char *new_comm;
+=20
+ 	if (!pid)
+ 		return 0;
+@@ -248,8 +250,19 @@ static int add_new_comm(struct tep_handle *pevent, con=
+st char *comm, int pid)
+ 	cmdline =3D bsearch(&key, pevent->cmdlines, pevent->cmdline_count,
+ 		       sizeof(*pevent->cmdlines), cmdline_cmp);
+ 	if (cmdline) {
+-		errno =3D EEXIST;
+-		return -1;
++		if (!override) {
++			errno =3D EEXIST;
++			return -1;
++		}
++		new_comm =3D strdup(comm);
++		if(!new_comm) {
++			errno =3D ENOMEM;
++			return -1;
++		}
++		free(cmdline->comm);
++		cmdline->comm =3D new_comm;
++
++		return 0;
+ 	}
+=20
+ 	cmdlines =3D realloc(cmdlines, sizeof(*cmdlines) * (pevent->cmdline_count=
+ + 1));
+@@ -276,21 +289,13 @@ static int add_new_comm(struct tep_handle *pevent, co=
+nst char *comm, int pid)
+ 	return 0;
+ }
+=20
+-/**
+- * tep_register_comm - register a pid / comm mapping
+- * @pevent: handle for the pevent
+- * @comm: the command line to register
+- * @pid: the pid to map the command line to
+- *
+- * This adds a mapping to search for command line names with
+- * a given pid. The comm is duplicated.
+- */
+-int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid=
+)
++static int _tep_register_comm(struct tep_handle *pevent,
++			      const char *comm, int pid, bool override)
+ {
+ 	struct cmdline_list *item;
+=20
+ 	if (pevent->cmdlines)
+-		return add_new_comm(pevent, comm, pid);
++		return add_new_comm(pevent, comm, pid, override);
+=20
+ 	item =3D malloc(sizeof(*item));
+ 	if (!item)
+@@ -313,6 +318,40 @@ int tep_register_comm(struct tep_handle *pevent, const=
+ char *comm, int pid)
+ 	return 0;
+ }
+=20
++/**
++ * tep_register_comm - register a pid / comm mapping
++ * @pevent: handle for the pevent
++ * @comm: the command line to register
++ * @pid: the pid to map the command line to
++ *
++ * This adds a mapping to search for command line names with
++ * a given pid. The comm is duplicated. If a command with the same pid
++ * already exist, -1 is returned and errno is set to EEXIST
++ */
++int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid=
+)
++{
++	return _tep_register_comm(pevent, comm, pid, false);
++}
++
++/**
++ * tep_override_comm - register a pid / comm mapping
++ * @pevent: handle for the pevent
++ * @comm: the command line to register
++ * @pid: the pid to map the command line to
++ *
++ * This adds a mapping to search for command line names with
++ * a given pid. The comm is duplicated. If a command with the same pid
++ * already exist, the command string is udapted with the new one
++ */
++int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid=
+)
++{
++	if (!pevent->cmdlines && cmdline_init(pevent)) {
++		errno =3D ENOMEM;
++		return -1;
++	}
++	return _tep_register_comm(pevent, comm, pid, true);
++}
++
+ int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_=
+clock)
+ {
+ 	pevent->trace_clock =3D strdup(trace_clock);
+--=20
+2.17.2
