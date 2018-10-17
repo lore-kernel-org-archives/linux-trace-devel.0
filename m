@@ -1,18 +1,17 @@
 Return-Path: <SRS0=/391=M5=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr710081.outbound.protection.outlook.com ([40.107.71.81]:11840
-        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-cys01nam02on0077.outbound.protection.outlook.com ([104.47.37.77]:35332
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726994AbeJQPhn (ORCPT
+        id S1727409AbeJQVxg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 17 Oct 2018 11:37:43 -0400
+        Wed, 17 Oct 2018 17:53:36 -0400
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: [PATCH v2] Introduce new libtracevent API: tep_override_comm()
-Date: Wed, 17 Oct 2018 07:43:15 +0000
-Message-ID: <20181017074302.13767-1-tstoyanov@vmware.com>
+        <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH v3] Introduce new libtracevent API: tep_override_comm()
+Date: Wed, 17 Oct 2018 13:57:41 +0000
+Message-ID: <20181017135728.5666-1-tstoyanov@vmware.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -20,13 +19,13 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-From: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
 Added a new API of tracevent library: tep_override_comm()
 It registers a pid / comm mapping. If a mapping with the same
 pid already exists, the entry is updated with the new comm.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
  include/traceevent/event-parse.h |  1 +
  lib/traceevent/event-parse.c     | 69 +++++++++++++++++++++++++-------
