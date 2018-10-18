@@ -1,18 +1,17 @@
 Return-Path: <SRS0=VoGV=M6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-bl2nam02on0054.outbound.protection.outlook.com ([104.47.38.54]:43069
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+Received: from mail-dm3nam03on0046.outbound.protection.outlook.com ([104.47.41.46]:64288
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726132AbeJRUFx (ORCPT
+        id S1726444AbeJRUFy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 18 Oct 2018 16:05:53 -0400
+        Thu, 18 Oct 2018 16:05:54 -0400
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 3/3] tools/lib/traceevent, tools/perf: Rename
- tep_free_format() to tep_free_event()
-Date: Thu, 18 Oct 2018 12:04:33 +0000
-Message-ID: <20181018120423.3665-1-tstoyanov@vmware.com>
+Subject: [PATCH v2] tools/lib/traceevent: Added support for pkg-config
+Date: Thu, 18 Oct 2018 12:05:09 +0000
+Message-ID: <20181018120458.3792-1-tstoyanov@vmware.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -20,63 +19,98 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-In order to make libtraceevent into a proper library, variables, data
-structures and functions require a unique prefix to prevent name space
-conflicts. This renames tep_free_format() to tep_free_event(),
-which describes more closely the purpose of the function.
+This patch implements integration with pkg-config framework.
+pkg-config can be used by the library users to determine
+required CFLAGS and LDFLAGS in order to use the library
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/event-parse.c | 6 +++---
- tools/lib/traceevent/event-parse.h | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ tools/lib/traceevent/Makefile                 | 26 ++++++++++++++++---
+ .../lib/traceevent/libtraceevent.pc.template  | 10 +++++++
+ 2 files changed, 33 insertions(+), 3 deletions(-)
+ create mode 100644 tools/lib/traceevent/libtraceevent.pc.template
 
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
-t-parse.c
-index d2aac1461769..73347e2ef81d 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -6169,7 +6169,7 @@ __parse_event(struct tep_handle *pevent,
- 	return 0;
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index 0b4e833088a4..05ac0ec9bcd1 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -25,6 +25,7 @@ endef
+ $(call allow-override,CC,$(CROSS_COMPILE)gcc)
+ $(call allow-override,AR,$(CROSS_COMPILE)ar)
+ $(call allow-override,NM,$(CROSS_COMPILE)nm)
++$(call allow-override,PKG_CONFIG,pkg-config)
 =20
- event_add_failed:
--	tep_free_format(event);
-+	tep_free_event(event);
- 	return ret;
- }
+ EXT =3D -std=3Dgnu99
+ INSTALL =3D install
+@@ -47,6 +48,8 @@ prefix ?=3D /usr/local
+ libdir =3D $(prefix)/$(libdir_relative)
+ man_dir =3D $(prefix)/share/man
+ man_dir_SQ =3D '$(subst ','\'',$(man_dir))'
++pkgconfig_dir ?=3D $(word 1,$(shell $(PKG_CONFIG) 		\
++			--variable pc_path pkg-config | tr ":" " "))
 =20
-@@ -6807,7 +6807,7 @@ static void free_formats(struct tep_format *format)
- 	free_format_fields(format->fields);
- }
+ export man_dir man_dir_SQ INSTALL
+ export DESTDIR DESTDIR_SQ
+@@ -270,7 +273,19 @@ define do_generate_dynamic_list_file
+ 	fi
+ endef
 =20
--void tep_free_format(struct tep_event *event)
-+void tep_free_event(struct tep_event *event)
- {
- 	free(event->name);
- 	free(event->system);
-@@ -6893,7 +6893,7 @@ void tep_free(struct tep_handle *pevent)
- 	}
+-install_lib: all_cmd install_plugins
++PKG_CONFIG_FILE =3D libtraceevent.pc
++define do_install_pkgconfig_file
++	if [ -n "${pkgconfig_dir}" ]; then 					\
++		cp -f ${PKG_CONFIG_FILE}.template ${PKG_CONFIG_FILE}; 		\
++		sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE}; 		\
++		sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
++		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
++	else 									\
++		(echo Failed to locate pkg-config directory) 1>&2;		\
++	fi=09
++endef
++
++install_lib: all_cmd install_plugins install_pkgconfig
+ 	$(call QUIET_INSTALL, $(LIB_TARGET)) \
+ 		$(call do_install_mkdir,$(libdir_SQ)); \
+ 		cp -fpR $(LIB_INSTALL) $(DESTDIR)$(libdir_SQ)
+@@ -279,6 +294,10 @@ install_plugins: $(PLUGINS)
+ 	$(call QUIET_INSTALL, trace_plugins) \
+ 		$(call do_install_plugins, $(PLUGINS))
 =20
- 	for (i =3D 0; i < pevent->nr_events; i++)
--		tep_free_format(pevent->events[i]);
-+		tep_free_event(pevent->events[i]);
++install_pkgconfig:
++	$(call QUIET_INSTALL, $(PKG_CONFIG_FILE)) \
++		$(call do_install_pkgconfig_file,$(prefix))
++
+ install_headers:
+ 	$(call QUIET_INSTALL, headers) \
+ 		$(call do_install,event-parse.h,$(prefix)/include/traceevent,644); \
+@@ -289,8 +308,9 @@ install: install_lib
 =20
- 	while (pevent->handlers) {
- 		handle =3D pevent->handlers;
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/even=
-t-parse.h
-index 00b696efd671..16131e006cfe 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -477,7 +477,7 @@ enum tep_errno tep_parse_format(struct tep_handle *peve=
-nt,
- 				struct tep_event **eventp,
- 				const char *buf,
- 				unsigned long size, const char *sys);
--void tep_free_format(struct tep_event *event);
-+void tep_free_event(struct tep_event *event);
- void tep_free_format_field(struct tep_format_field *field);
+ clean:
+ 	$(call QUIET_CLEAN, libtraceevent) \
+-		$(RM) *.o *~ $(TARGETS) *.a *.so $(VERSION_FILES) .*.d .*.cmd \
+-		$(RM) TRACEEVENT-CFLAGS tags TAGS
++		$(RM) *.o *~ $(TARGETS) *.a *.so $(VERSION_FILES) .*.d .*.cmd; \
++		$(RM) TRACEEVENT-CFLAGS tags TAGS; \
++		$(RM) $(PKG_CONFIG_FILE)
 =20
- void *tep_get_field_raw(struct trace_seq *s, struct tep_event *event,
+ PHONY +=3D force plugins
+ force:
+diff --git a/tools/lib/traceevent/libtraceevent.pc.template b/tools/lib/tra=
+ceevent/libtraceevent.pc.template
+new file mode 100644
+index 000000000000..42e4d6cb6b9e
+--- /dev/null
++++ b/tools/lib/traceevent/libtraceevent.pc.template
+@@ -0,0 +1,10 @@
++prefix=3DINSTALL_PREFIX
++libdir=3D${prefix}/lib64
++includedir=3D${prefix}/include/traceevent
++
++Name: libtraceevent
++URL: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
++Description: Linux kernel trace event library
++Version: LIB_VERSION
++Cflags: -I${includedir}
++Libs: -L${libdir} -ltraceevent
 --=20
 2.17.2
