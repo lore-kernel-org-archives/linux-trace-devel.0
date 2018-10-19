@@ -1,97 +1,84 @@
 Return-Path: <SRS0=XbHK=M7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:43804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727042AbeJSX7V (ORCPT
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:37888 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727200AbeJTAoK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 19 Oct 2018 19:59:21 -0400
-Date: Fri, 19 Oct 2018 11:52:38 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Yordan Karadzhov <ykaradzhov@vmware.com>
-Cc: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>,
-        Yordan Karadzhov <y.karadz@gmail.com>
-Subject: Re: [PATCH v2 20/23] kernel-shark-qt: Add make install
-Message-ID: <20181019115238.7025f2b7@gandalf.local.home>
-In-Reply-To: <20181016155232.5257-21-ykaradzhov@vmware.com>
-References: <20181016155232.5257-1-ykaradzhov@vmware.com>
-        <20181016155232.5257-21-ykaradzhov@vmware.com>
+        Fri, 19 Oct 2018 20:44:10 -0400
+Received: by mail-wm1-f45.google.com with SMTP id 193-v6so4266536wme.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Oct 2018 09:37:18 -0700 (PDT)
+Subject: Re: Issue with making of doxygen files
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+References: <20181019114029.6ec42a95@gandalf.local.home>
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <002df723-e710-ade0-3156-eac106aaf4f5@gmail.com>
+Date: Fri, 19 Oct 2018 19:37:15 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20181019114029.6ec42a95@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 16 Oct 2018 15:53:21 +0000
-Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 
-> diff --git a/kernel-shark-qt/build/cmake_uninstall.sh b/kernel-shark-qt/build/cmake_uninstall.sh
-> new file mode 100755
-> index 0000000..50c163b
-> --- /dev/null
-> +++ b/kernel-shark-qt/build/cmake_uninstall.sh
-> @@ -0,0 +1,17 @@
-> +#!/bin/bash
-> +
-> +CYAN='\033[0;36m'
-> +PURPLE='\033[0;35m'
-> +NC='\033[0m' # No Color
 
-BTW, this also works:
+On 19.10.2018 18:40, Steven Rostedt wrote:
+> Hi Yordan,
+> 
+> It appears we may be missing a dependency, as I tried to build the
+> doxygen files on my workstation and got this:
+> 
+> [rostedt@vypre build]$ make
+> Scanning dependencies of target doc
+> sh: epstopdf: command not found
+> error: Problems running epstopdf. Check your TeX installation!
+> sh: epstopdf: command not found
+> error: Problems running epstopdf. Check your TeX installation!
+> sh: epstopdf: command not found
+> error: Problems running epstopdf. Check your TeX installation!
+> sh: epstopdf: command not found
+> error: Problems running epstopdf. Check your TeX installation!
+> sh: epstopdf: command not found
+> error: Problems running epstopdf. Check your TeX installation!
+> sh: epstopdf: command not found
+> error: Problems running epstopdf. Check your TeX installation!
+> [...]
+> error: Problems running epstopdf. Check your TeX installation!
+> sh: epstopdf: command not found
+> error: Problems running epstopdf. Check your TeX installation!
+> sh: epstopdf: command not found
+> error: Problems running epstopdf. Check your TeX installation!
+> [  0%] Built target doc
+> [ 10%] Built target kshark
+> [ 15%] Built target kshark-plot
+> [ 68%] Built target kshark-gui
+> [ 71%] Built target kernelshark
+> [ 75%] Built target kshark-record
+> [ 80%] Built target sched_events
+> [ 83%] Built target dhisto
+> [ 86%] Built target confio
+> [ 90%] Built target dfilter
+> [ 93%] Built target dplot
+> [ 96%] Built target dload
+> [100%] Built target widgetdemo
+> 
+> 
+> Seems I'm missing the utility epstopdf.
 
- CYAN='\e[36m'
- PURPLE='\e[35m'
- NC='\e[0m' # No Color
+This is a LaTeX package. I guess it is needed to generate pdf documentation.
 
-Which is a little cleaner.
+Please try adding to "kernel-shark-qt/doc/dox_config" a line
 
-If you agree, can you resend just this patch with the update (as v2)?
+GENERATE_LATEX  = NO
+
+and see if the problem still persist. I don't want to add LaTeX as 
+dependency.
 
 Thanks!
+Yordan
 
--- Steve
 
-> +
-> +if [[ $EUID -ne 0 ]]; then
-> +   echo -e "${PURPLE}Permission denied${NC}" 1>&2
-> +   exit 100
-> +fi
-> +
-> +if [ -e install_manifest.txt ]
-> +then
-> +    echo -e "${CYAN}Uninstall the project...${NC}"
-> +    xargs rm -v < install_manifest.txt
-> +    rm -f install_manifest.txt
-> +fi
-> diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
-> index 6819f86..2592094 100644
-> --- a/kernel-shark-qt/src/CMakeLists.txt
-> +++ b/kernel-shark-qt/src/CMakeLists.txt
-> @@ -73,6 +73,16 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
->      add_executable(kshark-record        kshark-record.cpp)
->      target_link_libraries(kshark-record kshark-gui)
->  
-> +    install(TARGETS kernelshark kshark-record kshark kshark-plot kshark-gui
-> +            RUNTIME DESTINATION /usr/local/bin/
-> +            LIBRARY DESTINATION /usr/local/lib/kshark/)
-> +
-> +    install(FILES "${KS_DIR}/kernelshark.desktop"
-> +            DESTINATION /usr/share/applications/)
-> +
-> +    install(FILES "${KS_DIR}/org.freedesktop.kshark-record.policy"
-> +            DESTINATION /usr/share/polkit-1/actions/)
-> +
->  endif (Qt5Widgets_FOUND AND Qt5Network_FOUND)
->  
->  add_subdirectory(plugins)
-> diff --git a/kernel-shark-qt/src/plugins/CMakeLists.txt b/kernel-shark-qt/src/plugins/CMakeLists.txt
-> index 88fd93c..2d7251d 100644
-> --- a/kernel-shark-qt/src/plugins/CMakeLists.txt
-> +++ b/kernel-shark-qt/src/plugins/CMakeLists.txt
-> @@ -24,4 +24,7 @@ BUILD_PLUGIN(NAME sched_events
->  list(APPEND PLUGIN_LIST "sched_events default") # This plugin will be loaded by default
->  # list(APPEND PLUGIN_LIST "sched_events") # This plugin isn't loaded by default
->  
-> +install(TARGETS sched_events
-> +        LIBRARY DESTINATION /usr/local/lib/kshark/)
-> +
->  set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
+> 
+> -- Steve
+> 
