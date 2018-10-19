@@ -1,43 +1,107 @@
 Return-Path: <SRS0=XbHK=M7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:54880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727200AbeJTBKX (ORCPT
+Received: from mail-eopbgr690079.outbound.protection.outlook.com ([40.107.69.79]:39872
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727464AbeJTBVG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 19 Oct 2018 21:10:23 -0400
-Date: Fri, 19 Oct 2018 13:03:24 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: Issue with making of doxygen files
-Message-ID: <20181019130324.495a6dd9@gandalf.local.home>
-In-Reply-To: <95c1af05-2cce-ddbe-2ac6-3bcc9559b6d3@gmail.com>
-References: <20181019114029.6ec42a95@gandalf.local.home>
-        <002df723-e710-ade0-3156-eac106aaf4f5@gmail.com>
-        <20181019124045.2ad35fa4@gandalf.local.home>
-        <95c1af05-2cce-ddbe-2ac6-3bcc9559b6d3@gmail.com>
+        Fri, 19 Oct 2018 21:21:06 -0400
+From: Yordan Karadzhov <ykaradzhov@vmware.com>
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Subject: [PATCH v3] kernel-shark-qt: Add make install
+Date: Fri, 19 Oct 2018 20:13:27 +0300
+Message-Id: <20181019171327.21548-1-ykaradzhov@vmware.com>
+In-Reply-To: <20181019115238.7025f2b7@gandalf.local.home>
+References: <20181019115238.7025f2b7@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Fri, 19 Oct 2018 19:45:38 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+From: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
-> Yes, this can be automated.
-> 
-> Please make a patch which adds this temporary fix and go ahead.
-> I will add the Cmake check in another patch.
+Define CMake installation rules for kernel-shark-qt project.
+Add a script for uninstalling.
 
-The warning is only an issue when doing:
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel-shark-qt/CMakeLists.txt             |  3 +++
+ kernel-shark-qt/build/cmake_uninstall.sh   | 17 +++++++++++++++++
+ kernel-shark-qt/src/CMakeLists.txt         | 10 ++++++++++
+ kernel-shark-qt/src/plugins/CMakeLists.txt |  3 +++
+ 4 files changed, 33 insertions(+)
+ create mode 100755 kernel-shark-qt/build/cmake_uninstall.sh
 
- cmake -D_DOXYGEN_DOC=1
-
-before doing a make, and it doesn't break anything (the html is still
-built).
-
-I'll just wait for your patch, it's fine to currently keep that
-warning. In other words, I'm not going to force the NO. I just wanted
-you to know that there was a warning.
-
--- Steve
+diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.txt
+index 278241b..767bec9 100644
+--- a/kernel-shark-qt/CMakeLists.txt
++++ b/kernel-shark-qt/CMakeLists.txt
+@@ -46,6 +46,9 @@ if (NOT _DEBUG)
+ 
+ endif (NOT _DEBUG)
+ 
++SET(CMAKE_INSTALL_RPATH "/usr/local/lib/kshark/")
++SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
++
+ include_directories(${KS_DIR}/src/
+                     ${KS_DIR}/build/src/
+                     ${JSONC_INCLUDE_DIR}
+diff --git a/kernel-shark-qt/build/cmake_uninstall.sh b/kernel-shark-qt/build/cmake_uninstall.sh
+new file mode 100755
+index 0000000..ae9eab5
+--- /dev/null
++++ b/kernel-shark-qt/build/cmake_uninstall.sh
+@@ -0,0 +1,17 @@
++#!/bin/bash
++
++CYAN='\e[36m'
++PURPLE='\e[35m'
++NC='\e[0m' # No Color
++
++if [[ $EUID -ne 0 ]]; then
++   echo -e "${PURPLE}Permission denied${NC}" 1>&2
++   exit 100
++fi
++
++if [ -e install_manifest.txt ]
++then
++    echo -e "${CYAN}Uninstall the project...${NC}"
++    xargs rm -v < install_manifest.txt
++    rm -f install_manifest.txt
++fi
+diff --git a/kernel-shark-qt/src/CMakeLists.txt b/kernel-shark-qt/src/CMakeLists.txt
+index 6819f86..2592094 100644
+--- a/kernel-shark-qt/src/CMakeLists.txt
++++ b/kernel-shark-qt/src/CMakeLists.txt
+@@ -73,6 +73,16 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+     add_executable(kshark-record        kshark-record.cpp)
+     target_link_libraries(kshark-record kshark-gui)
+ 
++    install(TARGETS kernelshark kshark-record kshark kshark-plot kshark-gui
++            RUNTIME DESTINATION /usr/local/bin/
++            LIBRARY DESTINATION /usr/local/lib/kshark/)
++
++    install(FILES "${KS_DIR}/kernelshark.desktop"
++            DESTINATION /usr/share/applications/)
++
++    install(FILES "${KS_DIR}/org.freedesktop.kshark-record.policy"
++            DESTINATION /usr/share/polkit-1/actions/)
++
+ endif (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+ 
+ add_subdirectory(plugins)
+diff --git a/kernel-shark-qt/src/plugins/CMakeLists.txt b/kernel-shark-qt/src/plugins/CMakeLists.txt
+index 88fd93c..2d7251d 100644
+--- a/kernel-shark-qt/src/plugins/CMakeLists.txt
++++ b/kernel-shark-qt/src/plugins/CMakeLists.txt
+@@ -24,4 +24,7 @@ BUILD_PLUGIN(NAME sched_events
+ list(APPEND PLUGIN_LIST "sched_events default") # This plugin will be loaded by default
+ # list(APPEND PLUGIN_LIST "sched_events") # This plugin isn't loaded by default
+ 
++install(TARGETS sched_events
++        LIBRARY DESTINATION /usr/local/lib/kshark/)
++
+ set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
+-- 
+2.17.1
