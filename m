@@ -1,34 +1,81 @@
-Return-Path: <SRS0=Skqm=NE=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-bn3nam01on0065.outbound.protection.outlook.com ([104.47.33.65]:34693
-        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
+Return-Path: <SRS0=g7z+=NM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-eopbgr810073.outbound.protection.outlook.com ([40.107.81.73]:3002
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726365AbeJYG1t (ORCPT
+        id S1727753AbeKBGu0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Oct 2018 02:27:49 -0400
+        Fri, 2 Nov 2018 02:50:26 -0400
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] kernel-shark-qt: correct a typo in ks.desktop.cmake
-Date: Wed, 24 Oct 2018 21:57:55 +0000
-Message-ID: <20181024215734.10956-1-ykaradzhov@vmware.com>
+Subject: [PATCH 2/8] kernel-shark-qt: Fix potential memory leak when searching
+ in collections
+Date: Thu, 1 Nov 2018 21:45:38 +0000
+Message-ID: <20181101214512.18684-3-ykaradzhov@vmware.com>
+References: <20181101214512.18684-1-ykaradzhov@vmware.com>
+In-Reply-To: <20181101214512.18684-1-ykaradzhov@vmware.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9AB6850F89A0D44D8F97B72AA44F219B@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-SXQgaXMgbm90IGNsZWFyIGhvdyB0aGlzIHR5cG8gY2FtZSBpbi4gSXQgaXMgbm90IHByZXNlbnRl
-ZCBpbiB0aGUgb3JpZ2luYWwgcGF0Y2guDQoNClNpZ25lZC1vZmYtYnk6IFlvcmRhbiBLYXJhZHpo
-b3YgPHlrYXJhZHpob3ZAdm13YXJlLmNvbT4NCi0tLQ0KIGtlcm5lbC1zaGFyay1xdC9idWlsZC9r
-cy5kZXNrdG9wLmNtYWtlIHwgMiArLQ0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwg
-MSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEva2VybmVsLXNoYXJrLXF0L2J1aWxkL2tzLmRl
-c2t0b3AuY21ha2UgYi9rZXJuZWwtc2hhcmstcXQvYnVpbGQva3MuZGVza3RvcC5jbWFrZQ0KaW5k
-ZXggMWZmNmQxZS4uMGI5NDdmMSAxMDA2NDQNCi0tLSBhL2tlcm5lbC1zaGFyay1xdC9idWlsZC9r
-cy5kZXNrdG9wLmNtYWtlDQorKysgYi9rZXJuZWwtc2hhcmstcXQvYnVpbGQva3MuZGVza3RvcC5j
-bWFrZQ0KQEAgLTYsNCArNiw0IEBAIEdlbmVyaWNOYW1lPUtlcm5lbCBTaGFyaw0KIENvbW1lbnQ9
-DQogRXhlYz0vdXNyL2xvY2FsL2Jpbi9rZXJuZWxzaGFyaw0KIEljb249QEtTX0RJUkAvaWNvbnMv
-a3NoYXJraWNvbi5wbmcNCi1UZXJtaW5hbMO6bHNlDQorVGVybWluYWw9ZmFsc2UNCi0tIA0KMi4x
-Ny4xDQoNCg==
+In some cases the Data Collection can map the original data request into
+a list of data requests. This is done in the cases when the range of the
+original request overlaps with more the one data interval (as defined by
+the collection). In such a case we must free the entire list of requests.
+
+Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+---
+ kernel-shark-qt/src/libkshark-model.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel-shark-qt/src/libkshark-model.c b/kernel-shark-qt/src/li=
+bkshark-model.c
+index 246a60c..7800090 100644
+--- a/kernel-shark-qt/src/libkshark-model.c
++++ b/kernel-shark-qt/src/libkshark-model.c
+@@ -900,7 +900,7 @@ ksmodel_get_entry_front(struct kshark_trace_histo *hist=
+o,
+ 	else
+ 		entry =3D kshark_get_entry_front(req, histo->data, index);
+=20
+-	free(req);
++	kshark_free_entry_request(req);
+=20
+ 	return entry;
+ }
+@@ -947,7 +947,7 @@ ksmodel_get_entry_back(struct kshark_trace_histo *histo=
+,
+ 	else
+ 		entry =3D kshark_get_entry_back(req, histo->data, index);
+=20
+-	free(req);
++	kshark_free_entry_request(req);
+=20
+ 	return entry;
+ }
+@@ -1160,7 +1160,7 @@ bool ksmodel_cpu_visible_event_exist(struct kshark_tr=
+ace_histo *histo,
+ 	else
+ 		entry =3D kshark_get_entry_front(req, histo->data, index);
+=20
+-	free(req);
++	kshark_free_entry_request(req);
+=20
+ 	if (!entry || !entry->visible) {
+ 		/* No visible entry has been found. */
+@@ -1213,7 +1213,7 @@ bool ksmodel_task_visible_event_exist(struct kshark_t=
+race_histo *histo,
+ 	else
+ 		entry =3D kshark_get_entry_front(req, histo->data, index);
+=20
+-	free(req);
++	kshark_free_entry_request(req);
+=20
+ 	if (!entry || !entry->visible) {
+ 		/* No visible entry has been found. */
+--=20
+2.17.1
