@@ -1,45 +1,53 @@
 Return-Path: <SRS0=Mn5y=NN=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:57900 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:36178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730441AbeKCECF (ORCPT
+        id S1726016AbeKCEZF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 3 Nov 2018 00:02:05 -0400
-Date: Fri, 2 Nov 2018 14:53:47 -0400
+        Sat, 3 Nov 2018 00:25:05 -0400
+Date: Fri, 2 Nov 2018 15:16:41 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Yordan Karadzhov <y.karadz@gmail.com>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] kernel-shark-qt: Fix typo in menu "Restor Last Session"
-Message-ID: <20181102145347.308c9296@gandalf.local.home>
+To: Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc: "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH 0/8] This series of patches contains various independent
+Message-ID: <20181102151641.4eaa0cf2@gandalf.local.home>
+In-Reply-To: <20181101214512.18684-1-ykaradzhov@vmware.com>
+References: <20181101214512.18684-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
+On Thu, 1 Nov 2018 21:45:36 +0000
+Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 
-[ Yordan, this is just an FYI that I added this patch ]
+> Yordan Karadzhov (8):
+>   kernel-shark-qt: Free all collections when closing the trace file.
+>   kernel-shark-qt: Fix potential memory leak when searching in
+>     collections
+>   kernel-shark-qt: Put error messages always on top
+>   kernel-shark-qt: Fix bug when loading the Dual Marker
+>   kernel-shark-qt: Fix bug when loading plugins from session
+>   kernel-shark-qt: Fix bug when resizing the KS window for session
+>   kernel-shark-qt: Change the color convention of the task graphs
+>   kernel-shark-qt: Remove duplicate code in KsWidgetsLib.cpp
+> 
+>  kernel-shark-qt/examples/dataplot.cpp |  30 +++--
+>  kernel-shark-qt/src/KsGLWidget.cpp    |  15 ++-
+>  kernel-shark-qt/src/KsGLWidget.hpp    |   2 +
+>  kernel-shark-qt/src/KsMainWindow.cpp  |  12 +-
+>  kernel-shark-qt/src/KsMainWindow.hpp  |  10 +-
+>  kernel-shark-qt/src/KsPlotTools.cpp   | 152 ++++++++++++++++----------
+>  kernel-shark-qt/src/KsPlotTools.hpp   |  45 ++++++--
+>  kernel-shark-qt/src/KsSession.cpp     |  46 +++++---
+>  kernel-shark-qt/src/KsSession.hpp     |   4 +-
+>  kernel-shark-qt/src/KsWidgetsLib.cpp  |  28 ++---
+>  kernel-shark-qt/src/libkshark-model.c |   8 +-
+>  kernel-shark-qt/src/libkshark.c       |   7 ++
+>  12 files changed, 233 insertions(+), 126 deletions(-)
+> 
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Pull. Thanks Yordan!
 
-Fix "Restor" to "Restore" in menu option.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel-shark-qt/src/KsMainWindow.cpp | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel-shark-qt/src/KsMainWindow.cpp b/kernel-shark-qt/src/KsMainWindow.cpp
-index 4f9a6e2e..871990dd 100644
---- a/kernel-shark-qt/src/KsMainWindow.cpp
-+++ b/kernel-shark-qt/src/KsMainWindow.cpp
-@@ -43,7 +43,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
-   _capture(this),
-   _captureLocalServer(this),
-   _openAction("Open", this),
--  _restorSessionAction("Restor Last Session", this),
-+  _restorSessionAction("Restore Last Session", this),
-   _importSessionAction("Import Session", this),
-   _exportSessionAction("Export Sassion", this),
-   _quitAction("Quit", this),
--- 
-2.13.6
+-- Steve
