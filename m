@@ -1,84 +1,45 @@
 Return-Path: <SRS0=Mn5y=NN=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr730056.outbound.protection.outlook.com ([40.107.73.56]:48320
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726265AbeKCAEv (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:57900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730441AbeKCECF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Nov 2018 20:04:51 -0400
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 2/3] tools/lib/traceevent: Add support for man pages with
- multiple names
-Date: Fri, 2 Nov 2018 14:57:28 +0000
-Message-ID: <20181102145714.25885-3-tstoyanov@vmware.com>
-References: <20181102145714.25885-1-tstoyanov@vmware.com>
-In-Reply-To: <20181102145714.25885-1-tstoyanov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 3 Nov 2018 00:02:05 -0400
+Date: Fri, 2 Nov 2018 14:53:47 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Yordan Karadzhov <y.karadz@gmail.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] kernel-shark-qt: Fix typo in menu "Restor Last Session"
+Message-ID: <20181102145347.308c9296@gandalf.local.home>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch adds support for man pages with multiple names, used to combine =
-the description of several APIs into one page.
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+[ Yordan, this is just an FYI that I added this patch ]
+
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+
+Fix "Restor" to "Restore" in menu option.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../traceevent/Documentation/asciidoc.conf    | 35 +++++++++++++++++--
- 1 file changed, 32 insertions(+), 3 deletions(-)
+ kernel-shark-qt/src/KsMainWindow.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/traceevent/Documentation/asciidoc.conf b/tools/lib/t=
-raceevent/Documentation/asciidoc.conf
-index 1b03c63fb73a..07595717f06e 100644
---- a/tools/lib/traceevent/Documentation/asciidoc.conf
-+++ b/tools/lib/traceevent/Documentation/asciidoc.conf
-@@ -74,12 +74,41 @@ template::[header-declarations]
- <refmeta>
- <refentrytitle>{mantitle}</refentrytitle>
- <manvolnum>{manvolnum}</manvolnum>
--<refmiscinfo class=3D"source">trace-cmd</refmiscinfo>
-+<refmiscinfo class=3D"source">libtraceevent</refmiscinfo>
- <refmiscinfo class=3D"version">{libtraceevent_version}</refmiscinfo>
--<refmiscinfo class=3D"manual">trace-cmd Manual</refmiscinfo>
-+<refmiscinfo class=3D"manual">libtraceevent Manual</refmiscinfo>
- </refmeta>
- <refnamediv>
--  <refname>{manname}</refname>
-+  <refname>{manname1}</refname>
-+  <refname>{manname2}</refname>
-+  <refname>{manname3}</refname>
-+  <refname>{manname4}</refname>
-+  <refname>{manname5}</refname>
-+  <refname>{manname6}</refname>
-+  <refname>{manname7}</refname>
-+  <refname>{manname8}</refname>
-+  <refname>{manname9}</refname>
-+  <refname>{manname10}</refname>
-+  <refname>{manname11}</refname>
-+  <refname>{manname12}</refname>
-+  <refname>{manname13}</refname>
-+  <refname>{manname14}</refname>
-+  <refname>{manname15}</refname>
-+  <refname>{manname16}</refname>
-+  <refname>{manname17}</refname>
-+  <refname>{manname18}</refname>
-+  <refname>{manname19}</refname>
-+  <refname>{manname20}</refname>
-+  <refname>{manname21}</refname>
-+  <refname>{manname22}</refname>
-+  <refname>{manname23}</refname>
-+  <refname>{manname24}</refname>
-+  <refname>{manname25}</refname>
-+  <refname>{manname26}</refname>
-+  <refname>{manname27}</refname>
-+  <refname>{manname28}</refname>
-+  <refname>{manname29}</refname>
-+  <refname>{manname30}</refname>
-   <refpurpose>{manpurpose}</refpurpose>
- </refnamediv>
- endif::backend-docbook[]
---=20
-2.17.2
+diff --git a/kernel-shark-qt/src/KsMainWindow.cpp b/kernel-shark-qt/src/KsMainWindow.cpp
+index 4f9a6e2e..871990dd 100644
+--- a/kernel-shark-qt/src/KsMainWindow.cpp
++++ b/kernel-shark-qt/src/KsMainWindow.cpp
+@@ -43,7 +43,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+   _capture(this),
+   _captureLocalServer(this),
+   _openAction("Open", this),
+-  _restorSessionAction("Restor Last Session", this),
++  _restorSessionAction("Restore Last Session", this),
+   _importSessionAction("Import Session", this),
+   _exportSessionAction("Export Sassion", this),
+   _quitAction("Quit", this),
+-- 
+2.13.6
