@@ -1,20 +1,17 @@
-Return-Path: <SRS0=g7z+=NM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr810044.outbound.protection.outlook.com ([40.107.81.44]:28016
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+Return-Path: <SRS0=Mn5y=NN=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-eopbgr730056.outbound.protection.outlook.com ([40.107.73.56]:48320
+        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727151AbeKBGud (ORCPT
+        id S1726265AbeKCAEt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Nov 2018 02:50:33 -0400
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
+        Fri, 2 Nov 2018 20:04:49 -0400
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 8/8] kernel-shark-qt: Remove duplicate code in
- KsWidgetsLib.cpp
-Date: Thu, 1 Nov 2018 21:45:46 +0000
-Message-ID: <20181101214512.18684-9-ykaradzhov@vmware.com>
-References: <20181101214512.18684-1-ykaradzhov@vmware.com>
-In-Reply-To: <20181101214512.18684-1-ykaradzhov@vmware.com>
+Subject: [PATCH 0/3] libtraceevent man pages
+Date: Fri, 2 Nov 2018 14:57:25 +0000
+Message-ID: <20181102145714.25885-1-tstoyanov@vmware.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -22,99 +19,33 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Currently the "Task" and "CPU" checkbox widgets have their own
-implementation of the code that generates the Rainbow color palettes
-of the CPUs and Tasks. This patch make the two widgets to use the same
-hash tables of colors used when plotting the graphs.
+This series of patches continues libtraceevent man pages implementation.=20
+First two patches improve man pages build process.=20
+The last patch implements 5 new man pages, describing 13 libtraceevent APIs
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark-qt/src/KsWidgetsLib.cpp | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+Tzvetomir Stoyanov (3):
+  tools/lib/traceevent: Fix libtraceevent/Documentation Makefile
+  tools/lib/traceevent: Add support for man pages with multiple names
+  tools/lib/traceevent: Implement libtraceevent man pages
 
-diff --git a/kernel-shark-qt/src/KsWidgetsLib.cpp b/kernel-shark-qt/src/KsW=
-idgetsLib.cpp
-index b4b62a4..dd6ab0f 100644
---- a/kernel-shark-qt/src/KsWidgetsLib.cpp
-+++ b/kernel-shark-qt/src/KsWidgetsLib.cpp
-@@ -622,7 +622,7 @@ KsCPUCheckBoxWidget::KsCPUCheckBoxWidget(struct tep_han=
-dle *tep,
- : KsCheckBoxTreeWidget("CPUs", parent)
- {
- 	int nCPUs(0), height(FONT_HEIGHT * 1.5);
--	KsPlot::Color cpuCol;
-+	KsPlot::ColorTable colors;
- 	QString style;
-=20
- 	style =3D QString("QTreeView::item { height: %1 ;}").arg(height);
-@@ -635,16 +635,16 @@ KsCPUCheckBoxWidget::KsCPUCheckBoxWidget(struct tep_h=
-andle *tep,
-=20
- 	_id.resize(nCPUs);
- 	_cb.resize(nCPUs);
-+	colors =3D KsPlot::getCPUColorTable();
-=20
- 	for (int i =3D 0; i < nCPUs; ++i) {
--		cpuCol.setRainbowColor(i);
- 		QTreeWidgetItem *cpuItem =3D new QTreeWidgetItem;
- 		cpuItem->setText(0, "  ");
- 		cpuItem->setText(1, QString("CPU %1").arg(i));
- 		cpuItem->setCheckState(0, Qt::Checked);
--		cpuItem->setBackgroundColor(0, QColor(cpuCol.r(),
--						      cpuCol.g(),
--						      cpuCol.b()));
-+		cpuItem->setBackgroundColor(0, QColor(colors[i].r(),
-+						      colors[i].g(),
-+						      colors[i].b()));
- 		_tree.addTopLevelItem(cpuItem);
- 		_id[i] =3D i;
- 		_cb[i] =3D cpuItem;
-@@ -719,10 +719,10 @@ KsTasksCheckBoxWidget::KsTasksCheckBoxWidget(struct t=
-ep_handle *pevent,
- {
- 	kshark_context *kshark_ctx(nullptr);
- 	QTableWidgetItem *pidItem, *comItem;
--	KsPlot::Color pidCol;
-+	KsPlot::ColorTable colors;
- 	QStringList headers;
- 	const char *comm;
--	int nTasks;
-+	int nTasks, pid;
-=20
- 	if (!kshark_instance(&kshark_ctx))
- 		return;
-@@ -735,24 +735,24 @@ KsTasksCheckBoxWidget::KsTasksCheckBoxWidget(struct t=
-ep_handle *pevent,
- 	_id =3D KsUtils::getPidList();
- 	nTasks =3D _id.count();
- 	_initTable(headers, nTasks);
-+	colors =3D KsPlot::getTaskColorTable();
-=20
- 	for (int i =3D 0; i < nTasks; ++i) {
--		pidItem	=3D new QTableWidgetItem(tr("%1").arg(_id[i]));
-+		pid =3D _id[i];
-+		pidItem	=3D new QTableWidgetItem(tr("%1").arg(pid));
- 		_table.setItem(i, 1, pidItem);
-=20
--		comm =3D tep_data_comm_from_pid(kshark_ctx->pevent, _id[i]);
-+		comm =3D tep_data_comm_from_pid(kshark_ctx->pevent, pid);
- 		comItem =3D new QTableWidgetItem(tr(comm));
-=20
--		pidItem->setBackgroundColor(QColor(pidCol.r(),
--						   pidCol.g(),
--						   pidCol.b()));
-+		pidItem->setBackgroundColor(QColor(colors[pid].r(),
-+						   colors[pid].g(),
-+						   colors[pid].b()));
-=20
- 		if (_id[i] =3D=3D 0)
- 			pidItem->setTextColor(Qt::white);
-=20
- 		_table.setItem(i, 2, comItem);
--
--		pidCol.setRainbowColor(i);
- 	}
-=20
- 	_adjustSize();
+ tools/lib/traceevent/Documentation/Makefile   |   2 +-
+ .../traceevent/Documentation/asciidoc.conf    |  35 ++++-
+ .../Documentation/libtraceevent-commands.txt  | 125 ++++++++++++++++++
+ .../Documentation/libtraceevent-handle.txt    |  77 +++++++++++
+ .../Documentation/libtraceevent-long_size.txt |  75 +++++++++++
+ .../Documentation/libtraceevent-ref.txt       |  84 ++++++++++++
+ .../Documentation/libtraceevent-set_flag.txt  |  94 +++++++++++++
+ 7 files changed, 488 insertions(+), 4 deletions(-)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-comman=
+ds.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-handle=
+.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-long_s=
+ize.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-ref.tx=
+t
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-set_fl=
+ag.txt
+
 --=20
-2.17.1
+2.17.2
