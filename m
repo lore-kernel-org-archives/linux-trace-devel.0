@@ -2,16 +2,16 @@ Return-Path: <SRS0=lo60=NR=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr710048.outbound.protection.outlook.com ([40.107.71.48]:16352
         "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388466AbeKFWqD (ORCPT
+        id S2388447AbeKFWqE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Nov 2018 17:46:03 -0500
+        Tue, 6 Nov 2018 17:46:04 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 1/7] tools/lib/traceevent: Implement libtraceevent man pages
-Date: Tue, 6 Nov 2018 13:20:50 +0000
-Message-ID: <20181106132035.7692-2-tstoyanov@vmware.com>
+Subject: [PATCH 2/7] tools/lib/traceevent: Implement libtraceevent man pages
+Date: Tue, 6 Nov 2018 13:20:51 +0000
+Message-ID: <20181106132035.7692-3-tstoyanov@vmware.com>
 References: <20181106132035.7692-1-tstoyanov@vmware.com>
 In-Reply-To: <20181106132035.7692-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,30 +22,30 @@ Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
 This patch implements a man page, which documents
-tep_get_header_page_size() libtraceevent API
+tep_get_cpus() and tep_set_cpus() libtraceevent APIs
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-header_size.txt             | 73 +++++++++++++++++++
- tools/lib/traceevent/event-parse-api.c        |  4 +-
- 2 files changed, 75 insertions(+), 2 deletions(-)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-header=
-_size.txt
+ .../Documentation/libtraceevent-cpus.txt      | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-cpus.t=
+xt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-header_size.t=
-xt b/tools/lib/traceevent/Documentation/libtraceevent-header_size.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt b/to=
+ols/lib/traceevent/Documentation/libtraceevent-cpus.txt
 new file mode 100644
-index 000000000000..8edf49d2a709
+index 000000000000..f9ed0a02d653
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-header_size.txt
-@@ -0,0 +1,73 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
+@@ -0,0 +1,78 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_get_header_page_size - Get the size of a long integer, in kernel conte=
-xt.
++tep_get_cpus,tep_set_cpus - Get / set the numbers of CPUs, which have trac=
+ing=20
++data recorded.
 +
 +SYNOPSIS
 +--------
@@ -53,23 +53,28 @@ xt.
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_get_header_page_size*(struct tep_handle pass:[*]_tep_);
-+
++int *tep_get_cpus*(struct tep_handle pass:[*]_tep_);
++void *tep_set_cpus*(struct tep_handle pass:[*]_tep_, int _cpus_);
 +--
++
 +DESCRIPTION
 +-----------
-+The _tep_get_header_page_size()_ function returns the size of a long integ=
-er,
-+in kernel context. The _tep_ argument is trace event parser context.
-+This information is retrieved from /sys/kernel/debug/tracing/events/header=
-_page,
-+ "commit" field.
++The _tep_get_cpus()_ functions gets the number of CPUs, which have tracing=
+=20
++data recorded. The _tep_ argument is trace event parser context.
++
++The _tep_set_cpus()_ functions sets the number of CPUs, which have tracing=
+=20
++data recorded. The _tep_ argument is trace event parser context. The _cpu_
++argument is the number of CPUs with tracing data. This information is save=
+d=20
++in the trace.dat file.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_header_page_size()_ function returns the size of a long integ=
-er,=20
-+in bytes
++The _tep_get_cpus()_ functions returns the number of CPUs, which have trac=
+ing=20
++data recorded.
 +
 +EXAMPLE
 +-------
@@ -79,9 +84,9 @@ er,=20
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+	int lsize =3D tep_get_header_page_size(tep);
-+	printf ("The size of a long in kernel context is %d bytes", lsize);
-+...=09
++	tep_set_cpus(tep, 5);
++...
++	printf("We have tracing data for %d CPUs", tep_get_cpus(tep));
 +--
 +
 +FILES
@@ -116,25 +121,5 @@ er,=20
 +RESOURCES
 +---------
 +https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-diff --git a/tools/lib/traceevent/event-parse-api.c b/tools/lib/traceevent/=
-event-parse-api.c
-index 6a1899b378b1..39e0fca2d9a2 100644
---- a/tools/lib/traceevent/event-parse-api.c
-+++ b/tools/lib/traceevent/event-parse-api.c
-@@ -100,10 +100,10 @@ tep_data2host8(struct tep_handle *pevent, unsigned lo=
-ng long data)
- }
-=20
- /**
-- * tep_get_header_page_size - get size of the header page
-+ * tep_get_header_page_size - get the size of a long integer, in kernel co=
-ntext
-  * @pevent: a handle to the tep_handle
-  *
-- * This returns size of the header page
-+ * This returns the size of a long integer, in kernel context
-  * If @pevent is NULL, 0 is returned.
-  */
- int tep_get_header_page_size(struct tep_handle *pevent)
 --=20
 2.17.2
