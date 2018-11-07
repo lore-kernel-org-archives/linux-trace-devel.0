@@ -1,51 +1,52 @@
 Return-Path: <SRS0=o0t1=NS=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:35160 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:36078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727270AbeKGJrw (ORCPT
+        id S2388387AbeKGJvh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 7 Nov 2018 04:47:52 -0500
-Date: Tue, 6 Nov 2018 19:19:58 -0500
+        Wed, 7 Nov 2018 04:51:37 -0500
+Date: Tue, 6 Nov 2018 19:23:43 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 5/7] tools/lib/traceevent: Implement libtraceevent man
+Subject: Re: [PATCH 6/7] tools/lib/traceevent: Implement libtraceevent man
  pages
-Message-ID: <20181106191958.2c07ec17@gandalf.local.home>
-In-Reply-To: <20181106132035.7692-6-tstoyanov@vmware.com>
+Message-ID: <20181106192343.1831edd8@gandalf.local.home>
+In-Reply-To: <20181106132035.7692-7-tstoyanov@vmware.com>
 References: <20181106132035.7692-1-tstoyanov@vmware.com>
-        <20181106132035.7692-6-tstoyanov@vmware.com>
+        <20181106132035.7692-7-tstoyanov@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Tue, 6 Nov 2018 13:20:54 +0000
+On Tue, 6 Nov 2018 13:20:56 +0000
 Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
 > This patch implements a man page, which documents
-> tep_is_latency_format() and tep_set_latency_format()
+> tep_get_page_size() and tep_set_page_size()
 > libtraceevent APIs
 > 
 > Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 > ---
->  .../libtraceevent-latency_format.txt          | 98 +++++++++++++++++++
->  1 file changed, 98 insertions(+)
->  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt
+>  .../Documentation/libtraceevent-page_size.txt | 79 +++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
 > 
-> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt b/tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt
+> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
 > new file mode 100644
-> index 000000000000..a7eaed5d1a7e
+> index 000000000000..d2bad8dca42d
 > --- /dev/null
-> +++ b/tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt
-> @@ -0,0 +1,98 @@
+> +++ b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
+> @@ -0,0 +1,79 @@
 > +libtraceevent(3)
 > +================
 > +
 > +NAME
 > +----
-> +tep_set_latency_format,tep_is_latency_format - Get / set "latency output" format.
+> +tep_get_page_size,tep_set_page_size - Get / set the size of a memory page on the 
+> +machine, where the trace is generated 
 > +
 > +SYNOPSIS
 > +--------
@@ -53,58 +54,37 @@ Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 > +--
 > +*#include <event-parse.h>*
 > +
-> +void *tep_set_latency_format*(struct tep_handle pass:[*]_tep_, int _lat_);
-> +int *tep_is_latency_format*(struct tep_handle pass:[*]_tep_);
-> +
+> +int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
+> +void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_);
 > +--
 > +
 > +DESCRIPTION
 > +-----------
-> +"Latency output" format prints information about interrupts being disabled, 
-> +soft irq being disabled, the "need_resched" flag being set, preempt count, 
-> +and big kernel lock. This information is recorded with every event, but by 
-
-The "big kernel lock" no longer exists (Yay!!!), we can remove that
-line.
-
-> +default is not printed.
+> +The _tep_get_page_size()_ function returns the size of a memory page on 
+> +the machine, where the trace is generated. The _tep_ argument is trace event parser context.
 > +
-> +The _tep_set_latency_format()_ function enables the "latency output" printing.
-> +The _tep_ argument is trace event parser context. The _lat_ argument can be zero,
-> +for "latency output" disabled, or non zero for "latency output" enabled.
+> +The _tep_set_page_size()_ function sets the size of a memory page on the machine, 
+> +where the trace is generated. The _tep_ argument is trace event parser context.
 
-Hmm, perhaps we should change that parameter to true or false.
+Note, we don't actually set the memory page size of the machine, that's
+already fixed ;-)
 
-> +Information is displayed with 6 characters. When a field is zero, or N/A, a pass:['.'] 
-> +is printed. Example:
-> +[verse]
-> +--
-> +  <idle>-0       0d.h1. 106467.859747: function:             ktime_get <-- tick_check_idle
-> +--
-> +The 0d.h1. denotes this information. The first character is never a pass:['.']
-> +and represents what CPU the trace was recorded on (CPU 0). The pass:['d'] denotes
-> +that interrupts were disabled. The pass:['h'] means that this was called inside
-> +an interrupt handler. The pass:['1'] is the preemption disabled (preempt_count)
-> +was set to one.  The two pass:['.']s are "need_resched" flag and kernel lock
-> +counter. If the "need_resched" flag is set, then that character would be a pass:['N'].
-> +
-> +The _tep_is_latency_format()_ function returns if "latency output" is enabled.
-
-We need to add somewhere in this description about
-tep_print_event_task() and tep_print_event_time() which is what this
-affects. As tep_print_event*() creates the string to output and is
-affected by this format.
-
-We may change this before we release the final output.
+We use tep_set_page_size() to tell the tep handler what the page size
+is for the raw data it is parsing, and we use tep_get_page_size to
+retrieve what the page_size is for the handler. The get_page_size is
+used by plugins that need to know this information.
 
 -- Steve
 
+
+
+
+> +The _page_size_ argument is the size of a memory page, in bytes. 
+> +This information is saved in the trace.dat file. 
 > +
 > +RETURN VALUE
 > +------------
-> +
-> +The _tep_is_latency_format()_ function returns non zero if "latency output" 
-> +is enabled, or zero if it is disabled.
+> +The _tep_get_page_size()_ function returns size, in bytes, of the memory page.
 > +
 > +EXAMPLE
 > +-------
@@ -114,12 +94,10 @@ We may change this before we release the final output.
 > +...
 > +struct tep_handle *tep = tep_alloc();
 > +...
-> +	tep_set_latency_format(tep, 1);
-> +...
-> +	if (tep_is_latency_format(tep)) {
-> +		/* latency output format is enabled */
-> +	} else {
-> +		/* latency output format is disabled */
+> +	int page_size = 4096;
+> +	tep_set_page_size(tep, page_size);
+> +	if ( 4096 != tep_get_page_size(tep)) {
+> +		/* Something wrong happened, page size is not set as expected */
 > +	}
 > +--
 > +
