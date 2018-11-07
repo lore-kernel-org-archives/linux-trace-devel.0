@@ -1,101 +1,57 @@
 Return-Path: <SRS0=o0t1=NS=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr810042.outbound.protection.outlook.com ([40.107.81.42]:5084
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-bl2nam02on0062.outbound.protection.outlook.com ([104.47.38.62]:11903
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726635AbeKHARM (ORCPT
+        id S1727546AbeKHBpf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 7 Nov 2018 19:17:12 -0500
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+        Wed, 7 Nov 2018 20:45:35 -0500
+From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 4/7] tools/lib/traceevent: Implement libtraceevent man
- pages
-Date: Wed, 7 Nov 2018 14:45:38 +0000
-Message-ID: <CACqStoc_Y_OD6N0CjmK5mLNykSTcnr6X=VuooFZUkb5085f0PQ@mail.gmail.com>
-References: <20181106132035.7692-1-tstoyanov@vmware.com>
- <20181106132035.7692-5-tstoyanov@vmware.com>
- <20181106191556.4b199def@gandalf.local.home>
-In-Reply-To: <20181106191556.4b199def@gandalf.local.home>
+Subject: [PATCH 0/8] New/improved KernelShark plugins
+Date: Wed, 7 Nov 2018 16:14:31 +0000
+Message-ID: <20181107161410.22507-1-ykaradzhov@vmware.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <024385B3AED4E844B46FB9B03DDC1501@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-T24gV2VkLCBOb3YgNywgMjAxOCBhdCAyOjE1IEFNIFN0ZXZlbiBSb3N0ZWR0IDxyb3N0ZWR0QGdv
-b2RtaXMub3JnPiB3cm90ZToNCj4NCj4gT24gVHVlLCA2IE5vdiAyMDE4IDEzOjIwOjUzICswMDAw
-DQo+IFR6dmV0b21pciBTdG95YW5vdiA8dHN0b3lhbm92QHZtd2FyZS5jb20+IHdyb3RlOg0KPg0K
-PiA+IFRoaXMgcGF0Y2ggaW1wbGVtZW50cyBhIG1hbiBwYWdlLCB3aGljaCBkb2N1bWVudHMNCj4g
-PiB0ZXBfaXNfaG9zdF9iaWdlbmRpYW4oKSBhbmQgdGVwX3NldF9ob3N0X2JpZ2VuZGlhbigpDQo+
-ID4gbGlidHJhY2VldmVudCBBUElzDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBUenZldG9taXIg
-U3RveWFub3YgPHRzdG95YW5vdkB2bXdhcmUuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4vbGlidHJh
-Y2VldmVudC1ob3N0X2VuZGlhbi50eHQgICAgICAgICAgICAgfCA4NSArKysrKysrKysrKysrKysr
-KysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA4NSBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBt
-b2RlIDEwMDY0NCB0b29scy9saWIvdHJhY2VldmVudC9Eb2N1bWVudGF0aW9uL2xpYnRyYWNlZXZl
-bnQtaG9zdF9lbmRpYW4udHh0DQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvdG9vbHMvbGliL3RyYWNl
-ZXZlbnQvRG9jdW1lbnRhdGlvbi9saWJ0cmFjZWV2ZW50LWhvc3RfZW5kaWFuLnR4dCBiL3Rvb2xz
-L2xpYi90cmFjZWV2ZW50L0RvY3VtZW50YXRpb24vbGlidHJhY2VldmVudC1ob3N0X2VuZGlhbi50
-eHQNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uMjNl
-MDg1ZGI4ZDU0DQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL3Rvb2xzL2xpYi90cmFjZWV2
-ZW50L0RvY3VtZW50YXRpb24vbGlidHJhY2VldmVudC1ob3N0X2VuZGlhbi50eHQNCj4gPiBAQCAt
-MCwwICsxLDg1IEBADQo+ID4gK2xpYnRyYWNlZXZlbnQoMykNCj4gPiArPT09PT09PT09PT09PT09
-PQ0KPiA+ICsNCj4gPiArTkFNRQ0KPiA+ICstLS0tDQo+ID4gK3RlcF9pc19ob3N0X2JpZ2VuZGlh
-bix0ZXBfc2V0X2hvc3RfYmlnZW5kaWFuIC0gR2V0IC8gc2V0IHRoZSBlbmRpYW5lc3Mgb2YgdGhl
-IGxvY2FsIGhvc3QuDQo+DQo+IFByb2JhYmx5IG5lZWQgdG8gc3RhdGUgbW9yZSBhYm91dCB0aGUg
-ZW5kaWFubmVzcyBvZiB0aGUgbWFjaGluZSBydW5uaW5nDQo+IHRoZSBjb2RlLiBUaGF0IGlzLCB0
-aGUgbG9jYWwgaG9zdCByZXByZXNlbnRzIHRoZSBtYWNoaW5lIGV4ZWN1dGluZyB0aGUNCj4gY3Vy
-cmVudCBjb2RlLg0KDQpJJ20gY29uZnVzZWQgYWJvdXQgdGhlc2UgdHdvIEFQSXM6DQogICAgICAg
-aW50IHRlcF9ob3N0X2JpZ2VuZGlhbih2b2lkKTsNCiAgICAgICBpbnQgdGVwX2lzX2hvc3RfYmln
-ZW5kaWFuKHN0cnVjdCB0ZXBfaGFuZGxlICpwZXZlbnQpOw0KV2h5IHdlIG5lZWQgdGhlIHNlY29u
-ZCBvbmUgPyBEb2VzIGl0IHdvcmsgZmFzdGVyIHRoYW4gdGhlIGZpcnN0IEFQSSwNCm9yIHRoZXJl
-IGlzIHNvbWUgc3BlY2lhbCB1c2UgY2FzZSA/DQoNCj4NCj4gLS0gU3RldmUNCj4NCj4NCj4gPiAr
-DQo+ID4gK1NZTk9QU0lTDQo+ID4gKy0tLS0tLS0tDQo+ID4gK1t2ZXJzZV0NCj4gPiArLS0NCj4g
-PiArKiNpbmNsdWRlIDxldmVudC1wYXJzZS5oPioNCj4gPiArDQo+ID4gK2VudW0gKnRlcF9lbmRp
-YW4qIHsNCj4gPiArICAgICBURVBfTElUVExFX0VORElBTiA9IDAsDQo+ID4gKyAgICAgVEVQX0JJ
-R19FTkRJQU4NCj4gPiArfTsNCj4gPiArDQo+ID4gK2ludCAqdGVwX2lzX2hvc3RfYmlnZW5kaWFu
-KihzdHJ1Y3QgdGVwX2hhbmRsZSBwYXNzOlsqXV90ZXBfKTsNCj4gPiArdm9pZCAqdGVwX3NldF9o
-b3N0X2JpZ2VuZGlhbiooc3RydWN0IHRlcF9oYW5kbGUgcGFzczpbKl1fdGVwXywgZW51bSB0ZXBf
-ZW5kaWFuIF9lbmRpYW5fKTsNCj4gPiArLS0NCj4gPiArDQo+ID4gK0RFU0NSSVBUSU9ODQo+ID4g
-Ky0tLS0tLS0tLS0tDQo+ID4gK1RoZSBfdGVwX2lzX2hvc3RfYmlnZW5kaWFuKClfIGZ1bmN0aW9u
-IHJldHVybnMgdGhlIGVuZGlhbmVzcyBvZiB0aGUgbG9jYWwgaG9zdA0KPiA+ICtUaGUgX3RlcF8g
-YXJndW1lbnQgaXMgdHJhY2UgZXZlbnQgcGFyc2VyIGNvbnRleHQuDQo+ID4gKw0KPiA+ICtUaGUg
-X3RlcF9zZXRfaG9zdF9iaWdlbmRpYW4oKV8gc2V0IHRoZSBlbmRpYW5lc3Mgb2YgdGhlIGxvY2Fs
-IGhvc3QuDQo+ID4gK1RoZSBfdGVwXyBhcmd1bWVudCBpcyB0cmFjZSBldmVudCBwYXJzZXIgY29u
-dGV4dC4gVGhlIF9lbmRpYW5fIGFyZ3VtZW50IGlzIHRoZSBlbmRpYW5lc3M6DQo+ID4gKyAgICAg
-X1RFUF9MSVRUTEVfRU5ESUFOXyAtIHRoZSBob3N0IGlzIGxpdHRsZSBlbmRpYW4sDQo+ID4gKyAg
-ICAgX1RFUF9CSUdfRU5ESUFOXyAtIHRoZSBob3N0IGlzIGJpZyBlbmRpYW4uDQo+ID4gKw0KPiA+
-ICtSRVRVUk4gVkFMVUUNCj4gPiArLS0tLS0tLS0tLS0tDQo+ID4gK1RoZSBfdGVwX2lzX2hvc3Rf
-YmlnZW5kaWFuKClfIGZ1bmN0aW9uIHJldHVybnMgX1RFUF9MSVRUTEVfRU5ESUFOXyBvciBfVEVQ
-X0JJR19FTkRJQU5fLg0KPiA+ICsNCj4gPiArRVhBTVBMRQ0KPiA+ICstLS0tLS0tDQo+ID4gK1tz
-b3VyY2UsY10NCj4gPiArLS0NCj4gPiArI2luY2x1ZGUgPGV2ZW50LXBhcnNlLmg+DQo+ID4gKy4u
-Lg0KPiA+ICtzdHJ1Y3QgdGVwX2hhbmRsZSAqdGVwID0gdGVwX2FsbG9jKCk7DQo+ID4gKy4uLg0K
-PiA+ICsgICAgIHRlcF9zZXRfaG9zdF9iaWdlbmRpYW4odGVwLCBURVBfTElUVExFX0VORElBTik7
-DQo+ID4gKy4uLg0KPiA+ICsgICAgIGlmIChURVBfQklHX0VORElBTiA9PSB0ZXBfaXNfaG9zdF9i
-aWdlbmRpYW4odGVwKSkgew0KPiA+ICsgICAgICAgICAgICAgLyogVGhlIGxvY2FsIGhvc3QgaXMg
-YmlnIGVuZGlhbiAqLw0KPiA+ICsgICAgIH0gZWxzZSB7DQo+ID4gKyAgICAgICAgICAgICAvKiBU
-aGUgbG9jYWwgaG9zdCBpcyBsaXR0bGUgZW5kaWFuICovDQo+ID4gKyAgICAgfQ0KPiA+ICstLQ0K
-PiA+ICsNCj4gPiArRklMRVMNCj4gPiArLS0tLS0NCj4gPiArW3ZlcnNlXQ0KPiA+ICstLQ0KPiA+
-ICsqZXZlbnQtcGFyc2UuaCoNCj4gPiArICAgICBIZWFkZXIgZmlsZSB0byBpbmNsdWRlIGluIG9y
-ZGVyIHRvIGhhdmUgYWNjZXNzIHRvIHRoZSBsaWJyYXJ5IEFQSXMuDQo+ID4gKyotbHRyYWNlZXZl
-bnQqDQo+ID4gKyAgICAgTGlua2VyIHN3aXRjaCB0byBhZGQgd2hlbiBidWlsZGluZyBhIHByb2dy
-YW0gdGhhdCB1c2VzIHRoZSBsaWJyYXJ5Lg0KPiA+ICstLQ0KPiA+ICsNCj4gPiArU0VFIEFMU08N
-Cj4gPiArLS0tLS0tLS0NCj4gPiArX2xpYnRyYWNlZXZlbnQoMylfLCBfdHJhY2UtY21kKDEpXw0K
-PiA+ICsNCj4gPiArQVVUSE9SDQo+ID4gKy0tLS0tLQ0KPiA+ICtbdmVyc2VdDQo+ID4gKy0tDQo+
-ID4gKypTdGV2ZW4gUm9zdGVkdCogPHJvc3RlZHRAZ29vZG1pcy5vcmc+LCBhdXRob3Igb2YgKmxp
-YnRyYWNlZXZlbnQqLg0KPiA+ICsqVHp2ZXRvbWlyIFN0b3lhbm92KiA8dHouc3RveWFub3ZAZ21h
-aWwuY29tPiwgYXV0aG9yIG9mIHRoaXMgbWFuIHBhZ2UuDQo+ID4gKy0tDQo+ID4gK1JFUE9SVElO
-RyBCVUdTDQo+ID4gKy0tLS0tLS0tLS0tLS0tDQo+ID4gK1JlcG9ydCBidWdzIHRvICA8bGludXgt
-dHJhY2UtZGV2ZWxAdmdlci5rZXJuZWwub3JnPg0KPiA+ICsNCj4gPiArTElDRU5TRQ0KPiA+ICst
-LS0tLS0tDQo+ID4gK2xpYnRyYWNlZXZlbnQgaXMgRnJlZSBTb2Z0d2FyZSBsaWNlbnNlZCB1bmRl
-ciB0aGUgR05VIExHUEwgMi4xDQo+ID4gKw0KPiA+ICtSRVNPVVJDRVMNCj4gPiArLS0tLS0tLS0t
-DQo+ID4gK2h0dHBzOi8vbmEwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJs
-PWh0dHBzJTNBJTJGJTJGZ2l0Lmtlcm5lbC5vcmclMkZwdWIlMkZzY20lMkZsaW51eCUyRmtlcm5l
-bCUyRmdpdCUyRnRvcnZhbGRzJTJGbGludXguZ2l0JmFtcDtkYXRhPTAyJTdDMDElN0N0c3RveWFu
-b3YlNDB2bXdhcmUuY29tJTdDMjI2NGIyNjJlNzQwNDI3NjFhNzQwOGQ2NDQ0NjMxOTElN0NiMzkx
-MzhjYTNjZWU0YjRhYTRkNmNkODNkOWRkNjJmMCU3QzElN0MwJTdDNjM2NzcxNDY1NjA4NjkzNDE1
-JmFtcDtzZGF0YT1GamNoVTlFblowMDdPV2pDdSUyQnhpZ0RvRTBJT2R3bWVmWjB5MnRkeVg1SkUl
-M0QmYW1wO3Jlc2VydmVkPTANCj4NCg0KDQotLSANCi0tDQpUenZldG9taXIgKENlY28pIFN0b3lh
-bm92DQpWTXdhcmUgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXINCg==
+This series of patches combines a development which originally aimed to
+make the drawing logic of the Sched event plugin more robust and easy
+to understand. It turned out that this is not possible without
+introducing custom KernelShark entries for "Missed events".
+
+Yordan Karadzhov (8):
+  kernel-shark-qt: Reset the second pass hash when reloading Sched
+    plugin
+  kernel-shark-qt: Improve the plotting logic of the Sched event plugin
+  kernel-shark-qt: Update the visualization model before plotting new
+    graphs
+  kernel-shark-qt: Add "Missed events" custom kshark_entry
+  kernel-shark-qt: Add instrumentation for "Missed events" to the model
+  kernel-shark-qt: Add tot_count field to the model descriptor
+  kernel-shark-qt: Add "Missed events" plugin for KernelShark
+  kernel-shark-qt: Update Sched Events plugin
+
+ kernel-shark-qt/src/KsGLWidget.cpp           |   2 +
+ kernel-shark-qt/src/libkshark-model.c        |  67 +++++++
+ kernel-shark-qt/src/libkshark-model.h        |  15 ++
+ kernel-shark-qt/src/libkshark.c              | 196 +++++++++++++++----
+ kernel-shark-qt/src/libkshark.h              |  16 ++
+ kernel-shark-qt/src/plugins/CMakeLists.txt   |   6 +-
+ kernel-shark-qt/src/plugins/MissedEvents.cpp | 149 ++++++++++++++
+ kernel-shark-qt/src/plugins/SchedEvents.cpp  | 171 +++++++---------
+ kernel-shark-qt/src/plugins/missed_events.c  |  41 ++++
+ kernel-shark-qt/src/plugins/missed_events.h  |  30 +++
+ kernel-shark-qt/src/plugins/sched_events.c   |  54 +++--
+ kernel-shark-qt/src/plugins/sched_events.h   |  15 +-
+ 12 files changed, 615 insertions(+), 147 deletions(-)
+ create mode 100644 kernel-shark-qt/src/plugins/MissedEvents.cpp
+ create mode 100644 kernel-shark-qt/src/plugins/missed_events.c
+ create mode 100644 kernel-shark-qt/src/plugins/missed_events.h
+
+--=20
+2.17.1
