@@ -1,134 +1,44 @@
-Return-Path: <SRS0=o0t1=NS=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-bl2nam02on0062.outbound.protection.outlook.com ([104.47.38.62]:11903
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727546AbeKHBq0 (ORCPT
+Return-Path: <SRS0=uqUN=NT=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail.kernel.org ([198.145.29.99]:57472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727426AbeKIEOR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 7 Nov 2018 20:46:26 -0500
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 5/8] kernel-shark-qt: Add instrumentation for "Missed events"
- to the model
-Date: Wed, 7 Nov 2018 16:14:37 +0000
-Message-ID: <20181107161410.22507-6-ykaradzhov@vmware.com>
-References: <20181107161410.22507-1-ykaradzhov@vmware.com>
-In-Reply-To: <20181107161410.22507-1-ykaradzhov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 8 Nov 2018 23:14:17 -0500
+Date: Thu, 8 Nov 2018 13:30:53 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: tep_*host_bigendian()
+Message-ID: <20181108133053.6eb22596@gandalf.local.home>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch adds to the Visualization model instruments, used for
-finding and plotting "Missed events".
+Hi Tzvetomir,
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark-qt/src/libkshark-model.c | 60 +++++++++++++++++++++++++++
- kernel-shark-qt/src/libkshark-model.h | 12 ++++++
- 2 files changed, 72 insertions(+)
+I was looking at the code for tep_is_file_bigendian(),
+tep_is_host_bigendian() and tep_host_bigendian().
 
-diff --git a/kernel-shark-qt/src/libkshark-model.c b/kernel-shark-qt/src/li=
-bkshark-model.c
-index 7800090..ef6ad48 100644
---- a/kernel-shark-qt/src/libkshark-model.c
-+++ b/kernel-shark-qt/src/libkshark-model.c
-@@ -1222,3 +1222,63 @@ bool ksmodel_task_visible_event_exist(struct kshark_=
-trace_histo *histo,
-=20
- 	return true;
- }
-+
-+static bool match_cpu_missed_events(struct kshark_context *kshark_ctx,
-+				    struct kshark_entry *e, int cpu)
-+{
-+	return e->event_id =3D=3D -EOVERFLOW && e->cpu =3D=3D cpu;
-+}
-+
-+static bool match_pid_missed_events(struct kshark_context *kshark_ctx,
-+				    struct kshark_entry *e, int pid)
-+{
-+	return e->event_id =3D=3D -EOVERFLOW && e->pid =3D=3D pid;
-+}
-+
-+/**
-+ * @brief In a given CPU and bin, start from the front end of the bin and =
-go towards
-+ *	  the back end, searching for a Missed Events entry.
-+ *
-+ * @param histo: Input location for the model descriptor.
-+ * @param bin: Bin id.
-+ * @param cpu: CPU Id.
-+ * @param col: Optional input location for Data collection.
-+ * @param index: Optional output location for the index of the requested
-+ *		 entry inside the array.
-+ *
-+ * @returns Pointer ot a kshark_entry, if an entry has been found. Else NU=
-LL.
-+ */
-+const struct kshark_entry *
-+ksmodel_get_cpu_missed_events(struct kshark_trace_histo *histo,
-+			      int bin, int cpu,
-+			      struct kshark_entry_collection *col,
-+			      ssize_t *index)
-+{
-+	return ksmodel_get_entry_front(histo, bin, true,
-+				       match_cpu_missed_events, cpu,
-+				       col, index);
-+}
-+
-+/**
-+ * @brief In a given task and bin, start from the front end of the bin and=
- go towards
-+ *	  the back end, searching for a Missed Events entry.
-+ *
-+ * @param histo: Input location for the model descriptor.
-+ * @param bin: Bin id.
-+ * @param pid: Process Id of the task.
-+ * @param col: Optional input location for Data collection.
-+ * @param index: Optional output location for the index of the requested
-+ *		 entry inside the array.
-+ *
-+ * @returns Pointer ot a kshark_entry, if an entry has been found. Else NU=
-LL.
-+ */
-+const struct kshark_entry *
-+ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
-+			       int bin, int pid,
-+			       struct kshark_entry_collection *col,
-+			       ssize_t *index)
-+{
-+	return ksmodel_get_entry_front(histo, bin, true,
-+				       match_pid_missed_events, pid,
-+				       col, index);
-+}
-diff --git a/kernel-shark-qt/src/libkshark-model.h b/kernel-shark-qt/src/li=
-bkshark-model.h
-index 1cf68da..db681cc 100644
---- a/kernel-shark-qt/src/libkshark-model.h
-+++ b/kernel-shark-qt/src/libkshark-model.h
-@@ -148,6 +148,18 @@ bool ksmodel_task_visible_event_exist(struct kshark_tr=
-ace_histo *histo,
- 				      struct kshark_entry_collection *col,
- 				      ssize_t *index);
-=20
-+const struct kshark_entry *
-+ksmodel_get_cpu_missed_events(struct kshark_trace_histo *histo,
-+			      int bin, int cpu,
-+			      struct kshark_entry_collection *col,
-+			      ssize_t *index);
-+
-+const struct kshark_entry *
-+ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
-+			       int bin, int pid,
-+			       struct kshark_entry_collection *col,
-+			       ssize_t *index);
-+
- static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
- 				      int bin)
- {
---=20
-2.17.1
+The tep_host_bigendian() checks if the current machine that is
+executing is bigendian or not.
+
+tep_is_host_bigendian() looks at the pevent to see what it has, which
+should be the same as tep_host_bigendian().
+
+tep_is_file_bigendian() is if the raw file format is bigendian or not.
+If the file does not mach the host, byte swapping needs to be made.
+
+Looking at this deeper, I think the names are backwards.
+
+Let's rename tep_host_bigendian() to tep_is_host_bigendian()
+      rename tep_is_host_bigendian() to tep_host_bigendian()
+      rename tep_is_file_bigendian() to tep_file_bigendian()
+
+
+The "is_host" to me sounds more like we are testing the actual host,
+where as just saying 'tep_host_bigendian' sounds to me that it's what
+the pevent has the host set as.
+
+-- Steve
