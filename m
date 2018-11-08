@@ -1,54 +1,73 @@
 Return-Path: <SRS0=uqUN=NT=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-cys01nam02on0066.outbound.protection.outlook.com ([104.47.37.66]:23597
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725723AbeKIFR3 (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:47840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729589AbeKIIBI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Nov 2018 00:17:29 -0500
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
+        Fri, 9 Nov 2018 03:01:08 -0500
+Date: Thu, 8 Nov 2018 17:23:30 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
 Subject: Re: tep_*host_bigendian()
-Date: Thu, 8 Nov 2018 19:40:31 +0000
-Message-ID: <CACqStodfPXL6vP5Raj4dUOA3AytSN2r-k1QO90Ug8ANDo_EAmg@mail.gmail.com>
+Message-ID: <20181108172330.2182459e@gandalf.local.home>
+In-Reply-To: <CACqStodfPXL6vP5Raj4dUOA3AytSN2r-k1QO90Ug8ANDo_EAmg@mail.gmail.com>
 References: <20181108133053.6eb22596@gandalf.local.home>
-In-Reply-To: <20181108133053.6eb22596@gandalf.local.home>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A9C007AEE1BA13488D386FB21525B03F@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        <CACqStodfPXL6vP5Raj4dUOA3AytSN2r-k1QO90Ug8ANDo_EAmg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-SGkgU3RldmVuLA0KT2ssIEknJ2xsIHJlbmFtZSB0ZXBfaXNfZmlsZV9iaWdlbmRpYW4oKSB0byB0
-ZXBfZmlsZV9iaWdlbmRpYW4oKS4NCkJ1dCBhYm91dCB0ZXBfaXNfaG9zdF9iaWdlbmRpYW4oKSAt
-IEkgdGhpbmsgaXQgbWFrZXMgc2Vuc2UgdG8gcmVtb3ZlIGNvbXBsZXRlbHkNCnRlcF9pc19ob3N0
-X2JpZ2VuZGlhbigpIC8gdGVwX3NldF9ob3N0X2JpZ2VuZGlhbigpIEFQSXMsIHdoYXQgZG8geW91
-IHRoaW5rID8NClRoZSB0ZXBfc2V0X2hvc3RfYmlnZW5kaWFuKCkgQVBJIGlzIHVzZWQgb25seSBp
-biBwZXJmIGNvZGUsIHRvIHNldCB0aGUNCm9yZGVyIGluIHRlcCBoYW5kbGVyIC0gYW5kIGl0IHVz
-ZXMgdGVwX2hvc3RfYmlnZW5kaWFuKCkgdG8gZ2V0IHRoZQ0KbG9jYWwgaG9zdCBieXRlIG9yZGVy
-Lg0KSSB0aGluayBpdCBpcyBzYWZlIHRvIHRoZSByZW1vdmUgdGVwX3NldF9ob3N0X2JpZ2VuZGlh
-bigpIEFQSSBhbmQNCnJlcGxhY2UgdGVwX2lzX2hvc3RfYmlnZW5kaWFuKCkgd2l0aCB0ZXBfaG9z
-dF9iaWdlbmRpYW4oKS4NCg0KT24gVGh1LCBOb3YgOCwgMjAxOCBhdCA4OjMwIFBNIFN0ZXZlbiBS
-b3N0ZWR0IDxyb3N0ZWR0QGdvb2RtaXMub3JnPiB3cm90ZToNCj4NCj4gSGkgVHp2ZXRvbWlyLA0K
-Pg0KPiBJIHdhcyBsb29raW5nIGF0IHRoZSBjb2RlIGZvciB0ZXBfaXNfZmlsZV9iaWdlbmRpYW4o
-KSwNCj4gdGVwX2lzX2hvc3RfYmlnZW5kaWFuKCkgYW5kIHRlcF9ob3N0X2JpZ2VuZGlhbigpLg0K
-Pg0KPiBUaGUgdGVwX2hvc3RfYmlnZW5kaWFuKCkgY2hlY2tzIGlmIHRoZSBjdXJyZW50IG1hY2hp
-bmUgdGhhdCBpcw0KPiBleGVjdXRpbmcgaXMgYmlnZW5kaWFuIG9yIG5vdC4NCj4NCj4gdGVwX2lz
-X2hvc3RfYmlnZW5kaWFuKCkgbG9va3MgYXQgdGhlIHBldmVudCB0byBzZWUgd2hhdCBpdCBoYXMs
-IHdoaWNoDQo+IHNob3VsZCBiZSB0aGUgc2FtZSBhcyB0ZXBfaG9zdF9iaWdlbmRpYW4oKS4NCj4N
-Cj4gdGVwX2lzX2ZpbGVfYmlnZW5kaWFuKCkgaXMgaWYgdGhlIHJhdyBmaWxlIGZvcm1hdCBpcyBi
-aWdlbmRpYW4gb3Igbm90Lg0KPiBJZiB0aGUgZmlsZSBkb2VzIG5vdCBtYWNoIHRoZSBob3N0LCBi
-eXRlIHN3YXBwaW5nIG5lZWRzIHRvIGJlIG1hZGUuDQo+DQo+IExvb2tpbmcgYXQgdGhpcyBkZWVw
-ZXIsIEkgdGhpbmsgdGhlIG5hbWVzIGFyZSBiYWNrd2FyZHMuDQo+DQo+IExldCdzIHJlbmFtZSB0
-ZXBfaG9zdF9iaWdlbmRpYW4oKSB0byB0ZXBfaXNfaG9zdF9iaWdlbmRpYW4oKQ0KPiAgICAgICBy
-ZW5hbWUgdGVwX2lzX2hvc3RfYmlnZW5kaWFuKCkgdG8gdGVwX2hvc3RfYmlnZW5kaWFuKCkNCj4g
-ICAgICAgcmVuYW1lIHRlcF9pc19maWxlX2JpZ2VuZGlhbigpIHRvIHRlcF9maWxlX2JpZ2VuZGlh
-bigpDQo+DQo+DQo+IFRoZSAiaXNfaG9zdCIgdG8gbWUgc291bmRzIG1vcmUgbGlrZSB3ZSBhcmUg
-dGVzdGluZyB0aGUgYWN0dWFsIGhvc3QsDQo+IHdoZXJlIGFzIGp1c3Qgc2F5aW5nICd0ZXBfaG9z
-dF9iaWdlbmRpYW4nIHNvdW5kcyB0byBtZSB0aGF0IGl0J3Mgd2hhdA0KPiB0aGUgcGV2ZW50IGhh
-cyB0aGUgaG9zdCBzZXQgYXMuDQo+DQo+IC0tIFN0ZXZlDQoNCg0KDQotLSANCi0tDQpUenZldG9t
-aXIgKENlY28pIFN0b3lhbm92DQpWTXdhcmUgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIN
-Cg==
+On Thu, 8 Nov 2018 19:40:32 +0000
+Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+
+> Hi Steven,
+> Ok, I''ll rename tep_is_file_bigendian() to tep_file_bigendian().
+> But about tep_is_host_bigendian() - I think it makes sense to remove completely
+> tep_is_host_bigendian() / tep_set_host_bigendian() APIs, what do you think ?
+> The tep_set_host_bigendian() API is used only in perf code, to set the
+> order in tep handler - and it uses tep_host_bigendian() to get the
+> local host byte order.
+> I think it is safe to the remove tep_set_host_bigendian() API and
+> replace tep_is_host_bigendian() with tep_host_bigendian().
+
+I'm fine with this, as long as we don't calculate the endianess each
+time. We still need the tep->host_bigendian setting. But we can set it
+when we allocate a tep handle.
+
+-- Steve
+
+> 
+> On Thu, Nov 8, 2018 at 8:30 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > Hi Tzvetomir,
+> >
+> > I was looking at the code for tep_is_file_bigendian(),
+> > tep_is_host_bigendian() and tep_host_bigendian().
+> >
+> > The tep_host_bigendian() checks if the current machine that is
+> > executing is bigendian or not.
+> >
+> > tep_is_host_bigendian() looks at the pevent to see what it has, which
+> > should be the same as tep_host_bigendian().
+> >
+> > tep_is_file_bigendian() is if the raw file format is bigendian or not.
+> > If the file does not mach the host, byte swapping needs to be made.
+> >
+> > Looking at this deeper, I think the names are backwards.
+> >
+> > Let's rename tep_host_bigendian() to tep_is_host_bigendian()
+> >       rename tep_is_host_bigendian() to tep_host_bigendian()
+> >       rename tep_is_file_bigendian() to tep_file_bigendian()
+> >
+> >
+> > The "is_host" to me sounds more like we are testing the actual host,
+> > where as just saying 'tep_host_bigendian' sounds to me that it's what
+> > the pevent has the host set as.
+> >
+> > -- Steve  
+> 
+> 
+> 
