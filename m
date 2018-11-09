@@ -2,17 +2,17 @@ Return-Path: <SRS0=pNTI=NU=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-cys01nam02on0082.outbound.protection.outlook.com ([104.47.37.82]:58643
         "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725752AbeKJFdL (ORCPT
+        id S1725872AbeKJFdO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 10 Nov 2018 00:33:11 -0500
+        Sat, 10 Nov 2018 00:33:14 -0500
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 1/8] kernel-shark-qt: Reset the second pass hash when
- reloading Sched plugin
-Date: Fri, 9 Nov 2018 19:50:24 +0000
-Message-ID: <20181109195004.25455-2-ykaradzhov@vmware.com>
+Subject: [PATCH v2 7/8] kernel-shark-qt: Add "Missed events" plugin for
+ KernelShark
+Date: Fri, 9 Nov 2018 19:50:30 +0000
+Message-ID: <20181109195004.25455-8-ykaradzhov@vmware.com>
 References: <20181109195004.25455-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181109195004.25455-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -22,101 +22,285 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-When the plugin is reloaded, the trace data gets reloaded as well.
-Hence the second pass over the data has to be repeated.
+The "Missed events" plugin displays a special marker that indicates
+the position (in time) of the missed (overwritten) data.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark-qt/src/plugins/SchedEvents.cpp | 15 ++++++---------
- kernel-shark-qt/src/plugins/sched_events.c  |  4 ++++
- kernel-shark-qt/src/plugins/sched_events.h  |  3 +++
- 3 files changed, 13 insertions(+), 9 deletions(-)
+ kernel-shark-qt/src/plugins/CMakeLists.txt   |   6 +-
+ kernel-shark-qt/src/plugins/MissedEvents.cpp | 149 +++++++++++++++++++
+ kernel-shark-qt/src/plugins/missed_events.c  |  41 +++++
+ kernel-shark-qt/src/plugins/missed_events.h  |  30 ++++
+ 4 files changed, 225 insertions(+), 1 deletion(-)
+ create mode 100644 kernel-shark-qt/src/plugins/MissedEvents.cpp
+ create mode 100644 kernel-shark-qt/src/plugins/missed_events.c
+ create mode 100644 kernel-shark-qt/src/plugins/missed_events.h
 
-diff --git a/kernel-shark-qt/src/plugins/SchedEvents.cpp b/kernel-shark-qt/=
-src/plugins/SchedEvents.cpp
-index 7f75baa..5f833df 100644
---- a/kernel-shark-qt/src/plugins/SchedEvents.cpp
-+++ b/kernel-shark-qt/src/plugins/SchedEvents.cpp
-@@ -193,8 +193,6 @@ static void pluginDraw(plugin_sched_context *plugin_ctx=
-,
- 	return;
- }
+diff --git a/kernel-shark-qt/src/plugins/CMakeLists.txt b/kernel-shark-qt/s=
+rc/plugins/CMakeLists.txt
+index 2d7251d..853214e 100644
+--- a/kernel-shark-qt/src/plugins/CMakeLists.txt
++++ b/kernel-shark-qt/src/plugins/CMakeLists.txt
+@@ -24,7 +24,11 @@ BUILD_PLUGIN(NAME sched_events
+ list(APPEND PLUGIN_LIST "sched_events default") # This plugin will be load=
+ed by default
+ # list(APPEND PLUGIN_LIST "sched_events") # This plugin isn't loaded by de=
+fault
 =20
--static std::unordered_set<int> secondPassDone;
--
- /*
-  * Ideally, the sched_switch has to be the last trace event recorded befor=
-e the
-  * task is preempted. Because of this, when the data is loaded (the first =
-pass),
-@@ -250,8 +248,6 @@ static void secondPass(kshark_entry **data,
- 			}
- 		}
- 	}
--
--	secondPassDone.insert(pid);
- }
+-install(TARGETS sched_events
++BUILD_PLUGIN(NAME missed_events
++             SOURCE missed_events.c MissedEvents.cpp)
++list(APPEND PLUGIN_LIST "missed_events default") # This plugin will be loa=
+ded by default
++
++install(TARGETS sched_events missed_events
+         LIBRARY DESTINATION /usr/local/lib/kshark/)
 =20
- /**
-@@ -298,12 +294,13 @@ void plugin_draw(kshark_cpp_argv *argv_c, int pid, in=
-t draw_action)
- 						      KS_TASK_COLLECTION_MARGIN);
- 	}
-=20
--	try {
--		if (secondPassDone.find(pid) =3D=3D secondPassDone.end()) {
--			/* The second pass for this task is not done yet. */
--			secondPass(argvCpp->_histo->data, col, pid);
--		}
-+	if (!tracecmd_filter_id_find(plugin_ctx->second_pass_hash, pid)) {
-+		/* The second pass for this task is not done yet. */
-+		secondPass(argvCpp->_histo->data, col, pid);
-+		tracecmd_filter_id_add(plugin_ctx->second_pass_hash, pid);
+ set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
+diff --git a/kernel-shark-qt/src/plugins/MissedEvents.cpp b/kernel-shark-qt=
+/src/plugins/MissedEvents.cpp
+new file mode 100644
+index 0000000..05dfcb5
+--- /dev/null
++++ b/kernel-shark-qt/src/plugins/MissedEvents.cpp
+@@ -0,0 +1,149 @@
++// SPDX-License-Identifier: LGPL-2.1
++
++/*
++ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
++ */
++
++/**
++ *  @file    MissedEvents.cpp
++ *  @brief   Plugin for visualization of events, missed due to overflow of=
+ the ring buffer.
++ */
++
++// C++
++#include<iostream>
++
++// KernelShark
++#include "libkshark.h"
++#include "plugins/missed_events.h"
++#include "KsPlotTools.hpp"
++#include "KsPlugins.hpp"
++
++using namespace KsPlot;
++
++/**
++ * This class represents the graphical element of the KernelShark marker f=
+or
++ * Missed events.
++ */
++class MissedEventsMark : public PlotObject {
++public:
++	/** Create a default Missed events marker. */
++	MissedEventsMark() : _base(0, 0), _height(0)
++	{
++		_color =3D {0, 0, 255};
++		_size =3D 2;
 +	}
-=20
++
++	/**
++	 * @brief Create and position a Missed events marker.
++	 *
++	 * @param p: Base point of the marker.
++	 * @param h: vertical size (height) of the marker.
++	 */
++	MissedEventsMark(const Point &p, int h)
++	: _base(p.x(), p.y()), _height(h)
++	{
++		_color =3D {0, 0, 255};
++		_size =3D 2;
++	}
++
++	/** Set the Base point of the marker. */
++	void setBase(const Point &p) {_base.set(p.x(), p.y());}
++
++	/** Set the vertical size (height) point of the marker. */
++	void setHeight(int h) {_height =3D h;}
++
++private:
++	/** Base point of the Mark's line. */
++	Point	_base;
++
++	/** The vertical size (height) of the Mark. */
++	int	_height;
++
++	void _draw(const Color &col, float size =3D 1.) const override;
++};
++
++void MissedEventsMark::_draw(const Color &col, float size) const
++{
++	Point p(_base.x(), _base.y() - _height);
++	drawLine(_base, p, col, size);
++
++	Rectangle rec;
++	rec.setPoint(0, p.x(), p.y());
++	rec.setPoint(1, p.x() - _height / 4, p.y());
++	rec.setPoint(2, p.x() - _height / 4, p.y() + _height / 4);
++	rec.setPoint(3, p.x(), p.y() + _height / 4);
++	rec._color =3D col;
++	rec.draw();
++}
++
++//! @cond Doxygen_Suppress
++
++#define PLUGIN_MAX_ENTRIES		10000
++
++#define KS_TASK_COLLECTION_MARGIN	25
++
++//! @endcond
++
++static void pluginDraw(kshark_context *kshark_ctx,
++		       KsCppArgV *argvCpp,
++		       int val, int draw_action)
++{
++	int height =3D argvCpp->_graph->getHeight();
++	const kshark_entry *entry(nullptr);
++	MissedEventsMark *mark;
++	ssize_t index;
++
++	int nBins =3D argvCpp->_graph->size();
++	for (int bin =3D 0; bin < nBins; ++bin) {
++		if (draw_action =3D=3D KSHARK_PLUGIN_TASK_DRAW)
++			entry =3D ksmodel_get_task_missed_events(argvCpp->_histo,
++							       bin, val,
++							       nullptr,
++							       &index);
++		if (draw_action =3D=3D KSHARK_PLUGIN_CPU_DRAW)
++			entry =3D ksmodel_get_cpu_missed_events(argvCpp->_histo,
++							      bin, val,
++							      nullptr,
++							      &index);
++
++		if (entry) {
++			mark =3D new MissedEventsMark(argvCpp->_graph->getBin(bin)._base,
++						    height);
++
++			argvCpp->_shapes->push_front(mark);
++		}
++	}
++}
++
++/**
++ * @brief Plugin's draw function.
++ *
++ * @param argv_c: A C pointer to be converted to KsCppArgV (C++ struct).
++ * @param val: Process or CPU Id value.
++ * @param draw_action: Draw action identifier.
++ */
++void draw_missed_events(kshark_cpp_argv *argv_c,
++			int val, int draw_action)
++{
++	kshark_context *kshark_ctx(NULL);
++
++	if (!kshark_instance(&kshark_ctx))
++		return;
++
++	KsCppArgV *argvCpp =3D KS_ARGV_TO_CPP(argv_c);
++
++	/*
++	 * Plotting the "Missed events" makes sense only in the case of a deep
++	 * zoom. Here we set a threshold based on the total number of entries
++	 * being visualized by the model.
++	 * Don't be afraid to play with different values for this threshold.
++	 */
++	if (argvCpp->_histo->tot_count > PLUGIN_MAX_ENTRIES)
++		return;
++
 +	try {
- 		pluginDraw(plugin_ctx, kshark_ctx,
- 			   argvCpp->_histo, col,
- 			   SchedEvent::Switch, pid,
-diff --git a/kernel-shark-qt/src/plugins/sched_events.c b/kernel-shark-qt/s=
-rc/plugins/sched_events.c
-index 80ac214..f23c916 100644
---- a/kernel-shark-qt/src/plugins/sched_events.c
-+++ b/kernel-shark-qt/src/plugins/sched_events.c
-@@ -79,6 +79,8 @@ static bool plugin_sched_init_context(struct kshark_conte=
-xt *kshark_ctx)
- 	plugin_ctx->sched_wakeup_new_success_field =3D
- 		tep_find_field(event, "success");
-=20
-+	plugin_ctx->second_pass_hash =3D tracecmd_filter_id_hash_alloc();
++		pluginDraw(kshark_ctx, argvCpp, val, draw_action);
++	} catch (const std::exception &exc) {
++		std::cerr << "Exception in MissedEvents\n" << exc.what();
++	}
++}
+diff --git a/kernel-shark-qt/src/plugins/missed_events.c b/kernel-shark-qt/=
+src/plugins/missed_events.c
+new file mode 100644
+index 0000000..cf652bf
+--- /dev/null
++++ b/kernel-shark-qt/src/plugins/missed_events.c
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: LGPL-2.1
 +
- 	return true;
- }
-=20
-@@ -279,6 +281,8 @@ static int plugin_sched_close(struct kshark_context *ks=
-hark_ctx)
- 					plugin_sched_action,
- 					plugin_draw);
-=20
-+	tracecmd_filter_id_hash_free(plugin_ctx->second_pass_hash);
++/*
++ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
++ */
 +
- 	free(plugin_ctx);
- 	plugin_sched_context_handler =3D NULL;
-=20
-diff --git a/kernel-shark-qt/src/plugins/sched_events.h b/kernel-shark-qt/s=
-rc/plugins/sched_events.h
-index 5a9406b..481413f 100644
---- a/kernel-shark-qt/src/plugins/sched_events.h
-+++ b/kernel-shark-qt/src/plugins/sched_events.h
-@@ -55,6 +55,9 @@ struct plugin_sched_context {
- 	 * Pointer to the sched_wakeup_new_success_field format descriptor.
- 	 */
- 	struct tep_format_field	*sched_wakeup_new_success_field;
++/**
++ *  @file    missed_events.c
++ *  @brief   Plugin for visualization of missed events due to overflow of =
+the
++ *	     ring buffer.
++ */
 +
-+	/** Hash of the tasks for which the second pass is already done. */
-+	struct tracecmd_filter_id	*second_pass_hash;
- };
-=20
- int plugin_get_next_pid(struct tep_record *record);
++// KernelShark
++#include "plugins/missed_events.h"
++
++static void nop_action(struct kshark_context *kshark_ctx,
++				struct tep_record *record,
++				struct kshark_entry *entry)
++{}
++
++/** Load this plugin. */
++int KSHARK_PLUGIN_INITIALIZER(struct kshark_context *kshark_ctx)
++{
++	kshark_register_event_handler(&kshark_ctx->event_handlers,
++				      KS_EVENT_OVERFLOW,
++				      nop_action,
++				      draw_missed_events);
++
++	return 1;
++}
++
++/** Unload this plugin. */
++int KSHARK_PLUGIN_DEINITIALIZER(struct kshark_context *kshark_ctx)
++{
++	kshark_unregister_event_handler(&kshark_ctx->event_handlers,
++					KS_EVENT_OVERFLOW,
++					nop_action,
++					draw_missed_events);
++
++	return 1;
++}
+diff --git a/kernel-shark-qt/src/plugins/missed_events.h b/kernel-shark-qt/=
+src/plugins/missed_events.h
+new file mode 100644
+index 0000000..e05d79a
+--- /dev/null
++++ b/kernel-shark-qt/src/plugins/missed_events.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++
++/*
++ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <ykaradzov@vmware.com>
++ */
++
++/**
++ *  @file    missed_events.h
++ *  @brief   Plugin for visualization of missed events due to overflow of =
+the
++ *	     ring buffer.
++ */
++
++#ifndef _KS_PLUGIN_M_EVTS_H
++#define _KS_PLUGIN_M_EVTS_H
++
++// KernelShark
++#include "libkshark.h"
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++void draw_missed_events(struct kshark_cpp_argv *argv,
++			int pid, int draw_action);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
 --=20
 2.17.1
