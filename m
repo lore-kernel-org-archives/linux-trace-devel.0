@@ -2,17 +2,17 @@ Return-Path: <SRS0=pNTI=NU=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-cys01nam02on0088.outbound.protection.outlook.com ([104.47.37.88]:36407
         "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725883AbeKJFdC (ORCPT
+        id S1725872AbeKJFdE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 10 Nov 2018 00:33:02 -0500
+        Sat, 10 Nov 2018 00:33:04 -0500
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 3/8] kernel-shark-qt: Update the visualization model when
- updating Graphs
-Date: Fri, 9 Nov 2018 19:50:26 +0000
-Message-ID: <20181109195004.25455-4-ykaradzhov@vmware.com>
+Subject: [PATCH v2 5/8] kernel-shark-qt: Add instrumentation for "Missed
+ events" to the model
+Date: Fri, 9 Nov 2018 19:50:28 +0000
+Message-ID: <20181109195004.25455-6-ykaradzhov@vmware.com>
 References: <20181109195004.25455-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181109195004.25455-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -22,27 +22,113 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Updating the model when the Graph widget is doing self-update, guarantees
-that all previously plotted graphs are wiped out before plotting something
-new.
+This patch adds to the Visualization model instruments, used for
+finding and plotting "Missed events".
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark-qt/src/KsTraceGraph.cpp | 1 +
- 1 file changed, 1 insertion(+)
+ kernel-shark-qt/src/libkshark-model.c | 60 +++++++++++++++++++++++++++
+ kernel-shark-qt/src/libkshark-model.h | 12 ++++++
+ 2 files changed, 72 insertions(+)
 
-diff --git a/kernel-shark-qt/src/KsTraceGraph.cpp b/kernel-shark-qt/src/KsT=
-raceGraph.cpp
-index 21a09d0..29a5950 100644
---- a/kernel-shark-qt/src/KsTraceGraph.cpp
-+++ b/kernel-shark-qt/src/KsTraceGraph.cpp
-@@ -215,6 +215,7 @@ void KsTraceGraph::_selfUpdate()
- 	_updateGraphLegends();
- 	_updateTimeLegends();
- 	_markerReDraw();
-+	_glWindow.model()->update();
- 	updateGeom();
- }
+diff --git a/kernel-shark-qt/src/libkshark-model.c b/kernel-shark-qt/src/li=
+bkshark-model.c
+index 7800090..ef6ad48 100644
+--- a/kernel-shark-qt/src/libkshark-model.c
++++ b/kernel-shark-qt/src/libkshark-model.c
+@@ -1222,3 +1222,63 @@ bool ksmodel_task_visible_event_exist(struct kshark_=
+trace_histo *histo,
 =20
+ 	return true;
+ }
++
++static bool match_cpu_missed_events(struct kshark_context *kshark_ctx,
++				    struct kshark_entry *e, int cpu)
++{
++	return e->event_id =3D=3D -EOVERFLOW && e->cpu =3D=3D cpu;
++}
++
++static bool match_pid_missed_events(struct kshark_context *kshark_ctx,
++				    struct kshark_entry *e, int pid)
++{
++	return e->event_id =3D=3D -EOVERFLOW && e->pid =3D=3D pid;
++}
++
++/**
++ * @brief In a given CPU and bin, start from the front end of the bin and =
+go towards
++ *	  the back end, searching for a Missed Events entry.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param cpu: CPU Id.
++ * @param col: Optional input location for Data collection.
++ * @param index: Optional output location for the index of the requested
++ *		 entry inside the array.
++ *
++ * @returns Pointer ot a kshark_entry, if an entry has been found. Else NU=
+LL.
++ */
++const struct kshark_entry *
++ksmodel_get_cpu_missed_events(struct kshark_trace_histo *histo,
++			      int bin, int cpu,
++			      struct kshark_entry_collection *col,
++			      ssize_t *index)
++{
++	return ksmodel_get_entry_front(histo, bin, true,
++				       match_cpu_missed_events, cpu,
++				       col, index);
++}
++
++/**
++ * @brief In a given task and bin, start from the front end of the bin and=
+ go towards
++ *	  the back end, searching for a Missed Events entry.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param bin: Bin id.
++ * @param pid: Process Id of the task.
++ * @param col: Optional input location for Data collection.
++ * @param index: Optional output location for the index of the requested
++ *		 entry inside the array.
++ *
++ * @returns Pointer ot a kshark_entry, if an entry has been found. Else NU=
+LL.
++ */
++const struct kshark_entry *
++ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
++			       int bin, int pid,
++			       struct kshark_entry_collection *col,
++			       ssize_t *index)
++{
++	return ksmodel_get_entry_front(histo, bin, true,
++				       match_pid_missed_events, pid,
++				       col, index);
++}
+diff --git a/kernel-shark-qt/src/libkshark-model.h b/kernel-shark-qt/src/li=
+bkshark-model.h
+index 1cf68da..db681cc 100644
+--- a/kernel-shark-qt/src/libkshark-model.h
++++ b/kernel-shark-qt/src/libkshark-model.h
+@@ -148,6 +148,18 @@ bool ksmodel_task_visible_event_exist(struct kshark_tr=
+ace_histo *histo,
+ 				      struct kshark_entry_collection *col,
+ 				      ssize_t *index);
+=20
++const struct kshark_entry *
++ksmodel_get_cpu_missed_events(struct kshark_trace_histo *histo,
++			      int bin, int cpu,
++			      struct kshark_entry_collection *col,
++			      ssize_t *index);
++
++const struct kshark_entry *
++ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
++			       int bin, int pid,
++			       struct kshark_entry_collection *col,
++			       ssize_t *index);
++
+ static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
+ 				      int bin)
+ {
 --=20
 2.17.1
