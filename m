@@ -1,17 +1,18 @@
 Return-Path: <SRS0=pNTI=NU=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-cys01nam02on0088.outbound.protection.outlook.com ([104.47.37.88]:36407
+Received: from mail-cys01nam02on0082.outbound.protection.outlook.com ([104.47.37.82]:58643
         "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725872AbeKJFdH (ORCPT
+        id S1725752AbeKJFdL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 10 Nov 2018 00:33:07 -0500
+        Sat, 10 Nov 2018 00:33:11 -0500
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 8/8] kernel-shark-qt: Update Sched Events plugin
-Date: Fri, 9 Nov 2018 19:50:31 +0000
-Message-ID: <20181109195004.25455-9-ykaradzhov@vmware.com>
+Subject: [PATCH v2 1/8] kernel-shark-qt: Reset the second pass hash when
+ reloading Sched plugin
+Date: Fri, 9 Nov 2018 19:50:24 +0000
+Message-ID: <20181109195004.25455-2-ykaradzhov@vmware.com>
 References: <20181109195004.25455-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181109195004.25455-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -21,118 +22,101 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch updates the Sched Events plugin to use the recently
-introduced "Missed events" entries and tot_count field of the
-Visualization model descriptor in its plotting logic. We need this
-update because the sched plugin would get confused because of missed
-events, where we could have missed events hiding wakeups, and only
-have the sched switch, or a wakeup with a missing sched switch would
-break the plotting of the latency.
+When the plugin is reloaded, the trace data gets reloaded as well.
+Hence the second pass over the data has to be repeated.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark-qt/src/plugins/SchedEvents.cpp | 43 ++++++++++-----------
- 1 file changed, 20 insertions(+), 23 deletions(-)
+ kernel-shark-qt/src/plugins/SchedEvents.cpp | 15 ++++++---------
+ kernel-shark-qt/src/plugins/sched_events.c  |  4 ++++
+ kernel-shark-qt/src/plugins/sched_events.h  |  3 +++
+ 3 files changed, 13 insertions(+), 9 deletions(-)
 
 diff --git a/kernel-shark-qt/src/plugins/SchedEvents.cpp b/kernel-shark-qt/=
 src/plugins/SchedEvents.cpp
-index eec60fe..b4596c9 100644
+index 7f75baa..5f833df 100644
 --- a/kernel-shark-qt/src/plugins/SchedEvents.cpp
 +++ b/kernel-shark-qt/src/plugins/SchedEvents.cpp
-@@ -28,7 +28,7 @@
-=20
- #define PLUGIN_MIN_BOX_SIZE 4
-=20
--#define PLUGIN_MAX_ENTRIES_PER_BIN 500
-+#define PLUGIN_MAX_ENTRIES 10000
-=20
- #define KS_TASK_COLLECTION_MARGIN 25
-=20
-@@ -54,11 +54,11 @@ static void pluginDraw(plugin_sched_context *plugin_ctx=
+@@ -193,8 +193,6 @@ static void pluginDraw(plugin_sched_context *plugin_ctx=
 ,
- 		       KsPlot::Graph *graph,
- 		       KsPlot::PlotObjList *shapes)
- {
--	const kshark_entry *entryClose, *entryOpen;
-+	const kshark_entry *entryClose, *entryOpen, *entryME;
-+	ssize_t indexClose(0), indexOpen(0), indexME(0);
- 	std::function<void(int)> ifSchedBack;
- 	KsPlot::Rectangle *rec =3D nullptr;
- 	int height =3D graph->getHeight() * .3;
--	ssize_t indexClose(0), indexOpen(0);
+ 	return;
+ }
 =20
- 	auto openBox =3D [&] (const KsPlot::Point &p)
- 	{
-@@ -104,24 +104,6 @@ static void pluginDraw(plugin_sched_context *plugin_ct=
-x,
- 	};
-=20
- 	for (int bin =3D 0; bin < graph->size(); ++bin) {
--		/**
--		 * Plotting the latencies makes sense only in the case of a
--		 * deep zoom. Here we set a naive threshold based on the number
--		 * of entries inside the current bin. This cut seems to work
--		 * well in all cases I tested so far, but it may result in
--		 * unexpected behavior with some unusual trace data-sets.
--		 * TODO: find a better criteria for deciding when to start
--		 * plotting latencies.
--		 */
--		if (ksmodel_bin_count(histo, bin) > PLUGIN_MAX_ENTRIES_PER_BIN) {
--			if (rec) {
--				delete rec;
--				rec =3D nullptr;
--			}
+-static std::unordered_set<int> secondPassDone;
 -
--			continue;
--		}
--
- 		/*
- 		 * Starting from the first element in this bin, go forward
- 		 * in time until you find a trace entry that satisfies the
-@@ -131,6 +113,11 @@ static void pluginDraw(plugin_sched_context *plugin_ct=
-x,
- 						 plugin_switch_match_entry_pid,
- 						 pid, col, &indexClose);
-=20
-+		entryME =3D ksmodel_get_task_missed_events(histo,
-+							 bin, pid,
-+							 col,
-+							 &indexME);
-+
- 		if (e =3D=3D SchedEvent::Switch) {
- 			/*
- 			 * Starting from the last element in this bin, go backward
-@@ -155,10 +142,12 @@ static void pluginDraw(plugin_sched_context *plugin_c=
-tx,
+ /*
+  * Ideally, the sched_switch has to be the last trace event recorded befor=
+e the
+  * task is preempted. Because of this, when the data is loaded (the first =
+pass),
+@@ -250,8 +248,6 @@ static void secondPass(kshark_entry **data,
+ 			}
  		}
+ 	}
+-
+-	secondPassDone.insert(pid);
+ }
 =20
- 		if (rec) {
--			if (entryClose) {
-+			if (entryME || entryClose) {
- 				/* Close the box in this bin. */
- 				closeBox(graph->getBin(bin)._base);
--				if (entryOpen && indexClose < indexOpen) {
-+				if (entryOpen &&
-+				    indexME < indexOpen &&
-+				    indexClose < indexOpen) {
- 					/*
- 					 * We have a Sched switch entry that
- 					 * comes after (in time) the closure of
-@@ -288,6 +277,14 @@ void plugin_draw(kshark_cpp_argv *argv_c, int pid, int=
- draw_action)
- 		tracecmd_filter_id_add(plugin_ctx->second_pass_hash, pid);
+ /**
+@@ -298,12 +294,13 @@ void plugin_draw(kshark_cpp_argv *argv_c, int pid, in=
+t draw_action)
+ 						      KS_TASK_COLLECTION_MARGIN);
  	}
 =20
-+	/*
-+	 * Plotting the latencies makes sense only in the case of a deep zoom.
-+	 * Here we set a threshold based on the total number of entries being
-+	 * visualized by the model.
-+	 * Don't be afraid to play with different values for this threshold.
-+	 */
-+	if (argvCpp->_histo->tot_count > PLUGIN_MAX_ENTRIES)
-+		return;
- 	try {
+-	try {
+-		if (secondPassDone.find(pid) =3D=3D secondPassDone.end()) {
+-			/* The second pass for this task is not done yet. */
+-			secondPass(argvCpp->_histo->data, col, pid);
+-		}
++	if (!tracecmd_filter_id_find(plugin_ctx->second_pass_hash, pid)) {
++		/* The second pass for this task is not done yet. */
++		secondPass(argvCpp->_histo->data, col, pid);
++		tracecmd_filter_id_add(plugin_ctx->second_pass_hash, pid);
++	}
+=20
++	try {
  		pluginDraw(plugin_ctx, kshark_ctx,
  			   argvCpp->_histo, col,
+ 			   SchedEvent::Switch, pid,
+diff --git a/kernel-shark-qt/src/plugins/sched_events.c b/kernel-shark-qt/s=
+rc/plugins/sched_events.c
+index 80ac214..f23c916 100644
+--- a/kernel-shark-qt/src/plugins/sched_events.c
++++ b/kernel-shark-qt/src/plugins/sched_events.c
+@@ -79,6 +79,8 @@ static bool plugin_sched_init_context(struct kshark_conte=
+xt *kshark_ctx)
+ 	plugin_ctx->sched_wakeup_new_success_field =3D
+ 		tep_find_field(event, "success");
+=20
++	plugin_ctx->second_pass_hash =3D tracecmd_filter_id_hash_alloc();
++
+ 	return true;
+ }
+=20
+@@ -279,6 +281,8 @@ static int plugin_sched_close(struct kshark_context *ks=
+hark_ctx)
+ 					plugin_sched_action,
+ 					plugin_draw);
+=20
++	tracecmd_filter_id_hash_free(plugin_ctx->second_pass_hash);
++
+ 	free(plugin_ctx);
+ 	plugin_sched_context_handler =3D NULL;
+=20
+diff --git a/kernel-shark-qt/src/plugins/sched_events.h b/kernel-shark-qt/s=
+rc/plugins/sched_events.h
+index 5a9406b..481413f 100644
+--- a/kernel-shark-qt/src/plugins/sched_events.h
++++ b/kernel-shark-qt/src/plugins/sched_events.h
+@@ -55,6 +55,9 @@ struct plugin_sched_context {
+ 	 * Pointer to the sched_wakeup_new_success_field format descriptor.
+ 	 */
+ 	struct tep_format_field	*sched_wakeup_new_success_field;
++
++	/** Hash of the tasks for which the second pass is already done. */
++	struct tracecmd_filter_id	*second_pass_hash;
+ };
+=20
+ int plugin_get_next_pid(struct tep_record *record);
 --=20
 2.17.1
