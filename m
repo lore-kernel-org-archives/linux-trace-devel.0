@@ -2,17 +2,17 @@ Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr710056.outbound.protection.outlook.com ([40.107.71.56]:22208
         "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728890AbeKSXRw (ORCPT
+        id S1728877AbeKSXRy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:17:52 -0500
+        Mon, 19 Nov 2018 18:17:54 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 03/34] tools/lib/traceevent: Man pages for
- tep_register_function() and tep_register_print_string()
-Date: Mon, 19 Nov 2018 12:54:12 +0000
-Message-ID: <20181119125357.19449-4-tstoyanov@vmware.com>
+Subject: [PATCH 04/34] tools/lib/traceevent: Man pages for
+ tep_register_print_function() and tep_unregister_print_function()
+Date: Mon, 19 Nov 2018 12:54:13 +0000
+Message-ID: <20181119125357.19449-5-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,32 +22,32 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_register_function() and tep_register_print_string(=
-)
+Create man pages for tep_register_print_function() and tep_unregister_print=
+_function()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-reg_funcstr.txt             | 89 +++++++++++++++++++
- 1 file changed, 89 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_fu=
-ncstr.txt
+ .../libtraceevent-reg_print_func.txt          | 128 ++++++++++++++++++
+ 1 file changed, 128 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_pr=
+int_func.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.t=
-xt b/tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_print_fun=
+c.txt b/tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt
 new file mode 100644
-index 000000000000..b0e196a1e47b
+index 000000000000..fbb2f973f3b0
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.txt
-@@ -0,0 +1,89 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt
+@@ -0,0 +1,128 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_register_function, tep_register_print_string - Registers a function / =
-string=20
-+with a given address.
++tep_register_print_function,tep_unregister_print_function - Registers / Un=
+registers
++a helper function.
 +
 +SYNOPSIS
 +--------
@@ -55,65 +55,113 @@ string=20
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_register_function*(struct tep_handle pass:[*]_tep_, char pass:[*]=
-_name_, unsigned long long _addr_, char pass:[*]_mod_);
-+int *tep_register_print_string*(struct tep_handle pass:[*]_tep_, const cha=
-r pass:[*]_fmt_, unsigned long long _addr_);
++enum *tep_func_arg_type* {
++	TEP_FUNC_ARG_VOID,
++	TEP_FUNC_ARG_INT,
++	TEP_FUNC_ARG_LONG,
++	TEP_FUNC_ARG_STRING,
++	TEP_FUNC_ARG_PTR,
++	TEP_FUNC_ARG_MAX_TYPES
++};
++
++typedef unsigned long long (*pass:[*]tep_func_handler*)(struct trace_seq p=
+ass:[*]s, unsigned long long pass:[*]args);
++
++int *tep_register_print_function*(struct tep_handle pass:[*]_tep_, tep_fun=
+c_handler _func_, enum tep_func_arg_type _ret_type_, char pass:[*]_name_, _=
+..._);
++int *tep_unregister_print_function*(struct tep_handle pass:[*]_tep_, tep_f=
+unc_handler _func_, char pass:[*]_name_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_register_function()_ function registers a function name with an=20
-+address and module. The _tep_ argument is the trace event parser context. =
-The=20
-+_name_ is the name of the function, the string is copied internally. The _=
-addr_=20
-+is the start address of the function. The _mod_ is the kernel module=20
-+the function may be in (NULL for none).=20
++Some events may have helper functions in the print format arguments. This =
+allows
++a plugin to dynamically create a way to process one of these functions.
 +
-+The _tep_register_print_string()_ function  registers a string by the addr=
-ess=20
-+it was stored in the kernel. The _tep_ argument is the trace event parser=
++The _tep_register_print_function()_ registers such helper function. The _t=
+ep_=20
++argument is the trace event parser context. The _func_ argument is the add=
+ress
++of the helper function. The _ret_type_ argument is  the return type of the=
 =20
-+context. The _fmt_ is the string to register, it is copied internally. The=
- _addr_=20
-+is the address the string was located at.
++helper function, value from the _tep_func_arg_type_ enum. The _name_ is th=
+e name
++of the helper function, as seen in the print format arguments. The _..._ i=
+s a=20
++variable list of _tep_func_arg_type_ enums, the _func_ function arguments.=
+=20
++This list must end with _TEP_FUNC_ARG_VOID_.
++
++The _tep_unregister_print_function()_ unregisters a helper function, previ=
+ously=20
++registered with _tep_register_print_function()_. The _tep_ argument is the=
+=20
++trace event parser context. The _func_ and _name_ arguments are the same, =
+used=20
++when the helper function was registered.
++
++The _tep_func_handler_ is the type of the helper function. The _s_ argumen=
+t is=20
++the trace sequence, it can be used to create a custom string.
++The _args_  is a list of arguments, defined when the helper function was=20
++registered.=20
 +
 +RETURN VALUE
 +------------
-+The _tep_register_function()_ function returns 0 in case of success. In ca=
-se of=20
-+an error -1 is returned, and errno is set to the appropriate error number.
++The _tep_register_print_function()_ function returns 0 in case of success.=
+=20
++In case of an error, TEP_ERRNO_... code is returned.
 +
-+The _tep_register_print_string()_ function returns 0 in case of success. I=
-n case=20
-+of an error -1 is returned, and errno is set to the appropriate error numb=
-er.
++The _tep_unregister_print_function()_ returns 0 in case of success, or -1 =
+in
++case of an error.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
++#include <trace-seq.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+	if (tep_register_function(tep, "my_custom_func",
-+			  	 (unsigned long long) 0x12345678, NULL) !=3D 0) {
-+		/* Failed to register my_custom_func address mapping */
++static long long
++process_custom_helper(struct trace_seq *s, unsigned long long *args)
++{
++	unsigned long long param =3D args[0];
++	trace_seq_printf(s, "the helper was called, with argument %lld", param);
++	return 0;
++}
++...
++	if ( tep_register_print_function(tep,
++				    process_custom_helper,
++				    TEP_FUNC_ARG_STRING,
++				    "custom_helper",
++				    TEP_FUNC_ARG_LONG,
++				    TEP_FUNC_ARG_VOID) !=3D 0) {
++		/* Failed to register my process_custom_helper function */
 +	}
 +...
-+	if (tep_register_print_string(tep, "print string",
-+			  	 (unsigned long long) 0x87654321, NULL) !=3D 0) {
-+		/* Failed to register "print string" address mapping */
-+	}
++	if (tep_unregister_print_function(tep, process_custom_helper,
++				      	  "custom_helper") !=3D 0) {
++		/* Failed to unregister my process_custom_helper function */
++	}				   =20
 +--
++
 +FILES
 +-----
 +[verse]
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
++*trace-seq.h*
++	Header file to include in order to have access to trace sequences related=
+ APIs.
++	Trace sequences are used to allow a function to call several other functi=
+ons=20
++	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
