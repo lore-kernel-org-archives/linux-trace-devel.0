@@ -1,18 +1,18 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790045.outbound.protection.outlook.com ([40.107.79.45]:56480
+Received: from mail-eopbgr790085.outbound.protection.outlook.com ([40.107.79.85]:11680
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728958AbeKSXSV (ORCPT
+        id S1728990AbeKSXSX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:21 -0500
+        Mon, 19 Nov 2018 18:18:23 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 21/34] tools/lib/traceevent: Man page for
- tep_filter_make_string()
-Date: Mon, 19 Nov 2018 12:54:32 +0000
-Message-ID: <20181119125357.19449-22-tstoyanov@vmware.com>
+Subject: [PATCH 25/34] tools/lib/traceevent: Man pages for tep_parse_event()
+ and tep_parse_format()
+Date: Mon, 19 Nov 2018 12:54:36 +0000
+Message-ID: <20181119125357.19449-26-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,29 +22,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_filter_make_string()
+Create man pages for tep_parse_event() and tep_parse_format()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-filter_show.txt             | 75 +++++++++++++++++++
- 1 file changed, 75 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
-_show.txt
+ .../libtraceevent-parse_event.txt             | 90 +++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_=
+event.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_show.t=
-xt b/tools/lib/traceevent/Documentation/libtraceevent-filter_show.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_event.t=
+xt b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
 new file mode 100644
-index 000000000000..889b9328f87f
+index 000000000000..ceb41cdd6514
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_show.txt
-@@ -0,0 +1,75 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
+@@ -0,0 +1,90 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_filter_make_string - Returns a string showing the filter.
++tep_parse_event,tep_parse_format - Parse the event format information
 +
 +SYNOPSIS
 +--------
@@ -52,20 +52,38 @@ index 000000000000..889b9328f87f
 +--
 +*#include <event-parse.h>*
 +
-+char pass:[*]*tep_filter_make_string*(struct tep_event_filter pass:[*]_fil=
-ter_, int _event_id_);
++enum tep_errno *tep_parse_event*(struct tep_handle pass:[*]_tep_, const ch=
+ar pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
++enum tep_errno *tep_parse_format*(struct tep_handle pass:[*]_tep_, struct =
+tep_event pass:[*]pass:[*]_eventp_, const char pass:[*]_buf_, unsigned long=
+ _size_, const char pass:[*]_sys_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_filter_make_string()_ function constructs a string, displaying=20
-+the _filter_ contents for given _event_id_.
++The _tep_parse_event()_ function parses the event format and creates an ev=
+ent=20
++structure to quickly parse raw data for a given event. The _tep_ argument =
+is=20
++the trace event parser context. The created event structure is stored in t=
+he=20
++_tep_ context. The _buf_ argument is a buffer with _size_, where the event=
+=20
++format data is. The event format data can be taken from=20
++tracefs/events/.../.../format files. The _sys_ argument is the system of=20
++the event.=20
++
++The _tep_parse_format()_ function does the same as _tep_parse_event()_. Th=
+e only
++difference is in the extra _eventp_ argument, where the newly created even=
+t=20
++structure is returned.
 +
 +RETURN VALUE
 +------------
-+The _tep_filter_make_string()_ function returns a string, which must be fr=
-eed=20
-+with free(), or NULL in case of an error.
++Both _tep_parse_event()_ and _tep_parse_format()_ functions return 0 on su=
+ccess,
++or TEP_ERRNO__... in case of an error.=20
 +
 +EXAMPLE
 +-------
@@ -74,12 +92,18 @@ eed=20
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
-+struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+char *fstring =3D tep_filter_make_string(filter, 352);
-+if (fstring !=3D NULL) {
-+	/* The filter for event 352 is in fstring */
-+	free(fstring);
++char *buf;
++int size;
++struct tep_event *event =3D NULL;
++buf =3D read_file("/sys/kernel/tracing/events/ftrace/print/format", &size)=
+;
++if (tep_parse_event(tep, buf, size, "ftrace") !=3D 0) {
++	/* Failed to parse the ftrace print format */
++}
++
++if (tep_parse_format(tep, &event, buf, size, "ftrace") !=3D 0) {
++	/* Failed to parse the ftrace print format */
 +}
 +...
 +--
