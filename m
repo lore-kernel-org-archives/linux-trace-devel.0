@@ -1,18 +1,18 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790085.outbound.protection.outlook.com ([40.107.79.85]:11680
+Received: from mail-eopbgr790045.outbound.protection.outlook.com ([40.107.79.45]:56480
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728886AbeKSXSU (ORCPT
+        id S1728958AbeKSXSV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:20 -0500
+        Mon, 19 Nov 2018 18:18:21 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 24/34] tools/lib/traceevent: Man pages for
- tep_set_function_resolver() and tep_reset_function_resolver()
-Date: Mon, 19 Nov 2018 12:54:35 +0000
-Message-ID: <20181119125357.19449-25-tstoyanov@vmware.com>
+Subject: [PATCH 21/34] tools/lib/traceevent: Man page for
+ tep_filter_make_string()
+Date: Mon, 19 Nov 2018 12:54:32 +0000
+Message-ID: <20181119125357.19449-22-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,31 +22,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_set_function_resolver() and tep_reset_function_res=
-olver()
+Create man page for tep_filter_make_string()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-func_resolve.txt            | 96 +++++++++++++++++++
- 1 file changed, 96 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_r=
-esolve.txt
+ .../libtraceevent-filter_show.txt             | 75 +++++++++++++++++++
+ 1 file changed, 75 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
+_show.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-func_resolve.=
-txt b/tools/lib/traceevent/Documentation/libtraceevent-func_resolve.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_show.t=
+xt b/tools/lib/traceevent/Documentation/libtraceevent-filter_show.txt
 new file mode 100644
-index 000000000000..4965cc6c79dc
+index 000000000000..889b9328f87f
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-func_resolve.txt
-@@ -0,0 +1,96 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_show.txt
+@@ -0,0 +1,75 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_set_function_resolver,tep_reset_function_resolver - Set / reset an alt=
-ernative function resolver
++tep_filter_make_string - Returns a string showing the filter.
 +
 +SYNOPSIS
 +--------
@@ -54,45 +52,20 @@ ernative function resolver
 +--
 +*#include <event-parse.h>*
 +
-+typedef char pass:[*](*tep_func_resolver_t*)(void pass:[*]_priv_, unsigned=
- long long pass:[*]_addrp_, char pass:[**]_modp_);
-+
-+int *tep_set_function_resolver*(struct tep_handle pass:[*]_tep_, tep_func_=
-resolver_t pass:[*]_func_, void pass:[*]_priv_);
-+void *tep_reset_function_resolver*(struct tep_handle pass:[*]_tep_);
++char pass:[*]*tep_filter_make_string*(struct tep_event_filter pass:[*]_fil=
+ter_, int _event_id_);
 +--
 +
 +DESCRIPTION
 +-----------
-+Some tools may have already a way to resolve the kernel functions. These A=
-PIs
-+allow them to keep using it instead of duplicating all the entries inside.
-+
-+The _tep_set_function_resolver()_ function registers _func_ as an alternat=
-ive=20
-+kernel functions resolver. The _tep_ argument is trace event parser contex=
-t.
-+The _priv_ argument is a custom context of the _func_ function.
-+
-+The _tep_reset_function_resolver()_ function resets the kernel functions=20
-+resolver to the default function.  The _tep_ argument is trace event parse=
-r=20
-+context.
-+
-+The _tep_func_resolver_t_ type is the prototype of the alternative kernel=
-=20
-+functions resolver. This function receives a pointer to its custom context=
-=20
-+(set with the _tep_set_function_resolver()_ call ) and the address of a ke=
-rnel=20
-+function, which has to be resolved. In case of success, it should return=20
-+the name of the function and its module (if any) in _modp_.
++The _tep_filter_make_string()_ function constructs a string, displaying=20
++the _filter_ contents for given _event_id_.
 +
 +RETURN VALUE
 +------------
-+The _tep_set_function_resolver()_ function returns 0 in case of success, o=
-r -1
-+in case of an error.
++The _tep_filter_make_string()_ function returns a string, which must be fr=
+eed=20
++with free(), or NULL in case of an error.
 +
 +EXAMPLE
 +-------
@@ -101,19 +74,13 @@ r -1
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
++struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+char *my_resolve_kernel_addr(void *context, unsigned long long *addrp, cha=
-r **modp)
-+{=09
-+	return NULL;
++char *fstring =3D tep_filter_make_string(filter, 352);
++if (fstring !=3D NULL) {
++	/* The filter for event 352 is in fstring */
++	free(fstring);
 +}
-+...
-+	if (tep_set_function_resolver(tep, my_resolve_kernel_addr, NULL) !=3D 0) =
-{
-+		/* failed to register my_resolve_kernel_addr */
-+	}
-+...
-+	tep_reset_function_resolver(tep);
 +...
 +--
 +
