@@ -1,18 +1,18 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790085.outbound.protection.outlook.com ([40.107.79.85]:11680
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr700074.outbound.protection.outlook.com ([40.107.70.74]:19586
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728828AbeKSXS3 (ORCPT
+        id S1728872AbeKSXSa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:29 -0500
+        Mon, 19 Nov 2018 18:18:30 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 29/34] tools/lib/traceevent: Man pages for tep_data_type(),
- tep_data_pid(), tep_data_preempt_count() and tep_data_flags()
-Date: Mon, 19 Nov 2018 12:54:41 +0000
-Message-ID: <20181119125357.19449-30-tstoyanov@vmware.com>
+Subject: [PATCH 06/34] tools/lib/traceevent: Man pages for tep_find_event(),
+ tep_find_event_by_name() and tep_find_event_by_record()
+Date: Mon, 19 Nov 2018 12:54:16 +0000
+Message-ID: <20181119125357.19449-7-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,31 +22,30 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_data_type(), tep_data_pid(),
-tep_data_preempt_count() and tep_data_flags()
-as part of the libtraceevent APIs.
+Create man pages for tep_find_event(), tep_find_event_by_name()
+and tep_find_event_by_record() as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-record_parse.txt            | 134 ++++++++++++++++++
- 1 file changed, 134 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record=
-_parse.txt
+ .../libtraceevent-event_find.txt              | 99 +++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_=
+find.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-record_parse.=
-txt b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_find.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-event_find.txt
 new file mode 100644
-index 000000000000..6b4ca8dbcdfd
+index 000000000000..69a91bd21639
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
-@@ -0,0 +1,134 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-event_find.txt
+@@ -0,0 +1,99 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_data_type,tep_data_pid,tep_data_preempt_count,tep_data_flags - Extract=
- common fields from a record.
++tep_find_event,tep_find_event_by_name,tep_find_event_by_record - Find even=
+ts by given key.=20
 +
 +SYNOPSIS
 +--------
@@ -54,76 +53,37 @@ index 000000000000..6b4ca8dbcdfd
 +--
 +*#include <event-parse.h>*
 +
-+enum *trace_flag_type* {
-+	_TRACE_FLAG_IRQS_OFF_,
-+	_TRACE_FLAG_IRQS_NOSUPPOR_,
-+	_TRACE_FLAG_NEED_RESCHED_,
-+	_TRACE_FLAG_HARDIRQ_,
-+	_TRACE_FLAG_SOFTIRQ_,
-+};
-+
-+int *tep_data_type*(struct tep_handle pass:[*]_tep_, struct tep_record pas=
-s:[*]_rec_);
-+int *tep_data_pid*(struct tep_handle pass:[*]_tep_, struct tep_record pass=
-:[*]_rec_);
-+int *tep_data_preempt_count*(struct tep_handle pass:[*]_tep_, struct tep_r=
-ecord pass:[*]_rec_);
-+int *tep_data_flags*(struct tep_handle pass:[*]_tep_, struct tep_record pa=
-ss:[*]_rec_);
++struct tep_event pass:[*]*tep_find_event*(struct tep_handle pass:[*]_tep_,=
+ int _id_);
++struct tep_event pass:[*]*tep_find_event_by_name*(struct tep_handle pass:[=
+*]_tep_, const char pass:[*]_sys_, const char pass:[*]_name_);
++struct tep_event pass:[*]*tep_find_event_by_record*(struct tep_handle pass=
+:[*]_tep_, struct tep_record pass:[*]_record_);
 +--
 +
 +DESCRIPTION
 +-----------
-+This set of functions can be used to extract common fields from a record.
++This set of functions can be used to search for an event, based on a given=
+=20
++criteria. All functions require a pointer to a _tep_, trace event parser c=
+ontext.
 +
-+The _tep_data_type()_ function gets the event id from the record _rec_. It=
- reads=20
-+the "common_type" field. The _tep_ argument is the trace event parser cont=
-ext.
++The _tep_find_event()_ function searches for an event by given event _id_.
 +
-+The _tep_data_pid()_ function gets the process id from the record _rec_. I=
-t reads=20
-+the "common_pid" field. The _tep_ argument is the trace event parser conte=
-xt.
++The tep_find_event_by_name()_ function searches for an event by given=20
++event _name_, under the system _sys_. If the _sys_ is NULL (not specified)=
+,
++the first event with _name_ is returned.
 +
-+The _tep_data_preempt_count()_ function gets the preemption count from the=
- record=20
-+_rec_. It reads the "common_preempt_count" field. The _tep_ argument is th=
-e=20
-+trace event parser context.
-+
-+The _tep_data_flags()_ function gets the latency flags from the record _re=
-c_.=20
-+It reads the "common_flags" field. The _tep_ argument is the trace event p=
-arser=20
-+context. Supported latency flags are:
-+[verse]
-+--
-+	_TRACE_FLAG_IRQS_OFF_,		Interrupts are disabled.
-+	_TRACE_FLAG_IRQS_NOSUPPOR_,	Reading IRQ flag is not supported by the arch=
-itecture.
-+	_TRACE_FLAG_NEED_RESCHED_,	Task needs rescheduling.
-+	_TRACE_FLAG_HARDIRQ_,		Hard IRQ is running.
-+	_TRACE_FLAG_SOFTIRQ_,		Soft IRQ is running.
-+--
++The tep_find_event_by_record()_ function searches for an event from a give=
+n=20
++_record_.
 +
 +RETURN VALUE
 +------------
-+The _tep_data_type()_ function returns an integer, representing the event =
-id.
-+
-+The _tep_data_pid()_ function returns an integer, representing the process=
- id
-+
-+The _tep_data_preempt_count()_ function returns an integer, representing t=
-he=20
-+preemption count.
-+
-+The _tep_data_flags()_ function returns an integer, representing the laten=
-cy=20
-+flags. Look at the _trace_flag_type_ enum for supported flags.
-+
-+All these functions in case of an error return a negative integer.
++All these functions return a pointer to the found event, or NULL if there =
+is no=20
++such event.
 +
 +EXAMPLE
 +-------
@@ -133,29 +93,24 @@ cy=20
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+void process_record(struct tep_record *record)
++struct tep_event *event;
++
++event =3D tep_find_event(tep, 1857);
++if (event =3D=3D NULL) {
++	/* There is no event with ID 1857 */
++}
++
++event =3D tep_find_event_by_name(tep, "kvm", "kvm_exit");
++if (event =3D=3D NULL) {
++	/* There is no kvm_exit event, from kvm system */
++}
++
++void event_from_record(struct tep_record *record)
 +{
-+	int data;
-+=09
-+	data =3D tep_data_type(tep, record);
-+	if (data >=3D 0) {
-+		/* Got the ID of the event */
++ struct tep_event *event =3D tep_find_event_by_record(tep, record);
++	if (event =3D=3D NULL) {
++		/* There is no event from given record */
 +	}
-+=09
-+	data =3D tep_data_pid(tep, record);
-+	if (data >=3D 0) {
-+		/* Got the process ID */
-+	}
-+=09
-+	data =3D tep_data_preempt_count(tep, record);
-+	if (data >=3D 0) {
-+		/* Got the preemption count */
-+	}
-+=09
-+	data =3D tep_data_flags(tep, record);
-+	if (data >=3D 0) {
-+		/* Got the latency flags */
-+	}=09
 +}
 +...
 +--
