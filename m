@@ -2,17 +2,17 @@ Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr790084.outbound.protection.outlook.com ([40.107.79.84]:44928
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728872AbeKSXSr (ORCPT
+        id S1728880AbeKSXSs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:47 -0500
+        Mon, 19 Nov 2018 18:18:48 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 30/34] tools/lib/traceevent: Man pages for trace_seq_init()
- and trace_seq_destroy()
-Date: Mon, 19 Nov 2018 12:54:42 +0000
-Message-ID: <20181119125357.19449-31-tstoyanov@vmware.com>
+Subject: [PATCH 31/34] tools/lib/traceevent: Man pages for
+ trace_seq_do_fprintf() and trace_seq_do_printf()
+Date: Mon, 19 Nov 2018 12:54:43 +0000
+Message-ID: <20181119125357.19449-32-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,29 +22,30 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for trace_seq_init() and trace_seq_destroy()
+Create man pages for trace_seq_do_fprintf() and trace_seq_do_printf()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-tseq.txt      | 76 +++++++++++++++++++
- 1 file changed, 76 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq.t=
-xt
+ .../libtraceevent-tseq_doprint.txt            | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_d=
+oprint.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt b/to=
-ols/lib/traceevent/Documentation/libtraceevent-tseq.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_doprint.=
+txt b/tools/lib/traceevent/Documentation/libtraceevent-tseq_doprint.txt
 new file mode 100644
-index 000000000000..1bbfb1556b1c
+index 000000000000..441afae8ca0c
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
-@@ -0,0 +1,76 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_doprint.txt
+@@ -0,0 +1,89 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+trace_seq_init,trace_seq_destroy - Initialize / destroy a trace sequence.
++trace_seq_do_fprintf,trace_seq_do_printf - Print the trace sequence buffer=
+ to a file.
 +
 +SYNOPSIS
 +--------
@@ -53,8 +54,9 @@ index 000000000000..1bbfb1556b1c
 +*#include <event-parse.h>*
 +*#include <trace-seq.h>*
 +
-+void *trace_seq_init*(struct trace_seq pass:[*]_s_);
-+void *trace_seq_destroy*(struct trace_seq pass:[*]_s_);
++int *trace_seq_do_printf*(struct trace_seq pass:[*]_s_);
++int *trace_seq_do_fprintf*(struct trace_seq pass:[*]_s_, FILE pass:[*]_fp_=
+);
 +--
 +
 +DESCRIPTION
@@ -63,11 +65,19 @@ index 000000000000..1bbfb1556b1c
 ns=20
 +to create a string of data to use.
 +
-+The _trace_seq_init()_ function initializes the trace sequence _s_.
++The _trace_seq_do_printf()_ function prints the buffer of trace sequence _=
+s_ to
++the standard output stdout.
 +
-+The _trace_seq_destroy()_ function destroys the trace sequence _s_ and fre=
-es=20
-+all its resources that it had used.=20
++The _trace_seq_do_fprintf()_ function prints the buffer of trace sequence =
+_s_=20
++to the given file _fp_.
++
++RETURN VALUE
++------------
++Both _trace_seq_do_printf()_ and _trace_seq_do_fprintf()_ functions return=
+ the
++number of printed characters, or -1 in case of an error.
 +
 +EXAMPLE
 +-------
@@ -79,7 +89,16 @@ es=20
 +struct trace_seq seq;
 +trace_seq_init(&seq);
 +...
-+trace_seq_destroy(&seq);
++if (trace_seq_do_printf(&seq) < 0 ) [
++	/* Failed to print the buffer of the trace sequence to the standard outpu=
+t */
++}
++...
++FILE *fp =3D fopen("trace.txt", "w");
++if (trace_seq_do_fprintf(&seq, fp) < 0 ) [
++	/* Failed to print the buffer of the trace sequence to the trace.txt file=
+ */
++}
 +...
 +--
 +
