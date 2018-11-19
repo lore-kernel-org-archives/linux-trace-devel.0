@@ -1,18 +1,17 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790085.outbound.protection.outlook.com ([40.107.79.85]:11680
+Received: from mail-eopbgr790045.outbound.protection.outlook.com ([40.107.79.45]:56480
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728884AbeKSXS2 (ORCPT
+        id S1728846AbeKSXS3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:28 -0500
+        Mon, 19 Nov 2018 18:18:29 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 27/34] tools/lib/traceevent: Man pages for tep_load_plugins()
- and tep_unload_plugin()
-Date: Mon, 19 Nov 2018 12:54:39 +0000
-Message-ID: <20181119125357.19449-28-tstoyanov@vmware.com>
+Subject: [PATCH 28/34] tools/lib/traceevent: Man page for tep_data_lat_fmt()
+Date: Mon, 19 Nov 2018 12:54:40 +0000
+Message-ID: <20181119125357.19449-29-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,29 +21,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_load_plugins() and tep_unload_plugin()
+Create man page for tep_data_lat_fmt()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-plugins.txt   | 98 +++++++++++++++++++
- 1 file changed, 98 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-plugin=
-s.txt
+ .../libtraceevent-record_lat.txt              | 77 +++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record=
+_lat.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt b=
-/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-record_lat.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-record_lat.txt
 new file mode 100644
-index 000000000000..7b3acdab3133
+index 000000000000..5c8f5ec0599d
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-@@ -0,0 +1,98 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-record_lat.txt
+@@ -0,0 +1,77 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_load_plugins,tep_unload_plugins - Load  / unload traceevent plugins
++tep_data_lat_fmt - Parses the data for the latency format.
 +
 +SYNOPSIS
 +--------
@@ -52,64 +51,35 @@ index 000000000000..7b3acdab3133
 +--
 +*#include <event-parse.h>*
 +
-+struct tep_plugin_list pass:[*]*tep_load_plugins*(struct tep_handle pass:[=
-*]_tep_);
-+void *tep_unload_plugins*(struct tep_plugin_list pass:[*]_plugin_list_, st=
-ruct tep_handle pass:[*]_tep_);
++void *tep_data_lat_fmt*(struct tep_handle pass:[*]_tep_, struct trace_seq =
+pass:[*]_s_, struct tep_record pass:[*]_record_);
 +--
-+
 +DESCRIPTION
 +-----------
-+The _tep_load_plugins()_ function loads all plugins, located in the plugin=
-=20
-+directories. The _tep_ argument is trace event parser context.=20
-+The plugin directories are :
-+[verse]
-+--
-+	- System's plugin directory, defined at the library compile time. It=20
-+	  depends on the library installation prefix and usually is=20
-+	  _(install_preffix)/lib/traceevent/plugins_
-+	- Directory, defined by the environment variable _TRACEEVENT_PLUGIN_DIR_
-+	- User's plugin directory, located at _~/.traceevent/plugins_=20
-+--=20
-+Loading of plugins can be controlled by the _tep_flags_, using the=20
-+_tep_set_flag()_ API:
-+[verse]
-+--
-+	_TEP_DISABLE_SYS_PLUGINS_	- do not load plugins, located in=20
-+					the system's plugin directory.
-+	_TEP_DISABLE_PLUGINS_		- do not load any plugins.
-+--
-+The _tep_set_flag()_ API must be called before _tep_load_plugins()_.
-+
-+The _tep_unload_plugins()_ function unloads the plugins, previously loaded=
- by
-+_tep_load_plugins()_. The _tep_ argument is trace event parser context. Th=
-e=20
-+_plugin_list_ is the list of loaded plugins, returned by the _tep_load_plu=
-gins()_
-+function.
-+
-+RETURN VALUE
-+------------
-+The _tep_load_plugins()_ function returns a list of successfully loaded pl=
-ugins,=20
-+or NULL in case no plugins are loaded. =20
++The _tep_data_lat_fmt()_ function parses out the latency format (interrupt=
+s=20
++disabled, need rescheduling, in hard/soft interrupt, preempt count and=20
++lock depth) from _record_ and places it into the _s_.  The _tep_ argument =
+is=20
++the trace event parser context.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
++#include <trace-seq.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
++struct trace_seq seq;
++trace_seq_init(&seq);
 +...
-+struct tep_plugin_list *plugins =3D tep_load_plugins(tep);
-+if (plugins =3D=3D NULL) {
-+	/* no plugins are loaded */
++void process_record(struct tep_record *record)
++{
++	/* Place latency information in the seq */
++	tep_data_lat_fmt(tep, &seq, record);
 +}
 +...
-+tep_unload_plugins(plugins, tep);
 +--
 +
 +FILES
@@ -118,13 +88,19 @@ ugins,=20
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
++*trace-seq.h*
++	Header file to include in order to have access to trace sequences related=
+ APIs.
++	Trace sequences are used to allow a function to call several other functi=
+ons=20
++	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
 +
 +SEE ALSO
 +--------
-+_libtraceevent(3)_, _trace-cmd(1)_, _tep_set_flag(3)_
++_libtraceevent(3)_, _trace-cmd(1)_,_tep_set_latency_format(3)_
 +
 +AUTHOR
 +------
