@@ -1,133 +1,206 @@
-Return-Path: <SRS0=al7W=N3=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from s30320.gliwa.com ([148.251.52.238]:42506 "EHLO mail.gliwa.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727854AbeKPXos (ORCPT
+Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-eopbgr680058.outbound.protection.outlook.com ([40.107.68.58]:35776
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728818AbeKSXQn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 16 Nov 2018 18:44:48 -0500
-Subject: Re: ftrace global trace_pipe_raw
-From: Claudio <claudio.fontana@gliwa.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org, jens <jens.meier@gliwa.com>
-References: <73e2f61e-7e7b-d8be-6c94-896cf94e7567@gliwa.com>
- <20180709113257.79152dd0@gandalf.local.home>
- <7dfce43c-afd3-52ee-4c58-ef6a3b1be5fd@gliwa.com>
- <20180724102316.41cdb8a1@gandalf.local.home>
- <20180724102506.42114a68@gandalf.local.home>
- <aa0799d4-6eaa-58fa-03fa-0b8a4f7a6890@gliwa.com>
- <20181008121618.0510159f@gandalf.local.home>
- <ac424b7c-5449-16fc-4d4f-64641bcc4964@gliwa.com>
-Message-ID: <76ed1c26-b7c7-2817-1765-3eea1ff209d9@gliwa.com>
-Date: Fri, 16 Nov 2018 14:23:52 +0100
-MIME-Version: 1.0
-In-Reply-To: <ac424b7c-5449-16fc-4d4f-64641bcc4964@gliwa.com>
-Content-Type: text/plain; charset=utf-8
+        Mon, 19 Nov 2018 18:16:43 -0500
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To: "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC: "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] tools/lib/traceevent: Rename struct cmdline to struct
+ tep_cmdline
+Date: Mon, 19 Nov 2018 12:53:08 +0000
+Message-ID: <20181119125255.19155-1-tstoyanov@vmware.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Hello,
+In order to make libtraceevent into a proper library, variables, data
+structures and functions require a unique prefix to prevent name space
+conflicts. That prefix will be "tep_".
+This patch renames struct cmdline to struct tep_cmdline.
 
-just a small update below:
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+---
+ tools/lib/traceevent/event-parse-local.h |  4 +--
+ tools/lib/traceevent/event-parse.c       | 36 ++++++++++++------------
+ tools/lib/traceevent/event-parse.h       |  8 +++---
+ 3 files changed, 24 insertions(+), 24 deletions(-)
 
-On 10/08/2018 09:18 PM, Claudio wrote:
-> Hi Steven,
-> 
-> thank you for your answer,
-> 
-> On 10/08/2018 06:16 PM, Steven Rostedt wrote:
->> On Mon, 8 Oct 2018 18:07:49 +0200
->> Claudio <claudio.fontana@gliwa.com> wrote:
->>
->>> Hello Steven,
->>>
->>> On 07/24/2018 04:25 PM, Steven Rostedt wrote:
->>>> On Tue, 24 Jul 2018 10:23:16 -0400
->>>> Steven Rostedt <rostedt@goodmis.org> wrote:
->>>>   
->>>>>>
->>>>>> Would work in the direction of adding a global trace_pipe_raw be considered
->>>>>> for inclusion?    
->>>>>
->>>>> The design of the lockless ring buffer requires not to be preempted,
->>>>> and that the data cannot be written to from more than one location. To
->>>>> do so, we make a per CPU buffer, and disable preemption when writing.
->>>>> This means that we have only one writer at a time. It can handle
->>>>> interrupts and NMIs, because they will finish before they return and
->>>>> this doesn't break the algorithm. But having writers from multiple CPUs
->>>>> would require locking or other heaving synchronization operations that
->>>>> will greatly reduce the speed of writing to the buffers (not to mention
->>>>> the cache thrashing).  
->>>>
->>>> And why would you need a single buffer? Note, we are working on making
->>>> libtracecmd.so that will allow applications to read the buffers and the
->>>> library will take care of the interleaving of the raw data. This should
->>>> hopefully be ready in about three months or so.
->>>>
->>>> -- Steve
->>>>   
->>>
->>> Is this something you will showcase in the linux tracing summit?
->>> Is there a repo / branch I should be following?
->>
->> We are preparing the code in tools/lib/traceevent of the Linux kernel
->> to turn that into a library.
->>
->> At the same time, we are looking at making libtracecmd or perhaps we'll
->> call it libftrace? to implement all the trace-cmd code as a library as
->> well. But that's happening in the main trace-cmd repo:
->>
->>  git://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git
->>
-> 
-> I think that the binary raw event streaming aspect will be part of this last component right?
-> 
-> libftrace is way better as a name I think.
-> 
-> 
->>>
->>> The reason why we need to end up with a single stream of events is to be
->>> able to do "online" task state correlation and timing parameters calculations
->>> for all task-related events independent of cores.
->>
->> Well, all the events are timestamped, and you can pick different clocks
->> to use, and a simple merge sort gives all the information you need.
-> 
-> Yes, we are about to do the merge sorting of the streams ourselves,
-> but if the library does it, even better ;-)
-
-I think that with K streams, instead of merge sort it would be optimal to
-use min heap sort for the partial, online sorting of the events coming
-from the cpu streams.
-
-Do you think this could be part of the library, so it would be able
-to provide a constant stream of already sorted events regardless of the cpu,
-for full sched task state correlation?
-
-Or it it your view that this functionality should never be part of the
-library, and needs to be implemented by every user of the library separately?
-
-For me, it would be I think the main factor to decide whether to use the
-library or not.
-
-Thank you,
-
-Claudio
-
-> 
->> Note, having per cpu buffers makes things much more efficient as you
->> don't need to do synchronizing with atomics.>>
->> -- Steve
->>
->>>
->>> Currently we have this on QNX, and we are trying to enable it for Linux as well.
->>>
->>> Thank you,
->>>
->>> Claudio
->>
-> 
-> Thanks,
-> 
-> Claudio
-> 
+diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceeven=
+t/event-parse-local.h
+index 9a092dd4a86d..35833ee32d6c 100644
+--- a/tools/lib/traceevent/event-parse-local.h
++++ b/tools/lib/traceevent/event-parse-local.h
+@@ -7,7 +7,7 @@
+ #ifndef _PARSE_EVENTS_INT_H
+ #define _PARSE_EVENTS_INT_H
+=20
+-struct cmdline;
++struct tep_cmdline;
+ struct cmdline_list;
+ struct func_map;
+ struct func_list;
+@@ -36,7 +36,7 @@ struct tep_handle {
+ 	int long_size;
+ 	int page_size;
+=20
+-	struct cmdline *cmdlines;
++	struct tep_cmdline *cmdlines;
+ 	struct cmdline_list *cmdlist;
+ 	int cmdline_count;
+=20
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
+t-parse.c
+index 3156a52ddbbd..5cbe543969ad 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -139,15 +139,15 @@ struct tep_print_arg *alloc_arg(void)
+ 	return calloc(1, sizeof(struct tep_print_arg));
+ }
+=20
+-struct cmdline {
++struct tep_cmdline {
+ 	char *comm;
+ 	int pid;
+ };
+=20
+ static int cmdline_cmp(const void *a, const void *b)
+ {
+-	const struct cmdline *ca =3D a;
+-	const struct cmdline *cb =3D b;
++	const struct tep_cmdline *ca =3D a;
++	const struct tep_cmdline *cb =3D b;
+=20
+ 	if (ca->pid < cb->pid)
+ 		return -1;
+@@ -167,7 +167,7 @@ static int cmdline_init(struct tep_handle *pevent)
+ {
+ 	struct cmdline_list *cmdlist =3D pevent->cmdlist;
+ 	struct cmdline_list *item;
+-	struct cmdline *cmdlines;
++	struct tep_cmdline *cmdlines;
+ 	int i;
+=20
+ 	cmdlines =3D malloc(sizeof(*cmdlines) * pevent->cmdline_count);
+@@ -194,8 +194,8 @@ static int cmdline_init(struct tep_handle *pevent)
+=20
+ static const char *find_cmdline(struct tep_handle *pevent, int pid)
+ {
+-	const struct cmdline *comm;
+-	struct cmdline key;
++	const struct tep_cmdline *comm;
++	struct tep_cmdline key;
+=20
+ 	if (!pid)
+ 		return "<idle>";
+@@ -223,8 +223,8 @@ static const char *find_cmdline(struct tep_handle *peve=
+nt, int pid)
+  */
+ int tep_pid_is_registered(struct tep_handle *pevent, int pid)
+ {
+-	const struct cmdline *comm;
+-	struct cmdline key;
++	const struct tep_cmdline *comm;
++	struct tep_cmdline key;
+=20
+ 	if (!pid)
+ 		return 1;
+@@ -250,9 +250,9 @@ int tep_pid_is_registered(struct tep_handle *pevent, in=
+t pid)
+ static int add_new_comm(struct tep_handle *pevent,
+ 			const char *comm, int pid, bool override)
+ {
+-	struct cmdline *cmdlines =3D pevent->cmdlines;
+-	struct cmdline *cmdline;
+-	struct cmdline key;
++	struct tep_cmdline *cmdlines =3D pevent->cmdlines;
++	struct tep_cmdline *cmdline;
++	struct tep_cmdline key;
+ 	char *new_comm;
+=20
+ 	if (!pid)
+@@ -5345,8 +5345,8 @@ const char *tep_data_comm_from_pid(struct tep_handle =
+*pevent, int pid)
+ 	return comm;
+ }
+=20
+-static struct cmdline *
+-pid_from_cmdlist(struct tep_handle *pevent, const char *comm, struct cmdli=
+ne *next)
++static struct tep_cmdline *
++pid_from_cmdlist(struct tep_handle *pevent, const char *comm, struct tep_c=
+mdline *next)
+ {
+ 	struct cmdline_list *cmdlist =3D (struct cmdline_list *)next;
+=20
+@@ -5358,7 +5358,7 @@ pid_from_cmdlist(struct tep_handle *pevent, const cha=
+r *comm, struct cmdline *ne
+ 	while (cmdlist && strcmp(cmdlist->comm, comm) !=3D 0)
+ 		cmdlist =3D cmdlist->next;
+=20
+-	return (struct cmdline *)cmdlist;
++	return (struct tep_cmdline *)cmdlist;
+ }
+=20
+ /**
+@@ -5374,10 +5374,10 @@ pid_from_cmdlist(struct tep_handle *pevent, const c=
+har *comm, struct cmdline *ne
+  * next pid.
+  * Also, it does a linear seach, so it may be slow.
+  */
+-struct cmdline *tep_data_pid_from_comm(struct tep_handle *pevent, const ch=
+ar *comm,
+-				       struct cmdline *next)
++struct tep_cmdline *tep_data_pid_from_comm(struct tep_handle *pevent, cons=
+t char *comm,
++					   struct tep_cmdline *next)
+ {
+-	struct cmdline *cmdline;
++	struct tep_cmdline *cmdline;
+=20
+ 	/*
+ 	 * If the cmdlines have not been converted yet, then use
+@@ -5416,7 +5416,7 @@ struct cmdline *tep_data_pid_from_comm(struct tep_han=
+dle *pevent, const char *co
+  * Returns the pid for a give cmdline. If @cmdline is NULL, then
+  * -1 is returned.
+  */
+-int tep_cmdline_pid(struct tep_handle *pevent, struct cmdline *cmdline)
++int tep_cmdline_pid(struct tep_handle *pevent, struct tep_cmdline *cmdline=
+)
+ {
+ 	struct cmdline_list *cmdlist =3D (struct cmdline_list *)cmdline;
+=20
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/even=
+t-parse.h
+index 8742cf3bff41..be74958cbc7d 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -526,10 +526,10 @@ int tep_data_pid(struct tep_handle *pevent, struct te=
+p_record *rec);
+ int tep_data_preempt_count(struct tep_handle *pevent, struct tep_record *r=
+ec);
+ int tep_data_flags(struct tep_handle *pevent, struct tep_record *rec);
+ const char *tep_data_comm_from_pid(struct tep_handle *pevent, int pid);
+-struct cmdline;
+-struct cmdline *tep_data_pid_from_comm(struct tep_handle *pevent, const ch=
+ar *comm,
+-				       struct cmdline *next);
+-int tep_cmdline_pid(struct tep_handle *pevent, struct cmdline *cmdline);
++struct tep_cmdline;
++struct tep_cmdline *tep_data_pid_from_comm(struct tep_handle *pevent, cons=
+t char *comm,
++					   struct tep_cmdline *next);
++int tep_cmdline_pid(struct tep_handle *pevent, struct tep_cmdline *cmdline=
+);
+=20
+ void tep_print_field(struct trace_seq *s, void *data,
+ 		     struct tep_format_field *field);
+--=20
+2.17.2
