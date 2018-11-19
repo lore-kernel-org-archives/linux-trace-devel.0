@@ -1,18 +1,18 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790045.outbound.protection.outlook.com ([40.107.79.45]:56480
+Received: from mail-eopbgr790085.outbound.protection.outlook.com ([40.107.79.85]:11680
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728991AbeKSXSY (ORCPT
+        id S1728884AbeKSXS2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:24 -0500
+        Mon, 19 Nov 2018 18:18:28 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 26/34] tools/lib/traceevent: Man page for
- tep_parse_header_page()
-Date: Mon, 19 Nov 2018 12:54:38 +0000
-Message-ID: <20181119125357.19449-27-tstoyanov@vmware.com>
+Subject: [PATCH 27/34] tools/lib/traceevent: Man pages for tep_load_plugins()
+ and tep_unload_plugin()
+Date: Mon, 19 Nov 2018 12:54:39 +0000
+Message-ID: <20181119125357.19449-28-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,29 +22,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_parse_header_page()
+Create man pages for tep_load_plugins() and tep_unload_plugin()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-parse_head.txt              | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_=
-head.txt
+ .../Documentation/libtraceevent-plugins.txt   | 98 +++++++++++++++++++
+ 1 file changed, 98 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-plugin=
+s.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_head.tx=
-t b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt b=
+/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
 new file mode 100644
-index 000000000000..a5e7295b911c
+index 000000000000..7b3acdab3133
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
-@@ -0,0 +1,82 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
+@@ -0,0 +1,98 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_parse_header_page - Parses the data stored in the header page.
++tep_load_plugins,tep_unload_plugins - Load  / unload traceevent plugins
 +
 +SYNOPSIS
 +--------
@@ -52,31 +52,49 @@ index 000000000000..a5e7295b911c
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_parse_header_page*(struct tep_handle pass:[*]_tep_, char pass:[*]=
-_buf_, unsigned long _size_, int _long_size_);
++struct tep_plugin_list pass:[*]*tep_load_plugins*(struct tep_handle pass:[=
+*]_tep_);
++void *tep_unload_plugins*(struct tep_plugin_list pass:[*]_plugin_list_, st=
+ruct tep_handle pass:[*]_tep_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_parse_header_page()_ function parses the header page data from _b=
-uf_,=20
-+and initializes the _tep_, trace event parser context, with it. The buffer=
++The _tep_load_plugins()_ function loads all plugins, located in the plugin=
 =20
-+_buf_ is with _size_, and is supposed to be copied from=20
-+tracefs/events/header_page.=20
++directories. The _tep_ argument is trace event parser context.=20
++The plugin directories are :
++[verse]
++--
++	- System's plugin directory, defined at the library compile time. It=20
++	  depends on the library installation prefix and usually is=20
++	  _(install_preffix)/lib/traceevent/plugins_
++	- Directory, defined by the environment variable _TRACEEVENT_PLUGIN_DIR_
++	- User's plugin directory, located at _~/.traceevent/plugins_=20
++--=20
++Loading of plugins can be controlled by the _tep_flags_, using the=20
++_tep_set_flag()_ API:
++[verse]
++--
++	_TEP_DISABLE_SYS_PLUGINS_	- do not load plugins, located in=20
++					the system's plugin directory.
++	_TEP_DISABLE_PLUGINS_		- do not load any plugins.
++--
++The _tep_set_flag()_ API must be called before _tep_load_plugins()_.
 +
-+Some old kernels do not have header page info, in this case the=20
-+_tep_parse_header_page()_ function  can be called with _size_ equal to 0. =
-The=20
-+_tep_ context is initialized with default values. The _long_size_ can be u=
-sed in
-+this use case, to set the size of a long integer to be used.=20
++The _tep_unload_plugins()_ function unloads the plugins, previously loaded=
+ by
++_tep_load_plugins()_. The _tep_ argument is trace event parser context. Th=
+e=20
++_plugin_list_ is the list of loaded plugins, returned by the _tep_load_plu=
+gins()_
++function.
 +
 +RETURN VALUE
 +------------
-+The _tep_parse_header_page()_ function returns 0 in case of success, or -1=
-=20
-+in case of an error.
++The _tep_load_plugins()_ function returns a list of successfully loaded pl=
+ugins,=20
++or NULL in case no plugins are loaded. =20
 +
 +EXAMPLE
 +-------
@@ -86,13 +104,12 @@ sed in
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+char *buf;
-+int size;
-+buf =3D read_file("/sys/kernel/tracing/events/header_page", &size);
-+if (tep_parse_header_page(tep, buf, size, sizeof(unsigned long)) !=3D 0) {
-+	/* Failed to parse the header page */
++struct tep_plugin_list *plugins =3D tep_load_plugins(tep);
++if (plugins =3D=3D NULL) {
++	/* no plugins are loaded */
 +}
 +...
++tep_unload_plugins(plugins, tep);
 +--
 +
 +FILES
@@ -107,7 +124,7 @@ sed in
 +
 +SEE ALSO
 +--------
-+_libtraceevent(3)_, _trace-cmd(1)_
++_libtraceevent(3)_, _trace-cmd(1)_, _tep_set_flag(3)_
 +
 +AUTHOR
 +------
