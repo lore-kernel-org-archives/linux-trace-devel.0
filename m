@@ -2,18 +2,17 @@ Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr800073.outbound.protection.outlook.com ([40.107.80.73]:62612
         "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728933AbeKSXS6 (ORCPT
+        id S1728843AbeKSXS7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:58 -0500
+        Mon, 19 Nov 2018 18:18:59 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 08/34] tools/lib/traceevent: Man pages for tep_print_event(),
- tep_print_event_data(), tep_event_info(), tep_print_event_task() and
- tep_print_event_time()
-Date: Mon, 19 Nov 2018 12:54:18 +0000
-Message-ID: <20181119125357.19449-9-tstoyanov@vmware.com>
+Subject: [PATCH 17/34] tools/lib/traceevent: Man page for
+ tep_filter_strerror()
+Date: Mon, 19 Nov 2018 12:54:28 +0000
+Message-ID: <20181119125357.19449-18-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -23,128 +22,70 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_print_event(), tep_print_event_data(),
-tep_event_info(), tep_print_event_task() and tep_print_event_time()
+Create man page for tep_filter_strerror()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-event_print.txt             | 126 ++++++++++++++++++
- 1 file changed, 126 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_=
-print.txt
+ .../libtraceevent-filter_error.txt            | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
+_error.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_print.t=
-xt b/tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_error.=
+txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_error.txt
 new file mode 100644
-index 000000000000..f5af35d0d409
+index 000000000000..64e3aa809838
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
-@@ -0,0 +1,126 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_error.txt
+@@ -0,0 +1,78 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_print_event,tep_print_event_data,tep_event_info,tep_print_event_task,t=
-ep_print_event_time - Parses the data into the print format.
++tep_filter_strerror - Fills the filter error message in a buffer.
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <event-parse.h>*
-+*#include <trace-seq.h>*
 +
-+void *tep_print_event_time*(struct tep_handle pass:[*]_tep_, struct trace_=
-seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[=
-*]record, bool _use_trace_clock_);
-+void *tep_print_event_task*(struct tep_handle pass:[*]_tep_, struct trace_=
-seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[=
-*]_record_);
-+void *tep_event_info*(struct trace_seq pass:[*]_s_, struct tep_event pass:=
-[*]_event_, struct tep_record pass:[*]_record_);
-+void *tep_print_event_data*(struct tep_handle pass:[*]_tep_, struct trace_=
-seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[=
-*]_record_);
-+void *tep_print_event*(struct tep_handle pass:[*]_tep_, struct trace_seq p=
-ass:[*]_s_, struct tep_record pass:[*]_record_, bool _use_trace_clock_);
++int *tep_filter_strerror*(struct tep_event_filter pass:[*]_filter_, enum t=
+ep_errno _err_, char pass:[*]buf, size_t _buflen_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_print_event_time()_ function prints the timestamp of the _record_=
- using=20
-+the given _event_ information as trace sequence in _s_. The _tep_ argument=
- is=20
-+trace event parser context. The _use_trace_clock_ argument indicates if=20
-+the tep->trace_clock should be used for parsing the timestamp.
++The _tep_filter_strerror()_ function copies the _filter_ error buffer into=
+ the=20
++given _buf_ with the size _buflen_. If the error buffer is empty, in the _=
+buf_=20
++is copied a string, describing the error _err_.=20
 +
-+The _tep_print_event_task()_ function prints the task command, pid and CPU=
- of=20
-+the _record_ using the given _event_ information as trace sequence in _s_.=
-=20
-+The _tep_ argument is trace event parser context.=20
-+
-+The _tep_event_info()_ function parses the raw data from the _record_ usin=
-g=20
-+the given _event_ information and writes the print format as trace sequenc=
-e in
-+_s_.
-+
-+The _tep_print_event_data()_ function writes the _event_ name  as trace=20
-+sequence in _s_ and calls _tep_event_info()_ to parse and write the raw da=
-ta
-+from the _record_. The _tep_ argument is trace event parser context.=20
-+
-+The _tep_print_event()_ function prints the _record_ information as trace=
-=20
-+sequence in _s_. It finds the corresponding event and calls=20
-+_tep_print_event_task()_,_tep_print_event_time()_ and _tep_print_event_dat=
-a()_
-+to parse and print the information. =20
-+The _tep_ argument is trace event parser context. The _use_trace_clock_=20
-+argument indicates if the tep->trace_clock should be used for parsing=20
-+the timestamp.
++RETURN VALUE
++------------
++The _tep_filter_strerror()_ function returns 0 if message was filled=20
++successfully, or -1 in case of an error.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
-+#include <trace-seq.h>
 +...
-+struct trace_seq seq;
-+trace_seq_init(&seq);
 +struct tep_handle *tep =3D tep_alloc();
++struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+void print_my_event(struct tep_record *record)
-+{=09
-+	struct tep_event *event;
-+=09
-+	/* print all event information */
-+	trace_seq_reset(&seq);
-+	tep_print_event(tep, &seq, record, TRUE);
-+=09
-+	event =3D tep_find_event_by_record(tep, record);
-+=09
-+	if (event !=3D NULL) {
-+		/* print event timestamp */
-+		trace_seq_reset(&seq);
-+		tep_print_event_time(tep, &seq, event, record, TRUE);
-+	=09
-+		/* print event task information */
-+		trace_seq_reset(&seq);
-+		tep_print_event_task(tep, &seq, event, record);
-+
-+		/* print event name and raw data */
-+		trace_seq_reset(&seq);
-+		tep_print_event_data(tep, &seq, event, record);=09
-+
-+		/* print event raw data */
-+		trace_seq_reset(&seq);
-+		tep_event_info(&seq, event, record);=09
-+	}
++int ret;
++char errstr[200];
++ret =3D tep_filter_add_filter_str(filter, "sched/sched_wakeup:target_cpu=
+=3D=3D1");=20
++if(ret < 0) {
++	tep_filter_strerror(filter, ret, errstr, sizeof(errstr));
++	/* Failed to add a new rule to the filter, the error string is in errstr =
+*/
 +}
 +...
 +--
@@ -155,12 +96,6 @@ a()_
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
-+*trace-seq.h*
-+	Header file to include in order to have access to trace sequences related=
- APIs.
-+	Trace sequences are used to allow a function to call several other functi=
-ons=20
-+	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
