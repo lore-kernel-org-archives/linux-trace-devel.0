@@ -1,18 +1,17 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790045.outbound.protection.outlook.com ([40.107.79.45]:56480
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr800073.outbound.protection.outlook.com ([40.107.80.73]:62612
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728933AbeKSXSE (ORCPT
+        id S1728957AbeKSXSF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:04 -0500
+        Mon, 19 Nov 2018 18:18:05 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 18/34] tools/lib/traceevent: Man pages for
- tep_event_filtered() and tep_filter_remove_event()
-Date: Mon, 19 Nov 2018 12:54:29 +0000
-Message-ID: <20181119125357.19449-19-tstoyanov@vmware.com>
+Subject: [PATCH 07/34] tools/lib/traceevent: Man page for tep_list_events()
+Date: Mon, 19 Nov 2018 12:54:17 +0000
+Message-ID: <20181119125357.19449-8-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,30 +21,28 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_event_filtered() and tep_filter_remove_event()
-as part of the libtraceevent APIs.
+Create man page for tep_list_events() as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-filter_event.txt            | 84 +++++++++++++++++++
- 1 file changed, 84 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
-_event.txt
+ .../libtraceevent-event_list.txt              | 94 +++++++++++++++++++
+ 1 file changed, 94 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_=
+list.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_event.=
-txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_event.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_list.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
 new file mode 100644
-index 000000000000..8b45dd765e02
+index 000000000000..f443d8648a34
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_event.txt
-@@ -0,0 +1,84 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
+@@ -0,0 +1,94 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_event_filtered,tep_filter_remove_event - Checks / removes a filter on =
-an event.
++tep_list_events - Get list of events, sorted by given criteria.
 +
 +SYNOPSIS
 +--------
@@ -53,31 +50,36 @@ an event.
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_event_filtered*(struct tep_event_filter pass:[*]_filter_, int _ev=
-ent_id_);
-+int *tep_filter_remove_event*(struct tep_event_filter pass:[*]_filter_, in=
-t _event_id_);
++enum *tep_event_sort_type* {
++	_TEP_EVENT_SORT_ID_,
++	_TEP_EVENT_SORT_NAME_,
++	_TEP_EVENT_SORT_SYSTEM_,
++};
++
++struct tep_event pass:[*]pass:[*]*tep_list_events*(struct tep_handle pass:=
+[*]_tep_, enum tep_event_sort_type _sort_type_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_event_filtered()_ function checks if the event with _event_id_ ha=
-s=20
-+_filter_.
-+
-+The _tep_filter_remove_event()_ function removes a _filter_ for an event w=
-ith=20
-+_event_id_.
++The _tep_list_events()_ function returns an array of pointers to the event=
+s,=20
++sorted by the _sort_type_ criteria. The last element of the array is NULL.
++The returned memory must not be freed, it is managed by the library.=20
++The _tep_ argument is trace event parser context. The _sort_type_ argument=
+ is=20
++the required sort criteria:
++[verse]
++--
++	_TEP_EVENT_SORT_ID_	- sort by the event ID.
++	_TEP_EVENT_SORT_NAME_	- sort by the event (name, system, id) triplet.
++	_TEP_EVENT_SORT_SYSTEM_	- sort by the event (system, name, id) triplet.
++--=20
 +
 +RETURN VALUE
 +------------
-+The _tep_event_filtered()_ function returns 1 if the filter is found for g=
-iven
-+event, or 0 otherwise.
-+
-+The _tep_filter_remove_event()_ function returns 1 if the vent was removed=
-, or=20
-+0 if the event was not found.
++The _tep_list_events()_ function returns an array of pointers to events.=20
++In case of an error, NULL is returned.
 +
 +EXAMPLE
 +-------
@@ -86,14 +88,17 @@ iven
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
-+struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+if (tep_event_filtered(filter, 1857) =3D=3D 1) {
-+	/* Event 1857 has filter */
-+}
-+
-+if (tep_filter_remove_event(filter, 1857) =3D=3D 1) {
-+	/* Event 1857 was removed from the filter */
++int i=3D0;
++struct tep_event_format **events =3D tep_list_events(tep, TEP_EVENT_SORT_I=
+D);
++if (events =3D=3D NULL) {
++	/* Failed to get the events, sorted by ID */
++} else {
++	while(events[i]) {
++		/* walk through the list of the events, sorted by the ID */
++		i++;
++	}
 +}
 +...
 +--
