@@ -1,18 +1,18 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr800073.outbound.protection.outlook.com ([40.107.80.73]:62612
-        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr790084.outbound.protection.outlook.com ([40.107.79.84]:44928
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728843AbeKSXS7 (ORCPT
+        id S1728828AbeKSXTE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:59 -0500
+        Mon, 19 Nov 2018 18:19:04 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 17/34] tools/lib/traceevent: Man page for
- tep_filter_strerror()
-Date: Mon, 19 Nov 2018 12:54:28 +0000
-Message-ID: <20181119125357.19449-18-tstoyanov@vmware.com>
+Subject: [PATCH 34/34] tools/lib/traceevent: Man pages for trace_seq_reset()
+ and trace_seq_terminate()
+Date: Mon, 19 Nov 2018 12:54:46 +0000
+Message-ID: <20181119125357.19449-35-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,80 +22,80 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_filter_strerror()
+Create man pages for trace_seq_reset() and trace_seq_terminate()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-filter_error.txt            | 78 +++++++++++++++++++
+ .../libtraceevent-tseq_reset.txt              | 78 +++++++++++++++++++
  1 file changed, 78 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
-_error.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_r=
+eset.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_error.=
-txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_error.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.txt
 new file mode 100644
-index 000000000000..64e3aa809838
+index 000000000000..3951f313d39c
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_error.txt
++++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.txt
 @@ -0,0 +1,78 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_filter_strerror - Fills the filter error message in a buffer.
++trace_seq_reset,trace_seq_terminate - Reset / terminate a trace sequence.=
+=20
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <event-parse.h>*
++*#include <trace-seq.h>*
 +
-+int *tep_filter_strerror*(struct tep_event_filter pass:[*]_filter_, enum t=
-ep_errno _err_, char pass:[*]buf, size_t _buflen_);
++void *trace_seq_reset*(struct trace_seq pass:[*]_s_);
++void *trace_seq_terminate*(struct trace_seq pass:[*]_s_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_filter_strerror()_ function copies the _filter_ error buffer into=
- the=20
-+given _buf_ with the size _buflen_. If the error buffer is empty, in the _=
-buf_=20
-+is copied a string, describing the error _err_.=20
++Trace sequences are used to allow a function to call several other functio=
+ns=20
++to create a string of data to use.
 +
-+RETURN VALUE
-+------------
-+The _tep_filter_strerror()_ function returns 0 if message was filled=20
-+successfully, or -1 in case of an error.
++The _trace_seq_reset()_ function re-initializes the trace sequence _s_. Al=
+l=20
++characters already written in _s_ will be deleted.
++
++The _trace_seq_terminate()_ function terminates the trace sequence _s_. It=
+ puts
++the null character pass:['\0'] at the end of the buffer.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
++#include <trace-seq.h>
 +...
-+struct tep_handle *tep =3D tep_alloc();
-+struct tep_event_filter *filter =3D tep_filter_alloc(tep);
++struct trace_seq seq;
++trace_seq_init(&seq);
 +...
-+int ret;
-+char errstr[200];
-+ret =3D tep_filter_add_filter_str(filter, "sched/sched_wakeup:target_cpu=
-=3D=3D1");=20
-+if(ret < 0) {
-+	tep_filter_strerror(filter, ret, errstr, sizeof(errstr));
-+	/* Failed to add a new rule to the filter, the error string is in errstr =
-*/
-+}
++trace_seq_reset(&seq);
++...
++trace_seq_terminate(&seq);
 +...
 +--
-+
 +FILES
 +-----
 +[verse]
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
++*trace-seq.h*
++	Header file to include in order to have access to trace sequences related=
+ APIs.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
