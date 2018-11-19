@@ -1,18 +1,19 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790084.outbound.protection.outlook.com ([40.107.79.84]:44928
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr800073.outbound.protection.outlook.com ([40.107.80.73]:62612
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728880AbeKSXSu (ORCPT
+        id S1728933AbeKSXS6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:50 -0500
+        Mon, 19 Nov 2018 18:18:58 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 33/34] tools/lib/traceevent: Man pages for trace_seq_putc()
- and trace_seq_puts()
-Date: Mon, 19 Nov 2018 12:54:45 +0000
-Message-ID: <20181119125357.19449-34-tstoyanov@vmware.com>
+Subject: [PATCH 08/34] tools/lib/traceevent: Man pages for tep_print_event(),
+ tep_print_event_data(), tep_event_info(), tep_print_event_task() and
+ tep_print_event_time()
+Date: Mon, 19 Nov 2018 12:54:18 +0000
+Message-ID: <20181119125357.19449-9-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,30 +23,31 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for trace_seq_putc() and trace_seq_puts()
+Create man pages for tep_print_event(), tep_print_event_data(),
+tep_event_info(), tep_print_event_task() and tep_print_event_time()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-tseq_put.txt  | 89 +++++++++++++++++++
- 1 file changed, 89 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_p=
-ut.txt
+ .../libtraceevent-event_print.txt             | 126 ++++++++++++++++++
+ 1 file changed, 126 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_=
+print.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt =
-b/tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_print.t=
+xt b/tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
 new file mode 100644
-index 000000000000..78d2e87dbba8
+index 000000000000..f5af35d0d409
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt
-@@ -0,0 +1,89 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
+@@ -0,0 +1,126 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+trace_seq_putc,trace_seq_puts - Put string / character in  a trace sequenc=
-e.
++tep_print_event,tep_print_event_data,tep_event_info,tep_print_event_task,t=
+ep_print_event_time - Parses the data into the print format.
 +
 +SYNOPSIS
 +--------
@@ -54,29 +56,56 @@ e.
 +*#include <event-parse.h>*
 +*#include <trace-seq.h>*
 +
-+int *trace_seq_putc*(struct trace_seq pass:[*]_s_, unsigned char _c_);
-+int *trace_seq_puts*(struct trace_seq pass:[*]_s_, const char pass:[*]_str=
-_);
++void *tep_print_event_time*(struct tep_handle pass:[*]_tep_, struct trace_=
+seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[=
+*]record, bool _use_trace_clock_);
++void *tep_print_event_task*(struct tep_handle pass:[*]_tep_, struct trace_=
+seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[=
+*]_record_);
++void *tep_event_info*(struct trace_seq pass:[*]_s_, struct tep_event pass:=
+[*]_event_, struct tep_record pass:[*]_record_);
++void *tep_print_event_data*(struct tep_handle pass:[*]_tep_, struct trace_=
+seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[=
+*]_record_);
++void *tep_print_event*(struct tep_handle pass:[*]_tep_, struct trace_seq p=
+ass:[*]_s_, struct tep_record pass:[*]_record_, bool _use_trace_clock_);
 +--
 +
 +DESCRIPTION
 +-----------
-+Trace sequences are used to allow a function to call several other functio=
-ns=20
-+to create a string of data to use.
++The _tep_print_event_time()_ function prints the timestamp of the _record_=
+ using=20
++the given _event_ information as trace sequence in _s_. The _tep_ argument=
+ is=20
++trace event parser context. The _use_trace_clock_ argument indicates if=20
++the tep->trace_clock should be used for parsing the timestamp.
 +
-+The _trace_seq_putc()_ function puts a single character _c_ in the trace=20
-+sequence _s_.
-+
-+The _trace_seq_puts()_ function puts a NULL terminated string _str_ in the=
-=20
-+trace sequence _s_.
-+
-+RETURN VALUE
-+------------
-+Both _trace_seq_putc()_ and _trace_seq_puts()_ functions return the number=
++The _tep_print_event_task()_ function prints the task command, pid and CPU=
  of=20
-+characters put in the trace sequence, or 0 in case of an error.
++the _record_ using the given _event_ information as trace sequence in _s_.=
+=20
++The _tep_ argument is trace event parser context.=20
++
++The _tep_event_info()_ function parses the raw data from the _record_ usin=
+g=20
++the given _event_ information and writes the print format as trace sequenc=
+e in
++_s_.
++
++The _tep_print_event_data()_ function writes the _event_ name  as trace=20
++sequence in _s_ and calls _tep_event_info()_ to parse and write the raw da=
+ta
++from the _record_. The _tep_ argument is trace event parser context.=20
++
++The _tep_print_event()_ function prints the _record_ information as trace=
+=20
++sequence in _s_. It finds the corresponding event and calls=20
++_tep_print_event_task()_,_tep_print_event_time()_ and _tep_print_event_dat=
+a()_
++to parse and print the information. =20
++The _tep_ argument is trace event parser context. The _use_trace_clock_=20
++argument indicates if the tep->trace_clock should be used for parsing=20
++the timestamp.
 +
 +EXAMPLE
 +-------
@@ -87,14 +116,35 @@ ns=20
 +...
 +struct trace_seq seq;
 +trace_seq_init(&seq);
++struct tep_handle *tep =3D tep_alloc();
 +...
-+if (trace_seq_putc(&seq, ';') !=3D 1) {
-+	/* Failed to put ';' in the trace sequence */
-+}
-+...
-+char *str =3D " foo ";
-+if (trace_seq_puts(&seq, str) !=3D strlen(str)) {
-+	/* Failed to put " foo " in the trace sequence */
++void print_my_event(struct tep_record *record)
++{=09
++	struct tep_event *event;
++=09
++	/* print all event information */
++	trace_seq_reset(&seq);
++	tep_print_event(tep, &seq, record, TRUE);
++=09
++	event =3D tep_find_event_by_record(tep, record);
++=09
++	if (event !=3D NULL) {
++		/* print event timestamp */
++		trace_seq_reset(&seq);
++		tep_print_event_time(tep, &seq, event, record, TRUE);
++	=09
++		/* print event task information */
++		trace_seq_reset(&seq);
++		tep_print_event_task(tep, &seq, event, record);
++
++		/* print event name and raw data */
++		trace_seq_reset(&seq);
++		tep_print_event_data(tep, &seq, event, record);=09
++
++		/* print event raw data */
++		trace_seq_reset(&seq);
++		tep_event_info(&seq, event, record);=09
++	}
 +}
 +...
 +--
@@ -108,6 +158,9 @@ ns=20
 +*trace-seq.h*
 +	Header file to include in order to have access to trace sequences related=
  APIs.
++	Trace sequences are used to allow a function to call several other functi=
+ons=20
++	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
