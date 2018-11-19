@@ -1,19 +1,18 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790085.outbound.protection.outlook.com ([40.107.79.85]:11680
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr810089.outbound.protection.outlook.com ([40.107.81.89]:53856
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728882AbeKSXST (ORCPT
+        id S1728818AbeKSXR7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:19 -0500
+        Mon, 19 Nov 2018 18:17:59 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 22/34] tools/lib/traceevent: Man pages for
- tep_filter_event_has_trivial(), tep_update_trivial() and
- tep_filter_clear_trivial()
-Date: Mon, 19 Nov 2018 12:54:33 +0000
-Message-ID: <20181119125357.19449-23-tstoyanov@vmware.com>
+Subject: [PATCH 13/34] tools/lib/traceevent: Man page for
+ tep_read_number_field()
+Date: Mon, 19 Nov 2018 12:54:23 +0000
+Message-ID: <20181119125357.19449-14-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -23,31 +22,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_filter_event_has_trivial(),
-tep_update_trivial() and tep_filter_clear_trivial()
+Create man page for tep_read_number_field()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-filter_trivial.txt          | 112 ++++++++++++++++++
- 1 file changed, 112 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
-_trivial.txt
+ .../libtraceevent-field_read.txt              | 80 +++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_=
+read.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_trivia=
-l.txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_trivial.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_read.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
 new file mode 100644
-index 000000000000..8afd50b29269
+index 000000000000..8e4ca26b73aa
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_trivial.txt
-@@ -0,0 +1,112 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
+@@ -0,0 +1,80 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_filter_event_has_trivial,tep_update_trivial,tep_filter_clear_trivial -=
- Check / update / clear trivial rules of given filter.
++tep_read_number_field - Reads a number from a raw data.
 +
 +SYNOPSIS
 +--------
@@ -55,57 +52,23 @@ index 000000000000..8afd50b29269
 +--
 +*#include <event-parse.h>*
 +
-+enum *tep_filter_trivial_type* {
-+	_TEP_FILTER_TRIVIAL_FALSE_,
-+	_TEP_FILTER_TRIVIAL_TRUE_,
-+	_TEP_FILTER_TRIVIAL_BOTH_,
-+};
-+
-+int *tep_filter_event_has_trivial*(struct tep_event_filter pass:[*]_filter=
-_, int _event_id_, enum tep_filter_trivial_type _type_);
-+int *tep_update_trivial*(struct tep_event_filter pass:[*]_dest_, struct te=
-p_event_filter pass:[*]_source_, enum tep_filter_trivial_type _type_);
-+int *tep_filter_clear_trivial*(struct tep_event_filter pass:[*]_filter_, e=
-num tep_filter_trivial_type _type_);
++int *tep_read_number_field*(struct tep_format_field pass:[*]_field_, const=
+ void pass:[*]_data_, unsigned long long pass:[*]_value_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_filter_event_has_trivial()_ function checks if the event with=20
-+_event_id_ contains a trivial _filter_ of _type_.
-+
-+The _tep_update_trivial()_ function updates the trivial rules with the giv=
-en=20
-+filter. It scans _dest_ for trivial events matching _type_ to replace with=
-=20
-+the _source_.
-+
-+The _tep_filter_clear_trivial()_ function clears TRUE and FALSE rules.=20
-+It removes rules in the _filter_ that only contain a given _type_ boolean =
-arg.
-+
-+The trivial _type_, used as argument of these functions can be:
-+[verse]
-+--
-+	_TEP_FILTER_TRIVIAL_FALSE_	- TRUE
-+	_TEP_FILTER_TRIVIAL_TRUE_	- FALSE
-+	_TEP_FILTER_TRIVIAL_BOTH_	- TRUE or FALSE
-+
-+--
++The _tep_read_number_field()_ function reads the value of the _field_ from=
+ the=20
++raw _data_ and stores it in the _value_. The function sets the _value_ acc=
+ording
++to the endianness of the raw data and the current machine.=20
 +
 +RETURN VALUE
 +------------
-+The _tep_filter_event_has_trivial()_ function returns 1 if the event conta=
-ins=20
-+a matching trivial type, otherwise 0.
-+
-+The _tep_update_trivial()_ function  returns 0 on success, or -1 if there =
-was=20
-+a problem updating, but events may have still been updated on error.
-+
-+The _tep_filter_clear_trivial()_ function returns 0 on success, or -1 if t=
-here=20
-+was a problem.
++The _tep_read_number_field()_ function retunrs 0 in case of success, or -1=
+ in=20
++case of an error.
 +
 +EXAMPLE
 +-------
@@ -114,25 +77,22 @@ here=20
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
-+struct tep_event_filter *filter1 =3D tep_filter_alloc(tep);
-+struct tep_event_filter *filter2 =3D tep_filter_alloc(tep);
 +...
-+if (tep_filter_event_has_trivial(filter1, 1857,TEP_FILTER_TRIVIAL_FALSE) =
-=3D=3D 0) {
-+	/* There are FALSE rules in filer1 for the event 1857 */
-+}
-+
-+if (tep_update_trivial(filter1, filter2, TEP_FILTER_TRIVIAL_TRUE) !=3D 0) =
-{
-+	/* Failed to update TRUE trivial rules of filter1 with filter2 */
-+}
-+
-+if (tep_filter_clear_trivial(filter, TEP_FILTER_TRIVIAL_BOTH) =3D=3D 0) {
-+	/* Failed to clear TRUE and FALSE trivial rules of filter1 */
++struct tep_event *event =3D tep_find_event_by_name(tep, "timer", "hrtimer_=
+start");
++...
++void process_record(struct tep_record *record)
++{
++	unsigned long long pid;
++	struct tep_format_field *field_pid =3D tep_find_common_field(event, "comm=
+on_pid");
++=09
++	if (tep_read_number_field(field_pid, record->data, &pid) !=3D 0) {
++		/* Failed to get "common_pid" value */
++	}
 +}
 +...
 +--
-+
 +FILES
 +-----
 +[verse]
