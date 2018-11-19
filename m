@@ -1,17 +1,18 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790045.outbound.protection.outlook.com ([40.107.79.45]:56480
+Received: from mail-eopbgr790085.outbound.protection.outlook.com ([40.107.79.85]:11680
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728846AbeKSXS3 (ORCPT
+        id S1728828AbeKSXS3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 19 Nov 2018 18:18:29 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 28/34] tools/lib/traceevent: Man page for tep_data_lat_fmt()
-Date: Mon, 19 Nov 2018 12:54:40 +0000
-Message-ID: <20181119125357.19449-29-tstoyanov@vmware.com>
+Subject: [PATCH 29/34] tools/lib/traceevent: Man pages for tep_data_type(),
+ tep_data_pid(), tep_data_preempt_count() and tep_data_flags()
+Date: Mon, 19 Nov 2018 12:54:41 +0000
+Message-ID: <20181119125357.19449-30-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -21,29 +22,31 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_data_lat_fmt()
+Create man pages for tep_data_type(), tep_data_pid(),
+tep_data_preempt_count() and tep_data_flags()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-record_lat.txt              | 77 +++++++++++++++++++
- 1 file changed, 77 insertions(+)
+ .../libtraceevent-record_parse.txt            | 134 ++++++++++++++++++
+ 1 file changed, 134 insertions(+)
  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record=
-_lat.txt
+_parse.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-record_lat.tx=
-t b/tools/lib/traceevent/Documentation/libtraceevent-record_lat.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-record_parse.=
+txt b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
 new file mode 100644
-index 000000000000..5c8f5ec0599d
+index 000000000000..6b4ca8dbcdfd
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-record_lat.txt
-@@ -0,0 +1,77 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
+@@ -0,0 +1,134 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_data_lat_fmt - Parses the data for the latency format.
++tep_data_type,tep_data_pid,tep_data_preempt_count,tep_data_flags - Extract=
+ common fields from a record.
 +
 +SYNOPSIS
 +--------
@@ -51,33 +54,108 @@ index 000000000000..5c8f5ec0599d
 +--
 +*#include <event-parse.h>*
 +
-+void *tep_data_lat_fmt*(struct tep_handle pass:[*]_tep_, struct trace_seq =
-pass:[*]_s_, struct tep_record pass:[*]_record_);
++enum *trace_flag_type* {
++	_TRACE_FLAG_IRQS_OFF_,
++	_TRACE_FLAG_IRQS_NOSUPPOR_,
++	_TRACE_FLAG_NEED_RESCHED_,
++	_TRACE_FLAG_HARDIRQ_,
++	_TRACE_FLAG_SOFTIRQ_,
++};
++
++int *tep_data_type*(struct tep_handle pass:[*]_tep_, struct tep_record pas=
+s:[*]_rec_);
++int *tep_data_pid*(struct tep_handle pass:[*]_tep_, struct tep_record pass=
+:[*]_rec_);
++int *tep_data_preempt_count*(struct tep_handle pass:[*]_tep_, struct tep_r=
+ecord pass:[*]_rec_);
++int *tep_data_flags*(struct tep_handle pass:[*]_tep_, struct tep_record pa=
+ss:[*]_rec_);
 +--
++
 +DESCRIPTION
 +-----------
-+The _tep_data_lat_fmt()_ function parses out the latency format (interrupt=
-s=20
-+disabled, need rescheduling, in hard/soft interrupt, preempt count and=20
-+lock depth) from _record_ and places it into the _s_.  The _tep_ argument =
-is=20
-+the trace event parser context.
++This set of functions can be used to extract common fields from a record.
++
++The _tep_data_type()_ function gets the event id from the record _rec_. It=
+ reads=20
++the "common_type" field. The _tep_ argument is the trace event parser cont=
+ext.
++
++The _tep_data_pid()_ function gets the process id from the record _rec_. I=
+t reads=20
++the "common_pid" field. The _tep_ argument is the trace event parser conte=
+xt.
++
++The _tep_data_preempt_count()_ function gets the preemption count from the=
+ record=20
++_rec_. It reads the "common_preempt_count" field. The _tep_ argument is th=
+e=20
++trace event parser context.
++
++The _tep_data_flags()_ function gets the latency flags from the record _re=
+c_.=20
++It reads the "common_flags" field. The _tep_ argument is the trace event p=
+arser=20
++context. Supported latency flags are:
++[verse]
++--
++	_TRACE_FLAG_IRQS_OFF_,		Interrupts are disabled.
++	_TRACE_FLAG_IRQS_NOSUPPOR_,	Reading IRQ flag is not supported by the arch=
+itecture.
++	_TRACE_FLAG_NEED_RESCHED_,	Task needs rescheduling.
++	_TRACE_FLAG_HARDIRQ_,		Hard IRQ is running.
++	_TRACE_FLAG_SOFTIRQ_,		Soft IRQ is running.
++--
++
++RETURN VALUE
++------------
++The _tep_data_type()_ function returns an integer, representing the event =
+id.
++
++The _tep_data_pid()_ function returns an integer, representing the process=
+ id
++
++The _tep_data_preempt_count()_ function returns an integer, representing t=
+he=20
++preemption count.
++
++The _tep_data_flags()_ function returns an integer, representing the laten=
+cy=20
++flags. Look at the _trace_flag_type_ enum for supported flags.
++
++All these functions in case of an error return a negative integer.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
-+#include <trace-seq.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
-+struct trace_seq seq;
-+trace_seq_init(&seq);
 +...
 +void process_record(struct tep_record *record)
 +{
-+	/* Place latency information in the seq */
-+	tep_data_lat_fmt(tep, &seq, record);
++	int data;
++=09
++	data =3D tep_data_type(tep, record);
++	if (data >=3D 0) {
++		/* Got the ID of the event */
++	}
++=09
++	data =3D tep_data_pid(tep, record);
++	if (data >=3D 0) {
++		/* Got the process ID */
++	}
++=09
++	data =3D tep_data_preempt_count(tep, record);
++	if (data >=3D 0) {
++		/* Got the preemption count */
++	}
++=09
++	data =3D tep_data_flags(tep, record);
++	if (data >=3D 0) {
++		/* Got the latency flags */
++	}=09
 +}
 +...
 +--
@@ -88,19 +166,13 @@ is=20
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
-+*trace-seq.h*
-+	Header file to include in order to have access to trace sequences related=
- APIs.
-+	Trace sequences are used to allow a function to call several other functi=
-ons=20
-+	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
 +
 +SEE ALSO
 +--------
-+_libtraceevent(3)_, _trace-cmd(1)_,_tep_set_latency_format(3)_
++_libtraceevent(3)_, _trace-cmd(1)_
 +
 +AUTHOR
 +------
