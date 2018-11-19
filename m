@@ -2,17 +2,17 @@ Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr710056.outbound.protection.outlook.com ([40.107.71.56]:22208
         "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728877AbeKSXRv (ORCPT
+        id S1728890AbeKSXRw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:17:51 -0500
+        Mon, 19 Nov 2018 18:17:52 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 02/34] tools/lib/traceevent: Man pages for
- tep_register_event_handler() and tep_unregister_event_handler()
-Date: Mon, 19 Nov 2018 12:54:11 +0000
-Message-ID: <20181119125357.19449-3-tstoyanov@vmware.com>
+Subject: [PATCH 03/34] tools/lib/traceevent: Man pages for
+ tep_register_function() and tep_register_print_string()
+Date: Mon, 19 Nov 2018 12:54:12 +0000
+Message-ID: <20181119125357.19449-4-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,34 +22,32 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_register_event_handler() and tep_unregister_event_=
-handler()
+Create man pages for tep_register_function() and tep_register_print_string(=
+)
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-reg_event_handler.txt       | 123 ++++++++++++++++++
- 1 file changed, 123 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_ev=
-ent_handler.txt
+ .../libtraceevent-reg_funcstr.txt             | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_fu=
+ncstr.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_event_han=
-dler.txt b/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handl=
-er.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.t=
+xt b/tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.txt
 new file mode 100644
-index 000000000000..1a9269039f6c
+index 000000000000..b0e196a1e47b
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.tx=
-t
-@@ -0,0 +1,123 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.txt
+@@ -0,0 +1,89 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_register_event_handler,tep_unregister_event_handler -  Register / unre=
-gisters
-+a callback function to parse an event information.
++tep_register_function, tep_register_print_string - Registers a function / =
+string=20
++with a given address.
 +
 +SYNOPSIS
 +--------
@@ -57,119 +55,65 @@ gisters
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_register_event_handler*(struct tep_handle pass:[*]_tep_, int _id_=
-, const char pass:[*]_sys_name_, const char pass:[*]_event_name_, tep_event=
-_handler_func _func_, void pass:[*]_context_);
-+int *tep_unregister_event_handler*(struct tep_handle pass:[*]tep, int id, =
-const char pass:[*]sys_name, const char pass:[*]event_name, tep_event_handl=
-er_func func, void pass:[*]_context_);
-+
-+typedef int (*pass:[*]tep_event_handler_func*)(struct trace_seq pass:[*]s,=
- struct tep_record pass:[*]record, struct tep_event pass:[*]event, void pas=
-s:[*]context);
++int *tep_register_function*(struct tep_handle pass:[*]_tep_, char pass:[*]=
+_name_, unsigned long long _addr_, char pass:[*]_mod_);
++int *tep_register_print_string*(struct tep_handle pass:[*]_tep_, const cha=
+r pass:[*]_fmt_, unsigned long long _addr_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_register_event_handler()_ function registers a handler function,=
-=20
-+which is going to be called to parse the information for a given event.=20
-+The _tep_ argument is the trace event parser context. The _id_ argument is=
-=20
-+the id of the event. The _sys_name_ argument is the name of the system,=20
-+the event belongs to. The _event_name_ argument is the name of the event.
-+If _id_ is >=3D 0, it is used to find the event, otherwise _sys_name_ and=
-=20
-+_event_name_ are used. The _func_ is a pointer to the function, which is g=
-oing=20
-+to be called to parse the event information. The _context_ argument is a p=
-ointer
-+to the context data, which will be passed to the _func_. If a handler func=
-tion=20
-+for the same event is already registered, it will be overridden with the n=
-ew=20
-+one. This mechanism allows a developer to override the parsing of a given =
-event.
-+If for some reason the default print format is not sufficient, the develop=
-er=20
-+can register a function for an event to be used to parse the data instead.
++The _tep_register_function()_ function registers a function name with an=20
++address and module. The _tep_ argument is the trace event parser context. =
+The=20
++_name_ is the name of the function, the string is copied internally. The _=
+addr_=20
++is the start address of the function. The _mod_ is the kernel module=20
++the function may be in (NULL for none).=20
 +
-+The _tep_unregister_event_handler()_ function unregisters the handler func=
-tion,
-+previously registered with _tep_register_event_handler()_. The _tep_ argum=
-ent=20
-+is the trace event parser context. The _id_, _sys_name_, _event_name_, _fu=
-nc_,
-+and _context_ are the same arguments, as when the callback function _func_=
- was
-+registered.
++The _tep_register_print_string()_ function  registers a string by the addr=
+ess=20
++it was stored in the kernel. The _tep_ argument is the trace event parser=
+=20
++context. The _fmt_ is the string to register, it is copied internally. The=
+ _addr_=20
++is the address the string was located at.
 +
-+The _tep_event_handler_func_ is the type of the custom event handler=20
-+function. The _s_ argument is the trace sequence, it can be used to create=
- a=20
-+custom string, describing the event. A _record_  to get the event from is =
-passed=20
-+as input parameter and also the _event_ - the handle to the record's event=
-. The=20
-+_context_ is custom context, set when the custom event handler is register=
-ed.=20
-+=20
 +RETURN VALUE
 +------------
-+The _tep_register_event_handler()_ function returns 0 in case of success.=
-=20
-+If there is not  enough memory to complete the registration,=20
-+TEP_ERRNO__MEM_ALLOC_FAILED is returned.=20
++The _tep_register_function()_ function returns 0 in case of success. In ca=
+se of=20
++an error -1 is returned, and errno is set to the appropriate error number.
 +
-+The _tep_unregister_event_handler()_ function returns 0 if _func_ was remo=
-ved=20
-+successful or, -1 if the event was not found.
-+
-+The _tep_event_handler_func_ should return -1 in case of an error, or 0 ot=
-herwise.
++The _tep_register_print_string()_ function returns 0 in case of success. I=
+n case=20
++of an error -1 is returned, and errno is set to the appropriate error numb=
+er.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
-+#include <trace-seq.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+int custom_event_handler(struct trace_seq *s, struct tep_record *record,
-+			 struct tep_event *event, void *context)=20
-+{
-+	trace_seq_printf(s, "kvm_exit event");
-+	return 0;
-+}
-+...
-+	if (tep_register_event_handler(tep, -1, "kvm", "kvm_exit",
-+				   custom_event_handler, NULL)) {
-+	/* Failed to register the handler for event "kvm_exit" from "kvm" system =
-*/
++	if (tep_register_function(tep, "my_custom_func",
++			  	 (unsigned long long) 0x12345678, NULL) !=3D 0) {
++		/* Failed to register my_custom_func address mapping */
 +	}
 +...
-+	if (tep_unregister_event_handler(pevent, -1, "kvm", "kvm_exit",
-+				     custom_event_handler, NULL) !=3D ) {
-+	/* Failed to unregister the handler for event "kvm_exit" from "kvm" syste=
-m */
++	if (tep_register_print_string(tep, "print string",
++			  	 (unsigned long long) 0x87654321, NULL) !=3D 0) {
++		/* Failed to register "print string" address mapping */
 +	}
-+
 +--
-+
 +FILES
 +-----
 +[verse]
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
-+*trace-seq.h*
-+	Header file to include in order to have access to trace sequences related=
- APIs.
-+	Trace sequences are used to allow a function to call several other functi=
-ons=20
-+	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
