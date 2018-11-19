@@ -2,17 +2,17 @@ Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr700074.outbound.protection.outlook.com ([40.107.70.74]:19586
         "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728828AbeKSXSc (ORCPT
+        id S1728872AbeKSXSg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:32 -0500
+        Mon, 19 Nov 2018 18:18:36 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 09/34] tools/lib/traceevent: Man pages tep_get_first_event()
- and tep_get_events_count()
-Date: Mon, 19 Nov 2018 12:54:19 +0000
-Message-ID: <20181119125357.19449-10-tstoyanov@vmware.com>
+Subject: [PATCH 10/34] tools/lib/traceevent: Man pages
+ tep_find_common_field(), tep_find_field() and tep_find_any_field()
+Date: Mon, 19 Nov 2018 12:54:20 +0000
+Message-ID: <20181119125357.19449-11-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,29 +22,30 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_get_first_event() and tep_get_events_count()
-as part of the libtraceevent APIs.
+Create man pages for tep_find_common_field(), tep_find_field()
+and tep_find_any_field() as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-events.txt    | 87 +++++++++++++++++++
- 1 file changed, 87 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-events=
-.txt
+ .../libtraceevent-field_find.txt              | 98 +++++++++++++++++++
+ 1 file changed, 98 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_=
+find.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-events.txt b/=
-tools/lib/traceevent/Documentation/libtraceevent-events.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_find.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
 new file mode 100644
-index 000000000000..169bb3240633
+index 000000000000..a5afe260285a
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-events.txt
-@@ -0,0 +1,87 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
+@@ -0,0 +1,98 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_get_first_event,tep_get_events_count - Access events.=20
++tep_find_common_field,tep_find_field,tep_find_any_field - Search for a fie=
+ld in an event.=20
 +
 +SYNOPSIS
 +--------
@@ -52,29 +53,36 @@ index 000000000000..169bb3240633
 +--
 +*#include <event-parse.h>*
 +
-+struct tep_event pass:[*]*tep_get_first_event*(struct tep_handle pass:[*]_=
-tep_);
-+int *tep_get_events_count*(struct tep_handle pass:[*]_tep_);
++struct tep_format_field pass:[*]*tep_find_common_field*(struct tep_event p=
+ass:[*]_event_, const char pass:[*]_name_);
++struct tep_format_field pass:[*]*tep_find_field*(struct tep_event_ormat pa=
+ss:[*]_event_, const char pass:[*]_name_);
++struct tep_format_field pass:[*]*tep_find_any_field*(struct tep_event pass=
+:[*]_event_, const char pass:[*]_name_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_get_first_event()_ function returns a pointer to the first event.=
- As events are=20
-+stored in an array, this function returns the pointer to the beginning=20
-+of the array. The _tep_ argument is trace event parser context.=20
++These functions search for a field with given name in an event.
 +
-+The _tep_get_events_count()_ function returns the number of the events=20
-+in the array. The _tep_ argument is trace event parser context.
++The _tep_find_common_field()_ function searches for a common field with _n=
+ame_=20
++in the _event_.
++
++The _tep_find_field()_ function searches for an event specific field with
++_name_ in the _event_.
++
++The _tep_find_any_field()_ function searches for any field with _name_ in =
+the=20
++_event_.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_first_event()_ returns a pointer to the first event. NULL is=
-=20
-+returned in case of error, or in case there are no events.
-+
-+The _tep_get_events_count()_ returns the number of the events. 0 is=20
-+returned in case of error, or in case there are no events.
++The _tep_find_common_field(), _tep_find_field()_ and _tep_find_any_field()=
+_
++functions return a pointer to the found field, or NULL in case there is no=
+ field
++with the requested name.
 +
 +EXAMPLE
 +-------
@@ -84,17 +92,26 @@ tep_);
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+int i,count =3D tep_get_events_count(tep);
-+struct tep_event *event, *events =3D tep_get_first_event(tep);
++struct tep_event *event =3D tep_find_event_by_name(tep, "timer", "hrtimer_=
+start");
++...
++	struct tep_format_field *field;
 +
-+if (events =3D=3D NULL) {
-+	/* There are no events */
-+} else {
-+	for (i=3D0; i<count; i++) {
-+		event =3D (events+i);
-+		/* process events[i] */
++	field =3D tep_find_common_field(event, "common_pid");
++	if (field =3D=3D NULL) {
++		/* Cannot find "common_pid" common field in the event */
 +	}
-+}
++
++	field =3D tep_find_field(event, "softexpires");
++	if (field =3D=3D NULL) {
++		/* Cannot find "softexpires" event specific field in the event */
++	}
++=09
++	field =3D tep_find_any_field(event, "mode");
++	if (field =3D=3D NULL) {
++		/* Cannot find "mode" field in the event */
++	}
++...
 +--
 +
 +FILES
