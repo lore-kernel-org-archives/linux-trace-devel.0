@@ -2,16 +2,17 @@ Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr790045.outbound.protection.outlook.com ([40.107.79.45]:56480
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728958AbeKSXSH (ORCPT
+        id S1728882AbeKSXSI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:07 -0500
+        Mon, 19 Nov 2018 18:18:08 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 19/34] tools/lib/traceevent: Man page for tep_filter_match()
-Date: Mon, 19 Nov 2018 12:54:30 +0000
-Message-ID: <20181119125357.19449-20-tstoyanov@vmware.com>
+Subject: [PATCH 20/34] tools/lib/traceevent: Man pages for tep_filter_copy()
+ and tep_filter_compare()
+Date: Mon, 19 Nov 2018 12:54:31 +0000
+Message-ID: <20181119125357.19449-21-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -21,29 +22,30 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_filter_match()
+Create man pages for tep_filter_copy() and tep_filter_compare()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-filter_match.txt            | 96 +++++++++++++++++++
- 1 file changed, 96 insertions(+)
+ .../libtraceevent-filter_oper.txt             | 84 +++++++++++++++++++
+ 1 file changed, 84 insertions(+)
  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
-_match.txt
+_oper.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_match.=
-txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_match.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_oper.t=
+xt b/tools/lib/traceevent/Documentation/libtraceevent-filter_oper.txt
 new file mode 100644
-index 000000000000..61c81d36c54d
+index 000000000000..5ddae5819a99
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_match.txt
-@@ -0,0 +1,96 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_oper.txt
+@@ -0,0 +1,84 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_filter_match - Tests if a record matches a filter.
++tep_filter_copy,tep_filter_compare - Copy / compare operations with event =
+filters.
 +
 +SYNOPSIS
 +--------
@@ -51,29 +53,29 @@ index 000000000000..61c81d36c54d
 +--
 +*#include <event-parse.h>*
 +
-+enum tep_errno *tep_filter_match*(struct tep_event_filter pass:[*]_filter_=
-, struct tep_record pass:[*]_record_);
++int *tep_filter_copy*(struct tep_event_filter pass:[*]_dest_, struct tep_e=
+vent_filter pass:[*]_source_);
++int *tep_filter_compare*(struct tep_event_filter pass:[*]_filter1_, struct=
+ tep_event_filter pass:[*]_filter2_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_filter_match()_ function tests if a _record_ matches given _filte=
-r_.
++The _tep_filter_copy()_ function copies a _source_ filter into a _dest_ fi=
+lter.
++
++The _tep_filter_compare()_ function compares two filers - _filter1_ and _f=
+ilter2_.
 +
 +RETURN VALUE
 +------------
-+The _tep_filter_match()_ function returns _tep_errno_, according to the re=
-sult:
-+[verse]
-+--
-+_pass:[TEP_ERRNO__FILTER_MATCH]_	- filter found for event, the record matc=
-hes.
-+_pass:[TEP_ERRNO__FILTER_MISS]_		- filter found for event, the record does=
- not match.
-+_pass:[TEP_ERRNO__FILTER_NOT_FOUND]_	- no filter found for record's event.
-+_pass:[TEP_ERRNO__NO_FILTER]_		- no rules in the filter.
-+--
-+or any other _tep_errno_, if an error occurred during the test.
++The _tep_filter_copy()_ function returns 0 on success or -1 if not all rul=
+es
++ were copied.
++=20
++The _tep_filter_compare()_ function returns 1 if the two filters hold the =
+same=20
++content, or 0 if they do not.
 +
 +EXAMPLE
 +-------
@@ -82,27 +84,16 @@ hes.
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
-+struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+void process_record(struct tep_record *record)
-+{
-+	switch (tep_filter_match(filter, record)) {
-+	case TEP_ERRNO__FILTER_MATCH:
-+		/* The filter matches the record */
-+		break;
-+	case TEP_ERRNO__FILTER_MISS:
-+		/* The filter does not match the record */
-+		break;
-+	case TEP_ERRNO__FILTER_NOT_FOUND:
-+		/* No filter found for record's event */
-+		break;
-+	case TEP_ERRNO__NO_FILTER:
-+		/* There are no rules in the filter */
-+		break
-+	default:
-+		/* An error occurred during the test */
-+		break;=09
-+	}
++struct tep_event_filter *filter1 =3D tep_filter_alloc(tep);
++struct tep_event_filter *filter2 =3D tep_filter_alloc(tep);
++...
++if (tep_filter_copy(filter1, filter2) !=3D 0) {
++	/* Failed to copy filter2 in filter1 */
++}
++...
++if (tep_filter_compare(filter1, filter2) !=3D 1) {
++	/* Both filters are different */
 +}
 +...
 +--
