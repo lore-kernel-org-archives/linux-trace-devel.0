@@ -1,17 +1,17 @@
 Return-Path: <SRS0=OAlf=N6=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr800073.outbound.protection.outlook.com ([40.107.80.73]:62612
-        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr790045.outbound.protection.outlook.com ([40.107.79.45]:56480
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728957AbeKSXSF (ORCPT
+        id S1728958AbeKSXSH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Nov 2018 18:18:05 -0500
+        Mon, 19 Nov 2018 18:18:07 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 07/34] tools/lib/traceevent: Man page for tep_list_events()
-Date: Mon, 19 Nov 2018 12:54:17 +0000
-Message-ID: <20181119125357.19449-8-tstoyanov@vmware.com>
+Subject: [PATCH 19/34] tools/lib/traceevent: Man page for tep_filter_match()
+Date: Mon, 19 Nov 2018 12:54:30 +0000
+Message-ID: <20181119125357.19449-20-tstoyanov@vmware.com>
 References: <20181119125357.19449-1-tstoyanov@vmware.com>
 In-Reply-To: <20181119125357.19449-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -21,28 +21,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_list_events() as part of the libtraceevent APIs.
+Create man page for tep_filter_match()
+as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-event_list.txt              | 94 +++++++++++++++++++
- 1 file changed, 94 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_=
-list.txt
+ .../libtraceevent-filter_match.txt            | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
+_match.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_list.tx=
-t b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_match.=
+txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_match.txt
 new file mode 100644
-index 000000000000..f443d8648a34
+index 000000000000..61c81d36c54d
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
-@@ -0,0 +1,94 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_match.txt
+@@ -0,0 +1,96 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_list_events - Get list of events, sorted by given criteria.
++tep_filter_match - Tests if a record matches a filter.
 +
 +SYNOPSIS
 +--------
@@ -50,36 +51,29 @@ index 000000000000..f443d8648a34
 +--
 +*#include <event-parse.h>*
 +
-+enum *tep_event_sort_type* {
-+	_TEP_EVENT_SORT_ID_,
-+	_TEP_EVENT_SORT_NAME_,
-+	_TEP_EVENT_SORT_SYSTEM_,
-+};
-+
-+struct tep_event pass:[*]pass:[*]*tep_list_events*(struct tep_handle pass:=
-[*]_tep_, enum tep_event_sort_type _sort_type_);
++enum tep_errno *tep_filter_match*(struct tep_event_filter pass:[*]_filter_=
+, struct tep_record pass:[*]_record_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_list_events()_ function returns an array of pointers to the event=
-s,=20
-+sorted by the _sort_type_ criteria. The last element of the array is NULL.
-+The returned memory must not be freed, it is managed by the library.=20
-+The _tep_ argument is trace event parser context. The _sort_type_ argument=
- is=20
-+the required sort criteria:
-+[verse]
-+--
-+	_TEP_EVENT_SORT_ID_	- sort by the event ID.
-+	_TEP_EVENT_SORT_NAME_	- sort by the event (name, system, id) triplet.
-+	_TEP_EVENT_SORT_SYSTEM_	- sort by the event (system, name, id) triplet.
-+--=20
++The _tep_filter_match()_ function tests if a _record_ matches given _filte=
+r_.
 +
 +RETURN VALUE
 +------------
-+The _tep_list_events()_ function returns an array of pointers to events.=20
-+In case of an error, NULL is returned.
++The _tep_filter_match()_ function returns _tep_errno_, according to the re=
+sult:
++[verse]
++--
++_pass:[TEP_ERRNO__FILTER_MATCH]_	- filter found for event, the record matc=
+hes.
++_pass:[TEP_ERRNO__FILTER_MISS]_		- filter found for event, the record does=
+ not match.
++_pass:[TEP_ERRNO__FILTER_NOT_FOUND]_	- no filter found for record's event.
++_pass:[TEP_ERRNO__NO_FILTER]_		- no rules in the filter.
++--
++or any other _tep_errno_, if an error occurred during the test.
 +
 +EXAMPLE
 +-------
@@ -88,16 +82,26 @@ s,=20
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
++struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+int i=3D0;
-+struct tep_event_format **events =3D tep_list_events(tep, TEP_EVENT_SORT_I=
-D);
-+if (events =3D=3D NULL) {
-+	/* Failed to get the events, sorted by ID */
-+} else {
-+	while(events[i]) {
-+		/* walk through the list of the events, sorted by the ID */
-+		i++;
++void process_record(struct tep_record *record)
++{
++	switch (tep_filter_match(filter, record)) {
++	case TEP_ERRNO__FILTER_MATCH:
++		/* The filter matches the record */
++		break;
++	case TEP_ERRNO__FILTER_MISS:
++		/* The filter does not match the record */
++		break;
++	case TEP_ERRNO__FILTER_NOT_FOUND:
++		/* No filter found for record's event */
++		break;
++	case TEP_ERRNO__NO_FILTER:
++		/* There are no rules in the filter */
++		break
++	default:
++		/* An error occurred during the test */
++		break;=09
 +	}
 +}
 +...
