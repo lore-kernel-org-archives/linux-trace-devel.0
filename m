@@ -1,66 +1,45 @@
 Return-Path: <SRS0=VnmA=N7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr720052.outbound.protection.outlook.com ([40.107.72.52]:44256
-        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr690070.outbound.protection.outlook.com ([40.107.69.70]:20160
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725780AbeKTSdF (ORCPT
+        id S1725995AbeKUAj2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 20 Nov 2018 13:33:05 -0500
+        Tue, 20 Nov 2018 19:39:28 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] tools/lib/traceevent: Implemented new API
- tep_ref_get()
-Date: Tue, 20 Nov 2018 08:05:14 +0000
-Message-ID: <CACqStofp5Yry7kHjrgxNxHmGYZqqvkLid7RKOjbxeH0ZzHZf_g@mail.gmail.com>
-References: <20180928071940.29810-1-tstoyanov@vmware.com>
- <20180928071940.29810-2-tstoyanov@vmware.com>
- <20181119225404.6a10fe56@vmware.local.home>
-In-Reply-To: <20181119225404.6a10fe56@vmware.local.home>
+Subject: [PATCH v2 0/3] libtraceevent: Added support for pkg-config and few
+ other fixes related to transfoming traceevent into a library
+Date: Tue, 20 Nov 2018 14:10:06 +0000
+Message-ID: <20181120140953.30315-1-tstoyanov@vmware.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <51AFF5B5F2A58545867BEE490FE0E0FD@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-T24gVHVlLCBOb3YgMjAsIDIwMTggYXQgNTo1NCBBTSBTdGV2ZW4gUm9zdGVkdCA8cm9zdGVkdEBn
-b29kbWlzLm9yZz4gd3JvdGU6DQo+DQo+IE9uIEZyaSwgMjggU2VwIDIwMTggMTA6MTk6MzggKzAz
-MDANCj4gVHp2ZXRvbWlyIFN0b3lhbm92IDx0c3RveWFub3ZAdm13YXJlLmNvbT4gd3JvdGU6DQo+
-DQo+ID4gVGhpcyBwYXRjaCBpbXBsZW1lbnRzIG5ldyBBUEkgb2YgdGhlIHRyYWNldmVudCBsaWJy
-YXJ5Og0KPiA+IGludCB0ZXBfcmVmX2dldChzdHJ1Y3QgdGVwX2hhbmRsZSAqcGV2ZW50KTsNCj4g
-PiBUaGUgQVBJIHJldHVybnMgdGhlIHJlZmVyZW5jZSBjb3VudGVyICJyZWZfY291bnQiIG9mIHRo
-ZSB0ZXAgaGFuZGxlci4NCj4gPiBBcyAic3RydWN0IHRlcF9oYW5kbGUiIGlzIGludGVybmFsIG9u
-bHksIGl0cyBtZW1iZXJzIGNhbm5vdCBiZSBhY2Nlc3NlZA0KPiA+IGJ5IHRoZSBsaWJyYXJ5IHVz
-ZXJzLCB0aGUgQVBJIGlzIHVzZWQgdG8gZ2V0IHRoZSByZWZlcmVuY2UgY291bnRlci4NCj4gPg0K
-PiA+IFNpZ25lZC1vZmYtYnk6IFR6dmV0b21pciBTdG95YW5vdiA8dHN0b3lhbm92QHZtd2FyZS5j
-b20+DQo+ID4gLS0tDQo+ID4gIHRvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLmMgfCA3
-ICsrKysrKysNCj4gPiAgdG9vbHMvbGliL3RyYWNlZXZlbnQvZXZlbnQtcGFyc2UuaCB8IDEgKw0K
-PiA+ICAyIGZpbGVzIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdp
-dCBhL3Rvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLmMgYi90b29scy9saWIvdHJhY2Vl
-dmVudC9ldmVudC1wYXJzZS5jDQo+ID4gaW5kZXggZjMyN2M5OTBkZWRjLi5hYTI2ZDBlN2MwNzQg
-MTAwNjQ0DQo+ID4gLS0tIGEvdG9vbHMvbGliL3RyYWNlZXZlbnQvZXZlbnQtcGFyc2UuYw0KPiA+
-ICsrKyBiL3Rvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLmMNCj4gPiBAQCAtNjc3NCw2
-ICs2Nzc0LDEzIEBAIHZvaWQgdGVwX3JlZihzdHJ1Y3QgdGVwX2hhbmRsZSAqcGV2ZW50KQ0KPiA+
-ICAgICAgIHBldmVudC0+cmVmX2NvdW50Kys7DQo+ID4gIH0NCj4gPg0KPiA+ICtpbnQgdGVwX3Jl
-Zl9nZXQoc3RydWN0IHRlcF9oYW5kbGUgKnBldmVudCkNCj4NCj4gSG1tLCBJJ20gdGhpbmtpbmcg
-d2Ugc2hvdWxkIGNhbGwgdGhpcyAidGVwX2dldF9yZWYiIGFzIHRoYXQgZml0cyBtb3JlDQo+IHRo
-ZSBuYW1pbmcgY29udmVudGlvbiBvZiB0aGUgTGludXgga2VybmVsLg0KPg0KPiAtLSBTdGV2ZQ0K
-DQpPaywgZ29pbmcgdG8gc2VuZCBhIFYyIG9mIHRoaXMgcGF0Y2gNCg0KDQoNCj4NCj4gPiArew0K
-PiA+ICsgICAgIGlmIChwZXZlbnQpDQo+ID4gKyAgICAgICAgICAgICByZXR1cm4gcGV2ZW50LT5y
-ZWZfY291bnQ7DQo+ID4gKyAgICAgcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4gIHZvaWQg
-dGVwX2ZyZWVfZm9ybWF0X2ZpZWxkKHN0cnVjdCB0ZXBfZm9ybWF0X2ZpZWxkICpmaWVsZCkNCj4g
-PiAgew0KPiA+ICAgICAgIGZyZWUoZmllbGQtPnR5cGUpOw0KPiA+IGRpZmYgLS1naXQgYS90b29s
-cy9saWIvdHJhY2VldmVudC9ldmVudC1wYXJzZS5oIGIvdG9vbHMvbGliL3RyYWNlZXZlbnQvZXZl
-bnQtcGFyc2UuaA0KPiA+IGluZGV4IDEwMGIwYjdiMjlmYy4uY2RhMjFhNjcxNjBlIDEwMDY0NA0K
-PiA+IC0tLSBhL3Rvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLmgNCj4gPiArKysgYi90
-b29scy9saWIvdHJhY2VldmVudC9ldmVudC1wYXJzZS5oDQo+ID4gQEAgLTU3Nyw2ICs1NzcsNyBA
-QCBzdHJ1Y3QgdGVwX2hhbmRsZSAqdGVwX2FsbG9jKHZvaWQpOw0KPiA+ICB2b2lkIHRlcF9mcmVl
-KHN0cnVjdCB0ZXBfaGFuZGxlICpwZXZlbnQpOw0KPiA+ICB2b2lkIHRlcF9yZWYoc3RydWN0IHRl
-cF9oYW5kbGUgKnBldmVudCk7DQo+ID4gIHZvaWQgdGVwX3VucmVmKHN0cnVjdCB0ZXBfaGFuZGxl
-ICpwZXZlbnQpOw0KPiA+ICtpbnQgdGVwX3JlZl9nZXQoc3RydWN0IHRlcF9oYW5kbGUgKnBldmVu
-dCk7DQo+ID4NCj4gPiAgLyogYWNjZXNzIHRvIHRoZSBpbnRlcm5hbCBwYXJzZXIgKi8NCj4gPiAg
-dm9pZCB0ZXBfYnVmZmVyX2luaXQoY29uc3QgY2hhciAqYnVmLCB1bnNpZ25lZCBsb25nIGxvbmcg
-c2l6ZSk7DQo+DQoNCg0KLS0gDQoNClR6dmV0b21pciAoQ2VjbykgU3RveWFub3YNClZNd2FyZSBP
-cGVuIFNvdXJjZSBUZWNobm9sb2d5IENlbnRlcg0K
+Added support for pkg-config, which makes possible the library to be detect=
+ed by autoconfig.
+Implemented new API tep_ref_get(), used by applications to get the tep hand=
+le reference count.
+Install trace-seq.h header file, which is part of the library API.=20
+
+[v2 of the patch: renamed tep_ref_get -> tep_get_ref, included v2 of the "A=
+dded support for pkg-config" patch]
+
+Tzvetomir Stoyanov (3):
+  tools/lib/traceevent: Implemented new API tep_get_ref()
+  tools/lib/traceevent: Added support for pkg-config
+  tools/lib/traceevent: Install trace-seq.h API header file
+
+ tools/lib/traceevent/Makefile                 | 27 ++++++++++++++++---
+ tools/lib/traceevent/event-parse.c            |  7 +++++
+ tools/lib/traceevent/event-parse.h            |  1 +
+ .../lib/traceevent/libtraceevent.pc.template  | 10 +++++++
+ 4 files changed, 42 insertions(+), 3 deletions(-)
+ create mode 100644 tools/lib/traceevent/libtraceevent.pc.template
+
+--=20
+2.19.1
