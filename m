@@ -1,40 +1,49 @@
 Return-Path: <SRS0=VnmA=N7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:59388 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730148AbeKTO2H (ORCPT
+        id S1730180AbeKTOev (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 20 Nov 2018 09:28:07 -0500
-Date: Mon, 19 Nov 2018 23:01:02 -0500
+        Tue, 20 Nov 2018 09:34:51 -0500
+Date: Mon, 19 Nov 2018 23:07:44 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 2/3] tools/lib/traceevent: Added support for pkg-config
-Message-ID: <20181119230102.6079ea82@vmware.local.home>
-In-Reply-To: <20180928071940.29810-3-tstoyanov@vmware.com>
-References: <20180928071940.29810-1-tstoyanov@vmware.com>
-        <20180928071940.29810-3-tstoyanov@vmware.com>
+Cc: "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v2] tools/lib/traceevent: Added support for pkg-config
+Message-ID: <20181119230616.10958fa3@vmware.local.home>
+In-Reply-To: <20181018120458.3792-1-tstoyanov@vmware.com>
+References: <20181018120458.3792-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Fri, 28 Sep 2018 10:19:39 +0300
+On Thu, 18 Oct 2018 12:05:09 +0000
 Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
 > This patch implements integration with pkg-config framework.
 > pkg-config can be used by the library users to determine
 > required CFLAGS and LDFLAGS in order to use the library
+> 
 
-Do we still need this patch. I thought that there was some issue with
-PowerTop where this wasn't working. If you think it's still useful then
-we'll keep it.
+OK, this is a v2 of a single patch of the previous patch queue.
 
-Thanks!
+Note, this would normally mean the other two patches should be dropped
+(when doing a v2 or other version, keep all the patches in the queue,
+unless the other patches were already accepted, which they don't appear
+to be).
+
+The only time I allow (but other maintainers do not), to update a
+single patch in the queue is if it is a reply to the patch it is
+updating. That is, you can send a v2 of a single patch, but it must be
+a reply to (not a start of a new thread) of a patch it is updating.
+
+I will state that new patch sets, must start their own threads.
 
 -- Steve
 
-> 
+
 > Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 > ---
 >  tools/lib/traceevent/Makefile                 | 26 ++++++++++++++++---
@@ -109,7 +118,7 @@ Thanks!
 >  force:
 > diff --git a/tools/lib/traceevent/libtraceevent.pc.template b/tools/lib/traceevent/libtraceevent.pc.template
 > new file mode 100644
-> index 000000000000..7e5078aadf85
+> index 000000000000..42e4d6cb6b9e
 > --- /dev/null
 > +++ b/tools/lib/traceevent/libtraceevent.pc.template
 > @@ -0,0 +1,10 @@
@@ -118,8 +127,8 @@ Thanks!
 > +includedir=${prefix}/include/traceevent
 > +
 > +Name: libtraceevent
-> +URL: https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git/about/
-> +Description: traceevent library
+> +URL: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> +Description: Linux kernel trace event library
 > +Version: LIB_VERSION
 > +Cflags: -I${includedir}
 > +Libs: -L${libdir} -ltraceevent
