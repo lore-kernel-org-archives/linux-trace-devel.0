@@ -1,134 +1,120 @@
 Return-Path: <SRS0=VnmA=N7=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730180AbeKTOev (ORCPT
+Received: from mail-eopbgr820083.outbound.protection.outlook.com ([40.107.82.83]:64384
+        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725866AbeKTSXV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 20 Nov 2018 09:34:51 -0500
-Date: Mon, 19 Nov 2018 23:07:44 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc: "linux-trace-devel@vger.kernel.org"
+        Tue, 20 Nov 2018 13:23:21 -0500
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To: "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
 Subject: Re: [PATCH v2] tools/lib/traceevent: Added support for pkg-config
-Message-ID: <20181119230616.10958fa3@vmware.local.home>
-In-Reply-To: <20181018120458.3792-1-tstoyanov@vmware.com>
+Date: Tue, 20 Nov 2018 07:55:31 +0000
+Message-ID: <CACqStocOQkQKEebM4tMFaoJLpbPbfpSGpcYjxT9GUbE-7ZRqeA@mail.gmail.com>
 References: <20181018120458.3792-1-tstoyanov@vmware.com>
+ <20181119230616.10958fa3@vmware.local.home>
+In-Reply-To: <20181119230616.10958fa3@vmware.local.home>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <746BAA5205D7AC48AD048B2C7268B4FD@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Thu, 18 Oct 2018 12:05:09 +0000
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
-
-> This patch implements integration with pkg-config framework.
-> pkg-config can be used by the library users to determine
-> required CFLAGS and LDFLAGS in order to use the library
-> 
-
-OK, this is a v2 of a single patch of the previous patch queue.
-
-Note, this would normally mean the other two patches should be dropped
-(when doing a v2 or other version, keep all the patches in the queue,
-unless the other patches were already accepted, which they don't appear
-to be).
-
-The only time I allow (but other maintainers do not), to update a
-single patch in the queue is if it is a reply to the patch it is
-updating. That is, you can send a v2 of a single patch, but it must be
-a reply to (not a start of a new thread) of a patch it is updating.
-
-I will state that new patch sets, must start their own threads.
-
--- Steve
-
-
-> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> ---
->  tools/lib/traceevent/Makefile                 | 26 ++++++++++++++++---
->  .../lib/traceevent/libtraceevent.pc.template  | 10 +++++++
->  2 files changed, 33 insertions(+), 3 deletions(-)
->  create mode 100644 tools/lib/traceevent/libtraceevent.pc.template
-> 
-> diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-> index 0b4e833088a4..05ac0ec9bcd1 100644
-> --- a/tools/lib/traceevent/Makefile
-> +++ b/tools/lib/traceevent/Makefile
-> @@ -25,6 +25,7 @@ endef
->  $(call allow-override,CC,$(CROSS_COMPILE)gcc)
->  $(call allow-override,AR,$(CROSS_COMPILE)ar)
->  $(call allow-override,NM,$(CROSS_COMPILE)nm)
-> +$(call allow-override,PKG_CONFIG,pkg-config)
->  
->  EXT = -std=gnu99
->  INSTALL = install
-> @@ -47,6 +48,8 @@ prefix ?= /usr/local
->  libdir = $(prefix)/$(libdir_relative)
->  man_dir = $(prefix)/share/man
->  man_dir_SQ = '$(subst ','\'',$(man_dir))'
-> +pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
-> +			--variable pc_path pkg-config | tr ":" " "))
->  
->  export man_dir man_dir_SQ INSTALL
->  export DESTDIR DESTDIR_SQ
-> @@ -270,7 +273,19 @@ define do_generate_dynamic_list_file
->  	fi
->  endef
->  
-> -install_lib: all_cmd install_plugins
-> +PKG_CONFIG_FILE = libtraceevent.pc
-> +define do_install_pkgconfig_file
-> +	if [ -n "${pkgconfig_dir}" ]; then 					\
-> +		cp -f ${PKG_CONFIG_FILE}.template ${PKG_CONFIG_FILE}; 		\
-> +		sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE}; 		\
-> +		sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
-> +		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
-> +	else 									\
-> +		(echo Failed to locate pkg-config directory) 1>&2;		\
-> +	fi	
-> +endef
-> +
-> +install_lib: all_cmd install_plugins install_pkgconfig
->  	$(call QUIET_INSTALL, $(LIB_TARGET)) \
->  		$(call do_install_mkdir,$(libdir_SQ)); \
->  		cp -fpR $(LIB_INSTALL) $(DESTDIR)$(libdir_SQ)
-> @@ -279,6 +294,10 @@ install_plugins: $(PLUGINS)
->  	$(call QUIET_INSTALL, trace_plugins) \
->  		$(call do_install_plugins, $(PLUGINS))
->  
-> +install_pkgconfig:
-> +	$(call QUIET_INSTALL, $(PKG_CONFIG_FILE)) \
-> +		$(call do_install_pkgconfig_file,$(prefix))
-> +
->  install_headers:
->  	$(call QUIET_INSTALL, headers) \
->  		$(call do_install,event-parse.h,$(prefix)/include/traceevent,644); \
-> @@ -289,8 +308,9 @@ install: install_lib
->  
->  clean:
->  	$(call QUIET_CLEAN, libtraceevent) \
-> -		$(RM) *.o *~ $(TARGETS) *.a *.so $(VERSION_FILES) .*.d .*.cmd \
-> -		$(RM) TRACEEVENT-CFLAGS tags TAGS
-> +		$(RM) *.o *~ $(TARGETS) *.a *.so $(VERSION_FILES) .*.d .*.cmd; \
-> +		$(RM) TRACEEVENT-CFLAGS tags TAGS; \
-> +		$(RM) $(PKG_CONFIG_FILE)
->  
->  PHONY += force plugins
->  force:
-> diff --git a/tools/lib/traceevent/libtraceevent.pc.template b/tools/lib/traceevent/libtraceevent.pc.template
-> new file mode 100644
-> index 000000000000..42e4d6cb6b9e
-> --- /dev/null
-> +++ b/tools/lib/traceevent/libtraceevent.pc.template
-> @@ -0,0 +1,10 @@
-> +prefix=INSTALL_PREFIX
-> +libdir=${prefix}/lib64
-> +includedir=${prefix}/include/traceevent
-> +
-> +Name: libtraceevent
-> +URL: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> +Description: Linux kernel trace event library
-> +Version: LIB_VERSION
-> +Cflags: -I${includedir}
-> +Libs: -L${libdir} -ltraceevent
+SGkgU3RldmVuLA0KT24gVHVlLCBOb3YgMjAsIDIwMTggYXQgNjowNyBBTSBTdGV2ZW4gUm9zdGVk
+dCA8cm9zdGVkdEBnb29kbWlzLm9yZz4gd3JvdGU6DQo+DQo+IE9uIFRodSwgMTggT2N0IDIwMTgg
+MTI6MDU6MDkgKzAwMDANCj4gVHp2ZXRvbWlyIFN0b3lhbm92IDx0c3RveWFub3ZAdm13YXJlLmNv
+bT4gd3JvdGU6DQo+DQo+ID4gVGhpcyBwYXRjaCBpbXBsZW1lbnRzIGludGVncmF0aW9uIHdpdGgg
+cGtnLWNvbmZpZyBmcmFtZXdvcmsuDQo+ID4gcGtnLWNvbmZpZyBjYW4gYmUgdXNlZCBieSB0aGUg
+bGlicmFyeSB1c2VycyB0byBkZXRlcm1pbmUNCj4gPiByZXF1aXJlZCBDRkxBR1MgYW5kIExERkxB
+R1MgaW4gb3JkZXIgdG8gdXNlIHRoZSBsaWJyYXJ5DQo+ID4NCj4NCj4gT0ssIHRoaXMgaXMgYSB2
+MiBvZiBhIHNpbmdsZSBwYXRjaCBvZiB0aGUgcHJldmlvdXMgcGF0Y2ggcXVldWUuDQo+DQo+IE5v
+dGUsIHRoaXMgd291bGQgbm9ybWFsbHkgbWVhbiB0aGUgb3RoZXIgdHdvIHBhdGNoZXMgc2hvdWxk
+IGJlIGRyb3BwZWQNCj4gKHdoZW4gZG9pbmcgYSB2MiBvciBvdGhlciB2ZXJzaW9uLCBrZWVwIGFs
+bCB0aGUgcGF0Y2hlcyBpbiB0aGUgcXVldWUsDQo+IHVubGVzcyB0aGUgb3RoZXIgcGF0Y2hlcyB3
+ZXJlIGFscmVhZHkgYWNjZXB0ZWQsIHdoaWNoIHRoZXkgZG9uJ3QgYXBwZWFyDQo+IHRvIGJlKS4N
+Cj4NCj4gVGhlIG9ubHkgdGltZSBJIGFsbG93IChidXQgb3RoZXIgbWFpbnRhaW5lcnMgZG8gbm90
+KSwgdG8gdXBkYXRlIGENCj4gc2luZ2xlIHBhdGNoIGluIHRoZSBxdWV1ZSBpcyBpZiBpdCBpcyBh
+IHJlcGx5IHRvIHRoZSBwYXRjaCBpdCBpcw0KPiB1cGRhdGluZy4gVGhhdCBpcywgeW91IGNhbiBz
+ZW5kIGEgdjIgb2YgYSBzaW5nbGUgcGF0Y2gsIGJ1dCBpdCBtdXN0IGJlDQo+IGEgcmVwbHkgdG8g
+KG5vdCBhIHN0YXJ0IG9mIGEgbmV3IHRocmVhZCkgb2YgYSBwYXRjaCBpdCBpcyB1cGRhdGluZy4N
+Cj4NCj4gSSB3aWxsIHN0YXRlIHRoYXQgbmV3IHBhdGNoIHNldHMsIG11c3Qgc3RhcnQgdGhlaXIg
+b3duIHRocmVhZHMuDQo+DQo+IC0tIFN0ZXZlDQo+DQpPSywgSSdsbCByZXNlbmQgdGhlIHYyIG9m
+IHRoZSBwYXRjaCBzZXQgd2l0aCB1cGRhdGVkIHBrZy1jb25maWcgcGF0Y2guDQoNCj4NCj4gPiBT
+aWduZWQtb2ZmLWJ5OiBUenZldG9taXIgU3RveWFub3YgPHRzdG95YW5vdkB2bXdhcmUuY29tPg0K
+PiA+IC0tLQ0KPiA+ICB0b29scy9saWIvdHJhY2VldmVudC9NYWtlZmlsZSAgICAgICAgICAgICAg
+ICAgfCAyNiArKysrKysrKysrKysrKysrLS0tDQo+ID4gIC4uLi9saWIvdHJhY2VldmVudC9saWJ0
+cmFjZWV2ZW50LnBjLnRlbXBsYXRlICB8IDEwICsrKysrKysNCj4gPiAgMiBmaWxlcyBjaGFuZ2Vk
+LCAzMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2
+NDQgdG9vbHMvbGliL3RyYWNlZXZlbnQvbGlidHJhY2VldmVudC5wYy50ZW1wbGF0ZQ0KPiA+DQo+
+ID4gZGlmZiAtLWdpdCBhL3Rvb2xzL2xpYi90cmFjZWV2ZW50L01ha2VmaWxlIGIvdG9vbHMvbGli
+L3RyYWNlZXZlbnQvTWFrZWZpbGUNCj4gPiBpbmRleCAwYjRlODMzMDg4YTQuLjA1YWMwZWM5YmNk
+MSAxMDA2NDQNCj4gPiAtLS0gYS90b29scy9saWIvdHJhY2VldmVudC9NYWtlZmlsZQ0KPiA+ICsr
+KyBiL3Rvb2xzL2xpYi90cmFjZWV2ZW50L01ha2VmaWxlDQo+ID4gQEAgLTI1LDYgKzI1LDcgQEAg
+ZW5kZWYNCj4gPiAgJChjYWxsIGFsbG93LW92ZXJyaWRlLENDLCQoQ1JPU1NfQ09NUElMRSlnY2Mp
+DQo+ID4gICQoY2FsbCBhbGxvdy1vdmVycmlkZSxBUiwkKENST1NTX0NPTVBJTEUpYXIpDQo+ID4g
+ICQoY2FsbCBhbGxvdy1vdmVycmlkZSxOTSwkKENST1NTX0NPTVBJTEUpbm0pDQo+ID4gKyQoY2Fs
+bCBhbGxvdy1vdmVycmlkZSxQS0dfQ09ORklHLHBrZy1jb25maWcpDQo+ID4NCj4gPiAgRVhUID0g
+LXN0ZD1nbnU5OQ0KPiA+ICBJTlNUQUxMID0gaW5zdGFsbA0KPiA+IEBAIC00Nyw2ICs0OCw4IEBA
+IHByZWZpeCA/PSAvdXNyL2xvY2FsDQo+ID4gIGxpYmRpciA9ICQocHJlZml4KS8kKGxpYmRpcl9y
+ZWxhdGl2ZSkNCj4gPiAgbWFuX2RpciA9ICQocHJlZml4KS9zaGFyZS9tYW4NCj4gPiAgbWFuX2Rp
+cl9TUSA9ICckKHN1YnN0ICcsJ1wnJywkKG1hbl9kaXIpKScNCj4gPiArcGtnY29uZmlnX2RpciA/
+PSAkKHdvcmQgMSwkKHNoZWxsICQoUEtHX0NPTkZJRykgICAgICAgICAgICAgIFwNCj4gPiArICAg
+ICAgICAgICAgICAgICAgICAgLS12YXJpYWJsZSBwY19wYXRoIHBrZy1jb25maWcgfCB0ciAiOiIg
+IiAiKSkNCj4gPg0KPiA+ICBleHBvcnQgbWFuX2RpciBtYW5fZGlyX1NRIElOU1RBTEwNCj4gPiAg
+ZXhwb3J0IERFU1RESVIgREVTVERJUl9TUQ0KPiA+IEBAIC0yNzAsNyArMjczLDE5IEBAIGRlZmlu
+ZSBkb19nZW5lcmF0ZV9keW5hbWljX2xpc3RfZmlsZQ0KPiA+ICAgICAgIGZpDQo+ID4gIGVuZGVm
+DQo+ID4NCj4gPiAtaW5zdGFsbF9saWI6IGFsbF9jbWQgaW5zdGFsbF9wbHVnaW5zDQo+ID4gK1BL
+R19DT05GSUdfRklMRSA9IGxpYnRyYWNlZXZlbnQucGMNCj4gPiArZGVmaW5lIGRvX2luc3RhbGxf
+cGtnY29uZmlnX2ZpbGUNCj4gPiArICAgICBpZiBbIC1uICIke3BrZ2NvbmZpZ19kaXJ9IiBdOyB0
+aGVuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQo+ID4gKyAgICAgICAg
+ICAgICBjcCAtZiAke1BLR19DT05GSUdfRklMRX0udGVtcGxhdGUgJHtQS0dfQ09ORklHX0ZJTEV9
+OyAgICAgICAgICAgXA0KPiA+ICsgICAgICAgICAgICAgc2VkIC1pICJzfElOU1RBTExfUFJFRklY
+fCR7MX18ZyIgJHtQS0dfQ09ORklHX0ZJTEV9OyAgICAgICAgICAgIFwNCj4gPiArICAgICAgICAg
+ICAgIHNlZCAtaSAic3xMSUJfVkVSU0lPTnwke0VWRU5UX1BBUlNFX1ZFUlNJT059fGciICR7UEtH
+X0NPTkZJR19GSUxFfTsgXA0KPiA+ICsgICAgICAgICAgICAgJChjYWxsIGRvX2luc3RhbGwsJChQ
+S0dfQ09ORklHX0ZJTEUpLCQocGtnY29uZmlnX2RpciksNjQ0KTsgICAgIFwNCj4gPiArICAgICBl
+bHNlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBcDQo+ID4gKyAgICAgICAgICAgICAoZWNobyBGYWlsZWQgdG8gbG9jYXRl
+IHBrZy1jb25maWcgZGlyZWN0b3J5KSAxPiYyOyAgICAgICAgICAgICAgXA0KPiA+ICsgICAgIGZp
+DQo+ID4gK2VuZGVmDQo+ID4gKw0KPiA+ICtpbnN0YWxsX2xpYjogYWxsX2NtZCBpbnN0YWxsX3Bs
+dWdpbnMgaW5zdGFsbF9wa2djb25maWcNCj4gPiAgICAgICAkKGNhbGwgUVVJRVRfSU5TVEFMTCwg
+JChMSUJfVEFSR0VUKSkgXA0KPiA+ICAgICAgICAgICAgICAgJChjYWxsIGRvX2luc3RhbGxfbWtk
+aXIsJChsaWJkaXJfU1EpKTsgXA0KPiA+ICAgICAgICAgICAgICAgY3AgLWZwUiAkKExJQl9JTlNU
+QUxMKSAkKERFU1RESVIpJChsaWJkaXJfU1EpDQo+ID4gQEAgLTI3OSw2ICsyOTQsMTAgQEAgaW5z
+dGFsbF9wbHVnaW5zOiAkKFBMVUdJTlMpDQo+ID4gICAgICAgJChjYWxsIFFVSUVUX0lOU1RBTEws
+IHRyYWNlX3BsdWdpbnMpIFwNCj4gPiAgICAgICAgICAgICAgICQoY2FsbCBkb19pbnN0YWxsX3Bs
+dWdpbnMsICQoUExVR0lOUykpDQo+ID4NCj4gPiAraW5zdGFsbF9wa2djb25maWc6DQo+ID4gKyAg
+ICAgJChjYWxsIFFVSUVUX0lOU1RBTEwsICQoUEtHX0NPTkZJR19GSUxFKSkgXA0KPiA+ICsgICAg
+ICAgICAgICAgJChjYWxsIGRvX2luc3RhbGxfcGtnY29uZmlnX2ZpbGUsJChwcmVmaXgpKQ0KPiA+
+ICsNCj4gPiAgaW5zdGFsbF9oZWFkZXJzOg0KPiA+ICAgICAgICQoY2FsbCBRVUlFVF9JTlNUQUxM
+LCBoZWFkZXJzKSBcDQo+ID4gICAgICAgICAgICAgICAkKGNhbGwgZG9faW5zdGFsbCxldmVudC1w
+YXJzZS5oLCQocHJlZml4KS9pbmNsdWRlL3RyYWNlZXZlbnQsNjQ0KTsgXA0KPiA+IEBAIC0yODks
+OCArMzA4LDkgQEAgaW5zdGFsbDogaW5zdGFsbF9saWINCj4gPg0KPiA+ICBjbGVhbjoNCj4gPiAg
+ICAgICAkKGNhbGwgUVVJRVRfQ0xFQU4sIGxpYnRyYWNlZXZlbnQpIFwNCj4gPiAtICAgICAgICAg
+ICAgICQoUk0pICoubyAqfiAkKFRBUkdFVFMpICouYSAqLnNvICQoVkVSU0lPTl9GSUxFUykgLiou
+ZCAuKi5jbWQgXA0KPiA+IC0gICAgICAgICAgICAgJChSTSkgVFJBQ0VFVkVOVC1DRkxBR1MgdGFn
+cyBUQUdTDQo+ID4gKyAgICAgICAgICAgICAkKFJNKSAqLm8gKn4gJChUQVJHRVRTKSAqLmEgKi5z
+byAkKFZFUlNJT05fRklMRVMpIC4qLmQgLiouY21kOyBcDQo+ID4gKyAgICAgICAgICAgICAkKFJN
+KSBUUkFDRUVWRU5ULUNGTEFHUyB0YWdzIFRBR1M7IFwNCj4gPiArICAgICAgICAgICAgICQoUk0p
+ICQoUEtHX0NPTkZJR19GSUxFKQ0KPiA+DQo+ID4gIFBIT05ZICs9IGZvcmNlIHBsdWdpbnMNCj4g
+PiAgZm9yY2U6DQo+ID4gZGlmZiAtLWdpdCBhL3Rvb2xzL2xpYi90cmFjZWV2ZW50L2xpYnRyYWNl
+ZXZlbnQucGMudGVtcGxhdGUgYi90b29scy9saWIvdHJhY2VldmVudC9saWJ0cmFjZWV2ZW50LnBj
+LnRlbXBsYXRlDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAw
+MDAuLjQyZTRkNmNiNmI5ZQ0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi90b29scy9saWIv
+dHJhY2VldmVudC9saWJ0cmFjZWV2ZW50LnBjLnRlbXBsYXRlDQo+ID4gQEAgLTAsMCArMSwxMCBA
+QA0KPiA+ICtwcmVmaXg9SU5TVEFMTF9QUkVGSVgNCj4gPiArbGliZGlyPSR7cHJlZml4fS9saWI2
+NA0KPiA+ICtpbmNsdWRlZGlyPSR7cHJlZml4fS9pbmNsdWRlL3RyYWNlZXZlbnQNCj4gPiArDQo+
+ID4gK05hbWU6IGxpYnRyYWNlZXZlbnQNCj4gPiArVVJMOiBodHRwczovL25hMDEuc2FmZWxpbmtz
+LnByb3RlY3Rpb24ub3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUyRiUyRmdpdC5rZXJuZWwub3Jn
+JTJGcHViJTJGc2NtJTJGbGludXglMkZrZXJuZWwlMkZnaXQlMkZ0b3J2YWxkcyUyRmxpbnV4Lmdp
+dCZhbXA7ZGF0YT0wMiU3QzAxJTdDdHN0b3lhbm92JTQwdm13YXJlLmNvbSU3Q2NiNTk1YWNjZGY1
+ZDQyZWI3OWE0MDhkNjRlOWRiYmNkJTdDYjM5MTM4Y2EzY2VlNGI0YWE0ZDZjZDgzZDlkZDYyZjAl
+N0MwJTdDMCU3QzYzNjc4MjgzNjcwNTc2NDgxMCZhbXA7c2RhdGE9b0tjNXUyV0I1dExrJTJGc0t3
+ZWxqdDBEQXlmVkRRa1JpSTdRTWgxbFRnNXA4JTNEJmFtcDtyZXNlcnZlZD0wDQo+ID4gK0Rlc2Ny
+aXB0aW9uOiBMaW51eCBrZXJuZWwgdHJhY2UgZXZlbnQgbGlicmFyeQ0KPiA+ICtWZXJzaW9uOiBM
+SUJfVkVSU0lPTg0KPiA+ICtDZmxhZ3M6IC1JJHtpbmNsdWRlZGlyfQ0KPiA+ICtMaWJzOiAtTCR7
+bGliZGlyfSAtbHRyYWNlZXZlbnQNCj4NCg0KDQotLSANCg0KVHp2ZXRvbWlyIChDZWNvKSBTdG95
+YW5vdg0KVk13YXJlIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudGVyDQo=
