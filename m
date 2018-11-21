@@ -1,110 +1,105 @@
 Return-Path: <SRS0=0JuE=OA=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790053.outbound.protection.outlook.com ([40.107.79.53]:64832
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr690040.outbound.protection.outlook.com ([40.107.69.40]:23584
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730512AbeKVBtL (ORCPT
+        id S1726849AbeKVBtr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 21 Nov 2018 20:49:11 -0500
+        Wed, 21 Nov 2018 20:49:47 -0500
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 01/11] kernel-shark-qt: protect all calls of
- tep_read_number_field()
-Date: Wed, 21 Nov 2018 15:14:18 +0000
-Message-ID: <20181121151356.16901-2-ykaradzhov@vmware.com>
+Subject: [PATCH 05/11] kernel-shark-qt: Add iterator index to the search panel
+Date: Wed, 21 Nov 2018 15:14:23 +0000
+Message-ID: <20181121151356.16901-7-ykaradzhov@vmware.com>
 References: <20181121151356.16901-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181121151356.16901-1-ykaradzhov@vmware.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <DC85B46C3AD168429E8C3E24B5A49673@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-dGVwX3JlYWRfbnVtYmVyX2ZpZWxkKCkgaXMgYmVpbmcgdXNlZCB0byByZXRyaWV2ZSB0aGUgdmFs
-dWUgb2YgYSBkYXRhDQpmaWVsZCBhbmQgdGhpcyB2YWx1ZSBoYXMgYmVpbmcgdXNlZCB3aXRob3V0
-IGNoZWNraW5nIGlmIHRoZSBmdW5jdGlvbg0Kc3VjY2VlZGVkLiBUaGlzIGlzIGEgcG90ZW50aWFs
-IGJ1ZyBiZWNhdXNlIHRlcF9yZWFkX251bWJlcl9maWVsZCgpIG1heQ0KZtCwaWwgYW5kIGluIHN1
-Y2ggYSBjYXNlIHRoZSByZXRyaWV2ZWQgZmllbGQgdmFsdWUgd2lsbCBiZSBhcmJpdHJhcnkuDQoN
-ClNpZ25lZC1vZmYtYnk6IFlvcmRhbiBLYXJhZHpob3YgPHlrYXJhZHpob3ZAdm13YXJlLmNvbT4N
-Ci0tLQ0KIGtlcm5lbC1zaGFyay1xdC9zcmMvcGx1Z2lucy9zY2hlZF9ldmVudHMuYyB8IDUyICsr
-KysrKysrKysrKystLS0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgMzAgaW5zZXJ0aW9ucygrKSwg
-MjIgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9rZXJuZWwtc2hhcmstcXQvc3JjL3BsdWdp
-bnMvc2NoZWRfZXZlbnRzLmMgYi9rZXJuZWwtc2hhcmstcXQvc3JjL3BsdWdpbnMvc2NoZWRfZXZl
-bnRzLmMNCmluZGV4IDE4NTE1NjkuLmMyMmUxOTggMTAwNjQ0DQotLS0gYS9rZXJuZWwtc2hhcmst
-cXQvc3JjL3BsdWdpbnMvc2NoZWRfZXZlbnRzLmMNCisrKyBiL2tlcm5lbC1zaGFyay1xdC9zcmMv
-cGx1Z2lucy9zY2hlZF9ldmVudHMuYw0KQEAgLTk3LDEwICs5NywxMiBAQCBpbnQgcGx1Z2luX2dl
-dF9uZXh0X3BpZChzdHJ1Y3QgdGVwX3JlY29yZCAqcmVjb3JkKQ0KIAlzdHJ1Y3QgcGx1Z2luX3Nj
-aGVkX2NvbnRleHQgKnBsdWdpbl9jdHggPQ0KIAkJcGx1Z2luX3NjaGVkX2NvbnRleHRfaGFuZGxl
-cjsNCiAJdW5zaWduZWQgbG9uZyBsb25nIHZhbDsNCisJaW50IHJldDsNCiANCi0JdGVwX3JlYWRf
-bnVtYmVyX2ZpZWxkKHBsdWdpbl9jdHgtPnNjaGVkX3N3aXRjaF9uZXh0X2ZpZWxkLA0KLQkJCSAg
-ICAgIHJlY29yZC0+ZGF0YSwgJnZhbCk7DQotCXJldHVybiB2YWw7DQorCXJldCA9IHRlcF9yZWFk
-X251bWJlcl9maWVsZChwbHVnaW5fY3R4LT5zY2hlZF9zd2l0Y2hfbmV4dF9maWVsZCwNCisJCQkJ
-ICAgIHJlY29yZC0+ZGF0YSwgJnZhbCk7DQorDQorCXJldHVybiAocmV0ID09IDApID8gdmFsIDog
-cmV0Ow0KIH0NCiANCiAvKioNCkBAIC0xMTMsMTAgKzExNSwxMiBAQCBpbnQgcGx1Z2luX2dldF9y
-ZWNfd2FrZXVwX3BpZChzdHJ1Y3QgdGVwX3JlY29yZCAqcmVjb3JkKQ0KIAlzdHJ1Y3QgcGx1Z2lu
-X3NjaGVkX2NvbnRleHQgKnBsdWdpbl9jdHggPQ0KIAkJcGx1Z2luX3NjaGVkX2NvbnRleHRfaGFu
-ZGxlcjsNCiAJdW5zaWduZWQgbG9uZyBsb25nIHZhbDsNCisJaW50IHJldDsNCisNCisJcmV0ID0g
-dGVwX3JlYWRfbnVtYmVyX2ZpZWxkKHBsdWdpbl9jdHgtPnNjaGVkX3dha2V1cF9waWRfZmllbGQs
-DQorCQkJCSAgICByZWNvcmQtPmRhdGEsICZ2YWwpOw0KIA0KLQl0ZXBfcmVhZF9udW1iZXJfZmll
-bGQocGx1Z2luX2N0eC0+c2NoZWRfd2FrZXVwX3BpZF9maWVsZCwNCi0JCQkgICAgICByZWNvcmQt
-PmRhdGEsICZ2YWwpOw0KLQlyZXR1cm4gdmFsOw0KKwlyZXR1cm4gKHJldCA9PSAwKSA/IHZhbCA6
-IHJldDsNCiB9DQogDQogc3RhdGljIHZvaWQgcGx1Z2luX3JlZ2lzdGVyX2NvbW1hbmQoc3RydWN0
-IGtzaGFya19jb250ZXh0ICprc2hhcmtfY3R4LA0KQEAgLTE0NSwxMSArMTQ5LDEyIEBAIHN0YXRp
-YyBpbnQgcGx1Z2luX2dldF9yZWNfd2FrZXVwX25ld19waWQoc3RydWN0IHRlcF9yZWNvcmQgKnJl
-Y29yZCkNCiAJc3RydWN0IHBsdWdpbl9zY2hlZF9jb250ZXh0ICpwbHVnaW5fY3R4ID0NCiAJCXBs
-dWdpbl9zY2hlZF9jb250ZXh0X2hhbmRsZXI7DQogCXVuc2lnbmVkIGxvbmcgbG9uZyB2YWw7DQor
-CWludCByZXQ7DQogDQotCXRlcF9yZWFkX251bWJlcl9maWVsZChwbHVnaW5fY3R4LT5zY2hlZF93
-YWtldXBfbmV3X3BpZF9maWVsZCwNCi0JCQkJIHJlY29yZC0+ZGF0YSwgJnZhbCk7DQorCXJldCA9
-IHRlcF9yZWFkX251bWJlcl9maWVsZChwbHVnaW5fY3R4LT5zY2hlZF93YWtldXBfbmV3X3BpZF9m
-aWVsZCwNCisJCQkJICAgIHJlY29yZC0+ZGF0YSwgJnZhbCk7DQogDQotCXJldHVybiB2YWw7DQor
-CXJldHVybiAocmV0ID09IDApID8gdmFsIDogcmV0Ow0KIH0NCiANCiAvKioNCkBAIC0xNzAsNyAr
-MTc1LDcgQEAgYm9vbCBwbHVnaW5fd2FrZXVwX21hdGNoX3JlY19waWQoc3RydWN0IGtzaGFya19j
-b250ZXh0ICprc2hhcmtfY3R4LA0KIAlzdHJ1Y3QgcGx1Z2luX3NjaGVkX2NvbnRleHQgKnBsdWdp
-bl9jdHg7DQogCXN0cnVjdCB0ZXBfcmVjb3JkICpyZWNvcmQgPSBOVUxMOw0KIAl1bnNpZ25lZCBs
-b25nIGxvbmcgdmFsOw0KLQlpbnQgd2FrZXVwX3BpZCA9IC0xOw0KKwlpbnQgcmV0LCB3YWtldXBf
-cGlkID0gLTE7DQogDQogCXBsdWdpbl9jdHggPSBwbHVnaW5fc2NoZWRfY29udGV4dF9oYW5kbGVy
-Ow0KIAlpZiAoIXBsdWdpbl9jdHgpDQpAQCAtMTgxLDEwICsxODYsMTAgQEAgYm9vbCBwbHVnaW5f
-d2FrZXVwX21hdGNoX3JlY19waWQoc3RydWN0IGtzaGFya19jb250ZXh0ICprc2hhcmtfY3R4LA0K
-IAkJcmVjb3JkID0ga3NoYXJrX3JlYWRfYXQoa3NoYXJrX2N0eCwgZS0+b2Zmc2V0KTsNCiANCiAJ
-CS8qIFdlIG9ubHkgd2FudCB0aG9zZSB0aGF0IGFjdHVhbGx5IHdva2UgdXAgdGhlIHRhc2suICov
-DQotCQl0ZXBfcmVhZF9udW1iZXJfZmllbGQocGx1Z2luX2N0eC0+c2NoZWRfd2FrZXVwX3N1Y2Nl
-c3NfZmllbGQsDQotCQkJCSAgICAgIHJlY29yZC0+ZGF0YSwgJnZhbCk7DQorCQlyZXQgPSB0ZXBf
-cmVhZF9udW1iZXJfZmllbGQocGx1Z2luX2N0eC0+c2NoZWRfd2FrZXVwX3N1Y2Nlc3NfZmllbGQs
-DQorCQkJCQkgICAgcmVjb3JkLT5kYXRhLCAmdmFsKTsNCiANCi0JCWlmICh2YWwpDQorCQlpZiAo
-cmV0ID09IDAgJiYgdmFsKQ0KIAkJCXdha2V1cF9waWQgPSBwbHVnaW5fZ2V0X3JlY193YWtldXBf
-cGlkKHJlY29yZCk7DQogCX0NCiANCkBAIC0xOTMsMTAgKzE5OCwxMCBAQCBib29sIHBsdWdpbl93
-YWtldXBfbWF0Y2hfcmVjX3BpZChzdHJ1Y3Qga3NoYXJrX2NvbnRleHQgKmtzaGFya19jdHgsDQog
-CQlyZWNvcmQgPSBrc2hhcmtfcmVhZF9hdChrc2hhcmtfY3R4LCBlLT5vZmZzZXQpOw0KIA0KIAkJ
-LyogV2Ugb25seSB3YW50IHRob3NlIHRoYXQgYWN0dWFsbHkgd29rZSB1cCB0aGUgdGFzay4gKi8N
-Ci0JCXRlcF9yZWFkX251bWJlcl9maWVsZChwbHVnaW5fY3R4LT5zY2hlZF93YWtldXBfbmV3X3N1
-Y2Nlc3NfZmllbGQsDQotCQkJCSAgICAgIHJlY29yZC0+ZGF0YSwgJnZhbCk7DQorCQlyZXQgPSB0
-ZXBfcmVhZF9udW1iZXJfZmllbGQocGx1Z2luX2N0eC0+c2NoZWRfd2FrZXVwX25ld19zdWNjZXNz
-X2ZpZWxkLA0KKwkJCQkJICAgIHJlY29yZC0+ZGF0YSwgJnZhbCk7DQogDQotCQlpZiAodmFsKQ0K
-KwkJaWYgKHJldCA9PSAwICYmIHZhbCkNCiAJCQl3YWtldXBfcGlkID0gcGx1Z2luX2dldF9yZWNf
-d2FrZXVwX25ld19waWQocmVjb3JkKTsNCiAJfQ0KIA0KQEAgLTIyNCw3ICsyMjksNyBAQCBib29s
-IHBsdWdpbl9zd2l0Y2hfbWF0Y2hfcmVjX3BpZChzdHJ1Y3Qga3NoYXJrX2NvbnRleHQgKmtzaGFy
-a19jdHgsDQogew0KIAlzdHJ1Y3QgcGx1Z2luX3NjaGVkX2NvbnRleHQgKnBsdWdpbl9jdHg7DQog
-CXVuc2lnbmVkIGxvbmcgbG9uZyB2YWw7DQotCWludCBzd2l0Y2hfcGlkID0gLTE7DQorCWludCBy
-ZXQsIHN3aXRjaF9waWQgPSAtMTsNCiANCiAJcGx1Z2luX2N0eCA9IHBsdWdpbl9zY2hlZF9jb250
-ZXh0X2hhbmRsZXI7DQogDQpAQCAtMjMzLDEwICsyMzgsMTAgQEAgYm9vbCBwbHVnaW5fc3dpdGNo
-X21hdGNoX3JlY19waWQoc3RydWN0IGtzaGFya19jb250ZXh0ICprc2hhcmtfY3R4LA0KIAkJc3Ry
-dWN0IHRlcF9yZWNvcmQgKnJlY29yZDsNCiANCiAJCXJlY29yZCA9IGtzaGFya19yZWFkX2F0KGtz
-aGFya19jdHgsIGUtPm9mZnNldCk7DQotCQl0ZXBfcmVhZF9udW1iZXJfZmllbGQocGx1Z2luX2N0
-eC0+c2NoZWRfc3dpdGNoX3ByZXZfc3RhdGVfZmllbGQsDQotCQkJCSAgICAgIHJlY29yZC0+ZGF0
-YSwgJnZhbCk7DQorCQlyZXQgPSB0ZXBfcmVhZF9udW1iZXJfZmllbGQocGx1Z2luX2N0eC0+c2No
-ZWRfc3dpdGNoX3ByZXZfc3RhdGVfZmllbGQsDQorCQkJCQkgICAgcmVjb3JkLT5kYXRhLCAmdmFs
-KTsNCiANCi0JCWlmICghKHZhbCAmIDB4N2YpKQ0KKwkJaWYgKHJldCA9PSAwICYmICEodmFsICYg
-MHg3ZikpDQogCQkJc3dpdGNoX3BpZCA9IHRlcF9kYXRhX3BpZChwbHVnaW5fY3R4LT5wZXZlbnQs
-IHJlY29yZCk7DQogDQogCQlmcmVlX3JlY29yZChyZWNvcmQpOw0KQEAgLTI3OCw4ICsyODMsMTEg
-QEAgc3RhdGljIHZvaWQgcGx1Z2luX3NjaGVkX2FjdGlvbihzdHJ1Y3Qga3NoYXJrX2NvbnRleHQg
-KmtzaGFya19jdHgsDQogCQkJCXN0cnVjdCB0ZXBfcmVjb3JkICpyZWMsDQogCQkJCXN0cnVjdCBr
-c2hhcmtfZW50cnkgKmVudHJ5KQ0KIHsNCi0JZW50cnktPnBpZCA9IHBsdWdpbl9nZXRfbmV4dF9w
-aWQocmVjKTsNCi0JcGx1Z2luX3JlZ2lzdGVyX2NvbW1hbmQoa3NoYXJrX2N0eCwgcmVjLCBlbnRy
-eS0+cGlkKTsNCisJaW50IHBpZCA9IHBsdWdpbl9nZXRfbmV4dF9waWQocmVjKTsNCisJaWYgKHBp
-ZCA+PSAwKSB7DQorCQllbnRyeS0+cGlkID0gcGlkOw0KKwkJcGx1Z2luX3JlZ2lzdGVyX2NvbW1h
-bmQoa3NoYXJrX2N0eCwgcmVjLCBlbnRyeS0+cGlkKTsNCisJfQ0KIH0NCiANCiBzdGF0aWMgaW50
-IHBsdWdpbl9zY2hlZF9pbml0KHN0cnVjdCBrc2hhcmtfY29udGV4dCAqa3NoYXJrX2N0eCkNCi0t
-IA0KMi4xNy4xDQoNCg==
+The search panel displays the index inside the list of search
+matching entries.
+
+Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+---
+ kernel-shark-qt/src/KsTraceViewer.cpp | 17 +++++++++++++++--
+ kernel-shark-qt/src/KsTraceViewer.hpp |  2 ++
+ 2 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/kernel-shark-qt/src/KsTraceViewer.cpp b/kernel-shark-qt/src/Ks=
+TraceViewer.cpp
+index e92dd83..3df4a5d 100644
+--- a/kernel-shark-qt/src/KsTraceViewer.cpp
++++ b/kernel-shark-qt/src/KsTraceViewer.cpp
+@@ -362,6 +362,8 @@ void KsTraceViewer::_next()
+ 		if (_graphFollows)
+ 			emit select(*_it); // Send a signal to the Graph widget.
+ 	}
++
++	_updateSearchCount();
+ }
+=20
+ void KsTraceViewer::_prev()
+@@ -385,6 +387,16 @@ void KsTraceViewer::_prev()
+ 		if (_graphFollows)
+ 			emit select(*_it); // Send a signal to the Graph widget.
+ 	}
++
++	_updateSearchCount();
++}
++
++void KsTraceViewer::_updateSearchCount()
++{
++	int index(_it - _matchList.begin());
++	int total(_matchList.count());
++
++	_searchCountLabel.setText(QString(" %1 / %2").arg(index).arg(total));
+ }
+=20
+ void KsTraceViewer::_searchStop()
+@@ -571,7 +583,6 @@ size_t KsTraceViewer::_searchItems(int column,
+ 	count =3D _matchList.count();
+=20
+ 	_pbAction->setVisible(false);
+-	_searchCountLabel.setText(QString(" %1").arg(count));
+ 	_searchDone =3D true;
+=20
+ 	if (count =3D=3D 0) // No items have been found. Do nothing.
+@@ -605,6 +616,8 @@ size_t KsTraceViewer::_searchItems(int column,
+ 		_it =3D _matchList.begin();
+ 	}
+=20
++	_updateSearchCount();
++
+ 	return count;
+ }
+=20
+@@ -645,7 +658,7 @@ void KsTraceViewer::_searchItemsMapReduce(int column,
+ 	for (int r =3D 1; r < nThreads; ++r)
+ 		maps.push_back(std::async(lamSearchMap, ranges[r], false));
+=20
+-	while (_proxyModel.searchProgress() < KS_PROGRESS_BAR_MAX- nThreads) {
++	while (_proxyModel.searchProgress() < KS_PROGRESS_BAR_MAX - nThreads) {
+ 		std::unique_lock<std::mutex> lk(_proxyModel._mutex);
+ 		_proxyModel._pbCond.wait(lk);
+ 		_searchProgBar.setValue(_proxyModel.searchProgress());
+diff --git a/kernel-shark-qt/src/KsTraceViewer.hpp b/kernel-shark-qt/src/Ks=
+TraceViewer.hpp
+index de8af97..19371de 100644
+--- a/kernel-shark-qt/src/KsTraceViewer.hpp
++++ b/kernel-shark-qt/src/KsTraceViewer.hpp
+@@ -132,6 +132,8 @@ private:
+=20
+ 	void _prev();
+=20
++	void _updateSearchCount();
++
+ 	void _searchStop();
+=20
+ 	void _clicked(const QModelIndex& i);
+--=20
+2.17.1
