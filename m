@@ -2,19 +2,16 @@ Return-Path: <SRS0=0JuE=OA=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr790053.outbound.protection.outlook.com ([40.107.79.53]:64832
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726849AbeKVBtR (ORCPT
+        id S1726849AbeKVBtK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 21 Nov 2018 20:49:17 -0500
+        Wed, 21 Nov 2018 20:49:10 -0500
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 03/11] kernel-shark-qt: Avoid race condition in
- kshark_get_event_name_easy()
-Date: Wed, 21 Nov 2018 15:14:21 +0000
-Message-ID: <20181121151356.16901-5-ykaradzhov@vmware.com>
-References: <20181121151356.16901-1-ykaradzhov@vmware.com>
-In-Reply-To: <20181121151356.16901-1-ykaradzhov@vmware.com>
+Subject: [PATCH 00/11] Small modifications and bug fixes toward KS 1.0
+Date: Wed, 21 Nov 2018 15:14:17 +0000
+Message-ID: <20181121151356.16901-1-ykaradzhov@vmware.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -22,39 +19,37 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Calling tep_data_event_from_type() is not thread-safe (potential
-race condition). This patch protects the access to it by using the
-mutex associated with the input file.
+This series of patches contains various independent modifications and
+bug fixes needed before releasing KernelShark 1.0.
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark-qt/src/libkshark.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Yordan Karadzhov (11):
+  kernel-shark-qt: Protect all calls of tep_read_number_field()
+  kernel-shark-qt: Fix the returned error value of
+    kshark_get_event_id_easy()
+  kernel-shark-qt: Avoid race condition in kshark_get_event_name_easy()
+  kernel-shark-qt: Optimize the search in the text data
+  kernel-shark-qt: Add iterator index to the search panel
+  kernel-shark-qt: Update search iterator when marker is changed
+  kernel-shark-qt: Optimize the search in a case of a small data-set
+  kernel-shark qt: No error when Record authentication dialog is closed
+  kernel-shark-qt: Remove all system=3Dftrace events from Record dialog
+  kernel-shark-qt: Updata Event filter mask when applaing filters to
+    Graph
+  kernel-shark-qt: Reprocess all CPU collections when the filtering
+    changes
 
-diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshar=
-k.c
-index fa85171..89ae769 100644
---- a/kernel-shark-qt/src/libkshark.c
-+++ b/kernel-shark-qt/src/libkshark.c
-@@ -1147,7 +1147,18 @@ const char *kshark_get_event_name_easy(struct kshark=
-_entry *entry)
- 		}
- 	}
-=20
-+	/*
-+	 * Calling tep_data_event_from_type() is not thread-safe (potential
-+	 * race condition).
-+	 * TODO: See if we can add a thread-safe version of the
-+	 * function. For the time being use a mutex to protect the access.
-+	 */
-+	pthread_mutex_lock(&kshark_ctx->input_mutex);
-+
- 	event =3D tep_data_event_from_type(kshark_ctx->pevent, event_id);
-+
-+	pthread_mutex_unlock(&kshark_ctx->input_mutex);
-+
- 	if (event)
- 		return event->name;
-=20
+ kernel-shark-qt/src/KsCaptureDialog.cpp    |   1 +
+ kernel-shark-qt/src/KsMainWindow.cpp       |   8 ++
+ kernel-shark-qt/src/KsModels.cpp           |  28 ++--
+ kernel-shark-qt/src/KsModels.hpp           |   4 +-
+ kernel-shark-qt/src/KsTraceViewer.cpp      | 152 +++++++++++++++------
+ kernel-shark-qt/src/KsTraceViewer.hpp      |   9 +-
+ kernel-shark-qt/src/KsUtils.cpp            |   6 +
+ kernel-shark-qt/src/KsWidgetsLib.cpp       |  10 ++
+ kernel-shark-qt/src/KsWidgetsLib.hpp       |   2 +
+ kernel-shark-qt/src/libkshark.c            |  15 +-
+ kernel-shark-qt/src/plugins/sched_events.c |  52 ++++---
+ 11 files changed, 204 insertions(+), 83 deletions(-)
+
 --=20
 2.17.1
