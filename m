@@ -1,18 +1,18 @@
 Return-Path: <SRS0=YO3e=OC=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr720041.outbound.protection.outlook.com ([40.107.72.41]:43424
-        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr740058.outbound.protection.outlook.com ([40.107.74.58]:1920
+        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2394909AbeKXAYR (ORCPT
+        id S2405578AbeKXAYX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 23 Nov 2018 19:24:17 -0500
+        Fri, 23 Nov 2018 19:24:23 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 1/3] tools/lib/traceevent: Remove tep_data_event_from_type()
- API
-Date: Fri, 23 Nov 2018 13:40:00 +0000
-Message-ID: <20181123133946.16239-2-tstoyanov@vmware.com>
+Subject: [PATCH 3/3] tools/lib/traceevent: Changed return logic of
+ trace_seq_printf() and trace_seq_vprintf() APIs
+Date: Fri, 23 Nov 2018 13:40:02 +0000
+Message-ID: <20181123133946.16239-4-tstoyanov@vmware.com>
 References: <20181123133946.16239-1-tstoyanov@vmware.com>
 In-Reply-To: <20181123133946.16239-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -23,76 +23,110 @@ Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
 In order to make libtraceevent into a proper library, its API
-should be straightforward. After discussion with Steven Rostedt,
-we decided to remove the tep_data_event_from_type() API and to
-replace it with tep_find_event(), as it does the same.
+should be straightforward. The trace_seq_printf() and
+trace_seq_vprintf() APIs have inconsistent returned values with
+the other trace_seq_* APIs. This path changes the return logic of
+trace_seq_printf() and trace_seq_vprintf() - to return the number
+of printed characters, as the other trace_seq_* related APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/Documentation/libtraceevent.txt |  1 -
- tools/lib/traceevent/event-parse.c                   | 12 ------------
- tools/lib/traceevent/event-parse.h                   |  1 -
- 3 files changed, 14 deletions(-)
+ .../Documentation/libtraceevent-tseq_print.txt  |  9 +++++----
+ tools/lib/traceevent/trace-seq.c                | 17 ++++++++++++-----
+ 2 files changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent.txt b/tools/l=
-ib/traceevent/Documentation/libtraceevent.txt
-index 1100240a8a29..f2679a055c1a 100644
---- a/tools/lib/traceevent/Documentation/libtraceevent.txt
-+++ b/tools/lib/traceevent/Documentation/libtraceevent.txt
-@@ -63,7 +63,6 @@ Event finding:
- 	struct tep_event pass:[*]*tep_find_event*(struct tep_handle pass:[*]_tep_=
-, int _id_);
- 	struct tep_event pass:[*]*tep_find_event_by_name*(struct tep_handle pass:=
-[*]_tep_, const char pass:[*]_sys_, const char pass:[*]_name_);
- 	struct tep_event pass:[*]*tep_find_event_by_record*(struct tep_handle pas=
-s:[*]_tep_, struct tep_record pass:[*]_record_);
--	struct tep_event pass:[*]*tep_data_event_from_type*(struct tep_handle pas=
-s:[*]_tep_, int _type_);
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
+index ae1aa44710e7..70e222ddbe8c 100644
+--- a/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
++++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
+@@ -30,8 +30,9 @@ list of arguments _args_ in the trace sequence _s_.
+ RETURN VALUE
+ ------------
 =20
- Parsing of event files:
- 	int *tep_parse_header_page*(struct tep_handle pass:[*]_tep_, char pass:[*=
-]_buf_, unsigned long _size_, int _long_size_);
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
-t-parse.c
-index 966c4b7fd163..2970358b4c10 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -5240,18 +5240,6 @@ int tep_data_type(struct tep_handle *pevent, struct =
-tep_record *rec)
- 	return trace_parse_common_type(pevent, rec->data);
+-Both _trace_seq_printf()_ and _trace_seq_vprintf()_ functions return non-z=
+ero=20
+-on success, or 0 in case of an error.
++Both _trace_seq_printf()_ and _trace_seq_vprintf()_ functions return 0 if =
+the=20
++trace oversizes the buffer's free space, the number of characters printed,=
+ or=20
++a negative value in case of an error.
+=20
+ EXAMPLE
+ -------
+@@ -43,7 +44,7 @@ EXAMPLE
+ struct trace_seq seq;
+ trace_seq_init(&seq);
+ ...
+-if (trace_seq_printf(&seq, "example print %d", 10) =3D=3D 0) {
++if (trace_seq_printf(&seq, "example print %d", 10) <=3D 0) {
+ 	/* Failed to print in the trace sequence */
+ }
+ ...
+@@ -51,7 +52,7 @@ void my_print(char *format, ...)
+ {
+ 	va_list ap;
+ 	va_start(ap, format);
+-	if (trace_seq_printf(&seq, format, ap) =3D=3D 0) {
++	if (trace_seq_printf(&seq, format, ap) <=3D 0) {
+ 		/* Failed to print in the trace sequence */
+ 	}=09
+ 	va_end(ap);
+diff --git a/tools/lib/traceevent/trace-seq.c b/tools/lib/traceevent/trace-=
+seq.c
+index 7c5cc0a57e3c..32c610bc0538 100644
+--- a/tools/lib/traceevent/trace-seq.c
++++ b/tools/lib/traceevent/trace-seq.c
+@@ -114,7 +114,8 @@ static void expand_buffer(struct trace_seq *s)
+  * @fmt: printf format string
+  *
+  * It returns 0 if the trace oversizes the buffer's free
+- * space, 1 otherwise.
++ * space, the number of characters printed, or a negative
++ * value in case of an error.
+  *
+  * The tracer may use either sequence operations or its own
+  * copy to user routines. To simplify formating of a trace
+@@ -143,9 +144,10 @@ trace_seq_printf(struct trace_seq *s, const char *fmt,=
+ ...)
+ 		goto try_again;
+ 	}
+=20
+-	s->len +=3D ret;
++	if (ret > 0)
++		s->len +=3D ret;
+=20
+-	return 1;
++	return ret;
  }
 =20
--/**
-- * tep_data_event_from_type - find the event by a given type
-- * @pevent: a handle to the pevent
-- * @type: the type of the event.
-- *
-- * This returns the event form a given @type;
-- */
--struct tep_event *tep_data_event_from_type(struct tep_handle *pevent, int =
-type)
--{
--	return tep_find_event(pevent, type);
--}
--
  /**
-  * tep_data_pid - parse the PID from record
-  * @pevent: a handle to the pevent
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/even=
-t-parse.h
-index 262abe3c6c9e..c6bdebf0a0ed 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -520,7 +520,6 @@ tep_find_event_by_record(struct tep_handle *pevent, str=
-uct tep_record *record);
- void tep_data_lat_fmt(struct tep_handle *pevent,
- 		      struct trace_seq *s, struct tep_record *record);
- int tep_data_type(struct tep_handle *pevent, struct tep_record *rec);
--struct tep_event *tep_data_event_from_type(struct tep_handle *pevent, int =
-type);
- int tep_data_pid(struct tep_handle *pevent, struct tep_record *rec);
- int tep_data_preempt_count(struct tep_handle *pevent, struct tep_record *r=
-ec);
- int tep_data_flags(struct tep_handle *pevent, struct tep_record *rec);
+@@ -153,6 +155,10 @@ trace_seq_printf(struct trace_seq *s, const char *fmt,=
+ ...)
+  * @s: trace sequence descriptor
+  * @fmt: printf format string
+  *
++ * It returns 0 if the trace oversizes the buffer's free
++ * space, the number of characters printed, or a negative
++ * value in case of an error.
++ * *
+  * The tracer may use either sequence operations or its own
+  * copy to user routines. To simplify formating of a trace
+  * trace_seq_printf is used to store strings into a special
+@@ -177,9 +183,10 @@ trace_seq_vprintf(struct trace_seq *s, const char *fmt=
+, va_list args)
+ 		goto try_again;
+ 	}
+=20
+-	s->len +=3D ret;
++	if (ret > 0)
++		s->len +=3D ret;
+=20
+-	return len;
++	return ret;
+ }
+=20
+ /**
 --=20
 2.19.1
