@@ -1,20 +1,17 @@
 Return-Path: <SRS0=YO3e=OC=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr740058.outbound.protection.outlook.com ([40.107.74.58]:1920
+Received: from mail-eopbgr740044.outbound.protection.outlook.com ([40.107.74.44]:1170
         "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405578AbeKXAYX (ORCPT
+        id S2410047AbeKXAZ7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 23 Nov 2018 19:24:23 -0500
+        Fri, 23 Nov 2018 19:25:59 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 3/3] tools/lib/traceevent: Changed return logic of
- trace_seq_printf() and trace_seq_vprintf() APIs
-Date: Fri, 23 Nov 2018 13:40:02 +0000
-Message-ID: <20181123133946.16239-4-tstoyanov@vmware.com>
-References: <20181123133946.16239-1-tstoyanov@vmware.com>
-In-Reply-To: <20181123133946.16239-1-tstoyanov@vmware.com>
+Subject: [PATCH] tools/lib/traceevent: make libtraceevent thread safe
+Date: Fri, 23 Nov 2018 13:41:40 +0000
+Message-ID: <20181123134130.16566-1-tstoyanov@vmware.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -22,111 +19,162 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-In order to make libtraceevent into a proper library, its API
-should be straightforward. The trace_seq_printf() and
-trace_seq_vprintf() APIs have inconsistent returned values with
-the other trace_seq_* APIs. This path changes the return logic of
-trace_seq_printf() and trace_seq_vprintf() - to return the number
-of printed characters, as the other trace_seq_* related APIs.
+This patch is a PoC about transforming libtraceevent
+into a thread safe library. It implements per thread local
+storage and internal APIs to access it. It covers only
+tep->last_event cache, but easily can be extended with all
+library's thread sensitive data.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-tseq_print.txt  |  9 +++++----
- tools/lib/traceevent/trace-seq.c                | 17 ++++++++++++-----
- 2 files changed, 17 insertions(+), 9 deletions(-)
+ tools/lib/traceevent/event-parse-local.h  | 17 ++++++++++---
+ tools/lib/traceevent/event-parse-thread.c | 29 +++++++++++++++++++++++
+ tools/lib/traceevent/event-parse.c        | 23 ++++++++++--------
+ 3 files changed, 56 insertions(+), 13 deletions(-)
+ create mode 100644 tools/lib/traceevent/event-parse-thread.c
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.tx=
-t b/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
-index ae1aa44710e7..70e222ddbe8c 100644
---- a/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
-@@ -30,8 +30,9 @@ list of arguments _args_ in the trace sequence _s_.
- RETURN VALUE
- ------------
+diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceeven=
+t/event-parse-local.h
+index 9a092dd4a86d..11f71ef8850b 100644
+--- a/tools/lib/traceevent/event-parse-local.h
++++ b/tools/lib/traceevent/event-parse-local.h
+@@ -14,6 +14,17 @@ struct func_list;
+ struct event_handler;
+ struct func_resolver;
 =20
--Both _trace_seq_printf()_ and _trace_seq_vprintf()_ functions return non-z=
-ero=20
--on success, or 0 in case of an error.
-+Both _trace_seq_printf()_ and _trace_seq_vprintf()_ functions return 0 if =
-the=20
-+trace oversizes the buffer's free space, the number of characters printed,=
- or=20
-+a negative value in case of an error.
++/* cache */
++struct tep_thread_data {
++	struct tep_event *last_event;
++};
++
++struct tep_thread_data_list {
++	pid_t tid;
++	struct tep_thread_data thr_data;
++	struct tep_thread_data_pool *next;
++};
++
+ struct tep_handle {
+ 	int ref_count;
 =20
- EXAMPLE
- -------
-@@ -43,7 +44,7 @@ EXAMPLE
- struct trace_seq seq;
- trace_seq_init(&seq);
- ...
--if (trace_seq_printf(&seq, "example print %d", 10) =3D=3D 0) {
-+if (trace_seq_printf(&seq, "example print %d", 10) <=3D 0) {
- 	/* Failed to print in the trace sequence */
- }
- ...
-@@ -51,7 +52,7 @@ void my_print(char *format, ...)
+@@ -83,9 +94,6 @@ struct tep_handle {
+ 	struct event_handler *handlers;
+ 	struct tep_function_handler *func_handlers;
+=20
+-	/* cache */
+-	struct tep_event *last_event;
+-
+ 	char *trace_clock;
+ };
+=20
+@@ -96,4 +104,7 @@ unsigned short tep_data2host2(struct tep_handle *pevent,=
+ unsigned short data);
+ unsigned int tep_data2host4(struct tep_handle *pevent, unsigned int data);
+ unsigned long long tep_data2host8(struct tep_handle *pevent, unsigned long=
+ long data);
+=20
++struct tep_thread_data *tep_get_thread_local();
++void tep_destroy_thread_local();
++
+ #endif /* _PARSE_EVENTS_INT_H */
+diff --git a/tools/lib/traceevent/event-parse-thread.c b/tools/lib/traceeve=
+nt/event-parse-thread.c
+new file mode 100644
+index 000000000000..775d953041ab
+--- /dev/null
++++ b/tools/lib/traceevent/event-parse-thread.c
+@@ -0,0 +1,29 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.c=
+om>
++ *
++ */
++
++#include "event-parse.h"
++#include "event-parse-local.h"
++#include "event-utils.h"
++
++static __thread struct tep_thread_data *tep_thread_local;
++
++
++struct tep_thread_data *tep_get_thread_local(struct tep_handle *tep __mayb=
+e_unused)
++{
++	if (tep_thread_local)
++		return tep_thread_local;
++
++	tep_thread_local =3D calloc(1, sizeof(struct tep_thread_data));
++	return tep_thread_local;
++}
++
++
++void tep_destroy_thread_local()
++{
++	free(tep_thread_local);
++	tep_thread_local =3D NULL;
++}
++
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
+t-parse.c
+index a5048c1b9bec..25f4ceab9a58 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -3485,10 +3485,11 @@ struct tep_event *tep_find_event(struct tep_handle =
+*pevent, int id)
+ 	struct tep_event **eventptr;
+ 	struct tep_event key;
+ 	struct tep_event *pkey =3D &key;
+-
++	struct tep_thread_data *local =3D tep_get_thread_local(pevent);
+ 	/* Check cache first */
+-	if (pevent->last_event && pevent->last_event->id =3D=3D id)
+-		return pevent->last_event;
++
++	if (local && local->last_event && local->last_event->id =3D=3D id)
++		return local->last_event;
+=20
+ 	key.id =3D id;
+=20
+@@ -3496,7 +3497,8 @@ struct tep_event *tep_find_event(struct tep_handle *p=
+event, int id)
+ 			   sizeof(*pevent->events), events_id_cmp);
+=20
+ 	if (eventptr) {
+-		pevent->last_event =3D *eventptr;
++		if (local)
++			local->last_event =3D *eventptr;
+ 		return *eventptr;
+ 	}
+=20
+@@ -3516,13 +3518,14 @@ struct tep_event *
+ tep_find_event_by_name(struct tep_handle *pevent,
+ 		       const char *sys, const char *name)
  {
- 	va_list ap;
- 	va_start(ap, format);
--	if (trace_seq_printf(&seq, format, ap) =3D=3D 0) {
-+	if (trace_seq_printf(&seq, format, ap) <=3D 0) {
- 		/* Failed to print in the trace sequence */
- 	}=09
- 	va_end(ap);
-diff --git a/tools/lib/traceevent/trace-seq.c b/tools/lib/traceevent/trace-=
-seq.c
-index 7c5cc0a57e3c..32c610bc0538 100644
---- a/tools/lib/traceevent/trace-seq.c
-+++ b/tools/lib/traceevent/trace-seq.c
-@@ -114,7 +114,8 @@ static void expand_buffer(struct trace_seq *s)
-  * @fmt: printf format string
-  *
-  * It returns 0 if the trace oversizes the buffer's free
-- * space, 1 otherwise.
-+ * space, the number of characters printed, or a negative
-+ * value in case of an error.
-  *
-  * The tracer may use either sequence operations or its own
-  * copy to user routines. To simplify formating of a trace
-@@ -143,9 +144,10 @@ trace_seq_printf(struct trace_seq *s, const char *fmt,=
- ...)
- 		goto try_again;
++	struct tep_thread_data *local =3D tep_get_thread_local(pevent);
+ 	struct tep_event *event =3D NULL;
+ 	int i;
+=20
+-	if (pevent->last_event &&
+-	    strcmp(pevent->last_event->name, name) =3D=3D 0 &&
+-	    (!sys || strcmp(pevent->last_event->system, sys) =3D=3D 0))
+-		return pevent->last_event;
++	if (local && local->last_event &&
++	    strcmp(local->last_event->name, name) =3D=3D 0 &&
++	    (!sys || strcmp(local->last_event->system, sys) =3D=3D 0))
++		return local->last_event;
+=20
+ 	for (i =3D 0; i < pevent->nr_events; i++) {
+ 		event =3D pevent->events[i];
+@@ -3535,8 +3538,8 @@ tep_find_event_by_name(struct tep_handle *pevent,
  	}
-=20
--	s->len +=3D ret;
-+	if (ret > 0)
-+		s->len +=3D ret;
-=20
--	return 1;
-+	return ret;
+ 	if (i =3D=3D pevent->nr_events)
+ 		event =3D NULL;
+-
+-	pevent->last_event =3D event;
++	if (local)
++		local->last_event =3D event;
+ 	return event;
  }
 =20
- /**
-@@ -153,6 +155,10 @@ trace_seq_printf(struct trace_seq *s, const char *fmt,=
- ...)
-  * @s: trace sequence descriptor
-  * @fmt: printf format string
-  *
-+ * It returns 0 if the trace oversizes the buffer's free
-+ * space, the number of characters printed, or a negative
-+ * value in case of an error.
-+ * *
-  * The tracer may use either sequence operations or its own
-  * copy to user routines. To simplify formating of a trace
-  * trace_seq_printf is used to store strings into a special
-@@ -177,9 +183,10 @@ trace_seq_vprintf(struct trace_seq *s, const char *fmt=
-, va_list args)
- 		goto try_again;
- 	}
-=20
--	s->len +=3D ret;
-+	if (ret > 0)
-+		s->len +=3D ret;
-=20
--	return len;
-+	return ret;
- }
-=20
- /**
 --=20
 2.19.1
