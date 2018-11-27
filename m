@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr700081.outbound.protection.outlook.com ([40.107.70.81]:24265
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr730083.outbound.protection.outlook.com ([40.107.73.83]:39328
+        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726681AbeK1Cly (ORCPT
+        id S1729751AbeK1CmF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:41:54 -0500
+        Tue, 27 Nov 2018 21:42:05 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 42/46] tools/lib/traceevent: Man pages for trace_seq_init()
- and trace_seq_destroy()
-Date: Tue, 27 Nov 2018 15:43:02 +0000
-Message-ID: <20181127154153.11315-43-tstoyanov@vmware.com>
+Subject: [PATCH v3 46/46] tools/lib/traceevent: Man pages for
+ trace_seq_reset() and trace_seq_terminate()
+Date: Tue, 27 Nov 2018 15:43:07 +0000
+Message-ID: <20181127154153.11315-47-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,29 +22,30 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for trace_seq_init() and trace_seq_destroy()
+Create man pages for trace_seq_reset() and trace_seq_terminate()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-tseq.txt      | 76 +++++++++++++++++++
- 1 file changed, 76 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq.t=
-xt
+ .../libtraceevent-tseq_reset.txt              | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_r=
+eset.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt b/to=
-ols/lib/traceevent/Documentation/libtraceevent-tseq.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.txt
 new file mode 100644
-index 000000000000..1bbfb1556b1c
+index 000000000000..3951f313d39c
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
-@@ -0,0 +1,76 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.txt
+@@ -0,0 +1,78 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+trace_seq_init,trace_seq_destroy - Initialize / destroy a trace sequence.
++trace_seq_reset,trace_seq_terminate - Reset / terminate a trace sequence.=
+=20
 +
 +SYNOPSIS
 +--------
@@ -53,8 +54,8 @@ index 000000000000..1bbfb1556b1c
 +*#include <event-parse.h>*
 +*#include <trace-seq.h>*
 +
-+void *trace_seq_init*(struct trace_seq pass:[*]_s_);
-+void *trace_seq_destroy*(struct trace_seq pass:[*]_s_);
++void *trace_seq_reset*(struct trace_seq pass:[*]_s_);
++void *trace_seq_terminate*(struct trace_seq pass:[*]_s_);
 +--
 +
 +DESCRIPTION
@@ -63,11 +64,13 @@ index 000000000000..1bbfb1556b1c
 ns=20
 +to create a string of data to use.
 +
-+The _trace_seq_init()_ function initializes the trace sequence _s_.
++The _trace_seq_reset()_ function re-initializes the trace sequence _s_. Al=
+l=20
++characters already written in _s_ will be deleted.
 +
-+The _trace_seq_destroy()_ function destroys the trace sequence _s_ and fre=
-es=20
-+all its resources that it had used.=20
++The _trace_seq_terminate()_ function terminates the trace sequence _s_. It=
+ puts
++the null character pass:['\0'] at the end of the buffer.
 +
 +EXAMPLE
 +-------
@@ -79,10 +82,11 @@ es=20
 +struct trace_seq seq;
 +trace_seq_init(&seq);
 +...
-+trace_seq_destroy(&seq);
++trace_seq_reset(&seq);
++...
++trace_seq_terminate(&seq);
 +...
 +--
-+
 +FILES
 +-----
 +[verse]
