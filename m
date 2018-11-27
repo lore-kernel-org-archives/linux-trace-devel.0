@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr730087.outbound.protection.outlook.com ([40.107.73.87]:64515
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr700058.outbound.protection.outlook.com ([40.107.70.58]:36480
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729964AbeK1Cj0 (ORCPT
+        id S1726381AbeK1Cj1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:39:26 -0500
+        Tue, 27 Nov 2018 21:39:27 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 11/14] tools/lib/traceevent: Changed return logic of
- trace_seq_printf() and trace_seq_vprintf() APIs
-Date: Tue, 27 Nov 2018 15:41:06 +0000
-Message-ID: <20181127154038.11175-12-tstoyanov@vmware.com>
+Subject: [PATCH v2 05/14] tools/lib/traceevent: Rename tep_free_format() to
+ tep_free_event()
+Date: Tue, 27 Nov 2018 15:40:58 +0000
+Message-ID: <20181127154038.11175-6-tstoyanov@vmware.com>
 References: <20181127154038.11175-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154038.11175-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,72 +22,63 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-In order to make libtraceevent into a proper library, its API
-should be straightforward. The trace_seq_printf() and
-trace_seq_vprintf() APIs have inconsistent returned values with
-the other trace_seq_* APIs. This path changes the return logic of
-trace_seq_printf() and trace_seq_vprintf() - to return the number
-of printed characters, as the other trace_seq_* related APIs.
+In order to make libtraceevent into a proper library, variables, data
+structures and functions require a unique prefix to prevent name space
+conflicts. This renames tep_free_format() to tep_free_event(),
+which describes more closely the purpose of the function.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/trace-seq.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ tools/lib/traceevent/event-parse.c | 6 +++---
+ tools/lib/traceevent/event-parse.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/traceevent/trace-seq.c b/tools/lib/traceevent/trace-=
-seq.c
-index 7c5cc0a57e3c..32c610bc0538 100644
---- a/tools/lib/traceevent/trace-seq.c
-+++ b/tools/lib/traceevent/trace-seq.c
-@@ -114,7 +114,8 @@ static void expand_buffer(struct trace_seq *s)
-  * @fmt: printf format string
-  *
-  * It returns 0 if the trace oversizes the buffer's free
-- * space, 1 otherwise.
-+ * space, the number of characters printed, or a negative
-+ * value in case of an error.
-  *
-  * The tracer may use either sequence operations or its own
-  * copy to user routines. To simplify formating of a trace
-@@ -143,9 +144,10 @@ trace_seq_printf(struct trace_seq *s, const char *fmt,=
- ...)
- 		goto try_again;
- 	}
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
+t-parse.c
+index df37613f8920..7140b845e20f 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -6169,7 +6169,7 @@ __parse_event(struct tep_handle *pevent,
+ 	return 0;
 =20
--	s->len +=3D ret;
-+	if (ret > 0)
-+		s->len +=3D ret;
-=20
--	return 1;
-+	return ret;
+ event_add_failed:
+-	tep_free_format(event);
++	tep_free_event(event);
+ 	return ret;
  }
 =20
- /**
-@@ -153,6 +155,10 @@ trace_seq_printf(struct trace_seq *s, const char *fmt,=
- ...)
-  * @s: trace sequence descriptor
-  * @fmt: printf format string
-  *
-+ * It returns 0 if the trace oversizes the buffer's free
-+ * space, the number of characters printed, or a negative
-+ * value in case of an error.
-+ * *
-  * The tracer may use either sequence operations or its own
-  * copy to user routines. To simplify formating of a trace
-  * trace_seq_printf is used to store strings into a special
-@@ -177,9 +183,10 @@ trace_seq_vprintf(struct trace_seq *s, const char *fmt=
-, va_list args)
- 		goto try_again;
- 	}
-=20
--	s->len +=3D ret;
-+	if (ret > 0)
-+		s->len +=3D ret;
-=20
--	return len;
-+	return ret;
+@@ -6807,7 +6807,7 @@ static void free_formats(struct tep_format *format)
+ 	free_format_fields(format->fields);
  }
 =20
- /**
+-void tep_free_format(struct tep_event *event)
++void tep_free_event(struct tep_event *event)
+ {
+ 	free(event->name);
+ 	free(event->system);
+@@ -6893,7 +6893,7 @@ void tep_free(struct tep_handle *pevent)
+ 	}
+=20
+ 	for (i =3D 0; i < pevent->nr_events; i++)
+-		tep_free_format(pevent->events[i]);
++		tep_free_event(pevent->events[i]);
+=20
+ 	while (pevent->handlers) {
+ 		handle =3D pevent->handlers;
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/even=
+t-parse.h
+index e2f5f56fbcb6..0c8548bf234c 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -477,7 +477,7 @@ enum tep_errno tep_parse_format(struct tep_handle *peve=
+nt,
+ 				struct tep_event **eventp,
+ 				const char *buf,
+ 				unsigned long size, const char *sys);
+-void tep_free_format(struct tep_event *event);
++void tep_free_event(struct tep_event *event);
+ void tep_free_format_field(struct tep_format_field *field);
+=20
+ void *tep_get_field_raw(struct trace_seq *s, struct tep_event *event,
 --=20
 2.19.1
