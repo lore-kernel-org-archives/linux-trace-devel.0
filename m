@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr800049.outbound.protection.outlook.com ([40.107.80.49]:61440
-        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr690062.outbound.protection.outlook.com ([40.107.69.62]:29120
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729943AbeK1Ckz (ORCPT
+        id S1729913AbeK1Ckz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 27 Nov 2018 21:40:55 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 07/46] tools/lib/traceevent: Man page for tep_get_cpus()
- and tep_set_cpus()
-Date: Tue, 27 Nov 2018 15:42:15 +0000
-Message-ID: <20181127154153.11315-8-tstoyanov@vmware.com>
+Subject: [PATCH v3 21/46] tools/lib/traceevent: Man pages
+ tep_get_first_event() and tep_get_events_count()
+Date: Tue, 27 Nov 2018 15:42:33 +0000
+Message-ID: <20181127154153.11315-22-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,31 +22,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_get_cpus() and tep_set_cpus() as part of the
-libtraceevent APIs.
+Create man pages for tep_get_first_event() and tep_get_events_count()
+as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-cpus.txt      | 78 +++++++++++++++++++
- 1 file changed, 78 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-cpus.t=
-xt
+ .../Documentation/libtraceevent-events.txt    | 87 +++++++++++++++++++
+ 1 file changed, 87 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-events=
+.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt b/to=
-ols/lib/traceevent/Documentation/libtraceevent-cpus.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-events.txt b/=
+tools/lib/traceevent/Documentation/libtraceevent-events.txt
 new file mode 100644
-index 000000000000..81d9b4c83bee
+index 000000000000..169bb3240633
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
-@@ -0,0 +1,78 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-events.txt
+@@ -0,0 +1,87 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_get_cpus,tep_set_cpus - Get / set the number of CPUs, which have traci=
-ng=20
-+data recorded.
++tep_get_first_event,tep_get_events_count - Access events.=20
 +
 +SYNOPSIS
 +--------
@@ -54,28 +52,29 @@ ng=20
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_get_cpus*(struct tep_handle pass:[*]_tep_);
-+void *tep_set_cpus*(struct tep_handle pass:[*]_tep_, int _cpus_);
++struct tep_event pass:[*]*tep_get_first_event*(struct tep_handle pass:[*]_=
+tep_);
++int *tep_get_events_count*(struct tep_handle pass:[*]_tep_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_get_cpus()_ function gets the number of CPUs, which have tracing=
-=20
-+data recorded in the _tep_ context. The _tep_ argument is trace event pars=
-er=20
-+context.
++The _tep_get_first_event()_ function returns a pointer to the first event.=
+ As events are=20
++stored in an array, this function returns the pointer to the beginning=20
++of the array. The _tep_ argument is trace event parser context.=20
 +
-+The _tep_set_cpus()_ function sets the number of CPUs, which have tracing=
-=20
-+data recorded. The _tep_ argument is trace event parser context. The _cpu_
-+argument is the number of CPUs with tracing data.
++The _tep_get_events_count()_ function returns the number of the events=20
++in the array. The _tep_ argument is trace event parser context.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_cpus()_ functions returns the number of CPUs, which have trac=
-ing=20
-+data recorded.
++The _tep_get_first_event()_ returns a pointer to the first event. NULL is=
+=20
++returned in case of error, or in case there are no events.
++
++The _tep_get_events_count()_ returns the number of the events. 0 is=20
++returned in case of error, or in case there are no events.
 +
 +EXAMPLE
 +-------
@@ -85,9 +84,17 @@ ing=20
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+	tep_set_cpus(tep, 5);
-+...
-+	printf("We have tracing data for %d CPUs", tep_get_cpus(tep));
++int i,count =3D tep_get_events_count(tep);
++struct tep_event *event, *events =3D tep_get_first_event(tep);
++
++if (events =3D=3D NULL) {
++	/* There are no events */
++} else {
++	for (i=3D0; i<count; i++) {
++		event =3D (events+i);
++		/* process events[i] */
++	}
++}
 +--
 +
 +FILES
