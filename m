@@ -1,19 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr690079.outbound.protection.outlook.com ([40.107.69.79]:56248
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr700081.outbound.protection.outlook.com ([40.107.70.81]:24265
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726381AbeK1Clp (ORCPT
+        id S1726681AbeK1Clr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:41:45 -0500
+        Tue, 27 Nov 2018 21:41:47 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 34/46] tools/lib/traceevent: Man pages for
- tep_filter_event_has_trivial(), tep_update_trivial() and
- tep_filter_clear_trivial()
-Date: Tue, 27 Nov 2018 15:42:51 +0000
-Message-ID: <20181127154153.11315-35-tstoyanov@vmware.com>
+Subject: [PATCH v3 36/46] tools/lib/traceevent: Man pages for
+ tep_set_function_resolver() and tep_reset_function_resolver()
+Date: Tue, 27 Nov 2018 15:42:53 +0000
+Message-ID: <20181127154153.11315-37-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -23,31 +22,31 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_filter_event_has_trivial(),
-tep_update_trivial() and tep_filter_clear_trivial()
+Create man pages for tep_set_function_resolver() and tep_reset_function_res=
+olver()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-filter_trivial.txt          | 112 ++++++++++++++++++
- 1 file changed, 112 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
-_trivial.txt
+ .../libtraceevent-func_resolve.txt            | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_r=
+esolve.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_trivia=
-l.txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_trivial.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-func_resolve.=
+txt b/tools/lib/traceevent/Documentation/libtraceevent-func_resolve.txt
 new file mode 100644
-index 000000000000..8afd50b29269
+index 000000000000..4965cc6c79dc
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_trivial.txt
-@@ -0,0 +1,112 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-func_resolve.txt
+@@ -0,0 +1,96 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_filter_event_has_trivial,tep_update_trivial,tep_filter_clear_trivial -=
- Check / update / clear trivial rules of given filter.
++tep_set_function_resolver,tep_reset_function_resolver - Set / reset an alt=
+ernative function resolver
 +
 +SYNOPSIS
 +--------
@@ -55,57 +54,45 @@ index 000000000000..8afd50b29269
 +--
 +*#include <event-parse.h>*
 +
-+enum *tep_filter_trivial_type* {
-+	_TEP_FILTER_TRIVIAL_FALSE_,
-+	_TEP_FILTER_TRIVIAL_TRUE_,
-+	_TEP_FILTER_TRIVIAL_BOTH_,
-+};
++typedef char pass:[*](*tep_func_resolver_t*)(void pass:[*]_priv_, unsigned=
+ long long pass:[*]_addrp_, char pass:[**]_modp_);
 +
-+int *tep_filter_event_has_trivial*(struct tep_event_filter pass:[*]_filter=
-_, int _event_id_, enum tep_filter_trivial_type _type_);
-+int *tep_update_trivial*(struct tep_event_filter pass:[*]_dest_, struct te=
-p_event_filter pass:[*]_source_, enum tep_filter_trivial_type _type_);
-+int *tep_filter_clear_trivial*(struct tep_event_filter pass:[*]_filter_, e=
-num tep_filter_trivial_type _type_);
++int *tep_set_function_resolver*(struct tep_handle pass:[*]_tep_, tep_func_=
+resolver_t pass:[*]_func_, void pass:[*]_priv_);
++void *tep_reset_function_resolver*(struct tep_handle pass:[*]_tep_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_filter_event_has_trivial()_ function checks if the event with=20
-+_event_id_ contains a trivial _filter_ of _type_.
++Some tools may have already a way to resolve the kernel functions. These A=
+PIs
++allow them to keep using it instead of duplicating all the entries inside.
 +
-+The _tep_update_trivial()_ function updates the trivial rules with the giv=
-en=20
-+filter. It scans _dest_ for trivial events matching _type_ to replace with=
++The _tep_set_function_resolver()_ function registers _func_ as an alternat=
+ive=20
++kernel functions resolver. The _tep_ argument is trace event parser contex=
+t.
++The _priv_ argument is a custom context of the _func_ function.
++
++The _tep_reset_function_resolver()_ function resets the kernel functions=20
++resolver to the default function.  The _tep_ argument is trace event parse=
+r=20
++context.
++
++The _tep_func_resolver_t_ type is the prototype of the alternative kernel=
 =20
-+the _source_.
-+
-+The _tep_filter_clear_trivial()_ function clears TRUE and FALSE rules.=20
-+It removes rules in the _filter_ that only contain a given _type_ boolean =
-arg.
-+
-+The trivial _type_, used as argument of these functions can be:
-+[verse]
-+--
-+	_TEP_FILTER_TRIVIAL_FALSE_	- TRUE
-+	_TEP_FILTER_TRIVIAL_TRUE_	- FALSE
-+	_TEP_FILTER_TRIVIAL_BOTH_	- TRUE or FALSE
-+
-+--
++functions resolver. This function receives a pointer to its custom context=
+=20
++(set with the _tep_set_function_resolver()_ call ) and the address of a ke=
+rnel=20
++function, which has to be resolved. In case of success, it should return=20
++the name of the function and its module (if any) in _modp_.
 +
 +RETURN VALUE
 +------------
-+The _tep_filter_event_has_trivial()_ function returns 1 if the event conta=
-ins=20
-+a matching trivial type, otherwise 0.
-+
-+The _tep_update_trivial()_ function  returns 0 on success, or -1 if there =
-was=20
-+a problem updating, but events may have still been updated on error.
-+
-+The _tep_filter_clear_trivial()_ function returns 0 on success, or -1 if t=
-here=20
-+was a problem.
++The _tep_set_function_resolver()_ function returns 0 in case of success, o=
+r -1
++in case of an error.
 +
 +EXAMPLE
 +-------
@@ -114,22 +101,19 @@ here=20
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
-+struct tep_event_filter *filter1 =3D tep_filter_alloc(tep);
-+struct tep_event_filter *filter2 =3D tep_filter_alloc(tep);
 +...
-+if (tep_filter_event_has_trivial(filter1, 1857,TEP_FILTER_TRIVIAL_FALSE) =
-=3D=3D 0) {
-+	/* There are FALSE rules in filer1 for the event 1857 */
++char *my_resolve_kernel_addr(void *context, unsigned long long *addrp, cha=
+r **modp)
++{=09
++	return NULL;
 +}
-+
-+if (tep_update_trivial(filter1, filter2, TEP_FILTER_TRIVIAL_TRUE) !=3D 0) =
++...
++	if (tep_set_function_resolver(tep, my_resolve_kernel_addr, NULL) !=3D 0) =
 {
-+	/* Failed to update TRUE trivial rules of filter1 with filter2 */
-+}
-+
-+if (tep_filter_clear_trivial(filter, TEP_FILTER_TRIVIAL_BOTH) =3D=3D 0) {
-+	/* Failed to clear TRUE and FALSE trivial rules of filter1 */
-+}
++		/* failed to register my_resolve_kernel_addr */
++	}
++...
++	tep_reset_function_resolver(tep);
 +...
 +--
 +
