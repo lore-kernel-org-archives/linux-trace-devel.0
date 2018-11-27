@@ -1,19 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr700077.outbound.protection.outlook.com ([40.107.70.77]:22368
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr690062.outbound.protection.outlook.com ([40.107.69.62]:29120
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729309AbeK1Ck5 (ORCPT
+        id S1729968AbeK1Ck6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:40:57 -0500
+        Tue, 27 Nov 2018 21:40:58 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 23/46] tools/lib/traceevent: Man pages
- tep_get_any_field_val(), tep_get_common_field_val(), tep_get_field_val() and
- tep_get_field_raw()
-Date: Tue, 27 Nov 2018 15:42:36 +0000
-Message-ID: <20181127154153.11315-24-tstoyanov@vmware.com>
+Subject: [PATCH v3 22/46] tools/lib/traceevent: Man pages
+ tep_find_common_field(), tep_find_field() and tep_find_any_field()
+Date: Tue, 27 Nov 2018 15:42:35 +0000
+Message-ID: <20181127154153.11315-23-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -23,124 +22,96 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_get_any_field_val(), tep_get_common_field_val(),
-tep_get_field_val() and tep_get_field_raw() as part of the libtraceevent AP=
-Is.
+Create man pages for tep_find_common_field(), tep_find_field()
+and tep_find_any_field() as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-field_get_val.txt           | 117 ++++++++++++++++++
- 1 file changed, 117 insertions(+)
+ .../libtraceevent-field_find.txt              | 98 +++++++++++++++++++
+ 1 file changed, 98 insertions(+)
  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_=
-get_val.txt
+find.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_get_val=
-.txt b/tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_find.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
 new file mode 100644
-index 000000000000..4d2b99bf342f
+index 000000000000..a5afe260285a
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
-@@ -0,0 +1,117 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
+@@ -0,0 +1,98 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_get_any_field_val,tep_get_common_field_val,tep_get_field_val,tep_get_f=
-ield_raw - Get value of a field.
++tep_find_common_field,tep_find_field,tep_find_any_field - Search for a fie=
+ld in an event.=20
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <event-parse.h>*
-+*#include <trace-seq.h>*
 +
-+int *tep_get_any_field_val*(struct trace_seq pass:[*]_s_, struct tep_event=
- pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_rec=
-ord_, unsigned long long pass:[*]_val_, int _err_);
-+int *tep_get_common_field_val*(struct trace_seq pass:[*]_s_, struct tep_ev=
-ent pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_=
-record_, unsigned long long pass:[*]_val_, int _err_);
-+int *tep_get_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pas=
-s:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_=
-, unsigned long long pass:[*]_val_, int _err_);
-+void pass:[*]*tep_get_field_raw*(struct trace_seq pass:[*]_s_, struct tep_=
-event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*=
-]_record_, int pass:[*]_len_, int _err_);
++struct tep_format_field pass:[*]*tep_find_common_field*(struct tep_event p=
+ass:[*]_event_, const char pass:[*]_name_);
++struct tep_format_field pass:[*]*tep_find_field*(struct tep_event_ormat pa=
+ss:[*]_event_, const char pass:[*]_name_);
++struct tep_format_field pass:[*]*tep_find_any_field*(struct tep_event pass=
+:[*]_event_, const char pass:[*]_name_);
 +--
 +
 +DESCRIPTION
 +-----------
-+These functions can be used to find a field and retrieve its value.
++These functions search for a field with given name in an event.
 +
-+The _tep_get_any_field_val()_ function searches in the _record_ for a file=
-d with=20
-+_name_, part of the _event_. If the field is found, its value is stored in=
- _val_.=20
-+In case of an error, an error string is printed into _s_, if _err_ is not =
-0.
++The _tep_find_common_field()_ function searches for a common field with _n=
+ame_=20
++in the _event_.
 +
-+The _tep_get_common_field_val()_ function does the same as=20
-+_tep_get_any_field_val()_, but searches only in the common fields.=20
++The _tep_find_field()_ function searches for an event specific field with
++_name_ in the _event_.
 +
-+The _tep_get_field_val()_ function does the same as=20
-+_tep_get_any_field_val()_, but searches only in the event specific fields.=
-=20
-+
-+The _tep_get_field_raw()_ function searches in the _record_ for a filed wi=
-th _name_,=20
-+part of the _event_. If the field is found, a pointer to its raw data is r=
-eturned.=20
-+The size of the data is stored in _len_. In case of an error, an error str=
-ing=20
-+is printed into _s_, if _err_ is not 0.
++The _tep_find_any_field()_ function searches for any field with _name_ in =
+the=20
++_event_.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_any_field_val()_, _tep_get_common_field_val()_ and=20
-+_tep_get_field_val()_ functions return 0 on success, or -1 in case of an e=
-rror.
-+
-+The _tep_get_field_raw()_ function returns a pointer to field's raw data, =
-and=20
-+places the length of this data in _len_. In case of an error NULL is retur=
-ned.
++The _tep_find_common_field(), _tep_find_field()_ and _tep_find_any_field()=
+_
++functions return a pointer to the found field, or NULL in case there is no=
+ field
++with the requested name.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
-+#include <trace-seq.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+struct tep_event *event =3D tep_find_event_by_name(tep, "kvm", "kvm_exit")=
-;
++struct tep_event *event =3D tep_find_event_by_name(tep, "timer", "hrtimer_=
+start");
 +...
-+void process_record(struct tep_record *record)
-+{
-+	int len;
-+	char *comm;
-+	struct tep_event_format *event;
-+	unsigned long long val;
++	struct tep_format_field *field;
 +
-+	event =3D tep_find_event_by_record(pevent, record);
-+	if (event !=3D NULL) {
-+		if (tep_get_common_field_val(NULL, event, "common_type", record, &val, 0=
-) =3D=3D 0) {
-+			/* Got the value of common type field */
-+		}
-+		if (tep_get_field_val(NULL, event, "pid", record, &val, 0) =3D=3D 0) {
-+			/* Got the value of pid specific field */
-+		}
-+		comm =3D tep_get_field_raw(NULL, event, "comm", record, &len, 0);
-+		if (comm !=3D NULL) {
-+			/* Got a pointer to the comm event specific field */
-+		}
-+	}=20
-+}
++	field =3D tep_find_common_field(event, "common_pid");
++	if (field =3D=3D NULL) {
++		/* Cannot find "common_pid" common field in the event */
++	}
++
++	field =3D tep_find_field(event, "softexpires");
++	if (field =3D=3D NULL) {
++		/* Cannot find "softexpires" event specific field in the event */
++	}
++=09
++	field =3D tep_find_any_field(event, "mode");
++	if (field =3D=3D NULL) {
++		/* Cannot find "mode" field in the event */
++	}
++...
 +--
 +
 +FILES
@@ -149,12 +120,6 @@ ned.
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
-+*trace-seq.h*
-+	Header file to include in order to have access to trace sequences related=
- APIs.
-+	Trace sequences are used to allow a function to call several other functi=
-ons=20
-+	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
