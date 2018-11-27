@@ -2,17 +2,17 @@ Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr730068.outbound.protection.outlook.com ([40.107.73.68]:47354
         "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729309AbeK1Ckk (ORCPT
+        id S1729872AbeK1Ckm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:40:40 -0500
+        Tue, 27 Nov 2018 21:40:42 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 10/46] tools/lib/traceevent: Man page for
- tep_is_latency_format() and tep_set_latency_format()
-Date: Tue, 27 Nov 2018 15:42:19 +0000
-Message-ID: <20181127154153.11315-11-tstoyanov@vmware.com>
+Subject: [PATCH v3 11/46] tools/lib/traceevent: Man page for
+ tep_get_page_size() and tep_set_page_size()
+Date: Tue, 27 Nov 2018 15:42:20 +0000
+Message-ID: <20181127154153.11315-12-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,30 +22,32 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_is_latency_format() and tep_set_latency_format()
-as part of the libtraceevent APIs.
+Create man pages for tep_get_page_size() and tep_set_page_size()
+as part of the libtraceevent APIs. It also alignes description of
+the functions (in the C code) with the man pages.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-latency_format.txt          | 100 ++++++++++++++++++
- 1 file changed, 100 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-latenc=
-y_format.txt
+ .../Documentation/libtraceevent-page_size.txt | 80 +++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-page_s=
+ize.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-latency_forma=
-t.txt b/tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt=
+ b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
 new file mode 100644
-index 000000000000..4b0d7d3f6ae9
+index 000000000000..015664b96197
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt
-@@ -0,0 +1,100 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
+@@ -0,0 +1,80 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_set_latency_format,tep_is_latency_format - Get / set "latency output" =
-format.
++tep_get_page_size,tep_set_page_size - Get / set the size of a memory page =
+on the=20
++machine, where the trace is generated=20
 +
 +SYNOPSIS
 +--------
@@ -53,58 +55,27 @@ format.
 +--
 +*#include <event-parse.h>*
 +
-+void *tep_set_latency_format*(struct tep_handle pass:[*]_tep_, int _lat_);
-+int *tep_is_latency_format*(struct tep_handle pass:[*]_tep_);
-+
++int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
++void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_)=
+;
 +--
 +
 +DESCRIPTION
 +-----------
-+"Latency output" format prints information about interrupts being disabled=
-,=20
-+soft irq being disabled, the "need_resched" flag being set and preempt cou=
-nt.=20
-+This information is recorded with every event, but by default is not print=
-ed.
++The _tep_get_page_size()_ function returns the size of a memory page on=20
++the machine, where the trace is generated. The _tep_ argument is trace=20
++event parser context.
 +
-+The _tep_set_latency_format()_ function enables the "latency output" print=
-ing.
-+The _tep_ argument is trace event parser context. The _lat_ argument can b=
-e zero,
-+for "latency output" disabled, or non zero for "latency output" enabled.
-+Information is displayed with 6 characters. When a field is zero, or N/A, =
-a pass:['.']=20
-+is printed. Example:
-+[verse]
-+--
-+  <idle>-0       0d.h1. 106467.859747: function:             ktime_get <--=
- tick_check_idle
-+--
-+The 0d.h1. denotes this information. The first character is never a pass:[=
-'.']
-+and represents what CPU the trace was recorded on (CPU 0). The pass:['d'] =
-denotes
-+that interrupts were disabled. The pass:['h'] means that this was called i=
-nside
-+an interrupt handler. The pass:['1'] is the preemption disabled (preempt_c=
-ount)
-+was set to one.  The two pass:['.']s are "need_resched" flag and kernel lo=
-ck
-+counter. If the "need_resched" flag is set, then that character would be a=
- pass:['N'].
-+
-+The _tep_is_latency_format()_ function returns if "latency output" is enab=
-led.
-+
-+This "Latency output" setting affects output of _tep_print_event_task()_
-+and _tep_print_event_time()_ APIs.=20
++The _tep_set_page_size()_ function stores in the _tep_ context the size of=
+ a=20
++memory page on the machine, where the trace is generated.=20
++The _tep_ argument is trace event parser context.
++The _page_size_ argument is the size of a memory page, in bytes.=20
 +
 +RETURN VALUE
 +------------
-+
-+The _tep_is_latency_format()_ function returns non zero if "latency output=
-"=20
-+is enabled, or zero if it is disabled.
++The _tep_get_page_size()_ function returns size of the memory page, in byt=
+es.
 +
 +EXAMPLE
 +-------
@@ -114,12 +85,10 @@ led.
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+	tep_set_latency_format(tep, 1);
-+...
-+	if (tep_is_latency_format(tep)) {
-+		/* latency output format is enabled */
-+	} else {
-+		/* latency output format is disabled */
++	int page_size =3D 4096;
++	tep_set_page_size(tep, page_size);
++	if ( 4096 !=3D tep_get_page_size(tep)) {
++		/* Something wrong happened, page size is not set as expected */
 +	}
 +--
 +
@@ -135,8 +104,7 @@ led.
 +
 +SEE ALSO
 +--------
-+_libtraceevent(3)_, _trace-cmd(1)_, tep_print_event_task(3), tep_print_eve=
-nt_time(3)
++_libtraceevent(3)_, _trace-cmd(1)_
 +
 +AUTHOR
 +------
