@@ -1,17 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr730072.outbound.protection.outlook.com ([40.107.73.72]:22643
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr690078.outbound.protection.outlook.com ([40.107.69.78]:52480
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729913AbeK1ClJ (ORCPT
+        id S1726381AbeK1ClP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:41:09 -0500
+        Tue, 27 Nov 2018 21:41:15 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 19/46] tools/lib/traceevent: Man page for tep_list_events()
-Date: Tue, 27 Nov 2018 15:42:31 +0000
-Message-ID: <20181127154153.11315-20-tstoyanov@vmware.com>
+Subject: [PATCH v3 28/46] tools/lib/traceevent: Man page for
+ tep_filter_add_filter_str()
+Date: Tue, 27 Nov 2018 15:42:43 +0000
+Message-ID: <20181127154153.11315-29-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -21,28 +22,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_list_events() as part of the libtraceevent APIs.
+Create man page for tep_filter_add_filter_str()
+as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-event_list.txt              | 94 +++++++++++++++++++
- 1 file changed, 94 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_=
-list.txt
+ .../libtraceevent-filter_add.txt              | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
+_add.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_list.tx=
-t b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_add.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-filter_add.txt
 new file mode 100644
-index 000000000000..f443d8648a34
+index 000000000000..37208be468f8
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
-@@ -0,0 +1,94 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_add.txt
+@@ -0,0 +1,78 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_list_events - Get list of events, sorted by given criteria.
++tep_filter_add_filter_str - Adds a new rule to a filter.
 +
 +SYNOPSIS
 +--------
@@ -50,36 +52,22 @@ index 000000000000..f443d8648a34
 +--
 +*#include <event-parse.h>*
 +
-+enum *tep_event_sort_type* {
-+	_TEP_EVENT_SORT_ID_,
-+	_TEP_EVENT_SORT_NAME_,
-+	_TEP_EVENT_SORT_SYSTEM_,
-+};
-+
-+struct tep_event pass:[*]pass:[*]*tep_list_events*(struct tep_handle pass:=
-[*]_tep_, enum tep_event_sort_type _sort_type_);
++enum tep_errno *tep_filter_add_filter_str*(struct tep_event_filter pass:[*=
+]_filter_, const char pass:[*]_filter_str_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_list_events()_ function returns an array of pointers to the event=
-s,=20
-+sorted by the _sort_type_ criteria. The last element of the array is NULL.
-+The returned memory must not be freed, it is managed by the library.=20
-+The _tep_ argument is trace event parser context. The _sort_type_ argument=
- is=20
-+the required sort criteria:
-+[verse]
-+--
-+	_TEP_EVENT_SORT_ID_	- sort by the event ID.
-+	_TEP_EVENT_SORT_NAME_	- sort by the event (name, system, id) triplet.
-+	_TEP_EVENT_SORT_SYSTEM_	- sort by the event (system, name, id) triplet.
-+--=20
++The _tep_filter_add_filter_str()_ function adds a new rule to the _filter_=
+. The=20
++_filter_str_ argument is the filter string, that contains the rule.
 +
 +RETURN VALUE
 +------------
-+The _tep_list_events()_ function returns an array of pointers to events.=20
-+In case of an error, NULL is returned.
++The _tep_filter_add_filter_str()_ function returns 0 if the rule was=20
++successfully added or a negative error code.  Use _tep_filter_strerror()_ =
+to see=20
++actual error message in case of an error.
 +
 +EXAMPLE
 +-------
@@ -88,17 +76,16 @@ s,=20
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
++struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+int i=3D0;
-+struct tep_event_format **events =3D tep_list_events(tep, TEP_EVENT_SORT_I=
-D);
-+if (events =3D=3D NULL) {
-+	/* Failed to get the events, sorted by ID */
-+} else {
-+	while(events[i]) {
-+		/* walk through the list of the events, sorted by the ID */
-+		i++;
-+	}
++int ret;
++char errstr[200];
++ret =3D tep_filter_add_filter_str(filter, "sched/sched_wakeup:target_cpu=
+=3D=3D1");=20
++if(ret < 0) {
++	tep_filter_strerror(filter, ret, errstr, sizeof(errstr));
++	/* Failed to add a new rule to the filter, the error string is in errstr =
+*/
 +}
 +...
 +--
@@ -115,7 +102,7 @@ D);
 +
 +SEE ALSO
 +--------
-+_libtraceevent(3)_, _trace-cmd(1)_
++_libtraceevent(3)_, _trace-cmd(1)_, _tep_filter_strerror(3)_
 +
 +AUTHOR
 +------
