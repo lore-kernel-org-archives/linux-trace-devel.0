@@ -2,16 +2,17 @@ Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr700058.outbound.protection.outlook.com ([40.107.70.58]:36480
         "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726381AbeK1Cj3 (ORCPT
+        id S1729964AbeK1Cja (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:39:29 -0500
+        Tue, 27 Nov 2018 21:39:30 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 07/14] tools/lib/traceevent: traceevent API cleanup
-Date: Tue, 27 Nov 2018 15:41:01 +0000
-Message-ID: <20181127154038.11175-8-tstoyanov@vmware.com>
+Subject: [PATCH v2 08/14] tools/lib/traceevent: Introduce new libtracevent
+ API: tep_override_comm()
+Date: Tue, 27 Nov 2018 15:41:02 +0000
+Message-ID: <20181127154038.11175-9-tstoyanov@vmware.com>
 References: <20181127154038.11175-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154038.11175-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -21,167 +22,151 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-In order to make libtraceevent into a proper library, its API
-should be straightforward. This patch hides few API functions,
-intended for internal usage only:
-tep_free_event(), tep_free_format_field(), __tep_data2host2(),
-__tep_data2host4() and __tep_data2host8().
-The patch also alignes the libtraceevent summary man page with
-these API changes.
+This patch adds a new API of tracevent library: tep_override_comm()
+It registers a pid / command mapping. If a mapping with the same
+pid already exists, the entry is updated with the new command.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/event-parse-api.c   |  6 +++---
- tools/lib/traceevent/event-parse-local.h |  7 +++++++
- tools/lib/traceevent/event-parse.c       | 13 ++++++++-----
- tools/lib/traceevent/event-parse.h       | 18 ------------------
- 4 files changed, 18 insertions(+), 26 deletions(-)
+ tools/lib/traceevent/event-parse.c | 69 +++++++++++++++++++++++-------
+ tools/lib/traceevent/event-parse.h |  1 +
+ 2 files changed, 55 insertions(+), 15 deletions(-)
 
-diff --git a/tools/lib/traceevent/event-parse-api.c b/tools/lib/traceevent/=
-event-parse-api.c
-index 52188921cfe3..bdefe3c235ad 100644
---- a/tools/lib/traceevent/event-parse-api.c
-+++ b/tools/lib/traceevent/event-parse-api.c
-@@ -51,7 +51,7 @@ void tep_set_flag(struct tep_handle *tep, int flag)
- 		tep->flags |=3D flag;
- }
-=20
--unsigned short __tep_data2host2(struct tep_handle *pevent, unsigned short =
-data)
-+unsigned short tep_data2host2(struct tep_handle *pevent, unsigned short da=
-ta)
- {
- 	unsigned short swap;
-=20
-@@ -64,7 +64,7 @@ unsigned short __tep_data2host2(struct tep_handle *pevent=
-, unsigned short data)
- 	return swap;
- }
-=20
--unsigned int __tep_data2host4(struct tep_handle *pevent, unsigned int data=
-)
-+unsigned int tep_data2host4(struct tep_handle *pevent, unsigned int data)
- {
- 	unsigned int swap;
-=20
-@@ -80,7 +80,7 @@ unsigned int __tep_data2host4(struct tep_handle *pevent, =
-unsigned int data)
- }
-=20
- unsigned long long
--__tep_data2host8(struct tep_handle *pevent, unsigned long long data)
-+tep_data2host8(struct tep_handle *pevent, unsigned long long data)
- {
- 	unsigned long long swap;
-=20
-diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceeven=
-t/event-parse-local.h
-index 94746efef433..9a092dd4a86d 100644
---- a/tools/lib/traceevent/event-parse-local.h
-+++ b/tools/lib/traceevent/event-parse-local.h
-@@ -89,4 +89,11 @@ struct tep_handle {
- 	char *trace_clock;
- };
-=20
-+void tep_free_event(struct tep_event *event);
-+void tep_free_format_field(struct tep_format_field *field);
-+
-+unsigned short tep_data2host2(struct tep_handle *pevent, unsigned short da=
-ta);
-+unsigned int tep_data2host4(struct tep_handle *pevent, unsigned int data);
-+unsigned long long tep_data2host8(struct tep_handle *pevent, unsigned long=
- long data);
-+
- #endif /* _PARSE_EVENTS_INT_H */
 diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
 t-parse.c
-index 7140b845e20f..668bc5e2805f 100644
+index 668bc5e2805f..2c0597a29f58 100644
 --- a/tools/lib/traceevent/event-parse.c
 +++ b/tools/lib/traceevent/event-parse.c
-@@ -3343,15 +3343,18 @@ tep_find_any_field(struct tep_event *event, const c=
-har *name)
- unsigned long long tep_read_number(struct tep_handle *pevent,
- 				   const void *ptr, int size)
+@@ -247,11 +247,13 @@ int tep_pid_is_registered(struct tep_handle *pevent, =
+int pid)
+  * we must add this pid. This is much slower than when cmdlines
+  * are added before the array is initialized.
+  */
+-static int add_new_comm(struct tep_handle *pevent, const char *comm, int p=
+id)
++static int add_new_comm(struct tep_handle *pevent,
++			const char *comm, int pid, bool override)
  {
-+	unsigned long long val;
-+
- 	switch (size) {
- 	case 1:
- 		return *(unsigned char *)ptr;
- 	case 2:
--		return tep_data2host2(pevent, ptr);
-+		return tep_data2host2(pevent, *(unsigned short *)ptr);
- 	case 4:
--		return tep_data2host4(pevent, ptr);
-+		return tep_data2host4(pevent, *(unsigned int *)ptr);
- 	case 8:
--		return tep_data2host8(pevent, ptr);
-+		memcpy(&val, (ptr), sizeof(unsigned long long));
-+		return tep_data2host8(pevent, val);
- 	default:
- 		/* BUG! */
+ 	struct cmdline *cmdlines =3D pevent->cmdlines;
+-	const struct cmdline *cmdline;
++	struct cmdline *cmdline;
+ 	struct cmdline key;
++	char *new_comm;
+=20
+ 	if (!pid)
  		return 0;
-@@ -4077,7 +4080,7 @@ static void print_str_arg(struct trace_seq *s, void *=
-data, int size,
- 			f =3D tep_find_any_field(event, arg->string.string);
- 			arg->string.offset =3D f->offset;
- 		}
--		str_offset =3D tep_data2host4(pevent, data + arg->string.offset);
-+		str_offset =3D tep_data2host4(pevent, *(unsigned int *)(data + arg->stri=
-ng.offset));
- 		str_offset &=3D 0xffff;
- 		print_str_to_seq(s, format, len_arg, ((char *)data) + str_offset);
- 		break;
-@@ -4095,7 +4098,7 @@ static void print_str_arg(struct trace_seq *s, void *=
-data, int size,
- 			f =3D tep_find_any_field(event, arg->bitmask.bitmask);
- 			arg->bitmask.offset =3D f->offset;
- 		}
--		bitmask_offset =3D tep_data2host4(pevent, data + arg->bitmask.offset);
-+		bitmask_offset =3D tep_data2host4(pevent, *(unsigned int *)(data + arg->=
-bitmask.offset));
- 		bitmask_size =3D bitmask_offset >> 16;
- 		bitmask_offset &=3D 0xffff;
- 		print_bitmask_to_seq(pevent, s, format, len_arg,
+@@ -262,8 +264,19 @@ static int add_new_comm(struct tep_handle *pevent, con=
+st char *comm, int pid)
+ 	cmdline =3D bsearch(&key, pevent->cmdlines, pevent->cmdline_count,
+ 		       sizeof(*pevent->cmdlines), cmdline_cmp);
+ 	if (cmdline) {
+-		errno =3D EEXIST;
+-		return -1;
++		if (!override) {
++			errno =3D EEXIST;
++			return -1;
++		}
++		new_comm =3D strdup(comm);
++		if(!new_comm) {
++			errno =3D ENOMEM;
++			return -1;
++		}
++		free(cmdline->comm);
++		cmdline->comm =3D new_comm;
++
++		return 0;
+ 	}
+=20
+ 	cmdlines =3D realloc(cmdlines, sizeof(*cmdlines) * (pevent->cmdline_count=
+ + 1));
+@@ -290,21 +303,13 @@ static int add_new_comm(struct tep_handle *pevent, co=
+nst char *comm, int pid)
+ 	return 0;
+ }
+=20
+-/**
+- * tep_register_comm - register a pid / comm mapping
+- * @pevent: handle for the pevent
+- * @comm: the command line to register
+- * @pid: the pid to map the command line to
+- *
+- * This adds a mapping to search for command line names with
+- * a given pid. The comm is duplicated.
+- */
+-int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid=
+)
++static int _tep_register_comm(struct tep_handle *pevent,
++			      const char *comm, int pid, bool override)
+ {
+ 	struct cmdline_list *item;
+=20
+ 	if (pevent->cmdlines)
+-		return add_new_comm(pevent, comm, pid);
++		return add_new_comm(pevent, comm, pid, override);
+=20
+ 	item =3D malloc(sizeof(*item));
+ 	if (!item)
+@@ -327,6 +332,40 @@ int tep_register_comm(struct tep_handle *pevent, const=
+ char *comm, int pid)
+ 	return 0;
+ }
+=20
++/**
++ * tep_register_comm - register a pid / comm mapping
++ * @pevent: handle for the pevent
++ * @comm: the command line to register
++ * @pid: the pid to map the command line to
++ *
++ * This adds a mapping to search for command line names with
++ * a given pid. The comm is duplicated. If a command with the same pid
++ * already exist, -1 is returned and errno is set to EEXIST
++ */
++int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid=
+)
++{
++	return _tep_register_comm(pevent, comm, pid, false);
++}
++
++/**
++ * tep_override_comm - register a pid / comm mapping
++ * @pevent: handle for the pevent
++ * @comm: the command line to register
++ * @pid: the pid to map the command line to
++ *
++ * This adds a mapping to search for command line names with
++ * a given pid. The comm is duplicated. If a command with the same pid
++ * already exist, the command string is udapted with the new one
++ */
++int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid=
+)
++{
++	if (!pevent->cmdlines && cmdline_init(pevent)) {
++		errno =3D ENOMEM;
++		return -1;
++	}
++	return _tep_register_comm(pevent, comm, pid, true);
++}
++
+ int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_=
+clock)
+ {
+ 	pevent->trace_clock =3D strdup(trace_clock);
 diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/even=
 t-parse.h
-index 0c8548bf234c..4e0602522c28 100644
+index 4e0602522c28..e6f36cdb836d 100644
 --- a/tools/lib/traceevent/event-parse.h
 +++ b/tools/lib/traceevent/event-parse.h
-@@ -409,22 +409,6 @@ void tep_print_plugins(struct trace_seq *s,
- typedef char *(tep_func_resolver_t)(void *priv,
- 				    unsigned long long *addrp, char **modp);
- void tep_set_flag(struct tep_handle *tep, int flag);
--unsigned short __tep_data2host2(struct tep_handle *pevent, unsigned short =
-data);
--unsigned int __tep_data2host4(struct tep_handle *pevent, unsigned int data=
+@@ -432,6 +432,7 @@ int tep_set_function_resolver(struct tep_handle *pevent=
+,
+ 			      tep_func_resolver_t *func, void *priv);
+ void tep_reset_function_resolver(struct tep_handle *pevent);
+ int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid=
 );
--unsigned long long
--__tep_data2host8(struct tep_handle *pevent, unsigned long long data);
--
--#define tep_data2host2(pevent, ptr)	\
--	__tep_data2host2(pevent, *(unsigned short *)(ptr))
--#define tep_data2host4(pevent, ptr)	\
--	__tep_data2host4(pevent, *(unsigned int *)(ptr))
--#define tep_data2host8(pevent, ptr)	\
--({								\
--	unsigned long long __val;				\
--								\
--	memcpy(&__val, (ptr), sizeof(unsigned long long));	\
--	__tep_data2host8(pevent, __val);			\
--})
-=20
- static inline int tep_host_bigendian(void)
- {
-@@ -477,8 +461,6 @@ enum tep_errno tep_parse_format(struct tep_handle *peve=
-nt,
- 				struct tep_event **eventp,
- 				const char *buf,
- 				unsigned long size, const char *sys);
--void tep_free_event(struct tep_event *event);
--void tep_free_format_field(struct tep_format_field *field);
-=20
- void *tep_get_field_raw(struct trace_seq *s, struct tep_event *event,
- 			const char *name, struct tep_record *record,
++int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid=
+);
+ int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_=
+clock);
+ int tep_register_function(struct tep_handle *pevent, char *name,
+ 			  unsigned long long addr, char *mod);
 --=20
 2.19.1
