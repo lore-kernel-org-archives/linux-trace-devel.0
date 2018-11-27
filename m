@@ -2,17 +2,16 @@ Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr730068.outbound.protection.outlook.com ([40.107.73.68]:47354
         "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729872AbeK1Ckm (ORCPT
+        id S1729309AbeK1Ckn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:40:42 -0500
+        Tue, 27 Nov 2018 21:40:43 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 11/46] tools/lib/traceevent: Man page for
- tep_get_page_size() and tep_set_page_size()
-Date: Tue, 27 Nov 2018 15:42:20 +0000
-Message-ID: <20181127154153.11315-12-tstoyanov@vmware.com>
+Subject: [PATCH v3 12/46] tools/lib/traceevent: Man page for tep_strerror()
+Date: Tue, 27 Nov 2018 15:42:21 +0000
+Message-ID: <20181127154153.11315-13-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,32 +21,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_get_page_size() and tep_set_page_size()
-as part of the libtraceevent APIs. It also alignes description of
-the functions (in the C code) with the man pages.
+Create man page for tep_strerror() as part of libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-page_size.txt | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-page_s=
-ize.txt
+ .../Documentation/libtraceevent-strerror.txt  | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-strerr=
+or.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt=
- b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-strerror.txt =
+b/tools/lib/traceevent/Documentation/libtraceevent-strerror.txt
 new file mode 100644
-index 000000000000..015664b96197
+index 000000000000..fde1bd71b679
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
-@@ -0,0 +1,80 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-strerror.txt
+@@ -0,0 +1,78 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_get_page_size,tep_set_page_size - Get / set the size of a memory page =
-on the=20
-+machine, where the trace is generated=20
++tep_strerror - Returns a string describing regular errno and tep error num=
+ber.=20
 +
 +SYNOPSIS
 +--------
@@ -55,27 +51,28 @@ on the=20
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
-+void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_)=
-;
-+--
++int *tep_strerror*(struct tep_handle pass:[*]_tep_, enum tep_errno _errnum=
+_, char pass:[*]_buf_, size_t _buflen_);
 +
++--
 +DESCRIPTION
 +-----------
-+The _tep_get_page_size()_ function returns the size of a memory page on=20
-+the machine, where the trace is generated. The _tep_ argument is trace=20
-+event parser context.
-+
-+The _tep_set_page_size()_ function stores in the _tep_ context the size of=
- a=20
-+memory page on the machine, where the trace is generated.=20
-+The _tep_ argument is trace event parser context.
-+The _page_size_ argument is the size of a memory page, in bytes.=20
++The _tep_strerror()_ function converts tep error number into a human reada=
+ble string.
++The _tep_ argument is trace event parser context. The _errnum_ is a regula=
+r errno,
++defined in errno.h, or a tep error number. The string, describing this err=
+or number=20
++is copied in the _buf_ argument. The _buflen_ argument is the size of the =
+_buf_.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_page_size()_ function returns size of the memory page, in byt=
-es.
++The _tep_strerror()_ function returns 0, if a valid _errnum_ is passed and=
+ the=20
++string is copied into _buf_. If _errnum_ is not a valid error number, -1 i=
+s returned=20
++and _buf_ is not modified.
 +
 +EXAMPLE
 +-------
@@ -85,11 +82,13 @@ es.
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+	int page_size =3D 4096;
-+	tep_set_page_size(tep, page_size);
-+	if ( 4096 !=3D tep_get_page_size(tep)) {
-+		/* Something wrong happened, page size is not set as expected */
-+	}
++char buf[32];=20
++char *pool =3D calloc(1, 128);
++if (tep =3D=3D NULL) {
++	tep_strerror(tep, TEP_ERRNO__MEM_ALLOC_FAILED, buf, 32);
++	printf ("The pool is not initialized, %s", buf);
++}
++...
 +--
 +
 +FILES
