@@ -1,18 +1,19 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr730068.outbound.protection.outlook.com ([40.107.73.68]:47354
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr690062.outbound.protection.outlook.com ([40.107.69.62]:29120
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729913AbeK1Ckx (ORCPT
+        id S1729872AbeK1Cky (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:40:53 -0500
+        Tue, 27 Nov 2018 21:40:54 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 16/46] tools/lib/traceevent: Man pages for
- tep_register_print_function() and tep_unregister_print_function()
-Date: Tue, 27 Nov 2018 15:42:27 +0000
-Message-ID: <20181127154153.11315-17-tstoyanov@vmware.com>
+Subject: [PATCH v3 20/46] tools/lib/traceevent: Man pages for
+ tep_print_event(), tep_print_event_data(), tep_event_info(),
+ tep_print_event_task() and tep_print_event_time()
+Date: Tue, 27 Nov 2018 15:42:32 +0000
+Message-ID: <20181127154153.11315-21-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,101 +23,89 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_register_print_function() and tep_unregister_print=
-_function()
+Create man pages for tep_print_event(), tep_print_event_data(),
+tep_event_info(), tep_print_event_task() and tep_print_event_time()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-reg_print_func.txt          | 128 ++++++++++++++++++
- 1 file changed, 128 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_pr=
-int_func.txt
+ .../libtraceevent-event_print.txt             | 126 ++++++++++++++++++
+ 1 file changed, 126 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_=
+print.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_print_fun=
-c.txt b/tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_print.t=
+xt b/tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
 new file mode 100644
-index 000000000000..fbb2f973f3b0
+index 000000000000..f5af35d0d409
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt
-@@ -0,0 +1,128 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
+@@ -0,0 +1,126 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_register_print_function,tep_unregister_print_function - Registers / Un=
-registers
-+a helper function.
++tep_print_event,tep_print_event_data,tep_event_info,tep_print_event_task,t=
+ep_print_event_time - Parses the data into the print format.
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <event-parse.h>*
++*#include <trace-seq.h>*
 +
-+enum *tep_func_arg_type* {
-+	TEP_FUNC_ARG_VOID,
-+	TEP_FUNC_ARG_INT,
-+	TEP_FUNC_ARG_LONG,
-+	TEP_FUNC_ARG_STRING,
-+	TEP_FUNC_ARG_PTR,
-+	TEP_FUNC_ARG_MAX_TYPES
-+};
-+
-+typedef unsigned long long (*pass:[*]tep_func_handler*)(struct trace_seq p=
-ass:[*]s, unsigned long long pass:[*]args);
-+
-+int *tep_register_print_function*(struct tep_handle pass:[*]_tep_, tep_fun=
-c_handler _func_, enum tep_func_arg_type _ret_type_, char pass:[*]_name_, _=
-..._);
-+int *tep_unregister_print_function*(struct tep_handle pass:[*]_tep_, tep_f=
-unc_handler _func_, char pass:[*]_name_);
++void *tep_print_event_time*(struct tep_handle pass:[*]_tep_, struct trace_=
+seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[=
+*]record, bool _use_trace_clock_);
++void *tep_print_event_task*(struct tep_handle pass:[*]_tep_, struct trace_=
+seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[=
+*]_record_);
++void *tep_event_info*(struct trace_seq pass:[*]_s_, struct tep_event pass:=
+[*]_event_, struct tep_record pass:[*]_record_);
++void *tep_print_event_data*(struct tep_handle pass:[*]_tep_, struct trace_=
+seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[=
+*]_record_);
++void *tep_print_event*(struct tep_handle pass:[*]_tep_, struct trace_seq p=
+ass:[*]_s_, struct tep_record pass:[*]_record_, bool _use_trace_clock_);
 +--
 +
 +DESCRIPTION
 +-----------
-+Some events may have helper functions in the print format arguments. This =
-allows
-+a plugin to dynamically create a way to process one of these functions.
++The _tep_print_event_time()_ function prints the timestamp of the _record_=
+ using=20
++the given _event_ information as trace sequence in _s_. The _tep_ argument=
+ is=20
++trace event parser context. The _use_trace_clock_ argument indicates if=20
++the tep->trace_clock should be used for parsing the timestamp.
 +
-+The _tep_register_print_function()_ registers such helper function. The _t=
-ep_=20
-+argument is the trace event parser context. The _func_ argument is the add=
-ress
-+of the helper function. The _ret_type_ argument is  the return type of the=
++The _tep_print_event_task()_ function prints the task command, pid and CPU=
+ of=20
++the _record_ using the given _event_ information as trace sequence in _s_.=
 =20
-+helper function, value from the _tep_func_arg_type_ enum. The _name_ is th=
-e name
-+of the helper function, as seen in the print format arguments. The _..._ i=
-s a=20
-+variable list of _tep_func_arg_type_ enums, the _func_ function arguments.=
++The _tep_ argument is trace event parser context.=20
++
++The _tep_event_info()_ function parses the raw data from the _record_ usin=
+g=20
++the given _event_ information and writes the print format as trace sequenc=
+e in
++_s_.
++
++The _tep_print_event_data()_ function writes the _event_ name  as trace=20
++sequence in _s_ and calls _tep_event_info()_ to parse and write the raw da=
+ta
++from the _record_. The _tep_ argument is trace event parser context.=20
++
++The _tep_print_event()_ function prints the _record_ information as trace=
 =20
-+This list must end with _TEP_FUNC_ARG_VOID_.
-+
-+The _tep_unregister_print_function()_ unregisters a helper function, previ=
-ously=20
-+registered with _tep_register_print_function()_. The _tep_ argument is the=
-=20
-+trace event parser context. The _func_ and _name_ arguments are the same, =
-used=20
-+when the helper function was registered.
-+
-+The _tep_func_handler_ is the type of the helper function. The _s_ argumen=
-t is=20
-+the trace sequence, it can be used to create a custom string.
-+The _args_  is a list of arguments, defined when the helper function was=20
-+registered.=20
-+
-+RETURN VALUE
-+------------
-+The _tep_register_print_function()_ function returns 0 in case of success.=
-=20
-+In case of an error, TEP_ERRNO_... code is returned.
-+
-+The _tep_unregister_print_function()_ returns 0 in case of success, or -1 =
-in
-+case of an error.
++sequence in _s_. It finds the corresponding event and calls=20
++_tep_print_event_task()_,_tep_print_event_time()_ and _tep_print_event_dat=
+a()_
++to parse and print the information. =20
++The _tep_ argument is trace event parser context. The _use_trace_clock_=20
++argument indicates if the tep->trace_clock should be used for parsing=20
++the timestamp.
 +
 +EXAMPLE
 +-------
@@ -125,29 +114,39 @@ in
 +#include <event-parse.h>
 +#include <trace-seq.h>
 +...
++struct trace_seq seq;
++trace_seq_init(&seq);
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+static long long
-+process_custom_helper(struct trace_seq *s, unsigned long long *args)
-+{
-+	unsigned long long param =3D args[0];
-+	trace_seq_printf(s, "the helper was called, with argument %lld", param);
-+	return 0;
++void print_my_event(struct tep_record *record)
++{=09
++	struct tep_event *event;
++=09
++	/* print all event information */
++	trace_seq_reset(&seq);
++	tep_print_event(tep, &seq, record, TRUE);
++=09
++	event =3D tep_find_event_by_record(tep, record);
++=09
++	if (event !=3D NULL) {
++		/* print event timestamp */
++		trace_seq_reset(&seq);
++		tep_print_event_time(tep, &seq, event, record, TRUE);
++	=09
++		/* print event task information */
++		trace_seq_reset(&seq);
++		tep_print_event_task(tep, &seq, event, record);
++
++		/* print event name and raw data */
++		trace_seq_reset(&seq);
++		tep_print_event_data(tep, &seq, event, record);=09
++
++		/* print event raw data */
++		trace_seq_reset(&seq);
++		tep_event_info(&seq, event, record);=09
++	}
 +}
 +...
-+	if ( tep_register_print_function(tep,
-+				    process_custom_helper,
-+				    TEP_FUNC_ARG_STRING,
-+				    "custom_helper",
-+				    TEP_FUNC_ARG_LONG,
-+				    TEP_FUNC_ARG_VOID) !=3D 0) {
-+		/* Failed to register my process_custom_helper function */
-+	}
-+...
-+	if (tep_unregister_print_function(tep, process_custom_helper,
-+				      	  "custom_helper") !=3D 0) {
-+		/* Failed to unregister my process_custom_helper function */
-+	}				   =20
 +--
 +
 +FILES
