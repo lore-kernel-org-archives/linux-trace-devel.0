@@ -1,18 +1,19 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr700081.outbound.protection.outlook.com ([40.107.70.81]:24265
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr690079.outbound.protection.outlook.com ([40.107.69.79]:56248
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726524AbeK1Clo (ORCPT
+        id S1726381AbeK1Clp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:41:44 -0500
+        Tue, 27 Nov 2018 21:41:45 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 35/46] tools/lib/traceevent: Man pages for
- tep_find_function() and tep_find_function_address()
-Date: Tue, 27 Nov 2018 15:42:52 +0000
-Message-ID: <20181127154153.11315-36-tstoyanov@vmware.com>
+Subject: [PATCH v3 34/46] tools/lib/traceevent: Man pages for
+ tep_filter_event_has_trivial(), tep_update_trivial() and
+ tep_filter_clear_trivial()
+Date: Tue, 27 Nov 2018 15:42:51 +0000
+Message-ID: <20181127154153.11315-35-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,30 +23,31 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_find_function() and tep_find_function_address()
+Create man pages for tep_filter_event_has_trivial(),
+tep_update_trivial() and tep_filter_clear_trivial()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-func_find.txt | 88 +++++++++++++++++++
- 1 file changed, 88 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_f=
-ind.txt
+ .../libtraceevent-filter_trivial.txt          | 112 ++++++++++++++++++
+ 1 file changed, 112 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
+_trivial.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-func_find.txt=
- b/tools/lib/traceevent/Documentation/libtraceevent-func_find.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_trivia=
+l.txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_trivial.txt
 new file mode 100644
-index 000000000000..3826269bde6f
+index 000000000000..8afd50b29269
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-func_find.txt
-@@ -0,0 +1,88 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_trivial.txt
+@@ -0,0 +1,112 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_find_function,tep_find_function_address - Find function name / start a=
-ddress.
++tep_filter_event_has_trivial,tep_update_trivial,tep_filter_clear_trivial -=
+ Check / update / clear trivial rules of given filter.
 +
 +SYNOPSIS
 +--------
@@ -53,41 +55,57 @@ ddress.
 +--
 +*#include <event-parse.h>*
 +
-+const char pass:[*]*tep_find_function*(struct tep_handle pass:[*]_tep_, un=
-signed long long _addr_);
-+unsigned long long *tep_find_function_address*(struct tep_handle pass:[*]_=
-tep_, unsigned long long _addr_);
++enum *tep_filter_trivial_type* {
++	_TEP_FILTER_TRIVIAL_FALSE_,
++	_TEP_FILTER_TRIVIAL_TRUE_,
++	_TEP_FILTER_TRIVIAL_BOTH_,
++};
++
++int *tep_filter_event_has_trivial*(struct tep_event_filter pass:[*]_filter=
+_, int _event_id_, enum tep_filter_trivial_type _type_);
++int *tep_update_trivial*(struct tep_event_filter pass:[*]_dest_, struct te=
+p_event_filter pass:[*]_source_, enum tep_filter_trivial_type _type_);
++int *tep_filter_clear_trivial*(struct tep_event_filter pass:[*]_filter_, e=
+num tep_filter_trivial_type _type_);
 +--
 +
 +DESCRIPTION
 +-----------
-+These functions can be used to find function name and start address, by gi=
-ven=20
-+address. The given address does not have to be exact, it will select the f=
-unction=20
-+that would contain it.
++The _tep_filter_event_has_trivial()_ function checks if the event with=20
++_event_id_ contains a trivial _filter_ of _type_.
 +
-+The _tep_find_function()_ function returns the function name, which contai=
-ns the
-+given address _addr_. The _tep_ argument is the trace event parser context=
-.
++The _tep_update_trivial()_ function updates the trivial rules with the giv=
+en=20
++filter. It scans _dest_ for trivial events matching _type_ to replace with=
+=20
++the _source_.
 +
-+The _tep_find_function_address()_ function returns the function start addr=
-ess,=20
-+by given address _addr_. The _addr_ does not have to be exact, it will sel=
-ect the function=20
-+that would contain it. The _tep_ argument is the trace event parser contex=
-t.
++The _tep_filter_clear_trivial()_ function clears TRUE and FALSE rules.=20
++It removes rules in the _filter_ that only contain a given _type_ boolean =
+arg.
++
++The trivial _type_, used as argument of these functions can be:
++[verse]
++--
++	_TEP_FILTER_TRIVIAL_FALSE_	- TRUE
++	_TEP_FILTER_TRIVIAL_TRUE_	- FALSE
++	_TEP_FILTER_TRIVIAL_BOTH_	- TRUE or FALSE
++
++--
 +
 +RETURN VALUE
 +------------
-+The _tep_find_function()_ function returns the function name, or NULL in c=
-ase=20
-+it cannot be found.
++The _tep_filter_event_has_trivial()_ function returns 1 if the event conta=
+ins=20
++a matching trivial type, otherwise 0.
 +
-+The _tep_find_function_address()_ function returns the function start addr=
-ess,=20
-+or 0 in case it cannot be found.
++The _tep_update_trivial()_ function  returns 0 on success, or -1 if there =
+was=20
++a problem updating, but events may have still been updated on error.
++
++The _tep_filter_clear_trivial()_ function returns 0 on success, or -1 if t=
+here=20
++was a problem.
 +
 +EXAMPLE
 +-------
@@ -96,15 +114,22 @@ ess,=20
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
++struct tep_event_filter *filter1 =3D tep_filter_alloc(tep);
++struct tep_event_filter *filter2 =3D tep_filter_alloc(tep);
 +...
-+void show_function( unsigned long long addr)
-+{
-+	const char *fname =3D tep_find_function(tep, addr);
-+	unsigned long long fstart =3D tep_find_function_address(tep, addr);
-+=09
-+	/* addr is in function named fname, starting at fstart address, at offset=
- (addr - fstart) */
-+}=20
++if (tep_filter_event_has_trivial(filter1, 1857,TEP_FILTER_TRIVIAL_FALSE) =
+=3D=3D 0) {
++	/* There are FALSE rules in filer1 for the event 1857 */
++}
++
++if (tep_update_trivial(filter1, filter2, TEP_FILTER_TRIVIAL_TRUE) !=3D 0) =
+{
++	/* Failed to update TRUE trivial rules of filter1 with filter2 */
++}
++
++if (tep_filter_clear_trivial(filter, TEP_FILTER_TRIVIAL_BOTH) =3D=3D 0) {
++	/* Failed to clear TRUE and FALSE trivial rules of filter1 */
++}
 +...
 +--
 +
