@@ -2,16 +2,17 @@ Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr730068.outbound.protection.outlook.com ([40.107.73.68]:47354
         "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729309AbeK1Ckn (ORCPT
+        id S1729872AbeK1Ckq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:40:43 -0500
+        Tue, 27 Nov 2018 21:40:46 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 12/46] tools/lib/traceevent: Man page for tep_strerror()
-Date: Tue, 27 Nov 2018 15:42:21 +0000
-Message-ID: <20181127154153.11315-13-tstoyanov@vmware.com>
+Subject: [PATCH v3 13/46] tools/lib/traceevent: Man page for
+ tep_register_trace_clock()
+Date: Tue, 27 Nov 2018 15:42:23 +0000
+Message-ID: <20181127154153.11315-14-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -21,29 +22,30 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_strerror() as part of libtraceevent APIs.
+Create man page for tep_register_trace_clock()
+as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-strerror.txt  | 78 +++++++++++++++++++
- 1 file changed, 78 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-strerr=
-or.txt
+ .../Documentation/libtraceevent-reg_clock.txt | 77 +++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_cl=
+ock.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-strerror.txt =
-b/tools/lib/traceevent/Documentation/libtraceevent-strerror.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_clock.txt=
+ b/tools/lib/traceevent/Documentation/libtraceevent-reg_clock.txt
 new file mode 100644
-index 000000000000..fde1bd71b679
+index 000000000000..60dd81df6b37
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-strerror.txt
-@@ -0,0 +1,78 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_clock.txt
+@@ -0,0 +1,77 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_strerror - Returns a string describing regular errno and tep error num=
-ber.=20
++tep_register_trace_clock - Registers the clock, used for the timestamp of
++the events.=20
 +
 +SYNOPSIS
 +--------
@@ -51,28 +53,28 @@ ber.=20
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_strerror*(struct tep_handle pass:[*]_tep_, enum tep_errno _errnum=
-_, char pass:[*]_buf_, size_t _buflen_);
-+
++int *tep_register_trace_clock*(struct tep_handle pass:[*]_tep_, const char=
+ pass:[*]_trace_clock_);
 +--
++
 +DESCRIPTION
 +-----------
-+The _tep_strerror()_ function converts tep error number into a human reada=
-ble string.
-+The _tep_ argument is trace event parser context. The _errnum_ is a regula=
-r errno,
-+defined in errno.h, or a tep error number. The string, describing this err=
-or number=20
-+is copied in the _buf_ argument. The _buflen_ argument is the size of the =
-_buf_.
++The _tep_register_trace_clock()_ function registers the clock, used for=20
++the timestamps of the events. When an event is recorded, a timestamp is at=
+tached=20
++to it. This timestamp comes from a specified clock. Supported clocks can b=
+e seen=20
++in tracefs/trace_clock, the selected one is in square brackets.
++The _tep_ argument is the trace event parser context. The _trace_clock_ ar=
+gument=20
++is the name of the clock, the string is copied internally.=20
 +
 +RETURN VALUE
 +------------
-+The _tep_strerror()_ function returns 0, if a valid _errnum_ is passed and=
- the=20
-+string is copied into _buf_. If _errnum_ is not a valid error number, -1 i=
-s returned=20
-+and _buf_ is not modified.
++The _tep_register_trace_clock()_ function returns 0 in case of success.=20
++If there is not enough memory to copy the _trace_clock_ string -1 is retur=
+ned=20
++and errno is set to ENOMEM.=20
 +
 +EXAMPLE
 +-------
@@ -82,13 +84,9 @@ s returned=20
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+char buf[32];=20
-+char *pool =3D calloc(1, 128);
-+if (tep =3D=3D NULL) {
-+	tep_strerror(tep, TEP_ERRNO__MEM_ALLOC_FAILED, buf, 32);
-+	printf ("The pool is not initialized, %s", buf);
-+}
-+...
++	if(tep_register_trace_clock(tep, "local") !=3D 0) {
++		/* Failed to register the clock */
++	}
 +--
 +
 +FILES
