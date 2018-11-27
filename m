@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr730065.outbound.protection.outlook.com ([40.107.73.65]:43948
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr700089.outbound.protection.outlook.com ([40.107.70.89]:36176
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729553AbeK1CjN (ORCPT
+        id S1729553AbeK1CjO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:39:13 -0500
+        Tue, 27 Nov 2018 21:39:14 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 01/14] tools/lib/traceevent: Implemented new API
- tep_get_ref()
-Date: Tue, 27 Nov 2018 15:40:51 +0000
-Message-ID: <20181127154038.11175-2-tstoyanov@vmware.com>
+Subject: [PATCH v2 03/14] tools/lib/traceevent: Install trace-seq.h API header
+ file
+Date: Tue, 27 Nov 2018 15:40:54 +0000
+Message-ID: <20181127154038.11175-4-tstoyanov@vmware.com>
 References: <20181127154038.11175-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154038.11175-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,49 +22,33 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch implements new API of the tracevent library:
-int tep_get_ref(struct tep_handle *pevent);
-The API returns the reference counter "ref_count" of the tep handler.
-As "struct tep_handle" is internal only, its members cannot be accessed
-by the library users, the API is used to get the reference counter.
+This patch installs trace-seq.h header file on "make install".
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/event-parse.c | 7 +++++++
- tools/lib/traceevent/event-parse.h | 1 +
- 2 files changed, 8 insertions(+)
+ tools/lib/traceevent/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
-t-parse.c
-index f327c990dedc..c0dd72141a44 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -6774,6 +6774,13 @@ void tep_ref(struct tep_handle *pevent)
- 	pevent->ref_count++;
- }
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index 05ac0ec9bcd1..f65243137d6d 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -285,7 +285,7 @@ define do_install_pkgconfig_file
+ 	fi=09
+ endef
 =20
-+int tep_get_ref(struct tep_handle *pevent)
-+{
-+	if (pevent)
-+		return pevent->ref_count;
-+	return 0;
-+}
-+
- void tep_free_format_field(struct tep_format_field *field)
- {
- 	free(field->type);
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/even=
-t-parse.h
-index cacd0b9f4807..9af316862ed4 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -583,6 +583,7 @@ struct tep_handle *tep_alloc(void);
- void tep_free(struct tep_handle *pevent);
- void tep_ref(struct tep_handle *pevent);
- void tep_unref(struct tep_handle *pevent);
-+int tep_get_ref(struct tep_handle *pevent);
+-install_lib: all_cmd install_plugins install_pkgconfig
++install_lib: all_cmd install_plugins install_headers install_pkgconfig
+ 	$(call QUIET_INSTALL, $(LIB_TARGET)) \
+ 		$(call do_install_mkdir,$(libdir_SQ)); \
+ 		cp -fpR $(LIB_INSTALL) $(DESTDIR)$(libdir_SQ)
+@@ -302,6 +302,7 @@ install_headers:
+ 	$(call QUIET_INSTALL, headers) \
+ 		$(call do_install,event-parse.h,$(prefix)/include/traceevent,644); \
+ 		$(call do_install,event-utils.h,$(prefix)/include/traceevent,644); \
++		$(call do_install,trace-seq.h,$(prefix)/include/traceevent,644); \
+ 		$(call do_install,kbuffer.h,$(prefix)/include/traceevent,644)
 =20
- /* access to the internal parser */
- void tep_buffer_init(const char *buf, unsigned long long size);
+ install: install_lib
 --=20
 2.19.1
