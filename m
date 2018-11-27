@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr690078.outbound.protection.outlook.com ([40.107.69.78]:52480
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr700068.outbound.protection.outlook.com ([40.107.70.68]:1600
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726624AbeK1ClR (ORCPT
+        id S1726381AbeK1Cle (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:41:17 -0500
+        Tue, 27 Nov 2018 21:41:34 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 29/46] tools/lib/traceevent: Man page for
- tep_filter_strerror()
-Date: Tue, 27 Nov 2018 15:42:44 +0000
-Message-ID: <20181127154153.11315-30-tstoyanov@vmware.com>
+Subject: [PATCH v3 25/46] tools/lib/traceevent: Man page for
+ tep_read_number_field()
+Date: Tue, 27 Nov 2018 15:42:39 +0000
+Message-ID: <20181127154153.11315-26-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,29 +22,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_filter_strerror()
+Create man page for tep_read_number_field()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-filter_error.txt            | 78 +++++++++++++++++++
- 1 file changed, 78 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
-_error.txt
+ .../libtraceevent-field_read.txt              | 80 +++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_=
+read.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_error.=
-txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_error.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_read.tx=
+t b/tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
 new file mode 100644
-index 000000000000..64e3aa809838
+index 000000000000..8e4ca26b73aa
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_error.txt
-@@ -0,0 +1,78 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
+@@ -0,0 +1,80 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_filter_strerror - Fills the filter error message in a buffer.
++tep_read_number_field - Reads a number from a raw data.
 +
 +SYNOPSIS
 +--------
@@ -52,22 +52,23 @@ index 000000000000..64e3aa809838
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_filter_strerror*(struct tep_event_filter pass:[*]_filter_, enum t=
-ep_errno _err_, char pass:[*]buf, size_t _buflen_);
++int *tep_read_number_field*(struct tep_format_field pass:[*]_field_, const=
+ void pass:[*]_data_, unsigned long long pass:[*]_value_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_filter_strerror()_ function copies the _filter_ error buffer into=
++The _tep_read_number_field()_ function reads the value of the _field_ from=
  the=20
-+given _buf_ with the size _buflen_. If the error buffer is empty, in the _=
-buf_=20
-+is copied a string, describing the error _err_.=20
++raw _data_ and stores it in the _value_. The function sets the _value_ acc=
+ording
++to the endianness of the raw data and the current machine.=20
 +
 +RETURN VALUE
 +------------
-+The _tep_filter_strerror()_ function returns 0 if message was filled=20
-+successfully, or -1 in case of an error.
++The _tep_read_number_field()_ function retunrs 0 in case of success, or -1=
+ in=20
++case of an error.
 +
 +EXAMPLE
 +-------
@@ -76,20 +77,22 @@ buf_=20
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
-+struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+int ret;
-+char errstr[200];
-+ret =3D tep_filter_add_filter_str(filter, "sched/sched_wakeup:target_cpu=
-=3D=3D1");=20
-+if(ret < 0) {
-+	tep_filter_strerror(filter, ret, errstr, sizeof(errstr));
-+	/* Failed to add a new rule to the filter, the error string is in errstr =
-*/
++struct tep_event *event =3D tep_find_event_by_name(tep, "timer", "hrtimer_=
+start");
++...
++void process_record(struct tep_record *record)
++{
++	unsigned long long pid;
++	struct tep_format_field *field_pid =3D tep_find_common_field(event, "comm=
+on_pid");
++=09
++	if (tep_read_number_field(field_pid, record->data, &pid) !=3D 0) {
++		/* Failed to get "common_pid" value */
++	}
 +}
 +...
 +--
-+
 +FILES
 +-----
 +[verse]
