@@ -2,17 +2,17 @@ Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr700081.outbound.protection.outlook.com ([40.107.70.81]:24265
         "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726681AbeK1Clr (ORCPT
+        id S1726381AbeK1Clr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 27 Nov 2018 21:41:47 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 36/46] tools/lib/traceevent: Man pages for
- tep_set_function_resolver() and tep_reset_function_resolver()
-Date: Tue, 27 Nov 2018 15:42:53 +0000
-Message-ID: <20181127154153.11315-37-tstoyanov@vmware.com>
+Subject: [PATCH v3 37/46] tools/lib/traceevent: Man pages for
+ tep_parse_event() and tep_parse_format()
+Date: Tue, 27 Nov 2018 15:42:55 +0000
+Message-ID: <20181127154153.11315-38-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,31 +22,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_set_function_resolver() and tep_reset_function_res=
-olver()
+Create man pages for tep_parse_event() and tep_parse_format()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-func_resolve.txt            | 96 +++++++++++++++++++
- 1 file changed, 96 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_r=
-esolve.txt
+ .../libtraceevent-parse_event.txt             | 90 +++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_=
+event.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-func_resolve.=
-txt b/tools/lib/traceevent/Documentation/libtraceevent-func_resolve.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_event.t=
+xt b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
 new file mode 100644
-index 000000000000..4965cc6c79dc
+index 000000000000..ceb41cdd6514
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-func_resolve.txt
-@@ -0,0 +1,96 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
+@@ -0,0 +1,90 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_set_function_resolver,tep_reset_function_resolver - Set / reset an alt=
-ernative function resolver
++tep_parse_event,tep_parse_format - Parse the event format information
 +
 +SYNOPSIS
 +--------
@@ -54,45 +52,38 @@ ernative function resolver
 +--
 +*#include <event-parse.h>*
 +
-+typedef char pass:[*](*tep_func_resolver_t*)(void pass:[*]_priv_, unsigned=
- long long pass:[*]_addrp_, char pass:[**]_modp_);
-+
-+int *tep_set_function_resolver*(struct tep_handle pass:[*]_tep_, tep_func_=
-resolver_t pass:[*]_func_, void pass:[*]_priv_);
-+void *tep_reset_function_resolver*(struct tep_handle pass:[*]_tep_);
++enum tep_errno *tep_parse_event*(struct tep_handle pass:[*]_tep_, const ch=
+ar pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
++enum tep_errno *tep_parse_format*(struct tep_handle pass:[*]_tep_, struct =
+tep_event pass:[*]pass:[*]_eventp_, const char pass:[*]_buf_, unsigned long=
+ _size_, const char pass:[*]_sys_);
 +--
 +
 +DESCRIPTION
 +-----------
-+Some tools may have already a way to resolve the kernel functions. These A=
-PIs
-+allow them to keep using it instead of duplicating all the entries inside.
-+
-+The _tep_set_function_resolver()_ function registers _func_ as an alternat=
-ive=20
-+kernel functions resolver. The _tep_ argument is trace event parser contex=
-t.
-+The _priv_ argument is a custom context of the _func_ function.
-+
-+The _tep_reset_function_resolver()_ function resets the kernel functions=20
-+resolver to the default function.  The _tep_ argument is trace event parse=
-r=20
-+context.
-+
-+The _tep_func_resolver_t_ type is the prototype of the alternative kernel=
++The _tep_parse_event()_ function parses the event format and creates an ev=
+ent=20
++structure to quickly parse raw data for a given event. The _tep_ argument =
+is=20
++the trace event parser context. The created event structure is stored in t=
+he=20
++_tep_ context. The _buf_ argument is a buffer with _size_, where the event=
 =20
-+functions resolver. This function receives a pointer to its custom context=
-=20
-+(set with the _tep_set_function_resolver()_ call ) and the address of a ke=
-rnel=20
-+function, which has to be resolved. In case of success, it should return=20
-+the name of the function and its module (if any) in _modp_.
++format data is. The event format data can be taken from=20
++tracefs/events/.../.../format files. The _sys_ argument is the system of=20
++the event.=20
++
++The _tep_parse_format()_ function does the same as _tep_parse_event()_. Th=
+e only
++difference is in the extra _eventp_ argument, where the newly created even=
+t=20
++structure is returned.
 +
 +RETURN VALUE
 +------------
-+The _tep_set_function_resolver()_ function returns 0 in case of success, o=
-r -1
-+in case of an error.
++Both _tep_parse_event()_ and _tep_parse_format()_ functions return 0 on su=
+ccess,
++or TEP_ERRNO__... in case of an error.=20
 +
 +EXAMPLE
 +-------
@@ -102,18 +93,18 @@ r -1
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+char *my_resolve_kernel_addr(void *context, unsigned long long *addrp, cha=
-r **modp)
-+{=09
-+	return NULL;
++char *buf;
++int size;
++struct tep_event *event =3D NULL;
++buf =3D read_file("/sys/kernel/tracing/events/ftrace/print/format", &size)=
+;
++if (tep_parse_event(tep, buf, size, "ftrace") !=3D 0) {
++	/* Failed to parse the ftrace print format */
 +}
-+...
-+	if (tep_set_function_resolver(tep, my_resolve_kernel_addr, NULL) !=3D 0) =
-{
-+		/* failed to register my_resolve_kernel_addr */
-+	}
-+...
-+	tep_reset_function_resolver(tep);
++
++if (tep_parse_format(tep, &event, buf, size, "ftrace") !=3D 0) {
++	/* Failed to parse the ftrace print format */
++}
 +...
 +--
 +
