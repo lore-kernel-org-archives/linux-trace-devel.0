@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr700068.outbound.protection.outlook.com ([40.107.70.68]:1600
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr690079.outbound.protection.outlook.com ([40.107.69.79]:56248
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726524AbeK1Clg (ORCPT
+        id S1726681AbeK1Clh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:41:36 -0500
+        Tue, 27 Nov 2018 21:41:37 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 26/46] tools/lib/traceevent: Man pages for
- tep_event_common_fields() and tep_event_fields()
-Date: Tue, 27 Nov 2018 15:42:40 +0000
-Message-ID: <20181127154153.11315-27-tstoyanov@vmware.com>
+Subject: [PATCH v3 31/46] tools/lib/traceevent: Man page for
+ tep_filter_match()
+Date: Tue, 27 Nov 2018 15:42:47 +0000
+Message-ID: <20181127154153.11315-32-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,30 +22,29 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_event_common_fields() and tep_event_fields()
+Create man page for tep_filter_match()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-fields.txt    | 99 +++++++++++++++++++
- 1 file changed, 99 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-fields=
-.txt
+ .../libtraceevent-filter_match.txt            | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
+_match.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-fields.txt b/=
-tools/lib/traceevent/Documentation/libtraceevent-fields.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_match.=
+txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_match.txt
 new file mode 100644
-index 000000000000..45e1e05cbfb2
+index 000000000000..61c81d36c54d
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-fields.txt
-@@ -0,0 +1,99 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_match.txt
+@@ -0,0 +1,96 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_event_common_fields,tep_event_fields - Get a list of fields for an eve=
-nt.
++tep_filter_match - Tests if a record matches a filter.
 +
 +SYNOPSIS
 +--------
@@ -53,31 +52,29 @@ nt.
 +--
 +*#include <event-parse.h>*
 +
-+struct tep_format_field pass:[*]pass:[*]*tep_event_common_fields*(struct t=
-ep_event pass:[*]_event_);
-+struct tep_format_field pass:[*]pass:[*]*tep_event_fields*(struct tep_even=
-t pass:[*]_event_);
++enum tep_errno *tep_filter_match*(struct tep_event_filter pass:[*]_filter_=
+, struct tep_record pass:[*]_record_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_event_common_fields()_ function returns an array of pointers to c=
-ommon=20
-+fields for the _event_. The array is allocated in the function and must be=
- freed
-+by free(). The last element of the array is NULL.
-+
-+The _tep_event_fields()_ function returns an array of pointers to event sp=
-ecific=20
-+fields for the _event_. The array is allocated in the function and must be=
- freed
-+by free(). The last element of the array is NULL.
++The _tep_filter_match()_ function tests if a _record_ matches given _filte=
+r_.
 +
 +RETURN VALUE
 +------------
-+Both _tep_event_common_fields()_ and _tep_event_fields()_ functions return
-+an array of pointers to tep_format_field structures in case of success, or
-+NULL in case of an error.
++The _tep_filter_match()_ function returns _tep_errno_, according to the re=
+sult:
++[verse]
++--
++_pass:[TEP_ERRNO__FILTER_MATCH]_	- filter found for event, the record matc=
+hes.
++_pass:[TEP_ERRNO__FILTER_MISS]_		- filter found for event, the record does=
+ not match.
++_pass:[TEP_ERRNO__FILTER_NOT_FOUND]_	- no filter found for record's event.
++_pass:[TEP_ERRNO__NO_FILTER]_		- no rules in the filter.
++--
++or any other _tep_errno_, if an error occurred during the test.
 +
 +EXAMPLE
 +-------
@@ -86,31 +83,27 @@ ecific=20
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
++struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+int i;
-+struct tep_format_field **fields;
-+struct tep_event *event =3D tep_find_event_by_name(tep, "kvm", "kvm_exit")=
-;
-+if (event !=3D NULL) {
-+	fields =3D tep_event_common_fields(event);
-+	if (fields !=3D NULL) {
-+		i =3D 0;
-+		while (fields[i]) {
-+			/* walk through the list of the common fields of the kvm_exit event */
-+			i++;
-+		}
-+		free(fields);
++void process_record(struct tep_record *record)
++{
++	switch (tep_filter_match(filter, record)) {
++	case TEP_ERRNO__FILTER_MATCH:
++		/* The filter matches the record */
++		break;
++	case TEP_ERRNO__FILTER_MISS:
++		/* The filter does not match the record */
++		break;
++	case TEP_ERRNO__FILTER_NOT_FOUND:
++		/* No filter found for record's event */
++		break;
++	case TEP_ERRNO__NO_FILTER:
++		/* There are no rules in the filter */
++		break
++	default:
++		/* An error occurred during the test */
++		break;=09
 +	}
-+	fields =3D tep_event_fields(event);
-+	if (fields !=3D NULL) {
-+		i =3D 0;
-+		while (fields[i]) {
-+			/* walk through the list of the event specific fields of the kvm_exit e=
-vent */
-+			i++;
-+		}
-+		free(fields);
-+	}=09
 +}
 +...
 +--
