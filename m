@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr700068.outbound.protection.outlook.com ([40.107.70.68]:1600
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr690079.outbound.protection.outlook.com ([40.107.69.79]:56248
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726381AbeK1Cle (ORCPT
+        id S1726381AbeK1Clg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:41:34 -0500
+        Tue, 27 Nov 2018 21:41:36 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 25/46] tools/lib/traceevent: Man page for
- tep_read_number_field()
-Date: Tue, 27 Nov 2018 15:42:39 +0000
-Message-ID: <20181127154153.11315-26-tstoyanov@vmware.com>
+Subject: [PATCH v3 30/46] tools/lib/traceevent: Man pages for
+ tep_event_filtered() and tep_filter_remove_event()
+Date: Tue, 27 Nov 2018 15:42:45 +0000
+Message-ID: <20181127154153.11315-31-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,29 +22,30 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_read_number_field()
+Create man pages for tep_event_filtered() and tep_filter_remove_event()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-field_read.txt              | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_=
-read.txt
+ .../libtraceevent-filter_event.txt            | 84 +++++++++++++++++++
+ 1 file changed, 84 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
+_event.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_read.tx=
-t b/tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_event.=
+txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_event.txt
 new file mode 100644
-index 000000000000..8e4ca26b73aa
+index 000000000000..8b45dd765e02
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
-@@ -0,0 +1,80 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_event.txt
+@@ -0,0 +1,84 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_read_number_field - Reads a number from a raw data.
++tep_event_filtered,tep_filter_remove_event - Checks / removes a filter on =
+an event.
 +
 +SYNOPSIS
 +--------
@@ -52,23 +53,31 @@ index 000000000000..8e4ca26b73aa
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_read_number_field*(struct tep_format_field pass:[*]_field_, const=
- void pass:[*]_data_, unsigned long long pass:[*]_value_);
++int *tep_event_filtered*(struct tep_event_filter pass:[*]_filter_, int _ev=
+ent_id_);
++int *tep_filter_remove_event*(struct tep_event_filter pass:[*]_filter_, in=
+t _event_id_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_read_number_field()_ function reads the value of the _field_ from=
- the=20
-+raw _data_ and stores it in the _value_. The function sets the _value_ acc=
-ording
-+to the endianness of the raw data and the current machine.=20
++The _tep_event_filtered()_ function checks if the event with _event_id_ ha=
+s=20
++_filter_.
++
++The _tep_filter_remove_event()_ function removes a _filter_ for an event w=
+ith=20
++_event_id_.
 +
 +RETURN VALUE
 +------------
-+The _tep_read_number_field()_ function retunrs 0 in case of success, or -1=
- in=20
-+case of an error.
++The _tep_event_filtered()_ function returns 1 if the filter is found for g=
+iven
++event, or 0 otherwise.
++
++The _tep_filter_remove_event()_ function returns 1 if the vent was removed=
+, or=20
++0 if the event was not found.
 +
 +EXAMPLE
 +-------
@@ -77,22 +86,18 @@ ording
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
++struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+struct tep_event *event =3D tep_find_event_by_name(tep, "timer", "hrtimer_=
-start");
-+...
-+void process_record(struct tep_record *record)
-+{
-+	unsigned long long pid;
-+	struct tep_format_field *field_pid =3D tep_find_common_field(event, "comm=
-on_pid");
-+=09
-+	if (tep_read_number_field(field_pid, record->data, &pid) !=3D 0) {
-+		/* Failed to get "common_pid" value */
-+	}
++if (tep_event_filtered(filter, 1857) =3D=3D 1) {
++	/* Event 1857 has filter */
++}
++
++if (tep_filter_remove_event(filter, 1857) =3D=3D 1) {
++	/* Event 1857 was removed from the filter */
 +}
 +...
 +--
++
 +FILES
 +-----
 +[verse]
