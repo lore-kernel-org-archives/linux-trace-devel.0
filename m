@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr690079.outbound.protection.outlook.com ([40.107.69.79]:56248
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr700068.outbound.protection.outlook.com ([40.107.70.68]:1600
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726381AbeK1Clg (ORCPT
+        id S1726524AbeK1Clg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 27 Nov 2018 21:41:36 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 30/46] tools/lib/traceevent: Man pages for
- tep_event_filtered() and tep_filter_remove_event()
-Date: Tue, 27 Nov 2018 15:42:45 +0000
-Message-ID: <20181127154153.11315-31-tstoyanov@vmware.com>
+Subject: [PATCH v3 26/46] tools/lib/traceevent: Man pages for
+ tep_event_common_fields() and tep_event_fields()
+Date: Tue, 27 Nov 2018 15:42:40 +0000
+Message-ID: <20181127154153.11315-27-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,30 +22,30 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_event_filtered() and tep_filter_remove_event()
+Create man pages for tep_event_common_fields() and tep_event_fields()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-filter_event.txt            | 84 +++++++++++++++++++
- 1 file changed, 84 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
-_event.txt
+ .../Documentation/libtraceevent-fields.txt    | 99 +++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-fields=
+.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_event.=
-txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_event.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-fields.txt b/=
+tools/lib/traceevent/Documentation/libtraceevent-fields.txt
 new file mode 100644
-index 000000000000..8b45dd765e02
+index 000000000000..45e1e05cbfb2
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_event.txt
-@@ -0,0 +1,84 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-fields.txt
+@@ -0,0 +1,99 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_event_filtered,tep_filter_remove_event - Checks / removes a filter on =
-an event.
++tep_event_common_fields,tep_event_fields - Get a list of fields for an eve=
+nt.
 +
 +SYNOPSIS
 +--------
@@ -53,31 +53,31 @@ an event.
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_event_filtered*(struct tep_event_filter pass:[*]_filter_, int _ev=
-ent_id_);
-+int *tep_filter_remove_event*(struct tep_event_filter pass:[*]_filter_, in=
-t _event_id_);
++struct tep_format_field pass:[*]pass:[*]*tep_event_common_fields*(struct t=
+ep_event pass:[*]_event_);
++struct tep_format_field pass:[*]pass:[*]*tep_event_fields*(struct tep_even=
+t pass:[*]_event_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_event_filtered()_ function checks if the event with _event_id_ ha=
-s=20
-+_filter_.
++The _tep_event_common_fields()_ function returns an array of pointers to c=
+ommon=20
++fields for the _event_. The array is allocated in the function and must be=
+ freed
++by free(). The last element of the array is NULL.
 +
-+The _tep_filter_remove_event()_ function removes a _filter_ for an event w=
-ith=20
-+_event_id_.
++The _tep_event_fields()_ function returns an array of pointers to event sp=
+ecific=20
++fields for the _event_. The array is allocated in the function and must be=
+ freed
++by free(). The last element of the array is NULL.
 +
 +RETURN VALUE
 +------------
-+The _tep_event_filtered()_ function returns 1 if the filter is found for g=
-iven
-+event, or 0 otherwise.
-+
-+The _tep_filter_remove_event()_ function returns 1 if the vent was removed=
-, or=20
-+0 if the event was not found.
++Both _tep_event_common_fields()_ and _tep_event_fields()_ functions return
++an array of pointers to tep_format_field structures in case of success, or
++NULL in case of an error.
 +
 +EXAMPLE
 +-------
@@ -86,14 +86,31 @@ iven
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep =3D tep_alloc();
-+struct tep_event_filter *filter =3D tep_filter_alloc(tep);
 +...
-+if (tep_event_filtered(filter, 1857) =3D=3D 1) {
-+	/* Event 1857 has filter */
-+}
-+
-+if (tep_filter_remove_event(filter, 1857) =3D=3D 1) {
-+	/* Event 1857 was removed from the filter */
++int i;
++struct tep_format_field **fields;
++struct tep_event *event =3D tep_find_event_by_name(tep, "kvm", "kvm_exit")=
+;
++if (event !=3D NULL) {
++	fields =3D tep_event_common_fields(event);
++	if (fields !=3D NULL) {
++		i =3D 0;
++		while (fields[i]) {
++			/* walk through the list of the common fields of the kvm_exit event */
++			i++;
++		}
++		free(fields);
++	}
++	fields =3D tep_event_fields(event);
++	if (fields !=3D NULL) {
++		i =3D 0;
++		while (fields[i]) {
++			/* walk through the list of the event specific fields of the kvm_exit e=
+vent */
++			i++;
++		}
++		free(fields);
++	}=09
 +}
 +...
 +--
