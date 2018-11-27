@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr690062.outbound.protection.outlook.com ([40.107.69.62]:29120
+Received: from mail-eopbgr690078.outbound.protection.outlook.com ([40.107.69.78]:52480
         "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729968AbeK1Ck6 (ORCPT
+        id S1726524AbeK1ClB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:40:58 -0500
+        Tue, 27 Nov 2018 21:41:01 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 22/46] tools/lib/traceevent: Man pages
- tep_find_common_field(), tep_find_field() and tep_find_any_field()
-Date: Tue, 27 Nov 2018 15:42:35 +0000
-Message-ID: <20181127154153.11315-23-tstoyanov@vmware.com>
+Subject: [PATCH v3 27/46] tools/lib/traceevent: Man pages for
+ tep_filter_alloc(), tep_filter_free() and tep_filter_reset()
+Date: Tue, 27 Nov 2018 15:42:41 +0000
+Message-ID: <20181127154153.11315-28-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,30 +22,31 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_find_common_field(), tep_find_field()
-and tep_find_any_field() as part of the libtraceevent APIs.
+Create man pages tep_filter_alloc(), tep_filter_free() and tep_filter_reset=
+()
+as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-field_find.txt              | 98 +++++++++++++++++++
- 1 file changed, 98 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_=
-find.txt
+ .../Documentation/libtraceevent-filter.txt    | 85 +++++++++++++++++++
+ 1 file changed, 85 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter=
+.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_find.tx=
-t b/tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter.txt b/=
+tools/lib/traceevent/Documentation/libtraceevent-filter.txt
 new file mode 100644
-index 000000000000..a5afe260285a
+index 000000000000..8b51f246b402
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
-@@ -0,0 +1,98 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter.txt
+@@ -0,0 +1,85 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_find_common_field,tep_find_field,tep_find_any_field - Search for a fie=
-ld in an event.=20
++tep_filter_alloc,tep_filter_free,tep_filter_reset - Create / free / reset =
+an event filter.
 +
 +SYNOPSIS
 +--------
@@ -53,36 +54,31 @@ ld in an event.=20
 +--
 +*#include <event-parse.h>*
 +
-+struct tep_format_field pass:[*]*tep_find_common_field*(struct tep_event p=
-ass:[*]_event_, const char pass:[*]_name_);
-+struct tep_format_field pass:[*]*tep_find_field*(struct tep_event_ormat pa=
-ss:[*]_event_, const char pass:[*]_name_);
-+struct tep_format_field pass:[*]*tep_find_any_field*(struct tep_event pass=
-:[*]_event_, const char pass:[*]_name_);
++struct tep_event_filter pass:[*]*tep_filter_alloc*(struct tep_handle pass:=
+[*]_tep_);
++void *tep_filter_free*(struct tep_event_filter pass:[*]_filter_);
++void *tep_filter_reset*(struct tep_event_filter pass:[*]_filter_);
 +--
 +
 +DESCRIPTION
 +-----------
-+These functions search for a field with given name in an event.
++The _tep_filter_alloc()_ function creates a new event filter. The _tep_ ar=
+gument
++is the trace event parser context.
 +
-+The _tep_find_common_field()_ function searches for a common field with _n=
-ame_=20
-+in the _event_.
++The _tep_filter_free()_ function frees an event filter and all resources t=
+hat it=20
++had used.=20
 +
-+The _tep_find_field()_ function searches for an event specific field with
-+_name_ in the _event_.
-+
-+The _tep_find_any_field()_ function searches for any field with _name_ in =
-the=20
-+_event_.
++The _tep_filter_reset()_ function removes all rules from an event filter a=
+nd=20
++resets it.
 +
 +RETURN VALUE
 +------------
-+The _tep_find_common_field(), _tep_find_field()_ and _tep_find_any_field()=
-_
-+functions return a pointer to the found field, or NULL in case there is no=
- field
-+with the requested name.
++The _tep_filter_alloc()_ function returns a pointer to the newly created e=
+vent
++filter, or NULL in case of an error.
 +
 +EXAMPLE
 +-------
@@ -92,25 +88,14 @@ _
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+struct tep_event *event =3D tep_find_event_by_name(tep, "timer", "hrtimer_=
-start");
++struct tep_event_filter *filter =3D tep_filter_alloc(tep);
++if (filter =3D=3D NULL) {
++	/* Failed to create the filter */
++}
 +...
-+	struct tep_format_field *field;
-+
-+	field =3D tep_find_common_field(event, "common_pid");
-+	if (field =3D=3D NULL) {
-+		/* Cannot find "common_pid" common field in the event */
-+	}
-+
-+	field =3D tep_find_field(event, "softexpires");
-+	if (field =3D=3D NULL) {
-+		/* Cannot find "softexpires" event specific field in the event */
-+	}
-+=09
-+	field =3D tep_find_any_field(event, "mode");
-+	if (field =3D=3D NULL) {
-+		/* Cannot find "mode" field in the event */
-+	}
++tep_filter_reset(filter);
++...
++tep_filter_free(filter);
 +...
 +--
 +
