@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr690062.outbound.protection.outlook.com ([40.107.69.62]:29120
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr730072.outbound.protection.outlook.com ([40.107.73.72]:22643
+        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729913AbeK1Ckz (ORCPT
+        id S1729309AbeK1Ckz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 27 Nov 2018 21:40:55 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 21/46] tools/lib/traceevent: Man pages
- tep_get_first_event() and tep_get_events_count()
-Date: Tue, 27 Nov 2018 15:42:33 +0000
-Message-ID: <20181127154153.11315-22-tstoyanov@vmware.com>
+Subject: [PATCH v3 15/46] tools/lib/traceevent: Man pages for
+ tep_register_function() and tep_register_print_string()
+Date: Tue, 27 Nov 2018 15:42:25 +0000
+Message-ID: <20181127154153.11315-16-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,29 +22,32 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man pages for tep_get_first_event() and tep_get_events_count()
+Create man pages for tep_register_function() and tep_register_print_string(=
+)
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-events.txt    | 87 +++++++++++++++++++
- 1 file changed, 87 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-events=
-.txt
+ .../libtraceevent-reg_funcstr.txt             | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_fu=
+ncstr.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-events.txt b/=
-tools/lib/traceevent/Documentation/libtraceevent-events.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.t=
+xt b/tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.txt
 new file mode 100644
-index 000000000000..169bb3240633
+index 000000000000..b0e196a1e47b
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-events.txt
-@@ -0,0 +1,87 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.txt
+@@ -0,0 +1,89 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_get_first_event,tep_get_events_count - Access events.=20
++tep_register_function, tep_register_print_string - Registers a function / =
+string=20
++with a given address.
 +
 +SYNOPSIS
 +--------
@@ -52,29 +55,40 @@ index 000000000000..169bb3240633
 +--
 +*#include <event-parse.h>*
 +
-+struct tep_event pass:[*]*tep_get_first_event*(struct tep_handle pass:[*]_=
-tep_);
-+int *tep_get_events_count*(struct tep_handle pass:[*]_tep_);
++int *tep_register_function*(struct tep_handle pass:[*]_tep_, char pass:[*]=
+_name_, unsigned long long _addr_, char pass:[*]_mod_);
++int *tep_register_print_string*(struct tep_handle pass:[*]_tep_, const cha=
+r pass:[*]_fmt_, unsigned long long _addr_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_get_first_event()_ function returns a pointer to the first event.=
- As events are=20
-+stored in an array, this function returns the pointer to the beginning=20
-+of the array. The _tep_ argument is trace event parser context.=20
++The _tep_register_function()_ function registers a function name with an=20
++address and module. The _tep_ argument is the trace event parser context. =
+The=20
++_name_ is the name of the function, the string is copied internally. The _=
+addr_=20
++is the start address of the function. The _mod_ is the kernel module=20
++the function may be in (NULL for none).=20
 +
-+The _tep_get_events_count()_ function returns the number of the events=20
-+in the array. The _tep_ argument is trace event parser context.
++The _tep_register_print_string()_ function  registers a string by the addr=
+ess=20
++it was stored in the kernel. The _tep_ argument is the trace event parser=
+=20
++context. The _fmt_ is the string to register, it is copied internally. The=
+ _addr_=20
++is the address the string was located at.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_first_event()_ returns a pointer to the first event. NULL is=
-=20
-+returned in case of error, or in case there are no events.
++The _tep_register_function()_ function returns 0 in case of success. In ca=
+se of=20
++an error -1 is returned, and errno is set to the appropriate error number.
 +
-+The _tep_get_events_count()_ returns the number of the events. 0 is=20
-+returned in case of error, or in case there are no events.
++The _tep_register_print_string()_ function returns 0 in case of success. I=
+n case=20
++of an error -1 is returned, and errno is set to the appropriate error numb=
+er.
 +
 +EXAMPLE
 +-------
@@ -84,19 +98,16 @@ tep_);
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+int i,count =3D tep_get_events_count(tep);
-+struct tep_event *event, *events =3D tep_get_first_event(tep);
-+
-+if (events =3D=3D NULL) {
-+	/* There are no events */
-+} else {
-+	for (i=3D0; i<count; i++) {
-+		event =3D (events+i);
-+		/* process events[i] */
++	if (tep_register_function(tep, "my_custom_func",
++			  	 (unsigned long long) 0x12345678, NULL) !=3D 0) {
++		/* Failed to register my_custom_func address mapping */
 +	}
-+}
++...
++	if (tep_register_print_string(tep, "print string",
++			  	 (unsigned long long) 0x87654321, NULL) !=3D 0) {
++		/* Failed to register "print string" address mapping */
++	}
 +--
-+
 +FILES
 +-----
 +[verse]
