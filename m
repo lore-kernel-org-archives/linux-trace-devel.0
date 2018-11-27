@@ -1,17 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr730068.outbound.protection.outlook.com ([40.107.73.68]:47354
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr800049.outbound.protection.outlook.com ([40.107.80.49]:61440
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729862AbeK1Ckz (ORCPT
+        id S1729943AbeK1Ckz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 27 Nov 2018 21:40:55 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 17/46] tools/lib/traceevent: Man page for tep_read_number()
-Date: Tue, 27 Nov 2018 15:42:28 +0000
-Message-ID: <20181127154153.11315-18-tstoyanov@vmware.com>
+Subject: [PATCH v3 07/46] tools/lib/traceevent: Man page for tep_get_cpus()
+ and tep_set_cpus()
+Date: Tue, 27 Nov 2018 15:42:15 +0000
+Message-ID: <20181127154153.11315-8-tstoyanov@vmware.com>
 References: <20181127154153.11315-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154153.11315-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -21,28 +22,31 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Create man page for tep_read_number() as part of the libtraceevent APIs.
+Create man pages for tep_get_cpus() and tep_set_cpus() as part of the
+libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-endian_read.txt             | 76 +++++++++++++++++++
- 1 file changed, 76 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-endian=
-_read.txt
+ .../Documentation/libtraceevent-cpus.txt      | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-cpus.t=
+xt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-endian_read.t=
-xt b/tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt b/to=
+ols/lib/traceevent/Documentation/libtraceevent-cpus.txt
 new file mode 100644
-index 000000000000..7f355e439a6e
+index 000000000000..81d9b4c83bee
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
-@@ -0,0 +1,76 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
+@@ -0,0 +1,78 @@
 +libtraceevent(3)
 +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 +
 +NAME
 +----
-+tep_read_number - Reads a number from raw data.
++tep_get_cpus,tep_set_cpus - Get / set the number of CPUs, which have traci=
+ng=20
++data recorded.
 +
 +SYNOPSIS
 +--------
@@ -50,25 +54,28 @@ index 000000000000..7f355e439a6e
 +--
 +*#include <event-parse.h>*
 +
-+unsigned long long *tep_read_number*(struct tep_handle pass:[*]_tep_, cons=
-t void pass:[*]_ptr_, int _size_);
++int *tep_get_cpus*(struct tep_handle pass:[*]_tep_);
++void *tep_set_cpus*(struct tep_handle pass:[*]_tep_, int _cpus_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_read_number()_ function reads an integer from raw data, taking in=
-to=20
-+account the endianness of the raw data and the current host. The _tep_ arg=
-ument=20
-+is the trace event parser context. The _ptr_ is a pointer to the raw data,=
- where=20
-+the integer is, and the _size_ is the size of the integer.=20
++The _tep_get_cpus()_ function gets the number of CPUs, which have tracing=
+=20
++data recorded in the _tep_ context. The _tep_ argument is trace event pars=
+er=20
++context.
++
++The _tep_set_cpus()_ function sets the number of CPUs, which have tracing=
+=20
++data recorded. The _tep_ argument is trace event parser context. The _cpu_
++argument is the number of CPUs with tracing data.
 +
 +RETURN VALUE
 +------------
-+The _tep_read_number()_ function returns the integer in the byte order of=
-=20
-+the current host. In case of an error, 0 is returned.
++The _tep_get_cpus()_ functions returns the number of CPUs, which have trac=
+ing=20
++data recorded.
 +
 +EXAMPLE
 +-------
@@ -78,12 +85,9 @@ ument=20
 +...
 +struct tep_handle *tep =3D tep_alloc();
 +...
-+void process_record(struct tep_record *record)
-+{
-+	int data =3D tep_read_number(tep, record->data, 4);
-+	/* Read the first 4 bytes of the record as integer */
-+}
++	tep_set_cpus(tep, 5);
 +...
++	printf("We have tracing data for %d CPUs", tep_get_cpus(tep));
 +--
 +
 +FILES
