@@ -1,18 +1,18 @@
 Return-Path: <SRS0=9Vts=OG=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr700089.outbound.protection.outlook.com ([40.107.70.89]:36176
+Received: from mail-eopbgr700058.outbound.protection.outlook.com ([40.107.70.58]:36480
         "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729553AbeK1CjO (ORCPT
+        id S1729964AbeK1Cj2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Nov 2018 21:39:14 -0500
+        Tue, 27 Nov 2018 21:39:28 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 03/14] tools/lib/traceevent: Install trace-seq.h API header
- file
-Date: Tue, 27 Nov 2018 15:40:54 +0000
-Message-ID: <20181127154038.11175-4-tstoyanov@vmware.com>
+Subject: [PATCH v2 06/14] tools/perf: traceevent API cleanup, remove
+ __tep_data2host*()
+Date: Tue, 27 Nov 2018 15:40:59 +0000
+Message-ID: <20181127154038.11175-7-tstoyanov@vmware.com>
 References: <20181127154038.11175-1-tstoyanov@vmware.com>
 In-Reply-To: <20181127154038.11175-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,33 +22,40 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch installs trace-seq.h header file on "make install".
+In order to make libtraceevent into a proper library, its API
+should be straightforward. The __tep_data2host*() functions are
+going to no longer be available as a libtraceevent API, tep_read_number()
+should be used instead. This patch replaces __tep_data2host*() usage with
+tep_read_number() in perf.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/perf/util/trace-event-read.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index 05ac0ec9bcd1..f65243137d6d 100644
---- a/tools/lib/traceevent/Makefile
-+++ b/tools/lib/traceevent/Makefile
-@@ -285,7 +285,7 @@ define do_install_pkgconfig_file
- 	fi=09
- endef
+diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-eve=
+nt-read.c
+index cdf6de82a507..3191bd310fcf 100644
+--- a/tools/perf/util/trace-event-read.c
++++ b/tools/perf/util/trace-event-read.c
+@@ -102,7 +102,7 @@ static unsigned int read4(struct tep_handle *pevent)
 =20
--install_lib: all_cmd install_plugins install_pkgconfig
-+install_lib: all_cmd install_plugins install_headers install_pkgconfig
- 	$(call QUIET_INSTALL, $(LIB_TARGET)) \
- 		$(call do_install_mkdir,$(libdir_SQ)); \
- 		cp -fpR $(LIB_INSTALL) $(DESTDIR)$(libdir_SQ)
-@@ -302,6 +302,7 @@ install_headers:
- 	$(call QUIET_INSTALL, headers) \
- 		$(call do_install,event-parse.h,$(prefix)/include/traceevent,644); \
- 		$(call do_install,event-utils.h,$(prefix)/include/traceevent,644); \
-+		$(call do_install,trace-seq.h,$(prefix)/include/traceevent,644); \
- 		$(call do_install,kbuffer.h,$(prefix)/include/traceevent,644)
+ 	if (do_read(&data, 4) < 0)
+ 		return 0;
+-	return __tep_data2host4(pevent, data);
++	return tep_read_number(pevent, &data, 4);
+ }
 =20
- install: install_lib
+ static unsigned long long read8(struct tep_handle *pevent)
+@@ -111,7 +111,7 @@ static unsigned long long read8(struct tep_handle *peve=
+nt)
+=20
+ 	if (do_read(&data, 8) < 0)
+ 		return 0;
+-	return __tep_data2host8(pevent, data);
++	return tep_read_number(pevent, &data, 8);
+ }
+=20
+ static char *read_string(void)
 --=20
 2.19.1
