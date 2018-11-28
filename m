@@ -1,91 +1,132 @@
 Return-Path: <SRS0=agpe=OH=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:41656 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:42774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727823AbeK2BX2 (ORCPT
+        id S1727726AbeK2B3N (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Nov 2018 20:23:28 -0500
-Date: Wed, 28 Nov 2018 09:21:37 -0500
+        Wed, 28 Nov 2018 20:29:13 -0500
+Date: Wed, 28 Nov 2018 09:27:21 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v2] tools/lib/traceevent: make libtraceevent thread safe
-Message-ID: <20181128092137.58a8b028@gandalf.local.home>
-In-Reply-To: <CACqStodWHb=aeSAp1Fu0LeZkA6WAPKxQjBUGVtJ-M6Vz+QiUhw@mail.gmail.com>
-References: <20181126132245.19576-1-tstoyanov@vmware.com>
-        <20181126120328.509a3151@gandalf.local.home>
-        <CACqStodWHb=aeSAp1Fu0LeZkA6WAPKxQjBUGVtJ-M6Vz+QiUhw@mail.gmail.com>
+Subject: Re: [PATCH v3] tools/lib/traceevent: make libtraceevent thread safe
+Message-ID: <20181128092721.17368705@gandalf.local.home>
+In-Reply-To: <20181128133119.13149-1-tstoyanov@vmware.com>
+References: <20181128133119.13149-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Wed, 28 Nov 2018 10:59:18 +0000
+
+On Wed, 28 Nov 2018 13:31:31 +0000
 Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-> Hi Steven
+> This patch is a PoC about transforming libtraceevent
 
 Hi Tzvetomir,
 
-Can you make sure that your replies have HTML turned off. As it doesn't
-seem to do inlined replies well (my responses don't have a ">" in front
-of them thus it's hard to know which is your reply or my old one).
+You may want to talk with Yordan about how to send patches with a
+subject like:
 
+[POC][PATCH v3] tools/lib/traceevent: make libtraceevent thread safe
 
+As the subject should state that this is a proof of concept patch.
 
-> > diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-> > index a5048c1b9bec..25f4ceab9a58 100644
-> > --- a/tools/lib/traceevent/event-parse.c
-> > +++ b/tools/lib/traceevent/event-parse.c
-> > @@ -3485,10 +3485,11 @@ struct tep_event *tep_find_event(struct tep_handle *pevent, int id)
-> >       struct tep_event **eventptr;
-> >       struct tep_event key;
-> >       struct tep_event *pkey = &key;
-> > -
-> > +     struct tep_thread_data *local = tep_get_thread_local(pevent);  
+> into a thread safe library. It implements per thread local
+> storage and internal APIs to access it. It covers only
+> tep->last_event cache, but easily can be extended with all
+> library's thread sensitive data.
 > 
-> Let's make this:
+> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+> ---
+> v2: Added local thread data per tep context
+> v3: Implemented APIs to access specific tread local data,
+>     instead of the whole struct tep_thread_data.
+> ---
+>  tools/lib/traceevent/event-parse-local.h  |  18 ++-
+>  tools/lib/traceevent/event-parse-thread.c | 131 ++++++++++++++++++++++
+>  tools/lib/traceevent/event-parse.c        |  21 ++--
+>  3 files changed, 158 insertions(+), 12 deletions(-)
+>  create mode 100644 tools/lib/traceevent/event-parse-thread.c
 > 
->         local = tep_get_thread_local(pevent, id);
-> 
->         if (local)
->                 return local->last_event;
-> 
-> 
+> diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
+> index 9a092dd4a86d..aa9418fdefd0 100644
+> --- a/tools/lib/traceevent/event-parse-local.h
+> +++ b/tools/lib/traceevent/event-parse-local.h
+> @@ -14,6 +14,14 @@ struct func_list;
+>  struct event_handler;
+>  struct func_resolver;
+>  
+> +/* cache */
+> +struct tep_thread_data {
+> +	struct tep_handle *tep;
+> +	struct tep_thread_data *next;
+> +
+> +	struct tep_event *last_event;
+> +};
+> +
+>  struct tep_handle {
+>  	int ref_count;
+>  
+> @@ -83,9 +91,6 @@ struct tep_handle {
+>  	struct event_handler *handlers;
+>  	struct tep_function_handler *func_handlers;
+>  
+> -	/* cache */
+> -	struct tep_event *last_event;
+> -
+>  	char *trace_clock;
+>  };
+>  
+> @@ -96,4 +101,11 @@ unsigned short tep_data2host2(struct tep_handle *pevent, unsigned short data);
+>  unsigned int tep_data2host4(struct tep_handle *pevent, unsigned int data);
+>  unsigned long long tep_data2host8(struct tep_handle *pevent, unsigned long long data);
+>  
+> +/* tep cache per thread */
+> +struct tep_event *tep_find_event_by_id_cache(struct tep_handle *tep, int id);
+> +struct tep_event *
+> +tep_find_event_by_name_cache(struct tep_handle *tep, const char *name, const char *sys);
+> +void tep_set_serach_event_cache(struct tep_handle *tep, struct tep_event *event);
+> +void tep_destroy_thread_local(struct tep_handle *tep);
+> +
+>  #endif /* _PARSE_EVENTS_INT_H */
+> diff --git a/tools/lib/traceevent/event-parse-thread.c b/tools/lib/traceevent/event-parse-thread.c
+> new file mode 100644
+> index 000000000000..84707c24ac6b
+> --- /dev/null
+> +++ b/tools/lib/traceevent/event-parse-thread.c
+> @@ -0,0 +1,131 @@
+> +// SPDX-License-Identifier: LGPL-2.1
+> +/*
+> + * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+> + *
+> + */
+> +
+> +#include "event-parse.h"
+> +#include "event-parse-local.h"
+> +#include "event-utils.h"
+> +
+> +static __thread struct tep_thread_data *tep_thread_local;
+> +
+> +static struct tep_thread_data *tep_alloc_thread_local(struct tep_handle *tep)
+> +{
+> +	struct tep_thread_data *local;
+> +
+> +	local = calloc(1, sizeof(struct tep_thread_data));
+> +	if (local) {
+> +		local->tep = tep;
+> +		local->next = tep_thread_local;
 
-> I got the idea, but have one comment about naming of the new functions.
-> My initial idea was tep_get_thread_local() to access all tread specific data, not only
-> last_event cache. That's why I named it this way, and make it to not depend on an event.
-> As these are internal APIs, we are not going to expose them to the users, we can assume
-> that the callers are aware of  "struct tep_thread_data" and can access it directly.
-> As I understand,  your idea is to hide "struct tep_thread_data", and to implement APIs to
-> access only specific tread local data, as "last_event cache" at the first stage. When we add
-> more into "struct tep_thread_data", new APIs will be implemented. I'm ok with this
-> approach, but in this case we should name the new APIs to follow the name of thread local item,
-> something like this:
-
->     tep_find_event_by_id_cache(struct tep_handle *, int);
->     tep_find_event_by_name_cache(struct tep_handle *, const char *);
->     tep_set_serach_event_cache(struct tep_handle *, struct tep_event *);
-> 
-
-No, I don't think the cached should be visible to the user. That's too
-much implementation details. But we can have several thread caches. We
-probably want to drop the "tep_" prefix too, as these functions
-shouldn't be exposed.
-
-We could have:
-
-  get_thread_local_event_by_id(tep, id);
-  get_thread_local_event_by_name(tep, name);
-
-and such.
-
-The point is, the cache is suppose to be a fast access where code might
-be accessing the same event over and over. A loop searching for a cache
-item defeats that purpose. The last access either matches or it
-doesn't. If it is bouncing between multiple tep handlers, then it will
-flush the cache of the previous one.
+I really don't want a loop. We should have one thread cache. Heck, then
+we don't even need to allocate it.
 
 -- Steve
+
+
+> +		tep_thread_local = local;
+> +	}
+> +	return local;
+> +}
+> +
