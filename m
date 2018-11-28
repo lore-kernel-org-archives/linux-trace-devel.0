@@ -2,16 +2,18 @@ Return-Path: <SRS0=agpe=OH=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr710070.outbound.protection.outlook.com ([40.107.71.70]:36576
         "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727941AbeK2CSJ (ORCPT
+        id S1728664AbeK2CSL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Nov 2018 21:18:09 -0500
+        Wed, 28 Nov 2018 21:18:11 -0500
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 00/17] More modifications and bug fixes toward KS 1.0
-Date: Wed, 28 Nov 2018 15:16:04 +0000
-Message-ID: <20181128151530.21965-1-ykaradzhov@vmware.com>
+Subject: [PATCH 03/17] kernel-shark-qt: Fix a byg in unset_event_filter_flag()
+Date: Wed, 28 Nov 2018 15:16:09 +0000
+Message-ID: <20181128151530.21965-4-ykaradzhov@vmware.com>
+References: <20181128151530.21965-1-ykaradzhov@vmware.com>
+In-Reply-To: <20181128151530.21965-1-ykaradzhov@vmware.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,59 +21,50 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This series of patches continues adding various unrelated modifications
-and bug fixes needed before releasing KernelShark 1.0. Some of the patches
-from the previous series, which for various reasons didn't manage to move
-upstream are sent again here.
+Currently the unset_event_filter_flag() function unsets explicitly the
+EVENT_VIEW visibility flag, ignoring the user's request for visibility
+of the data after the filtering. This is wrong. The value of the
+coresponging bit in the user-provided mask (kshark_ctx->filter_mask),
+has to be used instead.
 
+Since the function becames very simple now it is declared as inline.
 
-Yordan Karadzhov (17):
-  kernel-shark-qt: Updata Event filter mask when applaing filters to
-    Graph
-  kernel-shark-qt: Reprocess all CPU collections when the filtering
-    changes
-  kernel-shark-qt: Fix a byg in unset_event_filter_flag()
-  kernel-shark qt: No error when Record authentication dialog is closed
-  kernel-shark-qt: Protect all calls of tep_read_number_field()
-  kernel-shark-qt: Ignore sched_wakeup events if the task is running.
-  kernel-shark-qt: Fix the documentation of libkshark-model
-  kernel-shark-qt: Add a method for easy retrieve of all Ids of a filter
-  kernel-shark-qt: Add centralized context menu for View and Graph
-    widgets
-  kernel-shark-qt: Add keyboard shortcuts for deselecting the marker
-  kernel-shark-qt: Sort all graphs before plotting
-  kernel-shark-qt: Add CPU-based filtering to the C API
-  kernel-shark-qt: Add CPU-based filtering to KsDataStore
-  kernel-shark-qt: Add Hide CPU action to the Quick Context Menu
-  kernel-shark-qt: Add the CPU filters to the Json config I/O
-  kernel-shark-qt: Add "Hide CPU" checkbox dialog to the Main window
-    menu
-  kernel-shark-qt: Add the user filter mask to the Json config I/O
+Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+---
+ kernel-shark-qt/src/libkshark.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
- kernel-shark-qt/src/CMakeLists.txt          |   2 +
- kernel-shark-qt/src/KsGLWidget.cpp          |  46 +--
- kernel-shark-qt/src/KsGLWidget.hpp          |  22 +-
- kernel-shark-qt/src/KsMainWindow.cpp        | 117 +++++++-
- kernel-shark-qt/src/KsMainWindow.hpp        |  14 +
- kernel-shark-qt/src/KsQuickContextMenu.cpp  | 302 ++++++++++++++++++++
- kernel-shark-qt/src/KsQuickContextMenu.hpp  | 142 +++++++++
- kernel-shark-qt/src/KsTraceGraph.cpp        |  96 +++++++
- kernel-shark-qt/src/KsTraceGraph.hpp        |  14 +
- kernel-shark-qt/src/KsTraceViewer.cpp       |  30 +-
- kernel-shark-qt/src/KsTraceViewer.hpp       |  32 ++-
- kernel-shark-qt/src/KsUtils.cpp             |  48 +++-
- kernel-shark-qt/src/KsUtils.hpp             |   6 +
- kernel-shark-qt/src/KsWidgetsLib.cpp        | 120 --------
- kernel-shark-qt/src/KsWidgetsLib.hpp        |  44 ---
- kernel-shark-qt/src/libkshark-configio.c    | 232 ++++++++++++---
- kernel-shark-qt/src/libkshark-model.c       |   4 +-
- kernel-shark-qt/src/libkshark.c             |  48 +++-
- kernel-shark-qt/src/libkshark.h             |  56 +++-
- kernel-shark-qt/src/plugins/SchedEvents.cpp |  15 +
- kernel-shark-qt/src/plugins/sched_events.c  |  52 ++--
- 21 files changed, 1149 insertions(+), 293 deletions(-)
- create mode 100644 kernel-shark-qt/src/KsQuickContextMenu.cpp
- create mode 100644 kernel-shark-qt/src/KsQuickContextMenu.hpp
-
+diff --git a/kernel-shark-qt/src/libkshark.c b/kernel-shark-qt/src/libkshar=
+k.c
+index fa85171..b4b3d5b 100644
+--- a/kernel-shark-qt/src/libkshark.c
++++ b/kernel-shark-qt/src/libkshark.c
+@@ -448,19 +448,18 @@ bool kshark_filter_is_set(struct kshark_context *ksha=
+rk_ctx)
+ 	       filter_is_set(kshark_ctx->hide_event_filter);
+ }
+=20
+-static void unset_event_filter_flag(struct kshark_context *kshark_ctx,
+-				    struct kshark_entry *e)
++static inline void unset_event_filter_flag(struct kshark_context *kshark_c=
+tx,
++					   struct kshark_entry *e)
+ {
+ 	/*
+ 	 * All entries, filtered-out by the event filters, will be treated
+ 	 * differently, when visualized. Because of this, ignore the value
+ 	 * of the GRAPH_VIEW flag provided by the user via
+-	 * kshark_ctx->filter_mask and unset the EVENT_VIEW flag.
++	 * kshark_ctx->filter_mask. The value of the EVENT_VIEW flag in
++	 * kshark_ctx->filter_mask will be used instead.
+ 	 */
+-	int event_mask =3D kshark_ctx->filter_mask;
++	int event_mask =3D kshark_ctx->filter_mask & ~KS_GRAPH_VIEW_FILTER_MASK;
+=20
+-	event_mask &=3D ~KS_GRAPH_VIEW_FILTER_MASK;
+-	event_mask |=3D KS_EVENT_VIEW_FILTER_MASK;
+ 	e->visible &=3D ~event_mask;
+ }
+=20
 --=20
 2.17.1
