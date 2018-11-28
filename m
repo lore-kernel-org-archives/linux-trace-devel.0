@@ -1,172 +1,67 @@
 Return-Path: <SRS0=agpe=OH=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr790048.outbound.protection.outlook.com ([40.107.79.48]:57828
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr740044.outbound.protection.outlook.com ([40.107.74.44]:54752
+        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727413AbeK1UKh (ORCPT
+        id S1727673AbeK1XdE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Nov 2018 15:10:37 -0500
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
+        Wed, 28 Nov 2018 18:33:04 -0500
+From: Yordan Karadzhov <ykaradzhov@vmware.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+        "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 08/15] tools/lib/traceevent: Introduce new libtracevent
- API: tep_override_comm()
-Date: Wed, 28 Nov 2018 09:07:38 +0000
-Message-ID: <20181128090711.17792-9-tstoyanov@vmware.com>
-References: <20181128090711.17792-1-tstoyanov@vmware.com>
-In-Reply-To: <20181128090711.17792-1-tstoyanov@vmware.com>
+CC: Slavomir Kaslev <kaslevs@vmware.com>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Subject: Re: [PATCH] kernel-shark-qt: Have "make gui" build the Qt KernelShark
+ version
+Date: Wed, 28 Nov 2018 12:31:14 +0000
+Message-ID: <226f4bbf-8b65-44aa-269e-6667b58f57aa@vmware.com>
+References: <20181127212245.01c819b1@vmware.local.home>
+In-Reply-To: <20181127212245.01c819b1@vmware.local.home>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F5DEEBA178E1D1428222D5142DD05E52@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch adds a new API of tracevent library: tep_override_comm()
-It registers a pid / command mapping. If a mapping with the same
-pid already exists, the entry is updated with the new command.
-
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- tools/lib/traceevent/event-parse.c | 69 +++++++++++++++++++++++-------
- tools/lib/traceevent/event-parse.h |  1 +
- 2 files changed, 55 insertions(+), 15 deletions(-)
-
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
-t-parse.c
-index 668bc5e2805f..2c0597a29f58 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -247,11 +247,13 @@ int tep_pid_is_registered(struct tep_handle *pevent, =
-int pid)
-  * we must add this pid. This is much slower than when cmdlines
-  * are added before the array is initialized.
-  */
--static int add_new_comm(struct tep_handle *pevent, const char *comm, int p=
-id)
-+static int add_new_comm(struct tep_handle *pevent,
-+			const char *comm, int pid, bool override)
- {
- 	struct cmdline *cmdlines =3D pevent->cmdlines;
--	const struct cmdline *cmdline;
-+	struct cmdline *cmdline;
- 	struct cmdline key;
-+	char *new_comm;
-=20
- 	if (!pid)
- 		return 0;
-@@ -262,8 +264,19 @@ static int add_new_comm(struct tep_handle *pevent, con=
-st char *comm, int pid)
- 	cmdline =3D bsearch(&key, pevent->cmdlines, pevent->cmdline_count,
- 		       sizeof(*pevent->cmdlines), cmdline_cmp);
- 	if (cmdline) {
--		errno =3D EEXIST;
--		return -1;
-+		if (!override) {
-+			errno =3D EEXIST;
-+			return -1;
-+		}
-+		new_comm =3D strdup(comm);
-+		if(!new_comm) {
-+			errno =3D ENOMEM;
-+			return -1;
-+		}
-+		free(cmdline->comm);
-+		cmdline->comm =3D new_comm;
-+
-+		return 0;
- 	}
-=20
- 	cmdlines =3D realloc(cmdlines, sizeof(*cmdlines) * (pevent->cmdline_count=
- + 1));
-@@ -290,21 +303,13 @@ static int add_new_comm(struct tep_handle *pevent, co=
-nst char *comm, int pid)
- 	return 0;
- }
-=20
--/**
-- * tep_register_comm - register a pid / comm mapping
-- * @pevent: handle for the pevent
-- * @comm: the command line to register
-- * @pid: the pid to map the command line to
-- *
-- * This adds a mapping to search for command line names with
-- * a given pid. The comm is duplicated.
-- */
--int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid=
-)
-+static int _tep_register_comm(struct tep_handle *pevent,
-+			      const char *comm, int pid, bool override)
- {
- 	struct cmdline_list *item;
-=20
- 	if (pevent->cmdlines)
--		return add_new_comm(pevent, comm, pid);
-+		return add_new_comm(pevent, comm, pid, override);
-=20
- 	item =3D malloc(sizeof(*item));
- 	if (!item)
-@@ -327,6 +332,40 @@ int tep_register_comm(struct tep_handle *pevent, const=
- char *comm, int pid)
- 	return 0;
- }
-=20
-+/**
-+ * tep_register_comm - register a pid / comm mapping
-+ * @pevent: handle for the pevent
-+ * @comm: the command line to register
-+ * @pid: the pid to map the command line to
-+ *
-+ * This adds a mapping to search for command line names with
-+ * a given pid. The comm is duplicated. If a command with the same pid
-+ * already exist, -1 is returned and errno is set to EEXIST
-+ */
-+int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid=
-)
-+{
-+	return _tep_register_comm(pevent, comm, pid, false);
-+}
-+
-+/**
-+ * tep_override_comm - register a pid / comm mapping
-+ * @pevent: handle for the pevent
-+ * @comm: the command line to register
-+ * @pid: the pid to map the command line to
-+ *
-+ * This adds a mapping to search for command line names with
-+ * a given pid. The comm is duplicated. If a command with the same pid
-+ * already exist, the command string is udapted with the new one
-+ */
-+int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid=
-)
-+{
-+	if (!pevent->cmdlines && cmdline_init(pevent)) {
-+		errno =3D ENOMEM;
-+		return -1;
-+	}
-+	return _tep_register_comm(pevent, comm, pid, true);
-+}
-+
- int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_=
-clock)
- {
- 	pevent->trace_clock =3D strdup(trace_clock);
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/even=
-t-parse.h
-index 4e0602522c28..e6f36cdb836d 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -432,6 +432,7 @@ int tep_set_function_resolver(struct tep_handle *pevent=
-,
- 			      tep_func_resolver_t *func, void *priv);
- void tep_reset_function_resolver(struct tep_handle *pevent);
- int tep_register_comm(struct tep_handle *pevent, const char *comm, int pid=
-);
-+int tep_override_comm(struct tep_handle *pevent, const char *comm, int pid=
-);
- int tep_register_trace_clock(struct tep_handle *pevent, const char *trace_=
-clock);
- int tep_register_function(struct tep_handle *pevent, char *name,
- 			  unsigned long long addr, char *mod);
---=20
-2.19.1
+DQoNCk9uIDI4LjExLjE4INCzLiA0OjIyINGHLiwgU3RldmVuIFJvc3RlZHQgd3JvdGU6DQo+IA0K
+PiBOb3cgdGhhdCB0aGUgUXQgdmVyc2lvbiBpcyB0aGUgbWFpbiB2ZXJzaW9uIGZvciBLZXJuZWxT
+aGFyaywgaGF2ZSBpdCBiZSB0aGUNCj4gb25lIHRoYXQgaXMgYnVpbHQgd2hlbiBwYXNzaW5nIGlu
+IHRoZSB0YXJnZXQgImd1aSIuDQo+IA0KDQoiaW5zdGFsbF9ndWkiIGhhcyB0byBiZSB1cGRhdGVk
+IGFzIHdlbGwuDQoNClRoYW5rcyENCllvcmRhbg0KDQoNCj4gU2lnbmVkLW9mZi1ieTogU3RldmVu
+IFJvc3RlZHQgKFZNd2FyZSkgPHJvc3RlZHRAZ29vZG1pcy5vcmc+DQo+IC0tLQ0KPiAgIE1ha2Vm
+aWxlICAgICAgICAgfCA5ICsrKysrKysrLQ0KPiAgIHNjcmlwdHMvdXRpbHMubWsgfCAyICsrDQo+
+ICAgMiBmaWxlcyBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0K
+PiBkaWZmIC0tZ2l0IGEvTWFrZWZpbGUgYi9NYWtlZmlsZQ0KPiBpbmRleCAxZTZmZDVlNy4uZDU4
+Y2UwZjIgMTAwNjQ0DQo+IC0tLSBhL01ha2VmaWxlDQo+ICsrKyBiL01ha2VmaWxlDQo+IEBAIC0x
+NjEsNiArMTYxLDggQEAgb2JqdHJlZQkJOj0gJChCVUlMRF9PVVRQVVQpDQo+ICAgc3JjCQk6PSAk
+KHNyY3RyZWUpDQo+ICAgb2JqCQk6PSAkKG9ianRyZWUpDQo+ICAgDQo+ICtrc2hhcmstZGlyCT0g
+JChzcmMpL2tlcm5lbC1zaGFyay1xdA0KPiArDQo+ICAgZXhwb3J0IHByZWZpeCBiaW5kaXIgc3Jj
+IG9iag0KPiAgIA0KPiAgIExJQlMgPSAtbGRsDQo+IEBAIC0yNDcsOSArMjQ5LDEzIEBAIGFsbDog
+YWxsX2NtZCBwbHVnaW5zIHNob3dfZ3VpX21ha2UNCj4gICANCj4gICBhbGxfY21kOiAkKENNRF9U
+QVJHRVRTKQ0KPiAgIA0KPiArQ01BS0VfQ09NTUFORCA9IC91c3IvYmluL2NtYWtlDQo+ICsNCj4g
+ICBndWk6IGZvcmNlICQoQ01EX1RBUkdFVFMpDQo+IC0JJChRKSQoTUFLRSkgLUMgJChzcmMpL2tl
+cm5lbC1zaGFyazsgXA0KPiArCSQoUSkgY2QgJChrc2hhcmstZGlyKS9idWlsZCAmJiAkKENNQUtF
+X0NPTU1BTkQpIC4uDQo+ICsJJChRKSQoTUFLRSkgJChTKSAtQyAkKGtzaGFyay1kaXIpL2J1aWxk
+DQo+ICAgCWVjaG8gImd1aSBidWlsZCBjb21wbGV0ZSINCj4gKwllY2hvICIgIGtlcm5lbHNoYXJr
+IGxvY2F0ZWQgYXQgJChrc2hhcmstZGlyKS9iaW4iDQo+ICAgDQo+ICAgdHJhY2UtY21kOiBmb3Jj
+ZSAkKExJQlRSQUNFRVZFTlRfU1RBVElDKSAkKExJQlRSQUNFQ01EX1NUQVRJQykNCj4gICAJJChR
+KSQoTUFLRSkgLUMgJChzcmMpL3RyYWNlY21kICQob2JqKS90cmFjZWNtZC8kQA0KPiBAQCAtMzU2
+LDYgKzM2Miw3IEBAIGNsZWFuOg0KPiAgIAkkKE1BS0UpIC1DICQoc3JjKS9saWIvdHJhY2VldmVu
+dCBjbGVhbg0KPiAgIAkkKE1BS0UpIC1DICQoc3JjKS9saWIvdHJhY2UtY21kIGNsZWFuDQo+ICAg
+CSQoTUFLRSkgLUMgJChzcmMpL2tlcm5lbC1zaGFyayBjbGVhbg0KPiArCSQoTUFLRSkgLUMgJChr
+c2hhcmstZGlyKS9idWlsZCBjbGVhbg0KPiAgIAkkKE1BS0UpIC1DICQoc3JjKS9wbHVnaW5zIGNs
+ZWFuDQo+ICAgCSQoTUFLRSkgLUMgJChzcmMpL3B5dGhvbiBjbGVhbg0KPiAgIAkkKE1BS0UpIC1D
+ICQoc3JjKS90cmFjZWNtZCBjbGVhbg0KPiBkaWZmIC0tZ2l0IGEvc2NyaXB0cy91dGlscy5tayBi
+L3NjcmlwdHMvdXRpbHMubWsNCj4gaW5kZXggYWQzMWY2ZTQuLmY1ZmVlY2EwIDEwMDY0NA0KPiAt
+LS0gYS9zY3JpcHRzL3V0aWxzLm1rDQo+ICsrKyBiL3NjcmlwdHMvdXRpbHMubWsNCj4gQEAgLTE0
+LDYgKzE0LDcgQEAgZW5kaWYNCj4gICANCj4gICBpZmVxICgkKFZFUkJPU0UpLDEpDQo+ICAgICBR
+ID0NCj4gKyAgUyA9DQo+ICAgICBwcmludF9jb21waWxlID0NCj4gICAgIHByaW50X2FwcF9idWls
+ZCA9DQo+ICAgICBwcmludF9mcGljX2NvbXBpbGUgPQ0KPiBAQCAtMjMsNiArMjQsNyBAQCBpZmVx
+ICgkKFZFUkJPU0UpLDEpDQo+ICAgICBwcmludF9pbnN0YWxsID0NCj4gICBlbHNlDQo+ICAgICBR
+ID0gQA0KPiArICBTID0gLXMNCj4gICAgIHByaW50X2NvbXBpbGUgPQkJZWNobyAnICAkKEdVSSlD
+T01QSUxFICAgICAgICAgICAgJyQoR09CSik7DQo+ICAgICBwcmludF9hcHBfYnVpbGQgPQkJZWNo
+byAnICAkKEdVSSlCVUlMRCAgICAgICAgICAgICAgJyQoR09CSik7DQo+ICAgICBwcmludF9mcGlj
+X2NvbXBpbGUgPQkJZWNobyAnICAkKEdVSSlDT01QSUxFIEZQSUMgICAgICAgJyQoR09CSik7DQo+
+IA0K
