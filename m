@@ -1,106 +1,52 @@
 Return-Path: <SRS0=agpe=OH=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr780044.outbound.protection.outlook.com ([40.107.78.44]:34896
-        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr710070.outbound.protection.outlook.com ([40.107.71.70]:36576
+        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728181AbeK2Bwk (ORCPT
+        id S1728664AbeK2CSK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Nov 2018 20:52:40 -0500
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+        Wed, 28 Nov 2018 21:18:10 -0500
+From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v3] tools/lib/traceevent: make libtraceevent thread safe
-Date: Wed, 28 Nov 2018 14:50:41 +0000
-Message-ID: <CACqStoesVsyO6YgXRm-cpnEk3Efx9W4kKs2N5XbKzWe3hTQHww@mail.gmail.com>
-References: <20181128133119.13149-1-tstoyanov@vmware.com>
- <20181128092721.17368705@gandalf.local.home>
-In-Reply-To: <20181128092721.17368705@gandalf.local.home>
+Subject: [PATCH 01/17] kernel-shark-qt: Updata Event filter mask when applaing
+ filters to Graph
+Date: Wed, 28 Nov 2018 15:16:06 +0000
+Message-ID: <20181128151530.21965-2-ykaradzhov@vmware.com>
+References: <20181128151530.21965-1-ykaradzhov@vmware.com>
+In-Reply-To: <20181128151530.21965-1-ykaradzhov@vmware.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2B296C54692A624CAADE4D895EAD4DAB@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-SGkgU3RldmVuDQpPbiBXZWQsIE5vdiAyOCwgMjAxOCBhdCA0OjI3IFBNIFN0ZXZlbiBSb3N0ZWR0
-IDxyb3N0ZWR0QGdvb2RtaXMub3JnPiB3cm90ZToNCj4NCj4NCj4gT24gV2VkLCAyOCBOb3YgMjAx
-OCAxMzozMTozMSArMDAwMA0KPiBUenZldG9taXIgU3RveWFub3YgPHRzdG95YW5vdkB2bXdhcmUu
-Y29tPiB3cm90ZToNCj4NCj4gPiBUaGlzIHBhdGNoIGlzIGEgUG9DIGFib3V0IHRyYW5zZm9ybWlu
-ZyBsaWJ0cmFjZWV2ZW50DQo+DQo+IEhpIFR6dmV0b21pciwNCj4NCj4gWW91IG1heSB3YW50IHRv
-IHRhbGsgd2l0aCBZb3JkYW4gYWJvdXQgaG93IHRvIHNlbmQgcGF0Y2hlcyB3aXRoIGENCj4gc3Vi
-amVjdCBsaWtlOg0KPg0KPiBbUE9DXVtQQVRDSCB2M10gdG9vbHMvbGliL3RyYWNlZXZlbnQ6IG1h
-a2UgbGlidHJhY2VldmVudCB0aHJlYWQgc2FmZQ0KPg0KPiBBcyB0aGUgc3ViamVjdCBzaG91bGQg
-c3RhdGUgdGhhdCB0aGlzIGlzIGEgcHJvb2Ygb2YgY29uY2VwdCBwYXRjaC4NCj4NCj4gPiBpbnRv
-IGEgdGhyZWFkIHNhZmUgbGlicmFyeS4gSXQgaW1wbGVtZW50cyBwZXIgdGhyZWFkIGxvY2FsDQo+
-ID4gc3RvcmFnZSBhbmQgaW50ZXJuYWwgQVBJcyB0byBhY2Nlc3MgaXQuIEl0IGNvdmVycyBvbmx5
-DQo+ID4gdGVwLT5sYXN0X2V2ZW50IGNhY2hlLCBidXQgZWFzaWx5IGNhbiBiZSBleHRlbmRlZCB3
-aXRoIGFsbA0KPiA+IGxpYnJhcnkncyB0aHJlYWQgc2Vuc2l0aXZlIGRhdGEuDQo+ID4NCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBUenZldG9taXIgU3RveWFub3YgPHRzdG95YW5vdkB2bXdhcmUuY29tPg0K
-PiA+IC0tLQ0KPiA+IHYyOiBBZGRlZCBsb2NhbCB0aHJlYWQgZGF0YSBwZXIgdGVwIGNvbnRleHQN
-Cj4gPiB2MzogSW1wbGVtZW50ZWQgQVBJcyB0byBhY2Nlc3Mgc3BlY2lmaWMgdHJlYWQgbG9jYWwg
-ZGF0YSwNCj4gPiAgICAgaW5zdGVhZCBvZiB0aGUgd2hvbGUgc3RydWN0IHRlcF90aHJlYWRfZGF0
-YS4NCj4gPiAtLS0NCj4gPiAgdG9vbHMvbGliL3RyYWNlZXZlbnQvZXZlbnQtcGFyc2UtbG9jYWwu
-aCAgfCAgMTggKystDQo+ID4gIHRvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLXRocmVh
-ZC5jIHwgMTMxICsrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgdG9vbHMvbGliL3RyYWNlZXZl
-bnQvZXZlbnQtcGFyc2UuYyAgICAgICAgfCAgMjEgKystLQ0KPiA+ICAzIGZpbGVzIGNoYW5nZWQs
-IDE1OCBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkNCj4gPiAgY3JlYXRlIG1vZGUgMTAw
-NjQ0IHRvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLXRocmVhZC5jDQo+ID4NCj4gPiBk
-aWZmIC0tZ2l0IGEvdG9vbHMvbGliL3RyYWNlZXZlbnQvZXZlbnQtcGFyc2UtbG9jYWwuaCBiL3Rv
-b2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLWxvY2FsLmgNCj4gPiBpbmRleCA5YTA5MmRk
-NGE4NmQuLmFhOTQxOGZkZWZkMCAxMDA2NDQNCj4gPiAtLS0gYS90b29scy9saWIvdHJhY2VldmVu
-dC9ldmVudC1wYXJzZS1sb2NhbC5oDQo+ID4gKysrIGIvdG9vbHMvbGliL3RyYWNlZXZlbnQvZXZl
-bnQtcGFyc2UtbG9jYWwuaA0KPiA+IEBAIC0xNCw2ICsxNCwxNCBAQCBzdHJ1Y3QgZnVuY19saXN0
-Ow0KPiA+ICBzdHJ1Y3QgZXZlbnRfaGFuZGxlcjsNCj4gPiAgc3RydWN0IGZ1bmNfcmVzb2x2ZXI7
-DQo+ID4NCj4gPiArLyogY2FjaGUgKi8NCj4gPiArc3RydWN0IHRlcF90aHJlYWRfZGF0YSB7DQo+
-ID4gKyAgICAgc3RydWN0IHRlcF9oYW5kbGUgKnRlcDsNCj4gPiArICAgICBzdHJ1Y3QgdGVwX3Ro
-cmVhZF9kYXRhICpuZXh0Ow0KPiA+ICsNCj4gPiArICAgICBzdHJ1Y3QgdGVwX2V2ZW50ICpsYXN0
-X2V2ZW50Ow0KPiA+ICt9Ow0KPiA+ICsNCj4gPiAgc3RydWN0IHRlcF9oYW5kbGUgew0KPiA+ICAg
-ICAgIGludCByZWZfY291bnQ7DQo+ID4NCj4gPiBAQCAtODMsOSArOTEsNiBAQCBzdHJ1Y3QgdGVw
-X2hhbmRsZSB7DQo+ID4gICAgICAgc3RydWN0IGV2ZW50X2hhbmRsZXIgKmhhbmRsZXJzOw0KPiA+
-ICAgICAgIHN0cnVjdCB0ZXBfZnVuY3Rpb25faGFuZGxlciAqZnVuY19oYW5kbGVyczsNCj4gPg0K
-PiA+IC0gICAgIC8qIGNhY2hlICovDQo+ID4gLSAgICAgc3RydWN0IHRlcF9ldmVudCAqbGFzdF9l
-dmVudDsNCj4gPiAtDQo+ID4gICAgICAgY2hhciAqdHJhY2VfY2xvY2s7DQo+ID4gIH07DQo+ID4N
-Cj4gPiBAQCAtOTYsNCArMTAxLDExIEBAIHVuc2lnbmVkIHNob3J0IHRlcF9kYXRhMmhvc3QyKHN0
-cnVjdCB0ZXBfaGFuZGxlICpwZXZlbnQsIHVuc2lnbmVkIHNob3J0IGRhdGEpOw0KPiA+ICB1bnNp
-Z25lZCBpbnQgdGVwX2RhdGEyaG9zdDQoc3RydWN0IHRlcF9oYW5kbGUgKnBldmVudCwgdW5zaWdu
-ZWQgaW50IGRhdGEpOw0KPiA+ICB1bnNpZ25lZCBsb25nIGxvbmcgdGVwX2RhdGEyaG9zdDgoc3Ry
-dWN0IHRlcF9oYW5kbGUgKnBldmVudCwgdW5zaWduZWQgbG9uZyBsb25nIGRhdGEpOw0KPiA+DQo+
-ID4gKy8qIHRlcCBjYWNoZSBwZXIgdGhyZWFkICovDQo+ID4gK3N0cnVjdCB0ZXBfZXZlbnQgKnRl
-cF9maW5kX2V2ZW50X2J5X2lkX2NhY2hlKHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXAsIGludCBpZCk7
-DQo+ID4gK3N0cnVjdCB0ZXBfZXZlbnQgKg0KPiA+ICt0ZXBfZmluZF9ldmVudF9ieV9uYW1lX2Nh
-Y2hlKHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXAsIGNvbnN0IGNoYXIgKm5hbWUsIGNvbnN0IGNoYXIg
-KnN5cyk7DQo+ID4gK3ZvaWQgdGVwX3NldF9zZXJhY2hfZXZlbnRfY2FjaGUoc3RydWN0IHRlcF9o
-YW5kbGUgKnRlcCwgc3RydWN0IHRlcF9ldmVudCAqZXZlbnQpOw0KPiA+ICt2b2lkIHRlcF9kZXN0
-cm95X3RocmVhZF9sb2NhbChzdHJ1Y3QgdGVwX2hhbmRsZSAqdGVwKTsNCj4gPiArDQo+ID4gICNl
-bmRpZiAvKiBfUEFSU0VfRVZFTlRTX0lOVF9IICovDQo+ID4gZGlmZiAtLWdpdCBhL3Rvb2xzL2xp
-Yi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLXRocmVhZC5jIGIvdG9vbHMvbGliL3RyYWNlZXZlbnQv
-ZXZlbnQtcGFyc2UtdGhyZWFkLmMNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4
-IDAwMDAwMDAwMDAwMC4uODQ3MDdjMjRhYzZiDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBi
-L3Rvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLXRocmVhZC5jDQo+ID4gQEAgLTAsMCAr
-MSwxMzEgQEANCj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IExHUEwtMi4xDQo+ID4g
-Ky8qDQo+ID4gKyAqIENvcHlyaWdodCAoQykgMjAwOSwgMjAxMCBSZWQgSGF0IEluYywgU3RldmVu
-IFJvc3RlZHQgPHNyb3N0ZWR0QHJlZGhhdC5jb20+DQo+ID4gKyAqDQo+ID4gKyAqLw0KPiA+ICsN
-Cj4gPiArI2luY2x1ZGUgImV2ZW50LXBhcnNlLmgiDQo+ID4gKyNpbmNsdWRlICJldmVudC1wYXJz
-ZS1sb2NhbC5oIg0KPiA+ICsjaW5jbHVkZSAiZXZlbnQtdXRpbHMuaCINCj4gPiArDQo+ID4gK3N0
-YXRpYyBfX3RocmVhZCBzdHJ1Y3QgdGVwX3RocmVhZF9kYXRhICp0ZXBfdGhyZWFkX2xvY2FsOw0K
-PiA+ICsNCj4gPiArc3RhdGljIHN0cnVjdCB0ZXBfdGhyZWFkX2RhdGEgKnRlcF9hbGxvY190aHJl
-YWRfbG9jYWwoc3RydWN0IHRlcF9oYW5kbGUgKnRlcCkNCj4gPiArew0KPiA+ICsgICAgIHN0cnVj
-dCB0ZXBfdGhyZWFkX2RhdGEgKmxvY2FsOw0KPiA+ICsNCj4gPiArICAgICBsb2NhbCA9IGNhbGxv
-YygxLCBzaXplb2Yoc3RydWN0IHRlcF90aHJlYWRfZGF0YSkpOw0KPiA+ICsgICAgIGlmIChsb2Nh
-bCkgew0KPiA+ICsgICAgICAgICAgICAgbG9jYWwtPnRlcCA9IHRlcDsNCj4gPiArICAgICAgICAg
-ICAgIGxvY2FsLT5uZXh0ID0gdGVwX3RocmVhZF9sb2NhbDsNCj4NCj4gSSByZWFsbHkgZG9uJ3Qg
-d2FudCBhIGxvb3AuIFdlIHNob3VsZCBoYXZlIG9uZSB0aHJlYWQgY2FjaGUuIEhlY2ssIHRoZW4N
-Cj4gd2UgZG9uJ3QgZXZlbiBuZWVkIHRvIGFsbG9jYXRlIGl0Lg0KPg0KDQpUaGUgcmVhc29uIGZv
-ciBkeW5hbWljIGFsbG9jYXRpb24gaXMgdGhhdCB3ZSBzaG91bGQgc3VwcG9ydCB0aGUgY2FzZQ0K
-d2hlcmUgd2UgaGF2ZQ0KbXVsdGlwbGUgdGhyZWFkcywgd29ya2luZyB3aXRoIG11bHRpcGxlIHRl
-cCBoYW5kbGVycy4gV2UgbmVlZCBlYWNoDQp0aHJlYWQgdG8gaGFzIGxvY2FsDQpkYXRhIGZvciBl
-YWNoIHRlcCBoYW5kbGVyLCBzbyB3ZSBzaG91bGQgdXNlIGxpc3QgKG9yIG90aGVyIGR5bmFtaWMN
-CnN0cnVjdHVyZSkgb2YgYWxsDQp0ZXAgaGFuZGxlcnMgcGVyIHRocmVhZC4gVGhlIGdsb2JhbCB2
-YXJpYWJsZQ0Kc3RhdGljIF9fdGhyZWFkIHN0cnVjdCB0ZXBfdGhyZWFkX2RhdGEgKnRlcF90aHJl
-YWRfbG9jYWw7DQpoYXMgdG8gc3RvcmUgbG9jYWxzIGZvciBtdWx0aXBsZSB0ZXAgaGFuZGxlcnMs
-IGluIGNvbnRleHQgb2YgY3VycmVudCB0aHJlYWQuDQoNCj4gLS0gU3RldmUNCj4NCj4NCj4gPiAr
-ICAgICAgICAgICAgIHRlcF90aHJlYWRfbG9jYWwgPSBsb2NhbDsNCj4gPiArICAgICB9DQo+ID4g
-KyAgICAgcmV0dXJuIGxvY2FsOw0KPiA+ICt9DQo+ID4gKw0KPg0KPg0KDQoNCi0tIA0KDQpUenZl
-dG9taXIgKENlY28pIFN0b3lhbm92DQpWTXdhcmUgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50
-ZXINCg==
+KS_GRAPH_VIEW_FILTER_MASK and KS_EVENT_VIEW_FILTER_MASK are two bit
+flags used to control the visibility of an entry inside the Graphs.
+Both flags have to be updated when the "Apply filters to Graph"
+checkbox is clicked.
+
+Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+---
+ kernel-shark-qt/src/KsUtils.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel-shark-qt/src/KsUtils.cpp b/kernel-shark-qt/src/KsUtils.=
+cpp
+index 5e4c9c8..8bb0970 100644
+--- a/kernel-shark-qt/src/KsUtils.cpp
++++ b/kernel-shark-qt/src/KsUtils.cpp
+@@ -67,8 +67,10 @@ void graphFilterSync(bool state)
+=20
+ 	if (state) {
+ 		kshark_ctx->filter_mask |=3D KS_GRAPH_VIEW_FILTER_MASK;
++		kshark_ctx->filter_mask |=3D KS_EVENT_VIEW_FILTER_MASK;
+ 	} else {
+ 		kshark_ctx->filter_mask &=3D ~KS_GRAPH_VIEW_FILTER_MASK;
++		kshark_ctx->filter_mask &=3D ~KS_EVENT_VIEW_FILTER_MASK;
+ 	}
+ }
+=20
+--=20
+2.17.1
