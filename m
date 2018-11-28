@@ -1,297 +1,91 @@
 Return-Path: <SRS0=agpe=OH=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr760051.outbound.protection.outlook.com ([40.107.76.51]:36605
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728092AbeK2AdP (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:41656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727823AbeK2BX2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Nov 2018 19:33:15 -0500
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
+        Wed, 28 Nov 2018 20:23:28 -0500
+Date: Wed, 28 Nov 2018 09:21:37 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3] tools/lib/traceevent: make libtraceevent thread safe
-Date: Wed, 28 Nov 2018 13:31:31 +0000
-Message-ID: <20181128133119.13149-1-tstoyanov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] tools/lib/traceevent: make libtraceevent thread safe
+Message-ID: <20181128092137.58a8b028@gandalf.local.home>
+In-Reply-To: <CACqStodWHb=aeSAp1Fu0LeZkA6WAPKxQjBUGVtJ-M6Vz+QiUhw@mail.gmail.com>
+References: <20181126132245.19576-1-tstoyanov@vmware.com>
+        <20181126120328.509a3151@gandalf.local.home>
+        <CACqStodWHb=aeSAp1Fu0LeZkA6WAPKxQjBUGVtJ-M6Vz+QiUhw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch is a PoC about transforming libtraceevent
-into a thread safe library. It implements per thread local
-storage and internal APIs to access it. It covers only
-tep->last_event cache, but easily can be extended with all
-library's thread sensitive data.
+On Wed, 28 Nov 2018 10:59:18 +0000
+Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
-v2: Added local thread data per tep context
-v3: Implemented APIs to access specific tread local data,
-    instead of the whole struct tep_thread_data.
----
- tools/lib/traceevent/event-parse-local.h  |  18 ++-
- tools/lib/traceevent/event-parse-thread.c | 131 ++++++++++++++++++++++
- tools/lib/traceevent/event-parse.c        |  21 ++--
- 3 files changed, 158 insertions(+), 12 deletions(-)
- create mode 100644 tools/lib/traceevent/event-parse-thread.c
+> Hi Steven
 
-diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceeven=
-t/event-parse-local.h
-index 9a092dd4a86d..aa9418fdefd0 100644
---- a/tools/lib/traceevent/event-parse-local.h
-+++ b/tools/lib/traceevent/event-parse-local.h
-@@ -14,6 +14,14 @@ struct func_list;
- struct event_handler;
- struct func_resolver;
-=20
-+/* cache */
-+struct tep_thread_data {
-+	struct tep_handle *tep;
-+	struct tep_thread_data *next;
-+
-+	struct tep_event *last_event;
-+};
-+
- struct tep_handle {
- 	int ref_count;
-=20
-@@ -83,9 +91,6 @@ struct tep_handle {
- 	struct event_handler *handlers;
- 	struct tep_function_handler *func_handlers;
-=20
--	/* cache */
--	struct tep_event *last_event;
--
- 	char *trace_clock;
- };
-=20
-@@ -96,4 +101,11 @@ unsigned short tep_data2host2(struct tep_handle *pevent=
-, unsigned short data);
- unsigned int tep_data2host4(struct tep_handle *pevent, unsigned int data);
- unsigned long long tep_data2host8(struct tep_handle *pevent, unsigned long=
- long data);
-=20
-+/* tep cache per thread */
-+struct tep_event *tep_find_event_by_id_cache(struct tep_handle *tep, int i=
-d);
-+struct tep_event *
-+tep_find_event_by_name_cache(struct tep_handle *tep, const char *name, con=
-st char *sys);
-+void tep_set_serach_event_cache(struct tep_handle *tep, struct tep_event *=
-event);
-+void tep_destroy_thread_local(struct tep_handle *tep);
-+
- #endif /* _PARSE_EVENTS_INT_H */
-diff --git a/tools/lib/traceevent/event-parse-thread.c b/tools/lib/traceeve=
-nt/event-parse-thread.c
-new file mode 100644
-index 000000000000..84707c24ac6b
---- /dev/null
-+++ b/tools/lib/traceevent/event-parse-thread.c
-@@ -0,0 +1,131 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+/*
-+ * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.c=
-om>
-+ *
-+ */
-+
-+#include "event-parse.h"
-+#include "event-parse-local.h"
-+#include "event-utils.h"
-+
-+static __thread struct tep_thread_data *tep_thread_local;
-+
-+static struct tep_thread_data *tep_alloc_thread_local(struct tep_handle *t=
-ep)
-+{
-+	struct tep_thread_data *local;
-+
-+	local =3D calloc(1, sizeof(struct tep_thread_data));
-+	if (local) {
-+		local->tep =3D tep;
-+		local->next =3D tep_thread_local;
-+		tep_thread_local =3D local;
-+	}
-+	return local;
-+}
-+
-+static struct tep_thread_data *tep_get_thread_local(struct tep_handle *tep=
-)
-+{
-+	struct tep_thread_data *local;
-+	static __thread struct tep_thread_data *last_local;
-+
-+	if (last_local && last_local->tep =3D=3D tep)
-+		return last_local;
-+
-+	local =3D tep_thread_local;
-+	while (local) {
-+		if (local->tep =3D=3D tep) {
-+			last_local =3D local;
-+			return local;
-+		}
-+		local =3D local->next;
-+	}
-+
-+	return NULL;
-+}
-+
-+/**
-+ * tep_find_event_by_id_cache - Find event with given id in the cache
-+ * @tep: a handle to the tep context
-+ * @id: event's id
-+ *
-+ * Searches in the cache for event with given id
-+ */
-+struct tep_event *tep_find_event_by_id_cache(struct tep_handle *tep, int i=
-d)
-+{
-+	struct tep_thread_data *local =3D tep_get_thread_local(tep);
-+
-+	if (local && local->last_event && local->last_event->id =3D=3D id)
-+		return local->last_event;
-+
-+	return NULL;
-+}
-+
-+/**
-+ * tep_find_event_by_name_cache - Find event with given name and sys in th=
-e cache
-+ * @tep: a handle to the tep context
-+ * @name: event's name
-+ * @sys: event's system
-+ *
-+ * Searches in the cache for event with given name and system
-+ */
-+struct tep_event *
-+tep_find_event_by_name_cache(struct tep_handle *tep, const char *name, con=
-st char *sys)
-+{
-+	struct tep_thread_data *local =3D tep_get_thread_local(tep);
-+
-+	if (local && local->last_event &&
-+	    strcmp(local->last_event->name, name) =3D=3D 0 &&
-+	    (!sys || strcmp(local->last_event->system, sys) =3D=3D 0))
-+		return local->last_event;
-+
-+	return NULL;
-+}
-+
-+/**
-+ * tep_set_serach_event_cache - set last used event in the cache
-+ * @tep: a handle to the tep context
-+ * @event: pointer to the last used event
-+ *
-+ * Sets last used event in the cache, to speed up the next searches
-+ */
-+void tep_set_serach_event_cache(struct tep_handle *tep, struct tep_event *=
-event)
-+{
-+	struct tep_thread_data *local =3D tep_get_thread_local(tep);
-+
-+	if (!local)
-+		local =3D tep_alloc_thread_local(tep);
-+
-+	if (local)
-+		local->last_event =3D event;
-+}
-+
-+/**
-+ * tep_destroy_thread_local - destroy local data of tep context
-+ * @tep: a handle to the tep context
-+ *
-+ * Destroys local data of tep context for the current thread
-+ */
-+void tep_destroy_thread_local(struct tep_handle *tep)
-+{
-+	struct tep_thread_data **local, *del;
-+
-+	if (!tep_thread_local)
-+		return;
-+	local =3D &tep_thread_local;
-+
-+	while (*local) {
-+		if ((*local)->tep =3D=3D tep) {
-+			tep_thread_local =3D (*local)->next;
-+			free(*local);
-+			return;
-+		}
-+		if ((*local)->next && (*local)->next->tep =3D=3D tep) {
-+			del =3D (*local)->next;
-+			(*local)->next =3D (*local)->next->next;
-+			free(del);
-+			return;
-+		}
-+		local =3D &((*local)->next);
-+	}
-+}
-+
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
-t-parse.c
-index a5048c1b9bec..8fd727023640 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -3485,10 +3485,11 @@ struct tep_event *tep_find_event(struct tep_handle =
-*pevent, int id)
- 	struct tep_event **eventptr;
- 	struct tep_event key;
- 	struct tep_event *pkey =3D &key;
-+	struct tep_event *event_cache =3D tep_find_event_by_id_cache(pevent, id);
-=20
- 	/* Check cache first */
--	if (pevent->last_event && pevent->last_event->id =3D=3D id)
--		return pevent->last_event;
-+	if (event_cache)
-+		return event_cache;
-=20
- 	key.id =3D id;
-=20
-@@ -3496,7 +3497,7 @@ struct tep_event *tep_find_event(struct tep_handle *p=
-event, int id)
- 			   sizeof(*pevent->events), events_id_cmp);
-=20
- 	if (eventptr) {
--		pevent->last_event =3D *eventptr;
-+		tep_set_serach_event_cache(pevent, *eventptr);
- 		return *eventptr;
- 	}
-=20
-@@ -3516,13 +3517,13 @@ struct tep_event *
- tep_find_event_by_name(struct tep_handle *pevent,
- 		       const char *sys, const char *name)
- {
--	struct tep_event *event =3D NULL;
- 	int i;
-+	struct tep_event *event =3D NULL;
-+	struct tep_event *event_cache =3D tep_find_event_by_name_cache(pevent, na=
-me, sys);
-=20
--	if (pevent->last_event &&
--	    strcmp(pevent->last_event->name, name) =3D=3D 0 &&
--	    (!sys || strcmp(pevent->last_event->system, sys) =3D=3D 0))
--		return pevent->last_event;
-+	/* Check cache first */
-+	if (event_cache)
-+		return event_cache;
-=20
- 	for (i =3D 0; i < pevent->nr_events; i++) {
- 		event =3D pevent->events[i];
-@@ -3533,10 +3534,12 @@ tep_find_event_by_name(struct tep_handle *pevent,
- 				break;
- 		}
- 	}
-+
- 	if (i =3D=3D pevent->nr_events)
- 		event =3D NULL;
-+	if (event)
-+		tep_set_serach_event_cache(pevent, event);
-=20
--	pevent->last_event =3D event;
- 	return event;
- }
-=20
---=20
-2.19.1
+Hi Tzvetomir,
+
+Can you make sure that your replies have HTML turned off. As it doesn't
+seem to do inlined replies well (my responses don't have a ">" in front
+of them thus it's hard to know which is your reply or my old one).
+
+
+
+> > diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+> > index a5048c1b9bec..25f4ceab9a58 100644
+> > --- a/tools/lib/traceevent/event-parse.c
+> > +++ b/tools/lib/traceevent/event-parse.c
+> > @@ -3485,10 +3485,11 @@ struct tep_event *tep_find_event(struct tep_handle *pevent, int id)
+> >       struct tep_event **eventptr;
+> >       struct tep_event key;
+> >       struct tep_event *pkey = &key;
+> > -
+> > +     struct tep_thread_data *local = tep_get_thread_local(pevent);  
+> 
+> Let's make this:
+> 
+>         local = tep_get_thread_local(pevent, id);
+> 
+>         if (local)
+>                 return local->last_event;
+> 
+> 
+
+> I got the idea, but have one comment about naming of the new functions.
+> My initial idea was tep_get_thread_local() to access all tread specific data, not only
+> last_event cache. That's why I named it this way, and make it to not depend on an event.
+> As these are internal APIs, we are not going to expose them to the users, we can assume
+> that the callers are aware of  "struct tep_thread_data" and can access it directly.
+> As I understand,  your idea is to hide "struct tep_thread_data", and to implement APIs to
+> access only specific tread local data, as "last_event cache" at the first stage. When we add
+> more into "struct tep_thread_data", new APIs will be implemented. I'm ok with this
+> approach, but in this case we should name the new APIs to follow the name of thread local item,
+> something like this:
+
+>     tep_find_event_by_id_cache(struct tep_handle *, int);
+>     tep_find_event_by_name_cache(struct tep_handle *, const char *);
+>     tep_set_serach_event_cache(struct tep_handle *, struct tep_event *);
+> 
+
+No, I don't think the cached should be visible to the user. That's too
+much implementation details. But we can have several thread caches. We
+probably want to drop the "tep_" prefix too, as these functions
+shouldn't be exposed.
+
+We could have:
+
+  get_thread_local_event_by_id(tep, id);
+  get_thread_local_event_by_name(tep, name);
+
+and such.
+
+The point is, the cache is suppose to be a fast access where code might
+be accessing the same event over and over. A loop searching for a cache
+item defeats that purpose. The last access either matches or it
+doesn't. If it is bouncing between multiple tep handlers, then it will
+flush the cache of the previous one.
+
+-- Steve
