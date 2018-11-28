@@ -2,17 +2,17 @@ Return-Path: <SRS0=agpe=OH=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr790052.outbound.protection.outlook.com ([40.107.79.52]:55564
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727978AbeK1UIm (ORCPT
+        id S1727413AbeK1UIn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Nov 2018 15:08:42 -0500
+        Wed, 28 Nov 2018 15:08:43 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3 05/15] tools/lib/traceevent: Rename tep_free_format() to
- tep_free_event()
-Date: Wed, 28 Nov 2018 09:07:35 +0000
-Message-ID: <20181128090711.17792-6-tstoyanov@vmware.com>
+Subject: [PATCH v3 06/15] tools/perf: traceevent API cleanup, remove
+ __tep_data2host*()
+Date: Wed, 28 Nov 2018 09:07:36 +0000
+Message-ID: <20181128090711.17792-7-tstoyanov@vmware.com>
 References: <20181128090711.17792-1-tstoyanov@vmware.com>
 In-Reply-To: <20181128090711.17792-1-tstoyanov@vmware.com>
 Content-Language: en-US
@@ -22,63 +22,40 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-In order to make libtraceevent into a proper library, variables, data
-structures and functions require a unique prefix to prevent name space
-conflicts. This renames tep_free_format() to tep_free_event(),
-which describes more closely the purpose of the function.
+In order to make libtraceevent into a proper library, its API
+should be straightforward. The __tep_data2host*() functions are
+going to no longer be available as a libtraceevent API, tep_read_number()
+should be used instead. This patch replaces __tep_data2host*() usage with
+tep_read_number() in perf.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/event-parse.c | 6 +++---
- tools/lib/traceevent/event-parse.h | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ tools/perf/util/trace-event-read.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
-t-parse.c
-index df37613f8920..7140b845e20f 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -6169,7 +6169,7 @@ __parse_event(struct tep_handle *pevent,
- 	return 0;
+diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-eve=
+nt-read.c
+index cdf6de82a507..3191bd310fcf 100644
+--- a/tools/perf/util/trace-event-read.c
++++ b/tools/perf/util/trace-event-read.c
+@@ -102,7 +102,7 @@ static unsigned int read4(struct tep_handle *pevent)
 =20
- event_add_failed:
--	tep_free_format(event);
-+	tep_free_event(event);
- 	return ret;
+ 	if (do_read(&data, 4) < 0)
+ 		return 0;
+-	return __tep_data2host4(pevent, data);
++	return tep_read_number(pevent, &data, 4);
  }
 =20
-@@ -6807,7 +6807,7 @@ static void free_formats(struct tep_format *format)
- 	free_format_fields(format->fields);
+ static unsigned long long read8(struct tep_handle *pevent)
+@@ -111,7 +111,7 @@ static unsigned long long read8(struct tep_handle *peve=
+nt)
+=20
+ 	if (do_read(&data, 8) < 0)
+ 		return 0;
+-	return __tep_data2host8(pevent, data);
++	return tep_read_number(pevent, &data, 8);
  }
 =20
--void tep_free_format(struct tep_event *event)
-+void tep_free_event(struct tep_event *event)
- {
- 	free(event->name);
- 	free(event->system);
-@@ -6893,7 +6893,7 @@ void tep_free(struct tep_handle *pevent)
- 	}
-=20
- 	for (i =3D 0; i < pevent->nr_events; i++)
--		tep_free_format(pevent->events[i]);
-+		tep_free_event(pevent->events[i]);
-=20
- 	while (pevent->handlers) {
- 		handle =3D pevent->handlers;
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/even=
-t-parse.h
-index e2f5f56fbcb6..0c8548bf234c 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -477,7 +477,7 @@ enum tep_errno tep_parse_format(struct tep_handle *peve=
-nt,
- 				struct tep_event **eventp,
- 				const char *buf,
- 				unsigned long size, const char *sys);
--void tep_free_format(struct tep_event *event);
-+void tep_free_event(struct tep_event *event);
- void tep_free_format_field(struct tep_format_field *field);
-=20
- void *tep_get_field_raw(struct trace_seq *s, struct tep_event *event,
+ static char *read_string(void)
 --=20
 2.19.1
