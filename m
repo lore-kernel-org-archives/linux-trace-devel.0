@@ -1,77 +1,72 @@
 Return-Path: <SRS0=ZWpJ=OI=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr740080.outbound.protection.outlook.com ([40.107.74.80]:37312
-        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731655AbeK3CCC (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728272AbeK3DLn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Nov 2018 21:02:02 -0500
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
+        Thu, 29 Nov 2018 22:11:43 -0500
+Date: Thu, 29 Nov 2018 11:05:49 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] kernel-shark-qt: Don't use collection when searching for
- sched_wakeup
-Date: Thu, 29 Nov 2018 14:56:22 +0000
-Message-ID: <20181129145600.8803-2-ykaradzhov@vmware.com>
-References: <20181129145600.8803-1-ykaradzhov@vmware.com>
-In-Reply-To: <20181129145600.8803-1-ykaradzhov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [POC][PATCH v4] tools/lib/traceevent: make libtraceevent thread
+ safe
+Message-ID: <20181129110549.5039c7ce@gandalf.local.home>
+In-Reply-To: <20181129122330.22500-1-tstoyanov@vmware.com>
+References: <20181129122330.22500-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch modifies the way the wake up latency is plotted by
-the Sched events plugin. The sched_wakeup event does not belong to
-the task it is waking, hence we cannot use the task's collection
-to search for it. It was partially working so far because in most
-of the cases the sched_wakeup event happened to be inside the
-"margins" of the collection. Note that if we do not use collection
-when searching, the time complexity of the plugin becomes linear.
-However, this should not be a problem, because we have an explicit
-cut which disables plotting if the number of entries shown by
-the graph is bigger than PLUGIN_MAX_ENTRIES (10 000).
+On Thu, 29 Nov 2018 12:23:42 +0000
+Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark-qt/src/plugins/SchedEvents.cpp | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+> This patch is a PoC about transforming libtraceevent
+> into a thread safe library. It implements per thread local
+> storage and internal APIs to access it. It covers only
+> tep->last_event cache, but easily can be extended with all
+> library's thread sensitive data.
+> 
+> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+> ---
+> v2: Added local thread data per tep context
+> v3: Implemented APIs to access specific tread local data,
+>     instead of the whole struct tep_thread_data.
+> v4: Simplify the implementation to keep cache only for the last
+>     used tep context in current thread, instead to track
+>     cache for all tep contexts. Remove "tep_" prefix of functions,
+>     as these are internal APIs and are not going to be exposed to
+>     the library users.
+> ---
+>  tools/lib/traceevent/event-parse-local.h  | 16 ++++--
+>  tools/lib/traceevent/event-parse-thread.c | 62 +++++++++++++++++++++++
+>  tools/lib/traceevent/event-parse.c        | 21 ++++----
+>  3 files changed, 87 insertions(+), 12 deletions(-)
+>  create mode 100644 tools/lib/traceevent/event-parse-thread.c
+> 
+> diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
+> index 9a092dd4a86d..bf3f810ce02f 100644
+> --- a/tools/lib/traceevent/event-parse-local.h
+> +++ b/tools/lib/traceevent/event-parse-local.h
+> @@ -14,6 +14,13 @@ struct func_list;
+>  struct event_handler;
+>  struct func_resolver;
+>  
+> +/* cache */
+> +struct tep_thread_data {
+> +	struct tep_handle *tep;
+> +
+> +	struct tep_event *last_event;
 
-diff --git a/kernel-shark-qt/src/plugins/SchedEvents.cpp b/kernel-shark-qt/=
-src/plugins/SchedEvents.cpp
-index ea07662..c8dc3bf 100644
---- a/kernel-shark-qt/src/plugins/SchedEvents.cpp
-+++ b/kernel-shark-qt/src/plugins/SchedEvents.cpp
-@@ -122,7 +122,7 @@ static void pluginDraw(plugin_sched_context *plugin_ctx=
-,
- 			/*
- 			 * Starting from the last element in this bin, go backward
- 			 * in time until you find a trace entry that satisfies the
--			 * condition defined by plugin_switch_match_pid.
-+			 * condition defined by plugin_switch_match_rec_pid.
- 			 */
- 			entryOpen =3D
- 				ksmodel_get_entry_back(histo, bin, false,
-@@ -133,12 +133,16 @@ static void pluginDraw(plugin_sched_context *plugin_c=
-tx,
- 			/*
- 			 * Starting from the last element in this bin, go backward
- 			 * in time until you find a trace entry that satisfies the
--			 * condition defined by plugin_wakeup_match_pid.
-+			 * condition defined by plugin_wakeup_match_rec_pid. Note
-+			 * that the wakeup event does not belong to this task,
-+			 * hence we cannot use the task's collection.
- 			 */
- 			entryOpen =3D
- 				ksmodel_get_entry_back(histo, bin, false,
- 						       plugin_wakeup_match_rec_pid,
--						       pid, col, &indexOpen);
-+						       pid,
-+						       nullptr, // No collection.
-+						       &indexOpen);
-=20
- 			if (entryOpen) {
- 				int cpu =3D ksmodel_get_cpu_back(histo, bin,
---=20
-2.17.1
+Small nit. The space between tep and last_event isn't needed.
+
+> +};
+> +
+
+The rest looks good. Care to send a non POC patch?
+
+Thanks!
+
+-- Steve
