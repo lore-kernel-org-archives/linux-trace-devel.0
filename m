@@ -1,55 +1,97 @@
 Return-Path: <SRS0=EnxC=OJ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr720049.outbound.protection.outlook.com ([40.107.72.49]:20658
-        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr750083.outbound.protection.outlook.com ([40.107.75.83]:34256
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726070AbeLAAWn (ORCPT
+        id S1726070AbeLAA3V (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 30 Nov 2018 19:22:43 -0500
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+        Fri, 30 Nov 2018 19:29:21 -0500
+From: Slavomir Kaslev <kaslevs@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 2/2] tools/lib/traceevent: make few libtraceevent internal
- variables to be per thread
-Date: Fri, 30 Nov 2018 13:13:09 +0000
-Message-ID: <20181130131254.32621-3-tstoyanov@vmware.com>
-References: <20181130131254.32621-1-tstoyanov@vmware.com>
-In-Reply-To: <20181130131254.32621-1-tstoyanov@vmware.com>
+Subject: Re: [PATCH] trace-cmd: Fix record --date flag when sending tracing
+ data to a listener
+Date: Fri, 30 Nov 2018 13:19:58 +0000
+Message-ID: <CAE0o1NuvSxrqKq3SY0d8AhQAhV--G7W_EAptjKJwGX0g+XNRSQ@mail.gmail.com>
+References: <20181114154328.14731-1-kaslevs@vmware.com>
+ <20181126130530.63e8df2f@gandalf.local.home>
+ <CAE0o1Ns+4UXU+UEgVT=sJvLujCOEPa78-UA7J_UVLTEK1gHoqQ@mail.gmail.com>
+ <20181127221921.3e67172a@vmware.local.home>
+ <CAE0o1Nt+a4iDyJb7Ab=1soj63DX1aR+HbwE-TTwhzRgaHOJE2A@mail.gmail.com>
+In-Reply-To: <CAE0o1Nt+a4iDyJb7Ab=1soj63DX1aR+HbwE-TTwhzRgaHOJE2A@mail.gmail.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4638DACA71757F44AA121BA2C45019A2@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch continues the effort to transform libtraceevent
-into a thread safe library. It converts input_buf, input_buf_ptr
-and input_buf_siz internal variables to be thread specific. This
-buffer is not related to a specific tep context. It is used
-internally by the library during the parsing of various strings.
-
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- tools/lib/traceevent/event-parse.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/even=
-t-parse.c
-index 8f19dcdd06ec..f6c926467fa3 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -42,9 +42,9 @@
- #include "event-utils.h"
- #include "trace-seq.h"
-=20
--static const char *input_buf;
--static unsigned long long input_buf_ptr;
--static unsigned long long input_buf_siz;
-+static __thread const char *input_buf;
-+static __thread unsigned long long input_buf_ptr;
-+static __thread unsigned long long input_buf_siz;
-=20
- static int is_flag_field;
- static int is_symbolic_field;
---=20
-2.19.1
+T24gRnJpLCBOb3YgMzAsIDIwMTggYXQgMjozMyBQTSBTbGF2b21pciBLYXNsZXYgPGthc2xldnNA
+dm13YXJlLmNvbT4gd3JvdGU6DQo+DQo+IE9uIFdlZCwgTm92IDI4LCAyMDE4IGF0IDU6MTkgQU0g
+U3RldmVuIFJvc3RlZHQgPHJvc3RlZHRAZ29vZG1pcy5vcmc+IHdyb3RlOg0KPiA+DQo+ID4gT24g
+VHVlLCAyNyBOb3YgMjAxOCAxMDoxNTo1NSArMDAwMA0KPiA+IFNsYXZvbWlyIEthc2xldiA8a2Fz
+bGV2c0B2bXdhcmUuY29tPiB3cm90ZToNCj4gPg0KPiA+ID4gPiBJIGRvbid0IHNlZSBhbnl0aGlu
+ZyB0b28gd3Jvbmcgd2l0aCBpdCwgYWNjZXB0IHRoZSBmb2xsb3dpbmcgdGVzdCBicm9rZToNCj4g
+PiA+ID4NCj4gPiA+ID4gICQgZ2l0IGNoZWNrb3V0IHRyYWNlLWNtZC12Mi42DQo+ID4gPiA+ICAk
+IG1ha2UNCj4gPiA+ID4gICQgc3VkbyBjcCB0cmFjZS1jbWQgL3Vzci9sb2NhbC9iaW4vdHJhY2Ut
+Y21kLXYyLjYNCj4gPiA+ID4gICQgZ2l0IGNoZWNrb3V0IG9yaWdpbi9tYXN0ZXINCj4gPiA+ID4g
+ICQgcGF0Y2ggLXAxIDwgdGhpcy5wYXRjaA0KPiA+ID4gPiAgJCBtYWtlDQo+ID4gPiA+ICAkIHRy
+YWNlLWNtZC12Mi42IGxpc3RlbiAtcCAxMjM0NQ0KPiA+ID4gPg0KPiA+ID4gPiBJbiBhbm90aGVy
+IHRlcm1pbmFsOg0KPiA+ID4gPg0KPiA+ID4gPiAgJCBzdWRvIHRyYWNlLWNtZCByZWNvcmQgLU4g
+MTI3LjAuMC4xOjEyMzQ1IC1lIHNjaGVkIHNsZWVwIDENCj4gPiA+ID4gdHJhY2UtY21kOiBObyBz
+dWNoIGZpbGUgb3IgZGlyZWN0b3J5DQo+ID4gPiA+ICAgQ2Fubm90IGhhbmRsZSB0aGUgcHJvdG9j
+b2wNCj4gPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gUmVtZW1iZXIsIHdlIG5lZWQgdG8gcmVtYWlu
+IGJhY2t3YXJkIGNvbXBhdGlibGUuIFdlIGFsc28gbmVlZCB0byB0ZXN0DQo+ID4gPiA+IHRoaXMg
+Y29kZSBydW5uaW5nIGFzIGEgbGlzdGVuZXIsIGFuZCB0aGUgdHJhY2UtY21kLXYyLjYgKGFuZCBl
+YXJsaWVyKQ0KPiA+ID4gPiBhcyB0aGUgcmVjb3JkZXIuDQo+ID4gPg0KPiA+ID4gVGhpcyBpcyBh
+IGRlc2lnbiBidWcgKHRoZSBiZXN0IGtpbmQpLCBtZXRhZGF0YSBzaG91bGQgcmVhbGx5IGJlIHdy
+aXR0ZW4gZnJvbSB0aGUNCj4gPiA+IHJlY29yZGluZyBzaWRlIGFuZCBub3QgZnJvbSB0aGUgbGlz
+dGVuZXIuIEEgYmFja3dhcmQgY29tcGF0aWJsZSBmaXggc2hvdWxkIGhhdmUNCj4gPiA+IHRoZSBu
+ZXdlciByZWNvcmRlciBhbmQgbGlzdGVuZXIgZGV0ZWN0IHRoZXkncmUgdGFsa2luZyB0byBhbiBv
+bGRlciB2ZXJzaW9uIGFuZA0KPiA+ID4gZmFsbGJhY2sgdG8gYnJva2VuIGJlaGF2aW9yLiBUaGlz
+IGltcGxpZXMgYSBuZXcgcHJvdG9jb2wgdmVyc2lvbiBvciBleHRlbmRpbmcNCj4gPiA+IE1TR19U
+SU5JVC9NU0dfUklOSVQgc28gdGhhdCB3ZSBjYW4gaW5mZXIgdGhlIGJlaGF2aW9yIG9uIHRoZSBv
+dGhlciBzaWRlIGFuZA0KPiA+ID4gZmFsbGJhY2sgdG8gYmVpbmcgYnJva2VuIHdoZW4gbmVjZXNz
+YXJ5Lg0KPiA+DQo+ID4gQWdyZWVkLg0KPiA+DQo+ID4gPg0KPiA+ID4gV2hhdCB3b3VsZCB5b3Ug
+c3VnZ2VzdD8NCj4gPg0KPiA+IEkganVzdCB3YW50IHRvIHN0cmVzcyB0aGF0IEkgZmVlbCBhcyBz
+dHJvbmcgZm9yIGJhY2t3YXJkIGNvbXBhdGliaWxpdHkNCj4gPiBhcyBMaW51cyBmZWVscyBmb3Ig
+bm90IGJyZWFraW5nIHVzZXIgc3BhY2UuIFRoYXQgaXMsIEknbGwgZ28gd2l0aG91dCBhDQo+ID4g
+Zml4IGlmIGl0IGJyZWFrcyBiYWNrd2FyZCBjb21wYXRpYmlsaXR5Lg0KPiA+DQo+ID4gQnV0IHRo
+ZSByZWFsbHkgZ29vZCBuZXdzIGlzLCB5b3VyIGNvZGUgZGlkbid0IGJyZWFrIGJhY2t3YXJkDQo+
+ID4gY29tcGF0aWJpbGl0eS4gSXQgdW5jb3ZlcmVkIGEgYnVnIDotKSA6LSkgOi0pDQo+ID4NCj4g
+PiBUaGUgZmFpbHVyZSBvZiB0aGUgb2xkIGNvZGUgaXMgdGhhdCBpdCBsb29rZWQgYXQgYnVmWzBd
+IHdpdGhvdXQNCj4gPiBpbml0aWFsaXppbmcgaXQuIFRoZSBmaXggaXMgdGhpczoNCj4gPg0KPiA+
+IGRpZmYgLS1naXQgYS90cmFjZWNtZC90cmFjZS1yZWNvcmQuYyBiL3RyYWNlY21kL3RyYWNlLXJl
+Y29yZC5jDQo+ID4gaW5kZXggZTFlMmY0MzMuLjE0Mzc5M2RhIDEwMDY0NA0KPiA+IC0tLSBhL3Ry
+YWNlY21kL3RyYWNlLXJlY29yZC5jDQo+ID4gKysrIGIvdHJhY2VjbWQvdHJhY2UtcmVjb3JkLmMN
+Cj4gPiBAQCAtMjc3NSw2ICsyNzc1LDggQEAgc3RhdGljIHZvaWQgY2hlY2tfcHJvdG9jb2xfdmVy
+c2lvbihzdHJ1Y3QgdHJhY2VjbWRfbXNnX2hhbmRsZSAqbXNnX2hhbmRsZSkNCj4gPiAgICAgICAg
+ICAqLw0KPiA+ICAgICAgICAgd3JpdGUoZmQsIFYyX0NQVSwgc2l6ZW9mKFYyX0NQVSkpOw0KPiA+
+DQo+ID4gKyAgICAgICBidWZbMF0gPSAwOw0KPiA+ICsNCj4gPiAgICAgICAgIC8qIHJlYWQgYSBy
+ZXBseSBtZXNzYWdlICovDQo+ID4gICAgICAgICBuID0gcmVhZChmZCwgYnVmLCBCVUZTSVopOw0K
+PiA+DQo+DQo+IFRoaXMgZml4IGRvZXMgd29yayBhbmQgcmVjb3JkZXIgZmFsbGJhY2tzIHRvIHBy
+b3RvY29sIHYxIHdoZW4gdGFsa2luZw0KPiB3aXRoIHYyLjYgbGlzdGVuZXIuDQo+DQo+IFRoZSBy
+ZXN1bHRpbmcgdHJhY2UgZmlsZSBmYWlscyB0byBwYXJzZSB0aG91Z2gNCj4NCj4ga2FzbGV2c0Bi
+b3g6fi90bXAkIHRjIHJlcG9ydCAtaSB0cmFjZS5sb2NhbGhvc3Q6Mzk3NTQuZGF0DQo+ICAgZmFp
+bGVkIHRvIGluaXQgZGF0YQ0KPg0KPiBiZWNhdXNlIGJvdGggdGhlIHJlY29yZGVyIGFuZCB0aGUg
+bGlzdGVuZXIgd3JvdGUgb3B0aW9ucyB0byB0aGUgLmRhdCBmaWxlLg0KPg0KPiBTbyB3ZSBzdGls
+bCBoYXZlIHRvIGRldGVjdCB0aGF0IHRoZSBsaXN0ZW5lciBlbmQgaXMgYW4gb2xkZXIgdmVyc2lv
+bg0KPiBhbmQgZmFsbGJhY2sgdG8gb2xkIGJlaGF2aW9yIGluIHRoZSByZWNvcmRlci4NCj4NCj4g
+T3VyIGN1cnJlbnQgcHJvdG9jb2wgZG9lc24ndCBhbGxvdyB0byBlYXNpbHkgYWRkIG5ldyBmaWVs
+ZHMgdG8NCj4gbWVzc2FnZXMgYmVjYXVzZSB0aGUgc2l6ZSBvZiBtZXNzYWdlcyBpcyBoYXJkIGNv
+ZGVkIGluIHRoZSBleGVjdXRhYmxlLg0KPiBUaHVzIGV4dGVuZGluZw0KPg0KPiBzdHJ1Y3QgdHJh
+Y2VjbWRfbXNnX3Jpbml0IHsNCj4gICAgICAgICBiZTMyIGNwdXM7DQo+IH0gX19hdHRyaWJ1dGVf
+XygocGFja2VkKSk7DQo+DQo+IG9yIHJldXNpbmcgYml0cyBmcm9tIC5jcHVzIHdpbGwgbm90IGZs
+eS4NCj4NCj4gQWx0ZXJuYXRpdmVseSwgd2UgY2FuIGFkZCB0cmFjZWNtZF9tc2dfcmluaXQyIHdp
+dGggd2hpY2ggdGhlIGxpc3RlbmVyDQo+IChuZXcgdmVyc2lvbnMpIHJlc3BvbmRzIGRlcGVuZGlu
+ZyBvbiB0aGUgb3B0aW9ucyBzZXQgaW4NCj4gdHJhY2VjbWRfbXNnX3Rpbml0IGJ5IHRoZSByZWNv
+cmRlciAod2hlbiB0aGUgcmVjb3JkZXIgaXMgbmV3IHZlcnNpb24NCj4gdG9vKS4NCg0KQW5vdGhl
+ciBvcHRpb24gaXMgdG8gZml4IHRoZSBwcm90b2NvbCBpdHNlbGYgdG8gYmUgZnV0dXJlIHByb29m
+IGFuZA0KYWxsb3cgYWRkaW5nIG5ldyBtZXNzYWdlIGZpZWxkcyB3aXRob3V0IGJyZWFraW5nIG9s
+ZCB2ZXJzaW9ucy4gSW4NCm90aGVyIHdvcmRzLCBtYWtlIGVhY2ggY29tbWFuZCB3cml0ZSBpdCdz
+IC5zaXplIG9uIHRoZSB3aXJlIGluc3RlYWQgb2YNCmhhdmluZyBpdCBoYXJkLWNvZGVkICh0aGUg
+Y3VycmVudCAuc2l6ZSBpbiB0cmFjZWNtZF9tc2dfaGVhZGVyIGJvdW5kcw0KdGhlIHdob2xlIG1l
+c3NhZ2UgKGNvbW1hbmQgYW5kIGFkZGl0aW9uYWwgZGF0YSkgYW5kIGRvZXNuJ3QgYWxsb3cgdG8N
+CmRpZmZlcmVudGlhdGUgYmV0d2VlbiBkaWZmZXJlbnQgdmVyc2lvbnMgb2Ygc2F5IHRoZSB0cmFj
+ZWNtZF9tc2dfcmluaXQNCmNvbW1hbmQpLg0K
