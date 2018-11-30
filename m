@@ -1,86 +1,86 @@
 Return-Path: <SRS0=EnxC=OJ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:55590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726472AbeK3O05 (ORCPT
+Received: from mail-eopbgr790078.outbound.protection.outlook.com ([40.107.79.78]:27072
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726555AbeK3Xmi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 30 Nov 2018 09:26:57 -0500
-Message-Id: <20181130031907.694438604@goodmis.org>
-Date: Thu, 29 Nov 2018 22:18:30 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Wang Haibin <wanghaibin.wang@huawei.com>,
-        linux-trace-devel@vger.kernel.org, stable@vger.kernel.org,
-        Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH 1/2] tracepoint: Use __idx instead of idx in DO_TRACE macro to make it
- unique
-References: <20181130031829.268422593@goodmis.org>
+        Fri, 30 Nov 2018 18:42:38 -0500
+From: Slavomir Kaslev <kaslevs@vmware.com>
+To: "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC: "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] trace-cmd: Fix record --date flag when sending tracing
+ data to a listener
+Date: Fri, 30 Nov 2018 12:33:24 +0000
+Message-ID: <CAE0o1Nt+a4iDyJb7Ab=1soj63DX1aR+HbwE-TTwhzRgaHOJE2A@mail.gmail.com>
+References: <20181114154328.14731-1-kaslevs@vmware.com>
+ <20181126130530.63e8df2f@gandalf.local.home>
+ <CAE0o1Ns+4UXU+UEgVT=sJvLujCOEPa78-UA7J_UVLTEK1gHoqQ@mail.gmail.com>
+ <20181127221921.3e67172a@vmware.local.home>
+In-Reply-To: <20181127221921.3e67172a@vmware.local.home>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2A46C88279C85446B92CC252E6274FB6@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-From: Zenghui Yu <yuzenghui@huawei.com>
-
-After enabling KVM event tracing, almost all of trace_kvm_exit()'s
-printk shows
-
-	"kvm_exit: IRQ: ..."
-
-even if the actual exception_type is NOT IRQ.  More specifically,
-trace_kvm_exit() is defined in virt/kvm/arm/trace.h by TRACE_EVENT.
-
-This slight problem may have existed after commit e6753f23d961
-("tracepoint: Make rcuidle tracepoint callers use SRCU"). There are
-two variables in trace_kvm_exit() and __DO_TRACE() which have the
-same name, *idx*. Thus the actual value of *idx* will be overwritten
-when tracing. Fix it by adding a simple prefix.
-
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Wang Haibin <wanghaibin.wang@huawei.com>
-Cc: linux-trace-devel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Fixes: e6753f23d961 ("tracepoint: Make rcuidle tracepoint callers use SRCU")
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- include/linux/tracepoint.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 538ba1a58f5b..e9de8ad0bad7 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -166,7 +166,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 		struct tracepoint_func *it_func_ptr;			\
- 		void *it_func;						\
- 		void *__data;						\
--		int __maybe_unused idx = 0;				\
-+		int __maybe_unused __idx = 0;				\
- 									\
- 		if (!(cond))						\
- 			return;						\
-@@ -182,7 +182,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 		 * doesn't work from the idle path.			\
- 		 */							\
- 		if (rcuidle) {						\
--			idx = srcu_read_lock_notrace(&tracepoint_srcu);	\
-+			__idx = srcu_read_lock_notrace(&tracepoint_srcu);\
- 			rcu_irq_enter_irqson();				\
- 		}							\
- 									\
-@@ -198,7 +198,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 									\
- 		if (rcuidle) {						\
- 			rcu_irq_exit_irqson();				\
--			srcu_read_unlock_notrace(&tracepoint_srcu, idx);\
-+			srcu_read_unlock_notrace(&tracepoint_srcu, __idx);\
- 		}							\
- 									\
- 		preempt_enable_notrace();				\
--- 
-2.19.1
+T24gV2VkLCBOb3YgMjgsIDIwMTggYXQgNToxOSBBTSBTdGV2ZW4gUm9zdGVkdCA8cm9zdGVkdEBn
+b29kbWlzLm9yZz4gd3JvdGU6DQo+DQo+IE9uIFR1ZSwgMjcgTm92IDIwMTggMTA6MTU6NTUgKzAw
+MDANCj4gU2xhdm9taXIgS2FzbGV2IDxrYXNsZXZzQHZtd2FyZS5jb20+IHdyb3RlOg0KPg0KPiA+
+ID4gSSBkb24ndCBzZWUgYW55dGhpbmcgdG9vIHdyb25nIHdpdGggaXQsIGFjY2VwdCB0aGUgZm9s
+bG93aW5nIHRlc3QgYnJva2U6DQo+ID4gPg0KPiA+ID4gICQgZ2l0IGNoZWNrb3V0IHRyYWNlLWNt
+ZC12Mi42DQo+ID4gPiAgJCBtYWtlDQo+ID4gPiAgJCBzdWRvIGNwIHRyYWNlLWNtZCAvdXNyL2xv
+Y2FsL2Jpbi90cmFjZS1jbWQtdjIuNg0KPiA+ID4gICQgZ2l0IGNoZWNrb3V0IG9yaWdpbi9tYXN0
+ZXINCj4gPiA+ICAkIHBhdGNoIC1wMSA8IHRoaXMucGF0Y2gNCj4gPiA+ICAkIG1ha2UNCj4gPiA+
+ICAkIHRyYWNlLWNtZC12Mi42IGxpc3RlbiAtcCAxMjM0NQ0KPiA+ID4NCj4gPiA+IEluIGFub3Ro
+ZXIgdGVybWluYWw6DQo+ID4gPg0KPiA+ID4gICQgc3VkbyB0cmFjZS1jbWQgcmVjb3JkIC1OIDEy
+Ny4wLjAuMToxMjM0NSAtZSBzY2hlZCBzbGVlcCAxDQo+ID4gPiB0cmFjZS1jbWQ6IE5vIHN1Y2gg
+ZmlsZSBvciBkaXJlY3RvcnkNCj4gPiA+ICAgQ2Fubm90IGhhbmRsZSB0aGUgcHJvdG9jb2wNCj4g
+PiA+DQo+ID4gPg0KPiA+ID4gUmVtZW1iZXIsIHdlIG5lZWQgdG8gcmVtYWluIGJhY2t3YXJkIGNv
+bXBhdGlibGUuIFdlIGFsc28gbmVlZCB0byB0ZXN0DQo+ID4gPiB0aGlzIGNvZGUgcnVubmluZyBh
+cyBhIGxpc3RlbmVyLCBhbmQgdGhlIHRyYWNlLWNtZC12Mi42IChhbmQgZWFybGllcikNCj4gPiA+
+IGFzIHRoZSByZWNvcmRlci4NCj4gPg0KPiA+IFRoaXMgaXMgYSBkZXNpZ24gYnVnICh0aGUgYmVz
+dCBraW5kKSwgbWV0YWRhdGEgc2hvdWxkIHJlYWxseSBiZSB3cml0dGVuIGZyb20gdGhlDQo+ID4g
+cmVjb3JkaW5nIHNpZGUgYW5kIG5vdCBmcm9tIHRoZSBsaXN0ZW5lci4gQSBiYWNrd2FyZCBjb21w
+YXRpYmxlIGZpeCBzaG91bGQgaGF2ZQ0KPiA+IHRoZSBuZXdlciByZWNvcmRlciBhbmQgbGlzdGVu
+ZXIgZGV0ZWN0IHRoZXkncmUgdGFsa2luZyB0byBhbiBvbGRlciB2ZXJzaW9uIGFuZA0KPiA+IGZh
+bGxiYWNrIHRvIGJyb2tlbiBiZWhhdmlvci4gVGhpcyBpbXBsaWVzIGEgbmV3IHByb3RvY29sIHZl
+cnNpb24gb3IgZXh0ZW5kaW5nDQo+ID4gTVNHX1RJTklUL01TR19SSU5JVCBzbyB0aGF0IHdlIGNh
+biBpbmZlciB0aGUgYmVoYXZpb3Igb24gdGhlIG90aGVyIHNpZGUgYW5kDQo+ID4gZmFsbGJhY2sg
+dG8gYmVpbmcgYnJva2VuIHdoZW4gbmVjZXNzYXJ5Lg0KPg0KPiBBZ3JlZWQuDQo+DQo+ID4NCj4g
+PiBXaGF0IHdvdWxkIHlvdSBzdWdnZXN0Pw0KPg0KPiBJIGp1c3Qgd2FudCB0byBzdHJlc3MgdGhh
+dCBJIGZlZWwgYXMgc3Ryb25nIGZvciBiYWNrd2FyZCBjb21wYXRpYmlsaXR5DQo+IGFzIExpbnVz
+IGZlZWxzIGZvciBub3QgYnJlYWtpbmcgdXNlciBzcGFjZS4gVGhhdCBpcywgSSdsbCBnbyB3aXRo
+b3V0IGENCj4gZml4IGlmIGl0IGJyZWFrcyBiYWNrd2FyZCBjb21wYXRpYmlsaXR5Lg0KPg0KPiBC
+dXQgdGhlIHJlYWxseSBnb29kIG5ld3MgaXMsIHlvdXIgY29kZSBkaWRuJ3QgYnJlYWsgYmFja3dh
+cmQNCj4gY29tcGF0aWJpbGl0eS4gSXQgdW5jb3ZlcmVkIGEgYnVnIDotKSA6LSkgOi0pDQo+DQo+
+IFRoZSBmYWlsdXJlIG9mIHRoZSBvbGQgY29kZSBpcyB0aGF0IGl0IGxvb2tlZCBhdCBidWZbMF0g
+d2l0aG91dA0KPiBpbml0aWFsaXppbmcgaXQuIFRoZSBmaXggaXMgdGhpczoNCj4NCj4gZGlmZiAt
+LWdpdCBhL3RyYWNlY21kL3RyYWNlLXJlY29yZC5jIGIvdHJhY2VjbWQvdHJhY2UtcmVjb3JkLmMN
+Cj4gaW5kZXggZTFlMmY0MzMuLjE0Mzc5M2RhIDEwMDY0NA0KPiAtLS0gYS90cmFjZWNtZC90cmFj
+ZS1yZWNvcmQuYw0KPiArKysgYi90cmFjZWNtZC90cmFjZS1yZWNvcmQuYw0KPiBAQCAtMjc3NSw2
+ICsyNzc1LDggQEAgc3RhdGljIHZvaWQgY2hlY2tfcHJvdG9jb2xfdmVyc2lvbihzdHJ1Y3QgdHJh
+Y2VjbWRfbXNnX2hhbmRsZSAqbXNnX2hhbmRsZSkNCj4gICAgICAgICAgKi8NCj4gICAgICAgICB3
+cml0ZShmZCwgVjJfQ1BVLCBzaXplb2YoVjJfQ1BVKSk7DQo+DQo+ICsgICAgICAgYnVmWzBdID0g
+MDsNCj4gKw0KPiAgICAgICAgIC8qIHJlYWQgYSByZXBseSBtZXNzYWdlICovDQo+ICAgICAgICAg
+biA9IHJlYWQoZmQsIGJ1ZiwgQlVGU0laKTsNCj4NCg0KVGhpcyBmaXggZG9lcyB3b3JrIGFuZCBy
+ZWNvcmRlciBmYWxsYmFja3MgdG8gcHJvdG9jb2wgdjEgd2hlbiB0YWxraW5nDQp3aXRoIHYyLjYg
+bGlzdGVuZXIuDQoNClRoZSByZXN1bHRpbmcgdHJhY2UgZmlsZSBmYWlscyB0byBwYXJzZSB0aG91
+Z2gNCg0Ka2FzbGV2c0Bib3g6fi90bXAkIHRjIHJlcG9ydCAtaSB0cmFjZS5sb2NhbGhvc3Q6Mzk3
+NTQuZGF0DQogIGZhaWxlZCB0byBpbml0IGRhdGENCg0KYmVjYXVzZSBib3RoIHRoZSByZWNvcmRl
+ciBhbmQgdGhlIGxpc3RlbmVyIHdyb3RlIG9wdGlvbnMgdG8gdGhlIC5kYXQgZmlsZS4NCg0KU28g
+d2Ugc3RpbGwgaGF2ZSB0byBkZXRlY3QgdGhhdCB0aGUgbGlzdGVuZXIgZW5kIGlzIGFuIG9sZGVy
+IHZlcnNpb24NCmFuZCBmYWxsYmFjayB0byBvbGQgYmVoYXZpb3IgaW4gdGhlIHJlY29yZGVyLg0K
+DQpPdXIgY3VycmVudCBwcm90b2NvbCBkb2Vzbid0IGFsbG93IHRvIGVhc2lseSBhZGQgbmV3IGZp
+ZWxkcyB0bw0KbWVzc2FnZXMgYmVjYXVzZSB0aGUgc2l6ZSBvZiBtZXNzYWdlcyBpcyBoYXJkIGNv
+ZGVkIGluIHRoZSBleGVjdXRhYmxlLg0KVGh1cyBleHRlbmRpbmcNCg0Kc3RydWN0IHRyYWNlY21k
+X21zZ19yaW5pdCB7DQogICAgICAgIGJlMzIgY3B1czsNCn0gX19hdHRyaWJ1dGVfXygocGFja2Vk
+KSk7DQoNCm9yIHJldXNpbmcgYml0cyBmcm9tIC5jcHVzIHdpbGwgbm90IGZseS4NCg0KQWx0ZXJu
+YXRpdmVseSwgd2UgY2FuIGFkZCB0cmFjZWNtZF9tc2dfcmluaXQyIHdpdGggd2hpY2ggdGhlIGxp
+c3RlbmVyDQoobmV3IHZlcnNpb25zKSByZXNwb25kcyBkZXBlbmRpbmcgb24gdGhlIG9wdGlvbnMg
+c2V0IGluDQp0cmFjZWNtZF9tc2dfdGluaXQgYnkgdGhlIHJlY29yZGVyICh3aGVuIHRoZSByZWNv
+cmRlciBpcyBuZXcgdmVyc2lvbg0KdG9vKS4NCg0KPg0KPiBUaGF0IHNhaWQsIEkgaGF2ZSBvbmUg
+bWlub3Igbml0IHdpdGggdGhlIHBhdGNoLiBJJ2xsIHJlcGx5IHRvIHRoZSBwYXRjaA0KPiBpdHNl
+bGYuDQo+DQo+IFRoYW5rcyENCj4NCj4gLS0gU3RldmUNCj4NCg==
