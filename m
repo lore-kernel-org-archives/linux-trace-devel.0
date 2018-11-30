@@ -1,60 +1,61 @@
 Return-Path: <SRS0=EnxC=OJ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:40598 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:46590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726609AbeLADIS (ORCPT
+        id S1726644AbeLADWM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 30 Nov 2018 22:08:18 -0500
-Date: Fri, 30 Nov 2018 10:58:29 -0500
+        Fri, 30 Nov 2018 22:22:12 -0500
+Date: Fri, 30 Nov 2018 11:12:21 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Yordan Karadzhov <ykaradzhov@vmware.com>
 Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] kernel-shark-qt: Correct the coordinates of the
- Quick Context Menu
-Message-ID: <20181130105829.6d77fa15@gandalf.local.home>
-In-Reply-To: <20181130153749.4419-1-ykaradzhov@vmware.com>
-References: <20181130153749.4419-1-ykaradzhov@vmware.com>
+Subject: Re: [PATCH 0/2] Make Sched event plugin use its own data
+ collections
+Message-ID: <20181130111221.3823978e@gandalf.local.home>
+In-Reply-To: <20181130154211.4575-1-ykaradzhov@vmware.com>
+References: <20181130154211.4575-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Fri, 30 Nov 2018 15:38:11 +0000
+On Fri, 30 Nov 2018 15:42:35 +0000
 Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 
-> The "Y" coordinate of the Quick Context Menu has to be corrected in
-> the case when the menu gets opened from the Graph widget. This is
-> needed because the Graph widget is nested inside a scroll area and
-> we have to take into account the offset of the vertical scrollbar.
+> These two patches aim to restore the log(n) time complexity of
+> the latency plotting, by adding Data Collections for Sched events.
 > 
-> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+> Steven, please try playing with this modification before applying it.
+> If you can test this, when doing some real work this would be great.
 
-Thanks!
+This works awesomely!
 
-I applied both patches.
+Check out this screenshot:
+
+  http://rostedt.org/private/ks-latency.png
+
+The old way I could not see that huge wake up latency. Also, I noticed
+that fsync got preempted (see the red square to the left).
+
+I have to ask, how hard is it to click on the wakeup (the start of
+the green box) and get the marker to go there? I can find it difficult
+to measure because I can't get the marker to set to the start without
+doing a search for the wakeup.
 
 -- Steve
 
-> ---
->  kernel-shark-qt/src/KsTraceGraph.cpp | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+
 > 
-> diff --git a/kernel-shark-qt/src/KsTraceGraph.cpp b/kernel-shark-qt/src/KsTraceGraph.cpp
-> index 0b5a8b1..858930c 100644
-> --- a/kernel-shark-qt/src/KsTraceGraph.cpp
-> +++ b/kernel-shark-qt/src/KsTraceGraph.cpp
-> @@ -782,6 +782,12 @@ void KsTraceGraph::_onCustomContextMenu(const QPoint &point)
->  		connect(menu,	&KsQuickMarkerMenu::deselect,
->  			this,	&KsTraceGraph::deselect);
->  
-> -		menu->exec(mapToGlobal(point));
-> +		QPoint global = mapToGlobal(point);
-> +		/*
-> +		 * The global coordinates have to be corrected for the offset
-> +		 * of the vertical scrollbar.
-> +		 */
-> +		global.ry() -= _scrollArea.verticalScrollBar()->value();
-> +		menu->exec(global);
->  	}
->  }
+> Yordan Karadzhov (2):
+>   kernel-shark-qt: Add a method for adding a new collection to a list
+>   kernel-shark-qt: Make Sched event plugin use its own data collections
+> 
+>  kernel-shark-qt/src/libkshark-collection.c  | 45 ++++++++++++++++++++-
+>  kernel-shark-qt/src/libkshark.c             |  1 +
+>  kernel-shark-qt/src/libkshark.h             |  9 +++++
+>  kernel-shark-qt/src/plugins/SchedEvents.cpp | 33 ++++++---------
+>  kernel-shark-qt/src/plugins/sched_events.c  | 21 ++++++++++
+>  kernel-shark-qt/src/plugins/sched_events.h  |  6 +++
+>  6 files changed, 93 insertions(+), 22 deletions(-)
+> 
