@@ -1,72 +1,66 @@
-Return-Path: <SRS0=ZWpJ=OI=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728272AbeK3DLn (ORCPT
+Return-Path: <SRS0=EnxC=OJ=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:36810 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbeK3N0X (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Nov 2018 22:11:43 -0500
-Date: Thu, 29 Nov 2018 11:05:49 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [POC][PATCH v4] tools/lib/traceevent: make libtraceevent thread
- safe
-Message-ID: <20181129110549.5039c7ce@gandalf.local.home>
-In-Reply-To: <20181129122330.22500-1-tstoyanov@vmware.com>
-References: <20181129122330.22500-1-tstoyanov@vmware.com>
+        Fri, 30 Nov 2018 08:26:23 -0500
+Received: by mail-pl1-f193.google.com with SMTP id g9so2008366plo.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Nov 2018 18:18:44 -0800 (PST)
+Date: Thu, 29 Nov 2018 18:18:42 -0800
+From: Joel Fernandes <joel@joelfernandes.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Zenghui Yu <yuzenghui@huawei.com>, wanghaibin.wang@huawei.com,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] tracepoint: fix bad trace value in trace_kvm_exit()
+Message-ID: <20181130021842.GA104630@google.com>
+References: <1543376123-23800-1-git-send-email-yuzenghui@huawei.com>
+ <20181127225431.0e51a52f@vmware.local.home>
+ <38bdc3d6-d371-af23-eda3-78a0392fbc83@huawei.com>
+ <20181128213442.08e90ed4@vmware.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181128213442.08e90ed4@vmware.local.home>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Thu, 29 Nov 2018 12:23:42 +0000
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
-
-> This patch is a PoC about transforming libtraceevent
-> into a thread safe library. It implements per thread local
-> storage and internal APIs to access it. It covers only
-> tep->last_event cache, but easily can be extended with all
-> library's thread sensitive data.
+On Wed, Nov 28, 2018 at 09:34:42PM -0500, Steven Rostedt wrote:
+> On Thu, 29 Nov 2018 10:21:55 +0800
+> Zenghui Yu <yuzenghui@huawei.com> wrote:
 > 
-> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> ---
-> v2: Added local thread data per tep context
-> v3: Implemented APIs to access specific tread local data,
->     instead of the whole struct tep_thread_data.
-> v4: Simplify the implementation to keep cache only for the last
->     used tep context in current thread, instead to track
->     cache for all tep contexts. Remove "tep_" prefix of functions,
->     as these are internal APIs and are not going to be exposed to
->     the library users.
-> ---
->  tools/lib/traceevent/event-parse-local.h  | 16 ++++--
->  tools/lib/traceevent/event-parse-thread.c | 62 +++++++++++++++++++++++
->  tools/lib/traceevent/event-parse.c        | 21 ++++----
->  3 files changed, 87 insertions(+), 12 deletions(-)
->  create mode 100644 tools/lib/traceevent/event-parse-thread.c
+> > On 2018/11/28 11:54, Steven Rostedt wrote:
+> > > On Wed, 28 Nov 2018 03:35:23 +0000
+> > > Zenghui Yu <yuzenghui@huawei.com> wrote:
+> > >   
+> > >> After enabling KVM event tracing, almost all of trace_kvm_exit()'s
+> > >> printk shows
+> > >>
+> > >> 	"kvm_exit: IRQ: ..."
+> > >>
+> > >> even if the actual exception_type is NOT IRQ.  More specifically,
+> > >> trace_kvm_exit() is defined in virt/kvm/arm/trace.h by TRACE_EVENT.
+> > >>
+> > >> This slight problem may have existed after commit e6753f23d961
+> > >> ("tracepoint: Make rcuidle tracepoint callers use SRCU"). There are
+> > >> two variables in trace_kvm_exit() and __DO_TRACE() which have the
+> > >> same name, *idx*. Thus the actual value of *idx* will be overwritten
+> > >> when tracing. Fix it by adding a simple prefix.  
+> > > 
+> > > Nice catch! I'll apply it tomorrow and start testing it then.  
+> > 
+> > Thanks Steven!
+> > 
 > 
-> diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
-> index 9a092dd4a86d..bf3f810ce02f 100644
-> --- a/tools/lib/traceevent/event-parse-local.h
-> +++ b/tools/lib/traceevent/event-parse-local.h
-> @@ -14,6 +14,13 @@ struct func_list;
->  struct event_handler;
->  struct func_resolver;
->  
-> +/* cache */
-> +struct tep_thread_data {
-> +	struct tep_handle *tep;
-> +
-> +	struct tep_event *last_event;
-
-Small nit. The space between tep and last_event isn't needed.
-
-> +};
-> +
-
-The rest looks good. Care to send a non POC patch?
+> FYI, I renamed your subject to:
+> 
+>  tracepoint: Use __idx instead of idx in DO_TRACE macro to make it unique
+> 
+> to make the name more specific to the fix and not the symptom.
+> 
+> Thanks!
 
 Thanks!
 
--- Steve
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+ - Joel
