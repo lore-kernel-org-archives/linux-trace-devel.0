@@ -1,44 +1,39 @@
 Return-Path: <SRS0=R/5S=OM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:50220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726560AbeLCPW6 (ORCPT
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:53974 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbeLCQJw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 3 Dec 2018 10:22:58 -0500
-Date: Mon, 3 Dec 2018 10:22:54 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: trace libraries install path
-Message-ID: <20181203102254.68f7b0e2@vmware.local.home>
-In-Reply-To: <CACqStofXszX3wvg4X8YKCoANx_WbEmoJ5v_zV=f=OJd_ZO225A@mail.gmail.com>
-References: <CACqStofXszX3wvg4X8YKCoANx_WbEmoJ5v_zV=f=OJd_ZO225A@mail.gmail.com>
+        Mon, 3 Dec 2018 11:09:52 -0500
+Received: by mail-wm1-f65.google.com with SMTP id y1so6428703wmi.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 03 Dec 2018 08:09:45 -0800 (PST)
+From: Slavomir Kaslev <kaslevs@vmware.com>
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org
+Subject: [PATCH 0/2] trace-cmd: Resend record --date fix
+Date: Mon,  3 Dec 2018 18:09:35 +0200
+Message-Id: <20181203160937.5285-1-kaslevs@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Mon, 3 Dec 2018 14:22:01 +0000
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+Resending "trace-cmd record --date" fix while keeping backward compatibility.
 
-> Hi Steven,
-> While porting those two patches from linux to trace-cmd tree:
->     [PATCH 3/9] tools/lib/traceevent: Install trace-seq.h API header file
->     [PATCH 2/9] tools/lib/traceevent: Added support for pkg-config
-> I noticed a mismatch between linux and trace-cmd in logic installing
-> library header files, in main Makefile:
->   linux code installs library headers in  "$(prefix)/include/traceevent"
->   trace-cmd code nstalls library headers in "$(prefix)/include/trace-cmd"
-> This is the destination install path of traceevent library header files:
->    event-parse.h, event-utils.h, trace-seq.h, kbuffer.h
-> 
-> We should make it consistent, what install folder to choose for those files ?
+Ideally those two patches should land together since the second one assumes that
+all v3 listeners follow new behavior and don't write options in the trace file.
 
-Actually they should just follow the paths in trace-cmd.git. That is,
-those in include/traceevent/* go into $(prefix)/include/traceevent and
-those in include/trace-cmd/* go into $(prefix)/include/trace-cmd
+Slavomir Kaslev (2):
+  trace-cmd: Bump protocol version to v3
+  trace-cmd: Fix record --date flag when sending tracing data to a
+    listener
 
-Make sense?
+ include/trace-cmd/trace-cmd.h |  13 ++-
+ tracecmd/include/trace-msg.h  |   6 +-
+ tracecmd/trace-listen.c       |  37 +++----
+ tracecmd/trace-msg.c          | 187 +++++++++++++++-------------------
+ tracecmd/trace-output.c       |  26 +++--
+ tracecmd/trace-record.c       |  78 +++++++-------
+ 6 files changed, 176 insertions(+), 171 deletions(-)
 
--- Steve
+-- 
+2.19.1
