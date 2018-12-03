@@ -1,59 +1,52 @@
-Return-Path: <SRS0=Ns+A=OK=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:60650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbeLAPKG (ORCPT
+Return-Path: <SRS0=R/5S=OM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37435 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbeLCJT6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 1 Dec 2018 10:10:06 -0500
-Date: Fri, 30 Nov 2018 22:58:32 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v3 14/15] tools/lib/traceevent: Change description of
- few APIs
-Message-ID: <20181130225832.39b2a90d@vmware.local.home>
-In-Reply-To: <20181130224301.1828d3b1@vmware.local.home>
-References: <20181128090711.17792-1-tstoyanov@vmware.com>
-        <20181128090711.17792-15-tstoyanov@vmware.com>
-        <20181130224301.1828d3b1@vmware.local.home>
+        Mon, 3 Dec 2018 04:19:58 -0500
+Received: by mail-wr1-f68.google.com with SMTP id j10so11277566wru.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 03 Dec 2018 01:19:46 -0800 (PST)
+From: Slavomir Kaslev <kaslevs@vmware.com>
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org, ykaradzhov@vmware.com
+Subject: [PATCH] trace-cmd: Fix make clean error
+Date: Mon,  3 Dec 2018 11:19:36 +0200
+Message-Id: <20181203091936.2881-1-kaslevs@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Fri, 30 Nov 2018 22:43:01 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Fix make clean failing when cmake hasn't generated Makefile for KernelShark:
 
-> > diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-> > index 7b26b9e3a4ba..aed098f29b66 100644
-> > --- a/tools/lib/traceevent/event-parse.c
-> > +++ b/tools/lib/traceevent/event-parse.c
-> > @@ -6441,7 +6441,7 @@ int tep_get_any_field_val(struct trace_seq *s, struct tep_event *event,
-> >   * @record: The record with the field name.
-> >   * @err: print default error if failed.
-> >   *
-> > - * Returns: 0 on success, -1 field not found, or 1 if buffer is full.
-> > + * Returns: 1 on success, -1 field not found, or 0 if buffer is full.  
-> 
-> Actually, it looks like it returns the length written on success.
+    $ make clean
+    # ...
+    make -C /home/kaslevs/src/trace-cmd/kernel-shark-qt/build clean
+    make[1]: *** No rule to make target 'clean'.  Stop.
+    make: *** [Makefile:365: clean] Error 2
 
-And this actually changed by your update to trace_seq_printf() in patch
-11.
+Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Luckily, it appears that the only use cases just check for the -1. :-)
-
--- Steve
-
-> 
-> >   */
-> >  int tep_print_num_field(struct trace_seq *s, const char *fmt,
-> >  			struct tep_event *event, const char *name,
-> > @@ -6473,7 +6473,7 @@ int tep_print_num_field(struct trace_seq *s, const char *fmt,
-> >   * @record: The record with the field name.
-> >   * @err: print default error if failed.
-> >   *
-> > - * Returns: 0 on success, -1 field not found, or 1 if buffer is full.
-> > + * Returns: 1 on success, -1 field not found, or 0 if buffer is full.  
-> 
-> This too.
+diff --git a/Makefile b/Makefile
+index 7ee9e0d..562afd1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -361,11 +361,11 @@ clean:
+ 	$(RM) tags TAGS cscope*
+ 	$(MAKE) -C $(src)/lib/traceevent clean
+ 	$(MAKE) -C $(src)/lib/trace-cmd clean
+-	$(MAKE) -C $(src)/kernel-shark clean
+-	$(MAKE) -C $(kshark-dir)/build clean
+ 	$(MAKE) -C $(src)/plugins clean
+ 	$(MAKE) -C $(src)/python clean
+ 	$(MAKE) -C $(src)/tracecmd clean
++	$(MAKE) -C $(src)/kernel-shark clean
++	if [ -f $(kshark-dir)/build/Makefile ]; then $(MAKE) -C $(kshark-dir)/build clean; fi
+ 
+ 
+ ##### PYTHON STUFF #####
+-- 
+2.19.1
