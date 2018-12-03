@@ -1,52 +1,36 @@
 Return-Path: <SRS0=R/5S=OM=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:37435 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbeLCJT6 (ORCPT
+Received: from mail-eopbgr820072.outbound.protection.outlook.com ([40.107.82.72]:62496
+        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726028AbeLCOXP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 3 Dec 2018 04:19:58 -0500
-Received: by mail-wr1-f68.google.com with SMTP id j10so11277566wru.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 03 Dec 2018 01:19:46 -0800 (PST)
-From: Slavomir Kaslev <kaslevs@vmware.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org, ykaradzhov@vmware.com
-Subject: [PATCH] trace-cmd: Fix make clean error
-Date: Mon,  3 Dec 2018 11:19:36 +0200
-Message-Id: <20181203091936.2881-1-kaslevs@vmware.com>
+        Mon, 3 Dec 2018 09:23:15 -0500
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To: "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC: "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>
+Subject: trace libraries install path
+Date: Mon, 3 Dec 2018 14:22:01 +0000
+Message-ID: <CACqStofXszX3wvg4X8YKCoANx_WbEmoJ5v_zV=f=OJd_ZO225A@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <33240D9C77E2344D85B83C81AF576F2E@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Fix make clean failing when cmake hasn't generated Makefile for KernelShark:
-
-    $ make clean
-    # ...
-    make -C /home/kaslevs/src/trace-cmd/kernel-shark-qt/build clean
-    make[1]: *** No rule to make target 'clean'.  Stop.
-    make: *** [Makefile:365: clean] Error 2
-
-Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
----
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 7ee9e0d..562afd1 100644
---- a/Makefile
-+++ b/Makefile
-@@ -361,11 +361,11 @@ clean:
- 	$(RM) tags TAGS cscope*
- 	$(MAKE) -C $(src)/lib/traceevent clean
- 	$(MAKE) -C $(src)/lib/trace-cmd clean
--	$(MAKE) -C $(src)/kernel-shark clean
--	$(MAKE) -C $(kshark-dir)/build clean
- 	$(MAKE) -C $(src)/plugins clean
- 	$(MAKE) -C $(src)/python clean
- 	$(MAKE) -C $(src)/tracecmd clean
-+	$(MAKE) -C $(src)/kernel-shark clean
-+	if [ -f $(kshark-dir)/build/Makefile ]; then $(MAKE) -C $(kshark-dir)/build clean; fi
- 
- 
- ##### PYTHON STUFF #####
--- 
-2.19.1
+SGkgU3RldmVuLA0KV2hpbGUgcG9ydGluZyB0aG9zZSB0d28gcGF0Y2hlcyBmcm9tIGxpbnV4IHRv
+IHRyYWNlLWNtZCB0cmVlOg0KICAgIFtQQVRDSCAzLzldIHRvb2xzL2xpYi90cmFjZWV2ZW50OiBJ
+bnN0YWxsIHRyYWNlLXNlcS5oIEFQSSBoZWFkZXIgZmlsZQ0KICAgIFtQQVRDSCAyLzldIHRvb2xz
+L2xpYi90cmFjZWV2ZW50OiBBZGRlZCBzdXBwb3J0IGZvciBwa2ctY29uZmlnDQpJIG5vdGljZWQg
+YSBtaXNtYXRjaCBiZXR3ZWVuIGxpbnV4IGFuZCB0cmFjZS1jbWQgaW4gbG9naWMgaW5zdGFsbGlu
+Zw0KbGlicmFyeSBoZWFkZXIgZmlsZXMsIGluIG1haW4gTWFrZWZpbGU6DQogIGxpbnV4IGNvZGUg
+aW5zdGFsbHMgbGlicmFyeSBoZWFkZXJzIGluICAiJChwcmVmaXgpL2luY2x1ZGUvdHJhY2VldmVu
+dCINCiAgdHJhY2UtY21kIGNvZGUgbnN0YWxscyBsaWJyYXJ5IGhlYWRlcnMgaW4gIiQocHJlZml4
+KS9pbmNsdWRlL3RyYWNlLWNtZCINClRoaXMgaXMgdGhlIGRlc3RpbmF0aW9uIGluc3RhbGwgcGF0
+aCBvZiB0cmFjZWV2ZW50IGxpYnJhcnkgaGVhZGVyIGZpbGVzOg0KICAgZXZlbnQtcGFyc2UuaCwg
+ZXZlbnQtdXRpbHMuaCwgdHJhY2Utc2VxLmgsIGtidWZmZXIuaA0KDQpXZSBzaG91bGQgbWFrZSBp
+dCBjb25zaXN0ZW50LCB3aGF0IGluc3RhbGwgZm9sZGVyIHRvIGNob29zZSBmb3IgdGhvc2UgZmls
+ZXMgPw0KLS0gDQpUenZldG9taXIgKENlY28pIFN0b3lhbm92DQpWTXdhcmUgT3BlbiBTb3VyY2Ug
+VGVjaG5vbG9neSBDZW50ZXINCg==
