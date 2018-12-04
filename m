@@ -1,86 +1,40 @@
 Return-Path: <SRS0=S9Jt=ON=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr720057.outbound.protection.outlook.com ([40.107.72.57]:59188
-        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725802AbeLDNL4 (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:58180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726549AbeLDWem (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 4 Dec 2018 08:11:56 -0500
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] tools/lib/traceevent: Parameterize the install paths in
- pkg-config file
-Date: Tue, 4 Dec 2018 13:11:52 +0000
-Message-ID: <20181204131139.24876-1-tstoyanov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 4 Dec 2018 17:34:42 -0500
+Date: Tue, 4 Dec 2018 17:34:39 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Slavomir Kaslev <kaslevs@vmware.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 0/2] trace-cmd: Resend record --date fix
+Message-ID: <20181204173439.5e5f10dc@vmware.local.home>
+In-Reply-To: <20181203160937.5285-1-kaslevs@vmware.com>
+References: <20181203160937.5285-1-kaslevs@vmware.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Install directories of header and library files are hardcoded in
-pkg-config templete file. This patch makes them configurable and
-modifies the Makefile to set them on the install stage.
+On Mon,  3 Dec 2018 18:09:35 +0200
+Slavomir Kaslev <kaslevs@vmware.com> wrote:
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- tools/lib/traceevent/Makefile                  | 13 +++++++++----
- tools/lib/traceevent/libtraceevent.pc.template |  4 ++--
- 2 files changed, 11 insertions(+), 6 deletions(-)
+> Resending "trace-cmd record --date" fix while keeping backward compatibility.
+> 
+> Ideally those two patches should land together since the second one assumes that
+> all v3 listeners follow new behavior and don't write options in the trace file.
+> 
+> Slavomir Kaslev (2):
+>   trace-cmd: Bump protocol version to v3
+>   trace-cmd: Fix record --date flag when sending tracing data to a
+>     listener
+> 
 
-diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index 67fe5d7ef190..6419a24058ab 100644
---- a/tools/lib/traceevent/Makefile
-+++ b/tools/lib/traceevent/Makefile
-@@ -50,6 +50,9 @@ man_dir =3D $(prefix)/share/man
- man_dir_SQ =3D '$(subst ','\'',$(man_dir))'
- pkgconfig_dir ?=3D $(word 1,$(shell $(PKG_CONFIG) 		\
- 			--variable pc_path pkg-config | tr ":" " "))
-+includedir_relative =3D traceevent
-+includedir =3D $(prefix)/include/$(includedir_relative)
-+includedir_SQ =3D '$(subst ','\'',$(includedir))'
-=20
- export man_dir man_dir_SQ INSTALL
- export DESTDIR DESTDIR_SQ
-@@ -279,6 +282,8 @@ define do_install_pkgconfig_file
- 		cp -f ${PKG_CONFIG_FILE}.template ${PKG_CONFIG_FILE}; 		\
- 		sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE}; 		\
- 		sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
-+		sed -i "s|LIB_DIR|${libdir}|g" ${PKG_CONFIG_FILE}; \
-+		sed -i "s|HEADER_DIR|$(includedir)|g" ${PKG_CONFIG_FILE}; \
- 		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
- 	else 									\
- 		(echo Failed to locate pkg-config directory) 1>&2;		\
-@@ -300,10 +305,10 @@ install_pkgconfig:
-=20
- install_headers:
- 	$(call QUIET_INSTALL, headers) \
--		$(call do_install,event-parse.h,$(prefix)/include/traceevent,644); \
--		$(call do_install,event-utils.h,$(prefix)/include/traceevent,644); \
--		$(call do_install,trace-seq.h,$(prefix)/include/traceevent,644); \
--		$(call do_install,kbuffer.h,$(prefix)/include/traceevent,644)
-+		$(call do_install,event-parse.h,$(DESTDIR)$(includedir_SQ),644); \
-+		$(call do_install,event-utils.h,$(DESTDIR)$(includedir_SQ),644); \
-+		$(call do_install,trace-seq.h,$(DESTDIR)$(includedir_SQ),644); \
-+		$(call do_install,kbuffer.h,$(DESTDIR)$(includedir_SQ),644)
-=20
- install: install_lib
-=20
-diff --git a/tools/lib/traceevent/libtraceevent.pc.template b/tools/lib/tra=
-ceevent/libtraceevent.pc.template
-index 42e4d6cb6b9e..86384fcd57f1 100644
---- a/tools/lib/traceevent/libtraceevent.pc.template
-+++ b/tools/lib/traceevent/libtraceevent.pc.template
-@@ -1,6 +1,6 @@
- prefix=3DINSTALL_PREFIX
--libdir=3D${prefix}/lib64
--includedir=3D${prefix}/include/traceevent
-+libdir=3DLIB_DIR
-+includedir=3DHEADER_DIR
-=20
- Name: libtraceevent
- URL: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
---=20
-2.19.2
+Note, both patches do not have a signed-off-by. Can you resend with
+that fixed.
+
+Thanks!
+
+-- Steve
