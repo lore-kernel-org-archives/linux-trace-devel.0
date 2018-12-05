@@ -1,47 +1,90 @@
 Return-Path: <SRS0=ZRv/=OO=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:56248 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbeLEJPd (ORCPT
+Received: from mail-eopbgr770055.outbound.protection.outlook.com ([40.107.77.55]:6363
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726889AbeLEJVt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 5 Dec 2018 04:15:33 -0500
-Received: by mail-wm1-f66.google.com with SMTP id y139so12342284wmc.5
-        for <linux-trace-devel@vger.kernel.org>; Wed, 05 Dec 2018 01:15:32 -0800 (PST)
-From: Slavomir Kaslev <kaslevs@vmware.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 0/3] trace-cmd: Resend record --date fix
-Date: Wed,  5 Dec 2018 11:15:21 +0200
-Message-Id: <20181205091524.4789-1-kaslevs@vmware.com>
+        Wed, 5 Dec 2018 04:21:49 -0500
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To: "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC: "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH 0/6]  tools/lib/traceevent: Various changes in libtraceevent
+ APIs
+Date: Wed, 5 Dec 2018 09:21:45 +0000
+Message-ID: <20181205092134.2214-1-tstoyanov@vmware.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Resending "trace-cmd record --date" fix while keeping backward compatibility.
+This patch series includes changes, related to transformation of=20
+traceevent into a library:
+ Renamed few libtracevent APIs.=20
+ Introduced new API: tep_get_ref()
+ Added support for pkg-config infrastructure
 
-Ideally those patches should land together since the last one assumes that all
-v3 listeners follow new behavior and don't write options in the trace file.
+[backported from Linux kernel tree]
 
-Changes v2:
-- split into 3 patches for easier reviewing
-- fix tracecmd_msg_recv not reading cmd_size bytes it doesn't know about
+Tzvetomir Stoyanov (6):
+  tools lib traceevent: Implement new API tep_get_ref()
+  tools lib traceevent, perf tools: Rename 'struct tep_event_format' to
+    'struct tep_event'
+  tools lib traceevent: Rename tep_free_format() to tep_free_event()
+  tools lib traceevent: traceevent API cleanup
+  tools lib traceevent: Added support for pkg-config
+  tools lib traceevent: Install trace-seq.h API header file
 
-Changes v3:
-- added Signed-off-by
+ Makefile                                     |  47 ++++-
+ include/trace-cmd/trace-cmd.h                |   2 +-
+ include/traceevent/event-parse.h             |  76 +++----
+ kernel-shark-qt/examples/datafilter.c        |   2 +-
+ kernel-shark-qt/src/KsAdvFilteringDialog.cpp |  10 +-
+ kernel-shark-qt/src/KsAdvFilteringDialog.hpp |   2 +-
+ kernel-shark-qt/src/KsCaptureDialog.cpp      |   4 +-
+ kernel-shark-qt/src/KsMainWindow.cpp         |   2 +-
+ kernel-shark-qt/src/KsWidgetsLib.cpp         |   2 +-
+ kernel-shark-qt/src/libkshark-configio.c     |   6 +-
+ kernel-shark-qt/src/libkshark.c              |   8 +-
+ kernel-shark-qt/src/plugins/sched_events.c   |   2 +-
+ kernel-shark-qt/src/plugins/sched_events.h   |   6 +-
+ kernel-shark/include/trace-view-store.h      |   6 +-
+ kernel-shark/trace-capture.c                 |   6 +-
+ kernel-shark/trace-dialog.c                  |   4 +-
+ kernel-shark/trace-filter.c                  |  24 +--
+ kernel-shark/trace-graph.c                   |   8 +-
+ kernel-shark/trace-plot-cpu.c                |   4 +-
+ kernel-shark/trace-plot-task.c               |   4 +-
+ kernel-shark/trace-view-store.c              |   2 +-
+ lib/trace-cmd/trace-blk-hack.c               |   2 +-
+ lib/trace-cmd/trace-ftrace.c                 |  16 +-
+ lib/trace-cmd/trace-input.c                  |  14 +-
+ lib/traceevent/event-parse-api.c             |  10 +-
+ lib/traceevent/event-parse-local.h           |  13 +-
+ lib/traceevent/event-parse.c                 | 206 ++++++++++---------
+ lib/traceevent/libtraceevent.pc.template     |  10 +
+ lib/traceevent/parse-filter.c                |  42 ++--
+ plugins/plugin_blk.c                         |   4 +-
+ plugins/plugin_function.c                    |   2 +-
+ plugins/plugin_futex.c                       |   2 +-
+ plugins/plugin_hrtimer.c                     |   4 +-
+ plugins/plugin_kmem.c                        |   2 +-
+ plugins/plugin_kvm.c                         |  14 +-
+ plugins/plugin_mac80211.c                    |  10 +-
+ plugins/plugin_sched_switch.c                |   4 +-
+ plugins/plugin_tlb.c                         |   2 +-
+ python/ctracecmd.i                           |  10 +-
+ tracecmd/trace-hist.c                        |  22 +-
+ tracecmd/trace-mem.c                         |  18 +-
+ tracecmd/trace-output.c                      |   6 +-
+ tracecmd/trace-profile.c                     |  10 +-
+ tracecmd/trace-read.c                        |  16 +-
+ tracecmd/trace-record.c                      |   2 +-
+ tracecmd/trace-split.c                       |  19 +-
+ 46 files changed, 367 insertions(+), 320 deletions(-)
+ create mode 100644 lib/traceevent/libtraceevent.pc.template
 
-Slavomir Kaslev (3):
-  trace-cmd: Prepare for protocol bump to version 3
-  trace-cmd: Bump protocol version to v3
-  trace-cmd: Fix record --date flag when sending tracing data to a
-    listener
-
- include/trace-cmd/trace-cmd.h |  13 ++-
- tracecmd/include/trace-msg.h  |   6 +-
- tracecmd/trace-listen.c       |  27 ++---
- tracecmd/trace-msg.c          | 198 +++++++++++++++-------------------
- tracecmd/trace-output.c       |  26 +++--
- tracecmd/trace-record.c       |  78 +++++++-------
- 6 files changed, 173 insertions(+), 175 deletions(-)
-
--- 
-2.19.1
+--=20
+2.19.2
