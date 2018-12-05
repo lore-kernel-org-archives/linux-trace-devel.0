@@ -2,17 +2,18 @@ Return-Path: <SRS0=ZRv/=OO=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
 Received: from mail-eopbgr770055.outbound.protection.outlook.com ([40.107.77.55]:6363
         "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726889AbeLEJVt (ORCPT
+        id S1726944AbeLEJVv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 5 Dec 2018 04:21:49 -0500
+        Wed, 5 Dec 2018 04:21:51 -0500
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 0/6]  tools/lib/traceevent: Various changes in libtraceevent
- APIs
-Date: Wed, 5 Dec 2018 09:21:45 +0000
-Message-ID: <20181205092134.2214-1-tstoyanov@vmware.com>
+Subject: [PATCH 1/6] tools lib traceevent: Implement new API tep_get_ref()
+Date: Wed, 5 Dec 2018 09:21:47 +0000
+Message-ID: <20181205092134.2214-2-tstoyanov@vmware.com>
+References: <20181205092134.2214-1-tstoyanov@vmware.com>
+In-Reply-To: <20181205092134.2214-1-tstoyanov@vmware.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -20,71 +21,56 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch series includes changes, related to transformation of=20
-traceevent into a library:
- Renamed few libtracevent APIs.=20
- Introduced new API: tep_get_ref()
- Added support for pkg-config infrastructure
+This patch implements a new API of the tracevent library:
 
-[backported from Linux kernel tree]
+  int tep_get_ref(struct tep_handle *tep);
 
-Tzvetomir Stoyanov (6):
-  tools lib traceevent: Implement new API tep_get_ref()
-  tools lib traceevent, perf tools: Rename 'struct tep_event_format' to
-    'struct tep_event'
-  tools lib traceevent: Rename tep_free_format() to tep_free_event()
-  tools lib traceevent: traceevent API cleanup
-  tools lib traceevent: Added support for pkg-config
-  tools lib traceevent: Install trace-seq.h API header file
+The API returns the reference counter "ref_count" of the tep handler.
+As "struct tep_handle" is internal only, its members cannot be accessed
+by the library users, the API is used to get the reference counter.
 
- Makefile                                     |  47 ++++-
- include/trace-cmd/trace-cmd.h                |   2 +-
- include/traceevent/event-parse.h             |  76 +++----
- kernel-shark-qt/examples/datafilter.c        |   2 +-
- kernel-shark-qt/src/KsAdvFilteringDialog.cpp |  10 +-
- kernel-shark-qt/src/KsAdvFilteringDialog.hpp |   2 +-
- kernel-shark-qt/src/KsCaptureDialog.cpp      |   4 +-
- kernel-shark-qt/src/KsMainWindow.cpp         |   2 +-
- kernel-shark-qt/src/KsWidgetsLib.cpp         |   2 +-
- kernel-shark-qt/src/libkshark-configio.c     |   6 +-
- kernel-shark-qt/src/libkshark.c              |   8 +-
- kernel-shark-qt/src/plugins/sched_events.c   |   2 +-
- kernel-shark-qt/src/plugins/sched_events.h   |   6 +-
- kernel-shark/include/trace-view-store.h      |   6 +-
- kernel-shark/trace-capture.c                 |   6 +-
- kernel-shark/trace-dialog.c                  |   4 +-
- kernel-shark/trace-filter.c                  |  24 +--
- kernel-shark/trace-graph.c                   |   8 +-
- kernel-shark/trace-plot-cpu.c                |   4 +-
- kernel-shark/trace-plot-task.c               |   4 +-
- kernel-shark/trace-view-store.c              |   2 +-
- lib/trace-cmd/trace-blk-hack.c               |   2 +-
- lib/trace-cmd/trace-ftrace.c                 |  16 +-
- lib/trace-cmd/trace-input.c                  |  14 +-
- lib/traceevent/event-parse-api.c             |  10 +-
- lib/traceevent/event-parse-local.h           |  13 +-
- lib/traceevent/event-parse.c                 | 206 ++++++++++---------
- lib/traceevent/libtraceevent.pc.template     |  10 +
- lib/traceevent/parse-filter.c                |  42 ++--
- plugins/plugin_blk.c                         |   4 +-
- plugins/plugin_function.c                    |   2 +-
- plugins/plugin_futex.c                       |   2 +-
- plugins/plugin_hrtimer.c                     |   4 +-
- plugins/plugin_kmem.c                        |   2 +-
- plugins/plugin_kvm.c                         |  14 +-
- plugins/plugin_mac80211.c                    |  10 +-
- plugins/plugin_sched_switch.c                |   4 +-
- plugins/plugin_tlb.c                         |   2 +-
- python/ctracecmd.i                           |  10 +-
- tracecmd/trace-hist.c                        |  22 +-
- tracecmd/trace-mem.c                         |  18 +-
- tracecmd/trace-output.c                      |   6 +-
- tracecmd/trace-profile.c                     |  10 +-
- tracecmd/trace-read.c                        |  16 +-
- tracecmd/trace-record.c                      |   2 +-
- tracecmd/trace-split.c                       |  19 +-
- 46 files changed, 367 insertions(+), 320 deletions(-)
- create mode 100644 lib/traceevent/libtraceevent.pc.template
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: http://lkml.kernel.org/r/20181130154646.890615385@goodmis.org
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ include/traceevent/event-parse.h | 1 +
+ lib/traceevent/event-parse.c     | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
+diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-pa=
+rse.h
+index af1f068..ea6d25d 100644
+--- a/include/traceevent/event-parse.h
++++ b/include/traceevent/event-parse.h
+@@ -577,6 +577,7 @@ struct tep_handle *tep_alloc(void);
+ void tep_free(struct tep_handle *pevent);
+ void tep_ref(struct tep_handle *pevent);
+ void tep_unref(struct tep_handle *pevent);
++int tep_get_ref(struct tep_handle *tep);
+=20
+ /* access to the internal parser */
+ void tep_buffer_init(const char *buf, unsigned long long size);
+diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+index 2e8031c..57e3615 100644
+--- a/lib/traceevent/event-parse.c
++++ b/lib/traceevent/event-parse.c
+@@ -6761,6 +6761,13 @@ void tep_ref(struct tep_handle *pevent)
+ 	pevent->ref_count++;
+ }
+=20
++int tep_get_ref(struct tep_handle *tep)
++{
++	if (tep)
++		return tep->ref_count;
++	return 0;
++}
++
+ void tep_free_format_field(struct tep_format_field *field)
+ {
+ 	free(field->type);
 --=20
 2.19.2
