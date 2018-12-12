@@ -1,147 +1,62 @@
 Return-Path: <SRS0=dEKL=OV=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr680042.outbound.protection.outlook.com ([40.107.68.42]:40896
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727681AbeLLQ7a (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:50208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727808AbeLLRs0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 12 Dec 2018 11:59:30 -0500
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
+        Wed, 12 Dec 2018 12:48:26 -0500
+Date: Wed, 12 Dec 2018 12:48:23 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 3/5] kernel-shark-qt: Improuve the KsQuickContextMenu
-Date: Wed, 12 Dec 2018 16:58:47 +0000
-Message-ID: <20181212165826.8218-4-ykaradzhov@vmware.com>
-References: <20181212165826.8218-1-ykaradzhov@vmware.com>
-In-Reply-To: <20181212165826.8218-1-ykaradzhov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 05/46] tools/lib/traceevent: libtraceevent man pages
+ for tep_handler related APIs
+Message-ID: <20181212124823.7e657f6c@gandalf.local.home>
+In-Reply-To: <20181127154153.11315-6-tstoyanov@vmware.com>
+References: <20181127154153.11315-1-tstoyanov@vmware.com>
+        <20181127154153.11315-6-tstoyanov@vmware.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-In this patch the KsQuickContextMenu gets upgraded according
-to the user feedback received from Steven. First of all a
-"Show CPU X only" action is added to the version of the menu
-that gets opened from the Table widget. In addition to this
-"Apply filter to XX" check-boxes are added in order to control
-the visibility of the filtered data.
+On Tue, 27 Nov 2018 15:42:12 +0000
+Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark-qt/src/KsQuickContextMenu.cpp | 39 ++++++++++++++++++++++
- kernel-shark-qt/src/KsQuickContextMenu.hpp |  6 +++-
- 2 files changed, 44 insertions(+), 1 deletion(-)
+> This patch adds 4 new man pages for:
+> tep_register_comm,tep_pid_is_registered,tep_data_comm_from_pid,
+> tep_data_pid_from_comm,tep_cmdline_pid,tep_alloc,tep_free,tep_get_long_size,
+> tep_set_long_size,tep_set_flag, as part of the libtraceevent APIs.
 
-diff --git a/kernel-shark-qt/src/KsQuickContextMenu.cpp b/kernel-shark-qt/s=
-rc/KsQuickContextMenu.cpp
-index 815e4b9..c225269 100644
---- a/kernel-shark-qt/src/KsQuickContextMenu.cpp
-+++ b/kernel-shark-qt/src/KsQuickContextMenu.cpp
-@@ -50,11 +50,14 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *dat=
-a, size_t row,
- : KsQuickMarkerMenu(dm, parent),
-   _data(data),
-   _row(row),
-+  _graphSyncCBox(nullptr),
-+  _listSyncCBox(nullptr),
-   _hideTaskAction(this),
-   _showTaskAction(this),
-   _hideEventAction(this),
-   _showEventAction(this),
-   _hideCPUAction(this),
-+  _showCPUAction(this),
-   _addCPUPlotAction(this),
-   _addTaskPlotAction(this),
-   _removeCPUPlotAction(this),
-@@ -85,6 +88,32 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data=
-, size_t row,
- 	parentName =3D parent->metaObject()->className();
-=20
- 	addSection("Pointer menu");
-+
-+	if (parentName =3D=3D "KsTraceViewer") {
-+		_graphSyncCBox =3D
-+			KsUtils::addCheckBoxToMenu(this, "Apply filters to Graph");
-+
-+		connect(_graphSyncCBox,	&QCheckBox::stateChanged,
-+					&KsUtils::graphFilterSync);
-+
-+		bool state(false);
-+		KsUtils::graphFilterSync(state);
-+		_graphSyncCBox->setChecked(state);
-+	}
-+
-+	if (parentName =3D=3D "KsTraceGraph" &&
-+	    (graphs =3D dynamic_cast<KsTraceGraph *>(parent))) {
-+		_listSyncCBox =3D
-+			KsUtils::addCheckBoxToMenu(this, "Apply filters to Graph");
-+
-+		connect(_listSyncCBox,	&QCheckBox::stateChanged,
-+					&KsUtils::listFilterSync);
-+
-+		bool state(false);
-+		KsUtils::listFilterSync(state);
-+		_listSyncCBox->setChecked(state);
-+	}
-+
- 	descr =3D "Hide task [";
- 	descr +=3D taskName;
- 	descr +=3D "-";
-@@ -113,6 +142,9 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *dat=
-a, size_t row,
- 	lamAddAction(&_hideCPUAction, &KsQuickContextMenu::_hideCPU);
-=20
- 	if (parentName =3D=3D "KsTraceViewer") {
-+		descr =3D QString("Show CPU [%1] only").arg(cpu);
-+		lamAddAction(&_showCPUAction, &KsQuickContextMenu::_showCPU);
-+
- 		descr =3D "Add [";
- 		descr +=3D taskName;
- 		descr +=3D "-";
-@@ -198,6 +230,13 @@ void KsQuickContextMenu::_showEvent()
- 	_data->applyPosEventFilter(QVector<int>(1, eventId));
- }
-=20
-+void KsQuickContextMenu::_showCPU()
-+{
-+	int cpu =3D _data->rows()[_row]->cpu;
-+
-+	_data->applyPosCPUFilter(QVector<int>(1, cpu));
-+}
-+
- void KsQuickContextMenu::_hideCPU()
- {
- 	kshark_context *kshark_ctx(nullptr);
-diff --git a/kernel-shark-qt/src/KsQuickContextMenu.hpp b/kernel-shark-qt/s=
-rc/KsQuickContextMenu.hpp
-index 6ca1b08..f5a2a78 100644
---- a/kernel-shark-qt/src/KsQuickContextMenu.hpp
-+++ b/kernel-shark-qt/src/KsQuickContextMenu.hpp
-@@ -71,6 +71,8 @@ private:
-=20
- 	void _showEvent();
-=20
-+	void _showCPU();
-+
- 	void _hideCPU();
-=20
- 	void _addCPUPlot();
-@@ -87,11 +89,13 @@ private:
-=20
- 	size_t		_row;
-=20
-+	QCheckBox	*_graphSyncCBox, *_listSyncCBox;
-+
- 	QAction _hideTaskAction, _showTaskAction;
-=20
- 	QAction _hideEventAction, _showEventAction;
-=20
--	QAction _hideCPUAction;
-+	QAction _hideCPUAction, _showCPUAction;
-=20
- 	QAction _addCPUPlotAction;
-=20
---=20
-2.17.1
+FYI,
+
+I'm finding lots of whitespace errors in your patches. Please run
+check-patch on new patches. Also, perhaps looking at the output of
+"git show" will display in red (it does for me) where the whitespace
+errors are.
+
+I'll handle it for this series, but it is very time consuming for a
+maintainer to fix these, and most will just reject the patches because
+of it.
+
+-- Steve
+
+
+> 
+> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+> ---
+>  .../Documentation/libtraceevent-commands.txt  | 130 ++++++++++++++++++
+>  .../Documentation/libtraceevent-handle.txt    | 101 ++++++++++++++
+>  .../Documentation/libtraceevent-long_size.txt |  78 +++++++++++
+>  .../Documentation/libtraceevent-set_flag.txt  |  90 ++++++++++++
+>  4 files changed, 399 insertions(+)
+>  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-commands.txt
+>  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-handle.txt
+>  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-long_size.txt
+>  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-set_flag.txt
+> 
+> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-commands.txt b/tools/lib/traceevent/Documentation/libtraceevent-commands.txt
+> new file mode 100644
+> index 000000000000..e8d226f6c072
+> --- /dev/null
