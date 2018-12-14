@@ -1,17 +1,17 @@
 Return-Path: <SRS0=+Nut=OX=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr750048.outbound.protection.outlook.com ([40.107.75.48]:44920
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr800084.outbound.protection.outlook.com ([40.107.80.84]:60384
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729846AbeLNMwp (ORCPT
+        id S1729835AbeLNMwq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 14 Dec 2018 07:52:45 -0500
+        Fri, 14 Dec 2018 07:52:46 -0500
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 4/8] kernel-shark-qt: Avoid spurious searches
-Date: Fri, 14 Dec 2018 12:52:38 +0000
-Message-ID: <20181214125212.9637-5-ykaradzhov@vmware.com>
+Subject: [PATCH v2 7/8] kernel-shark-qt: Update the documentation link
+Date: Fri, 14 Dec 2018 12:52:41 +0000
+Message-ID: <20181214125212.9637-8-ykaradzhov@vmware.com>
 References: <20181214125212.9637-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181214125212.9637-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -21,34 +21,27 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-We do not want to search if the text field of search panel is empty.
-Most probably this is an accidental key press or mouse click.
+Help->Contents now opens http://kernelshark.org/
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark-qt/src/KsTraceViewer.cpp | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ kernel-shark-qt/src/KsMainWindow.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel-shark-qt/src/KsTraceViewer.cpp b/kernel-shark-qt/src/Ks=
-TraceViewer.cpp
-index aeed5f7..971793f 100644
---- a/kernel-shark-qt/src/KsTraceViewer.cpp
-+++ b/kernel-shark-qt/src/KsTraceViewer.cpp
-@@ -331,6 +331,15 @@ void KsTraceViewer::_search()
+diff --git a/kernel-shark-qt/src/KsMainWindow.cpp b/kernel-shark-qt/src/KsM=
+ainWindow.cpp
+index 142cd1f..a375126 100644
+--- a/kernel-shark-qt/src/KsMainWindow.cpp
++++ b/kernel-shark-qt/src/KsMainWindow.cpp
+@@ -820,7 +820,7 @@ void KsMainWindow::_aboutInfo()
 =20
- 		_matchList.clear();
- 		xText =3D _searchLineEdit.text();
-+		if (xText.isEmpty()) {
-+			/*
-+			 * No text is provided by the user. Most probably this
-+			 * is an accidental key press. Just reenable the input.
-+			 */
-+			_lockSearchPanel(false);
-+			return;
-+		}
-+
- 		xColumn =3D _columnComboBox.currentIndex();
- 		xSelect =3D _selectComboBox.currentIndex();
+ void KsMainWindow::_contents()
+ {
+-	QDesktopServices::openUrl(QUrl("https://www.google.bg/search?q=3Dkernelsh=
+ark",
++	QDesktopServices::openUrl(QUrl("http://kernelshark.org/",
+ 				  QUrl::TolerantMode));
+ }
 =20
 --=20
 2.17.1
