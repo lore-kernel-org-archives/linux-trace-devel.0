@@ -1,17 +1,17 @@
 Return-Path: <SRS0=+Nut=OX=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr800084.outbound.protection.outlook.com ([40.107.80.84]:60384
-        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr750048.outbound.protection.outlook.com ([40.107.75.48]:44920
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729831AbeLNMwp (ORCPT
+        id S1729846AbeLNMwp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 14 Dec 2018 07:52:45 -0500
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 6/8] kernel-shark-qt: Improve the KsQuickContextMenu
-Date: Fri, 14 Dec 2018 12:52:40 +0000
-Message-ID: <20181214125212.9637-7-ykaradzhov@vmware.com>
+Subject: [PATCH v2 4/8] kernel-shark-qt: Avoid spurious searches
+Date: Fri, 14 Dec 2018 12:52:38 +0000
+Message-ID: <20181214125212.9637-5-ykaradzhov@vmware.com>
 References: <20181214125212.9637-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181214125212.9637-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -21,127 +21,34 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-In this patch the KsQuickContextMenu gets upgraded according
-to the user feedback, received from Steven. First of all a
-"Show CPU X only" action is added to the version of the menu
-that gets opened from the Table widget. In addition to this
-"Apply filter to XX" check-boxes are added in order to control
-the visibility of the filtered data.
+We do not want to search if the text field of search panel is empty.
+Most probably this is an accidental key press or mouse click.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark-qt/src/KsQuickContextMenu.cpp | 39 ++++++++++++++++++++++
- kernel-shark-qt/src/KsQuickContextMenu.hpp |  6 +++-
- 2 files changed, 44 insertions(+), 1 deletion(-)
+ kernel-shark-qt/src/KsTraceViewer.cpp | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/kernel-shark-qt/src/KsQuickContextMenu.cpp b/kernel-shark-qt/s=
-rc/KsQuickContextMenu.cpp
-index 815e4b9..c225269 100644
---- a/kernel-shark-qt/src/KsQuickContextMenu.cpp
-+++ b/kernel-shark-qt/src/KsQuickContextMenu.cpp
-@@ -50,11 +50,14 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *dat=
-a, size_t row,
- : KsQuickMarkerMenu(dm, parent),
-   _data(data),
-   _row(row),
-+  _graphSyncCBox(nullptr),
-+  _listSyncCBox(nullptr),
-   _hideTaskAction(this),
-   _showTaskAction(this),
-   _hideEventAction(this),
-   _showEventAction(this),
-   _hideCPUAction(this),
-+  _showCPUAction(this),
-   _addCPUPlotAction(this),
-   _addTaskPlotAction(this),
-   _removeCPUPlotAction(this),
-@@ -85,6 +88,32 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data=
-, size_t row,
- 	parentName =3D parent->metaObject()->className();
+diff --git a/kernel-shark-qt/src/KsTraceViewer.cpp b/kernel-shark-qt/src/Ks=
+TraceViewer.cpp
+index aeed5f7..971793f 100644
+--- a/kernel-shark-qt/src/KsTraceViewer.cpp
++++ b/kernel-shark-qt/src/KsTraceViewer.cpp
+@@ -331,6 +331,15 @@ void KsTraceViewer::_search()
 =20
- 	addSection("Pointer menu");
+ 		_matchList.clear();
+ 		xText =3D _searchLineEdit.text();
++		if (xText.isEmpty()) {
++			/*
++			 * No text is provided by the user. Most probably this
++			 * is an accidental key press. Just reenable the input.
++			 */
++			_lockSearchPanel(false);
++			return;
++		}
 +
-+	if (parentName =3D=3D "KsTraceViewer") {
-+		_graphSyncCBox =3D
-+			KsUtils::addCheckBoxToMenu(this, "Apply filters to Graph");
-+
-+		connect(_graphSyncCBox,	&QCheckBox::stateChanged,
-+					&KsUtils::graphFilterSync);
-+
-+		bool state(false);
-+		KsUtils::graphFilterSync(state);
-+		_graphSyncCBox->setChecked(state);
-+	}
-+
-+	if (parentName =3D=3D "KsTraceGraph" &&
-+	    (graphs =3D dynamic_cast<KsTraceGraph *>(parent))) {
-+		_listSyncCBox =3D
-+			KsUtils::addCheckBoxToMenu(this, "Apply filters to Graph");
-+
-+		connect(_listSyncCBox,	&QCheckBox::stateChanged,
-+					&KsUtils::listFilterSync);
-+
-+		bool state(false);
-+		KsUtils::listFilterSync(state);
-+		_listSyncCBox->setChecked(state);
-+	}
-+
- 	descr =3D "Hide task [";
- 	descr +=3D taskName;
- 	descr +=3D "-";
-@@ -113,6 +142,9 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *dat=
-a, size_t row,
- 	lamAddAction(&_hideCPUAction, &KsQuickContextMenu::_hideCPU);
-=20
- 	if (parentName =3D=3D "KsTraceViewer") {
-+		descr =3D QString("Show CPU [%1] only").arg(cpu);
-+		lamAddAction(&_showCPUAction, &KsQuickContextMenu::_showCPU);
-+
- 		descr =3D "Add [";
- 		descr +=3D taskName;
- 		descr +=3D "-";
-@@ -198,6 +230,13 @@ void KsQuickContextMenu::_showEvent()
- 	_data->applyPosEventFilter(QVector<int>(1, eventId));
- }
-=20
-+void KsQuickContextMenu::_showCPU()
-+{
-+	int cpu =3D _data->rows()[_row]->cpu;
-+
-+	_data->applyPosCPUFilter(QVector<int>(1, cpu));
-+}
-+
- void KsQuickContextMenu::_hideCPU()
- {
- 	kshark_context *kshark_ctx(nullptr);
-diff --git a/kernel-shark-qt/src/KsQuickContextMenu.hpp b/kernel-shark-qt/s=
-rc/KsQuickContextMenu.hpp
-index 6ca1b08..f5a2a78 100644
---- a/kernel-shark-qt/src/KsQuickContextMenu.hpp
-+++ b/kernel-shark-qt/src/KsQuickContextMenu.hpp
-@@ -71,6 +71,8 @@ private:
-=20
- 	void _showEvent();
-=20
-+	void _showCPU();
-+
- 	void _hideCPU();
-=20
- 	void _addCPUPlot();
-@@ -87,11 +89,13 @@ private:
-=20
- 	size_t		_row;
-=20
-+	QCheckBox	*_graphSyncCBox, *_listSyncCBox;
-+
- 	QAction _hideTaskAction, _showTaskAction;
-=20
- 	QAction _hideEventAction, _showEventAction;
-=20
--	QAction _hideCPUAction;
-+	QAction _hideCPUAction, _showCPUAction;
-=20
- 	QAction _addCPUPlotAction;
+ 		xColumn =3D _columnComboBox.currentIndex();
+ 		xSelect =3D _selectComboBox.currentIndex();
 =20
 --=20
 2.17.1
