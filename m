@@ -1,17 +1,18 @@
 Return-Path: <SRS0=+Nut=OX=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr800084.outbound.protection.outlook.com ([40.107.80.84]:60384
-        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr750048.outbound.protection.outlook.com ([40.107.75.48]:44920
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729831AbeLNMwr (ORCPT
+        id S1729831AbeLNMwm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 14 Dec 2018 07:52:47 -0500
+        Fri, 14 Dec 2018 07:52:42 -0500
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: "rostedt@goodmis.org" <rostedt@goodmis.org>
 CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2 8/8] kernel-shark-qt: Version 1.0.0
-Date: Fri, 14 Dec 2018 12:52:42 +0000
-Message-ID: <20181214125212.9637-9-ykaradzhov@vmware.com>
+Subject: [PATCH v2 2/8] kernel-shark-qt: Fix a simple bug in
+ KsTraceViewer::_searchReset()
+Date: Fri, 14 Dec 2018 12:52:35 +0000
+Message-ID: <20181214125212.9637-3-ykaradzhov@vmware.com>
 References: <20181214125212.9637-1-ykaradzhov@vmware.com>
 In-Reply-To: <20181214125212.9637-1-ykaradzhov@vmware.com>
 Content-Language: en-US
@@ -21,27 +22,26 @@ MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
+Most probably this is a copy-and-paste bug.
+
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark-qt/CMakeLists.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel-shark-qt/src/KsTraceViewer.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel-shark-qt/CMakeLists.txt b/kernel-shark-qt/CMakeLists.tx=
-t
-index d92bc3d..46137a3 100644
---- a/kernel-shark-qt/CMakeLists.txt
-+++ b/kernel-shark-qt/CMakeLists.txt
-@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
- # Set the name and version of the project
- project(kernel-shark-qt)
+diff --git a/kernel-shark-qt/src/KsTraceViewer.cpp b/kernel-shark-qt/src/Ks=
+TraceViewer.cpp
+index afb9892..7f0f1e2 100644
+--- a/kernel-shark-qt/src/KsTraceViewer.cpp
++++ b/kernel-shark-qt/src/KsTraceViewer.cpp
+@@ -223,7 +223,7 @@ void KsTraceViewer::_searchReset()
+ {
+ 	_searchProgBar.setValue(0);
+ 	_searchCountLabel.setText("");
+-	_proxyModel.searchProgress();
++	_proxyModel.searchReset();
+ 	_searchDone =3D false;
+ }
 =20
--set(KS_VERSION_MAJOR 0)
--set(KS_VERSION_MINOR 9)
-+set(KS_VERSION_MAJOR 1)
-+set(KS_VERSION_MINOR 0)
- set(KS_VERSION_PATCH 0)
- set(KS_VERSION_STRING ${KS_VERSION_MAJOR}.${KS_VERSION_MINOR}.${KS_VERSION=
-_PATCH})
- message("\n project: Kernel Shark: (version: ${KS_VERSION_STRING})\n")
 --=20
 2.17.1
