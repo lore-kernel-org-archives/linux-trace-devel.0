@@ -1,62 +1,49 @@
-Return-Path: <SRS0=ubwn=OW=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr720074.outbound.protection.outlook.com ([40.107.72.74]:20288
-        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727618AbeLMOVr (ORCPT
+Return-Path: <SRS0=+Nut=OX=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
+Received: from mail.kernel.org ([198.145.29.99]:34482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728203AbeLNBiz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 13 Dec 2018 09:21:47 -0500
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH 5/5] fix "trace-cmd reset" command to restore the default
- value of tracing_max_latency
-Date: Thu, 13 Dec 2018 14:21:44 +0000
-Message-ID: <20181213142125.12149-6-tstoyanov@vmware.com>
-References: <20181213142125.12149-1-tstoyanov@vmware.com>
-In-Reply-To: <20181213142125.12149-1-tstoyanov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 13 Dec 2018 20:38:55 -0500
+Date: Thu, 13 Dec 2018 20:38:52 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Slavomir Kaslev <kaslevs@vmware.com>
+Cc: linux-trace-devel@vger.kernel.org,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Subject: Re: [PATCH v3 3/3] trace-cmd: Fix record --date flag when sending
+ tracing data to a listener
+Message-ID: <20181213203852.5989aa28@vmware.local.home>
+In-Reply-To: <20181212111711.30990a0f@gandalf.local.home>
+References: <20181205091524.4789-1-kaslevs@vmware.com>
+        <20181205091524.4789-4-kaslevs@vmware.com>
+        <20181212111711.30990a0f@gandalf.local.home>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-The "trace-cmd reset" command should restore ftrace to its default state.
-This patch sets "tracing/tracing_max_latency" to 0,
-when the "trace-cmd reset" command is executed.
+On Wed, 12 Dec 2018 11:17:11 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- tracecmd/trace-record.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> Let's break this function up, and have the caller deal with a
+> tracecmd_output *handle.
+> 
+> We can have:
+> 
+> 	handle = tracecmd_get_output_handle_fd(ofd);
+> 	if (write_options) {
+> 		tracecmd_write_cpus(handle, cpus);
+> 		tracecmd_write_options(handle);
+> 	}
+> 	tracecmd_write_cpu_data(handle, cpus, temp_files);
+> 
+> Also, let's have this patch come before patch 2/3, such that there's no
+> path to write the options until the boosting to v3.
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index f77e49a..a9bcd8d 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3769,6 +3769,14 @@ static void reset_event_pid(void)
- 		write_instance_file(instance, "set_event_pid", "", "event_pid");
- }
-=20
-+static void reset_max_latency_instance(void)
-+{
-+	struct buffer_instance *instance;
-+
-+	for_all_instances(instance)
-+		write_instance_file(instance,
-+				    "tracing_max_latency", "0", "max_latency");
-+}
-=20
- static void clear_triggers(void)
- {
-@@ -4474,6 +4482,7 @@ void trace_reset(int argc, char **argv)
- 	/* set clock to "local" */
- 	reset_clock();
- 	reset_event_pid();
-+	reset_max_latency_instance();
- 	tracecmd_remove_instances();
- 	clear_func_filters();
- 	/* restore tracing_on to 1 */
---=20
-2.19.2
+Hi Slavomir,
+
+Have you had a chance to do these changes yet and send out a v4?
+
+Thanks,
+
+-- Steve
