@@ -1,73 +1,51 @@
 Return-Path: <SRS0=+Nut=OX=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:59980 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:37182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726554AbeLNOwq (ORCPT
+        id S1729935AbeLNRB6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 14 Dec 2018 09:52:46 -0500
-Date: Fri, 14 Dec 2018 09:52:44 -0500
+        Fri, 14 Dec 2018 12:01:58 -0500
+Date: Fri, 14 Dec 2018 12:01:55 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Yordan Karadzhov <ykaradzhov@vmware.com>
 Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/8] kernel-shark-qt: Lock completely the searching
- panel when searching
-Message-ID: <20181214095244.444f4819@gandalf.local.home>
-In-Reply-To: <20181214095037.05d37f87@gandalf.local.home>
+Subject: Re: [PATCH v2 5/8] kernel-shark-qt: Create "Apply filter XX"
+ checkboxes in KsUtils
+Message-ID: <20181214120155.706a68aa@gandalf.local.home>
+In-Reply-To: <20181214125212.9637-6-ykaradzhov@vmware.com>
 References: <20181214125212.9637-1-ykaradzhov@vmware.com>
-        <20181214125212.9637-2-ykaradzhov@vmware.com>
-        <20181214095037.05d37f87@gandalf.local.home>
+        <20181214125212.9637-6-ykaradzhov@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Fri, 14 Dec 2018 09:50:37 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, 14 Dec 2018 12:52:39 +0000
+Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 
-> On Fri, 14 Dec 2018 12:52:34 +0000
-> Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
-> 
-> > So far, when searching we lock only the text field of the  searching
-> > panel. This may create a deadlock (as reported by Steven) in the case
-
-BTW, we should probably use the normal way of documenting "reported
-by", which would be (see below).
-
-> > when the user presses "Next" or "Prev." button in the same time when
-> > a parallelized search is in progress. This patch aims to protect
-> > against such a deadlock by locking all components of the panel, except
-> > the "Stop search" button.
-> > The text panel gets locked only during the actual searching.
-> > 
-
-Reporte-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-> > Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
-> > ---
-> >  kernel-shark-qt/src/KsTraceViewer.cpp | 27 +++++++++++++++++++--------
-> >  kernel-shark-qt/src/KsTraceViewer.hpp |  2 ++
-> >  2 files changed, 21 insertions(+), 8 deletions(-)
-> > 
-
-
-> Can we add two helper functions and use that instead?
-> 
-> void KsTraceViewer::_searchPanelLock(void)
-> {
-> 	_lockSearchPanel(true);
-> }
-> 
-> void KsTraceViewer::_searchPanelUnlock(void)
-> {
-> 	_lockSearchPanel(false);
-> }
-> 
-> This its more in line with the lock / unlock paradigm than passing in
-> true and false.
+> The code responsible for the creation of the "Apply filters to Graph"
+> and "Apply filters to List" checkboxes (showing in the "Filtering" menu),
+> has been moved outside of the KsMainWindow class and is now available
+> in KsUtils. This is done because we want to have the same checkboxes
+> available in the KsQuickContextMenu.
 > 
 
-I may apply this series anyway, and we could just add the helper
-functions in a separate patch.
+I applied this patch and it shows the "Hide CPU [x]". But it's a bit
+flaky. The first time I tried it, it didn't do anything. Then after
+starting kernelshark again, I was able to have it hide the CPU, but
+when I clicked on the "Filter" menu on the top toolbar, the filter went
+away.
+
+Another thing, the "Apply filters to Graph" checkbox is a bit
+confusing. What does it actually mean? The filters are applied by
+default to the graph, correct? But the checkbox isn't set.
+
+Also, does it make sense to have that "Apply filters to graph" checkbox
+in the Graph menu. It would make more sense if it said "Apply filters
+to table".
+
+I think I'll apply this series except for this patch and the last one
+(5 and 8).
 
 -- Steve
