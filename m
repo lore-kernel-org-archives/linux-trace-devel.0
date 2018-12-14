@@ -1,78 +1,69 @@
 Return-Path: <SRS0=+Nut=OX=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-eopbgr710082.outbound.protection.outlook.com ([40.107.71.82]:33975
-        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726344AbeLNLe5 (ORCPT
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:35799 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730128AbeLNMCp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 14 Dec 2018 06:34:57 -0500
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "linux-trace-devel@vger.kernel.org"
+        Fri, 14 Dec 2018 07:02:45 -0500
+Received: by mail-wm1-f65.google.com with SMTP id c126so5551961wmh.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 14 Dec 2018 04:02:44 -0800 (PST)
+Subject: Re: [PATCH 1/5] kernel-shark-qt: Avoid spurious searches
+To: Steven Rostedt <rostedt@goodmis.org>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd: fix "trace-cmd stat" output
-Date: Fri, 14 Dec 2018 11:34:54 +0000
-Message-ID: <20181214113441.12166-1-tstoyanov@vmware.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+References: <20181212165826.8218-1-ykaradzhov@vmware.com>
+ <20181212165826.8218-2-ykaradzhov@vmware.com>
+ <20181213224739.0510e951@vmware.local.home>
+From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <2b57d6cf-fd9c-821f-26eb-caf7c6256870@gmail.com>
+Date: Fri, 14 Dec 2018 14:02:40 +0200
 MIME-Version: 1.0
+In-Reply-To: <20181213224739.0510e951@vmware.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This patch fixes the output of the "trace-cmd stat"
-command to not display "(none enabled)" in case there
-are enabled events from individual systems.
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- tracecmd/trace-stat.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
-index 99a22d0..538f4ad 100644
---- a/tracecmd/trace-stat.c
-+++ b/tracecmd/trace-stat.c
-@@ -324,6 +324,7 @@ static void report_events(struct buffer_instance *insta=
-nce)
- 	char *system;
- 	enum event_iter_type type;
- 	enum event_process processed =3D PROCESSED_NONE;
-+	enum event_process processed_part =3D PROCESSED_NONE;
-=20
- 	str =3D get_instance_file_content(instance, "events/enable");
- 	if (!str)
-@@ -358,7 +359,6 @@ static void report_events(struct buffer_instance *insta=
-nce)
-=20
- 	reset_event_iter(iter);
-=20
--	processed =3D PROCESSED_NONE;
- 	system =3D NULL;
- 	while ((type =3D trace_event_iter_next(iter, path, system))) {
-=20
-@@ -369,18 +369,18 @@ static void report_events(struct buffer_instance *ins=
-tance)
- 				continue;
-=20
- 			system =3D iter->system_dent->d_name;
--			if (processed)
--				processed =3D PROCESSED_SYSTEM;
-+			if (processed_part)
-+				processed_part =3D PROCESSED_SYSTEM;
- 			continue;
- 		}
-=20
- 		process_event_enable(path, iter->system_dent->d_name,
--				     iter->event_dent->d_name, &processed);
-+				     iter->event_dent->d_name, &processed_part);
- 	}
-=20
- 	trace_event_iter_free(iter);
-=20
--	if (!processed)
-+	if (!processed && !processed_part)
- 		printf("  (none enabled)\n");
-=20
- 	tracecmd_put_tracing_file(path);
---=20
-2.19.2
+On 14.12.18 г. 5:47 ч., Steven Rostedt wrote:
+> On Wed, 12 Dec 2018 16:58:44 +0000
+> Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
+> 
+>> Do not search if the text field of search panel is empty.
+>> Most probably this is an accidental key press or mouse click.
+>>
+>> The text field gets locked only during the actual searching.
+>>
+>> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+>> ---
+>>   kernel-shark-qt/src/KsTraceViewer.cpp | 20 +++++++++++++++-----
+>>   1 file changed, 15 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/kernel-shark-qt/src/KsTraceViewer.cpp b/kernel-shark-qt/src/KsTraceViewer.cpp
+>> index a308ea0..599b687 100644
+>> --- a/kernel-shark-qt/src/KsTraceViewer.cpp
+>> +++ b/kernel-shark-qt/src/KsTraceViewer.cpp
+>> @@ -308,8 +308,6 @@ static bool matchCond(const QString &searchText, const QString &itemText)
+>>   
+>>   void KsTraceViewer::_search()
+>>   {
+>> -	/* Disable the user input until the search is done. */
+>> -	_searchLineEdit.setReadOnly(true);
+> 
+> Hmm, can any races happen by setting the search line read only after
+> the empty checks?
+> 
+> Also, I found a bug. Try this on a large data file. It doesn't matter
+> what data file it is.
+> 
+> With the Search: at its start up defaults (with Column = "#"), type
+> "aaa" in the search window and then hit enter. While the search is
+> going on, hit the "Next" button. See what happens.
+Deadlock :)
+
+Well spotted, thanks a lot!
+I will resend the whole series.
+
+Yordan
