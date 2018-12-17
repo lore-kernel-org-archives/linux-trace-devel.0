@@ -1,74 +1,158 @@
 Return-Path: <SRS0=DGv/=O2=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:50824 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726607AbeLQRoH (ORCPT
+Received: from mail-eopbgr700052.outbound.protection.outlook.com ([40.107.70.52]:10656
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726801AbeLQR4D (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 17 Dec 2018 12:44:07 -0500
-Received: by mail-wm1-f66.google.com with SMTP id n190so99403wmd.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 17 Dec 2018 09:44:05 -0800 (PST)
-Subject: Re: [PATCH v2 5/8] kernel-shark-qt: Create "Apply filter XX"
- checkboxes in KsUtils
-To: Steven Rostedt <rostedt@goodmis.org>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>
-Cc: "linux-trace-devel@vger.kernel.org"
+        Mon, 17 Dec 2018 12:56:03 -0500
+From: Yordan Karadzhov <ykaradzhov@vmware.com>
+To: "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC: "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>
-References: <20181214125212.9637-1-ykaradzhov@vmware.com>
- <20181214125212.9637-6-ykaradzhov@vmware.com>
- <20181214120155.706a68aa@gandalf.local.home>
-From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <19a2b689-b316-a759-b626-3a5aed4d1a87@gmail.com>
-Date: Mon, 17 Dec 2018 19:44:03 +0200
-MIME-Version: 1.0
-In-Reply-To: <20181214120155.706a68aa@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Subject: [PATCH 1/3] kernel-shark-qt: Improve the KsQuickContextMenu
+Date: Mon, 17 Dec 2018 17:55:59 +0000
+Message-ID: <20181217175516.2944-1-ykaradzhov@vmware.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
+In this patch the KsQuickContextMenu gets upgraded according
+to the user feedback, received from Steven. First of all a
+"Show CPU X only" action is added to the version of the menu
+that gets opened from the Table widget. In addition to this
+"Apply filter to XX" check-boxes are added in order to control
+the visibility of the filtered data.
 
+Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+---
+ kernel-shark-qt/src/KsQuickContextMenu.cpp | 45 ++++++++++++++++++++++
+ kernel-shark-qt/src/KsQuickContextMenu.hpp |  6 ++-
+ 2 files changed, 50 insertions(+), 1 deletion(-)
 
-On 14.12.18 г. 19:01 ч., Steven Rostedt wrote:
-> On Fri, 14 Dec 2018 12:52:39 +0000
-> Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
-> 
->> The code responsible for the creation of the "Apply filters to Graph"
->> and "Apply filters to List" checkboxes (showing in the "Filtering" menu),
->> has been moved outside of the KsMainWindow class and is now available
->> in KsUtils. This is done because we want to have the same checkboxes
->> available in the KsQuickContextMenu.
->>
-> 
-> I applied this patch and it shows the "Hide CPU [x]". But it's a bit
-> flaky. The first time I tried it, it didn't do anything. Then after
-> starting kernelshark again, I was able to have it hide the CPU, but
-> when I clicked on the "Filter" menu on the top toolbar, the filter went
-> away.
-
-Interesting, I have an idea why this may happen, but I am not sure.
-
-
-> 
-> Another thing, the "Apply filters to Graph" checkbox is a bit
-> confusing. What does it actually mean? The filters are applied by
-> default to the graph, correct? But the checkbox isn't set.
-> 
-> Also, does it make sense to have that "Apply filters to graph" checkbox
-> in the Graph menu. It would make more sense if it said "Apply filters
-> to table".
-
-You are right. There is a typo in the name of the checkbox. But it does 
-the correct thing.
-
-I will fix the two problems and will resend the patch.
-
-Thanks a lot!
-Yordan
-
-
-> 
-> I think I'll apply this series except for this patch and the last one
-> (5 and 8).
-> 
-> -- Steve
-> 
+diff --git a/kernel-shark-qt/src/KsQuickContextMenu.cpp b/kernel-shark-qt/s=
+rc/KsQuickContextMenu.cpp
+index 815e4b9..6c9c9ef 100644
+--- a/kernel-shark-qt/src/KsQuickContextMenu.cpp
++++ b/kernel-shark-qt/src/KsQuickContextMenu.cpp
+@@ -50,11 +50,14 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *dat=
+a, size_t row,
+ : KsQuickMarkerMenu(dm, parent),
+   _data(data),
+   _row(row),
++  _graphSyncCBox(nullptr),
++  _listSyncCBox(nullptr),
+   _hideTaskAction(this),
+   _showTaskAction(this),
+   _hideEventAction(this),
+   _showEventAction(this),
+   _hideCPUAction(this),
++  _showCPUAction(this),
+   _addCPUPlotAction(this),
+   _addTaskPlotAction(this),
+   _removeCPUPlotAction(this),
+@@ -85,6 +88,37 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data=
+, size_t row,
+ 	parentName =3D parent->metaObject()->className();
+=20
+ 	addSection("Pointer menu");
++
++	if (parentName =3D=3D "KsTraceViewer") {
++		_graphSyncCBox =3D
++			KsUtils::addCheckBoxToMenu(this, "Apply filters to Graph");
++
++		connect(_graphSyncCBox,	&QCheckBox::stateChanged,
++					&KsUtils::graphFilterSync);
++
++		/*
++		 * By defauls the filters will be append to the List (Table)
++		 * only.
++		 */
++		KsUtils::listFilterSync(true);
++		KsUtils::graphFilterSync(false);
++		_graphSyncCBox->setChecked(false);
++	}
++
++	if (parentName =3D=3D "KsTraceGraph" &&
++	    (graphs =3D dynamic_cast<KsTraceGraph *>(parent))) {
++		_listSyncCBox =3D
++			KsUtils::addCheckBoxToMenu(this, "Apply filters to List");
++
++		connect(_listSyncCBox,	&QCheckBox::stateChanged,
++					&KsUtils::listFilterSync);
++
++		/* By defauls the filters will be append to the Graph only. */
++		KsUtils::graphFilterSync(true);
++		KsUtils::listFilterSync(false);
++		_listSyncCBox->setChecked(false);
++	}
++
+ 	descr =3D "Hide task [";
+ 	descr +=3D taskName;
+ 	descr +=3D "-";
+@@ -113,6 +147,9 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *dat=
+a, size_t row,
+ 	lamAddAction(&_hideCPUAction, &KsQuickContextMenu::_hideCPU);
+=20
+ 	if (parentName =3D=3D "KsTraceViewer") {
++		descr =3D QString("Show CPU [%1] only").arg(cpu);
++		lamAddAction(&_showCPUAction, &KsQuickContextMenu::_showCPU);
++
+ 		descr =3D "Add [";
+ 		descr +=3D taskName;
+ 		descr +=3D "-";
+@@ -198,6 +235,13 @@ void KsQuickContextMenu::_showEvent()
+ 	_data->applyPosEventFilter(QVector<int>(1, eventId));
+ }
+=20
++void KsQuickContextMenu::_showCPU()
++{
++	int cpu =3D _data->rows()[_row]->cpu;
++
++	_data->applyPosCPUFilter(QVector<int>(1, cpu));
++}
++
+ void KsQuickContextMenu::_hideCPU()
+ {
+ 	kshark_context *kshark_ctx(nullptr);
+@@ -208,6 +252,7 @@ void KsQuickContextMenu::_hideCPU()
+=20
+ 	vec =3D_getFilterVector(kshark_ctx->hide_cpu_filter,
+ 			      _data->rows()[_row]->cpu);
++
+ 	_data->applyNegCPUFilter(vec);
+ }
+=20
+diff --git a/kernel-shark-qt/src/KsQuickContextMenu.hpp b/kernel-shark-qt/s=
+rc/KsQuickContextMenu.hpp
+index 6ca1b08..f5a2a78 100644
+--- a/kernel-shark-qt/src/KsQuickContextMenu.hpp
++++ b/kernel-shark-qt/src/KsQuickContextMenu.hpp
+@@ -71,6 +71,8 @@ private:
+=20
+ 	void _showEvent();
+=20
++	void _showCPU();
++
+ 	void _hideCPU();
+=20
+ 	void _addCPUPlot();
+@@ -87,11 +89,13 @@ private:
+=20
+ 	size_t		_row;
+=20
++	QCheckBox	*_graphSyncCBox, *_listSyncCBox;
++
+ 	QAction _hideTaskAction, _showTaskAction;
+=20
+ 	QAction _hideEventAction, _showEventAction;
+=20
+-	QAction _hideCPUAction;
++	QAction _hideCPUAction, _showCPUAction;
+=20
+ 	QAction _addCPUPlotAction;
+=20
+--=20
+2.17.1
