@@ -1,58 +1,50 @@
 Return-Path: <SRS0=lLmH=O3=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail.kernel.org ([198.145.29.99]:36388 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:56964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727675AbeLRWId (ORCPT
+        id S1726590AbeLRXZZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 18 Dec 2018 17:08:33 -0500
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-trace-devel@vger.kernel.org, stable@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 05/63] tools lib traceevent: Fix processing of dereferenced args in bprintk events
-Date: Tue, 18 Dec 2018 19:06:35 -0300
-Message-Id: <20181218220733.15839-6-acme@kernel.org>
-In-Reply-To: <20181218220733.15839-1-acme@kernel.org>
-References: <20181218220733.15839-1-acme@kernel.org>
+        Tue, 18 Dec 2018 18:25:25 -0500
+Date: Tue, 18 Dec 2018 18:25:22 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] trace-cmd: fix deletion of histogram triggers
+Message-ID: <20181218182522.3d601a7e@gandalf.local.home>
+In-Reply-To: <20181218103928.18345-1-tstoyanov@vmware.com>
+References: <20181218103928.18345-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Tue, 18 Dec 2018 12:39:28 +0200
+Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-In the case that a bprintk event has a dereferenced pointer that is
-stored as a string, and there's more values to process (more args), the
-arg was not updated to point to the next arg after processing the
-dereferenced pointer, and it screwed up what was to be displayed.
+> This patch fixes the clear_trigger() function to delete
+> configured histograms. Unlike other triggers, histograms
+> must be deleted specifying the whole trigger string.
+> 
+> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: linux-trace-devel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Fixes: 37db96bb49629 ("tools lib traceevent: Handle new pointer processing of bprint strings")
-Link: http://lkml.kernel.org/r/20181210134522.3f71e2ca@gandalf.local.home
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/lib/traceevent/event-parse.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied. Thanks Tzvetomir!
 
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index a5ed291b8a9f..69a96e39f0ab 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -4973,6 +4973,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
- 
- 				if (arg->type == TEP_PRINT_BSTRING) {
- 					trace_seq_puts(s, arg->string.string);
-+					arg = arg->next;
- 					break;
- 				}
- 
--- 
-2.19.2
+-- Steve
+
+> ---
+>  tracecmd/trace-record.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+> index a9bcd8d..37a2d1d 100644
+> --- a/tracecmd/trace-record.c
+> +++ b/tracecmd/trace-record.c
+> @@ -1680,7 +1680,7 @@ static void clear_trigger(const char *file)
+>  	 * to the file for each trigger.
+>  	 */
+>  	do {
+> -		len = find_trigger(file, trigger+1, BUFSIZ-1, 1);
+> +		len = find_trigger(file, trigger+1, BUFSIZ-1, 3);
+>  		if (len)
+>  			write_trigger(file, trigger);
+>  	} while (len);
