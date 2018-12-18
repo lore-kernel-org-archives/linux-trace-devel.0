@@ -1,187 +1,58 @@
 Return-Path: <SRS0=lLmH=O3=vger.kernel.org=linux-trace-devel-owner@goodmis.org>
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:41934 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbeLRNaS (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:36388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727675AbeLRWId (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 18 Dec 2018 08:30:18 -0500
-Received: by mail-wr1-f67.google.com with SMTP id x10so15904708wrs.8
-        for <linux-trace-devel@vger.kernel.org>; Tue, 18 Dec 2018 05:30:15 -0800 (PST)
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: implement a new API, tep_list_events_copy()
-Date: Tue, 18 Dec 2018 15:30:13 +0200
-Message-Id: <20181218133013.31094-1-tstoyanov@vmware.com>
+        Tue, 18 Dec 2018 17:08:33 -0500
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Clark Williams <williams@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-trace-devel@vger.kernel.org, stable@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 05/63] tools lib traceevent: Fix processing of dereferenced args in bprintk events
+Date: Tue, 18 Dec 2018 19:06:35 -0300
+Message-Id: <20181218220733.15839-6-acme@kernel.org>
+In-Reply-To: <20181218220733.15839-1-acme@kernel.org>
+References: <20181218220733.15839-1-acme@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Existing API tep_list_events() is not thread safe, it
-uses the internal array sort_events to keep cache of
-the sorted events and reuses it. This patch implements
-a new API, tep_list_events_copy(), which allocates new
-sorted array each time it is called. It could be used
-when a sorted events functionality is needed in thread
-safe use cases. It is up to the caller to free the array.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+In the case that a bprintk event has a dereferenced pointer that is
+stored as a string, and there's more values to process (more args), the
+arg was not updated to point to the next arg after processing the
+dereferenced pointer, and it screwed up what was to be displayed.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: linux-trace-devel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Fixes: 37db96bb49629 ("tools lib traceevent: Handle new pointer processing of bprint strings")
+Link: http://lkml.kernel.org/r/20181210134522.3f71e2ca@gandalf.local.home
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h |   5 +-
- lib/traceevent/event-parse.c     | 109 ++++++++++++++++++++++++-------
- 2 files changed, 91 insertions(+), 23 deletions(-)
+ tools/lib/traceevent/event-parse.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 3ffc26a..405fee8 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -528,7 +528,10 @@ void tep_event_info(struct trace_seq *s, struct tep_event *event,
- int tep_strerror(struct tep_handle *pevent, enum tep_errno errnum,
- 		    char *buf, size_t buflen);
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index a5ed291b8a9f..69a96e39f0ab 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -4973,6 +4973,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
  
--struct tep_event **tep_list_events(struct tep_handle *pevent, enum tep_event_sort_type);
-+struct tep_event **tep_list_events(struct tep_handle *tep,
-+				   enum tep_event_sort_type);
-+struct tep_event **tep_list_events_copy(struct tep_handle *tep,
-+					enum tep_event_sort_type);
- struct tep_format_field **tep_event_common_fields(struct tep_event *event);
- struct tep_format_field **tep_event_fields(struct tep_event *event);
+ 				if (arg->type == TEP_PRINT_BSTRING) {
+ 					trace_seq_puts(s, arg->string.string);
++					arg = arg->next;
+ 					break;
+ 				}
  
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 1cab1a5..1df8b14 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -5626,32 +5626,26 @@ static int events_system_cmp(const void *a, const void *b)
- 	return events_id_cmp(a, b);
- }
- 
--struct tep_event **tep_list_events(struct tep_handle *pevent, enum tep_event_sort_type sort_type)
-+static struct tep_event **list_events_copy(struct tep_handle *tep)
- {
- 	struct tep_event **events;
--	int (*sort)(const void *a, const void *b);
--
--	events = pevent->sort_events;
--
--	if (events && pevent->last_type == sort_type)
--		return events;
- 
--	if (!events) {
--		events = malloc(sizeof(*events) * (pevent->nr_events + 1));
--		if (!events)
--			return NULL;
-+	if (!tep)
-+		return NULL;
- 
--		memcpy(events, pevent->events, sizeof(*events) * pevent->nr_events);
--		events[pevent->nr_events] = NULL;
-+	events = malloc(sizeof(*events) * (tep->nr_events + 1));
-+	if (!events)
-+		return NULL;
- 
--		pevent->sort_events = events;
-+	memcpy(events, tep->events, sizeof(*events) * tep->nr_events);
-+	events[tep->nr_events] = NULL;
-+	return events;
-+}
- 
--		/* the internal events are sorted by id */
--		if (sort_type == TEP_EVENT_SORT_ID) {
--			pevent->last_type = sort_type;
--			return events;
--		}
--	}
-+static void list_events_sort(struct tep_event **events, int nr_events,
-+			     enum tep_event_sort_type sort_type)
-+{
-+	int (*sort)(const void *a, const void *b);
- 
- 	switch (sort_type) {
- 	case TEP_EVENT_SORT_ID:
-@@ -5664,11 +5658,82 @@ struct tep_event **tep_list_events(struct tep_handle *pevent, enum tep_event_sor
- 		sort = events_system_cmp;
- 		break;
- 	default:
-+		sort = NULL;
-+	}
-+
-+	if (sort)
-+		qsort(events, nr_events, sizeof(*events), sort);
-+}
-+
-+/**
-+ * tep_list_events - Get events, sorted by given criteria.
-+ * @tep: a handle to the tep context
-+ * @sort_type: desired sort order of the events in the array
-+ *
-+ * Returns an array of pointers to all events, sorted by the given
-+ * @sort_type criteria. The last element of the array is NULL. The returned
-+ * memory must not be freed, it is managed by the library.
-+ * The function is not thread safe.
-+ */
-+struct tep_event **tep_list_events(struct tep_handle *tep,
-+				   enum tep_event_sort_type sort_type)
-+{
-+	struct tep_event **events;
-+
-+	if (!tep)
-+		return NULL;
-+
-+	events = tep->sort_events;
-+	if (events && tep->last_type == sort_type)
- 		return events;
-+
-+	if (!events) {
-+		events = list_events_copy(tep);
-+		if (!events)
-+			return NULL;
-+
-+		tep->sort_events = events;
-+
-+		/* the internal events are sorted by id */
-+		if (sort_type == TEP_EVENT_SORT_ID) {
-+			tep->last_type = sort_type;
-+			return events;
-+		}
- 	}
- 
--	qsort(events, pevent->nr_events, sizeof(*events), sort);
--	pevent->last_type = sort_type;
-+	list_events_sort(events, tep->nr_events, sort_type);
-+	tep->last_type = sort_type;
-+
-+	return events;
-+}
-+
-+
-+/**
-+ * tep_list_events_copy - Thread safe version of tep_list_events()
-+ * @tep: a handle to the tep context
-+ * @sort_type: desired sort order of the events in the array
-+ *
-+ * Returns an array of pointers to all events, sorted by the given
-+ * @sort_type criteria. The last element of the array is NULL. The returned
-+ * array is newly allocated inside the function and must be freed by the caller
-+ */
-+struct tep_event **tep_list_events_copy(struct tep_handle *tep,
-+					enum tep_event_sort_type sort_type)
-+{
-+	struct tep_event **events;
-+
-+	if (!tep)
-+		return NULL;
-+
-+	events = list_events_copy(tep);
-+	if (!events)
-+		return NULL;
-+
-+	/* the internal events are sorted by id */
-+	if (sort_type == TEP_EVENT_SORT_ID)
-+		return events;
-+
-+	list_events_sort(events, tep->nr_events, sort_type);
- 
- 	return events;
- }
 -- 
 2.19.2
