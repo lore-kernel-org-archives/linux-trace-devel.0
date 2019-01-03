@@ -1,145 +1,104 @@
 Return-Path: <linux-trace-devel-owner@vger.kernel.org>
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:54812 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729271AbfACMIm (ORCPT
+Received: from mail.kernel.org ([198.145.29.99]:37058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731053AbfACOcz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 3 Jan 2019 07:08:42 -0500
-Received: by mail-wm1-f46.google.com with SMTP id a62so29107118wmh.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Jan 2019 04:08:39 -0800 (PST)
-To: Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: multi-thread read bug
-Message-ID: <e85a0404-85e7-b8f7-2c47-0c90ba42e7e0@gmail.com>
-Date: Thu, 3 Jan 2019 14:08:37 +0200
+        Thu, 3 Jan 2019 09:32:55 -0500
+Date: Thu, 3 Jan 2019 09:32:53 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: multi-thread read bug
+Message-ID: <20190103093253.5c06e604@gandalf.local.home>
+In-Reply-To: <e85a0404-85e7-b8f7-2c47-0c90ba42e7e0@gmail.com>
+References: <e85a0404-85e7-b8f7-2c47-0c90ba42e7e0@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------ABEDFD0CE02DFF958AECFC17"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------ABEDFD0CE02DFF958AECFC17
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, 3 Jan 2019 14:08:37 +0200
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-Hi Ceco,
+> Hi Ceco,
+> 
+> I have a problem when trying to call tracecmd_read_at() from different 
+> threads. Although the call of tracecmd_read_at() is protected by a 
+> mutex,
 
-I have a problem when trying to call tracecmd_read_at() from different 
-threads. Although the call of tracecmd_read_at() is protected by a 
-mutex, I am still getting a segmentation fault.
-A simple program that reproduces the problem is attached as a patch.
+I believe I stated before that adding a mutex around that wont help at
+all.
 
-Thanks!
-Yordan
+> I am still getting a segmentation fault.
+> A simple program that reproduces the problem is attached as a patch.
 
---------------ABEDFD0CE02DFF958AECFC17
-Content-Type: text/x-patch;
- name="mt_read_bug.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="mt_read_bug.patch"
+Yep, that can easily happen:
 
-diff --git a/kernel-shark-qt/examples/CMakeLists.txt b/kernel-shark-qt/examples/CMakeLists.txt
-index e16216e..ae1331c 100644
---- a/kernel-shark-qt/examples/CMakeLists.txt
-+++ b/kernel-shark-qt/examples/CMakeLists.txt
-@@ -23,3 +23,7 @@ target_link_libraries(dplot   kshark-plot)
- message(STATUS "widgetdemo")
- add_executable(widgetdemo          widgetdemo.cpp)
- target_link_libraries(widgetdemo   kshark-gui)
-+
-+message(STATUS "mtread")
-+add_executable(mtread          mt_read.cpp)
-+target_link_libraries(mtread   kshark-gui)
-diff --git a/kernel-shark-qt/examples/mt_read.cpp b/kernel-shark-qt/examples/mt_read.cpp
-index e69de29..0419454 100644
---- a/kernel-shark-qt/examples/mt_read.cpp
-+++ b/kernel-shark-qt/examples/mt_read.cpp
-@@ -0,0 +1,82 @@
-+// C
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+// C++
-+#include <vector>
-+#include <thread>
-+
-+// KernelShark
-+#include "libkshark.h"
-+
-+using namespace std;
-+
-+const char *default_file = "trace.dat";
-+
-+static void read_job(struct kshark_context *kshark_ctx,
-+		     struct kshark_entry **data,
-+		     size_t first, size_t last)
-+{
-+	struct tep_record *rec;
-+
-+	for (size_t r = first; r < last; ++r) {
-+		rec = kshark_read_at(kshark_ctx, data[r]->offset);
-+		free(rec);
-+	}
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int nThreads = std::thread::hardware_concurrency();
-+	struct kshark_context *kshark_ctx;
-+	struct kshark_entry **data = NULL;
-+	size_t r, n_rows;
-+	int first, last, delta;
-+	bool status;
-+
-+	/* Create a new kshark session. */
-+	kshark_ctx = NULL;
-+	if (!kshark_instance(&kshark_ctx))
-+		return 1;
-+
-+	/* Open a trace data file produced by trace-cmd. */
-+	if (argc > 1)
-+		status = kshark_open(kshark_ctx, argv[1]);
-+	else
-+		status = kshark_open(kshark_ctx, default_file);
-+
-+	if (!status) {
-+		kshark_free(kshark_ctx);
-+		return 1;
-+	}
-+
-+	/* Load the content of the file into an array of entries. */
-+	n_rows = kshark_load_data_entries(kshark_ctx, &data);
-+
-+// 	nThreads = 1;
-+	delta = n_rows / nThreads;
-+	vector<thread> threads;
-+	for (int i = 0; i < nThreads; ++i) {
-+		first = i * delta;
-+		last = first + delta - 1;
-+		threads.push_back(thread(read_job, kshark_ctx, data, first, last));
-+// 		threads.push_back(thread(read_job, kshark_ctx, data, 0, n_rows));
-+	}
-+
-+	for (auto &t:threads)
-+		t.join();
-+
-+	/* Free the memory. */
-+	for (r = 0; r < n_rows; ++r)
-+		free(data[r]);
-+
-+	free(data);
-+
-+	/* Close the file. */
-+	kshark_close(kshark_ctx);
-+
-+	/* Close the session. */
-+	kshark_free(kshark_ctx);
-+
-+	return 0;
-+}
+tracecmd_read_at() calls read_event() which is:
 
---------------ABEDFD0CE02DFF958AECFC17--
+	record = peek_event(handle, offset, cpu);
+	if (record)
+		record = tracecmd_read_data(handle, cpu);
+	return record;
+
+Where peek_event() caches the event record to handle->cpu_data[cpu].next.
+
+The tracecmd_read_data() will also call tracecmd_peek_data() which if
+next is set, will return that, and then set next to NULL.
+
+A easy way to crash this is to do the following:
+
+	CPU0				CPU1
+	----				----
+ tracecmd_read_at() {
+  read_event() {
+   peek_event() {
+    tracecmd_peek_data() {
+      handle->cpu_data[cpu].next = record;
+    }
+   }
+   tracecmd_read_data() {
+    tracecmd_peek_data(); [ return .next ]
+
+					tracecmd_read_at() {
+					 read_event() {
+					  peek_event() {
+					   tracecmd_peek_data();
+					    [ return .next ]
+					  }
+					  tracecmd_read_data() {
+					   tracecmd_peek_data() {
+
+					    if (cpu_data[cpu].next) {
+    record = cpu_data[cpu].next;
+    cpu_data[cpu].next = NULL;
+						[ .next is now NULL ]
+					      record = cpu_data[cpu].next;
+					      if (!record->data)
+
+						[ SEGFAULT! ]
+
+
+There's a few ways to solve this. We could slap mutexes all over the
+code, which would slow things down and be a mess.
+
+Or, what may be a bit more complex for threads, we could make a
+tracecmd_dup() function that will clone the necessary data. Just like
+dup() does for file descriptors.
+
+new_handle = tracecmd_dup(handle);
+
+And have the threads use their own handle. And the handle should have
+its own indexes (like cpu_data and such).
+
+They could share data (with a ref count) and then when all is done just
+free it normally. The ref counts will be decremented, and when they hit
+zero it will be free.
+
+Hmm, we may need a mutex to protect the counters or if there are atomic
+counters in userspace, then use them. Doing a quick search, there
+appears to be some atomic counters that we can use.
+
+-- Steve
