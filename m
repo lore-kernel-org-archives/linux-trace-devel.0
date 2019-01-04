@@ -1,104 +1,62 @@
 Return-Path: <linux-trace-devel-owner@vger.kernel.org>
-Received: from mail.kernel.org ([198.145.29.99]:37058 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:46054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731053AbfACOcz (ORCPT
+        id S1726189AbfADDnD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 3 Jan 2019 09:32:55 -0500
-Date: Thu, 3 Jan 2019 09:32:53 -0500
+        Thu, 3 Jan 2019 22:43:03 -0500
+Date: Thu, 3 Jan 2019 22:43:00 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: multi-thread read bug
-Message-ID: <20190103093253.5c06e604@gandalf.local.home>
-In-Reply-To: <e85a0404-85e7-b8f7-2c47-0c90ba42e7e0@gmail.com>
-References: <e85a0404-85e7-b8f7-2c47-0c90ba42e7e0@gmail.com>
+To: Johannes Berg <johannes@sipsolutions.net>,
+        "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>
+Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Subject: Re: trace-cmd python
+Message-ID: <20190103224300.418e002b@vmware.local.home>
+In-Reply-To: <1524143246.3024.21.camel@sipsolutions.net>
+References: <1524143246.3024.21.camel@sipsolutions.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Thu, 3 Jan 2019 14:08:37 +0200
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+On Thu, 19 Apr 2018 15:07:26 +0200
+Johannes Berg <johannes@sipsolutions.net> wrote:
 
-> Hi Ceco,
+Hi Johannes,
+
+This was buried in my TODO list, and lost. I just noticed it. 
+
+> So, starting again from git clean -fdxq, I observe the following:
 > 
-> I have a problem when trying to call tracecmd_read_at() from different 
-> threads. Although the call of tracecmd_read_at() is protected by a 
-> mutex,
+> 1) make -j8 install
+>    -> errors out with  
+> "make[1]: *** No rule to make target '/home/jberg1/sys/trace-cmd/lib/trace-cmd/libtracecmd.a', needed by 'ctracecmd.so'.  Stop."
+> 
+> 2) make install
+>    -> python plugin not installed
+>    -> copy it manually  
+> 
+> 3) running trace-cmd report with plugin_mac80211.py in
+> ~/.trace-cmd/plugins/ I see
+> 
+> failed loading /home/jberg1/.trace-cmd/plugins/mac80211.py
+> Traceback (most recent call last):
+>   File "<string>", line 1, in <module>
+>   File "/tmp/tcmd//lib/trace-cmd/python/tracecmd.py", line 22, in <module>
+>     from ctracecmd import *
+> ImportError: /tmp/tcmd//lib/trace-cmd/python/ctracecmd.so: undefined symbol: traceevent_plugin_free_options_list
+> 
+> If I remove that from the header file I eventually get down to not
+> having __vpr_stat() or something, which seems to indicate that
+> ctracecmd.so isn't linked with libtraceevent, only with libtracecmd? But
+> adding that to the Makefile didn't change anything, and then I gave up
+> and checked out v2.7 instead.
+>
 
-I believe I stated before that adding a mutex around that wont help at
-all.
+I just checked, and this is still an issue today. I'll make sure that
+this gets fixed soon.
 
-> I am still getting a segmentation fault.
-> A simple program that reproduces the problem is attached as a patch.
-
-Yep, that can easily happen:
-
-tracecmd_read_at() calls read_event() which is:
-
-	record = peek_event(handle, offset, cpu);
-	if (record)
-		record = tracecmd_read_data(handle, cpu);
-	return record;
-
-Where peek_event() caches the event record to handle->cpu_data[cpu].next.
-
-The tracecmd_read_data() will also call tracecmd_peek_data() which if
-next is set, will return that, and then set next to NULL.
-
-A easy way to crash this is to do the following:
-
-	CPU0				CPU1
-	----				----
- tracecmd_read_at() {
-  read_event() {
-   peek_event() {
-    tracecmd_peek_data() {
-      handle->cpu_data[cpu].next = record;
-    }
-   }
-   tracecmd_read_data() {
-    tracecmd_peek_data(); [ return .next ]
-
-					tracecmd_read_at() {
-					 read_event() {
-					  peek_event() {
-					   tracecmd_peek_data();
-					    [ return .next ]
-					  }
-					  tracecmd_read_data() {
-					   tracecmd_peek_data() {
-
-					    if (cpu_data[cpu].next) {
-    record = cpu_data[cpu].next;
-    cpu_data[cpu].next = NULL;
-						[ .next is now NULL ]
-					      record = cpu_data[cpu].next;
-					      if (!record->data)
-
-						[ SEGFAULT! ]
-
-
-There's a few ways to solve this. We could slap mutexes all over the
-code, which would slow things down and be a mess.
-
-Or, what may be a bit more complex for threads, we could make a
-tracecmd_dup() function that will clone the necessary data. Just like
-dup() does for file descriptors.
-
-new_handle = tracecmd_dup(handle);
-
-And have the threads use their own handle. And the handle should have
-its own indexes (like cpu_data and such).
-
-They could share data (with a ref count) and then when all is done just
-free it normally. The ref counts will be decremented, and when they hit
-zero it will be free.
-
-Hmm, we may need a mutex to protect the counters or if there are atomic
-counters in userspace, then use them. Doing a quick search, there
-appears to be some atomic counters that we can use.
+Thanks for reporting! (even though it got lost in my INBOX :-( )
 
 -- Steve
