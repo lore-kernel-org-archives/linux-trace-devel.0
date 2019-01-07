@@ -1,74 +1,63 @@
 Return-Path: <linux-trace-devel-owner@vger.kernel.org>
-Received: from mail.kernel.org ([198.145.29.99]:41646 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:47240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbfADVbs (ORCPT
+        id S1730204AbfAGM7l (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Jan 2019 16:31:48 -0500
-Date: Fri, 4 Jan 2019 16:31:45 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Yordan Karadzhov <ykaradzhov@vmware.com>
-Cc: "linux-trace-devel@vger.kernel.org"
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] kernel-shark-qt: Cosmetic modifications in
- KsQuickContextMenu
-Message-ID: <20190104163145.1cf4240f@gandalf.local.home>
-In-Reply-To: <20190104195726.24264-2-ykaradzhov@vmware.com>
-References: <20190104195726.24264-1-ykaradzhov@vmware.com>
-        <20190104195726.24264-2-ykaradzhov@vmware.com>
+        Mon, 7 Jan 2019 07:59:41 -0500
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 4.19 149/170] tools lib traceevent: Fix processing of dereferenced args in bprintk events
+Date: Mon,  7 Jan 2019 13:32:56 +0100
+Message-Id: <20190107104510.552687119@linuxfoundation.org>
+In-Reply-To: <20190107104452.953560660@linuxfoundation.org>
+References: <20190107104452.953560660@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Fri, 4 Jan 2019 19:57:52 +0000
-Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
+4.19-stable review patch.  If anyone has any objections, please let me know.
 
-> This patch does the following minor modifications in
+------------------
 
-FYI, it is looked down to say "This patch" or "This commit" as people
-know what it is. I've seen maintainers get really annoyed by it. I
-don't care as much, but I'd like to keep the same requirements as
-upstream Linux kernel.
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
+commit f024cf085c423bac7512479f45c34ee9a24af7ce upstream.
 
-> KsQuickContextMenu:
-> 1. Removes the "Apply to list/graph" check-boxes.
-> 2. Swaps the position of the Show / Hide actions
-> 3. Adds "clear all filters" action.
+In the case that a bprintk event has a dereferenced pointer that is
+stored as a string, and there's more values to process (more args), the
+arg was not updated to point to the next arg after processing the
+dereferenced pointer, and it screwed up what was to be displayed.
 
-These should each be a separate patch (one patch that does one thing).
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: linux-trace-devel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Fixes: 37db96bb49629 ("tools lib traceevent: Handle new pointer processing of bprint strings")
+Link: http://lkml.kernel.org/r/20181210134522.3f71e2ca@gandalf.local.home
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-> 
-> The code that adds the check-boxes is commented out, because we may
-> change our opinion in the future.
+---
+ tools/lib/traceevent/event-parse.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Again, lets refrain from commenting out code, and just delete it. git
-history will archive it for us ;-)
-
--- Steve
-
-> 
-> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
-> ---
->  kernel-shark-qt/src/KsQuickContextMenu.cpp | 94 ++++++++++++----------
->  kernel-shark-qt/src/KsQuickContextMenu.hpp |  4 +-
->  2 files changed, 54 insertions(+), 44 deletions(-)
-> 
-> diff --git a/kernel-shark-qt/src/KsQuickContextMenu.cpp b/kernel-shark-qt/src/KsQuickContextMenu.cpp
-> index 6c9c9ef..3d190f3 100644
-> --- a/kernel-shark-qt/src/KsQuickContextMenu.cpp
-> +++ b/kernel-shark-qt/src/KsQuickContextMenu.cpp
-> @@ -62,7 +62,7 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data, size_t row,
->    _addTaskPlotAction(this),
->    _removeCPUPlotAction(this),
->    _removeTaskPlotAction(this),
-> -  _deselectAction(this)
-> +  _clearAllFilters(this)
->  {
->  	typedef void (KsQuickContextMenu::*mfp)();
->  	QString taskName, parentName, descr;
-> @@ -87,37 +87,45 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data, size_t row,
->  
->  	parentName = parent->metaObject()->className();
->  
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -4968,6 +4968,7 @@ static void pretty_print(struct trace_se
+ 
+ 				if (arg->type == PRINT_BSTRING) {
+ 					trace_seq_puts(s, arg->string.string);
++					arg = arg->next;
+ 					break;
+ 				}
+ 
