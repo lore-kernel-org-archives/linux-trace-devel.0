@@ -1,132 +1,156 @@
 Return-Path: <linux-trace-devel-owner@vger.kernel.org>
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:35611 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730250AbfAINKB (ORCPT
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:46427 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730249AbfAINKC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Jan 2019 08:10:01 -0500
-Received: by mail-wr1-f65.google.com with SMTP id 96so7627234wrb.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Jan 2019 05:10:00 -0800 (PST)
+        Wed, 9 Jan 2019 08:10:02 -0500
+Received: by mail-wr1-f68.google.com with SMTP id l9so7566042wrt.13
+        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Jan 2019 05:10:01 -0800 (PST)
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 1/6] kernel-shark-qt: Rearrange the "Filter" top menu
-Date: Wed,  9 Jan 2019 15:09:40 +0200
-Message-Id: <20190109130945.28519-2-ykaradzhov@vmware.com>
+Subject: [PATCH v2 2/6] kernel-shark-qt: Cosmetic modifications in KsQuickContextMenu
+Date: Wed,  9 Jan 2019 15:09:41 +0200
+Message-Id: <20190109130945.28519-3-ykaradzhov@vmware.com>
 In-Reply-To: <20190109130945.28519-1-ykaradzhov@vmware.com>
 References: <20190109130945.28519-1-ykaradzhov@vmware.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-Now the "Filter" top menu contains only "Show Task" and "Show CPU"
-menu actions ("Hide" versions are removed).
+The following minor modifications in KsQuickContextMenu are introduced:
+
+1. Removes the "Apply to list/graph" check-boxes.
+2. Swaps the position of the Show / Hide actions
+3. Adds "clear all filters" action.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark-qt/src/KsMainWindow.cpp | 46 ++++++++++++++++++++++------
- kernel-shark-qt/src/KsMainWindow.hpp |  6 ++--
- 2 files changed, 40 insertions(+), 12 deletions(-)
+ kernel-shark-qt/src/KsQuickContextMenu.cpp | 63 +++++++---------------
+ kernel-shark-qt/src/KsQuickContextMenu.hpp |  4 +-
+ 2 files changed, 23 insertions(+), 44 deletions(-)
 
-diff --git a/kernel-shark-qt/src/KsMainWindow.cpp b/kernel-shark-qt/src/KsMainWindow.cpp
-index a375126..8bb51a3 100644
---- a/kernel-shark-qt/src/KsMainWindow.cpp
-+++ b/kernel-shark-qt/src/KsMainWindow.cpp
-@@ -53,8 +53,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
-   _listFilterSyncCBox(nullptr),
-   _showEventsAction("Show events", this),
-   _showTasksAction("Show tasks", this),
--  _hideTasksAction("Hide tasks", this),
--  _hideCPUsAction("Hide CPUs", this),
-+  _showCPUsAction("Show CPUs", this),
-   _advanceFilterAction("Advance Filtering", this),
-   _clearAllFilters("Clear all filters", this),
-   _cpuSelectAction("CPUs", this),
-@@ -205,11 +204,8 @@ void KsMainWindow::_createActions()
- 	connect(&_showTasksAction,	&QAction::triggered,
- 		this,			&KsMainWindow::_showTasks);
- 
--	connect(&_hideTasksAction,	&QAction::triggered,
--		this,			&KsMainWindow::_hideTasks);
--
--	connect(&_hideCPUsAction,	&QAction::triggered,
--		this,			&KsMainWindow::_hideCPUs);
-+	connect(&_showCPUsAction,	&QAction::triggered,
-+		this,			&KsMainWindow::_showCPUs);
- 
- 	connect(&_advanceFilterAction,	&QAction::triggered,
- 		this,			&KsMainWindow::_advancedFiltering);
-@@ -322,8 +318,7 @@ void KsMainWindow::_createMenus()
- 
- 	filter->addAction(&_showEventsAction);
- 	filter->addAction(&_showTasksAction);
--	filter->addAction(&_hideTasksAction);
--	filter->addAction(&_hideCPUsAction);
-+	filter->addAction(&_showCPUsAction);
- 	filter->addAction(&_advanceFilterAction);
- 	filter->addAction(&_clearAllFilters);
- 
-@@ -621,6 +616,39 @@ void KsMainWindow::_hideTasks()
- 	dialog->show();
- }
- 
-+void KsMainWindow::_showCPUs()
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+	KsCheckBoxWidget *cpu_cbd;
-+	KsCheckBoxDialog *dialog;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return;
-+
-+	cpu_cbd = new KsCPUCheckBoxWidget(_data.tep(), this);
-+	dialog = new KsCheckBoxDialog(cpu_cbd, this);
-+
-+	if (!kshark_ctx->show_cpu_filter ||
-+	    !kshark_ctx->show_cpu_filter->count) {
-+		cpu_cbd->setDefault(true);
-+	} else {
-+		int nCPUs = tep_get_cpus(_data.tep());
-+		QVector<bool> v(nCPUs, false);
-+
-+		for (int i = 0; i < nCPUs; ++i) {
-+			if (tracecmd_filter_id_find(kshark_ctx->show_cpu_filter, i))
-+				v[i] = true;
-+		}
-+
-+		cpu_cbd->set(v);
-+	}
-+
-+	connect(dialog,		&KsCheckBoxDialog::apply,
-+		&_data,		&KsDataStore::applyPosCPUFilter);
-+
-+	dialog->show();
-+}
-+
- void KsMainWindow::_hideCPUs()
+diff --git a/kernel-shark-qt/src/KsQuickContextMenu.cpp b/kernel-shark-qt/src/KsQuickContextMenu.cpp
+index 6c9c9ef..728ecbd 100644
+--- a/kernel-shark-qt/src/KsQuickContextMenu.cpp
++++ b/kernel-shark-qt/src/KsQuickContextMenu.cpp
+@@ -62,7 +62,7 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data, size_t row,
+   _addTaskPlotAction(this),
+   _removeCPUPlotAction(this),
+   _removeTaskPlotAction(this),
+-  _deselectAction(this)
++  _clearAllFilters(this)
  {
- 	kshark_context *kshark_ctx(nullptr);
-diff --git a/kernel-shark-qt/src/KsMainWindow.hpp b/kernel-shark-qt/src/KsMainWindow.hpp
-index 301acc9..44f7dd7 100644
---- a/kernel-shark-qt/src/KsMainWindow.hpp
-+++ b/kernel-shark-qt/src/KsMainWindow.hpp
-@@ -118,9 +118,7 @@ private:
+ 	typedef void (KsQuickContextMenu::*mfp)();
+ 	QString taskName, parentName, descr;
+@@ -87,37 +87,14 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data, size_t row,
  
- 	QAction		_showTasksAction;
+ 	parentName = parent->metaObject()->className();
  
--	QAction		_hideTasksAction;
+-	addSection("Pointer menu");
++	addSection("Pointer filter menu");
+ 
+-	if (parentName == "KsTraceViewer") {
+-		_graphSyncCBox =
+-			KsUtils::addCheckBoxToMenu(this, "Apply filters to Graph");
 -
--	QAction		_hideCPUsAction;
-+	QAction		_showCPUsAction;
+-		connect(_graphSyncCBox,	&QCheckBox::stateChanged,
+-					&KsUtils::graphFilterSync);
+-
+-		/*
+-		 * By defauls the filters will be append to the List (Table)
+-		 * only.
+-		 */
+-		KsUtils::listFilterSync(true);
+-		KsUtils::graphFilterSync(false);
+-		_graphSyncCBox->setChecked(false);
+-	}
+-
+-	if (parentName == "KsTraceGraph" &&
+-	    (graphs = dynamic_cast<KsTraceGraph *>(parent))) {
+-		_listSyncCBox =
+-			KsUtils::addCheckBoxToMenu(this, "Apply filters to List");
+-
+-		connect(_listSyncCBox,	&QCheckBox::stateChanged,
+-					&KsUtils::listFilterSync);
+-
+-		/* By defauls the filters will be append to the Graph only. */
+-		KsUtils::graphFilterSync(true);
+-		KsUtils::listFilterSync(false);
+-		_listSyncCBox->setChecked(false);
+-	}
++	descr = "Show task [";
++	descr += taskName;
++	descr += "-";
++	descr += QString("%1").arg(pid);
++	descr += "] only";
++	lamAddAction(&_showTaskAction, &KsQuickContextMenu::_showTask);
  
- 	QAction		_advanceFilterAction;
+ 	descr = "Hide task [";
+ 	descr += taskName;
+@@ -126,30 +103,30 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data, size_t row,
+ 	descr += "]";
+ 	lamAddAction(&_hideTaskAction, &KsQuickContextMenu::_hideTask);
  
-@@ -173,6 +171,8 @@ private:
+-	descr = "Show task [";
+-	descr += taskName;
+-	descr += "-";
+-	descr += QString("%1").arg(pid);
++	descr = "Show event [";
++	descr += kshark_get_event_name_easy(_data->rows()[_row]);
+ 	descr += "] only";
+-	lamAddAction(&_showTaskAction, &KsQuickContextMenu::_showTask);
++	lamAddAction(&_showEventAction, &KsQuickContextMenu::_showEvent);
  
- 	void _hideTasks();
+ 	descr = "Hide event [";
+ 	descr += kshark_get_event_name_easy(_data->rows()[_row]);
+ 	descr += "]";
+ 	lamAddAction(&_hideEventAction, &KsQuickContextMenu::_hideEvent);
  
-+	void _showCPUs();
+-	descr = "Show event [";
+-	descr += kshark_get_event_name_easy(_data->rows()[_row]);
+-	descr += "] only";
+-	lamAddAction(&_showEventAction, &KsQuickContextMenu::_showEvent);
++	if (parentName == "KsTraceViewer") {
++		descr = QString("Show CPU [%1] only").arg(cpu);
++		lamAddAction(&_showCPUAction, &KsQuickContextMenu::_showCPU);
++	}
+ 
+ 	descr = QString("Hide CPU [%1]").arg(_data->rows()[_row]->cpu);
+ 	lamAddAction(&_hideCPUAction, &KsQuickContextMenu::_hideCPU);
+ 
+-	if (parentName == "KsTraceViewer") {
+-		descr = QString("Show CPU [%1] only").arg(cpu);
+-		lamAddAction(&_showCPUAction, &KsQuickContextMenu::_showCPU);
++	descr = "Clear all filters";
++	lamAddAction(&_clearAllFilters, &KsQuickContextMenu::_clearFilters);
+ 
++	addSection("Pointer plot menu");
 +
- 	void _hideCPUs();
++	if (parentName == "KsTraceViewer") {
+ 		descr = "Add [";
+ 		descr += taskName;
+ 		descr += "-";
+diff --git a/kernel-shark-qt/src/KsQuickContextMenu.hpp b/kernel-shark-qt/src/KsQuickContextMenu.hpp
+index f5a2a78..df8a65b 100644
+--- a/kernel-shark-qt/src/KsQuickContextMenu.hpp
++++ b/kernel-shark-qt/src/KsQuickContextMenu.hpp
+@@ -85,6 +85,8 @@ private:
  
- 	void _advancedFiltering();
+ 	QVector<int> _getFilterVector(tracecmd_filter_id *filter, int newId);
+ 
++	void _clearFilters() {_data->clearAllFilters();}
++
+ 	KsDataStore	*_data;
+ 
+ 	size_t		_row;
+@@ -105,7 +107,7 @@ private:
+ 
+ 	QAction _removeTaskPlotAction;
+ 
+-	QAction _deselectAction;
++	QAction _clearAllFilters;
+ };
+ 
+ /**
 -- 
 2.17.1
