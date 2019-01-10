@@ -1,58 +1,71 @@
 Return-Path: <linux-trace-devel-owner@vger.kernel.org>
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41772 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728919AbfAJNob (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:45466 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729042AbfAJNoc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Jan 2019 08:44:31 -0500
-Received: by mail-wr1-f68.google.com with SMTP id x10so11399579wrs.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jan 2019 05:44:29 -0800 (PST)
+        Thu, 10 Jan 2019 08:44:32 -0500
+Received: by mail-wr1-f67.google.com with SMTP id t6so11379522wrr.12
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Jan 2019 05:44:30 -0800 (PST)
 From: Yordan Karadzhov <ykaradzhov@vmware.com>
 To: rostedt@goodmis.org
 Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/5] kernel-shark-qt: Remove _deselectAction from KsQuickContextMenu
-Date: Thu, 10 Jan 2019 15:44:15 +0200
-Message-Id: <20190110134419.20247-2-ykaradzhov@vmware.com>
+Subject: [PATCH 2/5] kernel-shark-qt: Remove the "Apply to" checkboxes from KsQuickContextMenu
+Date: Thu, 10 Jan 2019 15:44:16 +0200
+Message-Id: <20190110134419.20247-3-ykaradzhov@vmware.com>
 In-Reply-To: <20190110134419.20247-1-ykaradzhov@vmware.com>
 References: <20190110134419.20247-1-ykaradzhov@vmware.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-The action used to deselect the active marker gets inherited from
-KsQuickMarkerMenu. This makes the declaration of an identical data
-member in class KsQuickContextMenu ambiguous.
+"Apply to list/graph" checkboxes are available in the "Filter" top menu.
+Having the same checkboxes in the Context menu is a potential source of
+confusion for the user.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark-qt/src/KsQuickContextMenu.cpp | 3 +--
- kernel-shark-qt/src/KsQuickContextMenu.hpp | 2 --
- 2 files changed, 1 insertion(+), 4 deletions(-)
+ kernel-shark-qt/src/KsQuickContextMenu.cpp | 30 ----------------------
+ 1 file changed, 30 deletions(-)
 
 diff --git a/kernel-shark-qt/src/KsQuickContextMenu.cpp b/kernel-shark-qt/src/KsQuickContextMenu.cpp
-index 6c9c9ef..b41adb9 100644
+index b41adb9..4f922a2 100644
 --- a/kernel-shark-qt/src/KsQuickContextMenu.cpp
 +++ b/kernel-shark-qt/src/KsQuickContextMenu.cpp
-@@ -61,8 +61,7 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data, size_t row,
-   _addCPUPlotAction(this),
-   _addTaskPlotAction(this),
-   _removeCPUPlotAction(this),
--  _removeTaskPlotAction(this),
--  _deselectAction(this)
-+  _removeTaskPlotAction(this)
- {
- 	typedef void (KsQuickContextMenu::*mfp)();
- 	QString taskName, parentName, descr;
-diff --git a/kernel-shark-qt/src/KsQuickContextMenu.hpp b/kernel-shark-qt/src/KsQuickContextMenu.hpp
-index f5a2a78..670d010 100644
---- a/kernel-shark-qt/src/KsQuickContextMenu.hpp
-+++ b/kernel-shark-qt/src/KsQuickContextMenu.hpp
-@@ -104,8 +104,6 @@ private:
- 	QAction _removeCPUPlotAction;
+@@ -88,36 +88,6 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data, size_t row,
  
- 	QAction _removeTaskPlotAction;
+ 	addSection("Pointer menu");
+ 
+-	if (parentName == "KsTraceViewer") {
+-		_graphSyncCBox =
+-			KsUtils::addCheckBoxToMenu(this, "Apply filters to Graph");
 -
--	QAction _deselectAction;
- };
- 
- /**
+-		connect(_graphSyncCBox,	&QCheckBox::stateChanged,
+-					&KsUtils::graphFilterSync);
+-
+-		/*
+-		 * By defauls the filters will be append to the List (Table)
+-		 * only.
+-		 */
+-		KsUtils::listFilterSync(true);
+-		KsUtils::graphFilterSync(false);
+-		_graphSyncCBox->setChecked(false);
+-	}
+-
+-	if (parentName == "KsTraceGraph" &&
+-	    (graphs = dynamic_cast<KsTraceGraph *>(parent))) {
+-		_listSyncCBox =
+-			KsUtils::addCheckBoxToMenu(this, "Apply filters to List");
+-
+-		connect(_listSyncCBox,	&QCheckBox::stateChanged,
+-					&KsUtils::listFilterSync);
+-
+-		/* By defauls the filters will be append to the Graph only. */
+-		KsUtils::graphFilterSync(true);
+-		KsUtils::listFilterSync(false);
+-		_listSyncCBox->setChecked(false);
+-	}
+-
+ 	descr = "Hide task [";
+ 	descr += taskName;
+ 	descr += "-";
 -- 
 2.17.1
