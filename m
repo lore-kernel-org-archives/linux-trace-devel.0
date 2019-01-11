@@ -1,123 +1,102 @@
 Return-Path: <linux-trace-devel-owner@vger.kernel.org>
-Received: from mail.kernel.org ([198.145.29.99]:51904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729265AbfAJVsy (ORCPT
+Received: from mail-eopbgr680061.outbound.protection.outlook.com ([40.107.68.61]:51648
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728637AbfAKJJY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Jan 2019 16:48:54 -0500
-Date: Thu, 10 Jan 2019 16:48:51 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
+        Fri, 11 Jan 2019 04:09:24 -0500
+From: Yordan Karadzhov <ykaradzhov@vmware.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+        =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?=
         <u.kleine-koenig@pengutronix.de>
-Cc: linux-trace-devel@vger.kernel.org,
-        Yordan Karadzhov <ykaradzhov@vmware.com>, kernel@pengutronix.de
+CC: "linux-trace-devel@vger.kernel.org"
+        <linux-trace-devel@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
 Subject: Re: [PATCH] Fix formatting of fixed-point numbers to not skip zeros
-Message-ID: <20190110164851.6eb411c8@gandalf.local.home>
-In-Reply-To: <20190110214346.8054-1-u.kleine-koenig@pengutronix.de>
+Date: Fri, 11 Jan 2019 09:09:19 +0000
+Message-ID: <900152eb-ce31-0918-7675-17729f0cfbe9@vmware.com>
 References: <20190110214346.8054-1-u.kleine-koenig@pengutronix.de>
+ <20190110164851.6eb411c8@gandalf.local.home>
+In-Reply-To: <20190110164851.6eb411c8@gandalf.local.home>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7FD15D2D0FF12947BA1E9E1E9C4AA9F4@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-On Thu, 10 Jan 2019 22:43:46 +0100
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
-
-> When a timestamp that represents 1.00001 is converted to (for example)
-> seconds and microseconds this results in seconds=1 and useconds=10. To
-> format that into a string requires the format %lu.%06lu to yield
-> "1.000010". Some code parts used %lu.%lu however which results in "1.10"
-> which is wrong.
-
-Thanks Uwe!
-
-Yordan, can you review this patch and give an Acked-by or Reviewed-by
-tag?
-
-Thanks!
-
--- Steve
-
-> 
-> This was noticed because I failed to find a significant location in a trace
-> provided by a colleague as the reported timestamp was wrong :-|
-> 
-> This change fixes all occurrences of this problem found by
-> $(grep -E '\.%[^0s]').
-> ---
->  kernel-shark-qt/src/KsTraceGraph.cpp | 10 +++++-----
->  python/event-viewer.py               |  4 ++--
->  python/tracecmd.py                   |  2 +-
->  3 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel-shark-qt/src/KsTraceGraph.cpp b/kernel-shark-qt/src/KsTraceGraph.cpp
-> index 462918f8a37a..844c79494e9b 100644
-> --- a/kernel-shark-qt/src/KsTraceGraph.cpp
-> +++ b/kernel-shark-qt/src/KsTraceGraph.cpp
-> @@ -279,7 +279,7 @@ void KsTraceGraph::_resetPointer(uint64_t ts, int cpu, int pid)
->  	QString pointer;
->  
->  	kshark_convert_nano(ts, &sec, &usec);
-> -	pointer.sprintf("%lu.%lu", sec, usec);
-> +	pointer.sprintf("%lu.%06lu", sec, usec);
->  	_labelP2.setText(pointer);
->  
->  	if (pid > 0 && cpu >= 0) {
-> @@ -315,7 +315,7 @@ void KsTraceGraph::_setPointerInfo(size_t i)
->  	uint64_t sec, usec;
->  
->  	kshark_convert_nano(e->ts, &sec, &usec);
-> -	pointer.sprintf("%lu.%lu", sec, usec);
-> +	pointer.sprintf("%lu.%06lu", sec, usec);
->  	_labelP2.setText(pointer);
->  
->  	comm.append("-");
-> @@ -601,17 +601,17 @@ void KsTraceGraph::_updateTimeLegends()
->  	QString tMin, tMid, tMax;
->  
->  	kshark_convert_nano(_glWindow.model()->histo()->min, &sec, &usec);
-> -	tMin.sprintf("%lu.%lu", sec, usec);
-> +	tMin.sprintf("%lu.%06lu", sec, usec);
->  	_labelXMin.setText(tMin);
->  
->  	tsMid = (_glWindow.model()->histo()->min +
->  		 _glWindow.model()->histo()->max) / 2;
->  	kshark_convert_nano(tsMid, &sec, &usec);
-> -	tMid.sprintf("%lu.%lu", sec, usec);
-> +	tMid.sprintf("%lu.%06lu", sec, usec);
->  	_labelXMid.setText(tMid);
->  
->  	kshark_convert_nano(_glWindow.model()->histo()->max, &sec, &usec);
-> -	tMax.sprintf("%lu.%lu", sec, usec);
-> +	tMax.sprintf("%lu.%06lu", sec, usec);
->  	_labelXMax.setText(tMax);
->  }
->  
-> diff --git a/python/event-viewer.py b/python/event-viewer.py
-> index 651761a083c9..3a082b81fc3d 100755
-> --- a/python/event-viewer.py
-> +++ b/python/event-viewer.py
-> @@ -203,8 +203,8 @@ class EventView(gtk.TreeView):
->              return False
->  
->          if data == "ts":
-> -            cell.set_property("markup", "%d.%d" % (ev.ts/1000000000,
-> -                                                   ev.ts%1000000000))
-> +            cell.set_property("markup", "%d.%09d" % (ev.ts/1000000000,
-> +                                                     ev.ts%1000000000))
->              data_func_cnt = data_func_cnt + 1
->              if app:
->                  app.inc_data_func()
-> diff --git a/python/tracecmd.py b/python/tracecmd.py
-> index 1267941aa388..f551a1489e25 100644
-> --- a/python/tracecmd.py
-> +++ b/python/tracecmd.py
-> @@ -62,7 +62,7 @@ class Event(object, DictMixin):
->          self._format = format
->  
->      def __str__(self):
-> -        return "%d.%d CPU%d %s: pid=%d comm=%s type=%d" % \
-> +        return "%d.%09d CPU%d %s: pid=%d comm=%s type=%d" % \
->                 (self.ts/1000000000, self.ts%1000000000, self.cpu, self.name,
->                  self.num_field("common_pid"), self.comm, self.type)
->  
+T24gMTAuMDEuMTkg0LMuIDIzOjQ4INGHLiwgU3RldmVuIFJvc3RlZHQgd3JvdGU6DQo+IE9uIFRo
+dSwgMTAgSmFuIDIwMTkgMjI6NDM6NDYgKzAxMDANCj4gVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xl
+aW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4gd3JvdGU6DQo+IA0KPj4gV2hlbiBhIHRpbWVzdGFt
+cCB0aGF0IHJlcHJlc2VudHMgMS4wMDAwMSBpcyBjb252ZXJ0ZWQgdG8gKGZvciBleGFtcGxlKQ0K
+Pj4gc2Vjb25kcyBhbmQgbWljcm9zZWNvbmRzIHRoaXMgcmVzdWx0cyBpbiBzZWNvbmRzPTEgYW5k
+IHVzZWNvbmRzPTEwLiBUbw0KPj4gZm9ybWF0IHRoYXQgaW50byBhIHN0cmluZyByZXF1aXJlcyB0
+aGUgZm9ybWF0ICVsdS4lMDZsdSB0byB5aWVsZA0KPj4gIjEuMDAwMDEwIi4gU29tZSBjb2RlIHBh
+cnRzIHVzZWQgJWx1LiVsdSBob3dldmVyIHdoaWNoIHJlc3VsdHMgaW4gIjEuMTAiDQo+PiB3aGlj
+aCBpcyB3cm9uZy4NCj4gDQo+IFRoYW5rcyBVd2UhDQo+IA0KPiBZb3JkYW4sIGNhbiB5b3UgcmV2
+aWV3IHRoaXMgcGF0Y2ggYW5kIGdpdmUgYW4gQWNrZWQtYnkgb3IgUmV2aWV3ZWQtYnkNCj4gdGFn
+Pw0KPiANCg0KVmVyeSB3ZWxsIHNwb3R0ZWQuDQoNClJldmlld2VkLWJ5OiBZb3JkYW4gS2FyYWR6
+aG92IDx5a2FyYWR6aG92QHZtd2FyZS5jb20+DQoNCkp1c3Qgb25lIG1pbm9yIHRoaW5nLCBwbGVh
+c2Ugc2lnbiB0aGUgcGF0Y2guDQoNClRoYW5rcyBhIGxvdCENCllvcmRhbg0KDQoNCj4gVGhhbmtz
+IQ0KPiANCj4gLS0gU3RldmUNCj4gDQo+Pg0KPj4gVGhpcyB3YXMgbm90aWNlZCBiZWNhdXNlIEkg
+ZmFpbGVkIHRvIGZpbmQgYSBzaWduaWZpY2FudCBsb2NhdGlvbiBpbiBhIHRyYWNlDQo+PiBwcm92
+aWRlZCBieSBhIGNvbGxlYWd1ZSBhcyB0aGUgcmVwb3J0ZWQgdGltZXN0YW1wIHdhcyB3cm9uZyA6
+LXwNCj4+DQo+PiBUaGlzIGNoYW5nZSBmaXhlcyBhbGwgb2NjdXJyZW5jZXMgb2YgdGhpcyBwcm9i
+bGVtIGZvdW5kIGJ5DQo+PiAkKGdyZXAgLUUgJ1wuJVteMHNdJykuDQo+PiAtLS0NCj4+ICAga2Vy
+bmVsLXNoYXJrLXF0L3NyYy9Lc1RyYWNlR3JhcGguY3BwIHwgMTAgKysrKystLS0tLQ0KPj4gICBw
+eXRob24vZXZlbnQtdmlld2VyLnB5ICAgICAgICAgICAgICAgfCAgNCArKy0tDQo+PiAgIHB5dGhv
+bi90cmFjZWNtZC5weSAgICAgICAgICAgICAgICAgICB8ICAyICstDQo+PiAgIDMgZmlsZXMgY2hh
+bmdlZCwgOCBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1naXQg
+YS9rZXJuZWwtc2hhcmstcXQvc3JjL0tzVHJhY2VHcmFwaC5jcHAgYi9rZXJuZWwtc2hhcmstcXQv
+c3JjL0tzVHJhY2VHcmFwaC5jcHANCj4+IGluZGV4IDQ2MjkxOGY4YTM3YS4uODQ0Yzc5NDk0ZTli
+IDEwMDY0NA0KPj4gLS0tIGEva2VybmVsLXNoYXJrLXF0L3NyYy9Lc1RyYWNlR3JhcGguY3BwDQo+
+PiArKysgYi9rZXJuZWwtc2hhcmstcXQvc3JjL0tzVHJhY2VHcmFwaC5jcHANCj4+IEBAIC0yNzks
+NyArMjc5LDcgQEAgdm9pZCBLc1RyYWNlR3JhcGg6Ol9yZXNldFBvaW50ZXIodWludDY0X3QgdHMs
+IGludCBjcHUsIGludCBwaWQpDQo+PiAgIAlRU3RyaW5nIHBvaW50ZXI7DQo+PiAgIA0KPj4gICAJ
+a3NoYXJrX2NvbnZlcnRfbmFubyh0cywgJnNlYywgJnVzZWMpOw0KPj4gLQlwb2ludGVyLnNwcmlu
+dGYoIiVsdS4lbHUiLCBzZWMsIHVzZWMpOw0KPj4gKwlwb2ludGVyLnNwcmludGYoIiVsdS4lMDZs
+dSIsIHNlYywgdXNlYyk7DQo+PiAgIAlfbGFiZWxQMi5zZXRUZXh0KHBvaW50ZXIpOw0KPj4gICAN
+Cj4+ICAgCWlmIChwaWQgPiAwICYmIGNwdSA+PSAwKSB7DQo+PiBAQCAtMzE1LDcgKzMxNSw3IEBA
+IHZvaWQgS3NUcmFjZUdyYXBoOjpfc2V0UG9pbnRlckluZm8oc2l6ZV90IGkpDQo+PiAgIAl1aW50
+NjRfdCBzZWMsIHVzZWM7DQo+PiAgIA0KPj4gICAJa3NoYXJrX2NvbnZlcnRfbmFubyhlLT50cywg
+JnNlYywgJnVzZWMpOw0KPj4gLQlwb2ludGVyLnNwcmludGYoIiVsdS4lbHUiLCBzZWMsIHVzZWMp
+Ow0KPj4gKwlwb2ludGVyLnNwcmludGYoIiVsdS4lMDZsdSIsIHNlYywgdXNlYyk7DQo+PiAgIAlf
+bGFiZWxQMi5zZXRUZXh0KHBvaW50ZXIpOw0KPj4gICANCj4+ICAgCWNvbW0uYXBwZW5kKCItIik7
+DQo+PiBAQCAtNjAxLDE3ICs2MDEsMTcgQEAgdm9pZCBLc1RyYWNlR3JhcGg6Ol91cGRhdGVUaW1l
+TGVnZW5kcygpDQo+PiAgIAlRU3RyaW5nIHRNaW4sIHRNaWQsIHRNYXg7DQo+PiAgIA0KPj4gICAJ
+a3NoYXJrX2NvbnZlcnRfbmFubyhfZ2xXaW5kb3cubW9kZWwoKS0+aGlzdG8oKS0+bWluLCAmc2Vj
+LCAmdXNlYyk7DQo+PiAtCXRNaW4uc3ByaW50ZigiJWx1LiVsdSIsIHNlYywgdXNlYyk7DQo+PiAr
+CXRNaW4uc3ByaW50ZigiJWx1LiUwNmx1Iiwgc2VjLCB1c2VjKTsNCj4+ICAgCV9sYWJlbFhNaW4u
+c2V0VGV4dCh0TWluKTsNCj4+ICAgDQo+PiAgIAl0c01pZCA9IChfZ2xXaW5kb3cubW9kZWwoKS0+
+aGlzdG8oKS0+bWluICsNCj4+ICAgCQkgX2dsV2luZG93Lm1vZGVsKCktPmhpc3RvKCktPm1heCkg
+LyAyOw0KPj4gICAJa3NoYXJrX2NvbnZlcnRfbmFubyh0c01pZCwgJnNlYywgJnVzZWMpOw0KPj4g
+LQl0TWlkLnNwcmludGYoIiVsdS4lbHUiLCBzZWMsIHVzZWMpOw0KPj4gKwl0TWlkLnNwcmludGYo
+IiVsdS4lMDZsdSIsIHNlYywgdXNlYyk7DQo+PiAgIAlfbGFiZWxYTWlkLnNldFRleHQodE1pZCk7
+DQo+PiAgIA0KPj4gICAJa3NoYXJrX2NvbnZlcnRfbmFubyhfZ2xXaW5kb3cubW9kZWwoKS0+aGlz
+dG8oKS0+bWF4LCAmc2VjLCAmdXNlYyk7DQo+PiAtCXRNYXguc3ByaW50ZigiJWx1LiVsdSIsIHNl
+YywgdXNlYyk7DQo+PiArCXRNYXguc3ByaW50ZigiJWx1LiUwNmx1Iiwgc2VjLCB1c2VjKTsNCj4+
+ICAgCV9sYWJlbFhNYXguc2V0VGV4dCh0TWF4KTsNCj4+ICAgfQ0KPj4gICANCj4+IGRpZmYgLS1n
+aXQgYS9weXRob24vZXZlbnQtdmlld2VyLnB5IGIvcHl0aG9uL2V2ZW50LXZpZXdlci5weQ0KPj4g
+aW5kZXggNjUxNzYxYTA4M2M5Li4zYTA4MmI4MWZjM2QgMTAwNzU1DQo+PiAtLS0gYS9weXRob24v
+ZXZlbnQtdmlld2VyLnB5DQo+PiArKysgYi9weXRob24vZXZlbnQtdmlld2VyLnB5DQo+PiBAQCAt
+MjAzLDggKzIwMyw4IEBAIGNsYXNzIEV2ZW50VmlldyhndGsuVHJlZVZpZXcpOg0KPj4gICAgICAg
+ICAgICAgICByZXR1cm4gRmFsc2UNCj4+ICAgDQo+PiAgICAgICAgICAgaWYgZGF0YSA9PSAidHMi
+Og0KPj4gLSAgICAgICAgICAgIGNlbGwuc2V0X3Byb3BlcnR5KCJtYXJrdXAiLCAiJWQuJWQiICUg
+KGV2LnRzLzEwMDAwMDAwMDAsDQo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgZXYudHMlMTAwMDAwMDAwMCkpDQo+PiArICAgICAgICAgICAgY2Vs
+bC5zZXRfcHJvcGVydHkoIm1hcmt1cCIsICIlZC4lMDlkIiAlIChldi50cy8xMDAwMDAwMDAwLA0K
+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ZXYudHMlMTAwMDAwMDAwMCkpDQo+PiAgICAgICAgICAgICAgIGRhdGFfZnVuY19jbnQgPSBkYXRh
+X2Z1bmNfY250ICsgMQ0KPj4gICAgICAgICAgICAgICBpZiBhcHA6DQo+PiAgICAgICAgICAgICAg
+ICAgICBhcHAuaW5jX2RhdGFfZnVuYygpDQo+PiBkaWZmIC0tZ2l0IGEvcHl0aG9uL3RyYWNlY21k
+LnB5IGIvcHl0aG9uL3RyYWNlY21kLnB5DQo+PiBpbmRleCAxMjY3OTQxYWEzODguLmY1NTFhMTQ4
+OWUyNSAxMDA2NDQNCj4+IC0tLSBhL3B5dGhvbi90cmFjZWNtZC5weQ0KPj4gKysrIGIvcHl0aG9u
+L3RyYWNlY21kLnB5DQo+PiBAQCAtNjIsNyArNjIsNyBAQCBjbGFzcyBFdmVudChvYmplY3QsIERp
+Y3RNaXhpbik6DQo+PiAgICAgICAgICAgc2VsZi5fZm9ybWF0ID0gZm9ybWF0DQo+PiAgIA0KPj4g
+ICAgICAgZGVmIF9fc3RyX18oc2VsZik6DQo+PiAtICAgICAgICByZXR1cm4gIiVkLiVkIENQVSVk
+ICVzOiBwaWQ9JWQgY29tbT0lcyB0eXBlPSVkIiAlIFwNCj4+ICsgICAgICAgIHJldHVybiAiJWQu
+JTA5ZCBDUFUlZCAlczogcGlkPSVkIGNvbW09JXMgdHlwZT0lZCIgJSBcDQo+PiAgICAgICAgICAg
+ICAgICAgIChzZWxmLnRzLzEwMDAwMDAwMDAsIHNlbGYudHMlMTAwMDAwMDAwMCwgc2VsZi5jcHUs
+IHNlbGYubmFtZSwNCj4+ICAgICAgICAgICAgICAgICAgIHNlbGYubnVtX2ZpZWxkKCJjb21tb25f
+cGlkIiksIHNlbGYuY29tbSwgc2VsZi50eXBlKQ0KPj4gICANCj4gDQo=
