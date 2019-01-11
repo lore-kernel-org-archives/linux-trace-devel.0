@@ -1,102 +1,62 @@
 Return-Path: <linux-trace-devel-owner@vger.kernel.org>
-Received: from mail-eopbgr680061.outbound.protection.outlook.com ([40.107.68.61]:51648
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728637AbfAKJJY (ORCPT
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:53461 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbfAKJY0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Jan 2019 04:09:24 -0500
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
-To: Steven Rostedt <rostedt@goodmis.org>,
-        =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?=
+        Fri, 11 Jan 2019 04:24:26 -0500
+Date: Fri, 11 Jan 2019 10:24:20 +0100
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
         <u.kleine-koenig@pengutronix.de>
-CC: "linux-trace-devel@vger.kernel.org"
+To: Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+        "linux-trace-devel@vger.kernel.org"
         <linux-trace-devel@vger.kernel.org>,
         "kernel@pengutronix.de" <kernel@pengutronix.de>
 Subject: Re: [PATCH] Fix formatting of fixed-point numbers to not skip zeros
-Date: Fri, 11 Jan 2019 09:09:19 +0000
-Message-ID: <900152eb-ce31-0918-7675-17729f0cfbe9@vmware.com>
+Message-ID: <20190111092420.e24fxhyke2o5vnp3@pengutronix.de>
 References: <20190110214346.8054-1-u.kleine-koenig@pengutronix.de>
  <20190110164851.6eb411c8@gandalf.local.home>
-In-Reply-To: <20190110164851.6eb411c8@gandalf.local.home>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7FD15D2D0FF12947BA1E9E1E9C4AA9F4@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <900152eb-ce31-0918-7675-17729f0cfbe9@vmware.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <900152eb-ce31-0918-7675-17729f0cfbe9@vmware.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 List-ID: <linux-trace-devel.vger.kernel.org>
 
-T24gMTAuMDEuMTkg0LMuIDIzOjQ4INGHLiwgU3RldmVuIFJvc3RlZHQgd3JvdGU6DQo+IE9uIFRo
-dSwgMTAgSmFuIDIwMTkgMjI6NDM6NDYgKzAxMDANCj4gVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xl
-aW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4gd3JvdGU6DQo+IA0KPj4gV2hlbiBhIHRpbWVzdGFt
-cCB0aGF0IHJlcHJlc2VudHMgMS4wMDAwMSBpcyBjb252ZXJ0ZWQgdG8gKGZvciBleGFtcGxlKQ0K
-Pj4gc2Vjb25kcyBhbmQgbWljcm9zZWNvbmRzIHRoaXMgcmVzdWx0cyBpbiBzZWNvbmRzPTEgYW5k
-IHVzZWNvbmRzPTEwLiBUbw0KPj4gZm9ybWF0IHRoYXQgaW50byBhIHN0cmluZyByZXF1aXJlcyB0
-aGUgZm9ybWF0ICVsdS4lMDZsdSB0byB5aWVsZA0KPj4gIjEuMDAwMDEwIi4gU29tZSBjb2RlIHBh
-cnRzIHVzZWQgJWx1LiVsdSBob3dldmVyIHdoaWNoIHJlc3VsdHMgaW4gIjEuMTAiDQo+PiB3aGlj
-aCBpcyB3cm9uZy4NCj4gDQo+IFRoYW5rcyBVd2UhDQo+IA0KPiBZb3JkYW4sIGNhbiB5b3UgcmV2
-aWV3IHRoaXMgcGF0Y2ggYW5kIGdpdmUgYW4gQWNrZWQtYnkgb3IgUmV2aWV3ZWQtYnkNCj4gdGFn
-Pw0KPiANCg0KVmVyeSB3ZWxsIHNwb3R0ZWQuDQoNClJldmlld2VkLWJ5OiBZb3JkYW4gS2FyYWR6
-aG92IDx5a2FyYWR6aG92QHZtd2FyZS5jb20+DQoNCkp1c3Qgb25lIG1pbm9yIHRoaW5nLCBwbGVh
-c2Ugc2lnbiB0aGUgcGF0Y2guDQoNClRoYW5rcyBhIGxvdCENCllvcmRhbg0KDQoNCj4gVGhhbmtz
-IQ0KPiANCj4gLS0gU3RldmUNCj4gDQo+Pg0KPj4gVGhpcyB3YXMgbm90aWNlZCBiZWNhdXNlIEkg
-ZmFpbGVkIHRvIGZpbmQgYSBzaWduaWZpY2FudCBsb2NhdGlvbiBpbiBhIHRyYWNlDQo+PiBwcm92
-aWRlZCBieSBhIGNvbGxlYWd1ZSBhcyB0aGUgcmVwb3J0ZWQgdGltZXN0YW1wIHdhcyB3cm9uZyA6
-LXwNCj4+DQo+PiBUaGlzIGNoYW5nZSBmaXhlcyBhbGwgb2NjdXJyZW5jZXMgb2YgdGhpcyBwcm9i
-bGVtIGZvdW5kIGJ5DQo+PiAkKGdyZXAgLUUgJ1wuJVteMHNdJykuDQo+PiAtLS0NCj4+ICAga2Vy
-bmVsLXNoYXJrLXF0L3NyYy9Lc1RyYWNlR3JhcGguY3BwIHwgMTAgKysrKystLS0tLQ0KPj4gICBw
-eXRob24vZXZlbnQtdmlld2VyLnB5ICAgICAgICAgICAgICAgfCAgNCArKy0tDQo+PiAgIHB5dGhv
-bi90cmFjZWNtZC5weSAgICAgICAgICAgICAgICAgICB8ICAyICstDQo+PiAgIDMgZmlsZXMgY2hh
-bmdlZCwgOCBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1naXQg
-YS9rZXJuZWwtc2hhcmstcXQvc3JjL0tzVHJhY2VHcmFwaC5jcHAgYi9rZXJuZWwtc2hhcmstcXQv
-c3JjL0tzVHJhY2VHcmFwaC5jcHANCj4+IGluZGV4IDQ2MjkxOGY4YTM3YS4uODQ0Yzc5NDk0ZTli
-IDEwMDY0NA0KPj4gLS0tIGEva2VybmVsLXNoYXJrLXF0L3NyYy9Lc1RyYWNlR3JhcGguY3BwDQo+
-PiArKysgYi9rZXJuZWwtc2hhcmstcXQvc3JjL0tzVHJhY2VHcmFwaC5jcHANCj4+IEBAIC0yNzks
-NyArMjc5LDcgQEAgdm9pZCBLc1RyYWNlR3JhcGg6Ol9yZXNldFBvaW50ZXIodWludDY0X3QgdHMs
-IGludCBjcHUsIGludCBwaWQpDQo+PiAgIAlRU3RyaW5nIHBvaW50ZXI7DQo+PiAgIA0KPj4gICAJ
-a3NoYXJrX2NvbnZlcnRfbmFubyh0cywgJnNlYywgJnVzZWMpOw0KPj4gLQlwb2ludGVyLnNwcmlu
-dGYoIiVsdS4lbHUiLCBzZWMsIHVzZWMpOw0KPj4gKwlwb2ludGVyLnNwcmludGYoIiVsdS4lMDZs
-dSIsIHNlYywgdXNlYyk7DQo+PiAgIAlfbGFiZWxQMi5zZXRUZXh0KHBvaW50ZXIpOw0KPj4gICAN
-Cj4+ICAgCWlmIChwaWQgPiAwICYmIGNwdSA+PSAwKSB7DQo+PiBAQCAtMzE1LDcgKzMxNSw3IEBA
-IHZvaWQgS3NUcmFjZUdyYXBoOjpfc2V0UG9pbnRlckluZm8oc2l6ZV90IGkpDQo+PiAgIAl1aW50
-NjRfdCBzZWMsIHVzZWM7DQo+PiAgIA0KPj4gICAJa3NoYXJrX2NvbnZlcnRfbmFubyhlLT50cywg
-JnNlYywgJnVzZWMpOw0KPj4gLQlwb2ludGVyLnNwcmludGYoIiVsdS4lbHUiLCBzZWMsIHVzZWMp
-Ow0KPj4gKwlwb2ludGVyLnNwcmludGYoIiVsdS4lMDZsdSIsIHNlYywgdXNlYyk7DQo+PiAgIAlf
-bGFiZWxQMi5zZXRUZXh0KHBvaW50ZXIpOw0KPj4gICANCj4+ICAgCWNvbW0uYXBwZW5kKCItIik7
-DQo+PiBAQCAtNjAxLDE3ICs2MDEsMTcgQEAgdm9pZCBLc1RyYWNlR3JhcGg6Ol91cGRhdGVUaW1l
-TGVnZW5kcygpDQo+PiAgIAlRU3RyaW5nIHRNaW4sIHRNaWQsIHRNYXg7DQo+PiAgIA0KPj4gICAJ
-a3NoYXJrX2NvbnZlcnRfbmFubyhfZ2xXaW5kb3cubW9kZWwoKS0+aGlzdG8oKS0+bWluLCAmc2Vj
-LCAmdXNlYyk7DQo+PiAtCXRNaW4uc3ByaW50ZigiJWx1LiVsdSIsIHNlYywgdXNlYyk7DQo+PiAr
-CXRNaW4uc3ByaW50ZigiJWx1LiUwNmx1Iiwgc2VjLCB1c2VjKTsNCj4+ICAgCV9sYWJlbFhNaW4u
-c2V0VGV4dCh0TWluKTsNCj4+ICAgDQo+PiAgIAl0c01pZCA9IChfZ2xXaW5kb3cubW9kZWwoKS0+
-aGlzdG8oKS0+bWluICsNCj4+ICAgCQkgX2dsV2luZG93Lm1vZGVsKCktPmhpc3RvKCktPm1heCkg
-LyAyOw0KPj4gICAJa3NoYXJrX2NvbnZlcnRfbmFubyh0c01pZCwgJnNlYywgJnVzZWMpOw0KPj4g
-LQl0TWlkLnNwcmludGYoIiVsdS4lbHUiLCBzZWMsIHVzZWMpOw0KPj4gKwl0TWlkLnNwcmludGYo
-IiVsdS4lMDZsdSIsIHNlYywgdXNlYyk7DQo+PiAgIAlfbGFiZWxYTWlkLnNldFRleHQodE1pZCk7
-DQo+PiAgIA0KPj4gICAJa3NoYXJrX2NvbnZlcnRfbmFubyhfZ2xXaW5kb3cubW9kZWwoKS0+aGlz
-dG8oKS0+bWF4LCAmc2VjLCAmdXNlYyk7DQo+PiAtCXRNYXguc3ByaW50ZigiJWx1LiVsdSIsIHNl
-YywgdXNlYyk7DQo+PiArCXRNYXguc3ByaW50ZigiJWx1LiUwNmx1Iiwgc2VjLCB1c2VjKTsNCj4+
-ICAgCV9sYWJlbFhNYXguc2V0VGV4dCh0TWF4KTsNCj4+ICAgfQ0KPj4gICANCj4+IGRpZmYgLS1n
-aXQgYS9weXRob24vZXZlbnQtdmlld2VyLnB5IGIvcHl0aG9uL2V2ZW50LXZpZXdlci5weQ0KPj4g
-aW5kZXggNjUxNzYxYTA4M2M5Li4zYTA4MmI4MWZjM2QgMTAwNzU1DQo+PiAtLS0gYS9weXRob24v
-ZXZlbnQtdmlld2VyLnB5DQo+PiArKysgYi9weXRob24vZXZlbnQtdmlld2VyLnB5DQo+PiBAQCAt
-MjAzLDggKzIwMyw4IEBAIGNsYXNzIEV2ZW50VmlldyhndGsuVHJlZVZpZXcpOg0KPj4gICAgICAg
-ICAgICAgICByZXR1cm4gRmFsc2UNCj4+ICAgDQo+PiAgICAgICAgICAgaWYgZGF0YSA9PSAidHMi
-Og0KPj4gLSAgICAgICAgICAgIGNlbGwuc2V0X3Byb3BlcnR5KCJtYXJrdXAiLCAiJWQuJWQiICUg
-KGV2LnRzLzEwMDAwMDAwMDAsDQo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgZXYudHMlMTAwMDAwMDAwMCkpDQo+PiArICAgICAgICAgICAgY2Vs
-bC5zZXRfcHJvcGVydHkoIm1hcmt1cCIsICIlZC4lMDlkIiAlIChldi50cy8xMDAwMDAwMDAwLA0K
-Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ZXYudHMlMTAwMDAwMDAwMCkpDQo+PiAgICAgICAgICAgICAgIGRhdGFfZnVuY19jbnQgPSBkYXRh
-X2Z1bmNfY250ICsgMQ0KPj4gICAgICAgICAgICAgICBpZiBhcHA6DQo+PiAgICAgICAgICAgICAg
-ICAgICBhcHAuaW5jX2RhdGFfZnVuYygpDQo+PiBkaWZmIC0tZ2l0IGEvcHl0aG9uL3RyYWNlY21k
-LnB5IGIvcHl0aG9uL3RyYWNlY21kLnB5DQo+PiBpbmRleCAxMjY3OTQxYWEzODguLmY1NTFhMTQ4
-OWUyNSAxMDA2NDQNCj4+IC0tLSBhL3B5dGhvbi90cmFjZWNtZC5weQ0KPj4gKysrIGIvcHl0aG9u
-L3RyYWNlY21kLnB5DQo+PiBAQCAtNjIsNyArNjIsNyBAQCBjbGFzcyBFdmVudChvYmplY3QsIERp
-Y3RNaXhpbik6DQo+PiAgICAgICAgICAgc2VsZi5fZm9ybWF0ID0gZm9ybWF0DQo+PiAgIA0KPj4g
-ICAgICAgZGVmIF9fc3RyX18oc2VsZik6DQo+PiAtICAgICAgICByZXR1cm4gIiVkLiVkIENQVSVk
-ICVzOiBwaWQ9JWQgY29tbT0lcyB0eXBlPSVkIiAlIFwNCj4+ICsgICAgICAgIHJldHVybiAiJWQu
-JTA5ZCBDUFUlZCAlczogcGlkPSVkIGNvbW09JXMgdHlwZT0lZCIgJSBcDQo+PiAgICAgICAgICAg
-ICAgICAgIChzZWxmLnRzLzEwMDAwMDAwMDAsIHNlbGYudHMlMTAwMDAwMDAwMCwgc2VsZi5jcHUs
-IHNlbGYubmFtZSwNCj4+ICAgICAgICAgICAgICAgICAgIHNlbGYubnVtX2ZpZWxkKCJjb21tb25f
-cGlkIiksIHNlbGYuY29tbSwgc2VsZi50eXBlKQ0KPj4gICANCj4gDQo=
+Hello Yordan,
+
+On Fri, Jan 11, 2019 at 09:09:19AM +0000, Yordan Karadzhov wrote:
+> On 10.01.19 г. 23:48 ч., Steven Rostedt wrote:
+> > On Thu, 10 Jan 2019 22:43:46 +0100
+> > Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
+> > 
+> >> When a timestamp that represents 1.00001 is converted to (for example)
+> >> seconds and microseconds this results in seconds=1 and useconds=10. To
+> >> format that into a string requires the format %lu.%06lu to yield
+> >> "1.000010". Some code parts used %lu.%lu however which results in "1.10"
+> >> which is wrong.
+> > 
+> > Thanks Uwe!
+> > 
+> > Yordan, can you review this patch and give an Acked-by or Reviewed-by
+> > tag?
+> 
+> Very well spotted.
+> 
+> Reviewed-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+> 
+> Just one minor thing, please sign the patch.
+
+It was a conscious decision to not sign-off the patch as it isn't
+formalized for trace-cmd what a Signed-off-by-line would mean.
+
+So if you insist on this formalism, I suggest you formalize it first :-)
+
+Best regards
+Uwe
+
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
