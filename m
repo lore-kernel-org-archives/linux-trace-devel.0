@@ -1,115 +1,56 @@
-Return-Path: <linux-trace-devel-owner@vger.kernel.org>
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:39861 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730940AbfAKPFo (ORCPT
+Return-Path: <SRS0=jW1X=PT=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+	aws-us-west-2-korg-lkml-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EDAEC43387
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Jan 2019 22:12:13 +0000 (UTC)
+Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
+	by mail.kernel.org (Postfix) with ESMTP id 7908221783
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Jan 2019 22:12:13 +0000 (UTC)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S1726387AbfAKWMN (ORCPT
+        <rfc822;linux-trace-devel@archiver.kernel.org>);
+        Fri, 11 Jan 2019 17:12:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726116AbfAKWMN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Jan 2019 10:05:44 -0500
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
-        <u.kleine-koenig@pengutronix.de>
-To: linux-trace-devel@vger.kernel.org
-Cc: kernel@pengutronix.de, Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v2] Fix formatting of fixed-point numbers to not skip zeros
-Date: Fri, 11 Jan 2019 16:05:36 +0100
-Message-Id: <20190111150536.28204-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20190111092954.05966ae8@gandalf.local.home>
-References: <20190111092954.05966ae8@gandalf.local.home>
+        Fri, 11 Jan 2019 17:12:13 -0500
+Received: from gandalf.local.home (cpe-66-24-56-78.stny.res.rr.com [66.24.56.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08B2B2084C;
+        Fri, 11 Jan 2019 22:12:11 +0000 (UTC)
+Date:   Fri, 11 Jan 2019 17:12:10 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Yordan Karadzhov <y.karadz@gmail.com>,
+        Slavomir Kaslev <kaslevs@vmware.com>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Matt Helsley <mhelsley@vmware.com>
+Subject: Patchwork is live for linux-trace-devel!
+Message-ID: <20190111171210.13e83e4b@gandalf.local.home>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
+Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
+X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When a timestamp that represents 1.00001 is converted to (for example)
-seconds and microseconds this results in seconds=1 and useconds=10. To
-format that into a string requires the format %lu.%06lu to yield
-"1.000010". Some code parts used %lu.%lu however which results in "1.10"
-which is wrong.
+FYI, we now have patchwork working for linux-trace-devel, and it's
+also archived. Now I don't need to use my INBOX to figure out what I
+need to handle for trace-cmd and KernelShark.
 
-This was noticed because I failed to find a significant location in a trace
-provided by a colleague as the reported timestamp was wrong :-|
+ https://patchwork.kernel.org/project/linux-trace-devel/list/
 
-This change fixes all occurrences of this problem found by
-$(grep -E '\.%[^0s]').
+And the lists are archived here:
 
-Reviewed-by: Yordan Karadzhov <ykaradzhov@vmware.com>
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- kernel-shark-qt/src/KsTraceGraph.cpp | 10 +++++-----
- python/event-viewer.py               |  4 ++--
- python/tracecmd.py                   |  2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
+  https://lore.kernel.org/linux-trace-devel/
+  https://lore.kernel.org/linux-trace-users/
 
-diff --git a/kernel-shark-qt/src/KsTraceGraph.cpp b/kernel-shark-qt/src/KsTraceGraph.cpp
-index 462918f8a37a..844c79494e9b 100644
---- a/kernel-shark-qt/src/KsTraceGraph.cpp
-+++ b/kernel-shark-qt/src/KsTraceGraph.cpp
-@@ -279,7 +279,7 @@ void KsTraceGraph::_resetPointer(uint64_t ts, int cpu, int pid)
- 	QString pointer;
- 
- 	kshark_convert_nano(ts, &sec, &usec);
--	pointer.sprintf("%lu.%lu", sec, usec);
-+	pointer.sprintf("%lu.%06lu", sec, usec);
- 	_labelP2.setText(pointer);
- 
- 	if (pid > 0 && cpu >= 0) {
-@@ -315,7 +315,7 @@ void KsTraceGraph::_setPointerInfo(size_t i)
- 	uint64_t sec, usec;
- 
- 	kshark_convert_nano(e->ts, &sec, &usec);
--	pointer.sprintf("%lu.%lu", sec, usec);
-+	pointer.sprintf("%lu.%06lu", sec, usec);
- 	_labelP2.setText(pointer);
- 
- 	comm.append("-");
-@@ -601,17 +601,17 @@ void KsTraceGraph::_updateTimeLegends()
- 	QString tMin, tMid, tMax;
- 
- 	kshark_convert_nano(_glWindow.model()->histo()->min, &sec, &usec);
--	tMin.sprintf("%lu.%lu", sec, usec);
-+	tMin.sprintf("%lu.%06lu", sec, usec);
- 	_labelXMin.setText(tMin);
- 
- 	tsMid = (_glWindow.model()->histo()->min +
- 		 _glWindow.model()->histo()->max) / 2;
- 	kshark_convert_nano(tsMid, &sec, &usec);
--	tMid.sprintf("%lu.%lu", sec, usec);
-+	tMid.sprintf("%lu.%06lu", sec, usec);
- 	_labelXMid.setText(tMid);
- 
- 	kshark_convert_nano(_glWindow.model()->histo()->max, &sec, &usec);
--	tMax.sprintf("%lu.%lu", sec, usec);
-+	tMax.sprintf("%lu.%06lu", sec, usec);
- 	_labelXMax.setText(tMax);
- }
- 
-diff --git a/python/event-viewer.py b/python/event-viewer.py
-index 651761a083c9..3a082b81fc3d 100755
---- a/python/event-viewer.py
-+++ b/python/event-viewer.py
-@@ -203,8 +203,8 @@ class EventView(gtk.TreeView):
-             return False
- 
-         if data == "ts":
--            cell.set_property("markup", "%d.%d" % (ev.ts/1000000000,
--                                                   ev.ts%1000000000))
-+            cell.set_property("markup", "%d.%09d" % (ev.ts/1000000000,
-+                                                     ev.ts%1000000000))
-             data_func_cnt = data_func_cnt + 1
-             if app:
-                 app.inc_data_func()
-diff --git a/python/tracecmd.py b/python/tracecmd.py
-index 1267941aa388..f551a1489e25 100644
---- a/python/tracecmd.py
-+++ b/python/tracecmd.py
-@@ -62,7 +62,7 @@ class Event(object, DictMixin):
-         self._format = format
- 
-     def __str__(self):
--        return "%d.%d CPU%d %s: pid=%d comm=%s type=%d" % \
-+        return "%d.%09d CPU%d %s: pid=%d comm=%s type=%d" % \
-                (self.ts/1000000000, self.ts%1000000000, self.cpu, self.name,
-                 self.num_field("common_pid"), self.comm, self.type)
- 
--- 
-2.20.1
+-- Steve
