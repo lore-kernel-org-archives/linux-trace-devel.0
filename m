@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 966CAC43387
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6396C43612
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jan 2019 15:28:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 61B102087E
+	by mail.kernel.org (Postfix) with ESMTP id 8EAE320896
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 14 Jan 2019 15:28:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbfANP2M (ORCPT
+        id S1726696AbfANP2M (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 14 Jan 2019 10:28:12 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:45251 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726696AbfANP2L (ORCPT
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37783 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726688AbfANP2L (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 14 Jan 2019 10:28:11 -0500
-Received: by mail-wr1-f67.google.com with SMTP id t6so23276137wrr.12
+Received: by mail-wr1-f68.google.com with SMTP id s12so23350746wrt.4
         for <linux-trace-devel@vger.kernel.org>; Mon, 14 Jan 2019 07:28:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qAVEmCrwQ7LbzgWl1iLQa+qb+EmOa9tBt+vB6/lwOjI=;
-        b=j/yNeTuaHP+EY7n+kJOui+z1rhFLQZGqhcCNmJYLh1jq1dNkWu8l778Js2/+zKOgGw
-         H6MJcv4YjbYWNUkua+TGPKH8eKaL6ktVxk2egLk0ppSBxEq5gcc7UeP2aOYnumM+xsuz
-         7vyUQsF0hH07fDaCAG5mvql38+wqdM/3fRywfMbI1SUdz0LLFZmTo8ZoF8sbH8sWZMNr
-         ifbw2SRBkjnT/dTNx4hKIiRrEOL6tJXq6bcC1493wyrPATHqCp2FJbUg2Yff4PEQ3uCP
-         nVPdQQVIrV7tgy7pTpsR8Wu2eHnUdBWeIgwiuOk4G5vUwRQLjNkaV2EgiMXH2zeAepyI
-         f5HQ==
-X-Gm-Message-State: AJcUukeKOaD2Ed5uWAORgX9/ZyKcV5Kq9g4yV77sV1/r9A6QQTkhPpU1
-        UXCKlMl3m2FWiTS7Ft8PSMlZhCzyqHmU
-X-Google-Smtp-Source: ALg8bN7ledfxlwl/UICgJPlperXekKZSAlQn3OaMbB9TUbhpWFXi8ijY8caVxNC5AS6wsqT9AEOAvw==
-X-Received: by 2002:a5d:63c3:: with SMTP id c3mr24469693wrw.215.1547479689860;
-        Mon, 14 Jan 2019 07:28:09 -0800 (PST)
+        bh=9+GF+jrI4TNjak2yGXa8jMFomUvzyDNqUDFXxev7EiI=;
+        b=uR01HsB4BBoHH2f+ZKuJsMYC9wmIyE3m+GPQaNksjyLMQOc5OFyKCH58JFytDo5BRH
+         8Q1gMOXz6oOTPsLm7TiAs3k8HxGL+pmZPMfFMoTTxdQMpFtVahSXSQc/41Hup1E1zc82
+         tENwp47yDnXzRGoPvKUNpdM1j4ZJWv/j+I8FrXJrunBbSuQFxvCdtZnv3JaxuXQnlaQZ
+         c/0dnIuB3WlKUbhJ+hMBSXMvS83hbeIEiDwcUw2Kj1INkebfdHkIHPxDiksY/hGfyi/0
+         lZrRJ0EuN7gZYTYyuOqoEP8gxkbCXRcrtghosu0Wmx4l9FVk+BIGWMR2BxeRoeqIPyL2
+         1WyQ==
+X-Gm-Message-State: AJcUukcI1sYTFuTdEzqbp7agRCRwSUgSRAF0fo4Eze/tSIXttD+cTdfM
+        4qSF60fQItjSuW1rlR23WXHthd1JOiFg
+X-Google-Smtp-Source: ALg8bN6nm5DMaZ5Mz42RGRQ2A4JeF0MJ0OlP3SZq4tqKIxRNLHUwQsTgdQ4XNSlLX9Xe22kjFo/whA==
+X-Received: by 2002:adf:9205:: with SMTP id 5mr24787863wrj.189.1547479688823;
+        Mon, 14 Jan 2019 07:28:08 -0800 (PST)
 Received: from box.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id a132sm34784167wmh.5.2019.01.14.07.28.08
+        by smtp.gmail.com with ESMTPSA id a132sm34784167wmh.5.2019.01.14.07.28.07
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Jan 2019 07:28:09 -0800 (PST)
+        Mon, 14 Jan 2019 07:28:08 -0800 (PST)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     rostedt@goodmis.org, ykaradzhov@vmware.com, tstoyanov@vmware.com
-Subject: [PATCH v3 2/6] trace-cmd: Detect if vsock sockets are available
-Date:   Mon, 14 Jan 2019 17:27:56 +0200
-Message-Id: <20190114152800.31060-3-kaslevs@vmware.com>
+Subject: [PATCH v3 1/6] trace-cmd: Minor refactoring
+Date:   Mon, 14 Jan 2019 17:27:55 +0200
+Message-Id: <20190114152800.31060-2-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190114152800.31060-1-kaslevs@vmware.com>
 References: <20190114152800.31060-1-kaslevs@vmware.com>
@@ -58,35 +58,210 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Pass `struct common_record_context` in trace-record.c instead of explicitly
+passing necessary options through additional arguments.
 
-Detect and define VSOCK if vsock sockets are available on the system.
-This macro is used to disable VM remote tracing features on older kernels.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
- Makefile | 7 +++++++
- 1 file changed, 7 insertions(+)
+ tracecmd/trace-record.c | 91 +++++++++++++++++++++--------------------
+ 1 file changed, 46 insertions(+), 45 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 27d3683..abc4f0c 100644
---- a/Makefile
-+++ b/Makefile
-@@ -205,6 +205,13 @@ CFLAGS ?= -g -Wall
- CPPFLAGS ?=
- LDFLAGS ?=
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 01330ee..a8c3464 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -191,6 +191,36 @@ enum {
+ 	RESET_HIGH_PRIO		= 100000,
+ };
  
-+VSOCK_DEFINED := $(shell if (echo "\#include <linux/vm_sockets.h>" | $(CC) -E - >/dev/null 2>&1) ; then echo 1; else echo 0 ; fi)
++enum trace_cmd {
++	CMD_extract,
++	CMD_start,
++	CMD_stream,
++	CMD_profile,
++	CMD_record,
++	CMD_record_agent,
++};
 +
-+export VSOCK_DEFINED
-+ifeq ($(VSOCK_DEFINED), 1)
-+CFLAGS += -DVSOCK
-+endif
++struct common_record_context {
++	enum trace_cmd curr_cmd;
++	struct buffer_instance *instance;
++	const char *output;
++	char *date2ts;
++	char *max_graph_depth;
++	int data_flags;
 +
- export CFLAGS
- export INCLUDES
++	int record_all;
++	int total_disable;
++	int disable;
++	int events;
++	int global;
++	int filtered;
++	int date;
++	int manual;
++	int topt;
++	int do_child;
++	int run_command;
++};
++
+ static void add_reset_file(const char *file, const char *val, int prio)
+ {
+ 	struct reset_file *reset;
+@@ -2880,10 +2910,10 @@ again:
+ 	return msg_handle;
+ }
  
+-static void add_options(struct tracecmd_output *handle, char *date2ts, int flags);
++static void add_options(struct tracecmd_output *handle, struct common_record_context *ctx);
+ 
+ static struct tracecmd_msg_handle *
+-setup_connection(struct buffer_instance *instance, char *date2ts, int flags)
++setup_connection(struct buffer_instance *instance, struct common_record_context *ctx)
+ {
+ 	struct tracecmd_msg_handle *msg_handle;
+ 	struct tracecmd_output *network_handle;
+@@ -2893,7 +2923,7 @@ setup_connection(struct buffer_instance *instance, char *date2ts, int flags)
+ 	/* Now create the handle through this socket */
+ 	if (msg_handle->version == V3_PROTOCOL) {
+ 		network_handle = tracecmd_create_init_fd_msg(msg_handle, listed_events);
+-		add_options(network_handle, date2ts, flags);
++		add_options(network_handle, ctx);
+ 		tracecmd_write_cpus(network_handle, instance->cpu_count);
+ 		tracecmd_write_options(network_handle);
+ 		tracecmd_msg_finish_sending_data(msg_handle);
+@@ -2915,7 +2945,7 @@ static void finish_network(struct tracecmd_msg_handle *msg_handle)
+ 	free(host);
+ }
+ 
+-void start_threads(enum trace_type type, int global, char *date2ts, int flags)
++void start_threads(enum trace_type type, struct common_record_context *ctx)
+ {
+ 	struct buffer_instance *instance;
+ 	int *brass = NULL;
+@@ -2937,7 +2967,7 @@ void start_threads(enum trace_type type, int global, char *date2ts, int flags)
+ 		int x, pid;
+ 
+ 		if (host) {
+-			instance->msg_handle = setup_connection(instance, date2ts, flags);
++			instance->msg_handle = setup_connection(instance, ctx);
+ 			if (!instance->msg_handle)
+ 				die("Failed to make connection");
+ 		}
+@@ -2952,7 +2982,7 @@ void start_threads(enum trace_type type, int global, char *date2ts, int flags)
+ 								   brass[0],
+ 								   instance->cpu_count,
+ 								   hooks, handle_init,
+-								   global);
++								   ctx->global);
+ 				if (!pids[i].stream)
+ 					die("Creating stream for %d", i);
+ 			} else
+@@ -3091,19 +3121,19 @@ enum {
+ 	DATA_FL_OFFSET		= 2,
+ };
+ 
+-static void add_options(struct tracecmd_output *handle, char *date2ts, int flags)
++static void add_options(struct tracecmd_output *handle, struct common_record_context *ctx)
+ {
+ 	int type = 0;
+ 
+-	if (date2ts) {
+-		if (flags & DATA_FL_DATE)
++	if (ctx->date2ts) {
++		if (ctx->data_flags & DATA_FL_DATE)
+ 			type = TRACECMD_OPTION_DATE;
+-		else if (flags & DATA_FL_OFFSET)
++		else if (ctx->data_flags & DATA_FL_OFFSET)
+ 			type = TRACECMD_OPTION_OFFSET;
+ 	}
+ 
+ 	if (type)
+-		tracecmd_add_option(handle, type, strlen(date2ts)+1, date2ts);
++		tracecmd_add_option(handle, type, strlen(ctx->date2ts)+1, ctx->date2ts);
+ 
+ 	tracecmd_add_option(handle, TRACECMD_OPTION_TRACECLOCK, 0, NULL);
+ 	add_option_hooks(handle);
+@@ -3111,7 +3141,7 @@ static void add_options(struct tracecmd_output *handle, char *date2ts, int flags
+ 
+ }
+ 
+-static void record_data(char *date2ts, int flags)
++static void record_data(struct common_record_context *ctx)
+ {
+ 	struct tracecmd_option **buffer_options;
+ 	struct tracecmd_output *handle;
+@@ -3166,7 +3196,7 @@ static void record_data(char *date2ts, int flags)
+ 		if (!handle)
+ 			die("Error creating output file");
+ 
+-		add_options(handle, date2ts, flags);
++		add_options(handle, ctx);
+ 
+ 		/* Only record the top instance under TRACECMD_OPTION_CPUSTAT*/
+ 		if (!no_top_instance() && !top_instance.msg_handle) {
+@@ -4469,35 +4499,6 @@ void trace_reset(int argc, char **argv)
+ 	exit(0);
+ }
+ 
+-enum trace_cmd {
+-	CMD_extract,
+-	CMD_start,
+-	CMD_stream,
+-	CMD_profile,
+-	CMD_record
+-};
+-
+-struct common_record_context {
+-	enum trace_cmd curr_cmd;
+-	struct buffer_instance *instance;
+-	const char *output;
+-	char *date2ts;
+-	char *max_graph_depth;
+-	int data_flags;
+-
+-	int record_all;
+-	int total_disable;
+-	int disable;
+-	int events;
+-	int global;
+-	int filtered;
+-	int date;
+-	int manual;
+-	int topt;
+-	int do_child;
+-	int run_command;
+-};
+-
+ static void init_common_record_context(struct common_record_context *ctx,
+ 				       enum trace_cmd curr_cmd)
+ {
+@@ -4986,7 +4987,7 @@ static void record_trace(int argc, char **argv,
+ 	if (type & (TRACE_TYPE_RECORD | TRACE_TYPE_STREAM)) {
+ 		signal(SIGINT, finish);
+ 		if (!latency)
+-			start_threads(type, ctx->global, ctx->date2ts, ctx->data_flags);
++			start_threads(type, ctx);
+ 	} else {
+ 		update_task_filter();
+ 		tracecmd_enable_tracing();
+@@ -5017,7 +5018,7 @@ static void record_trace(int argc, char **argv,
+ 		tracecmd_disable_all_tracing(0);
+ 
+ 	if (IS_RECORD(ctx)) {
+-		record_data(ctx->date2ts, ctx->data_flags);
++		record_data(ctx);
+ 		delete_thread_data();
+ 	} else
+ 		print_stats();
+@@ -5097,7 +5098,7 @@ void trace_extract(int argc, char **argv)
+ 		ctx.date2ts = get_date_to_ts();
+ 	}
+ 
+-	record_data(ctx.date2ts, ctx.data_flags);
++	record_data(&ctx);
+ 	delete_thread_data();
+ 	destroy_stats();
+ 	finalize_record_trace(&ctx);
 -- 
 2.19.1
 
