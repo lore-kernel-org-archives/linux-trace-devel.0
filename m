@@ -2,86 +2,81 @@ Return-Path: <SRS0=27yZ=PX=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0501CC43387
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Jan 2019 10:20:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3370FC43387
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Jan 2019 13:09:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C3DC220656
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Jan 2019 10:20:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0FCBB20651
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Jan 2019 13:09:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbfAOKUZ (ORCPT
+        id S1729270AbfAONJe (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Jan 2019 05:20:25 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:33349 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728202AbfAOKUZ (ORCPT
+        Tue, 15 Jan 2019 08:09:34 -0500
+Received: from s3.sipsolutions.net ([144.76.43.62]:56086 "EHLO
+        sipsolutions.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729050AbfAONJe (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Jan 2019 05:20:25 -0500
-Received: by mail-wm1-f67.google.com with SMTP id r24so663256wmh.0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Jan 2019 02:20:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=nd8y511s+A/T4Y90+0rzK89MVPcmgwYh3Gn5/KfZXEU=;
-        b=iMgTcZKNfxOzXT6Tz/NPft9MjzxgtVLqOeA+PAxuG8CrXjSeuaRec8QnRqcVY7osJJ
-         mqqSu4ViXc7p15aNkiURouV2QpXa275FICNvFMcjbY9n93BEfKmMzq2xR3qyCM7FVqqo
-         67tJHJdGf2Wa2Kresk7SmohnafUCJGevegm1IhsxKt1yzrmne7XVQ9AW7vVKxj0xl4VJ
-         Ok1RAdYaqZo3dEKhqrgJv1Nm+wBMVXBfGJJrGr/K3A9ISTFvEmjYW6Yz2ezM/wmpnq3j
-         qvQKyhAIFLU8xmWkReXVpd6+DOrrCvbJ4YUCL1bQccGEMqKf86lzAJCV1PMPcR+ONRuy
-         LOiw==
-X-Gm-Message-State: AJcUukcheLsnvf7gR6mNik6iptviyYSj6wvPz5iqmfEmIKY7yMg05xAs
-        8zKydu20rTZu8Yk+MyqEn3xSUm08
-X-Google-Smtp-Source: ALg8bN6Z+JtIguqp19je/7mKCp7DeGzrpm01CijFfaKeDO6/ASI/TYzTjT/2GzX7qDlqvCUhPTdfBQ==
-X-Received: by 2002:a1c:7d54:: with SMTP id y81mr2705558wmc.106.1547547623167;
-        Tue, 15 Jan 2019 02:20:23 -0800 (PST)
-Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id t70sm51058516wmd.36.2019.01.15.02.20.22
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Jan 2019 02:20:22 -0800 (PST)
-From:   Yordan Karadzhov <ykaradzhov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org,
-        Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH] kernel-shark-qt: Handle the case when the range of the model is too small
-Date:   Tue, 15 Jan 2019 12:18:57 +0200
-Message-Id: <20190115101857.25857-1-ykaradzhov@vmware.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 15 Jan 2019 08:09:34 -0500
+Received: by sipsolutions.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92-RC4)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1gjOTE-0007Lj-2X; Tue, 15 Jan 2019 14:09:32 +0100
+Message-ID: <b8e933bd8fc5f6a1aac94beced2ee75b8729975b.camel@sipsolutions.net>
+Subject: Re: trace-cmd python
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Date:   Tue, 15 Jan 2019 14:09:30 +0100
+In-Reply-To: <20190109153650.0261951b@gandalf.local.home>
+References: <1524143246.3024.21.camel@sipsolutions.net>
+         <20190103224300.418e002b@vmware.local.home>
+         <20190109153650.0261951b@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-2.fc28) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The size of the bin must be equal or greater than 1, hence the range
-must be equal or greater than the number of bins. When this condition
-is not satisfied, the range has to be extended, instead of just leaving
-the model unset.
+On Wed, 2019-01-09 at 15:36 -0500, Steven Rostedt wrote:
+> On Thu, 3 Jan 2019 22:43:00 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> 
+> > I just checked, and this is still an issue today. I'll make sure that
+> > this gets fixed soon.
+> > 
+> > Thanks for reporting! (even though it got lost in my INBOX :-( )
+> > 
+> 
+> OK, I finally got around to looking at this. It was a bit of a pain to
+> figure out. It was caused by the shuffling of the files around, as that
+> was needed to do because trace-cmd was getting bigger. This caused the
+> python ctracecmd.so to lose linking with the proper libraries and
+> caused the undefined symbols.
+> 
+> I just fixed it and pushed it to the repo. Want to give it a try and
+> see if it works for you?
 
-Reported-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark-qt/src/libkshark-model.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Seems to work more or less.
 
-diff --git a/kernel-shark-qt/src/libkshark-model.c b/kernel-shark-qt/src/libkshark-model.c
-index 76e2940..2094795 100644
---- a/kernel-shark-qt/src/libkshark-model.c
-+++ b/kernel-shark-qt/src/libkshark-model.c
-@@ -102,8 +102,10 @@ static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
- 	struct kshark_entry *last;
- 
- 	/* The size of the bin must be >= 1, hence the range must be >= n. */
--	if (n == 0 || range < n)
--		return;
-+	if (n == 0 || range < n) {
-+		range = n;
-+		max = min + n;
-+	}
- 
- 	/*
- 	 * If the number of bins changes, allocate memory for the descriptor of
--- 
-2.17.1
+Not sure how I managed to install it into a custom subdirectory of my
+$HOME before, and make it load plugins - I can't seem to figure out the
+right combination of prefix= and DESTDIR= anymore.
+
+If I symlink it to a place where trace-cmd actually looks for it then I
+get errors in python saying pevent_record_data_get() is not defined, but
+could be that I'm not importing something right ...
+
+What's a good way to install it into a custom directory without
+affecting the whole machine?
+
+johannes
 
