@@ -2,223 +2,88 @@ Return-Path: <SRS0=fS1d=PY=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B61F1C43387
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Jan 2019 17:45:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2B9AC43387
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Jan 2019 19:18:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 809AE206C2
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Jan 2019 17:45:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9512020866
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Jan 2019 19:18:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbfAPRpg (ORCPT
+        id S1730796AbfAPTSm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 16 Jan 2019 12:45:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726821AbfAPRpg (ORCPT
+        Wed, 16 Jan 2019 14:18:42 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43212 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730169AbfAPTSm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 16 Jan 2019 12:45:36 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B8E720657;
-        Wed, 16 Jan 2019 17:45:34 +0000 (UTC)
-Date:   Wed, 16 Jan 2019 12:45:33 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v3 10/46] tools/lib/traceevent: Man page for
- tep_is_latency_format() and tep_set_latency_format()
-Message-ID: <20190116124533.4ed3f389@gandalf.local.home>
-In-Reply-To: <20181127154153.11315-11-tstoyanov@vmware.com>
-References: <20181127154153.11315-1-tstoyanov@vmware.com>
-        <20181127154153.11315-11-tstoyanov@vmware.com>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 16 Jan 2019 14:18:42 -0500
+Received: by mail-wr1-f65.google.com with SMTP id r10so8236701wrs.10
+        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Jan 2019 11:18:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pHy7RdBh6KmpLnrgx7ilUPigbQ8FsprILr4FZVLcDdY=;
+        b=Q7RQ3gHJJd7URS5Pt9xyBXmvKcLmrS7a4J+Vyy3X4MTY5x5uzFCNtFJd0ShEI9ziWM
+         Y4VBcuhhs0FBBFfNJBOqA7RvS2u9fvq2cfZdiYtsu+DZCMyiAyd+b/okL6Vi2rTBKrX3
+         soZYohOpCCc0nEWegIJnuoE28nT+ybNWNJOYfefvjzE4WqY1Wr5E98u08eibOognmeZz
+         KbRFWEDOaKLIO5XcaoDCGAxImj3rz872DD1aOj8+J3BAU7HgBzsFF4fxDmR+TRRAt/Yq
+         uRldAAc514YDd9GDugpkPhayRJZvnVVJJbPUWclfVScPVdnBpQHYOI00Pwza3ET8wfI4
+         bNBQ==
+X-Gm-Message-State: AJcUukeaqGONNWLnp10RVdBKtV7zNgutXVF6y+2CNecyODRNkd/nYqDg
+        4I3rqKUcTbugMtAvTlxtEs7po9RS
+X-Google-Smtp-Source: ALg8bN77/l5hRjQXriQSLuujyXHyRQj7EI0c41k28cHJ6MNRXJaoJyxS3oafe06ijI8doWxBVFZjpg==
+X-Received: by 2002:adf:bb8d:: with SMTP id q13mr8697636wrg.183.1547666320492;
+        Wed, 16 Jan 2019 11:18:40 -0800 (PST)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id p6sm98393345wrx.50.2019.01.16.11.18.39
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Jan 2019 11:18:39 -0800 (PST)
+From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH 0/7] trace-cmd [POC]: Timestamps sync using PTP-like algorithm, relying on vsock events.
+Date:   Wed, 16 Jan 2019 21:18:31 +0200
+Message-Id: <20190116191838.32127-1-tstoyanov@vmware.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 27 Nov 2018 15:42:19 +0000
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+This patch series is a POC for timestamps sync between guest and host machines. 
+It implelents PTP-like algorithm, using vsock events for getting the current time. 
+Best results are achieved when "boot" clock is used on both host and guest when
+recording the events.
+The patch series depends on Slavomir's changes, introduced by the patch series
+"Add VM kernel tracing over vsock sockets"
 
-> Create man pages for tep_is_latency_format() and tep_set_latency_format()
-> as part of the libtraceevent APIs.
-> 
-> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> ---
->  .../libtraceevent-latency_format.txt          | 100 ++++++++++++++++++
->  1 file changed, 100 insertions(+)
->  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt
-> 
-> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt b/tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt
-> new file mode 100644
-> index 000000000000..4b0d7d3f6ae9
-> --- /dev/null
-> +++ b/tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt
-> @@ -0,0 +1,100 @@
-> +libtraceevent(3)
-> +================
-> +
-> +NAME
-> +----
-> +tep_set_latency_format,tep_is_latency_format - Get / set "latency output" format.
-> +
-> +SYNOPSIS
-> +--------
-> +[verse]
-> +--
-> +*#include <event-parse.h>*
-> +
-> +void *tep_set_latency_format*(struct tep_handle pass:[*]_tep_, int _lat_);
-> +int *tep_is_latency_format*(struct tep_handle pass:[*]_tep_);
-> +
-> +--
-> +
-> +DESCRIPTION
-> +-----------
-> +"Latency output" format prints information about interrupts being disabled, 
-> +soft irq being disabled, the "need_resched" flag being set and preempt count. 
-> +This information is recorded with every event, but by default is not printed.
-> +
-> +The _tep_set_latency_format()_ function enables the "latency output" printing.
-> +The _tep_ argument is trace event parser context. The _lat_ argument can be zero,
-> +for "latency output" disabled, or non zero for "latency output" enabled.
-> +Information is displayed with 6 characters. When a field is zero, or N/A, a pass:['.'] 
-> +is printed. Example:
-> +[verse]
-> +--
-> +  <idle>-0       0d.h1. 106467.859747: function:             ktime_get <-- tick_check_idle
-> +--
-> +The 0d.h1. denotes this information. The first character is never a pass:['.']
-> +and represents what CPU the trace was recorded on (CPU 0). The pass:['d'] denotes
-> +that interrupts were disabled. The pass:['h'] means that this was called inside
-> +an interrupt handler. The pass:['1'] is the preemption disabled (preempt_count)
-> +was set to one.  The two pass:['.']s are "need_resched" flag and kernel lock
-> +counter. If the "need_resched" flag is set, then that character would be a pass:['N'].
+Tzvetomir Stoyanov (7):
+  trace-cmd: Implemented new lib API: tracecmd_local_events_system()
+  trace-cmd: Added new option in trace.dat file for negative time
+    offsets
+  trace-cmd: Fixed logic in tracecmd_read_page_record()
+  trace-cmd: Added implementation of htonll() and ntohll()
+  trace-cmd: Added user configured clock to the record context
+  trace-cmd: Refactored make_instances() and tracecmd_remove_instances()
+  trace-cmd [POC]: Implemented timestamps synch PTP-like algorithm,
+    using vsock events.
 
-I would like to see a more formal explanation of the output here. Then
-we can say "See Latency Format section."
+ include/trace-cmd/trace-cmd.h  |   7 +
+ lib/trace-cmd/trace-input.c    |  19 +-
+ lib/trace-cmd/trace-util.c     |  89 +++++---
+ tracecmd/include/trace-local.h |   5 +
+ tracecmd/include/trace-msg.h   |  10 +
+ tracecmd/trace-listen.c        |   3 +
+ tracecmd/trace-msg.c           | 311 ++++++++++++++++++++++++++-
+ tracecmd/trace-record.c        | 380 +++++++++++++++++++++++++--------
+ 8 files changed, 685 insertions(+), 139 deletions(-)
 
-Latency Format
---------------
-
-The latency format displays 5 or more fields:
-
- CPU #, interrupt state, scheduling state, current context, and
- preemption count.
-
- Field 1 is the CPU number (starting with zero).
-
- Field 2 is the interrupt enabled state:
-
-   d : Interrupts are disabled
-   . : Interrupts are enabled
-   X : The architecture does not support this information
-
- Field 3 is the "need resched" state.
-
-   N : The task is set to call the scheduler when possible, as another
-       higher priority task may need to be scheduled in.
-   . : The task is not set to call the scheduler.
-
- Field 4 is the context state.
-
-   . : Normal context
-
-   s : Soft interrupt context
-
-   h : Hard interrupt context
-
-   H : Hard interrupt context which triggered during soft interrupt
-       context.
-
-   z : NMI context
-
-   Z : NMI context which triggered during hard interrupt context
-
- Field 5 is the preemption count.
-
-   . : The preempt count is zero.
-
-   On preemptible kernels (where the task can be scheduled out in
-   arbitrary locations while in kernel context), The preempt count,
-   when non zero, will prevent the kernel from scheduling out the
-   current task. The preempt count number is displayed when it is not
-   zero.
-
-Depending on the kernel, it may show other fields (lock depth,
-or migration disabled, which are unique to specialized kernels).
-
--- Steve
-
-
-> +
-> +The _tep_is_latency_format()_ function returns if "latency output" is enabled.
-> +
-> +This "Latency output" setting affects output of _tep_print_event_task()_
-> +and _tep_print_event_time()_ APIs. 
-> +
-> +RETURN VALUE
-> +------------
-> +
-> +The _tep_is_latency_format()_ function returns non zero if "latency output" 
-> +is enabled, or zero if it is disabled.
-> +
-> +EXAMPLE
-> +-------
-> +[source,c]
-> +--
-> +#include <event-parse.h>
-> +...
-> +struct tep_handle *tep = tep_alloc();
-> +...
-> +	tep_set_latency_format(tep, 1);
-> +...
-> +	if (tep_is_latency_format(tep)) {
-> +		/* latency output format is enabled */
-> +	} else {
-> +		/* latency output format is disabled */
-> +	}
-> +--
-> +
-> +FILES
-> +-----
-> +[verse]
-> +--
-> +*event-parse.h*
-> +	Header file to include in order to have access to the library APIs.
-> +*-ltraceevent*
-> +	Linker switch to add when building a program that uses the library.
-> +--
-> +
-> +SEE ALSO
-> +--------
-> +_libtraceevent(3)_, _trace-cmd(1)_, tep_print_event_task(3), tep_print_event_time(3)
-> +
-> +AUTHOR
-> +------
-> +[verse]
-> +--
-> +*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-> +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
-> +--
-> +REPORTING BUGS
-> +--------------
-> +Report bugs to  <linux-trace-devel@vger.kernel.org>
-> +
-> +LICENSE
-> +-------
-> +libtraceevent is Free Software licensed under the GNU LGPL 2.1
-> +
-> +RESOURCES
-> +---------
-> +https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+-- 
+2.20.1
 
