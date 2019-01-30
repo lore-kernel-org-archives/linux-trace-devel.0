@@ -6,42 +6,42 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B42BAC282D7
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jan 2019 10:44:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D565C282D7
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jan 2019 10:44:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8E1BF20857
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jan 2019 10:44:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F264920857
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jan 2019 10:44:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbfA3Kod (ORCPT
+        id S1730515AbfA3Kof (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 30 Jan 2019 05:44:33 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:38765 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbfA3Kod (ORCPT
+        Wed, 30 Jan 2019 05:44:35 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:52574 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbfA3Kof (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 30 Jan 2019 05:44:33 -0500
-Received: by mail-wr1-f65.google.com with SMTP id v13so25440759wrw.5
-        for <linux-trace-devel@vger.kernel.org>; Wed, 30 Jan 2019 02:44:32 -0800 (PST)
+        Wed, 30 Jan 2019 05:44:35 -0500
+Received: by mail-wm1-f68.google.com with SMTP id m1so21102621wml.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 30 Jan 2019 02:44:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=X1p0J0O2F41sMT9Os/4Rv1FgYkr1f9hXI6aZCcKN5+I=;
-        b=hNQ2ExpGWVHuwpuUiMJo+MfKx1JLdRDRDfImwzwJbi52jHzRNn+NijZ89daRAGqH7e
-         fYpZJmOJGCs83EMuwHaaJStfuBYfeq++O/yU4vdCKi4PjxJ+l6Qp8Bk/028wgoYtgIzK
-         VV+FVQ6Xgy6l56Q8amcB0RwDgPsaXxLU5/DbwekWc98Y5nTyXSavFDPxCnaoT8KNuNJr
-         gCUu7aH5ez0PM+Tw8q5cUHuzTr4sSSl2ti6qfh1aHBJ14bvvNW+g8nCkRKS+FFcVtt5q
-         +cZjw5ZYAk/xXxG4/xwIzLsOyPGsvPG4TZi/eFl8BOPtGDyijjFs93gOejCQ0VtgFRyh
-         ockw==
-X-Gm-Message-State: AJcUukdw6uiHqNEfLoaz1d6bytMhoMSQ/a3pobtG0/pzG9GQRmrmwFMc
-        r7pFbzRpNlPDSIKbXhGwxEd4fC1Q
-X-Google-Smtp-Source: ALg8bN6O2ddklWrslx8X4l0z7yp9qJKpE7nzQb5NE38LtOUICG/Q+UgPV7KxGkRd2hFgzDIUia1X9A==
-X-Received: by 2002:adf:8544:: with SMTP id 62mr30955120wrh.1.1548845071752;
-        Wed, 30 Jan 2019 02:44:31 -0800 (PST)
+        bh=rCb3NGXA7lesF5jBW/ahfTz3WfjpVWV5itGnytj9UmE=;
+        b=a9kyXyZuU++ld/yPc4eQeOEwRQWOcLrpuKaRJeHwlEzFVGLih34Ao+JNR2xbQNIcAv
+         nIWR3cvrvJDRvQ5SHbVuoEfn9kY7dCyMWgtn9lCHwijJs5r761Q4KQ+F1EbbgvT2LyTe
+         7kPs2Zy1b4xP5hpC1eu91NEyhATA82VEJpXyAQ8z41QExUomD3KP3w777mugG/2cIPdg
+         q09xTYRoSYuUKIobtwmMbSRDhwlMx8Bo2csGnlCDiV9pJ451RCurrQfXcebSLcOEaQP7
+         yerQMIBBLXtNTGpGQJn4H76yu3DGBsk9Az7mLGUcuK1owKyDfBPS7YTFt4OCAjcsrC9S
+         xyaA==
+X-Gm-Message-State: AJcUukcyVAXw7J+FZanK8qV1Qrd0F9dVIivnp04w/BUkkzUhULmPOEz5
+        fdatYiQAuMW83IZXkNBachw=
+X-Google-Smtp-Source: ALg8bN5fprINCUoQQxUqmoFA1+nm33Knj6GZxWh0AlhmlJGE6e8QUdxTnX8LSQQVr7fS4dB4x8Vf4A==
+X-Received: by 2002:a1c:8c05:: with SMTP id o5mr23752489wmd.29.1548845072778;
+        Wed, 30 Jan 2019 02:44:32 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id w12sm503079wrr.23.2019.01.30.02.44.30
+        by smtp.gmail.com with ESMTPSA id w12sm503079wrr.23.2019.01.30.02.44.31
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Jan 2019 02:44:31 -0800 (PST)
+        Wed, 30 Jan 2019 02:44:32 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
@@ -49,9 +49,9 @@ Cc:     linux-trace-devel@vger.kernel.org,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 4/6] trace-cmd: Changed return logic of tep_register_event_handler() API
-Date:   Wed, 30 Jan 2019 12:44:23 +0200
-Message-Id: <20190130104425.8813-5-tstoyanov@vmware.com>
+Subject: [PATCH 5/6] trace-cmd: Rename tep_is_file_bigendian() to tep_file_bigendian()
+Date:   Wed, 30 Jan 2019 12:44:24 +0200
+Message-Id: <20190130104425.8813-6-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190130104425.8813-1-tstoyanov@vmware.com>
 References: <20190130104425.8813-1-tstoyanov@vmware.com>
@@ -65,78 +65,169 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 In order to make libtraceevent into a proper library, its API
 should be straightforward.
 
-The tep_register_event_handler() functions returns -1 in case it
-successfully registers the new event handler. Such return code is used
-by the other library APIs in case of an error.
+After a discussion with Steven Rostedt, we decided to rename a few APIs,
+to have more intuitive names.
 
-To unify the return logic of tep_register_event_handler() with the other
-APIs, this patch introduces enum tep_reg_handler, which is used by this
-function as return value, to handle all possible successful return
-cases.
+This patch renames tep_is_file_bigendian() to tep_file_bigendian().
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Link: http://lkml.kernel.org/r/20181201040852.628034497@goodmis.org
+Link: http://lkml.kernel.org/r/20181201040852.767549746@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h |  5 +++++
- lib/traceevent/event-parse.c     | 10 ++++++++--
- 2 files changed, 13 insertions(+), 2 deletions(-)
+ include/traceevent/event-parse.h | 2 +-
+ lib/trace-cmd/trace-input.c      | 8 ++++----
+ lib/traceevent/event-parse-api.c | 4 ++--
+ plugins/plugin_kvm.c             | 2 +-
+ python/tracecmd.py               | 2 +-
+ tracecmd/trace-output.c          | 2 +-
+ tracecmd/trace-read.c            | 4 ++--
+ tracecmd/trace-split.c           | 2 +-
+ 8 files changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 426b7eb..b4fa2c7 100644
+index b4fa2c7..2dc5822 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -473,6 +473,11 @@ int tep_print_func_field(struct trace_seq *s, const char *fmt,
- 			 struct tep_event *event, const char *name,
- 			 struct tep_record *record, int err);
+@@ -551,7 +551,7 @@ int tep_get_long_size(struct tep_handle *pevent);
+ void tep_set_long_size(struct tep_handle *pevent, int long_size);
+ int tep_get_page_size(struct tep_handle *pevent);
+ void tep_set_page_size(struct tep_handle *pevent, int _page_size);
+-int tep_is_file_bigendian(struct tep_handle *pevent);
++int tep_file_bigendian(struct tep_handle *pevent);
+ void tep_set_file_bigendian(struct tep_handle *pevent, enum tep_endian endian);
+ int tep_is_host_bigendian(struct tep_handle *pevent);
+ void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian);
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index b628570..b161c75 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -1619,7 +1619,7 @@ tracecmd_translate_data(struct tracecmd_input *handle,
+ 	memset(record, 0, sizeof(*record));
  
-+enum tep_reg_handler {
-+	TEP_REGISTER_SUCCESS = 0,
-+	TEP_REGISTER_SUCCESS_OVERWRITE,
-+};
-+
- int tep_register_event_handler(struct tep_handle *pevent, int id,
- 			       const char *sys_name, const char *event_name,
- 			       tep_event_handler_func func, void *context);
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 1f1821d..8cdb5a3 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -6699,6 +6699,12 @@ static struct tep_event *search_event(struct tep_handle *pevent, int id,
-  *
-  * If @id is >= 0, then it is used to find the event.
-  * else @sys_name and @event_name are used.
-+ *
-+ * Returns:
-+ *  TEP_REGISTER_SUCCESS_OVERWRITE if an existing handler is overwritten
-+ *  TEP_REGISTER_SUCCESS if a new handler is registered successfully
-+ *  negative TEP_ERRNO_... in case of an error
-+ *
-  */
- int tep_register_event_handler(struct tep_handle *pevent, int id,
- 			       const char *sys_name, const char *event_name,
-@@ -6716,7 +6722,7 @@ int tep_register_event_handler(struct tep_handle *pevent, int id,
+ 	record->ref_count = 1;
+-	if (tep_is_host_bigendian(pevent) == tep_is_file_bigendian(pevent))
++	if (tep_is_host_bigendian(pevent) == tep_file_bigendian(pevent))
+ 		swap = 0;
+ 	record->data = kbuffer_translate_data(swap, ptr, &length);
+ 	record->size = length;
+@@ -1661,7 +1661,7 @@ tracecmd_read_page_record(struct tep_handle *pevent, void *page, int size,
+ 	enum kbuffer_endian endian;
+ 	void *ptr;
  
- 	event->handler = func;
- 	event->context = context;
--	return 0;
-+	return TEP_REGISTER_SUCCESS_OVERWRITE;
+-	if (tep_is_file_bigendian(pevent))
++	if (tep_file_bigendian(pevent))
+ 		endian = KBUFFER_ENDIAN_BIG;
+ 	else
+ 		endian = KBUFFER_ENDIAN_LITTLE;
+@@ -2266,7 +2266,7 @@ static int read_cpu_data(struct tracecmd_input *handle)
+ 	else
+ 		long_size = KBUFFER_LSIZE_4;
  
-  not_found:
- 	/* Save for later use. */
-@@ -6746,7 +6752,7 @@ int tep_register_event_handler(struct tep_handle *pevent, int id,
- 	pevent->handlers = handle;
- 	handle->context = context;
+-	if (tep_is_file_bigendian(handle->pevent))
++	if (tep_file_bigendian(handle->pevent))
+ 		endian = KBUFFER_ENDIAN_BIG;
+ 	else
+ 		endian = KBUFFER_ENDIAN_LITTLE;
+@@ -2475,7 +2475,7 @@ int tracecmd_make_pipe(struct tracecmd_input *handle, int cpu, int fd, int cpus)
+ 	else
+ 		long_size = KBUFFER_LSIZE_4;
  
--	return -1;
-+	return TEP_REGISTER_SUCCESS;
+-	if (tep_is_file_bigendian(handle->pevent))
++	if (tep_file_bigendian(handle->pevent))
+ 		endian = KBUFFER_ENDIAN_BIG;
+ 	else
+ 		endian = KBUFFER_ENDIAN_LITTLE;
+diff --git a/lib/traceevent/event-parse-api.c b/lib/traceevent/event-parse-api.c
+index 347ff10..afafbc8 100644
+--- a/lib/traceevent/event-parse-api.c
++++ b/lib/traceevent/event-parse-api.c
+@@ -250,13 +250,13 @@ void tep_set_page_size(struct tep_handle *pevent, int _page_size)
  }
  
- static int handle_matches(struct event_handler *handler, int id,
+ /**
+- * tep_is_file_bigendian - get if the file is in big endian order
++ * tep_file_bigendian - get if the file is in big endian order
+  * @pevent: a handle to the tep_handle
+  *
+  * This returns if the file is in big endian order
+  * If @pevent is NULL, 0 is returned.
+  */
+-int tep_is_file_bigendian(struct tep_handle *pevent)
++int tep_file_bigendian(struct tep_handle *pevent)
+ {
+ 	if (pevent)
+ 		return pevent->file_bigendian;
+diff --git a/plugins/plugin_kvm.c b/plugins/plugin_kvm.c
+index f81d3c5..ddac21a 100644
+--- a/plugins/plugin_kvm.c
++++ b/plugins/plugin_kvm.c
+@@ -386,7 +386,7 @@ static int kvm_mmu_print_role(struct trace_seq *s, struct tep_record *record,
+ 	 * We can only use the structure if file is of the same
+ 	 * endianness.
+ 	 */
+-	if (tep_is_file_bigendian(event->pevent) ==
++	if (tep_file_bigendian(event->pevent) ==
+ 	    tep_is_host_bigendian(event->pevent)) {
+ 
+ 		trace_seq_printf(s, "%u/%u q%u%s %s%s %spge %snxe",
+diff --git a/python/tracecmd.py b/python/tracecmd.py
+index f4f241e..60a0d3e 100644
+--- a/python/tracecmd.py
++++ b/python/tracecmd.py
+@@ -166,7 +166,7 @@ class PEvent(object):
+ 
+     @cached_property
+     def file_endian(self):
+-        if tep_is_file_bigendian(self._pevent):
++        if tep_file_bigendian(self._pevent):
+             return '>'
+         return '<'
+ 
+diff --git a/tracecmd/trace-output.c b/tracecmd/trace-output.c
+index 33d6ce3..1c2e92c 100644
+--- a/tracecmd/trace-output.c
++++ b/tracecmd/trace-output.c
+@@ -808,7 +808,7 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
+ 		/* Use the pevent of the ihandle for later writes */
+ 		handle->pevent = tracecmd_get_pevent(ihandle);
+ 		tep_ref(pevent);
+-		if (tep_is_file_bigendian(pevent))
++		if (tep_file_bigendian(pevent))
+ 			buf[0] = 1;
+ 		else
+ 			buf[0] = 0;
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 4cc1f61..03c0978 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1700,8 +1700,8 @@ void trace_report (int argc, char **argv)
+ 
+ 		if (show_endian) {
+ 			printf("file is %s endian and host is %s endian\n",
+-			       tep_is_file_bigendian(pevent) ? "big" : "little",
+-			       tep_is_host_bigendian(pevent) ? "big" : "little");
++				tep_file_bigendian(pevent) ? "big" : "little",
++				tep_is_host_bigendian(pevent) ? "big" : "little");
+ 			return;
+ 		}
+ 
+diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
+index d27b3c6..6043e97 100644
+--- a/tracecmd/trace-split.c
++++ b/tracecmd/trace-split.c
+@@ -64,7 +64,7 @@ static int create_type_len(struct tep_handle *pevent, int time, int len)
+ 			bigendian = 1;
+ 	}
+ 
+-	if (tep_is_file_bigendian(pevent))
++	if (tep_file_bigendian(pevent))
+ 		time |= (len << 27);
+ 	else
+ 		time = (time << 5) | len;
 -- 
 2.20.1
 
