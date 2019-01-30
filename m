@@ -1,133 +1,90 @@
-Return-Path: <SRS0=wE5d=QF=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=bjmZ=QG=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	PLING_QUERY,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BA58C169C4
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Jan 2019 13:17:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C700C282D7
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jan 2019 10:44:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 48C2720880
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Jan 2019 13:17:02 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f061IAuH"
+	by mail.kernel.org (Postfix) with ESMTP id 680A320857
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Jan 2019 10:44:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbfA2NQ6 (ORCPT
+        id S1727097AbfA3Koa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 29 Jan 2019 08:16:58 -0500
-Received: from mail-it1-f196.google.com ([209.85.166.196]:51899 "EHLO
-        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbfA2NQ5 (ORCPT
+        Wed, 30 Jan 2019 05:44:30 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:39966 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbfA3Ko3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 29 Jan 2019 08:16:57 -0500
-Received: by mail-it1-f196.google.com with SMTP id w18so4416566ite.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Jan 2019 05:16:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IkoDHTcoQExAmP/zAYGRu0okBS/vxY+ZLfd6eRLq2ws=;
-        b=f061IAuHSK40I6nwWINrYYQYRCskJ9MACDwUkTWtcLX1aQvOTh17RYGlMImOEtf+Dd
-         acKrpU8urBDqKrja8BBPGU/+nT6RVfROPCxwCZimgWsUrKreBe5PqpstY3NI800dTk+B
-         xGYZymOzfSWs2UXdEK/ekgexvdqxH4+1Wk//UTa9dtBFpo0iAjzUhnRSykfnS7uBhbnN
-         xG7r2zSbXB99vdr3zYuyP6yFz7OtwCKcvffIm3rA1PDQ7gmGm4e80jifZc0GNTJxN1as
-         DApyhr7QFfWnC1NyvEwujhryzwldweuPn5V6sbbYfUgf4p8zP9/hJE35p67u0XSBY3hb
-         GzwA==
+        Wed, 30 Jan 2019 05:44:29 -0500
+Received: by mail-wr1-f48.google.com with SMTP id p4so25486530wrt.7
+        for <linux-trace-devel@vger.kernel.org>; Wed, 30 Jan 2019 02:44:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IkoDHTcoQExAmP/zAYGRu0okBS/vxY+ZLfd6eRLq2ws=;
-        b=Q1dXj+6FxoO3JWqU9VvW2hliS5Za4sEuAlQ4HINzcuFNTAEPalDPu+6MinPe+fIja6
-         /An/RRHv1YE0bpHhZ8nMbmUhVnHfZbsBcZ/Q5nfnSq9gI35e9t6StDYQkmVdtSGGb0Kj
-         A27z9anotjVxU/mcLUkR0uGksKvpeI3/6qygNfPAk/llXF84Ofs4yCU/Ssh1Pp6LPslu
-         anmYx7KU+J2nXO+YAWuEgHDUv+tqSY9DK6E/LiJ6kttzlQPQhZe05Rhwd+rNRhW70Z7c
-         GoS97aOC1ZkYtEoAweCOAVnlGkik74Vw+UmQYTHscocyzpDBpWdOWfEfMUZvsdj6XrB1
-         fTpg==
-X-Gm-Message-State: AJcUukdC65Zt7HBs8JvMD3EqgwfFc2usu/mHvOPLOPxl11KvlFf2DxEF
-        ibKzYefTu4zrD0K7nQumn7KWGRHa9ydTy9AjFK5kYg==
-X-Google-Smtp-Source: ALg8bN6HUj/A2UU9bghOpcHs1qK2Z+MApKf0C4wuxVMRcYDAospR59LbC5gWi/li/WD2y0jw96rJ6UbiFVPgZsFKDXE=
-X-Received: by 2002:a05:660c:f94:: with SMTP id x20mr11173972itl.144.1548767816077;
- Tue, 29 Jan 2019 05:16:56 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hi1EwgWkkryxcFhn6fonOYI9HW+p2QPW9vfnHELXjmE=;
+        b=f6M1E/IbfP/xmp7epQ4aM5g3+showKd4ubXWoKtkyK8Q0CwKYCOFAXNT7ELLWqpe+5
+         svHYuPEavPW3KooQZzANqP7GJCaWnWpC0Ya/33XS4UzVStfxhHo2j8Qu2myeFAi3UwaP
+         EP5jQ8poM9FwcTSEU3e8RIGikeVuHswajqhd3SwYNM7j9ZH6l0Ev7IPbPq93kfBJhPiZ
+         IGMnpeOr6t/ocZKuTJVG9bUHBCb6ib+JbJDwPlFT2kmtl6ar9taP2N6+7wOcYvImS8LD
+         DCbO1r/xTeHk2XgerkBWCTBTE0mRHdmYqTfJocC05+lzjI9Coh8CnBcqJEQKcEqR0cs1
+         j+Yw==
+X-Gm-Message-State: AJcUukdGmM4Lt87GDe2UCQzpRE9PBpZpkC7FmItgZwCMU/51bmkCdEBg
+        EFWGjXg5q7oOzngnMgg3cYignczx
+X-Google-Smtp-Source: ALg8bN6K9C7avK80+I26VKrRZwbPWQkksjfyB3v18x/ho6snte5EPp2lVkuE4+wMYZhrcMHyaVocRQ==
+X-Received: by 2002:adf:f449:: with SMTP id f9mr30306021wrp.40.1548845067254;
+        Wed, 30 Jan 2019 02:44:27 -0800 (PST)
+Received: from oberon.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id w12sm503079wrr.23.2019.01.30.02.44.26
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Jan 2019 02:44:26 -0800 (PST)
+From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH 0/6] Few patches, backported from Arnaldo's kernel repo
+Date:   Wed, 30 Jan 2019 12:44:19 +0200
+Message-Id: <20190130104425.8813-1-tstoyanov@vmware.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAKcZhuW-ozJp-MVU3gw=uhuSc9+HTMVJza8QRUL3TaRrbqjJew@mail.gmail.com>
- <CACT4Y+aJADsj37Y8jPAV7PASqKm_L-iJ=MDv68yPUO0TFvhdRg@mail.gmail.com>
- <CACT4Y+ZxgzdbCeFquYmKThfiTGg3pZhn90X_Fk3yRXGYfepU4Q@mail.gmail.com>
- <CAKcZhuWE_2+D_AP_U0XZP-bjb=8Eec1Ku3KD8qO8K0zDGo98Ow@mail.gmail.com>
- <CACT4Y+Ye+0bBV5sB1F3wVbCC1guyA=RdsRnYHgrar=AhftGtQA@mail.gmail.com> <20190121175842.0f526757@vmware.local.home>
-In-Reply-To: <20190121175842.0f526757@vmware.local.home>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 29 Jan 2019 14:16:43 +0100
-Message-ID: <CACT4Y+Y7PJ1=dv6wzDTVRkFJCnrtDYyksmYp6UibW9a8_ob0Nw@mail.gmail.com>
-Subject: Re: [RESEND BUG REPORT] System hung! Due to ftrace or KASAN?
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>
-Cc:     Zenghui Yu <zenghuiyu96@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "open list:KERNEL BUILD + fi..." <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Jan 29, 2019 at 1:27 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Mon, 21 Jan 2019 10:36:25 +0100 Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> > > Thanks Dmitry! I'll try to test this commit tomorrow.
-> > >
-> > > BTW, I have bisect-ed and tested for this issue today. Finally it turned out
-> > > that
-> > >         bffa986c6f80e39d9903015fc7d0d99a66bbf559 is the first bad commit.
-> > > So I'm wondering if anywhere need to be fixed in commit bffa986c6f80 ("kasan:
-> > > move common generic and tag-based code to common.c").
-> >
-> > Thanks for bisecting. I think we have understanding of what happens
-> > here and it's exactly this that needs to be fixed:
-> > https://groups.google.com/d/msg/kasan-dev/g8A8PLKCyoE/vXnirYEnCAAJ
-> > And this commit already fixes it.
->
-> Has that been sent in my direction?  I can't find it.
->
-> If sending it please add
->
-> Tested-by: Dmitry Vyukov <dvyukov@google.com>
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Few patches, backported from Arnaldo's kernel repo. The patch series 
+was merged upstream on 8th of Januari.
 
+Tzvetomir Stoyanov (6):
+  trace-cmd: Initialize host_bigendian at tep_handle allocation
+  trace_cmd: Rename struct cmdline to struct tep_cmdline
+  trace-cmd: Changed return logic of trace_seq_printf() and
+    trace_seq_vprintf() APIs
+  trace-cmd: Changed return logic of tep_register_event_handler() API
+  trace-cmd: Rename tep_is_file_bigendian() to tep_file_bigendian()
+  trace-cmd: Remove tep_data_event_from_type() API
 
-Yes, it's here (State: New):
-https://lore.kernel.org/patchwork/patch/1024393/
+ include/traceevent/event-parse.h   | 16 +++++---
+ kernel-shark/src/libkshark.c       |  7 ++--
+ lib/trace-cmd/trace-input.c        |  8 ++--
+ lib/traceevent/event-parse-api.c   |  4 +-
+ lib/traceevent/event-parse-local.h |  4 +-
+ lib/traceevent/event-parse.c       | 62 ++++++++++++++----------------
+ lib/traceevent/trace-seq.c         | 17 +++++---
+ plugins/plugin_kvm.c               |  2 +-
+ python/tracecmd.py                 | 10 ++---
+ tracecmd/trace-hist.c              |  4 +-
+ tracecmd/trace-mem.c               |  2 +-
+ tracecmd/trace-output.c            |  2 +-
+ tracecmd/trace-read.c              |  7 ++--
+ tracecmd/trace-record.c            |  2 +-
+ tracecmd/trace-split.c             |  2 +-
+ 15 files changed, 78 insertions(+), 71 deletions(-)
 
-This page says it was mailed to linux-mm mailing list too:
-https://groups.google.com/forum/#!topic/kasan-dev/g8A8PLKCyoE
+-- 
+2.20.1
 
-But I can't find linux-mm archives here:
-http://vger.kernel.org/vger-lists.html
-
-How can I add a tag to an existing change under review? Patchwork does
-not show something like "add Tested-by: me tag" to me on the patch
-page.
-
-Patchwork shows Todo list on the main page with "Your todo list
-contains patches that have been delegated to you". But I don't see an
-option to delegate this patch to you either...
