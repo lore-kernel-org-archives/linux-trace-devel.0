@@ -1,761 +1,588 @@
-Return-Path: <SRS0=aEXj=QI=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=pRBY=QJ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DA7DC282D8
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Feb 2019 13:45:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB82BC282D7
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  2 Feb 2019 08:20:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 017552084C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Feb 2019 13:45:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 560AC2146E
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  2 Feb 2019 08:20:45 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="UXWoIKc4"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730205AbfBANpr (ORCPT
+        id S1726594AbfBBIUo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 1 Feb 2019 08:45:47 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:35046 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729506AbfBANpr (ORCPT
+        Sat, 2 Feb 2019 03:20:44 -0500
+Received: from mail-eopbgr690075.outbound.protection.outlook.com ([40.107.69.75]:20512
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726561AbfBBIUo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 1 Feb 2019 08:45:47 -0500
-Received: by mail-wr1-f65.google.com with SMTP id r17so1195430wrp.2
-        for <linux-trace-devel@vger.kernel.org>; Fri, 01 Feb 2019 05:45:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DDPHLX9eaMTqLJQTXQMe9XyltETeW2phSskHN+UtqUk=;
-        b=LOwFjnqVWpR7EWv+NU5tB6evYt6aWId5oCjBkhHeM5uZDDMXzQqnYJP2SoUQTywaak
-         SABtX4iGCbceNcgJhsxEQ6B3/KSlW6PaRFlW0/EJfWhawXTu68KimYmkW0UJkPy+wnjT
-         1bNJGz4lwpR67j9YVO6SrNB6Vgr53Z8/D6qBkVZjaPNdZNGJpEtitvVJ5y6fYAREfmwL
-         E31t1EfaPXQnlSX/tDAERUELLBwtobynKHboa/PU60sZXIE8MiMCZpiGJjE85/eIZ7Qk
-         WslDxrncl+CnXnnLXhAKkuRjCjuRm0qzHlkYzR+rFPMJqI43S40Mu7kz3EdjF2/26R8D
-         KHgQ==
-X-Gm-Message-State: AJcUukerGgEZ96qBp2/KeAYz+TsQSLEl9mukxlTLcsQ6svDp++NcQnkS
-        viwLyjT0ZBQQFrOpHncwj8P6EvE1
-X-Google-Smtp-Source: ALg8bN7AYx0k54538mfrQkxXC7Z8kv9aKEVW0Rrp6QOWV6lyJt3G9Oku+JBC9kJrWWGkaySOUIgfCQ==
-X-Received: by 2002:adf:fdc2:: with SMTP id i2mr40082583wrs.117.1549028744094;
-        Fri, 01 Feb 2019 05:45:44 -0800 (PST)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id v26sm1468732wrv.78.2019.02.01.05.45.42
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 01 Feb 2019 05:45:43 -0800 (PST)
-From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 6/6] trace-cmd [POC]: Implemented timestamps synch PTP-like algorithm, using vsock events.
-Date:   Fri,  1 Feb 2019 15:45:35 +0200
-Message-Id: <20190201134535.2979-7-tstoyanov@vmware.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190201134535.2979-1-tstoyanov@vmware.com>
+        Sat, 2 Feb 2019 03:20:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O5bwSfLOhuM8jvD4WirC7HksYb+H1wz98WUekhYjeWA=;
+ b=UXWoIKc4iR0BeyhSb3sfPNQeRKWuqtVYcElG9zMRQuOwuEfZ22nX89vawlATvyieMS+KXhs30bePL1yUzMSjM7nW2OLiTzczQsEjSvObQWmwNWzwBcsF0CdFc805D3C9Rd5wCUDOml47U8xEgbvXMYB7HG2I8OfrLSOKPEN3H0w=
+Received: from CY1PR05MB2780.namprd05.prod.outlook.com (10.167.18.26) by
+ CY1PR05MB2665.namprd05.prod.outlook.com (10.167.10.153) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1580.13; Sat, 2 Feb 2019 08:05:30 +0000
+Received: from CY1PR05MB2780.namprd05.prod.outlook.com
+ ([fe80::dcaf:ea32:61c2:a615]) by CY1PR05MB2780.namprd05.prod.outlook.com
+ ([fe80::dcaf:ea32:61c2:a615%11]) with mapi id 15.20.1580.019; Sat, 2 Feb 2019
+ 08:05:30 +0000
+From:   Slavomir Kaslev <kaslevs@vmware.com>
+To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v2 6/6] trace-cmd [POC]: Implemented timestamps synch
+ PTP-like algorithm, using vsock events.
+Thread-Topic: [PATCH v2 6/6] trace-cmd [POC]: Implemented timestamps synch
+ PTP-like algorithm, using vsock events.
+Thread-Index: AQHUus4Q9oxLB2ni4UOWT8n7EoTecw==
+Date:   Sat, 2 Feb 2019 08:05:30 +0000
+Message-ID: <CAE0o1Nsrf8itUQteCoK40NfZK5KKoi02Vcx1XLRnxamKOqh=xA@mail.gmail.com>
 References: <20190201134535.2979-1-tstoyanov@vmware.com>
+ <20190201134535.2979-7-tstoyanov@vmware.com>
+In-Reply-To: <20190201134535.2979-7-tstoyanov@vmware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: DM5PR06CA0059.namprd06.prod.outlook.com
+ (2603:10b6:3:37::21) To CY1PR05MB2780.namprd05.prod.outlook.com
+ (2a01:111:e400:c63a::26)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=kaslevs@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-gm-message-state: AJcUukfUooZ8KGyEb7lE4JlauhHaACgFQe9RxdCoH7U0AWsLVMbQJbte
+        jJzzjhaERN9qyF4t8ZB7xtInz2QKS8tpUCCaTQ==
+x-google-smtp-source: ALg8bN5bK0ZuvPaj7Fs94bdXh0uBNt3WuKAcYkeKwe1pU80iqTfzXw7L6uYqgn5A5D4uzqILQgHQoSLV5QxmLSqV9sY=
+x-received: by 2002:a02:6284:: with SMTP id
+ d126mr28198860jac.120.1549094727376; Sat, 02 Feb 2019 00:05:27 -0800 (PST)
+x-gmail-original-message-id: <CAE0o1Nsrf8itUQteCoK40NfZK5KKoi02Vcx1XLRnxamKOqh=xA@mail.gmail.com>
+x-originating-ip: [209.85.166.175]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1;CY1PR05MB2665;20:v8jRPBB9ymWGHjDDhmFalGIp1L5951+lIgOX1ZRGdZIXLmQPkXJ2RZyjMZpv6h58Kehvv0vOW5JqDHCs6QagxC2aaRL8Zmw58Lv/NAiaCT1exVvfBtIazwzZT6jYLFYzU1nBLrRAT/t7ScET7xRURu0D44QZhqANxnrUoWp2AmU=
+x-ms-office365-filtering-correlation-id: 2177d461-361f-4ef0-093b-08d688e5328a
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);SRVR:CY1PR05MB2665;
+x-ms-traffictypediagnostic: CY1PR05MB2665:
+x-microsoft-antispam-prvs: <CY1PR05MB2665997DC47962E8AB792617DA930@CY1PR05MB2665.namprd05.prod.outlook.com>
+x-forefront-prvs: 09368DB063
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(39860400002)(396003)(366004)(136003)(199004)(189003)(229853002)(305945005)(95326003)(6486002)(61726006)(30864003)(66066001)(6436002)(86362001)(68736007)(97736004)(498394004)(61266001)(71200400001)(71190400001)(256004)(99286004)(81166006)(14444005)(8676002)(81156014)(53936002)(106356001)(53946003)(486006)(8936002)(6116002)(9686003)(6506007)(6246003)(76176011)(54906003)(478600001)(476003)(3846002)(105586002)(55446002)(25786009)(2906002)(52116002)(446003)(14454004)(6636002)(4326008)(7736002)(11346002)(6512007)(186003)(53546011)(102836004)(98316002)(6862004)(33896004)(26005)(316002)(386003)(579004)(559001);DIR:OUT;SFP:1101;SCL:1;SRVR:CY1PR05MB2665;H:CY1PR05MB2780.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: DIgKrjUnz+s7DD+I/WB71CRK3WPI+zSX5Pt2ERtGecbXojhD2P5etTTbH5kZv7BeTNoQPDjoFjHq0z/Lb4q+t5+kk+50CCb4uhz4JMwybjAbU9w2ir4gT5cma9rhxyxa+BQw3b8HGziTdCxhaR2lac+Ct5lh/riPacRJIaX64RF+INE3BQ0XekIMoOhKPuFLDLPIrFEk16C417HvL7tQwNSVtsMQCjHZqG2Odz0q7Io8Vsswgwg0ict0b9Gi1lVA3k2Rq0EsWdD+D4M43fuXTL52Z0cSU1JwW7oKd6bYpBHm3ZaIR9oGcPXiTRcyWUnNme59luj708H8AgbS/qCJqkHFO3/haZRVN6ObCtOyFi2cwNXxMJxZW8ObuLEgVox22tDWtk7tt96jxMi0R7pmuLaEsu1uDHf2hPmExbRyo9E=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B5F33683FF85AD43894F70F4DAF08DC2@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2177d461-361f-4ef0-093b-08d688e5328a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2019 08:05:29.6289
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1PR05MB2665
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is a POC patch, implementing a PTP-like algorithm for syncing timestamps between
-host and guest machines, using vsock trace events to catch the host / guest time.
-
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- include/trace-cmd/trace-cmd.h  |   4 +
- tracecmd/include/trace-local.h |   5 +
- tracecmd/trace-listen.c        |   3 +
- tracecmd/trace-msg.c           | 307 +++++++++++++++++++++++++++++++--
- tracecmd/trace-record.c        | 207 +++++++++++++++++++++-
- 5 files changed, 507 insertions(+), 19 deletions(-)
-
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index da225b4..7f7e1fc 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -351,6 +351,10 @@ int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 				 int *nr_cpus, int *page_size,
- 				 unsigned int **ports);
- 
-+int tracecmd_msg_rcv_time_sync(struct tracecmd_msg_handle *msg_handle);
-+int tracecmd_msg_snd_time_sync(struct tracecmd_msg_handle *msg_handle,
-+			       char *clock_str, long long *toffset);
-+
- int tracecmd_msg_wait_close(struct tracecmd_msg_handle *msg_handle);
- 
- /* --- Plugin handling --- */
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 823d323..c502c70 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -225,6 +225,11 @@ void show_instance_file(struct buffer_instance *instance, const char *name);
- 
- int count_cpus(void);
- 
-+struct buffer_instance *clock_synch_enable(int fd, char *clock,
-+					   int *tx_event, int *rx_event);
-+void clock_synch_disable(int fd, struct buffer_instance *instance);
-+struct tep_handle *clock_synch_get_tep(struct buffer_instance *instance);
-+
- /* No longer in event-utils.h */
- void __noreturn die(const char *fmt, ...); /* Can be overriden */
- void *malloc_or_die(unsigned int size); /* Can be overridden */
-diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
-index 9b50147..7783a68 100644
---- a/tracecmd/trace-listen.c
-+++ b/tracecmd/trace-listen.c
-@@ -404,6 +404,9 @@ static int communicate_with_client(struct tracecmd_msg_handle *msg_handle)
- 
- 		msg_handle->version = V3_PROTOCOL;
- 
-+		/* time sync with the v3 client */
-+		tracecmd_msg_rcv_time_sync(msg_handle);
-+
- 		/* read the CPU count, the page size, and options */
- 		if ((pagesize = tracecmd_msg_initial_setting(msg_handle)) < 0)
- 			goto out;
-diff --git a/tracecmd/trace-msg.c b/tracecmd/trace-msg.c
-index 46b18aa..e264f10 100644
---- a/tracecmd/trace-msg.c
-+++ b/tracecmd/trace-msg.c
-@@ -18,9 +18,11 @@
- #include <stdarg.h>
- #include <string.h>
- #include <unistd.h>
-+#include <time.h>
- #include <arpa/inet.h>
- #include <sys/types.h>
- #include <linux/types.h>
-+#include <linux/vm_sockets.h>
- 
- #include "trace-cmd-local.h"
- #include "trace-local.h"
-@@ -28,6 +30,8 @@
- 
- typedef __u32 u32;
- typedef __be32 be32;
-+typedef __u64 u64;
-+typedef __s64 s64;
- 
- static inline void dprint(const char *fmt, ...)
- {
-@@ -50,11 +54,20 @@ static inline void dprint(const char *fmt, ...)
- 
- unsigned int page_size;
- 
-+/* Try a few times to get an accurate time sync */
-+#define TSYNC_TRIES 5000
-+#define TSYNC_TRESCH 10000
-+
- struct tracecmd_msg_server {
- 	struct tracecmd_msg_handle handle;
- 	int			done;
- };
- 
-+struct clock_synch_event {
-+	int			id;
-+	unsigned long long	ts;
-+};
-+
- static struct tracecmd_msg_server *
- make_server(struct tracecmd_msg_handle *msg_handle)
- {
-@@ -90,6 +103,16 @@ struct tracecmd_msg_trace_resp {
- 	be32 page_size;
- } __attribute__((packed));
- 
-+struct tracecmd_msg_time_sync_init {
-+	char clock[32];
-+	s64  toffset;
-+} __attribute__((packed));
-+
-+struct tracecmd_msg_time_sync {
-+	u64 tlocal_rx;
-+	u64 tlocal_tx;
-+} __attribute__((packed));
-+
- struct tracecmd_msg_header {
- 	be32	size;
- 	be32	cmd;
-@@ -97,13 +120,15 @@ struct tracecmd_msg_header {
- } __attribute__((packed));
- 
- #define MSG_MAP								\
--	C(CLOSE,	0,	0),					\
--	C(TINIT,	1,	sizeof(struct tracecmd_msg_tinit)),	\
--	C(RINIT,	2,	sizeof(struct tracecmd_msg_rinit)),	\
--	C(SEND_DATA,	3,	0),					\
--	C(FIN_DATA,	4,	0),					\
--	C(TRACE_REQ,	5,	sizeof(struct tracecmd_msg_trace_req)),	\
--	C(TRACE_RESP,	6,	sizeof(struct tracecmd_msg_trace_resp)),
-+	C(CLOSE,		0, 0),					\
-+	C(TINIT,		1, sizeof(struct tracecmd_msg_tinit)),	\
-+	C(RINIT,		2, sizeof(struct tracecmd_msg_rinit)),	\
-+	C(SEND_DATA,		3, 0),					\
-+	C(FIN_DATA,		4, 0),					\
-+	C(TRACE_REQ,		5, sizeof(struct tracecmd_msg_trace_req)),\
-+	C(TRACE_RESP,		6, sizeof(struct tracecmd_msg_trace_resp)),\
-+	C(TIME_SYNC_INIT,	7, sizeof(struct tracecmd_msg_time_sync_init)),\
-+	C(TIME_SYNC,		8, sizeof(struct tracecmd_msg_time_sync)),
- 
- #undef C
- #define C(a,b,c)	MSG_##a = b
-@@ -133,10 +158,12 @@ static const char *cmd_to_name(int cmd)
- struct tracecmd_msg {
- 	struct tracecmd_msg_header		hdr;
- 	union {
--		struct tracecmd_msg_tinit	tinit;
--		struct tracecmd_msg_rinit	rinit;
--		struct tracecmd_msg_trace_req	trace_req;
--		struct tracecmd_msg_trace_resp	trace_resp;
-+		struct tracecmd_msg_tinit		tinit;
-+		struct tracecmd_msg_rinit		rinit;
-+		struct tracecmd_msg_trace_req		trace_req;
-+		struct tracecmd_msg_trace_resp		trace_resp;
-+		struct tracecmd_msg_time_sync_init	time_sync_init;
-+		struct tracecmd_msg_time_sync		time_sync;
- 	};
- 	union {
- 		struct tracecmd_msg_opt		*opt;
-@@ -825,6 +852,264 @@ out:
- 	return ret;
- }
- 
-+static int
-+find_events_in_page(struct tep_handle *pevent, void *page,
-+		    int size, struct clock_synch_event *events)
-+{
-+	struct tep_event *event = NULL;
-+	struct tep_record *last_record = NULL;
-+	struct tep_record *record;
-+	int id, i, j, cnt = 0;
-+
-+	if (size <= 0)
-+		return 0;
-+	for (i = 0; events[i].id; i++) {
-+		if (!events[i].ts)
-+			cnt++;
-+	}
-+
-+	while (cnt) {
-+		event = NULL;
-+		record = tracecmd_read_page_record(pevent, page, size,
-+						   last_record);
-+		if (!record)
-+			break;
-+		free_record(last_record);
-+		id = tep_data_type(pevent, record);
-+		for (i = 0; events[i].id; i++)
-+			if (!events[i].ts && events[i].id == id) {
-+				event = tep_data_event_from_type(pevent, id);
-+				break;
-+			}
-+		if (event) {
-+			for (j = 0; j < i; j++)
-+				if (events[j].ts && events[j].ts > record->ts)
-+					break;
-+			if (j == i) {
-+				events[i].ts = record->ts;
-+				cnt--;
-+			}
-+		}
-+		last_record = record;
-+	}
-+	free_record(last_record);
-+
-+	return cnt;
-+}
-+
-+static int clock_synch_find_events(struct tep_handle *tep,
-+				   struct buffer_instance *instance,
-+				   struct clock_synch_event *events)
-+{
-+	struct dirent *dent;
-+	int ts = 0;
-+	void *page;
-+	char *path;
-+	char *file;
-+	DIR *dir;
-+	int len;
-+	int fd;
-+	int r;
-+
-+	page_size = getpagesize();
-+
-+	path = get_instance_file(instance, "per_cpu");
-+	if (!path)
-+		return ts;
-+
-+	dir = opendir(path);
-+	if (!dir)
-+		goto out;
-+
-+	len = strlen(path);
-+	file = malloc(len + strlen("trace_pipe_raw") + 32);
-+	page = malloc(page_size);
-+	if (!file || !page)
-+		die("Failed to allocate time_stamp info");
-+
-+	while ((dent = readdir(dir))) {
-+
-+		const char *name = dent->d_name;
-+
-+		if (strncmp(name, "cpu", 3) != 0)
-+			continue;
-+		sprintf(file, "%s/%s/trace_pipe_raw", path, name);
-+		fd = open(file, O_RDONLY | O_NONBLOCK);
-+		if (fd < 0)
-+			continue;
-+		do {
-+			r = read(fd, page, page_size);
-+			if (r > 0) {
-+				ts = find_events_in_page(tep, page, r, events);
-+				if (!ts)
-+					break;
-+			}
-+		} while (r > 0);
-+		close(fd);
-+	}
-+
-+	free(file);
-+	free(page);
-+	closedir(dir);
-+
-+ out:
-+	tracecmd_put_tracing_file(path);
-+	return ts;
-+}
-+
-+extern struct tep_handle *clock_synch_get_tep(struct buffer_instance *instance);
-+
-+int tracecmd_msg_rcv_time_sync(struct tracecmd_msg_handle *msg_handle)
-+{
-+	struct buffer_instance *vinst;
-+	struct tracecmd_msg msg;
-+	struct tep_handle *tep;
-+	int ret;
-+	char *clock;
-+	struct clock_synch_event events[3];
-+
-+	ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+	if (ret < 0 || ntohl(msg.hdr.cmd) != MSG_TIME_SYNC_INIT)
-+		return 0;
-+	if (!msg.time_sync_init.clock[0])
-+		return 0;
-+
-+	clock = strdup(msg.time_sync_init.clock);
-+	events[2].id = 0;
-+	vinst = clock_synch_enable(msg_handle->fd, clock,
-+				   &events[1].id, &events[0].id);
-+	tep = clock_synch_get_tep(vinst);
-+	tracecmd_msg_init(MSG_TIME_SYNC_INIT, &msg);
-+	tracecmd_msg_send(msg_handle->fd, &msg);
-+
-+	do {
-+		events[0].ts = 0;
-+		events[1].ts = 0;
-+		ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+		if (ret < 0 || ntohl(msg.hdr.cmd) != MSG_TIME_SYNC)
-+			break;
-+
-+		tracecmd_msg_send(msg_handle->fd, &msg);
-+		clock_synch_find_events(tep, vinst, events);
-+		tracecmd_msg_init(MSG_TIME_SYNC, &msg);
-+		msg.time_sync.tlocal_tx = htonll(events[1].ts);
-+		msg.time_sync.tlocal_rx = htonll(events[0].ts);
-+		tracecmd_msg_send(msg_handle->fd, &msg);
-+	} while (true);
-+	clock_synch_disable(msg_handle->fd, vinst);
-+	msg_free(&msg);
-+	tep_free(tep);
-+	free(clock);
-+	return ret;
-+}
-+
-+int tracecmd_msg_snd_time_sync(struct tracecmd_msg_handle *msg_handle,
-+			       char *clock_str, long long *toffset)
-+{
-+	static struct buffer_instance *vinst;
-+	struct clock_synch_event events[4];
-+	long long *offsets, *replies;
-+	struct tracecmd_msg msg_resp;
-+	struct tracecmd_msg msg_req;
-+	int sync_loop = TSYNC_TRIES;
-+	long long ms_diff, sm_diff;
-+	int j= 0, i = 0, ret = 0;
-+	struct tep_handle *tep;
-+	long long m_t1, m_t4;
-+	long long s_t2, s_t3;
-+	long long t_offs = 0;
-+	long long min_p=0;
-+	char *clock;
-+
-+	clock = clock_str;
-+	if (!clock)
-+		clock = "local";
-+
-+	tracecmd_msg_init(MSG_TIME_SYNC_INIT, &msg_req);
-+	if (toffset == NULL) {
-+		msg_req.time_sync_init.clock[0] = 0;
-+		tracecmd_msg_send(msg_handle->fd, &msg_req);
-+		return 0;
-+	}
-+	offsets = calloc(sizeof(long long), TSYNC_TRIES);
-+	replies = calloc(sizeof(long long), TSYNC_TRIES);
-+	if (!offsets || !replies) {
-+		free(offsets);
-+		free(replies);
-+		return 0;
-+	}
-+
-+	strncpy(msg_req.time_sync_init.clock, clock, 16);
-+	tracecmd_msg_send(msg_handle->fd, &msg_req);
-+	ret = tracecmd_msg_recv(msg_handle->fd, &msg_resp);
-+	if (ret < 0 || ntohl(msg_resp.hdr.cmd) != MSG_TIME_SYNC_INIT) {
-+		free(offsets);
-+		free(replies);
-+		return 0;
-+	}
-+	events[3].id = 0;
-+	vinst = clock_synch_enable(msg_handle->fd, clock_str,
-+				   &events[0].id, &events[1].id);
-+	tep = clock_synch_get_tep(vinst);
-+	*toffset = 0;
-+
-+	do {
-+		memset(&msg_resp, 0, sizeof(msg_resp));
-+		events[0].ts = 0;
-+		events[1].ts = 0;
-+		events[2].ts = 0;
-+		tracecmd_msg_init(MSG_TIME_SYNC, &msg_req);
-+
-+		tracecmd_msg_send(msg_handle->fd, &msg_req);
-+		ret = tracecmd_msg_recv(msg_handle->fd, &msg_resp);
-+		if (ret < 0 || ntohl(msg_resp.hdr.cmd) != MSG_TIME_SYNC)
-+			break;
-+		ret = tracecmd_msg_recv(msg_handle->fd, &msg_resp);
-+		if (ret < 0 || ntohl(msg_resp.hdr.cmd) != MSG_TIME_SYNC)
-+			break;
-+		clock_synch_find_events(tep, vinst, events);
-+		m_t1 = events[0].ts;
-+		m_t4 = events[1].ts;
-+		s_t2 = htonll(msg_resp.time_sync.tlocal_rx);
-+		s_t3 = ntohll(msg_resp.time_sync.tlocal_tx);
-+		if (!m_t1 || !m_t4 || !s_t2 || !s_t3)
-+			continue;
-+		if ( m_t1 >= m_t4) 
-+			continue;
-+		ms_diff = s_t2 - m_t1;
-+		sm_diff = m_t4 - s_t3;
-+		offsets[i] = (ms_diff - sm_diff)/2;
-+		replies[i] = abs(sm_diff);
-+		if (!min_p || min_p > replies[i])
-+			min_p = replies[i];
-+		i++;
-+	} while (--sync_loop);
-+	clock_synch_disable(msg_handle->fd, vinst);
-+
-+	for (i=0; i<TSYNC_TRIES; i++) {
-+		if (replies[i] && replies[i] < (TSYNC_TRESCH+min_p)) {
-+			t_offs += offsets[i];
-+			j++;
-+		}
-+	}
-+	if(j)
-+		t_offs /= j;
-+
-+	tracecmd_msg_init(MSG_TIME_SYNC_INIT, &msg_req);
-+	msg_req.time_sync_init.clock[0] = 0;
-+	msg_req.time_sync_init.toffset = t_offs;
-+	tracecmd_msg_send(msg_handle->fd, &msg_req);
-+
-+	msg_free(&msg_req);
-+	msg_free(&msg_resp);
-+	free(offsets);
-+	free(replies);
-+
-+	*toffset = t_offs;
-+
-+	return ret;
-+}
-+
- static int make_trace_resp(struct tracecmd_msg *msg,
- 			   int page_size, int nr_cpus, unsigned int *ports)
- {
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 6d67858..af442fe 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3157,7 +3157,41 @@ static void check_protocol_version(struct tracecmd_msg_handle *msg_handle)
- 	}
- }
- 
--static struct tracecmd_msg_handle *setup_network(struct buffer_instance *instance)
-+static void sync_time_with_listener_v3(struct tracecmd_msg_handle *msg_handle,
-+				       struct common_record_context *ctx)
-+{
-+	struct buffer_instance	*instance;
-+	long long toffset = 0;
-+	char *clock = NULL;
-+
-+	instance = ctx->instance;
-+	while (instance) {
-+		clock = instance->clock;
-+		if (clock)
-+			break;
-+		instance = instance->next;
-+	}
-+
-+	if (ctx->data_flags & DATA_FL_DATE ||
-+	    ctx->data_flags & DATA_FL_OFFSET) {
-+		tracecmd_msg_snd_time_sync(msg_handle, clock, NULL);
-+		return;
-+	}
-+
-+	tracecmd_msg_snd_time_sync(msg_handle, clock, &toffset);
-+
-+	free(ctx->date2ts);
-+	/* 20 digits + \0 */
-+	ctx->date2ts = malloc(21);
-+	if (ctx->date2ts) {
-+		snprintf(ctx->date2ts, 21, "%lld", toffset);
-+		ctx->data_flags |= DATA_FL_OFFSET;
-+	}
-+
-+}
-+
-+static struct tracecmd_msg_handle *setup_network(struct buffer_instance *instance,
-+						 struct common_record_context *ctx)
- {
- 	struct tracecmd_msg_handle *msg_handle = NULL;
- 	struct addrinfo hints;
-@@ -3292,12 +3326,13 @@ static void add_options(struct tracecmd_output *handle,
- }
- 
- static struct tracecmd_msg_handle *
--setup_connection(struct buffer_instance *instance, struct common_record_context *ctx)
-+setup_connection(struct buffer_instance *instance,
-+		 struct common_record_context *ctx)
- {
- 	struct tracecmd_msg_handle *msg_handle;
- 	struct tracecmd_output *network_handle;
- 
--	msg_handle = setup_network(instance);
-+	msg_handle = setup_network(instance, ctx);
- 
- 	/* Now create the handle through this socket */
- 	if (msg_handle->version == V3_PROTOCOL) {
-@@ -3324,7 +3359,8 @@ static void finish_network(struct tracecmd_msg_handle *msg_handle)
- 	free(host);
- }
- 
--static void connect_to_agent(struct buffer_instance *instance)
-+static void connect_to_agent(struct buffer_instance *instance,
-+			     struct common_record_context *ctx)
- {
- 	struct tracecmd_msg_handle *msg_handle;
- 	int sd, nr_cpus, page_size;
-@@ -3350,9 +3386,12 @@ static void connect_to_agent(struct buffer_instance *instance)
- 
- 	/* the msg_handle now points to the guest fd */
- 	instance->msg_handle = msg_handle;
-+
-+	tracecmd_msg_rcv_time_sync(msg_handle);
- }
- 
--static void setup_guest(struct buffer_instance *instance)
-+static void setup_guest(struct buffer_instance *instance,
-+			struct common_record_context *ctx)
- {
- 	struct tracecmd_msg_handle *msg_handle = instance->msg_handle;
- 	char *file;
-@@ -3374,10 +3413,13 @@ static void setup_guest(struct buffer_instance *instance)
- 	close(fd);
- }
- 
--static void setup_agent(struct buffer_instance *instance, struct common_record_context *ctx)
-+static void setup_agent(struct buffer_instance *instance,
-+			struct common_record_context *ctx)
- {
- 	struct tracecmd_output *network_handle;
- 
-+	sync_time_with_listener_v3(instance->msg_handle, ctx);
-+
- 	network_handle = tracecmd_create_init_fd_msg(instance->msg_handle,
- 						     listed_events);
- 	add_options(network_handle, ctx);
-@@ -3397,7 +3439,7 @@ void start_threads(enum trace_type type, struct common_record_context *ctx)
- 	for_all_instances(instance) {
- 		/* Start the connection now to find out how many CPUs we need */
- 		if (instance->flags & BUFFER_FL_GUEST)
--			connect_to_agent(instance);
-+			connect_to_agent(instance, ctx);
- 		total_cpu_count += instance->cpu_count;
- 	}
- 
-@@ -3413,7 +3455,7 @@ void start_threads(enum trace_type type, struct common_record_context *ctx)
- 		if (instance->flags & BUFFER_FL_AGENT) {
- 			setup_agent(instance, ctx);
- 		} else if (instance->flags & BUFFER_FL_GUEST) {
--			setup_guest(instance);
-+			setup_guest(instance, ctx);
- 		} else if (host) {
- 			instance->msg_handle = setup_connection(instance, ctx);
- 			if (!instance->msg_handle)
-@@ -5769,3 +5811,152 @@ int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
- 	free(argv_plus);
- 	return 0;
- }
-+
-+static void get_vsocket_params(int fd, int *lcid,
-+			       int *lport, int *rcid, int *rport)
-+{
-+	struct sockaddr_vm addr;
-+	socklen_t addr_len = sizeof(addr);
-+
-+	memset(&addr, 0, sizeof(addr));
-+	if (getsockname(fd, (struct sockaddr *)&addr, &addr_len))
-+		return;
-+	if (addr.svm_family != AF_VSOCK)
-+		return;
-+	*lport = addr.svm_port;
-+	*lcid = addr.svm_cid;
-+
-+	memset(&addr, 0, sizeof(addr));
-+	addr_len = sizeof(addr);
-+	if (getpeername(fd, (struct sockaddr *)&addr, &addr_len))
-+		return;
-+	if (addr.svm_family != AF_VSOCK)
-+		return;
-+
-+	*rport = addr.svm_port;
-+	*rcid = addr.svm_cid;
-+}
-+
-+static void set_clock_synch_events(int cfd, struct buffer_instance *instance,
-+				   bool enable, int *tx_event, int *rx_event)
-+{
-+	int lcid, lport, rcid, rport;
-+	char buffer[255];
-+	FILE *fp;
-+	char *path;
-+	int fd;
-+
-+	path = get_instance_file(instance, "events/vsock/enable");
-+	fd = open(path, O_WRONLY);
-+	if (fd < 0)
-+		return;
-+	if (enable)
-+		write(fd, "1", 2);
-+	else
-+		write(fd, "0", 2);
-+	close(fd);
-+	tracecmd_put_tracing_file(path);
-+
-+	if (enable) {
-+		get_vsocket_params(cfd, &lcid, &lport, &rcid, &rport);
-+
-+		snprintf(buffer, 255,
-+			"src_cid==%d && src_port==%d && dst_cid==%d && dst_port==%d && len!=0",
-+			rcid, rport, lcid, lport);
-+		path = get_instance_file(instance,
-+					 "events/vsock/virtio_transport_recv_pkt/filter");
-+		fd = open(path, O_WRONLY);
-+		write(fd, buffer, strlen(buffer)+1);
-+		close(fd);
-+		tracecmd_put_tracing_file(path);
-+
-+		snprintf(buffer, 255,
-+			"src_cid==%d && src_port==%d && dst_cid==%d && dst_port==%d && len!=0",
-+			lcid, lport, rcid, rport);
-+		path = get_instance_file(instance,
-+					 "events/vsock/virtio_transport_alloc_pkt/filter");
-+		fd = open(path, O_WRONLY);
-+		write(fd, buffer, strlen(buffer)+1);
-+		close(fd);
-+		tracecmd_put_tracing_file(path);
-+
-+		if (tx_event) {
-+			path = get_instance_file(instance,
-+						 "events/vsock/virtio_transport_alloc_pkt/id");
-+			fp = fopen(path, "r");
-+			fgets(buffer, 255, (FILE *) fp);
-+			*tx_event = atoi(buffer);
-+			fclose(fp);
-+			tracecmd_put_tracing_file(path);
-+		}
-+		if (rx_event) {
-+			path = get_instance_file(instance,
-+						 "events/vsock/virtio_transport_recv_pkt/id");
-+			fp = fopen(path, "r");
-+			fgets(buffer, 255, (FILE *) fp);
-+			*rx_event = atoi(buffer);
-+			fclose(fp);
-+			tracecmd_put_tracing_file(path);
-+		}
-+	}
-+
-+	path = get_instance_file(instance, "events/vsock/enable");
-+
-+	if (enable)
-+		write_tracing_on(instance, 1);
-+	else
-+		write_tracing_on(instance, 0);
-+}
-+
-+static void vsock_trace_reset(struct buffer_instance *vinst)
-+{
-+	char *path;
-+	int fd;
-+
-+	path = get_instance_file(vinst, "trace");
-+	fd = open(path, O_WRONLY);
-+	tracecmd_put_tracing_file(path);
-+	write(fd, "0", 2);
-+	close(fd);
-+}
-+
-+struct tep_handle *clock_synch_get_tep(struct buffer_instance *instance)
-+{
-+	struct tep_handle *tep = NULL;
-+	char *systems[] = {"vsock", "kvm", NULL};
-+	char *path;
-+
-+	path = get_instance_dir(instance);
-+	tep = tracecmd_local_events_system(path, systems);
-+	tracecmd_put_tracing_file(path);
-+
-+	tep_set_file_bigendian(tep, tracecmd_host_bigendian());
-+	tep_set_host_bigendian(tep, tracecmd_host_bigendian());
-+
-+	return tep;
-+}
-+
-+struct buffer_instance *clock_synch_enable(int fd, char *clock,
-+					   int *tx_event, int *rx_event)
-+{
-+	char inst_name[256];
-+	struct buffer_instance *vinst;
-+
-+	snprintf(inst_name, 256, "clock_synch-%d", rand()%100);
-+	vinst = create_instance(strdup(inst_name));
-+	init_instance(vinst);
-+	vinst->cpu_count = local_cpu_count;
-+	make_one_instance(vinst);
-+	vsock_trace_reset(vinst);
-+	vinst->clock = strdup(clock);
-+	set_clock(vinst);
-+	set_clock_synch_events(fd, vinst, true, tx_event, rx_event);
-+	return vinst;
-+}
-+
-+void clock_synch_disable(int fd, struct buffer_instance *instance)
-+{
-+	set_clock_synch_events(fd, instance, false, NULL, NULL);
-+	tracecmd_remove_one_instance(instance);
-+	/* todo: clean up the instance */
-+}
--- 
-2.20.1
-
+T24gRnJpLCBGZWIgMSwgMjAxOSBhdCA0OjE4IFBNIFR6dmV0b21pciBTdG95YW5vdiA8dHN0b3lh
+bm92QHZtd2FyZS5jb20+IHdyb3RlOg0KPg0KPiBUaGlzIGlzIGEgUE9DIHBhdGNoLCBpbXBsZW1l
+bnRpbmcgYSBQVFAtbGlrZSBhbGdvcml0aG0gZm9yIHN5bmNpbmcgdGltZXN0YW1wcyBiZXR3ZWVu
+DQo+IGhvc3QgYW5kIGd1ZXN0IG1hY2hpbmVzLCB1c2luZyB2c29jayB0cmFjZSBldmVudHMgdG8g
+Y2F0Y2ggdGhlIGhvc3QgLyBndWVzdCB0aW1lLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBUenZldG9t
+aXIgU3RveWFub3YgPHRzdG95YW5vdkB2bXdhcmUuY29tPg0KPiAtLS0NCj4gIGluY2x1ZGUvdHJh
+Y2UtY21kL3RyYWNlLWNtZC5oICB8ICAgNCArDQo+ICB0cmFjZWNtZC9pbmNsdWRlL3RyYWNlLWxv
+Y2FsLmggfCAgIDUgKw0KPiAgdHJhY2VjbWQvdHJhY2UtbGlzdGVuLmMgICAgICAgIHwgICAzICsN
+Cj4gIHRyYWNlY21kL3RyYWNlLW1zZy5jICAgICAgICAgICB8IDMwNyArKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrLS0NCj4gIHRyYWNlY21kL3RyYWNlLXJlY29yZC5jICAgICAgICB8IDIw
+NyArKysrKysrKysrKysrKysrKysrKystDQo+ICA1IGZpbGVzIGNoYW5nZWQsIDUwNyBpbnNlcnRp
+b25zKCspLCAxOSBkZWxldGlvbnMoLSkNCj4NCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdHJhY2Ut
+Y21kL3RyYWNlLWNtZC5oIGIvaW5jbHVkZS90cmFjZS1jbWQvdHJhY2UtY21kLmgNCj4gaW5kZXgg
+ZGEyMjViNC4uN2Y3ZTFmYyAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS90cmFjZS1jbWQvdHJhY2Ut
+Y21kLmgNCj4gKysrIGIvaW5jbHVkZS90cmFjZS1jbWQvdHJhY2UtY21kLmgNCj4gQEAgLTM1MSw2
+ICszNTEsMTAgQEAgaW50IHRyYWNlY21kX21zZ19yZWN2X3RyYWNlX3Jlc3Aoc3RydWN0IHRyYWNl
+Y21kX21zZ19oYW5kbGUgKm1zZ19oYW5kbGUsDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGludCAqbnJfY3B1cywgaW50ICpwYWdlX3NpemUsDQo+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHVuc2lnbmVkIGludCAqKnBvcnRzKTsNCj4NCj4gK2ludCB0cmFjZWNt
+ZF9tc2dfcmN2X3RpbWVfc3luYyhzdHJ1Y3QgdHJhY2VjbWRfbXNnX2hhbmRsZSAqbXNnX2hhbmRs
+ZSk7DQo+ICtpbnQgdHJhY2VjbWRfbXNnX3NuZF90aW1lX3N5bmMoc3RydWN0IHRyYWNlY21kX21z
+Z19oYW5kbGUgKm1zZ19oYW5kbGUsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBj
+aGFyICpjbG9ja19zdHIsIGxvbmcgbG9uZyAqdG9mZnNldCk7DQo+ICsNCj4gIGludCB0cmFjZWNt
+ZF9tc2dfd2FpdF9jbG9zZShzdHJ1Y3QgdHJhY2VjbWRfbXNnX2hhbmRsZSAqbXNnX2hhbmRsZSk7
+DQo+DQo+ICAvKiAtLS0gUGx1Z2luIGhhbmRsaW5nIC0tLSAqLw0KPiBkaWZmIC0tZ2l0IGEvdHJh
+Y2VjbWQvaW5jbHVkZS90cmFjZS1sb2NhbC5oIGIvdHJhY2VjbWQvaW5jbHVkZS90cmFjZS1sb2Nh
+bC5oDQo+IGluZGV4IDgyM2QzMjMuLmM1MDJjNzAgMTAwNjQ0DQo+IC0tLSBhL3RyYWNlY21kL2lu
+Y2x1ZGUvdHJhY2UtbG9jYWwuaA0KPiArKysgYi90cmFjZWNtZC9pbmNsdWRlL3RyYWNlLWxvY2Fs
+LmgNCj4gQEAgLTIyNSw2ICsyMjUsMTEgQEAgdm9pZCBzaG93X2luc3RhbmNlX2ZpbGUoc3RydWN0
+IGJ1ZmZlcl9pbnN0YW5jZSAqaW5zdGFuY2UsIGNvbnN0IGNoYXIgKm5hbWUpOw0KPg0KPiAgaW50
+IGNvdW50X2NwdXModm9pZCk7DQo+DQo+ICtzdHJ1Y3QgYnVmZmVyX2luc3RhbmNlICpjbG9ja19z
+eW5jaF9lbmFibGUoaW50IGZkLCBjaGFyICpjbG9jaywNCj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIGludCAqdHhfZXZlbnQsIGludCAqcnhfZXZlbnQpOw0KPiAr
+dm9pZCBjbG9ja19zeW5jaF9kaXNhYmxlKGludCBmZCwgc3RydWN0IGJ1ZmZlcl9pbnN0YW5jZSAq
+aW5zdGFuY2UpOw0KPiArc3RydWN0IHRlcF9oYW5kbGUgKmNsb2NrX3N5bmNoX2dldF90ZXAoc3Ry
+dWN0IGJ1ZmZlcl9pbnN0YW5jZSAqaW5zdGFuY2UpOw0KPiArDQo+ICAvKiBObyBsb25nZXIgaW4g
+ZXZlbnQtdXRpbHMuaCAqLw0KPiAgdm9pZCBfX25vcmV0dXJuIGRpZShjb25zdCBjaGFyICpmbXQs
+IC4uLik7IC8qIENhbiBiZSBvdmVycmlkZW4gKi8NCj4gIHZvaWQgKm1hbGxvY19vcl9kaWUodW5z
+aWduZWQgaW50IHNpemUpOyAvKiBDYW4gYmUgb3ZlcnJpZGRlbiAqLw0KPiBkaWZmIC0tZ2l0IGEv
+dHJhY2VjbWQvdHJhY2UtbGlzdGVuLmMgYi90cmFjZWNtZC90cmFjZS1saXN0ZW4uYw0KPiBpbmRl
+eCA5YjUwMTQ3Li43NzgzYTY4IDEwMDY0NA0KPiAtLS0gYS90cmFjZWNtZC90cmFjZS1saXN0ZW4u
+Yw0KPiArKysgYi90cmFjZWNtZC90cmFjZS1saXN0ZW4uYw0KPiBAQCAtNDA0LDYgKzQwNCw5IEBA
+IHN0YXRpYyBpbnQgY29tbXVuaWNhdGVfd2l0aF9jbGllbnQoc3RydWN0IHRyYWNlY21kX21zZ19o
+YW5kbGUgKm1zZ19oYW5kbGUpDQo+DQo+ICAgICAgICAgICAgICAgICBtc2dfaGFuZGxlLT52ZXJz
+aW9uID0gVjNfUFJPVE9DT0w7DQo+DQo+ICsgICAgICAgICAgICAgICAvKiB0aW1lIHN5bmMgd2l0
+aCB0aGUgdjMgY2xpZW50ICovDQo+ICsgICAgICAgICAgICAgICB0cmFjZWNtZF9tc2dfcmN2X3Rp
+bWVfc3luYyhtc2dfaGFuZGxlKTsNCj4gKw0KPiAgICAgICAgICAgICAgICAgLyogcmVhZCB0aGUg
+Q1BVIGNvdW50LCB0aGUgcGFnZSBzaXplLCBhbmQgb3B0aW9ucyAqLw0KPiAgICAgICAgICAgICAg
+ICAgaWYgKChwYWdlc2l6ZSA9IHRyYWNlY21kX21zZ19pbml0aWFsX3NldHRpbmcobXNnX2hhbmRs
+ZSkpIDwgMCkNCj4gICAgICAgICAgICAgICAgICAgICAgICAgZ290byBvdXQ7DQo+IGRpZmYgLS1n
+aXQgYS90cmFjZWNtZC90cmFjZS1tc2cuYyBiL3RyYWNlY21kL3RyYWNlLW1zZy5jDQo+IGluZGV4
+IDQ2YjE4YWEuLmUyNjRmMTAgMTAwNjQ0DQo+IC0tLSBhL3RyYWNlY21kL3RyYWNlLW1zZy5jDQo+
+ICsrKyBiL3RyYWNlY21kL3RyYWNlLW1zZy5jDQo+IEBAIC0xOCw5ICsxOCwxMSBAQA0KPiAgI2lu
+Y2x1ZGUgPHN0ZGFyZy5oPg0KPiAgI2luY2x1ZGUgPHN0cmluZy5oPg0KPiAgI2luY2x1ZGUgPHVu
+aXN0ZC5oPg0KPiArI2luY2x1ZGUgPHRpbWUuaD4NCj4gICNpbmNsdWRlIDxhcnBhL2luZXQuaD4N
+Cj4gICNpbmNsdWRlIDxzeXMvdHlwZXMuaD4NCj4gICNpbmNsdWRlIDxsaW51eC90eXBlcy5oPg0K
+PiArI2luY2x1ZGUgPGxpbnV4L3ZtX3NvY2tldHMuaD4NCj4NCj4gICNpbmNsdWRlICJ0cmFjZS1j
+bWQtbG9jYWwuaCINCj4gICNpbmNsdWRlICJ0cmFjZS1sb2NhbC5oIg0KPiBAQCAtMjgsNiArMzAs
+OCBAQA0KPg0KPiAgdHlwZWRlZiBfX3UzMiB1MzI7DQo+ICB0eXBlZGVmIF9fYmUzMiBiZTMyOw0K
+PiArdHlwZWRlZiBfX3U2NCB1NjQ7DQo+ICt0eXBlZGVmIF9fczY0IHM2NDsNCj4NCj4gIHN0YXRp
+YyBpbmxpbmUgdm9pZCBkcHJpbnQoY29uc3QgY2hhciAqZm10LCAuLi4pDQo+ICB7DQo+IEBAIC01
+MCwxMSArNTQsMjAgQEAgc3RhdGljIGlubGluZSB2b2lkIGRwcmludChjb25zdCBjaGFyICpmbXQs
+IC4uLikNCj4NCj4gIHVuc2lnbmVkIGludCBwYWdlX3NpemU7DQo+DQo+ICsvKiBUcnkgYSBmZXcg
+dGltZXMgdG8gZ2V0IGFuIGFjY3VyYXRlIHRpbWUgc3luYyAqLw0KPiArI2RlZmluZSBUU1lOQ19U
+UklFUyA1MDAwDQo+ICsjZGVmaW5lIFRTWU5DX1RSRVNDSCAxMDAwMA0KDQpJIHRoaW5rIHdlIHNo
+b3VsZCBkcm9wIHRoaXMgZnVkZ2luZyBjb25zdGFudC4gSW5zdGVhZCBvZiB0YWtpbmcNCnNhbXBs
+ZXMgd2l0aCBvZmZzZXQgaW4gdGhlIHJhbmdlIFttaW4sIG1pbiArIFRTWU5DX1RSRVNIXSwgd2Ug
+Y2FuIHRha2UNCnRoZSBzbWFsbGVzdCBzYXkgNSUgb2YgdGhlIHNhbXBsZXMgKGFsc28gbm8gbmVl
+ZCBmb3Igc29ydGluZywgY2FuIGJlDQpkb25lIGluIGxpbmVhciB0aW1lIHdpdGggay1zZWxlY3Qp
+Lg0KDQo+ICsNCj4gIHN0cnVjdCB0cmFjZWNtZF9tc2dfc2VydmVyIHsNCj4gICAgICAgICBzdHJ1
+Y3QgdHJhY2VjbWRfbXNnX2hhbmRsZSBoYW5kbGU7DQo+ICAgICAgICAgaW50ICAgICAgICAgICAg
+ICAgICAgICAgZG9uZTsNCj4gIH07DQo+DQo+ICtzdHJ1Y3QgY2xvY2tfc3luY2hfZXZlbnQgew0K
+PiArICAgICAgIGludCAgICAgICAgICAgICAgICAgICAgIGlkOw0KPiArICAgICAgIHVuc2lnbmVk
+IGxvbmcgbG9uZyAgICAgIHRzOw0KPiArfTsNCj4gKw0KPiAgc3RhdGljIHN0cnVjdCB0cmFjZWNt
+ZF9tc2dfc2VydmVyICoNCj4gIG1ha2Vfc2VydmVyKHN0cnVjdCB0cmFjZWNtZF9tc2dfaGFuZGxl
+ICptc2dfaGFuZGxlKQ0KPiAgew0KPiBAQCAtOTAsNiArMTAzLDE2IEBAIHN0cnVjdCB0cmFjZWNt
+ZF9tc2dfdHJhY2VfcmVzcCB7DQo+ICAgICAgICAgYmUzMiBwYWdlX3NpemU7DQo+ICB9IF9fYXR0
+cmlidXRlX18oKHBhY2tlZCkpOw0KPg0KPiArc3RydWN0IHRyYWNlY21kX21zZ190aW1lX3N5bmNf
+aW5pdCB7DQo+ICsgICAgICAgY2hhciBjbG9ja1szMl07DQo+ICsgICAgICAgczY0ICB0b2Zmc2V0
+Ow0KPiArfSBfX2F0dHJpYnV0ZV9fKChwYWNrZWQpKTsNCj4gKw0KPiArc3RydWN0IHRyYWNlY21k
+X21zZ190aW1lX3N5bmMgew0KPiArICAgICAgIHU2NCB0bG9jYWxfcng7DQo+ICsgICAgICAgdTY0
+IHRsb2NhbF90eDsNCj4gK30gX19hdHRyaWJ1dGVfXygocGFja2VkKSk7DQo+ICsNCj4gIHN0cnVj
+dCB0cmFjZWNtZF9tc2dfaGVhZGVyIHsNCj4gICAgICAgICBiZTMyICAgIHNpemU7DQo+ICAgICAg
+ICAgYmUzMiAgICBjbWQ7DQo+IEBAIC05NywxMyArMTIwLDE1IEBAIHN0cnVjdCB0cmFjZWNtZF9t
+c2dfaGVhZGVyIHsNCj4gIH0gX19hdHRyaWJ1dGVfXygocGFja2VkKSk7DQo+DQo+ICAjZGVmaW5l
+IE1TR19NQVAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgXA0KPiAtICAgICAgIEMoQ0xPU0UsICAgICAgICAwLCAgICAgIDApLCAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQo+IC0gICAgICAgQyhUSU5JVCwg
+ICAgICAgIDEsICAgICAgc2l6ZW9mKHN0cnVjdCB0cmFjZWNtZF9tc2dfdGluaXQpKSwgICAgIFwN
+Cj4gLSAgICAgICBDKFJJTklULCAgICAgICAgMiwgICAgICBzaXplb2Yoc3RydWN0IHRyYWNlY21k
+X21zZ19yaW5pdCkpLCAgICAgXA0KPiAtICAgICAgIEMoU0VORF9EQVRBLCAgICAzLCAgICAgIDAp
+LCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQo+IC0gICAgICAgQyhGSU5f
+REFUQSwgICAgIDQsICAgICAgMCksICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IFwNCj4gLSAgICAgICBDKFRSQUNFX1JFUSwgICAgNSwgICAgICBzaXplb2Yoc3RydWN0IHRyYWNl
+Y21kX21zZ190cmFjZV9yZXEpKSwgXA0KPiAtICAgICAgIEMoVFJBQ0VfUkVTUCwgICA2LCAgICAg
+IHNpemVvZihzdHJ1Y3QgdHJhY2VjbWRfbXNnX3RyYWNlX3Jlc3ApKSwNCj4gKyAgICAgICBDKENM
+T1NFLCAgICAgICAgICAgICAgICAwLCAwKSwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgXA0KPiArICAgICAgIEMoVElOSVQsICAgICAgICAgICAgICAgIDEsIHNpemVvZihzdHJ1Y3Qg
+dHJhY2VjbWRfbXNnX3Rpbml0KSksICBcDQo+ICsgICAgICAgQyhSSU5JVCwgICAgICAgICAgICAg
+ICAgMiwgc2l6ZW9mKHN0cnVjdCB0cmFjZWNtZF9tc2dfcmluaXQpKSwgIFwNCj4gKyAgICAgICBD
+KFNFTkRfREFUQSwgICAgICAgICAgICAzLCAwKSwgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgXA0KPiArICAgICAgIEMoRklOX0RBVEEsICAgICAgICAgICAgIDQsIDApLCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBcDQo+ICsgICAgICAgQyhUUkFDRV9SRVEsICAgICAg
+ICAgICAgNSwgc2l6ZW9mKHN0cnVjdCB0cmFjZWNtZF9tc2dfdHJhY2VfcmVxKSksXA0KPiArICAg
+ICAgIEMoVFJBQ0VfUkVTUCwgICAgICAgICAgIDYsIHNpemVvZihzdHJ1Y3QgdHJhY2VjbWRfbXNn
+X3RyYWNlX3Jlc3ApKSxcDQo+ICsgICAgICAgQyhUSU1FX1NZTkNfSU5JVCwgICAgICAgNywgc2l6
+ZW9mKHN0cnVjdCB0cmFjZWNtZF9tc2dfdGltZV9zeW5jX2luaXQpKSxcDQo+ICsgICAgICAgQyhU
+SU1FX1NZTkMsICAgICAgICAgICAgOCwgc2l6ZW9mKHN0cnVjdCB0cmFjZWNtZF9tc2dfdGltZV9z
+eW5jKSksDQo+DQo+ICAjdW5kZWYgQw0KPiAgI2RlZmluZSBDKGEsYixjKSAgICAgICBNU0dfIyNh
+ID0gYg0KPiBAQCAtMTMzLDEwICsxNTgsMTIgQEAgc3RhdGljIGNvbnN0IGNoYXIgKmNtZF90b19u
+YW1lKGludCBjbWQpDQo+ICBzdHJ1Y3QgdHJhY2VjbWRfbXNnIHsNCj4gICAgICAgICBzdHJ1Y3Qg
+dHJhY2VjbWRfbXNnX2hlYWRlciAgICAgICAgICAgICAgaGRyOw0KPiAgICAgICAgIHVuaW9uIHsN
+Cj4gLSAgICAgICAgICAgICAgIHN0cnVjdCB0cmFjZWNtZF9tc2dfdGluaXQgICAgICAgdGluaXQ7
+DQo+IC0gICAgICAgICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX3Jpbml0ICAgICAgIHJpbml0
+Ow0KPiAtICAgICAgICAgICAgICAgc3RydWN0IHRyYWNlY21kX21zZ190cmFjZV9yZXEgICB0cmFj
+ZV9yZXE7DQo+IC0gICAgICAgICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX3RyYWNlX3Jlc3Ag
+IHRyYWNlX3Jlc3A7DQo+ICsgICAgICAgICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX3Rpbml0
+ICAgICAgICAgICAgICAgdGluaXQ7DQo+ICsgICAgICAgICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRf
+bXNnX3Jpbml0ICAgICAgICAgICAgICAgcmluaXQ7DQo+ICsgICAgICAgICAgICAgICBzdHJ1Y3Qg
+dHJhY2VjbWRfbXNnX3RyYWNlX3JlcSAgICAgICAgICAgdHJhY2VfcmVxOw0KPiArICAgICAgICAg
+ICAgICAgc3RydWN0IHRyYWNlY21kX21zZ190cmFjZV9yZXNwICAgICAgICAgIHRyYWNlX3Jlc3A7
+DQo+ICsgICAgICAgICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX3RpbWVfc3luY19pbml0ICAg
+ICAgdGltZV9zeW5jX2luaXQ7DQo+ICsgICAgICAgICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNn
+X3RpbWVfc3luYyAgICAgICAgICAgdGltZV9zeW5jOw0KPiAgICAgICAgIH07DQo+ICAgICAgICAg
+dW5pb24gew0KPiAgICAgICAgICAgICAgICAgc3RydWN0IHRyYWNlY21kX21zZ19vcHQgICAgICAg
+ICAqb3B0Ow0KPiBAQCAtODI1LDYgKzg1MiwyNjQgQEAgb3V0Og0KPiAgICAgICAgIHJldHVybiBy
+ZXQ7DQo+ICB9DQo+DQo+ICtzdGF0aWMgaW50DQo+ICtmaW5kX2V2ZW50c19pbl9wYWdlKHN0cnVj
+dCB0ZXBfaGFuZGxlICpwZXZlbnQsIHZvaWQgKnBhZ2UsDQo+ICsgICAgICAgICAgICAgICAgICAg
+aW50IHNpemUsIHN0cnVjdCBjbG9ja19zeW5jaF9ldmVudCAqZXZlbnRzKQ0KPiArew0KPiArICAg
+ICAgIHN0cnVjdCB0ZXBfZXZlbnQgKmV2ZW50ID0gTlVMTDsNCj4gKyAgICAgICBzdHJ1Y3QgdGVw
+X3JlY29yZCAqbGFzdF9yZWNvcmQgPSBOVUxMOw0KPiArICAgICAgIHN0cnVjdCB0ZXBfcmVjb3Jk
+ICpyZWNvcmQ7DQo+ICsgICAgICAgaW50IGlkLCBpLCBqLCBjbnQgPSAwOw0KPiArDQo+ICsgICAg
+ICAgaWYgKHNpemUgPD0gMCkNCj4gKyAgICAgICAgICAgICAgIHJldHVybiAwOw0KPiArICAgICAg
+IGZvciAoaSA9IDA7IGV2ZW50c1tpXS5pZDsgaSsrKSB7DQo+ICsgICAgICAgICAgICAgICBpZiAo
+IWV2ZW50c1tpXS50cykNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgY250Kys7DQo+ICsgICAg
+ICAgfQ0KPiArDQo+ICsgICAgICAgd2hpbGUgKGNudCkgew0KPiArICAgICAgICAgICAgICAgZXZl
+bnQgPSBOVUxMOw0KPiArICAgICAgICAgICAgICAgcmVjb3JkID0gdHJhY2VjbWRfcmVhZF9wYWdl
+X3JlY29yZChwZXZlbnQsIHBhZ2UsIHNpemUsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGxhc3RfcmVjb3JkKTsNCj4gKyAgICAgICAgICAgICAg
+IGlmICghcmVjb3JkKQ0KPiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAg
+ICAgICAgICAgIGZyZWVfcmVjb3JkKGxhc3RfcmVjb3JkKTsNCj4gKyAgICAgICAgICAgICAgIGlk
+ID0gdGVwX2RhdGFfdHlwZShwZXZlbnQsIHJlY29yZCk7DQo+ICsgICAgICAgICAgICAgICBmb3Ig
+KGkgPSAwOyBldmVudHNbaV0uaWQ7IGkrKykNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgaWYg
+KCFldmVudHNbaV0udHMgJiYgZXZlbnRzW2ldLmlkID09IGlkKSB7DQo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgZXZlbnQgPSB0ZXBfZGF0YV9ldmVudF9mcm9tX3R5cGUocGV2ZW50
+LCBpZCk7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgIH0NCj4gKyAgICAgICAgICAgICAgIGlmIChldmVudCkgew0KPiAr
+ICAgICAgICAgICAgICAgICAgICAgICBmb3IgKGogPSAwOyBqIDwgaTsgaisrKQ0KPiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChldmVudHNbal0udHMgJiYgZXZlbnRzW2pdLnRz
+ID4gcmVjb3JkLT50cykNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGJyZWFrOw0KPiArICAgICAgICAgICAgICAgICAgICAgICBpZiAoaiA9PSBpKSB7DQo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgZXZlbnRzW2ldLnRzID0gcmVjb3JkLT50czsNCj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbnQtLTsNCj4gKyAgICAgICAgICAgICAg
+ICAgICAgICAgfQ0KPiArICAgICAgICAgICAgICAgfQ0KPiArICAgICAgICAgICAgICAgbGFzdF9y
+ZWNvcmQgPSByZWNvcmQ7DQo+ICsgICAgICAgfQ0KPiArICAgICAgIGZyZWVfcmVjb3JkKGxhc3Rf
+cmVjb3JkKTsNCj4gKw0KPiArICAgICAgIHJldHVybiBjbnQ7DQo+ICt9DQo+ICsNCj4gK3N0YXRp
+YyBpbnQgY2xvY2tfc3luY2hfZmluZF9ldmVudHMoc3RydWN0IHRlcF9oYW5kbGUgKnRlcCwNCj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgYnVmZmVyX2luc3RhbmNl
+ICppbnN0YW5jZSwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qg
+Y2xvY2tfc3luY2hfZXZlbnQgKmV2ZW50cykNCj4gK3sNCj4gKyAgICAgICBzdHJ1Y3QgZGlyZW50
+ICpkZW50Ow0KPiArICAgICAgIGludCB0cyA9IDA7DQo+ICsgICAgICAgdm9pZCAqcGFnZTsNCj4g
+KyAgICAgICBjaGFyICpwYXRoOw0KPiArICAgICAgIGNoYXIgKmZpbGU7DQo+ICsgICAgICAgRElS
+ICpkaXI7DQo+ICsgICAgICAgaW50IGxlbjsNCj4gKyAgICAgICBpbnQgZmQ7DQo+ICsgICAgICAg
+aW50IHI7DQo+ICsNCj4gKyAgICAgICBwYWdlX3NpemUgPSBnZXRwYWdlc2l6ZSgpOw0KPiArDQo+
+ICsgICAgICAgcGF0aCA9IGdldF9pbnN0YW5jZV9maWxlKGluc3RhbmNlLCAicGVyX2NwdSIpOw0K
+PiArICAgICAgIGlmICghcGF0aCkNCj4gKyAgICAgICAgICAgICAgIHJldHVybiB0czsNCj4gKw0K
+PiArICAgICAgIGRpciA9IG9wZW5kaXIocGF0aCk7DQo+ICsgICAgICAgaWYgKCFkaXIpDQo+ICsg
+ICAgICAgICAgICAgICBnb3RvIG91dDsNCj4gKw0KPiArICAgICAgIGxlbiA9IHN0cmxlbihwYXRo
+KTsNCj4gKyAgICAgICBmaWxlID0gbWFsbG9jKGxlbiArIHN0cmxlbigidHJhY2VfcGlwZV9yYXci
+KSArIDMyKTsNCj4gKyAgICAgICBwYWdlID0gbWFsbG9jKHBhZ2Vfc2l6ZSk7DQo+ICsgICAgICAg
+aWYgKCFmaWxlIHx8ICFwYWdlKQ0KPiArICAgICAgICAgICAgICAgZGllKCJGYWlsZWQgdG8gYWxs
+b2NhdGUgdGltZV9zdGFtcCBpbmZvIik7DQo+ICsNCj4gKyAgICAgICB3aGlsZSAoKGRlbnQgPSBy
+ZWFkZGlyKGRpcikpKSB7DQo+ICsNCj4gKyAgICAgICAgICAgICAgIGNvbnN0IGNoYXIgKm5hbWUg
+PSBkZW50LT5kX25hbWU7DQo+ICsNCj4gKyAgICAgICAgICAgICAgIGlmIChzdHJuY21wKG5hbWUs
+ICJjcHUiLCAzKSAhPSAwKQ0KPiArICAgICAgICAgICAgICAgICAgICAgICBjb250aW51ZTsNCj4g
+KyAgICAgICAgICAgICAgIHNwcmludGYoZmlsZSwgIiVzLyVzL3RyYWNlX3BpcGVfcmF3IiwgcGF0
+aCwgbmFtZSk7DQo+ICsgICAgICAgICAgICAgICBmZCA9IG9wZW4oZmlsZSwgT19SRE9OTFkgfCBP
+X05PTkJMT0NLKTsNCj4gKyAgICAgICAgICAgICAgIGlmIChmZCA8IDApDQo+ICsgICAgICAgICAg
+ICAgICAgICAgICAgIGNvbnRpbnVlOw0KPiArICAgICAgICAgICAgICAgZG8gew0KPiArICAgICAg
+ICAgICAgICAgICAgICAgICByID0gcmVhZChmZCwgcGFnZSwgcGFnZV9zaXplKTsNCj4gKyAgICAg
+ICAgICAgICAgICAgICAgICAgaWYgKHIgPiAwKSB7DQo+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgdHMgPSBmaW5kX2V2ZW50c19pbl9wYWdlKHRlcCwgcGFnZSwgciwgZXZlbnRzKTsN
+Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoIXRzKQ0KPiArICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ICsgICAgICAgICAgICAgICAg
+ICAgICAgIH0NCj4gKyAgICAgICAgICAgICAgIH0gd2hpbGUgKHIgPiAwKTsNCj4gKyAgICAgICAg
+ICAgICAgIGNsb3NlKGZkKTsNCj4gKyAgICAgICB9DQo+ICsNCj4gKyAgICAgICBmcmVlKGZpbGUp
+Ow0KPiArICAgICAgIGZyZWUocGFnZSk7DQo+ICsgICAgICAgY2xvc2VkaXIoZGlyKTsNCj4gKw0K
+PiArIG91dDoNCj4gKyAgICAgICB0cmFjZWNtZF9wdXRfdHJhY2luZ19maWxlKHBhdGgpOw0KPiAr
+ICAgICAgIHJldHVybiB0czsNCj4gK30NCj4gKw0KPiArZXh0ZXJuIHN0cnVjdCB0ZXBfaGFuZGxl
+ICpjbG9ja19zeW5jaF9nZXRfdGVwKHN0cnVjdCBidWZmZXJfaW5zdGFuY2UgKmluc3RhbmNlKTsN
+Cj4gKw0KPiAraW50IHRyYWNlY21kX21zZ19yY3ZfdGltZV9zeW5jKHN0cnVjdCB0cmFjZWNtZF9t
+c2dfaGFuZGxlICptc2dfaGFuZGxlKQ0KPiArew0KPiArICAgICAgIHN0cnVjdCBidWZmZXJfaW5z
+dGFuY2UgKnZpbnN0Ow0KPiArICAgICAgIHN0cnVjdCB0cmFjZWNtZF9tc2cgbXNnOw0KPiArICAg
+ICAgIHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXA7DQo+ICsgICAgICAgaW50IHJldDsNCj4gKyAgICAg
+ICBjaGFyICpjbG9jazsNCj4gKyAgICAgICBzdHJ1Y3QgY2xvY2tfc3luY2hfZXZlbnQgZXZlbnRz
+WzNdOw0KPiArDQo+ICsgICAgICAgcmV0ID0gdHJhY2VjbWRfbXNnX3JlY3YobXNnX2hhbmRsZS0+
+ZmQsICZtc2cpOw0KPiArICAgICAgIGlmIChyZXQgPCAwIHx8IG50b2hsKG1zZy5oZHIuY21kKSAh
+PSBNU0dfVElNRV9TWU5DX0lOSVQpDQo+ICsgICAgICAgICAgICAgICByZXR1cm4gMDsNCg0KV2hh
+dCBoYXBwZW5zIHdoZW4gd2UgcmVjZWl2ZSBhIG5vbiBNU0dfVElNRV9TWU5DX0lOSVQgY29tbWFu
+ZCBoZXJlPw0KDQo+ICsgICAgICAgaWYgKCFtc2cudGltZV9zeW5jX2luaXQuY2xvY2tbMF0pDQo+
+ICsgICAgICAgICAgICAgICByZXR1cm4gMDsNCj4gKw0KPiArICAgICAgIGNsb2NrID0gc3RyZHVw
+KG1zZy50aW1lX3N5bmNfaW5pdC5jbG9jayk7DQo+ICsgICAgICAgZXZlbnRzWzJdLmlkID0gMDsN
+Cj4gKyAgICAgICB2aW5zdCA9IGNsb2NrX3N5bmNoX2VuYWJsZShtc2dfaGFuZGxlLT5mZCwgY2xv
+Y2ssDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJmV2ZW50c1sxXS5pZCwg
+JmV2ZW50c1swXS5pZCk7DQo+ICsgICAgICAgdGVwID0gY2xvY2tfc3luY2hfZ2V0X3RlcCh2aW5z
+dCk7DQo+ICsgICAgICAgdHJhY2VjbWRfbXNnX2luaXQoTVNHX1RJTUVfU1lOQ19JTklULCAmbXNn
+KTsNCj4gKyAgICAgICB0cmFjZWNtZF9tc2dfc2VuZChtc2dfaGFuZGxlLT5mZCwgJm1zZyk7DQo+
+ICsNCj4gKyAgICAgICBkbyB7DQo+ICsgICAgICAgICAgICAgICBldmVudHNbMF0udHMgPSAwOw0K
+PiArICAgICAgICAgICAgICAgZXZlbnRzWzFdLnRzID0gMDsNCj4gKyAgICAgICAgICAgICAgIHJl
+dCA9IHRyYWNlY21kX21zZ19yZWN2KG1zZ19oYW5kbGUtPmZkLCAmbXNnKTsNCj4gKyAgICAgICAg
+ICAgICAgIGlmIChyZXQgPCAwIHx8IG50b2hsKG1zZy5oZHIuY21kKSAhPSBNU0dfVElNRV9TWU5D
+KQ0KPiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gKw0KPiArICAgICAgICAgICAg
+ICAgdHJhY2VjbWRfbXNnX3NlbmQobXNnX2hhbmRsZS0+ZmQsICZtc2cpOw0KPiArICAgICAgICAg
+ICAgICAgY2xvY2tfc3luY2hfZmluZF9ldmVudHModGVwLCB2aW5zdCwgZXZlbnRzKTsNCj4gKyAg
+ICAgICAgICAgICAgIHRyYWNlY21kX21zZ19pbml0KE1TR19USU1FX1NZTkMsICZtc2cpOw0KPiAr
+ICAgICAgICAgICAgICAgbXNnLnRpbWVfc3luYy50bG9jYWxfdHggPSBodG9ubGwoZXZlbnRzWzFd
+LnRzKTsNCj4gKyAgICAgICAgICAgICAgIG1zZy50aW1lX3N5bmMudGxvY2FsX3J4ID0gaHRvbmxs
+KGV2ZW50c1swXS50cyk7DQo+ICsgICAgICAgICAgICAgICB0cmFjZWNtZF9tc2dfc2VuZChtc2df
+aGFuZGxlLT5mZCwgJm1zZyk7DQo+ICsgICAgICAgfSB3aGlsZSAodHJ1ZSk7DQo+ICsgICAgICAg
+Y2xvY2tfc3luY2hfZGlzYWJsZShtc2dfaGFuZGxlLT5mZCwgdmluc3QpOw0KPiArICAgICAgIG1z
+Z19mcmVlKCZtc2cpOw0KPiArICAgICAgIHRlcF9mcmVlKHRlcCk7DQo+ICsgICAgICAgZnJlZShj
+bG9jayk7DQo+ICsgICAgICAgcmV0dXJuIHJldDsNCj4gK30NCj4gKw0KPiAraW50IHRyYWNlY21k
+X21zZ19zbmRfdGltZV9zeW5jKHN0cnVjdCB0cmFjZWNtZF9tc2dfaGFuZGxlICptc2dfaGFuZGxl
+LA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hhciAqY2xvY2tfc3RyLCBsb25n
+IGxvbmcgKnRvZmZzZXQpDQo+ICt7DQo+ICsgICAgICAgc3RhdGljIHN0cnVjdCBidWZmZXJfaW5z
+dGFuY2UgKnZpbnN0Ow0KPiArICAgICAgIHN0cnVjdCBjbG9ja19zeW5jaF9ldmVudCBldmVudHNb
+NF07DQo+ICsgICAgICAgbG9uZyBsb25nICpvZmZzZXRzLCAqcmVwbGllczsNCj4gKyAgICAgICBz
+dHJ1Y3QgdHJhY2VjbWRfbXNnIG1zZ19yZXNwOw0KPiArICAgICAgIHN0cnVjdCB0cmFjZWNtZF9t
+c2cgbXNnX3JlcTsNCj4gKyAgICAgICBpbnQgc3luY19sb29wID0gVFNZTkNfVFJJRVM7DQo+ICsg
+ICAgICAgbG9uZyBsb25nIG1zX2RpZmYsIHNtX2RpZmY7DQo+ICsgICAgICAgaW50IGo9IDAsIGkg
+PSAwLCByZXQgPSAwOw0KPiArICAgICAgIHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXA7DQo+ICsgICAg
+ICAgbG9uZyBsb25nIG1fdDEsIG1fdDQ7DQo+ICsgICAgICAgbG9uZyBsb25nIHNfdDIsIHNfdDM7
+DQo+ICsgICAgICAgbG9uZyBsb25nIHRfb2ZmcyA9IDA7DQo+ICsgICAgICAgbG9uZyBsb25nIG1p
+bl9wPTA7DQo+ICsgICAgICAgY2hhciAqY2xvY2s7DQo+ICsNCj4gKyAgICAgICBjbG9jayA9IGNs
+b2NrX3N0cjsNCj4gKyAgICAgICBpZiAoIWNsb2NrKQ0KPiArICAgICAgICAgICAgICAgY2xvY2sg
+PSAibG9jYWwiOw0KPiArDQo+ICsgICAgICAgdHJhY2VjbWRfbXNnX2luaXQoTVNHX1RJTUVfU1lO
+Q19JTklULCAmbXNnX3JlcSk7DQo+ICsgICAgICAgaWYgKHRvZmZzZXQgPT0gTlVMTCkgew0KPiAr
+ICAgICAgICAgICAgICAgbXNnX3JlcS50aW1lX3N5bmNfaW5pdC5jbG9ja1swXSA9IDA7DQo+ICsg
+ICAgICAgICAgICAgICB0cmFjZWNtZF9tc2dfc2VuZChtc2dfaGFuZGxlLT5mZCwgJm1zZ19yZXEp
+Ow0KPiArICAgICAgICAgICAgICAgcmV0dXJuIDA7DQo+ICsgICAgICAgfQ0KPiArICAgICAgIG9m
+ZnNldHMgPSBjYWxsb2Moc2l6ZW9mKGxvbmcgbG9uZyksIFRTWU5DX1RSSUVTKTsNCj4gKyAgICAg
+ICByZXBsaWVzID0gY2FsbG9jKHNpemVvZihsb25nIGxvbmcpLCBUU1lOQ19UUklFUyk7DQo+ICsg
+ICAgICAgaWYgKCFvZmZzZXRzIHx8ICFyZXBsaWVzKSB7DQo+ICsgICAgICAgICAgICAgICBmcmVl
+KG9mZnNldHMpOw0KPiArICAgICAgICAgICAgICAgZnJlZShyZXBsaWVzKTsNCj4gKyAgICAgICAg
+ICAgICAgIHJldHVybiAwOw0KPiArICAgICAgIH0NCj4gKw0KPiArICAgICAgIHN0cm5jcHkobXNn
+X3JlcS50aW1lX3N5bmNfaW5pdC5jbG9jaywgY2xvY2ssIDE2KTsNCj4gKyAgICAgICB0cmFjZWNt
+ZF9tc2dfc2VuZChtc2dfaGFuZGxlLT5mZCwgJm1zZ19yZXEpOw0KPiArICAgICAgIHJldCA9IHRy
+YWNlY21kX21zZ19yZWN2KG1zZ19oYW5kbGUtPmZkLCAmbXNnX3Jlc3ApOw0KPiArICAgICAgIGlm
+IChyZXQgPCAwIHx8IG50b2hsKG1zZ19yZXNwLmhkci5jbWQpICE9IE1TR19USU1FX1NZTkNfSU5J
+VCkgew0KPiArICAgICAgICAgICAgICAgZnJlZShvZmZzZXRzKTsNCj4gKyAgICAgICAgICAgICAg
+IGZyZWUocmVwbGllcyk7DQo+ICsgICAgICAgICAgICAgICByZXR1cm4gMDsNCj4gKyAgICAgICB9
+DQo+ICsgICAgICAgZXZlbnRzWzNdLmlkID0gMDsNCj4gKyAgICAgICB2aW5zdCA9IGNsb2NrX3N5
+bmNoX2VuYWJsZShtc2dfaGFuZGxlLT5mZCwgY2xvY2tfc3RyLA0KPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICZldmVudHNbMF0uaWQsICZldmVudHNbMV0uaWQpOw0KPiArICAg
+ICAgIHRlcCA9IGNsb2NrX3N5bmNoX2dldF90ZXAodmluc3QpOw0KPiArICAgICAgICp0b2Zmc2V0
+ID0gMDsNCj4gKw0KPiArICAgICAgIGRvIHsNCj4gKyAgICAgICAgICAgICAgIG1lbXNldCgmbXNn
+X3Jlc3AsIDAsIHNpemVvZihtc2dfcmVzcCkpOw0KPiArICAgICAgICAgICAgICAgZXZlbnRzWzBd
+LnRzID0gMDsNCj4gKyAgICAgICAgICAgICAgIGV2ZW50c1sxXS50cyA9IDA7DQo+ICsgICAgICAg
+ICAgICAgICBldmVudHNbMl0udHMgPSAwOw0KPiArICAgICAgICAgICAgICAgdHJhY2VjbWRfbXNn
+X2luaXQoTVNHX1RJTUVfU1lOQywgJm1zZ19yZXEpOw0KPiArDQo+ICsgICAgICAgICAgICAgICB0
+cmFjZWNtZF9tc2dfc2VuZChtc2dfaGFuZGxlLT5mZCwgJm1zZ19yZXEpOw0KPiArICAgICAgICAg
+ICAgICAgcmV0ID0gdHJhY2VjbWRfbXNnX3JlY3YobXNnX2hhbmRsZS0+ZmQsICZtc2dfcmVzcCk7
+DQo+ICsgICAgICAgICAgICAgICBpZiAocmV0IDwgMCB8fCBudG9obChtc2dfcmVzcC5oZHIuY21k
+KSAhPSBNU0dfVElNRV9TWU5DKQ0KPiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4g
+KyAgICAgICAgICAgICAgIHJldCA9IHRyYWNlY21kX21zZ19yZWN2KG1zZ19oYW5kbGUtPmZkLCAm
+bXNnX3Jlc3ApOw0KPiArICAgICAgICAgICAgICAgaWYgKHJldCA8IDAgfHwgbnRvaGwobXNnX3Jl
+c3AuaGRyLmNtZCkgIT0gTVNHX1RJTUVfU1lOQykNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+YnJlYWs7DQo+ICsgICAgICAgICAgICAgICBjbG9ja19zeW5jaF9maW5kX2V2ZW50cyh0ZXAsIHZp
+bnN0LCBldmVudHMpOw0KPiArICAgICAgICAgICAgICAgbV90MSA9IGV2ZW50c1swXS50czsNCj4g
+KyAgICAgICAgICAgICAgIG1fdDQgPSBldmVudHNbMV0udHM7DQo+ICsgICAgICAgICAgICAgICBz
+X3QyID0gaHRvbmxsKG1zZ19yZXNwLnRpbWVfc3luYy50bG9jYWxfcngpOw0KPiArICAgICAgICAg
+ICAgICAgc190MyA9IG50b2hsbChtc2dfcmVzcC50aW1lX3N5bmMudGxvY2FsX3R4KTsNCj4gKyAg
+ICAgICAgICAgICAgIGlmICghbV90MSB8fCAhbV90NCB8fCAhc190MiB8fCAhc190MykNCj4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ICsgICAgICAgICAgICAgICBpZiAoIG1f
+dDEgPj0gbV90NCkNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ICsgICAg
+ICAgICAgICAgICBtc19kaWZmID0gc190MiAtIG1fdDE7DQo+ICsgICAgICAgICAgICAgICBzbV9k
+aWZmID0gbV90NCAtIHNfdDM7DQo+ICsgICAgICAgICAgICAgICBvZmZzZXRzW2ldID0gKG1zX2Rp
+ZmYgLSBzbV9kaWZmKS8yOw0KPiArICAgICAgICAgICAgICAgcmVwbGllc1tpXSA9IGFicyhzbV9k
+aWZmKTsNCj4gKyAgICAgICAgICAgICAgIGlmICghbWluX3AgfHwgbWluX3AgPiByZXBsaWVzW2ld
+KQ0KPiArICAgICAgICAgICAgICAgICAgICAgICBtaW5fcCA9IHJlcGxpZXNbaV07DQo+ICsgICAg
+ICAgICAgICAgICBpKys7DQo+ICsgICAgICAgfSB3aGlsZSAoLS1zeW5jX2xvb3ApOw0KPiArICAg
+ICAgIGNsb2NrX3N5bmNoX2Rpc2FibGUobXNnX2hhbmRsZS0+ZmQsIHZpbnN0KTsNCj4gKw0KPiAr
+ICAgICAgIGZvciAoaT0wOyBpPFRTWU5DX1RSSUVTOyBpKyspIHsNCj4gKyAgICAgICAgICAgICAg
+IGlmIChyZXBsaWVzW2ldICYmIHJlcGxpZXNbaV0gPCAoVFNZTkNfVFJFU0NIK21pbl9wKSkgew0K
+PiArICAgICAgICAgICAgICAgICAgICAgICB0X29mZnMgKz0gb2Zmc2V0c1tpXTsNCj4gKyAgICAg
+ICAgICAgICAgICAgICAgICAgaisrOw0KPiArICAgICAgICAgICAgICAgfQ0KPiArICAgICAgIH0N
+Cj4gKyAgICAgICBpZihqKQ0KPiArICAgICAgICAgICAgICAgdF9vZmZzIC89IGo7DQo+ICsNCj4g
+KyAgICAgICB0cmFjZWNtZF9tc2dfaW5pdChNU0dfVElNRV9TWU5DX0lOSVQsICZtc2dfcmVxKTsN
+Cj4gKyAgICAgICBtc2dfcmVxLnRpbWVfc3luY19pbml0LmNsb2NrWzBdID0gMDsNCj4gKyAgICAg
+ICBtc2dfcmVxLnRpbWVfc3luY19pbml0LnRvZmZzZXQgPSB0X29mZnM7DQo+ICsgICAgICAgdHJh
+Y2VjbWRfbXNnX3NlbmQobXNnX2hhbmRsZS0+ZmQsICZtc2dfcmVxKTsNCj4gKw0KPiArICAgICAg
+IG1zZ19mcmVlKCZtc2dfcmVxKTsNCj4gKyAgICAgICBtc2dfZnJlZSgmbXNnX3Jlc3ApOw0KPiAr
+ICAgICAgIGZyZWUob2Zmc2V0cyk7DQo+ICsgICAgICAgZnJlZShyZXBsaWVzKTsNCj4gKw0KPiAr
+ICAgICAgICp0b2Zmc2V0ID0gdF9vZmZzOw0KPiArDQo+ICsgICAgICAgcmV0dXJuIHJldDsNCj4g
+K30NCj4gKw0KPiAgc3RhdGljIGludCBtYWtlX3RyYWNlX3Jlc3Aoc3RydWN0IHRyYWNlY21kX21z
+ZyAqbXNnLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnQgcGFnZV9zaXplLCBpbnQg
+bnJfY3B1cywgdW5zaWduZWQgaW50ICpwb3J0cykNCj4gIHsNCj4gZGlmZiAtLWdpdCBhL3RyYWNl
+Y21kL3RyYWNlLXJlY29yZC5jIGIvdHJhY2VjbWQvdHJhY2UtcmVjb3JkLmMNCj4gaW5kZXggNmQ2
+Nzg1OC4uYWY0NDJmZSAxMDA2NDQNCj4gLS0tIGEvdHJhY2VjbWQvdHJhY2UtcmVjb3JkLmMNCj4g
+KysrIGIvdHJhY2VjbWQvdHJhY2UtcmVjb3JkLmMNCj4gQEAgLTMxNTcsNyArMzE1Nyw0MSBAQCBz
+dGF0aWMgdm9pZCBjaGVja19wcm90b2NvbF92ZXJzaW9uKHN0cnVjdCB0cmFjZWNtZF9tc2dfaGFu
+ZGxlICptc2dfaGFuZGxlKQ0KPiAgICAgICAgIH0NCj4gIH0NCj4NCj4gLXN0YXRpYyBzdHJ1Y3Qg
+dHJhY2VjbWRfbXNnX2hhbmRsZSAqc2V0dXBfbmV0d29yayhzdHJ1Y3QgYnVmZmVyX2luc3RhbmNl
+ICppbnN0YW5jZSkNCj4gK3N0YXRpYyB2b2lkIHN5bmNfdGltZV93aXRoX2xpc3RlbmVyX3YzKHN0
+cnVjdCB0cmFjZWNtZF9tc2dfaGFuZGxlICptc2dfaGFuZGxlLA0KPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgY29tbW9uX3JlY29yZF9jb250ZXh0ICpjdHgp
+DQo+ICt7DQo+ICsgICAgICAgc3RydWN0IGJ1ZmZlcl9pbnN0YW5jZSAgKmluc3RhbmNlOw0KPiAr
+ICAgICAgIGxvbmcgbG9uZyB0b2Zmc2V0ID0gMDsNCj4gKyAgICAgICBjaGFyICpjbG9jayA9IE5V
+TEw7DQo+ICsNCj4gKyAgICAgICBpbnN0YW5jZSA9IGN0eC0+aW5zdGFuY2U7DQo+ICsgICAgICAg
+d2hpbGUgKGluc3RhbmNlKSB7DQo+ICsgICAgICAgICAgICAgICBjbG9jayA9IGluc3RhbmNlLT5j
+bG9jazsNCj4gKyAgICAgICAgICAgICAgIGlmIChjbG9jaykNCj4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgYnJlYWs7DQo+ICsgICAgICAgICAgICAgICBpbnN0YW5jZSA9IGluc3RhbmNlLT5uZXh0
+Ow0KPiArICAgICAgIH0NCj4gKw0KPiArICAgICAgIGlmIChjdHgtPmRhdGFfZmxhZ3MgJiBEQVRB
+X0ZMX0RBVEUgfHwNCj4gKyAgICAgICAgICAgY3R4LT5kYXRhX2ZsYWdzICYgREFUQV9GTF9PRkZT
+RVQpIHsNCj4gKyAgICAgICAgICAgICAgIHRyYWNlY21kX21zZ19zbmRfdGltZV9zeW5jKG1zZ19o
+YW5kbGUsIGNsb2NrLCBOVUxMKTsNCj4gKyAgICAgICAgICAgICAgIHJldHVybjsNCj4gKyAgICAg
+ICB9DQo+ICsNCj4gKyAgICAgICB0cmFjZWNtZF9tc2dfc25kX3RpbWVfc3luYyhtc2dfaGFuZGxl
+LCBjbG9jaywgJnRvZmZzZXQpOw0KPiArDQo+ICsgICAgICAgZnJlZShjdHgtPmRhdGUydHMpOw0K
+PiArICAgICAgIC8qIDIwIGRpZ2l0cyArIFwwICovDQo+ICsgICAgICAgY3R4LT5kYXRlMnRzID0g
+bWFsbG9jKDIxKTsNCj4gKyAgICAgICBpZiAoY3R4LT5kYXRlMnRzKSB7DQo+ICsgICAgICAgICAg
+ICAgICBzbnByaW50ZihjdHgtPmRhdGUydHMsIDIxLCAiJWxsZCIsIHRvZmZzZXQpOw0KPiArICAg
+ICAgICAgICAgICAgY3R4LT5kYXRhX2ZsYWdzIHw9IERBVEFfRkxfT0ZGU0VUOw0KPiArICAgICAg
+IH0NCj4gKw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgc3RydWN0IHRyYWNlY21kX21zZ19oYW5kbGUg
+KnNldHVwX25ldHdvcmsoc3RydWN0IGJ1ZmZlcl9pbnN0YW5jZSAqaW5zdGFuY2UsDQo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgY29tbW9u
+X3JlY29yZF9jb250ZXh0ICpjdHgpDQo+ICB7DQo+ICAgICAgICAgc3RydWN0IHRyYWNlY21kX21z
+Z19oYW5kbGUgKm1zZ19oYW5kbGUgPSBOVUxMOw0KPiAgICAgICAgIHN0cnVjdCBhZGRyaW5mbyBo
+aW50czsNCj4gQEAgLTMyOTIsMTIgKzMzMjYsMTMgQEAgc3RhdGljIHZvaWQgYWRkX29wdGlvbnMo
+c3RydWN0IHRyYWNlY21kX291dHB1dCAqaGFuZGxlLA0KPiAgfQ0KPg0KPiAgc3RhdGljIHN0cnVj
+dCB0cmFjZWNtZF9tc2dfaGFuZGxlICoNCj4gLXNldHVwX2Nvbm5lY3Rpb24oc3RydWN0IGJ1ZmZl
+cl9pbnN0YW5jZSAqaW5zdGFuY2UsIHN0cnVjdCBjb21tb25fcmVjb3JkX2NvbnRleHQgKmN0eCkN
+Cj4gK3NldHVwX2Nvbm5lY3Rpb24oc3RydWN0IGJ1ZmZlcl9pbnN0YW5jZSAqaW5zdGFuY2UsDQo+
+ICsgICAgICAgICAgICAgICAgc3RydWN0IGNvbW1vbl9yZWNvcmRfY29udGV4dCAqY3R4KQ0KPiAg
+ew0KPiAgICAgICAgIHN0cnVjdCB0cmFjZWNtZF9tc2dfaGFuZGxlICptc2dfaGFuZGxlOw0KPiAg
+ICAgICAgIHN0cnVjdCB0cmFjZWNtZF9vdXRwdXQgKm5ldHdvcmtfaGFuZGxlOw0KPg0KPiAtICAg
+ICAgIG1zZ19oYW5kbGUgPSBzZXR1cF9uZXR3b3JrKGluc3RhbmNlKTsNCj4gKyAgICAgICBtc2df
+aGFuZGxlID0gc2V0dXBfbmV0d29yayhpbnN0YW5jZSwgY3R4KTsNCj4NCj4gICAgICAgICAvKiBO
+b3cgY3JlYXRlIHRoZSBoYW5kbGUgdGhyb3VnaCB0aGlzIHNvY2tldCAqLw0KPiAgICAgICAgIGlm
+IChtc2dfaGFuZGxlLT52ZXJzaW9uID09IFYzX1BST1RPQ09MKSB7DQo+IEBAIC0zMzI0LDcgKzMz
+NTksOCBAQCBzdGF0aWMgdm9pZCBmaW5pc2hfbmV0d29yayhzdHJ1Y3QgdHJhY2VjbWRfbXNnX2hh
+bmRsZSAqbXNnX2hhbmRsZSkNCj4gICAgICAgICBmcmVlKGhvc3QpOw0KPiAgfQ0KPg0KPiAtc3Rh
+dGljIHZvaWQgY29ubmVjdF90b19hZ2VudChzdHJ1Y3QgYnVmZmVyX2luc3RhbmNlICppbnN0YW5j
+ZSkNCj4gK3N0YXRpYyB2b2lkIGNvbm5lY3RfdG9fYWdlbnQoc3RydWN0IGJ1ZmZlcl9pbnN0YW5j
+ZSAqaW5zdGFuY2UsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGNvbW1v
+bl9yZWNvcmRfY29udGV4dCAqY3R4KQ0KPiAgew0KPiAgICAgICAgIHN0cnVjdCB0cmFjZWNtZF9t
+c2dfaGFuZGxlICptc2dfaGFuZGxlOw0KPiAgICAgICAgIGludCBzZCwgbnJfY3B1cywgcGFnZV9z
+aXplOw0KPiBAQCAtMzM1MCw5ICszMzg2LDEyIEBAIHN0YXRpYyB2b2lkIGNvbm5lY3RfdG9fYWdl
+bnQoc3RydWN0IGJ1ZmZlcl9pbnN0YW5jZSAqaW5zdGFuY2UpDQo+DQo+ICAgICAgICAgLyogdGhl
+IG1zZ19oYW5kbGUgbm93IHBvaW50cyB0byB0aGUgZ3Vlc3QgZmQgKi8NCj4gICAgICAgICBpbnN0
+YW5jZS0+bXNnX2hhbmRsZSA9IG1zZ19oYW5kbGU7DQo+ICsNCj4gKyAgICAgICB0cmFjZWNtZF9t
+c2dfcmN2X3RpbWVfc3luYyhtc2dfaGFuZGxlKTsNCj4gIH0NCj4NCj4gLXN0YXRpYyB2b2lkIHNl
+dHVwX2d1ZXN0KHN0cnVjdCBidWZmZXJfaW5zdGFuY2UgKmluc3RhbmNlKQ0KPiArc3RhdGljIHZv
+aWQgc2V0dXBfZ3Vlc3Qoc3RydWN0IGJ1ZmZlcl9pbnN0YW5jZSAqaW5zdGFuY2UsDQo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgIHN0cnVjdCBjb21tb25fcmVjb3JkX2NvbnRleHQgKmN0eCkNCj4g
+IHsNCj4gICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX2hhbmRsZSAqbXNnX2hhbmRsZSA9IGlu
+c3RhbmNlLT5tc2dfaGFuZGxlOw0KPiAgICAgICAgIGNoYXIgKmZpbGU7DQo+IEBAIC0zMzc0LDEw
+ICszNDEzLDEzIEBAIHN0YXRpYyB2b2lkIHNldHVwX2d1ZXN0KHN0cnVjdCBidWZmZXJfaW5zdGFu
+Y2UgKmluc3RhbmNlKQ0KPiAgICAgICAgIGNsb3NlKGZkKTsNCj4gIH0NCj4NCj4gLXN0YXRpYyB2
+b2lkIHNldHVwX2FnZW50KHN0cnVjdCBidWZmZXJfaW5zdGFuY2UgKmluc3RhbmNlLCBzdHJ1Y3Qg
+Y29tbW9uX3JlY29yZF9jb250ZXh0ICpjdHgpDQo+ICtzdGF0aWMgdm9pZCBzZXR1cF9hZ2VudChz
+dHJ1Y3QgYnVmZmVyX2luc3RhbmNlICppbnN0YW5jZSwNCj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgc3RydWN0IGNvbW1vbl9yZWNvcmRfY29udGV4dCAqY3R4KQ0KPiAgew0KPiAgICAgICAgIHN0
+cnVjdCB0cmFjZWNtZF9vdXRwdXQgKm5ldHdvcmtfaGFuZGxlOw0KPg0KPiArICAgICAgIHN5bmNf
+dGltZV93aXRoX2xpc3RlbmVyX3YzKGluc3RhbmNlLT5tc2dfaGFuZGxlLCBjdHgpOw0KPiArDQo+
+ICAgICAgICAgbmV0d29ya19oYW5kbGUgPSB0cmFjZWNtZF9jcmVhdGVfaW5pdF9mZF9tc2coaW5z
+dGFuY2UtPm1zZ19oYW5kbGUsDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgbGlzdGVkX2V2ZW50cyk7DQo+ICAgICAgICAgYWRkX29wdGlvbnMo
+bmV0d29ya19oYW5kbGUsIGN0eCk7DQo+IEBAIC0zMzk3LDcgKzM0MzksNyBAQCB2b2lkIHN0YXJ0
+X3RocmVhZHMoZW51bSB0cmFjZV90eXBlIHR5cGUsIHN0cnVjdCBjb21tb25fcmVjb3JkX2NvbnRl
+eHQgKmN0eCkNCj4gICAgICAgICBmb3JfYWxsX2luc3RhbmNlcyhpbnN0YW5jZSkgew0KPiAgICAg
+ICAgICAgICAgICAgLyogU3RhcnQgdGhlIGNvbm5lY3Rpb24gbm93IHRvIGZpbmQgb3V0IGhvdyBt
+YW55IENQVXMgd2UgbmVlZCAqLw0KPiAgICAgICAgICAgICAgICAgaWYgKGluc3RhbmNlLT5mbGFn
+cyAmIEJVRkZFUl9GTF9HVUVTVCkNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgY29ubmVjdF90
+b19hZ2VudChpbnN0YW5jZSk7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIGNvbm5lY3RfdG9f
+YWdlbnQoaW5zdGFuY2UsIGN0eCk7DQo+ICAgICAgICAgICAgICAgICB0b3RhbF9jcHVfY291bnQg
+Kz0gaW5zdGFuY2UtPmNwdV9jb3VudDsNCj4gICAgICAgICB9DQo+DQo+IEBAIC0zNDEzLDcgKzM0
+NTUsNyBAQCB2b2lkIHN0YXJ0X3RocmVhZHMoZW51bSB0cmFjZV90eXBlIHR5cGUsIHN0cnVjdCBj
+b21tb25fcmVjb3JkX2NvbnRleHQgKmN0eCkNCj4gICAgICAgICAgICAgICAgIGlmIChpbnN0YW5j
+ZS0+ZmxhZ3MgJiBCVUZGRVJfRkxfQUdFTlQpIHsNCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+c2V0dXBfYWdlbnQoaW5zdGFuY2UsIGN0eCk7DQo+ICAgICAgICAgICAgICAgICB9IGVsc2UgaWYg
+KGluc3RhbmNlLT5mbGFncyAmIEJVRkZFUl9GTF9HVUVTVCkgew0KPiAtICAgICAgICAgICAgICAg
+ICAgICAgICBzZXR1cF9ndWVzdChpbnN0YW5jZSk7DQo+ICsgICAgICAgICAgICAgICAgICAgICAg
+IHNldHVwX2d1ZXN0KGluc3RhbmNlLCBjdHgpOw0KPiAgICAgICAgICAgICAgICAgfSBlbHNlIGlm
+IChob3N0KSB7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGluc3RhbmNlLT5tc2dfaGFuZGxl
+ID0gc2V0dXBfY29ubmVjdGlvbihpbnN0YW5jZSwgY3R4KTsNCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgaWYgKCFpbnN0YW5jZS0+bXNnX2hhbmRsZSkNCj4gQEAgLTU3NjksMyArNTgxMSwxNTIg
+QEAgaW50IHRyYWNlX3JlY29yZF9hZ2VudChzdHJ1Y3QgdHJhY2VjbWRfbXNnX2hhbmRsZSAqbXNn
+X2hhbmRsZSwNCj4gICAgICAgICBmcmVlKGFyZ3ZfcGx1cyk7DQo+ICAgICAgICAgcmV0dXJuIDA7
+DQo+ICB9DQo+ICsNCj4gK3N0YXRpYyB2b2lkIGdldF92c29ja2V0X3BhcmFtcyhpbnQgZmQsIGlu
+dCAqbGNpZCwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGludCAqbHBvcnQsIGlu
+dCAqcmNpZCwgaW50ICpycG9ydCkNCj4gK3sNCj4gKyAgICAgICBzdHJ1Y3Qgc29ja2FkZHJfdm0g
+YWRkcjsNCj4gKyAgICAgICBzb2NrbGVuX3QgYWRkcl9sZW4gPSBzaXplb2YoYWRkcik7DQo+ICsN
+Cj4gKyAgICAgICBtZW1zZXQoJmFkZHIsIDAsIHNpemVvZihhZGRyKSk7DQo+ICsgICAgICAgaWYg
+KGdldHNvY2tuYW1lKGZkLCAoc3RydWN0IHNvY2thZGRyICopJmFkZHIsICZhZGRyX2xlbikpDQo+
+ICsgICAgICAgICAgICAgICByZXR1cm47DQo+ICsgICAgICAgaWYgKGFkZHIuc3ZtX2ZhbWlseSAh
+PSBBRl9WU09DSykNCj4gKyAgICAgICAgICAgICAgIHJldHVybjsNCj4gKyAgICAgICAqbHBvcnQg
+PSBhZGRyLnN2bV9wb3J0Ow0KPiArICAgICAgICpsY2lkID0gYWRkci5zdm1fY2lkOw0KPiArDQo+
+ICsgICAgICAgbWVtc2V0KCZhZGRyLCAwLCBzaXplb2YoYWRkcikpOw0KPiArICAgICAgIGFkZHJf
+bGVuID0gc2l6ZW9mKGFkZHIpOw0KPiArICAgICAgIGlmIChnZXRwZWVybmFtZShmZCwgKHN0cnVj
+dCBzb2NrYWRkciAqKSZhZGRyLCAmYWRkcl9sZW4pKQ0KPiArICAgICAgICAgICAgICAgcmV0dXJu
+Ow0KPiArICAgICAgIGlmIChhZGRyLnN2bV9mYW1pbHkgIT0gQUZfVlNPQ0spDQo+ICsgICAgICAg
+ICAgICAgICByZXR1cm47DQo+ICsNCj4gKyAgICAgICAqcnBvcnQgPSBhZGRyLnN2bV9wb3J0Ow0K
+PiArICAgICAgICpyY2lkID0gYWRkci5zdm1fY2lkOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgdm9p
+ZCBzZXRfY2xvY2tfc3luY2hfZXZlbnRzKGludCBjZmQsIHN0cnVjdCBidWZmZXJfaW5zdGFuY2Ug
+Kmluc3RhbmNlLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJvb2wgZW5h
+YmxlLCBpbnQgKnR4X2V2ZW50LCBpbnQgKnJ4X2V2ZW50KQ0KPiArew0KPiArICAgICAgIGludCBs
+Y2lkLCBscG9ydCwgcmNpZCwgcnBvcnQ7DQo+ICsgICAgICAgY2hhciBidWZmZXJbMjU1XTsNCj4g
+KyAgICAgICBGSUxFICpmcDsNCj4gKyAgICAgICBjaGFyICpwYXRoOw0KPiArICAgICAgIGludCBm
+ZDsNCj4gKw0KPiArICAgICAgIHBhdGggPSBnZXRfaW5zdGFuY2VfZmlsZShpbnN0YW5jZSwgImV2
+ZW50cy92c29jay9lbmFibGUiKTsNCj4gKyAgICAgICBmZCA9IG9wZW4ocGF0aCwgT19XUk9OTFkp
+Ow0KPiArICAgICAgIGlmIChmZCA8IDApDQo+ICsgICAgICAgICAgICAgICByZXR1cm47DQo+ICsg
+ICAgICAgaWYgKGVuYWJsZSkNCj4gKyAgICAgICAgICAgICAgIHdyaXRlKGZkLCAiMSIsIDIpOw0K
+PiArICAgICAgIGVsc2UNCj4gKyAgICAgICAgICAgICAgIHdyaXRlKGZkLCAiMCIsIDIpOw0KPiAr
+ICAgICAgIGNsb3NlKGZkKTsNCj4gKyAgICAgICB0cmFjZWNtZF9wdXRfdHJhY2luZ19maWxlKHBh
+dGgpOw0KPiArDQo+ICsgICAgICAgaWYgKGVuYWJsZSkgew0KPiArICAgICAgICAgICAgICAgZ2V0
+X3Zzb2NrZXRfcGFyYW1zKGNmZCwgJmxjaWQsICZscG9ydCwgJnJjaWQsICZycG9ydCk7DQo+ICsN
+Cj4gKyAgICAgICAgICAgICAgIHNucHJpbnRmKGJ1ZmZlciwgMjU1LA0KPiArICAgICAgICAgICAg
+ICAgICAgICAgICAic3JjX2NpZD09JWQgJiYgc3JjX3BvcnQ9PSVkICYmIGRzdF9jaWQ9PSVkICYm
+IGRzdF9wb3J0PT0lZCAmJiBsZW4hPTAiLA0KPiArICAgICAgICAgICAgICAgICAgICAgICByY2lk
+LCBycG9ydCwgbGNpZCwgbHBvcnQpOw0KPiArICAgICAgICAgICAgICAgcGF0aCA9IGdldF9pbnN0
+YW5jZV9maWxlKGluc3RhbmNlLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICJldmVudHMvdnNvY2svdmlydGlvX3RyYW5zcG9ydF9yZWN2X3BrdC9maWx0ZXIiKTsN
+Cj4gKyAgICAgICAgICAgICAgIGZkID0gb3BlbihwYXRoLCBPX1dST05MWSk7DQo+ICsgICAgICAg
+ICAgICAgICB3cml0ZShmZCwgYnVmZmVyLCBzdHJsZW4oYnVmZmVyKSsxKTsNCj4gKyAgICAgICAg
+ICAgICAgIGNsb3NlKGZkKTsNCj4gKyAgICAgICAgICAgICAgIHRyYWNlY21kX3B1dF90cmFjaW5n
+X2ZpbGUocGF0aCk7DQo+ICsNCj4gKyAgICAgICAgICAgICAgIHNucHJpbnRmKGJ1ZmZlciwgMjU1
+LA0KPiArICAgICAgICAgICAgICAgICAgICAgICAic3JjX2NpZD09JWQgJiYgc3JjX3BvcnQ9PSVk
+ICYmIGRzdF9jaWQ9PSVkICYmIGRzdF9wb3J0PT0lZCAmJiBsZW4hPTAiLA0KPiArICAgICAgICAg
+ICAgICAgICAgICAgICBsY2lkLCBscG9ydCwgcmNpZCwgcnBvcnQpOw0KPiArICAgICAgICAgICAg
+ICAgcGF0aCA9IGdldF9pbnN0YW5jZV9maWxlKGluc3RhbmNlLA0KPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICJldmVudHMvdnNvY2svdmlydGlvX3RyYW5zcG9ydF9h
+bGxvY19wa3QvZmlsdGVyIik7DQo+ICsgICAgICAgICAgICAgICBmZCA9IG9wZW4ocGF0aCwgT19X
+Uk9OTFkpOw0KPiArICAgICAgICAgICAgICAgd3JpdGUoZmQsIGJ1ZmZlciwgc3RybGVuKGJ1ZmZl
+cikrMSk7DQo+ICsgICAgICAgICAgICAgICBjbG9zZShmZCk7DQo+ICsgICAgICAgICAgICAgICB0
+cmFjZWNtZF9wdXRfdHJhY2luZ19maWxlKHBhdGgpOw0KPiArDQo+ICsgICAgICAgICAgICAgICBp
+ZiAodHhfZXZlbnQpIHsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgcGF0aCA9IGdldF9pbnN0
+YW5jZV9maWxlKGluc3RhbmNlLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgImV2ZW50cy92c29jay92aXJ0aW9fdHJhbnNwb3J0X2FsbG9jX3BrdC9p
+ZCIpOw0KPiArICAgICAgICAgICAgICAgICAgICAgICBmcCA9IGZvcGVuKHBhdGgsICJyIik7DQo+
+ICsgICAgICAgICAgICAgICAgICAgICAgIGZnZXRzKGJ1ZmZlciwgMjU1LCAoRklMRSAqKSBmcCk7
+DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICp0eF9ldmVudCA9IGF0b2koYnVmZmVyKTsNCj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgZmNsb3NlKGZwKTsNCj4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgdHJhY2VjbWRfcHV0X3RyYWNpbmdfZmlsZShwYXRoKTsNCj4gKyAgICAgICAgICAgICAg
+IH0NCj4gKyAgICAgICAgICAgICAgIGlmIChyeF9ldmVudCkgew0KPiArICAgICAgICAgICAgICAg
+ICAgICAgICBwYXRoID0gZ2V0X2luc3RhbmNlX2ZpbGUoaW5zdGFuY2UsDQo+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiZXZlbnRzL3Zzb2NrL3ZpcnRp
+b190cmFuc3BvcnRfcmVjdl9wa3QvaWQiKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgZnAg
+PSBmb3BlbihwYXRoLCAiciIpOw0KPiArICAgICAgICAgICAgICAgICAgICAgICBmZ2V0cyhidWZm
+ZXIsIDI1NSwgKEZJTEUgKikgZnApOw0KPiArICAgICAgICAgICAgICAgICAgICAgICAqcnhfZXZl
+bnQgPSBhdG9pKGJ1ZmZlcik7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIGZjbG9zZShmcCk7
+DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHRyYWNlY21kX3B1dF90cmFjaW5nX2ZpbGUocGF0
+aCk7DQo+ICsgICAgICAgICAgICAgICB9DQo+ICsgICAgICAgfQ0KPiArDQo+ICsgICAgICAgcGF0
+aCA9IGdldF9pbnN0YW5jZV9maWxlKGluc3RhbmNlLCAiZXZlbnRzL3Zzb2NrL2VuYWJsZSIpOw0K
+PiArDQo+ICsgICAgICAgaWYgKGVuYWJsZSkNCj4gKyAgICAgICAgICAgICAgIHdyaXRlX3RyYWNp
+bmdfb24oaW5zdGFuY2UsIDEpOw0KPiArICAgICAgIGVsc2UNCj4gKyAgICAgICAgICAgICAgIHdy
+aXRlX3RyYWNpbmdfb24oaW5zdGFuY2UsIDApOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgdm9pZCB2
+c29ja190cmFjZV9yZXNldChzdHJ1Y3QgYnVmZmVyX2luc3RhbmNlICp2aW5zdCkNCj4gK3sNCj4g
+KyAgICAgICBjaGFyICpwYXRoOw0KPiArICAgICAgIGludCBmZDsNCj4gKw0KPiArICAgICAgIHBh
+dGggPSBnZXRfaW5zdGFuY2VfZmlsZSh2aW5zdCwgInRyYWNlIik7DQo+ICsgICAgICAgZmQgPSBv
+cGVuKHBhdGgsIE9fV1JPTkxZKTsNCj4gKyAgICAgICB0cmFjZWNtZF9wdXRfdHJhY2luZ19maWxl
+KHBhdGgpOw0KPiArICAgICAgIHdyaXRlKGZkLCAiMCIsIDIpOw0KPiArICAgICAgIGNsb3NlKGZk
+KTsNCj4gK30NCj4gKw0KPiArc3RydWN0IHRlcF9oYW5kbGUgKmNsb2NrX3N5bmNoX2dldF90ZXAo
+c3RydWN0IGJ1ZmZlcl9pbnN0YW5jZSAqaW5zdGFuY2UpDQo+ICt7DQo+ICsgICAgICAgc3RydWN0
+IHRlcF9oYW5kbGUgKnRlcCA9IE5VTEw7DQo+ICsgICAgICAgY2hhciAqc3lzdGVtc1tdID0geyJ2
+c29jayIsICJrdm0iLCBOVUxMfTsNCj4gKyAgICAgICBjaGFyICpwYXRoOw0KPiArDQo+ICsgICAg
+ICAgcGF0aCA9IGdldF9pbnN0YW5jZV9kaXIoaW5zdGFuY2UpOw0KPiArICAgICAgIHRlcCA9IHRy
+YWNlY21kX2xvY2FsX2V2ZW50c19zeXN0ZW0ocGF0aCwgc3lzdGVtcyk7DQo+ICsgICAgICAgdHJh
+Y2VjbWRfcHV0X3RyYWNpbmdfZmlsZShwYXRoKTsNCj4gKw0KPiArICAgICAgIHRlcF9zZXRfZmls
+ZV9iaWdlbmRpYW4odGVwLCB0cmFjZWNtZF9ob3N0X2JpZ2VuZGlhbigpKTsNCj4gKyAgICAgICB0
+ZXBfc2V0X2hvc3RfYmlnZW5kaWFuKHRlcCwgdHJhY2VjbWRfaG9zdF9iaWdlbmRpYW4oKSk7DQo+
+ICsNCj4gKyAgICAgICByZXR1cm4gdGVwOw0KPiArfQ0KPiArDQo+ICtzdHJ1Y3QgYnVmZmVyX2lu
+c3RhbmNlICpjbG9ja19zeW5jaF9lbmFibGUoaW50IGZkLCBjaGFyICpjbG9jaywNCj4gKyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGludCAqdHhfZXZlbnQsIGludCAq
+cnhfZXZlbnQpDQo+ICt7DQo+ICsgICAgICAgY2hhciBpbnN0X25hbWVbMjU2XTsNCj4gKyAgICAg
+ICBzdHJ1Y3QgYnVmZmVyX2luc3RhbmNlICp2aW5zdDsNCj4gKw0KPiArICAgICAgIHNucHJpbnRm
+KGluc3RfbmFtZSwgMjU2LCAiY2xvY2tfc3luY2gtJWQiLCByYW5kKCklMTAwKTsNCj4gKyAgICAg
+ICB2aW5zdCA9IGNyZWF0ZV9pbnN0YW5jZShzdHJkdXAoaW5zdF9uYW1lKSk7DQo+ICsgICAgICAg
+aW5pdF9pbnN0YW5jZSh2aW5zdCk7DQo+ICsgICAgICAgdmluc3QtPmNwdV9jb3VudCA9IGxvY2Fs
+X2NwdV9jb3VudDsNCj4gKyAgICAgICBtYWtlX29uZV9pbnN0YW5jZSh2aW5zdCk7DQo+ICsgICAg
+ICAgdnNvY2tfdHJhY2VfcmVzZXQodmluc3QpOw0KPiArICAgICAgIHZpbnN0LT5jbG9jayA9IHN0
+cmR1cChjbG9jayk7DQo+ICsgICAgICAgc2V0X2Nsb2NrKHZpbnN0KTsNCj4gKyAgICAgICBzZXRf
+Y2xvY2tfc3luY2hfZXZlbnRzKGZkLCB2aW5zdCwgdHJ1ZSwgdHhfZXZlbnQsIHJ4X2V2ZW50KTsN
+Cj4gKyAgICAgICByZXR1cm4gdmluc3Q7DQo+ICt9DQo+ICsNCj4gK3ZvaWQgY2xvY2tfc3luY2hf
+ZGlzYWJsZShpbnQgZmQsIHN0cnVjdCBidWZmZXJfaW5zdGFuY2UgKmluc3RhbmNlKQ0KPiArew0K
+PiArICAgICAgIHNldF9jbG9ja19zeW5jaF9ldmVudHMoZmQsIGluc3RhbmNlLCBmYWxzZSwgTlVM
+TCwgTlVMTCk7DQo+ICsgICAgICAgdHJhY2VjbWRfcmVtb3ZlX29uZV9pbnN0YW5jZShpbnN0YW5j
+ZSk7DQo+ICsgICAgICAgLyogdG9kbzogY2xlYW4gdXAgdGhlIGluc3RhbmNlICovDQo+ICt9DQo+
+IC0tDQo+IDIuMjAuMQ0KPg0K
