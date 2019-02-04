@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAD81C282D7
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Feb 2019 06:59:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94DA8C282C4
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Feb 2019 06:59:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8B0D520811
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Feb 2019 06:59:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 60E4820811
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Feb 2019 06:59:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbfBDG7D (ORCPT
+        id S1726185AbfBDG7E (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Feb 2019 01:59:03 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:38906 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbfBDG7D (ORCPT
+        Mon, 4 Feb 2019 01:59:04 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:34616 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbfBDG7E (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Feb 2019 01:59:03 -0500
-Received: by mail-wr1-f67.google.com with SMTP id v13so13139515wrw.5
-        for <linux-trace-devel@vger.kernel.org>; Sun, 03 Feb 2019 22:59:01 -0800 (PST)
+        Mon, 4 Feb 2019 01:59:04 -0500
+Received: by mail-wm1-f68.google.com with SMTP id y185so9296551wmd.1
+        for <linux-trace-devel@vger.kernel.org>; Sun, 03 Feb 2019 22:59:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nchF6aP4wBEXwHmlyn2j5ppBbARyelas+/PlNoYY8xo=;
-        b=NQ8wAsy2OZTawj/kGKZfmSkvfb59SY0IqublCRC15COmu3I3iSmWloyEwVaPNeisz2
-         rCT3IJSeenJ/wFzy0Z1kJ2lPpyFBFhOHrLxO+RKaPoae8qLGhnGrC+7DQ6+lWfjdtHf3
-         TdpxZLs8J/hyAVbE6cFGwFfZMriaJ2aAutsgiPt9aVSYcWNHoZ1eRFNKu0MBt+W+ZD6v
-         qWo1QeUTYns0XHATUxyVQ7vbcpZI70J/6zIMeNE0xJ4kO8lQTC/j9rocw5t86ZtgwV6D
-         av2k7upino+SGMWd+u5/qsZo3uqUcLuTRNFHs6fT4MEl2bM7Z73uMmp2HWHnRpYGLMlH
-         eHDQ==
-X-Gm-Message-State: AJcUukfkdOHHS58aO2fbpG0sENO058OHh7fuy2ZVvdWir+0JE+JAvPG/
-        2vvvW53NRr84Xwpr+IcuHO4Hhqk7vw==
-X-Google-Smtp-Source: ALg8bN4noUGvRpyd2H3HWY7fCSoq6KqNpG5kcC8ycgBhl3CKdqHXXFzkIouJRgFY/PhivawiSzmY8w==
-X-Received: by 2002:adf:8b4d:: with SMTP id v13mr46083721wra.282.1549263540173;
-        Sun, 03 Feb 2019 22:59:00 -0800 (PST)
+        bh=cILFA6YqC26BwdhG6xlYaNZ/d3tVOXiWsCpNOhOBXGY=;
+        b=QZFXML4oD0V0BxoiE6YR1x4fCohpwOyTVdqCdQwnyihGDPAqx/1/0DGhcH7oOWmQZc
+         fAdxY+HFhj1VoFU88B8qDima1+9613oK9phYXTyaOWPR3Vp/HFapouRe48TWnLxzFpeM
+         OiCZY+0r2PR6/RQewkAUo+P4rCImiWKuU/CW2dClvceLJn3nnFDCIilZGGOYH6rzLdu5
+         oUJdRUUbABTDfjhCUDzj+kDTsHoNJvAr7X42Yiqtq5vitFubSB+N9pxlOMiecddPz4Nw
+         d+/+zU8s58sHCfA34xaNH9ZNt2yULy9IZDQnpkObTnxJdyC3GTR8nSQvbbbCdUZvzKug
+         p83g==
+X-Gm-Message-State: AHQUAubu4lXWc7zr1cClgfpBV3+hgGhV22tTDvmwc/D1tX0XkrAaT1LY
+        +KbbJts8wJowzk3CfY2X6fj1I3kCrw==
+X-Google-Smtp-Source: AHgI3Ibu+aYbEqIyKDxQ3+wAULx2ojvq8+6fuLeTETePVQ9c3slx/3MZgtcDoGhmj52kDBEEBQfhnw==
+X-Received: by 2002:a7b:c76b:: with SMTP id x11mr11602118wmk.37.1549263541352;
+        Sun, 03 Feb 2019 22:59:01 -0800 (PST)
 Received: from localhost.localdomain ([213.145.108.55])
-        by smtp.gmail.com with ESMTPSA id q12sm12596809wrx.31.2019.02.03.22.58.58
+        by smtp.gmail.com with ESMTPSA id q12sm12596809wrx.31.2019.02.03.22.59.00
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 03 Feb 2019 22:58:59 -0800 (PST)
+        Sun, 03 Feb 2019 22:59:00 -0800 (PST)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     rostedt@goodmis.org, slavomir.kaslev@gmail.com,
         tstoyanov@vmware.com, ykaradzhov@vmware.com
-Subject: [RFC PATCH v5 03/11] trace-cmd: Add TRACE_REQ and TRACE_RESP messages
-Date:   Mon,  4 Feb 2019 08:58:40 +0200
-Message-Id: <20190204065848.8248-4-kaslevs@vmware.com>
+Subject: [RFC PATCH v5 04/11] trace-cmd: Add buffer instance flags for tracing in guest and agent context
+Date:   Mon,  4 Feb 2019 08:58:41 +0200
+Message-Id: <20190204065848.8248-5-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190204065848.8248-1-kaslevs@vmware.com>
 References: <20190204065848.8248-1-kaslevs@vmware.com>
@@ -59,316 +59,223 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add TRACE_REQ and TRACE_RESP messages which are used for initiating guest VM
-tracing.
+Add BUFFER_FL_GUEST and BUFFER_FL_AGENT flags to differentiate when
+trace-record.c is being called to trace guest or the VM tracing agent.
+
+Also disable functions talking to the local tracefs when called in recording
+guest instances context.
 
 Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
- include/trace-cmd/trace-cmd.h |  16 ++-
- tracecmd/trace-msg.c          | 213 +++++++++++++++++++++++++++++++++-
- 2 files changed, 224 insertions(+), 5 deletions(-)
+ tracecmd/include/trace-local.h |  2 ++
+ tracecmd/trace-record.c        | 55 ++++++++++++++++++++++++++++++++--
+ 2 files changed, 55 insertions(+), 2 deletions(-)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 8b43462..7664074 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -326,7 +326,7 @@ int tracecmd_msg_send_init_data(struct tracecmd_msg_handle *msg_handle,
- int tracecmd_msg_data_send(struct tracecmd_msg_handle *msg_handle,
- 			       const char *buf, int size);
- int tracecmd_msg_finish_sending_data(struct tracecmd_msg_handle *msg_handle);
--void tracecmd_msg_send_close_msg(struct tracecmd_msg_handle *msg_handle);
-+int tracecmd_msg_send_close_msg(struct tracecmd_msg_handle *msg_handle);
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index a1a06e9..f19c8bb 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -149,6 +149,8 @@ char *strstrip(char *str);
+ enum buffer_instance_flags {
+ 	BUFFER_FL_KEEP		= 1 << 0,
+ 	BUFFER_FL_PROFILE	= 1 << 1,
++	BUFFER_FL_GUEST		= 1 << 2,
++	BUFFER_FL_AGENT		= 1 << 3,
+ };
  
- /* for server */
- int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle);
-@@ -337,6 +337,20 @@ int tracecmd_msg_collect_data(struct tracecmd_msg_handle *msg_handle, int ofd);
- bool tracecmd_msg_done(struct tracecmd_msg_handle *msg_handle);
- void tracecmd_msg_set_done(struct tracecmd_msg_handle *msg_handle);
+ struct func_list {
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 3034a4b..b911c34 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -781,6 +781,9 @@ static void __clear_trace(struct buffer_instance *instance)
+ 	FILE *fp;
+ 	char *path;
  
-+int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
-+				int argc, char **argv);
-+int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
-+				int *argc, char ***argv);
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
 +
-+int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
-+				 int nr_cpus, int page_size,
-+				 unsigned int *ports);
-+int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
-+				 int *nr_cpus, int *page_size,
-+				 unsigned int **ports);
+ 	/* reset the trace */
+ 	path = get_instance_file(instance, "trace");
+ 	fp = fopen(path, "w");
+@@ -1264,6 +1267,9 @@ set_plugin_instance(struct buffer_instance *instance, const char *name)
+ 	char *path;
+ 	char zero = '0';
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
 +
-+int tracecmd_msg_wait_close(struct tracecmd_msg_handle *msg_handle);
-+
- /* --- Plugin handling --- */
- extern struct tep_plugin_option trace_ftrace_options[];
- 
-diff --git a/tracecmd/trace-msg.c b/tracecmd/trace-msg.c
-index 529ae2a..8b6fb03 100644
---- a/tracecmd/trace-msg.c
-+++ b/tracecmd/trace-msg.c
-@@ -16,6 +16,7 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <stdarg.h>
-+#include <string.h>
- #include <unistd.h>
- #include <arpa/inet.h>
- #include <sys/types.h>
-@@ -79,6 +80,16 @@ struct tracecmd_msg_rinit {
- 	be32 cpus;
- } __attribute__((packed));
- 
-+struct tracecmd_msg_trace_req {
-+	be32 flags;
-+	be32 argc;
-+} __attribute__((packed));
-+
-+struct tracecmd_msg_trace_resp {
-+	be32 cpus;
-+	be32 page_size;
-+} __attribute__((packed));
-+
- struct tracecmd_msg_header {
- 	be32	size;
- 	be32	cmd;
-@@ -90,7 +101,9 @@ struct tracecmd_msg_header {
- 	C(TINIT,	1,	sizeof(struct tracecmd_msg_tinit)),	\
- 	C(RINIT,	2,	sizeof(struct tracecmd_msg_rinit)),	\
- 	C(SEND_DATA,	3,	0),					\
--	C(FIN_DATA,	4,	0),
-+	C(FIN_DATA,	4,	0),					\
-+	C(TRACE_REQ,	5,	sizeof(struct tracecmd_msg_trace_req)),	\
-+	C(TRACE_RESP,	6,	sizeof(struct tracecmd_msg_trace_resp)),
- 
- #undef C
- #define C(a,b,c)	MSG_##a = b
-@@ -122,6 +135,8 @@ struct tracecmd_msg {
- 	union {
- 		struct tracecmd_msg_tinit	tinit;
- 		struct tracecmd_msg_rinit	rinit;
-+		struct tracecmd_msg_trace_req	trace_req;
-+		struct tracecmd_msg_trace_resp	trace_resp;
- 	};
- 	union {
- 		struct tracecmd_msg_opt		*opt;
-@@ -569,12 +584,12 @@ int tracecmd_msg_send_port_array(struct tracecmd_msg_handle *msg_handle,
- 	return 0;
- }
- 
--void tracecmd_msg_send_close_msg(struct tracecmd_msg_handle *msg_handle)
-+int tracecmd_msg_send_close_msg(struct tracecmd_msg_handle *msg_handle)
- {
- 	struct tracecmd_msg msg;
- 
- 	tracecmd_msg_init(MSG_CLOSE, &msg);
--	tracecmd_msg_send(msg_handle->fd, &msg);
-+	return tracecmd_msg_send(msg_handle->fd, &msg);
- }
- 
- int tracecmd_msg_data_send(struct tracecmd_msg_handle *msg_handle,
-@@ -684,7 +699,7 @@ int tracecmd_msg_collect_data(struct tracecmd_msg_handle *msg_handle, int ofd)
+ 	path = get_instance_file(instance, "current_tracer");
+ 	fp = fopen(path, "w");
+ 	if (!fp) {
+@@ -1360,6 +1366,9 @@ static void disable_func_stack_trace_instance(struct buffer_instance *instance)
+ 	int size;
  	int ret;
  
- 	ret = tracecmd_msg_read_data(msg_handle, ofd);
--	if (ret)
-+	if (ret < 0)
- 		goto error;
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	path = get_instance_file(instance, "current_tracer");
+ 	ret = stat(path, &st);
+ 	tracecmd_put_tracing_file(path);
+@@ -1553,6 +1562,9 @@ reset_events_instance(struct buffer_instance *instance)
+ 	int i;
+ 	int ret;
  
- 	/* check the finish message of the client */
-@@ -715,3 +730,193 @@ error:
- 	msg_free(&msg);
- 	return ret;
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	if (use_old_event_method()) {
+ 		/* old way only had top instance */
+ 		if (!is_top_instance(instance))
+@@ -1904,6 +1916,9 @@ static void write_tracing_on(struct buffer_instance *instance, int on)
+ 	int ret;
+ 	int fd;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	fd = open_tracing_on(instance);
+ 	if (fd < 0)
+ 		return;
+@@ -1923,6 +1938,9 @@ static int read_tracing_on(struct buffer_instance *instance)
+ 	char buf[10];
+ 	int ret;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return -1;
++
+ 	fd = open_tracing_on(instance);
+ 	if (fd < 0)
+ 		return fd;
+@@ -2156,6 +2174,9 @@ static void set_mask(struct buffer_instance *instance)
+ 	int fd;
+ 	int ret;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	if (!instance->cpumask)
+ 		return;
+ 
+@@ -2186,6 +2207,9 @@ static void enable_events(struct buffer_instance *instance)
+ {
+ 	struct event_list *event;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	for (event = instance->events; event; event = event->next) {
+ 		if (!event->neg)
+ 			update_event(event, event->filter, 0, '1');
+@@ -2209,6 +2233,9 @@ static void set_clock(struct buffer_instance *instance)
+ 	char *content;
+ 	char *str;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	if (!instance->clock)
+ 		return;
+ 
+@@ -2238,6 +2265,9 @@ static void set_max_graph_depth(struct buffer_instance *instance, char *max_grap
+ 	char *path;
+ 	int ret;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	path = get_instance_file(instance, "max_graph_depth");
+ 	reset_save_file(path, RESET_DEFAULT_PRIO);
+ 	tracecmd_put_tracing_file(path);
+@@ -2463,6 +2493,9 @@ static void expand_event_instance(struct buffer_instance *instance)
+ 	struct event_list *compressed_list = instance->events;
+ 	struct event_list *event;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	reset_event_list(instance);
+ 
+ 	while (compressed_list) {
+@@ -3336,6 +3369,9 @@ static void set_funcs(struct buffer_instance *instance)
+ 	int set_notrace = 0;
+ 	int ret;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	ret = write_func_file(instance, "set_ftrace_filter", &instance->filter_funcs);
+ 	if (ret < 0)
+ 		die("set_ftrace_filter does not exist. Can not filter functions");
+@@ -3632,6 +3668,9 @@ static void set_buffer_size_instance(struct buffer_instance *instance)
+ 	int ret;
+ 	int fd;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
++
+ 	if (!buffer_size)
+ 		return;
+ 
+@@ -3829,6 +3868,9 @@ static void make_instances(void)
+ 	int ret;
+ 
+ 	for_each_instance(instance) {
++		if (instance->flags & BUFFER_FL_GUEST)
++			continue;
++
+ 		path = get_instance_dir(instance);
+ 		ret = stat(path, &st);
+ 		if (ret < 0) {
+@@ -3850,7 +3892,7 @@ void tracecmd_remove_instances(void)
+ 
+ 	for_each_instance(instance) {
+ 		/* Only delete what we created */
+-		if (instance->flags & BUFFER_FL_KEEP)
++		if (instance->flags & (BUFFER_FL_KEEP | BUFFER_FL_GUEST))
+ 			continue;
+ 		if (instance->tracing_on_fd > 0) {
+ 			close(instance->tracing_on_fd);
+@@ -3932,7 +3974,7 @@ static void check_function_plugin(void)
+ 
+ static int __check_doing_something(struct buffer_instance *instance)
+ {
+-	return (instance->flags & BUFFER_FL_PROFILE) ||
++	return (instance->flags & (BUFFER_FL_PROFILE | BUFFER_FL_GUEST)) ||
+ 		instance->plugin || instance->events;
  }
+ 
+@@ -3954,6 +3996,9 @@ update_plugin_instance(struct buffer_instance *instance,
+ {
+ 	const char *plugin = instance->plugin;
+ 
++	if (instance->flags & BUFFER_FL_GUEST)
++		return;
 +
-+static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv)
-+{
-+	size_t args_size = 0;
-+	char *p;
-+	int i;
+ 	if (!plugin)
+ 		return;
+ 
+@@ -4053,6 +4098,9 @@ static void record_stats(void)
+ 	int cpu;
+ 
+ 	for_all_instances(instance) {
++		if (instance->flags & BUFFER_FL_GUEST)
++			continue;
 +
-+	for (i = 0; i < argc; i++)
-+		args_size += strlen(argv[i]) + 1;
+ 		s_save = instance->s_save;
+ 		s_print = instance->s_print;
+ 		for (cpu = 0; cpu < instance->cpu_count; cpu++) {
+@@ -4079,6 +4127,9 @@ static void destroy_stats(void)
+ 	int cpu;
+ 
+ 	for_all_instances(instance) {
++		if (instance->flags & BUFFER_FL_GUEST)
++			continue;
 +
-+	msg->hdr.size = htonl(ntohl(msg->hdr.size) + args_size);
-+	msg->trace_req.argc = htonl(argc);
-+	msg->buf = calloc(args_size, 1);
-+	if (!msg->buf)
-+		return -ENOMEM;
-+
-+	p = msg->buf;
-+	for (i = 0; i < argc; i++)
-+		p = stpcpy(p, argv[i]) + 1;
-+
-+	return 0;
-+}
-+
-+int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
-+				int argc, char **argv)
-+{
-+	struct tracecmd_msg msg;
-+	int ret;
-+
-+	tracecmd_msg_init(MSG_TRACE_REQ, &msg);
-+	ret = make_trace_req(&msg, argc, argv);
-+	if (ret < 0)
-+		return ret;
-+
-+	return tracecmd_msg_send(msg_handle->fd, &msg);
-+}
-+
-+ /*
-+  * NOTE: On success, the returned `argv` should be freed with:
-+  *     free(argv[0]);
-+  *     free(argv);
-+  */
-+int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
-+				int *argc, char ***argv)
-+{
-+	struct tracecmd_msg msg;
-+	char *p, *buf_end, **args;
-+	int i, ret, nr_args;
-+	size_t buf_len;
-+
-+	ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ntohl(msg.hdr.cmd) != MSG_TRACE_REQ)
-+		goto out;
-+
-+	if (ntohl(msg.trace_req.argc) < 0)
-+		goto out;
-+
-+	buf_len = ntohl(msg.hdr.size) - MSG_HDR_LEN - ntohl(msg.hdr.cmd_size);
-+	buf_end = (char *)msg.buf + buf_len;
-+	p = msg.buf;
-+	nr_args = ntohl(msg.trace_req.argc);
-+	args = calloc(nr_args, sizeof(*args));
-+	if (!args) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	for (i = 0; i < nr_args; i++) {
-+		if (p >= buf_end) {
-+			ret = -1;
-+			free(args);
-+			goto out;
-+		}
-+
-+		args[i] = p;
-+		p = strchr(p, '\0');
-+		p++;
-+	}
-+
-+	/*
-+	 * On success we're passing msg.buf to the caller through argv[0] so we
-+	 * reset it here to avoid getting it freed below.
-+	 */
-+	msg.buf = NULL;
-+	*argc = nr_args;
-+	*argv = args;
-+	ret = 0;
-+
-+out:
-+	msg_free(&msg);
-+	return ret;
-+}
-+
-+static int make_trace_resp(struct tracecmd_msg *msg,
-+			   int page_size, int nr_cpus, unsigned int *ports)
-+{
-+	int ports_size = nr_cpus * sizeof(*msg->port_array);
-+	int i;
-+
-+	msg->hdr.size = htonl(ntohl(msg->hdr.size) + ports_size);
-+	msg->trace_resp.cpus = htonl(nr_cpus);
-+	msg->trace_resp.page_size = htonl(page_size);
-+
-+	msg->port_array = malloc(ports_size);
-+	if (!msg->port_array)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < nr_cpus; i++)
-+		msg->port_array[i] = htonl(ports[i]);
-+
-+	return 0;
-+}
-+
-+int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
-+				 int nr_cpus, int page_size,
-+				 unsigned int *ports)
-+{
-+	struct tracecmd_msg msg;
-+	int ret;
-+
-+	tracecmd_msg_init(MSG_TRACE_RESP, &msg);
-+	ret = make_trace_resp(&msg, page_size, nr_cpus, ports);
-+	if (ret < 0)
-+		return ret;
-+
-+	return tracecmd_msg_send(msg_handle->fd, &msg);
-+}
-+
-+int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
-+				 int *nr_cpus, int *page_size,
-+				 unsigned int **ports)
-+{
-+	struct tracecmd_msg msg;
-+	size_t buf_len;
-+	int i, ret;
-+
-+	ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ntohl(msg.hdr.cmd) != MSG_TRACE_RESP) {
-+		ret = -1;
-+		goto out;
-+	}
-+
-+	buf_len = ntohl(msg.hdr.size) - MSG_HDR_LEN - ntohl(msg.hdr.cmd_size);
-+	if (buf_len <= 0 ||
-+	    buf_len != sizeof(*msg.port_array) * ntohl(msg.trace_resp.cpus)) {
-+		ret = -1;
-+		goto out;
-+	}
-+
-+	*nr_cpus = ntohl(msg.trace_resp.cpus);
-+	*page_size = ntohl(msg.trace_resp.page_size);
-+	*ports = calloc(*nr_cpus, sizeof(**ports));
-+	if (!*ports) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	for (i = 0; i < *nr_cpus; i++)
-+		(*ports)[i] = ntohl(msg.port_array[i]);
-+
-+	ret = 0;
-+
-+out:
-+	msg_free(&msg);
-+	return ret;
-+}
-+
-+int tracecmd_msg_wait_close(struct tracecmd_msg_handle *msg_handle)
-+{
-+	struct tracecmd_msg msg;
-+	int ret;
-+
-+	memset(&msg, 0, sizeof(msg));
-+	for (;;) {
-+		ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (ntohl(msg.hdr.cmd) == MSG_CLOSE)
-+			return 0;
-+
-+		msg_free(&msg);
-+	}
-+
-+	return -1;
-+}
+ 		for (cpu = 0; cpu < instance->cpu_count; cpu++) {
+ 			trace_seq_destroy(&instance->s_save[cpu]);
+ 			trace_seq_destroy(&instance->s_print[cpu]);
 -- 
 2.19.1
 
