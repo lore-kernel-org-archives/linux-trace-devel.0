@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94DA8C282C4
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Feb 2019 06:59:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EE5AC282D7
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Feb 2019 06:59:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 60E4820811
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Feb 2019 06:59:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3786C20811
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Feb 2019 06:59:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbfBDG7E (ORCPT
+        id S1726720AbfBDG7G (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Feb 2019 01:59:04 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:34616 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbfBDG7E (ORCPT
+        Mon, 4 Feb 2019 01:59:06 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:42463 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbfBDG7F (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Feb 2019 01:59:04 -0500
-Received: by mail-wm1-f68.google.com with SMTP id y185so9296551wmd.1
-        for <linux-trace-devel@vger.kernel.org>; Sun, 03 Feb 2019 22:59:02 -0800 (PST)
+        Mon, 4 Feb 2019 01:59:05 -0500
+Received: by mail-wr1-f68.google.com with SMTP id q18so13122002wrx.9
+        for <linux-trace-devel@vger.kernel.org>; Sun, 03 Feb 2019 22:59:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cILFA6YqC26BwdhG6xlYaNZ/d3tVOXiWsCpNOhOBXGY=;
-        b=QZFXML4oD0V0BxoiE6YR1x4fCohpwOyTVdqCdQwnyihGDPAqx/1/0DGhcH7oOWmQZc
-         fAdxY+HFhj1VoFU88B8qDima1+9613oK9phYXTyaOWPR3Vp/HFapouRe48TWnLxzFpeM
-         OiCZY+0r2PR6/RQewkAUo+P4rCImiWKuU/CW2dClvceLJn3nnFDCIilZGGOYH6rzLdu5
-         oUJdRUUbABTDfjhCUDzj+kDTsHoNJvAr7X42Yiqtq5vitFubSB+N9pxlOMiecddPz4Nw
-         d+/+zU8s58sHCfA34xaNH9ZNt2yULy9IZDQnpkObTnxJdyC3GTR8nSQvbbbCdUZvzKug
-         p83g==
-X-Gm-Message-State: AHQUAubu4lXWc7zr1cClgfpBV3+hgGhV22tTDvmwc/D1tX0XkrAaT1LY
-        +KbbJts8wJowzk3CfY2X6fj1I3kCrw==
-X-Google-Smtp-Source: AHgI3Ibu+aYbEqIyKDxQ3+wAULx2ojvq8+6fuLeTETePVQ9c3slx/3MZgtcDoGhmj52kDBEEBQfhnw==
-X-Received: by 2002:a7b:c76b:: with SMTP id x11mr11602118wmk.37.1549263541352;
-        Sun, 03 Feb 2019 22:59:01 -0800 (PST)
+        bh=e3J/W9wUPHGJUHak9160UZGjCuXyNtQd8t5Pjta35DA=;
+        b=aPImPz4bHJ0JqlxsmS6moQ7SAfk5/yPcT1CJRfC51vGPKz4ydDZcIUwzwSyuOCXhoi
+         WCx5rdc+YxBe2xum0U6fiyTFDDKIY164RJHH+F5Jui/PWEuKI1t4du9QO8fk8jRDgCaW
+         E+q9Vw71YkQ3dJcT/Sg8aAtmgjMoN+8kV3unE3Bbf8GI9Rjs6Oq8u2s9lkXbVZO0jX2I
+         hfK5Kuu6A4kGpDsbePlIqUMOAlFXMCEMHndBfrcz2KI/+4ousjGscqjXGz3micaKQZjY
+         Ff9uVvRthWKy6H38Yv0qgJdRSX0b9yl3W8Qv16ojJEA5bh0XrjEktbMo//EHLrfPKdns
+         OfLQ==
+X-Gm-Message-State: AJcUukcNxNC61XMoZWKEnCGykH7xhGZ623p4DmCdr4pWH0h8V6dpTDuP
+        p6Bi3Ty5vvYb+ZHIjc6hHfdwcpJRLQ==
+X-Google-Smtp-Source: ALg8bN7+nDDmDl7Hk+Rjba0hSVGSn0mgljhQFS+4ayRDN2SAfMtjDay8Ihg9W3bHu9bvM4+sJ+ZdHA==
+X-Received: by 2002:a5d:4303:: with SMTP id h3mr48681616wrq.273.1549263543661;
+        Sun, 03 Feb 2019 22:59:03 -0800 (PST)
 Received: from localhost.localdomain ([213.145.108.55])
-        by smtp.gmail.com with ESMTPSA id q12sm12596809wrx.31.2019.02.03.22.59.00
+        by smtp.gmail.com with ESMTPSA id q12sm12596809wrx.31.2019.02.03.22.59.02
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 03 Feb 2019 22:59:00 -0800 (PST)
+        Sun, 03 Feb 2019 22:59:03 -0800 (PST)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     rostedt@goodmis.org, slavomir.kaslev@gmail.com,
         tstoyanov@vmware.com, ykaradzhov@vmware.com
-Subject: [RFC PATCH v5 04/11] trace-cmd: Add buffer instance flags for tracing in guest and agent context
-Date:   Mon,  4 Feb 2019 08:58:41 +0200
-Message-Id: <20190204065848.8248-5-kaslevs@vmware.com>
+Subject: [RFC PATCH v5 06/11] trace-cmd: Use splice(2) for vsockets if available
+Date:   Mon,  4 Feb 2019 08:58:43 +0200
+Message-Id: <20190204065848.8248-7-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190204065848.8248-1-kaslevs@vmware.com>
 References: <20190204065848.8248-1-kaslevs@vmware.com>
@@ -59,223 +59,117 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add BUFFER_FL_GUEST and BUFFER_FL_AGENT flags to differentiate when
-trace-record.c is being called to trace guest or the VM tracing agent.
-
-Also disable functions talking to the local tracefs when called in recording
-guest instances context.
+Detect if splice(2) reading is supported for vsockets (Linux 4.20 and
+later) and use it, or fallback to read/write-ing otherwise.
 
 Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
- tracecmd/include/trace-local.h |  2 ++
- tracecmd/trace-record.c        | 55 ++++++++++++++++++++++++++++++++--
- 2 files changed, 55 insertions(+), 2 deletions(-)
+ lib/trace-cmd/trace-recorder.c |  6 ++--
+ tracecmd/trace-record.c        | 56 ++++++++++++++++++++++++++++++++--
+ 2 files changed, 56 insertions(+), 6 deletions(-)
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index a1a06e9..f19c8bb 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -149,6 +149,8 @@ char *strstrip(char *str);
- enum buffer_instance_flags {
- 	BUFFER_FL_KEEP		= 1 << 0,
- 	BUFFER_FL_PROFILE	= 1 << 1,
-+	BUFFER_FL_GUEST		= 1 << 2,
-+	BUFFER_FL_AGENT		= 1 << 3,
- };
- 
- struct func_list {
+diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
+index 83a12f4..b750935 100644
+--- a/lib/trace-cmd/trace-recorder.c
++++ b/lib/trace-cmd/trace-recorder.c
+@@ -380,10 +380,8 @@ static long splice_data(struct tracecmd_recorder *recorder)
+ 	ret = splice(recorder->brass[0], NULL, recorder->fd, NULL,
+ 		     read, recorder->fd_flags);
+ 	if (ret < 0) {
+-		if (errno != EAGAIN && errno != EINTR) {
+-			warning("recorder error in splice output");
+-			return -1;
+-		}
++		if (errno != EAGAIN && errno != EINTR)
++			return ret;
+ 		return total_read;
+ 	} else
+ 		update_fd(recorder, ret);
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 3034a4b..b911c34 100644
+index 3c28314..71176d9 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -781,6 +781,9 @@ static void __clear_trace(struct buffer_instance *instance)
- 	FILE *fp;
- 	char *path;
+@@ -2656,12 +2656,61 @@ static int open_vsock(unsigned int cid, unsigned int port)
  
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	/* reset the trace */
- 	path = get_instance_file(instance, "trace");
- 	fp = fopen(path, "w");
-@@ -1264,6 +1267,9 @@ set_plugin_instance(struct buffer_instance *instance, const char *name)
- 	char *path;
- 	char zero = '0';
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	path = get_instance_file(instance, "current_tracer");
- 	fp = fopen(path, "w");
- 	if (!fp) {
-@@ -1360,6 +1366,9 @@ static void disable_func_stack_trace_instance(struct buffer_instance *instance)
- 	int size;
- 	int ret;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	path = get_instance_file(instance, "current_tracer");
- 	ret = stat(path, &st);
- 	tracecmd_put_tracing_file(path);
-@@ -1553,6 +1562,9 @@ reset_events_instance(struct buffer_instance *instance)
- 	int i;
- 	int ret;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	if (use_old_event_method()) {
- 		/* old way only had top instance */
- 		if (!is_top_instance(instance))
-@@ -1904,6 +1916,9 @@ static void write_tracing_on(struct buffer_instance *instance, int on)
- 	int ret;
- 	int fd;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	fd = open_tracing_on(instance);
- 	if (fd < 0)
- 		return;
-@@ -1923,6 +1938,9 @@ static int read_tracing_on(struct buffer_instance *instance)
- 	char buf[10];
- 	int ret;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return -1;
-+
- 	fd = open_tracing_on(instance);
- 	if (fd < 0)
- 		return fd;
-@@ -2156,6 +2174,9 @@ static void set_mask(struct buffer_instance *instance)
- 	int fd;
- 	int ret;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	if (!instance->cpumask)
- 		return;
- 
-@@ -2186,6 +2207,9 @@ static void enable_events(struct buffer_instance *instance)
- {
- 	struct event_list *event;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	for (event = instance->events; event; event = event->next) {
- 		if (!event->neg)
- 			update_event(event, event->filter, 0, '1');
-@@ -2209,6 +2233,9 @@ static void set_clock(struct buffer_instance *instance)
- 	char *content;
- 	char *str;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	if (!instance->clock)
- 		return;
- 
-@@ -2238,6 +2265,9 @@ static void set_max_graph_depth(struct buffer_instance *instance, char *max_grap
- 	char *path;
- 	int ret;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	path = get_instance_file(instance, "max_graph_depth");
- 	reset_save_file(path, RESET_DEFAULT_PRIO);
- 	tracecmd_put_tracing_file(path);
-@@ -2463,6 +2493,9 @@ static void expand_event_instance(struct buffer_instance *instance)
- 	struct event_list *compressed_list = instance->events;
- 	struct event_list *event;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	reset_event_list(instance);
- 
- 	while (compressed_list) {
-@@ -3336,6 +3369,9 @@ static void set_funcs(struct buffer_instance *instance)
- 	int set_notrace = 0;
- 	int ret;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	ret = write_func_file(instance, "set_ftrace_filter", &instance->filter_funcs);
- 	if (ret < 0)
- 		die("set_ftrace_filter does not exist. Can not filter functions");
-@@ -3632,6 +3668,9 @@ static void set_buffer_size_instance(struct buffer_instance *instance)
- 	int ret;
- 	int fd;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
-+
- 	if (!buffer_size)
- 		return;
- 
-@@ -3829,6 +3868,9 @@ static void make_instances(void)
- 	int ret;
- 
- 	for_each_instance(instance) {
-+		if (instance->flags & BUFFER_FL_GUEST)
-+			continue;
-+
- 		path = get_instance_dir(instance);
- 		ret = stat(path, &st);
- 		if (ret < 0) {
-@@ -3850,7 +3892,7 @@ void tracecmd_remove_instances(void)
- 
- 	for_each_instance(instance) {
- 		/* Only delete what we created */
--		if (instance->flags & BUFFER_FL_KEEP)
-+		if (instance->flags & (BUFFER_FL_KEEP | BUFFER_FL_GUEST))
- 			continue;
- 		if (instance->tracing_on_fd > 0) {
- 			close(instance->tracing_on_fd);
-@@ -3932,7 +3974,7 @@ static void check_function_plugin(void)
- 
- static int __check_doing_something(struct buffer_instance *instance)
- {
--	return (instance->flags & BUFFER_FL_PROFILE) ||
-+	return (instance->flags & (BUFFER_FL_PROFILE | BUFFER_FL_GUEST)) ||
- 		instance->plugin || instance->events;
+ 	return sd;
  }
- 
-@@ -3954,6 +3996,9 @@ update_plugin_instance(struct buffer_instance *instance,
++
++static int try_splice_read_vsock(void)
++{
++	int ret, sd, brass[2];
++
++	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
++	if (sd < 0)
++		return sd;
++
++	ret = pipe(brass);
++	if (ret < 0)
++		goto out_close_sd;
++
++	/*
++	 * On kernels that don't support splice reading from vsockets
++	 * this will fail with EINVAL, or ENOTCONN otherwise.
++	 * Technically, it should never succeed but if it does, claim splice
++	 * reading is supported.
++	 */
++	ret = splice(sd, NULL, brass[1], NULL, 10, 0);
++	if (ret < 0)
++		ret = errno != EINVAL;
++	else
++		ret = 1;
++
++	close(brass[0]);
++	close(brass[1]);
++out_close_sd:
++	close(sd);
++	return ret;
++}
++
++static bool can_splice_read_vsock(void)
++{
++	static bool initialized, res;
++
++	if (initialized)
++		return res;
++
++	res = try_splice_read_vsock() > 0;
++	initialized = true;
++	return res;
++}
++
+ #else
+ static inline int open_vsock(unsigned int cid, unsigned int port)
  {
- 	const char *plugin = instance->plugin;
- 
-+	if (instance->flags & BUFFER_FL_GUEST)
-+		return;
+ 	die("vsock is not supported");
+ 	return -1;
+ }
 +
- 	if (!plugin)
- 		return;
++static bool can_splice_read_vsock(void)
++{
++	return false;
++}
+ #endif
  
-@@ -4053,6 +4098,9 @@ static void record_stats(void)
- 	int cpu;
+ static int do_accept(int sd)
+@@ -2866,13 +2915,16 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
  
- 	for_all_instances(instance) {
-+		if (instance->flags & BUFFER_FL_GUEST)
-+			continue;
-+
- 		s_save = instance->s_save;
- 		s_print = instance->s_print;
- 		for (cpu = 0; cpu < instance->cpu_count; cpu++) {
-@@ -4079,6 +4127,9 @@ static void destroy_stats(void)
- 	int cpu;
+ 	if (instance->flags & BUFFER_FL_GUEST) {
+ 		int sd;
++		unsigned int flags;
  
- 	for_all_instances(instance) {
-+		if (instance->flags & BUFFER_FL_GUEST)
-+			continue;
-+
- 		for (cpu = 0; cpu < instance->cpu_count; cpu++) {
- 			trace_seq_destroy(&instance->s_save[cpu]);
- 			trace_seq_destroy(&instance->s_print[cpu]);
+ 		sd = open_vsock(instance->cid, instance->client_ports[cpu]);
+ 		if (sd < 0)
+ 			die("Failed to connect to agent");
+ 
+-		return tracecmd_create_recorder_virt(
+-			file, cpu, recorder_flags | TRACECMD_RECORD_NOSPLICE, sd);
++		flags = recorder_flags;
++		if (!can_splice_read_vsock())
++			flags |= TRACECMD_RECORD_NOSPLICE;
++		return tracecmd_create_recorder_virt(file, cpu, flags, sd);
+ 	}
+ 
+ 	if (brass)
 -- 
 2.19.1
 
