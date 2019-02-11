@@ -2,149 +2,209 @@ Return-Path: <SRS0=h7mL=QS=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3890FC282D7
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Feb 2019 01:21:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86C67C169C4
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Feb 2019 08:53:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0E2D821773
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Feb 2019 01:21:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 30D2420823
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Feb 2019 08:53:21 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="rKo6hCXR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbfBKBVz (ORCPT
+        id S1726891AbfBKIxU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 10 Feb 2019 20:21:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726154AbfBKBVz (ORCPT
+        Mon, 11 Feb 2019 03:53:20 -0500
+Received: from mail-eopbgr750072.outbound.protection.outlook.com ([40.107.75.72]:47455
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726358AbfBKIxU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 10 Feb 2019 20:21:55 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7F77214DA;
-        Mon, 11 Feb 2019 01:21:54 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.92-RC5)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1gt0ID-0003w4-Un; Sun, 10 Feb 2019 20:21:53 -0500
-Message-Id: <20190211012153.848572065@goodmis.org>
-User-Agent: quilt/0.65
-Date:   Sun, 10 Feb 2019 20:18:08 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 1/4] kernel-shark: Remove testing of "success" field of wakeup events
+        Mon, 11 Feb 2019 03:53:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+1P+JNzPIwRRD/gHVxiWNTsc7Z5RPo+5BHvoNyjGhA8=;
+ b=rKo6hCXR2Av1zuPnDrDk5pFZqEsWtnXdkOCow/b737yPQcItPsY2CHmg90Nmu6XH53m9MhqrpEjTMMcaLV/FLHKTXYupRbG2Hn3OdmGjIxN67YCOEbjLOtMpckjQ4Y9Do8uR6bYU6APuZWnK6KYt9EAHwk/21ac8uflqHoSylYI=
+Received: from SN4PR0501MB3903.namprd05.prod.outlook.com (10.167.142.151) by
+ SN4PR0501MB3709.namprd05.prod.outlook.com (10.167.128.157) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1622.9; Mon, 11 Feb 2019 08:53:16 +0000
+Received: from SN4PR0501MB3903.namprd05.prod.outlook.com
+ ([fe80::9c6c:db1c:e297:7b13]) by SN4PR0501MB3903.namprd05.prod.outlook.com
+ ([fe80::9c6c:db1c:e297:7b13%3]) with mapi id 15.20.1622.013; Mon, 11 Feb 2019
+ 08:53:16 +0000
+From:   Yordan Karadzhov <ykaradzhov@vmware.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] kernel-shark: Consolidate duplicate code of the
+ sched_wakeup events
+Thread-Topic: [PATCH 2/4] kernel-shark: Consolidate duplicate code of the
+ sched_wakeup events
+Thread-Index: AQHUwahMfaf0d19QQEaazCWyd2zWC6XaSxuA
+Date:   Mon, 11 Feb 2019 08:53:16 +0000
+Message-ID: <9c610142-ee8d-5801-6077-33d7d39acaf9@vmware.com>
 References: <20190211011807.714634783@goodmis.org>
+ <20190211012153.982548008@goodmis.org>
+In-Reply-To: <20190211012153.982548008@goodmis.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: LO2P265CA0003.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:62::15) To SN4PR0501MB3903.namprd05.prod.outlook.com
+ (2603:10b6:803:4d::23)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [146.247.46.5]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1;SN4PR0501MB3709;20:k+cplCq2RSPkX/6YJVvHaEZgHPm8wJJSfb7CZncE05RwCC9Ijj99wDkrZjTSwfxj1eYeyWA1wuRb34+k2jsmeI1/NM8HiEv+YZGTQsOffCm0IE8PQ5TmvJ+7KM7hS0eG2c+TKIOwjZz+XTWbKiQRzsIcEu/Z1WHHBjJ/zocESSY=
+x-ms-office365-filtering-correlation-id: d9a2d79d-f51b-4c28-fee5-08d68ffe5cd4
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600110)(711020)(4605077)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7153060)(7193020);SRVR:SN4PR0501MB3709;
+x-ms-traffictypediagnostic: SN4PR0501MB3709:
+x-microsoft-antispam-prvs: <SN4PR0501MB37093A8064BEED15F7F23F4BA0640@SN4PR0501MB3709.namprd05.prod.outlook.com>
+x-forefront-prvs: 0945B0CC72
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(366004)(396003)(376002)(136003)(39860400002)(189003)(199004)(7736002)(106356001)(6506007)(31696002)(68736007)(25786009)(31686004)(102836004)(53936002)(105586002)(81166006)(386003)(305945005)(8676002)(256004)(6486002)(81156014)(71200400001)(2501003)(71190400001)(14454004)(6436002)(6512007)(2906002)(6246003)(66066001)(76176011)(6116002)(446003)(26005)(476003)(8936002)(316002)(6346003)(36756003)(2616005)(486006)(97736004)(186003)(229853002)(11346002)(52116002)(478600001)(99286004)(3846002)(110136005)(86362001);DIR:OUT;SFP:1101;SCL:1;SRVR:SN4PR0501MB3709;H:SN4PR0501MB3903.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=ykaradzhov@vmware.com; 
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: GrDl59j0M9wf9JG6MYfBVu8kdzaezSzTFsxoporZeSpY8pxxe4lbnHjQt++OF51oe+XgxwzR1yhy9Jt0BumGmDihi+ooxuKLRk2wwtA5UAR7z7FsvJV4rYteq9R4oFfyM12wVWtNtUICbQa7+Of6ER4+QNCJyb5N6w2oiibJOnd8p2roHG16UDq5CKmfjP/Eggm9esLck0HpeexBBj8cuE5LNRKlo5sG97xx/QF3MdwDcgkDFxGZUGY0h5I4bnBqbjzLpcRRg3oVAaG3xBBJGv5Hpj41znfiZnLeX3gXPVD+4WEgzxvYZuaIhcL1tLxIqVUxtUN/OOV5D4TyL4Jg8JbfMFiLEiycHfgENSJxquL8iONO3Q49O1PgLDypZD0x8Mil54b5D5NpR3UVrGrp393Bs5X79+O6jNHni4BYBAk=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2B483A958B942746BB3FABEE845A8013@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9a2d79d-f51b-4c28-fee5-08d68ffe5cd4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2019 08:53:15.5247
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0501MB3709
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-
-Since 2011 (or Linux version 3.0) the sched wakeup event "success" field has
-been hardcoded to true (or 1). There's no reason to waste cycles checking it
-in any newer kernel, which is most of them. Just ignore it. Even when
-running on older kernels which may have a success=0 value, the algorithm
-should still work.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel-shark/src/plugins/sched_events.c | 25 +++----------------------
- kernel-shark/src/plugins/sched_events.h |  8 --------
- 2 files changed, 3 insertions(+), 30 deletions(-)
-
-diff --git a/kernel-shark/src/plugins/sched_events.c b/kernel-shark/src/plugins/sched_events.c
-index c0328e804911..5b1af7722624 100644
---- a/kernel-shark/src/plugins/sched_events.c
-+++ b/kernel-shark/src/plugins/sched_events.c
-@@ -68,9 +68,6 @@ static bool plugin_sched_init_context(struct kshark_context *kshark_ctx)
- 	plugin_ctx->sched_wakeup_pid_field =
- 		tep_find_any_field(event, "pid");
- 
--	plugin_ctx->sched_wakeup_success_field =
--		tep_find_field(event, "success");
--
- 	event = tep_find_event_by_name(plugin_ctx->pevent,
- 				       "sched", "sched_wakeup_new");
- 	if (!event)
-@@ -80,9 +77,6 @@ static bool plugin_sched_init_context(struct kshark_context *kshark_ctx)
- 	plugin_ctx->sched_wakeup_new_pid_field =
- 		tep_find_any_field(event, "pid");
- 
--	plugin_ctx->sched_wakeup_new_success_field =
--		tep_find_field(event, "success");
--
- 	plugin_ctx->second_pass_hash = tracecmd_filter_id_hash_alloc();
- 
- 	return true;
-@@ -175,8 +169,7 @@ bool plugin_wakeup_match_rec_pid(struct kshark_context *kshark_ctx,
- {
- 	struct plugin_sched_context *plugin_ctx;
- 	struct tep_record *record = NULL;
--	unsigned long long val;
--	int ret, wakeup_pid = -1;
-+	int wakeup_pid = -1;
- 
- 	plugin_ctx = plugin_sched_context_handler;
- 	if (!plugin_ctx)
-@@ -185,25 +178,13 @@ bool plugin_wakeup_match_rec_pid(struct kshark_context *kshark_ctx,
- 	if (plugin_ctx->sched_wakeup_event &&
- 	    e->event_id == plugin_ctx->sched_wakeup_event->id) {
- 		record = tracecmd_read_at(kshark_ctx->handle, e->offset, NULL);
--
--		/* We only want those that actually woke up the task. */
--		ret = tep_read_number_field(plugin_ctx->sched_wakeup_success_field,
--					    record->data, &val);
--
--		if (ret == 0 && val)
--			wakeup_pid = plugin_get_rec_wakeup_pid(record);
-+		wakeup_pid = plugin_get_rec_wakeup_pid(record);
- 	}
- 
- 	if (plugin_ctx->sched_wakeup_new_event &&
- 	    e->event_id == plugin_ctx->sched_wakeup_new_event->id) {
- 		record = tracecmd_read_at(kshark_ctx->handle, e->offset, NULL);
--
--		/* We only want those that actually woke up the task. */
--		ret = tep_read_number_field(plugin_ctx->sched_wakeup_new_success_field,
--					    record->data, &val);
--
--		if (ret == 0 && val)
--			wakeup_pid = plugin_get_rec_wakeup_new_pid(record);
-+		wakeup_pid = plugin_get_rec_wakeup_new_pid(record);
- 	}
- 
- 	free_record(record);
-diff --git a/kernel-shark/src/plugins/sched_events.h b/kernel-shark/src/plugins/sched_events.h
-index fb1849ee8ffb..0beb63fe2b48 100644
---- a/kernel-shark/src/plugins/sched_events.h
-+++ b/kernel-shark/src/plugins/sched_events.h
-@@ -45,20 +45,12 @@ struct plugin_sched_context {
- 	/** Pointer to the sched_wakeup_pid_field format descriptor. */
- 	struct tep_format_field	*sched_wakeup_pid_field;
- 
--	/** Pointer to the sched_wakeup_success_field format descriptor. */
--	struct tep_format_field	*sched_wakeup_success_field;
--
- 	/** Pointer to the sched_wakeup_new_event object. */
- 	struct tep_event	*sched_wakeup_new_event;
- 
- 	/** Pointer to the sched_wakeup_new_pid_field format descriptor. */
- 	struct tep_format_field	*sched_wakeup_new_pid_field;
- 
--	/**
--	 * Pointer to the sched_wakeup_new_success_field format descriptor.
--	 */
--	struct tep_format_field	*sched_wakeup_new_success_field;
--
- 	/** List of Data collections used by this plugin. */
- 	struct kshark_entry_collection	*collections;
- 
--- 
-2.20.1
-
-
+DQoNCk9uIDExLjAyLjE5INCzLiAzOjE4INGHLiwgU3RldmVuIFJvc3RlZHQgd3JvdGU6DQo+IEZy
+b206ICJTdGV2ZW4gUm9zdGVkdCAoVk13YXJlKSIgPHJvc3RlZHRAZ29vZG1pcy5vcmc+DQo+IA0K
+PiBUaGUgbG9naWMgdXNlZCBmb3Igc2NoZWRfd2FrZXVwIGFuZCBzY2hlZF93YWtldXBfbmV3IGV2
+ZW50cyBhcmUgYmFzaWNhbGx5DQo+IHRoZSBzYW1lLiBDcmVhdGUgaGVscGVyIGZ1bmN0aW9ucyB0
+byBiZSBjYWxsZWQgdG8gZG8gdGhlIGR1cGxpY2F0ZSBjb2RlIHdpdGgNCj4ganVzdCBwYXNzaW5n
+IGluIHRoZSBwYXJhbWV0ZXJzIHRoYXQgYXJlIHVuaXF1ZSB0byB0aGUgZXZlbnRzLg0KPiANCj4g
+U2lnbmVkLW9mZi1ieTogU3RldmVuIFJvc3RlZHQgKFZNd2FyZSkgPHJvc3RlZHRAZ29vZG1pcy5v
+cmc+DQo+IC0tLQ0KPiAgIGtlcm5lbC1zaGFyay9zcmMvcGx1Z2lucy9zY2hlZF9ldmVudHMuYyB8
+IDEwNiArKysrKysrKysrKysrKystLS0tLS0tLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgNjYgaW5z
+ZXJ0aW9ucygrKSwgNDAgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEva2VybmVsLXNo
+YXJrL3NyYy9wbHVnaW5zL3NjaGVkX2V2ZW50cy5jIGIva2VybmVsLXNoYXJrL3NyYy9wbHVnaW5z
+L3NjaGVkX2V2ZW50cy5jDQo+IGluZGV4IDViMWFmNzcyMjYyNC4uMGY1YzA4ZTM1MDhkIDEwMDY0
+NA0KPiAtLS0gYS9rZXJuZWwtc2hhcmsvc3JjL3BsdWdpbnMvc2NoZWRfZXZlbnRzLmMNCj4gKysr
+IGIva2VybmVsLXNoYXJrL3NyYy9wbHVnaW5zL3NjaGVkX2V2ZW50cy5jDQo+IEBAIC0yMywxMCAr
+MjMsMjcgQEANCj4gICAvKiogUGx1Z2luIGNvbnRleHQgaW5zdGFuY2UuICovDQo+ICAgc3RydWN0
+IHBsdWdpbl9zY2hlZF9jb250ZXh0ICpwbHVnaW5fc2NoZWRfY29udGV4dF9oYW5kbGVyID0gTlVM
+TDsNCj4gICANCj4gK3N0YXRpYyBib29sIGRlZmluZV93YWtldXBfZXZlbnQoc3RydWN0IHRlcF9o
+YW5kbGUgKnRlcCwgY29uc3QgY2hhciAqd2FrZXVwX25hbWUsDQo+ICsJCQkJc3RydWN0IHRlcF9l
+dmVudCAqKndha2V1cF9ldmVudCwNCj4gKwkJCQlzdHJ1Y3QgdGVwX2Zvcm1hdF9maWVsZCAqKnBp
+ZF9maWVsZCkNCj4gK3sNCj4gKwlzdHJ1Y3QgdGVwX2V2ZW50ICpldmVudDsNCj4gKw0KPiArCWV2
+ZW50ID0gdGVwX2ZpbmRfZXZlbnRfYnlfbmFtZSh0ZXAsICJzY2hlZCIsIHdha2V1cF9uYW1lKTsN
+Cj4gKwlpZiAoIWV2ZW50KQ0KPiArCQlyZXR1cm4gZmFsc2U7DQo+ICsNCj4gKwkqd2FrZXVwX2V2
+ZW50ID0gZXZlbnQ7DQo+ICsJKnBpZF9maWVsZCA9IHRlcF9maW5kX2FueV9maWVsZChldmVudCwg
+InBpZCIpOw0KPiArDQo+ICsJcmV0dXJuIHRydWU7DQo+ICt9DQo+ICsNCj4gICBzdGF0aWMgYm9v
+bCBwbHVnaW5fc2NoZWRfaW5pdF9jb250ZXh0KHN0cnVjdCBrc2hhcmtfY29udGV4dCAqa3NoYXJr
+X2N0eCkNCj4gICB7DQo+ICAgCXN0cnVjdCBwbHVnaW5fc2NoZWRfY29udGV4dCAqcGx1Z2luX2N0
+eDsNCj4gICAJc3RydWN0IHRlcF9ldmVudCAqZXZlbnQ7DQo+ICsJYm9vbCB3YWtldXBfZm91bmQ7
+DQo+ICAgDQo+ICAgCS8qIE5vIGNvbnRleHQgc2hvdWxkIGV4aXN0IHdoZW4gd2UgaW5pdGlhbGl6
+ZSB0aGUgcGx1Z2luLiAqLw0KPiAgIAlhc3NlcnQocGx1Z2luX3NjaGVkX2NvbnRleHRfaGFuZGxl
+ciA9PSBOVUxMKTsNCj4gQEAgLTU5LDIzICs3NiwxNyBAQCBzdGF0aWMgYm9vbCBwbHVnaW5fc2No
+ZWRfaW5pdF9jb250ZXh0KHN0cnVjdCBrc2hhcmtfY29udGV4dCAqa3NoYXJrX2N0eCkNCj4gICAJ
+cGx1Z2luX2N0eC0+c2NoZWRfc3dpdGNoX3ByZXZfc3RhdGVfZmllbGQgPQ0KPiAgIAkJdGVwX2Zp
+bmRfZmllbGQoZXZlbnQsICJwcmV2X3N0YXRlIik7DQo+ICAgDQo+IC0JZXZlbnQgPSB0ZXBfZmlu
+ZF9ldmVudF9ieV9uYW1lKHBsdWdpbl9jdHgtPnBldmVudCwNCj4gLQkJCQkgICAgICAic2NoZWQi
+LCAic2NoZWRfd2FrZXVwIik7DQo+IC0JaWYgKCFldmVudCkNCj4gLQkJcmV0dXJuIGZhbHNlOw0K
+PiAgIA0KPiAtCXBsdWdpbl9jdHgtPnNjaGVkX3dha2V1cF9ldmVudCA9IGV2ZW50Ow0KPiAtCXBs
+dWdpbl9jdHgtPnNjaGVkX3dha2V1cF9waWRfZmllbGQgPQ0KPiAtCQl0ZXBfZmluZF9hbnlfZmll
+bGQoZXZlbnQsICJwaWQiKTsNCj4gKwl3YWtldXBfZm91bmQgPSBkZWZpbmVfd2FrZXVwX2V2ZW50
+KGtzaGFya19jdHgtPnBldmVudCwgInNjaGVkX3dha2V1cCIsDQo+ICsJCQkJCSAgICZwbHVnaW5f
+Y3R4LT5zY2hlZF93YWtldXBfZXZlbnQsDQo+ICsJCQkJCSAgICZwbHVnaW5fY3R4LT5zY2hlZF93
+YWtldXBfcGlkX2ZpZWxkKTsNCj4gICANCj4gLQlldmVudCA9IHRlcF9maW5kX2V2ZW50X2J5X25h
+bWUocGx1Z2luX2N0eC0+cGV2ZW50LA0KPiAtCQkJCSAgICAgICAic2NoZWQiLCAic2NoZWRfd2Fr
+ZXVwX25ldyIpOw0KPiAtCWlmICghZXZlbnQpDQo+IC0JCXJldHVybiBmYWxzZTsNCj4gKwl3YWtl
+dXBfZm91bmQgfD0gZGVmaW5lX3dha2V1cF9ldmVudChrc2hhcmtfY3R4LT5wZXZlbnQsICJzY2hl
+ZF93YWtldXBfbmV3IiwNCj4gKwkJCQkJICAgJnBsdWdpbl9jdHgtPnNjaGVkX3dha2V1cF9uZXdf
+ZXZlbnQsDQo+ICsJCQkJCSAgICZwbHVnaW5fY3R4LT5zY2hlZF93YWtldXBfbmV3X3BpZF9maWVs
+ZCk7DQo+ICAgDQo+IC0JcGx1Z2luX2N0eC0+c2NoZWRfd2FrZXVwX25ld19ldmVudCA9IGV2ZW50
+Ow0KPiAtCXBsdWdpbl9jdHgtPnNjaGVkX3dha2V1cF9uZXdfcGlkX2ZpZWxkID0NCj4gLQkJdGVw
+X2ZpbmRfYW55X2ZpZWxkKGV2ZW50LCAicGlkIik7DQo+ICsJaWYgKCF3YWtldXBfZm91bmQpDQo+
+ICsJCXJldHVybiBmYWxzZTsNCj4gICANCj4gICAJcGx1Z2luX2N0eC0+c2Vjb25kX3Bhc3NfaGFz
+aCA9IHRyYWNlY21kX2ZpbHRlcl9pZF9oYXNoX2FsbG9jKCk7DQo+ICAgDQo+IEBAIC0xMzksMTcg
+KzE1MCw1MSBAQCBzdGF0aWMgdm9pZCBwbHVnaW5fcmVnaXN0ZXJfY29tbWFuZChzdHJ1Y3Qga3No
+YXJrX2NvbnRleHQgKmtzaGFya19jdHgsDQo+ICAgCQkJdGVwX3JlZ2lzdGVyX2NvbW0oa3NoYXJr
+X2N0eC0+cGV2ZW50LCBjb21tLCBwaWQpOw0KPiAgIH0NCj4gICANCj4gLXN0YXRpYyBpbnQgcGx1
+Z2luX2dldF9yZWNfd2FrZXVwX25ld19waWQoc3RydWN0IHRlcF9yZWNvcmQgKnJlY29yZCkNCg0K
+VGhpcyBwYXRjaCBzaWxlbnRseSByZW1vdmVzIHRoZSAicGx1Z2luX2dldF9yZWNfd2FrZXVwX25l
+d19waWQoKSIgDQpmdW5jdGlvbiB3aGljaCBpcyB0aGUgZXF1aXZhbGVudCBvZiAicGx1Z2luX2dl
+dF9yZWNfd2FrZXVwX3BpZCgpIiwgYnV0IA0KZm9yICJ3YWtldXBfbmV3IiBldmVudHMuIEkgZ3Vl
+c3MsIHlvdSBhcmUgcmVtb3ZpbmcgDQoicGx1Z2luX2dldF9yZWNfd2FrZXVwX25ld19waWQoKSIg
+aGVyZSwgYmVjYXVzZSBpdCBpcyBkZWZpbmVkIHN0YXRpYyBidXQgDQppbiBmYWN0IHRoZXJlIGlz
+IG5vIHJlYXNvbiBmb3IgInBsdWdpbl9nZXRfcmVjX3dha2V1cF9waWQoKSIgYmVpbmcgDQpub24t
+c3RhdGljICh0aGlzIGlzIG15IG1pc3Rha2UpLiBTbyBqdXN0IHRvIGtlZXAgZXZlcnl0aGluZyBj
+b25zaXN0ZW50LCANCnBsZWFzZSBkbyB0aGUgcmVtb3ZhbCBvZiAicGx1Z2luX2dldF9yZWNfd2Fr
+ZXVwX25ld19waWQoKSIgaW4gdGhlIG5leHQgDQpwYXRjaCAodG9nZXRoZXIgd2l0aCB0aGUgcmVt
+b3ZhbCBvZiAicGx1Z2luX2dldF9yZWNfd2FrZXVwX3BpZCgpIikuDQoNCg0KPiAraW50IGZpbmRf
+d2FrZXVwX3BpZChzdHJ1Y3Qga3NoYXJrX2NvbnRleHQgKmtzaGFya19jdHgsIHN0cnVjdCBrc2hh
+cmtfZW50cnkgKmUsDQo+ICsJCSAgICBzdHJ1Y3QgdGVwX2V2ZW50ICp3YWtldXBfZXZlbnQsIHN0
+cnVjdCB0ZXBfZm9ybWF0X2ZpZWxkICpwaWRfZmllbGQpDQo+ICAgew0KPiAtCXN0cnVjdCBwbHVn
+aW5fc2NoZWRfY29udGV4dCAqcGx1Z2luX2N0eCA9DQo+IC0JCXBsdWdpbl9zY2hlZF9jb250ZXh0
+X2hhbmRsZXI7DQo+ICsJc3RydWN0IHRlcF9yZWNvcmQgKnJlY29yZDsNCj4gICAJdW5zaWduZWQg
+bG9uZyBsb25nIHZhbDsNCj4gICAJaW50IHJldDsNCj4gICANCj4gLQlyZXQgPSB0ZXBfcmVhZF9u
+dW1iZXJfZmllbGQocGx1Z2luX2N0eC0+c2NoZWRfd2FrZXVwX25ld19waWRfZmllbGQsDQo+IC0J
+CQkJICAgIHJlY29yZC0+ZGF0YSwgJnZhbCk7DQo+ICsJaWYgKCF3YWtldXBfZXZlbnQgfHwgZS0+
+ZXZlbnRfaWQgIT0gd2FrZXVwX2V2ZW50LT5pZCkNCj4gKwkJcmV0dXJuIC0xOw0KPiAgIA0KPiAt
+CXJldHVybiByZXQgPyA6IHZhbDsNCj4gKwlyZWNvcmQgPSB0cmFjZWNtZF9yZWFkX2F0KGtzaGFy
+a19jdHgtPmhhbmRsZSwgZS0+b2Zmc2V0LCBOVUxMKTsNCj4gKwlyZXQgPSB0ZXBfcmVhZF9udW1i
+ZXJfZmllbGQocGlkX2ZpZWxkLCByZWNvcmQtPmRhdGEsICZ2YWwpOw0KPiArCWZyZWVfcmVjb3Jk
+KHJlY29yZCk7DQo+ICsNCj4gKwlpZiAocmV0KQ0KPiArCQlyZXR1cm4gLTE7DQo+ICsNCj4gKwly
+ZXR1cm4gdmFsOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgYm9vbCB3YWtldXBfbWF0Y2hfcmVjX3Bp
+ZChzdHJ1Y3QgcGx1Z2luX3NjaGVkX2NvbnRleHQgKnBsdWdpbl9jdHgsDQo+ICsJCQkJIHN0cnVj
+dCBrc2hhcmtfY29udGV4dCAqa3NoYXJrX2N0eCwNCj4gKwkJCQkgc3RydWN0IGtzaGFya19lbnRy
+eSAqZSwNCj4gKwkJCQkgaW50IHBpZCkNCj4gK3sNCj4gKwlzdHJ1Y3QgdGVwX2V2ZW50ICp3YWtl
+dXBfZXZlbnRzW10gPSB7DQo+ICsJCXBsdWdpbl9jdHgtPnNjaGVkX3dha2V1cF9ldmVudCwNCj4g
+KwkJcGx1Z2luX2N0eC0+c2NoZWRfd2FrZXVwX25ld19ldmVudCwNCj4gKwl9Ow0KPiArCXN0cnVj
+dCB0ZXBfZm9ybWF0X2ZpZWxkICp3YWtldXBfZmllbGRzW10gPSB7DQo+ICsJCXBsdWdpbl9jdHgt
+PnNjaGVkX3dha2V1cF9waWRfZmllbGQsDQo+ICsJCXBsdWdpbl9jdHgtPnNjaGVkX3dha2V1cF9u
+ZXdfcGlkX2ZpZWxkLA0KPiArCX07DQo+ICsJaW50IGksIHdha2V1cF9waWQgPSAtMTsNCj4gKw0K
+PiArCWZvciAoaSA9IDA7IGkgPCBzaXplb2Yod2FrZXVwX2V2ZW50cykgLyBzaXplb2Yod2FrZXVw
+X2V2ZW50c1swXSk7IGkrKykgew0KPiArCQl3YWtldXBfcGlkID0gZmluZF93YWtldXBfcGlkKGtz
+aGFya19jdHgsIGUsIHdha2V1cF9ldmVudHNbaV0sIHdha2V1cF9maWVsZHNbaV0pOw0KPiArCQlp
+ZiAod2FrZXVwX3BpZCA+PSAwKQ0KPiArCQkJYnJlYWs7DQo+ICsJfQ0KPiArDQo+ICsJaWYgKHdh
+a2V1cF9waWQgPj0gMCAmJiB3YWtldXBfcGlkID09IHBpZCkNCj4gKwkJcmV0dXJuIHRydWU7DQo+
+ICsNCj4gKwlyZXR1cm4gZmFsc2U7DQo+ICAgfQ0KPiAgIA0KPiAgIC8qKg0KPiBAQCAtMTY4LDMx
+ICsyMTMsMTIgQEAgYm9vbCBwbHVnaW5fd2FrZXVwX21hdGNoX3JlY19waWQoc3RydWN0IGtzaGFy
+a19jb250ZXh0ICprc2hhcmtfY3R4LA0KPiAgIAkJCQkgaW50IHBpZCkNCj4gICB7DQo+ICAgCXN0
+cnVjdCBwbHVnaW5fc2NoZWRfY29udGV4dCAqcGx1Z2luX2N0eDsNCj4gLQlzdHJ1Y3QgdGVwX3Jl
+Y29yZCAqcmVjb3JkID0gTlVMTDsNCj4gLQlpbnQgd2FrZXVwX3BpZCA9IC0xOw0KPiAgIA0KPiAg
+IAlwbHVnaW5fY3R4ID0gcGx1Z2luX3NjaGVkX2NvbnRleHRfaGFuZGxlcjsNCj4gICAJaWYgKCFw
+bHVnaW5fY3R4KQ0KPiAgIAkJcmV0dXJuIGZhbHNlOw0KPiAgIA0KPiAtCWlmIChwbHVnaW5fY3R4
+LT5zY2hlZF93YWtldXBfZXZlbnQgJiYNCj4gLQkgICAgZS0+ZXZlbnRfaWQgPT0gcGx1Z2luX2N0
+eC0+c2NoZWRfd2FrZXVwX2V2ZW50LT5pZCkgew0KPiAtCQlyZWNvcmQgPSB0cmFjZWNtZF9yZWFk
+X2F0KGtzaGFya19jdHgtPmhhbmRsZSwgZS0+b2Zmc2V0LCBOVUxMKTsNCj4gLQkJd2FrZXVwX3Bp
+ZCA9IHBsdWdpbl9nZXRfcmVjX3dha2V1cF9waWQocmVjb3JkKTsNCj4gLQl9DQo+IC0NCj4gLQlp
+ZiAocGx1Z2luX2N0eC0+c2NoZWRfd2FrZXVwX25ld19ldmVudCAmJg0KPiAtCSAgICBlLT5ldmVu
+dF9pZCA9PSBwbHVnaW5fY3R4LT5zY2hlZF93YWtldXBfbmV3X2V2ZW50LT5pZCkgew0KPiAtCQly
+ZWNvcmQgPSB0cmFjZWNtZF9yZWFkX2F0KGtzaGFya19jdHgtPmhhbmRsZSwgZS0+b2Zmc2V0LCBO
+VUxMKTsNCj4gLQkJd2FrZXVwX3BpZCA9IHBsdWdpbl9nZXRfcmVjX3dha2V1cF9uZXdfcGlkKHJl
+Y29yZCk7DQo+IC0JfQ0KPiAtDQo+IC0JZnJlZV9yZWNvcmQocmVjb3JkKTsNCj4gLQ0KPiAtCWlm
+ICh3YWtldXBfcGlkID49IDAgJiYgd2FrZXVwX3BpZCA9PSBwaWQpDQo+IC0JCXJldHVybiB0cnVl
+Ow0KPiAtDQo+IC0JcmV0dXJuIGZhbHNlOw0KPiArCXJldHVybiB3YWtldXBfbWF0Y2hfcmVjX3Bp
+ZChwbHVnaW5fY3R4LCBrc2hhcmtfY3R4LCBlLCBwaWQpOw0KPiAgIH0NCj4NCg0KSSBzZWUgbm8g
+cG9pbnQgaW4gZGVmaW5pbmcgInN0YXRpYyBib29sIHdha2V1cF9tYXRjaF9yZWNfcGlkKCkiIGFu
+ZCB0aGVuIA0KaGF2aW5nICJwbHVnaW5fd2FrZXVwX21hdGNoX3JlY19waWQoKSIgd2hpY2ggaXMg
+ZG9pbmcgbm90aGluZyBidXQganVzdCANCmNhbGxpbmcgdGhpcyBzdGF0aWMgZnVuY3Rpb24uDQoN
+Cg0KRXZlcnl0aGluZyBlbHNlIGluIHRoaXMgcGF0Y2ggc2VyaWVzIGlzIE9LLg0KDQpUaGFuayB5
+b3UgdmVyeSBtdWNoIQ0KWW9yZGFuDQoNCg0KUmV2aWV3ZWQtYnk6IFlvcmRhbiBLYXJhZHpob3Yg
+PHlrYXJhZHpob3ZAdm13YXJlLmNvbT4NCg0KDQo+ICAgLyoqDQo+IA0K
