@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5C81C282C4
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5CB3C282CE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AE68B20700
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BD1C420700
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729694AbfBLRE2 (ORCPT
+        id S1728353AbfBLRE3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Feb 2019 12:04:28 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:34889 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728353AbfBLRE2 (ORCPT
+        Tue, 12 Feb 2019 12:04:29 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:40510 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729617AbfBLRE3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 12 Feb 2019 12:04:28 -0500
-Received: by mail-wm1-f65.google.com with SMTP id t200so3855552wmt.0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Feb 2019 09:04:26 -0800 (PST)
+        Tue, 12 Feb 2019 12:04:29 -0500
+Received: by mail-wm1-f66.google.com with SMTP id q21so3814021wmc.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Feb 2019 09:04:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=TPzahrGxSiS7re5yq69qr922slzySdv8npjmVQB6tq0=;
-        b=SOvwCdQvpuY7Y0Nj9tdHYGnRO69fv7kq08V/CaB3LNF+VtGVOX9cJYlgBfrpWQxXBz
-         tqIf8asBcm75et/qIgEHBx78caOchnaW34sH+rZx4gMy0TkfJuDaziwjEwTH9CJ7Dplv
-         waYt9Lqg3nO+nsev9OnA68abPXYHRsSQigeZ99NXc4vwkqcj7Aq8ZYRkFcteDPFH0UzW
-         joslXsl8G/JqdlBy0Yn5/3DUWyuvFbIVZZgLr4IbbNYQ8ZgSD8jUnoO0QSOpVLiUsjYJ
-         QYvVgzVZMrD+hTblxV3hYApVtcreH6J3PKhE7wT+fEg5CPOqzoBAlyXDmvyzos114rst
-         rlXA==
-X-Gm-Message-State: AHQUAuY+YoIJCacAQq/yUXArHAN7qgyzlkJlnqG1fnzLsG0oEU4DbL4+
-        S0hVbmDd8tDHKwCZ1T2UlfU=
-X-Google-Smtp-Source: AHgI3IZz3ALqcpRotvMEAeb89R2K6jVAA3UcDmWKKgM8nNljjuQCNpy2fmYHChT13XMdcNgejab1EQ==
-X-Received: by 2002:a1c:6788:: with SMTP id b130mr40889wmc.102.1549991065870;
-        Tue, 12 Feb 2019 09:04:25 -0800 (PST)
+        bh=Ps63Xwwi5nXjvOYWpthjWVngj8bBpJNpSe9YgwRom0U=;
+        b=LnW1wlwG90HaKLWd5kPESGLotWJh6jD2kvZOjyzqEP6gdevugggYCeTxYg8FEa3KDn
+         bVJNmYBCW7g7m/Vxp3bqracwEO9BvmuYPR2Av/6QOFZ7Owi4SOI2DWbGykIe6rHGQfSE
+         DeHz9ZeaS5aovcey7c2s829jnuDzTBoExk9V9g4Fdo7yjgFLhBqbAFayXfnflvF5/ziz
+         tHd1koBbu6B61liZhs+Uup18/HuQtw0+HXgQmTcnbZFssMFY197ofxnZwpuiUbkPemnB
+         YC+yCoVxPHIl9MWX9JPH87VVPX0ORdfI1Fu95PaUp1MkDJpENahX2QLp64CLAeizMBPt
+         BKrA==
+X-Gm-Message-State: AHQUAuaB6J/l3A7ZHPKNiT6fKhFekLSs+rLDoeSMAdZu0u+E834SU4ts
+        t7tN7IBAs9LOO1w52gC4W8I=
+X-Google-Smtp-Source: AHgI3IalFq/f5wudkbYjWM/KUA4/XgaZlCC+zDrOw8N71mpl/1DEZA4L8kYBbCQsZ5OqLCUVML4kiw==
+X-Received: by 2002:a1c:9cce:: with SMTP id f197mr3655432wme.135.1549991067581;
+        Tue, 12 Feb 2019 09:04:27 -0800 (PST)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id c139sm5579732wmd.13.2019.02.12.09.04.25
+        by smtp.gmail.com with ESMTPSA id c139sm5579732wmd.13.2019.02.12.09.04.26
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Feb 2019 09:04:25 -0800 (PST)
+        Tue, 12 Feb 2019 09:04:27 -0800 (PST)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 1/5] kernel-shark: Customize the marker switching button
-Date:   Tue, 12 Feb 2019 19:03:58 +0200
-Message-Id: <20190212170402.10104-2-ykaradzhov@vmware.com>
+Subject: [PATCH 2/5] kernel-shark: Define a method in View for selecting the Passive marker
+Date:   Tue, 12 Feb 2019 19:03:59 +0200
+Message-Id: <20190212170402.10104-3-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190212170402.10104-1-ykaradzhov@vmware.com>
 References: <20190212170402.10104-1-ykaradzhov@vmware.com>
@@ -57,133 +57,55 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The handler for "mouse press events" in the customized button is
-reimplemented in order to provide the emission of a "deselect"
-signal in the case of right mouse click. Two additional signals are
-defined in KsDualMarkerSM. Those signals are used to re-emit the
-"deselect" signals of the two marker buttons. Later (in another patch)
-the signals will be connected to methods where the actual deselection
-of the markers will take place.
+The same method can be used to deselect the Passive marker.
 
 Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202327
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsDualMarker.cpp | 21 ++++++++++++++
- kernel-shark/src/KsDualMarker.hpp | 46 +++++++++++++++++++++++++++++--
- 2 files changed, 65 insertions(+), 2 deletions(-)
+ kernel-shark/src/KsTraceViewer.cpp | 16 ++++++++++++++++
+ kernel-shark/src/KsTraceViewer.hpp |  2 ++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/kernel-shark/src/KsDualMarker.cpp b/kernel-shark/src/KsDualMarker.cpp
-index dbeb923..43bc177 100644
---- a/kernel-shark/src/KsDualMarker.cpp
-+++ b/kernel-shark/src/KsDualMarker.cpp
-@@ -12,6 +12,21 @@
- #include "KsDualMarker.hpp"
- #include "KsGLWidget.hpp"
+diff --git a/kernel-shark/src/KsTraceViewer.cpp b/kernel-shark/src/KsTraceViewer.cpp
+index 369c78e..61d7386 100644
+--- a/kernel-shark/src/KsTraceViewer.cpp
++++ b/kernel-shark/src/KsTraceViewer.cpp
+@@ -704,6 +704,22 @@ void KsTraceViewer::_searchItemsMapReduce(int column,
+ 		lamSearchReduce(_matchList, m.get());
+ }
  
 +/**
-+ * Reimplemented handler for mouse press events. Right mouse click events will
-+ * deselect the corresponding marker.
++ * @brief Color (select) the given row in the table, by using the color of the
++ * 	  Passive marker.
++ *
++ * @param row: The row index. If the Passive marker is selected and the input
++ *	        value is negative, the Passive marker will be deselected.
 + */
-+void KsMarkerButton::mousePressEvent(QMouseEvent *e)
++void KsTraceViewer::passiveMarkerSelectRow(int row)
 +{
-+	if(e->button() == Qt::RightButton) {
-+		emit deselect();
++	DualMarkerState state = _mState->getState();
 +
-+		return;
-+	}
-+
-+	QPushButton::mousePressEvent(e);
++	_view.setVisible(false);
++	_model.selectRow(!state, row);
++	_view.setVisible(true);
 +}
 +
  /**
-  * @brief Create KsGraphMark object.
-  *
-@@ -178,6 +193,9 @@ KsDualMarkerSM::KsDualMarkerSM(QWidget *parent)
- 	connect(&_buttonB,	&QPushButton::clicked,
- 		this,		&KsDualMarkerSM::_doStateB);
+  * Get the currently selected row. If no row is selected the function
+  * returns -1.
+diff --git a/kernel-shark/src/KsTraceViewer.hpp b/kernel-shark/src/KsTraceViewer.hpp
+index f59f5df..cf529ba 100644
+--- a/kernel-shark/src/KsTraceViewer.hpp
++++ b/kernel-shark/src/KsTraceViewer.hpp
+@@ -68,6 +68,8 @@ public:
  
-+	connect(&_buttonB,	&KsMarkerButton::deselect,
-+		this,		&KsDualMarkerSM::deselectB);
+ 	void clearSelection();
+ 
++	void passiveMarkerSelectRow(int row);
 +
- 	/* Define transitions from State B to State A. */
- 	_stateB->addTransition(this,	&KsDualMarkerSM::machineToA, _stateA);
+ 	int selectedRow();
  
-@@ -192,6 +210,9 @@ KsDualMarkerSM::KsDualMarkerSM(QWidget *parent)
- 	connect(&_buttonA,	&QPushButton::clicked,
- 		this,		&KsDualMarkerSM::_doStateA);
- 
-+	connect(&_buttonA,	&KsMarkerButton::deselect,
-+		this,		&KsDualMarkerSM::deselectA);
-+
- 	_machine.addState(_stateA);
- 	_machine.addState(_stateB);
- 	_machine.setInitialState(_stateA);
-diff --git a/kernel-shark/src/KsDualMarker.hpp b/kernel-shark/src/KsDualMarker.hpp
-index 73d4f8a..597bddb 100644
---- a/kernel-shark/src/KsDualMarker.hpp
-+++ b/kernel-shark/src/KsDualMarker.hpp
-@@ -19,6 +19,36 @@
- #include "KsUtils.hpp"
- #include "KsPlotTools.hpp"
- 
-+/**
-+ * The Marker Button class provides a button that deselect the corresponding
-+ * marker in the case of a Right  mouse click.
-+ */
-+class KsMarkerButton : public QPushButton
-+{
-+	Q_OBJECT
-+public:
-+	/**
-+	 * @brief Create a default button.
-+	 */
-+	explicit KsMarkerButton(QWidget *parent = nullptr)
-+	: QPushButton(parent) {}
-+
-+	/**
-+	 * @brief Create a button with text.
-+	 */
-+	explicit KsMarkerButton(const QString &text, QWidget *parent = nullptr)
-+	: QPushButton(text, parent) {}
-+
-+	void mousePressEvent(QMouseEvent *e);
-+
-+signals:
-+	/**
-+	 * This signal is emitted when the button is click by the Right mouse
-+	 * button.
-+	 */
-+	void deselect();
-+};
-+
- class KsGLWidget;
- 
- /** The KsGraphMark represents a marker for KernelShark GUI. */
-@@ -161,10 +191,22 @@ signals:
- 	 */
- 	void machineToB();
- 
-+	/**
-+	 * This signal is used to re-emitted the deselect signal of the
-+	 * Marker A button.
-+	 */
-+	void deselectA();
-+
-+	/**
-+	 * This signal is used to re-emitted the deselect signal of the
-+	 * Marker B button.
-+	 */
-+	void deselectB();
-+
- private:
--	QPushButton	 _buttonA;
-+	KsMarkerButton	 _buttonA;
- 
--	QPushButton	 _buttonB;
-+	KsMarkerButton	 _buttonB;
- 
- 	QLabel		 _labelMA, _labelMB, _labelDelta;
- 
+ 	void update(KsDataStore *data);
 -- 
 2.17.1
 
