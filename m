@@ -1,124 +1,80 @@
-Return-Path: <SRS0=h7mL=QS=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=4mzf=QT=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2847EC169C4
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Feb 2019 17:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15773C282C4
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F06D0218AE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Feb 2019 17:50:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D38B420700
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728560AbfBKRuu (ORCPT
+        id S1725916AbfBLREU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Feb 2019 12:50:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbfBKRuu (ORCPT
+        Tue, 12 Feb 2019 12:04:20 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:46537 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729694AbfBLREU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Feb 2019 12:50:50 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B67F218A4;
-        Mon, 11 Feb 2019 17:50:49 +0000 (UTC)
-Date:   Mon, 11 Feb 2019 12:50:47 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     Slavomir Kaslev <kaslevs@vmware.com>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: Mapping vsock events from guest to host
-Message-ID: <20190211125047.590e897e@gandalf.local.home>
-In-Reply-To: <20190210211317.04f208f1@vmware.local.home>
-References: <20190210211317.04f208f1@vmware.local.home>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Tue, 12 Feb 2019 12:04:20 -0500
+Received: by mail-wr1-f66.google.com with SMTP id l9so3475763wrt.13
+        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Feb 2019 09:04:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9z+oR7jILbY40Vc1ovSYxahDUvdETkAVgYKvzAuYuzQ=;
+        b=ObjlkYBSdJUH0RzbGB2MwuQeg8R7ozjwshvBAga/uIzJ0rT32iesPNo3kNS9ikGvHW
+         LSdHXWaR+cff+hHCgMzYvQ0sNksNW691g3hIplcGm+pwU8K6MC+/NawhQ776cZYggyWZ
+         m5wgy+pwc62wn0xNEG8Bc26yAYo5faHxxe3pHvGP5xD5MPyG3EvKTU3ZimTmlSse4Yg9
+         wInZQCJ3lXgG6gcaL03He3t/MTU0I5KPADLTv6WGsPz6UFA5TTpzHjfZOs7zt87B1xzx
+         +nKknBdZDfuKzbavdeWZcJsHaeJtlRf4mqOGSkREPiFbwcOxXxrzjhLiQX1+nStiK/l5
+         KhXg==
+X-Gm-Message-State: AHQUAuYRik5tSXDrA/Rc0RrUyXbqZ0NzG+j4d87J79DY2zNdq+LX9FXE
+        Dr/DkuYk04G4vati2VezP3bzAQaU
+X-Google-Smtp-Source: AHgI3IZPKj7lCulrvSVE0JK5G0qt4alKQsWVnF5OzzQY0qoj68helDatwnGpGSGCIIG/WUCYXZjItA==
+X-Received: by 2002:adf:c18c:: with SMTP id x12mr3803184wre.152.1549991058787;
+        Tue, 12 Feb 2019 09:04:18 -0800 (PST)
+Received: from mamba.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id c139sm5579732wmd.13.2019.02.12.09.04.17
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 12 Feb 2019 09:04:18 -0800 (PST)
+From:   Yordan Karadzhov <ykaradzhov@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        Yordan Karadzhov <ykaradzhov@vmware.com>
+Subject: [PATCH 0/5] The right click of the button deselects the marker
+Date:   Tue, 12 Feb 2019 19:03:57 +0200
+Message-Id: <20190212170402.10104-1-ykaradzhov@vmware.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-
-I did a bit more investigation on the guest side, and also followed the
-kernel code to see how vsock works. I found the function that is called
-that triggers the host to take over to read the vsock packet. It's
-vp_notify:
-
-/* the notify function used when creating a virt queue */
-bool vp_notify(struct virtqueue *vq)
-{
-	/* we write the queue's selector into the notification register to
-	 * signal the other end */
-	iowrite16(vq->index, (void __iomem *)vq->priv);
-	return true;
-}
+This series of patches implements the feature requested in
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202327
 
 
-Now I did:
+Yordan Karadzhov (5):
+  kernel-shark: Customize the marker switching button
+  kernel-shark: Define a method in View for selecting the Passive marker
+  kernel-shark: Define KS_NO_ROW_SELECTED as a negative row index (-1)
+  kernel-shark-qt: Do marker-deselect by right mouse click of the button
+  kernel-shark: Rename the method for deselecting the Active marker.
 
- # trace-cmd record -p function -l vp_notify -e vsock -e sched_waking -e sched_switch ./vsock-agent 824
+ kernel-shark/src/KsDualMarker.cpp  | 21 ++++++++++++++
+ kernel-shark/src/KsDualMarker.hpp  | 46 ++++++++++++++++++++++++++++--
+ kernel-shark/src/KsMainWindow.cpp  | 38 +++++++++++++++++++++---
+ kernel-shark/src/KsMainWindow.hpp  |  6 +++-
+ kernel-shark/src/KsModels.cpp      |  8 +++---
+ kernel-shark/src/KsModels.hpp      |  3 ++
+ kernel-shark/src/KsTraceViewer.cpp | 22 ++++++++++++--
+ kernel-shark/src/KsTraceViewer.hpp |  2 ++
+ 8 files changed, 132 insertions(+), 14 deletions(-)
 
-Which gives me:
-
-    sshd-2396    0.... 245253.091020: function:             vp_notify
-    sshd-2396    0d... 245253.091075: sched_switch:         sshd:2396 [120] D ==> vsock-agent:29742 [120]
-vsock-ag-29742   0.... 245253.091201: print:                tracing_mark_write: received 'hello'
-vsock-ag-29742   0.... 245253.091213: virtio_transport_alloc_pkt: 3:824 -> 2:207129201 len=6 type=STREAM op=RW flags=0
-vsock-ag-29742   0d... 245253.091215: sched_waking:         comm=kworker/0:1 pid=29648 prio=120 target_cpu=000
-vsock-ag-29742   0d... 245253.091220: sched_switch:         vsock-agent:29742 [120] S ==> kworker/0:1:29648 [120]
-kworker/-29648   0.... 245253.091224: function:             vp_notify
-kworker/-29648   0d... 245253.091245: sched_switch:         kworker/0:1:29648 [120] R ==> vsock-agent:29742 [120]
-vsock-ag-29742   0.... 245253.091250: print:                tracing_mark_write: wrote 'hello'
-vsock-ag-29742   0.... 245253.091259: virtio_transport_alloc_pkt: 3:824 -> 2:207129201 len=0 type=STREAM op=SHUTDOWN flags=0x3
-vsock-ag-29742   0d... 245253.091260: sched_waking:         comm=kworker/0:1 pid=29648 prio=120 target_cpu=000
-vsock-ag-29742   0d... 245253.091264: sched_switch:         vsock-agent:29742 [120] R ==> kworker/0:1:29648 [120]
-kworker/-29648   0d... 245253.091267: sched_switch:         kworker/0:1:29648 [120] R ==> vsock-agent:29742 [120]
-vsock-ag-29742   0d... 245253.091290: sched_switch:         vsock-agent:29742 [120] D ==> swapper/0:0 [120]
-
-The events of interest are:
-
-vsock-ag-29742   0.... 245253.091213: virtio_transport_alloc_pkt: 3:824 -> 2:207129201 len=6 type=STREAM op=RW flags=0
-vsock-ag-29742   0d... 245253.091215: sched_waking:         comm=kworker/0:1 pid=29648 prio=120 target_cpu=000
-vsock-ag-29742   0d... 245253.091220: sched_switch:         vsock-agent:29742 [120] S ==> kworker/0:1:29648 [120]
-kworker/-29648   0.... 245253.091224: function:             vp_notify
-
-The vsock-agent allocates packet (that we see in the above event), and
-then wakes up the kworker to do the work for it (it's not done by an
-interrupt). The the kworker runs the virtio work queue that passes the
-information to the host via the vp_notify.
-
-
-As we can see, on my machine, the vp_notify is 11us after the transport
-packet, and because other tasks can get in the way, they can cause a
-nasty jitter. What's also bothersome about this is that we can see that
-vp_notify is called with preemption and interrupts enabled. This means
-that it is possible that the recording of the vp_notify() function
-entry and the actual call to the iowrite can be interrupted!
-
-Now, we really should be flexible and allow other methods (like the p2p
-round trip as a backup if we can't do what I'm about to suggest).
-We should enable the function tracer and only trace vp_notify (via
-set_ftrace_filter, which works in instances). Enable sched_switch and
-sched_wakeup events, also enable interrupt events. If we see the
-vp_notify followed by a sched_switch without any interrupts happening,
-(or a NEED_SCHED flag set in the event of the sched_switch) we can
-safely assume that nothing preempted that vp_notify.
-
-kworker/-29648   0.... 245253.091224: function:             vp_notify
-kworker/-29648   0d... 245253.091245: sched_switch:         kworker/0:1:29648 [120] R ==> vsock-agent:29742 [120]
-
-Like the above, we don't see a 'N' flag, nor any interrupts (although I
-wasn't tracing them :-)
-
-This compared to the kvm_exit on the host that we talked about should
-be a fairly good estimate of how the client and host clocks are synced.
-
--- Steve
-
+-- 
+2.17.1
 
