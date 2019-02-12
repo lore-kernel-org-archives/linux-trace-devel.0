@@ -3,52 +3,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22330C282C4
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26570C282CA
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F0DCC20700
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F0A3E20700
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Feb 2019 17:04:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729617AbfBLREc (ORCPT
+        id S1729728AbfBLREe (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Feb 2019 12:04:32 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:40410 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729700AbfBLREc (ORCPT
+        Tue, 12 Feb 2019 12:04:34 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:34900 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729700AbfBLREe (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 12 Feb 2019 12:04:32 -0500
-Received: by mail-wr1-f66.google.com with SMTP id q1so3512277wrp.7
-        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Feb 2019 09:04:31 -0800 (PST)
+        Tue, 12 Feb 2019 12:04:34 -0500
+Received: by mail-wm1-f66.google.com with SMTP id t200so3855960wmt.0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Feb 2019 09:04:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=0Hx1wgVdc1G6EHiAOFyWhFcEZrPnlmzgJ43u/19ITrA=;
-        b=IJwZCBpfefcBrRNPWTTRvNxjsEATkB7rc8xwLjRezyJsepe/Sy7TR83zWGfgKudyd1
-         vpamEThgLvZazD8EOvV9ENHrjHHC8skHNRnUDULz+HKewcHlMVOxC2OKl2tFpAzua/T5
-         PqOSMApMOFsDL7xycGl/DAmHZ9jPZVvH3lV9yQQo4guhgNAtQ8NYRKr5xmc2SMgT+qXb
-         SVrg84+h97loPknlVCQapize7Fniv1H89ZStn5BbVU593hD07Bky34KF+1FcuDNvZO9Q
-         jiJt8aqDG3hCRSBrd28J7mTAFiqq0LKF+pEsQWXuln59HqbtKzJJh0TY8HqkKIHJS6m9
-         YnDA==
-X-Gm-Message-State: AHQUAubgiYJXr7fmZ5JmDg12UyzBLxxNv5zBYMe8YGSFq3i2jMdOjTgM
-        wogniSVzqHK0svlvL0PpFXw=
-X-Google-Smtp-Source: AHgI3IagxvINaSxQQY9A2p8pV8MHkYETMVUxvD6nYFHRaRZQ2sJWj0sNmIBdLXNvSkNTlc9LCntuGQ==
-X-Received: by 2002:adf:e706:: with SMTP id c6mr3682597wrm.278.1549991070810;
-        Tue, 12 Feb 2019 09:04:30 -0800 (PST)
+        bh=w750JyhiBEB13QK6qRQxx0rjaaookYP1EMZ1W4rlMFI=;
+        b=YVi9bWd0qd8RhmdBSRU3TUgoKaUyHCio1cry1d+TM6mPTJWq+41jDE/JL3i4Dgut4D
+         AaGDuJvmZcpPRQrd4xiSNqXLBooii04JOxjMYoNHnVVpBDSzXsvucSV28H9W3SfGvj2L
+         Q1enibqDxa7mkYVGJhLhjMijb3GrenW9Pdock7alR7dCoTfRL8wZUWj54G1pWf+rDk2C
+         hX/rvSZ3yW2qimWX3NsyUaof6wt19aG0/GhPYrQfpoI2wwIEzgfJzdbYQv9Z3sLouHQ6
+         Xbtm6BzNN2DbZo645260gn4mI2KHuRI/DmgE560LjjUFUA+WXvku9QUaaWQAVPoHIlQy
+         sgCg==
+X-Gm-Message-State: AHQUAuaNmxxihBjXRX83LFxX3Opd88Z45a3//5zAo/74pcpeU6FQkHeI
+        920o7frrlMUFipC2TdxbJoI=
+X-Google-Smtp-Source: AHgI3IaMCdEQltdsqoOqtUC0q/SuOjgxewJALlFujFxHG5izsgnXQz3BCEVRfhieiSsIwDMQaWafXg==
+X-Received: by 2002:a1c:4681:: with SMTP id t123mr3646691wma.24.1549991072421;
+        Tue, 12 Feb 2019 09:04:32 -0800 (PST)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id c139sm5579732wmd.13.2019.02.12.09.04.30
+        by smtp.gmail.com with ESMTPSA id c139sm5579732wmd.13.2019.02.12.09.04.31
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Feb 2019 09:04:30 -0800 (PST)
+        Tue, 12 Feb 2019 09:04:31 -0800 (PST)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 4/5] kernel-shark-qt: Do marker-deselect by right mouse click of the button
-Date:   Tue, 12 Feb 2019 19:04:01 +0200
-Message-Id: <20190212170402.10104-5-ykaradzhov@vmware.com>
+Subject: [PATCH 5/5] kernel-shark: Rename the method for deselecting the Active marker.
+Date:   Tue, 12 Feb 2019 19:04:02 +0200
+Message-Id: <20190212170402.10104-6-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190212170402.10104-1-ykaradzhov@vmware.com>
 References: <20190212170402.10104-1-ykaradzhov@vmware.com>
@@ -57,76 +57,65 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Methods for deselecting Marker A and B are added to KsMainWindow. Those
-methods are connected to the "deselect" signals of the two marker buttons.
+This method deselects the Active marker regardless of its state (A or B).
+The method is renamed in order to avoid confusion with the methods for
+deselecting markers A and B.
 
 Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202327
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 30 ++++++++++++++++++++++++++++++
- kernel-shark/src/KsMainWindow.hpp |  4 ++++
- 2 files changed, 34 insertions(+)
+ kernel-shark/src/KsMainWindow.cpp | 8 ++++----
+ kernel-shark/src/KsMainWindow.hpp | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 06770d9..443b7b0 100644
+index 443b7b0..362b955 100644
 --- a/kernel-shark/src/KsMainWindow.cpp
 +++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -119,6 +119,12 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+@@ -101,10 +101,10 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+ 		&_view,		&KsTraceViewer::showRow);
+ 
+ 	connect(&_graph,	&KsTraceGraph::deselect,
+-		this,		&KsMainWindow::_deselect);
++		this,		&KsMainWindow::_deselectActive);
+ 
+ 	connect(&_view,		&KsTraceViewer::deselect,
+-		this,		&KsMainWindow::_deselect);
++		this,		&KsMainWindow::_deselectActive);
+ 
+ 	connect(&_data,		&KsDataStore::updateWidgets,
+ 		&_view,		&KsTraceViewer::update);
+@@ -117,7 +117,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+ 
+ 	_deselectShortcut.setKey(Qt::CTRL + Qt::Key_D);
  	connect(&_deselectShortcut,	&QShortcut::activated,
- 		this,			&KsMainWindow::_deselect);
+-		this,			&KsMainWindow::_deselect);
++		this,			&KsMainWindow::_deselectActive);
  
-+	connect(&_mState,	&KsDualMarkerSM::deselectA,
-+		this,		&KsMainWindow::_deselectA);
-+
-+	connect(&_mState,	&KsDualMarkerSM::deselectB,
-+		this,		&KsMainWindow::_deselectB);
-+
- 	_resizeEmpty();
+ 	connect(&_mState,	&KsDualMarkerSM::deselectA,
+ 		this,		&KsMainWindow::_deselectA);
+@@ -1136,7 +1136,7 @@ void KsMainWindow::_splitterMoved(int pos, int index)
+ 	_session.saveSplitterSize(_splitter);
  }
  
-@@ -1137,3 +1143,27 @@ void KsMainWindow::_deselect()
- 	_mState.updateLabels();
- 	_graph.glPtr()->model()->update();
- }
-+
-+void KsMainWindow::_deselectA()
-+{
-+	if (_mState.getState() == DualMarkerState::A)
-+		_view.clearSelection();
-+	else
-+		_view.passiveMarkerSelectRow(KS_NO_ROW_SELECTED);
-+
-+	_mState.markerA().remove();
-+	_mState.updateLabels();
-+	_graph.glPtr()->model()->update();
-+}
-+
-+void KsMainWindow::_deselectB()
-+{
-+	if (_mState.getState() == DualMarkerState::B)
-+		_view.clearSelection();
-+	else
-+		_view.passiveMarkerSelectRow(KS_NO_ROW_SELECTED);
-+
-+	_mState.markerB().remove();
-+	_mState.updateLabels();
-+	_graph.glPtr()->model()->update();
-+}
+-void KsMainWindow::_deselect()
++void KsMainWindow::_deselectActive()
+ {
+ 	_view.clearSelection();
+ 	_mState.activeMarker().remove();
 diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-index 44f7dd7..abfe196 100644
+index abfe196..969b603 100644
 --- a/kernel-shark/src/KsMainWindow.hpp
 +++ b/kernel-shark/src/KsMainWindow.hpp
-@@ -218,6 +218,10 @@ private:
+@@ -216,7 +216,7 @@ private:
+ 	void _error(const QString &text, const QString &errCode,
+ 		    bool resize, bool unloadPlugins);
  
- 	void _deselect();
+-	void _deselect();
++	void _deselectActive();
  
-+	void _deselectA();
-+
-+	void _deselectB();
-+
- 	void _updateFilterMenu();
+ 	void _deselectA();
  
- 	void _filterSyncCBoxUpdate(kshark_context *kshark_ctx);
 -- 
 2.17.1
 
