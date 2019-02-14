@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAE5EC43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Feb 2019 20:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CDC2C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Feb 2019 20:41:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C55C52192B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Feb 2019 20:05:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 53AC52192D
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Feb 2019 20:41:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389114AbfBNUFX (ORCPT
+        id S2439995AbfBNUlg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Feb 2019 15:05:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39586 "EHLO mail.kernel.org"
+        Thu, 14 Feb 2019 15:41:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387799AbfBNUFX (ORCPT
+        id S2439994AbfBNUlg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Feb 2019 15:05:23 -0500
+        Thu, 14 Feb 2019 15:41:36 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2026C218AC;
-        Thu, 14 Feb 2019 20:05:22 +0000 (UTC)
-Date:   Thu, 14 Feb 2019 15:05:20 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C4AF218FF;
+        Thu, 14 Feb 2019 20:41:35 +0000 (UTC)
+Date:   Thu, 14 Feb 2019 15:41:32 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Slavomir Kaslev <kaslevs@vmware.com>
 Cc:     linux-trace-devel@vger.kernel.org, slavomir.kaslev@gmail.com
-Subject: Re: [RFC PATCH v6 04/11] trace-cmd: Add buffer instance flags for
- tracing in guest and agent context
-Message-ID: <20190214150520.3c6bb8ac@gandalf.local.home>
-In-Reply-To: <20190214141335.28144-5-kaslevs@vmware.com>
+Subject: Re: [RFC PATCH v6 07/11] trace-cmd: Add `trace-cmd setup-guest`
+ command
+Message-ID: <20190214154132.43082ece@gandalf.local.home>
+In-Reply-To: <20190214141335.28144-8-kaslevs@vmware.com>
 References: <20190214141335.28144-1-kaslevs@vmware.com>
-        <20190214141335.28144-5-kaslevs@vmware.com>
+        <20190214141335.28144-8-kaslevs@vmware.com>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,81 +44,141 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 14 Feb 2019 16:13:28 +0200
+On Thu, 14 Feb 2019 16:13:31 +0200
 Slavomir Kaslev <kaslevs@vmware.com> wrote:
 
-> Add BUFFER_FL_GUEST and BUFFER_FL_AGENT flags to differentiate when
-> trace-record.c is being called to trace guest or the VM tracing agent.
-> 
-> Also disable functions talking to the local tracefs when called in recording
-> guest instances context.
+> Add `trace-cmd setup-guest` command that creates the necessary FIFOs for tracing
+> a guest over FIFOs instead of vsockets.
 > 
 > Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 > ---
->  tracecmd/include/trace-local.h |  2 ++
->  tracecmd/trace-record.c        | 55 ++++++++++++++++++++++++++++++++--
->  2 files changed, 55 insertions(+), 2 deletions(-)
+>  tracecmd/Makefile              |   1 +
+>  tracecmd/include/trace-local.h |   6 ++
+>  tracecmd/trace-cmd.c           |   1 +
+>  tracecmd/trace-setup-guest.c   | 186 +++++++++++++++++++++++++++++++++
+>  tracecmd/trace-usage.c         |   8 ++
+>  5 files changed, 202 insertions(+)
+>  create mode 100644 tracecmd/trace-setup-guest.c
 > 
+> diff --git a/tracecmd/Makefile b/tracecmd/Makefile
+> index 865b1c6..d3e3080 100644
+> --- a/tracecmd/Makefile
+> +++ b/tracecmd/Makefile
+> @@ -35,6 +35,7 @@ TRACE_CMD_OBJS += trace-msg.o
+>  
+>  ifeq ($(VSOCK_DEFINED), 1)
+>  TRACE_CMD_OBJS += trace-agent.o
+> +TRACE_CMD_OBJS += trace-setup-guest.o
+>  endif
+>  
+>  ALL_OBJS := $(TRACE_CMD_OBJS:%.o=$(bdir)/%.o)
 > diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-> index a1a06e9..f19c8bb 100644
+> index 823d323..b23130e 100644
 > --- a/tracecmd/include/trace-local.h
 > +++ b/tracecmd/include/trace-local.h
-> @@ -149,6 +149,8 @@ char *strstrip(char *str);
->  enum buffer_instance_flags {
->  	BUFFER_FL_KEEP		= 1 << 0,
->  	BUFFER_FL_PROFILE	= 1 << 1,
-> +	BUFFER_FL_GUEST		= 1 << 2,
-> +	BUFFER_FL_AGENT		= 1 << 3,
->  };
+> @@ -14,6 +14,10 @@
 >  
->  struct func_list {
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 8beefab..107d3d1 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -781,6 +781,9 @@ static void __clear_trace(struct buffer_instance *instance)
->  	FILE *fp;
->  	char *path;
+>  #define TRACE_AGENT_DEFAULT_PORT	823
 >  
-> +	if (instance->flags & BUFFER_FL_GUEST)
-> +		return;
+> +#define GUEST_PIPE_NAME		"trace-pipe-cpu"
+> +#define GUEST_DIR_FMT		"/var/lib/trace-cmd/virt/%s"
+> +#define GUEST_FIFO_FMT		GUEST_DIR_FMT "/" GUEST_PIPE_NAME "%d"
 > +
->  	/* reset the trace */
->  	path = get_instance_file(instance, "trace");
->  	fp = fopen(path, "w");
-> @@ -1264,6 +1267,9 @@ set_plugin_instance(struct buffer_instance *instance, const char *name)
->  	char *path;
->  	char zero = '0';
+>  extern int debug;
+>  extern int quiet;
 >  
-> +	if (instance->flags & BUFFER_FL_GUEST)
-> +		return;
-> +
->  	path = get_instance_file(instance, "current_tracer");
->  	fp = fopen(path, "w");
->  	if (!fp) {
-> @@ -1360,6 +1366,9 @@ static void disable_func_stack_trace_instance(struct buffer_instance *instance)
->  	int size;
->  	int ret;
+> @@ -68,6 +72,8 @@ void trace_listen(int argc, char **argv);
 >  
-> +	if (instance->flags & BUFFER_FL_GUEST)
-> +		return;
+>  void trace_agent(int argc, char **argv);
+>  
+> +void trace_setup_guest(int argc, char **argv);
 > +
->  	path = get_instance_file(instance, "current_tracer");
->  	ret = stat(path, &st);
->  	tracecmd_put_tracing_file(path);
+>  void trace_restore(int argc, char **argv);
+>  
+>  void trace_clear(int argc, char **argv);
+> diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
+> index 3ae5e2e..4da82b4 100644
+> --- a/tracecmd/trace-cmd.c
+> +++ b/tracecmd/trace-cmd.c
+> @@ -85,6 +85,7 @@ struct command commands[] = {
+>  	{"listen", trace_listen},
+>  #ifdef VSOCK
+>  	{"agent", trace_agent},
+> +	{"setup-guest", trace_setup_guest},
+>  #endif
+>  	{"split", trace_split},
+>  	{"restore", trace_restore},
+> diff --git a/tracecmd/trace-setup-guest.c b/tracecmd/trace-setup-guest.c
+> new file mode 100644
+> index 0000000..875ac0e
+> --- /dev/null
+> +++ b/tracecmd/trace-setup-guest.c
+> @@ -0,0 +1,186 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019 VMware Inc, Slavomir Kaslev <kaslevs@vmware.com>
+> + *
+> + */
+> +
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <getopt.h>
+> +#include <grp.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <sys/stat.h>
+> +#include <unistd.h>
+> +
+> +#include "trace-local.h"
+> +#include "trace-msg.h"
+> +
+> +static int make_dir(const char *path, mode_t mode)
+> +{
+> +	char *buf, *end, *p;
+> +	int ret = 0;
+> +
+> +	buf = strdup(path);
+> +	end = buf + strlen(buf);
+> +
+> +	for (p = buf; p < end; p++) {
+> +		for (; p < end && *p == '/'; p++);
+> +		for (; p < end && *p != '/'; p++);
 
+Why not:
+	for (p = buf; p && *p; p++) {
 
-I think we should add a:
+		for (; *p == '/'; p++);
+		p = index(p, '/');
+		if (p)
+			*p = '\0';
+			
 
-#define is_guest(instance) ((instance)->flags & BUFFER_FL_GUEST)
+> +
+> +		*p = '\0';
+> +		ret = mkdir(buf, mode);
+> +		if (ret < 0) {
+> +			if (errno != EEXIST) {
+> +				ret = -errno;
+> +				break;
+> +			}
+> +			ret = 0;
+> +		}
 
-Helper macro here, and all these should be turned into:
+		if (p)
+			*p = '/';
 
-	if (is_guest(instance))
-		return;
+?
 
-Less error prone, and looks cleaner.
-
-We could add a is_agent() too in later patches.
+No need for "end".
 
 -- Steve
+
+> +		*p = '/';
+> +	}
+> +
+> +	free(buf);
+> +	return ret;
+> +}
+> +
+
