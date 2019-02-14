@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67ABBC43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Feb 2019 14:14:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63D3AC43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Feb 2019 14:14:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 421F22080A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Feb 2019 14:14:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 41AA92080A
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Feb 2019 14:14:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404695AbfBNOOD (ORCPT
+        id S2404732AbfBNOOF (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Feb 2019 09:14:03 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46913 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404604AbfBNOOC (ORCPT
+        Thu, 14 Feb 2019 09:14:05 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:39246 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404718AbfBNOOE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Feb 2019 09:14:02 -0500
-Received: by mail-wr1-f66.google.com with SMTP id l9so6605084wrt.13
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Feb 2019 06:14:01 -0800 (PST)
+        Thu, 14 Feb 2019 09:14:04 -0500
+Received: by mail-wm1-f66.google.com with SMTP id f16so6241124wmh.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Feb 2019 06:14:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=57BUBS4rZy6xZY7bmnUkRT+WKYpMLBy8MxUJ4X1Pomk=;
-        b=ikVESOuNi/BS6nCk2Qvb3c5iPQ1QD9idLD3OhTWhzNkHSM7WiAjATVSh28UO2/GzDY
-         sy+oD9bNht+juiKFv88RRPzKx+ivcKpaeU2pxXBSQ12kLKYcGVv86xIMhobXtjBsVd4A
-         2Echx3siYW2tyLPyc0sIkd13eyA1SFGAo2zwNs+xFu9MMHshKDXvVSM0FLaA5nLm/kq1
-         w4fS/T88riJlNaOAe+IulvRXzDdLPjyiez+exmH7MSxqjA34BoymV8ZjR+cYiASsd4qG
-         Vu0cd8rjX6wHeLwImHPPTHxJPTWu5IipIaR+8IQPwAPZsEgBFZfPn1Pq7+Vuq/RwdmEH
-         k/MA==
-X-Gm-Message-State: AHQUAuZWMn03HxuxUoBRshT4t9YUyYq+eOkjCW2KXQDa2f2sLkATft/d
-        JV4nJKoZK9XrHW7Ys1Kkxkl3ydc=
-X-Google-Smtp-Source: AHgI3IZ1N4k7nZe6n1hP4uShFOPpyDObBGg5yLUwzgFdK4IgSR9De6x2J/xbrTzNdjz3HMmqVLX4eg==
-X-Received: by 2002:a5d:4a05:: with SMTP id m5mr3187703wrq.46.1550153640925;
-        Thu, 14 Feb 2019 06:14:00 -0800 (PST)
+        bh=aXE53MOcOtsZGP1NAEWxJ+PN06aqBljmiF5yHsoLsDM=;
+        b=b3ppaVJT6kIjdxUxQTitOOJqzmFdpwik4k4W4GXrmvMi3DQuq9NxxPbZfyc6egk1Ns
+         kwB5a5w+SO8VCT3+JuBuGyqs877awWKhzAgUf8wJRbnIvhZlh/NUO/wsinIekwdvLyo5
+         NfvG8AeAhgs5m+IZesSuXqpfjMGBQ9oIUaHPSGsZ88V/Jt+EkjTwKe+zJa8RvmSozc2q
+         IrVK/EvIub+6zzSoUh5+9m4Xhp/1gTmui5tVxEULlMy7Cysj34wrayEhRNxaM9a2GTxm
+         kfjOdICq2bqQKnEVWpgeeCNJ+X1aNY9vv/e1xQZJTGUpSUrXXAhjfxB+hSoI+sAR61+i
+         7B3Q==
+X-Gm-Message-State: AHQUAuY3SEB53eHjjA4tXLVSH8V3gslBufOm01EC7Dalbo2NOhI8YlLY
+        FlosYygQ0zEmqFR6wgqhUg==
+X-Google-Smtp-Source: AHgI3IZG9MGAuC6RQwISmdUG7L6pKn4ifthBFPm/99hsVRjh817sclJoEDW/ocHBZjNp6UYoSa1C7g==
+X-Received: by 2002:a1c:9acd:: with SMTP id c196mr3037140wme.145.1550153642351;
+        Thu, 14 Feb 2019 06:14:02 -0800 (PST)
 Received: from localhost.localdomain ([213.145.108.55])
-        by smtp.gmail.com with ESMTPSA id m4sm1844840wml.2.2019.02.14.06.13.59
+        by smtp.gmail.com with ESMTPSA id m4sm1844840wml.2.2019.02.14.06.14.01
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Feb 2019 06:14:00 -0800 (PST)
+        Thu, 14 Feb 2019 06:14:01 -0800 (PST)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, slavomir.kaslev@gmail.com
-Subject: [RFC PATCH v6 08/11] trace-cmd: Try to autodetect number of guest CPUs in setup-guest if not specified
-Date:   Thu, 14 Feb 2019 16:13:32 +0200
-Message-Id: <20190214141335.28144-9-kaslevs@vmware.com>
+Subject: [RFC PATCH v6 09/11] trace-cmd: Add setup-guest flag for attaching FIFOs to the guest VM config
+Date:   Thu, 14 Feb 2019 16:13:33 +0200
+Message-Id: <20190214141335.28144-10-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190214141335.28144-1-kaslevs@vmware.com>
 References: <20190214141335.28144-1-kaslevs@vmware.com>
@@ -58,67 +58,130 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When no number of guest CPUs is provided with the -c flag to `trace-cmd
-setup-guest`, try to autodetect it using virsh for libvirt managed guests.
+This patch adds a flag for attaching the newly created FIFOs for guest tracing
+as virtio serial devices to libvirt managed guests.
 
 Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
- tracecmd/trace-setup-guest.c | 21 +++++++++++++++++++++
- tracecmd/trace-usage.c       |  2 +-
- 2 files changed, 22 insertions(+), 1 deletion(-)
+ tracecmd/trace-setup-guest.c | 54 ++++++++++++++++++++++++++++++++++--
+ tracecmd/trace-usage.c       |  3 +-
+ 2 files changed, 53 insertions(+), 4 deletions(-)
 
 diff --git a/tracecmd/trace-setup-guest.c b/tracecmd/trace-setup-guest.c
-index 875ac0e..7ee6f06 100644
+index 7ee6f06..7898c66 100644
 --- a/tracecmd/trace-setup-guest.c
 +++ b/tracecmd/trace-setup-guest.c
-@@ -101,6 +101,24 @@ static int make_guest_fifos(const char *guest, int nr_cpus, mode_t mode)
- 	return ret;
+@@ -119,7 +119,45 @@ static int get_guest_cpu_count(const char *guest)
+ 	return nr_cpus;
  }
  
-+static int get_guest_cpu_count(const char *guest)
+-static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gid)
++static int attach_guest_fifos(const char *guest, int nr_cpus)
 +{
-+	const char *cmd_fmt = "virsh vcpucount --maximum '%s' 2>/dev/null";
-+	int nr_cpus = -1;
-+	char cmd[1024];
-+	FILE *f;
++	const char *cmd_fmt =
++		"virsh attach-device --config '%s' '%s' >/dev/null 2>/dev/null";
++	const char *xml_fmt =
++		"<channel type='pipe'>\n"
++		"  <source path='%s'/>\n"
++		"  <target type='virtio' name='%s%d'/>\n"
++		"</channel>";
++	char tmp_path[PATH_MAX], path[PATH_MAX];
++	char cmd[PATH_MAX], xml[PATH_MAX];
++	int i, fd, ret = 0;
 +
-+	snprintf(cmd, sizeof(cmd), cmd_fmt, guest);
-+	f = popen(cmd, "r");
-+	if (!f)
-+		return -errno;
++	strcpy(tmp_path, "/tmp/pipexmlXXXXXX");
++	fd = mkstemp(tmp_path);
++	if (fd < 0)
++		return fd;
 +
-+	fscanf(f, "%d", &nr_cpus);
-+	pclose(f);
++	for (i = 0; i < nr_cpus; i++) {
++		snprintf(path, sizeof(path), GUEST_FIFO_FMT, guest, i);
++		snprintf(xml, sizeof(xml), xml_fmt, path, GUEST_PIPE_NAME, i);
++		pwrite(fd, xml, strlen(xml), 0);
 +
-+	return nr_cpus;
++		snprintf(cmd, sizeof(cmd), cmd_fmt, guest, tmp_path);
++		errno = 0;
++		if (system(cmd) != 0) {
++			ret = -errno;
++			break;
++		}
++	}
++
++	close(fd);
++	unlink(tmp_path);
++
++	return ret;
 +}
 +
- static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gid)
++static void do_setup_guest(const char *guest, int nr_cpus,
++			   mode_t mode, gid_t gid, bool attach)
  {
  	gid_t save_egid;
-@@ -179,6 +197,9 @@ void trace_setup_guest(int argc, char **argv)
+ 	int ret;
+@@ -139,6 +177,12 @@ static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gi
+ 	if (ret < 0)
+ 		pdie("failed to create FIFOs for %s", guest);
  
- 	guest = argv[optind+1];
- 
-+	if (nr_cpus <= 0)
-+		nr_cpus = get_guest_cpu_count(guest);
++	if (attach) {
++		ret = attach_guest_fifos(guest, nr_cpus);
++		if (ret < 0)
++			pdie("failed to attach FIFOs to %s", guest);
++	}
 +
+ 	if (gid != -1) {
+ 		ret = setegid(save_egid);
+ 		if (ret < 0)
+@@ -148,6 +192,7 @@ static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gi
+ 
+ void trace_setup_guest(int argc, char **argv)
+ {
++	bool attach = false;
+ 	struct group *group;
+ 	mode_t mode = 0660;
+ 	int nr_cpus = -1;
+@@ -167,7 +212,7 @@ void trace_setup_guest(int argc, char **argv)
+ 			{NULL, 0, NULL, 0}
+ 		};
+ 
+-		c = getopt_long(argc-1, argv+1, "+hc:p:g:",
++		c = getopt_long(argc-1, argv+1, "+hc:p:g:a",
+ 				long_options, &option_index);
+ 		if (c == -1)
+ 			break;
+@@ -187,6 +232,9 @@ void trace_setup_guest(int argc, char **argv)
+ 				pdie("group %s does not exist", optarg);
+ 			gid = group->gr_gid;
+ 			break;
++		case 'a':
++			attach = true;
++			break;
+ 		default:
+ 			usage(argv);
+ 		}
+@@ -203,5 +251,5 @@ void trace_setup_guest(int argc, char **argv)
  	if (nr_cpus <= 0)
  		pdie("invalid number of cpus for guest %s", guest);
  
+-	do_setup_guest(guest, nr_cpus, mode, gid);
++	do_setup_guest(guest, nr_cpus, mode, gid, attach);
+ }
 diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 7a8002f..9a13d93 100644
+index 9a13d93..bcfd3dc 100644
 --- a/tracecmd/trace-usage.c
 +++ b/tracecmd/trace-usage.c
-@@ -249,7 +249,7 @@ static struct usage_help usage_help[] = {
+@@ -249,10 +249,11 @@ static struct usage_help usage_help[] = {
  	{
  		"setup-guest",
  		"create FIFOs for tracing guest VMs",
--		" %s setup-guest -c cpus[-p perm][-g group] guest\n"
-+		" %s setup-guest [-c cpus][-p perm][-g group] guest\n"
+-		" %s setup-guest [-c cpus][-p perm][-g group] guest\n"
++		" %s setup-guest [-c cpus][-p perm][-g group][-a] guest\n"
  		"          -c number of guest virtual CPUs\n"
  		"          -p FIFOs permissions (default: 0660)\n"
  		"          -g FIFOs group owner\n"
++		"          -a Attach FIFOs to guest VM config\n"
+ 	},
+ #endif
+ 	{
 -- 
 2.19.1
 
