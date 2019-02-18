@@ -2,490 +2,143 @@ Return-Path: <SRS0=zcJY=QZ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CE19C43381
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2059C43381
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 17:44:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 223AA21479
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:55:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BA9C4217F5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 17:44:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730321AbfBROzR (ORCPT
+        id S2388101AbfBRRok (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 18 Feb 2019 09:55:17 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:37577 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729907AbfBROzR (ORCPT
+        Mon, 18 Feb 2019 12:44:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387866AbfBRRok (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 18 Feb 2019 09:55:17 -0500
-Received: by mail-wr1-f67.google.com with SMTP id c8so18688182wrs.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Feb 2019 06:55:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XlCjSz9ucs33Xk7tc1p0tDIJepIIP7QIMy/b4Z0Nz9I=;
-        b=QxxqR6BG4yrOjhW4eo0QgvqrKDtWaFlg9CLG8vMcaM3BiUP4wKnAiu7+VI3826k76F
-         xMYcwh0NQ/TN24iqDHTbL2guvaCaF7BfHCd0207ZGDXt08xPKof0KVfrOVX7L1Yr21Xz
-         +9ZtK7VqCC1WCEsS5csKRiYHM/XdJr6T22TdryKsgumqq6gwmpv5YmcyJHkv1k/asnjP
-         Ci6mc9Qwf917FVynn5qX912iSh93MYmo6KwngiaSEdifcbGqnCzPyn/LIg49k/JcK0nN
-         cDLZVXedcu7uqkYOGcd2NSGzJK+b6aQ+Bn6xOZsKNuiZCW1ErSZMAjYwUPx4dRTpRv9y
-         /QLA==
-X-Gm-Message-State: AHQUAubEOLK4VhZdCGP1IDkYSXaOjzI8gEfiNUlpGM/6xxRBCPIECB33
-        Al87W1RGgBURUSgAFd32iQ==
-X-Google-Smtp-Source: AHgI3IbkqHfBomecjANmfsn7YsURLn53dWQ47sEZP+padiuWRTojwAJ1JW4EtbKZcHo27eyo0/j28g==
-X-Received: by 2002:adf:dd4d:: with SMTP id u13mr18637130wrm.284.1550501715096;
-        Mon, 18 Feb 2019 06:55:15 -0800 (PST)
-Received: from localhost.localdomain ([146.247.46.6])
-        by smtp.gmail.com with ESMTPSA id n11sm10172528wrw.60.2019.02.18.06.55.13
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Feb 2019 06:55:14 -0800 (PST)
-From:   Slavomir Kaslev <kaslevs@vmware.com>
-To:     rostedt@vmware.com, rostedt@goodmis.org
+        Mon, 18 Feb 2019 12:44:40 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57D4D2146F;
+        Mon, 18 Feb 2019 17:44:39 +0000 (UTC)
+Date:   Mon, 18 Feb 2019 12:44:37 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Slavomir Kaslev <kaslevs@vmware.com>
 Cc:     linux-trace-devel@vger.kernel.org, slavomir.kaslev@gmail.com
-Subject: [RFC PATCH v7 13/13] trace-cmd: Add VM tracing over FIFOs transport
-Date:   Mon, 18 Feb 2019 16:54:49 +0200
-Message-Id: <20190218145449.13360-14-kaslevs@vmware.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190218145449.13360-1-kaslevs@vmware.com>
-References: <20190218145449.13360-1-kaslevs@vmware.com>
+Subject: Re: [RFC PATCH v6 07/11] trace-cmd: Add `trace-cmd setup-guest`
+ command
+Message-ID: <20190218124437.0761e27b@gandalf.local.home>
+In-Reply-To: <20190218143746.GD11734@box>
+References: <20190214141335.28144-1-kaslevs@vmware.com>
+        <20190214141335.28144-8-kaslevs@vmware.com>
+        <20190214154132.43082ece@gandalf.local.home>
+        <20190218143746.GD11734@box>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-FIFOs offer ~3x the throughput of vsockets. This patch adds support for using
-FIFOs to stream tracing data back to the host when tracing VMs.
+On Mon, 18 Feb 2019 16:37:47 +0200
+Slavomir Kaslev <kaslevs@vmware.com> wrote:
 
-Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
----
- include/trace-cmd/trace-cmd.h  |  8 ++--
- tracecmd/include/trace-local.h |  4 +-
- tracecmd/trace-agent.c         | 40 ++++++++++++++--
- tracecmd/trace-msg.c           | 26 ++++++----
- tracecmd/trace-record.c        | 87 ++++++++++++++++++++++++++++++----
- 5 files changed, 137 insertions(+), 28 deletions(-)
+> This won't work as proposed: `p` will be NULL on the last iteration but will
+> still get incremented from the outer for-loop and the check (p && *p) won't get
+> triggered (p == 0x01 in this case).
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 52962e9..27ba89d 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -333,16 +333,16 @@ bool tracecmd_msg_done(struct tracecmd_msg_handle *msg_handle);
- void tracecmd_msg_set_done(struct tracecmd_msg_handle *msg_handle);
- 
- int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
--				int argc, char **argv);
-+				int argc, char **argv, bool use_fifos);
- int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
--				int *argc, char ***argv);
-+				int *argc, char ***argv, bool *use_fifos);
- 
- int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 				 int nr_cpus, int page_size,
--				 unsigned int *ports);
-+				 unsigned int *ports, bool use_fifos);
- int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 				 int *nr_cpus, int *page_size,
--				 unsigned int **ports);
-+				 unsigned int **ports, bool *use_fifos);
- 
- /* --- Plugin handling --- */
- extern struct tep_plugin_option trace_ftrace_options[];
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index d32ba88..d7bdb1f 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -17,6 +17,7 @@
- #define GUEST_PIPE_NAME		"trace-pipe-cpu"
- #define GUEST_DIR_FMT		"/var/lib/trace-cmd/virt/%s"
- #define GUEST_FIFO_FMT		GUEST_DIR_FMT "/" GUEST_PIPE_NAME "%d"
-+#define VIRTIO_FIFO_FMT		"/dev/virtio-ports/" GUEST_PIPE_NAME "%d"
- 
- extern int debug;
- extern int quiet;
-@@ -100,7 +101,7 @@ void trace_usage(int argc, char **argv);
- 
- int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
- 		       int cpus, int *fds,
--		       int argc, char **argv);
-+		       int argc, char **argv, bool use_fifos);
- 
- struct hook_list;
- 
-@@ -212,6 +213,7 @@ struct buffer_instance {
- 	int			cid;
- 	int			port;
- 	int			*fds;
-+	bool			use_fifos;
- };
- 
- extern struct buffer_instance top_instance;
-diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
-index 0c0873b..7389f72 100644
---- a/tracecmd/trace-agent.c
-+++ b/tracecmd/trace-agent.c
-@@ -83,12 +83,39 @@ static void make_vsocks(int nr, int *fds, unsigned int *ports)
- 	}
- }
- 
-+static int open_agent_fifos(int nr_cpus, int *fds)
-+{
-+	char path[PATH_MAX];
-+	int i, fd, ret = 0;
-+
-+	for (i = 0; i < nr_cpus; i++) {
-+		snprintf(path, sizeof(path), VIRTIO_FIFO_FMT, i);
-+		fd = open(path, O_WRONLY);
-+		if (fd < 0) {
-+			ret = -errno;
-+			break;
-+		}
-+
-+		fds[i] = fd;
-+	}
-+
-+	if (!ret)
-+		return ret;
-+
-+	/* We failed to open all FIFOs so clean up and return error */
-+	while (--i >= 0)
-+		close(fds[i]);
-+
-+	return ret;
-+}
-+
- static void agent_handle(int sd, int nr_cpus, int page_size)
- {
- 	struct tracecmd_msg_handle *msg_handle;
- 	unsigned int *ports;
- 	char **argv = NULL;
- 	int argc = 0;
-+	bool use_fifos;
- 	int *fds;
- 	int ret;
- 
-@@ -101,17 +128,22 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
- 	if (!msg_handle)
- 		die("Failed to allocate message handle");
- 
--	ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv);
-+	ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv, &use_fifos);
- 	if (ret < 0)
- 		die("Failed to receive trace request");
- 
--	make_vsocks(nr_cpus, fds, ports);
-+	if (use_fifos && open_agent_fifos(nr_cpus, fds))
-+		use_fifos = false;
-+
-+	if (!use_fifos)
-+		make_vsocks(nr_cpus, fds, ports);
- 
--	ret = tracecmd_msg_send_trace_resp(msg_handle, nr_cpus, page_size, ports);
-+	ret = tracecmd_msg_send_trace_resp(msg_handle, nr_cpus, page_size,
-+					   ports, use_fifos);
- 	if (ret < 0)
- 		die("Failed to send trace response");
- 
--	trace_record_agent(msg_handle, nr_cpus, fds, argc, argv);
-+	trace_record_agent(msg_handle, nr_cpus, fds, argc, argv, use_fifos);
- 
- 	free(argv[0]);
- 	free(argv);
-diff --git a/tracecmd/trace-msg.c b/tracecmd/trace-msg.c
-index 8ce1f98..065a01e 100644
---- a/tracecmd/trace-msg.c
-+++ b/tracecmd/trace-msg.c
-@@ -159,6 +159,10 @@ static int msg_write(int fd, struct tracecmd_msg *msg)
- 	return __do_write_check(fd, msg->buf, data_size);
- }
- 
-+enum msg_trace_flags {
-+	MSG_TRACE_USE_FIFOS = 1 << 0,
-+};
-+
- enum msg_opt_command {
- 	MSGOPT_USETCP = 1,
- };
-@@ -740,7 +744,7 @@ error:
- 	return ret;
- }
- 
--static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv)
-+static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv, bool use_fifos)
- {
- 	size_t args_size = 0;
- 	char *p;
-@@ -750,6 +754,7 @@ static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv)
- 		args_size += strlen(argv[i]) + 1;
- 
- 	msg->hdr.size = htonl(ntohl(msg->hdr.size) + args_size);
-+	msg->trace_req.flags = use_fifos ? htonl(MSG_TRACE_USE_FIFOS) : htonl(0);
- 	msg->trace_req.argc = htonl(argc);
- 	msg->buf = calloc(args_size, 1);
- 	if (!msg->buf)
-@@ -763,13 +768,13 @@ static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv)
- }
- 
- int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
--				int argc, char **argv)
-+				int argc, char **argv, bool use_fifos)
- {
- 	struct tracecmd_msg msg;
- 	int ret;
- 
- 	tracecmd_msg_init(MSG_TRACE_REQ, &msg);
--	ret = make_trace_req(&msg, argc, argv);
-+	ret = make_trace_req(&msg, argc, argv, use_fifos);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -782,7 +787,7 @@ int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
-   *     free(argv);
-   */
- int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
--				int *argc, char ***argv)
-+				int *argc, char ***argv, bool *use_fifos)
- {
- 	struct tracecmd_msg msg;
- 	char *p, *buf_end, **args;
-@@ -834,6 +839,7 @@ int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
- 
- 	*argc = nr_args;
- 	*argv = args;
-+	*use_fifos = ntohl(msg.trace_req.flags) & MSG_TRACE_USE_FIFOS;
- 
- 	/*
- 	 * On success we're passing msg.buf to the caller through argv[0] so we
-@@ -853,13 +859,14 @@ out:
- 	return ret;
- }
- 
--static int make_trace_resp(struct tracecmd_msg *msg,
--			   int page_size, int nr_cpus, unsigned int *ports)
-+static int make_trace_resp(struct tracecmd_msg *msg, int page_size, int nr_cpus,
-+			   unsigned int *ports, bool use_fifos)
- {
- 	int ports_size = nr_cpus * sizeof(*msg->port_array);
- 	int i;
- 
- 	msg->hdr.size = htonl(ntohl(msg->hdr.size) + ports_size);
-+	msg->trace_resp.flags = use_fifos ? htonl(MSG_TRACE_USE_FIFOS) : htonl(0);
- 	msg->trace_resp.cpus = htonl(nr_cpus);
- 	msg->trace_resp.page_size = htonl(page_size);
- 
-@@ -875,13 +882,13 @@ static int make_trace_resp(struct tracecmd_msg *msg,
- 
- int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 				 int nr_cpus, int page_size,
--				 unsigned int *ports)
-+				 unsigned int *ports, bool use_fifos)
- {
- 	struct tracecmd_msg msg;
- 	int ret;
- 
- 	tracecmd_msg_init(MSG_TRACE_RESP, &msg);
--	ret = make_trace_resp(&msg, page_size, nr_cpus, ports);
-+	ret = make_trace_resp(&msg, page_size, nr_cpus, ports, use_fifos);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -890,7 +897,7 @@ int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 
- int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 				 int *nr_cpus, int *page_size,
--				 unsigned int **ports)
-+				 unsigned int **ports, bool *use_fifos)
- {
- 	struct tracecmd_msg msg;
- 	ssize_t buf_len;
-@@ -912,6 +919,7 @@ int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 		goto out;
- 	}
- 
-+	*use_fifos = ntohl(msg.trace_resp.flags) & MSG_TRACE_USE_FIFOS;
- 	*nr_cpus = ntohl(msg.trace_resp.cpus);
- 	*page_size = ntohl(msg.trace_resp.page_size);
- 	*ports = calloc(*nr_cpus, sizeof(**ports));
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index ca97758..ef6319f 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -76,6 +76,8 @@ static int buffers;
- /* Clear all function filters */
- static int clear_function_filters;
- 
-+static bool no_fifos;
-+
- static char *host;
- 
- /* Max size to let a per cpu file get */
-@@ -2921,12 +2923,17 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
- 		int fd;
- 		unsigned int flags;
- 
--		fd = open_vsock(instance->cid, instance->client_ports[cpu]);
-+		if (instance->use_fifos)
-+			fd = instance->fds[cpu];
-+		else
-+			fd = open_vsock(instance->cid, instance->client_ports[cpu]);
- 		if (fd < 0)
- 			die("Failed to connect to agent");
- 
- 		flags = recorder_flags;
--		if (!can_splice_read_vsock())
-+		if (instance->use_fifos)
-+			flags |= TRACECMD_RECORD_NOBRASS;
-+		else if (!can_splice_read_vsock())
- 			flags |= TRACECMD_RECORD_NOSPLICE;
- 		return tracecmd_create_recorder_virt(file, cpu, flags, fd);
- 	}
-@@ -2979,10 +2986,14 @@ static int create_recorder(struct buffer_instance *instance, int cpu,
- 		char *path = NULL;
- 		int fd;
- 
--		if (is_agent(instance))
--			fd = do_accept(instance->fds[cpu]);
--		else
-+		if (is_agent(instance)) {
-+			if (instance->use_fifos)
-+				fd = instance->fds[cpu];
-+			else
-+				fd = do_accept(instance->fds[cpu]);
-+		} else {
- 			fd = connect_port(host, instance->client_ports[cpu]);
-+		}
- 		if (fd < 0)
- 			die("Failed connecting to client");
- 		if (instance->name && !is_agent(instance))
-@@ -3263,11 +3274,42 @@ static void finish_network(struct tracecmd_msg_handle *msg_handle)
- 	free(host);
- }
- 
-+static int open_guest_fifos(const char *guest, int **fds)
-+{
-+	char path[PATH_MAX];
-+	int i, fd, flags;
-+
-+	for (i = 0; ; i++) {
-+		snprintf(path, sizeof(path), GUEST_FIFO_FMT ".out", guest, i);
-+
-+		/* O_NONBLOCK so we don't wait for writers */
-+		fd = open(path, O_RDONLY | O_NONBLOCK);
-+		if (fd < 0)
-+			break;
-+
-+		/* Success, now clear O_NONBLOCK */
-+		flags = fcntl(fd, F_GETFL);
-+		fcntl(fd, F_SETFL, flags & ~O_NONBLOCK);
-+
-+		*fds = realloc(*fds, i + 1);
-+		(*fds)[i] = fd;
-+	}
-+
-+	return i;
-+}
-+
- static void connect_to_agent(struct buffer_instance *instance)
- {
- 	struct tracecmd_msg_handle *msg_handle;
--	int sd, ret, nr_cpus, page_size;
-+	int sd, ret, nr_fifos, nr_cpus, page_size;
- 	unsigned int *ports;
-+	int i, *fds = NULL;
-+	bool use_fifos = false;
-+
-+	if (!no_fifos) {
-+		nr_fifos = open_guest_fifos(instance->name, &fds);
-+		use_fifos = nr_fifos > 0;
-+	}
- 
- 	sd = open_vsock(instance->cid, instance->port);
- 	if (sd < 0)
-@@ -3278,15 +3320,33 @@ static void connect_to_agent(struct buffer_instance *instance)
- 	if (!msg_handle)
- 		die("Failed to allocate message handle");
- 
--	ret = tracecmd_msg_send_trace_req(msg_handle, instance->argc, instance->argv);
-+	ret = tracecmd_msg_send_trace_req(msg_handle, instance->argc,
-+					  instance->argv, use_fifos);
- 	if (ret < 0)
- 		die("Failed to send trace request");
- 
--	ret = tracecmd_msg_recv_trace_resp(msg_handle, &nr_cpus, &page_size, &ports);
-+	ret = tracecmd_msg_recv_trace_resp(msg_handle, &nr_cpus, &page_size,
-+					   &ports, &use_fifos);
- 	if (ret < 0)
- 		die("Failed to receive trace response");
- 
--	instance->client_ports = ports;
-+	if (use_fifos) {
-+		if (nr_cpus != nr_fifos) {
-+			warning("number of FIFOs (%d) for guest %s differs "
-+				"from number of virtual CPUs (%d)",
-+				nr_fifos, instance->name, nr_cpus);
-+			nr_cpus = nr_cpus < nr_fifos ? nr_cpus : nr_fifos;
-+		}
-+		free(ports);
-+		instance->fds = fds;
-+	} else {
-+		for (i = 0; i < nr_fifos; i++)
-+			close(fds[i]);
-+		free(fds);
-+		instance->client_ports = ports;
-+	}
-+
-+	instance->use_fifos = use_fifos;
- 	instance->cpu_count = nr_cpus;
- 
- 	/* the msg_handle now points to the guest fd */
-@@ -4785,6 +4845,7 @@ enum {
- 	OPT_funcstack		= 254,
- 	OPT_date		= 255,
- 	OPT_module		= 256,
-+	OPT_nofifos		= 257,
- };
- 
- void trace_stop(int argc, char **argv)
-@@ -5048,6 +5109,7 @@ static void parse_record_options(int argc,
- 			{"date", no_argument, NULL, OPT_date},
- 			{"func-stack", no_argument, NULL, OPT_funcstack},
- 			{"nosplice", no_argument, NULL, OPT_nosplice},
-+			{"nofifos", no_argument, NULL, OPT_nofifos},
- 			{"profile", no_argument, NULL, OPT_profile},
- 			{"stderr", no_argument, NULL, OPT_stderr},
- 			{"by-comm", no_argument, NULL, OPT_bycomm},
-@@ -5333,6 +5395,9 @@ static void parse_record_options(int argc,
- 		case OPT_nosplice:
- 			recorder_flags |= TRACECMD_RECORD_NOSPLICE;
- 			break;
-+		case OPT_nofifos:
-+			no_fifos = true;
-+			break;
- 		case OPT_profile:
- 			handle_init = trace_init_profile;
- 			ctx->instance->flags |= BUFFER_FL_PROFILE;
-@@ -5731,7 +5796,8 @@ void trace_record(int argc, char **argv)
- 
- int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
- 		       int cpus, int *fds,
--		       int argc, char **argv)
-+		       int argc, char **argv,
-+		       bool use_fifos)
- {
- 	struct common_record_context ctx;
- 	char **argv_plus;
-@@ -5757,6 +5823,7 @@ int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
- 		return -EINVAL;
- 
- 	ctx.instance->fds = fds;
-+	ctx.instance->use_fifos = use_fifos;
- 	ctx.instance->flags |= BUFFER_FL_AGENT;
- 	ctx.instance->msg_handle = msg_handle;
- 	msg_handle->version = V3_PROTOCOL;
--- 
-2.19.1
+I still don't like the "end", it just looks awkward.
 
+> 
+> A fixed version might look like this:
+> 
+> static int make_dir(const char *path, mode_t mode)
+> {
+> 	char buf[PATH_MAX+1], *p;
+> 	int ret = 0;
+> 
+> 	strncpy(buf, path, sizeof(buf));
+> 	for (p = buf; *p; p++) {
+> 		for (; *p == '/'; p++);
+> 		p = strchr(p, '/');
+> 
+> 		if (p)
+> 			*p = '\0';
+> 		ret = mkdir(buf, mode);
+> 		if (ret < 0) {
+> 			if (errno != EEXIST) {
+> 				ret = -errno;
+> 				break;
+> 			}
+> 			ret = 0;
+> 		}
+> 		if (!p)
+> 			break;
+> 		*p = '/';
+> 	}
+> 
+> 	return ret;
+> }
+> 
+> OTOH I find the original version much more readable:
+> 
+> static int make_dir(const char *path, mode_t mode)
+> {
+> 	char buf[PATH_MAX+1], *end, *p;
+> 	int ret = 0;
+> 
+> 	end = stpncpy(buf, path, sizeof(buf));
+> 	for (p = buf; p < end; p++) {
+> 		for (; p < end && *p == '/'; p++);
+> 		for (; p < end && *p != '/'; p++);
+> 
+> 		*p = '\0';
+> 		ret = mkdir(buf, mode);
+> 		if (ret < 0) {
+> 			if (errno != EEXIST) {
+> 				ret = -errno;
+> 				break;
+> 			}
+> 			ret = 0;
+> 		}
+> 		*p = '/';
+> 	}
+> 
+> 	return ret;
+> }
+> 
+> The intent behind `*p = '\0'; ... *p = '/';` is more clearly expressed in this
+> version without getting bogged down by strchr() edge case handling.
+> 
+> Since this is not on a performance critical path how about sticking to the more
+> readable of the two?
+> 
+
+I'd still like to use '*p' as that's very common.
+
+Also break up the other for loops into a while loops.
+
+	for (p = buf; *p; p++) {
+
+		while (*p == '/')
+			p++;
+		while (*p && *p != '/')
+			p++;
+
+		if (*p)
+			*p = '\0';
+		else
+			p--; /* for the for loop */
+
+		[...]
+
+
+This would work, and I think is still readable. It matches more the
+standard way of the Linux kernel as well.
+
+-- Steve
