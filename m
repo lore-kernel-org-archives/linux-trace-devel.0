@@ -3,51 +3,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D37FC43381
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:55:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D96D6C43381
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:55:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EBDE021479
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:55:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B3D6E21479
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:55:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731032AbfBROzO (ORCPT
+        id S1730211AbfBROzQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 18 Feb 2019 09:55:14 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:36019 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729907AbfBROzO (ORCPT
+        Mon, 18 Feb 2019 09:55:16 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:36397 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730321AbfBROzQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 18 Feb 2019 09:55:14 -0500
-Received: by mail-wm1-f68.google.com with SMTP id j125so17442264wmj.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Feb 2019 06:55:13 -0800 (PST)
+        Mon, 18 Feb 2019 09:55:16 -0500
+Received: by mail-wr1-f66.google.com with SMTP id o17so18716469wrw.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Feb 2019 06:55:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ddAyRPKZEQFhmI/PbM/tQUe91aCAWIcm8aqi3kaSxGQ=;
-        b=n+2pKn/3f9iugvdnYQeAooKqSO+qZw5JkQQNAtzm7Eiw1n2AumWzAcQQKBvuJ6p07D
-         QVVM6Wt1Wfex/i9aNcLJlZ1i4lHHOUMHMWDzSDZ3+WJ54gQkN6qoD5oHAL8nb5IHTrP4
-         GZNKO6DLl6zMHVsy8gVdFdQS9xoFp7FL8EOL4mW4eTCx3rIOhC3fkQ7kmQx5RW9Fxbiz
-         nJFKfMVa8XGdaw0LiwTs0QbteWHv7AUzO98JUH7PJqTaCc9z5QhKBgexv/YKZWhveGfr
-         jg2oxVGOwpLgIe7ZSf0j+oOiHRaxzHd6xz+zO2okniRaMorS9SxnD5pt8dL+CcEWPgNW
-         T77Q==
-X-Gm-Message-State: AHQUAuaSf3XBCtBrU7c8p6aMiTxTejicoVeE8lPdMl7Jq599triqSe+e
-        6/K5GL1xXgUkaHmMnubRXK/oiLc=
-X-Google-Smtp-Source: AHgI3IbBWzSebuzuRN9VwQMefCNUzWReDHYt88N9cK/lrJbNddWHxkaEurWXu9IGNON0k3Nc0tRkSA==
-X-Received: by 2002:a1c:4155:: with SMTP id o82mr15606339wma.122.1550501712464;
-        Mon, 18 Feb 2019 06:55:12 -0800 (PST)
+        bh=u2EwF0qQ8fIwZ8XAhIn8rabEJP9DpcagTnKdKR/HstQ=;
+        b=niNAeqaXIRC5aJ6w1nQLzdqGAaMNv6m2C8ERsBwASaKYgxeH94cPkhIOQ1IKNUfvbm
+         upPwLHngn/+IqaEtKIrbrexF201oZ/ZidavF+fBFRpUowFc0t7ez2G/T7n8pzN+vk7GZ
+         1KiD+c9fBjbMndf0zqusB7171L9h8Sh7QnDYW/nWrYY6F55CyE4Nck03Ckge/rp46AjR
+         rOlWT7vZ93VmCwgF1xgevS/Y15Sa1UWG7ekfmXXYuqInTIvIVwLyIIkM/HZtAEu4Jakq
+         MxrTRKbCJg29Opkno49WC1+SIqRLN3YvYSGcThJAjzcZDU7wpsWX4FoW2pEBv05ezRjS
+         tLYA==
+X-Gm-Message-State: AHQUAubOdF5uAql8BiLJHYSCHBi6VNmzaguB4IaH4w6ymHrpbHRR0pNo
+        E0bOik9pGy+KVqzg5PHos446z3M=
+X-Google-Smtp-Source: AHgI3IbPA9LFkkUzjGdZnWqZJsxtlPzXDBEh1E69+NuAUKSJUjgLFFO+ouh9KGO7L/4atKxXzwWMZg==
+X-Received: by 2002:adf:f103:: with SMTP id r3mr18553754wro.50.1550501713782;
+        Mon, 18 Feb 2019 06:55:13 -0800 (PST)
 Received: from localhost.localdomain ([146.247.46.6])
-        by smtp.gmail.com with ESMTPSA id n11sm10172528wrw.60.2019.02.18.06.55.10
+        by smtp.gmail.com with ESMTPSA id n11sm10172528wrw.60.2019.02.18.06.55.12
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Feb 2019 06:55:11 -0800 (PST)
+        Mon, 18 Feb 2019 06:55:13 -0800 (PST)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     rostedt@vmware.com, rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, slavomir.kaslev@gmail.com
-Subject: [RFC PATCH v7 11/13] trace-cmd: Add setup-guest flag for attaching FIFOs to the guest VM config
-Date:   Mon, 18 Feb 2019 16:54:47 +0200
-Message-Id: <20190218145449.13360-12-kaslevs@vmware.com>
+Subject: [RFC PATCH v7 12/13] trace-cmd: Add splice() recording from FIFO without additional pipe buffer
+Date:   Mon, 18 Feb 2019 16:54:48 +0200
+Message-Id: <20190218145449.13360-13-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190218145449.13360-1-kaslevs@vmware.com>
 References: <20190218145449.13360-1-kaslevs@vmware.com>
@@ -58,130 +58,184 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patch adds a flag for attaching the newly created FIFOs for guest tracing
-as virtio serial devices to libvirt managed guests.
+When `trace-cmd record` is reading tracing data over FIFO we can do a direct
+splice from the FIFO to the output file descriptor instead of doing two through
+an additional pipe buffer. This patch implements specialized tracecmd_recorder
+data transfer version for this case.
 
 Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
- tracecmd/trace-setup-guest.c | 54 ++++++++++++++++++++++++++++++++++--
- tracecmd/trace-usage.c       |  3 +-
- 2 files changed, 53 insertions(+), 4 deletions(-)
+ include/trace-cmd/trace-cmd.h  |  3 +-
+ lib/trace-cmd/trace-recorder.c | 70 ++++++++++++++++++++++++++++------
+ 2 files changed, 61 insertions(+), 12 deletions(-)
 
-diff --git a/tracecmd/trace-setup-guest.c b/tracecmd/trace-setup-guest.c
-index 789dc65..043bca2 100644
---- a/tracecmd/trace-setup-guest.c
-+++ b/tracecmd/trace-setup-guest.c
-@@ -109,7 +109,45 @@ static int get_guest_cpu_count(const char *guest)
- 	return nr_cpus;
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 6a21e66..52962e9 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -270,8 +270,9 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd);
+ 
+ enum {
+ 	TRACECMD_RECORD_NOSPLICE	= (1 << 0),	/* Use read instead of splice */
+-	TRACECMD_RECORD_SNAPSHOT	= (1 << 1),	/* extract from snapshot */
++	TRACECMD_RECORD_SNAPSHOT	= (1 << 1),	/* Extract from snapshot */
+ 	TRACECMD_RECORD_BLOCK		= (1 << 2),	/* Block on splice write */
++	TRACECMD_RECORD_NOBRASS		= (1 << 3),	/* Splice directly without a brass pipe */
+ };
+ 
+ void tracecmd_free_recorder(struct tracecmd_recorder *recorder);
+diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
+index d66f112..8058d71 100644
+--- a/lib/trace-cmd/trace-recorder.c
++++ b/lib/trace-cmd/trace-recorder.c
+@@ -8,6 +8,7 @@
+ #include <stdlib.h>
+ #include <fcntl.h>
+ #include <time.h>
++#include <poll.h>
+ #include <unistd.h>
+ #include <errno.h>
+ 
+@@ -26,6 +27,8 @@
+ # define SPLICE_F_GIFT		8
+ #endif
+ 
++#define POLL_TIMEOUT_MS		1000
++
+ struct tracecmd_recorder {
+ 	int		fd;
+ 	int		fd1;
+@@ -40,6 +43,7 @@ struct tracecmd_recorder {
+ 	int		pages;
+ 	int		count;
+ 	unsigned	fd_flags;
++	unsigned	trace_fd_flags;
+ 	unsigned	flags;
+ };
+ 
+@@ -127,6 +131,8 @@ tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
+ 	if (!(recorder->flags & TRACECMD_RECORD_BLOCK))
+ 		recorder->fd_flags |= SPLICE_F_NONBLOCK;
+ 
++	recorder->trace_fd_flags = SPLICE_F_MOVE;
++
+ 	/* Init to know what to free and release */
+ 	recorder->trace_fd = -1;
+ 	recorder->brass[0] = -1;
+@@ -171,7 +177,8 @@ tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
+ 			goto out_free;
+ 	}
+ 
+-	if ((recorder->flags & TRACECMD_RECORD_NOSPLICE) == 0) {
++	if (!(recorder->flags & (TRACECMD_RECORD_NOSPLICE |
++				 TRACECMD_RECORD_NOBRASS))) {
+ 		ret = pipe(recorder->brass);
+ 		if (ret < 0)
+ 			goto out_free;
+@@ -372,7 +379,7 @@ static long splice_data(struct tracecmd_recorder *recorder)
+ 	long ret;
+ 
+ 	read = splice(recorder->trace_fd, NULL, recorder->brass[1], NULL,
+-		      recorder->pipe_size, SPLICE_F_MOVE);
++		      recorder->pipe_size, recorder->trace_fd_flags);
+ 	if (read < 0) {
+ 		if (errno != EAGAIN && errno != EINTR) {
+ 			warning("recorder error in splice input");
+@@ -399,6 +406,39 @@ static long splice_data(struct tracecmd_recorder *recorder)
+ 	return total_read;
  }
  
--static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gid)
-+static int attach_guest_fifos(const char *guest, int nr_cpus)
++/*
++ * Returns -1 on error.
++ *          or bytes of data read.
++ */
++static long direct_splice_data(struct tracecmd_recorder *recorder)
 +{
-+	const char *cmd_fmt =
-+		"virsh attach-device --config '%s' '%s' >/dev/null 2>/dev/null";
-+	const char *xml_fmt =
-+		"<channel type='pipe'>\n"
-+		"  <source path='%s'/>\n"
-+		"  <target type='virtio' name='%s%d'/>\n"
-+		"</channel>";
-+	char tmp_path[PATH_MAX], path[PATH_MAX];
-+	char cmd[PATH_MAX], xml[PATH_MAX];
-+	int i, fd, ret = 0;
++	struct pollfd pfd = {
++		.fd = recorder->trace_fd,
++		.events = POLLIN,
++	};
++	long read;
++	int ret;
 +
-+	strcpy(tmp_path, "/tmp/pipexmlXXXXXX");
-+	fd = mkstemp(tmp_path);
-+	if (fd < 0)
-+		return fd;
++	ret = poll(&pfd, 1, POLL_TIMEOUT_MS);
++	if (ret < 0)
++		return -1;
 +
-+	for (i = 0; i < nr_cpus; i++) {
-+		snprintf(path, sizeof(path), GUEST_FIFO_FMT, guest, i);
-+		snprintf(xml, sizeof(xml), xml_fmt, path, GUEST_PIPE_NAME, i);
-+		pwrite(fd, xml, strlen(xml), 0);
++	if (!(pfd.revents | POLLIN))
++		return 0;
 +
-+		snprintf(cmd, sizeof(cmd), cmd_fmt, guest, tmp_path);
-+		errno = 0;
-+		if (system(cmd) != 0) {
-+			ret = -errno;
-+			break;
-+		}
++	read = splice(recorder->trace_fd, NULL, recorder->fd, NULL,
++		      recorder->pipe_size, recorder->trace_fd_flags);
++	if (read < 0) {
++		if (errno == EAGAIN || errno == EINTR)
++			return 0;
++
++		warning("recorder error in splice input");
++		return -1;
 +	}
 +
-+	close(fd);
-+	unlink(tmp_path);
-+
-+	return ret;
++	return read;
 +}
 +
-+static void do_setup_guest(const char *guest, int nr_cpus,
-+			   mode_t mode, gid_t gid, bool attach)
- {
- 	gid_t save_egid;
- 	int ret;
-@@ -129,6 +167,12 @@ static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gi
- 	if (ret < 0)
- 		pdie("failed to create FIFOs for %s", guest);
- 
-+	if (attach) {
-+		ret = attach_guest_fifos(guest, nr_cpus);
-+		if (ret < 0)
-+			pdie("failed to attach FIFOs to %s", guest);
-+	}
-+
- 	if (gid != -1) {
- 		ret = setegid(save_egid);
- 		if (ret < 0)
-@@ -138,6 +182,7 @@ static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gi
- 
- void trace_setup_guest(int argc, char **argv)
- {
-+	bool attach = false;
- 	struct group *group;
- 	mode_t mode = 0660;
- 	int nr_cpus = -1;
-@@ -157,7 +202,7 @@ void trace_setup_guest(int argc, char **argv)
- 			{NULL, 0, NULL, 0}
- 		};
- 
--		c = getopt_long(argc-1, argv+1, "+hc:p:g:",
-+		c = getopt_long(argc-1, argv+1, "+hc:p:g:a",
- 				long_options, &option_index);
- 		if (c == -1)
- 			break;
-@@ -177,6 +222,9 @@ void trace_setup_guest(int argc, char **argv)
- 				pdie("group %s does not exist", optarg);
- 			gid = group->gr_gid;
- 			break;
-+		case 'a':
-+			attach = true;
-+			break;
- 		default:
- 			usage(argv);
- 		}
-@@ -193,5 +241,5 @@ void trace_setup_guest(int argc, char **argv)
- 	if (nr_cpus <= 0)
- 		pdie("invalid number of cpus for guest %s", guest);
- 
--	do_setup_guest(guest, nr_cpus, mode, gid);
-+	do_setup_guest(guest, nr_cpus, mode, gid, attach);
+ /*
+  * Returns -1 on error.
+  *          or bytes of data read.
+@@ -433,6 +473,17 @@ static long read_data(struct tracecmd_recorder *recorder)
+ 	return r;
  }
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 9a13d93..bcfd3dc 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -249,10 +249,11 @@ static struct usage_help usage_help[] = {
- 	{
- 		"setup-guest",
- 		"create FIFOs for tracing guest VMs",
--		" %s setup-guest [-c cpus][-p perm][-g group] guest\n"
-+		" %s setup-guest [-c cpus][-p perm][-g group][-a] guest\n"
- 		"          -c number of guest virtual CPUs\n"
- 		"          -p FIFOs permissions (default: 0660)\n"
- 		"          -g FIFOs group owner\n"
-+		"          -a Attach FIFOs to guest VM config\n"
- 	},
- #endif
- 	{
+ 
++static long move_data(struct tracecmd_recorder *recorder)
++{
++	if (recorder->flags & TRACECMD_RECORD_NOSPLICE)
++		return read_data(recorder);
++
++	if (recorder->flags & TRACECMD_RECORD_NOBRASS)
++		return direct_splice_data(recorder);
++
++	return splice_data(recorder);
++}
++
+ static void set_nonblock(struct tracecmd_recorder *recorder)
+ {
+ 	long flags;
+@@ -440,8 +491,11 @@ static void set_nonblock(struct tracecmd_recorder *recorder)
+ 	/* Do not block on reads for flushing */
+ 	flags = fcntl(recorder->trace_fd, F_GETFL);
+ 	fcntl(recorder->trace_fd, F_SETFL, flags | O_NONBLOCK);
++	recorder->trace_fd_flags |= SPLICE_F_NONBLOCK;
+ 
+-	/* Do not block on streams for write */
++	/* Do not block on pipes for write */
++	flags = fcntl(recorder->fd, F_GETFL);
++	fcntl(recorder->fd, F_SETFL, flags | O_NONBLOCK);
+ 	recorder->fd_flags |= SPLICE_F_NONBLOCK;
+ }
+ 
+@@ -455,10 +509,7 @@ long tracecmd_flush_recording(struct tracecmd_recorder *recorder)
+ 	set_nonblock(recorder);
+ 
+ 	do {
+-		if (recorder->flags & TRACECMD_RECORD_NOSPLICE)
+-			ret = read_data(recorder);
+-		else
+-			ret = splice_data(recorder);
++		ret = move_data(recorder);
+ 		if (ret < 0)
+ 			return ret;
+ 		total += ret;
+@@ -503,10 +554,7 @@ int tracecmd_start_recording(struct tracecmd_recorder *recorder, unsigned long s
+ 
+ 		read = 0;
+ 		do {
+-			if (recorder->flags & TRACECMD_RECORD_NOSPLICE)
+-				ret = read_data(recorder);
+-			else
+-				ret = splice_data(recorder);
++			ret = move_data(recorder);
+ 			if (ret < 0)
+ 				return ret;
+ 			read += ret;
 -- 
 2.19.1
 
