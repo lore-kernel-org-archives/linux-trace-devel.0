@@ -2,271 +2,135 @@ Return-Path: <SRS0=zcJY=QZ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50B24C4360F
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:38:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43E79C43381
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:54:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 24A9421736
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:38:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1D3F621479
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 18 Feb 2019 14:54:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732463AbfBROiW (ORCPT
+        id S1729036AbfBROy6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 18 Feb 2019 09:38:22 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:37550 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388328AbfBROhx (ORCPT
+        Mon, 18 Feb 2019 09:54:58 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:42528 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728893AbfBROy6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 18 Feb 2019 09:37:53 -0500
-Received: by mail-wr1-f67.google.com with SMTP id c8so18620134wrs.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Feb 2019 06:37:51 -0800 (PST)
+        Mon, 18 Feb 2019 09:54:58 -0500
+Received: by mail-wr1-f65.google.com with SMTP id r5so5323238wrg.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 18 Feb 2019 06:54:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=s2Pd3G1eXGIDbqNb2VlZOwfLj/Ul0YJIx8z2pdKPyd0=;
-        b=MD/975nPAD6GnIsb2j0tt8heTbFwCJzUCccl7HZWGIXLubRYhFGokX5c9TdwvduzB0
-         gved+hjO7tTbTsb8oWlbDnp9ZkSyXsEcELNdtg3gAqkrHfQTVIlbXSJuyCCF53Qtsf8r
-         xiVdKDXjf3Gi/qZxvlpeucvlUyLeBRwoyli2M+a9SPRih1b7y9Pvif+S3rBHNnq6mZjG
-         ONnSMJIDUVLEV6yRYihdvXHyXoqQDJO19OpoOc6s18gjTxxrApb+3MoPmemOALuAzcDi
-         ZWYMQTDzHfVmtcAKtGEbWk/XpuAaqGiWtYiuMdLAqcMccZIvG4xJUvLeFpjCjcXIPkew
-         ISxA==
-X-Gm-Message-State: AHQUAuaXD0KARHswlTXs6Z/rC7iA3SPnZkPtCjs38Ip0EZBv8xlW7CB5
-        jt+hMDIA+kRUackrl/3Qnw==
-X-Google-Smtp-Source: AHgI3IYW+VSLCmSkCyvQ8oiU7CgEwvuXcrNKv8BFWyq5asDnktrV1xkCxuca7ppKxIBOc80VMstBAg==
-X-Received: by 2002:adf:cc83:: with SMTP id p3mr16825228wrj.292.1550500670760;
-        Mon, 18 Feb 2019 06:37:50 -0800 (PST)
-Received: from box ([146.247.46.6])
-        by smtp.gmail.com with ESMTPSA id y22sm5293249wmj.6.2019.02.18.06.37.49
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 18 Feb 2019 06:37:50 -0800 (PST)
-Date:   Mon, 18 Feb 2019 16:37:47 +0200
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lYcF8j9zOFnPu/Jpal3bhWmJWs646HLeTZI78cI1Yak=;
+        b=fPIqxQRQ4qCh4pGpOFSUtulUXclQvjIXM4KJuf/2nQSzR8R/d9+GyP6UG0pXe8HdMb
+         O+SDHJSEbS8Au/9CD4n+Jl9yHsJpNYmU5FZaTvfBWcuqgWIecIbkny2PKYfOK1A0zgrK
+         wncKkdXbV1IaSg+5tzyeAF+nhrU2SdDgZOBAA0nRp60deuyGRUT7FEuDcYzNlDFLTS/a
+         zKcd0VavYfIbJy2dlP5h7ohHg11Rq65/iQdq0qdeVnHzZSF7Ttoet1ApTcAJ2OZKfu/K
+         CR5XvXm5JRG/UfVAfekOlGW9eZ5NqdTbHORGRu31WeSP9AT+BRoBMXr8t0k/MdSGgJPK
+         LAqg==
+X-Gm-Message-State: AHQUAuZYveL6oeppB4QQ8T8ekJgazOwvo/4kIGZHul65bgzXGHGFALbi
+        JcfFJWKkdE5zv3Hqw+HxGA==
+X-Google-Smtp-Source: AHgI3IZDUZt+JTj6vPslVB86fA1s1ruQOgi+g/5teXfK6klKdhEvwILx7IOz/qaj5kotHVBhvcNRhg==
+X-Received: by 2002:adf:eb45:: with SMTP id u5mr16379074wrn.102.1550501697015;
+        Mon, 18 Feb 2019 06:54:57 -0800 (PST)
+Received: from localhost.localdomain ([146.247.46.6])
+        by smtp.gmail.com with ESMTPSA id n11sm10172528wrw.60.2019.02.18.06.54.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Feb 2019 06:54:56 -0800 (PST)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
+To:     rostedt@vmware.com, rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, slavomir.kaslev@gmail.com
-Subject: Re: [RFC PATCH v6 07/11] trace-cmd: Add `trace-cmd setup-guest`
- command
-Message-ID: <20190218143746.GD11734@box>
-References: <20190214141335.28144-1-kaslevs@vmware.com>
- <20190214141335.28144-8-kaslevs@vmware.com>
- <20190214154132.43082ece@gandalf.local.home>
+Subject: [RFC PATCH v7 00/13] Add VM kernel tracing over vsockets and FIFOs
+Date:   Mon, 18 Feb 2019 16:54:36 +0200
+Message-Id: <20190218145449.13360-1-kaslevs@vmware.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20190214154132.43082ece@gandalf.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Feb 14, 2019 at 03:41:32PM -0500, Steven Rostedt wrote:
-> On Thu, 14 Feb 2019 16:13:31 +0200
-> Slavomir Kaslev <kaslevs@vmware.com> wrote:
-> 
-> > Add `trace-cmd setup-guest` command that creates the necessary FIFOs for tracing
-> > a guest over FIFOs instead of vsockets.
-> > 
-> > Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
-> > ---
-> >  tracecmd/Makefile              |   1 +
-> >  tracecmd/include/trace-local.h |   6 ++
-> >  tracecmd/trace-cmd.c           |   1 +
-> >  tracecmd/trace-setup-guest.c   | 186 +++++++++++++++++++++++++++++++++
-> >  tracecmd/trace-usage.c         |   8 ++
-> >  5 files changed, 202 insertions(+)
-> >  create mode 100644 tracecmd/trace-setup-guest.c
-> > 
-> > diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-> > index 865b1c6..d3e3080 100644
-> > --- a/tracecmd/Makefile
-> > +++ b/tracecmd/Makefile
-> > @@ -35,6 +35,7 @@ TRACE_CMD_OBJS += trace-msg.o
-> >  
-> >  ifeq ($(VSOCK_DEFINED), 1)
-> >  TRACE_CMD_OBJS += trace-agent.o
-> > +TRACE_CMD_OBJS += trace-setup-guest.o
-> >  endif
-> >  
-> >  ALL_OBJS := $(TRACE_CMD_OBJS:%.o=$(bdir)/%.o)
-> > diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-> > index 823d323..b23130e 100644
-> > --- a/tracecmd/include/trace-local.h
-> > +++ b/tracecmd/include/trace-local.h
-> > @@ -14,6 +14,10 @@
-> >  
-> >  #define TRACE_AGENT_DEFAULT_PORT	823
-> >  
-> > +#define GUEST_PIPE_NAME		"trace-pipe-cpu"
-> > +#define GUEST_DIR_FMT		"/var/lib/trace-cmd/virt/%s"
-> > +#define GUEST_FIFO_FMT		GUEST_DIR_FMT "/" GUEST_PIPE_NAME "%d"
-> > +
-> >  extern int debug;
-> >  extern int quiet;
-> >  
-> > @@ -68,6 +72,8 @@ void trace_listen(int argc, char **argv);
-> >  
-> >  void trace_agent(int argc, char **argv);
-> >  
-> > +void trace_setup_guest(int argc, char **argv);
-> > +
-> >  void trace_restore(int argc, char **argv);
-> >  
-> >  void trace_clear(int argc, char **argv);
-> > diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-> > index 3ae5e2e..4da82b4 100644
-> > --- a/tracecmd/trace-cmd.c
-> > +++ b/tracecmd/trace-cmd.c
-> > @@ -85,6 +85,7 @@ struct command commands[] = {
-> >  	{"listen", trace_listen},
-> >  #ifdef VSOCK
-> >  	{"agent", trace_agent},
-> > +	{"setup-guest", trace_setup_guest},
-> >  #endif
-> >  	{"split", trace_split},
-> >  	{"restore", trace_restore},
-> > diff --git a/tracecmd/trace-setup-guest.c b/tracecmd/trace-setup-guest.c
-> > new file mode 100644
-> > index 0000000..875ac0e
-> > --- /dev/null
-> > +++ b/tracecmd/trace-setup-guest.c
-> > @@ -0,0 +1,186 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2019 VMware Inc, Slavomir Kaslev <kaslevs@vmware.com>
-> > + *
-> > + */
-> > +
-> > +#include <errno.h>
-> > +#include <fcntl.h>
-> > +#include <getopt.h>
-> > +#include <grp.h>
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +#include <string.h>
-> > +#include <sys/stat.h>
-> > +#include <unistd.h>
-> > +
-> > +#include "trace-local.h"
-> > +#include "trace-msg.h"
-> > +
-> > +static int make_dir(const char *path, mode_t mode)
-> > +{
-> > +	char *buf, *end, *p;
-> > +	int ret = 0;
-> > +
-> > +	buf = strdup(path);
-> > +	end = buf + strlen(buf);
-> > +
-> > +	for (p = buf; p < end; p++) {
-> > +		for (; p < end && *p == '/'; p++);
-> > +		for (; p < end && *p != '/'; p++);
-> 
-> Why not:
-> 	for (p = buf; p && *p; p++) {
-> 
-> 		for (; *p == '/'; p++);
-> 		p = index(p, '/');
-> 		if (p)
-> 			*p = '\0';
-> 			
-> 
-> > +
-> > +		*p = '\0';
-> > +		ret = mkdir(buf, mode);
-> > +		if (ret < 0) {
-> > +			if (errno != EEXIST) {
-> > +				ret = -errno;
-> > +				break;
-> > +			}
-> > +			ret = 0;
-> > +		}
-> 
-> 		if (p)
-> 			*p = '/';
-> 
-> ?
-> 
-> No need for "end".
-> 
-> -- Steve
-> 
-> > +		*p = '/';
-> > +	}
-> > +
-> > +	free(buf);
-> > +	return ret;
-> > +}
-> > +
-> 
+This patchset adds support for tracing guest kernels to trace-cmd.
 
-This won't work as proposed: `p` will be NULL on the last iteration but will
-still get incremented from the outer for-loop and the check (p && *p) won't get
-triggered (p == 0x01 in this case).
+The first two patches in the series are minor cleanups which can be merged
+separately.
 
-A fixed version might look like this:
+Changes in v7:
+ - fixed potential memory leak in add_arg()
+ - call msg_free() in tracecmd_msg_recv_trace_req() eventhough we're stealing
+   the message buffer
+ - added is_guest and is_agent macros and use throughout tracecmd_record.c
+   instead of testing instance->flags bits
+ - avoid memory allocation in make_dir()
 
-static int make_dir(const char *path, mode_t mode)
-{
-	char buf[PATH_MAX+1], *p;
-	int ret = 0;
+Changes in v6:
+ - added specialized data transfer path over FIFOs making single splice() per
+   iteration
+ - made tracecmd_msg_recv_trace_req/tracecmd_msg_recv_trace_resp more defensive
+   to invalid messages
 
-	strncpy(buf, path, sizeof(buf));
-	for (p = buf; *p; p++) {
-		for (; *p == '/'; p++);
-		p = strchr(p, '/');
+Changes in v5:
+ - add FIFOs transport for tracing data
+ - fixed a bug in tracecmd_msg_wait_close
 
-		if (p)
-			*p = '\0';
-		ret = mkdir(buf, mode);
-		if (ret < 0) {
-			if (errno != EEXIST) {
-				ret = -errno;
-				break;
-			}
-			ret = 0;
-		}
-		if (!p)
-			break;
-		*p = '/';
-	}
+Changes in v4:
+ - detect and use splice(2) on vsock sockets if possible
+ - switch port numbers to unsigned int
+ - trace-cmd record --date flag is now set for all guests if provided by the user
+ - removed grow_cap and exponential buffer size growth
 
-	return ret;
-}
+Changes in v3:
+ - addressed Steven's feedback
+ - detect and disable guest tracing if <linux/vm_sockets.h> is not available
+ - the --date flag is now treated as global for all guest instances
+ - fixed a bug that caused --date to be ignored for host tracing data when tracing guests
 
-OTOH I find the original version much more readable:
+Changes in v2:
+ - rebased on top of protocol V3
+ - fixed system clock timestamps with the --date flag
 
-static int make_dir(const char *path, mode_t mode)
-{
-	char buf[PATH_MAX+1], *end, *p;
-	int ret = 0;
 
-	end = stpncpy(buf, path, sizeof(buf));
-	for (p = buf; p < end; p++) {
-		for (; p < end && *p == '/'; p++);
-		for (; p < end && *p != '/'; p++);
+Slavomir Kaslev (12):
+  trace-cmd: Minor cleanup in tracecmd_start_recording()
+  trace-cmd: Minor cleanup in print_stat()
+  trace-cmd: Add tracecmd_create_recorder_virt function
+  trace-cmd: Add TRACE_REQ and TRACE_RESP messages
+  trace-cmd: Add buffer instance flags for tracing in guest and agent
+    context
+  trace-cmd: Add VM kernel tracing over vsockets transport
+  trace-cmd: Use splice(2) for vsockets if available
+  trace-cmd: Add `trace-cmd setup-guest` command
+  trace-cmd: Try to autodetect number of guest CPUs in setup-guest if
+    not specified
+  trace-cmd: Add setup-guest flag for attaching FIFOs to the guest VM
+    config
+  trace-cmd: Add splice() recording from FIFO without additional pipe
+    buffer
+  trace-cmd: Add VM tracing over FIFOs transport
 
-		*p = '\0';
-		ret = mkdir(buf, mode);
-		if (ret < 0) {
-			if (errno != EEXIST) {
-				ret = -errno;
-				break;
-			}
-			ret = 0;
-		}
-		*p = '/';
-	}
+Steven Rostedt (VMware) (1):
+  trace-cmd: Detect if vsockets are available
 
-	return ret;
-}
+ Makefile                       |   7 +
+ include/trace-cmd/trace-cmd.h  |  16 +-
+ lib/trace-cmd/trace-recorder.c | 140 ++++--
+ tracecmd/Makefile              |   7 +-
+ tracecmd/include/trace-local.h |  29 ++
+ tracecmd/trace-agent.c         | 257 +++++++++++
+ tracecmd/trace-cmd.c           |   4 +
+ tracecmd/trace-msg.c           | 219 ++++++++-
+ tracecmd/trace-record.c        | 779 ++++++++++++++++++++++++++++++---
+ tracecmd/trace-setup-guest.c   | 245 +++++++++++
+ tracecmd/trace-usage.c         |  22 +-
+ 11 files changed, 1637 insertions(+), 88 deletions(-)
+ create mode 100644 tracecmd/trace-agent.c
+ create mode 100644 tracecmd/trace-setup-guest.c
 
-The intent behind `*p = '\0'; ... *p = '/';` is more clearly expressed in this
-version without getting bogged down by strchr() edge case handling.
-
-Since this is not on a performance critical path how about sticking to the more
-readable of the two?
-
--Slavi
+--
+2.19.1
