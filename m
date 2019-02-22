@@ -6,37 +6,39 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1372C43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 19:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3A44C10F00
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 19:32:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A8DCB2070B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 19:25:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AAFD42070B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 19:32:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725902AbfBVTZd (ORCPT
+        id S1726152AbfBVTcC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 22 Feb 2019 14:25:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56832 "EHLO mail.kernel.org"
+        Fri, 22 Feb 2019 14:32:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbfBVTZd (ORCPT
+        id S1725980AbfBVTcC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 22 Feb 2019 14:25:33 -0500
+        Fri, 22 Feb 2019 14:32:02 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 687F120700;
-        Fri, 22 Feb 2019 19:25:32 +0000 (UTC)
-Date:   Fri, 22 Feb 2019 14:25:31 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E1A9206C0;
+        Fri, 22 Feb 2019 19:32:01 +0000 (UTC)
+Date:   Fri, 22 Feb 2019 14:32:00 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Slavomir Kaslev <kaslevs@vmware.com>
-Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v4 6/7] trace-cmd: Find and store pids of tasks, which
- run virtual CPUs of given VM
-Message-ID: <20190222142531.25830e03@gandalf.local.home>
-In-Reply-To: <20190222170708.GB17098@box>
-References: <20190222142836.12596-1-tstoyanov@vmware.com>
-        <20190222142836.12596-7-tstoyanov@vmware.com>
-        <20190222170708.GB17098@box>
+To:     Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc:     Slavomir Kaslev <kaslevs@vmware.com>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] kernel-shark: Fix a bug in
+ ksmodel_set_next_bin_edge()
+Message-ID: <20190222143200.558586fb@gandalf.local.home>
+In-Reply-To: <793ef231-43fc-d00f-8681-6212cf021e7f@vmware.com>
+References: <20190221124205.21115-1-ykaradzhov@vmware.com>
+        <20190221124205.21115-4-ykaradzhov@vmware.com>
+        <20190221161530.GA16009@box>
+        <793ef231-43fc-d00f-8681-6212cf021e7f@vmware.com>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -46,17 +48,23 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 22 Feb 2019 19:07:09 +0200
-Slavomir Kaslev <kaslevs@vmware.com> wrote:
+On Thu, 21 Feb 2019 16:38:29 +0000
+Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 
-> I think the following section should go into separate function since this one is
-> already getting too long. Then here we can just do:
+> > Acked-by: Slavomir Kaslev <kaslevs@vmware.com>
 
-Thanks for reviewing these Slavomir.
+Thanks for reviewing Slavomir!
 
-Tvzetomir, can you update the patch series and send out a new version
-with these updates when you get a chance.
+> > 
+> > Side note: ksmodel_shift_backward/ksmodel_shift_forward look pretty similar. Can
+> > they be generalized to an either-directional ksmodel_shift taking the shift
+> > parameter as signed? If ksmodel_shift_backward/ksmodel_shift_forward need to be
+> > kept for backward compatibility, they can call ksmodel_shift (with a flipped
+> > sign in the backward case).
+> >   
+> Thanks for the comment!
+> You are right. I think this can be done, but in a separate patch.
 
-Thanks!
+I agree on both accounts.
 
 -- Steve
