@@ -2,53 +2,55 @@ Return-Path: <SRS0=rw6q=Q5=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5553CC43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 18:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06128C4360F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 18:05:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3609C2075C
+	by mail.kernel.org (Postfix) with ESMTP id D79422070D
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 18:05:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727718AbfBVSFw (ORCPT
+        id S1727722AbfBVSFx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 22 Feb 2019 13:05:52 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:34922 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbfBVSFs (ORCPT
+        Fri, 22 Feb 2019 13:05:53 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33317 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727051AbfBVSFw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 22 Feb 2019 13:05:48 -0500
-Received: by mail-wm1-f67.google.com with SMTP id y15so2791314wma.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Feb 2019 10:05:46 -0800 (PST)
+        Fri, 22 Feb 2019 13:05:52 -0500
+Received: by mail-wr1-f67.google.com with SMTP id i12so3365781wrw.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Feb 2019 10:05:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e7vNAgdfIx/4vQ4CqMbG+dM+t3UpAYqIhNR7wXHxReg=;
-        b=HYVmE9noTTUhoGTGh+3DGVgeHR34fAh+D3yRKlnaXIyK0sByf8R7szl8ACmgDO1L6b
-         a13QSyyiObGjFJVTxZYmWwziqdr7cBuwXTyGq2YxFU9Ne8U1mHDDEhqSFA4agwvsJnxR
-         z9cBHwIPI++cdlLUncFt3D8J1JsEoNhAad5wd7ISEy9VHigJ4uf5ms3IryoX5k+ElHvC
-         Bu4CnNz+B5YKnZkYjlfIFCVAJtz+gQ58KP78KejjAMaj95TysRkOuBa5OMYivZzXgMdi
-         LmqXdO5hEZXS8lxH4KfiJIa93w94/BA8yRfHSTsLKMUXh0MJB04o821f/AVfI6YqSQxW
-         rnOg==
-X-Gm-Message-State: AHQUAuY/vLOA8bqynHJzby/zXPbxTmQKtahl1EnJcSoaYCbrcPM4C6+Z
-        FVBLfuHbSAP4za5lN8IqGu2psuM=
-X-Google-Smtp-Source: AHgI3IaMqQ+S2q1xHVbvicyFjje1Exgzzk8wAtQrUB67o58bHGqvU7Rav9g9jlUleDTYQyZaI8sC9A==
-X-Received: by 2002:a1c:4009:: with SMTP id n9mr3212088wma.132.1550858745885;
-        Fri, 22 Feb 2019 10:05:45 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=M+/It+j7FfoUaH8l9PeGEnMn/KnpXFCDAhrtUlvjwME=;
+        b=Fp4gq68ZIAXyHKtPnHaBUtPrULDwecoWyFORDOtZSnJ7ZX7a/YRNgc/eRmb3157foL
+         lKPxYnems8aZiBuaM4+jJ9VXnB/sWNJmEqsMjZDi0+lR36pSb+wvf4ZZpe1hCdiAA8bT
+         KqfeJ033C2aA6cFmHfhRJFO/kskPThf4lEdj+OBM/rzxSV4nAa3OSktA+Al9LQUhSFBV
+         drmA+APxMI1diS7svjTTG/tFSzxPGQujLZNQINN46XrN3sipVvPS15kAs2yRTY/sXF+0
+         Fg8NVS5tJbMzEeEI5yBHfINmgUjVFrFfdmM3ln3VEF+XeuzNsNDie/0N5Q4YRSVemsZX
+         U34w==
+X-Gm-Message-State: AHQUAubbTpzat/h2e3bXB6n9ZHRkf4dEF0zL9hb0R4aIYtYSJHfgexvT
+        Ox7sfXKEMqM7kWYvhZf7URtEJVQ=
+X-Google-Smtp-Source: AHgI3IaR6Q++A4UKUCuJAYdBuza0jEIVy7GBPNYcEXiCUyOCoAUnDloqjh+YR9cnfxeZhEYJxb1Uiw==
+X-Received: by 2002:adf:dd86:: with SMTP id x6mr3838856wrl.250.1550858750972;
+        Fri, 22 Feb 2019 10:05:50 -0800 (PST)
 Received: from localhost.localdomain ([146.247.46.6])
-        by smtp.gmail.com with ESMTPSA id c18sm1320678wre.32.2019.02.22.10.05.44
+        by smtp.gmail.com with ESMTPSA id c18sm1320678wre.32.2019.02.22.10.05.49
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Feb 2019 10:05:45 -0800 (PST)
+        Fri, 22 Feb 2019 10:05:49 -0800 (PST)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     rostedt@goodmis.org, slavomir.kaslev@gmail.com
-Subject: [RFC PATCH v8 00/13] Add VM kernel tracing over vsockets and FIFOs
-Date:   Fri, 22 Feb 2019 20:05:26 +0200
-Message-Id: <20190222180539.27439-1-kaslevs@vmware.com>
+Subject: [RFC PATCH v8 04/13] trace-cmd: Add tracecmd_create_recorder_virt function
+Date:   Fri, 22 Feb 2019 20:05:30 +0200
+Message-Id: <20190222180539.27439-5-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
+In-Reply-To: <20190222180539.27439-1-kaslevs@vmware.com>
+References: <20190222180539.27439-1-kaslevs@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -56,85 +58,116 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patchset adds support for tracing guest kernels to trace-cmd.
+Add tracecmd_create_recorder_virt function that will be used for
+tracing VM guests.
 
-The first two patches in the series are minor cleanups which can be merged
-separately.
+Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
+---
+ include/trace-cmd/trace-cmd.h  |  1 +
+ lib/trace-cmd/trace-recorder.c | 53 ++++++++++++++++++++++++----------
+ 2 files changed, 39 insertions(+), 15 deletions(-)
 
-Changes in v8:
- - refactored make_dir function per Steven's review feedback
-
-Changes in v7:
- - fixed potential memory leak in add_arg()
- - call msg_free() in tracecmd_msg_recv_trace_req() eventhough we're stealing
-   the message buffer
- - added is_guest and is_agent macros and use throughout tracecmd_record.c
-   instead of testing instance->flags bits
- - avoid memory allocation in make_dir()
-
-Changes in v6:
- - added specialized data transfer path over FIFOs making single splice() per
-   iteration
- - made tracecmd_msg_recv_trace_req/tracecmd_msg_recv_trace_resp more defensive
-   to invalid messages
-
-Changes in v5:
- - add FIFOs transport for tracing data
- - fixed a bug in tracecmd_msg_wait_close
-
-Changes in v4:
- - detect and use splice(2) on vsock sockets if possible
- - switch port numbers to unsigned int
- - trace-cmd record --date flag is now set for all guests if provided by the user
- - removed grow_cap and exponential buffer size growth
-
-Changes in v3:
- - addressed Steven's feedback
- - detect and disable guest tracing if <linux/vm_sockets.h> is not available
- - the --date flag is now treated as global for all guest instances
- - fixed a bug that caused --date to be ignored for host tracing data when tracing guests
-
-Changes in v2:
- - rebased on top of protocol V3
- - fixed system clock timestamps with the --date flag
-
-
-Slavomir Kaslev (12):
-  trace-cmd: Minor cleanup in tracecmd_start_recording()
-  trace-cmd: Minor cleanup in print_stat()
-  trace-cmd: Add tracecmd_create_recorder_virt function
-  trace-cmd: Add TRACE_REQ and TRACE_RESP messages
-  trace-cmd: Add buffer instance flags for tracing in guest and agent
-    context
-  trace-cmd: Add VM kernel tracing over vsockets transport
-  trace-cmd: Use splice(2) for vsockets if available
-  trace-cmd: Add `trace-cmd setup-guest` command
-  trace-cmd: Try to autodetect number of guest CPUs in setup-guest if
-    not specified
-  trace-cmd: Add setup-guest flag for attaching FIFOs to the guest VM
-    config
-  trace-cmd: Add splice() recording from FIFO without additional pipe
-    buffer
-  trace-cmd: Add VM tracing over FIFOs transport
-
-Steven Rostedt (VMware) (1):
-  trace-cmd: Detect if vsockets are available
-
- Makefile                       |   7 +
- include/trace-cmd/trace-cmd.h  |  16 +-
- lib/trace-cmd/trace-recorder.c | 140 ++++--
- tracecmd/Makefile              |   7 +-
- tracecmd/include/trace-local.h |  29 ++
- tracecmd/trace-agent.c         | 257 +++++++++++
- tracecmd/trace-cmd.c           |   4 +
- tracecmd/trace-msg.c           | 219 ++++++++-
- tracecmd/trace-record.c        | 779 ++++++++++++++++++++++++++++++---
- tracecmd/trace-setup-guest.c   | 247 +++++++++++
- tracecmd/trace-usage.c         |  22 +-
- 11 files changed, 1639 insertions(+), 88 deletions(-)
- create mode 100644 tracecmd/trace-agent.c
- create mode 100644 tracecmd/trace-setup-guest.c
-
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index ca4452b..5961355 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -277,6 +277,7 @@ enum {
+ void tracecmd_free_recorder(struct tracecmd_recorder *recorder);
+ struct tracecmd_recorder *tracecmd_create_recorder(const char *file, int cpu, unsigned flags);
+ struct tracecmd_recorder *tracecmd_create_recorder_fd(int fd, int cpu, unsigned flags);
++struct tracecmd_recorder *tracecmd_create_recorder_virt(const char *file, int cpu, unsigned flags, int trace_fd);
+ struct tracecmd_recorder *tracecmd_create_recorder_maxkb(const char *file, int cpu, unsigned flags, int maxkb);
+ struct tracecmd_recorder *tracecmd_create_buffer_recorder_fd(int fd, int cpu, unsigned flags, const char *buffer);
+ struct tracecmd_recorder *tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags, const char *buffer);
+diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
+index 0bd0657..1b84bb5 100644
+--- a/lib/trace-cmd/trace-recorder.c
++++ b/lib/trace-cmd/trace-recorder.c
+@@ -154,16 +154,22 @@ tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
+ 	recorder->fd1 = fd;
+ 	recorder->fd2 = fd2;
+ 
+-	if (flags & TRACECMD_RECORD_SNAPSHOT)
+-		ret = asprintf(&path, "%s/per_cpu/cpu%d/snapshot_raw", buffer, cpu);
+-	else
+-		ret = asprintf(&path, "%s/per_cpu/cpu%d/trace_pipe_raw", buffer, cpu);
+-	if (ret < 0)
+-		goto out_free;
++	if (buffer) {
++		if (flags & TRACECMD_RECORD_SNAPSHOT)
++			ret = asprintf(&path, "%s/per_cpu/cpu%d/snapshot_raw",
++				       buffer, cpu);
++		else
++			ret = asprintf(&path, "%s/per_cpu/cpu%d/trace_pipe_raw",
++				       buffer, cpu);
++		if (ret < 0)
++			goto out_free;
++
++		recorder->trace_fd = open(path, O_RDONLY);
++		free(path);
+ 
+-	recorder->trace_fd = open(path, O_RDONLY);
+-	if (recorder->trace_fd < 0)
+-		goto out_free;
++		if (recorder->trace_fd < 0)
++			goto out_free;
++	}
+ 
+ 	if ((recorder->flags & TRACECMD_RECORD_NOSPLICE) == 0) {
+ 		ret = pipe(recorder->brass);
+@@ -183,13 +189,9 @@ tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
+ 		recorder->pipe_size = pipe_size;
+ 	}
+ 
+-	free(path);
+-
+ 	return recorder;
+ 
+  out_free:
+-	free(path);
+-
+ 	tracecmd_free_recorder(recorder);
+ 	return NULL;
+ }
+@@ -200,8 +202,9 @@ tracecmd_create_buffer_recorder_fd(int fd, int cpu, unsigned flags, const char *
+ 	return tracecmd_create_buffer_recorder_fd2(fd, -1, cpu, flags, buffer, 0);
+ }
+ 
+-struct tracecmd_recorder *
+-tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags, const char *buffer)
++static struct tracecmd_recorder *
++__tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags,
++				  const char *buffer)
+ {
+ 	struct tracecmd_recorder *recorder;
+ 	int fd;
+@@ -264,6 +267,26 @@ tracecmd_create_buffer_recorder_maxkb(const char *file, int cpu, unsigned flags,
+ 	goto out;
+ }
+ 
++struct tracecmd_recorder *
++tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags,
++				const char *buffer)
++{
++	return __tracecmd_create_buffer_recorder(file, cpu, flags, buffer);
++}
++
++struct tracecmd_recorder *
++tracecmd_create_recorder_virt(const char *file, int cpu, unsigned flags,
++			      int trace_fd)
++{
++	struct tracecmd_recorder *recorder;
++
++	recorder = __tracecmd_create_buffer_recorder(file, cpu, flags, NULL);
++	if (recorder)
++		recorder->trace_fd = trace_fd;
++
++	return recorder;
++}
++
+ struct tracecmd_recorder *tracecmd_create_recorder_fd(int fd, int cpu, unsigned flags)
+ {
+ 	const char *tracing;
 -- 
 2.19.1
 
