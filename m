@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47529C43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 14:28:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0503C10F00
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 14:28:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2076F2075A
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 14:28:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 91330208E4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Feb 2019 14:28:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbfBVO2n (ORCPT
+        id S1726560AbfBVO2n (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 22 Feb 2019 09:28:43 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:50926 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbfBVO2m (ORCPT
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:56044 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbfBVO2n (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 22 Feb 2019 09:28:42 -0500
-Received: by mail-wm1-f66.google.com with SMTP id x7so2147046wmj.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Feb 2019 06:28:41 -0800 (PST)
+        Fri, 22 Feb 2019 09:28:43 -0500
+Received: by mail-wm1-f68.google.com with SMTP id q187so2144317wme.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Feb 2019 06:28:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uk3prq7PM5NWRxFeku/sMfCiWVMc5DcibNxNMdyfE4M=;
-        b=HnuS1SZce2e8Vt/K0vAcYwiqXI05JrMdLulLQvdq6bF0kTywCAH3YKHEiEM25+C3Go
-         WPrRkqrkoSfYBNQhHJoPl976b2jZr1Iwikr1DCZSPjNlnAhFzvorUdt0mYWlUP/3iIYo
-         QbQA+BaNNNMryutKmfSffouFUAC0yYdx/nYHEUgC03jsqUevhtgybKZhy7F93z355p2W
-         2TNWAhSXyr2KaxU+bAaqwT4XCcNsGrW+qo2tpHgbl1jwFn+JcFrLeUR8bTWlVUEN9gVt
-         dQlLi/8fUAyss5v+MbKrrFCFZHs3xUigli+HxrF4wGuk8ZrrvtGFcukRW04i/sE2Oo5u
-         CTzg==
-X-Gm-Message-State: AHQUAuYcF4cbcUr3r7a5XLFU1gHRwhOta5v6tOfh8jl6KUiZMVl3IKMg
-        8bY4RRG7UvjibvI4zpzTX0g=
-X-Google-Smtp-Source: AHgI3IZ8MG7uey6n/EPR7G2Kg8jIayhMEbgwB9c5XTjxlHrxpHwwAb6t/WOTH92WX7GOi731Kp7QLw==
-X-Received: by 2002:a1c:a9d0:: with SMTP id s199mr2642048wme.142.1550845720993;
-        Fri, 22 Feb 2019 06:28:40 -0800 (PST)
+        bh=KZrqIpIWaDsmqIPJyX90jfu7nox1DuIvSLjj1esD/k8=;
+        b=aXqe2kQskkavPK3Pi2xhIZm9vIyluxC8oeW3il+nIULgJ5vXl8xCn29XjpUX5Tw9oT
+         R45EFawtvwa+nL/wf91eM3J4EeE7AC1c0XFfVpo6QRnpow5uYvDU2vTlm4Xx9BBjLZZv
+         a9XpdZypXO6vXVmq9ysTUq0oWqq6ZeZcUZDiNnY23lb8/vTGZZU490bpD+4biySBWi0E
+         s2Naust7Witf1zEwV5+2sMzrxYLiKg2+b0/xD4jIDuWPgUKmaf6EXBAbI90zFf1tb/ae
+         2CBLNLWiwXNFr8u0crcMGrAdsPJ0lDN8eci0LgNrMWDaRK2qMM6Fetr3hRrth1+9OZ3M
+         oifA==
+X-Gm-Message-State: AHQUAuZTND5a+ArkEQlqm5x7HiJWs54rKYfCnsoJKrrBXWcvhpL+1ZzL
+        oWWnu1yqrVSfDH9ajaBPtVJmCACq
+X-Google-Smtp-Source: AHgI3IafLAfiiH494oWFoN1esJp5MM9p27Kmw6HND6CKaajcxD//3Ue6jOVxpB+ouQovQkZ1TPW99Q==
+X-Received: by 2002:a1c:5fd7:: with SMTP id t206mr2686687wmb.73.1550845721737;
+        Fri, 22 Feb 2019 06:28:41 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id q9sm848987wrv.26.2019.02.22.06.28.40
+        by smtp.gmail.com with ESMTPSA id q9sm848987wrv.26.2019.02.22.06.28.41
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 22 Feb 2019 06:28:40 -0800 (PST)
+        Fri, 22 Feb 2019 06:28:41 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 3/7] trace-cmd: Fix tracecmd_read_page_record() to read more than one event
-Date:   Fri, 22 Feb 2019 16:28:32 +0200
-Message-Id: <20190222142836.12596-4-tstoyanov@vmware.com>
+Subject: [PATCH v4 4/7] trace-cmd: Added implementation of htonll() and ntohll()
+Date:   Fri, 22 Feb 2019 16:28:33 +0200
+Message-Id: <20190222142836.12596-5-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190222142836.12596-1-tstoyanov@vmware.com>
 References: <20190222142836.12596-1-tstoyanov@vmware.com>
@@ -58,49 +58,33 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The kbuffer_next_event() will return the next event on the sub buffer.
-If we pass in the last_record to tracecmd_read_page_record(), it
-initializes the sub buffer, and by calling kbuffer_next_event()
-(instead of kbuffer_read_event()), the second event on the sub buffer
-is returned. This causes the match of the last_record not to match if
-the last_record happens to be the first event on the sub buffer.
+Added implementation of htonll() and ntohll() as
+macros, if they are not already defined.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- lib/trace-cmd/trace-input.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ tracecmd/include/trace-msg.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index be6720c..0a6e820 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -1679,18 +1679,22 @@ tracecmd_read_page_record(struct tep_handle *pevent, void *page, int size,
- 			goto out_free;
- 		}
+diff --git a/tracecmd/include/trace-msg.h b/tracecmd/include/trace-msg.h
+index b7fe10b..445f799 100644
+--- a/tracecmd/include/trace-msg.h
++++ b/tracecmd/include/trace-msg.h
+@@ -15,4 +15,14 @@ extern unsigned int page_size;
+ void plog(const char *fmt, ...);
+ void pdie(const char *fmt, ...);
  
--		do {
-+		ptr = kbuffer_read_event(kbuf, &ts);
-+		while (ptr < last_record->data) {
- 			ptr = kbuffer_next_event(kbuf, NULL);
- 			if (!ptr)
- 				break;
--		} while (ptr < last_record->data);
-+			if (ptr == last_record->data)
-+				break;
-+		}
- 		if (ptr != last_record->data) {
- 			warning("tracecmd_read_page_record: could not find last_record");
- 			goto out_free;
- 		}
--	}
-+		ptr = kbuffer_next_event(kbuf, &ts);
-+	} else
-+		ptr = kbuffer_read_event(kbuf, &ts);
- 
--	ptr = kbuffer_read_event(kbuf, &ts);
- 	if (!ptr)
- 		goto out_free;
- 
++#ifndef htonll
++# if __BYTE_ORDER == __LITTLE_ENDIAN
++#define htonll(x) __bswap_64(x)
++#define ntohll(x) __bswap_64(x)
++#else
++#define htonll(x) (x)
++#define ntohll(x) (x)
++#endif
++#endif
++
+ #endif /* _TRACE_MSG_H_ */
 -- 
 2.20.1
 
