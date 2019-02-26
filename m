@@ -1,83 +1,75 @@
-Return-Path: <SRS0=3M/k=RA=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=LjSD=RB=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 991C9C43381
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Feb 2019 17:12:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2734BC43381
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Feb 2019 14:35:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6D68D213A2
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Feb 2019 17:12:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D8FE120C01
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Feb 2019 14:35:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbfBYRMA (ORCPT
+        id S1727406AbfBZOfT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 25 Feb 2019 12:12:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34470 "EHLO mail.kernel.org"
+        Tue, 26 Feb 2019 09:35:19 -0500
+Received: from mx1.redhat.com ([209.132.183.28]:48666 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728368AbfBYRMA (ORCPT
+        id S1725977AbfBZOfT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Feb 2019 12:12:00 -0500
-Received: from vmware.local.home (unknown [208.91.3.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 26 Feb 2019 09:35:19 -0500
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61AA720643;
-        Mon, 25 Feb 2019 17:11:59 +0000 (UTC)
-Date:   Mon, 25 Feb 2019 12:11:57 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     "linux-trace-devel@vger.kernel.org" 
+        by mx1.redhat.com (Postfix) with ESMTPS id 3C5C0309BFE6;
+        Tue, 26 Feb 2019 14:35:19 +0000 (UTC)
+Received: from pauld.bos.csb (dhcp-17-51.bos.redhat.com [10.18.17.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D67BD5D6AA;
+        Tue, 26 Feb 2019 14:35:18 +0000 (UTC)
+Date:   Tue, 26 Feb 2019 09:35:17 -0500
+From:   Phil Auld <pauld@redhat.com>
+To:     "linux-trace-devel@vger.kernel.org" 
         <linux-trace-devel@vger.kernel.org>
-Subject: Re: Multiple time offsets in trace.dat file
-Message-ID: <20190225121157.1916067f@vmware.local.home>
-In-Reply-To: <CACqStoeckAbvXp9ZzVBro1zzzQzi6C9ub9Hv_GtCZNmZ3skxTw@mail.gmail.com>
-References: <CACqStoeckAbvXp9ZzVBro1zzzQzi6C9ub9Hv_GtCZNmZ3skxTw@mail.gmail.com>
-X-Mailer: Claws Mail 3.15.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Cc:     Yordan Karadzhov <ykaradzhov@vmware.com>
+Subject: Kernel-shark and sched_switch
+Message-ID: <20190226143516.GE8239@pauld.bos.csb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Tue, 26 Feb 2019 14:35:19 +0000 (UTC)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 25 Feb 2019 15:37:57 +0000
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+Hi,
 
-> Hi Steven,
-> When tracing host and guest machines, in order to overcome the drift
-> between the times in both contexts, we need to use multiple (at least
-> 2) time offsets. In addition, we need the local time stamp, related to
-> each offset:
->   (ts_offset1, ts_local1), (ts_offset2, ts_local2), ....
->  where ts_local1 is the time when the offset ts_offset1 was measured.
-> This information should be stored somehow in trace.dat file, which
-> currently supports only one TRACECMD_OPTION_OFFSET option.
-> There are two possible approaches to do it, please suggest which one to choose:
-> 
->  1. Use the existing TRACECMD_OPTION_OFFSET, written 2 times in the
-> trace.dat file. Extract the ts_local1 and ts_local2 times from the
-> file, as ts_local1 is the time of the first event and ts_local2 is the
-> time of the last event. There are few  cons of this approach:
->         - we can use only 2 offsets, before and after the trace.
->         - mapping ts_local1 and ts_local2 to the times of the first
-> and last event is not accurate, as these are not the actual times when
-> the time stamps were calculated.
->          - Finding first and last event from the trace.dat file will
-> require one extra parsing of the whole file, as the events there are
-> not sorted.
-> 
->  2. Introduce a new TRACECMD_OPTION_ option, which will hold all
-> ts_offsets together with ts_local times.
-> 
+	I'm using kernel-shark to visualize some scheduler traces. I noticed that the visualization
+does not handle the sched_switch events as well as it might. The switch event is colored with the 
+task being switched from, since that's the pid of the event itself.  But this has the effect of leaving
+the wrong colored task "running" in the visualization until the next event by that task.  If that next
+event is a sched_switch again you can have a case where the exact opposite of what happened is being 
+visualized in kernel-shark. I could post a screenshot that illustrates this if that helps. Didn't want
+to add a binary attachment to my first post.  It is especially glaring when switching to/from idle.
 
-Option 2 is the right approach. The offset is just for the --date
-operation by itself. This should be something new, and for older
-trace-cmd reading this file, it can simply ignore it.
+I've tried both with and without the sched_events plugin enabled.  There was no difference I could see. 
 
-What about: TRACECMD_OPTION_TIME_SHIFT
+I'm not the slightest bit familiar with the code here, but I imagine there could be a way to get the pid
+from the next_pid field when the event is SchedEvent::Switch instead of the general PID field. 
 
-does that sound good? I'm open for other suggestions.
 
--- Steve
+If this is not of general interest I'd be happy to make the change only in my tree if anyone has a pointer 
+or two on where to start.  
+
+
+
+
+Cheers,
+Phil
+
+
+-- 
