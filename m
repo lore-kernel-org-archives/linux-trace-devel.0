@@ -2,150 +2,140 @@ Return-Path: <SRS0=lLCO=RD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4032C43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 19:08:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2C94C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 19:10:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B37A620C01
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 19:08:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 89CD920C01
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 19:10:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FP1DmMvr"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="l5RZhBdl"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbfB1TIF (ORCPT
+        id S2387413AbfB1TKk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Feb 2019 14:08:05 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:34368 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbfB1TIF (ORCPT
+        Thu, 28 Feb 2019 14:10:40 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:36465 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733284AbfB1TKj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Feb 2019 14:08:05 -0500
-Received: by mail-qk1-f196.google.com with SMTP id a15so12766390qkc.1;
-        Thu, 28 Feb 2019 11:08:04 -0800 (PST)
+        Thu, 28 Feb 2019 14:10:39 -0500
+Received: by mail-qt1-f194.google.com with SMTP id p25so24860716qtb.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Feb 2019 11:10:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gY/eN3dNE9VGGR0tbNCSzKwh5eQv624Pzq8V/GLMbAQ=;
-        b=FP1DmMvr3kdvlxEtRpCks7bIbGwY49+Gr64xd3JpJzFWhEJhBHikc9ntXsj4GWVfkU
-         7HfxMZ6Kwjp6nhzS8UQubTzjOoc2epxgxtIomDOHF/Fc2jnxlQhQ19cTs39TgWNqJB4p
-         gfV4wIKmFryv+t37mmirWqWZ2LYfPCVOAvcn2hOiCMhJuqTo2dFGnRSZR9y8AcjcBckA
-         h2AJXPS8duJgTDs33+JtgHK2o0hXL0KcK3qg9SwfYnYLtbnSrDkMzHrgxlmNLZ5Xhwe4
-         F8IM4YbUREEs8JJj/WHq1lSvb/nAmlw7/saVEO7nqtlVuS12RD1s8Crq0FwKpWvM6Xhg
-         V/tA==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=+TfQWGMGs5ObBJodcOfCCLLfPFDT3yxUHkAF1a8U5pg=;
+        b=l5RZhBdloG5SnuEpC7J80qco08NL6zfZAxkTcaznq32CSbl1Fl6HOIZVB1gb1Ig5GQ
+         jfTPJz7YCH03JwzA0V2LbbykTqcoCFl5npJinI6Sap8KFNy9Q2Wl2JLj60qIBeQR3RsG
+         IShrGDzKjjlNM3Uu7Z0Ze64W0J0mLEhX/+Uec=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gY/eN3dNE9VGGR0tbNCSzKwh5eQv624Pzq8V/GLMbAQ=;
-        b=NIWtYVGH4iLbvWfkKasK1KGCG8qlXKWbEsbTKcxhFpH2XNkPRpjD6rc4cEBzCK+9zt
-         NBzsIvHtKwiWko9YWFYweYXJxCJmshT8rKtd3nV+tugU48A/QHBwxg21zeKazAthGDEF
-         4Xq+BhMFytLrK1mogK2zoSQvhclAoKf0K+hGX8E5OHXKoKf1bsDQFvKw9E82dDtmDNe2
-         9Dd8X2VGgWxS7nQ8eCIq2Z1vrA/2eve1ij5TJqP9wilJqQz92YHKyi3YZsy/2wlDSmgh
-         vvjTw/IxdkT60I1l7WgSSlqxQRLQCN56glSEUenoVUhjeZkxU4RunXYB4jXOr3FCGOaH
-         rlqw==
-X-Gm-Message-State: APjAAAX4Qo1JlpVUjPhuIUiU//QXWbZJPGk33Aqun1JQqT+w86NPVUpf
-        472lJ5LJYJ4iWMpclb8hfaY=
-X-Google-Smtp-Source: APXvYqxER8xTvd9KBPkmtpXAy0XRLgzO22qmZgz8H1zpICv0TTrm3zDGJ9uh8TNYH+a0UJP9LRX/2Q==
-X-Received: by 2002:a05:620a:123b:: with SMTP id v27mr779308qkj.29.1551380883726;
-        Thu, 28 Feb 2019 11:08:03 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([179.97.35.11])
-        by smtp.gmail.com with ESMTPSA id l24sm13331678qtf.27.2019.02.28.11.08.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=+TfQWGMGs5ObBJodcOfCCLLfPFDT3yxUHkAF1a8U5pg=;
+        b=I/ND0+g7UvTsSqlFML58/8WnfVSM0QTSPjgpWJoEXucuwkZUcbM02IFQC2h0KcQywl
+         nIKEcK9WIjb7vmRTQgD8yz+lyHLsutb4w9whdQcS2IF6iWvJg4LUjCXgY1mv+DvXn4XD
+         6bDI839iKfv0QJ5QWxCmeBuY0TPDlGnunr0zp/YrpIcVj15PHE5FKBB7IoKSQSq5OV+m
+         XjElJd8traJrCfgN1rdPaBPiyLAm7aMLsId8l1AIK7a+OCTifR40yVb7JpaBSBtTIx4Z
+         xCSSyxk13MNagNWY+iT+KPqiDYDhwfFi1k8qd8+Rkj51Yf6cay2BG9T+reJTn6jrWG2L
+         loNg==
+X-Gm-Message-State: APjAAAXV71XN7tBM7rbTzH24Vv0fl7X3OGDL71nnb6YAVWT+CScg78SA
+        ieXha7/fPcza844QwcnLBzE+Gw==
+X-Google-Smtp-Source: APXvYqy+TEco/RrLJg0x6DwgujHE/KEmoQqB+GMeGU4Nek5SZHYM7shD34UwjLyEuaMVNk9ZcC2VqQ==
+X-Received: by 2002:a0c:d121:: with SMTP id a30mr657202qvh.0.1551381038318;
+        Thu, 28 Feb 2019 11:10:38 -0800 (PST)
+Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
+        by smtp.gmail.com with ESMTPSA id n21sm11413235qtl.97.2019.02.28.11.10.37
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 28 Feb 2019 11:08:02 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 710414039C; Thu, 28 Feb 2019 16:07:59 -0300 (-03)
-Date:   Thu, 28 Feb 2019 16:07:59 -0300
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tony Jones <tonyj@suse.de>, linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-perf-users@vger.kernel.org,
-        Mathias Krause <minipli@googlemail.com>,
+        Thu, 28 Feb 2019 11:10:37 -0800 (PST)
+Date:   Thu, 28 Feb 2019 14:10:36 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, ast@kernel.org,
+        atishp04@gmail.com, dancol@google.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
+        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Michael Sartain <mikesart@fastmail.com>
-Subject: Re: [PATCH] tools lib traceevent: Fix buffer overflow in arg_eval
-Message-ID: <20190228190759.GL9508@kernel.org>
-References: <20190228015532.8941-1-tonyj@suse.de>
- <20190227221250.74996869@vmware.local.home>
- <20190228190123.GK9508@kernel.org>
+        Manoj Rao <linux@manojrajarao.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        mhiramat@kernel.org, paulmck@linux.vnet.ibm.com,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        rdunlap@infradead.org, rostedt@goodmis.org,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, yhs@fb.com
+Subject: Re: [PATCH v3 1/2] Provide in-kernel headers for making it easy to
+ extend the kernel
+Message-ID: <20190228191036.GA203889@google.com>
+References: <20190227193748.132301-1-joel@joelfernandes.org>
+ <20190228135343.23kzkilig3bsioov@e107158-lin.cambridge.arm.com>
+ <20190228144759.GA156098@google.com>
+ <b100f0a2-7966-b6a2-dcd5-ca11abe57ead@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190228190123.GK9508@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b100f0a2-7966-b6a2-dcd5-ca11abe57ead@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Em Thu, Feb 28, 2019 at 04:01:23PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Feb 27, 2019 at 10:12:50PM -0500, Steven Rostedt escreveu:
-> > On Wed, 27 Feb 2019 17:55:32 -0800
-> > Tony Jones <tonyj@suse.de> wrote:
-> > 
-> > > Fix buffer overflow observed when running perf test.
-> > > 
-> > > The overflow is when trying to evaluate "1ULL << (64 - 1)" which
-> > > is resulting in -9223372036854775808 which overflows the 20 character
-> > > buffer.
-> > > 
-> > > If is possible this bug has been reported before but I still don't
-> > > see any fix checked in:
-> > > 
-> > > See: https://www.spinics.net/lists/linux-perf-users/msg07714.html
-> > > 
-> > > Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > Cc: linux-perf-users@vger.kernel.org
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Signed-off-by: Tony Jones <tonyj@suse.de>
-> > 
-> > Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > 
-> > I have to say I've let this slide and it is not the first time a patch
-> > went out with this fix. But this one has the correct fix because we
-> > should use a buffer with a multiple of 4. Anyway, Tony I believe was
-> > the first to report this anyway.
-> > 
-> > For reference we have:
-> > 
-> > I first heard about Tony's complaint on a post to linux-perf-users on Jan 18.
-> > 
-> > But then we had after that:
-> > 
-> >  Michael Sartain reported it on 1/24 (and fixed by Tzvetomir)
-> >  https://lore.kernel.org/linux-trace-devel/20190125102014.19600-1-tstoyanov@vmware.com/
-> >  
-> > It was later fixed again by Mathias Krause
-> >  https://lore.kernel.org/linux-trace-devel/20190223122404.21137-1-minipli@googlemail.com/
-> > 
-> > But since Tony was first to report it, and we discussed that it should
-> > be 24 bytes, I would say this is the patch to take.
-> > 
-> > Again, sorry for not getting this acknowledged earlier and everyone doing
-> > the same thing multiple times. :-/
-> > 
-> > Arnaldo, please take this patch. But also add:
-> > 
-> > Reported-by: Michael Sartain <mikesart@fastmail.com>
-> > Reported-by: Mathias Krause <minipli@googlemail.com>
+On Thu, Feb 28, 2019 at 05:04:59PM +0100, Dietmar Eggemann wrote:
+[...]                      ^
+> kernel/kheaders_data.h:1:1: note: in expansion of macro ‘KH_MAGIC_END’
+>  KH_MAGIC_END;
+>  ^~~~~~~~~~~~
+> kernel/kheaders.c: In function ‘ikheaders_read_current’:
+> kernel/kheaders.c:38:12: error: ‘kernel_headers_data’ undeclared (first use
+> in this function); did you mean ‘kernel_headers_data_size’?
+>             kernel_headers_data + KH_MAGIC_SIZE,
+>             ^~~~~~~~~~~~~~~~~~~
+>             kernel_headers_data_size
+> kernel/kheaders.c:38:12: note: each undeclared identifier is reported only
+> once for each function it appears in
+> kernel/kheaders.c: In function ‘ikheaders_init’:
+> kernel/kheaders.c:31:10: error: ‘kernel_headers_data’ undeclared (first use
+> in this function); did you mean ‘kernel_headers_data_size’?
+>   (sizeof(kernel_headers_data) - 1 - KH_MAGIC_SIZE * 2)
+>           ^
+> kernel/kheaders.c:57:23: note: in expansion of macro
+> ‘kernel_headers_data_size’
+>   proc_set_size(entry, kernel_headers_data_size);
+>                        ^~~~~~~~~~~~~~~~~~~~~~~~
+> kernel/kheaders.c: In function ‘ikheaders_read_current’:
+> kernel/kheaders.c:40:1: warning: control reaches end of non-void function
+> [-Wreturn-type]
+>  }
 > 
-> Will do.
 > 
-> Thanks for the credit research,
+> The reason for me to stay on v4.20 is that with v5.0-rc8 I don't have ebpf
+> 'raw tracepoint' support any more on my arm64 board. But this issue is not
+> related to your patch though.
 
-Some more research, an approximation, adding:
+I'm glad mainline fixed your issue though as you said in the other thread ;-)
+I will refer to your email here later when doing backports if I hit the issue.
 
-Cc: Frederic Weisbecker <fweisbec@gmail.com>
-Fixes: f7d82350e597 ("tools/events: Add files to create libtraceevent.a")
+> Another point which supports the functionality your patch provides is the
+> fact that maintainers don't want to see new TRACE_EVENTs in their code. So
+> here your patch comes handy when using ebpf for tracing in embedded
+> environments.
 
-That is the 'git blame' entry for when that line was added with sizeof
-== 20
+Yes, I agree. One can also use the series to build custom kernel modules
+which can also contain tracepoints in their own right. Glad you also find it
+useful. I will CC you on it for next spin.
 
-- Arnaldo
+thanks,
+
+ - Joel
+
