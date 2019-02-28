@@ -3,149 +3,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CE01C43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 16:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39B12C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 16:09:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EB4352184A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 16:05:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1290A218B0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 16:09:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731424AbfB1QFH (ORCPT
+        id S1731398AbfB1QJV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Feb 2019 11:05:07 -0500
-Received: from foss.arm.com ([217.140.101.70]:50712 "EHLO foss.arm.com"
+        Thu, 28 Feb 2019 11:09:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731142AbfB1QFH (ORCPT
+        id S1726986AbfB1QJV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Feb 2019 11:05:07 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7ADFBA78;
-        Thu, 28 Feb 2019 08:05:06 -0800 (PST)
-Received: from [0.0.0.0] (e107985-lin.cambridge.arm.com [10.1.194.38])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 06AD43F720;
-        Thu, 28 Feb 2019 08:05:00 -0800 (PST)
-Subject: Re: [PATCH v3 1/2] Provide in-kernel headers for making it easy to
- extend the kernel
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        Qais Yousef <qais.yousef@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
+        Thu, 28 Feb 2019 11:09:21 -0500
+Received: from vmware.local.home (unknown [38.88.19.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31DEF2184A;
+        Thu, 28 Feb 2019 16:09:20 +0000 (UTC)
+Date:   Thu, 28 Feb 2019 11:09:18 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>, ast@kernel.org,
         atishp04@gmail.com, dancol@google.com,
         Dan Williams <dan.j.williams@intel.com>,
-        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
         Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
         Kees Cook <keescook@chromium.org>, kernel-team@android.com,
         linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-trace-devel@vger.kernel.org,
         Manoj Rao <linux@manojrajarao.com>,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
-        mhiramat@kernel.org, paulmck@linux.vnet.ibm.com,
+        paulmck@linux.vnet.ibm.com,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        rdunlap@infradead.org, rostedt@goodmis.org,
+        qais.yousef@arm.com, rdunlap@infradead.org,
         Shuah Khan <shuah@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>, yhs@fb.com
+Subject: Re: [PATCH v3 1/2] Provide in-kernel headers for making it easy to
+ extend the kernel
+Message-ID: <20190228110918.06ae3346@vmware.local.home>
+In-Reply-To: <20190228154513.GA12050@kroah.com>
 References: <20190227193748.132301-1-joel@joelfernandes.org>
- <20190228135343.23kzkilig3bsioov@e107158-lin.cambridge.arm.com>
- <20190228144759.GA156098@google.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <b100f0a2-7966-b6a2-dcd5-ca11abe57ead@arm.com>
-Date:   Thu, 28 Feb 2019 17:04:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
+        <20190228173444.54403795211d80ba540b61cb@kernel.org>
+        <20190228150054.GB156098@google.com>
+        <20190228153026.GG8481@kroah.com>
+        <20190228153741.GA168373@google.com>
+        <20190228154513.GA12050@kroah.com>
+X-Mailer: Claws Mail 3.15.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20190228144759.GA156098@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Joel,
+On Thu, 28 Feb 2019 16:45:13 +0100
+Greg KH <gregkh@linuxfoundation.org> wrote:
 
-On 2/28/19 3:47 PM, Joel Fernandes wrote:
-> On Thu, Feb 28, 2019 at 01:53:43PM +0000, Qais Yousef wrote:
->> Hi Joel
->>
->> On 02/27/19 14:37, Joel Fernandes (Google) wrote:
-
-[...]
-
-> Ah good catch, I made this change for "file_list=${@:2}" in my tree but
-> forgot to push it. Below is the updated patch. Sorry and I'll refresh the
-> series with the change after we finish the discussion in the other thread.
-> Meanwhile the updated patch is as follows...
+> On Thu, Feb 28, 2019 at 10:37:41AM -0500, Joel Fernandes wrote:
+> > In any case, it is not practical to provide headers for every kernel version on
+> > the system image and maintain them, it will take up too much space and has to
+> > be periodically packaged. Not to mention that there will be kernel versions
+> > that are booting Android that simply don't have anyone maintaining headers
+> > for. So the proposed solution is an easier path.  
 > 
-> ---8<-----------------------
-> 
-> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> Subject: [PATCH v3.1] Provide in-kernel headers for making it easy to extend the kernel
-> 
-> Introduce in-kernel headers and other artifacts which are made available
-> as an archive through proc (/proc/kheaders.tar.xz file). This archive makes
-> it possible to build kernel modules, run eBPF programs, and other
-> tracing programs that need to extend the kernel for tracing purposes
-> without any dependency on the file system having headers and build
-> artifacts.
-> 
-> On Android and embedded systems, it is common to switch kernels but not
-> have kernel headers available on the file system. Raw kernel headers
-> also cannot be copied into the filesystem like they can be on other
-> distros, due to licensing and other issues. There's no linux-headers
-> package on Android. Further once a different kernel is booted, any
-> headers stored on the file system will no longer be useful. By storing
-> the headers as a compressed archive within the kernel, we can avoid these
-> issues that have been a hindrance for a long time.
-> 
-> The feature is also buildable as a module just in case the user desires
-> it not being part of the kernel image. This makes it possible to load
-> and unload the headers on demand. A tracing program, or a kernel module
-> builder can load the module, do its operations, and then unload the
-> module to save kernel memory. The total memory needed is 3.8MB.
-> 
-> The code to read the headers is based on /proc/config.gz code and uses
-> the same technique to embed the headers.
+> I totally agree with this, and with your proposed patches, just wanting
+> to clear up some potential anti-GPL-FUD before it got spread any further :)
+>
 
-This version gives me the header files on a v5.0-rc8 kernel on my arm64 
-box but does not compile anymore on v4.20:
+I would believe that the decision of saying it is "not allowed" is not
+about it being illegal, but more of a "we would then need to keep track
+of every GPL code and all the specific versions in every package that we
+ship such that we will have to provide it if someone were to ask for
+it", which would be required by the license. And that can be quite a
+burden.
 
-kernel/kheaders.c:25:22: error: expected identifier or ‘(’ before string 
-constant
-  #define KH_MAGIC_END "IKHD_ED"
-                       ^
-kernel/kheaders_data.h:1:1: note: in expansion of macro ‘KH_MAGIC_END’
-  KH_MAGIC_END;
-  ^~~~~~~~~~~~
-kernel/kheaders.c: In function ‘ikheaders_read_current’:
-kernel/kheaders.c:38:12: error: ‘kernel_headers_data’ undeclared (first 
-use in this function); did you mean ‘kernel_headers_data_size’?
-             kernel_headers_data + KH_MAGIC_SIZE,
-             ^~~~~~~~~~~~~~~~~~~
-             kernel_headers_data_size
-kernel/kheaders.c:38:12: note: each undeclared identifier is reported 
-only once for each function it appears in
-kernel/kheaders.c: In function ‘ikheaders_init’:
-kernel/kheaders.c:31:10: error: ‘kernel_headers_data’ undeclared (first 
-use in this function); did you mean ‘kernel_headers_data_size’?
-   (sizeof(kernel_headers_data) - 1 - KH_MAGIC_SIZE * 2)
-           ^
-kernel/kheaders.c:57:23: note: in expansion of macro 
-‘kernel_headers_data_size’
-   proc_set_size(entry, kernel_headers_data_size);
-                        ^~~~~~~~~~~~~~~~~~~~~~~~
-kernel/kheaders.c: In function ‘ikheaders_read_current’:
-kernel/kheaders.c:40:1: warning: control reaches end of non-void 
-function [-Wreturn-type]
-  }
-
-
-The reason for me to stay on v4.20 is that with v5.0-rc8 I don't have 
-ebpf 'raw tracepoint' support any more on my arm64 board. But this issue 
-is not related to your patch though.
-
-Another point which supports the functionality your patch provides is 
-the fact that maintainers don't want to see new TRACE_EVENTs in their 
-code. So here your patch comes handy when using ebpf for tracing in 
-embedded environments.
+-- Steve
