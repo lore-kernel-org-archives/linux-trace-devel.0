@@ -2,64 +2,171 @@ Return-Path: <SRS0=lLCO=RD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,USER_AGENT_NEOMUTT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C479CC43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 16:33:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5334C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 16:48:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9B5A2218CD
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 16:33:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BBF982184A
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Feb 2019 16:48:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbfB1Qdg (ORCPT
+        id S1732018AbfB1QsJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Feb 2019 11:33:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42638 "EHLO mail.kernel.org"
+        Thu, 28 Feb 2019 11:48:09 -0500
+Received: from foss.arm.com ([217.140.101.70]:51462 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726502AbfB1Qdg (ORCPT
+        id S1726717AbfB1QsJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Feb 2019 11:33:36 -0500
-Received: from vmware.local.home (unknown [38.88.19.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 644E2218AE;
-        Thu, 28 Feb 2019 16:33:35 +0000 (UTC)
-Date:   Thu, 28 Feb 2019 11:33:34 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Slavomir Kaslev <kaslevs@vmware.com>
-Subject: Re: Can't use kvm_exit for the host side time stamp
-Message-ID: <20190228113334.59f1f785@vmware.local.home>
-In-Reply-To: <CACqStocgP+F+Kvr4a3a28V1ACEM=kbKVVSJxGbb0CiN9WdNKaA@mail.gmail.com>
-References: <20190226112406.7abab75a@vmware.local.home>
-        <CACqStocgP+F+Kvr4a3a28V1ACEM=kbKVVSJxGbb0CiN9WdNKaA@mail.gmail.com>
-X-Mailer: Claws Mail 3.15.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 28 Feb 2019 11:48:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BC6EEBD;
+        Thu, 28 Feb 2019 08:48:08 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.17])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF7463F720;
+        Thu, 28 Feb 2019 08:48:03 -0800 (PST)
+Date:   Thu, 28 Feb 2019 16:48:01 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, ast@kernel.org,
+        atishp04@gmail.com, dancol@google.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
+        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Manoj Rao <linux@manojrajarao.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        mhiramat@kernel.org, paulmck@linux.vnet.ibm.com,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        rdunlap@infradead.org, rostedt@goodmis.org,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, yhs@fb.com
+Subject: Re: [PATCH v3 1/2] Provide in-kernel headers for making it easy to
+ extend the kernel
+Message-ID: <20190228164801.iahwphx5o2zeks4n@e107158-lin.cambridge.arm.com>
+References: <20190227193748.132301-1-joel@joelfernandes.org>
+ <20190228135343.23kzkilig3bsioov@e107158-lin.cambridge.arm.com>
+ <20190228144759.GA156098@google.com>
+ <b100f0a2-7966-b6a2-dcd5-ca11abe57ead@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b100f0a2-7966-b6a2-dcd5-ca11abe57ead@arm.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 28 Feb 2019 16:22:41 +0000
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+On 02/28/19 17:04, Dietmar Eggemann wrote:
+> Hi Joel,
+> 
+> On 2/28/19 3:47 PM, Joel Fernandes wrote:
+> > On Thu, Feb 28, 2019 at 01:53:43PM +0000, Qais Yousef wrote:
+> > > Hi Joel
+> > > 
+> > > On 02/27/19 14:37, Joel Fernandes (Google) wrote:
+> 
+> [...]
+> 
+> > Ah good catch, I made this change for "file_list=${@:2}" in my tree but
+> > forgot to push it. Below is the updated patch. Sorry and I'll refresh the
+> > series with the change after we finish the discussion in the other thread.
+> > Meanwhile the updated patch is as follows...
+> > 
+> > ---8<-----------------------
+> > 
+> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> > Subject: [PATCH v3.1] Provide in-kernel headers for making it easy to extend the kernel
+> > 
+> > Introduce in-kernel headers and other artifacts which are made available
+> > as an archive through proc (/proc/kheaders.tar.xz file). This archive makes
+> > it possible to build kernel modules, run eBPF programs, and other
+> > tracing programs that need to extend the kernel for tracing purposes
+> > without any dependency on the file system having headers and build
+> > artifacts.
+> > 
+> > On Android and embedded systems, it is common to switch kernels but not
+> > have kernel headers available on the file system. Raw kernel headers
+> > also cannot be copied into the filesystem like they can be on other
+> > distros, due to licensing and other issues. There's no linux-headers
+> > package on Android. Further once a different kernel is booted, any
+> > headers stored on the file system will no longer be useful. By storing
+> > the headers as a compressed archive within the kernel, we can avoid these
+> > issues that have been a hindrance for a long time.
+> > 
+> > The feature is also buildable as a module just in case the user desires
+> > it not being part of the kernel image. This makes it possible to load
+> > and unload the headers on demand. A tracing program, or a kernel module
+> > builder can load the module, do its operations, and then unload the
+> > module to save kernel memory. The total memory needed is 3.8MB.
+> > 
+> > The code to read the headers is based on /proc/config.gz code and uses
+> > the same technique to embed the headers.
+> 
+> This version gives me the header files on a v5.0-rc8 kernel on my arm64 box
+> but does not compile anymore on v4.20:
+> 
+> kernel/kheaders.c:25:22: error: expected identifier or ‘(’ before string
+> constant
+>  #define KH_MAGIC_END "IKHD_ED"
+>                       ^
+> kernel/kheaders_data.h:1:1: note: in expansion of macro ‘KH_MAGIC_END’
+>  KH_MAGIC_END;
+>  ^~~~~~~~~~~~
+> kernel/kheaders.c: In function ‘ikheaders_read_current’:
+> kernel/kheaders.c:38:12: error: ‘kernel_headers_data’ undeclared (first use
+> in this function); did you mean ‘kernel_headers_data_size’?
+>             kernel_headers_data + KH_MAGIC_SIZE,
+>             ^~~~~~~~~~~~~~~~~~~
+>             kernel_headers_data_size
+> kernel/kheaders.c:38:12: note: each undeclared identifier is reported only
+> once for each function it appears in
+> kernel/kheaders.c: In function ‘ikheaders_init’:
+> kernel/kheaders.c:31:10: error: ‘kernel_headers_data’ undeclared (first use
+> in this function); did you mean ‘kernel_headers_data_size’?
+>   (sizeof(kernel_headers_data) - 1 - KH_MAGIC_SIZE * 2)
+>           ^
+> kernel/kheaders.c:57:23: note: in expansion of macro
+> ‘kernel_headers_data_size’
+>   proc_set_size(entry, kernel_headers_data_size);
+>                        ^~~~~~~~~~~~~~~~~~~~~~~~
+> kernel/kheaders.c: In function ‘ikheaders_read_current’:
+> kernel/kheaders.c:40:1: warning: control reaches end of non-void function
+> [-Wreturn-type]
+>  }
+> 
+> 
+> The reason for me to stay on v4.20 is that with v5.0-rc8 I don't have ebpf
+> 'raw tracepoint' support any more on my arm64 board. But this issue is not
+> related to your patch though.
 
-> The problem is that
-> vmx_read_l1_tsc_offset() is Intel specific, most probably it is not
-> used on non-Intel CPUs.
+And this is caused by a38d1107f937 (bpf: support raw tracepoints in modules)
+which renamed bpf_find_raw_tracepoint() which bcc-tools relies on to detect if
+raw tracepoints are supported..
 
-Correct, but we should be able to easily determine that by checking
-which module is loaded (kvm_intel or kvm_amd). I'm sure we can just use
-the equivalent for amd.
+https://github.com/iovisor/bcc/blob/master/src/python/bcc/__init__.py#L860
 
-But again, this needs to be able to work with non-x86 too, which means
-at the end, we need to make this configurable. Either by having plugins
-loaded by checking what system it is on, and seeing what options are
-available.
+Speaking of fragile depedencies :-)
 
--- Steve
+I guess the check can be extended to check for both symbols - but it'll stay
+fragile. Not sure if they can do better.
+
+I filed a bug
+
+https://github.com/iovisor/bcc/issues/2240
+
+--
+Qais Yousef
+
+> 
+> Another point which supports the functionality your patch provides is the
+> fact that maintainers don't want to see new TRACE_EVENTs in their code. So
+> here your patch comes handy when using ebpf for tracing in embedded
+> environments.
