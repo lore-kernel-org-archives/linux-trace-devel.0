@@ -4,179 +4,162 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 517BEC43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Mar 2019 17:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43F80C43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Mar 2019 17:22:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 166142085A
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Mar 2019 17:19:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 151F820850
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Mar 2019 17:22:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="a38jITjr"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Le5Ueu53"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389355AbfCART5 (ORCPT
+        id S2388690AbfCARWB (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 1 Mar 2019 12:19:57 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:36131 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389273AbfCART5 (ORCPT
+        Fri, 1 Mar 2019 12:22:01 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:42356 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728276AbfCARWB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 1 Mar 2019 12:19:57 -0500
-Received: by mail-qt1-f194.google.com with SMTP id p25so28627508qtb.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 01 Mar 2019 09:19:56 -0800 (PST)
+        Fri, 1 Mar 2019 12:22:01 -0500
+Received: by mail-qt1-f195.google.com with SMTP id u7so19417931qtg.9
+        for <linux-trace-devel@vger.kernel.org>; Fri, 01 Mar 2019 09:22:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=DHWPXUSg70P7oFntkIS7YhwNkOCIzd5Ta8zUZclrvFA=;
-        b=a38jITjrVIFkNfD3sYQsTaS2Kaxy+KixXPvDeyZn5S8usJMZ/5lRTCMB2yAnydkY7r
-         DsXdk145tMNPvCXHcjqRkVP15u/Qn1GLCwusg+6nVaUqWUu9jaB3auETlD7xRypZAqrg
-         2cJo1/T76aCKJ+peFfvoJwrKwJ2MTxaGfj3ew=
+        bh=U/9thOjurA+lIRFK0bp+ZG70JtmlEraTbsN+PJD2O9I=;
+        b=Le5Ueu53kunQMlXpyqwk2e4kYM6t5IvX9AiUfdGQPxrJ+VxZfmHQWHOJuSdMOPIR34
+         PQ6VZS1rE/d5mtizV/jGDXMz0UYRflhcUPSg5ynGCSn8TDqDFvpGOx85DqwQtavqgkFR
+         +TzA2XnKhu3cb9avBoiHXkJ4xszJSyLbVco+s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DHWPXUSg70P7oFntkIS7YhwNkOCIzd5Ta8zUZclrvFA=;
-        b=rPYBEZlUfxW4wo3sBaH+a0cwtpW66Si4RhNIATAg4t6r7fM2+uRabJhvrXIOUdFP6n
-         kk3vM6XTr9c2Nqiw58zIitA3lPWp0SZopQ9i+M3moFInbXzA3Sm9xQ5Z0fY4VCOb2kmB
-         iGBk4DLYLLNywz7uXMivn2mIuBX9nSdjFC8LpDRG5X1WE1dqc84tCNC2G4k07YL6knCk
-         0edX9y+XgLHoGviNepiq5c2mM4Izo2yZuzspcJ1UKcaSGu7fiP274i8Mrxr1iJfH7/a1
-         2g324VHSz9q8/0V9Vn08En/hZDdX8MFeDa/zeEaiOB4NUox5K8ObKoPIu3uRx0Is9FT+
-         4XSQ==
-X-Gm-Message-State: APjAAAUX4DT8Tr5Onf25EhxG+NSVhvYQfZEhelXoUUYpy1fEpOuOt6sy
-        weLF42KUg+cm8tvYLt9zlBTEa5dL8dM=
-X-Google-Smtp-Source: APXvYqwUBsEMjs7fHoewfpA+usetH+sLk7wnSGVfLfrB2V8pslnDzmEBpnGnO9ol8VGVY1bV5GFoCw==
-X-Received: by 2002:ac8:1aa6:: with SMTP id x35mr4937634qtj.218.1551460796033;
-        Fri, 01 Mar 2019 09:19:56 -0800 (PST)
+        bh=U/9thOjurA+lIRFK0bp+ZG70JtmlEraTbsN+PJD2O9I=;
+        b=BzecrxgJeEwtXAISEk+eOZIQeBARBpjnqjIJmxzjSoU2L5fNujHYUkKwOX6B8A2Rln
+         VGfiV2l7aWijD4oZWcIiQ4Ce7trvRCP/9orRnKFk3eC7kaRKgvnD+qj/R6deMcVWMXFi
+         Jjehnc+Y11TU4+uvr4UFHE8QJdGSKhmF/+ey4bjOR890iAyWEj6ZC50kvvlfSUhBcd7O
+         vlO12aQPwkHcLQPgLtPNtGqYKwYwZrOPck8WJdA8FlEgz08/U1+nbY8eUssBbjajihiW
+         N4K2SodBEWkOes0/KSFvrpm1Ds5ZtkS8KbuBEmyjXMVxGJZBXii+F2Aq/Oj4qs7FUa5s
+         tJaw==
+X-Gm-Message-State: APjAAAX+4Mb+NVojqWKhat5unBoa0u8CbE5KgFVPUGxSzopq+k6Gk3qP
+        Kz8KxQHblHahDbsFMcRjbLYXug==
+X-Google-Smtp-Source: APXvYqx8qELjvvbvGFW2ax0aQPeF/drI8AnPQBY3nP2jPcGHy8fpGhR7rluWFXj7RpbHZCvxdQ0R2w==
+X-Received: by 2002:ac8:2bc1:: with SMTP id n1mr4777281qtn.176.1551460919817;
+        Fri, 01 Mar 2019 09:21:59 -0800 (PST)
 Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id l24sm15097453qtf.27.2019.03.01.09.19.54
+        by smtp.gmail.com with ESMTPSA id j139sm12403640qke.26.2019.03.01.09.21.58
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 01 Mar 2019 09:19:54 -0800 (PST)
-Date:   Fri, 1 Mar 2019 12:19:54 -0500
+        Fri, 01 Mar 2019 09:21:58 -0800 (PST)
+Date:   Fri, 1 Mar 2019 12:21:58 -0500
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        atish patra <atishp04@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, ast@kernel.org,
+        atishp04@gmail.com, dancol@google.com,
         Dan Williams <dan.j.williams@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
         Kees Cook <keescook@chromium.org>, kernel-team@android.com,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-trace-devel@vger.kernel.org,
         Manoj Rao <linux@manojrajarao.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        paulmck@linux.vnet.ibm.com,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        qais.yousef@arm.com, Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        qais.yousef@arm.com, rdunlap@infradead.org, rostedt@goodmis.org,
         Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yonghong Song <yhs@fb.com>
+        Thomas Gleixner <tglx@linutronix.de>, yhs@fb.com
 Subject: Re: [PATCH v3 1/2] Provide in-kernel headers for making it easy to
  extend the kernel
-Message-ID: <20190301171954.GA217990@google.com>
+Message-ID: <20190301172158.GB217990@google.com>
 References: <20190227193748.132301-1-joel@joelfernandes.org>
- <CAK7LNAR=dpw7y+Y20m0n4ZqzQtqY2XrS3CKk5bQA-Azhp0SN6g@mail.gmail.com>
- <20190228144306.GA138215@google.com>
- <CAK7LNARTHJP=HzyBg_oBBL4whpxHXeijqk=zKLYpt=1GBLNGAA@mail.gmail.com>
+ <20190228173444.54403795211d80ba540b61cb@kernel.org>
+ <20190228150054.GB156098@google.com>
+ <20190301112826.ced40b59fb7e8118fa5b40d6@kernel.org>
+ <20190301032611.GA78818@google.com>
+ <20190301160309.2ddadeeb4aadbab4cdc88171@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK7LNARTHJP=HzyBg_oBBL4whpxHXeijqk=zKLYpt=1GBLNGAA@mail.gmail.com>
+In-Reply-To: <20190301160309.2ddadeeb4aadbab4cdc88171@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Mar 01, 2019 at 03:25:05PM +0900, Masahiro Yamada wrote:
-[...]
-> > > I am guessing the user will run these commands
-> > > on the target system.
-> > > In other words, external modules are native-compiled.
-> > > So,
-> > >
-> > >   target-arch: arm64
-> > >   host-arch:   arm64
-> > >
-> > >
-> > > Is this correct?
-> > >
-> > >
-> > > If I understood the assumed use-case correctly,
-> > > kheaders.tar.xw will contain host-programs compiled for x86,
-> > > which will not work on the target system.
-> > >
-> >
-> > You are right, the above commands in the commit message work only if the
-> > host/target are same arch due to scripts.
-> >
-> > However we can build with arm64 device connected to a host, like this (which
-> > I tested):
-> >
-> > adb shell modprobe kheaders; adb pull /proc/kheaders.tar.xz
-> > rm -rf $HOME/headers; mkdir -p $HOME/headers
-> > tar -xvf /proc/kheaders.tar.xz -C $HOME/headers >/dev/null
-> > cd my-kernel-module
-> > make -C $HOME/headers M=$(pwd) ARCH=arm64 CROSS_COMPILE=aarch64- modules
-> > adb push test.ko /data/; adb shell rmmod kheaders
-> >
-> > The other way we can make this work is using x86 usermode emulation inside a
-> > chroot on the Android device which will make the earlier commands work. One
-> > thing to note is that Android also runs on x86 hardware so the commands in
-> > the commit message will work even for x86 Android targets already.
-> >
-> > Also note that this the "module building" part is really only one of the
-> > usecases. eBPF is another which needs the headers - and the headers are vast
-> > majority of the archive. Headers take 3.1MB out of 3.6MB of the archive on
-> > arm64 builds.
-> >
-> > How do you want to proceed here, should I mention these points in the commit
-> > message?
+On Fri, Mar 01, 2019 at 04:03:09PM +0900, Masami Hiramatsu wrote:
+> Hi Joel,
 > 
+> On Thu, 28 Feb 2019 22:26:11 -0500
+> Joel Fernandes <joel@joelfernandes.org> wrote:
 > 
+> > On Fri, Mar 01, 2019 at 11:28:26AM +0900, Masami Hiramatsu wrote:
+[..]
+> > There are many usecases for this, I have often run into issues with Linux
+> > over the years not only with Android, but other distros, where I boot custom
+> > kernels with no linux-headers package. This is quite painful. It is
+> > convenient to have it as /proc file since the file is dependent on kernel
+> > being booted up and this will work across all Linux distros and systems. I
+> > feel that if you can keep an open mind about it, you will see that a lot of
+> > people will use this feature if it is accepted and there is a lot of positive
+> > feedback in earlier posts of this set.
 > 
-> I do not request a re-spin just for a matter of commit log,
-> but this version produces an empty tarball.
-> So, you will have a chance to update the patch anyway.
-> 
-> In the next version, it would be nice to note that
-> "external modules must be built on the same host arch
-> as built vmlinux".
+> I don't complain about having headers for custom boot kernel. I agree with you
+> that having kernel headers for debugging is always good. :)
+> So google recommends built-in, it is reasonable.
 
-Ok, I respun it with 1 more minor nit for arm64 building. Please take a look.
+Ok, thanks :)
 
-> Let me ask one more question.
+> > > > > > The code to read the headers is based on /proc/config.gz code and uses
+> > > > > > the same technique to embed the headers.
+> > > > > > 
+> > > > > > To build a module, the below steps have been tested on an x86 machine:
+> > > > > > modprobe kheaders
+> > > > > > rm -rf $HOME/headers
+> > > > > > mkdir -p $HOME/headers
+> > > > > > tar -xvf /proc/kheaders.tar.xz -C $HOME/headers >/dev/null
+> > > > > > cd my-kernel-module
+> > > > > > make -C $HOME/headers M=$(pwd) modules
+> > > > > > rmmod kheaders
+> > > > > 
+> > > > > It seems a bit complex, but no difference from compared with carrying
+> > > > > kheaders.tar.gz. I think we would better have a psudo filesystem
+> > > > > which can mount this compressed header file directly :) Then it becomes
+> > > > > simpler, like
+> > > > > 
+> > > > > modprobe headerfs
+> > > > > mkdir $HOME/headers
+> > > > > mount -t headerfs $HOME/headers
+> > > > > 
+> > > > > And this doesn't consume any disk-space.
+> > > > 
+> > > > I felt using a compressed tar is really the easiest way because of all the
+> > > > tools are already available.
+> > > 
+> > > As I asked above, if the pure tarball is useful, you can simply ask vendors
+> > > to put the header tarball on their vendor directory. I feel making it as
+> > > a module is not a right way.
+> > 
+> > I don't see what is the drawback of making it a module, it makes it well
+> > integrated into kernel build and ecosystem. I also didn't see any
+> > justification you're providing about why it cannot be a module. If you go
+> > through this and earlier threads, a lot of people are Ok with having a module
+> > option. And I asked several top kernel maintainers at LPC and many people
+> > suggested having it as a module.
 > 
-> I guess this patch is motivated by
-> how difficult to convey kernel headers
-> from vendors to users.
+> I meant, if we have a tarball, we don't need any operation of loading/unloading
+> kmodules. But if we have this as built-in, yes, this would be much easier to
+> deploy it to device.
 > 
-> In that situation, how will the user find
-> the right compiler to use for building external modules?
+> Anyway, having that option (make it as a module) is not bad. IMHO, that may
+> be more complicated than just have a tarball file, but it is a user's choice.
 > 
-> 
-> 
-> 
-> Greg KH said:
-> 
-> We don't ever support the system of loading a module built with anything
-> other than the _exact_ same compiler than the kernel was.
-> 
-> 
-> For the full context, see this:
-> https://lore.kernel.org/patchwork/patch/836247/#1031547
+> OK, now I understand it.
 
-IMO this issue is not related to this patch but is just an issue with
-building external modules in general. It is up to the user to use the right
-compiler, etc. I will let Greg comment more on that.
+Sounds good. :) Just sent out v4.
 
 thanks,
 
