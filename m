@@ -2,227 +2,204 @@ Return-Path: <SRS0=1gjG=RE=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B6BDC43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Mar 2019 06:26:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BAA5C43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Mar 2019 07:03:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 371452084F
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Mar 2019 06:26:00 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="jlitbj2t"
+	by mail.kernel.org (Postfix) with ESMTP id 10FE0218B0
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  1 Mar 2019 07:03:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1551423808;
+	bh=FPijZllBu5a7gpOenCVYmY8UC/Q7eD6ly4oHVzasmmM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
+	b=ty3pkfQ2/KQaG7mcXWyAB6xmRC44VUODqv5FG0yyJuCynLxtb1y3ikYaHcgzMn6EH
+	 q4TD44WNjMrsn1G33xOb4Pbf2mIzRQHUmAl0TK6XLjG3SYBJh/1YUWeRNAA41OOfMc
+	 e/BbhGaxhU98s68IZkiURw1xXANRYn0GQtxO/o6c=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbfCAGZ7 (ORCPT
+        id S1731278AbfCAHDR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 1 Mar 2019 01:25:59 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:41369 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbfCAGZ7 (ORCPT
+        Fri, 1 Mar 2019 02:03:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725290AbfCAHDQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 1 Mar 2019 01:25:59 -0500
-X-Greylist: delayed 101229 seconds by postgrey-1.27 at vger.kernel.org; Fri, 01 Mar 2019 01:25:57 EST
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id x216PgT9019527;
-        Fri, 1 Mar 2019 15:25:43 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com x216PgT9019527
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1551421543;
-        bh=CPTIQj4MJjEqWQPvI7EAGkqlSEzE35Ksp0rPBhizPpc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jlitbj2tuEj96fvC7Iv3DwItUhmOGKWjIgTFjL75XOg+Mzinqmo+OcJMUw26T4X/R
-         sY13fXi5UYPLsCNBOKPdpWiCmwsY0cASLEeYd+nmqOD/VVF06OGzAVSzf82meTSGmg
-         ucyiftFJRGgDJhHmtVIiMdd8d6iSD8nuGBSTtibSG7+4xOu9edu7tvUAzRuTfCL5Fs
-         lu0OVMQHXmzDwRsRT7Gczfi50xMwwIlZ7MsfZeCe7oW0z0hOnMW8fNdqvC2u7RSC6L
-         TCaF6nSK1rbG4Pq6jecL/3jzWSMD+aRtQg+QNG1bNJfvaKRy9g8n3pVofN6R/Hze/p
-         2H6u50rqdNHUA==
-X-Nifty-SrcIP: [209.85.222.49]
-Received: by mail-ua1-f49.google.com with SMTP id s15so21449771uap.6;
-        Thu, 28 Feb 2019 22:25:43 -0800 (PST)
-X-Gm-Message-State: APjAAAVOpB/6OK5GsF3WCxSbRKQ9X1HqhN4Ootinau7AsM6fRaYCeoep
-        M1dZ3CGCV+xKefWJlPMUhH/sQQRpydCCGnOE3kE=
-X-Google-Smtp-Source: APXvYqyO9icQE5soySUmzB8GfMt5HnNE/JNtqj1SEDSugKyv8JvaVQ7JQ4VBi120aSeFDO3UmQZl00jja98Q29etx3I=
-X-Received: by 2002:ab0:2a01:: with SMTP id o1mr1643096uar.42.1551421542201;
- Thu, 28 Feb 2019 22:25:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20190227193748.132301-1-joel@joelfernandes.org>
- <CAK7LNAR=dpw7y+Y20m0n4ZqzQtqY2XrS3CKk5bQA-Azhp0SN6g@mail.gmail.com> <20190228144306.GA138215@google.com>
-In-Reply-To: <20190228144306.GA138215@google.com>
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Fri, 1 Mar 2019 15:25:05 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARTHJP=HzyBg_oBBL4whpxHXeijqk=zKLYpt=1GBLNGAA@mail.gmail.com>
-Message-ID: <CAK7LNARTHJP=HzyBg_oBBL4whpxHXeijqk=zKLYpt=1GBLNGAA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] Provide in-kernel headers for making it easy to
- extend the kernel
+        Fri, 1 Mar 2019 02:03:16 -0500
+Received: from devbox (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B4892084F;
+        Fri,  1 Mar 2019 07:03:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1551423795;
+        bh=FPijZllBu5a7gpOenCVYmY8UC/Q7eD6ly4oHVzasmmM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ytGsC9tlAlLY1wRTzjvgWqUcxUZgnQUspZ5TUmI/9TJxHaJEiaax6/8KBrw5YJxvN
+         SfVjhn2RiF/iRK51MuMGaArzaO1AFG+Kp79o4HiZ5ILaVDYVdN2qhbqmVOmUqaSybE
+         n8cXGishrYBa9g6jMjiH9nRCk5OX/Yw4PRVdT1yQ=
+Date:   Fri, 1 Mar 2019 16:03:09 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        atish patra <atishp04@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, ast@kernel.org,
+        atishp04@gmail.com, dancol@google.com,
         Dan Williams <dan.j.williams@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
         Kees Cook <keescook@chromium.org>, kernel-team@android.com,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-trace-devel@vger.kernel.org,
         Manoj Rao <linux@manojrajarao.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        paulmck@linux.vnet.ibm.com,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        qais.yousef@arm.com, Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        qais.yousef@arm.com, rdunlap@infradead.org, rostedt@goodmis.org,
         Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>, yhs@fb.com
+Subject: Re: [PATCH v3 1/2] Provide in-kernel headers for making it easy to
+ extend the kernel
+Message-Id: <20190301160309.2ddadeeb4aadbab4cdc88171@kernel.org>
+In-Reply-To: <20190301032611.GA78818@google.com>
+References: <20190227193748.132301-1-joel@joelfernandes.org>
+        <20190228173444.54403795211d80ba540b61cb@kernel.org>
+        <20190228150054.GB156098@google.com>
+        <20190301112826.ced40b59fb7e8118fa5b40d6@kernel.org>
+        <20190301032611.GA78818@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Mar 1, 2019 at 12:06 AM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Thu, Feb 28, 2019 at 11:17:51AM +0900, Masahiro Yamada wrote:
+Hi Joel,
+
+On Thu, 28 Feb 2019 22:26:11 -0500
+Joel Fernandes <joel@joelfernandes.org> wrote:
+
+> On Fri, Mar 01, 2019 at 11:28:26AM +0900, Masami Hiramatsu wrote:
 > > Hi Joel,
-> >
-> >
-> > On Thu, Feb 28, 2019 at 4:40 AM Joel Fernandes (Google)
-> > <joel@joelfernandes.org> wrote:
-> > >
-> > > Introduce in-kernel headers and other artifacts which are made available
-> > > as an archive through proc (/proc/kheaders.tar.xz file). This archive makes
-> > > it possible to build kernel modules, run eBPF programs, and other
-> > > tracing programs that need to extend the kernel for tracing purposes
-> > > without any dependency on the file system having headers and build
-> > > artifacts.
-> > >
-> > > On Android and embedded systems, it is common to switch kernels but not
-> > > have kernel headers available on the file system. Raw kernel headers
-> > > also cannot be copied into the filesystem like they can be on other
-> > > distros, due to licensing and other issues. There's no linux-headers
-> > > package on Android. Further once a different kernel is booted, any
-> > > headers stored on the file system will no longer be useful. By storing
-> > > the headers as a compressed archive within the kernel, we can avoid these
-> > > issues that have been a hindrance for a long time.
-> > >
-> > > The feature is also buildable as a module just in case the user desires
-> > > it not being part of the kernel image. This makes it possible to load
-> > > and unload the headers on demand. A tracing program, or a kernel module
-> > > builder can load the module, do its operations, and then unload the
-> > > module to save kernel memory. The total memory needed is 3.8MB.
-> > >
-> > > The code to read the headers is based on /proc/config.gz code and uses
-> > > the same technique to embed the headers.
-> >
-> >
-> >
-> > Please let me ask a question about the actual use-case.
-> >
-> >
-> > To build embedded systems including Android,
-> > I use an x86 build machine.
-> >
-> > In other words, I cross-compile vmlinux and in-tree modules.
-> > So,
-> >
-> >   target-arch: arm64
-> >   host-arch:   x86
-> >
-> >
-> >
-> > > To build a module, the below steps have been tested on an x86 machine:
-> > > modprobe kheaders
-> > > rm -rf $HOME/headers
-> > > mkdir -p $HOME/headers
-> > > tar -xvf /proc/kheaders.tar.xz -C $HOME/headers >/dev/null
-> > > cd my-kernel-module
-> > > make -C $HOME/headers M=$(pwd) modules
-> > > rmmod kheaders
-> >
-> > I am guessing the user will run these commands
-> > on the target system.
-> > In other words, external modules are native-compiled.
-> > So,
-> >
-> >   target-arch: arm64
-> >   host-arch:   arm64
-> >
-> >
-> > Is this correct?
-> >
-> >
-> > If I understood the assumed use-case correctly,
-> > kheaders.tar.xw will contain host-programs compiled for x86,
-> > which will not work on the target system.
-> >
->
-> You are right, the above commands in the commit message work only if the
-> host/target are same arch due to scripts.
->
-> However we can build with arm64 device connected to a host, like this (which
-> I tested):
->
-> adb shell modprobe kheaders; adb pull /proc/kheaders.tar.xz
-> rm -rf $HOME/headers; mkdir -p $HOME/headers
-> tar -xvf /proc/kheaders.tar.xz -C $HOME/headers >/dev/null
-> cd my-kernel-module
-> make -C $HOME/headers M=$(pwd) ARCH=arm64 CROSS_COMPILE=aarch64- modules
-> adb push test.ko /data/; adb shell rmmod kheaders
->
-> The other way we can make this work is using x86 usermode emulation inside a
-> chroot on the Android device which will make the earlier commands work. One
-> thing to note is that Android also runs on x86 hardware so the commands in
-> the commit message will work even for x86 Android targets already.
->
-> Also note that this the "module building" part is really only one of the
-> usecases. eBPF is another which needs the headers - and the headers are vast
-> majority of the archive. Headers take 3.1MB out of 3.6MB of the archive on
-> arm64 builds.
->
-> How do you want to proceed here, should I mention these points in the commit
-> message?
+> 
+> Hi Masami,
+> 
+> > On Thu, 28 Feb 2019 10:00:54 -0500
+> > Joel Fernandes <joel@joelfernandes.org> wrote:
+> > 
+> > > > Hmm, isn't it easier to add kernel-headers package on Android?
+> > > 
+> > > I have already been down that road. In the Android ecosystem, the Android
+> > > teams only provide a "userspace system image" which goes on the system
+> > > partition of the flash (and a couple other images are also provided but
+> > > system is the main one). The system image cannot contain GPL source code. It
+> > > is also not possible to put kernel headers for every kernel version on the
+> > > system images that ship and is not practical. Android boots on 1000s of forked
+> > > kernels. It does not make sense to provide headers on the system image for
+> > > every kernel version and I already had many discussions on the subject with
+> > > the teams, it is something that is just not done. Now for kernel modules,
+> > > there's another image called the "vendor image" which is flashed onto the
+> > > vendor parition, this is where kernel modules go.  This vendor image is not
+> > > provided by Google for non-Pixel devices. So we have no control over what
+> > > goes there BUT we do know that kernel modules that are enabled will go there,
+> > > and we do have control over enforcing that certain kernel modules should be
+> > > built and available as they are mandatory for Android to function properly.
+> > > We would also possibly make it a built-in option as well. Anyway my point is
+> > > keeping it in the kernel is really the easiest and the smartest choice IMO.
+> > 
+> > Sorry, I'm not convinced yet. This sounds like "because Android decided not
+> > to put the header files on vendor partition, but kernel module is OK"
+> > Why don't google ask vendors to put their kernel headers (or header tarball)
+> > on vendor partition instead?
+> 
+> May be Google can do that, but I think you missed the point of the patches.
+> Making it a module is not mandatory, people can build it into the kernel as
+> well (CONFIG_IKHEADERS_PROC=y). In this case, the proc entry will be
+> available on boot without any dependency on the filesystem. If you go through
+> the other threads such as folks from ARM who replied, they just boot a kernel
+> image for debug purpose and want headers on device available without any
+> additional step of copying headers to the filesystem. And folks from Google
+> also said that they wanted a built-in option.
 
+Agreed. Making it built-in is reasonable, since it will not involves any
+other files. :) 
 
+> There are many usecases for this, I have often run into issues with Linux
+> over the years not only with Android, but other distros, where I boot custom
+> kernels with no linux-headers package. This is quite painful. It is
+> convenient to have it as /proc file since the file is dependent on kernel
+> being booted up and this will work across all Linux distros and systems. I
+> feel that if you can keep an open mind about it, you will see that a lot of
+> people will use this feature if it is accepted and there is a lot of positive
+> feedback in earlier posts of this set.
 
-I do not request a re-spin just for a matter of commit log,
-but this version produces an empty tarball.
-So, you will have a chance to update the patch anyway.
+I don't complain about having headers for custom boot kernel. I agree with you
+that having kernel headers for debugging is always good. :)
+So google recommends built-in, it is reasonable.
 
-In the next version, it would be nice to note that
-"external modules must be built on the same host arch
-as built vmlinux".
+> > > > > The code to read the headers is based on /proc/config.gz code and uses
+> > > > > the same technique to embed the headers.
+> > > > > 
+> > > > > To build a module, the below steps have been tested on an x86 machine:
+> > > > > modprobe kheaders
+> > > > > rm -rf $HOME/headers
+> > > > > mkdir -p $HOME/headers
+> > > > > tar -xvf /proc/kheaders.tar.xz -C $HOME/headers >/dev/null
+> > > > > cd my-kernel-module
+> > > > > make -C $HOME/headers M=$(pwd) modules
+> > > > > rmmod kheaders
+> > > > 
+> > > > It seems a bit complex, but no difference from compared with carrying
+> > > > kheaders.tar.gz. I think we would better have a psudo filesystem
+> > > > which can mount this compressed header file directly :) Then it becomes
+> > > > simpler, like
+> > > > 
+> > > > modprobe headerfs
+> > > > mkdir $HOME/headers
+> > > > mount -t headerfs $HOME/headers
+> > > > 
+> > > > And this doesn't consume any disk-space.
+> > > 
+> > > I felt using a compressed tar is really the easiest way because of all the
+> > > tools are already available.
+> > 
+> > As I asked above, if the pure tarball is useful, you can simply ask vendors
+> > to put the header tarball on their vendor directory. I feel making it as
+> > a module is not a right way.
+> 
+> I don't see what is the drawback of making it a module, it makes it well
+> integrated into kernel build and ecosystem. I also didn't see any
+> justification you're providing about why it cannot be a module. If you go
+> through this and earlier threads, a lot of people are Ok with having a module
+> option. And I asked several top kernel maintainers at LPC and many people
+> suggested having it as a module.
 
+I meant, if we have a tarball, we don't need any operation of loading/unloading
+kmodules. But if we have this as built-in, yes, this would be much easier to
+deploy it to device.
 
+Anyway, having that option (make it as a module) is not bad. IMHO, that may
+be more complicated than just have a tarball file, but it is a user's choice.
 
+OK, now I understand it.
 
-Let me ask one more question.
+> > > There isn't a compressed in-ram filesystem right
+> > > now that I'm aware off that can achieve the kind of high compression ratio
+> > > this patchset does.
+> > 
+> > I think if linux can support something like tarfs(or compressed initramfs)
+> > in kernel, it gives linux an improvement not only a hack. :-)
+> 
+> Agreed, that sounds like a good idea. I will consider doing it once the
+> series in its current form can be accepted. I am saying so since this series
+> is simple, and I can do that as a next step since that idea will take a lot
+> of time to implement. But I am keen on doing it.
 
-I guess this patch is motivated by
-how difficult to convey kernel headers
-from vendors to users.
+I look forward to it :-)
 
-In that situation, how will the user find
-the right compiler to use for building external modules?
-
-
-
-
-Greg KH said:
-
-We don't ever support the system of loading a module built with anything
-other than the _exact_ same compiler than the kernel was.
-
-
-For the full context, see this:
-https://lore.kernel.org/patchwork/patch/836247/#1031547
-
+Thank you!
 
 -- 
-Best Regards
-Masahiro Yamada
+Masami Hiramatsu <mhiramat@kernel.org>
