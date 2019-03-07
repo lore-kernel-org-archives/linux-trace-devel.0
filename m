@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C346CC43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09A0AC43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 937B820449
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D883220449
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726172AbfCGPFk (ORCPT
+        id S1726234AbfCGPFl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Mar 2019 10:05:40 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:40365 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbfCGPFk (ORCPT
+        Thu, 7 Mar 2019 10:05:41 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:40376 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726127AbfCGPFl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 7 Mar 2019 10:05:40 -0500
-Received: by mail-wm1-f67.google.com with SMTP id g20so9487049wmh.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Mar 2019 07:05:39 -0800 (PST)
+        Thu, 7 Mar 2019 10:05:41 -0500
+Received: by mail-wm1-f68.google.com with SMTP id g20so9487162wmh.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Mar 2019 07:05:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=u2lo2WEDRuEdyIPOfJAVbLGdfhu/OMhY0/4TDFAALgs=;
-        b=dgH89FRD6ZRSfkqe6Sy5UiKDPSlC9lSSGEhxek9+8hymXvtCYgvCVXQgaWcEVOgQp4
-         U0RnJC9oU7esEpEF28e37NAEjjO0mPQY2XvQt/xeQ9Rin5p7XW8qzY7MWsQmytTO6m2Y
-         8yoSt1p7snJRwU+/wijNE+MQxs+7rpg0/Q0qJQKgWchYRJSbIQ0wMxp172K3NP9IWdjS
-         eF3tBKtozImeCToDTtq/ObJW9dUlY/mxBDiftIu8+KpbmJm21AWtAdDg09bipAV4RM8w
-         WnCE/F9HJP9VmBwibxFqFwnQe3fpdvEa21ZkCNsNG+jWKIMA+XvUheZ9DOV9C2TjgdXf
-         vkhQ==
-X-Gm-Message-State: APjAAAVm9VjLr/k6Ra46ewvwZrDviCb7i5PxtU8uAtjwdXeCt4bRPUpV
-        G4DTl6IdtNzWMOJmMwCWX/k0l2JZ/aA=
-X-Google-Smtp-Source: APXvYqzCROTQEuPyLgTlC+pxsbZzmXxY99diZELMcUTikSACPm/CQ+Fnl3eTITIbv9PR+mrfUBGrZA==
-X-Received: by 2002:a7b:cf27:: with SMTP id m7mr6018412wmg.80.1551971138429;
-        Thu, 07 Mar 2019 07:05:38 -0800 (PST)
+        bh=ThKcWGp17T1PGZIGkYv9fgJ3BuOcNijCTQQSZYbvuBQ=;
+        b=GHHycF8T44mOkFd7JSmVfbJUxpPEoGTms1x/Pyq9mbvENUKFTOy+o8g4cyGNg/6n/V
+         VIXxY5ECS7PQlVHZrh2S0K0OqXwEW40e6puUHNwyCtKY9yUu6DBB6keFZSPqPFjo5nIS
+         Pls7R37TOFuH7VZDFtdoLHfHlihilRP+GtGCUyPLmcVDIaXLeDasIpOZ8fnezjD7ubZc
+         UysBKuP4bRmjudpcWOF0vrutoQkCTY0odfV3xEcmsXvy0uqNxeqyqY6WYu/0rhe0ny0X
+         btzVpCZxdGVN331hDXkJo0NIPg4wQsbSfFGkOI1jTdOJziYFoTc8fb0OsfrVII//47A+
+         5vWA==
+X-Gm-Message-State: APjAAAVrUVEXG2oakPFXSloWMLhxv4S8G0o9byMfQ6BLXnX2hsr1xmlo
+        7D8UTUiSfo1nlqOJMHbB5z8=
+X-Google-Smtp-Source: APXvYqzSjkxds6HixxnbT2jVWjiY8m8/AszlmFBM0TVhwpu9tcxnP68uSTft2NSte1a+H17rFhu3Ng==
+X-Received: by 2002:a1c:4e19:: with SMTP id g25mr6298701wmh.106.1551971139896;
+        Thu, 07 Mar 2019 07:05:39 -0800 (PST)
 Received: from localhost.localdomain ([95.87.198.56])
-        by smtp.gmail.com with ESMTPSA id d15sm10281274wrw.36.2019.03.07.07.05.37
+        by smtp.gmail.com with ESMTPSA id d15sm10281274wrw.36.2019.03.07.07.05.39
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Mar 2019 07:05:38 -0800 (PST)
+        Thu, 07 Mar 2019 07:05:39 -0800 (PST)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 1/4] kernel-shark: Specify the OpenGL interface used by KernelShark
-Date:   Thu,  7 Mar 2019 17:05:08 +0200
-Message-Id: <20190307150511.17246-2-ykaradzhov@vmware.com>
+Subject: [PATCH 2/4] kernel-shark: Fix a bug in ksmodel_zoom
+Date:   Thu,  7 Mar 2019 17:05:09 +0200
+Message-Id: <20190307150511.17246-3-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190307150511.17246-1-ykaradzhov@vmware.com>
 References: <20190307150511.17246-1-ykaradzhov@vmware.com>
@@ -59,29 +59,43 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-We instruct CMAKE to prefer using the legacy libGL library, if
-available. Although this is the default choice, the latest versions
-of CMAKE are printing a warning message in the case when no explicit
-preference is provided.
+When zooming-in the model is supposed to avoid over-zooming by
+recalculation the Scale factor. The new value of the Scale factor is
+supposed to be such that the size of the bin cannot be smaller than 5
+ns. This patch fixes a naive bug in the way the new scale value is
+calculated. The bug was introduced in
 
-Suggested-by: Slavomir Kaslev <kaslevs@vmware.com>
+f97e31f00 ("kernel-shark-qt: Introduce the visualization model used by the Qt-based KS")
+
+but had no effect until
+
+94efea960 ("kernel-shark-qt: Handle the case when the range of the model is too small")
+
+because the ridiculous value of the Scale factor resulted in a very
+small model range and because of this such modification of the model
+was always rejected.
+
+Fixes: f97e31f00 ("kernel-shark-qt: Introduce the visualization model used by the Qt-based KS")
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/CMakeLists.txt | 1 +
- 1 file changed, 1 insertion(+)
+ kernel-shark/src/libkshark-model.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
-index 9460026..20ced14 100644
---- a/kernel-shark/CMakeLists.txt
-+++ b/kernel-shark/CMakeLists.txt
-@@ -22,6 +22,7 @@ include(${KS_DIR}/build/FindJSONC.cmake)
+diff --git a/kernel-shark/src/libkshark-model.c b/kernel-shark/src/libkshark-model.c
+index 4bd1e2c..7574cbe 100644
+--- a/kernel-shark/src/libkshark-model.c
++++ b/kernel-shark/src/libkshark-model.c
+@@ -648,8 +648,8 @@ static void ksmodel_zoom(struct kshark_trace_histo *histo,
+ 	 * Avoid overzooming. If needed, adjust the Scale factor to a the value
+ 	 * which provides bin_size >= 5.
+ 	 */
+-	if (zoom_in && range * (1 - r) < histo->n_bins * 5)
+-		r = 1 - (histo->n_bins * 5) / range;
++	if (zoom_in && int (range * (1. - r)) < histo->n_bins * 5)
++		r = 1. - (histo->n_bins * 5.) / range;
  
- find_package(Doxygen)
- 
-+set(OpenGL_GL_PREFERENCE LEGACY)
- find_package(OpenGL)
- find_package(GLUT)
- 
+ 	/*
+ 	 * Now calculate the new range of the histo. Use the bin of the marker
 -- 
 2.19.1
 
