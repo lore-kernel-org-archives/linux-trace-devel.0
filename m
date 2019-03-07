@@ -2,96 +2,149 @@ Return-Path: <SRS0=dlhe=RK=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B589FC43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEC78C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:23:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 852FC20449
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9C12F20851
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:23:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1551972192;
+	bh=lCO3T/XpRXUd0bBBzJFZCQZ2nBBRK9+DkfsiRbJa12c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=jun5YFai7/IMtODifzO21MWep5yYuyhed1cRAMNWPqCxjrvp9avE/j8Y6ZWcrI1F5
+	 203CLef5SJy94+J1JQ53sNAQyAkJORwOWCcdE3j1jZEIO88gIBeTKPa4TUGMwefpYN
+	 iXBsVODjENmzoRXuUGv1GhaJwG8Uin1AttzsrKnQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbfCGPFo (ORCPT
+        id S1726311AbfCGPXH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Mar 2019 10:05:44 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46124 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbfCGPFo (ORCPT
+        Thu, 7 Mar 2019 10:23:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726166AbfCGPXH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 7 Mar 2019 10:05:44 -0500
-Received: by mail-wr1-f66.google.com with SMTP id i16so17798894wrs.13
-        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Mar 2019 07:05:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NdMzN8MIJtdVLbpS/kta7Rs50VSBU0N/4h520Ka2nEs=;
-        b=dFoeTI6jRpQuv6R8xPl/rvsV1ZdGo+FY2/s3xusAyyEQUE3MRnGtnVEAqpzz6jrHw4
-         gL9VwKCnfTkfhvMfwpUMD10iSt3aXP+clEnp7dfRZ1Bx7vnfAFOx8qubW3468l2yzQIM
-         mUazyTu6llf6HwqnS2P+MmxAYaJFafL+Gq7Lr8yY/t0iLu2oe1xxdHztMkbTfqB4x+Yu
-         s8HIpMcm8mtG91wqCzi5rQTru8Ib3kmu/qULO7I7IyN3emhcyG6G21MA2tZLwQ6q6t6N
-         aTaTeR6r6FIPH0/DFg0X0ULvwwpcR1CX+NzSQHvWvi/8Me1btcTv9Ap0S6NFiZH2Enmz
-         lhTA==
-X-Gm-Message-State: APjAAAUkuADuKc+WCP/yWbo4WHDeUfui7XzfXW3yebxJ2mXkUmhnt7wx
-        LBx97K2qlrAF4ipQ+ckpXkEF4cB0dYA=
-X-Google-Smtp-Source: APXvYqw7w74Q2E0RB8xz8SJ+/qy6tLtB7NiGArjPocqfXyM68cetHXdskwM22gxx2EWNyAMOu+DUzQ==
-X-Received: by 2002:adf:cd0b:: with SMTP id w11mr2340615wrm.95.1551971142436;
-        Thu, 07 Mar 2019 07:05:42 -0800 (PST)
-Received: from localhost.localdomain ([95.87.198.56])
-        by smtp.gmail.com with ESMTPSA id d15sm10281274wrw.36.2019.03.07.07.05.41
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Mar 2019 07:05:42 -0800 (PST)
-From:   Yordan Karadzhov <ykaradzhov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org,
-        Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 4/4] kernel-shark: Fix a bug in KsPluginManager
-Date:   Thu,  7 Mar 2019 17:05:11 +0200
-Message-Id: <20190307150511.17246-5-ykaradzhov@vmware.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190307150511.17246-1-ykaradzhov@vmware.com>
-References: <20190307150511.17246-1-ykaradzhov@vmware.com>
+        Thu, 7 Mar 2019 10:23:07 -0500
+Received: from localhost (5356596B.cm-6-7b.dynamic.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BE1A20840;
+        Thu,  7 Mar 2019 15:23:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1551972185;
+        bh=lCO3T/XpRXUd0bBBzJFZCQZ2nBBRK9+DkfsiRbJa12c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T8cROAQMU7pzNz0iJSmrs9g07QSB0UTZJB0ZtrY7ra7fexbvXRJbYCW8G1h/8jKjF
+         CmX5g1gM9KLgorDDRSvvLft3pqx9ESdoMt05DBS+Vl2Vn+o9MSqOROaTTgrBCt/j5r
+         WTHEiZQXaaOBwh/La/WHteiU06L01I8fs23noqmM=
+Date:   Thu, 7 Mar 2019 16:23:03 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>, atishp04@gmail.com,
+        dancol@google.com, Dan Williams <dan.j.williams@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
+        Kees Cook <keescook@chromium.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Manoj Rao <linux@manojrajarao.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>, qais.yousef@arm.com,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shuah Khan <shuah@kernel.org>, yhs@fb.com
+Subject: Re: [PATCH v4 1/2] Provide in-kernel headers for making it easy to
+ extend the kernel
+Message-ID: <20190307152303.GA9819@kroah.com>
+References: <20190301160856.129678-1-joel@joelfernandes.org>
+ <CAMuHMdU77UyUs-LvRx-NN_k0Y7MZXQkBdgL2i83veCkvdzeeqA@mail.gmail.com>
+ <20190307150343.GB258852@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190307150343.GB258852@google.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-const char *lib = plugin.toStdString().c_str();
+On Thu, Mar 07, 2019 at 10:03:43AM -0500, Joel Fernandes wrote:
+> On Thu, Mar 07, 2019 at 09:58:24AM +0100, Geert Uytterhoeven wrote:
+> > Hi Joel,
+> > 
+> > On Fri, Mar 1, 2019 at 5:10 PM Joel Fernandes (Google)
+> > <joel@joelfernandes.org> wrote:
+> > > Introduce in-kernel headers and other artifacts which are made available
+> > > as an archive through proc (/proc/kheaders.tar.xz file). This archive makes
+> > > it possible to build kernel modules, run eBPF programs, and other
+> > > tracing programs that need to extend the kernel for tracing purposes
+> > > without any dependency on the file system having headers and build
+> > > artifacts.
+> > >
+> > > On Android and embedded systems, it is common to switch kernels but not
+> > > have kernel headers available on the file system. Raw kernel headers
+> > > also cannot be copied into the filesystem like they can be on other
+> > > distros, due to licensing and other issues. There's no linux-headers
+> > > package on Android. Further once a different kernel is booted, any
+> > > headers stored on the file system will no longer be useful. By storing
+> > > the headers as a compressed archive within the kernel, we can avoid these
+> > > issues that have been a hindrance for a long time.
+> > >
+> > > The feature is also buildable as a module just in case the user desires
+> > > it not being part of the kernel image. This makes it possible to load
+> > > and unload the headers on demand. A tracing program, or a kernel module
+> > > builder can load the module, do its operations, and then unload the
+> > > module to save kernel memory. The total memory needed is 3.8MB.
+> > >
+> > > The code to read the headers is based on /proc/config.gz code and uses
+> > > the same technique to embed the headers.
+> > >
+> > > To build a module, the below steps have been tested on an x86 machine:
+> > > modprobe kheaders
+> > > rm -rf $HOME/headers
+> > > mkdir -p $HOME/headers
+> > > tar -xvf /proc/kheaders.tar.xz -C $HOME/headers >/dev/null
+> > > cd my-kernel-module
+> > > make -C $HOME/headers M=$(pwd) modules
+> > > rmmod kheaders
+> > 
+> > As the usage pattern will be accessing the individual files, what about
+> > implementing a file system that provides read-only access to the internal
+> > kheaders archive?
+> > 
+> >     mount kheaders $HOME/headers -t kheaders
+> 
+> I thought about it already. This is easier said than done though. The archive
+> is compressed from 40MB to 3.6MB. If we leave it uncompressed in RAM, then it
+> will take up the entire 40MB of RAM and in Android we don't even use
+> disk-based swap.
+> 
+> So we will need some kind of intra file compressed memory representation that
+> a filesystem can use for the backing store. I thought of RAM-backed squashfs
+> but it requires squashfs-tools to be installed at build time (which my host
+> distro itself didn't have).
+> 
+> It is just so much easier to use tar + xz at build time, and leave the
+> decompression task to the user. After decompression, the files will live on
+> the disk and the page-cache mechanism will free memory when/if the files fall
+> off the LRUs.
+> 
+> WDYT?
 
-This line is a bad idea because the returned array may (will) be
-invalidated when the destructor of std::string is called.
+I think the compressed tarball is much simpler/easier overall.  If
+someone really wants the filesystem, they just uncompress it into a
+tmpfs mount.  It's much less moving kernel code to worry about.
 
-Fixes: 18cf94f485("kernel-shark-qt: Add KernalShark Utils")
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark/src/KsUtils.cpp | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+thanks,
 
-diff --git a/kernel-shark/src/KsUtils.cpp b/kernel-shark/src/KsUtils.cpp
-index 34b2e2d..d7b1753 100644
---- a/kernel-shark/src/KsUtils.cpp
-+++ b/kernel-shark/src/KsUtils.cpp
-@@ -439,7 +439,7 @@ void KsPluginManager::registerFromList(kshark_context *kshark_ctx)
- 
- 	auto lamRegUser = [&kshark_ctx](const QString &plugin)
- 	{
--		const char *lib = plugin.toStdString().c_str();
-+		const char *lib = plugin.toLocal8Bit().data();
- 		kshark_register_plugin(kshark_ctx, lib);
- 	};
- 
-@@ -474,7 +474,7 @@ void KsPluginManager::unregisterFromList(kshark_context *kshark_ctx)
- 
- 	auto lamUregUser = [&kshark_ctx](const QString &plugin)
- 	{
--		const char *lib = plugin.toStdString().c_str();
-+		const char *lib = plugin.toLocal8Bit().data();
- 		kshark_unregister_plugin(kshark_ctx, lib);
- 	};
- 
--- 
-2.19.1
-
+greg k-h
