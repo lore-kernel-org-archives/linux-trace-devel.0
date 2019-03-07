@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09A0AC43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CAE5C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D883220449
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B02220449
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Mar 2019 15:05:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbfCGPFl (ORCPT
+        id S1726233AbfCGPFn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Mar 2019 10:05:41 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:40376 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbfCGPFl (ORCPT
+        Thu, 7 Mar 2019 10:05:43 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37547 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726127AbfCGPFn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 7 Mar 2019 10:05:41 -0500
-Received: by mail-wm1-f68.google.com with SMTP id g20so9487162wmh.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Mar 2019 07:05:40 -0800 (PST)
+        Thu, 7 Mar 2019 10:05:43 -0500
+Received: by mail-wm1-f66.google.com with SMTP id x10so9511226wmg.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Mar 2019 07:05:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ThKcWGp17T1PGZIGkYv9fgJ3BuOcNijCTQQSZYbvuBQ=;
-        b=GHHycF8T44mOkFd7JSmVfbJUxpPEoGTms1x/Pyq9mbvENUKFTOy+o8g4cyGNg/6n/V
-         VIXxY5ECS7PQlVHZrh2S0K0OqXwEW40e6puUHNwyCtKY9yUu6DBB6keFZSPqPFjo5nIS
-         Pls7R37TOFuH7VZDFtdoLHfHlihilRP+GtGCUyPLmcVDIaXLeDasIpOZ8fnezjD7ubZc
-         UysBKuP4bRmjudpcWOF0vrutoQkCTY0odfV3xEcmsXvy0uqNxeqyqY6WYu/0rhe0ny0X
-         btzVpCZxdGVN331hDXkJo0NIPg4wQsbSfFGkOI1jTdOJziYFoTc8fb0OsfrVII//47A+
-         5vWA==
-X-Gm-Message-State: APjAAAVrUVEXG2oakPFXSloWMLhxv4S8G0o9byMfQ6BLXnX2hsr1xmlo
-        7D8UTUiSfo1nlqOJMHbB5z8=
-X-Google-Smtp-Source: APXvYqzSjkxds6HixxnbT2jVWjiY8m8/AszlmFBM0TVhwpu9tcxnP68uSTft2NSte1a+H17rFhu3Ng==
-X-Received: by 2002:a1c:4e19:: with SMTP id g25mr6298701wmh.106.1551971139896;
-        Thu, 07 Mar 2019 07:05:39 -0800 (PST)
+        bh=b88oxwvPmWDVA/FBp3A71q2ZVukyxicVOA5F9lDyxEU=;
+        b=HtHUBA1hXnPci/yaznzCBY8nmC2rKYMrp2lrXWVhfOJCIOeW/odPJE+v+qGA0R4eSc
+         30mHkh25BU8Xhc0ZohZpFAvwX2ep9uqnKAZJbkQXmTn82z8/5hq30V/byu6F+J0MUnPD
+         Aa/wG5lrIIrOvkNHhKx7VUsDwrvSEa2A73XQUK0R2zaimNYSggmkcXzag/xwOuGSqFGD
+         G1WzT61Lw8DLwIF71bporCQBe2cXkgTP5hiubULRj5KjBTFoTyx1EHri1YIEy+vveJn+
+         ZnpbQdZDIyFe2/4tCX3mwoInAtMVo/CWGwgtTvnQ6Yb9V5bD0+iCVmKcQFVsjzI/yaDe
+         CDLQ==
+X-Gm-Message-State: APjAAAW4X9NNriNGQWIchpOUvh3NzFdOvqegSknxpvWHm501wxUz94Yq
+        8ryTL+VsZdkZZwTWL+Zgr+0=
+X-Google-Smtp-Source: APXvYqzIyJW1bwdemyRi0PnfhLyT36tH/nM0zDavGv9XAPJgwwzOZtb5PCP8ywUbWW6RKdggSTFJzg==
+X-Received: by 2002:a1c:9c02:: with SMTP id f2mr5837985wme.91.1551971141151;
+        Thu, 07 Mar 2019 07:05:41 -0800 (PST)
 Received: from localhost.localdomain ([95.87.198.56])
-        by smtp.gmail.com with ESMTPSA id d15sm10281274wrw.36.2019.03.07.07.05.39
+        by smtp.gmail.com with ESMTPSA id d15sm10281274wrw.36.2019.03.07.07.05.40
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Mar 2019 07:05:39 -0800 (PST)
+        Thu, 07 Mar 2019 07:05:40 -0800 (PST)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 2/4] kernel-shark: Fix a bug in ksmodel_zoom
-Date:   Thu,  7 Mar 2019 17:05:09 +0200
-Message-Id: <20190307150511.17246-3-ykaradzhov@vmware.com>
+Subject: [PATCH 3/4] kernel-shark: Fix Doxygen warning from sched_events
+Date:   Thu,  7 Mar 2019 17:05:10 +0200
+Message-Id: <20190307150511.17246-4-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190307150511.17246-1-ykaradzhov@vmware.com>
 References: <20190307150511.17246-1-ykaradzhov@vmware.com>
@@ -59,43 +59,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When zooming-in the model is supposed to avoid over-zooming by
-recalculation the Scale factor. The new value of the Scale factor is
-supposed to be such that the size of the bin cannot be smaller than 5
-ns. This patch fixes a naive bug in the way the new scale value is
-calculated. The bug was introduced in
+There is no reason for find_wakeup_pid being non-static. In the same
+time, because it is non-static, Doxygen complains about missing
+documentation for this function.
 
-f97e31f00 ("kernel-shark-qt: Introduce the visualization model used by the Qt-based KS")
-
-but had no effect until
-
-94efea960 ("kernel-shark-qt: Handle the case when the range of the model is too small")
-
-because the ridiculous value of the Scale factor resulted in a very
-small model range and because of this such modification of the model
-was always rejected.
-
-Fixes: f97e31f00 ("kernel-shark-qt: Introduce the visualization model used by the Qt-based KS")
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/libkshark-model.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel-shark/src/plugins/sched_events.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel-shark/src/libkshark-model.c b/kernel-shark/src/libkshark-model.c
-index 4bd1e2c..7574cbe 100644
---- a/kernel-shark/src/libkshark-model.c
-+++ b/kernel-shark/src/libkshark-model.c
-@@ -648,8 +648,8 @@ static void ksmodel_zoom(struct kshark_trace_histo *histo,
- 	 * Avoid overzooming. If needed, adjust the Scale factor to a the value
- 	 * which provides bin_size >= 5.
- 	 */
--	if (zoom_in && range * (1 - r) < histo->n_bins * 5)
--		r = 1 - (histo->n_bins * 5) / range;
-+	if (zoom_in && int (range * (1. - r)) < histo->n_bins * 5)
-+		r = 1. - (histo->n_bins * 5.) / range;
+diff --git a/kernel-shark/src/plugins/sched_events.c b/kernel-shark/src/plugins/sched_events.c
+index c52fb29..724aa19 100644
+--- a/kernel-shark/src/plugins/sched_events.c
++++ b/kernel-shark/src/plugins/sched_events.c
+@@ -148,7 +148,7 @@ static void plugin_register_command(struct kshark_context *kshark_ctx,
+ 			tep_register_comm(kshark_ctx->pevent, comm, pid);
+ }
  
- 	/*
- 	 * Now calculate the new range of the histo. Use the bin of the marker
+-int find_wakeup_pid(struct kshark_context *kshark_ctx, struct kshark_entry *e,
++static int find_wakeup_pid(struct kshark_context *kshark_ctx, struct kshark_entry *e,
+ 		    struct tep_event *wakeup_event, struct tep_format_field *pid_field)
+ {
+ 	struct tep_record *record;
 -- 
 2.19.1
 
