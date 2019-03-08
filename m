@@ -4,47 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.4 required=3.0 tests=DATE_IN_PAST_03_06,
 	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D876C43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 17:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7994BC43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 17:05:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F32DD20868
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 17:05:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E5E22147A
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 17:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1552064703;
-	bh=0KmKBB5hUOmbSa2Z0IuEZtfFdYqKhcvEQl3K1X8k4/w=;
+	s=default; t=1552064708;
+	bh=wWxR9hRaEHAVMKJhNe3opZ01U3EQ5LfT2qwcS5LBxZA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=nCOqZBnABHoiCJVYjjvyPFcIWFBjIGOz8a8vDPsbL7FvaL9uPXBDAMjC7yMFjN86X
-	 bRT1zYC2qmE0kRx/jgpXN4K2R0cauliyPQoiJKd0XXB5dCSmMDvhqvmflIhBuKlaot
-	 fvLPPIqhQCyYoRB/9UNIIT8Vfhm75t3HDQeZa2Po=
+	b=pT1jxOOS9sWCXI+aJ3SAwxUUPi1XDYVj4WBdjmd8Svwqa+warvPQxsmfE5JLJ7/Wi
+	 d9Z3WU0lJ3S1hxy9P3m6p3RhA4MRqPk/l/48FunSJG2WR9heWbHAD5sFB1DkCZIRKf
+	 s0aNG7AoFb2kQb52ExarML018sWAzhZxxcB6JRL8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbfCHRFC (ORCPT
+        id S1726411AbfCHRE6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Mar 2019 12:05:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47748 "EHLO mail.kernel.org"
+        Fri, 8 Mar 2019 12:04:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726286AbfCHRFB (ORCPT
+        id S1726286AbfCHRE6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Mar 2019 12:05:01 -0500
+        Fri, 8 Mar 2019 12:04:58 -0500
 Received: from localhost (5356596B.cm-6-7b.dynamic.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6D142146F;
-        Fri,  8 Mar 2019 17:04:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 285E8205F4;
+        Fri,  8 Mar 2019 17:04:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1552064700;
-        bh=0KmKBB5hUOmbSa2Z0IuEZtfFdYqKhcvEQl3K1X8k4/w=;
+        s=default; t=1552064697;
+        bh=wWxR9hRaEHAVMKJhNe3opZ01U3EQ5LfT2qwcS5LBxZA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FosBzl01qp/vRSugyk2U2vOFOjmJrmb1Pc14HKnsjkXtN/YgiYOvhpZIM9FsXShhy
-         ma+sOnUx5t9VPKpw5KnFsaypJv5qEMtXUQV2sY+Iw9KlKjZakt3mUTEz85cUc8gOHg
-         WEFcYFy9REp/YrJqvh0dheWDCjvPSUq4EW+xp2yA=
-Date:   Fri, 8 Mar 2019 15:04:49 +0100
+        b=dsIFXEPsKBgBYHpWOJ+dmybmjRZnIqzuEluYQnl3BgXlmUwXrYzY/h4jMihKH9Wmq
+         RX2xmsyEa+7CBuCXxeSksWzNUUHhSkyuUFfK7BR/0qALmpJZEjU7a/SlHlV6MBpvUh
+         WuzqdgupmDahhSe1icgn1kUT2KwBTjCxPbqvQ+O4=
+Date:   Fri, 8 Mar 2019 15:02:51 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -70,62 +69,41 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>
 Subject: Re: [PATCH v4 1/2] Provide in-kernel headers for making it easy to
  extend the kernel
-Message-ID: <20190308140449.GD25768@kroah.com>
+Message-ID: <20190308140251.GC25768@kroah.com>
 References: <20190301160856.129678-1-joel@joelfernandes.org>
  <CAMuHMdU77UyUs-LvRx-NN_k0Y7MZXQkBdgL2i83veCkvdzeeqA@mail.gmail.com>
  <20190307150343.GB258852@google.com>
  <CAMuHMdW_7BTZREsnz7uMTToCZ4HDOZboMJH8k8UZica2pB=Jew@mail.gmail.com>
  <CAEXW_YQUcA+bnav20tAFQPXYE=epMie4X85diudKs_s-TJ7dsw@mail.gmail.com>
- <05942dfd-b05d-0a26-f8e4-85e2a73b8feb@metux.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <05942dfd-b05d-0a26-f8e4-85e2a73b8feb@metux.net>
+In-Reply-To: <CAEXW_YQUcA+bnav20tAFQPXYE=epMie4X85diudKs_s-TJ7dsw@mail.gmail.com>
 User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Mar 08, 2019 at 02:57:24PM +0100, Enrico Weigelt, metux IT consult wrote:
-> On 08.03.19 14:42, Joel Fernandes wrote:
+On Fri, Mar 08, 2019 at 05:42:32AM -0800, Joel Fernandes wrote:
+> HI Geert,
 > 
-> Hi folks,
+> On Fri, Mar 8, 2019, 3:53 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > It is just so much easier to use tar + xz at build time, and leave the
+> > > decompression task to the user. After decompression, the files will live on
+> > > the disk and the page-cache mechanism will free memory when/if the files fall
+> > > off the LRUs.
+> >
+> > I'm also considering how generic and extensible the solution is.
+> > What if people need other build artifacts in the future (e.g. signing key to
+> > load signed modules)?
 > 
-> > That sounds like it could be useful. I don't see any reason off the
-> > top why that would not be possible to add to the list of archived
-> > files in the future. The patch allows populating the list of files
-> > from Kbuild using ikh_file_list variable.
-> 
-> It seems the whole thing's going into a direction where a whole own
-> subtopic is coming up: compressed built-in filesystem.
-> 
-> Haven't had a deeper thought about it yet, whether or not existing
-> filesystems like squashfs, initramfs, etc are the right thing for that,
-> or something new should be invented, but a generic mechanism for
-> compiled-in compressed (ro) filesystems could also be interesting
-> for very small devices, that perhaps even dont need any persistence.
-> 
-> Some requirements coming up in mind:
-> 
-> 1. it shall be possible to have any number of instances - possibly by
->    separate modules.
-> 2. it shall be possible to use an bootloader/firmware provided image
->    (so it can serve as initrd)
-> 2. data should stay compressed as long as possible, but uncompressed
->    data might be cached - do decompression on-demand
-> 3. only needs to be ro (write access could be done via unionfs+friends)
-> 4. it shall be swappable (if swap is enabled)
-> 
-> In that scenario, these in-kernel headers would just one consumer,
-> I can imagine lots of others.
+> That sounds like it could be useful. I don't see any reason off the
+> top why that would not be possible to add to the list of archived
+> files in the future. The patch allows populating the list of files
+> from Kbuild using ikh_file_list variable.
 
-I too want a pony :)
-
-Until then, I think this feature should not be bikeshedded to death.  It
-fits a real need, is simple (modulo the Kbuild interactions), and is
-optional for those that do not wish to waste the memory.
-
-thanks,
+Um, no, you don't want the signing key in the kernel itself, as that
+totally defeats the purpose of the signing key :)
 
 greg k-h
