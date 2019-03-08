@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCE59C43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A08AC10F0C
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8F97A2087C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4CAEF2087C
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbfCHNhn (ORCPT
+        id S1726755AbfCHNho (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Mar 2019 08:37:43 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:51454 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbfCHNhm (ORCPT
+        Fri, 8 Mar 2019 08:37:44 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:54797 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726787AbfCHNhn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Mar 2019 08:37:42 -0500
-Received: by mail-wm1-f65.google.com with SMTP id n19so12557177wmi.1
+        Fri, 8 Mar 2019 08:37:43 -0500
+Received: by mail-wm1-f67.google.com with SMTP id f3so12671434wmj.4
         for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:37:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hfr/XW9nWfq0j12kU6DOCXZlcGOGdP2lqwFZ2x5Sn8s=;
-        b=RUUUfDwxZdcDmFqkQVL5c4SbrwWgfNBpkwFCvdR83i1xhdlq6mlCHPEEt3Oz6tZ0cd
-         ApOg2LKglayICXBcItm1PFhMJgJ8JH5r/lBqC9woPs/fMroC7ef/Dt6SjyaaaDzzgM5P
-         EvV6GDBr8ET0u5KBkTK/IWa19yY+W0/U1OGldjmdUShmgDCYZIe32b5Nowm1RrXFyJW0
-         6NqETTHTPVfxj4d+QcwewHAbI1fdXWAAolJhj9Ct3GEoPgiAGyWQOKCqIpfbMz+8FCJd
-         fysbNIWHtF/sm6ii+Lb9U55IDqfhDYT6sbB5t+Do1A0jwO8eQf/78zRI1wu/BlusswbM
-         yP+g==
-X-Gm-Message-State: APjAAAVx4fwQNvtfy2/XwiH7LmAuE6gnHBJ2nU58ksL7CZc6Y/8eLaF1
-        EQEEAiWbm5dn5IPbM/I/k/Y=
-X-Google-Smtp-Source: APXvYqy/kA6Uyfu/rFRxlWkv29m6sWT6b48dOhV+daYoLPSTWpvjOXHEOhUrlMy0XIfkLJrvPwwgZg==
-X-Received: by 2002:a1c:1fca:: with SMTP id f193mr8753409wmf.65.1552052260252;
-        Fri, 08 Mar 2019 05:37:40 -0800 (PST)
+        bh=uF9DYVikNw0nzU/qEt8DMny7TZ9T/e4pyUutAT1d2GQ=;
+        b=I3oAki6mAu1pjA9YY8rypF8m8LgNj2DxOKnddgoypxz8DdifCwFXuUTMiP8uOMvlOx
+         05Fq9oFVmoQsufjWaoOklzgtljK+7XwQ+a3Mh/uKQjAE3zMNQgz1WalYIEhBYixQHXqF
+         UjoYpU+hqduU26iLQ4mN56u/lyD8uHWcDkHdJUTg8U5ku3JuJW3yXU0N0VDtJZ96Jsns
+         Kn0H7niLk+frN2kXboiprUv83Ia0bcHkdnKfAfV3+oG9l1iiT3MIM5/bxRFETs7YRrUY
+         9VD1onrVQb8A0mUPL49A3pWKWT7ZHVDMr6MpfIuLUK2RejqhexLns7gvRiN/vo/elfOX
+         uhQg==
+X-Gm-Message-State: APjAAAU3x2EdDKPBbPBVE6WnVHhl6U2MAsypWNrUgkpyWLBL5bXhixt5
+        ffwVyROxRrXk6R0NmASKFvQ=
+X-Google-Smtp-Source: APXvYqxzXv7wI+F0PhL/FzwqJUVXyah4WjI5+hh4NgJNzvzi5JcKzFpMbfdzgGFeOuQ6wIUe33fzWQ==
+X-Received: by 2002:a7b:c017:: with SMTP id c23mr9057414wmb.50.1552052261109;
+        Fri, 08 Mar 2019 05:37:41 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.39
+        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.40
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Mar 2019 05:37:39 -0800 (PST)
+        Fri, 08 Mar 2019 05:37:40 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 45/46] tools/lib/traceevent: Man pages for trace_seq_putc() and trace_seq_puts()
-Date:   Fri,  8 Mar 2019 15:36:53 +0200
-Message-Id: <20190308133654.21264-46-tstoyanov@vmware.com>
+Subject: [PATCH v4 46/46] tools/lib/traceevent: Man pages for trace_seq_reset() and trace_seq_terminate()
+Date:   Fri,  8 Mar 2019 15:36:54 +0200
+Message-Id: <20190308133654.21264-47-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190308133654.21264-1-tstoyanov@vmware.com>
 References: <20190308133654.21264-1-tstoyanov@vmware.com>
@@ -59,27 +59,27 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Create man pages for trace_seq_putc() and trace_seq_puts()
+Create man pages for trace_seq_reset() and trace_seq_terminate()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-tseq_put.txt  | 89 +++++++++++++++++++
- 1 file changed, 89 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt
+ .../libtraceevent-tseq_reset.txt              | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt b/tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.txt b/tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.txt
 new file mode 100644
-index 000000000000..d14d7791d0ef
+index 000000000000..a70c0b2f152f
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt
-@@ -0,0 +1,89 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.txt
+@@ -0,0 +1,78 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+trace_seq_putc,trace_seq_puts - Put string / character in  a trace sequence.
++trace_seq_reset,trace_seq_terminate - Reset / terminate a trace sequence.
 +
 +SYNOPSIS
 +--------
@@ -88,8 +88,8 @@ index 000000000000..d14d7791d0ef
 +*#include <event-parse.h>*
 +*#include <trace-seq.h>*
 +
-+int *trace_seq_putc*(struct trace_seq pass:[*]_s_, unsigned char _c_);
-+int *trace_seq_puts*(struct trace_seq pass:[*]_s_, const char pass:[*]_str_);
++void *trace_seq_reset*(struct trace_seq pass:[*]_s_);
++void *trace_seq_terminate*(struct trace_seq pass:[*]_s_);
 +--
 +
 +DESCRIPTION
@@ -97,16 +97,11 @@ index 000000000000..d14d7791d0ef
 +Trace sequences are used to allow a function to call several other functions
 +to create a string of data to use.
 +
-+The _trace_seq_putc()_ function puts a single character _c_ in the trace
-+sequence _s_.
++The _trace_seq_reset()_ function re-initializes the trace sequence _s_. All
++characters already written in _s_ will be deleted.
 +
-+The _trace_seq_puts()_ function puts a NULL terminated string _str_ in the
-+trace sequence _s_.
-+
-+RETURN VALUE
-+------------
-+Both _trace_seq_putc()_ and _trace_seq_puts()_ functions return the number of
-+characters put in the trace sequence, or 0 in case of an error.
++The _trace_seq_terminate()_ function terminates the trace sequence _s_. It puts
++the null character pass:['\0'] at the end of the buffer.
 +
 +EXAMPLE
 +-------
@@ -118,17 +113,11 @@ index 000000000000..d14d7791d0ef
 +struct trace_seq seq;
 +trace_seq_init(&seq);
 +...
-+if (trace_seq_putc(&seq, ';') != 1) {
-+	/* Failed to put ';' in the trace sequence */
-+}
++trace_seq_reset(&seq);
 +...
-+char *str = " foo ";
-+if (trace_seq_puts(&seq, str) != strlen(str)) {
-+	/* Failed to put " foo " in the trace sequence */
-+}
++trace_seq_terminate(&seq);
 +...
 +--
-+
 +FILES
 +-----
 +[verse]
