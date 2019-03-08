@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FA73C43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 639F5C4360F
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7000A2087C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 43BA72087C
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbfCHNh3 (ORCPT
+        id S1726743AbfCHNha (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Mar 2019 08:37:29 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:39005 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbfCHNh3 (ORCPT
+        Fri, 8 Mar 2019 08:37:30 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:36566 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbfCHNh3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 8 Mar 2019 08:37:29 -0500
-Received: by mail-wm1-f65.google.com with SMTP id z84so12439956wmg.4
+Received: by mail-wr1-f68.google.com with SMTP id o17so21411951wrw.3
         for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:37:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NKi0RPd+/+/jSQfXotQ+wmF/Y6LhamUzgX6OcrfcCRw=;
-        b=GPxbBadlxBon5ahh4plcOm4SWKduFc6vhFtOedF/ABVvSOnQfFHhZdysCcc+9eTZ48
-         UKqk4sBzmhXBtDs/LeMX4rsnB0OSwh6IRPyk9N4fCY56nP3SZGk9BXTN4U1t0vQHnOKQ
-         eQe2/FF4XEnK4yebf+rgHYqKEU1ax2qzWYj2c+v+QQfNtYwRUZYu1jnAttxHYY8nU7m8
-         AW0g5DaOlXiWnoveOlrME/Skm+2u1I97EmUgpilgFPTC1Z47RbgUkK5lRf1Q4I4sbV2v
-         2VZo/TDFRSS7ALEwo5mqwRQ5Ac5ZCWph1uSnWE/To2Os4TpDbQ70OzT2hfxSefhAnnuu
-         ZHLg==
-X-Gm-Message-State: APjAAAU5okjs21epdT3D6hTXNGVmapEDJpSdn1IIGoNUAzmAXytPoqiI
-        T42d3q4MxOr1gfnjh6eq4ua0a1Am
-X-Google-Smtp-Source: APXvYqy3A0QSHw3qcCSmbjmmldHtg30pPet2zZ1tz8ve749Se9h/+oIWpseNnUYchlnnqbxb4kNvWQ==
-X-Received: by 2002:a1c:7e58:: with SMTP id z85mr9438494wmc.52.1552052247385;
-        Fri, 08 Mar 2019 05:37:27 -0800 (PST)
+        bh=CKZ0vQumDnE4o2awGyv+reBvTJfL3GSDGfpLWC0Z54U=;
+        b=SIxmcuQcjMr72w5RdwVVrHvOhDoqiHA+USMmtVu7tAWd9XFuQco7ZHqBISeZQjZCfI
+         mVLC71QWMOPwsO7HJTQAmjnxrFW+cQKa4fDhwUFbBXPbPD6HhFnIRLlUYtf/DxYGEcOH
+         YVRloEAvFzXyz9iHOcdxVJ8hTn1gkSUFqebXNw1RAwSBAVxSoMrDRw7xm5/97pJKnJTt
+         xnxaH7QloRkRMEdbBCKQdseBK491sbK9LI2meDrop/V10bY90kufLQt3hp80xrD8Tm1/
+         bqxtaS1RaeiG16XpkYdlqfJ/+RO0STUJtcnc4rJtL9OT+l8ny/vlVlO1lyKrbfzFWZVz
+         rxig==
+X-Gm-Message-State: APjAAAXcGT4S2kG7ggvkOtKrNR8Tw4/pLjKxc1RN9Gc0WAwZR/PbyAHz
+        RV1KOGM3XZQqqIZf3HcQCHg=
+X-Google-Smtp-Source: APXvYqx43rOFgMo2M44K7UcwaTODSzxJWQbnj1TMoOnBVj1UgtGpLlkmYZn3q/qv/h3TF9zX8da2lw==
+X-Received: by 2002:adf:dfca:: with SMTP id q10mr11264040wrn.45.1552052248309;
+        Fri, 08 Mar 2019 05:37:28 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.26
+        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.27
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Mar 2019 05:37:26 -0800 (PST)
+        Fri, 08 Mar 2019 05:37:27 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 32/46] tools/lib/traceevent: Man pages for tep_filter_copy() and tep_filter_compare()
-Date:   Fri,  8 Mar 2019 15:36:40 +0200
-Message-Id: <20190308133654.21264-33-tstoyanov@vmware.com>
+Subject: [PATCH v4 33/46] tools/lib/traceevent: Man page for tep_filter_make_string()
+Date:   Fri,  8 Mar 2019 15:36:41 +0200
+Message-Id: <20190308133654.21264-34-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190308133654.21264-1-tstoyanov@vmware.com>
 References: <20190308133654.21264-1-tstoyanov@vmware.com>
@@ -59,27 +59,27 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Create man pages for tep_filter_copy() and tep_filter_compare()
+Create man page for tep_filter_make_string()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-filter_oper.txt             | 84 +++++++++++++++++++
- 1 file changed, 84 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter_oper.txt
+ .../libtraceevent-filter_show.txt             | 75 +++++++++++++++++++
+ 1 file changed, 75 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter_show.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_oper.txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_oper.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter_show.txt b/tools/lib/traceevent/Documentation/libtraceevent-filter_show.txt
 new file mode 100644
-index 000000000000..dce4cc649ad0
+index 000000000000..8d54b401018e
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_oper.txt
-@@ -0,0 +1,84 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter_show.txt
+@@ -0,0 +1,75 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_filter_copy,tep_filter_compare - Copy / compare operations with event filters.
++tep_filter_make_string - Returns a string showing the filter.
 +
 +SYNOPSIS
 +--------
@@ -87,23 +87,18 @@ index 000000000000..dce4cc649ad0
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_filter_copy*(struct tep_event_filter pass:[*]_dest_, struct tep_event_filter pass:[*]_source_);
-+int *tep_filter_compare*(struct tep_event_filter pass:[*]_filter1_, struct tep_event_filter pass:[*]_filter2_);
++char pass:[*]*tep_filter_make_string*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_filter_copy()_ function copies a _source_ filter into a _dest_ filter.
-+
-+The _tep_filter_compare()_ function compares two filers - _filter1_ and _filter2_.
++The _tep_filter_make_string()_ function constructs a string, displaying
++the _filter_ contents for given _event_id_.
 +
 +RETURN VALUE
 +------------
-+The _tep_filter_copy()_ function returns 0 on success or -1 if not all rules
-+ were copied.
-+
-+The _tep_filter_compare()_ function returns 1 if the two filters hold the same
-+content, or 0 if they do not.
++The _tep_filter_make_string()_ function returns a string, which must be freed
++with free(), or NULL in case of an error.
 +
 +EXAMPLE
 +-------
@@ -112,16 +107,12 @@ index 000000000000..dce4cc649ad0
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep = tep_alloc();
++struct tep_event_filter *filter = tep_filter_alloc(tep);
 +...
-+struct tep_event_filter *filter1 = tep_filter_alloc(tep);
-+struct tep_event_filter *filter2 = tep_filter_alloc(tep);
-+...
-+if (tep_filter_copy(filter1, filter2) != 0) {
-+	/* Failed to copy filter2 in filter1 */
-+}
-+...
-+if (tep_filter_compare(filter1, filter2) != 1) {
-+	/* Both filters are different */
++char *fstring = tep_filter_make_string(filter, 352);
++if (fstring != NULL) {
++	/* The filter for event 352 is in fstring */
++	free(fstring);
 +}
 +...
 +--
