@@ -2,162 +2,262 @@ Return-Path: <SRS0=Frhw=RL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECD2BC43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 08:53:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4099C43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BEBD020855
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 08:53:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 86F352087C
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726334AbfCHIx3 (ORCPT
+        id S1726623AbfCHNhA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Mar 2019 03:53:29 -0500
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:46699 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbfCHIxV (ORCPT
+        Fri, 8 Mar 2019 08:37:00 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:56197 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726432AbfCHNg7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Mar 2019 03:53:21 -0500
-Received: by mail-ua1-f67.google.com with SMTP id j8so11148898uae.13;
-        Fri, 08 Mar 2019 00:53:20 -0800 (PST)
+        Fri, 8 Mar 2019 08:36:59 -0500
+Received: by mail-wm1-f66.google.com with SMTP id q187so12680707wme.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:36:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Epzvyc9GGSP7cfqVVNfvz4S/KW5UlhBXOeZbYred4hw=;
-        b=s1Yn6trgpLNxnMgCyP+Z030k1bFjedhlFDi2z6E6cw+g6iD8rvWMYf9/ilw6og+Tis
-         jUgzSHf/j8Iw+D8aosrJaNz0h2+dlru6UzDB1nX2mI6Dp7tN17GzU+WvRt5srItlUbz6
-         XoqSFuCqWx/5beplAz10Vau14WklJtc+w5DEem21YmXSLl5ZUpzmCya4Z7ZFXGptMbQO
-         Ts8FGgDYf7JoTDRGdic8cVMILXC3ka1rGNw/t5lgHHIimWUYqCHzqo0U4e+4pcLUqka+
-         3Vwg9FEJQrcQ83+AyzfYgfJFoC8Y9N/gdt7Z/xkQQVVOUlOa/mo1ZVLx3Ffp2aYudcif
-         Ob5g==
-X-Gm-Message-State: APjAAAVgqHidXtZtxgG+ga/FJYwY5sRTFBDplE1tyATpu+8lLtQHJ1bK
-        52y2Jg2bKnM7tOKmLZwWZHzV/LiX01QGqYptbk0=
-X-Google-Smtp-Source: APXvYqzH78I36PVbTINXJE8yFq87TmwZTLoEQLDtrKnJtuRJVZeGdF4xBDJWMtLst6mGELKutdWl6GQgrnj0JuawYTM=
-X-Received: by 2002:a9f:30dc:: with SMTP id k28mr9442718uab.75.1552035200158;
- Fri, 08 Mar 2019 00:53:20 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7HCPSBRA3AZytmhzfmfEzRQBUW9tJGlWTnlpuKgLd3Q=;
+        b=DHY4Q/NDEogg3HBCYvHjCAm+6JIBbfpeRTQiHLcBjlIw6eX9zmhGerH9Py/QAUL3Ic
+         xvUMtCd3d4RWv3aetotXIryIEcmL9C4DFfqLCNAEc7V0WUTUSPSIzE1bVa3Km6ofJ0Qc
+         1tg+mHj7BjlP11WZbbBUDc5JB+lnXm0Qb2ISdW5K2V2yZt9LAQ6qTGR3tkouo1YKMgkW
+         rxzSToUIle7UfS0vGEzRAW+8lS8B455BAxOJ1ejMdWKvPvzVIkmVzkqhKU4pBz34N1F3
+         YtIkKCt1fGU/G8e8oqEH4gh5Oqh+LVbYdld6WrnACUZ4U60U0LablVsbIa0Z+9fhrbBh
+         L2jA==
+X-Gm-Message-State: APjAAAV2J4HpvCdj9KsTlF6gKuSQyhkSLfEtUuJcTwb5AmrrOMIBn5N+
+        kG7peznhBeQt3ZRP3ivyiud2DFwr
+X-Google-Smtp-Source: APXvYqz+GFgnY17aq1na6wGtE10bY9oK4wDY/SxUt4O6LunapSOwxGz/liZbJXXyukL3+8uS2gxJzw==
+X-Received: by 2002:a1c:8088:: with SMTP id b130mr8937617wmd.96.1552052217209;
+        Fri, 08 Mar 2019 05:36:57 -0800 (PST)
+Received: from oberon.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.36.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 08 Mar 2019 05:36:56 -0800 (PST)
+From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v4 00/46] Libtraceevent MAN pages
+Date:   Fri,  8 Mar 2019 15:36:08 +0200
+Message-Id: <20190308133654.21264-1-tstoyanov@vmware.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20190301160856.129678-1-joel@joelfernandes.org>
- <CAMuHMdU77UyUs-LvRx-NN_k0Y7MZXQkBdgL2i83veCkvdzeeqA@mail.gmail.com> <20190307150343.GB258852@google.com>
-In-Reply-To: <20190307150343.GB258852@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Mar 2019 09:53:07 +0100
-Message-ID: <CAMuHMdW_7BTZREsnz7uMTToCZ4HDOZboMJH8k8UZica2pB=Jew@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] Provide in-kernel headers for making it easy to
- extend the kernel
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>, atishp04@gmail.com,
-        dancol@google.com, Dan Williams <dan.j.williams@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
-        Kees Cook <keescook@chromium.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        Manoj Rao <linux@manojrajarao.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>, qais.yousef@arm.com,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Shuah Khan <shuah@kernel.org>, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Joel,
+[
+ V4 changes:
+  - Addressed Steven Rostedt comments
+  - Removed trailing whitespace
 
-On Thu, Mar 7, 2019 at 4:03 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> On Thu, Mar 07, 2019 at 09:58:24AM +0100, Geert Uytterhoeven wrote:
-> > On Fri, Mar 1, 2019 at 5:10 PM Joel Fernandes (Google)
-> > <joel@joelfernandes.org> wrote:
-> > > Introduce in-kernel headers and other artifacts which are made available
-> > > as an archive through proc (/proc/kheaders.tar.xz file). This archive makes
-> > > it possible to build kernel modules, run eBPF programs, and other
-> > > tracing programs that need to extend the kernel for tracing purposes
-> > > without any dependency on the file system having headers and build
-> > > artifacts.
-> > >
-> > > On Android and embedded systems, it is common to switch kernels but not
-> > > have kernel headers available on the file system. Raw kernel headers
-> > > also cannot be copied into the filesystem like they can be on other
-> > > distros, due to licensing and other issues. There's no linux-headers
-> > > package on Android. Further once a different kernel is booted, any
-> > > headers stored on the file system will no longer be useful. By storing
-> > > the headers as a compressed archive within the kernel, we can avoid these
-> > > issues that have been a hindrance for a long time.
-> > >
-> > > The feature is also buildable as a module just in case the user desires
-> > > it not being part of the kernel image. This makes it possible to load
-> > > and unload the headers on demand. A tracing program, or a kernel module
-> > > builder can load the module, do its operations, and then unload the
-> > > module to save kernel memory. The total memory needed is 3.8MB.
-> > >
-> > > The code to read the headers is based on /proc/config.gz code and uses
-> > > the same technique to embed the headers.
-> > >
-> > > To build a module, the below steps have been tested on an x86 machine:
-> > > modprobe kheaders
-> > > rm -rf $HOME/headers
-> > > mkdir -p $HOME/headers
-> > > tar -xvf /proc/kheaders.tar.xz -C $HOME/headers >/dev/null
-> > > cd my-kernel-module
-> > > make -C $HOME/headers M=$(pwd) modules
-> > > rmmod kheaders
-> >
-> > As the usage pattern will be accessing the individual files, what about
-> > implementing a file system that provides read-only access to the internal
-> > kheaders archive?
-> >
-> >     mount kheaders $HOME/headers -t kheaders
->
-> I thought about it already. This is easier said than done though. The archive
-> is compressed from 40MB to 3.6MB. If we leave it uncompressed in RAM, then it
-> will take up the entire 40MB of RAM and in Android we don't even use
-> disk-based swap.
+ V3 changes:
+  - Combines all man page related patches into one series. 
+  - Removes any dependencies between man page related patches
+    and patches related to the APIs implementation.
+]
 
-Sure.
+This patch series includes implementation of libtraceevent
+man pages, describing all APIs of the library.
 
-> So we will need some kind of intra file compressed memory representation that
-> a filesystem can use for the backing store. I thought of RAM-backed squashfs
+Tzvetomir Stoyanov (46):
+  tools/lib/traceevent: Implement libtraceevent man pages
+  tools/lib/traceevent: Fix libtraceevent/Documentation Makefile
+  tools/lib/traceevent: Add support for man pages with multiple names
+  tools/lib/traceevent: libtraceevent Makefile "help" target
+  tools/lib/traceevent: libtraceevent man pages for tep_handler related
+    APIs
+  tools/lib/traceevent: Man page for tep_get_header_page_size()
+  tools/lib/traceevent: Man page for tep_get_cpus() and tep_set_cpus()
+  tools/lib/traceevent: Man page for tep_is_file_bigendian() and
+    tep_set_file_bigendian()
+  tools/lib/traceevent: Man page for tep_is_host_bigendian() and
+    tep_set_host_bigendian()
+  tools/lib/traceevent: Man page for tep_is_latency_format() and
+    tep_set_latency_format()
+  tools/lib/traceevent: Man page for tep_get_page_size() and
+    tep_set_page_size()
+  tools/lib/traceevent: Man page for tep_strerror()
+  tools/lib/traceevent: Man page for tep_register_trace_clock()
+  tools/lib/traceevent: Man pages for tep_register_event_handler() and
+    tep_unregister_event_handler()
+  tools/lib/traceevent: Man pages for tep_register_function() and
+    tep_register_print_string()
+  tools/lib/traceevent: Man pages for tep_register_print_function() and
+    tep_unregister_print_function()
+  tools/lib/traceevent: Man page for tep_read_number()
+  tools/lib/traceevent: Man pages for tep_find_event(),
+    tep_find_event_by_name() and tep_find_event_by_record()
+  tools/lib/traceevent: Man page for tep_list_events()
+  tools/lib/traceevent: Man pages for tep_print_event(),
+    tep_print_event_data(), tep_event_info(), tep_print_event_task() and
+    tep_print_event_time()
+  tools/lib/traceevent: Man pages tep_get_first_event() and
+    tep_get_events_count()
+  tools/lib/traceevent: Man pages tep_find_common_field(),
+    tep_find_field() and tep_find_any_field()
+  tools/lib/traceevent: Man pages tep_get_any_field_val(),
+    tep_get_common_field_val(), tep_get_field_val() and
+    tep_get_field_raw()
+  tools/lib/traceevent: Man pages for tep_print_field(),
+    tep_print_fields(), tep_print_num_field() and tep_print_func_field()
+  tools/lib/traceevent: Man page for tep_read_number_field()
+  tools/lib/traceevent: Man pages for tep_event_common_fields() and
+    tep_event_fields()
+  tools/lib/traceevent: Man pages for tep_filter_alloc(),
+    tep_filter_free() and tep_filter_reset()
+  tools/lib/traceevent: Man page for tep_filter_add_filter_str()
+  tools/lib/traceevent: Man page for tep_filter_strerror()
+  tools/lib/traceevent: Man pages for tep_event_filtered() and
+    tep_filter_remove_event()
+  tools/lib/traceevent: Man page for tep_filter_match()
+  tools/lib/traceevent: Man pages for tep_filter_copy() and
+    tep_filter_compare()
+  tools/lib/traceevent: Man page for tep_filter_make_string()
+  tools/lib/traceevent: Man pages for tep_filter_event_has_trivial(),
+    tep_update_trivial() and tep_filter_clear_trivial()
+  tools/lib/traceevent: Man pages for tep_find_function() and
+    tep_find_function_address()
+  tools/lib/traceevent: Man pages for tep_set_function_resolver() and
+    tep_reset_function_resolver()
+  tools/lib/traceevent: Man pages for tep_parse_event() and
+    tep_parse_format()
+  tools/lib/traceevent: Man page for tep_parse_header_page()
+  tools/lib/traceevent: Man pages for tep_load_plugins() and
+    tep_unload_plugin()
+  tools/lib/traceevent: Man page for tep_data_lat_fmt()
+  tools/lib/traceevent: Man pages for tep_data_type(), tep_data_pid(),
+    tep_data_preempt_count() and tep_data_flags()
+  tools/lib/traceevent: Man pages for trace_seq_init() and
+    trace_seq_destroy()
+  tools/lib/traceevent: Man pages for trace_seq_do_fprintf() and
+    trace_seq_do_printf()
+  tools/lib/traceevent: Man pages for trace_seq_printf() and
+    trace_seq_vprintf()
+  tools/lib/traceevent: Man pages for trace_seq_putc() and
+    trace_seq_puts()
+  tools/lib/traceevent: Man pages for trace_seq_reset() and
+    trace_seq_terminate()
 
-Right, I didn't think of squashfs. Having a kernel module that sets up an MTD
-that can be mounted with squashfs is IMHO an even better (and more generic)
-solution.
-
-> but it requires squashfs-tools to be installed at build time (which my host
-> distro itself didn't have).
-
-Squashfs not being part of your host distro is not the hardest problem
-to solve...
-
-> It is just so much easier to use tar + xz at build time, and leave the
-> decompression task to the user. After decompression, the files will live on
-> the disk and the page-cache mechanism will free memory when/if the files fall
-> off the LRUs.
-
-I'm also considering how generic and extensible the solution is.
-What if people need other build artifacts in the future (e.g. signing key to
-load signed modules)?
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
+ tools/lib/traceevent/Documentation/Makefile   | 208 ++++++++++++++++++
+ .../traceevent/Documentation/asciidoc.conf    | 120 ++++++++++
+ .../Documentation/libtraceevent-commands.txt  | 130 +++++++++++
+ .../Documentation/libtraceevent-cpus.txt      |  77 +++++++
+ .../libtraceevent-endian_read.txt             |  76 +++++++
+ .../libtraceevent-event_find.txt              |  99 +++++++++
+ .../libtraceevent-event_list.txt              |  94 ++++++++
+ .../libtraceevent-event_print.txt             | 126 +++++++++++
+ .../Documentation/libtraceevent-events.txt    |  87 ++++++++
+ .../libtraceevent-field_find.txt              |  98 +++++++++
+ .../libtraceevent-field_get_val.txt           | 117 ++++++++++
+ .../libtraceevent-field_print.txt             | 120 ++++++++++
+ .../libtraceevent-field_read.txt              |  80 +++++++
+ .../Documentation/libtraceevent-fields.txt    |  99 +++++++++
+ .../libtraceevent-file_endian.txt             |  89 ++++++++
+ .../Documentation/libtraceevent-filter.txt    |  85 +++++++
+ .../libtraceevent-filter_add.txt              |  78 +++++++
+ .../libtraceevent-filter_error.txt            |  78 +++++++
+ .../libtraceevent-filter_event.txt            |  84 +++++++
+ .../libtraceevent-filter_match.txt            |  96 ++++++++
+ .../libtraceevent-filter_oper.txt             |  84 +++++++
+ .../libtraceevent-filter_show.txt             |  75 +++++++
+ .../libtraceevent-filter_trivial.txt          | 112 ++++++++++
+ .../Documentation/libtraceevent-func_find.txt |  88 ++++++++
+ .../libtraceevent-func_resolve.txt            |  96 ++++++++
+ .../Documentation/libtraceevent-handle.txt    | 101 +++++++++
+ .../libtraceevent-header_size.txt             |  73 ++++++
+ .../libtraceevent-host_endian.txt             |  91 ++++++++
+ .../libtraceevent-latency_format.txt          | 140 ++++++++++++
+ .../Documentation/libtraceevent-long_size.txt |  78 +++++++
+ .../Documentation/libtraceevent-page_size.txt |  80 +++++++
+ .../libtraceevent-parse_event.txt             |  90 ++++++++
+ .../libtraceevent-parse_head.txt              |  82 +++++++
+ .../Documentation/libtraceevent-plugins.txt   |  98 +++++++++
+ .../libtraceevent-record_lat.txt              |  77 +++++++
+ .../libtraceevent-record_parse.txt            | 134 +++++++++++
+ .../Documentation/libtraceevent-reg_clock.txt |  77 +++++++
+ .../libtraceevent-reg_event_handler.txt       | 129 +++++++++++
+ .../libtraceevent-reg_funcstr.txt             |  89 ++++++++
+ .../libtraceevent-reg_print_func.txt          | 128 +++++++++++
+ .../Documentation/libtraceevent-set_flag.txt  |  90 ++++++++
+ .../Documentation/libtraceevent-strerror.txt  |  78 +++++++
+ .../Documentation/libtraceevent-tseq.txt      |  76 +++++++
+ .../libtraceevent-tseq_doprint.txt            |  89 ++++++++
+ .../libtraceevent-tseq_print.txt              |  96 ++++++++
+ .../Documentation/libtraceevent-tseq_put.txt  |  89 ++++++++
+ .../libtraceevent-tseq_reset.txt              |  78 +++++++
+ .../Documentation/libtraceevent.txt           | 198 +++++++++++++++++
+ .../traceevent/Documentation/manpage-1.72.xsl |  14 ++
+ .../traceevent/Documentation/manpage-base.xsl |  35 +++
+ .../Documentation/manpage-bold-literal.xsl    |  17 ++
+ .../Documentation/manpage-normal.xsl          |  13 ++
+ .../Documentation/manpage-suppress-sp.xsl     |  21 ++
+ tools/lib/traceevent/Makefile                 |  28 +++
+ 54 files changed, 4885 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/Makefile
+ create mode 100644 tools/lib/traceevent/Documentation/asciidoc.conf
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-commands.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_find.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-events.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_print.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-fields.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-file_endian.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter_add.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter_error.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter_event.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter_match.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter_oper.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter_show.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter_trivial.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_find.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_resolve.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-handle.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-header_size.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-latency_format.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-long_size.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record_lat.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_clock.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_funcstr.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-set_flag.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-strerror.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_doprint.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_reset.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent.txt
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-1.72.xsl
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-base.xsl
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-bold-literal.xsl
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-normal.xsl
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-suppress-sp.xsl
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.20.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
