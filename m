@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.0 required=3.0
 	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6782BC43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4951CC10F09
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 434032087C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 202052087C
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbfCHNhh (ORCPT
+        id S1726722AbfCHNhh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 8 Mar 2019 08:37:37 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:40396 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbfCHNhg (ORCPT
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:39014 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726751AbfCHNhh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Mar 2019 08:37:36 -0500
-Received: by mail-wr1-f68.google.com with SMTP id t6so2189460wrw.7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:37:35 -0800 (PST)
+        Fri, 8 Mar 2019 08:37:37 -0500
+Received: by mail-wm1-f65.google.com with SMTP id z84so12440338wmg.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:37:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dkTfb07DSfHUuZgYyltvJ7+hZOkAvHIhF2h+y9ewlP4=;
-        b=hBRepYwCBu7A+6Kd3ti0g74Axp2HkiHINnIrfUOHPsw/ePECiNQC+yX23w6D5gp288
-         gJe4z+/Zka8/mgsE6CPDttwavaf67++VfgdxCSAf0DEfOLSCfnGpk8Pf7BcOS3I5Bw6K
-         uG0GW80iepzHcPC9mlVqIoIOSZEmOhqBfWOTZ7/2c84Mt+/E+ql3PeL13F+o3aH58AP0
-         rrBLkqh9y9vDaVAkdtt2KRSWP7vebMLBFworScQnEBHXkIfgdz0CcNVHnLHi1O/1JSXJ
-         WRHal7Vn8S/MG0Hx0YBkagFM7MH1PP6ZCiM3++meXjya0xIRls8VFFNB3pEHbcLMIBpe
-         5ZHg==
-X-Gm-Message-State: APjAAAUejo2JYuRymq7xO9/9b8GtUkxk+5sI/WPl4P6G1413o1HfTBRk
-        MkobBhX4ZIi8bsuV+R13D1Y=
-X-Google-Smtp-Source: APXvYqzjvhNhpB3fbGbSjIJeWrf2zXKQ308DX3JNwF8gEk9FxFMPmCYBKNWFt8BhgRPPMdphkVpg9Q==
-X-Received: by 2002:a5d:6542:: with SMTP id z2mr10908105wrv.237.1552052254970;
-        Fri, 08 Mar 2019 05:37:34 -0800 (PST)
+        bh=xE4elAawO1Ad37rMvc88O37Zmg25/gtEYtZZlNcRmQ0=;
+        b=EqhJ6ZkNl5qLYtPOXr9f+G2k8ga02cX06HEXWc3yg5mkLo8QddNu7EV/0kUJ5FfzMp
+         Jou5l84DZkzhXinuMPgnHo2BuFyCvP5vbJ4zd0T1bNL5C0hpAq1N3GbR58U0YAsAMWE2
+         F+YkYd3IdXBHC6xFSRHc8K9o4mrYGrHnILvnWBBKu5xwSUueLm23Ix5Yw5NbcMFfkd7M
+         BhwpPiy8RnHU00RPfDwotatVUSEjde4u5KR0Vu7/22RhdLZE3cVcZKcjCnP8l3GjU54a
+         VHaoQuaxTdVHli0c6Zwnv/Zhvb24JyP9h4i4Sw9tWlcMlbr5SLwpjZjCv3GbzO5m1hJ/
+         fuow==
+X-Gm-Message-State: APjAAAX11JIBz8xG1P6FIzJtnJg5H7z99ApSatYx7TzNY1Ji0gp3/aQ4
+        ideQAy5tcBuyDLNoP8uWLCc=
+X-Google-Smtp-Source: APXvYqz65of0AHF65e4pbKc83wUUQuvYUjeL+OgzOoges22IApSJcKLSlGJOJwBSxE++Gan0ROCDAA==
+X-Received: by 2002:a1c:4844:: with SMTP id v65mr9859304wma.66.1552052256020;
+        Fri, 08 Mar 2019 05:37:36 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.33
+        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.35
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Mar 2019 05:37:34 -0800 (PST)
+        Fri, 08 Mar 2019 05:37:35 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 40/46] tools/lib/traceevent: Man page for tep_data_lat_fmt()
-Date:   Fri,  8 Mar 2019 15:36:48 +0200
-Message-Id: <20190308133654.21264-41-tstoyanov@vmware.com>
+Subject: [PATCH v4 41/46] tools/lib/traceevent: Man pages for tep_data_type(), tep_data_pid(), tep_data_preempt_count() and tep_data_flags()
+Date:   Fri,  8 Mar 2019 15:36:49 +0200
+Message-Id: <20190308133654.21264-42-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190308133654.21264-1-tstoyanov@vmware.com>
 References: <20190308133654.21264-1-tstoyanov@vmware.com>
@@ -59,27 +59,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Create man page for tep_data_lat_fmt()
+Create man pages for tep_data_type(), tep_data_pid(),
+tep_data_preempt_count() and tep_data_flags()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-record_lat.txt              | 77 +++++++++++++++++++
- 1 file changed, 77 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record_lat.txt
+ .../libtraceevent-record_parse.txt            | 134 ++++++++++++++++++
+ 1 file changed, 134 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-record_lat.txt b/tools/lib/traceevent/Documentation/libtraceevent-record_lat.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
 new file mode 100644
-index 000000000000..f4e37b186f61
+index 000000000000..a74581d5c668
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-record_lat.txt
-@@ -0,0 +1,77 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
+@@ -0,0 +1,134 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_data_lat_fmt - Parses the data for the latency format.
++tep_data_type,tep_data_pid,tep_data_preempt_count,tep_data_flags - Extract common fields from a record.
 +
 +SYNOPSIS
 +--------
@@ -87,30 +88,91 @@ index 000000000000..f4e37b186f61
 +--
 +*#include <event-parse.h>*
 +
-+void *tep_data_lat_fmt*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_record pass:[*]_record_);
++enum *trace_flag_type* {
++	_TRACE_FLAG_IRQS_OFF_,
++	_TRACE_FLAG_IRQS_NOSUPPOR_,
++	_TRACE_FLAG_NEED_RESCHED_,
++	_TRACE_FLAG_HARDIRQ_,
++	_TRACE_FLAG_SOFTIRQ_,
++};
++
++int *tep_data_type*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++int *tep_data_pid*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++int *tep_data_preempt_count*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++int *tep_data_flags*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
 +--
++
 +DESCRIPTION
 +-----------
-+The _tep_data_lat_fmt()_ function parses out the latency format (interrupts
-+disabled, need rescheduling, in hard/soft interrupt, preempt count and
-+lock depth) from _record_ and places it into the _s_.  The _tep_ argument is
-+the trace event parser context.
++This set of functions can be used to extract common fields from a record.
++
++The _tep_data_type()_ function gets the event id from the record _rec_. It reads
++the "common_type" field. The _tep_ argument is the trace event parser context.
++
++The _tep_data_pid()_ function gets the process id from the record _rec_. It reads
++the "common_pid" field. The _tep_ argument is the trace event parser context.
++
++The _tep_data_preempt_count()_ function gets the preemption count from the record
++_rec_. It reads the "common_preempt_count" field. The _tep_ argument is the
++trace event parser context.
++
++The _tep_data_flags()_ function gets the latency flags from the record _rec_.
++It reads the "common_flags" field. The _tep_ argument is the trace event parser
++context. Supported latency flags are:
++[verse]
++--
++	_TRACE_FLAG_IRQS_OFF_,		Interrupts are disabled.
++	_TRACE_FLAG_IRQS_NOSUPPOR_,	Reading IRQ flag is not supported by the architecture.
++	_TRACE_FLAG_NEED_RESCHED_,	Task needs rescheduling.
++	_TRACE_FLAG_HARDIRQ_,		Hard IRQ is running.
++	_TRACE_FLAG_SOFTIRQ_,		Soft IRQ is running.
++--
++
++RETURN VALUE
++------------
++The _tep_data_type()_ function returns an integer, representing the event id.
++
++The _tep_data_pid()_ function returns an integer, representing the process id
++
++The _tep_data_preempt_count()_ function returns an integer, representing the
++preemption count.
++
++The _tep_data_flags()_ function returns an integer, representing the latency
++flags. Look at the _trace_flag_type_ enum for supported flags.
++
++All these functions in case of an error return a negative integer.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
-+#include <trace-seq.h>
 +...
 +struct tep_handle *tep = tep_alloc();
-+struct trace_seq seq;
-+trace_seq_init(&seq);
 +...
 +void process_record(struct tep_record *record)
 +{
-+	/* Place latency information in the seq */
-+	tep_data_lat_fmt(tep, &seq, record);
++	int data;
++
++	data = tep_data_type(tep, record);
++	if (data >= 0) {
++		/* Got the ID of the event */
++	}
++
++	data = tep_data_pid(tep, record);
++	if (data >= 0) {
++		/* Got the process ID */
++	}
++
++	data = tep_data_preempt_count(tep, record);
++	if (data >= 0) {
++		/* Got the preemption count */
++	}
++
++	data = tep_data_flags(tep, record);
++	if (data >= 0) {
++		/* Got the latency flags */
++	}
 +}
 +...
 +--
@@ -121,17 +183,13 @@ index 000000000000..f4e37b186f61
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
-+*trace-seq.h*
-+	Header file to include in order to have access to trace sequences related APIs.
-+	Trace sequences are used to allow a function to call several other functions
-+	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
 +
 +SEE ALSO
 +--------
-+_libtraceevent(3)_, _trace-cmd(1)_,_tep_set_latency_format(3)_
++_libtraceevent(3)_, _trace-cmd(1)_
 +
 +AUTHOR
 +------
