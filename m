@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91138C10F09
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCE59C43381
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6B607208E4
+	by mail.kernel.org (Postfix) with ESMTP id 8F97A2087C
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbfCHNhm (ORCPT
+        id S1726751AbfCHNhn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Mar 2019 08:37:42 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:33290 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbfCHNhl (ORCPT
+        Fri, 8 Mar 2019 08:37:43 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:51454 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726755AbfCHNhm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Mar 2019 08:37:41 -0500
-Received: by mail-wr1-f66.google.com with SMTP id i12so21395112wrw.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:37:39 -0800 (PST)
+        Fri, 8 Mar 2019 08:37:42 -0500
+Received: by mail-wm1-f65.google.com with SMTP id n19so12557177wmi.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:37:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6Z8ZEoOfvX8++ORC0VJqtjDGKMYkB80TdZwRJpGJqOQ=;
-        b=BKRUyOHsr5E9GUadeoWqh1lBUfpGzSszUfXaGvLxXIYdvWCee43MYuEfDdaZk8kSLs
-         csnHt+q+AN8b4CGIWMYoDTR25/kKttamK7nKfCCex2mT1mSfWtahAuHRqopsTyVxEWq8
-         B6drPZn1sj6RRx1Kh/ATcKYUsOI2GOc3OXnxqJEkjNbNamG+G4ssr0LL2ZIZxd++sqzy
-         Cey9Pq7N3GnCygN9JdCNY+fzRx2jcNZPhDK9xbGvLLcA1bia6wGKxqeco6RPT7VLEfzZ
-         rz1gjfJy7AdbI5i7trdRsYXTgx3h2xyZ3IcfrZC8JobijunrDr6ehprpCSQMjq/sNihp
-         8hZg==
-X-Gm-Message-State: APjAAAXhOWnjE8NcnoCRqTKPvRpWWeVdSbrYWfK4ngVb6bNW0NMqs8Zh
-        +UNZEY5A8QaLTsuwql5jLSc=
-X-Google-Smtp-Source: APXvYqzikZXGKYKs8Oukqf3YNf6QvZGMIVTEWk+Yssp2m7kLxp5wBC0hj8dPkAOThz88RDAa5SSDow==
-X-Received: by 2002:a5d:4b05:: with SMTP id v5mr1930067wrq.323.1552052259165;
-        Fri, 08 Mar 2019 05:37:39 -0800 (PST)
+        bh=hfr/XW9nWfq0j12kU6DOCXZlcGOGdP2lqwFZ2x5Sn8s=;
+        b=RUUUfDwxZdcDmFqkQVL5c4SbrwWgfNBpkwFCvdR83i1xhdlq6mlCHPEEt3Oz6tZ0cd
+         ApOg2LKglayICXBcItm1PFhMJgJ8JH5r/lBqC9woPs/fMroC7ef/Dt6SjyaaaDzzgM5P
+         EvV6GDBr8ET0u5KBkTK/IWa19yY+W0/U1OGldjmdUShmgDCYZIe32b5Nowm1RrXFyJW0
+         6NqETTHTPVfxj4d+QcwewHAbI1fdXWAAolJhj9Ct3GEoPgiAGyWQOKCqIpfbMz+8FCJd
+         fysbNIWHtF/sm6ii+Lb9U55IDqfhDYT6sbB5t+Do1A0jwO8eQf/78zRI1wu/BlusswbM
+         yP+g==
+X-Gm-Message-State: APjAAAVx4fwQNvtfy2/XwiH7LmAuE6gnHBJ2nU58ksL7CZc6Y/8eLaF1
+        EQEEAiWbm5dn5IPbM/I/k/Y=
+X-Google-Smtp-Source: APXvYqy/kA6Uyfu/rFRxlWkv29m6sWT6b48dOhV+daYoLPSTWpvjOXHEOhUrlMy0XIfkLJrvPwwgZg==
+X-Received: by 2002:a1c:1fca:: with SMTP id f193mr8753409wmf.65.1552052260252;
+        Fri, 08 Mar 2019 05:37:40 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.38
+        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.39
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Mar 2019 05:37:38 -0800 (PST)
+        Fri, 08 Mar 2019 05:37:39 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 44/46] tools/lib/traceevent: Man pages for trace_seq_printf() and trace_seq_vprintf()
-Date:   Fri,  8 Mar 2019 15:36:52 +0200
-Message-Id: <20190308133654.21264-45-tstoyanov@vmware.com>
+Subject: [PATCH v4 45/46] tools/lib/traceevent: Man pages for trace_seq_putc() and trace_seq_puts()
+Date:   Fri,  8 Mar 2019 15:36:53 +0200
+Message-Id: <20190308133654.21264-46-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190308133654.21264-1-tstoyanov@vmware.com>
 References: <20190308133654.21264-1-tstoyanov@vmware.com>
@@ -59,27 +59,27 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Create man pages for trace_seq_printf() and trace_seq_vprintf()
+Create man pages for trace_seq_putc() and trace_seq_puts()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-tseq_print.txt              | 96 +++++++++++++++++++
- 1 file changed, 96 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
+ .../Documentation/libtraceevent-tseq_put.txt  | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt b/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt b/tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt
 new file mode 100644
-index 000000000000..f0919bcf1fe3
+index 000000000000..d14d7791d0ef
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_print.txt
-@@ -0,0 +1,96 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq_put.txt
+@@ -0,0 +1,89 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+trace_seq_printf,trace_seq_vprintf - Print formated string with arguments in a trace sequence.
++trace_seq_putc,trace_seq_puts - Put string / character in  a trace sequence.
 +
 +SYNOPSIS
 +--------
@@ -88,8 +88,8 @@ index 000000000000..f0919bcf1fe3
 +*#include <event-parse.h>*
 +*#include <trace-seq.h>*
 +
-+int *trace_seq_printf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, _..._);
-+int *trace_seq_vprintf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, va_list _args_);
++int *trace_seq_putc*(struct trace_seq pass:[*]_s_, unsigned char _c_);
++int *trace_seq_puts*(struct trace_seq pass:[*]_s_, const char pass:[*]_str_);
 +--
 +
 +DESCRIPTION
@@ -97,18 +97,16 @@ index 000000000000..f0919bcf1fe3
 +Trace sequences are used to allow a function to call several other functions
 +to create a string of data to use.
 +
-+The _trace_seq_printf()_ function puts a formated string _fmt _with
-+variable arguments _..._ in the trace sequence _s_.
++The _trace_seq_putc()_ function puts a single character _c_ in the trace
++sequence _s_.
 +
-+The _trace_seq_vprintf()_ function puts a formated string _fmt _with
-+list of arguments _args_ in the trace sequence _s_.
++The _trace_seq_puts()_ function puts a NULL terminated string _str_ in the
++trace sequence _s_.
 +
 +RETURN VALUE
 +------------
-+
-+Both _trace_seq_printf()_ and _trace_seq_vprintf()_ functions return 0 if the
-+trace oversizes the buffer's free space, the number of characters printed, or
-+a negative value in case of an error.
++Both _trace_seq_putc()_ and _trace_seq_puts()_ functions return the number of
++characters put in the trace sequence, or 0 in case of an error.
 +
 +EXAMPLE
 +-------
@@ -120,18 +118,13 @@ index 000000000000..f0919bcf1fe3
 +struct trace_seq seq;
 +trace_seq_init(&seq);
 +...
-+if (trace_seq_printf(&seq, "example print %d", 10) <= 0) {
-+	/* Failed to print in the trace sequence */
++if (trace_seq_putc(&seq, ';') != 1) {
++	/* Failed to put ';' in the trace sequence */
 +}
 +...
-+void my_print(char *format, ...)
-+{
-+	va_list ap;
-+	va_start(ap, format);
-+	if (trace_seq_printf(&seq, format, ap) <= 0) {
-+		/* Failed to print in the trace sequence */
-+	}
-+	va_end(ap);
++char *str = " foo ";
++if (trace_seq_puts(&seq, str) != strlen(str)) {
++	/* Failed to put " foo " in the trace sequence */
 +}
 +...
 +--
