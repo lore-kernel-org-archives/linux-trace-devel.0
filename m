@@ -3,51 +3,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F51DC10F0C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:44:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AA3DC43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:44:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5537520661
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:44:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 444ED20661
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:44:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbfCHNoe (ORCPT
+        id S1726737AbfCHNof (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Mar 2019 08:44:34 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:40165 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726706AbfCHNoe (ORCPT
+        Fri, 8 Mar 2019 08:44:35 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:50585 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726613AbfCHNoe (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 8 Mar 2019 08:44:34 -0500
-Received: by mail-wr1-f65.google.com with SMTP id t6so2213744wrw.7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:44:32 -0800 (PST)
+Received: by mail-wm1-f65.google.com with SMTP id x7so12609801wmj.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:44:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=r35nAWnDGLi7XaFd52nE7EtPM/JcoTSF2Yuqxw5WQIo=;
-        b=a+xro8cmACHSRRzjazInFkMljNXy8uRJ9lppowH8kc78yUNg0hHy2vPWoDFv9bBkYL
-         6/3ebm+58wrn89t7JNYJ4WepiNf+vccvSIzgStwpzB9j8ubcHBtk2wjOUV90hUlSxu3D
-         QcyNHD7XvE5exJXbCr6GNRs5+FCjqeaL1/bmSKIX3YlMhGZWwUT45u1L6iqWQf2znTSo
-         Yi8hdm3QQjmy2+CRgBlV4OsEa6EzzYOvwIDTReajbRwWxdSlkztMWy1k4FI5d/bNlxtN
-         xpkjpRr4brk4pvcTTVEf7EB8t0StovD33/f/M+wR27GcwFiKZInkMlFA9GMO3+WxUOTg
-         IY2Q==
-X-Gm-Message-State: APjAAAXbChoML/b0H1F4wWkvIZGTweSeFjZxXaUm3OfXEr5nIFgUuiW8
-        f6eU/eGaQY0HwUZJ+lnnaw4=
-X-Google-Smtp-Source: APXvYqxkaeR3fX9zHa2tatpg0WpUJi27LV0xCINAgP7EO8KtRIdKhV1swhd462pMcurunXsYmB+bOg==
-X-Received: by 2002:a5d:62cc:: with SMTP id o12mr10818054wrv.242.1552052671991;
-        Fri, 08 Mar 2019 05:44:31 -0800 (PST)
+        bh=gacbcF6cWlnSIZ3FEjiMO8yBwpK1r7Ava8qBIF1rGe4=;
+        b=UHLbKwBFzFNidZdbTPbrWTBFgu6sY5+AOkFjXPGdiSBYE5CTL9ipJkaMK+7ff1rz9k
+         aq2I8Yr1epuHVVi94tRuRaaCheNjrBcSOOnric6DwWtKWtvXxv8M1R5MEmwgj8jjbjee
+         domG1n+N6LrksxgLgPiF5X/u/h24KIDBVJbm9Yauagz2jYblZoBL9/tKLUNyXOcVgH1H
+         ig1x7F/+xmW0De2Dec/lieect/8yOCTWKt9UxFv760kPUPJaVkTvxd4YuBV7WMCIXsw0
+         a8Cn+DXqqRhyWgpQGGyGFoDDXTJiniudvx+SBxpz6MoZMBG9pYxA9y3kMERysgjVw3Sp
+         r4PA==
+X-Gm-Message-State: APjAAAUt8ZWHIbx4i50QojaF7nTZrX7ztMg+5JPTjU5UUs67MsF0J08d
+        QIBYFftLUjN16dpBazTHrSuiS6ar
+X-Google-Smtp-Source: APXvYqwG5U+RWvvK04QP+fTF/jnI87lSZzPwow+r4GNiX/zk5PFbsKWsl8G+jy3zcd5WKm33Ma8bww==
+X-Received: by 2002:a1c:6555:: with SMTP id z82mr8872254wmb.125.1552052672690;
+        Fri, 08 Mar 2019 05:44:32 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id w4sm11631872wmg.8.2019.03.08.05.44.31
+        by smtp.gmail.com with ESMTPSA id w4sm11631872wmg.8.2019.03.08.05.44.32
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Mar 2019 05:44:31 -0800 (PST)
+        Fri, 08 Mar 2019 05:44:32 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 7/9] trace-cmd: Implemented new API tracecmd_add_option_v()
-Date:   Fri,  8 Mar 2019 15:44:21 +0200
-Message-Id: <20190308134423.22008-8-tstoyanov@vmware.com>
+Subject: [PATCH v5 8/9] trace-cmd: Implemented new option in trace.dat file: TRACECMD_OPTION_TIME_SHIFT
+Date:   Fri,  8 Mar 2019 15:44:22 +0200
+Message-Id: <20190308134423.22008-9-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190308134423.22008-1-tstoyanov@vmware.com>
 References: <20190308134423.22008-1-tstoyanov@vmware.com>
@@ -58,218 +58,211 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patch implements a new tracecmd API, tracecmd_add_option_v()
-It adds new option in trace.dat, similar to tracecmd_add_option(),
-but the option's data is passed as list of buffers. The standard
-struct iovec is used as input parameter, containing the option's
-data buffers.
+The TRACECMD_OPTION_TIME_SHIFT is used when synchronizing trace time stamps between
+two trace.dat files. It contains multiple long long (time, offset) pairs, describing
+time stamps _offset_, measured in the given local _time_. The content of the option
+buffer is:
+ first 4 bytes - integer, count of timestamp offsets
+ long long array of size _count_, local time in which the offset is measured
+ long long array of size _count_, offset of the time stamps
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- include/trace-cmd/trace-cmd.h    |   5 ++
- include/traceevent/event-parse.h |   1 +
- tracecmd/trace-output.c          | 117 ++++++++++++++++++++++++++-----
- 3 files changed, 106 insertions(+), 17 deletions(-)
+ include/trace-cmd/trace-cmd.h |   1 +
+ lib/trace-cmd/trace-input.c   | 119 +++++++++++++++++++++++++++++++++-
+ 2 files changed, 118 insertions(+), 2 deletions(-)
 
 diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 3f0ab4f..023b701 100644
+index 023b701..cea6bb9 100644
 --- a/include/trace-cmd/trace-cmd.h
 +++ b/include/trace-cmd/trace-cmd.h
-@@ -245,11 +245,16 @@ struct tracecmd_output *tracecmd_create_init_file_override(const char *output_fi
- struct tracecmd_option *tracecmd_add_option(struct tracecmd_output *handle,
- 					    unsigned short id, int size,
- 					    const void *data);
-+struct tracecmd_option *
-+tracecmd_add_option_v(struct tracecmd_output *handle,
-+		    unsigned short id, const struct iovec *vector, int count);
+@@ -82,6 +82,7 @@ enum {
+ 	TRACECMD_OPTION_HOOK,
+ 	TRACECMD_OPTION_OFFSET,
+ 	TRACECMD_OPTION_CPUCOUNT,
++	TRACECMD_OPTION_TIME_SHIFT,
+ };
+ 
+ enum {
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 0a6e820..bfda4c2 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -75,6 +75,11 @@ struct input_buffer_instance {
+ 	size_t			offset;
+ };
+ 
++struct ts_offset_corr {
++	long long	time;
++	long long	ofsset;
++};
 +
- struct tracecmd_option *tracecmd_add_buffer_option(struct tracecmd_output *handle,
- 						   const char *name, int cpus);
- 
- int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
- int tracecmd_write_options(struct tracecmd_output *handle);
-+int tracecmd_append_options(struct tracecmd_output *handle);
- int tracecmd_update_option(struct tracecmd_output *handle,
- 			   struct tracecmd_option *option, int size,
- 			   const void *data);
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 3f2ae80..9705b51 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -11,6 +11,7 @@
- #include <stdio.h>
- #include <regex.h>
- #include <string.h>
-+#include <sys/uio.h>
- 
- #include "trace-seq.h"
- 
-diff --git a/tracecmd/trace-output.c b/tracecmd/trace-output.c
-index 33d6ce3..d57539c 100644
---- a/tracecmd/trace-output.c
-+++ b/tracecmd/trace-output.c
-@@ -883,21 +883,23 @@ static struct tracecmd_output *create_file(const char *output_file,
+ struct tracecmd_input {
+ 	struct tep_handle	*pevent;
+ 	struct tep_plugin_list	*plugin_list;
+@@ -92,6 +97,8 @@ struct tracecmd_input {
+ 	bool			use_pipe;
+ 	struct cpu_data 	*cpu_data;
+ 	long long		ts_offset;
++	int			ts_corr_count;
++	struct ts_offset_corr	*ts_corr;
+ 	double			ts2secs;
+ 	char *			cpustats;
+ 	char *			uname;
+@@ -1028,6 +1035,68 @@ static void free_next(struct tracecmd_input *handle, int cpu)
+ 	free_record(record);
  }
  
- /**
-- * tracecmd_add_option - add options to the file
-+ * tracecmd_add_option_v - add options to the file
-  * @handle: the output file handle name
-  * @id: the id of the option
-- * @size: the size of the option data
-- * @data: the data to write to the file.
-+ * @vector: array of vectors, pointing to the data to write in the file
-+ * @count: number of items in the vector array
-  *
-  * Returns handle to update option if needed.
-  *  Just the content can be updated, with smaller or equal to
-  *  content than the specified size.
-  */
- struct tracecmd_option *
--tracecmd_add_option(struct tracecmd_output *handle,
--		    unsigned short id, int size, const void *data)
-+tracecmd_add_option_v(struct tracecmd_output *handle,
-+		    unsigned short id, const struct iovec *vector, int count)
- {
- 	struct tracecmd_option *option;
-+	char *data = NULL;
-+	int i, size = 0;
- 
- 	/*
- 	 * We can only add options before they were written.
-@@ -906,32 +908,63 @@ tracecmd_add_option(struct tracecmd_output *handle,
- 	if (handle->options_written)
- 		return NULL;
- 
--	handle->nr_options++;
-+	for (i = 0; i < count; i++)
-+		size += vector[i].iov_len;
-+
-+	/* Some IDs (like TRACECMD_OPTION_TRACECLOCK) pass vector with 0 / NULL data */
-+	if (size) {
-+		data = malloc(size);
-+		if (!data) {
-+			warning("Insufficient memory");
-+			return NULL;
-+		}
-+	}
- 
- 	option = malloc(sizeof(*option));
- 	if (!option) {
- 		warning("Could not allocate space for option");
-+		free(data);
- 		return NULL;
- 	}
- 
--	option->id = id;
--	option->size = size;
--	option->data = malloc(size);
--	if (!option->data) {
--		warning("Insufficient memory");
--		free(option);
--		return NULL;
-+	handle->nr_options++;
-+	option->data = data;
-+	for (i = 0; i < count; i++) {
-+		if (vector[i].iov_base && vector[i].iov_len) {
-+			memcpy(data, vector[i].iov_base, vector[i].iov_len);
-+			data += vector[i].iov_len;
-+		}
- 	}
--
--	/* Some IDs (like TRACECMD_OPTION_TRACECLOCK) pass 0 / NULL data */
--	if (size)
--		memcpy(option->data, data, size);
-+	option->size = size;
-+	option->id = id;
- 
- 	list_add_tail(&option->list, &handle->options);
- 
- 	return option;
- }
- 
-+/**
-+ * tracecmd_add_option - add options to the file
-+ * @handle: the output file handle name
-+ * @id: the id of the option
-+ * @size: the size of the option data
-+ * @data: the data to write to the file.
-+ *
-+ * Returns handle to update option if needed.
-+ *  Just the content can be updated, with smaller or equal to
-+ *  content than the specified size.
-+ */
-+struct tracecmd_option *
-+tracecmd_add_option(struct tracecmd_output *handle,
-+		    unsigned short id, int size, const void *data)
++static inline unsigned long long
++timestamp_correction_calc(unsigned long long ts, struct ts_offset_corr *min,
++			  struct ts_offset_corr *max)
 +{
-+	struct iovec vect;
++	long long tscor = min->ofsset +
++			(((((long long)ts) - min->time)*
++			(max->ofsset-min->ofsset))/(max->time-min->time));
 +
-+	vect.iov_base = data;
-+	vect.iov_len = size;
-+	return tracecmd_add_option_v(handle, id, &vect, 1);
++	if (tscor < 0)
++		return ts - llabs(tscor);
++
++	return ts + tscor;
++
 +}
 +
- int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
- {
- 	cpus = convert_endian_4(handle, cpus);
-@@ -979,6 +1012,56 @@ int tracecmd_write_options(struct tracecmd_output *handle)
- 	return 0;
++static unsigned long long timestamp_correct(unsigned long long ts,
++					    struct tracecmd_input *handle)
++{
++	static int min = -1;
++	static int max = -1;
++	int i;
++
++	if (handle->ts_offset)
++		return ts + handle->ts_offset;
++	if (!handle->ts_corr_count || !handle->ts_corr)
++		return ts;
++
++	/* We have only one offset, nothing to calc here */
++	if (handle->ts_corr_count == 1)
++		return ts + handle->ts_corr[0].ofsset;
++
++	/* We have two offsets, nothing to search here */
++	if (handle->ts_corr_count == 2)
++		return timestamp_correction_calc(ts, &handle->ts_corr[0],
++						 &handle->ts_corr[1]);
++
++	/* We have more than two offsets */
++	/* check if current ts fits in the last found time frame */
++	if (min >= 0 && max >= 0 &&
++	    ts >= handle->ts_corr[min].time &&
++	    ts <= handle->ts_corr[max].time) {
++		return timestamp_correction_calc(ts, &handle->ts_corr[min],
++						 &handle->ts_corr[max]);
++	}
++	min = -1;
++	max = -1;
++	for (i = 0; i < handle->ts_corr_count; i++) {
++		if (ts > handle->ts_corr[i].time)
++			min = i;
++		else if (ts <= handle->ts_corr[i].time) {
++			max = i;
++			break;
++		}
++	}
++	if (min >= 0 && max >= 0 && min != max &&
++	    min < handle->ts_corr_count && max < handle->ts_corr_count)
++		return timestamp_correction_calc(ts, &handle->ts_corr[min],
++						 &handle->ts_corr[max]);
++
++	return ts;
++}
++
+ /*
+  * Page is mapped, now read in the page header info.
+  */
+@@ -1049,7 +1118,7 @@ static int update_page_info(struct tracecmd_input *handle, int cpu)
+ 		    kbuffer_subbuffer_size(kbuf));
+ 		return -1;
+ 	}
+-	handle->cpu_data[cpu].timestamp = kbuffer_timestamp(kbuf) + handle->ts_offset;
++	handle->cpu_data[cpu].timestamp = timestamp_correct(kbuffer_timestamp(kbuf), handle);
+ 
+ 	if (handle->ts2secs)
+ 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
+@@ -1776,7 +1845,7 @@ read_again:
+ 		goto read_again;
+ 	}
+ 
+-	handle->cpu_data[cpu].timestamp = ts + handle->ts_offset;
++	handle->cpu_data[cpu].timestamp = timestamp_correct(ts, handle);
+ 
+ 	if (handle->ts2secs) {
+ 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
+@@ -2101,6 +2170,34 @@ void tracecmd_set_ts2secs(struct tracecmd_input *handle,
+ 	handle->use_trace_clock = false;
  }
  
-+int tracecmd_append_options(struct tracecmd_output *handle)
++static int tsync_offset_cmp(const void *a, const void *b)
 +{
-+	struct tracecmd_option *options;
-+	unsigned short option;
-+	unsigned short endian2;
-+	unsigned int endian4;
-+	off_t offset;
-+	int r;
++	struct ts_offset_corr *ts_a = (struct ts_offset_corr *)a;
++	struct ts_offset_corr *ts_b = (struct ts_offset_corr *)b;
 +
-+	/* If already written, ignore */
-+	if (handle->options_written)
-+		return 0;
-+
-+	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
++	if (ts_a->time > ts_b->time)
++		return 1;
++	if (ts_a->time < ts_b->time)
 +		return -1;
-+	offset = lseek64(handle->fd, -2, SEEK_CUR);
-+	if (offset == (off_t)-1)
-+		return -1;
-+
-+	r = pread(handle->fd, &option, 2, offset);
-+	if (r != 2 || option != TRACECMD_OPTION_DONE)
-+		return -1;
-+
-+	list_for_each_entry(options, &handle->options, list) {
-+		endian2 = convert_endian_2(handle, options->id);
-+		if (do_write_check(handle, &endian2, 2))
-+			return -1;
-+
-+		endian4 = convert_endian_4(handle, options->size);
-+		if (do_write_check(handle, &endian4, 4))
-+			return -1;
-+
-+		/* Save the data location in case it needs to be updated */
-+		options->offset = lseek64(handle->fd, 0, SEEK_CUR);
-+
-+		if (do_write_check(handle, options->data,
-+				   options->size))
-+			return -1;
-+	}
-+
-+	option = TRACECMD_OPTION_DONE;
-+
-+	if (do_write_check(handle, &option, 2))
-+		return -1;
-+
-+	handle->options_written = 1;
-+
 +	return 0;
 +}
 +
- int tracecmd_update_option(struct tracecmd_output *handle,
- 			   struct tracecmd_option *option, int size,
- 			   const void *data)
++static void tsync_offset_load(struct tracecmd_input *handle, char *buf)
++{
++	int i;
++	long long *buf8 = (long long *)buf;
++
++	for (i = 0; i < handle->ts_corr_count; i++) {
++		handle->ts_corr[i].time = tep_read_number(handle->pevent,
++							  buf8+i, 8);
++		handle->ts_corr[i].ofsset = tep_read_number(handle->pevent,
++						buf8+handle->ts_corr_count+i, 8);
++	}
++	qsort(handle->ts_corr,
++	      handle->ts_corr_count, sizeof(struct ts_offset_corr),
++	      tsync_offset_cmp);
++}
++
+ static int handle_options(struct tracecmd_input *handle)
+ {
+ 	long long offset;
+@@ -2111,6 +2208,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 	struct input_buffer_instance *buffer;
+ 	struct hook_list *hook;
+ 	char *buf;
++	int tsync;
+ 	int cpus;
+ 
+ 	for (;;) {
+@@ -2155,6 +2253,23 @@ static int handle_options(struct tracecmd_input *handle)
+ 			offset = strtoll(buf, NULL, 0);
+ 			handle->ts_offset += offset;
+ 			break;
++		case TRACECMD_OPTION_TIME_SHIFT:
++			/*
++			 * int (4 bytes) count of timestamp offsets.
++			 * long long array of size [count] of times,
++			 *	when the offsets were calculated.
++			 * long long array of size [count] of timestamp offsets.
++			 */
++			handle->ts_corr_count = tep_read_number(handle->pevent,
++								buf, 4);
++			tsync = (sizeof(long long)*handle->ts_corr_count);
++			if (size != (4+(2*tsync)))
++				break;
++			handle->ts_corr = malloc(2*tsync);
++			if (!handle->ts_corr)
++				return -ENOMEM;
++			tsync_offset_load(handle, buf+4);
++			break;
+ 		case TRACECMD_OPTION_CPUSTAT:
+ 			buf[size-1] = '\n';
+ 			cpustats = realloc(cpustats, cpustats_size + size + 1);
 -- 
 2.20.1
 
