@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B147C4360F
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 14:31:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DC63C43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 14:31:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5EE7D2085A
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 14:31:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 714892085A
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 14:31:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbfCHOba (ORCPT
+        id S1726591AbfCHObb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Mar 2019 09:31:30 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:36149 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbfCHOba (ORCPT
+        Fri, 8 Mar 2019 09:31:31 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:43125 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbfCHObb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Mar 2019 09:31:30 -0500
-Received: by mail-wm1-f67.google.com with SMTP id j125so12644818wmj.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 06:31:28 -0800 (PST)
+        Fri, 8 Mar 2019 09:31:31 -0500
+Received: by mail-wr1-f67.google.com with SMTP id d17so21584067wre.10
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 06:31:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9RHgqU8nn0PP+caEF3ZjBz0MN0WO4lkw5eG8njQAhCE=;
-        b=IFte7Nj2u02rzaAKShZLST5ul+XPKMgFj7Q0w2feCiTeRU/R81lhCmROC+WAoiW5Bd
-         /yNDpYY/nyAMuthQDQYNdoN5tClZtyd5ZCGFOuQkdldv+upHGq05B2nKuT77TOV/9TwH
-         ie+cFcqorXUUz4z0dKUf8pfTAip02OX+GumoXrGHjA7LijqxBU9G3CKn28Hpwlk+Jn8F
-         uRtVgtHMr+4uuvOXj0oLbdp5HGvF1TLO4j8/MH+F3ufaRY3TaDPR8BkRWNxPaYYghI+g
-         /Lh5tCNyKR8MptvHTZstudIdud6VSllXYtMmuI8XX8DQdI4Xsywz+KB8UyEBmQKfw7Ji
-         ExHQ==
-X-Gm-Message-State: APjAAAUJiKnQcFPL9eLwYn6rXZf/10e0VTBVAqXcUaKJoEkbiT0sCWCQ
-        RwcdHSWZR+2lVyxBP1Sf5fYAed/W
-X-Google-Smtp-Source: APXvYqwKQiSbeqGG7Reifq6paMKROx1aC41jATU1w/T9e4K8juM5h6TMvwfPVp/tSVCD4m/BQ4wA5w==
-X-Received: by 2002:a1c:1f51:: with SMTP id f78mr8878419wmf.28.1552055488206;
-        Fri, 08 Mar 2019 06:31:28 -0800 (PST)
+        bh=B0LSgheigQKYDNu87C/yhSfypvVN6mgElsvHHKqMVDU=;
+        b=f4LRVDBiMsJ/bJu+7KVLxNU+ZsffCAUGuK2tNmRfnHKbVPDOfKcrmr4bajlSk1umBo
+         dDVJacMRbFpMmQDDZtwRJUN+5kLh60w+4Q1so38KrT985A9DY1KeBxnkNYo9gC4AgWvO
+         aF2WaajSQRrCFW0FRnTOhAseFP90MhG2frq06ohjEHYY8gb6hAgqvYIDWaCxWPrHr3G3
+         bAiDQY8Bnbf9kPrKxeSU419E58T3sm3UirTZU2M5p4/D5D/olPHGQ4g2lJZelvp9pWXx
+         +7SfcdzHshzi6t8FjnQJTpCcDGZHyipgl+I1LxXG6XMfXJMoG8XCiVO9LPKBF5Gm1dY5
+         IZUQ==
+X-Gm-Message-State: APjAAAWL2KEBPlXhmjQiPVKBFd7YKxXcSeZUqoXBVz+FPnTIdXHu4u7F
+        fMBoxdSLvMUnqbf32X4Bt8+9Kx68
+X-Google-Smtp-Source: APXvYqxaRCJP8LeX/L1FEhCZG5Y6Ptk5b+9zs1YWIJXs7qMV0xfroS1Fl7NCpt/ZXluLUsKH3KpF1g==
+X-Received: by 2002:a05:6000:124a:: with SMTP id j10mr10909014wrx.26.1552055489379;
+        Fri, 08 Mar 2019 06:31:29 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id t3sm13495654wmc.20.2019.03.08.06.31.27
+        by smtp.gmail.com with ESMTPSA id t3sm13495654wmc.20.2019.03.08.06.31.28
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Mar 2019 06:31:27 -0800 (PST)
+        Fri, 08 Mar 2019 06:31:28 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 1/7] kernel-shark: Fix a bug in ksmodel_set_next_bin_edge()
-Date:   Fri,  8 Mar 2019 16:31:19 +0200
-Message-Id: <20190308143125.31168-2-tstoyanov@vmware.com>
+Subject: [PATCH v3 2/7] trace-cmd: Fix "trace-cmd reset" command to restore "tracng_on"
+Date:   Fri,  8 Mar 2019 16:31:20 +0200
+Message-Id: <20190308143125.31168-3-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190308143125.31168-1-tstoyanov@vmware.com>
 References: <20190308143125.31168-1-tstoyanov@vmware.com>
@@ -58,47 +58,29 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
+The "trace-cmd reset" command should restore ftrace to its default state.
+By default, "tracing/current_tracer" is "nop" and "tracing/tracing_on" is "1".
+This patch sets "tracing/tracing_on" to 1, when the command "trace-cmd reset"
+is executed.
 
-The modification of the last bin of the model makes no sense (this is
-my mistake). The comment above the code that is doing this modification
-is partially correct, however it speaks about increasing the size of
-the last bin, while the code below the comment changes the lower edge
-of this bin. The actual increase of the size of the last bin is done in
-ksmodel_set_upper_edge() where the lower edge of the Upper Overflow bin
-gets shifted (max + 1). This effectively increases the size of the last bin.
-
-Link: http://lore.kernel.org/linux-trace-devel/20190221124205.21115-4-ykaradzhov@vmware.com
-
-Reported-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
-Fixes: f97e31f00 ("kernel-shark-qt: Introduce the visualization model ..")
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- kernel-shark/src/libkshark-model.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ tracecmd/trace-record.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel-shark/src/libkshark-model.c b/kernel-shark/src/libkshark-model.c
-index b6d3612..4bd1e2c 100644
---- a/kernel-shark/src/libkshark-model.c
-+++ b/kernel-shark/src/libkshark-model.c
-@@ -266,15 +266,6 @@ static void ksmodel_set_next_bin_edge(struct kshark_trace_histo *histo,
- 	/* Calculate the beginning of the next bin. */
- 	time = histo->min + next_bin * histo->bin_size;
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 8beefab..fc658b2 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -4496,6 +4496,8 @@ void trace_reset(int argc, char **argv)
+ 	clear_triggers();
+ 	tracecmd_remove_instances();
+ 	clear_func_filters();
++	/* restore tracing_on to 1 */
++	tracecmd_enable_tracing();
+ 	exit(0);
+ }
  
--	/*
--	 * The timestamp of the very last entry of the dataset can be exactly
--	 * equal to the value of the upper edge of the range. This is very
--	 * likely to happen when we use ksmodel_set_in_range_bining(). In this
--	 * case we have to increase the size of the very last bin in order to
--	 * make sure that the last entry of the dataset will fall into it.
--	 */
--	if (next_bin == histo->n_bins - 1)
--		++time;
- 	/*
- 	 * Find the index of the first entry inside
- 	 * the next bin (timestamp > time).
 -- 
 2.20.1
 
