@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ADA3C43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E24AFC10F09
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 55EB12087C
+	by mail.kernel.org (Postfix) with ESMTP id BBDFA2087C
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:37:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbfCHNhf (ORCPT
+        id S1726623AbfCHNhf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 8 Mar 2019 08:37:35 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46381 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbfCHNhe (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:38775 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbfCHNhf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Mar 2019 08:37:34 -0500
-Received: by mail-wr1-f66.google.com with SMTP id i16so21376183wrs.13
-        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:37:33 -0800 (PST)
+        Fri, 8 Mar 2019 08:37:35 -0500
+Received: by mail-wr1-f67.google.com with SMTP id g12so21393497wrm.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:37:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=L1IWRStKn+CgkAIQku139tVPIQjflwlXSBx2hL5Nh3Q=;
-        b=RRo/CSDqg+Scuh42muQray2XoS0+lYHlf7k9PZ7CBpF0CINXEm3gBlXB62zlw9kEQU
-         ooALqWQjZQWvzbGqlUDF3O/sNdgRUd6vDFxG9sL2sYF1SRNr8zWRWHFqyF7FXzaAjBQX
-         Z5FBiukNiV1DkCGSgWehpFd9NhznteiNit7yMAOFKkzLNTKU/Kx11j0Nc0SobCvmthj/
-         CA4mibuyB3/bs65xJ3gRgb7ZQS6r5WcPy3NIp1AMHpyzSEIa0gJdib3cUaA7eRFC2T44
-         tf/FpxrZAF/55GE59axDwK4VGvNCvgBQ6rz02UKQBsxA/4eX/+UoDds5ufK5wNISX+lF
-         9ECw==
-X-Gm-Message-State: APjAAAUwh/uDiTS9Q3L4w1LIydSnOEo5wglLqWoDpTOW54AJzpBD7fPj
-        W1ziaJYtQKnLDOgLt8DIiuc=
-X-Google-Smtp-Source: APXvYqx5PCeL7hqkWi1IHGOwh+goa575eXnJzjC+6prtzEzz/4yFZxFLhZQfGHHv36arGNBVkDJ62g==
-X-Received: by 2002:adf:f711:: with SMTP id r17mr2901834wrp.38.1552052253009;
+        bh=3GCdyjmtjyV29RvWEmKgohuvdKyvG7AXjIUu9pqvPd8=;
+        b=LIzRW+WTxe/VcEJyHZJ+eB+QyncO6sf2wtOnYbDIHoQzIt9CD5XDpIk5k7l5KMSWiB
+         w4oKHXMB5E6fUMEHSy7Tu9MdHwDYT8hI0WhcoZzng3vDi1l6Ww5x5xGg+JMQh7K7VWxH
+         DCAFr7WLrXO95etE+w7XbfOvyo1LQFTPntxDwyqwYjdZWx5WM+rTVCoQ0OUfs+iJHMpx
+         nyT+REnwNeQPNHpLXRp7v1VP+bfxVlgPAwZxeKI9XzlqJjjfwWKiQxdvN3IbmbrshFne
+         PtJuZZ6XnW0cdN2oJGCSu67uU3BfI3evQl0wVre3055Xnig+FKWgZIv612uOEF2eidDU
+         cTiQ==
+X-Gm-Message-State: APjAAAV6QDfAl8ekSOCuBTtmkmE8JAbFZU9hU5WnzssOtUDvePIkHYP3
+        492I6XQ9NuTzlIBpvZvO44d2rjBO
+X-Google-Smtp-Source: APXvYqzoxtsHILiP825apo9tfj/nSPFyr/+h3WIpY00olXzAEDxMywmdEyvVQMV5wH+oswYOub9oBQ==
+X-Received: by 2002:adf:8273:: with SMTP id 106mr11488644wrb.34.1552052253850;
         Fri, 08 Mar 2019 05:37:33 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.32
+        by smtp.gmail.com with ESMTPSA id 132sm19625364wmd.27.2019.03.08.05.37.33
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Mar 2019 05:37:32 -0800 (PST)
+        Fri, 08 Mar 2019 05:37:33 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 38/46] tools/lib/traceevent: Man page for tep_parse_header_page()
-Date:   Fri,  8 Mar 2019 15:36:46 +0200
-Message-Id: <20190308133654.21264-39-tstoyanov@vmware.com>
+Subject: [PATCH v4 39/46] tools/lib/traceevent: Man pages for tep_load_plugins() and tep_unload_plugin()
+Date:   Fri,  8 Mar 2019 15:36:47 +0200
+Message-Id: <20190308133654.21264-40-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190308133654.21264-1-tstoyanov@vmware.com>
 References: <20190308133654.21264-1-tstoyanov@vmware.com>
@@ -59,27 +59,27 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Create man page for tep_parse_header_page()
+Create man pages for tep_load_plugins() and tep_unload_plugin()
 as part of the libtraceevent APIs.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-parse_head.txt              | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
+ .../Documentation/libtraceevent-plugins.txt   | 98 +++++++++++++++++++
+ 1 file changed, 98 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
 new file mode 100644
-index 000000000000..c90f16c7d8e6
+index 000000000000..0f40d14944c0
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
-@@ -0,0 +1,82 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
+@@ -0,0 +1,98 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_parse_header_page - Parses the data stored in the header page.
++tep_load_plugins,tep_unload_plugins - Load  / unload traceevent plugins
 +
 +SYNOPSIS
 +--------
@@ -87,25 +87,42 @@ index 000000000000..c90f16c7d8e6
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_parse_header_page*(struct tep_handle pass:[*]_tep_, char pass:[*]_buf_, unsigned long _size_, int _long_size_);
++struct tep_plugin_list pass:[*]*tep_load_plugins*(struct tep_handle pass:[*]_tep_);
++void *tep_unload_plugins*(struct tep_plugin_list pass:[*]_plugin_list_, struct tep_handle pass:[*]_tep_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_parse_header_page()_ function parses the header page data from _buf_,
-+and initializes the _tep_, trace event parser context, with it. The buffer
-+_buf_ is with _size_, and is supposed to be copied from
-+tracefs/events/header_page.
++The _tep_load_plugins()_ function loads all plugins, located in the plugin
++directories. The _tep_ argument is trace event parser context.
++The plugin directories are :
++[verse]
++--
++	- System's plugin directory, defined at the library compile time. It
++	  depends on the library installation prefix and usually is
++	  _(install_preffix)/lib/traceevent/plugins_
++	- Directory, defined by the environment variable _TRACEEVENT_PLUGIN_DIR_
++	- User's plugin directory, located at _~/.traceevent/plugins_
++--
++Loading of plugins can be controlled by the _tep_flags_, using the
++_tep_set_flag()_ API:
++[verse]
++--
++	_TEP_DISABLE_SYS_PLUGINS_	- do not load plugins, located in
++					the system's plugin directory.
++	_TEP_DISABLE_PLUGINS_		- do not load any plugins.
++--
++The _tep_set_flag()_ API must be called before _tep_load_plugins()_.
 +
-+Some old kernels do not have header page info, in this case the
-+_tep_parse_header_page()_ function  can be called with _size_ equal to 0. The
-+_tep_ context is initialized with default values. The _long_size_ can be used in
-+this use case, to set the size of a long integer to be used.
++The _tep_unload_plugins()_ function unloads the plugins, previously loaded by
++_tep_load_plugins()_. The _tep_ argument is trace event parser context. The
++_plugin_list_ is the list of loaded plugins, returned by the _tep_load_plugins()_
++function.
 +
 +RETURN VALUE
 +------------
-+The _tep_parse_header_page()_ function returns 0 in case of success, or -1
-+in case of an error.
++The _tep_load_plugins()_ function returns a list of successfully loaded plugins,
++or NULL in case no plugins are loaded.
 +
 +EXAMPLE
 +-------
@@ -115,13 +132,12 @@ index 000000000000..c90f16c7d8e6
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+char *buf;
-+int size;
-+buf = read_file("/sys/kernel/tracing/events/header_page", &size);
-+if (tep_parse_header_page(tep, buf, size, sizeof(unsigned long)) != 0) {
-+	/* Failed to parse the header page */
++struct tep_plugin_list *plugins = tep_load_plugins(tep);
++if (plugins == NULL) {
++	/* no plugins are loaded */
 +}
 +...
++tep_unload_plugins(plugins, tep);
 +--
 +
 +FILES
@@ -136,7 +152,7 @@ index 000000000000..c90f16c7d8e6
 +
 +SEE ALSO
 +--------
-+_libtraceevent(3)_, _trace-cmd(1)_
++_libtraceevent(3)_, _trace-cmd(1)_, _tep_set_flag(3)_
 +
 +AUTHOR
 +------
