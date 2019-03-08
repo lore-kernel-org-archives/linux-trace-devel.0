@@ -2,55 +2,53 @@ Return-Path: <SRS0=Frhw=RL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71B88C10F0C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:44:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA330C43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:44:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4AE1820661
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:44:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C203120661
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Mar 2019 13:44:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbfCHNoP (ORCPT
+        id S1726581AbfCHNo1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Mar 2019 08:44:15 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:52107 "EHLO
+        Fri, 8 Mar 2019 08:44:27 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:52126 "EHLO
         mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbfCHNoO (ORCPT
+        with ESMTP id S1726420AbfCHNo1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Mar 2019 08:44:14 -0500
-Received: by mail-wm1-f66.google.com with SMTP id n19so12577210wmi.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:44:13 -0800 (PST)
+        Fri, 8 Mar 2019 08:44:27 -0500
+Received: by mail-wm1-f66.google.com with SMTP id n19so12577732wmi.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Mar 2019 05:44:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k7RzuzhhDaG+aYWpS7qXWP855XoYR2nMC0Urv+Xlnno=;
-        b=k/kmCdbK8G0M9Y2gY4t3ir+/EjmHTLiNQsOWNzQiG9XcGNpfXHfkKBMx6rq/JfbR/H
-         ON6xHdjtWpiF/wPq9je/8zC/N5COqdWpY+vTvJhfLzOPdVoop2RjczNsT0fkgRWaKZm9
-         ATvxYNHEGNgwYMXzKCtvgcCnzKER+N0m3fn4JEtoI+fKXctuJ86dUb8Z8TPtBHTHRW1B
-         /IIX7T0k9kQa5ZgJqljvPkp0EWAjo1gve/zbXfk2Ey9KJJotkp8ii7q85BIOGV6Addq2
-         zBY8wI9xJ0WT3xb7qTQeSRMs95r0ABYhz2+xnrqCiTHJ6ej8R9PsXuEZryo4QcFkhvc7
-         cZuw==
-X-Gm-Message-State: APjAAAVUOLdJYOMZ9JCb/eh0BYWKylcaB/gj9gt5ehh90rBdI6+nmQuA
-        LPyeFe+MFn0d5nF2ugJBjNLRXRnm
-X-Google-Smtp-Source: APXvYqyHDXgUGzVOUrepZUI2lFcufefIPKmWtMsz85mOqN3Bky8WSvDNTuClJsmYPJWk6XheCopu9Q==
-X-Received: by 2002:a1c:2c4:: with SMTP id 187mr8976416wmc.77.1552052653231;
-        Fri, 08 Mar 2019 05:44:13 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yUpNdRbq33uIpZSw+ryStVWRppLGcU9yATLiH1OjFLo=;
+        b=bcHFpmL82wpqvaLydu71QPHndL1xCW7WSmwqvN2/iM1AW5Fv6xwR2BRp5+z0OytvdJ
+         CQO83A/oaTyNnxP3sUU7Y5Vv/HhUYCZn/q8C6UwrU3OBqzZsmsmHM+BUgvgLWSdEJE9v
+         NBsL9SFWDJdOVGnJglWp7VjU9mThwVnA9pDCmhEAiZJbAPU516t1IB4c50SBIjrKpeTh
+         CY3c1MBSggb66MLthvCfI9n/s4XJ8mbMDf2zrhy9v9oTRlbUtjl0/5YDQmjwE7ewfP9O
+         cWm8ZrWkdX7R3aBGtLxJSZX7uZehx6H9sMDeY4PpBu9pBYjKox7cSAe0rcoqnMoXxqg2
+         nU4Q==
+X-Gm-Message-State: APjAAAWxxfWaC52bS4N1aJsz1cNGmA7VoorEnJfAx29ABoOOh12DqDZr
+        UNn/3jN/QdMYofXVLnyQhKk=
+X-Google-Smtp-Source: APXvYqzT8kNJBmmAPlbTGQzuhPWmrP+stwpP5OWjg0geZQgNLitmGLp6sd4CD0aqkTWtivHQiaBE2A==
+X-Received: by 2002:a1c:9e97:: with SMTP id h145mr9000606wme.147.1552052665285;
+        Fri, 08 Mar 2019 05:44:25 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id t16sm5650943wmj.47.2019.03.08.05.44.12
+        by smtp.gmail.com with ESMTPSA id w4sm11631872wmg.8.2019.03.08.05.44.24
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Mar 2019 05:44:12 -0800 (PST)
+        Fri, 08 Mar 2019 05:44:24 -0800 (PST)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 6/6] trace-cmd: Fix "trace-cmd reset" command to restore the default value of tracing_max_latency
-Date:   Fri,  8 Mar 2019 15:44:05 +0200
-Message-Id: <20190308134405.21921-7-tstoyanov@vmware.com>
+Subject: [PATCH v5 0/9] [POC] trace-cmd: Timetamps sync between host and guest machines, relying on vsock events.
+Date:   Fri,  8 Mar 2019 15:44:14 +0200
+Message-Id: <20190308134423.22008-1-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190308134405.21921-1-tstoyanov@vmware.com>
-References: <20190308134405.21921-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -58,42 +56,77 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The "trace-cmd reset" command should restore ftrace to its default state.
-This patch sets "tracing/tracing_max_latency" to 0,
-when the "trace-cmd reset" command is executed.
+[
+ V5 changes:
+  - Rebased to Slavomir's v8 "Add VM kernel tracing over vsockets and FIFOs"
+    patch series.
+  - Implemented an algorithm for time drift correction.
+  - Addressed Slavomir's commnets.
+  - Refactored the code: moved all time sync specific implementation in trace-timesync.c
+  - Isolated all hardcoded event specific stuff in a structure, so it could be easily 
+    moved to external plugins.
+  - Added a check for VSOCK support: do not perform vsock dependent time synchronisation 
+    in case there is no VSOCK support. 
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- tracecmd/trace-record.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ V4 changes:
+  - Removed the implementation of PTP-like algorithm. The current 
+    logic relies on matching time stamps of kvm_exit/virtio_transport_recv_pkt
+    events on host to virtio_transport_alloc_pkt/vp_notify events on guest.
+  - Rebased to Slavomir's v7 "Add VM kernel tracing over vsockets and FIFOs" 
+    patch series.
+  - Decreased the time synch probes from 5000 to 300.
+  - Addressed Steven Rostedt comments.
+  - Code cleanup. 
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index bdf0c02..f4dac2f 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3801,6 +3801,14 @@ static void reset_event_pid(void)
- 	add_event_pid("");
- }
- 
-+static void reset_max_latency_instance(void)
-+{
-+	struct buffer_instance *instance;
-+
-+	for_all_instances(instance)
-+		write_instance_file(instance,
-+				    "tracing_max_latency", "0", "max_latency");
-+}
- 
- static void clear_triggers(void)
- {
-@@ -4506,6 +4514,7 @@ void trace_reset(int argc, char **argv)
- 	/* set clock to "local" */
- 	reset_clock();
- 	reset_event_pid();
-+	reset_max_latency_instance();
- 	tracecmd_remove_instances();
- 	clear_func_filters();
- 	/* restore tracing_on to 1 */
+ V3 changes:
+ - Removed any magic constants, used in the PTP-like algorithm,
+   as Slavomir Kaslev suggested.
+ - Implemented new algorithm, based on mapping kvm_exit events
+   in host context to vsock_send events in guest context,
+   suggested by Steven Rostedt.
+
+ V2 changes:
+  - Addressed Steven Rostedt comments.
+  - Modified PTP-like timestamps sync algorithm to gain more accuracy, with the
+    help of Yordan Karadzhov and Slavomir Kaslev.
+]
+
+
+This patch series is a POC for timestamps sync between guest and host machines.
+The algorithm relies on matching time stamps of guest and host vsock events.
+
+The patch series depends on Slavomir's changes, introduced by the v8 patch series
+"Add VM kernel tracing over vsockets and FIFOs"
+
+Tzvetomir Stoyanov (9):
+  trace-cmd: Implemented new lib API: tracecmd_local_events_system()
+  trace-cmd: Added support for negative time offsets in trace.dat file
+  trace-cmd: Fix tracecmd_read_page_record() to read more than one event
+  trace-cmd: Added implementation of htonll() and ntohll()
+  trace-cmd: Refactored few functions in trace-record.c
+  trace-cmd: Find and store pids of tasks, which run virtual CPUs of
+    given VM
+  trace-cmd: Implemented new API tracecmd_add_option_v()
+  trace-cmd: Implemented new option in trace.dat file:
+    TRACECMD_OPTION_TIME_SHIFT
+  trace-cmd [POC]: Implemented timestamps synch PTP-like algorithm,
+    using vsock events.
+
+ include/trace-cmd/trace-cmd.h    |  19 +-
+ include/traceevent/event-parse.h |   1 +
+ lib/trace-cmd/trace-input.c      | 137 ++++++-
+ lib/trace-cmd/trace-util.c       |  99 +++--
+ tracecmd/Makefile                |   1 +
+ tracecmd/include/trace-local.h   |  60 +++
+ tracecmd/include/trace-msg.h     |  10 +
+ tracecmd/trace-msg.c             | 284 +++++++++++++-
+ tracecmd/trace-output.c          | 117 +++++-
+ tracecmd/trace-read.c            |   4 +-
+ tracecmd/trace-record.c          | 227 +++++++++--
+ tracecmd/trace-timesync.c        | 622 +++++++++++++++++++++++++++++++
+ 12 files changed, 1467 insertions(+), 114 deletions(-)
+ create mode 100644 tracecmd/trace-timesync.c
+
 -- 
 2.20.1
 
