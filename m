@@ -2,57 +2,63 @@ Return-Path: <SRS0=JYjC=RM=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FB61C10F0D
-	for <linux-trace-devel@archiver.kernel.org>; Sat,  9 Mar 2019 19:27:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6938C43381
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  9 Mar 2019 21:44:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6B1F2207E0
-	for <linux-trace-devel@archiver.kernel.org>; Sat,  9 Mar 2019 19:27:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C05120652
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  9 Mar 2019 21:44:36 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=opersys-com.20150623.gappssmtp.com header.i=@opersys-com.20150623.gappssmtp.com header.b="I42p6Egc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbfCIT0x (ORCPT
+        id S1726524AbfCIVog (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 9 Mar 2019 14:26:53 -0500
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:41716 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726313AbfCIT0w (ORCPT
+        Sat, 9 Mar 2019 16:44:36 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39552 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726348AbfCIVof (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 9 Mar 2019 14:26:52 -0500
-Received: by mail-ua1-f67.google.com with SMTP id j7so299008uak.8;
-        Sat, 09 Mar 2019 11:26:51 -0800 (PST)
+        Sat, 9 Mar 2019 16:44:35 -0500
+Received: by mail-qk1-f196.google.com with SMTP id x6so653229qki.6
+        for <linux-trace-devel@vger.kernel.org>; Sat, 09 Mar 2019 13:44:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=opersys-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eL2DXtq/rP8TZ2jDYm6stKjkD38WT1ewH8UCn9iYD+I=;
+        b=I42p6EgcsXFpfzgTLZan7rfofg0KeBkp6V7wvWypbSB8xpTbYIW8en6hYzpCBVDaX8
+         /EhjhiamXTcRTteu3xKkvru9BpZ4UZPswSa2/WCQaehHDQjytBIyuvuUzBpCFGrQN8ZQ
+         uJwuvRkBeJPdi9x2es/7oKpNw7S2UU6Z5fZZFrTWyZbfUeNikl/U8z7+3GxXuHz3YiGg
+         gybNh8lMbKdWmVoqQQg5/XCgpyT8hc2FwNaWSi8UFDA22hCZud7lPNzRi56FAtKpzk+i
+         c2f2jGZpNmHDCJsgbEN27RIMP1WM3MvnQBCzw3luLGR8NZl+qsjXt/R69u4mFBtKpkfl
+         p7VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AAqB6aPEulBxFa6L4PnE5pJMgPtYdJeULQPU7Hg+bCE=;
-        b=IarylnUPsCvRU+8D6QxRdiXVNQJUWGoq2cX9bIG79UooFVl7rHcQ2DIBbHMyu2EUDs
-         vQiGm/UeZJpeo4ItQwxEXZViSFAVHuqGrd5b9d9QS+lgIQ7FjD9lGf0Lr0H9AAiZmWi9
-         dd7NK+IiGLu+Jad8mkWl1I/Icg9LclMHAAnP9iCpMglePSdIHDNrH4Ui/X8PGLEjhyKp
-         kwyHd2ZADGhp5DQqW7h3vOyUGrUlcWmBc+9keBejiPVDX2HBykqji3/Z1cViyVNpgcMF
-         /PBv1fxX908avv1jDfQ5DDtQirwJDeAiIVX48QwA92ARQE5QfUYQGvDVRwqGTCK6MlrX
-         Cl2g==
-X-Gm-Message-State: APjAAAW0AVBjkj7Cmxz6MhrTPZN78YZXwfmqcmOqU3ndySiaW7AtFFWk
-        p9GTS1CJv2/BQhNkfS5gXaKQ33TyhJoZ7hF+UlA=
-X-Google-Smtp-Source: APXvYqwU/Ucwx+j8RglXLCLe/TmaoXH0K2Ul79JfEk6r2JqwW0sM4n/T2J0RWur3a6W/8tu1kLKRzl/CFHS+5uErXwE=
-X-Received: by 2002:a9f:2f0b:: with SMTP id x11mr12348794uaj.78.1552159611142;
- Sat, 09 Mar 2019 11:26:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20190301160856.129678-1-joel@joelfernandes.org>
- <CAMuHMdU77UyUs-LvRx-NN_k0Y7MZXQkBdgL2i83veCkvdzeeqA@mail.gmail.com>
- <20190307150343.GB258852@google.com> <CAMuHMdW_7BTZREsnz7uMTToCZ4HDOZboMJH8k8UZica2pB=Jew@mail.gmail.com>
- <CAEXW_YQUcA+bnav20tAFQPXYE=epMie4X85diudKs_s-TJ7dsw@mail.gmail.com>
- <20190308140251.GC25768@kroah.com> <CAMuHMdUmnrJtu8bBeUgtiU6y_TLHM27z1WxpPia4dXMpApeijw@mail.gmail.com>
- <20190309071648.GE3882@kroah.com> <CAMuHMdUT+UGt9p2QhOXzAtCUmqy-a8YN-ceDa-0qANJE53pWBA@mail.gmail.com>
- <20190309121141.GA30173@kroah.com> <b7296377-9e0c-aed7-61f0-93d24d1ceddd@opersys.com>
-In-Reply-To: <b7296377-9e0c-aed7-61f0-93d24d1ceddd@opersys.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sat, 9 Mar 2019 20:26:39 +0100
-Message-ID: <CAMuHMdV8+XTyGf1ZJ+gMf=zQpzqh3-+b7wgi+gAmXQ6HpUAw3A@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eL2DXtq/rP8TZ2jDYm6stKjkD38WT1ewH8UCn9iYD+I=;
+        b=mK/6MdcJ80qdCXXmDCOKKOIftmmHDqF24CLEwSQLE150osViEwNN9NlVJ4hz/RRL5y
+         6xP7B2sRsMfWFlCtyI+VSWkGKtJShIW1hp+qkNJGjZVEjF1ksiRBkCsuY34pQUx/lFab
+         1mIAlPWZkLmVvSScW4JSRzrRIICokEDzb9McB5wOTDRGg5VZNz6CmQnwlYuXd+gZx+F5
+         ++PDj+1hp3CKFvmKRCIzwkt4LTY93CSg8o9Fj13VkQafRl9J6SqKdm5DOQqSuL7z1y2d
+         NM1qfBRgY04qpmrwLb3Nyi4uhYUG5RQEnFJrc0BCtAfPMw391iaa3ml7xgwGRiV0yQl0
+         OxIg==
+X-Gm-Message-State: APjAAAX6vG3g4atT/sKZIY4M2t1e1oo/GKHkYW0A1VOWcZOdQ6Vg5HQV
+        F+jk1QaFhh6/zEe2lfBmaSQRoQ==
+X-Google-Smtp-Source: APXvYqzV1SwgH9OQZSfuX3YRYuZ3vfMpu/xweCHGesn1cWWuK/Fy3t+3njQlFrfoCTYJpq4ZHMCM7w==
+X-Received: by 2002:a37:4ec2:: with SMTP id c185mr19771016qkb.244.1552167874504;
+        Sat, 09 Mar 2019 13:44:34 -0800 (PST)
+Received: from [192.168.202.103] (modemcable170.15-70-69.static.videotron.ca. [69.70.15.170])
+        by smtp.googlemail.com with ESMTPSA id r77sm832622qkl.89.2019.03.09.13.44.31
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 09 Mar 2019 13:44:33 -0800 (PST)
 Subject: Re: [PATCH v4 1/2] Provide in-kernel headers for making it easy to
  extend the kernel
-To:     Karim Yaghmour <karim.yaghmour@opersys.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Greg KH <gregkh@linuxfoundation.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -77,99 +83,78 @@ Cc:     Greg KH <gregkh@linuxfoundation.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20190301160856.129678-1-joel@joelfernandes.org>
+ <CAMuHMdU77UyUs-LvRx-NN_k0Y7MZXQkBdgL2i83veCkvdzeeqA@mail.gmail.com>
+ <20190307150343.GB258852@google.com>
+ <CAMuHMdW_7BTZREsnz7uMTToCZ4HDOZboMJH8k8UZica2pB=Jew@mail.gmail.com>
+ <CAEXW_YQUcA+bnav20tAFQPXYE=epMie4X85diudKs_s-TJ7dsw@mail.gmail.com>
+ <20190308140251.GC25768@kroah.com>
+ <CAMuHMdUmnrJtu8bBeUgtiU6y_TLHM27z1WxpPia4dXMpApeijw@mail.gmail.com>
+ <20190309071648.GE3882@kroah.com>
+ <CAMuHMdUT+UGt9p2QhOXzAtCUmqy-a8YN-ceDa-0qANJE53pWBA@mail.gmail.com>
+ <20190309121141.GA30173@kroah.com>
+ <b7296377-9e0c-aed7-61f0-93d24d1ceddd@opersys.com>
+ <CAMuHMdV8+XTyGf1ZJ+gMf=zQpzqh3-+b7wgi+gAmXQ6HpUAw3A@mail.gmail.com>
+From:   Karim Yaghmour <karim.yaghmour@opersys.com>
+Message-ID: <3e84e1ef-e266-e983-5874-6c26ac7f38b8@opersys.com>
+Date:   Sat, 9 Mar 2019 16:44:31 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.1
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdV8+XTyGf1ZJ+gMf=zQpzqh3-+b7wgi+gAmXQ6HpUAw3A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Karim,
 
-Thanks for the explanation!
+Hi Geert,
 
-On Sat, Mar 9, 2019 at 5:52 PM Karim Yaghmour
-<karim.yaghmour@opersys.com> wrote:
-> On 3/9/19 7:11 AM, Greg KH wrote:
-> > There is no licensing issue, see my follow-up comment about that.
-> >
-> > It's all in ease-of-use here.  You want to build a trace function
-> > against a running kernel, and now you have the header files for that
-> > specific kernel right there in the kernel itself to build against.  It
-> > doesn't get easier than that.
->
-> Agreed.
->
-> It seems that opinions in this thread are split along two conceptions of
-> a "Linux system". On one side there's that of the conventional "Linux
-> distro" where the entity generating the distro has full control over the
-> entire process and the parts thereof. On the other side there's the
-> world that has evolved out of the multi-party ecosystem that Android
-> fostered. In the later, there isn't a single party that controls all
-> aspects of the "distro". Instead, there are a multitude of parties
-> contributing to creating a fully-functional Linux-based system.
->
-> In the latter ecosystem, the kernel and the filesystems (*plural*) used
-> with it do not necessarily come from the same place, are maintained by
-> the same parties or even required to be in lock-step. For all I know,
-> the filesystem images are coming from one party and the kernel is at one
-> point from one party and at another point can be substituted, possibly
-> for testing purposes, without userspace images ever changing. No
-> licensing issues at all involved, either with regards to the headers or
-> the distribution of the kernel itself, which, in as far as I've seen
-> when speaking of known industry players (those that matter here), are
-> always ultimately available in source from somewhere.
->
-> Instead the issue is that I want to be able to give user-space access to
-> the headers that were used to build the kernel that they're running
-> over, regardless of where this kernel came from. And since I have to
-> assume that those two parts (kernel vs. user-space) are coming from
-> separate parties and can be arbitrarily replaced, there needs to be some
-> form of "contract" between them. The kernel's ABI already provides quite
-> a bit of that and, as Joel pointed out, Google can enforce a few more
-> things, such as default kernel configs, to "make things work". But one
-> option that doesn't exist in the world Android evolves in is to somehow
-> ensure that the filesystem images somehow have kernel-specific
-> tool-required artifacts for every possible kernel they may run against.
-> That's just not possible.
->
-> That's especially true in the case of modern-day Android where the final
-> system is made of at least half a dozen filesystem images with each
-> image possibly coming from a different party. The /vendor partition
-> (with the hardware enablement), for example, could be coming from the
-> device vendor while the /system partition (with the Android framework),
-> for example, could be coming straight from Google in the form of
-> "Generic System Image" -- an image meant to run as-is on any
-> Treble-compliant system. /system might have the tools for eBPF, but
-> /vendor might have modules, while still the "boot" partition might have
-> the kernel. There's no reason I can't replace the boot partition
-> *without* changing /vendor. And there's no reason I can't replace
-> /vendor *without* replacing the boot partition. And all other
-> combinations with all other images.
+On 3/9/19 2:26 PM, Geert Uytterhoeven wrote:
+> Thanks for the explanation!
 
-So how does this work, with kernel images and kernel modules supplied
-by separate parties, not "bound" by the same kernel headers/API, as they
-can be replaced separately?
+Happy this was useful :)
 
-> That, in my view, is a big part of the problem Joel's patch solves: in a
-> system whose functionality requires multiple *independent* parties to
-> work together, I can still get the necessary kernel headers for
-> user-space tools to properly operate regardless of which part of the
-> system id being substituted or replaced.
+> So how does this work, with kernel images and kernel modules supplied
+> by separate parties, not "bound" by the same kernel headers/API, as they
+> can be replaced separately?
 
-Isn't the need for kernel headers for user-space tools something different,
-as this is limited to the uapi versions, which are less (almost not) subject
-to change, compared to the kernel headers needed for compiling kernel
-modules?
+The thing with Android is that there isn't a "one size fits all". Google 
+provides guidance, policies and at least one example implementation 
+through the Pixel lines.
 
-Thanks!
+Each vendor however is allowed a great degree of latitude with regards 
+to what they decide to do. Personally, if I was advising a team working 
+on an Android device where Joel's patch was available as part of their 
+kernel I would just recommend that they build it in -- i.e. not as a 
+module. Hence, there would be no module chasing game.
 
-Gr{oetje,eeting}s,
+With regards to Google's guidelines for manufacturers, though, Google 
+states that CONFIG_MODVERSIONS needs to be enabled, see here:
+https://source.android.com/devices/architecture/kernel/modular-kernels
+FWIW, that doesn't mean that modules are actually used. Devices don't 
+necessarily have to be using modules.
 
-                        Geert
+> Isn't the need for kernel headers for user-space tools something different,
+> as this is limited to the uapi versions, which are less (almost not) subject
+> to change, compared to the kernel headers needed for compiling kernel
+> modules?
+
+Sorry, I should've been clearer. I'm including eBPF/BCC into the 
+"user-space tools" here. That was in fact my prime motivation in 
+encouraging Joel at the last LPC to look at this. I've been integrating 
+the teaching of eBPF into my AOSP debugging and performance analysis 
+class (see CC courseware here: 
+http://www.opersys.com/training/android-debug-and-performance), and it 
+was pretty messy trying to show people how to benefit from such tools 
+under Android. Joel's present set of patches would obviate this problem.
+
+HTH,
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Karim Yaghmour
+CEO - Opersys inc. / www.opersys.com
+http://twitter.com/karimyaghmour
