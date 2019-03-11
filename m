@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C7EAC43381
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D13EC43381
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:31:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 09FF02075C
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:20:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0266920657
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:31:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ov6EEWCQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qqlPiV3n"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbfCKMUf (ORCPT
+        id S1726735AbfCKMbO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Mar 2019 08:20:35 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:43940 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726592AbfCKMUf (ORCPT
+        Mon, 11 Mar 2019 08:31:14 -0400
+Received: from mail-it1-f195.google.com ([209.85.166.195]:50481 "EHLO
+        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725943AbfCKMbO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Mar 2019 08:20:35 -0400
-Received: by mail-io1-f65.google.com with SMTP id y6so3791453ioq.10
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Mar 2019 05:20:35 -0700 (PDT)
+        Mon, 11 Mar 2019 08:31:14 -0400
+Received: by mail-it1-f195.google.com with SMTP id m137so6915723ita.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Mar 2019 05:31:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uQvJ8n8aoKcHzZo5O0VJV+P/KyuCQ2hzJxwDFSc0tKs=;
-        b=ov6EEWCQLFmS+UEp9pFBntPbrDiCbFJHV3gAa/DZytvDhnipt9KTNFGIN1r8sEnxgf
-         fUT1SGqgr23bh75Oaw3yCCzmhV+R6OjeQ8yiI5shxFM505wD4EeC8/VLFnWhDOc8EhnQ
-         i3OgH8U3exiQEWeaTq08eSrK6ZbZWI0cvfBspPNH6YPOvWI7KiZQFkkfS6pbLtftKgUF
-         hXLbyB1vyTOQr30L1lL/HsTYO1b1XUbUURoJ6bvKQwj0dJqo2OMMb5zY+3bgcykwMTMy
-         orlEJnJocrGNccnFDAzVzM70/ad7ybbwbyUcuVaJjE6+vu/rPkaQItZbnNipGUsUDzyc
-         fXcA==
+        bh=0987FjP4LfVMOxoj1K+8fhGzKNfamdJh9c8ctU8x1FI=;
+        b=qqlPiV3nx8frT2REGaXFhlB+0UyMXXvED5qPuhEr9w2CNdx86TzV7jgdH1i4YN8iyW
+         tyJNudzn3CPZcVk7Ho6WyS2k1j4E0wOmbjWnVnOLe1tyMQkm149lJR78tON9Oazi4gHY
+         7/27j2rElM5ctobQLpfYuJnrSQFsfC7txazz7pLxvlZqoqDFRtYZYuiFDMYpp5hbhY5l
+         8VD+S0obNYBUuFdgut6WelP1gLbPM13ipQm7e8C/uV5dpac/zg7NdjXX5OU4/+aKFgbe
+         JBKLxKgf5V0zysOJZ9GOLPn6tYMbf2/SBq3I+Epk9DNbLKXvxQNU0u8nY263Gk/z5Qb7
+         3NyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uQvJ8n8aoKcHzZo5O0VJV+P/KyuCQ2hzJxwDFSc0tKs=;
-        b=suEHdABlofKkM1mJE5xkopUiYQ0SxGayEo5Rf+IcptGX8G5b+MBBppnCNzYyKhBE0u
-         Oi3VHyVsCJ4OAK8X95HvaRCRXA9DZrOqrzd99df3CyOOSnG30ML17Cksqb1j7cGbD5JG
-         Gq1POkpX9nVWapjs2BCm7FI6Q4mh/kRjYUEIMdhtj+mDquynlZ6S375ltrujIdKqluUZ
-         21cHtBNpfY9WIu00y1UqctHB3zE1NExQyn2MWHkFtLw6ga9jQqfrfH5DfGEn95U0Zx0o
-         XqR/RhflCyf4HnHFeEXJv90oKrX3NV/d79PGvLffmoxqn+XSL/fIeExTvmSzzeAkNjRG
-         DMEw==
-X-Gm-Message-State: APjAAAWscS97xCGaMMoCM3rzoIk4CV7u9ny8i/Om8FD1TDsNQcmCYKP4
-        qzdIFz+B8e0oNivlrUYJi6IQQSjMJpJ+FdbOP/M2JXojTg==
-X-Google-Smtp-Source: APXvYqztcchJZ0PjMLG5ruzPeCYIEbZcbUnkBb+SWgO2BFzLcsfEHOIz9M332IUVHXjVRQr12+oMKuDL5Brl1Ux4/M4=
-X-Received: by 2002:a5d:8190:: with SMTP id u16mr17859030ion.238.1552306834520;
- Mon, 11 Mar 2019 05:20:34 -0700 (PDT)
+        bh=0987FjP4LfVMOxoj1K+8fhGzKNfamdJh9c8ctU8x1FI=;
+        b=I2RUhh/gsL/mJV+cTyXIvI32b17oj6jpKVVPqwvxyeQpDc8zNiSpkRvh791RYJoE1G
+         Lgqi11t1g6FUfmkHq2FLkveeIxdW9CqqifUtDjpexH/P27+jSH57HvOXkdxmNpR9N01n
+         vypGnJIpn3VQ0a9kpDsgwkA/afqF01wNyite3TMZh6c6TRWGgutZCwPtivmpTb5EOHXa
+         LH61uUdpsmIR8RG3Ka8fJtd+NybAUJxB1PSStMNrHiNKqJCfNHIfetGuSdLikeS/RQYB
+         TN4ggu5eG1UfoSr2DTd8/HAI0Na8yeA8B1TAIJvGXG3ISP0q10rqHTH/bHmQr35ce5pD
+         cFhQ==
+X-Gm-Message-State: APjAAAV43cqOK8ibW1CPjxIEJkOSQcjIJVe4oqYJDBFpptDGhsjwoc2n
+        tBqjrVfyvi5aVCy1dVq4847hPwYsB7x/O+cD76QQdxs=
+X-Google-Smtp-Source: APXvYqy0OvOLpFtk45lSS81OQMuWdLzNZdqbTO4q0gG8zTsQBgYnlZtfWYXMbkuiEBhyvhUZF0HlKRyapm+fQWoQniU=
+X-Received: by 2002:a24:918c:: with SMTP id i134mr15117449ite.92.1552307473416;
+ Mon, 11 Mar 2019 05:31:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190308171512.15372-1-ykaradzhov@vmware.com> <20190308171512.15372-3-ykaradzhov@vmware.com>
-In-Reply-To: <20190308171512.15372-3-ykaradzhov@vmware.com>
+References: <20190308171405.15266-1-ykaradzhov@vmware.com> <20190308171405.15266-2-ykaradzhov@vmware.com>
+In-Reply-To: <20190308171405.15266-2-ykaradzhov@vmware.com>
 From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Date:   Mon, 11 Mar 2019 14:20:23 +0200
-Message-ID: <CAE0o1NsO5nqemTQ5v2HR9bixVKeiO9Dc8=D9-w36o7b15O9P=A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] kernel-shark: Save the configuration information in ${HOME}/.kshark
+Date:   Mon, 11 Mar 2019 14:31:02 +0200
+Message-ID: <CAE0o1Nv7xkKyFnpYYT4vfpwpQYc_LiNKPuv7aAf7PYUoEUkCTQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] kernel-shark: Define addPlugin method for KsPluginManager
 To:     Yordan Karadzhov <ykaradzhov@vmware.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org
@@ -68,62 +68,70 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Mar 8, 2019 at 7:16 PM Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
+On Fri, Mar 8, 2019 at 7:14 PM Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 >
-> By default the "Last session" configuration file will be saved in
-> ${HOME}/.kshark
-
-${HOME}/.config/foobar seems to be the standard path these days for
-config files[1]. Wdyt about switching it to ${HOME}/.config/khark?
-
-[1] https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-
--- Slavi
-
+> The method can be used to register and load a user-defined plugin.
+> All other previously loaded plugins will be reloaded.
 >
-> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 > ---
->  Makefile                    | 2 +-
->  kernel-shark/CMakeLists.txt | 5 +++--
->  2 files changed, 4 insertions(+), 3 deletions(-)
+>  kernel-shark/src/KsUtils.cpp | 17 +++++++++++++++++
+>  kernel-shark/src/KsUtils.hpp |  3 +++
+>  2 files changed, 20 insertions(+)
 >
-> diff --git a/Makefile b/Makefile
-> index b780718..967c364 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -254,7 +254,7 @@ all_cmd: $(CMD_TARGETS)
->  CMAKE_COMMAND = /usr/bin/cmake
+> diff --git a/kernel-shark/src/KsUtils.cpp b/kernel-shark/src/KsUtils.cpp
+> index d7b1753..4d05bda 100644
+> --- a/kernel-shark/src/KsUtils.cpp
+> +++ b/kernel-shark/src/KsUtils.cpp
+> @@ -596,6 +596,23 @@ void KsPluginManager::unregisterPlugin(const QString &plugin)
+>         }
+>  }
 >
->  $(kshark-dir)/build/Makefile: $(kshark-dir)/CMakeLists.txt
-> -       $(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) ..
-> +       $(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) -DKS_CONF_DIR=$(HOME)/.kshark ..
+> +/** @brief Add to the list and load a user-provided plugin. All other
+> + *        previously loaded plugins will be reloaded.
+> + *
+> + * @param fileName: the library file (.so) of the plugin.
+> +*/
+> +void KsPluginManager::addPlugin(const QString &fileName)
+> +{
+> +       kshark_context *kshark_ctx(nullptr);
+> +
+> +       if (!kshark_instance(&kshark_ctx))
+> +               return;
+> +
+> +       kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_CLOSE);
+> +       registerPlugin(fileName);
+> +       kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_INIT);
+> +}
+
+Calling addPlugin() several times in a row will reinitialize all
+already registered plugins several times and lead to quadratic
+complexity. This seems wrong to me.
+
+Maybe we should split adding plugins from (re-)initializing them so
+that one can add several plugins and then have initialized once when
+they are actually needed to run. Wdyt?
+
+--Slavi
+
+> +
+>  /** Unload all plugins. */
+>  void KsPluginManager::unloadAll()
+>  {
+> diff --git a/kernel-shark/src/KsUtils.hpp b/kernel-shark/src/KsUtils.hpp
+> index cb95b4f..ae7f6d1 100644
+> --- a/kernel-shark/src/KsUtils.hpp
+> +++ b/kernel-shark/src/KsUtils.hpp
+> @@ -210,6 +210,9 @@ public:
 >
->  gui: force $(CMD_TARGETS) $(kshark-dir)/build/Makefile
->         $(Q)$(MAKE) $(S) -C $(kshark-dir)/build
-> diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
-> index 20ced14..3c3beb0 100644
-> --- a/kernel-shark/CMakeLists.txt
-> +++ b/kernel-shark/CMakeLists.txt
-> @@ -14,7 +14,7 @@ set(KS_DIR ${CMAKE_SOURCE_DIR})
+>         void registerPlugin(const QString &plugin);
+>         void unregisterPlugin(const QString &plugin);
+> +
+> +       void addPlugin(const QString &fileName);
+> +
+>         void unloadAll();
 >
->  # Make a directory to hold configuration files. To change this do:
->  # cmake .. -DKS_CONF_DIR=/your/preferred/path
-> -set(KS_CONF_DIR "${KS_DIR}/.ksconf" CACHE STRING "Directory for configuration files.")
-> +set(KS_CONF_DIR "$ENV{HOME}/.kshark" CACHE STRING "Directory for configuration files.")
->  file(MAKE_DIRECTORY ${KS_CONF_DIR})
->
->  include(${KS_DIR}/build/FindTraceCmd.cmake)
-> @@ -59,7 +59,8 @@ include_directories(${KS_DIR}/src/
->  message("")
->  message(STATUS "C flags      : " ${CMAKE_C_FLAGS})
->  message(STATUS "CXX flags    : " ${CMAKE_CXX_FLAGS})
-> -message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS})
-> +message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS}\n)
-> +message(STATUS "config. files saved in ${KS_CONF_DIR}")
->
->  add_subdirectory(${KS_DIR}/src)
->  add_subdirectory(${KS_DIR}/examples)
+>         void updatePlugins(QVector<int> pluginId);
 > --
 > 2.19.1
 >
