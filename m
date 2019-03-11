@@ -7,58 +7,59 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D28D9C43381
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:09:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEC56C43381
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:16:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9ECB42075C
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:09:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9FD562084F
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:16:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="twwNHile"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d0fLY9Gb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbfCKMJw (ORCPT
+        id S1727128AbfCKMQM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Mar 2019 08:09:52 -0400
-Received: from mail-it1-f196.google.com ([209.85.166.196]:52603 "EHLO
-        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbfCKMJw (ORCPT
+        Mon, 11 Mar 2019 08:16:12 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:44143 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbfCKMQM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Mar 2019 08:09:52 -0400
-Received: by mail-it1-f196.google.com with SMTP id g17so6824801ita.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Mar 2019 05:09:51 -0700 (PDT)
+        Mon, 11 Mar 2019 08:16:12 -0400
+Received: by mail-io1-f66.google.com with SMTP id u12so3784906iop.11
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Mar 2019 05:16:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3PmT+OlaYiYqDcyoiaIaRy+XcbBwLZSQTsgM7+5EO/A=;
-        b=twwNHilefWibFO1h0KKqXRAL1GexZu0PyEQf3yzfxNZWp69oMN6EziBuhA1a7TZitU
-         jm46oJ23bgJfkR8H2ZM0q6LMI+QPEYp8rXwDP4BYcGa4SuUPEMT5g4sUcmiZVsSD63Zl
-         ax8FyDV9bwTJ/681sdjnI3bNJPvq8FZyu2QRt3v6LLpBhzJhnBbQ7AGUC+0qpdnoYxcl
-         WSGQTer54Ctr3ltYF8GQ88aIqYmdILm6GUAL2Z972Ox88r9KCqg+3/SY2eZ8uFLKVQvy
-         UQB9xmuVnNymkKBl0+QcozcjFa10s3IWiUfo6b2UE0bCFGUAI/gu1T49R8QWMP65oord
-         kHdQ==
+        bh=mW4/D+pqaqPl/294QuVkkIcM1pIfPSoqB4U5DQUJ03A=;
+        b=d0fLY9GbVflCdnB0RnhzCxM19W6eLBwVHPrz5Yo7FfjqRftHgDyAq2cuUCSLpdWu59
+         U4sMLuCjkA4dnIADDjHbAZchBdciJbZyDLiCn+gtyJtorYVJAIje9QYqXSY9hUEZzN1d
+         0pzc/64FG5RS7X7EbcZ7jBO8nxc2iVHuvVqZhrHMIMMo1lB9rI4aaKwKuEE+ePyw9vTT
+         OKnl/K8ivtwXBR7AQOAmyTubRTBJWmRiBX5SCR/mCP+fJ6uYWP7YrY93ngPIEAd24ob3
+         5hxcpOU5LxbC4J4k46s4pXJJJZFPHF0KXsKuh8BLwNP0pGbdD4HX0PdE908LyHTxUEsA
+         IjbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3PmT+OlaYiYqDcyoiaIaRy+XcbBwLZSQTsgM7+5EO/A=;
-        b=sqeLHnJqlDUe86m4WSCwS7nCq4vVOn6+FvcEBBDZ/0f0sCilF7PGDdcJeq5LwXdv+0
-         9inFmd3JROZNO8z1s7XFh5fXHNHZMPltIGhH++FSBnse6D3gHvU/dsJt+vVV0SKeaw0q
-         wz7UpP7iJ/RuPQD/i1qby4Lm/ghHablgl8kiKPMEBxY/+8bDzG6iiK5ryklkERFG7HbM
-         RWRDq4FaO9VOIxA8PijeBBQy8fHzon0/u2qdFWuaxazFd2iyOhFU3hy1BpXcbEgQo/G6
-         /sfRhQRI0Cx+4dTEl9DpSd3I7seqiLXlea5MZeKQPqNPks6EeD50phNRBCx5MCipXaVX
-         A/Ag==
-X-Gm-Message-State: APjAAAV04z7f8aGqukJaD4zhiFdJSSCetEz259vHWbYK5+bwzLwHGq1R
-        uFwo1yj6XpHlrk2Yh+Jkv6ZEIvXVPxwouDCwQMyHxpg=
-X-Google-Smtp-Source: APXvYqw4ZiCYm1bo2tbFCxxvNnr7zq0PjRwnvg2iGROl27IIk8gs1Mb57lSvddUlujkNur0hTy5yrX5h6qhRSm+NU18=
-X-Received: by 2002:a02:8a4a:: with SMTP id e10mr1059677jal.120.1552306190215;
- Mon, 11 Mar 2019 05:09:50 -0700 (PDT)
+        bh=mW4/D+pqaqPl/294QuVkkIcM1pIfPSoqB4U5DQUJ03A=;
+        b=aGwUIJMJTUOxsZ4nRaHta96503uxj8K9w3XbAyVRHr/pz3oL82Z+gJ/bRZAZjQhDUw
+         JqKGSVsWvoE2dC6NmS1GpH4FsumbZUx+On0gtRVGvP2jcrQOUNXWDg8XtbGObf17i57w
+         s8hZOrsXCsZs1TSs2CkHJVKuMiXy11eoLy6I5IiIum9f53MtIEfUNqiTfRAGW1ShOjqI
+         EO+3C0c0l2Vy7ib28jOnEAttJt3xhY7zDP1J+9VS8oXpwQwLwcybtABgu8ztY5DnWovg
+         tl6WrBnsD14Tx+uV4m4VstcIUd6uLHmGUzYvCUehPkNWzKPd6JIhTG2ENAa4r18LNmOD
+         trpw==
+X-Gm-Message-State: APjAAAXc5CJx2IZWDvpCTHAHjYi1QOjOYPxR2QnTs1pISOJFUjsZjELZ
+        R4bOZpfH2/Z3sXbt/Endaou0ejpnGm7gRToc/Q==
+X-Google-Smtp-Source: APXvYqwGvNFs64EfZrybega3j42barzEdqmyn/Kz0N5TAHntxgtj8l/gNtP09gT+S2l4jf87JS6xKAc9OskIA78HtrU=
+X-Received: by 2002:a5d:9947:: with SMTP id v7mr17540621ios.81.1552306571244;
+ Mon, 11 Mar 2019 05:16:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190307154316.19194-1-ykaradzhov@vmware.com> <20190307154316.19194-5-ykaradzhov@vmware.com>
-In-Reply-To: <20190307154316.19194-5-ykaradzhov@vmware.com>
+References: <20190308171512.15372-1-ykaradzhov@vmware.com> <20190308171512.15372-4-ykaradzhov@vmware.com>
+In-Reply-To: <20190308171512.15372-4-ykaradzhov@vmware.com>
 From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Date:   Mon, 11 Mar 2019 14:09:39 +0200
-Message-ID: <CAE0o1NsXJCV65iRzCMTs_-R8H2ET1TiN4aY20EU5hvkTHOju5Q@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] kernel-shark: Fix a bug in KsPluginManager
+Date:   Mon, 11 Mar 2019 14:16:00 +0200
+Message-ID: <CAE0o1NsC2AFgO53EumUC+kB8-0Ed8+k5dmrEsGfiCUhf5AAVPA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] kernel-shark: Set the location of .kshark directory
+ via env. variable
 To:     Yordan Karadzhov <ykaradzhov@vmware.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org
@@ -68,49 +69,77 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Mar 7, 2019 at 5:44 PM Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
+On Fri, Mar 8, 2019 at 7:16 PM Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 >
-> const char *lib = plugin.toStdString().c_str();
+> The environment variable ${KS_CONF_DIR} can be used to specify the
+> directory where the "Last session" configuration file will be saved.
 >
-> This line is a bad idea because the returned array may (will) be
-> invalidated when the destructor of std::string is called.
->
+> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 > ---
->  kernel-shark/src/KsUtils.cpp | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  kernel-shark/src/KsMainWindow.cpp | 19 ++++++++++++-------
+>  kernel-shark/src/KsMainWindow.hpp |  2 ++
+>  2 files changed, 14 insertions(+), 7 deletions(-)
 >
-> diff --git a/kernel-shark/src/KsUtils.cpp b/kernel-shark/src/KsUtils.cpp
-> index 34b2e2d..d7b1753 100644
-> --- a/kernel-shark/src/KsUtils.cpp
-> +++ b/kernel-shark/src/KsUtils.cpp
-> @@ -439,7 +439,7 @@ void KsPluginManager::registerFromList(kshark_context *kshark_ctx)
+> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+> index 2d61c3f..7f39c14 100644
+> --- a/kernel-shark/src/KsMainWindow.cpp
+> +++ b/kernel-shark/src/KsMainWindow.cpp
+> @@ -133,9 +133,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+>  KsMainWindow::~KsMainWindow()
+>  {
+>         kshark_context *kshark_ctx(nullptr);
+> -       QString file = KS_CONF_DIR;
+> -
+> -       file += "/lastsession.json";
+> +       QString file = _getLastSessionFile();
 >
->         auto lamRegUser = [&kshark_ctx](const QString &plugin)
->         {
-> -               const char *lib = plugin.toStdString().c_str();
-> +               const char *lib = plugin.toLocal8Bit().data();
->                 kshark_register_plugin(kshark_ctx, lib);
->         };
+>         _updateSession();
+>         kshark_save_config_file(file.toLocal8Bit().data(),
+> @@ -368,12 +366,19 @@ void KsMainWindow::_open()
+>                 loadDataFile(fileName);
+>  }
 >
-> @@ -474,7 +474,7 @@ void KsPluginManager::unregisterFromList(kshark_context *kshark_ctx)
+> -void KsMainWindow::_restorSession()
+> +QString KsMainWindow::_getLastSessionFile()
+>  {
+> -       QString file = KS_CONF_DIR;
+> -       file += "/lastsession.json";
+> +       const char *file = getenv("KS_CONF_DIR");
 >
->         auto lamUregUser = [&kshark_ctx](const QString &plugin)
->         {
-> -               const char *lib = plugin.toStdString().c_str();
-> +               const char *lib = plugin.toLocal8Bit().data();
->                 kshark_unregister_plugin(kshark_ctx, lib);
->         };
+> -       loadSession(file);
+> +       if (!file)
+> +               file = KS_CONF_DIR;
+> +
+> +       return QString(file) +  "/lastsession.json";
+> +}
+> +
+> +void KsMainWindow::_restorSession()
 
-Doesn't the new version have the same problem with the temporary QByteArray?
+Nit: typo _restorSession()  -> _restoreSession()
 
-How about saving the data in a local std::string/QByteArray variable?
+> +{
+> +       loadSession(_getLastSessionFile());
+>         _graph.updateGeom();
+>  }
+>
+> diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
+> index 0727631..9b7ec6d 100644
+> --- a/kernel-shark/src/KsMainWindow.hpp
+> +++ b/kernel-shark/src/KsMainWindow.hpp
+> @@ -153,6 +153,8 @@ private:
+>
+>         void _open();
+>
+> +       QString _getLastSessionFile();
+> +
+>         void _restorSession();
+>
+>         void _importSession();
+> --
+> 2.19.1
+>
 
-               std::string lib = plugin.toStdString();
-               kshark_register_plugin(kshark_ctx, lib.c_str());
 
-Thanks!
-
-
---
+-- 
 Slavomir Kaslev
