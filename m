@@ -7,59 +7,58 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEC56C43381
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:16:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C7EAC43381
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:20:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9FD562084F
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:16:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 09FF02075C
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 12:20:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d0fLY9Gb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ov6EEWCQ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbfCKMQM (ORCPT
+        id S1727125AbfCKMUf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Mar 2019 08:16:12 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:44143 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726977AbfCKMQM (ORCPT
+        Mon, 11 Mar 2019 08:20:35 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:43940 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726592AbfCKMUf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Mar 2019 08:16:12 -0400
-Received: by mail-io1-f66.google.com with SMTP id u12so3784906iop.11
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Mar 2019 05:16:11 -0700 (PDT)
+        Mon, 11 Mar 2019 08:20:35 -0400
+Received: by mail-io1-f65.google.com with SMTP id y6so3791453ioq.10
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Mar 2019 05:20:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mW4/D+pqaqPl/294QuVkkIcM1pIfPSoqB4U5DQUJ03A=;
-        b=d0fLY9GbVflCdnB0RnhzCxM19W6eLBwVHPrz5Yo7FfjqRftHgDyAq2cuUCSLpdWu59
-         U4sMLuCjkA4dnIADDjHbAZchBdciJbZyDLiCn+gtyJtorYVJAIje9QYqXSY9hUEZzN1d
-         0pzc/64FG5RS7X7EbcZ7jBO8nxc2iVHuvVqZhrHMIMMo1lB9rI4aaKwKuEE+ePyw9vTT
-         OKnl/K8ivtwXBR7AQOAmyTubRTBJWmRiBX5SCR/mCP+fJ6uYWP7YrY93ngPIEAd24ob3
-         5hxcpOU5LxbC4J4k46s4pXJJJZFPHF0KXsKuh8BLwNP0pGbdD4HX0PdE908LyHTxUEsA
-         IjbA==
+        bh=uQvJ8n8aoKcHzZo5O0VJV+P/KyuCQ2hzJxwDFSc0tKs=;
+        b=ov6EEWCQLFmS+UEp9pFBntPbrDiCbFJHV3gAa/DZytvDhnipt9KTNFGIN1r8sEnxgf
+         fUT1SGqgr23bh75Oaw3yCCzmhV+R6OjeQ8yiI5shxFM505wD4EeC8/VLFnWhDOc8EhnQ
+         i3OgH8U3exiQEWeaTq08eSrK6ZbZWI0cvfBspPNH6YPOvWI7KiZQFkkfS6pbLtftKgUF
+         hXLbyB1vyTOQr30L1lL/HsTYO1b1XUbUURoJ6bvKQwj0dJqo2OMMb5zY+3bgcykwMTMy
+         orlEJnJocrGNccnFDAzVzM70/ad7ybbwbyUcuVaJjE6+vu/rPkaQItZbnNipGUsUDzyc
+         fXcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mW4/D+pqaqPl/294QuVkkIcM1pIfPSoqB4U5DQUJ03A=;
-        b=aGwUIJMJTUOxsZ4nRaHta96503uxj8K9w3XbAyVRHr/pz3oL82Z+gJ/bRZAZjQhDUw
-         JqKGSVsWvoE2dC6NmS1GpH4FsumbZUx+On0gtRVGvP2jcrQOUNXWDg8XtbGObf17i57w
-         s8hZOrsXCsZs1TSs2CkHJVKuMiXy11eoLy6I5IiIum9f53MtIEfUNqiTfRAGW1ShOjqI
-         EO+3C0c0l2Vy7ib28jOnEAttJt3xhY7zDP1J+9VS8oXpwQwLwcybtABgu8ztY5DnWovg
-         tl6WrBnsD14Tx+uV4m4VstcIUd6uLHmGUzYvCUehPkNWzKPd6JIhTG2ENAa4r18LNmOD
-         trpw==
-X-Gm-Message-State: APjAAAXc5CJx2IZWDvpCTHAHjYi1QOjOYPxR2QnTs1pISOJFUjsZjELZ
-        R4bOZpfH2/Z3sXbt/Endaou0ejpnGm7gRToc/Q==
-X-Google-Smtp-Source: APXvYqwGvNFs64EfZrybega3j42barzEdqmyn/Kz0N5TAHntxgtj8l/gNtP09gT+S2l4jf87JS6xKAc9OskIA78HtrU=
-X-Received: by 2002:a5d:9947:: with SMTP id v7mr17540621ios.81.1552306571244;
- Mon, 11 Mar 2019 05:16:11 -0700 (PDT)
+        bh=uQvJ8n8aoKcHzZo5O0VJV+P/KyuCQ2hzJxwDFSc0tKs=;
+        b=suEHdABlofKkM1mJE5xkopUiYQ0SxGayEo5Rf+IcptGX8G5b+MBBppnCNzYyKhBE0u
+         Oi3VHyVsCJ4OAK8X95HvaRCRXA9DZrOqrzd99df3CyOOSnG30ML17Cksqb1j7cGbD5JG
+         Gq1POkpX9nVWapjs2BCm7FI6Q4mh/kRjYUEIMdhtj+mDquynlZ6S375ltrujIdKqluUZ
+         21cHtBNpfY9WIu00y1UqctHB3zE1NExQyn2MWHkFtLw6ga9jQqfrfH5DfGEn95U0Zx0o
+         XqR/RhflCyf4HnHFeEXJv90oKrX3NV/d79PGvLffmoxqn+XSL/fIeExTvmSzzeAkNjRG
+         DMEw==
+X-Gm-Message-State: APjAAAWscS97xCGaMMoCM3rzoIk4CV7u9ny8i/Om8FD1TDsNQcmCYKP4
+        qzdIFz+B8e0oNivlrUYJi6IQQSjMJpJ+FdbOP/M2JXojTg==
+X-Google-Smtp-Source: APXvYqztcchJZ0PjMLG5ruzPeCYIEbZcbUnkBb+SWgO2BFzLcsfEHOIz9M332IUVHXjVRQr12+oMKuDL5Brl1Ux4/M4=
+X-Received: by 2002:a5d:8190:: with SMTP id u16mr17859030ion.238.1552306834520;
+ Mon, 11 Mar 2019 05:20:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190308171512.15372-1-ykaradzhov@vmware.com> <20190308171512.15372-4-ykaradzhov@vmware.com>
-In-Reply-To: <20190308171512.15372-4-ykaradzhov@vmware.com>
+References: <20190308171512.15372-1-ykaradzhov@vmware.com> <20190308171512.15372-3-ykaradzhov@vmware.com>
+In-Reply-To: <20190308171512.15372-3-ykaradzhov@vmware.com>
 From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Date:   Mon, 11 Mar 2019 14:16:00 +0200
-Message-ID: <CAE0o1NsC2AFgO53EumUC+kB8-0Ed8+k5dmrEsGfiCUhf5AAVPA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] kernel-shark: Set the location of .kshark directory
- via env. variable
+Date:   Mon, 11 Mar 2019 14:20:23 +0200
+Message-ID: <CAE0o1NsO5nqemTQ5v2HR9bixVKeiO9Dc8=D9-w36o7b15O9P=A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] kernel-shark: Save the configuration information in ${HOME}/.kshark
 To:     Yordan Karadzhov <ykaradzhov@vmware.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org
@@ -71,71 +70,60 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 On Fri, Mar 8, 2019 at 7:16 PM Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 >
-> The environment variable ${KS_CONF_DIR} can be used to specify the
-> directory where the "Last session" configuration file will be saved.
+> By default the "Last session" configuration file will be saved in
+> ${HOME}/.kshark
+
+${HOME}/.config/foobar seems to be the standard path these days for
+config files[1]. Wdyt about switching it to ${HOME}/.config/khark?
+
+[1] https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+
+-- Slavi
+
 >
 > Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 > ---
->  kernel-shark/src/KsMainWindow.cpp | 19 ++++++++++++-------
->  kernel-shark/src/KsMainWindow.hpp |  2 ++
->  2 files changed, 14 insertions(+), 7 deletions(-)
+>  Makefile                    | 2 +-
+>  kernel-shark/CMakeLists.txt | 5 +++--
+>  2 files changed, 4 insertions(+), 3 deletions(-)
 >
-> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-> index 2d61c3f..7f39c14 100644
-> --- a/kernel-shark/src/KsMainWindow.cpp
-> +++ b/kernel-shark/src/KsMainWindow.cpp
-> @@ -133,9 +133,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
->  KsMainWindow::~KsMainWindow()
->  {
->         kshark_context *kshark_ctx(nullptr);
-> -       QString file = KS_CONF_DIR;
-> -
-> -       file += "/lastsession.json";
-> +       QString file = _getLastSessionFile();
+> diff --git a/Makefile b/Makefile
+> index b780718..967c364 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -254,7 +254,7 @@ all_cmd: $(CMD_TARGETS)
+>  CMAKE_COMMAND = /usr/bin/cmake
 >
->         _updateSession();
->         kshark_save_config_file(file.toLocal8Bit().data(),
-> @@ -368,12 +366,19 @@ void KsMainWindow::_open()
->                 loadDataFile(fileName);
->  }
+>  $(kshark-dir)/build/Makefile: $(kshark-dir)/CMakeLists.txt
+> -       $(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) ..
+> +       $(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) -DKS_CONF_DIR=$(HOME)/.kshark ..
 >
-> -void KsMainWindow::_restorSession()
-> +QString KsMainWindow::_getLastSessionFile()
->  {
-> -       QString file = KS_CONF_DIR;
-> -       file += "/lastsession.json";
-> +       const char *file = getenv("KS_CONF_DIR");
+>  gui: force $(CMD_TARGETS) $(kshark-dir)/build/Makefile
+>         $(Q)$(MAKE) $(S) -C $(kshark-dir)/build
+> diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
+> index 20ced14..3c3beb0 100644
+> --- a/kernel-shark/CMakeLists.txt
+> +++ b/kernel-shark/CMakeLists.txt
+> @@ -14,7 +14,7 @@ set(KS_DIR ${CMAKE_SOURCE_DIR})
 >
-> -       loadSession(file);
-> +       if (!file)
-> +               file = KS_CONF_DIR;
-> +
-> +       return QString(file) +  "/lastsession.json";
-> +}
-> +
-> +void KsMainWindow::_restorSession()
-
-Nit: typo _restorSession()  -> _restoreSession()
-
-> +{
-> +       loadSession(_getLastSessionFile());
->         _graph.updateGeom();
->  }
+>  # Make a directory to hold configuration files. To change this do:
+>  # cmake .. -DKS_CONF_DIR=/your/preferred/path
+> -set(KS_CONF_DIR "${KS_DIR}/.ksconf" CACHE STRING "Directory for configuration files.")
+> +set(KS_CONF_DIR "$ENV{HOME}/.kshark" CACHE STRING "Directory for configuration files.")
+>  file(MAKE_DIRECTORY ${KS_CONF_DIR})
 >
-> diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-> index 0727631..9b7ec6d 100644
-> --- a/kernel-shark/src/KsMainWindow.hpp
-> +++ b/kernel-shark/src/KsMainWindow.hpp
-> @@ -153,6 +153,8 @@ private:
+>  include(${KS_DIR}/build/FindTraceCmd.cmake)
+> @@ -59,7 +59,8 @@ include_directories(${KS_DIR}/src/
+>  message("")
+>  message(STATUS "C flags      : " ${CMAKE_C_FLAGS})
+>  message(STATUS "CXX flags    : " ${CMAKE_CXX_FLAGS})
+> -message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS})
+> +message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS}\n)
+> +message(STATUS "config. files saved in ${KS_CONF_DIR}")
 >
->         void _open();
->
-> +       QString _getLastSessionFile();
-> +
->         void _restorSession();
->
->         void _importSession();
+>  add_subdirectory(${KS_DIR}/src)
+>  add_subdirectory(${KS_DIR}/examples)
 > --
 > 2.19.1
 >
