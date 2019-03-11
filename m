@@ -2,172 +2,86 @@ Return-Path: <SRS0=t4cO=RO=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D411C4360F
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 18:23:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 447EAC43381
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 22:09:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 108E2206BA
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 18:23:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 10461214AE
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Mar 2019 22:09:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbfCKSXe convert rfc822-to-8bit (ORCPT
+        id S1727527AbfCKWJN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Mar 2019 14:23:34 -0400
-Received: from smtprelay0146.hostedemail.com ([216.40.44.146]:35423 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726864AbfCKSXe (ORCPT
+        Mon, 11 Mar 2019 18:09:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727138AbfCKWJN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Mar 2019 14:23:34 -0400
-X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Mar 2019 14:23:33 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave08.hostedemail.com (Postfix) with ESMTP id A83631803323C
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Mar 2019 18:16:15 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id D383C8368EE8;
-        Mon, 11 Mar 2019 18:16:14 +0000 (UTC)
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-HE-Tag: rice75_1952e87692707
-X-Filterd-Recvd-Size: 4935
-Received: from [IPv6:2607:fb90:4a4:c73b:8c47:db71:528:ea44] (unknown [172.56.38.70])
-        (Authenticated sender: rostedt@goodmis.org)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 11 Mar 2019 18:16:13 +0000 (UTC)
-Date:   Mon, 11 Mar 2019 11:15:40 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <f4a51b16-446a-a426-a8b4-71365b8829c4@gmail.com>
-References: <20190307154316.19194-1-ykaradzhov@vmware.com> <20190307154316.19194-5-ykaradzhov@vmware.com> <CAE0o1NsXJCV65iRzCMTs_-R8H2ET1TiN4aY20EU5hvkTHOju5Q@mail.gmail.com> <351105f9-557d-5a2d-99f1-0f93db2848be@gmail.com> <CAE0o1Nv5g6wujxY8ey2mQ72kk977s7tCWq9Hcab1zfNU3rNOVg@mail.gmail.com> <f4a51b16-446a-a426-a8b4-71365b8829c4@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Subject: Re: [PATCH v2 4/4] kernel-shark: Fix a bug in KsPluginManager
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
-        Slavomir Kaslev <slavomir.kaslev@gmail.com>
-CC:     Yordan Karadzhov <ykaradzhov@vmware.com>,
-        linux-trace-devel@vger.kernel.org
+        Mon, 11 Mar 2019 18:09:13 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01E452087C;
+        Mon, 11 Mar 2019 22:09:06 +0000 (UTC)
+Date:   Mon, 11 Mar 2019 18:08:39 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-Message-ID: <55A448CA-1F0F-4396-89D0-22515B630A28@goodmis.org>
+To:     Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc:     Slavomir Kaslev <slavomir.kaslev@gmail.com>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] kernel-shark: Define addPlugin method for
+ KsPluginManager
+Message-ID: <20190311180839.587fc269@oasis.local.home>
+In-Reply-To: <3a983bd7-1c93-4bfe-8ead-ff98eefbc6a8@vmware.com>
+References: <20190308171405.15266-1-ykaradzhov@vmware.com>
+        <20190308171405.15266-2-ykaradzhov@vmware.com>
+        <CAE0o1Nv7xkKyFnpYYT4vfpwpQYc_LiNKPuv7aAf7PYUoEUkCTQ@mail.gmail.com>
+        <3a983bd7-1c93-4bfe-8ead-ff98eefbc6a8@vmware.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Mon, 11 Mar 2019 17:39:11 +0000
+Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 
+> > Calling addPlugin() several times in a row will reinitialize all
+> > already registered plugins several times and lead to quadratic
+> > complexity. This seems wrong to me.
+> > 
+> > Maybe we should split adding plugins from (re-)initializing them so
+> > that one can add several plugins and then have initialized once when
+> > they are actually needed to run. Wdyt?
+> >   
+> 
+> Hi Slavi,
+> 
+> KsPluginManager is a helper class for the GUI. It only does what the GUI 
+> is supposed to do. Currently the dialog that allows to load user plugins 
+> provides loading only one plugin at a time, so the KsPluginManager 
+> provides only this functionality.
+> 
+> So the questions is: do we want a dialog that loads multiple plugins 
+> with one click?
 
-On March 11, 2019 10:55:57 AM PDT, "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
->
->
->On 11.03.19 г. 15:44 ч., Slavomir Kaslev wrote:
->> On Mon, Mar 11, 2019 at 3:20 PM Yordan Karadzhov (VMware)
->> <y.karadz@gmail.com> wrote:
->>>
->>>
->>>
->>> On 11.03.19 г. 14:09 ч., Slavomir Kaslev wrote:
->>>> On Thu, Mar 7, 2019 at 5:44 PM Yordan Karadzhov
-><ykaradzhov@vmware.com> wrote:
->>>>>
->>>>> const char *lib = plugin.toStdString().c_str();
->>>>>
->>>>> This line is a bad idea because the returned array may (will) be
->>>>> invalidated when the destructor of std::string is called.
->>>>>
->>>>> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
->>>>> ---
->>>>>    kernel-shark/src/KsUtils.cpp | 4 ++--
->>>>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/kernel-shark/src/KsUtils.cpp
->b/kernel-shark/src/KsUtils.cpp
->>>>> index 34b2e2d..d7b1753 100644
->>>>> --- a/kernel-shark/src/KsUtils.cpp
->>>>> +++ b/kernel-shark/src/KsUtils.cpp
->>>>> @@ -439,7 +439,7 @@ void
->KsPluginManager::registerFromList(kshark_context *kshark_ctx)
->>>>>
->>>>>           auto lamRegUser = [&kshark_ctx](const QString &plugin)
->>>>>           {
->>>>> -               const char *lib = plugin.toStdString().c_str();
->>>>> +               const char *lib = plugin.toLocal8Bit().data();
->>>>>                   kshark_register_plugin(kshark_ctx, lib);
->>>>>           };
->>>>>
->>>>> @@ -474,7 +474,7 @@ void
->KsPluginManager::unregisterFromList(kshark_context *kshark_ctx)
->>>>>
->>>>>           auto lamUregUser = [&kshark_ctx](const QString &plugin)
->>>>>           {
->>>>> -               const char *lib = plugin.toStdString().c_str();
->>>>> +               const char *lib = plugin.toLocal8Bit().data();
->>>>>                   kshark_unregister_plugin(kshark_ctx, lib);
->>>>>           };
->>>>
->>>> Doesn't the new version have the same problem with the temporary
->QByteArray?
->>>>
->>>> How about saving the data in a local std::string/QByteArray
->variable?
->>>>
->>>>                  std::string lib = plugin.toStdString();
->>>>                  kshark_register_plugin(kshark_ctx, lib.c_str());
->>>>
->>>
->>> Hi Slavi,
->>>
->>> As far I can understand toStdString() will create a fresh
->std::string
->>> and this string will has its own copy of the characters. However,
->this
->>> copy gets out-of-scope as soon as we hit the semicolon of the line.
->>>
->>> My understanding was that toLocal8Bit().data() makes no copy so the
->>> array will go out-of-scope only when the QString is destroyed.
->> 
->> I did some digging into QString's implementation. From my reading of
->> the code, toLocal8Bit() calls into qt_convert_to_latin1()[1] which
->> does allocation, copying/transform-to-latin1 and returns the
->> QByteArray. So it seems that toLocal8Bit() is still making a copy.
->> 
->> [1]
->https://github.com/qt/qtbase/blob/5.12/src/corelib/tools/qstring.cpp#L5275
->> 
->> Cheers,
->> 
->
->Thanks a lot for investigating this!
->I think in this case it will be more appropriate if you sign the patch.
->cheers,
->Y.
->
->> -- Slavi
->> 
->>>
->>> But anyway, your solution looks cleaner and safer.
->>> I will send another version of the patch.
->>> Thanks a lot!
+What would be the issue with allowing that?
 
+> 
+> On the other hand we do encourage the users to use the KernelShark 
+> library for making custom applications. This is the motivation for 
+> having the C API, but KsPluginManager it is not part of this API. 
+> KsPluginManager operates on top of the API and is intended to be used 
+> only by the GUI code.
+> 
+> Indeed the C API itself separates adding plugins from there initializing.
 
-Signing the patch means that the person either wrote the patch or handled it to be committed.
-
-I think you want Suggested-by:
+Just like clicking the plugin dialog, where you select the plugins to
+add or remove and hit apply. Couldn't this be the same, or am I missing
+something?
 
 -- Steve
-
->>> Y.
->>>
->>>
->>>> Thanks!
->>>>
->>>>
->>>> --
->>>> Slavomir Kaslev
->>>>
->> 
->> 
->> 
-
--- 
-Sent from my Android device with K-9 Mail. Please excuse my brevity and top posting.
