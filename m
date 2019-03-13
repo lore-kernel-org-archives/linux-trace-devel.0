@@ -2,95 +2,88 @@ Return-Path: <SRS0=BXa2=RQ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAFF0C43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 14:50:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51CB8C43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 15:07:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9B41D214AE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 14:50:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 288DC214AE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 15:07:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbfCMOuY (ORCPT
+        id S1725895AbfCMPHk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 13 Mar 2019 10:50:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725907AbfCMOuY (ORCPT
+        Wed, 13 Mar 2019 11:07:40 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:35501 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725832AbfCMPHk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 13 Mar 2019 10:50:24 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18D822147C;
-        Wed, 13 Mar 2019 14:50:23 +0000 (UTC)
-Date:   Wed, 13 Mar 2019 10:50:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Claudio <claudio.fontana@gliwa.com>
-Cc:     joel@joelfernandes.org,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>, Chunyu Hu <chuhu@redhat.com>
-Subject: Re: make TGID available also in binary ring buffer?
-Message-ID: <20190313105020.07bb8254@gandalf.local.home>
-In-Reply-To: <0ce98e8a-47b7-7890-500a-e0a2bc938b53@gliwa.com>
-References: <6e61f5ff-5302-ad96-66d3-38347bf3cf69@gliwa.com>
-        <20190304135147.5fcc243f@gandalf.local.home>
-        <ac830875-ca55-9978-1ece-4614fd988d29@gliwa.com>
-        <20190313094417.7ed14ee0@gandalf.local.home>
-        <0ce98e8a-47b7-7890-500a-e0a2bc938b53@gliwa.com>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 13 Mar 2019 11:07:40 -0400
+Received: by mail-wm1-f67.google.com with SMTP id y15so2270545wma.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 13 Mar 2019 08:07:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jyFccVLWzuY8/KMA6mJbr/szyCOl1142wMOSFppIxFs=;
+        b=eBSk+In2/8s9RuXk9B61eO5ywxQA2jHYI/Ug16/NeQyMFNccg6CXJcguYY5iAWZpQS
+         WZXN8hbKMS0OZUAfEKi+wtXX6lkqKsWW06hPQb6hbyIhz18q8xmWEwgcJaK314i72ihv
+         KF2+VQw5qjg6+CeDO7rigdBxq+LM97sdHcMJykNbMt2EEQVbXzJ7HMQQXWHujA1ycDti
+         X50Yj6YYPYeQziYay0t9DjUBx/xhzRAH1GWjTY1KT1ta1up3b9/H5FYGU57zikMsxocZ
+         jQImSiqDfCOBCJ//3GGXwxknon9cFQQKzjZfdBP/nFDndpf9LMzHR5Oj4OWEqenpi95U
+         YqVw==
+X-Gm-Message-State: APjAAAVNx4x1LPZP5u0mZb5u+6prlNcTufAa17vVaW8Yz9toJt68q15T
+        DpzdR2tNxSFOMQx9ODTLVAw=
+X-Google-Smtp-Source: APXvYqyetnuWkzCyPO5GGCTt79gi1ft6MPgOY2JY0GZSB+04cU4ZnYTxAhtn8S5lJa0BYWIvKmmp4w==
+X-Received: by 2002:a1c:7903:: with SMTP id l3mr2801028wme.22.1552489658822;
+        Wed, 13 Mar 2019 08:07:38 -0700 (PDT)
+Received: from localhost.localdomain ([95.87.198.56])
+        by smtp.gmail.com with ESMTPSA id f6sm22515103wrs.45.2019.03.13.08.07.38
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 Mar 2019 08:07:38 -0700 (PDT)
+From:   Yordan Karadzhov <ykaradzhov@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        Yordan Karadzhov <ykaradzhov@vmware.com>
+Subject: [PATCH v2 0/4] Add dialog for loading user-defined plugins
+Date:   Wed, 13 Mar 2019 17:07:13 +0200
+Message-Id: <20190313150717.21345-1-ykaradzhov@vmware.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 13 Mar 2019 15:03:35 +0100
-Claudio <claudio.fontana@gliwa.com> wrote:
+So far loading user-defined plugins was possible only from the
+command line
 
+./kernelshark -p /path/to/your/plugin-lib.so
 
-> >>
-> >> When I read an event for a new process or thread
-> >> (sched_process_fork), I need to know if it is a new thread or a
-> >> new process at that time, and collect the tgid of the child.  
-> > 
-> > You are reading this at the time of tracing?  
-> 
-> Yes, my requirements are for live tracing of the low level events,
-> and correlation of the events from all cores, in order to be able to
-> immediately respond to the events from the tracing application.
-> 
-> Tracing is expected to be always on in the system (no expected
-> trace-first/analyze later pattern - everything related to the
-> analysis of the events is automated and occurs at runtime).
+This patch set adds the possibility to load plugins from the GUI
+itself by using a dedicated dialog available in Tools
 
-You could add a kprobe to find out the tgid as well.
+Changes in v2:
+  - The dialog can now select and load multiple plugins at a time, as
+suggested by Slavomir and Steven .
 
-> 
-> This works fine for the real time timing analysis at the thread
-> level, but for the process level I need to know the tgid of the
-> thread at the time I see the event. 
-> >>
-> >> How can I get that information, if the update is done only at the
-> >> time of the first "child" context-switch?
-> >>
-> >> 3) Is the saved_tgids map in sync with the reader of
-> >> trace_pipe_raw, so that when reading an event from the pipe, the
-> >> saved_tgids represent the particular state of the tid to tgid maps
-> >> at the timestamp indicated in the event?  
-> > 
-> > Currently, it's only taken at the end of the trace.  
-> 
-> I wonder what the concept of the "end of the trace" is..
+  - After re-initializing the list of plugins the data is reloaded.
+Not reloading the data was a bug in the previous version.
 
+Yordan Karadzhov (4):
+  kernel-shark: Define addPlugins method for KsPluginManager
+  kernel-shark: Add dialog for user-defined plugins to the Tools menu
+  kernel-shark: Rename the manu action for managing registered plugins
+  kernel-shark: Add icons for "Add plugins" and "Manage plugins"
 
-I meant for "trace-cmd record", the saved_cmdlines are stored when the
-tracing is finished, not during the trace. But the saved_cmdlines is
-updated at each sched_switch, and so is the tgid.
+ kernel-shark/src/KsMainWindow.cpp | 34 ++++++++++++++++++++++++++-----
+ kernel-shark/src/KsMainWindow.hpp |  6 +++++-
+ kernel-shark/src/KsUtils.cpp      | 23 +++++++++++++++++++++
+ kernel-shark/src/KsUtils.hpp      |  3 +++
+ 4 files changed, 60 insertions(+), 6 deletions(-)
 
-Now, we could add that info to the fork part as well.
+-- 
+2.19.1
 
--- Steve
