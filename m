@@ -6,88 +6,95 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60570C43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 11:24:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BC77C43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 13:44:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2A1D42171F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 11:24:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 687912171F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 13:44:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbfCMLYp (ORCPT
+        id S1725856AbfCMNoV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 13 Mar 2019 07:24:45 -0400
-Received: from s30320.gliwa.com ([148.251.52.238]:60232 "EHLO mail.gliwa.com"
+        Wed, 13 Mar 2019 09:44:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725832AbfCMLYo (ORCPT
+        id S1725832AbfCMNoV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 13 Mar 2019 07:24:44 -0400
-Received: by mail.gliwa.com (Postfix, from userid 992)
-        id C224D341002; Wed, 13 Mar 2019 12:24:42 +0100 (CET)
-X-Virus-Checker-Version: ClamAV 0.101.1/25386/Tue Mar 12 09:15:09 2019
-X-Virus-Status: OK
-Received: from [192.168.2.102] (dslb-178-003-217-045.178.003.pools.vodafone-ip.de [178.3.217.45])
-        by mail.gliwa.com (Postfix) with ESMTPSA id 7F96A340FD5;
-        Wed, 13 Mar 2019 12:24:42 +0100 (CET)
-Subject: Re: [PATCH v4 00/46] Libtraceevent MAN pages
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-References: <20190308133654.21264-1-tstoyanov@vmware.com>
- <438810f6-6a04-aa9d-a38a-1d0e04c03c5c@gliwa.com>
- <CACqStodFFrxyQR1YD-uL2swMT8nyVSYQJCJzzX=NV2vrRd5sfQ@mail.gmail.com>
- <20190312113506.52ca2568@gandalf.local.home>
-From:   Claudio <claudio.fontana@gliwa.com>
-Message-ID: <9a489ee4-ca01-93eb-c34d-20bcf0388ded@gliwa.com>
-Date:   Wed, 13 Mar 2019 12:24:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+        Wed, 13 Mar 2019 09:44:21 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C82A42087C;
+        Wed, 13 Mar 2019 13:44:19 +0000 (UTC)
+Date:   Wed, 13 Mar 2019 09:44:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Claudio <claudio.fontana@gliwa.com>
+Cc:     joel@joelfernandes.org,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>, Chunyu Hu <chuhu@redhat.com>
+Subject: Re: make TGID available also in binary ring buffer?
+Message-ID: <20190313094417.7ed14ee0@gandalf.local.home>
+In-Reply-To: <ac830875-ca55-9978-1ece-4614fd988d29@gliwa.com>
+References: <6e61f5ff-5302-ad96-66d3-38347bf3cf69@gliwa.com>
+        <20190304135147.5fcc243f@gandalf.local.home>
+        <ac830875-ca55-9978-1ece-4614fd988d29@gliwa.com>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20190312113506.52ca2568@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steve,
+On Wed, 13 Mar 2019 09:26:33 +0100
+Claudio <claudio.fontana@gliwa.com> wrote:
 
-On 3/12/19 4:35 PM, Steven Rostedt wrote:
-> On Fri, 8 Mar 2019 15:47:14 +0000
-> Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
-> 
->> Steven could describe it in more details, but we work on common
->> tracing platform - set of libraries, which will expose the tracing
->> functionality, currently available for trace-cmd and kernelshark only,
->> to any application.
-> 
-> [ Just came back from SCaLE 17x conference ]
-> 
-> Note, the libtraceevent is currently just a way to parse the data read
-> by the Linux kernel trace events. The format files exist in the tracefs
-> file system under events/<system>/<event>/format (e.g.
-> events/sched/sched_switch/format).
-> 
-> The library is used by trace-cmd, perf, powertop and mce utils.
-> Currently, each has their own copy. We are working on making this into
-> a shared library where the code no longer needs to be duplicated.
 
- 
-> There's also going to be an effort to create libftrace, that will take
-> the functionality of trace-cmd and move it into a library, such that
-> any tool can start ftrace tracing, and record data. But that's not going
-> to happen until after we finish getting libtraceevent out.
+> 1) Are the saved_tgids not present in a tracing instance?
+> I am currently interacting with ftrace from the application doing everything in an instance,
+
+Currently save_cmdlines and saved_tgids are only in the top level
+tracing directory, and are global for all tracing.
+
+Thinking about this a bit more, it does make sense to make this an
+instance file, as we don't want instance tracing to remove the top
+level cached cmdlines.
+
 > 
-> -- Steve
+> tracefs on /usr/local/var/run/T1/tracing type tracefs (rw,relatime)
 > 
+> but the saved_tgids is not present in my instance directory.
+> 
+> 2) Which state does "saved_tgids" represent, ie when is it updated?
+> 
+> The ftrace.rst doc says at each context switch, but wouldn't sched_process_fork / sched_process_free tracepoints be a better place to update?
 
-thank you for this background information, this solves my confusion at the moment.
+Well, forks and free can happen after tracing, and they are only
+updated during the trace. We mostly want to see the tasks when they
+run, and the sched_switch is the best place to save them.
 
-I currently have my own code that parses the data, based on the event/format,
-so I will not replace it immediately, I think that the really valuable replacement
-would be the libftrace follow up project.
+> 
+> When I read an event for a new process or thread (sched_process_fork),
+> I need to know if it is a new thread or a new process at that time, and collect the tgid of the child.
 
-Ciao,
+You are reading this at the time of tracing?
 
-CLaudio
+> 
+> How can I get that information, if the update is done only at the time of the first "child" context-switch?
+> 
+> 3) Is the saved_tgids map in sync with the reader of trace_pipe_raw,
+> so that when reading an event from the pipe, the saved_tgids represent the particular state of the tid to tgid maps at the timestamp indicated in the event?
+
+Currently, it's only taken at the end of the trace.
+
+-- Steve
+
+> 
+> Or is the saved_tgids map updated asynchronously with the reader?
+> 
+> Thank you for any advice on this..
+> 
+> Ciao,
+> 
+> Claudio
+
