@@ -2,148 +2,403 @@ Return-Path: <SRS0=BXa2=RQ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AC4BC43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 01:18:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8030CC43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 01:28:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 39D41217F4
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 01:18:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1552439938;
-	bh=RgwH5rsy0vHUZudERZYU4v2QMra3BIv3Y4JztssEOfI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=LIT2mmV4Kg+1Ffka9ZMAct9s+inWwRxQQ5kbiE2uxmrom1RlWfucMdceehGkPlUYS
-	 tuQ2J4y1dCdzJWdRNvGVv2Fo3J6zhZhP580ieeRCZxwJ3QjBn0VY4ay70SIe7jeyjO
-	 Mbt1wSEWu+BPdCNzglDtBirBbocUM/iQlPTIxqIU=
+	by mail.kernel.org (Postfix) with ESMTP id 4F427217F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 01:28:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbfCMBSx (ORCPT
+        id S1726411AbfCMB2g (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Mar 2019 21:18:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33996 "EHLO mail.kernel.org"
+        Tue, 12 Mar 2019 21:28:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbfCMBSx (ORCPT
+        id S1726269AbfCMB2f (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 12 Mar 2019 21:18:53 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        Tue, 12 Mar 2019 21:28:35 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F11BD2171F;
-        Wed, 13 Mar 2019 01:18:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1552439931;
-        bh=RgwH5rsy0vHUZudERZYU4v2QMra3BIv3Y4JztssEOfI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=2FUb4f4eniif1ed390uE14DJr2XNeFbFI6ozTKH6nUU2Okzjs4mKdxuxVM2Hlc8DY
-         cn6dnyAn05FsLCL2LwlZDgSPBnssJe05KU05Z5tCIGPGTSowoI3pWW96NwOPI43dLE
-         MpkhFhAQJWDVW7jRv29shlEtDY7RyqAN/uiGmCrc=
-Date:   Wed, 13 Mar 2019 10:18:43 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Joel Fernandes <joelaf@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Daniel Colascione <dancol@google.com>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        atish patra <atishp04@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        Manoj Rao <linux@manojrajarao.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH v4 1/2] Provide in-kernel headers for making it easy to
- extend the kernel
-Message-Id: <20190313101843.800dd8d6a9babb635580ebdc@kernel.org>
-In-Reply-To: <CAJWu+oqsD_wHGWfzj6POFowiY2qcu04auVzkA6Lu9R+LR4gkrQ@mail.gmail.com>
-References: <20190308140251.GC25768@kroah.com>
-        <CAMuHMdUmnrJtu8bBeUgtiU6y_TLHM27z1WxpPia4dXMpApeijw@mail.gmail.com>
-        <20190309071648.GE3882@kroah.com>
-        <CAMuHMdUT+UGt9p2QhOXzAtCUmqy-a8YN-ceDa-0qANJE53pWBA@mail.gmail.com>
-        <20190309121141.GA30173@kroah.com>
-        <b7296377-9e0c-aed7-61f0-93d24d1ceddd@opersys.com>
-        <CAMuHMdV8+XTyGf1ZJ+gMf=zQpzqh3-+b7wgi+gAmXQ6HpUAw3A@mail.gmail.com>
-        <3e84e1ef-e266-e983-5874-6c26ac7f38b8@opersys.com>
-        <20190311193612.4f09bf11@oasis.local.home>
-        <CAKOZuetHG0O-CiO6h5tD7aht_MT70ebwWMMSPkRUHdiM3wVq0Q@mail.gmail.com>
-        <20190312003912.GA170478@google.com>
-        <20190311212823.60684182@oasis.local.home>
-        <CAJWu+oqsD_wHGWfzj6POFowiY2qcu04auVzkA6Lu9R+LR4gkrQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by mail.kernel.org (Postfix) with ESMTPSA id E4B6C214AE;
+        Wed, 13 Mar 2019 01:28:33 +0000 (UTC)
+Date:   Tue, 12 Mar 2019 21:28:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v4 6/6] trace-cmd: Reafctored reset_max_latency() to
+ utilize write_instance_file()
+Message-ID: <20190312212722.7556b545@oasis.local.home>
+In-Reply-To: <20190311083339.21581-7-tstoyanov@vmware.com>
+References: <20190311083339.21581-1-tstoyanov@vmware.com>
+ <20190311083339.21581-7-tstoyanov@vmware.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="MP_/7O9c4/TBZl8Um55aCKr2cPN"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 11 Mar 2019 18:38:49 -0700
-Joel Fernandes <joelaf@google.com> wrote:
+--MP_/7O9c4/TBZl8Um55aCKr2cPN
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> On Mon, Mar 11, 2019 at 6:28 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Mon, 11 Mar 2019 20:39:12 -0400
-> > Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > > I think even though the kernel-headers can't have information about all data
-> > > structures, they do already contain a lot of data structure definitions we
-> > > need already. And anything needed can/should arguably be moved to include/ if
-> > > they are really needed for kernel extension by something "external" to the
-> > > kernel such as kernel modules or eBPF, right?
-> >
-> > That's not my worry. I would like to be able to easily walk data
-> > structures from within the kernel, without having to do a lot of work
-> > in userspace to get that information. The kprobe_events could then be
-> > passed type casts or such to access data fields of arguments to
-> > functions and such.
-> 
-> Ok.
-> 
-> > > In any case, such a solution such as what Steve suggested, still cannot do
-> > > what we can with headers - such as build kernel modules on the fly using the
-> > > C-compiler without any auto-generation of C code from any debug artifiacts.
-> > > Think systemtap working with the module-backend without any need for
-> > > linux-headers package on the file system. So such a solution would still be a
-> > > bit orthogonal in scope to what this proposed solution can solve IMO.
-> > >
-> >
-> > With the information I would like to have, it would be trivial to read
-> > the data to create the header files needed for modules.
-> 
-> But there are macros and other #define things too. We lose all of them
-> and can't recreate them from just DWARF (AFAIK). Including
-> include/generated/autoconf.h which #defines the CONFIG options. For
-> that we either need headers, or full kernel's sources with build
-> artifacts.
+On Mon, 11 Mar 2019 10:33:39 +0200
+Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-What kind of macros would you concern?
 
-> I do see a use case for the debug info you are talking about as you
-> mentioned for the kprobe_events argument list types, and I already
-> thought about it. But it does not seem to work for all the use cases I
-> am referring to here.
+> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+> index bdf0c02..dfbb0cd 100644
+> --- a/tracecmd/trace-record.c
+> +++ b/tracecmd/trace-record.c
+> @@ -814,19 +814,49 @@ static void clear_trace(void)
+>  	fclose(fp);
+>  }
+>  
+> -static void reset_max_latency(void)
+> +static int write_file(const char *file, const char *str, const char *type)
+> +{
+> +	char buf[BUFSIZ];
+> +	int fd;
+> +	int ret;
+> +
+> +	fd = open(file, O_WRONLY | O_TRUNC);
+> +	if (fd < 0)
+> +		die("opening to '%s'", file);
+> +	ret = write(fd, str, strlen(str));
+> +	close(fd);
+> +	if (ret < 0 && type) {
+> +		/* write failed */
+> +		fd = open(file, O_RDONLY);
+> +		if (fd < 0)
+> +			die("writing to '%s'", file);
+> +		/* the filter has the error */
+> +		while ((ret = read(fd, buf, BUFSIZ)) > 0)
+> +			fprintf(stderr, "%.*s", ret, buf);
+> +		die("Failed %s of %s\n", type, file);
+> +		close(fd);
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int
+> +write_instance_file(struct buffer_instance *instance,
+> +		    const char *file, const char *str, const char *type)
+>  {
+> -	FILE *fp;
+>  	char *path;
+> +	int ret;
+>  
+> -	/* reset the trace */
+> -	path = tracecmd_get_tracing_file("tracing_max_latency");
+> -	fp = fopen(path, "w");
+> -	if (!fp)
+> -		die("writing to '%s'", path);
+> +	path = get_instance_file(instance, file);
+> +	ret = write_file(path, str, type);
+>  	tracecmd_put_tracing_file(path);
+> -	fwrite("0", 1, 1, fp);
+> -	fclose(fp);
+> +
+> +	return ret;
 
-But the eBPF is based on kprobe-events. What kind of usage would you
-expected? (with macros??)
+To make this easier to review and understand, I added a change before
+patch 4 that moved write_instance_file() up further. This way, there's
+a single patch that moves the code. Especially, since you moved it
+twice. Sometimes its cleaner to do the move as a separate change.
+Especially when you are modifying the change near the move.
 
-Thank you,
+I rebased the changes on top of the move, and the result is attached.
 
+-- Steve
+
+--MP_/7O9c4/TBZl8Um55aCKr2cPN
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0001-trace-cmd-Move-write_instance_file-up-in-file.patch
+
+From cbd567febd2559b055576ec48312fa53f46f76f5 Mon Sep 17 00:00:00 2001
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Date: Tue, 12 Mar 2019 21:13:19 -0400
+Subject: [PATCH 1/4] trace-cmd: Move write_instance_file() up in file
+
+To allow for reset_max_latency() and add_filter_pid() to utilize
+write_instance_file(), move it up before those functions. It is in a better
+location now as well.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ tracecmd/trace-record.c | 78 ++++++++++++++++++++---------------------
+ 1 file changed, 39 insertions(+), 39 deletions(-)
+
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 00dc5ad7..f1f5d29d 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -776,6 +776,45 @@ get_instance_dir(struct buffer_instance *instance)
+ 	return path;
+ }
+ 
++static int write_file(const char *file, const char *str, const char *type)
++{
++	char buf[BUFSIZ];
++	int fd;
++	int ret;
++
++	fd = open(file, O_WRONLY | O_TRUNC);
++	if (fd < 0)
++		die("opening to '%s'", file);
++	ret = write(fd, str, strlen(str));
++	close(fd);
++	if (ret < 0 && type) {
++		/* write failed */
++		fd = open(file, O_RDONLY);
++		if (fd < 0)
++			die("writing to '%s'", file);
++		/* the filter has the error */
++		while ((ret = read(fd, buf, BUFSIZ)) > 0)
++			fprintf(stderr, "%.*s", ret, buf);
++		die("Failed %s of %s\n", type, file);
++		close(fd);
++	}
++	return ret;
++}
++
++static int
++write_instance_file(struct buffer_instance *instance,
++		    const char *file, const char *str, const char *type)
++{
++	char *path;
++	int ret;
++
++	path = get_instance_file(instance, file);
++	ret = write_file(path, str, type);
++	tracecmd_put_tracing_file(path);
++
++	return ret;
++}
++
+ static void __clear_trace(struct buffer_instance *instance)
+ {
+ 	FILE *fp;
+@@ -1596,45 +1635,6 @@ static void reset_events(void)
+ 		reset_events_instance(instance);
+ }
+ 
+-static int write_file(const char *file, const char *str, const char *type)
+-{
+-	char buf[BUFSIZ];
+-	int fd;
+-	int ret;
+-
+-	fd = open(file, O_WRONLY | O_TRUNC);
+-	if (fd < 0)
+-		die("opening to '%s'", file);
+-	ret = write(fd, str, strlen(str));
+-	close(fd);
+-	if (ret < 0 && type) {
+-		/* write failed */
+-		fd = open(file, O_RDONLY);
+-		if (fd < 0)
+-			die("writing to '%s'", file);
+-		/* the filter has the error */
+-		while ((ret = read(fd, buf, BUFSIZ)) > 0)
+-			fprintf(stderr, "%.*s", ret, buf);
+-		die("Failed %s of %s\n", type, file);
+-		close(fd);
+-	}
+-	return ret;
+-}
+-
+-static int
+-write_instance_file(struct buffer_instance *instance,
+-		    const char *file, const char *str, const char *type)
+-{
+-	char *path;
+-	int ret;
+-
+-	path = get_instance_file(instance, file);
+-	ret = write_file(path, str, type);
+-	tracecmd_put_tracing_file(path);
+-
+-	return ret;
+-}
+-
+ enum {
+ 	STATE_NEWLINE,
+ 	STATE_SKIP,
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.20.1
+
+
+--MP_/7O9c4/TBZl8Um55aCKr2cPN
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0002-trace-cmd-Refactore-add_event_pid-to-utilize-write_i.patch
+
+From cd5a23168280917774094eeb77b5a359e4f4a292 Mon Sep 17 00:00:00 2001
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Date: Mon, 11 Mar 2019 10:33:37 +0200
+Subject: [PATCH 2/4] trace-cmd: Refactore add_event_pid()to utilize
+ write_instance_file()
+
+This patch changes add_event_pid() to utilize write_instance_file() for
+writing set_event_pid instance file, instead of directly opening it.
+
+Link: http://lore.kernel.org/linux-trace-devel/20190311083339.21581-5-tstoyanov@vmware.com
+
+Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ tracecmd/trace-record.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index f1f5d29d..801dad24 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -1133,30 +1133,25 @@ static void update_sched_events(struct buffer_instance *instance, int pid)
+ static int open_instance_fd(struct buffer_instance *instance,
+ 			    const char *file, int flags);
+ 
+-static void add_event_pid(const char *buf, int len)
++static void add_event_pid(const char *buf)
+ {
+ 	struct buffer_instance *instance;
+-	int fd;
+ 
+-	for_all_instances(instance) {
+-		fd = open_instance_fd(instance, "set_event_pid", O_WRONLY);
+-		write(fd, buf, len);
+-		close(fd);
+-	}
++	for_all_instances(instance)
++		write_instance_file(instance, "set_event_pid", buf, "event_pid");
+ }
+ 
+ static void add_new_filter_pid(int pid)
+ {
+ 	struct buffer_instance *instance;
+ 	char buf[100];
+-	int len;
+ 
+ 	add_filter_pid(pid, 0);
+-	len = sprintf(buf, "%d", pid);
++	sprintf(buf, "%d", pid);
+ 	update_ftrace_pid(buf, 0);
+ 
+ 	if (have_set_event_pid)
+-		return add_event_pid(buf, len);
++		return add_event_pid(buf);
+ 
+ 	common_pid_filter = append_pid_filter(common_pid_filter, "common_pid", pid);
+ 
+-- 
+2.20.1
+
+
+--MP_/7O9c4/TBZl8Um55aCKr2cPN
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0004-trace-cmd-Refactore-reset_max_latency-to-utilize-wri.patch
+
+From 7b4254303277ee6c5833f427fea7f00fa161bd74 Mon Sep 17 00:00:00 2001
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Date: Mon, 11 Mar 2019 10:33:39 +0200
+Subject: [PATCH 4/4] trace-cmd: Refactore reset_max_latency() to utilize
+ write_instance_file()
+
+This patch changes reset_max_latency() to utilize write_instance_file() for
+writing set_event_pid instance file, instead of directly opening it. It also
+changes the function to work per instance.
+
+Link: http://lore.kernel.org/linux-trace-devel/20190311083339.21581-7-tstoyanov@vmware.com
+
+Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ tracecmd/trace-record.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
+
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index fe22ad08..c16abe2f 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -853,19 +853,10 @@ static void clear_trace(void)
+ 	fclose(fp);
+ }
+ 
+-static void reset_max_latency(void)
++static void reset_max_latency(struct buffer_instance *instance)
+ {
+-	FILE *fp;
+-	char *path;
+-
+-	/* reset the trace */
+-	path = tracecmd_get_tracing_file("tracing_max_latency");
+-	fp = fopen(path, "w");
+-	if (!fp)
+-		die("writing to '%s'", path);
+-	tracecmd_put_tracing_file(path);
+-	fwrite("0", 1, 1, fp);
+-	fclose(fp);
++	 write_instance_file(instance,
++			     "tracing_max_latency", "0", "max_latency");
+ }
+ 
+ static void add_filter_pid(int pid, int exclude)
+@@ -1931,6 +1922,14 @@ static int read_tracing_on(struct buffer_instance *instance)
+ 	return ret;
+ }
+ 
++static void reset_max_latency_instance(void)
++{
++	struct buffer_instance *instance;
++
++	for_all_instances(instance)
++		reset_max_latency(instance);
++}
++
+ void tracecmd_enable_tracing(void)
+ {
+ 	struct buffer_instance *instance;
+@@ -1941,7 +1940,7 @@ void tracecmd_enable_tracing(void)
+ 		write_tracing_on(instance, 1);
+ 
+ 	if (latency)
+-		reset_max_latency();
++		reset_max_latency_instance();
+ }
+ 
+ void tracecmd_disable_tracing(void)
+@@ -3802,7 +3801,6 @@ static void reset_event_pid(void)
+ 	add_event_pid("");
+ }
+ 
+-
+ static void clear_triggers(void)
+ {
+ 	struct buffer_instance *instance;
+@@ -4507,6 +4505,7 @@ void trace_reset(int argc, char **argv)
+ 	/* set clock to "local" */
+ 	reset_clock();
+ 	reset_event_pid();
++	reset_max_latency_instance();
+ 	tracecmd_remove_instances();
+ 	clear_func_filters();
+ 	/* restore tracing_on to 1 */
+-- 
+2.20.1
+
+
+--MP_/7O9c4/TBZl8Um55aCKr2cPN--
