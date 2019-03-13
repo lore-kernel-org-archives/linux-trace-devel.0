@@ -1,42 +1,92 @@
-Return-Path: <SRS0=WSgK=RP=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=BXa2=RQ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90F08C43381
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Mar 2019 23:07:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AC4BC43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 01:18:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 55FE22173C
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Mar 2019 23:07:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 39D41217F4
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 01:18:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1552439938;
+	bh=RgwH5rsy0vHUZudERZYU4v2QMra3BIv3Y4JztssEOfI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
+	b=LIT2mmV4Kg+1Ffka9ZMAct9s+inWwRxQQ5kbiE2uxmrom1RlWfucMdceehGkPlUYS
+	 tuQ2J4y1dCdzJWdRNvGVv2Fo3J6zhZhP580ieeRCZxwJ3QjBn0VY4ay70SIe7jeyjO
+	 Mbt1wSEWu+BPdCNzglDtBirBbocUM/iQlPTIxqIU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbfCLXH6 (ORCPT
+        id S1726708AbfCMBSx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Mar 2019 19:07:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40822 "EHLO mail.kernel.org"
+        Tue, 12 Mar 2019 21:18:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726755AbfCLXH5 (ORCPT
+        id S1725917AbfCMBSx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 12 Mar 2019 19:07:57 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Tue, 12 Mar 2019 21:18:53 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D22E6213A2;
-        Tue, 12 Mar 2019 23:07:56 +0000 (UTC)
-Date:   Tue, 12 Mar 2019 19:07:55 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Slavomir Kaslev <kaslevs@vmware.com>
-Cc:     linux-trace-devel@vger.kernel.org, slavomir.kaslev@gmail.com
-Subject: Re: [RFC PATCH v8 07/13] trace-cmd: Add VM kernel tracing over
- vsockets transport
-Message-ID: <20190312190755.15e7f603@gandalf.local.home>
-In-Reply-To: <20190222180539.27439-8-kaslevs@vmware.com>
-References: <20190222180539.27439-1-kaslevs@vmware.com>
-        <20190222180539.27439-8-kaslevs@vmware.com>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        by mail.kernel.org (Postfix) with ESMTPSA id F11BD2171F;
+        Wed, 13 Mar 2019 01:18:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1552439931;
+        bh=RgwH5rsy0vHUZudERZYU4v2QMra3BIv3Y4JztssEOfI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2FUb4f4eniif1ed390uE14DJr2XNeFbFI6ozTKH6nUU2Okzjs4mKdxuxVM2Hlc8DY
+         cn6dnyAn05FsLCL2LwlZDgSPBnssJe05KU05Z5tCIGPGTSowoI3pWW96NwOPI43dLE
+         MpkhFhAQJWDVW7jRv29shlEtDY7RyqAN/uiGmCrc=
+Date:   Wed, 13 Mar 2019 10:18:43 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Joel Fernandes <joelaf@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Colascione <dancol@google.com>,
+        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        atish patra <atishp04@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Manoj Rao <linux@manojrajarao.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v4 1/2] Provide in-kernel headers for making it easy to
+ extend the kernel
+Message-Id: <20190313101843.800dd8d6a9babb635580ebdc@kernel.org>
+In-Reply-To: <CAJWu+oqsD_wHGWfzj6POFowiY2qcu04auVzkA6Lu9R+LR4gkrQ@mail.gmail.com>
+References: <20190308140251.GC25768@kroah.com>
+        <CAMuHMdUmnrJtu8bBeUgtiU6y_TLHM27z1WxpPia4dXMpApeijw@mail.gmail.com>
+        <20190309071648.GE3882@kroah.com>
+        <CAMuHMdUT+UGt9p2QhOXzAtCUmqy-a8YN-ceDa-0qANJE53pWBA@mail.gmail.com>
+        <20190309121141.GA30173@kroah.com>
+        <b7296377-9e0c-aed7-61f0-93d24d1ceddd@opersys.com>
+        <CAMuHMdV8+XTyGf1ZJ+gMf=zQpzqh3-+b7wgi+gAmXQ6HpUAw3A@mail.gmail.com>
+        <3e84e1ef-e266-e983-5874-6c26ac7f38b8@opersys.com>
+        <20190311193612.4f09bf11@oasis.local.home>
+        <CAKOZuetHG0O-CiO6h5tD7aht_MT70ebwWMMSPkRUHdiM3wVq0Q@mail.gmail.com>
+        <20190312003912.GA170478@google.com>
+        <20190311212823.60684182@oasis.local.home>
+        <CAJWu+oqsD_wHGWfzj6POFowiY2qcu04auVzkA6Lu9R+LR4gkrQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -44,114 +94,56 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 22 Feb 2019 20:05:33 +0200
-Slavomir Kaslev <kaslevs@vmware.com> wrote:
+On Mon, 11 Mar 2019 18:38:49 -0700
+Joel Fernandes <joelaf@google.com> wrote:
 
-> +static void agent_serve(unsigned int port)
-> +{
-> +	int sd, cd, nr_cpus;
-> +	pid_t pid;
-> +
-> +	signal(SIGCHLD, handle_sigchld);
-> +
-> +	nr_cpus = count_cpus();
-> +	page_size = getpagesize();
-> +
-> +	sd = make_vsock(port);
-> +	if (sd < 0)
-> +		die("Failed to open vsocket");
-> +
-> +	for (;;) {
-> +		cd = accept(sd, NULL, NULL);
-> +		if (cd < 0) {
-> +			if (errno == EINTR)
-> +				continue;
-> +			die("accept");
-> +		}
-> +
-> +		if (handler_pid)
-> +			goto busy;
-> +
-> +		pid = fork();
+> On Mon, Mar 11, 2019 at 6:28 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Mon, 11 Mar 2019 20:39:12 -0400
+> > Joel Fernandes <joel@joelfernandes.org> wrote:
+> >
+> > > I think even though the kernel-headers can't have information about all data
+> > > structures, they do already contain a lot of data structure definitions we
+> > > need already. And anything needed can/should arguably be moved to include/ if
+> > > they are really needed for kernel extension by something "external" to the
+> > > kernel such as kernel modules or eBPF, right?
+> >
+> > That's not my worry. I would like to be able to easily walk data
+> > structures from within the kernel, without having to do a lot of work
+> > in userspace to get that information. The kprobe_events could then be
+> > passed type casts or such to access data fields of arguments to
+> > functions and such.
+> 
+> Ok.
+> 
+> > > In any case, such a solution such as what Steve suggested, still cannot do
+> > > what we can with headers - such as build kernel modules on the fly using the
+> > > C-compiler without any auto-generation of C code from any debug artifiacts.
+> > > Think systemtap working with the module-backend without any need for
+> > > linux-headers package on the file system. So such a solution would still be a
+> > > bit orthogonal in scope to what this proposed solution can solve IMO.
+> > >
+> >
+> > With the information I would like to have, it would be trivial to read
+> > the data to create the header files needed for modules.
+> 
+> But there are macros and other #define things too. We lose all of them
+> and can't recreate them from just DWARF (AFAIK). Including
+> include/generated/autoconf.h which #defines the CONFIG options. For
+> that we either need headers, or full kernel's sources with build
+> artifacts.
 
-Also, for debugging purposes, I add a --debug option that prevents
-forking, and the process is handled directly. The patch below is sorta
-the idea.
+What kind of macros would you concern?
 
-This way we can run both the agent and host under gdb and step through
-the communication, without having to deal with "set follow-fork" modes.
+> I do see a use case for the debug info you are talking about as you
+> mentioned for the kprobe_events argument list types, and I already
+> thought about it. But it does not seem to work for all the use cases I
+> am referring to here.
 
--- Steve
+But the eBPF is based on kprobe-events. What kind of usage would you
+expected? (with macros??)
 
-> +		if (pid == 0) {
-> +			close(sd);
-> +			signal(SIGCHLD, SIG_DFL);
-> +			agent_handle(cd, nr_cpus, page_size);
-> +		}
-> +		if (pid > 0)
-> +			handler_pid = pid;
-> +
-> +busy:
-> +		close(cd);
-> +	}
-> +}
-> +
+Thank you,
 
-diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
-index 02dda47..da6ff12 100644
---- a/tracecmd/trace-agent.c
-+++ b/tracecmd/trace-agent.c
-@@ -170,6 +170,15 @@ static void handle_sigchld(int sig)
- 	}
- }
- 
-+static pid_t do_fork()
-+{
-+	/* in debug mode, we do not fork off children */
-+	if (debug)
-+		return 0;
-+
-+	return fork();
-+}
-+
- static void agent_serve(unsigned int port)
- {
- 	int sd, cd, nr_cpus;
-@@ -195,7 +204,7 @@ static void agent_serve(unsigned int port)
- 		if (handler_pid)
- 			goto busy;
- 
--		pid = fork();
-+		pid = do_fork();
- 		if (pid == 0) {
- 			close(sd);
- 			signal(SIGCHLD, SIG_DFL);
-@@ -209,6 +218,10 @@ busy:
- 	}
- }
- 
-+enum {
-+	DO_DEBUG	= 255
-+};
-+
- void trace_agent(int argc, char **argv)
- {
- 	bool do_daemon = false;
-@@ -225,6 +238,7 @@ void trace_agent(int argc, char **argv)
- 		static struct option long_options[] = {
- 			{"port", required_argument, NULL, 'p'},
- 			{"help", no_argument, NULL, '?'},
-+			{"debug", no_argument, NULL, DO_DEBUG},
- 			{NULL, 0, NULL, 0}
- 		};
- 
-@@ -242,6 +256,9 @@ void trace_agent(int argc, char **argv)
- 		case 'D':
- 			do_daemon = true;
- 			break;
-+		case DO_DEBUG:
-+			debug = true;
-+			break;
- 		default:
- 			usage(argv);
- 		}
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
