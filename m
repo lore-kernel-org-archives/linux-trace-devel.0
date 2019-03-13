@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48FBDC43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 15:07:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 043C3C43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 15:07:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 21A82214AE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 15:07:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D18C7214AE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 15:07:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbfCMPHv (ORCPT
+        id S1726167AbfCMPHw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 13 Mar 2019 11:07:51 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:51787 "EHLO
+        Wed, 13 Mar 2019 11:07:52 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:35518 "EHLO
         mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbfCMPHu (ORCPT
+        with ESMTP id S1725832AbfCMPHw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 13 Mar 2019 11:07:50 -0400
-Received: by mail-wm1-f66.google.com with SMTP id n19so2443006wmi.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 13 Mar 2019 08:07:49 -0700 (PDT)
+        Wed, 13 Mar 2019 11:07:52 -0400
+Received: by mail-wm1-f66.google.com with SMTP id y15so2271225wma.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 13 Mar 2019 08:07:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=c0h2OYd+4fDOGzkfYdDN2PpY5KS+qCoACIVlWKMD3rI=;
-        b=elSxK4CMGD/pHqJ/QaXnKZ80ktkXX/t9lwXJ1uZ69BhlLU8Oy1LgIk2gNhuUe7zzgd
-         mw3P72elm9OAaMPyM4dLcmoO7HDuVpwjWHVgGP9eTCXlavGA2yo65UnVfC3TDepr+r9E
-         5sTJs+6JbF4aS4GQOXz/sK/lnbJDmI9l+WS/jxP0iNvQmegQXgtmzn0eE7Ft00cqX0IY
-         NJqMYIN8+jHbWCokBANrV+RGrmXg5in669qlXNIcEbRl75EyfMk2tVlWVFQElFl/iQsB
-         u2qXYmcP5ZHmT2r8k0wcFbGuO7SN9GxFREUHxqcYIPGjDZ3NZsbTmatpexfGyX0kSox7
-         9gww==
-X-Gm-Message-State: APjAAAU9W86RC8DM8Y5RqJ+y22oRVETtZukjzz7mOueP4qBVlf7FT68z
-        AkkstjifUBlMaqMN4X5GdEM=
-X-Google-Smtp-Source: APXvYqyLhOxJ80B9g/0NMKYt6qHeEtXBJrJCesSAzF5fbrzgL7hVKwxD5xB4zZPuZwmsJ5WCM47XMA==
-X-Received: by 2002:a1c:3c02:: with SMTP id j2mr2731286wma.72.1552489669077;
-        Wed, 13 Mar 2019 08:07:49 -0700 (PDT)
+        bh=e2+ML2lpSIwhj2QPgw+Z9SlnkrCwUyUcM+MPXVLqLo8=;
+        b=L2/6lW0tni2rOgl3PCjI+chrPuNYCriqfQCBKFJkZP0wiEKMjScpK/0YmbjxgJMSQC
+         u4s+bVrW0cFw/nLGxAhOzKEt4ugUgHCclr7NVHwWRNz8wa0bC4mtgngck5RwNI7EG4pk
+         hJS8kLyEDh4+lvNiuvXjJ2W0+EUkj8gW79En2ko5i0+gYWbfAfud0Hpfsh4+LHiSi2Vb
+         ZyAmSP4jQCClavrrwOJja8MN3hNDmpkw3bBYaBU26VA81oRq8gq/rTqyJ4gtMYnGZR8Q
+         2S5xyuzt+hu0gFTm1BcaKABYoy15mIIGtgWu6diSeBqsiN96t6nErKnrQaOokyHB5Ev4
+         dkWg==
+X-Gm-Message-State: APjAAAUJsDz7ADq1kh0maRd1zpFAN4ZwK7i7zXa4A0C0hMqbmD7okcJr
+        zBjhKZvGe5P1qHTvNsCVwqc=
+X-Google-Smtp-Source: APXvYqzHUxeJtAABbkiYEynSPwbWWePrNNNrIlrT8uAerRe+WrgSAgxBboqBAh3TiptJQjG2KdJ4Uw==
+X-Received: by 2002:a7b:c413:: with SMTP id k19mr2713426wmi.75.1552489670342;
+        Wed, 13 Mar 2019 08:07:50 -0700 (PDT)
 Received: from localhost.localdomain ([95.87.198.56])
-        by smtp.gmail.com with ESMTPSA id f6sm22515103wrs.45.2019.03.13.08.07.48
+        by smtp.gmail.com with ESMTPSA id f6sm22515103wrs.45.2019.03.13.08.07.49
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Mar 2019 08:07:48 -0700 (PDT)
+        Wed, 13 Mar 2019 08:07:49 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH v2 2/4] kernel-shark: Add dialog for user-defined plugins to the Tools menu
-Date:   Wed, 13 Mar 2019 17:07:15 +0200
-Message-Id: <20190313150717.21345-3-ykaradzhov@vmware.com>
+Subject: [PATCH v2 3/4] kernel-shark: Rename the manu action for managing registered plugins
+Date:   Wed, 13 Mar 2019 17:07:16 +0200
+Message-Id: <20190313150717.21345-4-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190313150717.21345-1-ykaradzhov@vmware.com>
 References: <20190313150717.21345-1-ykaradzhov@vmware.com>
@@ -59,91 +59,65 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The dialog allows the user to find and load the plugin's
-lobrary (.so file).
+The menu action in Tools that is used to manage all registered
+plugins is renamed in order to avoid confusion with the "Add plugins"
+menu action, implemented in the previous patch.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 22 ++++++++++++++++++++++
- kernel-shark/src/KsMainWindow.hpp |  4 ++++
- 2 files changed, 26 insertions(+)
+ kernel-shark/src/KsMainWindow.cpp | 10 +++++-----
+ kernel-shark/src/KsMainWindow.hpp |  2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 362b955..6428d4d 100644
+index 6428d4d..f165797 100644
 --- a/kernel-shark/src/KsMainWindow.cpp
 +++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -59,6 +59,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+@@ -58,7 +58,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+   _clearAllFilters("Clear all filters", this),
    _cpuSelectAction("CPUs", this),
    _taskSelectAction("Tasks", this),
-   _pluginsAction("Plugins", this),
-+  _addPluginsAction("Add plugins", this),
+-  _pluginsAction("Plugins", this),
++  _managePluginsAction("Manage plugins", this),
+   _addPluginsAction("Add plugins", this),
    _captureAction("Record", this),
    _colorAction(this),
-   _colSlider(this),
-@@ -233,6 +234,11 @@ void KsMainWindow::_createActions()
- 	connect(&_pluginsAction,	&QAction::triggered,
+@@ -228,10 +228,10 @@ void KsMainWindow::_createActions()
+ 		this,			&KsMainWindow::_taskSelect);
+ 
+ 	/* Tools menu */
+-	_pluginsAction.setShortcut(tr("Ctrl+P"));
+-	_pluginsAction.setStatusTip("Manage plugins");
++	_managePluginsAction.setShortcut(tr("Ctrl+P"));
++	_managePluginsAction.setStatusTip("Manage plugins");
+ 
+-	connect(&_pluginsAction,	&QAction::triggered,
++	connect(&_managePluginsAction,	&QAction::triggered,
  		this,			&KsMainWindow::_pluginSelect);
  
-+	_addPluginsAction.setStatusTip("Add plugins");
-+
-+	connect(&_addPluginsAction,	&QAction::triggered,
-+		this,			&KsMainWindow::_pluginAdd);
-+
- 	_captureAction.setIcon(QIcon::fromTheme("media-record"));
- 	_captureAction.setShortcut(tr("Ctrl+R"));
- 	_captureAction.setStatusTip("Capture trace data");
-@@ -336,6 +342,7 @@ void KsMainWindow::_createMenus()
+ 	_addPluginsAction.setStatusTip("Add plugins");
+@@ -341,7 +341,7 @@ void KsMainWindow::_createMenus()
+ 
  	/* Tools menu */
  	tools = menuBar()->addMenu("Tools");
- 	tools->addAction(&_pluginsAction);
-+	tools->addAction(&_addPluginsAction);
+-	tools->addAction(&_pluginsAction);
++	tools->addAction(&_managePluginsAction);
+ 	tools->addAction(&_addPluginsAction);
  	tools->addAction(&_captureAction);
  	tools->addSeparator();
- 	tools->addAction(&_colorAction);
-@@ -796,6 +803,21 @@ void KsMainWindow::_pluginSelect()
- 	dialog->show();
- }
- 
-+void KsMainWindow::_pluginAdd()
-+{
-+	QStringList fileNames;
-+
-+	fileNames =
-+		QFileDialog::getOpenFileNames(this, "Add KernelShark plugins",
-+					      KS_DIR,
-+					      "KernelShark Plugins (*.so);;");
-+
-+	if (fileNames.isEmpty())
-+		return;
-+
-+	_plugins.addPlugins(fileNames);
-+}
-+
- void KsMainWindow::_record()
- {
- #ifndef DO_AS_ROOT
 diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-index 969b603..1e6d619 100644
+index 1e6d619..a93382a 100644
 --- a/kernel-shark/src/KsMainWindow.hpp
 +++ b/kernel-shark/src/KsMainWindow.hpp
-@@ -132,6 +132,8 @@ private:
+@@ -130,7 +130,7 @@ private:
+ 	QAction		_taskSelectAction;
+ 
  	// Tools menu.
- 	QAction		_pluginsAction;
+-	QAction		_pluginsAction;
++	QAction		_managePluginsAction;
  
-+	QAction		_addPluginsAction;
-+
- 	QAction		_captureAction;
+ 	QAction		_addPluginsAction;
  
- 	QWidgetAction	_colorAction;
-@@ -185,6 +187,8 @@ private:
- 
- 	void _pluginSelect();
- 
-+	void _pluginAdd();
-+
- 	void _record();
- 
- 	void _setColorPhase(int);
 -- 
 2.19.1
 
