@@ -6,37 +6,34 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BC77C43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 13:44:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99659C4360F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 13:52:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 687912171F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 13:44:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 72B612177E
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 13:52:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725856AbfCMNoV (ORCPT
+        id S1726888AbfCMNwE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 13 Mar 2019 09:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51150 "EHLO mail.kernel.org"
+        Wed, 13 Mar 2019 09:52:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725832AbfCMNoV (ORCPT
+        id S1726892AbfCMNwB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 13 Mar 2019 09:44:21 -0400
+        Wed, 13 Mar 2019 09:52:01 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C82A42087C;
-        Wed, 13 Mar 2019 13:44:19 +0000 (UTC)
-Date:   Wed, 13 Mar 2019 09:44:17 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 884CB2177E;
+        Wed, 13 Mar 2019 13:52:00 +0000 (UTC)
+Date:   Wed, 13 Mar 2019 09:51:59 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Claudio <claudio.fontana@gliwa.com>
-Cc:     joel@joelfernandes.org,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>, Chunyu Hu <chuhu@redhat.com>
-Subject: Re: make TGID available also in binary ring buffer?
-Message-ID: <20190313094417.7ed14ee0@gandalf.local.home>
-In-Reply-To: <ac830875-ca55-9978-1ece-4614fd988d29@gliwa.com>
-References: <6e61f5ff-5302-ad96-66d3-38347bf3cf69@gliwa.com>
-        <20190304135147.5fcc243f@gandalf.local.home>
-        <ac830875-ca55-9978-1ece-4614fd988d29@gliwa.com>
+To:     Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] kernel-shark: Fix a bug in ksmodel_zoom
+Message-ID: <20190313095159.6b2609b2@gandalf.local.home>
+In-Reply-To: <20190307154316.19194-3-ykaradzhov@vmware.com>
+References: <20190307154316.19194-1-ykaradzhov@vmware.com>
+        <20190307154316.19194-3-ykaradzhov@vmware.com>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -46,55 +43,17 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 13 Mar 2019 09:26:33 +0100
-Claudio <claudio.fontana@gliwa.com> wrote:
+On Thu,  7 Mar 2019 17:43:14 +0200
+Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 
+> When zooming-in the model is supposed to avoid over-zooming by
+> recalculation the Scale factor. The new value of the Scale factor is
+> supposed to be such that the size of the bin cannot be smaller than 5
+> ns. This patch fixes a naive bug in the way the new scale value is
+> calculated.
 
-> 1) Are the saved_tgids not present in a tracing instance?
-> I am currently interacting with ftrace from the application doing everything in an instance,
-
-Currently save_cmdlines and saved_tgids are only in the top level
-tracing directory, and are global for all tracing.
-
-Thinking about this a bit more, it does make sense to make this an
-instance file, as we don't want instance tracing to remove the top
-level cached cmdlines.
-
-> 
-> tracefs on /usr/local/var/run/T1/tracing type tracefs (rw,relatime)
-> 
-> but the saved_tgids is not present in my instance directory.
-> 
-> 2) Which state does "saved_tgids" represent, ie when is it updated?
-> 
-> The ftrace.rst doc says at each context switch, but wouldn't sched_process_fork / sched_process_free tracepoints be a better place to update?
-
-Well, forks and free can happen after tracing, and they are only
-updated during the trace. We mostly want to see the tasks when they
-run, and the sched_switch is the best place to save them.
-
-> 
-> When I read an event for a new process or thread (sched_process_fork),
-> I need to know if it is a new thread or a new process at that time, and collect the tgid of the child.
-
-You are reading this at the time of tracing?
-
-> 
-> How can I get that information, if the update is done only at the time of the first "child" context-switch?
-> 
-> 3) Is the saved_tgids map in sync with the reader of trace_pipe_raw,
-> so that when reading an event from the pipe, the saved_tgids represent the particular state of the tid to tgid maps at the timestamp indicated in the event?
-
-Currently, it's only taken at the end of the trace.
+BTW, what if the resolution of time stamps isn't in ns, and we can have
+more than one event in a 5 unit bin. Does that mean we never display
+multiple events in that small of a time scale?
 
 -- Steve
-
-> 
-> Or is the saved_tgids map updated asynchronously with the reader?
-> 
-> Thank you for any advice on this..
-> 
-> Ciao,
-> 
-> Claudio
-
