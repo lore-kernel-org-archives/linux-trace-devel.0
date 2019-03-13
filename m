@@ -2,403 +2,127 @@ Return-Path: <SRS0=BXa2=RQ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8030CC43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 01:28:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A88DCC43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 08:26:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4F427217F5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 01:28:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 79EF92147C
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Mar 2019 08:26:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbfCMB2g (ORCPT
+        id S1726568AbfCMI0h (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Mar 2019 21:28:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41830 "EHLO mail.kernel.org"
+        Wed, 13 Mar 2019 04:26:37 -0400
+Received: from s30320.gliwa.com ([148.251.52.238]:51516 "EHLO mail.gliwa.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726269AbfCMB2f (ORCPT
+        id S1726539AbfCMI0g (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 12 Mar 2019 21:28:35 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4B6C214AE;
-        Wed, 13 Mar 2019 01:28:33 +0000 (UTC)
-Date:   Tue, 12 Mar 2019 21:28:31 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v4 6/6] trace-cmd: Reafctored reset_max_latency() to
- utilize write_instance_file()
-Message-ID: <20190312212722.7556b545@oasis.local.home>
-In-Reply-To: <20190311083339.21581-7-tstoyanov@vmware.com>
-References: <20190311083339.21581-1-tstoyanov@vmware.com>
- <20190311083339.21581-7-tstoyanov@vmware.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 13 Mar 2019 04:26:36 -0400
+Received: by mail.gliwa.com (Postfix, from userid 992)
+        id 3EE36340FB8; Wed, 13 Mar 2019 09:26:34 +0100 (CET)
+X-Virus-Checker-Version: ClamAV 0.101.1/25386/Tue Mar 12 09:15:09 2019
+X-Virus-Status: OK
+Received: from [192.168.2.102] (dslb-178-003-217-045.178.003.pools.vodafone-ip.de [178.3.217.45])
+        by mail.gliwa.com (Postfix) with ESMTPSA id 09F36340A34;
+        Wed, 13 Mar 2019 09:26:34 +0100 (CET)
+Subject: Re: make TGID available also in binary ring buffer?
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     joel@joelfernandes.org,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>, Chunyu Hu <chuhu@redhat.com>
+References: <6e61f5ff-5302-ad96-66d3-38347bf3cf69@gliwa.com>
+ <20190304135147.5fcc243f@gandalf.local.home>
+From:   Claudio <claudio.fontana@gliwa.com>
+Message-ID: <ac830875-ca55-9978-1ece-4614fd988d29@gliwa.com>
+Date:   Wed, 13 Mar 2019 09:26:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/7O9c4/TBZl8Um55aCKr2cPN"
+In-Reply-To: <20190304135147.5fcc243f@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
---MP_/7O9c4/TBZl8Um55aCKr2cPN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Mon, 11 Mar 2019 10:33:39 +0200
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
 
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index bdf0c02..dfbb0cd 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -814,19 +814,49 @@ static void clear_trace(void)
->  	fclose(fp);
->  }
->  
-> -static void reset_max_latency(void)
-> +static int write_file(const char *file, const char *str, const char *type)
-> +{
-> +	char buf[BUFSIZ];
-> +	int fd;
-> +	int ret;
-> +
-> +	fd = open(file, O_WRONLY | O_TRUNC);
-> +	if (fd < 0)
-> +		die("opening to '%s'", file);
-> +	ret = write(fd, str, strlen(str));
-> +	close(fd);
-> +	if (ret < 0 && type) {
-> +		/* write failed */
-> +		fd = open(file, O_RDONLY);
-> +		if (fd < 0)
-> +			die("writing to '%s'", file);
-> +		/* the filter has the error */
-> +		while ((ret = read(fd, buf, BUFSIZ)) > 0)
-> +			fprintf(stderr, "%.*s", ret, buf);
-> +		die("Failed %s of %s\n", type, file);
-> +		close(fd);
-> +	}
-> +	return ret;
-> +}
-> +
-> +static int
-> +write_instance_file(struct buffer_instance *instance,
-> +		    const char *file, const char *str, const char *type)
->  {
-> -	FILE *fp;
->  	char *path;
-> +	int ret;
->  
-> -	/* reset the trace */
-> -	path = tracecmd_get_tracing_file("tracing_max_latency");
-> -	fp = fopen(path, "w");
-> -	if (!fp)
-> -		die("writing to '%s'", path);
-> +	path = get_instance_file(instance, file);
-> +	ret = write_file(path, str, type);
->  	tracecmd_put_tracing_file(path);
-> -	fwrite("0", 1, 1, fp);
-> -	fclose(fp);
-> +
-> +	return ret;
+On 3/4/19 7:51 PM, Steven Rostedt wrote:
+> On Mon, 4 Mar 2019 11:01:39 +0100
+> Claudio <claudio.fontana@gliwa.com> wrote:
+> 
+>> Hello all,
+>>
+>> I am currently facing the issue of having to efficiently read the events
+>> from a user-space application for tracing for programmatic use in automotive
+>> (AUTOSAR AP).
+>>
+>> It is for programmatically reacting to events on the system,
+>> and I am currently using the trace_pipe_raw to do that, to reduce the
+>> overhead compared with parsing the textual output of trace_pipe.
+>>
+>> After merging the sorted streams from all cpus, in order to reconstruct
+>> the task state, we are still way more CPU-efficient compared with using the
+>> textual output.
+>>
+>> I would like to make use of the implemented support for recording tgids,
+>>
+>> commit d914ba37d714 ("tracing: Add support for recording tgid of tasks")
+>> commit 441dae8f2f29 ("tracing: Add support for display of tgid in trace output")
+>>
+>> but it seems to me that, while for COMM recording there is explicit support in
+>> the binary events for the information, it seems that tgid is not stored in the
+>> binary format.
+>>
+>> Is such an extension of the binary format a possibility for sched-class
+>> events, that takes into account backward compatibility, or is there some
+>> better way to do it? Is this problem addressed by libtracevent / trace-cmd?
+>>
+>> Currently I was thinking to look into the NETLINK interface to get the task
+>> information, however the issue is the race condition between the time of
+>> tracing and the time of reading the trace, to be fully correct, but if
+>> nothing else is possible I will have to accept the compromise.
+>>
+>> Thank you for any hints on this.
+> 
+> It looks to be outputted into /sys/kernel/debug/tracing/saved_tgids
+> 
+> Interesting, we should probably save that in trace-cmd as well.
+> 
+> -- Steve
+> 
 
-To make this easier to review and understand, I added a change before
-patch 4 that moved write_instance_file() up further. This way, there's
-a single patch that moves the code. Especially, since you moved it
-twice. Sometimes its cleaner to do the move as a separate change.
-Especially when you are modifying the change near the move.
+Hi Steve,
 
-I rebased the changes on top of the move, and the result is attached.
+I have two questions regarding saved_tgids which are currently blocking and confusing me.
 
--- Steve
+1) Are the saved_tgids not present in a tracing instance?
+I am currently interacting with ftrace from the application doing everything in an instance,
 
---MP_/7O9c4/TBZl8Um55aCKr2cPN
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0001-trace-cmd-Move-write_instance_file-up-in-file.patch
+tracefs on /usr/local/var/run/T1/tracing type tracefs (rw,relatime)
 
-From cbd567febd2559b055576ec48312fa53f46f76f5 Mon Sep 17 00:00:00 2001
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Date: Tue, 12 Mar 2019 21:13:19 -0400
-Subject: [PATCH 1/4] trace-cmd: Move write_instance_file() up in file
+but the saved_tgids is not present in my instance directory.
 
-To allow for reset_max_latency() and add_filter_pid() to utilize
-write_instance_file(), move it up before those functions. It is in a better
-location now as well.
+2) Which state does "saved_tgids" represent, ie when is it updated?
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- tracecmd/trace-record.c | 78 ++++++++++++++++++++---------------------
- 1 file changed, 39 insertions(+), 39 deletions(-)
+The ftrace.rst doc says at each context switch, but wouldn't sched_process_fork / sched_process_free tracepoints be a better place to update?
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 00dc5ad7..f1f5d29d 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -776,6 +776,45 @@ get_instance_dir(struct buffer_instance *instance)
- 	return path;
- }
- 
-+static int write_file(const char *file, const char *str, const char *type)
-+{
-+	char buf[BUFSIZ];
-+	int fd;
-+	int ret;
-+
-+	fd = open(file, O_WRONLY | O_TRUNC);
-+	if (fd < 0)
-+		die("opening to '%s'", file);
-+	ret = write(fd, str, strlen(str));
-+	close(fd);
-+	if (ret < 0 && type) {
-+		/* write failed */
-+		fd = open(file, O_RDONLY);
-+		if (fd < 0)
-+			die("writing to '%s'", file);
-+		/* the filter has the error */
-+		while ((ret = read(fd, buf, BUFSIZ)) > 0)
-+			fprintf(stderr, "%.*s", ret, buf);
-+		die("Failed %s of %s\n", type, file);
-+		close(fd);
-+	}
-+	return ret;
-+}
-+
-+static int
-+write_instance_file(struct buffer_instance *instance,
-+		    const char *file, const char *str, const char *type)
-+{
-+	char *path;
-+	int ret;
-+
-+	path = get_instance_file(instance, file);
-+	ret = write_file(path, str, type);
-+	tracecmd_put_tracing_file(path);
-+
-+	return ret;
-+}
-+
- static void __clear_trace(struct buffer_instance *instance)
- {
- 	FILE *fp;
-@@ -1596,45 +1635,6 @@ static void reset_events(void)
- 		reset_events_instance(instance);
- }
- 
--static int write_file(const char *file, const char *str, const char *type)
--{
--	char buf[BUFSIZ];
--	int fd;
--	int ret;
--
--	fd = open(file, O_WRONLY | O_TRUNC);
--	if (fd < 0)
--		die("opening to '%s'", file);
--	ret = write(fd, str, strlen(str));
--	close(fd);
--	if (ret < 0 && type) {
--		/* write failed */
--		fd = open(file, O_RDONLY);
--		if (fd < 0)
--			die("writing to '%s'", file);
--		/* the filter has the error */
--		while ((ret = read(fd, buf, BUFSIZ)) > 0)
--			fprintf(stderr, "%.*s", ret, buf);
--		die("Failed %s of %s\n", type, file);
--		close(fd);
--	}
--	return ret;
--}
--
--static int
--write_instance_file(struct buffer_instance *instance,
--		    const char *file, const char *str, const char *type)
--{
--	char *path;
--	int ret;
--
--	path = get_instance_file(instance, file);
--	ret = write_file(path, str, type);
--	tracecmd_put_tracing_file(path);
--
--	return ret;
--}
--
- enum {
- 	STATE_NEWLINE,
- 	STATE_SKIP,
--- 
-2.20.1
+When I read an event for a new process or thread (sched_process_fork),
+I need to know if it is a new thread or a new process at that time, and collect the tgid of the child.
 
+How can I get that information, if the update is done only at the time of the first "child" context-switch?
 
---MP_/7O9c4/TBZl8Um55aCKr2cPN
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0002-trace-cmd-Refactore-add_event_pid-to-utilize-write_i.patch
+3) Is the saved_tgids map in sync with the reader of trace_pipe_raw,
+so that when reading an event from the pipe, the saved_tgids represent the particular state of the tid to tgid maps at the timestamp indicated in the event?
 
-From cd5a23168280917774094eeb77b5a359e4f4a292 Mon Sep 17 00:00:00 2001
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Date: Mon, 11 Mar 2019 10:33:37 +0200
-Subject: [PATCH 2/4] trace-cmd: Refactore add_event_pid()to utilize
- write_instance_file()
+Or is the saved_tgids map updated asynchronously with the reader?
 
-This patch changes add_event_pid() to utilize write_instance_file() for
-writing set_event_pid instance file, instead of directly opening it.
+Thank you for any advice on this..
 
-Link: http://lore.kernel.org/linux-trace-devel/20190311083339.21581-5-tstoyanov@vmware.com
+Ciao,
 
-Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- tracecmd/trace-record.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
-
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index f1f5d29d..801dad24 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -1133,30 +1133,25 @@ static void update_sched_events(struct buffer_instance *instance, int pid)
- static int open_instance_fd(struct buffer_instance *instance,
- 			    const char *file, int flags);
- 
--static void add_event_pid(const char *buf, int len)
-+static void add_event_pid(const char *buf)
- {
- 	struct buffer_instance *instance;
--	int fd;
- 
--	for_all_instances(instance) {
--		fd = open_instance_fd(instance, "set_event_pid", O_WRONLY);
--		write(fd, buf, len);
--		close(fd);
--	}
-+	for_all_instances(instance)
-+		write_instance_file(instance, "set_event_pid", buf, "event_pid");
- }
- 
- static void add_new_filter_pid(int pid)
- {
- 	struct buffer_instance *instance;
- 	char buf[100];
--	int len;
- 
- 	add_filter_pid(pid, 0);
--	len = sprintf(buf, "%d", pid);
-+	sprintf(buf, "%d", pid);
- 	update_ftrace_pid(buf, 0);
- 
- 	if (have_set_event_pid)
--		return add_event_pid(buf, len);
-+		return add_event_pid(buf);
- 
- 	common_pid_filter = append_pid_filter(common_pid_filter, "common_pid", pid);
- 
--- 
-2.20.1
-
-
---MP_/7O9c4/TBZl8Um55aCKr2cPN
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0004-trace-cmd-Refactore-reset_max_latency-to-utilize-wri.patch
-
-From 7b4254303277ee6c5833f427fea7f00fa161bd74 Mon Sep 17 00:00:00 2001
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Date: Mon, 11 Mar 2019 10:33:39 +0200
-Subject: [PATCH 4/4] trace-cmd: Refactore reset_max_latency() to utilize
- write_instance_file()
-
-This patch changes reset_max_latency() to utilize write_instance_file() for
-writing set_event_pid instance file, instead of directly opening it. It also
-changes the function to work per instance.
-
-Link: http://lore.kernel.org/linux-trace-devel/20190311083339.21581-7-tstoyanov@vmware.com
-
-Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- tracecmd/trace-record.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
-
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index fe22ad08..c16abe2f 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -853,19 +853,10 @@ static void clear_trace(void)
- 	fclose(fp);
- }
- 
--static void reset_max_latency(void)
-+static void reset_max_latency(struct buffer_instance *instance)
- {
--	FILE *fp;
--	char *path;
--
--	/* reset the trace */
--	path = tracecmd_get_tracing_file("tracing_max_latency");
--	fp = fopen(path, "w");
--	if (!fp)
--		die("writing to '%s'", path);
--	tracecmd_put_tracing_file(path);
--	fwrite("0", 1, 1, fp);
--	fclose(fp);
-+	 write_instance_file(instance,
-+			     "tracing_max_latency", "0", "max_latency");
- }
- 
- static void add_filter_pid(int pid, int exclude)
-@@ -1931,6 +1922,14 @@ static int read_tracing_on(struct buffer_instance *instance)
- 	return ret;
- }
- 
-+static void reset_max_latency_instance(void)
-+{
-+	struct buffer_instance *instance;
-+
-+	for_all_instances(instance)
-+		reset_max_latency(instance);
-+}
-+
- void tracecmd_enable_tracing(void)
- {
- 	struct buffer_instance *instance;
-@@ -1941,7 +1940,7 @@ void tracecmd_enable_tracing(void)
- 		write_tracing_on(instance, 1);
- 
- 	if (latency)
--		reset_max_latency();
-+		reset_max_latency_instance();
- }
- 
- void tracecmd_disable_tracing(void)
-@@ -3802,7 +3801,6 @@ static void reset_event_pid(void)
- 	add_event_pid("");
- }
- 
--
- static void clear_triggers(void)
- {
- 	struct buffer_instance *instance;
-@@ -4507,6 +4505,7 @@ void trace_reset(int argc, char **argv)
- 	/* set clock to "local" */
- 	reset_clock();
- 	reset_event_pid();
-+	reset_max_latency_instance();
- 	tracecmd_remove_instances();
- 	clear_func_filters();
- 	/* restore tracing_on to 1 */
--- 
-2.20.1
-
-
---MP_/7O9c4/TBZl8Um55aCKr2cPN--
+Claudio
