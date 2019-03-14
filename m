@@ -2,124 +2,188 @@ Return-Path: <SRS0=grb/=RR=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D4D9C43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 15:10:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCFD8C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 16:06:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0893020811
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 15:10:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B82102184C
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 16:06:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727184AbfCNPKx (ORCPT
+        id S1726330AbfCNQGQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Mar 2019 11:10:53 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:43180 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbfCNPKx (ORCPT
+        Thu, 14 Mar 2019 12:06:16 -0400
+Received: from s30320.gliwa.com ([148.251.52.238]:37758 "EHLO mail.gliwa.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726157AbfCNQGQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Mar 2019 11:10:53 -0400
-Received: by mail-pf1-f194.google.com with SMTP id q17so4024709pfh.10
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Mar 2019 08:10:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=f8C7j7UUJo4vBP/4+DiQuGUXXXxVtCoxu7ygfOE2iGM=;
-        b=tQfFmIMmBU0khL5plIagXHkv5BiK6TRGCMOaxhQh+Eaxbnz3QfwHArqrtX0MkZHRcJ
-         xnwFSRiOMWuYwfkP0OLPgS2GKSdasjGYkCm30lsKRHrYFhtScko1p8j+gF9Axu3H2Qn9
-         9wwdU2wiQnH7KMWTe7hC891hYLsyEPMJejUmdyksFz6CytiB+lq1S9nNzWtPbwm/UwDS
-         me8o+8HAqyP2sIZEUfqH+U1Qoa+hkgbqF98TyioSz1hTFQvg7YxcmopHGXeyQwa743/U
-         XH2QSJLuC7feQtMfMgf5XJz9ylD9+kTg7fA/jfMPO8tXoW5IQeMhxqWRywmvMErm5RQo
-         DYAg==
-X-Gm-Message-State: APjAAAVmMdwYibn1pvhe2JvjxQdP12Vd52mcLUcjtb/6OoqYV9shLdSk
-        kwS3Cmg4vEa26+wMgoFwaCup9mbh
-X-Google-Smtp-Source: APXvYqwPn3DTCVAYryKQShJ08WhD8jUAmmJJtgat0Wu1N9ogrFAo1FHlekyVNkh30hqTIy0OjgLKsw==
-X-Received: by 2002:a63:a109:: with SMTP id b9mr45126224pgf.328.1552576252606;
-        Thu, 14 Mar 2019 08:10:52 -0700 (PDT)
-Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id f65sm8165585pfg.98.2019.03.14.08.10.50
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Mar 2019 08:10:52 -0700 (PDT)
-From:   Yordan Karadzhov <ykaradzhov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 12/12] kernel-shark: In collections, handle the case when the data is small
-Date:   Thu, 14 Mar 2019 17:10:12 +0200
-Message-Id: <20190314151012.905-13-ykaradzhov@vmware.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190314151012.905-1-ykaradzhov@vmware.com>
-References: <20190314151012.905-1-ykaradzhov@vmware.com>
+        Thu, 14 Mar 2019 12:06:16 -0400
+Received: by mail.gliwa.com (Postfix, from userid 992)
+        id C92E63411B4; Thu, 14 Mar 2019 17:06:12 +0100 (CET)
+X-Virus-Checker-Version: ClamAV 0.101.1/25388/Thu Mar 14 10:10:01 2019
+X-Virus-Status: OK
+Received: from [192.168.2.102] (dslb-178-003-217-045.178.003.pools.vodafone-ip.de [178.3.217.45])
+        by mail.gliwa.com (Postfix) with ESMTPSA id 9079D34119E;
+        Thu, 14 Mar 2019 17:06:12 +0100 (CET)
+Subject: Re: make TGID available also in binary ring buffer?
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     joel@joelfernandes.org,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>, Chunyu Hu <chuhu@redhat.com>
+References: <6e61f5ff-5302-ad96-66d3-38347bf3cf69@gliwa.com>
+ <20190304135147.5fcc243f@gandalf.local.home>
+ <ac830875-ca55-9978-1ece-4614fd988d29@gliwa.com>
+ <20190313094417.7ed14ee0@gandalf.local.home>
+ <0ce98e8a-47b7-7890-500a-e0a2bc938b53@gliwa.com>
+ <20190313105020.07bb8254@gandalf.local.home>
+From:   Claudio <claudio.fontana@gliwa.com>
+Message-ID: <5cfad70b-b823-e3ed-630e-d766cc53f6e5@gliwa.com>
+Date:   Thu, 14 Mar 2019 17:06:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190313105020.07bb8254@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In particular, handle the case when the size of the data is smaller
-than the required margin.
+Hi Steve,
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark/src/libkshark-collection.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+On 3/13/19 3:50 PM, Steven Rostedt wrote:
+> On Wed, 13 Mar 2019 15:03:35 +0100
+> Claudio <claudio.fontana@gliwa.com> wrote:
+> 
+> 
+>>>>
+>>>> When I read an event for a new process or thread
+>>>> (sched_process_fork), I need to know if it is a new thread or a
+>>>> new process at that time, and collect the tgid of the child.  
+>>>
+>>> You are reading this at the time of tracing?  
+>>
+>> Yes, my requirements are for live tracing of the low level events,
+>> and correlation of the events from all cores, in order to be able to
+>> immediately respond to the events from the tracing application.
+>>
+>> Tracing is expected to be always on in the system (no expected
+>> trace-first/analyze later pattern - everything related to the
+>> analysis of the events is automated and occurs at runtime).
+> 
+> You could add a kprobe to find out the tgid as well.
 
-diff --git a/kernel-shark/src/libkshark-collection.c b/kernel-shark/src/libkshark-collection.c
-index c70da1e..02a014e 100644
---- a/kernel-shark/src/libkshark-collection.c
-+++ b/kernel-shark/src/libkshark-collection.c
-@@ -71,7 +71,7 @@ static bool collection_add_entry(struct entry_list **list,
- static struct kshark_entry_collection *
- kshark_data_collection_alloc(struct kshark_context *kshark_ctx,
- 			     struct kshark_entry **data,
--			     size_t first,
-+			     ssize_t first,
- 			     size_t n_rows,
- 			     matching_condition_func cond,
- 			     int val,
-@@ -81,9 +81,19 @@ kshark_data_collection_alloc(struct kshark_context *kshark_ctx,
- 	struct kshark_entry *last_vis_entry = NULL;
- 	struct entry_list *col_list, *temp;
- 	size_t resume_count = 0, break_count = 0;
--	size_t i, j, end, last_added = 0;
-+	size_t i, j, last_added = 0;
-+	ssize_t end;
- 	bool good_data = false;
+I think I am going to try this next.
+
+
+>>
+>> This works fine for the real time timing analysis at the thread
+>> level, but for the process level I need to know the tgid of the
+>> thread at the time I see the event. 
+>>>>
+>>>> How can I get that information, if the update is done only at the
+>>>> time of the first "child" context-switch?
+>>>>
+>>>> 3) Is the saved_tgids map in sync with the reader of
+>>>> trace_pipe_raw, so that when reading an event from the pipe, the
+>>>> saved_tgids represent the particular state of the tid to tgid maps
+>>>> at the timestamp indicated in the event?  
+>>>
+>>> Currently, it's only taken at the end of the trace.  
+>>
+>> I wonder what the concept of the "end of the trace" is..
+> 
+> 
+> I meant for "trace-cmd record", the saved_cmdlines are stored when the
+> tracing is finished, not during the trace. But the saved_cmdlines is
+> updated at each sched_switch, and so is the tgid.
+> 
+> Now, we could add that info to the fork part as well.
+> 
+> -- Steve
+> 
+
+I have experimented with mainline, and then with mainline plus a patch to add the info for fork as well like this:
+
+diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched_switch.c
+index e288168..c5339ed 100644
+--- a/kernel/trace/trace_sched_switch.c
++++ b/kernel/trace/trace_sched_switch.c
+@@ -47,6 +47,20 @@ probe_sched_wakeup(void *ignore, struct task_struct *wakee)
+ 	tracing_record_taskinfo(current, flags);
+ }
  
-+	/* Create the collection. */
-+	col_ptr = calloc(1, sizeof(*col_ptr));
-+	if (!col_ptr)
-+		goto fail;
++static void
++probe_sched_fork(void *ignore,
++		 struct task_struct *parent, struct task_struct *child)
++{
++	int flags;
 +
-+	end = first + n_rows - margin;
-+	if (first >= end)
-+		return col_ptr;
++	flags = (RECORD_TGID * !!sched_tgid_ref) +
++		(RECORD_CMDLINE * !!sched_cmdline_ref);
 +
- 	col_list = malloc(sizeof(*col_list));
- 	if (!col_list)
- 		goto fail;
-@@ -106,7 +116,6 @@ kshark_data_collection_alloc(struct kshark_context *kshark_ctx,
- 		temp->type = COLLECTION_IGNORE;
++	if (!flags)
++		return;
++	tracing_record_taskinfo(child, flags);
++}
++
+ static int tracing_sched_register(void)
+ {
+ 	int ret;
+@@ -72,7 +86,16 @@ static int tracing_sched_register(void)
+ 		goto fail_deprobe_wake_new;
  	}
  
--	end = first + n_rows - margin;
- 	for (i = first + margin; i < end; ++i) {
- 		if (!cond(kshark_ctx, data[i], val)) {
- 			/*
-@@ -204,11 +213,6 @@ kshark_data_collection_alloc(struct kshark_context *kshark_ctx,
- 	 */
- 	assert(break_count == resume_count);
++	ret = register_trace_sched_process_fork(probe_sched_fork, NULL);
++	if (ret) {
++		pr_info("sched trace: Couldn't activate tracepoint"
++			" probe to kernel_sched_process_fork\n");
++		goto fail_deprobe_switch;
++	}
++
+ 	return ret;
++fail_deprobe_switch:
++	unregister_trace_sched_switch(probe_sched_switch, NULL);
+ fail_deprobe_wake_new:
+ 	unregister_trace_sched_wakeup_new(probe_sched_wakeup, NULL);
+ fail_deprobe:
+@@ -82,6 +105,7 @@ static int tracing_sched_register(void)
  
--	/* Create the collection. */
--	col_ptr = malloc(sizeof(*col_ptr));
--	if (!col_ptr)
--		goto fail;
--
- 	col_ptr->next = NULL;
- 
- 	col_ptr->resume_points = calloc(resume_count,
--- 
-2.19.1
+ static void tracing_sched_unregister(void)
+ {
++	unregister_trace_sched_process_fork(probe_sched_fork, NULL);
+ 	unregister_trace_sched_switch(probe_sched_switch, NULL);
+ 	unregister_trace_sched_wakeup_new(probe_sched_wakeup, NULL);
+ 	unregister_trace_sched_wakeup(probe_sched_wakeup, NULL);
+
+
+--
+
+It seems to work, but the model seems not to apply very well to my use case.
+
+saved_tgids cannot be reset, not even by disabling tracing completely
+
+echo 0 > tracing_on
+
+or 
+
+echo 0 > options/record-tgids
+
+and the list just keeps growing, no entries are ever removed when tasks are destroyed etc,
+so my lookups become more and more expensive as the list grows.
+I don't think this is suited to be looked up frequently for my tracing scenario.
+
+Next I will experiment with:
+
+1) kprobes, trying to generate an event before every sched class event carrying the tid to tgid mapping.
+
+2) if everything fails, revert to use /proc/PID/stat, which however can be slow and racy if the process does not exist anymore when I read back the ftrace buffers.
+
+Thanks & ciao,
+
+Claudio
 
