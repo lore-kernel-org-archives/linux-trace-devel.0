@@ -2,170 +2,114 @@ Return-Path: <SRS0=grb/=RR=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E03E4C43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 12:27:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62249C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 13:05:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AED8921855
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 12:27:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2F5FF20854
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 13:05:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="kQh7eu4c"
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="QUtjaxIe"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbfCNM1w (ORCPT
+        id S1727173AbfCNNFT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Mar 2019 08:27:52 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:37327 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbfCNM1v (ORCPT
+        Thu, 14 Mar 2019 09:05:19 -0400
+Received: from mail-eopbgr720058.outbound.protection.outlook.com ([40.107.72.58]:60672
+        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727059AbfCNNFS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Mar 2019 08:27:51 -0400
-Received: by mail-qt1-f194.google.com with SMTP id z17so5751879qtn.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Mar 2019 05:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6flR/SZ3bVyvGpeBMlCe2ZUtI2LHYS6gvOXI4e6BfpI=;
-        b=kQh7eu4cXQZsGXIDCyZUWIYrnP4SyHjyEFvqeDX9qwPtnZcuVZwGG+PjPGwiNcoOW4
-         K6ThH9dTXFVHXQ8v4C8+VL2bakspMZATm2KkwyVhMgEQB5zCyrrNAkrL1M2cYBGHrKzN
-         f+mj5cuB3C4v+kP1Bu40/h0NQwqAOdgzZb3J4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6flR/SZ3bVyvGpeBMlCe2ZUtI2LHYS6gvOXI4e6BfpI=;
-        b=hN7tdU/h8DtEGnKubq2zYJIvUEnXYKoyozc9Zg0nzm3gw48MeVa6ZZNnUpFfGjhG/n
-         pae/d7H87y0H6ELDHhM9nRoa1hqnVsYOSKstd9kIrfXYnBTSocLs0+ZTLoIB3TVjyDah
-         jKEzHf0MEbjS3CCXf9LLlksC2RG04YrvuBI5mx14S6X7ZWpAdrnKWyp7xU1NxgOSGH0K
-         zRVu54HvEHDnuC5i5FgOmdHFfMp23T+YmniJDfAnDAJtc/aAn/CjVBeld37fuYV9ZcYT
-         +l7tNZ+PZ1Sb2fHjKSRx8JVMxHNu0dNIlpHZT9T3swwdU25B3YtwTTtKIsesvSla87Yw
-         fYRg==
-X-Gm-Message-State: APjAAAUvlOoVClt8LUVI3JOiemoydVnn8yMlUt5MP5aRfMYDuzcCfqIE
-        d4sQA5ziRzGUvJnfaRRQxENlDg==
-X-Google-Smtp-Source: APXvYqy2IZqfZEb8pYZbKHCl44Uhexadk5h0/fwVSteoQa1v1VP2dysxz0REKQPzCiHRqC15nDXZfg==
-X-Received: by 2002:ac8:2bc1:: with SMTP id n1mr37856804qtn.176.1552566470361;
-        Thu, 14 Mar 2019 05:27:50 -0700 (PDT)
-Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id k33sm8837364qte.8.2019.03.14.05.27.48
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 14 Mar 2019 05:27:48 -0700 (PDT)
-Date:   Thu, 14 Mar 2019 08:27:48 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Colascione <dancol@google.com>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        atish patra <atishp04@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        Manoj Rao <linux@manojrajarao.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH v4 1/2] Provide in-kernel headers for making it easy to
- extend the kernel
-Message-ID: <20190314122748.GA101545@google.com>
-References: <20190309121141.GA30173@kroah.com>
- <b7296377-9e0c-aed7-61f0-93d24d1ceddd@opersys.com>
- <CAMuHMdV8+XTyGf1ZJ+gMf=zQpzqh3-+b7wgi+gAmXQ6HpUAw3A@mail.gmail.com>
- <3e84e1ef-e266-e983-5874-6c26ac7f38b8@opersys.com>
- <20190311193612.4f09bf11@oasis.local.home>
- <CAKOZuetHG0O-CiO6h5tD7aht_MT70ebwWMMSPkRUHdiM3wVq0Q@mail.gmail.com>
- <20190312003912.GA170478@google.com>
- <20190311212823.60684182@oasis.local.home>
- <CAJWu+oqsD_wHGWfzj6POFowiY2qcu04auVzkA6Lu9R+LR4gkrQ@mail.gmail.com>
- <20190313101843.800dd8d6a9babb635580ebdc@kernel.org>
+        Thu, 14 Mar 2019 09:05:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TOC+zTiLLBpB2km8x4U0jA54t9QQ1m8mt3abrCOkOxI=;
+ b=QUtjaxIemSd/6ggDXv7ERQd2VRS/r+vWS4SgZhv4EO+8reGgE9G9KkwGqutqoAQmfZHc8b5rhRmfXjIONVybjkcTYIaP4KidY+/ZF6q/WH8GApmZIndpzriDgpzn+dF2XTA9hYhZDLZIWsmh+XykCuSJu5ozDedLO0qeBSo5tBg=
+Received: from CY1PR05MB2761.namprd05.prod.outlook.com (10.167.18.19) by
+ CY1PR05MB2761.namprd05.prod.outlook.com (10.167.18.19) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1709.11; Thu, 14 Mar 2019 13:05:15 +0000
+Received: from CY1PR05MB2761.namprd05.prod.outlook.com
+ ([fe80::50:9d56:d444:62ec]) by CY1PR05MB2761.namprd05.prod.outlook.com
+ ([fe80::50:9d56:d444:62ec%4]) with mapi id 15.20.1709.011; Thu, 14 Mar 2019
+ 13:05:15 +0000
+From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v4 19/46] tools/lib/traceevent: Man page for
+ tep_list_events()
+Thread-Topic: [PATCH v4 19/46] tools/lib/traceevent: Man page for
+ tep_list_events()
+Thread-Index: AQHU1bQO5msDM0e0o0+EI26u6J/QsKYJ2TyAgAFIZ4A=
+Date:   Thu, 14 Mar 2019 13:05:15 +0000
+Message-ID: <CACqStoe=hFZ4_bTa0kh=eqsLs8eZKS=9+Ku0EG-sjP3NoHZ6MA@mail.gmail.com>
+References: <20190308133654.21264-1-tstoyanov@vmware.com>
+ <20190308133654.21264-20-tstoyanov@vmware.com>
+ <20190313132933.004e49d2@gandalf.local.home>
+In-Reply-To: <20190313132933.004e49d2@gandalf.local.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM5PR04CA0002.eurprd04.prod.outlook.com
+ (2603:10a6:206:1::15) To CY1PR05MB2761.namprd05.prod.outlook.com
+ (2a01:111:e400:c63a::19)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-gm-message-state: APjAAAWPp3U/6ykC2aONSc1GLwqPy6X9YW3Ef3zLlcjZA2hpy/xJeip1
+        87JL1z5ox9xSKSz9KEOFlYd/StlmJ0mfs/WsS6E=
+x-google-smtp-source: APXvYqzoB/IfzXpBKD3fRkUVT2ej21ljSlUnxfzbTNJlUreLQAMajCzrC6/vDVPqY1iqNuxdkGjVKOA6ohWljCqhBkU=
+x-received: by 2002:adf:f686:: with SMTP id v6mr14703450wrp.241.1552568708891;
+ Thu, 14 Mar 2019 06:05:08 -0700 (PDT)
+x-gmail-original-message-id: <CACqStoe=hFZ4_bTa0kh=eqsLs8eZKS=9+Ku0EG-sjP3NoHZ6MA@mail.gmail.com>
+x-originating-ip: [209.85.221.50]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2ef6fb6d-69e8-4089-0d87-08d6a87db2ca
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);SRVR:CY1PR05MB2761;
+x-ms-traffictypediagnostic: CY1PR05MB2761:
+x-microsoft-antispam-prvs: <CY1PR05MB2761D2517F6FF94BE7D28B09DC4B0@CY1PR05MB2761.namprd05.prod.outlook.com>
+x-forefront-prvs: 09760A0505
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(376002)(396003)(366004)(346002)(39860400002)(189003)(199004)(66066001)(2906002)(478600001)(99286004)(95326003)(81156014)(498394004)(6436002)(6246003)(6512007)(53936002)(9686003)(6116002)(98316002)(8936002)(3846002)(6486002)(229853002)(68736007)(61726006)(81166006)(305945005)(7736002)(486006)(446003)(11346002)(476003)(186003)(97736004)(61266001)(6862004)(256004)(71200400001)(106356001)(105586002)(316002)(14444005)(8676002)(76176011)(26005)(55446002)(86362001)(25786009)(5660300002)(4326008)(4744005)(52116002)(6346003)(53546011)(386003)(6506007)(14454004)(102836004)(71190400001);DIR:OUT;SFP:1101;SCL:1;SRVR:CY1PR05MB2761;H:CY1PR05MB2761.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=tstoyanov@vmware.com; 
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: bMXlbZDw6Dtg65V7P5oHzv3p7tX1b+KLLfMGddSKAKBtyIHS2bxAlKDDELbW9tastbut0tl4+SgkEz3SpbYIMBXvapf/GkYkNwTBjeB5t97Nu+p4WDbxwQRDkUgd82OlssAAHVekcxio6IOK6UUZh7jVsz8XhWBH6r2NtYWe5B8NpsYjktXfD/Zv7OOxDpYbE6vbz+5MEgHjcvpWVIJZesm/w9WpmmAyaSz1IKkL+F8y6JQPZAlQbBpkbHkhUuLpFFaC+//I79lU2AWcNxR9J9Xxr5KWNgGNuQTWolsH55uJsXbeDhUKaDRCgo41jc583Zdoyb3+3jaluu6MixCYygTKVZcvQrLAQjF+MDv4Kf47bBIPwj2EPBWv/PJqJRJ7bMDO0gUmMqXAjwep4P8W/QFQdUu1AOjr/anrrd+wT8k=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6C0E64425C6EA0468F7F72079D2E9CB0@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190313101843.800dd8d6a9babb635580ebdc@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ef6fb6d-69e8-4089-0d87-08d6a87db2ca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2019 13:05:15.2296
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1PR05MB2761
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Masami,
-Sorry for late reply as I was traveling.
-
-On Wed, Mar 13, 2019 at 10:18:43AM +0900, Masami Hiramatsu wrote:
-> On Mon, 11 Mar 2019 18:38:49 -0700
-> Joel Fernandes <joelaf@google.com> wrote:
-> 
-> > On Mon, Mar 11, 2019 at 6:28 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > >
-> > > On Mon, 11 Mar 2019 20:39:12 -0400
-> > > Joel Fernandes <joel@joelfernandes.org> wrote:
-> > >
-> > > > I think even though the kernel-headers can't have information about all data
-> > > > structures, they do already contain a lot of data structure definitions we
-> > > > need already. And anything needed can/should arguably be moved to include/ if
-> > > > they are really needed for kernel extension by something "external" to the
-> > > > kernel such as kernel modules or eBPF, right?
-> > >
-> > > That's not my worry. I would like to be able to easily walk data
-> > > structures from within the kernel, without having to do a lot of work
-> > > in userspace to get that information. The kprobe_events could then be
-> > > passed type casts or such to access data fields of arguments to
-> > > functions and such.
-> > 
-> > Ok.
-> > 
-> > > > In any case, such a solution such as what Steve suggested, still cannot do
-> > > > what we can with headers - such as build kernel modules on the fly using the
-> > > > C-compiler without any auto-generation of C code from any debug artifiacts.
-> > > > Think systemtap working with the module-backend without any need for
-> > > > linux-headers package on the file system. So such a solution would still be a
-> > > > bit orthogonal in scope to what this proposed solution can solve IMO.
-> > > >
-> > >
-> > > With the information I would like to have, it would be trivial to read
-> > > the data to create the header files needed for modules.
-> > 
-> > But there are macros and other #define things too. We lose all of them
-> > and can't recreate them from just DWARF (AFAIK). Including
-> > include/generated/autoconf.h which #defines the CONFIG options. For
-> > that we either need headers, or full kernel's sources with build
-> > artifacts.
-> 
-> What kind of macros would you concern?
-> 
-> > I do see a use case for the debug info you are talking about as you
-> > mentioned for the kprobe_events argument list types, and I already
-> > thought about it. But it does not seem to work for all the use cases I
-> > am referring to here.
-> 
-> But the eBPF is based on kprobe-events. What kind of usage would you
-> expected? (with macros??)
-
-eBPF C programs are compiled with kernel headers. They can execute inline
-functions or refer to macros in the kernel headers. They are similar to
-kernel modules where you build a C program that then later is executed in
-kernel context. It goes through the whole compiler pipeline. This is slightly
-different usage from pure kprobe-events.  Also eBPF kprobe programs need
-LINUX_VERSION_CODE (or similarly named) macro which it provides to the bpf(2)
-syscall when loading kprobe programs. This is because eBPF implementation in
-the kernel checks if the eBPF programs that use kprobes are being loaded
-against the right kernel.
-
-thanks,
-
-- Joel
-
+T24gV2VkLCBNYXIgMTMsIDIwMTkgYXQgNzoyOSBQTSBTdGV2ZW4gUm9zdGVkdCA8cm9zdGVkdEBn
+b29kbWlzLm9yZz4gd3JvdGU6DQo+DQo+IE9uIEZyaSwgIDggTWFyIDIwMTkgMTU6MzY6MjcgKzAy
+MDANCj4gVHp2ZXRvbWlyIFN0b3lhbm92IDx0c3RveWFub3ZAdm13YXJlLmNvbT4gd3JvdGU6DQo+
+DQo+ID4gQ3JlYXRlIG1hbiBwYWdlIGZvciB0ZXBfbGlzdF9ldmVudHMoKSBhcyBwYXJ0IG9mIHRo
+ZSBsaWJ0cmFjZWV2ZW50IEFQSXMuDQo+ID4NCj4NCj4gV2Ugc2hvdWxkIHByb2JhYmx5IGluY2x1
+ZGUgdGVwX2xpc3RfZXZlbnRzX2NvcHkoKSBpbiB0aGlzIG1hbiBwYWdlLg0KPiBXaGVyZSBvbmUg
+aXMgbm90IHRvIGJlIGZyZWVkLCBhbmQgdGhlIG90aGVyIGlzLg0KDQpJJ2xsIHVwZGF0ZSB0aGUg
+bWFuIHBhZ2Ugb25jZSB3ZSBpbnRyb2R1Y2UgdGVwX2xpc3RfZXZlbnRzX2NvcHkoKSB0bw0KdG9v
+bHMvbGliL3RyYWNlZXZlbnQsIGN1cnJlbnRseSB0aGlzIG5ldyBBUEkgaXMgcGFydCBvZiB0cmFj
+ZS1jbWQgb25seS4NCg0KPg0KPiAtLSBTdGV2ZQ0KPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFR6dmV0
+b21pciBTdG95YW5vdiA8dHN0b3lhbm92QHZtd2FyZS5jb20+DQo+ID4gLS0tDQo+ID4gIC4uLi9s
+aWJ0cmFjZWV2ZW50LWV2ZW50X2xpc3QudHh0ICAgICAgICAgICAgICB8IDk0ICsrKysrKysrKysr
+KysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDk0IGluc2VydGlvbnMoKykNCj4gPiAgY3Jl
+YXRlIG1vZGUgMTAwNjQ0IHRvb2xzL2xpYi90cmFjZWV2ZW50L0RvY3VtZW50YXRpb24vbGlidHJh
+Y2VldmVudC1ldmVudF9saXN0LnR4dA0KPiA+DQoNCg0KDQotLSANCg0KVHp2ZXRvbWlyIChDZWNv
+KSBTdG95YW5vdg0KVk13YXJlIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudGVyDQo=
