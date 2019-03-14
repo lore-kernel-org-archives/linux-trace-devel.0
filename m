@@ -2,188 +2,99 @@ Return-Path: <SRS0=grb/=RR=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCFD8C43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 16:06:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FAA4C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 16:08:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B82102184C
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 16:06:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 104F82184E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 16:08:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbfCNQGQ (ORCPT
+        id S1726612AbfCNQIz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Mar 2019 12:06:16 -0400
-Received: from s30320.gliwa.com ([148.251.52.238]:37758 "EHLO mail.gliwa.com"
+        Thu, 14 Mar 2019 12:08:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726157AbfCNQGQ (ORCPT
+        id S1726157AbfCNQIz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Mar 2019 12:06:16 -0400
-Received: by mail.gliwa.com (Postfix, from userid 992)
-        id C92E63411B4; Thu, 14 Mar 2019 17:06:12 +0100 (CET)
-X-Virus-Checker-Version: ClamAV 0.101.1/25388/Thu Mar 14 10:10:01 2019
-X-Virus-Status: OK
-Received: from [192.168.2.102] (dslb-178-003-217-045.178.003.pools.vodafone-ip.de [178.3.217.45])
-        by mail.gliwa.com (Postfix) with ESMTPSA id 9079D34119E;
-        Thu, 14 Mar 2019 17:06:12 +0100 (CET)
-Subject: Re: make TGID available also in binary ring buffer?
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     joel@joelfernandes.org,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>, Chunyu Hu <chuhu@redhat.com>
-References: <6e61f5ff-5302-ad96-66d3-38347bf3cf69@gliwa.com>
- <20190304135147.5fcc243f@gandalf.local.home>
- <ac830875-ca55-9978-1ece-4614fd988d29@gliwa.com>
- <20190313094417.7ed14ee0@gandalf.local.home>
- <0ce98e8a-47b7-7890-500a-e0a2bc938b53@gliwa.com>
- <20190313105020.07bb8254@gandalf.local.home>
-From:   Claudio <claudio.fontana@gliwa.com>
-Message-ID: <5cfad70b-b823-e3ed-630e-d766cc53f6e5@gliwa.com>
-Date:   Thu, 14 Mar 2019 17:06:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+        Thu, 14 Mar 2019 12:08:55 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB7E32184C;
+        Thu, 14 Mar 2019 16:08:54 +0000 (UTC)
+Date:   Thu, 14 Mar 2019 12:08:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc:     "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] tools lib traceevent, perf tools: Move struct
+ tep_handler definition in a local header file
+Message-ID: <20190314120852.592eed46@gandalf.local.home>
+In-Reply-To: <20181010105105.826-1-tstoyanov@vmware.com>
+References: <20181010105105.826-1-tstoyanov@vmware.com>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20190313105020.07bb8254@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steve,
+On Wed, 10 Oct 2018 10:51:17 +0000
+Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-On 3/13/19 3:50 PM, Steven Rostedt wrote:
-> On Wed, 13 Mar 2019 15:03:35 +0100
-> Claudio <claudio.fontana@gliwa.com> wrote:
-> 
-> 
->>>>
->>>> When I read an event for a new process or thread
->>>> (sched_process_fork), I need to know if it is a new thread or a
->>>> new process at that time, and collect the tgid of the child.  
->>>
->>> You are reading this at the time of tracing?  
->>
->> Yes, my requirements are for live tracing of the low level events,
->> and correlation of the events from all cores, in order to be able to
->> immediately respond to the events from the tracing application.
->>
->> Tracing is expected to be always on in the system (no expected
->> trace-first/analyze later pattern - everything related to the
->> analysis of the events is automated and occurs at runtime).
-> 
-> You could add a kprobe to find out the tgid as well.
+> +++ b/lib/traceevent/event-parse-api.c
+> @@ -0,0 +1,401 @@
+> +// SPDX-License-Identifier: LGPL-2.1
+> +/*
+> + * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+> + *
+> + */
+> +
+> +#include "event-parse.h"
+> +#include "event-parse-local.h"
+> +#include "event-utils.h"
+> +
+> +/**
+> + * tep_get_event - returns the event with the given index
+> + * @tep: a handle to the tep_handle
+> + * @index: index of the requested event, in the range 0 .. nr_events
+> + *
+> + * This returns pointer to the element of the events array with the given index
+> + * If @tep is NULL, or @index is not in the range 0 .. nr_events, NULL is returned.
+> + */
+> +struct tep_event_format *tep_get_event(struct tep_handle *tep, int index)
+> +{
+> +	if (tep && tep->events && index < tep->nr_events)
+> +		return tep->events[index];
+> +
+> +	return NULL;
+> +}
 
-I think I am going to try this next.
+It looks like a upstream backport added this function to the
+event-parse-api.c file to accommodate kernelshark.
 
+Please be careful not to do this on backports. If you need to add
+functionality, it needs to be a separate patch so that we can upstream
+it. Otherwise, I get confused to see why the traceevent code is
+different between trace-cmd and linux/tools when all the commits have
+been added.
 
->>
->> This works fine for the real time timing analysis at the thread
->> level, but for the process level I need to know the tgid of the
->> thread at the time I see the event. 
->>>>
->>>> How can I get that information, if the update is done only at the
->>>> time of the first "child" context-switch?
->>>>
->>>> 3) Is the saved_tgids map in sync with the reader of
->>>> trace_pipe_raw, so that when reading an event from the pipe, the
->>>> saved_tgids represent the particular state of the tid to tgid maps
->>>> at the timestamp indicated in the event?  
->>>
->>> Currently, it's only taken at the end of the trace.  
->>
->> I wonder what the concept of the "end of the trace" is..
-> 
-> 
-> I meant for "trace-cmd record", the saved_cmdlines are stored when the
-> tracing is finished, not during the trace. But the saved_cmdlines is
-> updated at each sched_switch, and so is the tgid.
-> 
-> Now, we could add that info to the fork part as well.
-> 
-> -- Steve
-> 
+-- Steve
 
-I have experimented with mainline, and then with mainline plus a patch to add the info for fork as well like this:
-
-diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched_switch.c
-index e288168..c5339ed 100644
---- a/kernel/trace/trace_sched_switch.c
-+++ b/kernel/trace/trace_sched_switch.c
-@@ -47,6 +47,20 @@ probe_sched_wakeup(void *ignore, struct task_struct *wakee)
- 	tracing_record_taskinfo(current, flags);
- }
- 
-+static void
-+probe_sched_fork(void *ignore,
-+		 struct task_struct *parent, struct task_struct *child)
-+{
-+	int flags;
-+
-+	flags = (RECORD_TGID * !!sched_tgid_ref) +
-+		(RECORD_CMDLINE * !!sched_cmdline_ref);
-+
-+	if (!flags)
-+		return;
-+	tracing_record_taskinfo(child, flags);
-+}
-+
- static int tracing_sched_register(void)
- {
- 	int ret;
-@@ -72,7 +86,16 @@ static int tracing_sched_register(void)
- 		goto fail_deprobe_wake_new;
- 	}
- 
-+	ret = register_trace_sched_process_fork(probe_sched_fork, NULL);
-+	if (ret) {
-+		pr_info("sched trace: Couldn't activate tracepoint"
-+			" probe to kernel_sched_process_fork\n");
-+		goto fail_deprobe_switch;
-+	}
-+
- 	return ret;
-+fail_deprobe_switch:
-+	unregister_trace_sched_switch(probe_sched_switch, NULL);
- fail_deprobe_wake_new:
- 	unregister_trace_sched_wakeup_new(probe_sched_wakeup, NULL);
- fail_deprobe:
-@@ -82,6 +105,7 @@ static int tracing_sched_register(void)
- 
- static void tracing_sched_unregister(void)
- {
-+	unregister_trace_sched_process_fork(probe_sched_fork, NULL);
- 	unregister_trace_sched_switch(probe_sched_switch, NULL);
- 	unregister_trace_sched_wakeup_new(probe_sched_wakeup, NULL);
- 	unregister_trace_sched_wakeup(probe_sched_wakeup, NULL);
-
-
---
-
-It seems to work, but the model seems not to apply very well to my use case.
-
-saved_tgids cannot be reset, not even by disabling tracing completely
-
-echo 0 > tracing_on
-
-or 
-
-echo 0 > options/record-tgids
-
-and the list just keeps growing, no entries are ever removed when tasks are destroyed etc,
-so my lookups become more and more expensive as the list grows.
-I don't think this is suited to be looked up frequently for my tracing scenario.
-
-Next I will experiment with:
-
-1) kprobes, trying to generate an event before every sched class event carrying the tid to tgid mapping.
-
-2) if everything fails, revert to use /proc/PID/stat, which however can be slow and racy if the process does not exist anymore when I read back the ftrace buffers.
-
-Thanks & ciao,
-
-Claudio
-
+> +++ b/kernel-shark-qt/examples/datafilter.c
+> @@ -83,9 +83,9 @@ int main(int argc, char **argv)
+>  	puts("\n\n");
+>  
+>  	/* Show only "sched" events. */
+> -	n_evts = kshark_ctx->pevent->nr_events;
+> +	n_evts = tep_get_events_count(kshark_ctx->pevent);
+>  	for (i = 0; i < n_evts; ++i) {
+> -		event = kshark_ctx->pevent->events[i];
+> +		event = tep_get_event(kshark_ctx->pevent, i);
+>  		if (strcmp(event->system, "sched") == 0)
+>  			kshark_filter_add_id(kshark_ctx, KS_SHOW_EVENT_FILTER,
+>  							 event->id);
