@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B510C43381
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 15:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD736C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 15:10:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D7F0E20811
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 15:10:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B853120811
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Mar 2019 15:10:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbfCNPKt (ORCPT
+        id S1727174AbfCNPKv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Mar 2019 11:10:49 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:45911 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbfCNPKt (ORCPT
+        Thu, 14 Mar 2019 11:10:51 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:32788 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726360AbfCNPKv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Mar 2019 11:10:49 -0400
-Received: by mail-pf1-f196.google.com with SMTP id v21so4019434pfm.12
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Mar 2019 08:10:49 -0700 (PDT)
+        Thu, 14 Mar 2019 11:10:51 -0400
+Received: by mail-pf1-f193.google.com with SMTP id i19so4055428pfd.0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Mar 2019 08:10:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=y3cbyVMfq+8I0WeCaweE+oE9AfAwLE3JBJg9n2ZIxCo=;
-        b=XWTC2nuFYJLpBrLtGJi05L1Ne/t1LJKLdG5/mup8jehoDhy8arVyeFyC5b3sCFoT1q
-         PTdF6ZRqHu9ahlFD6xK9RFD0xay7LD3Sf1Mk6l9LkHiHTwTrPH7ZgVCFRJ2DXLi8UWLZ
-         hZBY3eLSxTk7geY5Ehf08iAMDZ9wE/11YHMHyzUfF92SiA9bGAFif93Kvlav3FYantKx
-         LF9wUqCRcFzDxesZ1xDh7XciHEeNF2B3llWFprxZ6HvzVyvkR9v94u26qE+FFx0oqkLF
-         0hLIN0HsO6t2ImG/fT4aRvr1gSWucydbWD4t6hHyXdJsP7/VNRdifdh4lYEgn+wBpcvx
-         RPwg==
-X-Gm-Message-State: APjAAAUgY0gPPLBiO82rdpUCjtSz7k0aYyBfqAe8matCKnr8IKF9Dg2R
-        d4xXLtxlrafg5uxOpTQt1RE=
-X-Google-Smtp-Source: APXvYqzaD/i83XSjsgalTHw5Wt+kWzUW2I3DbH65QA+70feDACHmRxxsABLUTi8wmbxihSrbiF4NOw==
-X-Received: by 2002:a17:902:7b92:: with SMTP id w18mr4065208pll.237.1552576248973;
-        Thu, 14 Mar 2019 08:10:48 -0700 (PDT)
+        bh=gSKQ5bH65mirLqB3barHk8fmR2aksEZmF9F1bcvAJtM=;
+        b=XixBjbIL8e1Nj68mnteFK04St+gPyRxQpBhYbPKZDlErlMAU4n8FixPI2R6qU3ItmS
+         qtlOTk8mvCmvYADFYQEDwSc7/b9kYTsSvjMv6/IHu+uudcF2S6iWr9kEzcegqt2/ZeFE
+         cW7Hn2053al84BImuqLMV1gjXvRPyqE2LoWcJRUZHiyhT+CzsZ6ko3kz65JtECKawSgy
+         g3zq4FPqrlW5hfQ2+ujcP2Qw2lBYh8TGcPEv2fFQNHzaSfQdyPcxhm8eQkvp4HGXFQ0F
+         RK7umSnGYud1KUigoZt0UsBGeUpTNojGR84OEorkpJKb0JPpyhYgQMjrlR9xoHNQ6XWi
+         wGiA==
+X-Gm-Message-State: APjAAAU88ubAwbaDCcgHY7CNGpuOEP4qJAjNQbZDz7OsAHjPeNvzLoLb
+        jWhsvAIKryFi4uwveqqMrvo=
+X-Google-Smtp-Source: APXvYqyPg2JuCmh215V2vvLjSK1oay286fX3mj97CpOvVBEGt8pqtBs9DOOjBVNnkn6na5wFJIrOKQ==
+X-Received: by 2002:a63:7e0e:: with SMTP id z14mr45722680pgc.436.1552576250752;
+        Thu, 14 Mar 2019 08:10:50 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id f65sm8165585pfg.98.2019.03.14.08.10.47
+        by smtp.gmail.com with ESMTPSA id f65sm8165585pfg.98.2019.03.14.08.10.49
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Mar 2019 08:10:48 -0700 (PDT)
+        Thu, 14 Mar 2019 08:10:50 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 10/12] kernel-shark: Avoid 0/0 spliter ratio in KsSession
-Date:   Thu, 14 Mar 2019 17:10:10 +0200
-Message-Id: <20190314151012.905-11-ykaradzhov@vmware.com>
+Subject: [PATCH 11/12] kernel-shark: In model, handle the case when all bins are empty
+Date:   Thu, 14 Mar 2019 17:10:11 +0200
+Message-Id: <20190314151012.905-12-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190314151012.905-1-ykaradzhov@vmware.com>
 References: <20190314151012.905-1-ykaradzhov@vmware.com>
@@ -58,39 +58,55 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Sometimes when we save the session QSplitter::sizes() returns
-0/0 ratio (no idea why). Later when we load the session the
-0/0 ratio results in misbehavior of the splitter position.
+ksmodel_set_bin_counts() should not crash in the case when all
+bins of the model, except the Upper Overflow bin, are empty.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsSession.cpp | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel-shark/src/libkshark-model.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/kernel-shark/src/KsSession.cpp b/kernel-shark/src/KsSession.cpp
-index b151818..9d86776 100644
---- a/kernel-shark/src/KsSession.cpp
-+++ b/kernel-shark/src/KsSession.cpp
-@@ -256,7 +256,7 @@ void KsSession::loadSplitterSize(QSplitter *splitter)
+diff --git a/kernel-shark/src/libkshark-model.c b/kernel-shark/src/libkshark-model.c
+index af3440b..29676c7 100644
+--- a/kernel-shark/src/libkshark-model.c
++++ b/kernel-shark/src/libkshark-model.c
+@@ -290,7 +290,7 @@ static void ksmodel_set_next_bin_edge(struct kshark_trace_histo *histo,
+ static void ksmodel_set_bin_counts(struct kshark_trace_histo *histo)
  {
- 	kshark_config_doc *spl = kshark_config_alloc(KS_CONFIG_JSON);
- 	json_object *jspl, *jgraphsize, *jviewsize;
--	int graphSize, viewSize;
-+	int graphSize(1), viewSize(1);
- 	QList<int> sizes;
+ 	int i = 0, prev_not_empty;
+-	ssize_t count_tmp;
++	ssize_t count_tmp = 0;
  
- 	if (!kshark_config_doc_get(_config, "Splitter", spl))
-@@ -269,6 +269,10 @@ void KsSession::loadSplitterSize(QSplitter *splitter)
+ 	histo->tot_count = 0;
+ 	memset(&histo->bin_count[0], 0,
+@@ -303,7 +303,7 @@ static void ksmodel_set_bin_counts(struct kshark_trace_histo *histo)
+ 		prev_not_empty = LOB(histo);
+ 	} else {
+ 		/* Loop till the first non-empty bin. */
+-		while (histo->map[i] < 0) {
++		while (histo->map[i] < 0 && i < histo->n_bins) {
+ 			++i;
+ 		}
  
- 		graphSize = json_object_get_int(jgraphsize);
- 		viewSize = json_object_get_int(jviewsize);
-+		if (graphSize == 0 && viewSize == 0) {
-+			/* 0/0 spliter ratio is undefined. Make it 1/1. */
-+			viewSize = graphSize = 1;
-+		}
- 	}
+@@ -316,7 +316,8 @@ static void ksmodel_set_bin_counts(struct kshark_trace_histo *histo)
+ 	 */
+ 	for (; i < histo->n_bins; ++i) {
+ 		if (histo->map[i] != KS_EMPTY_BIN) {
+-			/* The current bin is not empty, take its data row and
++			/*
++			 * The current bin is not empty, take its data row and
+ 			 * subtract it from the data row of the previous not
+ 			 * empty bin, which will give us the number of data
+ 			 * rows in the "prev_not_empty" bin.
+@@ -358,7 +359,7 @@ static void ksmodel_set_bin_counts(struct kshark_trace_histo *histo)
+ 	 * We will do a sanity check. The number of data rows in the last not
+ 	 * empty bin must be greater than zero.
+ 	 */
+-	assert(count_tmp > 0);
++	assert(count_tmp >= 0);
+ 	histo->tot_count += histo->bin_count[prev_not_empty] = count_tmp;
+ }
  
- 	sizes << graphSize << viewSize;
 -- 
 2.19.1
 
