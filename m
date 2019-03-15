@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 684C8C10F00
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Mar 2019 08:38:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B34EC43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Mar 2019 08:38:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3EFF221872
+	by mail.kernel.org (Postfix) with ESMTP id DB2E121872
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Mar 2019 08:38:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727291AbfCOIiA (ORCPT
+        id S1727312AbfCOIiA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 15 Mar 2019 04:38:00 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:55909 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727058AbfCOIh7 (ORCPT
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:36292 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727055AbfCOIiA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 15 Mar 2019 04:37:59 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 4so5562137wmf.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Mar 2019 01:37:58 -0700 (PDT)
+        Fri, 15 Mar 2019 04:38:00 -0400
+Received: by mail-wr1-f65.google.com with SMTP id y13so4066344wrd.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 15 Mar 2019 01:37:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/UnSjgn063r718kUxw+hYTPaixZKeywUhQaFk7tTPRA=;
-        b=mlG6W34ZKlRTNZjNv+nDCFwxwiLvLnB4yCf68JFl3Zbta55QimwkNViYuBHhHoBUEw
-         Xg+eyIYfovLIxYSZX6+tCb8EaRHtHyd69zFxopHpKvPBm7f5RrEJRg3G8dileK3iogNj
-         8VdVZ9VZvmMEeIGQI4EjkYiSYi33nnkt3Mn8oDpaD7VQb9qxQTfPq7IZe+9NJvthCru0
-         C8MH5YG+OeFC3Owtq8TLNHihJHdgAjsOKgiyW23seldu+tJf9q4+01irJecBjt0EBaIv
-         ALmXAdjTvy5gPNTa6IeQ2VeEOCgIucawZ80CUnIjVDEgrldihnN9McN2RMKH0wnAuV49
-         vKHw==
-X-Gm-Message-State: APjAAAWbw2LC9z1l7EX9YW/2MKNHzfsyQDguO96GTP9tMpPoEQZ4bNVy
-        Ne7s8WCtwbSfrbyoGpThNQ73inUZ
-X-Google-Smtp-Source: APXvYqw+xURQJaZ/ARpLT9i9mNIGa/BunMN0A4o3yrBSA/G5bQig9tyhpSAPugcHg23ujlqLzY/2mg==
-X-Received: by 2002:a1c:dc85:: with SMTP id t127mr1170787wmg.136.1552639077514;
-        Fri, 15 Mar 2019 01:37:57 -0700 (PDT)
+        bh=FqFD0+SNXkWScg4eQN2fiGCZ2PdfRLNFg7lshgeVR6Q=;
+        b=Cut09TA+yH23MAKiYFZ+6a3ak2rXhFgdF70zdH3Jbve8F1Yz+G4QIHTGaLfQHBF2RK
+         K1jcoMZSCPpnWR9gMoghAbS66ItBeIeMkhwfzlsUtHeuCT2B9KurW9GFWZ+nyFmzdQwg
+         rP3dqkfxVBmv3CIQsU7pV84EN4tUvwGNz5mxv0Mvwf43F4SfIOnX8TeX12sRq93HTc4k
+         ifLOrt2iMiL2XZ/rFs0yaoGMQfsJ6onBonhYUZ4/M+w5yRh7iDuCqcscobU2d7hFAu4M
+         OzXPxxzPUOaHAEWN/Jooq8U72XVq6gP5J0l7HnY99CcfIm7XUaREtKGtSnPz15WFx6dx
+         yYug==
+X-Gm-Message-State: APjAAAVgd2ywwL0zqzb17CE/4REB34fcIyWzTy/N8/AcMGkFfqXDBWae
+        ZAOFXqdRzh5GKNPRqv6W+Ao=
+X-Google-Smtp-Source: APXvYqzlfV5vCAGzY/aYSwqXuXTqUhi+Plr6rQvqhmV+RjdrVO3MWxO4NuyPc0o6fj2lAK0oFSqwSw==
+X-Received: by 2002:adf:b651:: with SMTP id i17mr1384599wre.108.1552639078640;
+        Fri, 15 Mar 2019 01:37:58 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id o5sm979395wmh.12.2019.03.15.01.37.56
+        by smtp.gmail.com with ESMTPSA id o5sm979395wmh.12.2019.03.15.01.37.57
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 15 Mar 2019 01:37:56 -0700 (PDT)
+        Fri, 15 Mar 2019 01:37:57 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 1/9] trace-cmd: Implemented new lib API: tracecmd_local_events_system()
-Date:   Fri, 15 Mar 2019 10:37:46 +0200
-Message-Id: <20190315083754.27532-2-tstoyanov@vmware.com>
+Subject: [PATCH v6 2/9] trace-cmd: Added support for negative time offsets in trace.dat file
+Date:   Fri, 15 Mar 2019 10:37:47 +0200
+Message-Id: <20190315083754.27532-3-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190315083754.27532-1-tstoyanov@vmware.com>
 References: <20190315083754.27532-1-tstoyanov@vmware.com>
@@ -58,157 +58,83 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The new tracecmd lib API tracecmd_local_events_system() creates
-a tep handler and initializes it with the events of the
-specified subsystems.
+When synchronizing timestamps between different machines, there are cases
+when the time offset is negative. This patch changes the way time offset is
+written and read from trace.dat file - as signed decimal, instead of hex.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- include/trace-cmd/trace-cmd.h |  2 +
- lib/trace-cmd/trace-util.c    | 95 ++++++++++++++++++++++++-----------
- 2 files changed, 67 insertions(+), 30 deletions(-)
+ include/trace-cmd/trace-cmd.h | 2 +-
+ lib/trace-cmd/trace-input.c   | 6 +++---
+ tracecmd/trace-read.c         | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 27ba89d..21f83e2 100644
+index 21f83e2..428d792 100644
 --- a/include/trace-cmd/trace-cmd.h
 +++ b/include/trace-cmd/trace-cmd.h
-@@ -32,6 +32,8 @@ void tracecmd_unload_plugins(struct tep_plugin_list *list, struct tep_handle *pe
- char **tracecmd_event_systems(const char *tracing_dir);
- char **tracecmd_system_events(const char *tracing_dir, const char *system);
- struct tep_handle *tracecmd_local_events(const char *tracing_dir);
-+struct tep_handle *tracecmd_local_events_system(const char *tracing_dir,
-+						const char * const *sys_names);
- int tracecmd_fill_local_events(const char *tracing_dir, struct tep_handle *pevent);
- char **tracecmd_local_plugins(const char *tracing_dir);
+@@ -126,7 +126,7 @@ int tracecmd_is_buffer_instance(struct tracecmd_input *handle);
+ void tracecmd_create_top_instance(char *name);
+ void tracecmd_remove_instances(void);
  
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index b5aea39..ca32fcf 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -1119,43 +1119,25 @@ static int read_header(struct tep_handle *pevent, const char *events_dir)
- 	return ret;
+-void tracecmd_set_ts_offset(struct tracecmd_input *handle, unsigned long long offset);
++void tracecmd_set_ts_offset(struct tracecmd_input *handle, long long offset);
+ void tracecmd_set_ts2secs(struct tracecmd_input *handle, unsigned long long hz);
+ 
+ void tracecmd_print_events(struct tracecmd_input *handle, const char *regex);
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 34a8301..be6720c 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -91,7 +91,7 @@ struct tracecmd_input {
+ 	bool			read_page;
+ 	bool			use_pipe;
+ 	struct cpu_data 	*cpu_data;
+-	unsigned long long	ts_offset;
++	long long		ts_offset;
+ 	double			ts2secs;
+ 	char *			cpustats;
+ 	char *			uname;
+@@ -2082,7 +2082,7 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
  }
  
--/**
-- * tracecmd_local_events - create a pevent from the events on system
-- * @tracing_dir: The directory that contains the events.
-- *
-- * Returns a pevent structure that contains the pevents local to
-- * the system.
-- */
--struct tep_handle *tracecmd_local_events(const char *tracing_dir)
-+static bool contains(const char *name, const char * const *names)
+ void tracecmd_set_ts_offset(struct tracecmd_input *handle,
+-			    unsigned long long offset)
++			    long long offset)
  {
--	struct tep_handle *pevent = NULL;
--
--	pevent = tep_alloc();
--	if (!pevent)
--		return NULL;
--
--	if (tracecmd_fill_local_events(tracing_dir, pevent)) {
--		tep_free(pevent);
--		pevent = NULL;
--	}
--
--	return pevent;
-+	if (!names)
-+		return false;
-+	for (; *names; names++)
-+		if (strcmp(name, *names) == 0)
-+			return true;
-+	return false;
+ 	handle->ts_offset = offset;
  }
+@@ -2099,7 +2099,7 @@ void tracecmd_set_ts2secs(struct tracecmd_input *handle,
  
--/**
-- * tracecmd_fill_local_events - Fill a pevent with the events on system
-- * @tracing_dir: The directory that contains the events.
-- * @pevent: Allocated pevent which will be filled
-- *
-- * Returns whether the operation succeeded
-- */
--int tracecmd_fill_local_events(const char *tracing_dir, struct tep_handle *pevent)
-+static int tracecmd_fill_local_events_system(const char *tracing_dir,
-+					     struct tep_handle *pevent,
-+					     const char * const *sys_names)
+ static int handle_options(struct tracecmd_input *handle)
  {
-+	int ret, failure = 0;
- 	struct dirent *dent;
- 	char *events_dir;
- 	struct stat st;
- 	DIR *dir;
--	int ret, failure = 0;
- 
- 	if (!tracing_dir)
- 		return -1;
-@@ -1189,7 +1171,8 @@ int tracecmd_fill_local_events(const char *tracing_dir, struct tep_handle *peven
- 		if (strcmp(name, ".") == 0 ||
- 		    strcmp(name, "..") == 0)
- 			continue;
--
-+		if (sys_names && !contains(name, sys_names))
-+			continue;
- 		sys = append_file(events_dir, name);
- 		ret = stat(sys, &st);
- 		if (ret < 0 || !S_ISDIR(st.st_mode)) {
-@@ -1217,6 +1200,58 @@ int tracecmd_fill_local_events(const char *tracing_dir, struct tep_handle *peven
- 	return ret;
- }
- 
-+/**
-+ * tracecmd_local_events_system - create a tep from the events of the specified subsystem.
-+ *
-+ * @tracing_dir: The directory that contains the events.
-+ * @sys_name: Array of system names, to load the events from.
-+ * The last element from the array must be NULL
-+ *
-+ * Returns a tep structure that contains the tep local to
-+ * the system.
-+ */
-+struct tep_handle *tracecmd_local_events_system(const char *tracing_dir,
-+						const char * const *sys_names)
-+{
-+	struct tep_handle *tep = NULL;
-+
-+	tep = tep_alloc();
-+	if (!tep)
-+		return NULL;
-+
-+	if (tracecmd_fill_local_events_system(tracing_dir, tep, sys_names)) {
-+		tep_free(tep);
-+		tep = NULL;
-+	}
-+
-+	return tep;
-+}
-+
-+/**
-+ * tracecmd_local_events - create a pevent from the events on system
-+ * @tracing_dir: The directory that contains the events.
-+ *
-+ * Returns a pevent structure that contains the pevents local to
-+ * the system.
-+ */
-+struct tep_handle *tracecmd_local_events(const char *tracing_dir)
-+{
-+	return tracecmd_local_events_system(tracing_dir, NULL);
-+}
-+
-+/**
-+ * tracecmd_fill_local_events - Fill a pevent with the events on system
-+ * @tracing_dir: The directory that contains the events.
-+ * @pevent: Allocated pevent which will be filled
-+ *
-+ * Returns whether the operation succeeded
-+ */
-+int tracecmd_fill_local_events(const char *tracing_dir,
-+			       struct tep_handle *pevent)
-+{
-+	return tracecmd_fill_local_events_system(tracing_dir, pevent, NULL);
-+}
-+
- /**
-  * tracecmd_local_plugins - returns an array of available tracer plugins
-  * @tracing_dir: The directory that contains the tracing directory
+-	unsigned long long offset;
++	long long offset;
+ 	unsigned short option;
+ 	unsigned int size;
+ 	char *cpustats = NULL;
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 804022a..e309672 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -58,7 +58,7 @@ static struct list_head handle_list;
+ struct input_files {
+ 	struct list_head	list;
+ 	const char		*file;
+-	unsigned long long	tsoffset;
++	long long		tsoffset;
+ 	unsigned long long	ts2secs;
+ };
+ static struct list_head input_files;
+@@ -1413,7 +1413,7 @@ void trace_report (int argc, char **argv)
+ 	struct input_files *inputs;
+ 	struct handle_list *handles;
+ 	enum output_type otype;
+-	unsigned long long tsoffset = 0;
++	long long tsoffset = 0;
+ 	unsigned long long ts2secs = 0;
+ 	unsigned long long ts2sc;
+ 	int show_stat = 0;
 -- 
 2.20.1
 
