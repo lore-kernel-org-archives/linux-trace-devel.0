@@ -2,155 +2,147 @@ Return-Path: <SRS0=vzsu=RW=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D7ADC43381
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Mar 2019 11:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA262C43381
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Mar 2019 15:55:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 347122085A
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Mar 2019 11:29:35 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="JH1O/xxD"
+	by mail.kernel.org (Postfix) with ESMTP id B493820857
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Mar 2019 15:55:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbfCSL3f (ORCPT
+        id S1727193AbfCSPzk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 19 Mar 2019 07:29:35 -0400
-Received: from mail-eopbgr760051.outbound.protection.outlook.com ([40.107.76.51]:17863
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725934AbfCSL3e (ORCPT
+        Tue, 19 Mar 2019 11:55:40 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:36683 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726857AbfCSPzk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 19 Mar 2019 07:29:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9QX8dtwIzrIxG9Lp7fzTALH3+dngwpHtc5++ki7B/zU=;
- b=JH1O/xxDTYHYH3QWKP9fuRlYGta+j5qWNU8CkqC77lqn2nqbQF7L77WxmG8cvr3/QPHmSjSO0oZd03MWvQJJWHX//wCeNwRzmAfoarUjddwAkE44t8EN6BxcOWAqAazn4c783g8f4j8TztqT3MEf0YOrwNlGjfMxlvma0tJvbUc=
-Received: from CY1PR05MB2761.namprd05.prod.outlook.com (10.167.18.19) by
- CY1PR05MB2716.namprd05.prod.outlook.com (10.167.18.10) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1730.6; Tue, 19 Mar 2019 11:28:52 +0000
-Received: from CY1PR05MB2761.namprd05.prod.outlook.com
- ([fe80::50:9d56:d444:62ec]) by CY1PR05MB2761.namprd05.prod.outlook.com
- ([fe80::50:9d56:d444:62ec%4]) with mapi id 15.20.1709.015; Tue, 19 Mar 2019
- 11:28:52 +0000
+        Tue, 19 Mar 2019 11:55:40 -0400
+Received: by mail-wm1-f65.google.com with SMTP id h18so8608677wml.1
+        for <linux-trace-devel@vger.kernel.org>; Tue, 19 Mar 2019 08:55:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9pWfdrLFAGZvr0vjsxYXywCMkZPzdvKtZYYbx5/PvGc=;
+        b=DSpk7xN+QViLUPYtQN1KGLt3Dt2BqIBrbEvhEGysNCJ7WvJtRobLrbBVDYoKO3N+E6
+         dmUy3KUzNFFO1NZ9shrKe6rCFTJ/F+2hDL8GBivio1kijFP6Nyh6XCVedtnvP7zJvTpl
+         NVWgXB+BAEalET3WVVdxe3JJ1k6IFPoTP1VQhYsywhE8o334FpA+QE0rv+jljU6wHCju
+         0IFFF4Reb92W3UbojpSXoc3lqbiE9GVHX9a1N/2dfUzD1tqdFjtpkKB/+/fYGYyBPPGL
+         xE64pYI2DqHepGBxqdbU5LgfytwspoxxH+ESnFDNEhnZvnHTiiXp/to6ktSEW8o+bRu2
+         ZvhQ==
+X-Gm-Message-State: APjAAAUGJGYrFuNgE7dt1vYe0SjU9wXvbQMMpFkBRy9zbyihEy+xvvUG
+        73gXLDxJV0vfSt4TP6nlCfC46KjX
+X-Google-Smtp-Source: APXvYqxDOIfUJtFE5koIECLRxTht7uy2UjdU97davM92dP5bcJbw3sRT1f/BnRrNY6PpMLhVvKnQKA==
+X-Received: by 2002:a1c:f70c:: with SMTP id v12mr4146483wmh.19.1553010938325;
+        Tue, 19 Mar 2019 08:55:38 -0700 (PDT)
+Received: from oberon.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id t15sm9365911wrr.16.2019.03.19.08.55.36
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 Mar 2019 08:55:37 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To:     Matt Helsley <mhelsley@vmware.com>
-CC:     "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [Suspected Spam] [PATCH v4 01/46] tools/lib/traceevent: Implement
- libtraceevent man pages
-Thread-Topic: [Suspected Spam] [PATCH v4 01/46] tools/lib/traceevent:
- Implement libtraceevent man pages
-Thread-Index: AQHU1bQFZnmLbA+Ajk2AOgmXJVv8hKYR8OiAgADxeAA=
-Date:   Tue, 19 Mar 2019 11:28:52 +0000
-Message-ID: <CACqStofZRRJkE2-ywKPJ2X3c4o0spWCaQZeuZ22yFpj2RVP1AQ@mail.gmail.com>
-References: <20190308133654.21264-1-tstoyanov@vmware.com>
- <20190308133654.21264-2-tstoyanov@vmware.com>
- <E6DB113F-62ED-48B3-8C8B-58BA28F634D4@vmware.com>
-In-Reply-To: <E6DB113F-62ED-48B3-8C8B-58BA28F634D4@vmware.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM6P193CA0053.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:209:8e::30) To CY1PR05MB2761.namprd05.prod.outlook.com
- (2a01:111:e400:c63a::19)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-gm-message-state: APjAAAV0fWX5lCarPRJmoGzJT+K0HmCAMeKo1o8GVTD9Bu/znIu9gJ3/
-        /VPlqQhK4+oqt/JIPis1dFd5X4ubh7EoGdN88ps=
-x-google-smtp-source: APXvYqwXbCYoOeqQchgAgSU6r0B403dPKEKvBx56CaZTKuYzsEIH8IAly3RagGClf+9wRP4/9y2ODOrkpOgc5sLGnHI=
-x-received: by 2002:a1c:c18d:: with SMTP id
- r135mr3117641wmf.112.1552994927812; Tue, 19 Mar 2019 04:28:47 -0700 (PDT)
-x-gmail-original-message-id: <CACqStofZRRJkE2-ywKPJ2X3c4o0spWCaQZeuZ22yFpj2RVP1AQ@mail.gmail.com>
-x-originating-ip: [209.85.128.41]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 912f213e-b6dc-4da2-bc28-08d6ac5e106e
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);SRVR:CY1PR05MB2716;
-x-ms-traffictypediagnostic: CY1PR05MB2716:
-x-microsoft-antispam-prvs: <CY1PR05MB271616B5CBF192A3512C48CCDC400@CY1PR05MB2716.namprd05.prod.outlook.com>
-x-forefront-prvs: 0981815F2F
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(396003)(39860400002)(346002)(136003)(376002)(199004)(189003)(26005)(186003)(316002)(61266001)(99286004)(6636002)(86362001)(256004)(6346003)(14444005)(9686003)(6506007)(5660300002)(6512007)(498394004)(6862004)(68736007)(97736004)(3846002)(305945005)(71200400001)(6486002)(6116002)(53546011)(95326003)(66066001)(102836004)(71190400001)(76176011)(386003)(54906003)(52116002)(14454004)(55446002)(81156014)(229853002)(478600001)(25786009)(2906002)(476003)(11346002)(6246003)(81166006)(446003)(8676002)(486006)(4326008)(6436002)(7736002)(61726006)(106356001)(53936002)(105586002)(8936002);DIR:OUT;SFP:1101;SCL:1;SRVR:CY1PR05MB2716;H:CY1PR05MB2761.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: vmware.com does not designate
- permitted sender hosts)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=tstoyanov@vmware.com; 
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: NRCiGOAU29laXK299VdbV6KiDqolvbEAbAPZZGxjK5m3/uThr2M5W9tMd9YmWP7SaOLK6SinZQhHD9ZCTD5cb+bdC7cnw1uZ/zPNalVrzr0epFGnmgx7qrQllnv37n3WWx16tljAiEcqrSh/S/dC/CMxeA7TQ75jWDlZKS1ZE4a0DmiUOeMSYtjjySmN9D/J60iCqh7zKxirh20otNbbF6Hfx/oJ872kCoXmis02e/pFjJ971teK/TvylrlQ/e4tG+wiZBqzK4rN2MbzKJIHwod3RQlJNOqm4PtBG5FoQHVXSLd0H3EUL716gj25ZoK9liczBkyKIkmsGlNrKyoeb/V0eaVElwcThN04Q4zNwVeg1firb2/xpgG1w5qlHhKkXRxkRZJgiLYu/8mcQiL9/rhAswge6ZHpUyCPRJswpnk=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <02D99279C120CF41AF78C0765F416B72@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v7 0/9] trace-cmd: Timetamps sync between host and guest machines, relying on vsock events.
+Date:   Tue, 19 Mar 2019 17:55:27 +0200
+Message-Id: <20190319155536.19381-1-tstoyanov@vmware.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 912f213e-b6dc-4da2-bc28-08d6ac5e106e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2019 11:28:52.6113
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1PR05MB2716
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-T24gTW9uLCBNYXIgMTgsIDIwMTkgYXQgMTE6MDQgUE0gTWF0dCBIZWxzbGV5IDxtaGVsc2xleUB2
-bXdhcmUuY29tPiB3cm90ZToNCj4NCj4NCj4NCj4gPiBPbiBNYXIgOCwgMjAxOSwgYXQgNTozNiBB
-TSwgVHp2ZXRvbWlyIFN0b3lhbm92IDx0c3RveWFub3ZAdm13YXJlLmNvbT4gd3JvdGU6DQo+ID4N
-Cj4gPiBUaGlzIHBhdGNoIGFkZHMgaW5pdGlhbCBzdXBwb3J0IGZvciBsaWJ0cmFjZWV2ZW50IG1h
-biBwYWdlcyAtDQo+ID4gRG9jdW1lbnRhdGlvbiBkaXJlY3RvcnksIHRlbXBsYXRlcywgY29uZmln
-dXJhdGlvbnMsIE1ha2VmaWxlcy4NCj4gPiBUaGUgZmlyc3QgbWFuIHBhZ2UgaXMgYWxzbyBwYXJ0
-IG9mIHRoZSBwYXRjaCAtIHN1bW1hcnkgb2YgdGhlDQo+ID4gbGlicmFyeSBhbmQgYWxsIGl0cyBB
-UElzLiBCdWlsZGluZyBvZiB0aGUgZG9jdW1lbnRhdGlvbiBpcw0KPiA+IGludGVncmF0ZWQgaW50
-byB0aGUgbGlidHJhY2VldmVudCBidWlsZCBwcm9jZXNzLCBuZXcgdGFyZ2V0cyBhcmUNCj4gPiBh
-ZGRlZCB0byBpdHMgTWFrZWZpbGU6DQo+ID4gbWFrZSBkb2MNCj4gPiBtYWtlIGRvYy1jbGVhbg0K
-PiA+IG1ha2UgZG9jLWluc3RhbGwNCj4gPiBtYWtlIGRvYy11bmluc3RhbGwNCj4gPg0KPiA+IFNp
-Z25lZC1vZmYtYnk6IFR6dmV0b21pciBTdG95YW5vdiA8dHN0b3lhbm92QHZtd2FyZS5jb20+DQo+
-ID4gLS0tDQo+ID4gdG9vbHMvbGliL3RyYWNlZXZlbnQvRG9jdW1lbnRhdGlvbi9NYWtlZmlsZSAg
-IHwgMjA1ICsrKysrKysrKysrKysrKysrKw0KPiA+IC4uLi90cmFjZWV2ZW50L0RvY3VtZW50YXRp
-b24vYXNjaWlkb2MuY29uZiAgICB8ICA5MSArKysrKysrKw0KPiA+IC4uLi9Eb2N1bWVudGF0aW9u
-L2xpYnRyYWNlZXZlbnQudHh0ICAgICAgICAgICB8IDE5OCArKysrKysrKysrKysrKysrKw0KPiA+
-IC4uLi90cmFjZWV2ZW50L0RvY3VtZW50YXRpb24vbWFucGFnZS0xLjcyLnhzbCB8ICAxNCArKw0K
-PiA+IC4uLi90cmFjZWV2ZW50L0RvY3VtZW50YXRpb24vbWFucGFnZS1iYXNlLnhzbCB8ICAzNSAr
-KysNCj4gPiAuLi4vRG9jdW1lbnRhdGlvbi9tYW5wYWdlLWJvbGQtbGl0ZXJhbC54c2wgICAgfCAg
-MTcgKysNCj4gPiAuLi4vRG9jdW1lbnRhdGlvbi9tYW5wYWdlLW5vcm1hbC54c2wgICAgICAgICAg
-fCAgMTMgKysNCj4gPiAuLi4vRG9jdW1lbnRhdGlvbi9tYW5wYWdlLXN1cHByZXNzLXNwLnhzbCAg
-ICAgfCAgMjEgKysNCj4gPiB0b29scy9saWIvdHJhY2VldmVudC9NYWtlZmlsZSAgICAgICAgICAg
-ICAgICAgfCAgMTMgKysNCj4gPiA5IGZpbGVzIGNoYW5nZWQsIDYwNyBpbnNlcnRpb25zKCspDQo+
-ID4gY3JlYXRlIG1vZGUgMTAwNjQ0IHRvb2xzL2xpYi90cmFjZWV2ZW50L0RvY3VtZW50YXRpb24v
-TWFrZWZpbGUNCj4gPiBjcmVhdGUgbW9kZSAxMDA2NDQgdG9vbHMvbGliL3RyYWNlZXZlbnQvRG9j
-dW1lbnRhdGlvbi9hc2NpaWRvYy5jb25mDQo+ID4gY3JlYXRlIG1vZGUgMTAwNjQ0IHRvb2xzL2xp
-Yi90cmFjZWV2ZW50L0RvY3VtZW50YXRpb24vbGlidHJhY2VldmVudC50eHQNCj4gPiBjcmVhdGUg
-bW9kZSAxMDA2NDQgdG9vbHMvbGliL3RyYWNlZXZlbnQvRG9jdW1lbnRhdGlvbi9tYW5wYWdlLTEu
-NzIueHNsDQo+ID4gY3JlYXRlIG1vZGUgMTAwNjQ0IHRvb2xzL2xpYi90cmFjZWV2ZW50L0RvY3Vt
-ZW50YXRpb24vbWFucGFnZS1iYXNlLnhzbA0KPiA+IGNyZWF0ZSBtb2RlIDEwMDY0NCB0b29scy9s
-aWIvdHJhY2VldmVudC9Eb2N1bWVudGF0aW9uL21hbnBhZ2UtYm9sZC1saXRlcmFsLnhzbA0KPiA+
-IGNyZWF0ZSBtb2RlIDEwMDY0NCB0b29scy9saWIvdHJhY2VldmVudC9Eb2N1bWVudGF0aW9uL21h
-bnBhZ2Utbm9ybWFsLnhzbA0KPiA+IGNyZWF0ZSBtb2RlIDEwMDY0NCB0b29scy9saWIvdHJhY2Vl
-dmVudC9Eb2N1bWVudGF0aW9uL21hbnBhZ2Utc3VwcHJlc3Mtc3AueHNsDQo+DQo+DQo+ID4gPHNu
-aXA+DQo+DQo+DQo+ID4gZGlmZiAtLWdpdCBhL3Rvb2xzL2xpYi90cmFjZWV2ZW50L01ha2VmaWxl
-IGIvdG9vbHMvbGliL3RyYWNlZXZlbnQvTWFrZWZpbGUNCj4gPiBpbmRleCBmNjUyNDMxMzdkNmQu
-LjM3NjRlMDAzZDFjYyAxMDA2NDQNCj4gPiAtLS0gYS90b29scy9saWIvdHJhY2VldmVudC9NYWtl
-ZmlsZQ0KPiA+ICsrKyBiL3Rvb2xzL2xpYi90cmFjZWV2ZW50L01ha2VmaWxlDQo+ID4gQEAgLTUz
-LDYgKzUzLDcgQEAgcGtnY29uZmlnX2RpciA/PSAkKHdvcmQgMSwkKHNoZWxsICQoUEtHX0NPTkZJ
-RykgICAgICAgICAgICAgXA0KPiA+DQo+ID4gZXhwb3J0IG1hbl9kaXIgbWFuX2Rpcl9TUSBJTlNU
-QUxMDQo+ID4gZXhwb3J0IERFU1RESVIgREVTVERJUl9TUQ0KPiA+ICtleHBvcnQgRVZFTlRfUEFS
-U0VfVkVSU0lPTg0KPiA+DQo+ID4gc2V0X3BsdWdpbl9kaXIgOj0gMQ0KPiA+DQo+ID4gQEAgLTMx
-Myw2ICszMTQsMTggQEAgY2xlYW46DQo+ID4gICAgICAgICAgICAgICAkKFJNKSBUUkFDRUVWRU5U
-LUNGTEFHUyB0YWdzIFRBR1M7IFwNCj4gPiAgICAgICAgICAgICAgICQoUk0pICQoUEtHX0NPTkZJ
-R19GSUxFKQ0KPiA+DQo+IG5pdDogSSBub3RpY2UgeW914oCZcmUgYWRkaW5nIG5ldyB0YXJnZXRz
-IHdoaWNoIHNob3VsZCBwcm9iYWJseSBiZSBhZGRlZCB0byBQSE9OWS4gZS5nLjoNCj4NCj4gUEhP
-TlkgKz0gZG9jDQo+ID4gK2RvYzoNCj4gPiArICAgICAkKGNhbGwgZGVzY2VuZCxEb2N1bWVudGF0
-aW9uKQ0KPiA+ICsNCj4NCj4gUEhPTlkgKz0gZG9jLWNsZWFuDQo+ID4gK2RvYy1jbGVhbjoNCj4g
-PiArICAgICAkKGNhbGwgZGVzY2VuZCxEb2N1bWVudGF0aW9uLGNsZWFuKQ0KPiA+ICsNCj4NCj4g
-UEhPTlkgKz0gZG9jLWluc3RhbGwNCj4gPiArZG9jLWluc3RhbGw6DQo+ID4gKyAgICAgJChjYWxs
-IGRlc2NlbmQsRG9jdW1lbnRhdGlvbixpbnN0YWxsKQ0KPiA+ICsNCj4gPiArZG9jLXVuaW5zdGFs
-bDoNCj4gPiArICAgICAkKGNhbGwgZGVzY2VuZCxEb2N1bWVudGF0aW9uLHVuaW5zdGFsbCkNCj4g
-PiArDQo+DQo+IFJldmlld2VkLWJ5OiBNYXR0IEhlbHNsZXkgPG1oZWxzbGV5QHZtd2FyZS5jb20+
-DQoNClRoYW5rcyBNYXR0LCBJJ2xsIGFkZCBpdCBpbiB0aGUgbmV4dCB2ZXJzaW9uIG9mIHRoZSBw
-YXRjaC4NCg0KDQotLSANCg0KVHp2ZXRvbWlyIChDZWNvKSBTdG95YW5vdg0KVk13YXJlIE9wZW4g
-U291cmNlIFRlY2hub2xvZ3kgQ2VudGVyDQo=
+[
+ v7 changes:
+  - Added warning messages in case time synchronization cannot be negotiated or fails.
+  - Few optimizations and checks in read_qemu_guests_pids(), tsync_offset_load(), 
+    and find_raw_events(), suggested by Slavomir Kaslev.
+  - Reworked timestamp_correct() to not use static variables.
+  - Check TRACECMD_OPTION_TIME_SHIFT before reading time sync samples from the trace.dat file
+
+ v6 changes:
+  - Refactored tracecmd_msg_snd_time_sync() and tracecmd_msg_rcv_time_sync() functions:
+    removed any time sync calculations logic as separate functions in trace-timesync.c file
+  - Defined TSYNC_PROBE, TSYNC_REQ and TSYNC_RESP messages, in order to make the time sync
+    protocol comprehensible.
+  - Addressed Steven Rostedt comments.
+  - Addressed Slavomir Kaslev commnets.
+	
+ v5 changes:
+  - Rebased to Slavomir's v8 "Add VM kernel tracing over vsockets and FIFOs"
+    patch series.
+  - Implemented an algorithm for time drift correction.
+  - Addressed Slavomir's commnets.
+  - Refactored the code: moved all time sync specific implementation in trace-timesync.c
+  - Isolated all hardcoded event specific stuff in a structure, so it could be easily 
+    moved to external plugins.
+  - Added a check for VSOCK support: do not perform vsock dependent time synchronisation 
+    in case there is no VSOCK support. 
+
+ v4 changes:
+  - Removed the implementation of PTP-like algorithm. The current 
+    logic relies on matching time stamps of kvm_exit/virtio_transport_recv_pkt
+    events on host to virtio_transport_alloc_pkt/vp_notify events on guest.
+  - Rebased to Slavomir's v7 "Add VM kernel tracing over vsockets and FIFOs" 
+    patch series.
+  - Decreased the time synch probes from 5000 to 300.
+  - Addressed Steven Rostedt comments.
+  - Code cleanup. 
+
+ v3 changes:
+ - Removed any magic constants, used in the PTP-like algorithm,
+   as Slavomir Kaslev suggested.
+ - Implemented new algorithm, based on mapping kvm_exit events
+   in host context to vsock_send events in guest context,
+   suggested by Steven Rostedt.
+
+ v2 changes:
+  - Addressed Steven Rostedt comments.
+  - Modified PTP-like timestamps sync algorithm to gain more accuracy, with the
+    help of Yordan Karadzhov and Slavomir Kaslev.
+]
+
+
+This patch series is a POC for timestamps sync between guest and host machines.
+The algorithm relies on matching time stamps of guest and host vsock events.
+
+The patch series depends on Slavomir's changes, introduced by the v8 patch series
+"Add VM kernel tracing over vsockets and FIFOs"
+
+Tzvetomir Stoyanov (9):
+  trace-cmd: Implemented new lib API: tracecmd_local_events_system()
+  trace-cmd: Added support for negative time offsets in trace.dat file
+  trace-cmd: Fix tracecmd_read_page_record() to read more than one event
+  trace-cmd: Added implementation of htonll() and ntohll()
+  trace-cmd: Refactored few functions in trace-record.c
+  trace-cmd: Find and store pids of tasks, which run virtual CPUs of
+    given VM
+  trace-cmd: Implemented new API tracecmd_add_option_v()
+  trace-cmd: Implemented new option in trace.dat file:
+    TRACECMD_OPTION_TIME_SHIFT
+  trace-cmd [POC]: Implemented timestamps synch  algorithm, using vsock
+    events.
+
+ include/trace-cmd/trace-cmd.h    |  31 +-
+ include/traceevent/event-parse.h |   1 +
+ lib/trace-cmd/trace-input.c      | 145 +++++-
+ lib/trace-cmd/trace-util.c       |  95 ++--
+ tracecmd/Makefile                |   1 +
+ tracecmd/include/trace-local.h   |  43 +-
+ tracecmd/include/trace-msg.h     |  10 +
+ tracecmd/trace-agent.c           |  13 +-
+ tracecmd/trace-msg.c             | 208 +++++++-
+ tracecmd/trace-output.c          | 117 ++++-
+ tracecmd/trace-read.c            |   4 +-
+ tracecmd/trace-record.c          | 228 +++++++--
+ tracecmd/trace-timesync.c        | 825 +++++++++++++++++++++++++++++++
+ 13 files changed, 1588 insertions(+), 133 deletions(-)
+ create mode 100644 tracecmd/trace-timesync.c
+
+-- 
+2.20.1
+
