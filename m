@@ -2,212 +2,69 @@ Return-Path: <SRS0=0SC1=RX=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F317C43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Mar 2019 16:32:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FB69C43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Mar 2019 18:31:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 09B2920850
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Mar 2019 16:32:37 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="OqqLpSef"
+	by mail.kernel.org (Postfix) with ESMTP id 068742175B
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 20 Mar 2019 18:31:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1553106679;
+	bh=rvcnD5sDuDHQ0TkA/zx9U/1rQgOuu7bgfyo//2WyEbc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
+	b=AJ7ofWAvOr+MQUgGX7CHsal593TPAZd1FQcSvYrt38t7GPl/iCAgXNVZRoGjf3xYD
+	 Jb9z+vCwiUfkKL6OjEYkxLfqQIGLRo7zWppC+C3Ack/B7Tavo3fEmhdN5sg8aaTqvl
+	 41C3fRBc1bMP8xCe5+7w3Hm5+9a4oEpvOsasOz7A=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbfCTQcg (ORCPT
+        id S1727379AbfCTSbO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 20 Mar 2019 12:32:36 -0400
-Received: from mail-eopbgr710078.outbound.protection.outlook.com ([40.107.71.78]:45312
-        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726817AbfCTQcg (ORCPT
+        Wed, 20 Mar 2019 14:31:14 -0400
+Received: from mail.linuxfoundation.org ([140.211.169.12]:48030 "EHLO
+        mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727196AbfCTSbN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 20 Mar 2019 12:32:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KeVXEKbniw+oa+/qYr5CUXi4q1qZcCqQJVemgOyiMI4=;
- b=OqqLpSefuYb0ZUB/TwZxtDYqi+fwM/6N0pIQ8T5okBwusDO7npf3l8nqqFf7ceyfIer/pb3cFuvGhirHD/jwwVs8A4NQVrYK9j/70e4NdCFk9rCdu4y5kpkDHqvY8FYUaevF/YCoz3yj8xCKEgm95yKVKpTOXyLE0Z+GG8Cz7xQ=
-Received: from BYAPR05MB5592.namprd05.prod.outlook.com (20.177.186.153) by
- BYAPR05MB4326.namprd05.prod.outlook.com (52.135.202.26) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1709.12; Wed, 20 Mar 2019 16:32:25 +0000
-Received: from BYAPR05MB5592.namprd05.prod.outlook.com
- ([fe80::c0d4:e960:b51:44cc]) by BYAPR05MB5592.namprd05.prod.outlook.com
- ([fe80::c0d4:e960:b51:44cc%2]) with mapi id 15.20.1730.013; Wed, 20 Mar 2019
- 16:32:25 +0000
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-CC:     "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] tools/lib/traceevent: Implement new traceevent APIs
- for accessing struct tep_handler fields
-Thread-Topic: [PATCH 3/3] tools/lib/traceevent: Implement new traceevent APIs
- for accessing struct tep_handler fields
-Thread-Index: AQHU3kWipfEBCS7PNUSXylKBaCbrpaYUuHMA
-Date:   Wed, 20 Mar 2019 16:32:25 +0000
-Message-ID: <854FD5EF-691D-4BF2-8A1D-FBF6863B5C19@vmware.com>
-References: <20190319111924.17443-1-tstoyanov@vmware.com>
- <20190319111924.17443-4-tstoyanov@vmware.com>
-In-Reply-To: <20190319111924.17443-4-tstoyanov@vmware.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=mhelsley@vmware.com; 
-x-originating-ip: [73.25.163.201]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 74bc3b9b-b70e-439d-86cb-08d6ad51a312
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);SRVR:BYAPR05MB4326;
-x-ms-traffictypediagnostic: BYAPR05MB4326:
-x-microsoft-antispam-prvs: <BYAPR05MB43261A041B196EAA54D70EDDA0410@BYAPR05MB4326.namprd05.prod.outlook.com>
-x-forefront-prvs: 098291215C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(39860400002)(136003)(396003)(376002)(346002)(199004)(189003)(37006003)(54906003)(53546011)(36756003)(76176011)(3846002)(8676002)(6246003)(102836004)(256004)(6636002)(446003)(6116002)(11346002)(186003)(53936002)(14444005)(6506007)(25786009)(66066001)(6862004)(305945005)(86362001)(81156014)(81166006)(8936002)(4326008)(7736002)(14454004)(5660300002)(33656002)(26005)(316002)(71190400001)(68736007)(478600001)(229853002)(99286004)(97736004)(71200400001)(83716004)(486006)(6436002)(2616005)(476003)(6486002)(6512007)(2906002)(82746002)(105586002)(106356001);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB4326;H:BYAPR05MB5592.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: vmware.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: LG/r43eF+krG/aa9GeXK7X7TEWPQeHmUSoRUHwbTYQcloeDrmHJ0l3n3SFYPc4hE1fZyXvdoFRuojq2lLH5OcTp4EgYTILGGPFXUaYvz3ftFiBIDwSVG/THLyigN+kLVyhAZXB1G6mR9h6BgpbSn4BSbwPg9unqE4hG6+7CW0pkHLZT9X4TXOjjl6TKM3kF9bMfOWf0cbI5Bzz/j1/ZdGB/bqhk8QlNmo31+UyDjXMqG0xjScKhb/nAWTEEEpQ1TuHsa/MESH98CuN8bZZMA6wUj9VFEIhebECL0rvf5hVtn47EQg1821jNpwg1YwQC8spJnMep2hY5bQ7z8ZMUpWdBY0qzSkrCWAfBfXkF+34/FkuGNdRD+62Iq3UdR7t8e7Jf6cTUK4x/kO4Xcz6GBBJ2NjA8QDqDURSM6zAmg4+8=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E013F2275A916648B696E965E73DE85D@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74bc3b9b-b70e-439d-86cb-08d6ad51a312
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2019 16:32:25.6998
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4326
+        Wed, 20 Mar 2019 14:31:13 -0400
+Received: from localhost.localdomain (c-73-223-200-170.hsd1.ca.comcast.net [73.223.200.170])
+        by mail.linuxfoundation.org (Postfix) with ESMTPSA id 1C3254B4D;
+        Wed, 20 Mar 2019 18:31:12 +0000 (UTC)
+Date:   Wed, 20 Mar 2019 11:31:11 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, qais.yousef@arm.com,
+        dietmar.eggemann@arm.com, linux@manojrajarao.com, ast@kernel.org,
+        atishp04@gmail.com, dancol@google.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
+        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        mhiramat@kernel.org, rdunlap@infradead.org, rostedt@goodmis.org,
+        Shuah Khan <shuah@kernel.org>, yhs@fb.com
+Subject: Re: [PATCH v5 1/3] Provide in-kernel headers to make extending
+ kernel easier
+Message-Id: <20190320113111.d68a7c71c2c163bbc7d5f6aa@linux-foundation.org>
+In-Reply-To: <20190320163116.39275-1-joel@joelfernandes.org>
+References: <20190320163116.39275-1-joel@joelfernandes.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-DQoNCj4gT24gTWFyIDE5LCAyMDE5LCBhdCA0OjE5IEFNLCBUenZldG9taXIgU3RveWFub3YgPHRz
-dG95YW5vdkB2bXdhcmUuY29tPiB3cm90ZToNCj4gDQo+IEFzIHN0cnVjdCB0ZXBfaGFuZGxlciBk
-ZWZpbml0aW9uIGlzIG5vdCBleHBvc2VkIGFzIHBhcnQgb2YgbGlidHJhY2VldmVudCBBUEksIGl0
-cyBmaWVsZHMNCj4gY2Fubm90IGJlIGFjY2Vzc2VkIGRpcmVjdGx5IGJ5IHRoZSBsaWJyYXJ5IHVz
-ZXJzLiBUaGlzIHBhdGNoIGltcGxlbWVudHMgbmV3IEFQSXMsIHdoaWNoDQo+IGNhbiBiZSB1c2Vk
-IHRvIGFjY2VzcyB0aGUgc3RydWN0IHRlcF9oYW5kbGVyIGZpZWxkczoNCj4gdGVwX3Jlc2V0X2Zs
-YWcoKSwgdGVwX2NoZWNrX2ZsYWcoKSwgdGVwX3NldF9wYXJzaW5nX2ZhaWx1cmVzKCksIHRlcF9n
-ZXRfcGFyc2luZ19mYWlsdXJlcygpDQo+IHRlcF9nZXRfaGVhZGVyX3BhZ2VfdHNfc2l6ZSgpLCB0
-ZXBfaXNfb2xkX2Zvcm1hdCgpLCB0ZXBfc2V0X3ByaW50X3JhdygpIGFuZCB0ZXBfc2V0X3Rlc3Rf
-ZmlsdGVycygpDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBUenZldG9taXIgU3RveWFub3YgPHRzdG95
-YW5vdkB2bXdhcmUuY29tPg0KPiAtLS0NCj4gdG9vbHMvbGliL3RyYWNlZXZlbnQvZXZlbnQtcGFy
-c2UtYXBpLmMgICB8IDE0MCArKysrKysrKysrKysrKysrKysrKystLQ0KPiB0b29scy9saWIvdHJh
-Y2VldmVudC9ldmVudC1wYXJzZS1sb2NhbC5oIHwgICAyICsNCj4gdG9vbHMvbGliL3RyYWNlZXZl
-bnQvZXZlbnQtcGFyc2UuaCAgICAgICB8ICAxMiArLQ0KPiB0b29scy9saWIvdHJhY2VldmVudC9w
-bHVnaW5fa3ZtLmMgICAgICAgIHwgICAyICstDQo+IDQgZmlsZXMgY2hhbmdlZCwgMTQ2IGluc2Vy
-dGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL3Rvb2xzL2xpYi90
-cmFjZWV2ZW50L2V2ZW50LXBhcnNlLWFwaS5jIGIvdG9vbHMvbGliL3RyYWNlZXZlbnQvZXZlbnQt
-cGFyc2UtYXBpLmMNCj4gaW5kZXggMzcxNmE5MTQyYWVmLi4yYmQyYmY3YzQ5OWQgMTAwNjQ0DQo+
-IC0tLSBhL3Rvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLWFwaS5jDQo+ICsrKyBiL3Rv
-b2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLWFwaS5jDQo+IEBAIC04LDYgKzgsMjIgQEAN
-Cj4gI2luY2x1ZGUgImV2ZW50LXBhcnNlLWxvY2FsLmgiDQo+ICNpbmNsdWRlICJldmVudC11dGls
-cy5oIg0KPiANCj4gKy8qKg0KPiArICogdGVwX2dldF9ldmVudCAtIHJldHVybnMgdGhlIGV2ZW50
-IHdpdGggdGhlIGdpdmVuIGluZGV4DQo+ICsgKiBAdGVwOiBhIGhhbmRsZSB0byB0aGUgdGVwX2hh
-bmRsZQ0KPiArICogQGluZGV4OiBpbmRleCBvZiB0aGUgcmVxdWVzdGVkIGV2ZW50LCBpbiB0aGUg
-cmFuZ2UgMCAuLiBucl9ldmVudHMNCj4gKyAqDQo+ICsgKiBUaGlzIHJldHVybnMgcG9pbnRlciB0
-byB0aGUgZWxlbWVudCBvZiB0aGUgZXZlbnRzIGFycmF5IHdpdGggdGhlIGdpdmVuIGluZGV4DQo+
-ICsgKiBJZiBAdGVwIGlzIE5VTEwsIG9yIEBpbmRleCBpcyBub3QgaW4gdGhlIHJhbmdlIDAgLi4g
-bnJfZXZlbnRzLCBOVUxMIGlzIHJldHVybmVkLg0KPiArICovDQo+ICtzdHJ1Y3QgdGVwX2V2ZW50
-ICp0ZXBfZ2V0X2V2ZW50KHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXAsIGludCBpbmRleCkNCj4gK3sN
-Cj4gKwlpZiAodGVwICYmIHRlcC0+ZXZlbnRzICYmIGluZGV4IDwgdGVwLT5ucl9ldmVudHMpDQo+
-ICsJCXJldHVybiB0ZXAtPmV2ZW50c1tpbmRleF07DQo+ICsNCj4gKwlyZXR1cm4gTlVMTDsNCj4g
-K30NCj4gKw0KPiAvKioNCj4gICogdGVwX2dldF9maXJzdF9ldmVudCAtIHJldHVybnMgdGhlIGZp
-cnN0IGV2ZW50IGluIHRoZSBldmVudHMgYXJyYXkNCj4gICogQHRlcDogYSBoYW5kbGUgdG8gdGhl
-IHRlcF9oYW5kbGUNCj4gQEAgLTE3LDEwICszMyw3IEBADQo+ICAqLw0KPiBzdHJ1Y3QgdGVwX2V2
-ZW50ICp0ZXBfZ2V0X2ZpcnN0X2V2ZW50KHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXApDQo+IHsNCj4g
-LQlpZiAodGVwICYmIHRlcC0+ZXZlbnRzKQ0KPiAtCQlyZXR1cm4gdGVwLT5ldmVudHNbMF07DQo+
-IC0NCj4gLQlyZXR1cm4gTlVMTDsNCj4gKwlyZXR1cm4gdGVwX2dldF9ldmVudCh0ZXAsIDApOw0K
-PiB9DQo+IA0KPiAvKioNCj4gQEAgLTQ1LDEyICs1OCw0MSBAQCBpbnQgdGVwX2dldF9ldmVudHNf
-Y291bnQoc3RydWN0IHRlcF9oYW5kbGUgKnRlcCkNCj4gICoNCj4gICogVGhpcyBzZXRzIGEgZmxh
-ZyBvciBjb21iaW5hdGlvbiBvZiBmbGFncyBmcm9tIGVudW0gdGVwX2ZsYWcNCj4gICovDQo+IC12
-b2lkIHRlcF9zZXRfZmxhZyhzdHJ1Y3QgdGVwX2hhbmRsZSAqdGVwLCBpbnQgZmxhZykNCj4gK3Zv
-aWQgdGVwX3NldF9mbGFnKHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXAsIGVudW0gdGVwX2ZsYWcgZmxh
-ZykNCj4gew0KPiAJaWYgKHRlcCkNCj4gCQl0ZXAtPmZsYWdzIHw9IGZsYWc7DQo+IH0NCj4gDQo+
-ICsvKioNCj4gKyAqIHRlcF9yZXNldF9mbGFnIC0gcmVzZXQgZXZlbnQgcGFyc2VyIGZsYWcNCj4g
-KyAqIEB0ZXA6IGEgaGFuZGxlIHRvIHRoZSB0ZXBfaGFuZGxlDQo+ICsgKiBAZmxhZzogZmxhZywg
-b3IgY29tYmluYXRpb24gb2YgZmxhZ3MgdG8gYmUgcmVzZXRlZA0KDQpzL3Jlc2V0ZWQvcmVzZXQv
-DQoNCj4gKyAqIGNhbiBiZSBhbnkgY29tYmluYXRpb24gZnJvbSBlbnVtIHRlcF9mbGFnDQo+ICsg
-Kg0KPiArICogVGhpcyByZXNldHMgYSBmbGFnIG9yIGNvbWJpbmF0aW9uIG9mIGZsYWdzIGZyb20g
-ZW51bSB0ZXBfZmxhZw0KPiArICovDQo+ICt2b2lkIHRlcF9yZXNldF9mbGFnKHN0cnVjdCB0ZXBf
-aGFuZGxlICp0ZXAsIGVudW0gdGVwX2ZsYWcgZmxhZykNCj4gK3sNCj4gKwlpZiAodGVwKQ0KPiAr
-CQl0ZXAtPmZsYWdzICY9IH5mbGFnOw0KPiArfQ0KDQpuaXQ6IHJlbmFtZSB0byByZXNldF9mbGFn
-cyBzaW5jZSBpdOKAmXMgb25lIG9yIG1vcmUgZmxhZ3M/DQoNCj4gKw0KPiArLyoqDQo+ICsgKiB0
-ZXBfY2hlY2tfZmxhZyAtIGNoZWNrIHRoZSBzdGF0ZSBvZiBldmVudCBwYXJzZXIgZmxhZw0KPiAr
-ICogQHRlcDogYSBoYW5kbGUgdG8gdGhlIHRlcF9oYW5kbGUNCj4gKyAqIEBmbGFnOiBmbGFnLCBv
-ciBjb21iaW5hdGlvbiBvZiBmbGFncyB0byBiZSBjaGVja2VkDQo+ICsgKiBjYW4gYmUgYW55IGNv
-bWJpbmF0aW9uIGZyb20gZW51bSB0ZXBfZmxhZw0KPiArICoNCj4gKyAqIFRoaXMgY2hlY2tzIHRo
-ZSBzdGF0ZSBvZiBhIGZsYWcgb3IgY29tYmluYXRpb24gb2YgZmxhZ3MgZnJvbSBlbnVtIHRlcF9m
-bGFnDQo+ICsgKi8NCj4gK2ludCB0ZXBfY2hlY2tfZmxhZyhzdHJ1Y3QgdGVwX2hhbmRsZSAqdGVw
-LCBlbnVtIHRlcF9mbGFnIGZsYWcpDQo+ICt7DQo+ICsJaWYgKHRlcCkNCj4gKwkJcmV0dXJuICh0
-ZXAtPmZsYWdzICYgZmxhZyk7DQo+ICsJcmV0dXJuIDA7DQo+ICt9DQoNClRoaXMgcmV0dXJucyBh
-IHN1YnNldCBvZiB0aGUgZmxhZ3MgZGlyZWN0bHkg4oCUIGl0IGRvZXNu4oCZdCByZWFsbHkgY2hl
-Y2sgdGhlbSAtLSB0aGF04oCZcyB1cCB0byB0aGUgY2FsbGVyLg0KU28gIEnigJlkIHNheSB0aGlz
-IGlzIG1vcmUgb2YgYSDigJxnZXR0ZXIiIHRoYW4gYSDigJxjaGVja2Vy4oCdLg0KDQpJZiByZXR1
-cm5pbmcgYSDigJxib29sZWFu4oCdIGlzIHRoZSB0cnVlIGludGVudCBvZiB0aGUgQVBJIHRoZW4g
-aXQgc2hvdWxkIGJlOg0KDQpyZXR1cm4gKHRlcC0+ZmxhZ3MgJiBmbGFnKSA9PSBmbGFnOw0KDQo+
-ICsNCj4gdW5zaWduZWQgc2hvcnQgdGVwX2RhdGEyaG9zdDIoc3RydWN0IHRlcF9oYW5kbGUgKnBl
-dmVudCwgdW5zaWduZWQgc2hvcnQgZGF0YSkNCj4gew0KPiAJdW5zaWduZWQgc2hvcnQgc3dhcDsN
-Cj4gQEAgLTExMyw2ICsxNTUsMjAgQEAgaW50IHRlcF9nZXRfaGVhZGVyX3BhZ2Vfc2l6ZShzdHJ1
-Y3QgdGVwX2hhbmRsZSAqcGV2ZW50KQ0KPiAJcmV0dXJuIDA7DQo+IH0NCj4gDQo+ICsvKioNCj4g
-KyAqIHRlcF9nZXRfaGVhZGVyX3BhZ2VfdHNfc2l6ZSAtIGdldCBzaXplIG9mIHRoZSB0aW1lIHN0
-YW1wIGluIHRoZSBoZWFkZXIgcGFnZQ0KPiArICogQHRlcDogYSBoYW5kbGUgdG8gdGhlIHRlcF9o
-YW5kbGUNCj4gKyAqDQo+ICsgKiBUaGlzIHJldHVybnMgc2l6ZSBvZiB0aGUgdGltZSBzdGFtcCBp
-biB0aGUgaGVhZGVyIHBhZ2UNCj4gKyAqIElmIEB0ZXAgaXMgTlVMTCwgMCBpcyByZXR1cm5lZC4N
-Cj4gKyAqLw0KPiAraW50IHRlcF9nZXRfaGVhZGVyX3BhZ2VfdHNfc2l6ZShzdHJ1Y3QgdGVwX2hh
-bmRsZSAqdGVwKQ0KPiArew0KPiArCWlmICh0ZXApDQo+ICsJCXJldHVybiB0ZXAtPmhlYWRlcl9w
-YWdlX3RzX3NpemU7DQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gLyoqDQo+ICAqIHRlcF9n
-ZXRfY3B1cyAtIGdldCB0aGUgbnVtYmVyIG9mIENQVXMNCj4gICogQHBldmVudDogYSBoYW5kbGUg
-dG8gdGhlIHRlcF9oYW5kbGUNCj4gQEAgLTE5NCwxMyArMjUwLDEzIEBAIHZvaWQgdGVwX3NldF9w
-YWdlX3NpemUoc3RydWN0IHRlcF9oYW5kbGUgKnBldmVudCwgaW50IF9wYWdlX3NpemUpDQo+IH0N
-Cj4gDQo+IC8qKg0KPiAtICogdGVwX2ZpbGVfYmlnZW5kaWFuIC0gZ2V0IGlmIHRoZSBmaWxlIGlz
-IGluIGJpZyBlbmRpYW4gb3JkZXINCj4gKyAqIHRlcF9pc19maWxlX2JpZ2VuZGlhbiAtIGdldCBp
-ZiB0aGUgZmlsZSBpcyBpbiBiaWcgZW5kaWFuIG9yZGVyDQo+ICAqIEBwZXZlbnQ6IGEgaGFuZGxl
-IHRvIHRoZSB0ZXBfaGFuZGxlDQo+ICAqDQo+ICAqIFRoaXMgcmV0dXJucyBpZiB0aGUgZmlsZSBp
-cyBpbiBiaWcgZW5kaWFuIG9yZGVyDQo+ICAqIElmIEBwZXZlbnQgaXMgTlVMTCwgMCBpcyByZXR1
-cm5lZC4NCj4gICovDQo+IC1pbnQgdGVwX2ZpbGVfYmlnZW5kaWFuKHN0cnVjdCB0ZXBfaGFuZGxl
-ICpwZXZlbnQpDQo+ICtpbnQgdGVwX2lzX2ZpbGVfYmlnZW5kaWFuKHN0cnVjdCB0ZXBfaGFuZGxl
-ICpwZXZlbnQpDQo+IHsNCj4gCWlmIChwZXZlbnQpDQo+IAkJcmV0dXJuIHBldmVudC0+ZmlsZV9i
-aWdlbmRpYW47DQoNCnN0cmljdGx5IHNwZWFraW5nIHRoaXMgaXMgbW9yZSBvZiBhIGdldHRlciB0
-aGFuIGEgYm9vbGVhbiB0ZXN0DQoNCjxzbmlwPg0KDQo+ICsvKioNCj4gKyAqIHRlcF9pc19vbGRf
-Zm9ybWF0IC0gZ2V0IGlmIGFuIG9sZCBrZXJuZWwgaXMgdXNlZA0KPiArICogQHRlcDogYSBoYW5k
-bGUgdG8gdGhlIHRlcF9oYW5kbGUNCj4gKyAqDQo+ICsgKiBUaGlzIHJldHVybnMgMSwgaWYgYW4g
-b2xkIGtlcm5lbCBpcyB1c2VkIHRvIGdlbmVyYXRlIHRoZSB0cmFjaW5nIGV2ZW50cyBvcg0KPiAr
-ICogMCBpZiBhIG5ldyBrZXJuZWwgaXMgdXNlZC4gT2xkIGtlcm5lbHMgZGlkIG5vdCBoYXZlIGhl
-YWRlciBwYWdlIGluZm8uDQo+ICsgKiBJZiBAcGV2ZW50IGlzIE5VTEwsIDAgaXMgcmV0dXJuZWQu
-DQo+ICsgKi8NCj4gK2ludCB0ZXBfaXNfb2xkX2Zvcm1hdChzdHJ1Y3QgdGVwX2hhbmRsZSAqdGVw
-KQ0KPiArew0KPiArCWlmICh0ZXApDQo+ICsJCXJldHVybiB0ZXAtPm9sZF9mb3JtYXQ7DQoNClNh
-bWUgaGVyZS4NCg0KVGhlcmUgbWF5IGJlIHZhbHVlIGluIHJlc3RyaWN0aW5nIHRoZXNlIHRvIGJv
-b2xlYW4gcmV0dXJucy4gT3RoZXJ3aXNlIHRoaXMgZnVuY3Rpb24gb2YgdGhlIEFQSSBhbmQgdGhv
-c2UgaW1wbGVtZW50ZWQgbGlrZSBpdCBjb3VsZCBiZSDigJxhYnVzZWTigJ0gYXMgZ2V0dGVycy4g
-VGhhdCBtaWdodCBjb21wbGljYXRlIHRoaW5ncyBpbiB0aGUgZnV0dXJlIGlmLCBzb21lZGF5LCBp
-dCB3b3VsZCBiZSBuaWNlIHRvIGNoYW5nZSB0aGluZ3MgYXJvdW5kIGluc2lkZSB0aGUgb3BhcXVl
-IHN0cnVjdCB0ZXBfaGFuZGxl4oCZcyAgb2xkX2Zvcm1hdCBmaWVsZCB3aXRob3V0IGJyZWFraW5n
-IGNhbGxlcnMgb2YgdGVwX2lzX29sZF9mb3JtYXQoKS4NCg0KaW50IHRlcF9pc19mb28oLi4uKQ0K
-ew0KCWlmICh0ZXApDQoJCXJldHVybiAodGVwLT52YWx1ZSAmIGZvbykgID09IGZvbzsgLyogZmxh
-ZyB0ZXN0ICovDQrigKYNCg0Kb3INCgkJcmV0dXJuICEhKHRlcC0+dmFsdWUpOyAvKiAgaXMgaXQg
-bm9uLXplcm8gdGVzdCAqLw0KDQpBbHNvLCBmb3IgIHRoZXNlIOKAnHRlcF9pc1/igJ0gZnVuY3Rp
-b25zIGl0IG1pZ2h0IGJlIG1vcmUgZGVzY3JpcHRpdmUgdG8gdXNlIGJvb2wgYXMgYSByZXR1cm4g
-dmFsdWUuIEZvbGtzIG1heSBoYXZlIHZldG9lZCB1c2Ugb2Yg4oCcYm9vbCIgYmVmb3JlIEkgc3Rh
-cnRlZCBsb29raW5nIGF0IHRoaXMgcHJvamVjdCBzbyBmZWVsIGZyZWUgdG8gaWdub3JlIG1lIGlm
-IHRoYXTigJlzIHRoZSBjYXNlLg0KDQo8c25pcD4NCg0KPiBkaWZmIC0tZ2l0IGEvdG9vbHMvbGli
-L3RyYWNlZXZlbnQvZXZlbnQtcGFyc2UuaCBiL3Rvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBh
-cnNlLmgNCj4gaW5kZXggYWVjNDhmMmFlYThhLi5mNjk1Njg4ZjM4ZmQgMTAwNjQ0DQo+IC0tLSBh
-L3Rvb2xzL2xpYi90cmFjZWV2ZW50L2V2ZW50LXBhcnNlLmgNCj4gKysrIGIvdG9vbHMvbGliL3Ry
-YWNlZXZlbnQvZXZlbnQtcGFyc2UuaA0KPiBAQCAtNDA4LDcgKzQwOCw5IEBAIHZvaWQgdGVwX3By
-aW50X3BsdWdpbnMoc3RydWN0IHRyYWNlX3NlcSAqcywNCj4gLyogdGVwX2hhbmRsZSAqLw0KPiB0
-eXBlZGVmIGNoYXIgKih0ZXBfZnVuY19yZXNvbHZlcl90KSh2b2lkICpwcml2LA0KPiAJCQkJICAg
-IHVuc2lnbmVkIGxvbmcgbG9uZyAqYWRkcnAsIGNoYXIgKiptb2RwKTsNCj4gLXZvaWQgdGVwX3Nl
-dF9mbGFnKHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXAsIGludCBmbGFnKTsNCj4gK3ZvaWQgdGVwX3Nl
-dF9mbGFnKHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXAsIGVudW0gdGVwX2ZsYWcgZmxhZyk7DQo+ICt2
-b2lkIHRlcF9yZXNldF9mbGFnKHN0cnVjdCB0ZXBfaGFuZGxlICp0ZXAsIGVudW0gdGVwX2ZsYWcg
-ZmxhZyk7DQo+ICtpbnQgdGVwX2NoZWNrX2ZsYWcoc3RydWN0IHRlcF9oYW5kbGUgKnRlcCwgZW51
-bSB0ZXBfZmxhZyBmbGFnKTsNCj4gDQo+IHN0YXRpYyBpbmxpbmUgaW50IHRlcF9ob3N0X2JpZ2Vu
-ZGlhbih2b2lkKQ0KPiB7DQoNCkRvZXMgYW5vdGhlciBzZXJpZXMgcmVuYW1lIHRoaXMgdG86IHRl
-cF9pc19ob3N0X2JpZ2VuZGlhbigpID8NCg0KQ2hlZXJzLA0KICAgICAtTWF0dA0KDQo=
+On Wed, 20 Mar 2019 12:31:14 -0400 "Joel Fernandes (Google)" <joel@joelfernandes.org> wrote:
+
+> Introduce in-kernel headers and other artifacts which are made available
+> as an archive through proc (/proc/kheaders.tar.xz file).
+
+Lazyass here hasn't been following the recent review discussion and is
+going to try cheating.  Are there significant outstanding concerns now,
+or are we good to go?
+
