@@ -2,185 +2,114 @@ Return-Path: <SRS0=pKOM=RZ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91DD2C43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Mar 2019 14:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20EF1C43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Mar 2019 15:01:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6A16620830
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Mar 2019 14:34:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE190218B0
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Mar 2019 15:01:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbfCVOeU (ORCPT
+        id S1729254AbfCVPBN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 22 Mar 2019 10:34:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727964AbfCVOeT (ORCPT
+        Fri, 22 Mar 2019 11:01:13 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:41085 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727843AbfCVPBN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 22 Mar 2019 10:34:19 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67EC120830;
-        Fri, 22 Mar 2019 14:34:18 +0000 (UTC)
-Date:   Fri, 22 Mar 2019 10:34:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tools/perf,tools/lib/traceevent: Make traceevent APIs
- more consistent
-Message-ID: <20190322103417.3f7eb84e@gandalf.local.home>
-In-Reply-To: <20190322130816.13903-1-tstoyanov@vmware.com>
-References: <20190322130816.13903-1-tstoyanov@vmware.com>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 22 Mar 2019 11:01:13 -0400
+Received: by mail-wr1-f68.google.com with SMTP id p1so2692744wrs.8
+        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Mar 2019 08:01:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GwKFSb5Dlmi95/oLJsm99XOH/9yCmW4wLKgPb+NMWwY=;
+        b=OfZVjxDZyca7Y3c5va4IjvNLw+JgJLLe8Be+g9gzPaVSMeVUNZK1C4jt1B/A670FSJ
+         53zAIznjG2ljKOevGd/S1l1cjW3V7G6JPeC/z7t2QfzwrVCp/CWx5yN1zpuZq3UQMTnv
+         7t0n4AdBhrJktGslHhQddY3O/0/30EyqfR1mrRaUbFfKPa6hZGCn1akaYJ3pPhM51DCh
+         YKLOSfKBn1DfAYddk0UpeSLJQw3KQggys+xttv3voAr3M8v0xSq5YtmnMQVWY/sag22K
+         Ru0wjXXVFtDofNir6knuaYPgRnaeky4WUdb+V5ror/UWZoX4xzckepKKaAyd7ypQ10LH
+         ZxoA==
+X-Gm-Message-State: APjAAAVDrUSOmSscDAT83kvNYvkS/Sr4YsXb4r0dWBpQ8hQOqZ3XEgKC
+        uLUEu5XtmcIKMHsmCQAdBQ==
+X-Google-Smtp-Source: APXvYqyvFvOF0+lCH8kMtSfYH05vkr+Lh506z6ESMw3YMVsY/WLVtXnAL9MTWPHbBZKwL/kqAVJN7g==
+X-Received: by 2002:adf:e443:: with SMTP id t3mr7189284wrm.257.1553266871576;
+        Fri, 22 Mar 2019 08:01:11 -0700 (PDT)
+Received: from box.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id f11sm4543522wrm.30.2019.03.22.08.01.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Mar 2019 08:01:10 -0700 (PDT)
+From:   Slavomir Kaslev <kaslevs@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org, slavomir.kaslev@gmail.com
+Subject: [PATCH] trace-cmd: Change tracecmd_msg's buf member type to char *
+Date:   Fri, 22 Mar 2019 17:01:05 +0200
+Message-Id: <20190322150105.24136-1-kaslevs@vmware.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 22 Mar 2019 15:08:16 +0200
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+Now that the buffer for protocol V3 messages is always text, it makes sense to
+have it declared as such and drop a few casts.
 
->  /**
-> - * tep_get_header_page_ts_size - get size of the time stamp in the header page
-> + * tep_get_header_timestamp_size - get size of the time stamp in the header page
+Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
+---
+ tracecmd/trace-msg.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Let's change "time stamp" to "timestamp". Even though it's not quite a
-correct English word.
-
-
->  
->  /**
-> - * tep_file_bigendian - get if the file is in big endian order
-> + * tep_is_file_bigendian - get if the file is in big endian order
-
- tep_is_file_bigendian - return the endian of the file
-
-
->   * @pevent: a handle to the tep_handle
->   *
-> - * This returns if the file is in big endian order
-> - * If @pevent is NULL, 0 is returned.
-> + * This returns true if the file is in big endian order
-> + * If @pevent is NULL, false is returned.
->   */
-> -int tep_file_bigendian(struct tep_handle *pevent)
-> +bool tep_is_file_bigendian(struct tep_handle *pevent)
->  {
->  	if (pevent)
-> -		return pevent->file_bigendian;
-> -	return 0;
-> +		return (pevent->file_bigendian == TEP_BIG_ENDIAN);
-> +	return false;
->  }
->  
->  /**
-> @@ -277,27 +277,27 @@ void tep_set_file_bigendian(struct tep_handle *pevent, enum tep_endian endian)
->  }
->  
->  /**
-> - * tep_is_host_bigendian - get if the order of the current host is big endian
-> + * tep_is_local_bigendian - get if the local order is big endian
-
-
- tep_is_local_bigendian - return the endian of the saved local machine
-
->   * @pevent: a handle to the tep_handle
-
- s/@pevent/@tep/
-
->   *
-> - * This gets if the order of the current host is big endian
-> + * This gets if the local order is big endian
-
- This returns true if the saved local machine in @tep is big endian.
-
->   * If @pevent is NULL, 0 is returned.
-
- s/@pevent/@tep/
-
->   */
-> -int tep_is_host_bigendian(struct tep_handle *pevent)
-> +bool tep_is_local_bigendian(struct tep_handle *pevent)
->  {
->  	if (pevent)
-> -		return pevent->host_bigendian;
-> +		return (pevent->host_bigendian == TEP_BIG_ENDIAN);
->  	return 0;
->  }
->  
->  /**
-> - * tep_set_host_bigendian - set the order of the local host
-> + * tep_set_local_bigendian - set the local endian order
-
- - set the stored local machine endian order
-
->   * @pevent: a handle to the tep_handle
->   * @endian: non zero, if the local host has big endian order
->   *
-> - * This sets the order of the local host
-> + * This sets the local endian order
-
-  This sets the endian order for the local machine.
-
-
-> diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-> index 69af77896283..7d553a72469b 100644
-> --- a/tools/lib/traceevent/event-parse.c
-> +++ b/tools/lib/traceevent/event-parse.c
-> @@ -199,23 +199,23 @@ static const char *find_cmdline(struct tep_handle *pevent, int pid)
-
->  /**
-> - * tep_data_lat_fmt - parse the data for the latency format
-> + * tep_data_latency_format - parse the data for the latency format
->   * @pevent: a handle to the pevent
-
-While we modify the functions here, we should also change @pevent to
-@tep.
-
-That needs to be stated in the change log too:
-
-  Where modified, the legacy "pevent" name is changed to "tep".
-
-Hmm, actually, lets make this a two patch series. One that removes all
-references to "pevent" (in the tools/lib/traceevent/ directory), and
-then this one on top of it.
-
--- Steve
-
-
->   * @s: the trace_seq to write to
->   * @record: the record to read from
-> @@ -5180,8 +5180,8 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
->   * need rescheduling, in hard/soft interrupt, preempt count
->   * and lock depth) and places it into the trace_seq.
->   */
-> -void tep_data_lat_fmt(struct tep_handle *pevent,
-> -		      struct trace_seq *s, struct tep_record *record)
-> +void tep_data_latency_format(struct tep_handle *pevent,
-> +			     struct trace_seq *s, struct tep_record *record)
->  {
->  	static int check_lock_depth = 1;
->  	static int check_migrate_disable = 1;
-> @@ -5530,7 +5530,7 @@ void tep_print_event_time(struct tep_handle *pevent, struct trace_seq *s,
->  	}
->  
->  	if (pevent->latency_format) {
-> -		tep_data_lat_fmt(pevent, s, record);
-> +		tep_data_latency_format(pevent, s, record);
->  	}
->  
->  	if (use_usec_format) {
-> @@ -6758,7 +6758,7 @@ struct tep_handle *tep_alloc(void)
->  
->  	if (pevent) {
->  		pevent->ref_count = 1;
-> -		pevent->host_bigendian = tep_host_bigendian();
-> +		pevent->host_bigendian = tep_is_bigendian();
->  	}
+diff --git a/tracecmd/trace-msg.c b/tracecmd/trace-msg.c
+index a91b211..9a27141 100644
+--- a/tracecmd/trace-msg.c
++++ b/tracecmd/trace-msg.c
+@@ -104,7 +104,7 @@ struct tracecmd_msg {
+ 		struct tracecmd_msg_tinit	tinit;
+ 		struct tracecmd_msg_rinit	rinit;
+ 	};
+-	void					*buf;
++	char					*buf;
+ } __attribute__((packed));
+ 
+ static int msg_buf_len(struct tracecmd_msg *msg)
+@@ -436,7 +436,7 @@ int tracecmd_msg_send_init_data(struct tracecmd_msg_handle *msg_handle,
+ 		goto error;
+ 	}
+ 
+-	if (((char *)msg.buf)[buf_len-1] != '\0') {
++	if (msg.buf[buf_len-1] != '\0') {
+ 		ret = -EINVAL;
+ 		goto error;
+ 	}
+@@ -448,7 +448,7 @@ int tracecmd_msg_send_init_data(struct tracecmd_msg_handle *msg_handle,
+ 		goto out;
+ 	}
+ 
+-	buf_end = (char *)msg.buf + buf_len;
++	buf_end = msg.buf + buf_len;
+ 	for (i = 0, p = msg.buf; i < cpus; i++, p++) {
+ 		if (p >= buf_end) {
+ 			free(ports);
+@@ -555,12 +555,12 @@ int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle)
+ 	if (buf_len == 0)
+ 		goto no_options;
+ 
+-	if (((char *)msg.buf)[buf_len-1] != '\0') {
++	if (msg.buf[buf_len-1] != '\0') {
+ 		ret = -EINVAL;
+ 		goto error;
+ 	}
+ 
+-	buf_end = (char *)msg.buf + buf_len;
++	buf_end = msg.buf + buf_len;
+ 	options = ntohl(msg.tinit.opt_num);
+ 	for (i = 0, p = msg.buf; i < options; i++, p++) {
+ 		if (p >= buf_end) {
+-- 
+2.19.1
 
