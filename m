@@ -3,51 +3,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6279C10F03
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Mar 2019 13:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81B5FC4360F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Mar 2019 13:07:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 81E2F213F2
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Mar 2019 13:07:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 502AB2183E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 22 Mar 2019 13:07:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730598AbfCVNHq (ORCPT
+        id S1730302AbfCVNHt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 22 Mar 2019 09:07:46 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:40839 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730630AbfCVNHq (ORCPT
+        Fri, 22 Mar 2019 09:07:49 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:36012 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730688AbfCVNHs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 22 Mar 2019 09:07:46 -0400
-Received: by mail-wr1-f66.google.com with SMTP id t5so2278116wri.7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Mar 2019 06:07:45 -0700 (PDT)
+        Fri, 22 Mar 2019 09:07:48 -0400
+Received: by mail-wm1-f52.google.com with SMTP id h18so2126659wml.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 22 Mar 2019 06:07:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K5TxoNiYuP8LFxE4NWOwT4yZabbiWyeIomT/r9DFxQk=;
-        b=MSwuLvIwT8efqbN1Hp+WymuNzKbvJoFI68CGMgXwbbTWVhBiOa4mjJdlIVAt7o6ysC
-         JVeXSQRD+WxAGv7B0yGkhJ2p9SEFEtfM4QKmEyUhsiYmhBJZHDQZXGUyJbrWX7xlOhiR
-         fG34yqWLMrN9yfqZp35EKOVBqYYXa1St6cu0dCijhPcX5F+6RhzOxdXDe4UiB1WJrOzH
-         MWGUZMUGWlFiCDdlT0H9qqnHkgwfz0GJ358nUTM/8K1z71QWi0Nd35Ys7qe0Y2v9yEY5
-         oQ8sIA6Ib4mQxYSCOKJfiUINQWSooYB1qoRX9xHT4U4f6pSYqlQhz7+kr6UmXoucyGMy
-         k8aQ==
-X-Gm-Message-State: APjAAAV4lCwwb76CjKXuc++Iska+lhK2XR1ixLeXK07UUzNPLg3CjZ4n
-        WR/IZq11K9oJ6UKABsaUl1U=
-X-Google-Smtp-Source: APXvYqzt5+iCHCblHHuKm50cbn81S1Qa/g2Vj9SiM08bGd0WURVkZgj2eXkfpYK9n8TYDMBSMNE3aA==
-X-Received: by 2002:adf:c18d:: with SMTP id x13mr1967462wre.246.1553260064652;
-        Fri, 22 Mar 2019 06:07:44 -0700 (PDT)
+        bh=GeVYhMhPWB83TmWIY5ySbmKqM72Z/5dmn5F4n+/s8pY=;
+        b=a/vOdkGTRSH1L2/XyFfH53uAUNUmSlrLvUuE3MI6xDufGCkoEqgSKEhGLpoOAR5UX8
+         P9XJr/9WyHhtGWmY+Q/GaLIZo6b88kY5yP13s3BAXRuEfH98NaeXkuPD94n7PKqblqGP
+         EZ+YnXwJc05YmzDAxvQ1n1O/J9MZPGENBYW6s5egk2Se7CkaE38VtFFE3ywcLSp+MmqT
+         Kq/lZDKmqGnumy0i4SiJ0FdvJ7oMfnftH8QuGW5u2CwVYSQ72kiklwCbS5a7WKkh4Mhq
+         ZQ9I9IQFlAQnqqlUIUpW4ErzouEvmNe7a7nOaJdQ08EHDpQeejrAg3Fe+5iMgq0baXB9
+         eT4w==
+X-Gm-Message-State: APjAAAUuXsJIdqpIPnr6D0ciKpSHeCf2OLH4lS5ILsgwp5EwnB+sJQRk
+        5HlbQ5ie0vXKUvcMzENR59Y=
+X-Google-Smtp-Source: APXvYqzfjzcKELAzKH+WADe/rePafH44aEvI9ME+v05LAyulAKGgpO9XstX3GNfC4GR7Fva3Yc/qyA==
+X-Received: by 2002:a1c:f61a:: with SMTP id w26mr3214928wmc.70.1553260066878;
+        Fri, 22 Mar 2019 06:07:46 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 204sm13010466wmc.1.2019.03.22.06.07.43
+        by smtp.gmail.com with ESMTPSA id 204sm13010466wmc.1.2019.03.22.06.07.45
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 22 Mar 2019 06:07:44 -0700 (PDT)
+        Fri, 22 Mar 2019 06:07:46 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 1/3] tools/lib/traceevent: Change description of few APIs
-Date:   Fri, 22 Mar 2019 15:07:40 +0200
-Message-Id: <20190322130742.13753-2-tstoyanov@vmware.com>
+Subject: [PATCH v2 3/3] tools/lib/traceevent: Implement new traceevent APIs for accessing struct tep_handler fields
+Date:   Fri, 22 Mar 2019 15:07:42 +0200
+Message-Id: <20190322130742.13753-4-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190322130742.13753-1-tstoyanov@vmware.com>
 References: <20190322130742.13753-1-tstoyanov@vmware.com>
@@ -58,113 +58,228 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-APIs descriptions should describe the purpose of the
-function, its parameters and return value. While working
-on man pages implementation, I noticed mismatches in the
-descriptions of few APIs. This patch changes the description
-of these APIs, making them consistent with the man pages:
-tep_print_num_field(), tep_print_func_field(),
-tep_get_header_page_size(), tep_get_long_size(),
-tep_set_long_size(), tep_get_page_size() and
-tep_set_page_size().
+As struct tep_handler definition is not exposed as part of libtraceevent API, its fields
+cannot be accessed directly by the library users. This patch implements new APIs, which
+can be used to access the struct tep_handler fields:
+tep_clear_flag(), tep_test_flag(), tep_set_parsing_failures(), tep_get_parsing_failures()
+tep_get_header_page_ts_size(), tep_is_old_format(), tep_set_print_raw() and tep_set_test_filters()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/event-parse-api.c | 20 ++++++++++----------
- tools/lib/traceevent/event-parse.c     |  4 ++--
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ tools/lib/traceevent/event-parse-api.c   | 134 ++++++++++++++++++++++-
+ tools/lib/traceevent/event-parse-local.h |   2 +
+ tools/lib/traceevent/event-parse.h       |   8 ++
+ 3 files changed, 140 insertions(+), 4 deletions(-)
 
 diff --git a/tools/lib/traceevent/event-parse-api.c b/tools/lib/traceevent/event-parse-api.c
-index d463761a58f4..3686a221e981 100644
+index 3716a9142aef..112a83f5caa9 100644
 --- a/tools/lib/traceevent/event-parse-api.c
 +++ b/tools/lib/traceevent/event-parse-api.c
-@@ -43,8 +43,8 @@ int tep_get_events_count(struct tep_handle *tep)
-  * @flag: flag, or combination of flags to be set
-  * can be any combination from enum tep_flag
-  *
-- * This sets a flag or mbination of flags  from enum tep_flag
--  */
-+ * This sets a flag or combination of flags from enum tep_flag
+@@ -8,6 +8,22 @@
+ #include "event-parse-local.h"
+ #include "event-utils.h"
+ 
++/**
++ * tep_get_event - returns the event with the given index
++ * @tep: a handle to the tep_handle
++ * @index: index of the requested event, in the range 0 .. nr_events
++ *
++ * This returns pointer to the element of the events array with the given index
++ * If @tep is NULL, or @index is not in the range 0 .. nr_events, NULL is returned.
 + */
- void tep_set_flag(struct tep_handle *tep, int flag)
++struct tep_event *tep_get_event(struct tep_handle *tep, int index)
++{
++	if (tep && tep->events && index < tep->nr_events)
++		return tep->events[index];
++
++	return NULL;
++}
++
+ /**
+  * tep_get_first_event - returns the first event in the events array
+  * @tep: a handle to the tep_handle
+@@ -17,10 +33,7 @@
+  */
+ struct tep_event *tep_get_first_event(struct tep_handle *tep)
  {
- 	if(tep)
-@@ -140,10 +140,10 @@ void tep_set_cpus(struct tep_handle *pevent, int cpus)
+-	if (tep && tep->events)
+-		return tep->events[0];
+-
+-	return NULL;
++	return tep_get_event(tep, 0);
  }
  
  /**
-- * tep_get_long_size - get the size of a long integer on the current machine
-+ * tep_get_long_size - get the size of a long integer on the traced machine
-  * @pevent: a handle to the tep_handle
-  *
-- * This returns the size of a long integer on the current machine
-+ * This returns the size of a long integer on the traced machine
-  * If @pevent is NULL, 0 is returned.
-  */
- int tep_get_long_size(struct tep_handle *pevent)
-@@ -154,11 +154,11 @@ int tep_get_long_size(struct tep_handle *pevent)
+@@ -51,6 +64,35 @@ void tep_set_flag(struct tep_handle *tep, int flag)
+ 		tep->flags |= flag;
  }
  
- /**
-- * tep_set_long_size - set the size of a long integer on the current machine
-+ * tep_set_long_size - set the size of a long integer on the traced machine
-  * @pevent: a handle to the tep_handle
-  * @size: size, in bytes, of a long integer
-  *
-- * This sets the size of a long integer on the current machine
-+ * This sets the size of a long integer on the traced machine
-  */
- void tep_set_long_size(struct tep_handle *pevent, int long_size)
++/**
++ * tep_clear_flag - clear event parser flag
++ * @tep: a handle to the tep_handle
++ * @flag: flag to be cleared
++ *
++ * This clears a tep flag
++ */
++void tep_clear_flags(struct tep_handle *tep, enum tep_flag flag)
++{
++	if (tep)
++		tep->flags &= ~flag;
++}
++
++/**
++ * tep_test_flag - check the state of event parser flag
++ * @tep: a handle to the tep_handle
++ * @flag: flag to be checked
++ *
++ * This checks the state of a tep flag.
++ * true is returned if the flag is set, false
++ * otherwise
++ */
++bool tep_test_flag(struct tep_handle *tep, enum tep_flag flag)
++{
++	if (tep)
++		return (tep->flags & flag);
++	return false;
++}
++
+ unsigned short tep_data2host2(struct tep_handle *pevent, unsigned short data)
  {
-@@ -167,10 +167,10 @@ void tep_set_long_size(struct tep_handle *pevent, int long_size)
+ 	unsigned short swap;
+@@ -113,6 +155,20 @@ int tep_get_header_page_size(struct tep_handle *pevent)
+ 	return 0;
  }
  
++/**
++ * tep_get_header_page_ts_size - get size of the time stamp in the header page
++ * @tep: a handle to the tep_handle
++ *
++ * This returns size of the time stamp in the header page
++ * If @tep is NULL, 0 is returned.
++ */
++int tep_get_header_page_ts_size(struct tep_handle *tep)
++{
++	if (tep)
++		return tep->header_page_ts_size;
++	return 0;
++}
++
  /**
-- * tep_get_page_size - get the size of a memory page on the current machine
-+ * tep_get_page_size - get the size of a memory page on the traced machine
+  * tep_get_cpus - get the number of CPUs
   * @pevent: a handle to the tep_handle
-  *
-- * This returns the size of a memory page on the current machine
-+ * This returns the size of a memory page on the traced machine
-  * If @pevent is NULL, 0 is returned.
-  */
- int tep_get_page_size(struct tep_handle *pevent)
-@@ -181,11 +181,11 @@ int tep_get_page_size(struct tep_handle *pevent)
+@@ -273,3 +329,73 @@ void tep_set_latency_format(struct tep_handle *pevent, int lat)
+ 	if (pevent)
+ 		pevent->latency_format = lat;
  }
++
++/**
++ * tep_set_parsing_failures - set parsing failures flag
++ * @tep: a handle to the tep_handle
++ * @parsing_failures: the new value of the parsing_failures flag
++ *
++ * This sets flag "parsing_failures" to the given count
++ */
++void tep_set_parsing_failures(struct tep_handle *tep, int parsing_failures)
++{
++	if (tep)
++		tep->parsing_failures = parsing_failures;
++}
++
++/**
++ * tep_get_parsing_failures - get the parsing failures flag
++ * @tep: a handle to the tep_handle
++ *
++ * This returns value of flag "parsing_failures"
++ * If @tep is NULL, 0 is returned.
++ */
++int tep_get_parsing_failures(struct tep_handle *tep)
++{
++	if (tep)
++		return tep->parsing_failures;
++	return 0;
++}
++
++/**
++ * tep_is_old_format - get if an old kernel is used
++ * @tep: a handle to the tep_handle
++ *
++ * This returns true, if an old kernel is used to generate the tracing events or
++ * false if a new kernel is used. Old kernels did not have header page info.
++ * If @pevent is NULL, false is returned.
++ */
++bool tep_is_old_format(struct tep_handle *tep)
++{
++	if (tep)
++		return !!(tep->old_format);
++	return false;
++}
++
++/**
++ * tep_set_print_raw - set a flag to force print in raw format
++ * @tep: a handle to the tep_handle
++ * @print_raw: the new value of the print_raw flag
++ *
++ * This sets a flag to force print in raw format
++ */
++void tep_set_print_raw(struct tep_handle *tep, int print_raw)
++{
++	if (tep)
++		tep->print_raw = print_raw;
++}
++
++/**
++ * tep_set_print_raw - set a flag to test a filter string
++ * @tep: a handle to the tep_handle
++ * @test_filters: the new value of the test_filters flag
++ *
++ * This sets a flag to fjust test a filter string. If this flag is set,
++ * when a filter string is added, then it will print the filters strings
++ * that were created and exit.
++ */
++void tep_set_test_filters(struct tep_handle *tep, int test_filters)
++{
++	if (tep)
++		tep->test_filters = test_filters;
++}
+diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
+index 35833ee32d6c..c5c8eb4c4ab7 100644
+--- a/tools/lib/traceevent/event-parse-local.h
++++ b/tools/lib/traceevent/event-parse-local.h
+@@ -83,6 +83,8 @@ struct tep_handle {
+ 	struct event_handler *handlers;
+ 	struct tep_function_handler *func_handlers;
  
- /**
-- * tep_set_page_size - set the size of a memory page on the current machine
-+ * tep_set_page_size - set the size of a memory page on the traced machine
-  * @pevent: a handle to the tep_handle
-  * @_page_size: size of a memory page, in bytes
-  *
-- * This sets the size of a memory page on the current machine
-+ * This sets the size of a memory page on the traced machine
-  */
- void tep_set_page_size(struct tep_handle *pevent, int _page_size)
++	int parsing_failures;
++
+ 	/* cache */
+ 	struct tep_event *last_event;
+ 
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
+index aec48f2aea8a..4b64658334de 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -409,6 +409,8 @@ void tep_print_plugins(struct trace_seq *s,
+ typedef char *(tep_func_resolver_t)(void *priv,
+ 				    unsigned long long *addrp, char **modp);
+ void tep_set_flag(struct tep_handle *tep, int flag);
++void tep_clear_flag(struct tep_handle *tep, enum tep_flag flag);
++bool tep_check_flags(struct tep_handle *tep, enum tep_flag flags);
+ 
+ static inline int tep_host_bigendian(void)
  {
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index 87494c7c619d..69af77896283 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -6386,7 +6386,7 @@ int tep_get_any_field_val(struct trace_seq *s, struct tep_event *event,
-  * @record: The record with the field name.
-  * @err: print default error if failed.
-  *
-- * Returns: 0 on success, -1 field not found, or 1 if buffer is full.
-+ * Returns: 1 on success, -1 field not found, or 0 if buffer is full.
-  */
- int tep_print_num_field(struct trace_seq *s, const char *fmt,
- 			struct tep_event *event, const char *name,
-@@ -6418,7 +6418,7 @@ int tep_print_num_field(struct trace_seq *s, const char *fmt,
-  * @record: The record with the field name.
-  * @err: print default error if failed.
-  *
-- * Returns: 0 on success, -1 field not found, or 1 if buffer is full.
-+ * Returns: 1 on success, -1 field not found, or 0 if buffer is full.
-  */
- int tep_print_func_field(struct trace_seq *s, const char *fmt,
- 			 struct tep_event *event, const char *name,
+@@ -565,6 +567,12 @@ void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian);
+ int tep_is_latency_format(struct tep_handle *pevent);
+ void tep_set_latency_format(struct tep_handle *pevent, int lat);
+ int tep_get_header_page_size(struct tep_handle *pevent);
++void tep_set_parsing_failures(struct tep_handle *tep, int parsing_failures);
++int tep_get_parsing_failures(struct tep_handle *tep);
++int tep_get_header_page_ts_size(struct tep_handle *tep);
++bool tep_is_old_format(struct tep_handle *pevent);
++void tep_set_print_raw(struct tep_handle *tep, int print_raw);
++void tep_set_test_filters(struct tep_handle *tep, int test_filters);
+ 
+ struct tep_handle *tep_alloc(void);
+ void tep_free(struct tep_handle *pevent);
 -- 
 2.20.1
 
