@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A72CC4360F
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Mar 2019 14:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05278C10F0A
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Mar 2019 14:24:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3D05A2084D
+	by mail.kernel.org (Postfix) with ESMTP id D453C2087E
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 25 Mar 2019 14:24:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729482AbfCYOYu (ORCPT
+        id S1729427AbfCYOYw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 25 Mar 2019 10:24:50 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:50420 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729437AbfCYOYt (ORCPT
+        Mon, 25 Mar 2019 10:24:52 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:52949 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729485AbfCYOYw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 25 Mar 2019 10:24:49 -0400
-Received: by mail-wm1-f68.google.com with SMTP id z11so9217683wmi.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 25 Mar 2019 07:24:47 -0700 (PDT)
+        Mon, 25 Mar 2019 10:24:52 -0400
+Received: by mail-wm1-f65.google.com with SMTP id a184so9138737wma.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 25 Mar 2019 07:24:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Hzq6E/U5bBlF+OJm4031s0+EwWU3hqqKot4I/1+y9aE=;
-        b=nnuAo1JnZc+iGfHgWvxyyWvqh2pmJ2FjjDfCaasgKvWM2s74k7PndwzpTmCEtoYKhG
-         K6b8qqdntXcs0sHeglGHqbaRENKTggH0dco4ArNKubMNY064MITeNm1RgZOqkjipEPBk
-         7oUYqz5CmCqinwM3LX3X5Qo0OGR5JViB4EMXS9/WDx7rrVf+HtkJmi0PieRJas7dF3gL
-         5igRjP0FDjWu0dr7Q8vQD8N6i82qCppePBg8uNMXHIKOQbB14S/aAj0nayr9ce1H8Pn3
-         eJBTl8Z/2J3rMc1u/I1PEH5vP+cfF5dy8j76Aoj3StMHxj3u2d4n9CwVm+QK6t/j1DkF
-         pOrA==
-X-Gm-Message-State: APjAAAXAAgrB0Buei9IBLt9rRr9xjtKLJCG2oMcWj+FvUSgF540AC/Ky
-        IaZn+gSW+/DTLW/xSz1RXls9zqLP
-X-Google-Smtp-Source: APXvYqx/xBzTIegKwFN/kNCs8RCYMShxRJguOqyUt7c3FtFLBE7Z8Ye2u8oqQmG1jux8F4zT9/iM0Q==
-X-Received: by 2002:a1c:e709:: with SMTP id e9mr5615795wmh.14.1553523886619;
-        Mon, 25 Mar 2019 07:24:46 -0700 (PDT)
+        bh=ukoxtg+2FxxlqYYzmFb82zFrOxig6XaSNjnvYYLJ2gE=;
+        b=tIVXFdY1jjzJz399st+pjLC0Fv0lfYqIWDWfe3NV6i2CLQtWy6X+BROd3UZlHjrHGJ
+         MgBkG2t+8G1pWNi6gNpmcDMGxZhoQirJn+fxbMmdHCv++mMBia8jvqf6H8LANZkYOWBw
+         Bj7G6wlLZdzaRwuXkhSHR2mR2iWQWmI7inI1LDgdO2gA69nj95m4qv/wsaZn1qZJLF/p
+         fjp6qdd6sjEEAoTeRpO5oxVjzEQWK9QtWHb87D8HVqPkO0ozqjUOhGBwebp+76k5fVod
+         cg8dBMj5sH+1z3uNdM6sZ1SKfdpM7Qi5E1GEsspC6rNNrtoBtKJQbn0dx3uSfeem5GRg
+         v/Zw==
+X-Gm-Message-State: APjAAAVeifuo3FJSPFLESBZBv1iffHw1GUhEiwWAsmDarPtL4jqu5+E/
+        A1uvd5yD9RFfqQrqRx7omg2Z75G1
+X-Google-Smtp-Source: APXvYqwoYmKIvPgIXwfymLwep2x+EhiX8W7tnTmXw+lmdZa729LOKQtqTJ6rP7EszMTz6dVGhQW7ZA==
+X-Received: by 2002:a7b:cf2c:: with SMTP id m12mr1735696wmg.21.1553523890170;
+        Mon, 25 Mar 2019 07:24:50 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id s2sm1293440wmc.7.2019.03.25.07.24.45
+        by smtp.gmail.com with ESMTPSA id s2sm1293440wmc.7.2019.03.25.07.24.48
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 25 Mar 2019 07:24:46 -0700 (PDT)
+        Mon, 25 Mar 2019 07:24:48 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v9 5/9] trace-cmd: Refactored few functions in trace-record.c
-Date:   Mon, 25 Mar 2019 16:24:35 +0200
-Message-Id: <20190325142439.22032-6-tstoyanov@vmware.com>
+Subject: [PATCH v9 8/9] trace-cmd: Implemented new option in trace.dat file: TRACECMD_OPTION_TIME_SHIFT
+Date:   Mon, 25 Mar 2019 16:24:38 +0200
+Message-Id: <20190325142439.22032-9-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190325142439.22032-1-tstoyanov@vmware.com>
 References: <20190325142439.22032-1-tstoyanov@vmware.com>
@@ -58,250 +58,218 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In order to reuse the code inside the trace-cmd application, few
-functions from trace-record.c are refactored:
-  - make_instances() and tracecmd_remove_instances() are splited.
-New ones are created: tracecmd_make_instance() and tracecmd_remove_instance(),
-which are visible outside the trace-record.c
-  - Following functions are made non-static: tracecmd_init_instance()
-get_instance_dir(), write_instance_file(), write_tracing_on(),
-tracecmd_set_clock()
-  - New function is implemented: tracecmd_local_cpu_count(), an internal
-API to get local_cpu_count.
+The TRACECMD_OPTION_TIME_SHIFT is used when synchronizing trace time stamps between
+two trace.dat files. It contains multiple long long (time, offset) pairs, describing
+time stamps _offset_, measured in the given local _time_. The content of the option
+buffer is:
+ first 4 bytes - integer, count of timestamp offsets
+ long long array of size _count_, local time in which the offset is measured
+ long long array of size _count_, offset of the time stamps
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tracecmd/include/trace-local.h |  9 ++++
- tracecmd/trace-record.c        | 88 +++++++++++++++++++---------------
- 2 files changed, 59 insertions(+), 38 deletions(-)
+ include/trace-cmd/trace-cmd.h |   1 +
+ lib/trace-cmd/trace-input.c   | 126 +++++++++++++++++++++++++++++++++-
+ 2 files changed, 125 insertions(+), 2 deletions(-)
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index d7bdb1f..8413054 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -235,6 +235,15 @@ void update_first_instance(struct buffer_instance *instance, int topt);
- void show_instance_file(struct buffer_instance *instance, const char *name);
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index f7c043a..5552396 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -82,6 +82,7 @@ enum {
+ 	TRACECMD_OPTION_HOOK,
+ 	TRACECMD_OPTION_OFFSET,
+ 	TRACECMD_OPTION_CPUCOUNT,
++	TRACECMD_OPTION_TIME_SHIFT,
+ };
  
- int count_cpus(void);
-+void write_tracing_on(struct buffer_instance *instance, int on);
-+char *get_instance_dir(struct buffer_instance *instance);
-+int write_instance_file(struct buffer_instance *instance,
-+			const char *file, const char *str, const char *type);
-+void tracecmd_init_instance(struct buffer_instance *instance);
-+void tracecmd_make_instance(struct buffer_instance *instance);
-+int tracecmd_local_cpu_count(void);
-+void tracecmd_set_clock(struct buffer_instance *instance);
-+void tracecmd_remove_instance(struct buffer_instance *instance);
+ enum {
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 0a6e820..84dcdfb 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -75,6 +75,11 @@ struct input_buffer_instance {
+ 	size_t			offset;
+ };
  
- /* No longer in event-utils.h */
- void __noreturn die(const char *fmt, ...); /* Can be overriden */
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 177060d..eacf7d2 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -184,7 +184,7 @@ static inline int no_top_instance(void)
- 	return first_instance != &top_instance;
++struct ts_offset_sample {
++	long long	time;
++	long long	offset;
++};
++
+ struct tracecmd_input {
+ 	struct tep_handle	*pevent;
+ 	struct tep_plugin_list	*plugin_list;
+@@ -92,6 +97,8 @@ struct tracecmd_input {
+ 	bool			use_pipe;
+ 	struct cpu_data 	*cpu_data;
+ 	long long		ts_offset;
++	int			ts_samples_count;
++	struct ts_offset_sample	*ts_samples;
+ 	double			ts2secs;
+ 	char *			cpustats;
+ 	char *			uname;
+@@ -1028,6 +1035,66 @@ static void free_next(struct tracecmd_input *handle, int cpu)
+ 	free_record(record);
  }
  
--static void init_instance(struct buffer_instance *instance)
-+void tracecmd_init_instance(struct buffer_instance *instance)
- {
- 	instance->event_next = &instance->events;
- }
-@@ -308,7 +308,7 @@ static void reset_save_file_cond(const char *file, int prio,
-  */
- void add_instance(struct buffer_instance *instance, int cpu_count)
- {
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
- 	instance->next = buffer_instances;
- 	if (first_instance == buffer_instances)
- 		first_instance = instance;
-@@ -495,7 +495,7 @@ static void add_event(struct buffer_instance *instance, struct event_list *event
- static void reset_event_list(struct buffer_instance *instance)
- {
- 	instance->events = NULL;
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
- }
- 
- static char *get_temp_file(struct buffer_instance *instance, int cpu)
-@@ -791,8 +791,7 @@ get_instance_file(struct buffer_instance *instance, const char *file)
- 	return path;
- }
- 
--static char *
--get_instance_dir(struct buffer_instance *instance)
-+char *get_instance_dir(struct buffer_instance *instance)
- {
- 	char *buf;
- 	char *path;
-@@ -1668,9 +1667,8 @@ static int write_file(const char *file, const char *str, const char *type)
- 	return ret;
- }
- 
--static int
--write_instance_file(struct buffer_instance *instance,
--		    const char *file, const char *str, const char *type)
-+int write_instance_file(struct buffer_instance *instance,
-+			const char *file, const char *str, const char *type)
- {
- 	char *path;
- 	int ret;
-@@ -1946,7 +1944,7 @@ static int open_tracing_on(struct buffer_instance *instance)
- 	return fd;
- }
- 
--static void write_tracing_on(struct buffer_instance *instance, int on)
-+void write_tracing_on(struct buffer_instance *instance, int on)
- {
- 	int ret;
- 	int fd;
-@@ -2262,7 +2260,7 @@ void tracecmd_enable_events(void)
- 	enable_events(first_instance);
- }
- 
--static void set_clock(struct buffer_instance *instance)
-+void tracecmd_set_clock(struct buffer_instance *instance)
- {
- 	char *path;
- 	char *content;
-@@ -4316,49 +4314,58 @@ static void clear_func_filters(void)
- 	}
- }
- 
--static void make_instances(void)
-+void tracecmd_make_instance(struct buffer_instance *instance)
- {
--	struct buffer_instance *instance;
- 	struct stat st;
- 	char *path;
- 	int ret;
- 
-+	path = get_instance_dir(instance);
-+	ret = stat(path, &st);
-+	if (ret < 0) {
-+		ret = mkdir(path, 0777);
-+		if (ret < 0)
-+			die("mkdir %s", path);
-+	} else
-+		/* Don't delete instances that already exist */
-+		instance->flags |= BUFFER_FL_KEEP;
-+	tracecmd_put_tracing_file(path);
++static inline unsigned long long
++timestamp_correction_calc(unsigned long long ts, struct ts_offset_sample *min,
++			  struct ts_offset_sample *max)
++{
++	long long tscor = min->offset +
++			(((((long long)ts) - min->time)*
++			(max->offset-min->offset))/(max->time-min->time));
++
++	if (tscor < 0)
++		return ts - llabs(tscor);
++
++	return ts + tscor;
 +
 +}
 +
-+static void make_instances(void)
++static unsigned long long timestamp_correct(unsigned long long ts,
++					    struct tracecmd_input *handle)
 +{
-+	struct buffer_instance *instance;
++	int min, mid, max;
 +
- 	for_each_instance(instance) {
- 		if (is_guest(instance))
- 			continue;
-+		tracecmd_make_instance(instance);
++	if (handle->ts_offset)
++		return ts + handle->ts_offset;
++	if (!handle->ts_samples_count || !handle->ts_samples)
++		return ts;
++
++	/* We have one sample, nothing to calc here */
++	if (handle->ts_samples_count == 1)
++		return ts + handle->ts_samples[0].offset;
++
++	/* We have two samples, nothing to search here */
++	if (handle->ts_samples_count == 2)
++		return timestamp_correction_calc(ts, &handle->ts_samples[0],
++						 &handle->ts_samples[1]);
++
++	/* We have more than two samples */
++	if (ts <= handle->ts_samples[0].time)
++		return timestamp_correction_calc(ts,
++						  &handle->ts_samples[0],
++						  &handle->ts_samples[1]);
++	else if (ts >= handle->ts_samples[handle->ts_samples_count-1].time)
++		return timestamp_correction_calc(ts,
++						 &handle->ts_samples[handle->ts_samples_count-2],
++						 &handle->ts_samples[handle->ts_samples_count-1]);
++	min = 0;
++	max = handle->ts_samples_count-1;
++	mid = (min + max)/2;
++	while (min <= max) {
++		if (ts < handle->ts_samples[mid].time)
++			max = mid - 1;
++		else if (ts > handle->ts_samples[mid].time)
++			min = mid + 1;
++		else
++			break;
++		mid = (min + max)/2;
++	}
++
++	return timestamp_correction_calc(ts, &handle->ts_samples[mid],
++					 &handle->ts_samples[mid+1]);
++}
++
+ /*
+  * Page is mapped, now read in the page header info.
+  */
+@@ -1049,7 +1116,7 @@ static int update_page_info(struct tracecmd_input *handle, int cpu)
+ 		    kbuffer_subbuffer_size(kbuf));
+ 		return -1;
+ 	}
+-	handle->cpu_data[cpu].timestamp = kbuffer_timestamp(kbuf) + handle->ts_offset;
++	handle->cpu_data[cpu].timestamp = timestamp_correct(kbuffer_timestamp(kbuf), handle);
+ 
+ 	if (handle->ts2secs)
+ 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
+@@ -1776,7 +1843,7 @@ read_again:
+ 		goto read_again;
+ 	}
+ 
+-	handle->cpu_data[cpu].timestamp = ts + handle->ts_offset;
++	handle->cpu_data[cpu].timestamp = timestamp_correct(ts, handle);
+ 
+ 	if (handle->ts2secs) {
+ 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
+@@ -2101,6 +2168,41 @@ void tracecmd_set_ts2secs(struct tracecmd_input *handle,
+ 	handle->use_trace_clock = false;
+ }
+ 
++static int tsync_offset_cmp(const void *a, const void *b)
++{
++	struct ts_offset_sample *ts_a = (struct ts_offset_sample *)a;
++	struct ts_offset_sample *ts_b = (struct ts_offset_sample *)b;
++
++	if (ts_a->time > ts_b->time)
++		return 1;
++	if (ts_a->time < ts_b->time)
++		return -1;
++	return 0;
++}
++
++static void tsync_offset_load(struct tracecmd_input *handle, char *buf)
++{
++	int i, j;
++	long long *buf8 = (long long *)buf;
++
++	for (i = 0; i < handle->ts_samples_count; i++) {
++		handle->ts_samples[i].time = tep_read_number(handle->pevent,
++							  buf8+i, 8);
++		handle->ts_samples[i].offset = tep_read_number(handle->pevent,
++						buf8+handle->ts_samples_count+i, 8);
++	}
++	qsort(handle->ts_samples,
++	      handle->ts_samples_count, sizeof(struct ts_offset_sample),
++	      tsync_offset_cmp);
++	/* Filter possible samples with equal time */
++	for (i = 0, j = 0; i < handle->ts_samples_count; i++) {
++		if (i == 0 ||
++		    handle->ts_samples[i].time != handle->ts_samples[i-1].time) {
++			handle->ts_samples[j++] = handle->ts_samples[i];
++		}
 +	}
 +}
- 
--		path = get_instance_dir(instance);
--		ret = stat(path, &st);
--		if (ret < 0) {
--			ret = mkdir(path, 0777);
--			if (ret < 0)
--				die("mkdir %s", path);
--		} else
--			/* Don't delete instances that already exist */
--			instance->flags |= BUFFER_FL_KEEP;
--		tracecmd_put_tracing_file(path);
-+void tracecmd_remove_instance(struct buffer_instance *instance)
-+{
-+	char *path;
 +
-+	if (instance->tracing_on_fd > 0) {
-+		close(instance->tracing_on_fd);
-+		instance->tracing_on_fd = 0;
- 	}
-+	path = get_instance_dir(instance);
-+	rmdir(path);
-+	tracecmd_put_tracing_file(path);
- }
- 
- void tracecmd_remove_instances(void)
+ static int handle_options(struct tracecmd_input *handle)
  {
- 	struct buffer_instance *instance;
--	char *path;
--	int ret;
- 
- 	for_each_instance(instance) {
- 		/* Only delete what we created */
- 		if (is_guest(instance) || (instance->flags & BUFFER_FL_KEEP))
- 			continue;
--		if (instance->tracing_on_fd > 0) {
--			close(instance->tracing_on_fd);
--			instance->tracing_on_fd = 0;
--		}
--		path = get_instance_dir(instance);
--		ret = rmdir(path);
--		if (ret < 0)
--			die("rmdir %s", path);
--		tracecmd_put_tracing_file(path);
-+		tracecmd_remove_instance(instance);
- 	}
- }
- 
-@@ -4853,7 +4860,7 @@ void trace_stop(int argc, char **argv)
- 	int topt = 0;
- 	struct buffer_instance *instance = &top_instance;
- 
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
+ 	long long offset;
+@@ -2111,6 +2213,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 	struct input_buffer_instance *buffer;
+ 	struct hook_list *hook;
+ 	char *buf;
++	int tsync;
+ 	int cpus;
  
  	for (;;) {
- 		int c;
-@@ -4894,7 +4901,7 @@ void trace_restart(int argc, char **argv)
- 	int topt = 0;
- 	struct buffer_instance *instance = &top_instance;
- 
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
- 
- 	for (;;) {
- 		int c;
-@@ -4936,7 +4943,7 @@ void trace_reset(int argc, char **argv)
- 	int topt = 0;
- 	struct buffer_instance *instance = &top_instance;
- 
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
- 
- 	/* if last arg is -a, then -b and -d apply to all instances */
- 	int last_specified_all = 0;
-@@ -5014,11 +5021,16 @@ static void init_common_record_context(struct common_record_context *ctx,
- 	memset(ctx, 0, sizeof(*ctx));
- 	ctx->instance = &top_instance;
- 	ctx->curr_cmd = curr_cmd;
--	init_instance(ctx->instance);
-+	tracecmd_init_instance(ctx->instance);
- 	local_cpu_count = count_cpus();
- 	ctx->instance->cpu_count = local_cpu_count;
- }
- 
-+int tracecmd_local_cpu_count(void)
-+{
-+	return local_cpu_count;
-+}
-+
- #define IS_EXTRACT(ctx) ((ctx)->curr_cmd == CMD_extract)
- #define IS_START(ctx) ((ctx)->curr_cmd == CMD_start)
- #define IS_STREAM(ctx) ((ctx)->curr_cmd == CMD_stream)
-@@ -5589,7 +5601,7 @@ static void record_trace(int argc, char **argv,
- 	tracecmd_disable_all_tracing(1);
- 
- 	for_all_instances(instance)
--		set_clock(instance);
-+		tracecmd_set_clock(instance);
- 
- 	/* Record records the date first */
- 	if (ctx->date &&
+@@ -2155,6 +2258,25 @@ static int handle_options(struct tracecmd_input *handle)
+ 			offset = strtoll(buf, NULL, 0);
+ 			handle->ts_offset += offset;
+ 			break;
++		case TRACECMD_OPTION_TIME_SHIFT:
++			/*
++			 * int (4 bytes) count of timestamp offsets.
++			 * long long array of size [count] of times,
++			 *	when the offsets were calculated.
++			 * long long array of size [count] of timestamp offsets.
++			 */
++			if (handle->flags & TRACECMD_FL_IGNORE_DATE)
++				break;
++			handle->ts_samples_count = tep_read_number(handle->pevent,
++								buf, 4);
++			tsync = (sizeof(long long)*handle->ts_samples_count);
++			if (size != (4+(2*tsync)))
++				break;
++			handle->ts_samples = malloc(2*tsync);
++			if (!handle->ts_samples)
++				return -ENOMEM;
++			tsync_offset_load(handle, buf+4);
++			break;
+ 		case TRACECMD_OPTION_CPUSTAT:
+ 			buf[size-1] = '\n';
+ 			cpustats = realloc(cpustats, cpustats_size + size + 1);
 -- 
 2.20.1
 
