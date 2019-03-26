@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AC85C43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 695E0C10F06
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:43:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 07D0A20823
+	by mail.kernel.org (Postfix) with ESMTP id 3464720863
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:43:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732092AbfCZPnj (ORCPT
+        id S1732086AbfCZPnj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Tue, 26 Mar 2019 11:43:39 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46262 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732028AbfCZPng (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33640 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732075AbfCZPni (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Mar 2019 11:43:36 -0400
-Received: by mail-wr1-f66.google.com with SMTP id o1so14899710wrs.13;
-        Tue, 26 Mar 2019 08:43:34 -0700 (PDT)
+        Tue, 26 Mar 2019 11:43:38 -0400
+Received: by mail-wr1-f67.google.com with SMTP id q1so14961305wrp.0;
+        Tue, 26 Mar 2019 08:43:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2yZU7/UH586wVPOYU7pW99TczLqv0gTkb2HKZHJuQ7I=;
-        b=V4Q5WYTlMub0st34AmcQ+w4kIVAkkBjubRqNoKGlx5n5Vp65JGQjaAxKtYpRlQK0VJ
-         S+E514AE5TfDo5nDkViqOOZ+b5zM4CKzo5KQCZ/CGDul+lPmRLyDGrQ2YjRMY1IES48n
-         bW1VM7KC+1SBq7HDtE6QeROuYD8CuPE/mDfUkirizG55XEhkXI88hxjnOcHoPJewoe10
-         WLyrkG3hVXlnahTkvCDX/WKcx1nLFUhupBocGaqNz7BTe2bnM9aYZh7fyZZHPqOVdg8+
-         okYwlXJ8J6ge2lbvaG1qbkVYJI46+HeE719BQNt2ftI4j8hE0R7mEiuO/FT8c1YJNglx
-         2W+w==
-X-Gm-Message-State: APjAAAUUprowMOPVnQtdHLkUWWv2wAOAmYsYFrSH9+0pi1nBzMglmIh+
-        8IsdOzWeYp6/6tjM0iyB+io=
-X-Google-Smtp-Source: APXvYqw4Hwj+Dx8WIsIucB3dbK9sWIJxLIu5NGF+/CQd1TEWSE9c7VQpwfh0X7pI7hoSTtWPCclJkw==
-X-Received: by 2002:adf:cd90:: with SMTP id q16mr19459684wrj.75.1553615013724;
-        Tue, 26 Mar 2019 08:43:33 -0700 (PDT)
+        bh=5Y3FmfcQ1PRB0Vp6CXgSWGpr2DhrWnI0yrtFYH2f+LA=;
+        b=bmgBKMwnQ5aFHzS/nb3/b+BCYha3rjirrggGswuWP9TP8FPob4ydWC2T06fHNJI7Hf
+         SJuDbcDp0U0oNz2nNgKIjXlyPezukrTMaScx3YikKXxU61OLowIIKaDH+hWclX2Cpq66
+         5If7L2mmeQxSuqbRn/MU03NeFJglTSYHbO9c4P6ObM3IgYAdC62Mfh6fuKqqO5/e0ZTw
+         yJsEapfuRTx1PyOpGOl2CgxKvrlithWU48ltvpoKktSl/QY0pg9bGUWLgn6dci/XaU1s
+         gnh0For+WP7dNVVJqfjlIKTijM508hmnVe86vEs3cNIOJVfX1nW6aq3AAl2mxrpvxPkG
+         b9og==
+X-Gm-Message-State: APjAAAWFFaNz1OBRQjkIpF7g5ZEbunV597wWXAr3GQQM9lcdEkNJdo4f
+        Vgttg153Xuym74MlkNmxCM0=
+X-Google-Smtp-Source: APXvYqzUpH9h/bJu3id7SEtwx6J9OeZYCl6VCgljSjp48d4ZBxklD4GG4VpLG6lkBjXdnZqAahBj9A==
+X-Received: by 2002:adf:ed8a:: with SMTP id c10mr3108345wro.40.1553615015560;
+        Tue, 26 Mar 2019 08:43:35 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id n11sm31927685wrt.63.2019.03.26.08.43.32
+        by smtp.gmail.com with ESMTPSA id n11sm31927685wrt.63.2019.03.26.08.43.34
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 Mar 2019 08:43:33 -0700 (PDT)
+        Tue, 26 Mar 2019 08:43:35 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/8] tools/lib/traceevent: Remove tep filter trivial APIs
-Date:   Tue, 26 Mar 2019 17:43:23 +0200
-Message-Id: <20190326154328.28718-4-tstoyanov@vmware.com>
+Subject: [PATCH 5/8] tools/perf,tools/lib/traceevent: rename "pevent" member of struct tep_event to "tep"
+Date:   Tue, 26 Mar 2019 17:43:25 +0200
+Message-Id: <20190326154328.28718-6-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190326154328.28718-1-tstoyanov@vmware.com>
 References: <20190326154328.28718-1-tstoyanov@vmware.com>
@@ -58,252 +58,344 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patch removes trivial filter tep APIs:
- enum tep_filter_trivial_type
- tep_filter_event_has_trivial()
- tep_update_trivial()
- tep_filter_clear_trivial()
-
-Trivial filters is an optimization, used only in the first
-version of KernelShark. The API is deprecated, the next KernelShark
-release does not use it.
+This patch renames "pevent" member of the struct tep_event to "tep". This makes
+the struct consistent with the chosen naming convention:
+tep (trace event parser), instead of the old pevent.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/event-parse.h  |  16 ---
- tools/lib/traceevent/parse-filter.c | 169 ----------------------------
- 2 files changed, 185 deletions(-)
+ tools/lib/traceevent/event-parse.c            | 32 +++++++++----------
+ tools/lib/traceevent/event-parse.h            |  2 +-
+ tools/lib/traceevent/parse-filter.c           |  6 ++--
+ tools/lib/traceevent/plugin_function.c        |  2 +-
+ tools/lib/traceevent/plugin_kmem.c            |  4 +--
+ tools/lib/traceevent/plugin_kvm.c             |  4 +--
+ tools/lib/traceevent/plugin_sched_switch.c    |  2 +-
+ tools/perf/builtin-kmem.c                     |  2 +-
+ tools/perf/util/data-convert-bt.c             |  4 +--
+ tools/perf/util/python.c                      |  2 +-
+ .../util/scripting-engines/trace-event-perl.c |  2 +-
+ .../scripting-engines/trace-event-python.c    |  2 +-
+ tools/perf/util/trace-event-parse.c           |  2 +-
+ 13 files changed, 33 insertions(+), 33 deletions(-)
 
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index 6265d3bb72a1..de17fe9f0f62 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -804,7 +804,7 @@ static int add_event(struct tep_handle *pevent, struct tep_event *event)
+ 	pevent->events[i] = event;
+ 	pevent->nr_events++;
+ 
+-	event->pevent = pevent;
++	event->tep = pevent;
+ 
+ 	return 0;
+ }
+@@ -1656,8 +1656,8 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
+ 			else if (field->flags & TEP_FIELD_IS_STRING)
+ 				field->elementsize = 1;
+ 			else if (field->flags & TEP_FIELD_IS_LONG)
+-				field->elementsize = event->pevent ?
+-						     event->pevent->long_size :
++				field->elementsize = event->tep ?
++						     event->tep->long_size :
+ 						     sizeof(long);
+ 		} else
+ 			field->elementsize = field->size;
+@@ -3075,7 +3075,7 @@ process_function(struct tep_event *event, struct tep_print_arg *arg,
+ 		return process_dynamic_array_len(event, arg, tok);
+ 	}
+ 
+-	func = find_func_handler(event->pevent, token);
++	func = find_func_handler(event->tep, token);
+ 	if (func) {
+ 		free_token(token);
+ 		return process_func_handler(event, func, arg, tok);
+@@ -3405,7 +3405,7 @@ int tep_read_number_field(struct tep_format_field *field, const void *data,
+ 	case 2:
+ 	case 4:
+ 	case 8:
+-		*value = tep_read_number(field->event->pevent,
++		*value = tep_read_number(field->event->tep,
+ 					 data + field->offset, field->size);
+ 		return 0;
+ 	default:
+@@ -3566,7 +3566,7 @@ tep_find_event_by_name(struct tep_handle *tep,
+ static unsigned long long
+ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg *arg)
+ {
+-	struct tep_handle *pevent = event->pevent;
++	struct tep_handle *pevent = event->tep;
+ 	unsigned long long val = 0;
+ 	unsigned long long left, right;
+ 	struct tep_print_arg *typearg = NULL;
+@@ -3907,7 +3907,7 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
+ 			  struct tep_event *event, const char *format,
+ 			  int len_arg, struct tep_print_arg *arg)
+ {
+-	struct tep_handle *pevent = event->pevent;
++	struct tep_handle *pevent = event->tep;
+ 	struct tep_print_flag_sym *flag;
+ 	struct tep_format_field *field;
+ 	struct printk_map *printk;
+@@ -4256,7 +4256,7 @@ static void free_args(struct tep_print_arg *args)
+ 
+ static struct tep_print_arg *make_bprint_args(char *fmt, void *data, int size, struct tep_event *event)
+ {
+-	struct tep_handle *pevent = event->pevent;
++	struct tep_handle *pevent = event->tep;
+ 	struct tep_format_field *field, *ip_field;
+ 	struct tep_print_arg *args, *arg, **next;
+ 	unsigned long long ip, val;
+@@ -4433,7 +4433,7 @@ static char *
+ get_bprint_format(void *data, int size __maybe_unused,
+ 		  struct tep_event *event)
+ {
+-	struct tep_handle *pevent = event->pevent;
++	struct tep_handle *pevent = event->tep;
+ 	unsigned long long addr;
+ 	struct tep_format_field *field;
+ 	struct printk_map *printk;
+@@ -4834,7 +4834,7 @@ void tep_print_field(struct trace_seq *s, void *data,
+ {
+ 	unsigned long long val;
+ 	unsigned int offset, len, i;
+-	struct tep_handle *pevent = field->event->pevent;
++	struct tep_handle *pevent = field->event->tep;
+ 
+ 	if (field->flags & TEP_FIELD_IS_ARRAY) {
+ 		offset = field->offset;
+@@ -4909,7 +4909,7 @@ void tep_print_fields(struct trace_seq *s, void *data,
+ 
+ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_event *event)
+ {
+-	struct tep_handle *pevent = event->pevent;
++	struct tep_handle *pevent = event->tep;
+ 	struct tep_print_fmt *print_fmt = &event->print_fmt;
+ 	struct tep_print_arg *arg = print_fmt->args;
+ 	struct tep_print_arg *args = NULL;
+@@ -5423,7 +5423,7 @@ void tep_event_info(struct trace_seq *s, struct tep_event *event,
+ {
+ 	int print_pretty = 1;
+ 
+-	if (event->pevent->print_raw || (event->flags & TEP_EVENT_FL_PRINTRAW))
++	if (event->tep->print_raw || (event->flags & TEP_EVENT_FL_PRINTRAW))
+ 		tep_print_fields(s, record->data, record->size, event);
+ 	else {
+ 
+@@ -6097,7 +6097,7 @@ enum tep_errno __tep_parse_format(struct tep_event **eventp,
+ 	}
+ 
+ 	/* Add pevent to event so that it can be referenced */
+-	event->pevent = pevent;
++	event->tep = pevent;
+ 
+ 	ret = event_read_format(event);
+ 	if (ret < 0) {
+@@ -6297,8 +6297,8 @@ void *tep_get_field_raw(struct trace_seq *s, struct tep_event *event,
+ 
+ 	offset = field->offset;
+ 	if (field->flags & TEP_FIELD_IS_DYNAMIC) {
+-		offset = tep_read_number(event->pevent,
+-					    data + offset, field->size);
++		offset = tep_read_number(event->tep,
++					 data + offset, field->size);
+ 		*len = offset >> 16;
+ 		offset &= 0xffff;
+ 	} else
+@@ -6432,7 +6432,7 @@ int tep_print_func_field(struct trace_seq *s, const char *fmt,
+ 			 struct tep_record *record, int err)
+ {
+ 	struct tep_format_field *field = tep_find_field(event, name);
+-	struct tep_handle *pevent = event->pevent;
++	struct tep_handle *pevent = event->tep;
+ 	unsigned long long val;
+ 	struct func_map *func;
+ 	char tmp[128];
 diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index dcf0385684b8..02932d3d2632 100644
+index 77f3308274d1..d98362ff4bb1 100644
 --- a/tools/lib/traceevent/event-parse.h
 +++ b/tools/lib/traceevent/event-parse.h
-@@ -732,12 +732,6 @@ struct tep_event_filter *tep_filter_alloc(struct tep_handle *pevent);
- #define FILTER_MISS		TEP_ERRNO__FILTER_MISS
- #define FILTER_MATCH		TEP_ERRNO__FILTER_MATCH
+@@ -278,7 +278,7 @@ struct tep_print_fmt {
+ };
  
--enum tep_filter_trivial_type {
--	TEP_FILTER_TRIVIAL_FALSE,
--	TEP_FILTER_TRIVIAL_TRUE,
--	TEP_FILTER_TRIVIAL_BOTH,
--};
--
- enum tep_errno tep_filter_add_filter_str(struct tep_event_filter *filter,
- 					 const char *filter_str);
- 
-@@ -752,9 +746,6 @@ int tep_event_filtered(struct tep_event_filter *filter,
- 
- void tep_filter_reset(struct tep_event_filter *filter);
- 
--int tep_filter_clear_trivial(struct tep_event_filter *filter,
--			     enum tep_filter_trivial_type type);
--
- void tep_filter_free(struct tep_event_filter *filter);
- 
- char *tep_filter_make_string(struct tep_event_filter *filter, int event_id);
-@@ -762,15 +753,8 @@ char *tep_filter_make_string(struct tep_event_filter *filter, int event_id);
- int tep_filter_remove_event(struct tep_event_filter *filter,
- 			    int event_id);
- 
--int tep_filter_event_has_trivial(struct tep_event_filter *filter,
--				 int event_id,
--				 enum tep_filter_trivial_type type);
--
- int tep_filter_copy(struct tep_event_filter *dest, struct tep_event_filter *source);
- 
--int tep_update_trivial(struct tep_event_filter *dest, struct tep_event_filter *source,
--			enum tep_filter_trivial_type type);
--
- int tep_filter_compare(struct tep_event_filter *filter1, struct tep_event_filter *filter2);
- 
- #endif /* _PARSE_EVENTS_H */
+ struct tep_event {
+-	struct tep_handle	*pevent;
++	struct tep_handle	*tep;
+ 	char			*name;
+ 	int			id;
+ 	int			flags;
 diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
-index cb5ce66dab6e..4ffd8b25a852 100644
+index ce437ac286e9..231e9cae5729 100644
 --- a/tools/lib/traceevent/parse-filter.c
 +++ b/tools/lib/traceevent/parse-filter.c
-@@ -1522,167 +1522,6 @@ int tep_filter_copy(struct tep_event_filter *dest, struct tep_event_filter *sour
- 	return ret;
+@@ -1531,8 +1531,8 @@ get_comm(struct tep_event *event, struct tep_record *record)
+ 	const char *comm;
+ 	int pid;
+ 
+-	pid = tep_data_pid(event->pevent, record);
+-	comm = tep_data_comm_from_pid(event->pevent, pid);
++	pid = tep_data_pid(event->tep, record);
++	comm = tep_data_comm_from_pid(event->tep, pid);
+ 	return comm;
  }
  
--
--/**
-- * tep_update_trivial - update the trivial filters with the given filter
-- * @dest - the filter to update
-- * @source - the filter as the source of the update
-- * @type - the type of trivial filter to update.
-- *
-- * Scan dest for trivial events matching @type to replace with the source.
-- *
-- * Returns 0 on success and -1 if there was a problem updating, but
-- *   events may have still been updated on error.
-- */
--int tep_update_trivial(struct tep_event_filter *dest, struct tep_event_filter *source,
--		       enum tep_filter_trivial_type type)
--{
--	struct tep_handle *src_pevent;
--	struct tep_handle *dest_pevent;
--	struct tep_event *event;
--	struct tep_filter_type *filter_type;
--	struct tep_filter_arg *arg;
--	char *str;
--	int i;
--
--	src_pevent = source->pevent;
--	dest_pevent = dest->pevent;
--
--	/* Do nothing if either of the filters has nothing to filter */
--	if (!dest->filters || !source->filters)
--		return 0;
--
--	for (i = 0; i < dest->filters; i++) {
--		filter_type = &dest->event_filters[i];
--		arg = filter_type->filter;
--		if (arg->type != TEP_FILTER_ARG_BOOLEAN)
--			continue;
--		if ((arg->boolean.value && type == TEP_FILTER_TRIVIAL_FALSE) ||
--		    (!arg->boolean.value && type == TEP_FILTER_TRIVIAL_TRUE))
--			continue;
--
--		event = filter_type->event;
--
--		if (src_pevent != dest_pevent) {
--			/* do a look up */
--			event = tep_find_event_by_name(src_pevent,
--						       event->system,
--						       event->name);
--			if (!event)
--				return -1;
--		}
--
--		str = tep_filter_make_string(source, event->id);
--		if (!str)
--			continue;
--
--		/* Don't bother if the filter is trivial too */
--		if (strcmp(str, "TRUE") != 0 && strcmp(str, "FALSE") != 0)
--			filter_event(dest, event, str, NULL);
--		free(str);
--	}
--	return 0;
--}
--
--/**
-- * tep_filter_clear_trivial - clear TRUE and FALSE filters
-- * @filter: the filter to remove trivial filters from
-- * @type: remove only true, false, or both
-- *
-- * Removes filters that only contain a TRUE or FALES boolean arg.
-- *
-- * Returns 0 on success and -1 if there was a problem.
-- */
--int tep_filter_clear_trivial(struct tep_event_filter *filter,
--			     enum tep_filter_trivial_type type)
--{
--	struct tep_filter_type *filter_type;
--	int count = 0;
--	int *ids = NULL;
--	int i;
--
--	if (!filter->filters)
--		return 0;
--
--	/*
--	 * Two steps, first get all ids with trivial filters.
--	 *  then remove those ids.
--	 */
--	for (i = 0; i < filter->filters; i++) {
--		int *new_ids;
--
--		filter_type = &filter->event_filters[i];
--		if (filter_type->filter->type != TEP_FILTER_ARG_BOOLEAN)
--			continue;
--		switch (type) {
--		case TEP_FILTER_TRIVIAL_FALSE:
--			if (filter_type->filter->boolean.value)
--				continue;
--			break;
--		case TEP_FILTER_TRIVIAL_TRUE:
--			if (!filter_type->filter->boolean.value)
--				continue;
--		default:
--			break;
--		}
--
--		new_ids = realloc(ids, sizeof(*ids) * (count + 1));
--		if (!new_ids) {
--			free(ids);
--			return -1;
--		}
--
--		ids = new_ids;
--		ids[count++] = filter_type->event_id;
--	}
--
--	if (!count)
--		return 0;
--
--	for (i = 0; i < count; i++)
--		tep_filter_remove_event(filter, ids[i]);
--
--	free(ids);
--	return 0;
--}
--
--/**
-- * tep_filter_event_has_trivial - return true event contains trivial filter
-- * @filter: the filter with the information
-- * @event_id: the id of the event to test
-- * @type: trivial type to test for (TRUE, FALSE, EITHER)
-- *
-- * Returns 1 if the event contains a matching trivial type
-- *  otherwise 0.
-- */
--int tep_filter_event_has_trivial(struct tep_event_filter *filter,
--				 int event_id,
--				 enum tep_filter_trivial_type type)
--{
--	struct tep_filter_type *filter_type;
--
--	if (!filter->filters)
--		return 0;
--
--	filter_type = find_filter_type(filter, event_id);
--
--	if (!filter_type)
--		return 0;
--
--	if (filter_type->filter->type != TEP_FILTER_ARG_BOOLEAN)
--		return 0;
--
--	switch (type) {
--	case TEP_FILTER_TRIVIAL_FALSE:
--		return !filter_type->filter->boolean.value;
--
--	case TEP_FILTER_TRIVIAL_TRUE:
--		return filter_type->filter->boolean.value;
--	default:
--		return 1;
--	}
--}
--
- static int test_filter(struct tep_event *event, struct tep_filter_arg *arg,
- 		       struct tep_record *record, enum tep_errno *err);
+@@ -1730,7 +1730,7 @@ static const char *get_field_str(struct tep_filter_arg *arg, struct tep_record *
  
-@@ -2409,14 +2248,6 @@ int tep_filter_compare(struct tep_event_filter *filter1, struct tep_event_filter
- 			break;
- 		if (filter_type1->filter->type != filter_type2->filter->type)
- 			break;
--		switch (filter_type1->filter->type) {
--		case TEP_FILTER_TRIVIAL_FALSE:
--		case TEP_FILTER_TRIVIAL_TRUE:
--			/* trivial types just need the type compared */
--			continue;
--		default:
--			break;
--		}
- 		/* The best way to compare complex filters is with strings */
- 		str1 = arg_to_str(filter1, filter_type1->filter);
- 		str2 = arg_to_str(filter2, filter_type2->filter);
+ 	} else {
+ 		event = arg->str.field->event;
+-		pevent = event->pevent;
++		pevent = event->tep;
+ 		addr = get_value(event, arg->str.field, record);
+ 
+ 		if (arg->str.field->flags & (TEP_FIELD_IS_POINTER | TEP_FIELD_IS_LONG))
+diff --git a/tools/lib/traceevent/plugin_function.c b/tools/lib/traceevent/plugin_function.c
+index e93f33bd705f..d6a8df060614 100644
+--- a/tools/lib/traceevent/plugin_function.c
++++ b/tools/lib/traceevent/plugin_function.c
+@@ -126,7 +126,7 @@ static int add_and_get_index(const char *parent, const char *child, int cpu)
+ static int function_handler(struct trace_seq *s, struct tep_record *record,
+ 			    struct tep_event *event, void *context)
+ {
+-	struct tep_handle *pevent = event->pevent;
++	struct tep_handle *pevent = event->tep;
+ 	unsigned long long function;
+ 	unsigned long long pfunction;
+ 	const char *func;
+diff --git a/tools/lib/traceevent/plugin_kmem.c b/tools/lib/traceevent/plugin_kmem.c
+index c09bafdd8377..edaec5d962c3 100644
+--- a/tools/lib/traceevent/plugin_kmem.c
++++ b/tools/lib/traceevent/plugin_kmem.c
+@@ -39,11 +39,11 @@ static int call_site_handler(struct trace_seq *s, struct tep_record *record,
+ 	if (tep_read_number_field(field, data, &val))
+ 		return 1;
+ 
+-	func = tep_find_function(event->pevent, val);
++	func = tep_find_function(event->tep, val);
+ 	if (!func)
+ 		return 1;
+ 
+-	addr = tep_find_function_address(event->pevent, val);
++	addr = tep_find_function_address(event->tep, val);
+ 
+ 	trace_seq_printf(s, "(%s+0x%x) ", func, (int)(val - addr));
+ 	return 1;
+diff --git a/tools/lib/traceevent/plugin_kvm.c b/tools/lib/traceevent/plugin_kvm.c
+index 472298c2b531..c8e623065a7e 100644
+--- a/tools/lib/traceevent/plugin_kvm.c
++++ b/tools/lib/traceevent/plugin_kvm.c
+@@ -389,8 +389,8 @@ static int kvm_mmu_print_role(struct trace_seq *s, struct tep_record *record,
+ 	 * We can only use the structure if file is of the same
+ 	 * endianness.
+ 	 */
+-	if (tep_is_file_bigendian(event->pevent) ==
+-	    tep_is_local_bigendian(event->pevent)) {
++	if (tep_is_file_bigendian(event->tep) ==
++	    tep_is_local_bigendian(event->tep)) {
+ 
+ 		trace_seq_printf(s, "%u q%u%s %s%s %spae %snxe %swp%s%s%s",
+ 				 role.level,
+diff --git a/tools/lib/traceevent/plugin_sched_switch.c b/tools/lib/traceevent/plugin_sched_switch.c
+index 701c22913cf8..957389a0ff7a 100644
+--- a/tools/lib/traceevent/plugin_sched_switch.c
++++ b/tools/lib/traceevent/plugin_sched_switch.c
+@@ -62,7 +62,7 @@ static void write_and_save_comm(struct tep_format_field *field,
+ 	comm = &s->buffer[len];
+ 
+ 	/* Help out the comm to ids. This will handle dups */
+-	tep_register_comm(field->event->pevent, comm, pid);
++	tep_register_comm(field->event->tep, comm, pid);
+ }
+ 
+ static int sched_wakeup_handler(struct trace_seq *s,
+diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
+index fa520f4b8095..b80eee455111 100644
+--- a/tools/perf/builtin-kmem.c
++++ b/tools/perf/builtin-kmem.c
+@@ -1975,7 +1975,7 @@ int cmd_kmem(int argc, const char **argv)
+ 			goto out_delete;
+ 		}
+ 
+-		kmem_page_size = tep_get_page_size(evsel->tp_format->pevent);
++		kmem_page_size = tep_get_page_size(evsel->tp_format->tep);
+ 		symbol_conf.use_callchain = true;
+ 	}
+ 
+diff --git a/tools/perf/util/data-convert-bt.c b/tools/perf/util/data-convert-bt.c
+index 26af43ad9ddd..e0311c9750ad 100644
+--- a/tools/perf/util/data-convert-bt.c
++++ b/tools/perf/util/data-convert-bt.c
+@@ -310,7 +310,7 @@ static int add_tracepoint_field_value(struct ctf_writer *cw,
+ 	if (flags & TEP_FIELD_IS_DYNAMIC) {
+ 		unsigned long long tmp_val;
+ 
+-		tmp_val = tep_read_number(fmtf->event->pevent,
++		tmp_val = tep_read_number(fmtf->event->tep,
+ 					  data + offset, len);
+ 		offset = tmp_val;
+ 		len = offset >> 16;
+@@ -354,7 +354,7 @@ static int add_tracepoint_field_value(struct ctf_writer *cw,
+ 			unsigned long long value_int;
+ 
+ 			value_int = tep_read_number(
+-					fmtf->event->pevent,
++					fmtf->event->tep,
+ 					data + offset + i * len, len);
+ 
+ 			if (!(flags & TEP_FIELD_IS_SIGNED))
+diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+index dda0ac978b1e..6aa7e2352e16 100644
+--- a/tools/perf/util/python.c
++++ b/tools/perf/util/python.c
+@@ -342,7 +342,7 @@ static bool is_tracepoint(struct pyrf_event *pevent)
+ static PyObject*
+ tracepoint_field(struct pyrf_event *pe, struct tep_format_field *field)
+ {
+-	struct tep_handle *pevent = field->event->pevent;
++	struct tep_handle *pevent = field->event->tep;
+ 	void *data = pe->sample.raw_data;
+ 	PyObject *ret = NULL;
+ 	unsigned long long val;
+diff --git a/tools/perf/util/scripting-engines/trace-event-perl.c b/tools/perf/util/scripting-engines/trace-event-perl.c
+index 5f06378a482b..61aa7f3df915 100644
+--- a/tools/perf/util/scripting-engines/trace-event-perl.c
++++ b/tools/perf/util/scripting-engines/trace-event-perl.c
+@@ -372,7 +372,7 @@ static void perl_process_tracepoint(struct perf_sample *sample,
+ 	ns = nsecs - s * NSEC_PER_SEC;
+ 
+ 	scripting_context->event_data = data;
+-	scripting_context->pevent = evsel->tp_format->pevent;
++	scripting_context->pevent = evsel->tp_format->tep;
+ 
+ 	ENTER;
+ 	SAVETMPS;
+diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
+index 09604c6508f0..22f52b669871 100644
+--- a/tools/perf/util/scripting-engines/trace-event-python.c
++++ b/tools/perf/util/scripting-engines/trace-event-python.c
+@@ -837,7 +837,7 @@ static void python_process_tracepoint(struct perf_sample *sample,
+ 	ns = nsecs - s * NSEC_PER_SEC;
+ 
+ 	scripting_context->event_data = data;
+-	scripting_context->pevent = evsel->tp_format->pevent;
++	scripting_context->pevent = evsel->tp_format->tep;
+ 
+ 	context = _PyCapsule_New(scripting_context, NULL, NULL);
+ 
+diff --git a/tools/perf/util/trace-event-parse.c b/tools/perf/util/trace-event-parse.c
+index ad74be1f0e42..863955e4094e 100644
+--- a/tools/perf/util/trace-event-parse.c
++++ b/tools/perf/util/trace-event-parse.c
+@@ -111,7 +111,7 @@ raw_field_value(struct tep_event *event, const char *name, void *data)
+ 
+ unsigned long long read_size(struct tep_event *event, void *ptr, int size)
+ {
+-	return tep_read_number(event->pevent, ptr, size);
++	return tep_read_number(event->tep, ptr, size);
+ }
+ 
+ void event_format__fprintf(struct tep_event *event,
 -- 
 2.20.1
 
