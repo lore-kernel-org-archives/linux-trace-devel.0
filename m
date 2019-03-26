@@ -2,121 +2,98 @@ Return-Path: <SRS0=md0U=R5=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EE6CC43381
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 13:37:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE48DC43381
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 13:39:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E11202070B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 13:37:14 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JYooWtBO"
+	by mail.kernel.org (Postfix) with ESMTP id 919452075C
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 13:39:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbfCZNhO (ORCPT
+        id S1726266AbfCZNj3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Mar 2019 09:37:14 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44811 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726177AbfCZNhO (ORCPT
+        Tue, 26 Mar 2019 09:39:29 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:32910 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726175AbfCZNj3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Mar 2019 09:37:14 -0400
-Received: by mail-wr1-f68.google.com with SMTP id y7so10269939wrn.11
-        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Mar 2019 06:37:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=R0hw9iFNU7hfadbmBWH4e0FK484VWVo9aKWq15TwHB8=;
-        b=JYooWtBOko3bh13fIgps5MYluPs+0tLoJRjDhP9PR4JzdCLsYmrqvoQPDikNIIuIY4
-         bq2t8z+6aS8nJ+JzB2d+3hITDzButNaJ2RJEWZ0HmB23yySXvwYEwr2uNoaxCAohrRND
-         s2JrVAAhzFlaX6hTJ6An0G10sX+iLv3AZa3KRQKSOuf2DHa3hyMUv6RdemCxVBLFlEuM
-         wL0REK/vajA8JpkTdlwPAkeC17oa4i2TslUso/o69tOuqvUjn3b3DV305Jkf/H+xwOJQ
-         nNXiztxovJroodlCkAoGkk5cYoB+qro1bGLQ6xuxgj/+rCb0x8DJKaK6dAwInDvz4adH
-         JDaA==
+        Tue, 26 Mar 2019 09:39:29 -0400
+Received: by mail-wr1-f65.google.com with SMTP id q1so14421066wrp.0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Mar 2019 06:39:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=R0hw9iFNU7hfadbmBWH4e0FK484VWVo9aKWq15TwHB8=;
-        b=dSwRcZp7fpvYYQpD4TNlH72v/ca/A2groNXSTOa7mcyoXhe1fk6pNTwUaqI3dyhRwU
-         mHk8XiYd9Da2fBtPqHdbWCZg13F0Lfiq1bLGW7J3cTPUaBhJzmuGj+duD4X791/Rz8Z5
-         ZMXvs3BVmiB39ktPH+17Qz0xBnQKbS++DmFP6ogCA0Y3jfReh9kSoXeFBt1glCduC0CO
-         z0CRaelUjfy0ctok/pIzSRo/nvFnkSGZq9kQqJfwuG8HqFOveWJNYQ6nTFCTgDYgV1Ue
-         uteVtoa7WowjrOJh8pVMselOHIK69GZ6txMtIH7nS9KLyo5OdkuSEBNVJAyEp4F3WS1c
-         0OpQ==
-X-Gm-Message-State: APjAAAV5guAxiKeN7ZNLlNBkyWs4bwcXSoyEFYP5KUw3TD6iASvfHShz
-        zkDfHZvzc9aDW2Fmi1rIZUuchn/2E1o=
-X-Google-Smtp-Source: APXvYqwXHP51xPG0NfhHW0payvH5bCenhFM+TH5eMiiL0dRfvKmFE2xNEdBs1W6koTXOfrr0QRp+xg==
-X-Received: by 2002:adf:e84b:: with SMTP id d11mr20832756wrn.289.1553607432852;
-        Tue, 26 Mar 2019 06:37:12 -0700 (PDT)
-Received: from [10.27.112.183] ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id o10sm16985938wru.54.2019.03.26.06.37.12
+        bh=rcXwAu319jdI0gNay8qXKcIDNBI8LPnJYobHrCTv3Xc=;
+        b=mTGgKoyw8WRhcaIVmWfYTERjK+gdaLIjzHnKzKjAE09wLWgL2lZa9mGQ1noChZ8HCd
+         mFoVmKq4UP6odOfm3lUNsy3c1JQAavgCzg3lWQBUP9RpN9Dw3MIi0vxCwJ/r2SxbC0E6
+         Luf+KGoN7bmDVANQ0s0VnqY5kSTonjgD0EeNQMmXWb4y0kiAf13pfExjnvULoQkKS0Uc
+         E2E9YNtadF53fbg8pB5+o7z0IAlUh843Xc1ZEFIX47f7OzajEgtiUd1RL5hb95qJTAsl
+         XcY4aaluXhov1Flv6QZb5rreEuvLcsTxgWR+OB2r5cotyeQQTpiQVJsEjUyaQJjtAVSo
+         Z23g==
+X-Gm-Message-State: APjAAAU329SnWKUGSjlC2zWevf6VdhVp0Tdm/2ZplNipih+5M7XJSWrm
+        8qtKmfIImXMQZH6+YTKoMZg=
+X-Google-Smtp-Source: APXvYqx52/ZsDDu3kD5kN9aK9HfMYpWsEpYPQzcyaUPxG/KYtu8oDpKPYmXltaxum/6IYeFK0vuT6w==
+X-Received: by 2002:a5d:4c88:: with SMTP id z8mr12247077wrs.291.1553607567366;
+        Tue, 26 Mar 2019 06:39:27 -0700 (PDT)
+Received: from mamba.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id r16sm8485718wrx.37.2019.03.26.06.39.26
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Mar 2019 06:37:12 -0700 (PDT)
-Subject: Re: [PATCH v2 4/4] kernel-shark: Fix a bug in KsPluginManager
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Cc:     Yordan Karadzhov <ykaradzhov@vmware.com>,
-        linux-trace-devel@vger.kernel.org
-References: <20190307154316.19194-1-ykaradzhov@vmware.com>
- <20190307154316.19194-5-ykaradzhov@vmware.com>
- <CAE0o1NsXJCV65iRzCMTs_-R8H2ET1TiN4aY20EU5hvkTHOju5Q@mail.gmail.com>
- <351105f9-557d-5a2d-99f1-0f93db2848be@gmail.com>
- <CAE0o1Nv5g6wujxY8ey2mQ72kk977s7tCWq9Hcab1zfNU3rNOVg@mail.gmail.com>
- <f4a51b16-446a-a426-a8b4-71365b8829c4@gmail.com>
- <55A448CA-1F0F-4396-89D0-22515B630A28@goodmis.org>
- <20190325215846.31df78c7@oasis.local.home>
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <84bef027-edaa-66f1-b77b-7229158687fb@gmail.com>
-Date:   Tue, 26 Mar 2019 15:37:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+        Tue, 26 Mar 2019 06:39:27 -0700 (PDT)
+From:   Yordan Karadzhov <ykaradzhov@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v3] kernel-shark: Fix a bug in KsPluginManager
+Date:   Tue, 26 Mar 2019 15:39:14 +0200
+Message-Id: <20190326133914.18884-1-ykaradzhov@vmware.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-In-Reply-To: <20190325215846.31df78c7@oasis.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+const char *lib = plugin.toStdString().c_str();
 
+This line is a bad idea because the returned array may (will) be
+invalidated when the destructor of std::string is called.
 
-On 26.03.19 г. 3:58 ч., Steven Rostedt wrote:
-> On Mon, 11 Mar 2019 11:15:40 -0700
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
->>> Thanks a lot for investigating this!
->>> I think in this case it will be more appropriate if you sign the patch.
->>> cheers,
->>> Y.
->>>   
->>>> -- Slavi
->>>>    
->>>>>
->>>>> But anyway, your solution looks cleaner and safer.
->>>>> I will send another version of the patch.
->>>>> Thanks a lot!
->>
->>
->> Signing the patch means that the person either wrote the patch or handled it to be committed.
->>
->> I think you want Suggested-by:
->>
-> 
-> BTW, I'm confused. Does this patch need to be applied or was there another version coming?
-> 
+Fixes: 18cf94f48 ("kernel-shark-qt: Add KernalShark Utils")
+Suggested-by: Slavomir Kaslev <kaslevs@vmware.com>
+Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+---
+ kernel-shark/src/KsUtils.cpp | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-It is my fault. Looks like I forgot to send v3.
-The patch is coming.
-Thanks!
-Y.
+diff --git a/kernel-shark/src/KsUtils.cpp b/kernel-shark/src/KsUtils.cpp
+index 34b2e2d..3585cca 100644
+--- a/kernel-shark/src/KsUtils.cpp
++++ b/kernel-shark/src/KsUtils.cpp
+@@ -439,8 +439,8 @@ void KsPluginManager::registerFromList(kshark_context *kshark_ctx)
+ 
+ 	auto lamRegUser = [&kshark_ctx](const QString &plugin)
+ 	{
+-		const char *lib = plugin.toStdString().c_str();
+-		kshark_register_plugin(kshark_ctx, lib);
++		std::string lib = plugin.toStdString();
++		kshark_register_plugin(kshark_ctx, lib.c_str());
+ 	};
+ 
+ 	_forEachInList(_ksPluginList,
+@@ -474,8 +474,8 @@ void KsPluginManager::unregisterFromList(kshark_context *kshark_ctx)
+ 
+ 	auto lamUregUser = [&kshark_ctx](const QString &plugin)
+ 	{
+-		const char *lib = plugin.toStdString().c_str();
+-		kshark_unregister_plugin(kshark_ctx, lib);
++		std::string lib = plugin.toStdString();
++		kshark_unregister_plugin(kshark_ctx, lib.c_str());
+ 	};
+ 
+ 	_forEachInList(_ksPluginList,
+-- 
+2.19.1
 
-
-> -- Steve
-> 
