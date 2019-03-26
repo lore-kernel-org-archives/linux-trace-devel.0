@@ -2,379 +2,193 @@ Return-Path: <SRS0=md0U=R5=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EAF1C43381
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEE93C43381
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 17:28:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 547E220866
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:44:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A892120823
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 17:28:11 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="HgqjH/6N"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732022AbfCZPne (ORCPT
+        id S1726207AbfCZR2L (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Mar 2019 11:43:34 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:36857 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731897AbfCZPnd (ORCPT
+        Tue, 26 Mar 2019 13:28:11 -0400
+Received: from mail-eopbgr810072.outbound.protection.outlook.com ([40.107.81.72]:26828
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726111AbfCZR2L (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Mar 2019 11:43:33 -0400
-Received: by mail-wm1-f65.google.com with SMTP id h18so13487314wml.1;
-        Tue, 26 Mar 2019 08:43:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fANz4yPzPxvm4DgilB+nGjOrA5gmS5bn2wLSTbAX9vc=;
-        b=RwYoTyMycAnfCyBP1Kztr6C0Kj1dzjWCuCuy+KQBgjg4pEGBjphtRR4gEly+qH74TN
-         i5/Sxsb4CD88J9oOeDMbXC5LNmVkLtmjXlrM1is971BpzuSTeuFY5Rb5T12DSqkxqMXY
-         wmMjX9x3GhAPy3REaX0wPATaxEV/kOCo3SjwiaSZ6B1/EA9YN7682MkZWf9NMhvdhOKo
-         BAEsyrf0FJH5X95P+7Gkws218IQnfIynhVivRtiSXNh3imw29sksr1U9bu7WnOkJL0th
-         5VCSLbYE7CEJGApA+0M0+1cDKkg4Q70hKcsN5NNI035q9KydbHChIDARDlg+nS4ICBCM
-         eJOA==
-X-Gm-Message-State: APjAAAWphGviH38jCN63zdnu5ZINSr9VoMltXKWPZeQ/kb89DudHW6qz
-        jPGRZg1GuHkgun7MCxQT7L8=
-X-Google-Smtp-Source: APXvYqw2eeQPAeFI0iUX2aYEjQ8ykBmxP0GbOFD6ff7snl59Tzel57qhU0D9ufAULF5KT0Emj/kHuQ==
-X-Received: by 2002:a1c:f606:: with SMTP id w6mr8872085wmc.130.1553615011552;
-        Tue, 26 Mar 2019 08:43:31 -0700 (PDT)
-Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id n11sm31927685wrt.63.2019.03.26.08.43.30
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 Mar 2019 08:43:31 -0700 (PDT)
-From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/8] tools/perf,tools/lib/traceevent: Make traceevent APIs more consistent
-Date:   Tue, 26 Mar 2019 17:43:21 +0200
-Message-Id: <20190326154328.28718-2-tstoyanov@vmware.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190326154328.28718-1-tstoyanov@vmware.com>
-References: <20190326154328.28718-1-tstoyanov@vmware.com>
+        Tue, 26 Mar 2019 13:28:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=efvHynnOWhfdUEXSedxRZ4I0r6VFOBF5h+p4eV25gTk=;
+ b=HgqjH/6NkbGBqEHzR+4VuMJwdDk7vGu/pvGvzoQbdZIT2sxFxGU9RnaPDWpeF59geo1W1j+mcQAoOzSS/pOOnbNcVU+Iq9GxX8vBkvrdty5wg5YXYA9shMzjYM7VLOA7mXxOvyh7lFPQc62CiniNjo/T6tdbwkLE0egFMdaPZ+8=
+Received: from CY1PR05MB2780.namprd05.prod.outlook.com (10.167.18.26) by
+ CY1PR05MB2667.namprd05.prod.outlook.com (10.167.11.7) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1750.11; Tue, 26 Mar 2019 17:26:29 +0000
+Received: from CY1PR05MB2780.namprd05.prod.outlook.com
+ ([fe80::4db6:3e20:4b0e:4416]) by CY1PR05MB2780.namprd05.prod.outlook.com
+ ([fe80::4db6:3e20:4b0e:4416%10]) with mapi id 15.20.1750.014; Tue, 26 Mar
+ 2019 17:26:29 +0000
+From:   Slavomir Kaslev <kaslevs@vmware.com>
+To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v10 9/9] trace-cmd [POC]: Implemented timestamps synch
+ algorithm, using vsock events.
+Thread-Topic: [PATCH v10 9/9] trace-cmd [POC]: Implemented timestamps synch
+ algorithm, using vsock events.
+Thread-Index: AQHU4/kBY6Kt7G5TeEWH6YRxG2s4cA==
+Date:   Tue, 26 Mar 2019 17:26:27 +0000
+Message-ID: <CAE0o1NtHiaLLwScUt2M9y+D5Fkyx7jivzC71Xq7o5XFLWLG3ag@mail.gmail.com>
+References: <20190326150651.25811-1-tstoyanov@vmware.com>
+ <20190326150651.25811-10-tstoyanov@vmware.com>
+In-Reply-To: <20190326150651.25811-10-tstoyanov@vmware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: DM5PR12CA0057.namprd12.prod.outlook.com
+ (2603:10b6:3:103::19) To CY1PR05MB2780.namprd05.prod.outlook.com
+ (2a01:111:e400:c63a::26)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=kaslevs@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-gm-message-state: APjAAAVbqVc1C2q5eX47hxecZCPm7ewHxXVKf6cXtexOaj0b0VrxiQMN
+        QUI+0b7wa6Z26h62lpoZPfyEREOZXJcs8cbrMw==
+x-google-smtp-source: APXvYqx7oEotQn9x4aq2kDtG4RXspsA0KNG93iMYr5BvIeQDpq58t/JBFiYzeRLH08CgOng15sj1vnysErhCqVByKUU=
+x-received: by 2002:a02:9f19:: with SMTP id z25mr19582912jal.2.1553621184648;
+ Tue, 26 Mar 2019 10:26:24 -0700 (PDT)
+x-gmail-original-message-id: <CAE0o1NtHiaLLwScUt2M9y+D5Fkyx7jivzC71Xq7o5XFLWLG3ag@mail.gmail.com>
+x-originating-ip: [209.85.166.173]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0fc45bd2-c27b-4690-e457-08d6b2102d7a
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600127)(711020)(4605104)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7153060)(7193020);SRVR:CY1PR05MB2667;
+x-ms-traffictypediagnostic: CY1PR05MB2667:
+x-microsoft-antispam-prvs: <CY1PR05MB26678A276094506431913E56DA5F0@CY1PR05MB2667.namprd05.prod.outlook.com>
+x-forefront-prvs: 09888BC01D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(376002)(366004)(136003)(39860400002)(396003)(199004)(189003)(256004)(81156014)(305945005)(76176011)(86362001)(316002)(105586002)(99286004)(5660300002)(54906003)(106356001)(95326003)(97736004)(476003)(71190400001)(446003)(71200400001)(68736007)(486006)(11346002)(7736002)(53546011)(186003)(6506007)(6512007)(4326008)(66066001)(26005)(6486002)(478600001)(6116002)(55446002)(3846002)(6862004)(6436002)(61266001)(498394004)(6246003)(6636002)(25786009)(229853002)(14454004)(81166006)(53936002)(52116002)(8936002)(9686003)(102836004)(386003)(61726006)(2906002)(8676002)(67856001);DIR:OUT;SFP:1101;SCL:1;SRVR:CY1PR05MB2667;H:CY1PR05MB2780.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: D8EeAYV0RolWyH/6UESSQj0yWpz3bTwTuSE5Lm8DuDkpJcfqKw52kiw5LhA7BRBC5Hd6niiuD4K+4h/vrLhn3Sraohs63YDK0ehN1hxzAiKZiuHyWHUuzTUqeTz/XipsxV2lFZKDBIaFccKd2SU1H0iLdgxVH2B/Nsu2z7OZmbdFQOb81ThORDtNuomSc7MiTPIKQaDSIuGi8LgxR3cEcHv+FQqLx3Hs5Lhgz8W7kuv8MHFpWVIYFU1kOWfyCF2mGd/4JTCk9PK6RxA2yljjM6D3I0WhlwZjopjvl/AHG47QJ5S7oSFG1ToYfPoVDUJxiLNAR76AnOr2Y4mF+MA28UxGK5OgYau43heYi9EJEUPyHG0j8X/8h10L8f4bEUyU1AYhgD0W7mFvDRIMvWlPqkrKnjH/PJeb9o5uQ82lmPg=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C784787CDE166E4A8031708DB58A1829@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0fc45bd2-c27b-4690-e457-08d6b2102d7a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2019 17:26:27.6457
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1PR05MB2667
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Rename some traceevent APIs for consistency:
-
-tep_pid_is_registered() to tep_is_pid_registered()
-tep_file_bigendian() to tep_is_file_bigendian()
-  to make the names and return values consistent with other tep_is_... APIs
-
-tep_data_lat_fmt() to tep_data_latency_format()
-  to make the name more descriptive
-
-tep_host_bigendian() to tep_is_bigendian()
-tep_set_host_bigendian() to tep_set_local_bigendian()
-tep_is_host_bigendian() to tep_is_local_bigendian()
-  "host" can be confused with VMs, and "local" is about the local
-  machine. All tep_is_..._bigendian(struct tep_handle *tep) APIs return
-  the saved data in the tep handle, while tep_is_bigendian() returns
-  the running machine's endianness.
-
-All tep_is_... functions are modified to return bool value, instead of int.
-
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- tools/lib/traceevent/event-parse-api.c | 44 +++++++++++++-------------
- tools/lib/traceevent/event-parse.c     | 26 +++++++--------
- tools/lib/traceevent/event-parse.h     | 16 +++++-----
- tools/lib/traceevent/plugin_kvm.c      |  4 +--
- tools/perf/util/trace-event-read.c     |  2 +-
- tools/perf/util/trace-event.c          |  4 +--
- 6 files changed, 48 insertions(+), 48 deletions(-)
-
-diff --git a/tools/lib/traceevent/event-parse-api.c b/tools/lib/traceevent/event-parse-api.c
-index 2ac8b44854ce..46670bb87051 100644
---- a/tools/lib/traceevent/event-parse-api.c
-+++ b/tools/lib/traceevent/event-parse-api.c
-@@ -88,7 +88,7 @@ void tep_clear_flag(struct tep_handle *tep, enum tep_flag flag)
- bool tep_test_flag(struct tep_handle *tep, enum tep_flag flag)
- {
- 	if (tep)
--		return (tep->flags & flag);
-+		return !!(tep->flags & flag);
- 	return false;
- }
- 
-@@ -155,10 +155,10 @@ int tep_get_header_page_size(struct tep_handle *pevent)
- }
- 
- /**
-- * tep_get_header_timestamp_size - get size of the time stamp in the header page
-+ * tep_get_header_timestamp_size - get size of the timestamp in the header page
-  * @tep: a handle to the tep_handle
-  *
-- * This returns size of the time stamp in the header page
-+ * This returns size of the timestamp in the header page
-  * If @tep is NULL, 0 is returned.
-  */
- int tep_get_header_timestamp_size(struct tep_handle *tep)
-@@ -249,17 +249,17 @@ void tep_set_page_size(struct tep_handle *pevent, int _page_size)
- }
- 
- /**
-- * tep_file_bigendian - get if the file is in big endian order
-+ * tep_is_file_bigendian - return the endian of the file
-  * @pevent: a handle to the tep_handle
-  *
-- * This returns if the file is in big endian order
-- * If @pevent is NULL, 0 is returned.
-+ * This returns true if the file is in big endian order
-+ * If @pevent is NULL, false is returned.
-  */
--int tep_file_bigendian(struct tep_handle *pevent)
-+bool tep_is_file_bigendian(struct tep_handle *pevent)
- {
- 	if (pevent)
--		return pevent->file_bigendian;
--	return 0;
-+		return (pevent->file_bigendian == TEP_BIG_ENDIAN);
-+	return false;
- }
- 
- /**
-@@ -276,27 +276,27 @@ void tep_set_file_bigendian(struct tep_handle *pevent, enum tep_endian endian)
- }
- 
- /**
-- * tep_is_host_bigendian - get if the order of the current host is big endian
-+ * tep_is_local_bigendian - return the endian of the saved local machine
-  * @pevent: a handle to the tep_handle
-  *
-- * This gets if the order of the current host is big endian
-- * If @pevent is NULL, 0 is returned.
-+ * This returns true if the saved local machine in @pevent is big endian.
-+ * If @pevent is NULL, false is returned.
-  */
--int tep_is_host_bigendian(struct tep_handle *pevent)
-+bool tep_is_local_bigendian(struct tep_handle *pevent)
- {
- 	if (pevent)
--		return pevent->host_bigendian;
-+		return (pevent->host_bigendian == TEP_BIG_ENDIAN);
- 	return 0;
- }
- 
- /**
-- * tep_set_host_bigendian - set the order of the local host
-+ * tep_set_local_bigendian - set the stored local machine endian order
-  * @pevent: a handle to the tep_handle
-  * @endian: non zero, if the local host has big endian order
-  *
-- * This sets the order of the local host
-+ * This sets the endian order for the local machine.
-  */
--void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian)
-+void tep_set_local_bigendian(struct tep_handle *pevent, enum tep_endian endian)
- {
- 	if (pevent)
- 		pevent->host_bigendian = endian;
-@@ -306,14 +306,14 @@ void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian)
-  * tep_is_latency_format - get if the latency output format is configured
-  * @pevent: a handle to the tep_handle
-  *
-- * This gets if the latency output format is configured
-- * If @pevent is NULL, 0 is returned.
-+ * This returns true if the latency output format is configured
-+ * If @pevent is NULL, false is returned.
-  */
--int tep_is_latency_format(struct tep_handle *pevent)
-+bool tep_is_latency_format(struct tep_handle *pevent)
- {
- 	if (pevent)
--		return pevent->latency_format;
--	return 0;
-+		return !!(pevent->latency_format);
-+	return false;
- }
- 
- /**
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index e53c566be55d..f309b6d7e08a 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -199,23 +199,23 @@ static const char *find_cmdline(struct tep_handle *pevent, int pid)
- }
- 
- /**
-- * tep_pid_is_registered - return if a pid has a cmdline registered
-+ * tep_is_pid_registered - return if a pid has a cmdline registered
-  * @pevent: handle for the pevent
-  * @pid: The pid to check if it has a cmdline registered with.
-  *
-- * Returns 1 if the pid has a cmdline mapped to it
-- * 0 otherwise.
-+ * Returns true if the pid has a cmdline mapped to it
-+ * false otherwise.
-  */
--int tep_pid_is_registered(struct tep_handle *pevent, int pid)
-+bool tep_is_pid_registered(struct tep_handle *pevent, int pid)
- {
- 	const struct tep_cmdline *comm;
- 	struct tep_cmdline key;
- 
- 	if (!pid)
--		return 1;
-+		return true;
- 
- 	if (!pevent->cmdlines && cmdline_init(pevent))
--		return 0;
-+		return false;
- 
- 	key.pid = pid;
- 
-@@ -223,8 +223,8 @@ int tep_pid_is_registered(struct tep_handle *pevent, int pid)
- 		       sizeof(*pevent->cmdlines), cmdline_cmp);
- 
- 	if (comm)
--		return 1;
--	return 0;
-+		return true;
-+	return false;
- }
- 
- /*
-@@ -5171,7 +5171,7 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
- }
- 
- /**
-- * tep_data_lat_fmt - parse the data for the latency format
-+ * tep_data_latency_format - parse the data for the latency format
-  * @pevent: a handle to the pevent
-  * @s: the trace_seq to write to
-  * @record: the record to read from
-@@ -5180,8 +5180,8 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
-  * need rescheduling, in hard/soft interrupt, preempt count
-  * and lock depth) and places it into the trace_seq.
-  */
--void tep_data_lat_fmt(struct tep_handle *pevent,
--		      struct trace_seq *s, struct tep_record *record)
-+void tep_data_latency_format(struct tep_handle *pevent,
-+			     struct trace_seq *s, struct tep_record *record)
- {
- 	static int check_lock_depth = 1;
- 	static int check_migrate_disable = 1;
-@@ -5530,7 +5530,7 @@ void tep_print_event_time(struct tep_handle *pevent, struct trace_seq *s,
- 	}
- 
- 	if (pevent->latency_format) {
--		tep_data_lat_fmt(pevent, s, record);
-+		tep_data_latency_format(pevent, s, record);
- 	}
- 
- 	if (use_usec_format) {
-@@ -6760,7 +6760,7 @@ struct tep_handle *tep_alloc(void)
- 
- 	if (pevent) {
- 		pevent->ref_count = 1;
--		pevent->host_bigendian = tep_host_bigendian();
-+		pevent->host_bigendian = tep_is_bigendian();
- 	}
- 
- 	return pevent;
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index 93b7d96c5afe..f3b822736d87 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -412,7 +412,7 @@ void tep_set_flag(struct tep_handle *tep, int flag);
- void tep_clear_flag(struct tep_handle *tep, enum tep_flag flag);
- bool tep_test_flag(struct tep_handle *tep, enum tep_flag flags);
- 
--static inline int tep_host_bigendian(void)
-+static inline int tep_is_bigendian(void)
- {
- 	unsigned char str[] = { 0x1, 0x2, 0x3, 0x4 };
- 	unsigned int val;
-@@ -440,7 +440,7 @@ int tep_register_function(struct tep_handle *pevent, char *name,
- 			  unsigned long long addr, char *mod);
- int tep_register_print_string(struct tep_handle *pevent, const char *fmt,
- 			      unsigned long long addr);
--int tep_pid_is_registered(struct tep_handle *pevent, int pid);
-+bool tep_is_pid_registered(struct tep_handle *pevent, int pid);
- 
- void tep_print_event_task(struct tep_handle *pevent, struct trace_seq *s,
- 			  struct tep_event *event,
-@@ -526,8 +526,8 @@ tep_find_event_by_name(struct tep_handle *pevent, const char *sys, const char *n
- struct tep_event *
- tep_find_event_by_record(struct tep_handle *pevent, struct tep_record *record);
- 
--void tep_data_lat_fmt(struct tep_handle *pevent,
--		      struct trace_seq *s, struct tep_record *record);
-+void tep_data_latency_format(struct tep_handle *pevent,
-+			     struct trace_seq *s, struct tep_record *record);
- int tep_data_type(struct tep_handle *pevent, struct tep_record *rec);
- int tep_data_pid(struct tep_handle *pevent, struct tep_record *rec);
- int tep_data_preempt_count(struct tep_handle *pevent, struct tep_record *rec);
-@@ -561,11 +561,11 @@ int tep_get_long_size(struct tep_handle *pevent);
- void tep_set_long_size(struct tep_handle *pevent, int long_size);
- int tep_get_page_size(struct tep_handle *pevent);
- void tep_set_page_size(struct tep_handle *pevent, int _page_size);
--int tep_file_bigendian(struct tep_handle *pevent);
-+bool tep_is_file_bigendian(struct tep_handle *pevent);
- void tep_set_file_bigendian(struct tep_handle *pevent, enum tep_endian endian);
--int tep_is_host_bigendian(struct tep_handle *pevent);
--void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian);
--int tep_is_latency_format(struct tep_handle *pevent);
-+bool tep_is_local_bigendian(struct tep_handle *pevent);
-+void tep_set_local_bigendian(struct tep_handle *pevent, enum tep_endian endian);
-+bool tep_is_latency_format(struct tep_handle *pevent);
- void tep_set_latency_format(struct tep_handle *pevent, int lat);
- int tep_get_header_page_size(struct tep_handle *pevent);
- int tep_get_header_timestamp_size(struct tep_handle *tep);
-diff --git a/tools/lib/traceevent/plugin_kvm.c b/tools/lib/traceevent/plugin_kvm.c
-index 64b9c25a1fd3..688e5d97d7a7 100644
---- a/tools/lib/traceevent/plugin_kvm.c
-+++ b/tools/lib/traceevent/plugin_kvm.c
-@@ -389,8 +389,8 @@ static int kvm_mmu_print_role(struct trace_seq *s, struct tep_record *record,
- 	 * We can only use the structure if file is of the same
- 	 * endianness.
- 	 */
--	if (tep_file_bigendian(event->pevent) ==
--	    tep_is_host_bigendian(event->pevent)) {
-+	if (tep_is_file_bigendian(event->pevent) ==
-+	    tep_is_local_bigendian(event->pevent)) {
- 
- 		trace_seq_printf(s, "%u q%u%s %s%s %spae %snxe %swp%s%s%s",
- 				 role.level,
-diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-event-read.c
-index efe2f58cff4e..48d53d8e3e16 100644
---- a/tools/perf/util/trace-event-read.c
-+++ b/tools/perf/util/trace-event-read.c
-@@ -442,7 +442,7 @@ ssize_t trace_report(int fd, struct trace_event *tevent, bool __repipe)
- 
- 	tep_set_flag(pevent, TEP_NSEC_OUTPUT);
- 	tep_set_file_bigendian(pevent, file_bigendian);
--	tep_set_host_bigendian(pevent, host_bigendian);
-+	tep_set_local_bigendian(pevent, host_bigendian);
- 
- 	if (do_read(buf, 1) < 0)
- 		goto out;
-diff --git a/tools/perf/util/trace-event.c b/tools/perf/util/trace-event.c
-index cbe0dd758e3a..01b9d89bf5bf 100644
---- a/tools/perf/util/trace-event.c
-+++ b/tools/perf/util/trace-event.c
-@@ -40,7 +40,7 @@ int trace_event__init(struct trace_event *t)
- 
- static int trace_event__init2(void)
- {
--	int be = tep_host_bigendian();
-+	int be = tep_is_bigendian();
- 	struct tep_handle *pevent;
- 
- 	if (trace_event__init(&tevent))
-@@ -49,7 +49,7 @@ static int trace_event__init2(void)
- 	pevent = tevent.pevent;
- 	tep_set_flag(pevent, TEP_NSEC_OUTPUT);
- 	tep_set_file_bigendian(pevent, be);
--	tep_set_host_bigendian(pevent, be);
-+	tep_set_local_bigendian(pevent, be);
- 	tevent_initialized = true;
- 	return 0;
- }
--- 
-2.20.1
-
+T24gVHVlLCBNYXIgMjYsIDIwMTkgYXQgNTowNyBQTSBUenZldG9taXIgU3RveWFub3YgPHRzdG95
+YW5vdkB2bXdhcmUuY29tPiB3cm90ZToNCjxzbmlwPg0KPiBAQCAtMTIwLDEwICsxNDYsMTMgQEAg
+c3RhdGljIGNvbnN0IGNoYXIgKmNtZF90b19uYW1lKGludCBjbWQpDQo+ICBzdHJ1Y3QgdHJhY2Vj
+bWRfbXNnIHsNCj4gICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX2hlYWRlciAgICAgICAgICAg
+ICAgaGRyOw0KPiAgICAgICAgIHVuaW9uIHsNCj4gLSAgICAgICAgICAgICAgIHN0cnVjdCB0cmFj
+ZWNtZF9tc2dfdGluaXQgICAgICAgdGluaXQ7DQo+IC0gICAgICAgICAgICAgICBzdHJ1Y3QgdHJh
+Y2VjbWRfbXNnX3Jpbml0ICAgICAgIHJpbml0Ow0KPiAtICAgICAgICAgICAgICAgc3RydWN0IHRy
+YWNlY21kX21zZ190cmFjZV9yZXEgICB0cmFjZV9yZXE7DQo+IC0gICAgICAgICAgICAgICBzdHJ1
+Y3QgdHJhY2VjbWRfbXNnX3RyYWNlX3Jlc3AgIHRyYWNlX3Jlc3A7DQo+ICsgICAgICAgICAgICAg
+ICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX3Rpbml0ICAgICAgICAgICAgICAgdGluaXQ7DQo+ICsgICAg
+ICAgICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX3Jpbml0ICAgICAgICAgICAgICAgcmluaXQ7
+DQo+ICsgICAgICAgICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX3RyYWNlX3JlcSAgICAgICAg
+ICAgdHJhY2VfcmVxOw0KPiArICAgICAgICAgICAgICAgc3RydWN0IHRyYWNlY21kX21zZ190cmFj
+ZV9yZXNwICAgICAgICAgIHRyYWNlX3Jlc3A7DQo+ICsgICAgICAgICAgICAgICBzdHJ1Y3QgdHJh
+Y2VjbWRfbXNnX3RzeW5jX3N0b3AgICAgICAgICAgdHNfc3RvcDsNCj4gKyAgICAgICAgICAgICAg
+IHN0cnVjdCB0cmFjZWNtZF9tc2dfdHN5bmNfcmVxICAgICAgICAgICB0c19yZXE7DQo+ICsgICAg
+ICAgICAgICAgICBzdHJ1Y3QgdHJhY2VjbWRfbXNnX3RzeW5jX3Jlc3AgICAgICAgICAgdHNfcmVz
+cDsNCj4gICAgICAgICB9Ow0KPiAgICAgICAgIHVuaW9uIHsNCj4gICAgICAgICAgICAgICAgIHN0
+cnVjdCB0cmFjZWNtZF9tc2dfb3B0ICAgICAgICAgKm9wdDsNCj4gQEAgLTE2MSw2ICsxOTAsNyBA
+QCBzdGF0aWMgaW50IG1zZ193cml0ZShpbnQgZmQsIHN0cnVjdCB0cmFjZWNtZF9tc2cgKm1zZykN
+Cg0KVGhlIHNlY29uZCB1bmlvbiBpbiB0cmFjZWNtZF9tc2cgaXMgYWxyZWFkeSBnb25lIGluIG1h
+c3RlciBhbmQgdGhpcw0Kc2VyaWVzIG5lZWRzIHRvIGdldCByZWJhc2VkLg0KDQo8c25pcD4NCg0K
+PiBkaWZmIC0tZ2l0IGEvdHJhY2VjbWQvdHJhY2Utb3V0cHV0LmMgYi90cmFjZWNtZC90cmFjZS1v
+dXRwdXQuYw0KPiBpbmRleCBkNTc1MzljLi5mYzMzOGNhIDEwMDY0NA0KPiAtLS0gYS90cmFjZWNt
+ZC90cmFjZS1vdXRwdXQuYw0KPiArKysgYi90cmFjZWNtZC90cmFjZS1vdXRwdXQuYw0KPiBAQCAt
+OTYwLDcgKzk2MCw3IEBAIHRyYWNlY21kX2FkZF9vcHRpb24oc3RydWN0IHRyYWNlY21kX291dHB1
+dCAqaGFuZGxlLA0KPiAgew0KPiAgICAgICAgIHN0cnVjdCBpb3ZlYyB2ZWN0Ow0KPg0KPiAtICAg
+ICAgIHZlY3QuaW92X2Jhc2UgPSBkYXRhOw0KPiArICAgICAgIHZlY3QuaW92X2Jhc2UgPSAodm9p
+ZCAqKWRhdGE7DQo+ICAgICAgICAgdmVjdC5pb3ZfbGVuID0gc2l6ZTsNCj4gICAgICAgICByZXR1
+cm4gdHJhY2VjbWRfYWRkX29wdGlvbl92KGhhbmRsZSwgaWQsICZ2ZWN0LCAxKTsNCj4gIH0NCg0K
+VGhpcyBmaXggbmVlZHMgdG8gYmUgZm9sZGVkIGluIHBhdGNoIDcgd2hlcmUgdGhpcyBjb2RlIGlz
+IGludHJvZHVjZWQNCnJhdGhlciB0aGFuIGhlcmUuDQoNCj4gZGlmZiAtLWdpdCBhL3RyYWNlY21k
+L3RyYWNlLXJlY29yZC5jIGIvdHJhY2VjbWQvdHJhY2UtcmVjb3JkLmMNCj4gaW5kZXggNzJhOGVk
+My4uMTRmM2NmOSAxMDA2NDQNCj4gLS0tIGEvdHJhY2VjbWQvdHJhY2UtcmVjb3JkLmMNCj4gKysr
+IGIvdHJhY2VjbWQvdHJhY2UtcmVjb3JkLmMNCj4gQEAgLTU2MDksNiArNTYzMSw0MiBAQCBzdGF0
+aWMgYm9vbCBoYXNfbG9jYWxfaW5zdGFuY2VzKHZvaWQpDQo+ICAgICAgICAgcmV0dXJuIGZhbHNl
+Ow0KPiAgfQ0KPg0KPiArLy8jZGVmaW5lIFRTWU5DX0RFQlVHDQoNClJlbW92ZT8gVGhpcyBkZWZp
+bmUgY2FuIGJlIHBhc3NlZCBvbiB0aGUgY29tbWFuZCBsaW5lIHRvIG1ha2UuDQoNCj4gK3N0YXRp
+YyB2b2lkIHdyaXRlX2d1ZXN0X3RpbWVfc2hpZnQoc3RydWN0IGJ1ZmZlcl9pbnN0YW5jZSAqaW5z
+dGFuY2UpDQo+ICt7DQo+ICsgICAgICAgc3RydWN0IHRyYWNlY21kX291dHB1dCAqaGFuZGxlOw0K
+PiArICAgICAgIHN0cnVjdCBpb3ZlYyB2ZWN0b3JbM107DQo+ICsgICAgICAgY2hhciAqZmlsZTsN
+Cj4gKyAgICAgICBpbnQgZmQ7DQo+ICsNCj4gKyAgICAgICBpZiAoIWluc3RhbmNlLT50aW1lX3N5
+bmNfY291bnQpDQo+ICsgICAgICAgICAgICAgICByZXR1cm47DQo+ICsNCj4gKyAgICAgICBmaWxl
+ID0gZ2V0X2d1ZXN0X2ZpbGUob3V0cHV0X2ZpbGUsIGluc3RhbmNlLT5uYW1lKTsNCj4gKyAgICAg
+ICBmZCA9IG9wZW4oZmlsZSwgT19SRFdSKTsNCj4gKyAgICAgICBpZiAoZmQgPCAwKQ0KPiArICAg
+ICAgICAgICAgICAgZGllKCJlcnJvciBvcGVuaW5nICVzIiwgZmlsZSk7DQo+ICsgICAgICAgcHV0
+X3RlbXBfZmlsZShmaWxlKTsNCj4gKyAgICAgICBoYW5kbGUgPSB0cmFjZWNtZF9nZXRfb3V0cHV0
+X2hhbmRsZV9mZChmZCk7DQo+ICsgICAgICAgdmVjdG9yWzBdLmlvdl9sZW4gPSBzaXplb2YoaW5z
+dGFuY2UtPnRpbWVfc3luY19jb3VudCk7DQo+ICsgICAgICAgdmVjdG9yWzBdLmlvdl9iYXNlID0g
+Jmluc3RhbmNlLT50aW1lX3N5bmNfY291bnQ7DQo+ICsgICAgICAgdmVjdG9yWzFdLmlvdl9sZW4g
+PSBzaXplb2YobG9uZyBsb25nKSAqIGluc3RhbmNlLT50aW1lX3N5bmNfY291bnQ7DQo+ICsgICAg
+ICAgdmVjdG9yWzFdLmlvdl9iYXNlID0gaW5zdGFuY2UtPnRpbWVfc3luY190czsNCj4gKyAgICAg
+ICB2ZWN0b3JbMl0uaW92X2xlbiA9IHNpemVvZihsb25nIGxvbmcpICogaW5zdGFuY2UtPnRpbWVf
+c3luY19jb3VudDsNCj4gKyAgICAgICB2ZWN0b3JbMl0uaW92X2Jhc2UgPSBpbnN0YW5jZS0+dGlt
+ZV9zeW5jX29mZnNldHM7DQo+ICsgICAgICAgdHJhY2VjbWRfYWRkX29wdGlvbl92KGhhbmRsZSwg
+VFJBQ0VDTURfT1BUSU9OX1RJTUVfU0hJRlQsIHZlY3RvciwgMyk7DQoNClRoaXMgc2VlbXMgdG8g
+YmUgdGhlIG9ubHkgdXNlIG9mIHRoZSBuZXdseSBhZGRlZA0KdHJhY2VjbWRfYWRkX29wdGlvbl92
+LiBJJ20gbm90IGNvbnZpbmNlZCB0aGF0IGhhdmluZyBzdHJ1Y3QgaW92ZWMNCmludGVyZmFjZSBm
+b3IgdHJhY2VjbWQgb3B0aW9ucyBpcyBhIGdvb2QgcGF0dGVybiBzaW5jZQ0KYSkgdGhlIGlvdmVj
+IGNvbmNhdGVuYXRpb24gaW4gdHJhY2VjbWRfYWRkX29wdGlvbl92IGFkZHMgYW4gZXh0cmENCmFs
+bG9jYXRpb24gZm9yIHRoZSBtb3N0IGNvbW1vbiBjYXNlIHdoZW4gdGhlcmUncyBhIHNpbmdsZSBw
+aWVjZSBvZg0KZGF0YSBwYXNzZWQNCmIpIGl0IG5ldmVyIGFjdHVhbGx5IGdldHMgcGFzc2VkIHRv
+IHJlYWR2L3dyaXRldg0KYykgdGhlIGFib3ZlIGlzIG5vdCByZWFsbHkgcG9ydGFibGUgc2luY2Ug
+dGhlcmUncyBubyBndWFyYW50ZWUgdGhhdA0Kc2l6ZW9mKGludCkgPSA0DQoNCkkgdGhpbmsgZGVm
+aW5pbmcgYSBmdW5jdGlvbiBoZXJlIHRoYXQgbWFzc2FnZXMgdGltZSBzeW5jIHNhbXBsZXMgaW50
+bw0KVElNRV9TSElGVCBvcHRpb24gZm9ybWF0IChpbiBhIHBvcnRhYmxlIHdheSkgYW5kIGRyb3Bw
+aW5nIHRoZSBwYXRjaA0KdGhhdCBhZGRzIHRyYWNlY21kX2FkZF9vcHRpb25fdiBhbHRvZ2V0aGVy
+IGlzIGEgYmV0dGVyIHdheSB0byBnby4NCg0KPHNuaXA+DQoNCj4gZGlmZiAtLWdpdCBhL3RyYWNl
+Y21kL3RyYWNlLXRpbWVzeW5jLmMgYi90cmFjZWNtZC90cmFjZS10aW1lc3luYy5jDQo+IG5ldyBm
+aWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAuLjA3NGM5ZDANCj4gLS0tIC9kZXYvbnVs
+bA0KPiArKysgYi90cmFjZWNtZC90cmFjZS10aW1lc3luYy5jDQo+IEBAIC0wLDAgKzEsODA1IEBA
+DQo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiArLyoNCj4gKyAqIENv
+cHlyaWdodCAoQykgMjAxOSwgVk13YXJlLCBUenZldG9taXIgU3RveWFub3YgPHRzdG95YW5vdkB2
+bXdhcmUuY29tPg0KPiArICoNCj4gKyAqLw0KPiArDQo+ICsjaW5jbHVkZSA8ZmNudGwuaD4NCj4g
+KyNpbmNsdWRlIDxzdGRsaWIuaD4NCj4gKyNpbmNsdWRlIDx1bmlzdGQuaD4NCj4gKyNpbmNsdWRl
+IDxhcnBhL2luZXQuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC92bV9zb2NrZXRzLmg+DQo+ICsjaW5j
+bHVkZSAidHJhY2UtbG9jYWwuaCINCg0KPHNuaXA+DQoNCj4gKw0KPiArc3RhdGljIHZvaWQgZ2V0
+X3Zzb2NrZXRfcGFyYW1zKGludCBmZCwgdW5zaWduZWQgaW50ICpsY2lkLCB1bnNpZ25lZCBpbnQg
+Kmxwb3J0LA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdW5zaWduZWQgaW50ICpy
+Y2lkLCB1bnNpZ25lZCBpbnQgKnJwb3J0KQ0KPiArew0KPiArICAgICAgIHN0cnVjdCBzb2NrYWRk
+cl92bSBhZGRyOw0KPiArICAgICAgIHNvY2tsZW5fdCBhZGRyX2xlbiA9IHNpemVvZihhZGRyKTsN
+Cj4gKw0KPiArICAgICAgIG1lbXNldCgmYWRkciwgMCwgc2l6ZW9mKGFkZHIpKTsNCj4gKyAgICAg
+ICBpZiAoZ2V0c29ja25hbWUoZmQsIChzdHJ1Y3Qgc29ja2FkZHIgKikmYWRkciwgJmFkZHJfbGVu
+KSkNCj4gKyAgICAgICAgICAgICAgIHJldHVybjsNCj4gKyAgICAgICBpZiAoYWRkci5zdm1fZmFt
+aWx5ICE9IEFGX1ZTT0NLKQ0KPiArICAgICAgICAgICAgICAgcmV0dXJuOw0KPiArICAgICAgICps
+cG9ydCA9IGFkZHIuc3ZtX3BvcnQ7DQo+ICsgICAgICAgKmxjaWQgPSBhZGRyLnN2bV9jaWQ7DQo+
+ICsNCj4gKyAgICAgICBtZW1zZXQoJmFkZHIsIDAsIHNpemVvZihhZGRyKSk7DQo+ICsgICAgICAg
+YWRkcl9sZW4gPSBzaXplb2YoYWRkcik7DQo+ICsgICAgICAgaWYgKGdldHBlZXJuYW1lKGZkLCAo
+c3RydWN0IHNvY2thZGRyICopJmFkZHIsICZhZGRyX2xlbikpDQo+ICsgICAgICAgICAgICAgICBy
+ZXR1cm47DQo+ICsgICAgICAgaWYgKGFkZHIuc3ZtX2ZhbWlseSAhPSBBRl9WU09DSykNCj4gKyAg
+ICAgICAgICAgICAgIHJldHVybjsNCj4gKyAgICAgICAqcnBvcnQgPSBhZGRyLnN2bV9wb3J0Ow0K
+PiArICAgICAgICpyY2lkID0gYWRkci5zdm1fY2lkOw0KPiArfQ0KDQpUaGlzIGZ1bmN0aW9uIGNh
+biBzaWxlbnRseSBpZ25vcmUgZXJyb3JzIGlmIGdldHNvY2tuYW1lL2dldHBlZXJuYW1lDQpmYWls
+IG9yIGZpbGUgZGVzY3JpcHRvciBoYXBwZW5zIHRvIG5vdCBiZSBhIHZzb2NrZXQuIENhbiB5b3Ug
+Y2hhbmdlIGl0DQpyZXR1cm4gZXJyb3IgYW5kIGhhdmUgY2FsbGVycyBjaGVjayBmb3IgaXQ/DQoN
+ClRoYW5rIHlvdSBDZWNvLA0KDQotLSBTbGF2aQ0K
