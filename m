@@ -3,51 +3,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31EBDC43381
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:44:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66F76C43381
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:44:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0446620866
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:44:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D46720866
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:44:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732089AbfCZPoK (ORCPT
+        id S1732052AbfCZPnf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Mar 2019 11:44:10 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:42566 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732081AbfCZPnj (ORCPT
+        Tue, 26 Mar 2019 11:43:35 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:37820 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbfCZPne (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Mar 2019 11:43:39 -0400
-Received: by mail-wr1-f65.google.com with SMTP id g3so11439651wrx.9;
-        Tue, 26 Mar 2019 08:43:37 -0700 (PDT)
+        Tue, 26 Mar 2019 11:43:34 -0400
+Received: by mail-wr1-f67.google.com with SMTP id w10so14947865wrm.4;
+        Tue, 26 Mar 2019 08:43:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SPzWbhECY7YRkPD8wQD2k8BCrJ5/QV8ZXJkGLDDU2L0=;
-        b=ncVE8rkq/n1A67myzgwnFUzNucvV3hKzR/tucMtxSXujncsbGDRWxDmSF8yOl13zo9
-         B5WomgbLcuQmMlOOwxz7Ps3NDA32bvjyFRM641/z9eYdwbUrImoSPpbFkClc+tCXK4+p
-         Fb26XGzahMc8HlLytPLLPbRsZf52rAdUEEe/omnEv4sfwylO7eEarE+lGgNGkwyKkV/o
-         voxGerJ4vzXix9VgypfzGQiSkwgPcABBhDvr5fGLynhWacJJ7ZLIvvJJcUQIehJMieln
-         B/4cBSnPhPbLzUtuRxIlO6Ed1sPujvVWJJibzqr7vnNOdSMV8PlWZZNZ73z/T6uXAbeY
-         SWYg==
-X-Gm-Message-State: APjAAAVh/NEknIZ19TjG2xGUzG2WYhTRMI0x75cCLYVOp3ksZ5L14ruH
-        0NodVSmV8xWS6usZiWOQY2le2Fhl
-X-Google-Smtp-Source: APXvYqz97HmUfZ4jRD1ZJO/Dh2VEMCvIkqj/m06N1yVXykpicQQv1eMzBnv1HBPFY/p+9lq86Kkkcg==
-X-Received: by 2002:adf:afee:: with SMTP id y46mr19649646wrd.217.1553615017059;
-        Tue, 26 Mar 2019 08:43:37 -0700 (PDT)
+        bh=OtWNvrczy9+nV+RCDF2iOR7mnvgfA9hr6XE0rdj350A=;
+        b=A6sCU2rTlqqAjSLebFVzp7p60ggvIWxG7t10A3uf/V9qLhDgzuZlgsz98jAgmTvL8j
+         sOaApiSi9+EbLRW7RDKgLtWezlLP59LbxrupjF7Us0ikoUXyqPxEkpbGSUtprLcBO06Q
+         GuEm55oQ7A5T4KTB4alDZCiHJSpiickHOjHiF4aVZzoA3XlmPiOJ8JOgroQWjaNBlhMR
+         HoPP4fCkWnAD8/hWVDjewFIYzIsX/z+72NuQQMQs/D0nJfGUSzbkn163dkPc4ssGfgPy
+         kuruk17bFgNqamZnZtN9jGaRMY+VxpIckJcIV4MmAuYLGME/fMIuNbF9iE196QCrrgGH
+         1CRA==
+X-Gm-Message-State: APjAAAUzMqJffwjd/B79BmrHHeHeVdZrEQWyNLjkzgt/kyH7kiDtqhDh
+        tBgDJG01O2KwR130F3C2VuRNhg2d
+X-Google-Smtp-Source: APXvYqwo7nEOkwa9h0Uzm+0prYavAbUt4us/MGVUDqC3o8vV0q24GbhUZPlOaz18NJM/emsFsNvZUA==
+X-Received: by 2002:adf:e487:: with SMTP id i7mr20397498wrm.264.1553615012594;
+        Tue, 26 Mar 2019 08:43:32 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id n11sm31927685wrt.63.2019.03.26.08.43.35
+        by smtp.gmail.com with ESMTPSA id n11sm31927685wrt.63.2019.03.26.08.43.31
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 Mar 2019 08:43:35 -0700 (PDT)
+        Tue, 26 Mar 2019 08:43:31 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/8] tools/perf,tools/lib/traceevent: rename "pevent" member of struct tep_event_filter to "tep"
-Date:   Tue, 26 Mar 2019 17:43:26 +0200
-Message-Id: <20190326154328.28718-7-tstoyanov@vmware.com>
+Subject: [PATCH 2/8] tools/lib/traceevent: Add counter to track parsing failures
+Date:   Tue, 26 Mar 2019 17:43:22 +0200
+Message-Id: <20190326154328.28718-3-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190326154328.28718-1-tstoyanov@vmware.com>
 References: <20190326154328.28718-1-tstoyanov@vmware.com>
@@ -58,96 +58,101 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patch renames "pevent" member of the struct tep_event_filter to "tep".
-This makes the struct consistent with the chosen naming convention:
-tep (trace event parser), instead of the old pevent.
+This patch adds a parsing failures counter to struct tep_handle. The counter can
+be used to track failures on parsing event format files. It is updated
+automatically by tep_parse_event(), when failure is detected. The patch also
+adds two new APIs for accessing the counter:
+ tep_get_parsing_failures() - returns the current value of the counter.
+ tep_clear_parsing_failures() - clears the counter.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tools/lib/traceevent/event-parse.h  |  2 +-
- tools/lib/traceevent/parse-filter.c | 14 +++++++-------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ tools/lib/traceevent/event-parse-api.c   | 27 ++++++++++++++++++++++++
+ tools/lib/traceevent/event-parse-local.h |  2 ++
+ tools/lib/traceevent/event-parse.c       |  8 ++++++-
+ tools/lib/traceevent/event-parse.h       |  2 ++
+ 4 files changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index d98362ff4bb1..17fb8d2dd081 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -718,7 +718,7 @@ struct tep_filter_type {
- #define TEP_FILTER_ERROR_BUFSZ  1024
+diff --git a/tools/lib/traceevent/event-parse-api.c b/tools/lib/traceevent/event-parse-api.c
+index 46670bb87051..1fe284b1fac8 100644
+--- a/tools/lib/traceevent/event-parse-api.c
++++ b/tools/lib/traceevent/event-parse-api.c
+@@ -371,3 +371,30 @@ void tep_set_test_filters(struct tep_handle *tep, int test_filters)
+ 	if (tep)
+ 		tep->test_filters = test_filters;
+ }
++
++/**
++ * tep_get_parsing_failures - get the count of parsing failures
++ * @tep: a handle to a tep_handle
++ *
++ * Every time when tep_parse_event() fails to parse an event format file,
++ * a parsing failure is registered. This returns the parsing failures count.
++ */
++int tep_get_parsing_failures(struct tep_handle *tep)
++{
++	if (tep)
++		return tep->parsing_failures;
++	return 0;
++}
++
++/**
++ * tep_clear_parsing_failures - clear parsing failures count
++ * @tep: a handle to a tep_handle
++ *
++ * Every time when tep_parse_event() fails to parse an event format file,
++ * a parsing failure is registered. This clears the parsing failures counter.
++ */
++void tep_clear_parsing_failures(struct tep_handle *tep)
++{
++	if (tep)
++		tep->parsing_failures = 0;
++}
+diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
+index 35833ee32d6c..c5c8eb4c4ab7 100644
+--- a/tools/lib/traceevent/event-parse-local.h
++++ b/tools/lib/traceevent/event-parse-local.h
+@@ -83,6 +83,8 @@ struct tep_handle {
+ 	struct event_handler *handlers;
+ 	struct tep_function_handler *func_handlers;
  
- struct tep_event_filter {
--	struct tep_handle	*pevent;
-+	struct tep_handle	*tep;
- 	int			filters;
- 	struct tep_filter_type	*event_filters;
- 	char			error_buffer[TEP_FILTER_ERROR_BUFSZ];
-diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
-index 231e9cae5729..1d2f1343090d 100644
---- a/tools/lib/traceevent/parse-filter.c
-+++ b/tools/lib/traceevent/parse-filter.c
-@@ -154,7 +154,7 @@ add_filter_type(struct tep_event_filter *filter, int id)
++	int parsing_failures;
++
+ 	/* cache */
+ 	struct tep_event *last_event;
  
- 	filter_type = &filter->event_filters[i];
- 	filter_type->event_id = id;
--	filter_type->event = tep_find_event(filter->pevent, id);
-+	filter_type->event = tep_find_event(filter->tep, id);
- 	filter_type->filter = NULL;
- 
- 	filter->filters++;
-@@ -175,7 +175,7 @@ struct tep_event_filter *tep_filter_alloc(struct tep_handle *tep)
- 		return NULL;
- 
- 	memset(filter, 0, sizeof(*filter));
--	filter->pevent = tep;
-+	filter->tep = tep;
- 	tep_ref(tep);
- 
- 	return filter;
-@@ -1257,7 +1257,7 @@ static void filter_init_error_buf(struct tep_event_filter *filter)
- enum tep_errno tep_filter_add_filter_str(struct tep_event_filter *filter,
- 					 const char *filter_str)
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index f309b6d7e08a..4144c4e20e4e 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -6230,7 +6230,13 @@ enum tep_errno tep_parse_event(struct tep_handle *pevent, const char *buf,
+ 			       unsigned long size, const char *sys)
  {
--	struct tep_handle *pevent = filter->pevent;
-+	struct tep_handle *pevent = filter->tep;
- 	struct event_list *event;
- 	struct event_list *events = NULL;
- 	const char *filter_start;
-@@ -1380,7 +1380,7 @@ int tep_filter_strerror(struct tep_event_filter *filter, enum tep_errno err,
- 		return 0;
- 	}
- 
--	return tep_strerror(filter->pevent, err, buf, buflen);
-+	return tep_strerror(filter->tep, err, buf, buflen);
+ 	struct tep_event *event = NULL;
+-	return __parse_event(pevent, &event, buf, size, sys);
++	enum tep_errno ret;
++
++	ret = __parse_event(pevent, &event, buf, size, sys);
++	if (ret != TEP_ERRNO__SUCCESS)
++		pevent->parsing_failures++;
++
++	return ret;
  }
  
- /**
-@@ -1443,7 +1443,7 @@ void tep_filter_reset(struct tep_event_filter *filter)
+ int get_field_val(struct trace_seq *s, struct tep_format_field *field,
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
+index f3b822736d87..dcf0385684b8 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -464,6 +464,8 @@ enum tep_errno tep_parse_format(struct tep_handle *pevent,
+ 				struct tep_event **eventp,
+ 				const char *buf,
+ 				unsigned long size, const char *sys);
++int tep_get_parsing_failures(struct tep_handle *tep);
++void tep_clear_parsing_failures(struct tep_handle *tep);
  
- void tep_filter_free(struct tep_event_filter *filter)
- {
--	tep_unref(filter->pevent);
-+	tep_unref(filter->tep);
- 
- 	tep_filter_reset(filter);
- 
-@@ -1465,7 +1465,7 @@ static int copy_filter_type(struct tep_event_filter *filter,
- 	/* Can't assume that the pevent's are the same */
- 	sys = filter_type->event->system;
- 	name = filter_type->event->name;
--	event = tep_find_event_by_name(filter->pevent, sys, name);
-+	event = tep_find_event_by_name(filter->tep, sys, name);
- 	if (!event)
- 		return -1;
- 
-@@ -1875,7 +1875,7 @@ int tep_event_filtered(struct tep_event_filter *filter, int event_id)
- enum tep_errno tep_filter_match(struct tep_event_filter *filter,
- 				struct tep_record *record)
- {
--	struct tep_handle *pevent = filter->pevent;
-+	struct tep_handle *pevent = filter->tep;
- 	struct tep_filter_type *filter_type;
- 	int event_id;
- 	int ret;
+ void *tep_get_field_raw(struct trace_seq *s, struct tep_event *event,
+ 			const char *name, struct tep_record *record,
 -- 
 2.20.1
 
