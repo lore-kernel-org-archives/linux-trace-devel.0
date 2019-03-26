@@ -3,51 +3,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EB3DC43381
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03251C10F05
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:07:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 17F7F2070D
+	by mail.kernel.org (Postfix) with ESMTP id C78532070D
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:07:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731560AbfCZPHC (ORCPT
+        id S1731599AbfCZPHC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Tue, 26 Mar 2019 11:07:02 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:36021 "EHLO
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:40427 "EHLO
         mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbfCZPHB (ORCPT
+        with ESMTP id S1727492AbfCZPHC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Mar 2019 11:07:01 -0400
-Received: by mail-wm1-f68.google.com with SMTP id h18so13340824wml.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Mar 2019 08:07:00 -0700 (PDT)
+        Tue, 26 Mar 2019 11:07:02 -0400
+Received: by mail-wm1-f68.google.com with SMTP id z24so10075784wmi.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Mar 2019 08:06:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bXdZcegVi6UJa6w5kVdIBecWQKNoeZvUZ5CztYC7GEE=;
-        b=eL1hWfsW/79WDWjqNhzW9TcibjBWgIRvolRGc81WyoKCIBUkkKik0VAXf7jX30/idB
-         HTFX1vVplMzvaRpxeSXKWyiJ5TxYXdMYmR8ScPAzB4G6GSsVv7++fPnY9pnnlVUetS0O
-         KFML/3OjMGpg+emg1WzclioiEHvWkBsLfzhEnRLDaZTIZNJi6CYtDjZlOI0dUQ2wXoBA
-         378T1ObpYkptVofizSuBTlrWPlPK0PRmUeaPVNag9MOxdF3hrncxWh0JqpkV86xVtifW
-         x5YNdXTErPoCYB1N3+OEMCXhsFz0s09O2jhfxBLYZDbLSgqg7VEQGxP+ePppy5nZr86b
-         XTIA==
-X-Gm-Message-State: APjAAAWtP3C0JyFIVQZfZWDq9Rfkjdm/FnA5/KYIPippyb2sBdFblozm
-        pWv/jDLtKvckN0I1tfxpm4uKiiSD
-X-Google-Smtp-Source: APXvYqyD7DY7B5iTsrVVOURo9ltSL5snvdsLkFu3ZYTBDIAPsVx7mDBcgl3KFjB3IxL6MTSisqzc8w==
-X-Received: by 2002:a1c:6a0d:: with SMTP id f13mr14951732wmc.76.1553612820158;
-        Tue, 26 Mar 2019 08:07:00 -0700 (PDT)
-Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 13sm6833631wmf.23.2019.03.26.08.06.59
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        bh=Hzq6E/U5bBlF+OJm4031s0+EwWU3hqqKot4I/1+y9aE=;
+        b=InDWzZPiqU1rsNCdMhdKaa9nnoyBywR43LXOUHEVrGUYPh2LSzUSHggdZludXeq6QE
+         ySlapyDWjZC9gD/KqI96sDAqvcZC/geZ/h/pq2CQ8ULh0cclRwHUgf3ZbcdtxB2j0Lo7
+         3H1WYNW/uwu1hhSdZy4BTB00MYKexfpLt0tDgIp9JaUvlQ4YURzOb5g+6X86bke4pkaO
+         U0/KBR7rTziq2MKgG0G+ogM0MIx689pg36La97W/s5t738EZPKkbkkt/wOjLFDfmtkwM
+         xUS0zEGGNu60jWA/JZ/Am/v5DBH4BGBtZh+hulrRTSRsGzvXZf6snZ5cLHC2zvbdcUTv
+         HbOw==
+X-Gm-Message-State: APjAAAVRKDiKnOlIXvHHmQqZJYarSWr0QNve4IEmMWqPDidhLRuq3F8x
+        EDLSMP3t+3TyoB6HFIKMdps=
+X-Google-Smtp-Source: APXvYqwkvBYKRwpxUNJuYdLEd48QmDv4blnuLliSNTVDG1V/IoBwSCuoES0XY3f70HWvOZlIBp2Jvg==
+X-Received: by 2002:a1c:7311:: with SMTP id d17mr5807037wmb.115.1553612819246;
         Tue, 26 Mar 2019 08:06:59 -0700 (PDT)
+Received: from oberon.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id 13sm6833631wmf.23.2019.03.26.08.06.58
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 26 Mar 2019 08:06:58 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v10 6/9] trace-cmd: Find and store pids of tasks, which run virtual CPUs of given VM
-Date:   Tue, 26 Mar 2019 17:06:48 +0200
-Message-Id: <20190326150651.25811-7-tstoyanov@vmware.com>
+Subject: [PATCH v10 5/9] trace-cmd: Refactored few functions in trace-record.c
+Date:   Tue, 26 Mar 2019 17:06:47 +0200
+Message-Id: <20190326150651.25811-6-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190326150651.25811-1-tstoyanov@vmware.com>
 References: <20190326150651.25811-1-tstoyanov@vmware.com>
@@ -58,123 +58,250 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In order to match host and guest events, a mapping between guest VCPU
-and the host task, running this VCPU is needed. Extended existing
-struct guest to hold such mapping and added logic in read_qemu_guests()
-function to initialize it. Implemented a new internal API,
-get_guest_vcpu_pid(), to retrieve VCPU-task mapping for given VM.
+In order to reuse the code inside the trace-cmd application, few
+functions from trace-record.c are refactored:
+  - make_instances() and tracecmd_remove_instances() are splited.
+New ones are created: tracecmd_make_instance() and tracecmd_remove_instance(),
+which are visible outside the trace-record.c
+  - Following functions are made non-static: tracecmd_init_instance()
+get_instance_dir(), write_instance_file(), write_tracing_on(),
+tracecmd_set_clock()
+  - New function is implemented: tracecmd_local_cpu_count(), an internal
+API to get local_cpu_count.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tracecmd/include/trace-local.h |  1 +
- tracecmd/trace-record.c        | 57 ++++++++++++++++++++++++++++++++++
- 2 files changed, 58 insertions(+)
+ tracecmd/include/trace-local.h |  9 ++++
+ tracecmd/trace-record.c        | 88 +++++++++++++++++++---------------
+ 2 files changed, 59 insertions(+), 38 deletions(-)
 
 diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 8413054..62f5e47 100644
+index d7bdb1f..8413054 100644
 --- a/tracecmd/include/trace-local.h
 +++ b/tracecmd/include/trace-local.h
-@@ -245,6 +245,7 @@ int tracecmd_local_cpu_count(void);
- void tracecmd_set_clock(struct buffer_instance *instance);
- void tracecmd_remove_instance(struct buffer_instance *instance);
+@@ -235,6 +235,15 @@ void update_first_instance(struct buffer_instance *instance, int topt);
+ void show_instance_file(struct buffer_instance *instance, const char *name);
  
-+int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
+ int count_cpus(void);
++void write_tracing_on(struct buffer_instance *instance, int on);
++char *get_instance_dir(struct buffer_instance *instance);
++int write_instance_file(struct buffer_instance *instance,
++			const char *file, const char *str, const char *type);
++void tracecmd_init_instance(struct buffer_instance *instance);
++void tracecmd_make_instance(struct buffer_instance *instance);
++int tracecmd_local_cpu_count(void);
++void tracecmd_set_clock(struct buffer_instance *instance);
++void tracecmd_remove_instance(struct buffer_instance *instance);
+ 
  /* No longer in event-utils.h */
  void __noreturn die(const char *fmt, ...); /* Can be overriden */
- void *malloc_or_die(unsigned int size); /* Can be overridden */
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index eacf7d2..72a8ed3 100644
+index 177060d..eacf7d2 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -2746,10 +2746,12 @@ static bool is_digits(const char *s)
- 	return true;
+@@ -184,7 +184,7 @@ static inline int no_top_instance(void)
+ 	return first_instance != &top_instance;
  }
  
-+#define VCPUS_MAX 256
- struct guest {
- 	char *name;
- 	int cid;
- 	int pid;
-+	int cpu_pid[VCPUS_MAX];
- };
- 
- static struct guest *guests;
-@@ -2767,6 +2769,46 @@ static char *get_qemu_guest_name(char *arg)
- 	return arg;
+-static void init_instance(struct buffer_instance *instance)
++void tracecmd_init_instance(struct buffer_instance *instance)
+ {
+ 	instance->event_next = &instance->events;
+ }
+@@ -308,7 +308,7 @@ static void reset_save_file_cond(const char *file, int prio,
+  */
+ void add_instance(struct buffer_instance *instance, int cpu_count)
+ {
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
+ 	instance->next = buffer_instances;
+ 	if (first_instance == buffer_instances)
+ 		first_instance = instance;
+@@ -495,7 +495,7 @@ static void add_event(struct buffer_instance *instance, struct event_list *event
+ static void reset_event_list(struct buffer_instance *instance)
+ {
+ 	instance->events = NULL;
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
  }
  
-+static void read_qemu_guests_pids(char *guest_task, struct guest *guest)
+ static char *get_temp_file(struct buffer_instance *instance, int cpu)
+@@ -791,8 +791,7 @@ get_instance_file(struct buffer_instance *instance, const char *file)
+ 	return path;
+ }
+ 
+-static char *
+-get_instance_dir(struct buffer_instance *instance)
++char *get_instance_dir(struct buffer_instance *instance)
+ {
+ 	char *buf;
+ 	char *path;
+@@ -1668,9 +1667,8 @@ static int write_file(const char *file, const char *str, const char *type)
+ 	return ret;
+ }
+ 
+-static int
+-write_instance_file(struct buffer_instance *instance,
+-		    const char *file, const char *str, const char *type)
++int write_instance_file(struct buffer_instance *instance,
++			const char *file, const char *str, const char *type)
+ {
+ 	char *path;
+ 	int ret;
+@@ -1946,7 +1944,7 @@ static int open_tracing_on(struct buffer_instance *instance)
+ 	return fd;
+ }
+ 
+-static void write_tracing_on(struct buffer_instance *instance, int on)
++void write_tracing_on(struct buffer_instance *instance, int on)
+ {
+ 	int ret;
+ 	int fd;
+@@ -2262,7 +2260,7 @@ void tracecmd_enable_events(void)
+ 	enable_events(first_instance);
+ }
+ 
+-static void set_clock(struct buffer_instance *instance)
++void tracecmd_set_clock(struct buffer_instance *instance)
+ {
+ 	char *path;
+ 	char *content;
+@@ -4316,49 +4314,58 @@ static void clear_func_filters(void)
+ 	}
+ }
+ 
+-static void make_instances(void)
++void tracecmd_make_instance(struct buffer_instance *instance)
+ {
+-	struct buffer_instance *instance;
+ 	struct stat st;
+ 	char *path;
+ 	int ret;
+ 
++	path = get_instance_dir(instance);
++	ret = stat(path, &st);
++	if (ret < 0) {
++		ret = mkdir(path, 0777);
++		if (ret < 0)
++			die("mkdir %s", path);
++	} else
++		/* Don't delete instances that already exist */
++		instance->flags |= BUFFER_FL_KEEP;
++	tracecmd_put_tracing_file(path);
++
++}
++
++static void make_instances(void)
 +{
-+	struct dirent *entry_t;
-+	char path[PATH_MAX];
-+	char *buf = NULL;
-+	size_t n = 0;
-+	int vcpu;
-+	DIR *dir;
-+	FILE *ft;
++	struct buffer_instance *instance;
 +
-+	snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
-+	dir = opendir(path);
-+	if (!dir)
-+		return;
-+
-+	while ((entry_t = readdir(dir))) {
-+		if (!(entry_t->d_type == DT_DIR && is_digits(entry_t->d_name)))
-+			continue;
-+
-+		snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
-+			 guest_task, entry_t->d_name);
-+		ft = fopen(path, "r");
-+		if (!ft)
-+			continue;
-+		if (getline(&buf, &n, ft) < 0)
-+			goto next;
-+		if (strncmp(buf, "CPU ", 4) != 0)
-+			goto next;
-+
-+		vcpu = atoi(buf+4);
-+		if (!(vcpu >= 0 && vcpu < VCPUS_MAX))
-+			goto next;
-+		guest->cpu_pid[vcpu] = atoi(entry_t->d_name);
-+
-+next:
-+		fclose(ft);
+ 	for_each_instance(instance) {
+ 		if (is_guest(instance))
+ 			continue;
++		tracecmd_make_instance(instance);
 +	}
-+	free(buf);
 +}
-+
- static void read_qemu_guests(void)
- {
- 	static bool initialized;
-@@ -2828,6 +2870,8 @@ static void read_qemu_guests(void)
- 		if (!is_qemu)
- 			goto next;
  
-+		read_qemu_guests_pids(entry->d_name, &guest);
+-		path = get_instance_dir(instance);
+-		ret = stat(path, &st);
+-		if (ret < 0) {
+-			ret = mkdir(path, 0777);
+-			if (ret < 0)
+-				die("mkdir %s", path);
+-		} else
+-			/* Don't delete instances that already exist */
+-			instance->flags |= BUFFER_FL_KEEP;
+-		tracecmd_put_tracing_file(path);
++void tracecmd_remove_instance(struct buffer_instance *instance)
++{
++	char *path;
 +
- 		guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
- 		if (!guests)
- 			die("Can not allocate guest buffer");
-@@ -2873,6 +2917,19 @@ static char *parse_guest_name(char *guest, int *cid, int *port)
- 	return guest;
++	if (instance->tracing_on_fd > 0) {
++		close(instance->tracing_on_fd);
++		instance->tracing_on_fd = 0;
+ 	}
++	path = get_instance_dir(instance);
++	rmdir(path);
++	tracecmd_put_tracing_file(path);
  }
  
-+int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
+ void tracecmd_remove_instances(void)
+ {
+ 	struct buffer_instance *instance;
+-	char *path;
+-	int ret;
+ 
+ 	for_each_instance(instance) {
+ 		/* Only delete what we created */
+ 		if (is_guest(instance) || (instance->flags & BUFFER_FL_KEEP))
+ 			continue;
+-		if (instance->tracing_on_fd > 0) {
+-			close(instance->tracing_on_fd);
+-			instance->tracing_on_fd = 0;
+-		}
+-		path = get_instance_dir(instance);
+-		ret = rmdir(path);
+-		if (ret < 0)
+-			die("rmdir %s", path);
+-		tracecmd_put_tracing_file(path);
++		tracecmd_remove_instance(instance);
+ 	}
+ }
+ 
+@@ -4853,7 +4860,7 @@ void trace_stop(int argc, char **argv)
+ 	int topt = 0;
+ 	struct buffer_instance *instance = &top_instance;
+ 
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
+ 
+ 	for (;;) {
+ 		int c;
+@@ -4894,7 +4901,7 @@ void trace_restart(int argc, char **argv)
+ 	int topt = 0;
+ 	struct buffer_instance *instance = &top_instance;
+ 
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
+ 
+ 	for (;;) {
+ 		int c;
+@@ -4936,7 +4943,7 @@ void trace_reset(int argc, char **argv)
+ 	int topt = 0;
+ 	struct buffer_instance *instance = &top_instance;
+ 
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
+ 
+ 	/* if last arg is -a, then -b and -d apply to all instances */
+ 	int last_specified_all = 0;
+@@ -5014,11 +5021,16 @@ static void init_common_record_context(struct common_record_context *ctx,
+ 	memset(ctx, 0, sizeof(*ctx));
+ 	ctx->instance = &top_instance;
+ 	ctx->curr_cmd = curr_cmd;
+-	init_instance(ctx->instance);
++	tracecmd_init_instance(ctx->instance);
+ 	local_cpu_count = count_cpus();
+ 	ctx->instance->cpu_count = local_cpu_count;
+ }
+ 
++int tracecmd_local_cpu_count(void)
 +{
-+	int i;
-+
-+	if (!guests || guest_vcpu >= VCPUS_MAX)
-+		return -1;
-+
-+	for (i = 0; i < guests_len; i++)
-+		if (guest_cid == guests[i].cid)
-+			return guests[i].cpu_pid[guest_vcpu];
-+	return -1;
++	return local_cpu_count;
 +}
 +
- static void set_prio(int prio)
- {
- 	struct sched_param sp;
+ #define IS_EXTRACT(ctx) ((ctx)->curr_cmd == CMD_extract)
+ #define IS_START(ctx) ((ctx)->curr_cmd == CMD_start)
+ #define IS_STREAM(ctx) ((ctx)->curr_cmd == CMD_stream)
+@@ -5589,7 +5601,7 @@ static void record_trace(int argc, char **argv,
+ 	tracecmd_disable_all_tracing(1);
+ 
+ 	for_all_instances(instance)
+-		set_clock(instance);
++		tracecmd_set_clock(instance);
+ 
+ 	/* Record records the date first */
+ 	if (ctx->date &&
 -- 
 2.20.1
 
