@@ -3,38 +3,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1615CC43381
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 13:12:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1480EC43381
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 13:17:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E564B2084B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 13:12:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D57512084B
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 13:17:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbfCZNMP (ORCPT
+        id S1731516AbfCZNRf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Mar 2019 09:12:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39930 "EHLO mail.kernel.org"
+        Tue, 26 Mar 2019 09:17:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726258AbfCZNMP (ORCPT
+        id S1731511AbfCZNRf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Mar 2019 09:12:15 -0400
+        Tue, 26 Mar 2019 09:17:35 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC63F20823;
-        Tue, 26 Mar 2019 13:12:13 +0000 (UTC)
-Date:   Tue, 26 Mar 2019 09:12:12 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id B090A20823;
+        Tue, 26 Mar 2019 13:17:33 +0000 (UTC)
+Date:   Tue, 26 Mar 2019 09:17:32 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] tools/lib/traceevent: Change description of few
- APIs
-Message-ID: <20190326091212.4e7581b0@gandalf.local.home>
-In-Reply-To: <20190325145017.30246-2-tstoyanov@vmware.com>
+Subject: Re: [PATCH v3 3/3] tools/lib/traceevent: Implement new traceevent
+ APIs for accessing struct tep_handler fields
+Message-ID: <20190326091732.5cd73b5d@gandalf.local.home>
+In-Reply-To: <20190325145017.30246-4-tstoyanov@vmware.com>
 References: <20190325145017.30246-1-tstoyanov@vmware.com>
-        <20190325145017.30246-2-tstoyanov@vmware.com>
+        <20190325145017.30246-4-tstoyanov@vmware.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,148 +44,214 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 25 Mar 2019 16:50:15 +0200
+On Mon, 25 Mar 2019 16:50:17 +0200
 Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-> APIs descriptions should describe the purpose of the
-> function, its parameters and return value. While working
-> on man pages implementation, I noticed mismatches in the
-> descriptions of few APIs. This patch changes the description
-> of these APIs, making them consistent with the man pages:
-> tep_print_num_field(), tep_print_func_field(),
-> tep_get_header_page_size(), tep_get_long_size(),
-> tep_set_long_size(), tep_get_page_size() and
-> tep_set_page_size().
+> As struct tep_handler definition is not exposed as part of libtraceevent API, its fields
+> cannot be accessed directly by the library users. This patch implements new APIs, which
+> can be used to access the struct tep_handler fields:
+> 
+> tep_get_event() - retrieves an event pointer at a specific index
+> tep_get_first_event() is modified to use tep_get_event()
+> tep_clear_flag() - clears a tep handle flag
+> tep_test_flag() - test if a given flag is set
+> tep_get_header_timestamp_size() - returns the size of the timestamp stored in the header.
+> tep_get_cpus() - returns the number of CPUs
+> tep_is_old_format() - returns true if data was created by an
+>                       older kernel with the old data format
+> tep_set_print_raw() - have the output print in the raw format
+> tep_set_test_filters() - debugging utility for testing tep filters
 
-Hi Tzvetomir,
+This looks good, but one nit, it can be a bit more formatted ;-)
 
-The above is very hard to read. Please list them one per line, and
-write it like this:
+ tep_get_event()        - retrieves an event pointer at a specific index
+ tep_get_first_event()  - is modified to use tep_get_event()
+ tep_clear_flag()       - clears a tep handle flag
+ tep_test_flag()        - test if a given flag is set
+ tep_get_header_timestamp_size() - returns the size of the timestamp
+                          stored in the header.
+ tep_get_cpus()         - returns the number of CPUs
+ tep_is_old_format()    - returns true if data was created by an
+                          older kernel with the old data format
+ tep_set_print_raw()    - have the output print in the raw format
+ tep_set_test_filters() - debugging utility for testing tep filters
 
- APIs descriptions should describe the purpose of the function, its
- parameters and return value. While working  on man pages
- implementation, I noticed mismatches in the  descriptions of few APIs.
- This patch changes the description of these APIs, making them
- consistent with the man pages:
-
- - tep_print_num_field()
- - tep_print_func_field()
- - tep_get_header_page_size()
- - tep_get_long_size()
- - tep_set_long_size()
- - tep_get_page_size()
- - tep_set_page_size()
-
-
-It's much easier on the eyes.
-
-I changed it for you. But next time, please start listing functions
-instead of stringing them in one hard to read bundle.
-
-Thanks!
+I'll update it.
 
 -- Steve
-
 
 
 > 
 > Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 > ---
->  tools/lib/traceevent/event-parse-api.c | 20 ++++++++++----------
->  tools/lib/traceevent/event-parse.c     |  6 ++++--
->  2 files changed, 14 insertions(+), 12 deletions(-)
+>  tools/lib/traceevent/event-parse-api.c | 106 ++++++++++++++++++++++++-
+>  tools/lib/traceevent/event-parse.h     |   6 ++
+>  2 files changed, 108 insertions(+), 4 deletions(-)
 > 
 > diff --git a/tools/lib/traceevent/event-parse-api.c b/tools/lib/traceevent/event-parse-api.c
-> index d463761a58f4..3686a221e981 100644
+> index 3716a9142aef..36672b9e18e0 100644
 > --- a/tools/lib/traceevent/event-parse-api.c
 > +++ b/tools/lib/traceevent/event-parse-api.c
-> @@ -43,8 +43,8 @@ int tep_get_events_count(struct tep_handle *tep)
->   * @flag: flag, or combination of flags to be set
->   * can be any combination from enum tep_flag
->   *
-> - * This sets a flag or mbination of flags  from enum tep_flag
-> -  */
-> + * This sets a flag or combination of flags from enum tep_flag
+> @@ -8,6 +8,22 @@
+>  #include "event-parse-local.h"
+>  #include "event-utils.h"
+>  
+> +/**
+> + * tep_get_event - returns the event with the given index
+> + * @tep: a handle to the tep_handle
+> + * @index: index of the requested event, in the range 0 .. nr_events
+> + *
+> + * This returns pointer to the element of the events array with the given index
+> + * If @tep is NULL, or @index is not in the range 0 .. nr_events, NULL is returned.
 > + */
->  void tep_set_flag(struct tep_handle *tep, int flag)
+> +struct tep_event *tep_get_event(struct tep_handle *tep, int index)
+> +{
+> +	if (tep && tep->events && index < tep->nr_events)
+> +		return tep->events[index];
+> +
+> +	return NULL;
+> +}
+> +
+>  /**
+>   * tep_get_first_event - returns the first event in the events array
+>   * @tep: a handle to the tep_handle
+> @@ -17,10 +33,7 @@
+>   */
+>  struct tep_event *tep_get_first_event(struct tep_handle *tep)
 >  {
->  	if(tep)
-> @@ -140,10 +140,10 @@ void tep_set_cpus(struct tep_handle *pevent, int cpus)
+> -	if (tep && tep->events)
+> -		return tep->events[0];
+> -
+> -	return NULL;
+> +	return tep_get_event(tep, 0);
 >  }
 >  
 >  /**
-> - * tep_get_long_size - get the size of a long integer on the current machine
-> + * tep_get_long_size - get the size of a long integer on the traced machine
->   * @pevent: a handle to the tep_handle
->   *
-> - * This returns the size of a long integer on the current machine
-> + * This returns the size of a long integer on the traced machine
->   * If @pevent is NULL, 0 is returned.
->   */
->  int tep_get_long_size(struct tep_handle *pevent)
-> @@ -154,11 +154,11 @@ int tep_get_long_size(struct tep_handle *pevent)
+> @@ -51,6 +64,34 @@ void tep_set_flag(struct tep_handle *tep, int flag)
+>  		tep->flags |= flag;
 >  }
 >  
->  /**
-> - * tep_set_long_size - set the size of a long integer on the current machine
-> + * tep_set_long_size - set the size of a long integer on the traced machine
->   * @pevent: a handle to the tep_handle
->   * @size: size, in bytes, of a long integer
->   *
-> - * This sets the size of a long integer on the current machine
-> + * This sets the size of a long integer on the traced machine
->   */
->  void tep_set_long_size(struct tep_handle *pevent, int long_size)
+> +/**
+> + * tep_clear_flag - clear event parser flag
+> + * @tep: a handle to the tep_handle
+> + * @flag: flag to be cleared
+> + *
+> + * This clears a tep flag
+> + */
+> +void tep_clear_flag(struct tep_handle *tep, enum tep_flag flag)
+> +{
+> +	if (tep)
+> +		tep->flags &= ~flag;
+> +}
+> +
+> +/**
+> + * tep_test_flag - check the state of event parser flag
+> + * @tep: a handle to the tep_handle
+> + * @flag: flag to be checked
+> + *
+> + * This returns the state of the requested tep flag.
+> + * Returns: true if the flag is set, false otherwise.
+> + */
+> +bool tep_test_flag(struct tep_handle *tep, enum tep_flag flag)
+> +{
+> +	if (tep)
+> +		return (tep->flags & flag);
+> +	return false;
+> +}
+> +
+>  unsigned short tep_data2host2(struct tep_handle *pevent, unsigned short data)
 >  {
-> @@ -167,10 +167,10 @@ void tep_set_long_size(struct tep_handle *pevent, int long_size)
+>  	unsigned short swap;
+> @@ -113,6 +154,20 @@ int tep_get_header_page_size(struct tep_handle *pevent)
+>  	return 0;
 >  }
 >  
+> +/**
+> + * tep_get_header_timestamp_size - get size of the time stamp in the header page
+> + * @tep: a handle to the tep_handle
+> + *
+> + * This returns size of the time stamp in the header page
+> + * If @tep is NULL, 0 is returned.
+> + */
+> +int tep_get_header_timestamp_size(struct tep_handle *tep)
+> +{
+> +	if (tep)
+> +		return tep->header_page_ts_size;
+> +	return 0;
+> +}
+> +
 >  /**
-> - * tep_get_page_size - get the size of a memory page on the current machine
-> + * tep_get_page_size - get the size of a memory page on the traced machine
+>   * tep_get_cpus - get the number of CPUs
 >   * @pevent: a handle to the tep_handle
->   *
-> - * This returns the size of a memory page on the current machine
-> + * This returns the size of a memory page on the traced machine
->   * If @pevent is NULL, 0 is returned.
->   */
->  int tep_get_page_size(struct tep_handle *pevent)
-> @@ -181,11 +181,11 @@ int tep_get_page_size(struct tep_handle *pevent)
+> @@ -273,3 +328,46 @@ void tep_set_latency_format(struct tep_handle *pevent, int lat)
+>  	if (pevent)
+>  		pevent->latency_format = lat;
 >  }
+> +
+> +/**
+> + * tep_is_old_format - get if an old kernel is used
+> + * @tep: a handle to the tep_handle
+> + *
+> + * This returns true, if an old kernel is used to generate the tracing events or
+> + * false if a new kernel is used. Old kernels did not have header page info.
+> + * If @pevent is NULL, false is returned.
+> + */
+> +bool tep_is_old_format(struct tep_handle *tep)
+> +{
+> +	if (tep)
+> +		return !!(tep->old_format);
+> +	return false;
+> +}
+> +
+> +/**
+> + * tep_set_print_raw - set a flag to force print in raw format
+> + * @tep: a handle to the tep_handle
+> + * @print_raw: the new value of the print_raw flag
+> + *
+> + * This sets a flag to force print in raw format
+> + */
+> +void tep_set_print_raw(struct tep_handle *tep, int print_raw)
+> +{
+> +	if (tep)
+> +		tep->print_raw = print_raw;
+> +}
+> +
+> +/**
+> + * tep_set_test_filters - set a flag to test a filter string
+> + * @tep: a handle to the tep_handle
+> + * @test_filters: the new value of the test_filters flag
+> + *
+> + * This sets a flag to test a filter string. If this flag is set, when
+> + * tep_filter_add_filter_str() API as called,it will print the filter string
+> + * instead of adding it.
+> + */
+> +void tep_set_test_filters(struct tep_handle *tep, int test_filters)
+> +{
+> +	if (tep)
+> +		tep->test_filters = test_filters;
+> +}
+> diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
+> index aec48f2aea8a..6e1d493738b4 100644
+> --- a/tools/lib/traceevent/event-parse.h
+> +++ b/tools/lib/traceevent/event-parse.h
+> @@ -409,6 +409,8 @@ void tep_print_plugins(struct trace_seq *s,
+>  typedef char *(tep_func_resolver_t)(void *priv,
+>  				    unsigned long long *addrp, char **modp);
+>  void tep_set_flag(struct tep_handle *tep, int flag);
+> +void tep_clear_flag(struct tep_handle *tep, enum tep_flag flag);
+> +bool tep_check_flags(struct tep_handle *tep, enum tep_flag flags);
 >  
->  /**
-> - * tep_set_page_size - set the size of a memory page on the current machine
-> + * tep_set_page_size - set the size of a memory page on the traced machine
->   * @pevent: a handle to the tep_handle
->   * @_page_size: size of a memory page, in bytes
->   *
-> - * This sets the size of a memory page on the current machine
-> + * This sets the size of a memory page on the traced machine
->   */
->  void tep_set_page_size(struct tep_handle *pevent, int _page_size)
+>  static inline int tep_host_bigendian(void)
 >  {
-> diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-> index 87494c7c619d..e53c566be55d 100644
-> --- a/tools/lib/traceevent/event-parse.c
-> +++ b/tools/lib/traceevent/event-parse.c
-> @@ -6386,7 +6386,8 @@ int tep_get_any_field_val(struct trace_seq *s, struct tep_event *event,
->   * @record: The record with the field name.
->   * @err: print default error if failed.
->   *
-> - * Returns: 0 on success, -1 field not found, or 1 if buffer is full.
-> + * Returns positive value on success, negative in case of an error,
-> + * or 0 if buffer is full.
->   */
->  int tep_print_num_field(struct trace_seq *s, const char *fmt,
->  			struct tep_event *event, const char *name,
-> @@ -6418,7 +6419,8 @@ int tep_print_num_field(struct trace_seq *s, const char *fmt,
->   * @record: The record with the field name.
->   * @err: print default error if failed.
->   *
-> - * Returns: 0 on success, -1 field not found, or 1 if buffer is full.
-> + * Returns positive value on success, negative in case of an error,
-> + * or 0 if buffer is full.
->   */
->  int tep_print_func_field(struct trace_seq *s, const char *fmt,
->  			 struct tep_event *event, const char *name,
+> @@ -565,6 +567,10 @@ void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian);
+>  int tep_is_latency_format(struct tep_handle *pevent);
+>  void tep_set_latency_format(struct tep_handle *pevent, int lat);
+>  int tep_get_header_page_size(struct tep_handle *pevent);
+> +int tep_get_header_timestamp_size(struct tep_handle *tep);
+> +bool tep_is_old_format(struct tep_handle *pevent);
+> +void tep_set_print_raw(struct tep_handle *tep, int print_raw);
+> +void tep_set_test_filters(struct tep_handle *tep, int test_filters);
+>  
+>  struct tep_handle *tep_alloc(void);
+>  void tep_free(struct tep_handle *pevent);
 
