@@ -3,51 +3,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14D28C43381
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:07:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EB3DC43381
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:07:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D96AB2070D
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:06:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 17F7F2070D
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 26 Mar 2019 15:07:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731491AbfCZPG7 (ORCPT
+        id S1731560AbfCZPHC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 26 Mar 2019 11:06:59 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44381 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727492AbfCZPG7 (ORCPT
+        Tue, 26 Mar 2019 11:07:02 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:36021 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbfCZPHB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 26 Mar 2019 11:06:59 -0400
-Received: by mail-wr1-f68.google.com with SMTP id y7so10656165wrn.11
-        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Mar 2019 08:06:58 -0700 (PDT)
+        Tue, 26 Mar 2019 11:07:01 -0400
+Received: by mail-wm1-f68.google.com with SMTP id h18so13340824wml.1
+        for <linux-trace-devel@vger.kernel.org>; Tue, 26 Mar 2019 08:07:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KZrqIpIWaDsmqIPJyX90jfu7nox1DuIvSLjj1esD/k8=;
-        b=IxG01f8QUUKtfRuyR04cHnwlsgqgeyoFUk1HiYMSK7zfZruI9TLT0qBTRaxChK4kts
-         b6xdrawGj8uq2A75xdsvskeH5AW7dixYGOKHav6zIRajaedFRZnAoVte+EDAZIihFm6Y
-         QK9bAKPfYEGOLh5LhfsHE2A1bZecGYqD/VNCBfrXXi0mzqb8tcIJTN7QN/xYw6qYB8Ur
-         Evxk0USoLWHCspiO9qFIsdnrkuqJ68EVN955NYhbzsaX3mt21sApHL9q9WaTchEJCWd7
-         TAumw7pFq1x8H94ViC/vPL5WEN8rPqdF/juamj2cFGKMDSirmsn0LEJrxzg25H407atN
-         bz/g==
-X-Gm-Message-State: APjAAAW91uyHFwlT37Q6F2fwskDHfmKU0atzHoWz7M1eAVa6/4fZBmHa
-        5yhvyqTm/Mdq56j4qSMrf1AugDFn
-X-Google-Smtp-Source: APXvYqxJS7hhXfazRVBfVGkcB6pRX1obDo6n79GYWhl915P4ArWoLWKvPzF3j//9ok/9KJIywwdK+g==
-X-Received: by 2002:a5d:4a4f:: with SMTP id v15mr18639718wrs.5.1553612817964;
-        Tue, 26 Mar 2019 08:06:57 -0700 (PDT)
+        bh=bXdZcegVi6UJa6w5kVdIBecWQKNoeZvUZ5CztYC7GEE=;
+        b=eL1hWfsW/79WDWjqNhzW9TcibjBWgIRvolRGc81WyoKCIBUkkKik0VAXf7jX30/idB
+         HTFX1vVplMzvaRpxeSXKWyiJ5TxYXdMYmR8ScPAzB4G6GSsVv7++fPnY9pnnlVUetS0O
+         KFML/3OjMGpg+emg1WzclioiEHvWkBsLfzhEnRLDaZTIZNJi6CYtDjZlOI0dUQ2wXoBA
+         378T1ObpYkptVofizSuBTlrWPlPK0PRmUeaPVNag9MOxdF3hrncxWh0JqpkV86xVtifW
+         x5YNdXTErPoCYB1N3+OEMCXhsFz0s09O2jhfxBLYZDbLSgqg7VEQGxP+ePppy5nZr86b
+         XTIA==
+X-Gm-Message-State: APjAAAWtP3C0JyFIVQZfZWDq9Rfkjdm/FnA5/KYIPippyb2sBdFblozm
+        pWv/jDLtKvckN0I1tfxpm4uKiiSD
+X-Google-Smtp-Source: APXvYqyD7DY7B5iTsrVVOURo9ltSL5snvdsLkFu3ZYTBDIAPsVx7mDBcgl3KFjB3IxL6MTSisqzc8w==
+X-Received: by 2002:a1c:6a0d:: with SMTP id f13mr14951732wmc.76.1553612820158;
+        Tue, 26 Mar 2019 08:07:00 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 13sm6833631wmf.23.2019.03.26.08.06.57
+        by smtp.gmail.com with ESMTPSA id 13sm6833631wmf.23.2019.03.26.08.06.59
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 Mar 2019 08:06:57 -0700 (PDT)
+        Tue, 26 Mar 2019 08:06:59 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v10 4/9] trace-cmd: Added implementation of htonll() and ntohll()
-Date:   Tue, 26 Mar 2019 17:06:46 +0200
-Message-Id: <20190326150651.25811-5-tstoyanov@vmware.com>
+Subject: [PATCH v10 6/9] trace-cmd: Find and store pids of tasks, which run virtual CPUs of given VM
+Date:   Tue, 26 Mar 2019 17:06:48 +0200
+Message-Id: <20190326150651.25811-7-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190326150651.25811-1-tstoyanov@vmware.com>
 References: <20190326150651.25811-1-tstoyanov@vmware.com>
@@ -58,33 +58,123 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added implementation of htonll() and ntohll() as
-macros, if they are not already defined.
+In order to match host and guest events, a mapping between guest VCPU
+and the host task, running this VCPU is needed. Extended existing
+struct guest to hold such mapping and added logic in read_qemu_guests()
+function to initialize it. Implemented a new internal API,
+get_guest_vcpu_pid(), to retrieve VCPU-task mapping for given VM.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tracecmd/include/trace-msg.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ tracecmd/include/trace-local.h |  1 +
+ tracecmd/trace-record.c        | 57 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
-diff --git a/tracecmd/include/trace-msg.h b/tracecmd/include/trace-msg.h
-index b7fe10b..445f799 100644
---- a/tracecmd/include/trace-msg.h
-+++ b/tracecmd/include/trace-msg.h
-@@ -15,4 +15,14 @@ extern unsigned int page_size;
- void plog(const char *fmt, ...);
- void pdie(const char *fmt, ...);
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 8413054..62f5e47 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -245,6 +245,7 @@ int tracecmd_local_cpu_count(void);
+ void tracecmd_set_clock(struct buffer_instance *instance);
+ void tracecmd_remove_instance(struct buffer_instance *instance);
  
-+#ifndef htonll
-+# if __BYTE_ORDER == __LITTLE_ENDIAN
-+#define htonll(x) __bswap_64(x)
-+#define ntohll(x) __bswap_64(x)
-+#else
-+#define htonll(x) (x)
-+#define ntohll(x) (x)
-+#endif
-+#endif
++int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
+ /* No longer in event-utils.h */
+ void __noreturn die(const char *fmt, ...); /* Can be overriden */
+ void *malloc_or_die(unsigned int size); /* Can be overridden */
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index eacf7d2..72a8ed3 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -2746,10 +2746,12 @@ static bool is_digits(const char *s)
+ 	return true;
+ }
+ 
++#define VCPUS_MAX 256
+ struct guest {
+ 	char *name;
+ 	int cid;
+ 	int pid;
++	int cpu_pid[VCPUS_MAX];
+ };
+ 
+ static struct guest *guests;
+@@ -2767,6 +2769,46 @@ static char *get_qemu_guest_name(char *arg)
+ 	return arg;
+ }
+ 
++static void read_qemu_guests_pids(char *guest_task, struct guest *guest)
++{
++	struct dirent *entry_t;
++	char path[PATH_MAX];
++	char *buf = NULL;
++	size_t n = 0;
++	int vcpu;
++	DIR *dir;
++	FILE *ft;
 +
- #endif /* _TRACE_MSG_H_ */
++	snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
++	dir = opendir(path);
++	if (!dir)
++		return;
++
++	while ((entry_t = readdir(dir))) {
++		if (!(entry_t->d_type == DT_DIR && is_digits(entry_t->d_name)))
++			continue;
++
++		snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
++			 guest_task, entry_t->d_name);
++		ft = fopen(path, "r");
++		if (!ft)
++			continue;
++		if (getline(&buf, &n, ft) < 0)
++			goto next;
++		if (strncmp(buf, "CPU ", 4) != 0)
++			goto next;
++
++		vcpu = atoi(buf+4);
++		if (!(vcpu >= 0 && vcpu < VCPUS_MAX))
++			goto next;
++		guest->cpu_pid[vcpu] = atoi(entry_t->d_name);
++
++next:
++		fclose(ft);
++	}
++	free(buf);
++}
++
+ static void read_qemu_guests(void)
+ {
+ 	static bool initialized;
+@@ -2828,6 +2870,8 @@ static void read_qemu_guests(void)
+ 		if (!is_qemu)
+ 			goto next;
+ 
++		read_qemu_guests_pids(entry->d_name, &guest);
++
+ 		guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
+ 		if (!guests)
+ 			die("Can not allocate guest buffer");
+@@ -2873,6 +2917,19 @@ static char *parse_guest_name(char *guest, int *cid, int *port)
+ 	return guest;
+ }
+ 
++int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
++{
++	int i;
++
++	if (!guests || guest_vcpu >= VCPUS_MAX)
++		return -1;
++
++	for (i = 0; i < guests_len; i++)
++		if (guest_cid == guests[i].cid)
++			return guests[i].cpu_pid[guest_vcpu];
++	return -1;
++}
++
+ static void set_prio(int prio)
+ {
+ 	struct sched_param sp;
 -- 
 2.20.1
 
