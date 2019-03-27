@@ -2,53 +2,55 @@ Return-Path: <SRS0=8Y6V=R6=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A18B4C43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50054C43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1EF5A20700
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2A5CB20700
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbfC0QDn (ORCPT
+        id S1727389AbfC0QDq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Mar 2019 12:03:43 -0400
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:34645 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbfC0QDn (ORCPT
+        Wed, 27 Mar 2019 12:03:46 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:32927 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbfC0QDp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Mar 2019 12:03:43 -0400
-Received: by mail-pf1-f169.google.com with SMTP id b3so8550070pfd.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Mar 2019 09:03:43 -0700 (PDT)
+        Wed, 27 Mar 2019 12:03:45 -0400
+Received: by mail-pg1-f195.google.com with SMTP id b12so10178436pgk.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Mar 2019 09:03:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pCoUyrDZvFSieyuHq7/DLAfegRm53JF05cBHOI4g8Y8=;
-        b=SRPsFogVnHruELcANecj5IElqu8QkgdQq0PJaLeYVokIjosDT/z1IYWSEMIp1MldLN
-         ammF17pr8fAXdKYw4CU+noG8I7wl30WKpfwdd3yKJh4gFeDHRKqmFgjzZrM8n5GY7Xid
-         zaAF0DbJfJP46DY1ha16DdYdGwxfvfdZ6laCJuFINb3MkBdb9pKN6awfblma6oq5RsnR
-         Ro683inpPncPPBLnnb4boP34k8VBaK1lbL3x14pMLNnqMV1kPyGruUxbVhW/TH9KU1+C
-         APlqXUaVuH8jM2k6QMSQF11NuPkzutX+4ppXBYdTbY5oRSfBI0ICIkAPMEvK6Qm3W7gO
-         Mltw==
-X-Gm-Message-State: APjAAAXs2Q857B6+B52Zm9TK7g1vPnKKc32Ra1dRvErZ7UkIm1qGvWhG
-        HI6q8E9MCFg/XbTUXxAAADM=
-X-Google-Smtp-Source: APXvYqxXgJdMNZi7FCtt3gDfi4rguXJBZVhTNY7YhV06OaZSjVsuO/nwFzAdgZZmeQrH6PQflwFpFA==
-X-Received: by 2002:a63:c204:: with SMTP id b4mr34755188pgd.335.1553702622897;
-        Wed, 27 Mar 2019 09:03:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lPWoOzH5YTvnrwVFuW5joRTOY72FphCBaUp1V74GVWQ=;
+        b=Shmr3vtjoYx9pZ+yiXWyZiuOm4C//KDokzYhN2q1sGDLKKD6v2xh0zoRh5uObnX1rB
+         CUZBWb1ecx0nzthBHNX34X6/uLM9iZNI8Wi5Y8F0Y9oBUls15FSp6xikFWfZZHPe/YVA
+         0cn6835gsNL8zBJtScRUlUwdOQd68ovlvbyEdLQTRPAlp8l7N+Bw8n0Sp5qZfnAKDFuT
+         5fywHOCxPwhabEKuiEXQIjDD6UTWFeGbc56naAQ7C4V5VwjFKq/uzzYBIGWSvMabnWh6
+         qyoti4jJGynGwO3XjptO5axqC8Z/c/zvbkzavywvI5OrD6UDobJ8o2NZGsfLU6nWCsDE
+         XVAw==
+X-Gm-Message-State: APjAAAVbMABo+eKS3ZP0/HtKErP8NjmKS/604AcvZH9+lSw2dPZC+doZ
+        8QXJUpmulrEMiTWg6LYunRtR+kBhIhc=
+X-Google-Smtp-Source: APXvYqxEAyyZp16eDeuW2p6a2KY/QHrgT6hlkH+z991RanyoJezhciFCtibPFtOnddw8wibOLmUQSg==
+X-Received: by 2002:aa7:8c42:: with SMTP id e2mr6796652pfd.24.1553702625312;
+        Wed, 27 Mar 2019 09:03:45 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id p88sm36150806pfa.80.2019.03.27.09.03.40
+        by smtp.gmail.com with ESMTPSA id p88sm36150806pfa.80.2019.03.27.09.03.43
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Mar 2019 09:03:42 -0700 (PDT)
+        Wed, 27 Mar 2019 09:03:44 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com
-Subject: [RFC 0/7] NumPy Interface for KernelShark
-Date:   Wed, 27 Mar 2019 18:03:16 +0200
-Message-Id: <20190327160323.31654-1-ykaradzhov@vmware.com>
+Subject: [RFC 1/7] kernel-shark: kshark_string_config_alloc() must take no arguments
+Date:   Wed, 27 Mar 2019 18:03:17 +0200
+Message-Id: <20190327160323.31654-2-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
+In-Reply-To: <20190327160323.31654-1-ykaradzhov@vmware.com>
+References: <20190327160323.31654-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -56,45 +58,42 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-NumPy is an efficient multi-dimensional container of generic data.
-It uses strong typing in order to provide fast data processing in
-Python. The NumPy interface will allow sophisticated analysis of
-tracing data via scripts, but it also opens the door for
-exposing the kernel tracing data to the instruments provided by
-the scientific toolkit of Python (matplotlib, scikit-learn) or
-maybe even PyTorch and TensorFlow in the future.
+The function is not meant to have arguments, so it must explicitly
+state this. A functions taking unspecified list of parameters will
+be a problem for the Pythion interface.
 
-Disclaimer: I am not very good in Python. Please check as carefully
-as possible :-)
+Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+---
+ kernel-shark/src/libkshark-configio.c | 2 +-
+ kernel-shark/src/libkshark.h          | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Yordan Karadzhov (7):
-  kernel-shark: kshark_string_config_alloc() must take no arguments
-  kernel-shark: Add new dataloading method to be used by the NumPu
-    interface
-  kernel-shark: Prepare for building the NumPy interface
-  kernel-shark: Add the core components of the NumPy API
-  kernel-shark: Add Numpy Interface for processing of tracing data
-  kernel-shark: Add automatic building of the NumPy interface
-  kernel-shark: Add basic example demonstrating the NumPy interface
-
- kernel-shark/CMakeLists.txt                 |   3 +
- kernel-shark/README                         |  12 +-
- kernel-shark/bin/sched_wakeup.py            |  96 +++++++
- kernel-shark/build/py/libkshark_wrapper.pyx | 264 ++++++++++++++++++++
- kernel-shark/build/py/np_setup.py           |  87 +++++++
- kernel-shark/build/py/pybuild.sh            |  26 ++
- kernel-shark/src/CMakeLists.txt             |  39 +++
- kernel-shark/src/libkshark-configio.c       |   2 +-
- kernel-shark/src/libkshark-py.c             | 176 +++++++++++++
- kernel-shark/src/libkshark.c                | 128 ++++++++++
- kernel-shark/src/libkshark.h                |   9 +-
- 11 files changed, 838 insertions(+), 4 deletions(-)
- create mode 100755 kernel-shark/bin/sched_wakeup.py
- create mode 100644 kernel-shark/build/py/libkshark_wrapper.pyx
- create mode 100644 kernel-shark/build/py/np_setup.py
- create mode 100755 kernel-shark/build/py/pybuild.sh
- create mode 100644 kernel-shark/src/libkshark-py.c
-
+diff --git a/kernel-shark/src/libkshark-configio.c b/kernel-shark/src/libkshark-configio.c
+index 2bd5600..9106522 100644
+--- a/kernel-shark/src/libkshark-configio.c
++++ b/kernel-shark/src/libkshark-configio.c
+@@ -369,7 +369,7 @@ kshark_filter_config_new(enum kshark_config_formats format)
+  * @returns kshark_config_doc instance on success, otherwise NULL. Use free()
+  *	    to free the object.
+  */
+-struct kshark_config_doc *kshark_string_config_alloc()
++struct kshark_config_doc *kshark_string_config_alloc(void)
+ {
+ 	return kshark_config_alloc(KS_CONFIG_STRING);
+ }
+diff --git a/kernel-shark/src/libkshark.h b/kernel-shark/src/libkshark.h
+index a1b1f91..c218b61 100644
+--- a/kernel-shark/src/libkshark.h
++++ b/kernel-shark/src/libkshark.h
+@@ -541,7 +541,7 @@ kshark_record_config_new(enum kshark_config_formats);
+ struct kshark_config_doc *
+ kshark_filter_config_new(enum kshark_config_formats);
+ 
+-struct kshark_config_doc *kshark_string_config_alloc();
++struct kshark_config_doc *kshark_string_config_alloc(void);
+ 
+ bool kshark_type_check(struct kshark_config_doc *conf, const char *type);
+ 
 -- 
 2.19.1
 
