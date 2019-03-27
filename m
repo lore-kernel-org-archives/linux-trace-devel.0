@@ -2,123 +2,109 @@ Return-Path: <SRS0=8Y6V=R6=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61A20C43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 23:25:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45082C43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 23:41:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 112822082F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 23:25:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 087892075E
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 23:41:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="i2xt+IMV"
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="EIkUqG/o"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbfC0XZE (ORCPT
+        id S1731274AbfC0XlS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Mar 2019 19:25:04 -0400
-Received: from mail-eopbgr760080.outbound.protection.outlook.com ([40.107.76.80]:3616
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        Wed, 27 Mar 2019 19:41:18 -0400
+Received: from mail-eopbgr720086.outbound.protection.outlook.com ([40.107.72.86]:44295
+        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726055AbfC0XZE (ORCPT
+        id S1725601AbfC0XlS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Mar 2019 19:25:04 -0400
+        Wed, 27 Mar 2019 19:41:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pJPhLalaHfzmqfzsQptv6WJJzN5STI3uCQWA3+vmPBk=;
- b=i2xt+IMVzBpr3jjgmmdwo8Kq7oK4NkOH9cE9LhInROUTYA5czmW1jIOFuUMpaDD4lMmZQ3t6hKUKGiZAjA1UH9Qkexcsq1PJyNvCfUZF7P8hqTh1ABOqovCLuhiwmXhTFTVbIsa9tEb3NfBTj6VUA3hczaqg0dYYCZIGdfSH7Uw=
+ bh=yM6l/ttZ8f3lCPM7eDatiyWEJy7+Lyqx/HOblsUkvb0=;
+ b=EIkUqG/o8WOQSd763SnOkObi0hkzH2Pp2IjXhJvnU77bFiU1IOF09pMTUmEQpduUX71/rNaJ5bGaCvx5d6F/BuHx+0e65pTekkmveeg33LvMIz5HmSYYhxvW/n9kO/+RlR+b9HvQvhG53ASu7OKO8EYcXV5ylvKyh/QHyzinCxY=
 Received: from MWHPR0501MB3772.namprd05.prod.outlook.com (10.167.163.156) by
- MWHPR0501MB3881.namprd05.prod.outlook.com (10.167.173.24) with Microsoft SMTP
+ MWHPR0501MB3689.namprd05.prod.outlook.com (10.167.163.35) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1750.13; Wed, 27 Mar 2019 23:25:01 +0000
+ 15.20.1771.6; Wed, 27 Mar 2019 23:41:13 +0000
 Received: from MWHPR0501MB3772.namprd05.prod.outlook.com
  ([fe80::b9a6:ba16:fc53:bb41]) by MWHPR0501MB3772.namprd05.prod.outlook.com
  ([fe80::b9a6:ba16:fc53:bb41%5]) with mapi id 15.20.1750.010; Wed, 27 Mar 2019
- 23:25:01 +0000
+ 23:41:13 +0000
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     Yordan Karadzhov <ykaradzhov@vmware.com>
 CC:     Steven Rostedt <rostedt@goodmis.org>,
         "linux-trace-devel@vger.kernel.org" 
         <linux-trace-devel@vger.kernel.org>,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: Re: [RFC 7/7] kernel-shark: Add basic example demonstrating the NumPy
- interface
-Thread-Topic: [RFC 7/7] kernel-shark: Add basic example demonstrating the
- NumPy interface
-Thread-Index: AQHU5PRMftAUGyN58UyMwSeXlygv5Q==
-Date:   Wed, 27 Mar 2019 23:25:01 +0000
-Message-ID: <CAE0o1Nv+LoROA9sgj=+ByRH8CH8htKH7DnTgAh58j6ZnyEWn1A@mail.gmail.com>
+Subject: Re: [RFC 2/7] kernel-shark: Add new dataloading method to be used by
+ the NumPu interface
+Thread-Topic: [RFC 2/7] kernel-shark: Add new dataloading method to be used by
+ the NumPu interface
+Thread-Index: AQHU5PZuJG14FfPUT0eOsoi1XHGl5g==
+Date:   Wed, 27 Mar 2019 23:41:13 +0000
+Message-ID: <CAE0o1NsYsBkHbapChkA_CjB__Qn4V_K-2FD23-H9jYbVsiPQgw@mail.gmail.com>
 References: <20190327160323.31654-1-ykaradzhov@vmware.com>
- <20190327160323.31654-8-ykaradzhov@vmware.com>
-In-Reply-To: <20190327160323.31654-8-ykaradzhov@vmware.com>
+ <20190327160323.31654-3-ykaradzhov@vmware.com>
+In-Reply-To: <20190327160323.31654-3-ykaradzhov@vmware.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: DM5PR13CA0010.namprd13.prod.outlook.com
- (2603:10b6:3:23::20) To MWHPR0501MB3772.namprd05.prod.outlook.com
- (2603:10b6:301:7a::28)
+x-clientproxiedby: DM5PR0102CA0015.prod.exchangelabs.com (2603:10b6:4:9c::28)
+ To MWHPR0501MB3772.namprd05.prod.outlook.com (2603:10b6:301:7a::28)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=kaslevs@vmware.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
-x-gm-message-state: APjAAAXj3LteOG2C2dqg7cJV0qvTGM5ICzMbPmJWNaDO1F+//L/hAUjL
-        4wF//XdZXKgv6a/IJXf1UYL3Vgi0jKR0+/fHyQ==
-x-google-smtp-source: APXvYqwj28LQ/JoKA31y78JSRV1BdtenzsojuoYNnMGZ38Gk/Qzmcn2ECqjYMlWDAJC7Jyk9Q2r2xuinOg4XyVZpBoc=
-x-received: by 2002:a02:9a02:: with SMTP id b2mr5524345jal.120.1553729097681;
- Wed, 27 Mar 2019 16:24:57 -0700 (PDT)
-x-gmail-original-message-id: <CAE0o1Nv+LoROA9sgj=+ByRH8CH8htKH7DnTgAh58j6ZnyEWn1A@mail.gmail.com>
-x-originating-ip: [209.85.166.173]
+x-gm-message-state: APjAAAUrQpS9yJhj/ORZGYc26TV4/3bAhNaLO2zcmVTQfMS/AUN1S4/s
+        6ZcZU9r0YxZkGmtNiKVS3vPtU+rDlneOq5I7ew==
+x-google-smtp-source: APXvYqxghTkP+98g1kuJhwvikMw2YyzBx9aTW5Krd4RUpkwreHfMeZQHzC28wfLDTzNIlgi3zjBXqCEeqtxAgG70P+E=
+x-received: by 2002:a24:7d04:: with SMTP id b4mr5617749itc.73.1553730028039;
+ Wed, 27 Mar 2019 16:40:28 -0700 (PDT)
+x-gmail-original-message-id: <CAE0o1NsYsBkHbapChkA_CjB__Qn4V_K-2FD23-H9jYbVsiPQgw@mail.gmail.com>
+x-originating-ip: [209.85.166.170]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f8c0913b-44e6-4eae-d4ae-08d6b30b6e7e
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);SRVR:MWHPR0501MB3881;
-x-ms-traffictypediagnostic: MWHPR0501MB3881:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <MWHPR0501MB3881930B56B1812BE91EA4B7DA580@MWHPR0501MB3881.namprd05.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 44bcdf92-c681-4325-fe8c-08d6b30db25d
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);SRVR:MWHPR0501MB3689;
+x-ms-traffictypediagnostic: MWHPR0501MB3689:
+x-microsoft-antispam-prvs: <MWHPR0501MB3689A4D97D9960BBC9A88BBDDA580@MWHPR0501MB3689.namprd05.prod.outlook.com>
 x-forefront-prvs: 0989A7979C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(979002)(366004)(376002)(39860400002)(396003)(136003)(346002)(199004)(189003)(5660300002)(55446002)(229853002)(25786009)(6486002)(14454004)(95326003)(61726006)(478600001)(256004)(107886003)(71200400001)(71190400001)(8676002)(52116002)(68736007)(4326008)(6862004)(966005)(6436002)(99286004)(76176011)(2906002)(81156014)(3846002)(81166006)(6116002)(6246003)(98316002)(54906003)(53936002)(498394004)(6506007)(53546011)(386003)(6306002)(9686003)(6512007)(316002)(102836004)(8936002)(26005)(66066001)(61266001)(11346002)(106356001)(186003)(105586002)(486006)(86362001)(6636002)(446003)(476003)(97736004)(7736002)(305945005)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:MWHPR0501MB3881;H:MWHPR0501MB3772.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(366004)(346002)(376002)(136003)(39850400004)(189003)(199004)(229853002)(6246003)(6512007)(6486002)(6436002)(53936002)(25786009)(106356001)(316002)(5660300002)(8676002)(6862004)(4326008)(107886003)(8936002)(7736002)(81166006)(305945005)(81156014)(61726006)(9686003)(55446002)(6636002)(105586002)(61266001)(498394004)(66066001)(68736007)(80366005)(478600001)(6116002)(3846002)(6506007)(386003)(26005)(53546011)(52116002)(186003)(2906002)(76176011)(102836004)(97736004)(95326003)(86362001)(14454004)(99286004)(71190400001)(256004)(54906003)(14444005)(71200400001)(4744005)(11346002)(486006)(476003)(446003);DIR:OUT;SFP:1101;SCL:1;SRVR:MWHPR0501MB3689;H:MWHPR0501MB3772.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: vmware.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: eQm5SuF7mmDazWE1CPAauWKP1G2v/p25MwKYSvS/4d0GFjknpW/KbBWTT0bn5VeYZZ68QNxMthDL4gIlHcjjaheVMI3Dokf8rz1xbdEYDOELv3NXHuswo41xQZ7gY4H3dsnspe38lf6I00OcM52+3CqoA2RGxC0xrYRNqbOUEz+rNkxs4tLyH2X09h3/QJT1nYOVZy/U7Pbf3HYZWwy8SNsLqkoddowz1+U6LDEM8EESi+PFT+s+DwFzNVqVctGUInuL4B65oDFaPMB/kxhqOyd2WjWAjsRTace8dFoB6tVC73w7tfC79rSFMn+v1cUwKsuG9Ei8z/00w1Qa7NEm1xb9AAUeh2vkziV2HEVcaxSH3ZPv5l6uSL7n/4r35r2222Iiy2Q/zYCORwYITnexaaodLmPBhVGH2p2XeDHTYp8=
+x-microsoft-antispam-message-info: HwgOGFngALLTrql6QwI4ECPmWVsyqqBiR+/kja8r2u2AecHFjuTlyffBf8QK7N+la+MgmS5Qui4OTrnJX2Siz+3kijROSD1GEPOIqUZP1aZ6y3uBZWXF0NVmo9jf/tVvw6mUYW6d5jaKCJ5rclX1KuGTuWGgvYdAZJyZlHvl/FXoiZivCTgOAExrAe7/Mxkld6WWdkHMpgXmj/PFhHblV2jsj0VNBOqAPN8/TFAWZg36x2ZzY1+2zaG/GCZTsUbDT5r8ONW0+cR3GzIKcR7P8d5qSr5zDFA112SHSE+rsXWRz80FSi2IHEhZOhkXfLsTyY2CjxF6fZqfNXTzj0VsHTnZYXmbkBp+TNd/Gf6vMwIsItMUkBsHQbkUALq/nsuyg0suCwgMiRcCrIl8wDSECfehRTeUZb/ujHNYCTQHve8=
 Content-Type: text/plain; charset="utf-8"
-Content-ID: <691E578AF82CFF4DAB71833BEF4A4E85@namprd05.prod.outlook.com>
+Content-ID: <92350B9E1D1CC342901FEC0DEE9CDED6@namprd05.prod.outlook.com>
 Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8c0913b-44e6-4eae-d4ae-08d6b30b6e7e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Mar 2019 23:25:01.0169
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44bcdf92-c681-4325-fe8c-08d6b30db25d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Mar 2019 23:41:13.0897
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0501MB3881
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0501MB3689
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 T24gV2VkLCBNYXIgMjcsIDIwMTkgYXQgNjowNCBQTSBZb3JkYW4gS2FyYWR6aG92IDx5a2FyYWR6
-aG92QHZtd2FyZS5jb20+IHdyb3RlOg0KPg0KPiBUaGUgZXhhbXBsZSBzY3JpcHQgcGxvdHMgdGhl
-IGRpc3RyaWJ1dGlvbiAoaGlzdG9ncmFtKSBvZiB0aGUgcHVsc2VhdWRpbw0KPiB3YWtlLXVwIHRp
-bWVzIGFuZCBmaW5kcyB0aGUgYmlnZ2VzdCBsYXRlbmN5LiBUaGUgc2NyaXB0IGFsc28gZ2VuZXJh
-dGVzDQo+IGEgS2VybmVsU2hhcmsgc2Vzc2lvbiBkZXNjcmlwdG9yIGZpbGUgKEpTT04pLiBUaGUg
-c2Vzc2lvbiBkZXNjcmlwdG9yIGZpbGUNCj4gY2FuIGJlIHVzZWQgYnkgdGhlIEtlcm5lbFNoZXJr
-IEdVSSB0byBvcGVuIGEgc2Vzc2lvbiB3aGljaCB3aWxsIGRpcmVjdGx5DQo+IHZpc3VhbGl6ZSB0
-aGUgbGFyZ2VzdCB3YWtlLXVwIGxhdGVuY3kuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IFlvcmRhbiBL
-YXJhZHpob3YgPHlrYXJhZHpob3ZAdm13YXJlLmNvbT4NCj4gLS0tDQo+ICBrZXJuZWwtc2hhcmsv
-YmluL3NjaGVkX3dha2V1cC5weSB8IDk2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-DQo+ICAxIGZpbGUgY2hhbmdlZCwgOTYgaW5zZXJ0aW9ucygrKQ0KPiAgY3JlYXRlIG1vZGUgMTAw
-NzU1IGtlcm5lbC1zaGFyay9iaW4vc2NoZWRfd2FrZXVwLnB5DQo+DQo+IGRpZmYgLS1naXQgYS9r
-ZXJuZWwtc2hhcmsvYmluL3NjaGVkX3dha2V1cC5weSBiL2tlcm5lbC1zaGFyay9iaW4vc2NoZWRf
-d2FrZXVwLnB5DQoNCjxzbmlwPg0KDQo+ICt3aGlsZSAoaSA+PSAwKToNCj4gKyAgaWYgKGV2dFtp
-XSA9PSBzc19laWQpOg0KDQpUaG9zZSB3aGlsZSAoLi4uKXMgYW5kIGlmICguLi4pcyBhcmUgdmVy
-eSBDIHN0eWxlIFB5dGhvbiBjb2RlIDopDQpVc3VhbGx5IHBhcmVudGhlc2VzIGFyZSBuZWVkZWQg
-b25seSB3aGVuIHRoZSBleHByZXNzaW9uIGluc2lkZSBpcyB0b28NCmxvbmcgYW5kIG9uZSB3YW50
-cyB0byBicmVhayBpdCBvbiBzZXZlcmFsIGxpbmVzLg0KDQpTaW5jZSB3ZSBkb24ndCBoYXZlIGEg
-Ymxlc3NlZCBQeXRob24gc3R5bGUgZ3VpZGUsIEkgd291bGQgc3VnZ2VzdA0Kc3RpY2tpbmcgdG8g
-cGVwOFsxXS4gVGhlcmUncyBhbHNvIGEgcGVwOCBjaGVja2VyIHRvb2xbMl0gd2hpY2ggY29tZXMN
-CmhhbmR5IGFuZCBjYW4gcG9pbnQgb3V0IHVuaWRpb21hdGljIGNvZGUuDQoNCkNoZWVycywNCg0K
-LS0gU2xhdmkNCg0KWzFdIGh0dHBzOi8vd3d3LnB5dGhvbi5vcmcvZGV2L3BlcHMvcGVwLTAwMDgv
-DQpbMl0gYGFwdCBpbnN0YWxsIHBlcDhgIG9uIERlYmlhbiBzeXN0ZW1zDQo=
+aG92QHZtd2FyZS5jb20+IHdyb3RlOg0KPHNuaXA+DQo+ICsgICAgICAgaWYgKG9mZnNldF9hcnJh
+eSkNCj4gKyAgICAgICAgICAgICAgIGZyZWUob2Zmc2V0X2FycmF5KTsNCg0KVGhpcyBzaG91bGQg
+YmUNCiAgICBmcmVlKCpvZmZzZXRfYXJyYXkpOw0KYW5kIGRpdHRvIGZvciB0aGUgcmVzdC4NCg0K
+QWxzbyBpbiB0aGUgdmVyeSB1bmxpa2VseSBldmVudCBvZiBtYWxsb2MoKSBmYWlsaW5nLCBpZiB0
+aGUgY2FsbGVyDQpkaWRuJ3QgaW5pdGlhbGl6ZSB0aGUgYXJndW1lbnRzIGJlZm9yZSBjYWxsaW5n
+LCB0aGlzIHdpbGwgYmUgY2FsbGluZw0KZnJlZSgpIHdpdGggZ2FyYmFnZS4gSWYgd2UncmUgcGFy
+YW5vaWQgZm9yIHRoaXMgY2FzZSwgd2UgY2FuIGVpdGhlcg0KMSkgaGF2ZSBOVUxMIGluaXRpYWxp
+emVkIGxvY2FsIHZhcmlhYmxlcyB3aGVyZSB3ZSBtYWxsb2MoKSBhbmQgb24NCmZhaWx1cmUgZnJl
+ZSgpLCBvciBvbiBzdWNjZXNzIGFzc2lnbiB0byB0aGUgb3V0cHV0IGFyZ3VtZW50cw0KMikgaGF2
+ZSBhIHNlcGFyYXRlIGxhYmVsIGZvciBlYWNoIG1hbGxvYygpIGZhaWx1cmUgY2FzZSBhbmQganVt
+cCB0bw0KdGhlIGNvcnJlY3QgbGFiZWwgd2hlbiBtYWxsb2MoKSBmYWlscw0KDQotLSBTbGF2aQ0K
