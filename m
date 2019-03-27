@@ -2,309 +2,123 @@ Return-Path: <SRS0=8Y6V=R6=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 381ABC43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 22:54:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61A20C43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 23:25:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ECB3520811
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 22:54:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 112822082F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 23:25:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CP4W/IAf"
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="i2xt+IMV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727436AbfC0WyM (ORCPT
+        id S1726127AbfC0XZE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Mar 2019 18:54:12 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:44879 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbfC0WyM (ORCPT
+        Wed, 27 Mar 2019 19:25:04 -0400
+Received: from mail-eopbgr760080.outbound.protection.outlook.com ([40.107.76.80]:3616
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726055AbfC0XZE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Mar 2019 18:54:12 -0400
-Received: by mail-io1-f65.google.com with SMTP id u12so15559021iop.11
-        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Mar 2019 15:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iYJViHbqMVPK7Jh1Xf6+WGNmmd+V1PQ44q0lAio226Q=;
-        b=CP4W/IAfxVZIyJbGV0UdbsZBAmNc30pwkdILVgFGLWBeyTDrwaf3nV5lBS9fDHskOH
-         Cs4x40Vy1+fnghT6NH6QQENdJ22OrHU5a6XQP6maLOlO3cJo+jUQOVtp6+EHpZzcLBXN
-         b7wAgcUJt/LZ2SFpJZoOoROq3lykehI5O+5V0TiTorNWpUHU+VjkqjYW/Lzjed0TmdUB
-         k1/kqfLNqtB7yAMFquhPm8m15CnKYTmYF/fIek75trc/0eEilniyoxVD7YCd5XkdUlNl
-         yH4zlcKOZ5L95xYgsah4KuDwOxugv0kMB79vLeDFgJKHWWYhd+1kAsrffhJCiNnG19eb
-         ExjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iYJViHbqMVPK7Jh1Xf6+WGNmmd+V1PQ44q0lAio226Q=;
-        b=c9Cf+8Y3OcFDZfqoz9B9f7zk+CWPlzyiR7WA43uDMfJnwW8ATPLy5jqMhSJwB+WDZ/
-         4cFZgprzxPv2hQJ/xbgOo+dN8nNUnL2yfx9HuaBTH8hmk3jgFN1lbKzC8oB7EtjC2E6n
-         MpVesVFPfDqYE/8g2O6RCFNUuI++CUmOih6TKx+jsOIfbng+eyhIVi+9GtAUa82qW6sK
-         AmN1lIfMaOMOQ5rpHV1nR9DiVHQtTYGBg0oCOm/4y4CQpLHCdSF/s2UijkoIpqXsihKC
-         fXgIbHBs0j9x2eoMFje7NETXvIY+Wgc4WI3yU6W5vGC9jdmzVY1QDcLPyO8B+bUG1ln1
-         KFbw==
-X-Gm-Message-State: APjAAAXjnIzlcNndZMJaDHV9axns8ECE+CpGGLnuIglyzssij0ut9Vqq
-        1zjWfbxT7ztzaHr1qkfouQDJpZlbqMm13G3vug==
-X-Google-Smtp-Source: APXvYqwAbPfMIps6ENJUKPjCksLcmvgx4Gy641a2GXtDx7T6mO5qQnuOdXlQAjuECWzKIyofvCa7W/Sgw0ZYGNxO8U4=
-X-Received: by 2002:a6b:d307:: with SMTP id s7mr26896988iob.81.1553727250855;
- Wed, 27 Mar 2019 15:54:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190327160323.31654-1-ykaradzhov@vmware.com> <20190327160323.31654-5-ykaradzhov@vmware.com>
-In-Reply-To: <20190327160323.31654-5-ykaradzhov@vmware.com>
-From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Date:   Thu, 28 Mar 2019 00:53:59 +0200
-Message-ID: <CAE0o1Nso6ODRjJ0e-rcLPAOPe-pue0y9=qgsysLMBCknB-ZvJg@mail.gmail.com>
-Subject: Re: [RFC 4/7] kernel-shark: Add the core components of the NumPy API
+        Wed, 27 Mar 2019 19:25:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pJPhLalaHfzmqfzsQptv6WJJzN5STI3uCQWA3+vmPBk=;
+ b=i2xt+IMVzBpr3jjgmmdwo8Kq7oK4NkOH9cE9LhInROUTYA5czmW1jIOFuUMpaDD4lMmZQ3t6hKUKGiZAjA1UH9Qkexcsq1PJyNvCfUZF7P8hqTh1ABOqovCLuhiwmXhTFTVbIsa9tEb3NfBTj6VUA3hczaqg0dYYCZIGdfSH7Uw=
+Received: from MWHPR0501MB3772.namprd05.prod.outlook.com (10.167.163.156) by
+ MWHPR0501MB3881.namprd05.prod.outlook.com (10.167.173.24) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1750.13; Wed, 27 Mar 2019 23:25:01 +0000
+Received: from MWHPR0501MB3772.namprd05.prod.outlook.com
+ ([fe80::b9a6:ba16:fc53:bb41]) by MWHPR0501MB3772.namprd05.prod.outlook.com
+ ([fe80::b9a6:ba16:fc53:bb41%5]) with mapi id 15.20.1750.010; Wed, 27 Mar 2019
+ 23:25:01 +0000
+From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     Yordan Karadzhov <ykaradzhov@vmware.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org,
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [RFC 7/7] kernel-shark: Add basic example demonstrating the NumPy
+ interface
+Thread-Topic: [RFC 7/7] kernel-shark: Add basic example demonstrating the
+ NumPy interface
+Thread-Index: AQHU5PRMftAUGyN58UyMwSeXlygv5Q==
+Date:   Wed, 27 Mar 2019 23:25:01 +0000
+Message-ID: <CAE0o1Nv+LoROA9sgj=+ByRH8CH8htKH7DnTgAh58j6ZnyEWn1A@mail.gmail.com>
+References: <20190327160323.31654-1-ykaradzhov@vmware.com>
+ <20190327160323.31654-8-ykaradzhov@vmware.com>
+In-Reply-To: <20190327160323.31654-8-ykaradzhov@vmware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: DM5PR13CA0010.namprd13.prod.outlook.com
+ (2603:10b6:3:23::20) To MWHPR0501MB3772.namprd05.prod.outlook.com
+ (2603:10b6:301:7a::28)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=kaslevs@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-gm-message-state: APjAAAXj3LteOG2C2dqg7cJV0qvTGM5ICzMbPmJWNaDO1F+//L/hAUjL
+        4wF//XdZXKgv6a/IJXf1UYL3Vgi0jKR0+/fHyQ==
+x-google-smtp-source: APXvYqwj28LQ/JoKA31y78JSRV1BdtenzsojuoYNnMGZ38Gk/Qzmcn2ECqjYMlWDAJC7Jyk9Q2r2xuinOg4XyVZpBoc=
+x-received: by 2002:a02:9a02:: with SMTP id b2mr5524345jal.120.1553729097681;
+ Wed, 27 Mar 2019 16:24:57 -0700 (PDT)
+x-gmail-original-message-id: <CAE0o1Nv+LoROA9sgj=+ByRH8CH8htKH7DnTgAh58j6ZnyEWn1A@mail.gmail.com>
+x-originating-ip: [209.85.166.173]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f8c0913b-44e6-4eae-d4ae-08d6b30b6e7e
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);SRVR:MWHPR0501MB3881;
+x-ms-traffictypediagnostic: MWHPR0501MB3881:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <MWHPR0501MB3881930B56B1812BE91EA4B7DA580@MWHPR0501MB3881.namprd05.prod.outlook.com>
+x-forefront-prvs: 0989A7979C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(979002)(366004)(376002)(39860400002)(396003)(136003)(346002)(199004)(189003)(5660300002)(55446002)(229853002)(25786009)(6486002)(14454004)(95326003)(61726006)(478600001)(256004)(107886003)(71200400001)(71190400001)(8676002)(52116002)(68736007)(4326008)(6862004)(966005)(6436002)(99286004)(76176011)(2906002)(81156014)(3846002)(81166006)(6116002)(6246003)(98316002)(54906003)(53936002)(498394004)(6506007)(53546011)(386003)(6306002)(9686003)(6512007)(316002)(102836004)(8936002)(26005)(66066001)(61266001)(11346002)(106356001)(186003)(105586002)(486006)(86362001)(6636002)(446003)(476003)(97736004)(7736002)(305945005)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:MWHPR0501MB3881;H:MWHPR0501MB3772.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: eQm5SuF7mmDazWE1CPAauWKP1G2v/p25MwKYSvS/4d0GFjknpW/KbBWTT0bn5VeYZZ68QNxMthDL4gIlHcjjaheVMI3Dokf8rz1xbdEYDOELv3NXHuswo41xQZ7gY4H3dsnspe38lf6I00OcM52+3CqoA2RGxC0xrYRNqbOUEz+rNkxs4tLyH2X09h3/QJT1nYOVZy/U7Pbf3HYZWwy8SNsLqkoddowz1+U6LDEM8EESi+PFT+s+DwFzNVqVctGUInuL4B65oDFaPMB/kxhqOyd2WjWAjsRTace8dFoB6tVC73w7tfC79rSFMn+v1cUwKsuG9Ei8z/00w1Qa7NEm1xb9AAUeh2vkziV2HEVcaxSH3ZPv5l6uSL7n/4r35r2222Iiy2Q/zYCORwYITnexaaodLmPBhVGH2p2XeDHTYp8=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <691E578AF82CFF4DAB71833BEF4A4E85@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8c0913b-44e6-4eae-d4ae-08d6b30b6e7e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Mar 2019 23:25:01.0169
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0501MB3881
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Mar 27, 2019 at 6:04 PM Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
->
-> The NumPy API is meant to operate on top of the C API-s of trace-cmd and
-> KernelShark and to provide only the minimum of basic functionalities needed
-> in order to processor the tracing data. The NumPy API itself is made of two
-> layers. A bottom-one written in C and a top-one which implements the
-> interface, written in Cython (C-Python). This patch introduces the C layer.
-
-Why is there a need for two layers? Since the upper layer is Cython,
-it can access the libkernelshark C API just fine. I don't understand
-the need for this middle layer.
-
-Also there's already a Python binding for traceevent, maybe we can
-utilize it for this instead of providing an ad hoc binding for trace
-events here too?
-
-On an unrelated note, Python 2 will be hitting its end of life date in
-a couple of months[1]. Does it make sense to start with Python 2 in
-2019 when we'll need to port it to Python 3 in the very near future? I
-think going for Python 3 only might be a better choice.
-
-[1] https://pythonclock.org/
-
-Several non high-level comments follow inline.
-
->
-> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
-> ---
->  kernel-shark/src/libkshark-py.c | 176 ++++++++++++++++++++++++++++++++
->  1 file changed, 176 insertions(+)
->  create mode 100644 kernel-shark/src/libkshark-py.c
->
-> diff --git a/kernel-shark/src/libkshark-py.c b/kernel-shark/src/libkshark-py.c
-> new file mode 100644
-> index 0000000..4c589f3
-> --- /dev/null
-> +++ b/kernel-shark/src/libkshark-py.c
-> @@ -0,0 +1,176 @@
-> +// SPDX-License-Identifier: LGPL-2.1
-> +
-> +/*
-> + * Copyright (C) 2019 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-> + */
-> +
-> + /**
-> + *  @file    libpykshark-py.c
-
-                      ^ libkshark-py.c?
-
-> + *  @brief   Python API for processing of FTRACE (trace-cmd) data.
-> + */
-> +
-> +// KernelShark
-> +#include "libkshark.h"
-> +#include "libkshark-model.h"
-> +
-> +bool kspy_open(const char *fname)
-> +{
-> +       struct kshark_context *kshark_ctx = NULL;
-> +
-> +       if (!kshark_instance(&kshark_ctx))
-> +               return false;
-> +
-> +       return kshark_open(kshark_ctx, fname);
-> +}
-> +
-> +void kspy_close(void)
-> +{
-> +       struct kshark_context *kshark_ctx = NULL;
-> +
-> +       if (!kshark_instance(&kshark_ctx))
-> +               return;
-> +
-> +       kshark_close(kshark_ctx);
-> +       kshark_free(kshark_ctx);
-> +}
-> +
-> +static int compare(const void * a, const void * b)
-> +{
-> +  return ( *(int*)a - *(int*)b );
-> +}
-> +
-> +size_t kspy_get_tasks(int **pids, char ***names)
-> +{
-> +       struct kshark_context *kshark_ctx = NULL;
-> +       const char *comm;
-> +       ssize_t i, n;
-> +       int ret;
-> +
-> +       if (!kshark_instance(&kshark_ctx))
-> +               return 0;
-> +
-> +       n = kshark_get_task_pids(kshark_ctx, pids);
-> +       if (n == 0)
-> +               return 0;
-> +
-> +       qsort(*pids, n, sizeof(**pids), compare);
-> +
-> +       *names = calloc(n, sizeof(char*));
-> +       if (!(*names))
-> +               goto fail;
-> +
-> +       for (i = 0; i < n; ++i) {
-> +               comm = tep_data_comm_from_pid(kshark_ctx->pevent, (*pids)[i]);
-> +               ret = asprintf(&(*names)[i], "%s", comm);
-> +               if (ret < 1)
-> +                       goto fail;
-> +       }
-> +
-> +       return n;
-> +
-> +  fail:
-> +       free(*pids);
-> +       free(*names);
-> +       return 0;
-> +}
-> +
-> +size_t kspy_trace2matrix(uint64_t **offset_array,
-> +                        uint8_t **cpu_array,
-> +                        uint64_t **ts_array,
-> +                        uint16_t **pid_array,
-> +                        int **event_array)
-> +{
-> +       struct kshark_context *kshark_ctx = NULL;
-> +       size_t total = 0;
-> +
-> +       if (!kshark_instance(&kshark_ctx))
-> +               return false;
-> +
-> +       total = kshark_load_data_matrix(kshark_ctx, offset_array,
-> +                                       cpu_array,
-> +                                       ts_array,
-> +                                       pid_array,
-> +                                       event_array);
-> +
-> +       return total;
-> +}
-> +
-> +int kspy_get_event_id(const char *sys, const char *evt)
-> +{
-> +       struct kshark_context *kshark_ctx = NULL;
-> +       struct tep_event *event;
-> +
-> +       if (!kshark_instance(&kshark_ctx))
-> +               return -1;
-> +
-> +       event = tep_find_event_by_name(kshark_ctx->pevent, sys, evt);
-> +
-> +       return event->id;
-> +}
-> +
-> +uint64_t kspy_read_event_field(uint64_t offset, const char *sys,
-> +                                               const char *evt,
-> +                                               const char *field)
-> +{
-> +       struct kshark_context *kshark_ctx = NULL;
-> +       struct tep_format_field *evt_field;
-> +       struct tep_record *record;
-> +       struct tep_event *event;
-> +       unsigned long long val;
-> +       int ret;
-> +
-> +       if (!kshark_instance(&kshark_ctx))
-> +               return 0;
-> +
-> +       event = tep_find_event_by_name(kshark_ctx->pevent, sys, evt);
-
-tep_find_event_by_name() is linear in the number of events and it does
-a couple of thousand string comparisons. So calling
-kspy_read_event_field() in a loop can get *really* slow. I haven't
-measured, but I would guess that a good chunk of the running time of
-the script in patch 7 is spent in this function.
-
-We might want to provide an efficient API using event ids instead and
-use tep_find_event() (which does binary search; that is 10s of
-numerical comparisons) here to prevent Python users shooting
-themselves in the foot performance-wise.
-
-> +       if (!event)
-> +               return 0;
-> +
-> +       evt_field = tep_find_any_field(event, field);
-> +       if (!evt_field)
-> +               return 0;
-> +
-> +       record = tracecmd_read_at(kshark_ctx->handle, offset, NULL);
-> +       if (!record)
-> +               return 0;
-> +
-> +       ret = tep_read_number_field(evt_field, record->data, &val);
-> +       free_record(record);
-> +
-> +       if (ret != 0)
-> +               return 0;
-> +
-> +       return val;
-> +}
-> +
-> +void kspy_new_session_file(const char *data_file, const char *session_file)
-> +{
-> +       struct kshark_context *kshark_ctx = NULL;
-> +       struct kshark_trace_histo histo;
-> +       struct kshark_config_doc *session;
-> +       struct kshark_config_doc *filters;
-> +       struct kshark_config_doc *markers;
-> +       struct kshark_config_doc *model;
-> +       struct kshark_config_doc *file;
-> +
-> +       if (!kshark_instance(&kshark_ctx))
-> +               return;
-> +
-> +       session = kshark_config_new("kshark.config.session",
-> +                                   KS_CONFIG_JSON);
-> +
-> +       file = kshark_export_trace_file(data_file, KS_CONFIG_JSON);
-> +       kshark_config_doc_add(session, "Data", file);
-> +
-> +       filters = kshark_export_all_filters(kshark_ctx, KS_CONFIG_JSON);
-> +       kshark_config_doc_add(session, "Filters", filters);
-> +
-> +       ksmodel_init(&histo);
-> +       model = kshark_export_model(&histo, KS_CONFIG_JSON);
-> +       kshark_config_doc_add(session, "Model", model);
-> +
-> +       markers = kshark_config_new("kshark.config.markers", KS_CONFIG_JSON);
-> +       kshark_config_doc_add(session, "Markers", markers);
-> +
-> +       kshark_save_config_file(session_file, session);
-> +}
-
-Aren't the struct kshark_config_doc variables leaking from this function?
-
-Also, this function doesn't seem related to the Python bindings at
-all. If it's useful on it's own, you might want to have it in
-libkernelshark.
-The Python binding layer should not contain any additional logic
-besides defining the binding itself imo.
-
--- Slavi
+T24gV2VkLCBNYXIgMjcsIDIwMTkgYXQgNjowNCBQTSBZb3JkYW4gS2FyYWR6aG92IDx5a2FyYWR6
+aG92QHZtd2FyZS5jb20+IHdyb3RlOg0KPg0KPiBUaGUgZXhhbXBsZSBzY3JpcHQgcGxvdHMgdGhl
+IGRpc3RyaWJ1dGlvbiAoaGlzdG9ncmFtKSBvZiB0aGUgcHVsc2VhdWRpbw0KPiB3YWtlLXVwIHRp
+bWVzIGFuZCBmaW5kcyB0aGUgYmlnZ2VzdCBsYXRlbmN5LiBUaGUgc2NyaXB0IGFsc28gZ2VuZXJh
+dGVzDQo+IGEgS2VybmVsU2hhcmsgc2Vzc2lvbiBkZXNjcmlwdG9yIGZpbGUgKEpTT04pLiBUaGUg
+c2Vzc2lvbiBkZXNjcmlwdG9yIGZpbGUNCj4gY2FuIGJlIHVzZWQgYnkgdGhlIEtlcm5lbFNoZXJr
+IEdVSSB0byBvcGVuIGEgc2Vzc2lvbiB3aGljaCB3aWxsIGRpcmVjdGx5DQo+IHZpc3VhbGl6ZSB0
+aGUgbGFyZ2VzdCB3YWtlLXVwIGxhdGVuY3kuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IFlvcmRhbiBL
+YXJhZHpob3YgPHlrYXJhZHpob3ZAdm13YXJlLmNvbT4NCj4gLS0tDQo+ICBrZXJuZWwtc2hhcmsv
+YmluL3NjaGVkX3dha2V1cC5weSB8IDk2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+DQo+ICAxIGZpbGUgY2hhbmdlZCwgOTYgaW5zZXJ0aW9ucygrKQ0KPiAgY3JlYXRlIG1vZGUgMTAw
+NzU1IGtlcm5lbC1zaGFyay9iaW4vc2NoZWRfd2FrZXVwLnB5DQo+DQo+IGRpZmYgLS1naXQgYS9r
+ZXJuZWwtc2hhcmsvYmluL3NjaGVkX3dha2V1cC5weSBiL2tlcm5lbC1zaGFyay9iaW4vc2NoZWRf
+d2FrZXVwLnB5DQoNCjxzbmlwPg0KDQo+ICt3aGlsZSAoaSA+PSAwKToNCj4gKyAgaWYgKGV2dFtp
+XSA9PSBzc19laWQpOg0KDQpUaG9zZSB3aGlsZSAoLi4uKXMgYW5kIGlmICguLi4pcyBhcmUgdmVy
+eSBDIHN0eWxlIFB5dGhvbiBjb2RlIDopDQpVc3VhbGx5IHBhcmVudGhlc2VzIGFyZSBuZWVkZWQg
+b25seSB3aGVuIHRoZSBleHByZXNzaW9uIGluc2lkZSBpcyB0b28NCmxvbmcgYW5kIG9uZSB3YW50
+cyB0byBicmVhayBpdCBvbiBzZXZlcmFsIGxpbmVzLg0KDQpTaW5jZSB3ZSBkb24ndCBoYXZlIGEg
+Ymxlc3NlZCBQeXRob24gc3R5bGUgZ3VpZGUsIEkgd291bGQgc3VnZ2VzdA0Kc3RpY2tpbmcgdG8g
+cGVwOFsxXS4gVGhlcmUncyBhbHNvIGEgcGVwOCBjaGVja2VyIHRvb2xbMl0gd2hpY2ggY29tZXMN
+CmhhbmR5IGFuZCBjYW4gcG9pbnQgb3V0IHVuaWRpb21hdGljIGNvZGUuDQoNCkNoZWVycywNCg0K
+LS0gU2xhdmkNCg0KWzFdIGh0dHBzOi8vd3d3LnB5dGhvbi5vcmcvZGV2L3BlcHMvcGVwLTAwMDgv
+DQpbMl0gYGFwdCBpbnN0YWxsIHBlcDhgIG9uIERlYmlhbiBzeXN0ZW1zDQo=
