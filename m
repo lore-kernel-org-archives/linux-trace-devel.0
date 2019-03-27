@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4829C4360F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71C98C43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8EB4620700
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4AA8A20700
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727405AbfC0QDs (ORCPT
+        id S1727446AbfC0QDu (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Mar 2019 12:03:48 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:34607 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbfC0QDs (ORCPT
+        Wed, 27 Mar 2019 12:03:50 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:35636 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbfC0QDu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Mar 2019 12:03:48 -0400
-Received: by mail-pf1-f193.google.com with SMTP id b3so8550169pfd.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Mar 2019 09:03:47 -0700 (PDT)
+        Wed, 27 Mar 2019 12:03:50 -0400
+Received: by mail-pl1-f196.google.com with SMTP id p19so3527551plo.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Mar 2019 09:03:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=S4vA5wGkuKQVJQjjTTVBOBVpJVgygzrAd4O1sEikO9o=;
-        b=mCpAuuFZ4wRXkHwgsmCuPhBYHOTCq+0dBiqFj2rGKTSYZzlTDRWGCEy/CU9Mo6KaMe
-         S/Ij4gNvXAnzrQJtI8PTzN8V1ZT46VPDKevDZheL/uyxJdi5KqwBIeFs0Tsj9RvGO+yP
-         bkrRQFnU7XW5sQIwKrWoGFJuaDaQTJSC4egHpMM9clQOL5CMzAYoHUH62RdNdNPujO41
-         O0xkoIYMMJT/9dv6OpErq0j8F8w2QyHH9HU4Bw+5SObIdYeFsRUHP9/UCwWywo4mfzxc
-         57Nglb6bHHxA0XL0g6MqnLLH+nvZcG6e+qLpo4CG4IdpEaXgxUpFEOvXoW56EcYnr3dG
-         jQ7Q==
-X-Gm-Message-State: APjAAAWDXh7F7JQIk3NPLjUVGJS93RMGjtqvpV3z3PwLXckKAgRcY7YA
-        wjkgPotfLB72eHHeEMN1taA=
-X-Google-Smtp-Source: APXvYqx3rvZC5ySmfbKGti36DwCN23zJOIpqOr4fILagvVzvP21mxEqi17hpO//+dSG1WPb915SOIg==
-X-Received: by 2002:a62:174c:: with SMTP id 73mr36156740pfx.33.1553702627345;
-        Wed, 27 Mar 2019 09:03:47 -0700 (PDT)
+        bh=8zVIyzNbGKGvrkTMc44Mf2RnGpRFEVAMRC3Fuut3EY4=;
+        b=MAwxM9rXmTIMTEr+1B+KNng7xELfalSTh9B1SNeaCjholkhEjatGYEx8SdZbOHiFtM
+         06q/QyqA0R4OIerrVJXtdwZOoWiXWx4s1J+pxum19dkKJkn2Oi+BmfytfNkF2Wz8Z/pA
+         EAR6CvRXix7wjFm5sA2ppSTCsHDYXmWxMaLZJBl4dFFwYt3UxPS4nKPYBHV1/XE0vsKq
+         ba5Hj/k2JYFHKwtJYYNuKRSLntXeG6Er15OsPFymgYd67y/zX0f1a/n/wTfi+yGKsD3F
+         aD5BEy/yrPWmvG+bhxL/YjrldFKq/lh8tn+u7fM8VlExHWtOiGsSjcsh64NBoIdrlGRa
+         KGTQ==
+X-Gm-Message-State: APjAAAUq20NLFPsbOp6a0doFDXiBY0e8w1BLznsfPhxfqix+578wa+3R
+        GV6Y2gGehkf6GO+gfktEMfg=
+X-Google-Smtp-Source: APXvYqy2Yes96WdAD9NBd90azT188FCf6od3fEiMGW4R9kNYMng2pHvtGdP3+xqclolikrS3EZrjvQ==
+X-Received: by 2002:a17:902:e684:: with SMTP id cn4mr14690498plb.71.1553702629385;
+        Wed, 27 Mar 2019 09:03:49 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id p88sm36150806pfa.80.2019.03.27.09.03.45
+        by smtp.gmail.com with ESMTPSA id p88sm36150806pfa.80.2019.03.27.09.03.47
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Mar 2019 09:03:46 -0700 (PDT)
+        Wed, 27 Mar 2019 09:03:48 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com
-Subject: [RFC 2/7] kernel-shark: Add new dataloading method to be used by the NumPu interface
-Date:   Wed, 27 Mar 2019 18:03:18 +0200
-Message-Id: <20190327160323.31654-3-ykaradzhov@vmware.com>
+Subject: [RFC 3/7] kernel-shark: Prepare for building the NumPy interface
+Date:   Wed, 27 Mar 2019 18:03:19 +0200
+Message-Id: <20190327160323.31654-4-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190327160323.31654-1-ykaradzhov@vmware.com>
 References: <20190327160323.31654-1-ykaradzhov@vmware.com>
@@ -58,173 +58,94 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The new function loads the content of the trace data file into a
-table / matrix, made of columns / arrays of data having various integer
-types. Later those arrays will be wrapped as NumPy arrays.
+This patch prepares the Cmake build infrastructure for the
+introduction of a the NumPy interface.
+
+We add building of a static version of the C API library to be used by
+the interface. The NumPy interface itself will be added in the following
+patches.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/libkshark.c | 128 +++++++++++++++++++++++++++++++++++
- kernel-shark/src/libkshark.h |   7 ++
- 2 files changed, 135 insertions(+)
+ kernel-shark/CMakeLists.txt     |  3 +++
+ kernel-shark/README             | 12 ++++++++++--
+ kernel-shark/src/CMakeLists.txt | 19 +++++++++++++++++++
+ 3 files changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/kernel-shark/src/libkshark.c b/kernel-shark/src/libkshark.c
-index a886f80..20b1594 100644
---- a/kernel-shark/src/libkshark.c
-+++ b/kernel-shark/src/libkshark.c
-@@ -959,6 +959,134 @@ ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
- 	return -ENOMEM;
- }
+diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
+index 20ced14..0c5d7a7 100644
+--- a/kernel-shark/CMakeLists.txt
++++ b/kernel-shark/CMakeLists.txt
+@@ -34,6 +34,9 @@ if (Qt5Widgets_FOUND)
  
-+static bool data_matrix_alloc(size_t n_rows, uint64_t **offset_array,
-+					     uint8_t **cpu_array,
-+					     uint64_t **ts_array,
-+					     uint16_t **pid_array,
-+					     int **event_array)
-+{
-+	if (offset_array) {
-+		*offset_array = calloc(n_rows, sizeof(**offset_array));
-+		if (!offset_array)
-+			goto free_all;
-+	}
-+
-+	if (cpu_array) {
-+		*cpu_array = calloc(n_rows, sizeof(**cpu_array));
-+		if (!cpu_array)
-+			goto free_all;
-+	}
-+
-+	if (ts_array) {
-+		*ts_array = calloc(n_rows, sizeof(**ts_array));
-+		if (!ts_array)
-+			goto free_all;
-+	}
-+
-+	if (pid_array) {
-+		*pid_array = calloc(n_rows, sizeof(**pid_array));
-+		if (!pid_array)
-+			goto free_all;
-+	}
-+
-+	if (event_array) {
-+		*event_array = calloc(n_rows, sizeof(**event_array));
-+		if (!event_array)
-+			goto free_all;
-+	}
-+
-+	return true;
-+
-+ free_all:
-+	fprintf(stderr, "Failed to allocate memory during data loading.\n");
-+
-+	if (offset_array)
-+		free(offset_array);
-+
-+	if (cpu_array)
-+		free(cpu_array);
-+
-+	if (ts_array)
-+		free(ts_array);
-+
-+	if (pid_array)
-+		free(pid_array);
-+
-+	if (event_array)
-+		free(event_array);
-+
-+	return false;
-+}
-+
-+/**
-+ * @brief Load the content of the trace data file into a table / matrix made
-+ *	  of columns / arrays of data. The user is responsible for freeing the
-+ *	  elements of the outputted array
-+ *
-+ * @param kshark_ctx: Input location for the session context pointer.
-+ * @param offset_array: Output location for the array of record offsets.
-+ * @param cpu_array: Output location for the array of CPU Ids.
-+ * @param ts_array: Output location for the array of timestamps.
-+ * @param pid_array: Output location for the array of Process Ids.
-+ * @param event_array: Output location for the array of Event Ids.
-+ *
-+ * @returns The size of the outputted arrays in the case of success, or a
-+ *	    negative error code on failure.
-+ */
-+size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
-+			       uint64_t **offset_array,
-+			       uint8_t **cpu_array,
-+			       uint64_t **ts_array,
-+			       uint16_t **pid_array,
-+			       int **event_array)
-+{
-+	enum rec_type type = REC_RECORD;
-+	struct rec_list **rec_list;
-+	struct tep_record *rec;
-+	size_t count, total = 0;
-+	bool status;
-+	int n_cpus;
-+
-+	total = get_records(kshark_ctx, &rec_list, REC_RECORD);
-+	if (total < 0)
-+		goto fail;
-+
-+	status = data_matrix_alloc(total, offset_array,
-+					  cpu_array,
-+					  ts_array,
-+					  pid_array,
-+					  event_array);
-+	if (!status)
-+		goto fail;
-+
-+	n_cpus = tracecmd_cpus(kshark_ctx->handle);
-+
-+	for (count = 0; count < total; count++) {
-+		int next_cpu;
-+
-+		next_cpu = pick_next_cpu(rec_list, n_cpus, type);
-+		if (next_cpu >= 0) {
-+			rec = rec_list[next_cpu]->rec;
-+
-+			(*offset_array)[count] = rec->offset;
-+			(*cpu_array)[count] = rec->cpu;
-+			(*ts_array)[count] = rec->ts;
-+			(*pid_array)[count] = tep_data_pid(kshark_ctx->pevent, rec);
-+			(*event_array)[count] = tep_data_type(kshark_ctx->pevent, rec);
-+
-+			rec_list[next_cpu] = rec_list[next_cpu]->next;
-+		}
-+	}
-+
-+	free_rec_list(rec_list, n_cpus, type);
-+
-+	return total;
-+
-+ fail:
-+	fprintf(stderr, "Failed to allocate memory during data loading.\n");
-+	return -ENOMEM;
-+}
-+
- static const char *kshark_get_latency(struct tep_handle *pe,
- 				      struct tep_record *record)
- {
-diff --git a/kernel-shark/src/libkshark.h b/kernel-shark/src/libkshark.h
-index c218b61..92ade41 100644
---- a/kernel-shark/src/libkshark.h
-+++ b/kernel-shark/src/libkshark.h
-@@ -149,6 +149,13 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
- ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
- 				 struct tep_record ***data_rows);
+ endif (Qt5Widgets_FOUND)
  
-+size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
-+			       uint64_t **offset_array,
-+			       uint8_t **cpu_array,
-+			       uint64_t **ts_array,
-+			       uint16_t **pid_array,
-+			       int **event_array);
++find_package(PythonLibs)
++include(${KS_DIR}/build/FindNumPy.cmake)
 +
- ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int **pids);
+ set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
+ set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
  
- void kshark_close(struct kshark_context *kshark_ctx);
+diff --git a/kernel-shark/README b/kernel-shark/README
+index efc6748..5a723a4 100644
+--- a/kernel-shark/README
++++ b/kernel-shark/README
+@@ -12,7 +12,11 @@ KernelShark has the following external dependencies:
+     sudo apt-get install freeglut3-dev libxmu-dev libxi-dev -y
+     sudo apt-get install qtbase5-dev -y
+ 
+-1.1 I you want to be able to generate Doxygen documentation:
++1.1 I you want to be able to use the NumPu Interface of KernelShark:
++    sudo apt-get install libpython-dev cython -y
++    sudo apt-get install python-numpy python-matplotlib -y
++
++1.2 I you want to be able to generate Doxygen documentation:
+     sudo apt-get install graphviz doxygen-gui -y
+ 
+ 
+@@ -21,7 +25,11 @@ KernelShark has the following external dependencies:
+     dnf install freeglut-devel redhat-rpm-config -y
+     dnf install qt5-qtbase-devel -y
+ 
+-2.1 I you want to be able to generate Doxygen documentation:
++2.1 I you want to be able to use the NumPu Interface of KernelShark:
++    dnf install python2-devel python-Cython -y
++    dnf install python-numpy python3-matplotlib -y
++
++2.2 I you want to be able to generate Doxygen documentation:
+     dnf install graphviz doxygen -y
+ 
+ 
+diff --git a/kernel-shark/src/CMakeLists.txt b/kernel-shark/src/CMakeLists.txt
+index 1e0a794..a3c6743 100644
+--- a/kernel-shark/src/CMakeLists.txt
++++ b/kernel-shark/src/CMakeLists.txt
+@@ -28,6 +28,25 @@ if (OPENGL_FOUND AND GLUT_FOUND)
+ 
+ endif (OPENGL_FOUND AND GLUT_FOUND)
+ 
++if (PYTHONLIBS_FOUND AND CYTHON_FOUND AND NUMPY_FOUND)
++
++    message(STATUS "kshark_wrapper")
++
++    add_library(pykshark STATIC libkshark.c
++                                libkshark-model.c
++                                libkshark-plugin.c
++                                libkshark-configio.c
++                                libkshark-collection.c)
++
++    target_compile_options(pykshark PUBLIC "-fPIC")
++
++    target_link_libraries(pykshark ${TRACEEVENT_LIBRARY}
++                                   ${TRACECMD_LIBRARY}
++                                   ${CMAKE_DL_LIBS}
++                                   ${JSONC_LIBRARIES})
++
++endif (PYTHONLIBS_FOUND AND CYTHON_FOUND AND NUMPY_FOUND)
++
+ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+ 
+     message(STATUS "libkshark-gui")
 -- 
 2.19.1
 
