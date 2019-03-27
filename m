@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83CAFC43381
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CAEBC43381
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5E24D20700
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F6FF20700
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Mar 2019 16:03:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbfC0QD4 (ORCPT
+        id S1727574AbfC0QD6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Mar 2019 12:03:56 -0400
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:41303 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727391AbfC0QDz (ORCPT
+        Wed, 27 Mar 2019 12:03:58 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:38841 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727397AbfC0QD5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Mar 2019 12:03:55 -0400
-Received: by mail-pl1-f179.google.com with SMTP id y5so3518585plk.8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Mar 2019 09:03:55 -0700 (PDT)
+        Wed, 27 Mar 2019 12:03:57 -0400
+Received: by mail-pl1-f196.google.com with SMTP id g37so3524473plb.5
+        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Mar 2019 09:03:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QZrbwSiXW/iuRzMjIVeyxRnny31c5JnD9Xwt8Sn+1Lg=;
-        b=XA/2U6CJ2BB1cf6jC6C9+2H0XV9UfcAMMoXVnLu16VmyKu5c1gcC5EoiqQYSKb7dZ7
-         lIMvyPtqldkqGuir0HjTkTHgVynzYyMQXipN2Gc0D2CCuUmEzHZCYVQlX/o5VQOIyyWa
-         4p4aFAf0RPFGjjAXjohu3dO5WVIYpKC8qC+TlBBeR67vDRUbpZAhUL2vtKGvUbs7mm4p
-         HsgGyVxi4oTregqSJYSwiuAfPPg1ALZ1GtirmQZwl7CLVw7QFmRKviezmX68EIq73bV/
-         UNGkmO5Q7v0Yyi0ORIewp8sKHhybrRlDNulD6vrNxIcBcwAyXxE5p+06g7HxlWQyL+wk
-         NXQw==
-X-Gm-Message-State: APjAAAXjtaceJNLywefvuuIK2NSqeejSiFMv12FgLzTPkc+irrhvpfoY
-        Jl2DdV2rPOWRD8YVPNav3Z0=
-X-Google-Smtp-Source: APXvYqyiTul8erKR3tUsXfTTx0PNUGIevF2OSYyHcgA4PVwX5S7WDgcF6p06xbfcZNc2weHE6Kl+zA==
-X-Received: by 2002:a17:902:a5c3:: with SMTP id t3mr38095033plq.293.1553702635302;
-        Wed, 27 Mar 2019 09:03:55 -0700 (PDT)
+        bh=bzWrH+isx16ZgTWNl9NjPHRJcn9B+m5UVfnnt3zY+Qc=;
+        b=A54I/py5o9Hk/zQVhFXYNuA3a6xPeZpCkPch0ZUwOhVIPiRXyiTkT0TqR8pAdfDaW8
+         G2EIZZRw2j2c92Jl3r0rHdV9vhMhPCJZvrjPWaucz+Ii5aJK5AtD38lpmJPhBYPJ8011
+         KaAZAgGAiJ3676AyqdeOcsrqpbGgqsCwqp5o0aLSiRbN1QaNRKUDBAyvHTbwLHjP4UpU
+         YPNXomANX2wHK5R6qaalUP6BLTtyXGaObAJDtxc14XFprWc9FfofvG6FnwwAndU7dcQq
+         xSi3ktJp4hJwGah+0hBVoMgigyn3+Rspz7jQpeVD+/F8pYCgeKFmNtrLzu0gPC7xUIh1
+         r93g==
+X-Gm-Message-State: APjAAAVqhaloVvlnGo9voi2pADGgGL3JmfPjnZYMVLVNGT0FAxLE6WFX
+        +bwVpLEe4p3YTPET4RNUIbU=
+X-Google-Smtp-Source: APXvYqxE1tTSZmrbdAPDrd5ZUTgcSJQH47DnzghuI7kZlR9dgaIu3/E1jLk7U37P2AycUTc7tWtVjA==
+X-Received: by 2002:a17:902:7590:: with SMTP id j16mr3177289pll.98.1553702637271;
+        Wed, 27 Mar 2019 09:03:57 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id p88sm36150806pfa.80.2019.03.27.09.03.53
+        by smtp.gmail.com with ESMTPSA id p88sm36150806pfa.80.2019.03.27.09.03.55
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Mar 2019 09:03:54 -0700 (PDT)
+        Wed, 27 Mar 2019 09:03:56 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com
-Subject: [RFC 6/7] kernel-shark: Add automatic building of the NumPy interface
-Date:   Wed, 27 Mar 2019 18:03:22 +0200
-Message-Id: <20190327160323.31654-7-ykaradzhov@vmware.com>
+Subject: [RFC 7/7] kernel-shark: Add basic example demonstrating the NumPy interface
+Date:   Wed, 27 Mar 2019 18:03:23 +0200
+Message-Id: <20190327160323.31654-8-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190327160323.31654-1-ykaradzhov@vmware.com>
 References: <20190327160323.31654-1-ykaradzhov@vmware.com>
@@ -58,79 +58,120 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-CMAKE will call the python script that build the NumPy interface.
-It will also takes care about cleaning.
+The example script plots the distribution (histogram) of the pulseaudio
+wake-up times and finds the biggest latency. The script also generates
+a KernelShark session descriptor file (JSON). The session descriptor file
+can be used by the KernelSherk GUI to open a session which will directly
+visualize the largest wake-up latency.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/build/py/pybuild.sh | 26 ++++++++++++++++++++++++++
- kernel-shark/src/CMakeLists.txt  | 20 ++++++++++++++++++++
- 2 files changed, 46 insertions(+)
- create mode 100755 kernel-shark/build/py/pybuild.sh
+ kernel-shark/bin/sched_wakeup.py | 96 ++++++++++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100755 kernel-shark/bin/sched_wakeup.py
 
-diff --git a/kernel-shark/build/py/pybuild.sh b/kernel-shark/build/py/pybuild.sh
+diff --git a/kernel-shark/bin/sched_wakeup.py b/kernel-shark/bin/sched_wakeup.py
 new file mode 100755
-index 0000000..978085c
+index 0000000..79dbedd
 --- /dev/null
-+++ b/kernel-shark/build/py/pybuild.sh
-@@ -0,0 +1,26 @@
-+#!/bin/bash
++++ b/kernel-shark/bin/sched_wakeup.py
+@@ -0,0 +1,96 @@
++#!/usr/bin/env python2
 +
-+python np_setup.py --pykslibdir=$1 \
-+                   --trlibdir=$2 \
-+                   --trincdir=$3 \
-+                   --evlibdir=$4 \
-+                   --evincdir=$5 \
-+                   --jsnincdir=$6 \
-+                   build_ext -i &> pybuild.log
++import matplotlib.pyplot as plt
++import libkshark_wrapper as ks
++import scipy.stats as st
++import numpy as np
++import array
++import json
++import sys
 +
-+if grep -q 'error:' pybuild.log; then
-+   cat pybuild.log
-+fi
++fname = str(sys.argv[1])
 +
-+if grep -q 'Error:' pybuild.log; then
-+   cat pybuild.log
-+fi
++ks.open_file(fname)
++ofst, cpu, evt, pid, ts = ks.load_data()
++tasks = ks.get_tasks()
++task_pid = tasks["pulseaudio"]
 +
-+WC=$(grep 'warning' pybuild.log | wc -l)
-+if ((WC > 2)); then
-+   cat pybuild.log
-+fi
++ss_eid = ks.event_id("sched", "sched_switch");
++w_eid = ks.event_id("sched", "sched_waking");
 +
-+if grep -q 'usage:' pybuild.log; then
-+   cat pybuild.log
-+fi
-diff --git a/kernel-shark/src/CMakeLists.txt b/kernel-shark/src/CMakeLists.txt
-index a3c6743..886ddad 100644
---- a/kernel-shark/src/CMakeLists.txt
-+++ b/kernel-shark/src/CMakeLists.txt
-@@ -45,6 +45,26 @@ if (PYTHONLIBS_FOUND AND CYTHON_FOUND AND NUMPY_FOUND)
-                                    ${CMAKE_DL_LIBS}
-                                    ${JSONC_LIBRARIES})
- 
++i = evt.size - 1
++dt = []
++delta_max = i_ss_max = i_sw_max = 0
 +
-+    add_custom_target(kshark_wrapper ALL DEPENDS pykshark libkshark-py.c
-+                                     COMMENT "Generating libkshark_wrapper.c")
++while (i >= 0):
++  if (evt[i] == ss_eid):
++    next_pid = ks.read_event_field(offset=ofst[i],
++                                   sys="sched",
++                                   event="sched_switch",
++                                   field="next_pid")
 +
-+    add_custom_command(TARGET kshark_wrapper
-+                       PRE_BUILD
-+                       COMMAND ./pybuild.sh ${KS_DIR}/lib/
-+                                            ${TRACECMD_LIBRARY_DIR}   ${TRACECMD_INCLUDE_DIR}
-+                                            ${TRACEEVENT_LIBRARY_DIR} ${TRACEEVENT_INCLUDE_DIR}
-+                                            ${JSONC_INCLUDE_DIR}
-+                       COMMAND cp libkshark_wrapper.so  ${KS_DIR}/bin
-+                       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/py
-+                       DEPENDS ${KS_DIR}/build/py/np_setup.py ${KS_DIR}/src/libkshark-py.c
-+                       )
++    if (next_pid == task_pid):
++      time_ss = ts[i]
++      index_ss = i
 +
-+    set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
-+                                           "${KS_DIR}/bin/libkshark_wrapper.so"
-+                                           "${KS_DIR}/build/py/libkshark_wrapper.so"
-+                                           "${KS_DIR}/build/py/libkshark_wrapper.c")
++      while(i >= 0):
++        i = i - 1
++        if (evt[i] == w_eid):
++          waking_pid = ks.read_event_field(offset=ofst[i],
++                                           sys="sched",
++                                           event="sched_waking",
++                                           field="pid")
 +
- endif (PYTHONLIBS_FOUND AND CYTHON_FOUND AND NUMPY_FOUND)
- 
- if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
++          if (waking_pid == task_pid):
++            delta = (time_ss - ts[i]) / 1000.
++            #print delta
++            dt.append(delta);
++            if (delta > delta_max):
++              print "lat. max: ", delta
++              i_ss_max = index_ss
++              i_sw_max = i
++              delta_max = delta
++
++            break
++
++  i = i - 1
++
++desc = st.describe(np.array(dt))
++print desc
++
++fig, ax = plt.subplots(nrows=1, ncols=1)
++fig.set_figheight(6)
++fig.set_figwidth(7)
++
++rect = fig.patch
++rect.set_facecolor('white')
++
++ax.set_xlabel('latency [$\mu$s]')
++plt.yscale('log')
++ax.hist(dt, bins=(200), histtype=u'step');
++plt.show()
++
++sname = 'sched.json'
++ks.new_session(fname, sname)
++
++with open(sname, "r+") as s:
++  session = json.load(s)
++  session['TaskPlots'] = [task_pid]
++  session['CPUPlots'] = [int(cpu[i_sw_max]), int(cpu[i_ss_max])]
++
++  delta = ts[i_ss_max] - ts[i_sw_max]
++  tmin = int(ts[i_sw_max] - delta)
++  tmax = int(ts[i_ss_max] + delta)
++  session['Model']['range'] = [tmin, tmax]
++
++  session['Markers']['markA']['isSet'] = True
++  session['Markers']['markA']['row'] = int(i_sw_max)
++
++  session['Markers']['markB']['isSet'] = True
++  session['Markers']['markB']['row'] = int(i_ss_max)
++
++  session['ViewTop'] = int(i_sw_max) - 5
++
++  ks.save_session(session, s)
++
++ks.close()
 -- 
 2.19.1
 
