@@ -7,51 +7,49 @@ X-Spam-Status: No, score=-6.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D788C43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Mar 2019 14:05:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC2A8C43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Mar 2019 14:44:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4B87A206B6
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Mar 2019 14:05:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A974B2183F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Mar 2019 14:44:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbfC2OFU (ORCPT
+        id S1728848AbfC2Ooq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Mar 2019 10:05:20 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:35434 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728985AbfC2OFT (ORCPT
+        Fri, 29 Mar 2019 10:44:46 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:45568 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728815AbfC2Ooq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Mar 2019 10:05:19 -0400
-Received: by mail-wm1-f68.google.com with SMTP id y197so2978581wmd.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Mar 2019 07:05:18 -0700 (PDT)
+        Fri, 29 Mar 2019 10:44:46 -0400
+Received: by mail-wr1-f43.google.com with SMTP id s15so2890488wra.12
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Mar 2019 07:44:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=e4c8lCxlIVb+L3h+XcR59fHgVLEbr2d9IB28E3tHEGk=;
-        b=IsmG7F/OucvyoFV0umBBrvW9uAVWEx+NXAK92bXA4taLWtu9N6k3GRUPuNGScUna5s
-         fJL0FWz586cS4CAt0sW8AAdmmau3rIVG5GyucRjLdiEZh1QYAkIchcLrhQjS4+lk1X3e
-         QGwfWChWQXCREoO8EPMncvfMMnc/CkEfBNc7IjDTiDPDYdNpLvnTez1+rH8S3d6My+2g
-         3gYxTbhzSVjBnkhJlCX6AsWpI97E1CWKMjLP3XA1kgsrtFWOe0WF/yWFNpws6qLJQFIu
-         JEeqZmBZW+5HWOB5bCltALJpUxkz3wQACZM17GiS2ImfitlAmdzctMwETYSK3UxTtYb+
-         Knjw==
-X-Gm-Message-State: APjAAAUzM0s8QmPagnit3cRPyHWa1ThB8d/oaDjpyFvtv6ScWnMWrZln
-        VUpjVJfqVyseo5z5OykeMOk=
-X-Google-Smtp-Source: APXvYqzKzptJ6U/YwvCtTuPVfYVx1Whg//Wzfucnsb6/FudbWDz4sAquJ4iMu4Q5wPs475DcuUixdw==
-X-Received: by 2002:a1c:bd8b:: with SMTP id n133mr3874885wmf.73.1553868317600;
-        Fri, 29 Mar 2019 07:05:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vk3uLmTsnps/KD9RIG6j7c/NAePUbxCIKOgkHpck8ws=;
+        b=MbCIicdjog/GC1J9YRKWS/tUDDQLsEIIXcjpZ0pRT9U7wskfTVDIN5a8/BTfe1Xw+C
+         8jPKWfljN7o9oNqv/gTlArbTR1InxHhtOQbzRNBo7B+/j6Lp8l9ImxdBppaWcM9CYIc6
+         EZv9yrwthQdGGoW9SEhrND7yRbIhKzVEi3M5ed9P+VDT4ZbWsyVLLnEutNF0Y8WtEMIW
+         X7EAdXyh5KAa/L5XWutad3hvEQTSK+uqJpwY1jyw3pzcHEeJXwnnv73Jb3mYJU1P5Vsr
+         ETrBaulR8gQRWT5Uey1HxQgqM4bFtp+5p0BMelBz8A3XYeSc2bNfsoQMbkAJcitLwMWg
+         WXWA==
+X-Gm-Message-State: APjAAAWGOKGS9AvxT/Kznc/FGuX76aSFX/V+goRJjVwYAM9ouK6IcSd8
+        3dIh8f8zZcTEfa2vPlIUQwdLC6n7
+X-Google-Smtp-Source: APXvYqxX4wt1g6EHEW/uFtBAB29Drmd5STYcOCrQ92SBaHajrCsFfx8PTh5DDOwISQXAtDolrGPo2g==
+X-Received: by 2002:a5d:4750:: with SMTP id o16mr31531503wrs.206.1553870683830;
+        Fri, 29 Mar 2019 07:44:43 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id t81sm4201352wmb.5.2019.03.29.07.05.16
+        by smtp.gmail.com with ESMTPSA id 132sm3863983wmd.27.2019.03.29.07.44.41
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 29 Mar 2019 07:05:17 -0700 (PDT)
+        Fri, 29 Mar 2019 07:44:42 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] kernel-shark: remove hardcoded /usr/local install prefix
-Date:   Fri, 29 Mar 2019 16:05:14 +0200
-Message-Id: <20190329140514.1373-2-tstoyanov@vmware.com>
+Subject: [PATCH v2] kernel-shark: remove hardcoded /usr/local install prefix
+Date:   Fri, 29 Mar 2019 16:44:41 +0200
+Message-Id: <20190329144441.5626-1-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190329140514.1373-1-tstoyanov@vmware.com>
-References: <20190329140514.1373-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -78,7 +76,7 @@ Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
  rename kernel-shark/{org.freedesktop.kshark-record.policy => build/org.freedesktop.kshark-record.policy.cmake} (86%)
 
 diff --git a/Makefile b/Makefile
-index b780718..0b08e53 100644
+index b780718..cde45f8 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -254,7 +254,7 @@ all_cmd: $(CMD_TARGETS)
@@ -86,7 +84,7 @@ index b780718..0b08e53 100644
  
  $(kshark-dir)/build/Makefile: $(kshark-dir)/CMakeLists.txt
 -	$(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) ..
-+	$(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) -D_INSTALL_PREFIX=$(prefix) .. 
++	$(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) -D_INSTALL_PREFIX=$(prefix) ..
  
  gui: force $(CMD_TARGETS) $(kshark-dir)/build/Makefile
  	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build
