@@ -2,53 +2,52 @@ Return-Path: <SRS0=xW9H=SA=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9F45C43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Mar 2019 14:45:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 399B3C43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Mar 2019 15:03:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7A07C2184C
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Mar 2019 14:45:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0947C206C0
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Mar 2019 15:03:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728737AbfC2Opu (ORCPT
+        id S1728720AbfC2PDY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Mar 2019 10:45:50 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35674 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729184AbfC2Opu (ORCPT
+        Fri, 29 Mar 2019 11:03:24 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:32890 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728717AbfC2PDY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Mar 2019 10:45:50 -0400
-Received: by mail-wr1-f67.google.com with SMTP id w1so2949173wrp.2;
-        Fri, 29 Mar 2019 07:45:48 -0700 (PDT)
+        Fri, 29 Mar 2019 11:03:24 -0400
+Received: by mail-wr1-f50.google.com with SMTP id q1so3030296wrp.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Mar 2019 08:03:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=woXlb6ivRqHuTA55bFh89ymhKduhc5nZwdZTGOtsw5k=;
-        b=TfSHEd1htSKvXygSD0dqwl/2OQFh8MGzj7VgW5Xpp2JXr5DMrypikrfalXWUfNNFIw
-         AvRnPXxqfwIbSQFH/fLXzmsi1ZKg4KGPzLVfDOrcLAszkAPKjfId4g7cFuo4nsq8PLQI
-         fPwfrY5AbhN9Ew1rkIqOfC7JETiKV0R54/ClP5+GRmY7k0B2e8Qdwj6SjtI68gfH5nFE
-         erjuL1n7zZ4Au2X0z+WPvDAd2HmHWvCGMm2nM5tLvYEUQqURpRm//Zx9Nioqlb5idR0C
-         6Vy1N/l8ZKcCfsPvVSUIF0RH0ryFJ7ATzYsVSeNZR1clVcuVmQPaEEiTvrL+dIxr6rQO
-         cVag==
-X-Gm-Message-State: APjAAAUNWMDstTfq5+rdNd5DNmSBuoThGjGEbbSCmAJajO+O3aI/KvMW
-        xUZXM4tX4GFTh7O1CfbiHTWMdppt
-X-Google-Smtp-Source: APXvYqx6vccNWPXruElK/seOhQY77Wg+XYjCPYr7CAfJWa1/qSykdNOhPIM/eKW7xpfCqPHGea/log==
-X-Received: by 2002:adf:deca:: with SMTP id i10mr6574315wrn.88.1553870748215;
-        Fri, 29 Mar 2019 07:45:48 -0700 (PDT)
+        bh=rP+0pGpvZtc/mscNs5uxoS8aYWHBwZw++l3aBIfIpJA=;
+        b=ZB5wuE3eE83NK5qRG9JszUJZVOJKkEGrUL3G5cvz4GspB+KKTFL5u7bDgGoQ6piSNt
+         RHsmkXMpiTVVboDD1aOkRp9MAU0jZwIKrrQTn5KygVlGn9nkDbLmQOEHloPxNIY7n1kB
+         zBQKK86wfaO0ZBDTUBe/NkmOikDGTmzU1rbnFBCcPtvLProZ+CjmDFPGo8wJT3f+uD0M
+         cavHgdDhw/vMj6+wRSUrbR7AKzul7Fwwqy8BfiaHyGjf77K/VobRThrlcG7kasnc2Q21
+         ANRlekOuNsDDw9EiNnlwLlAeL6eWH5O9a7qFABG532xJYSFO9mkdVP+A4ONcJn3cLMXs
+         7VUA==
+X-Gm-Message-State: APjAAAUmurXFt5KwtvUGSKxMydJVGcs9JTgciCmA1eekDJeIUNNLBs5z
+        xJULnQJQ9gdLfFsgyniNOXubDvku
+X-Google-Smtp-Source: APXvYqzHUq5vKqqA3MwhpKF4E4Fs8lWqnekgMlrvLccQHjdos6Lfs8UpUdK2H466m/t2EnNkH45Ptg==
+X-Received: by 2002:adf:c788:: with SMTP id l8mr22375780wrg.143.1553871802347;
+        Fri, 29 Mar 2019 08:03:22 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 4sm1754266wmg.12.2019.03.29.07.45.47
+        by smtp.gmail.com with ESMTPSA id o6sm1882483wrp.41.2019.03.29.08.03.20
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 29 Mar 2019 07:45:47 -0700 (PDT)
+        Fri, 29 Mar 2019 08:03:21 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] tools/lib/traceevent: Remove hardcoded install paths from pkg-config file
-Date:   Fri, 29 Mar 2019 16:45:46 +0200
-Message-Id: <20190329144546.5819-1-tstoyanov@vmware.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v3] kernel-shark: remove hardcoded /usr/local install prefix
+Date:   Fri, 29 Mar 2019 17:03:19 +0200
+Message-Id: <20190329150319.7176-1-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,67 +56,168 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Install directories of header and library files are hardcoded in pkg-config
-templete file. They must be configurable, the Makefile should set them on the
-compilation / install stage.
+Installation prefix of kernelshark should not be hardcoded, it should be
+configurable at build time. As kernelshark and trace-cmd are built together,
+they should share the same installation prefix. The patch removes hardcoded
+/usr/local prefix from kernelshark make files and replaces it with the one,
+specified in the top Makefile.
+Note: after applying the patch, kernel-shark/build/cmake_clean.sh should be
+run, to ensure that cmake cache is cleared.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Reviewed-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+Tested-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- tools/lib/traceevent/Makefile                  | 13 +++++++++----
- tools/lib/traceevent/libtraceevent.pc.template |  4 ++--
- 2 files changed, 11 insertions(+), 6 deletions(-)
+ Makefile                                                 | 2 +-
+ kernel-shark/CMakeLists.txt                              | 9 ++++++++-
+ kernel-shark/README                                      | 5 ++++-
+ kernel-shark/build/cmake_clean.sh                        | 1 +
+ kernel-shark/build/ks.desktop.cmake                      | 2 +-
+ .../org.freedesktop.kshark-record.policy.cmake}          | 2 +-
+ kernel-shark/src/CMakeLists.txt                          | 6 +++---
+ kernel-shark/src/plugins/CMakeLists.txt                  | 2 +-
+ 8 files changed, 20 insertions(+), 9 deletions(-)
+ rename kernel-shark/{org.freedesktop.kshark-record.policy => build/org.freedesktop.kshark-record.policy.cmake} (86%)
 
-diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index 67fe5d7ef190..6419a24058ab 100644
---- a/tools/lib/traceevent/Makefile
-+++ b/tools/lib/traceevent/Makefile
-@@ -50,6 +50,9 @@ man_dir = $(prefix)/share/man
- man_dir_SQ = '$(subst ','\'',$(man_dir))'
- pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
- 			--variable pc_path pkg-config | tr ":" " "))
-+includedir_relative = traceevent
-+includedir = $(prefix)/include/$(includedir_relative)
-+includedir_SQ = '$(subst ','\'',$(includedir))'
+diff --git a/Makefile b/Makefile
+index b780718..cde45f8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -254,7 +254,7 @@ all_cmd: $(CMD_TARGETS)
+ CMAKE_COMMAND = /usr/bin/cmake
  
- export man_dir man_dir_SQ INSTALL
- export DESTDIR DESTDIR_SQ
-@@ -279,6 +282,8 @@ define do_install_pkgconfig_file
- 		cp -f ${PKG_CONFIG_FILE}.template ${PKG_CONFIG_FILE}; 		\
- 		sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE}; 		\
- 		sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
-+		sed -i "s|LIB_DIR|${libdir}|g" ${PKG_CONFIG_FILE}; \
-+		sed -i "s|HEADER_DIR|$(includedir)|g" ${PKG_CONFIG_FILE}; \
- 		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
- 	else 									\
- 		(echo Failed to locate pkg-config directory) 1>&2;		\
-@@ -300,10 +305,10 @@ install_pkgconfig:
+ $(kshark-dir)/build/Makefile: $(kshark-dir)/CMakeLists.txt
+-	$(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) ..
++	$(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) -D_INSTALL_PREFIX=$(prefix) ..
  
- install_headers:
- 	$(call QUIET_INSTALL, headers) \
--		$(call do_install,event-parse.h,$(prefix)/include/traceevent,644); \
--		$(call do_install,event-utils.h,$(prefix)/include/traceevent,644); \
--		$(call do_install,trace-seq.h,$(prefix)/include/traceevent,644); \
--		$(call do_install,kbuffer.h,$(prefix)/include/traceevent,644)
-+		$(call do_install,event-parse.h,$(DESTDIR)$(includedir_SQ),644); \
-+		$(call do_install,event-utils.h,$(DESTDIR)$(includedir_SQ),644); \
-+		$(call do_install,trace-seq.h,$(DESTDIR)$(includedir_SQ),644); \
-+		$(call do_install,kbuffer.h,$(DESTDIR)$(includedir_SQ),644)
+ gui: force $(CMD_TARGETS) $(kshark-dir)/build/Makefile
+ 	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build
+diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
+index 20ced14..10cb696 100644
+--- a/kernel-shark/CMakeLists.txt
++++ b/kernel-shark/CMakeLists.txt
+@@ -40,6 +40,10 @@ set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
+ set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -g -pthread")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -std=c++11 -pthread")
  
- install: install_lib
++if(NOT _INSTALL_PREFIX)
++	set(_INSTALL_PREFIX "/usr/local")
++endif()
++
+ if (NOT _DEBUG)
  
-diff --git a/tools/lib/traceevent/libtraceevent.pc.template b/tools/lib/traceevent/libtraceevent.pc.template
-index 42e4d6cb6b9e..86384fcd57f1 100644
---- a/tools/lib/traceevent/libtraceevent.pc.template
-+++ b/tools/lib/traceevent/libtraceevent.pc.template
-@@ -1,6 +1,6 @@
- prefix=INSTALL_PREFIX
--libdir=${prefix}/lib64
--includedir=${prefix}/include/traceevent
-+libdir=LIB_DIR
-+includedir=HEADER_DIR
+ 	set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -O2")
+@@ -47,7 +51,7 @@ if (NOT _DEBUG)
  
- Name: libtraceevent
- URL: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+ endif (NOT _DEBUG)
+ 
+-SET(CMAKE_INSTALL_RPATH "/usr/local/lib/kshark/")
++SET(CMAKE_INSTALL_RPATH "${_INSTALL_PREFIX}/lib/kshark/")
+ SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+ 
+ include_directories(${KS_DIR}/src/
+@@ -82,4 +86,7 @@ endif ()
+ configure_file( ${KS_DIR}/build/ks.desktop.cmake
+                 ${KS_DIR}/kernelshark.desktop)
+ 
++configure_file( ${KS_DIR}/build/org.freedesktop.kshark-record.policy.cmake
++                ${KS_DIR}/org.freedesktop.kshark-record.policy)
++
+ message("")
+diff --git a/kernel-shark/README b/kernel-shark/README
+index efc6748..379c390 100644
+--- a/kernel-shark/README
++++ b/kernel-shark/README
+@@ -41,8 +41,11 @@ as a CMake Command-Line option.
+ 2.1.2 In order to generates complete debug information to be used by GDB add
+ -D_DEBUG=1 as a CMake Command-Line option.
+ 
++2.1.3 By default, installation prefix is "/usr/local". It can be changed using
++-D_INSTALL_PREFIX= as a CMake Command-Line option.
++
+ Example:
+-    cmake -D_DOXYGEN_DOC=1 -D_DEBUG=1 ../
++    cmake -D_DOXYGEN_DOC=1 -D_DEBUG=1 -D_INSTALL_PREFIX=/usr ../
+ 
+ 2.2.1 Use "make clean" if you want to delete all already compiled objects.
+ 
+diff --git a/kernel-shark/build/cmake_clean.sh b/kernel-shark/build/cmake_clean.sh
+index ea04dc0..2e7c8f9 100755
+--- a/kernel-shark/build/cmake_clean.sh
++++ b/kernel-shark/build/cmake_clean.sh
+@@ -7,6 +7,7 @@ rm -rf src/
+ rm -rf examples/
+ rm -f ../lib/*
+ rm ../kernelshark.desktop
++rm ../org.freedesktop.kshark-record.policy
+ rm -f ../src/KsCmakeDef.hpp
+ rm -f CMakeDoxyfile.in
+ rm -f CMakeDoxygenDefaults.cmake
+diff --git a/kernel-shark/build/ks.desktop.cmake b/kernel-shark/build/ks.desktop.cmake
+index f1951f0..10e3610 100644
+--- a/kernel-shark/build/ks.desktop.cmake
++++ b/kernel-shark/build/ks.desktop.cmake
+@@ -4,7 +4,7 @@ Type=Application
+ Name=Kernel Shark
+ GenericName=Kernel Shark
+ Comment=
+-Exec=/usr/local/bin/kernelshark
++Exec=@_INSTALL_PREFIX@/bin/kernelshark
+ Icon=@KS_DIR@/icons/ksharkicon.png
+ Categories=System;
+ Terminal=false
+diff --git a/kernel-shark/org.freedesktop.kshark-record.policy b/kernel-shark/build/org.freedesktop.kshark-record.policy.cmake
+similarity index 86%
+rename from kernel-shark/org.freedesktop.kshark-record.policy
+rename to kernel-shark/build/org.freedesktop.kshark-record.policy.cmake
+index dc73817..988db78 100644
+--- a/kernel-shark/org.freedesktop.kshark-record.policy
++++ b/kernel-shark/build/org.freedesktop.kshark-record.policy.cmake
+@@ -11,7 +11,7 @@
+       <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin</allow_active>
+     </defaults>
+-    <annotate key="org.freedesktop.policykit.exec.path">/usr/local/bin/kshark-record</annotate>
++    <annotate key="org.freedesktop.policykit.exec.path">@_INSTALL_PREFIX@/bin/kshark-record</annotate>
+     <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+   </action>
+ 
+diff --git a/kernel-shark/src/CMakeLists.txt b/kernel-shark/src/CMakeLists.txt
+index 1e0a794..b7dbd7e 100644
+--- a/kernel-shark/src/CMakeLists.txt
++++ b/kernel-shark/src/CMakeLists.txt
+@@ -78,8 +78,8 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+     target_link_libraries(kshark-record kshark-gui)
+ 
+     install(TARGETS kernelshark kshark-record kshark kshark-plot kshark-gui
+-            RUNTIME DESTINATION /usr/local/bin/
+-            LIBRARY DESTINATION /usr/local/lib/kshark/)
++            RUNTIME DESTINATION ${_INSTALL_PREFIX}/bin/
++            LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/kshark/)
+ 
+     install(FILES "${KS_DIR}/kernelshark.desktop"
+             DESTINATION /usr/share/applications/)
+@@ -88,7 +88,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+             DESTINATION /usr/share/polkit-1/actions/)
+ 
+     install(PROGRAMS "${KS_DIR}/bin/kshark-su-record"
+-            DESTINATION /usr/local/bin/)
++            DESTINATION ${_INSTALL_PREFIX}/bin/)
+ 
+ endif (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+ 
+diff --git a/kernel-shark/src/plugins/CMakeLists.txt b/kernel-shark/src/plugins/CMakeLists.txt
+index 853214e..6098275 100644
+--- a/kernel-shark/src/plugins/CMakeLists.txt
++++ b/kernel-shark/src/plugins/CMakeLists.txt
+@@ -29,6 +29,6 @@ BUILD_PLUGIN(NAME missed_events
+ list(APPEND PLUGIN_LIST "missed_events default") # This plugin will be loaded by default
+ 
+ install(TARGETS sched_events missed_events
+-        LIBRARY DESTINATION /usr/local/lib/kshark/)
++        LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/kshark/)
+ 
+ set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
 -- 
 2.20.1
 
