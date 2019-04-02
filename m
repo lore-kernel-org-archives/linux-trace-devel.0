@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A730BC10F00
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Apr 2019 13:42:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FEA1C10F0C
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Apr 2019 13:42:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7ED572146E
+	by mail.kernel.org (Postfix) with ESMTP id E5FE02147C
 	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Apr 2019 13:42:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731773AbfDBNmq (ORCPT
+        id S1731699AbfDBNms (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 2 Apr 2019 09:42:46 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:45796 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731863AbfDBNmk (ORCPT
+        Tue, 2 Apr 2019 09:42:48 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:43569 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731640AbfDBNmp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 2 Apr 2019 09:42:40 -0400
-Received: by mail-wr1-f67.google.com with SMTP id s15so16710428wra.12
-        for <linux-trace-devel@vger.kernel.org>; Tue, 02 Apr 2019 06:42:39 -0700 (PDT)
+        Tue, 2 Apr 2019 09:42:45 -0400
+Received: by mail-wr1-f68.google.com with SMTP id k17so16700391wrx.10
+        for <linux-trace-devel@vger.kernel.org>; Tue, 02 Apr 2019 06:42:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=f381mcVQ+N5PnipoSDp4SrS6oARs5fbXaT6Ys7gW6/c=;
-        b=CXirjWWaaTDNP2c4X8gTxRUuZ4V6f9LvugSYK+uR8i2Gk/QzNHDiVITqfV36SBrOuD
-         CVhPBs3nn9U/sr9ZgmzLcxHWXES5Nxfol50VtT2OgQ0Fzr9qLIOt5IOsbWnL9TXWoT0i
-         KC78WQbAOD9AJ0qjym/JaEMUC4AsuriVCS8uh/Em/WZx6VDuu0BF+2+XcSoW87hRW/UM
-         iuDIvLriKhI745X4iZIa4csufdnfdaUO6wdGgotVPrlcJ2ZeKVclLw6QDJyZ1B2Gmkuq
-         0dS0bdlagJMLMUBA0v2+XREdDzF+j9cq4AP4ysSLHrsI0bfur9KgdNrSQOlyyeky2Rvc
-         92QA==
-X-Gm-Message-State: APjAAAUeE7Pgpxg8Px8VDbwiTpYsZXrp+FmrsJzPwQUhIMX8mqpmG38X
-        kFAZdq1+M2Ae5vopK355pw==
-X-Google-Smtp-Source: APXvYqxSddoQUYA6mzR4rsAf0xfr/lr8CgJY7i0IhyTizdJFgrT+3mSo3pM72mSBRnRbJtwwCnTxzw==
-X-Received: by 2002:adf:e692:: with SMTP id r18mr48378456wrm.231.1554212558879;
-        Tue, 02 Apr 2019 06:42:38 -0700 (PDT)
+        bh=ebx/6PKF298evGUiQpbCn8tno+rQu+UODpYT6m+zsg0=;
+        b=dV4d5nUFxYN7mMckbPz6apYpvani/gYS5rdbvnRN+0ih0TUuEWSpV/KlFH24il2xrs
+         gS8F5r+gIHx2C8aslKUwF+3uYwi7dN9HeL+bo+iO6fWbxjUEhoUHZ6W1MtS/BzbM3jLs
+         BmUFg9UbqcTmVQOaaubGCcxv16artt61L/9tHpIL+FKAc9cHkbUS6aVieopvJGi+fveP
+         fXH/HagiMhXZ5SEBULF53arMWImZJPgfa/UShQmtiS95xFznJmsl/1CKkD+PViA/Rtam
+         TuAZZigPXOQvLMvD0xQX3TdcnS9/4JRDkjomwdYZFrbH2hLNl1K2RGTLDs74Y+PSNN8O
+         g5gw==
+X-Gm-Message-State: APjAAAXh0VGWu+2FTXNpUAHSzCvqF/xHV7ur18ZKDmqcEzINpWMqbTcI
+        Vf/zWD6RGmf3PERpI5QaAw==
+X-Google-Smtp-Source: APXvYqw5AYfXh+jv11DPLrB4oE2SRE6vWqZw3NMo0Y5ZZxaIQ9ugqAafJGl1/PY/VT4EjhKgShmwpg==
+X-Received: by 2002:adf:fc0b:: with SMTP id i11mr45923563wrr.145.1554212563326;
+        Tue, 02 Apr 2019 06:42:43 -0700 (PDT)
 Received: from box.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id h84sm19207083wmf.15.2019.04.02.06.42.37
+        by smtp.gmail.com with ESMTPSA id h84sm19207083wmf.15.2019.04.02.06.42.42
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Apr 2019 06:42:38 -0700 (PDT)
+        Tue, 02 Apr 2019 06:42:42 -0700 (PDT)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org
 Cc:     slavomir.kaslev@gmail.com
-Subject: [RFC PATCH v8 01/13] trace-cmd: Minor cleanup in tracecmd_start_recording()
-Date:   Tue,  2 Apr 2019 16:42:08 +0300
-Message-Id: <20190402134230.30988-3-kaslevs@vmware.com>
+Subject: [RFC PATCH v8 03/13] trace-cmd: Detect if vsockets are available
+Date:   Tue,  2 Apr 2019 16:42:12 +0300
+Message-Id: <20190402134230.30988-7-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190402134230.30988-1-kaslevs@vmware.com>
 References: <20190402134230.30988-1-kaslevs@vmware.com>
@@ -58,46 +58,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Initialize `struct timespec req` only once instead of on every loop iteration
-since `sleep` is being constant throughout tracecmd_start_recording() execution.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-No changes in behavior intended.
+Detect and define VSOCK if vsockets are available on the system.
+This macro is used to disable VM remote tracing features on older kernels.
 
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
- lib/trace-cmd/trace-recorder.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ Makefile | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
-index 0b8d98a..0bd0657 100644
---- a/lib/trace-cmd/trace-recorder.c
-+++ b/lib/trace-cmd/trace-recorder.c
-@@ -466,7 +466,10 @@ long tracecmd_flush_recording(struct tracecmd_recorder *recorder)
+diff --git a/Makefile b/Makefile
+index b780718..99e4f39 100644
+--- a/Makefile
++++ b/Makefile
+@@ -204,6 +204,13 @@ CFLAGS ?= -g -Wall
+ CPPFLAGS ?=
+ LDFLAGS ?=
  
- int tracecmd_start_recording(struct tracecmd_recorder *recorder, unsigned long sleep)
- {
--	struct timespec req;
-+	struct timespec req = {
-+		.tv_sec = sleep / 1000000,
-+		.tv_nsec = (sleep % 1000000) * 1000,
-+	};
- 	long read = 1;
- 	long ret;
- 
-@@ -474,11 +477,9 @@ int tracecmd_start_recording(struct tracecmd_recorder *recorder, unsigned long s
- 
- 	do {
- 		/* Only sleep if we did not read anything last time */
--		if (!read && sleep) {
--			req.tv_sec = sleep / 1000000;
--			req.tv_nsec = (sleep % 1000000) * 1000;
-+		if (!read && sleep)
- 			nanosleep(&req, NULL);
--		}
++VSOCK_DEFINED := $(shell if (echo "\#include <linux/vm_sockets.h>" | $(CC) -E - >/dev/null 2>&1) ; then echo 1; else echo 0 ; fi)
 +
- 		read = 0;
- 		do {
- 			if (recorder->flags & TRACECMD_RECORD_NOSPLICE)
++export VSOCK_DEFINED
++ifeq ($(VSOCK_DEFINED), 1)
++CFLAGS += -DVSOCK
++endif
++
+ export CFLAGS
+ export INCLUDES
+ 
 -- 
 2.19.1
 
