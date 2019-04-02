@@ -2,53 +2,52 @@ Return-Path: <SRS0=t+9I=SE=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15853C10F00
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4741C4360F
 	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Apr 2019 13:42:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D66BF2146E
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Apr 2019 13:42:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D0642147C
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Apr 2019 13:42:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731863AbfDBNmz (ORCPT
+        id S1731740AbfDBNm4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 2 Apr 2019 09:42:55 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33947 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731741AbfDBNmz (ORCPT
+        Tue, 2 Apr 2019 09:42:56 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:40007 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731745AbfDBNm4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 2 Apr 2019 09:42:55 -0400
-Received: by mail-wr1-f68.google.com with SMTP id p10so16758583wrq.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 02 Apr 2019 06:42:53 -0700 (PDT)
+        Tue, 2 Apr 2019 09:42:56 -0400
+Received: by mail-wr1-f67.google.com with SMTP id h4so16701202wre.7
+        for <linux-trace-devel@vger.kernel.org>; Tue, 02 Apr 2019 06:42:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0a7gIALhhxU1fh2WoTbKDkB7fSOAZCCtoJCD3lSIXrI=;
-        b=sVFNEv0pLCtFIuWAio1NzUcq+86izrDMR5t2smWsvMs7EG7PnZTjuIIC8u2KDUJtxk
-         s3pJpHRzSzi8M55wbpM71fbhkyiIr3BpS4gAIhDCgpX4Vyc1qooanJCsLNJZqa/2fUw5
-         3+EwAmKFEMTeltVm+4mbGoxEOF0K8768fbRGE6o2uugITk4SblOKWhzICBLv3DmseXgO
-         Oy5iibReMopRO7PGN0q3B8UJVoDmkVYgaaGv2UB7jSJ/m824IDH0phNwNCAY+JFSWQX/
-         bRW4omtE/kFIhRexGycZ0P1RM2xj2fhEu6gHGMlolxnIbgKe0B26DGzAU2ZOL0vJrzKR
-         UcNw==
-X-Gm-Message-State: APjAAAU27k1Wj6TP4eTUnk+uQxbV1us3R0ai35gPtw2izM3f6AEhSEuu
-        T9Csipkmc4e7ic1tyrjDs4bt3ZdACA==
-X-Google-Smtp-Source: APXvYqw+x1bGSbHkV8ox0umkMDoe3Iwmo9OX1NdrirY83ATDb4ir0VY4sSOQK2TW6HVtIkvRkNbhXA==
-X-Received: by 2002:a5d:6a4f:: with SMTP id t15mr45374783wrw.156.1554212573317;
-        Tue, 02 Apr 2019 06:42:53 -0700 (PDT)
+        bh=Lg02P6aEHrWfEHsIREncaJtq5C+qOqu3BVw/fV7EDAk=;
+        b=Is7F2Np/hzXQO99NUrcAgA9/KHlXfgGy4ZVYGL+vEtRnZ4aglD6Pxzq6kur4UOsAvI
+         HQIOowxEl2nzc3qMehuWIiI7kwXw/A4tWM84Vf4RSvhDweNip9AV9+H2EyZSxfw9QdSJ
+         wpZQsz7VYwKAFCdxTrbkKh5kxuz4LK2cNy3gGjnWOrXvXaqQwvGYPs3weZCUkAIij4wj
+         tf9siXnlfMfUzw4T8zLkuOjW5MEBsZugUyHveHWrLqFAAY2o/T4w6Oagt9oPaU+8FYBG
+         oXd48BcPDMPIzjBjG72ZHf0Lk3b1X5T+fDXR4luD+R2aXjC45tRyWRBmwbozzuwCrpJE
+         DJTg==
+X-Gm-Message-State: APjAAAU0HxcPQSchfOxjj60lxqMjJSBu8NtNYgji+8WIgXlzUCDHDtki
+        wU91G4Ez8585cIUyJsYlIQ==
+X-Google-Smtp-Source: APXvYqzf55R2yzQK2c91CPFERWEWu1sxltn+UzFx4l2Dem+NuT5oeFB+rk9DPd+LqNSWZamtlecwdw==
+X-Received: by 2002:adf:f80c:: with SMTP id s12mr47223067wrp.72.1554212574375;
+        Tue, 02 Apr 2019 06:42:54 -0700 (PDT)
 Received: from box.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id h84sm19207083wmf.15.2019.04.02.06.42.52
+        by smtp.gmail.com with ESMTPSA id h84sm19207083wmf.15.2019.04.02.06.42.53
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Apr 2019 06:42:52 -0700 (PDT)
+        Tue, 02 Apr 2019 06:42:53 -0700 (PDT)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, slavomir.kaslev@gmail.com
-Subject: [RFC PATCH v8 08/11] trace-cmd: Add `trace-cmd setup-guest` command
-Date:   Tue,  2 Apr 2019 16:42:21 +0300
-Message-Id: <20190402134230.30988-16-kaslevs@vmware.com>
+To:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org
+Cc:     slavomir.kaslev@gmail.com
+Subject: [RFC PATCH v8 08/13] trace-cmd: Use splice(2) for vsockets if available
+Date:   Tue,  2 Apr 2019 16:42:22 +0300
+Message-Id: <20190402134230.30988-17-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190402134230.30988-1-kaslevs@vmware.com>
 References: <20190402134230.30988-1-kaslevs@vmware.com>
@@ -59,270 +58,117 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add `trace-cmd setup-guest` command that creates the necessary FIFOs for tracing
-a guest over FIFOs instead of vsockets.
+Detect if splice(2) reading is supported for vsockets (Linux 4.20 and
+later) and use it, or fallback to read/write-ing otherwise.
 
 Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
- tracecmd/Makefile              |   1 +
- tracecmd/include/trace-local.h |   6 ++
- tracecmd/trace-cmd.c           |   1 +
- tracecmd/trace-setup-guest.c   | 178 +++++++++++++++++++++++++++++++++
- tracecmd/trace-usage.c         |   8 ++
- 5 files changed, 194 insertions(+)
- create mode 100644 tracecmd/trace-setup-guest.c
+ lib/trace-cmd/trace-recorder.c |  6 ++--
+ tracecmd/trace-record.c        | 56 ++++++++++++++++++++++++++++++++--
+ 2 files changed, 56 insertions(+), 6 deletions(-)
 
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index 865b1c6..d3e3080 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -35,6 +35,7 @@ TRACE_CMD_OBJS += trace-msg.o
+diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
+index 1b84bb5..d66f112 100644
+--- a/lib/trace-cmd/trace-recorder.c
++++ b/lib/trace-cmd/trace-recorder.c
+@@ -386,10 +386,8 @@ static long splice_data(struct tracecmd_recorder *recorder)
+ 	ret = splice(recorder->brass[0], NULL, recorder->fd, NULL,
+ 		     read, recorder->fd_flags);
+ 	if (ret < 0) {
+-		if (errno != EAGAIN && errno != EINTR) {
+-			warning("recorder error in splice output");
+-			return -1;
+-		}
++		if (errno != EAGAIN && errno != EINTR)
++			return ret;
+ 		return total_read;
+ 	} else
+ 		update_fd(recorder, ret);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 98cc4f3..6bfcab4 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -2660,12 +2660,61 @@ static int open_vsock(unsigned int cid, unsigned int port)
  
- ifeq ($(VSOCK_DEFINED), 1)
- TRACE_CMD_OBJS += trace-agent.o
-+TRACE_CMD_OBJS += trace-setup-guest.o
- endif
- 
- ALL_OBJS := $(TRACE_CMD_OBJS:%.o=$(bdir)/%.o)
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index edcfee0..dd203b2 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -14,6 +14,10 @@
- 
- #define TRACE_AGENT_DEFAULT_PORT	823
- 
-+#define GUEST_PIPE_NAME		"trace-pipe-cpu"
-+#define GUEST_DIR_FMT		"/var/lib/trace-cmd/virt/%s"
-+#define GUEST_FIFO_FMT		GUEST_DIR_FMT "/" GUEST_PIPE_NAME "%d"
+ 	return sd;
+ }
 +
- extern int debug;
- extern int quiet;
- 
-@@ -68,6 +72,8 @@ void trace_listen(int argc, char **argv);
- 
- void trace_agent(int argc, char **argv);
- 
-+void trace_setup_guest(int argc, char **argv);
-+
- void trace_restore(int argc, char **argv);
- 
- void trace_clear(int argc, char **argv);
-diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-index 3ae5e2e..4da82b4 100644
---- a/tracecmd/trace-cmd.c
-+++ b/tracecmd/trace-cmd.c
-@@ -85,6 +85,7 @@ struct command commands[] = {
- 	{"listen", trace_listen},
- #ifdef VSOCK
- 	{"agent", trace_agent},
-+	{"setup-guest", trace_setup_guest},
- #endif
- 	{"split", trace_split},
- 	{"restore", trace_restore},
-diff --git a/tracecmd/trace-setup-guest.c b/tracecmd/trace-setup-guest.c
-new file mode 100644
-index 0000000..a6f58dc
---- /dev/null
-+++ b/tracecmd/trace-setup-guest.c
-@@ -0,0 +1,178 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019 VMware Inc, Slavomir Kaslev <kaslevs@vmware.com>
-+ *
-+ */
-+
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <getopt.h>
-+#include <grp.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+
-+#include "trace-local.h"
-+#include "trace-msg.h"
-+
-+static int make_dir(const char *path, mode_t mode)
++static int try_splice_read_vsock(void)
 +{
-+	char buf[PATH_MAX+2], *p;
++	int ret, sd, brass[2];
 +
-+	strncpy(buf, path, sizeof(buf));
-+	if (buf[PATH_MAX])
-+		return -E2BIG;
++	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
++	if (sd < 0)
++		return sd;
 +
-+	for (p = buf; *p; p++) {
-+		p += strspn(p, "/");
-+		p += strcspn(p, "/");
-+		*p = '\0';
-+		if (mkdir(buf, mode) < 0 && errno != EEXIST)
-+			return -errno;
-+		*p = '/';
-+	}
++	ret = pipe(brass);
++	if (ret < 0)
++		goto out_close_sd;
 +
-+	return 0;
-+}
++	/*
++	 * On kernels that don't support splice reading from vsockets
++	 * this will fail with EINVAL, or ENOTCONN otherwise.
++	 * Technically, it should never succeed but if it does, claim splice
++	 * reading is supported.
++	 */
++	ret = splice(sd, NULL, brass[1], NULL, 10, 0);
++	if (ret < 0)
++		ret = errno != EINVAL;
++	else
++		ret = 1;
 +
-+static int make_fifo(const char *path, mode_t mode)
-+{
-+	struct stat st;
-+
-+	if (!stat(path, &st)) {
-+		if (S_ISFIFO(st.st_mode))
-+			return 0;
-+		return -EEXIST;
-+	}
-+
-+	if (mkfifo(path, mode))
-+		return -errno;
-+	return 0;
-+}
-+
-+static int make_guest_dir(const char *guest)
-+{
-+	char path[PATH_MAX];
-+
-+	snprintf(path, sizeof(path), GUEST_DIR_FMT, guest);
-+	return make_dir(path, 0750);
-+}
-+
-+static int make_guest_fifo(const char *guest, int cpu, mode_t mode)
-+{
-+	static const char *exts[] = {".in", ".out"};
-+	char path[PATH_MAX];
-+	int i, ret = 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(exts); i++) {
-+		snprintf(path, sizeof(path), GUEST_FIFO_FMT "%s",
-+			 guest, cpu, exts[i]);
-+		ret = make_fifo(path, mode);
-+		if (ret < 0)
-+			break;
-+	}
-+
++	close(brass[0]);
++	close(brass[1]);
++out_close_sd:
++	close(sd);
 +	return ret;
 +}
 +
-+static int make_guest_fifos(const char *guest, int nr_cpus, mode_t mode)
++static bool can_splice_read_vsock(void)
 +{
-+	int i, ret = 0;
-+	mode_t mask;
++	static bool initialized, res;
 +
-+	mask = umask(0);
-+	for (i = 0; i < nr_cpus; i++) {
-+		ret = make_guest_fifo(guest, i, mode);
-+		if (ret < 0)
-+			break;
-+	}
-+	umask(mask);
++	if (initialized)
++		return res;
 +
-+	return ret;
++	res = try_splice_read_vsock() > 0;
++	initialized = true;
++	return res;
 +}
 +
-+static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gid)
+ #else
+ static inline int open_vsock(unsigned int cid, unsigned int port)
+ {
+ 	die("vsock is not supported");
+ 	return -1;
+ }
++
++static bool can_splice_read_vsock(void)
 +{
-+	gid_t save_egid;
-+	int ret;
-+
-+	if (gid != -1) {
-+		save_egid = getegid();
-+		ret = setegid(gid);
-+		if (ret < 0)
-+			pdie("failed to set effective group ID");
-+	}
-+
-+	ret = make_guest_dir(guest);
-+	if (ret < 0)
-+		pdie("failed to create guest directory for %s", guest);
-+
-+	ret = make_guest_fifos(guest, nr_cpus, mode);
-+	if (ret < 0)
-+		pdie("failed to create FIFOs for %s", guest);
-+
-+	if (gid != -1) {
-+		ret = setegid(save_egid);
-+		if (ret < 0)
-+			pdie("failed to restore effective group ID");
-+	}
++	return false;
 +}
-+
-+void trace_setup_guest(int argc, char **argv)
-+{
-+	struct group *group;
-+	mode_t mode = 0660;
-+	int nr_cpus = -1;
-+	gid_t gid = -1;
-+	char *guest;
-+
-+	if (argc < 2)
-+		usage(argv);
-+
-+	if (strcmp(argv[1], "setup-guest") != 0)
-+		usage(argv);
-+
-+	for (;;) {
-+		int c, option_index = 0;
-+		static struct option long_options[] = {
-+			{"help", no_argument, NULL, '?'},
-+			{NULL, 0, NULL, 0}
-+		};
-+
-+		c = getopt_long(argc-1, argv+1, "+hc:p:g:",
-+				long_options, &option_index);
-+		if (c == -1)
-+			break;
-+		switch (c) {
-+		case 'h':
-+			usage(argv);
-+			break;
-+		case 'c':
-+			nr_cpus = atoi(optarg);
-+			break;
-+		case 'p':
-+			mode = strtol(optarg, NULL, 8);
-+			break;
-+		case 'g':
-+			group = getgrnam(optarg);
-+			if (!group)
-+				pdie("group %s does not exist", optarg);
-+			gid = group->gr_gid;
-+			break;
-+		default:
-+			usage(argv);
-+		}
-+	}
-+
-+	if (optind != argc-2)
-+		usage(argv);
-+
-+	guest = argv[optind+1];
-+
-+	if (nr_cpus <= 0)
-+		pdie("invalid number of cpus for guest %s", guest);
-+
-+	do_setup_guest(guest, nr_cpus, mode, gid);
-+}
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index e845f50..7a8002f 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -246,6 +246,14 @@ static struct usage_help usage_help[] = {
- 		"          -p port number to listen on.\n"
- 		"          -D run in daemon mode.\n"
- 	},
-+	{
-+		"setup-guest",
-+		"create FIFOs for tracing guest VMs",
-+		" %s setup-guest -c cpus[-p perm][-g group] guest\n"
-+		"          -c number of guest virtual CPUs\n"
-+		"          -p FIFOs permissions (default: 0660)\n"
-+		"          -g FIFOs group owner\n"
-+	},
  #endif
- 	{
- 		"list",
+ 
+ static int do_accept(int sd)
+@@ -2870,13 +2919,16 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
+ 
+ 	if (is_guest(instance)) {
+ 		int fd;
++		unsigned int flags;
+ 
+ 		fd = open_vsock(instance->cid, instance->client_ports[cpu]);
+ 		if (fd < 0)
+ 			die("Failed to connect to agent");
+ 
+-		return tracecmd_create_recorder_virt(
+-			file, cpu, recorder_flags | TRACECMD_RECORD_NOSPLICE, fd);
++		flags = recorder_flags;
++		if (!can_splice_read_vsock())
++			flags |= TRACECMD_RECORD_NOSPLICE;
++		return tracecmd_create_recorder_virt(file, cpu, flags, fd);
+ 	}
+ 
+ 	if (brass)
 -- 
 2.19.1
 
