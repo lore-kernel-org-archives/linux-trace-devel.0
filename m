@@ -2,52 +2,52 @@ Return-Path: <SRS0=Fk9f=SG=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE509C10F0F
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Apr 2019 14:56:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A507C4360F
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Apr 2019 14:56:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9FDC4205F4
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Apr 2019 14:56:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2BF4A205F4
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Apr 2019 14:56:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729003AbfDDO4S (ORCPT
+        id S1728683AbfDDO4T (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 4 Apr 2019 10:56:18 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:55542 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728683AbfDDO4S (ORCPT
+        Thu, 4 Apr 2019 10:56:19 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:46674 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728842AbfDDO4S (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 4 Apr 2019 10:56:18 -0400
-Received: by mail-wm1-f67.google.com with SMTP id o25so3402906wmf.5
+Received: by mail-wr1-f65.google.com with SMTP id t17so4129874wrw.13
         for <linux-trace-devel@vger.kernel.org>; Thu, 04 Apr 2019 07:56:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SaAcxvLXdkIUy3oCd1hVeb66KDSze7oeTnLjclEwM08=;
-        b=heW+uMbaW++staYjQrzkJixLlW1HO5clzKYEjfXmZfRUYoZhFRctfKum+D8+y/R3Sl
-         TdLFQqI4mTAMghCV3Qsuhni8TaiF+kqEcltYr4LPPjmJLBvy7OdVuVPQ48sifFR6RObj
-         34CagG2DtQVbXVIUX2jJZb0A/8l9mnIJp14jM+j7HKhsplDqI3VvaddLZIrRnSA23tzj
-         1z59un6fT/DLEspE2AWq0H9I8T5jWu82TLmyFpIoDl5L4vyUHyCwSL4nHSOqEk9KbQTo
-         7fscqHqCnwXXAUkb0DurKpZo+Mm16SfipeCmGeqPmOMUCsPJDCUNEhq56IZ0bGy9HFB/
-         RmyQ==
-X-Gm-Message-State: APjAAAVEqXQVrHkgeXRaOXMSFdnuNJi7+CDMhgm6/9ARVHjnYgsNLtkS
-        uoG8pAGiB5EVepN4hcc6VxcYNI/FK14=
-X-Google-Smtp-Source: APXvYqy4P55bD6sUnQSoaA3rCg4JrGzK6sCQybtH5mvUJ+S5JOHRNd/Zio/ifGhRoBvOkYCeTaziWw==
-X-Received: by 2002:a1c:a64d:: with SMTP id p74mr4642892wme.89.1554389776500;
-        Thu, 04 Apr 2019 07:56:16 -0700 (PDT)
+        bh=frj9H5zYvSb6RavHTSwMKoitEP2oz6MyHpmET+IXKMg=;
+        b=a8T5vBAu1QA+3PLZ7cJNipIBftAeONRhQFw4m6iUF4VIbcMUv5Evsbaw9F7719Jvrl
+         q2Nmmx4IgPZiLoMlpP7dyIxfnFhirVz4rotetROsLk36aPVjkXSe4cC54PWCGSS9xLkS
+         KnqiYr2jGOxMLap35+nxiWRX8T6/ilduC79f7F2fHw+JeSBIstbzf1ZquqA01KPPZxJt
+         Xu2mHKmZoPaWqZ2w+hv48RxN90r7fvUzvlCaTivWskFNgDRF3xLeBoHkEkAIvZ28huq7
+         U2G55CpdA08H0tFLyXzK2vjCUJ8GuwElDBEgmwZD1wv82EPJXMD8zccqXIIvXM3xOWUS
+         bj3Q==
+X-Gm-Message-State: APjAAAUY0srv90lzva7oCGpFzTYDF06e/E8EmJRBe4F7BuQCz//6K7mo
+        cZtiMtbJe1LWt9M8Y67AAac=
+X-Google-Smtp-Source: APXvYqy9uPiFaFJPVmOLkda/npXthhcW4AHkTjwe0mD47GKX0xU866+PvQjtpczjKGvI+xkaTf2Dhw==
+X-Received: by 2002:adf:f68d:: with SMTP id v13mr4428766wrp.6.1554389777123;
+        Thu, 04 Apr 2019 07:56:17 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id m13sm21919883wmg.42.2019.04.04.07.56.15
+        by smtp.gmail.com with ESMTPSA id m13sm21919883wmg.42.2019.04.04.07.56.16
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
         Thu, 04 Apr 2019 07:56:16 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/4] kernel-shark: Load Last Session from command line
-Date:   Thu,  4 Apr 2019 17:56:02 +0300
-Message-Id: <20190404145603.13592-4-ykaradzhov@vmware.com>
+Subject: [PATCH 4/4] kernel-shark: Configuration file directory to be created by the executable
+Date:   Thu,  4 Apr 2019 17:56:03 +0300
+Message-Id: <20190404145603.13592-5-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190404145603.13592-1-ykaradzhov@vmware.com>
 References: <20190404145603.13592-1-ykaradzhov@vmware.com>
@@ -58,47 +58,44 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-./kernelshark -l  will load directly the Last Session
+The build process should not make the directory that will contain
+KernelShark configuration files. This directory should be made by
+the application itself.
 
-Signed-off-by : Yordan Karadzhov <ykaradzhov@vmware.com>
+Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/kernelshark.cpp | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ kernel-shark/CMakeLists.txt       | 2 --
+ kernel-shark/src/KsMainWindow.cpp | 3 +++
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel-shark/src/kernelshark.cpp b/kernel-shark/src/kernelshark.cpp
-index 2ec91de..1ec6678 100644
---- a/kernel-shark/src/kernelshark.cpp
-+++ b/kernel-shark/src/kernelshark.cpp
-@@ -28,6 +28,7 @@ void usage(const char *prog)
- 	printf("  -p	register plugin, use plugin name, absolute or relative path\n");
- 	printf("  -u	unregister plugin, use plugin name or absolute path\n");
- 	printf("  -s	import a session\n");
-+	printf("  -l	import the last session\n");
+diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
+index 14d73f5..c6a4abf 100644
+--- a/kernel-shark/CMakeLists.txt
++++ b/kernel-shark/CMakeLists.txt
+@@ -17,8 +17,6 @@ set(KS_DIR ${CMAKE_SOURCE_DIR})
+ set(_KS_CACHE_DIR "$ENV{HOME}/.cache/kernelshark"
+     CACHE STRING "Directory for cached configuration files.")
+ 
+-file(MAKE_DIRECTORY ${_KS_CACHE_DIR})
+-
+ include(${KS_DIR}/build/FindTraceCmd.cmake)
+ include(${KS_DIR}/build/FindJSONC.cmake)
+ 
+diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+index 39b06d6..898e598 100644
+--- a/kernel-shark/src/KsMainWindow.cpp
++++ b/kernel-shark/src/KsMainWindow.cpp
+@@ -127,6 +127,9 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+ 		this,		&KsMainWindow::_deselectB);
+ 
+ 	_resizeEmpty();
++
++	if (!QDir(KS_CACHE_DIR).exists())
++		QDir().mkdir(KS_CACHE_DIR);
  }
  
- int main(int argc, char **argv)
-@@ -40,7 +41,7 @@ int main(int argc, char **argv)
- 	int c;
- 	bool fromSession = false;
- 
--	while ((c = getopt(argc, argv, "hvi:p:u:s:")) != -1) {
-+	while ((c = getopt(argc, argv, "hvi:p:u:s:l")) != -1) {
- 		switch(c) {
- 		case 'h':
- 			usage(argv[0]);
-@@ -65,6 +66,12 @@ int main(int argc, char **argv)
- 		case 's':
- 			ks.loadSession(QString(optarg));
- 			fromSession = true;
-+			break;
-+
-+		case 'l':
-+			ks.loadSession(ks.lastSessionFile());
-+			fromSession = true;
-+			break;
- 
- 		default:
- 			break;
+ /** Destroy KernelShark Main window. */
 -- 
 2.19.1
 
