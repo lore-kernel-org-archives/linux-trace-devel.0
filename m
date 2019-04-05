@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6520EC4360F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D869C10F00
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 331A421850
+	by mail.kernel.org (Postfix) with ESMTP id 7748221850
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730920AbfDEODl (ORCPT
+        id S1730870AbfDEODm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 5 Apr 2019 10:03:41 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:39511 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730870AbfDEODl (ORCPT
+        Fri, 5 Apr 2019 10:03:42 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:39199 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729987AbfDEODl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 5 Apr 2019 10:03:41 -0400
-Received: by mail-wm1-f66.google.com with SMTP id n25so7357919wmk.4
+Received: by mail-wr1-f65.google.com with SMTP id j9so8171712wrn.6
         for <linux-trace-devel@vger.kernel.org>; Fri, 05 Apr 2019 07:03:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3BBEfXIjZS7gv3NcIxIW8zZWgFWe7oTnHSLMw3HCIcU=;
-        b=nimWNJWSKL5tjQu7Tc26akQYRTGfXJdFssDhggo5t6RkQTg+APuZK5jpMimKfHCBfg
-         bcwqChfWdkBDdxsZpfFSmpLy97qNp/qYaR8w/HgzlwlQhpcbcF/i+etw6xoOdIajKDbL
-         6T104W9RkF5QbfcakvumxxIfMuD8jf4q0hgfi2rDdcBMbKV0w9xgzkY9WcZAEDkA+5vD
-         xbLYKoJNYj/64EYF2neAlOme/SXUjp+XcUQZUC3/0mBsRWlGLBIBVZgdSHOxxMiFYA5S
-         98GnPAOVWlI9vh2NGhFBQPtKCWX0osMNRG/AIxdcXR+knHWAHWWJ/lN985afWWynSyEv
-         B7Zg==
-X-Gm-Message-State: APjAAAVySWvAgykpanpsZp0OmqWZLQmMklwbATWbSzHUj11caqEoqRIO
-        3CV8tZj05E3dcf0Qx4NFV5l2dqo1
-X-Google-Smtp-Source: APXvYqyuXoJVbRsxKTxFjGNTgGVOdotkChYqJoPOrHuttIkkXes7bhWAm/nEIu82HrVUrkrv169QDQ==
-X-Received: by 2002:a1c:e904:: with SMTP id q4mr5992608wmc.43.1554473019325;
-        Fri, 05 Apr 2019 07:03:39 -0700 (PDT)
+        bh=v6G+QUj4MP4Z4WiHOY2csqsbs6lznvZV6Rg8bE4ZHaY=;
+        b=MfhgMU/WDtnvIqAw0J16QO06dsI/+k0nv/lLBo0dve0Lg4nSz80mhfA+X4zZ6wD0dm
+         9DlW4MBNNhmxbn5176TRoMemCIcDRbET+PINk2ie5W+0sZOGxqmEY0Undqqi+GbkniWk
+         gxLyjGbtTVMqVjBEC5EKoPY9/v0OxDpsRFky8AmhE+bx42WYCycXnlTn0juYzHfEpS7N
+         n70LGS/v+3DvQNRsaed8JVAFdPKQtm+F1jv6UCU7YvsEhCDdVu+kib/V70jlxmdBgNG6
+         zKJM+CoEivj/n7AURennMawEZEHRF+EH4iO5d4ou4L4LhkQB9Z8JsC/aNXsKO6qq9k9S
+         VbXA==
+X-Gm-Message-State: APjAAAVxq6s23MgNScMLmMAQS9/OcRqNVi320UZ37G7ARga4gArR2rQf
+        Yxl9+b1d+AjXrq0owZgee20=
+X-Google-Smtp-Source: APXvYqxJMY9UgrGfAr5WeUr1k8gVnMEyWxpCri2tZyD2znSAicu/ovVJdsd6UVELJ3LU6Eu9xPgWYg==
+X-Received: by 2002:adf:e94d:: with SMTP id m13mr9365590wrn.141.1554473020289;
+        Fri, 05 Apr 2019 07:03:40 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id w16sm29604647wrt.84.2019.04.05.07.03.38
+        by smtp.gmail.com with ESMTPSA id w16sm29604647wrt.84.2019.04.05.07.03.39
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 05 Apr 2019 07:03:38 -0700 (PDT)
+        Fri, 05 Apr 2019 07:03:39 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 04/10] tools lib traceevent: Remove tep filter trivial APIs
-Date:   Fri,  5 Apr 2019 17:03:26 +0300
-Message-Id: <20190405140332.10949-5-tstoyanov@vmware.com>
+Subject: [PATCH 05/10] tools lib traceevent: Remove call to exit() from tep_filter_add_filter_str()
+Date:   Fri,  5 Apr 2019 17:03:27 +0300
+Message-Id: <20190405140332.10949-6-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190405140332.10949-1-tstoyanov@vmware.com>
 References: <20190405140332.10949-1-tstoyanov@vmware.com>
@@ -58,260 +58,42 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patch removes trivial filter tep APIs:
-
-  enum tep_filter_trivial_type
-  tep_filter_event_has_trivial()
-  tep_update_trivial()
-  tep_filter_clear_trivial()
-
-Trivial filters is an optimization, used only in the first version of
-KernelShark. The API is deprecated, the next KernelShark release does
-not use it.
+This patch removes call to exit() from tep_filter_add_filter_str(). A
+library function should not force the application to exit. In the
+current implementation tep_filter_add_filter_str() calls exit() when a
+special "test_filters" mode is set, used only for debugging purposes.
+When this mode is set and a filter is added - its string is printed to
+the console and exit() is called. This patch changes the logic - when in
+"test_filters" mode, the filter string is still printed, but the exit()
+is not called. It is up to the application to track when "test_filters"
+mode is set and to call exit, if needed.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190326154328.28718-4-tstoyanov%40vmware.com&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7C58975d5a9b5e47514e9608d6b7853f5c%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180262751086&amp;sdata=6mN8K2rdhIzLLSoy4J2Oazl%2F20SC051ohmn7%2BshKfxU%3D&amp;reserved=0
-Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190401164343.968458918%40goodmis.org&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7C58975d5a9b5e47514e9608d6b7853f5c%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180262751086&amp;sdata=8ETo6r9x584BKb9lXMMo5kQbLztOSkeuvLWoHE6RdJU%3D&amp;reserved=0
+Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190326154328.28718-9-tstoyanov%40vmware.com&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7Ca85c00102f8946a5a65008d6b78541b2%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180295236164&amp;sdata=2bP6ffKd0dTVskeHiJBvhMkgGNaqyskxRGuShZiD3ME%3D&amp;reserved=0
+Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190401164344.121717482%40goodmis.org&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7Ca85c00102f8946a5a65008d6b78541b2%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180295236164&amp;sdata=lq%2BDgVReaUgoo0NqCLPCxvNoBI6CVK1Gzb3gP7fGiBs%3D&amp;reserved=0
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h |  16 ---
- lib/traceevent/parse-filter.c    | 169 -------------------------------
- 2 files changed, 185 deletions(-)
+ lib/traceevent/parse-filter.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 0ac9e19..12cbed0 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -721,12 +721,6 @@ struct tep_event_filter *tep_filter_alloc(struct tep_handle *pevent);
- #define FILTER_MISS		TEP_ERRNO__FILTER_MISS
- #define FILTER_MATCH		TEP_ERRNO__FILTER_MATCH
- 
--enum tep_filter_trivial_type {
--	TEP_FILTER_TRIVIAL_FALSE,
--	TEP_FILTER_TRIVIAL_TRUE,
--	TEP_FILTER_TRIVIAL_BOTH,
--};
--
- enum tep_errno tep_filter_add_filter_str(struct tep_event_filter *filter,
- 					 const char *filter_str);
- 
-@@ -741,9 +735,6 @@ int tep_event_filtered(struct tep_event_filter *filter,
- 
- void tep_filter_reset(struct tep_event_filter *filter);
- 
--int tep_filter_clear_trivial(struct tep_event_filter *filter,
--			     enum tep_filter_trivial_type type);
--
- void tep_filter_free(struct tep_event_filter *filter);
- 
- char *tep_filter_make_string(struct tep_event_filter *filter, int event_id);
-@@ -751,15 +742,8 @@ char *tep_filter_make_string(struct tep_event_filter *filter, int event_id);
- int tep_filter_remove_event(struct tep_event_filter *filter,
- 			    int event_id);
- 
--int tep_filter_event_has_trivial(struct tep_event_filter *filter,
--				 int event_id,
--				 enum tep_filter_trivial_type type);
--
- int tep_filter_copy(struct tep_event_filter *dest, struct tep_event_filter *source);
- 
--int tep_update_trivial(struct tep_event_filter *dest, struct tep_event_filter *source,
--			enum tep_filter_trivial_type type);
--
- int tep_filter_compare(struct tep_event_filter *filter1, struct tep_event_filter *filter2);
- 
- #endif /* _PARSE_EVENTS_H */
 diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
-index cb5ce66..4ffd8b2 100644
+index 4ffd8b2..3320c0a 100644
 --- a/lib/traceevent/parse-filter.c
 +++ b/lib/traceevent/parse-filter.c
-@@ -1522,167 +1522,6 @@ int tep_filter_copy(struct tep_event_filter *dest, struct tep_event_filter *sour
- 	return ret;
+@@ -1346,9 +1346,6 @@ enum tep_errno tep_filter_add_filter_str(struct tep_event_filter *filter,
+ 
+ 	free_events(events);
+ 
+-	if (rtn >= 0 && pevent->test_filters)
+-		exit(0);
+-
+ 	return rtn;
  }
  
--
--/**
-- * tep_update_trivial - update the trivial filters with the given filter
-- * @dest - the filter to update
-- * @source - the filter as the source of the update
-- * @type - the type of trivial filter to update.
-- *
-- * Scan dest for trivial events matching @type to replace with the source.
-- *
-- * Returns 0 on success and -1 if there was a problem updating, but
-- *   events may have still been updated on error.
-- */
--int tep_update_trivial(struct tep_event_filter *dest, struct tep_event_filter *source,
--		       enum tep_filter_trivial_type type)
--{
--	struct tep_handle *src_pevent;
--	struct tep_handle *dest_pevent;
--	struct tep_event *event;
--	struct tep_filter_type *filter_type;
--	struct tep_filter_arg *arg;
--	char *str;
--	int i;
--
--	src_pevent = source->pevent;
--	dest_pevent = dest->pevent;
--
--	/* Do nothing if either of the filters has nothing to filter */
--	if (!dest->filters || !source->filters)
--		return 0;
--
--	for (i = 0; i < dest->filters; i++) {
--		filter_type = &dest->event_filters[i];
--		arg = filter_type->filter;
--		if (arg->type != TEP_FILTER_ARG_BOOLEAN)
--			continue;
--		if ((arg->boolean.value && type == TEP_FILTER_TRIVIAL_FALSE) ||
--		    (!arg->boolean.value && type == TEP_FILTER_TRIVIAL_TRUE))
--			continue;
--
--		event = filter_type->event;
--
--		if (src_pevent != dest_pevent) {
--			/* do a look up */
--			event = tep_find_event_by_name(src_pevent,
--						       event->system,
--						       event->name);
--			if (!event)
--				return -1;
--		}
--
--		str = tep_filter_make_string(source, event->id);
--		if (!str)
--			continue;
--
--		/* Don't bother if the filter is trivial too */
--		if (strcmp(str, "TRUE") != 0 && strcmp(str, "FALSE") != 0)
--			filter_event(dest, event, str, NULL);
--		free(str);
--	}
--	return 0;
--}
--
--/**
-- * tep_filter_clear_trivial - clear TRUE and FALSE filters
-- * @filter: the filter to remove trivial filters from
-- * @type: remove only true, false, or both
-- *
-- * Removes filters that only contain a TRUE or FALES boolean arg.
-- *
-- * Returns 0 on success and -1 if there was a problem.
-- */
--int tep_filter_clear_trivial(struct tep_event_filter *filter,
--			     enum tep_filter_trivial_type type)
--{
--	struct tep_filter_type *filter_type;
--	int count = 0;
--	int *ids = NULL;
--	int i;
--
--	if (!filter->filters)
--		return 0;
--
--	/*
--	 * Two steps, first get all ids with trivial filters.
--	 *  then remove those ids.
--	 */
--	for (i = 0; i < filter->filters; i++) {
--		int *new_ids;
--
--		filter_type = &filter->event_filters[i];
--		if (filter_type->filter->type != TEP_FILTER_ARG_BOOLEAN)
--			continue;
--		switch (type) {
--		case TEP_FILTER_TRIVIAL_FALSE:
--			if (filter_type->filter->boolean.value)
--				continue;
--			break;
--		case TEP_FILTER_TRIVIAL_TRUE:
--			if (!filter_type->filter->boolean.value)
--				continue;
--		default:
--			break;
--		}
--
--		new_ids = realloc(ids, sizeof(*ids) * (count + 1));
--		if (!new_ids) {
--			free(ids);
--			return -1;
--		}
--
--		ids = new_ids;
--		ids[count++] = filter_type->event_id;
--	}
--
--	if (!count)
--		return 0;
--
--	for (i = 0; i < count; i++)
--		tep_filter_remove_event(filter, ids[i]);
--
--	free(ids);
--	return 0;
--}
--
--/**
-- * tep_filter_event_has_trivial - return true event contains trivial filter
-- * @filter: the filter with the information
-- * @event_id: the id of the event to test
-- * @type: trivial type to test for (TRUE, FALSE, EITHER)
-- *
-- * Returns 1 if the event contains a matching trivial type
-- *  otherwise 0.
-- */
--int tep_filter_event_has_trivial(struct tep_event_filter *filter,
--				 int event_id,
--				 enum tep_filter_trivial_type type)
--{
--	struct tep_filter_type *filter_type;
--
--	if (!filter->filters)
--		return 0;
--
--	filter_type = find_filter_type(filter, event_id);
--
--	if (!filter_type)
--		return 0;
--
--	if (filter_type->filter->type != TEP_FILTER_ARG_BOOLEAN)
--		return 0;
--
--	switch (type) {
--	case TEP_FILTER_TRIVIAL_FALSE:
--		return !filter_type->filter->boolean.value;
--
--	case TEP_FILTER_TRIVIAL_TRUE:
--		return filter_type->filter->boolean.value;
--	default:
--		return 1;
--	}
--}
--
- static int test_filter(struct tep_event *event, struct tep_filter_arg *arg,
- 		       struct tep_record *record, enum tep_errno *err);
- 
-@@ -2409,14 +2248,6 @@ int tep_filter_compare(struct tep_event_filter *filter1, struct tep_event_filter
- 			break;
- 		if (filter_type1->filter->type != filter_type2->filter->type)
- 			break;
--		switch (filter_type1->filter->type) {
--		case TEP_FILTER_TRIVIAL_FALSE:
--		case TEP_FILTER_TRIVIAL_TRUE:
--			/* trivial types just need the type compared */
--			continue;
--		default:
--			break;
--		}
- 		/* The best way to compare complex filters is with strings */
- 		str1 = arg_to_str(filter1, filter_type1->filter);
- 		str2 = arg_to_str(filter2, filter_type2->filter);
 -- 
 2.20.1
 
