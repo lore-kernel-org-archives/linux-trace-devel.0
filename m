@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43638C10F0F
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6520EC4360F
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 11BD721850
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 331A421850
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727212AbfDEODj (ORCPT
+        id S1730920AbfDEODl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 5 Apr 2019 10:03:39 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:50227 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726513AbfDEODj (ORCPT
+        Fri, 5 Apr 2019 10:03:41 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:39511 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730870AbfDEODl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 5 Apr 2019 10:03:39 -0400
-Received: by mail-wm1-f46.google.com with SMTP id z11so6879136wmi.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Apr 2019 07:03:38 -0700 (PDT)
+        Fri, 5 Apr 2019 10:03:41 -0400
+Received: by mail-wm1-f66.google.com with SMTP id n25so7357919wmk.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Apr 2019 07:03:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vONETdYkW1pxsKC8J8pcIO9NAdoe9h6Sh0b73wBYlJQ=;
-        b=AA+8FBWHWZlEc1hsntzTBputi2DSf9EgrTUDsieRI7tI9YHXfR3FQ9oRMnlDSimsAK
-         HRf2rOstxS1lNYIMzbG8ZiN7N7LPxfc7hQjswKjTZrHMfckzwD7jKkbyshvaG+S4DI8p
-         jMo4oPvd1sWjg2VbceyxJwkzVL1bNXnOdwjVZ5VDzeb0xXcV5wXOBNpkF98xnCXr+kNx
-         JEIuWJAwVK/Wzh4BKjZYseWEphJDmpHhxOqR4lGY3em4cknzzNO0BT239d+In35zde6w
-         SQsfOnm2dXmHh8KWCeXFQB5KsbjsHyeoe8h++m9g3C/FfwTG8L/x1MY9fxTku088j9Xe
-         NWuw==
-X-Gm-Message-State: APjAAAXTsta8noQi5k//+I8Q+2SO6j96Ez/1CzzeoDchrKd8FYY9vsJQ
-        M8Er655coFjFdUfXAFyHqpI=
-X-Google-Smtp-Source: APXvYqywDL6V2XUsse3GDUbj5nxHBrWX7YSWq8Hlu8kK/97P/y10ztlxOxzCaFUXcYWV9kvk0JdY5A==
-X-Received: by 2002:a1c:ac07:: with SMTP id v7mr8640506wme.49.1554473017457;
-        Fri, 05 Apr 2019 07:03:37 -0700 (PDT)
+        bh=3BBEfXIjZS7gv3NcIxIW8zZWgFWe7oTnHSLMw3HCIcU=;
+        b=nimWNJWSKL5tjQu7Tc26akQYRTGfXJdFssDhggo5t6RkQTg+APuZK5jpMimKfHCBfg
+         bcwqChfWdkBDdxsZpfFSmpLy97qNp/qYaR8w/HgzlwlQhpcbcF/i+etw6xoOdIajKDbL
+         6T104W9RkF5QbfcakvumxxIfMuD8jf4q0hgfi2rDdcBMbKV0w9xgzkY9WcZAEDkA+5vD
+         xbLYKoJNYj/64EYF2neAlOme/SXUjp+XcUQZUC3/0mBsRWlGLBIBVZgdSHOxxMiFYA5S
+         98GnPAOVWlI9vh2NGhFBQPtKCWX0osMNRG/AIxdcXR+knHWAHWWJ/lN985afWWynSyEv
+         B7Zg==
+X-Gm-Message-State: APjAAAVySWvAgykpanpsZp0OmqWZLQmMklwbATWbSzHUj11caqEoqRIO
+        3CV8tZj05E3dcf0Qx4NFV5l2dqo1
+X-Google-Smtp-Source: APXvYqyuXoJVbRsxKTxFjGNTgGVOdotkChYqJoPOrHuttIkkXes7bhWAm/nEIu82HrVUrkrv169QDQ==
+X-Received: by 2002:a1c:e904:: with SMTP id q4mr5992608wmc.43.1554473019325;
+        Fri, 05 Apr 2019 07:03:39 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id w16sm29604647wrt.84.2019.04.05.07.03.36
+        by smtp.gmail.com with ESMTPSA id w16sm29604647wrt.84.2019.04.05.07.03.38
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 05 Apr 2019 07:03:36 -0700 (PDT)
+        Fri, 05 Apr 2019 07:03:38 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 02/10] tools lib traceevent: Implement new traceevent APIs for accessing struct tep_handler fields
-Date:   Fri,  5 Apr 2019 17:03:24 +0300
-Message-Id: <20190405140332.10949-3-tstoyanov@vmware.com>
+Subject: [PATCH 04/10] tools lib traceevent: Remove tep filter trivial APIs
+Date:   Fri,  5 Apr 2019 17:03:26 +0300
+Message-Id: <20190405140332.10949-5-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190405140332.10949-1-tstoyanov@vmware.com>
 References: <20190405140332.10949-1-tstoyanov@vmware.com>
@@ -58,205 +58,260 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-As struct tep_handler definition is not exposed as part of libtraceevent
-API, its fields cannot be accessed directly by the library users. This
-patch implements new APIs, which can be used to access the struct
-tep_handler fields:
+This patch removes trivial filter tep APIs:
 
-  tep_get_event()        - retrieves an event pointer at a specific index
-  tep_get_first_event()  - is modified to use tep_get_event()
-  tep_clear_flag()       - clears a tep handle flag
-  tep_test_flag()        - test if a given flag is set
-  tep_get_header_timestamp_size() - returns the size of the timestamp stored
-                           in the header.
-  tep_get_cpus()         - returns the number of CPUs
-  tep_is_old_format()    - returns true if data was created by an
-                           older kernel with the old data format
-  tep_set_print_raw()    - have the output print in the raw format
-  tep_set_test_filters() - debugging utility for testing tep filters
+  enum tep_filter_trivial_type
+  tep_filter_event_has_trivial()
+  tep_update_trivial()
+  tep_filter_clear_trivial()
+
+Trivial filters is an optimization, used only in the first version of
+KernelShark. The API is deprecated, the next KernelShark release does
+not use it.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flore.kernel.org%2Flinux-trace-devel%2F20190325145017.30246-4-tstoyanov%40vmware.com&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7C418f50a431d443c8298a08d6b7853ba5%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180214904129&amp;sdata=LB7QIw2gJItreIaCu%2B42pOkqYYz0PKWc0p%2Bx3d0z4w0%3D&amp;reserved=0
-Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190401164343.679629539%40goodmis.org&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7C418f50a431d443c8298a08d6b7853ba5%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180214904129&amp;sdata=wzO%2BjuyysGeLLBIeKtIBbr9BEscTW%2BWO5t%2FEgXbgjd0%3D&amp;reserved=0
-[ Renamed some newly added "pevent" to "tep" ]
+Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190326154328.28718-4-tstoyanov%40vmware.com&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7C58975d5a9b5e47514e9608d6b7853f5c%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180262751086&amp;sdata=6mN8K2rdhIzLLSoy4J2Oazl%2F20SC051ohmn7%2BshKfxU%3D&amp;reserved=0
+Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190401164343.968458918%40goodmis.org&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7C58975d5a9b5e47514e9608d6b7853f5c%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180262751086&amp;sdata=8ETo6r9x584BKb9lXMMo5kQbLztOSkeuvLWoHE6RdJU%3D&amp;reserved=0
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- include/traceevent/event-parse.h | 10 +++----
- lib/trace-cmd/trace-input.c      |  2 +-
- lib/traceevent/event-parse-api.c | 49 ++++++++++++++++----------------
- tracecmd/trace-read.c            |  2 +-
- 4 files changed, 31 insertions(+), 32 deletions(-)
+ include/traceevent/event-parse.h |  16 ---
+ lib/traceevent/parse-filter.c    | 169 -------------------------------
+ 2 files changed, 185 deletions(-)
 
 diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index bdc6101..0ac9e19 100644
+index 0ac9e19..12cbed0 100644
 --- a/include/traceevent/event-parse.h
 +++ b/include/traceevent/event-parse.h
-@@ -394,9 +394,9 @@ void tep_print_plugins(struct trace_seq *s,
- /* tep_handle */
- typedef char *(tep_func_resolver_t)(void *priv,
- 				    unsigned long long *addrp, char **modp);
--void tep_set_flag(struct tep_handle *tep, enum tep_flag flag);
--void tep_reset_flag(struct tep_handle *tep, enum tep_flag flag);
--int tep_check_flag(struct tep_handle *tep, enum tep_flag flag);
-+void tep_set_flag(struct tep_handle *tep, int flag);
-+void tep_clear_flag(struct tep_handle *tep, enum tep_flag flag);
-+bool tep_test_flag(struct tep_handle *tep, enum tep_flag flags);
+@@ -721,12 +721,6 @@ struct tep_event_filter *tep_filter_alloc(struct tep_handle *pevent);
+ #define FILTER_MISS		TEP_ERRNO__FILTER_MISS
+ #define FILTER_MATCH		TEP_ERRNO__FILTER_MATCH
  
- static inline int tep_host_bigendian(void)
- {
-@@ -559,8 +559,8 @@ void tep_set_latency_format(struct tep_handle *pevent, int lat);
- int tep_get_header_page_size(struct tep_handle *pevent);
- void tep_set_parsing_failures(struct tep_handle *tep, int parsing_failures);
- int tep_get_parsing_failures(struct tep_handle *tep);
--int tep_get_header_page_ts_size(struct tep_handle *tep);
--int tep_is_old_format(struct tep_handle *pevent);
-+int tep_get_header_timestamp_size(struct tep_handle *tep);
-+bool tep_is_old_format(struct tep_handle *tep);
- void tep_set_print_raw(struct tep_handle *tep, int print_raw);
- void tep_set_test_filters(struct tep_handle *tep, int test_filters);
+-enum tep_filter_trivial_type {
+-	TEP_FILTER_TRIVIAL_FALSE,
+-	TEP_FILTER_TRIVIAL_TRUE,
+-	TEP_FILTER_TRIVIAL_BOTH,
+-};
+-
+ enum tep_errno tep_filter_add_filter_str(struct tep_event_filter *filter,
+ 					 const char *filter_str);
  
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 6938513..643d8ac 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -1038,7 +1038,7 @@ static int update_page_info(struct tracecmd_input *handle, int cpu)
- 	struct kbuffer *kbuf = handle->cpu_data[cpu].kbuf;
+@@ -741,9 +735,6 @@ int tep_event_filtered(struct tep_event_filter *filter,
  
- 	/* FIXME: handle header page */
--	if (tep_get_header_page_ts_size(pevent) != 8) {
-+	if (tep_get_header_timestamp_size(pevent) != 8) {
- 		warning("expected a long long type for timestamp");
- 		return -1;
- 	}
-diff --git a/lib/traceevent/event-parse-api.c b/lib/traceevent/event-parse-api.c
-index 2c70375..f2e5d18 100644
---- a/lib/traceevent/event-parse-api.c
-+++ b/lib/traceevent/event-parse-api.c
-@@ -58,39 +58,38 @@ int tep_get_events_count(struct tep_handle *tep)
-  *
-  * This sets a flag or combination of flags from enum tep_flag
-  */
--void tep_set_flag(struct tep_handle *tep, enum tep_flag flag)
-+void tep_set_flag(struct tep_handle *tep, int flag)
- {
- 	if (tep)
- 		tep->flags |= flag;
+ void tep_filter_reset(struct tep_event_filter *filter);
+ 
+-int tep_filter_clear_trivial(struct tep_event_filter *filter,
+-			     enum tep_filter_trivial_type type);
+-
+ void tep_filter_free(struct tep_event_filter *filter);
+ 
+ char *tep_filter_make_string(struct tep_event_filter *filter, int event_id);
+@@ -751,15 +742,8 @@ char *tep_filter_make_string(struct tep_event_filter *filter, int event_id);
+ int tep_filter_remove_event(struct tep_event_filter *filter,
+ 			    int event_id);
+ 
+-int tep_filter_event_has_trivial(struct tep_event_filter *filter,
+-				 int event_id,
+-				 enum tep_filter_trivial_type type);
+-
+ int tep_filter_copy(struct tep_event_filter *dest, struct tep_event_filter *source);
+ 
+-int tep_update_trivial(struct tep_event_filter *dest, struct tep_event_filter *source,
+-			enum tep_filter_trivial_type type);
+-
+ int tep_filter_compare(struct tep_event_filter *filter1, struct tep_event_filter *filter2);
+ 
+ #endif /* _PARSE_EVENTS_H */
+diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
+index cb5ce66..4ffd8b2 100644
+--- a/lib/traceevent/parse-filter.c
++++ b/lib/traceevent/parse-filter.c
+@@ -1522,167 +1522,6 @@ int tep_filter_copy(struct tep_event_filter *dest, struct tep_event_filter *sour
+ 	return ret;
  }
  
- /**
-- * tep_reset_flag - reset event parser flag
-+ * tep_clear_flag - clear event parser flag
-  * @tep: a handle to the tep_handle
-- * @flag: flag, or combination of flags to be reseted
-- * can be any combination from enum tep_flag
-+ * @flag: flag to be cleared
-  *
-- * This resets a flag or combination of flags from enum tep_flag
-+ * This clears a tep flag
-  */
--void tep_reset_flag(struct tep_handle *tep, enum tep_flag flag)
-+void tep_clear_flag(struct tep_handle *tep, enum tep_flag flag)
- {
- 	if (tep)
- 		tep->flags &= ~flag;
- }
- 
- /**
-- * tep_check_flag - check the state of event parser flag
-+ * tep_test_flag - check the state of event parser flag
-  * @tep: a handle to the tep_handle
-- * @flag: flag, or combination of flags to be checked
-- * can be any combination from enum tep_flag
-+ * @flag: flag to be checked
-  *
-- * This checks the state of a flag or combination of flags from enum tep_flag
-+ * This returns the state of the requested tep flag.
-+ * Returns: true if the flag is set, false otherwise.
-  */
--int tep_check_flag(struct tep_handle *tep, enum tep_flag flag)
-+bool tep_test_flag(struct tep_handle *tep, enum tep_flag flag)
- {
- 	if (tep)
- 		return (tep->flags & flag);
+-
+-/**
+- * tep_update_trivial - update the trivial filters with the given filter
+- * @dest - the filter to update
+- * @source - the filter as the source of the update
+- * @type - the type of trivial filter to update.
+- *
+- * Scan dest for trivial events matching @type to replace with the source.
+- *
+- * Returns 0 on success and -1 if there was a problem updating, but
+- *   events may have still been updated on error.
+- */
+-int tep_update_trivial(struct tep_event_filter *dest, struct tep_event_filter *source,
+-		       enum tep_filter_trivial_type type)
+-{
+-	struct tep_handle *src_pevent;
+-	struct tep_handle *dest_pevent;
+-	struct tep_event *event;
+-	struct tep_filter_type *filter_type;
+-	struct tep_filter_arg *arg;
+-	char *str;
+-	int i;
+-
+-	src_pevent = source->pevent;
+-	dest_pevent = dest->pevent;
+-
+-	/* Do nothing if either of the filters has nothing to filter */
+-	if (!dest->filters || !source->filters)
+-		return 0;
+-
+-	for (i = 0; i < dest->filters; i++) {
+-		filter_type = &dest->event_filters[i];
+-		arg = filter_type->filter;
+-		if (arg->type != TEP_FILTER_ARG_BOOLEAN)
+-			continue;
+-		if ((arg->boolean.value && type == TEP_FILTER_TRIVIAL_FALSE) ||
+-		    (!arg->boolean.value && type == TEP_FILTER_TRIVIAL_TRUE))
+-			continue;
+-
+-		event = filter_type->event;
+-
+-		if (src_pevent != dest_pevent) {
+-			/* do a look up */
+-			event = tep_find_event_by_name(src_pevent,
+-						       event->system,
+-						       event->name);
+-			if (!event)
+-				return -1;
+-		}
+-
+-		str = tep_filter_make_string(source, event->id);
+-		if (!str)
+-			continue;
+-
+-		/* Don't bother if the filter is trivial too */
+-		if (strcmp(str, "TRUE") != 0 && strcmp(str, "FALSE") != 0)
+-			filter_event(dest, event, str, NULL);
+-		free(str);
+-	}
 -	return 0;
-+	return false;
- }
- 
- unsigned short tep_data2host2(struct tep_handle *pevent, unsigned short data)
-@@ -156,13 +155,13 @@ int tep_get_header_page_size(struct tep_handle *pevent)
- }
- 
- /**
-- * tep_get_header_page_ts_size - get size of the time stamp in the header page
-+ * tep_get_header_timestamp_size - get size of the timestamp in the header page
-  * @tep: a handle to the tep_handle
-  *
-- * This returns size of the time stamp in the header page
-+ * This returns size of the timestamp in the header page
-  * If @tep is NULL, 0 is returned.
-  */
--int tep_get_header_page_ts_size(struct tep_handle *tep)
-+int tep_get_header_timestamp_size(struct tep_handle *tep)
- {
- 	if (tep)
- 		return tep->header_page_ts_size;
-@@ -361,15 +360,15 @@ int tep_get_parsing_failures(struct tep_handle *tep)
-  * tep_is_old_format - get if an old kernel is used
-  * @tep: a handle to the tep_handle
-  *
-- * This returns 1, if an old kernel is used to generate the tracing events or
-- * 0 if a new kernel is used. Old kernels did not have header page info.
-- * If @pevent is NULL, 0 is returned.
-+ * This returns true, if an old kernel is used to generate the tracing events or
-+ * false if a new kernel is used. Old kernels did not have header page info.
-+ * If @tep is NULL, false is returned.
-  */
--int tep_is_old_format(struct tep_handle *tep)
-+bool tep_is_old_format(struct tep_handle *tep)
- {
- 	if (tep)
--		return tep->old_format;
+-}
+-
+-/**
+- * tep_filter_clear_trivial - clear TRUE and FALSE filters
+- * @filter: the filter to remove trivial filters from
+- * @type: remove only true, false, or both
+- *
+- * Removes filters that only contain a TRUE or FALES boolean arg.
+- *
+- * Returns 0 on success and -1 if there was a problem.
+- */
+-int tep_filter_clear_trivial(struct tep_event_filter *filter,
+-			     enum tep_filter_trivial_type type)
+-{
+-	struct tep_filter_type *filter_type;
+-	int count = 0;
+-	int *ids = NULL;
+-	int i;
+-
+-	if (!filter->filters)
+-		return 0;
+-
+-	/*
+-	 * Two steps, first get all ids with trivial filters.
+-	 *  then remove those ids.
+-	 */
+-	for (i = 0; i < filter->filters; i++) {
+-		int *new_ids;
+-
+-		filter_type = &filter->event_filters[i];
+-		if (filter_type->filter->type != TEP_FILTER_ARG_BOOLEAN)
+-			continue;
+-		switch (type) {
+-		case TEP_FILTER_TRIVIAL_FALSE:
+-			if (filter_type->filter->boolean.value)
+-				continue;
+-			break;
+-		case TEP_FILTER_TRIVIAL_TRUE:
+-			if (!filter_type->filter->boolean.value)
+-				continue;
+-		default:
+-			break;
+-		}
+-
+-		new_ids = realloc(ids, sizeof(*ids) * (count + 1));
+-		if (!new_ids) {
+-			free(ids);
+-			return -1;
+-		}
+-
+-		ids = new_ids;
+-		ids[count++] = filter_type->event_id;
+-	}
+-
+-	if (!count)
+-		return 0;
+-
+-	for (i = 0; i < count; i++)
+-		tep_filter_remove_event(filter, ids[i]);
+-
+-	free(ids);
 -	return 0;
-+		return !!(tep->old_format);
-+	return false;
- }
+-}
+-
+-/**
+- * tep_filter_event_has_trivial - return true event contains trivial filter
+- * @filter: the filter with the information
+- * @event_id: the id of the event to test
+- * @type: trivial type to test for (TRUE, FALSE, EITHER)
+- *
+- * Returns 1 if the event contains a matching trivial type
+- *  otherwise 0.
+- */
+-int tep_filter_event_has_trivial(struct tep_event_filter *filter,
+-				 int event_id,
+-				 enum tep_filter_trivial_type type)
+-{
+-	struct tep_filter_type *filter_type;
+-
+-	if (!filter->filters)
+-		return 0;
+-
+-	filter_type = find_filter_type(filter, event_id);
+-
+-	if (!filter_type)
+-		return 0;
+-
+-	if (filter_type->filter->type != TEP_FILTER_ARG_BOOLEAN)
+-		return 0;
+-
+-	switch (type) {
+-	case TEP_FILTER_TRIVIAL_FALSE:
+-		return !filter_type->filter->boolean.value;
+-
+-	case TEP_FILTER_TRIVIAL_TRUE:
+-		return filter_type->filter->boolean.value;
+-	default:
+-		return 1;
+-	}
+-}
+-
+ static int test_filter(struct tep_event *event, struct tep_filter_arg *arg,
+ 		       struct tep_record *record, enum tep_errno *err);
  
- /**
-@@ -386,13 +385,13 @@ void tep_set_print_raw(struct tep_handle *tep, int print_raw)
- }
- 
- /**
-- * tep_set_print_raw - set a flag to test a filter string
-+ * tep_set_test_filters - set a flag to test a filter string
-  * @tep: a handle to the tep_handle
-  * @test_filters: the new value of the test_filters flag
-  *
-- * This sets a flag to fjust test a filter string. If this flag is set,
-- * when a filter string is added, then it will print the filters strings
-- * that were created and exit.
-+ * This sets a flag to test a filter string. If this flag is set, when
-+ * tep_filter_add_filter_str() API as called,it will print the filter string
-+ * instead of adding it.
-  */
- void tep_set_test_filters(struct tep_handle *tep, int test_filters)
- {
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index 03c0978..0d16b15 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -798,7 +798,7 @@ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
- 		tep_print_event_time(pevent, &s, event, record,
- 					use_trace_clock);
- 		buf[0] = 0;
--		if (use_trace_clock && !tep_check_flag(pevent, TEP_NSEC_OUTPUT))
-+		if (use_trace_clock && !tep_test_flag(pevent, TEP_NSEC_OUTPUT))
- 			rec_ts = (rec_ts + 500) / 1000;
- 		if (last_ts) {
- 			diff_ts = rec_ts - last_ts;
+@@ -2409,14 +2248,6 @@ int tep_filter_compare(struct tep_event_filter *filter1, struct tep_event_filter
+ 			break;
+ 		if (filter_type1->filter->type != filter_type2->filter->type)
+ 			break;
+-		switch (filter_type1->filter->type) {
+-		case TEP_FILTER_TRIVIAL_FALSE:
+-		case TEP_FILTER_TRIVIAL_TRUE:
+-			/* trivial types just need the type compared */
+-			continue;
+-		default:
+-			break;
+-		}
+ 		/* The best way to compare complex filters is with strings */
+ 		str1 = arg_to_str(filter1, filter_type1->filter);
+ 		str2 = arg_to_str(filter2, filter_type2->filter);
 -- 
 2.20.1
 
