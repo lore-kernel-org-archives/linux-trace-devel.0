@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D869C10F00
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8511C10F0F
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7748221850
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8691921872
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 14:03:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730870AbfDEODm (ORCPT
+        id S1726643AbfDEODn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 5 Apr 2019 10:03:42 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39199 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729987AbfDEODl (ORCPT
+        Fri, 5 Apr 2019 10:03:43 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:36812 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731140AbfDEODn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 5 Apr 2019 10:03:41 -0400
-Received: by mail-wr1-f65.google.com with SMTP id j9so8171712wrn.6
-        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Apr 2019 07:03:40 -0700 (PDT)
+        Fri, 5 Apr 2019 10:03:43 -0400
+Received: by mail-wr1-f68.google.com with SMTP id y13so8192128wrd.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Apr 2019 07:03:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=v6G+QUj4MP4Z4WiHOY2csqsbs6lznvZV6Rg8bE4ZHaY=;
-        b=MfhgMU/WDtnvIqAw0J16QO06dsI/+k0nv/lLBo0dve0Lg4nSz80mhfA+X4zZ6wD0dm
-         9DlW4MBNNhmxbn5176TRoMemCIcDRbET+PINk2ie5W+0sZOGxqmEY0Undqqi+GbkniWk
-         gxLyjGbtTVMqVjBEC5EKoPY9/v0OxDpsRFky8AmhE+bx42WYCycXnlTn0juYzHfEpS7N
-         n70LGS/v+3DvQNRsaed8JVAFdPKQtm+F1jv6UCU7YvsEhCDdVu+kib/V70jlxmdBgNG6
-         zKJM+CoEivj/n7AURennMawEZEHRF+EH4iO5d4ou4L4LhkQB9Z8JsC/aNXsKO6qq9k9S
-         VbXA==
-X-Gm-Message-State: APjAAAVxq6s23MgNScMLmMAQS9/OcRqNVi320UZ37G7ARga4gArR2rQf
-        Yxl9+b1d+AjXrq0owZgee20=
-X-Google-Smtp-Source: APXvYqxJMY9UgrGfAr5WeUr1k8gVnMEyWxpCri2tZyD2znSAicu/ovVJdsd6UVELJ3LU6Eu9xPgWYg==
-X-Received: by 2002:adf:e94d:: with SMTP id m13mr9365590wrn.141.1554473020289;
-        Fri, 05 Apr 2019 07:03:40 -0700 (PDT)
+        bh=5fEX1BeGiQnOovpdZLuscPK8glpxqwQTnhm/eDV73+c=;
+        b=MHRBMRoeop1nS+51ZxWZMiM8UVRBMp/bbb0VvX2YbCOiilIJPNGatIDR8AtAoM17hc
+         4S52NhN/H5M3/+ONQ5OWY1tU2oxPx5AzwpJfzIJP2qejvURhZ2o/vopOGxzFn38mt97A
+         ogpFcQ69+GjESr0MHZbR+jFYtof8ulwelddK5SDUCQ1K40tJ7mB20+S0QgZTKXrMB/6t
+         kJ+01FW773q2/7lpBnvzt4ikWk7UCeakdNBFr5iy8WCrl0uKAXZRIpQ7VqD3KzIDP2an
+         u665J4erdEEn9nkvUmSUjKlZ+xAqCIy5jIyyngwgy6WX9G6d3+HVix/0xBinlsXoAbrU
+         k8pQ==
+X-Gm-Message-State: APjAAAUv07AnVZq7eyrpT8YaxqQjtzZbpg18thIrDQepgbJlypunPA8L
+        EHlGRM5kt4Ka3Rsp4yG/dvc=
+X-Google-Smtp-Source: APXvYqzN0FF0+vAGTQnL0J1tzxyZJ1L7dfdjfkh7FYIBfmGDnUQwPN+Iya6TSJ+rX6lh1Ar4bvE3uA==
+X-Received: by 2002:adf:b612:: with SMTP id f18mr8919573wre.236.1554473021786;
+        Fri, 05 Apr 2019 07:03:41 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id w16sm29604647wrt.84.2019.04.05.07.03.39
+        by smtp.gmail.com with ESMTPSA id w16sm29604647wrt.84.2019.04.05.07.03.40
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 05 Apr 2019 07:03:39 -0700 (PDT)
+        Fri, 05 Apr 2019 07:03:40 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 05/10] tools lib traceevent: Remove call to exit() from tep_filter_add_filter_str()
-Date:   Fri,  5 Apr 2019 17:03:27 +0300
-Message-Id: <20190405140332.10949-6-tstoyanov@vmware.com>
+Subject: [PATCH 06/10] tools tools, tools lib traceevent: Make traceevent APIs more consistent
+Date:   Fri,  5 Apr 2019 17:03:28 +0300
+Message-Id: <20190405140332.10949-7-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190405140332.10949-1-tstoyanov@vmware.com>
 References: <20190405140332.10949-1-tstoyanov@vmware.com>
@@ -58,42 +58,380 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patch removes call to exit() from tep_filter_add_filter_str(). A
-library function should not force the application to exit. In the
-current implementation tep_filter_add_filter_str() calls exit() when a
-special "test_filters" mode is set, used only for debugging purposes.
-When this mode is set and a filter is added - its string is printed to
-the console and exit() is called. This patch changes the logic - when in
-"test_filters" mode, the filter string is still printed, but the exit()
-is not called. It is up to the application to track when "test_filters"
-mode is set and to call exit, if needed.
+Rename some traceevent APIs for consistency:
+
+tep_pid_is_registered() to tep_is_pid_registered()
+tep_file_bigendian() to tep_is_file_bigendian()
+
+  to make the names and return values consistent with other tep_is_... APIs
+
+tep_data_lat_fmt() to tep_data_latency_format()
+
+  to make the name more descriptive
+
+tep_host_bigendian() to tep_is_bigendian()
+tep_set_host_bigendian() to tep_set_local_bigendian()
+tep_is_host_bigendian() to tep_is_local_bigendian()
+
+  "host" can be confused with VMs, and "local" is about the local
+  machine. All tep_is_..._bigendian(struct tep_handle *tep) APIs return
+  the saved data in the tep handle, while tep_is_bigendian() returns
+  the running machine's endianness.
+
+All tep_is_... functions are modified to return bool value, instead of int.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190326154328.28718-9-tstoyanov%40vmware.com&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7Ca85c00102f8946a5a65008d6b78541b2%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180295236164&amp;sdata=2bP6ffKd0dTVskeHiJBvhMkgGNaqyskxRGuShZiD3ME%3D&amp;reserved=0
-Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190401164344.121717482%40goodmis.org&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7Ca85c00102f8946a5a65008d6b78541b2%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180295236164&amp;sdata=lq%2BDgVReaUgoo0NqCLPCxvNoBI6CVK1Gzb3gP7fGiBs%3D&amp;reserved=0
+Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190327141946.4353-2-tstoyanov%40vmware.com&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7C44334540f5c94b45f5a408d6b785435f%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180385505967&amp;sdata=WLestHE33ypMBj6ZpvzSGqwQ1oyMDbeHwGfJeS8qA5s%3D&amp;reserved=0
+Link: https://nam04.safelinks.protection.outlook.com/?url=http%3A%2F%2Flkml.kernel.org%2Fr%2F20190401164344.288624897%40goodmis.org&amp;data=02%7C01%7Ctstoyanov%40vmware.com%7C44334540f5c94b45f5a408d6b785435f%7Cb39138ca3cee4b4aa4d6cd83d9dd62f0%7C0%7C0%7C636898180385505967&amp;sdata=GFAxMqyn4knuGiEIxbYLqDxg76ck8iTxwAHuCaeqCww%3D&amp;reserved=0
+[ Removed some extra parenthesis around return statements ]
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- lib/traceevent/parse-filter.c | 3 ---
- 1 file changed, 3 deletions(-)
+ include/traceevent/event-parse.h | 16 ++++++++--------
+ lib/trace-cmd/trace-input.c      | 10 +++++-----
+ lib/traceevent/event-parse-api.c | 32 ++++++++++++++++----------------
+ lib/traceevent/event-parse.c     | 28 ++++++++++++++--------------
+ plugins/plugin_kvm.c             |  4 ++--
+ python/tracecmd.py               |  2 +-
+ tracecmd/trace-output.c          |  2 +-
+ tracecmd/trace-read.c            |  4 ++--
+ tracecmd/trace-split.c           |  2 +-
+ 9 files changed, 50 insertions(+), 50 deletions(-)
 
-diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
-index 4ffd8b2..3320c0a 100644
---- a/lib/traceevent/parse-filter.c
-+++ b/lib/traceevent/parse-filter.c
-@@ -1346,9 +1346,6 @@ enum tep_errno tep_filter_add_filter_str(struct tep_event_filter *filter,
+diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
+index 12cbed0..f8a5461 100644
+--- a/include/traceevent/event-parse.h
++++ b/include/traceevent/event-parse.h
+@@ -398,7 +398,7 @@ void tep_set_flag(struct tep_handle *tep, int flag);
+ void tep_clear_flag(struct tep_handle *tep, enum tep_flag flag);
+ bool tep_test_flag(struct tep_handle *tep, enum tep_flag flags);
  
- 	free_events(events);
+-static inline int tep_host_bigendian(void)
++static inline int tep_is_bigendian(void)
+ {
+ 	unsigned char str[] = { 0x1, 0x2, 0x3, 0x4 };
+ 	unsigned int val;
+@@ -426,7 +426,7 @@ int tep_register_function(struct tep_handle *pevent, char *name,
+ 			  unsigned long long addr, char *mod);
+ int tep_register_print_string(struct tep_handle *pevent, const char *fmt,
+ 			      unsigned long long addr);
+-int tep_pid_is_registered(struct tep_handle *pevent, int pid);
++bool tep_is_pid_registered(struct tep_handle *pevent, int pid);
  
--	if (rtn >= 0 && pevent->test_filters)
--		exit(0);
--
- 	return rtn;
+ void tep_print_event_task(struct tep_handle *pevent, struct trace_seq *s,
+ 			  struct tep_event *event,
+@@ -512,8 +512,8 @@ tep_find_event_by_name(struct tep_handle *pevent, const char *sys, const char *n
+ struct tep_event *
+ tep_find_event_by_record(struct tep_handle *pevent, struct tep_record *record);
+ 
+-void tep_data_lat_fmt(struct tep_handle *pevent,
+-		      struct trace_seq *s, struct tep_record *record);
++void tep_data_latency_format(struct tep_handle *pevent,
++			     struct trace_seq *s, struct tep_record *record);
+ int tep_data_type(struct tep_handle *pevent, struct tep_record *rec);
+ int tep_data_pid(struct tep_handle *pevent, struct tep_record *rec);
+ int tep_data_preempt_count(struct tep_handle *pevent, struct tep_record *rec);
+@@ -550,11 +550,11 @@ int tep_get_long_size(struct tep_handle *pevent);
+ void tep_set_long_size(struct tep_handle *pevent, int long_size);
+ int tep_get_page_size(struct tep_handle *pevent);
+ void tep_set_page_size(struct tep_handle *pevent, int _page_size);
+-int tep_file_bigendian(struct tep_handle *pevent);
++bool tep_is_file_bigendian(struct tep_handle *pevent);
+ void tep_set_file_bigendian(struct tep_handle *pevent, enum tep_endian endian);
+-int tep_is_host_bigendian(struct tep_handle *pevent);
+-void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian);
+-int tep_is_latency_format(struct tep_handle *pevent);
++bool tep_is_local_bigendian(struct tep_handle *pevent);
++void tep_set_local_bigendian(struct tep_handle *pevent, enum tep_endian endian);
++bool tep_is_latency_format(struct tep_handle *pevent);
+ void tep_set_latency_format(struct tep_handle *pevent, int lat);
+ int tep_get_header_page_size(struct tep_handle *pevent);
+ void tep_set_parsing_failures(struct tep_handle *tep, int parsing_failures);
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 643d8ac..d5ee371 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -1610,7 +1610,7 @@ tracecmd_translate_data(struct tracecmd_input *handle,
+ 	memset(record, 0, sizeof(*record));
+ 
+ 	record->ref_count = 1;
+-	if (tep_is_host_bigendian(pevent) == tep_file_bigendian(pevent))
++	if (tep_is_local_bigendian(pevent) == tep_is_file_bigendian(pevent))
+ 		swap = 0;
+ 	record->data = kbuffer_translate_data(swap, ptr, &length);
+ 	record->size = length;
+@@ -1652,7 +1652,7 @@ tracecmd_read_page_record(struct tep_handle *pevent, void *page, int size,
+ 	enum kbuffer_endian endian;
+ 	void *ptr;
+ 
+-	if (tep_file_bigendian(pevent))
++	if (tep_is_file_bigendian(pevent))
+ 		endian = KBUFFER_ENDIAN_BIG;
+ 	else
+ 		endian = KBUFFER_ENDIAN_LITTLE;
+@@ -2257,7 +2257,7 @@ static int read_cpu_data(struct tracecmd_input *handle)
+ 	else
+ 		long_size = KBUFFER_LSIZE_4;
+ 
+-	if (tep_file_bigendian(handle->pevent))
++	if (tep_is_file_bigendian(handle->pevent))
+ 		endian = KBUFFER_ENDIAN_BIG;
+ 	else
+ 		endian = KBUFFER_ENDIAN_LITTLE;
+@@ -2466,7 +2466,7 @@ int tracecmd_make_pipe(struct tracecmd_input *handle, int cpu, int fd, int cpus)
+ 	else
+ 		long_size = KBUFFER_LSIZE_4;
+ 
+-	if (tep_file_bigendian(handle->pevent))
++	if (tep_is_file_bigendian(handle->pevent))
+ 		endian = KBUFFER_ENDIAN_BIG;
+ 	else
+ 		endian = KBUFFER_ENDIAN_LITTLE;
+@@ -2636,7 +2636,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd)
+ 	handle->plugin_list = tracecmd_load_plugins(handle->pevent);
+ 
+ 	tep_set_file_bigendian(handle->pevent, buf[0]);
+-	tep_set_host_bigendian(handle->pevent, tracecmd_host_bigendian());
++	tep_set_local_bigendian(handle->pevent, tracecmd_host_bigendian());
+ 
+ 	do_read_check(handle, buf, 1);
+ 	handle->long_size = buf[0];
+diff --git a/lib/traceevent/event-parse-api.c b/lib/traceevent/event-parse-api.c
+index fb49d1b..13d65a8 100644
+--- a/lib/traceevent/event-parse-api.c
++++ b/lib/traceevent/event-parse-api.c
+@@ -249,16 +249,16 @@ void tep_set_page_size(struct tep_handle *pevent, int _page_size)
  }
  
+ /**
+- * tep_file_bigendian - get if the file is in big endian order
++ * tep_is_file_bigendian - return the endian of the file
+  * @pevent: a handle to the tep_handle
+  *
+- * This returns if the file is in big endian order
+- * If @pevent is NULL, 0 is returned.
++ * This returns true if the file is in big endian order
++ * If @pevent is NULL, false is returned.
+  */
+-int tep_file_bigendian(struct tep_handle *pevent)
++bool tep_is_file_bigendian(struct tep_handle *pevent)
+ {
+ 	if (pevent)
+-		return pevent->file_bigendian;
++		return (pevent->file_bigendian == TEP_BIG_ENDIAN);
+ 	return 0;
+ }
+ 
+@@ -276,13 +276,13 @@ void tep_set_file_bigendian(struct tep_handle *pevent, enum tep_endian endian)
+ }
+ 
+ /**
+- * tep_is_host_bigendian - get if the order of the current host is big endian
++ * tep_is_local_bigendian - return the endian of the saved local machine
+  * @pevent: a handle to the tep_handle
+  *
+- * This gets if the order of the current host is big endian
+- * If @pevent is NULL, 0 is returned.
++ * This returns true if the saved local machine in @pevent is big endian.
++ * If @pevent is NULL, false is returned.
+  */
+-int tep_is_host_bigendian(struct tep_handle *pevent)
++bool tep_is_local_bigendian(struct tep_handle *pevent)
+ {
+ 	if (pevent)
+ 		return pevent->host_bigendian;
+@@ -290,13 +290,13 @@ int tep_is_host_bigendian(struct tep_handle *pevent)
+ }
+ 
+ /**
+- * tep_set_host_bigendian - set the order of the local host
++ * tep_set_local_bigendian - set the stored local machine endian order
+  * @pevent: a handle to the tep_handle
+  * @endian: non zero, if the local host has big endian order
+  *
+- * This sets the order of the local host
++ * This sets the endian order for the local machine.
+  */
+-void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian)
++void tep_set_local_bigendian(struct tep_handle *pevent, enum tep_endian endian)
+ {
+ 	if (pevent)
+ 		pevent->host_bigendian = endian;
+@@ -306,14 +306,14 @@ void tep_set_host_bigendian(struct tep_handle *pevent, enum tep_endian endian)
+  * tep_is_latency_format - get if the latency output format is configured
+  * @pevent: a handle to the tep_handle
+  *
+- * This gets if the latency output format is configured
+- * If @pevent is NULL, 0 is returned.
++ * This returns true if the latency output format is configured
++ * If @pevent is NULL, false is returned.
+  */
+-int tep_is_latency_format(struct tep_handle *pevent)
++bool tep_is_latency_format(struct tep_handle *pevent)
+ {
+ 	if (pevent)
+ 		return pevent->latency_format;
+-	return 0;
++	return false;
+ }
+ 
+ /**
+diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+index a17f4f8..969f259 100644
+--- a/lib/traceevent/event-parse.c
++++ b/lib/traceevent/event-parse.c
+@@ -199,23 +199,23 @@ static const char *find_cmdline(struct tep_handle *pevent, int pid)
+ }
+ 
+ /**
+- * tep_pid_is_registered - return if a pid has a cmdline registered
+- * @pevent: handle for the pevent
++ * tep_is_pid_registered - return if a pid has a cmdline registered
++ * @pevent: a handle to the trace event parser context
+  * @pid: The pid to check if it has a cmdline registered with.
+  *
+- * Returns 1 if the pid has a cmdline mapped to it
+- * 0 otherwise.
++ * Returns true if the pid has a cmdline mapped to it
++ * false otherwise.
+  */
+-int tep_pid_is_registered(struct tep_handle *pevent, int pid)
++bool tep_is_pid_registered(struct tep_handle *pevent, int pid)
+ {
+ 	const struct tep_cmdline *comm;
+ 	struct tep_cmdline key;
+ 
+ 	if (!pid)
+-		return 1;
++		return true;
+ 
+ 	if (!pevent->cmdlines && cmdline_init(pevent))
+-		return 0;
++		return false;
+ 
+ 	key.pid = pid;
+ 
+@@ -223,8 +223,8 @@ int tep_pid_is_registered(struct tep_handle *pevent, int pid)
+ 		       sizeof(*pevent->cmdlines), cmdline_cmp);
+ 
+ 	if (comm)
+-		return 1;
+-	return 0;
++		return true;
++	return false;
+ }
+ 
+ /*
+@@ -5172,7 +5172,7 @@ out_failed:
+ }
+ 
+ /**
+- * tep_data_lat_fmt - parse the data for the latency format
++ * tep_data_latency_format - parse the data for the latency format
+  * @pevent: a handle to the pevent
+  * @s: the trace_seq to write to
+  * @record: the record to read from
+@@ -5181,8 +5181,8 @@ out_failed:
+  * need rescheduling, in hard/soft interrupt, preempt count
+  * and lock depth) and places it into the trace_seq.
+  */
+-void tep_data_lat_fmt(struct tep_handle *pevent,
+-		      struct trace_seq *s, struct tep_record *record)
++void tep_data_latency_format(struct tep_handle *pevent,
++			     struct trace_seq *s, struct tep_record *record)
+ {
+ 	static int check_lock_depth = 1;
+ 	static int check_migrate_disable = 1;
+@@ -5532,7 +5532,7 @@ void tep_print_event_time(struct tep_handle *pevent, struct trace_seq *s,
+ 	}
+ 
+ 	if (pevent->latency_format) {
+-		tep_data_lat_fmt(pevent, s, record);
++		tep_data_latency_format(pevent, s, record);
+ 	}
+ 
+ 	if (use_usec_format) {
+@@ -6827,7 +6827,7 @@ struct tep_handle *tep_alloc(void)
+ 
+ 	if (pevent) {
+ 		pevent->ref_count = 1;
+-		pevent->host_bigendian = tep_host_bigendian();
++		pevent->host_bigendian = tep_is_bigendian();
+ 	}
+ 
+ 	return pevent;
+diff --git a/plugins/plugin_kvm.c b/plugins/plugin_kvm.c
+index ddac21a..e23b513 100644
+--- a/plugins/plugin_kvm.c
++++ b/plugins/plugin_kvm.c
+@@ -386,8 +386,8 @@ static int kvm_mmu_print_role(struct trace_seq *s, struct tep_record *record,
+ 	 * We can only use the structure if file is of the same
+ 	 * endianness.
+ 	 */
+-	if (tep_file_bigendian(event->pevent) ==
+-	    tep_is_host_bigendian(event->pevent)) {
++	if (tep_is_file_bigendian(event->pevent) ==
++	    tep_is_local_bigendian(event->pevent)) {
+ 
+ 		trace_seq_printf(s, "%u/%u q%u%s %s%s %spge %snxe",
+ 				 role.level,
+diff --git a/python/tracecmd.py b/python/tracecmd.py
+index a6671f6..677c0f2 100644
+--- a/python/tracecmd.py
++++ b/python/tracecmd.py
+@@ -166,7 +166,7 @@ class PEvent(object):
+ 
+     @cached_property
+     def file_endian(self):
+-        if tep_file_bigendian(self._pevent):
++        if tep_is_file_bigendian(self._pevent):
+             return '>'
+         return '<'
+ 
+diff --git a/tracecmd/trace-output.c b/tracecmd/trace-output.c
+index 1c2e92c..33d6ce3 100644
+--- a/tracecmd/trace-output.c
++++ b/tracecmd/trace-output.c
+@@ -808,7 +808,7 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
+ 		/* Use the pevent of the ihandle for later writes */
+ 		handle->pevent = tracecmd_get_pevent(ihandle);
+ 		tep_ref(pevent);
+-		if (tep_file_bigendian(pevent))
++		if (tep_is_file_bigendian(pevent))
+ 			buf[0] = 1;
+ 		else
+ 			buf[0] = 0;
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 0d16b15..52fa1bd 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1700,8 +1700,8 @@ void trace_report (int argc, char **argv)
+ 
+ 		if (show_endian) {
+ 			printf("file is %s endian and host is %s endian\n",
+-				tep_file_bigendian(pevent) ? "big" : "little",
+-				tep_is_host_bigendian(pevent) ? "big" : "little");
++				tep_is_file_bigendian(pevent) ? "big" : "little",
++				tep_is_local_bigendian(pevent) ? "big" : "little");
+ 			return;
+ 		}
+ 
+diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
+index 6043e97..d27b3c6 100644
+--- a/tracecmd/trace-split.c
++++ b/tracecmd/trace-split.c
+@@ -64,7 +64,7 @@ static int create_type_len(struct tep_handle *pevent, int time, int len)
+ 			bigendian = 1;
+ 	}
+ 
+-	if (tep_file_bigendian(pevent))
++	if (tep_is_file_bigendian(pevent))
+ 		time |= (len << 27);
+ 	else
+ 		time = (time << 5) | len;
 -- 
 2.20.1
 
