@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8169C10F13
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 10:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56610C10F0F
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 10:14:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AA622217D4
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 10:14:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3133420651
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Apr 2019 10:14:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730610AbfDEKO0 (ORCPT
+        id S1730532AbfDEKO1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 5 Apr 2019 06:14:26 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:43231 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730532AbfDEKO0 (ORCPT
+        Fri, 5 Apr 2019 06:14:27 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:42274 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730283AbfDEKO0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 5 Apr 2019 06:14:26 -0400
-Received: by mail-wr1-f43.google.com with SMTP id k17so7258609wrx.10
-        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Apr 2019 03:14:24 -0700 (PDT)
+Received: by mail-wr1-f67.google.com with SMTP id g3so7266864wrx.9
+        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Apr 2019 03:14:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rkLsNwijaMBBDsVj9HNv6GFGTQT1HiGdcwbTl0G1pIo=;
-        b=WnhMT2FLVSO+i+HpSJSco74XTLlNoMDTofsYV2NxwJrXGDVQnh0nPJ9tEZTZB4rz5M
-         WWqVTzypJXwy+kKzeAmOHw51P+3st6gh8PkvECcFW35FxUhTND86QSZKxKagLHTFJVBa
-         3DHgfHROXti3W6omqlFVOGAMPv1vdfh+5Td5Q0MWT/Tr8upOHRjlaI3PkVIiEWBmkL9K
-         T+TOUzcc9C3M2NfhBbvQ1zJHwlazCuIpBjX3pmgZVmaRQl5BXeEbfbRvAgvkXee/OTgU
-         FvUFGyuA8+icgyYGYfRykBwZ2ENgvSmtvzVtLxoFaN+n5Ab4TxLh2eyG4TBUchmxFKU6
-         bDsA==
-X-Gm-Message-State: APjAAAWDLMQJy7HseogooDxYnlQTTF6tGLaE0W8hqg1jv28CQCLH1yEn
-        Yc5rWy2aCilxFjL3BJ3VzepMtYlebSY=
-X-Google-Smtp-Source: APXvYqwBn7EuNJtlVkJ+KUdv3pyMV/v+CHy46Ff6DKBPP0Z1vxJBWDvxPjeML+ZCt3mvBu6EIW9Zlw==
-X-Received: by 2002:a5d:6706:: with SMTP id o6mr8286095wru.36.1554459263873;
-        Fri, 05 Apr 2019 03:14:23 -0700 (PDT)
+        bh=cbo98OGECtDOdbjU1D4IGLQXzptCaKoNOZXLvDcbwhU=;
+        b=FKjBhVOllm0DQvOoKQ7gKb+30l03SKQsIqe9bQFW6zz16RII6ugSL4/RVcRxN4xNzi
+         yJeNB1o4RCe2eWvCAfWkcLClMecSXkZPmXAKo0ZqteZydt/u5R1RqsXnGk+7mbs4wKfk
+         23wSDodFXbgm6a9jzOvEejJ66C/3B+sRMCCsTRO14HDfxfBQX63RNbcfj+ysh+a01Dqa
+         Zh5IxUVzbsg+nbMxqn8K9sTR1/awKFKFbYTg348hegGq3C0kB/tKWxXp9OmU78nJP26V
+         em8/4xTygLi9xD7r0gDesumsx897yegJNqEETXe52r7oEdEKWv/K+DcSMXUxMEItk5p8
+         OGvQ==
+X-Gm-Message-State: APjAAAU2Ot3ohtDV2apSkjwW3TDPiPaOe7Ttx4YhbxLiclK2njNbsR6s
+        m7HDjyGCiDUEjIk1W/GugXU=
+X-Google-Smtp-Source: APXvYqx4bHjxf3G3hwC0s7NGaGV8Dv1S4hpBcWl+tXK7wiuxHb3YzIjsNt6rTJTVmEqmANba82bRLw==
+X-Received: by 2002:adf:ba81:: with SMTP id p1mr8170642wrg.192.1554459265097;
+        Fri, 05 Apr 2019 03:14:25 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id a187sm1851124wma.32.2019.04.05.03.14.23
+        by smtp.gmail.com with ESMTPSA id a187sm1851124wma.32.2019.04.05.03.14.24
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Apr 2019 03:14:23 -0700 (PDT)
+        Fri, 05 Apr 2019 03:14:24 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [RFC v2 4/6] kernel-shark: Add Numpy Interface for processing of tracing data
-Date:   Fri,  5 Apr 2019 13:14:09 +0300
-Message-Id: <20190405101411.25466-5-ykaradzhov@vmware.com>
+Subject: [RFC v2 6/6] kernel-shark: Add basic example demonstrating the NumPy interface
+Date:   Fri,  5 Apr 2019 13:14:11 +0300
+Message-Id: <20190405101411.25466-7-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190405101411.25466-1-ykaradzhov@vmware.com>
 References: <20190405101411.25466-1-ykaradzhov@vmware.com>
@@ -58,433 +58,130 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patch contains the Cython implementation of the Interface
-together with a Python script used to build the corresponding
-library (libkshark_wrapper.so)
+The example script plots the distribution (histogram) of the pulseaudio
+wake-up times and finds the biggest latency. The script also generates
+a KernelShark session descriptor file (JSON). The session descriptor file
+can be used by the KernelSherk GUI to open a session which will directly
+visualize the largest wake-up latency.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/build/py/libkshark_wrapper.pyx | 302 ++++++++++++++++++++
- kernel-shark/build/py/np_setup.py           | 101 +++++++
- 2 files changed, 403 insertions(+)
- create mode 100644 kernel-shark/build/py/libkshark_wrapper.pyx
- create mode 100644 kernel-shark/build/py/np_setup.py
+ kernel-shark/bin/sched_wakeup.py | 106 +++++++++++++++++++++++++++++++
+ 1 file changed, 106 insertions(+)
+ create mode 100755 kernel-shark/bin/sched_wakeup.py
 
-diff --git a/kernel-shark/build/py/libkshark_wrapper.pyx b/kernel-shark/build/py/libkshark_wrapper.pyx
-new file mode 100644
-index 0000000..71d4bd7
+diff --git a/kernel-shark/bin/sched_wakeup.py b/kernel-shark/bin/sched_wakeup.py
+new file mode 100755
+index 0000000..8e2cfc1
 --- /dev/null
-+++ b/kernel-shark/build/py/libkshark_wrapper.pyx
-@@ -0,0 +1,302 @@
-+"""
-+SPDX-License-Identifier: GPL-2.0
-+
-+Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
-+"""
-+
-+import ctypes
-+
-+# Import the Python-level symbols of numpy
-+import numpy as np
-+# Import the C-level symbols of numpy
-+cimport numpy as np
-+
-+import json
-+
-+from libcpp cimport bool
-+
-+from libc.stdlib cimport free
-+
-+from cpython cimport PyObject, Py_INCREF
-+
-+
-+cdef extern from 'stdint.h':
-+    ctypedef unsigned short uint8_t
-+    ctypedef unsigned short uint16_t
-+    ctypedef unsigned long long uint64_t
-+
-+cdef extern from 'numpy/ndarraytypes.h':
-+    int NPY_ARRAY_CARRAY
-+
-+# Declare all C functions we are going to call
-+cdef extern from '../../src/libkshark-py.c':
-+    bool kspy_open(const char *fname)
-+
-+cdef extern from '../../src/libkshark-py.c':
-+    bool kspy_close()
-+
-+cdef extern from '../../src/libkshark-py.c':
-+    size_t kspy_trace2matrix(uint64_t **offset_array,
-+                             uint8_t **cpu_array,
-+                             uint64_t **ts_array,
-+                             uint16_t **pid_array,
-+                             int **event_array)
-+
-+cdef extern from '../../src/libkshark-py.c':
-+    int kspy_get_event_id(const char *sys, const char *evt)
-+
-+cdef extern from '../../src/libkshark-py.c':
-+    uint64_t kspy_read_event_field(uint64_t offset,
-+                                   int event_id,
-+                                   const char *field)
-+
-+cdef extern from '../../src/libkshark-py.c':
-+    ssize_t kspy_get_tasks(int **pids, char ***names)
-+
-+cdef extern from '../../src/libkshark.h':
-+    int KS_EVENT_OVERFLOW
-+
-+cdef extern from '../../src/libkshark-py.c':
-+    void kspy_new_session_file(const char *data_file,
-+                               const char *session_file)
-+
-+EVENT_OVERFLOW = KS_EVENT_OVERFLOW
-+
-+# Numpy must be initialized!!!
-+np.import_array()
-+
-+
-+cdef class KsDataWrapper:
-+    cdef int item_size
-+    cdef int data_size
-+    cdef int data_type
-+    cdef void* data_ptr
-+
-+    cdef init(self,
-+              int data_type,
-+              int data_size,
-+              int item_size,
-+              void* data_ptr):
-+        """ This initialization cannot be done in the constructor because
-+            we use C-level arguments.
-+        """
-+        self.item_size = item_size
-+        self.data_size = data_size
-+        self.data_type = data_type
-+        self.data_ptr = data_ptr
-+
-+    def __array__(self):
-+        """ Here we use the __array__ method, that is called when numpy
-+            tries to get an array from the object.
-+        """
-+        cdef np.npy_intp shape[1]
-+        shape[0] = <np.npy_intp> self.data_size
-+
-+        ndarray = np.PyArray_New(np.ndarray,
-+                                 1, shape,
-+                                 self.data_type,
-+                                 NULL,
-+                                 self.data_ptr,
-+                                 self.item_size,
-+                                 NPY_ARRAY_CARRAY,
-+                                 <object>NULL)
-+
-+        return ndarray
-+
-+    def __dealloc__(self):
-+        """ Free the data. This is called by Python when all the references to
-+            the object are gone.
-+        """
-+        free(<void*>self.data_ptr)
-+
-+
-+def c_str2py(char *c_str):
-+    """ String convertion C -> Python
-+    """
-+    return ctypes.c_char_p(c_str).value.decode('utf-8')
-+
-+
-+def py_str2c(py_str):
-+    """ String convertion Python -> C
-+    """
-+    return py_str.encode('utf-8')
-+
-+
-+def open_file(fname):
-+    """ Open a tracing data file.
-+    """
-+    return kspy_open(py_str2c(fname))
-+
-+
-+def close():
-+    """ Open the session file.
-+    """
-+    kspy_close()
-+
-+
-+def read_event_field(offset, event_id, field):
-+    """ Read the value of a specific field of the trace event.
-+    """
-+    cdef uint64_t v
-+
-+    v = kspy_read_event_field(offset, event_id, py_str2c(field))
-+    return v
-+
-+
-+def event_id(system, event):
-+    """ Get the unique Id of the event
-+    """
-+    return kspy_get_event_id(py_str2c(system), py_str2c(event))
-+
-+
-+def get_tasks():
-+    """ Get a dictionary of all task's PIDs
-+    """
-+    cdef int *pids
-+    cdef char **names
-+    cdef int size = kspy_get_tasks(&pids, &names)
-+
-+    task_dict = {}
-+
-+    for i in range(0, size):
-+        task_dict.update({c_str2py(names[i]): pids[i]})
-+
-+    return task_dict
-+
-+
-+def load_data(ofst_data=True, cpu_data=True,
-+	      ts_data=True, pid_data=True,
-+	      evt_data=True):
-+    """ Python binding of the 'kshark_load_data_matrix' function that does not
-+        copy the data. The input parameters can be used to avoid loading the
-+        data from the unnecessary fields.
-+    """
-+    cdef uint64_t *ofst_c
-+    cdef uint8_t *cpu_c
-+    cdef uint64_t *ts_c
-+    cdef uint16_t *pid_c
-+    cdef int *evt_c
-+
-+    cdef np.ndarray ofst
-+    cdef np.ndarray cpu
-+    cdef np.ndarray ts
-+    cdef np.ndarray pid
-+    cdef np.ndarray evt
-+
-+    if not ofst_data:
-+        ofst_c = NULL
-+
-+    if not cpu_data:
-+        cpu_c = NULL
-+
-+    if not ts_data:
-+        ts_c = NULL
-+
-+    if not pid_data:
-+        pid_c = NULL
-+
-+    if not evt_data:
-+        evt_c = NULL
-+
-+    data_dict = {}
-+
-+    # Call the C function
-+    size = kspy_trace2matrix(&ofst_c, &cpu_c, &ts_c, &pid_c, &evt_c)
-+
-+    if ofst_data:
-+        array_wrapper_ofst = KsDataWrapper()
-+        array_wrapper_ofst.init(data_type=np.NPY_UINT64,
-+                                item_size=0,
-+                                data_size=size,
-+                                data_ptr=<void *> ofst_c)
-+
-+
-+        ofst = np.array(array_wrapper_ofst, copy=False)
-+        ofst.base = <PyObject *> array_wrapper_ofst
-+        data_dict.update({'offset': ofst})
-+        Py_INCREF(array_wrapper_ofst)
-+
-+    if cpu_data:
-+        array_wrapper_cpu = KsDataWrapper()
-+        array_wrapper_cpu.init(data_type=np.NPY_UINT8,
-+                               data_size=size,
-+                               item_size=0,
-+                               data_ptr=<void *> cpu_c)
-+
-+        cpu = np.array(array_wrapper_cpu, copy=False)
-+        cpu.base = <PyObject *> array_wrapper_cpu
-+        data_dict.update({'cpu': cpu})
-+        Py_INCREF(array_wrapper_cpu)
-+
-+    if ts_data:
-+        array_wrapper_ts = KsDataWrapper()
-+        array_wrapper_ts.init(data_type=np.NPY_UINT64,
-+                              data_size=size,
-+                              item_size=0,
-+                              data_ptr=<void *> ts_c)
-+
-+        ts = np.array(array_wrapper_ts, copy=False)
-+        ts.base = <PyObject *> array_wrapper_ts
-+        data_dict.update({'time': ts})
-+        Py_INCREF(array_wrapper_ts)
-+
-+    if pid_data:
-+        array_wrapper_pid = KsDataWrapper()
-+        array_wrapper_pid.init(data_type=np.NPY_UINT16,
-+                               data_size=size,
-+                               item_size=0,
-+                               data_ptr=<void *>pid_c)
-+
-+        pid = np.array(array_wrapper_pid, copy=False)
-+        pid.base = <PyObject *> array_wrapper_pid
-+        data_dict.update({'pid': pid})
-+        Py_INCREF(array_wrapper_pid)
-+
-+    if evt_data:
-+        array_wrapper_evt = KsDataWrapper()
-+        array_wrapper_evt.init(data_type=np.NPY_INT,
-+                               data_size=size,
-+                               item_size=0,
-+                               data_ptr=<void *>evt_c)
-+
-+        evt = np.array(array_wrapper_evt, copy=False)
-+        evt.base = <PyObject *> array_wrapper_evt
-+        data_dict.update({'event': evt})
-+        Py_INCREF(array_wrapper_evt)
-+
-+    return data_dict
-+
-+
-+def save_session(session, s):
-+    """ Save a KernelShark session description of a JSON file.
-+    """
-+    s.seek(0)
-+    json.dump(session, s, indent=4)
-+    s.truncate()
-+
-+
-+def new_session(fname, sname):
-+    """ Generate and save a default KernelShark session description
-+        file (JSON).
-+    """
-+    kspy_new_session_file(py_str2c(fname), py_str2c(sname))
-+
-+    with open(sname, 'r+') as s:
-+        session = json.load(s)
-+
-+        session['Filters']['filter mask'] = 7
-+        session['CPUPlots'] = []
-+        session['TaskPlots'] = []
-+        session['Splitter'] = [1, 1]
-+        session['MainWindow'] = [1200, 800]
-+        session['ViewTop'] = 0
-+        session['ColorScheme'] = 0.75
-+        session['Model']['bins'] = 1000
-+
-+        session['Markers']['markA'] = {}
-+        session['Markers']['markA']['isSet'] = False
-+        session['Markers']['markB'] = {}
-+        session['Markers']['markB']['isSet'] = False
-+        session['Markers']['Active'] = 'A'
-+
-+        save_session(session, s)
-diff --git a/kernel-shark/build/py/np_setup.py b/kernel-shark/build/py/np_setup.py
-new file mode 100644
-index 0000000..0f0a26c
---- /dev/null
-+++ b/kernel-shark/build/py/np_setup.py
-@@ -0,0 +1,101 @@
++++ b/kernel-shark/bin/sched_wakeup.py
+@@ -0,0 +1,106 @@
 +#!/usr/bin/env python3
 +
-+"""
-+SPDX-License-Identifier: LGPL-2.1
-+
-+Copyright (C) 2017 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
++""" The license to be determined !!!!
 +"""
 +
++import json
 +import sys
-+import getopt
-+import numpy
-+from Cython.Distutils import build_ext
 +
++import matplotlib.pyplot as plt
++import scipy.stats as st
++import numpy as np
 +
-+def libs(argv):
-+    kslibdir = ''
-+    evlibdir = ''
-+    evincdir = ''
-+    trlibdir = ''
-+    trincdir = ''
-+    jsnincdir = ''
++import ksharkpy as ks
 +
-+    try:
-+        opts, args = getopt.getopt(
-+            argv, 'l:t:i:e:n:j:', ['kslibdir=',
-+                                   'trlibdir=',
-+                                   'trincdir=',
-+                                   'evlibdir=',
-+                                   'evincdir=',
-+                                   'jsnincdir=']
-+        )
++fname = str(sys.argv[1])
 +
-+    except getopt.GetoptError:
-+        sys.exit(2)
++ks.open_file(fname)
 +
-+    for opt, arg in opts:
-+        if opt in ('-l', '--kslibdir'):
-+            kslibdir = arg
-+        elif opt in ('-t', '--trlibdir'):
-+            trlibdir = arg
-+        elif opt in ('-i', '--trincdir'):
-+            trincdir = arg
-+        elif opt in ('-e', '--evlibdir'):
-+            evlibdir = arg
-+        elif opt in ('-n', '--evincdir'):
-+            evincdir = arg
-+        elif opt in ('-j', '--jsnincdir'):
-+            jsnincdir = arg
++# We do not need the Process Ids of the records.
++# Do not load the "pid" data.
++data = ks.load_data(pid_data=False)
 +
-+    cmd1 = 1
-+    for i in range(len(sys.argv)):
-+        if sys.argv[i] == 'build_ext':
-+            cmd1 = i
++tasks = ks.get_tasks()
++task_pid = tasks['pulseaudio']
 +
-+    sys.argv = sys.argv[:1] + sys.argv[cmd1:]
++# Get the Event Ids of the sched_switch and sched_waking events.
++ss_eid = ks.event_id('sched', 'sched_switch')
++w_eid = ks.event_id('sched', 'sched_waking')
 +
-+    return kslibdir, evlibdir, evincdir, trlibdir, trincdir, jsnincdir
++# Gey the size of the data.
++i = data['offset'].size
 +
++dt = []
++delta_max = i_ss_max = i_sw_max = 0
 +
-+def configuration(parent_package='',
-+                  top_path=None,
-+                  libs=['kshark', 'tracecmd', 'traceevent', 'json-c'],
-+                  libdirs=['.'],
-+                  incdirs=['.']):
-+    """ Function used to build our configuration.
-+    """
-+    from numpy.distutils.misc_util import Configuration
++while i > 0:
++    i = i - 1
++    if data['event'][i] == ss_eid:
++        next_pid = ks.read_event_field(offset=data['offset'][i],
++                                       event_id=ss_eid,
++                                       field='next_pid')
 +
-+    # The configuration object that hold information on all the files
-+    # to be built.
-+    config = Configuration('', parent_package, top_path)
-+    config.add_extension('ksharkpy',
-+                         sources=['libkshark_wrapper.pyx'],
-+                         libraries=libs,
-+                         library_dirs=libdirs,
-+                         depends=['../../src/libkshark.c', '../../src/libkshark-py.c'],
-+                         include_dirs=incdirs)
++        if next_pid == task_pid:
++            time_ss = data['time'][i]
++            index_ss = i
 +
-+    return config
++            while i > 0:
++                i = i - 1
++                if (data['event'][i] == w_eid):
++                    waking_pid = ks.read_event_field(offset=data['offset'][i],
++                                                     event_id=w_eid,
++                                                     field='pid')
 +
++                    if waking_pid == task_pid:
++                        delta = (time_ss - data['time'][i]) / 1000.
++                        # print(delta)
++                        dt.append(delta)
++                        if delta > delta_max:
++                            print('lat. max: ', delta)
++                            i_ss_max = index_ss
++                            i_sw_max = i
++                            delta_max = delta
 +
-+def main(argv):
-+    # Retrieve third-party libraries
-+    kslibdir, evlibdir, evincdir, trlibdir, trincdir, jsnincdir = libs(sys.argv[1:])
++                        break
 +
-+    # Retrieve the parameters of our local configuration
-+    params = configuration(top_path='',
-+                           libdirs=[kslibdir, trlibdir, evlibdir],
-+                           incdirs=[trincdir, evincdir, jsnincdir]).todict()
++desc = st.describe(np.array(dt))
++print(desc)
 +
-+    # Override the C-extension building so that it knows about '.pyx'
-+    # Cython files.
-+    params['cmdclass'] = dict(build_ext=build_ext)
++fig, ax = plt.subplots(nrows=1, ncols=1)
++fig.set_figheight(6)
++fig.set_figwidth(7)
 +
-+    # Call the actual building/packaging function (see distutils docs)
-+    from numpy.distutils.core import setup
-+    setup(**params)
++rect = fig.patch
++rect.set_facecolor('white')
 +
++ax.set_xlabel('latency [$\mu$s]')
++plt.yscale('log')
++ax.hist(dt, bins=(200), histtype='step')
++plt.show()
 +
-+if __name__ == '__main__':
-+    main(sys.argv[1:])
++sname = 'sched.json'
++ks.new_session(fname, sname)
++
++with open(sname, 'r+') as s:
++    session = json.load(s)
++    session['TaskPlots'] = [task_pid]
++    session['CPUPlots'] = [
++        int(data['cpu'][i_sw_max]),
++        int(data['cpu'][i_ss_max])]
++
++    delta = data['time'][i_ss_max] - data['time'][i_sw_max]
++    tmin = int(data['time'][i_sw_max] - delta)
++    tmax = int(data['time'][i_ss_max] + delta)
++    session['Model']['range'] = [tmin, tmax]
++
++    session['Markers']['markA']['isSet'] = True
++    session['Markers']['markA']['row'] = int(i_sw_max)
++
++    session['Markers']['markB']['isSet'] = True
++    session['Markers']['markB']['row'] = int(i_ss_max)
++
++    session['ViewTop'] = int(i_sw_max) - 5
++
++    ks.save_session(session, s)
++
++ks.close()
 -- 
 2.19.1
 
