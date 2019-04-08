@@ -2,304 +2,193 @@ Return-Path: <SRS0=kFh5=SK=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.9 required=3.0 tests=BODY_SINGLE_WORD,
-	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1FCFC10F13
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Apr 2019 14:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2C7CC10F13
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Apr 2019 15:01:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6EEDE21473
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Apr 2019 14:22:27 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="hFkWv7HQ"
+	by mail.kernel.org (Postfix) with ESMTP id 8F77021473
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Apr 2019 15:01:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbfDHOW0 (ORCPT
+        id S1726228AbfDHPBM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 8 Apr 2019 10:22:26 -0400
-Received: from mail-eopbgr820042.outbound.protection.outlook.com ([40.107.82.42]:24192
-        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726573AbfDHOW0 (ORCPT
+        Mon, 8 Apr 2019 11:01:12 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:42236 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726005AbfDHPBM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 8 Apr 2019 10:22:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0VIqZ9gJPBq1aqTo2amQDxw0Csm/a/MAnQa2Ih/JLsY=;
- b=hFkWv7HQx5M5WrNdfqURkVY9PGND3PNwNKD9Aartwh0T2qaxGfIif0jwd0al7+5oOzOisR7PupYQSeNz/5TzVMFvdbHz9PBu0tUE7sbERwuvoiUIxOHa5FayzCHkntytCpF/vK5urFX+ovtljyYs46EXNO93KNGsamzHehbLKBc=
-Received: from SN4PR0501MB3903.namprd05.prod.outlook.com (10.167.142.151) by
- SN4PR0501MB3792.namprd05.prod.outlook.com (10.167.140.146) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1792.12; Mon, 8 Apr 2019 14:22:21 +0000
-Received: from SN4PR0501MB3903.namprd05.prod.outlook.com
- ([fe80::9863:fa92:a642:b111]) by SN4PR0501MB3903.namprd05.prod.outlook.com
- ([fe80::9863:fa92:a642:b111%2]) with mapi id 15.20.1792.009; Mon, 8 Apr 2019
- 14:22:21 +0000
-From:   Yordan Karadzhov <ykaradzhov@vmware.com>
-To:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: Test sending logo file
-Thread-Topic: Test sending logo file
-Thread-Index: AQHU7hZzHJlMs1ftQESqzELSZLUJPQ==
-Date:   Mon, 8 Apr 2019 14:22:21 +0000
-Message-ID: <SN4PR0501MB39037A2DAEC8E2BB6B7F764DA02C0@SN4PR0501MB3903.namprd05.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=ykaradzhov@vmware.com; 
-x-originating-ip: [146.247.46.6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 597db524-519c-45c5-8727-08d6bc2d9d50
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600139)(711020)(4605104)(2017052603328)(49563074)(7193020);SRVR:SN4PR0501MB3792;
-x-ms-traffictypediagnostic: SN4PR0501MB3792:
-x-microsoft-antispam-prvs: <SN4PR0501MB37926D767207C84D9265D66BA02C0@SN4PR0501MB3792.namprd05.prod.outlook.com>
-x-forefront-prvs: 0001227049
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(346002)(366004)(39860400002)(396003)(376002)(199004)(189003)(52536014)(66066001)(305945005)(33656002)(102836004)(7736002)(74316002)(99936001)(558084003)(55016002)(555874004)(9686003)(5640700003)(81166006)(81156014)(8676002)(3846002)(6116002)(26005)(14454004)(6506007)(186003)(19618925003)(53936002)(2501003)(3480700005)(99286004)(2351001)(6916009)(71190400001)(71200400001)(2906002)(486006)(25786009)(7696005)(105586002)(256004)(476003)(6436002)(316002)(8936002)(86362001)(478600001)(97736004)(106356001)(68736007)(558944008)(19559445001)(15288005002);DIR:OUT;SFP:1101;SCL:1;SRVR:SN4PR0501MB3792;H:SN4PR0501MB3903.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: vmware.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 7M+6O+DZRTWcBySJW5BoddLLG+qgthJL12KDp31S0r1VYshG7UEbYZva5mHcaO23d9THrSHnmoHDsj8v6xQqgCaGg6QrI0TgV5g3tHeNoM6iP6ABxvV0E4/zSx301T7yEvXqGNEYMv5+52j2NJuLvRo+VDj5A7uqhTbKrPJgYcrCXuUiTLjrBxX/vnUVjyrHMeUsAhQ5SREovrLTYEZ9gGcbpf8c+rsI64Ss9C9FKG1wTgbslvR3QswqLGXkq/co2VtpVinpT1pVOTAHTrEqixrSOU65+ZKVLtribuqpQHs=
-Content-Type: multipart/mixed;
-        boundary="_002_SN4PR0501MB39037A2DAEC8E2BB6B7F764DA02C0SN4PR0501MB3903_"
+        Mon, 8 Apr 2019 11:01:12 -0400
+Received: by mail-wr1-f65.google.com with SMTP id g3so16773408wrx.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 08 Apr 2019 08:01:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mtyfCO+4kvlBslQ4gDC6FrqmWT+tFzt/7nMy65PTSdc=;
+        b=stEZje5tulncQ2gOJtexC6NVf15GWWSiSbDIn9hbitXRSTpVHObaAITGRN8buyDdTZ
+         coHA3ipruyEkp1yWgJZlknb55ofO6Lk4UAs39ew4u/lTynvWTZipLZ00l1EKeOhuk+XS
+         k8gpELXKd7Sh29Ruos+O/MeqJ+PhDpOcN64ZJv9qiHJy4Fq4ecrU/Ocl6sKTpsvzU4FQ
+         h4bJYglCAsSXWzxZMPSsFZxy8u/StFHSgBqitrrrX4/p3J4MaXtMv1TJNZfxjfxjBy2I
+         SE6n8ShKGcjgT977QdFr/1MaiJQMog8/NcztIzl0jm/9LmnWA/Sxy9LLpATPPXTs1DC4
+         J1cw==
+X-Gm-Message-State: APjAAAV8LoN60Ic902Ffevtrb+u/G02QqzRQNMYCMI29/WsWmJ1WwS25
+        xd01CSEykt4/32ZJZj72Bg==
+X-Google-Smtp-Source: APXvYqzFGpsvHRLwBXYaCHlcQYvpCMH6zCIG7yqnrUih1FYfuAZQrvB/8RaRddAj6K93LNKP68f/dg==
+X-Received: by 2002:adf:f7cc:: with SMTP id a12mr19351906wrq.87.1554735669502;
+        Mon, 08 Apr 2019 08:01:09 -0700 (PDT)
+Received: from box ([146.247.46.6])
+        by smtp.gmail.com with ESMTPSA id e7sm10315969wme.37.2019.04.08.08.01.08
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 08 Apr 2019 08:01:08 -0700 (PDT)
+Date:   Mon, 8 Apr 2019 18:01:03 +0300
+From:   Slavomir Kaslev <kaslevs@vmware.com>
+To:     Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 1/4] kernel-shark: Configuration information in
+ ${HOME}/.cache/kernelshark
+Message-ID: <20190408150102.GA6430@box>
+References: <20190404145603.13592-1-ykaradzhov@vmware.com>
+ <20190404145603.13592-2-ykaradzhov@vmware.com>
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 597db524-519c-45c5-8727-08d6bc2d9d50
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2019 14:22:21.7293
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0501MB3792
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20190404145603.13592-2-ykaradzhov@vmware.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
---_002_SN4PR0501MB39037A2DAEC8E2BB6B7F764DA02C0SN4PR0501MB3903_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Thu, Apr 04, 2019 at 05:56:00PM +0300, Yordan Karadzhov wrote:
+> By default the "Last session" configuration file will be saved in
+> ${HOME}/.cache/kernelshark
+> 
+> After applying this patch you may need to clean the CMAKE cache.
+> This can be done by:
+> 
+>     cd kernel-shark/build/;./cmake_clean.sh; cd -
+>     make gui
+> 
+> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+> ---
+>  Makefile                          |  5 ++++-
+>  kernel-shark/CMakeLists.txt       | 13 ++++++++-----
+>  kernel-shark/README               |  8 +++++++-
+>  kernel-shark/build/deff.h.cmake   |  4 ++--
+>  kernel-shark/src/KsMainWindow.cpp |  4 ++--
+>  5 files changed, 23 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index cde45f8..d9b0c0e 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -254,7 +254,10 @@ all_cmd: $(CMD_TARGETS)
+>  CMAKE_COMMAND = /usr/bin/cmake
+>  
+>  $(kshark-dir)/build/Makefile: $(kshark-dir)/CMakeLists.txt
+> -	$(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) -D_INSTALL_PREFIX=$(prefix) ..
+> +
+> +	$(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) \
+> +		-D_KS_CACHE_DIR=$(HOME)/.cache/kernelshark \
+                                ^
+Which $HOME would that be? The one for the user who built kernelshark and not the user who runs it.
 
-test=
 
---_002_SN4PR0501MB39037A2DAEC8E2BB6B7F764DA02C0SN4PR0501MB3903_
-Content-Type: image/png; name="KS_logo_symbol.png"
-Content-Description: KS_logo_symbol.png
-Content-Disposition: attachment; filename="KS_logo_symbol.png"; size=11812;
-	creation-date="Mon, 08 Apr 2019 14:22:18 GMT";
-	modification-date="Mon, 08 Apr 2019 14:22:18 GMT"
-Content-Transfer-Encoding: base64
-
-iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABmJLR0QA/wD/AP+gvaeTAAAACXBI
-WXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4wQFDCcATYXefwAAIABJREFUeNrtnXlYVdX6x7/v3ueA
-CI7N5a1uZnUrBVRAbdLbrA0qQtMtAYvuraty0NIKuDvAHFIOatcKFVDLCgQbzLyN1i0VEAGbbLK0
-bjb4UzEG4Zy93t8fUKlx9jmHM3CA9X0e/YO9z1prr/1+1rTXel9CF1PRjpgLFcJCIh4JYD9Az+nm
-uuz4iz5u9mm+1SPPUCEWATwGQBOIXtFt9ofjh1fW+jTf7cP6KCZ1HgHjAAQD/LZJBM24eegH3/sy
-341fnBvcWH9CGsC3AjgRhC1kV2ZOHLbt065kT9SVHmb9h8MGCl2tBhB23FMWx4aXx/ss36qIvoKC
-PgQw4LhLFf0P9hw1Zsxmuy/yfeed0aYD/Ru2gjH8uEvf6nZ9sC/hLKmOWgdQ7HF/roPC4bFDKnZ3
-FZtSuhIgwq5m/AEOAGDEFddEX+arfHUKntYGHAAQdbBf452+yvdg3/pb2oADAP5kMqsP+CrfdTUj
-YtqAAwDCIJTHupJNdSlAiNo0ltZOhIb6LF8WwxxdY7DP8hVEDvMVwofPK/Rhjq/67nklIB6KgVDH
-L5WDfQcmhRqUKsh342N2mK9CvssXoDCDi0ESECmpbiIJiJSUBERKSgIiJSUBkZKSgEhJSUCkpCQg
-UlISECkpCUjnEBtcYJ9lSsQd87gdky8pJCQgnVFEXxrY0j7fYclfGdCzz3fZ4iuDyvBhvgbPS/he
-AhKo3QfjOQeX9qls2+CrfAUrzzvovRp0oT7js3yFuh5AY5sdphArfGY03PwOgH1tt0O0XAISoIoN
-Lytg0JJjjZW/F4RbJkRWH/JVvnGR2zYzMBPA0YeyaomRED9s65e+yjd+2NYvGZzAwOGj/txMwIyJ
-Qyve9VW+EyKrD0HhW4+DhEGcOyG8rLBLDUq64rixdEd0OIguFQofEDZ9o69P9f2q1gNbV4G5SQ/C
-pviLKn7wR75FH0edqjbjOhAFQ+E3/HVgqWj7sD6qqo4DuC+blPcnDS7bKaf1UlJSUlJSUlJS3XEO
-IvVHJTygnco2fSCBzgHEOUR0Opj7gKgnAT0ZFAJwA4BfwNzMirIfEN+CaQ9IfCOaxBer/z33/yQg
-Up1eycnJZnuvk2IgaCSIRjFjJIBTvJD0bhCXEagcLN7Pt86phA8/wEpApLwIhdbTHiauZ+bxAG4A
-0NfnmTK+B+gVVsTL6G16u1DTjkhApAJKSZZHhgtW7ifCLQBCOrAoBwBaRUI8nb84+zMJiFSHSdM0
-057D+q3MNJXA0QFWPAawGcQ5BTnZGyQgUn59XwmWjBsIPAfA4E5Q3hommlOYk1ksAXF5SKCdwyxi
-iLhXlzJd5tOYlLMANoPQLJhqFWIbhPgZrH5rZ/vHA/sH7dI0zd6+eku7ioH58KEDPN/VDb3PUKYW
-5mrVEhADJVrSswA8BEDtvp0A60TUwIwfAXwOYLtQ1Lf+3Atb2oLn9tmz+wU3mawATfZiIQ4B+B+A
-vQTUtZbrEANBAPUmoLcAn0SgswH09lKedhBy7UqjtmbhwnoJyHFKsKTfSnC427bbi8FMoJ9BqGLi
-V1VhelZn+2gi+jeAUz1Ieg8z3gF4B4iqbXa15tml2mFXf3znTO1kM9vOE4KGKaBLGBgF4AwPyvMN
-ge/Jt2a/KQE5tvfYDOAKiYJftJUJ60yCX1uRm+31cASJM7QLwfYJYExs55BPEFHWL99+mlVcXKxL
-QFoA+QTAX6Tt+qoHwj4FKLCTump1jva53+aU09POF0R/J0IC3P/28qZdVe9Ys1D7SQJiSd8BIFKa
-stfB+FoBFoTaDxUsXbq0qaPKkZys9bSF2SeD6WG0HQrCkb4TwHWrrFkfB2L9+vHAFDVKc/a6DhDj
-KVNQ83MdCQcA5OVpDQU52U9yH3UQwKkAfnbxpwMU4L3E1EdGdeseJMmS/iYDVzq43ExAfSc2VIWZ
-e4JIBYNAfl8+/wVAgapy7oqF2V8HQoXcPnt2v+Bm8wIwprhoZw0KU/zK3MxXu+sQ6xW07BFqa5hQ
-UmjNmtSVmnZN00y7bbZT0GQ+Icgm/iJU8ReG+mew+DOI/gTmUwH08HK2NjCtoCAlO3+BFhDOExIt
-6VcAWA5gkCvlZ4FLChdnVXRHQF4A4CBOIG0psGZe0t3GRwkJCT24z9nXqIq4gYkvAfNAgLwR6KeR
-QU+IZtv8QNiinvTgg73YFrzC8fs/urWk9wtyMy/rdoAkpKRbiZDiaKJZaM06R04pgCnTtItZ1e8H
-4VpmnAnPPqr+yCTGF+bM2RYQvUlq+jQwcpw8U1Pdd7tCA2X512+TdCLea0DpaRKNFq1con2Ub836
-R35O1jl1qOsF0HgGSgC0ZxJ+CrFSfOfMmaEB8XCME5wBz8CBQPo2YvJb3TD2kOP+qscUi9Z/pVU7
-EOD2SwkpaROIlFGAC3vJCIfB9H6BNfNltONgUbHV2gjgJQAv3T57dr8eTeZbGDQF4OFuJDPAbO95
-OYDXOngu8iiADBeq+JlAeuH+A0SlPUYOK1mxXQjg/UCedO+p1V8CMNZlW2cA4JmJlvSX6r7bFetJ
-y7h23ryDAJ4C8NTkGenDVMHTGXSbK+9QKAjrJHBsC6pXtEB6734bYinN9r2GL1EoQwK569hba5/e
-Ake7dHPYny6431tlWbUoqzLfmn2XqvJ53AKNzeB2O4RSEehwEFDZFNw8Ni9Pa+iWgBQsnfszAIdb
-CogpoAFh0FgPE/D6MvaKhdlfF1qz/kFQLwDwDIA/9tFM8wtztW8CHY4jwbarW3tJdEtAWlXpuJY4
-oAEBYA7U4Wy+VdtdYM26U9HVcBBWAPiQgLcYuKMgNzNdwtEJ5iBHAXK9g2vhcZoWVKxpzQEKyJsA
-2r0+z4DPj5+uXKJ9BOCejq4od+YcTXbl2rXWrMMB+s793YPQdoOLPcNq9ZEBO8Tqoy5gUHk7n3tL
-fR91IbqBXIcDW5vtyrXOzqYUbRkZ0m0A0aFvNzRCoisD9cUXatqRoPofLmVwChFebO1RnP1bT8z/
-PKuPckUA94wdBId6nTM4iquiRqk99d2lNdF/7ahnog6oxK8BnO2oyy2wZo6ElISjKmqUQrQJQC8A
-DUS4cWJ4+dtdfZIOAjYa9CHDE1K0vtLcJBxHwQEAPZnxSkf0JH4HhImNvuiaiMQEaXISjqPgQEdC
-YgJaA7/Y1QwQhsEd73xEu5nxXGx4WQGRa5+X67j+rTCENQDo2XYPw3cAKJCm1/3gKKkafgmIXmsD
-jqMhealkZ1S4syBBzKDSndFJxLiNgT+78ViNRNjOxJmxQyp2U9GOmAtVhcsBtHtDG4OWTIoom+5G
-xW6E4+VeoUOcudo653/tLU+L50FbNLEyhEHnMXM/heD3DXvMLFhRPoddrClckv2FhMNYLYAoRoC0
-NKKM5yZGlt9umFZ19BIAUz14xDrSlWhaVxWzkYiv93jkJBA5cWh5jSs3J1nSkxl42nFimFGYk5Xj
-7vQmwZJ2rQKazC0Hs8ICyJ4amDiuMCd7Y/eCg7Y025Xr3XEz5CIku2Mjygc6uriuOuoiAn0Ijxeh
-+A2FiEd4Y+7NxC4feDIFNb8AoMGghUjWNM3l+VFiStqkxJS0nQR6jYFbAwwOAOhJTPkBs+08QOEA
-gNjI7R8I5uuOC0x6vJw4s1Ni4JUVWrpUAeCVE2eskMtbBfLmz69l4vUGt5z/zWH7dc7SmTLjkbMS
-LelvgKgYRBcHuG2dooieIyQczhUXWbGFgAfbbdZE+730yIcUgLzg7ZC/FzbdreEDQylw0iVZjK4n
-pKaNFULZAeCqzmJgihAs4XDRyME/t/e3us32LhzEcXezDMsV3VyXDYIn3rf3CaJb3Q21/OfeyjsM
-GHnguPKu6VqbGxiTUtMTiOklAP07jYUxvjc3mLZ1RjiSUjM0V+Eg85HrPIXDU8UPr6xtI467m3Cg
-yG5umPPbOK24JvoyRdAwInbdaQDzd3ZdbGhvHPKE1LRZxDTPoJDP51uzbjt2vpFxG4ifQQd8w/Fo
-RQQcm2/Nfr2zwZFgybiRwC+7YFAfwNx0ff6CBb94I9/S6qiJDCpxcHl/bET5Sc7SWF8V0Vcn8w0K
-6AzXTZqaiLB9YkTZ+0AHxwe5Y6rWO9ikf8NAP0flJYjofOuc7QCQlJI+kgmbAQS5kc03BPyPgR8J
-8OtZZ2YWTPS1SeW8QPFX5XbvYezP7Jiew1tweAsQb8hv292LtowMiR+19Rjvis8u1Q4nWtL/DSDN
-4VQEynwAVybPmtXH1oznXITjGyYsVVh9Md+q7YaUByNDnOWk56iEl+EIJPkNEFOoHgdg9fF/Nyvq
-YpvQLXD8ofKvSSkZ1zfbMI7AZznJphHgR8Lstcs62hVnFyLkExDONQDolK4cpsxv43hm3KvxH/PL
-W6TtZ8Zyo98KBUuJ+e/OJsEscEWBNdsq4fCeCJgHYy8VA0RzcKYExHMNHFId0+ZYlnT7Y2iJeuRg
-nMUDYexP6QALHh1ILiu7ivJzs7YS0ROGEBGmJqZoQyUgnvYixG3ujSlYOvdnJmS1M1kB5riuttcp
-oMbhdcpsagkX50gqSDwdFxenSkA80w0lNSPabGmC6n5cCqAd8bV5TUFu9tvSjH2nvDytgUkkwnAV
-kIf3GnDBFAmIh0NaYjGr7ZeQZ2PiVDfTs+nClCFN2PcqyJmzBYRFxtNAZMRZLCESEI8WRTCptHJE
-m6HYCnOyN4LxshuJbV69WNsrzdc/MtepjwL41uCWM3oh9D4JiId5sqI7/HoO3X43gB9dm9PgRWm2
-/h1qEdNDxm0Wzb5jqtZbAuLZQOum0qqYqx1O2Jlda4UUkhNzPys/N3MtgDKDW040q3aLBMTToRbx
-40VFba96FOZml4L/+FHxD5zp/HBycrJZmq2/Xx0sMPg2QkQp992nhUlAPFO4Ouibex2Od4ObpxHY
-eDcmYbQt9OTl6OA9Zd2vF8naipaYJY7U90iQfbIExPOh1oKimug2D9TnzZ9faxM0AU5jDdDkBEv6
-Y9Js/d2PqHONuxn6Z1douDp6y3ioibGcue2KXLM4q4yZljnlDJidZMmYJ63WfyrI1XaA8YbBLRck
-Ts+4RgLiaUMEXFlaEz3e0fXC3Mx/MtGzztPhWYkpGcvcOcsu5ZmEQvONrYunSUC8MtLiPxldP7u3
-chdaQpE5SYj/seewvrwrbnkIRK3KyXzLiUPy6+6eqg2QgPhYmqaJOtTdBuAdF7qkpNABF7yUPGtW
-H2nCfpHRRkbFbtbjJSB+ULHV2miuV28A8F8X5iTjbM1BFYkztAul/fpWdrVhHYBfDN7FrRIQPykv
-T2swBzXfCPAOF24fBKF/kJCaNlaase+0ZuHCemaDJV9G1BSLdq4ExF+QzJ9fa1ZM1wKocuH2vsS0
-IdGSkdvVNtEFlniV4WSe7LdIQPwJySJtP5mbrnCyzHhUL8/TwxC2I2F6epQ0Zu+rMDf7XUMXTqyM
-76zP1uLdvSqir07B00A8lEAuu8dk5i8Vwc9PHFrxrr8Lnr9gwS/Jycnj7KEnr2TQnS785AJSsCXR
-kj7PXK/ODbRww529C1EY65ng4LgCD51i0fqvtGoH/DpvrRoxWiFxK4gGuvwg4HpirtTtYkn88Mpa
-U1H1yDME9G0EHtAa+N7lAhBwFSt077rq6JmTIspz/P1W8vLybAAmJ6Vm7Gbmf7nYIKTZQvXEpNT0
-h/Nzsta49cBSjodRKm0i4fA8j6KzfTSAUn+Vp6Q6agYgHgdAYLdsGgDdrJrUe17acckIRYVYBMCT
-tWoiYO76D4cN7KjWKz8nUwPT7UarKcfpDGasSrKk/3eK5ZFoad6eq1fzwfcA1Ds2PMVvLmJbti/R
-XHi21eVPumKzKgCP8UKZgoRu6tAAnAW5mc/ppA4HUOMyWcAlAkpZkiX9/QRLxo3SzNuvpUuXNjGw
-2XEryn6zD5XpUnge1x4MXK8A8I6LHBYdHsV1dY72eR3qRjJ4pZsVcQmBX060pG9JtGTcLL/Et3PF
-hx2H12PgvIQHtFP9UQ5iPuKlpGwKiF7xQkK1ehA2BcJLKrZaGwut2XcT0SR233nxSIBfDDvjgr0J
-lvS5SdPTzpdm7w4h9L7hZZuI9EsPYqL3nMQXcXXy8Lyi2+wPA/DEn1QjMe6Jv6jih0B6V/k5mSVg
-9cKTTj9QQ+6ORAmnEzCbFdqVaMn4ICk1PSVhWtogSYCxzuytfgyg0aBpD/dHOW4eXPYjwPcYlsW5
-EZQ3NuIhAoB33hltOtiv8U4GDwXYdcfQTPt0oT4TP2zrl85XFaJ/AHCKg/Hp9InhFUt8tJrx9IGf
-+iXv3HIx6mo9DvD0JYCNBH7lzD6mtzVNExKLY5VoydgKOIhaxvxCQW62S1tPvOG8el1VzCAC3wHi
-09wAoxnMlf0PhT4zZsxmuwkAxozZbEdLZNkuGV22/8mHcMVNH2Dvl2fgi5pzcaQhuL1JnQtgGoOm
-7Tlk/2jyA2njVz2e/ZXE4ug2E5XEGOFgyBLhz7JMiiz7AoDmSRqm7vLiSGGcdd53GDDwe3zz6Zn4
-6qNz0NzkwUIH0cVk51JN0yI97Uni4uLU0DPOv5GgDAfxEQL2C+afVOb9BP5sxeLHfuw09cyoNGpg
-4iyWkGKrtbGzPE+3AeS3CZwqMPDib3Dm+d/h8+pBu7/++MweIJzeLmMADdl7SI8BsLW95UlI0foS
-xCsgvvTXb5YMgIggWidPiZb0/QA+AqgGwDvMyruFudqhwASEd7HjOZ8aqocOANBpvNF029N3ZrMd
-F0d9+rW54cezCbgFbLwCY0DJFR7Boeivt8BhqBMBjAZ4OsAvEun7E1PTyxMt6WlJFu2cQKpXOwlD
-R36KSelUB6hM6OZq3a5SBKAoIUWLIIhkEMcCONmlMTdjZHvyTZ41q09zs/gPGO3ZQKm2/i6KoWcm
-WjK2EniNqV5d3dF7zM7pY963p1a3wcGHOiHQqQCR57ePUmGuVl2Qm3lf3Xe7TieivxKwzOm3FMJI
-uLmloSVaVtB/COyNbS4E8CgGnrSF6nsTLelZd09/+JSOqsPW+di3jueCQgLS2VVcXKzn52S+k2/N
-uv/sPuoAJjIKzXBSYuojI92FA0CMD4p+AoA0XVG/SbBkLOjAY8d7Hc9RSAISUJNGIofxttmFWNya
-pglmfsF4Yqrc4UpZ7piq9bY1B2/yERxHqweBH7A1B32ZlJJ2v6Zp/h5K/+Swzon7SUACSDr4HQN6
-3nIljVXWrE+Mhg0MxMdpWpAzOIJM+iaHH9GOlbfijJ/IRE/sOaxv8e/5fG50PB6kEAlIACkuvOIt
-JlreBhxv6p+d5eqHUQaoyMgQww7pdzm6mPTgg72CTOI1wJUJPS0usGb1DWlSewngYmaOBdNcAG/C
-YDu5k9JHQeiVSZa0B/yyEZOVBoOK7FSAdItVrEnhZckl1VFvgegmCAQR4S37Z2cuj48v1t146WtB
-+gyDqfIjycnJq1pXxY6BA7bg1wAe5TQLRm5hbmYqAF62TKsD8HHrv1IAmDp1avAvQf0uJ4FxAN8C
-wJ3dsT0YtCDsTxdcefvs2betnTfvoO/GtTAAhCQggajYiIoXABw1lyh36/cFudqOREt6mcH84Wxb
-2MlJAJ4+Hg4GLnHBqqytcDhUa/TeNwC8oWnazG8PiWsFOBmEG1weDTCuDT5irpgyTRu/con2kU86
-EEIDsSN2WA6xuqoYWOLEMh5LTnn4NAC47z4tjG3Br7oKR4E1063wc5qm2VfmZr5akJt1s8p8McAF
-AOwutvADhapvTZiRcbVvOhDR5LiX5GAJSBdV/Xe7XgCwy+CW/jZS8+6cOTO0MVh/GcBlvoDjeK3I
-zf60wJqdRIIvJqDYxZ+FkeANCSlpE+WblYB4RcXFxTrDabjqG0x6yE4ALhxlpkWewnG08hdnf5Zv
-zYpn0E0uHhYLIqLnE1MzbpFvVwLiFZ3dR30ezjcnOt8fRVhYYM2c2Z4yrKuKGVtaHf1mSU30npLq
-6NdKq2OO2ctVaM18pTnYdhGAtS4kZwbzmiRL2jXy7UpAPFbLh0P1PpfH+23OZejxgpysB9oHR/Rk
-In6VgSvBOBPAdQx+t6QqetzR962dN+9ggTXrDgbuB+DMX4CZQeumpKZHyjcsAfFYhblaNRPNbecM
-dkGhNfPB9vy0qChOJUJOm++R8ERbgYgKrVnLQGIMgP1Oku+lM17t7OEKJCCBMtTqrWTCONprG2zQ
-/IKcrFntflkX7B4EoL+jIr1cdUmbR0sLcuZsUZkvh3GMcxBwmm7S13bA1hQJiLdUtCPypJLqmMyS
-6uj1JTVR1nXVURd10FDLDhJxAFxyVsHAvHxr5mxP8lQFGcYfb1JtDpdQV+Rmf6oL9VIAe5xkc9me
-QyJTotEJASmqHHmuqpg/AjgdwHgwpRCocl1NlF+cvmkMpbQm+q+lNVHTSqqix8X944WfiDERzrxn
-MM0ttGY91NH1t3qxtlcn9RoYbCZs6Up41uTUjCslHp0MEFXVl+KPB5mCiWl50ZaRPv1Cu74qou+Q
-mqi3mPEWMy0GYUNjff/KcUmbflSY4gDYHAxbHivIzXw4UOpwdY72OVi9HoDRwSpFYX4qQdN6dHdA
-TECr25++9bcIomEEdtE3DjEzvhJCXe+K2x+Pe4+iOBXYc7mDy6eoIbahAD7wVf5MQYsYGH3cny+C
-oDUrczMvSUxNmwimFfjdtVEjgx8qsGYvDrSXXpCr7UiwpN9DgFFw1HOpVn8EQHpnNe51VTGDAB5P
-hIEAu3SojUH1xNje/1DPojFjNttNRduH9TlgbngTTMPp1zbP1UknAaqqP7quOiphUkRFkU+f9pzd
-YYDa02FZFOrly6GVqMEkBzUzat3OYRdMGpK94Y6p2nlBihjJJEJhNm0pfFz7IVCNp9CatTbRkhHd
-cs7doR5Mmp72TP7i7M86Gxwl1VG3tG6/CYEbdk2t/x3o15BStH3Y1SbFpM4DY7gHZQkBaHnRx1Hv
-BZp3RW9pyM5RJzLsDifIil05BcCuZ5dqhwH8p7M8V5j94Kw6tc+VILrYwS1BTHgUnSzOYNHHUafC
-Rsvh2db6KMWkzlMIGOdpgQjorTbjuq46DlUV3bD50UmlzvhcS5cubWKmJBh99CSKS7CkD+5UE2sb
-LgfQywt2Ha8A8M7uSlKCINXpVLg4qwLAU0b2RsCjneyxvGWLZoUYb3khoWYo4k1pbp1TTcG2DAD/
-Z3DL+M4UqVZl9X04317jSqu/UVHZPBNOvrA6XeABZscOqdgtTa1zau28eQfBWGBkKQxxd2d5ngmR
-275h4CF4Fl7vW5MwpZpuHvrB90Xbhw02mdUHhKChpLgRmYd5HxReMXFIxXvSzDq3KKjpSdiCZzPQ
-ptcRBk9J0DStUNOOdIbnmRRRnlNcNWKHSjyFyfWjySxgI0KlbrcvjB1eXmsCgPjhlbUA0qSZBLZs
-Ztqr2hy/W9j0dkeRzV+w4JfElIxlIH7EwS0n0iH7DQDWdZb6iovcthkGYeFcmvB3GusIOdIIB1+r
-AUAX6pHO8igbvzg3+MWdIwevrxpxtju/a1lGJ0eH6Te2NnTtlk76kwAcO7IgmtDdGqVOA0j8RR83
-A9jh4HKDCUeqfTaJ/UU5bGQ4ZGKXW+7Smui7Guv7f6sLfacg8XVJdfR/W6KyujgU0ikBf9hwSLtU
-lf/h6XOuts75H8Nw0WacM/9fEpAOlGBObasXYWDWhMhqn4UDiB+1tdEhnIz/O2F/yCeupLOuOvpa
-ZhQCODo60qUmxmsFX492ad/TxGHbPm08QkMATANoEUD3Hu4TEjl+cMW3XjEIptUGl/v0qrVf3p0A
-6VT7/uMiK7asqx4eo0CZx8BFAL5jxrxJkeUv+n4WS9PA/A6AHscwq2Bqa4Qu50kAKWhjzwMD5/eu
-bbgewHpX0vnbiLLDAJb6xCCCmzbYmoMcemcHaAxanNhJQAJzdWJ7FYBr/Z1vbHjZttLKEUNZEZlM
-fD4R7SKmJbHhZe7EFRloMMUOiCChefPn1yZa0rfBgUcWBkagG0meHHNDE4dt+xRAnC/qm70Q+N4b
-StC0HqjV6wxuiYqLi1OLi93wSnlML0qDEizp953dR32qMwRBlUdupX6Hw5I+mGr1cgDXG9zWK+zM
-izyJHx9CwL/3HBLvJqRoZ0tApDqDKCk1PYVa/LE63ZjIbDM8+ssg50E6iS8l0qsSUtLGyyFWgKio
-KE41nf/1XxhqWD0aP7wrfGd9dycjOTnZ3Bx2cgEz7nDxJ0cUk+1joxtUXWwXikttb18iKklMTbcU
-5GQd49bVbsYWtRk7QRgiexA/qHRHdLjpvD07mZUPwby1J/f4fl1V9GQ/N9TfO34RdMj/cGg9baGn
-vEhMrsIBBrLyFyz4xeielYvnvAdgg8s2yFicZMmYh6NW+OIvqvhBD+p5CYBNEhAf65ltMb1ZxcsM
-XPj7ZBG9iZBfXBN9mf9KIhwdpmpiVbzm1/lGitbXHqq/DmCsiz+pBfHfC61Zj7kEUh81jhg5cNHB
-HoNnJVrSCjRNU36HZHOdbq6/mUDPSEB8qJ4hGNvqhfAPz0/ADH+VIyT04AIAxy8L60xs8edu6OTk
-ZDORvt41z/NgAopBYnBBTvbTruZRqGlH8nOzZrCiDobL301o8p5accyu4viLPm6eEF52FwNWCYiv
-xOIvBk3XWf4qxthBXzbpn581GsyJAFaCaBmYR04Kr3jSn9XR3POUPPzRAUVb2k2KuDzfmhVfkDOn
-XV/qCxdpuwqsWdcQYTKAX1x4WTOSLOl/PwYbAseGl88A40l/m073mKQTqY5OBhD7t5FojWpV2PrP
-70pITZtFjATn3Qa9RzbbpPylc3/2Qracn5O1+q5UbZvK+ksALnAyz3kiMTXtu4Kc7A1HQ8Jcfn9p
-TXQQgJtlDyLldSVZ0q4iJhfmEGQ9u7dyZYF34PhNq3O0z5uCbaNATh1bqMS0+tdgREdDon9+1r0g
-KpKABKhKamIGrKuOvrbF51LnUXKy1pOZnnJKDvx2AAANpUlEQVT6zpnmFFgzUzVNs/uiHGvnzTto
-rvvxRgZeddKL9LOR+nRbPbD+2ZnTJCABpo1fnBu8riYmD8x7CdhExJ+XVEdvKC2LPqEzlN8WKrJB
-BnvBABCwrCA30+cH5/Ly8mz1qItjImcnUW9sK7iPW8FXJSAuDICZ9hpYxf+5ksaR+hM0Yr4Hx+7G
-HcfBWB7oz58wPT0K4GlO4Hj+zD7qVH+VqdhqbQwyN90E4EMnL2/JFIvWv6PqrlsAohO/AQcOpon5
-OZcgAztyWjDB3ZOBfl+jUPA4AKP46Lub7Oq9/t48mDd/fi0U9VYYO/8+WUC3SEB8qPjw8q/BfB+A
-pmNbTXpmQkTFCme/f2X7sBMBnOjoulD1MwO290h9ZASAKwxusRPjb61eIf2ugkXaJ8zsLGbKtIQU
-ra8ExIeKjawo1EmEM+hfRHhcgK6dGFF2J5Fz1zAi2KQaXtfVgK1HYiXdyaR8fn5u1taOLGNhbvYT
-DLxucEtvIv2fHVG2376DrKsZEaMIHg7iMNfG9WAQvlC4+R1fHnf1bk+y/TMA3SY4zJTU9EjBhlvX
-fwppVuYFwjRRITzIjKsMGu3pyclaTl6e1uBqoht2XtqvSTSPBmMQkWveq5n5F4V4+4SI7eUAYNr4
-xbnBjfX9ngWLWHbHw2zrvYKCfijZGXVLrPSNFXASjCQYuDUnwtxly7S69qavaZrp68PiChV8Blh8
-km+ds729aeXnZNUkWdKL2LGj7BObw8Q4uBgHvmRn1OVNovkFAKeC3PAgRwQBQklNdLFuqv+b0lh/
-QhpAsR68h1Mh6Pmi7cP6SJMMHGmapqAl+pUjfSt6q0+1N/3JD6QN3FOr1yjMbzJjFUOpSLCkb0h6
-8MF2O422k/ovGHmPYY53JZ31VRF9IagFjnb3aYhTbWFpCsDecG1/mqqq46RZeq4Xd44cXFIdvaGk
-OnrfuuroqpKqmBStHdth9v5iGwXC6QZDiZXt9ZKY9KB2umKnN3HU7ujWQcU4tgW/3N7IVKtztM9B
-hhsbx953n+Z0CiCUHpd7BMfvtXS3AsArH7pYYdmDeKjSmuEX60IvR0tIilMJiACxdXBNtNtRqoSu
-GI0KWCXTs+2a11i0/mzTXwdwtoNbRlOtvjYuLk5tZzUYbW3v2dhDOG2IidlbH2/7KiB4YwVDQFE+
-kCbuYSMjaA6OdSv0q+4vrRzxF3fSIvBVBlfLVlo1t8PmJSdrPQWLl9DicslIE8LOuCAf7oQr+3WY
-pTSuB1Bn0PONdpqGQBk8c1z9a4/4X4XsykyjArmWEi+ZNLhsZ/stg8IlHgCIohzWsMouRwGLs1hC
-QHSBwVJNiftwJJvtoXoJiC910bruSrCkP+ZuPmsWLqxngyhdRBjmLI34oWWfMMhTv2F1QtGnKxOH
-bfsUCocD9AKAzwHsdvkfYSuBkiYOqUj1qOUEkkqqo+dLQhBm0Ai5HOgoTIQNgcFRBlLFNnfRtYWe
-vJzhXhQxAmYnpqTPdLcSFHCZgbEMSU5OduoiKTa8LIVBUwBsc8umgc+J8RwUDp80pHKXCQBaT7P5
-Ng4d4VvwbxFg29KDpdXRpokR5TMkJx5K5aEGQV11GzVVuZNcQkp6DoDJ7XzvC5IsGQfzrZkrXW8w
-HTroBoBge9gpFwKoMe6MwUBZPoB8T6rSn1+ANzivGKTKnsQbkxkyOpD00ZqFC+tdhyPtX0RI8WgA
-Dn4qKTXtJld/ENKkVsJguZcFXeivqvQbICE9D8yDccvwW09SUh09T1q5RzLa/fqVy3BY0u8jIs2F
-W50drDIx0/NTpj/ikuPrZcu0OjB+dMw/9+tygIwd9GWTbrdf4yIks0qqYxZKO2+3+hoMeVwK1ZBk
-yZhAwBLn6wp4sSnYdj4Blc7aSKEorySmaENd7AYPOM6zCwICtESych0SniEhafcQyyEgzHTQ2c8n
-p2ZcyeDnYLxFHgDeDrUdunXtvHkHTYp6HYBdTu7vDdI3JU1Pc+66lIzKSX27JCASEj+JHH+0JRKG
-UagSp6fHKMwvwUl4cAaVhzSpNy9durQJAPIWafsVRVwH4DsnpTuJFdp4/HnzNjI46BjyLtqDSEj8
-JsfeagQ5DGOXOEO7EApeBRDqJP0vdFW58fiNjisXzdkDRb0WcHpK8xwblNcNTwqS4zDO5EdvPB12
-jkFC0qbqDIyi2ZcZ3z1VGwChvwbnW4++UxRx9ZqF2k9tXSxYpH2iQIyFs4/PRBcLiFfvnDkzNJBf
-SIce9OkskDTZmg2Poqqss5eycrRdnAVzpa+eL3mGdqJu0t8A4Oxk5H6V+ZqVi+bsMbpppXVOuSAa
-j+NOcLbxWCNUPeQFVz78dUtA2gPJuqqox/1dxrjIqv0ADjketSjfe2XqIJDellEx8PSkiIqPffFs
-SQ8+2Msu9E1w4swNQAMxblqRm/2pK+muysl8i0C3wShqbkvPOK457ORjfPJKQDyAhIhm+hsSIjCI
-1jp4wW9Niiz7whv5TBxaXsMQIwF+g4HDIOwFY5b4/CyfHDeN07QgYQtex3C6v6kZgia6ezQ335q5
-ngCnZSemO745LJZIQDoxJLopZBaAV44rSbmicqI385kUsb0qNqLimkkR5X1iw8vPio0sX+ALP1Bx
-cXFqr1r9GQKucXKrIODOgsWZ/2lPPvnWrKeYWXMOCd+fYEl/WALSSSGJv2hzXWxE+U0Eugyge4n4
-+v4HQy7xVvhlP4t6DTj/SXYh3iIzp+Rbszxy9VmYm/0oQE69sxMwJyElbWpAVVQgvr2i7cP6qCbT
-6wBHu/ACF06KrHgAUr8p0ZL+CYC2z48wZjGhHwGzndYt8Iir8UBcsbWElPR8IqeOswUT3dp6vHaS
-g5KtKrBmJ/ijLgNyYhTow61OLcJkl+Bg5HoCR0lVtFZaHX20vysOavgxGYCzQEEKMa8BI1IOsSQk
-HSGnO2GZ+Nmz+6rtPnZQWh31KAj/YmBuSXVM8q9/z8vLs9WhLhZMzmLLBzvzI9ztAZGQdIwYeDWo
-7qfE9rohLamOyWRQxu9DeH6ypDrqNwfUxVZrozm46QaAqztDfQS8Z0V3ISmtiV4gzbzd469tutp4
-S15enq2dcGQBnP5HG6M163cO/82BXd78+bVkNo1j4OvAH5F2Em3YeWm/Jm5+HQznZ7MZjwWrQd1m
-/5YS8kPD2EFfNrk0SXc86fioqYf98rXz5v1hk+Ar24ed2BykGMZGJ6a/M8NosaSeBK6eOLT8t28p
-kx9IG6jY6X247aLHf5P0ThOC7YYh7x8s2j7sKpdWtwgPN4nmh7sLINzQ7z7Ao/h9u80Q1xS0AUfp
-juiRTQo2kUBvJ0MzZwplBRnA765QVz2e/dVd07VrTYq+mYF+Adn4dCZDcG9bipSL+pkEj83LfWxf
-W3AIBZsIxnC4qMpgJej24/+4erG2k4EJAI5IQCQkgabDCuHa/MXZn/kBjqtvGPJ+m2c8CqxZ7zIo
-Hi7GVJeASEj8oUZFiBtX5mRVdSQcv6rQmvkKMyXBCw7fuj0gEhKPpTPz31YunvNeIMDxGyS5mWuY
-eboERELiUxEMHTMwM5ILc7NLAwmO3yHJXgqCk6V6Zb8ExG1IsEai0UoAsMkxPPxAYW5Wvg/hEGCs
-MPUwj3EXjt/mJDlZs0EGDt9YbPRXXZq6gkHED6+sBXDXhp2XTm9C02DYEdStegxVOcabiF1ttJr1
-kOsYuORYbqDlW7MXtZWGXRUHzKT+1aNxm9DFkSPqV38bUeZpvEOu+3ZXctiAC8IAHB8T5ImC3Oy3
-/dgbS3VFJScnm209T5kM4DIQDpMiXshfNOf9zsZ+YmpGPASPJUKdAL9SaM3eJN+ulJSUlJSUlJSU
-lFRXVZecpK+rjroIUGKIaL9us73busrlcxXVRP9ZZbqUmI+oJnrv5sFlP/ol34+jTlVsuJygBCtM
-/50Que0bf+S7viqir1B6XE7MJ9gFyuKHln0iAQlgMYNKWwJe/vOoZ9sHhW/1dRz3kuqoGQDNBWAG
-AAYOA3zPpIiKIh/newtAywH8Gn65mYGHJkWU5/g0351Rlx8XapkZtDQ2vCylJXiNBCTgVFITfTcY
-y9u4tE/h5gsnRFYf8o2RxowB+K026rORmcK95TfrDz1lVcwgIq4BEHJ8WyFY+Wtc5LbNvsh3w85L
-+zWJ5k/Q1jkOwt2x4eUru4pNKV0JEGKHYeROExR8ow/7rlscNDYhBL7Dh/mObwMOACCVeIqvcm0S
-zaPh6JAT4+6uZFNdChCG44P+zHyq78ikgQbUnua7bI0cG/gyXzJyqHCaBKQTDhnJh8NJYu6goWrH
-5MuCu5rddBtApKQkIFJSEhApKQmIlJQEREpKAiIlJQGRkpKASElJSUCkpLobIATUO7rGCjX5Kl9m
-rjcolc/imzPIYb6CyYdx1dkoBnqzBCRAxewwzjgURqUPydxuUCif5UsGz0vku+dViLe3p0wSkI6W
-yo8CqGujZymaGFHmM48eul0sAdBGME8q738o9Blf5dv/UM8iABVtXPpWt9t9Fv5hQsT2chCK27hU
-xyqnSUACVLFDKnaTrkQD/AZavIXvI3Cm3Vx/py/zjR9eWWsS5hGtRlMH4ACIljUewdVjxmz2mUPm
-MWM223W7fjUDT6HFm+IvAL0Aux7j61OUuqn+bwBlAdgH4AgBr7OiR8UOqdjdlWzq/wEZJ65ODq2o
-awAAAABJRU5ErkJggg==
-
---_002_SN4PR0501MB39037A2DAEC8E2BB6B7F764DA02C0SN4PR0501MB3903_--
+> +		-D_INSTALL_PREFIX=$(prefix) ..
+>  
+>  gui: force $(CMD_TARGETS) $(kshark-dir)/build/Makefile
+>  	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build
+> diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
+> index 8858eb7..14d73f5 100644
+> --- a/kernel-shark/CMakeLists.txt
+> +++ b/kernel-shark/CMakeLists.txt
+> @@ -12,10 +12,12 @@ message("\n project: Kernel Shark: (version: ${KS_VERSION_STRING})\n")
+>  
+>  set(KS_DIR ${CMAKE_SOURCE_DIR})
+>  
+> -# Make a directory to hold configuration files. To change this do:
+> -# cmake .. -DKS_CONF_DIR=/your/preferred/path
+> -set(KS_CONF_DIR "${KS_DIR}/.ksconf" CACHE STRING "Directory for configuration files.")
+> -file(MAKE_DIRECTORY ${KS_CONF_DIR})
+> +# Make a directory to hold cached configuration files. To change this do:
+> +# cmake .. -D_KS_CACHE_DIR=/your/preferred/path
+> +set(_KS_CACHE_DIR "$ENV{HOME}/.cache/kernelshark"
+> +    CACHE STRING "Directory for cached configuration files.")
+> +
+> +file(MAKE_DIRECTORY ${_KS_CACHE_DIR})
+>  
+>  include(${KS_DIR}/build/FindTraceCmd.cmake)
+>  include(${KS_DIR}/build/FindJSONC.cmake)
+> @@ -66,7 +68,8 @@ include_directories(${KS_DIR}/src/
+>  message("")
+>  message(STATUS "C flags      : " ${CMAKE_C_FLAGS})
+>  message(STATUS "CXX flags    : " ${CMAKE_CXX_FLAGS})
+> -message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS})
+> +message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS}\n)
+> +message(STATUS "config. files saved in ${_KS_CACHE_DIR}")
+>  
+>  add_subdirectory(${KS_DIR}/src)
+>  add_subdirectory(${KS_DIR}/examples)
+> diff --git a/kernel-shark/README b/kernel-shark/README
+> index 9f7db26..a75b08b 100644
+> --- a/kernel-shark/README
+> +++ b/kernel-shark/README
+> @@ -52,8 +52,14 @@ as a CMake Command-Line option.
+>  2.1.3 By default, installation prefix is "/usr/local". It can be changed using
+>  -D_INSTALL_PREFIX= as a CMake Command-Line option.
+>  
+> -Example:
+> +2.1.4 By default, the directory that holds cached configuration files is
+> +${HOME}/.cache/kernelshark/ .It can be changed using -D_KS_CACHE_DIR=
+> +as a CMake Command-Line option. Use only absolute paths for this option.
+> +
+> +
+> +Examples:
+>      cmake -D_DOXYGEN_DOC=1 -D_DEBUG=1 -D_INSTALL_PREFIX=/usr ../
+> +    cmake -D_KS_CACHE_DIR=${PWD}../.kscache ../
+>  
+>  2.2.1 Use "make clean" if you want to delete all already compiled objects.
+>  
+> diff --git a/kernel-shark/build/deff.h.cmake b/kernel-shark/build/deff.h.cmake
+> index 80d624c..f1f6a35 100644
+> --- a/kernel-shark/build/deff.h.cmake
+> +++ b/kernel-shark/build/deff.h.cmake
+> @@ -14,8 +14,8 @@
+>  /** KernelShark source code path. */
+>  #cmakedefine KS_DIR "@KS_DIR@"
+>  
+> -/** KernelShark configuration directory path. */
+> -#cmakedefine KS_CONF_DIR "@KS_CONF_DIR@"
+> +/** KernelShark cache directory path. */
+> +#cmakedefine _KS_CACHE_DIR "@_KS_CACHE_DIR@"
+>  
+>  /** Location of the trace-cmd executable. */
+>  #cmakedefine TRACECMD_BIN_DIR "@TRACECMD_BIN_DIR@"
+> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+> index 7afb721..d07a89d 100644
+> --- a/kernel-shark/src/KsMainWindow.cpp
+> +++ b/kernel-shark/src/KsMainWindow.cpp
+> @@ -133,7 +133,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+>  KsMainWindow::~KsMainWindow()
+>  {
+>  	kshark_context *kshark_ctx(nullptr);
+> -	QString file = KS_CONF_DIR;
+> +	QString file = _KS_CACHE_DIR;
+>  
+>  	file += "/lastsession.json";
+>  
+> @@ -370,7 +370,7 @@ void KsMainWindow::_open()
+>  
+>  void KsMainWindow::_restoreSession()
+>  {
+> -	QString file = KS_CONF_DIR;
+> +	QString file = _KS_CACHE_DIR;
+>  	file += "/lastsession.json";
+>  
+>  	loadSession(file);
+> -- 
+> 2.19.1
+> 
