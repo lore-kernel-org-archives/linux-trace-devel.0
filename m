@@ -2,105 +2,127 @@ Return-Path: <SRS0=eAkL=SL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F08C8C10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Apr 2019 13:33:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F02EC10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Apr 2019 14:54:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B0D21205ED
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Apr 2019 13:33:39 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="Tl5O9ErE"
+	by mail.kernel.org (Postfix) with ESMTP id 20F8420674
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Apr 2019 14:54:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbfDINdj (ORCPT
+        id S1726471AbfDIOy1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Apr 2019 09:33:39 -0400
-Received: from mail-eopbgr780058.outbound.protection.outlook.com ([40.107.78.58]:55232
-        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726513AbfDINdj (ORCPT
+        Tue, 9 Apr 2019 10:54:27 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:6853 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726401AbfDIOy1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Apr 2019 09:33:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QmOzXET8nbjB6W6/gxC+M2GcxcgjzHJcPmV64592qZc=;
- b=Tl5O9ErEyGQC2pWiK5RBJLJPDrzkMzrKlsUTTdfPDnc9LSe0eFJTT/LW7fFISWqLQ+fWV88DU+Y7WrIVoFEHHZlKu8Rp4LaSyGP8UdS2t4odHUj7K/KxfAsttU3otFvr4l35XQ+QJGbGz39XMeoVY4RJpyUDIrMcKhIxvgDYeCQ=
-Received: from SN4PR0501MB3903.namprd05.prod.outlook.com (10.167.142.151) by
- SN4PR0501MB3725.namprd05.prod.outlook.com (10.167.150.142) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1792.11; Tue, 9 Apr 2019 13:33:33 +0000
-Received: from SN4PR0501MB3903.namprd05.prod.outlook.com
- ([fe80::9863:fa92:a642:b111]) by SN4PR0501MB3903.namprd05.prod.outlook.com
- ([fe80::9863:fa92:a642:b111%2]) with mapi id 15.20.1792.009; Tue, 9 Apr 2019
- 13:33:33 +0000
-From:   Yordan Karadzhov <ykaradzhov@vmware.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-CC:     Slavomir Kaslev <kaslevs@vmware.com>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] kernel-shark: Configuration information in
- ${HOME}/.cache/kernelshark
-Thread-Topic: [PATCH 1/4] kernel-shark: Configuration information in
- ${HOME}/.cache/kernelshark
-Thread-Index: AQHU7hvpxSwj+3SMbEW799lauKWXPKYyXu0AgAFjDgCAABC8gIAAAq8A
-Date:   Tue, 9 Apr 2019 13:33:33 +0000
-Message-ID: <e025cbfd-5d82-34c8-9c3c-47172ee24a22@vmware.com>
-References: <20190404145603.13592-1-ykaradzhov@vmware.com>
- <20190404145603.13592-2-ykaradzhov@vmware.com> <20190408150102.GA6430@box>
- <20190408111308.301f30c1@gandalf.local.home>
- <0808d774-880a-f232-dda3-cd897120d86d@gmail.com>
- <20190409092349.3e7cb6e3@gandalf.local.home>
-In-Reply-To: <20190409092349.3e7cb6e3@gandalf.local.home>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR06CA0164.eurprd06.prod.outlook.com
- (2603:10a6:803:c8::21) To SN4PR0501MB3903.namprd05.prod.outlook.com
- (2603:10b6:803:4d::23)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=ykaradzhov@vmware.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [146.247.46.5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 341df30b-7aca-4315-cab8-08d6bceff611
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600139)(711020)(4605104)(2017052603328)(7193020);SRVR:SN4PR0501MB3725;
-x-ms-traffictypediagnostic: SN4PR0501MB3725:
-x-microsoft-antispam-prvs: <SN4PR0501MB3725798F189C59403557BCF4A02D0@SN4PR0501MB3725.namprd05.prod.outlook.com>
-x-forefront-prvs: 000227DA0C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(39860400002)(396003)(346002)(366004)(136003)(189003)(199004)(11346002)(54906003)(6436002)(6486002)(256004)(478600001)(14454004)(71190400001)(71200400001)(4744005)(99286004)(93886005)(316002)(476003)(106356001)(486006)(105586002)(2616005)(31686004)(86362001)(68736007)(229853002)(25786009)(110136005)(31696002)(5660300002)(446003)(97736004)(76176011)(6246003)(4326008)(386003)(26005)(186003)(66066001)(6512007)(53936002)(6506007)(52116002)(305945005)(102836004)(7736002)(81156014)(81166006)(3846002)(8676002)(8936002)(2906002)(6116002)(36756003)(228453006);DIR:OUT;SFP:1101;SCL:1;SRVR:SN4PR0501MB3725;H:SN4PR0501MB3903.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: vmware.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 0doyb9Fw5HXkUp4bn1hWSAcyJY/astv9/QJhB2hDpz0eF59u0s963SOvhPWQ80dm9QhsjCveKJxV9otuI0hrkefbi0PZ9CIDs4+i97AAsIPFprOw1oyZRIwbbSb0Y99lk988lyfOxGpFk/5s4z+lD3k3kx1nHE1oZwbC2zzoGV+VrMBeWYrqjwOhpfHrsuZB+j00cECjbgiAyToVYeeX//n52/1UIc/DIyKvNTwC49UtIGZiILxkdrXJt2uu78YdK3Vgc6WUYR2FtikKWIFUP21lh5JnpSSkeh8ohNKHpULilzfIW7zpa4ppIipvXJUSyjX5HvCV9OIENvaKimRCqQVLk4QfxfbV8I2z+k4T7dUNusloi7HdSrf8AG68VKvMj/Aq/X5afcFtBpVCGwtSy3eB2atCeRa3ldcMoDTyow4=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <64AE83CEEDCA6046BFD77ADB8262767B@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 9 Apr 2019 10:54:27 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 502048B13F;
+        Tue,  9 Apr 2019 14:54:27 +0000 (UTC)
+Received: from sandy.ghostprotocols.net (ovpn-112-34.phx2.redhat.com [10.3.112.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CD4DE19C7F;
+        Tue,  9 Apr 2019 14:54:26 +0000 (UTC)
+Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
+        id DD6345B81; Tue,  9 Apr 2019 11:54:23 -0300 (BRT)
+Date:   Tue, 9 Apr 2019 11:54:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-kernel@vger.kernel.org, tstoyanov@vmware.com,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] tools lib traceevent: Fix missing equality check for
+ strcmp
+Message-ID: <20190409145423.GD2581@redhat.com>
+References: <20190409091529.2686-1-rikard.falkeborn@gmail.com>
+ <20190409092122.2e8f62f0@gandalf.local.home>
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 341df30b-7aca-4315-cab8-08d6bceff611
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2019 13:33:33.5373
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0501MB3725
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190409092122.2e8f62f0@gandalf.local.home>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Tue, 09 Apr 2019 14:54:27 +0000 (UTC)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-DQoNCk9uIDkuMDQuMTkg0LMuIDE2OjIzINGHLiwgU3RldmVuIFJvc3RlZHQgd3JvdGU6DQo+IE9u
-IFR1ZSwgOSBBcHIgMjAxOSAxNToyMzo1NiArMDMwMA0KPiAiWW9yZGFuIEthcmFkemhvdiAoVk13
-YXJlKSIgPHkua2FyYWR6QGdtYWlsLmNvbT4gd3JvdGU6DQo+IA0KPj4gSSBjYW4gbWFrZSB0aGUg
-R1VJIHRvIGNoZWNrIGlmIF9LU19DQUNIRV9ESVIgaXMgZGVmaW5lZCBhbmQgaWYgaXRzIHZhbHVl
-DQo+PiAocGF0aCkgYmVsb25ncyB0byB0aGUgdXNlciB3aG8gcnVucyB0aGUgR1VJLiBJZiB0aGlz
-IGlzIG5vdCB0aGUgY2FzZSwNCj4+IFRoZSBHVUkgd2lsbCB1c2UgdGhlIGRlZmF1bHQgbG9jYXRp
-b24gKH4vY2FjaGUva2VybmVsc2hhcmspLg0KPiANCj4gQ2FuJ3Qgd2UganVzdCBtYWtlIGl0IHNv
-IHRoYXQgaXQgYWx3YXlzIGRvZXMgdGhpcyBwYXRoPw0KDQpUaGlzIHdpbGwgYmUgYSBncmVhdCBz
-aW1wbGlmaWNhdGlvbiA6LSkNClllcywgd2UgY2FuLg0KDQpUaGFua3MhDQpZb3JkYW4NCg0KDQo+
-IA0KPiAtLSBTdGV2ZQ0KPiANCg==
+Em Tue, Apr 09, 2019 at 09:21:22AM -0400, Steven Rostedt escreveu:
+> 
+> Hi Rikard,
+> 
+> On Tue,  9 Apr 2019 11:15:29 +0200
+> Rikard Falkeborn <rikard.falkeborn@gmail.com> wrote:
+> 
+> > There was a missing comparison with 0 when checking if type is "s64" or
+> > "u64". Therefore, the body of the if-statement was entered if "type" was
+> > "u64" or not "s64", which made the first strcmp() redundant since if
+> > type is "u64", it's not "s64".
+> > 
+> > If type is "s64", the body of the if-statement is not entered but since the
+> > remainder of the function consists of if-statements which will not be
+> > entered if type is "s64", we will just return "val", which is correct,
+> > albeit at the cost of a few more calls to strcmp(), i.e., it will behave
+> > just as if the if-statement was entered.
+> > 
+> > If type is neither "s64" or "u64", the body of the if-statement will be
+> > entered incorrectly and "val" returned. This means that any type that is
+> > checked after "s64" and "u64" is handled the same way as "s64" and
+> > "u64", i.e., the limiting of "val" to fit in for example "s8" is never
+> > reached.
+> > 
+> > This was introduced in the kernel tree when the sources were copied from
+> > trace-cmd in commit f7d82350e597 ("tools/events: Add files to create
+> > libtraceevent.a"), and in the trace-cmd repo in 1cdbae6035cei ("Implement
+> > typecasting in parser") when the function was introduced, i.e., it has
+> > always behaved the wrong way.
+> > 
+> > Detected by cppcheck.
+> 
+> Nice. Thanks for this.
+> 
+> > 
+> > Fixes: f7d82350e597 ("tools/events: Add files to create libtraceevent.a")
+> > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> 
+> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
+> Arnaldo,
+> 
+> Care to pull this in?
+
+Sure, thanks.
+
+- Arnaldo
+ 
+> Thanks!
+> 
+> -- Steve
+> 
+> > ---
+> > I have only compile tested the patch but it should be correct. I don't
+> > know if any other problems will surface due to this though.
+> > ---
+> >  tools/lib/traceevent/event-parse.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+> > index 87494c7c619d..981c6ce2da2c 100644
+> > --- a/tools/lib/traceevent/event-parse.c
+> > +++ b/tools/lib/traceevent/event-parse.c
+> > @@ -2233,7 +2233,7 @@ eval_type_str(unsigned long long val, const char *type, int pointer)
+> >  		return val & 0xffffffff;
+> >  
+> >  	if (strcmp(type, "u64") == 0 ||
+> > -	    strcmp(type, "s64"))
+> > +	    strcmp(type, "s64") == 0)
+> >  		return val;
+> >  
+> >  	if (strcmp(type, "s8") == 0)
