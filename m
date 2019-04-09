@@ -2,154 +2,136 @@ Return-Path: <SRS0=eAkL=SL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2FE7C10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Apr 2019 15:11:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67950C10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Apr 2019 15:44:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B6EC32084C
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Apr 2019 15:11:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1A1492084C
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Apr 2019 15:44:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="IIWGAI8T"
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="Dv0g+Vi+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbfDIPLa (ORCPT
+        id S1726559AbfDIPo5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Apr 2019 11:11:30 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:36664 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbfDIPLa (ORCPT
+        Tue, 9 Apr 2019 11:44:57 -0400
+Received: from mail-eopbgr810080.outbound.protection.outlook.com ([40.107.81.80]:53332
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726486AbfDIPo5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Apr 2019 11:11:30 -0400
-Received: by mail-pl1-f196.google.com with SMTP id ck15so9580476plb.3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 09 Apr 2019 08:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=q+hdpo5Zvt5UX4cGtmri23OHl9BRrTvopODJHtXjDgk=;
-        b=IIWGAI8Tpah7LSCb8Uj6j7Bsh2scU7rdBBPG5pGd3vcPJCZX2vKAt4rBqlYJGXPJF7
-         KGM7Fcc4D7VbymCdAf4UzE81kvxodO5KmXaG6HiWQ9oUIxP96In7jXi1LS67vdT8uOHL
-         NHfid0fMOS+z8idpVwxIOtNNC/Z+0Yhi06NQM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=q+hdpo5Zvt5UX4cGtmri23OHl9BRrTvopODJHtXjDgk=;
-        b=M55HRkbSuTHXW/wiLdcSah0R+QW4uLAGn+kRMQlxmisjJAa7M7ecGJUoTHyRTbLCdX
-         I09dpo5ZMzd2KNwI8H6iOOdq8bh+fO/qqNaONnrcdAqagLzvU2vc/Oa7h049GEj6JUmU
-         rXREzmx9qkF0UpanVx+qsSxQO2j6FAT8Gp0uxR/FkPT5Y8yVAjCdNgo7oeqq3mErCM5J
-         C89yzegpH7ZsEHt/q2qvy1LYeCfgd7byhDo+t0tTVoi/Ru+tNQ7tM/tUiNChzUqTeCsE
-         pfmBwKIKTb7tOBLTrE6rxE4b8ykRPpP+fbTJJ1ly1U2oGr+7EEl8rW8+5dghB2Ju9dBS
-         9WVA==
-X-Gm-Message-State: APjAAAU/gARWDOyyCFBxoTzGgJdhCgr26F07GzLPHXbsxmBk552UKlqu
-        d10/Ucz6dltXZBe+V/dXyixCcw==
-X-Google-Smtp-Source: APXvYqzzYFaDAbXhfHc4LIgX/OHmUWO3xACamq4l9xl/oMgbF/dWI+EUrT2t/BZLaVzxnYk+Cr7TSA==
-X-Received: by 2002:a17:902:9006:: with SMTP id a6mr36674982plp.259.1554822689395;
-        Tue, 09 Apr 2019 08:11:29 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id g4sm58108236pfm.115.2019.04.09.08.11.28
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 09 Apr 2019 08:11:28 -0700 (PDT)
-Date:   Tue, 9 Apr 2019 11:11:27 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, ast@kernel.org,
-        atishp04@gmail.com, dancol@google.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        dietmar.eggemann@arm.com, gregkh@linuxfoundation.org,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
-        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Manoj Rao <linux@manojrajarao.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        mhiramat@kernel.org, rdunlap@infradead.org, rostedt@goodmis.org,
-        Shuah Khan <shuah@kernel.org>, yhs@fb.com
-Subject: Re: [PATCH v6 1/2] Provide in-kernel headers to make extending
- kernel easier
-Message-ID: <20190409151127.GA248418@google.com>
-References: <20190408212855.233198-1-joel@joelfernandes.org>
- <20190409150034.qkeceveap4tblk25@e107158-lin.cambridge.arm.com>
+        Tue, 9 Apr 2019 11:44:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o7oiONrvJtw2qh1r7TFeN8jqvpt++PGBSDsSmk237+g=;
+ b=Dv0g+Vi+m/BcFINL+iT/tSHLsfQtJ8+GBH7tLIsadJKsGVvkByXbBd3ftUgs1s32jsVyvi7DfxB8Wed5tbZ2TDTo/oU4XoA9D9ieWtrO5HW0pSV+biMBZiDgVt7OC81/ZKFERrDssNi8jeohrLQ/krhA0G0EKMEStkEjRlTroxM=
+Received: from MWHPR0501MB3772.namprd05.prod.outlook.com (10.167.163.156) by
+ MWHPR0501MB3707.namprd05.prod.outlook.com (10.167.163.139) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1792.8; Tue, 9 Apr 2019 15:44:53 +0000
+Received: from MWHPR0501MB3772.namprd05.prod.outlook.com
+ ([fe80::b9a6:ba16:fc53:bb41]) by MWHPR0501MB3772.namprd05.prod.outlook.com
+ ([fe80::b9a6:ba16:fc53:bb41%5]) with mapi id 15.20.1792.007; Tue, 9 Apr 2019
+ 15:44:53 +0000
+From:   Slavomir Kaslev <kaslevs@vmware.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] kernel-shark: Configuration information in
+ ${HOME}/.cache/kernelshark
+Thread-Topic: [PATCH 1/4] kernel-shark: Configuration information in
+ ${HOME}/.cache/kernelshark
+Thread-Index: AQHU7h2WcCXQDyjBs0OQUMjYOKqD5aYzwfgAgAAQu4CAABrHgIAAAywAgAAJaAA=
+Date:   Tue, 9 Apr 2019 15:44:53 +0000
+Message-ID: <CAE0o1Nv_JgHpTHgwpLhw7dkyxqW_u-rRUBMojgzPENCwVUDbmg@mail.gmail.com>
+References: <20190404145603.13592-1-ykaradzhov@vmware.com>
+ <20190404145603.13592-2-ykaradzhov@vmware.com> <20190408150102.GA6430@box>
+ <20190408111308.301f30c1@gandalf.local.home>
+ <0808d774-880a-f232-dda3-cd897120d86d@gmail.com>
+ <20190409092349.3e7cb6e3@gandalf.local.home>
+ <CAE0o1NtOBbVGjHfYyqOhrCrmywSNjYWOprDU66uMTPx4hX4UGA@mail.gmail.com>
+ <20190409111100.28297adb@gandalf.local.home>
+In-Reply-To: <20190409111100.28297adb@gandalf.local.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: DM6PR11CA0010.namprd11.prod.outlook.com
+ (2603:10b6:5:190::23) To MWHPR0501MB3772.namprd05.prod.outlook.com
+ (2603:10b6:301:7a::28)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=kaslevs@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-gm-message-state: APjAAAVQK3L77iNYM+F3K4jFqpY9KpgUTk8yx7sjy/A2cjJ+tSKyO7rc
+        R9UiLrlAcmNvXTpai3X6pJTnxsYvsvHiWhBP7g==
+x-google-smtp-source: APXvYqwlz0TQg29gGce/rUPa4zJfIBnx6mB4yBkwnpGZIldlLGd4S2R/K+k4coBeAz3SU0/gtjAXUS+jzLE3caUN1+I=
+x-received: by 2002:a24:d11:: with SMTP id 17mr25412145itx.30.1554824692180;
+ Tue, 09 Apr 2019 08:44:52 -0700 (PDT)
+x-gmail-original-message-id: <CAE0o1Nv_JgHpTHgwpLhw7dkyxqW_u-rRUBMojgzPENCwVUDbmg@mail.gmail.com>
+x-originating-ip: [209.85.166.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 05e75ffd-5956-4e8f-07c6-08d6bd024f00
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600139)(711020)(4605104)(2017052603328)(7193020);SRVR:MWHPR0501MB3707;
+x-ms-traffictypediagnostic: MWHPR0501MB3707:
+x-microsoft-antispam-prvs: <MWHPR0501MB37077B0FCF4BC7F5350E4100DA2D0@MWHPR0501MB3707.namprd05.prod.outlook.com>
+x-forefront-prvs: 000227DA0C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(136003)(39860400002)(366004)(346002)(396003)(189003)(199004)(102836004)(6116002)(6506007)(71190400001)(76176011)(386003)(71200400001)(186003)(26005)(61726006)(14444005)(53936002)(256004)(316002)(9686003)(6512007)(86362001)(93886005)(3846002)(2906002)(53546011)(54906003)(498394004)(95326003)(6862004)(478600001)(106356001)(5660300002)(229853002)(8936002)(99286004)(446003)(7736002)(55446002)(52116002)(97736004)(6486002)(68736007)(61266001)(6436002)(105586002)(6246003)(305945005)(81166006)(81156014)(476003)(25786009)(8676002)(11346002)(14454004)(66066001)(486006)(4326008)(228453006);DIR:OUT;SFP:1101;SCL:1;SRVR:MWHPR0501MB3707;H:MWHPR0501MB3772.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 6Zt+LwoSyqvbwxC1nVyEso942LTwSzfbQaHGLJ/9F7dU33scM67XJjvVa3qE10rTKDDtnDbfdlTCoCfeSJd8g1Fr5TdO9Ir+XLF2GGPIq5c6K6k/eJ1maIQ4Xppyj5yPQRolJlrZ1tDZGNuB2TBAUpmNoVhnS69NWcjxndUkXadRcYSS3nLNEcQzexyAIdVcea0t5ePXUhCxmg3biJ1qY167ZGUdzuCTCF9/S/oH3RjsY70XUJgJcAZJYg4+MrvIVvn/ROb5Cuz7EkqAloY8i7P9QIkeeAYu1p4bYmNSgfwtNCcwqzoK91s++vGSJiDDAXxVE8OrnCCGw1NBO0duOjo14deazWU1YXqYyqg6uzUbtK6YFoacT2QK6VKgSY9r60qGmOvXQwGbsx/10lZl8KYox4BeAWZgo4bQhg4bI3c=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4A3E0F2D15EAD84390E9A1B0830D68FF@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190409150034.qkeceveap4tblk25@e107158-lin.cambridge.arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 05e75ffd-5956-4e8f-07c6-08d6bd024f00
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2019 15:44:53.6142
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0501MB3707
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Apr 09, 2019 at 04:00:34PM +0100, Qais Yousef wrote:
-> On 04/08/19 17:28, Joel Fernandes (Google) wrote:
-> > Introduce in-kernel headers which are made available as an archive
-> > through proc (/proc/kheaders.tar.xz file). This archive makes it
-> > possible to run eBPF and other tracing programs tracing programs that
-> > need to extend the kernel for tracing purposes without any dependency on
-> > the file system having headers.
-> > 
-> > On Android and embedded systems, it is common to switch kernels but not
-> > have kernel headers available on the file system. Further once a
-> > different kernel is booted, any headers stored on the file system will
-> > no longer be useful. By storing the headers as a compressed archive
-> > within the kernel, we can avoid these issues that have been a hindrance
-> > for a long time.
-> > 
-> > The best way to use this feature is by building it in. Several users
-> > have a need for this, when they switch debug kernels, they donot want to
-> > update the filesystem or worry about it where to store the headers on
-> > it. However, the feature is also buildable as a module in case the user
-> > desires it not being part of the kernel image. This makes it possible to
-> > load and unload the headers from memory on demand. A tracing program, or
-> > a kernel module builder can load the module, do its operations, and then
-> > unload the module to save kernel memory. The total memory needed is 3.8MB.
-> > 
-> > By having the archive available at a fixed location independent of
-> > filesystem dependencies and conventions, all debugging tools can
-> > directly refer to the fixed location for the archive, without concerning
-> > with where the headers on a typical filesystem which significantly
-> > simplifies tooling that needs kernel headers.
-> > 
-> > The code to read the headers is based on /proc/config.gz code and uses
-> > the same technique to embed the headers.
-> > 
-> > IKHD_ST and IKHD_ED markers as is to facilitate future patches that
-> > would extract the headers from a kernel or module image.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> I applied both patches on 5.1-rc2 and managed to compile and run several
-> eBPF programs using the untarred headers from /proc/kheaders.tar.xz on my juno.
-> 
-> Tested-by: Qais Yousef <qais.yousef@arm.com>
-
-Thank you Qais!  Masahiro, if Ok with you now could you give your tag?
-
-thanks,
-
- - Joel
-
-
-> > ---
-> > 
-> >     v5 -> v6: (Masahiro Yamada suggestions mostly)
-> >     - Dropped support for module building.
-> >     - Rebuild archive if script changes.
-> >     - Move archive file list to script.
-> >     - Move build script to kernel directory.
-> > 
-> >     v4 -> v5:
-> >     (v4 was Tested-by the following folks)
-> >         Tested-by: qais.yousef@arm.com
-> >         Tested-by: dietmar.eggemann@arm.com
-> >         Tested-by: linux@manojrajarao.com
-> 
-> Thanks!
-> 
-> --
-> Qais Yousef
+T24gVHVlLCBBcHIgOSwgMjAxOSBhdCA2OjExIFBNIFN0ZXZlbiBSb3N0ZWR0IDxyb3N0ZWR0QGdv
+b2RtaXMub3JnPiB3cm90ZToNCj4NCj4gT24gVHVlLCA5IEFwciAyMDE5IDE0OjU5OjU0ICswMDAw
+DQo+IFNsYXZvbWlyIEthc2xldiA8a2FzbGV2c0B2bXdhcmUuY29tPiB3cm90ZToNCj4NCj4gPiBX
+ZSBhbHNvIGhhdmUgdGhlIHNhbWUgcHJvYmxlbSB3aXRoIEtTX0RJUiBhbmQgVFJBQ0VDTURfQklO
+X0RJUiB0aG91Z2guDQo+ID4gVGhleSBib3RoIHBvaW50IGluc2lkZSB0aGUgdHJhY2UtY21kIHNv
+dXJjZSBkaXJlY3RvcnkgZm9yIHRoZSB1c2VyIHdobw0KPiA+IGJ1aWx0IGtlcm5lbHNoYXJrIGF0
+bS4NCj4NCj4gSG1tLCB0aGVzZSBhcmUgYSBiaXQgZGlmZmVyZW50LiBJJ20gbm90IHN1cmUgSSB3
+YW50IHRoZW0gdG8gYmUgdXNlcg0KPiBydW4tdGltZSBjb25maWd1cmFibGUsIGJlY2F1c2UgdGhl
+eSBhcmUgZXhlY3V0aW5nIHN5c3RlbSB0b29scy4gVGhhdA0KPiBjb3VsZCBiZSBhIHNlY3VyaXR5
+IGNvbmNlcm4uDQo+DQo+IEJ1dCB0aGV5IHNob3VsZCBiZSBjb21waWxlIHRpbWUgY29uZmlndXJh
+YmxlLCBzdWNoIHRoYXQgYSBkaXN0cm8gY2FuDQo+IGRlZmluZSB0aGVtLg0KDQpJIGFncmVlLCB0
+aGVyZSdzIG5vIG5lZWQgZm9yIHRob3NlIHRvIGhhdmUgZW52aXJvbm1lbnQgdmFyaWFibGUgb3Zl
+cnJpZGUuDQoNClRoZSBwcm9ibGVtIGlzIHRoZSB3YXkgdGhleSBhcmUgZGVmaW5lZCBhdG06DQoN
+CiMgRmlyc3Qgc2VhcmNoIGluIHRoZSB1c2VyIHByb3ZpZGVkIHBhdGhzLg0KZmluZF9wYXRoKFRS
+QUNFQ01EX0JJTl9ESVIgICAgICBOQU1FUyAgdHJhY2UtY21kDQogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIFBBVEhTICAkRU5We1RSQUNFX0NNRH0vdHJhY2VjbWQvDQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAke0NNQUtFX1NPVVJDRV9ESVJ9Ly4uL3RyYWNl
+Y21kLw0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOT19ERUZBVUxUX1BBVEgpDQoN
+ClRoaXMgd2lsbCBuZXZlciBldmFsdWF0ZSB0byAvdXNyL2JpbiB3aGljaCBpcyB3aGF0IGl0IHNo
+b3VsZCBiZSBmb3INCmRpc3RybyBidWlsZHMuDQoNCktTX0RJUiBpcyB1c2VkIHJ1bnRpbWUgdG8g
+bG9hZCBwbHVnaW5zLCBhcyBkZWZhdWx0IHBhdGggZm9yIGZpbGUgb3Blbg0KZGlhbG9ncyAod2hp
+Y2ggZG9lc24ndCBtYWtlIG11Y2ggc2Vuc2UgaW1vKSBhbmQgYXQgY29tcGlsZSB0aW1lIHRvDQpj
+b25zdHJ1Y3QgcmVsYXRpdmUgcGF0aHMgaW4gdGhlIHNvdXJjZSBkaXJlY3RvcnkuIEl0IGlzIGN1
+cnJlbnRseQ0KZGVmaW5lZCBzaW1wbHkgYXMNCg0Kc2V0KEtTX0RJUiAke0NNQUtFX1NPVVJDRV9E
+SVJ9KQ0KDQpJIHRoaW5rIHRoZXJlIG5lZWRzIHRvIGJlIGEgc2VwYXJhdGUgY29uc3RhbnQgZm9y
+IHBsdWdpbnMgcGF0aCB0aGF0DQpjYW4gYmUgc2V0IGF0IGJ1aWxkIHRpbWUgYW5kIGluIGRpc3Ry
+byBidWlsZCBjYW4gcG9pbnQgdG8NCi91c3Ivc2hhcmUva2VybmVsc2hhcmsvcGx1Z2lucyBvciBz
+b21ld2hlcmUgd2hlcmUgd2Ugd2FudCBzaGFyZWQNCnBsdWdpbnMgdG8gbGl2ZS4gVGhlIGNvbXBp
+bGUgdGltZSB1c2VzIG9mIEtTX0RJUiBhcmUgZmluZSB0aG91Z2gNCiR7Q01BS0VfU09VUkNFX0RJ
+Un0gaXMgY2xlYXJlciBmb3IgdGhlIHJlYWRlci4gVGhlIGRlZmF1bHQgZGlyZWN0b3J5DQpmb3Ig
+ZmlsZSBvcGVuIGRpYWxvZ3MgY2FuIGJlIHRoZSBjdXJyZW50IGRpcmVjdG9yeSBvciB0aGUgbGFz
+dCBvcGVuZWQNCnBhdGggcmF0aGVyIHRoYW4gdGhlIGtlcm5lbHNoYXJrIHNvdXJjZSBkaXJlY3Rv
+cnkuDQoNCldoYXQgZG8geW91IHRoaW5rPw0KDQpDaGVlcnMsDQoNCi0tIFNsYXZpDQo=
