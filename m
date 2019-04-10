@@ -2,65 +2,68 @@ Return-Path: <SRS0=mbrG=SM=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BF7DC10F11
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Apr 2019 15:16:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 226D0C10F11
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Apr 2019 15:45:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0BCB720820
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Apr 2019 15:16:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E59C320830
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Apr 2019 15:45:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lixom-net.20150623.gappssmtp.com header.i=@lixom-net.20150623.gappssmtp.com header.b="cKFn1n3j"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jO0olwCU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733107AbfDJPQQ (ORCPT
+        id S1728879AbfDJPpI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 10 Apr 2019 11:16:16 -0400
-Received: from mail-it1-f195.google.com ([209.85.166.195]:53294 "EHLO
-        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733018AbfDJPQO (ORCPT
+        Wed, 10 Apr 2019 11:45:08 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:37423 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727583AbfDJPpI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Apr 2019 11:16:14 -0400
-Received: by mail-it1-f195.google.com with SMTP id y204so4010720itf.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Apr 2019 08:16:14 -0700 (PDT)
+        Wed, 10 Apr 2019 11:45:08 -0400
+Received: by mail-ua1-f68.google.com with SMTP id l17so940527uar.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Apr 2019 08:45:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xXXoU6/FqhffNVx13TnuqZws2BBVOxxAPM7i3tEN7Gk=;
-        b=cKFn1n3jYl3MDH5QBleg3GyZt9fGOMW0AOVk5V6g6+FahiMo/Yni6xpg1MBz2vDqwE
-         jkLTyVfI/9w9tiSrfl7m+VqNrbiN/mOa2q2/xkEozcSzmbrwuYhOEyLbuaf6loxAKX6n
-         2mNl5at8paa3YhadKIfZXAC+WI0PdMzHkELtW/4yxb6V5MY4jwm6H+iXsMS6FEiZ1l4z
-         lvgE8LF8+Ggk7FGbOTPjJdFeIz6Zm4qQ6v2cVZhUFMkhZHDm3eVvrlpPyE+R+TpxIE7E
-         0fIY3eh5s84Z0Yq4g1irQ2YBwCoWCY+v6e8DV0BFyoC4s6sBAyOuniNLQuKlXnfmyyQw
-         dCOQ==
+        bh=EOOzgOmnaW9PWM1ThtEHEbDTMZ3kGVHOn2+NNi5Gr40=;
+        b=jO0olwCUmQkkI1+UF+TH3pc/VdIW42NCfyqi4pVYh0vexHpxwwY110t7HxlD3kSVrQ
+         RHuZDOs8QheyCF5zbqqnai3cB0/tAjohu+Hdrzm2D58eUSaMZuirE6al7j5xLaNTnGYx
+         TD+k5xm7dte+cGWrAZkqXLB5WF/TcuCWzHld4/qSq8RNmoLTsSFWfo2GbSddF4IWwgKR
+         11LVYFGEAJmSoqg+tvdwmb2bBuxXnS8tBGerYJPG/39vD2iZZtiClf+aSSyozDzUIKS9
+         a6Lzz2GFyxt5Ez0+ld/Z/7G9Iyf8sDTgwVa1cn2iBy82VCYnLJbitOTc9hKh2ub+WOl8
+         eRXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xXXoU6/FqhffNVx13TnuqZws2BBVOxxAPM7i3tEN7Gk=;
-        b=rNGl3bCwR5S/awlcP9n7Og5zFf7ktsHwY5wqhUZv2k+aQMZaqQexiDvVdasyBt2mUB
-         qODm004xf3BTBkAKtk2u6BQ7URm4ZwRJvrDy1oRRTTtZRQ/9TVzAH1QwR2N5rYK+k5z5
-         CiD0GvHbKaiz4tVVzxt823gVzARSAtMhY0nmgCoAZuB3uKtgCUp4oL/KmAiWTK+BQRBU
-         pWrzL0UVbwbyr+IiAbHWTfo7MMkUuA0fuKd3NhnCXCcY+XEewv4iRq2sFYTXi1YdiiLi
-         hN3cmHb7NU596qIxZpF6Vg7VINkhtrbSWdWpODo9mfwGRLJ/MS7C9HTcaH1uLh968P2+
-         ySfQ==
-X-Gm-Message-State: APjAAAVexdoAyV+e3VK+es4WB11+BfZicjO69AE5kPJ69MIVxICnIeO9
-        3zj08flJSWz3oDL1ILHpiPKP/156syZ0myujUQDcHA==
-X-Google-Smtp-Source: APXvYqxni5IADu3FF8FlZg+Ln4rHXEKRkaB44FhG/joIhG3TELx5Wv9r5dL3+NTYR01YmHFm91lgDHZM5+wOe8dfTck=
-X-Received: by 2002:a24:2458:: with SMTP id f85mr2181063ita.83.1554909373652;
- Wed, 10 Apr 2019 08:16:13 -0700 (PDT)
+        bh=EOOzgOmnaW9PWM1ThtEHEbDTMZ3kGVHOn2+NNi5Gr40=;
+        b=MoiX6ETie8MIhh4XfGFH29QakvAjLbfRMjMiNPsFMhvlQu5NdbcrZqG7rHZeX89NNk
+         6odQoPc9uM6mJFONMCFpMLyPPQKlHfl2Q1K0XndaNlR4s98MB/uBx1X04rvvZ3sV5DIz
+         X/PihU2Ec5UWXZ7W5DN0Goyjx8THs4hnKFthbqrzwbS6u9JXQ42gB/XygrhrGfb395IC
+         pw4t/r0SqfMXhXt0Up1RVEYxemDCfZAQEGspgKoibNOubrvbdXmAt0Mxd5moELDaRi7+
+         J/xJ8Y0CfKkdGxb6zeUewI3Tg0CmiNOvTYxxbucm62Y+ea8yepQ6mfxC7RdEmJWHE5T+
+         dSiQ==
+X-Gm-Message-State: APjAAAXClXU8YakScreS/midopIVvXWNzAaUucJ/o7PngRBaItTXUuLV
+        Ef2cHRxKQtnajabEA2UkApl8nh4M99yj9mf60RBcAw==
+X-Google-Smtp-Source: APXvYqw0TI6DnAqeMlVRPllfSCLVHooW+otPIG1dlwODTmK+smWDmG5Y1DN8DH9kflLZ4gQiLHA/ylQEgFCoCVv/w/A=
+X-Received: by 2002:a9f:2c09:: with SMTP id r9mr21462395uaj.56.1554911106679;
+ Wed, 10 Apr 2019 08:45:06 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190320163116.39275-1-joel@joelfernandes.org>
- <CAOesGMheoZda84OSz9spQ7p66wot5S_9aaqaKC=QYp+8utASXA@mail.gmail.com> <79b6bdbc-890a-5a51-7fa1-aec57889046a@opersys.com>
-In-Reply-To: <79b6bdbc-890a-5a51-7fa1-aec57889046a@opersys.com>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Wed, 10 Apr 2019 08:15:59 -0700
-Message-ID: <CAOesGMgGFunOeMt93f57fPspdDSHp2twahhudEDhMvZ=VPJHaQ@mail.gmail.com>
+ <CAOesGMheoZda84OSz9spQ7p66wot5S_9aaqaKC=QYp+8utASXA@mail.gmail.com>
+ <79b6bdbc-890a-5a51-7fa1-aec57889046a@opersys.com> <CAOesGMgGFunOeMt93f57fPspdDSHp2twahhudEDhMvZ=VPJHaQ@mail.gmail.com>
+In-Reply-To: <CAOesGMgGFunOeMt93f57fPspdDSHp2twahhudEDhMvZ=VPJHaQ@mail.gmail.com>
+From:   Daniel Colascione <dancol@google.com>
+Date:   Wed, 10 Apr 2019 08:44:54 -0700
+Message-ID: <CAKOZueuQFiUVA2N0jj3cb6WkN1AjwDz2C+Q85W_spcjyMLYmjA@mail.gmail.com>
 Subject: Re: [PATCH v5 1/3] Provide in-kernel headers to make extending kernel easier
-To:     Karim Yaghmour <karim.yaghmour@opersys.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
+To:     Olof Johansson <olof@lixom.net>
+Cc:     Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Qais Yousef <qais.yousef@arm.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -90,84 +93,25 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Apr 8, 2019 at 1:52 PM Karim Yaghmour
-<karim.yaghmour@opersys.com> wrote:
->
->
-> Hi Olof,
->
-> On 4/8/19 12:29 PM, Olof Johansson wrote:
-> > Sorry to be late at the party with this kind of feedback, but I find
-> > the whole ".tar.gz in procfs" to be an awkward solution, especially if
-> > there's expected to be userspace tooling that depends on this
-> > long-term.
-> >
-> > Wouldn't it be more convenient to provide it in a standardized format
-> > such that you won't have to take an additional step, and always have
-> > it in a known location?
-> >
-> > Something like:
-> >
-> >   - Pseudo-filesystem, that can just be mounted under
-> > /sys/kernel/headers or something (similar to debugfs or
-> > /proc/device-tree).
-> >   - Exporting something like a squashfs image instead, allowing
-> > loopback mounting of it (or by providing a pseudo-/dev entry for it),
-> > again allowing direct export of the contents and avoiding the
-> > extracted directory from being out of sync with currently running
-> > kernel.
-> >
-> > Having to copy and extract the tarball is the most awkward step, IMHO.
-> > I also find the waste of kernel memory for it to be an issue, but
-> > given that it can be built as a module I guess that's the obvious
-> > solution for those who care about memory consumption.
->
-> One of the things I pointed out earlier in the thread is that
-> /proc/config.gz has already set a precedent as to the interface for this
-> sort of artifact. It's a plain compressed file and it's directly
-> accessible from toplevel /proc. From a consistency perspective there's
-> an idiomatic angle to some sort of "/proc/kheaders.gz".
+On Wed, Apr 10, 2019 at 8:16 AM Olof Johansson <olof@lixom.net> wrote:
+> Anyway, see my other reply just now -- CPIO + a filesystem view, and
+> providing said cpio archive in debugfs for those who want to copy it
+> off themselves might be something that fits everybody.
 
-I'm not arguing against providing the headers in some format, I think
-that's a good idea.
+I don't think it's worth increasing the complexity of the kernel for
+the sake of a little userspace convenience. By including the headers
+in the kernel, we solve an important coordination problem --- but we
+should solve this problem in the simplest possible way, pushing
+whatever complexity possible to userspace, which is more flexible and
+which evolves faster. Providing a compressed archive is fine. The user
+burden is not large: it's just extracting an archive from a standard
+container format. The kernel has no special advantageous way of doing
+this job. If userspace wants to cache extraction, it can hash the
+compressed archive itself and use the result as a key: it's only 3MB.
+But extracting the archive every time is fine. We're not talking about
+a huge amount of data, and I don't see a need for the kind of
+long-term caching that would require revalidation.
 
-On similarities, there are some but there are also substantial
-differences in the use model.
-
-For the config file, the main use cases are:
-
- - Checking to make sure that the running kernel has a particular set
-of config options set or cleared.
- - Ease of cloning the config of a running kernel when building a new one.
-
-The file format is just a plain text file, even if compressed. No real
-internal structure to consider.
-
-Both of the above uses are relatively rare (well, the first might be
-done in some startup scripts, etc).
-
-The kernel headers case is different. The file format is more complex
-(tarball, which would also include the structure of said tarball). You
-can't just zgrep to get some data out.
-
-Also, the way the contents is used is different, in that it will be
-needed by runtime tools that build and load eBPF programs. For the
-build to always be known to be against the running headers, every
-build would likely need to decompress and stage said tarball
-independently and not rely on previous state. If that's needed, why
-not just provide it once in the right format and avoid people building
-userspace solutions in several different ways to do the same thing?
-
-> In some offline discussions I was also told that squashfs (I'm no expert
-> of it) required special user-space tools and had some security issues.
-
-I'm unaware of what the security issues are, and there's indeed a
-GPLv2 tool needed to construct the filesystem. The latter can be
-solved, the former I don't know enough about to have an opinion.
-
-Anyway, see my other reply just now -- CPIO + a filesystem view, and
-providing said cpio archive in debugfs for those who want to copy it
-off themselves might be something that fits everybody.
-
-
--Olof
+As for cpio vs tar: IME, people are much more familiar with the
+latter, and they're both omnipresent on unixish systems. I think it's
+fine to rely on a tool that's been part of POSIX for over 30 years.
