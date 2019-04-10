@@ -2,317 +2,290 @@ Return-Path: <SRS0=mbrG=SM=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEB4CC10F11
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Apr 2019 10:49:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EF44C10F11
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Apr 2019 15:07:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 99E0F20830
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Apr 2019 10:49:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1A3D62082E
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 10 Apr 2019 15:07:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="Y+KDkdhy"
+	dkim=pass (2048-bit key) header.d=lixom-net.20150623.gappssmtp.com header.i=@lixom-net.20150623.gappssmtp.com header.b="hMDJUgUY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730708AbfDJKt0 (ORCPT
+        id S1733013AbfDJPHi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 10 Apr 2019 06:49:26 -0400
-Received: from mail-eopbgr680051.outbound.protection.outlook.com ([40.107.68.51]:24509
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730487AbfDJKt0 (ORCPT
+        Wed, 10 Apr 2019 11:07:38 -0400
+Received: from mail-it1-f195.google.com ([209.85.166.195]:53204 "EHLO
+        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732830AbfDJPHi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 10 Apr 2019 06:49:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0zOYT6t4MccVxoYsjHXVaUQ6swvr95GvoYEOgiTA+xk=;
- b=Y+KDkdhyXVT4mSr2IigGGhL8ca2ZQ0UrmytxLvuduj8CGzFzBELOtJbFHxDKFj5zTlk9mms4I90D8g8djN19KGcWHrFBqzbrXjb7bc980/4AhB/wOoxu/JYLyGtMftz+BMJBaJOBk7RuUry75L2Ark9h/5ttll+z1yoSeLGAN9E=
-Received: from MN2PR05MB6494.namprd05.prod.outlook.com (20.178.246.92) by
- MN2PR05MB6432.namprd05.prod.outlook.com (20.178.249.141) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1792.11; Wed, 10 Apr 2019 10:49:17 +0000
-Received: from MN2PR05MB6494.namprd05.prod.outlook.com
- ([fe80::a431:c776:a5cf:89b9]) by MN2PR05MB6494.namprd05.prod.outlook.com
- ([fe80::a431:c776:a5cf:89b9%4]) with mapi id 15.20.1792.009; Wed, 10 Apr 2019
- 10:49:17 +0000
-From:   Stela Stamenkova <sstamenkova@vmware.com>
-To:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: KernelShark logo proposals
-Thread-Topic: KernelShark logo proposals
-Thread-Index: AQHU74sLs3qUg1RzYEqVu/IIQDd3Cg==
-Date:   Wed, 10 Apr 2019 10:49:17 +0000
-Message-ID: <79C6D6CD-D982-4551-97E1-2F1D670F4FDD@vmware.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=sstamenkova@vmware.com; 
-x-originating-ip: [146.247.46.5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f9053af5-f5e0-41bd-3a6a-08d6bda22e04
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600139)(711020)(4605104)(2017052603328)(49563074)(7193020);SRVR:MN2PR05MB6432;
-x-ms-traffictypediagnostic: MN2PR05MB6432:
-x-microsoft-antispam-prvs: <MN2PR05MB6432FE2FE78FE29406D5B5DDCF2E0@MN2PR05MB6432.namprd05.prod.outlook.com>
-x-forefront-prvs: 00032065B2
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(396003)(366004)(136003)(39860400002)(376002)(189003)(199004)(53754006)(8676002)(82746002)(25786009)(14454004)(97736004)(33656002)(5660300002)(3846002)(6116002)(305945005)(6436002)(316002)(6916009)(99286004)(86362001)(68736007)(6486002)(99936001)(478600001)(558084003)(8936002)(7736002)(2351001)(102836004)(3480700005)(6506007)(81166006)(83716004)(53936002)(26005)(6512007)(36756003)(2616005)(66066001)(186003)(81156014)(105586002)(5640700003)(106356001)(2501003)(256004)(7116003)(71190400001)(71200400001)(486006)(476003)(5024004)(2906002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR05MB6432;H:MN2PR05MB6494.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: vmware.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: XX8pEq1BzOkDENn1e2ranwgDwurkyiTHZ1F6lm3kJ3O23gO94c0y7IwvxdUcTFjuHka0DUxJiZzfWZ9TkbfAGn8wS2XctElNvPdT6MzZm7EYcN0+3g5yqGI2ShZAW76lyemgDdRMrT8ANV7uQ9hKl4jXYFAJldCZ1YXQuvGX+NLSPsS1vj2HdP6d3nnnx7WEqeQby7i94nCkbW7BzpjBr3deDv5Gdu63WtotpRglW2GBcWXCg0TaIPGYYIMko1FRvBoRgOPMmzIoxvRyxTAX4a47mTIKysf6bz+8uLCIlUCHz9+KAsggDvcD0Eeav1T1Ql4SoxFQM5FDuqDI4xBAxZWDWalPkTxD6uqQZxk2bXPp6bgCKBRN9w896sePtQIbuQkYEuCTpMm/S40MeBHjp3/TKTjhfcqlxMBzGBcT5Hk=
-Content-Type: multipart/mixed;
-        boundary="_004_79C6D6CDD982455197E12F1D670F4FDDvmwarecom_"
+        Wed, 10 Apr 2019 11:07:38 -0400
+Received: by mail-it1-f195.google.com with SMTP id x132so3965420itf.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 10 Apr 2019 08:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lixom-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0dLbMymr9RG+VgnlDmaD9t8c2EpqFngSDxWgIbW15ME=;
+        b=hMDJUgUY4RXjIwTstii/Rjy7FaUHBlykGrH4RLul0NWm6/Qpa0KpYNzk4i/tAZK88l
+         b+hOVpMmcrZeEs5GekTHgu8CLVYVtsOzzBguZMh/NhN/edjDPBUZuAvwhR0Ougek8eJK
+         JGKI7C/mo66wdfBzjxRUhbsiTx+nWxOx9d9Xn1Vd0VtPLGNpaO+jtnBQgvJTcXpm7TZb
+         wSXUHFShudVBq8zul2QECD9a5gO58Y5ljamugHymI6jVUBdRI8sJ7l4mUTZy4y0Ro0YF
+         Um2w7vw4c9WBFSFEnzfZZ5P7LnpKp8VjKheNCnFWX7TuPYi2CjxIxpee8foKJQw8HyEX
+         k6Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0dLbMymr9RG+VgnlDmaD9t8c2EpqFngSDxWgIbW15ME=;
+        b=P6kmVIdE4e7lYn5aiMXiFqMQCgF5jxrvoaVLCR4WFzg9vQyddrk2Wsz4X8Mkg5LweG
+         ouMuveVgngJ8siV8sEY7lO4E9x4G9uE1yDKro+mrC8oPT0jKW4uQBz4m3ebs5aMXOT3N
+         LKWTjW1ndYOJsIoOADZgOwnUi6HZ7K1nZWT9aPTLHe7uwBJ+i1r2I6kZxK3HjWw1RsG5
+         KtiPpakJJmP8O4HXmpzlo6yQyCrQcnxPf6pDoSsb1RY67ZO7rZ5mzRhr8mfhS3+032O9
+         YOoKyosLKUdAWAbbNcIMVxMZYiFLEN/ei3Tnxf5MWzzZ5bjF+SpdWRzyBoJXZKmI0vv2
+         r7GA==
+X-Gm-Message-State: APjAAAXJZOKLEUsJh4/no/txWE27ZJSFbalYxS1zSe+5dhKDOrh03sO4
+        NW5PT8oM0SV6JUQ6SDZv2JT56GgXPxYKznZ7cUC8Zw==
+X-Google-Smtp-Source: APXvYqx3xrMrF5CG6Af593SCAIb88rMvzYCoO/o6CcMqL3gFz5l7P/DbNlgCSn6UzfXcYrUVAUpFlGUHEium5Jgmiw0=
+X-Received: by 2002:a24:7c9:: with SMTP id f192mr3820215itf.97.1554908857206;
+ Wed, 10 Apr 2019 08:07:37 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f9053af5-f5e0-41bd-3a6a-08d6bda22e04
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Apr 2019 10:49:17.2853
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR05MB6432
+References: <20190320163116.39275-1-joel@joelfernandes.org>
+ <CAOesGMheoZda84OSz9spQ7p66wot5S_9aaqaKC=QYp+8utASXA@mail.gmail.com> <20190408203601.GF133872@google.com>
+In-Reply-To: <20190408203601.GF133872@google.com>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Wed, 10 Apr 2019 08:07:25 -0700
+Message-ID: <CAOesGMibHCuMPCYkc8V++Z2Kuf3YQf_OjYn18GvDgzTy6ubV=g@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] Provide in-kernel headers to make extending kernel easier
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Manoj Rao <linux@manojrajarao.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        atish patra <atishp04@gmail.com>,
+        Daniel Colascione <dancol@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Kees Cook <keescook@chromium.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
---_004_79C6D6CDD982455197E12F1D670F4FDDvmwarecom_
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6D42F9CA44F7F643877266F1F1AFE704@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+On Mon, Apr 8, 2019 at 1:36 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+>
+> On Mon, Apr 08, 2019 at 09:29:30AM -0700, Olof Johansson wrote:
+> > Hi,
+> >
+> > On Wed, Mar 20, 2019 at 9:31 AM Joel Fernandes (Google)
+> > <joel@joelfernandes.org> wrote:
+> > >
+> > > Introduce in-kernel headers and other artifacts which are made available
+> > > as an archive through proc (/proc/kheaders.tar.xz file). This archive makes
+> > > it possible to build kernel modules, run eBPF programs, and other
+> > > tracing programs that need to extend the kernel for tracing purposes
+> > > without any dependency on the file system having headers and build
+> > > artifacts.
+> > >
+> > > On Android and embedded systems, it is common to switch kernels but not
+> > > have kernel headers available on the file system. Further once a
+> > > different kernel is booted, any headers stored on the file system will
+> > > no longer be useful. By storing the headers as a compressed archive
+> > > within the kernel, we can avoid these issues that have been a hindrance
+> > > for a long time.
+> > >
+> > > The best way to use this feature is by building it in. Several users
+> > > have a need for this, when they switch debug kernels, they donot want to
+> > > update the filesystem or worry about it where to store the headers on
+> > > it. However, the feature is also buildable as a module in case the user
+> > > desires it not being part of the kernel image. This makes it possible to
+> > > load and unload the headers from memory on demand. A tracing program, or
+> > > a kernel module builder can load the module, do its operations, and then
+> > > unload the module to save kernel memory. The total memory needed is 3.8MB.
+> > >
+> > > By having the archive available at a fixed location independent of
+> > > filesystem dependencies and conventions, all debugging tools can
+> > > directly refer to the fixed location for the archive, without concerning
+> > > with where the headers on a typical filesystem which significantly
+> > > simplifies tooling that needs kernel headers.
+> > >
+> > > The code to read the headers is based on /proc/config.gz code and uses
+> > > the same technique to embed the headers.
+> > >
+> > > To build a module, the below steps have been tested on an x86 machine:
+> > > modprobe kheaders
+> > > rm -rf $HOME/headers
+> > > mkdir -p $HOME/headers
+> > > tar -xvf /proc/kheaders.tar.xz -C $HOME/headers >/dev/null
+> > > cd my-kernel-module
+> > > make -C $HOME/headers M=$(pwd) modules
+> > > rmmod kheaders
+> > >
+> > > Additional notes:
+> > > (1) external modules must be built on the same arch as the host that
+> > > built vmlinux. This can be done either in a qemu emulated chroot on the
+> > > target, or natively. This is due to host arch dependency of kernel
+> > > scripts.
+> > >
+> > > (2)
+> > > If module building is used, since Module.symvers is not available in the
+> > > archive due to a cyclic dependency with building of the archive into the
+> > > kernel or module binaries, the modules built using the archive will not
+> > > contain symbol versioning (modversion). This is usually not an issue
+> > > since the idea of this patch is to build a kernel module on the fly and
+> > > load it into the same kernel. An appropriate warning is already printed
+> > > by the kernel to alert the user of modules not having modversions when
+> > > built using the archive. For building with modversions, the user can use
+> > > traditional header packages. For our tracing usecases, we build modules
+> > > on the fly with this so it is not a concern.
+> > >
+> > > (3) I have left IKHD_ST and IKHD_ED markers as is to facilitate
+> > > future patches that would extract the headers from a kernel or module
+> > > image.
+> > >
+> > > (v4 was Tested-by the following folks,
+> > >  v5 only has minor changes and has passed my testing).
+> > > Tested-by: qais.yousef@arm.com
+> > > Tested-by: dietmar.eggemann@arm.com
+> > > Tested-by: linux@manojrajarao.com
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >
+> > Sorry to be late at the party with this kind of feedback, but I find
+> > the whole ".tar.gz in procfs" to be an awkward solution, especially if
+> > there's expected to be userspace tooling that depends on this
+> > long-term.
+>
+> No problem, your feedback is welcome.
+>
+> > Wouldn't it be more convenient to provide it in a standardized format
+> > such that you won't have to take an additional step, and always have
+> > This is that form IMO.
+>
+> The location of the archive is fixed/known. If you are talking of the
+> location where the user decompresses it to, then they a;ready know where they
+> are decompressing to.
 
-SGVsbG8gZXZlcnlvbmUsDQoNCkkgYW0gYXR0YWNoaW5nIHNvbWUgcHJvcG9zYWxzIGZvciB0aGUg
-S2VybmVsU2hhcmsgbG9nby4NCg0KQmVzdCwNCg0KU3RlbGEgU3RhbWVua292YQ0KDQpTZW5pb3Ig
-VmlzdWFsIERlc2lnbmVyLCBDbGFyaXR5DQpDZWxsOiArMzU5IDg4NyA4ODIgMDIxDQoNCg0K
+The location _of_ the archive, sure. But the format of what is in the
+tarball, how it is versioned, and how to manage it will have to be
+done by every user.
 
---_004_79C6D6CDD982455197E12F1D670F4FDDvmwarecom_
-Content-Type: image/svg+xml; name="logo_proposals-1.svg"
-Content-Description: logo_proposals-1.svg
-Content-Disposition: attachment; filename="logo_proposals-1.svg"; size=959;
-	creation-date="Wed, 10 Apr 2019 10:49:17 GMT";
-	modification-date="Wed, 10 Apr 2019 10:49:17 GMT"
-Content-ID: <C36B6BD53F98DE44AF509077DB18A7F3@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+For any script that doesn't depend on some shared system state that
+wants to, say, build a eBPF program and load it, it would need to
+extract the tarball from scratch to make sure it is the current
+correct version of it.
 
-PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53
-My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNTAw
-IDUwMCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmb250LXNpemU6MjkuNTNweDtmaWxsOiM2MTcxN2Q7
-Zm9udC1mYW1pbHk6TWV0cm9wb2xpcy1Cb2xkLCBNZXRyb3BvbGlzO2ZvbnQtd2VpZ2h0OjcwMDt9
-LmNscy0ye2ZpbGw6IzAwZDRiODt9LmNscy0ze2ZpbGw6IzAwOTVkMzt9LmNscy00e2ZpbGw6I2Zm
-Zjt9LmNscy01e2ZpbGw6I2E5YjZiZTt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmxvZ29fcHJvcG9z
-YWxzPC90aXRsZT48dGV4dCBjbGFzcz0iY2xzLTEiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIxNi44
-NSAzMzcuODcpIj5LRVJORUxTSEFSSzwvdGV4dD48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50
-cz0iMjkzLjAzIDI5Ny43MiAxNDguODQgMjk3LjcyIDI5My4wMyAxNTMuNTMgMjkzLjAzIDI5Ny43
-MiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMyIgcG9pbnRzPSIxNDguOSAyOTcuNzIgNjEuMTcgMjEw
-IDIzNi42MiAyMTAgMTQ4LjkgMjk3LjcyIi8+PHBvbHlnb24gY2xhc3M9ImNscy00IiBwb2ludHM9
-IjE3MS4zMyAyMzcuOTcgMTU5LjkxIDIyNi41NSAxODIuNzUgMjI2LjU1IDE3MS4zMyAyMzcuOTci
-Lz48cG9seWdvbiBjbGFzcz0iY2xzLTMiIHBvaW50cz0iMTg2LjE5IDI5Ny43MiAyMTkuMDEgMjk3
-LjcyIDE4Ni4xOSAzMzAuNTQgMTg2LjE5IDI5Ny43MiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtNSIg
-cG9pbnRzPSIyOTMuMDMgMjk3LjcyIDI5My4wMyAyMTEuNTcgMzc5LjE4IDI5Ny43MiAyOTMuMDMg
-Mjk3LjcyIi8+PHBvbHlnb24gY2xhc3M9ImNscy0zIiBwb2ludHM9IjQzNy4zOSAyOTcuNzIgMzc3
-Ljk2IDI5Ny43MiA0MzcuMzkgMjM4LjI5IDQzNy4zOSAyOTcuNzIiLz48L3N2Zz4=
+If that's required by all users, why not just present the data in a
+way that it can be used directly?
 
---_004_79C6D6CDD982455197E12F1D670F4FDDvmwarecom_
-Content-Type: image/svg+xml; name="logo_proposals-2.svg"
-Content-Description: logo_proposals-2.svg
-Content-Disposition: attachment; filename="logo_proposals-2.svg"; size=5135;
-	creation-date="Wed, 10 Apr 2019 10:49:17 GMT";
-	modification-date="Wed, 10 Apr 2019 10:49:17 GMT"
-Content-ID: <10A40C1ECA83A24BA18DA1ED0113AF8F@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+> > Something like:
+> >
+> >  - Pseudo-filesystem, that can just be mounted under
+> > /sys/kernel/headers or something (similar to debugfs or
+> > /proc/device-tree).
+>
+> The headers are huge if uncompressed (~30MB). Currently we use xz compression
+> in the archive. It would be a huge waste to decompress everything into
+> memory such as through an in-memory filesystem. And compressing on a
+> per-file basis would be too slow for build time. Currently the build of the
+> archive is extrememly fast.
 
-PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53
-My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNTAw
-IDUwMCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNhZGQwMzY7fS5jbHMtMntmaWxsOiMwMDk1
-ZDM7fS5jbHMtM3tmb250LXNpemU6MjUuNzRweDtmaWxsOiM2MTcxN2Q7Zm9udC1mYW1pbHk6TWV0
-cm9wb2xpcy1Cb2xkLCBNZXRyb3BvbGlzO2ZvbnQtd2VpZ2h0OjcwMDt9PC9zdHlsZT48L2RlZnM+
-PHRpdGxlPmxvZ29fcHJvcG9zYWxzPC90aXRsZT48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMDAu
-MjQsMjI0LjcyYTQuNTYsNC41NiwwLDAsMS00LjU3LTQuNTdWMjA5Ljc4YTQuNTgsNC41OCwwLDAs
-MSw5LjE1LDB2MTAuMzdBNC41Nyw0LjU3LDAsMCwxLDIwMC4yNCwyMjQuNzJaIi8+PHBhdGggY2xh
-c3M9ImNscy0xIiBkPSJNMTgzLjQ3LDI1NC44NGE0LjU4LDQuNTgsMCwwLDEtNC41OC00LjU3VjIz
-OS45YTQuNTgsNC41OCwwLDEsMSw5LjE1LDB2MTAuMzdBNC41OCw0LjU4LDAsMCwxLDE4My40Nywy
-NTQuODRaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjAxLjU5LDI3NS42QTQuNTcsNC41Nyww
-LDAsMSwxOTcsMjcxdi01LjY1YTQuNTgsNC41OCwwLDEsMSw5LjE1LDBWMjcxQTQuNTgsNC41OCww
-LDAsMSwyMDEuNTksMjc1LjZaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjY0LjI4LDI1My4x
-N2E0LjU4LDQuNTgsMCwwLDEtNC41OC00LjU4VjIzNC42N2E0LjU4LDQuNTgsMCwxLDEsOS4xNSww
-djEzLjkyQTQuNTcsNC41NywwLDAsMSwyNjQuMjgsMjUzLjE3WiIvPjxwYXRoIGNsYXNzPSJjbHMt
-MSIgZD0iTTI1My4zOSwyOTkuNzZhNC41OCw0LjU4LDAsMCwxLTQuNTctNC41OFYyODQuNDNhNC41
-OCw0LjU4LDAsMSwxLDkuMTUsMHYxMC43NUE0LjU4LDQuNTgsMCwwLDEsMjUzLjM5LDI5OS43Nloi
-Lz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMjIuMDYsMjU2YTQuNTgsNC41OCwwLDAsMS00LjU4
-LTQuNTh2LTkuOWE0LjU4LDQuNTgsMCwwLDEsOS4xNSwwdjkuOUE0LjU4LDQuNTgsMCwwLDEsMjIy
-LjA2LDI1NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMjIuMDYsMzAxLjU4YTQuNTcsNC41
-NywwLDAsMS00LjU4LTQuNTd2LTIzYTQuNTgsNC41OCwwLDEsMSw5LjE1LDB2MjNBNC41Nyw0LjU3
-LDAsMCwxLDIyMi4wNiwzMDEuNThaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjQzLjUzLDI2
-NS43NWE0LjU4LDQuNTgsMCwwLDEtNC41OC00LjU4di01LjQyYTQuNTgsNC41OCwwLDAsMSw5LjE1
-LDB2NS40MkE0LjU4LDQuNTgsMCwwLDEsMjQzLjUzLDI2NS43NVoiLz48cGF0aCBjbGFzcz0iY2xz
-LTIiIGQ9Ik0zMzcuMTgsMzIwLjU5YTQuNTMsNC41MywwLDAsMS0zLjM3LTEuNDhsLTI3LjI3LTI5
-LjY1LTI3LjI2LDI5LjY1YTQuNTgsNC41OCwwLDAsMS03Ljk1LTMuMDlWMjkzLjI4YTQyLjg1LDQy
-Ljg1LDAsMCwxLDIwLjM3LTM2LjU2LDQ1LjIsNDUuMiwwLDAsMC00MC4yOC0zNC4zMmwtMTYuNzUs
-MTYuNzRhNC41Nyw0LjU3LDAsMCwxLTYuNC4wNmwtLjA4LS4wN2E0MS41NCw0MS41NCwwLDAsMS0x
-MS4xOS0yMCw4MS4xOCw4MS4xOCwwLDAsMS01OS03OC41MSw0LjU5LDQuNTksMCwwLDEsNC41OC00
-LjU3aDY3LjYxYTkwLjcxLDkwLjcxLDAsMCwxLDIzLjQ2LDMuMDksNTksNTksMCwwLDEsNzUuOTMs
-Ni4yNWwuMTguMThhNC41Nyw0LjU3LDAsMCwxLS4wNiw2LjQxbC0yNC4yNCwyNC4yNGE4OS45Miw4
-OS45MiwwLDAsMSwxNS4zNSw1MC40NHYyOS43NGE0Mi44NCw0Mi44NCwwLDAsMSwyMC45NCwzNi45
-MVYzMTZhNC41Niw0LjU2LDAsMCwxLTQuNTcsNC41N1ptLTMwLjY0LTQyLjQ3YTQuNiw0LjYsMCww
-LDEsMy4zNywxLjQ4bDIyLjY5LDI0LjY4di0xMWEzMy43NCwzMy43NCwwLDAsMC0xOC40NS0zMC4x
-NCw0LjU5LDQuNTksMCwwLDEtMi40OS00LjA4VjIyNi42M2E4MC43Nyw4MC43NywwLDAsMC0xNS44
-NC00OC4yNCw0LjU4LDQuNTgsMCwwLDEsLjQ1LTUuOTVsMjMuNTktMjMuNTlhNDkuNzksNDkuNzks
-MCwwLDAtNjIuNDctMS4xMiw0LjU2LDQuNTYsMCwwLDEtNC4xMS43OCw4MS43Nyw4MS43NywwLDAs
-MC0yMy4wOS0zLjM0SDE2Ny4yOEE3Miw3MiwwLDAsMCwyMjIsMjExYTQuNTksNC41OSwwLDAsMSwz
-LjQzLDMuNzMsMzIuMzQsMzIuMzQsMCwwLDAsNi4xOSwxNC41MmwxNC43NC0xNC43NGE0LjY4LDQu
-NjgsMCwwLDEsMy40LTEuMzQsNTQuMzgsNTQuMzgsMCwwLDEsNTEuNTcsNDUuMTcsNC41OCw0LjU4
-LDAsMCwxLTIuNDIsNC44MywzMy43MywzMy43MywwLDAsMC0xOC40NiwzMC4xNHYxMWwyMi43LTI0
-LjY4QTQuNTYsNC41NiwwLDAsMSwzMDYuNTQsMjc4LjEyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIg
-ZD0iTTE3OS40NiwxOTMuNzFhNC41OCw0LjU4LDAsMCwxLTQuNTctNC41OCwyMy41NCwyMy41NCww
-LDAsMSwyMy41MS0yMy41MWgzNi4yMWE0LjU3LDQuNTcsMCwxLDEsMCw5LjE0SDE5OC40QTE0LjM4
-LDE0LjM4LDAsMCwwLDE4NCwxODkuMTMsNC41OCw0LjU4LDAsMCwxLDE3OS40NiwxOTMuNzFaIi8+
-PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjcyLjA4LDE1Ni4zMWE0LjU5LDQuNTksMCwwLDEtMi4y
-NS0uNTksODEuNDcsODEuNDcsMCwwLDAtNDAuMTItMTAuNTUsNC41OCw0LjU4LDAsMCwxLDAtOS4x
-NSw5MC42LDkwLjYsMCwwLDEsNDQuNjMsMTEuNzQsNC41Nyw0LjU3LDAsMCwxLTIuMjYsOC41NVoi
-Lz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zMDcuNDEsMzA5LjYzSDI5Ni42NmwtOS4xNSw5LjE0
-aDIxLjhhNC41Niw0LjU2LDAsMCwwLDMuMjMtMS4zNGw3LjIyLTcuMjEtNi4yLTYuNzRaIi8+PHBh
-dGggY2xhc3M9ImNscy0xIiBkPSJNMTY3LDI4NC4wOFYxOTMuMzdhNzYuOSw3Ni45LDAsMCwxLTku
-MTQtMTcuNDdWMjg2YTQuNTYsNC41NiwwLDAsMCwxLjM0LDMuMjNsMjguMjIsMjguMjJhNC41Niw0
-LjU2LDAsMCwwLDMuMjMsMS4zNGg3NnYtOS4xNEgxOTIuNTlaIi8+PHBhdGggY2xhc3M9ImNscy0x
-IiBkPSJNMzQwLjc2LDE2NC4xM2wtNS4zOC01LjM5LTYuNDcsNi40Nyw0LDQsMCwuMjVoLjE0djkw
-LjZjMy4zNywyLjg2LDcuMzcsNi40OSw5LDguNjlWMTY3LjM2QTQuNTYsNC41NiwwLDAsMCwzNDAu
-NzYsMTY0LjEzWiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE0My44LDI4NS45NEgxMzBhNC41
-OCw0LjU4LDAsMCwxLDAtOS4xNUgxNDMuOGE0LjU4LDQuNTgsMCwxLDEsMCw5LjE1WiIvPjxwYXRo
-IGNsYXNzPSJjbHMtMSIgZD0iTTE0My44LDI0OC4zOEgxMzBhNC41OCw0LjU4LDAsMCwxLDAtOS4x
-NUgxNDMuOGE0LjU4LDQuNTgsMCwxLDEsMCw5LjE1WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0i
-TTE0My44LDIxMC44M0gxMzBhNC41OCw0LjU4LDAsMCwxLDAtOS4xNUgxNDMuOGE0LjU4LDQuNTgs
-MCwxLDEsMCw5LjE1WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE0My44LDE3My4yN0gxMzBh
-NC41OCw0LjU4LDAsMCwxLDAtOS4xNUgxNDMuOGE0LjU4LDQuNTgsMCwxLDEsMCw5LjE1WiIvPjxw
-YXRoIGNsYXNzPSJjbHMtMSIgZD0iTTM3MCwyODUuOTRIMzU2LjJhNC41OCw0LjU4LDAsMSwxLDAt
-OS4xNUgzNzBhNC41OCw0LjU4LDAsMCwxLDAsOS4xNVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9
-Ik0zNzAsMjQ4LjM4SDM1Ni4yYTQuNTgsNC41OCwwLDEsMSwwLTkuMTVIMzcwYTQuNTgsNC41OCww
-LDAsMSwwLDkuMTVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcwLDIxMC44M0gzNTYuMmE0
-LjU4LDQuNTgsMCwxLDEsMC05LjE1SDM3MGE0LjU4LDQuNTgsMCwwLDEsMCw5LjE1WiIvPjxwYXRo
-IGNsYXNzPSJjbHMtMSIgZD0iTTM3MCwxNzMuMjdIMzU2LjJhNC41OCw0LjU4LDAsMSwxLDAtOS4x
-NUgzNzBhNC41OCw0LjU4LDAsMCwxLDAsOS4xNVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0z
-MDYuMzMsMzQ5LjY0YTQuNTcsNC41NywwLDAsMS00LjU3LTQuNTdWMzMxLjIzYTQuNTgsNC41OCww
-LDEsMSw5LjE1LDB2MTMuODRBNC41Nyw0LjU3LDAsMCwxLDMwNi4zMywzNDkuNjRaIi8+PHBhdGgg
-Y2xhc3M9ImNscy0xIiBkPSJNMjY4Ljc4LDM0OS42NGE0LjU3LDQuNTcsMCwwLDEtNC41OC00LjU3
-VjMzMS4yM2E0LjU4LDQuNTgsMCwxLDEsOS4xNSwwdjEzLjg0QTQuNTcsNC41NywwLDAsMSwyNjgu
-NzgsMzQ5LjY0WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTIzMS4yMiwzNDkuNjRhNC41Nyw0
-LjU3LDAsMCwxLTQuNTctNC41N1YzMzEuMjNhNC41OCw0LjU4LDAsMSwxLDkuMTUsMHYxMy44NEE0
-LjU3LDQuNTcsMCwwLDEsMjMxLjIyLDM0OS42NFoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0x
-OTMuNjcsMzQ5LjY0YTQuNTcsNC41NywwLDAsMS00LjU4LTQuNTdWMzMxLjIzYTQuNTgsNC41OCww
-LDEsMSw5LjE1LDB2MTMuODRBNC41Nyw0LjU3LDAsMCwxLDE5My42NywzNDkuNjRaIi8+PHBhdGgg
-Y2xhc3M9ImNscy0xIiBkPSJNMzA2LjMzLDEyMy40MWE0LjU4LDQuNTgsMCwwLDEtNC41Ny00LjU4
-VjEwNWE0LjU4LDQuNTgsMCwwLDEsOS4xNSwwdjEzLjg0QTQuNTgsNC41OCwwLDAsMSwzMDYuMzMs
-MTIzLjQxWiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTI2OC43OCwxMjMuNDFhNC41OCw0LjU4
-LDAsMCwxLTQuNTgtNC41OFYxMDVhNC41OCw0LjU4LDAsMCwxLDkuMTUsMHYxMy44NEE0LjU4LDQu
-NTgsMCwwLDEsMjY4Ljc4LDEyMy40MVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMzEuMjIs
-MTIzLjQxYTQuNTgsNC41OCwwLDAsMS00LjU3LTQuNThWMTA1YTQuNTgsNC41OCwwLDAsMSw5LjE1
-LDB2MTMuODRBNC41OCw0LjU4LDAsMCwxLDIzMS4yMiwxMjMuNDFaIi8+PHBhdGggY2xhc3M9ImNs
-cy0xIiBkPSJNMTkzLjY3LDEyMy40MWE0LjU4LDQuNTgsMCwwLDEtNC41OC00LjU4VjEwNWE0LjU4
-LDQuNTgsMCwwLDEsOS4xNSwwdjEzLjg0QTQuNTgsNC41OCwwLDAsMSwxOTMuNjcsMTIzLjQxWiIv
-PjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTIzNCwxNTkuODlIMjIyLjM3YTQuNTgsNC41OCwwLDEs
-MSwwLTkuMTVIMjM0YTQuNTgsNC41OCwwLDEsMSwwLDkuMTVaIi8+PHRleHQgY2xhc3M9ImNscy0z
-IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNTEuOSAzOTIuMDkpIj5LRVJORUxTSEFSSzwvdGV4dD48
-L3N2Zz4=
+Keeping it around at all times in memory seems like a significant
+waste, I agree.
 
---_004_79C6D6CDD982455197E12F1D670F4FDDvmwarecom_
-Content-Type: image/svg+xml; name="logo_proposals-3.svg"
-Content-Description: logo_proposals-3.svg
-Content-Disposition: attachment; filename="logo_proposals-3.svg"; size=5129;
-	creation-date="Wed, 10 Apr 2019 10:49:17 GMT";
-	modification-date="Wed, 10 Apr 2019 10:49:17 GMT"
-Content-ID: <F25CC35BB1D60747992A015AE8E76108@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Providing a standard way of presenting the contents without more
+requirements on userspace, and without building up new cargo cult
+methods for how to prepare the headers, would still be useful though
+(see below).
 
-PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53
-My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNTAw
-IDUwMCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNhZGQwMzY7fS5jbHMtMiwuY2xzLTN7Zmls
-bDojNzk4ODkzO30uY2xzLTN7Zm9udC1zaXplOjI1Ljc0cHg7Zm9udC1mYW1pbHk6TWV0cm9wb2xp
-cy1Cb2xkLCBNZXRyb3BvbGlzO2ZvbnQtd2VpZ2h0OjcwMDt9PC9zdHlsZT48L2RlZnM+PHRpdGxl
-PmxvZ29fcHJvcG9zYWxzPC90aXRsZT48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMDAuMjQsMjI0
-LjcyYTQuNTYsNC41NiwwLDAsMS00LjU3LTQuNTdWMjA5Ljc4YTQuNTgsNC41OCwwLDAsMSw5LjE1
-LDB2MTAuMzdBNC41Nyw0LjU3LDAsMCwxLDIwMC4yNCwyMjQuNzJaIi8+PHBhdGggY2xhc3M9ImNs
-cy0xIiBkPSJNMTgzLjQ3LDI1NC44NGE0LjU4LDQuNTgsMCwwLDEtNC41OC00LjU3VjIzOS45YTQu
-NTgsNC41OCwwLDEsMSw5LjE1LDB2MTAuMzdBNC41OCw0LjU4LDAsMCwxLDE4My40NywyNTQuODRa
-Ii8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjAxLjU5LDI3NS42QTQuNTcsNC41NywwLDAsMSwx
-OTcsMjcxdi01LjY1YTQuNTgsNC41OCwwLDEsMSw5LjE1LDBWMjcxQTQuNTgsNC41OCwwLDAsMSwy
-MDEuNTksMjc1LjZaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjY0LjI4LDI1My4xN2E0LjU4
-LDQuNTgsMCwwLDEtNC41OC00LjU4VjIzNC42N2E0LjU4LDQuNTgsMCwxLDEsOS4xNSwwdjEzLjky
-QTQuNTcsNC41NywwLDAsMSwyNjQuMjgsMjUzLjE3WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0i
-TTI1My4zOSwyOTkuNzZhNC41OCw0LjU4LDAsMCwxLTQuNTctNC41OFYyODQuNDNhNC41OCw0LjU4
-LDAsMSwxLDkuMTUsMHYxMC43NUE0LjU4LDQuNTgsMCwwLDEsMjUzLjM5LDI5OS43NloiLz48cGF0
-aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMjIuMDYsMjU2YTQuNTgsNC41OCwwLDAsMS00LjU4LTQuNTh2
-LTkuOWE0LjU4LDQuNTgsMCwwLDEsOS4xNSwwdjkuOUE0LjU4LDQuNTgsMCwwLDEsMjIyLjA2LDI1
-NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMjIuMDYsMzAxLjU4YTQuNTcsNC41NywwLDAs
-MS00LjU4LTQuNTd2LTIzYTQuNTgsNC41OCwwLDEsMSw5LjE1LDB2MjNBNC41Nyw0LjU3LDAsMCwx
-LDIyMi4wNiwzMDEuNThaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjQzLjUzLDI2NS43NWE0
-LjU4LDQuNTgsMCwwLDEtNC41OC00LjU4di01LjQyYTQuNTgsNC41OCwwLDAsMSw5LjE1LDB2NS40
-MkE0LjU4LDQuNTgsMCwwLDEsMjQzLjUzLDI2NS43NVoiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9
-Ik0zMzcuMTgsMzIwLjU5YTQuNTMsNC41MywwLDAsMS0zLjM3LTEuNDhsLTI3LjI3LTI5LjY1LTI3
-LjI2LDI5LjY1YTQuNTgsNC41OCwwLDAsMS03Ljk1LTMuMDlWMjkzLjI4YTQyLjg1LDQyLjg1LDAs
-MCwxLDIwLjM3LTM2LjU2LDQ1LjIsNDUuMiwwLDAsMC00MC4yOC0zNC4zMmwtMTYuNzUsMTYuNzRh
-NC41Nyw0LjU3LDAsMCwxLTYuNC4wNmwtLjA4LS4wN2E0MS41NCw0MS41NCwwLDAsMS0xMS4xOS0y
-MCw4MS4xOCw4MS4xOCwwLDAsMS01OS03OC41MSw0LjU5LDQuNTksMCwwLDEsNC41OC00LjU3aDY3
-LjYxYTkwLjcxLDkwLjcxLDAsMCwxLDIzLjQ2LDMuMDksNTksNTksMCwwLDEsNzUuOTMsNi4yNWwu
-MTguMThhNC41Nyw0LjU3LDAsMCwxLS4wNiw2LjQxbC0yNC4yNCwyNC4yNGE4OS45Miw4OS45Miww
-LDAsMSwxNS4zNSw1MC40NHYyOS43NGE0Mi44NCw0Mi44NCwwLDAsMSwyMC45NCwzNi45MVYzMTZh
-NC41Niw0LjU2LDAsMCwxLTQuNTcsNC41N1ptLTMwLjY0LTQyLjQ3YTQuNiw0LjYsMCwwLDEsMy4z
-NywxLjQ4bDIyLjY5LDI0LjY4di0xMWEzMy43NCwzMy43NCwwLDAsMC0xOC40NS0zMC4xNCw0LjU5
-LDQuNTksMCwwLDEtMi40OS00LjA4VjIyNi42M2E4MC43Nyw4MC43NywwLDAsMC0xNS44NC00OC4y
-NCw0LjU4LDQuNTgsMCwwLDEsLjQ1LTUuOTVsMjMuNTktMjMuNTlhNDkuNzksNDkuNzksMCwwLDAt
-NjIuNDctMS4xMiw0LjU2LDQuNTYsMCwwLDEtNC4xMS43OCw4MS43Nyw4MS43NywwLDAsMC0yMy4w
-OS0zLjM0SDE2Ny4yOEE3Miw3MiwwLDAsMCwyMjIsMjExYTQuNTksNC41OSwwLDAsMSwzLjQzLDMu
-NzMsMzIuMzQsMzIuMzQsMCwwLDAsNi4xOSwxNC41MmwxNC43NC0xNC43NGE0LjY4LDQuNjgsMCww
-LDEsMy40LTEuMzQsNTQuMzgsNTQuMzgsMCwwLDEsNTEuNTcsNDUuMTcsNC41OCw0LjU4LDAsMCwx
-LTIuNDIsNC44MywzMy43MywzMy43MywwLDAsMC0xOC40NiwzMC4xNHYxMWwyMi43LTI0LjY4QTQu
-NTYsNC41NiwwLDAsMSwzMDYuNTQsMjc4LjEyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE3
-OS40NiwxOTMuNzFhNC41OCw0LjU4LDAsMCwxLTQuNTctNC41OCwyMy41NCwyMy41NCwwLDAsMSwy
-My41MS0yMy41MWgzNi4yMWE0LjU3LDQuNTcsMCwxLDEsMCw5LjE0SDE5OC40QTE0LjM4LDE0LjM4
-LDAsMCwwLDE4NCwxODkuMTMsNC41OCw0LjU4LDAsMCwxLDE3OS40NiwxOTMuNzFaIi8+PHBhdGgg
-Y2xhc3M9ImNscy0yIiBkPSJNMjcyLjA4LDE1Ni4zMWE0LjU5LDQuNTksMCwwLDEtMi4yNS0uNTks
-ODEuNDcsODEuNDcsMCwwLDAtNDAuMTItMTAuNTUsNC41OCw0LjU4LDAsMCwxLDAtOS4xNSw5MC42
-LDkwLjYsMCwwLDEsNDQuNjMsMTEuNzQsNC41Nyw0LjU3LDAsMCwxLTIuMjYsOC41NVoiLz48cGF0
-aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zMDcuNDEsMzA5LjYzSDI5Ni42NmwtOS4xNSw5LjE0aDIxLjhh
-NC41Niw0LjU2LDAsMCwwLDMuMjMtMS4zNGw3LjIyLTcuMjEtNi4yLTYuNzRaIi8+PHBhdGggY2xh
-c3M9ImNscy0xIiBkPSJNMTY3LDI4NC4wOFYxOTMuMzdhNzYuOSw3Ni45LDAsMCwxLTkuMTQtMTcu
-NDdWMjg2YTQuNTYsNC41NiwwLDAsMCwxLjM0LDMuMjNsMjguMjIsMjguMjJhNC41Niw0LjU2LDAs
-MCwwLDMuMjMsMS4zNGg3NnYtOS4xNEgxOTIuNTlaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJN
-MzQwLjc2LDE2NC4xM2wtNS4zOC01LjM5LTYuNDcsNi40Nyw0LDQsMCwuMjVoLjE0djkwLjZjMy4z
-NywyLjg2LDcuMzcsNi40OSw5LDguNjlWMTY3LjM2QTQuNTYsNC41NiwwLDAsMCwzNDAuNzYsMTY0
-LjEzWiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE0My44LDI4NS45NEgxMzBhNC41OCw0LjU4
-LDAsMCwxLDAtOS4xNUgxNDMuOGE0LjU4LDQuNTgsMCwxLDEsMCw5LjE1WiIvPjxwYXRoIGNsYXNz
-PSJjbHMtMSIgZD0iTTE0My44LDI0OC4zOEgxMzBhNC41OCw0LjU4LDAsMCwxLDAtOS4xNUgxNDMu
-OGE0LjU4LDQuNTgsMCwxLDEsMCw5LjE1WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE0My44
-LDIxMC44M0gxMzBhNC41OCw0LjU4LDAsMCwxLDAtOS4xNUgxNDMuOGE0LjU4LDQuNTgsMCwxLDEs
-MCw5LjE1WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE0My44LDE3My4yN0gxMzBhNC41OCw0
-LjU4LDAsMCwxLDAtOS4xNUgxNDMuOGE0LjU4LDQuNTgsMCwxLDEsMCw5LjE1WiIvPjxwYXRoIGNs
-YXNzPSJjbHMtMSIgZD0iTTM3MCwyODUuOTRIMzU2LjJhNC41OCw0LjU4LDAsMSwxLDAtOS4xNUgz
-NzBhNC41OCw0LjU4LDAsMCwxLDAsOS4xNVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zNzAs
-MjQ4LjM4SDM1Ni4yYTQuNTgsNC41OCwwLDEsMSwwLTkuMTVIMzcwYTQuNTgsNC41OCwwLDAsMSww
-LDkuMTVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcwLDIxMC44M0gzNTYuMmE0LjU4LDQu
-NTgsMCwxLDEsMC05LjE1SDM3MGE0LjU4LDQuNTgsMCwwLDEsMCw5LjE1WiIvPjxwYXRoIGNsYXNz
-PSJjbHMtMSIgZD0iTTM3MCwxNzMuMjdIMzU2LjJhNC41OCw0LjU4LDAsMSwxLDAtOS4xNUgzNzBh
-NC41OCw0LjU4LDAsMCwxLDAsOS4xNVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zMDYuMzMs
-MzQ5LjY0YTQuNTcsNC41NywwLDAsMS00LjU3LTQuNTdWMzMxLjIzYTQuNTgsNC41OCwwLDEsMSw5
-LjE1LDB2MTMuODRBNC41Nyw0LjU3LDAsMCwxLDMwNi4zMywzNDkuNjRaIi8+PHBhdGggY2xhc3M9
-ImNscy0xIiBkPSJNMjY4Ljc4LDM0OS42NGE0LjU3LDQuNTcsMCwwLDEtNC41OC00LjU3VjMzMS4y
-M2E0LjU4LDQuNTgsMCwxLDEsOS4xNSwwdjEzLjg0QTQuNTcsNC41NywwLDAsMSwyNjguNzgsMzQ5
-LjY0WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTIzMS4yMiwzNDkuNjRhNC41Nyw0LjU3LDAs
-MCwxLTQuNTctNC41N1YzMzEuMjNhNC41OCw0LjU4LDAsMSwxLDkuMTUsMHYxMy44NEE0LjU3LDQu
-NTcsMCwwLDEsMjMxLjIyLDM0OS42NFoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xOTMuNjcs
-MzQ5LjY0YTQuNTcsNC41NywwLDAsMS00LjU4LTQuNTdWMzMxLjIzYTQuNTgsNC41OCwwLDEsMSw5
-LjE1LDB2MTMuODRBNC41Nyw0LjU3LDAsMCwxLDE5My42NywzNDkuNjRaIi8+PHBhdGggY2xhc3M9
-ImNscy0xIiBkPSJNMzA2LjMzLDEyMy40MWE0LjU4LDQuNTgsMCwwLDEtNC41Ny00LjU4VjEwNWE0
-LjU4LDQuNTgsMCwwLDEsOS4xNSwwdjEzLjg0QTQuNTgsNC41OCwwLDAsMSwzMDYuMzMsMTIzLjQx
-WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTI2OC43OCwxMjMuNDFhNC41OCw0LjU4LDAsMCwx
-LTQuNTgtNC41OFYxMDVhNC41OCw0LjU4LDAsMCwxLDkuMTUsMHYxMy44NEE0LjU4LDQuNTgsMCww
-LDEsMjY4Ljc4LDEyMy40MVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMzEuMjIsMTIzLjQx
-YTQuNTgsNC41OCwwLDAsMS00LjU3LTQuNThWMTA1YTQuNTgsNC41OCwwLDAsMSw5LjE1LDB2MTMu
-ODRBNC41OCw0LjU4LDAsMCwxLDIzMS4yMiwxMjMuNDFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBk
-PSJNMTkzLjY3LDEyMy40MWE0LjU4LDQuNTgsMCwwLDEtNC41OC00LjU4VjEwNWE0LjU4LDQuNTgs
-MCwwLDEsOS4xNSwwdjEzLjg0QTQuNTgsNC41OCwwLDAsMSwxOTMuNjcsMTIzLjQxWiIvPjxwYXRo
-IGNsYXNzPSJjbHMtMiIgZD0iTTIzNCwxNTkuODlIMjIyLjM3YTQuNTgsNC41OCwwLDEsMSwwLTku
-MTVIMjM0YTQuNTgsNC41OCwwLDEsMSwwLDkuMTVaIi8+PHRleHQgY2xhc3M9ImNscy0zIiB0cmFu
-c2Zvcm09InRyYW5zbGF0ZSgxNTEuOSAzOTIuMDkpIj5LRVJORUxTSEFSSzwvdGV4dD48L3N2Zz4=
+> >  - Exporting something like a squashfs image instead, allowing
+> > loopback mounting of it (or by providing a pseudo-/dev entry for it),
+> > again allowing direct export of the contents and avoiding the
+> > extracted directory from being out of sync with currently running
+> > kernel.
+>
+> One drawback of squashfs (other than possibly the compression ratio) is that
+> this would be kernel build unfriendly in comparison to tar+xz. On my machine,
+> squashfs-tools needed to be installed. For users who don't have this package,
+> that would break their kernel build.
 
---_004_79C6D6CDD982455197E12F1D670F4FDDvmwarecom_--
+Adding a new tool that is required to use a new feature isn't that bad
+-- it's not like you're breaking the build for everyone.
+
+We've also done this before in the past, by importing the tools into
+the kernel tree if needed. It can be solved.
+
+> > Having to copy and extract the tarball is the most awkward step, IMHO.
+> > I also find the waste of kernel memory for it to be an issue, but
+> > given that it can be built as a module I guess that's the obvious
+> > solution for those who care about memory consumption.
+>
+> Yes. We discussed in previous threads that for users who really want the
+> archive to be completely uncompressed and in-memory, can just load the
+> module, decompress into tmpfs, and unload the module. That is an extra step,
+> yes.
+
+Most users will need to decompress it every time they use it anyway,
+especially if there's no versioned prefix in the tarball that they can
+use to key to a previously decompressed version with the exact same
+kernel version and config.
+
+So, if you need to do that anyway, wouldn't it be easier if you just
+mounted a FS to get to it. If you're on a system where you can't use
+it in-place for resource reasons, you can copy it off and unmount it.
+No extra tools needed in userspace then at run/use time.
+
+Said filesystem could be populated by a compressed cpio archive since
+we already have code in the kernel to do this for initramfs, and could
+do so at mount time -- and at unmount time it'd be freed up.
+
+If you absolutely need to export a file to userspace with the archive,
+my suggestion is to do it through debugfs. That way the format isn't
+in a /proc ABI that can't be changed in the future (debugfs isn't
+required to be stable in the same way). This way we can change the
+format carried in the kernel over time without changing the official
+way we present the data to userspace (via a filesystem view).
+
+As far as format goes; there's clear precedent on cpio being used and
+supported; we already have build time requirements on the userspace
+tools with some options. Using tar would actually be a new dependency
+even if it is a common tool to have installed. With a self-populating
+FS, there's no new tool requirements on the runtime side either.
+
+> We had close to 2-3 months of discussions now with various folks up until v5.
+> I am about to post v6 which is in line with Masahiro Yamada's expecations. In
+> that I will be dropping module building artifacts due to his module building
+> concerns and only include the headers.
+
+I've found some of the old discussion and read up on it. I think it
+was pretty quick at dismissing ideas for more robust implementations
+("it needs squashfs-tools"), and had some narrow viewpoints (exporting
+a tarball is the least amount of kernel change, while adding
+complexity at the system/usage side).
+
+I'd also like to clarify: I'm not opposed to the general idea of
+providing the needed headers with the kernel somehow. I just think
+it's worth spending effort making sure an interface for it that we'll
+need to live with forever is appropriately thought through and not
+rushed in, especially since we're likely to get substantial
+infrastructure on top of it quickly (eBPF and friends in particular).
+
+
+-Olof
