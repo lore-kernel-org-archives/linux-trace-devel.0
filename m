@@ -5,63 +5,64 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1770BC10F13
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Apr 2019 22:09:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ADF4C10F13
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Apr 2019 22:09:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C53872084D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Apr 2019 22:09:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A1CA2186A
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Apr 2019 22:09:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BX3HTi2J"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FeYTKpFs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbfDKWJH (ORCPT
+        id S1727079AbfDKWJT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Apr 2019 18:09:07 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:34999 "EHLO
+        Thu, 11 Apr 2019 18:09:19 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:46254 "EHLO
         mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbfDKWJH (ORCPT
+        with ESMTP id S1726946AbfDKWJR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Apr 2019 18:09:07 -0400
-Received: by mail-io1-f65.google.com with SMTP id p16so6802103iod.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Apr 2019 15:09:06 -0700 (PDT)
+        Thu, 11 Apr 2019 18:09:17 -0400
+Received: by mail-io1-f65.google.com with SMTP id p23so6735891iol.13
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Apr 2019 15:09:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dB1QaR+oryWm7I4D8N9CxELwJzcot7fYy9K+LcuHORU=;
-        b=BX3HTi2J6Q9wHGAARCT7efSesYMqfEuVgVcQhJ/8zAw/x2lw8FGBtg/Qx3uNKV33r+
-         08vYiOFE7uIEdfa34CK7DHXsh56HsI0pbS4OQ9yfcwcVdMRvlb506KuCa7ePgJrjiIzS
-         tgG1XTBuuACjx8NuURzxcTB/nxVR3UZQl7Z6k=
+        bh=N+KHzpPEzxiX0Ro0ISDWs6yLhJrXHxEIc70pati1wqs=;
+        b=FeYTKpFszOooF+/VXmGwfotFmY6sJjBJgnEw8svTmrSBBHwzbiFTO6v/mrOiGed1Cw
+         /G6E25Z2LmpBH4gNc2CNAEa/9GYdk1IDDxciHbuLdKx70RtfF/+ro028wJ9eMlP/mCyC
+         jGD2RhdiRsP51Y6TJ/JtvHNwAZ46PLUDQ9CYg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dB1QaR+oryWm7I4D8N9CxELwJzcot7fYy9K+LcuHORU=;
-        b=lF52L0SowCTIZL2D+oJ+zF/0gvqA9+It1VVn7gXneCJTWM7jFwlbs5WSzl1VZaZ+zj
-         ZPvvH4oLg6ON/LoDSpYvMH23d5Tyjgcx4tFwPrjea2wNdnhi90sSH7z3YoLYOgPriQkS
-         JPwmccHdiR75WakNeoHmhjSpBVAS79SGCe1CtjUa/3OPCl+T4nesEwEW4JcoGHhs/jF1
-         dQUGAvOJBGXiWE8cOm6ACupnsq4hjDTL+AEk3CZZ3rKx888ZAhbmjH8zxeg1iBtbocXO
-         CXoaHAwQbStpKNPGAXcTogiT7fWIMJsyfp/UBzWvWintmBS8nhoBblDDZk9Sa0Y01v4u
-         2BjA==
-X-Gm-Message-State: APjAAAVW8hXJIFfKQ3WN4gNN5EPv6xFYq/OczRaWEWPGUc4U83CLorl7
-        +fF0SBgbXNo8TXoht1nj/gEAZkq5Mzc7JI4Q
-X-Google-Smtp-Source: APXvYqyA5WtSSrzrF16G5xI+OM7Nmxy8lPUkl0+9gX9Q8JhllZrpBI1uNO8Vcsv6R1ECVAPTnr5fnA==
-X-Received: by 2002:a5e:c705:: with SMTP id f5mr16138882iop.40.1555020546314;
-        Thu, 11 Apr 2019 15:09:06 -0700 (PDT)
+        bh=N+KHzpPEzxiX0Ro0ISDWs6yLhJrXHxEIc70pati1wqs=;
+        b=WTyj5vaCfOjM3ToDw3YPgGr6ZwpPbQHC196c9XMeDzhB/zkkVGBpbtBqCnDUo1IFgJ
+         dwhBKk7OqqgAGLLnzZx6teO6lYcRjTL1voLwbQC9v+H1PpuLxCpsRDaElW566W7wHsc7
+         Xp8gI2fxuvepe/6+OsYj0M7A8aGkgO0IRQdiDb8nQ4fPCS+uF7ybzcG/HaReShl3ypmF
+         ivIaoSIpA5/aJ5EmiKzHaN4867dbXOtEgy/dmaUx81eiVLSsR/SHqe4ZrKbyi4guHfvJ
+         gtwy3dKTMLKImlCowiTgCnq7fWC3dkFfB6wpg+UnRsP9wQNJzah1BQv/eK1mwWZygOZY
+         m1Fw==
+X-Gm-Message-State: APjAAAV67DRsoUvFZwcJB3JkIfYrXE1E4WQh2cIV24f7Y8qCGlUVj5hd
+        6Mrf+87COqzMVmhaZUuULjBKhFK72nnb4JxS
+X-Google-Smtp-Source: APXvYqzZvqo2Fa50VZvneu8l4Ia4IBaVyJuX+A7oLhdoPC0oid4xoRz96FTFJ4LlnFDP6yZL7pr/7A==
+X-Received: by 2002:a5e:c019:: with SMTP id u25mr34184557iol.104.1555020556664;
+        Thu, 11 Apr 2019 15:09:16 -0700 (PDT)
 Received: from localhost ([2620:15c:183:0:20b8:dee7:5447:d05])
-        by smtp.gmail.com with ESMTPSA id 64sm3298762ite.42.2019.04.11.15.09.05
+        by smtp.gmail.com with ESMTPSA id m81sm3327620itm.33.2019.04.11.15.09.15
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Apr 2019 15:09:05 -0700 (PDT)
+        Thu, 11 Apr 2019 15:09:16 -0700 (PDT)
 From:   Raul E Rangel <rrangel@chromium.org>
 To:     linux-trace-devel@vger.kernel.org, linux-mmc@vger.kernel.org
 Cc:     djkurtz@chromium.org, zwisler@chromium.org,
         Raul E Rangel <rrangel@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH v1 1/4] trace_events: Add trace_print_register to print register fields
-Date:   Thu, 11 Apr 2019 16:08:19 -0600
-Message-Id: <20190411220822.81845-2-rrangel@chromium.org>
+        linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v1 4/4] mmc/host/sdhci: Make sdhci_read/sdhci_write call trace functions
+Date:   Thu, 11 Apr 2019 16:08:22 -0600
+Message-Id: <20190411220822.81845-5-rrangel@chromium.org>
 X-Mailer: git-send-email 2.21.0.392.gf8f6787159e-goog
 In-Reply-To: <20190411220822.81845-1-rrangel@chromium.org>
 References: <20190411220822.81845-1-rrangel@chromium.org>
@@ -72,247 +73,274 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is a hybrid method that combines the functionality of
-trace_print_flags_seq and trace_print_symbols_seq. It supports printing
-bit fields, enum fields, and numeric fields.
+An example trace can be seen here: https://pastebin.com/x73d5cvL
 
-Given the following register definition:
-  * 0   - Enabled
-  * 1   - Width, 0 = 1-bits, 1 = 4-bits
-  * 2:3 - DMA, 0 = None, 1 = SDMA, 2 = ADMA, 3 = ADMA2
-  * 4:7 - Timeout Counter
-
-The register fields could be defined as follows:
-
-  const struct trace_print_field reg[] = {
-    {1<<0, "ENABLED"},
-    {
-      .mask = 1<<1,
-      .name = "WIDTH",
-      .symbols = (const struct trace_print_flags[]) {
-        {0, "1-BIT"},
-        {1, "4-BIT"},
-        {}
-      }
-    }, {
-      .mask = 3<<2,
-      .symbols = (const struct trace_print_flags[]) {
-        {0, "NONE"},
-        {1, "SDMA"},
-        {2, "ADMA"},
-        {3, "ADMA2"},
-        {}
-      }
-    },
-    {0xF<<4, "TIMEOUT"}
-  }
-
-This would print out the following given value 0xAB:
-
-ENABLED: 1 | WIDTH: 4-BIT | ADMA | TIMEOUT: 0xA
-
-See https://pastebin.com/x73d5cvL for this in action.
+I was unable to leave sdhci_readX and sdhci_writeX as macros because
+they are used in other modules (i.e., sdhci-pci). This means they can't
+call the trace_sdhci_XXX functions without explicitly exporting the
+private trace function name.
 
 Signed-off-by: Raul E Rangel <rrangel@chromium.org>
 ---
 
- include/linux/trace_events.h    |   4 ++
- include/linux/tracepoint-defs.h |   6 ++
- include/trace/trace_events.h    |   9 +++
- kernel/trace/trace_output.c     | 121 ++++++++++++++++++++++++++++++++
- 4 files changed, 140 insertions(+)
+ drivers/mmc/host/sdhci-core.c | 136 ++++++++++++++++++++++++++++++++++
+ drivers/mmc/host/sdhci.h      |  89 ++--------------------
+ 2 files changed, 142 insertions(+), 83 deletions(-)
 
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 8a62731673f7..3c44909ce8b3 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -23,6 +23,10 @@ const char *trace_print_flags_seq(struct trace_seq *p, const char *delim,
- const char *trace_print_symbols_seq(struct trace_seq *p, unsigned long val,
- 				    const struct trace_print_flags *symbol_array);
+diff --git a/drivers/mmc/host/sdhci-core.c b/drivers/mmc/host/sdhci-core.c
+index a8141ff9be03..9e3f114629d9 100644
+--- a/drivers/mmc/host/sdhci-core.c
++++ b/drivers/mmc/host/sdhci-core.c
+@@ -36,6 +36,7 @@
+ #include <linux/mmc/slot-gpio.h>
  
-+const char *trace_print_register(struct trace_seq *p,
-+				 const struct trace_print_field fields[],
-+				 unsigned long val, unsigned long mask);
+ #include "sdhci.h"
++#include "sdhci-trace.h"
+ 
+ #define DRIVER_NAME "sdhci"
+ 
+@@ -54,6 +55,141 @@ static void sdhci_finish_data(struct sdhci_host *);
+ 
+ static void sdhci_enable_preset_value(struct sdhci_host *host, bool enable);
+ 
++#ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
 +
- #if BITS_PER_LONG == 32
- const char *trace_print_flags_seq_u64(struct trace_seq *p, const char *delim,
- 		      unsigned long long flags,
-diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
-index 49ba9cde7e4b..c3dc27c192f4 100644
---- a/include/linux/tracepoint-defs.h
-+++ b/include/linux/tracepoint-defs.h
-@@ -16,6 +16,12 @@ struct trace_print_flags {
- 	const char		*name;
++void sdhci_writel(struct sdhci_host *host, u32 val, int reg)
++{
++	trace_sdhci_write(host, reg, val, U32_MAX);
++
++	if (unlikely(host->ops->write_l))
++		host->ops->write_l(host, val, reg);
++	else
++		writel(val, host->ioaddr + reg);
++}
++EXPORT_SYMBOL(sdhci_writel);
++
++void sdhci_writew(struct sdhci_host *host, u16 val, int reg)
++{
++	trace_sdhci_write(host, reg, val, U16_MAX);
++
++	if (unlikely(host->ops->write_w))
++		host->ops->write_w(host, val, reg);
++	else
++		writew(val, host->ioaddr + reg);
++}
++EXPORT_SYMBOL(sdhci_writew);
++
++void sdhci_writeb(struct sdhci_host *host, u8 val, int reg)
++{
++	trace_sdhci_write(host, reg, val, U8_MAX);
++
++	if (unlikely(host->ops->write_b))
++		host->ops->write_b(host, val, reg);
++	else
++		writeb(val, host->ioaddr + reg);
++}
++EXPORT_SYMBOL(sdhci_writeb);
++
++u32 sdhci_readl(struct sdhci_host *host, int reg)
++{
++	u32 val;
++
++	if (unlikely(host->ops->read_l))
++		val = host->ops->read_l(host, reg);
++	else
++		val = readl(host->ioaddr + reg);
++
++	trace_sdhci_read(host, reg, val, U32_MAX);
++
++	return val;
++}
++EXPORT_SYMBOL(sdhci_readl);
++
++u16 sdhci_readw(struct sdhci_host *host, int reg)
++{
++	u16 val;
++
++	if (unlikely(host->ops->read_w))
++		val = host->ops->read_w(host, reg);
++	else
++		val = readw(host->ioaddr + reg);
++
++	trace_sdhci_read(host, reg, val, U16_MAX);
++
++	return val;
++}
++EXPORT_SYMBOL(sdhci_readw);
++
++u8 sdhci_readb(struct sdhci_host *host, int reg)
++{
++	u8 val;
++
++	if (unlikely(host->ops->read_b))
++		val = host->ops->read_b(host, reg);
++	else
++		val = readb(host->ioaddr + reg);
++
++	trace_sdhci_read(host, reg, val, U8_MAX);
++
++	return val;
++}
++EXPORT_SYMBOL(sdhci_readb);
++
++#else
++
++void sdhci_writel(struct sdhci_host *host, u32 val, int reg)
++{
++	trace_sdhci_write(host, reg, val, U32_MAX);
++	writel(val, host->ioaddr + reg);
++}
++EXPORT_SYMBOL(sdhci_writel);
++
++void sdhci_writew(struct sdhci_host *host, u16 val, int reg)
++{
++	trace_sdhci_write(host, reg, val, U16_MAX);
++	writew(val, host->ioaddr + reg);
++}
++EXPORT_SYMBOL(sdhci_writew);
++
++void sdhci_writeb(struct sdhci_host *host, u8 val, int reg)
++{
++	trace_sdhci_write(host, reg, val, U8_MAX);
++	writeb(val, host->ioaddr + reg);
++}
++EXPORT_SYMBOL(sdhci_writeb);
++
++u32 sdhci_readl(struct sdhci_host *host, int reg)
++{
++	u32 val = readl(host->ioaddr + reg);
++
++	trace_sdhci_read(host, reg, val, U32_MAX);
++
++	return val;
++}
++EXPORT_SYMBOL(sdhci_readl);
++
++u16 sdhci_readw(struct sdhci_host *host, int reg)
++{
++	u16 val = readw(host->ioaddr + reg);
++
++	trace_sdhci_read(host, reg, val, U16_MAX);
++
++	return val;
++}
++EXPORT_SYMBOL(sdhci_readw);
++
++u8 sdhci_readb(struct sdhci_host *host, int reg)
++{
++	u8 val = readb(host->ioaddr + reg);
++
++	trace_sdhci_read(host, reg, val, U8_MAX);
++
++	return val;
++}
++EXPORT_SYMBOL(sdhci_readb);
++
++#endif /* CONFIG_MMC_SDHCI_IO_ACCESSORS */
++
+ void sdhci_dumpregs(struct sdhci_host *host)
+ {
+ 	SDHCI_DUMP("============ SDHCI REGISTER DUMP ===========\n");
+diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+index 01002cba1359..052361f27ec0 100644
+--- a/drivers/mmc/host/sdhci.h
++++ b/drivers/mmc/host/sdhci.h
+@@ -647,89 +647,12 @@ struct sdhci_ops {
+ 				   dma_addr_t addr, int len, unsigned int cmd);
  };
  
-+struct trace_print_field {
-+	unsigned long			mask;
-+	const char			*name;
-+	const struct trace_print_flags	*symbols;
-+};
-+
- struct trace_print_flags_u64 {
- 	unsigned long long	mask;
- 	const char		*name;
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index 4ecdfe2e3580..6adc32fcb1c3 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -300,6 +300,14 @@ TRACE_MAKE_SYSTEM_STR();
- 		trace_print_symbols_seq(p, value, symbols);		\
- 	})
+-#ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
+-
+-static inline void sdhci_writel(struct sdhci_host *host, u32 val, int reg)
+-{
+-	if (unlikely(host->ops->write_l))
+-		host->ops->write_l(host, val, reg);
+-	else
+-		writel(val, host->ioaddr + reg);
+-}
+-
+-static inline void sdhci_writew(struct sdhci_host *host, u16 val, int reg)
+-{
+-	if (unlikely(host->ops->write_w))
+-		host->ops->write_w(host, val, reg);
+-	else
+-		writew(val, host->ioaddr + reg);
+-}
+-
+-static inline void sdhci_writeb(struct sdhci_host *host, u8 val, int reg)
+-{
+-	if (unlikely(host->ops->write_b))
+-		host->ops->write_b(host, val, reg);
+-	else
+-		writeb(val, host->ioaddr + reg);
+-}
+-
+-static inline u32 sdhci_readl(struct sdhci_host *host, int reg)
+-{
+-	if (unlikely(host->ops->read_l))
+-		return host->ops->read_l(host, reg);
+-	else
+-		return readl(host->ioaddr + reg);
+-}
+-
+-static inline u16 sdhci_readw(struct sdhci_host *host, int reg)
+-{
+-	if (unlikely(host->ops->read_w))
+-		return host->ops->read_w(host, reg);
+-	else
+-		return readw(host->ioaddr + reg);
+-}
+-
+-static inline u8 sdhci_readb(struct sdhci_host *host, int reg)
+-{
+-	if (unlikely(host->ops->read_b))
+-		return host->ops->read_b(host, reg);
+-	else
+-		return readb(host->ioaddr + reg);
+-}
+-
+-#else
+-
+-static inline void sdhci_writel(struct sdhci_host *host, u32 val, int reg)
+-{
+-	writel(val, host->ioaddr + reg);
+-}
+-
+-static inline void sdhci_writew(struct sdhci_host *host, u16 val, int reg)
+-{
+-	writew(val, host->ioaddr + reg);
+-}
+-
+-static inline void sdhci_writeb(struct sdhci_host *host, u8 val, int reg)
+-{
+-	writeb(val, host->ioaddr + reg);
+-}
+-
+-static inline u32 sdhci_readl(struct sdhci_host *host, int reg)
+-{
+-	return readl(host->ioaddr + reg);
+-}
+-
+-static inline u16 sdhci_readw(struct sdhci_host *host, int reg)
+-{
+-	return readw(host->ioaddr + reg);
+-}
+-
+-static inline u8 sdhci_readb(struct sdhci_host *host, int reg)
+-{
+-	return readb(host->ioaddr + reg);
+-}
+-
+-#endif /* CONFIG_MMC_SDHCI_IO_ACCESSORS */
++void sdhci_writel(struct sdhci_host *host, u32 val, int reg);
++void sdhci_writew(struct sdhci_host *host, u16 val, int reg);
++void sdhci_writeb(struct sdhci_host *host, u8 val, int reg);
++u32 sdhci_readl(struct sdhci_host *host, int reg);
++u16 sdhci_readw(struct sdhci_host *host, int reg);
++u8 sdhci_readb(struct sdhci_host *host, int reg);
  
-+#undef __print_register
-+#define __print_register(value, mask, field_array...)			\
-+	({								\
-+		static const struct trace_print_field fields[] =	\
-+			{ field_array, {} };			\
-+		trace_print_register(p, value, mask, fields);		\
-+	})
-+
- #undef __print_flags_u64
- #undef __print_symbolic_u64
- #if BITS_PER_LONG == 32
-@@ -744,6 +752,7 @@ static inline void ftrace_test_probe_##call(void)			\
- 
- #undef __print_flags
- #undef __print_symbolic
-+#undef __print_register
- #undef __print_hex
- #undef __print_hex_str
- #undef __get_dynamic_array
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index 54373d93e251..cd5727ad54c3 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -124,6 +124,127 @@ trace_print_symbols_seq(struct trace_seq *p, unsigned long val,
- }
- EXPORT_SYMBOL(trace_print_symbols_seq);
- 
-+/**
-+ * trace_print_register - Prints all the fields of a register.
-+ *
-+ * This is a hybrid method that combines the functionality of
-+ * trace_print_flags_seq and trace_print_symbols_seq. It supports printing
-+ * bit fields, enum fields, and numeric fields.
-+ *
-+ * Given the following register definition:
-+ *   * 0   - Enabled
-+ *   * 1   - Width, 0 = 1-bits, 1 = 4-bits
-+ *   * 2:3 - DMA, 0 = None, 1 = SDMA, 2 = ADMA, 3 = ADMA2
-+ *   * 4:7 - Timeout Counter
-+ *
-+ * The register fields could be defined as follows:
-+ *
-+ *   const struct trace_print_field reg[] = {
-+ *     {1<<0, "ENABLED"},
-+ *     {
-+ *       .mask = 1<<1,
-+ *       .name = "WIDTH",
-+ *       .symbols = (const struct trace_print_flags[]) {
-+ *         {0, "1-BIT"},
-+ *         {1, "4-BIT"},
-+ *         {}
-+ *       }
-+ *     }, {
-+ *       .mask = 3<<2,
-+ *       .symbols = (const struct trace_print_flags[]) {
-+ *         {0, "NONE"},
-+ *         {1, "SDMA"},
-+ *         {2, "ADMA"},
-+ *         {3, "ADMA2"},
-+ *         {}
-+ *       }
-+ *     },
-+ *     {0xF<<4, "TIMEOUT"}
-+ *   }
-+ *
-+ * This would print out the following given value 0xAB:
-+ *
-+ * ENABLED: 1 | WIDTH: 4-BIT | ADMA | TIMEOUT: 0xA
-+ *
-+ * @p: trace buffer
-+ * @fields: Array of fields that describe the register. Must be terminated with
-+ *          an empty value.
-+ * @val: register value
-+ * @mask: Mask that defines the bits present in @val. Useful if only a subset
-+ *        of the register was read. Any fields that fall outside of the mask
-+ *        will not be printed.
-+ */
-+const char *trace_print_register(struct trace_seq *p,
-+				 const struct trace_print_field fields[],
-+				 unsigned long val, unsigned long mask)
-+{
-+	const char *ret = trace_seq_buffer_ptr(p);
-+	char *tail;
-+	unsigned long fval;
-+	int first = 1, symbol_found;
-+	const struct trace_print_field *field;
-+	const struct trace_print_flags *symbol;
-+
-+	for (field = fields; field->mask; field++) {
-+		/* Make sure the field mask is within the accessed bits */
-+		if ((mask & field->mask) != field->mask)
-+			continue;
-+
-+		if (!first)
-+			trace_seq_puts(p, " | ");
-+
-+		first = 0;
-+
-+		if (field->name) {
-+			trace_seq_puts(p, field->name);
-+			trace_seq_puts(p, ": ");
-+		}
-+
-+		fval = val & field->mask;
-+		fval >>= ffs(field->mask) - 1;
-+
-+		val &= ~field->mask;
-+
-+		symbol_found = 0;
-+		for (symbol = field->symbols; symbol && symbol->name;
-+		     symbol++) {
-+			if (symbol->mask != fval)
-+				continue;
-+			trace_seq_puts(p, symbol->name);
-+			symbol_found = 1;
-+			break;
-+		}
-+
-+		if (!symbol_found) {
-+			if (fval == 0) {
-+				trace_seq_puts(p, "0");
-+			} else if (fval == 1) {
-+				trace_seq_puts(p, "1");
-+			} else {
-+				trace_seq_printf(p, "%#x", fval);
-+
-+				/* Strip off the null terminator */
-+				for (tail = trace_seq_buffer_ptr(p) - 1;
-+				     tail > ret && !*tail; tail--) {
-+					p->seq.len--;
-+				}
-+			}
-+		}
-+	}
-+
-+	/* Print any left over bits */
-+	if (val) {
-+		if (!first)
-+			trace_seq_puts(p, " | ");
-+		trace_seq_printf(p, "%#x", val);
-+	}
-+
-+	trace_seq_putc(p, 0);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(trace_print_register);
-+
- #if BITS_PER_LONG == 32
- const char *
- trace_print_flags_seq_u64(struct trace_seq *p, const char *delim,
+ struct sdhci_host *sdhci_alloc_host(struct device *dev, size_t priv_size);
+ void sdhci_free_host(struct sdhci_host *host);
 -- 
 2.21.0.392.gf8f6787159e-goog
 
