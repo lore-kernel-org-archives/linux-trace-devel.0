@@ -2,42 +2,43 @@ Return-Path: <SRS0=k/vv=SO=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A04C0C10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 15:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEF3FC10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 15:42:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 725D42171F
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 15:35:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 99B4121872
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 15:42:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbfDLPfv (ORCPT
+        id S1726780AbfDLPmD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 12 Apr 2019 11:35:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57256 "EHLO mail.kernel.org"
+        Fri, 12 Apr 2019 11:42:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726788AbfDLPfu (ORCPT
+        id S1726765AbfDLPmD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Apr 2019 11:35:50 -0400
+        Fri, 12 Apr 2019 11:42:03 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3CB22082E;
-        Fri, 12 Apr 2019 15:35:49 +0000 (UTC)
-Date:   Fri, 12 Apr 2019 11:35:47 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id C60A92082E;
+        Fri, 12 Apr 2019 15:42:01 +0000 (UTC)
+Date:   Fri, 12 Apr 2019 11:42:00 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Josef Bacik <jbacik@fb.com>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Slavomir Kaslev <kaslevs@vmware.com>
-Subject: Re: trace-cmd fails with many cpus
-Message-ID: <20190412113547.31b08902@gandalf.local.home>
-In-Reply-To: <20190412111546.0c54576e@gandalf.local.home>
-References: <20190412135333.GB6201@pauld.bos.csb>
-        <20190412111546.0c54576e@gandalf.local.home>
+To:     Raul Rangel <rrangel@chromium.org>
+Cc:     linux-trace-devel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        djkurtz@chromium.org, zwisler@chromium.org,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH v1 1/4] trace_events: Add trace_print_register to print
+ register fields
+Message-ID: <20190412114200.6c1a8593@gandalf.local.home>
+In-Reply-To: <20190412153036.GB101407@google.com>
+References: <20190411220822.81845-1-rrangel@chromium.org>
+        <20190411220822.81845-2-rrangel@chromium.org>
+        <20190411183934.28e6ad65@gandalf.local.home>
+        <20190412153036.GB101407@google.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -47,33 +48,63 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 12 Apr 2019 11:15:46 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, 12 Apr 2019 09:30:36 -0600
+Raul Rangel <rrangel@chromium.org> wrote:
 
+> Ah, I wasn't aware that the format was exposed via sysfs. That makes
+> sense why the macros are used. I was using xhci-trace as my reference
+> point which just calls arbitrary functions.
+> 
+> cat /sys/kernel/debug/tracing/events/xhci-hcd/xhci_handle_event/format
+> print fmt: "%s: %s",
+> xhci_ring_type_string(REC->type),
+> xhci_decode_trb(REC->field0, REC->field1, REC->field2, REC->field3)
+> 
+> I'm guessing calling out to a function is not the way the framework was
+> intended to be used. Does this mean that every TRB type in xhci_decode_trb
+> should be its own trace event so the printf format isn't hidden inside
+> the code?
+
+You can add plugins to handle this. See tools/lib/traceevent/plugin_*.c
+
+> 
 > > 
-> > 
-> > I suppose the answer is don't run on a system with that many cpus  :)
-> > 
-> > But I wonder if it would be possible to have the threads each handle say 8 cpu
-> > files or something.  
+> > How does perf or trace-cmd parse this? To add something like this, you
+> > need them to have the same output as what is displayed by the trace
+> > file otherwise NAK.  
 > 
-> Actually, I think another solution is to consolidate the pids that are
-> to be excluded and sort them. Thus if we have (which is very likely the
-> case)
+> So for the short term I can remove __print_register. The SDHCI tracing
+> doesn't use it, but instead calls out to a method that calls
+> trace_print_register directly. Or I could move trace_print_register
+> into the sdhci-trace module.
+
+For the short term yeah. And you can add a plugin to the libtraceevent
+to teach trace-cmd and perf how to parse it.
+See "tep_register_print_function()"
+
 > 
->  (common_pid!=1000)&&(common_pid!=1001)&&(common_pid!=1002)
+> cat /sys/kernel/debug/tracing/events/sdhci/sdhci_read/format
 > 
-> That we change that to:
+> print fmt: "%s: %#x [%s] => %#x: %s",
+>   __get_str(name),
+>   REC->reg,
+>   __print_symbolic(REC->reg & ~3UL, {0x00, "DMA_ADDRESS"}, ...),
+>   REC->val,
+>   sdhci_decode_register( p, REC->reg, REC->val, REC->mask )
 > 
->   !((common_pid>=1000)||(common_pid<=1002))  
+> The format prints out the raw value, so using perf or trace-cmd
+> will still have value, you just won't get the pretty print.
+> 
+> For the long term I could make event-parser handle __print_register. I'm
+> assuming it just needs to handle the additional case?
+> https://github.com/torvalds/linux/blob/master/tools/lib/traceevent/event-parse.c#L3040
+> 
 
-> > WRITE: /sys/kernel/tracing/events/sched/sched_switch/filter, len 6718, data "(common_pid!=100199)&&(common_pid!=100198)&&(common_pid!=100197)&&(common_pid!=100196)&&(common_pid!=100195)&&(common_pid!=100194)&&(common_pid!=100193)&&(common_pid!=100192)&&(common_pid!=100191) ... 160 of these ...
-> > &&(common_pid!=100040)||(next_pid!=100199)&&(next_pid!=100198)&&(next_pid!=100197)&&(next_pid!=100196)&&(next_pid!=100195)&&(next_pid!=100194)&&(next_pid!=100193)&&(next_pid!=100192)...  160 of these...
+Yes, I'm fine with adding new generic functions that can parse the code
+properly to libtraceevent. Anything added to the trace_event code
+should have a corresponding routine added to libtraceevent. Just
+remember, that those *are* user API, and once made, they can not change.
 
-Yes this would definitely help. From your output that is shown, we
-could convert that to:
-
- !((common_pid>=100040)||(common_pid<=100199))&&!((next_pid>=100040)||(next_pid<=100199))
-
+Thanks!
 
 -- Steve
