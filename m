@@ -2,67 +2,76 @@ Return-Path: <SRS0=k/vv=SO=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3EC0C10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 19:51:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2622AC10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 19:51:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AED1C218A3
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 19:51:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D46B0218A3
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 19:51:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="oeghV1xE"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="XjAyjQDF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbfDLTv3 (ORCPT
+        id S1727039AbfDLTvl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 12 Apr 2019 15:51:29 -0400
-Received: from mail-it1-f195.google.com ([209.85.166.195]:51901 "EHLO
-        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726870AbfDLTv2 (ORCPT
+        Fri, 12 Apr 2019 15:51:41 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:43302 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726907AbfDLTvl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Apr 2019 15:51:28 -0400
-Received: by mail-it1-f195.google.com with SMTP id s3so3108203itk.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 12:51:27 -0700 (PDT)
+        Fri, 12 Apr 2019 15:51:41 -0400
+Received: by mail-pf1-f196.google.com with SMTP id c8so5617797pfd.10
+        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 12:51:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HlfDz4PF9tdAjIwyaWfidRJ9LFGIrm1jbr/xBoNJt9Q=;
-        b=oeghV1xEtppHFFM0Bmspo5/kbJ64cVWVNT0Rqh6ybaA8LwPIlQK+e+K15+R87pNSvV
-         1LbjBtk5IkhTIDAQfBJMLVoHEOcyoPAZtuz4xMkNrIaNrGnI55CRHvwU9qO3RJ5uYj4p
-         yZgVgUcXCEw6RsEsD8BogzvNOOxtjjuLTSxG4=
+        bh=9FeyArGzj5gP+alpqQKLTZ9TGpRqcDMZc6FU6Su0Lr8=;
+        b=XjAyjQDFBWjIlOLhE3r4buafF7NyOBeuXADmdAX38qoaD9hrVj4i4ULrnQatOHxAnM
+         LpAw+usUYe2DNld88Hs9CfHXXgcbyEJAdH3az8xQBY+FqoHRMi/YqPjnRoBwKBAZrmK4
+         BexF7FeJ9m++C1M5mquoNP/8Dm/tRCfXmmitc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HlfDz4PF9tdAjIwyaWfidRJ9LFGIrm1jbr/xBoNJt9Q=;
-        b=ChaD8ZtBPr9W15gHlwkekq8liSIFHRdmQ77TviYtDXL1dEA+eCbmh6xZc7KNR4jnKt
-         /l/BCtQ+GwPoD5ETGYWyqNTVKIwYo06aJs5+q/wpNnHh7jAxh753pOylryjyakVItgXa
-         FMT2Ln/iqEO8e1YlTYLo9lUvTVzr7PPeNOBzPBbrMrRYNNOVUSwX+q3mmkYiq3PDrMHb
-         959pvHlzVnayg9bl1f5CvZX+4vVh3uF8om0Xe+XrD9oNKFHP+M7FNUmAb6bvrgWqL3pW
-         SL3QA6YC//4TyX1IlU7AhAlp43BdaCSaeAaAiHZJv7jZbazlO3Ho1WPYHgj8Vj1+4pHh
-         20fQ==
-X-Gm-Message-State: APjAAAXWAzM7yTwdY68SPY5B/4xcQoTx4yN9eieAIp1P+Basvn8TTQK4
-        ARjRdcTyqBlkVjMt0UZ//l/vCmf7Zw1/lA==
-X-Google-Smtp-Source: APXvYqxGjGgQZYbhvCLyornHOlnQV6TO7P+njbbIat1yv4zrN/laTngsUO06DPhHje2g5mrWngVc5A==
-X-Received: by 2002:a02:5bc2:: with SMTP id g185mr41373960jab.31.1555098687149;
-        Fri, 12 Apr 2019 12:51:27 -0700 (PDT)
-Received: from localhost ([2620:15c:183:0:20b8:dee7:5447:d05])
-        by smtp.gmail.com with ESMTPSA id h77sm4646618ith.2.2019.04.12.12.51.25
+        bh=9FeyArGzj5gP+alpqQKLTZ9TGpRqcDMZc6FU6Su0Lr8=;
+        b=AU8hZewQUlRnW3snxi7CkNIoPu5NeC3Zdlz2ecoICVrpryD/wrm8PCMkiJ6tAvDqZe
+         0ONAKkGzypZXOnIiPI/VtBjvBioCH73mgcurmZwnmfoJVCG4W9XJebOMhrk426Pg458q
+         svDlWz7ydjdbQwio76+wvfb1LirAGCkYFrAM052wMCUgtjLujfUUCRQvBCXiLI+s1LVb
+         3Kh7y+t3mEoFlihfFexRk6/ajopyXyJVEFjsxzc2eVMYsO1OBU8jDpRowjtUkCsG+ah1
+         zT4Dtm1mX9qpGlj3DJLU/YBqvqbHLnLWjNq7pBtzYXPyIxuuVDfW3qoMCFOuGZNrIlXZ
+         qAWA==
+X-Gm-Message-State: APjAAAVkE4UBo/ZiKufIRevM47hM2hm9eZjcaAIszBp55GE33qnRvcOc
+        TA2r0gQmNmtpQ7Ouablffpr02w==
+X-Google-Smtp-Source: APXvYqyaDM7WeFLKVJPAhW/6Ws17X5iMlRUZIhg1hjGGHPI1RaoRAHTsN+uUR8CwOnalgHHTZNSceQ==
+X-Received: by 2002:a63:c145:: with SMTP id p5mr53602439pgi.339.1555098700158;
+        Fri, 12 Apr 2019 12:51:40 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id e126sm106356796pfh.35.2019.04.12.12.51.36
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Apr 2019 12:51:26 -0700 (PDT)
-From:   Raul E Rangel <rrangel@chromium.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     eballetbo@gmail.com, zwisler@chromium.org, djkurtz@chromium.org,
-        Raul E Rangel <rrangel@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fri, 12 Apr 2019 12:51:39 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>, ast@kernel.org,
+        atishp04@gmail.com, dancol@google.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        dietmar.eggemann@arm.com, gregkh@linuxfoundation.org,
         Guenter Roeck <groeck@chromium.org>,
-        linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>
-Subject: [PATCH v3] chrome/platform: cros_ec_proto: Add trace event to trace EC commands
-Date:   Fri, 12 Apr 2019 13:51:23 -0600
-Message-Id: <20190412195124.8998-1-rrangel@chromium.org>
+        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
+        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Manoj Rao <linux@manojrajarao.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        mhiramat@kernel.org, qais.yousef@arm.com, rdunlap@infradead.org,
+        rostedt@goodmis.org, Shuah Khan <shuah@kernel.org>, yhs@fb.com
+Subject: [PATCH v7 1/2] Provide in-kernel headers to make extending kernel easier
+Date:   Fri, 12 Apr 2019 15:51:24 -0400
+Message-Id: <20190412195125.3891-1-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.21.0.392.gf8f6787159e-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,304 +80,345 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is useful to see which EC commands are being executed and when.
+Introduce in-kernel headers which are made available as an archive
+through proc (/proc/kheaders.tar.xz file). This archive makes it
+possible to run eBPF and other tracing programs that need to extend the
+kernel for tracing purposes without any dependency on the file system
+having headers.
 
-To enable:
+A github PR is sent for the corresponding BCC patch at:
+https://github.com/iovisor/bcc/pull/2312
 
-    echo 'cros_ec:*' >> /sys/kernel/debug/tracing/set_event
+On Android and embedded systems, it is common to switch kernels but not
+have kernel headers available on the file system. Further once a
+different kernel is booted, any headers stored on the file system will
+no longer be useful. This is an issue even well known to distros.
+By storing the headers as a compressed archive within the kernel, we can
+avoid these issues that have been a hindrance for a long time.
 
-Example:
+The best way to use this feature is by building it in. Several users
+have a need for this, when they switch debug kernels, they do not want to
+update the filesystem or worry about it where to store the headers on
+it. However, the feature is also buildable as a module in case the user
+desires it not being part of the kernel image. This makes it possible to
+load and unload the headers from memory on demand. A tracing program can
+load the module, do its operations, and then unload the module to save
+kernel memory. The total memory needed is 3.3MB.
 
-    /* cros_ec_cmd: version: 0, command: GET_VERSION */
-    /* cros_ec_cmd: version: 0, command: GET_PROTOCOL_INFO */
-    /* cros_ec_cmd: version: 1, command: GET_CMD_VERSIONS */
-    /* cros_ec_cmd: version: 1, command: USB_PD_CONTROL */
+By having the archive available at a fixed location independent of
+filesystem dependencies and conventions, all debugging tools can
+directly refer to the fixed location for the archive, without concerning
+with where the headers on a typical filesystem which significantly
+simplifies tooling that needs kernel headers.
 
-Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+The code to read the headers is based on /proc/config.gz code and uses
+the same technique to embed the headers.
+
+Other approaches were discussed such as having an in-memory mountable
+filesystem, but that has drawbacks such as requiring an in-kernel xz
+decompressor which we don't have today, and requiring usage of 42 MB of
+kernel memory to host the decompressed headers at anytime. Also this
+approach is simpler than such approaches.
+
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
 
-Changes in v3:
-- Use a macro to avoid duplicating the ec command names.
+    v6 -> v7:
+    - Minor nits from Masahiro Yamada are addressed.
 
-Changes in v2:
-- Changed comment style to match other cros_ec files.
-- Fixed commit tag.
+    v5 -> v6: (Masahiro Yamada suggestions mostly)
+    - Dropped support for module building.
+    - Rebuild archive if script changes.
+    - Move archive file list to script.
+    - Move build script to kernel directory.
 
- drivers/platform/chrome/Makefile        |   4 +-
- drivers/platform/chrome/cros_ec_proto.c |   4 +
- drivers/platform/chrome/cros_ec_trace.c | 162 ++++++++++++++++++++++++
- drivers/platform/chrome/cros_ec_trace.h |  51 ++++++++
- 4 files changed, 220 insertions(+), 1 deletion(-)
- create mode 100644 drivers/platform/chrome/cros_ec_trace.c
- create mode 100644 drivers/platform/chrome/cros_ec_trace.h
+    v4 -> v5:
+    (v4 was Tested-by the following folks)
+        Tested-by: qais.yousef@arm.com
+        Tested-by: dietmar.eggemann@arm.com
+        Tested-by: linux@manojrajarao.com
+    (Thanks to Masahiro Yamada for several excellent suggestions)
+    - used incbin instead of bin2c (Masahiro did similar idea)
+    - added module.lds if ia64 otherwise ia64 may fail to build.
+    - added clean-files rule to Makefile
+    - removed strip-comments script and doing it inline
+    - added set -e to header generated to die on errorsr
+    - fixed a minor issue where find command was noisy.
+    - removed unneeded tar.xz rule from kernel/.gitignore
+    - added Tested-by tags from ARM folks.
 
-diff --git a/drivers/platform/chrome/Makefile b/drivers/platform/chrome/Makefile
-index 1e2f0029b597..e542268454a4 100644
---- a/drivers/platform/chrome/Makefile
-+++ b/drivers/platform/chrome/Makefile
-@@ -3,12 +3,14 @@
- obj-$(CONFIG_CHROMEOS_LAPTOP)		+= chromeos_laptop.o
- obj-$(CONFIG_CHROMEOS_PSTORE)		+= chromeos_pstore.o
- obj-$(CONFIG_CHROMEOS_TBMC)		+= chromeos_tbmc.o
-+# tell define_trace.h where to find the cros ec trace header
-+CFLAGS_cros_ec_trace.o:=		-I$(src)
- obj-$(CONFIG_CROS_EC_I2C)		+= cros_ec_i2c.o
- obj-$(CONFIG_CROS_EC_SPI)		+= cros_ec_spi.o
- cros_ec_lpcs-objs			:= cros_ec_lpc.o cros_ec_lpc_reg.o
- cros_ec_lpcs-$(CONFIG_CROS_EC_LPC_MEC)	+= cros_ec_lpc_mec.o
- obj-$(CONFIG_CROS_EC_LPC)		+= cros_ec_lpcs.o
--obj-$(CONFIG_CROS_EC_PROTO)		+= cros_ec_proto.o
-+obj-$(CONFIG_CROS_EC_PROTO)		+= cros_ec_proto.o cros_ec_trace.o
- obj-$(CONFIG_CROS_KBD_LED_BACKLIGHT)	+= cros_kbd_led_backlight.o
- obj-$(CONFIG_CROS_EC_LIGHTBAR)		+= cros_ec_lightbar.o
- obj-$(CONFIG_CROS_EC_VBC)		+= cros_ec_vbc.o
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index 97a068dff192..3d02c8259ac6 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -10,6 +10,8 @@
- #include <linux/slab.h>
- #include <asm/unaligned.h>
+    Changes since v3:
+    - Blank tar was being generated because of a one line I
+      forgot to push. It is updated now.
+    - Added module.lds since arm64 needs it to build modules.
+
+    Changes since v2:
+    (Thanks to Masahiro Yamada for several excellent suggestions)
+    - Added support for out of tree builds.
+    - Added incremental build support bringing down build time of
+      incremental builds from 50 seconds to 5 seconds.
+    - Fixed various small nits / cleanups.
+    - clean ups to kheaders.c pointed by Alexey Dobriyan.
+    - Fixed MODULE_LICENSE in test module and kheaders.c
+    - Dropped Module.symvers from archive due to circular dependency.
+
+    Changes since v1:
+    - removed IKH_EXTRA variable, not needed (Masahiro Yamada)
+    - small fix ups to selftest
+       - added target to main Makefile etc
+       - added MODULE_LICENSE to test module
+       - made selftest more quiet
+
+    Changes since RFC:
+    Both changes bring size down to 3.8MB:
+    - use xz for compression
+    - strip comments except SPDX lines
+    - Call out the module name in Kconfig
+    - Also added selftests in second patch to ensure headers are always
+    working.
+
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+ init/Kconfig           | 10 +++++
+ kernel/.gitignore      |  1 +
+ kernel/Makefile        | 10 +++++
+ kernel/gen_ikh_data.sh | 89 ++++++++++++++++++++++++++++++++++++++++++
+ kernel/kheaders.c      | 74 +++++++++++++++++++++++++++++++++++
+ 5 files changed, 184 insertions(+)
+ create mode 100755 kernel/gen_ikh_data.sh
+ create mode 100644 kernel/kheaders.c
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 4592bf7997c0..47c0db6e63a5 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -580,6 +580,16 @@ config IKCONFIG_PROC
+ 	  This option enables access to the kernel configuration file
+ 	  through /proc/config.gz.
  
-+#include "cros_ec_trace.h"
++config IKHEADERS_PROC
++	tristate "Enable kernel header artifacts through /proc/kheaders.tar.xz"
++	depends on PROC_FS
++	help
++	  This option enables access to the kernel header and other artifacts that
++	  are generated during the build process. These can be used to build eBPF
++	  tracing programs, or similar programs.  If you build the headers as a
++	  module, a module called kheaders.ko is built which can be loaded on-demand
++	  to get access to the headers.
 +
- #define EC_COMMAND_RETRIES	50
- 
- static int prepare_packet(struct cros_ec_device *ec_dev,
-@@ -51,6 +53,8 @@ static int send_command(struct cros_ec_device *ec_dev,
- 	int ret;
- 	int (*xfer_fxn)(struct cros_ec_device *ec, struct cros_ec_command *msg);
- 
-+	trace_cros_ec_cmd(msg);
+ config LOG_BUF_SHIFT
+ 	int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
+ 	range 12 25
+diff --git a/kernel/.gitignore b/kernel/.gitignore
+index 6e699100872f..34d1e77ee9df 100644
+--- a/kernel/.gitignore
++++ b/kernel/.gitignore
+@@ -1,5 +1,6 @@
+ #
+ # Generated files
+ #
++kheaders.md5
+ timeconst.h
+ hz.bc
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 6c57e78817da..12399614c350 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -70,6 +70,7 @@ obj-$(CONFIG_UTS_NS) += utsname.o
+ obj-$(CONFIG_USER_NS) += user_namespace.o
+ obj-$(CONFIG_PID_NS) += pid_namespace.o
+ obj-$(CONFIG_IKCONFIG) += configs.o
++obj-$(CONFIG_IKHEADERS_PROC) += kheaders.o
+ obj-$(CONFIG_SMP) += stop_machine.o
+ obj-$(CONFIG_KPROBES_SANITY_TEST) += test_kprobes.o
+ obj-$(CONFIG_AUDIT) += audit.o auditfilter.o
+@@ -121,3 +122,12 @@ $(obj)/configs.o: $(obj)/config_data.gz
+ targets += config_data.gz
+ $(obj)/config_data.gz: $(KCONFIG_CONFIG) FORCE
+ 	$(call if_changed,gzip)
 +
- 	if (ec_dev->proto_version > 2)
- 		xfer_fxn = ec_dev->pkt_xfer;
- 	else
-diff --git a/drivers/platform/chrome/cros_ec_trace.c b/drivers/platform/chrome/cros_ec_trace.c
-new file mode 100644
-index 000000000000..1f817aa9d886
++$(obj)/kheaders.o: $(obj)/kheaders_data.tar.xz
++
++quiet_cmd_genikh = CHK     $(obj)/kheaders_data.tar.xz
++cmd_genikh = $(srctree)/kernel/gen_ikh_data.sh $@
++$(obj)/kheaders_data.tar.xz: FORCE
++	$(call cmd,genikh)
++
++clean-files := kheaders_data.tar.xz kheaders.md5
+diff --git a/kernel/gen_ikh_data.sh b/kernel/gen_ikh_data.sh
+new file mode 100755
+index 000000000000..591a94f7b387
 --- /dev/null
-+++ b/drivers/platform/chrome/cros_ec_trace.c
-@@ -0,0 +1,162 @@
++++ b/kernel/gen_ikh_data.sh
+@@ -0,0 +1,89 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++# This script generates an archive consisting of kernel headers
++# for CONFIG_IKHEADERS_PROC.
++set -e
++spath="$(dirname "$(readlink -f "$0")")"
++kroot="$spath/.."
++outdir="$(pwd)"
++tarfile=$1
++cpio_dir=$outdir/$tarfile.tmp
++
++# Script filename relative to the kernel source root
++# We add it to the archive because it is small and any changes
++# to this script will also cause a rebuild of the archive.
++sfile="$(realpath --relative-to $kroot "$(readlink -f "$0")")"
++
++src_file_list="
++include/
++arch/$SRCARCH/include/
++$sfile
++"
++
++obj_file_list="
++include/
++arch/$SRCARCH/include/
++"
++
++# Support incremental builds by skipping archive generation
++# if timestamps of files being archived are not changed.
++
++# This block is useful for debugging the incremental builds.
++# Uncomment it for debugging.
++# iter=1
++# if [ ! -f /tmp/iter ]; then echo 1 > /tmp/iter;
++# else; 	iter=$(($(cat /tmp/iter) + 1)); fi
++# find $src_file_list -type f | xargs ls -lR > /tmp/src-ls-$iter
++# find $obj_file_list -type f | xargs ls -lR > /tmp/obj-ls-$iter
++
++# include/generated/compile.h is ignored because it is touched even when none
++# of the source files changed. This causes pointless regeneration, so let us
++# ignore them for md5 calculation.
++pushd $kroot > /dev/null
++src_files_md5="$(find $src_file_list -type f                       |
++		grep -v "include/generated/compile.h"		   |
++		xargs ls -lR | md5sum | cut -d ' ' -f1)"
++popd > /dev/null
++obj_files_md5="$(find $obj_file_list -type f                       |
++		grep -v "include/generated/compile.h"		   |
++		xargs ls -lR | md5sum | cut -d ' ' -f1)"
++
++if [ -f $tarfile ]; then tarfile_md5="$(md5sum $tarfile | cut -d ' ' -f1)"; fi
++if [ -f kernel/kheaders.md5 ] &&
++	[ "$(cat kernel/kheaders.md5|head -1)" == "$src_files_md5" ] &&
++	[ "$(cat kernel/kheaders.md5|head -2|tail -1)" == "$obj_files_md5" ] &&
++	[ "$(cat kernel/kheaders.md5|tail -1)" == "$tarfile_md5" ]; then
++		exit
++fi
++
++if [ "${quiet}" != "silent_" ]; then
++       echo "  GEN     $tarfile"
++fi
++
++rm -rf $cpio_dir
++mkdir $cpio_dir
++
++pushd $kroot > /dev/null
++for f in $src_file_list;
++	do find "$f" ! -name "*.cmd" ! -name ".*";
++done | cpio --quiet -pd $cpio_dir
++popd > /dev/null
++
++# The second CPIO can complain if files already exist which can
++# happen with out of tree builds. Just silence CPIO for now.
++for f in $obj_file_list;
++	do find "$f" ! -name "*.cmd" ! -name ".*";
++done | cpio --quiet -pd $cpio_dir >/dev/null 2>&1
++
++# Remove comments except SDPX lines
++find $cpio_dir -type f -print0 |
++	xargs -0 -P8 -n1 perl -pi -e 'BEGIN {undef $/;}; s/\/\*((?!SPDX).)*?\*\///smg;'
++
++tar -Jcf $tarfile -C $cpio_dir/ . > /dev/null
++
++echo "$src_files_md5" > kernel/kheaders.md5
++echo "$obj_files_md5" >> kernel/kheaders.md5
++echo "$(md5sum $tarfile | cut -d ' ' -f1)" >> kernel/kheaders.md5
++
++rm -rf $cpio_dir
+diff --git a/kernel/kheaders.c b/kernel/kheaders.c
+new file mode 100644
+index 000000000000..19526294a4e8
+--- /dev/null
++++ b/kernel/kheaders.c
+@@ -0,0 +1,74 @@
 +// SPDX-License-Identifier: GPL-2.0
-+// Trace events for the ChromeOS Embedded Controller
-+//
-+// Copyright 2019 Google LLC.
-+
-+#define EC_CMD(a) {EC_CMD_##a, #a}
-+
-+#define ec_cmds \
-+	EC_CMD(PROTO_VERSION), \
-+	EC_CMD(HELLO), \
-+	EC_CMD(GET_VERSION), \
-+	EC_CMD(READ_TEST), \
-+	EC_CMD(GET_BUILD_INFO), \
-+	EC_CMD(GET_CHIP_INFO), \
-+	EC_CMD(GET_BOARD_VERSION), \
-+	EC_CMD(READ_MEMMAP), \
-+	EC_CMD(GET_CMD_VERSIONS), \
-+	EC_CMD(GET_COMMS_STATUS), \
-+	EC_CMD(TEST_PROTOCOL), \
-+	EC_CMD(GET_PROTOCOL_INFO), \
-+	EC_CMD(GSV_PAUSE_IN_S5), \
-+	EC_CMD(GET_FEATURES), \
-+	EC_CMD(GET_SKU_ID), \
-+	EC_CMD(SET_SKU_ID), \
-+	EC_CMD(FLASH_INFO), \
-+	EC_CMD(FLASH_READ), \
-+	EC_CMD(FLASH_WRITE), \
-+	EC_CMD(FLASH_ERASE), \
-+	EC_CMD(FLASH_PROTECT), \
-+	EC_CMD(FLASH_REGION_INFO), \
-+	EC_CMD(VBNV_CONTEXT), \
-+	EC_CMD(FLASH_SPI_INFO), \
-+	EC_CMD(FLASH_SELECT), \
-+	EC_CMD(PWM_GET_FAN_TARGET_RPM), \
-+	EC_CMD(PWM_SET_FAN_TARGET_RPM), \
-+	EC_CMD(PWM_GET_KEYBOARD_BACKLIGHT), \
-+	EC_CMD(PWM_SET_KEYBOARD_BACKLIGHT), \
-+	EC_CMD(PWM_SET_FAN_DUTY), \
-+	EC_CMD(PWM_SET_DUTY), \
-+	EC_CMD(PWM_GET_DUTY), \
-+	EC_CMD(LIGHTBAR_CMD), \
-+	EC_CMD(LED_CONTROL), \
-+	EC_CMD(VBOOT_HASH), \
-+	EC_CMD(MOTION_SENSE_CMD), \
-+	EC_CMD(FORCE_LID_OPEN), \
-+	EC_CMD(CONFIG_POWER_BUTTON), \
-+	EC_CMD(USB_CHARGE_SET_MODE), \
-+	EC_CMD(PSTORE_INFO), \
-+	EC_CMD(PSTORE_READ), \
-+	EC_CMD(PSTORE_WRITE), \
-+	EC_CMD(RTC_GET_VALUE), \
-+	EC_CMD(RTC_GET_ALARM), \
-+	EC_CMD(RTC_SET_VALUE), \
-+	EC_CMD(RTC_SET_ALARM), \
-+	EC_CMD(PORT80_READ), \
-+	EC_CMD(VSTORE_INFO), \
-+	EC_CMD(VSTORE_READ), \
-+	EC_CMD(VSTORE_WRITE), \
-+	EC_CMD(THERMAL_SET_THRESHOLD), \
-+	EC_CMD(THERMAL_GET_THRESHOLD), \
-+	EC_CMD(THERMAL_AUTO_FAN_CTRL), \
-+	EC_CMD(TMP006_GET_CALIBRATION), \
-+	EC_CMD(TMP006_SET_CALIBRATION), \
-+	EC_CMD(TMP006_GET_RAW), \
-+	EC_CMD(MKBP_STATE), \
-+	EC_CMD(MKBP_INFO), \
-+	EC_CMD(MKBP_SIMULATE_KEY), \
-+	EC_CMD(MKBP_SET_CONFIG), \
-+	EC_CMD(MKBP_GET_CONFIG), \
-+	EC_CMD(KEYSCAN_SEQ_CTRL), \
-+	EC_CMD(GET_NEXT_EVENT), \
-+	EC_CMD(KEYBOARD_FACTORY_TEST), \
-+	EC_CMD(TEMP_SENSOR_GET_INFO), \
-+	EC_CMD(ACPI_READ), \
-+	EC_CMD(ACPI_WRITE), \
-+	EC_CMD(ACPI_BURST_ENABLE), \
-+	EC_CMD(ACPI_BURST_DISABLE), \
-+	EC_CMD(ACPI_QUERY_EVENT), \
-+	EC_CMD(HOST_EVENT_GET_B), \
-+	EC_CMD(HOST_EVENT_GET_SMI_MASK), \
-+	EC_CMD(HOST_EVENT_GET_SCI_MASK), \
-+	EC_CMD(HOST_EVENT_SET_SMI_MASK), \
-+	EC_CMD(HOST_EVENT_SET_SCI_MASK), \
-+	EC_CMD(HOST_EVENT_CLEAR), \
-+	EC_CMD(HOST_EVENT_GET_WAKE_MASK), \
-+	EC_CMD(HOST_EVENT_SET_WAKE_MASK), \
-+	EC_CMD(HOST_EVENT_CLEAR_B), \
-+	EC_CMD(SWITCH_ENABLE_BKLIGHT), \
-+	EC_CMD(SWITCH_ENABLE_WIRELESS), \
-+	EC_CMD(GPIO_SET), \
-+	EC_CMD(GPIO_GET), \
-+	EC_CMD(I2C_READ), \
-+	EC_CMD(I2C_WRITE), \
-+	EC_CMD(CHARGE_CONTROL), \
-+	EC_CMD(CONSOLE_SNAPSHOT), \
-+	EC_CMD(CONSOLE_READ), \
-+	EC_CMD(BATTERY_CUT_OFF), \
-+	EC_CMD(USB_MUX), \
-+	EC_CMD(LDO_SET), \
-+	EC_CMD(LDO_GET), \
-+	EC_CMD(POWER_INFO), \
-+	EC_CMD(I2C_PASSTHRU), \
-+	EC_CMD(HANG_DETECT), \
-+	EC_CMD(CHARGE_STATE), \
-+	EC_CMD(CHARGE_CURRENT_LIMIT), \
-+	EC_CMD(EXTERNAL_POWER_LIMIT), \
-+	EC_CMD(OVERRIDE_DEDICATED_CHARGER_LIMIT), \
-+	EC_CMD(HOST_EVENT), \
-+	EC_CMD(HIBERNATION_DELAY), \
-+	EC_CMD(HOST_SLEEP_EVENT), \
-+	EC_CMD(DEVICE_EVENT), \
-+	EC_CMD(SB_READ_WORD), \
-+	EC_CMD(SB_WRITE_WORD), \
-+	EC_CMD(SB_READ_BLOCK), \
-+	EC_CMD(SB_WRITE_BLOCK), \
-+	EC_CMD(BATTERY_VENDOR_PARAM), \
-+	EC_CMD(SB_FW_UPDATE), \
-+	EC_CMD(ENTERING_MODE), \
-+	EC_CMD(I2C_PASSTHRU_PROTECT), \
-+	EC_CMD(REBOOT), \
-+	EC_CMD(REBOOT_EC), \
-+	EC_CMD(GET_PANIC_INFO), \
-+	EC_CMD(RESEND_RESPONSE), \
-+	EC_CMD(VERSION0), \
-+	EC_CMD(PD_EXCHANGE_STATUS), \
-+	EC_CMD(USB_PD_CONTROL), \
-+	EC_CMD(USB_PD_PORTS), \
-+	EC_CMD(USB_PD_POWER_INFO), \
-+	EC_CMD(PD_HOST_EVENT_STATUS), \
-+	EC_CMD(USB_PD_FW_UPDATE), \
-+	EC_CMD(USB_PD_RW_HASH_ENTRY), \
-+	EC_CMD(USB_PD_DEV_INFO), \
-+	EC_CMD(USB_PD_DISCOVERY), \
-+	EC_CMD(PD_CHARGE_PORT_OVERRIDE), \
-+	EC_CMD(PD_GET_LOG_ENTRY), \
-+	EC_CMD(USB_PD_GET_AMODE), \
-+	EC_CMD(USB_PD_SET_AMODE), \
-+	EC_CMD(PD_WRITE_LOG_ENTRY), \
-+	EC_CMD(PD_CONTROL), \
-+	EC_CMD(USB_PD_MUX_INFO), \
-+	EC_CMD(PD_CHIP_INFO), \
-+	EC_CMD(RWSIG_CHECK_STATUS), \
-+	EC_CMD(RWSIG_ACTION), \
-+	EC_CMD(CR51_BASE), \
-+	EC_CMD(CR51_LAST), \
-+	EC_CMD(FP_PASSTHRU), \
-+	EC_CMD(FP_SENSOR_CONFIG), \
-+	EC_CMD(FP_MODE), \
-+	EC_CMD(FP_INFO), \
-+	EC_CMD(FP_FRAME), \
-+	EC_CMD(TP_SELF_TEST), \
-+	EC_CMD(TP_FRAME_INFO), \
-+	EC_CMD(TP_FRAME_SNAPSHOT), \
-+	EC_CMD(TP_FRAME_GET), \
-+	EC_CMD(BATTERY_GET_STATIC), \
-+	EC_CMD(BATTERY_GET_DYNAMIC), \
-+	EC_CMD(CHARGER_CONTROL), \
-+	EC_CMD(BOARD_SPECIFIC_BASE), \
-+	EC_CMD(BOARD_SPECIFIC_LAST)
-+
-+#define CREATE_TRACE_POINTS
-+#include "cros_ec_trace.h"
-diff --git a/drivers/platform/chrome/cros_ec_trace.h b/drivers/platform/chrome/cros_ec_trace.h
-new file mode 100644
-index 000000000000..86ef52f96fd4
---- /dev/null
-+++ b/drivers/platform/chrome/cros_ec_trace.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Trace events for the ChromeOS Embedded Controller
++ * Provide kernel headers useful to build tracing programs
++ * such as for running eBPF tracing tools.
 + *
-+ * Copyright 2019 Google LLC.
++ * (Borrowed code from kernel/configs.c)
 + */
 +
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM cros_ec
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/proc_fs.h>
++#include <linux/init.h>
++#include <linux/uaccess.h>
 +
-+#if !defined(_CROS_EC_TRACE_H_) || defined(TRACE_HEADER_MULTI_READ)
-+#define _CROS_EC_TRACE_H_
++/*
++ * Define kernel_headers_data and kernel_headers_data_end, within which the the
++ * compressed kernel headers are stpred. The file is first compressed with xz.
++ */
 +
-+#include <linux/types.h>
-+#include <linux/mfd/cros_ec.h>
-+
-+#include <linux/tracepoint.h>
-+
-+DECLARE_EVENT_CLASS(cros_ec_cmd_class,
-+	TP_PROTO(struct cros_ec_command *cmd),
-+	TP_ARGS(cmd),
-+	TP_STRUCT__entry(
-+		__field(uint32_t, version)
-+		__field(uint32_t, command)
-+	),
-+	TP_fast_assign(
-+		__entry->version = cmd->version;
-+		__entry->command = cmd->command;
-+	),
-+	TP_printk("version: %u, command: %s", __entry->version,
-+		  __print_symbolic(__entry->command, ec_cmds))
++asm (
++"	.pushsection .rodata, \"a\"		\n"
++"	.global kernel_headers_data		\n"
++"kernel_headers_data:				\n"
++"	.incbin \"kernel/kheaders_data.tar.xz\"	\n"
++"	.global kernel_headers_data_end		\n"
++"kernel_headers_data_end:			\n"
++"	.popsection				\n"
 +);
 +
++extern char kernel_headers_data;
++extern char kernel_headers_data_end;
 +
-+DEFINE_EVENT(cros_ec_cmd_class, cros_ec_cmd,
-+	TP_PROTO(struct cros_ec_command *cmd),
-+	TP_ARGS(cmd)
-+);
++static ssize_t
++ikheaders_read_current(struct file *file, char __user *buf,
++		      size_t len, loff_t *offset)
++{
++	return simple_read_from_buffer(buf, len, offset,
++				       &kernel_headers_data,
++				       &kernel_headers_data_end -
++				       &kernel_headers_data);
++}
 +
++static const struct file_operations ikheaders_file_ops = {
++	.read = ikheaders_read_current,
++	.llseek = default_llseek,
++};
 +
-+#endif /* _CROS_EC_TRACE_H_ */
++static int __init ikheaders_init(void)
++{
++	struct proc_dir_entry *entry;
 +
-+/* this part must be outside header guard */
++	/* create the current headers file */
++	entry = proc_create("kheaders.tar.xz", S_IRUGO, NULL,
++			    &ikheaders_file_ops);
++	if (!entry)
++		return -ENOMEM;
 +
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
++	proc_set_size(entry,
++		      &kernel_headers_data_end -
++		      &kernel_headers_data);
++	return 0;
++}
 +
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_FILE cros_ec_trace
++static void __exit ikheaders_cleanup(void)
++{
++	remove_proc_entry("kheaders.tar.xz", NULL);
++}
 +
-+#include <trace/define_trace.h>
++module_init(ikheaders_init);
++module_exit(ikheaders_cleanup);
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Joel Fernandes");
++MODULE_DESCRIPTION("Echo the kernel header artifacts used to build the kernel");
 -- 
 2.21.0.392.gf8f6787159e-goog
-
