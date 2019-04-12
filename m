@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.0 required=3.0
 	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E05A9C10F14
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DF0EC10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B05E92084D
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 571372084D
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbfDLNiZ (ORCPT
+        id S1726812AbfDLNi1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 12 Apr 2019 09:38:25 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:51516 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726911AbfDLNiZ (ORCPT
+        Fri, 12 Apr 2019 09:38:27 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:52613 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726998AbfDLNi1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Apr 2019 09:38:25 -0400
-Received: by mail-wm1-f67.google.com with SMTP id 4so11293286wmf.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 06:38:23 -0700 (PDT)
+        Fri, 12 Apr 2019 09:38:27 -0400
+Received: by mail-wm1-f65.google.com with SMTP id a184so11295269wma.2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 06:38:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KPUtG962/fGhN5OS1oN5GTAfFGa8nl96r76qp/aieDg=;
-        b=NKm0W48D7Fsownk5gLKvX7FhmthBTGS1S8V+xGphnOEJj53YZI2D97JFDxO7FPZAk3
-         tV+u7DamMevueXKcMdNyfmBSPwRveNh4vPpz26ol/njU4XFa9G6iCFM3imVYqZDs/iHC
-         KeRjCjOVcwDLZd7i9pDFPhW4hjfwP4qrqNwErGET0vNt8Jfy2JdAl6n0CtIO/AZR2Upx
-         hXRb5ewShsFeb/lKtfVDMO1y10oPjCJmpDh8fIWBrpJJAUhg5Oo37cXooQtI5T6I7Bnd
-         R/PXM8Wf3Fv7m1sxvpZQIx1DySt4d+S1oD6tYlcBD2jccpC4jh5Oi4XHe31SZxHTv9lg
-         xKsw==
-X-Gm-Message-State: APjAAAU5ZvmD8rsgT9QCOkL+vrAwvFc+FqI+1kHQVuV1YLXBLrN4cIer
-        UPzTHa2F9XvLjrrHqdxhcaQ=
-X-Google-Smtp-Source: APXvYqwmt7d3AwHtVcdwXrAmKLGDfWI6YChNe9bgGKktHtNtR2dqq7xjy/m+uqvEDoQNbH9vyQM9Xg==
-X-Received: by 2002:a7b:c5c7:: with SMTP id n7mr1735920wmk.9.1555076302739;
-        Fri, 12 Apr 2019 06:38:22 -0700 (PDT)
+        bh=CY1D/yN46Y8efOfIDfVfmxQVFib2qqsDhe066xRSLHQ=;
+        b=C8mmD7UJ9W4P2kd4biFzp7w1VCn7IlEnR5SpkOcNnqfzroElJEjn8/rKtINiwPm8iI
+         TYhc429pEpe4/HPRhpUBcu6X5Sh5Kreb9Bty7YA5CbNgoaPtVONRfmxt+cHKfkF0U62Q
+         wVEQPehUERL4VJ0XJBQlJvnZL8M1Ta47Y5AIl4j+DPN4Uf2CzMIq3svydcgzRfuiACRZ
+         e8pYvhUcy6f83a8YfgLXYeiAWxlTi3xM1w6/A1WkfVSBix6yJ6v4qIoZyHY9/UCTXtl2
+         x1RtPkHJsuOd0OMZIuV+RTAvKZEWRyT6PEQg28egm+McEHz1VbWMhzybZKn5l9UhB4ra
+         Xsfw==
+X-Gm-Message-State: APjAAAVJp4eNiiXacD1YfklovDp5UrVEDPQRbC2mfPSp41U7Mpu/LZ8M
+        uTZ5TybI4pZxIhCr0t52WoQ=
+X-Google-Smtp-Source: APXvYqwQSkU2JpuOEmvzxcXow6WPXcD/iM5kGOiNw77pd/WEDVAwJ7DtZUnU42js+/NpcXx0aEt3Ow==
+X-Received: by 2002:a7b:c00e:: with SMTP id c14mr11663189wmb.110.1555076304615;
+        Fri, 12 Apr 2019 06:38:24 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x205sm11594682wmg.9.2019.04.12.06.38.21
+        by smtp.gmail.com with ESMTPSA id x205sm11594682wmg.9.2019.04.12.06.38.23
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Apr 2019 06:38:22 -0700 (PDT)
+        Fri, 12 Apr 2019 06:38:23 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 11/30] tools/lib/traceevent: Man pages for event handler APIs
-Date:   Fri, 12 Apr 2019 16:37:52 +0300
-Message-Id: <20190412133811.15878-12-tstoyanov@vmware.com>
+Subject: [PATCH v5 13/30] tools/lib/traceevent: Man pages for registering print function
+Date:   Fri, 12 Apr 2019 16:37:54 +0300
+Message-Id: <20190412133811.15878-14-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190412133811.15878-1-tstoyanov@vmware.com>
 References: <20190412133811.15878-1-tstoyanov@vmware.com>
@@ -60,28 +60,28 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Create man pages for libtraceevent APIs:
-  tep_register_event_handler()
-  tep_unregister_event_handler()
+  tep_register_print_function()
+  tep_unregister_print_function()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-reg_event_handler.txt       | 131 ++++++++++++++++++
- 1 file changed, 131 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
+ .../libtraceevent-reg_print_func.txt          | 155 ++++++++++++++++++
+ 1 file changed, 155 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt b/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt b/tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt
 new file mode 100644
-index 000000000000..8b1b75da7628
+index 000000000000..d95e0b19e4ca
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
-@@ -0,0 +1,131 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt
+@@ -0,0 +1,155 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_register_event_handler, tep_unregister_event_handler -  Register /
-+unregisters a callback function to parse an event information.
++tep_register_print_function,tep_unregister_print_function -
++Registers / Unregisters a helper function.
 +
 +SYNOPSIS
 +--------
@@ -89,61 +89,80 @@ index 000000000000..8b1b75da7628
 +--
 +*#include <event-parse.h>*
 +
-+enum *tep_reg_handler* {
-+	_TEP_REGISTER_SUCCESS_,
-+	_TEP_REGISTER_SUCCESS_OVERWRITE_,
++enum *tep_func_arg_type* {
++	TEP_FUNC_ARG_VOID,
++	TEP_FUNC_ARG_INT,
++	TEP_FUNC_ARG_LONG,
++	TEP_FUNC_ARG_STRING,
++	TEP_FUNC_ARG_PTR,
++	TEP_FUNC_ARG_MAX_TYPES
 +};
 +
-+int *tep_register_event_handler*(struct tep_handle pass:[*]_tep_, int _id_, const char pass:[*]_sys_name_, const char pass:[*]_event_name_, tep_event_handler_func _func_, void pass:[*]_context_);
-+int *tep_unregister_event_handler*(struct tep_handle pass:[*]tep, int id, const char pass:[*]sys_name, const char pass:[*]event_name, tep_event_handler_func func, void pass:[*]_context_);
++typedef unsigned long long (*pass:[*]tep_func_handler*)(struct trace_seq pass:[*]s, unsigned long long pass:[*]args);
 +
-+typedef int (*pass:[*]tep_event_handler_func*)(struct trace_seq pass:[*]s, struct tep_record pass:[*]record, struct tep_event pass:[*]event, void pass:[*]context);
++int *tep_register_print_function*(struct tep_handle pass:[*]_tep_, tep_func_handler _func_, enum tep_func_arg_type _ret_type_, char pass:[*]_name_, _..._);
++int *tep_unregister_print_function*(struct tep_handle pass:[*]_tep_, tep_func_handler _func_, char pass:[*]_name_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_register_event_handler()_ function registers a handler function,
-+which is going to be called to parse the information for a given event.
-+The _tep_ argument is the trace event parser context. The _id_ argument is
-+the id of the event. The _sys_name_ argument is the name of the system,
-+the event belongs to. The _event_name_ argument is the name of the event.
-+If _id_ is >= 0, it is used to find the event, otherwise _sys_name_ and
-+_event_name_ are used. The _func_ is a pointer to the function, which is going
-+to be called to parse the event information. The _context_ argument is a pointer
-+to the context data, which will be passed to the _func_. If a handler function
-+for the same event is already registered, it will be overridden with the new
-+one. This mechanism allows a developer to override the parsing of a given event.
-+If for some reason the default print format is not sufficient, the developer
-+can register a function for an event to be used to parse the data instead.
++Some events may have helper functions in the print format arguments.
++This allows a plugin to dynamically create a way to process one of
++these functions.
 +
-+The _tep_unregister_event_handler()_ function unregisters the handler function,
-+previously registered with _tep_register_event_handler()_. The _tep_ argument
-+is the trace event parser context. The _id_, _sys_name_, _event_name_, _func_,
-+and _context_ are the same arguments, as when the callback function _func_ was
++The _tep_register_print_function()_ registers such helper function. The _tep_
++argument is the trace event parser context. The _func_ argument  is a pointer
++to the helper function. The _ret_type_ argument is  the return type of the
++helper function, value from the _tep_func_arg_type_ enum. The _name_ is the name
++of the helper function, as seen in the print format arguments. The _..._ is a
++variable list of _tep_func_arg_type_ enums, the _func_ function arguments.
++This list must end with _TEP_FUNC_ARG_VOID_. See 'EXAMPLE' section.
++
++The _tep_unregister_print_function()_ unregisters a helper function, previously
++registered with _tep_register_print_function()_. The _tep_ argument is the
++trace event parser context. The _func_ and _name_ arguments are the same, used
++when the helper function was registered.
++
++The _tep_func_handler_ is the type of the helper function. The _s_ argument is
++the trace sequence, it can be used to create a custom string.
++The _args_  is a list of arguments, defined when the helper function was
 +registered.
-+
-+The _tep_event_handler_func_ is the type of the custom event handler
-+function. The _s_ argument is the trace sequence, it can be used to create a
-+custom string, describing the event. A _record_  to get the event from is passed
-+as input parameter and also the _event_ - the handle to the record's event. The
-+_context_ is custom context, set when the custom event handler is registered.
 +
 +RETURN VALUE
 +------------
-+The _tep_register_event_handler()_ function returns _TEP_REGISTER_SUCCESS_
-+if the new handler is registered successfully or
-+_TEP_REGISTER_SUCCESS_OVERWRITE_ if an existing handler is overwritten.
-+If there is not  enough memory to complete the registration,
-+TEP_ERRNO__MEM_ALLOC_FAILED is returned.
++The _tep_register_print_function()_ function returns 0 in case of success.
++In case of an error, TEP_ERRNO_... code is returned.
 +
-+The _tep_unregister_event_handler()_ function returns 0 if _func_ was removed
-+successful or, -1 if the event was not found.
-+
-+The _tep_event_handler_func_ should return -1 in case of an error,
-+or 0 otherwise.
++The _tep_unregister_print_function()_ returns 0 in case of success, or -1 in
++case of an error.
 +
 +EXAMPLE
 +-------
++Some events have internal functions calls, that appear in the print format
++output. For example "tracefs/events/i915/g4x_wm/format" has:
++[source,c]
++--
++print fmt: "pipe %c, frame=%u, scanline=%u, wm %d/%d/%d, sr %s/%d/%d/%d, hpll %s/%d/%d/%d, fbc %s",
++	    ((REC->pipe) + 'A'), REC->frame, REC->scanline, REC->primary,
++	    REC->sprite, REC->cursor, yesno(REC->cxsr), REC->sr_plane,
++	    REC->sr_cursor, REC->sr_fbc, yesno(REC->hpll), REC->hpll_plane,
++	    REC->hpll_cursor, REC->hpll_fbc, yesno(REC->fbc)
++--
++Notice the call to function _yesno()_ in the print arguments. In the kernel
++context, this function has the following implementation:
++[source,c]
++--
++static const char *yesno(int x)
++{
++	static const char *yes = "yes";
++	static const char *no = "no";
++
++	return x ? yes : no;
++}
++--
++The user space event parser has no idea how to handle this _yesno()_ function.
++The _tep_register_print_function()_ API can be used to register an user space
++helper function, mapped to the kernel's _yesno()_:
 +[source,c]
 +--
 +#include <event-parse.h>
@@ -151,23 +170,28 @@ index 000000000000..8b1b75da7628
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+int custom_event_handler(struct trace_seq *s, struct tep_record *record,
-+			 struct tep_event *event, void *context)
++static const char *yes_no_helper(int x)
 +{
-+	trace_seq_printf(s, "kvm_exit event");
-+	return 0;
++	return x ? "yes" : "no";
 +}
 +...
-+	if (tep_register_event_handler(tep, -1, "kvm", "kvm_exit",
-+				   custom_event_handler, NULL)) {
-+	/* Failed to register the handler for event "kvm_exit", "kvm" system */
-+	}
-+...
-+	if (tep_unregister_event_handler(pevent, -1, "kvm", "kvm_exit",
-+				     custom_event_handler, NULL) != ) {
-+	/* Failed to unregister the handler for event "kvm_exit", "kvm" system */
++	if ( tep_register_print_function(tep,
++				    yes_no_helper,
++				    TEP_FUNC_ARG_STRING,
++				    "yesno",
++				    TEP_FUNC_ARG_INT,
++				    TEP_FUNC_ARG_VOID) != 0) {
++		/* Failed to register yes_no_helper function */
 +	}
 +
++/*
++   Now, when the event parser encounters this yesno() function, it will know
++   how to handle it.
++*/
++...
++	if (tep_unregister_print_function(tep, yes_no_helper, "yesno") != 0) {
++		/* Failed to unregister yes_no_helper function */
++	}
 +--
 +
 +FILES
