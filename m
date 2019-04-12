@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A24A1C10F14
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46FEAC10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7C0322084D
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1FAAD2084D
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbfDLNi3 (ORCPT
+        id S1726911AbfDLNia (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 12 Apr 2019 09:38:29 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41398 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726911AbfDLNi3 (ORCPT
+        Fri, 12 Apr 2019 09:38:30 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:50248 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726998AbfDLNia (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Apr 2019 09:38:29 -0400
-Received: by mail-wr1-f68.google.com with SMTP id r4so11965617wrq.8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 06:38:27 -0700 (PDT)
+        Fri, 12 Apr 2019 09:38:30 -0400
+Received: by mail-wm1-f68.google.com with SMTP id z11so11357154wmi.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 06:38:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oaPIgFhnw3nZP94vy4cUagZ1XhQY6w1o32hV3EJD3ig=;
-        b=sW52J0oBQ0LZvqj/B58w783Qcq/WTiMcGTENBfiDtQVN7OZXnGldy6BnjDwrkVnIq5
-         YEB4Cj0ZD8GexqxxfMx8U2ueYf1xgxyyFV7z0Op+0ZH7XV8iJbCGRiPc0oXPV14we2iK
-         Rl+l3tHjPqJ25d0+/oDHUSoa30u/dsztBcrkZPpDkba8eW5x6FgD5sHyM+MlmVEMEfBH
-         7Hm/OLhJRvKQXAHIqb2f+uqr6yYLgtLApp3S7o4k4acu1lMLKjCzuEhfl2kpD9U255os
-         mw5SywJ7yrXLH2GTEdZ4y03zm5fHG02JPNIwXMBM+rjCmyB5FdgBNIkS/0LbY14X0KwT
-         Nepw==
-X-Gm-Message-State: APjAAAXk+fmOOrOMP6iw9ImhmoFBM0ws29sTCkvuKxhxAoJLIYuS9qln
-        jM4tSPz7SqkWQqksGaWMBZUNFqwX
-X-Google-Smtp-Source: APXvYqxfUdC0l9DK95Sn650MLfJSi3U8D7mWdQhHqlradM7lCzUG1BdTm4HITFLJ70tDnWH42qEShg==
-X-Received: by 2002:adf:e288:: with SMTP id v8mr29978662wri.7.1555076307371;
-        Fri, 12 Apr 2019 06:38:27 -0700 (PDT)
+        bh=AFwVAijLoCh30tb6KrgZ0JsJmiHOCnKRknkIp8Jy59E=;
+        b=RholWza6FE7BDli2GI+/psFEsIrRjEfCZ5K9A+CwYtfaSIvqFHP7igb5V955KjNCjw
+         MwF3ZSsFUkTjVvUSQHNcLQJq5t7vkyn4XLsJhCAFHso4ptJ6/mOSWJdmKcRICCoDERo6
+         oI4JrP2uUADU+h+LhtH3ApOw3WFiA7jEYVm4DfV9mtb/xJBMwwo1o5fVahu9ON9/hCqU
+         869NIdENU8vn44Xqj5jgXDMZBqprAd3nBfu02HKu1tBcJU9rfYi+vTbE6QlAqKHT4Nek
+         pYlm802jf0ujK4BdGZrMBNYGykpnIPHucdw062q05N0Wtzj91htIpP8vjsbR6/VsAp0p
+         Qcew==
+X-Gm-Message-State: APjAAAX54R5wBi/qDzeSpBJRdzwnbtV/Xd79gSb+8L1JC/1P7X+gspR8
+        23KMyQuVBdBGRR+OCAhd8aImT87X
+X-Google-Smtp-Source: APXvYqxUEQ4gN5EyATtSTyYjPDE9Uf5oeMJgd/4AXRkUvAHSxjes/qwECnDuBJ6/R9O9H8LTeyl3jA==
+X-Received: by 2002:a7b:c3d7:: with SMTP id t23mr10739487wmj.62.1555076308315;
+        Fri, 12 Apr 2019 06:38:28 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x205sm11594682wmg.9.2019.04.12.06.38.26
+        by smtp.gmail.com with ESMTPSA id x205sm11594682wmg.9.2019.04.12.06.38.27
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Apr 2019 06:38:26 -0700 (PDT)
+        Fri, 12 Apr 2019 06:38:27 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 16/30] tools/lib/traceevent: Man page for list events APIs
-Date:   Fri, 12 Apr 2019 16:37:57 +0300
-Message-Id: <20190412133811.15878-17-tstoyanov@vmware.com>
+Subject: [PATCH v5 17/30] tools/lib/traceevent: Man pages for libtraceevent event print related APIs
+Date:   Fri, 12 Apr 2019 16:37:58 +0300
+Message-Id: <20190412133811.15878-18-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190412133811.15878-1-tstoyanov@vmware.com>
 References: <20190412133811.15878-1-tstoyanov@vmware.com>
@@ -59,108 +59,125 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Create man page for libtraceevent APIs:
-  tep_list_events()
-  tep_list_events_copy()
+Added new man pages, describing libtraceevent event print related APIs:
+  tep_print_event(),
+  tep_print_event_data(),
+  tep_event_info(),
+  tep_print_event_task(),
+  tep_print_event_time(),
+  tep_set_print_raw()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-event_list.txt              | 121 ++++++++++++++++++
- 1 file changed, 121 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
+ .../libtraceevent-event_print.txt             | 138 ++++++++++++++++++
+ 1 file changed, 138 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_print.txt b/tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
 new file mode 100644
-index 000000000000..3776e84bba8b
+index 000000000000..2a0dec71fd99
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
-@@ -0,0 +1,121 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-event_print.txt
+@@ -0,0 +1,138 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_list_events, tep_list_events_copy -
-+Get list of events, sorted by given criteria.
++tep_print_event, tep_print_event_data, tep_event_info, tep_print_event_task,
++tep_print_event_time, tep_set_print_raw - Parses the data into the print format.
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <event-parse.h>*
++*#include <trace-seq.h>*
 +
-+enum *tep_event_sort_type* {
-+	_TEP_EVENT_SORT_ID_,
-+	_TEP_EVENT_SORT_NAME_,
-+	_TEP_EVENT_SORT_SYSTEM_,
-+};
-+
-+struct tep_event pass:[*]pass:[*]*tep_list_events*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
-+struct tep_event pass:[*]pass:[*]*tep_list_events_copy*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
++void *tep_print_event_time*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]record, bool _use_trace_clock_);
++void *tep_print_event_task*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]_record_);
++void *tep_event_info*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]_record_);
++void *tep_print_event_data*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]_record_);
++void *tep_print_event*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_record pass:[*]_record_, bool _use_trace_clock_);
++void *tep_set_print_raw*(struct tep_handle pass:[*]_tep_, int _print_raw_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_list_events()_ function returns an array of pointers to the events,
-+sorted by the _sort_type_ criteria. The last element of the array is NULL.
-+The returned memory must not be freed, it is managed by the library.
-+The function is not thread safe. The _tep_ argument is trace event parser
-+context. The _sort_type_ argument is the required sort criteria:
-+[verse]
-+--
-+	_TEP_EVENT_SORT_ID_	- sort by the event ID.
-+	_TEP_EVENT_SORT_NAME_	- sort by the event (name, system, id) triplet.
-+	_TEP_EVENT_SORT_SYSTEM_	- sort by the event (system, name, id) triplet.
-+--
++The _tep_print_event_time()_ function writes the timestamp of the given _record_
++into the trace sequence _s_. The _tep_ argument is trace event parser context.
++The _use_trace_clock_ argument indicates if the tep->trace_clock should be used
++for parsing the timestamp.
 +
-+The _tep_list_events_copy()_ is a thread safe version of _tep_list_events()_.
-+It has the same behavior, but the returned array is allocated internally and
-+must be freed by the caller.
++The _tep_print_event_task()_ function writes the task command, pid and CPU of
++the given _record_ using the given _event_ information into the trace sequence
++_s_. The _tep_ argument is trace event parser context.
 +
-+RETURN VALUE
-+------------
-+The _tep_list_events()_ function returns an array of pointers to events.
-+In case of an error, NULL is returned. The returned array must not be freed,
-+it is managed by the library.
++The _tep_event_info()_ function parses the raw data from the _record_ using
++the given _event_ information and writes the print format into the trace
++sequence _s_.
 +
-+The _tep_list_events_copy()_ function returns an array of pointers to events.
-+In case of an error, NULL is returned. The returned array must be freed by
-+the caller.
++The _tep_print_event_data()_ function writes the name of the _record_ using the
++given _event_ information into the trace sequence _s_ and calls
++_tep_event_info()_ to parse and write the raw data from the _record_. The _tep_
++argument is trace event parser context.
++
++The _tep_print_event()_ function writes the _record_ information. It finds the
++corresponding event and calls _tep_print_event_task()_, _tep_print_event_time()_
++and _tep_print_event_data()_ to parse and write the information, into the trace
++sequence _s_. The _tep_ argument is trace event parser context.
++The _use_trace_clock_ argument indicates if the tep->trace_clock should be used
++for parsing the timestamp.
++
++The _tep_set_print_raw()_ function forces event's information to be printed in
++raw format. It changes the behavior of _tep_event_info()_ function. The _tep_
++argument is trace event parser context. The _print_raw_ argument specifies
++whether to print in raw format or not.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
++#include <trace-seq.h>
 +...
++struct trace_seq seq;
++trace_seq_init(&seq);
 +struct tep_handle *tep = tep_alloc();
 +...
-+int i;
-+struct tep_event_format **events;
++void print_my_event(struct tep_record *record)
++{
++	struct tep_event *event;
 +
-+i=0;
-+events = tep_list_events(tep, TEP_EVENT_SORT_ID);
-+if (events == NULL) {
-+	/* Failed to get the events, sorted by ID */
-+} else {
-+	while(events[i]) {
-+		/* walk through the list of the events, sorted by ID */
-+		i++;
++	/* print all event information */
++	trace_seq_reset(&seq);
++	tep_print_event(tep, &seq, record, TRUE);
++
++	event = tep_find_event_by_record(tep, record);
++
++	if (event != NULL) {
++		/* print event timestamp */
++		trace_seq_reset(&seq);
++		tep_print_event_time(tep, &seq, event, record, TRUE);
++
++		/* print event task information */
++		trace_seq_reset(&seq);
++		tep_print_event_task(tep, &seq, event, record);
++
++		/* print event name and raw data */
++		trace_seq_reset(&seq);
++		tep_print_event_data(tep, &seq, event, record);
++
++		/* print event raw data */
++		trace_seq_reset(&seq);
++		tep_event_info(&seq, event, record);
++
++		/* print event raw data in raw format */
++		trace_seq_reset(&seq);
++		tep_set_print_raw(tep, 1);
++		tep_event_info(&seq, event, record);
 +	}
 +}
-+
-+i=0;
-+events = tep_list_events_copy(tep, TEP_EVENT_SORT_NAME);
-+if (events == NULL) {
-+	/* Failed to get the events, sorted by name */
-+} else {
-+	while(events[i]) {
-+		/* walk through the list of the events, sorted by name */
-+		i++;
-+	}
-+	free(events);
-+}
-+
 +...
 +--
 +
@@ -170,6 +187,10 @@ index 000000000000..3776e84bba8b
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
++*trace-seq.h*
++	Header file to include in order to have access to trace sequences related APIs.
++	Trace sequences are used to allow a function to call several other functions
++	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
