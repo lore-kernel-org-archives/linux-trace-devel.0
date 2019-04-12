@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4021C282CE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D18E2C10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BF15C2084D
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD0B12084D
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 13:38:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbfDLNid (ORCPT
+        id S1726954AbfDLNie (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 12 Apr 2019 09:38:33 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:35882 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726954AbfDLNid (ORCPT
+        Fri, 12 Apr 2019 09:38:34 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:51534 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726865AbfDLNie (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Apr 2019 09:38:33 -0400
-Received: by mail-wm1-f67.google.com with SMTP id h18so11090349wml.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 06:38:31 -0700 (PDT)
+        Fri, 12 Apr 2019 09:38:34 -0400
+Received: by mail-wm1-f66.google.com with SMTP id 4so11293959wmf.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 06:38:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1bQE3TTFSmDOY6FHgV61Pevw3gusRyfrEHXS0IauMjA=;
-        b=OMdStb0Sa28PFCH140UqzYt24xj7aDd7jbk5C19+hOHvMGJOoJDyHzZbWh/TO/oocZ
-         VnND/vljVqQXes0jY/Svq6f5yNGViH1+y4NBxdtmC6VnZBitw8YDYkO6M/mYgQmig76a
-         rT4B7OOmALO6fJPFt07B4pJEnOVSzoMxzFTHnxV5yGqtuMjjicTP46P7JAbFN+Y8mWH3
-         9DTpO6cDRVOrkBHlfQzdkclkgfDH+R4ofTePJFfX62u4TdnIwYXUQ8MtDxoTRtcpWfJU
-         /xdfpMjYkb1/prCAXrvvnV7evvzZVgvhpIpl0DSJm93LHYfxksSjNmodCUP/Ln/5VXmz
-         OD3Q==
-X-Gm-Message-State: APjAAAWZLo9xWydUa5cF6CNib9ZcnoOx3XRVL82S6vdDcIjXy9t+uS/H
-        D62x8hoXR2I2wj5eJDN+PeYao7bW
-X-Google-Smtp-Source: APXvYqzI53gzhvRlusxLjTNd2U8DJsH6RkgOftLQ4SyQAeb/aXbhKuWcLrqUMZqGaqWPXHQaKORbMw==
-X-Received: by 2002:a1c:4187:: with SMTP id o129mr11007739wma.57.1555076311154;
-        Fri, 12 Apr 2019 06:38:31 -0700 (PDT)
+        bh=QyKgGJb830tj2VKYVpZN0GpSFpkJhoqYtjtCcSNAbW4=;
+        b=QoayqtEMWbEEMTkM/2LJBw5vpHjdyz1gF7CTP3X5EvToWjZPIlEQvg564ikR3GY+oD
+         5Y/kbyHNRPnLEbSurdzKcg+iVoaRtwJ9uc2+8byzV5fjoT6+T6M3rhLQAozGyoytNZQC
+         9VXclUt4umrNzqZrsXxT1TTCh4aI3ZbFkZpWUsp4KhJnJ4kiZCXzInz/eLoGZi05qCf+
+         /SXpobqJ5p86Z/YlYXwgurptkRhCb95YCiX0GrFbJX6bfNTjsuBo9qw1+SGTvL30/yHy
+         XrCRxdJH8aLgXbNss81//jk9QNYWAsAntYnhxiPhGchpkUGISJRfw2cHAA0aEbkaKD3M
+         dBQw==
+X-Gm-Message-State: APjAAAUKZE4HWXirSWJj026gHZ0dUnmAU92TTS6U5RlgydQQ1aXWWn2N
+        JQTUvLBKviNjZzwe5SaD4L/36oxU
+X-Google-Smtp-Source: APXvYqzGqHEx3sxHUsOkVVb5Y/3UPfUP1YSaDxyVA2M7++7dxs/Wlq/OZtWPnXgRep4X6Q0ih7Iu0Q==
+X-Received: by 2002:a1c:730c:: with SMTP id d12mr11531302wmb.10.1555076312034;
+        Fri, 12 Apr 2019 06:38:32 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x205sm11594682wmg.9.2019.04.12.06.38.30
+        by smtp.gmail.com with ESMTPSA id x205sm11594682wmg.9.2019.04.12.06.38.31
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Apr 2019 06:38:30 -0700 (PDT)
+        Fri, 12 Apr 2019 06:38:31 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v5 20/30] tools/lib/traceevent: Man pages get field value APIs
-Date:   Fri, 12 Apr 2019 16:38:01 +0300
-Message-Id: <20190412133811.15878-21-tstoyanov@vmware.com>
+Subject: [PATCH v5 21/30] tools/lib/traceevent: Man pages for print field APIs
+Date:   Fri, 12 Apr 2019 16:38:02 +0300
+Message-Id: <20190412133811.15878-22-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190412133811.15878-1-tstoyanov@vmware.com>
 References: <20190412133811.15878-1-tstoyanov@vmware.com>
@@ -60,30 +60,30 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Create man pages for libtraceevent APIs:
-  tep_get_any_field_val(),
-  tep_get_common_field_val(),
-  tep_get_field_val(),
-  tep_get_field_raw()
+  tep_print_field(),
+  tep_print_fields(),
+  tep_print_num_field(),
+  tep_print_func_field()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-field_get_val.txt           | 121 ++++++++++++++++++
+ .../libtraceevent-field_print.txt             | 121 ++++++++++++++++++
  1 file changed, 121 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_print.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt b/tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_print.txt b/tools/lib/traceevent/Documentation/libtraceevent-field_print.txt
 new file mode 100644
-index 000000000000..b71b407b23e9
+index 000000000000..7305e2391805
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
++++ b/tools/lib/traceevent/Documentation/libtraceevent-field_print.txt
 @@ -0,0 +1,121 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_get_any_field_val, tep_get_common_field_val, tep_get_field_val,
-+tep_get_field_raw - Get value of a field.
++tep_print_field, tep_print_fields, tep_print_num_field, tep_print_func_field -
++Print the field content.
 +
 +SYNOPSIS
 +--------
@@ -92,40 +92,41 @@ index 000000000000..b71b407b23e9
 +*#include <event-parse.h>*
 +*#include <trace-seq.h>*
 +
-+int *tep_get_any_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
-+int *tep_get_common_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
-+int *tep_get_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
-+void pass:[*]*tep_get_field_raw*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int pass:[*]_len_, int _err_);
++void *tep_print_field*(struct trace_seq pass:[*]_s_, void pass:[*]_data_, struct tep_format_field pass:[*]_field_);
++void *tep_print_fields*(struct trace_seq pass:[*]_s_, void pass:[*]_data_, int _size_, struct tep_event pass:[*]_event_);
++int *tep_print_num_field*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int _err_);
++int *tep_print_func_field*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int _err_);
 +--
 +
 +DESCRIPTION
 +-----------
-+These functions can be used to find a field and retrieve its value.
++These functions print recorded field's data, according to the field's type.
 +
-+The _tep_get_any_field_val()_ function searches in the _record_ for a field
-+with _name_, part of the _event_. If the field is found, its value is stored in
-+_val_. If there is an error and _err_ is not zero, then an error string is
-+written into _s_.
++The _tep_print_field()_ function extracts from the recorded raw _data_ value of
++the _field_ and prints it into _s_, according to the field type.
 +
-+The _tep_get_common_field_val()_ function does the same as
-+_tep_get_any_field_val()_, but searches only in the common fields. This works
-+for any event as all events include the common fields.
++The _tep_print_fields()_ prints recorded values of all _event_'s fields. It
++iterates all fileds of the _event_, and calls _tep_print_field()_ for each of
++them.
 +
-+The _tep_get_field_val()_ function does the same as _tep_get_any_field_val()_,
-+but searches only in the event specific fields.
++The _tep_print_num_field()_ function prints a numeric field with given format
++string. A search is performed in the _event_ for a field with _name_. If such
++field is found, its value is extracted from the _record_ and is printed in the
++_s_, according to the given format string _fmt_. If the argument _err_ is
++non-zero, and an error occures - it is printed in the _s_.
 +
-+The _tep_get_field_raw()_ function searches in the _record_ for a field with
-+_name_, part of the _event_. If the field is found, a pointer to its raw data
-+is returned. The size of the data is stored in _len_. If there is an error and
-+_err_ is not zero, then an error string is written into _s_.
++The _tep_print_func_field()_ function prints a function field with given format
++string.  A search is performed in the _event_ for a field with _name_. If such
++field is found, its value is extracted from the _record_. The value is assumed
++to be a function address, and a search is perform to find the name of this
++function. The function name (if found) and its address are printed in the _s_,
++according to the given format string _fmt_. If the argument _err_ is non-zero,
++and an error occures - it is printed in _s_.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_any_field_val()_, _tep_get_common_field_val()_ and
-+_tep_get_field_val()_ functions return 0 on success, or -1 in case of an error.
-+
-+The _tep_get_field_raw()_ function returns a pointer to field's raw data, and
-+places the length of this data in _len_. In case of an error NULL is returned.
++The _tep_print_num_field()_ and _tep_print_func_field()_ functions return 1
++on success, -1 in case of an error or 0 if the print buffer _s_ is full.
 +
 +EXAMPLE
 +-------
@@ -136,30 +137,29 @@ index 000000000000..b71b407b23e9
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+struct tep_event *event = tep_find_event_by_name(tep, "kvm", "kvm_exit");
++struct trace_seq seq;
++trace_seq_init(&seq);
++struct tep_event *event = tep_find_event_by_name(tep, "timer", "hrtimer_start");
 +...
 +void process_record(struct tep_record *record)
 +{
-+	int len;
-+	char *comm;
-+	struct tep_event_format *event;
-+	unsigned long long val;
++ 	struct tep_format_field *field_pid = tep_find_common_field(event, "common_pid");
 +
-+	event = tep_find_event_by_record(pevent, record);
-+	if (event != NULL) {
-+		if (tep_get_common_field_val(NULL, event, "common_type",
-+		 			     record, &val, 0) == 0) {
-+			/* Got the value of common type field */
-+		}
-+		if (tep_get_field_val(NULL, event, "pid", record, &val, 0) == 0) {
-+			/* Got the value of pid specific field */
-+		}
-+		comm = tep_get_field_raw(NULL, event, "comm", record, &len, 0);
-+		if (comm != NULL) {
-+			/* Got a pointer to the comm event specific field */
-+		}
-+	}
-+}
++ 	trace_seq_reset(&seq);
++
++ 	/* Print the value of "common_pid" */
++ 	tep_print_field(&seq, record->data, field_pid);
++
++ 	/* Print all fields of the "hrtimer_start" event */
++ 	tep_print_fields(&seq, record->data, record->size, event);
++
++ 	/* Print the value of "expires" field with custom format string */
++ 	tep_print_num_field(&seq, " timer expires in %llu ", event, "expires", record, 0);
++
++ 	/* Print the address and the name of "function" field with custom format string */
++	tep_print_func_field(&seq, " timer function is %s ", event, "function", record, 0);
++ }
++ ...
 +--
 +
 +FILES
@@ -169,9 +169,9 @@ index 000000000000..b71b407b23e9
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
 +*trace-seq.h*
-+	Header file to include in order to have access to trace sequences
-+	related APIs. Trace sequences are used to allow a function to call
-+	several other functions to create a string of data to use.
++	Header file to include in order to have access to trace sequences related APIs.
++	Trace sequences are used to allow a function to call several other functions
++	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
