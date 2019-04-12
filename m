@@ -2,52 +2,53 @@ Return-Path: <SRS0=k/vv=SO=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-6.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 212CCC10F0E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E636DC282CE
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 23:02:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E0CD62086D
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 23:01:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C1D722086D
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Apr 2019 23:02:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbfDLXB7 (ORCPT
+        id S1726477AbfDLXCA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 12 Apr 2019 19:01:59 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33067 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbfDLXB7 (ORCPT
+        Fri, 12 Apr 2019 19:02:00 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:44127 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726833AbfDLXCA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Apr 2019 19:01:59 -0400
-Received: by mail-wr1-f68.google.com with SMTP id q1so13915392wrp.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 16:01:58 -0700 (PDT)
+        Fri, 12 Apr 2019 19:02:00 -0400
+Received: by mail-wr1-f65.google.com with SMTP id y7so13833500wrn.11
+        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 16:01:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ComvrFzotmp6+Ef207l+/IOjWZSMzC6oZmIntFcRBHw=;
-        b=c4Foz5e7BqKZj9dWjrgUCoV3rAkxRH/MkTdL86INHSMzjuNxA0K0EKihnQfl0QK61z
-         Ohr7X5z+qHmBP1mXvQP7HhC+1VZRo0jRM5ePFFUzAiCPMKKd29xF2N5+8qCVd4xvJyJC
-         aVkeRiK0xmS3/eoNQLIEtgqhdIGtRJNp6G7gDSeT2P3x6cfk8XSx6cU+hCB5z4Y2yAZN
-         /h+h17RDqIoZwhQEf2oGhDnl8zesg9urfi6JC3SyE4Cib8MHUGFQMA/Qg8ebz5ANjuZM
-         TtXanrHYvNZdmduNWqMHzjYAGbwQb6+y03edQFLugZtv8cxj33q7r/L071g7HT8lJRam
-         PHNw==
-X-Gm-Message-State: APjAAAV2A4LzHliKs80G7yAE2ATS7BGeSti4A8rNp0Pexhq09oynCbwh
-        /JJZlbGlU3TvJ7iDlEzHoQ==
-X-Google-Smtp-Source: APXvYqzq2nh0nj+b7lBJlxUoDkNxnQk/TdcJcysV+vh49mTGRq7g0t4Y7dqYMenIDUm4ASxsc9Lbsw==
-X-Received: by 2002:adf:f70e:: with SMTP id r14mr37762249wrp.37.1555110117367;
-        Fri, 12 Apr 2019 16:01:57 -0700 (PDT)
+        bh=ao6zWk6qYGFp5j5rhez4Bd2z0+mxECaw8ki2sBhUyRA=;
+        b=bWm2aMZXJGx+jv+Mf67VFZy79q2GTYXcqZWpTH/hKyOghlG62bIX29xOUzzhNeA1Ag
+         pVQeKfSaj7NyVrQSFOUl1j0lDNWnQAHrbAhBc/TgBQCDx+qXSN78Ed/yOLIniBA27dZF
+         pjU1qCT9kXWADkNIttRcl7kO7EZmqvp+HrhYWRrLjCcrH8OfPYr91d5SkKZzRZsLNhCZ
+         tuSpOXPw1YeuO3SgYr6poKpFsH9t9HJkGBDIc+EaKzQg/hgszLc567RPDGUXfJMjz1ei
+         LzjM7lc+hMBaZbOWSXS0v7O8OJPE34cTG4PdT1sAtqbE0hcvlGg0hhEjSTQE+bGVVH68
+         qinA==
+X-Gm-Message-State: APjAAAV8flgYywkxhG2T/zMuYH1kO2oJfeObbXmfcPaLdkj/CVxbf3pE
+        terbsA1IFYZbezemVKxqe3WY+vTGCA==
+X-Google-Smtp-Source: APXvYqzAxOl9XXuAOfZ1qScr7N5yEU9luagN5lqX+tB8g5A8Cbde0crvrCS+VR2C59ewE2SLP+lI/w==
+X-Received: by 2002:a5d:618b:: with SMTP id j11mr34521600wru.123.1555110118712;
+        Fri, 12 Apr 2019 16:01:58 -0700 (PDT)
 Received: from localhost.localdomain ([151.251.243.36])
-        by smtp.gmail.com with ESMTPSA id g19sm8563686wmh.17.2019.04.12.16.01.56
+        by smtp.gmail.com with ESMTPSA id g19sm8563686wmh.17.2019.04.12.16.01.57
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Apr 2019 16:01:56 -0700 (PDT)
+        Fri, 12 Apr 2019 16:01:58 -0700 (PDT)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, pauld@redhat.com
 Subject: [PATCH] .
-Date:   Sat, 13 Apr 2019 02:01:49 +0300
-Message-Id: <20190412230150.26462-1-kaslevs@vmware.com>
+Date:   Sat, 13 Apr 2019 02:01:50 +0300
+Message-Id: <20190412230150.26462-2-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190412111546.0c54576e@gandalf.local.home>
 References: <20190412111546.0c54576e@gandalf.local.home>
@@ -58,29 +59,7 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 2019-04-12 at 11:15 -0400, Steven Rostedt wrote:
-> Actually, I think another solution is to consolidate the pids that
-> are
-> to be excluded and sort them. Thus if we have (which is very likely
-> the
-> case)
-> 
->  (common_pid!=1000)&&(common_pid!=1001)&&(common_pid!=1002)
-> 
-> That we change that to:
-> 
->   !((common_pid>=1000)||(common_pid<=1002))
-> 
-> Which would also have the affect of improving the filter logic within
-> the kernel as well.
-> 
-> Tzvetomir or Slavomir, would either of you be able to implement the
-> above? Both adding an option to disable this (--no-filter) and the
-> sorting of the excluded pids?
-
-Do you mean something like this? The comment for make_pid_filter() needs be
-updated too. I'll send a proper patch tomorrow if this fixes the issue.
-
+Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
  tracecmd/trace-record.c | 110 +++++++++++++++++++++++++++-------------
  1 file changed, 74 insertions(+), 36 deletions(-)
