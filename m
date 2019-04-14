@@ -1,89 +1,91 @@
-Return-Path: <SRS0=1j5l=SP=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=4wQP=SQ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D73EC282CE
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 13 Apr 2019 03:19:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5FCDC10F14
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 14 Apr 2019 19:38:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1A16720896
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 13 Apr 2019 03:19:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ABD1F206B7
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 14 Apr 2019 19:38:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aSBOYv2S"
+	dkim=pass (2048-bit key) header.d=lixom-net.20150623.gappssmtp.com header.i=@lixom-net.20150623.gappssmtp.com header.b="WDfzNPNq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbfDMDTC (ORCPT
+        id S1726262AbfDNTir (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 12 Apr 2019 23:19:02 -0400
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:35341 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726998AbfDMDTC (ORCPT
+        Sun, 14 Apr 2019 15:38:47 -0400
+Received: from mail-it1-f195.google.com ([209.85.166.195]:53115 "EHLO
+        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726159AbfDNTir (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Apr 2019 23:19:02 -0400
-Received: by mail-vs1-f65.google.com with SMTP id d8so6676530vsp.2
-        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Apr 2019 20:19:01 -0700 (PDT)
+        Sun, 14 Apr 2019 15:38:47 -0400
+Received: by mail-it1-f195.google.com with SMTP id x132so23774100itf.2
+        for <linux-trace-devel@vger.kernel.org>; Sun, 14 Apr 2019 12:38:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=lixom-net.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qAmpE3G0oOsflpcYUOecHLM2RaT+tXXFiDXT/2FM05k=;
-        b=aSBOYv2SXshliFLxSy4uYTsfmpZPFXrOFc84rPFriHb3qm3rzjl1mGUwpHCSxqcpxR
-         g7jt3WCjgzBJ0+BqzTOcD3JPCxC2bB7Vk7UHUwtlBMsRdNPK4Okp5IGmSG5OrBFjy8eJ
-         N/HDnZiJP2nyUmMBtxy5DSbTT7IPjR+YH+SYQeo8MnKl6DH/4yVWJnWSG0WT/X6rrMKp
-         33an5f/Pu5geWlAzxi0fCXCgcZzftxzxNEbtgoH0S2exKJT+vKWD+/56L7pZ0HNggAZD
-         kvFy94aRQtKN0sgRclWG9E+ub3DntOG94yjGRovBiWAejeltQ9aZqa2tEXAnjOfdOAhA
-         bW1A==
+        bh=QOWtsughs8v5wa64yJxww8mtNQrcGzXPVL4jTOgzC/c=;
+        b=WDfzNPNq7XXUT+Vy97HPWh3UDNOGkcsiWIi4/1mGI47OsfGj/aBaJ0V5eP3WoLkFUm
+         Okq47hXhs9TB71pWkv9Z3Uq1ogtTvwdoOPn/2In/Mo0ZHLwkDmqMiulDWXCxW9p9w3jK
+         yNHQEgxW5nRBrKL3q02Dy1ki9B97+Po5aqDlcQuYRck+cKUYpA+XiKag5N/uTbiR6isX
+         4elBNcmJSATa2N3hIifcyWnY7iCZyrxbO5mdH99IPwzy8V5YjYLjgdWyYyfIdItvu7Ac
+         8rQbBKPtcGOcUzjRl1CiE+lIQBYppRfBgpHNLEQ6ykvJiFnYV3yCkiSPMXvZbYMZFYgz
+         AHSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qAmpE3G0oOsflpcYUOecHLM2RaT+tXXFiDXT/2FM05k=;
-        b=Hwugss1OTgf21T2m6za2YHF2OlOstBMLYcxOEjl23X2AYTKD/h9uNbBIFlN95Ou3lT
-         a3F3d47x283m1ua7dAjelLaz8cpoRjaSmSXTi28DWtFPQzFBwnkt6iimJrKTzqSeNAPV
-         k8HG+n5aOjYD0Nh1XRiliYfte1rCyAyuFZCFmG8pNwtdadZcQdeFyiRjyAWp4jizLYHc
-         IeEiFvP7adK9+Y2aO5ChmkeqG1oIesOo0uVge6F4Uii5WnzK3NK27sZJ+P9e+tfZtGJl
-         YhOcCO76SfaOH4uRxTMhJ7MzsDlZczR6/NWocFOu03uenpgITgBZUGkUHYtzQc8Wmdqd
-         4mfg==
-X-Gm-Message-State: APjAAAUTRkmwrTuLvIzL20b/qKb16xmBzlMoArYKEdD+sNYUfTdFcMql
-        jCrvdjvR0jdHuYKdcgOSxSUbW52N2Ve1eCaqm4jlzQ==
-X-Google-Smtp-Source: APXvYqxV4TtiwDsxsirehWHSbYq4591Y8OO46Atnr9GDtlWJwOcktgDhlMV+aMMJrbGwwhR0oR1tOaInjum0Tt05F7Q=
-X-Received: by 2002:a67:e9c8:: with SMTP id q8mr31353496vso.120.1555125540368;
- Fri, 12 Apr 2019 20:19:00 -0700 (PDT)
+        bh=QOWtsughs8v5wa64yJxww8mtNQrcGzXPVL4jTOgzC/c=;
+        b=BtB7z9cHQ2jbKIw0krIQIE14lNnCPUbTZ4wMhDGSZu+DL4t+kSR5kB/KJA2Ji0xhos
+         +5u4mNqKRQbRbTKobJBMZTs09mL6ub4A18yY5i+yTaoaJ2jZu4HKwCRWNNvQmGTfIccT
+         kmsbdojdix+7ijbEthjNhNOLNs6ee+I0gFDAVIpvA3rvNQ/2auszTk23rdZUXiCl81f5
+         xH0UqehRKgO/ZqCMdTRt/DeGpdYTpfBW1RDI1+rySKnGOS79iXVGwSPlSFG2jhyypmfY
+         CQfWEDpmpQUvTreJwcb4FXdAWTLyi9pbESVOEs2qKr3gPVWr/D2vxwoRN3yUHqHERGFs
+         negA==
+X-Gm-Message-State: APjAAAVSrwzV6ZJcian8UF2kgHRBYOSoXnR0NWID7hV2CCmZIUfROLBj
+        Ng4GA+17CfrLbFs9HKp+Enn+azr/qk3XUOyYtiVgiQ==
+X-Google-Smtp-Source: APXvYqw1e1E6pqgqVUSjzULhu0+QVSb2v6ZJpDczRMWtqKRDHCkklZ/5N4hAkSSB8CVIDSZWj7xazJ3U9w1CNvAgGpY=
+X-Received: by 2002:a02:c7c8:: with SMTP id s8mr48885831jao.13.1555270726209;
+ Sun, 14 Apr 2019 12:38:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190408212855.233198-1-joel@joelfernandes.org>
- <CAK7LNAQgvhozubW9b2yqnxHAVE17VHHZiq6N4Py_TzFCHN0YUQ@mail.gmail.com>
- <20190412180014.GA175945@google.com> <CAK7LNAT83SijpivFJA8GS=bOsgfnV03fo+-QJFgO1SgmLBOiQw@mail.gmail.com>
- <CAKOZueuf8qM1O7c+m7zRHv1b6-YsZmWoTBfErBLY+yV1pyESmQ@mail.gmail.com>
- <CAK7LNATW0EQ+uYqGgEbzp1pzajs2CBOWT937JOCNnepP3AAD1g@mail.gmail.com> <CAK7LNAS8LroP_N76ZS2OLZKaxSMA3UubdE1r7QzkqCt-TFmnWA@mail.gmail.com>
-In-Reply-To: <CAK7LNAS8LroP_N76ZS2OLZKaxSMA3UubdE1r7QzkqCt-TFmnWA@mail.gmail.com>
-From:   Daniel Colascione <dancol@google.com>
-Date:   Fri, 12 Apr 2019 20:18:49 -0700
-Message-ID: <CAKOZuetDdtGoN8aNm6KF2N3Oz-QGO3PeTex=7VLoem_jDeaknw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] Provide in-kernel headers to make extending kernel easier
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
+References: <20190320163116.39275-1-joel@joelfernandes.org>
+ <CAOesGMheoZda84OSz9spQ7p66wot5S_9aaqaKC=QYp+8utASXA@mail.gmail.com>
+ <20190408203601.GF133872@google.com> <CAOesGMibHCuMPCYkc8V++Z2Kuf3YQf_OjYn18GvDgzTy6ubV=g@mail.gmail.com>
+ <CAJWu+or0hWce9+7aEfTHoOR8cptRbzHYVL-bPdJWGZH20dbo7Q@mail.gmail.com>
+ <CAOesGMiuGK-Sbqo2z=1ab070JONav1LF82MRRLCdX-4+14_XZA@mail.gmail.com> <20190411031540.ehezr6kq7ouobpzx@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20190411031540.ehezr6kq7ouobpzx@ast-mbp.dhcp.thefacebook.com>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Sun, 14 Apr 2019 12:38:34 -0700
+Message-ID: <CAOesGMgiPB=7FE7tXXHes7WSLfByyPxirOStoH21NZqMwaUihQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] Provide in-kernel headers to make extending kernel easier
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Joel Fernandes <joelaf@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Manoj Rao <linux@manojrajarao.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
         atish patra <atishp04@gmail.com>,
+        Daniel Colascione <dancol@google.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Guenter Roeck <groeck@chromium.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Karim Yaghmour <karim.yaghmour@opersys.com>,
         Kees Cook <keescook@chromium.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
+        Android Kernel Team <kernel-team@android.com>,
         "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
         "open list:KERNEL SELFTEST FRAMEWORK" 
         <linux-kselftest@vger.kernel.org>,
         linux-trace-devel@vger.kernel.org,
-        Manoj Rao <linux@manojrajarao.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
         Randy Dunlap <rdunlap@infradead.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>
@@ -93,86 +95,83 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Apr 12, 2019 at 8:10 PM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
+On Wed, Apr 10, 2019 at 8:15 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Sat, Apr 13, 2019 at 11:58 AM Masahiro Yamada
-> <yamada.masahiro@socionext.com> wrote:
-> >
-> > On Sat, Apr 13, 2019 at 10:53 AM Daniel Colascione <dancol@google.com> wrote:
+> On Wed, Apr 10, 2019 at 09:34:49AM -0700, Olof Johansson wrote:
+> > On Wed, Apr 10, 2019 at 8:51 AM Joel Fernandes <joelaf@google.com> wrote:
 > > >
-> > > On Fri, Apr 12, 2019 at 6:49 PM Masahiro Yamada
-> > > <yamada.masahiro@socionext.com> wrote:
-> > > >
-> > > > On Sat, Apr 13, 2019 at 3:02 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > >
-> > > > > > > +extern char kernel_headers_data;
-> > > > > > > +extern char kernel_headers_data_end;
-> > > > > > > +
-> > > > > > > +static ssize_t
-> > > > > > > +ikheaders_read_current(struct file *file, char __user *buf,
-> > > > > >
-> > > > > > Could you stretch this line ?
-> > > > > > It will still fit in 80-cols.
-> > > > > >
-> > > > > > (This is a coding style error in kernel/configs.c)
-> > > > >
-> > > > > It takes 87 cols if I expand, so I'll leave it as is.
-> > > > >
-> > > >
-> > > >
-> > > > Sorry if what I said was unclear.
-> > > >
-> > > > Since I just did not a good reason to put
-> > > > "static ssize_t" in the previous line,
-> > > > I meant like follows:
-> > > >
-> > > >
-> > > > [Before]
-> > > > static ssize_t
-> > > > ikheaders_read_current(struct file *file, char __user *buf,
-> > > >                        size_t len, loff_t *offset)
-> > > >
-> > > >
-> > > >
-> > > > [After]
-> > > > static ssize_t ikheaders_read_current(struct file *file, char __user *buf,
-> > > >                                       size_t len, loff_t *offset)
-> > > >
-> > > >
-> > > > (takes 74-cols.)
-> > > >
-> > > >
-> > > > (I am sending this from Gmail, so I am not sure
-> > > > how it will look like from you...)
-> > > >
-> > > >
-> > > > Anyway, it is super-bikeshedding stuff.
-> > > > It is OK as-is.
-> > > >
-> > >
-> > > What about sorting the files for determinism?
-> >
-> >
-> > Do you mean the order of files in the tar archive?
-
-Yes.
-
-> > I think it is a good idea for reproducible build.
-> >
-> >
-> >
-> > It looks like the tar command supports --sort=name option,
-> > but I did not test it at all.
-> >
-> >
-> >
-> > Perhaps, the sorting policy could be affected by locale.
-> > We saw it for the 'find' command.
+> > > On Wed, Apr 10, 2019 at 11:07 AM Olof Johansson <olof@lixom.net> wrote:
+> > > [snip]
+> > > > > > Wouldn't it be more convenient to provide it in a standardized format
+> > > > > > such that you won't have to take an additional step, and always have
+> > > > > > This is that form IMO.
+> ...
+> > Compared to:
+> >  - Extract tarball
+> >  - Build and load
+> >  - Remove file tree from filesystem
 >
->
-> 'sort' command is affected by locale.
+> I think there are too many assumptions in this thread in regard to what
+> is more convenient for user space.
+> I think bcc should try to avoid extracting tarball into file system.
+> For example libbcc can uncompress kheader.tar.xz into virtual file system
+> of clang front-end. It's more or less std::map<string, string>
+> with key=path, value=content of the file. Access to such in-memory
+> 'files' is obviously faster than doing open/read syscalls.
 
-It should be independent of locale if you set LC_ALL=C in the
-environment while running it.
+I think performance is a red herring, especially since you have to
+uncompress it on every compiler invocation. With this you'd need to
+read/touch/write _all_ header files, not just the one your current
+compiler invocation will use.
+
+In the grand scheme of things, open/mmap syscalls wouldn't necessarily
+be slower.
+
+> bcc already uses this approach for some bcc internal 'files' that
+> it passes to clang during compilation.
+> All of /proc/kheaders.tar.xz files can be passed the same way
+> without extracting them into real file system.
+
+This is now a circular argument. Joel was stating that the plain text
+headers took up too much memory, but now it's preferred to create such
+filesystem in userspace memory on *every compiler invocation*?
+That's... not better. And definitely worse if you want to compile in
+parallel.
+
+
+From my perspective, this is where we're at:
+
+This patch seems to have been met with a lot of responses in the tone
+of "this is not an appealing solution". Meanwhile, some of the
+suggested alternative solutions have not worked out, and we are now at
+a point where there's less interest in exploring alternatives and
+arguments to merge as-is with only minor adjustments.
+
+I understand the desire to solve this. It'd be really convenient to
+have a way to runtime build against the same structure layouts that
+the kernel was built with. But I haven't heard anyone say that they
+*like* the solution proposed, and I haven't seen many of those
+expressing concerns being converted to support it.
+
+Usually what we do at times like this is that we say "Yeah, this is a
+problem that should be solved, but this solution doesn't seem to be
+the right one and we would need to maintain it forever as part of the
+ABI. Let's wait until a better solution is found." With time,
+sometimes a better solution becomes obvious, or circumstances change
+enough to allow for some different approach, or someone has a new idea
+from a different perspective that solves the same problem.
+
+All of that being said, I don't have veto rights on code going into
+the kernel, even if I think picking up this patch would be the wrong
+thing to do.
+
+I'd be a *lot* less hesitant if this went into debugfs or another
+location than /proc, which is one of the most regression-sensitive
+interfaces we have in the kernel.
+
+> Joel, would be great if you can share corresponding bcc patch
+> that takes advantage of /proc/kheaders
+
+
+-Olof
