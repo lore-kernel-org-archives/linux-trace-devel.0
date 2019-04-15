@@ -7,68 +7,65 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2131C282DA
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 22:53:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE4C7C10F12
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 22:53:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A1A1A20854
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 22:53:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A313F20854
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 22:53:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Cb7aaKwi"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="l13kvR76"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbfDOWxJ (ORCPT
+        id S1728083AbfDOWxE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Apr 2019 18:53:09 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:34472 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728198AbfDOWxH (ORCPT
+        Mon, 15 Apr 2019 18:53:04 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:34469 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728031AbfDOWxD (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 15 Apr 2019 18:53:07 -0400
-Received: by mail-io1-f66.google.com with SMTP id n11so16052113ioh.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Apr 2019 15:53:07 -0700 (PDT)
+        Mon, 15 Apr 2019 18:53:03 -0400
+Received: by mail-io1-f67.google.com with SMTP id n11so16051991ioh.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Apr 2019 15:53:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gdPoW9mhfi6soRZh5xEBsWtXHQf+l0G2eEYMV2IVYv0=;
-        b=Cb7aaKwiFDjPX1hsQVWMdhof7UfTrhdSCipGghOvpHM29X6Q378GE+rYJ2MwWdc7HY
-         7dxPhWQlRxoHIRBqY6cPWEYLJrSuzKU7zWvZlV4718swC2FM1unKHfUCW5Q+HqrhHski
-         dowZmxjew6PmHD6wB8n6+BWB8tbCaur4x8a7w=
+        bh=GkjIrKEQNQ3G7xnk8XYGn5F/+Y0cS2ZRMu00W+VyZSE=;
+        b=l13kvR7644rfoKoxzoMRYJT7KFRzjE9KRkKEasZ/Q6oOShdyjJ7qKNMxGtEzcSksRq
+         YQvbn+2nZz0HuqwE93Cp9KX2smsWC7DZ/tLGshgVH6v2bznWULCWlGsHl0pPO5MpkCXK
+         V8JnsYr1RxMliDlXnubPtBfg0w4ix9utPBJOE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gdPoW9mhfi6soRZh5xEBsWtXHQf+l0G2eEYMV2IVYv0=;
-        b=SW4w9040gxfGYpj7//jQYVgzMp8/+asef0EUPo0aniKSpWY0CcSyrnloFf7jhwlzQI
-         SW6hDB0Gs5Hq02peFHfOrP9TpDSfY5X0rPZHgK7G4NKh4S5bYKiwdf+DJnR56kZxTAzo
-         lIrKKRrRusIglr3w7yJ61k8ZcieLo7A2yA2xJADb5dq77KS8ngvp4rNDCGg9ltbUbXOL
-         8fGevf4/e+PqNkCHHtrX7Zhz9T0afxxS4C+vYs0Otpz3MybjurnwQVDui2f+DZdtx28T
-         VUKSj8vN4R2JlReNcsn9746ATz8YVLTNC/+knti89rgB7TcPTcNLSaRvCrX50D68G8yX
-         oDbQ==
-X-Gm-Message-State: APjAAAVd4KG2IfTU0GBF2V9HiYqoGxoUsilHh0RCBl85bVUHh9phM49J
-        zuS6XseXCzoDhMkDveqZc9t/DQ==
-X-Google-Smtp-Source: APXvYqyIPAyjx9oo54Bkr5S/JXYCCCJH5bow3kmenuIuyOIAUJLE4RhXwJ7MoxLERPst/6T7sucEIQ==
-X-Received: by 2002:a5d:8b87:: with SMTP id p7mr16062565iol.64.1555368787253;
-        Mon, 15 Apr 2019 15:53:07 -0700 (PDT)
+        bh=GkjIrKEQNQ3G7xnk8XYGn5F/+Y0cS2ZRMu00W+VyZSE=;
+        b=R39ohjnwPW8GfyEqN3qJVLx3JlZfDRfnWrGGSIh0JxTP5vxwOTlpLHjR01QqKsRP+P
+         uTYJCNuUCszcMgVTq8+fURnKhiXxa9z5XnnmJ8PK0ZDlh4LS57rpJvAeXyCyUhLmypD1
+         nbo6qReaWn5tcW65+fRVkIVSBfW7XW3vYpcrbyW2tth8SDdHdCarUG1gE6nJbteSWvSN
+         iHRcVNmQU4MKOwAjNnC43/po7PlueCvgNKXpSrDSMZi+/+Lw3qs1aPxRu7nwvA3GNe1H
+         0MybgkmzUpIAZtKxdu3s+e72490kB9SS2NFoAByxwRTgbs3xPFNq016rr0hvwxQQsAF0
+         cAlg==
+X-Gm-Message-State: APjAAAUOZFPlFTGaaxLDy0C2p6MKxuUQ6GOM2CgEGD+2HipHJb4lsqL5
+        7WpvQqgaWv2Z6AwPd6CfsOvB1w==
+X-Google-Smtp-Source: APXvYqwtwuYOp6f8Vhqlap+/EK5khOXtFLcn1jsF+Vxq86qoKG+/lfrqqNQq0TATHAy6SJUuidIzwA==
+X-Received: by 2002:a6b:b285:: with SMTP id b127mr46548010iof.179.1555368782824;
+        Mon, 15 Apr 2019 15:53:02 -0700 (PDT)
 Received: from localhost ([2620:15c:183:0:20b8:dee7:5447:d05])
-        by smtp.gmail.com with ESMTPSA id t142sm8558391ita.38.2019.04.15.15.53.06
+        by smtp.gmail.com with ESMTPSA id 77sm8873833itl.17.2019.04.15.15.53.02
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Apr 2019 15:53:06 -0700 (PDT)
+        Mon, 15 Apr 2019 15:53:02 -0700 (PDT)
 From:   Raul E Rangel <rrangel@chromium.org>
 To:     linux-mmc@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     djkurtz@chromium.org, zwisler@chromium.org,
         Raul E Rangel <rrangel@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         hongjiefang <hongjiefang@asrmicro.com>,
-        Jennifer Dahm <jennifer.dahm@ni.com>,
-        linux-kernel@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
         Kyle Roeschley <kyle.roeschley@ni.com>,
-        Ingo Molnar <mingo@redhat.com>,
         Avri Altman <avri.altman@wdc.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Simon Horman <horms+renesas@verge.net.au>
-Subject: [PATCH v1 4/4] mmc: core: Add trace event for CSD response
-Date:   Mon, 15 Apr 2019 16:52:41 -0600
-Message-Id: <20190415225241.70088-4-rrangel@chromium.org>
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v1 2/4] mmc: core: Add trace event for SD SSR response
+Date:   Mon, 15 Apr 2019 16:52:39 -0600
+Message-Id: <20190415225241.70088-2-rrangel@chromium.org>
 X-Mailer: git-send-email 2.21.0.392.gf8f6787159e-goog
 In-Reply-To: <20190415225241.70088-1-rrangel@chromium.org>
 References: <20190415225241.70088-1-rrangel@chromium.org>
@@ -80,84 +77,64 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Example:
-mmc_csd: mmc0: struct: 0, cmdclass: 0x5b5, raw: {0x400e0032,0x5b590000,0x3b4b7f80,0xa404000}
+sd_ssr: mmc0: au: 8192, erase time: 0, erase offset: 0x0, raw: {0x0,0x3000000,0x1019000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0}
 
 Signed-off-by: Raul E Rangel <rrangel@chromium.org>
 ---
 
- drivers/mmc/core/mmc.c     |  4 ++++
  drivers/mmc/core/sd.c      |  2 ++
- include/trace/events/mmc.h | 28 ++++++++++++++++++++++++++++
- 3 files changed, 34 insertions(+)
+ include/trace/events/mmc.h | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+)
 
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 3e786ba204c3..46ce894f7c03 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -20,6 +20,8 @@
- #include <linux/mmc/card.h>
- #include <linux/mmc/mmc.h>
- 
-+#include <trace/events/mmc.h>
-+
- #include "core.h"
- #include "card.h"
- #include "host.h"
-@@ -182,6 +184,8 @@ static int mmc_decode_csd(struct mmc_card *card)
- 		csd->erase_size <<= csd->write_blkbits - 9;
- 	}
- 
-+	trace_mmc_csd(card);
-+
- 	return 0;
- }
- 
 diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index cc33a4f96c6a..4e704a7280ba 100644
+index 3bed7c4b6d75..cc33a4f96c6a 100644
 --- a/drivers/mmc/core/sd.c
 +++ b/drivers/mmc/core/sd.c
-@@ -183,6 +183,8 @@ static int mmc_decode_csd(struct mmc_card *card)
+@@ -282,6 +282,8 @@ static int mmc_read_ssr(struct mmc_card *card)
+ 		}
+ 	}
  
- 	card->erase_size = csd->erase_size;
- 
-+	trace_mmc_csd(card);
++	trace_sd_ssr(card);
 +
- 	return 0;
- }
- 
+ 	/*
+ 	 * starting SD5.1 discard is supported if DISCARD_SUPPORT (b313) is set
+ 	 */
 diff --git a/include/trace/events/mmc.h b/include/trace/events/mmc.h
-index fa82c010ae4e..58f6f7808974 100644
+index e45258e8a6cb..cad604ee800f 100644
 --- a/include/trace/events/mmc.h
 +++ b/include/trace/events/mmc.h
-@@ -174,6 +174,34 @@ TRACE_EVENT(sd_ssr,
+@@ -52,6 +52,37 @@ TRACE_EVENT(sd_scr,
  	)
  );
  
-+TRACE_EVENT(mmc_csd,
++TRACE_EVENT(sd_ssr,
 +
 +	TP_PROTO(struct mmc_card *card),
 +
 +	TP_ARGS(card),
 +
 +	TP_STRUCT__entry(
-+		__array(u32,			raw,	4)
-+		__field(unsigned char,		structure)
-+		__field(unsigned short,		cmdclass)
++		__array(u32,			raw,	16)
++		__field(unsigned int,		au)
++		__field(unsigned int,		erase_timeout)
++		__field(unsigned int,		erase_offset)
 +		__string(name,			mmc_hostname(card->host))
 +	),
 +
 +	TP_fast_assign(
-+		__entry->structure = card->csd.structure;
-+		__entry->cmdclass = card->csd.cmdclass;
-+		memcpy(__entry->raw, card->raw_csd, sizeof(card->raw_csd));
++		memcpy(__entry->raw, card->raw_ssr, sizeof(card->raw_ssr));
++		__entry->au = card->ssr.au;
++		__entry->erase_timeout = card->ssr.erase_timeout;
++		__entry->erase_offset = card->ssr.erase_offset;
 +		__assign_str(name, mmc_hostname(card->host));
 +	),
 +
-+	TP_printk("%s: struct: %d, cmdclass: %#x, raw: %s",
++	TP_printk("%s: au: %d, erase time: %d, erase offset: %#x, raw: %s",
 +		  __get_str(name),
-+		  __entry->structure,
-+		  __entry->cmdclass,
-+		  __print_array(__entry->raw, 4, sizeof(u32))
++		  __entry->au,
++		  __entry->erase_timeout,
++		  __entry->erase_offset,
++		  __print_array(__entry->raw, 16, sizeof(u32))
 +	)
 +);
 +
