@@ -2,104 +2,110 @@ Return-Path: <SRS0=14DL=SR=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B328C10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 14:41:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A6CBC282DA
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 15:20:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 257FA2077C
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 14:41:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 046A12147C
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 15:20:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="Zf/kTUeW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbfDOOlO (ORCPT
+        id S1727692AbfDOPU4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Apr 2019 10:41:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727602AbfDOOlN (ORCPT
+        Mon, 15 Apr 2019 11:20:56 -0400
+Received: from mail-eopbgr800055.outbound.protection.outlook.com ([40.107.80.55]:52127
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727499AbfDOPU4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 15 Apr 2019 10:41:13 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D35DE2075B;
-        Mon, 15 Apr 2019 14:41:10 +0000 (UTC)
-Date:   Mon, 15 Apr 2019 10:41:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Olof Johansson <olof@lixom.net>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Manoj Rao <linux@manojrajarao.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        atish patra <atishp04@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Kees Cook <keescook@chromium.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH v5 1/3] Provide in-kernel headers to make extending
- kernel easier
-Message-ID: <20190415104109.64d914f3@gandalf.local.home>
-In-Reply-To: <CAOesGMgiPB=7FE7tXXHes7WSLfByyPxirOStoH21NZqMwaUihQ@mail.gmail.com>
-References: <20190320163116.39275-1-joel@joelfernandes.org>
-        <CAOesGMheoZda84OSz9spQ7p66wot5S_9aaqaKC=QYp+8utASXA@mail.gmail.com>
-        <20190408203601.GF133872@google.com>
-        <CAOesGMibHCuMPCYkc8V++Z2Kuf3YQf_OjYn18GvDgzTy6ubV=g@mail.gmail.com>
-        <CAJWu+or0hWce9+7aEfTHoOR8cptRbzHYVL-bPdJWGZH20dbo7Q@mail.gmail.com>
-        <CAOesGMiuGK-Sbqo2z=1ab070JONav1LF82MRRLCdX-4+14_XZA@mail.gmail.com>
-        <20190411031540.ehezr6kq7ouobpzx@ast-mbp.dhcp.thefacebook.com>
-        <CAOesGMgiPB=7FE7tXXHes7WSLfByyPxirOStoH21NZqMwaUihQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 15 Apr 2019 11:20:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ra+8jztIdVYAVIQIRGZn6NPs7LtMl0YLMrdyIzogSJw=;
+ b=Zf/kTUeWFZMiXKSwqRe/1Fva6FaF0YigmrSr4pbBGGnaBeJRPGQllzBN3x4bCkeXZbRMR+daRdIQjSePHduFOgcgIEPZXWfhWsEt++WSfqyepgpXWh/XjN9QPtqNIjEhABwEhOg0r2rHkbfnTgchG/HuPo+LWiRHSl65uSEBx54=
+Received: from MWHPR0501MB3772.namprd05.prod.outlook.com (10.167.163.156) by
+ MWHPR0501MB3740.namprd05.prod.outlook.com (10.167.163.148) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1813.8; Mon, 15 Apr 2019 15:20:53 +0000
+Received: from MWHPR0501MB3772.namprd05.prod.outlook.com
+ ([fe80::3949:85c0:3b7b:136e]) by MWHPR0501MB3772.namprd05.prod.outlook.com
+ ([fe80::3949:85c0:3b7b:136e%5]) with mapi id 15.20.1813.009; Mon, 15 Apr 2019
+ 15:20:53 +0000
+From:   Slavomir Kaslev <kaslevs@vmware.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>,
+        "pauld@redhat.com" <pauld@redhat.com>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>,
+        "jbacik@fb.com" <jbacik@fb.com>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Subject: Re: [PATCH 1/2] trace-cmd: Optimize how pid filters are expressed
+Thread-Topic: [PATCH 1/2] trace-cmd: Optimize how pid filters are expressed
+Thread-Index: AQHU852540PvyPUfdkKFujmy7POQ2Q==
+Date:   Mon, 15 Apr 2019 15:20:53 +0000
+Message-ID: <CAE0o1NvteO9GP15qdy9BWqUu8LFBvNEKsz4fP5qmDPLcmPcf5g@mail.gmail.com>
+References: <20190415104343.31113-1-kaslevs@vmware.com>
+ <20190415104343.31113-2-kaslevs@vmware.com>
+In-Reply-To: <20190415104343.31113-2-kaslevs@vmware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: DM6PR06CA0019.namprd06.prod.outlook.com
+ (2603:10b6:5:120::32) To MWHPR0501MB3772.namprd05.prod.outlook.com
+ (2603:10b6:301:7a::28)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=kaslevs@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-gm-message-state: APjAAAXhbkGXyg9KcNUjdb5vpMgH37VJ62h6wqPlxcw3IfaXpAtNMV1M
+        7SD5/CntrkoIlPO8aeKOWc0AlEVweSpHVbOReA==
+x-google-smtp-source: APXvYqyObF6lw42j+vS0r+638xGtIyHGw1LQjrL2A5sig2lAwu69mu1NRNbT7U0axh2I2AQZS6dxQw+KO1n/oSJ57NU=
+x-received: by 2002:a5e:a51a:: with SMTP id 26mr13475158iog.254.1555341245236;
+ Mon, 15 Apr 2019 08:14:05 -0700 (PDT)
+x-gmail-original-message-id: <CAE0o1NvteO9GP15qdy9BWqUu8LFBvNEKsz4fP5qmDPLcmPcf5g@mail.gmail.com>
+x-originating-ip: [209.85.166.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: edbc6e1e-bd02-4f0d-c664-08d6c1b5f35f
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600140)(711020)(4605104)(2017052603328)(7193020);SRVR:MWHPR0501MB3740;
+x-ms-traffictypediagnostic: MWHPR0501MB3740:
+x-microsoft-antispam-prvs: <MWHPR0501MB3740FA404276BD4BDC0D53D9DA2B0@MWHPR0501MB3740.namprd05.prod.outlook.com>
+x-forefront-prvs: 000800954F
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(39860400002)(136003)(396003)(346002)(376002)(189003)(199004)(52116002)(5660300002)(68736007)(6246003)(66066001)(229853002)(54206008)(476003)(81166006)(81156014)(55446002)(4744005)(256004)(9686003)(6512007)(478600001)(107886003)(71200400001)(53936002)(71190400001)(498394004)(4326008)(305945005)(14444005)(6436002)(61266001)(6862004)(186003)(86362001)(6486002)(76176011)(99286004)(54906003)(61726006)(316002)(486006)(6116002)(3846002)(26005)(25786009)(7736002)(8936002)(8676002)(446003)(11346002)(386003)(6506007)(95326003)(14454004)(53546011)(102836004)(97736004)(106356001)(105586002)(2906002);DIR:OUT;SFP:1101;SCL:1;SRVR:MWHPR0501MB3740;H:MWHPR0501MB3772.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: NDbtaAZEeesehKQ1syyBob06ilpyGM/M18MB+kbLyD+np6G4NMw7VsUOA4Rh8UMMr60GqapVgP6yTNzlJu82HY1DGMnxldqEBfSTbizwJ5MhHlZuG3Vab/t+oZYCBR2F2nCnUDgZCCwWsgKiIGii6MqWvgtzNQOwVgqEoBoorgcO7pkTlc/+9XqQthyFZVTpjSaZQ95A0PPJszXK+dpvs033fATtjXYBIy269rdIkc5UKbKAsdsipP/Q+LreNVznrtYgndpEWFTjHEJf/FNfVPELzvtuzngOhwJagxAQzNeDmCr2NfoRzTYW+DCxcRmQQ1DqLtsPp3L3kvX6oZJZxLHNbU3Lzd2jn0NfwoNUYwPJKAKlUQzzABn7vtqRnv5U/o1mZmTXhNMj2MBokIF88p4VJaWdghah6ywXaaJkPnw=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <13429B8EFA817E4AA8F2769723E33ACE@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: edbc6e1e-bd02-4f0d-c664-08d6c1b5f35f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2019 15:20:53.7906
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0501MB3740
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sun, 14 Apr 2019 12:38:34 -0700
-Olof Johansson <olof@lixom.net> wrote:
-
-> >From my perspective, this is where we're at:  
-> 
-> This patch seems to have been met with a lot of responses in the tone
-> of "this is not an appealing solution". Meanwhile, some of the
-> suggested alternative solutions have not worked out, and we are now at
-> a point where there's less interest in exploring alternatives and
-> arguments to merge as-is with only minor adjustments.
-
-Another consideration to make is difficulty of support. Having a
-tarball compressed headers may not be an appealing solution, but it
-isn't one that would be too much of an issue to support. Having a
-better interface would be difficult to get right, and if you get it
-wrong, you are now stuck with supporting something that may become a
-big pain to do so in the future.
-
-> I'd be a *lot* less hesitant if this went into debugfs or another
-> location than /proc, which is one of the most regression-sensitive
-> interfaces we have in the kernel.
-> 
-
-I agree with this assessment. We shouldn't use config.gz as precedence
-for this solution. config.gz should have been in debugfs to begin with,
-but I don't believe debugfs was around when config.gz was introduced.
-(Don't have time to look into the history of the two).
-
--- Steve
+T24gTW9uLCBBcHIgMTUsIDIwMTkgYXQgMTo0MyBQTSBTbGF2b21pciBLYXNsZXYgPGthc2xldnNA
+dm13YXJlLmNvbT4gd3JvdGU6DQo+DQo+IEV4cHJlc3MgcGlkIGZpbHRlcnMgYXMgYWxsb3dlZC9k
+aXNhbGxvd2VkIGZpbHRlciByYW5nZXMNCj4NCj4gICAocGlkPj0xMDAmJnBpZDw9MTAzKQ0KPg0K
+PiBpbnN0ZWFkIG9mIHNwZWNpZnlpbmcgdGhlbSBwZXIgcGlkDQo+DQo+ICAgKHBpZD09MTAwfHxw
+aWQ9PTEwMXx8cGlkPT0xMDJ8fHBpZD09MTAzKQ0KPg0KPiBUaGlzIG1ha2VzIHRoZSBzaXplIG9m
+IHRoZSByZXN1bHRpbmcgZmlsdGVyIHNtYWxsZXIgKGFuZCBmYXN0ZXIpIGFuZCBhdm9pZHMNCj4g
+b3ZlcmZsb3dpbmcgdGhlIGZpbHRlciBzaXplIGxpbWl0IG9mIG9uZSBwYWdlIHdoaWNoIHdlIGNh
+biBoaXQgb24gYmlnZ2VyDQo+IG1hY2hpbmVzIChzYXkgPjE2MCBDUFVzKS4NCj4NCj4gU2lnbmVk
+LW9mZi1ieTogU2xhdm9taXIgS2FzbGV2IDxrYXNsZXZzQHZtd2FyZS5jb20+DQoNCkkgbWlzc2Vk
+IHRvIGFkZCBzb21lIHRhZ3M6DQoNClJlcG9ydGVkLWJ5OiBQaGlsIEF1bGQgPHBhdWxkQHJlZGhh
+dC5jb20+DQpTdWdnZXN0ZWQtYnk6IFN0ZXZlbiBSb3N0ZWR0IChWTXdhcmUpIDxyb3N0ZWR0QGdv
+b2RtaXMub3JnPg0KDQotLSBTbGF2aQ0K
