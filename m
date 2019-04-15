@@ -2,139 +2,154 @@ Return-Path: <SRS0=14DL=SR=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 406E1C10F12
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 23:00:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73664C10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 23:31:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1329E2084B
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 23:00:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A05520830
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 23:31:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbfDOXA1 (ORCPT
+        id S1727206AbfDOXbi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Apr 2019 19:00:27 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:39596 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbfDOXA1 (ORCPT
+        Mon, 15 Apr 2019 19:31:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726939AbfDOXbh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 15 Apr 2019 19:00:27 -0400
-Received: by mail-wm1-f66.google.com with SMTP id n25so22505095wmk.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Apr 2019 16:00:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/B6kne7Oor5k7nI87WPMSvdH2yPz3zRd4cAAmlf36j4=;
-        b=Z9cfEEVQEJgbhjkRZk4bCkeprqTV0QNckmqGdPNZgCuHUvACJtgsDxLp4bFLOKEOW4
-         7dAbDg137Na8FQ6EUyowL3bilLKaGL8xUQ0pRHESpmBxIttO06yZlvjMUH9/cJwmUNbF
-         Q8Lveejm7V3H23ckzS8mIM+IL6X2FJHFHWd7+WyuyB0XV0xud+KrC1/Bzy/8qOFCJE3C
-         Os1co6YBJy98qIQgNQU3cEh0SYu44C7OyLNyH3j0MOQODo+sJJ9bhP7zYcZhfs0nG34z
-         buh+2xJEOmNUYbvcQ/se6pm/6nk0F+Yqg+QsM7fvzwztHZJ+Uh7kk5/i+gkR+RTMnche
-         3Tjg==
-X-Gm-Message-State: APjAAAVZxG4dkEJbefnCVTosyS5WUvtZthzxixev8esfOZD+z5Ncbtyb
-        6O/9ytkUCYT/u2AO1GGWTA==
-X-Google-Smtp-Source: APXvYqxuAI94D4ZoWznBhTIpFgjRYBEo1jNdj2fp3SHrYt2CYiRNXvUFnr7ZCozgtzWpWehQpj+orw==
-X-Received: by 2002:a1c:20cf:: with SMTP id g198mr23785016wmg.42.1555369225952;
-        Mon, 15 Apr 2019 16:00:25 -0700 (PDT)
-Received: from localhost.localdomain ([151.251.250.145])
-        by smtp.gmail.com with ESMTPSA id v184sm36426455wma.6.2019.04.15.16.00.24
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Apr 2019 16:00:25 -0700 (PDT)
-From:   Slavomir Kaslev <kaslevs@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, pauld@redhat.com,
-        ykaradzhov@vmware.com, jbacik@fb.com, tstoyanov@vmware.com,
-        slavomir.kaslev@gmail.com
-Subject: [PATCH v3 2/2] trace-cmd: Add --no-filter option to not filter recording processes
-Date:   Tue, 16 Apr 2019 02:00:16 +0300
-Message-Id: <20190415230016.13932-3-kaslevs@vmware.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190415230016.13932-1-kaslevs@vmware.com>
-References: <20190415230016.13932-1-kaslevs@vmware.com>
+        Mon, 15 Apr 2019 19:31:37 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5868020830;
+        Mon, 15 Apr 2019 23:31:35 +0000 (UTC)
+Date:   Mon, 15 Apr 2019 19:31:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Raul E Rangel <rrangel@chromium.org>
+Cc:     linux-mmc@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        djkurtz@chromium.org, zwisler@chromium.org,
+        hongjiefang <hongjiefang@asrmicro.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Kyle Roeschley <kyle.roeschley@ni.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v1 1/4] mmc: core: Add trace event for SD SCR response
+Message-ID: <20190415193133.2cdbc6d0@gandalf.local.home>
+In-Reply-To: <20190415225241.70088-1-rrangel@chromium.org>
+References: <20190415225241.70088-1-rrangel@chromium.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add --no-filter option which doesn't install filters for the trace-cmd recording
-processes pids.
+On Mon, 15 Apr 2019 16:52:38 -0600
+Raul E Rangel <rrangel@chromium.org> wrote:
 
-Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- tracecmd/trace-record.c | 14 +++++++++++---
- tracecmd/trace-usage.c  |  1 +
- 2 files changed, 12 insertions(+), 3 deletions(-)
+> Example:
+> sd_scr: mmc0: version: 2, spec3: 1, width: 5, cmds: 0, raw: {0x2b58000,0x0}
+> 
+> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+> ---
+> 
+>  drivers/mmc/core/sd.c      |  4 ++++
+>  include/trace/events/mmc.h | 42 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 46 insertions(+)
+> 
+> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+> index 265e1aeeb9d8..3bed7c4b6d75 100644
+> --- a/drivers/mmc/core/sd.c
+> +++ b/drivers/mmc/core/sd.c
+> @@ -21,6 +21,8 @@
+>  #include <linux/mmc/mmc.h>
+>  #include <linux/mmc/sd.h>
+>  
+> +#include <trace/events/mmc.h>
+> +
+>  #include "core.h"
+>  #include "card.h"
+>  #include "host.h"
+> @@ -200,6 +202,7 @@ static int mmc_decode_scr(struct mmc_card *card)
+>  	if (scr_struct != 0) {
+>  		pr_err("%s: unrecognised SCR structure version %d\n",
+>  			mmc_hostname(card->host), scr_struct);
+> +		trace_sd_scr(card, NULL);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -221,6 +224,7 @@ static int mmc_decode_scr(struct mmc_card *card)
+>  
+>  	if (scr->sda_spec3)
+>  		scr->cmds = UNSTUFF_BITS(resp, 32, 2);
+> +	trace_sd_scr(card, scr);
+>  	return 0;
+>  }
+>  
+> diff --git a/include/trace/events/mmc.h b/include/trace/events/mmc.h
+> index 7b706ff21335..e45258e8a6cb 100644
+> --- a/include/trace/events/mmc.h
+> +++ b/include/trace/events/mmc.h
+> @@ -10,6 +10,48 @@
+>  #include <linux/mmc/host.h>
+>  #include <linux/tracepoint.h>
+>  
+> +TRACE_EVENT(sd_scr,
+> +
+> +	TP_PROTO(struct mmc_card *card, struct sd_scr *scr),
+> +
+> +	TP_ARGS(card, scr),
+> +
+> +	TP_STRUCT__entry(
+> +		__array(u32,			raw,	2)
+> +		__field(unsigned char,		sda_vsn)
+> +		__field(unsigned char,		sda_spec3)
+> +		__field(unsigned char,		bus_widths)
+> +		__field(unsigned char,		cmds)
+> +		__string(name,			mmc_hostname(card->host))
+> +	),
+> +
+> +	TP_fast_assign(
+> +		memcpy(__entry->raw, card->raw_scr, sizeof(card->raw_scr));
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index dae0396..05a313b 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -86,6 +86,7 @@ static int do_ptrace;
- 
- static int filter_task;
- static int filter_pid = -1;
-+static bool no_filter = false;
- 
- static int local_cpu_count;
- 
-@@ -1063,6 +1064,9 @@ static void update_task_filter(void)
- 	struct buffer_instance *instance;
- 	int pid = getpid();
- 
-+	if (no_filter)
-+		return;
-+
- 	if (filter_task)
- 		add_filter_pid(pid, 0);
- 
-@@ -4377,9 +4381,9 @@ void update_first_instance(struct buffer_instance *instance, int topt)
- }
- 
- enum {
--
--	OPT_quiet		= 246,
--	OPT_debug		= 247,
-+	OPT_quiet		= 245,
-+	OPT_debug		= 246,
-+	OPT_no_filter		= 247,
- 	OPT_max_graph_depth	= 248,
- 	OPT_tsoffset		= 249,
- 	OPT_bycomm		= 250,
-@@ -4603,6 +4607,7 @@ static void parse_record_options(int argc,
- 			{"by-comm", no_argument, NULL, OPT_bycomm},
- 			{"ts-offset", required_argument, NULL, OPT_tsoffset},
- 			{"max-graph-depth", required_argument, NULL, OPT_max_graph_depth},
-+			{"no-filter", no_argument, NULL, OPT_no_filter},
- 			{"debug", no_argument, NULL, OPT_debug},
- 			{"quiet", no_argument, NULL, OPT_quiet},
- 			{"help", no_argument, NULL, '?'},
-@@ -4877,6 +4882,9 @@ static void parse_record_options(int argc,
- 			if (!ctx->max_graph_depth)
- 				die("Could not allocate option");
- 			break;
-+		case OPT_no_filter:
-+			no_filter = true;
-+			break;
- 		case OPT_debug:
- 			debug = 1;
- 			break;
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 9ea1906..29a7081 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -56,6 +56,7 @@ static struct usage_help usage_help[] = {
- 		"          --func-stack perform a stack trace for function tracer\n"
- 		"             (use with caution)\n"
- 		"          --max-graph-depth limit function_graph depth\n"
-+		"          --no-filter do not set any event filters\n"
- 	},
- 	{
- 		"start",
--- 
-2.19.1
+Having the memcpy() size be that of the source is dangerous. Not that
+the destination will every be smaller, but I would highly suggest
+either trying to see if "sizeof(__entry->raw)" works or at worse,
+sizeof(u32)*2.
+
+-- Steve
+
+> +		if (scr) {
+> +			__entry->sda_vsn = scr->sda_vsn;
+> +			__entry->sda_spec3 = scr->sda_spec3;
+> +			__entry->bus_widths = scr->bus_widths;
+> +			__entry->cmds = scr->cmds;
+> +		} else {
+> +			__entry->sda_vsn = 0;
+> +			__entry->sda_spec3 = 0;
+> +			__entry->bus_widths = 0;
+> +			__entry->cmds = 0;
+> +		}
+> +		__assign_str(name, mmc_hostname(card->host));
+> +	),
+> +
+> +	TP_printk("%s: version: %d, spec3: %d, width: %d, cmds: %d, "
+> +		"raw: %s",
+> +		  __get_str(name),
+> +		  __entry->sda_vsn,
+> +		  __entry->sda_spec3,
+> +		  __entry->bus_widths,
+> +		  __entry->cmds,
+> +		  __print_array(__entry->raw, 2, sizeof(u32))
+> +	)
+> +);
+> +
+>  TRACE_EVENT(mmc_request_start,
+>  
+>  	TP_PROTO(struct mmc_host *host, struct mmc_request *mrq),
 
