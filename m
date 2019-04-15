@@ -2,243 +2,171 @@ Return-Path: <SRS0=14DL=SR=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78FD7C10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 21:59:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D31BC10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 22:53:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4D68020880
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 21:59:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F350520854
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 22:53:00 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SLWChC7s"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbfDOV7X (ORCPT
+        id S1726751AbfDOWxA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Apr 2019 17:59:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725786AbfDOV7X (ORCPT
+        Mon, 15 Apr 2019 18:53:00 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:34464 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbfDOWxA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 15 Apr 2019 17:59:23 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EA69206BA;
-        Mon, 15 Apr 2019 21:59:20 +0000 (UTC)
-Date:   Mon, 15 Apr 2019 17:59:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Slavomir Kaslev <kaslevs@vmware.com>
-Cc:     linux-trace-devel@vger.kernel.org, pauld@redhat.com,
-        ykaradzhov@vmware.com, jbacik@fb.com, tstoyanov@vmware.com,
-        slavomir.kaslev@gmail.com
-Subject: Re: [PATCH v2 1/2] trace-cmd: Optimize how pid filters are
- expressed
-Message-ID: <20190415175919.637f28f6@gandalf.local.home>
-In-Reply-To: <20190415164739.17223-2-kaslevs@vmware.com>
-References: <20190415164739.17223-1-kaslevs@vmware.com>
-        <20190415164739.17223-2-kaslevs@vmware.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 15 Apr 2019 18:53:00 -0400
+Received: by mail-io1-f67.google.com with SMTP id n11so16051912ioh.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Apr 2019 15:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ne5pjde4HF9lJsw056hcCinTNwk9gZ4Gsc2PETazukk=;
+        b=SLWChC7su73E9YCNo30HEymjebC11nB28pHbTyvMXRljj6wGKJpLLLZdOei855VSy5
+         715GG9vYQ+Yokih+hurV0vvDNs4giXKpGIFrNZJ90mzU5ZTnmOecEY8GLSrYgOmCIh1d
+         eUkZUYp5h1f+v8IVpsh9sxli0s3LZQwIH2b38=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ne5pjde4HF9lJsw056hcCinTNwk9gZ4Gsc2PETazukk=;
+        b=ZWckymzjY8SosTznnmyYsBoD8a553MaDJFTFqeo5rOxqVtRRDB1zVklwPoP7MUtPlg
+         Jxqu+m9VXKbcliz0WvQx8adoRHxxEut0ghBgWFpVLT5LOMkV3JB9G4i1V86e+/+sZ8zb
+         kkpEnZEH2SqU5jlJnOlWKeqTkx8PFISMc6o7ZQvz70PNcyZiVspVtgRkOn411C3eUClx
+         0C3mI7IgrfFamdW1n/JnVNsYuQFGTJC3YUnp89pnoO950Kn9IvMlQmn+aHLxuXeRmaO0
+         d0QhF84YmT7iILoqF9oB4+4UOESHiJEVH4LRkR+ZUxXKdZIqzR9N3CT17aCqlCS4W7zp
+         3O4A==
+X-Gm-Message-State: APjAAAVSn52UKixtrz7snvpB+RzDiXtTBuhO4d2HIsmqUWL541o+tDZ5
+        Kd8P+YbSIN6+JX2RXLocDZAtZA==
+X-Google-Smtp-Source: APXvYqxL3Y1/5EY9rT1odg/U/wDCVci/c5Ayg9G8OwUTt1pbou2Sl7HGdCuZSnjch5kBpOPfOLD81w==
+X-Received: by 2002:a5d:87d3:: with SMTP id q19mr25910171ios.29.1555368779666;
+        Mon, 15 Apr 2019 15:52:59 -0700 (PDT)
+Received: from localhost ([2620:15c:183:0:20b8:dee7:5447:d05])
+        by smtp.gmail.com with ESMTPSA id a16sm8666316itc.36.2019.04.15.15.52.58
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Apr 2019 15:52:58 -0700 (PDT)
+From:   Raul E Rangel <rrangel@chromium.org>
+To:     linux-mmc@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Cc:     djkurtz@chromium.org, zwisler@chromium.org,
+        Raul E Rangel <rrangel@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        hongjiefang <hongjiefang@asrmicro.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Kyle Roeschley <kyle.roeschley@ni.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v1 1/4] mmc: core: Add trace event for SD SCR response
+Date:   Mon, 15 Apr 2019 16:52:38 -0600
+Message-Id: <20190415225241.70088-1-rrangel@chromium.org>
+X-Mailer: git-send-email 2.21.0.392.gf8f6787159e-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 15 Apr 2019 19:47:38 +0300
-Slavomir Kaslev <kaslevs@vmware.com> wrote:
+Example:
+sd_scr: mmc0: version: 2, spec3: 1, width: 5, cmds: 0, raw: {0x2b58000,0x0}
 
-> Express pid filters as allowed/disallowed filter ranges
-> 
->   (pid>=100&&pid<=103)  
-> 
-> instead of specifying them per pid
-> 
->   (pid==100||pid==101||pid==102||pid==103)
-> 
-> This makes the size of the resulting filter smaller (and faster) and avoids
-> overflowing the filter size limit of one page which we can hit on bigger
-> machines (say >160 CPUs).
+Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+---
 
-Except it breaks if we have a split.
+ drivers/mmc/core/sd.c      |  4 ++++
+ include/trace/events/mmc.h | 42 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 46 insertions(+)
 
-I ran this:
-
- hackbench 10 &
- tracecmd/trace-cmd record -e sched_switch cat /sys/kernel/debug/tracing/events/sched/sched_switch/filter
-
-
-Time: 0.093
-(common_pid<6959||common_pid>6969)||(common_pid<6945||common_pid>6957)||(next_pid<6959||next_pid>6969)||(next_pid<6945||next_pid>6957)
-
-This was the output. Showing that we had common_pid from 6959 - 6969
-and 6945 - 6957 (a 6958 was missing), and because of this, we now trace
-all processes because (common_pid < 6959 || common_pid > 6957) is
-always true.
-
-We need an "&&" there somewhere. That should have been:
-
-((common_pid<6959||common_pid>6969)&&(common_pid<6945||common_pid>6957))||((next_pid<6959||next_pid>6969)&&(next_pid<6945||next_pid>6957))
-
--- Steve
-
-
-
-> 
-> Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
-> Reported-by: Phil Auld <pauld@redhat.com>
-> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  tracecmd/trace-record.c | 115 +++++++++++++++++++++++++++-------------
->  1 file changed, 78 insertions(+), 37 deletions(-)
-> 
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 76ca92d..eeee5e9 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -950,10 +950,61 @@ static void update_ftrace_pids(int reset)
->  static void update_event_filters(struct buffer_instance *instance);
->  static void update_pid_event_filters(struct buffer_instance *instance);
->  
-> +static void append_filter_pid_range(char **filter, int *curr_len,
-> +				    const char *field,
-> +				    int start_pid, int end_pid, bool exclude)
-> +{
-> +	char *op, *op1, *op2, *op3;
-> +	int len;
-> +
-> +	op = *filter && **filter ? "||" : "";
-> +
-> +	// Handle thus case explicitly so that we get `pid==3` instead of
-> +	// `pid>=3&&pid<=3` for singleton ranges
-> +	if (start_pid == end_pid) {
-> +#define FMT	"%s(%s%s%d)"
-> +		len = snprintf(NULL, 0, FMT, op,
-> +			       field, exclude ? "!=" : "==", start_pid);
-> +		*filter = realloc(*filter, *curr_len + len + 1);
-> +		if (!*filter)
-> +			die("realloc");
-> +
-> +		len = snprintf(*filter + *curr_len, len + 1, FMT, op,
-> +			       field, exclude ? "!=" : "==", start_pid);
-> +		*curr_len += len;
-> +
-> +		return;
-> +#undef FMT
-> +	}
-> +
-> +	if (exclude) {
-> +		op1 = "<";
-> +		op2 = "||";
-> +		op3 = ">";
-> +	} else {
-> +		op1 = ">=";
-> +		op2 = "&&";
-> +		op3 = "<=";
-> +	}
-> +
-> +#define FMT	"%s(%s%s%d%s%s%s%d)"
-> +	len = snprintf(NULL, 0, FMT, op,
-> +		       field, op1, start_pid, op2,
-> +		       field, op3, end_pid);
-> +	*filter = realloc(*filter, *curr_len + len + 1);
-> +	if (!*filter)
-> +		die("realloc");
-> +
-> +	len = snprintf(*filter + *curr_len, len + 1, FMT, op,
-> +		       field, op1, start_pid, op2,
-> +		       field, op3, end_pid);
-> +	*curr_len += len;
-> +}
-> +
->  /**
->   * make_pid_filter - create a filter string to all pids against @field
->   * @curr_filter: Append to a previous filter (may realloc). Can be NULL
-> - * @field: The fild to compare the pids against
-> + * @field: The field to compare the pids against
->   *
->   * Creates a new string or appends to an existing one if @curr_filter
->   * is not NULL. The new string will contain a filter with all pids
-> @@ -963,54 +1014,44 @@ static void update_pid_event_filters(struct buffer_instance *instance);
->   */
->  static char *make_pid_filter(char *curr_filter, const char *field)
->  {
-> +	int curr_len = 0, last_exclude = -1;
-> +	int start_pid = -1, last_pid = -1;
-> +	char *filter = NULL, *save;
->  	struct filter_pids *p;
-> -	char *filter;
-> -	char *orit;
-> -	char *match;
-> -	char *str;
-> -	int curr_len = 0;
-> -	int len;
->  
->  	/* Use the new method if possible */
->  	if (have_set_event_pid)
->  		return NULL;
->  
-> -	len = len_filter_pids + (strlen(field) + strlen("(==)||")) * nr_filter_pids;
-> -
-> -	if (curr_filter) {
-> -		curr_len = strlen(curr_filter);
-> -		filter = realloc(curr_filter, curr_len + len + strlen("(&&())"));
-> -		if (!filter)
-> -			die("realloc");
-> -		memmove(filter+1, curr_filter, curr_len);
-> -		filter[0] = '(';
-> -		strcat(filter, ")&&(");
-> -		curr_len = strlen(filter);
-> -	} else
-> -		filter = malloc(len);
-> -	if (!filter)
-> -		die("Failed to allocate pid filter");
-> -
-> -	/* Last '||' that is not used will cover the \0 */
-> -	str = filter + curr_len;
-> +	if (!filter_pids)
-> +		return curr_filter;
->  
->  	for (p = filter_pids; p; p = p->next) {
-> -		if (p->exclude) {
-> -			match = "!=";
-> -			orit = "&&";
-> -		} else {
-> -			match = "==";
-> -			orit = "||";
-> +		/* PIDs are inserted in `filter_pids` from the front and that's
-> +		 * why we expect them in descending order here.
-> +		 */
-> +		if (p->pid == last_pid - 1 && p->exclude == last_exclude) {
-> +			last_pid = p->pid;
-> +			continue;
->  		}
-> -		if (p == filter_pids)
-> -			orit = "";
->  
-> -		len = sprintf(str, "%s(%s%s%d)", orit, field, match, p->pid);
-> -		str += len;
-> +		if (start_pid != -1)
-> +			append_filter_pid_range(&filter, &curr_len, field,
-> +						last_pid, start_pid,
-> +						last_exclude);
-> +
-> +		start_pid = last_pid = p->pid;
-> +		last_exclude = p->exclude;
-> +
->  	}
-> +	append_filter_pid_range(&filter, &curr_len, field,
-> +				last_pid, start_pid, last_exclude);
->  
-> -	if (curr_len)
-> -		sprintf(str, ")");
-> +	if (curr_filter) {
-> +		save = filter;
-> +		asprintf(&filter, "(%s)&&(%s)", curr_filter, filter);
-> +		free(save);
-> +	}
->  
->  	return filter;
->  }
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 265e1aeeb9d8..3bed7c4b6d75 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -21,6 +21,8 @@
+ #include <linux/mmc/mmc.h>
+ #include <linux/mmc/sd.h>
+ 
++#include <trace/events/mmc.h>
++
+ #include "core.h"
+ #include "card.h"
+ #include "host.h"
+@@ -200,6 +202,7 @@ static int mmc_decode_scr(struct mmc_card *card)
+ 	if (scr_struct != 0) {
+ 		pr_err("%s: unrecognised SCR structure version %d\n",
+ 			mmc_hostname(card->host), scr_struct);
++		trace_sd_scr(card, NULL);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -221,6 +224,7 @@ static int mmc_decode_scr(struct mmc_card *card)
+ 
+ 	if (scr->sda_spec3)
+ 		scr->cmds = UNSTUFF_BITS(resp, 32, 2);
++	trace_sd_scr(card, scr);
+ 	return 0;
+ }
+ 
+diff --git a/include/trace/events/mmc.h b/include/trace/events/mmc.h
+index 7b706ff21335..e45258e8a6cb 100644
+--- a/include/trace/events/mmc.h
++++ b/include/trace/events/mmc.h
+@@ -10,6 +10,48 @@
+ #include <linux/mmc/host.h>
+ #include <linux/tracepoint.h>
+ 
++TRACE_EVENT(sd_scr,
++
++	TP_PROTO(struct mmc_card *card, struct sd_scr *scr),
++
++	TP_ARGS(card, scr),
++
++	TP_STRUCT__entry(
++		__array(u32,			raw,	2)
++		__field(unsigned char,		sda_vsn)
++		__field(unsigned char,		sda_spec3)
++		__field(unsigned char,		bus_widths)
++		__field(unsigned char,		cmds)
++		__string(name,			mmc_hostname(card->host))
++	),
++
++	TP_fast_assign(
++		memcpy(__entry->raw, card->raw_scr, sizeof(card->raw_scr));
++		if (scr) {
++			__entry->sda_vsn = scr->sda_vsn;
++			__entry->sda_spec3 = scr->sda_spec3;
++			__entry->bus_widths = scr->bus_widths;
++			__entry->cmds = scr->cmds;
++		} else {
++			__entry->sda_vsn = 0;
++			__entry->sda_spec3 = 0;
++			__entry->bus_widths = 0;
++			__entry->cmds = 0;
++		}
++		__assign_str(name, mmc_hostname(card->host));
++	),
++
++	TP_printk("%s: version: %d, spec3: %d, width: %d, cmds: %d, "
++		"raw: %s",
++		  __get_str(name),
++		  __entry->sda_vsn,
++		  __entry->sda_spec3,
++		  __entry->bus_widths,
++		  __entry->cmds,
++		  __print_array(__entry->raw, 2, sizeof(u32))
++	)
++);
++
+ TRACE_EVENT(mmc_request_start,
+ 
+ 	TP_PROTO(struct mmc_host *host, struct mmc_request *mrq),
+-- 
+2.21.0.392.gf8f6787159e-goog
 
