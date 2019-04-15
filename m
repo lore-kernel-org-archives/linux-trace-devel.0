@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93899C10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 11:06:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 970A5C282DA
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 11:17:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5C21820848
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 11:06:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6578D20880
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Apr 2019 11:17:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AcpSoQh6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ecvbpAcq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbfDOLGC (ORCPT
+        id S1727322AbfDOLRA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 15 Apr 2019 07:06:02 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:51688 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbfDOLGB (ORCPT
+        Mon, 15 Apr 2019 07:17:00 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:46224 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726556AbfDOLRA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 15 Apr 2019 07:06:01 -0400
-Received: by mail-wm1-f68.google.com with SMTP id 4so20097193wmf.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Apr 2019 04:06:00 -0700 (PDT)
+        Mon, 15 Apr 2019 07:17:00 -0400
+Received: by mail-wr1-f65.google.com with SMTP id t17so21351814wrw.13
+        for <linux-trace-devel@vger.kernel.org>; Mon, 15 Apr 2019 04:16:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=03D+9Zb4zqJhIhlnU0RgpplIBTN6zWczgNh5ykClW/I=;
-        b=AcpSoQh6c30gAuaIyyCzjTRUJOueRZuTD71NVSmCfe1/9YHGDMn3qkiu7ByZnsVaPa
-         dGo1R7jOQr26D9WPZEfJkXTVUefnKKn353pkWnQ+Kk/hjKxsBM3pdPmDfUb7useXc8mM
-         qqmVhD3u60NJzm52eS9eCfqjh9moXwtml4hDQbqSLzi22j8nRh+/2vKd7uUrpwIQrV9x
-         ItzLZpI7ImJm26CaLfuSt4lo9McqogxLKJoVw/mrG1ol2PUVzwXFq6dZ3eXT6F6NUY82
-         6DFSAJe1ANeaXnbryeES6/xOWWptagJZA+gpXyAVggixknD8acPjLUUyg93+ZcMNH/pe
-         rq5A==
+        bh=awhpii9IVZpTW7x0ij3Ue6s0TYvFwfvm/3xFQekSXaI=;
+        b=ecvbpAcqrl/jejz/tFrA5/tsp8meCVzHAuNvKQyyQ3YkZBKVk424WyYTKb7FU2klAD
+         tzCCmICOrKpEwbMsnWGSYCA47Xz44WzCNS2CKsgpc4jhvu9O5fNXa61iBzvZbL/WggnZ
+         CjMW5AGjDi6eVXCmvJVXHSGjYJoxW1p4yauuYiS6sF4cwa7npnsm5lsUKg1raUppeKbj
+         QRlTIddYk+tjgLti/UrjyS8XodrhI87jNMYvtKfsWM9RSaVTeyzBFYscK7Jw6rZZdVM3
+         61LYwVdFm4vAiYy8MFL8va04VQNF5csfnK21K4JaabgywCRSM63eInpP1wWxSpwatIMW
+         wPMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=03D+9Zb4zqJhIhlnU0RgpplIBTN6zWczgNh5ykClW/I=;
-        b=eL0IbAnWLJ4poMm8ao2Ifhal1t4QJhNYepQqmMp0y81V/9tjIT9hRs2cu+/si7x0un
-         ILLQ7I5vYoB1GM9euA8dyscUuIoA7xvuvCr/Vu8emezNP+ymFj4+FJ/2phBBJdOP7/dL
-         m74NS/L46x25JiE6dK+U8TxTehfg/jR1AluxsxTD2hKGkr3jDRQYc+nA+M1aozvhXkc8
-         KVYkujXvHX54aEBri2nOId7nKj/ESc56qegeNxrFbQtw8kQHZi3b6fKoQQFCMriy3JZY
-         8LKGkxA7iaJzR/lthZczfeDUHEfFGTnagpAqt4WdTnVJna4VS61VfrB9PGKY/CT0FESf
-         Awdg==
-X-Gm-Message-State: APjAAAWqfbzlGxZ67UtwX9YdKrOzSapohy7TeeZ686eB56qQ4vA8oHMx
-        IhMl92eswANulyVFXvcIVmYfb8IO
-X-Google-Smtp-Source: APXvYqw6VAXqoVEKQ63Q+RHgkgaXXZgHoe6ujdWrpEnDxyrVy+GENDPR8K0tccIBmqhp2rTUcqKNlg==
-X-Received: by 2002:a1c:a103:: with SMTP id k3mr21814462wme.8.1555326359765;
-        Mon, 15 Apr 2019 04:05:59 -0700 (PDT)
+        bh=awhpii9IVZpTW7x0ij3Ue6s0TYvFwfvm/3xFQekSXaI=;
+        b=kyTi9V1NJj2ymuH4iKegPHJ+bx4T6XViCW6bflop2ZtfqbiGPCnphaOnjPhkTqcS4Q
+         40kf5NebnGM9IDv5KI2QqRrG/BwgtRPgQKDnAwGX5Yo6JRP8rkQXxBWLWAyrX8QAAV8Y
+         4gDrePUf/t11PQ0T9DZrteU8JUFZqN0jUTbfjdOAyHyNDFXPDDjKecFQvFppXPeViJtC
+         6yy0zzPjK/d97SH5/dDrpQXmmPw570eE1/puiTI/WUpLI/OUdFrN9lMgKmJN6yd1+YxH
+         Pm8Bew0Q4OBQ20QdrRrnxXyGvVCJygdmgj6ogAGNmKf44q7ALYnS8Ru72N16nx/xlsO8
+         NtOg==
+X-Gm-Message-State: APjAAAUkp9aw1ZYhNGP5a2w6IHHskeninPo+j5W/X0q4iOpQWZhdRwst
+        cCU5W4Wl4fo1Q26uhq0IJoGmM9Yh
+X-Google-Smtp-Source: APXvYqzqhm2+PkjJwX50tcPlNMJ3kicT8l5XmFu0crYDxb9R/GGChiUXWMvtqhozKz868FjU5k5J8g==
+X-Received: by 2002:adf:e74f:: with SMTP id c15mr45255799wrn.23.1555327018300;
+        Mon, 15 Apr 2019 04:16:58 -0700 (PDT)
 Received: from [10.27.112.40] ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id y132sm19368299wmg.38.2019.04.15.04.05.58
+        by smtp.gmail.com with ESMTPSA id 7sm169745170wrc.81.2019.04.15.04.16.57
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Apr 2019 04:05:59 -0700 (PDT)
+        Mon, 15 Apr 2019 04:16:57 -0700 (PDT)
 Subject: Re: [PATCH 1/4] kernel-shark: Configuration information in
  ${HOME}/.cache/kernelshark
 To:     Slavomir Kaslev <kaslevs@vmware.com>,
@@ -73,8 +73,8 @@ References: <20190404145603.13592-1-ykaradzhov@vmware.com>
  <20190409111100.28297adb@gandalf.local.home>
  <CAE0o1Nv_JgHpTHgwpLhw7dkyxqW_u-rRUBMojgzPENCwVUDbmg@mail.gmail.com>
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <edebede3-e508-022e-5d71-13226cd2df58@gmail.com>
-Date:   Mon, 15 Apr 2019 14:05:54 +0300
+Message-ID: <30661ef4-5fc5-d362-3df3-09fb1cc54482@gmail.com>
+Date:   Mon, 15 Apr 2019 14:16:53 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.5.1
 MIME-Version: 1.0
@@ -90,30 +90,40 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 
 On 9.04.19 г. 18:44 ч., Slavomir Kaslev wrote:
-> The problem is the way they are defined atm:
+> KS_DIR is used runtime to load plugins, as default path for file open
+> dialogs (which doesn't make much sense imo) and at compile time to
+> construct relative paths in the source directory. It is currently
+> defined simply as
 > 
-> # First search in the user provided paths.
-> find_path(TRACECMD_BIN_DIR      NAMES  trace-cmd
->                                  PATHS  $ENV{TRACE_CMD}/tracecmd/
->                                         ${CMAKE_SOURCE_DIR}/../tracecmd/
->                                  NO_DEFAULT_PATH)
+> set(KS_DIR ${CMAKE_SOURCE_DIR})
 > 
-> This will never evaluate to /usr/bin which is what it should be for
-> distro builds.
+> I think there needs to be a separate constant for plugins path that
+> can be set at build time and in distro build can point to
+> /usr/share/kernelshark/plugins or somewhere where we want shared
+> plugins to live. 
 
-I think there is a bit of confusion here. The code above will never 
-search in /usr/bin. This statement is correct.
+Yes. No doubt that this must be separated.
 
-However if this search fails we will perform another search that will 
-this time search in /usr/bin. Look few lines below in  FindTraceCmd.cmake.
+> The compile time uses of KS_DIR are fine though
+> ${CMAKE_SOURCE_DIR} is clearer for the reader. The default directory
+> for file open dialogs can be the current directory or the last opened
+> path rather than the kernelshark source directory.
+> 
+> What do you think?
 
-The reason for this is to avoid confusion in the case when the user has 
-the distro package installed, but in the same time is trying to build 
-KernelShark from source. We want in this case the GUI to link with the 
-version of the trace-cmd library that is being build (not the one from 
-the package).
+I still think that if you build KernelShark from source, the most 
+natural  default path for the open-file dialogs is the 
+trace-cmd/kernel-shark directory. However if this directory doesn't 
+exist the dialogs can start at ${HOME} (the one of the user running the 
+app).
 
+
+I still think that if you build KernelShark from source, the most 
+natural  default path for the open-file dialogs is the 
+trace-cmd/kernel-shark directory. However if this directory doesn't 
+exist {distro installation} the dialogs can start at ${HOME} (the one of 
+the user running the app).
+
+What do you think?
 Thanks!
 Yordan
-
-
