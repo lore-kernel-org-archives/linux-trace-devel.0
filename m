@@ -4,65 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 985FEC10F14
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Apr 2019 18:33:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D28A0C10F14
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Apr 2019 18:33:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6573420449
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Apr 2019 18:33:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A558420449
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 16 Apr 2019 18:33:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PU7Tpr+z"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TYgdyooD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729640AbfDPSdQ (ORCPT
+        id S1730179AbfDPSd1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 16 Apr 2019 14:33:16 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:33364 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730254AbfDPSdQ (ORCPT
+        Tue, 16 Apr 2019 14:33:27 -0400
+Received: from mail-it1-f193.google.com ([209.85.166.193]:52384 "EHLO
+        mail-it1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730280AbfDPSdT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 16 Apr 2019 14:33:16 -0400
-Received: by mail-io1-f66.google.com with SMTP id b6so18501727iog.0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 16 Apr 2019 11:33:15 -0700 (PDT)
+        Tue, 16 Apr 2019 14:33:19 -0400
+Received: by mail-it1-f193.google.com with SMTP id x132so375108itf.2
+        for <linux-trace-devel@vger.kernel.org>; Tue, 16 Apr 2019 11:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sCg1+4C/3BXdYjyRhbyWaAnGRGTGFQ1Fry4WA2G26j8=;
-        b=PU7Tpr+zhZjEs++hYXr1ScD7vT5qTwF4iKMM54vbh1iAZj7lEoQcejtgtaQhzuS/m4
-         7ph6PU9mzpswJ/0piM1OfkTxjZEVdYXDUIgk6FJAXXqyk2er7UyajgIrCgY5CTodvohj
-         Vs2f+81sG2Dt4EU5tnveamavMeTdrPSwmOM4c=
+        bh=F3GPaWxyQHkj77z2s2eVPCGI01KnC8ViCHmTdyBvcOU=;
+        b=TYgdyooDOXKuuhaht5S5dTCrXIc6mB+6oviKJo14tF4ChMKI0wLDdf3QmJW8ZscNB+
+         fKSjrQSrEV81py88vVUlJlbjxUy7eMW0FJBjzq8t9voUlRuPpiM7Crpp2tjMjKfEyOe1
+         4qsbNscB/a3xXglB+tPSE78EmnwpZY50JeAh0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sCg1+4C/3BXdYjyRhbyWaAnGRGTGFQ1Fry4WA2G26j8=;
-        b=aVwZtYoA1+0m8zzwcJzQ9bjFvnQ9Z+oS15vSI6rcrBdYug03J7ksT6umtF1hXD+GaP
-         qATXVw/+JxQt+mNZbleDnVZOj49UxvH+tmx4dXl8h3PzYN2KNOb//itMyipprxy3kAfE
-         iOsSapr2Deuy91kui65V9h2hV/yQ5s0GDAOn9n3FrigPhQiQLbH9jIj2weFiMLwecyL8
-         AQX/zUdaovf5HNizV6ytWU7JSG7iKnAdIMiml2zAhVxVoHOZZemOr7slSpQwnCwXzebT
-         l1JtxgHsgnunrHg6D/yp5gKRtB+Tp1kQhk0s9/v2CgqjtA4Pm3jckuRbDuW/lU/2dsla
-         WtUA==
-X-Gm-Message-State: APjAAAVW5gz8Qt0LklVowdx+/f3woSIAY6BtQ6dqqU6eeRKPtmI6SXQN
-        K5pBYysXEtCv4Y9uVnkWR9WZ4A==
-X-Google-Smtp-Source: APXvYqxe51A2j3HQNDba4Y1SRCrfzq3onNi4ynJVohVbf4X4syGAVuNhE3mopOvgQvF7pjvzYVE5iw==
-X-Received: by 2002:a6b:4e10:: with SMTP id c16mr9806791iob.18.1555439595207;
-        Tue, 16 Apr 2019 11:33:15 -0700 (PDT)
+        bh=F3GPaWxyQHkj77z2s2eVPCGI01KnC8ViCHmTdyBvcOU=;
+        b=jfArLHeY0tklmA6296csyflaqTVQPwdVYDoqI5PVpAj0H/kxrEoG2xvBdGy1UgFxP7
+         2sG5EsN71GW56kKdq3OptSsmBlgjM58hQinS5SieimEgfO3JZ51DQ/5O2rYJxmqiwsOg
+         esefWWs5PHGTgDOtDD9bgqcNK1MGZOwrf1Fg0lRBa3VTYH5Hbv/ippDubS4Xkf3h2zUV
+         16XDfJzd6DpfnVuJd4IsbrUG/riDO837XHkJ28X/HvHR4D9bh5rktG8tTMh9CoO5Igo7
+         /OSS3CDpShFz+NryTjSSgFIH1bxvZjry70RbEZ/ZfeWqNJklol3nBl13zDKvrvIrKUm1
+         wpuA==
+X-Gm-Message-State: APjAAAVtLYaX4Vk7o3+BqeTBuOSL22X5OZSAYEtV/53Crba7tmaDbxQL
+        PfgHPZyHXg2S28XzQFIv/luexQ==
+X-Google-Smtp-Source: APXvYqyUEAIZVeWfBmzRRg9tdYk+hBJwi3c2BMG1LanJailJTOvWT5vm8VLN+5bDqavqhvrdcAMEOA==
+X-Received: by 2002:a24:4161:: with SMTP id x94mr31426514ita.83.1555439598146;
+        Tue, 16 Apr 2019 11:33:18 -0700 (PDT)
 Received: from localhost ([2620:15c:183:0:20b8:dee7:5447:d05])
-        by smtp.gmail.com with ESMTPSA id k18sm19887735iob.60.2019.04.16.11.33.14
+        by smtp.gmail.com with ESMTPSA id m25sm92094iti.24.2019.04.16.11.33.17
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Apr 2019 11:33:14 -0700 (PDT)
+        Tue, 16 Apr 2019 11:33:17 -0700 (PDT)
 From:   Raul E Rangel <rrangel@chromium.org>
 To:     linux-mmc@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     djkurtz@chromium.org, zwisler@chromium.org,
         Raul E Rangel <rrangel@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v2 3/4] mmc: core: Add trace event for SD OCR response
-Date:   Tue, 16 Apr 2019 12:32:56 -0600
-Message-Id: <20190416183257.247902-4-rrangel@chromium.org>
+        hongjiefang <hongjiefang@asrmicro.com>,
+        Jennifer Dahm <jennifer.dahm@ni.com>,
+        linux-kernel@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
+        Kyle Roeschley <kyle.roeschley@ni.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Simon Horman <horms+renesas@verge.net.au>
+Subject: [PATCH v2 4/4] mmc: core: Add trace event for CSD response
+Date:   Tue, 16 Apr 2019 12:32:57 -0600
+Message-Id: <20190416183257.247902-5-rrangel@chromium.org>
 X-Mailer: git-send-email 2.21.0.392.gf8f6787159e-goog
 In-Reply-To: <20190416183257.247902-1-rrangel@chromium.org>
 References: <20190416183257.247902-1-rrangel@chromium.org>
@@ -74,149 +80,91 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Example:
-sd_ocr_request: mmc0: 0x0 []
-sd_ocr_request: mmc0: 0x51200000 [SDHC or SDXC Supported (HCS) | Maximum Performance (XPC) | Switch to 1.8V (S18R) | 3.3 ~ 3.4]
-sd_ocr_response: mmc0: 0xff8000 [2.7 ~ 2.8 | 2.8 ~ 2.9 | 2.9 ~ 3.0 | 3.0 ~ 3.1 | 3.1 ~ 3.2 | 3.2 ~ 3.3 | 3.3 ~ 3.4 | 3.4 ~ 3.5 | 3.5 ~ 3.6]
+mmc_csd: mmc0: struct: 0, cmdclass: 0x5b5, raw: {0x400e0032,0x5b590000,0x3b4b7f80,0xa404000}
 
 Signed-off-by: Raul E Rangel <rrangel@chromium.org>
 ---
 
- drivers/mmc/core/sd_ops.c  |  6 +++
- include/trace/events/mmc.h | 92 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 98 insertions(+)
+ drivers/mmc/core/mmc.c     |  4 ++++
+ drivers/mmc/core/sd.c      |  2 ++
+ include/trace/events/mmc.h | 29 +++++++++++++++++++++++++++++
+ 3 files changed, 35 insertions(+)
 
-diff --git a/drivers/mmc/core/sd_ops.c b/drivers/mmc/core/sd_ops.c
-index 0bb0b8419016..4cf0f040f896 100644
---- a/drivers/mmc/core/sd_ops.c
-+++ b/drivers/mmc/core/sd_ops.c
-@@ -19,6 +19,8 @@
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 3e786ba204c3..46ce894f7c03 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -20,6 +20,8 @@
+ #include <linux/mmc/card.h>
  #include <linux/mmc/mmc.h>
- #include <linux/mmc/sd.h>
  
 +#include <trace/events/mmc.h>
 +
  #include "core.h"
- #include "sd_ops.h"
+ #include "card.h"
+ #include "host.h"
+@@ -182,6 +184,8 @@ static int mmc_decode_csd(struct mmc_card *card)
+ 		csd->erase_size <<= csd->write_blkbits - 9;
+ 	}
  
-@@ -130,11 +132,15 @@ int mmc_send_app_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
- 		cmd.arg = ocr;
- 	cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R3 | MMC_CMD_BCR;
- 
-+	trace_sd_ocr_request(host, ocr);
++	trace_mmc_csd(card);
 +
- 	for (i = 100; i; i--) {
- 		err = mmc_wait_for_app_cmd(host, NULL, &cmd);
- 		if (err)
- 			break;
+ 	return 0;
+ }
  
-+		trace_sd_ocr_response(host, cmd.resp[0]);
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 908c3087cdcd..3b2e09fa72c5 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -183,6 +183,8 @@ static int mmc_decode_csd(struct mmc_card *card)
+ 
+ 	card->erase_size = csd->erase_size;
+ 
++	trace_mmc_csd(card);
 +
- 		/* if we're just probing, do a single pass */
- 		if (ocr == 0)
- 			break;
+ 	return 0;
+ }
+ 
 diff --git a/include/trace/events/mmc.h b/include/trace/events/mmc.h
-index 463cf318d762..8d97810221cd 100644
+index 8d97810221cd..46fd918bcae3 100644
 --- a/include/trace/events/mmc.h
 +++ b/include/trace/events/mmc.h
-@@ -10,6 +10,98 @@
- #include <linux/mmc/host.h>
- #include <linux/tracepoint.h>
+@@ -185,6 +185,35 @@ TRACE_EVENT(sd_ssr,
+ 	)
+ );
  
++TRACE_EVENT(mmc_csd,
 +
-+#define SD_OCR_REQUEST \
-+	{SD_OCR_CCS, "SDHC or SDXC Supported (HCS)"}, \
-+	{SD_OCR_XPC, "Maximum Performance (XPC)"}, \
-+	{SD_ROCR_S18A, "Switch to 1.8V (S18R)"}, \
-+	{MMC_VDD_165_195, "1.65 - 1.95"}, \
-+	{MMC_VDD_20_21, "2.0 ~ 2.1"}, \
-+	{MMC_VDD_21_22, "2.1 ~ 2.2"}, \
-+	{MMC_VDD_22_23, "2.2 ~ 2.3"}, \
-+	{MMC_VDD_23_24, "2.3 ~ 2.4"}, \
-+	{MMC_VDD_24_25, "2.4 ~ 2.5"}, \
-+	{MMC_VDD_25_26, "2.5 ~ 2.6"}, \
-+	{MMC_VDD_26_27, "2.6 ~ 2.7"}, \
-+	{MMC_VDD_27_28, "2.7 ~ 2.8"}, \
-+	{MMC_VDD_28_29, "2.8 ~ 2.9"}, \
-+	{MMC_VDD_29_30, "2.9 ~ 3.0"}, \
-+	{MMC_VDD_30_31, "3.0 ~ 3.1"}, \
-+	{MMC_VDD_31_32, "3.1 ~ 3.2"}, \
-+	{MMC_VDD_32_33, "3.2 ~ 3.3"}, \
-+	{MMC_VDD_33_34, "3.3 ~ 3.4"}, \
-+	{MMC_VDD_34_35, "3.4 ~ 3.5"}, \
-+	{MMC_VDD_35_36, "3.5 ~ 3.6"} \
++	TP_PROTO(struct mmc_card *card),
 +
-+TRACE_EVENT(sd_ocr_request,
-+
-+	TP_PROTO(struct mmc_host *host, u32 ocr),
-+
-+	TP_ARGS(host, ocr),
++	TP_ARGS(card),
 +
 +	TP_STRUCT__entry(
-+		__field(u32,			ocr)
-+		__string(name,			mmc_hostname(host))
++		__array(u32,			raw,	4)
++		__field(unsigned char,		structure)
++		__field(unsigned short,		cmdclass)
++		__string(name,			mmc_hostname(card->host))
 +	),
 +
 +	TP_fast_assign(
-+		__entry->ocr = ocr;
-+		__assign_str(name, mmc_hostname(host));
++		BUILD_BUG_ON(sizeof(card->raw_csd) != sizeof(__entry->raw));
++		memcpy(__entry->raw, card->raw_csd, sizeof(__entry->raw));
++		__entry->structure = card->csd.structure;
++		__entry->cmdclass = card->csd.cmdclass;
++		__assign_str(name, mmc_hostname(card->host));
 +	),
 +
-+	TP_printk("%s: %#x [%s]",
++	TP_printk("%s: struct: %d, cmdclass: %#x, raw: %s",
 +		  __get_str(name),
-+		  __entry->ocr,
-+		  __print_flags(__entry->ocr, " | ", SD_OCR_REQUEST)
++		  __entry->structure,
++		  __entry->cmdclass,
++		  __print_array(__entry->raw, 4, sizeof(u32))
 +	)
 +);
 +
-+#define SD_OCR_RESPONSE \
-+	{MMC_CARD_BUSY, "Ready"}, \
-+	{SD_OCR_CCS, "SDHC or SDXC (CCS)"}, \
-+	{(1<<29), "UHS-II Card"}, \
-+	{SD_ROCR_S18A, "1.8V Accepted (S18A)"}, \
-+	{MMC_VDD_165_195, "1.65 - 1.95"}, \
-+	{MMC_VDD_20_21, "2.0 ~ 2.1"}, \
-+	{MMC_VDD_21_22, "2.1 ~ 2.2"}, \
-+	{MMC_VDD_22_23, "2.2 ~ 2.3"}, \
-+	{MMC_VDD_23_24, "2.3 ~ 2.4"}, \
-+	{MMC_VDD_24_25, "2.4 ~ 2.5"}, \
-+	{MMC_VDD_25_26, "2.5 ~ 2.6"}, \
-+	{MMC_VDD_26_27, "2.6 ~ 2.7"}, \
-+	{MMC_VDD_27_28, "2.7 ~ 2.8"}, \
-+	{MMC_VDD_28_29, "2.8 ~ 2.9"}, \
-+	{MMC_VDD_29_30, "2.9 ~ 3.0"}, \
-+	{MMC_VDD_30_31, "3.0 ~ 3.1"}, \
-+	{MMC_VDD_31_32, "3.1 ~ 3.2"}, \
-+	{MMC_VDD_32_33, "3.2 ~ 3.3"}, \
-+	{MMC_VDD_33_34, "3.3 ~ 3.4"}, \
-+	{MMC_VDD_34_35, "3.4 ~ 3.5"}, \
-+	{MMC_VDD_35_36, "3.5 ~ 3.6"}
-+
-+TRACE_EVENT(sd_ocr_response,
-+
-+	TP_PROTO(struct mmc_host *host, u32 ocr),
-+
-+	TP_ARGS(host, ocr),
-+
-+	TP_STRUCT__entry(
-+		__field(u32,			ocr)
-+		__string(name,			mmc_hostname(host))
-+	),
-+
-+	TP_fast_assign(
-+		__entry->ocr = ocr;
-+		__assign_str(name, mmc_hostname(host));
-+	),
-+
-+	TP_printk("%s: %#x [%s]",
-+		  __get_str(name),
-+		  __entry->ocr,
-+		  __print_flags(__entry->ocr, " | ", SD_OCR_RESPONSE)
-+	)
-+);
-+
- #define SD_SCR_WIDTH_FLAGS		\
- 	{SD_SCR_BUS_WIDTH_1, "1-BIT"},	\
- 	{SD_SCR_BUS_WIDTH_4, "4-BIT"}
+ TRACE_EVENT(mmc_request_start,
+ 
+ 	TP_PROTO(struct mmc_host *host, struct mmc_request *mrq),
 -- 
 2.21.0.392.gf8f6787159e-goog
 
