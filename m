@@ -2,148 +2,96 @@ Return-Path: <SRS0=58xy=ST=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1133C282DA
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Apr 2019 13:19:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09A9FC282DA
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Apr 2019 13:44:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C82EE21773
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Apr 2019 13:19:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C782C20872
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Apr 2019 13:44:22 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QcPIqxJC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732240AbfDQNTZ (ORCPT
+        id S1729453AbfDQNoW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 17 Apr 2019 09:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726800AbfDQNTZ (ORCPT
+        Wed, 17 Apr 2019 09:44:22 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:36717 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729395AbfDQNoW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 17 Apr 2019 09:19:25 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76C3F206BA;
-        Wed, 17 Apr 2019 13:19:24 +0000 (UTC)
-Date:   Wed, 17 Apr 2019 09:19:22 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] trace-cmd: remove parsing_failures APIs from
- libtraceevent
-Message-ID: <20190417091922.1e4c5f19@gandalf.local.home>
-In-Reply-To: <CACqStoc1vyLp=8XavFoXBCrFQh7C5eruhhGoVLwqHS670TP06g@mail.gmail.com>
-References: <20190415125823.4011-1-tstoyanov@vmware.com>
-        <20190416184832.2bb69162@gandalf.local.home>
-        <CACqStoc1vyLp=8XavFoXBCrFQh7C5eruhhGoVLwqHS670TP06g@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Wed, 17 Apr 2019 09:44:22 -0400
+Received: by mail-wm1-f67.google.com with SMTP id h18so3710052wml.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Apr 2019 06:44:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=8HKyUFkoQgHd3ytzOBTOjSd8DF4ffOD6c760D1maM/c=;
+        b=QcPIqxJCsrRLPCtZzCqw+ubwPkOv+1wRU02fZGm6YK1aUUw+E7XkgRMwprWW/WwgM8
+         blEa8ifkowPgctmevHHZ6OLvbTQPxwsuwX/iIwQ2mD7Fgs3SlZm9ywIHHQLEqK0weF6F
+         w81IVUaeivxiyVblhhkscEugdY7G3FKAVAPJ/CZ1TNZ9hDJp31zz/ZTzt4RostuoNuY/
+         HnpS467xjSq5TdEMIRGuTBmsBzucoauOV5x/FUVRhZG1auDFYdNpVtc3EVoLxGZT4VKN
+         XiY5ZPZZaCQ0Ff8LxTstmgSmJtzgmQ2bIRLBTo2jhG7FpWyTApyB0RhqfU7d1G3WilMS
+         qx1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=8HKyUFkoQgHd3ytzOBTOjSd8DF4ffOD6c760D1maM/c=;
+        b=Y7rzivN1gzO6cD7xRGPsaXMs9ne+4croPo0m799YLwdmnwxVtnvL87ynQVJAWvGJ44
+         6dpRlkwFLR4E6djyUeRuGvgcYJWtDzPkQG075FwWMjCx41aneWY3GERrJfH3cpyO56r3
+         wliMApUQ//mN3AVf9HwuUqHw9GNTCZQLlN50ZY+cwnFxgrxsKHCE0diA5BeMV8J0qyUr
+         y9on1VXZ7JWPr9kyQz5/OFeAvMCVwf11YgKb7zHCU8/4IdyjWcyNA8vU7y/YpnZU8J0b
+         cdbxWT0qmtam0W4z1PU5YOYcbQPia1xKk12GuOjC5SS7mIcCWxOsp4e5A5IyVGaY+MLk
+         pvBg==
+X-Gm-Message-State: APjAAAUfg+7+hHFOaoV4Zy2a02Wuglvgraw1FaqDZOYGIZfMDpO9xeGJ
+        DwpuOIs9MpVWFZRZJw0how==
+X-Google-Smtp-Source: APXvYqysRcLlvcUQlfgjoBlpHy2UOzu4BMuoemvsX8apV3owNBoqqCgjV6nblRWiN/KWGPOllequ/Q==
+X-Received: by 2002:a1c:cf0b:: with SMTP id f11mr30552803wmg.26.1555508660549;
+        Wed, 17 Apr 2019 06:44:20 -0700 (PDT)
+Received: from box ([151.251.252.188])
+        by smtp.gmail.com with ESMTPSA id e7sm3623841wme.37.2019.04.17.06.44.16
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 17 Apr 2019 06:44:17 -0700 (PDT)
+Message-ID: <53f5d46695a66aaf103a31817855629675f4938b.camel@gmail.com>
+Subject: Re: [PATCH v3 1/2] trace-cmd: Optimize how pid filters are expressed
+From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org, pauld@redhat.com,
+        ykaradzhov@vmware.com, jbacik@fb.com, tstoyanov@vmware.com
+Date:   Wed, 17 Apr 2019 16:44:11 +0300
+In-Reply-To: <20190416174810.50d8a88d@gandalf.local.home>
+References: <20190415230016.13932-1-kaslevs@vmware.com>
+         <20190415230016.13932-2-kaslevs@vmware.com>
+         <20190416174810.50d8a88d@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.1-1build1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 17 Apr 2019 09:10:26 +0000
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
-
-Let's not add this. Instead add a "parsing_failures" to the
-> > tracecmd_input handle, and add:
-> >
-> > int tracecmd_get_parsing_failures(struct tracecmd_input *handle)
-> > {
-> >         return handle->parsing_failures;
-> > }
-> >  
-> I hesitated if to add new API, or use additional parameter to the
-> existing functions.
-> The reason for this change is to remove "parsing_failures" from
-> traceevent library,
-> that's why I decided not to move it to trace-cmd library. Using new
-> library API is nicer,
-> I can reimplement it in this way, but we may have the same concerns
-> when trace-cmd
-> library comes out.
+On Tue, 2019-04-16 at 17:48 -0400, Steven Rostedt wrote:
+> On Tue, 16 Apr 2019 02:00:15 +0300
+> Slavomir Kaslev <kaslevs@vmware.com> wrote:
 > 
-
-That's a valid concern, but there is a difference between the
-libtraceevent and libftrace (or whatever we decide to name it ;-)
-
-The trace-cmd code will be a higher level library on top of
-libtraceevent. The main difference is that the trace-cmd code has
-algorithms that deal with the counter but the tep code did not. We
-incorrectly added that counter to the tep code only because a higher
-layer needed it. The tep layer did not understand the context of that
-counter.
-
-My concern with the counter in the tep code was that it was at the
-wrong level. That is, the tep code had no processing for that counter.
-To put it a different way, the tep code did not understand the context
-of the counter. We had to add API to set and reset that counter, which
-was a clear indication that the tep library shouldn't be the one to
-store it.
-
-Now at the trace-cmd code level (libftrace), it most definitely
-understands the context of that counter. Thus the counter should be
-stored at that level. We didn't need to add APIs to the trace-cmd code
-to reset that counter, or increment it. Because the trace-cmd library
-knows the context of the counter. That's how one knows if the library
-should store the counter or not.
-
-Let's make the parsing_failures part of the tracecmd_input handler and
-it will simplify this patch quite a bit.
-
-Does that make sense?
-
--- Steve
-
-
-> > > +{
-> > > +     return _tracecmd_read_headers(handle, parsing_failures);
-> > > +}
-> > > +  
-> >
-> > [..]
-> >  
-> > > diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-> > > index 52fa1bd..fe116cc 100644
-> > > --- a/tracecmd/trace-read.c
-> > > +++ b/tracecmd/trace-read.c
-> > > @@ -1417,6 +1417,7 @@ void trace_report (int argc, char **argv)
-> > >       unsigned long long tsoffset = 0;
-> > >       unsigned long long ts2secs = 0;
-> > >       unsigned long long ts2sc;
-> > > +     int parsing_failures;
-> > >       int show_stat = 0;
-> > >       int show_funcs = 0;
-> > >       int show_endian = 0;
-> > > @@ -1714,10 +1715,10 @@ void trace_report (int argc, char **argv)
-> > >                       tracecmd_print_events(handle, print_event);
-> > >                       return;
-> > >               }
-> > > -
-> > > -             ret = tracecmd_read_headers(handle);
-> > > +             parsing_failures = 0;
-> > > +             ret = tracecmd_read_headers_failures(handle, &parsing_failures);  
-> >
-> > Here we should do:
-> >
-> >                 ret = tracecmd_read_headers(handle);
-> >  
-> > >               if (check_event_parsing) {
-> > > -                     if (ret || tep_get_parsing_failures(pevent))  
-> >
-> >                         if (ret || tracecmd_get_parsing_failures(handle))
-> >
-> > -- Steve
-> >  
-> > > +                     if (ret || parsing_failures)
-> > >                               exit(EINVAL);
-> > >                       else
-> > >                               exit(0);  
-> >  
+> >  static char *make_pid_filter(char *curr_filter, const char *field)
+> >  {
+> > +	int curr_len = 0, last_exclude = -1;
 > 
-> 
+> Small nit. Usually when adding multiple variables on one line like
+> this, the variables should be related. Because curr_len and
+> last_exclude are not related, it is best to keep them separate.
+
+Sent v4 addressing those and added a section about --no-filter to
+trace-cmd record's man page.
+
+Cheers,
+
+-- Slavi
 
