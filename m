@@ -2,95 +2,90 @@ Return-Path: <SRS0=Pjg+=SU=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDF67C10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 06:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45768C10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C6538214DA
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 06:25:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 16D0F20821
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388040AbfDRGZk (ORCPT
+        id S2388806AbfDRPWT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 18 Apr 2019 02:25:40 -0400
-Received: from mga01.intel.com ([192.55.52.88]:16089 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbfDRGZk (ORCPT
+        Thu, 18 Apr 2019 11:22:19 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34927 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731317AbfDRPWT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 18 Apr 2019 02:25:40 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Apr 2019 23:25:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.60,364,1549958400"; 
-   d="scan'208";a="151841923"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.198]) ([10.237.72.198])
-  by orsmga002.jf.intel.com with ESMTP; 17 Apr 2019 23:25:34 -0700
-Subject: Re: [PATCH v1 0/4] Add tracing for SDHCI register access
-To:     Raul Rangel <rrangel@chromium.org>
-Cc:     linux-trace-devel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        djkurtz@chromium.org, zwisler@chromium.org,
-        Ludovic Barre <ludovic.barre@st.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Faiz Abbas <faiz_abbas@ti.com>, linux-kernel@vger.kernel.org,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Liming Sun <lsun@mellanox.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Prabu Thangamuthu <Prabu.T@synopsys.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-References: <20190411220822.81845-1-rrangel@chromium.org>
- <7b77ebcb-b42b-2d14-f5f1-b37e07b88469@intel.com>
- <20190412145012.GA101407@google.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <bd3a1df1-5ac4-e23c-35a3-78361a5c356e@intel.com>
-Date:   Thu, 18 Apr 2019 09:24:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Thu, 18 Apr 2019 11:22:19 -0400
+Received: by mail-wr1-f66.google.com with SMTP id o12so133058wrn.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Apr 2019 08:22:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JtSYvbjoVh6UklgdPE562FaBI74oeMYyqS0+p2dTmOE=;
+        b=H769d3ksI+oZRSml2Sfl9lcxjCJy/Zw2ey+dD58p3qCLlI7BAHcBGqzdU6rsfeybeN
+         mmvHG3SY6NbTuIxG8pbCUg1PNk7c2QVCMk/bVXU51VsatDsouVVNUqEIzDiJAnhoBO21
+         wDIoHESTw2+7DTpNXWqOpJ8XjlezxfYJBglAMClJ/Hlq5yFvsZjYjDSJPrgijUT0FfH2
+         hj4Rj7xqYPCohr2DoWyEUahQ/ep+mnVFhN4SoSCiXAg1a4SguJ89LApRrWZ4nKoBgcWR
+         5ChBZkhNCaiJvWfPkkNWQ5MeL84y18mq2IGewfApWgH33bmVB3mwvoxHpE0z0s9SOOBt
+         LwjA==
+X-Gm-Message-State: APjAAAWU1xPDcay1uz71M9/etZ+AkYJAa+ykwTCmiM8FIkCRyUiq9OpN
+        CNpUZQZprEU/l3wG9JdEcPE0BLcq
+X-Google-Smtp-Source: APXvYqwAFJZIesOAaqSTDl+gapwlucNn8X9fyIS1JD6rETIVNweisvS2McLGVmIL/ueVkH/c2h3Bzw==
+X-Received: by 2002:a5d:5346:: with SMTP id t6mr2595021wrv.59.1555600938058;
+        Thu, 18 Apr 2019 08:22:18 -0700 (PDT)
+Received: from mamba.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id l12sm2543698wrt.31.2019.04.18.08.22.16
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Apr 2019 08:22:17 -0700 (PDT)
+From:   Yordan Karadzhov <ykaradzhov@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
+        Yordan Karadzhov <ykaradzhov@vmware.com>
+Subject: [PATCH v2 0/8] Various modifications and fixes toward KS 1.0
+Date:   Thu, 18 Apr 2019 18:21:38 +0300
+Message-Id: <20190418152146.27232-1-ykaradzhov@vmware.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-In-Reply-To: <20190412145012.GA101407@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 12/04/19 5:50 PM, Raul Rangel wrote:
-> On Fri, Apr 12, 2019 at 09:26:44AM +0300, Adrian Hunter wrote:
->> On 12/04/19 1:08 AM, Raul E Rangel wrote:
->>> I was debugging a SDHC hardware bug and got tired of having to
->>> translate the register values by hand. This patch set makes it so all
->>> SDHC register read and write operations can be traced and easily read by
->>> a human.
->>
->> While this might be useful for people unfamiliar with SDHCI, I am not sure
->> it should be in the upstream kernel.
-> Can you help me understand your hesitation? Would you prefer removing the
-> pretty printing? Or would you prefer not having any trace events at all?
+The patch-set contains reimplementation of patches that have been sent
+already, but have been found to have various problems. The last two
+patch are fixes of bugs that have been found recently.
 
-It is just cost/benefit.  I am not sure the cost of maintaining it is worth
-the benefit of having it upstream.
+Yordan Karadzhov (8):
+  kernel-shark: Configuration information in ${HOME}/.cache/kernelshark
+  kernel-shark: Remove the definition of KS_CONF_DIR
+  kernel-shark: Add logic for the initial path of Open-File dialogs
+  kernel-shark: Add logic for the plugins search path
+  kernel-shark: Rename KS_DIR to KS_SOURCE_DIR
+  kernel-shark: Load Last Session from command line
+  kernel-shark: Use proper searching condition when the dataset is small
+  kernel-shark: Handle the case when the marker points to a filtered
+    entry
 
-> The xhci driver has a bunch of pretty print trace events that make it
-> invaluable when debugging.
-> https://github.com/torvalds/linux/blob/d7563ca5bfca53398e100eb74345c5d3ef06bf9d/drivers/usb/host/xhci.h#L2160
-> 
->> Also, it doesn't seem ideal for every
->> driver to add its own plumbing for such a feature.
-> What do you mean by every driver having to add it's own plumbing? Any
-> driver that uses sdhci_readX or sdhci_writeX get the functionality for
-> free.
+ kernel-shark/CMakeLists.txt             | 37 +++++-------
+ kernel-shark/build/deff.h.cmake         |  6 +-
+ kernel-shark/src/CMakeLists.txt         | 10 ++--
+ kernel-shark/src/KsCaptureDialog.cpp    |  6 +-
+ kernel-shark/src/KsMainWindow.cpp       | 80 ++++++++++++++++++++-----
+ kernel-shark/src/KsMainWindow.hpp       |  4 ++
+ kernel-shark/src/KsTraceViewer.cpp      | 32 ++++++----
+ kernel-shark/src/KsTraceViewer.hpp      |  2 +
+ kernel-shark/src/KsUtils.cpp            | 35 +++++++----
+ kernel-shark/src/KsUtils.hpp            | 16 +++++
+ kernel-shark/src/kernelshark.cpp        |  9 ++-
+ kernel-shark/src/plugins/CMakeLists.txt |  2 +-
+ 12 files changed, 168 insertions(+), 71 deletions(-)
 
-I/O memory mappings are recorded for devices. e.g. /proc/iomem so it could
-be possible to add tracing for all I/O memory accesses via readx/writex etc,
-configurable / filterable by device id.
+-- 
+2.19.1
+
