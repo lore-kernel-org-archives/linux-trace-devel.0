@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1AEBC10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63169C10F14
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8B84720821
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3366420821
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389056AbfDRPWr (ORCPT
+        id S1731317AbfDRPWt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 18 Apr 2019 11:22:47 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:36255 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731317AbfDRPWr (ORCPT
+        Thu, 18 Apr 2019 11:22:49 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:46542 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389038AbfDRPWs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 18 Apr 2019 11:22:47 -0400
-Received: by mail-wr1-f68.google.com with SMTP id y13so3464704wrd.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Apr 2019 08:22:45 -0700 (PDT)
+        Thu, 18 Apr 2019 11:22:48 -0400
+Received: by mail-wr1-f53.google.com with SMTP id t17so3414840wrw.13
+        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Apr 2019 08:22:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/5rIGOhs7a/jPbr+IXa0qIZj5NDNRcRcUIxqrn/h1q8=;
-        b=aU1Lauwhb4O/hOMxtGs2dNKcvDmD3zi/sNdKP54rbfmPIOE/Jl/mpPZRWF5wQWlhAs
-         o5iNkC/SOTbenp+SBaWxGvDyRp7B4wafqkkjgWrnK2fsHSBk2/mVA1vhDy3P4Zg34M63
-         jDnXP+F1nBUBEZGmJIdqvp6tFTLyBZlYAltXKoBZmRp9R4PqQuDT/+x2LdBfihNqX+IW
-         dFybNBi4SG9UDuwOQIDDqfnFdyJoKgCvtkjKUfA3OCFLpn8GJLZ5OCWx60N+0Mjf0PMx
-         7my18ekHTs2NuBDLWjiJYDlqBpwenPkU9q46MT93mDW5qQTuNxR+DXL80Hys9FVxc04M
-         Pvpg==
-X-Gm-Message-State: APjAAAU3IwREDIMJuW/M6ez2EKr4RlBz1MKQgl08bE9SWx1jOPrSoB1t
-        dHVMeOudMnd3QkKrPGq0mPTOQS65
-X-Google-Smtp-Source: APXvYqxXJK8bVqJFBHCcMIMiMqMH8SL1txG0Qd557JNmw0Y4BZEuah8MFYCteKHx6mDunETIYJUiag==
-X-Received: by 2002:adf:ba49:: with SMTP id t9mr1934457wrg.146.1555600964871;
-        Thu, 18 Apr 2019 08:22:44 -0700 (PDT)
+        bh=Y+mZou+iV60esjuLtX9pEpF4V+vOVjNaOTHcJwHzxf8=;
+        b=V8aVSeTpSSLk40H0tAuysoeX/lbwNOglzvv/PcBX8wBjqbIrYGaar3W661LVHtQwHF
+         KJXjbH209ToAB88XUFIbtEibJYew6fxJz+O1408NiFSPoG61Y1scGcHcgjUACNQwjCE0
+         cPvnJg06CHCC9v2507ra2ZaXSUtfxrMZ7wsibPkMKl+TIhgzcdVjhxMOzgo3nrOFqAwc
+         Rkh1IFhJn5S8mWDDCzxTMKiOWqTDESK5ssG6tiaes1WK8Ov3n6kaT2jYh65sd4z3UoTA
+         iLk2ibv7qX+RwfJ3XZlc63YtXuCq7vlE2cvQwU3/iedrlorqWeQJwDG4BNzNCipppiBZ
+         1HrQ==
+X-Gm-Message-State: APjAAAVjJ4/Zq9I2r0pRXYayhxj/3Fooda5ADVXdBiQghNAvkSd3PKw5
+        MHHVrJL1JWLhDDZB4qRRo9e+N06h
+X-Google-Smtp-Source: APXvYqyMCobdPG8OjxyM+Cs7IKZQNU75l2rJBZF7es6dCRDONXgeSJ5BXJ5RKpVKe9uE4Z4bQjFEFw==
+X-Received: by 2002:adf:db05:: with SMTP id s5mr64128000wri.247.1555600966603;
+        Thu, 18 Apr 2019 08:22:46 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id l12sm2543698wrt.31.2019.04.18.08.22.44
+        by smtp.gmail.com with ESMTPSA id l12sm2543698wrt.31.2019.04.18.08.22.45
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Apr 2019 08:22:44 -0700 (PDT)
+        Thu, 18 Apr 2019 08:22:46 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH v2 4/8] kernel-shark: Add logic for the plugins search path
-Date:   Thu, 18 Apr 2019 18:21:42 +0300
-Message-Id: <20190418152146.27232-5-ykaradzhov@vmware.com>
+Subject: [PATCH v2 5/8] kernel-shark: Rename KS_DIR to KS_SOURCE_DIR
+Date:   Thu, 18 Apr 2019 18:21:43 +0300
+Message-Id: <20190418152146.27232-6-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190418152146.27232-1-ykaradzhov@vmware.com>
 References: <20190418152146.27232-1-ykaradzhov@vmware.com>
@@ -59,146 +59,164 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-If the application has been started from the source code directory, all
-build-in plugins will be loaded from kernel-shark/lib/
-If the application has been started from its installation location, all
-build-in plugins will be loaded from INSTALL_PREFIX/lib/kshark/plugins/
+KS_SOURCE_DIR is a more appropriate name since it defines the path to
+the KernelShark source code used to build the application.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/build/deff.h.cmake         |  3 +++
- kernel-shark/src/KsUtils.cpp            | 35 +++++++++++++++++--------
- kernel-shark/src/KsUtils.hpp            |  1 +
- kernel-shark/src/plugins/CMakeLists.txt |  2 +-
- 4 files changed, 29 insertions(+), 12 deletions(-)
+ kernel-shark/CMakeLists.txt     | 32 ++++++++++++++++----------------
+ kernel-shark/build/deff.h.cmake |  2 +-
+ kernel-shark/src/CMakeLists.txt | 10 +++++-----
+ kernel-shark/src/KsUtils.cpp    |  4 ++--
+ kernel-shark/src/KsUtils.hpp    |  2 +-
+ 5 files changed, 25 insertions(+), 25 deletions(-)
 
+diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
+index 1aee858..825cabd 100644
+--- a/kernel-shark/CMakeLists.txt
++++ b/kernel-shark/CMakeLists.txt
+@@ -10,10 +10,10 @@ set(KS_VERSION_PATCH 8)
+ set(KS_VERSION_STRING ${KS_VERSION_MAJOR}.${KS_VERSION_MINOR}.${KS_VERSION_PATCH})
+ message("\n project: Kernel Shark: (version: ${KS_VERSION_STRING})\n")
+ 
+-set(KS_DIR ${CMAKE_SOURCE_DIR})
++set(KS_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+ 
+-include(${KS_DIR}/build/FindTraceCmd.cmake)
+-include(${KS_DIR}/build/FindJSONC.cmake)
++include(${KS_SOURCE_DIR}/build/FindTraceCmd.cmake)
++include(${KS_SOURCE_DIR}/build/FindJSONC.cmake)
+ 
+ find_package(Doxygen)
+ 
+@@ -29,8 +29,8 @@ if (Qt5Widgets_FOUND)
+ 
+ endif (Qt5Widgets_FOUND)
+ 
+-set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
+-set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
++set(LIBRARY_OUTPUT_PATH    "${KS_SOURCE_DIR}/lib")
++set(EXECUTABLE_OUTPUT_PATH "${KS_SOURCE_DIR}/bin")
+ 
+ set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -g -pthread")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -std=c++11 -pthread")
+@@ -49,8 +49,8 @@ endif (NOT _DEBUG)
+ SET(CMAKE_INSTALL_RPATH "${_INSTALL_PREFIX}/lib/kshark/")
+ SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+ 
+-include_directories(${KS_DIR}/src/
+-                    ${KS_DIR}/build/src/
++include_directories(${KS_SOURCE_DIR}/src/
++                    ${KS_SOURCE_DIR}/build/src/
+                     ${JSONC_INCLUDE_DIR}
+                     ${TRACECMD_INCLUDE_DIR}
+                     ${TRACEEVENT_INCLUDE_DIR})
+@@ -60,8 +60,8 @@ message(STATUS "C flags      : " ${CMAKE_C_FLAGS})
+ message(STATUS "CXX flags    : " ${CMAKE_CXX_FLAGS})
+ message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS})
+ 
+-add_subdirectory(${KS_DIR}/src)
+-add_subdirectory(${KS_DIR}/examples)
++add_subdirectory(${KS_SOURCE_DIR}/src)
++add_subdirectory(${KS_SOURCE_DIR}/examples)
+ 
+ if (_DOXYGEN_DOC AND DOXYGEN_FOUND)
+ 
+@@ -72,16 +72,16 @@ if (_DOXYGEN_DOC AND DOXYGEN_FOUND)
+                        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc)
+ 
+     set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+-                                          "${KS_DIR}/doc/dox_build.log"
+-                                          "${KS_DIR}/doc/html"
+-                                          "${KS_DIR}/doc/latex")
++                                          "${KS_SOURCE_DIR}/doc/dox_build.log"
++                                          "${KS_SOURCE_DIR}/doc/html"
++                                          "${KS_SOURCE_DIR}/doc/latex")
+ 
+ endif ()
+ 
+-configure_file( ${KS_DIR}/build/ks.desktop.cmake
+-                ${KS_DIR}/kernelshark.desktop)
++configure_file(${KS_SOURCE_DIR}/build/ks.desktop.cmake
++               ${KS_SOURCE_DIR}/kernelshark.desktop)
+ 
+-configure_file( ${KS_DIR}/build/org.freedesktop.kshark-record.policy.cmake
+-                ${KS_DIR}/org.freedesktop.kshark-record.policy)
++configure_file(${KS_SOURCE_DIR}/build/org.freedesktop.kshark-record.policy.cmake
++               ${KS_SOURCE_DIR}/org.freedesktop.kshark-record.policy)
+ 
+ message("")
 diff --git a/kernel-shark/build/deff.h.cmake b/kernel-shark/build/deff.h.cmake
-index 8041cfc..ba211f4 100644
+index ba211f4..47c9d9f 100644
 --- a/kernel-shark/build/deff.h.cmake
 +++ b/kernel-shark/build/deff.h.cmake
-@@ -14,6 +14,9 @@
+@@ -12,7 +12,7 @@
+ #cmakedefine KS_VERSION_STRING "@KS_VERSION_STRING@"
+ 
  /** KernelShark source code path. */
- #cmakedefine KS_DIR "@KS_DIR@"
+-#cmakedefine KS_DIR "@KS_DIR@"
++#cmakedefine KS_SOURCE_DIR "@KS_SOURCE_DIR@"
  
-+/** KernelShark installation prefix path. */
-+#cmakedefine _INSTALL_PREFIX "@_INSTALL_PREFIX@"
-+
- /** Location of the trace-cmd executable. */
- #cmakedefine TRACECMD_BIN_DIR "@TRACECMD_BIN_DIR@"
+ /** KernelShark installation prefix path. */
+ #cmakedefine _INSTALL_PREFIX "@_INSTALL_PREFIX@"
+diff --git a/kernel-shark/src/CMakeLists.txt b/kernel-shark/src/CMakeLists.txt
+index b7dbd7e..5f97916 100644
+--- a/kernel-shark/src/CMakeLists.txt
++++ b/kernel-shark/src/CMakeLists.txt
+@@ -81,13 +81,13 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+             RUNTIME DESTINATION ${_INSTALL_PREFIX}/bin/
+             LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/kshark/)
  
+-    install(FILES "${KS_DIR}/kernelshark.desktop"
++    install(FILES "${KS_SOURCE_DIR}/kernelshark.desktop"
+             DESTINATION /usr/share/applications/)
+ 
+-    install(FILES "${KS_DIR}/org.freedesktop.kshark-record.policy"
++    install(FILES "${KS_SOURCE_DIR}/org.freedesktop.kshark-record.policy"
+             DESTINATION /usr/share/polkit-1/actions/)
+ 
+-    install(PROGRAMS "${KS_DIR}/bin/kshark-su-record"
++    install(PROGRAMS "${KS_SOURCE_DIR}/bin/kshark-su-record"
+             DESTINATION ${_INSTALL_PREFIX}/bin/)
+ 
+ endif (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+@@ -96,5 +96,5 @@ add_subdirectory(plugins)
+ 
+ find_program(DO_AS_ROOT pkexec)
+ 
+-configure_file( ${KS_DIR}/build/deff.h.cmake
+-                ${KS_DIR}/src/KsCmakeDef.hpp)
++configure_file( ${KS_SOURCE_DIR}/build/deff.h.cmake
++                ${KS_SOURCE_DIR}/src/KsCmakeDef.hpp)
 diff --git a/kernel-shark/src/KsUtils.cpp b/kernel-shark/src/KsUtils.cpp
-index 6af0c66..b05c0dc 100644
+index b05c0dc..387a1e0 100644
 --- a/kernel-shark/src/KsUtils.cpp
 +++ b/kernel-shark/src/KsUtils.cpp
-@@ -423,13 +423,12 @@ void KsPluginManager::_parsePluginList()
-  */
- void KsPluginManager::registerFromList(kshark_context *kshark_ctx)
- {
--	auto lamRegBuiltIn = [&kshark_ctx](const QString &plugin)
-+	auto lamRegBuiltIn = [&kshark_ctx, this](const QString &plugin)
- 	{
- 		char *lib;
- 		int n;
+@@ -491,9 +491,9 @@ char *KsPluginManager::_pluginLibFromName(const QString &plugin, int &n)
+ 	std::string pluginStr = plugin.toStdString();
+ 	char *lib;
  
--		n = asprintf(&lib, "%s/lib/plugin-%s.so",
--			     KS_DIR, plugin.toStdString().c_str());
-+		lib = _pluginLibFromName(plugin, n);
- 		if (n <= 0)
- 			return;
- 
-@@ -458,13 +457,12 @@ void KsPluginManager::registerFromList(kshark_context *kshark_ctx)
-  */
- void KsPluginManager::unregisterFromList(kshark_context *kshark_ctx)
- {
--	auto lamUregBuiltIn = [&kshark_ctx](const QString &plugin)
-+	auto lamUregBuiltIn = [&kshark_ctx, this](const QString &plugin)
- 	{
- 		char *lib;
- 		int n;
- 
--		n = asprintf(&lib, "%s/lib/plugin-%s.so",
--			     KS_DIR, plugin.toStdString().c_str());
-+		lib = _pluginLibFromName(plugin, n);
- 		if (n <= 0)
- 			return;
- 
-@@ -487,6 +485,23 @@ void KsPluginManager::unregisterFromList(kshark_context *kshark_ctx)
- 			lamUregUser);
- }
- 
-+char *KsPluginManager::_pluginLibFromName(const QString &plugin, int &n)
-+{
-+	QString path = QCoreApplication::applicationFilePath();
-+	std::string pluginStr = plugin.toStdString();
-+	char *lib;
-+
-+	if (path.contains(KS_DIR)) {
-+		n = asprintf(&lib, "%s/lib/plugin-%s.so",
-+			     KS_DIR, pluginStr.c_str());
-+	} else {
-+		n = asprintf(&lib, "%s/lib/kshark/plugins/plugin-%s.so",
-+			     _INSTALL_PREFIX, pluginStr.c_str());
-+	}
-+
-+	return lib;
-+}
-+
- /**
-  * @brief Register a Plugin.
-  *
-@@ -508,8 +523,7 @@ void KsPluginManager::registerPlugin(const QString &plugin)
- 			 * The argument is the name of the plugin. From the
- 			 * name get the library .so file.
- 			 */
--			n = asprintf(&lib, "%s/lib/plugin-%s.so",
--					KS_DIR, plugin.toStdString().c_str());
-+			lib = _pluginLibFromName(plugin, n);
- 			if (n > 0) {
- 				kshark_register_plugin(kshark_ctx, lib);
- 				_registeredKsPlugins[i] = true;
-@@ -570,8 +584,7 @@ void KsPluginManager::unregisterPlugin(const QString &plugin)
- 			 * The argument is the name of the plugin. From the
- 			 * name get the library .so file.
- 			 */
--			n = asprintf(&lib, "%s/lib/plugin-%s.so", KS_DIR,
--				     plugin.toStdString().c_str());
-+			lib = _pluginLibFromName(plugin, n);
- 			if (n > 0) {
- 				kshark_unregister_plugin(kshark_ctx, lib);
- 				_registeredKsPlugins[i] = false;
-@@ -579,7 +592,7 @@ void KsPluginManager::unregisterPlugin(const QString &plugin)
- 			}
- 
- 			return;
--		} else if  (plugin.contains("/lib/plugin-" +
-+		} else if (plugin.contains("/lib/plugin-" +
- 			                   _ksPluginList[i], Qt::CaseInsensitive)) {
- 			/*
- 			 * The argument is the name of the library .so file.
+-	if (path.contains(KS_DIR)) {
++	if (path.contains(KS_SOURCE_DIR)) {
+ 		n = asprintf(&lib, "%s/lib/plugin-%s.so",
+-			     KS_DIR, pluginStr.c_str());
++			     KS_SOURCE_DIR, pluginStr.c_str());
+ 	} else {
+ 		n = asprintf(&lib, "%s/lib/kshark/plugins/plugin-%s.so",
+ 			     _INSTALL_PREFIX, pluginStr.c_str());
 diff --git a/kernel-shark/src/KsUtils.hpp b/kernel-shark/src/KsUtils.hpp
-index 877c62a..85da9ae 100644
+index 85da9ae..e776d62 100644
 --- a/kernel-shark/src/KsUtils.hpp
 +++ b/kernel-shark/src/KsUtils.hpp
-@@ -238,6 +238,7 @@ signals:
+@@ -123,7 +123,7 @@ inline QString dialogDir()
+ {
+ 	QString path = QCoreApplication::applicationFilePath();
  
- private:
- 	void _parsePluginList();
-+	char *_pluginLibFromName(const QString &plugin, int &n);
+-	return (path.contains(KS_DIR)) ? KS_DIR : QDir::homePath();
++	return path.contains(KS_SOURCE_DIR) ? KS_SOURCE_DIR : QDir::homePath();
+ }
  
- 	template <class T>
- 	void _forEachInList(const QStringList &pl,
-diff --git a/kernel-shark/src/plugins/CMakeLists.txt b/kernel-shark/src/plugins/CMakeLists.txt
-index 6098275..64cf98d 100644
---- a/kernel-shark/src/plugins/CMakeLists.txt
-+++ b/kernel-shark/src/plugins/CMakeLists.txt
-@@ -29,6 +29,6 @@ BUILD_PLUGIN(NAME missed_events
- list(APPEND PLUGIN_LIST "missed_events default") # This plugin will be loaded by default
- 
- install(TARGETS sched_events missed_events
--        LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/kshark/)
-+        LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/kshark/plugins/)
- 
- set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
+ }; // KsUtils
 -- 
 2.19.1
 
