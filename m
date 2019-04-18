@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59D30C10F0E
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C8F5C10F0E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3396C20821
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 43D3820821
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Apr 2019 15:22:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389005AbfDRPWi (ORCPT
+        id S2389160AbfDRPWm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 18 Apr 2019 11:22:38 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:53928 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731317AbfDRPWh (ORCPT
+        Thu, 18 Apr 2019 11:22:42 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34060 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731317AbfDRPWm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 18 Apr 2019 11:22:37 -0400
-Received: by mail-wm1-f46.google.com with SMTP id q16so3195644wmj.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Apr 2019 08:22:36 -0700 (PDT)
+        Thu, 18 Apr 2019 11:22:42 -0400
+Received: by mail-wr1-f66.google.com with SMTP id w16so3477618wrl.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Apr 2019 08:22:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LUYxWtGb9ls6Eik3Jp8WcctqJ7Usm4mPTm+QUlvksAM=;
-        b=KpDMocXI/uzl+DR4JTNEQKNjUHTeYZoFkNCzKNd6+VLAuQWsYVB2xxCr/Vfbs7R9ud
-         8a4CfpdXUoAcCtqVqu8SIRA15N8+aAJO7Gyw7wkCxCYP3h/NtjcECaPPCSB7gMFG8d6d
-         6Ob6SAj1Ugvo8ENXVmDMs/Ia5PIH4PJSbNnviQCDWkJ7DO8nZOGlf8NJemKd4dsMONcP
-         RouFybhYeNYtwY1oPPP9z3jM7SGsgdoncoLPCXEWafH4KaFqoqunL4SQJPdmwPru0Xhm
-         AXsh7eaLbJT7qdAkojdkInGbJ4pGUYKHEkx79jl63iKm0XLvae7Mqc/nPAAvlovgZVud
-         1UnQ==
-X-Gm-Message-State: APjAAAWgCahEgQ1JFfwM3e8MCg9vMH6Z4wNAwjthYtSwkTeEhI+5qg+s
-        n5SXQPE0l4JGxhot1pHocPs=
-X-Google-Smtp-Source: APXvYqxBgRbGR3Q1GIgBTcevoWIsJ1Zp9sMFk/5/vqPNvGyW9Bt5Yqp91qTA/tBgGgtwQqhOfQEXWg==
-X-Received: by 2002:a7b:c155:: with SMTP id z21mr3500377wmi.1.1555600956158;
-        Thu, 18 Apr 2019 08:22:36 -0700 (PDT)
+        bh=Il9dtqM4rEE4fCxC1xW8TVogsDxVa6Mcnm6E5248sis=;
+        b=H+Uo4U8xsOaAbtfvXe0oEnzpUzBqBWn0qkjdcB7kCkj55ajuXj69eJAVqe4UlN1qrb
+         Ud8fAZdPi9aicr4vyeZIYbfJ43ka7Bzk4nONc5m387vCzToyD2LzFj7MQbVr8PQVj2cp
+         7i8Hz2eoImaE2jiZ83PLuIY0g4kuEgqk/yZlDCLKLYKsCSfcoNU1IAw9QDrVYWDI1+5d
+         ZdG32/imBCt5MBG08EpTD2lrvfKOAC86+g2lIJlqHUpGccQ+KAmsEAXdkX5I9qxSUBW1
+         eZCQrtPoBC/TR2h1Gzx5DSvSjqUXKhj9vJI2IIp4dzaALaIK2IhJMT3JDyYqKxZX5F/3
+         NB/g==
+X-Gm-Message-State: APjAAAXBPTo9+J+J7PKmXiVcqOowlqLMAqSab0Ja392BBExJUGOLjWXl
+        RV5q0pgZtzOM5xbD/v4pRWc=
+X-Google-Smtp-Source: APXvYqwTV8dAzZJUwizJ+4xhLtLUd963h8Atl6ufdvBfI6rCwZQI413oBGiWrmZZX+Gmbxpb2dLfxA==
+X-Received: by 2002:adf:f149:: with SMTP id y9mr7440513wro.273.1555600960384;
+        Thu, 18 Apr 2019 08:22:40 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id l12sm2543698wrt.31.2019.04.18.08.22.35
+        by smtp.gmail.com with ESMTPSA id l12sm2543698wrt.31.2019.04.18.08.22.39
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Apr 2019 08:22:35 -0700 (PDT)
+        Thu, 18 Apr 2019 08:22:40 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH v2 1/8] kernel-shark: Configuration information in ${HOME}/.cache/kernelshark
-Date:   Thu, 18 Apr 2019 18:21:39 +0300
-Message-Id: <20190418152146.27232-2-ykaradzhov@vmware.com>
+Subject: [PATCH v2 2/8] kernel-shark: Remove the definition of KS_CONF_DIR
+Date:   Thu, 18 Apr 2019 18:21:40 +0300
+Message-Id: <20190418152146.27232-3-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190418152146.27232-1-ykaradzhov@vmware.com>
 References: <20190418152146.27232-1-ykaradzhov@vmware.com>
@@ -59,135 +59,45 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-By default the "Last session" configuration file will be saved in
-${HOME}/.cache/kernelshark. If ${HOME}/.cache/kernelshark doesn't exist,
-it will be created automatically. The user can select another directory
-to be used to store the cached data. This can be done by setting the
-environment variable KS_USER_CACHE_DIR. In this case if the path (the
-value of KS_USER_CACHE_DIR) doesn't exist the user will be asked before
-create it.
-
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+KS_CONF_DIR is no longer used, so we do not need to define it in the
+Cmake-generated header file.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 68 +++++++++++++++++++++++++++----
- kernel-shark/src/KsMainWindow.hpp |  4 ++
- 2 files changed, 63 insertions(+), 9 deletions(-)
+ kernel-shark/CMakeLists.txt     | 5 -----
+ kernel-shark/build/deff.h.cmake | 3 ---
+ 2 files changed, 8 deletions(-)
 
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 7afb721..cf2db74 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -133,13 +133,15 @@ KsMainWindow::KsMainWindow(QWidget *parent)
- KsMainWindow::~KsMainWindow()
- {
- 	kshark_context *kshark_ctx(nullptr);
--	QString file = KS_CONF_DIR;
-+	QString file = lastSessionFile();
+diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
+index 10cb696..1aee858 100644
+--- a/kernel-shark/CMakeLists.txt
++++ b/kernel-shark/CMakeLists.txt
+@@ -12,11 +12,6 @@ message("\n project: Kernel Shark: (version: ${KS_VERSION_STRING})\n")
  
--	file += "/lastsession.json";
-+	if (!file.isEmpty()) {
-+		QByteArray fileBA = file.toLocal8Bit();
+ set(KS_DIR ${CMAKE_SOURCE_DIR})
  
--	_updateSession();
--	kshark_save_config_file(file.toLocal8Bit().data(),
--				_session.getConfDocPtr());
-+		_updateSession();
-+		kshark_save_config_file(fileBA.data(),
-+					_session.getConfDocPtr());
-+	}
+-# Make a directory to hold configuration files. To change this do:
+-# cmake .. -DKS_CONF_DIR=/your/preferred/path
+-set(KS_CONF_DIR "${KS_DIR}/.ksconf" CACHE STRING "Directory for configuration files.")
+-file(MAKE_DIRECTORY ${KS_CONF_DIR})
+-
+ include(${KS_DIR}/build/FindTraceCmd.cmake)
+ include(${KS_DIR}/build/FindJSONC.cmake)
  
- 	_data.clear();
+diff --git a/kernel-shark/build/deff.h.cmake b/kernel-shark/build/deff.h.cmake
+index 80d624c..8041cfc 100644
+--- a/kernel-shark/build/deff.h.cmake
++++ b/kernel-shark/build/deff.h.cmake
+@@ -14,9 +14,6 @@
+ /** KernelShark source code path. */
+ #cmakedefine KS_DIR "@KS_DIR@"
  
-@@ -368,12 +370,60 @@ void KsMainWindow::_open()
- 		loadDataFile(fileName);
- }
+-/** KernelShark configuration directory path. */
+-#cmakedefine KS_CONF_DIR "@KS_CONF_DIR@"
+-
+ /** Location of the trace-cmd executable. */
+ #cmakedefine TRACECMD_BIN_DIR "@TRACECMD_BIN_DIR@"
  
--void KsMainWindow::_restoreSession()
-+QString KsMainWindow::_getCacheDir()
-+{
-+	QString dir;
-+
-+	auto lamMakePath = [&] (bool ask) {
-+		if (ask) {
-+			QMessageBox::StandardButton reply;
-+			QString err("KernelShark cache directory not found!\n");
-+			QString question =
-+				QString("Do you want to create %1").arg(dir);
-+
-+			reply = QMessageBox::question(this, "KernelShark",
-+						      err + question,
-+						      QMessageBox::Yes |
-+						      QMessageBox::No);
-+
-+			if (reply == QMessageBox::No) {
-+				dir.clear();
-+				return;
-+			}
-+		}
-+
-+		QDir().mkpath(dir);
-+	};
-+
-+	dir = getenv("KS_USER_CACHE_DIR");
-+	if (!dir.isEmpty()) {
-+		if (!QDir(dir).exists())
-+			lamMakePath(true);
-+	} else {
-+		dir = QString(getpwuid(getuid())->pw_dir) +
-+		      "/.cache/kernelshark";
-+		if (!QDir(dir).exists())
-+			lamMakePath(false);
-+	}
-+
-+	return dir;
-+}
-+
-+/** Get the description file of the last session. */
-+QString KsMainWindow::lastSessionFile()
- {
--	QString file = KS_CONF_DIR;
--	file += "/lastsession.json";
-+	QString file;
- 
--	loadSession(file);
-+	file = _getCacheDir();
-+	if (!file.isEmpty())
-+		file += "/lastsession.json";
-+
-+	return file;
-+}
-+
-+void KsMainWindow::_restoreSession()
-+{
-+	loadSession(lastSessionFile());
- 	_graph.updateGeom();
- }
- 
-diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-index 78cd442..ec6506e 100644
---- a/kernel-shark/src/KsMainWindow.hpp
-+++ b/kernel-shark/src/KsMainWindow.hpp
-@@ -37,6 +37,8 @@ public:
- 
- 	void loadSession(const QString &fileName);
- 
-+	QString lastSessionFile();
-+
- 	/**
- 	 * @brief
- 	 *
-@@ -230,6 +232,8 @@ private:
- 
- 	void _filterSyncCBoxUpdate(kshark_context *kshark_ctx);
- 
-+	QString _getCacheDir();
-+
- private slots:
- 	void _captureFinished(int, QProcess::ExitStatus);
- };
 -- 
 2.19.1
 
