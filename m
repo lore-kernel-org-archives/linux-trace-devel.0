@@ -2,117 +2,141 @@ Return-Path: <SRS0=h6jj=SV=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DATE_IN_PAST_12_24,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48FE9C282DF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 20:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93B46C282E3
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 20:43:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1A4D220821
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 20:19:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 543F32171F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 20:43:16 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UEWo8TpY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbfDSUTA (ORCPT
+        id S1726179AbfDSUnQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 19 Apr 2019 16:19:00 -0400
-Received: from mail-ed1-f54.google.com ([209.85.208.54]:38587 "EHLO
-        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbfDSUTA (ORCPT
+        Fri, 19 Apr 2019 16:43:16 -0400
+Received: from mail-it1-f196.google.com ([209.85.166.196]:56020 "EHLO
+        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbfDSUnQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 19 Apr 2019 16:19:00 -0400
-Received: by mail-ed1-f54.google.com with SMTP id d13so5248858edr.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Apr 2019 13:18:59 -0700 (PDT)
+        Fri, 19 Apr 2019 16:43:16 -0400
+Received: by mail-it1-f196.google.com with SMTP id y134so10024357itc.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Apr 2019 13:43:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LX6sK0aLm1rw71XYqJI7JGyQQaGyjgbk5E1MlVseNRI=;
+        b=UEWo8TpYh/LTsDDgyBY6NH/tONcKhHwIueExd9HITFoQFFKWSyYZ3D6BpIVpAmf4KQ
+         brWBitzOs/HCEUhWHwhPc7B1c0pAvKVHPn0+h6Fht93VjXQaylCWsiUfcsGqlV+9AtxJ
+         8Re2YuI0b5NeO5Mv9nUN1KrGXaVAbhyCeJ1MB8QJ4HkxnO2SAkYARJupDxPggXqa0xA/
+         YTaVr0gNkSL6H+p5e/i8yVJs756c5AKGkia/cbTZ97HVqXyxAZD45pAiIwLrbbhOZ0/0
+         agT3Qc16WKXIkyP1YVOsOIRN6l3yVhDkx2V7eAUrDb5t4vPN2xxzRRHzlaCDWhuN0j6G
+         Afrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+JFqCw91JAPPrzvRGPb/+EPBs5Pj0EM9LP1zSNiH6II=;
-        b=hbOuoYJUHV1F8q1lp1GawXe5kfIpE4xqI2mIPHrrkhPgoSsvQaRjd81RgtxPokEXp9
-         rlIkdQZGdAQnA9nPLqFGSQi4Jt1lKWLo8gjmYRZoz1DnE4FHAPkEDCYHQdlq7eV/yVzx
-         tyYbKqcAwkeHhdLR2dzsIq9T5HBtfHut6k5yG6AOXHHG5ya6g4DuC3y+b1OmE1M7ZhD5
-         aaoMgkBezEbRuRJwKHGjppFu8pnwrLNFf9ZJDSRMJTvVfhwaRr8KJNxDZRtfIMD/8cjO
-         fu5CipPOfvsgYwDqPFWp/VmI0I24h3R2JlCJ7YnULisXoskWVSR9uAcxvr684/wywne/
-         J1Gg==
-X-Gm-Message-State: APjAAAVgXDSLk/nwcQOeG6VwzvsJKpLVn4yf0w2Acs84WygA6D56V6WE
-        Bqs2TxnHhlwmYYiJfvw0JAnvw+pb
-X-Google-Smtp-Source: APXvYqz9HulIo769/oZdJR+TqOKL/o5v8xBXYaC4lQZBuAtah4hMFPxOqZWQYitBIqFnfNzFbSABfA==
-X-Received: by 2002:a50:c44d:: with SMTP id w13mr1677702edf.50.1555662603969;
-        Fri, 19 Apr 2019 01:30:03 -0700 (PDT)
-Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id cg22sm779467ejb.2.2019.04.19.01.30.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 19 Apr 2019 01:30:03 -0700 (PDT)
-From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Load trace-cmd plugins from build folder, if exists
-Date:   Fri, 19 Apr 2019 11:30:02 +0300
-Message-Id: <20190419083002.17909-1-tstoyanov@vmware.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LX6sK0aLm1rw71XYqJI7JGyQQaGyjgbk5E1MlVseNRI=;
+        b=DdBv8BO2dZhjdso/t4djIjL+I++7kfnig0bDrn4f59SDQm5RPpgzm+7R+An32WbHoJ
+         Jbzu2r1Il4OKqCAFzPXbMo97Lm4vhQ0AMAp8rMg61613IyXAOVfqFQkCJtLc71sU8CVR
+         9WvaYIKAJL3P7f+sxKi8ygs9rfvy4uuenSF9OeRMYaAKlYNVnn0B1CtWrfzeTcO/2ceD
+         3bHD7B0au58sWxeoryncb3e/e/plrsiGsXpTUMhmNBU2aM3KuAtlapROydYM3BDAIoP6
+         L6RrfYdMHTDDdT0Zo80o3LLDYEe451KWY0TeS8VL6vc5yfDY1jqUc9X4U5Wy42cIrVIa
+         IN7g==
+X-Gm-Message-State: APjAAAXJLMCCBM6EQTOMPkf2bBefNbwdgkHU5X8i13aOrp4rLVTcb6kD
+        OjF/MsdCOuffs1nD2BICPS9rLSgOEq3U9bH0BUdmdk50mg==
+X-Google-Smtp-Source: APXvYqxLy4cKU1SQdqvjJdjqRtRPshep4Hld1dWJcByOFUkkD7phDenhWyjsarzcCqs8cd8pDtWcgNbpGOWc1bR+vOY=
+X-Received: by 2002:a24:6a8b:: with SMTP id l133mr1786432itc.92.1555658389820;
+ Fri, 19 Apr 2019 00:19:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190418152146.27232-1-ykaradzhov@vmware.com> <20190418152146.27232-2-ykaradzhov@vmware.com>
+In-Reply-To: <20190418152146.27232-2-ykaradzhov@vmware.com>
+From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
+Date:   Fri, 19 Apr 2019 10:19:38 +0300
+Message-ID: <CAE0o1NtWOkUWvmsc+RtJjM8LdD1Fp8C8wEir-WPj2GCxUhz+8Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] kernel-shark: Configuration information in ${HOME}/.cache/kernelshark
+To:     Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When a development version of trace-cmd is built and run on the machine,
-by default it loads all plugins from predefined drierctories :
-  (install_preffix)/lib/traceevent/plugins
-  ~/.traceevent/plugins
-  the path specified in TRACEEVENT_PLUGIN_DIR environment variable.
-In case there is a legacy trace-cmd version already installed, there will be
-a collision with the development version. Wrong, incompatible plugins will be
-loaded. To simplify the development process, a new logic is added:
-  On trace-cmd build stage, the full build path is stored in the
-  trace-cmd binary. When the application is started, it checks if this build
-  directory exists and loads only plugins from it.
+On Thu, Apr 18, 2019 at 6:22 PM Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
+>
+> By default the "Last session" configuration file will be saved in
+> ${HOME}/.cache/kernelshark. If ${HOME}/.cache/kernelshark doesn't exist,
+> it will be created automatically. The user can select another directory
+> to be used to store the cached data. This can be done by setting the
+> environment variable KS_USER_CACHE_DIR. In this case if the path (the
+> value of KS_USER_CACHE_DIR) doesn't exist the user will be asked before
+> create it.
+>
+> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+>
+> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- Makefile                   |  2 ++
- lib/trace-cmd/trace-util.c | 10 ++++++++++
- 2 files changed, 12 insertions(+)
+Nit: two identical Signed-off-by tags
 
-diff --git a/Makefile b/Makefile
-index cde45f8..534d882 100644
---- a/Makefile
-+++ b/Makefile
-@@ -207,6 +207,8 @@ LDFLAGS ?=
- export CFLAGS
- export INCLUDES
- 
-+override CFLAGS += -DBUILD_PLUGIN_PATH="\"$(shell $(shell which pwd))/plugins"\"
-+
- # Required CFLAGS
- override CFLAGS += -D_GNU_SOURCE
- 
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 8d21fb2..ea4f430 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -1374,11 +1374,21 @@ int trace_util_load_plugins(struct tep_handle *pevent, const char *suffix,
- 	char *home;
- 	char *path;
- 	char *envdir;
-+	struct stat sb;
- 	int ret;
- 
- 	if (tracecmd_disable_plugins)
- 		return -EBUSY;
- 
-+#ifdef BUILD_PLUGIN_PATH
-+	if (stat(BUILD_PLUGIN_PATH, &sb) == 0 && S_ISDIR(sb.st_mode)) {
-+		trace_util_load_plugins_dir(pevent, suffix, BUILD_PLUGIN_PATH,
-+					    load_plugin, data);
-+		return 0;
-+	}
-+#endif
-+
-+
- /* If a system plugin directory was defined, check that first */
- #ifdef PLUGIN_DIR
- 	if (!tracecmd_disable_sys_plugins)
--- 
-2.20.1
+> ---
+>  kernel-shark/src/KsMainWindow.cpp | 68 +++++++++++++++++++++++++++----
+>  kernel-shark/src/KsMainWindow.hpp |  4 ++
+>  2 files changed, 63 insertions(+), 9 deletions(-)
+>
+> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+> index 7afb721..cf2db74 100644
+> --- a/kernel-shark/src/KsMainWindow.cpp
+> +++ b/kernel-shark/src/KsMainWindow.cpp
 
+[...]
+
+> -void KsMainWindow::_restoreSession()
+> +QString KsMainWindow::_getCacheDir()
+> +{
+> +       QString dir;
+> +
+> +       auto lamMakePath = [&] (bool ask) {
+> +               if (ask) {
+> +                       QMessageBox::StandardButton reply;
+> +                       QString err("KernelShark cache directory not found!\n");
+> +                       QString question =
+> +                               QString("Do you want to create %1").arg(dir);
+> +
+> +                       reply = QMessageBox::question(this, "KernelShark",
+> +                                                     err + question,
+> +                                                     QMessageBox::Yes |
+> +                                                     QMessageBox::No);
+> +
+> +                       if (reply == QMessageBox::No) {
+> +                               dir.clear();
+> +                               return;
+> +                       }
+> +               }
+> +
+> +               QDir().mkpath(dir);
+> +       };
+> +
+> +       dir = getenv("KS_USER_CACHE_DIR");
+> +       if (!dir.isEmpty()) {
+> +               if (!QDir(dir).exists())
+> +                       lamMakePath(true);
+> +       } else {
+> +               dir = QString(getpwuid(getuid())->pw_dir) +
+> +                     "/.cache/kernelshark";
+
+Nit: s/QString(getpwuid(getuid())->pw_dir)/QDir::homePath()/
+
+Everything else looks great with the patch
+Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
+
+Cheers,
+
+--Slavi
