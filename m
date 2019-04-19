@@ -2,114 +2,191 @@ Return-Path: <SRS0=h6jj=SV=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=3.0 tests=FSL_HELO_FAKE,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98D47C282DF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 18:40:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F735C282DA
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 18:41:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 710B0204FD
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 18:40:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6B4DD204FD
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 18:41:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbfDSSkV (ORCPT
+        id S1727458AbfDSSlK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 19 Apr 2019 14:40:21 -0400
-Received: from mail-it1-f195.google.com ([209.85.166.195]:35082 "EHLO
-        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727529AbfDSSkU (ORCPT
+        Fri, 19 Apr 2019 14:41:10 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55351 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727130AbfDSSlJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 19 Apr 2019 14:40:20 -0400
-Received: by mail-it1-f195.google.com with SMTP id w15so9510315itc.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Apr 2019 11:40:19 -0700 (PDT)
+        Fri, 19 Apr 2019 14:41:09 -0400
+Received: by mail-wm1-f65.google.com with SMTP id o25so7056127wmf.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Apr 2019 11:41:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=h89jbsyKZFLdHfaOBCwQAn52VqoU6F6H0npqSz7mIhI=;
-        b=pjAjXI/iKAApcS7DgzyBvJXCVVt/o9PHCqKXNfd6c3a2bvKCqOd2sLea/T4xJPyZ8l
-         Zp6gqUqj5DsLUEJ1eiTu8XotF+pFzAd5VftAMnTeHJbOTBgGqGz/g8l1wBOQ5CNMoTk2
-         iWtPJZS0Bs/snbLEKWw7Zcf5u9qVmPiVVMZZ8/E1dYC450nSt/87kjNfOgFs262yp/yZ
-         We4Jd/ntwC8T6zv2H3S0YikutrFvH+lvijJkofR/ulj2WtdLrXUpDl+OnRi0P79jkfsU
-         jo5NFJgh8CzPMzJuV7lxRqpLECroqL7O326ZlZMqUNJFLwvXJN8THiP1ZrlX/Qh6VAil
-         axxA==
-X-Gm-Message-State: APjAAAUUK53d7r2yp7wjV5zQhMSQOB8dJvxf9gnw+g1SGY9g/8bvtz+A
-        8AdvnzgG4SoBZAFOQGWPCgPanhFEQQ2RYiL6
-X-Google-Smtp-Source: APXvYqyxB9ATaErq8VI0gfSGCwxDxUYLFmhbPWtElP+cGKDE6m/xtTGqQxWO0jBJTgf1/KcGc0Tpaw==
-X-Received: by 2002:a24:35d4:: with SMTP id k203mr3943021ita.89.1555699219243;
-        Fri, 19 Apr 2019 11:40:19 -0700 (PDT)
-Received: from google.com ([2620:15c:183:0:20b8:dee7:5447:d05])
-        by smtp.gmail.com with ESMTPSA id t67sm2708682ita.35.2019.04.19.11.40.17
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 19 Apr 2019 11:40:18 -0700 (PDT)
-Date:   Fri, 19 Apr 2019 12:40:13 -0600
-From:   Raul Rangel <rrangel@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        djkurtz@chromium.org, zwisler@chromium.org,
-        Ludovic Barre <ludovic.barre@st.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Faiz Abbas <faiz_abbas@ti.com>, linux-kernel@vger.kernel.org,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Liming Sun <lsun@mellanox.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Prabu Thangamuthu <Prabu.T@synopsys.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH v1 0/4] Add tracing for SDHCI register access
-Message-ID: <20190419184013.GA145226@google.com>
-References: <20190411220822.81845-1-rrangel@chromium.org>
- <7b77ebcb-b42b-2d14-f5f1-b37e07b88469@intel.com>
- <20190412145012.GA101407@google.com>
- <bd3a1df1-5ac4-e23c-35a3-78361a5c356e@intel.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lcmg/9QJVIq6qSZOb+glBNZ1KV4rVjONuDQaoDa12R0=;
+        b=ka9aZ36nPaswyeVXZvO/a9hhRctxPY8gu78qEw4qhzk41Z6iAZD8/xrEBkP2q0Y4tw
+         a+7cOkA9Na4Kt+355qawG+W5Y6AeuCEUU1SWxbJgSimzOVmayadCirfVFvKi+Mxj7EXA
+         NQrIc7rnLH3UjvbaI8zeiKSjZR1RQ5p+vOsYd451XRhGi2jp8Y3ZdegyNevtq1gOH3iJ
+         u6csc0BAw6SLFiYpvSZ2V74PSsb1TjeuYG/z7X/YzPB0Q3PtofXBWe30UlRlTXnzNFk7
+         vxEdKaX5wkBT9jRGwmh5xeMn1vRocSp884aixHr3JekUAW2HDeMK+2uUQmgttAhkU3QK
+         YT4Q==
+X-Gm-Message-State: APjAAAWhMZ9T/hTAqTOxBTWGdkg5gcRtpvfFQ6Js7A2pFCBfwoZPnmi8
+        luFmzulnSjyu2WCJKr+RE5fyUWT+
+X-Google-Smtp-Source: APXvYqw6V55lbsUQXpwsnz8giKiRKyA457yJm+PfXUhnTew6one/shDbLm0gGKn2mLgTMhW1THRPLg==
+X-Received: by 2002:a7b:c769:: with SMTP id x9mr2879369wmk.103.1555681859454;
+        Fri, 19 Apr 2019 06:50:59 -0700 (PDT)
+Received: from mamba.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id g132sm4120496wme.3.2019.04.19.06.50.58
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 19 Apr 2019 06:50:58 -0700 (PDT)
+From:   Yordan Karadzhov <ykaradzhov@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
+        Yordan Karadzhov <ykaradzhov@vmware.com>
+Subject: [PATCH v3 3/8] kernel-shark: Add logic for the initial path of Open-File dialogs
+Date:   Fri, 19 Apr 2019 16:50:31 +0300
+Message-Id: <20190419135036.19340-4-ykaradzhov@vmware.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190419135036.19340-1-ykaradzhov@vmware.com>
+References: <20190419135036.19340-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bd3a1df1-5ac4-e23c-35a3-78361a5c356e@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Apr 18, 2019 at 09:24:16AM +0300, Adrian Hunter wrote:
-> On 12/04/19 5:50 PM, Raul Rangel wrote:
-> > On Fri, Apr 12, 2019 at 09:26:44AM +0300, Adrian Hunter wrote:
-> >> On 12/04/19 1:08 AM, Raul E Rangel wrote:
-> >>> I was debugging a SDHC hardware bug and got tired of having to
-> >>> translate the register values by hand. This patch set makes it so all
-> >>> SDHC register read and write operations can be traced and easily read by
-> >>> a human.
-> >>
-> >> While this might be useful for people unfamiliar with SDHCI, I am not sure
-> >> it should be in the upstream kernel.
-> > Can you help me understand your hesitation? Would you prefer removing the
-> > pretty printing? Or would you prefer not having any trace events at all?
-> 
-> It is just cost/benefit.  I am not sure the cost of maintaining it is worth
-> the benefit of having it upstream.
-> 
-Steven,
-Since it seems this series won't be accepted upstream, would you still be
-open to accepting patches for trace_print_register? I can work on adding
-support to lib traceevent.
+If the application has been started from the source code directory,
+all Open-File dialogs will start there. If the application has been
+started from its installation location, all Open-File dialogs will
+start at ${HOME}.
 
-Thanks,
-Raul
-> > The xhci driver has a bunch of pretty print trace events that make it
-> > invaluable when debugging.
-> > https://github.com/torvalds/linux/blob/d7563ca5bfca53398e100eb74345c5d3ef06bf9d/drivers/usb/host/xhci.h#L2160
-> > 
-> >> Also, it doesn't seem ideal for every
-> >> driver to add its own plumbing for such a feature.
-> > What do you mean by every driver having to add it's own plumbing? Any
-> > driver that uses sdhci_readX or sdhci_writeX get the functionality for
-> > free.
-> 
-> I/O memory mappings are recorded for devices. e.g. /proc/iomem so it could
-> be possible to add tracing for all I/O memory accesses via readx/writex etc,
-> configurable / filterable by device id.
+Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+---
+ kernel-shark/src/KsCaptureDialog.cpp |  6 +++---
+ kernel-shark/src/KsMainWindow.cpp    | 12 ++++++------
+ kernel-shark/src/KsUtils.hpp         | 15 +++++++++++++++
+ 3 files changed, 24 insertions(+), 9 deletions(-)
+
+diff --git a/kernel-shark/src/KsCaptureDialog.cpp b/kernel-shark/src/KsCaptureDialog.cpp
+index 1272c2e..57bf7c7 100644
+--- a/kernel-shark/src/KsCaptureDialog.cpp
++++ b/kernel-shark/src/KsCaptureDialog.cpp
+@@ -208,7 +208,7 @@ void KsCaptureControl::_importSettings()
+ 	/* Get the configuration document. */
+ 	fileName = QFileDialog::getOpenFileName(this,
+ 						"Import from Filter",
+-						KS_DIR,
++						KsUtils::dialogDir(),
+ 						"Kernel Shark Config files (*.json);;");
+ 
+ 	if (fileName.isEmpty())
+@@ -259,7 +259,7 @@ void KsCaptureControl::_exportSettings()
+ 	QString fileName =
+ 		QFileDialog::getSaveFileName(this,
+ 					     "Export to File",
+-					     KS_DIR,
++					     KsUtils::dialogDir(),
+ 					     "Kernel Shark Config files (*.json);;");
+ 
+ 	if (fileName.isEmpty())
+@@ -314,7 +314,7 @@ void KsCaptureControl::_browse()
+ 	QString fileName =
+ 		QFileDialog::getSaveFileName(this,
+ 					     "Save File",
+-					     KS_DIR,
++					     KsUtils::dialogDir(),
+ 					     "trace-cmd files (*.dat);;All files (*)");
+ 
+ 	if (!fileName.isEmpty())
+diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+index c839aca..65ac71a 100644
+--- a/kernel-shark/src/KsMainWindow.cpp
++++ b/kernel-shark/src/KsMainWindow.cpp
+@@ -363,7 +363,7 @@ void KsMainWindow::_open()
+ 	QString fileName =
+ 		QFileDialog::getOpenFileName(this,
+ 					     "Open File",
+-					     KS_DIR,
++					     KsUtils::dialogDir(),
+ 					     "trace-cmd files (*.dat);;All files (*)");
+ 
+ 	if (!fileName.isEmpty())
+@@ -432,7 +432,7 @@ void KsMainWindow::_importSession()
+ 	QString fileName =
+ 		QFileDialog::getOpenFileName(this,
+ 					     "Import Session",
+-					     KS_DIR,
++					     KsUtils::dialogDir(),
+ 					     "Kernel Shark Config files (*.json);;");
+ 
+ 	if (fileName.isEmpty())
+@@ -463,7 +463,7 @@ void KsMainWindow::_exportSession()
+ 	QString fileName =
+ 		QFileDialog::getSaveFileName(this,
+ 					     "Export Filter",
+-					     KS_DIR,
++					     KsUtils::dialogDir(),
+ 					     "Kernel Shark Config files (*.json);;");
+ 
+ 	if (fileName.isEmpty())
+@@ -512,7 +512,7 @@ void KsMainWindow::_importFilter()
+ 	if (!kshark_instance(&kshark_ctx))
+ 		return;
+ 
+-	fileName = QFileDialog::getOpenFileName(this, "Import Filter", KS_DIR,
++	fileName = QFileDialog::getOpenFileName(this, "Import Filter", KsUtils::dialogDir(),
+ 						"Kernel Shark Config files (*.json);;");
+ 
+ 	if (fileName.isEmpty())
+@@ -540,7 +540,7 @@ void KsMainWindow::_exportFilter()
+ 	if (!kshark_instance(&kshark_ctx))
+ 		return;
+ 
+-	fileName = QFileDialog::getSaveFileName(this, "Export Filter", KS_DIR,
++	fileName = QFileDialog::getSaveFileName(this, "Export Filter", KsUtils::dialogDir(),
+ 						"Kernel Shark Config files (*.json);;");
+ 
+ 	if (fileName.isEmpty())
+@@ -861,7 +861,7 @@ void KsMainWindow::_pluginAdd()
+ 
+ 	fileNames =
+ 		QFileDialog::getOpenFileNames(this, "Add KernelShark plugins",
+-					      KS_DIR,
++					      KsUtils::dialogDir(),
+ 					      "KernelShark Plugins (*.so);;");
+ 
+ 	if (fileNames.isEmpty())
+diff --git a/kernel-shark/src/KsUtils.hpp b/kernel-shark/src/KsUtils.hpp
+index c8b5e88..77048ab 100644
+--- a/kernel-shark/src/KsUtils.hpp
++++ b/kernel-shark/src/KsUtils.hpp
+@@ -111,6 +111,21 @@ inline QString Ts2String(int64_t ts, int prec)
+ 
+ bool matchCPUVisible(struct kshark_context *kshark_ctx,
+ 			      struct kshark_entry *e, int cpu);
++
++/**
++ * @brief Get the directory to be used when opening QFileDialog. If the
++ *	  application has been started from the source code directory, all
++ *	  Open File dialogs will start there. If the application has been
++ *	  started from its installation location, all Open File dialogs will
++ *	  start at ${HOME}.
++ */
++inline QString dialogDir()
++{
++	QString path = QCoreApplication::applicationFilePath();
++
++	return path.contains(KS_DIR) ? KS_DIR : QDir::homePath();
++}
++
+ }; // KsUtils
+ 
+ /** Identifier of the Dual Marker active state. */
+-- 
+2.20.1
+
