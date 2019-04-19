@@ -2,191 +2,78 @@ Return-Path: <SRS0=h6jj=SV=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F735C282DA
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 18:41:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3825FC282DA
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 18:44:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6B4DD204FD
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 18:41:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0E35B205C9
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 18:44:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727458AbfDSSlK (ORCPT
+        id S1726543AbfDSSoP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 19 Apr 2019 14:41:10 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55351 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727130AbfDSSlJ (ORCPT
+        Fri, 19 Apr 2019 14:44:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725844AbfDSSoP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 19 Apr 2019 14:41:09 -0400
-Received: by mail-wm1-f65.google.com with SMTP id o25so7056127wmf.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Apr 2019 11:41:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lcmg/9QJVIq6qSZOb+glBNZ1KV4rVjONuDQaoDa12R0=;
-        b=ka9aZ36nPaswyeVXZvO/a9hhRctxPY8gu78qEw4qhzk41Z6iAZD8/xrEBkP2q0Y4tw
-         a+7cOkA9Na4Kt+355qawG+W5Y6AeuCEUU1SWxbJgSimzOVmayadCirfVFvKi+Mxj7EXA
-         NQrIc7rnLH3UjvbaI8zeiKSjZR1RQ5p+vOsYd451XRhGi2jp8Y3ZdegyNevtq1gOH3iJ
-         u6csc0BAw6SLFiYpvSZ2V74PSsb1TjeuYG/z7X/YzPB0Q3PtofXBWe30UlRlTXnzNFk7
-         vxEdKaX5wkBT9jRGwmh5xeMn1vRocSp884aixHr3JekUAW2HDeMK+2uUQmgttAhkU3QK
-         YT4Q==
-X-Gm-Message-State: APjAAAWhMZ9T/hTAqTOxBTWGdkg5gcRtpvfFQ6Js7A2pFCBfwoZPnmi8
-        luFmzulnSjyu2WCJKr+RE5fyUWT+
-X-Google-Smtp-Source: APXvYqw6V55lbsUQXpwsnz8giKiRKyA457yJm+PfXUhnTew6one/shDbLm0gGKn2mLgTMhW1THRPLg==
-X-Received: by 2002:a7b:c769:: with SMTP id x9mr2879369wmk.103.1555681859454;
-        Fri, 19 Apr 2019 06:50:59 -0700 (PDT)
-Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id g132sm4120496wme.3.2019.04.19.06.50.58
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Apr 2019 06:50:58 -0700 (PDT)
-From:   Yordan Karadzhov <ykaradzhov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
-        Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH v3 3/8] kernel-shark: Add logic for the initial path of Open-File dialogs
-Date:   Fri, 19 Apr 2019 16:50:31 +0300
-Message-Id: <20190419135036.19340-4-ykaradzhov@vmware.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190419135036.19340-1-ykaradzhov@vmware.com>
+        Fri, 19 Apr 2019 14:44:15 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2B17222D8;
+        Fri, 19 Apr 2019 17:28:16 +0000 (UTC)
+Date:   Fri, 19 Apr 2019 13:28:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com
+Subject: Re: [PATCH v3 4/8] kernel-shark: Add logic for the plugins search
+ path
+Message-ID: <20190419132815.2820b6af@gandalf.local.home>
+In-Reply-To: <20190419135036.19340-5-ykaradzhov@vmware.com>
 References: <20190419135036.19340-1-ykaradzhov@vmware.com>
+        <20190419135036.19340-5-ykaradzhov@vmware.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-If the application has been started from the source code directory,
-all Open-File dialogs will start there. If the application has been
-started from its installation location, all Open-File dialogs will
-start at ${HOME}.
+On Fri, 19 Apr 2019 16:50:32 +0300
+Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
 
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark/src/KsCaptureDialog.cpp |  6 +++---
- kernel-shark/src/KsMainWindow.cpp    | 12 ++++++------
- kernel-shark/src/KsUtils.hpp         | 15 +++++++++++++++
- 3 files changed, 24 insertions(+), 9 deletions(-)
+> +char *KsPluginManager::_pluginLibFromName(const QString &plugin, int &n)
+> +{
+> +	QString path = QCoreApplication::applicationFilePath();
+> +	std::string pluginStr = plugin.toStdString();
+> +	char *lib;
+> +
+> +	if (path.contains(KS_DIR)) {
 
-diff --git a/kernel-shark/src/KsCaptureDialog.cpp b/kernel-shark/src/KsCaptureDialog.cpp
-index 1272c2e..57bf7c7 100644
---- a/kernel-shark/src/KsCaptureDialog.cpp
-+++ b/kernel-shark/src/KsCaptureDialog.cpp
-@@ -208,7 +208,7 @@ void KsCaptureControl::_importSettings()
- 	/* Get the configuration document. */
- 	fileName = QFileDialog::getOpenFileName(this,
- 						"Import from Filter",
--						KS_DIR,
-+						KsUtils::dialogDir(),
- 						"Kernel Shark Config files (*.json);;");
- 
- 	if (fileName.isEmpty())
-@@ -259,7 +259,7 @@ void KsCaptureControl::_exportSettings()
- 	QString fileName =
- 		QFileDialog::getSaveFileName(this,
- 					     "Export to File",
--					     KS_DIR,
-+					     KsUtils::dialogDir(),
- 					     "Kernel Shark Config files (*.json);;");
- 
- 	if (fileName.isEmpty())
-@@ -314,7 +314,7 @@ void KsCaptureControl::_browse()
- 	QString fileName =
- 		QFileDialog::getSaveFileName(this,
- 					     "Save File",
--					     KS_DIR,
-+					     KsUtils::dialogDir(),
- 					     "trace-cmd files (*.dat);;All files (*)");
- 
- 	if (!fileName.isEmpty())
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index c839aca..65ac71a 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -363,7 +363,7 @@ void KsMainWindow::_open()
- 	QString fileName =
- 		QFileDialog::getOpenFileName(this,
- 					     "Open File",
--					     KS_DIR,
-+					     KsUtils::dialogDir(),
- 					     "trace-cmd files (*.dat);;All files (*)");
- 
- 	if (!fileName.isEmpty())
-@@ -432,7 +432,7 @@ void KsMainWindow::_importSession()
- 	QString fileName =
- 		QFileDialog::getOpenFileName(this,
- 					     "Import Session",
--					     KS_DIR,
-+					     KsUtils::dialogDir(),
- 					     "Kernel Shark Config files (*.json);;");
- 
- 	if (fileName.isEmpty())
-@@ -463,7 +463,7 @@ void KsMainWindow::_exportSession()
- 	QString fileName =
- 		QFileDialog::getSaveFileName(this,
- 					     "Export Filter",
--					     KS_DIR,
-+					     KsUtils::dialogDir(),
- 					     "Kernel Shark Config files (*.json);;");
- 
- 	if (fileName.isEmpty())
-@@ -512,7 +512,7 @@ void KsMainWindow::_importFilter()
- 	if (!kshark_instance(&kshark_ctx))
- 		return;
- 
--	fileName = QFileDialog::getOpenFileName(this, "Import Filter", KS_DIR,
-+	fileName = QFileDialog::getOpenFileName(this, "Import Filter", KsUtils::dialogDir(),
- 						"Kernel Shark Config files (*.json);;");
- 
- 	if (fileName.isEmpty())
-@@ -540,7 +540,7 @@ void KsMainWindow::_exportFilter()
- 	if (!kshark_instance(&kshark_ctx))
- 		return;
- 
--	fileName = QFileDialog::getSaveFileName(this, "Export Filter", KS_DIR,
-+	fileName = QFileDialog::getSaveFileName(this, "Export Filter", KsUtils::dialogDir(),
- 						"Kernel Shark Config files (*.json);;");
- 
- 	if (fileName.isEmpty())
-@@ -861,7 +861,7 @@ void KsMainWindow::_pluginAdd()
- 
- 	fileNames =
- 		QFileDialog::getOpenFileNames(this, "Add KernelShark plugins",
--					      KS_DIR,
-+					      KsUtils::dialogDir(),
- 					      "KernelShark Plugins (*.so);;");
- 
- 	if (fileNames.isEmpty())
-diff --git a/kernel-shark/src/KsUtils.hpp b/kernel-shark/src/KsUtils.hpp
-index c8b5e88..77048ab 100644
---- a/kernel-shark/src/KsUtils.hpp
-+++ b/kernel-shark/src/KsUtils.hpp
-@@ -111,6 +111,21 @@ inline QString Ts2String(int64_t ts, int prec)
- 
- bool matchCPUVisible(struct kshark_context *kshark_ctx,
- 			      struct kshark_entry *e, int cpu);
-+
-+/**
-+ * @brief Get the directory to be used when opening QFileDialog. If the
-+ *	  application has been started from the source code directory, all
-+ *	  Open File dialogs will start there. If the application has been
-+ *	  started from its installation location, all Open File dialogs will
-+ *	  start at ${HOME}.
-+ */
-+inline QString dialogDir()
-+{
-+	QString path = QCoreApplication::applicationFilePath();
-+
-+	return path.contains(KS_DIR) ? KS_DIR : QDir::homePath();
-+}
-+
- }; // KsUtils
- 
- /** Identifier of the Dual Marker active state. */
--- 
-2.20.1
+I'd rather not use the hardcoded path. If I build the code on one
+machine, tarball it up and move it to another machine and extract it,
+and then run that code from that machine, I want it to still use the
+plugins for that machine.
 
+I was hoping to test:
+
+	string = cmdline_path() + "../../kernel-shark/lib/";
+
+If that exists, then we know that we are in the source directory.
+
+-- Steve
+
+> +		n = asprintf(&lib, "%s/lib/plugin-%s.so",
+> +			     KS_DIR, pluginStr.c_str());
+> +	} else {
+> +		n = asprintf(&lib, "%s/lib/kshark/plugins/plugin-%s.so",
+> +			     _INSTALL_PREFIX, pluginStr.c_str());
+> +	}
+> +
+> +	return lib;
+> +}
+> +
