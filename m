@@ -3,52 +3,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BD13C282E0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 19:15:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB67C282DF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 19:19:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3C5B7204FD
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 19:15:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8CD6720821
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 19:19:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbfDSTPw (ORCPT
+        id S1727357AbfDSTTs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 19 Apr 2019 15:15:52 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:41852 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728924AbfDSTPv (ORCPT
+        Fri, 19 Apr 2019 15:19:48 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55068 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbfDSTTs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 19 Apr 2019 15:15:51 -0400
-Received: by mail-wr1-f67.google.com with SMTP id c12so1805686wrt.8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Apr 2019 12:15:50 -0700 (PDT)
+        Fri, 19 Apr 2019 15:19:48 -0400
+Received: by mail-wm1-f65.google.com with SMTP id c1so7142927wml.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Apr 2019 12:19:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NhuQmTFWm66fHbbjbnxa6eNNlgwmjwpkuWGTkehdv4M=;
-        b=C3FZb3oteqqGInsXQtomNqAO8FEHGW2SbJEim5eeeiBFw8XS3Av6UICSn0ucLdpVKV
-         qQAisTTTHABKuYMCujs6NvtoaStoOMojJ9NY02omJ33zN2kWQzQqv1a2aX3XkH4Tw5Dw
-         mvs5dUG+J5iV1KWKj685xPoGvFFxWeD1kXbQv/Q0JrR4AGIzmJzAvatHLqXifCuImsT9
-         Oq7abn8lw9whe+PhcOHK+ZyA3UVoIXiTiKUvGFGeu6ZbH9wSFR6k/ghAUELKlFg01f62
-         UYfjYKjKpMGjKgzKrSXjkazxCHHIKsJP4PVsTeFoN2kJr1/wpyXqumpZ+1IBCl2Gu8XB
-         hQnQ==
-X-Gm-Message-State: APjAAAXJPLdqO4ePbbbpD3oQf2+7iGUMDBiaHzFuPN5iFgoFhKFcSjU5
-        QIcwFRAMivduRpcqypvmHHC1IIDd
-X-Google-Smtp-Source: APXvYqwHWk/QqT/Byx7t5j3MQtJ62nV/8JFWobyq5NSBQZsfA05JAkS/sRXfl7VV/AM76HwEaNEDIw==
-X-Received: by 2002:adf:e88b:: with SMTP id d11mr3121387wrm.327.1555681856469;
-        Fri, 19 Apr 2019 06:50:56 -0700 (PDT)
+        bh=O0UuVyUaj6gRC5oVMlVkfjA3JGzFPAwr7A83t9IIslI=;
+        b=OYdrnUFsLMLTw29zsGtbl0XGNTayvTWEjoCqL3YwIwlhFQ5BUQAoG1JoYtx4JsEIkS
+         3wkl/SttHThDOtLV8jPxoK5g5ng7nIH45oRrsHP1B6t4zNbQ8/FSB5xZN+zbxoRycV31
+         Ryy0BA+h8dtq4fo1eNkyLhNoqtqk1Cv3gQpKVfE4YFkZRwv+LeAGAX/t4BpHNmx0YqTb
+         baYOxD9q65A1LtYi0A9ZByZXIuTFaUi+4+48Gdj2Ls5Xl193/tTngiNiwRO3/SdWkL8s
+         fR/neICfuKqjiygPdk4FCKnAQW8w4w2Dv4CW32R5ebzCkDaoZm5T1rlau9YwFA6NqI1h
+         SSOQ==
+X-Gm-Message-State: APjAAAU4dHHSGy8DpIk9QWYjv+4xsBYUFqEvvi+d0wR0mOQjxjCSD4lz
+        6IECkfHHn6DM4MJ1THvJetEQI2jK
+X-Google-Smtp-Source: APXvYqzsKmhQd4pOkE6TH3zt4PrEKH0XWWDiKNFh6I4AiEpITAwYt6Of9RvL62lSP3KtMvu+pXW1tw==
+X-Received: by 2002:a7b:ce84:: with SMTP id q4mr2900033wmj.41.1555681860670;
+        Fri, 19 Apr 2019 06:51:00 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id g132sm4120496wme.3.2019.04.19.06.50.55
+        by smtp.gmail.com with ESMTPSA id g132sm4120496wme.3.2019.04.19.06.51.00
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Apr 2019 06:50:55 -0700 (PDT)
+        Fri, 19 Apr 2019 06:51:00 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH v3 1/8] kernel-shark: Configuration information in ${HOME}/.cache/kernelshark
-Date:   Fri, 19 Apr 2019 16:50:29 +0300
-Message-Id: <20190419135036.19340-2-ykaradzhov@vmware.com>
+Subject: [PATCH v3 4/8] kernel-shark: Add logic for the plugins search path
+Date:   Fri, 19 Apr 2019 16:50:32 +0300
+Message-Id: <20190419135036.19340-5-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190419135036.19340-1-ykaradzhov@vmware.com>
 References: <20190419135036.19340-1-ykaradzhov@vmware.com>
@@ -59,133 +59,146 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-By default the "Last session" configuration file will be saved in
-${HOME}/.cache/kernelshark. If ${HOME}/.cache/kernelshark doesn't exist,
-it will be created automatically. The user can select another directory
-to be used to store the cached data. This can be done by setting the
-environment variable KS_USER_CACHE_DIR. In this case if the path (the
-value of KS_USER_CACHE_DIR) doesn't exist the user will be asked before
-create it.
+If the application has been started from the source code directory, all
+build-in plugins will be loaded from kernel-shark/lib/
+If the application has been started from its installation location, all
+build-in plugins will be loaded from INSTALL_PREFIX/lib/kshark/plugins/
 
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 68 +++++++++++++++++++++++++++----
- kernel-shark/src/KsMainWindow.hpp |  4 ++
- 2 files changed, 63 insertions(+), 9 deletions(-)
+ kernel-shark/build/deff.h.cmake         |  3 +++
+ kernel-shark/src/KsUtils.cpp            | 35 +++++++++++++++++--------
+ kernel-shark/src/KsUtils.hpp            |  1 +
+ kernel-shark/src/plugins/CMakeLists.txt |  2 +-
+ 4 files changed, 29 insertions(+), 12 deletions(-)
 
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 7afb721..c839aca 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -133,13 +133,15 @@ KsMainWindow::KsMainWindow(QWidget *parent)
- KsMainWindow::~KsMainWindow()
+diff --git a/kernel-shark/build/deff.h.cmake b/kernel-shark/build/deff.h.cmake
+index 8041cfc..ba211f4 100644
+--- a/kernel-shark/build/deff.h.cmake
++++ b/kernel-shark/build/deff.h.cmake
+@@ -14,6 +14,9 @@
+ /** KernelShark source code path. */
+ #cmakedefine KS_DIR "@KS_DIR@"
+ 
++/** KernelShark installation prefix path. */
++#cmakedefine _INSTALL_PREFIX "@_INSTALL_PREFIX@"
++
+ /** Location of the trace-cmd executable. */
+ #cmakedefine TRACECMD_BIN_DIR "@TRACECMD_BIN_DIR@"
+ 
+diff --git a/kernel-shark/src/KsUtils.cpp b/kernel-shark/src/KsUtils.cpp
+index 6af0c66..b05c0dc 100644
+--- a/kernel-shark/src/KsUtils.cpp
++++ b/kernel-shark/src/KsUtils.cpp
+@@ -423,13 +423,12 @@ void KsPluginManager::_parsePluginList()
+  */
+ void KsPluginManager::registerFromList(kshark_context *kshark_ctx)
  {
- 	kshark_context *kshark_ctx(nullptr);
--	QString file = KS_CONF_DIR;
-+	QString file = lastSessionFile();
+-	auto lamRegBuiltIn = [&kshark_ctx](const QString &plugin)
++	auto lamRegBuiltIn = [&kshark_ctx, this](const QString &plugin)
+ 	{
+ 		char *lib;
+ 		int n;
  
--	file += "/lastsession.json";
-+	if (!file.isEmpty()) {
-+		QByteArray fileBA = file.toLocal8Bit();
+-		n = asprintf(&lib, "%s/lib/plugin-%s.so",
+-			     KS_DIR, plugin.toStdString().c_str());
++		lib = _pluginLibFromName(plugin, n);
+ 		if (n <= 0)
+ 			return;
  
--	_updateSession();
--	kshark_save_config_file(file.toLocal8Bit().data(),
--				_session.getConfDocPtr());
-+		_updateSession();
-+		kshark_save_config_file(fileBA.data(),
-+					_session.getConfDocPtr());
-+	}
+@@ -458,13 +457,12 @@ void KsPluginManager::registerFromList(kshark_context *kshark_ctx)
+  */
+ void KsPluginManager::unregisterFromList(kshark_context *kshark_ctx)
+ {
+-	auto lamUregBuiltIn = [&kshark_ctx](const QString &plugin)
++	auto lamUregBuiltIn = [&kshark_ctx, this](const QString &plugin)
+ 	{
+ 		char *lib;
+ 		int n;
  
- 	_data.clear();
+-		n = asprintf(&lib, "%s/lib/plugin-%s.so",
+-			     KS_DIR, plugin.toStdString().c_str());
++		lib = _pluginLibFromName(plugin, n);
+ 		if (n <= 0)
+ 			return;
  
-@@ -368,12 +370,60 @@ void KsMainWindow::_open()
- 		loadDataFile(fileName);
+@@ -487,6 +485,23 @@ void KsPluginManager::unregisterFromList(kshark_context *kshark_ctx)
+ 			lamUregUser);
  }
  
--void KsMainWindow::_restoreSession()
-+QString KsMainWindow::_getCacheDir()
++char *KsPluginManager::_pluginLibFromName(const QString &plugin, int &n)
 +{
-+	QString dir;
++	QString path = QCoreApplication::applicationFilePath();
++	std::string pluginStr = plugin.toStdString();
++	char *lib;
 +
-+	auto lamMakePath = [&] (bool ask) {
-+		if (ask) {
-+			QMessageBox::StandardButton reply;
-+			QString err("KernelShark cache directory not found!\n");
-+			QString question =
-+				QString("Do you want to create %1").arg(dir);
-+
-+			reply = QMessageBox::question(this, "KernelShark",
-+						      err + question,
-+						      QMessageBox::Yes |
-+						      QMessageBox::No);
-+
-+			if (reply == QMessageBox::No) {
-+				dir.clear();
-+				return;
-+			}
-+		}
-+
-+		QDir().mkpath(dir);
-+	};
-+
-+	dir = getenv("KS_USER_CACHE_DIR");
-+	if (!dir.isEmpty()) {
-+		if (!QDir(dir).exists())
-+			lamMakePath(true);
++	if (path.contains(KS_DIR)) {
++		n = asprintf(&lib, "%s/lib/plugin-%s.so",
++			     KS_DIR, pluginStr.c_str());
 +	} else {
-+		dir = QString(QDir::homePath()) +
-+		      "/.cache/kernelshark";
-+		if (!QDir(dir).exists())
-+			lamMakePath(false);
++		n = asprintf(&lib, "%s/lib/kshark/plugins/plugin-%s.so",
++			     _INSTALL_PREFIX, pluginStr.c_str());
 +	}
 +
-+	return dir;
++	return lib;
 +}
 +
-+/** Get the description file of the last session. */
-+QString KsMainWindow::lastSessionFile()
- {
--	QString file = KS_CONF_DIR;
--	file += "/lastsession.json";
-+	QString file;
+ /**
+  * @brief Register a Plugin.
+  *
+@@ -508,8 +523,7 @@ void KsPluginManager::registerPlugin(const QString &plugin)
+ 			 * The argument is the name of the plugin. From the
+ 			 * name get the library .so file.
+ 			 */
+-			n = asprintf(&lib, "%s/lib/plugin-%s.so",
+-					KS_DIR, plugin.toStdString().c_str());
++			lib = _pluginLibFromName(plugin, n);
+ 			if (n > 0) {
+ 				kshark_register_plugin(kshark_ctx, lib);
+ 				_registeredKsPlugins[i] = true;
+@@ -570,8 +584,7 @@ void KsPluginManager::unregisterPlugin(const QString &plugin)
+ 			 * The argument is the name of the plugin. From the
+ 			 * name get the library .so file.
+ 			 */
+-			n = asprintf(&lib, "%s/lib/plugin-%s.so", KS_DIR,
+-				     plugin.toStdString().c_str());
++			lib = _pluginLibFromName(plugin, n);
+ 			if (n > 0) {
+ 				kshark_unregister_plugin(kshark_ctx, lib);
+ 				_registeredKsPlugins[i] = false;
+@@ -579,7 +592,7 @@ void KsPluginManager::unregisterPlugin(const QString &plugin)
+ 			}
  
--	loadSession(file);
-+	file = _getCacheDir();
-+	if (!file.isEmpty())
-+		file += "/lastsession.json";
-+
-+	return file;
-+}
-+
-+void KsMainWindow::_restoreSession()
-+{
-+	loadSession(lastSessionFile());
- 	_graph.updateGeom();
- }
+ 			return;
+-		} else if  (plugin.contains("/lib/plugin-" +
++		} else if (plugin.contains("/lib/plugin-" +
+ 			                   _ksPluginList[i], Qt::CaseInsensitive)) {
+ 			/*
+ 			 * The argument is the name of the library .so file.
+diff --git a/kernel-shark/src/KsUtils.hpp b/kernel-shark/src/KsUtils.hpp
+index 77048ab..019bde8 100644
+--- a/kernel-shark/src/KsUtils.hpp
++++ b/kernel-shark/src/KsUtils.hpp
+@@ -238,6 +238,7 @@ signals:
  
-diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-index 78cd442..ec6506e 100644
---- a/kernel-shark/src/KsMainWindow.hpp
-+++ b/kernel-shark/src/KsMainWindow.hpp
-@@ -37,6 +37,8 @@ public:
+ private:
+ 	void _parsePluginList();
++	char *_pluginLibFromName(const QString &plugin, int &n);
  
- 	void loadSession(const QString &fileName);
+ 	template <class T>
+ 	void _forEachInList(const QStringList &pl,
+diff --git a/kernel-shark/src/plugins/CMakeLists.txt b/kernel-shark/src/plugins/CMakeLists.txt
+index 6098275..64cf98d 100644
+--- a/kernel-shark/src/plugins/CMakeLists.txt
++++ b/kernel-shark/src/plugins/CMakeLists.txt
+@@ -29,6 +29,6 @@ BUILD_PLUGIN(NAME missed_events
+ list(APPEND PLUGIN_LIST "missed_events default") # This plugin will be loaded by default
  
-+	QString lastSessionFile();
-+
- 	/**
- 	 * @brief
- 	 *
-@@ -230,6 +232,8 @@ private:
+ install(TARGETS sched_events missed_events
+-        LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/kshark/)
++        LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/kshark/plugins/)
  
- 	void _filterSyncCBoxUpdate(kshark_context *kshark_ctx);
- 
-+	QString _getCacheDir();
-+
- private slots:
- 	void _captureFinished(int, QProcess::ExitStatus);
- };
+ set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
 -- 
 2.20.1
 
