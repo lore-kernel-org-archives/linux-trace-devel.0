@@ -1,142 +1,142 @@
-Return-Path: <SRS0=h6jj=SV=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=qNMP=SY=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DATE_IN_PAST_12_24,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93B46C282E3
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 20:43:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 592E3C10F11
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Apr 2019 11:29:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 543F32171F
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Apr 2019 20:43:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 255E7204EC
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Apr 2019 11:29:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UEWo8TpY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qGww9GMX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbfDSUnQ (ORCPT
+        id S1726900AbfDVL3y (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 19 Apr 2019 16:43:16 -0400
-Received: from mail-it1-f196.google.com ([209.85.166.196]:56020 "EHLO
-        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbfDSUnQ (ORCPT
+        Mon, 22 Apr 2019 07:29:54 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:54443 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbfDVL3y (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 19 Apr 2019 16:43:16 -0400
-Received: by mail-it1-f196.google.com with SMTP id y134so10024357itc.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Apr 2019 13:43:15 -0700 (PDT)
+        Mon, 22 Apr 2019 07:29:54 -0400
+Received: by mail-wm1-f65.google.com with SMTP id c1so14051205wml.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Apr 2019 04:29:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LX6sK0aLm1rw71XYqJI7JGyQQaGyjgbk5E1MlVseNRI=;
-        b=UEWo8TpYh/LTsDDgyBY6NH/tONcKhHwIueExd9HITFoQFFKWSyYZ3D6BpIVpAmf4KQ
-         brWBitzOs/HCEUhWHwhPc7B1c0pAvKVHPn0+h6Fht93VjXQaylCWsiUfcsGqlV+9AtxJ
-         8Re2YuI0b5NeO5Mv9nUN1KrGXaVAbhyCeJ1MB8QJ4HkxnO2SAkYARJupDxPggXqa0xA/
-         YTaVr0gNkSL6H+p5e/i8yVJs756c5AKGkia/cbTZ97HVqXyxAZD45pAiIwLrbbhOZ0/0
-         agT3Qc16WKXIkyP1YVOsOIRN6l3yVhDkx2V7eAUrDb5t4vPN2xxzRRHzlaCDWhuN0j6G
-         Afrg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4F+wH+gEttN2eVSRs74kQtbZ/kgaiQR01yPX2WdjdvE=;
+        b=qGww9GMXLzivToGgLagdDADpv4KY6IJIcaCeJCHNoIgqflYImkY9yIFXEcgCe20Cwk
+         DmpAwGe5lAkNf6lOzZpGTO2vM/hAp3q3JE7OVjrbx+wNqDn8z3s4/7YnWY6UMZqPoMf7
+         8BmZZ47XkebSK6NmBF5bFXTiRNYQGxFlIWtcJIgUcj7cHael0zQNX6ONZSjyLlEWD9Wb
+         PZYG42gwY+6c/PYTbh0c/+q3DP0SXPB2nbU9283U7Qzz2fgk590yH7T6PwO0PUSvIQnc
+         AC75WcgAGqTKnEuEC4SeloImHBGhErtSLBdofu+IYqEq+t1fuO7O84/h1SkQlqF8A7+K
+         xqHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LX6sK0aLm1rw71XYqJI7JGyQQaGyjgbk5E1MlVseNRI=;
-        b=DdBv8BO2dZhjdso/t4djIjL+I++7kfnig0bDrn4f59SDQm5RPpgzm+7R+An32WbHoJ
-         Jbzu2r1Il4OKqCAFzPXbMo97Lm4vhQ0AMAp8rMg61613IyXAOVfqFQkCJtLc71sU8CVR
-         9WvaYIKAJL3P7f+sxKi8ygs9rfvy4uuenSF9OeRMYaAKlYNVnn0B1CtWrfzeTcO/2ceD
-         3bHD7B0au58sWxeoryncb3e/e/plrsiGsXpTUMhmNBU2aM3KuAtlapROydYM3BDAIoP6
-         L6RrfYdMHTDDdT0Zo80o3LLDYEe451KWY0TeS8VL6vc5yfDY1jqUc9X4U5Wy42cIrVIa
-         IN7g==
-X-Gm-Message-State: APjAAAXJLMCCBM6EQTOMPkf2bBefNbwdgkHU5X8i13aOrp4rLVTcb6kD
-        OjF/MsdCOuffs1nD2BICPS9rLSgOEq3U9bH0BUdmdk50mg==
-X-Google-Smtp-Source: APXvYqxLy4cKU1SQdqvjJdjqRtRPshep4Hld1dWJcByOFUkkD7phDenhWyjsarzcCqs8cd8pDtWcgNbpGOWc1bR+vOY=
-X-Received: by 2002:a24:6a8b:: with SMTP id l133mr1786432itc.92.1555658389820;
- Fri, 19 Apr 2019 00:19:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4F+wH+gEttN2eVSRs74kQtbZ/kgaiQR01yPX2WdjdvE=;
+        b=fiWOH6nOikJv9rBvroNQfPawZ0kyNBopOkcotgSJvQd3p1sP2Uci8hh8Buu9JFQKWi
+         rqD7M0LPQLY4aCZjjj+OQ7YHPRzCPC7sDLCx4iTsWWprCtqPUDOXoM+J3Tl1WWEqzjBr
+         F+cN45gCh4etTMGamnvK2DNE7gzKZpMVGm/2UQxL2Wmxmjj5t4wPvP0sGdptRuMC+kn5
+         eX0cIXzz4tgCChdhAIXCKLrTDakDnaBEryP3W8a92aBELuBkHZtU3I2IStehD0xsGtsj
+         AolAQ4wn8rQ/m/X3mWl1JP+1+MOU+Vm8R9Kv96OWsF5Kof5sAc6nZxvtZCDokbZtlkwy
+         b/UQ==
+X-Gm-Message-State: APjAAAXPLko8j2XXSa0jU36lL3YP9ZlkPPp3m9pbUv78i+bHhFcxPInN
+        j3W71H0y+iPeb2/sQMuT8juDEd0r
+X-Google-Smtp-Source: APXvYqwWB7jK2YdNe4PD96lAEvLnoh54od2Jf4rpojTlsfHQo7/PTG9QQg8tGIex6XQ7if402m/2OQ==
+X-Received: by 2002:a1c:f50a:: with SMTP id t10mr11408098wmh.86.1555932592484;
+        Mon, 22 Apr 2019 04:29:52 -0700 (PDT)
+Received: from [10.27.113.15] ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id m14sm4019806wru.51.2019.04.22.04.29.51
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Apr 2019 04:29:52 -0700 (PDT)
+Subject: Re: [PATCH v3 4/8] kernel-shark: Add logic for the plugins search
+ path
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc:     linux-trace-devel@vger.kernel.org
+References: <20190419135036.19340-1-ykaradzhov@vmware.com>
+ <20190419135036.19340-5-ykaradzhov@vmware.com>
+ <20190419132815.2820b6af@gandalf.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <06f28287-93ee-ffc9-3603-3b67c8e1aa24@gmail.com>
+Date:   Mon, 22 Apr 2019 14:29:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20190418152146.27232-1-ykaradzhov@vmware.com> <20190418152146.27232-2-ykaradzhov@vmware.com>
-In-Reply-To: <20190418152146.27232-2-ykaradzhov@vmware.com>
-From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Date:   Fri, 19 Apr 2019 10:19:38 +0300
-Message-ID: <CAE0o1NtWOkUWvmsc+RtJjM8LdD1Fp8C8wEir-WPj2GCxUhz+8Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] kernel-shark: Configuration information in ${HOME}/.cache/kernelshark
-To:     Yordan Karadzhov <ykaradzhov@vmware.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190419132815.2820b6af@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Apr 18, 2019 at 6:22 PM Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
->
-> By default the "Last session" configuration file will be saved in
-> ${HOME}/.cache/kernelshark. If ${HOME}/.cache/kernelshark doesn't exist,
-> it will be created automatically. The user can select another directory
-> to be used to store the cached data. This can be done by setting the
-> environment variable KS_USER_CACHE_DIR. In this case if the path (the
-> value of KS_USER_CACHE_DIR) doesn't exist the user will be asked before
-> create it.
->
-> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
->
-> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 
-Nit: two identical Signed-off-by tags
 
-> ---
->  kernel-shark/src/KsMainWindow.cpp | 68 +++++++++++++++++++++++++++----
->  kernel-shark/src/KsMainWindow.hpp |  4 ++
->  2 files changed, 63 insertions(+), 9 deletions(-)
->
-> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-> index 7afb721..cf2db74 100644
-> --- a/kernel-shark/src/KsMainWindow.cpp
-> +++ b/kernel-shark/src/KsMainWindow.cpp
+On 19.04.19 г. 20:28 ч., Steven Rostedt wrote:
+> On Fri, 19 Apr 2019 16:50:32 +0300
+> Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
+> 
+>> +char *KsPluginManager::_pluginLibFromName(const QString &plugin, int &n)
+>> +{
+>> +	QString path = QCoreApplication::applicationFilePath();
+>> +	std::string pluginStr = plugin.toStdString();
+>> +	char *lib;
+>> +
+>> +	if (path.contains(KS_DIR)) {
+> 
+> I'd rather not use the hardcoded path. If I build the code on one
+> machine, tarball it up and move it to another machine and extract it,
+> and then run that code from that machine, I want it to still use the
+> plugins for that machine.
+> 
+> I was hoping to test:
+> 
+> 	string = cmdline_path() + "../../kernel-shark/lib/";
+> 
+> If that exists, then we know that we are in the source directory.
 
-[...]
+I don't thing this is a good idea. If we search for plugins in a path 
+that is defined like this:
+  cmdline_path() + "/something/hard/coded/lib/"
 
-> -void KsMainWindow::_restoreSession()
-> +QString KsMainWindow::_getCacheDir()
-> +{
-> +       QString dir;
-> +
-> +       auto lamMakePath = [&] (bool ask) {
-> +               if (ask) {
-> +                       QMessageBox::StandardButton reply;
-> +                       QString err("KernelShark cache directory not found!\n");
-> +                       QString question =
-> +                               QString("Do you want to create %1").arg(dir);
-> +
-> +                       reply = QMessageBox::question(this, "KernelShark",
-> +                                                     err + question,
-> +                                                     QMessageBox::Yes |
-> +                                                     QMessageBox::No);
-> +
-> +                       if (reply == QMessageBox::No) {
-> +                               dir.clear();
-> +                               return;
-> +                       }
-> +               }
-> +
-> +               QDir().mkpath(dir);
-> +       };
-> +
-> +       dir = getenv("KS_USER_CACHE_DIR");
-> +       if (!dir.isEmpty()) {
-> +               if (!QDir(dir).exists())
-> +                       lamMakePath(true);
-> +       } else {
-> +               dir = QString(getpwuid(getuid())->pw_dir) +
-> +                     "/.cache/kernelshark";
+Then the GUI will do one thing when started like this:
+./kernelshark
 
-Nit: s/QString(getpwuid(getuid())->pw_dir)/QDir::homePath()/
+and anther thing when started like this:
+bin/kernelshark
 
-Everything else looks great with the patch
-Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
+and this can be very surprising behavior for the user
 
-Cheers,
+The other solution has it own weaknesses, but at least it sounds like a 
+simple rule: "If you want to use the compiled version of the plugins you 
+have to start the GUI from the source code directory used to build. 
+Otherwise the installed version of the plugins will be used."
 
---Slavi
+Thanks!
+Yordan
+
+
+
+> 
+> -- Steve
+> 
+>> +		n = asprintf(&lib, "%s/lib/plugin-%s.so",
+>> +			     KS_DIR, pluginStr.c_str());
+>> +	} else {
+>> +		n = asprintf(&lib, "%s/lib/kshark/plugins/plugin-%s.so",
+>> +			     _INSTALL_PREFIX, pluginStr.c_str());
+>> +	}
+>> +
+>> +	return lib;
+>> +}
+>> +
