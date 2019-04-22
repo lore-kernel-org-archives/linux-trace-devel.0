@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9327DC10F11
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Apr 2019 14:55:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43201C282CE
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Apr 2019 14:55:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 69F4120656
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Apr 2019 14:55:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2300020656
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Apr 2019 14:55:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbfDVOze (ORCPT
+        id S1727855AbfDVOzg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 22 Apr 2019 10:55:34 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39966 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726132AbfDVOze (ORCPT
+        Mon, 22 Apr 2019 10:55:36 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:53166 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727803AbfDVOzf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 22 Apr 2019 10:55:34 -0400
-Received: by mail-wr1-f67.google.com with SMTP id h4so16088364wre.7
-        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Apr 2019 07:55:32 -0700 (PDT)
+        Mon, 22 Apr 2019 10:55:35 -0400
+Received: by mail-wm1-f67.google.com with SMTP id a184so14726788wma.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Apr 2019 07:55:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QLdWRZm/W9su2Jf1gcxBiO8slcy7S1fb9p8fnu/O4u8=;
-        b=eONz8vL+zlcxphs8yFjT1CBdqguJAlZUdQHUrICrGukeFsdSa2GO0R/VgWhN2UeqLQ
-         psAVYByU987o24MfcHmSax4zRgTaYEwX3HAM8TExSQ8QtrxyRoVYSexDywi56NdYWuM2
-         TgK7d+34kqIexvUVdlqaf00v0h7ESUshGkKuQG7r2i58oab15i12u8WaWbV2u2Au9eUF
-         kNuDHF6iXLhqDtLuNqOrtn20r3Wz4IxAdA10dmJ9rPP79lCz7Pk4EffivSejgO2gpUy5
-         DLhrWb8J2Zd6irCfKIKdvVuJhjIVf6CofHeFcc8ox6pRn0gDdN+MVp9h9Itq1aYoi7cO
-         SU4w==
-X-Gm-Message-State: APjAAAVSI0G7cooGl+fAvCVZpjEYrWGc2vYY/KywVU0JcESmGi0WPLGu
-        Qphv2tIY+3wvxSUiELewwP/E5WtQXw==
-X-Google-Smtp-Source: APXvYqySNHOCXA2UYTLXzqW378OCStZVcF8rY0G0pYztiHeq9AQUsGTlw4kmlqXF4xMsJNB16y2MWg==
-X-Received: by 2002:adf:fc47:: with SMTP id e7mr14179671wrs.100.1555944932203;
-        Mon, 22 Apr 2019 07:55:32 -0700 (PDT)
+        bh=qiWlGJhhYrmqLjdL0koxlW+uR3/5Fcs1GSzGZF7p5j4=;
+        b=gp2Rz78m5GokQ9l9487UqC8a0X50xWglF63qwyXBuLwNhlLLFiVcQhwzy66UdmRlac
+         e7sm7XMQUlopt7/qnZQ2ETMgsvwzDlOD78gpY7N/vQtEivej+xnBQPggmeA5NOzvPwgQ
+         K6zMco/fZCBd5GiVQUvuTGng+3mcIyLuODX6NaXrNXr3usSZzowH3cp62kvd1tjmfKVm
+         aR200k4WCZXkpDHvR70Awkirw4vTy3pOpj+MTQFFE9IcpRNbGj7OPx9e9pDc5GeU+dUC
+         Qvd0mShU3zcQvbeKKakWFZWL7q0TXryG0ma9oJX7ZVbc8xONj4uJbT6lrobbiWrNJMEV
+         OJKQ==
+X-Gm-Message-State: APjAAAWI/lLEI4t3hOyrvPMDsLkTNLmiAOE8fEKi69iFOQUNNBT2YzRi
+        O2307YOR1covBuIZ5oIR7Q==
+X-Google-Smtp-Source: APXvYqxOogkxNH+W7iwFFQk/Ky2PLLFDCvtkuoN0ASwf1i7ZWyiinvGQtqDUbp0zPzN2uWIPReWhbw==
+X-Received: by 2002:a1c:40c3:: with SMTP id n186mr12883258wma.3.1555944934148;
+        Mon, 22 Apr 2019 07:55:34 -0700 (PDT)
 Received: from box.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id f128sm17321087wme.28.2019.04.22.07.55.31
+        by smtp.gmail.com with ESMTPSA id f128sm17321087wme.28.2019.04.22.07.55.33
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Apr 2019 07:55:31 -0700 (PDT)
+        Mon, 22 Apr 2019 07:55:33 -0700 (PDT)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v10 07/12] trace-cmd: Use splice(2) for vsockets if available
-Date:   Mon, 22 Apr 2019 17:55:14 +0300
-Message-Id: <20190422145519.16146-8-kaslevs@vmware.com>
+Subject: [PATCH v10 09/12] trace-cmd: Try to autodetect number of guest CPUs in setup-guest if not specified
+Date:   Mon, 22 Apr 2019 17:55:16 +0300
+Message-Id: <20190422145519.16146-10-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190422145519.16146-1-kaslevs@vmware.com>
 References: <20190422145519.16146-1-kaslevs@vmware.com>
@@ -58,117 +58,67 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Detect if splice(2) reading is supported for vsockets (Linux 4.20 and
-later) and use it, or fallback to read/write-ing otherwise.
+When no number of guest CPUs is provided with the -c flag to `trace-cmd
+setup-guest`, try to autodetect it using virsh for libvirt managed guests.
 
 Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
- lib/trace-cmd/trace-recorder.c |  6 ++--
- tracecmd/trace-record.c        | 56 ++++++++++++++++++++++++++++++++--
- 2 files changed, 56 insertions(+), 6 deletions(-)
+ tracecmd/trace-setup-guest.c | 21 +++++++++++++++++++++
+ tracecmd/trace-usage.c       |  2 +-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
-index 0ea7a87..6b168a7 100644
---- a/lib/trace-cmd/trace-recorder.c
-+++ b/lib/trace-cmd/trace-recorder.c
-@@ -394,10 +394,8 @@ static long splice_data(struct tracecmd_recorder *recorder)
- 	ret = splice(recorder->brass[0], NULL, recorder->fd, NULL,
- 		     read, recorder->fd_flags);
- 	if (ret < 0) {
--		if (errno != EAGAIN && errno != EINTR) {
--			warning("recorder error in splice output");
--			return -1;
--		}
-+		if (errno != EAGAIN && errno != EINTR)
-+			return ret;
- 		return total_read;
- 	} else
- 		update_fd(recorder, ret);
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 1c6e115..eacb7e9 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -2703,12 +2703,61 @@ static int open_vsock(unsigned int cid, unsigned int port)
- 
- 	return sd;
+diff --git a/tracecmd/trace-setup-guest.c b/tracecmd/trace-setup-guest.c
+index a6f58dc..a55a37d 100644
+--- a/tracecmd/trace-setup-guest.c
++++ b/tracecmd/trace-setup-guest.c
+@@ -93,6 +93,24 @@ static int make_guest_fifos(const char *guest, int nr_cpus, mode_t mode)
+ 	return ret;
  }
-+
-+static int try_splice_read_vsock(void)
+ 
++static int get_guest_cpu_count(const char *guest)
 +{
-+	int ret, sd, brass[2];
++	const char *cmd_fmt = "virsh vcpucount --maximum '%s' 2>/dev/null";
++	int nr_cpus = -1;
++	char cmd[1024];
++	FILE *f;
 +
-+	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
-+	if (sd < 0)
-+		return sd;
++	snprintf(cmd, sizeof(cmd), cmd_fmt, guest);
++	f = popen(cmd, "r");
++	if (!f)
++		return -errno;
 +
-+	ret = pipe(brass);
-+	if (ret < 0)
-+		goto out_close_sd;
++	fscanf(f, "%d", &nr_cpus);
++	pclose(f);
 +
-+	/*
-+	 * On kernels that don't support splice reading from vsockets
-+	 * this will fail with EINVAL, or ENOTCONN otherwise.
-+	 * Technically, it should never succeed but if it does, claim splice
-+	 * reading is supported.
-+	 */
-+	ret = splice(sd, NULL, brass[1], NULL, 10, 0);
-+	if (ret < 0)
-+		ret = errno != EINVAL;
-+	else
-+		ret = 1;
-+
-+	close(brass[0]);
-+	close(brass[1]);
-+out_close_sd:
-+	close(sd);
-+	return ret;
++	return nr_cpus;
 +}
 +
-+static bool can_splice_read_vsock(void)
-+{
-+	static bool initialized, res;
-+
-+	if (initialized)
-+		return res;
-+
-+	res = try_splice_read_vsock() > 0;
-+	initialized = true;
-+	return res;
-+}
-+
- #else
- static inline int open_vsock(unsigned int cid, unsigned int port)
+ static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gid)
  {
- 	die("vsock is not supported");
- 	return -1;
- }
+ 	gid_t save_egid;
+@@ -171,6 +189,9 @@ void trace_setup_guest(int argc, char **argv)
+ 
+ 	guest = argv[optind+1];
+ 
++	if (nr_cpus <= 0)
++		nr_cpus = get_guest_cpu_count(guest);
 +
-+static bool can_splice_read_vsock(void)
-+{
-+	return false;
-+}
- #endif
+ 	if (nr_cpus <= 0)
+ 		pdie("invalid number of cpus for guest %s", guest);
  
- static int do_accept(int sd)
-@@ -2913,13 +2962,16 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
- 
- 	if (is_guest(instance)) {
- 		int fd;
-+		unsigned int flags;
- 
- 		fd = open_vsock(instance->cid, instance->client_ports[cpu]);
- 		if (fd < 0)
- 			die("Failed to connect to agent");
- 
--		return tracecmd_create_recorder_virt(
--			file, cpu, recorder_flags | TRACECMD_RECORD_NOSPLICE, fd);
-+		flags = recorder_flags;
-+		if (!can_splice_read_vsock())
-+			flags |= TRACECMD_RECORD_NOSPLICE;
-+		return tracecmd_create_recorder_virt(file, cpu, flags, fd);
- 	}
- 
- 	if (brass)
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index d0b84f9..2e5be6c 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -250,7 +250,7 @@ static struct usage_help usage_help[] = {
+ 	{
+ 		"setup-guest",
+ 		"create FIFOs for tracing guest VMs",
+-		" %s setup-guest -c cpus[-p perm][-g group] guest\n"
++		" %s setup-guest [-c cpus][-p perm][-g group] guest\n"
+ 		"          -c number of guest virtual CPUs\n"
+ 		"          -p FIFOs permissions (default: 0660)\n"
+ 		"          -g FIFOs group owner\n"
 -- 
 2.19.1
 
