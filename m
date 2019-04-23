@@ -3,35 +3,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D15C2C282DD
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 14:58:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C2F6C282DD
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 15:02:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AB9842175B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 14:58:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 427F2217D9
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 15:02:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbfDWO6u (ORCPT
+        id S1727467AbfDWPCU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Apr 2019 10:58:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43362 "EHLO mail.kernel.org"
+        Tue, 23 Apr 2019 11:02:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727740AbfDWO6u (ORCPT
+        id S1726421AbfDWPCT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Apr 2019 10:58:50 -0400
+        Tue, 23 Apr 2019 11:02:19 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A0FE20674;
-        Tue, 23 Apr 2019 14:58:49 +0000 (UTC)
-Date:   Tue, 23 Apr 2019 10:58:47 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id B838621773;
+        Tue, 23 Apr 2019 15:02:18 +0000 (UTC)
+Date:   Tue, 23 Apr 2019 11:02:17 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     linux-trace-devel@vger.kernel.org
+To:     Slavomir Kaslev <kaslevs@vmware.com>
+Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        linux-trace-devel@vger.kernel.org
 Subject: Re: [PATCH v3] trace-cmd: Load trace-cmd plugins from build folder,
  if exists
-Message-ID: <20190423105847.73e033de@gandalf.local.home>
+Message-ID: <20190423110217.63ff2898@gandalf.local.home>
 In-Reply-To: <20190423143344.30645-1-tstoyanov@vmware.com>
 References: <20190423143344.30645-1-tstoyanov@vmware.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
@@ -55,20 +56,6 @@ Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 >   - Added logic which gets the full path of the running trace-cmd
 >     binary and loads plugins from "plugins" directory around it, if exist.
 > ]
-
-Hi Tzvetomir,
-
-FYI, change versions should go below the three dashes "---" under the
-Signed-off-by, as that will keep them from being added to the git logs.
-Patch change versions are only for reviewers information not for git
-history.
-
-Other than that, the patch looks fine.
-
-Thanks!
-
--- Steve
-
 > 
 > When a development version of trace-cmd is built and run on the machine,
 > by default it loads all plugins from predefined drierctories :
@@ -82,6 +69,16 @@ Thanks!
 >   pluigins will be loaded last, so in case of duplication the "development"
 >   plugins win.
 > 
+
+Slavomir,
+
+Can you review this patch, and if it looks good to you, add your
+"Reviewed-by"?
+
+Thanks!
+
+-- Steve
+
 > Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 > ---
 >  lib/trace-cmd/trace-util.c | 29 +++++++++++++++++++++++++++++
