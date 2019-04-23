@@ -2,122 +2,103 @@ Return-Path: <SRS0=onCu=SZ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AB62C10F14
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 13:28:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E11BBC282DD
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 13:32:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 320C320685
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 13:28:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B930821773
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 13:32:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbfDWN2J (ORCPT
+        id S1727305AbfDWNco (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Apr 2019 09:28:09 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44384 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727458AbfDWN2I (ORCPT
+        Tue, 23 Apr 2019 09:32:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726655AbfDWNco (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Apr 2019 09:28:08 -0400
-Received: by mail-wr1-f66.google.com with SMTP id c5so11355379wrs.11
-        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Apr 2019 06:28:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Bd8/O3nFKfDnlyx4P3RcT9dgrqw31uFQ79XNZXVW2Ko=;
-        b=Phxw44u2zcn38pPSgzY5BxNbLsa7Pzv60UjqsgL6F+nzAIUMGey/mXgBpeZ1HuOjRx
-         docBX2mFDYZUeIWSY+R65xCBAcyoUPisRvHkoP28ibUG+ssk7Hm2BrBxOdBX0Hd1D4A7
-         Z5apGS4RAqgMZYsMoHRIoHIeNcKPWseauv+F3ozFWPl5bPgs1PTINqsVyZqArKwvaz6w
-         zEGagqO4b4fmnr9so/0XB7wm5i8rerWFO/yWam8XZADlVB8jbT3Na0Z10krI2Phg/YpJ
-         OOVLhjnM+VQb2UcYp1paE3k3mvkPlLe3Bnh7DWeRlvBE558vE3ObCBqNPDtAkoh9ZaNN
-         G4pA==
-X-Gm-Message-State: APjAAAVlPVXCW9DERIwDlNZUWMUqXQMqT3eO0WXQbQ6LM8aO7Yu8mQ+x
-        rYbgXNFQ9+fGmIddhmFW/bYkZUkg
-X-Google-Smtp-Source: APXvYqwSBD+5MuEQQp1PVa9pbVhj0CbxkZcdtt3C9c+k7b8qnhCBEnJeMMYIoY8PfUzBFIX4U2z5zw==
-X-Received: by 2002:adf:fe02:: with SMTP id n2mr17043237wrr.3.1556026086996;
-        Tue, 23 Apr 2019 06:28:06 -0700 (PDT)
-Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id w11sm31222231wre.15.2019.04.23.06.28.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Apr 2019 06:28:06 -0700 (PDT)
-From:   Yordan Karadzhov <ykaradzhov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Slavomir Kaslev <kaslevs@vmware.com>
-Subject: [PATCH 5/5] kernel-shark: Remember the paths used by the Open-File dialogs.
-Date:   Tue, 23 Apr 2019 16:27:41 +0300
-Message-Id: <20190423132741.17864-6-ykaradzhov@vmware.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190423132741.17864-1-ykaradzhov@vmware.com>
-References: <20190423132741.17864-1-ykaradzhov@vmware.com>
+        Tue, 23 Apr 2019 09:32:44 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 722CF214AE;
+        Tue, 23 Apr 2019 13:32:43 +0000 (UTC)
+Date:   Tue, 23 Apr 2019 09:32:41 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Slavomir Kaslev <kaslevs@vmware.com>
+Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH v2] trace-cmd: Load trace-cmd plugins from build folder,
+ if exists
+Message-ID: <20190423093241.12235bb8@gandalf.local.home>
+In-Reply-To: <f9e75bf11ee9507ebe8b1e3d6c34c4db9322da97.camel@vmware.com>
+References: <20190423095658.3907-1-tstoyanov@vmware.com>
+        <f9e75bf11ee9507ebe8b1e3d6c34c4db9322da97.camel@vmware.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The application remember the used file paths across different executions.
+On Tue, 23 Apr 2019 13:10:35 +0000
+Slavomir Kaslev <kaslevs@vmware.com> wrote:
 
-Suggested-by: Slavomir Kaslev <kaslevs@vmware.com>
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark/src/KsMainWindow.cpp | 11 ++++++++++-
- kernel-shark/src/KsMainWindow.hpp |  2 ++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ 
+> > +static char *trace_util_get_source_plugins_dir(void)
+> > +{
+> > +	char *plugins = "/plugins";
+> > +	char path[PATH_MAX+1];
+> > +	int slash = 0;
+> > +	int ret;
+> > +
+> > +	ret = readlink("/proc/self/exe", path, PATH_MAX);
+> > +	if (ret > PATH_MAX || ret < 0)
+> > +		return NULL;
+> > +
+> > +	while (ret) {
+> > +		if ('/' == path[ret--])
+> > +			slash++;
+> > +		if (slash == 2) {
+> > +			path[ret+1] = 0;
+> > +			if (strlen(path) + strlen(plugins) > PATH_MAX)
+> > +				break;
+> > +			strcat(path, plugins);
+> > +			return strdup(path);
+> > +		}
+> > +	}  
+> 
+> Looks good. I think that this while() loop can be simplified using the
+> standard library to something like:
+> 
+> 	char resolved[PATH_MAX+1];
+> 
+> 	dirname(path);
+> 	strcat(path, "/../plugins");
+> 	if (!realpath(path, resolved))
+> 		return NULL;
+> 
+> The realpath() above is also not strictly necessary.
 
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 748bacd..5f326f5 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -67,7 +67,8 @@ KsMainWindow::KsMainWindow(QWidget *parent)
-   _fullScreenModeAction("Full Screen Mode", this),
-   _aboutAction("About", this),
-   _contentsAction("Contents", this),
--  _deselectShortcut(this)
-+  _deselectShortcut(this),
-+  _settings("kernelshark.org", "Kernel Shark") // organization , application
- {
- 	setWindowTitle("Kernel Shark");
- 	_createActions();
-@@ -126,6 +127,10 @@ KsMainWindow::KsMainWindow(QWidget *parent)
- 	connect(&_mState,	&KsDualMarkerSM::deselectB,
- 		this,		&KsMainWindow::_deselectB);
- 
-+	_lastDataFilePath = _settings.value("dataPath").toString();
-+	_lastConfFilePath = _settings.value("confPath").toString();
-+	_lastPluginFilePath = _settings.value("pluginPath").toString();
-+
- 	_resizeEmpty();
- }
- 
-@@ -143,6 +148,10 @@ KsMainWindow::~KsMainWindow()
- 					_session.getConfDocPtr());
- 	}
- 
-+	_settings.setValue("dataPath", _lastDataFilePath);
-+	_settings.setValue("confPath", _lastConfFilePath);
-+	_settings.setValue("pluginPath", _lastPluginFilePath);
-+
- 	_data.clear();
- 
- 	if (kshark_instance(&kshark_ctx))
-diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-index 2bf3285..962de2d 100644
---- a/kernel-shark/src/KsMainWindow.hpp
-+++ b/kernel-shark/src/KsMainWindow.hpp
-@@ -155,6 +155,8 @@ private:
- 
- 	QString		_lastDataFilePath, _lastConfFilePath, _lastPluginFilePath;
- 
-+	QSettings	_settings;
-+
- 	void _open();
- 
- 	void _restoreSession();
--- 
-2.20.1
+Or:
+
+	char *p;
+
+	dirname(path);
+	p = strrchr(path, '/');
+	if (!p)
+		return NULL;
+	/* It's only in the source if we are in the tracecmd directory */
+	if (strcmp(p, "/tracecmd") != 0)
+		return NULL;
+
+	strcpy(p, "/plugins");
+
+
+-- Steve
 
