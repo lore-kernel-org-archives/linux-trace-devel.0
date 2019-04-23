@@ -2,136 +2,119 @@ Return-Path: <SRS0=onCu=SZ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69A24C10F14
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 09:57:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 533F7C10F14
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 10:02:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3DA3920843
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 09:57:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 27850206A3
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 10:02:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbfDWJ5C (ORCPT
+        id S1726330AbfDWKCY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Apr 2019 05:57:02 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:42543 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbfDWJ5C (ORCPT
+        Tue, 23 Apr 2019 06:02:24 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:50912 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbfDWKCY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Apr 2019 05:57:02 -0400
-Received: by mail-wr1-f66.google.com with SMTP id g3so19360651wrx.9
-        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Apr 2019 02:57:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0EP+IguqQ+hwAoW5qIZCWolMuAYEgRl6GSORffp3TTs=;
-        b=mQBtEh5sd7/5fPPncy4oH3Q1PkYnXS+otiM8RM9D7Gask6Nt51q2Gk0ngHhYtH8Ce2
-         MomJJjAmzsZf7kOCtEylXEgXE4yReDpiZQE6F0a5Fr+EngWuISIMl6Fght8YUT0SQs+r
-         buiO89z3geVZOV2jH/JoF7CeIoNleuTSO1KywFXfU5rsLdSSBPuUkHOdqnI+xvZkT5PT
-         MIhBiQN/nETvZ3OHEoguosewS9xAHdETXDwx8fuvicY3d26mNbfelb5S3oO2xqogeAya
-         8X7AT35fQqrrvPzNbfOBFmH7zdYCWGorBL4xOeo6p3KbI0bqb1GHQ3NZRpR2UvdBOpZ3
-         T5lw==
-X-Gm-Message-State: APjAAAWQ3ChYyxp8V2cEGFipcNg9LPtFnP30c3uHn90p6R2r8+wL2+d7
-        uIWB3sf7JWv/6v8FN4gMUoq26IQf
-X-Google-Smtp-Source: APXvYqyvKiHbD+WsgU5KgSsRaxufAA4cSEH/Y8+Q0tOmaKcCgeaGC4GX/ll9hRFeOUaczeKGyH+S3w==
-X-Received: by 2002:adf:e6c6:: with SMTP id y6mr16219257wrm.225.1556013420786;
-        Tue, 23 Apr 2019 02:57:00 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id c11sm7383920wrs.86.2019.04.23.02.56.59
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Apr 2019 02:57:00 -0700 (PDT)
-From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2] trace-cmd: Load trace-cmd plugins from build folder, if exists
-Date:   Tue, 23 Apr 2019 12:56:58 +0300
-Message-Id: <20190423095658.3907-1-tstoyanov@vmware.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 23 Apr 2019 06:02:24 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id EFE7727FB1F
+Subject: Re: [PATCH v6] platform/chrome: cros_ec: Add trace event to trace EC
+ commands
+To:     Raul E Rangel <rrangel@chromium.org>,
+        linux-trace-devel@vger.kernel.org
+Cc:     zwisler@chromium.org, djkurtz@chromium.org,
+        Ross Zwisler <zwisler@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>
+References: <20190416210328.204078-1-rrangel@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <a966c393-70ed-48e9-988e-a869c670e25c@collabora.com>
+Date:   Tue, 23 Apr 2019 12:02:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190416210328.204078-1-rrangel@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-[
- v2 changes:
-  - Removed the logic looking for plugins in the build path.
-  - Added logic which gets the full path of the running trace-cmd
-    binary and loads plugins from "plugins" directory around it, if exist.
-]
 
-When a development version of trace-cmd is built and run on the machine,
-by default it loads all plugins from predefined drierctories :
-  (install_preffix)/lib/traceevent/plugins
-  ~/.traceevent/plugins
-  the path specified in TRACEEVENT_PLUGIN_DIR environment variable.
-Thus, the development plugins will not be loaded. To simplify the development
-process, a new logic is added:
-  At plugins load time, check the location of trace-cmd application and look
-  for "plugins" directory around it. If found, load plugins from it. Those
-  pluigins will be loaded last, so in case of duplication the "development"
-  plugins win.
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- lib/trace-cmd/trace-util.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+On 16/4/19 23:03, Raul E Rangel wrote:
+> This is useful to see which EC commands are being executed and when.
+> 
+> To enable:
+> 
+>     echo 1 > /sys/kernel/debug/tracing/events/cros_ec/enable
+> 
+> Example:
+> 
+>     /* cros_ec_cmd: version: 0, command: EC_CMD_GET_VERSION */
+>     /* cros_ec_cmd: version: 0, command: EC_CMD_GET_PROTOCOL_INFO */
+>     /* cros_ec_cmd: version: 1, command: EC_CMD_GET_CMD_VERSIONS */
+>     /* cros_ec_cmd: version: 1, command: EC_CMD_USB_PD_CONTROL */
+> 
+> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+> Reviewed-by: Ross Zwisler <zwisler@google.com>
+> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> I did not add cros_ec_commands.h as an include to cros_ec_trace.c.
+> It's not strictly required because the macro doesn't get evaluated until
+> after cros_ec_trace.h has been included. That transitively brings in
+> cros_ec_ommands.h. I did try it, but since cros_ec_commands.h doesn't
+> include linux/types.h it fails to find uint32_t. I could have included
+> both headers, but since they aren't required I just skipped it.
+> 
+> My reasoning for not putting EC_CMDS in the cros_ec_trace.h was that I
+> didn't want to clutter the file. I think it's visually easier to find
+> all the trace events without having to parse through all the
+> implementation details.
+> 
+> Changes in v6:
+> - Added script to generate the EC_CMDS trace symbols. They were
+>   originally sorted by value, now they are sorted by declaration order.
+>   There is one duplicate: EC_CMD_PORT80_LAST_BOOT and
+>   EC_CMD_PORT80_READ. They both resolve to the same value. Not sure if
+>   this is a bug in the cros_ec_commands.h file or not. Anyway it doesn't
+>   hurt anything.
+> - Changed the example in the commit
+> 
+> Changes in v5:
+> - Rebased on upstream/master. It turns out upstream/master is missing a
+>   lot of changes to cros_ec_commands.h.
+> - Replace SYM with SYMBOL in macro name.
+> 
+> Changes in v4:
+> - Use the full command name so go to definition continues to work in my
+> editor.
+> 
+> Changes in v3:
+> - Use a macro to avoid duplicating the ec command names.
+> 
+> Changes in v2:
+> - Changed comment style to match other cros_ec files.
+> - Fixed commit tag.
+> 
+>  drivers/platform/chrome/Makefile        |   5 +-
+>  drivers/platform/chrome/cros_ec_proto.c |   4 +
+>  drivers/platform/chrome/cros_ec_trace.c | 124 ++++++++++++++++++++++++
+>  drivers/platform/chrome/cros_ec_trace.h |  51 ++++++++++
+>  4 files changed, 183 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/platform/chrome/cros_ec_trace.c
+>  create mode 100644 drivers/platform/chrome/cros_ec_trace.h
+> 
 
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 8d21fb2..98402a0 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -1364,6 +1364,34 @@ static int add_plugin_file(struct tep_handle *pevent, const char *path,
- 	return -ENOMEM;
- }
- 
-+static char *trace_util_get_source_plugins_dir(void)
-+{
-+	char *plugins = "/plugins";
-+	char path[PATH_MAX+1];
-+	int slash = 0;
-+	int ret;
-+
-+	ret = readlink("/proc/self/exe", path, PATH_MAX);
-+	if (ret > PATH_MAX || ret < 0)
-+		return NULL;
-+
-+	while (ret) {
-+		if ('/' == path[ret--])
-+			slash++;
-+		if (slash == 2) {
-+			path[ret+1] = 0;
-+			if (strlen(path) + strlen(plugins) > PATH_MAX)
-+				break;
-+			strcat(path, plugins);
-+			return strdup(path);
-+		}
-+	}
-+
-+	return NULL;
-+
-+}
-+
-+
- int trace_util_load_plugins(struct tep_handle *pevent, const char *suffix,
- 			    int (*load_plugin)(struct tep_handle *pevent,
- 					       const char *path,
-@@ -1404,6 +1432,12 @@ int trace_util_load_plugins(struct tep_handle *pevent, const char *suffix,
- 	trace_util_load_plugins_dir(pevent, suffix, path, load_plugin, data);
- 
- 	free(path);
-+
-+	path = trace_util_get_source_plugins_dir();
-+	if (path) {
-+		trace_util_load_plugins_dir(pevent, suffix, path, load_plugin, data);
-+		free(path);
-+	}
- 	return 0;
- }
- 
--- 
-2.20.1
+Tweaked a bit the commit message and applied for 5.2
 
+Thanks,
+ Enric
