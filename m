@@ -2,140 +2,93 @@ Return-Path: <SRS0=onCu=SZ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C2F6C282DD
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 15:02:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D67CC10F03
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 15:08:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 427F2217D9
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 15:02:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B1B0206BA
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Apr 2019 15:08:59 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="rFGTYKHx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727467AbfDWPCU (ORCPT
+        id S1727761AbfDWPI7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Apr 2019 11:02:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726421AbfDWPCT (ORCPT
+        Tue, 23 Apr 2019 11:08:59 -0400
+Received: from mail-eopbgr680087.outbound.protection.outlook.com ([40.107.68.87]:14566
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727745AbfDWPI7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Apr 2019 11:02:19 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B838621773;
-        Tue, 23 Apr 2019 15:02:18 +0000 (UTC)
-Date:   Tue, 23 Apr 2019 11:02:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Slavomir Kaslev <kaslevs@vmware.com>
-Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        linux-trace-devel@vger.kernel.org
+        Tue, 23 Apr 2019 11:08:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uLiDJvh4Or59k4/qonfdVfD+TYIORwXdGr6phhWk4oM=;
+ b=rFGTYKHx1RoTho3xG44ed/xZeiTiZVq3Ta91YfkX70miX8iYENR8dw1k2EDGxGXk7bBV7s6N/651k5L9DV40sduXMTaJu2q6oavoT25hdPkSu2TYYVlTwC/ZlJ6z/XkInCbJZ4aTaTi7qzlYMJSZWYlGBMNFl4zwljRhRIyTOaQ=
+Received: from MWHPR0501MB3772.namprd05.prod.outlook.com (10.167.163.156) by
+ MWHPR0501MB3707.namprd05.prod.outlook.com (10.167.163.139) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1835.9; Tue, 23 Apr 2019 15:08:55 +0000
+Received: from MWHPR0501MB3772.namprd05.prod.outlook.com
+ ([fe80::3949:85c0:3b7b:136e]) by MWHPR0501MB3772.namprd05.prod.outlook.com
+ ([fe80::3949:85c0:3b7b:136e%5]) with mapi id 15.20.1835.010; Tue, 23 Apr 2019
+ 15:08:54 +0000
+From:   Slavomir Kaslev <kaslevs@vmware.com>
+To:     "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
 Subject: Re: [PATCH v3] trace-cmd: Load trace-cmd plugins from build folder,
  if exists
-Message-ID: <20190423110217.63ff2898@gandalf.local.home>
-In-Reply-To: <20190423143344.30645-1-tstoyanov@vmware.com>
+Thread-Topic: [PATCH v3] trace-cmd: Load trace-cmd plugins from build folder,
+ if exists
+Thread-Index: AQHU+eWOvK5FIqYHDUeqESeioxjhZaZJ2SKA
+Date:   Tue, 23 Apr 2019 15:08:54 +0000
+Message-ID: <54dda75f1da218e241e46c453504106cee6345e8.camel@vmware.com>
 References: <20190423143344.30645-1-tstoyanov@vmware.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+         <20190423110217.63ff2898@gandalf.local.home>
+In-Reply-To: <20190423110217.63ff2898@gandalf.local.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=kaslevs@vmware.com; 
+x-originating-ip: [146.247.46.5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2b0f495a-9401-49c5-771b-08d6c7fd9a57
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:MWHPR0501MB3707;
+x-ms-traffictypediagnostic: MWHPR0501MB3707:
+x-microsoft-antispam-prvs: <MWHPR0501MB37078CBCEBDE2E52A9EBEAEBDA230@MWHPR0501MB3707.namprd05.prod.outlook.com>
+x-forefront-prvs: 0016DEFF96
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(376002)(396003)(346002)(366004)(39860400002)(189003)(199004)(36756003)(316002)(6436002)(558084003)(26005)(6116002)(6916009)(5640700003)(3846002)(76176011)(6506007)(25786009)(2501003)(4326008)(2906002)(118296001)(186003)(53936002)(486006)(305945005)(6512007)(6486002)(2351001)(7736002)(14454004)(11346002)(476003)(2616005)(6246003)(446003)(229853002)(66066001)(1730700003)(68736007)(86362001)(102836004)(256004)(81166006)(81156014)(8936002)(71200400001)(99286004)(8676002)(91956017)(71190400001)(97736004)(5660300002)(478600001)(76116006)(73956011)(66946007)(66556008)(64756008)(66446008)(66476007)(54906003);DIR:OUT;SFP:1101;SCL:1;SRVR:MWHPR0501MB3707;H:MWHPR0501MB3772.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: IttEIHY+Ser39w3PZRhGfCOU9i2BoaZ1RrEILRDieiYyvMnBcGFTjPgjjxEHaFSFQytw116B7qq+DGfS5yym982p03GBaCIoA8NVwBeuePVB8fEYr56pp32pTqUtt1vViTFiTUM/OEIuIaGxiatsLrUyrq+tSHjf01MCkvTspdHifXahg1zVVAq3R6mjhER71zSDpxeFf3WbYMP7RIPFeABFupduU9Z7xO4g7k2z1PE7eevbln/ekehd/LGXO/Akq+62kve+agVS6iv+AsjePZQR1ij705HLMa5wf/338dzop5/tidoRi3CHWlo0l1+mS/6Jt0EbSqgclznSD4cEuxy17atc1gp+6oz0jtyxBuMRK2dihrHBur0Z0ZL/g+tiNM+xCQauPZUCs5G6tASDdf7m5cgWsFJ/axMlqW06wv8=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <09E3437E54C5D8408DA152E14D8CB0B5@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b0f495a-9401-49c5-771b-08d6c7fd9a57
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2019 15:08:54.7358
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0501MB3707
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 23 Apr 2019 17:33:44 +0300
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
-
-> [
->  v3 changes:
->   - Simplified the logic, using standard library functions.
->   - Added check to ensure the binary is inside the source tree.
->  v2 changes:
->   - Removed the logic looking for plugins in the build path.
->   - Added logic which gets the full path of the running trace-cmd
->     binary and loads plugins from "plugins" directory around it, if exist.
-> ]
-> 
-> When a development version of trace-cmd is built and run on the machine,
-> by default it loads all plugins from predefined drierctories :
->   (install_preffix)/lib/traceevent/plugins
->   ~/.traceevent/plugins
->   the path specified in TRACEEVENT_PLUGIN_DIR environment variable.
-> Thus, the development plugins will not be loaded. To simplify the development
-> process, a new logic is added:
->   At plugins load time, check the location of trace-cmd application and look
->   for "plugins" directory around it. If found, load plugins from it. Those
->   pluigins will be loaded last, so in case of duplication the "development"
->   plugins win.
-> 
-
-Slavomir,
-
-Can you review this patch, and if it looks good to you, add your
-"Reviewed-by"?
-
-Thanks!
-
--- Steve
-
-> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> ---
->  lib/trace-cmd/trace-util.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
-> 
-> diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-> index 8d21fb2..190cf74 100644
-> --- a/lib/trace-cmd/trace-util.c
-> +++ b/lib/trace-cmd/trace-util.c
-> @@ -14,6 +14,7 @@
->  #include <unistd.h>
->  #include <ctype.h>
->  #include <limits.h>
-> +#include <libgen.h>
->  #include <sys/mount.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
-> @@ -1364,6 +1365,28 @@ static int add_plugin_file(struct tep_handle *pevent, const char *path,
->  	return -ENOMEM;
->  }
->  
-> +static char *trace_util_get_source_plugins_dir(void)
-> +{
-> +	char *p, path[PATH_MAX+1];
-> +	int ret;
-> +
-> +	ret = readlink("/proc/self/exe", path, PATH_MAX);
-> +	if (ret > PATH_MAX || ret < 0)
-> +		return NULL;
-> +
-> +	dirname(path);
-> +	p = strrchr(path, '/');
-> +	if (!p)
-> +		return NULL;
-> +	/* Check if we are in the the source tree */
-> +	if (strcmp(p, "/tracecmd") != 0)
-> +		return NULL;
-> +
-> +	strcpy(p, "/plugins");
-> +	return strdup(path);
-> +}
-> +
-> +
->  int trace_util_load_plugins(struct tep_handle *pevent, const char *suffix,
->  			    int (*load_plugin)(struct tep_handle *pevent,
->  					       const char *path,
-> @@ -1404,6 +1427,12 @@ int trace_util_load_plugins(struct tep_handle *pevent, const char *suffix,
->  	trace_util_load_plugins_dir(pevent, suffix, path, load_plugin, data);
->  
->  	free(path);
-> +
-> +	path = trace_util_get_source_plugins_dir();
-> +	if (path) {
-> +		trace_util_load_plugins_dir(pevent, suffix, path, load_plugin, data);
-> +		free(path);
-> +	}
->  	return 0;
->  }
->  
-
+T24gVHVlLCAyMDE5LTA0LTIzIGF0IDExOjAyIC0wNDAwLCBTdGV2ZW4gUm9zdGVkdCB3cm90ZToN
+Cj4gU2xhdm9taXIsDQo+IA0KPiBDYW4geW91IHJldmlldyB0aGlzIHBhdGNoLCBhbmQgaWYgaXQg
+bG9va3MgZ29vZCB0byB5b3UsIGFkZCB5b3VyDQo+ICJSZXZpZXdlZC1ieSI/DQoNClN1cmUsIHRy
+aWVkIGl0IGxvY2FsbHkgYW5kIHNlZW1zIHRvIGJlIHdvcmtpbmcgY29ycmVjdGx5DQoNClJldmll
+d2VkLWJ5OiBTbGF2b21pciBLYXNsZXYgPGthc2xldnNAdm13YXJlLmNvbT4NCg0KQ2hlZXJzLA0K
+DQotLSBTbGF2aQ0K
