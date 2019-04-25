@@ -1,267 +1,164 @@
-Return-Path: <SRS0=a8si=S2=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=Y1eu=S3=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 102B7C10F11
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Apr 2019 20:27:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BEE8C10F03
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 09:43:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C492220835
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Apr 2019 20:27:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 376082084F
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 09:43:59 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H/d/pYAv"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731235AbfDXU1G (ORCPT
+        id S1726439AbfDYJn6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Apr 2019 16:27:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730864AbfDXU1G (ORCPT
+        Thu, 25 Apr 2019 05:43:58 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:36954 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbfDYJn6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Apr 2019 16:27:06 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F24132175B;
-        Wed, 24 Apr 2019 20:27:04 +0000 (UTC)
-Date:   Wed, 24 Apr 2019 16:27:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v5 01/30] tools/lib/traceevent: Implement libtraceevent
- man pages
-Message-ID: <20190424162700.11318f32@gandalf.local.home>
-In-Reply-To: <20190412133811.15878-2-tstoyanov@vmware.com>
-References: <20190412133811.15878-1-tstoyanov@vmware.com>
-        <20190412133811.15878-2-tstoyanov@vmware.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 25 Apr 2019 05:43:58 -0400
+Received: by mail-wr1-f53.google.com with SMTP id t17so17645959wrr.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Apr 2019 02:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language;
+        bh=FpudFmFS7PI/Qamdz2ZadRuv3CLVzW3dH29ufetIoNM=;
+        b=H/d/pYAvetzXg+JVXwyUKcMNRvfHvj88Ig+Hrsx6X+ljHf3GGUoEbOZQ7pjN7p3Dli
+         uVbE4FXacn6pTHzTpj4AEXc84DRxLXHaJd4Ms6vjiG3Na6IpRqL0amjASyHKQ6MzY+KD
+         T8vxPVx4p1CAQeuQnh1WQv1hCm1eznMqrYNFqpcEq47w17DxMmUKBfG6LJ0GHHivaNDv
+         KkvPbEnLbqNObaooogh76zXnqS00zfGxDx7JTzakjTBbbz6dXn5EHFPh8IOQnBegu3Ur
+         2KA0Xc46sg8OCz8I7Za/4WUwzlR7k0SpHlEab5IijDdZipRgICbh2mXJRCJGWmLuSPv9
+         YZZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=FpudFmFS7PI/Qamdz2ZadRuv3CLVzW3dH29ufetIoNM=;
+        b=AxpDU+fOp17RVKFGCikIs0jRE6FmKHSPv/SwLflLn6bSh4nF4+BROQGWBRA9ghAKSR
+         8CWtC+jlx3TRA71R3SXxpCT1nmSrCKzGXg2ayfC4575Lh+xO9xdisMI5Ez9cRb2fqFIl
+         TphWerqQG3rNu8O2iJ33MRurmKeLdQP7gD+NP8Kb3Vq7k8+ZIDapr68IoyurUTVvZqeV
+         hoU+5sfI6ptC7YM7TTsyWVIjUvWgey/4njlu6RufM1NDgBbTKtjPHQsX7Gm210MKuN5W
+         ZFU4ONCN81SbPi9nYmpR/wIiogkvRaTOacYc2Ulez8LCy+tNh2DrAcOEZNJcxo2WHoP8
+         1L2Q==
+X-Gm-Message-State: APjAAAWb29yxCmK2xKshYBKp63ZVz5YALNAHbnrBJjNG74WEX9oOUMYT
+        qrfJfLD/aL1O8KTOzlA/vgmabFZo
+X-Google-Smtp-Source: APXvYqwoux2p+tDuCH9A5yHJw7q6iuS+zJ9i7TGKfZc43rKOOWcrgb64VLHlBp+R0ZWnCNHkn3fdSQ==
+X-Received: by 2002:a05:6000:cc:: with SMTP id q12mr14232282wrx.251.1556185436814;
+        Thu, 25 Apr 2019 02:43:56 -0700 (PDT)
+Received: from [10.27.113.15] ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id o6sm43012043wre.60.2019.04.25.02.43.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 25 Apr 2019 02:43:55 -0700 (PDT)
+Subject: Re: KernelShark not rendering correctly
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+References: <20190423104158.292c665a@gandalf.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <e079067a-2b6a-7847-9754-10e515fa8c1a@gmail.com>
+Date:   Thu, 25 Apr 2019 12:43:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20190423104158.292c665a@gandalf.local.home>
+Content-Type: multipart/mixed;
+ boundary="------------9873951DCA6771E028FEFB34"
+Content-Language: en-US
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 12 Apr 2019 16:37:42 +0300
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+This is a multi-part message in MIME format.
+--------------9873951DCA6771E028FEFB34
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> --- /dev/null
-> +++ b/tools/lib/traceevent/Documentation/libtraceevent.txt
-> @@ -0,0 +1,203 @@
-> +libtraceevent(3)
-> +================
-> +
-> +NAME
-> +----
-> +libtraceevent - Linux kernel trace event library
-> +
-> +SYNOPSIS
-> +--------
-> +[verse]
-> +--
-> +*#include <event-parse.h>*
-> +
-> +Management of tep handler data structure and access of its members:
-> +	struct tep_handle pass:[*]*tep_alloc*(void);
-> +	void *tep_free*(struct tep_handle pass:[*]_tep_);
-> +	void *tep_ref*(struct tep_handle pass:[*]_tep_);
-> +	void *tep_unref*(struct tep_handle pass:[*]_tep_);
-> +	int *tep_ref_get*(struct tep_handle pass:[*]_tep_);
-> +	void *tep_set_flag*(struct tep_handle pass:[*]_tep_, enum tep_flag _flag_);
-> +	void *tep_clear_flag*(struct tep_handle pass:[*]_tep_, enum tep_flag _flag_);
-> +	bool *tep_test_flag*(struct tep_handle pass:[*]_tep_, enum tep_flag _flags_);
-> +	int *tep_get_cpus*(struct tep_handle pass:[*]_tep_);
-> +	void *tep_set_cpus*(struct tep_handle pass:[*]_tep_, int _cpus_);
-> +	int *tep_get_long_size*(strucqt tep_handle pass:[*]_tep_);
-> +	void *tep_set_long_size*(struct tep_handle pass:[*]_tep_, int _long_size_);
-> +	int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
-> +	void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_);
-> +	bool *tep_is_latency_format*(struct tep_handle pass:[*]_tep_);
-> +	void *tep_set_latency_format*(struct tep_handle pass:[*]_tep_, int _lat_);
-> +	int *tep_get_header_page_size*(struct tep_handle pass:[*]_tep_);
-> +	int *tep_get_header_timestamp_size*(struct tep_handle pass:[*]_tep_);
-> +	bool *tep_is_old_format*(struct tep_handle pass:[*]_tep_);
-> +	int *tep_strerror*(struct tep_handle pass:[*]_tep_, enum tep_errno _errnum_, char pass:[*]_buf_, size_t _buflen_);
-> +
-> +Register / unregister APIs:
-> +	int *tep_register_trace_clock*(struct tep_handle pass:[*]_tep_, const char pass:[*]_trace_clock_);
-> +	int *tep_register_function*(struct tep_handle pass:[*]_tep_, char pass:[*]_name_, unsigned long long _addr_, char pass:[*]_mod_);
-> +	int *tep_register_event_handler*(struct tep_handle pass:[*]_tep_, int _id_, const char pass:[*]_sys_name_, const char pass:[*]_event_name_, tep_event_handler_func _func_, void pass:[*]_context_);
-> +	int *tep_unregister_event_handler*(struct tep_handle pass:[*]tep, int id, const char pass:[*]sys_name, const char pass:[*]event_name, tep_event_handler_func func, void pass:[*]_context_);
-> +	int *tep_register_print_string*(struct tep_handle pass:[*]_tep_, const char pass:[*]_fmt_, unsigned long long _addr_);
-> +	int *tep_register_print_function*(struct tep_handle pass:[*]_tep_, tep_func_handler _func_, enum tep_func_arg_type _ret_type_, char pass:[*]_name_, _..._);
-> +	int *tep_unregister_print_function*(struct tep_handle pass:[*]_tep_, tep_func_handler _func_, char pass:[*]_name_);
-> +
-> +Plugins management:
-> +	struct tep_plugin_list pass:[*]*tep_load_plugins*(struct tep_handle pass:[*]_tep_);
-> +	void *tep_unload_plugins*(struct tep_plugin_list pass:[*]_plugin_list_, struct tep_handle pass:[*]_tep_);
-> +	char pass:[*]pass:[*]*tep_plugin_list_options*(void);
-> +	void *tep_plugin_free_options_list*(char pass:[*]pass:[*]_list_);
-> +	int *tep_plugin_add_options*(const char pass:[*]_name_, struct tep_plugin_option pass:[*]_options_);
-> +	void *tep_plugin_remove_options*(struct tep_plugin_option pass:[*]_options_);
-> +	void *tep_print_plugins*(struct trace_seq pass:[*]_s_, const char pass:[*]_prefix_, const char pass:[*]_suffix_, const struct tep_plugin_list pass:[*]_list_);
-> +
-> +Event related APIs:
-> +	struct tep_event pass:[*]*tep_get_event*(struct tep_handle pass:[*]_tep_, int _index_);
-> +	struct tep_event pass:[*]*tep_get_first_event*(struct tep_handle pass:[*]_tep_);
-> +	int *tep_get_events_count*(struct tep_handle pass:[*]_tep_);
-> +	struct tep_event pass:[*]pass:[*]*tep_list_events*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
-> +	struct tep_event pass:[*]pass:[*]*tep_list_events_copy*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
-> +
-> +Event printing:
-> +	void *tep_print_event*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_record pass:[*]_record_, bool _use_trace_clock_);
-> +	void *tep_print_event_data*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]_record_);
-> +	void *tep_event_info*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]_record_);
-> +	void *tep_print_event_task*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]_record_);
-> +	void *tep_print_event_time*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]record, bool _use_trace_clock_);
-> +	void *tep_set_print_raw*(struct tep_handle pass:[*]_tep_, int _print_raw_);
-> +
-> +Event finding:
-> +	struct tep_event pass:[*]*tep_find_event*(struct tep_handle pass:[*]_tep_, int _id_);
-> +	struct tep_event pass:[*]*tep_find_event_by_name*(struct tep_handle pass:[*]_tep_, const char pass:[*]_sys_, const char pass:[*]_name_);
-> +	struct tep_event pass:[*]*tep_find_event_by_record*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_record_);
-> +
-> +Parsing of event files:
-> +	int *tep_parse_header_page*(struct tep_handle pass:[*]_tep_, char pass:[*]_buf_, unsigned long _size_, int _long_size_);
-> +	enum tep_errno *tep_parse_event*(struct tep_handle pass:[*]_tep_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
-> +	enum tep_errno *tep_parse_format*(struct tep_handle pass:[*]_tep_, struct tep_event pass:[*]pass:[*]_eventp_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
-> +
-> +APIs related to fields from event's format files:
-> +	struct tep_format_field pass:[*]pass:[*]*tep_event_common_fields*(struct tep_event pass:[*]_event_);
-> +	struct tep_format_field pass:[*]pass:[*]*tep_event_fields*(struct tep_event pass:[*]_event_);
-> +	void pass:[*]*tep_get_field_raw*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int pass:[*]_len_, int _err_);
-> +	int *tep_get_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
-> +	int *tep_get_common_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
-> +	int *tep_get_any_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
-> +	int *tep_read_number_field*(struct tep_format_field pass:[*]_field_, const void pass:[*]_data_, unsigned long long pass:[*]_value_);
-> +
-> +Event fileds printing:
+Hi Steven,
 
-s/fileds/fields/
+I managed the reproduce a similar behavior by saving a session at one 
+screen resolution then changing the resolution and reopening the 
+session. Not sure if you did the same.
+Attached is a patch that fixes the bug for me. Please test it and tell 
+me if it also fixes the bug for you.
 
-> +	void *tep_print_field*(struct trace_seq pass:[*]_s_, void pass:[*]_data_, struct tep_format_field pass:[*]_field_);
-> +	void *tep_print_fields*(struct trace_seq pass:[*]_s_, void pass:[*]_data_, int _size_, struct tep_event pass:[*]_event_);
-> +	int *tep_print_num_field*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int _err_);
-> +	int *tep_print_func_field*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int _err_);
-> +
-> +Event fileds finding:
-
-Same.
-
-> +	struct tep_format_field pass:[*]*tep_find_common_field*(struct tep_event pass:[*]_event_, const char pass:[*]_name_);
-> +	struct tep_format_field pass:[*]*tep_find_field*(struct tep_event_ormat pass:[*]_event_, const char pass:[*]_name_);
-> +	struct tep_format_field pass:[*]*tep_find_any_field*(struct tep_event pass:[*]_event_, const char pass:[*]_name_);
-> +
-> +Functions resolver:
-> +	int *tep_set_function_resolver*(struct tep_handle pass:[*]_tep_, tep_func_resolver_t pass:[*]_func_, void pass:[*]_priv_);
-> +	void *tep_reset_function_resolver*(struct tep_handle pass:[*]_tep_);
-> +	const char pass:[*]*tep_find_function*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
-> +	unsigned long long *tep_find_function_address*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
-> +
-> +Filter management:
-> +	struct tep_event_filter pass:[*]*tep_filter_alloc*(struct tep_handle pass:[*]_tep_);
-> +	enum tep_errno *tep_filter_add_filter_str*(struct tep_event_filter pass:[*]_filter_, const char pass:[*]_filter_str_);
-> +	enum tep_errno *tep_filter_match*(struct tep_event_filter pass:[*]_filter_, struct tep_record pass:[*]_record_);
-> +	int *tep_filter_strerror*(struct tep_event_filter pass:[*]_filter_, enum tep_errno _err_, char pass:[*]buf, size_t _buflen_);
-> +	int *tep_event_filtered*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
-> +	void *tep_filter_reset*(struct tep_event_filter pass:[*]_filter_);
-> +	void *tep_filter_free*(struct tep_event_filter pass:[*]_filter_);
-> +	char pass:[*]*tep_filter_make_string*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
-> +	int *tep_filter_remove_event*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
-> +	int *tep_filter_copy*(struct tep_event_filter pass:[*]_dest_, struct tep_event_filter pass:[*]_source_);
-> +	int *tep_filter_compare*(struct tep_event_filter pass:[*]_filter1_, struct tep_event_filter pass:[*]_filter2_);
-> +
-> +Parsing various data from the records:
-> +	void *tep_data_latency_format*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_record pass:[*]_record_);
-> +	int *tep_data_type*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
-> +	int *tep_data_pid*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
-> +	int *tep_data_preempt_count*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
-> +	int *tep_data_flags*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
-> +
-> +Command and task related APIs:
-> +	const char pass:[*]*tep_data_comm_from_pid*(struct tep_handle pass:[*]_tep_, int _pid_);
-> +	struct cmdline pass:[*]*tep_data_pid_from_comm*(struct tep_handle pass:[*]_tep_, const char pass:[*]_comm_, struct cmdline pass:[*]_next_);
-> +	int *tep_register_comm*(struct tep_handle pass:[*]_tep_, const char pass:[*]_comm_, int _pid_);
-> +	int *tep_override_comm*(struct tep_handle pass:[*]_tep_, const char pass:[*]_comm_, int _pid_);
-> +	bool *tep_is_pid_registered*(struct tep_handle pass:[*]_tep_, int _pid_);
-> +	int *tep_cmdline_pid*(struct tep_handle pass:[*]_tep_, struct cmdline pass:[*]_cmdline_);
-> +
-> +Endian related APIs:
-> +	int *tep_is_bigendian*(void);
-> +	unsigned long long *tep_read_number*(struct tep_handle pass:[*]_tep_, const void pass:[*]_ptr_, int _size_);
-> +	bool *tep_is_file_bigendian*(struct tep_handle pass:[*]_tep_);
-> +	void *tep_set_file_bigendian*(struct tep_handle pass:[*]_tep_, enum tep_endian _endian_);
-> +	bool *tep_is_local_bigendian*(struct tep_handle pass:[*]_tep_);
-> +	void *tep_set_local_bigendian*(struct tep_handle pass:[*]_tep_, enum tep_endian _endian_);
-> +
-> +Trace sequences:
-> +*#include <trace-seq.h>*
-> +	void *trace_seq_init*(struct trace_seq pass:[*]_s_);
-> +	void *trace_seq_reset*(struct trace_seq pass:[*]_s_);
-> +	void *trace_seq_destroy*(struct trace_seq pass:[*]_s_);
-> +	int *trace_seq_printf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, ...);
-> +	int *trace_seq_vprintf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, va_list _args_);
-> +	int *trace_seq_puts*(struct trace_seq pass:[*]_s_, const char pass:[*]_str_);
-> +	int *trace_seq_putc*(struct trace_seq pass:[*]_s_, unsigned char _c_);
-> +	void *trace_seq_terminate*(struct trace_seq pass:[*]_s_);
-> +	int *trace_seq_do_fprintf*(struct trace_seq pass:[*]_s_, FILE pass:[*]_fp_);
-> +	int *trace_seq_do_printf*(struct trace_seq pass:[*]_s_);
-> +--
-> +
-> +DESCRIPTION
-> +-----------
-> +The libtraceevent(3) library provides APIs to access kernel tracepoint events,
-> +located in the debugfs file system under the tracing/events directory.
-
-tracefs file system. It's not in debugfs anymore.
-
--- Steve
+Thanks!
+Yordan
 
 
-> +
-> +ENVIRONMENT
-> +-----------
-> +[verse]
-> +--
-> +TRACEEVENT_PLUGIN_DIR
-> +	Additional plugin directory. All shared object files, located in this directory will be loaded as traceevent plugins.
-> +--
-> +
-> +FILES
-> +-----
-> +[verse]
-> +--
-> +*event-parse.h*
-> +	Header file to include in order to have access to the library APIs.
-> +*trace-seq.h*
-> +	Header file to include in order to have access to trace sequences related APIs.
-> +	Trace sequences are used to allow a function to call several other functions
-> +	to create a string of data to use.
-> +*-ltraceevent*
-> +	Linker switch to add when building a program that uses the library.
-> +--
-> +
-> +SEE ALSO
-> +--------
-> +_trace-cmd(1)_
-> +
-> +AUTHOR
-> +------
-> +[verse]
-> +--
-> +*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-> +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
-> +--
-> +REPORTING BUGS
-> +--------------
-> +Report bugs to  <linux-trace-devel@vger.kernel.org>
-> +
-> +LICENSE
-> +-------
-> +libtraceevent is Free Software licensed under the GNU LGPL 2.1
-> +
-> +RESOURCES
-> +---------
->
+
+On 23.04.19 г. 17:41 ч., Steven Rostedt wrote:
+> Hi Yordan,
+> 
+> To test your zoom patch, I opened my old json file that I sent you, but
+> noticed that it comes up without the right dimensions for the graph.
+> 
+> Here's a screenshot:
+> 
+>    http://rostedt.homelinux.com/private/ks-off.png
+> 
+> If I resize the window it will eventually go back to normal. But I
+> figured I'd let you take a look. I'm guessing it has something to do
+> with the saved json file was for a smaller window than the one that
+> opened it.
+> 
+> -- Steve
+> 
+
+--------------9873951DCA6771E028FEFB34
+Content-Type: text/x-patch;
+ name="rendering_bug.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="rendering_bug.patch"
+
+diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+index 5f326f5..39bc7b5 100644
+--- a/kernel-shark/src/KsMainWindow.cpp
++++ b/kernel-shark/src/KsMainWindow.cpp
+@@ -433,7 +433,6 @@ QString KsMainWindow::lastSessionFile()
+ void KsMainWindow::_restoreSession()
+ {
+ 	loadSession(lastSessionFile());
+-	_graph.updateGeom();
+ }
+ 
+ void KsMainWindow::_importSession()
+@@ -448,7 +447,6 @@ void KsMainWindow::_importSession()
+ 		return;
+ 
+ 	loadSession(fileName);
+-	_graph.updateGeom();
+ }
+ 
+ void KsMainWindow::_updateSession()
+@@ -1098,6 +1096,7 @@ void KsMainWindow::loadSession(const QString &fileName)
+ 
+ 	_session.loadTable(&_view);
+ 	_colorPhaseSlider.setValue(_session.getColorScheme() * 100);
++	_graph.updateGeom();
+ }
+ 
+ void KsMainWindow::_initCapture()
+diff --git a/kernel-shark/src/KsTraceGraph.cpp b/kernel-shark/src/KsTraceGraph.cpp
+index 6087e96..598ef70 100644
+--- a/kernel-shark/src/KsTraceGraph.cpp
++++ b/kernel-shark/src/KsTraceGraph.cpp
+@@ -538,6 +538,8 @@ void KsTraceGraph::updateGeom()
+ 			       * allow the scroll bar to disappear when the
+ 			       * widget is extended to maximum.
+ 			       */
++
++	_glWindow.resizeGL(_glWindow.width(), _glWindow.height());
+ }
+ 
+ void KsTraceGraph::_updateGraphLegends()
+
+--------------9873951DCA6771E028FEFB34--
