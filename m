@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24EBDC282E3
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 11:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC310C282E1
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 11:05:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F2149214AE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 11:05:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7858D214AE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 11:05:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730655AbfDYLFl (ORCPT
+        id S1730659AbfDYLFn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Apr 2019 07:05:41 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53050 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730654AbfDYLFl (ORCPT
+        Thu, 25 Apr 2019 07:05:43 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:54124 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730647AbfDYLFm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Apr 2019 07:05:41 -0400
-Received: by mail-wm1-f66.google.com with SMTP id j13so8773415wmh.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Apr 2019 04:05:39 -0700 (PDT)
+        Thu, 25 Apr 2019 07:05:42 -0400
+Received: by mail-wm1-f67.google.com with SMTP id 26so2893945wmj.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Apr 2019 04:05:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cwMm2C4w9yI9eiaOqsYvF9cOsecUQ/ttiJRQ49FSz3Q=;
-        b=kkjS7fbMMcrHDQJmPUrvnp8X4/IHLawj+1678kZHrBMqN/0VscvglR2CjjaBiCdM6J
-         pwfgu8e1Cu9KBqG3ysCrkCqNmvhL8jm4EX/eG8apxsEKjK10wosS4YH2TmEgJKj/vP6j
-         o2BZWyI8ZheOeS2VYvc6OnN78sFLOuYl1edv+xrgxjSZM4YKvspH96sJdMyUF6Nl6wFF
-         pXAFtdxdZqOrrBIjOxlS84r7UevT30iXifEGU+cV/eMj205kSE4+70yv5EOmtFJm9/3e
-         wQz8Nws3DH0iC2IYTue7rsgptwOdeBZPUCoLEpm9MOC1YCpqGLmXT7wWl/pWj4qc5AXm
-         M2DQ==
-X-Gm-Message-State: APjAAAV9rx3FJBd4b/5+7HEekm3A0ye6eaLbrI+rz7myO681krSKl6lw
-        WjLHZb4kKXhEJhbNgnxE05RiQwvT
-X-Google-Smtp-Source: APXvYqwHMK1461tMWzT2SUFEEWDEA5z76T9i2+18fxT8X3V/8apuzJ7A8sXDOkK9Ejh/4sEqdxHnPw==
-X-Received: by 2002:a7b:c40c:: with SMTP id k12mr3012458wmi.2.1556190338424;
-        Thu, 25 Apr 2019 04:05:38 -0700 (PDT)
+        bh=jXj2Amv4ZDPpQ+T+P6AE0CYdc5SlFfDskEdO8LDqhbI=;
+        b=Ye0sLkje461/a83sftkvO27i9aXQfCQrOYi6p5vGIHwjkpIB15yZFnUP6lsneqeCHq
+         97fwzLFS24KS0bOXn01n3ZIEN3xpBFwxnJ73DGeRDCtxBeio4CiChKD/XDMpfBVrA2Yx
+         4GoV0PndJ5ye5iTYCoYw7rWnim3pNwVYb1ERGGEzRVZw5lq6FB/yb/fRoQaQUikouDhk
+         2bgGvooWfviw5MzMfluPKy/W9l6OW7FkW4IJm1hdDOv4l4hyChRxXHdgPnspf7Sb6nrF
+         mGdkQSVVf/FXQsak4EJ34Khroxi5Gu1vQmJB1MHhmdrQk8qLUdvK9WOgH8rq13BDI2Wu
+         Dq9w==
+X-Gm-Message-State: APjAAAUuewHqzY/AJCuhhNGm786RFTJgdzdOOjmRqV3npeXgje+waH2V
+        h5zhsisxzGzvrHBlKAYDYIU=
+X-Google-Smtp-Source: APXvYqzBU+ATtI0Z9+TYzp3N6HDXChMVSzjOQAubqE+TE1zaHIV/PBFLgYY7gTesceORFcpJXCMfUw==
+X-Received: by 2002:a1c:2d45:: with SMTP id t66mr3068995wmt.106.1556190340560;
+        Thu, 25 Apr 2019 04:05:40 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id a6sm23013606wrp.49.2019.04.25.04.05.37
+        by smtp.gmail.com with ESMTPSA id a6sm23013606wrp.49.2019.04.25.04.05.39
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Apr 2019 04:05:37 -0700 (PDT)
+        Thu, 25 Apr 2019 04:05:39 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v11 5/9] trace-cmd: Refactored few functions in trace-record.c
-Date:   Thu, 25 Apr 2019 14:05:27 +0300
-Message-Id: <20190425110531.8941-6-tstoyanov@vmware.com>
+Subject: [PATCH v11 7/9] trace-cmd: Implemented new API tracecmd_add_option_v()
+Date:   Thu, 25 Apr 2019 14:05:29 +0300
+Message-Id: <20190425110531.8941-8-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190425110531.8941-1-tstoyanov@vmware.com>
 References: <20190425110531.8941-1-tstoyanov@vmware.com>
@@ -58,250 +58,218 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In order to reuse the code inside the trace-cmd application, few
-functions from trace-record.c are refactored:
-  - make_instances() and tracecmd_remove_instances() are splited.
-New ones are created: tracecmd_make_instance() and tracecmd_remove_instance(),
-which are visible outside the trace-record.c
-  - Following functions are made non-static: tracecmd_init_instance()
-get_instance_dir(), write_instance_file(), write_tracing_on(),
-tracecmd_set_clock()
-  - New function is implemented: tracecmd_local_cpu_count(), an internal
-API to get local_cpu_count.
+This patch implements a new tracecmd API, tracecmd_add_option_v()
+It adds new option in trace.dat, similar to tracecmd_add_option(),
+but the option's data is passed as list of buffers. The standard
+struct iovec is used as input parameter, containing the option's
+data buffers.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tracecmd/include/trace-local.h |  9 ++++
- tracecmd/trace-record.c        | 88 +++++++++++++++++++---------------
- 2 files changed, 59 insertions(+), 38 deletions(-)
+ include/trace-cmd/trace-cmd.h    |   5 ++
+ include/traceevent/event-parse.h |   1 +
+ tracecmd/trace-output.c          | 117 ++++++++++++++++++++++++++-----
+ 3 files changed, 106 insertions(+), 17 deletions(-)
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 71b9249..554f1a3 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -235,6 +235,15 @@ void update_first_instance(struct buffer_instance *instance, int topt);
- void show_instance_file(struct buffer_instance *instance, const char *name);
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index bf32c4d..252d342 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -247,11 +247,16 @@ struct tracecmd_output *tracecmd_create_init_file_override(const char *output_fi
+ struct tracecmd_option *tracecmd_add_option(struct tracecmd_output *handle,
+ 					    unsigned short id, int size,
+ 					    const void *data);
++struct tracecmd_option *
++tracecmd_add_option_v(struct tracecmd_output *handle,
++		    unsigned short id, const struct iovec *vector, int count);
++
+ struct tracecmd_option *tracecmd_add_buffer_option(struct tracecmd_output *handle,
+ 						   const char *name, int cpus);
  
- int count_cpus(void);
-+void write_tracing_on(struct buffer_instance *instance, int on);
-+char *get_instance_dir(struct buffer_instance *instance);
-+int write_instance_file(struct buffer_instance *instance,
-+			const char *file, const char *str, const char *type);
-+void tracecmd_init_instance(struct buffer_instance *instance);
-+void tracecmd_make_instance(struct buffer_instance *instance);
-+int tracecmd_local_cpu_count(void);
-+void tracecmd_set_clock(struct buffer_instance *instance);
-+void tracecmd_remove_instance(struct buffer_instance *instance);
+ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
+ int tracecmd_write_options(struct tracecmd_output *handle);
++int tracecmd_append_options(struct tracecmd_output *handle);
+ int tracecmd_update_option(struct tracecmd_output *handle,
+ 			   struct tracecmd_option *option, int size,
+ 			   const void *data);
+diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
+index 5e0fd19..62057b3 100644
+--- a/include/traceevent/event-parse.h
++++ b/include/traceevent/event-parse.h
+@@ -11,6 +11,7 @@
+ #include <stdio.h>
+ #include <regex.h>
+ #include <string.h>
++#include <sys/uio.h>
  
- /* No longer in event-utils.h */
- void __noreturn die(const char *fmt, ...); /* Can be overriden */
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 29f5784..4a82773 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -185,7 +185,7 @@ static inline int no_top_instance(void)
- 	return first_instance != &top_instance;
+ #include "trace-seq.h"
+ 
+diff --git a/tracecmd/trace-output.c b/tracecmd/trace-output.c
+index 33d6ce3..f7a2791 100644
+--- a/tracecmd/trace-output.c
++++ b/tracecmd/trace-output.c
+@@ -883,21 +883,23 @@ static struct tracecmd_output *create_file(const char *output_file,
  }
  
--static void init_instance(struct buffer_instance *instance)
-+void tracecmd_init_instance(struct buffer_instance *instance)
- {
- 	instance->event_next = &instance->events;
- }
-@@ -309,7 +309,7 @@ static void reset_save_file_cond(const char *file, int prio,
+ /**
+- * tracecmd_add_option - add options to the file
++ * tracecmd_add_option_v - add options to the file
+  * @handle: the output file handle name
+  * @id: the id of the option
+- * @size: the size of the option data
+- * @data: the data to write to the file.
++ * @vector: array of vectors, pointing to the data to write in the file
++ * @count: number of items in the vector array
+  *
+  * Returns handle to update option if needed.
+  *  Just the content can be updated, with smaller or equal to
+  *  content than the specified size.
   */
- void add_instance(struct buffer_instance *instance, int cpu_count)
+ struct tracecmd_option *
+-tracecmd_add_option(struct tracecmd_output *handle,
+-		    unsigned short id, int size, const void *data)
++tracecmd_add_option_v(struct tracecmd_output *handle,
++		    unsigned short id, const struct iovec *vector, int count)
  {
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
- 	instance->next = buffer_instances;
- 	if (first_instance == buffer_instances)
- 		first_instance = instance;
-@@ -496,7 +496,7 @@ static void add_event(struct buffer_instance *instance, struct event_list *event
- static void reset_event_list(struct buffer_instance *instance)
- {
- 	instance->events = NULL;
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
- }
+ 	struct tracecmd_option *option;
++	char *data = NULL;
++	int i, size = 0;
  
- static char *get_temp_file(struct buffer_instance *instance, int cpu)
-@@ -792,8 +792,7 @@ get_instance_file(struct buffer_instance *instance, const char *file)
- 	return path;
- }
+ 	/*
+ 	 * We can only add options before they were written.
+@@ -906,32 +908,63 @@ tracecmd_add_option(struct tracecmd_output *handle,
+ 	if (handle->options_written)
+ 		return NULL;
  
--static char *
--get_instance_dir(struct buffer_instance *instance)
-+char *get_instance_dir(struct buffer_instance *instance)
- {
- 	char *buf;
- 	char *path;
-@@ -837,9 +836,8 @@ static int write_file(const char *file, const char *str, const char *type)
- 	return ret;
- }
- 
--static int
--write_instance_file(struct buffer_instance *instance,
--		    const char *file, const char *str, const char *type)
-+int write_instance_file(struct buffer_instance *instance,
-+			const char *file, const char *str, const char *type)
- {
- 	char *path;
- 	int ret;
-@@ -1981,7 +1979,7 @@ static int open_tracing_on(struct buffer_instance *instance)
- 	return fd;
- }
- 
--static void write_tracing_on(struct buffer_instance *instance, int on)
-+void write_tracing_on(struct buffer_instance *instance, int on)
- {
- 	int ret;
- 	int fd;
-@@ -2305,7 +2303,7 @@ void tracecmd_enable_events(void)
- 	enable_events(first_instance);
- }
- 
--static void set_clock(struct buffer_instance *instance)
-+void tracecmd_set_clock(struct buffer_instance *instance)
- {
- 	char *path;
- 	char *content;
-@@ -4442,49 +4440,58 @@ static void clear_func_filters(void)
- 	}
- }
- 
--static void make_instances(void)
-+void tracecmd_make_instance(struct buffer_instance *instance)
- {
--	struct buffer_instance *instance;
- 	struct stat st;
- 	char *path;
- 	int ret;
- 
-+	path = get_instance_dir(instance);
-+	ret = stat(path, &st);
-+	if (ret < 0) {
-+		ret = mkdir(path, 0777);
-+		if (ret < 0)
-+			die("mkdir %s", path);
-+	} else
-+		/* Don't delete instances that already exist */
-+		instance->flags |= BUFFER_FL_KEEP;
-+	tracecmd_put_tracing_file(path);
+-	handle->nr_options++;
++	for (i = 0; i < count; i++)
++		size += vector[i].iov_len;
 +
-+}
-+
-+static void make_instances(void)
-+{
-+	struct buffer_instance *instance;
-+
- 	for_each_instance(instance) {
- 		if (is_guest(instance))
- 			continue;
-+		tracecmd_make_instance(instance);
++	/* Some IDs (like TRACECMD_OPTION_TRACECLOCK) pass vector with 0 / NULL data */
++	if (size) {
++		data = malloc(size);
++		if (!data) {
++			warning("Insufficient memory");
++			return NULL;
++		}
 +	}
-+}
  
--		path = get_instance_dir(instance);
--		ret = stat(path, &st);
--		if (ret < 0) {
--			ret = mkdir(path, 0777);
--			if (ret < 0)
--				die("mkdir %s", path);
--		} else
--			/* Don't delete instances that already exist */
--			instance->flags |= BUFFER_FL_KEEP;
--		tracecmd_put_tracing_file(path);
-+void tracecmd_remove_instance(struct buffer_instance *instance)
-+{
-+	char *path;
-+
-+	if (instance->tracing_on_fd > 0) {
-+		close(instance->tracing_on_fd);
-+		instance->tracing_on_fd = 0;
+ 	option = malloc(sizeof(*option));
+ 	if (!option) {
+ 		warning("Could not allocate space for option");
++		free(data);
+ 		return NULL;
  	}
-+	path = get_instance_dir(instance);
-+	rmdir(path);
-+	tracecmd_put_tracing_file(path);
+ 
+-	option->id = id;
+-	option->size = size;
+-	option->data = malloc(size);
+-	if (!option->data) {
+-		warning("Insufficient memory");
+-		free(option);
+-		return NULL;
++	handle->nr_options++;
++	option->data = data;
++	for (i = 0; i < count; i++) {
++		if (vector[i].iov_base && vector[i].iov_len) {
++			memcpy(data, vector[i].iov_base, vector[i].iov_len);
++			data += vector[i].iov_len;
++		}
+ 	}
+-
+-	/* Some IDs (like TRACECMD_OPTION_TRACECLOCK) pass 0 / NULL data */
+-	if (size)
+-		memcpy(option->data, data, size);
++	option->size = size;
++	option->id = id;
+ 
+ 	list_add_tail(&option->list, &handle->options);
+ 
+ 	return option;
  }
  
- void tracecmd_remove_instances(void)
++/**
++ * tracecmd_add_option - add options to the file
++ * @handle: the output file handle name
++ * @id: the id of the option
++ * @size: the size of the option data
++ * @data: the data to write to the file.
++ *
++ * Returns handle to update option if needed.
++ *  Just the content can be updated, with smaller or equal to
++ *  content than the specified size.
++ */
++struct tracecmd_option *
++tracecmd_add_option(struct tracecmd_output *handle,
++		    unsigned short id, int size, const void *data)
++{
++	struct iovec vect;
++
++	vect.iov_base = (void *) data;
++	vect.iov_len = size;
++	return tracecmd_add_option_v(handle, id, &vect, 1);
++}
++
+ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
  {
- 	struct buffer_instance *instance;
--	char *path;
--	int ret;
- 
- 	for_each_instance(instance) {
- 		/* Only delete what we created */
- 		if (is_guest(instance) || (instance->flags & BUFFER_FL_KEEP))
- 			continue;
--		if (instance->tracing_on_fd > 0) {
--			close(instance->tracing_on_fd);
--			instance->tracing_on_fd = 0;
--		}
--		path = get_instance_dir(instance);
--		ret = rmdir(path);
--		if (ret < 0)
--			die("rmdir %s", path);
--		tracecmd_put_tracing_file(path);
-+		tracecmd_remove_instance(instance);
- 	}
+ 	cpus = convert_endian_4(handle, cpus);
+@@ -979,6 +1012,56 @@ int tracecmd_write_options(struct tracecmd_output *handle)
+ 	return 0;
  }
  
-@@ -4979,7 +4986,7 @@ void trace_stop(int argc, char **argv)
- 	int topt = 0;
- 	struct buffer_instance *instance = &top_instance;
- 
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
- 
- 	for (;;) {
- 		int c;
-@@ -5020,7 +5027,7 @@ void trace_restart(int argc, char **argv)
- 	int topt = 0;
- 	struct buffer_instance *instance = &top_instance;
- 
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
- 
- 	for (;;) {
- 		int c;
-@@ -5062,7 +5069,7 @@ void trace_reset(int argc, char **argv)
- 	int topt = 0;
- 	struct buffer_instance *instance = &top_instance;
- 
--	init_instance(instance);
-+	tracecmd_init_instance(instance);
- 
- 	/* if last arg is -a, then -b and -d apply to all instances */
- 	int last_specified_all = 0;
-@@ -5146,11 +5153,16 @@ static void init_common_record_context(struct common_record_context *ctx,
- 	memset(ctx, 0, sizeof(*ctx));
- 	ctx->instance = &top_instance;
- 	ctx->curr_cmd = curr_cmd;
--	init_instance(ctx->instance);
-+	tracecmd_init_instance(ctx->instance);
- 	local_cpu_count = count_cpus();
- 	ctx->instance->cpu_count = local_cpu_count;
- }
- 
-+int tracecmd_local_cpu_count(void)
++int tracecmd_append_options(struct tracecmd_output *handle)
 +{
-+	return local_cpu_count;
++	struct tracecmd_option *options;
++	unsigned short option;
++	unsigned short endian2;
++	unsigned int endian4;
++	off_t offset;
++	int r;
++
++	/* If already written, ignore */
++	if (handle->options_written)
++		return 0;
++
++	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
++		return -1;
++	offset = lseek64(handle->fd, -2, SEEK_CUR);
++	if (offset == (off_t)-1)
++		return -1;
++
++	r = pread(handle->fd, &option, 2, offset);
++	if (r != 2 || option != TRACECMD_OPTION_DONE)
++		return -1;
++
++	list_for_each_entry(options, &handle->options, list) {
++		endian2 = convert_endian_2(handle, options->id);
++		if (do_write_check(handle, &endian2, 2))
++			return -1;
++
++		endian4 = convert_endian_4(handle, options->size);
++		if (do_write_check(handle, &endian4, 4))
++			return -1;
++
++		/* Save the data location in case it needs to be updated */
++		options->offset = lseek64(handle->fd, 0, SEEK_CUR);
++
++		if (do_write_check(handle, options->data,
++				   options->size))
++			return -1;
++	}
++
++	option = TRACECMD_OPTION_DONE;
++
++	if (do_write_check(handle, &option, 2))
++		return -1;
++
++	handle->options_written = 1;
++
++	return 0;
 +}
 +
- #define IS_EXTRACT(ctx) ((ctx)->curr_cmd == CMD_extract)
- #define IS_START(ctx) ((ctx)->curr_cmd == CMD_start)
- #define IS_STREAM(ctx) ((ctx)->curr_cmd == CMD_stream)
-@@ -5728,7 +5740,7 @@ static void record_trace(int argc, char **argv,
- 	tracecmd_disable_all_tracing(1);
- 
- 	for_all_instances(instance)
--		set_clock(instance);
-+		tracecmd_set_clock(instance);
- 
- 	/* Record records the date first */
- 	if (ctx->date &&
+ int tracecmd_update_option(struct tracecmd_output *handle,
+ 			   struct tracecmd_option *option, int size,
+ 			   const void *data)
 -- 
 2.20.1
 
