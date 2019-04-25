@@ -2,55 +2,56 @@ Return-Path: <SRS0=Y1eu=S3=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F750C10F03
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 11:05:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4419C43218
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 14:47:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F2070214AE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 11:05:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A4EE3204FD
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Apr 2019 14:47:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730514AbfDYLFq (ORCPT
+        id S1726155AbfDYOrT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Apr 2019 07:05:46 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:35835 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730647AbfDYLFq (ORCPT
+        Thu, 25 Apr 2019 10:47:19 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34245 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbfDYOrS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Apr 2019 07:05:46 -0400
-Received: by mail-wm1-f66.google.com with SMTP id y197so9961590wmd.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Apr 2019 04:05:43 -0700 (PDT)
+        Thu, 25 Apr 2019 10:47:18 -0400
+Received: by mail-wr1-f67.google.com with SMTP id c6so25027764wrm.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Apr 2019 07:47:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MuCWZplrM1T3ZXp8TrPHk0o3x5iX2te1/osN+2q86Mc=;
-        b=G+7hvNOvHG6fdsE9HY5ceFpsMuBwlkOyd20PZo9Ba7zFXs6P2mz1IrvHgbMTGvYyFM
-         MUS3/7+QZwp39E5gXJxJB/HWfm3es0tgvHa52ZmBnkmwAc5z26mcrN8pDC9ovOM6VZdN
-         D8tCHvLscAryJjrjGGg2SaK/gjDvcMLXkQ6fzrrlUmmM6FPCJs+tAeUQNWkPDtzDx3Gt
-         j+7TKVHY1MVDVZlCDpbqZKjrKYvAwUyCBWHtuueQMMViL8siXdNQUiJGLnGl18bObTdn
-         SE96pIDeh/6IEpXt8Q1NIAUumoiW7x1+a9gnnwDjU+s7p2gGc3Ux+yBPW/1fpAPM8DNt
-         d6Lw==
-X-Gm-Message-State: APjAAAUqtTsdOBOB0MSNVyMdDhJhlecSdYeyYQ7NUZ5z2tE5pmGDhXUg
-        aHnAirSjfMtcoein+Pj2NxKs3JN4
-X-Google-Smtp-Source: APXvYqxStrw1lZ8wekE0uRTrgTW2XYCbZcQdHkcsJ8qaKUmLfibLOklxDhV82bA6cybjydwCS7kfRw==
-X-Received: by 2002:a1c:c142:: with SMTP id r63mr3187544wmf.97.1556190342296;
-        Thu, 25 Apr 2019 04:05:42 -0700 (PDT)
+        bh=DsrHFtQz2DN7dtg23ov/puOMDJbjGJjEFsSAebcSuqQ=;
+        b=LEAnLJT4ogvBJPrnMnxiLLc6+c+UsIRIF4OTQ/66irGDDYyNGl1+ReHkY7jjeuJeuL
+         cM4dLF1YScyMCbzqOdmhR73RlvVnwVA32VkIs5dRAlDPUjmZqx6OOaLFqrOUQS/STA6v
+         GPMku3nFuQgCEowKJv/p/vbgRXq0dCGcGB26b28jP0TbPqL2fT0a7BpA1EmjQWo6I8VP
+         MsVplNgu3GSjJZSct08su1dudixItpji2tn66BqV0obo7sIz6WdsHgM4TV+sL4HAZBfw
+         eyrR+8hIQ/IIzwoB17KsknkRYidBIg/B34OX996U0NeaQh92xRwGSaTqeeIwZjbfTikl
+         mGmw==
+X-Gm-Message-State: APjAAAUHrhIDtO+Tlmlh5dKIcmeNr2hVTD4lQ2yeVhiHQGJjQ0BAgdBg
+        UVGD2QGr8r/f5GBX3R48LQjTDhqI
+X-Google-Smtp-Source: APXvYqxEWrTZWw8fTjoViIlVSFj/0Vk7pQr7YPPzTXvHWXIZBQ2tWvyr/HScnx6CxoiF6/EVmsuRRQ==
+X-Received: by 2002:adf:ed4c:: with SMTP id u12mr877540wro.245.1556203634266;
+        Thu, 25 Apr 2019 07:47:14 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id a6sm23013606wrp.49.2019.04.25.04.05.41
+        by smtp.gmail.com with ESMTPSA id 6sm13723879wra.85.2019.04.25.07.47.13
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Apr 2019 04:05:41 -0700 (PDT)
+        Thu, 25 Apr 2019 07:47:13 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v11 9/9] trace-cmd [POC]: Implemented timestamps synch algorithm, using vsock events.
-Date:   Thu, 25 Apr 2019 14:05:31 +0300
-Message-Id: <20190425110531.8941-10-tstoyanov@vmware.com>
+Subject: [PATCH v6] tools/lib/traceevent: Implement libtraceevent man pages
+Date:   Thu, 25 Apr 2019 17:47:12 +0300
+Message-Id: <20190425144712.21098-1-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190425110531.8941-1-tstoyanov@vmware.com>
-References: <20190425110531.8941-1-tstoyanov@vmware.com>
+In-Reply-To: <20190424162700.11318f32@gandalf.local.home>
+References: <20190424162700.11318f32@gandalf.local.home>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -58,1511 +59,739 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is a POC patch, implementing an algorithm for syncing timestamps between
-host and guest machines, using vsock trace events to catch the host / guest time.
+Initial support for libtraceevent man pages - Documentation directory,
+templates, configurations, Makefiles. The first man page is also part
+of the patch - summary of the library and all its APIs. Building of
+the documentation is integrated into the libtraceevent build process,
+new targets are added to its Makefile:
+make help
+make doc
+make doc-clean
+make doc-install
+make doc-uninstall
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- include/trace-cmd/trace-cmd.h  |  21 +-
- tracecmd/Makefile              |   1 +
- tracecmd/include/trace-local.h |  33 +-
- tracecmd/trace-agent.c         |  13 +-
- tracecmd/trace-msg.c           | 209 ++++++++-
- tracecmd/trace-record.c        |  84 +++-
- tracecmd/trace-timesync.c      | 808 +++++++++++++++++++++++++++++++++
- 7 files changed, 1133 insertions(+), 36 deletions(-)
- create mode 100644 tracecmd/trace-timesync.c
+ tools/lib/traceevent/Documentation/Makefile   | 208 ++++++++++++++++++
+ .../traceevent/Documentation/asciidoc.conf    |  91 ++++++++
+ .../Documentation/libtraceevent.txt           | 203 +++++++++++++++++
+ .../traceevent/Documentation/manpage-1.72.xsl |  14 ++
+ .../traceevent/Documentation/manpage-base.xsl |  35 +++
+ .../Documentation/manpage-bold-literal.xsl    |  17 ++
+ .../Documentation/manpage-normal.xsl          |  13 ++
+ .../Documentation/manpage-suppress-sp.xsl     |  21 ++
+ tools/lib/traceevent/Makefile                 |  33 +++
+ 9 files changed, 635 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/Makefile
+ create mode 100644 tools/lib/traceevent/Documentation/asciidoc.conf
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent.txt
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-1.72.xsl
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-base.xsl
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-bold-literal.xsl
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-normal.xsl
+ create mode 100644 tools/lib/traceevent/Documentation/manpage-suppress-sp.xsl
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index df97eb9..b7e42a8 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -343,16 +343,29 @@ bool tracecmd_msg_done(struct tracecmd_msg_handle *msg_handle);
- void tracecmd_msg_set_done(struct tracecmd_msg_handle *msg_handle);
- 
- int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
--				int argc, char **argv, bool use_fifos);
-+				int argc, char **argv, bool use_fifos,
-+				bool do_tsync);
- int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
--				int *argc, char ***argv, bool *use_fifos);
-+				int *argc, char ***argv, bool *use_fifos,
-+				bool *do_tsync);
- 
- int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 				 int nr_cpus, int page_size,
--				 unsigned int *ports, bool use_fifos);
-+				 unsigned int *ports, bool use_fifos,
-+				 bool do_tsync);
- int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 				 int *nr_cpus, int *page_size,
--				 unsigned int **ports, bool *use_fifos);
-+				 unsigned int **ports, bool *use_fifos,
-+				 bool *do_tsync);
-+
-+struct tracecmd_clock_sync;
-+
-+int tracecmd_msg_rcv_time_sync(struct tracecmd_msg_handle *msg_handle,
-+			       struct tracecmd_clock_sync *clock_sync,
-+			       long long *offset, long long *timestamp);
-+int tracecmd_msg_snd_time_sync(struct tracecmd_msg_handle *msg_handle,
-+			       struct tracecmd_clock_sync *clock_sync,
-+			       long long *offset, long long *timestamp);
- 
- /* --- Plugin handling --- */
- extern struct tep_plugin_option trace_ftrace_options[];
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index d3e3080..8a73bf7 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -32,6 +32,7 @@ TRACE_CMD_OBJS += trace-list.o
- TRACE_CMD_OBJS += trace-output.o
- TRACE_CMD_OBJS += trace-usage.o
- TRACE_CMD_OBJS += trace-msg.o
-+TRACE_CMD_OBJS += trace-timesync.o
- 
- ifeq ($(VSOCK_DEFINED), 1)
- TRACE_CMD_OBJS += trace-agent.o
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 7f4d676..fa0ec9c 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -26,6 +26,7 @@ extern int quiet;
- typedef unsigned long long u64;
- 
- struct buffer_instance;
-+struct tracecmd_clock_sync;
- 
- /* for local shared information with trace-cmd executable */
- 
-@@ -101,7 +102,7 @@ void trace_usage(int argc, char **argv);
- 
- int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
- 		       int cpus, int *fds,
--		       int argc, char **argv, bool use_fifos);
-+		       int argc, char **argv, bool use_fifos, bool do_tsync);
- 
- struct hook_list;
- 
-@@ -214,6 +215,12 @@ struct buffer_instance {
- 	unsigned int		port;
- 	int			*fds;
- 	bool			use_fifos;
-+	bool			do_tsync;
-+
-+	struct tracecmd_clock_sync *clock_sync;
-+	int			time_sync_count;
-+	long long		*time_sync_ts;
-+	long long		*time_sync_offsets;
- };
- 
- extern struct buffer_instance top_instance;
-@@ -235,6 +242,30 @@ void update_first_instance(struct buffer_instance *instance, int topt);
- void show_instance_file(struct buffer_instance *instance, const char *name);
- 
- int count_cpus(void);
-+
-+struct tracecmd_time_sync_event {
-+	int			id;
-+	int			cpu;
-+	int			pid;
-+	unsigned long long	ts;
-+};
-+
-+int tracecmd_clock_get_peer(struct tracecmd_clock_sync *clock_context,
-+			    unsigned int *remote_cid, unsigned int *remote_port);
-+bool tracecmd_time_sync_check(void);
-+void tracecmd_clock_context_free(struct buffer_instance *instance);
-+int tracecmd_clock_find_event(struct tracecmd_clock_sync *clock, int cpu,
-+			      struct tracecmd_time_sync_event *event);
-+void tracecmd_clock_synch_enable(struct tracecmd_clock_sync *clock_context);
-+void tracecmd_clock_synch_disable(struct tracecmd_clock_sync *clock_context);
-+void tracecmd_clock_synch_calc_reset(struct tracecmd_clock_sync *clock_context);
-+void tracecmd_clock_synch_calc_probe(struct tracecmd_clock_sync *clock_context,
-+				     long long ts_local, long long ts_remote);
-+int tracecmd_clock_synch_calc(struct tracecmd_clock_sync *clock_context,
-+			       long long *offset_ret, long long *time_ret);
-+void sync_time_with_host_v3(struct buffer_instance *instance);
-+void sync_time_with_guest_v3(struct buffer_instance *instance);
-+
- void write_tracing_on(struct buffer_instance *instance, int on);
- char *get_instance_dir(struct buffer_instance *instance);
- int write_instance_file(struct buffer_instance *instance,
-diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
-index 71cb973..33e8ea8 100644
---- a/tracecmd/trace-agent.c
-+++ b/tracecmd/trace-agent.c
-@@ -132,6 +132,7 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
- 	char **argv = NULL;
- 	int argc = 0;
- 	bool use_fifos;
-+	bool do_tsync;
- 	int *fds;
- 	int ret;
- 
-@@ -144,7 +145,8 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
- 	if (!msg_handle)
- 		die("Failed to allocate message handle");
- 
--	ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv, &use_fifos);
-+	ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv,
-+					  &use_fifos, &do_tsync);
- 	if (ret < 0)
- 		die("Failed to receive trace request");
- 
-@@ -153,13 +155,18 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
- 
- 	if (!use_fifos)
- 		make_vsocks(nr_cpus, fds, ports);
-+	if (do_tsync) {
-+		do_tsync = tracecmd_time_sync_check();
-+		if (!do_tsync)
-+			warning("Failed to negotiate timestamps synchronization with the host");
-+	}
- 
- 	ret = tracecmd_msg_send_trace_resp(msg_handle, nr_cpus, page_size,
--					   ports, use_fifos);
-+					   ports, use_fifos, do_tsync);
- 	if (ret < 0)
- 		die("Failed to send trace response");
- 
--	trace_record_agent(msg_handle, nr_cpus, fds, argc, argv, use_fifos);
-+	trace_record_agent(msg_handle, nr_cpus, fds, argc, argv, use_fifos, do_tsync);
- 
- 	free(argv[0]);
- 	free(argv);
-diff --git a/tracecmd/trace-msg.c b/tracecmd/trace-msg.c
-index ff32e77..df29e47 100644
---- a/tracecmd/trace-msg.c
-+++ b/tracecmd/trace-msg.c
-@@ -26,8 +26,12 @@
- #include "trace-local.h"
- #include "trace-msg.h"
- 
-+typedef __u16 u16;
-+typedef __s16 s16;
- typedef __u32 u32;
- typedef __be32 be32;
-+typedef __u64 u64;
-+typedef __s64 s64;
- 
- static inline void dprint(const char *fmt, ...)
- {
-@@ -50,6 +54,9 @@ static inline void dprint(const char *fmt, ...)
- 
- unsigned int page_size;
- 
-+/* Try a few times to get an accurate time sync */
-+#define TSYNC_TRIES 300
-+
- struct tracecmd_msg_tinit {
- 	be32 cpus;
- 	be32 page_size;
-@@ -71,6 +78,20 @@ struct tracecmd_msg_trace_resp {
- 	be32 page_size;
- } __attribute__((packed));
- 
-+struct tracecmd_msg_tsync_stop {
-+	long long offset;
-+	long long timestamp;
-+} __attribute__((packed));
-+
-+struct tracecmd_msg_tsync_req {
-+	u16 cpu;
-+} __attribute__((packed));
-+
-+struct tracecmd_msg_tsync_resp {
-+	u64 time;
-+} __attribute__((packed));
-+
-+
- struct tracecmd_msg_header {
- 	be32	size;
- 	be32	cmd;
-@@ -78,14 +99,19 @@ struct tracecmd_msg_header {
- } __attribute__((packed));
- 
- #define MSG_MAP								\
--	C(CLOSE,	0,	0),					\
--	C(TINIT,	1,	sizeof(struct tracecmd_msg_tinit)),	\
--	C(RINIT,	2,	sizeof(struct tracecmd_msg_rinit)),	\
--	C(SEND_DATA,	3,	0),					\
--	C(FIN_DATA,	4,	0),					\
--	C(NOT_SUPP,	5,	0),					\
--	C(TRACE_REQ,	6,	sizeof(struct tracecmd_msg_trace_req)),	\
--	C(TRACE_RESP,	7,	sizeof(struct tracecmd_msg_trace_resp)),
-+	C(CLOSE,	  0,	0),					\
-+	C(TINIT,	  1,	sizeof(struct tracecmd_msg_tinit)),	\
-+	C(RINIT,	  2,	sizeof(struct tracecmd_msg_rinit)),	\
-+	C(SEND_DATA,	  3,	0),					\
-+	C(FIN_DATA,	  4,	0),					\
-+	C(NOT_SUPP,	  5,	0),					\
-+	C(TRACE_REQ,	  6,	sizeof(struct tracecmd_msg_trace_req)),	\
-+	C(TRACE_RESP,	  7,	sizeof(struct tracecmd_msg_trace_resp)),\
-+	C(TSYNC_START,	  8,	0),					\
-+	C(TSYNC_STOP,	  9,	sizeof(struct tracecmd_msg_tsync_stop)),\
-+	C(TSYNC_PROBE,	  11,	0),					\
-+	C(TSYNC_REQ,	  11,	sizeof(struct tracecmd_msg_tsync_req)),	\
-+	C(TSYNC_RESP,	  12,	sizeof(struct tracecmd_msg_tsync_resp)),
- 
- #undef C
- #define C(a,b,c)	MSG_##a = b
-@@ -115,10 +141,13 @@ static const char *cmd_to_name(int cmd)
- struct tracecmd_msg {
- 	struct tracecmd_msg_header		hdr;
- 	union {
--		struct tracecmd_msg_tinit	tinit;
--		struct tracecmd_msg_rinit	rinit;
--		struct tracecmd_msg_trace_req	trace_req;
--		struct tracecmd_msg_trace_resp	trace_resp;
-+		struct tracecmd_msg_tinit		tinit;
-+		struct tracecmd_msg_rinit		rinit;
-+		struct tracecmd_msg_trace_req		trace_req;
-+		struct tracecmd_msg_trace_resp		trace_resp;
-+		struct tracecmd_msg_tsync_stop		ts_stop;
-+		struct tracecmd_msg_tsync_req		ts_req;
-+		struct tracecmd_msg_tsync_resp		ts_resp;
- 	};
- 	char					*buf;
- } __attribute__((packed));
-@@ -157,6 +186,7 @@ static int msg_write(int fd, struct tracecmd_msg *msg)
- 
- enum msg_trace_flags {
- 	MSG_TRACE_USE_FIFOS = 1 << 0,
-+	MSG_TRACE_DO_TSYNC =  1 << 1,
- };
- 
- static int make_tinit(struct tracecmd_msg_handle *msg_handle,
-@@ -792,7 +822,8 @@ error:
- 	return ret;
- }
- 
--static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv, bool use_fifos)
-+static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv,
-+			  bool use_fifos, bool do_tsync)
- {
- 	size_t args_size = 0;
- 	char *p;
-@@ -802,7 +833,12 @@ static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv, bool
- 		args_size += strlen(argv[i]) + 1;
- 
- 	msg->hdr.size = htonl(ntohl(msg->hdr.size) + args_size);
--	msg->trace_req.flags = use_fifos ? htonl(MSG_TRACE_USE_FIFOS) : htonl(0);
-+	msg->trace_req.flags = 0;
-+	if (use_fifos)
-+		msg->trace_req.flags |= MSG_TRACE_USE_FIFOS;
-+	if (do_tsync)
-+		msg->trace_req.flags |= MSG_TRACE_DO_TSYNC;
-+	msg->trace_req.flags = htonl(msg->trace_req.flags);
- 	msg->trace_req.argc = htonl(argc);
- 	msg->buf = calloc(args_size, 1);
- 	if (!msg->buf)
-@@ -816,13 +852,14 @@ static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv, bool
- }
- 
- int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
--				int argc, char **argv, bool use_fifos)
-+				int argc, char **argv, bool use_fifos,
-+				bool do_tsync)
- {
- 	struct tracecmd_msg msg;
- 	int ret;
- 
- 	tracecmd_msg_init(MSG_TRACE_REQ, &msg);
--	ret = make_trace_req(&msg, argc, argv, use_fifos);
-+	ret = make_trace_req(&msg, argc, argv, use_fifos, do_tsync);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -835,7 +872,8 @@ int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
-   *     free(argv);
-   */
- int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
--				int *argc, char ***argv, bool *use_fifos)
-+				int *argc, char ***argv, bool *use_fifos,
-+				bool *do_tsync)
- {
- 	struct tracecmd_msg msg;
- 	char *p, *buf_end, **args;
-@@ -882,6 +920,7 @@ int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
- 	*argc = nr_args;
- 	*argv = args;
- 	*use_fifos = ntohl(msg.trace_req.flags) & MSG_TRACE_USE_FIFOS;
-+	*do_tsync = ntohl(msg.trace_req.flags) & MSG_TRACE_DO_TSYNC;
- 
- 	/*
- 	 * On success we're passing msg.buf to the caller through argv[0] so we
-@@ -901,8 +940,125 @@ out:
- 	return ret;
- }
- 
-+int tracecmd_msg_rcv_time_sync(struct tracecmd_msg_handle *msg_handle,
-+			       struct tracecmd_clock_sync *clock_context,
-+			       long long *offset, long long *timestamp)
-+{
-+	struct tracecmd_time_sync_event event;
-+	unsigned int remote_cid = 0;
-+	struct tracecmd_msg msg;
-+	int cpu_pid, ret;
-+
-+	if (clock_context == NULL || msg_handle == NULL)
-+		return 0;
-+
-+	if (offset)
-+		*offset = 0;
-+
-+	ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+	if (ret < 0 || ntohl(msg.hdr.cmd) == MSG_TSYNC_STOP)
-+		return 0;
-+	if (ntohl(msg.hdr.cmd) != MSG_TSYNC_START) {
-+		handle_unexpected_msg(msg_handle, &msg);
-+		return 0;
-+	}
-+
-+	tracecmd_clock_get_peer(clock_context, &remote_cid, NULL);
-+	tracecmd_msg_init(MSG_TSYNC_START, &msg);
-+	tracecmd_msg_send(msg_handle->fd, &msg);
-+	tracecmd_clock_synch_enable(clock_context);
-+
-+	do {
-+		memset(&event, 0, sizeof(event));
-+		ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+		if (ret < 0 || ntohl(msg.hdr.cmd) == MSG_TSYNC_STOP)
-+			break;
-+		if (ntohl(msg.hdr.cmd) != MSG_TSYNC_PROBE) {
-+			handle_unexpected_msg(msg_handle, &msg);
-+			break;
-+		}
-+		ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+		if (ret < 0 || ntohl(msg.hdr.cmd) == MSG_TSYNC_STOP)
-+			break;
-+		if (ntohl(msg.hdr.cmd) != MSG_TSYNC_REQ) {
-+			handle_unexpected_msg(msg_handle, &msg);
-+			break;
-+		}
-+		/* Get kvm event related to the corresponding VCPU context */
-+		cpu_pid = get_guest_vcpu_pid(remote_cid, ntohs(msg.ts_req.cpu));
-+		tracecmd_clock_find_event(clock_context, cpu_pid, &event);
-+		tracecmd_msg_init(MSG_TSYNC_RESP, &msg);
-+		msg.ts_resp.time = htonll(event.ts);
-+		tracecmd_msg_send(msg_handle->fd, &msg);
-+	} while (true);
-+
-+	tracecmd_clock_synch_disable(clock_context);
-+
-+	if (ret >= 0 && ntohl(msg.hdr.cmd) == MSG_TSYNC_STOP) {
-+		if (offset)
-+			*offset = ntohll(msg.ts_stop.offset);
-+		if (timestamp)
-+			*timestamp = ntohll(msg.ts_stop.timestamp);
-+	}
-+
-+	msg_free(&msg);
-+	return 0;
-+}
-+
-+int tracecmd_msg_snd_time_sync(struct tracecmd_msg_handle *msg_handle,
-+			       struct tracecmd_clock_sync *clock_context,
-+			       long long *offset, long long *timestamp)
-+{
-+	struct tracecmd_time_sync_event event;
-+	int sync_loop = TSYNC_TRIES;
-+	struct tracecmd_msg msg;
-+	int ret;
-+
-+	if (clock_context == NULL || msg_handle == NULL)
-+		return 0;
-+
-+	tracecmd_msg_init(MSG_TSYNC_START, &msg);
-+	tracecmd_msg_send(msg_handle->fd, &msg);
-+	ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+	if (ret < 0 || ntohl(msg.hdr.cmd) != MSG_TSYNC_START)
-+		return 0;
-+	tracecmd_clock_synch_calc_reset(clock_context);
-+	tracecmd_clock_synch_enable(clock_context);
-+
-+	do {
-+		tracecmd_msg_init(MSG_TSYNC_PROBE, &msg);
-+		tracecmd_msg_send(msg_handle->fd, &msg);
-+		/* Get the ts and CPU of the sent event */
-+		ret = tracecmd_clock_find_event(clock_context, -1, &event);
-+		tracecmd_msg_init(MSG_TSYNC_REQ, &msg);
-+		msg.ts_req.cpu = htons(event.cpu);
-+		tracecmd_msg_send(msg_handle->fd, &msg);
-+		memset(&msg, 0, sizeof(msg));
-+		ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-+		if (ret < 0)
-+			break;
-+		if (ntohl(msg.hdr.cmd) != MSG_TSYNC_RESP) {
-+			handle_unexpected_msg(msg_handle, &msg);
-+			break;
-+		}
-+		tracecmd_clock_synch_calc_probe(clock_context,
-+						event.ts,
-+						htonll(msg.ts_resp.time));
-+	} while (--sync_loop);
-+
-+	tracecmd_clock_synch_disable(clock_context);
-+	tracecmd_clock_synch_calc(clock_context, offset, timestamp);
-+	tracecmd_msg_init(MSG_TSYNC_STOP, &msg);
-+	msg.ts_stop.offset = htonll(*offset);
-+	msg.ts_stop.timestamp = htonll(*timestamp);
-+	tracecmd_msg_send(msg_handle->fd, &msg);
-+
-+	msg_free(&msg);
-+	return 0;
-+}
-+
- static int make_trace_resp(struct tracecmd_msg *msg, int page_size, int nr_cpus,
--			   unsigned int *ports, bool use_fifos)
-+			   unsigned int *ports, bool use_fifos, bool do_tsync)
- {
- 	int data_size;
- 
-@@ -913,7 +1069,13 @@ static int make_trace_resp(struct tracecmd_msg *msg, int page_size, int nr_cpus,
- 	write_uints(msg->buf, data_size, ports, nr_cpus);
- 
- 	msg->hdr.size = htonl(ntohl(msg->hdr.size) + data_size);
--	msg->trace_resp.flags = use_fifos ? htonl(MSG_TRACE_USE_FIFOS) : htonl(0);
-+	msg->trace_resp.flags = 0;
-+	if (use_fifos)
-+		msg->trace_resp.flags |= MSG_TRACE_USE_FIFOS;
-+	if (do_tsync)
-+		msg->trace_resp.flags |= MSG_TRACE_DO_TSYNC;
-+	msg->trace_resp.flags = htonl(msg->trace_resp.flags);
-+
- 	msg->trace_resp.cpus = htonl(nr_cpus);
- 	msg->trace_resp.page_size = htonl(page_size);
- 
-@@ -922,13 +1084,14 @@ static int make_trace_resp(struct tracecmd_msg *msg, int page_size, int nr_cpus,
- 
- int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 				 int nr_cpus, int page_size,
--				 unsigned int *ports, bool use_fifos)
-+				 unsigned int *ports, bool use_fifos,
-+				 bool do_tsync)
- {
- 	struct tracecmd_msg msg;
- 	int ret;
- 
- 	tracecmd_msg_init(MSG_TRACE_RESP, &msg);
--	ret = make_trace_resp(&msg, page_size, nr_cpus, ports, use_fifos);
-+	ret = make_trace_resp(&msg, page_size, nr_cpus, ports, use_fifos, do_tsync);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -937,7 +1100,8 @@ int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 
- int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 				 int *nr_cpus, int *page_size,
--				 unsigned int **ports, bool *use_fifos)
-+				 unsigned int **ports, bool *use_fifos,
-+				 bool *do_tsync)
- {
- 	struct tracecmd_msg msg;
- 	char *p, *buf_end;
-@@ -960,6 +1124,7 @@ int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
- 	}
- 
- 	*use_fifos = ntohl(msg.trace_resp.flags) & MSG_TRACE_USE_FIFOS;
-+	*do_tsync = ntohl(msg.trace_resp.flags) & MSG_TRACE_DO_TSYNC;
- 	*nr_cpus = ntohl(msg.trace_resp.cpus);
- 	*page_size = ntohl(msg.trace_resp.page_size);
- 	*ports = calloc(*nr_cpus, sizeof(**ports));
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 59a4170..359c094 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -211,6 +211,8 @@ struct common_record_context {
- 	char *date2ts;
- 	char *max_graph_depth;
- 	int data_flags;
-+	int time_shift_count;
-+	struct tracecmd_option *time_shift_option;
- 
- 	int record_all;
- 	int total_disable;
-@@ -650,11 +652,20 @@ static void tell_guests_to_stop(void)
- 	for_all_instances(instance) {
- 		if (is_guest(instance)) {
- 			tracecmd_msg_send_close_msg(instance->msg_handle);
--			tracecmd_msg_handle_close(instance->msg_handle);
- 		}
- 	}
- }
- 
-+static void close_guests_handle(void)
-+{
-+	struct buffer_instance *instance;
-+
-+	for_all_instances(instance) {
-+		if (is_guest(instance))
-+			tracecmd_msg_handle_close(instance->msg_handle);
-+	}
-+}
-+
- static void stop_threads(enum trace_type type)
- {
- 	struct timeval tv = { 0, 0 };
-@@ -3473,6 +3484,7 @@ static void connect_to_agent(struct buffer_instance *instance)
- 	unsigned int *ports;
- 	int i, *fds = NULL;
- 	bool use_fifos = false;
-+	bool do_tsync, do_tsync_reply;
- 
- 	if (!no_fifos) {
- 		nr_fifos = open_guest_fifos(instance->name, &fds);
-@@ -3484,20 +3496,24 @@ static void connect_to_agent(struct buffer_instance *instance)
- 		die("Failed to connect to vsocket @%u:%u",
- 		    instance->cid, instance->port);
- 
-+	do_tsync = tracecmd_time_sync_check();
-+
- 	msg_handle = tracecmd_msg_handle_alloc(sd, 0);
- 	if (!msg_handle)
- 		die("Failed to allocate message handle");
- 
- 	ret = tracecmd_msg_send_trace_req(msg_handle, instance->argc,
--					  instance->argv, use_fifos);
-+					  instance->argv, use_fifos, do_tsync);
- 	if (ret < 0)
- 		die("Failed to send trace request");
- 
- 	ret = tracecmd_msg_recv_trace_resp(msg_handle, &nr_cpus, &page_size,
--					   &ports, &use_fifos);
-+					   &ports, &use_fifos, &do_tsync_reply);
- 	if (ret < 0)
- 		die("Failed to receive trace response");
--
-+	if (do_tsync != do_tsync_reply)
-+		warning("Failed to negotiate timestamps synchronization with the guest %s",
-+			instance->name);
- 	if (use_fifos) {
- 		if (nr_cpus != nr_fifos) {
- 			warning("number of FIFOs (%d) for guest %s differs "
-@@ -3515,10 +3531,13 @@ static void connect_to_agent(struct buffer_instance *instance)
- 	}
- 
- 	instance->use_fifos = use_fifos;
-+	instance->do_tsync = do_tsync_reply;
- 	instance->cpu_count = nr_cpus;
- 
- 	/* the msg_handle now points to the guest fd */
- 	instance->msg_handle = msg_handle;
-+
-+	sync_time_with_guest_v3(instance);
- }
- 
- static void setup_guest(struct buffer_instance *instance)
-@@ -3543,10 +3562,13 @@ static void setup_guest(struct buffer_instance *instance)
- 	close(fd);
- }
- 
--static void setup_agent(struct buffer_instance *instance, struct common_record_context *ctx)
-+static void setup_agent(struct buffer_instance *instance,
-+			struct common_record_context *ctx)
- {
- 	struct tracecmd_output *network_handle;
- 
-+	sync_time_with_host_v3(instance);
-+
- 	network_handle = tracecmd_create_init_fd_msg(instance->msg_handle,
- 						     listed_events);
- 	add_options(network_handle, ctx);
-@@ -5748,6 +5770,41 @@ static bool has_local_instances(void)
- 	return false;
- }
- 
-+static void write_guest_time_shift(struct buffer_instance *instance)
-+{
-+	struct tracecmd_output *handle;
-+	struct iovec vector[3];
-+	char *file;
-+	int fd;
-+
-+	if (!instance->time_sync_count)
-+		return;
-+
-+	file = get_guest_file(output_file, instance->name);
-+	fd = open(file, O_RDWR);
-+	if (fd < 0)
-+		die("error opening %s", file);
-+	put_temp_file(file);
-+	handle = tracecmd_get_output_handle_fd(fd);
-+	vector[0].iov_len = 4;
-+	vector[0].iov_base = &instance->time_sync_count;
-+	vector[1].iov_len = 8 * instance->time_sync_count;
-+	vector[1].iov_base = instance->time_sync_ts;
-+	vector[2].iov_len = 8 * instance->time_sync_count;
-+	vector[2].iov_base = instance->time_sync_offsets;
-+	tracecmd_add_option_v(handle, TRACECMD_OPTION_TIME_SHIFT, vector, 3);
-+	tracecmd_append_options(handle);
-+	tracecmd_output_close(handle);
-+#ifdef TSYNC_DEBUG
-+	if (instance->time_sync_count > 1)
-+		printf("\n\rDetected %lld ns ts offset drift in %lld ns for guest %s\n\r",
-+			instance->time_sync_offsets[instance->time_sync_count-1] -
-+			instance->time_sync_offsets[0],
-+			instance->time_sync_ts[instance->time_sync_count-1]-
-+			instance->time_sync_ts[0], instance->name);
-+#endif
-+}
-+
- /*
-  * This function contains common code for the following commands:
-  * record, start, stream, profile.
-@@ -5867,6 +5924,20 @@ static void record_trace(int argc, char **argv,
- 	if (!latency)
- 		wait_threads();
- 
-+	if (ctx->instance && is_agent(ctx->instance)) {
-+		sync_time_with_host_v3(ctx->instance);
-+		tracecmd_clock_context_free(ctx->instance);
-+	} else {
-+		for_all_instances(instance) {
-+			if (is_guest(instance)) {
-+				sync_time_with_guest_v3(instance);
-+				write_guest_time_shift(instance);
-+				tracecmd_clock_context_free(instance);
-+			}
-+		}
-+	}
-+	close_guests_handle();
-+
- 	if (IS_RECORD(ctx)) {
- 		record_data(ctx);
- 		delete_thread_data();
-@@ -6005,7 +6076,7 @@ void trace_record(int argc, char **argv)
- int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
- 		       int cpus, int *fds,
- 		       int argc, char **argv,
--		       bool use_fifos)
-+		       bool use_fifos, bool do_tsync)
- {
- 	struct common_record_context ctx;
- 	char **argv_plus;
-@@ -6032,6 +6103,7 @@ int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
- 
- 	ctx.instance->fds = fds;
- 	ctx.instance->use_fifos = use_fifos;
-+	ctx.instance->do_tsync = do_tsync;
- 	ctx.instance->flags |= BUFFER_FL_AGENT;
- 	ctx.instance->msg_handle = msg_handle;
- 	msg_handle->version = V3_PROTOCOL;
-diff --git a/tracecmd/trace-timesync.c b/tracecmd/trace-timesync.c
+diff --git a/tools/lib/traceevent/Documentation/Makefile b/tools/lib/traceevent/Documentation/Makefile
 new file mode 100644
-index 0000000..a3f0c10
+index 000000000000..680a9771067f
 --- /dev/null
-+++ b/tracecmd/trace-timesync.c
-@@ -0,0 +1,808 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019, VMware, Tzvetomir Stoyanov <tstoyanov@vmware.com>
-+ *
-+ */
-+
-+#include <fcntl.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <arpa/inet.h>
-+#include <linux/vm_sockets.h>
-+#include "trace-local.h"
-+
-+static int clock_sync_x86_host_init(struct tracecmd_clock_sync *clock_context);
-+static int clock_sync_x86_host_free(struct tracecmd_clock_sync *clock_context);
-+static int clock_sync_x86_host_find_events(struct tracecmd_clock_sync *clock,
-+				    int cpu, struct tracecmd_time_sync_event *event);
-+static int clock_sync_x86_guest_init(struct tracecmd_clock_sync *clock_context);
-+static int clock_sync_x86_guest_free(struct tracecmd_clock_sync *clock_context);
-+static int clock_sync_x86_guest_find_events(struct tracecmd_clock_sync *clock,
-+					    int pid,
-+					    struct tracecmd_time_sync_event *event);
-+
-+struct tracecmd_event_descr {
-+	char			*system;
-+	char			*name;
-+};
-+
-+struct tracecmd_ftrace_param {
-+	char	*file;
-+	char	*set;
-+	char	*reset;
-+};
-+
-+enum clock_sync_context {
-+	CLOCK_KVM_X86_VSOCK_HOST,
-+	CLOCK_KVM_X86_VSOCK_GUEST,
-+	CLOCK_CONTEXT_MAX,
-+};
-+
-+struct tracecmd_clock_sync {
-+	enum clock_sync_context		clock_context_id;
-+	struct tracecmd_ftrace_param	*ftrace_params;
-+	struct tracecmd_time_sync_event	*events;
-+	int				events_count;
-+	struct tep_handle		*tep;
-+	struct buffer_instance		*vinst;
-+
-+	int				probes_count;
-+	int				bad_probes;
-+	int				probes_size;
-+	long long			*times;
-+	long long			*offsets;
-+	long long			offset_av;
-+	long long			offset_min;
-+	long long			offset_max;
-+	int				debug_fd;
-+
-+	unsigned int			local_cid;
-+	unsigned int			local_port;
-+	unsigned int			remote_cid;
-+	unsigned int			remote_port;
-+};
-+
-+struct {
-+	const char *systems[3];
-+	struct tracecmd_ftrace_param ftrace_params[5];
-+	struct tracecmd_event_descr events[3];
-+	int (*clock_sync_init)(struct tracecmd_clock_sync *clock_context);
-+	int (*clock_sync_free)(struct tracecmd_clock_sync *clock_context);
-+	int (*clock_sync_find_events)(struct tracecmd_clock_sync *clock_context,
-+				      int pid,
-+				      struct tracecmd_time_sync_event *event);
-+	int (*clock_sync_load)(struct tracecmd_clock_sync *clock_context);
-+	int (*clock_sync_unload)(struct tracecmd_clock_sync *clock_context);
-+} static clock_sync[CLOCK_CONTEXT_MAX] = {
-+	{ /* CLOCK_KVM_X86_VSOCK_HOST */
-+	  .systems = {"vsock", "ftrace", NULL},
-+	  .ftrace_params = {
-+	  {"set_ftrace_filter", "vmx_read_l1_tsc_offset\nsvm_read_l1_tsc_offset", "\0"},
-+	  {"current_tracer", "function", "nop"},
-+	  {"events/vsock/virtio_transport_recv_pkt/enable", "1", "0"},
-+	  {"events/vsock/virtio_transport_recv_pkt/filter", NULL, "\0"},
-+	  {NULL, NULL, NULL} },
-+	  .events = {
-+	  {.system = "ftrace", .name = "function"},
-+	  {.system = "vsock", .name = "virtio_transport_recv_pkt"},
-+	  {.system = NULL, .name = NULL} },
-+	 clock_sync_x86_host_init,
-+	 clock_sync_x86_host_free,
-+	 clock_sync_x86_host_find_events,
-+	},
-+
-+	{ /* CLOCK_KVM_X86_VSOCK_GUEST */
-+	 .systems = { "vsock", "ftrace", NULL},
-+	 .ftrace_params = {
-+	  {"set_ftrace_filter", "vp_notify", "\0"},
-+	  {"current_tracer", "function", "nop"},
-+	  {"events/vsock/virtio_transport_alloc_pkt/enable", "1", "0"},
-+	  {"events/vsock/virtio_transport_alloc_pkt/filter", NULL, "\0"},
-+	  {NULL, NULL, NULL},
-+	  },
-+	  .events = {
-+	  {.system = "vsock", .name = "virtio_transport_alloc_pkt"},
-+	  {.system = "ftrace", .name = "function"},
-+	  {.system = NULL, .name = NULL}
-+	 },
-+	  clock_sync_x86_guest_init,
-+	  clock_sync_x86_guest_free,
-+	  clock_sync_x86_guest_find_events,
-+	}
-+};
-+
-+static int clock_sync_x86_host_init(struct tracecmd_clock_sync *clock_context)
-+{
-+	char vsock_filter[255];
-+
-+	snprintf(vsock_filter, 255,
-+		"src_cid==%u && src_port==%u && dst_cid==%u && dst_port==%u && len!=0",
-+		clock_context->remote_cid, clock_context->remote_port,
-+		clock_context->local_cid, clock_context->local_port);
-+
-+	clock_context->ftrace_params[3].set = strdup(vsock_filter);
-+	return 1;
-+}
-+
-+static int clock_sync_x86_host_free(struct tracecmd_clock_sync *clock_context)
-+{
-+	free(clock_context->ftrace_params[3].set);
-+	clock_context->ftrace_params[3].set = NULL;
-+	return 1;
-+}
-+
-+static int clock_sync_x86_guest_init(struct tracecmd_clock_sync *clock_context)
-+{
-+	char vsock_filter[255];
-+
-+	snprintf(vsock_filter, 255,
-+		"src_cid==%u && src_port==%u && dst_cid==%u && dst_port==%u && len!=0",
-+		clock_context->local_cid, clock_context->local_port,
-+		clock_context->remote_cid, clock_context->remote_port);
-+
-+	clock_context->ftrace_params[3].set = strdup(vsock_filter);
-+	return 1;
-+}
-+
-+static int clock_sync_x86_guest_free(struct tracecmd_clock_sync *clock_context)
-+{
-+	free(clock_context->ftrace_params[3].set);
-+	clock_context->ftrace_params[3].set = NULL;
-+	return 1;
-+}
-+
-+static int
-+get_events_in_page(struct tep_handle *tep, void *page,
-+		    int size, int cpu, struct tracecmd_time_sync_event **events,
-+		    int *events_count, int *events_size)
-+{
-+	struct tracecmd_time_sync_event *events_array = NULL;
-+	struct tep_record *last_record = NULL;
-+	struct tep_event *event = NULL;
-+	struct tep_record *record;
-+	int id, cnt = 0;
-+
-+	if (size <= 0)
-+		return 0;
-+
-+	if (*events == NULL) {
-+		*events = malloc(10*sizeof(struct tracecmd_time_sync_event));
-+		*events_size = 10;
-+		*events_count = 0;
-+	}
-+
-+	while (true) {
-+		event = NULL;
-+		record = tracecmd_read_page_record(tep, page, size,
-+						   last_record);
-+		if (!record)
-+			break;
-+		free_record(last_record);
-+		id = tep_data_type(tep, record);
-+		event = tep_find_event(tep, id);
-+		if (event) {
-+			if (*events_count >= *events_size) {
-+				events_array = realloc(*events,
-+					((3*(*events_size))/2)*
-+					sizeof(struct tracecmd_time_sync_event));
-+				if (events_array) {
-+					*events = events_array;
-+					(*events_size) = (((*events_size)*3)/2);
-+				}
-+			}
-+
-+			if (*events_count < *events_size) {
-+				(*events)[*events_count].ts = record->ts;
-+				(*events)[*events_count].cpu = cpu;
-+				(*events)[*events_count].id = id;
-+				(*events)[*events_count].pid = tep_data_pid(tep, record);
-+				(*events_count)++;
-+				cnt++;
-+			}
-+		}
-+		last_record = record;
-+	}
-+	free_record(last_record);
-+
-+	return cnt;
-+}
-+
-+static int sync_events_cmp(const void *a, const void *b)
-+{
-+	const struct tracecmd_time_sync_event *ea = (const struct tracecmd_time_sync_event *)a;
-+	const struct tracecmd_time_sync_event *eb = (const struct tracecmd_time_sync_event *)b;
-+
-+	if (ea->ts > eb->ts)
-+		return 1;
-+	if (ea->ts < eb->ts)
-+		return -1;
-+	return 0;
-+}
-+
-+static int find_sync_events(struct tep_handle *pevent,
-+			    struct tracecmd_time_sync_event *recorded,
-+			    int rsize, struct tracecmd_time_sync_event *events)
-+{
-+	int i = 0, j = 0;
-+
-+	while (i < rsize) {
-+		if (!events[j].ts && events[j].id == recorded[i].id &&
-+		    (events[j].pid < 0 || events[j].pid == recorded[i].pid)) {
-+			events[j].cpu = recorded[i].cpu;
-+			events[j].ts = recorded[i].ts;
-+			j++;
-+		} else if (j > 0 && events[j-1].id == recorded[i].id &&
-+			  (events[j-1].pid < 0 || events[j-1].pid == recorded[i].pid)) {
-+			events[j-1].cpu = recorded[i].cpu;
-+			events[j-1].ts = recorded[i].ts;
-+		}
-+		i++;
-+	}
-+	return j;
-+}
-+
-+//#define TSYNC_RBUFFER_DEBUG
-+static int find_raw_events(struct tep_handle *tep,
-+		    struct buffer_instance *instance,
-+		    struct tracecmd_time_sync_event *events)
-+{
-+	struct tracecmd_time_sync_event *events_array = NULL;
-+	int events_count = 0;
-+	int events_size = 0;
-+	unsigned int p_size;
-+	char file[PATH_MAX];
-+	int ts = 0;
-+	void *page;
-+	char *path;
-+	int fd;
-+	int i;
-+	int r;
-+
-+	p_size = getpagesize();
-+#ifdef TSYNC_RBUFFER_DEBUG
-+	file = get_instance_file(instance, "trace");
-+	if (!file)
-+		return ts;
-+	{
-+		char *buf = NULL;
-+		FILE *fp;
-+		size_t n;
-+		int r;
-+
-+		printf("Events:\n\r");
-+		fp = fopen(file, "r");
-+		while ((r = getline(&buf, &n, fp)) >= 0) {
-+
-+			if (buf[0] != '#')
-+				printf("%s", buf);
-+			free(buf);
-+			buf = NULL;
-+		}
-+		fclose(fp);
-+	}
-+	tracecmd_put_tracing_file(file);
-+#endif /* TSYNC_RBUFFER_DEBUG */
-+	path = get_instance_file(instance, "per_cpu");
-+	if (!path)
-+		return ts;
-+
-+	page = malloc(p_size);
-+	if (!page)
-+		die("Failed to allocate time_stamp info");
-+	for (i = 0; i < instance->cpu_count; i++) {
-+		sprintf(file, "%s/cpu%d/trace_pipe_raw", path, i);
-+		fd = open(file, O_RDONLY | O_NONBLOCK);
-+		if (fd < 0)
-+			continue;
-+		do {
-+			r = read(fd, page, p_size);
-+			if (r > 0) {
-+				get_events_in_page(tep, page, r, i,
-+						   &events_array, &events_count,
-+						   &events_size);
-+			}
-+		} while (r > 0);
-+		close(fd);
-+	}
-+	qsort(events_array, events_count, sizeof(*events_array), sync_events_cmp);
-+	r = find_sync_events(tep, events_array, events_count, events);
-+#ifdef TSYNC_RBUFFER_DEBUG
-+	len = 0;
-+	while (events[len].id) {
-+		printf("Found %d @ cpu %d: %lld pid %d\n\r",
-+			events[len].id,  events[len].cpu,
-+			events[len].ts, events[len].pid);
-+		len++;
-+	}
-+#endif
-+
-+	free(events_array);
-+	free(page);
-+
-+	tracecmd_put_tracing_file(path);
-+	return r;
-+}
-+
-+static int clock_sync_x86_host_find_events(struct tracecmd_clock_sync *clock,
-+					   int pid,
-+					   struct tracecmd_time_sync_event *event)
-+{
-+	int ret;
-+
-+	clock->events[0].pid = pid;
-+	ret = find_raw_events(clock->tep, clock->vinst, clock->events);
-+	event->ts = clock->events[0].ts;
-+	event->cpu = clock->events[0].cpu;
-+	return ret;
-+
-+}
-+
-+static int clock_sync_x86_guest_find_events(struct tracecmd_clock_sync *clock,
-+					    int pid,
-+					    struct tracecmd_time_sync_event *event)
-+{
-+	int ret;
-+
-+	ret = find_raw_events(clock->tep, clock->vinst, clock->events);
-+	if (ret != clock->events_count)
-+		return 0;
-+	event->ts = clock->events[1].ts;
-+	event->cpu = clock->events[0].cpu;
-+	return 1;
-+
-+}
-+
-+static void tracecmd_clock_sync_reset(struct tracecmd_clock_sync *clock_context)
-+{
-+	int i = 0;
-+
-+	while (clock_context->events[i].id) {
-+		clock_context->events[i].cpu = 0;
-+		clock_context->events[i].ts = 0;
-+		clock_context->events[i].pid = -1;
-+		i++;
-+	}
-+}
-+
-+int tracecmd_clock_find_event(struct tracecmd_clock_sync *clock, int pid,
-+			      struct tracecmd_time_sync_event *event)
-+{
-+	int ret = 0;
-+	int id;
-+
-+	if (clock == NULL ||
-+	    clock->clock_context_id >= CLOCK_CONTEXT_MAX)
-+		return 0;
-+
-+	id = clock->clock_context_id;
-+	if (clock_sync[id].clock_sync_find_events)
-+		ret = clock_sync[id].clock_sync_find_events(clock, pid, event);
-+
-+	tracecmd_clock_sync_reset(clock);
-+	return ret;
-+}
-+
-+static void clock_context_copy(struct tracecmd_clock_sync *clock_context,
-+			       struct tracecmd_ftrace_param *params,
-+			       struct tracecmd_event_descr *events)
-+{
-+	int i;
-+
-+	i = 0;
-+	while (params[i].file)
-+		i++;
-+	clock_context->ftrace_params = calloc(i+1, sizeof(struct tracecmd_ftrace_param));
-+	i = 0;
-+	while (params[i].file) {
-+		clock_context->ftrace_params[i].file = strdup(params[i].file);
-+		if (params[i].set)
-+			clock_context->ftrace_params[i].set = strdup(params[i].set);
-+		if (params[i].reset)
-+			clock_context->ftrace_params[i].reset = strdup(params[i].reset);
-+		i++;
-+	}
-+
-+	i = 0;
-+	while (events[i].name)
-+		i++;
-+	clock_context->events = calloc(i+1, sizeof(struct tracecmd_time_sync_event));
-+	clock_context->events_count = i;
-+}
-+
-+void trace_instance_reset(struct buffer_instance *vinst)
-+{
-+	write_instance_file(vinst, "trace", "\0", NULL);
-+}
-+
-+static struct buffer_instance *
-+clock_synch_create_instance(const char *clock, unsigned int cid)
-+{
-+	struct buffer_instance *vinst;
-+	char inst_name[256];
-+
-+	snprintf(inst_name, 256, "clock_synch-%d", cid);
-+
-+	vinst = create_instance(strdup(inst_name));
-+	tracecmd_init_instance(vinst);
-+	vinst->cpu_count = tracecmd_local_cpu_count();
-+	tracecmd_make_instance(vinst);
-+	trace_instance_reset(vinst);
-+	if (clock)
-+		vinst->clock = strdup(clock);
-+	tracecmd_set_clock(vinst);
-+	return vinst;
-+}
-+
-+static struct tep_handle *clock_synch_get_tep(struct buffer_instance *instance,
-+					      const char * const *systems)
-+{
-+	struct tep_handle *tep = NULL;
-+	char *path;
-+
-+	path = get_instance_dir(instance);
-+	tep = tracecmd_local_events_system(path, systems);
-+	tracecmd_put_tracing_file(path);
-+
-+	tep_set_file_bigendian(tep, tracecmd_host_bigendian());
-+	tep_set_local_bigendian(tep, tracecmd_host_bigendian());
-+
-+	return tep;
-+}
-+
-+static int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *lport,
-+			       unsigned int *rcid, unsigned int *rport)
-+{
-+	struct sockaddr_vm addr;
-+	socklen_t addr_len = sizeof(addr);
-+
-+	memset(&addr, 0, sizeof(addr));
-+	if (getsockname(fd, (struct sockaddr *)&addr, &addr_len))
-+		return -1;
-+	if (addr.svm_family != AF_VSOCK)
-+		return -1;
-+	*lport = addr.svm_port;
-+	*lcid = addr.svm_cid;
-+
-+	memset(&addr, 0, sizeof(addr));
-+	addr_len = sizeof(addr);
-+	if (getpeername(fd, (struct sockaddr *)&addr, &addr_len))
-+		return -1;
-+	if (addr.svm_family != AF_VSOCK)
-+		return -1;
-+	*rport = addr.svm_port;
-+	*rcid = addr.svm_cid;
-+
-+	return 0;
-+}
-+
-+struct tracecmd_clock_sync*
-+tracecmd_clock_context_new(struct tracecmd_msg_handle *msg_handle,
-+			    const char *clock_str,
-+			    enum clock_sync_context id)
-+{
-+	struct tracecmd_clock_sync *clock_context;
-+	struct tep_event *event;
-+	unsigned int i = 0;
-+
-+	switch (id) {
-+#ifdef VSOCK
-+	case CLOCK_KVM_X86_VSOCK_HOST:
-+	case CLOCK_KVM_X86_VSOCK_GUEST:
-+		break;
-+#endif
-+	default: /* not supported clock sync context */
-+		return NULL;
-+	}
-+
-+	if (id >= CLOCK_CONTEXT_MAX || NULL == msg_handle)
-+		return NULL;
-+	clock_context = calloc(1, sizeof(struct tracecmd_clock_sync));
-+	if (!clock_context)
-+		return NULL;
-+	if (get_vsocket_params(msg_handle->fd,
-+			       &clock_context->local_cid,
-+			       &clock_context->local_port,
-+			       &clock_context->remote_cid,
-+			       &clock_context->remote_port)) {
-+		free (clock_context);
-+		return NULL;
-+	}
-+
-+	clock_context->clock_context_id = id;
-+	clock_context_copy(clock_context,
-+			   clock_sync[id].ftrace_params, clock_sync[id].events);
-+
-+	if (clock_sync[id].clock_sync_init)
-+		clock_sync[id].clock_sync_init(clock_context);
-+
-+	clock_context->vinst = clock_synch_create_instance(clock_str, clock_context->remote_cid);
-+	clock_context->tep = clock_synch_get_tep(clock_context->vinst,
-+						 clock_sync[id].systems);
-+	i = 0;
-+	while (clock_sync[id].events[i].name) {
-+		event = tep_find_event_by_name(clock_context->tep,
-+					       clock_sync[id].events[i].system,
-+					       clock_sync[id].events[i].name);
-+		if (!event)
-+			break;
-+		clock_context->events[i].id = event->id;
-+		i++;
-+	}
-+#ifdef TSYNC_DEBUG
-+	clock_context->debug_fd = -1;
-+#endif
-+
-+	return clock_context;
-+
-+}
-+
-+void tracecmd_clock_context_free(struct buffer_instance *instance)
-+{
-+	int i;
-+
-+	if (instance->clock_sync == NULL ||
-+	    instance->clock_sync->clock_context_id >= CLOCK_CONTEXT_MAX)
-+		return;
-+	if (clock_sync[instance->clock_sync->clock_context_id].clock_sync_free)
-+		clock_sync[instance->clock_sync->clock_context_id].clock_sync_free(instance->clock_sync);
-+
-+	i = 0;
-+	while (instance->clock_sync->ftrace_params[i].file) {
-+		free(instance->clock_sync->ftrace_params[i].file);
-+		free(instance->clock_sync->ftrace_params[i].set);
-+		free(instance->clock_sync->ftrace_params[i].reset);
-+		i++;
-+	}
-+	free(instance->clock_sync->ftrace_params);
-+	free(instance->clock_sync->events);
-+	tracecmd_remove_instance(instance->clock_sync->vinst);
-+	/* todo: clean up the instance */
-+	tep_free(instance->clock_sync->tep);
-+
-+	free(instance->clock_sync->offsets);
-+	free(instance->clock_sync->times);
-+#ifdef TSYNC_DEBUG
-+	if (instance->clock_sync->debug_fd >= 0) {
-+		close(instance->clock_sync->debug_fd);
-+		instance->clock_sync->debug_fd = -1;
-+	}
-+#endif
-+	free(instance->clock_sync);
-+	instance->clock_sync = NULL;
-+}
-+
-+bool tracecmd_time_sync_check(void)
-+{
-+#ifdef VSOCK
-+	return true;
-+#endif
-+	return false;
-+}
-+
-+void sync_time_with_host_v3(struct buffer_instance *instance)
-+{
-+	long long timestamp = 0;
-+	long long offset = 0;
-+
-+	if (!instance->do_tsync)
-+		return;
-+
-+	if (instance->clock_sync == NULL)
-+		instance->clock_sync = tracecmd_clock_context_new(instance->msg_handle,
-+					instance->clock, CLOCK_KVM_X86_VSOCK_GUEST);
-+
-+	tracecmd_msg_snd_time_sync(instance->msg_handle, instance->clock_sync,
-+				   &offset, &timestamp);
-+	if (!offset && !timestamp)
-+		warning("Failed to synchronize timestamps with the host");
-+}
-+
-+void sync_time_with_guest_v3(struct buffer_instance *instance)
-+{
-+	long long timestamp = 0;
-+	long long offset = 0;
-+	long long *sync_array_ts;
-+	long long *sync_array_offs;
-+
-+	if (!instance->do_tsync)
-+		return;
-+
-+	if (instance->clock_sync == NULL)
-+		instance->clock_sync = tracecmd_clock_context_new(instance->msg_handle,
-+						top_instance.clock, CLOCK_KVM_X86_VSOCK_HOST);
-+
-+	tracecmd_msg_rcv_time_sync(instance->msg_handle,
-+				   instance->clock_sync, &offset, &timestamp);
-+
-+	if (!offset && !timestamp) {
-+		warning("Failed to synchronize timestamps with guest %s",
-+			instance->name);
-+		return;
-+	}
-+
-+	sync_array_ts = realloc(instance->time_sync_ts,
-+			    (instance->time_sync_count+1)*sizeof(long long));
-+	sync_array_offs = realloc(instance->time_sync_offsets,
-+			    (instance->time_sync_count+1)*sizeof(long long));
-+
-+	if (sync_array_ts && sync_array_offs) {
-+		sync_array_ts[instance->time_sync_count] = timestamp;
-+		sync_array_offs[instance->time_sync_count] = offset;
-+		instance->time_sync_count++;
-+		instance->time_sync_ts = sync_array_ts;
-+		instance->time_sync_offsets = sync_array_offs;
-+
-+	} else {
-+		free(sync_array_ts);
-+		free(sync_array_offs);
-+	}
-+
-+}
-+
-+static void set_clock_synch_events(struct buffer_instance *instance,
-+				   struct tracecmd_ftrace_param *params,
-+				   bool enable)
-+{
-+	int i = 0;
-+
-+	if (!enable)
-+		write_tracing_on(instance, 0);
-+
-+	while (params[i].file) {
-+		if (enable && params[i].set) {
-+			write_instance_file(instance, params[i].file,
-+					    params[i].set, NULL);
-+		}
-+		if (!enable && params[i].reset)
-+			write_instance_file(instance, params[i].file,
-+					    params[i].reset, NULL);
-+		i++;
-+	}
-+
-+	if (enable)
-+		write_tracing_on(instance, 1);
-+}
-+
-+int tracecmd_clock_get_peer(struct tracecmd_clock_sync *clock_context,
-+			    unsigned int *remote_cid, unsigned int *remote_port)
-+{
-+	if (!clock_context)
-+		return 0;
-+	if (remote_cid)
-+		*remote_cid = clock_context->remote_cid;
-+	if (remote_port)
-+		*remote_cid = clock_context->remote_port;
-+	return 1;
-+}
-+
-+void tracecmd_clock_synch_enable(struct tracecmd_clock_sync *clock_context)
-+{
-+	set_clock_synch_events(clock_context->vinst,
-+			       clock_context->ftrace_params, true);
-+}
-+
-+void tracecmd_clock_synch_disable(struct tracecmd_clock_sync *clock_context)
-+{
-+	set_clock_synch_events(clock_context->vinst,
-+			       clock_context->ftrace_params, false);
-+}
-+
-+int tracecmd_clock_synch_calc(struct tracecmd_clock_sync *clock_context,
-+			       long long *offset_ret, long long *time_ret)
-+{
-+	int i, j = 0;
-+	long long av, tresch, offset = 0, time = 0;
-+
-+	if (!clock_context || !clock_context->probes_count)
-+		return 0;
-+	av = clock_context->offset_av / clock_context->probes_count;
-+	tresch = (long long)((clock_context->offset_max - clock_context->offset_min)/10);
-+
-+	for (i = 0; i < clock_context->probes_count; i++) {
-+		/* filter the offsets with deviation up to 10% */
-+		if (llabs(clock_context->offsets[i] - av) < tresch) {
-+			offset += clock_context->offsets[i];
-+			j++;
-+		}
-+	}
-+	if (j)
-+		offset /= (long long)j;
-+
-+	tresch = 0;
-+	for (i = 0; i < clock_context->probes_count; i++) {
-+		if ((!tresch || tresch > llabs(offset-clock_context->offsets[i]))) {
-+			tresch = llabs(offset-clock_context->offsets[i]);
-+			time = clock_context->times[i];
-+		}
-+	}
-+	if (offset_ret)
-+		*offset_ret = offset;
-+	if (time_ret)
-+		*time_ret = time;
-+#ifdef TSYNC_DEBUG
-+	printf("\n calculated offset: %lld, %d/%d probes\n\r",
-+		*offset_ret, clock_context->probes_count,
-+		clock_context->probes_count + clock_context->bad_probes);
-+#endif
-+	return 1;
-+}
-+
-+void tracecmd_clock_synch_calc_reset(struct tracecmd_clock_sync *clock_context)
-+{
-+	if (!clock_context)
-+		return;
-+
-+	clock_context->probes_count = 0;
-+	clock_context->bad_probes = 0;
-+	clock_context->offset_av = 0;
-+	clock_context->offset_min = 0;
-+	clock_context->offset_max = 0;
-+#ifdef TSYNC_DEBUG
-+	if (clock_context->debug_fd >= 0) {
-+		close(clock_context->debug_fd);
-+		clock_context->debug_fd = -1;
-+	}
-+#endif
-+
-+}
-+
-+void tracecmd_clock_synch_calc_probe(struct tracecmd_clock_sync *clock_context,
-+				     long long ts_local, long long ts_remote)
-+{
-+	int count;
-+#ifdef TSYNC_DEBUG
-+	char buff[256];
-+#endif
-+
-+	if (!clock_context || !ts_local || !ts_remote)
-+		return;
-+	if (!ts_local || !ts_remote) {
-+		clock_context->bad_probes++;
-+		return;
-+	}
-+
-+	if (!clock_context->offsets && !clock_context->times) {
-+		clock_context->offsets = calloc(10, sizeof(long long));
-+		clock_context->times = calloc(10, sizeof(long long));
-+		clock_context->probes_size = 10;
-+	}
-+
-+	if (clock_context->probes_size == clock_context->probes_count) {
-+		clock_context->probes_size = (3*clock_context->probes_size)/2;
-+		clock_context->offsets = realloc(clock_context->offsets,
-+						 clock_context->probes_size *
-+						 sizeof(long long));
-+		clock_context->times = realloc(clock_context->times,
-+					       clock_context->probes_size*
-+					       sizeof(long long));
-+	}
-+
-+	if (!clock_context->offsets || !clock_context->times) {
-+		clock_context->probes_size = 0;
-+		tracecmd_clock_synch_calc_reset(clock_context);
-+		return;
-+	}
-+#ifdef TSYNC_DEBUG
-+	if (clock_context->debug_fd < 0) {
-+		sprintf(buff, "s-cid%d.txt", clock_context->remote_cid);
-+		clock_context->debug_fd = open(buff, O_CREAT|O_WRONLY|O_TRUNC, 0644);
-+	}
-+#endif
-+	count = clock_context->probes_count;
-+	clock_context->probes_count++;
-+	clock_context->offsets[count] = ts_remote - ts_local;
-+	clock_context->times[count] = ts_local;
-+	clock_context->offset_av += clock_context->offsets[count];
-+
-+	if (!clock_context->offset_min ||
-+	    clock_context->offset_min > llabs(clock_context->offsets[count]))
-+		clock_context->offset_min = llabs(clock_context->offsets[count]);
-+	if (!clock_context->offset_max ||
-+	    clock_context->offset_max < llabs(clock_context->offsets[count]))
-+		clock_context->offset_max = llabs(clock_context->offsets[count]);
-+#ifdef TSYNC_DEBUG
-+	sprintf(buff, "%lld %lld\n", ts_local, ts_remote);
-+	write(clock_context->debug_fd, buff, strlen(buff));
-+#endif
-+
-+}
++++ b/tools/lib/traceevent/Documentation/Makefile
+@@ -0,0 +1,208 @@
++include ../../../scripts/Makefile.include
++include ../../../scripts/utilities.mak
++
++# This Makefile and manpage XSL files were taken from tools/perf/Documentation
++# and modified for libtraceevent.
++
++MAN3_TXT= \
++	$(wildcard libtraceevent-*.txt) \
++	libtraceevent.txt
++
++MAN_TXT = $(MAN3_TXT)
++_MAN_XML=$(patsubst %.txt,%.xml,$(MAN_TXT))
++_MAN_HTML=$(patsubst %.txt,%.html,$(MAN_TXT))
++_DOC_MAN3=$(patsubst %.txt,%.3,$(MAN3_TXT))
++
++MAN_XML=$(addprefix $(OUTPUT),$(_MAN_XML))
++MAN_HTML=$(addprefix $(OUTPUT),$(_MAN_HTML))
++DOC_MAN3=$(addprefix $(OUTPUT),$(_DOC_MAN3))
++
++# Make the path relative to DESTDIR, not prefix
++ifndef DESTDIR
++prefix?=$(HOME)
++endif
++bindir?=$(prefix)/bin
++htmldir?=$(prefix)/share/doc/libtraceevent-doc
++pdfdir?=$(prefix)/share/doc/libtraceevent-doc
++mandir?=$(prefix)/share/man
++man3dir=$(mandir)/man3
++
++ASCIIDOC=asciidoc
++ASCIIDOC_EXTRA = --unsafe -f asciidoc.conf
++ASCIIDOC_HTML = xhtml11
++MANPAGE_XSL = manpage-normal.xsl
++XMLTO_EXTRA =
++INSTALL?=install
++RM ?= rm -f
++
++ifdef USE_ASCIIDOCTOR
++ASCIIDOC = asciidoctor
++ASCIIDOC_EXTRA = -a compat-mode
++ASCIIDOC_EXTRA += -I. -rasciidoctor-extensions
++ASCIIDOC_EXTRA += -a mansource="libtraceevent" -a manmanual="libtraceevent Manual"
++ASCIIDOC_HTML = xhtml5
++endif
++
++XMLTO=xmlto
++
++_tmp_tool_path := $(call get-executable,$(ASCIIDOC))
++ifeq ($(_tmp_tool_path),)
++	missing_tools = $(ASCIIDOC)
++endif
++
++ifndef USE_ASCIIDOCTOR
++_tmp_tool_path := $(call get-executable,$(XMLTO))
++ifeq ($(_tmp_tool_path),)
++	missing_tools += $(XMLTO)
++endif
++endif
++
++#
++# For asciidoc ...
++#	-7.1.2,	no extra settings are needed.
++#	8.0-,	set ASCIIDOC8.
++#
++
++#
++# For docbook-xsl ...
++#	-1.68.1,	set ASCIIDOC_NO_ROFF? (based on changelog from 1.73.0)
++#	1.69.0,		no extra settings are needed?
++#	1.69.1-1.71.0,	set DOCBOOK_SUPPRESS_SP?
++#	1.71.1,		no extra settings are needed?
++#	1.72.0,		set DOCBOOK_XSL_172.
++#	1.73.0-,	set ASCIIDOC_NO_ROFF
++#
++
++#
++# If you had been using DOCBOOK_XSL_172 in an attempt to get rid
++# of 'the ".ft C" problem' in your generated manpages, and you
++# instead ended up with weird characters around callouts, try
++# using ASCIIDOC_NO_ROFF instead (it works fine with ASCIIDOC8).
++#
++
++ifdef ASCIIDOC8
++ASCIIDOC_EXTRA += -a asciidoc7compatible
++endif
++ifdef DOCBOOK_XSL_172
++ASCIIDOC_EXTRA += -a libtraceevent-asciidoc-no-roff
++MANPAGE_XSL = manpage-1.72.xsl
++else
++	ifdef ASCIIDOC_NO_ROFF
++	# docbook-xsl after 1.72 needs the regular XSL, but will not
++	# pass-thru raw roff codes from asciidoc.conf, so turn them off.
++	ASCIIDOC_EXTRA += -a libtraceevent-asciidoc-no-roff
++	endif
++endif
++ifdef MAN_BOLD_LITERAL
++XMLTO_EXTRA += -m manpage-bold-literal.xsl
++endif
++ifdef DOCBOOK_SUPPRESS_SP
++XMLTO_EXTRA += -m manpage-suppress-sp.xsl
++endif
++
++SHELL_PATH ?= $(SHELL)
++# Shell quote;
++SHELL_PATH_SQ = $(subst ','\'',$(SHELL_PATH))
++
++DESTDIR ?=
++DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
++
++export DESTDIR DESTDIR_SQ
++
++#
++# Please note that there is a minor bug in asciidoc.
++# The version after 6.0.3 _will_ include the patch found here:
++#   http://marc.theaimsgroup.com/?l=libtraceevent&m=111558757202243&w=2
++#
++# Until that version is released you may have to apply the patch
++# yourself - yes, all 6 characters of it!
++#
++QUIET_SUBDIR0  = +$(MAKE) -C # space to separate -C and subdir
++QUIET_SUBDIR1  =
++
++ifneq ($(findstring $(MAKEFLAGS),w),w)
++PRINT_DIR = --no-print-directory
++else # "make -w"
++NO_SUBDIR = :
++endif
++
++ifneq ($(findstring $(MAKEFLAGS),s),s)
++ifneq ($(V),1)
++	QUIET_ASCIIDOC	= @echo '  ASCIIDOC '$@;
++	QUIET_XMLTO	= @echo '  XMLTO    '$@;
++	QUIET_SUBDIR0	= +@subdir=
++	QUIET_SUBDIR1	= ;$(NO_SUBDIR) \
++			   echo '  SUBDIR   ' $$subdir; \
++			  $(MAKE) $(PRINT_DIR) -C $$subdir
++	export V
++endif
++endif
++
++all: html man
++
++man: man3
++man3: $(DOC_MAN3)
++
++html: $(MAN_HTML)
++
++$(MAN_HTML) $(DOC_MAN3): asciidoc.conf
++
++install: install-man
++
++check-man-tools:
++ifdef missing_tools
++	$(error "You need to install $(missing_tools) for man pages")
++endif
++
++do-install-man: man
++	$(call QUIET_INSTALL, Documentation-man) \
++		$(INSTALL) -d -m 755 $(DESTDIR)$(man3dir); \
++		$(INSTALL) -m 644 $(DOC_MAN3) $(DESTDIR)$(man3dir);
++
++install-man: check-man-tools man do-install-man
++
++uninstall: uninstall-man
++
++uninstall-man:
++	$(call QUIET_UNINST, Documentation-man) \
++		$(Q)$(RM) $(addprefix $(DESTDIR)$(man3dir)/,$(DOC_MAN3))
++
++
++ifdef missing_tools
++  DO_INSTALL_MAN = $(warning Please install $(missing_tools) to have the man pages installed)
++else
++  DO_INSTALL_MAN = do-install-man
++endif
++
++CLEAN_FILES =					\
++	$(MAN_XML) $(addsuffix +,$(MAN_XML))	\
++	$(MAN_HTML) $(addsuffix +,$(MAN_HTML))	\
++	$(DOC_MAN3) *.3
++
++clean:
++	$(call QUIET_CLEAN, Documentation) $(RM) $(CLEAN_FILES)
++
++ifdef USE_ASCIIDOCTOR
++$(OUTPUT)%.3 : $(OUTPUT)%.txt
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b manpage -d manpage \
++		$(ASCIIDOC_EXTRA) -alibtraceevent_version=$(EVENT_PARSE_VERSION) -o $@+ $< && \
++	mv $@+ $@
++endif
++
++$(OUTPUT)%.3 : $(OUTPUT)%.xml
++	$(QUIET_XMLTO)$(RM) $@ && \
++	$(XMLTO) -o $(OUTPUT). -m $(MANPAGE_XSL) $(XMLTO_EXTRA) man $<
++
++$(OUTPUT)%.xml : %.txt
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b docbook -d manpage \
++		$(ASCIIDOC_EXTRA) -alibtraceevent_version=$(EVENT_PARSE_VERSION) -o $@+ $< && \
++	mv $@+ $@
++
++$(MAN_HTML): $(OUTPUT)%.html : %.txt
++	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
++	$(ASCIIDOC) -b $(ASCIIDOC_HTML) -d manpage \
++		$(ASCIIDOC_EXTRA) -aperf_version=$(EVENT_PARSE_VERSION) -o $@+ $< && \
++	mv $@+ $@
++
+diff --git a/tools/lib/traceevent/Documentation/asciidoc.conf b/tools/lib/traceevent/Documentation/asciidoc.conf
+new file mode 100644
+index 000000000000..1b03c63fb73a
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/asciidoc.conf
+@@ -0,0 +1,91 @@
++## linktep: macro
++#
++# Usage: linktep:command[manpage-section]
++#
++# Note, {0} is the manpage section, while {target} is the command.
++#
++# Show TEP link as: <command>(<section>); if section is defined, else just show
++# the command.
++
++[macros]
++(?su)[\\]?(?P<name>linktep):(?P<target>\S*?)\[(?P<attrlist>.*?)\]=
++
++[attributes]
++asterisk=&#42;
++plus=&#43;
++caret=&#94;
++startsb=&#91;
++endsb=&#93;
++tilde=&#126;
++
++ifdef::backend-docbook[]
++[linktep-inlinemacro]
++{0%{target}}
++{0#<citerefentry>}
++{0#<refentrytitle>{target}</refentrytitle><manvolnum>{0}</manvolnum>}
++{0#</citerefentry>}
++endif::backend-docbook[]
++
++ifdef::backend-docbook[]
++ifndef::tep-asciidoc-no-roff[]
++# "unbreak" docbook-xsl v1.68 for manpages. v1.69 works with or without this.
++# v1.72 breaks with this because it replaces dots not in roff requests.
++[listingblock]
++<example><title>{title}</title>
++<literallayout>
++ifdef::doctype-manpage[]
++&#10;.ft C&#10;
++endif::doctype-manpage[]
++|
++ifdef::doctype-manpage[]
++&#10;.ft&#10;
++endif::doctype-manpage[]
++</literallayout>
++{title#}</example>
++endif::tep-asciidoc-no-roff[]
++
++ifdef::tep-asciidoc-no-roff[]
++ifdef::doctype-manpage[]
++# The following two small workarounds insert a simple paragraph after screen
++[listingblock]
++<example><title>{title}</title>
++<literallayout>
++|
++</literallayout><simpara></simpara>
++{title#}</example>
++
++[verseblock]
++<formalpara{id? id="{id}"}><title>{title}</title><para>
++{title%}<literallayout{id? id="{id}"}>
++{title#}<literallayout>
++|
++</literallayout>
++{title#}</para></formalpara>
++{title%}<simpara></simpara>
++endif::doctype-manpage[]
++endif::tep-asciidoc-no-roff[]
++endif::backend-docbook[]
++
++ifdef::doctype-manpage[]
++ifdef::backend-docbook[]
++[header]
++template::[header-declarations]
++<refentry>
++<refmeta>
++<refentrytitle>{mantitle}</refentrytitle>
++<manvolnum>{manvolnum}</manvolnum>
++<refmiscinfo class="source">trace-cmd</refmiscinfo>
++<refmiscinfo class="version">{libtraceevent_version}</refmiscinfo>
++<refmiscinfo class="manual">trace-cmd Manual</refmiscinfo>
++</refmeta>
++<refnamediv>
++  <refname>{manname}</refname>
++  <refpurpose>{manpurpose}</refpurpose>
++</refnamediv>
++endif::backend-docbook[]
++endif::doctype-manpage[]
++
++ifdef::backend-xhtml11[]
++[linktep-inlinemacro]
++<a href="{target}.html">{target}{0?({0})}</a>
++endif::backend-xhtml11[]
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent.txt b/tools/lib/traceevent/Documentation/libtraceevent.txt
+new file mode 100644
+index 000000000000..d71fc61ea759
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/libtraceevent.txt
+@@ -0,0 +1,203 @@
++libtraceevent(3)
++================
++
++NAME
++----
++libtraceevent - Linux kernel trace event library
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <event-parse.h>*
++
++Management of tep handler data structure and access of its members:
++	struct tep_handle pass:[*]*tep_alloc*(void);
++	void *tep_free*(struct tep_handle pass:[*]_tep_);
++	void *tep_ref*(struct tep_handle pass:[*]_tep_);
++	void *tep_unref*(struct tep_handle pass:[*]_tep_);
++	int *tep_ref_get*(struct tep_handle pass:[*]_tep_);
++	void *tep_set_flag*(struct tep_handle pass:[*]_tep_, enum tep_flag _flag_);
++	void *tep_clear_flag*(struct tep_handle pass:[*]_tep_, enum tep_flag _flag_);
++	bool *tep_test_flag*(struct tep_handle pass:[*]_tep_, enum tep_flag _flags_);
++	int *tep_get_cpus*(struct tep_handle pass:[*]_tep_);
++	void *tep_set_cpus*(struct tep_handle pass:[*]_tep_, int _cpus_);
++	int *tep_get_long_size*(strucqt tep_handle pass:[*]_tep_);
++	void *tep_set_long_size*(struct tep_handle pass:[*]_tep_, int _long_size_);
++	int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
++	void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_);
++	bool *tep_is_latency_format*(struct tep_handle pass:[*]_tep_);
++	void *tep_set_latency_format*(struct tep_handle pass:[*]_tep_, int _lat_);
++	int *tep_get_header_page_size*(struct tep_handle pass:[*]_tep_);
++	int *tep_get_header_timestamp_size*(struct tep_handle pass:[*]_tep_);
++	bool *tep_is_old_format*(struct tep_handle pass:[*]_tep_);
++	int *tep_strerror*(struct tep_handle pass:[*]_tep_, enum tep_errno _errnum_, char pass:[*]_buf_, size_t _buflen_);
++
++Register / unregister APIs:
++	int *tep_register_trace_clock*(struct tep_handle pass:[*]_tep_, const char pass:[*]_trace_clock_);
++	int *tep_register_function*(struct tep_handle pass:[*]_tep_, char pass:[*]_name_, unsigned long long _addr_, char pass:[*]_mod_);
++	int *tep_register_event_handler*(struct tep_handle pass:[*]_tep_, int _id_, const char pass:[*]_sys_name_, const char pass:[*]_event_name_, tep_event_handler_func _func_, void pass:[*]_context_);
++	int *tep_unregister_event_handler*(struct tep_handle pass:[*]tep, int id, const char pass:[*]sys_name, const char pass:[*]event_name, tep_event_handler_func func, void pass:[*]_context_);
++	int *tep_register_print_string*(struct tep_handle pass:[*]_tep_, const char pass:[*]_fmt_, unsigned long long _addr_);
++	int *tep_register_print_function*(struct tep_handle pass:[*]_tep_, tep_func_handler _func_, enum tep_func_arg_type _ret_type_, char pass:[*]_name_, _..._);
++	int *tep_unregister_print_function*(struct tep_handle pass:[*]_tep_, tep_func_handler _func_, char pass:[*]_name_);
++
++Plugins management:
++	struct tep_plugin_list pass:[*]*tep_load_plugins*(struct tep_handle pass:[*]_tep_);
++	void *tep_unload_plugins*(struct tep_plugin_list pass:[*]_plugin_list_, struct tep_handle pass:[*]_tep_);
++	char pass:[*]pass:[*]*tep_plugin_list_options*(void);
++	void *tep_plugin_free_options_list*(char pass:[*]pass:[*]_list_);
++	int *tep_plugin_add_options*(const char pass:[*]_name_, struct tep_plugin_option pass:[*]_options_);
++	void *tep_plugin_remove_options*(struct tep_plugin_option pass:[*]_options_);
++	void *tep_print_plugins*(struct trace_seq pass:[*]_s_, const char pass:[*]_prefix_, const char pass:[*]_suffix_, const struct tep_plugin_list pass:[*]_list_);
++
++Event related APIs:
++	struct tep_event pass:[*]*tep_get_event*(struct tep_handle pass:[*]_tep_, int _index_);
++	struct tep_event pass:[*]*tep_get_first_event*(struct tep_handle pass:[*]_tep_);
++	int *tep_get_events_count*(struct tep_handle pass:[*]_tep_);
++	struct tep_event pass:[*]pass:[*]*tep_list_events*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
++	struct tep_event pass:[*]pass:[*]*tep_list_events_copy*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
++
++Event printing:
++	void *tep_print_event*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_record pass:[*]_record_, bool _use_trace_clock_);
++	void *tep_print_event_data*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]_record_);
++	void *tep_event_info*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]_record_);
++	void *tep_print_event_task*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]_record_);
++	void *tep_print_event_time*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, struct tep_record pass:[*]record, bool _use_trace_clock_);
++	void *tep_set_print_raw*(struct tep_handle pass:[*]_tep_, int _print_raw_);
++
++Event finding:
++	struct tep_event pass:[*]*tep_find_event*(struct tep_handle pass:[*]_tep_, int _id_);
++	struct tep_event pass:[*]*tep_find_event_by_name*(struct tep_handle pass:[*]_tep_, const char pass:[*]_sys_, const char pass:[*]_name_);
++	struct tep_event pass:[*]*tep_find_event_by_record*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_record_);
++
++Parsing of event files:
++	int *tep_parse_header_page*(struct tep_handle pass:[*]_tep_, char pass:[*]_buf_, unsigned long _size_, int _long_size_);
++	enum tep_errno *tep_parse_event*(struct tep_handle pass:[*]_tep_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
++	enum tep_errno *tep_parse_format*(struct tep_handle pass:[*]_tep_, struct tep_event pass:[*]pass:[*]_eventp_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
++
++APIs related to fields from event's format files:
++	struct tep_format_field pass:[*]pass:[*]*tep_event_common_fields*(struct tep_event pass:[*]_event_);
++	struct tep_format_field pass:[*]pass:[*]*tep_event_fields*(struct tep_event pass:[*]_event_);
++	void pass:[*]*tep_get_field_raw*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int pass:[*]_len_, int _err_);
++	int *tep_get_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
++	int *tep_get_common_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
++	int *tep_get_any_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
++	int *tep_read_number_field*(struct tep_format_field pass:[*]_field_, const void pass:[*]_data_, unsigned long long pass:[*]_value_);
++
++Event fields printing:
++	void *tep_print_field*(struct trace_seq pass:[*]_s_, void pass:[*]_data_, struct tep_format_field pass:[*]_field_);
++	void *tep_print_fields*(struct trace_seq pass:[*]_s_, void pass:[*]_data_, int _size_, struct tep_event pass:[*]_event_);
++	int *tep_print_num_field*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int _err_);
++	int *tep_print_func_field*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int _err_);
++
++Event fields finding:
++	struct tep_format_field pass:[*]*tep_find_common_field*(struct tep_event pass:[*]_event_, const char pass:[*]_name_);
++	struct tep_format_field pass:[*]*tep_find_field*(struct tep_event_ormat pass:[*]_event_, const char pass:[*]_name_);
++	struct tep_format_field pass:[*]*tep_find_any_field*(struct tep_event pass:[*]_event_, const char pass:[*]_name_);
++
++Functions resolver:
++	int *tep_set_function_resolver*(struct tep_handle pass:[*]_tep_, tep_func_resolver_t pass:[*]_func_, void pass:[*]_priv_);
++	void *tep_reset_function_resolver*(struct tep_handle pass:[*]_tep_);
++	const char pass:[*]*tep_find_function*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
++	unsigned long long *tep_find_function_address*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
++
++Filter management:
++	struct tep_event_filter pass:[*]*tep_filter_alloc*(struct tep_handle pass:[*]_tep_);
++	enum tep_errno *tep_filter_add_filter_str*(struct tep_event_filter pass:[*]_filter_, const char pass:[*]_filter_str_);
++	enum tep_errno *tep_filter_match*(struct tep_event_filter pass:[*]_filter_, struct tep_record pass:[*]_record_);
++	int *tep_filter_strerror*(struct tep_event_filter pass:[*]_filter_, enum tep_errno _err_, char pass:[*]buf, size_t _buflen_);
++	int *tep_event_filtered*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
++	void *tep_filter_reset*(struct tep_event_filter pass:[*]_filter_);
++	void *tep_filter_free*(struct tep_event_filter pass:[*]_filter_);
++	char pass:[*]*tep_filter_make_string*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
++	int *tep_filter_remove_event*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
++	int *tep_filter_copy*(struct tep_event_filter pass:[*]_dest_, struct tep_event_filter pass:[*]_source_);
++	int *tep_filter_compare*(struct tep_event_filter pass:[*]_filter1_, struct tep_event_filter pass:[*]_filter2_);
++
++Parsing various data from the records:
++	void *tep_data_latency_format*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, struct tep_record pass:[*]_record_);
++	int *tep_data_type*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++	int *tep_data_pid*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++	int *tep_data_preempt_count*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++	int *tep_data_flags*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++
++Command and task related APIs:
++	const char pass:[*]*tep_data_comm_from_pid*(struct tep_handle pass:[*]_tep_, int _pid_);
++	struct cmdline pass:[*]*tep_data_pid_from_comm*(struct tep_handle pass:[*]_tep_, const char pass:[*]_comm_, struct cmdline pass:[*]_next_);
++	int *tep_register_comm*(struct tep_handle pass:[*]_tep_, const char pass:[*]_comm_, int _pid_);
++	int *tep_override_comm*(struct tep_handle pass:[*]_tep_, const char pass:[*]_comm_, int _pid_);
++	bool *tep_is_pid_registered*(struct tep_handle pass:[*]_tep_, int _pid_);
++	int *tep_cmdline_pid*(struct tep_handle pass:[*]_tep_, struct cmdline pass:[*]_cmdline_);
++
++Endian related APIs:
++	int *tep_is_bigendian*(void);
++	unsigned long long *tep_read_number*(struct tep_handle pass:[*]_tep_, const void pass:[*]_ptr_, int _size_);
++	bool *tep_is_file_bigendian*(struct tep_handle pass:[*]_tep_);
++	void *tep_set_file_bigendian*(struct tep_handle pass:[*]_tep_, enum tep_endian _endian_);
++	bool *tep_is_local_bigendian*(struct tep_handle pass:[*]_tep_);
++	void *tep_set_local_bigendian*(struct tep_handle pass:[*]_tep_, enum tep_endian _endian_);
++
++Trace sequences:
++*#include <trace-seq.h>*
++	void *trace_seq_init*(struct trace_seq pass:[*]_s_);
++	void *trace_seq_reset*(struct trace_seq pass:[*]_s_);
++	void *trace_seq_destroy*(struct trace_seq pass:[*]_s_);
++	int *trace_seq_printf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, ...);
++	int *trace_seq_vprintf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, va_list _args_);
++	int *trace_seq_puts*(struct trace_seq pass:[*]_s_, const char pass:[*]_str_);
++	int *trace_seq_putc*(struct trace_seq pass:[*]_s_, unsigned char _c_);
++	void *trace_seq_terminate*(struct trace_seq pass:[*]_s_);
++	int *trace_seq_do_fprintf*(struct trace_seq pass:[*]_s_, FILE pass:[*]_fp_);
++	int *trace_seq_do_printf*(struct trace_seq pass:[*]_s_);
++--
++
++DESCRIPTION
++-----------
++The libtraceevent(3) library provides APIs to access kernel tracepoint events,
++located in the tracefs file system under the tracing/events directory.
++
++ENVIRONMENT
++-----------
++[verse]
++--
++TRACEEVENT_PLUGIN_DIR
++	Additional plugin directory. All shared object files, located in this directory will be loaded as traceevent plugins.
++--
++
++FILES
++-----
++[verse]
++--
++*event-parse.h*
++	Header file to include in order to have access to the library APIs.
++*trace-seq.h*
++	Header file to include in order to have access to trace sequences related APIs.
++	Trace sequences are used to allow a function to call several other functions
++	to create a string of data to use.
++*-ltraceevent*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_trace-cmd(1)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtraceevent is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+diff --git a/tools/lib/traceevent/Documentation/manpage-1.72.xsl b/tools/lib/traceevent/Documentation/manpage-1.72.xsl
+new file mode 100644
+index 000000000000..b4d315cb8c47
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/manpage-1.72.xsl
+@@ -0,0 +1,14 @@
++<!-- manpage-1.72.xsl:
++     special settings for manpages rendered from asciidoc+docbook
++     handles peculiarities in docbook-xsl 1.72.0 -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<xsl:import href="manpage-base.xsl"/>
++
++<!-- these are the special values for the roff control characters
++     needed for docbook-xsl 1.72.0 -->
++<xsl:param name="git.docbook.backslash">&#x2593;</xsl:param>
++<xsl:param name="git.docbook.dot"      >&#x2302;</xsl:param>
++
++</xsl:stylesheet>
+diff --git a/tools/lib/traceevent/Documentation/manpage-base.xsl b/tools/lib/traceevent/Documentation/manpage-base.xsl
+new file mode 100644
+index 000000000000..a264fa616093
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/manpage-base.xsl
+@@ -0,0 +1,35 @@
++<!-- manpage-base.xsl:
++     special formatting for manpages rendered from asciidoc+docbook -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<!-- these params silence some output from xmlto -->
++<xsl:param name="man.output.quietly" select="1"/>
++<xsl:param name="refentry.meta.get.quietly" select="1"/>
++
++<!-- convert asciidoc callouts to man page format;
++     git.docbook.backslash and git.docbook.dot params
++     must be supplied by another XSL file or other means -->
++<xsl:template match="co">
++	<xsl:value-of select="concat(
++			      $git.docbook.backslash,'fB(',
++			      substring-after(@id,'-'),')',
++			      $git.docbook.backslash,'fR')"/>
++</xsl:template>
++<xsl:template match="calloutlist">
++	<xsl:value-of select="$git.docbook.dot"/>
++	<xsl:text>sp&#10;</xsl:text>
++	<xsl:apply-templates/>
++	<xsl:text>&#10;</xsl:text>
++</xsl:template>
++<xsl:template match="callout">
++	<xsl:value-of select="concat(
++			      $git.docbook.backslash,'fB',
++			      substring-after(@arearefs,'-'),
++			      '. ',$git.docbook.backslash,'fR')"/>
++	<xsl:apply-templates/>
++	<xsl:value-of select="$git.docbook.dot"/>
++	<xsl:text>br&#10;</xsl:text>
++</xsl:template>
++
++</xsl:stylesheet>
+diff --git a/tools/lib/traceevent/Documentation/manpage-bold-literal.xsl b/tools/lib/traceevent/Documentation/manpage-bold-literal.xsl
+new file mode 100644
+index 000000000000..608eb5df6281
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/manpage-bold-literal.xsl
+@@ -0,0 +1,17 @@
++<!-- manpage-bold-literal.xsl:
++     special formatting for manpages rendered from asciidoc+docbook -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<!-- render literal text as bold (instead of plain or monospace);
++     this makes literal text easier to distinguish in manpages
++     viewed on a tty -->
++<xsl:template match="literal">
++	<xsl:value-of select="$git.docbook.backslash"/>
++	<xsl:text>fB</xsl:text>
++	<xsl:apply-templates/>
++	<xsl:value-of select="$git.docbook.backslash"/>
++	<xsl:text>fR</xsl:text>
++</xsl:template>
++
++</xsl:stylesheet>
+diff --git a/tools/lib/traceevent/Documentation/manpage-normal.xsl b/tools/lib/traceevent/Documentation/manpage-normal.xsl
+new file mode 100644
+index 000000000000..a48f5b11f3dc
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/manpage-normal.xsl
+@@ -0,0 +1,13 @@
++<!-- manpage-normal.xsl:
++     special settings for manpages rendered from asciidoc+docbook
++     handles anything we want to keep away from docbook-xsl 1.72.0 -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<xsl:import href="manpage-base.xsl"/>
++
++<!-- these are the normal values for the roff control characters -->
++<xsl:param name="git.docbook.backslash">\</xsl:param>
++<xsl:param name="git.docbook.dot"	>.</xsl:param>
++
++</xsl:stylesheet>
+diff --git a/tools/lib/traceevent/Documentation/manpage-suppress-sp.xsl b/tools/lib/traceevent/Documentation/manpage-suppress-sp.xsl
+new file mode 100644
+index 000000000000..a63c7632a87d
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/manpage-suppress-sp.xsl
+@@ -0,0 +1,21 @@
++<!-- manpage-suppress-sp.xsl:
++     special settings for manpages rendered from asciidoc+docbook
++     handles erroneous, inline .sp in manpage output of some
++     versions of docbook-xsl -->
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++		version="1.0">
++
++<!-- attempt to work around spurious .sp at the tail of the line
++     that some versions of docbook stylesheets seem to add -->
++<xsl:template match="simpara">
++  <xsl:variable name="content">
++    <xsl:apply-templates/>
++  </xsl:variable>
++  <xsl:value-of select="normalize-space($content)"/>
++  <xsl:if test="not(ancestor::authorblurb) and
++                not(ancestor::personblurb)">
++    <xsl:text>&#10;&#10;</xsl:text>
++  </xsl:if>
++</xsl:template>
++
++</xsl:stylesheet>
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index f65243137d6d..e73a0f2aea24 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -53,6 +53,7 @@ pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
+ 
+ export man_dir man_dir_SQ INSTALL
+ export DESTDIR DESTDIR_SQ
++export EVENT_PARSE_VERSION
+ 
+ set_plugin_dir := 1
+ 
+@@ -313,6 +314,38 @@ clean:
+ 		$(RM) TRACEEVENT-CFLAGS tags TAGS; \
+ 		$(RM) $(PKG_CONFIG_FILE)
+ 
++PHONY += doc
++doc:
++	$(call descend,Documentation)
++
++PHONY += doc-clean
++doc-clean:
++	$(call descend,Documentation,clean)
++
++PHONY += doc-install
++doc-install:
++	$(call descend,Documentation,install)
++
++PHONY += doc-uninstall
++doc-uninstall:
++	$(call descend,Documentation,uninstall)
++
++PHONY += help
++help:
++	@echo 'Possible targets:'
++	@echo''
++	@echo '  all                 - default, compile the library and the'\
++	 			      'plugins'
++	@echo '  plugins             - compile the plugins'
++	@echo '  install             - install the library, the plugins,'\
++					'the header and pkgconfig files'
++	@echo '  clean               - clean the library and the plugins object files'
++	@echo '  doc                 - compile the documentation files - man'\
++					'and html pages, in the Documentation directory'
++	@echo '  doc-clean           - clean the documentation files'
++	@echo '  doc-install         - install the man pages'
++	@echo '  doc-uninstall       - uninstall the man pages'
++	@echo''
+ PHONY += force plugins
+ force:
+ 
 -- 
 2.20.1
 
