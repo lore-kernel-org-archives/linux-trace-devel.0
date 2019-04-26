@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0
 	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C61CFC43218
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 02:01:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95A21C43218
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 02:38:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B2B7020878
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 02:01:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 823092084F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 02:38:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbfDZCBm (ORCPT
+        id S1727563AbfDZCiV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Apr 2019 22:01:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59006 "EHLO mail.kernel.org"
+        Thu, 25 Apr 2019 22:38:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726006AbfDZCBm (ORCPT
+        id S1726855AbfDZCiV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Apr 2019 22:01:42 -0400
+        Thu, 25 Apr 2019 22:38:21 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46421206C1;
-        Fri, 26 Apr 2019 02:01:41 +0000 (UTC)
-Date:   Thu, 25 Apr 2019 22:01:39 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id A58F7206BA;
+        Fri, 26 Apr 2019 02:38:19 +0000 (UTC)
+Date:   Thu, 25 Apr 2019 22:38:17 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v5 07/30] tools/lib/traceevent: Man page for host endian
+Subject: Re: [PATCH v5 08/30] tools/lib/traceevent: Man page for page size
  APIs
-Message-ID: <20190425220139.50eacb33@oasis.local.home>
-In-Reply-To: <20190412133811.15878-8-tstoyanov@vmware.com>
+Message-ID: <20190425223817.511cc690@oasis.local.home>
+In-Reply-To: <20190412133811.15878-9-tstoyanov@vmware.com>
 References: <20190412133811.15878-1-tstoyanov@vmware.com>
-        <20190412133811.15878-8-tstoyanov@vmware.com>
+        <20190412133811.15878-9-tstoyanov@vmware.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -45,33 +45,32 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 12 Apr 2019 16:37:48 +0300
+On Fri, 12 Apr 2019 16:37:49 +0300
 Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
 > Create man pages for libtraceevent APIs:
->   tep_is_bigendian(),
->   tep_is_local_bigendian(),
->   tep_set_local_bigendian()
+>   tep_get_page_size()
+>   tep_set_page_size()
 > 
 > Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 > ---
->  .../libtraceevent-host_endian.txt             | 106 ++++++++++++++++++
->  1 file changed, 106 insertions(+)
->  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
+>  .../Documentation/libtraceevent-page_size.txt | 80 +++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+>  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
 > 
-> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt b/tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
+> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
 > new file mode 100644
-> index 000000000000..f313d64c4e7e
+> index 000000000000..2496b2cb2980
 > --- /dev/null
-> +++ b/tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
-> @@ -0,0 +1,106 @@
+> +++ b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
+> @@ -0,0 +1,80 @@
 > +libtraceevent(3)
 > +================
 > +
 > +NAME
 > +----
-> +tep_is_bigendian, tep_is_local_bigendian, tep_set_local_bigendian - Get / set
-> +the endianness of the local machine.
+> +tep_get_page_size, tep_set_page_size - Get / set the size of a memory page on
+> +the machine, where the trace is generated
 > +
 > +SYNOPSIS
 > +--------
@@ -79,87 +78,54 @@ Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 > +--
 > +*#include <event-parse.h>*
 > +
-> +enum *tep_endian* {
-> +	TEP_LITTLE_ENDIAN = 0,
-> +	TEP_BIG_ENDIAN
-> +};
-> +
-> +int *tep_is_bigendian*(void);
-> +bool *tep_is_local_bigendian*(struct tep_handle pass:[*]_tep_);
-> +void *tep_set_local_bigendian*(struct tep_handle pass:[*]_tep_, enum tep_endian _endian_);
+> +int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
+> +void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_);
 > +--
 > +
 > +DESCRIPTION
 > +-----------
+> +The _tep_get_page_size()_ function returns the size of a memory page on
+> +the machine, where the trace is generated. The _tep_ argument is trace
+> +event parser context.
 > +
-> +The _tep_is_bigendian()_ gets the endianness of the machine, executing
-> +the function.
-> +
-> +The _tep_is_local_bigendian()_ function gets the endianness of the local
-> +machine, saved in the _tep_ handler. The _tep_ argument is the trace event
-> +parser context.
-
-We probably should reference somewhere that using
-tep_is_local_bigendian() is a bit faster than calling
-tep_is_bigendian() even though they should return the same result. This
-allows the calculation of determining if the running machine is big
-endian or not to be cached in the tep handler.
-
-> +
-> +The _tep_set_local_bigendian()_ function sets the endianness of the local
-> +machine in the _tep_ handler. The _tep_ argument is trace event parser context.
-> +The _endian_ argument is the endianness:
-> +[verse]
-> +--
-> +	_TEP_LITTLE_ENDIAN_ - the machine is little endian,
-> +	_TEP_BIG_ENDIAN_ - the machine is big endian.
-> +--
+> +The _tep_set_page_size()_ function stores in the _tep_ context the size of a
+> +memory page on the machine, where the trace is generated.
+> +The _tep_ argument is trace event parser context.
+> +The _page_size_ argument is the size of a memory page, in bytes.
 > +
 > +RETURN VALUE
 > +------------
-> +The _tep_is_bigendian()_ function returns non zero if the endianness of the
-> +machine, executing the code, is big endian and zero otherwise.
-> +
-> +The _tep_is_local_bigendian()_ function returns true, if the endianness of the
-> +local machine, saved in the _tep_ handler, is big endian, or false otherwise.
+> +The _tep_get_page_size()_ function returns size of the memory page, in bytes.
 > +
 > +EXAMPLE
 > +-------
 > +[source,c]
 > +--
 > +#include <event-parse.h>
+
+Let's add:
+
+#include <unistd.h>
+
 > +...
 > +struct tep_handle *tep = tep_alloc();
 > +...
-> +	tep_set_host_bigendian(tep, TEP_LITTLE_ENDIAN);
+> +	int page_size = 4096;
 
-Looks like we slipped in a host. Anyway, it would be more logical to do
-this the way it would be used instead of just showing calls to these
-functions.
+	int page_size = getpagesize();
 
-	struct tep_handle *tep = tep_alloc();
+	tep_set_page_size(tep, page_size);
 
-	if (tep_is_bigendian())
-		tep_set_local_bigendian(tep, TEP_BIG_ENDIAN);
-	else
-		tep_set_local_bigendian(tep, TEP_LITTLE_ENDIAN);
+	printf("The page size for this machine is %d\n", tep_get_page_size(tep));
 
-	if (tep_is_local_bigendian(tep))
-		printf("This machine you are running on is bigendian\n");
+> +	tep_set_page_size(tep, page_size);
+> +	if ( 4096 != tep_get_page_size(tep)) {
+> +		/* Something wrong happened, page size is not set as expected */
+
+We don't want people thinking our code is buggy ;-)
 
 -- Steve
 
-> +...
-> +	if (tep_is_local_bigendian(tep)) {
-> +		/* The stored local host endian is big */
-> +	} else {
-> +		/* The stored local host endian is little */
-> +	}
-> +...
-> +	if (tep_is_bigendian()) {
-> +		/* The local host endian is big */
-> +	} else {
-> +		/* The local host endian is little */
 > +	}
 > +--
 > +
@@ -168,10 +134,10 @@ functions.
 > +[verse]
 > +--
 > +*event-parse.h*
-> +	Header file to include in order to have access to the
-> library APIs. +*-ltraceevent*
-> +	Linker switch to add when building a program that uses the
-> library. +--
+> +	Header file to include in order to have access to the library APIs.
+> +*-ltraceevent*
+> +	Linker switch to add when building a program that uses the library.
+> +--
 > +
 > +SEE ALSO
 > +--------
@@ -182,8 +148,8 @@ functions.
 > +[verse]
 > +--
 > +*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-> +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man
-> page. +--
+> +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
+> +--
 > +REPORTING BUGS
 > +--------------
 > +Report bugs to  <linux-trace-devel@vger.kernel.org>
