@@ -2,209 +2,426 @@ Return-Path: <SRS0=PQ4s=S4=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB101C43218
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 02:49:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7309C43218
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 19:04:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B960320878
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 02:49:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 89B9320869
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 19:04:52 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Fdt/aXcH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729562AbfDZCt7 (ORCPT
+        id S1726386AbfDZTEw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Apr 2019 22:49:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728983AbfDZCt7 (ORCPT
+        Fri, 26 Apr 2019 15:04:52 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:44499 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbfDZTEv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Apr 2019 22:49:59 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA3272084F;
-        Fri, 26 Apr 2019 02:49:57 +0000 (UTC)
-Date:   Thu, 25 Apr 2019 22:49:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v5 11/30] tools/lib/traceevent: Man pages for event
- handler APIs
-Message-ID: <20190425224956.381d866e@oasis.local.home>
-In-Reply-To: <20190412133811.15878-12-tstoyanov@vmware.com>
-References: <20190412133811.15878-1-tstoyanov@vmware.com>
-        <20190412133811.15878-12-tstoyanov@vmware.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 26 Apr 2019 15:04:51 -0400
+Received: by mail-pg1-f195.google.com with SMTP id z16so2029436pgv.11
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Apr 2019 12:04:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SQlqxfSsarDUrU5KqN/LPzSuKlWywacSGGQtZbZw+TE=;
+        b=Fdt/aXcHxudi0gtLbx7ctkVRKc62c2i0o+fstIanZNSiJV1k3HIGll5Hcs8YUMIS84
+         0OtrnVUP992dhvfqWsajanY6laW8bSjXhitmPrawJepQbvnCrRV+Gn295OnDmWaREnOh
+         SEbYnnRaPOI3OZ3NxzQLHSkl/7Sd12RcZKCjQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SQlqxfSsarDUrU5KqN/LPzSuKlWywacSGGQtZbZw+TE=;
+        b=coHsRz95ULrhWQIQBDdvWi5dT5ymTM5w7u2S3pUc2p2VMyz3BE4C+0SRQT7Mq1m8IV
+         Tpgsd3tWNMb6+4gE5r6fIOi1cpR992inxFROk0Do8za6HvI3A1sYBtNrnQlBCZaaEdSW
+         VWYSwuZM+T2yG2RIsCRZKzkkggwm1wHCkjAAsEi9vO96MOqDaRcGGfB9ibsePgsUazkR
+         YLQ+sOgNAqsoH2ct9RHI+OpYo4rP0UayTMj8I89zJa0KMxC/qgFQAKWTncdE9j9DveAL
+         fsVZpKHtsn9Dr8Wnb3aw+5rMjI2ynj1slCNpT9fC4/x7+jOmigy/OC/iKuJ1iB7aADlU
+         w8ug==
+X-Gm-Message-State: APjAAAVNslXvVZdVCunW8A/KPu8hZ5aWAyApzdp0GncMws295c5p8hop
+        E7KaBukhJ7zDVVvGpHVPPCwB6Q==
+X-Google-Smtp-Source: APXvYqyDyM6UcIj2aG5AGCnI0ZZartrq2h9FpGFrc1IXmrAlP32wecloRdyzOMD8u5Ir5Kh4rGMemw==
+X-Received: by 2002:a65:51c9:: with SMTP id i9mr45827582pgq.187.1556305489573;
+        Fri, 26 Apr 2019 12:04:49 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id j22sm7756797pfi.139.2019.04.26.12.04.46
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Apr 2019 12:04:48 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>, ast@kernel.org,
+        atishp04@gmail.com, dancol@google.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        dietmar.eggemann@arm.com, gregkh@linuxfoundation.org,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
+        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Manoj Rao <linux@manojrajarao.com>, mhiramat@kernel.org,
+        qais.yousef@arm.com, rdunlap@infradead.org, rostedt@goodmis.org,
+        Shuah Khan <shuah@kernel.org>, yhs@fb.com
+Subject: [PATCH v7 resend 1/2] Provide in-kernel headers to make extending kernel easier
+Date:   Fri, 26 Apr 2019 15:04:29 -0400
+Message-Id: <20190426190430.172543-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.21.0.593.g511ec345e18-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 12 Apr 2019 16:37:52 +0300
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+Introduce in-kernel headers which are made available as an archive
+through proc (/proc/kheaders.tar.xz file). This archive makes it
+possible to run eBPF and other tracing programs that need to extend the
+kernel for tracing purposes without any dependency on the file system
+having headers.
 
-> Create man pages for libtraceevent APIs:
->   tep_register_event_handler()
->   tep_unregister_event_handler()
-> 
-> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> ---
->  .../libtraceevent-reg_event_handler.txt       | 131 ++++++++++++++++++
->  1 file changed, 131 insertions(+)
->  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
-> 
-> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt b/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
-> new file mode 100644
-> index 000000000000..8b1b75da7628
-> --- /dev/null
-> +++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
-> @@ -0,0 +1,131 @@
-> +libtraceevent(3)
-> +================
-> +
-> +NAME
-> +----
-> +tep_register_event_handler, tep_unregister_event_handler -  Register /
-> +unregisters a callback function to parse an event information.
-> +
-> +SYNOPSIS
-> +--------
-> +[verse]
-> +--
-> +*#include <event-parse.h>*
-> +
-> +enum *tep_reg_handler* {
-> +	_TEP_REGISTER_SUCCESS_,
-> +	_TEP_REGISTER_SUCCESS_OVERWRITE_,
-> +};
-> +
-> +int *tep_register_event_handler*(struct tep_handle pass:[*]_tep_, int _id_, const char pass:[*]_sys_name_, const char pass:[*]_event_name_, tep_event_handler_func _func_, void pass:[*]_context_);
-> +int *tep_unregister_event_handler*(struct tep_handle pass:[*]tep, int id, const char pass:[*]sys_name, const char pass:[*]event_name, tep_event_handler_func func, void pass:[*]_context_);
-> +
-> +typedef int (*pass:[*]tep_event_handler_func*)(struct trace_seq pass:[*]s, struct tep_record pass:[*]record, struct tep_event pass:[*]event, void pass:[*]context);
-> +--
-> +
-> +DESCRIPTION
-> +-----------
-> +The _tep_register_event_handler()_ function registers a handler function,
-> +which is going to be called to parse the information for a given event.
-> +The _tep_ argument is the trace event parser context. The _id_ argument is
-> +the id of the event. The _sys_name_ argument is the name of the system,
-> +the event belongs to. The _event_name_ argument is the name of the event.
-> +If _id_ is >= 0, it is used to find the event, otherwise _sys_name_ and
-> +_event_name_ are used. The _func_ is a pointer to the function, which is going
-> +to be called to parse the event information. The _context_ argument is a pointer
-> +to the context data, which will be passed to the _func_. If a handler function
-> +for the same event is already registered, it will be overridden with the new
-> +one. This mechanism allows a developer to override the parsing of a given event.
-> +If for some reason the default print format is not sufficient, the developer
-> +can register a function for an event to be used to parse the data instead.
-> +
-> +The _tep_unregister_event_handler()_ function unregisters the handler function,
-> +previously registered with _tep_register_event_handler()_. The _tep_ argument
-> +is the trace event parser context. The _id_, _sys_name_, _event_name_, _func_,
-> +and _context_ are the same arguments, as when the callback function _func_ was
-> +registered.
-> +
-> +The _tep_event_handler_func_ is the type of the custom event handler
-> +function. The _s_ argument is the trace sequence, it can be used to create a
-> +custom string, describing the event. A _record_  to get the event from is passed
-> +as input parameter and also the _event_ - the handle to the record's event. The
-> +_context_ is custom context, set when the custom event handler is registered.
-> +
-> +RETURN VALUE
-> +------------
-> +The _tep_register_event_handler()_ function returns _TEP_REGISTER_SUCCESS_
-> +if the new handler is registered successfully or
-> +_TEP_REGISTER_SUCCESS_OVERWRITE_ if an existing handler is overwritten.
-> +If there is not  enough memory to complete the registration,
-> +TEP_ERRNO__MEM_ALLOC_FAILED is returned.
-> +
-> +The _tep_unregister_event_handler()_ function returns 0 if _func_ was removed
-> +successful or, -1 if the event was not found.
-> +
-> +The _tep_event_handler_func_ should return -1 in case of an error,
-> +or 0 otherwise.
-> +
-> +EXAMPLE
-> +-------
-> +[source,c]
-> +--
-> +#include <event-parse.h>
-> +#include <trace-seq.h>
-> +...
-> +struct tep_handle *tep = tep_alloc();
-> +...
-> +int custom_event_handler(struct trace_seq *s, struct tep_record *record,
-> +			 struct tep_event *event, void *context)
-> +{
-> +	trace_seq_printf(s, "kvm_exit event");
+A github PR is sent for the corresponding BCC patch at:
+https://github.com/iovisor/bcc/pull/2312
 
-We should use a more concrete example. One that does something with the
-event. Feel free to use one of the plugin calls.
+On Android and embedded systems, it is common to switch kernels but not
+have kernel headers available on the file system. Further once a
+different kernel is booted, any headers stored on the file system will
+no longer be useful. This is an issue even well known to distros.
+By storing the headers as a compressed archive within the kernel, we can
+avoid these issues that have been a hindrance for a long time.
 
--- Steve
+The best way to use this feature is by building it in. Several users
+have a need for this, when they switch debug kernels, they do not want to
+update the filesystem or worry about it where to store the headers on
+it. However, the feature is also buildable as a module in case the user
+desires it not being part of the kernel image. This makes it possible to
+load and unload the headers from memory on demand. A tracing program can
+load the module, do its operations, and then unload the module to save
+kernel memory. The total memory needed is 3.3MB.
 
-> +	return 0;
-> +}
-> +...
-> +	if (tep_register_event_handler(tep, -1, "kvm", "kvm_exit",
-> +				   custom_event_handler, NULL)) {
-> +	/* Failed to register the handler for event "kvm_exit",
-> "kvm" system */
-> +	}
-> +...
-> +	if (tep_unregister_event_handler(pevent, -1, "kvm",
-> "kvm_exit",
-> +				     custom_event_handler,
-> NULL) != ) {
-> +	/* Failed to unregister the handler for event "kvm_exit",
-> "kvm" system */
-> +	}
-> +
-> +--
-> +
-> +FILES
-> +-----
-> +[verse]
-> +--
-> +*event-parse.h*
-> +	Header file to include in order to have access to the
-> library APIs. +*trace-seq.h*
-> +	Header file to include in order to have access to trace
-> sequences
-> +	related APIs. Trace sequences are used to allow a function
-> to call
-> +	several other functions to create a string of data to use.
-> +*-ltraceevent*
-> +	Linker switch to add when building a program that uses the
-> library. +--
-> +
-> +SEE ALSO
-> +--------
-> +_libtraceevent(3)_, _trace-cmd(1)_
-> +
-> +AUTHOR
-> +------
-> +[verse]
-> +--
-> +*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-> +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man
-> page. +--
-> +REPORTING BUGS
-> +--------------
-> +Report bugs to  <linux-trace-devel@vger.kernel.org>
-> +
-> +LICENSE
-> +-------
-> +libtraceevent is Free Software licensed under the GNU LGPL 2.1
-> +
-> +RESOURCES
-> +---------
-> +https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+By having the archive available at a fixed location independent of
+filesystem dependencies and conventions, all debugging tools can
+directly refer to the fixed location for the archive, without concerning
+with where the headers on a typical filesystem which significantly
+simplifies tooling that needs kernel headers.
 
+The code to read the headers is based on /proc/config.gz code and uses
+the same technique to embed the headers.
+
+Other approaches were discussed such as having an in-memory mountable
+filesystem, but that has drawbacks such as requiring an in-kernel xz
+decompressor which we don't have today, and requiring usage of 42 MB of
+kernel memory to host the decompressed headers at anytime. Also this
+approach is simpler than such approaches.
+
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+
+(Just a resend with Masahiro's Reviewed-by tag added)
+
+    v6 -> v7:
+    - Minor nits from Masahiro Yamada are addressed.
+
+    v5 -> v6: (Masahiro Yamada suggestions mostly)
+    - Dropped support for module building.
+    - Rebuild archive if script changes.
+    - Move archive file list to script.
+    - Move build script to kernel directory.
+
+    v4 -> v5:
+    (v4 was Tested-by the following folks)
+        Tested-by: qais.yousef@arm.com
+        Tested-by: dietmar.eggemann@arm.com
+        Tested-by: linux@manojrajarao.com
+    (Thanks to Masahiro Yamada for several excellent suggestions)
+    - used incbin instead of bin2c (Masahiro did similar idea)
+    - added module.lds if ia64 otherwise ia64 may fail to build.
+    - added clean-files rule to Makefile
+    - removed strip-comments script and doing it inline
+    - added set -e to header generated to die on errorsr
+    - fixed a minor issue where find command was noisy.
+    - removed unneeded tar.xz rule from kernel/.gitignore
+    - added Tested-by tags from ARM folks.
+
+    Changes since v3:
+    - Blank tar was being generated because of a one line I
+      forgot to push. It is updated now.
+    - Added module.lds since arm64 needs it to build modules.
+
+    Changes since v2:
+    (Thanks to Masahiro Yamada for several excellent suggestions)
+    - Added support for out of tree builds.
+    - Added incremental build support bringing down build time of
+      incremental builds from 50 seconds to 5 seconds.
+    - Fixed various small nits / cleanups.
+    - clean ups to kheaders.c pointed by Alexey Dobriyan.
+    - Fixed MODULE_LICENSE in test module and kheaders.c
+    - Dropped Module.symvers from archive due to circular dependency.
+
+    Changes since v1:
+    - removed IKH_EXTRA variable, not needed (Masahiro Yamada)
+    - small fix ups to selftest
+       - added target to main Makefile etc
+       - added MODULE_LICENSE to test module
+       - made selftest more quiet
+
+    Changes since RFC:
+    Both changes bring size down to 3.8MB:
+    - use xz for compression
+    - strip comments except SPDX lines
+    - Call out the module name in Kconfig
+    - Also added selftests in second patch to ensure headers are always
+    working.
+
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+ init/Kconfig           | 10 +++++
+ kernel/.gitignore      |  1 +
+ kernel/Makefile        | 10 +++++
+ kernel/gen_ikh_data.sh | 89 ++++++++++++++++++++++++++++++++++++++++++
+ kernel/kheaders.c      | 74 +++++++++++++++++++++++++++++++++++
+ 5 files changed, 184 insertions(+)
+ create mode 100755 kernel/gen_ikh_data.sh
+ create mode 100644 kernel/kheaders.c
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 4592bf7997c0..47c0db6e63a5 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -580,6 +580,16 @@ config IKCONFIG_PROC
+ 	  This option enables access to the kernel configuration file
+ 	  through /proc/config.gz.
+ 
++config IKHEADERS_PROC
++	tristate "Enable kernel header artifacts through /proc/kheaders.tar.xz"
++	depends on PROC_FS
++	help
++	  This option enables access to the kernel header and other artifacts that
++	  are generated during the build process. These can be used to build eBPF
++	  tracing programs, or similar programs.  If you build the headers as a
++	  module, a module called kheaders.ko is built which can be loaded on-demand
++	  to get access to the headers.
++
+ config LOG_BUF_SHIFT
+ 	int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
+ 	range 12 25
+diff --git a/kernel/.gitignore b/kernel/.gitignore
+index 6e699100872f..34d1e77ee9df 100644
+--- a/kernel/.gitignore
++++ b/kernel/.gitignore
+@@ -1,5 +1,6 @@
+ #
+ # Generated files
+ #
++kheaders.md5
+ timeconst.h
+ hz.bc
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 6c57e78817da..12399614c350 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -70,6 +70,7 @@ obj-$(CONFIG_UTS_NS) += utsname.o
+ obj-$(CONFIG_USER_NS) += user_namespace.o
+ obj-$(CONFIG_PID_NS) += pid_namespace.o
+ obj-$(CONFIG_IKCONFIG) += configs.o
++obj-$(CONFIG_IKHEADERS_PROC) += kheaders.o
+ obj-$(CONFIG_SMP) += stop_machine.o
+ obj-$(CONFIG_KPROBES_SANITY_TEST) += test_kprobes.o
+ obj-$(CONFIG_AUDIT) += audit.o auditfilter.o
+@@ -121,3 +122,12 @@ $(obj)/configs.o: $(obj)/config_data.gz
+ targets += config_data.gz
+ $(obj)/config_data.gz: $(KCONFIG_CONFIG) FORCE
+ 	$(call if_changed,gzip)
++
++$(obj)/kheaders.o: $(obj)/kheaders_data.tar.xz
++
++quiet_cmd_genikh = CHK     $(obj)/kheaders_data.tar.xz
++cmd_genikh = $(srctree)/kernel/gen_ikh_data.sh $@
++$(obj)/kheaders_data.tar.xz: FORCE
++	$(call cmd,genikh)
++
++clean-files := kheaders_data.tar.xz kheaders.md5
+diff --git a/kernel/gen_ikh_data.sh b/kernel/gen_ikh_data.sh
+new file mode 100755
+index 000000000000..591a94f7b387
+--- /dev/null
++++ b/kernel/gen_ikh_data.sh
+@@ -0,0 +1,89 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++# This script generates an archive consisting of kernel headers
++# for CONFIG_IKHEADERS_PROC.
++set -e
++spath="$(dirname "$(readlink -f "$0")")"
++kroot="$spath/.."
++outdir="$(pwd)"
++tarfile=$1
++cpio_dir=$outdir/$tarfile.tmp
++
++# Script filename relative to the kernel source root
++# We add it to the archive because it is small and any changes
++# to this script will also cause a rebuild of the archive.
++sfile="$(realpath --relative-to $kroot "$(readlink -f "$0")")"
++
++src_file_list="
++include/
++arch/$SRCARCH/include/
++$sfile
++"
++
++obj_file_list="
++include/
++arch/$SRCARCH/include/
++"
++
++# Support incremental builds by skipping archive generation
++# if timestamps of files being archived are not changed.
++
++# This block is useful for debugging the incremental builds.
++# Uncomment it for debugging.
++# iter=1
++# if [ ! -f /tmp/iter ]; then echo 1 > /tmp/iter;
++# else; 	iter=$(($(cat /tmp/iter) + 1)); fi
++# find $src_file_list -type f | xargs ls -lR > /tmp/src-ls-$iter
++# find $obj_file_list -type f | xargs ls -lR > /tmp/obj-ls-$iter
++
++# include/generated/compile.h is ignored because it is touched even when none
++# of the source files changed. This causes pointless regeneration, so let us
++# ignore them for md5 calculation.
++pushd $kroot > /dev/null
++src_files_md5="$(find $src_file_list -type f                       |
++		grep -v "include/generated/compile.h"		   |
++		xargs ls -lR | md5sum | cut -d ' ' -f1)"
++popd > /dev/null
++obj_files_md5="$(find $obj_file_list -type f                       |
++		grep -v "include/generated/compile.h"		   |
++		xargs ls -lR | md5sum | cut -d ' ' -f1)"
++
++if [ -f $tarfile ]; then tarfile_md5="$(md5sum $tarfile | cut -d ' ' -f1)"; fi
++if [ -f kernel/kheaders.md5 ] &&
++	[ "$(cat kernel/kheaders.md5|head -1)" == "$src_files_md5" ] &&
++	[ "$(cat kernel/kheaders.md5|head -2|tail -1)" == "$obj_files_md5" ] &&
++	[ "$(cat kernel/kheaders.md5|tail -1)" == "$tarfile_md5" ]; then
++		exit
++fi
++
++if [ "${quiet}" != "silent_" ]; then
++       echo "  GEN     $tarfile"
++fi
++
++rm -rf $cpio_dir
++mkdir $cpio_dir
++
++pushd $kroot > /dev/null
++for f in $src_file_list;
++	do find "$f" ! -name "*.cmd" ! -name ".*";
++done | cpio --quiet -pd $cpio_dir
++popd > /dev/null
++
++# The second CPIO can complain if files already exist which can
++# happen with out of tree builds. Just silence CPIO for now.
++for f in $obj_file_list;
++	do find "$f" ! -name "*.cmd" ! -name ".*";
++done | cpio --quiet -pd $cpio_dir >/dev/null 2>&1
++
++# Remove comments except SDPX lines
++find $cpio_dir -type f -print0 |
++	xargs -0 -P8 -n1 perl -pi -e 'BEGIN {undef $/;}; s/\/\*((?!SPDX).)*?\*\///smg;'
++
++tar -Jcf $tarfile -C $cpio_dir/ . > /dev/null
++
++echo "$src_files_md5" > kernel/kheaders.md5
++echo "$obj_files_md5" >> kernel/kheaders.md5
++echo "$(md5sum $tarfile | cut -d ' ' -f1)" >> kernel/kheaders.md5
++
++rm -rf $cpio_dir
+diff --git a/kernel/kheaders.c b/kernel/kheaders.c
+new file mode 100644
+index 000000000000..70ae6052920d
+--- /dev/null
++++ b/kernel/kheaders.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Provide kernel headers useful to build tracing programs
++ * such as for running eBPF tracing tools.
++ *
++ * (Borrowed code from kernel/configs.c)
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/proc_fs.h>
++#include <linux/init.h>
++#include <linux/uaccess.h>
++
++/*
++ * Define kernel_headers_data and kernel_headers_data_end, within which the
++ * compressed kernel headers are stored. The file is first compressed with xz.
++ */
++
++asm (
++"	.pushsection .rodata, \"a\"		\n"
++"	.global kernel_headers_data		\n"
++"kernel_headers_data:				\n"
++"	.incbin \"kernel/kheaders_data.tar.xz\"	\n"
++"	.global kernel_headers_data_end		\n"
++"kernel_headers_data_end:			\n"
++"	.popsection				\n"
++);
++
++extern char kernel_headers_data;
++extern char kernel_headers_data_end;
++
++static ssize_t
++ikheaders_read_current(struct file *file, char __user *buf,
++		      size_t len, loff_t *offset)
++{
++	return simple_read_from_buffer(buf, len, offset,
++				       &kernel_headers_data,
++				       &kernel_headers_data_end -
++				       &kernel_headers_data);
++}
++
++static const struct file_operations ikheaders_file_ops = {
++	.read = ikheaders_read_current,
++	.llseek = default_llseek,
++};
++
++static int __init ikheaders_init(void)
++{
++	struct proc_dir_entry *entry;
++
++	/* create the current headers file */
++	entry = proc_create("kheaders.tar.xz", S_IRUGO, NULL,
++			    &ikheaders_file_ops);
++	if (!entry)
++		return -ENOMEM;
++
++	proc_set_size(entry,
++		      &kernel_headers_data_end -
++		      &kernel_headers_data);
++	return 0;
++}
++
++static void __exit ikheaders_cleanup(void)
++{
++	remove_proc_entry("kheaders.tar.xz", NULL);
++}
++
++module_init(ikheaders_init);
++module_exit(ikheaders_cleanup);
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Joel Fernandes");
++MODULE_DESCRIPTION("Echo the kernel header artifacts used to build the kernel");
+-- 
+2.21.0.593.g511ec345e18-goog
