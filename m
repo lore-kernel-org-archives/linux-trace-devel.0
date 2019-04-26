@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-12.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A1D8C43219
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 01:53:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C61CFC43218
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 02:01:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1924320878
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 01:53:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B2B7020878
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Apr 2019 02:01:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbfDZBxo (ORCPT
+        id S1726229AbfDZCBm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Apr 2019 21:53:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56382 "EHLO mail.kernel.org"
+        Thu, 25 Apr 2019 22:01:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726402AbfDZBxo (ORCPT
+        id S1726006AbfDZCBm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Apr 2019 21:53:44 -0400
+        Thu, 25 Apr 2019 22:01:42 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CCBA206C1;
-        Fri, 26 Apr 2019 01:53:43 +0000 (UTC)
-Date:   Thu, 25 Apr 2019 21:53:40 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 46421206C1;
+        Fri, 26 Apr 2019 02:01:41 +0000 (UTC)
+Date:   Thu, 25 Apr 2019 22:01:39 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v5 04/30] tools/lib/traceevent: Man page for header_page
+Subject: Re: [PATCH v5 07/30] tools/lib/traceevent: Man page for host endian
  APIs
-Message-ID: <20190425215340.7881aaa3@oasis.local.home>
-In-Reply-To: <20190412133811.15878-5-tstoyanov@vmware.com>
+Message-ID: <20190425220139.50eacb33@oasis.local.home>
+In-Reply-To: <20190412133811.15878-8-tstoyanov@vmware.com>
 References: <20190412133811.15878-1-tstoyanov@vmware.com>
-        <20190412133811.15878-5-tstoyanov@vmware.com>
+        <20190412133811.15878-8-tstoyanov@vmware.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -45,33 +45,33 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 12 Apr 2019 16:37:45 +0300
+On Fri, 12 Apr 2019 16:37:48 +0300
 Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-> Create a man page for libtraceevent APIs:
->   tep_get_header_page_size(),
->   tep_get_header_timestamp_size(),
->   tep_is_old_format()
+> Create man pages for libtraceevent APIs:
+>   tep_is_bigendian(),
+>   tep_is_local_bigendian(),
+>   tep_set_local_bigendian()
 > 
 > Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 > ---
->  .../libtraceevent-header_page.txt             | 105 ++++++++++++++++++
->  1 file changed, 105 insertions(+)
->  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
+>  .../libtraceevent-host_endian.txt             | 106 ++++++++++++++++++
+>  1 file changed, 106 insertions(+)
+>  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
 > 
-> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt b/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
+> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt b/tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
 > new file mode 100644
-> index 000000000000..e1bd664ac123
+> index 000000000000..f313d64c4e7e
 > --- /dev/null
-> +++ b/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
-> @@ -0,0 +1,105 @@
+> +++ b/tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
+> @@ -0,0 +1,106 @@
 > +libtraceevent(3)
 > +================
 > +
 > +NAME
 > +----
-> +tep_get_header_page_size, tep_get_header_timestamp_size, tep_is_old_format -
-> +Get the data stored in the header page, in kernel context.
+> +tep_is_bigendian, tep_is_local_bigendian, tep_set_local_bigendian - Get / set
+> +the endianness of the local machine.
 > +
 > +SYNOPSIS
 > +--------
@@ -79,63 +79,49 @@ Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 > +--
 > +*#include <event-parse.h>*
 > +
-> +int *tep_get_header_page_size*(struct tep_handle pass:[*]_tep_);
-> +int *tep_get_header_timestamp_size*(struct tep_handle pass:[*]_tep_);
-> +bool *tep_is_old_format*(struct tep_handle pass:[*]_tep_);
+> +enum *tep_endian* {
+> +	TEP_LITTLE_ENDIAN = 0,
+> +	TEP_BIG_ENDIAN
+> +};
+> +
+> +int *tep_is_bigendian*(void);
+> +bool *tep_is_local_bigendian*(struct tep_handle pass:[*]_tep_);
+> +void *tep_set_local_bigendian*(struct tep_handle pass:[*]_tep_, enum tep_endian _endian_);
 > +--
+> +
 > +DESCRIPTION
 > +-----------
-> +These functions retrieve information from kernel context, stored in
-> +/sys/kernel/debug/tracing/events/header_page. Old kernels do not have header
-
-Let's avoid using full path names. This should be:
-
- stored in the tracefs events/header_page.
-
-
-> +page info, so default values from user space context are used.
 > +
-> +The _tep_get_header_page_size()_ function returns the size of a long integer,
-> +in kernel context. The _tep_ argument is trace event parser context.
-> +This information is retrieved from /sys/kernel/debug/tracing/events/header_page,
-
-Same here.
-
-> + "commit" field.
+> +The _tep_is_bigendian()_ gets the endianness of the machine, executing
+> +the function.
 > +
-> +The _tep_get_header_timestamp_size()_ function returns the size of timestamps,
-> +in kernel context. The _tep_ argument is trace event parser context.
-> +This information is retrieved from /sys/kernel/debug/tracing/events/header_page,
+> +The _tep_is_local_bigendian()_ function gets the endianness of the local
+> +machine, saved in the _tep_ handler. The _tep_ argument is the trace event
+> +parser context.
 
-and here.
+We probably should reference somewhere that using
+tep_is_local_bigendian() is a bit faster than calling
+tep_is_bigendian() even though they should return the same result. This
+allows the calculation of determining if the running machine is big
+endian or not to be cached in the tep handler.
 
-> + "timestamp" field.
 > +
-> +The _tep_is_old_format()_ function  returns if the kernel is old one and has no
-
-The _tep_is_old_format()_ function returns true if the kernel predates
-the addition of events/header_page, otherwise it returns false.
-
-
-> +/sys/kernel/debug/tracing/events/header_page.
+> +The _tep_set_local_bigendian()_ function sets the endianness of the local
+> +machine in the _tep_ handler. The _tep_ argument is trace event parser context.
+> +The _endian_ argument is the endianness:
+> +[verse]
+> +--
+> +	_TEP_LITTLE_ENDIAN_ - the machine is little endian,
+> +	_TEP_BIG_ENDIAN_ - the machine is big endian.
+> +--
 > +
 > +RETURN VALUE
 > +------------
-> +The _tep_get_header_page_size()_ function returns the size of a long integer,
-> +in bytes.
+> +The _tep_is_bigendian()_ function returns non zero if the endianness of the
+> +machine, executing the code, is big endian and zero otherwise.
 > +
-> +The _tep_get_header_timestamp_size()_ function returns the size of timestamps,
-> +in bytes.
-> +
-> +The _tep_is_old_format()_ function returns true, if an old kernel is used to
-> +generate the tracing data, which has no
-> +/sys/kernel/debug/tracing/events/header_page. If the kernel is new, or _tep_ is
-
-Just say "no event/header_page"
-
--- Steve
-
-> +NULL, false is returned.
+> +The _tep_is_local_bigendian()_ function returns true, if the endianness of the
+> +local machine, saved in the _tep_ handler, is big endian, or false otherwise.
 > +
 > +EXAMPLE
 > +-------
@@ -145,19 +131,36 @@ Just say "no event/header_page"
 > +...
 > +struct tep_handle *tep = tep_alloc();
 > +...
-> +	int longsize;
-> +	int timesize;
-> +	bool old;
-> +
-> +	longsize = tep_get_header_page_size(tep);
-> +	timesize = tep_get_header_timestamp_size(tep);
-> +	old = tep_is_old_format(tep);
-> +
-> +	printf ("%s kernel is used to generate the tracing data.\n",
-> +		old?"Old":"New");
-> +	printf("The size of a long integer is %d bytes.\n", longsize);
-> +	printf("The timestamps size is %d bytes.\n", timesize);
+> +	tep_set_host_bigendian(tep, TEP_LITTLE_ENDIAN);
+
+Looks like we slipped in a host. Anyway, it would be more logical to do
+this the way it would be used instead of just showing calls to these
+functions.
+
+	struct tep_handle *tep = tep_alloc();
+
+	if (tep_is_bigendian())
+		tep_set_local_bigendian(tep, TEP_BIG_ENDIAN);
+	else
+		tep_set_local_bigendian(tep, TEP_LITTLE_ENDIAN);
+
+	if (tep_is_local_bigendian(tep))
+		printf("This machine you are running on is bigendian\n");
+
+-- Steve
+
 > +...
+> +	if (tep_is_local_bigendian(tep)) {
+> +		/* The stored local host endian is big */
+> +	} else {
+> +		/* The stored local host endian is little */
+> +	}
+> +...
+> +	if (tep_is_bigendian()) {
+> +		/* The local host endian is big */
+> +	} else {
+> +		/* The local host endian is little */
+> +	}
 > +--
 > +
 > +FILES
@@ -165,10 +168,10 @@ Just say "no event/header_page"
 > +[verse]
 > +--
 > +*event-parse.h*
-> +	Header file to include in order to have access to the library APIs.
-> +*-ltraceevent*
-> +	Linker switch to add when building a program that uses the library.
-> +--
+> +	Header file to include in order to have access to the
+> library APIs. +*-ltraceevent*
+> +	Linker switch to add when building a program that uses the
+> library. +--
 > +
 > +SEE ALSO
 > +--------
@@ -179,8 +182,8 @@ Just say "no event/header_page"
 > +[verse]
 > +--
 > +*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-> +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
-> +--
+> +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man
+> page. +--
 > +REPORTING BUGS
 > +--------------
 > +Report bugs to  <linux-trace-devel@vger.kernel.org>
