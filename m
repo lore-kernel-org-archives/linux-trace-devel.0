@@ -1,117 +1,131 @@
-Return-Path: <SRS0=kv0y=S5=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=8Jl/=S7=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7720AC43219
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 27 Apr 2019 13:38:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16C76C43219
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Apr 2019 09:57:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4996C208C2
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 27 Apr 2019 13:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1556372331;
-	bh=CQcLLq5g0BGJbtU32SVU6f5FrjJ1oFNOfzb5TjWhoQw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=RcVhx25A5k7roNnHhoJXUlMBvqzkacEBl+37VKOPV9kLbXBnRQFBXgrLWqJdXtMQ4
-	 POpKY2sO+3E6IQi0mqsGyrNl0Zjf62rvDXXml1Wo0F061+GDt1SP9NPpQzTMz/2fn8
-	 4p3HvOnLx8ESZFnCAXSdneB8aCuX/QrUj4zFRPQY=
+	by mail.kernel.org (Postfix) with ESMTP id D40CC20449
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Apr 2019 09:57:40 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KTRFAg/Q"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726079AbfD0Nis (ORCPT
+        id S1727589AbfD2J5k (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 27 Apr 2019 09:38:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbfD0Nir (ORCPT
+        Mon, 29 Apr 2019 05:57:40 -0400
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:41429 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727217AbfD2J5k (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 27 Apr 2019 09:38:47 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 690622087C;
-        Sat, 27 Apr 2019 13:38:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1556372326;
-        bh=CQcLLq5g0BGJbtU32SVU6f5FrjJ1oFNOfzb5TjWhoQw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VrSZOaxD3J8Y9bd0i/Ao20cxuGAUkc5xtteQQaQTLR0SqpT+eBj9scMUlWJ7z30Fd
-         Cr6LcQyukHusNdWX794WdFdVxxZ/ehgIxOqu8Qt63U4KpulEeRq6zOSISMhciNF/g6
-         kJScp46Ejq962tIRsV7hJzVQJWveers8pjTvNflI=
-Date:   Sat, 27 Apr 2019 15:38:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Andrew Morton <akpm@linux-foundation.org>, ast@kernel.org,
-        atishp04@gmail.com, dancol@google.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        dietmar.eggemann@arm.com, Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, karim.yaghmour@opersys.com,
-        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Manoj Rao <linux@manojrajarao.com>, mhiramat@kernel.org,
-        qais.yousef@arm.com, rdunlap@infradead.org, rostedt@goodmis.org,
-        Shuah Khan <shuah@kernel.org>, yhs@fb.com
-Subject: Re: [PATCH v7 resend 1/2] Provide in-kernel headers to make
- extending kernel easier
-Message-ID: <20190427133844.GA29366@kroah.com>
-References: <20190426190430.172543-1-joel@joelfernandes.org>
+        Mon, 29 Apr 2019 05:57:40 -0400
+Received: by mail-vs1-f68.google.com with SMTP id g187so5519224vsc.8
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Apr 2019 02:57:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5iKcYMeHTvYV/ojGAif7LIimREuXBzjZ/IIn9Py+Bbk=;
+        b=KTRFAg/QdIUZp9cOyAOJyKToCNwB5jdZZ3iUmC4NlCLEd502dosyUJGt2Em5CTT6BI
+         G+PDiK1BmQyJTczToyRZHM3v2L0dPLhRqxnWzB/vXyjnwUAFbECrcIX0OHTgugquVHcq
+         MTc+MpBOo0dRtfP/23qPClXOMT7HYlUpZA6WN47uiI3p3jkllys/RXUpXeoxq+JsqfXd
+         Gmx3ICMPTi4GuJLhms1sK8bR7rnG7Ps+qdDWKNsvaRtlWvD/yJGwkB3EqJvlLEmLBiqQ
+         y/EFQhp8D9oSVk+2IW16s6TKJVI8LmDgYc5fSYxUxmaJWSeRzjJHMpVqJUC436syraRg
+         rmTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5iKcYMeHTvYV/ojGAif7LIimREuXBzjZ/IIn9Py+Bbk=;
+        b=eNrQeaAZ8pg18X/IyncHnjP0ZOV4MdPR/CyTtGo2PUxGzg57TOPPCSp3a2mECZ2Rym
+         Y4JuClEz7G4t/g0azgGCFxh7Alm7ED/NyNPXsKFzkSTtZYBvrMJ416b7BYs11XmJ4xJB
+         r4loQX26HhwY0nb//zIfOHzhjX+Ta0luGMUaZ4YeAwwgImINyEHlDBTgX2oikwoF70Ll
+         xXf1mpwjVBVonVyXZUreaYS4Tys6kq+lTcZgWDguG6PFMd+iIH6x9MyYQXIqfVBDy5lj
+         efKyWu9/vdR1NDAEpPeW9MzdBxna1WnZXzAfEDlTdSs4QOAyyW2IMEO+vq1tG6X5FP4E
+         TWTQ==
+X-Gm-Message-State: APjAAAVgcqSp5YZOu57SjmfLxS9ucDILSzppJ3umCe11OaVtZTwckqWz
+        NklS6Ln/GQED6Od6T4u8vinzDUn8R6aaZUiY3QWXUw==
+X-Google-Smtp-Source: APXvYqw+DVB4A+oWlNfEJ4yNNJr2mpCLIYulP2TaMYSs5AmWe1v0HQOvm7D6Arhq68xHL7FgRmeTGLEYBftg5kM/1P8=
+X-Received: by 2002:a67:8155:: with SMTP id c82mr2462997vsd.200.1556531859282;
+ Mon, 29 Apr 2019 02:57:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190426190430.172543-1-joel@joelfernandes.org>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+References: <20190416183257.247902-1-rrangel@chromium.org> <CAPDyKFqYNMhDKy94zV8Bk80OUiS9JNFf2EmkbhJ0W_N=5=bZJQ@mail.gmail.com>
+ <20190424153115.GA186956@google.com>
+In-Reply-To: <20190424153115.GA186956@google.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 29 Apr 2019 11:57:02 +0200
+Message-ID: <CAPDyKFqerMeQey0wJW3Ctohh77CJs6-PxSaR=T6ive_Rx-oMMA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Add trace events for SD registers.
+To:     Raul Rangel <rrangel@chromium.org>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Daniel Kurtz <djkurtz@chromium.org>, zwisler@chromium.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        hongjiefang <hongjiefang@asrmicro.com>,
+        Jennifer Dahm <jennifer.dahm@ni.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Kyle Roeschley <kyle.roeschley@ni.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Simon Horman <horms+renesas@verge.net.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Apr 26, 2019 at 03:04:29PM -0400, Joel Fernandes (Google) wrote:
-> Introduce in-kernel headers which are made available as an archive
-> through proc (/proc/kheaders.tar.xz file). This archive makes it
-> possible to run eBPF and other tracing programs that need to extend the
-> kernel for tracing purposes without any dependency on the file system
-> having headers.
-> 
-> A github PR is sent for the corresponding BCC patch at:
-> https://github.com/iovisor/bcc/pull/2312
-> 
-> On Android and embedded systems, it is common to switch kernels but not
-> have kernel headers available on the file system. Further once a
-> different kernel is booted, any headers stored on the file system will
-> no longer be useful. This is an issue even well known to distros.
-> By storing the headers as a compressed archive within the kernel, we can
-> avoid these issues that have been a hindrance for a long time.
-> 
-> The best way to use this feature is by building it in. Several users
-> have a need for this, when they switch debug kernels, they do not want to
-> update the filesystem or worry about it where to store the headers on
-> it. However, the feature is also buildable as a module in case the user
-> desires it not being part of the kernel image. This makes it possible to
-> load and unload the headers from memory on demand. A tracing program can
-> load the module, do its operations, and then unload the module to save
-> kernel memory. The total memory needed is 3.3MB.
-> 
-> By having the archive available at a fixed location independent of
-> filesystem dependencies and conventions, all debugging tools can
-> directly refer to the fixed location for the archive, without concerning
-> with where the headers on a typical filesystem which significantly
-> simplifies tooling that needs kernel headers.
-> 
-> The code to read the headers is based on /proc/config.gz code and uses
-> the same technique to embed the headers.
-> 
-> Other approaches were discussed such as having an in-memory mountable
-> filesystem, but that has drawbacks such as requiring an in-kernel xz
-> decompressor which we don't have today, and requiring usage of 42 MB of
-> kernel memory to host the decompressed headers at anytime. Also this
-> approach is simpler than such approaches.
-> 
-> Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Wed, 24 Apr 2019 at 17:31, Raul Rangel <rrangel@chromium.org> wrote:
+>
+> On Tue, Apr 23, 2019 at 08:29:15AM +0200, Ulf Hansson wrote:
+> > On Tue, 16 Apr 2019 at 20:33, Raul E Rangel <rrangel@chromium.org> wrote:
+> > >
+> > > I am not able to make a single event class for all these registers. They
+> > > all have different struct sizes and different printf formats.
+> > >
+> > > Thanks for the reviews!
+> > >
+> > > Changes in v2:
+> > > - Made trace_sd_scr print out flags.
+> > > - Add BUILD_BUG_ON to make sure tracing stays in sync with structs.
+> > > - memcpy using sizeof(__entry->raw)
+> > >
+> > > Raul E Rangel (4):
+> > >   mmc: core: Add trace event for SD SCR response
+> > >   mmc: core: Add trace event for SD SSR response
+> > >   mmc: core: Add trace event for SD OCR response
+> > >   mmc: core: Add trace event for CSD response
+> > >
+> > >  drivers/mmc/core/mmc.c     |   4 +
+> > >  drivers/mmc/core/sd.c      |  10 ++
+> > >  drivers/mmc/core/sd_ops.c  |   6 ++
+> > >  include/trace/events/mmc.h | 204 +++++++++++++++++++++++++++++++++++++
+> > >  4 files changed, 224 insertions(+)
+> > >
+> > > --
+> > > 2.21.0.392.gf8f6787159e-goog
+> > >
+> >
+> > Why do you need this? We already have these card registers reflected
+> > though sysfs files, isn't that sufficient?
+> >
+> I was not actually aware that the registers were exposed via sysfs. I
+> was debugging a problem where the host controller was returning all
+> zeros when reading from the card. I wasn't aware that it was returning
+> all zeros until I added tracing. It made it quite easy to diagnose the
+> problem by just diffing the two traces.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This sounds like a quite an unusual problem, and I don't think having
+the buffers printed via tracing is worth it.
+
+Moreover, we already have tracing per command/request (but don't print
+the buffers), that should cover most of error cases during init, don't
+you think?
+
+[...]
+
+Kind regards
+Uffe
