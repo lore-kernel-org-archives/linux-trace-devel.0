@@ -6,50 +6,52 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E2F2C43219
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 12:46:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 159E7C43219
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 12:46:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DC3EF2075E
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 12:45:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E3CFF2075E
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 12:46:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbfEBMp7 (ORCPT
+        id S1726300AbfEBMqF (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 May 2019 08:45:59 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37885 "EHLO
+        Thu, 2 May 2019 08:46:05 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34482 "EHLO
         mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbfEBMp7 (ORCPT
+        with ESMTP id S1726282AbfEBMqF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 May 2019 08:45:59 -0400
-Received: by mail-wr1-f66.google.com with SMTP id k23so3177670wrd.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 May 2019 05:45:58 -0700 (PDT)
+        Thu, 2 May 2019 08:46:05 -0400
+Received: by mail-wr1-f66.google.com with SMTP id e9so3201952wrc.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 May 2019 05:46:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JDLVAnWL2bWT7LlBCrAiYByAByQs36OoGSQP+OjItiA=;
-        b=oCI8idLDrz5fMxkugw4BtX8jMu0Yb4MeiAMn5ayBOeMHq3vxOpUNfULDQ8yd0GnG3I
-         apLT4OF51vKKMz8QSz7MC6R8TZwvbxqhHuOyxjUmA2XSVMaJmQE1tPQHqzvENfkUOAoQ
-         yxuILgaq5IdnpwdykvHlmNc+33wZ2hDJnxD4LEBuS5ibZBiBSt+UArb2xaZNnyfo1fGu
-         LFtnvH+XFocpYw8s1dsIiWrB1sfut/RGLnHsbz+HcQQ0KZYI/0ImMA56RMSKU0FWF67r
-         YHul+JdBIjFDqMupc0u/5JKYJjUd8kfjY3fnnIv/kTWmkVgY78a4jfWaW32isyBY53/P
-         Pzaw==
-X-Gm-Message-State: APjAAAX8I42LGiWLnrjop0KsSLJK62N1G05hFnF7UIOvn4Gf1ikp3i2V
-        BqLa6Gh9D+AhuhfGut5hffkroZYV
-X-Google-Smtp-Source: APXvYqzPB/t7/AIp2Mefoj1lLJryC6Eon9Jcu34XHORMWAgw6VX+JlDWQOIpEaeatc4yQo+Xe+1CsQ==
-X-Received: by 2002:a5d:5041:: with SMTP id h1mr2697899wrt.181.1556801157876;
-        Thu, 02 May 2019 05:45:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=s7X8lzGxHFyxiXkBTtmd+4gn3gRD41VJ7VQmlcPc7Ws=;
+        b=in0cqXxgjGnxt+nJlVSpRojiwap0J7oXmQN2JkU1ZbYgeyn6mVn+AjYl868IJQtLhQ
+         9h2RBdj1rofpmEVtAsNWBrP3lEUgGl7Sl4JmeEhxgAhjTJ/3CBKRPxZt4IXSTqXro53y
+         RgM/D/sKDi8/Rtnp9ku+R6vpQ1arm2J7ZL7Qe3WbfKegj4xAGfMO34dVYHI1/mX0MRQd
+         2x+Jqu8I0oVBEq+hAFK3re5WQaq1v7Bs1hj77zeQAUoAy9NIG0F5/hicbNsoVl2Hjx3q
+         ARMoLVk+KVL38uCmHXQ6VQHFXwhqNAV8GL4EXhlOb5uD+hSMumBcHCulXvj3d9bJBS+o
+         W7ig==
+X-Gm-Message-State: APjAAAWSzY4ea57gWgws5yjFrA0MZbh7mtxk/BQ7NGlgN1Bc4wxIf+J8
+        ddvslQ8vEncCa3s2qrdLIOw=
+X-Google-Smtp-Source: APXvYqw1yHhTU7c3y6lkTQ/9w2mkeB2odRhIZIwJS/9B7mK4kuCbt71X0vL5XHJ3ZNBeFhjKD1OjUQ==
+X-Received: by 2002:a05:6000:1181:: with SMTP id g1mr2597063wrx.56.1556801163703;
+        Thu, 02 May 2019 05:46:03 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id c10sm10012949wrd.69.2019.05.02.05.45.57
+        by smtp.gmail.com with ESMTPSA id c10sm10012949wrd.69.2019.05.02.05.46.03
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 May 2019 05:45:57 -0700 (PDT)
+        Thu, 02 May 2019 05:46:03 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 1/2] kernel-shark: Enforce update of the OpenGL widget when loading new session
-Date:   Thu,  2 May 2019 15:45:35 +0300
-Message-Id: <20190502124536.32463-1-ykaradzhov@vmware.com>
+Subject: [PATCH 2/2] kernel-shark: Add "Report bug" button to "Help"
+Date:   Thu,  2 May 2019 15:45:36 +0300
+Message-Id: <20190502124536.32463-2-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190502124536.32463-1-ykaradzhov@vmware.com>
+References: <20190502124536.32463-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -57,71 +59,83 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is needed in the case when the session was saved at different screen
-resolution.
+When clicked, the Bugzilla will be opened in the appropriate Web browser
+for the user's desktop environment.
 
-Reported-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsGLWidget.hpp   | 2 ++
- kernel-shark/src/KsMainWindow.cpp | 3 +--
- kernel-shark/src/KsTraceGraph.cpp | 2 ++
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ kernel-shark/src/KsMainWindow.cpp | 13 +++++++++++++
+ kernel-shark/src/KsMainWindow.hpp |  4 ++++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/kernel-shark/src/KsGLWidget.hpp b/kernel-shark/src/KsGLWidget.hpp
-index 3bcecf9..bf68be3 100644
---- a/kernel-shark/src/KsGLWidget.hpp
-+++ b/kernel-shark/src/KsGLWidget.hpp
-@@ -41,6 +41,8 @@ public:
- 
- 	void reset();
- 
-+	void update() {resizeGL(width(), height());}
-+
- 	void mousePressEvent(QMouseEvent *event);
- 
- 	void mouseMoveEvent(QMouseEvent *event);
 diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index bb593bd..3cf10bc 100644
+index 3cf10bc..c7c7f6b 100644
 --- a/kernel-shark/src/KsMainWindow.cpp
 +++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -435,7 +435,6 @@ QString KsMainWindow::lastSessionFile()
- void KsMainWindow::_restoreSession()
+@@ -67,6 +67,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+   _fullScreenModeAction("Full Screen Mode", this),
+   _aboutAction("About", this),
+   _contentsAction("Contents", this),
++  _bugReportAction("Report a bug", this),
+   _deselectShortcut(this),
+   _settings("kernelshark.org", "Kernel Shark") // organization , application
  {
- 	loadSession(lastSessionFile());
--	_graph.updateGeom();
- }
- 
- void KsMainWindow::_importSession()
-@@ -450,7 +449,6 @@ void KsMainWindow::_importSession()
- 		return;
- 
- 	loadSession(fileName);
--	_graph.updateGeom();
- }
- 
- void KsMainWindow::_updateSession()
-@@ -1100,6 +1098,7 @@ void KsMainWindow::loadSession(const QString &fileName)
- 
- 	_session.loadTable(&_view);
- 	_colorPhaseSlider.setValue(_session.getColorScheme() * 100);
-+	_graph.updateGeom();
- }
- 
- void KsMainWindow::_initCapture()
-diff --git a/kernel-shark/src/KsTraceGraph.cpp b/kernel-shark/src/KsTraceGraph.cpp
-index 6087e96..da2c6aa 100644
---- a/kernel-shark/src/KsTraceGraph.cpp
-+++ b/kernel-shark/src/KsTraceGraph.cpp
-@@ -538,6 +538,8 @@ void KsTraceGraph::updateGeom()
- 			       * allow the scroll bar to disappear when the
- 			       * widget is extended to maximum.
- 			       */
+@@ -288,6 +289,9 @@ void KsMainWindow::_createActions()
+ 	_contentsAction.setIcon(QIcon::fromTheme("help-contents"));
+ 	connect(&_contentsAction,	&QAction::triggered,
+ 		this,			&KsMainWindow::_contents);
 +
-+	_glWindow.update();
++	connect(&_bugReportAction,	&QAction::triggered,
++		this,			&KsMainWindow::_bugReport);
  }
  
- void KsTraceGraph::_updateGraphLegends()
+ void KsMainWindow::_createMenus()
+@@ -365,6 +369,7 @@ void KsMainWindow::_createMenus()
+ 	help = menuBar()->addMenu("Help");
+ 	help->addAction(&_aboutAction);
+ 	help->addAction(&_contentsAction);
++	help->addAction(&_bugReportAction);
+ }
+ 
+ void KsMainWindow::_open()
+@@ -925,6 +930,14 @@ void KsMainWindow::_contents()
+ 				  QUrl::TolerantMode));
+ }
+ 
++void KsMainWindow::_bugReport()
++{
++	QUrl bugs("https://bugzilla.kernel.org/buglist.cgi?component=Trace-cmd%2FKernelshark&product=Tools&resolution=---",
++		  QUrl::TolerantMode);
++
++	QDesktopServices::openUrl(bugs);
++}
++
+ /** Load trace data for file. */
+ void KsMainWindow::loadDataFile(const QString& fileName)
+ {
+diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
+index 962de2d..22700d9 100644
+--- a/kernel-shark/src/KsMainWindow.hpp
++++ b/kernel-shark/src/KsMainWindow.hpp
+@@ -151,6 +151,8 @@ private:
+ 
+ 	QAction		_contentsAction;
+ 
++	QAction		_bugReportAction;
++
+ 	QShortcut	_deselectShortcut;
+ 
+ 	QString		_lastDataFilePath, _lastConfFilePath, _lastPluginFilePath;
+@@ -205,6 +207,8 @@ private:
+ 
+ 	void _contents();
+ 
++	void _bugReport();
++
+ 	void _captureStarted();
+ 
+ 	void _captureError(QProcess::ProcessError error);
 -- 
 2.20.1
 
