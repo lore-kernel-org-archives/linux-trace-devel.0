@@ -6,49 +6,50 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24243C04AA8
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 12:40:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DDB9C43219
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 12:44:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E851A2075E
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 12:40:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D79032075E
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 12:44:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbfEBMkn (ORCPT
+        id S1726341AbfEBMo0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 May 2019 08:40:43 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:42000 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbfEBMkn (ORCPT
+        Thu, 2 May 2019 08:44:26 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:34792 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbfEBMo0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 May 2019 08:40:43 -0400
-Received: by mail-wr1-f65.google.com with SMTP id l2so3129982wrb.9
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 May 2019 05:40:42 -0700 (PDT)
+        Thu, 2 May 2019 08:44:26 -0400
+Received: by mail-wr1-f68.google.com with SMTP id e9so3175263wrc.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 May 2019 05:40:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=N7ItfzZKOt1nrRaCHb3cf3KeNap2LA1hzeISdKQJswc=;
-        b=JpFWH6xGImItAlBYcAo1fkFWdCvGPruvzkV9EFfWCOheHI2wD7gFbPtqSNzhWoF4vV
-         oa8MpV94QCf2VpLjVvQAOgh9lig5bAjKS7/5FL4UEBfoNDbJTpBue/rHEAjBiUBRPdBM
-         FSNklo6Dw7l/dX7dzs5GQXlrlTzqHTX0bwyln0hDR3+kuv40ACGypqCZfONb7kOP1bH2
-         HO4t7/pe8rjUuWWb4i/DtS15dD2eQ/hqotOZdM58vHy91o64aKLodsDNy85YkO0rMEJ1
-         u+JY/VwGutZjH51YbvtchNN6DQ5WBVMps/dtiI5dMj+7GM6OCEkxH9KIRkrhmEVqZBG/
-         svLw==
-X-Gm-Message-State: APjAAAV9LMEgBNodODnI8W4SDipleynvxmIg76jHrSDNAxm1g7stMLb4
-        fKsEvE1HzrNXvC90sMMTmmU=
-X-Google-Smtp-Source: APXvYqxICNcv5KKQp1NqeqjJwuOsChTgWQP8mJmLCzKHih3ZURPgOKH3owhk8KremBH05x9PRWFHEw==
-X-Received: by 2002:adf:db05:: with SMTP id s5mr2623511wri.247.1556800842252;
-        Thu, 02 May 2019 05:40:42 -0700 (PDT)
+        bh=yJ3LU9b3ycGuq/+Hd+KuAKwFjTZs+PcwurjzAx/a/RI=;
+        b=f5MpclIgxLehc6Fjk+i2kSyMUw44tsqgNYrjWk3XL6hrLZqwtc4J6y0rj40jrdaHgo
+         bGGjT/gfdzioP3/TbqSdzgq2PMqkyrpkaKLlc1L/1tw9HP9FJ3OOes/3CelplcMMscVI
+         T/0NNbvn+oODOi4Bylv2FA6dIJEJKF+aZYQCH6r+MQsScwY/6P3917lrrvP7T6hn9Jlx
+         nWckCFEXTNEU/tA1IoIQOIE6fzosLQqtXzmp875IUAbjHX2yaKW7SXBXDKeiKKL38q1c
+         oBVNAyUGiTYgQE8eshiMBYHXt7FhkyCo0QrwlkDQPplckbwZQQKlgvDZa/x74hbaHV9C
+         ESnw==
+X-Gm-Message-State: APjAAAWzEEW+PDLrAMtWBj9ewk81hOYoa/Mu9sM3N/TIQBF5xETGkO8T
+        I0Syddn/eB0ACPfUFn0wvOg=
+X-Google-Smtp-Source: APXvYqzfcnWAdaqazgqUaInHdyJK36XvbPFtejOi7DiSZVwVb93yBuRZgoZZ/+M8BD6wBpjW/VehHw==
+X-Received: by 2002:a5d:55cc:: with SMTP id i12mr2634005wrw.179.1556800832057;
+        Thu, 02 May 2019 05:40:32 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id d11sm7511008wmb.39.2019.05.02.05.40.41
+        by smtp.gmail.com with ESMTPSA id d11sm7511008wmb.39.2019.05.02.05.40.31
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 May 2019 05:40:41 -0700 (PDT)
+        Thu, 02 May 2019 05:40:31 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
-        troyengel@gmail.com, Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH v2 8/8] kernel-shark: Use XDG compliant path when saving cached data
-Date:   Thu,  2 May 2019 15:40:09 +0300
-Message-Id: <20190502124009.32208-9-ykaradzhov@vmware.com>
+        troyengel@gmail.com, Yordan Karadzhov <ykaradzhov@vmware.com>,
+        Slavomir Kaslev <kaslevs@vmware.com>
+Subject: [PATCH v2 1/8] kernel-shark: Add INSTALL PREFIX to the Cmake-generated header file.
+Date:   Thu,  2 May 2019 15:40:02 +0300
+Message-Id: <20190502124009.32208-2-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190502124009.32208-1-ykaradzhov@vmware.com>
 References: <20190502124009.32208-1-ykaradzhov@vmware.com>
@@ -59,32 +60,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Use the QStandardPaths class provided by Qt in order to guarantee that
-the location of the cached data is XDG compliant.
+To be used to check if the aplication runs from its installation location.
 
-Suggested-by: Troy Engel <troyengel@gmail.com>
+Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel-shark/build/deff.h.cmake | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 5f326f5..bb593bd 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -409,8 +409,10 @@ QString KsMainWindow::_getCacheDir()
- 		if (!QDir(dir).exists())
- 			lamMakePath(true);
- 	} else {
--		dir = QString(QDir::homePath()) +
--		      "/.cache/kernelshark";
-+		auto appCachePath = QStandardPaths::GenericCacheLocation;
-+		dir = QStandardPaths::writableLocation(appCachePath);
-+		dir += "/kernelshark";
+diff --git a/kernel-shark/build/deff.h.cmake b/kernel-shark/build/deff.h.cmake
+index 8041cfc..ba211f4 100644
+--- a/kernel-shark/build/deff.h.cmake
++++ b/kernel-shark/build/deff.h.cmake
+@@ -14,6 +14,9 @@
+ /** KernelShark source code path. */
+ #cmakedefine KS_DIR "@KS_DIR@"
+ 
++/** KernelShark installation prefix path. */
++#cmakedefine _INSTALL_PREFIX "@_INSTALL_PREFIX@"
 +
- 		if (!QDir(dir).exists())
- 			lamMakePath(false);
- 	}
+ /** Location of the trace-cmd executable. */
+ #cmakedefine TRACECMD_BIN_DIR "@TRACECMD_BIN_DIR@"
+ 
 -- 
 2.20.1
 
