@@ -2,272 +2,206 @@ Return-Path: <SRS0=scwk=TD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45201C43219
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 15:47:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D6CDC43219
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 16:16:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 18BB22081C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 15:47:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0CAA820651
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 16:16:10 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ay/aycSD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728141AbfECPrM (ORCPT
+        id S1726719AbfECQQJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 3 May 2019 11:47:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727433AbfECPrM (ORCPT
+        Fri, 3 May 2019 12:16:09 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41174 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbfECQQJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 11:47:12 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35D352081C;
-        Fri,  3 May 2019 15:47:11 +0000 (UTC)
-Date:   Fri, 3 May 2019 11:47:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 1/2] trace-cmd: Fix crash when trace-cmd is executed
- with args "profile -F sleep 1"
-Message-ID: <20190503114709.76664a9f@gandalf.local.home>
-In-Reply-To: <20190502120952.20449-1-tstoyanov@vmware.com>
-References: <20190502120952.20449-1-tstoyanov@vmware.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 3 May 2019 12:16:09 -0400
+Received: by mail-wr1-f66.google.com with SMTP id c12so8569187wrt.8
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 09:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+1Yy4ye0+d/sq6fO78AAMHxRgQ7a0/dLnT57DWutGDQ=;
+        b=ay/aycSDr3cY5uh+/a4ols/uuy9dXyOS2JnPWRHD4Kl5sTaGKDKuVKdXH+TEbUN9xy
+         mkiiAtYjiLKxmrOHzGIOk+l8BC/0+h3WIoJQApWrC1O3muX7NB1oWaidWe+Rq0xhfS7l
+         AjTnu/SJOLmL1Df8ZCUHizIGR+scloqTWDH3pJbGpaAWHejbOJlDlnviTWGwWdUMUWOE
+         Yj2Zsv7vBg7Iev2LisITa811HxdKR3nSH8hHxVN0uIo/cTQk/Ygob1+11c8MYROUOJGE
+         MOR28F56GFPdlO/P1E1E/aT/9C/lItyPC8Ia52qKyiZTR8xNCqBabAYjz1P28hW3ZYmY
+         AfRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=+1Yy4ye0+d/sq6fO78AAMHxRgQ7a0/dLnT57DWutGDQ=;
+        b=jK9ZPj5Z6xHEIKlKSn3f23Jp3Rxi9m5zmVxV7mF2my+vKY1UwnfDqMhBGGs/uwQZ27
+         wWy9RsyTwUTbtAuHbjzGXp4Ne6gOCMtNswkG+D/vcxEJBXlTHkC8d3R0urKbqhlx2B5h
+         4A+Hsrnh7x3bSkUmYI+mjZIInRI/8stOikoGZU2CB1oBkmgV5VXJLHfz/bcgUCPf56h2
+         74e2PsMyPPOUjFrtkLhhIyJLy7d/qbAWqcPzaDoigaNXRd4r8zerCm02b14u3V74SYwP
+         IyXgtvjvJZnyRd6X7NZ3EQoaFM/gneqE0n81f3qBP1KggSjEugI084EZLGwco1WANyJ9
+         RYcA==
+X-Gm-Message-State: APjAAAX0u2l1UdR3M+5n2pISdlL7MG1ytHRFb9r+v4tn+5lNGKDOMC8k
+        hH6Jxs3v3f1++hNAUujPMxlURfE1
+X-Google-Smtp-Source: APXvYqx6+XrIrOQe1Q+Hz6aek3dSNHn+se5Wk1W6tl0vSmLM1MdVqk5xA2G6j+acquqedICyxCgXXA==
+X-Received: by 2002:adf:fb4a:: with SMTP id c10mr7469338wrs.309.1556900166916;
+        Fri, 03 May 2019 09:16:06 -0700 (PDT)
+Received: from planxty.redhat.com ([31.18.33.111])
+        by smtp.gmail.com with ESMTPSA id a4sm3460131wmf.45.2019.05.03.09.16.05
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 03 May 2019 09:16:06 -0700 (PDT)
+From:   John Kacur <jkacur@redhat.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Clark Williams <williams@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Kacur <jkacur@redhat.com>
+Subject: [PATCH] trace-cmd: python: Apply 2to3 print transformation to python files
+Date:   Fri,  3 May 2019 18:15:41 +0200
+Message-Id: <20190503161541.15773-1-jkacur@redhat.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu,  2 May 2019 15:09:51 +0300
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+In preperation for the python plugin to work with python3,
+apply the 2to3 print transformation on the python files.
 
-> A fix for https://bugzilla.kernel.org/show_bug.cgi?id=203411
+In python3 print is a function so needs to be bracketted.
+This is safe to do because the syntax is compatible with python2 as well
 
-This should be a tag below.
+Signed-off-by: John Kacur <jkacur@redhat.com>
+---
+ python/event-viewer.py | 14 +++++++-------
+ python/tracecmd.py     |  6 +++---
+ python/tracecmdgui.py  | 12 ++++++------
+ 3 files changed, 16 insertions(+), 16 deletions(-)
 
-> When trace-cmd is running in "profile" mode, trace files are not generated.
-> Instead, pipes are used to collect trace data from recorder threads. Some
-> internal functions, originally designed for working with files, are reused
-> in pipes use case:
->  init_cpu()
->  allocate_page()
->  get_next_page()
-> There was an undesired behaviour in those functions, when working with pipes,
-> which causes the segmentation fault, described in the bug report.
-
-Also, the full description should always be used in the commit log. If
-the bugzilla server were to one day disappear, we would lose that
-information.
-
-> 
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203411
-
-Also, I bisected this down to:
-
-Fixes: 62e82cc6cdc9 ("trace-cmd: Use lookup table instead of link list for pages")
-
-Please add that tag too.
-
-> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> ---
->  lib/trace-cmd/trace-input.c | 69 ++++++++++++++++++++++++-------------
->  1 file changed, 45 insertions(+), 24 deletions(-)
-> 
-> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index ba20ef1..8d1001a 100644
-> --- a/lib/trace-cmd/trace-input.c
-> +++ b/lib/trace-cmd/trace-input.c
-> @@ -62,6 +62,7 @@ struct cpu_data {
->  	struct list_head	page_maps;
->  	struct page_map		*page_map;
->  	struct page		**pages;
-> +	int			num_pages;
-
-This should be placed next to the other "int"s in the structure.
-Placing it here will cause a "hole" in the data. As on 64 bit, most
-compilers will try to keep the 8 byte words aligned by 8 bytes (not
-always, but mostly). An int is 4 bytes, so the compiler will likely pad
-the structure with 4 bytes of zeros, creating that "hole".
-
-Also, let's call this: nr_pages
-
-as that is more in sync with what we use for counting objects in
-structures (and is a common notation in the Linux kernel).
-
->  	struct tep_record	*next;
->  	struct page		*page;
->  	struct kbuffer		*kbuf;
-> @@ -921,34 +922,50 @@ static struct page *allocate_page(struct tracecmd_input *handle,
->  	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
->  	struct page *page;
->  	int index;
-> +	int ret;
->  
->  	index = (offset - cpu_data->file_offset) / handle->page_size;
-> -	if (cpu_data->pages[index]) {
-> -		cpu_data->pages[index]->ref_count++;
-> -		return cpu_data->pages[index];
-> -	}
-> -
-> -	page = malloc(sizeof(*page));
-> -	if (!page)
-> +	if (index >= cpu_data->num_pages)
->  		return NULL;
-
-I'm not sure if this is correct. Looking at the patch that broke this
-we have:
-
-@@ -907,12 +913,12 @@ static struct page *allocate_page(struct tracecmd_input *handle,
- {
-        struct cpu_data *cpu_data = &handle->cpu_data[cpu];
-        struct page *page;
-+       int index;
+diff --git a/python/event-viewer.py b/python/event-viewer.py
+index c7c50d16df14..e3b2edd49491 100755
+--- a/python/event-viewer.py
++++ b/python/event-viewer.py
+@@ -23,7 +23,7 @@ def timing(func):
+       start = time.time()
+       ret = func(*arg)
+       end = time.time()
+-      print '@%s took %0.3f s' % (func.func_name, (end-start))
++      print('@%s took %0.3f s' % (func.func_name, (end-start)))
+       return ret
+   return wrapper
  
--       list_for_each_entry(page, &cpu_data->pages, list) {
--               if (page->offset == offset) {
--                       page->ref_count++;
--                       return page;
--               }
-+       index = (offset - cpu_data->file_offset) / handle->page_size;
-+       if (cpu_data->pages[index]) {
-+               cpu_data->pages[index]->ref_count++;
-+               return cpu_data->pages[index];
-        }
+@@ -63,7 +63,7 @@ class EventStore(gtk.GenericTreeModel):
  
-
-Which shows to me that we would continue if index didn't match.
-
-So I would like to go back to that broken commit, and see exactly how
-the profile code worked before, and make make it work the same way again.
-
-Just making it not crash, doesn't mean that it works.
-
-Thanks!
-
--- Steve
-
-
-> +	page = cpu_data->pages[index];
-> +	if (page && !handle->read_page) {
-> +		page->ref_count++;
-> +		return page;
-> +	}
->  
-> -	memset(page, 0, sizeof(*page));
-> -	page->offset = offset;
-> -	page->handle = handle;
-> -	page->cpu = cpu;
-> +	if (!page) {
-> +		page = malloc(sizeof(*page));
-> +		if (!page)
-> +			return NULL;
->  
-> -	page->map = allocate_page_map(handle, page, cpu, offset);
-> +		memset(page, 0, sizeof(*page));
-> +		page->offset = offset;
-> +		page->handle = handle;
-> +		page->cpu = cpu;
-> +	}
->  
->  	if (!page->map) {
-> -		free(page);
-> -		return NULL;
-> +		page->map = allocate_page_map(handle, page, cpu, offset);
-> +		if (!page->map) {
-> +			free(page);
-> +			return NULL;
-> +		}
-> +
-> +		cpu_data->pages[index] = page;
-> +		cpu_data->page_cnt++;
-> +		page->ref_count = 1;
-> +
-> +		return page;
->  	}
->  
-> -	cpu_data->pages[index] = page;
-> -	cpu_data->page_cnt++;
-> -	page->ref_count = 1;
-> +	if (handle->read_page) {
-> +		ret = read_page(handle, offset, cpu, page->map);
-> +		if (ret < 0)
-> +			return NULL;
-> +		return page;
-> +	}
->  
-> -	return page;
-> +	return NULL;
->  }
->  
->  static void __free_page(struct tracecmd_input *handle, struct page *page)
-> @@ -960,6 +977,8 @@ static void __free_page(struct tracecmd_input *handle, struct page *page)
->  		die("Page ref count is zero!\n");
->  
->  	page->ref_count--;
-> +	if (cpu_data->page == page)
-> +		cpu_data->page = NULL;
->  	if (page->ref_count)
->  		return;
->  
-> @@ -1125,7 +1144,7 @@ static int get_page(struct tracecmd_input *handle, int cpu,
->  
->  static int get_next_page(struct tracecmd_input *handle, int cpu)
->  {
-> -	off64_t offset;
-> +	off64_t offset = 0;
->  
->  	if (!handle->cpu_data[cpu].page && !handle->use_pipe)
->  		return 0;
-> @@ -1137,7 +1156,8 @@ static int get_next_page(struct tracecmd_input *handle, int cpu)
->  		return 0;
->  	}
->  
-> -	offset = handle->cpu_data[cpu].offset + handle->page_size;
-> +	if (!handle->use_pipe)
-> +		offset = handle->cpu_data[cpu].offset + handle->page_size;
->  
->  	return get_page(handle, cpu, offset);
->  }
-> @@ -2026,7 +2046,6 @@ tracecmd_read_prev(struct tracecmd_input *handle, struct tep_record *record)
->  static int init_cpu(struct tracecmd_input *handle, int cpu)
->  {
->  	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
-> -	int num_pages;
->  	int i;
->  
->  	cpu_data->offset = cpu_data->file_offset;
-> @@ -2040,13 +2059,13 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
->  		return 0;
->  	}
->  
-> -	num_pages = (cpu_data->size + handle->page_size - 1) / handle->page_size;
-> -	cpu_data->pages = calloc(num_pages + 1, sizeof(*cpu_data->pages));
-> +	cpu_data->num_pages = (cpu_data->size + handle->page_size - 1) / handle->page_size;
-> +	cpu_data->pages = calloc(cpu_data->num_pages + 1, sizeof(*cpu_data->pages));
->  	if (!cpu_data->pages)
->  		return -1;
->  
->  	/* Add stopper */
-> -	cpu_data->pages[num_pages] = PAGE_STOPPER;
-> +	cpu_data->pages[cpu_data->num_pages] = PAGE_STOPPER;
->  
->  	if (handle->use_pipe) {
->  		/* Just make a page, it will be nuked later */
-> @@ -2056,8 +2075,10 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
->  
->  		memset(cpu_data->page, 0, sizeof(*cpu_data->page));
->  		cpu_data->pages[0] = cpu_data->page;
-> +		cpu_data->num_pages = 1;
->  		cpu_data->page_cnt = 1;
->  		cpu_data->page->ref_count = 1;
-> +		cpu_data->page->cpu = cpu;
->  		return 0;
->  	}
->  
+     @timing
+     def _load_trace(self):
+-        print "Building trace index..."
++        print("Building trace index...")
+         index = 0
+         for cpu in range(0, trace.cpus):
+             rec = tracecmd_read_data(self.trace._handle, cpu)
+@@ -73,7 +73,7 @@ class EventStore(gtk.GenericTreeModel):
+                 self.refs.append(self.EventRef(index, ts, offset, cpu))
+                 index = index + 1
+                 rec = tracecmd_read_data(self.trace._handle, cpu)
+-        print "Loaded %d events from trace" % (index)
++        print("Loaded %d events from trace" % (index))
+ 
+     @timing
+     def _sort(self):
+@@ -217,7 +217,7 @@ class EventView(gtk.TreeView):
+         elif data == "comm":
+             cell.set_property("markup", ev.comm)
+         else:
+-            print "Unknown Column:", data
++            print("Unknown Column:", data)
+             return False
+ 
+         return True
+@@ -264,9 +264,9 @@ if __name__ == "__main__":
+     else:
+         filename = "trace.dat"
+ 
+-    print "Initializing trace..."
++    print("Initializing trace...")
+     trace = Trace(filename)
+-    print "Initializing app..."
++    print("Initializing app...")
+     app = EventViewerApp(trace)
+-    print "Go!"
++    print("Go!")
+     gtk.main()
+diff --git a/python/tracecmd.py b/python/tracecmd.py
+index 677c0f2ff6c3..4d481576b9f9 100644
+--- a/python/tracecmd.py
++++ b/python/tracecmd.py
+@@ -242,13 +242,13 @@ class Trace(object):
+ # Basic builtin test, execute module directly
+ if __name__ == "__main__":
+     t = Trace("trace.dat")
+-    print "Trace contains data for %d cpus" % (t.cpus)
++    print("Trace contains data for %d cpus" % (t.cpus))
+ 
+     for cpu in range(0, t.cpus):
+-        print "CPU %d" % (cpu)
++        print("CPU %d" % (cpu))
+         ev = t.read_event(cpu)
+         while ev:
+-            print "\t%s" % (ev)
++            print("\t%s" % (ev))
+             ev = t.read_event(cpu)
+ 
+ 
+diff --git a/python/tracecmdgui.py b/python/tracecmdgui.py
+index 3a9f8a530414..01bfd614f1cd 100644
+--- a/python/tracecmdgui.py
++++ b/python/tracecmdgui.py
+@@ -48,7 +48,7 @@ def timing(func):
+       start = time.time()
+       ret = func(*arg)
+       end = time.time()
+-      print '@%s took %0.3f s' % (func.func_name, (end-start))
++      print('@%s took %0.3f s' % (func.func_name, (end-start)))
+       return ret
+   return wrapper
+ 
+@@ -62,7 +62,7 @@ class EventStore(gtk.GenericTreeModel):
+         self.cstore = trace_view_store_new(trace.handle)
+         self.gtk_cstore = trace_view_store_as_gtk_tree_model(self.cstore)
+         num_rows = trace_view_store_num_rows_get(self.cstore)
+-        print "Loaded %d events from trace" % (num_rows)
++        print("Loaded %d events from trace" % (num_rows))
+ 
+     def on_get_flags(self):
+         return trace_view_store_get_flags(self.gtk_cstore)
+@@ -196,7 +196,7 @@ class EventView(gtk.TreeView):
+         elif data == "comm":
+             cell.set_property("markup", ev.comm)
+         else:
+-            print "Unknown Column:", data
++            print("Unknown Column:", data)
+             return False
+ 
+         return True
+@@ -231,9 +231,9 @@ if __name__ == "__main__":
+     else:
+         filename = "trace.dat"
+ 
+-    print "Initializing trace..."
++    print("Initializing trace...")
+     trace = Trace(filename)
+-    print "Initializing app..."
++    print("Initializing app...")
+     app = EventViewerApp(trace)
+-    print "Go!"
++    print("Go!")
+     gtk.main()
+-- 
+2.20.1
 
