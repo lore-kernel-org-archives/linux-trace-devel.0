@@ -2,120 +2,272 @@ Return-Path: <SRS0=scwk=TD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED0F6C43219
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 15:08:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45201C43219
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 15:47:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BDE45205ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 15:08:36 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="MFvmRDDk"
+	by mail.kernel.org (Postfix) with ESMTP id 18BB22081C
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 15:47:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbfECPIg (ORCPT
+        id S1728141AbfECPrM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 3 May 2019 11:08:36 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:37911 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726495AbfECPIg (ORCPT
+        Fri, 3 May 2019 11:47:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727433AbfECPrM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 11:08:36 -0400
-Received: by mail-pg1-f196.google.com with SMTP id j26so2868468pgl.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 08:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kNTkQVNOA2OoGY05E27L56yuHsdvzUwDV9bMvSlE76A=;
-        b=MFvmRDDkIMtc9BaQDjrWPOSUDO9Jo1/wdFL+oMmuaFtd8BrX+9VVatnVk8YjQSnsoW
-         BsziOIyoxXHvWBYgvME24AJwRTKzg1v5hpxTEyKu2vSeYGAOa5tUX3uW7FhbKDdETQyb
-         5v+yKc70MV3v8Y806ihEUUkgJzSgITzNo64UQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kNTkQVNOA2OoGY05E27L56yuHsdvzUwDV9bMvSlE76A=;
-        b=SYefyS67/Ae0n1ZhZFyvcA+aLEsHQ5vxBHvMnwhBQwzWhFJ8CIMMglj8UmYb5fRk1R
-         pOmzrVHA1zYoG+jO4cTjNED79eh5/MBsWQR3zDZCxkLPsxgKEL0Vvyz7ZraYV8cTGooX
-         bhHYlPeVZBcfBYZh81KwiyHJFS64iy9dBRSKpSs8tI2OmUpKSXOe+0TKUZ4D7/auNc7R
-         S1Ma5vUyR/4wvFNHx5pm8rxt5Om6rZb1WXy7AU8zekjAUUu+9wNo2jFYFbI5VImVFxWg
-         iV59i+l5DtR65dDJg2bJHVNeXXW+VaT48froueAt8lPQyYfnNSRrjrl/1Hs9glSUIuvq
-         7JnQ==
-X-Gm-Message-State: APjAAAVwanwnIgVPGg6/ahbUV16Im8Sneggrosko6ONXt10wa4epItVG
-        UQaKvJvSEATRrWCM6cToiQ4N7w==
-X-Google-Smtp-Source: APXvYqw24XwNGkccqq09Ydr+Lfzc0vUPYmCja1k9q/7RdUIA3TyzF/y1fhaSR7qOXsBcDbXc//83LQ==
-X-Received: by 2002:a65:5c82:: with SMTP id a2mr11014324pgt.378.1556896108024;
-        Fri, 03 May 2019 08:08:28 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id d3sm3262715pfn.113.2019.05.03.08.08.26
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 08:08:27 -0700 (PDT)
-Date:   Fri, 3 May 2019 11:08:25 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        atish patra <atishp04@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        Manoj Rao <linux@manojrajarao.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v7 resend 1/2] Provide in-kernel headers to make
- extending kernel easier
-Message-ID: <20190503150825.GC253329@google.com>
-References: <20190426190430.172543-1-joel@joelfernandes.org>
- <20190427133844.GA29366@kroah.com>
- <20190429132602.GA165075@google.com>
- <20190429135455.GA2412@kroah.com>
- <CAK7LNARkGLQ_P4LSuC69QN8XPN47W5ujkDE3EauLrwnBgygsSA@mail.gmail.com>
- <20190429142425.GB29007@kroah.com>
- <20190503103315.0149ca71@gandalf.local.home>
+        Fri, 3 May 2019 11:47:12 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35D352081C;
+        Fri,  3 May 2019 15:47:11 +0000 (UTC)
+Date:   Fri, 3 May 2019 11:47:09 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 1/2] trace-cmd: Fix crash when trace-cmd is executed
+ with args "profile -F sleep 1"
+Message-ID: <20190503114709.76664a9f@gandalf.local.home>
+In-Reply-To: <20190502120952.20449-1-tstoyanov@vmware.com>
+References: <20190502120952.20449-1-tstoyanov@vmware.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190503103315.0149ca71@gandalf.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, May 03, 2019 at 10:33:15AM -0400, Steven Rostedt wrote:
-> On Mon, 29 Apr 2019 16:24:25 +0200
-> Greg KH <gregkh@linuxfoundation.org> wrote:
+On Thu,  2 May 2019 15:09:51 +0300
+Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+
+> A fix for https://bugzilla.kernel.org/show_bug.cgi?id=203411
+
+This should be a tag below.
+
+> When trace-cmd is running in "profile" mode, trace files are not generated.
+> Instead, pipes are used to collect trace data from recorder threads. Some
+> internal functions, originally designed for working with files, are reused
+> in pipes use case:
+>  init_cpu()
+>  allocate_page()
+>  get_next_page()
+> There was an undesired behaviour in those functions, when working with pipes,
+> which causes the segmentation fault, described in the bug report.
+
+Also, the full description should always be used in the commit log. If
+the bugzilla server were to one day disappear, we would lose that
+information.
+
 > 
-> > Hah, ok, I'll be glad to queue this up in my tree.  I'll take it now,
-> > and if people who really object to this being in /proc/ and want it in
-> > /sys/, we can add a follow-on patch before 5.2-final is out to move the
-> > file to that location.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203411
+
+Also, I bisected this down to:
+
+Fixes: 62e82cc6cdc9 ("trace-cmd: Use lookup table instead of link list for pages")
+
+Please add that tag too.
+
+> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+> ---
+>  lib/trace-cmd/trace-input.c | 69 ++++++++++++++++++++++++-------------
+>  1 file changed, 45 insertions(+), 24 deletions(-)
 > 
-> I really don't think putting it in /proc now is a good idea. Let's put
-> it in /sys now. If we don't do it now and it gets into a main release,
-> then that will become the permanent location for it.
+> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+> index ba20ef1..8d1001a 100644
+> --- a/lib/trace-cmd/trace-input.c
+> +++ b/lib/trace-cmd/trace-input.c
+> @@ -62,6 +62,7 @@ struct cpu_data {
+>  	struct list_head	page_maps;
+>  	struct page_map		*page_map;
+>  	struct page		**pages;
+> +	int			num_pages;
 
-I will send a patch to move it into /sys/kernel on top of this. Hope everyone
-else is also Ok with that as the location.
+This should be placed next to the other "int"s in the structure.
+Placing it here will cause a "hole" in the data. As on 64 bit, most
+compilers will try to keep the 8 byte words aligned by 8 bytes (not
+always, but mostly). An int is 4 bytes, so the compiler will likely pad
+the structure with 4 bytes of zeros, creating that "hole".
 
-thanks,
+Also, let's call this: nr_pages
 
- - Joel
+as that is more in sync with what we use for counting objects in
+structures (and is a common notation in the Linux kernel).
+
+>  	struct tep_record	*next;
+>  	struct page		*page;
+>  	struct kbuffer		*kbuf;
+> @@ -921,34 +922,50 @@ static struct page *allocate_page(struct tracecmd_input *handle,
+>  	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
+>  	struct page *page;
+>  	int index;
+> +	int ret;
+>  
+>  	index = (offset - cpu_data->file_offset) / handle->page_size;
+> -	if (cpu_data->pages[index]) {
+> -		cpu_data->pages[index]->ref_count++;
+> -		return cpu_data->pages[index];
+> -	}
+> -
+> -	page = malloc(sizeof(*page));
+> -	if (!page)
+> +	if (index >= cpu_data->num_pages)
+>  		return NULL;
+
+I'm not sure if this is correct. Looking at the patch that broke this
+we have:
+
+@@ -907,12 +913,12 @@ static struct page *allocate_page(struct tracecmd_input *handle,
+ {
+        struct cpu_data *cpu_data = &handle->cpu_data[cpu];
+        struct page *page;
++       int index;
+ 
+-       list_for_each_entry(page, &cpu_data->pages, list) {
+-               if (page->offset == offset) {
+-                       page->ref_count++;
+-                       return page;
+-               }
++       index = (offset - cpu_data->file_offset) / handle->page_size;
++       if (cpu_data->pages[index]) {
++               cpu_data->pages[index]->ref_count++;
++               return cpu_data->pages[index];
+        }
+ 
+
+Which shows to me that we would continue if index didn't match.
+
+So I would like to go back to that broken commit, and see exactly how
+the profile code worked before, and make make it work the same way again.
+
+Just making it not crash, doesn't mean that it works.
+
+Thanks!
+
+-- Steve
+
+
+> +	page = cpu_data->pages[index];
+> +	if (page && !handle->read_page) {
+> +		page->ref_count++;
+> +		return page;
+> +	}
+>  
+> -	memset(page, 0, sizeof(*page));
+> -	page->offset = offset;
+> -	page->handle = handle;
+> -	page->cpu = cpu;
+> +	if (!page) {
+> +		page = malloc(sizeof(*page));
+> +		if (!page)
+> +			return NULL;
+>  
+> -	page->map = allocate_page_map(handle, page, cpu, offset);
+> +		memset(page, 0, sizeof(*page));
+> +		page->offset = offset;
+> +		page->handle = handle;
+> +		page->cpu = cpu;
+> +	}
+>  
+>  	if (!page->map) {
+> -		free(page);
+> -		return NULL;
+> +		page->map = allocate_page_map(handle, page, cpu, offset);
+> +		if (!page->map) {
+> +			free(page);
+> +			return NULL;
+> +		}
+> +
+> +		cpu_data->pages[index] = page;
+> +		cpu_data->page_cnt++;
+> +		page->ref_count = 1;
+> +
+> +		return page;
+>  	}
+>  
+> -	cpu_data->pages[index] = page;
+> -	cpu_data->page_cnt++;
+> -	page->ref_count = 1;
+> +	if (handle->read_page) {
+> +		ret = read_page(handle, offset, cpu, page->map);
+> +		if (ret < 0)
+> +			return NULL;
+> +		return page;
+> +	}
+>  
+> -	return page;
+> +	return NULL;
+>  }
+>  
+>  static void __free_page(struct tracecmd_input *handle, struct page *page)
+> @@ -960,6 +977,8 @@ static void __free_page(struct tracecmd_input *handle, struct page *page)
+>  		die("Page ref count is zero!\n");
+>  
+>  	page->ref_count--;
+> +	if (cpu_data->page == page)
+> +		cpu_data->page = NULL;
+>  	if (page->ref_count)
+>  		return;
+>  
+> @@ -1125,7 +1144,7 @@ static int get_page(struct tracecmd_input *handle, int cpu,
+>  
+>  static int get_next_page(struct tracecmd_input *handle, int cpu)
+>  {
+> -	off64_t offset;
+> +	off64_t offset = 0;
+>  
+>  	if (!handle->cpu_data[cpu].page && !handle->use_pipe)
+>  		return 0;
+> @@ -1137,7 +1156,8 @@ static int get_next_page(struct tracecmd_input *handle, int cpu)
+>  		return 0;
+>  	}
+>  
+> -	offset = handle->cpu_data[cpu].offset + handle->page_size;
+> +	if (!handle->use_pipe)
+> +		offset = handle->cpu_data[cpu].offset + handle->page_size;
+>  
+>  	return get_page(handle, cpu, offset);
+>  }
+> @@ -2026,7 +2046,6 @@ tracecmd_read_prev(struct tracecmd_input *handle, struct tep_record *record)
+>  static int init_cpu(struct tracecmd_input *handle, int cpu)
+>  {
+>  	struct cpu_data *cpu_data = &handle->cpu_data[cpu];
+> -	int num_pages;
+>  	int i;
+>  
+>  	cpu_data->offset = cpu_data->file_offset;
+> @@ -2040,13 +2059,13 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
+>  		return 0;
+>  	}
+>  
+> -	num_pages = (cpu_data->size + handle->page_size - 1) / handle->page_size;
+> -	cpu_data->pages = calloc(num_pages + 1, sizeof(*cpu_data->pages));
+> +	cpu_data->num_pages = (cpu_data->size + handle->page_size - 1) / handle->page_size;
+> +	cpu_data->pages = calloc(cpu_data->num_pages + 1, sizeof(*cpu_data->pages));
+>  	if (!cpu_data->pages)
+>  		return -1;
+>  
+>  	/* Add stopper */
+> -	cpu_data->pages[num_pages] = PAGE_STOPPER;
+> +	cpu_data->pages[cpu_data->num_pages] = PAGE_STOPPER;
+>  
+>  	if (handle->use_pipe) {
+>  		/* Just make a page, it will be nuked later */
+> @@ -2056,8 +2075,10 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
+>  
+>  		memset(cpu_data->page, 0, sizeof(*cpu_data->page));
+>  		cpu_data->pages[0] = cpu_data->page;
+> +		cpu_data->num_pages = 1;
+>  		cpu_data->page_cnt = 1;
+>  		cpu_data->page->ref_count = 1;
+> +		cpu_data->page->cpu = cpu;
+>  		return 0;
+>  	}
+>  
 
