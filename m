@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7EFCC43219
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9013CC43219
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C3B82206C3
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69423206C3
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbfECJLk (ORCPT
+        id S1727075AbfECJLm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 3 May 2019 05:11:40 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:43715 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbfECJLk (ORCPT
+        Fri, 3 May 2019 05:11:42 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:32869 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726950AbfECJLm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 05:11:40 -0400
-Received: by mail-wr1-f65.google.com with SMTP id a12so6865400wrq.10
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:39 -0700 (PDT)
+        Fri, 3 May 2019 05:11:42 -0400
+Received: by mail-wm1-f67.google.com with SMTP id b188so5269970wmb.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lOsh7yjFkyid7emQ5kYbF8wd4NSvXwJPDsEaULG/B+Q=;
-        b=coquupqhr3fvOI7q8YTeVK2XZrPIl7h9YsEtWvNDFjOOzJ2RML/1UhpfPfAMn6Ebo0
-         Iw501YubLpPUnKWbl+ZAEb/3jcvRIPcZ1u6R+OzGg9PmEXIao23x+Y5w0YP09bFzvN+6
-         mXStxE2EEibxxF58qA6lf95nHSRjumpgEwjSydboEnnyUBOoBTYfxscdUOXG4nOeNcMY
-         yLzZaRfZkmTXwfyrJ3HHt2evXsdfP6T7fdK5OVPv7LSLwTu0fY+MTqOCa4GHtF2dTyFU
-         IJm5u7RMO+kUKZZXyZSODSEd2QXZvkksqUQE8jTepQ4IgdVvCtqOPqeptQRnIQvXhYG2
-         XZ9g==
-X-Gm-Message-State: APjAAAW2ZKSfB7FRoUYH+Zlg7kBQq8vVJ/gFEiyMq84aV1AbIn6QTYcl
-        np4RE61POtZINgCLZFQsBP4=
-X-Google-Smtp-Source: APXvYqzQJrSRN5cjl5G9TARNB6OHrMouRXTUBFiriLzI1YFtSg6C4V9t8JgAV9sCQ+T9X27p6ugWoQ==
-X-Received: by 2002:a5d:4942:: with SMTP id r2mr5850639wrs.159.1556874698739;
-        Fri, 03 May 2019 02:11:38 -0700 (PDT)
+        bh=bZ+I1EqMaelYorRhjejZI8WmMDXy0IyI9PEtYxf9P+I=;
+        b=CwfDaD23h7uAvJcU9mUWzCloRcopEOJqxMKyfcSOSPFKKIfTXn3/A9scGNa4s5mWIm
+         nyPHfffqZNx4Wtf7seKZIYEEZFBZYPsgoFO6CRwHLievuJw99CjslltEnV+TK8hUvNDt
+         rZrZmZWyo5UEnDoNGS2ravOwm7S0tlH8BcxE0HDYmDlR8tJEqgNiKG6syxsVk6I+K9NV
+         m5lldBzOCLF0CaS0wII57iOMciB8EYbYx7zBSEdQvd+GcxrXGxzjB2FNvon5rewnbWjQ
+         DXdXgMUAGc9v2s85iAPA/AaWMnQW0pK2VSiArwVp9mdhi0PTeoMzwONsAukBnUbcLtaC
+         pOeQ==
+X-Gm-Message-State: APjAAAXPMImy52GC0AtmXa01tBFPtPnwyWKt6VeD5nQBxdYo0TcmYnGU
+        3Yo9D63iv5jTBcr1C7ks5tU=
+X-Google-Smtp-Source: APXvYqxs1q58UBzbvdnt3hzTxTf13oJ5YRFPztW4PMcPp3oywkKCeIzrAIl/NNe4ukBykTkLkzibIQ==
+X-Received: by 2002:a1c:a753:: with SMTP id q80mr5490067wme.120.1556874700078;
+        Fri, 03 May 2019 02:11:40 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.37
+        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.39
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 02:11:38 -0700 (PDT)
+        Fri, 03 May 2019 02:11:39 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 21/26] tools/lib/traceevent: Man pages for event fields APIs
-Date:   Fri,  3 May 2019 12:11:14 +0300
-Message-Id: <20190503091119.23399-22-tstoyanov@vmware.com>
+Subject: [PATCH v6 23/26] tools/lib/traceevent: Man pages for parse event APIs
+Date:   Fri,  3 May 2019 12:11:16 +0300
+Message-Id: <20190503091119.23399-24-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190503091119.23399-1-tstoyanov@vmware.com>
 References: <20190503091119.23399-1-tstoyanov@vmware.com>
@@ -60,27 +60,27 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Create man pages for libtraceevent APIs:
-  tep_event_common_fields(),
-  tep_event_fields()
+  tep_parse_event(),
+  tep_parse_format()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-fields.txt    | 105 ++++++++++++++++++
- 1 file changed, 105 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-fields.txt
+ .../libtraceevent-parse_event.txt             | 90 +++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-fields.txt b/tools/lib/traceevent/Documentation/libtraceevent-fields.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
 new file mode 100644
-index 000000000000..1ccb531d5114
+index 000000000000..f248114ca1ff
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-fields.txt
-@@ -0,0 +1,105 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
+@@ -0,0 +1,90 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_event_common_fields, tep_event_fields - Get a list of fields for an event.
++tep_parse_event, tep_parse_format - Parse the event format information
 +
 +SYNOPSIS
 +--------
@@ -88,25 +88,28 @@ index 000000000000..1ccb531d5114
 +--
 +*#include <event-parse.h>*
 +
-+struct tep_format_field pass:[*]pass:[*]*tep_event_common_fields*(struct tep_event pass:[*]_event_);
-+struct tep_format_field pass:[*]pass:[*]*tep_event_fields*(struct tep_event pass:[*]_event_);
++enum tep_errno *tep_parse_event*(struct tep_handle pass:[*]_tep_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
++enum tep_errno *tep_parse_format*(struct tep_handle pass:[*]_tep_, struct tep_event pass:[*]pass:[*]_eventp_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_event_common_fields()_ function returns an array of pointers to common
-+fields for the _event_. The array is allocated in the function and must be freed
-+by free(). The last element of the array is NULL.
++The _tep_parse_event()_ function parses the event format and creates an event
++structure to quickly parse raw data for a given event. The _tep_ argument is
++the trace event parser context. The created event structure is stored in the
++_tep_ context. The _buf_ argument is a buffer with _size_, where the event
++format data is. The event format data can be taken from
++tracefs/events/.../.../format files. The _sys_ argument is the system of
++the event.
 +
-+The _tep_event_fields()_ function returns an array of pointers to event specific
-+fields for the _event_. The array is allocated in the function and must be freed
-+by free(). The last element of the array is NULL.
++The _tep_parse_format()_ function does the same as _tep_parse_event()_. The only
++difference is in the extra _eventp_ argument, where the newly created event
++structure is returned.
 +
 +RETURN VALUE
 +------------
-+Both _tep_event_common_fields()_ and _tep_event_fields()_ functions return
-+an array of pointers to tep_format_field structures in case of success, or
-+NULL in case of an error.
++Both _tep_parse_event()_ and _tep_parse_format()_ functions return 0 on success,
++or TEP_ERRNO__... in case of an error.
 +
 +EXAMPLE
 +-------
@@ -116,34 +119,16 @@ index 000000000000..1ccb531d5114
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+int i;
-+struct tep_format_field **fields;
-+struct tep_event *event = tep_find_event_by_name(tep, "kvm", "kvm_exit");
-+if (event != NULL) {
-+	fields = tep_event_common_fields(event);
-+	if (fields != NULL) {
-+		i = 0;
-+		while (fields[i]) {
-+			/*
-+			  walk through the list of the common fields
-+			  of the kvm_exit event
-+			*/
-+			i++;
-+		}
-+		free(fields);
-+	}
-+	fields = tep_event_fields(event);
-+	if (fields != NULL) {
-+		i = 0;
-+		while (fields[i]) {
-+			/*
-+			  walk through the list of the event specific
-+			  fields of the kvm_exit event
-+			*/
-+			i++;
-+		}
-+		free(fields);
-+	}
++char *buf;
++int size;
++struct tep_event *event = NULL;
++buf = read_file("/sys/kernel/tracing/events/ftrace/print/format", &size);
++if (tep_parse_event(tep, buf, size, "ftrace") != 0) {
++	/* Failed to parse the ftrace print format */
++}
++
++if (tep_parse_format(tep, &event, buf, size, "ftrace") != 0) {
++	/* Failed to parse the ftrace print format */
 +}
 +...
 +--
