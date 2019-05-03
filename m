@@ -1,69 +1,119 @@
-Return-Path: <SRS0=5+qO=TC=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=scwk=TD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B1BEC43219
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 15:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C467C43219
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 07:30:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 66B642081C
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 May 2019 15:36:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC45D20B7C
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 07:30:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbfEBPgt (ORCPT
+        id S1726193AbfECHaK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 May 2019 11:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727297AbfEBPgs (ORCPT
+        Fri, 3 May 2019 03:30:10 -0400
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193]:48862 "EHLO
+        atrey.karlin.mff.cuni.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725806AbfECHaJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 May 2019 11:36:48 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24E882081C;
-        Thu,  2 May 2019 15:36:48 +0000 (UTC)
-Date:   Thu, 2 May 2019 11:36:46 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v5 27/30] tools/lib/traceevent: Man pages for tep
- plugins APIs
-Message-ID: <20190502113646.39ce4596@gandalf.local.home>
-In-Reply-To: <CACqStocBTaULG=DHX3_uJTAzki3fnPN+mdKoiYgQ9bCD-iUPyQ@mail.gmail.com>
-References: <20190412133811.15878-1-tstoyanov@vmware.com>
-        <20190412133811.15878-28-tstoyanov@vmware.com>
-        <20190430213816.61705657@oasis.local.home>
-        <CACqStocBTaULG=DHX3_uJTAzki3fnPN+mdKoiYgQ9bCD-iUPyQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 3 May 2019 03:30:09 -0400
+Received: by atrey.karlin.mff.cuni.cz (Postfix, from userid 512)
+        id AB7B780370; Fri,  3 May 2019 09:29:57 +0200 (CEST)
+Date:   Fri, 3 May 2019 09:30:07 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        atish patra <atishp04@gmail.com>,
+        Daniel Colascione <dancol@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Manoj Rao <linux@manojrajarao.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v7 resend 1/2] Provide in-kernel headers to make
+ extending kernel easier
+Message-ID: <20190503073007.GA5834@amd>
+References: <20190426190430.172543-1-joel@joelfernandes.org>
+ <20190427133844.GA29366@kroah.com>
+ <20190429132602.GA165075@google.com>
+ <20190429135455.GA2412@kroah.com>
+ <CAK7LNARkGLQ_P4LSuC69QN8XPN47W5ujkDE3EauLrwnBgygsSA@mail.gmail.com>
+ <20190429142425.GB29007@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
+Content-Disposition: inline
+In-Reply-To: <20190429142425.GB29007@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 2 May 2019 15:23:28 +0000
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-> >
-> > We should change this to be:
-> >
-> >  ~/.config/traceevent/plugins/plugins_*.so
-> >  
-> Current directory is ~/.traceevent/plugins. I suggest to release the
-> man page in this way, and later
-> when we change the library, to update the man page with the new path.
-> Do you prefer to change
-> the path in the code before releasing the man pages ?
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hmm, I was about to say I'm fine with it, but I think this is something
-we need to change before we say the library is good to go. Let's hold
-off on this man page until we make the code update.
+> > > As you say, either is fine with me.
+> > >
+> > > > 2. Who is going to pull this patch: This seems a matter of where th=
+e header
+> > > > archive resides. If it is in /sys/kernel/ then I am assuming Greg w=
+ill pull
+> > > > it.  Masahiro has given his Reviewed-by tag, is he the one to pull =
+it?
+> > >
+> > > I can take it, but it probably should just go through the kbuild tree,
+> > > as that makes more sense to me.
+> >=20
+> >=20
+> > I do not want to take responsibility for this.
+>=20
+> Hah, ok, I'll be glad to queue this up in my tree.  I'll take it now,
+> and if people who really object to this being in /proc/ and want it in
+> /sys/, we can add a follow-on patch before 5.2-final is out to move the
+> file to that location.
 
-Thanks!
+People really object to having it in kernel in the first place.
 
--- Steve
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--tThc/1wpZn/ma/RB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlzL7f4ACgkQMOfwapXb+vK/NQCgjYkY7nlnhEf/qSPHOp9vcBlw
+4CsAn2WneJ5eeONJICEs3aNqGA3PuNoW
+=kOj9
+-----END PGP SIGNATURE-----
+
+--tThc/1wpZn/ma/RB--
