@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D4E9C004C9
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25D83C43219
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E2CD7206C3
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B6C4E206C3
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbfECJL0 (ORCPT
+        id S1727015AbfECJL1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 3 May 2019 05:11:26 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41144 "EHLO
+        Fri, 3 May 2019 05:11:27 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:40714 "EHLO
         mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbfECJL0 (ORCPT
+        with ESMTP id S1726842AbfECJL1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 05:11:26 -0400
-Received: by mail-wr1-f68.google.com with SMTP id c12so6877405wrt.8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:25 -0700 (PDT)
+        Fri, 3 May 2019 05:11:27 -0400
+Received: by mail-wr1-f68.google.com with SMTP id h4so6875139wre.7
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qlyHZA+EhU+7GCzOB9xEjeZpyznQNquLmxf0s/xFzrw=;
-        b=qESN8C8GONOQiIpWwxZ6gZBgU4SdkWdAOPzaZPhw8Iv5ZIooLiAhKM656Y4eFG8oKC
-         RrO9kkkG8X0BZnkJZjeQmJlPcMKgb2yc0B9vh/PDEDXkKejsiRlNNqe7+kcwUlPFxRUS
-         TqJoT1gfy2n+AMa+aPIjYIlxLccIOwwkZHDN/sFL8O+aFMQ0CglyMLdkxgw7qe80uDZe
-         Ms/IAQkPPPDbXtDADWC7cizJou3Cc3ih5W+zHkfsYtZy8+/432DytfFVfmVMwwPH+P9x
-         aqVA8PAZ6JZzwXncHUDZqq1msvm0RpGlxPIxih0r/GEsbmPEZwP5m1oCaNJ/+awKuU+N
-         7LtQ==
-X-Gm-Message-State: APjAAAXax/oitQbGT8MDcfCRNb619A/UceaqFWMA7+UczHzDibfvBz1+
-        aNHSm1NaK7b5m8bnxZ+t9s8=
-X-Google-Smtp-Source: APXvYqyS+tjJQvBTg6yZXI/apI1d8oM7mdQbCR6VGl+PC4Ed+qfbJefH8lOoP5Agqz5ZBafTwQCtEQ==
-X-Received: by 2002:a5d:654a:: with SMTP id z10mr6312661wrv.153.1556874685048;
+        bh=1KgDXdXVNQ5+zLav00nRVLOERuuQFC9ZZ+74zZDhbYU=;
+        b=D9m9+4AUh8PfEv3ApMYRS68q38BTkUEp2s9w1cnNYPcXLMg5DrhZSi8ZR83okzRO14
+         bH0X/UhvQmgw8jbMQ43Tduah2RkOLwFA1wP5dVoIJ56WwDZ/8+f4XF3eUj4H+HDPx+ra
+         0488zfOznDuDpDLf5S2G4QnVENwaa5+yzIAJNtSQEULYi3IgYm0h6YdhCMT+gqmZ4fvD
+         zONsL1AukWqzcVX/JSnjMQzOwQMwXGCSPjlcjR/0BE7o2X0gVhpL5QI0k11ZR8f2MQTF
+         sTTBAk0jd+XtOm6UZzrU0k0P4IzPfXbp9ZspBI2kaJX5T/0rPnpqOrFwhXsd4B0IT1Yp
+         hGzg==
+X-Gm-Message-State: APjAAAUONLlyBYO4enkyUtF2J8ZeSN8uQ9It7A+BwsT9KPpJSaSneYaZ
+        RouUG5Z6UyfQAhLXdLEvOvs=
+X-Google-Smtp-Source: APXvYqzEZnRwx2fGQ4sGFTJv4Jm9/qr6N3CsNpHOOX3GLDFoZtBD6Tz5RYL0sFA64wqR0D4pWJPWCw==
+X-Received: by 2002:adf:b611:: with SMTP id f17mr6362511wre.162.1556874685789;
         Fri, 03 May 2019 02:11:25 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.24
+        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.25
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 02:11:24 -0700 (PDT)
+        Fri, 03 May 2019 02:11:25 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 04/26] tools/lib/traceevent: Man page for header_page APIs
-Date:   Fri,  3 May 2019 12:10:57 +0300
-Message-Id: <20190503091119.23399-5-tstoyanov@vmware.com>
+Subject: [PATCH v6 05/26] tools/lib/traceevent: Man page for get/set cpus APIs
+Date:   Fri,  3 May 2019 12:10:58 +0300
+Message-Id: <20190503091119.23399-6-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190503091119.23399-1-tstoyanov@vmware.com>
 References: <20190503091119.23399-1-tstoyanov@vmware.com>
@@ -59,30 +59,29 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Create a man page for libtraceevent APIs:
-  tep_get_header_page_size(),
-  tep_get_header_timestamp_size(),
-  tep_is_old_format()
+Create man pages for libtraceevent APIs:
+ tep_get_cpus(),
+ tep_set_cpus()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-header_page.txt             | 102 ++++++++++++++++++
- 1 file changed, 102 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
+ .../Documentation/libtraceevent-cpus.txt      | 77 +++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt b/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt b/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
 new file mode 100644
-index 000000000000..615d117dc39f
+index 000000000000..5ad70e43b752
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
-@@ -0,0 +1,102 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
+@@ -0,0 +1,77 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_get_header_page_size, tep_get_header_timestamp_size, tep_is_old_format -
-+Get the data stored in the header page, in kernel context.
++tep_get_cpus, tep_set_cpus - Get / set the number of CPUs, which have a tracing
++buffer representing it. Note, the buffer may be empty.
 +
 +SYNOPSIS
 +--------
@@ -90,38 +89,23 @@ index 000000000000..615d117dc39f
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_get_header_page_size*(struct tep_handle pass:[*]_tep_);
-+int *tep_get_header_timestamp_size*(struct tep_handle pass:[*]_tep_);
-+bool *tep_is_old_format*(struct tep_handle pass:[*]_tep_);
++int *tep_get_cpus*(struct tep_handle pass:[*]_tep_);
++void *tep_set_cpus*(struct tep_handle pass:[*]_tep_, int _cpus_);
 +--
++
 +DESCRIPTION
 +-----------
-+These functions retrieve information from kernel context, stored in tracefs
-+events/header_page. Old kernels do not have header page info, so default values
-+from user space context are used.
++The _tep_get_cpus()_ function gets the number of CPUs, which have a tracing
++buffer representing it. The _tep_ argument is trace event parser context.
 +
-+The _tep_get_header_page_size()_ function returns the size of a long integer,
-+in kernel context. The _tep_ argument is trace event parser context.
-+This information is retrieved from tracefs events/header_page, "commit" field.
-+
-+The _tep_get_header_timestamp_size()_ function returns the size of timestamps,
-+in kernel context. The _tep_ argument is trace event parser context. This
-+information is retrieved from tracefs events/header_page, "timestamp" field.
-+
-+The _tep_is_old_format()_ function returns true if the kernel predates
-+the addition of events/header_page, otherwise it returns false.
++The _tep_set_cpus()_ function sets the number of CPUs, which have a tracing
++buffer representing it. The _tep_ argument is trace event parser context.
++The _cpu_ argument is the number of CPUs with tracing data.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_header_page_size()_ function returns the size of a long integer,
-+in bytes.
-+
-+The _tep_get_header_timestamp_size()_ function returns the size of timestamps,
-+in bytes.
-+
-+The _tep_is_old_format()_ function returns true, if an old kernel is used to
-+generate the tracing data, which has no event/header_page. If the kernel is new,
-+or _tep_ is NULL, false is returned.
++The _tep_get_cpus()_ functions returns the number of CPUs, which have tracing
++data recorded.
 +
 +EXAMPLE
 +-------
@@ -131,19 +115,9 @@ index 000000000000..615d117dc39f
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+	int longsize;
-+	int timesize;
-+	bool old;
-+
-+	longsize = tep_get_header_page_size(tep);
-+	timesize = tep_get_header_timestamp_size(tep);
-+	old = tep_is_old_format(tep);
-+
-+	printf ("%s kernel is used to generate the tracing data.\n",
-+		old?"Old":"New");
-+	printf("The size of a long integer is %d bytes.\n", longsize);
-+	printf("The timestamps size is %d bytes.\n", timesize);
++	tep_set_cpus(tep, 5);
 +...
++	printf("We have tracing data for %d CPUs", tep_get_cpus(tep));
 +--
 +
 +FILES
