@@ -2,109 +2,91 @@ Return-Path: <SRS0=scwk=TD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,T_DKIMWL_WL_HIGH,
-	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AFD3C43219
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 07:49:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B5F6C43219
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 08:26:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2885C2087F
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 07:49:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1556869752;
-	bh=ZgniHRv8E+BcrQYu8PwEidskt0uLyw99bsJIfZ4hwNM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=Ct/XgPDtt0xoLYaHaCJjMQKTVjJOB8yUA/f7oU5YeeAoX1rk+ELBV/eZlNF6dw3cy
-	 kxs/R7hgXlcJ0nOnxU19klWrbTMxqu2XR7MngQj+dP0bw9AuvyUNLoFByhp7payCAf
-	 Be31b0qLDlXvKNF9FpnbZm29PaugoFgvKty+o/Zo=
+	by mail.kernel.org (Postfix) with ESMTP id 1787A205F4
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 08:26:01 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kUnT+XWo"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbfECHtM (ORCPT
+        id S1726405AbfECIZ7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 3 May 2019 03:49:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725789AbfECHtL (ORCPT
+        Fri, 3 May 2019 04:25:59 -0400
+Received: from mail-it1-f195.google.com ([209.85.166.195]:50807 "EHLO
+        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725777AbfECIZ6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 03:49:11 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 906E9205F4;
-        Fri,  3 May 2019 07:49:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1556869751;
-        bh=ZgniHRv8E+BcrQYu8PwEidskt0uLyw99bsJIfZ4hwNM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cr7rRBaG88jGIikiLUaYEenv9V2UUDkhtXNE8mzQAA31d5RS4+md4UwuxPXADK4gJ
-         idpvQXfxU2wFw8wERCHdSJ2Ta2LAZDkrgxs2sGyogiHfaG/7z/enK4AsqH1VyeScnz
-         oUAsitHrQUVMDR36HP9INpQfYbiifOjI/WkcAUTE=
-Date:   Fri, 3 May 2019 09:49:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        atish patra <atishp04@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        Manoj Rao <linux@manojrajarao.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Shuah Khan <shuah@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v7 resend 1/2] Provide in-kernel headers to make
- extending kernel easier
-Message-ID: <20190503074908.GB27088@kroah.com>
-References: <20190426190430.172543-1-joel@joelfernandes.org>
- <20190427133844.GA29366@kroah.com>
- <20190429132602.GA165075@google.com>
- <20190429135455.GA2412@kroah.com>
- <CAK7LNARkGLQ_P4LSuC69QN8XPN47W5ujkDE3EauLrwnBgygsSA@mail.gmail.com>
- <20190429142425.GB29007@kroah.com>
- <20190503073007.GA5834@amd>
+        Fri, 3 May 2019 04:25:58 -0400
+Received: by mail-it1-f195.google.com with SMTP id q14so7864795itk.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 01:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lQEcgOqb/HFfyFWZBZgJ9YsXCTb2RoQyDAMslF7xpTg=;
+        b=kUnT+XWoXiXFDrIom+oRx4Osv3jcdpquEEMv0l+Fsft5/H81qTvzz0XlgO5O0jomfH
+         1s2EYLMOdmCpttV5IHstn725FFTJS6jUUjelmzFJrBAQ7nxQHdxsRpB4U0Fi0yjsURMr
+         UjidVfeG22KRnEbWBp0UAQEHWIZ9nLBx3vRtl1vN6Ji6Rm+vj0VvtFOjzvwxZnfHRRRA
+         InEImbSsX+J3V5KHQjEKhDZeBd06SsP0w3qghW2FLRV7FZ/e9uadLRcwE3R0ZYz1+AzJ
+         XZP9DjWC68+DqTfBXjjZ5k09I50Cer1oTY82JPJ1F/bemfeRqXfcWClqw2ZvyQWHBHRB
+         zddg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lQEcgOqb/HFfyFWZBZgJ9YsXCTb2RoQyDAMslF7xpTg=;
+        b=sPcG5qQDW0RDvMJJkc5hKM8D/AawaJ+ZbVFoYvIBpVvm2HkS2EadShDBoCyRCnHZcs
+         AtX3Mv44M6T/5dHoNDhjxUGk8I6VUFkWOEWenfCIBvi37MhKpkBW3JhnskeucY3irWfW
+         8NhAK0080HjPiwq0qhy9QDvxmLeK0GwtptvUK+nU+k96DNqEmhxt0KkKeHrl4QXM8FGN
+         t3Ry+nUCbOwWRn5W01UBxeU9OR7GLBW5Xp1KI8VKIhJrm9mjXxkoBHiVT7Qie4jdODHp
+         fptRP05aaxpPL2ogP5LWPvKPLrWWZsuvMH18oKtUWbw5v+d95vnGclapwd1urk9sY7D2
+         H6ag==
+X-Gm-Message-State: APjAAAWiikPXSl/Vm0E5tQ7KkTJSllnyxYAC0VxYhJXxtHrYTZsR3yH7
+        fpIctFfR6nd3nKBiW1OLZVsNr+B5+GOrYrOE6w==
+X-Google-Smtp-Source: APXvYqzDYKNeNSe8LGogR1q6dQUO5rndzagD/q+UzG3WioM6rfVqPd8fQWtMb/TUC2t9ETm9gST18A7LS6Cs87kJB1A=
+X-Received: by 2002:a24:b713:: with SMTP id h19mr5830957itf.73.1556871957548;
+ Fri, 03 May 2019 01:25:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190503073007.GA5834@amd>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+References: <20190502124536.32463-1-ykaradzhov@vmware.com>
+In-Reply-To: <20190502124536.32463-1-ykaradzhov@vmware.com>
+From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
+Date:   Fri, 3 May 2019 11:25:45 +0300
+Message-ID: <CAE0o1NsNek55HvAfiuOT2zn+B_PxAUuBbhr2Vx=EerWv_Heucg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kernel-shark: Enforce update of the OpenGL widget
+ when loading new session
+To:     Yordan Karadzhov <ykaradzhov@vmware.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, May 03, 2019 at 09:30:07AM +0200, Pavel Machek wrote:
-> > > > As you say, either is fine with me.
-> > > >
-> > > > > 2. Who is going to pull this patch: This seems a matter of where the header
-> > > > > archive resides. If it is in /sys/kernel/ then I am assuming Greg will pull
-> > > > > it.  Masahiro has given his Reviewed-by tag, is he the one to pull it?
-> > > >
-> > > > I can take it, but it probably should just go through the kbuild tree,
-> > > > as that makes more sense to me.
-> > > 
-> > > 
-> > > I do not want to take responsibility for this.
-> > 
-> > Hah, ok, I'll be glad to queue this up in my tree.  I'll take it now,
-> > and if people who really object to this being in /proc/ and want it in
-> > /sys/, we can add a follow-on patch before 5.2-final is out to move the
-> > file to that location.
-> 
-> People really object to having it in kernel in the first place.
+On Thu, May 2, 2019 at 3:46 PM Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
+>
+> This is needed in the case when the session was saved at different screen
+> resolution.
+>
+> Reported-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+> ---
+>  kernel-shark/src/KsGLWidget.hpp   | 2 ++
+>  kernel-shark/src/KsMainWindow.cpp | 3 +--
+>  kernel-shark/src/KsTraceGraph.cpp | 2 ++
+>  3 files changed, 5 insertions(+), 2 deletions(-)
 
-Then do not select that .config option, and all is good :)
+Both patches look good to me
+
+Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
+
+Cheers,
+
+-- Slavi
