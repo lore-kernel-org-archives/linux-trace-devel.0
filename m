@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6683C43219
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79E26C004C9
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 81BB5206C3
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 55869206C3
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbfECJLg (ORCPT
+        id S1727059AbfECJLh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 3 May 2019 05:11:36 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:40725 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbfECJLg (ORCPT
+        Fri, 3 May 2019 05:11:37 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:45338 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbfECJLh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 05:11:36 -0400
-Received: by mail-wr1-f65.google.com with SMTP id h4so6875794wre.7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:35 -0700 (PDT)
+        Fri, 3 May 2019 05:11:37 -0400
+Received: by mail-wr1-f67.google.com with SMTP id s15so6836117wra.12
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B+Ei2QhpQrkv3h8J1/NRM3Vibn/+b9Kac0vIj2+fXp8=;
-        b=V+y+uYlIvrLp48JFBwdBXT1Jwoicr41Z/tRJrFfEFk0q5j1UHqBHIkwKhDOvIMEAgA
-         uTJ3Lz95wLbqOuJe009Sx5YPXWjagSzwDoXGQjXNjL+c92K3hsR+CMRNshNpbrFy3ts8
-         Tw6jgyE+/RAkahxXYBak7qk0DsubdejYOgd0mL9+5poqel5AoCXsRqG8H/N/jgyKf/Ly
-         0vSJzbUeKbTv2WglC1WiTh63ss1bGNOO0IBgQ/zbShFpwgCkD+TmFC280Pt3QCyNsWCL
-         llqk8YM9ZF8qkE02FdQjgAtv+fn+NKEwQGHDox/sal3JZi15MLv9JcZ+Hr9TaAi76J5d
-         B2AQ==
-X-Gm-Message-State: APjAAAVBXVxKw/BlQJD/e9piNcZl5xDHmd+UBNAHaM7+Ryqs7s0w6zdd
-        YQEZNFa2u5EBw2WyGrNb6CppBb/2
-X-Google-Smtp-Source: APXvYqyz8CfFQkI8ZjN3zpj0/wSav7niAz3ubuXNASQWfmNTppvRQJJ7ihPSH/JaV5JoG/z7tWqHow==
-X-Received: by 2002:a5d:6384:: with SMTP id p4mr5946649wru.208.1556874694675;
-        Fri, 03 May 2019 02:11:34 -0700 (PDT)
+        bh=c7OpjGTjS/0SCcfU9EFvP5Z6UhyFladJ5cnJxnD1qJs=;
+        b=D+8W9W12h2JuOmyy7pV6iTAvoouKCYTJMtkxm+J2xBbdjNBid31RR+51sh6eaBs25n
+         CGfEIPqm65RtSv8QXb7lkfB1cgg1IjrfTxmtcTqkT68oQ2/c5h196H/SPRSy/xrDHWDo
+         2GFQgE0/hMgVnIaIsapu4iS+NizcbsCuOzKG8rnuFJAAje81xqcruxoNEEwlcbD5AAD6
+         xClcJ/3J1Jn1Lz5I6CftpzfTXA5mdiJhT8CxVQ3ZT2ZktSk56X2Q4bhkeeJBAMpa9aGW
+         4IsPXbBYLHAxtLiAeXeJ/5eEpjirEE5mhSDlmZ1AWTc0gh3OfKNycdFxZF3YHuv/RJOF
+         hd5w==
+X-Gm-Message-State: APjAAAVgNCeETuHJ0/qe6Mi65k+IW9TjWeZQNN6SzY71xSFKLVxe8/4y
+        aiKFKkXNn7Oe9QMPqxqpdDE=
+X-Google-Smtp-Source: APXvYqzcXKE+I0/r5ouLqt7/FrvaxkdvTDbYOnzaCPNcDWycweJMKomeaXS1c5sddSXHJNi1z7b5Sw==
+X-Received: by 2002:a5d:604d:: with SMTP id j13mr6025302wrt.55.1556874695457;
+        Fri, 03 May 2019 02:11:35 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.33
+        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.34
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 02:11:34 -0700 (PDT)
+        Fri, 03 May 2019 02:11:35 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 16/26] tools/lib/traceevent: Man pages for libtraceevent event get APIs
-Date:   Fri,  3 May 2019 12:11:09 +0300
-Message-Id: <20190503091119.23399-17-tstoyanov@vmware.com>
+Subject: [PATCH v6 17/26] tools/lib/traceevent: Man pages find field APIs
+Date:   Fri,  3 May 2019 12:11:10 +0300
+Message-Id: <20190503091119.23399-18-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190503091119.23399-1-tstoyanov@vmware.com>
 References: <20190503091119.23399-1-tstoyanov@vmware.com>
@@ -60,28 +60,29 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Create man pages for libtraceevent APIs:
-  tep_get_event(),
-  tep_get_first_event(),
-  tep_get_events_count()
+  tep_find_common_field(),
+  tep_find_field()
+  tep_find_any_field()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-event_get.txt | 99 +++++++++++++++++++
- 1 file changed, 99 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_get.txt
+ .../libtraceevent-field_find.txt              | 118 ++++++++++++++++++
+ 1 file changed, 118 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_get.txt b/tools/lib/traceevent/Documentation/libtraceevent-event_get.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_find.txt b/tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
 new file mode 100644
-index 000000000000..6525092fc417
+index 000000000000..0896af5b9eff
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-event_get.txt
-@@ -0,0 +1,99 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
+@@ -0,0 +1,118 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_get_event, tep_get_first_event, tep_get_events_count - Access events.
++tep_find_common_field, tep_find_field, tep_find_any_field -
++Search for a field in an event.
 +
 +SYNOPSIS
 +--------
@@ -89,35 +90,30 @@ index 000000000000..6525092fc417
 +--
 +*#include <event-parse.h>*
 +
-+struct tep_event pass:[*]*tep_get_event*(struct tep_handle pass:[*]_tep_, int _index_);
-+struct tep_event pass:[*]*tep_get_first_event*(struct tep_handle pass:[*]_tep_);
-+int *tep_get_events_count*(struct tep_handle pass:[*]_tep_);
++struct tep_format_field pass:[*]*tep_find_common_field*(struct tep_event pass:[*]_event_, const char pass:[*]_name_);
++struct tep_format_field pass:[*]*tep_find_field*(struct tep_event_ormat pass:[*]_event_, const char pass:[*]_name_);
++struct tep_format_field pass:[*]*tep_find_any_field*(struct tep_event pass:[*]_event_, const char pass:[*]_name_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_get_event()_ function returns a pointer to event at the given _index_.
-+The _tep_ argument is trace event parser context, the _index_ is the index of
-+the requested event.
++These functions search for a field with given name in an event. The field
++returned can be used to find the field content from within a data record.
 +
-+The _tep_get_first_event()_ function returns a pointer to the first event.
-+As events are stored in an array, this function returns the pointer to the
-+beginning of the array. The _tep_ argument is trace event parser context.
++The _tep_find_common_field()_ function searches for a common field with _name_
++in the _event_.
 +
-+The _tep_get_events_count()_ function returns the number of the events
-+in the array. The _tep_ argument is trace event parser context.
++The _tep_find_field()_ function searches for an event specific field with
++_name_ in the _event_.
++
++The _tep_find_any_field()_ function searches for any field with _name_ in the
++_event_.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_event()_ returns a pointer to the event located at _index_.
-+NULL is returned in case of error, in case there are no events or _index_ is
-+out of range.
-+
-+The _tep_get_first_event()_ returns a pointer to the first event. NULL is
-+returned in case of error, or in case there are no events.
-+
-+The _tep_get_events_count()_ returns the number of the events. 0 is
-+returned in case of error, or in case there are no events.
++The _tep_find_common_field(), _tep_find_field()_ and _tep_find_any_field()_
++functions return a pointer to the found field, or NULL in case there is no field
++with the requested name.
 +
 +EXAMPLE
 +-------
@@ -125,22 +121,45 @@ index 000000000000..6525092fc417
 +--
 +#include <event-parse.h>
 +...
-+struct tep_handle *tep = tep_alloc();
-+...
-+int i,count = tep_get_events_count(tep);
-+struct tep_event *event, *events = tep_get_first_event(tep);
++void get_htimer_info(struct tep_handle *tep, struct tep_record *record)
++{
++	struct tep_format_field *field;
++	struct tep_event *event;
++	long long softexpires;
++	int mode;
++	int pid;
 +
-+if (events == NULL) {
-+	/* There are no events */
-+} else {
-+	for (i = 0; i < count; i++) {
-+		event = (events+i);
-+		/* process events[i] */
++	event = tep_find_event_by_name(tep, "timer", "hrtimer_start");
++
++	field = tep_find_common_field(event, "common_pid");
++	if (field == NULL) {
++		/* Cannot find "common_pid" field in the event */
++	} else {
++		/* Get pid from the data record */
++		pid = tep_read_number(tep, record->data + field->offset,
++				      field->size);
 +	}
 +
-+	/* Get the last event */
-+	event = tep_get_event(tep, count-1);
++	field = tep_find_field(event, "softexpires");
++	if (field == NULL) {
++		/* Cannot find "softexpires" event specific field in the event */
++	} else {
++		/* Get softexpires parameter from the data record */
++		softexpires = tep_read_number(tep, record->data + field->offset,
++					      field->size);
++	}
++
++	field = tep_find_any_field(event, "mode");
++	if (field == NULL) {
++		/* Cannot find "mode" field in the event */
++	} else
++	{
++		/* Get mode parameter from the data record */
++		mode = tep_read_number(tep, record->data + field->offset,
++				       field->size);
++	}
 +}
++...
 +--
 +
 +FILES
