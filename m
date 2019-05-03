@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25D83C43219
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADBEDC04AAA
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B6C4E206C3
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 88D4F206C3
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbfECJL1 (ORCPT
+        id S1726842AbfECJL2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 3 May 2019 05:11:27 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:40714 "EHLO
+        Fri, 3 May 2019 05:11:28 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:36059 "EHLO
         mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726842AbfECJL1 (ORCPT
+        with ESMTP id S1726950AbfECJL2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 05:11:27 -0400
-Received: by mail-wr1-f68.google.com with SMTP id h4so6875139wre.7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:26 -0700 (PDT)
+        Fri, 3 May 2019 05:11:28 -0400
+Received: by mail-wr1-f68.google.com with SMTP id o4so6904407wra.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1KgDXdXVNQ5+zLav00nRVLOERuuQFC9ZZ+74zZDhbYU=;
-        b=D9m9+4AUh8PfEv3ApMYRS68q38BTkUEp2s9w1cnNYPcXLMg5DrhZSi8ZR83okzRO14
-         bH0X/UhvQmgw8jbMQ43Tduah2RkOLwFA1wP5dVoIJ56WwDZ/8+f4XF3eUj4H+HDPx+ra
-         0488zfOznDuDpDLf5S2G4QnVENwaa5+yzIAJNtSQEULYi3IgYm0h6YdhCMT+gqmZ4fvD
-         zONsL1AukWqzcVX/JSnjMQzOwQMwXGCSPjlcjR/0BE7o2X0gVhpL5QI0k11ZR8f2MQTF
-         sTTBAk0jd+XtOm6UZzrU0k0P4IzPfXbp9ZspBI2kaJX5T/0rPnpqOrFwhXsd4B0IT1Yp
-         hGzg==
-X-Gm-Message-State: APjAAAUONLlyBYO4enkyUtF2J8ZeSN8uQ9It7A+BwsT9KPpJSaSneYaZ
-        RouUG5Z6UyfQAhLXdLEvOvs=
-X-Google-Smtp-Source: APXvYqzEZnRwx2fGQ4sGFTJv4Jm9/qr6N3CsNpHOOX3GLDFoZtBD6Tz5RYL0sFA64wqR0D4pWJPWCw==
-X-Received: by 2002:adf:b611:: with SMTP id f17mr6362511wre.162.1556874685789;
-        Fri, 03 May 2019 02:11:25 -0700 (PDT)
+        bh=7bejhqSWNJ6yrsYhJqtY8KvJICS0zi1EcjABl3JOxyQ=;
+        b=n2PTRKEu6dzu7zBqXjxl1Hvi4UepvY/0ecxHJ5A6a5jiM47c6azZmj5uKtKr134CvC
+         G0WPvsuIJA4xZVj+cIS4bczeLukhk3OvDXQnvm+adPm880EVygwNVflv1jbpJoIu/gQc
+         JTMnf9PW20SYAt/v83jLBfNansw7arB2u3ty1rftKO8v3BMgmJ/MYErUJe0jDlmac8IO
+         j5pb/RZHNaoe69t4pG6mzB3Inm3XxYnkBpYeOnWX1dJ3wDDd85r8Ro20LFHg6j2fk+Pg
+         yKPU0OmDR95dLJ9s4kLtvhSnjDodpcqandsad08pes5w1ee3pjFRiEHZ2m2Kwpup1XsH
+         xc3A==
+X-Gm-Message-State: APjAAAW89eKbREDgjQDdE76rrbD7+uRL4qOpV/3BTtN2nbaDoiJAZ/en
+        5Bn9nDPJHVvBQHWTMrhhR+w/MrcN
+X-Google-Smtp-Source: APXvYqyRAv8x+dX8GW7dVUoGp6PAyqOIbmyv0yhPEiRkyoZIgvQts6etY2uWoJKsADKNHErwOzAgwA==
+X-Received: by 2002:a05:6000:1201:: with SMTP id e1mr6358021wrx.49.1556874686556;
+        Fri, 03 May 2019 02:11:26 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
         by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.25
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 02:11:25 -0700 (PDT)
+        Fri, 03 May 2019 02:11:26 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 05/26] tools/lib/traceevent: Man page for get/set cpus APIs
-Date:   Fri,  3 May 2019 12:10:58 +0300
-Message-Id: <20190503091119.23399-6-tstoyanov@vmware.com>
+Subject: [PATCH v6 06/26] tools/lib/traceevent: Man page for file endian APIs
+Date:   Fri,  3 May 2019 12:10:59 +0300
+Message-Id: <20190503091119.23399-7-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190503091119.23399-1-tstoyanov@vmware.com>
 References: <20190503091119.23399-1-tstoyanov@vmware.com>
@@ -60,28 +60,28 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Create man pages for libtraceevent APIs:
- tep_get_cpus(),
- tep_set_cpus()
+  tep_is_file_bigendian(),
+  tep_set_file_bigendian()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-cpus.txt      | 77 +++++++++++++++++++
- 1 file changed, 77 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
+ .../libtraceevent-file_endian.txt             | 91 +++++++++++++++++++
+ 1 file changed, 91 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-file_endian.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt b/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-file_endian.txt b/tools/lib/traceevent/Documentation/libtraceevent-file_endian.txt
 new file mode 100644
-index 000000000000..5ad70e43b752
+index 000000000000..f401ad311047
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
-@@ -0,0 +1,77 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-file_endian.txt
+@@ -0,0 +1,91 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_get_cpus, tep_set_cpus - Get / set the number of CPUs, which have a tracing
-+buffer representing it. Note, the buffer may be empty.
++tep_is_file_bigendian, tep_set_file_bigendian - Get / set the endianness of the
++raw data being accessed by the tep handler.
 +
 +SYNOPSIS
 +--------
@@ -89,23 +89,33 @@ index 000000000000..5ad70e43b752
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_get_cpus*(struct tep_handle pass:[*]_tep_);
-+void *tep_set_cpus*(struct tep_handle pass:[*]_tep_, int _cpus_);
-+--
++enum *tep_endian* {
++	TEP_LITTLE_ENDIAN = 0,
++	TEP_BIG_ENDIAN
++};
 +
++bool *tep_is_file_bigendian*(struct tep_handle pass:[*]_tep_);
++void *tep_set_file_bigendian*(struct tep_handle pass:[*]_tep_, enum tep_endian _endian_);
++
++--
 +DESCRIPTION
 +-----------
-+The _tep_get_cpus()_ function gets the number of CPUs, which have a tracing
-+buffer representing it. The _tep_ argument is trace event parser context.
++The _tep_is_file_bigendian()_ function gets the endianness of the raw data,
++being accessed by the tep handler. The _tep_ argument is trace event parser
++context.
 +
-+The _tep_set_cpus()_ function sets the number of CPUs, which have a tracing
-+buffer representing it. The _tep_ argument is trace event parser context.
-+The _cpu_ argument is the number of CPUs with tracing data.
-+
++The _tep_set_file_bigendian()_ function sets the endianness of raw data being
++accessed by the tep handler. The _tep_ argument is trace event parser context.
++[verse]
++--
++The _endian_ argument is the endianness:
++	_TEP_LITTLE_ENDIAN_ - the raw data is in little endian format,
++	_TEP_BIG_ENDIAN_ - the raw data is in big endian format.
++--
 +RETURN VALUE
 +------------
-+The _tep_get_cpus()_ functions returns the number of CPUs, which have tracing
-+data recorded.
++The _tep_is_file_bigendian()_ function returns true if the data is in bigendian
++format, false otherwise.
 +
 +EXAMPLE
 +-------
@@ -115,9 +125,13 @@ index 000000000000..5ad70e43b752
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+	tep_set_cpus(tep, 5);
++	tep_set_file_bigendian(tep, TEP_LITTLE_ENDIAN);
 +...
-+	printf("We have tracing data for %d CPUs", tep_get_cpus(tep));
++	if (tep_is_file_bigendian(tep)) {
++		/* The raw data is in big endian */
++	} else {
++		/* The raw data is in little endian */
++	}
 +--
 +
 +FILES
