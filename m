@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1AA1C04AAA
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 071E4C46460
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8C4E52087F
+	by mail.kernel.org (Postfix) with ESMTP id D746A206C3
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbfECJLm (ORCPT
+        id S1727060AbfECJLm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 3 May 2019 05:11:42 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55806 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727060AbfECJLm (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:42834 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbfECJLm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 3 May 2019 05:11:42 -0400
-Received: by mail-wm1-f65.google.com with SMTP id y2so5858881wmi.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:40 -0700 (PDT)
+Received: by mail-wr1-f67.google.com with SMTP id l2so6873518wrb.9
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WL7kfJV+x5tupF6LShGv+4DvG8dceUafnMrFyRO/ApM=;
-        b=KJApRCp6dumqiLjPU3xrlnJvttXdeSHyaby0/Fl3g2wuDSVJCSvZMYU8QNmShg/8p4
-         nRxkFlqY4/O34TTof/xoUlroF7BaUPhNKr1BdUf88P8pVVQJVLCc8PMtKeTCngtBYYiD
-         8jvFaFXG1cE1jykerLJwm070WMlw0vEi2Ym5VEgUXSDu2O/iMW2DhOCe8AW/4zByLy2W
-         5117AMxhTmNvvy6BbYw/cSv3Ii71aCCr8dXj6GW68jaBChB8C3OCSLuQlKEqIHggiISy
-         u/J3dVpYBru89f5zy1A8JzGGQxqTSjdp65GCm/WMvZpZTs70SfjaIxfzwIhIjnxYvK1R
-         m8HQ==
-X-Gm-Message-State: APjAAAVWkj4/IznPRs8JwXaoC4Iev9AuOXxJ2scwut4wFTLauBfB5gi6
-        ANsFmBoklZtjh0R2jfR4Noc=
-X-Google-Smtp-Source: APXvYqyaUbpEM6JjoZcHR4oStnT970MYGwNrAEvmtrlNDIDcZDehpfE2Ck7HFJvubpUm7K6gZo22OQ==
-X-Received: by 2002:a7b:cf0c:: with SMTP id l12mr5288425wmg.132.1556874699486;
-        Fri, 03 May 2019 02:11:39 -0700 (PDT)
+        bh=hvSaUKiMrEKZHSsIz9xkKhvhxLIm2GB1TGjnPbucNFo=;
+        b=kkpbf+geX3ewdNJo2yeUALYkMAW1iasiHsJAX5jsBZ6FfqrI38RScxftf8VZmScCAQ
+         1TJYKSTdlC3U3amhicDIkpUer3xfO298R7pPvtpYkEHAdLpmtRRDUOHN6nRlFA4s1Yj8
+         wzXaMZK1+Nz52K7p4XZGkZ3v83uAbdDi2SEcPzTFF5DKoacOxgJ5DtyJO1LWT5t/d4Hz
+         KAfIitd4XBSx430ZLjtG5o3T6RrV87O8LEhYivv8W/TgS0oHWX1mfRlg/wwXdNvJ76XW
+         vLW7Z2Bh2cUBkxM0LjdmKLh3yyJEB2I+oMy6GaB5UqLlNmF8OStuF2qv66NxF2U5ul9u
+         SzfQ==
+X-Gm-Message-State: APjAAAXXF0SHopSieU+K8L686xLtrW8CMGq7FsYc0Ko7HZ2uNjk6kZWM
+        2mknGldYhsXwpqHWQfeXYaAowdzf
+X-Google-Smtp-Source: APXvYqxV9UQ4k4IZfRgMmHFmlVdvONVuudFGl6x2G9PrOcvMQO6VKzyQwyLS3zZV3fbeJxO5kqpQ/w==
+X-Received: by 2002:adf:ef8c:: with SMTP id d12mr2757287wro.320.1556874700964;
+        Fri, 03 May 2019 02:11:40 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.38
+        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.40
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 02:11:39 -0700 (PDT)
+        Fri, 03 May 2019 02:11:40 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 22/26] tools/lib/traceevent: Man pages for event filter APIs
-Date:   Fri,  3 May 2019 12:11:15 +0300
-Message-Id: <20190503091119.23399-23-tstoyanov@vmware.com>
+Subject: [PATCH v6 24/26] tools/lib/traceevent: Man page for tep_parse_header_page()
+Date:   Fri,  3 May 2019 12:11:17 +0300
+Message-Id: <20190503091119.23399-25-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190503091119.23399-1-tstoyanov@vmware.com>
 References: <20190503091119.23399-1-tstoyanov@vmware.com>
@@ -59,40 +59,26 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added new man pages, describing libtraceevent event filter APIs:
-  tep_filter_alloc()
-  tep_filter_free()
-  tep_filter_reset()
-  tep_filter_add_filter_str()
-  tep_filter_strerror()
-  tep_event_filtered()
-  tep_filter_remove_event()
-  tep_filter_match()
-  tep_filter_copy()
-  tep_filter_compare()
-  tep_filter_make_string()
+Create man page for tep_parse_header_page() libtraceevent API.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../Documentation/libtraceevent-filter.txt    | 209 ++++++++++++++++++
- 1 file changed, 209 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter.txt
+ .../libtraceevent-parse_head.txt              | 82 +++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter.txt b/tools/lib/traceevent/Documentation/libtraceevent-filter.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
 new file mode 100644
-index 000000000000..4a9962d8cb59
+index 000000000000..c90f16c7d8e6
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter.txt
-@@ -0,0 +1,209 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
+@@ -0,0 +1,82 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_filter_alloc, tep_filter_free, tep_filter_reset, tep_filter_make_string,
-+tep_filter_copy, tep_filter_compare, tep_filter_match, tep_event_filtered,
-+tep_filter_remove_event, tep_filter_strerror, tep_filter_add_filter_str -
-+Event filter related APIs.
++tep_parse_header_page - Parses the data stored in the header page.
 +
 +SYNOPSIS
 +--------
@@ -100,93 +86,25 @@ index 000000000000..4a9962d8cb59
 +--
 +*#include <event-parse.h>*
 +
-+struct tep_event_filter pass:[*]*tep_filter_alloc*(struct tep_handle pass:[*]_tep_);
-+void *tep_filter_free*(struct tep_event_filter pass:[*]_filter_);
-+void *tep_filter_reset*(struct tep_event_filter pass:[*]_filter_);
-+enum tep_errno *tep_filter_add_filter_str*(struct tep_event_filter pass:[*]_filter_, const char pass:[*]_filter_str_);
-+int *tep_event_filtered*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
-+int *tep_filter_remove_event*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
-+enum tep_errno *tep_filter_match*(struct tep_event_filter pass:[*]_filter_, struct tep_record pass:[*]_record_);
-+int *tep_filter_copy*(struct tep_event_filter pass:[*]_dest_, struct tep_event_filter pass:[*]_source_);
-+int *tep_filter_compare*(struct tep_event_filter pass:[*]_filter1_, struct tep_event_filter pass:[*]_filter2_);
-+char pass:[*]*tep_filter_make_string*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
-+int *tep_filter_strerror*(struct tep_event_filter pass:[*]_filter_, enum tep_errno _err_, char pass:[*]buf, size_t _buflen_);
++int *tep_parse_header_page*(struct tep_handle pass:[*]_tep_, char pass:[*]_buf_, unsigned long _size_, int _long_size_);
 +--
 +
 +DESCRIPTION
 +-----------
-+Filters can be attached to traced events. They can be used to filter out various
-+events when outputting them. Each event can be filtered based on its parameters,
-+described in the event's format file. This set of functions can be used to
-+create, delete, modify and attach event filters.
++The _tep_parse_header_page()_ function parses the header page data from _buf_,
++and initializes the _tep_, trace event parser context, with it. The buffer
++_buf_ is with _size_, and is supposed to be copied from
++tracefs/events/header_page.
 +
-+The _tep_filter_alloc()_ function creates a new event filter. The _tep_ argument
-+is the trace event parser context.
-+
-+The _tep_filter_free()_ function frees an event filter and all resources that it
-+had used.
-+
-+The _tep_filter_reset()_ function removes all rules from an event filter and
-+resets it.
-+
-+The _tep_filter_add_filter_str()_ function adds a new rule to the _filter_. The
-+_filter_str_ argument is the filter string, that contains the rule.
-+
-+The _tep_event_filtered()_ function checks if the event with _event_id_ has
-+_filter_.
-+
-+The _tep_filter_remove_event()_ function removes a _filter_ for an event with
-+_event_id_.
-+
-+The _tep_filter_match()_ function tests if a _record_ matches given _filter_.
-+
-+The _tep_filter_copy()_ function copies a _source_ filter into a _dest_ filter.
-+
-+The _tep_filter_compare()_ function compares two filers - _filter1_ and _filter2_.
-+
-+The _tep_filter_make_string()_ function constructs a string, displaying
-+the _filter_ contents for given _event_id_.
-+
-+The _tep_filter_strerror()_ function copies the _filter_ error buffer into the
-+given _buf_ with the size _buflen_. If the error buffer is empty, in the _buf_
-+is copied a string, describing the error _err_.
++Some old kernels do not have header page info, in this case the
++_tep_parse_header_page()_ function  can be called with _size_ equal to 0. The
++_tep_ context is initialized with default values. The _long_size_ can be used in
++this use case, to set the size of a long integer to be used.
 +
 +RETURN VALUE
 +------------
-+The _tep_filter_alloc()_ function returns a pointer to the newly created event
-+filter, or NULL in case of an error.
-+
-+The _tep_filter_add_filter_str()_ function returns 0 if the rule was
-+successfully added or a negative error code.  Use _tep_filter_strerror()_ to see
-+actual error message in case of an error.
-+
-+The _tep_event_filtered()_ function returns 1 if the filter is found for given
-+event, or 0 otherwise.
-+
-+The _tep_filter_remove_event()_ function returns 1 if the vent was removed, or
-+0 if the event was not found.
-+
-+The _tep_filter_match()_ function returns _tep_errno_, according to the result:
-+[verse]
-+--
-+_pass:[TEP_ERRNO__FILTER_MATCH]_	- filter found for event, the record matches.
-+_pass:[TEP_ERRNO__FILTER_MISS]_		- filter found for event, the record does not match.
-+_pass:[TEP_ERRNO__FILTER_NOT_FOUND]_	- no filter found for record's event.
-+_pass:[TEP_ERRNO__NO_FILTER]_		- no rules in the filter.
-+--
-+or any other _tep_errno_, if an error occurred during the test.
-+
-+The _tep_filter_copy()_ function returns 0 on success or -1 if not all rules
-+ were copied.
-+
-+The _tep_filter_compare()_ function returns 1 if the two filters hold the same
-+content, or 0 if they do not.
-+
-+The _tep_filter_make_string()_ function returns a string, which must be freed
-+with free(), or NULL in case of an error.
-+
-+The _tep_filter_strerror()_ function returns 0 if message was filled
-+successfully, or -1 in case of an error.
++The _tep_parse_header_page()_ function returns 0 in case of success, or -1
++in case of an error.
 +
 +EXAMPLE
 +-------
@@ -196,68 +114,12 @@ index 000000000000..4a9962d8cb59
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+char errstr[200];
-+int ret;
-+
-+struct tep_event_filter *filter = tep_filter_alloc(tep);
-+struct tep_event_filter *filter1 = tep_filter_alloc(tep);
-+ret = tep_filter_add_filter_str(filter, "sched/sched_wakeup:target_cpu==1");
-+if(ret < 0) {
-+	tep_filter_strerror(filter, ret, errstr, sizeof(errstr));
-+	/* Failed to add a new rule to the filter, the error string is in errstr */
++char *buf;
++int size;
++buf = read_file("/sys/kernel/tracing/events/header_page", &size);
++if (tep_parse_header_page(tep, buf, size, sizeof(unsigned long)) != 0) {
++	/* Failed to parse the header page */
 +}
-+if (tep_filter_copy(filter1, filter) != 0) {
-+	/* Failed to copy filter in filter1 */
-+}
-+...
-+if (tep_filter_compare(filter, filter1) != 1) {
-+	/* Both filters are different */
-+}
-+...
-+void process_record(struct tep_handle *tep, struct tep_record *record)
-+{
-+	struct tep_event *event;
-+	char *fstring;
-+
-+	event = tep_find_event_by_record(tep, record);
-+
-+	if (tep_event_filtered(filter, event->id) == 1) {
-+		/* The event has filter */
-+		fstring = tep_filter_make_string(filter, event->id);
-+		if (fstring != NULL) {
-+			/* The filter for the event is in fstring */
-+			free(fstring);
-+		}
-+	}
-+
-+	switch (tep_filter_match(filter, record)) {
-+	case TEP_ERRNO__FILTER_MATCH:
-+		/* The filter matches the record */
-+		break;
-+	case TEP_ERRNO__FILTER_MISS:
-+		/* The filter does not match the record */
-+		break;
-+	case TEP_ERRNO__FILTER_NOT_FOUND:
-+		/* No filter found for record's event */
-+		break;
-+	case TEP_ERRNO__NO_FILTER:
-+		/* There are no rules in the filter */
-+		break
-+	default:
-+		/* An error occurred during the test */
-+		break;
-+	}
-+
-+	if (tep_filter_remove_event(filter, event->id) == 1) {
-+		/* The event was removed from the filter */
-+	}
-+}
-+
-+...
-+tep_filter_reset(filter);
-+...
-+tep_filter_free(filter);
-+tep_filter_free(filter1);
 +...
 +--
 +
