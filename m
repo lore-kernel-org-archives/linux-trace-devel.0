@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0275C43219
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96274C04AAA
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CB51A206C3
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 71FD62089E
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbfECJL3 (ORCPT
+        id S1727022AbfECJLa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 3 May 2019 05:11:29 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:55793 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbfECJL3 (ORCPT
+        Fri, 3 May 2019 05:11:30 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:37509 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbfECJLa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 05:11:29 -0400
-Received: by mail-wm1-f66.google.com with SMTP id y2so5858192wmi.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:28 -0700 (PDT)
+        Fri, 3 May 2019 05:11:30 -0400
+Received: by mail-wr1-f67.google.com with SMTP id k23so6880475wrd.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=E9vt/G/DyNCdWLgRQJPQIBL7aO506BRCRf057OJgGtE=;
-        b=MOBq1zL4fOHKcITr65ek4g8LtVPQ9VXm23ORHbF0qCClRVybTpm566hIwUWWpIqY+Y
-         pyfZ75JAZNsFIv1d5HaN1SH9DI/pAMRs154A1xcz7yoHG9kIMPUwxzyM6taNi1IoV3dT
-         hluFVFrG4v319v35f2KiYNMTAHH9NSspOZOdoDmPZupjW7wlgZfdkuc4SmjzBReSoBOi
-         RN0XafZ1wiscHsslG8hBYfQGppXDDXgWGdx4EvI3xp3LNqAGhZBLS0z49l/qc2axzpBM
-         1H5FiIW5hPB7Qc2L+pSC9EkH0mSz5EKzYUseybFytACzfaualMvNKulWCNpCqAh3B4iD
-         5yxw==
-X-Gm-Message-State: APjAAAX4Dz2rLD4LM18/FgOh7SaXEgOLJciVAXqpJPEGhH5e6x5m8DkJ
-        CoDw8KRIFCSwUTWdy2NjNxM=
-X-Google-Smtp-Source: APXvYqzht9nu13MWHtghQZ7D6/rVm7sRh6HgVDvkTJpT3LFqytC00goiFeEsoY+cHI3w1usBE6E6DQ==
-X-Received: by 2002:a1c:a753:: with SMTP id q80mr5489428wme.120.1556874687748;
-        Fri, 03 May 2019 02:11:27 -0700 (PDT)
+        bh=4xSuZZbHlNlsu6ymSziPSFNQpccmVlofHngbwQkqMgE=;
+        b=Cw/AjzXzFxOwzoK+/aM9FZPtqq8BR7nxmQHRvcgyrogF3sXaTNDd9IMrUvstTcPEoD
+         Z7pyG0wJAWghQPa/s82VJCDy5pCVzU8afw1jMCkf2zdl9ibqN/Y5SSHqRfx00lo063OG
+         1cDWklerVpkr5VfvlGFGtKRgmIu116kz3IaL0CdtmHdwQ/2rAIOHOVkyFOZXdi5Gzjb3
+         9iDwvARjOcWVB52nu7qhiqp9HLoPuouTFpEL9CNBnP0Zo6JSmQ6Jei6CJmZjePmHRKzY
+         hltr1iS8JhiTdkuVw/2AA1CF1baBOygGr3lEXm6dON/77rUrAgZwKvfOUl+PWIEuH9Ko
+         pqSg==
+X-Gm-Message-State: APjAAAWSBptMpkfD/3O4t9kfFox+ewGNaSqWD8kZD3LYyO8FueDGa/FW
+        ChEvAcGf6AXnYcis8klM0Z+WSH+K
+X-Google-Smtp-Source: APXvYqyc7RxJ23rXVZMmoqCGF+gyURA85CvvzRcPTIupmmrklxF1w7hnVu3XRJumlbJMgdGEei+Ktg==
+X-Received: by 2002:a5d:52c6:: with SMTP id r6mr6371465wrv.131.1556874688524;
+        Fri, 03 May 2019 02:11:28 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.26
+        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.27
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 02:11:26 -0700 (PDT)
+        Fri, 03 May 2019 02:11:28 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 07/26] tools/lib/traceevent: Man page for host endian APIs
-Date:   Fri,  3 May 2019 12:11:00 +0300
-Message-Id: <20190503091119.23399-8-tstoyanov@vmware.com>
+Subject: [PATCH v6 08/26] tools/lib/traceevent: Man page for page size APIs
+Date:   Fri,  3 May 2019 12:11:01 +0300
+Message-Id: <20190503091119.23399-9-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190503091119.23399-1-tstoyanov@vmware.com>
 References: <20190503091119.23399-1-tstoyanov@vmware.com>
@@ -60,29 +60,28 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Create man pages for libtraceevent APIs:
-  tep_is_bigendian(),
-  tep_is_local_bigendian(),
-  tep_set_local_bigendian()
+  tep_get_page_size()
+  tep_set_page_size()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-host_endian.txt             | 104 ++++++++++++++++++
- 1 file changed, 104 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
+ .../Documentation/libtraceevent-page_size.txt | 82 +++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt b/tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
 new file mode 100644
-index 000000000000..d5d375eb8d1e
+index 000000000000..452c0cfa1822
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
-@@ -0,0 +1,104 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
+@@ -0,0 +1,82 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_is_bigendian, tep_is_local_bigendian, tep_set_local_bigendian - Get / set
-+the endianness of the local machine.
++tep_get_page_size, tep_set_page_size - Get / set the size of a memory page on
++the machine, where the trace is generated
 +
 +SYNOPSIS
 +--------
@@ -90,61 +89,39 @@ index 000000000000..d5d375eb8d1e
 +--
 +*#include <event-parse.h>*
 +
-+enum *tep_endian* {
-+	TEP_LITTLE_ENDIAN = 0,
-+	TEP_BIG_ENDIAN
-+};
-+
-+int *tep_is_bigendian*(void);
-+bool *tep_is_local_bigendian*(struct tep_handle pass:[*]_tep_);
-+void *tep_set_local_bigendian*(struct tep_handle pass:[*]_tep_, enum tep_endian _endian_);
++int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
++void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_);
 +--
 +
 +DESCRIPTION
 +-----------
++The _tep_get_page_size()_ function returns the size of a memory page on
++the machine, where the trace is generated. The _tep_ argument is trace
++event parser context.
 +
-+The _tep_is_bigendian()_ gets the endianness of the machine, executing
-+the function.
-+
-+The _tep_is_local_bigendian()_ function gets the endianness of the local
-+machine, saved in the _tep_ handler. The _tep_ argument is the trace event
-+parser context. This API is a bit faster than _tep_is_bigendian()_, as it
-+returns cached endianness of the local machine instead of checking it each time.
-+
-+The _tep_set_local_bigendian()_ function sets the endianness of the local
-+machine in the _tep_ handler. The _tep_ argument is trace event parser context.
-+The _endian_ argument is the endianness:
-+[verse]
-+--
-+	_TEP_LITTLE_ENDIAN_ - the machine is little endian,
-+	_TEP_BIG_ENDIAN_ - the machine is big endian.
-+--
++The _tep_set_page_size()_ function stores in the _tep_ context the size of a
++memory page on the machine, where the trace is generated.
++The _tep_ argument is trace event parser context.
++The _page_size_ argument is the size of a memory page, in bytes.
 +
 +RETURN VALUE
 +------------
-+The _tep_is_bigendian()_ function returns non zero if the endianness of the
-+machine, executing the code, is big endian and zero otherwise.
-+
-+The _tep_is_local_bigendian()_ function returns true, if the endianness of the
-+local machine, saved in the _tep_ handler, is big endian, or false otherwise.
++The _tep_get_page_size()_ function returns size of the memory page, in bytes.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
++#include <unistd.h>
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+	if (tep_is_bigendian())
-+		tep_set_local_bigendian(tep, TEP_BIG_ENDIAN);
-+	else
-+		tep_set_local_bigendian(tep, TEP_LITTLE_ENDIAN);
-+...
-+	if (tep_is_local_bigendian(tep))
-+		printf("This machine you are running on is bigendian\n");
-+	else
-+		printf("This machine you are running on is little endian\n");
++	int page_size = getpagesize();
++
++	tep_set_page_size(tep, page_size);
++
++	printf("The page size for this machine is %d\n", tep_get_page_size(tep));
 +
 +--
 +
