@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61E33C004C9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7EFCC43219
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3CF7D206C3
+	by mail.kernel.org (Postfix) with ESMTP id C3B82206C3
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbfECJLk (ORCPT
+        id S1727073AbfECJLk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 3 May 2019 05:11:40 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:35114 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727060AbfECJLj (ORCPT
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43715 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726950AbfECJLk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 05:11:39 -0400
-Received: by mail-wm1-f65.google.com with SMTP id y197so5824273wmd.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:38 -0700 (PDT)
+        Fri, 3 May 2019 05:11:40 -0400
+Received: by mail-wr1-f65.google.com with SMTP id a12so6865400wrq.10
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=n2QFBROvX+ZkyelCN4SBkujc7Waj64W+cUz3iKlUioI=;
-        b=L2+2v7bAVPEmE2xdJId/4MpHwPEzhCZVD9Rmdr6gUru98xO3xuYa8bsqSYCyaL+d1W
-         JSIb32CYy/DLfFgDXxlUkGo2Y0fLCDp5kRPcktucdKX3ZTM1B6EEP3vdRPHL3rnYdKvp
-         3YQj4Oxs4zLW5RYfAywzVswoVd1JL36eWT41KWSVF8jvWtrKK3jpWowm7qG5KT4CmvOY
-         MnT3avYapsOEfGvX/1q0QnR9wXAunrRjaxsCO+ejIyM1AVq0H/bOeBhLM1DbJ/N5Axod
-         7ZV+i+sVrGadBV8or/llRiAFOY9B8Td42+IYrAAEWXHwo6RNX53/ilmgn6VMZhE+VjCH
-         kA8A==
-X-Gm-Message-State: APjAAAUqLa9lv+DY7PW3dSCG3N4YzZmQJjQ2NEQmwHv2kjR1oBKOTn4O
-        x8VVOLRi6tM1BzS2va5FecM=
-X-Google-Smtp-Source: APXvYqw61HEMFr4kqWofnlanQNR6sLBAWLKyGSVhU2Vyacz1UY79+Vuxbex+7aVMmpNczdu27Mk6yg==
-X-Received: by 2002:a05:600c:2206:: with SMTP id z6mr5779736wml.80.1556874697932;
-        Fri, 03 May 2019 02:11:37 -0700 (PDT)
+        bh=lOsh7yjFkyid7emQ5kYbF8wd4NSvXwJPDsEaULG/B+Q=;
+        b=coquupqhr3fvOI7q8YTeVK2XZrPIl7h9YsEtWvNDFjOOzJ2RML/1UhpfPfAMn6Ebo0
+         Iw501YubLpPUnKWbl+ZAEb/3jcvRIPcZ1u6R+OzGg9PmEXIao23x+Y5w0YP09bFzvN+6
+         mXStxE2EEibxxF58qA6lf95nHSRjumpgEwjSydboEnnyUBOoBTYfxscdUOXG4nOeNcMY
+         yLzZaRfZkmTXwfyrJ3HHt2evXsdfP6T7fdK5OVPv7LSLwTu0fY+MTqOCa4GHtF2dTyFU
+         IJm5u7RMO+kUKZZXyZSODSEd2QXZvkksqUQE8jTepQ4IgdVvCtqOPqeptQRnIQvXhYG2
+         XZ9g==
+X-Gm-Message-State: APjAAAW2ZKSfB7FRoUYH+Zlg7kBQq8vVJ/gFEiyMq84aV1AbIn6QTYcl
+        np4RE61POtZINgCLZFQsBP4=
+X-Google-Smtp-Source: APXvYqzQJrSRN5cjl5G9TARNB6OHrMouRXTUBFiriLzI1YFtSg6C4V9t8JgAV9sCQ+T9X27p6ugWoQ==
+X-Received: by 2002:a5d:4942:: with SMTP id r2mr5850639wrs.159.1556874698739;
+        Fri, 03 May 2019 02:11:38 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
         by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.37
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 02:11:37 -0700 (PDT)
+        Fri, 03 May 2019 02:11:38 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 20/26] tools/lib/traceevent: Man page for tep_read_number_field()
-Date:   Fri,  3 May 2019 12:11:13 +0300
-Message-Id: <20190503091119.23399-21-tstoyanov@vmware.com>
+Subject: [PATCH v6 21/26] tools/lib/traceevent: Man pages for event fields APIs
+Date:   Fri,  3 May 2019 12:11:14 +0300
+Message-Id: <20190503091119.23399-22-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190503091119.23399-1-tstoyanov@vmware.com>
 References: <20190503091119.23399-1-tstoyanov@vmware.com>
@@ -59,26 +59,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Create man page for libtraceevent API tep_read_number_field().
+Create man pages for libtraceevent APIs:
+  tep_event_common_fields(),
+  tep_event_fields()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-field_read.txt              | 81 +++++++++++++++++++
- 1 file changed, 81 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
+ .../Documentation/libtraceevent-fields.txt    | 105 ++++++++++++++++++
+ 1 file changed, 105 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-fields.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_read.txt b/tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-fields.txt b/tools/lib/traceevent/Documentation/libtraceevent-fields.txt
 new file mode 100644
-index 000000000000..64e9e25d3fd9
+index 000000000000..1ccb531d5114
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
-@@ -0,0 +1,81 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-fields.txt
+@@ -0,0 +1,105 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_read_number_field - Reads a number from raw data.
++tep_event_common_fields, tep_event_fields - Get a list of fields for an event.
 +
 +SYNOPSIS
 +--------
@@ -86,20 +88,25 @@ index 000000000000..64e9e25d3fd9
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_read_number_field*(struct tep_format_field pass:[*]_field_, const void pass:[*]_data_, unsigned long long pass:[*]_value_);
++struct tep_format_field pass:[*]pass:[*]*tep_event_common_fields*(struct tep_event pass:[*]_event_);
++struct tep_format_field pass:[*]pass:[*]*tep_event_fields*(struct tep_event pass:[*]_event_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_read_number_field()_ function reads the value of the _field_ from the
-+raw _data_ and stores it in the _value_. The function sets the _value_ according
-+to the endianness of the raw data and the current machine and stores it in
-+_value_.
++The _tep_event_common_fields()_ function returns an array of pointers to common
++fields for the _event_. The array is allocated in the function and must be freed
++by free(). The last element of the array is NULL.
++
++The _tep_event_fields()_ function returns an array of pointers to event specific
++fields for the _event_. The array is allocated in the function and must be freed
++by free(). The last element of the array is NULL.
 +
 +RETURN VALUE
 +------------
-+The _tep_read_number_field()_ function retunrs 0 in case of success, or -1 in
-+case of an error.
++Both _tep_event_common_fields()_ and _tep_event_fields()_ functions return
++an array of pointers to tep_format_field structures in case of success, or
++NULL in case of an error.
 +
 +EXAMPLE
 +-------
@@ -109,19 +116,38 @@ index 000000000000..64e9e25d3fd9
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+struct tep_event *event = tep_find_event_by_name(tep, "timer", "hrtimer_start");
-+...
-+void process_record(struct tep_record *record)
-+{
-+	unsigned long long pid;
-+	struct tep_format_field *field_pid = tep_find_common_field(event, "common_pid");
-+
-+	if (tep_read_number_field(field_pid, record->data, &pid) != 0) {
-+		/* Failed to get "common_pid" value */
++int i;
++struct tep_format_field **fields;
++struct tep_event *event = tep_find_event_by_name(tep, "kvm", "kvm_exit");
++if (event != NULL) {
++	fields = tep_event_common_fields(event);
++	if (fields != NULL) {
++		i = 0;
++		while (fields[i]) {
++			/*
++			  walk through the list of the common fields
++			  of the kvm_exit event
++			*/
++			i++;
++		}
++		free(fields);
++	}
++	fields = tep_event_fields(event);
++	if (fields != NULL) {
++		i = 0;
++		while (fields[i]) {
++			/*
++			  walk through the list of the event specific
++			  fields of the kvm_exit event
++			*/
++			i++;
++		}
++		free(fields);
 +	}
 +}
 +...
 +--
++
 +FILES
 +-----
 +[verse]
