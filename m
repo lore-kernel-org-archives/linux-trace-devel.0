@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-14.0 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF36FC43219
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F50AC04AAC
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9956D206C3
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0AB3B206C3
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbfECJLe (ORCPT
+        id S1727042AbfECJLe (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 3 May 2019 05:11:34 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41154 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbfECJLe (ORCPT
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:39295 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726950AbfECJLe (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 3 May 2019 05:11:34 -0400
-Received: by mail-wr1-f68.google.com with SMTP id c12so6877874wrt.8
+Received: by mail-wr1-f66.google.com with SMTP id a9so6881641wrp.6
         for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=e4zoqIUhc24m0lhZmvGFYfefxJEB4lfbL7L7QxrfiEg=;
-        b=aRRH8v+G0eTb3BIkHTBTPCogYwt0Ft6QijlXWRtyxTnzGhxu8cfwScLyR9zAKoCvXW
-         v0NX3Yoj0bru3A8qN4YB1XZKglrrqDmdNCVw2xCoLATS8b/9P074hndUbNZAYQwozKbp
-         KQXhTUGFf2AIBJ1CJSbqxhC1e+7vkcvXsJUFoLRqJrZgwgYB+/GcSLQVykFgOULN5oA1
-         1gxfEdRZ/zfghYZuL9aDprCgodEXv4B3qfoVmVjkUfePySO2/hNrk/UpIUOLDSrPdAT5
-         d1VTcVup+gdztNpa0S10Z93/f3rJQE7r3kNt+11RFzSLt0Bw3+16q4TyqBWITK0L7Jza
-         6ejQ==
-X-Gm-Message-State: APjAAAWtYFTz5eIwuYAcCaIkWDStN/ZrazONX6TFEamXxyyojgCbTtWn
-        loYLAXgs0rvFxJfCpUBUU6xEQzrL
-X-Google-Smtp-Source: APXvYqwPVMWbRt3+/YRIviz5TRhOiy8W8VdYCuMfTR4g6MdgUDVyxWBN/htpw98Ts0qh7DCHsjf2uA==
-X-Received: by 2002:a5d:654a:: with SMTP id z10mr6313078wrv.153.1556874692500;
-        Fri, 03 May 2019 02:11:32 -0700 (PDT)
+        bh=A5s9K+7KE/iJ2C5ypPOQFZuBFAwMnMhpdfofRurpHMA=;
+        b=NVya2p2fPeDEn1UAQMuvD8bVIRBDKJmgmD4XVZ4dvii11S/otcoBzfn+X7hNccV1B0
+         3lxqiw6o2HuglqNg8IY9VMq9loZc3gviVE/16goVNyarh0ZQZSCQyf60UAXusvGw7N70
+         5O2Z4BJlQTNZQLtNEjmcOYLm7QdF0KiR/t+VHC+g9w2nv1ORlg2TBNBotvTBVXgboCad
+         iP9fy0/ALT41ezdVLzU9tyVH94wdsJVqBnXEt8Z8BXXuGE9C8n4Xe7XWG9jh5Kjy2N9u
+         xwPkYzeCJNpjFvF4pnGNl89s3FrMO7xV5m2bvTtXRCZz9O847HjSw6LmX7PRDdTg21iJ
+         I+aQ==
+X-Gm-Message-State: APjAAAUFOOvG0k2wSzHu3rKKAvQBOlBinE/tZhlS+nGZhn/1Nu5GDjtp
+        XFbkrVQebnPXLVQge3hDMOvYH99K
+X-Google-Smtp-Source: APXvYqyalljepCRmoxQha6kDf6am4lO54BzfjE1eToftiY6wSzK7E6tKPX7kAp2Il+MvdfU1wc26pw==
+X-Received: by 2002:adf:a202:: with SMTP id p2mr6178110wra.166.1556874693201;
+        Fri, 03 May 2019 02:11:33 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.31
+        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.32
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 02:11:31 -0700 (PDT)
+        Fri, 03 May 2019 02:11:32 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 13/26] tools/lib/traceevent: Man page for tep_read_number()
-Date:   Fri,  3 May 2019 12:11:06 +0300
-Message-Id: <20190503091119.23399-14-tstoyanov@vmware.com>
+Subject: [PATCH v6 14/26] tools/lib/traceevent: Man pages for event find APIs
+Date:   Fri,  3 May 2019 12:11:07 +0300
+Message-Id: <20190503091119.23399-15-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190503091119.23399-1-tstoyanov@vmware.com>
 References: <20190503091119.23399-1-tstoyanov@vmware.com>
@@ -59,26 +59,30 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Create man page for tep_read_number() libtraceevent API.
+Create man pages for libtraceevent APIs:
+  tep_find_event()
+  tep_find_event_by_name()
+  tep_find_event_by_record()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- .../libtraceevent-endian_read.txt             | 78 +++++++++++++++++++
- 1 file changed, 78 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
+ .../libtraceevent-event_find.txt              | 103 ++++++++++++++++++
+ 1 file changed, 103 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_find.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt b/tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_find.txt b/tools/lib/traceevent/Documentation/libtraceevent-event_find.txt
 new file mode 100644
-index 000000000000..e64851b6e189
+index 000000000000..7bc062c9f76f
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
-@@ -0,0 +1,78 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-event_find.txt
+@@ -0,0 +1,103 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_read_number - Reads a number from raw data.
++tep_find_event,tep_find_event_by_name,tep_find_event_by_record -
++Find events by given key.
 +
 +SYNOPSIS
 +--------
@@ -86,20 +90,32 @@ index 000000000000..e64851b6e189
 +--
 +*#include <event-parse.h>*
 +
-+unsigned long long *tep_read_number*(struct tep_handle pass:[*]_tep_, const void pass:[*]_ptr_, int _size_);
++struct tep_event pass:[*]*tep_find_event*(struct tep_handle pass:[*]_tep_, int _id_);
++struct tep_event pass:[*]*tep_find_event_by_name*(struct tep_handle pass:[*]_tep_, const char pass:[*]_sys_, const char pass:[*]_name_);
++struct tep_event pass:[*]*tep_find_event_by_record*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_record_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_read_number()_ function reads an integer from raw data, taking into
-+account the endianness of the raw data and the current host. The _tep_ argument
-+is the trace event parser context. The _ptr_ is a pointer to the raw data, where
-+the integer is, and the _size_ is the size of the integer.
++This set of functions can be used to search for an event, based on a given
++criteria. All functions require a pointer to a _tep_, trace event parser
++context.
++
++The _tep_find_event()_ function searches for an event by given event _id_. The
++event ID is assigned dynamically and can be viewed in event's format file,
++"ID" field.
++
++The tep_find_event_by_name()_ function searches for an event by given
++event _name_, under the system _sys_. If the _sys_ is NULL (not specified),
++the first event with _name_ is returned.
++
++The tep_find_event_by_record()_ function searches for an event from a given
++_record_.
 +
 +RETURN VALUE
 +------------
-+The _tep_read_number()_ function returns the integer in the byte order of
-+the current host. In case of an error, 0 is returned.
++All these functions return a pointer to the found event, or NULL if there is no
++such event.
 +
 +EXAMPLE
 +-------
@@ -109,12 +125,24 @@ index 000000000000..e64851b6e189
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+void process_record(struct tep_record *record)
-+{
-+	int offset = 24;
-+	int data = tep_read_number(tep, record->data + offset, 4);
++struct tep_event *event;
 +
-+	/* Read the 4 bytes at the offset 24 of data as an integer */
++event = tep_find_event(tep, 1857);
++if (event == NULL) {
++	/* There is no event with ID 1857 */
++}
++
++event = tep_find_event_by_name(tep, "kvm", "kvm_exit");
++if (event == NULL) {
++	/* There is no kvm_exit event, from kvm system */
++}
++
++void event_from_record(struct tep_record *record)
++{
++ struct tep_event *event = tep_find_event_by_record(tep, record);
++	if (event == NULL) {
++		/* There is no event from given record */
++	}
 +}
 +...
 +--
