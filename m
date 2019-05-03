@@ -2,53 +2,56 @@ Return-Path: <SRS0=scwk=TD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45E1CC43219
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFA83C46460
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 16635206C3
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9B3782087F
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  3 May 2019 09:11:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbfECJLY (ORCPT
+        id S1727014AbfECJL0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 3 May 2019 05:11:24 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:38395 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726789AbfECJLY (ORCPT
+        Fri, 3 May 2019 05:11:26 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:37503 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726789AbfECJL0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 3 May 2019 05:11:24 -0400
-Received: by mail-wm1-f66.google.com with SMTP id f2so890338wmj.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:22 -0700 (PDT)
+        Fri, 3 May 2019 05:11:26 -0400
+Received: by mail-wr1-f67.google.com with SMTP id k23so6880190wrd.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 03 May 2019 02:11:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e4nfR029Vx9Sxtn584a4ZhzDlT3wYbjBbk492i8E7p4=;
-        b=JiAUOhlICFYZHK1W6iI7SUYmgN8TYic7n6VGj5sXCtDTj223bKe3rYtmh7vetC8/Ex
-         4pfUdIrbxwDP+UN4wcXnb9NYmp7KfPh1zxR1LrT2vB41v4RXKZzn1MumlY7Ow5pqMORB
-         FM+DThhw3qwNkGXSMuPu9EK05W/rZZiovNQ0RJEpwnBl4MVJOtBtqmz4Kc6cyJ+oqWoQ
-         g3PEa1LFtHJMKLHb+WII9LMDj0QYPNKHgbBh4rzfyg+QQWJC3aiUqU671zwsTfTQzZhL
-         ZZV1xt6Z8c2wpNsAArc7M8vY3XztZHHBQIp3Mz8e1lyEx+KfS8TjDyeCyVxAWDTzOOtE
-         CzEQ==
-X-Gm-Message-State: APjAAAUf89xO0Ga8OK5w55EA9+GJ/1IvtBoBq4m3CCPSjEweUjDdKmKg
-        RC7u84lf8MJ2LWxThk53CxFe10z2
-X-Google-Smtp-Source: APXvYqybjq0IZpJhgvTHLP7klhO2uBNPBeebWhSA1FreHTXGo8zPXnsZXkp9Mgjk2ilZkwO3nDhWJg==
-X-Received: by 2002:a1c:5f42:: with SMTP id t63mr5140252wmb.94.1556874681497;
-        Fri, 03 May 2019 02:11:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YzQG1BbHAMaQeWCmvso1h3ng5oVT0zP7vzV4w1Br6+Y=;
+        b=Cm9qjwC8bc7QKHzXqfx/nyu2pCDGmxK/klGXCDAAYdFdrsSTGLuxNbJt7B/x6JcwIZ
+         93W5fPN3cQd7yjH9BPnxcNlziDYu0pnVWCEOELC/zGLWYGGozholBxnrihykHJQ5B9md
+         8qLbzQ9JxlwvdImUVHNshO14lkB2Zqt5rakZB2XVpINpGiIMr+KdBdPCwjtvXHcBteKP
+         np2YzyWzFTi1CqIm3hlY5lqHPKUvz9oRsp7gnGY0bJFS+nPch3eWY/UYyWnaUP9sBgoE
+         E4M8cPHEeKneM2vT05UGTNYj4ahO4XBitrzpVB8M/v/hfU2lPTEaT/JfOHaIzRYT7Fos
+         oFNg==
+X-Gm-Message-State: APjAAAUPrUJ43qrfnpFay5etScUuNdmZ1oevszkygAjrSxDNuoSWLfXo
+        tmjXJ0DfDeK7LvHXfqkqRA8=
+X-Google-Smtp-Source: APXvYqz5SwMZ639WOEeycSWJxTB0eQt0eR3osi38odhi3kcGJrUwwpp+I1QUhBwEC8GRBYsUkKSP3g==
+X-Received: by 2002:a05:6000:10cc:: with SMTP id b12mr6496630wrx.182.1556874683987;
+        Fri, 03 May 2019 02:11:23 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.20
+        by smtp.gmail.com with ESMTPSA id b11sm2398596wmh.29.2019.05.03.02.11.23
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 02:11:20 -0700 (PDT)
+        Fri, 03 May 2019 02:11:23 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 00/26] Libtraceevent MAN pages
-Date:   Fri,  3 May 2019 12:10:53 +0300
-Message-Id: <20190503091119.23399-1-tstoyanov@vmware.com>
+Subject: [PATCH v6 03/26] tools/lib/traceevent: libtraceevent man pages for tep_handler related APIs
+Date:   Fri,  3 May 2019 12:10:56 +0300
+Message-Id: <20190503091119.23399-4-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190503091119.23399-1-tstoyanov@vmware.com>
+References: <20190503091119.23399-1-tstoyanov@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -56,140 +59,493 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-[
- v6 changes:
-  - Addressed Steven Rostedt comments.
-  - Deleted Man page for tep_register_trace_clock(), this API will be removed
-    from the library
-  - Removed following man pages from the series, as those APIs will be changed:
-	"Man pages for libtraceevent event print related APIs"
-	"Man pages for tep plugins APIs"
-	"Man pages for "latency format" APIs"
+Added 4 new man pages, describing libtraceevent APIs:
+  tep_register_comm(),
+  tep_override_comm(),
+  tep_is_pid_registered(),
+  tep_data_comm_from_pid(),
+  tep_data_pid_from_comm(),
+  tep_cmdline_pid(),
+  tep_alloc(),
+  tep_free(),
+  tep_get_long_size(),
+  tep_set_long_size(),
+  tep_set_flag(),
+  tep_clear_flag(),
+  tep_test_flag()
 
- v5 changes:
-  - Grouped logically related APIs into single man page.
-  - Updated the man pages, to be in sync with the latest libtracevent APIs cleanup.
-  - Changed descriptions in some man pages, suggested by Steven Rostedt.
-
- v4 changes:
-  - Addressed Steven Rostedt comments.
-  - Removed trailing whitespace.
-
- v3 changes:
-  - Combines all man page related patches into one series. 
-  - Removes any dependencies between man page related patches.
-    and patches related to the APIs implementation.
-]
-
-This patch series includes implementation of libtraceevent
-man pages, describing all APIs of the library.
-
-Tzvetomir Stoyanov (26):
-  tools/lib/traceevent: Implement libtraceevent man pages
-  tools/lib/traceevent: Add support for man pages with multiple names
-  tools/lib/traceevent: libtraceevent man pages for tep_handler related
-    APIs
-  tools/lib/traceevent: Man page for header_page APIs
-  tools/lib/traceevent: Man page for get/set cpus APIs
-  tools/lib/traceevent: Man page for file endian APIs
-  tools/lib/traceevent: Man page for host endian APIs
-  tools/lib/traceevent: Man page for page size APIs
-  tools/lib/traceevent: Man page for tep_strerror()
-  tools/lib/traceevent: Man pages for event handler APIs
-  tools/lib/traceevent: Man pages for function related libtraceevent 
-    APIs
-  tools/lib/traceevent: Man pages for registering print function
-  tools/lib/traceevent: Man page for tep_read_number()
-  tools/lib/traceevent: Man pages for event find APIs
-  tools/lib/traceevent: Man page for list events APIs
-  tools/lib/traceevent: Man pages for libtraceevent event get APIs
-  tools/lib/traceevent: Man pages find field APIs
-  tools/lib/traceevent: Man pages get field value APIs
-  tools/lib/traceevent: Man pages for print field APIs
-  tools/lib/traceevent: Man page for tep_read_number_field()
-  tools/lib/traceevent: Man pages for event fields APIs
-  tools/lib/traceevent: Man pages for event filter APIs
-  tools/lib/traceevent: Man pages for parse event APIs
-  tools/lib/traceevent: Man page for tep_parse_header_page()
-  tools/lib/traceevent: Man pages for APIs, used to extract common
-    fields from a record
-  tools/lib/traceevent: Man pages for trace sequences APIs
-
- tools/lib/traceevent/Documentation/Makefile   | 208 +++++++++++++++++
- .../traceevent/Documentation/asciidoc.conf    | 120 ++++++++++
- .../Documentation/libtraceevent-commands.txt  | 153 +++++++++++++
- .../Documentation/libtraceevent-cpus.txt      |  77 +++++++
- .../libtraceevent-endian_read.txt             |  78 +++++++
- .../libtraceevent-event_find.txt              | 103 +++++++++
- .../Documentation/libtraceevent-event_get.txt |  99 +++++++++
- .../libtraceevent-event_list.txt              | 122 ++++++++++
- .../libtraceevent-field_find.txt              | 118 ++++++++++
- .../libtraceevent-field_get_val.txt           | 122 ++++++++++
- .../libtraceevent-field_print.txt             | 126 +++++++++++
- .../libtraceevent-field_read.txt              |  81 +++++++
- .../Documentation/libtraceevent-fields.txt    | 105 +++++++++
- .../libtraceevent-file_endian.txt             |  91 ++++++++
- .../Documentation/libtraceevent-filter.txt    | 209 ++++++++++++++++++
- .../Documentation/libtraceevent-func_apis.txt | 183 +++++++++++++++
- .../Documentation/libtraceevent-func_find.txt |  88 ++++++++
- .../Documentation/libtraceevent-handle.txt    | 101 +++++++++
- .../libtraceevent-header_page.txt             | 102 +++++++++
- .../libtraceevent-host_endian.txt             | 104 +++++++++
- .../Documentation/libtraceevent-long_size.txt |  78 +++++++
- .../Documentation/libtraceevent-page_size.txt |  82 +++++++
- .../libtraceevent-parse_event.txt             |  90 ++++++++
- .../libtraceevent-parse_head.txt              |  82 +++++++
- .../libtraceevent-record_parse.txt            | 137 ++++++++++++
- .../libtraceevent-reg_event_handler.txt       | 156 +++++++++++++
- .../libtraceevent-reg_print_func.txt          | 155 +++++++++++++
- .../Documentation/libtraceevent-set_flag.txt  | 104 +++++++++
- .../Documentation/libtraceevent-strerror.txt  |  84 +++++++
- .../Documentation/libtraceevent-tseq.txt      | 158 +++++++++++++
- .../Documentation/libtraceevent.txt           | 203 +++++++++++++++++
- .../traceevent/Documentation/manpage-1.72.xsl |  14 ++
- .../traceevent/Documentation/manpage-base.xsl |  35 +++
- .../Documentation/manpage-bold-literal.xsl    |  17 ++
- .../Documentation/manpage-normal.xsl          |  13 ++
- .../Documentation/manpage-suppress-sp.xsl     |  21 ++
- tools/lib/traceevent/Makefile                 |  33 +++
- 37 files changed, 3852 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/Makefile
- create mode 100644 tools/lib/traceevent/Documentation/asciidoc.conf
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+---
+ .../Documentation/libtraceevent-commands.txt  | 153 ++++++++++++++++++
+ .../Documentation/libtraceevent-handle.txt    | 101 ++++++++++++
+ .../Documentation/libtraceevent-long_size.txt |  78 +++++++++
+ .../Documentation/libtraceevent-set_flag.txt  | 104 ++++++++++++
+ 4 files changed, 436 insertions(+)
  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-commands.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_find.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_get.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_find.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_print.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_read.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-fields.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-file_endian.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_find.txt
  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-handle.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-host_endian.txt
  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-long_size.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_print_func.txt
  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-set_flag.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-strerror.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent.txt
- create mode 100644 tools/lib/traceevent/Documentation/manpage-1.72.xsl
- create mode 100644 tools/lib/traceevent/Documentation/manpage-base.xsl
- create mode 100644 tools/lib/traceevent/Documentation/manpage-bold-literal.xsl
- create mode 100644 tools/lib/traceevent/Documentation/manpage-normal.xsl
- create mode 100644 tools/lib/traceevent/Documentation/manpage-suppress-sp.xsl
 
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-commands.txt b/tools/lib/traceevent/Documentation/libtraceevent-commands.txt
+new file mode 100644
+index 000000000000..bec552001f8e
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/libtraceevent-commands.txt
+@@ -0,0 +1,153 @@
++libtraceevent(3)
++================
++
++NAME
++----
++tep_register_comm, tep_override_comm, tep_pid_is_registered,
++tep_data_comm_from_pid, tep_data_pid_from_comm, tep_cmdline_pid -
++Manage pid to process name mappings.
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <event-parse.h>*
++
++int *tep_register_comm*(struct tep_handle pass:[*]_tep_, const char pass:[*]_comm_, int _pid_);
++int *tep_override_comm*(struct tep_handle pass:[*]_tep_, const char pass:[*]_comm_, int _pid_);
++bool *tep_is_pid_registered*(struct tep_handle pass:[*]_tep_, int _pid_);
++const char pass:[*]*tep_data_comm_from_pid*(struct tep_handle pass:[*]_pevent_, int _pid_);
++struct cmdline pass:[*]*tep_data_pid_from_comm*(struct tep_handle pass:[*]_pevent_, const char pass:[*]_comm_, struct cmdline pass:[*]_next_);
++int *tep_cmdline_pid*(struct tep_handle pass:[*]_pevent_, struct cmdline pass:[*]_cmdline_);
++--
++
++DESCRIPTION
++-----------
++These functions can be used to handle the mapping between pid and process name.
++The library builds a cache of these mappings, which is used to display the name
++of the process, instead of its pid. This information can be retrieved from
++tracefs/saved_cmdlines file.
++
++The _tep_register_comm()_ function registers a _pid_ / process name mapping.
++If a command with the same _pid_ is already registered, an error is returned.
++The _pid_ argument is the process ID, the _comm_ argument is the process name,
++_tep_ is the event context. The _comm_ is duplicated internally.
++
++The _tep_override_comm()_ function registers a _pid_ / process name mapping.
++If a process with the same pid is already registered, the process name string is
++udapted with the new one. The _pid_ argument is the process ID, the _comm_
++argument is the process name, _tep_ is the event context. The _comm_ is
++duplicated internally.
++
++The _tep_is_pid_registered()_ function checks if a pid has a process name
++mapping registered. The _pid_ argument is the process ID, _tep_ is the event
++context.
++
++The _tep_data_comm_from_pid()_ function returns the process name for a given
++pid. The _pid_ argument is the process ID, _tep_ is the event context.
++The returned string should not be freed, but will be freed when the _tep_
++handler is closed.
++
++The _tep_data_pid_from_comm()_ function returns a pid for a given process name.
++The _comm_ argument is the process name, _tep_ is the event context.
++The argument _next_ is the cmdline structure to search for the next pid.
++As there may be more than one pid for a given process, the result of this call
++can be passed back into a recurring call in the _next_ parameter, to search for
++the next pid. If _next_ is NULL, it will return the first pid associated with
++the _comm_. The function performs a linear search, so it may be slow.
++
++The _tep_cmdline_pid()_ function returns the pid associated with a given
++_cmdline_. The _tep_ argument is the event context.
++
++RETURN VALUE
++------------
++_tep_register_comm()_ function returns 0 on success. In case of an error -1 is
++returned and errno is set to indicate the cause of the problem: ENOMEM, if there
++is not enough memory to duplicate the _comm_ or EEXIST if a mapping for this
++_pid_ is already registered.
++
++_tep_override_comm()_ function returns 0 on success. In case of an error -1 is
++returned and errno is set to indicate the cause of the problem: ENOMEM, if there
++is not enough memory to duplicate the _comm_.
++
++_tep_is_pid_registered()_ function returns true if the _pid_ has a process name
++mapped to it, false otherwise.
++
++_tep_data_comm_from_pid()_ function returns the process name as string, or the
++string "<...>" if there is no mapping for the given pid.
++
++_tep_data_pid_from_comm()_ function returns a pointer to a struct cmdline, that
++holds a pid for a given process, or NULL if none is found. This result can be
++passed back into a recurring call as the _next_ parameter of the function.
++
++_tep_cmdline_pid()_ functions returns the pid for the give cmdline. If _cmdline_
++ is NULL, then -1 is returned.
++
++EXAMPLE
++-------
++The following example registers pid for command "ls", in context of event _tep_
++and performs various searches for pid / process name mappings:
++[source,c]
++--
++#include <event-parse.h>
++...
++int ret;
++int ls_pid = 1021;
++struct tep_handle *tep = tep_alloc();
++...
++	ret = tep_register_comm(tep, "ls", ls_pid);
++	if (ret != 0 && errno == EEXIST)
++		ret = tep_override_comm(tep, "ls", ls_pid);
++	if (ret != 0) {
++		/* Failed to register pid / command mapping */
++	}
++...
++	if (tep_is_pid_registered(tep, ls_pid) == 0) {
++		/* Command mapping for ls_pid is not registered */
++	}
++...
++	const char *comm = tep_data_comm_from_pid(tep, ls_pid);
++	if (comm) {
++		/* Found process name for ls_pid */
++	}
++...
++	int pid;
++	struct cmdline *cmd = tep_data_pid_from_comm(tep, "ls", NULL);
++	while (cmd) {
++		pid = tep_cmdline_pid(tep, cmd);
++		/* Found pid for process "ls" */
++		cmd = tep_data_pid_from_comm(tep, "ls", cmd);
++	}
++--
++FILES
++-----
++[verse]
++--
++*event-parse.h*
++	Header file to include in order to have access to the library APIs.
++*-ltraceevent*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtraceevent(3)_, _trace-cmd(1)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtraceevent is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-handle.txt b/tools/lib/traceevent/Documentation/libtraceevent-handle.txt
+new file mode 100644
+index 000000000000..8d568316847d
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/libtraceevent-handle.txt
+@@ -0,0 +1,101 @@
++libtraceevent(3)
++================
++
++NAME
++----
++tep_alloc, tep_free,tep_ref, tep_unref,tep_ref_get - Create, destroy, manage
++references of trace event parser context.
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <event-parse.h>*
++
++struct tep_handle pass:[*]*tep_alloc*(void);
++void *tep_free*(struct tep_handle pass:[*]_tep_);
++void *tep_ref*(struct tep_handle pass:[*]_tep_);
++void *tep_unref*(struct tep_handle pass:[*]_tep_);
++int *tep_ref_get*(struct tep_handle pass:[*]_tep_);
++--
++
++DESCRIPTION
++-----------
++These are the main functions to create and destroy tep_handle - the main
++structure, representing the trace event parser context. This context is used as
++the input parameter of most library APIs.
++
++The _tep_alloc()_ function allocates and initializes the tep context.
++
++The _tep_free()_ function will decrement the reference of the _tep_ handler.
++When there is no more references, then it will free the handler, as well
++as clean up all its resources that it had used. The argument _tep_ is
++the pointer to the trace event parser context.
++
++The _tep_ref()_ function adds a reference to the _tep_ handler.
++
++The _tep_unref()_ function removes a reference from the _tep_ handler. When
++the last reference is removed, the _tep_ is destroyed, and all resources that
++it had used are cleaned up.
++
++The _tep_ref_get()_ functions gets the current references of the _tep_ handler.
++
++RETURN VALUE
++------------
++_tep_alloc()_ returns a pointer to a newly created tep_handle structure.
++NULL is returned in case there is not enough free memory to allocate it.
++
++_tep_ref_get()_ returns the current references of _tep_.
++If _tep_ is NULL, 0 is returned.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <event-parse.h>
++
++...
++struct tep_handle *tep = tep_alloc();
++...
++int ref = tep_ref_get(tep);
++tep_ref(tep);
++if ( (ref+1) != tep_ref_get(tep)) {
++	/* Something wrong happened, the counter is not incremented by 1 */
++}
++tep_unref(tep);
++...
++tep_free(tep);
++...
++--
++FILES
++-----
++[verse]
++--
++*event-parse.h*
++	Header file to include in order to have access to the library APIs.
++*-ltraceevent*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtraceevent(3)_, _trace-cmd(1)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtraceevent is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-long_size.txt b/tools/lib/traceevent/Documentation/libtraceevent-long_size.txt
+new file mode 100644
+index 000000000000..01d78ea2519a
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/libtraceevent-long_size.txt
+@@ -0,0 +1,78 @@
++libtraceevent(3)
++================
++
++NAME
++----
++tep_get_long_size, tep_set_long_size - Get / set the size of a long integer on
++the machine, where the trace is generated, in bytes
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <event-parse.h>*
++
++int *tep_get_long_size*(strucqt tep_handle pass:[*]_tep_);
++void *tep_set_long_size*(struct tep_handle pass:[*]_tep_, int _long_size_);
++--
++
++DESCRIPTION
++-----------
++The _tep_get_long_size()_ function returns the size of a long integer on the machine,
++where the trace is generated. The _tep_ argument is trace event parser context.
++
++The _tep_set_long_size()_ function sets the size of a long integer on the machine,
++where the trace is generated. The _tep_ argument is trace event parser context.
++The _long_size_ is the size of a long integer, in bytes.
++
++RETURN VALUE
++------------
++The _tep_get_long_size()_ function returns the size of a long integer on the machine,
++where the trace is generated, in bytes.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <event-parse.h>
++...
++struct tep_handle *tep = tep_alloc();
++...
++tep_set_long_size(tep, 4);
++...
++int long_size = tep_get_long_size(tep);
++...
++--
++
++FILES
++-----
++[verse]
++--
++*event-parse.h*
++	Header file to include in order to have access to the library APIs.
++*-ltraceevent*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtraceevent(3)_, _trace-cmd(1)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtraceevent is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-set_flag.txt b/tools/lib/traceevent/Documentation/libtraceevent-set_flag.txt
+new file mode 100644
+index 000000000000..7e258086348e
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/libtraceevent-set_flag.txt
+@@ -0,0 +1,104 @@
++libtraceevent(3)
++================
++
++NAME
++----
++tep_set_flag, tep_clear_flag, tep_test_flag -
++Manage flags of trace event parser context.
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <event-parse.h>*
++
++enum *tep_flag* {
++	_TEP_NSEC_OUTPUT_,
++	_TEP_DISABLE_SYS_PLUGINS_,
++	_TEP_DISABLE_PLUGINS_
++};
++void *tep_set_flag*(struct tep_handle pass:[*]_tep_, enum tep_flag _flag_);
++void *tep_clear_flag*(struct tep_handle pass:[*]_tep_, enum tep_flag _flag_);
++bool *tep_test_flag*(struct tep_handle pass:[*]_tep_, enum tep_flag _flag_);
++--
++
++DESCRIPTION
++-----------
++Trace event parser context flags are defined in *enum tep_flag*:
++[verse]
++--
++_TEP_NSEC_OUTPUT_ - print event's timestamp in nano seconds, instead of micro seconds.
++_TEP_DISABLE_SYS_PLUGINS_ - disable plugins, located in system's plugin
++			directory. This directory is defined at library compile
++			time, and usually depends on library installation
++			prefix: (install_preffix)/lib/traceevent/plugins
++_TEP_DISABLE_PLUGINS_ - disable all library plugins:
++		 	- in system's plugin directory
++		 	- in directory, defined by the environment variable _TRACEEVENT_PLUGIN_DIR_
++		 	- in user's home directory, _~/.traceevent/plugins_
++--
++Note: plugin related flags must me set before calling _tep_load_plugins()_ API.
++
++The _tep_set_flag()_ function sets _flag_ to _tep_ context.
++
++The _tep_clear_flag()_ function clears _flag_ from _tep_ context.
++
++The _tep_test_flag()_ function tests if _flag_ is set to _tep_ context.
++
++RETURN VALUE
++------------
++_tep_test_flag()_ function returns true if _flag_ is set, false otherwise.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <event-parse.h>
++...
++struct tep_handle *tep = tep_alloc();
++...
++/* Print timestamps in nanoseconds */
++tep_set_flag(tep,  TEP_NSEC_OUTPUT);
++...
++if (tep_test_flag(tep, TEP_NSEC_OUTPUT)) {
++	/* print timestamps in nanoseconds */
++} else {
++	/* print timestamps in microseconds */
++}
++...
++/* Print timestamps in microseconds */
++tep_clear_flag(tep, TEP_NSEC_OUTPUT);
++...
++--
++FILES
++-----
++[verse]
++--
++*event-parse.h*
++	Header file to include in order to have access to the library APIs.
++*-ltraceevent*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtraceevent(3)_, _trace-cmd(1)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtraceevent is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 -- 
 2.20.1
 
