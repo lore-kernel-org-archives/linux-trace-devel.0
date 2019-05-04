@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA4CC43219
-	for <linux-trace-devel@archiver.kernel.org>; Sat,  4 May 2019 08:27:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E374CC43219
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  4 May 2019 08:28:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A614920652
-	for <linux-trace-devel@archiver.kernel.org>; Sat,  4 May 2019 08:27:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B4F6F20652
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  4 May 2019 08:28:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="n+OwnWiy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M8GlYjGx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725826AbfEDI1v (ORCPT
+        id S1725850AbfEDI2L (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 4 May 2019 04:27:51 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:40070 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbfEDI1v (ORCPT
+        Sat, 4 May 2019 04:28:11 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37327 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbfEDI2L (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 4 May 2019 04:27:51 -0400
-Received: by mail-wr1-f66.google.com with SMTP id h4so10645083wre.7
-        for <linux-trace-devel@vger.kernel.org>; Sat, 04 May 2019 01:27:49 -0700 (PDT)
+        Sat, 4 May 2019 04:28:11 -0400
+Received: by mail-wm1-f66.google.com with SMTP id y5so9257045wma.2
+        for <linux-trace-devel@vger.kernel.org>; Sat, 04 May 2019 01:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
         bh=D2kQo9hRx9o7bEDD0UK11w3ULUGMCCDibaIvyvg+7C8=;
-        b=n+OwnWiybU3PwXS9OBmymG/3ff7OOw1dIigZ3574ZL0v0DUhCRWiJ8CHS0xonhgtmE
-         FKzpDkMkqbrujLqIruUEGheDb9BI7wfE+b0Gf8q5xwp6A4MMUnpSyzCr751jWdFIIA7e
-         U0xVgfXQJlMagUwMso9YPj8AQuN0oUwDLOvpfBE6Fe7UKRHGp4wZ3Ezm/aDRbaaykZwG
-         zOHx9bvureRnc3EqH9EfGRPgKlW6kMvDFWJ7Ul4jtsZl4QR/ZVjAxmJI7ewkXEWAU42q
-         JdXVTpnK/zQ96S2Ef9ywxVIeD0QkxeKOfEyLX9OdfqOy2aW044QYq1nMcgetu/CSwDvZ
-         k4sA==
+        b=M8GlYjGxD9yD7LPfMXpbbpz6Humusww5cU8PiK4hFhT2CXq08aAkutRHiAgni0X++6
+         dppHdK0sZBFSLyXjcwBNhkAyS42ydAInTcMJzEXJe7RXuA+guXEP8q27aRbx83BxGFe3
+         92VLXpI34MTvK8CF8BIbJmlO6wg8JrXTmAVgpJ1Ty0kGwxAGyma/xIo26fa0RnMyTJa+
+         QIU2YHSbeGjDbtwMuzElNR6IuWcB79u36CW+Y2J699h0Sc2qXDMmNwdIP42iPVFmzuNS
+         jeXY7jp3hxZ4Jig4I87vG6AaAgaonvVBpAcdPAhRyDnSXfWbtAAjwWkc6JTzG1D87RIW
+         HfqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
         bh=D2kQo9hRx9o7bEDD0UK11w3ULUGMCCDibaIvyvg+7C8=;
-        b=ny107JBBZcmNbBafvZR2rSvSlVpTLEp2QH+PxNUQ8LDrWfU9TW3fLseFJqEAfBI145
-         bWfNh+Ec1aTyiY9U5p+lCrLFAfnovIB9ynefakvg/uipJtL69SusSn0U/1q+mZjfJ/Ff
-         +y7GjllYXRGRXKtdiJBz9pdZMzn+vRod7dN+QQNQkkH4KV7L2FUm5hR+sLnruEoG43In
-         z/S7qtTu84MvS7klrnevHM75hYioWkEbcD9LTPSIK7DVBoP7IaDAaHcbIvG0AOZkEqjD
-         vdB/f/YESgvOUr1bMXo/DhYotqAG7KpZEazGlZt7qCVQP2Sj434sMZII86fiCKPfC0py
-         DYOA==
-X-Gm-Message-State: APjAAAVYmLMnjIyvracNbI0drKKqWZeRSS+8vYPBE+uzFnAlxX4no8P5
-        0ctSr8ssrGg0h8AnkNZwpUg=
-X-Google-Smtp-Source: APXvYqxgRARM8VHFvGhqSI6o59PCencu6HjX6Ff3OXsgdo9HuNIzp97wnRorvW7/ojok4MjuI7bkcQ==
-X-Received: by 2002:adf:a202:: with SMTP id p2mr10362724wra.166.1556958469283;
-        Sat, 04 May 2019 01:27:49 -0700 (PDT)
+        b=Bjli85PHDb0TxbgUWXwYTyhL4J1HHKuTR5t7au4naae3KAruuBDAQ4IVAnSXpKSUv9
+         ZJjNkyfS212WbGUvXhC6X0RkN08AILFodlc5oKxSlt1ZRyrxO4zi8/RrRx+uJiCRNMDx
+         paVYRlCUl8CAEqDex44r6jTPqwswpzj9cmPBTojeDNecEKHOMLy5ughGl04R3THK8pvq
+         TBpCczKupOQzV/5HQkoi68YpE/pS7ysdrhaE7untZgXEShXSJh2VNelv2QkF6VRL1MKR
+         Yt5QzFzssb4LgevFBKisj/Nw6kuacrukb0+UHvHHW0ZowvI02ecbyUzK1gVVQH/OtRTZ
+         Mhmg==
+X-Gm-Message-State: APjAAAUwKYjCwviXt7QGuxys2qyr2TSmVWDxBBvNhWDTR8SDaitoVbix
+        vDoVuXY7docj9AdOfVXX0+I=
+X-Google-Smtp-Source: APXvYqyiBHknj5bBXLtgLP1HN031wgcsPmoymK8mcDjrwG5WmRrFd5Ej4ja+537TpnugybOxinoJWg==
+X-Received: by 2002:a7b:c3da:: with SMTP id t26mr9782773wmj.40.1556958488978;
+        Sat, 04 May 2019 01:28:08 -0700 (PDT)
 Received: from [192.168.0.108] ([84.40.104.204])
-        by smtp.gmail.com with ESMTPSA id o8sm5875760wra.4.2019.05.04.01.27.48
+        by smtp.gmail.com with ESMTPSA id h16sm8304904wrb.31.2019.05.04.01.28.08
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 04 May 2019 01:27:48 -0700 (PDT)
+        Sat, 04 May 2019 01:28:08 -0700 (PDT)
 Subject: Re: [PATCH v2 3/8] kernel-shark: Add logic for the plugins search
  path
 To:     Steven Rostedt <rostedt@goodmis.org>,
@@ -67,8 +67,8 @@ References: <20190502124009.32208-1-ykaradzhov@vmware.com>
  <20190502124009.32208-4-ykaradzhov@vmware.com>
  <20190503190557.6e36e59a@gandalf.local.home>
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <00b42af8-c822-82ea-76bd-afe6fe277644@gmail.com>
-Date:   Sat, 4 May 2019 11:27:47 +0300
+Message-ID: <4dbc5d6a-a9fc-218b-d78d-9f3f9d216cbb@gmail.com>
+Date:   Sat, 4 May 2019 11:28:07 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
