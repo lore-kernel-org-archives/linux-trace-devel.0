@@ -2,60 +2,33 @@ Return-Path: <SRS0=Tdus=TF=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3395FC004C9
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  5 May 2019 13:26:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45FF2C004C9
+	for <linux-trace-devel@archiver.kernel.org>; Sun,  5 May 2019 20:31:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 068D3208C0
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  5 May 2019 13:26:32 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Wx8/Qn4l"
+	by mail.kernel.org (Postfix) with ESMTP id 1E686206A3
+	for <linux-trace-devel@archiver.kernel.org>; Sun,  5 May 2019 20:31:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725873AbfEEN02 (ORCPT
+        id S1727615AbfEEUbv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 5 May 2019 09:26:28 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:33861 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727232AbfEEN01 (ORCPT
+        Sun, 5 May 2019 16:31:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726905AbfEEUbv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 5 May 2019 09:26:27 -0400
-Received: by mail-qk1-f195.google.com with SMTP id n68so2473557qka.1
-        for <linux-trace-devel@vger.kernel.org>; Sun, 05 May 2019 06:26:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VMs3ZDG4UTtB7mWeq9fogx8Im6FYMW4NfffNVZ0T6g0=;
-        b=Wx8/Qn4lhOzjepZEXkLBZ+w8/WHG8jhLCLZePQswk3nuOkWjV3N5eH3aZKCgdybogp
-         7/TReM/N6U6Lw8RYN3lD4pnUWUG8h7F81NJCRUMPZDWBZMOfV4oc9MoHAgMWetH1nZpI
-         OHyXUY0uszNgLft1e5rlQxJbPefuA34AZXXgA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VMs3ZDG4UTtB7mWeq9fogx8Im6FYMW4NfffNVZ0T6g0=;
-        b=Z17FANs4WeBq3SOg+jW+Co89TkN++DbJ9FcSzRMM0EsNZ3c0qPLUrP3PSiiM3SH3Cq
-         IsH7MhbPo7dPR/2FT+vo52hOEm9W/Nm56FX6hO7mfyPuEHnjVj7LETilarP1XxnQckwr
-         KG2Kd7GkxBHeMMSR0zUKBGY4Y41y3ATKZzNV/L+NZ+2gHQ2EGf8Z0zrGvupWucl8QRzl
-         aNpBxg4ins5XRSGgNf6beAjP4bZkV8DhK/nfqefZwLNBNR8X3jyHqOP6CLtJ25P3XGX2
-         wGNQOCl45+9gyDAfibGTVVqHJpjoS/wSkEherFQcEwuYx3D8kWYpD0bOL98PgKx1pXGi
-         SMag==
-X-Gm-Message-State: APjAAAU697TXriVbzueeTEwUwqFYnv+wPU8yC4kBkYE25dKF2jbtfH3E
-        p8t1GnHNKVrjO3Y0A+bxYX2ieA==
-X-Google-Smtp-Source: APXvYqzN3LNC9F4r23JL3m1ARyAewSM1naLPRx+StaQtVcEsebbIkaf5I9yTOOJzVD+6xM/cfuUBLQ==
-X-Received: by 2002:ae9:df43:: with SMTP id t64mr15613710qkf.250.1557062786462;
-        Sun, 05 May 2019 06:26:26 -0700 (PDT)
-Received: from localhost (c-73-216-90-110.hsd1.va.comcast.net. [73.216.90.110])
-        by smtp.gmail.com with ESMTPSA id k127sm4921838qkb.96.2019.05.05.06.26.25
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 05 May 2019 06:26:25 -0700 (PDT)
-Date:   Sun, 5 May 2019 13:26:23 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sun, 5 May 2019 16:31:51 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3ADEB20651;
+        Sun,  5 May 2019 20:31:47 +0000 (UTC)
+Date:   Sun, 5 May 2019 16:31:45 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
         Adrian Ratiu <adrian.ratiu@collabora.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>, atishp04@gmail.com,
@@ -73,7 +46,7 @@ Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         Manjo Raja Rao <linux@manojrajarao.com>,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        =?utf-8?Q?Micha=C5=82?= Gregorczyk <michalgr@fb.com>,
+        =?UTF-8?B?TWljaGHFgg==?= Gregorczyk <michalgr@fb.com>,
         Michal Gregorczyk <michalgr@live.com>,
         Mohammad Husain <russoue@gmail.com>,
         Olof Johansson <olof@lixom.net>, qais.yousef@arm.com,
@@ -81,36 +54,40 @@ Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         Srinivas Ramana <sramana@codeaurora.org>,
         Tamir Carmeli <carmeli.tamir@gmail.com>, yhs@fb.com
 Subject: Re: [PATCH v2] kheaders: Move from proc to sysfs
-Message-ID: <20190505132623.GA3076@localhost>
+Message-ID: <20190505163145.45f77e44@oasis.local.home>
+In-Reply-To: <20190505132623.GA3076@localhost>
 References: <20190504121213.183203-1-joel@joelfernandes.org>
- <20190504122158.GA23535@kroah.com>
- <20190504123650.GA229151@google.com>
- <20190505091030.GA25646@kroah.com>
+        <20190504122158.GA23535@kroah.com>
+        <20190504123650.GA229151@google.com>
+        <20190505091030.GA25646@kroah.com>
+        <20190505132623.GA3076@localhost>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190505091030.GA25646@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sun, May 05, 2019 at 11:10:30AM +0200, Greg KH wrote:
-> On Sat, May 04, 2019 at 08:36:50AM -0400, Joel Fernandes wrote:
-> > > But, you should change S_IRUGO to the correct octal number, checkpatch
-> > > should have barfed on this change.
+On Sun, 5 May 2019 13:26:23 +0000
+Joel Fernandes <joel@joelfernandes.org> wrote:
+
+> On Sun, May 05, 2019 at 11:10:30AM +0200, Greg KH wrote:
+> > On Sat, May 04, 2019 at 08:36:50AM -0400, Joel Fernandes wrote:  
+> > > > But, you should change S_IRUGO to the correct octal number, checkpatch
+> > > > should have barfed on this change.  
+> > > 
+> > > fixed, below is the updated patch inline, thanks!  
 > > 
-> > fixed, below is the updated patch inline, thanks!
+> > Please resend as a "real" submission, doing so in this format is a bit
+> > more difficult to apply.  
 > 
-> Please resend as a "real" submission, doing so in this format is a bit
-> more difficult to apply.
+> git am --scissors can do it, but no problem I will send as a formal
+> submission. Thanks a lot.
+>
 
-git am --scissors can do it, but no problem I will send as a formal
-submission. Thanks a lot.
+True, but a lot of us depend on scripts to pull in patches from our
+INBOX. Which is why we like them to stay with the standard format.
 
-
-> 
-> thanks,
-> 
-> greg k-h
+-- Steve
