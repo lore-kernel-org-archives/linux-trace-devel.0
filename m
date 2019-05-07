@@ -2,60 +2,48 @@ Return-Path: <SRS0=osWp=TH=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,T_DKIMWL_WL_HIGH,
+	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84D3FC004C9
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 May 2019 16:38:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F5FDC04AAD
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 May 2019 16:57:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5356E205C9
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 May 2019 16:38:28 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="eYuS+l8g"
+	by mail.kernel.org (Postfix) with ESMTP id 2059120656
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 May 2019 16:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1557248242;
+	bh=D6MpCQTS8LI1AAzN1OZT+Q/x/AiPwhtV7g7kacQEbx0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=mH28hqZQjpYyqGZ8GlBdHUjHSYHZ9f8VMkng8euH6Gl8+v25A5CYhzDjBFpxuuXSS
+	 BX9DKZMXzOSEFFl4RewiR+ihR+dNLGefmApvc2U5WtybFZBVTWzvKFUd+nVG3UDdB7
+	 2IYVaIOP3ZtGI1Yurxxv3fSj/mr3Ooe8DXbEEr9M=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbfEGQi2 (ORCPT
+        id S1727230AbfEGQ5V (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 May 2019 12:38:28 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:35165 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbfEGQi1 (ORCPT
+        Tue, 7 May 2019 12:57:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727165AbfEGQ5V (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 May 2019 12:38:27 -0400
-Received: by mail-pl1-f195.google.com with SMTP id w24so8463259plp.2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 07 May 2019 09:38:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PrwTuftts3y9+ku/n7DxYc7b66mYzqmoAIBNsj3WhKY=;
-        b=eYuS+l8gX0WHf8bL+hHAPFqQfZhQoR7iHHmMsTJF/AZoxWrP2uPc9hHL65RynHjA5y
-         Ab+bBINOze/EvQMgc+TwH643On5R7KzTcdmED9ud1JFWFO6UK5TocFWfLLIJFhMZ2MUX
-         7Uxj6u2ycKnfhohWj9D/bkHO7Kzvj7lwGqVUw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PrwTuftts3y9+ku/n7DxYc7b66mYzqmoAIBNsj3WhKY=;
-        b=fv/AgNVWBxH8Se4MCsVAUUD9+uxspaeyeNsGF2BfE85tdYyQKyY5T5Zf1rLpEF8zOt
-         K3uWx/c63IGgcbGgUAQRBg9MA9oiVHGWlcy0lzhfbSyoe40+4YvVLpA6Dlan8vBuJL5C
-         CrZosq7i8rWtlUIdHThHzTqW6ODyVFMdbbcduC4iUAblty4o/3dQXlIlEs1gfqy6sKr7
-         PK8ZVXGqkv4X1H/hGx1yA7zwBXbSASNM9KV58pJIFJr0Xp/V5p0kufw7eMLpRNxCWOXD
-         mm1NlnoBLpB/dSepCF/Yxy263RUpA5+Y4pv/iEB6UJAR3HfYrOSKOqOUQ9n6uaS6O5pX
-         0lsQ==
-X-Gm-Message-State: APjAAAWf7tt/ipxYGHdGFgNR0rRCTkMUFWhxwxisR9l2UXSCZSUUQyFy
-        UVGoFHjdnt2LmO9NqTZg/qMQ0g==
-X-Google-Smtp-Source: APXvYqyXNcsoYomIv94eB9GdJoQ72JRx4fHgYfkhkqw5RgY/K0k80ijGbucCDJQPhA+hQTsNJZh9vw==
-X-Received: by 2002:a17:902:2847:: with SMTP id e65mr3264147plb.319.1557247107171;
-        Tue, 07 May 2019 09:38:27 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id r8sm18061722pfn.11.2019.05.07.09.38.25
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 07 May 2019 09:38:25 -0700 (PDT)
-Date:   Tue, 7 May 2019 12:38:24 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        Tue, 7 May 2019 12:57:21 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA68D2054F;
+        Tue,  7 May 2019 16:57:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557248240;
+        bh=D6MpCQTS8LI1AAzN1OZT+Q/x/AiPwhtV7g7kacQEbx0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pjgx1GTyMP+8PrB4yhNbdYYUT4PUzjnrXZrXUGgoIXuA1GMtcBVXzbftpqViPkLRf
+         Od3fEvQcUMn8gEGQgMi4aq2W81hyvEPRzpOFzYwjYPV58uOgOdz57cUJFqiCQmFdMh
+         NM+XkPDA1KAFGGjnkOidL7aoRawFLQCcA14u1/ds=
+Date:   Tue, 7 May 2019 18:57:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
         Adrian Ratiu <adrian.ratiu@collabora.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>, atishp04@gmail.com,
@@ -81,46 +69,48 @@ Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
         Srinivas Ramana <sramana@codeaurora.org>,
         Tamir Carmeli <carmeli.tamir@gmail.com>, yhs@fb.com
 Subject: Re: [PATCH v2] kheaders: Move from proc to sysfs
-Message-ID: <20190507163824.GC89248@google.com>
+Message-ID: <20190507165718.GA1241@kroah.com>
 References: <20190504121213.183203-1-joel@joelfernandes.org>
  <20190504122158.GA23535@kroah.com>
  <20190504123650.GA229151@google.com>
  <20190505091030.GA25646@kroah.com>
  <20190505132623.GA3076@localhost>
  <20190505163145.45f77e44@oasis.local.home>
+ <20190507163824.GC89248@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190505163145.45f77e44@oasis.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190507163824.GC89248@google.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sun, May 05, 2019 at 04:31:45PM -0400, Steven Rostedt wrote:
-> On Sun, 5 May 2019 13:26:23 +0000
-> Joel Fernandes <joel@joelfernandes.org> wrote:
-> 
-> > On Sun, May 05, 2019 at 11:10:30AM +0200, Greg KH wrote:
-> > > On Sat, May 04, 2019 at 08:36:50AM -0400, Joel Fernandes wrote:  
-> > > > > But, you should change S_IRUGO to the correct octal number, checkpatch
-> > > > > should have barfed on this change.  
-> > > > 
-> > > > fixed, below is the updated patch inline, thanks!  
-> > > 
-> > > Please resend as a "real" submission, doing so in this format is a bit
-> > > more difficult to apply.  
+On Tue, May 07, 2019 at 12:38:24PM -0400, Joel Fernandes wrote:
+> On Sun, May 05, 2019 at 04:31:45PM -0400, Steven Rostedt wrote:
+> > On Sun, 5 May 2019 13:26:23 +0000
+> > Joel Fernandes <joel@joelfernandes.org> wrote:
 > > 
-> > git am --scissors can do it, but no problem I will send as a formal
-> > submission. Thanks a lot.
-> >
+> > > On Sun, May 05, 2019 at 11:10:30AM +0200, Greg KH wrote:
+> > > > On Sat, May 04, 2019 at 08:36:50AM -0400, Joel Fernandes wrote:  
+> > > > > > But, you should change S_IRUGO to the correct octal number, checkpatch
+> > > > > > should have barfed on this change.  
+> > > > > 
+> > > > > fixed, below is the updated patch inline, thanks!  
+> > > > 
+> > > > Please resend as a "real" submission, doing so in this format is a bit
+> > > > more difficult to apply.  
+> > > 
+> > > git am --scissors can do it, but no problem I will send as a formal
+> > > submission. Thanks a lot.
+> > >
+> > 
+> > True, but a lot of us depend on scripts to pull in patches from our
+> > INBOX. Which is why we like them to stay with the standard format.
 > 
-> True, but a lot of us depend on scripts to pull in patches from our
-> INBOX. Which is why we like them to stay with the standard format.
+> Thanks makes sense. So Greg, I submitted this properly, does it look good to
+> you now? Steven, I would appreciate any Acks/Reviews on the patch as well:
+> https://lore.kernel.org/patchwork/patch/1070199/
 
-Thanks makes sense. So Greg, I submitted this properly, does it look good to
-you now? Steven, I would appreciate any Acks/Reviews on the patch as well:
-https://lore.kernel.org/patchwork/patch/1070199/
-
-- Joel
+Looks good to me, should get to it in a few days...
