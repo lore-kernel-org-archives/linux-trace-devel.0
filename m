@@ -2,119 +2,130 @@ Return-Path: <SRS0=90v9=TK=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 305CAC04AB3
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 21:03:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 049A0C04A6B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 21:25:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F39E621841
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 21:03:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B7AF0217F9
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 21:25:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="UVBj/OwF"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vLHYryG1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbfEJVDJ (ORCPT
+        id S1728149AbfEJVZR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 May 2019 17:03:09 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:41565 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728069AbfEJVDI (ORCPT
+        Fri, 10 May 2019 17:25:17 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:35600 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727767AbfEJVZR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 May 2019 17:03:08 -0400
-Received: by mail-pf1-f196.google.com with SMTP id l132so3828916pfc.8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 May 2019 14:03:08 -0700 (PDT)
+        Fri, 10 May 2019 17:25:17 -0400
+Received: by mail-vs1-f67.google.com with SMTP id s4so4504791vsl.2;
+        Fri, 10 May 2019 14:25:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g9Gow6vM42aJp56wjf9r7GBUU79udYOMt8dacDWI13Q=;
-        b=UVBj/OwFLiTzum6IDgk7LUVfg4GiBlqfYvJJl4E6HY2WxlnZ0tj+8Mbyp8HNH5SRIF
-         xlPqFSE4NCYZBHfO7irbMEN+Vg+YxVQx3scJ2UAuP3Tk7DRfDauHCWrKS0qfq1K4r+C8
-         3DBrBuEM2rpf+Pk1qNBmlldbVkgMKr/w1GTH0=
+        d=gmail.com; s=20161025;
+        h=from:date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:message-id;
+        bh=IRTLh3UNu7SPuTbbI61OV5Ow9SpRxjKSzwT3uHWMX5E=;
+        b=vLHYryG1zs0J79YjN8Wnu86cKnSSweIlY7wAFbYr0Gkw9IVnfa3UZ4conX/ssCuQe3
+         3Zw0ulCI5lV17hSPlfZIX64stAfNLQXqlYU4u1fZW/Cw2F7UdknEiVkRa9Vy/df87LAx
+         QJY38l/A1SLiOb7p01rLhw1/AkenHssqx5CCU4jEJZxNy88AUS/ED+vuOtSVLTL4Yrdj
+         z4h5UCK/bsb1BejX8ZGdSS2igIrjghgWcuFio7LurvtdNdYvwGPuxR62SJVMzy+3tyng
+         dQYNLLWWAIgZi7Eoy33eQtqH4Ze/J0Q+LvJMbphi0AYDzYQqVoTogQEe592mz2Ny3jpZ
+         iXsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g9Gow6vM42aJp56wjf9r7GBUU79udYOMt8dacDWI13Q=;
-        b=loDtfzILXScAZC9Sa+c5/fF/uQJuWBKy90OjFEs0vzx5HAsv/+pizfg4HaErnjKn2n
-         QeV4UbzYxQ8W/+fACpuaJFTML8s1Y/7MDtbqPcK3uQpW/yLni+A+aGUG/REVOiwUGfPq
-         nWEOI8aML/SrxWlChybZ0nvc08uBad6+iZUs/Qu7qty2WDQBdIi/LfeiS6XZkh5qxbkg
-         Aa/CuX6RLlPD8qy3EKRPLcAW7O4nETSeNHm4RC9bTHBG+NTDWhjD97c6BmVePFGqbcKe
-         N7XoZrzgX/yePjGmpZ+thzbT6lqgtfTY15kbE+5tD/DlLh022BUO6DV8lmpZsAMP8OW7
-         DE3A==
-X-Gm-Message-State: APjAAAXSD+anIECbwvGQjT/5W4dx8P2+kBgCtLXrzSNyC76nzBSrh+v5
-        J4FETsCwUK6obXTg9S8J8QROFQ==
-X-Google-Smtp-Source: APXvYqxx7K5CBGqKQ/c/VTttlOFyb3tvfg/8U27VnQPYkICRqEywBVXgF7yTbE4iu6TL2YhtYXVtAQ==
-X-Received: by 2002:a63:2118:: with SMTP id h24mr16498738pgh.320.1557522187805;
-        Fri, 10 May 2019 14:03:07 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id y8sm6523333pgk.20.2019.05.10.14.03.03
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 10 May 2019 14:03:06 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, atishp04@gmail.com,
-        bpf@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>, dancol@google.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dietmar.eggemann@arm.com, duyuchao <yuchao.du@unisoc.com>,
-        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Manjo Raja Rao <linux@manojrajarao.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        =?UTF-8?q?Micha=C5=82=20Gregorczyk?= <michalgr@fb.com>,
-        Michal Gregorczyk <michalgr@live.com>,
-        Mohammad Husain <russoue@gmail.com>,
-        Olof Johansson <olof@lixom.net>, qais.yousef@arm.com,
-        rdunlap@infradead.org, rostedt@goodmis.org,
-        Shuah Khan <shuah@kernel.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Tamir Carmeli <carmeli.tamir@gmail.com>, yhs@fb.com
-Subject: [PATCH 3/3] kheaders: Make it depend on sysfs
-Date:   Fri, 10 May 2019 17:02:43 -0400
-Message-Id: <20190510210243.152808-4-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-In-Reply-To: <20190510210243.152808-1-joel@joelfernandes.org>
-References: <20190510210243.152808-1-joel@joelfernandes.org>
+        h=x-gm-message-state:from:date:user-agent:in-reply-to:references
+         :mime-version:content-transfer-encoding:subject:to:cc:message-id;
+        bh=IRTLh3UNu7SPuTbbI61OV5Ow9SpRxjKSzwT3uHWMX5E=;
+        b=ljcUTz2xWV4DhIUn/zfczPRswZZpkzgQVj4coWyvatVfKDWAtjWT8PWM1DOEIKzlXO
+         nqCGJpEPTkrUKRM4btgQc1ewL8J3mobTPCVXgWFa+iEhuMdGt6vZgSGdRAmrKTY+PDel
+         AipeVB9CJYudSHuwGFSGlhMeC7fSgWKUyfWO8Yb8ktSxpWCGH66niBrF5/82Ef6yaQdR
+         2lMQwuRvzlKaHZZY1N1/pGkrNHjM2yFOyJRdFKg0Flp3KulPFRMG9XgAnTx70tub+YD/
+         skWdEb2Qm9JR5FH1hjwT2VSrPljhVIh+GGGf3ZWRenjoOAu955p8zwcPZ2hYxpgibL8n
+         rXMg==
+X-Gm-Message-State: APjAAAUUYxp0tZWO8fSsAn8PKnJ0Nue1Qvwynm/0m/7u8aaXzEDu/TMd
+        rWukeUtoMdE3cs4W4sa5EiE=
+X-Google-Smtp-Source: APXvYqwn00Lcp6Z3izxfZ3GTSCywUImOfkwdr8X6hPTssjctHERIhMSHNo/gEm/R0sT9rfBA6roaOQ==
+X-Received: by 2002:a67:ea0b:: with SMTP id g11mr7351534vso.130.1557523515985;
+        Fri, 10 May 2019 14:25:15 -0700 (PDT)
+Received: from [192.168.1.113] ([199.116.59.166])
+        by smtp.gmail.com with ESMTPSA id j71sm4117957vsd.0.2019.05.10.14.25.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 May 2019 14:25:15 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Date:   Fri, 10 May 2019 17:25:10 -0400
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20190510161150.20be7f1e@gandalf.local.home>
+References: <20190510195606.537643615@goodmis.org> <20190510200105.966709757@goodmis.org> <20190510161150.20be7f1e@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 01/27] tools lib traceevent: Remove hard coded install paths from pkg-config file
+To:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org
+CC:     Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Message-ID: <BDB00110-43B1-4766-BB21-D7BF6FDD5EC7@kernel.org>
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The kheaders archive is exposed through SYSFS in /sys/kernel/. Make it
-depend on SYSFS as it makes no sense to enable this feature without it.
+On May 10, 2019 4:11:50 PM AST, Steven Rostedt <rostedt@goodmis=2Eorg> wrot=
+e:
+>On Fri, 10 May 2019 15:56:07 -0400
+>Steven Rostedt <rostedt@goodmis=2Eorg> wrote:
+>
+>> From: Tzvetomir Stoyanov <tstoyanov@vmware=2Ecom>
+>>=20
+>> Install directories of header and library files are hard coded in
+>> pkg-config template file=2E
+>>=20
+>> They must be configurable, the Makefile should set them on the
+>> compilation / install stage=2E
+>>=20
+>> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware=2Ecom>
+>> Cc: Jiri Olsa <jolsa@redhat=2Ecom>
+>> Link:
+>http://lkml=2Ekernel=2Eorg/r/20190418211556=2E5a12adc3@oasis=2Elocal=2Eho=
+me
+>> Link:
+>http://lkml=2Ekernel=2Eorg/r/20190329144546=2E5819-1-tstoyanov@vmware=2Ec=
+om
+>> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis=2Eorg>
+>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat=2Ecom>
+>
+>Bah!
+>
+>I based my patch series off of the wrong commit, and ended up including
+>this one in this series=2E
+>
+>Arnaldo,
+>
+>I believe you already applied patch 1 (otherwise I would not have your
+>SOB on it), please ignore=2E But patch 2 on are new to be applied=2E
 
-Suggested-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- init/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/init/Kconfig b/init/Kconfig
-index ce08adf0f637..f27138a8cf28 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -581,6 +581,7 @@ config IKCONFIG_PROC
- 
- config IKHEADERS
- 	tristate "Enable kernel headers through /sys/kernel/kheaders.tar.xz"
-+	depends on SYSFS
- 	help
- 	  This option enables access to the in-kernel headers that are generated during
- 	  the build process. These can be used to build eBPF tracing programs,
--- 
-2.21.0.1020.gf2820cf01a-goog
+Ok, I'll be back at work early next week and will peixes this,
+
+- Arnaldo
+
+>
+>Thanks!
+>
+>-- Steve
+>
+>> ---
+>>  tools/lib/traceevent/Makefile                  | 13 +++++++++----
+>>  tools/lib/traceevent/libtraceevent=2Epc=2Etemplate |  4 ++--
+>>  2 files changed, 11 insertions(+), 6 deletions(-)
 
