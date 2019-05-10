@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-11.9 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BE02C46470
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4992C04AB3
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:03:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 48119217F9
+	by mail.kernel.org (Postfix) with ESMTP id 81708217F4
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:03:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbfEJUC7 (ORCPT
+        id S1727866AbfEJUBJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 May 2019 16:02:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727907AbfEJUBJ (ORCPT
-        <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 10 May 2019 16:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727679AbfEJUBI (ORCPT
+        <rfc822;linux-trace-devel@vger.kernel.org>);
+        Fri, 10 May 2019 16:01:08 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04AD121873;
-        Fri, 10 May 2019 20:01:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D065521841;
+        Fri, 10 May 2019 20:01:07 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.92)
         (envelope-from <rostedt@goodmis.org>)
-        id 1hPBhc-0006kN-4l; Fri, 10 May 2019 16:01:08 -0400
-Message-Id: <20190510200108.042164597@goodmis.org>
+        id 1hPBha-0006fv-MT; Fri, 10 May 2019 16:01:06 -0400
+Message-Id: <20190510200106.583928896@goodmis.org>
 User-Agent: quilt/0.65
-Date:   Fri, 10 May 2019 15:56:20 -0400
+Date:   Fri, 10 May 2019 15:56:11 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -39,7 +39,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Subject: [PATCH 14/27] tools/lib/traceevent: Man page for tep_read_number()
+Subject: [PATCH 05/27] tools/lib/traceevent: Man page for header_page APIs
 References: <20190510195606.537643615@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -50,29 +50,33 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Create man page for tep_read_number() libtraceevent API.
+Create a man page for libtraceevent APIs:
+  tep_get_header_page_size(),
+  tep_get_header_timestamp_size(),
+  tep_is_old_format()
 
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-14-tstoyanov@vmware.com
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-5-tstoyanov@vmware.com
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../libtraceevent-endian_read.txt             | 78 +++++++++++++++++++
- 1 file changed, 78 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
+ .../libtraceevent-header_page.txt             | 102 ++++++++++++++++++
+ 1 file changed, 102 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt b/tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt b/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
 new file mode 100644
-index 000000000000..e64851b6e189
+index 000000000000..615d117dc39f
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-endian_read.txt
-@@ -0,0 +1,78 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
+@@ -0,0 +1,102 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_read_number - Reads a number from raw data.
++tep_get_header_page_size, tep_get_header_timestamp_size, tep_is_old_format -
++Get the data stored in the header page, in kernel context.
 +
 +SYNOPSIS
 +--------
@@ -80,20 +84,38 @@ index 000000000000..e64851b6e189
 +--
 +*#include <event-parse.h>*
 +
-+unsigned long long *tep_read_number*(struct tep_handle pass:[*]_tep_, const void pass:[*]_ptr_, int _size_);
++int *tep_get_header_page_size*(struct tep_handle pass:[*]_tep_);
++int *tep_get_header_timestamp_size*(struct tep_handle pass:[*]_tep_);
++bool *tep_is_old_format*(struct tep_handle pass:[*]_tep_);
 +--
-+
 +DESCRIPTION
 +-----------
-+The _tep_read_number()_ function reads an integer from raw data, taking into
-+account the endianness of the raw data and the current host. The _tep_ argument
-+is the trace event parser context. The _ptr_ is a pointer to the raw data, where
-+the integer is, and the _size_ is the size of the integer.
++These functions retrieve information from kernel context, stored in tracefs
++events/header_page. Old kernels do not have header page info, so default values
++from user space context are used.
++
++The _tep_get_header_page_size()_ function returns the size of a long integer,
++in kernel context. The _tep_ argument is trace event parser context.
++This information is retrieved from tracefs events/header_page, "commit" field.
++
++The _tep_get_header_timestamp_size()_ function returns the size of timestamps,
++in kernel context. The _tep_ argument is trace event parser context. This
++information is retrieved from tracefs events/header_page, "timestamp" field.
++
++The _tep_is_old_format()_ function returns true if the kernel predates
++the addition of events/header_page, otherwise it returns false.
 +
 +RETURN VALUE
 +------------
-+The _tep_read_number()_ function returns the integer in the byte order of
-+the current host. In case of an error, 0 is returned.
++The _tep_get_header_page_size()_ function returns the size of a long integer,
++in bytes.
++
++The _tep_get_header_timestamp_size()_ function returns the size of timestamps,
++in bytes.
++
++The _tep_is_old_format()_ function returns true, if an old kernel is used to
++generate the tracing data, which has no event/header_page. If the kernel is new,
++or _tep_ is NULL, false is returned.
 +
 +EXAMPLE
 +-------
@@ -103,13 +125,18 @@ index 000000000000..e64851b6e189
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+void process_record(struct tep_record *record)
-+{
-+	int offset = 24;
-+	int data = tep_read_number(tep, record->data + offset, 4);
++	int longsize;
++	int timesize;
++	bool old;
 +
-+	/* Read the 4 bytes at the offset 24 of data as an integer */
-+}
++	longsize = tep_get_header_page_size(tep);
++	timesize = tep_get_header_timestamp_size(tep);
++	old = tep_is_old_format(tep);
++
++	printf ("%s kernel is used to generate the tracing data.\n",
++		old?"Old":"New");
++	printf("The size of a long integer is %d bytes.\n", longsize);
++	printf("The timestamps size is %d bytes.\n", timesize);
 +...
 +--
 +
