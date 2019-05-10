@@ -7,39 +7,41 @@ X-Spam-Status: No, score=-11.9 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA886C04AB2
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:03:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34C18C04A6B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:03:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 95F72217F4
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:03:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 01E04217F4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:03:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727806AbfEJUBJ (ORCPT
+        id S1728104AbfEJUDG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 May 2019 16:01:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54892 "EHLO mail.kernel.org"
+        Fri, 10 May 2019 16:03:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727656AbfEJUBI (ORCPT
+        id S1727670AbfEJUBJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 May 2019 16:01:08 -0400
+        Fri, 10 May 2019 16:01:09 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BED10217D6;
+        by mail.kernel.org (Postfix) with ESMTPSA id CECCE2182B;
         Fri, 10 May 2019 20:01:07 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.92)
         (envelope-from <rostedt@goodmis.org>)
-        id 1hPBha-0006gO-RU; Fri, 10 May 2019 16:01:06 -0400
-Message-Id: <20190510200106.742948683@goodmis.org>
+        id 1hPBha-0006dt-2S; Fri, 10 May 2019 16:01:06 -0400
+Message-Id: <20190510200105.966709757@goodmis.org>
 User-Agent: quilt/0.65
-Date:   Fri, 10 May 2019 15:56:12 -0400
+Date:   Fri, 10 May 2019 15:56:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Subject: [PATCH 06/27] tools/lib/traceevent: Man page for get/set cpus APIs
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 01/27] tools lib traceevent: Remove hard coded install paths from pkg-config
+ file
 References: <20190510195606.537643615@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -50,102 +52,74 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Create man pages for libtraceevent APIs:
- tep_get_cpus(),
- tep_set_cpus()
+Install directories of header and library files are hard coded in
+pkg-config template file.
 
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-6-tstoyanov@vmware.com
+They must be configurable, the Makefile should set them on the
+compilation / install stage.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Link: http://lkml.kernel.org/r/20190418211556.5a12adc3@oasis.local.home
+Link: http://lkml.kernel.org/r/20190329144546.5819-1-tstoyanov@vmware.com
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- .../Documentation/libtraceevent-cpus.txt      | 77 +++++++++++++++++++
- 1 file changed, 77 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
+ tools/lib/traceevent/Makefile                  | 13 +++++++++----
+ tools/lib/traceevent/libtraceevent.pc.template |  4 ++--
+ 2 files changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt b/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
-new file mode 100644
-index 000000000000..5ad70e43b752
---- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-cpus.txt
-@@ -0,0 +1,77 @@
-+libtraceevent(3)
-+================
-+
-+NAME
-+----
-+tep_get_cpus, tep_set_cpus - Get / set the number of CPUs, which have a tracing
-+buffer representing it. Note, the buffer may be empty.
-+
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <event-parse.h>*
-+
-+int *tep_get_cpus*(struct tep_handle pass:[*]_tep_);
-+void *tep_set_cpus*(struct tep_handle pass:[*]_tep_, int _cpus_);
-+--
-+
-+DESCRIPTION
-+-----------
-+The _tep_get_cpus()_ function gets the number of CPUs, which have a tracing
-+buffer representing it. The _tep_ argument is trace event parser context.
-+
-+The _tep_set_cpus()_ function sets the number of CPUs, which have a tracing
-+buffer representing it. The _tep_ argument is trace event parser context.
-+The _cpu_ argument is the number of CPUs with tracing data.
-+
-+RETURN VALUE
-+------------
-+The _tep_get_cpus()_ functions returns the number of CPUs, which have tracing
-+data recorded.
-+
-+EXAMPLE
-+-------
-+[source,c]
-+--
-+#include <event-parse.h>
-+...
-+struct tep_handle *tep = tep_alloc();
-+...
-+	tep_set_cpus(tep, 5);
-+...
-+	printf("We have tracing data for %d CPUs", tep_get_cpus(tep));
-+--
-+
-+FILES
-+-----
-+[verse]
-+--
-+*event-parse.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltraceevent*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+_libtraceevent(3)_, _trace-cmd(1)_
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-+*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtraceevent is Free Software licensed under the GNU LGPL 2.1
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index 941761d9923d..34cf33a4f001 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -50,6 +50,9 @@ man_dir = $(prefix)/share/man
+ man_dir_SQ = '$(subst ','\'',$(man_dir))'
+ pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
+ 			--variable pc_path pkg-config | tr ":" " "))
++includedir_relative = traceevent
++includedir = $(prefix)/include/$(includedir_relative)
++includedir_SQ = '$(subst ','\'',$(includedir))'
+ 
+ export man_dir man_dir_SQ INSTALL
+ export DESTDIR DESTDIR_SQ
+@@ -279,6 +282,8 @@ define do_install_pkgconfig_file
+ 		cp -f ${PKG_CONFIG_FILE}.template ${PKG_CONFIG_FILE}; 		\
+ 		sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE}; 		\
+ 		sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
++		sed -i "s|LIB_DIR|${libdir}|g" ${PKG_CONFIG_FILE}; \
++		sed -i "s|HEADER_DIR|$(includedir)|g" ${PKG_CONFIG_FILE}; \
+ 		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
+ 	else 									\
+ 		(echo Failed to locate pkg-config directory) 1>&2;		\
+@@ -300,10 +305,10 @@ install_pkgconfig:
+ 
+ install_headers:
+ 	$(call QUIET_INSTALL, headers) \
+-		$(call do_install,event-parse.h,$(prefix)/include/traceevent,644); \
+-		$(call do_install,event-utils.h,$(prefix)/include/traceevent,644); \
+-		$(call do_install,trace-seq.h,$(prefix)/include/traceevent,644); \
+-		$(call do_install,kbuffer.h,$(prefix)/include/traceevent,644)
++		$(call do_install,event-parse.h,$(DESTDIR)$(includedir_SQ),644); \
++		$(call do_install,event-utils.h,$(DESTDIR)$(includedir_SQ),644); \
++		$(call do_install,trace-seq.h,$(DESTDIR)$(includedir_SQ),644); \
++		$(call do_install,kbuffer.h,$(DESTDIR)$(includedir_SQ),644)
+ 
+ install: install_lib
+ 
+diff --git a/tools/lib/traceevent/libtraceevent.pc.template b/tools/lib/traceevent/libtraceevent.pc.template
+index 42e4d6cb6b9e..86384fcd57f1 100644
+--- a/tools/lib/traceevent/libtraceevent.pc.template
++++ b/tools/lib/traceevent/libtraceevent.pc.template
+@@ -1,6 +1,6 @@
+ prefix=INSTALL_PREFIX
+-libdir=${prefix}/lib64
+-includedir=${prefix}/include/traceevent
++libdir=LIB_DIR
++includedir=HEADER_DIR
+ 
+ Name: libtraceevent
+ URL: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 -- 
 2.20.1
 
