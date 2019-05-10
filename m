@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-11.9 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05D9FC04A6B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:01:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E44F2C04AB2
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:01:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D3B78217F5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:01:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BE1BA217F4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:01:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbfEJUBe (ORCPT
+        id S1728132AbfEJUBk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 May 2019 16:01:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55118 "EHLO mail.kernel.org"
+        Fri, 10 May 2019 16:01:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728017AbfEJUBL (ORCPT
+        id S1728016AbfEJUBL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 10 May 2019 16:01:11 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AFE621855;
-        Fri, 10 May 2019 20:01:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBB76217D6;
+        Fri, 10 May 2019 20:01:10 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.92)
         (envelope-from <rostedt@goodmis.org>)
-        id 1hPBhe-0006pi-6f; Fri, 10 May 2019 16:01:10 -0400
-Message-Id: <20190510200110.093108279@goodmis.org>
+        id 1hPBhd-0006pD-Uv; Fri, 10 May 2019 16:01:09 -0400
+Message-Id: <20190510200109.847820380@goodmis.org>
 User-Agent: quilt/0.65
-Date:   Fri, 10 May 2019 15:56:31 -0400
+Date:   Fri, 10 May 2019 15:56:30 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -39,7 +39,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Subject: [PATCH 25/27] tools/lib/traceevent: Man page for tep_parse_header_page()
+Subject: [PATCH 24/27] tools/lib/traceevent: Man pages for parse event APIs
 References: <20190510195606.537643615@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -50,29 +50,31 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Create man page for tep_parse_header_page() libtraceevent API.
+Create man pages for libtraceevent APIs:
+  tep_parse_event(),
+  tep_parse_format()
 
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-25-tstoyanov@vmware.com
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-24-tstoyanov@vmware.com
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../libtraceevent-parse_head.txt              | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
+ .../libtraceevent-parse_event.txt             | 90 +++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
 new file mode 100644
-index 000000000000..c90f16c7d8e6
+index 000000000000..f248114ca1ff
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
-@@ -0,0 +1,82 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
+@@ -0,0 +1,90 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_parse_header_page - Parses the data stored in the header page.
++tep_parse_event, tep_parse_format - Parse the event format information
 +
 +SYNOPSIS
 +--------
@@ -80,25 +82,28 @@ index 000000000000..c90f16c7d8e6
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_parse_header_page*(struct tep_handle pass:[*]_tep_, char pass:[*]_buf_, unsigned long _size_, int _long_size_);
++enum tep_errno *tep_parse_event*(struct tep_handle pass:[*]_tep_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
++enum tep_errno *tep_parse_format*(struct tep_handle pass:[*]_tep_, struct tep_event pass:[*]pass:[*]_eventp_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_parse_header_page()_ function parses the header page data from _buf_,
-+and initializes the _tep_, trace event parser context, with it. The buffer
-+_buf_ is with _size_, and is supposed to be copied from
-+tracefs/events/header_page.
++The _tep_parse_event()_ function parses the event format and creates an event
++structure to quickly parse raw data for a given event. The _tep_ argument is
++the trace event parser context. The created event structure is stored in the
++_tep_ context. The _buf_ argument is a buffer with _size_, where the event
++format data is. The event format data can be taken from
++tracefs/events/.../.../format files. The _sys_ argument is the system of
++the event.
 +
-+Some old kernels do not have header page info, in this case the
-+_tep_parse_header_page()_ function  can be called with _size_ equal to 0. The
-+_tep_ context is initialized with default values. The _long_size_ can be used in
-+this use case, to set the size of a long integer to be used.
++The _tep_parse_format()_ function does the same as _tep_parse_event()_. The only
++difference is in the extra _eventp_ argument, where the newly created event
++structure is returned.
 +
 +RETURN VALUE
 +------------
-+The _tep_parse_header_page()_ function returns 0 in case of success, or -1
-+in case of an error.
++Both _tep_parse_event()_ and _tep_parse_format()_ functions return 0 on success,
++or TEP_ERRNO__... in case of an error.
 +
 +EXAMPLE
 +-------
@@ -110,9 +115,14 @@ index 000000000000..c90f16c7d8e6
 +...
 +char *buf;
 +int size;
-+buf = read_file("/sys/kernel/tracing/events/header_page", &size);
-+if (tep_parse_header_page(tep, buf, size, sizeof(unsigned long)) != 0) {
-+	/* Failed to parse the header page */
++struct tep_event *event = NULL;
++buf = read_file("/sys/kernel/tracing/events/ftrace/print/format", &size);
++if (tep_parse_event(tep, buf, size, "ftrace") != 0) {
++	/* Failed to parse the ftrace print format */
++}
++
++if (tep_parse_format(tep, &event, buf, size, "ftrace") != 0) {
++	/* Failed to parse the ftrace print format */
 +}
 +...
 +--
