@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-11.9 required=3.0
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 658A1C04A6B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:02:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 109B1C04AB3
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:02:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3A844217F4
+	by mail.kernel.org (Postfix) with ESMTP id DDF48217F4
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 20:02:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbfEJUCS (ORCPT
+        id S1728243AbfEJUCS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 10 May 2019 16:02:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55188 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:55092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727885AbfEJUBK (ORCPT
+        id S1727942AbfEJUBK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 10 May 2019 16:01:10 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 802A9218CD;
-        Fri, 10 May 2019 20:01:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6E1821880;
+        Fri, 10 May 2019 20:01:09 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.92)
         (envelope-from <rostedt@goodmis.org>)
-        id 1hPBhb-0006iv-L1; Fri, 10 May 2019 16:01:07 -0400
-Message-Id: <20190510200107.536391771@goodmis.org>
+        id 1hPBhc-0006mn-W8; Fri, 10 May 2019 16:01:09 -0400
+Message-Id: <20190510200108.885426878@goodmis.org>
 User-Agent: quilt/0.65
-Date:   Fri, 10 May 2019 15:56:17 -0400
+Date:   Fri, 10 May 2019 15:56:25 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -39,7 +39,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Subject: [PATCH 11/27] tools/lib/traceevent: Man pages for event handler APIs
+Subject: [PATCH 19/27] tools/lib/traceevent: Man pages get field value APIs
 References: <20190510195606.537643615@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -51,90 +51,76 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
 Create man pages for libtraceevent APIs:
-  tep_register_event_handler()
-  tep_unregister_event_handler()
+  tep_get_any_field_val(),
+  tep_get_common_field_val(),
+  tep_get_field_val(),
+  tep_get_field_raw()
 
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-11-tstoyanov@vmware.com
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-19-tstoyanov@vmware.com
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../libtraceevent-reg_event_handler.txt       | 156 ++++++++++++++++++
- 1 file changed, 156 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
+ .../libtraceevent-field_get_val.txt           | 122 ++++++++++++++++++
+ 1 file changed, 122 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt b/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt b/tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
 new file mode 100644
-index 000000000000..53d37d72a1c1
+index 000000000000..6324f0d48aeb
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-reg_event_handler.txt
-@@ -0,0 +1,156 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-field_get_val.txt
+@@ -0,0 +1,122 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_register_event_handler, tep_unregister_event_handler -  Register /
-+unregisters a callback function to parse an event information.
++tep_get_any_field_val, tep_get_common_field_val, tep_get_field_val,
++tep_get_field_raw - Get value of a field.
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <event-parse.h>*
++*#include <trace-seq.h>*
 +
-+enum *tep_reg_handler* {
-+	_TEP_REGISTER_SUCCESS_,
-+	_TEP_REGISTER_SUCCESS_OVERWRITE_,
-+};
-+
-+int *tep_register_event_handler*(struct tep_handle pass:[*]_tep_, int _id_, const char pass:[*]_sys_name_, const char pass:[*]_event_name_, tep_event_handler_func _func_, void pass:[*]_context_);
-+int *tep_unregister_event_handler*(struct tep_handle pass:[*]tep, int id, const char pass:[*]sys_name, const char pass:[*]event_name, tep_event_handler_func func, void pass:[*]_context_);
-+
-+typedef int (*pass:[*]tep_event_handler_func*)(struct trace_seq pass:[*]s, struct tep_record pass:[*]record, struct tep_event pass:[*]event, void pass:[*]context);
++int *tep_get_any_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
++int *tep_get_common_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
++int *tep_get_field_val*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, unsigned long long pass:[*]_val_, int _err_);
++void pass:[*]*tep_get_field_raw*(struct trace_seq pass:[*]_s_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int pass:[*]_len_, int _err_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_register_event_handler()_ function registers a handler function,
-+which is going to be called to parse the information for a given event.
-+The _tep_ argument is the trace event parser context. The _id_ argument is
-+the id of the event. The _sys_name_ argument is the name of the system,
-+the event belongs to. The _event_name_ argument is the name of the event.
-+If _id_ is >= 0, it is used to find the event, otherwise _sys_name_ and
-+_event_name_ are used. The _func_ is a pointer to the function, which is going
-+to be called to parse the event information. The _context_ argument is a pointer
-+to the context data, which will be passed to the _func_. If a handler function
-+for the same event is already registered, it will be overridden with the new
-+one. This mechanism allows a developer to override the parsing of a given event.
-+If for some reason the default print format is not sufficient, the developer
-+can register a function for an event to be used to parse the data instead.
++These functions can be used to find a field and retrieve its value.
 +
-+The _tep_unregister_event_handler()_ function unregisters the handler function,
-+previously registered with _tep_register_event_handler()_. The _tep_ argument
-+is the trace event parser context. The _id_, _sys_name_, _event_name_, _func_,
-+and _context_ are the same arguments, as when the callback function _func_ was
-+registered.
++The _tep_get_any_field_val()_ function searches in the _record_ for a field
++with _name_, part of the _event_. If the field is found, its value is stored in
++_val_. If there is an error and _err_ is not zero, then an error string is
++written into _s_.
 +
-+The _tep_event_handler_func_ is the type of the custom event handler
-+function. The _s_ argument is the trace sequence, it can be used to create a
-+custom string, describing the event. A _record_  to get the event from is passed
-+as input parameter and also the _event_ - the handle to the record's event. The
-+_context_ is custom context, set when the custom event handler is registered.
++The _tep_get_common_field_val()_ function does the same as
++_tep_get_any_field_val()_, but searches only in the common fields. This works
++for any event as all events include the common fields.
++
++The _tep_get_field_val()_ function does the same as _tep_get_any_field_val()_,
++but searches only in the event specific fields.
++
++The _tep_get_field_raw()_ function searches in the _record_ for a field with
++_name_, part of the _event_. If the field is found, a pointer to where the field
++exists in the record's raw data is returned. The size of the data is stored in
++_len_. If there is an error and _err_ is not zero, then an error string is
++written into _s_.
 +
 +RETURN VALUE
 +------------
-+The _tep_register_event_handler()_ function returns _TEP_REGISTER_SUCCESS_
-+if the new handler is registered successfully or
-+_TEP_REGISTER_SUCCESS_OVERWRITE_ if an existing handler is overwritten.
-+If there is not  enough memory to complete the registration,
-+TEP_ERRNO__MEM_ALLOC_FAILED is returned.
++The _tep_get_any_field_val()_, _tep_get_common_field_val()_ and
++_tep_get_field_val()_ functions return 0 on success, or -1 in case of an error.
 +
-+The _tep_unregister_event_handler()_ function returns 0 if _func_ was removed
-+successful or, -1 if the event was not found.
-+
-+The _tep_event_handler_func_ should return -1 in case of an error,
-+or 0 otherwise.
++The _tep_get_field_raw()_ function returns a pointer to field's raw data, and
++places the length of this data in _len_. In case of an error NULL is returned.
 +
 +EXAMPLE
 +-------
@@ -145,48 +131,30 @@ index 000000000000..53d37d72a1c1
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+int timer_expire_handler(struct trace_seq *s, struct tep_record *record,
-+			 struct tep_event *event, void *context)
-+{
-+	trace_seq_printf(s, "hrtimer=");
-+
-+	if (tep_print_num_field(s, "0x%llx", event, "timer", record, 0) == -1)
-+		tep_print_num_field(s, "0x%llx", event, "hrtimer", record, 1);
-+
-+	trace_seq_printf(s, " now=");
-+
-+	tep_print_num_field(s, "%llu", event, "now", record, 1);
-+
-+	tep_print_func_field(s, " function=%s", event, "function", record, 0);
-+
-+	return 0;
-+}
++struct tep_event *event = tep_find_event_by_name(tep, "kvm", "kvm_exit");
 +...
-+	int ret;
++void process_record(struct tep_record *record)
++{
++	int len;
++	char *comm;
++	struct tep_event_format *event;
++	unsigned long long val;
 +
-+	ret = tep_register_event_handler(tep, -1, "timer", "hrtimer_expire_entry",
-+					 timer_expire_handler, NULL);
-+	if (ret < 0) {
-+		char buf[32];
-+
-+		tep_strerror(tep, ret, buf, 32)
-+		printf("Failed to register handler for hrtimer_expire_entry: %s\n", buf);
-+	} else {
-+		switch (ret) {
-+		case TEP_REGISTER_SUCCESS:
-+			printf ("Registered handler for hrtimer_expire_entry\n");
-+			break;
-+		case TEP_REGISTER_SUCCESS_OVERWRITE:
-+			printf ("Overwrote handler for hrtimer_expire_entry\n");
-+			break;
++	event = tep_find_event_by_record(pevent, record);
++	if (event != NULL) {
++		if (tep_get_common_field_val(NULL, event, "common_type",
++					     record, &val, 0) == 0) {
++			/* Got the value of common type field */
++		}
++		if (tep_get_field_val(NULL, event, "pid", record, &val, 0) == 0) {
++			/* Got the value of pid specific field */
++		}
++		comm = tep_get_field_raw(NULL, event, "comm", record, &len, 0);
++		if (comm != NULL) {
++			/* Got a pointer to the comm event specific field */
 +		}
 +	}
-+...
-+	ret = tep_unregister_event_handler(tep, -1, "timer", "hrtimer_expire_entry",
-+					   timer_expire_handler, NULL);
-+	if ( ret )
-+		printf ("Failed to unregister handler for hrtimer_expire_entry\n");
-+
++}
 +--
 +
 +FILES
