@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-0.9 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82E04C04A6B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 17:48:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8025C04A6B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 18:29:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 610CE217F4
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 17:48:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 84416217D6
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 May 2019 18:29:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbfEJRsn (ORCPT
+        id S1728022AbfEJS35 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 May 2019 13:48:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49922 "EHLO mail.kernel.org"
+        Fri, 10 May 2019 14:29:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727569AbfEJRsn (ORCPT
+        id S1727642AbfEJS35 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 May 2019 13:48:43 -0400
+        Fri, 10 May 2019 14:29:57 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44E32217D6;
-        Fri, 10 May 2019 17:48:42 +0000 (UTC)
-Date:   Fri, 10 May 2019 13:48:40 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 60FA321841;
+        Fri, 10 May 2019 18:29:56 +0000 (UTC)
+Date:   Fri, 10 May 2019 14:29:54 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v6 09/26] tools/lib/traceevent: Man page for
- tep_strerror()
-Message-ID: <20190510134840.41d3ca77@gandalf.local.home>
-In-Reply-To: <20190503091119.23399-10-tstoyanov@vmware.com>
+Subject: Re: [PATCH v6 25/26] tools/lib/traceevent: Man pages for APIs, used
+ to extract common fields from a record
+Message-ID: <20190510142954.0ab4e582@gandalf.local.home>
+In-Reply-To: <20190503091119.23399-26-tstoyanov@vmware.com>
 References: <20190503091119.23399-1-tstoyanov@vmware.com>
-        <20190503091119.23399-10-tstoyanov@vmware.com>
+        <20190503091119.23399-26-tstoyanov@vmware.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,16 +44,59 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri,  3 May 2019 12:11:02 +0300
+On Fri,  3 May 2019 12:11:18 +0300
 Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
 
-> +It as a thread safe wrapper around strerror_r(). The library function has two
-> +different behaviors - POSIX and GNU specific. The _tep_strerror()_ API behaves
-> +as the POSIX version - the error string is copied in the user supplied buffer.
+> --- /dev/null
+> +++ b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
+> @@ -0,0 +1,137 @@
+> +libtraceevent(3)
+> +================
+> +
+> +NAME
+> +----
+> +tep_data_type, tep_data_pid,tep_data_preempt_count, tep_data_flags -
+> +Extract common fields from a record.
+> +
+> +SYNOPSIS
+> +--------
+> +[verse]
+> +--
+> +*#include <event-parse.h>*
+> +
+> +enum *trace_flag_type* {
+> +	_TRACE_FLAG_IRQS_OFF_,
+> +	_TRACE_FLAG_IRQS_NOSUPPORT_,
 
-I updated this to say "API always behaves as the POSIX version", to
-remove any ambiguity.
+Changed here OK.
 
-Thanks!
+> +	_TRACE_FLAG_NEED_RESCHED_,
+> +	_TRACE_FLAG_HARDIRQ_,
+> +	_TRACE_FLAG_SOFTIRQ_,
+> +};
+> +
+> +int *tep_data_type*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
+> +int *tep_data_pid*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
+> +int *tep_data_preempt_count*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
+> +int *tep_data_flags*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
+> +--
+
+
+
+> +The _tep_data_flags()_ function gets the latency flags from the record _rec_.
+> +It reads the "common_flags" field. The _tep_ argument is the trace event parser
+> +context. Supported latency flags are:
+> +[verse]
+> +--
+> +	_TRACE_FLAG_IRQS_OFF_,		Interrupts are disabled.
+> +	_TRACE_FLAG_IRQS_NOSUPPOR_,	Reading IRQ flag is not supported by the architecture.
+
+Forgot to change here. I'll fix.
 
 -- Steve
+
+> +	_TRACE_FLAG_NEED_RESCHED_,	Task needs rescheduling.
+> +	_TRACE_FLAG_HARDIRQ_,		Hard IRQ is running.
+> +	_TRACE_FLAG_SOFTIRQ_,		Soft IRQ is running.
+> +--
+> +
