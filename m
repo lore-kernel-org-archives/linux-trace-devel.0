@@ -2,58 +2,48 @@ Return-Path: <SRS0=bhO7=TL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E512DC04A6B
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 May 2019 00:53:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49C91C04AB1
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 May 2019 06:02:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B7F5321841
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 May 2019 00:53:15 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="umIRC7/3"
+	by mail.kernel.org (Postfix) with ESMTP id 0F2CE2182B
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 May 2019 06:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1557554527;
+	bh=p/HRiT9yqHlg2V7XNH8WpqZb2zm5DrER+cqskPbJ7+s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=nLvlmtFIJuN5F91IY5pYwGi1Os/7BpBDkNW3ghU2SgRQRA0IM09onbHmzGnXvglQj
+	 KJX/m5kJ3o5Dwn/M6KVcBZjmKMcvKfL2uv/1m3GErPVMRGoHL+Nr+qL5Pnz9EQdigY
+	 YEU0UcsLbzou7voj9ji3ITYB4GpfxAqR4C4DR8xM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbfEKAxL (ORCPT
+        id S1725990AbfEKGCG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 May 2019 20:53:11 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:31960 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbfEKAxL (ORCPT
+        Sat, 11 May 2019 02:02:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbfEKGCG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 May 2019 20:53:11 -0400
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id x4B0qe6p032760;
-        Sat, 11 May 2019 09:52:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com x4B0qe6p032760
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1557535961;
-        bh=iUxXS+30vplKGahUoVQhsc/083rdodKyu7vjq55D8xg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=umIRC7/3lNRLSfK+GHljh9R3w0EjQ+AonhIXa9BSr4osEJ1qBhMgzY50aI+8ebY8u
-         L9oNE/JlHyZaHMcd4m+0yEm/5oI6h4wmSJrCCbPCcO6F9NuHKAdyqzbvVIY2k5Zfna
-         ca9coS/3yMGwaZA736aNpG0ktBbgblls2W8ptdUMGkfOK9RM3DESUXB6IPNXsx8FcL
-         6cLIBKpJx7B2GacYkS186Z1oQ7b2X3Kyns+i1GE9ZBw8huUIgJvfsFJxpyQD6mWtwX
-         8rv9pykSnmYRazTLtdNBM/Z8HlK0+Kr7FWfwHPrYo4ncv0T60fUsm0CodN3bh5sY9g
-         MN3rUi7l+Az+g==
-X-Nifty-SrcIP: [209.85.217.50]
-Received: by mail-vs1-f50.google.com with SMTP id j184so4668136vsd.11;
-        Fri, 10 May 2019 17:52:41 -0700 (PDT)
-X-Gm-Message-State: APjAAAULBF5NbSY/oTiCb/RjkNEBAhB22SJO/v3+qos7RudpzuklxxXC
-        Lhu7f7D8vgA6EXESGRF3FFMdGYNbrcSYB9DiltI=
-X-Google-Smtp-Source: APXvYqyUc+v7TtnlTZkAvl+FZ1vVEt3lE7J6HYJX7L39IUWk68P03S3ownrv/zhg9Wxx1qmb65a+wPCgt1rx7T1DAls=
-X-Received: by 2002:a67:fd89:: with SMTP id k9mr7848953vsq.54.1557535960078;
- Fri, 10 May 2019 17:52:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190510210243.152808-1-joel@joelfernandes.org> <20190510210243.152808-4-joel@joelfernandes.org>
-In-Reply-To: <20190510210243.152808-4-joel@joelfernandes.org>
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Sat, 11 May 2019 09:52:04 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATeJqmE29M=Y1Vexg8nnRdr3qUDkq1BejN7t2_106PgVg@mail.gmail.com>
-Message-ID: <CAK7LNATeJqmE29M=Y1Vexg8nnRdr3qUDkq1BejN7t2_106PgVg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] kheaders: Make it depend on sysfs
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sat, 11 May 2019 02:02:06 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C61012173B;
+        Sat, 11 May 2019 06:02:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557554525;
+        bh=p/HRiT9yqHlg2V7XNH8WpqZb2zm5DrER+cqskPbJ7+s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ktm0kz52FhtprAmfDKfRf0+t/ACR967wBlZo/njpZyLTvdvQQcZE/JHEG0mPhwMnS
+         fSPu28p3h+yTt9jEZ2bBD58kVUAHRLZfIuy79u26uItO5gMpvcOkRhorvGTs7CSDs1
+         MdDsjOpnTitVkTfxOZTdc+qoCez/9OEhX6dWx0xE=
+Date:   Sat, 11 May 2019 08:02:03 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Adrian Ratiu <adrian.ratiu@collabora.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -65,7 +55,6 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Dan Williams <dan.j.williams@intel.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         duyuchao <yuchao.du@unisoc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Guenter Roeck <groeck@chromium.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Karim Yaghmour <karim.yaghmour@opersys.com>,
@@ -77,7 +66,7 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-trace-devel@vger.kernel.org,
         Manjo Raja Rao <linux@manojrajarao.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        =?UTF-8?Q?Micha=C5=82_Gregorczyk?= <michalgr@fb.com>,
+        =?utf-8?Q?Micha=C5=82?= Gregorczyk <michalgr@fb.com>,
         Michal Gregorczyk <michalgr@live.com>,
         Mohammad Husain <russoue@gmail.com>,
         Olof Johansson <olof@lixom.net>,
@@ -88,51 +77,33 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Srinivas Ramana <sramana@codeaurora.org>,
         Tamir Carmeli <carmeli.tamir@gmail.com>,
         Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 3/3] kheaders: Make it depend on sysfs
+Message-ID: <20190511060203.GA18650@kroah.com>
+References: <20190510210243.152808-1-joel@joelfernandes.org>
+ <20190510210243.152808-4-joel@joelfernandes.org>
+ <CAK7LNATeJqmE29M=Y1Vexg8nnRdr3qUDkq1BejN7t2_106PgVg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNATeJqmE29M=Y1Vexg8nnRdr3qUDkq1BejN7t2_106PgVg@mail.gmail.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sat, May 11, 2019 at 6:05 AM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> The kheaders archive is exposed through SYSFS in /sys/kernel/. Make it
-> depend on SYSFS as it makes no sense to enable this feature without it.
+On Sat, May 11, 2019 at 09:52:04AM +0900, Masahiro Yamada wrote:
+> On Sat, May 11, 2019 at 6:05 AM Joel Fernandes (Google)
+> <joel@joelfernandes.org> wrote:
+> >
+> > The kheaders archive is exposed through SYSFS in /sys/kernel/. Make it
+> > depend on SYSFS as it makes no sense to enable this feature without it.
+> 
+> 
+> And, it also makes no sense to break the feature by 1/3,
+> then fix it by 3/3.
+> 
+> 
+> Why don't you squash this?
 
-
-And, it also makes no sense to break the feature by 1/3,
-then fix it by 3/3.
-
-
-Why don't you squash this?
-
-
-
->
-> Suggested-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  init/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index ce08adf0f637..f27138a8cf28 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -581,6 +581,7 @@ config IKCONFIG_PROC
->
->  config IKHEADERS
->         tristate "Enable kernel headers through /sys/kernel/kheaders.tar.xz"
-> +       depends on SYSFS
->         help
->           This option enables access to the in-kernel headers that are generated during
->           the build process. These can be used to build eBPF tracing programs,
-> --
-> 2.21.0.1020.gf2820cf01a-goog
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+I agree, this belongs in patch 1/3.
