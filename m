@@ -6,50 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B1D3C04E53
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 949C3C04E53
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 723CB20843
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 66CA020843
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbfEOTK3 (ORCPT
+        id S1727173AbfEOTKn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 15 May 2019 15:10:29 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:40978 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727173AbfEOTK3 (ORCPT
+        Wed, 15 May 2019 15:10:43 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:46064 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726584AbfEOTKn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 15 May 2019 15:10:29 -0400
-Received: by mail-pf1-f195.google.com with SMTP id q17so446615pfq.8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 15 May 2019 12:10:28 -0700 (PDT)
+        Wed, 15 May 2019 15:10:43 -0400
+Received: by mail-pf1-f196.google.com with SMTP id s11so436796pfm.12
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 May 2019 12:10:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6WfPlN+10nuwKB/nKrdeUrA0kgkdFfN2WWZpTnbQank=;
-        b=rp3vPhFx4+W5OjeqlWQ7w/EpnpT0vDVP8xY/9Fw6QAvpcEVUGGEsMGJLDFbozzxxqb
-         cgUbHUTVJB/1YLMjqmNn+/Jf9OWDek/+YleP6Pbeb1gfLrYBVu5DSpJVC87x8GNAw24G
-         UGF/9VbwL+7ZJUmvNNtOrcO1EQGK2iA+HLSgHrZlaGytAe2YE4EVyAN33tTwu3S6ehFq
-         x2aqXVqSyKp7GkOCxp5sDALgnl7cRxBJlbn0Ib13hTqHDMB8cUxDZAxSFDYxgXoTqpWs
-         VklVvNK/mbN2c/OtFDcjOFimWL6LINEyCuBjF7iYDMQ/3iGhakN4SFWDS9IzqwHWwKdB
-         If2g==
-X-Gm-Message-State: APjAAAXHYwmK2R+Um9QNMw9f9/cGIRpD5AX0XKME55cdVoC3FOghUJ4E
-        A1j95M6xGAWWlIJRmCBO7K8=
-X-Google-Smtp-Source: APXvYqyWqrt7eP1ofADfgDMabVTlM/Kmvwuu+sslvNyM54Pkzq9INK9DURFlmJYk82sZ/NOD3M9HTA==
-X-Received: by 2002:a62:2cc2:: with SMTP id s185mr10288532pfs.106.1557947428658;
-        Wed, 15 May 2019 12:10:28 -0700 (PDT)
+        bh=H6lwmKt2n7Pf69RpCrlNpRShPPy7nJ7fY587b1cNBUc=;
+        b=oF2Dfr1dQYdg5kY2JZ/ACxvet6gX0w3hsH0Gj5saaCbRAhuQ1optfiBRbhm3nm6wuM
+         uwc8ITg853KLUzR9YVe8xr12L9h7Sks+9izBB/qAfLj/2pswnNHnC3JKQEfFcU5AI1Ut
+         SNBEsPEsZAqSno0Mu5KgLwis9YkEIaMqpzjZLY58EaKiAdPz7QXoc+cHOnlaw1dp/okH
+         p3qccpZmOcP9sHk0FiM6dEFww5c2RenI58gmmH+egeNtXX0d31l3jZeJXXfNPBfzhEZX
+         4vY8cM6EmGXI3/FuBHzZmCepCkGK9dwzrjyiQBkKvF5zm2TqqiSARxg12VH7l5aOdJrT
+         jc3Q==
+X-Gm-Message-State: APjAAAUfjABMYLjZsB5cBuZB/txKfDPiJZisPUrHFMG+aogXzCngJbUv
+        7sLAu3jkPkD6p+FejcDnRGU=
+X-Google-Smtp-Source: APXvYqyJPqRplKPeCSSi3BNsz97WV0qsL/H1nPHl0gGz1sV79pJXk+YNURUws2oA3/N3cFILHsBz3w==
+X-Received: by 2002:a63:2745:: with SMTP id n66mr44882075pgn.208.1557947442508;
+        Wed, 15 May 2019 12:10:42 -0700 (PDT)
 Received: from localhost.localdomain (50-204-120-225-static.hfc.comcastbusiness.net. [50.204.120.225])
-        by smtp.gmail.com with ESMTPSA id l65sm5772595pfb.7.2019.05.15.12.10.27
+        by smtp.gmail.com with ESMTPSA id l65sm5772595pfb.7.2019.05.15.12.10.41
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 May 2019 12:10:28 -0700 (PDT)
+        Wed, 15 May 2019 12:10:42 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Slavomir Kaslev <kaslevs@vmware.com>
-Subject: [PATCH 4/6] kernel-shark: Add "Report bug" button to "Help"
-Date:   Wed, 15 May 2019 12:09:09 -0700
-Message-Id: <20190515190911.20755-5-ykaradzhov@vmware.com>
+        Yordan Karadzhov <ykaradzhov@vmware.com>
+Subject: [PATCH 5/6] kernel-shark: Improve the appearance on high screen resolution
+Date:   Wed, 15 May 2019 12:09:10 -0700
+Message-Id: <20190515190911.20755-6-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190515190911.20755-1-ykaradzhov@vmware.com>
 References: <20190515190911.20755-1-ykaradzhov@vmware.com>
@@ -60,84 +59,111 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When clicked, the Bugzilla will be opened in the appropriate Web browser
-for the user's desktop environment.
+Some of the components of the plots haven't been properly scaled
+when displayed on high screen resolution.
 
-Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 13 +++++++++++++
- kernel-shark/src/KsMainWindow.hpp |  4 ++++
- 2 files changed, 17 insertions(+)
+ kernel-shark/src/KsGLWidget.cpp  | 24 ++++++++++++++----------
+ kernel-shark/src/KsGLWidget.hpp  |  2 +-
+ kernel-shark/src/KsPlotTools.cpp |  4 +++-
+ 3 files changed, 18 insertions(+), 12 deletions(-)
 
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 3cf10bc..c7c7f6b 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -67,6 +67,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
-   _fullScreenModeAction("Full Screen Mode", this),
-   _aboutAction("About", this),
-   _contentsAction("Contents", this),
-+  _bugReportAction("Report a bug", this),
-   _deselectShortcut(this),
-   _settings("kernelshark.org", "Kernel Shark") // organization , application
+diff --git a/kernel-shark/src/KsGLWidget.cpp b/kernel-shark/src/KsGLWidget.cpp
+index 789514a..ce68052 100644
+--- a/kernel-shark/src/KsGLWidget.cpp
++++ b/kernel-shark/src/KsGLWidget.cpp
+@@ -84,24 +84,29 @@ void KsGLWidget::resizeGL(int w, int h)
+ /** Reimplemented function used to plot trace graphs. */
+ void KsGLWidget::paintGL()
  {
-@@ -288,6 +289,9 @@ void KsMainWindow::_createActions()
- 	_contentsAction.setIcon(QIcon::fromTheme("help-contents"));
- 	connect(&_contentsAction,	&QAction::triggered,
- 		this,			&KsMainWindow::_contents);
++	float size = 1.5 * _dpr;
 +
-+	connect(&_bugReportAction,	&QAction::triggered,
-+		this,			&KsMainWindow::_bugReport);
+ 	glClear(GL_COLOR_BUFFER_BIT);
+ 
+ 	/* Draw the time axis. */
+ 	if(_data)
+-		_drawAxisX();
++		_drawAxisX(size);
+ 
+ 	/* Process and draw all graphs by using the built-in logic. */
+ 	_makeGraphs(_cpuList, _taskList);
+ 	for (auto const &g: _graphs)
+-		g->draw(1.5 * _dpr);
++		g->draw(size);
+ 
+ 	/* Process and draw all plugin-specific shapes. */
+ 	_makePluginShapes(_cpuList, _taskList);
+ 	while (!_shapes.empty()) {
+ 		auto s = _shapes.front();
++		_shapes.pop_front();
++
++		s->_size = size;
+ 		s->draw();
++
+ 		delete s;
+-		_shapes.pop_front();
+ 	}
+ 
+ 	/*
+@@ -448,22 +453,21 @@ void KsGLWidget::findGraphIds(const kshark_entry &e,
+ 		*graphTask = -1;
  }
  
- void KsMainWindow::_createMenus()
-@@ -365,6 +369,7 @@ void KsMainWindow::_createMenus()
- 	help = menuBar()->addMenu("Help");
- 	help->addAction(&_aboutAction);
- 	help->addAction(&_contentsAction);
-+	help->addAction(&_bugReportAction);
- }
- 
- void KsMainWindow::_open()
-@@ -925,6 +930,14 @@ void KsMainWindow::_contents()
- 				  QUrl::TolerantMode));
- }
- 
-+void KsMainWindow::_bugReport()
-+{
-+	QUrl bugs("https://bugzilla.kernel.org/buglist.cgi?component=Trace-cmd%2FKernelshark&product=Tools&resolution=---",
-+		  QUrl::TolerantMode);
-+
-+	QDesktopServices::openUrl(bugs);
-+}
-+
- /** Load trace data for file. */
- void KsMainWindow::loadDataFile(const QString& fileName)
+-void KsGLWidget::_drawAxisX()
++void KsGLWidget::_drawAxisX(float size)
  {
-diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-index 962de2d..22700d9 100644
---- a/kernel-shark/src/KsMainWindow.hpp
-+++ b/kernel-shark/src/KsMainWindow.hpp
-@@ -151,6 +151,8 @@ private:
+ 	KsPlot::Point a0(_hMargin, _vMargin / 4), a1(_hMargin, _vMargin / 2);
+-	KsPlot::Point b0(width()/2, _vMargin / 4), b1(width() / 2, _vMargin / 2);
++	KsPlot::Point b0(width() / 2, _vMargin / 4), b1(width() / 2, _vMargin / 2);
+ 	KsPlot::Point c0(width() - _hMargin, _vMargin / 4),
+ 			 c1(width() - _hMargin, _vMargin / 2);
+-	int lineSize = 2 * _dpr;
  
- 	QAction		_contentsAction;
+ 	a0._size = c0._size = _dpr;
  
-+	QAction		_bugReportAction;
-+
- 	QShortcut	_deselectShortcut;
+ 	a0.draw();
+ 	c0.draw();
+-	KsPlot::drawLine(a0, a1, {}, lineSize);
+-	KsPlot::drawLine(b0, b1, {}, lineSize);
+-	KsPlot::drawLine(c0, c1, {}, lineSize);
+-	KsPlot::drawLine(a0, c0, {}, lineSize);
++	KsPlot::drawLine(a0, a1, {}, size);
++	KsPlot::drawLine(b0, b1, {}, size);
++	KsPlot::drawLine(c0, c1, {}, size);
++	KsPlot::drawLine(a0, c0, {}, size);
+ }
  
- 	QString		_lastDataFilePath, _lastConfFilePath, _lastPluginFilePath;
-@@ -205,6 +207,8 @@ private:
+ void KsGLWidget::_makeGraphs(QVector<int> cpuList, QVector<int> taskList)
+diff --git a/kernel-shark/src/KsGLWidget.hpp b/kernel-shark/src/KsGLWidget.hpp
+index bc5cacf..e141b0a 100644
+--- a/kernel-shark/src/KsGLWidget.hpp
++++ b/kernel-shark/src/KsGLWidget.hpp
+@@ -190,7 +190,7 @@ private:
  
- 	void _contents();
+ 	int 		_dpr;
  
-+	void _bugReport();
-+
- 	void _captureStarted();
+-	void _drawAxisX();
++	void _drawAxisX(float size);
  
- 	void _captureError(QProcess::ProcessError error);
+ 	void _makeGraphs(QVector<int> cpuMask, QVector<int> taskMask);
+ 
+diff --git a/kernel-shark/src/KsPlotTools.cpp b/kernel-shark/src/KsPlotTools.cpp
+index 2b16a51..f95ada5 100644
+--- a/kernel-shark/src/KsPlotTools.cpp
++++ b/kernel-shark/src/KsPlotTools.cpp
+@@ -1089,8 +1089,10 @@ void Graph::draw(float size)
+ 	/* Draw as vartical lines all bins containing data. */
+ 	for (int i = 0; i < _size; ++i)
+ 		if (_bins[i]._idFront >= 0 || _bins[i]._idBack >= 0)
+-			if (_bins[i]._visMask & KS_EVENT_VIEW_FILTER_MASK)
++			if (_bins[i]._visMask & KS_EVENT_VIEW_FILTER_MASK) {
++				_bins[i]._size = size;
+ 				_bins[i].draw();
++			}
+ 
+ 	auto lamCheckEnsblVal = [this] (int v) {
+ 		return v > 0 || (v == 0 && !this->_zeroSuppress);
 -- 
 2.20.1
 
