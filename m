@@ -1,70 +1,94 @@
-Return-Path: <SRS0=/f37=TO=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=5FCK=TP=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5A03C04AB4
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 May 2019 15:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3364C04E53
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:09:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8351020879
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 May 2019 15:50:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB81620881
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:09:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbfENPuA (ORCPT
+        id S1727251AbfEOTJr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 May 2019 11:50:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbfENPt7 (ORCPT
+        Wed, 15 May 2019 15:09:47 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:34305 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbfEOTJr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 May 2019 11:49:59 -0400
-Received: from oasis.local.home (50-204-120-225-static.hfc.comcastbusiness.net [50.204.120.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 534ED2086A;
-        Tue, 14 May 2019 15:49:58 +0000 (UTC)
-Date:   Tue, 14 May 2019 11:49:57 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH 01/27] tools lib traceevent: Remove hard coded install
- paths from pkg-config file
-Message-ID: <20190514114957.663454b0@oasis.local.home>
-In-Reply-To: <20190514150524.GA1756@kernel.org>
-References: <20190510195606.537643615@goodmis.org>
-        <20190510200105.966709757@goodmis.org>
-        <20190510161150.20be7f1e@gandalf.local.home>
-        <BDB00110-43B1-4766-BB21-D7BF6FDD5EC7@kernel.org>
-        <20190514150524.GA1756@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 15 May 2019 15:09:47 -0400
+Received: by mail-pg1-f196.google.com with SMTP id c13so261647pgt.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 May 2019 12:09:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SZETe9vlrQUmZZNKwCaSUhoKxDUXi+dQoCBKUz1DhtI=;
+        b=exUctXXSJ9EBWmyLB1lMNigfJU2ptXLodzAdamtEBNSmH0SiCdlQB79v7DbGy+zri5
+         bbXSgEqGXtFNzMqQz9Dc4KXUdNWOYvrvuhJYk+Ji26lHy/EvBc1aeDOg3S0HF3B/1bxK
+         bM9pDRatsbT7utNvahOy4ZQ22Alo6+Zd4YpRsUnDwVVh2yLyDG1pDpw+gV8mMVpVFQ6X
+         NR/y5my8ktQtDSCOzvPT1cxg984OslaXr/zuhZEroQrl8n8XbuzNnN1oJHCPEqtGsL7x
+         85U5R00dolQ/cqVipdNl6bE93EJ09pYfVFNdY/F4I8hvQhdFQECGHmEqgm+vBxNSFtUS
+         ChhA==
+X-Gm-Message-State: APjAAAWL2ved2ZWwxKP9ziMANeY/ZVwhxX8XjvmWswo+RyK8g1t12bqB
+        IObV1idl7a+aune3TsQVlHg=
+X-Google-Smtp-Source: APXvYqzmibvVy3RtxfKsrjdw80f2WbJ2WBziX1tb8VF4zxZD4ouDEpRysVqx3R9B1Gi2z5SZaseGOA==
+X-Received: by 2002:a65:5c4c:: with SMTP id v12mr1644825pgr.283.1557947386539;
+        Wed, 15 May 2019 12:09:46 -0700 (PDT)
+Received: from localhost.localdomain (50-204-120-225-static.hfc.comcastbusiness.net. [50.204.120.225])
+        by smtp.gmail.com with ESMTPSA id l65sm5772595pfb.7.2019.05.15.12.09.45
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 May 2019 12:09:45 -0700 (PDT)
+From:   Yordan Karadzhov <ykaradzhov@vmware.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
+        Yordan Karadzhov <ykaradzhov@vmware.com>
+Subject: [PATCH 0/6] Various modifications and fixes toward KS 1.0
+Date:   Wed, 15 May 2019 12:09:05 -0700
+Message-Id: <20190515190911.20755-1-ykaradzhov@vmware.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 14 May 2019 12:05:24 -0300
-Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+The patch-set contains patches that have been sent already,
+but have not been pushed due to various reasons. The last
+two patch are fixes of bugs that have been found recently.
 
-> > >Arnaldo,
-> > >
-> > >I believe you already applied patch 1 (otherwise I would not have your
-> > >SOB on it), please ignore. But patch 2 on are new to be applied.  
-> > 
-> > 
-> > Ok, I'll be back at work early next week and will peixes this,  
-> 
-> Done.
 
-Thanks Arnaldo!
+Yordan Karadzhov (6):
+  kernel-shark: Remove hard-coded install paths
+  kernel-shark: Use XDG compliant path when saving cached data
+  kernel-shark: Enforce update of the OpenGL widget when loading new
+    session
+  kernel-shark: Add "Report bug" button to "Help"
+  kernel-shark: Improve the appearance on high screen resolution
+  kernel-shark: Handle the case when the marker points to a filtered
+    entry
 
--- Steve
+ kernel-shark/CMakeLists.txt             |  8 ++++--
+ kernel-shark/build/deff.h.cmake         |  3 ++
+ kernel-shark/build/ks.desktop.cmake     |  4 +--
+ kernel-shark/src/CMakeLists.txt         | 19 +++++++------
+ kernel-shark/src/KsDualMarker.cpp       |  9 ++++++
+ kernel-shark/src/KsGLWidget.cpp         | 24 +++++++++-------
+ kernel-shark/src/KsGLWidget.hpp         |  5 +++-
+ kernel-shark/src/KsMainWindow.cpp       | 22 ++++++++++++---
+ kernel-shark/src/KsMainWindow.hpp       |  4 +++
+ kernel-shark/src/KsPlotTools.cpp        | 37 +++++++++++++++++++++++--
+ kernel-shark/src/KsPlotTools.hpp        | 11 +++++++-
+ kernel-shark/src/KsTraceGraph.cpp       |  2 ++
+ kernel-shark/src/KsTraceViewer.cpp      | 22 +++++++++------
+ kernel-shark/src/KsUtils.cpp            |  4 +--
+ kernel-shark/src/plugins/CMakeLists.txt |  3 +-
+ 15 files changed, 134 insertions(+), 43 deletions(-)
+
+-- 
+2.20.1
+
