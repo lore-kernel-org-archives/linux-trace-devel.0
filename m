@@ -2,56 +2,89 @@ Return-Path: <SRS0=5FCK=TP=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C0B1C04E53
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F1CDC46460
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 21:36:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0C5AA20843
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F07421473
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 21:36:07 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pLODJpLN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727297AbfEOTKq (ORCPT
+        id S1726696AbfEOVgG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 15 May 2019 15:10:46 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34349 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726584AbfEOTKq (ORCPT
+        Wed, 15 May 2019 17:36:06 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:42271 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726613AbfEOVgG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 15 May 2019 15:10:46 -0400
-Received: by mail-pl1-f194.google.com with SMTP id w7so338735plz.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 15 May 2019 12:10:46 -0700 (PDT)
+        Wed, 15 May 2019 17:36:06 -0400
+Received: by mail-pf1-f195.google.com with SMTP id 13so628790pfw.9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 May 2019 14:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lj20BWGa/SSqkCUWhiNbUp+2jcIFFr5rWtfoPrCsSoQ=;
+        b=pLODJpLNTPnjKZE6jiCeKVcXugMyLtlONq+lmg6tPOtTzJj46GJOU6Cf+nCpBKO8Gl
+         QuPx22/EvuL7Mr6XG7dpT5RWwvPsfXc8SjNKuFgXNwGZ+VH8P/PM3RgZU3YOnnasoalh
+         bPKxFuh4a8fB5IVVNP9Jhftas1hXtKt5gUvik=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=x8NMODX5sqluhbXf6VrgopcpmsYyySuuVWNORWvMLAM=;
-        b=kHTKZCy+iRsQtjtAAKFDqL/Svxaw0Q6rfXgZTt/u9jpdiYsLJbTg63dJRcjmeJYoyL
-         kZbdc6jl/fJTlJmhuNwJFVP0Ftq8NrTvI+1oTHIfgX/lwS7AKTbMre/YKQkM5y5GFHyR
-         POXIe7FkmGjDKxS52AzG7bcTwEAw7q8xn+kJnSofVcj5yiIykiyRpatJBBg4nmQojHew
-         IktD63qrWyHj4Hdx4VIxSNjW0xwE6huW0MzrmCqJg9WOOBwZeyONf8UpvuIgdP5HnkJC
-         5heS7k1ub3suHClwaVGqOk5PZN1hIPFQJqAFxkh/xGpl+KDV+feLunUDO2gQ0B0HYK9T
-         yqOw==
-X-Gm-Message-State: APjAAAXBCnBMYLoVNpPXRk4FWGvVSQ+PHc20BK0IV+gxEh68KYTDWgXC
-        RYpQ89NxQ6hBmRbWpHoTqlpFthY5
-X-Google-Smtp-Source: APXvYqxFeaHdkH8g5J/trBe0r6te7S2mZXDgLCdIo+q0jbKvo+vxTmvwjwva1OXV/SuVLeiV90ssxQ==
-X-Received: by 2002:a17:902:6b81:: with SMTP id p1mr45060123plk.207.1557947445871;
-        Wed, 15 May 2019 12:10:45 -0700 (PDT)
-Received: from localhost.localdomain (50-204-120-225-static.hfc.comcastbusiness.net. [50.204.120.225])
-        by smtp.gmail.com with ESMTPSA id l65sm5772595pfb.7.2019.05.15.12.10.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 May 2019 12:10:45 -0700 (PDT)
-From:   Yordan Karadzhov <ykaradzhov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
-        Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 6/6] kernel-shark: Handle the case when the marker points to a filtered entry
-Date:   Wed, 15 May 2019 12:09:11 -0700
-Message-Id: <20190515190911.20755-7-ykaradzhov@vmware.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190515190911.20755-1-ykaradzhov@vmware.com>
-References: <20190515190911.20755-1-ykaradzhov@vmware.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lj20BWGa/SSqkCUWhiNbUp+2jcIFFr5rWtfoPrCsSoQ=;
+        b=TvBQGqHtPh2izLeKA1MkhA0vQ49r9pBVJvLjPIyfpZjcAEinNPWZn9wxN8j0COzXXE
+         PlkG09pZ86CP6P//t2lkIeI8MPaLh48ogP1Kcj38oXWfbrUdpISfUecYHAq0Z379WJ5E
+         IaWuDqQ8lvq4dIVemhw1M027fW5L7oClWskfFsGUGjCECJiJB9YWTjR+4viUW03rQhNW
+         57zdENnjw5xXH8/9hv01SFd1J6z0r8AOLvqicbXYlzC4YRY95tz6zofnEjS1BJ41F727
+         j7L2UUqY+l0hAL8//+z3AXHK1TYWvOq2fFhkSR0iCnLRTeO+JTvlKd0g0/bZ4DZmYd/a
+         m32w==
+X-Gm-Message-State: APjAAAVXNqVyNtGmgigcORf0N6Vpp6pvKVsI7E0bSIeorjmqshVFNb9B
+        3/ren5Bdu+DNDptXUO3aQtNtgA==
+X-Google-Smtp-Source: APXvYqyBnOgRxt8JiSmMw1XdoLOfLDNy0r57NqMlPQGJOPaLskNz2bSXh1R4oaRAS8sq2GtwOuxxpQ==
+X-Received: by 2002:a63:f410:: with SMTP id g16mr15243189pgi.428.1557956165115;
+        Wed, 15 May 2019 14:36:05 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id q4sm3695279pgb.39.2019.05.15.14.36.00
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 15 May 2019 14:36:03 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, atishp04@gmail.com,
+        bpf@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>, dancol@google.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        dietmar.eggemann@arm.com, duyuchao <yuchao.du@unisoc.com>,
+        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Manjo Raja Rao <linux@manojrajarao.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        =?UTF-8?q?Micha=C5=82=20Gregorczyk?= <michalgr@fb.com>,
+        Michal Gregorczyk <michalgr@live.com>,
+        Mohammad Husain <russoue@gmail.com>,
+        Olof Johansson <olof@lixom.net>, qais.yousef@arm.com,
+        rdunlap@infradead.org, rostedt@goodmis.org,
+        Shuah Khan <shuah@kernel.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Tamir Carmeli <carmeli.tamir@gmail.com>, yhs@fb.com
+Subject: [PATCH v4 0/2] kheaders fixes for -rc
+Date:   Wed, 15 May 2019 17:35:50 -0400
+Message-Id: <20190515213552.203737-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -59,169 +92,24 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Markers can point to entries that are filtered out. In such a case
-the filtered marker is plotted using a dashed line.
+Linus, Greg, Masahiro, Here are some simple fixes for the kheaders feature.
+Please consider these patches for an rc release. They are based on Linus's
+master branch. The only difference between the last series [1] and this one is
+I squashed 1/3 and 3/3 and rebased.  Thanks!
 
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark/src/KsDualMarker.cpp  | 10 +++++++++
- kernel-shark/src/KsPlotTools.cpp   | 33 +++++++++++++++++++++++++++++-
- kernel-shark/src/KsPlotTools.hpp   | 11 +++++++++-
- kernel-shark/src/KsTraceViewer.cpp | 22 ++++++++++++--------
- 4 files changed, 65 insertions(+), 11 deletions(-)
+[1] https://patchwork.kernel.org/cover/10939557/
 
-diff --git a/kernel-shark/src/KsDualMarker.cpp b/kernel-shark/src/KsDualMarker.cpp
-index 5dcbaae..755e246 100644
---- a/kernel-shark/src/KsDualMarker.cpp
-+++ b/kernel-shark/src/KsDualMarker.cpp
-@@ -79,9 +79,19 @@ bool KsGraphMark::set(const KsDataStore &data,
- 		      kshark_trace_histo *histo,
- 		      size_t pos, int cpuGraph, int taskGraph)
- {
-+	uint8_t visFlags;
-+
- 	_isSet = true;
- 	_pos = pos;
- 	_ts = data.rows()[_pos]->ts;
-+	visFlags = data.rows()[_pos]->visible;
-+
-+	if ((visFlags & KS_TEXT_VIEW_FILTER_MASK) &&
-+	    (visFlags & KS_GRAPH_VIEW_FILTER_MASK))
-+		_mark.setDashed(false);
-+	else
-+		_mark.setDashed(true);
-+
- 	_cpu = cpuGraph;
- 	_task = taskGraph;
- 
-diff --git a/kernel-shark/src/KsPlotTools.cpp b/kernel-shark/src/KsPlotTools.cpp
-index f95ada5..a8eddcd 100644
---- a/kernel-shark/src/KsPlotTools.cpp
-+++ b/kernel-shark/src/KsPlotTools.cpp
-@@ -379,6 +379,32 @@ void drawLine(const Point &a, const Point &b,
- 			 size);
- }
- 
-+/**
-+ * @brief Draw a dashed line between point "a" and point "b".
-+ *
-+ * @param a: The first finishing point of the line.
-+ * @param b: The second finishing point of the line.
-+ * @param col: The color of the line.
-+ * @param size: The size of the line.
-+ * @param period: The period of the dashed line.
-+ */
-+void drawDashedLine(const Point &a, const Point &b,
-+		    const Color &col, float size, float period)
-+{
-+	int dx = b.x() - a.x(), dy = b.y() - a.y();
-+	float mod = sqrt(dx * dx + dy * dy);
-+	int n = mod / period;
-+	Point p1, p2;
-+
-+	for (int i = 0; i < n; ++i) {
-+		p1.setX(a.x() + (i + .25) * dx / n);
-+		p1.setY(a.y() + (i + .25) * dy / n);
-+		p2.setX(a.x() + (i + .75) * dx / n);
-+		p2.setY(a.y() + (i + .75) * dy / n);
-+		drawLine(p1, p2, col, size);
-+	}
-+}
-+
- /** @brief Create a default line. The two points are initialized at (0, 0). */
- Line::Line()
- : Shape(2)
-@@ -430,6 +456,7 @@ void Polygon::_draw(const Color &col, float size) const
-  * @brief Create a default Mark.
-  */
- Mark::Mark()
-+: _dashed(false)
- {
- 	_visible = false;
- 	_cpu._color = Color(225, 255, 100);
-@@ -440,7 +467,11 @@ Mark::Mark()
- 
- void Mark::_draw(const Color &col, float size) const
- {
--	drawLine(_a, _b, col, size);
-+	if (_dashed)
-+		drawDashedLine(_a, _b, col, size, 3 * _cpu._size / size);
-+	else
-+		drawLine(_a, _b, col, size);
-+
- 	_cpu.draw();
- 	_task.draw();
- }
-diff --git a/kernel-shark/src/KsPlotTools.hpp b/kernel-shark/src/KsPlotTools.hpp
-index 11c49eb..ee447f1 100644
---- a/kernel-shark/src/KsPlotTools.hpp
-+++ b/kernel-shark/src/KsPlotTools.hpp
-@@ -204,7 +204,10 @@ private:
- };
- 
- void drawLine(const Point &a, const Point &b,
--	      const Color &col, float s);
-+	      const Color &col, float size);
-+
-+void drawDashedLine(const Point &a, const Point &b,
-+		    const Color &col, float size, float period);
- 
- /** This class represents a straight line. */
- class Line : public Shape {
-@@ -326,6 +329,9 @@ public:
- 
- 	void setTaskVisible(bool v);
- 
-+	/** If True, the Mark will be plotted as a dashed line. */
-+	void setDashed(bool d) {_dashed = d;}
-+
- private:
- 	void _draw(const Color &col, float size = 1.) const override;
- 
-@@ -340,6 +346,9 @@ private:
- 
- 	/** A point indicating the position of the Mark in a Task graph. */
- 	Point _task;
-+
-+	/* If True, plot the Mark as a dashed line. */
-+	bool _dashed;
- };
- 
- /** This class represents a KernelShark graph's bin. */
-diff --git a/kernel-shark/src/KsTraceViewer.cpp b/kernel-shark/src/KsTraceViewer.cpp
-index 04a38b8..05977c3 100644
---- a/kernel-shark/src/KsTraceViewer.cpp
-+++ b/kernel-shark/src/KsTraceViewer.cpp
-@@ -493,15 +493,19 @@ void KsTraceViewer::markSwitch()
- 		QModelIndex index =
- 			_proxyModel.mapFromSource(_model.index(row, 0));
- 
--		/*
--		 * The row of the active marker will be colored according to
--		 * the assigned property of the current state of the Dual
--		 * marker. Auto-scrolling is temporarily disabled because we
--		 * do not want to scroll to the position of the marker yet.
--		 */
--		_view.setAutoScroll(false);
--		_view.selectRow(index.row());
--		_view.setAutoScroll(true);
-+		if (index.isValid()) {
-+			/*
-+			 * The row of the active marker will be colored according to
-+			 * the assigned property of the current state of the Dual
-+			 * marker. Auto-scrolling is temporarily disabled because we
-+			 * do not want to scroll to the position of the marker yet.
-+			 */
-+			_view.setAutoScroll(false);
-+			_view.selectRow(index.row());
-+			_view.setAutoScroll(true);
-+		} else {
-+			_view.clearSelection();
-+		}
- 	} else {
- 		_view.clearSelection();
- 	}
--- 
-2.20.1
+Joel Fernandes (Google) (2):
+kheaders: Move from proc to sysfs
+kheaders: Do not regenerate archive if config is not changed
+
+init/Kconfig                                | 17 +++++----
+kernel/Makefile                             |  4 +--
+kernel/{gen_ikh_data.sh => gen_kheaders.sh} | 17 ++++++---
+kernel/kheaders.c                           | 40 +++++++++------------
+4 files changed, 38 insertions(+), 40 deletions(-)
+rename kernel/{gen_ikh_data.sh => gen_kheaders.sh} (82%)
+
+--
+2.21.0.1020.gf2820cf01a-goog
 
