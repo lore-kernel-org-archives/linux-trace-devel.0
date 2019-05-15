@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B8F7C04E87
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 21:36:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B19CC04E53
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 21:36:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E64E620881
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 21:36:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF4102084F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 21:36:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="kGO1Xsyc"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="VYyAWbWi"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbfEOVgL (ORCPT
+        id S1727327AbfEOVgP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 15 May 2019 17:36:11 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:40481 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbfEOVgK (ORCPT
+        Wed, 15 May 2019 17:36:15 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:38536 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727280AbfEOVgO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 15 May 2019 17:36:10 -0400
-Received: by mail-pg1-f193.google.com with SMTP id d30so425654pgm.7
-        for <linux-trace-devel@vger.kernel.org>; Wed, 15 May 2019 14:36:09 -0700 (PDT)
+        Wed, 15 May 2019 17:36:14 -0400
+Received: by mail-pl1-f196.google.com with SMTP id f97so490656plb.5
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 May 2019 14:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=VkH12zRhE8bVix5ewWJwVnDU/5Q47hhlmO4uv3QOaIE=;
-        b=kGO1Xsyc63DMPKfIrpQrhAvr0k0HEPAk9NYI/7CZkXpM6gbD5xV1wUF6vBxeiHpC1B
-         RieDPoOytOZeQXYGYjpzeJvIOtv2M1aIjuadHASU58SMx0Pyq36J9BXX9O72cH06D1gC
-         DDiX0UNjQ8BGU/AmNoEgN9kmbQue8NwU/yy4U=
+        bh=zjB9LsovF8lpor6w+CVg9dpdpQizlQADdXWnWKh0+Rg=;
+        b=VYyAWbWi7W7y+gL1aVVELgMHHzDwCnQoRhq01306PoaSmD2u7UqvAOGVFr/KZMuRCm
+         Ad56tj2pg1vt1yOuEEChvUVluDdPThEqtHcqeTOoLtCbGuWm6Ayjuh8w7xMROHdTGo2S
+         wbtlJxG2lTEdzsemWMiOsQy/Y140eT1YBdVko=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VkH12zRhE8bVix5ewWJwVnDU/5Q47hhlmO4uv3QOaIE=;
-        b=UH1/Nkym+Qv2T+4VaFT+3mswykr1+5hJH013jQXgD7j4zgxVRDx21LWlnYqLpbNFk4
-         yMAiJj+lCy4D3nxRFS9ph6TulIlXJcGx9XT+JVoXEYopf0PjXqJQg/+Yl6IOq/LLjm70
-         YXiqqYtf1orS37j/914imqwmV2hjV8WYFdIsjZ7XhQ/iWlbt4WyXSOd7pVr+1IBovy7w
-         AnGQ9YytCjyI+YPheBKNHlVbgv50H4BAHm8303YmxSV/o9Fcs+2eLp+vH561krxOpdwm
-         +hag/hAHwepp+WMOoWJvMtDHblzoAKQfVa/qDiDKaCRkePS+vVCzkJ4i2hvsrcvWLp6x
-         qrvQ==
-X-Gm-Message-State: APjAAAXLtMYa+ZfWoZgWXM9ZahPY1L/ooKF5RtxRxrFkXCJ4LapC452H
-        w2ZaKUGSNntadkpRRlWEQMSdww==
-X-Google-Smtp-Source: APXvYqzCqqy4RvGfmptPBRowriykLFvDEdJVeVAGrgf/YTZWfqTKcxSa5FLRJE9fRuAVVrhGuaTEHw==
-X-Received: by 2002:a65:5647:: with SMTP id m7mr45645191pgs.348.1557956169356;
-        Wed, 15 May 2019 14:36:09 -0700 (PDT)
+        bh=zjB9LsovF8lpor6w+CVg9dpdpQizlQADdXWnWKh0+Rg=;
+        b=lVP74L+Zmqrlj6nYXek/78cC1J2IAYxUseyJ6yr/YY+FTK4kvNulSQuc+6/jNmcFjA
+         sY1cq+aIydTIHkYFe0izF4cGdnp2dVb10qMgDcyB+89/NPV/g6cpdb493/Z7q0+AGAHX
+         m+zx0JBOF4tD/JNi8qXjgZP15apxgR1IGjs+LnI3lwwiDnnscI7TSquHEaHQ/sivor7u
+         +rD+z4fXTwVMydSVOutnYCwQWy7r68xz7Iiv4+RsDh0qM/3G6yywy0vs4k8SpGmiwdb4
+         WC1nyeImr9sFkGMj7Vqb7sCOGecFQGMoxddGkOJ4hChGQAf3Cr40eNpJhzbZUrpVrdKg
+         9SNg==
+X-Gm-Message-State: APjAAAVX31IFOQV72B9jxvc3atvZOgJ2fbbLLL/iafuKLRpROwo2GeyC
+        3PqkLmSspzh0EKlhJXJ5R5kPMQ==
+X-Google-Smtp-Source: APXvYqxHN70es4b0dCS2R1CKfqsJmikP3jLaCFw6mu2/8pQd3QzrWRXNHoRuaFwwglq5MBBI8QPEZA==
+X-Received: by 2002:a17:902:bc85:: with SMTP id bb5mr46246086plb.310.1557956173660;
+        Wed, 15 May 2019 14:36:13 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id q4sm3695279pgb.39.2019.05.15.14.36.05
+        by smtp.gmail.com with ESMTPSA id q4sm3695279pgb.39.2019.05.15.14.36.09
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 15 May 2019 14:36:08 -0700 (PDT)
+        Wed, 15 May 2019 14:36:12 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Adrian Ratiu <adrian.ratiu@collabora.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>, atishp04@gmail.com,
@@ -78,12 +78,13 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Michal Gregorczyk <michalgr@live.com>,
         Mohammad Husain <russoue@gmail.com>,
         Olof Johansson <olof@lixom.net>, qais.yousef@arm.com,
-        rdunlap@infradead.org, Shuah Khan <shuah@kernel.org>,
+        rdunlap@infradead.org, rostedt@goodmis.org,
+        Shuah Khan <shuah@kernel.org>,
         Srinivas Ramana <sramana@codeaurora.org>,
         Tamir Carmeli <carmeli.tamir@gmail.com>, yhs@fb.com
-Subject: [PATCH v4 1/2] kheaders: Move from proc to sysfs
-Date:   Wed, 15 May 2019 17:35:51 -0400
-Message-Id: <20190515213552.203737-2-joel@joelfernandes.org>
+Subject: [PATCH v4 2/2] kheaders: Do not regenerate archive if config is not changed
+Date:   Wed, 15 May 2019 17:35:52 -0400
+Message-Id: <20190515213552.203737-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
 In-Reply-To: <20190515213552.203737-1-joel@joelfernandes.org>
 References: <20190515213552.203737-1-joel@joelfernandes.org>
@@ -94,164 +95,65 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The kheaders archive consisting of the kernel headers used for compiling
-bpf programs is in /proc. However there is concern that moving it here
-will make it permanent. Let us move it to /sys/kernel as discussed [1].
+Linus reported an issue that doing an allmodconfig was causing the
+kheaders archive to be regenerated even though the config is the same.
+This patch fixes the issue by ignoring the config-related header files
+for "knowing when to regenerate based on timestamps".  Instead, if the
+CONFIG_X_Y option really changes, then we there are the
+include/config/X/Y.h which will already tells us "if a config really
+changed". So we don't really need these files for regeneration detection
+anyway, and ignoring them fixes Linus's issue.
 
-[1] https://lore.kernel.org/patchwork/patch/1067310/#1265969
-
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
-This patch applies on top of the previous patch that was applied to the
-driver tree:
-https://lore.kernel.org/patchwork/patch/1067310/
+ kernel/gen_kheaders.sh | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-v2->v3: Fixed sysfs file mode nit (Greg).
-v1->v2: Fixed some kconfig nits (Masami).
-
- init/Kconfig                                | 17 +++++----
- kernel/Makefile                             |  4 +--
- kernel/{gen_ikh_data.sh => gen_kheaders.sh} |  2 +-
- kernel/kheaders.c                           | 40 +++++++++------------
- 4 files changed, 27 insertions(+), 36 deletions(-)
- rename kernel/{gen_ikh_data.sh => gen_kheaders.sh} (98%)
-
-diff --git a/init/Kconfig b/init/Kconfig
-index 8b9ffe236e4f..16a7540d60c8 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -579,15 +579,14 @@ config IKCONFIG_PROC
- 	  This option enables access to the kernel configuration file
- 	  through /proc/config.gz.
- 
--config IKHEADERS_PROC
--	tristate "Enable kernel header artifacts through /proc/kheaders.tar.xz"
--	depends on PROC_FS
--	help
--	  This option enables access to the kernel header and other artifacts that
--	  are generated during the build process. These can be used to build eBPF
--	  tracing programs, or similar programs.  If you build the headers as a
--	  module, a module called kheaders.ko is built which can be loaded on-demand
--	  to get access to the headers.
-+config IKHEADERS
-+	tristate "Enable kernel headers through /sys/kernel/kheaders.tar.xz"
-+	depends on SYSFS
-+	help
-+	  This option enables access to the in-kernel headers that are generated during
-+	  the build process. These can be used to build eBPF tracing programs,
-+	  or similar programs.  If you build the headers as a module, a module called
-+	  kheaders.ko is built which can be loaded on-demand to get access to headers.
- 
- config LOG_BUF_SHIFT
- 	int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
-diff --git a/kernel/Makefile b/kernel/Makefile
-index 33824f0385b3..a8d923b5481b 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -71,7 +71,7 @@ obj-$(CONFIG_UTS_NS) += utsname.o
- obj-$(CONFIG_USER_NS) += user_namespace.o
- obj-$(CONFIG_PID_NS) += pid_namespace.o
- obj-$(CONFIG_IKCONFIG) += configs.o
--obj-$(CONFIG_IKHEADERS_PROC) += kheaders.o
-+obj-$(CONFIG_IKHEADERS) += kheaders.o
- obj-$(CONFIG_SMP) += stop_machine.o
- obj-$(CONFIG_KPROBES_SANITY_TEST) += test_kprobes.o
- obj-$(CONFIG_AUDIT) += audit.o auditfilter.o
-@@ -127,7 +127,7 @@ $(obj)/config_data.gz: $(KCONFIG_CONFIG) FORCE
- $(obj)/kheaders.o: $(obj)/kheaders_data.tar.xz
- 
- quiet_cmd_genikh = CHK     $(obj)/kheaders_data.tar.xz
--cmd_genikh = $(CONFIG_SHELL) $(srctree)/kernel/gen_ikh_data.sh $@
-+cmd_genikh = $(CONFIG_SHELL) $(srctree)/kernel/gen_kheaders.sh $@
- $(obj)/kheaders_data.tar.xz: FORCE
- 	$(call cmd,genikh)
- 
-diff --git a/kernel/gen_ikh_data.sh b/kernel/gen_kheaders.sh
-similarity index 98%
-rename from kernel/gen_ikh_data.sh
-rename to kernel/gen_kheaders.sh
-index 591a94f7b387..581b83534587 100755
---- a/kernel/gen_ikh_data.sh
+diff --git a/kernel/gen_kheaders.sh b/kernel/gen_kheaders.sh
+index 581b83534587..9a34e1d9bd7f 100755
+--- a/kernel/gen_kheaders.sh
 +++ b/kernel/gen_kheaders.sh
-@@ -2,7 +2,7 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -31,9 +31,8 @@ arch/$SRCARCH/include/
  
- # This script generates an archive consisting of kernel headers
--# for CONFIG_IKHEADERS_PROC.
-+# for CONFIG_IKHEADERS.
- set -e
- spath="$(dirname "$(readlink -f "$0")")"
- kroot="$spath/.."
-diff --git a/kernel/kheaders.c b/kernel/kheaders.c
-index 70ae6052920d..8f69772af77b 100644
---- a/kernel/kheaders.c
-+++ b/kernel/kheaders.c
-@@ -8,9 +8,8 @@
+ # This block is useful for debugging the incremental builds.
+ # Uncomment it for debugging.
+-# iter=1
+-# if [ ! -f /tmp/iter ]; then echo 1 > /tmp/iter;
+-# else; 	iter=$(($(cat /tmp/iter) + 1)); fi
++# if [ ! -f /tmp/iter ]; then iter=1; echo 1 > /tmp/iter;
++# else iter=$(($(cat /tmp/iter) + 1)); echo $iter > /tmp/iter; fi
+ # find $src_file_list -type f | xargs ls -lR > /tmp/src-ls-$iter
+ # find $obj_file_list -type f | xargs ls -lR > /tmp/obj-ls-$iter
  
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/proc_fs.h>
-+#include <linux/kobject.h>
- #include <linux/init.h>
--#include <linux/uaccess.h>
+@@ -43,10 +42,18 @@ arch/$SRCARCH/include/
+ pushd $kroot > /dev/null
+ src_files_md5="$(find $src_file_list -type f                       |
+ 		grep -v "include/generated/compile.h"		   |
++		grep -v "include/generated/autoconf.h"		   |
++		grep -v "include/config/auto.conf"		   |
++		grep -v "include/config/auto.conf.cmd"		   |
++		grep -v "include/config/tristate.conf"		   |
+ 		xargs ls -lR | md5sum | cut -d ' ' -f1)"
+ popd > /dev/null
+ obj_files_md5="$(find $obj_file_list -type f                       |
+ 		grep -v "include/generated/compile.h"		   |
++		grep -v "include/generated/autoconf.h"		   |
++		grep -v "include/config/auto.conf"                 |
++		grep -v "include/config/auto.conf.cmd"		   |
++		grep -v "include/config/tristate.conf"		   |
+ 		xargs ls -lR | md5sum | cut -d ' ' -f1)"
  
- /*
-  * Define kernel_headers_data and kernel_headers_data_end, within which the
-@@ -31,39 +30,32 @@ extern char kernel_headers_data;
- extern char kernel_headers_data_end;
+ if [ -f $tarfile ]; then tarfile_md5="$(md5sum $tarfile | cut -d ' ' -f1)"; fi
+@@ -82,7 +89,7 @@ find $cpio_dir -type f -print0 |
  
- static ssize_t
--ikheaders_read_current(struct file *file, char __user *buf,
--		      size_t len, loff_t *offset)
-+ikheaders_read(struct file *file,  struct kobject *kobj,
-+	       struct bin_attribute *bin_attr,
-+	       char *buf, loff_t off, size_t len)
- {
--	return simple_read_from_buffer(buf, len, offset,
--				       &kernel_headers_data,
--				       &kernel_headers_data_end -
--				       &kernel_headers_data);
-+	memcpy(buf, &kernel_headers_data + off, len);
-+	return len;
- }
+ tar -Jcf $tarfile -C $cpio_dir/ . > /dev/null
  
--static const struct file_operations ikheaders_file_ops = {
--	.read = ikheaders_read_current,
--	.llseek = default_llseek,
-+static struct bin_attribute kheaders_attr __ro_after_init = {
-+	.attr = {
-+		.name = "kheaders.tar.xz",
-+		.mode = 0444,
-+	},
-+	.read = &ikheaders_read,
- };
+-echo "$src_files_md5" > kernel/kheaders.md5
++echo "$src_files_md5" >  kernel/kheaders.md5
+ echo "$obj_files_md5" >> kernel/kheaders.md5
+ echo "$(md5sum $tarfile | cut -d ' ' -f1)" >> kernel/kheaders.md5
  
- static int __init ikheaders_init(void)
- {
--	struct proc_dir_entry *entry;
--
--	/* create the current headers file */
--	entry = proc_create("kheaders.tar.xz", S_IRUGO, NULL,
--			    &ikheaders_file_ops);
--	if (!entry)
--		return -ENOMEM;
--
--	proc_set_size(entry,
--		      &kernel_headers_data_end -
--		      &kernel_headers_data);
--	return 0;
-+	kheaders_attr.size = (&kernel_headers_data_end -
-+			      &kernel_headers_data);
-+	return sysfs_create_bin_file(kernel_kobj, &kheaders_attr);
- }
- 
- static void __exit ikheaders_cleanup(void)
- {
--	remove_proc_entry("kheaders.tar.xz", NULL);
-+	sysfs_remove_bin_file(kernel_kobj, &kheaders_attr);
- }
- 
- module_init(ikheaders_init);
 -- 
 2.21.0.1020.gf2820cf01a-goog
+
