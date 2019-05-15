@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 949C3C04E53
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C0B1C04E53
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 66CA020843
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0C5AA20843
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 May 2019 19:10:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727173AbfEOTKn (ORCPT
+        id S1727297AbfEOTKq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 15 May 2019 15:10:43 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:46064 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726584AbfEOTKn (ORCPT
+        Wed, 15 May 2019 15:10:46 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:34349 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726584AbfEOTKq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 15 May 2019 15:10:43 -0400
-Received: by mail-pf1-f196.google.com with SMTP id s11so436796pfm.12
-        for <linux-trace-devel@vger.kernel.org>; Wed, 15 May 2019 12:10:42 -0700 (PDT)
+        Wed, 15 May 2019 15:10:46 -0400
+Received: by mail-pl1-f194.google.com with SMTP id w7so338735plz.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 May 2019 12:10:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H6lwmKt2n7Pf69RpCrlNpRShPPy7nJ7fY587b1cNBUc=;
-        b=oF2Dfr1dQYdg5kY2JZ/ACxvet6gX0w3hsH0Gj5saaCbRAhuQ1optfiBRbhm3nm6wuM
-         uwc8ITg853KLUzR9YVe8xr12L9h7Sks+9izBB/qAfLj/2pswnNHnC3JKQEfFcU5AI1Ut
-         SNBEsPEsZAqSno0Mu5KgLwis9YkEIaMqpzjZLY58EaKiAdPz7QXoc+cHOnlaw1dp/okH
-         p3qccpZmOcP9sHk0FiM6dEFww5c2RenI58gmmH+egeNtXX0d31l3jZeJXXfNPBfzhEZX
-         4vY8cM6EmGXI3/FuBHzZmCepCkGK9dwzrjyiQBkKvF5zm2TqqiSARxg12VH7l5aOdJrT
-         jc3Q==
-X-Gm-Message-State: APjAAAUfjABMYLjZsB5cBuZB/txKfDPiJZisPUrHFMG+aogXzCngJbUv
-        7sLAu3jkPkD6p+FejcDnRGU=
-X-Google-Smtp-Source: APXvYqyJPqRplKPeCSSi3BNsz97WV0qsL/H1nPHl0gGz1sV79pJXk+YNURUws2oA3/N3cFILHsBz3w==
-X-Received: by 2002:a63:2745:: with SMTP id n66mr44882075pgn.208.1557947442508;
-        Wed, 15 May 2019 12:10:42 -0700 (PDT)
+        bh=x8NMODX5sqluhbXf6VrgopcpmsYyySuuVWNORWvMLAM=;
+        b=kHTKZCy+iRsQtjtAAKFDqL/Svxaw0Q6rfXgZTt/u9jpdiYsLJbTg63dJRcjmeJYoyL
+         kZbdc6jl/fJTlJmhuNwJFVP0Ftq8NrTvI+1oTHIfgX/lwS7AKTbMre/YKQkM5y5GFHyR
+         POXIe7FkmGjDKxS52AzG7bcTwEAw7q8xn+kJnSofVcj5yiIykiyRpatJBBg4nmQojHew
+         IktD63qrWyHj4Hdx4VIxSNjW0xwE6huW0MzrmCqJg9WOOBwZeyONf8UpvuIgdP5HnkJC
+         5heS7k1ub3suHClwaVGqOk5PZN1hIPFQJqAFxkh/xGpl+KDV+feLunUDO2gQ0B0HYK9T
+         yqOw==
+X-Gm-Message-State: APjAAAXBCnBMYLoVNpPXRk4FWGvVSQ+PHc20BK0IV+gxEh68KYTDWgXC
+        RYpQ89NxQ6hBmRbWpHoTqlpFthY5
+X-Google-Smtp-Source: APXvYqxFeaHdkH8g5J/trBe0r6te7S2mZXDgLCdIo+q0jbKvo+vxTmvwjwva1OXV/SuVLeiV90ssxQ==
+X-Received: by 2002:a17:902:6b81:: with SMTP id p1mr45060123plk.207.1557947445871;
+        Wed, 15 May 2019 12:10:45 -0700 (PDT)
 Received: from localhost.localdomain (50-204-120-225-static.hfc.comcastbusiness.net. [50.204.120.225])
-        by smtp.gmail.com with ESMTPSA id l65sm5772595pfb.7.2019.05.15.12.10.41
+        by smtp.gmail.com with ESMTPSA id l65sm5772595pfb.7.2019.05.15.12.10.44
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 May 2019 12:10:42 -0700 (PDT)
+        Wed, 15 May 2019 12:10:45 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 5/6] kernel-shark: Improve the appearance on high screen resolution
-Date:   Wed, 15 May 2019 12:09:10 -0700
-Message-Id: <20190515190911.20755-6-ykaradzhov@vmware.com>
+Subject: [PATCH 6/6] kernel-shark: Handle the case when the marker points to a filtered entry
+Date:   Wed, 15 May 2019 12:09:11 -0700
+Message-Id: <20190515190911.20755-7-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190515190911.20755-1-ykaradzhov@vmware.com>
 References: <20190515190911.20755-1-ykaradzhov@vmware.com>
@@ -59,111 +59,169 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some of the components of the plots haven't been properly scaled
-when displayed on high screen resolution.
+Markers can point to entries that are filtered out. In such a case
+the filtered marker is plotted using a dashed line.
 
+Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/src/KsGLWidget.cpp  | 24 ++++++++++++++----------
- kernel-shark/src/KsGLWidget.hpp  |  2 +-
- kernel-shark/src/KsPlotTools.cpp |  4 +++-
- 3 files changed, 18 insertions(+), 12 deletions(-)
+ kernel-shark/src/KsDualMarker.cpp  | 10 +++++++++
+ kernel-shark/src/KsPlotTools.cpp   | 33 +++++++++++++++++++++++++++++-
+ kernel-shark/src/KsPlotTools.hpp   | 11 +++++++++-
+ kernel-shark/src/KsTraceViewer.cpp | 22 ++++++++++++--------
+ 4 files changed, 65 insertions(+), 11 deletions(-)
 
-diff --git a/kernel-shark/src/KsGLWidget.cpp b/kernel-shark/src/KsGLWidget.cpp
-index 789514a..ce68052 100644
---- a/kernel-shark/src/KsGLWidget.cpp
-+++ b/kernel-shark/src/KsGLWidget.cpp
-@@ -84,24 +84,29 @@ void KsGLWidget::resizeGL(int w, int h)
- /** Reimplemented function used to plot trace graphs. */
- void KsGLWidget::paintGL()
+diff --git a/kernel-shark/src/KsDualMarker.cpp b/kernel-shark/src/KsDualMarker.cpp
+index 5dcbaae..755e246 100644
+--- a/kernel-shark/src/KsDualMarker.cpp
++++ b/kernel-shark/src/KsDualMarker.cpp
+@@ -79,9 +79,19 @@ bool KsGraphMark::set(const KsDataStore &data,
+ 		      kshark_trace_histo *histo,
+ 		      size_t pos, int cpuGraph, int taskGraph)
  {
-+	float size = 1.5 * _dpr;
++	uint8_t visFlags;
 +
- 	glClear(GL_COLOR_BUFFER_BIT);
- 
- 	/* Draw the time axis. */
- 	if(_data)
--		_drawAxisX();
-+		_drawAxisX(size);
- 
- 	/* Process and draw all graphs by using the built-in logic. */
- 	_makeGraphs(_cpuList, _taskList);
- 	for (auto const &g: _graphs)
--		g->draw(1.5 * _dpr);
-+		g->draw(size);
- 
- 	/* Process and draw all plugin-specific shapes. */
- 	_makePluginShapes(_cpuList, _taskList);
- 	while (!_shapes.empty()) {
- 		auto s = _shapes.front();
-+		_shapes.pop_front();
+ 	_isSet = true;
+ 	_pos = pos;
+ 	_ts = data.rows()[_pos]->ts;
++	visFlags = data.rows()[_pos]->visible;
 +
-+		s->_size = size;
- 		s->draw();
++	if ((visFlags & KS_TEXT_VIEW_FILTER_MASK) &&
++	    (visFlags & KS_GRAPH_VIEW_FILTER_MASK))
++		_mark.setDashed(false);
++	else
++		_mark.setDashed(true);
 +
- 		delete s;
--		_shapes.pop_front();
- 	}
- 
- 	/*
-@@ -448,22 +453,21 @@ void KsGLWidget::findGraphIds(const kshark_entry &e,
- 		*graphTask = -1;
- }
- 
--void KsGLWidget::_drawAxisX()
-+void KsGLWidget::_drawAxisX(float size)
- {
- 	KsPlot::Point a0(_hMargin, _vMargin / 4), a1(_hMargin, _vMargin / 2);
--	KsPlot::Point b0(width()/2, _vMargin / 4), b1(width() / 2, _vMargin / 2);
-+	KsPlot::Point b0(width() / 2, _vMargin / 4), b1(width() / 2, _vMargin / 2);
- 	KsPlot::Point c0(width() - _hMargin, _vMargin / 4),
- 			 c1(width() - _hMargin, _vMargin / 2);
--	int lineSize = 2 * _dpr;
- 
- 	a0._size = c0._size = _dpr;
- 
- 	a0.draw();
- 	c0.draw();
--	KsPlot::drawLine(a0, a1, {}, lineSize);
--	KsPlot::drawLine(b0, b1, {}, lineSize);
--	KsPlot::drawLine(c0, c1, {}, lineSize);
--	KsPlot::drawLine(a0, c0, {}, lineSize);
-+	KsPlot::drawLine(a0, a1, {}, size);
-+	KsPlot::drawLine(b0, b1, {}, size);
-+	KsPlot::drawLine(c0, c1, {}, size);
-+	KsPlot::drawLine(a0, c0, {}, size);
- }
- 
- void KsGLWidget::_makeGraphs(QVector<int> cpuList, QVector<int> taskList)
-diff --git a/kernel-shark/src/KsGLWidget.hpp b/kernel-shark/src/KsGLWidget.hpp
-index bc5cacf..e141b0a 100644
---- a/kernel-shark/src/KsGLWidget.hpp
-+++ b/kernel-shark/src/KsGLWidget.hpp
-@@ -190,7 +190,7 @@ private:
- 
- 	int 		_dpr;
- 
--	void _drawAxisX();
-+	void _drawAxisX(float size);
- 
- 	void _makeGraphs(QVector<int> cpuMask, QVector<int> taskMask);
+ 	_cpu = cpuGraph;
+ 	_task = taskGraph;
  
 diff --git a/kernel-shark/src/KsPlotTools.cpp b/kernel-shark/src/KsPlotTools.cpp
-index 2b16a51..f95ada5 100644
+index f95ada5..a8eddcd 100644
 --- a/kernel-shark/src/KsPlotTools.cpp
 +++ b/kernel-shark/src/KsPlotTools.cpp
-@@ -1089,8 +1089,10 @@ void Graph::draw(float size)
- 	/* Draw as vartical lines all bins containing data. */
- 	for (int i = 0; i < _size; ++i)
- 		if (_bins[i]._idFront >= 0 || _bins[i]._idBack >= 0)
--			if (_bins[i]._visMask & KS_EVENT_VIEW_FILTER_MASK)
-+			if (_bins[i]._visMask & KS_EVENT_VIEW_FILTER_MASK) {
-+				_bins[i]._size = size;
- 				_bins[i].draw();
-+			}
+@@ -379,6 +379,32 @@ void drawLine(const Point &a, const Point &b,
+ 			 size);
+ }
  
- 	auto lamCheckEnsblVal = [this] (int v) {
- 		return v > 0 || (v == 0 && !this->_zeroSuppress);
++/**
++ * @brief Draw a dashed line between point "a" and point "b".
++ *
++ * @param a: The first finishing point of the line.
++ * @param b: The second finishing point of the line.
++ * @param col: The color of the line.
++ * @param size: The size of the line.
++ * @param period: The period of the dashed line.
++ */
++void drawDashedLine(const Point &a, const Point &b,
++		    const Color &col, float size, float period)
++{
++	int dx = b.x() - a.x(), dy = b.y() - a.y();
++	float mod = sqrt(dx * dx + dy * dy);
++	int n = mod / period;
++	Point p1, p2;
++
++	for (int i = 0; i < n; ++i) {
++		p1.setX(a.x() + (i + .25) * dx / n);
++		p1.setY(a.y() + (i + .25) * dy / n);
++		p2.setX(a.x() + (i + .75) * dx / n);
++		p2.setY(a.y() + (i + .75) * dy / n);
++		drawLine(p1, p2, col, size);
++	}
++}
++
+ /** @brief Create a default line. The two points are initialized at (0, 0). */
+ Line::Line()
+ : Shape(2)
+@@ -430,6 +456,7 @@ void Polygon::_draw(const Color &col, float size) const
+  * @brief Create a default Mark.
+  */
+ Mark::Mark()
++: _dashed(false)
+ {
+ 	_visible = false;
+ 	_cpu._color = Color(225, 255, 100);
+@@ -440,7 +467,11 @@ Mark::Mark()
+ 
+ void Mark::_draw(const Color &col, float size) const
+ {
+-	drawLine(_a, _b, col, size);
++	if (_dashed)
++		drawDashedLine(_a, _b, col, size, 3 * _cpu._size / size);
++	else
++		drawLine(_a, _b, col, size);
++
+ 	_cpu.draw();
+ 	_task.draw();
+ }
+diff --git a/kernel-shark/src/KsPlotTools.hpp b/kernel-shark/src/KsPlotTools.hpp
+index 11c49eb..ee447f1 100644
+--- a/kernel-shark/src/KsPlotTools.hpp
++++ b/kernel-shark/src/KsPlotTools.hpp
+@@ -204,7 +204,10 @@ private:
+ };
+ 
+ void drawLine(const Point &a, const Point &b,
+-	      const Color &col, float s);
++	      const Color &col, float size);
++
++void drawDashedLine(const Point &a, const Point &b,
++		    const Color &col, float size, float period);
+ 
+ /** This class represents a straight line. */
+ class Line : public Shape {
+@@ -326,6 +329,9 @@ public:
+ 
+ 	void setTaskVisible(bool v);
+ 
++	/** If True, the Mark will be plotted as a dashed line. */
++	void setDashed(bool d) {_dashed = d;}
++
+ private:
+ 	void _draw(const Color &col, float size = 1.) const override;
+ 
+@@ -340,6 +346,9 @@ private:
+ 
+ 	/** A point indicating the position of the Mark in a Task graph. */
+ 	Point _task;
++
++	/* If True, plot the Mark as a dashed line. */
++	bool _dashed;
+ };
+ 
+ /** This class represents a KernelShark graph's bin. */
+diff --git a/kernel-shark/src/KsTraceViewer.cpp b/kernel-shark/src/KsTraceViewer.cpp
+index 04a38b8..05977c3 100644
+--- a/kernel-shark/src/KsTraceViewer.cpp
++++ b/kernel-shark/src/KsTraceViewer.cpp
+@@ -493,15 +493,19 @@ void KsTraceViewer::markSwitch()
+ 		QModelIndex index =
+ 			_proxyModel.mapFromSource(_model.index(row, 0));
+ 
+-		/*
+-		 * The row of the active marker will be colored according to
+-		 * the assigned property of the current state of the Dual
+-		 * marker. Auto-scrolling is temporarily disabled because we
+-		 * do not want to scroll to the position of the marker yet.
+-		 */
+-		_view.setAutoScroll(false);
+-		_view.selectRow(index.row());
+-		_view.setAutoScroll(true);
++		if (index.isValid()) {
++			/*
++			 * The row of the active marker will be colored according to
++			 * the assigned property of the current state of the Dual
++			 * marker. Auto-scrolling is temporarily disabled because we
++			 * do not want to scroll to the position of the marker yet.
++			 */
++			_view.setAutoScroll(false);
++			_view.selectRow(index.row());
++			_view.setAutoScroll(true);
++		} else {
++			_view.clearSelection();
++		}
+ 	} else {
+ 		_view.clearSelection();
+ 	}
 -- 
 2.20.1
 
