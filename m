@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8410AC04AB4
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CF77C04E87
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 48ADC21734
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0E9FE2166E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1558122121;
-	bh=TjXczYsx7Imb1FMxGy9SKVPwqPh+KtnQZhhwOKLiMNw=;
+	s=default; t=1558122122;
+	bh=q7WKE/PxVdUiZswmkA8zyS4iEKkoSFu3iphWqBiJvZw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Hty7BrANfI1QEya7BR44tZCfp0IFMxYwqZIJ5BqLZ0iHVJOLmoCMdj/jtrctK9YJP
-	 ZgZ7MrvCVee2iJL0kpf/YH9zE85TsST1iejd2KPSb4QFOUQ7Du5pIOTw+2K1JEhgyH
-	 FT9YMfOOPdHske+nsdfAF52gMQ2ReTuTgk4De9b0=
+	b=XvYqnEjnXxCtvNTqtBdwcpbya9Pt1vddFjzCNcx+Odu2mviq8ra7hGzzbqq7WuUmC
+	 htYNU73/3UtxO4L1LPSE869Cy+0TgVvaVR2TlLCnvWYbnETsiM+C/qUN2GuncOkkiS
+	 Ls/ndIwCRl+eDrVoRtDrVmZ2gaJVJ6w30IVFGTnw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729521AbfEQTj3 (ORCPT
+        id S1727926AbfEQTi5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 17 May 2019 15:39:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
+        Fri, 17 May 2019 15:38:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729499AbfEQTj2 (ORCPT
+        id S1728410AbfEQTi4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 May 2019 15:39:28 -0400
+        Fri, 17 May 2019 15:38:56 -0400
 Received: from quaco.ghostprotocols.net (unknown [190.15.121.82])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 855062087B;
-        Fri, 17 May 2019 19:39:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC52D2166E;
+        Fri, 17 May 2019 19:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558121966;
-        bh=TjXczYsx7Imb1FMxGy9SKVPwqPh+KtnQZhhwOKLiMNw=;
+        s=default; t=1558121935;
+        bh=q7WKE/PxVdUiZswmkA8zyS4iEKkoSFu3iphWqBiJvZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H2ov47NaEm5URQ2YoNJghrGIF0ESQmlG6xGLSMVL5W+DL0+jibe4qeq4qnGIkJaOn
-         fvhVIJw++tSvTzrd8iigsiNF3wu1T3j8rDV6tPLLukVnIw/hxMEfV1MgkPy1pCdSGN
-         CgIg17vWfNAzxRLnc3iAgMvnnRteTgOmgpf0bBsE=
+        b=TxCB621t0HfmhB+KCbW1Leg1tP4ElPlcePBA/iaqzzmSq3gcQZ39MrtCeutnVCtda
+         1zSoNii4BYj7YFoWbGMk8RE5rnHGAU2hpK9pIyQcYjAngBfPA2bX13gZcVFIh3OaDz
+         c5DqBlQd2IMsxlo/1H8pofsAUkBE8OpPmkuC886Y=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -52,9 +52,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 42/73] tools lib traceevent: Man pages for event filter APIs
-Date:   Fri, 17 May 2019 16:35:40 -0300
-Message-Id: <20190517193611.4974-43-acme@kernel.org>
+Subject: [PATCH 35/73] tools lib traceevent: Man page for list events APIs
+Date:   Fri, 17 May 2019 16:35:33 -0300
+Message-Id: <20190517193611.4974-36-acme@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190517193611.4974-1-acme@kernel.org>
 References: <20190517193611.4974-1-acme@kernel.org>
@@ -67,49 +67,38 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Added new man pages, describing libtraceevent event filter APIs:
+Create man page for libtraceevent APIs:
 
-  tep_filter_alloc()
-  tep_filter_free()
-  tep_filter_reset()
-  tep_filter_add_filter_str()
-  tep_filter_strerror()
-  tep_event_filtered()
-  tep_filter_remove_event()
-  tep_filter_match()
-  tep_filter_copy()
-  tep_filter_compare()
-  tep_filter_make_string()
+  tep_list_events()
+  tep_list_events_copy()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-23-tstoyanov@vmware.com
-Link: http://lkml.kernel.org/r/20190510200109.638838141@goodmis.org
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-16-tstoyanov@vmware.com
+Link: http://lkml.kernel.org/r/20190510200108.367633707@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- .../Documentation/libtraceevent-filter.txt    | 209 ++++++++++++++++++
- 1 file changed, 209 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter.txt
+ .../libtraceevent-event_list.txt              | 122 ++++++++++++++++++
+ 1 file changed, 122 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter.txt b/tools/lib/traceevent/Documentation/libtraceevent-filter.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
 new file mode 100644
-index 000000000000..4a9962d8cb59
+index 000000000000..fba350e5a4cb
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-filter.txt
-@@ -0,0 +1,209 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
+@@ -0,0 +1,122 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_filter_alloc, tep_filter_free, tep_filter_reset, tep_filter_make_string,
-+tep_filter_copy, tep_filter_compare, tep_filter_match, tep_event_filtered,
-+tep_filter_remove_event, tep_filter_strerror, tep_filter_add_filter_str -
-+Event filter related APIs.
++tep_list_events, tep_list_events_copy -
++Get list of events, sorted by given criteria.
 +
 +SYNOPSIS
 +--------
@@ -117,93 +106,44 @@ index 000000000000..4a9962d8cb59
 +--
 +*#include <event-parse.h>*
 +
-+struct tep_event_filter pass:[*]*tep_filter_alloc*(struct tep_handle pass:[*]_tep_);
-+void *tep_filter_free*(struct tep_event_filter pass:[*]_filter_);
-+void *tep_filter_reset*(struct tep_event_filter pass:[*]_filter_);
-+enum tep_errno *tep_filter_add_filter_str*(struct tep_event_filter pass:[*]_filter_, const char pass:[*]_filter_str_);
-+int *tep_event_filtered*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
-+int *tep_filter_remove_event*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
-+enum tep_errno *tep_filter_match*(struct tep_event_filter pass:[*]_filter_, struct tep_record pass:[*]_record_);
-+int *tep_filter_copy*(struct tep_event_filter pass:[*]_dest_, struct tep_event_filter pass:[*]_source_);
-+int *tep_filter_compare*(struct tep_event_filter pass:[*]_filter1_, struct tep_event_filter pass:[*]_filter2_);
-+char pass:[*]*tep_filter_make_string*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
-+int *tep_filter_strerror*(struct tep_event_filter pass:[*]_filter_, enum tep_errno _err_, char pass:[*]buf, size_t _buflen_);
++enum *tep_event_sort_type* {
++	_TEP_EVENT_SORT_ID_,
++	_TEP_EVENT_SORT_NAME_,
++	_TEP_EVENT_SORT_SYSTEM_,
++};
++
++struct tep_event pass:[*]pass:[*]*tep_list_events*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
++struct tep_event pass:[*]pass:[*]*tep_list_events_copy*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
 +--
 +
 +DESCRIPTION
 +-----------
-+Filters can be attached to traced events. They can be used to filter out various
-+events when outputting them. Each event can be filtered based on its parameters,
-+described in the event's format file. This set of functions can be used to
-+create, delete, modify and attach event filters.
++The _tep_list_events()_ function returns an array of pointers to the events,
++sorted by the _sort_type_ criteria. The last element of the array is NULL.
++The returned memory must not be freed, it is managed by the library.
++The function is not thread safe. The _tep_ argument is trace event parser
++context. The _sort_type_ argument is the required sort criteria:
++[verse]
++--
++	_TEP_EVENT_SORT_ID_	- sort by the event ID.
++	_TEP_EVENT_SORT_NAME_	- sort by the event (name, system, id) triplet.
++	_TEP_EVENT_SORT_SYSTEM_	- sort by the event (system, name, id) triplet.
++--
 +
-+The _tep_filter_alloc()_ function creates a new event filter. The _tep_ argument
-+is the trace event parser context.
-+
-+The _tep_filter_free()_ function frees an event filter and all resources that it
-+had used.
-+
-+The _tep_filter_reset()_ function removes all rules from an event filter and
-+resets it.
-+
-+The _tep_filter_add_filter_str()_ function adds a new rule to the _filter_. The
-+_filter_str_ argument is the filter string, that contains the rule.
-+
-+The _tep_event_filtered()_ function checks if the event with _event_id_ has
-+_filter_.
-+
-+The _tep_filter_remove_event()_ function removes a _filter_ for an event with
-+_event_id_.
-+
-+The _tep_filter_match()_ function tests if a _record_ matches given _filter_.
-+
-+The _tep_filter_copy()_ function copies a _source_ filter into a _dest_ filter.
-+
-+The _tep_filter_compare()_ function compares two filers - _filter1_ and _filter2_.
-+
-+The _tep_filter_make_string()_ function constructs a string, displaying
-+the _filter_ contents for given _event_id_.
-+
-+The _tep_filter_strerror()_ function copies the _filter_ error buffer into the
-+given _buf_ with the size _buflen_. If the error buffer is empty, in the _buf_
-+is copied a string, describing the error _err_.
++The _tep_list_events_copy()_ is a thread safe version of _tep_list_events()_.
++It has the same behavior, but the returned array is allocated internally and
++must be freed by the caller. Note that the content of the array must not be
++freed (see the EXAMPLE below).
 +
 +RETURN VALUE
 +------------
-+The _tep_filter_alloc()_ function returns a pointer to the newly created event
-+filter, or NULL in case of an error.
++The _tep_list_events()_ function returns an array of pointers to events.
++In case of an error, NULL is returned. The returned array must not be freed,
++it is managed by the library.
 +
-+The _tep_filter_add_filter_str()_ function returns 0 if the rule was
-+successfully added or a negative error code.  Use _tep_filter_strerror()_ to see
-+actual error message in case of an error.
-+
-+The _tep_event_filtered()_ function returns 1 if the filter is found for given
-+event, or 0 otherwise.
-+
-+The _tep_filter_remove_event()_ function returns 1 if the vent was removed, or
-+0 if the event was not found.
-+
-+The _tep_filter_match()_ function returns _tep_errno_, according to the result:
-+[verse]
-+--
-+_pass:[TEP_ERRNO__FILTER_MATCH]_	- filter found for event, the record matches.
-+_pass:[TEP_ERRNO__FILTER_MISS]_		- filter found for event, the record does not match.
-+_pass:[TEP_ERRNO__FILTER_NOT_FOUND]_	- no filter found for record's event.
-+_pass:[TEP_ERRNO__NO_FILTER]_		- no rules in the filter.
-+--
-+or any other _tep_errno_, if an error occurred during the test.
-+
-+The _tep_filter_copy()_ function returns 0 on success or -1 if not all rules
-+ were copied.
-+
-+The _tep_filter_compare()_ function returns 1 if the two filters hold the same
-+content, or 0 if they do not.
-+
-+The _tep_filter_make_string()_ function returns a string, which must be freed
-+with free(), or NULL in case of an error.
-+
-+The _tep_filter_strerror()_ function returns 0 if message was filled
-+successfully, or -1 in case of an error.
++The _tep_list_events_copy()_ function returns an array of pointers to events.
++In case of an error, NULL is returned. The returned array must be freed by
++the caller.
 +
 +EXAMPLE
 +-------
@@ -213,68 +153,32 @@ index 000000000000..4a9962d8cb59
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+char errstr[200];
-+int ret;
++int i;
++struct tep_event_format **events;
 +
-+struct tep_event_filter *filter = tep_filter_alloc(tep);
-+struct tep_event_filter *filter1 = tep_filter_alloc(tep);
-+ret = tep_filter_add_filter_str(filter, "sched/sched_wakeup:target_cpu==1");
-+if(ret < 0) {
-+	tep_filter_strerror(filter, ret, errstr, sizeof(errstr));
-+	/* Failed to add a new rule to the filter, the error string is in errstr */
-+}
-+if (tep_filter_copy(filter1, filter) != 0) {
-+	/* Failed to copy filter in filter1 */
-+}
-+...
-+if (tep_filter_compare(filter, filter1) != 1) {
-+	/* Both filters are different */
-+}
-+...
-+void process_record(struct tep_handle *tep, struct tep_record *record)
-+{
-+	struct tep_event *event;
-+	char *fstring;
-+
-+	event = tep_find_event_by_record(tep, record);
-+
-+	if (tep_event_filtered(filter, event->id) == 1) {
-+		/* The event has filter */
-+		fstring = tep_filter_make_string(filter, event->id);
-+		if (fstring != NULL) {
-+			/* The filter for the event is in fstring */
-+			free(fstring);
-+		}
-+	}
-+
-+	switch (tep_filter_match(filter, record)) {
-+	case TEP_ERRNO__FILTER_MATCH:
-+		/* The filter matches the record */
-+		break;
-+	case TEP_ERRNO__FILTER_MISS:
-+		/* The filter does not match the record */
-+		break;
-+	case TEP_ERRNO__FILTER_NOT_FOUND:
-+		/* No filter found for record's event */
-+		break;
-+	case TEP_ERRNO__NO_FILTER:
-+		/* There are no rules in the filter */
-+		break
-+	default:
-+		/* An error occurred during the test */
-+		break;
-+	}
-+
-+	if (tep_filter_remove_event(filter, event->id) == 1) {
-+		/* The event was removed from the filter */
++i=0;
++events = tep_list_events(tep, TEP_EVENT_SORT_ID);
++if (events == NULL) {
++	/* Failed to get the events, sorted by ID */
++} else {
++	while(events[i]) {
++		/* walk through the list of the events, sorted by ID */
++		i++;
 +	}
 +}
 +
-+...
-+tep_filter_reset(filter);
-+...
-+tep_filter_free(filter);
-+tep_filter_free(filter1);
++i=0;
++events = tep_list_events_copy(tep, TEP_EVENT_SORT_NAME);
++if (events == NULL) {
++	/* Failed to get the events, sorted by name */
++} else {
++	while(events[i]) {
++		/* walk through the list of the events, sorted by name */
++		i++;
++	}
++	free(events);
++}
++
 +...
 +--
 +
