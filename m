@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CF77C04E87
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B74DAC04AB4
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0E9FE2166E
+	by mail.kernel.org (Postfix) with ESMTP id 7D87F2166E
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1558122122;
-	bh=q7WKE/PxVdUiZswmkA8zyS4iEKkoSFu3iphWqBiJvZw=;
+	bh=Hpm88RRl3quoG4IJ2A0FNErAqcM4aydvlQvF2mCResc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=XvYqnEjnXxCtvNTqtBdwcpbya9Pt1vddFjzCNcx+Odu2mviq8ra7hGzzbqq7WuUmC
-	 htYNU73/3UtxO4L1LPSE869Cy+0TgVvaVR2TlLCnvWYbnETsiM+C/qUN2GuncOkkiS
-	 Ls/ndIwCRl+eDrVoRtDrVmZ2gaJVJ6w30IVFGTnw=
+	b=hj/VLFQ9tP75394TCgj1UFrvauo74RTgNFr7bLOR+9H+EcM6d7JBguwjIfVWqVCg1
+	 WTkEEKooek6yVf7nufeJz7ISglyKzoVxnflzxIosp63TfuPpH88FPV3TXz3AajOCPf
+	 lIRSItXs6MinXKsLWekWLzQg0NuF8sU3CXBUaNp4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbfEQTi5 (ORCPT
+        id S1729709AbfEQTik (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 17 May 2019 15:38:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55084 "EHLO mail.kernel.org"
+        Fri, 17 May 2019 15:38:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728410AbfEQTi4 (ORCPT
+        id S1729725AbfEQTij (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 May 2019 15:38:56 -0400
+        Fri, 17 May 2019 15:38:39 -0400
 Received: from quaco.ghostprotocols.net (unknown [190.15.121.82])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC52D2166E;
-        Fri, 17 May 2019 19:38:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE602217D9;
+        Fri, 17 May 2019 19:38:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558121935;
-        bh=q7WKE/PxVdUiZswmkA8zyS4iEKkoSFu3iphWqBiJvZw=;
+        s=default; t=1558121918;
+        bh=Hpm88RRl3quoG4IJ2A0FNErAqcM4aydvlQvF2mCResc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TxCB621t0HfmhB+KCbW1Leg1tP4ElPlcePBA/iaqzzmSq3gcQZ39MrtCeutnVCtda
-         1zSoNii4BYj7YFoWbGMk8RE5rnHGAU2hpK9pIyQcYjAngBfPA2bX13gZcVFIh3OaDz
-         c5DqBlQd2IMsxlo/1H8pofsAUkBE8OpPmkuC886Y=
+        b=tjmwzCzz8p4SqqXjNkTaN0842nDJeJw5DXv+Uw+26XQQ4Wi2G2b/nqJU0afiTtqAS
+         ROiSTXgRZSEFqU3ZYUSMbNjyLeNy9hvmI+QS/DI6Ly5yrs7aIJg+4QVzPo17lCGEol
+         mgMa6J8NDagVTL+23hFd4TBcUBen4Y1wTaIPkO/w=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -52,9 +52,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 35/73] tools lib traceevent: Man page for list events APIs
-Date:   Fri, 17 May 2019 16:35:33 -0300
-Message-Id: <20190517193611.4974-36-acme@kernel.org>
+Subject: [PATCH 31/73] tools lib traceevent: Man pages for function related libtraceevent APIs
+Date:   Fri, 17 May 2019 16:35:29 -0300
+Message-Id: <20190517193611.4974-32-acme@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190517193611.4974-1-acme@kernel.org>
 References: <20190517193611.4974-1-acme@kernel.org>
@@ -67,38 +67,45 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Create man page for libtraceevent APIs:
+Added new man pages, describing function related libtraceevent APIs:
 
-  tep_list_events()
-  tep_list_events_copy()
+  tep_register_function(),
+  tep_register_print_string(),
+  tep_find_function(),
+  tep_find_function_address(),
+  tep_set_function_resolver(),
+  tep_reset_function_resolver()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-16-tstoyanov@vmware.com
-Link: http://lkml.kernel.org/r/20190510200108.367633707@goodmis.org
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-12-tstoyanov@vmware.com
+Link: http://lkml.kernel.org/r/20190510200107.701962205@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- .../libtraceevent-event_list.txt              | 122 ++++++++++++++++++
- 1 file changed, 122 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
+ .../Documentation/libtraceevent-func_apis.txt | 183 ++++++++++++++++++
+ .../Documentation/libtraceevent-func_find.txt |  88 +++++++++
+ 2 files changed, 271 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-func_find.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt b/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
 new file mode 100644
-index 000000000000..fba350e5a4cb
+index 000000000000..38bfea30a5f6
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-event_list.txt
-@@ -0,0 +1,122 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
+@@ -0,0 +1,183 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_list_events, tep_list_events_copy -
-+Get list of events, sorted by given criteria.
++tep_find_function, tep_find_function_address, tep_set_function_resolver,
++tep_reset_function_resolver, tep_register_function, tep_register_print_string -
++function related tep APIs
 +
 +SYNOPSIS
 +--------
@@ -106,44 +113,85 @@ index 000000000000..fba350e5a4cb
 +--
 +*#include <event-parse.h>*
 +
-+enum *tep_event_sort_type* {
-+	_TEP_EVENT_SORT_ID_,
-+	_TEP_EVENT_SORT_NAME_,
-+	_TEP_EVENT_SORT_SYSTEM_,
-+};
-+
-+struct tep_event pass:[*]pass:[*]*tep_list_events*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
-+struct tep_event pass:[*]pass:[*]*tep_list_events_copy*(struct tep_handle pass:[*]_tep_, enum tep_event_sort_type _sort_type_);
++typedef char pass:[*](*tep_func_resolver_t*)(void pass:[*]_priv_, unsigned long long pass:[*]_addrp_, char pass:[**]_modp_);
++int *tep_set_function_resolver*(struct tep_handle pass:[*]_tep_, tep_func_resolver_t pass:[*]_func_, void pass:[*]_priv_);
++void *tep_reset_function_resolver*(struct tep_handle pass:[*]_tep_);
++const char pass:[*]*tep_find_function*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
++unsigned long long *tep_find_function_address*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
++int *tep_register_function*(struct tep_handle pass:[*]_tep_, char pass:[*]_name_, unsigned long long _addr_, char pass:[*]_mod_);
++int *tep_register_print_string*(struct tep_handle pass:[*]_tep_, const char pass:[*]_fmt_, unsigned long long _addr_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_list_events()_ function returns an array of pointers to the events,
-+sorted by the _sort_type_ criteria. The last element of the array is NULL.
-+The returned memory must not be freed, it is managed by the library.
-+The function is not thread safe. The _tep_ argument is trace event parser
-+context. The _sort_type_ argument is the required sort criteria:
-+[verse]
-+--
-+	_TEP_EVENT_SORT_ID_	- sort by the event ID.
-+	_TEP_EVENT_SORT_NAME_	- sort by the event (name, system, id) triplet.
-+	_TEP_EVENT_SORT_SYSTEM_	- sort by the event (system, name, id) triplet.
-+--
++Some tools may have already a way to resolve the kernel functions. These APIs
++allow them to keep using it instead of duplicating all the entries inside.
 +
-+The _tep_list_events_copy()_ is a thread safe version of _tep_list_events()_.
-+It has the same behavior, but the returned array is allocated internally and
-+must be freed by the caller. Note that the content of the array must not be
-+freed (see the EXAMPLE below).
++The _tep_func_resolver_t_ type is the prototype of the alternative kernel
++functions resolver. This function receives a pointer to its custom context
++(set with the _tep_set_function_resolver()_ call ) and the address of a kernel
++function, which has to be resolved. In case of success, it should return
++the name of the function and its module (if any) in _modp_.
++
++The _tep_set_function_resolver()_ function registers _func_ as an alternative
++kernel functions resolver. The _tep_ argument is trace event parser context.
++The _priv_ argument is a custom context of the _func_ function. The function
++resolver is used by the APIs _tep_find_function()_,
++_tep_find_function_address()_, and _tep_print_func_field()_ to resolve
++a function address to a function name.
++
++The _tep_reset_function_resolver()_ function resets the kernel functions
++resolver to the default function.  The _tep_ argument is trace event parser
++context.
++
++
++These APIs can be used to find function name and start address, by given
++address. The given address does not have to be exact, it will select
++the function that would contain it.
++
++The _tep_find_function()_ function returns the function name, which contains the
++given address _addr_. The _tep_ argument is the trace event parser context.
++
++The _tep_find_function_address()_ function returns the function start address,
++by given address _addr_. The _addr_ does not have to be exact, it will select
++the function that would contain it. The _tep_ argument is the trace event
++parser context.
++
++The _tep_register_function()_ function registers a function name mapped to an
++address and (optional) module. This mapping is used in case the function tracer
++or events have "%pF" or "%pS" parameter in its format string. It is common to
++pass in the kallsyms function names with their corresponding addresses with this
++function. The _tep_ argument is the trace event parser context. The _name_ is
++the name of the function, the string is copied internally. The _addr_ is
++the start address of the function. The _mod_ is the kernel module
++the function may be in (NULL for none).
++
++The _tep_register_print_string()_ function  registers a string by the address
++it was stored in the kernel. Some strings internal to the kernel with static
++address are passed to certain events. The "%s" in the event's format field
++which has an address needs to know what string would be at that address. The
++tep_register_print_string() supplies the parsing with the mapping between kernel
++addresses and those strings. The _tep_ argument is the trace event parser
++context. The _fmt_ is the string to register, it is copied internally.
++The _addr_ is the address the string was located at.
++
 +
 +RETURN VALUE
 +------------
-+The _tep_list_events()_ function returns an array of pointers to events.
-+In case of an error, NULL is returned. The returned array must not be freed,
-+it is managed by the library.
++The _tep_set_function_resolver()_ function returns 0 in case of success, or -1
++in case of an error.
 +
-+The _tep_list_events_copy()_ function returns an array of pointers to events.
-+In case of an error, NULL is returned. The returned array must be freed by
-+the caller.
++The _tep_find_function()_ function returns the function name, or NULL in case
++it cannot be found.
++
++The _tep_find_function_address()_ function returns the function start address,
++or 0 in case it cannot be found.
++
++The _tep_register_function()_ function returns 0 in case of success. In case of
++an error -1 is returned, and errno is set to the appropriate error number.
++
++The _tep_register_print_string()_ function returns 0 in case of success. In case
++of an error -1 is returned, and errno is set to the appropriate error number.
 +
 +EXAMPLE
 +-------
@@ -153,32 +201,145 @@ index 000000000000..fba350e5a4cb
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+int i;
-+struct tep_event_format **events;
++char *my_resolve_kernel_addr(void *context,
++			     unsigned long long *addrp, char **modp)
++{
++	struct db *function_database = context;
++	struct symbol *sym = sql_lookup(function_database, *addrp);
 +
-+i=0;
-+events = tep_list_events(tep, TEP_EVENT_SORT_ID);
-+if (events == NULL) {
-+	/* Failed to get the events, sorted by ID */
-+} else {
-+	while(events[i]) {
-+		/* walk through the list of the events, sorted by ID */
-+		i++;
-+	}
++	if (!sym)
++		return NULL;
++
++	*modp = sym->module_name;
++	return sym->name;
 +}
 +
-+i=0;
-+events = tep_list_events_copy(tep, TEP_EVENT_SORT_NAME);
-+if (events == NULL) {
-+	/* Failed to get the events, sorted by name */
-+} else {
-+	while(events[i]) {
-+		/* walk through the list of the events, sorted by name */
-+		i++;
-+	}
-+	free(events);
-+}
++void show_function( unsigned long long addr)
++{
++	unsigned long long fstart;
++	const char *fname;
 +
++	if (tep_set_function_resolver(tep, my_resolve_kernel_addr,
++				      function_database) != 0) {
++		/* failed to register my_resolve_kernel_addr */
++	}
++
++	/* These APIs use my_resolve_kernel_addr() to resolve the addr */
++	fname = tep_find_function(tep, addr);
++	fstart = tep_find_function_address(tep, addr);
++
++	/*
++	   addr is in function named fname, starting at fstart address,
++	   at offset (addr - fstart)
++	*/
++
++	tep_reset_function_resolver(tep);
++
++}
++...
++	if (tep_register_function(tep, "kvm_exit",
++				(unsigned long long) 0x12345678, "kvm") != 0) {
++		/* Failed to register kvm_exit address mapping */
++	}
++...
++	if (tep_register_print_string(tep, "print string",
++				(unsigned long long) 0x87654321, NULL) != 0) {
++		/* Failed to register "print string" address mapping */
++	}
++...
++--
++
++FILES
++-----
++[verse]
++--
++*event-parse.h*
++	Header file to include in order to have access to the library APIs.
++*-ltraceevent*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtraceevent(3)_, _trace-cmd(1)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtraceevent is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-func_find.txt b/tools/lib/traceevent/Documentation/libtraceevent-func_find.txt
+new file mode 100644
+index 000000000000..04840e244445
+--- /dev/null
++++ b/tools/lib/traceevent/Documentation/libtraceevent-func_find.txt
+@@ -0,0 +1,88 @@
++libtraceevent(3)
++================
++
++NAME
++----
++tep_find_function,tep_find_function_address - Find function name / start address.
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <event-parse.h>*
++
++const char pass:[*]*tep_find_function*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
++unsigned long long *tep_find_function_address*(struct tep_handle pass:[*]_tep_, unsigned long long _addr_);
++--
++
++DESCRIPTION
++-----------
++These functions can be used to find function name and start address, by given
++address. The given address does not have to be exact, it will select the function
++that would contain it.
++
++The _tep_find_function()_ function returns the function name, which contains the
++given address _addr_. The _tep_ argument is the trace event parser context.
++
++The _tep_find_function_address()_ function returns the function start address,
++by given address _addr_. The _addr_ does not have to be exact, it will select the
++function that would contain it. The _tep_ argument is the trace event parser context.
++
++RETURN VALUE
++------------
++The _tep_find_function()_ function returns the function name, or NULL in case
++it cannot be found.
++
++The _tep_find_function_address()_ function returns the function start address,
++or 0 in case it cannot be found.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <event-parse.h>
++...
++struct tep_handle *tep = tep_alloc();
++...
++void show_function( unsigned long long addr)
++{
++	const char *fname = tep_find_function(tep, addr);
++	unsigned long long fstart = tep_find_function_address(tep, addr);
++
++	/* addr is in function named fname, starting at fstart address, at offset (addr - fstart) */
++}
 +...
 +--
 +
