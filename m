@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1E26C04E87
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ED32C04E84
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C11B82087B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A8D02166E
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1558122124;
-	bh=ZoEXBcVdmFsdz/V/Ql5U8fQ3EuR+/gKC/IbjsOaJxj8=;
+	s=default; t=1558122125;
+	bh=UX50jR1VytJVQQxer7LjamI6OiE4kGXkWTXxYQGWl2Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=yYGS73bBoISuePX3JcVRAx1h6nBWf3aYSI+TyOfri3AinO1MuA42Vn/oyLvVnktbX
-	 W+zBzBJv+D4Ef0WkqXggHqY4gL7w3ZJoEDJ2QryjYpqZ8kDUJgf87qYdpQrL6Vp4gH
-	 TRzZwvacx6QGOuFI2zLgN4xEzFNdGmtPV0JLHac4=
+	b=MzP65bmSU6Pf5AEF7ks4CwZ2+1mdkonNld4Jaxp5F/xe44NTUgBFFzrOhZKnbDMvl
+	 V3zV/3xjytfWq7O/YLxo5BDpI7Qng9Xb8YKJEPyJI6zNMRimP69pt7TsR3pq098xFA
+	 3lpNOEpSBgVPusmbOm19HkiSAk/wtj/bbUMWjfXc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729688AbfEQTi1 (ORCPT
+        id S1728901AbfEQTiK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 17 May 2019 15:38:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54440 "EHLO mail.kernel.org"
+        Fri, 17 May 2019 15:38:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729686AbfEQTi0 (ORCPT
+        id S1727771AbfEQTiJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 May 2019 15:38:26 -0400
+        Fri, 17 May 2019 15:38:09 -0400
 Received: from quaco.ghostprotocols.net (unknown [190.15.121.82])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D791A21744;
-        Fri, 17 May 2019 19:38:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9019C21726;
+        Fri, 17 May 2019 19:38:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558121905;
-        bh=ZoEXBcVdmFsdz/V/Ql5U8fQ3EuR+/gKC/IbjsOaJxj8=;
+        s=default; t=1558121887;
+        bh=UX50jR1VytJVQQxer7LjamI6OiE4kGXkWTXxYQGWl2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PktAaB1UhlxLhF7pbYXEURsJ0QfhCZED2/gUCusEXaJWhzTQBIrcEC6K/bfPZLTBQ
-         bopOYz4dicCYktkXv0gA1B1HDxWKvDZcrmgarb5zLxff6ABgbfbII3LzU6eGGX4Cv6
-         kZU2fmtHYXgNG7DOl26tWt9OMZnIJi0WTYzXzAlo=
+        b=dJF+t5BaR9x8HOQ2vT8BA3y9KEJSGJKuzc1WrXsj+f06kKaA5Ci9sXLJajKn7vHkQ
+         DxzgGv9qnW70syLJaiOxwIauwaDgkc08BnsD+EG8HbNmprqHb+KMtUSRKx83p5O+ke
+         WYnUighbJN3ehk1rS1/O3hixJDW7F+KAp5PDFN4U=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -52,9 +52,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 28/73] tools lib traceevent: Man page for page size APIs
-Date:   Fri, 17 May 2019 16:35:26 -0300
-Message-Id: <20190517193611.4974-29-acme@kernel.org>
+Subject: [PATCH 24/73] tools lib traceevent: Man page for header_page APIs
+Date:   Fri, 17 May 2019 16:35:22 -0300
+Message-Id: <20190517193611.4974-25-acme@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190517193611.4974-1-acme@kernel.org>
 References: <20190517193611.4974-1-acme@kernel.org>
@@ -67,38 +67,39 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Create man pages for libtraceevent APIs:
+Create a man page for libtraceevent APIs:
 
-  tep_get_page_size()
-  tep_set_page_size()
+  tep_get_header_page_size(),
+  tep_get_header_timestamp_size(),
+  tep_is_old_format()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-9-tstoyanov@vmware.com
-Link: http://lkml.kernel.org/r/20190510200107.218173559@goodmis.org
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-5-tstoyanov@vmware.com
+Link: http://lkml.kernel.org/r/20190510200106.583928896@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- .../Documentation/libtraceevent-page_size.txt | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
+ .../libtraceevent-header_page.txt             | 102 ++++++++++++++++++
+ 1 file changed, 102 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt b/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
 new file mode 100644
-index 000000000000..452c0cfa1822
+index 000000000000..615d117dc39f
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-page_size.txt
-@@ -0,0 +1,82 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-header_page.txt
+@@ -0,0 +1,102 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_get_page_size, tep_set_page_size - Get / set the size of a memory page on
-+the machine, where the trace is generated
++tep_get_header_page_size, tep_get_header_timestamp_size, tep_is_old_format -
++Get the data stored in the header page, in kernel context.
 +
 +SYNOPSIS
 +--------
@@ -106,40 +107,60 @@ index 000000000000..452c0cfa1822
 +--
 +*#include <event-parse.h>*
 +
-+int *tep_get_page_size*(struct tep_handle pass:[*]_tep_);
-+void *tep_set_page_size*(struct tep_handle pass:[*]_tep_, int _page_size_);
++int *tep_get_header_page_size*(struct tep_handle pass:[*]_tep_);
++int *tep_get_header_timestamp_size*(struct tep_handle pass:[*]_tep_);
++bool *tep_is_old_format*(struct tep_handle pass:[*]_tep_);
 +--
-+
 +DESCRIPTION
 +-----------
-+The _tep_get_page_size()_ function returns the size of a memory page on
-+the machine, where the trace is generated. The _tep_ argument is trace
-+event parser context.
++These functions retrieve information from kernel context, stored in tracefs
++events/header_page. Old kernels do not have header page info, so default values
++from user space context are used.
 +
-+The _tep_set_page_size()_ function stores in the _tep_ context the size of a
-+memory page on the machine, where the trace is generated.
-+The _tep_ argument is trace event parser context.
-+The _page_size_ argument is the size of a memory page, in bytes.
++The _tep_get_header_page_size()_ function returns the size of a long integer,
++in kernel context. The _tep_ argument is trace event parser context.
++This information is retrieved from tracefs events/header_page, "commit" field.
++
++The _tep_get_header_timestamp_size()_ function returns the size of timestamps,
++in kernel context. The _tep_ argument is trace event parser context. This
++information is retrieved from tracefs events/header_page, "timestamp" field.
++
++The _tep_is_old_format()_ function returns true if the kernel predates
++the addition of events/header_page, otherwise it returns false.
 +
 +RETURN VALUE
 +------------
-+The _tep_get_page_size()_ function returns size of the memory page, in bytes.
++The _tep_get_header_page_size()_ function returns the size of a long integer,
++in bytes.
++
++The _tep_get_header_timestamp_size()_ function returns the size of timestamps,
++in bytes.
++
++The _tep_is_old_format()_ function returns true, if an old kernel is used to
++generate the tracing data, which has no event/header_page. If the kernel is new,
++or _tep_ is NULL, false is returned.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
-+#include <unistd.h>
 +#include <event-parse.h>
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+	int page_size = getpagesize();
++	int longsize;
++	int timesize;
++	bool old;
 +
-+	tep_set_page_size(tep, page_size);
++	longsize = tep_get_header_page_size(tep);
++	timesize = tep_get_header_timestamp_size(tep);
++	old = tep_is_old_format(tep);
 +
-+	printf("The page size for this machine is %d\n", tep_get_page_size(tep));
-+
++	printf ("%s kernel is used to generate the tracing data.\n",
++		old?"Old":"New");
++	printf("The size of a long integer is %d bytes.\n", longsize);
++	printf("The timestamps size is %d bytes.\n", timesize);
++...
 +--
 +
 +FILES
