@@ -5,41 +5,41 @@ X-Spam-Level:
 X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30EEAC04E87
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EA1FC04E84
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 032462173C
+	by mail.kernel.org (Postfix) with ESMTP id 2EB592166E
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1558121987;
-	bh=Pki2Aaa++CF5Sm8Vvh+8o3szdBpJoA8iAy2VJYoAHjI=;
+	bh=LhFOXG0WISx3V40lhHAcu5eNTbn4/Io60kUmHo1ThfM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=eaNN6YpElYpUlQbI0aKfVq6fmb+LgTehZ+gNfZLCCx4PqwSZwwyZKSPv/3rB8lTTI
-	 1C0pK61sSnZq88yZJyliW8yWwZRcBILp4nt7n+2SIt2CbMWyPhBWbH/AguVLehVpX5
-	 oYfhsniQ3bwsyrfKnptJyRB++vfAebaqcckYLCF0=
+	b=u/g9VKZHCIlwA+euDMCOwCNswrc9n9RaGJaEenXPiBbggXATBN7gvtH9E1vJDnnzp
+	 SiRDE16MdO6Fp/88ll7XAvLbesgnzhgu+P2LJNNnJLGnro/D5O38n9w5V0q/CWYeF2
+	 9jyOqF9tpztzuLvQIDqLUccdQzk8BGpqU8O/4540=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbfEQTjl (ORCPT
+        id S1727467AbfEQTjq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 17 May 2019 15:39:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
+        Fri, 17 May 2019 15:39:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729566AbfEQTjl (ORCPT
+        id S1729566AbfEQTjp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 May 2019 15:39:41 -0400
+        Fri, 17 May 2019 15:39:45 -0400
 Received: from quaco.ghostprotocols.net (unknown [190.15.121.82])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 880D821726;
-        Fri, 17 May 2019 19:39:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A39C821734;
+        Fri, 17 May 2019 19:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558121979;
-        bh=Pki2Aaa++CF5Sm8Vvh+8o3szdBpJoA8iAy2VJYoAHjI=;
+        s=default; t=1558121984;
+        bh=LhFOXG0WISx3V40lhHAcu5eNTbn4/Io60kUmHo1ThfM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sn6BdZkMQpL5nxAiXLb0Jq4Yp9YZhT2DUBGKsCdP9qDSDRMp5IquOnRsA4YReh2YL
-         54EgBJ6nq/K3QtwWfzg0KmREj7mCCEcmOuS+Ew+IGHqfyZ0C97GU2Z24BS2W6ljeHJ
-         eFJRlfPhlJzYzVGkUOXN2O3Xd25jw3lOyfWnCDos=
+        b=wdETtJHxgLB6vhxfrHMeK/ZT+29EC1fKB/U09j7NkeSBDEGh092GxZ16R6sW00ckW
+         IsZzAl9IABZbRxqog82PAqKHi7s6Mrl/hV7wR4+RdOXcb0DUPZFmw8xZoNSwYZ3sAU
+         doZViF0qc9gXe12cj+6Y/ljw7WOpE10foNaTXfyQ=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -52,9 +52,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 45/73] tools lib traceevent: Man pages for APIs used to extract common fields from a record
-Date:   Fri, 17 May 2019 16:35:43 -0300
-Message-Id: <20190517193611.4974-46-acme@kernel.org>
+Subject: [PATCH 46/73] tools lib traceevent: Man pages for trace sequences APIs
+Date:   Fri, 17 May 2019 16:35:44 -0300
+Message-Id: <20190517193611.4974-47-acme@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190517193611.4974-1-acme@kernel.org>
 References: <20190517193611.4974-1-acme@kernel.org>
@@ -67,136 +67,160 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Create man pages for libtraceevent APIs:
+Create man pages for trace sequences libtraceevent APIs:
 
- tep_data_type(),
- tep_data_pid(),
- tep_data_preempt_count(),
- tep_data_flags()
+  trace_seq_init(),
+  trace_seq_destroy(),
+  trace_seq_reset(),
+  trace_seq_terminate(),
+  trace_seq_putc(),
+  trace_seq_puts(),
+  trace_seq_printf(),
+  trace_seq_vprintf(),
+  trace_seq_do_fprintf(),
+  trace_seq_do_printf()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-26-tstoyanov@vmware.com
-Link: http://lkml.kernel.org/r/20190510200110.284281830@goodmis.org
-[ Fixed missing T in description of NOSUPPORT flag ]
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-27-tstoyanov@vmware.com
+Link: http://lkml.kernel.org/r/20190510200110.462646052@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- .../libtraceevent-record_parse.txt            | 137 ++++++++++++++++++
- 1 file changed, 137 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
+ .../Documentation/libtraceevent-tseq.txt      | 158 ++++++++++++++++++
+ 1 file changed, 158 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt b/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
 new file mode 100644
-index 000000000000..e9a69116c78b
+index 000000000000..8ac6aa174e12
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
-@@ -0,0 +1,137 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
+@@ -0,0 +1,158 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_data_type, tep_data_pid,tep_data_preempt_count, tep_data_flags -
-+Extract common fields from a record.
++trace_seq_init, trace_seq_destroy, trace_seq_reset, trace_seq_terminate,
++trace_seq_putc, trace_seq_puts, trace_seq_printf, trace_seq_vprintf,
++trace_seq_do_fprintf, trace_seq_do_printf -
++Initialize / destroy a trace sequence.
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <event-parse.h>*
++*#include <trace-seq.h>*
 +
-+enum *trace_flag_type* {
-+	_TRACE_FLAG_IRQS_OFF_,
-+	_TRACE_FLAG_IRQS_NOSUPPORT_,
-+	_TRACE_FLAG_NEED_RESCHED_,
-+	_TRACE_FLAG_HARDIRQ_,
-+	_TRACE_FLAG_SOFTIRQ_,
-+};
-+
-+int *tep_data_type*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
-+int *tep_data_pid*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
-+int *tep_data_preempt_count*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
-+int *tep_data_flags*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++void *trace_seq_init*(struct trace_seq pass:[*]_s_);
++void *trace_seq_destroy*(struct trace_seq pass:[*]_s_);
++void *trace_seq_reset*(struct trace_seq pass:[*]_s_);
++void *trace_seq_terminate*(struct trace_seq pass:[*]_s_);
++int *trace_seq_putc*(struct trace_seq pass:[*]_s_, unsigned char _c_);
++int *trace_seq_puts*(struct trace_seq pass:[*]_s_, const char pass:[*]_str_);
++int *trace_seq_printf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, _..._);
++int *trace_seq_vprintf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, va_list _args_);
++int *trace_seq_do_printf*(struct trace_seq pass:[*]_s_);
++int *trace_seq_do_fprintf*(struct trace_seq pass:[*]_s_, FILE pass:[*]_fp_);
 +--
 +
 +DESCRIPTION
 +-----------
-+This set of functions can be used to extract common fields from a record.
++Trace sequences are used to allow a function to call several other functions
++to create a string of data to use.
 +
-+The _tep_data_type()_ function gets the event id from the record _rec_.
-+It reads the "common_type" field. The _tep_ argument is the trace event parser
-+context.
++The _trace_seq_init()_ function initializes the trace sequence _s_.
 +
-+The _tep_data_pid()_ function gets the process id from the record _rec_.
-+It reads the "common_pid" field. The _tep_ argument is the trace event parser
-+context.
++The _trace_seq_destroy()_ function destroys the trace sequence _s_ and frees
++all its resources that it had used.
 +
-+The _tep_data_preempt_count()_ function gets the preemption count from the
-+record _rec_. It reads the "common_preempt_count" field. The _tep_ argument is
-+the trace event parser context.
++The _trace_seq_reset()_ function re-initializes the trace sequence _s_. All
++characters already written in _s_ will be deleted.
 +
-+The _tep_data_flags()_ function gets the latency flags from the record _rec_.
-+It reads the "common_flags" field. The _tep_ argument is the trace event parser
-+context. Supported latency flags are:
-+[verse]
-+--
-+	_TRACE_FLAG_IRQS_OFF_,		Interrupts are disabled.
-+	_TRACE_FLAG_IRQS_NOSUPPORT_,	Reading IRQ flag is not supported by the architecture.
-+	_TRACE_FLAG_NEED_RESCHED_,	Task needs rescheduling.
-+	_TRACE_FLAG_HARDIRQ_,		Hard IRQ is running.
-+	_TRACE_FLAG_SOFTIRQ_,		Soft IRQ is running.
-+--
++The _trace_seq_terminate()_ function terminates the trace sequence _s_. It puts
++the null character pass:['\0'] at the end of the buffer.
++
++The _trace_seq_putc()_ function puts a single character _c_ in the trace
++sequence _s_.
++
++The _trace_seq_puts()_ function puts a NULL terminated string _str_ in the
++trace sequence _s_.
++
++The _trace_seq_printf()_ function puts a formated string _fmt _with
++variable arguments _..._ in the trace sequence _s_.
++
++The _trace_seq_vprintf()_ function puts a formated string _fmt _with
++list of arguments _args_ in the trace sequence _s_.
++
++The _trace_seq_do_printf()_ function prints the buffer of trace sequence _s_ to
++the standard output stdout.
++
++The _trace_seq_do_fprintf()_ function prints the buffer of trace sequence _s_
++to the given file _fp_.
 +
 +RETURN VALUE
 +------------
-+The _tep_data_type()_ function returns an integer, representing the event id.
++Both _trace_seq_putc()_ and _trace_seq_puts()_ functions return the number of
++characters put in the trace sequence, or 0 in case of an error
 +
-+The _tep_data_pid()_ function returns an integer, representing the process id
++Both _trace_seq_printf()_ and _trace_seq_vprintf()_ functions return 0 if the
++trace oversizes the buffer's free space, the number of characters printed, or
++a negative value in case of an error.
 +
-+The _tep_data_preempt_count()_ function returns an integer, representing the
-+preemption count.
-+
-+The _tep_data_flags()_ function returns an integer, representing the latency
-+flags. Look at the _trace_flag_type_ enum for supported flags.
-+
-+All these functions in case of an error return a negative integer.
++Both _trace_seq_do_printf()_ and _trace_seq_do_fprintf()_ functions return the
++number of printed characters, or -1 in case of an error.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
++#include <trace-seq.h>
 +...
-+struct tep_handle *tep = tep_alloc();
++struct trace_seq seq;
++trace_seq_init(&seq);
 +...
-+void process_record(struct tep_record *record)
++void foo_seq_print(struct trace_seq *tseq, char *format, ...)
 +{
-+	int data;
-+
-+	data = tep_data_type(tep, record);
-+	if (data >= 0) {
-+		/* Got the ID of the event */
++	va_list ap;
++	va_start(ap, format);
++	if (trace_seq_vprintf(tseq, format, ap) <= 0) {
++		/* Failed to print in the trace sequence */
 +	}
-+
-+	data = tep_data_pid(tep, record);
-+	if (data >= 0) {
-+		/* Got the process ID */
-+	}
-+
-+	data = tep_data_preempt_count(tep, record);
-+	if (data >= 0) {
-+		/* Got the preemption count */
-+	}
-+
-+	data = tep_data_flags(tep, record);
-+	if (data >= 0) {
-+		/* Got the latency flags */
-+	}
++	va_end(ap);
 +}
++
++trace_seq_reset(&seq);
++
++char *str = " MAN page example";
++if (trace_seq_puts(&seq, str) != strlen(str)) {
++	/* Failed to put str in the trace sequence */
++}
++if (trace_seq_putc(&seq, ':') != 1) {
++	/* Failed to put ':' in the trace sequence */
++}
++if (trace_seq_printf(&seq, " trace sequence: %d", 1) <= 0) {
++	/* Failed to print in the trace sequence */
++}
++foo_seq_print( &seq, "  %d\n", 2);
++
++trace_seq_terminate(&seq);
++...
++
++if (trace_seq_do_printf(&seq) < 0 ) {
++	/* Failed to print the sequence buffer to the standard output */
++}
++FILE *fp = fopen("trace.txt", "w");
++if (trace_seq_do_fprintf(&seq, fp) < 0 ) [
++	/* Failed to print the sequence buffer to the trace.txt file */
++}
++
++trace_seq_destroy(&seq);
 +...
 +--
 +
@@ -206,6 +230,8 @@ index 000000000000..e9a69116c78b
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
++*trace-seq.h*
++	Header file to include in order to have access to trace sequences related APIs.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
