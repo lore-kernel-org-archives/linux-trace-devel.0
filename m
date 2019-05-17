@@ -5,41 +5,41 @@ X-Spam-Level:
 X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EA1FC04E84
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8410AC04AB4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2EB592166E
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 48ADC21734
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:42:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1558121987;
-	bh=LhFOXG0WISx3V40lhHAcu5eNTbn4/Io60kUmHo1ThfM=;
+	s=default; t=1558122121;
+	bh=TjXczYsx7Imb1FMxGy9SKVPwqPh+KtnQZhhwOKLiMNw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=u/g9VKZHCIlwA+euDMCOwCNswrc9n9RaGJaEenXPiBbggXATBN7gvtH9E1vJDnnzp
-	 SiRDE16MdO6Fp/88ll7XAvLbesgnzhgu+P2LJNNnJLGnro/D5O38n9w5V0q/CWYeF2
-	 9jyOqF9tpztzuLvQIDqLUccdQzk8BGpqU8O/4540=
+	b=Hty7BrANfI1QEya7BR44tZCfp0IFMxYwqZIJ5BqLZ0iHVJOLmoCMdj/jtrctK9YJP
+	 ZgZ7MrvCVee2iJL0kpf/YH9zE85TsST1iejd2KPSb4QFOUQ7Du5pIOTw+2K1JEhgyH
+	 FT9YMfOOPdHske+nsdfAF52gMQ2ReTuTgk4De9b0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727467AbfEQTjq (ORCPT
+        id S1729521AbfEQTj3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 17 May 2019 15:39:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56106 "EHLO mail.kernel.org"
+        Fri, 17 May 2019 15:39:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729566AbfEQTjp (ORCPT
+        id S1729499AbfEQTj2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 May 2019 15:39:45 -0400
+        Fri, 17 May 2019 15:39:28 -0400
 Received: from quaco.ghostprotocols.net (unknown [190.15.121.82])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A39C821734;
-        Fri, 17 May 2019 19:39:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 855062087B;
+        Fri, 17 May 2019 19:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558121984;
-        bh=LhFOXG0WISx3V40lhHAcu5eNTbn4/Io60kUmHo1ThfM=;
+        s=default; t=1558121966;
+        bh=TjXczYsx7Imb1FMxGy9SKVPwqPh+KtnQZhhwOKLiMNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wdETtJHxgLB6vhxfrHMeK/ZT+29EC1fKB/U09j7NkeSBDEGh092GxZ16R6sW00ckW
-         IsZzAl9IABZbRxqog82PAqKHi7s6Mrl/hV7wR4+RdOXcb0DUPZFmw8xZoNSwYZ3sAU
-         doZViF0qc9gXe12cj+6Y/ljw7WOpE10foNaTXfyQ=
+        b=H2ov47NaEm5URQ2YoNJghrGIF0ESQmlG6xGLSMVL5W+DL0+jibe4qeq4qnGIkJaOn
+         fvhVIJw++tSvTzrd8iigsiNF3wu1T3j8rDV6tPLLukVnIw/hxMEfV1MgkPy1pCdSGN
+         CgIg17vWfNAzxRLnc3iAgMvnnRteTgOmgpf0bBsE=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -52,9 +52,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 46/73] tools lib traceevent: Man pages for trace sequences APIs
-Date:   Fri, 17 May 2019 16:35:44 -0300
-Message-Id: <20190517193611.4974-47-acme@kernel.org>
+Subject: [PATCH 42/73] tools lib traceevent: Man pages for event filter APIs
+Date:   Fri, 17 May 2019 16:35:40 -0300
+Message-Id: <20190517193611.4974-43-acme@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190517193611.4974-1-acme@kernel.org>
 References: <20190517193611.4974-1-acme@kernel.org>
@@ -67,160 +67,214 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Create man pages for trace sequences libtraceevent APIs:
+Added new man pages, describing libtraceevent event filter APIs:
 
-  trace_seq_init(),
-  trace_seq_destroy(),
-  trace_seq_reset(),
-  trace_seq_terminate(),
-  trace_seq_putc(),
-  trace_seq_puts(),
-  trace_seq_printf(),
-  trace_seq_vprintf(),
-  trace_seq_do_fprintf(),
-  trace_seq_do_printf()
+  tep_filter_alloc()
+  tep_filter_free()
+  tep_filter_reset()
+  tep_filter_add_filter_str()
+  tep_filter_strerror()
+  tep_event_filtered()
+  tep_filter_remove_event()
+  tep_filter_match()
+  tep_filter_copy()
+  tep_filter_compare()
+  tep_filter_make_string()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-27-tstoyanov@vmware.com
-Link: http://lkml.kernel.org/r/20190510200110.462646052@goodmis.org
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-23-tstoyanov@vmware.com
+Link: http://lkml.kernel.org/r/20190510200109.638838141@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- .../Documentation/libtraceevent-tseq.txt      | 158 ++++++++++++++++++
- 1 file changed, 158 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
+ .../Documentation/libtraceevent-filter.txt    | 209 ++++++++++++++++++
+ 1 file changed, 209 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-filter.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt b/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-filter.txt b/tools/lib/traceevent/Documentation/libtraceevent-filter.txt
 new file mode 100644
-index 000000000000..8ac6aa174e12
+index 000000000000..4a9962d8cb59
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-tseq.txt
-@@ -0,0 +1,158 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-filter.txt
+@@ -0,0 +1,209 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+trace_seq_init, trace_seq_destroy, trace_seq_reset, trace_seq_terminate,
-+trace_seq_putc, trace_seq_puts, trace_seq_printf, trace_seq_vprintf,
-+trace_seq_do_fprintf, trace_seq_do_printf -
-+Initialize / destroy a trace sequence.
++tep_filter_alloc, tep_filter_free, tep_filter_reset, tep_filter_make_string,
++tep_filter_copy, tep_filter_compare, tep_filter_match, tep_event_filtered,
++tep_filter_remove_event, tep_filter_strerror, tep_filter_add_filter_str -
++Event filter related APIs.
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <event-parse.h>*
-+*#include <trace-seq.h>*
 +
-+void *trace_seq_init*(struct trace_seq pass:[*]_s_);
-+void *trace_seq_destroy*(struct trace_seq pass:[*]_s_);
-+void *trace_seq_reset*(struct trace_seq pass:[*]_s_);
-+void *trace_seq_terminate*(struct trace_seq pass:[*]_s_);
-+int *trace_seq_putc*(struct trace_seq pass:[*]_s_, unsigned char _c_);
-+int *trace_seq_puts*(struct trace_seq pass:[*]_s_, const char pass:[*]_str_);
-+int *trace_seq_printf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, _..._);
-+int *trace_seq_vprintf*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, va_list _args_);
-+int *trace_seq_do_printf*(struct trace_seq pass:[*]_s_);
-+int *trace_seq_do_fprintf*(struct trace_seq pass:[*]_s_, FILE pass:[*]_fp_);
++struct tep_event_filter pass:[*]*tep_filter_alloc*(struct tep_handle pass:[*]_tep_);
++void *tep_filter_free*(struct tep_event_filter pass:[*]_filter_);
++void *tep_filter_reset*(struct tep_event_filter pass:[*]_filter_);
++enum tep_errno *tep_filter_add_filter_str*(struct tep_event_filter pass:[*]_filter_, const char pass:[*]_filter_str_);
++int *tep_event_filtered*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
++int *tep_filter_remove_event*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
++enum tep_errno *tep_filter_match*(struct tep_event_filter pass:[*]_filter_, struct tep_record pass:[*]_record_);
++int *tep_filter_copy*(struct tep_event_filter pass:[*]_dest_, struct tep_event_filter pass:[*]_source_);
++int *tep_filter_compare*(struct tep_event_filter pass:[*]_filter1_, struct tep_event_filter pass:[*]_filter2_);
++char pass:[*]*tep_filter_make_string*(struct tep_event_filter pass:[*]_filter_, int _event_id_);
++int *tep_filter_strerror*(struct tep_event_filter pass:[*]_filter_, enum tep_errno _err_, char pass:[*]buf, size_t _buflen_);
 +--
 +
 +DESCRIPTION
 +-----------
-+Trace sequences are used to allow a function to call several other functions
-+to create a string of data to use.
++Filters can be attached to traced events. They can be used to filter out various
++events when outputting them. Each event can be filtered based on its parameters,
++described in the event's format file. This set of functions can be used to
++create, delete, modify and attach event filters.
 +
-+The _trace_seq_init()_ function initializes the trace sequence _s_.
++The _tep_filter_alloc()_ function creates a new event filter. The _tep_ argument
++is the trace event parser context.
 +
-+The _trace_seq_destroy()_ function destroys the trace sequence _s_ and frees
-+all its resources that it had used.
++The _tep_filter_free()_ function frees an event filter and all resources that it
++had used.
 +
-+The _trace_seq_reset()_ function re-initializes the trace sequence _s_. All
-+characters already written in _s_ will be deleted.
++The _tep_filter_reset()_ function removes all rules from an event filter and
++resets it.
 +
-+The _trace_seq_terminate()_ function terminates the trace sequence _s_. It puts
-+the null character pass:['\0'] at the end of the buffer.
++The _tep_filter_add_filter_str()_ function adds a new rule to the _filter_. The
++_filter_str_ argument is the filter string, that contains the rule.
 +
-+The _trace_seq_putc()_ function puts a single character _c_ in the trace
-+sequence _s_.
++The _tep_event_filtered()_ function checks if the event with _event_id_ has
++_filter_.
 +
-+The _trace_seq_puts()_ function puts a NULL terminated string _str_ in the
-+trace sequence _s_.
++The _tep_filter_remove_event()_ function removes a _filter_ for an event with
++_event_id_.
 +
-+The _trace_seq_printf()_ function puts a formated string _fmt _with
-+variable arguments _..._ in the trace sequence _s_.
++The _tep_filter_match()_ function tests if a _record_ matches given _filter_.
 +
-+The _trace_seq_vprintf()_ function puts a formated string _fmt _with
-+list of arguments _args_ in the trace sequence _s_.
++The _tep_filter_copy()_ function copies a _source_ filter into a _dest_ filter.
 +
-+The _trace_seq_do_printf()_ function prints the buffer of trace sequence _s_ to
-+the standard output stdout.
++The _tep_filter_compare()_ function compares two filers - _filter1_ and _filter2_.
 +
-+The _trace_seq_do_fprintf()_ function prints the buffer of trace sequence _s_
-+to the given file _fp_.
++The _tep_filter_make_string()_ function constructs a string, displaying
++the _filter_ contents for given _event_id_.
++
++The _tep_filter_strerror()_ function copies the _filter_ error buffer into the
++given _buf_ with the size _buflen_. If the error buffer is empty, in the _buf_
++is copied a string, describing the error _err_.
 +
 +RETURN VALUE
 +------------
-+Both _trace_seq_putc()_ and _trace_seq_puts()_ functions return the number of
-+characters put in the trace sequence, or 0 in case of an error
++The _tep_filter_alloc()_ function returns a pointer to the newly created event
++filter, or NULL in case of an error.
 +
-+Both _trace_seq_printf()_ and _trace_seq_vprintf()_ functions return 0 if the
-+trace oversizes the buffer's free space, the number of characters printed, or
-+a negative value in case of an error.
++The _tep_filter_add_filter_str()_ function returns 0 if the rule was
++successfully added or a negative error code.  Use _tep_filter_strerror()_ to see
++actual error message in case of an error.
 +
-+Both _trace_seq_do_printf()_ and _trace_seq_do_fprintf()_ functions return the
-+number of printed characters, or -1 in case of an error.
++The _tep_event_filtered()_ function returns 1 if the filter is found for given
++event, or 0 otherwise.
++
++The _tep_filter_remove_event()_ function returns 1 if the vent was removed, or
++0 if the event was not found.
++
++The _tep_filter_match()_ function returns _tep_errno_, according to the result:
++[verse]
++--
++_pass:[TEP_ERRNO__FILTER_MATCH]_	- filter found for event, the record matches.
++_pass:[TEP_ERRNO__FILTER_MISS]_		- filter found for event, the record does not match.
++_pass:[TEP_ERRNO__FILTER_NOT_FOUND]_	- no filter found for record's event.
++_pass:[TEP_ERRNO__NO_FILTER]_		- no rules in the filter.
++--
++or any other _tep_errno_, if an error occurred during the test.
++
++The _tep_filter_copy()_ function returns 0 on success or -1 if not all rules
++ were copied.
++
++The _tep_filter_compare()_ function returns 1 if the two filters hold the same
++content, or 0 if they do not.
++
++The _tep_filter_make_string()_ function returns a string, which must be freed
++with free(), or NULL in case of an error.
++
++The _tep_filter_strerror()_ function returns 0 if message was filled
++successfully, or -1 in case of an error.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
-+#include <trace-seq.h>
 +...
-+struct trace_seq seq;
-+trace_seq_init(&seq);
++struct tep_handle *tep = tep_alloc();
 +...
-+void foo_seq_print(struct trace_seq *tseq, char *format, ...)
++char errstr[200];
++int ret;
++
++struct tep_event_filter *filter = tep_filter_alloc(tep);
++struct tep_event_filter *filter1 = tep_filter_alloc(tep);
++ret = tep_filter_add_filter_str(filter, "sched/sched_wakeup:target_cpu==1");
++if(ret < 0) {
++	tep_filter_strerror(filter, ret, errstr, sizeof(errstr));
++	/* Failed to add a new rule to the filter, the error string is in errstr */
++}
++if (tep_filter_copy(filter1, filter) != 0) {
++	/* Failed to copy filter in filter1 */
++}
++...
++if (tep_filter_compare(filter, filter1) != 1) {
++	/* Both filters are different */
++}
++...
++void process_record(struct tep_handle *tep, struct tep_record *record)
 +{
-+	va_list ap;
-+	va_start(ap, format);
-+	if (trace_seq_vprintf(tseq, format, ap) <= 0) {
-+		/* Failed to print in the trace sequence */
++	struct tep_event *event;
++	char *fstring;
++
++	event = tep_find_event_by_record(tep, record);
++
++	if (tep_event_filtered(filter, event->id) == 1) {
++		/* The event has filter */
++		fstring = tep_filter_make_string(filter, event->id);
++		if (fstring != NULL) {
++			/* The filter for the event is in fstring */
++			free(fstring);
++		}
 +	}
-+	va_end(ap);
++
++	switch (tep_filter_match(filter, record)) {
++	case TEP_ERRNO__FILTER_MATCH:
++		/* The filter matches the record */
++		break;
++	case TEP_ERRNO__FILTER_MISS:
++		/* The filter does not match the record */
++		break;
++	case TEP_ERRNO__FILTER_NOT_FOUND:
++		/* No filter found for record's event */
++		break;
++	case TEP_ERRNO__NO_FILTER:
++		/* There are no rules in the filter */
++		break
++	default:
++		/* An error occurred during the test */
++		break;
++	}
++
++	if (tep_filter_remove_event(filter, event->id) == 1) {
++		/* The event was removed from the filter */
++	}
 +}
 +
-+trace_seq_reset(&seq);
-+
-+char *str = " MAN page example";
-+if (trace_seq_puts(&seq, str) != strlen(str)) {
-+	/* Failed to put str in the trace sequence */
-+}
-+if (trace_seq_putc(&seq, ':') != 1) {
-+	/* Failed to put ':' in the trace sequence */
-+}
-+if (trace_seq_printf(&seq, " trace sequence: %d", 1) <= 0) {
-+	/* Failed to print in the trace sequence */
-+}
-+foo_seq_print( &seq, "  %d\n", 2);
-+
-+trace_seq_terminate(&seq);
 +...
-+
-+if (trace_seq_do_printf(&seq) < 0 ) {
-+	/* Failed to print the sequence buffer to the standard output */
-+}
-+FILE *fp = fopen("trace.txt", "w");
-+if (trace_seq_do_fprintf(&seq, fp) < 0 ) [
-+	/* Failed to print the sequence buffer to the trace.txt file */
-+}
-+
-+trace_seq_destroy(&seq);
++tep_filter_reset(filter);
++...
++tep_filter_free(filter);
++tep_filter_free(filter1);
 +...
 +--
 +
@@ -230,8 +284,6 @@ index 000000000000..8ac6aa174e12
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
-+*trace-seq.h*
-+	Header file to include in order to have access to trace sequences related APIs.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
