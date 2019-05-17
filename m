@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7901FC04E87
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65EB0C04AB4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4AC6221743
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3775E217D9
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1558121969;
-	bh=zOOOzvFj4VvqACHZm2sdySpg6LWDWMIQqOD5g98Q8/g=;
+	s=default; t=1558121981;
+	bh=AOPLlfTF5bFrJs/B1xmT1jKuM+zLXIf7IqkNNlNJg5U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=rnjQgMlwzNBEwC90Ewg0/8MJqIa8mMZj9zUO6sP4iGlZR3RG+2hQ0R3vegtiTblo/
-	 rTQMOLSV7zW2Nk/Y+AwHs/tCMCVDKuFmp2AVgZsFKSe9VrVqXb8tdZs1o2Ca85iuZP
-	 1C9fSBWYTk6chWJMtXqzqqRU7+wFWnXbOgLyy+50=
+	b=xTbKi4FWStqE+G2Xxc4ta2i3nBt5BdKLQpTG1EdcRpvrhYz4YS8YwXMxOuMLSydrY
+	 73LpKYYmZZD6l/5ntn/gahHykuHwsj88GtkYlMHE+8nIxfP0BfVpenB3qZ6Ad/UHt3
+	 iQL+HYy6pM+fm47gaNz+I8UOhG3hMTNGip1idOpk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729362AbfEQTjO (ORCPT
+        id S1729848AbfEQTjg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 17 May 2019 15:39:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55418 "EHLO mail.kernel.org"
+        Fri, 17 May 2019 15:39:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729803AbfEQTjO (ORCPT
+        id S1729566AbfEQTjg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 May 2019 15:39:14 -0400
+        Fri, 17 May 2019 15:39:36 -0400
 Received: from quaco.ghostprotocols.net (unknown [190.15.121.82])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B37F621726;
-        Fri, 17 May 2019 19:39:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47C6221744;
+        Fri, 17 May 2019 19:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558121952;
-        bh=zOOOzvFj4VvqACHZm2sdySpg6LWDWMIQqOD5g98Q8/g=;
+        s=default; t=1558121975;
+        bh=AOPLlfTF5bFrJs/B1xmT1jKuM+zLXIf7IqkNNlNJg5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I8qbHPmcLvZM1snaLQ8/PLlDaHjCTsje7BUp7tZekdrr+s+hvCav404ojHGTWZD4H
-         8rCaM2/3Mb74UBJVEYsILK2a3QSn56S/zFrYDGuk4vO0HYYDWPY3Zjec2eKbC1Q2SM
-         IPyVNh9EDaZJLgc/mJpOcY2VltFop723UWWr4g80=
+        b=AQVpjBZqPaO866hvWATS3r4bVLbi46l3P5oX9QplJosTPjcCqkCrAmhnepORvcbMs
+         reMyAW8lni/4L3cDkird7kOGtwOfVLISwufdGYIq+iHwBDWT+w2NTQE+V2/EbOJ0G9
+         6qljHZ2fFgBnsi4sB1ewUwylDXNdTCpX/xyjKXBA=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -52,9 +52,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 39/73] tools lib traceevent: Man pages for print field APIs
-Date:   Fri, 17 May 2019 16:35:37 -0300
-Message-Id: <20190517193611.4974-40-acme@kernel.org>
+Subject: [PATCH 44/73] tools lib traceevent: Man page for tep_parse_header_page()
+Date:   Fri, 17 May 2019 16:35:42 -0300
+Message-Id: <20190517193611.4974-45-acme@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190517193611.4974-1-acme@kernel.org>
 References: <20190517193611.4974-1-acme@kernel.org>
@@ -67,121 +67,76 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Create man pages for libtraceevent APIs:
-
-  tep_print_field(),
-  tep_print_fields(),
-  tep_print_num_field(),
-  tep_print_func_field()
+Create man page for tep_parse_header_page() libtraceevent API.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-20-tstoyanov@vmware.com
-Link: http://lkml.kernel.org/r/20190510200109.054708419@goodmis.org
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-25-tstoyanov@vmware.com
+Link: http://lkml.kernel.org/r/20190510200110.093108279@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- .../libtraceevent-field_print.txt             | 126 ++++++++++++++++++
- 1 file changed, 126 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-field_print.txt
+ .../libtraceevent-parse_head.txt              | 82 +++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-field_print.txt b/tools/lib/traceevent/Documentation/libtraceevent-field_print.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
 new file mode 100644
-index 000000000000..9a9df98ac44d
+index 000000000000..c90f16c7d8e6
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-field_print.txt
-@@ -0,0 +1,126 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_head.txt
+@@ -0,0 +1,82 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_print_field, tep_print_fields, tep_print_num_field, tep_print_func_field -
-+Print the field content.
++tep_parse_header_page - Parses the data stored in the header page.
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <event-parse.h>*
-+*#include <trace-seq.h>*
 +
-+void *tep_print_field*(struct trace_seq pass:[*]_s_, void pass:[*]_data_, struct tep_format_field pass:[*]_field_);
-+void *tep_print_fields*(struct trace_seq pass:[*]_s_, void pass:[*]_data_, int _size_, struct tep_event pass:[*]_event_);
-+int *tep_print_num_field*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int _err_);
-+int *tep_print_func_field*(struct trace_seq pass:[*]_s_, const char pass:[*]_fmt_, struct tep_event pass:[*]_event_, const char pass:[*]_name_, struct tep_record pass:[*]_record_, int _err_);
++int *tep_parse_header_page*(struct tep_handle pass:[*]_tep_, char pass:[*]_buf_, unsigned long _size_, int _long_size_);
 +--
 +
 +DESCRIPTION
 +-----------
-+These functions print recorded field's data, according to the field's type.
++The _tep_parse_header_page()_ function parses the header page data from _buf_,
++and initializes the _tep_, trace event parser context, with it. The buffer
++_buf_ is with _size_, and is supposed to be copied from
++tracefs/events/header_page.
 +
-+The _tep_print_field()_ function extracts from the recorded raw _data_ value of
-+the _field_ and prints it into _s_, according to the field type.
-+
-+The _tep_print_fields()_ prints each field name followed by the record's field
-+value according to the field's type:
-+[verse]
-+--
-+"field1_name=field1_value field2_name=field2_value ..."
-+--
-+It iterates all fields of the _event_, and calls _tep_print_field()_ for each of
-+them.
-+
-+The _tep_print_num_field()_ function prints a numeric field with given format
-+string. A search is performed in the _event_ for a field with _name_. If such
-+field is found, its value is extracted from the _record_ and is printed in the
-+_s_, according to the given format string _fmt_. If the argument _err_ is
-+non-zero, and an error occures - it is printed in the _s_.
-+
-+The _tep_print_func_field()_ function prints a function field with given format
-+string.  A search is performed in the _event_ for a field with _name_. If such
-+field is found, its value is extracted from the _record_. The value is assumed
-+to be a function address, and a search is perform to find the name of this
-+function. The function name (if found) and its address are printed in the _s_,
-+according to the given format string _fmt_. If the argument _err_ is non-zero,
-+and an error occures - it is printed in _s_.
++Some old kernels do not have header page info, in this case the
++_tep_parse_header_page()_ function  can be called with _size_ equal to 0. The
++_tep_ context is initialized with default values. The _long_size_ can be used in
++this use case, to set the size of a long integer to be used.
 +
 +RETURN VALUE
 +------------
-+The _tep_print_num_field()_ and _tep_print_func_field()_ functions return 1
-+on success, -1 in case of an error or 0 if the print buffer _s_ is full.
++The _tep_parse_header_page()_ function returns 0 in case of success, or -1
++in case of an error.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <event-parse.h>
-+#include <trace-seq.h>
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+struct trace_seq seq;
-+trace_seq_init(&seq);
-+struct tep_event *event = tep_find_event_by_name(tep, "timer", "hrtimer_start");
++char *buf;
++int size;
++buf = read_file("/sys/kernel/tracing/events/header_page", &size);
++if (tep_parse_header_page(tep, buf, size, sizeof(unsigned long)) != 0) {
++	/* Failed to parse the header page */
++}
 +...
-+void process_record(struct tep_record *record)
-+{
-+	struct tep_format_field *field_pid = tep_find_common_field(event, "common_pid");
-+
-+	trace_seq_reset(&seq);
-+
-+	/* Print the value of "common_pid" */
-+	tep_print_field(&seq, record->data, field_pid);
-+
-+	/* Print all fields of the "hrtimer_start" event */
-+	tep_print_fields(&seq, record->data, record->size, event);
-+
-+	/* Print the value of "expires" field with custom format string */
-+	tep_print_num_field(&seq, " timer expires in %llu ", event, "expires", record, 0);
-+
-+	/* Print the address and the name of "function" field with custom format string */
-+	tep_print_func_field(&seq, " timer function is %s ", event, "function", record, 0);
-+ }
-+ ...
 +--
 +
 +FILES
@@ -190,10 +145,6 @@ index 000000000000..9a9df98ac44d
 +--
 +*event-parse.h*
 +	Header file to include in order to have access to the library APIs.
-+*trace-seq.h*
-+	Header file to include in order to have access to trace sequences related APIs.
-+	Trace sequences are used to allow a function to call several other functions
-+	to create a string of data to use.
 +*-ltraceevent*
 +	Linker switch to add when building a program that uses the library.
 +--
