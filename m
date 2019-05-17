@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08810C04AB4
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30EEAC04E87
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CB0592166E
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 032462173C
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 May 2019 19:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1558121986;
-	bh=GsBZGNpyNUtVNUIFeCF3uYkjQpjW58WSPKW4JHAwf1c=;
+	s=default; t=1558121987;
+	bh=Pki2Aaa++CF5Sm8Vvh+8o3szdBpJoA8iAy2VJYoAHjI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Ga3st+Bp4XfiSSvNdodrVnkc2vTpsaM7sn0ZYgyMb9JnbQ+15duxRHYwG9QXJynBO
-	 YFgDMRs0y0dUeAMsqdWDc8twWTZSeYuIfNKz7WgdJ+IfmNx7RbcSuQAeW6WF7a1K5/
-	 /DFVHTbATqVNLuH6f7D6cxBHxXUSeVvq33h7FEeY=
+	b=eaNN6YpElYpUlQbI0aKfVq6fmb+LgTehZ+gNfZLCCx4PqwSZwwyZKSPv/3rB8lTTI
+	 1C0pK61sSnZq88yZJyliW8yWwZRcBILp4nt7n+2SIt2CbMWyPhBWbH/AguVLehVpX5
+	 oYfhsniQ3bwsyrfKnptJyRB++vfAebaqcckYLCF0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729539AbfEQTjd (ORCPT
+        id S1729584AbfEQTjl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 17 May 2019 15:39:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
+        Fri, 17 May 2019 15:39:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729499AbfEQTjc (ORCPT
+        id S1729566AbfEQTjl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 May 2019 15:39:32 -0400
+        Fri, 17 May 2019 15:39:41 -0400
 Received: from quaco.ghostprotocols.net (unknown [190.15.121.82])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 138DD2166E;
-        Fri, 17 May 2019 19:39:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 880D821726;
+        Fri, 17 May 2019 19:39:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558121970;
-        bh=GsBZGNpyNUtVNUIFeCF3uYkjQpjW58WSPKW4JHAwf1c=;
+        s=default; t=1558121979;
+        bh=Pki2Aaa++CF5Sm8Vvh+8o3szdBpJoA8iAy2VJYoAHjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xFZvZdYg8yWvFmPI7PatSmfuZ6CmoohC+8kKf98NKcD7+U9rTup5mgqmSmPNPoWdk
-         uDEhOfWSB3F9h4eHQiDANweCB5tDvANnPX7dGovwuKXfmb8+ZCtOTtuBQbUduKSy5u
-         9dwQeeh4s35dgJmS0FtDfTnevHovkuzCMihBFE7E=
+        b=sn6BdZkMQpL5nxAiXLb0Jq4Yp9YZhT2DUBGKsCdP9qDSDRMp5IquOnRsA4YReh2YL
+         54EgBJ6nq/K3QtwWfzg0KmREj7mCCEcmOuS+Ew+IGHqfyZ0C97GU2Z24BS2W6ljeHJ
+         eFJRlfPhlJzYzVGkUOXN2O3Xd25jw3lOyfWnCDos=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -52,9 +52,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 43/73] tools lib traceevent: Man pages for parse event APIs
-Date:   Fri, 17 May 2019 16:35:41 -0300
-Message-Id: <20190517193611.4974-44-acme@kernel.org>
+Subject: [PATCH 45/73] tools lib traceevent: Man pages for APIs used to extract common fields from a record
+Date:   Fri, 17 May 2019 16:35:43 -0300
+Message-Id: <20190517193611.4974-46-acme@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190517193611.4974-1-acme@kernel.org>
 References: <20190517193611.4974-1-acme@kernel.org>
@@ -69,35 +69,39 @@ From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
 Create man pages for libtraceevent APIs:
 
-  tep_parse_event(),
-  tep_parse_format()
+ tep_data_type(),
+ tep_data_pid(),
+ tep_data_preempt_count(),
+ tep_data_flags()
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: linux-trace-devel@vger.kernel.org
-Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-24-tstoyanov@vmware.com
-Link: http://lkml.kernel.org/r/20190510200109.847820380@goodmis.org
+Link: http://lore.kernel.org/linux-trace-devel/20190503091119.23399-26-tstoyanov@vmware.com
+Link: http://lkml.kernel.org/r/20190510200110.284281830@goodmis.org
+[ Fixed missing T in description of NOSUPPORT flag ]
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- .../libtraceevent-parse_event.txt             | 90 +++++++++++++++++++
- 1 file changed, 90 insertions(+)
- create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
+ .../libtraceevent-record_parse.txt            | 137 ++++++++++++++++++
+ 1 file changed, 137 insertions(+)
+ create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
 new file mode 100644
-index 000000000000..f248114ca1ff
+index 000000000000..e9a69116c78b
 --- /dev/null
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-parse_event.txt
-@@ -0,0 +1,90 @@
++++ b/tools/lib/traceevent/Documentation/libtraceevent-record_parse.txt
+@@ -0,0 +1,137 @@
 +libtraceevent(3)
 +================
 +
 +NAME
 +----
-+tep_parse_event, tep_parse_format - Parse the event format information
++tep_data_type, tep_data_pid,tep_data_preempt_count, tep_data_flags -
++Extract common fields from a record.
 +
 +SYNOPSIS
 +--------
@@ -105,28 +109,61 @@ index 000000000000..f248114ca1ff
 +--
 +*#include <event-parse.h>*
 +
-+enum tep_errno *tep_parse_event*(struct tep_handle pass:[*]_tep_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
-+enum tep_errno *tep_parse_format*(struct tep_handle pass:[*]_tep_, struct tep_event pass:[*]pass:[*]_eventp_, const char pass:[*]_buf_, unsigned long _size_, const char pass:[*]_sys_);
++enum *trace_flag_type* {
++	_TRACE_FLAG_IRQS_OFF_,
++	_TRACE_FLAG_IRQS_NOSUPPORT_,
++	_TRACE_FLAG_NEED_RESCHED_,
++	_TRACE_FLAG_HARDIRQ_,
++	_TRACE_FLAG_SOFTIRQ_,
++};
++
++int *tep_data_type*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++int *tep_data_pid*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++int *tep_data_preempt_count*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
++int *tep_data_flags*(struct tep_handle pass:[*]_tep_, struct tep_record pass:[*]_rec_);
 +--
 +
 +DESCRIPTION
 +-----------
-+The _tep_parse_event()_ function parses the event format and creates an event
-+structure to quickly parse raw data for a given event. The _tep_ argument is
-+the trace event parser context. The created event structure is stored in the
-+_tep_ context. The _buf_ argument is a buffer with _size_, where the event
-+format data is. The event format data can be taken from
-+tracefs/events/.../.../format files. The _sys_ argument is the system of
-+the event.
++This set of functions can be used to extract common fields from a record.
 +
-+The _tep_parse_format()_ function does the same as _tep_parse_event()_. The only
-+difference is in the extra _eventp_ argument, where the newly created event
-+structure is returned.
++The _tep_data_type()_ function gets the event id from the record _rec_.
++It reads the "common_type" field. The _tep_ argument is the trace event parser
++context.
++
++The _tep_data_pid()_ function gets the process id from the record _rec_.
++It reads the "common_pid" field. The _tep_ argument is the trace event parser
++context.
++
++The _tep_data_preempt_count()_ function gets the preemption count from the
++record _rec_. It reads the "common_preempt_count" field. The _tep_ argument is
++the trace event parser context.
++
++The _tep_data_flags()_ function gets the latency flags from the record _rec_.
++It reads the "common_flags" field. The _tep_ argument is the trace event parser
++context. Supported latency flags are:
++[verse]
++--
++	_TRACE_FLAG_IRQS_OFF_,		Interrupts are disabled.
++	_TRACE_FLAG_IRQS_NOSUPPORT_,	Reading IRQ flag is not supported by the architecture.
++	_TRACE_FLAG_NEED_RESCHED_,	Task needs rescheduling.
++	_TRACE_FLAG_HARDIRQ_,		Hard IRQ is running.
++	_TRACE_FLAG_SOFTIRQ_,		Soft IRQ is running.
++--
 +
 +RETURN VALUE
 +------------
-+Both _tep_parse_event()_ and _tep_parse_format()_ functions return 0 on success,
-+or TEP_ERRNO__... in case of an error.
++The _tep_data_type()_ function returns an integer, representing the event id.
++
++The _tep_data_pid()_ function returns an integer, representing the process id
++
++The _tep_data_preempt_count()_ function returns an integer, representing the
++preemption count.
++
++The _tep_data_flags()_ function returns an integer, representing the latency
++flags. Look at the _trace_flag_type_ enum for supported flags.
++
++All these functions in case of an error return a negative integer.
 +
 +EXAMPLE
 +-------
@@ -136,16 +173,29 @@ index 000000000000..f248114ca1ff
 +...
 +struct tep_handle *tep = tep_alloc();
 +...
-+char *buf;
-+int size;
-+struct tep_event *event = NULL;
-+buf = read_file("/sys/kernel/tracing/events/ftrace/print/format", &size);
-+if (tep_parse_event(tep, buf, size, "ftrace") != 0) {
-+	/* Failed to parse the ftrace print format */
-+}
++void process_record(struct tep_record *record)
++{
++	int data;
 +
-+if (tep_parse_format(tep, &event, buf, size, "ftrace") != 0) {
-+	/* Failed to parse the ftrace print format */
++	data = tep_data_type(tep, record);
++	if (data >= 0) {
++		/* Got the ID of the event */
++	}
++
++	data = tep_data_pid(tep, record);
++	if (data >= 0) {
++		/* Got the process ID */
++	}
++
++	data = tep_data_preempt_count(tep, record);
++	if (data >= 0) {
++		/* Got the preemption count */
++	}
++
++	data = tep_data_flags(tep, record);
++	if (data >= 0) {
++		/* Got the latency flags */
++	}
 +}
 +...
 +--
