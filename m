@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBDF5C282DD
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 23 May 2019 15:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 738A2C282E1
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 23 May 2019 15:18:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CAD6320665
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 23 May 2019 15:18:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51A9D20665
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 23 May 2019 15:18:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731185AbfEWPSr (ORCPT
+        id S1730904AbfEWPSu (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 23 May 2019 11:18:47 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44450 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730741AbfEWPSq (ORCPT
+        Thu, 23 May 2019 11:18:50 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:37575 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731173AbfEWPSs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 23 May 2019 11:18:46 -0400
-Received: by mail-wr1-f68.google.com with SMTP id w13so6697617wru.11
-        for <linux-trace-devel@vger.kernel.org>; Thu, 23 May 2019 08:18:45 -0700 (PDT)
+        Thu, 23 May 2019 11:18:48 -0400
+Received: by mail-wr1-f66.google.com with SMTP id e15so6743904wrs.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 23 May 2019 08:18:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WjmaV1lSkCYDOvb3GEAecwv2rT46hwvlIAOUE8+KUcA=;
-        b=IPtZhvXdtMYpSKTohOvNc83wmLs0h9Ib4UZLEItR3+A8pD3Z/aqoxW5o3iQHqQUtFG
-         +6yw1IQxsj1pz/E9hzVhlZLXv4PEXwileO0JzwVq+v3IvSq2BmHOu3ZkAbk8QD66KdFy
-         WXIhGHmNrnb+dGM08n5M5eEblxyM+Hnn5BGWW2usmJ32KbWdfq1gQ17r4DpuXr8wg3wE
-         3NS/jZQiUjHYQ0eXi6xwFhWsiPjHfYxcxBBXhp7qCG5+CLvFighR1Ip+oldC7EAjlnmn
-         AQYoFIOikLnuaYSLvTG7RdkIL9xW+/NVW+60IGQblK9/vc+6mh5cyqswKNQHxNmQoZco
-         ZK5A==
-X-Gm-Message-State: APjAAAXYPBBpAuj3KT1trhj3V6TKik2FMbLf7jRLcRrIBiOY6QPycB/q
-        mGKvrHPUSBGwU557C9qLNxg=
-X-Google-Smtp-Source: APXvYqxVjmDhScNxGbIjm/yVO6pgegX5Hl5lY45AI2Bn3fPWaXVArUsyng7uVnCRMsUX+PeVT4dQlA==
-X-Received: by 2002:a5d:4b81:: with SMTP id b1mr34396913wrt.217.1558624725412;
-        Thu, 23 May 2019 08:18:45 -0700 (PDT)
+        bh=RlPSX2f46myCSZN6xZyY1xUFxQFevAdG7+SpzfBhUK0=;
+        b=Tf1OsfwUllZLaZuSmMXUm3BGg4hw+n0rW89pzFmxTwF4cO4SIRmdhT9bNZR1DYvMJ4
+         7jageiFFRepxxTfghsbX64ZCYXdxRqj2bU7o+wmtoLn04V0/k26VGykkT+XyGujNR4if
+         l8X/0sbL6vnAiX/ye8GKFp69fG+wiLGZWRwRt7uOx7XIhuiEJGbDEDHyuXONBwZh9rt7
+         tMncHcThlSRWTm/GU6GTXBGeF1A6aKcyyKpIxpVzRWdcUTjqn42RbyYo+4UglrIj3hpa
+         JP6rkHMGsbjNwp7/rnMVNFUv4kPGgULC1HBdolJWxRnyoDAMZ2UGAfc/YvhBSpRB3FuK
+         ORlg==
+X-Gm-Message-State: APjAAAVyzYKk49ib3tSDOfbmVRwGXh1PsSmvPXCqNviR38CbPimdDOZS
+        +3Rd4eYZSH+L1GCv6VbnnW0=
+X-Google-Smtp-Source: APXvYqx0nkJR+2h6iZQXInL3oldBxnvpuKll0l99jcIygyAc4fLKy/WkKGqXssC0kncijqDeanZadw==
+X-Received: by 2002:adf:f488:: with SMTP id l8mr23748287wro.287.1558624726740;
+        Thu, 23 May 2019 08:18:46 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x9sm12687071wmf.27.2019.05.23.08.18.44
+        by smtp.gmail.com with ESMTPSA id x9sm12687071wmf.27.2019.05.23.08.18.46
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 May 2019 08:18:45 -0700 (PDT)
+        Thu, 23 May 2019 08:18:46 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 3/5] kernel-shark: Use the shared versions of the trace-cmd libraries.
-Date:   Thu, 23 May 2019 18:18:10 +0300
-Message-Id: <20190523151812.31391-4-ykaradzhov@vmware.com>
+Subject: [PATCH 4/5] trace-cmd: Install public interface headers
+Date:   Thu, 23 May 2019 18:18:11 +0300
+Message-Id: <20190523151812.31391-5-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190523151812.31391-1-ykaradzhov@vmware.com>
 References: <20190523151812.31391-1-ykaradzhov@vmware.com>
@@ -59,62 +59,59 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-You may need to clean Cmake's cache after aplaying this patch:
-
-cd kernel-shark/build
-./cmake_clean.sh
-cmake ..
+Installing the header files included in the public interfaces of
+the trace-cmd libraries will make possible the libraries to be used
+for development.
 
 Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 ---
- kernel-shark/build/FindTraceCmd.cmake | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ Makefile | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
-diff --git a/kernel-shark/build/FindTraceCmd.cmake b/kernel-shark/build/FindTraceCmd.cmake
-index 21315e7..7ebf8da 100644
---- a/kernel-shark/build/FindTraceCmd.cmake
-+++ b/kernel-shark/build/FindTraceCmd.cmake
-@@ -24,12 +24,12 @@ find_path(TRACECMD_INCLUDE_DIR  NAMES  trace-cmd/trace-cmd.h
-                                        ${CMAKE_SOURCE_DIR}/../include/
-                                 NO_DEFAULT_PATH)
+diff --git a/Makefile b/Makefile
+index cde45f8..ac514b1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -49,10 +49,18 @@ html_install = $(prefix)/share/kernelshark/html
+ html_install_SQ = '$(subst ','\'',$(html_install))'
+ img_install = $(prefix)/share/kernelshark/html/images
+ img_install_SQ = '$(subst ','\'',$(img_install))'
+-libdir ?= $(prefix)/lib
+-libdir_SQ = '$(subst ','\'',$(libdir))'
+-includedir = $(prefix)/include/trace-cmd
+-includedir_SQ = '$(subst ','\'',$(includedir))'
++
++tcmd_libdir ?= $(prefix)/lib/trace-cmd
++tcmd_libdir_SQ = '$(subst ','\'',$(tcmd_libdir))'
++
++tevt_libdir ?= $(prefix)/lib/traceevent
++tevt_libdir_SQ = '$(subst ','\'',$(tevt_libdir))'
++
++tcmd_includedir = $(prefix)/include/trace-cmd
++tcmd_includedir_SQ = '$(subst ','\'',$(tcmd_includedir))'
++
++tevt_includedir = $(prefix)/include/traceevent
++tevt_includedir_SQ = '$(subst ','\'',$(tevt_includedir))'
  
--find_path(TRACECMD_LIBRARY_DIR  NAMES  trace-cmd/libtracecmd.a
-+find_path(TRACECMD_LIBRARY_DIR  NAMES  trace-cmd/libtracecmd.so
-                                 PATHS  $ENV{TRACE_CMD}/lib/
-                                        ${CMAKE_SOURCE_DIR}/../lib/
-                                 NO_DEFAULT_PATH)
+ export man_dir man_dir_SQ html_install html_install_SQ INSTALL
+ export img_install img_install_SQ
+@@ -335,10 +343,12 @@ install_gui: install_cmd gui
+ 	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build install
  
--find_path(TRACEEVENT_LIBRARY_DIR  NAMES  traceevent/libtraceevent.a
-+find_path(TRACEEVENT_LIBRARY_DIR  NAMES  traceevent/libtraceevent.so
-                                   PATHS  $ENV{TRACE_CMD}/lib/
-                                          ${CMAKE_SOURCE_DIR}/../lib/
-                                   NO_DEFAULT_PATH)
-@@ -38,13 +38,13 @@ find_path(TRACEEVENT_LIBRARY_DIR  NAMES  traceevent/libtraceevent.a
- # search was successful "find_path" will do nothing this time.
- find_path(TRACECMD_BIN_DIR      NAMES  trace-cmd)
- find_path(TRACECMD_INCLUDE_DIR  NAMES  trace-cmd/trace-cmd.h)
--find_library(TRACECMD_LIBRARY_DIR  NAMES  trace-cmd/libtracecmd.a)
--find_library(TRACEEVENT_LIBRARY_DIR  NAMES  traceevent/libtraceevent.a)
-+find_library(TRACECMD_LIBRARY_DIR  NAMES  trace-cmd/libtracecmd.so)
-+find_library(TRACEEVENT_LIBRARY_DIR  NAMES  traceevent/libtraceevent.so)
+ install_libs: libs
+-	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ))
+-	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ))
+-	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ))
+-	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ))
++	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(tcmd_libdir_SQ))
++	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(tevt_libdir_SQ))
++	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(tevt_includedir_SQ))
++	$(Q)$(call do_install,$(src)/include/traceevent/trace-seq.h,$(tevt_includedir_SQ))
++	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(tcmd_includedir_SQ))
++	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-filter-hash.h,$(tcmd_includedir_SQ))
  
- IF (TRACECMD_INCLUDE_DIR AND TRACECMD_LIBRARY_DIR)
- 
-   SET(TRACECMD_FOUND TRUE)
--  SET(TRACECMD_LIBRARY "${TRACECMD_LIBRARY_DIR}/trace-cmd/libtracecmd.a")
-+  SET(TRACECMD_LIBRARY "${TRACECMD_LIBRARY_DIR}/trace-cmd/libtracecmd.so")
- 
- ENDIF (TRACECMD_INCLUDE_DIR AND TRACECMD_LIBRARY_DIR)
- 
-@@ -61,7 +61,7 @@ ENDIF (TRACECMD_FOUND)
- IF (TRACEEVENT_LIBRARY_DIR)
- 
-   SET(TRACEEVENT_FOUND TRUE)
--  SET(TRACEEVENT_LIBRARY "${TRACEEVENT_LIBRARY_DIR}/traceevent/libtraceevent.a")
-+  SET(TRACEEVENT_LIBRARY "${TRACEEVENT_LIBRARY_DIR}/traceevent/libtraceevent.so")
- 
- ENDIF (TRACEEVENT_LIBRARY_DIR)
- 
+ doc:
+ 	$(MAKE) -C $(src)/Documentation all
 -- 
 2.20.1
 
