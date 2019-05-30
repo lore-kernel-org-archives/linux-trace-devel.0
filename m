@@ -2,56 +2,54 @@ Return-Path: <SRS0=Uv3S=T6=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41CFFC28CC0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 May 2019 13:15:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29FC5C28CC0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 May 2019 13:16:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 183022596C
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 May 2019 13:15:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F14982596C
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 May 2019 13:16:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbfE3NPG (ORCPT
+        id S1726118AbfE3NQW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 30 May 2019 09:15:06 -0400
-Received: from mail-pl1-f182.google.com ([209.85.214.182]:40362 "EHLO
-        mail-pl1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbfE3NPG (ORCPT
+        Thu, 30 May 2019 09:16:22 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:50363 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbfE3NQW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 30 May 2019 09:15:06 -0400
-Received: by mail-pl1-f182.google.com with SMTP id g69so2558812plb.7
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 May 2019 06:15:06 -0700 (PDT)
+        Thu, 30 May 2019 09:16:22 -0400
+Received: by mail-wm1-f68.google.com with SMTP id f204so3973947wme.0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 30 May 2019 06:16:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=F+T7GbWJRriRPe+v35HuXE1hEbCJIiZttFxZfcwJkuY=;
-        b=JmT+sXprnTV6rgnOW4IGppfKFZgFkwVzPvjBiHUOcaT9TAD/x15gp8Qcdr4/7j0mA1
-         kHT9P9DEIRXZeh9le1mohjh91inDdhCYIkPr99V/BhG0iED6Yq/hq0ZjFsMuvFho7G83
-         K5VaRrtzKNkrBZH7Fe5VRlHXXBjkWN43Bn4uW3gb2U3rmywrHf7Ke1hrNCAJAWmS6ehb
-         +zy7eRukFvhCTzZ7ziB/DByCBTTjAGFPZ9v9B3YMpJ/fA2PnkIfnjTR21PGF5R03jEUT
-         ++iXO6k938splMOND3bz3mDLOE3T2MzRh1Zwh6lUyLmdGlnmNCMwwq4TxGT6fx+smV/d
-         B3rA==
-X-Gm-Message-State: APjAAAUoU4RKm8KZqP+YiL6OK2alX1sH0CDJRini4MBIZi6zKxjUpCut
-        razGm3Sjs1nBh+AqQlR4YwI=
-X-Google-Smtp-Source: APXvYqx0lJay5J3FOA2RxzzTv+dcUGe76QV5xudHA56ZMxaZErz533bDIiAOeywJU+T1tXQdQ0PIZw==
-X-Received: by 2002:a17:902:2ae6:: with SMTP id j93mr3818831plb.130.1559222105901;
-        Thu, 30 May 2019 06:15:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D1sa3/F9PgJHm4reFPEIHcYQ1PQOLyug1RUAPXfV2qk=;
+        b=Pn5ib8gr+yEMLrVrg4CVaiQ4P8PYXx9PVzz7MCi2U6mOM3b9hzdZxrmhBIcycTOrPY
+         fujoIL2x/P18T4SZs8ntuPhCfDDfTKNJJgPY4QIQ/AUEpVqw8GYngMO89ZqBitrPMisi
+         ML162Uzx8vZyDCP1jX3PdffgAPVdNa3cX236qPPiZKAdLEdJm4gIWueIN0Gb3nRAdrOP
+         LHMTE9+Gm0ib7UCAEKm3JQ0EdRNmzLa/azue9hDAAtSh9skJ/uRCAR+u5mmrgnQ/DYYC
+         /ombfgWMXxNOmmB3ogYPG3o6LET2+fGa6aIO0vMttsL1LmBj7TAUpkDSXMVLpW2U3O6R
+         7/dg==
+X-Gm-Message-State: APjAAAVhkoAn1Jfn5H0Usku2A417rFJMIQroqMuCR65u0aL8MoxiNrkX
+        DE9XjLLkxiNLw7ejYGFa2Fg=
+X-Google-Smtp-Source: APXvYqzpileWMEcnoRFiQA/fqrdITILgKhzzpD8Thzr4UAihwZX/TokLRfU2dFty2cDgsVw9z5pDDQ==
+X-Received: by 2002:a1c:ab83:: with SMTP id u125mr2290752wme.131.1559222180889;
+        Thu, 30 May 2019 06:16:20 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id d19sm2419627pjs.22.2019.05.30.06.15.04
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 May 2019 06:15:05 -0700 (PDT)
+        by smtp.gmail.com with ESMTPSA id q15sm2334874wrr.19.2019.05.30.06.16.20
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 30 May 2019 06:16:20 -0700 (PDT)
 From:   Yordan Karadzhov <ykaradzhov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 2/2] kernel-shark: Use full paths for non-standard library headers
-Date:   Thu, 30 May 2019 16:13:30 +0300
-Message-Id: <20190530131330.21701-3-ykaradzhov@vmware.com>
+Subject: [PATCH 0/2] Modifications needed by the NumPy interface
+Date:   Thu, 30 May 2019 16:15:54 +0300
+Message-Id: <20190530131556.21832-1-ykaradzhov@vmware.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190530131330.21701-1-ykaradzhov@vmware.com>
-References: <20190530131330.21701-1-ykaradzhov@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -59,193 +57,20 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-All header files included in the public interfaces of the trace-cmd
-and KernelShark libraries have to use full path when including other
-non-standard library headers. This will be useful if someone wants to use
-those public interfaces from there installation location.
+The patch-set contains modifications of the build system (the "install"
+part in particular) needed in order to implement a standalone version
+of the NumPy data processing interface.
 
-You may need to clean Cmake's cache after aplaying this patch:
+Yordan Karadzhov (2):
+  trace-cmd: Install public interface headers
+  kernel-shark: Install public interface headers
 
-cd kernel-shark/build
-./cmake_clean.sh
-cmake ..
+ Makefile                                | 26 ++++++++----
+ kernel-shark/README                     |  4 ++
+ kernel-shark/src/CMakeLists.txt         | 56 ++++++++++++++++++++++---
+ kernel-shark/src/plugins/CMakeLists.txt |  3 +-
+ 4 files changed, 74 insertions(+), 15 deletions(-)
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- include/trace-cmd/trace-cmd.h         |  2 +-
- include/traceevent/event-parse.h      |  2 +-
- kernel-shark/CMakeLists.txt           |  3 +-
- kernel-shark/build/FindTraceCmd.cmake | 44 +++++++++++----------------
- kernel-shark/src/libkshark-plugin.h   |  2 +-
- kernel-shark/src/libkshark.h          |  9 +++---
- 6 files changed, 26 insertions(+), 36 deletions(-)
-
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index ceb03f4..9320098 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -6,7 +6,7 @@
- #ifndef _TRACE_CMD_H
- #define _TRACE_CMD_H
- 
--#include "event-parse.h"
-+#include "traceevent/event-parse.h"
- 
- #define ARRAY_SIZE(_a) (sizeof(_a) / sizeof((_a)[0]))
- #define __weak __attribute__((weak))
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 5e0fd19..65cabd9 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -12,7 +12,7 @@
- #include <regex.h>
- #include <string.h>
- 
--#include "trace-seq.h"
-+#include "traceevent/trace-seq.h"
- 
- #ifndef __maybe_unused
- #define __maybe_unused __attribute__((unused))
-diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
-index 52e4a29..145b058 100644
---- a/kernel-shark/CMakeLists.txt
-+++ b/kernel-shark/CMakeLists.txt
-@@ -56,8 +56,7 @@ SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
- include_directories(${KS_DIR}/src/
-                     ${KS_DIR}/build/src/
-                     ${JSONC_INCLUDE_DIR}
--                    ${TRACECMD_INCLUDE_DIR}
--                    ${TRACEEVENT_INCLUDE_DIR})
-+                    ${TRACECMD_INCLUDE_DIR})
- 
- message("")
- message(STATUS "C flags      : " ${CMAKE_C_FLAGS})
-diff --git a/kernel-shark/build/FindTraceCmd.cmake b/kernel-shark/build/FindTraceCmd.cmake
-index b09a11b..8c51f11 100644
---- a/kernel-shark/build/FindTraceCmd.cmake
-+++ b/kernel-shark/build/FindTraceCmd.cmake
-@@ -2,13 +2,10 @@
- # This module finds an installed trace-cmd package.
- #
- # It sets the following variables:
--#  TRACEEVENT_INCLUDE_DIR, where to find traceevent header.
--#  TRACEEVENT_LIBRARY_DIR , where to find the traceevent library.
- #  TRACEEVENT_LIBRARY, traceevent the library.
- #  TRACEEVENT_FOUND, If false, do not try to use traceevent.
- #
- #  TRACECMD_INCLUDE_DIR, where to find trace-cmd header.
--#  TRACECMD_LIBRARY_DIR , where to find the trace-cmd library.
- #  TRACECMD_LIBRARY, the trace-cmd library.
- #  TRACECMD_FOUND, If false, do not try to use trace-cmd.
- 
-@@ -20,28 +17,33 @@ find_path(TRACECMD_BIN_DIR      NAMES  trace-cmd
-                                        ${CMAKE_SOURCE_DIR}/../tracecmd/
-                                 NO_DEFAULT_PATH)
- 
--find_path(TRACECMD_INCLUDE_DIR  NAMES  trace-cmd.h
--                                PATHS  $ENV{TRACE_CMD}/include/trace-cmd/
--                                       ${CMAKE_SOURCE_DIR}/../include/trace-cmd/
-+find_path(TRACECMD_INCLUDE_DIR  NAMES  trace-cmd/trace-cmd.h
-+                                PATHS  $ENV{TRACE_CMD}/include/
-+                                       ${CMAKE_SOURCE_DIR}/../include/
-                                 NO_DEFAULT_PATH)
- 
--find_path(TRACECMD_LIBRARY_DIR  NAMES  libtracecmd.a
--                                PATHS  $ENV{TRACE_CMD}/lib/trace-cmd/
--                                       ${CMAKE_SOURCE_DIR}/../lib/trace-cmd/
-+find_library(TRACECMD_LIBRARY   NAMES  trace-cmd/libtracecmd.a
-+                                PATHS  $ENV{TRACE_CMD}/lib/
-+                                       ${CMAKE_SOURCE_DIR}/../lib/
-+                                NO_DEFAULT_PATH)
-+
-+find_library(TRACEEVENT_LIBRARY NAMES  traceevent/libtraceevent.a
-+                                PATHS  $ENV{TRACE_CMD}/lib/
-+                                       ${CMAKE_SOURCE_DIR}/../lib/
-                                 NO_DEFAULT_PATH)
- 
- # If not found, search in the default system paths. Note that if the previous
- # search was successful "find_path" will do nothing this time.
- find_path(TRACECMD_BIN_DIR      NAMES  trace-cmd)
--find_path(TRACECMD_INCLUDE_DIR  NAMES  trace-cmd.h)
--find_path(TRACECMD_LIBRARY_DIR  NAMES  libtracecmd.a)
-+find_path(TRACECMD_INCLUDE_DIR  NAMES  trace-cmd/trace-cmd.h)
-+find_library(TRACECMD_LIBRARY   NAMES  trace-cmd/libtracecmd.so)
-+find_library(TRACEEVENT_LIBRARY NAMES  traceevent/libtraceevent.so)
- 
--IF (TRACECMD_INCLUDE_DIR AND TRACECMD_LIBRARY_DIR)
-+IF (TRACECMD_INCLUDE_DIR AND TRACECMD_LIBRARY)
- 
-   SET(TRACECMD_FOUND TRUE)
--  SET(TRACECMD_LIBRARY "${TRACECMD_LIBRARY_DIR}/libtracecmd.a")
- 
--ENDIF (TRACECMD_INCLUDE_DIR AND TRACECMD_LIBRARY_DIR)
-+ENDIF (TRACECMD_INCLUDE_DIR AND TRACECMD_LIBRARY)
- 
- IF (TRACECMD_FOUND)
- 
-@@ -53,21 +55,11 @@ ELSE (TRACECMD_FOUND)
- 
- ENDIF (TRACECMD_FOUND)
- 
--
--find_path(TRACEEVENT_INCLUDE_DIR  NAMES  event-parse.h
--                                  PATHS  $ENV{TRACE_CMD}/include/traceevent/
--                                         ${CMAKE_SOURCE_DIR}/../include/traceevent/)
--
--find_path(TRACEEVENT_LIBRARY_DIR  NAMES  libtraceevent.a
--                                  PATHS  $ENV{TRACE_CMD}/lib/traceevent/
--                                         ${CMAKE_SOURCE_DIR}/../lib/traceevent/)
--
--IF (TRACEEVENT_INCLUDE_DIR AND TRACEEVENT_LIBRARY_DIR)
-+IF (TRACEEVENT_LIBRARY)
- 
-   SET(TRACEEVENT_FOUND TRUE)
--  SET(TRACEEVENT_LIBRARY "${TRACEEVENT_LIBRARY_DIR}/libtraceevent.a")
- 
--ENDIF (TRACEEVENT_INCLUDE_DIR AND TRACEEVENT_LIBRARY_DIR)
-+ENDIF (TRACEEVENT_LIBRARY)
- 
- IF (TRACEEVENT_FOUND)
- 
-diff --git a/kernel-shark/src/libkshark-plugin.h b/kernel-shark/src/libkshark-plugin.h
-index 0cb677a..b3cf1c6 100644
---- a/kernel-shark/src/libkshark-plugin.h
-+++ b/kernel-shark/src/libkshark-plugin.h
-@@ -17,7 +17,7 @@ extern "C" {
- #endif // __cplusplus
- 
- // trace-cmd
--#include "event-parse.h"
-+#include "traceevent/event-parse.h"
- 
- /* Quiet warnings over documenting simple structures */
- //! @cond Doxygen_Suppress
-diff --git a/kernel-shark/src/libkshark.h b/kernel-shark/src/libkshark.h
-index 27f7942..fe35333 100644
---- a/kernel-shark/src/libkshark.h
-+++ b/kernel-shark/src/libkshark.h
-@@ -18,17 +18,16 @@
- #include <errno.h>
- 
- // Json-C
--#include <json.h>
-+#include <json-c/json.h>
- 
- #ifdef __cplusplus
- extern "C" {
- #endif
- 
- // trace-cmd
--#include "trace-cmd.h"
--#include "trace-filter-hash.h"
--#include "event-parse.h"
--#include "trace-filter-hash.h"
-+#include "trace-cmd/trace-cmd.h"
-+#include "trace-cmd/trace-filter-hash.h"
-+#include "traceevent/event-parse.h"
- 
- // KernelShark
- #include "libkshark-plugin.h"
 -- 
 2.20.1
 
