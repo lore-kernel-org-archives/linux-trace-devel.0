@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75CEBC28D19
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  5 Jun 2019 11:19:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69A67C28CC5
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  5 Jun 2019 11:50:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5762F20874
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  5 Jun 2019 11:19:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E63F206DF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  5 Jun 2019 11:50:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbfFELTm (ORCPT
+        id S1727410AbfFELuu (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 5 Jun 2019 07:19:42 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:32993 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727411AbfFELTl (ORCPT
+        Wed, 5 Jun 2019 07:50:50 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:44196 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727330AbfFELut (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 5 Jun 2019 07:19:41 -0400
-Received: by mail-wr1-f65.google.com with SMTP id n9so6617046wru.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 05 Jun 2019 04:19:39 -0700 (PDT)
+        Wed, 5 Jun 2019 07:50:49 -0400
+Received: by mail-wr1-f68.google.com with SMTP id w13so19103148wru.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 05 Jun 2019 04:50:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eNQkO71pqQ6id/igKjJctLEZz9nALUDYz5rDmSsDQoI=;
-        b=BIs8fEmqeDetdWSlyv/mQ0r/gi41Jln1pT94lAzdUOrRyfS9iDjt4O2C187uvL4Mx/
-         9GIhzirRO68qmXNvuIas+dMgdWoQkNrTxYAFgj5WkIxHfLMSKH2LuGBFsChQcViTQMyT
-         mOUePRLjOurqkGfDL4Nj0D5GfO5GBoFPvj3K80uNZ+vdJRjEvihv+72DeLycHSEPQhM1
-         KD/8IFd/dzIxRbgzhks03k6FPaIk//KlE259Qh3kBYtXgrEbxurhNUUf3YazYXyiRVhG
-         ybQTmkhfAMmWaJwLf22438ifPS81rmZczpR+GLkLvg412luLcfIHbOtqk8FlBpa+pkV1
-         n5SQ==
-X-Gm-Message-State: APjAAAUCUElQZpbKCcSDf1EI+X0aYJns19w7yI3dCeRDyOK3YfoVB5A+
-        CeNl6Z4/dKlfWRsyZ47OrQOvBVWK
-X-Google-Smtp-Source: APXvYqwiY/LrKRgltSG2SnPCBSRVghscvTvY1NNn8GxYc/gjEJOAJEAs1cVzR6lLORI/EAqac6gxSQ==
-X-Received: by 2002:adf:dcd1:: with SMTP id x17mr25210138wrm.98.1559733579046;
-        Wed, 05 Jun 2019 04:19:39 -0700 (PDT)
+        bh=EDqC6lui4xVSzd+AUDRKIxsXxtHoMffTne3eK3H4hg0=;
+        b=SFs695RwKElV29R116oPJPXDlr177tpCpDkK/2USFdJ36vxfFmeRy2Z0+yImk2Bzg7
+         hO/22PJuj0GYX5SpIC9HrGeQy2VILlpVWGuTkFAIJs2DHvdRXNXlcTZOYZ0gXmuK8RXE
+         jBoHEjj4IamV/LlTHal/hm5krx/cO4NReHAbV6pKbFcjedjiqxCkbachhn3MnbTM28QF
+         Y278ghsMtNijAutBeg5wNJprSHvXKM6mPthPy4Sdw/Q26EiRxF7PkPQBfdM9kaYJvQQv
+         9WAVlktLwLi2V3lhwvKbYCC/zgfXi7CLXyc/s18PiUQKtI5S9f+6tRvwroGpSZ3UB9Mr
+         19WA==
+X-Gm-Message-State: APjAAAUgB5tJ81BMqlbtUhY6ycbn4kGyAEmTQPWP1oIC+YkR27w587wt
+        zmyjHOGPKnZxjPf0VqLWOo24hl2v
+X-Google-Smtp-Source: APXvYqywKupdw9K33YZ+Ja5feMGwVsPWU9bm5Br7agfbfg9fHh6Q++mgXo0Qz2gn59hEDilxYNbdOw==
+X-Received: by 2002:a5d:5586:: with SMTP id i6mr24636803wrv.299.1559735447649;
+        Wed, 05 Jun 2019 04:50:47 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 16sm15583084wmx.45.2019.06.05.04.19.38
+        by smtp.gmail.com with ESMTPSA id z65sm27549511wme.37.2019.06.05.04.50.46
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 05 Jun 2019 04:19:38 -0700 (PDT)
+        Wed, 05 Jun 2019 04:50:47 -0700 (PDT)
 From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 1/2] trace-cmd: Fix crash when trace-cmd is executed with args "profile -F sleep 1"
-Date:   Wed,  5 Jun 2019 14:19:36 +0300
-Message-Id: <20190605111937.17894-1-tstoyanov@vmware.com>
+Subject: [PATCH v3] trace-cmd: Fix crash when trace-cmd is executed with args "profile -F sleep 1"
+Date:   Wed,  5 Jun 2019 14:50:46 +0300
+Message-Id: <20190605115046.20444-1-tstoyanov@vmware.com>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -56,7 +56,15 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A fix for https://bugzilla.kernel.org/show_bug.cgi?id=203411
+[
+ v3 changes:
+  - added the full Bugzilla description of the problem.
+  - added tags for the Bugzilla problem and the commit which broke it.
+ v2 changes:
+  - reimplemented the fix, keeping the old link-list logic (before commit 62e82cc6cdc9)
+]
+
+
 When trace-cmd is running in "profile" mode, trace files are not generated.
 Instead, pipes are used to collect trace data from recorder threads. Some
 internal functions, originally designed for working with files, are reused
@@ -65,7 +73,33 @@ in pipes use case:
  allocate_page()
  get_next_page()
 There was an undesired behaviour in those functions, when working with pipes,
-which causes the segmentation fault, described in the bug report.
+which causes the segmentation fault.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203411
+Fixes: 62e82cc6cdc9 ("trace-cmd: Use lookup table instead of link list for pages")
+
+./trace-cmd profile -F sleep 1
+Segmentation fault (core dumped)
+back trace:
+0  allocate_page (handle=0x4a1a10, cpu=0, offset=12288) at trace-input.c:927
+1  0x000000000042d2aa in get_page (handle=0x4a1a10, cpu=0, offset=12288) at trace-input.c:1116
+2  0x000000000042d40d in get_next_page (handle=0x4a1a10, cpu=0) at trace-input.c:1142
+3  0x000000000042e339 in tracecmd_peek_data (handle=0x4a1a10, cpu=0) at trace-input.c:1776
+4  0x000000000042e6d4 in tracecmd_read_data (handle=0x4a1a10, cpu=0) at trace-input.c:1841
+5  0x0000000000424d82 in trace_stream_read (pids=0x47b7d0, nr_pids=8, tv=0x7fffffffd3c0) at trace-stream.c:105
+6  0x000000000040aa1f in trace_waitpid (type=TRACE_TYPE_STREAM, pid=24759, status=0x7fffffffd408, options=1) at trace-record.c:1114
+7  0x000000000040b151 in run_cmd (type=TRACE_TYPE_STREAM, argc=2, argv=0x7fffffffd600) at trace-record.c:1331
+8  0x0000000000412ffd in record_trace (argc=5, argv=0x7fffffffd5e8, ctx=0x7fffffffd470) at trace-record.c:5065
+9  0x000000000041338d in trace_profile (argc=5, argv=0x7fffffffd5e8) at trace-record.c:5199
+10 0x0000000000408bc5 in main (argc=5, argv=0x7fffffffd5e8) at trace-cmd.c:118
+
+The problem seems to be in the lookup table "struct page **pages" in struct cpu_data.
+In case pipes are used with this tracecmd_input handler, only a single page is
+allocated in this lookup table. Later, when get_page() is called, there is use
+case where more pages are addressed (in the backtrace above, the page with
+index 3 is addressed, cpu_data->pages[3])
+
+trace-cmd: current (git20190424)
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
