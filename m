@@ -1,137 +1,115 @@
-Return-Path: <SRS0=+uc8=UK=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=CcWV=UL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45947C43218
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 11 Jun 2019 15:21:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EFE9C31E46
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jun 2019 03:59:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2411D212F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 11 Jun 2019 15:21:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB1B02082C
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jun 2019 03:59:09 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LXT41P1m"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404185AbfFKPVq (ORCPT
+        id S1726568AbfFLD7J (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 11 Jun 2019 11:21:46 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:52717 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388810AbfFKPVp (ORCPT
+        Tue, 11 Jun 2019 23:59:09 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:46974 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbfFLD7J (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 11 Jun 2019 11:21:45 -0400
-Received: by mail-wm1-f65.google.com with SMTP id s3so3420586wms.2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 11 Jun 2019 08:21:44 -0700 (PDT)
+        Tue, 11 Jun 2019 23:59:09 -0400
+Received: by mail-pg1-f193.google.com with SMTP id v9so6426706pgr.13
+        for <linux-trace-devel@vger.kernel.org>; Tue, 11 Jun 2019 20:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TuJeq85uKu21AVHH/Gsx0/Y5FXuV1WzUdCKmnlzZtGw=;
+        b=LXT41P1mZIBSUxYDEbRgc1z4mFo50d0v35vdnnvP323APckNyMaOCyxvrU+rldaezW
+         45HrIOY3wzFpMaLUmOBnlKzhR5W4pls59zHaMUexfXY78jLxIG3nfSDFJ7kG8aAKKecW
+         zF/ohI7OF9+2adNWZp0EXYu18DRjmuQ90zCGLNMl9g6OngbzPrKP3pX1Z/a4OnywNfRz
+         RX1lRf2Sb+69GAj6GtUJQmDXdtm4IouN51nq/lQX18+b3yCwzeM3tGvYLiQE80COmgxO
+         n5j1ZyL/uqsR1rkWgyIm9IZNB0g6qYyF/Ci2TRV54XUe2FFiXteqdBogk9nPzp+7YTtm
+         8L9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8cYpwkxDhXV+UrEIBkKOBklOceWNxHM5PgZ0wLRmIfQ=;
-        b=HbD3P8H/jnrr4Z0w9SLo52sh/VBxvzYBFi2YzeyPHXWMVJPVMroXMF5kKURpjPkJjE
-         xi5Q79ZAdgHhS9RGOo9s142llFGyfYIt7rPbJhQvKGi7UzxUjcZNlCkOdnnrKaiJqh21
-         PEO8zsrmVan26xjsgnZsvniJ0CRS1EzNzQTwIaNvP/9HMbqFnI5jgSBxW1+ZV64xB5Iu
-         Ywh4GB0uszCpARj/STJ5Y2xvi3EmOUOmknAHw5pPuEiVbnEUoHNUfjLfWyy5rcKJ35UE
-         wKcMp93WUa+ffxqNTHJD4ihbkM8igjXnFEhC+eVpIORotP3a2bugZNgczhc+eJzRwZ7X
-         E07A==
-X-Gm-Message-State: APjAAAU/ZNN3iRlD4Mz+INEifXlmQzZCXTOhwGSF01Qkk2+uNp6Lck3w
-        IZV8PsquTmAE+O1v6qIUoJE=
-X-Google-Smtp-Source: APXvYqw/x/buiox4E/3LeTvI0b7J0IA7JEs3uBhyD3KamH0B+ZH5vr3oscSRh71BicyhRy0ZIAJIzQ==
-X-Received: by 2002:a1c:1b81:: with SMTP id b123mr17679206wmb.144.1560266503472;
-        Tue, 11 Jun 2019 08:21:43 -0700 (PDT)
-Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id r2sm2793821wma.26.2019.06.11.08.21.42
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 11 Jun 2019 08:21:43 -0700 (PDT)
-From:   Yordan Karadzhov <ykaradzhov@vmware.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, y.karadz@gmail.com,
-        troyengel@gmail.com, Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH 2/2] kernel-shark: Avoid debug build when CMAKE_BUILD_TYPE=Release
-Date:   Tue, 11 Jun 2019 18:20:43 +0300
-Message-Id: <20190611152043.22572-3-ykaradzhov@vmware.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190611152043.22572-1-ykaradzhov@vmware.com>
-References: <20190611152043.22572-1-ykaradzhov@vmware.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TuJeq85uKu21AVHH/Gsx0/Y5FXuV1WzUdCKmnlzZtGw=;
+        b=RKT3AvOjyrjoKJk/XNu4z0k8Ul36YuaMmpWlPWrshVAnj2nLc07HJGb6mval1MISbW
+         1qO+insXmp5FPr1GcCkjJQlyq+heZmVfH10uY1lYLqYgm8ecm5hyK0xnh5BHG/VMHKtZ
+         H1Q76MXS7udxNbM1+Vmj6wmEMczFUM74CiPYIIl3cmQyvKbfNcTdUrwKsWvY06strdkr
+         APxRaOh+yT0ewIPNxlTCuhRilVpuwJ+JCU1O98dPaj0Gh0fTJTg6Y+JmWu/3O56gWstM
+         uscVaXJ7VpWZOnVPEaExfFU3SFssprLmJ3cGjPyJkeGAtMdnbkPBo4kJf+bDnrF0PIiF
+         X49A==
+X-Gm-Message-State: APjAAAVNfHGuPTP2aPTlL9RIsuAve945GeFyy+tNlhymVx4IgnUEiwBw
+        nrTfU2XZ3QkCygi0Fiq3hjyLDjHKSmg=
+X-Google-Smtp-Source: APXvYqzKmR7T/jJgnjfbdK4mssl1SQZKmrCdXkB3ZuEv2njyLWKqjFUijXcuX0jqaGm6LXBLEyRYOQ==
+X-Received: by 2002:a63:29c2:: with SMTP id p185mr23152673pgp.216.1560311948224;
+        Tue, 11 Jun 2019 20:59:08 -0700 (PDT)
+Received: from localhost.localdomain (c-73-241-144-161.hsd1.ca.comcast.net. [73.241.144.161])
+        by smtp.gmail.com with ESMTPSA id c124sm18578862pfa.115.2019.06.11.20.59.07
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 11 Jun 2019 20:59:07 -0700 (PDT)
+From:   Alan Mikhak <alanmikhak@gmail.com>
+X-Google-Original-From: Alan Mikhak <amikhak@wirelessfabric.com>
+To:     linux-trace-devel@vger.kernel.org, rostedt@goodmis.org,
+        ykaradzhov@vmware.com
+Cc:     Alan Mikhak <amikhak@wirelessfabric.com>
+Subject: [PATCH] Fix compiler error in KsSession.cpp on Raspberry Pi 3
+Date:   Tue, 11 Jun 2019 20:59:02 -0700
+Message-Id: <20190612035902.16366-1-amikhak@wirelessfabric.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The debug flags by design embed the build paths, but the distro package
-binaries should not have such paths embedded in them.
+Fix compiler error at KsSession.cpp:457:30 on Raspberry Pi 3
 
-Reported-by: Troy Engel <troyengel@gmail.com>
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+Fix by changing the type of local variable 'pos' from uint64_t to
+size_t in KsSession::loadDualMarker().
+
+KsSession.cpp:457:30: error: no matching function for call to
+‘KsSession::_getMarker(const char [6], uint64_t*)’
+  if (_getMarker("markA", &pos)) {
+                              ^
+In file included from KsSession.cpp:14:0:
+KsSession.hpp:97:7: note: candidate:
+ bool KsSession::_getMarker(const char*, size_t*)
+  bool _getMarker(const char* name, size_t *pos);
+       ^~~~~~~~~~
+KsSession.hpp:97:7: note:   no known conversion for
+argument 2 from ‘uint64_t* {aka long long unsigned int*}’
+to ‘size_t* {aka unsigned int*}’
+
+Signed-off-by: Alan Mikhak <amikhak@wirelessfabric.com>
 ---
- kernel-shark/CMakeLists.txt | 25 ++++++++++++++++---------
- kernel-shark/README         |  4 ++--
- 2 files changed, 18 insertions(+), 11 deletions(-)
+ kernel-shark/src/KsSession.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
-index d45be20..fe398bb 100644
---- a/kernel-shark/CMakeLists.txt
-+++ b/kernel-shark/CMakeLists.txt
-@@ -33,8 +33,22 @@ endif (Qt5Widgets_FOUND)
- set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
- set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
+diff --git a/kernel-shark/src/KsSession.cpp b/kernel-shark/src/KsSession.cpp
+index 9d86776..a581bbf 100644
+--- a/kernel-shark/src/KsSession.cpp
++++ b/kernel-shark/src/KsSession.cpp
+@@ -450,7 +450,7 @@ void KsSession::saveDualMarker(KsDualMarkerSM *dm)
+  */
+ void KsSession::loadDualMarker(KsDualMarkerSM *dm, KsTraceGraph *graphs)
+ {
+-	uint64_t pos;
++	size_t pos;
  
--set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -g -pthread -fPIC")
--set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -std=c++11 -pthread -fPIC")
-+set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -pthread -fPIC")
-+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread -fPIC")
-+
-+if (NOT CMAKE_BUILD_TYPE MATCHES Release)
-+
-+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -g")
-+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-+
-+endif (NOT CMAKE_BUILD_TYPE MATCHES Release)
-+
-+if (NOT CMAKE_BUILD_TYPE MATCHES Debug)
-+
-+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -O2")
-+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
-+
-+endif (NOT CMAKE_BUILD_TYPE MATCHES Debug)
- 
- if(NOT _INSTALL_PREFIX)
- 	set(_INSTALL_PREFIX "/usr/local")
-@@ -47,13 +61,6 @@ set(KS_ICON_FIN    KS_icon_fin.svg)
- set(KS_LOGO        KS_logo_symbol.svg)
- set(KS_LOGO_LABEL  KS_logo_horizontal.svg)
- 
--if (NOT _DEBUG)
--
--	set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -O2")
--	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
--
--endif (NOT _DEBUG)
--
- SET(CMAKE_INSTALL_RPATH "${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/")
- SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
- 
-diff --git a/kernel-shark/README b/kernel-shark/README
-index 379c390..2027044 100644
---- a/kernel-shark/README
-+++ b/kernel-shark/README
-@@ -39,13 +39,13 @@ the original trace-cmd end traceevent libraries.
- as a CMake Command-Line option.
- 
- 2.1.2 In order to generates complete debug information to be used by GDB add
---D_DEBUG=1 as a CMake Command-Line option.
-+-DCMAKE_BUILD_TYPE=Debug as a CMake Command-Line option.
- 
- 2.1.3 By default, installation prefix is "/usr/local". It can be changed using
- -D_INSTALL_PREFIX= as a CMake Command-Line option.
- 
- Example:
--    cmake -D_DOXYGEN_DOC=1 -D_DEBUG=1 -D_INSTALL_PREFIX=/usr ../
-+    cmake -D_DOXYGEN_DOC=1 -DCMAKE_BUILD_TYPE=Debug -D_INSTALL_PREFIX=/usr ../
- 
- 2.2.1 Use "make clean" if you want to delete all already compiled objects.
- 
+ 	dm->reset();
+ 	dm->setState(DualMarkerState::A);
 -- 
-2.20.1
+2.17.1
 
