@@ -2,67 +2,68 @@ Return-Path: <SRS0=CcWV=UL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D47BBC31E46
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jun 2019 15:22:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EACBFC31E46
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jun 2019 15:31:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ABCBD2082C
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jun 2019 15:22:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B67AC215EA
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jun 2019 15:31:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QKJDz3Kf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vaVbtxuH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727931AbfFLPWi (ORCPT
+        id S2408715AbfFLPbp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 12 Jun 2019 11:22:38 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34714 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727419AbfFLPWh (ORCPT
+        Wed, 12 Jun 2019 11:31:45 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41779 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405706AbfFLPbp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 12 Jun 2019 11:22:37 -0400
-Received: by mail-ot1-f65.google.com with SMTP id n5so459693otk.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 12 Jun 2019 08:22:36 -0700 (PDT)
+        Wed, 12 Jun 2019 11:31:45 -0400
+Received: by mail-oi1-f196.google.com with SMTP id g7so8805299oia.8
+        for <linux-trace-devel@vger.kernel.org>; Wed, 12 Jun 2019 08:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=tcvQz3H1fN/MAPWBQO4HMRMLBqpUzsmUIbvM8As6YA4=;
-        b=QKJDz3KfafCwE5/2FuKrOJqDjDKo6j2svM+ht1VDhhVj73hX+1hx2AehSSxbCQauk9
-         x5JPvI4toDzYjsBBM5cEz+8uTiU2KtoAtUsC1xEBJaraSWL50P+MG1CjJNSSzoYQ8XXS
-         vtL7vqJ3vr1gsWqVTMiLV9ph3xhv16gAUi5Hsqlcfn7eksNky89fFH9y+TW3DQJfbdoa
-         0kBLiLwUwglawrP62SA5wgfzZ0xWOjkyxBW8KCinIQh0VdnbqoEw92B/hNcwqaRT3ion
-         1R+Hy5GN9g1MMfmYHBJBlD8gbK0SV/PiTb8LflQtwhnk6LdW+26K4N/O25euV6eJdnGs
-         Sq9g==
+        bh=l7mZvKKYjoVoh+JKEXOiBNkw+CrpW3QACVrNJxfe9A4=;
+        b=vaVbtxuHuvXE5N+OOXCfjAXZaZmoKZ6TwiObGuyST9BTNkxC7OFFTjmmIQVkqvq8mu
+         fX8JcCDqas7VXNc6FerTLo5/v6BiNL8Fjxa5S6jMlEiV5pEJ0aXRBDo1dTp0F/EK7/3O
+         tiji7Y+btv+kBqY4GbfKiPVihl5Wp+q1OITLE2xbsCfXU76tb2hluEcWG7CMwWDg/6+e
+         h9KKZfQflr4qMT75APPVDrojc2mFXsFW7/Nnwl1QUoq8hnGMSBWrrnvFRBE2zOjOmBv7
+         3dRDD4ivXUIwbPTRYJmpEFnVmfeYmCN7crT3RFQWwSGG/9qgTnGcjI6d6ryNCH9WGkMH
+         mHog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tcvQz3H1fN/MAPWBQO4HMRMLBqpUzsmUIbvM8As6YA4=;
-        b=j9ItdiBgwgQoGfrYNzzPkZKNj2lp174Dp5peQubAmMfecbqg0WF/n8YtNie3Q6JkRy
-         08eCBRsJpU0JtzJOaHTTMRFQFwilbTaOhKj/TKLOv6CnWU62nAanamaBJ9NQxue7JrE+
-         RnSSc/9pThLFhLHbDlFpSxCgta2F/JtiJMI0JHUkPnvSOCaGSGeABsU1/6//D6D5z7pl
-         NtafJVlz/YlNPBgCzdECrFPPTQz7GmQ+yaK4VOpXrSfyoGZcHDYfDM7wBAloiFP9mSwi
-         c1dMrECi8hLI/ANch0aYrKr+vucrLlT+Tb/0CJHFZD0SZtxH591973pH1k6pvRLpP9Bz
-         Al7g==
-X-Gm-Message-State: APjAAAUy8/6awOVr1ts/HoC7Dqewm0ArmhoQ2GqAspvs0pWMNJE2AFkv
-        yqEHu6wH8E804TR7cUM/MNSqqSywptzr6gCXv0s=
-X-Google-Smtp-Source: APXvYqzWw/KbJaC7AoqUjaJFcQUUa03VOxRBzCK3ZobPfk3TSdBoT1jTWzgHGySxM8VH/LB70jUR8VQ3c9h0vrpzxgk=
-X-Received: by 2002:a9d:6a19:: with SMTP id g25mr36182697otn.77.1560352955994;
- Wed, 12 Jun 2019 08:22:35 -0700 (PDT)
+        bh=l7mZvKKYjoVoh+JKEXOiBNkw+CrpW3QACVrNJxfe9A4=;
+        b=StjnNBdwTRuu3yWMT4YAbUMpsotwh/KM8EcMi460XdYub4P6fi/URmQGD1vsspN2Wd
+         M6wUrbUyd2bzkkb+mbjjANnov/JE1nJoOJ+OyxeOB/Q6BDF5Ysvbt6eeZv0bU5P41Mzr
+         HicfjJR7cLkFPj1qD0rqLyIf0cA1Um9MrRDtI4yB7DQVe3YIoIjWhk8ruuScEL1AW7YO
+         Iy2y3MAovR5/gZED+dkw5tiFpHHrKbcj3Es1DdATg3eUHNMp0RFHk7xen/l4fBybzn08
+         mbutAowN8K+BM3/z9rt6+HgkFZLIxOIDAKmjy+NyCbqWK3c2gtcbCT0il672xFJAavEH
+         GfDw==
+X-Gm-Message-State: APjAAAUzVbFUhiS9oZ5xqezrFavSq6Mtg0vCsqiWCH9C6oB7zlshklLP
+        SSkjSqQkW06CSps+kiqDXxSMGy7wAGIafEt9lEEFygAa
+X-Google-Smtp-Source: APXvYqyXdhkPGncYisbpNVXK569DP7mELldLpKz8y9hcwF/4PpJ6qfVzQKa0yCsoKitnJGxlhN4t+wXokD6SoS+tUtg=
+X-Received: by 2002:aca:2416:: with SMTP id n22mr18494590oic.116.1560353504375;
+ Wed, 12 Jun 2019 08:31:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190612035902.16366-1-amikhak@wirelessfabric.com> <b0108c01-00f4-fc5e-7fef-03e6984f361e@vmware.com>
-In-Reply-To: <b0108c01-00f4-fc5e-7fef-03e6984f361e@vmware.com>
+References: <20190612035902.16366-1-amikhak@wirelessfabric.com>
+ <b0108c01-00f4-fc5e-7fef-03e6984f361e@vmware.com> <20190612081252.6fd3d118@gandalf.local.home>
+In-Reply-To: <20190612081252.6fd3d118@gandalf.local.home>
 From:   Alan Mikhak <alanmikhak@gmail.com>
-Date:   Wed, 12 Jun 2019 08:22:22 -0700
-Message-ID: <CAOY98NeuPDgnpiHZqepa1gBuSjaDuyOgySccBeuRwLj4XdVe+g@mail.gmail.com>
+Date:   Wed, 12 Jun 2019 08:31:30 -0700
+Message-ID: <CAOY98Nfv24YknzV36PZFnVLsPK6UcCxZiKfTJ-mv4dUsDUzaMA@mail.gmail.com>
 Subject: Re: [PATCH] Fix compiler error in KsSession.cpp on Raspberry Pi 3
-To:     Yordan Karadzhov <ykaradzhov@vmware.com>
-Cc:     "linux-trace-devel@vger.kernel.org" 
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Yordan Karadzhov <ykaradzhov@vmware.com>,
+        "linux-trace-devel@vger.kernel.org" 
         <linux-trace-devel@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
         Alan Mikhak <amikhak@wirelessfabric.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -71,27 +72,73 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 12:34 AM Yordan Karadzhov <ykaradzhov@vmware.com> w=
-rote:
-> On 12.06.19 =D0=B3. 6:59 =D1=87., Alan Mikhak wrote:
-> > Fix compiler error at KsSession.cpp:457:30 on Raspberry Pi 3
-::
-> I am really curious to know how does KernelShark look and feel on
-> Raspberry Pi. Would you shared with us your impressions.
-> Honestly, I will be surprised if everything works fine ;)
+On Wed, Jun 12, 2019 at 5:12 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
+> On Wed, 12 Jun 2019 07:34:35 +0000
+> Yordan Karadzhov <ykaradzhov@vmware.com> wrote:
+>
+> > On 12.06.19 =D0=B3. 6:59 =D1=87., Alan Mikhak wrote:
+> > > Fix compiler error at KsSession.cpp:457:30 on Raspberry Pi 3
+> > >
+> > > Fix by changing the type of local variable 'pos' from uint64_t to
+> > > size_t in KsSession::loadDualMarker().
+> > >
+> > > KsSession.cpp:457:30: error: no matching function for call to
+> > > =E2=80=98KsSession::_getMarker(const char [6], uint64_t*)=E2=80=99
+> > >    if (_getMarker("markA", &pos)) {
+> > >                                ^
+> > > In file included from KsSession.cpp:14:0:
+> > > KsSession.hpp:97:7: note: candidate:
+> > >   bool KsSession::_getMarker(const char*, size_t*)
+> > >    bool _getMarker(const char* name, size_t *pos);
+> > >         ^~~~~~~~~~
+> > > KsSession.hpp:97:7: note:   no known conversion for
+> > > argument 2 from =E2=80=98uint64_t* {aka long long unsigned int*}=E2=
+=80=99
+> > > to =E2=80=98size_t* {aka unsigned int*}=E2=80=99
+> > >
+> > > Signed-off-by: Alan Mikhak <amikhak@wirelessfabric.com>
+> > > ---
+> > >   kernel-shark/src/KsSession.cpp | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel-shark/src/KsSession.cpp b/kernel-shark/src/KsSess=
+ion.cpp
+> > > index 9d86776..a581bbf 100644
+> > > --- a/kernel-shark/src/KsSession.cpp
+> > > +++ b/kernel-shark/src/KsSession.cpp
+> > > @@ -450,7 +450,7 @@ void KsSession::saveDualMarker(KsDualMarkerSM *dm=
+)
+> > >    */
+> > >   void KsSession::loadDualMarker(KsDualMarkerSM *dm, KsTraceGraph *gr=
+aphs)
+> > >   {
+> > > -   uint64_t pos;
+> > > +   size_t pos;
+> > >
+> > >     dm->reset();
+> > >     dm->setState(DualMarkerState::A);
+> > >
+> >
+> >
+> > Hi Alan,
+> > Thanks a lot for this fix!
+> >
+> > Reviewed-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+> >
+>
+> Thanks Alan and Yordan.
+>
+> I queued this patch for my next push to the repo (currently working on
+> some other things before I do that push).
+>
+> -- Steve
 
-Hi Yordan,
+Hi Steve and Yordan,
 
-KernelShark launches on my Raspberry Pi 3 model B+, loads my trace
-file, renders the screen elements, and is responsive. I have enabled a
-swap file and GPU acceleration with extra memory for the GPU. From
-looking at the code, rendering may even work on the CPU without
-acceleration, but haven't tried it.
-
-The abort issue on libkshark-model.c:242 currently limits KernelShark
-on my Raspberry Pi 3 model B+:
-https://bugzilla.kernel.org/show_bug.cgi?id=3D203869
+FYI, I ran the kernel get_maintainers.pl script when preparing this
+patch but the script didn't suggest linux-trace-devel@vger.kernel.org
+or either of you as maintainers.
 
 Regards,
 Alan
