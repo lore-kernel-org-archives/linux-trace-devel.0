@@ -1,71 +1,78 @@
-Return-Path: <SRS0=CcWV=UL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=Le/E=UM=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BBB2C31E47
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jun 2019 18:20:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 347B2C31E45
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Jun 2019 14:58:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F2A512173C
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 12 Jun 2019 18:20:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0B996207E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 13 Jun 2019 14:58:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbfFLSUU (ORCPT
+        id S1732633AbfFMO6z (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 12 Jun 2019 14:20:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46874 "EHLO mail.kernel.org"
+        Thu, 13 Jun 2019 10:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726735AbfFLSUU (ORCPT
+        id S1732630AbfFMO4n (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 12 Jun 2019 14:20:20 -0400
+        Thu, 13 Jun 2019 10:56:43 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C007E20B7C;
-        Wed, 12 Jun 2019 18:20:19 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.92)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1hb7r8-00057b-VB; Wed, 12 Jun 2019 14:20:18 -0400
-Message-Id: <20190612182018.861661984@goodmis.org>
-User-Agent: quilt/0.65
-Date:   Wed, 12 Jun 2019 14:19:28 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D34220B7C;
+        Thu, 13 Jun 2019 14:56:42 +0000 (UTC)
+Date:   Thu, 13 Jun 2019 10:56:40 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/3] trace-cmd: Fix typo in Makefile bidr to bdir
+To:     Slavomir Kaslev <kaslevs@vmware.com>
+Cc:     "slavomir.kaslev@gmail.com" <slavomir.kaslev@gmail.com>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Subject: Re: [PATCH 0/3] trace-cmd: Fix some bugs that include issues with
+ --max-graph-depth
+Message-ID: <20190613105640.1f9b9d44@gandalf.local.home>
+In-Reply-To: <CAE0o1NuCo-vhX9j6G_OnYi=UwMETv+eH=881z1oryzJ_6=JKuQ@mail.gmail.com>
 References: <20190612181927.608151291@goodmis.org>
+        <CAE0o1NuCo-vhX9j6G_OnYi=UwMETv+eH=881z1oryzJ_6=JKuQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Thu, 13 Jun 2019 14:51:48 +0000
+Slavomir Kaslev <kaslevs@vmware.com> wrote:
 
-The order-only prerequisit to $(bdir)/include has a typo of "$(bidr)"
-instead of being "$(bdir)"
+> On Wed, Jun 12, 2019 at 9:21 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> >
+> > Some last minute bugs that were found and fixed.
+> >
+> > Steven Rostedt (VMware) (3):
+> >       trace-cmd: Fix typo in Makefile bidr to bdir
+> >       trace-cmd: Have --max-graph-depth only be part of instance
+> >       trace-cmd: Check the return of get_file_content() before calling add_reset_file()
+> >
+> > ----
+> >  tracecmd/Makefile              |  2 +-
+> >  tracecmd/include/trace-local.h |  2 ++
+> >  tracecmd/trace-record.c        | 33 +++++++++++++++++++--------------
+> >  3 files changed, 22 insertions(+), 15 deletions(-)  
+> 
+> Looks good to me.
+> 
+> Reviewed-by: Slavomir Kaslev <kaslevs@vmware.com>
+> 
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- tracecmd/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Slavomir and Tzvetomir.
 
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index 93b373d58155..bcd437a26b98 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -47,7 +47,7 @@ all: $(TARGETS)
- $(bdir):
- 	@mkdir -p $(bdir)
- 
--$(bdir)/include: | $(bidr)
-+$(bdir)/include: | $(bdir)
- 	@mkdir -p $(bdir)/include
- 
- $(TC_VERSION): force | $(bdir)/include
--- 
-2.20.1
+I'll add these patches now with both of your reviewed-bys.
 
-
+-- Steve
