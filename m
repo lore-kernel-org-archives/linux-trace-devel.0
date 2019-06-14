@@ -2,110 +2,116 @@ Return-Path: <SRS0=/4Dl=UN=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 253D0C31E44
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 Jun 2019 04:40:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D819FC31E4B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 Jun 2019 13:26:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E27A720851
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 Jun 2019 04:40:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9AA5821473
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 14 Jun 2019 13:26:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qh7SnnjT"
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="lWdh2KD4"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725775AbfFNEkR (ORCPT
+        id S1728176AbfFNN0t (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 14 Jun 2019 00:40:17 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:34832 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbfFNEkR (ORCPT
+        Fri, 14 Jun 2019 09:26:49 -0400
+Received: from mail-eopbgr730084.outbound.protection.outlook.com ([40.107.73.84]:25120
+        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727673AbfFNN0s (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 14 Jun 2019 00:40:17 -0400
-Received: by mail-ot1-f66.google.com with SMTP id j19so1450177otq.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 13 Jun 2019 21:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CKP9sog/AHjGlkOEG/j6sBYBxAYThrW/dC8B1hQCMSc=;
-        b=Qh7SnnjTimxLN1hwBmwSWI5pmQZdNBVj03lVLoZecic2FO3oSmt/sC1qaZAW6SXnMf
-         St/EjBoCsfVojoW02kJbjI7GXFOHf9H7bKZqXmweCZWMXqhPjedOm8Yhiwr78sYhE44M
-         JndtOsj70vAhLQX96dWbhgFW/o+nnrJpsQ5EHOpk2QyL++QngKWSjxxn3sHkJfyxX1iL
-         JxyiK4w2NtU3+WKsLG0SApmyk8rAcEzB7GdH/+xytIb5Pzgb7rChBvdhbEhwrmOy9TVz
-         REO66cH+lcbIRG6u/Bfjsvh4FKfAJhrpeXcegvomDpv1AnNSO2okCRa0bhhUTrzOPVTG
-         rxvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CKP9sog/AHjGlkOEG/j6sBYBxAYThrW/dC8B1hQCMSc=;
-        b=NeklGhefstJCOQ1DWRWYCsAMVHDXRlcn2hm78BFfNNycosXmLPwIOYhcovuRLCG42K
-         9QrJRWfhWxbmASdJ7pRKeH9//c+cQZTg/jgrintflk64jNUfMF1m3FlEHJmP68lGThMB
-         BebJmIrE0il6Gsr8jHGU6B70+aouDd3IJuVpvzMuUU6C2uwxlOuIAdre224GHbI2pUzf
-         QvVUpMkonCyzoKycefKbv0tAGgzW9Sv8cW4VRpVuJ++ecNHY3nC4ME4xSLG8o0CSt7KZ
-         0uoSm9o1QeUeq+I7G09KFQ1nUH+JdGemBGME77BAHYsxf5wFgUyBPvSJLWKApVAAK6F9
-         P2Gg==
-X-Gm-Message-State: APjAAAVwXbixNObHN7JtDd8IBPyZYOUGYXpkE8y0e/q4eUQU2ZZnbysr
-        kudakPngCjyds4YNwd7wLywdxKIuCXvT1EhKgNfnYw==
-X-Google-Smtp-Source: APXvYqxBSy+Ozfhh1WzmTQ3DlpSj/JtPbHSQ1YG0XcgoNoI8y1hcAGvKXoRSdehK6PCJE+iTjmAqueWPjxK/Sxt2/as=
-X-Received: by 2002:a05:6830:1558:: with SMTP id l24mr11465154otp.352.1560487216540;
- Thu, 13 Jun 2019 21:40:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190612035902.16366-1-amikhak@wirelessfabric.com>
- <b0108c01-00f4-fc5e-7fef-03e6984f361e@vmware.com> <CAOY98NeuPDgnpiHZqepa1gBuSjaDuyOgySccBeuRwLj4XdVe+g@mail.gmail.com>
-In-Reply-To: <CAOY98NeuPDgnpiHZqepa1gBuSjaDuyOgySccBeuRwLj4XdVe+g@mail.gmail.com>
-From:   Alan Mikhak <alanmikhak@gmail.com>
-Date:   Thu, 13 Jun 2019 21:40:03 -0700
-Message-ID: <CAOY98Nd=HnFWMvB1DQkO4Dq6PX-LZ0VJQ6hsNk=Z52j-1OSuLA@mail.gmail.com>
-Subject: Re: [PATCH] Fix compiler error in KsSession.cpp on Raspberry Pi 3
-To:     Yordan Karadzhov <ykaradzhov@vmware.com>
-Cc:     "linux-trace-devel@vger.kernel.org" 
+        Fri, 14 Jun 2019 09:26:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IT/q0c1S9LKi0i1okIhHvH2WGGTjIMH7lGgyou2Cs9A=;
+ b=lWdh2KD4EouKbGlhjgOxVLM22MO31KaCBUNmUE306BOcivo6k5c0f/Nfg3D6OqlqYRiFydm3xf1SofRRvpbD1ejGg6xdbtBkCgcw8/N33TaHJBjLocrB2bJ0OvjR8dTi+ycqDkDQXJtPq6tvejLS76Ik8Da58dajT/Pyv9pveak=
+Received: from SN4PR0501MB3903.namprd05.prod.outlook.com (10.167.142.151) by
+ SN4PR0501MB3918.namprd05.prod.outlook.com (10.167.142.158) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.9; Fri, 14 Jun 2019 13:26:46 +0000
+Received: from SN4PR0501MB3903.namprd05.prod.outlook.com
+ ([fe80::d0ff:f109:af39:2c9c]) by SN4PR0501MB3903.namprd05.prod.outlook.com
+ ([fe80::d0ff:f109:af39:2c9c%5]) with mapi id 15.20.1987.010; Fri, 14 Jun 2019
+ 13:26:46 +0000
+From:   Yordan Karadzhov <ykaradzhov@vmware.com>
+To:     "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC:     "linux-trace-devel@vger.kernel.org" 
         <linux-trace-devel@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Alan Mikhak <amikhak@wirelessfabric.com>
-Content-Type: text/plain; charset="UTF-8"
+        "y.karadz@gmail.com" <y.karadz@gmail.com>,
+        "troyengel@gmail.com" <troyengel@gmail.com>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>
+Subject: [PATCH v2 0/3] KernelShark build fixes for v1.0
+Thread-Topic: [PATCH v2 0/3] KernelShark build fixes for v1.0
+Thread-Index: AQHVIrTQCxeSM9s1tE+ks4aJyPlkBg==
+Date:   Fri, 14 Jun 2019 13:26:46 +0000
+Message-ID: <20190614132609.16465-1-ykaradzhov@vmware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: DB8P191CA0020.EURP191.PROD.OUTLOOK.COM
+ (2603:10a6:10:130::30) To SN4PR0501MB3903.namprd05.prod.outlook.com
+ (2603:10b6:803:4d::23)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=ykaradzhov@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.20.1
+x-originating-ip: [146.247.46.5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0b649655-586d-41dc-376b-08d6f0cbf285
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:SN4PR0501MB3918;
+x-ms-traffictypediagnostic: SN4PR0501MB3918:
+x-microsoft-antispam-prvs: <SN4PR0501MB3918CB4DE0972F9187A0FCBDA0EE0@SN4PR0501MB3918.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 0068C7E410
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(346002)(376002)(39860400002)(136003)(366004)(199004)(189003)(1076003)(66066001)(486006)(2501003)(4744005)(2616005)(476003)(3846002)(6116002)(68736007)(256004)(99286004)(6916009)(66476007)(86362001)(66556008)(478600001)(64756008)(66446008)(73956011)(26005)(305945005)(66946007)(7736002)(14454004)(5660300002)(102836004)(386003)(6506007)(52116002)(71190400001)(107886003)(36756003)(8936002)(8676002)(4326008)(71200400001)(2906002)(53936002)(25786009)(1730700003)(5640700003)(186003)(316002)(2351001)(50226002)(81166006)(6512007)(6436002)(54906003)(6486002)(81156014);DIR:OUT;SFP:1101;SCL:1;SRVR:SN4PR0501MB3918;H:SN4PR0501MB3903.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 2uCAiuNgZRiQouFCqiL/5tgbvQBWSJpxQoQm9a5pJ77bxpJssC2MueDaYgBrqkVosjv4g7XA7M1PfNgYvxIluUnceVRVLtflhCeivzfj/doC0fGOxoef4bL+H2GzYC7L6oMAxfqL52Da4o35x40dk7SI1FtSYsyjoLLDYbKteRlCA6mDLh2oZM+c5ig7MUCU3bjTp1IqKWclndk/phPNTNIPEfwP3422xLzr4QRspF2H/6y+dZpZSwfXWUFr2sRJwOGnnQH3mUVMuJaGCQt4ZtVcJHBu8BXeN08p+rmBHErDCfZrYzvEw49UggMMsl9CaB7DGmMt7fMYgNe0GPND+C8GD8ixbGhrFguvv7D58+y+AQ757WlfSqdb3MzID+6m1t/zvbZZUjJkTX14wxmAwPQfODQ1He80K2cIJeZHgMI=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <79CA904EDD63394090BDB7842F1164C9@namprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b649655-586d-41dc-376b-08d6f0cbf285
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2019 13:26:46.2964
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ykaradzhov@vmware.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0501MB3918
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 8:22 AM Alan Mikhak <alanmikhak@gmail.com> wrote:
->
-> On Wed, Jun 12, 2019 at 12:34 AM Yordan Karadzhov <ykaradzhov@vmware.com>=
- wrote:
-> > On 12.06.19 =D0=B3. 6:59 =D1=87., Alan Mikhak wrote:
-> > > Fix compiler error at KsSession.cpp:457:30 on Raspberry Pi 3
-> ::
-> > I am really curious to know how does KernelShark look and feel on
-> > Raspberry Pi. Would you shared with us your impressions.
-> > Honestly, I will be surprised if everything works fine ;)
-> >
->
-> Hi Yordan,
->
-> KernelShark launches on my Raspberry Pi 3 model B+, loads my trace
-> file, renders the screen elements, and is responsive. I have enabled a
-> swap file and GPU acceleration with extra memory for the GPU. From
-> looking at the code, rendering may even work on the CPU without
-> acceleration, but haven't tried it.
->
-> The abort issue on libkshark-model.c:242 currently limits KernelShark
-> on my Raspberry Pi 3 model B+:
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D203869
+Patches addressing the problem of having the paths to the build
+directory embedded in the final binaries. The problem was reported
+by Troy Engel.
 
-Hi Yorday,
+Changes in v2:
+ - In FindTraceCmd.cmake : discovering the trace-cmd executable is now
+ a compulsory requirement.
+ - A new buld type called "Package" has been defined.
 
-I installed trace-cmd and kernelshark on my Raspberry Pi 3 model B+
-using the following command:
+Yordan Karadzhov (3):
+  kernel-shark: Remove the "-g" compiler flag.
+  kernel-shark: Avoid TRACECMD_BIN_DIR being set to the build path
+  kernel-shark: Define a CMAKE_BUILD_TYPE "Package"
 
-$ sudo apt install trace-cmd kernelshark
+ kernel-shark/CMakeLists.txt           | 45 ++++++++++++++++++---------
+ kernel-shark/README                   | 22 +++++++++----
+ kernel-shark/build/FindTraceCmd.cmake | 18 ++++++-----
+ kernel-shark/build/deff.h.cmake       |  2 +-
+ kernel-shark/src/KsCaptureDialog.cpp  |  7 ++---
+ 5 files changed, 61 insertions(+), 33 deletions(-)
 
-The version of kernelshark installed by 'apt install' runs smoothly on
-my Raspberry Pi 3 model B+ and doesn't exhibit the abort issue I
-reported here about the version I built from sources.
+--=20
+2.20.1
 
-Regards,
-Alan
