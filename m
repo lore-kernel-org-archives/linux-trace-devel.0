@@ -2,64 +2,116 @@ Return-Path: <SRS0=wRMB=UQ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 387FCC31E5B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F883C31E5D
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jun 2019 22:32:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F17A820652
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jun 2019 22:32:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 30A692084D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jun 2019 22:32:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727974AbfFQWcX (ORCPT
+        id S1726336AbfFQWcY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 17 Jun 2019 18:32:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35828 "EHLO mail.kernel.org"
+        Mon, 17 Jun 2019 18:32:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbfFQWcX (ORCPT
+        id S1726963AbfFQWcX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 17 Jun 2019 18:32:23 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACC132080A;
+        by mail.kernel.org (Postfix) with ESMTPSA id C9E4B20833;
         Mon, 17 Jun 2019 22:32:22 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.92)
         (envelope-from <rostedt@goodmis.org>)
-        id 1hd0An-000332-O1; Mon, 17 Jun 2019 18:32:21 -0400
-Message-Id: <20190617223129.706595135@goodmis.org>
+        id 1hd0An-00033Z-Tz; Mon, 17 Jun 2019 18:32:21 -0400
+Message-Id: <20190617223221.815886530@goodmis.org>
 User-Agent: quilt/0.65
-Date:   Mon, 17 Jun 2019 18:31:29 -0400
+Date:   Mon, 17 Jun 2019 18:31:30 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Yordan Karadzhov <y.karadz@gmail.com>,
         Troy Engel <troyengel@gmail.com>
-Subject: [PATCH 0/2] kernel-shark: Make some top level "make" changes
+Subject: [PATCH 1/2] kernel-shark: Have "make clean" run cmake-clean.sh
+References: <20190617223129.706595135@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is built on top of the three patches from Yordan that can be
-found here:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-  https://patchwork.kernel.org/project/linux-trace-devel/list/?series=132531
+A make clean should clean up the cmake files as well.
 
-It makes "make clean" remove cmake generated files (my build failed
-and I couldn't figure out why. "make clean" should allow builds to
-build again when CMake files change).
+Update the kernel-shark/README to reflect some of the changes that
+have been made, and options done by the "make" command line.
 
-I also adde a "make BUILD_TYPE=foo" to pass to the cmake command to
-change the CMAKE_BUILD_TYPE to allow an easy build by the package
-maintainers to change how KernelShark is built.
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ Makefile            |  1 +
+ kernel-shark/README | 17 ++++++++++++-----
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
-Steven Rostedt (VMware) (2):
-      kernel-shark: Have "make clean" run cmake-clean.sh
-      kernel-shark: Add 'make BUILD_TYPE=X gui' to change how the gui is made
+diff --git a/Makefile b/Makefile
+index 693f33b69b4e..c9679d42fdbd 100644
+--- a/Makefile
++++ b/Makefile
+@@ -357,6 +357,7 @@ clean:
+ 	$(MAKE) -C $(src)/python clean
+ 	$(MAKE) -C $(src)/tracecmd clean
+ 	if [ -f $(kshark-dir)/build/Makefile ]; then $(MAKE) -C $(kshark-dir)/build clean; fi
++	cd $(kshark-dir)/build; ./cmake_clean.sh
+ 
+ 
+ ##### PYTHON STUFF #####
+diff --git a/kernel-shark/README b/kernel-shark/README
+index 75a0dd08dcac..4fb13698261b 100644
+--- a/kernel-shark/README
++++ b/kernel-shark/README
+@@ -31,6 +31,11 @@ Building:
+ the original trace-cmd end traceevent libraries.
+ 
+ 2. Do:
++    make gui
++
++This will perform the following, in case you want to do it directly
++yourself:
++
+     cd kernel-shark/build
+     cmake ../
+     make
+@@ -39,7 +44,11 @@ the original trace-cmd end traceevent libraries.
+ as a CMake Command-Line option.
+ 
+ 2.1.2 By default, installation prefix is "/usr/local". It can be changed using
+--D_INSTALL_PREFIX= as a CMake Command-Line option.
++-D_INSTALL_PREFIX= as a CMake Command-Line option. Which can also be
++done by passing in "prefix=" to the make command line.
++
++  make prefix=/my/local/dir gui
++
+ 
+ 2.1.3 In addition to the standard CMake build types (Debug, Release,
+ RelWithDebInfo, MinSizeRel) KernelShark supports a "Package" build type.
+@@ -57,10 +66,8 @@ Examples:
+ 
+     cmake -DCMAKE_BUILD_TYPE=Package -DCMAKE_C_FLAGS_PACKAGE="-O3 -pedantic"  ../
+ 
+-2.2.1 Use "make clean" if you want to delete all already compiled objects.
+-
+-2.2.2 Use the script "cmake_clean.sh" if you want to delete all already
+-compiled objects and all files generated by CMake.
++2.2 Use "make clean" if you want to delete all already compiled objects
++and all files generated by CMake.
+ 
+ 3. After building the code "kernel-shark/lib" will contain all libraries
+ and "kernel-shark/bin" will contain all executables.
+-- 
+2.20.1
 
-----
- Makefile                    |  6 +++++-
- kernel-shark/CMakeLists.txt |  2 +-
- kernel-shark/README         | 23 +++++++++++++++++------
- 3 files changed, 23 insertions(+), 8 deletions(-)
+
