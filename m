@@ -6,81 +6,60 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D495C31E50
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jun 2019 14:12:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 387FCC31E5B
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jun 2019 22:32:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5A34F2084B
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jun 2019 14:12:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F17A820652
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 17 Jun 2019 22:32:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbfFQOMN (ORCPT
+        id S1727974AbfFQWcX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 17 Jun 2019 10:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47060 "EHLO mail.kernel.org"
+        Mon, 17 Jun 2019 18:32:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbfFQOMN (ORCPT
+        id S1726336AbfFQWcX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 17 Jun 2019 10:12:13 -0400
+        Mon, 17 Jun 2019 18:32:23 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33DFE2084B;
-        Mon, 17 Jun 2019 14:12:12 +0000 (UTC)
-Date:   Mon, 17 Jun 2019 10:12:10 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id ACC132080A;
+        Mon, 17 Jun 2019 22:32:22 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.92)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1hd0An-000332-O1; Mon, 17 Jun 2019 18:32:21 -0400
+Message-Id: <20190617223129.706595135@goodmis.org>
+User-Agent: quilt/0.65
+Date:   Mon, 17 Jun 2019 18:31:29 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     tz.stoyanov@gmail.com
-Cc:     y.karadz@gmail.com, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 2/2] trace-cmd: Save the tracee memory map into the
- trace.dat file.
-Message-ID: <20190617101210.6bbf05ac@gandalf.local.home>
-In-Reply-To: <20190617093722.71de482b@gandalf.local.home>
-References: <20190617115218.6279-1-tz.stoyanov@gmail.com>
-        <20190617115218.6279-3-tz.stoyanov@gmail.com>
-        <20190617093722.71de482b@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Yordan Karadzhov <y.karadz@gmail.com>,
+        Troy Engel <troyengel@gmail.com>
+Subject: [PATCH 0/2] kernel-shark: Make some top level "make" changes
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 17 Jun 2019 09:37:22 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+This is built on top of the three patches from Yordan that can be
+found here:
 
-> As stated in the last email. The vector size is hard coded as 2, which
-> is why I'm reluctant to add a vector version now. If it was dynamic,
-> then that would be more of a reason. Here we can just create our own
-> structure and use that:
-> 
-> 	struct tracecmd_map_file {
-> 		int		nr_maps;
-> 		int		maps_len;
-> 		char		*maps;
-> 	}
-> 
-> Or something like that.
+  https://patchwork.kernel.org/project/linux-trace-devel/list/?series=132531
 
-As you can't send that to the tracecmd_add_option, you would need
-something more like this:
+It makes "make clean" remove cmake generated files (my build failed
+and I couldn't figure out why. "make clean" should allow builds to
+build again when CMake files change).
 
-	struct tracecmd_map_file {
-		int		nr_maps;
-		int		maps_len;
-		char		maps[0];
-	};
+I also adde a "make BUILD_TYPE=foo" to pass to the cmake command to
+change the CMAKE_BUILD_TYPE to allow an easy build by the package
+maintainers to change how KernelShark is built.
 
-And then you would need to copy it first before sending it:
+Steven Rostedt (VMware) (2):
+      kernel-shark: Have "make clean" run cmake-clean.sh
+      kernel-shark: Add 'make BUILD_TYPE=X gui' to change how the gui is made
 
-
-	struct tracecmd_map_file *tmap;
-
-	tmap = malloc(sizeof(*tmap) + s.len + 1);
-	
-	and copy the buffer:
-
-	memcpy(&tmap->maps[0], s.buffer, s.len + 1);
-
-before sending it to tracecmd_add_option();
-
--- Steve
+----
+ Makefile                    |  6 +++++-
+ kernel-shark/CMakeLists.txt |  2 +-
+ kernel-shark/README         | 23 +++++++++++++++++------
+ 3 files changed, 23 insertions(+), 8 deletions(-)
