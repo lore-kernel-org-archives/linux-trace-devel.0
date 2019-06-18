@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39F03C31E5B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jun 2019 14:40:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06D2FC31E5E
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jun 2019 14:40:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 12DE920B1F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jun 2019 14:40:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D0FEB20B1F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jun 2019 14:40:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YnmPlaeA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XtkwFDuT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729157AbfFROkR (ORCPT
+        id S1729383AbfFROkT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 18 Jun 2019 10:40:17 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:39137 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728572AbfFROkR (ORCPT
+        Tue, 18 Jun 2019 10:40:19 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:39142 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728572AbfFROkT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 18 Jun 2019 10:40:17 -0400
-Received: by mail-wr1-f66.google.com with SMTP id x4so14288242wrt.6
-        for <linux-trace-devel@vger.kernel.org>; Tue, 18 Jun 2019 07:40:16 -0700 (PDT)
+        Tue, 18 Jun 2019 10:40:19 -0400
+Received: by mail-wr1-f67.google.com with SMTP id x4so14288413wrt.6
+        for <linux-trace-devel@vger.kernel.org>; Tue, 18 Jun 2019 07:40:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RUcBoUQNQrgcKDeseDcABNoAkO9CRuGl+8Gvj7tg0ew=;
-        b=YnmPlaeADoYLE3JJykLbpdi0NDlM9Yuo1qy/WrfUGlqvHEio/b6bmSOY8XS3FYP0UH
-         eILO2uj/xQzqX+oySRlF6gTtXrzZoF6rwgtcLfYpiWUqqyI7vKPz5Fd4ZA+ZbXZVnMr6
-         kED43+NEU/5sC1Yj0BIPAT4GM/q5BOtzKb8462oZrLFRD3wDxNXZ0uFBJfeO4S6E3Tlx
-         qluw7yHO4qODn6XALI1VI+lF/IwNXI6GGhNU+6qpgKzXyz0SYE4rFPhWD8HOf5K6aKRt
-         /zlZrGfOvAyoqCzJeBEHZyAvEO27hV6cNewo3L2y3PGgMUzq13J9OyEXxS/Zv2iwYg/c
-         VNhQ==
+        bh=wRhE2USNkyWhVFESY7aZ28+NJrvuNFHOu+uZjWk5Vnk=;
+        b=XtkwFDuTUMWtqwmghV0NTwRq/S0yPkyRTvaRkigxGCE7jaKvO/NDhY6rV3RUTBGxEO
+         xFN/FtBOTS4ljbcORLWaZmc/maD+23rTNiYS97XFTgF0LHJR5AFvl6Tf5S1Zmj9IEIAJ
+         RfXCLw15+StA2r5P7G1SDbTeeVL30PwWTBIp/FXfpi9pnc01JaIT6/Ym1Lh1pnhxx6Bw
+         XXrHggehv9EW3+NIK8Az8/thlMKRvOwtfC5dQ7MnnS3lo0Sb74JrmKrghur6YmAumAkE
+         dXhdT4L0JosLCLL3gqEzK4L5/7wSW0UBNP4JXAdzoAPn+eryEkTExm9TsawQKRTajav5
+         NXmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RUcBoUQNQrgcKDeseDcABNoAkO9CRuGl+8Gvj7tg0ew=;
-        b=fNVe+HzaTuRmducQMdC+cany1zdI8lf60brGZ/x/h8Wx2+IiyXzDf939dca7OZs7RM
-         sV6OTqVeEXBbnzCGqZk4sBbKLpVitPBtiCV6fXXKkJrboSRjdTuEfV9tK6AtYMm7cSwl
-         ridtHBC6+DI/BB/0Kl1XhTkq1027zPUv0Q+d1bSpcTCyN6LlCt2dw4EtXcpKTIBBWqB9
-         LYPHqsxtpIZCskada8KNVFdpisI4RZWNY7DfiJyZknl2Ca97aAJhpkWjUIVXub8qDq64
-         j/nI0NlMGGoAE05K7EKEKCbhhXIVj/C13GyFYucrCVa41wJ4ErsH7++ZQl5BXaIPuGPx
-         xLZA==
-X-Gm-Message-State: APjAAAWjb7l6SkC3ZPdqaTk5hBIEZpxaZFwrB/5RvdcaSmY6rTVYynl0
-        6+MXiu0pC+0CDBNf7Pm3olN1jM8=
-X-Google-Smtp-Source: APXvYqzfGL5Pb7gUYgoGsch7UzjNcLOwyMdIrSndndzkksOXcPrrrqyTM1Hw5l7stPxga5ZvVl0hgw==
-X-Received: by 2002:adf:fb47:: with SMTP id c7mr45303868wrs.116.1560868815290;
-        Tue, 18 Jun 2019 07:40:15 -0700 (PDT)
+        bh=wRhE2USNkyWhVFESY7aZ28+NJrvuNFHOu+uZjWk5Vnk=;
+        b=k8c3YC7j8dgUo7aYvZ88etGAWE5UYh704gEfzbEhJaBiAJwwxX3DY3F8GDNg4RfGbd
+         7tBfcAn6msF4z5F/pSiEGIa59SsguTBVR+GD2tlk/5kK+1W+gl1wqi68vsm0X1HIQrLe
+         gPXssnJcAPnrvHmea6GPC2rO0DSlCwVF5Twtl7ChbF7cjgacRsUo9tNsAVeWKClUOIKa
+         r6n1s8xFtXhlRclNa1y1UqF1QrzwqkhGVDG3BYal3alB/Kv2at5VreTEbEuIhFkon6zL
+         fvo56uT5TMu+Xde0dAOwhuv6y1Er6YE6IFACzvZuha3qvWzdfjFs8t1U9UBHh6XnsvQS
+         r+Lg==
+X-Gm-Message-State: APjAAAWYHN4STrtPdlGUVrNSgRF0F8S9G+33dZH1FD34cqembJTupYgZ
+        D/kN7ckUxQ2p5tmy72jM1aAGyac=
+X-Google-Smtp-Source: APXvYqxbXLATIfiGcFwTFlGevXd30wx7WAKqa0ti9gfhsEzgOea/48iM3oMg2oMFFHXvO8EHmFv/sA==
+X-Received: by 2002:a5d:4752:: with SMTP id o18mr12496507wrs.74.1560868817624;
+        Tue, 18 Jun 2019 07:40:17 -0700 (PDT)
 Received: from box.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id y1sm2411808wma.32.2019.06.18.07.40.14
+        by smtp.gmail.com with ESMTPSA id y1sm2411808wma.32.2019.06.18.07.40.16
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 18 Jun 2019 07:40:14 -0700 (PDT)
+        Tue, 18 Jun 2019 07:40:16 -0700 (PDT)
 From:   "Slavomir Kaslev (VMware)" <slavomir.kaslev@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v11 08/13] trace-cmd: Switch stop recording signal to SIGUSR1
-Date:   Tue, 18 Jun 2019 17:39:53 +0300
-Message-Id: <20190618143958.2865-9-slavomir.kaslev@gmail.com>
+Subject: [PATCH v11 10/13] trace-cmd: Try to autodetect number of guest CPUs in setup-guest if not specified
+Date:   Tue, 18 Jun 2019 17:39:55 +0300
+Message-Id: <20190618143958.2865-11-slavomir.kaslev@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190618143958.2865-1-slavomir.kaslev@gmail.com>
 References: <20190618143958.2865-1-slavomir.kaslev@gmail.com>
@@ -73,63 +73,70 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Using Ctrl-C to stop trace-cmd recording from the command line delivers SIGINT
-to all its child processes. Switch internal recording stop notification to
-SIGUSR1 so that notifying recording child processes can be delayed in order to
-do proper flushing when doing remote VM tracing.
+From: Slavomir Kaslev <kaslevs@vmware.com>
 
-Also remove the flush() function, which is only used by trace-cmd listen, and
-use finish() instead without changing listener's behavior.
+When no number of guest CPUs is provided with the -c flag to `trace-cmd
+setup-guest`, try to autodetect it using virsh for libvirt managed guests.
 
+Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 Signed-off-by: Slavomir Kaslev (VMware) <slavomir.kaslev@gmail.com>
 ---
- tracecmd/trace-record.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ tracecmd/trace-setup-guest.c | 21 +++++++++++++++++++++
+ tracecmd/trace-usage.c       |  2 +-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index f6e5c7e..d98cd39 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -673,7 +673,7 @@ static void stop_threads(enum trace_type type)
- 	/* Tell all threads to finish up */
- 	for (i = 0; i < recorder_threads; i++) {
- 		if (pids[i].pid > 0) {
--			kill(pids[i].pid, SIGINT);
-+			kill(pids[i].pid, SIGUSR1);
- 		}
- 	}
- 
-@@ -2653,12 +2653,6 @@ static void finish(int sig)
- 	finished = 1;
+diff --git a/tracecmd/trace-setup-guest.c b/tracecmd/trace-setup-guest.c
+index a6f58dc..a55a37d 100644
+--- a/tracecmd/trace-setup-guest.c
++++ b/tracecmd/trace-setup-guest.c
+@@ -93,6 +93,24 @@ static int make_guest_fifos(const char *guest, int nr_cpus, mode_t mode)
+ 	return ret;
  }
  
--static void flush(int sig)
--{
--	if (recorder)
--		tracecmd_stop_recording(recorder);
--}
--
- static int connect_port(const char *host, unsigned int port)
- {
- 	struct addrinfo hints;
-@@ -3013,7 +3007,6 @@ static int create_recorder(struct buffer_instance *instance, int cpu,
- 	pid_t pid;
- 
- 	if (type != TRACE_TYPE_EXTRACT) {
--		signal(SIGUSR1, flush);
- 
- 		pid = fork();
- 		if (pid < 0)
-@@ -3022,6 +3015,9 @@ static int create_recorder(struct buffer_instance *instance, int cpu,
- 		if (pid)
- 			return pid;
- 
-+		signal(SIGINT, SIG_DFL);
-+		signal(SIGUSR1, finish);
++static int get_guest_cpu_count(const char *guest)
++{
++	const char *cmd_fmt = "virsh vcpucount --maximum '%s' 2>/dev/null";
++	int nr_cpus = -1;
++	char cmd[1024];
++	FILE *f;
 +
- 		if (rt_prio)
- 			set_prio(rt_prio);
++	snprintf(cmd, sizeof(cmd), cmd_fmt, guest);
++	f = popen(cmd, "r");
++	if (!f)
++		return -errno;
++
++	fscanf(f, "%d", &nr_cpus);
++	pclose(f);
++
++	return nr_cpus;
++}
++
+ static void do_setup_guest(const char *guest, int nr_cpus, mode_t mode, gid_t gid)
+ {
+ 	gid_t save_egid;
+@@ -171,6 +189,9 @@ void trace_setup_guest(int argc, char **argv)
  
+ 	guest = argv[optind+1];
+ 
++	if (nr_cpus <= 0)
++		nr_cpus = get_guest_cpu_count(guest);
++
+ 	if (nr_cpus <= 0)
+ 		pdie("invalid number of cpus for guest %s", guest);
+ 
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 0d1b58e..a2a520c 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -251,7 +251,7 @@ static struct usage_help usage_help[] = {
+ 	{
+ 		"setup-guest",
+ 		"create FIFOs for tracing guest VMs",
+-		" %s setup-guest -c cpus[-p perm][-g group] guest\n"
++		" %s setup-guest [-c cpus][-p perm][-g group] guest\n"
+ 		"          -c number of guest virtual CPUs\n"
+ 		"          -p FIFOs permissions (default: 0660)\n"
+ 		"          -g FIFOs group owner\n"
 -- 
 2.20.1
 
