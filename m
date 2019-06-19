@@ -1,66 +1,95 @@
-Return-Path: <SRS0=s7zG=UR=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=4yZ8=US=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9FF6C31E5B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jun 2019 21:29:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DC1BC31E49
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jun 2019 06:28:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9F7532082C
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 18 Jun 2019 21:29:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 03C1A20B1F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jun 2019 06:28:27 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ot01YKbp"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730301AbfFRV3g (ORCPT
+        id S1725980AbfFSG20 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 18 Jun 2019 17:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730196AbfFRV3g (ORCPT
+        Wed, 19 Jun 2019 02:28:26 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:36413 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbfFSG20 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 18 Jun 2019 17:29:36 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AA422082C;
-        Tue, 18 Jun 2019 21:29:33 +0000 (UTC)
-Date:   Tue, 18 Jun 2019 17:29:31 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     tz.stoyanov@gmail.com
-Cc:     y.karadz@gmail.com, linux-trace-devel@vger.kernel.org
+        Wed, 19 Jun 2019 02:28:26 -0400
+Received: by mail-wr1-f66.google.com with SMTP id n4so1987614wrs.3
+        for <linux-trace-devel@vger.kernel.org>; Tue, 18 Jun 2019 23:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4s3NLjTeCIWSlmjCvWgYrUPY3qrKX9hbQyMwr19HdLI=;
+        b=ot01YKbpmT+Fgh17l/fpAGencoByNoba5kpSSK56Fm1zZOxRCy/vzN6iCM+VURQyfY
+         5tCPCBNenJzPZuppuOXbQzz/vkLbW3vizZF6y0Vu3if9eACjVymEgn/gELD5zQzI5yR9
+         CbQ3LHEQzdxu/aWd3LsxJhoESXWp1RnEzN/lFAFm/kAiHsK/V6TwSrG4Noagled1FpxF
+         SEk1wC6BXxmWmkX7ziYDvuKcdSZZDY07tb67A3rI8wlViKYrQXpQMvAFczulEr/m0D9D
+         AxcJsZ0u8GbYoalijX1HNZA/A8xBwWMOGCPQDeAyZS89JVnOLjdMktx3m08Y3ZFKYNlX
+         tXbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4s3NLjTeCIWSlmjCvWgYrUPY3qrKX9hbQyMwr19HdLI=;
+        b=aBnh0G6ayqVbd0pKCbpL/PyB79X0BxaGJOVxq2AHwNvu7T4u85vDcUUgnjEnO+djfw
+         ozyE/yWyoNsvwF9M0Ju1hMbJAZblZuR/KM6gi4j/corc5kSyppzf7+cBaj3ANzN0/JLa
+         Og+G919xAzChIdywHuiGWGq1D0xnu1ejYDtD8FnEH4Y3OH49i83ju3FsuoCiWaKwBr6n
+         bg2Dj6P351F/ERu4m11lcF+gqVWsVvCvtYt9GVwvfncdE7Mhz8Pt3Tlhg8goZE0Qmfv1
+         ovzKxSjneEC9+GzaIn7yOGQrapJBbqiPkVi3O+sHVgoTf0IfOXju1jCVEqy+uv8dA5mj
+         PLpw==
+X-Gm-Message-State: APjAAAUFIZhCqsrHiP5Ou/ChvkY1fedaeHuYcjE6g/67acikDe+IfaqX
+        auYMf+NRxdPdghRTqj3YCfryHFbo
+X-Google-Smtp-Source: APXvYqwzPxYOjUN1hUWiIqDjNo0pdouOQSaiQZlNtCNEQbKuX5DdwIYh8d4Vacnv0wQ6ziVyewqACA==
+X-Received: by 2002:adf:a201:: with SMTP id p1mr53197938wra.113.1560925702282;
+        Tue, 18 Jun 2019 23:28:22 -0700 (PDT)
+Received: from [10.27.113.15] ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id g10sm13173748wrw.60.2019.06.18.23.28.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 Jun 2019 23:28:21 -0700 (PDT)
 Subject: Re: [PATCH v2] trace-cmd: Save the tracee memory map into the
  trace.dat file.
-Message-ID: <20190618172931.012c1317@gandalf.local.home>
-In-Reply-To: <20190618143245.1377-1-tz.stoyanov@gmail.com>
+To:     tz.stoyanov@gmail.com, rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
 References: <20190618143245.1377-1-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <4380325c-6f41-2dc8-90ae-3f976c4886f4@gmail.com>
+Date:   Wed, 19 Jun 2019 09:28:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20190618143245.1377-1-tz.stoyanov@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 18 Jun 2019 17:32:45 +0300
-tz.stoyanov@gmail.com wrote:
 
+
+On 18.06.19 г. 17:32 ч., tz.stoyanov@gmail.com wrote:
 > From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 > 
 > [
->  v2 changes:
->    - Replaced usage of tracecmd_add_option_v() with tracecmd_add_option() API.
->    - Added checks to prevent buffer overflow when sscanf (... "%s", buf) is used.
->    - Return error in case memory allocation fails.
->    - Return error if option string is not in the expected format.
->    - Sort memory maps and use binary search to find matching library in the map.
+>   v2 changes:
+>     - Replaced usage of tracecmd_add_option_v() with tracecmd_add_option() API.
+>     - Added checks to prevent buffer overflow when sscanf (... "%s", buf) is used.
+>     - Return error in case memory allocation fails.
+>     - Return error if option string is not in the expected format.
+>     - Sort memory maps and use binary search to find matching library in the map.
 > ]
-
-Hi Tzvetomir!
-
-Note, "v2 changes" text should be below the 3 lines after the SOB.
-
 > 
 > A new trace-cmd record option is added: "--mmap". When it is set with
 > combination of -F or -P options, the memory map of the traced applications
@@ -70,73 +99,50 @@ Note, "v2 changes" text should be below the 3 lines after the SOB.
 > 
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
-
-  v2 changes:
-    - Replaced usage of tracecmd_add_option_v() with
-  tracecmd_add_option() API.
-    - Added checks to prevent buffer overflow when sscanf (... "%s",
-  buf) is used.
-    - Return error in case memory allocation fails.
-    - Return error if option string is not in the expected format.
-    - Sort memory maps and use binary search to find matching library
-  in the map.
-
-This way a "git am" will ignore it. This is what the Linux kernel
-community usually does.
-
-
->  include/trace-cmd/trace-cmd.h  |   4 +
->  lib/trace-cmd/trace-input.c    | 140 ++++++++++++++++++++++++++++++++-
->  tracecmd/include/trace-local.h |  16 ++++
->  tracecmd/trace-record.c        | 137 ++++++++++++++++++++++++++++++++
->  4 files changed, 294 insertions(+), 3 deletions(-)
+>   include/trace-cmd/trace-cmd.h  |   4 +
+>   lib/trace-cmd/trace-input.c    | 140 ++++++++++++++++++++++++++++++++-
+>   tracecmd/include/trace-local.h |  16 ++++
+>   tracecmd/trace-record.c        | 137 ++++++++++++++++++++++++++++++++
+>   4 files changed, 294 insertions(+), 3 deletions(-)
 > 
 > diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
 > index 6f62ab9..210be03 100644
 > --- a/include/trace-cmd/trace-cmd.h
 > +++ b/include/trace-cmd/trace-cmd.h
 > @@ -82,6 +82,7 @@ enum {
->  	TRACECMD_OPTION_OFFSET,
->  	TRACECMD_OPTION_CPUCOUNT,
->  	TRACECMD_OPTION_VERSION,
+>   	TRACECMD_OPTION_OFFSET,
+>   	TRACECMD_OPTION_CPUCOUNT,
+>   	TRACECMD_OPTION_VERSION,
 > +	TRACECMD_OPTION_PIDMMAPS,
->  };
->  
->  enum {
+>   };
+>   
+>   enum {
 > @@ -208,6 +209,9 @@ unsigned long long tracecmd_page_ts(struct tracecmd_input *handle,
->  unsigned int tracecmd_record_ts_delta(struct tracecmd_input *handle,
->  				      struct tep_record *record);
->  
+>   unsigned int tracecmd_record_ts_delta(struct tracecmd_input *handle,
+>   				      struct tep_record *record);
+>   
 > +char *tracecmd_get_tracee_lib(struct tracecmd_input *handle,
 > +			      int pid, unsigned long addr);
-
-Hmm, I rather not call it "tracee", that's a bit slang.
-
-Perhaps just call it "task"
-
-  tracecmd_get_task_lib()
-
-
 > +
->  #ifndef SWIG
->  /* hack for function graph work around */
->  extern __thread struct tracecmd_input *tracecmd_curr_thread_handle;
+>   #ifndef SWIG
+>   /* hack for function graph work around */
+>   extern __thread struct tracecmd_input *tracecmd_curr_thread_handle;
 > diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
 > index 61566ba..e2a06a8 100644
 > --- a/lib/trace-cmd/trace-input.c
 > +++ b/lib/trace-cmd/trace-input.c
 > @@ -101,6 +101,7 @@ struct tracecmd_input {
->  	struct tracecmd_ftrace	finfo;
->  
->  	struct hook_list	*hooks;
+>   	struct tracecmd_ftrace	finfo;
+>   
+>   	struct hook_list	*hooks;
 > +	struct pid_mem_maps	*pid_mmaps;
->  	/* file information */
->  	size_t			header_files_start;
->  	size_t			ftrace_files_start;
+>   	/* file information */
+>   	size_t			header_files_start;
+>   	size_t			ftrace_files_start;
 > @@ -2134,6 +2135,138 @@ void tracecmd_set_ts2secs(struct tracecmd_input *handle,
->  	handle->use_trace_clock = false;
->  }
->  
+>   	handle->use_trace_clock = false;
+>   }
+>   
 > +static int trace_pid_mmap_cmp(const void *a, const void *b)
 > +{
 > +	struct lib_mem_map *map_a = (struct lib_mem_map *)a;
@@ -188,38 +194,6 @@ Perhaps just call it "task"
 > +		free(maps);
 > +		return -ENOMEM;
 > +	}
-
-
-BTW, when you have a lot failure paths like this, you can make do the
-following:
-
-	ret = -EINVAL;
-
-	line = strchr(buf, '\n');
-	if (!line)
-		goto out_fail;
-
-	[..]
-	if (strlen(buf) > STR_MMAP_LINE_MAX)
-		goto out_fail;
-	[..]
-
-	if (ret != 3)
-		goto out_fail;
-
-	ret = -ENOMEM;
-
-	maps->proc_name = strdup(mapname);
-	if (!maps->proc_name)
-		goto out_fail;
-
-	[..]
-	if (!maps->lib_maps)
-		goto out_fail;
-
-
-
-
 > +	maps->next = handle->pid_mmaps;
 > +	handle->pid_mmaps = maps;
 > +	buf = line+1;
@@ -236,39 +210,18 @@ following:
 > +			maps->lib_maps[i].lib_name = strdup(mapname);
 > +			if (!maps->lib_maps[i].lib_name)
 > +				return -ENOMEM;
-
-Hmm, perhaps we should wait to update handle->pid_maps until after
-this, and have this goto out_fail as well.
-
 > +		}
 > +		buf = line+1;
 > +		line = strchr(buf, '\n');
 > +	}
 > +
 > +	if (i != maps->nr_lib_maps)
-
-Here too.
-
 > +		return -EINVAL;
 > +
 > +	qsort(maps->lib_maps, maps->nr_lib_maps,
 > +	      sizeof(*maps->lib_maps), trace_pid_mmap_cmp);
-
-Here we should update handle->pid_mmaps = maps;
-
 > +
 > +	return 0;
-
-Here we have:
-
- out_fail:
-	free(maps->lib_maps);
-	free(maps->proc_name);
-	free(maps);
-
-	return ret;
-
-	
 > +}
 > +
 > +static int trace_pid_mmap_search(const void *a, const void *b)
@@ -285,14 +238,8 @@ Here we have:
 > +
 > +/**
 > + * tracecmd_search_tracee_mmap - Search tracee memory address map
-
-Probably want to call this tracecmd_search_task_mmap().
-
 > + * @handle: input handle to the trace.dat file
 > + * @pid: pid of the tracee
-
-  of the task
-
 > + * @addr: address from the tracee memory space.
 > + *
 > + * Map of the tracee memory can be saved in the trace.dat file, using the option
@@ -328,38 +275,51 @@ Probably want to call this tracecmd_search_task_mmap().
 > +	return NULL;
 > +}
 > +
->  static int handle_options(struct tracecmd_input *handle)
->  {
->  	unsigned long long offset;
+
+Having only the name of the library doesn't provide enough information. 
+We also need the range in the address space of the process occupied by 
+this library. Without knowing this, there is no way to map one 
+instruction pointer in the address space of the process to the its 
+address in the library.
+
+Maybe you can change the interface function to return  constant pointer 
+to the lib_mem_map object instead of just the string containing the name.
+
+Thanks!
+Yordan
+
+>   static int handle_options(struct tracecmd_input *handle)
+>   {
+>   	unsigned long long offset;
 > @@ -2221,9 +2354,6 @@ static int handle_options(struct tracecmd_input *handle)
->  		case TRACECMD_OPTION_UNAME:
->  			handle->uname = strdup(buf);
->  			break;
+>   		case TRACECMD_OPTION_UNAME:
+>   			handle->uname = strdup(buf);
+>   			break;
 > -		case TRACECMD_OPTION_VERSION:
 > -			handle->version = strdup(buf);
 > -			break;
->  		case TRACECMD_OPTION_HOOK:
->  			hook = tracecmd_create_event_hook(buf);
->  			hook->next = handle->hooks;
+>   		case TRACECMD_OPTION_HOOK:
+>   			hook = tracecmd_create_event_hook(buf);
+>   			hook->next = handle->hooks;
 > @@ -2233,6 +2363,10 @@ static int handle_options(struct tracecmd_input *handle)
->  			cpus = *(int *)buf;
->  			handle->cpus = tep_read_number(handle->pevent, &cpus, 4);
->  			break;
+>   			cpus = *(int *)buf;
+>   			handle->cpus = tep_read_number(handle->pevent, &cpus, 4);
+>   			break;
 > +		case TRACECMD_OPTION_PIDMMAPS:
 > +			if (buf[size] == '\0')
 > +				trace_pid_mmap_load(handle, buf);
 > +			break;
->  		default:
->  			warning("unknown option %d", option);
->  			break;
+>   		default:
+>   			warning("unknown option %d", option);
+>   			break;
 > diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
 > index 1cad3cc..dc4dc03 100644
 > --- a/tracecmd/include/trace-local.h
 > +++ b/tracecmd/include/trace-local.h
 > @@ -157,6 +157,20 @@ struct func_list {
->  	const char *mod;
->  };
->  
+>   	const char *mod;
+>   };
+>   
 > +struct lib_mem_map {
 > +	unsigned long long	start;
 > +	unsigned long long	end;
@@ -374,34 +334,34 @@ Probably want to call this tracecmd_search_task_mmap().
 > +	int			pid;
 > +};
 > +
->  struct buffer_instance {
->  	struct buffer_instance	*next;
->  	const char		*name;
+>   struct buffer_instance {
+>   	struct buffer_instance	*next;
+>   	const char		*name;
 > @@ -183,6 +197,8 @@ struct buffer_instance {
->  	struct tracecmd_msg_handle *msg_handle;
->  	struct tracecmd_output *network_handle;
->  
+>   	struct tracecmd_msg_handle *msg_handle;
+>   	struct tracecmd_output *network_handle;
+>   
 > +	struct pid_mem_maps	*mem_maps;
 > +
->  	char			*max_graph_depth;
->  
->  	int			flags;
+>   	char			*max_graph_depth;
+>   
+>   	int			flags;
 > diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
 > index 5dc6f17..a938ce3 100644
 > --- a/tracecmd/trace-record.c
 > +++ b/tracecmd/trace-record.c
 > @@ -84,6 +84,7 @@ static int max_kb;
->  static bool use_tcp;
->  
->  static int do_ptrace;
+>   static bool use_tcp;
+>   
+>   static int do_ptrace;
 > +static int get_mmap;
->  
->  static int filter_task;
->  static int filter_pid = -1;
+>   
+>   static int filter_task;
+>   static int filter_pid = -1;
 > @@ -1062,6 +1063,98 @@ static char *make_pid_filter(char *curr_filter, const char *field)
->  	return filter;
->  }
->  
+>   	return filter;
+>   }
+>   
 > +static int get_pid_mmaps(int pid)
 > +{
 > +	struct buffer_instance *instance = &top_instance;
@@ -423,17 +383,6 @@ Probably want to call this tracecmd_search_task_mmap().
 > +			break;
 > +		maps = maps->next;
 > +	}
-
-BTW, each time I look at this code, I think this is a bug because you
-don't check for (!maps) at the end of this loop. But then notice below
-you do. Let's move this while loop to just before the:
-
-	if (!maps) {
-
-As it makes more sense to keep them together, and less likely that we
-think maps is used as NULL.
-
-
 > +
 > +	sprintf(fname, "/proc/%d/exe", pid);
 > +	ret = readlink(fname, mapname, PATH_MAX);
@@ -464,14 +413,6 @@ think maps is used as NULL.
 > +	maps->proc_name = strdup(mapname);
 > +	if (!maps->proc_name)
 > +		return -ENOMEM;
-
-We need to close 'f' before we return an error. Let's do:
-
-	ret = -ENOMEM;
-	maps->proc_name = strdup(mapname);
-	if (!maps->proc_name)
-		goto out;
-
 > +
 > +	ret = 0;
 > +	while (fgets(buf, sizeof(buf), f)) {
@@ -492,31 +433,14 @@ We need to close 'f' before we return an error. Let's do:
 > +				ret = -ENOMEM;
 > +				free(map);
 > +				break;
-
-I'm thinking on error, we goto "out_fail" and remove all maps.
-
 > +			}
 > +			maps->lib_maps = map;
 > +			maps->nr_lib_maps++;
 > +		}
 > +	}
-
- out:
-
 > +	fclose(f);
 > +
 > +	return ret;
-
-out_fail:
-
-	for (i = 0; i < maps->nr_lib_maps; i++) {
-		free(maps->lib_maps[i].lib_name);
-	free(maps->lib_maps);
-
-But we would also need to remove it from the instance->mem_maps list.
-
--- Steve
-
 > +}
 > +
 > +static void get_filter_pid_mmaps(void)
@@ -530,32 +454,32 @@ But we would also need to remove it from the instance->mem_maps list.
 > +	}
 > +}
 > +
->  static void update_task_filter(void)
->  {
->  	struct buffer_instance *instance;
+>   static void update_task_filter(void)
+>   {
+>   	struct buffer_instance *instance;
 > @@ -1070,6 +1163,9 @@ static void update_task_filter(void)
->  	if (no_filter)
->  		return;
->  
+>   	if (no_filter)
+>   		return;
+>   
 > +	if (get_mmap && filter_pids)
 > +		get_filter_pid_mmaps();
 > +
->  	if (filter_task)
->  		add_filter_pid(pid, 0);
->  
+>   	if (filter_task)
+>   		add_filter_pid(pid, 0);
+>   
 > @@ -1264,6 +1360,8 @@ static void ptrace_wait(enum trace_type type, int main_pid)
->  				break;
->  
->  			case PTRACE_EVENT_EXIT:
+>   				break;
+>   
+>   			case PTRACE_EVENT_EXIT:
 > +				if (get_mmap)
 > +					get_pid_mmaps(main_pid);
->  				ptrace(PTRACE_GETEVENTMSG, pid, NULL, &cstatus);
->  				ptrace(PTRACE_DETACH, pid, NULL, NULL);
->  				break;
+>   				ptrace(PTRACE_GETEVENTMSG, pid, NULL, &cstatus);
+>   				ptrace(PTRACE_DETACH, pid, NULL, NULL);
+>   				break;
 > @@ -3094,6 +3192,33 @@ static void append_buffer(struct tracecmd_output *handle,
->  	}
->  }
->  
+>   	}
+>   }
+>   
 > +
 > +static void
 > +add_pid_mem_maps(struct tracecmd_output *handle, struct buffer_instance *instance)
@@ -583,54 +507,54 @@ But we would also need to remove it from the instance->mem_maps list.
 > +	trace_seq_destroy(&s);
 > +}
 > +
->  static void
->  add_buffer_stat(struct tracecmd_output *handle, struct buffer_instance *instance)
->  {
+>   static void
+>   add_buffer_stat(struct tracecmd_output *handle, struct buffer_instance *instance)
+>   {
 > @@ -3287,6 +3412,10 @@ static void record_data(struct common_record_context *ctx)
->  		if (!no_top_instance() && !top_instance.msg_handle)
->  			print_stat(&top_instance);
->  
+>   		if (!no_top_instance() && !top_instance.msg_handle)
+>   			print_stat(&top_instance);
+>   
 > +		for_all_instances(instance) {
 > +			add_pid_mem_maps(handle, instance);
 > +		}
 > +
->  		tracecmd_append_cpu_data(handle, local_cpu_count, temp_files);
->  
->  		for (i = 0; i < max_cpu_count; i++)
+>   		tracecmd_append_cpu_data(handle, local_cpu_count, temp_files);
+>   
+>   		for (i = 0; i < max_cpu_count; i++)
 > @@ -4397,6 +4526,7 @@ void update_first_instance(struct buffer_instance *instance, int topt)
->  }
->  
->  enum {
+>   }
+>   
+>   enum {
 > +	OPT_mmap		= 244,
->  	OPT_quiet		= 245,
->  	OPT_debug		= 246,
->  	OPT_no_filter		= 247,
+>   	OPT_quiet		= 245,
+>   	OPT_debug		= 246,
+>   	OPT_no_filter		= 247,
 > @@ -4627,6 +4757,7 @@ static void parse_record_options(int argc,
->  			{"debug", no_argument, NULL, OPT_debug},
->  			{"quiet", no_argument, NULL, OPT_quiet},
->  			{"help", no_argument, NULL, '?'},
+>   			{"debug", no_argument, NULL, OPT_debug},
+>   			{"quiet", no_argument, NULL, OPT_quiet},
+>   			{"help", no_argument, NULL, '?'},
 > +			{"mmap", no_argument, NULL, OPT_mmap},
->  			{"module", required_argument, NULL, OPT_module},
->  			{NULL, 0, NULL, 0}
->  		};
+>   			{"module", required_argument, NULL, OPT_module},
+>   			{NULL, 0, NULL, 0}
+>   		};
 > @@ -4858,6 +4989,9 @@ static void parse_record_options(int argc,
->  		case 'i':
->  			ignore_event_not_found = 1;
->  			break;
+>   		case 'i':
+>   			ignore_event_not_found = 1;
+>   			break;
 > +		case OPT_mmap:
 > +			get_mmap = 1;
 > +			break;
->  		case OPT_date:
->  			ctx->date = 1;
->  			if (ctx->data_flags & DATA_FL_OFFSET)
+>   		case OPT_date:
+>   			ctx->date = 1;
+>   			if (ctx->data_flags & DATA_FL_OFFSET)
 > @@ -4924,6 +5058,9 @@ static void parse_record_options(int argc,
->  		add_func(&ctx->instance->filter_funcs,
->  			 ctx->instance->filter_mod, "*");
->  
+>   		add_func(&ctx->instance->filter_funcs,
+>   			 ctx->instance->filter_mod, "*");
+>   
 > +	if (filter_task && get_mmap)
 > +		do_ptrace = 1;
 > +
->  	if (do_ptrace && !filter_task && (filter_pid < 0))
->  		die(" -c can only be used with -F (or -P with event-fork support)");
->  	if (ctx->do_child && !filter_task &&! filter_pid)
-
+>   	if (do_ptrace && !filter_task && (filter_pid < 0))
+>   		die(" -c can only be used with -F (or -P with event-fork support)");
+>   	if (ctx->do_child && !filter_task &&! filter_pid)
+> 
