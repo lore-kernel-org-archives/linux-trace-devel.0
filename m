@@ -1,175 +1,634 @@
-Return-Path: <SRS0=4yZ8=US=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=toqP=UX=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URIBL_GREY
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C95BC31E49
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jun 2019 14:47:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92FEDC43613
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jun 2019 10:15:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4C3E4214AF
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 19 Jun 2019 14:47:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5296F205C9
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Jun 2019 10:15:05 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hHM63GFR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbfFSOrW convert rfc822-to-8bit (ORCPT
+        id S1728689AbfFXKPF (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 19 Jun 2019 10:47:22 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:37725 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726246AbfFSOrW (ORCPT
+        Mon, 24 Jun 2019 06:15:05 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:37614 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727730AbfFXKPE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 19 Jun 2019 10:47:22 -0400
-Received: by mail-io1-f67.google.com with SMTP id e5so38830986iok.4;
-        Wed, 19 Jun 2019 07:47:21 -0700 (PDT)
+        Mon, 24 Jun 2019 06:15:04 -0400
+Received: by mail-wm1-f65.google.com with SMTP id f17so12763901wme.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 24 Jun 2019 03:15:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1hlSO+sEs6lUGO6AJAtj+vloymiaoUsBvyYS+NprwCc=;
+        b=hHM63GFRqhq4DFisJCDNJglkMY46iB8uk696lscRPUL4biHXeB6M6X2wxa4L0E67r3
+         jpY2SOs+QvAy/GiSZVNO9fEwGxKXPIyNux6XWstck501n2lkoxYmzQ4aQprHelvfeRrv
+         8yHfrWrkcsQN5KYNfVylX44zagzsekTlngXPauYsyRNNVPDSb3SI30PeaWhK3eidMw1g
+         X1DjtshoXgkDCT8S33QRATqwoRS0atm24vlJBxgS3ZRQNcqdABn9s6SyqG7kLF4YF/as
+         uGhd3LOBSDTwVISuqeT2nBLVOw5y3gE90h6mBbCgZoNNm06876vGKeNHAhJBWOQyITuq
+         sbfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QEYP9H4UymVw8xeOjLOrHSZwO8yB1IyVK9g6mOUClEU=;
-        b=awhLPtgopr+4ipq4QGLSnzpBOsiO/E3KRM5BO2RDogh0gmE9vPpnGpnREaopIaFz9U
-         92g7145c0vArK5Kz92ZmB9ObTSZT3sDP8P/ZP3+BUJc/Au5bbbB4jxd4w7YzBCbnw18q
-         1o/5nZJrCP+cipOVETnPosiSBakU5nBBWwOHUTeNR/UekJXD83Vx0LuKgDTzx45mlgfo
-         ZxZGRrXH83/pwO47lZB8VcyOlHOchDo4nlc4HFPqzUQXI2kqt7O7rkkecidlatdBy2rK
-         D082u4D6OgRHsUHeBiC59T3WY71kqXuB455Q/hJt+ozmQ/boZdFWytaA3ntfZ5NaWnwL
-         ODcw==
-X-Gm-Message-State: APjAAAXaU3lezvrof7zo5M1E765owV1tz0S4m+6cFtJI/Pfz3rs0r/bq
-        SGlp+qH5mnHkKHj+0CJzK/JKUNYW/lyUQ52UMlo=
-X-Google-Smtp-Source: APXvYqxdMhOY/OZfjrMw6aAQiGZSCIplwo88vxdNupVG/0q9Pnjea0rgjppRWyCM2id1UYNso7aGg/xGyuV0xhH7q1w=
-X-Received: by 2002:a5d:9a04:: with SMTP id s4mr33496209iol.19.1560955641157;
- Wed, 19 Jun 2019 07:47:21 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1hlSO+sEs6lUGO6AJAtj+vloymiaoUsBvyYS+NprwCc=;
+        b=OF/CB2peli/Q1rPfoKv1Y0OstjwTfYrvMSpO+z1iHQueL9Jr5UG2QWLMuj2y8d15Nn
+         mevJMBHzTDzxbKt4HaANKY6F1AFDMFeGLm5/0jDKhbIve0u6ixGLvr24Rshq+SLfbo7s
+         ljBrAasp7ccGrCCE+0GcugvbWrDAaWzBi5K15YU1HOOCzfocKWJ+/t9qw/0WNQgs0DjJ
+         hX2lCmT+WY0zcgS6Ud7jGA/TZKOsuMNMm2l4/r25kPm9tVhN4KtnILSr+EseTi3/M08P
+         GndmKnzMhTIVc8S2Wm0DKjTVRY8adIM/+7DXoE5+mvdT5/Xy/tXjH7qlWfrbYxkXMKBE
+         atDg==
+X-Gm-Message-State: APjAAAUdUuXDG6vHe0ubUtorrKzWdSORZRHyU3mHIqaQSVuUJWpTTS4Y
+        5E4TzJcauYRp6KXnyY0jdojFFm0P/iI=
+X-Google-Smtp-Source: APXvYqxGWaj/G/4iiFrRBZgS1WWme+crtt/FmSBL4BdPeeTmhWPaSzTha4rpWJqUZPmNkETDCzpzNw==
+X-Received: by 2002:a1c:9e90:: with SMTP id h138mr15905448wme.67.1561371301450;
+        Mon, 24 Jun 2019 03:15:01 -0700 (PDT)
+Received: from [10.27.112.40] ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id e21sm18680613wra.27.2019.06.24.03.15.00
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 Jun 2019 03:15:01 -0700 (PDT)
+Subject: Re: [PATCH v3] trace-cmd: Save the tracee memory map into the
+ trace.dat file.
+To:     tz.stoyanov@gmail.com, rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+References: <20190619083915.2049-1-tz.stoyanov@gmail.com>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <165152d6-abe2-a9ba-13af-aa632bf89984@gmail.com>
+Date:   Mon, 24 Jun 2019 13:14:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <CADcCL0irokZ8Xp7S3eBV728qpL5yipwW+=2QvwiZrixqSdtBog@mail.gmail.com>
-In-Reply-To: <CADcCL0irokZ8Xp7S3eBV728qpL5yipwW+=2QvwiZrixqSdtBog@mail.gmail.com>
-From:   Francis Deslauriers <francis.deslauriers@efficios.com>
-Date:   Wed, 19 Jun 2019 10:47:05 -0400
-Message-ID: <CADcCL0gpbfk28_E1otW0Ttz0Osot3CYymh=t5fVR77WrqoU6uQ@mail.gmail.com>
-Subject: Re: Tracing Summit 2019: Announcement and Call for Proposals, August
- 20th, 2019, San Diego, CA
-To:     diamon-discuss@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        linux-trace-users@vger.kernel.org, linuxtools-dev@eclipse.org,
-        lttng-dev <lttng-dev@lists.lttng.org>, lwn@lwn.net,
-        tracecompass-dev@eclipse.org
-Cc:     info@tracingsummit.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20190619083915.2049-1-tz.stoyanov@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi all,
-This is a friendly reminder that the deadline for submitting talk
-proposals for the Tracing Summit 2019 [1] is coming up soon (July
-1st). Submit you talk today through this form:
-https://forms.gle/L6mR2ZN3Nt7bUxY98.
-
-The Tracing Summit 2019 will be held in San Diego, California on
-August 20th, 2019, at the Hilton San Diego Bayfront, co-located with
-the Open Source Summit & Embedded Linux Conference North America 2019
-
-This year tickets are $100 and seating is limited to 100 people. To
-register, you can add the Tracing Summit as an addon to your Open
-Source Summit ticket or use this link to register solely for the
-Tracing Summit:
-https://www.cvent.com/events/tracing-summit-2019/registration-63351d06945a46d890b8e5a200dbc0fc.aspx.
-
-We are actively looking for sponsors to support the Tracing Summit.
-Contact us at info@tracingsummit.org.
-
-More info: https://tracingsummit.org/wiki/TracingSummit2019
-
-Thank you,
-
-On behalf of the Diagnostic and Monitoring Workgroup,
-Tracing Summit organizers
-
-Le mar. 16 avr. 2019, à 11 h 54, Francis Deslauriers
-<francis.deslauriers@efficios.com> a écrit :
->
-> Hi all,
->
-> This is a Call for Proposals for the Tracing Summit 2019 [0] which
-> will be held in San Diego, California, USA at the Hilton San Diego
-> Bayfront, co-located with the Open Source Summit & Embedded Linux
-> Conference North America 2019 [1] on August 20th, 2019.
->
-> You can subscribe to our mailing list ot get the latest info on the event: [2]
->
-> The Tracing Summit is single-day, single-track conference on the topic
-> of tracing. The event focuses on the field of software and hardware
-> tracing, gathering developers and end-users of tracing and trace
-> analysis tools. The main goal of the Tracing Summit is to provide
-> space for discussion between people of the various areas that benefit
-> from tracing, namely parallel, distributed and/or real-time systems,
-> as well as kernel development.
->
-> We are welcoming 30 minute presentations from both end users and
-> developers, on topics covering, but not limited to:
-> -Investigation workflow of Real-Time, latency, and throughput issues,
-> -Trace collection and extraction,
-> -Trace filtering,
-> -Trace aggregation,
-> -Trace formats,
-> -Tracing multi-core systems,
-> -Trace abstraction,
-> -Trace modeling,
-> -Automated trace analysis (e.g. dependency analysis),
-> -Tracing large clusters and distributed systems,
-> -Hardware-level tracing (e.g. DSP, GPU, bare-metal),
-> -Trace visualisation,
-> -Interaction between debugging and tracing,
-> -Tracing remote control,
-> -Analysis of large trace datasets,
-> -Cloud trace collection and analysis,
-> -Integration between trace tools,
-> -Live tracing & monitoring,
-> -Programmable tracing (e.g. eBPF).
->
-> Those can cover recently available technologies, ongoing work, and yet
-> non-existing technologies (which are compellingly interesting to
-> end-users). Please understand that this open forum is not the proper
-> place to present sales or marketing pitches, nor technologies which
-> are prevented from being freely used in open source.
->
-> * Submit you talk today using this form: https://forms.gle/L6mR2ZN3Nt7bUxY98 *
->
-> The submission deadline is July 1st 2019 at 23:59 EST.
->
-> This year tickets are $100 and seating is limited to 100 people. To
-> register, you can add the Tracing Summit as an addon to your Open
-> Source Summit ticket [3] or use this link [4] to register solely for
-> the Tracing Summit.
->
-> The Tracing Summit is sponsored by EfficiOS. We are actively looking
-> for sponsors to support the Tracing Summit. Contact us at
-> info@tracingsummit.org.
->
-> Please send any query about this conference to info@tracingsummit.org.
->
-> This event is organized by Francis Deslauriers and Mathieu Desnoyers
-> on the behalf of the Linux Foundation Diagnostic and Monitoring
-> Workgroup [5].
->
-> [0] : https://tracingsummit.org
-> [1]: https://events.linuxfoundation.org/events/open-source-summit-north-america-2019
-> [2]: http://eepurl.com/goakfv
-> [3]: https://www.cvent.com/events/open-source-summit-embedded-linux-conference-north-america-2019/registration-0ed1330c38bd4845be29b91c9d2444ce.aspx?fqp=true
-> [4]: https://www.cvent.com/events/tracing-summit-2019/registration-63351d06945a46d890b8e5a200dbc0fc.aspx?fqp=true
-> [5]: https://diamon.org
->
-> --
-> Francis Deslauriers
-> Computer Engineer
-> EfficiOS inc.
 
 
+On 19.06.19 г. 11:39 ч., tz.stoyanov@gmail.com wrote:
+> From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+> 
+> A new trace-cmd record option is added: "--mmap". When it is set with
+> combination of -F or -P options, the memory map of the traced applications
+> is stored in the trace.dat file. A new API tracecmd_search_task_mmap()
+> can be used to look up into stored memory maps. The map is retrieved from
+> /proc/<pid>/maps file.
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+> [
+>   v3 changes:
+>     - Changed tracecmd_search_task_mmap() API to return not only the library
+>       name, but also the start and end memory addresses.
+>     - Renamed *tracee* to *task*
+>     - Improved resources cleanup, in case of an error.
+>     - Removed (this) changelog from the commit message.
+> 
+>   v2 changes:
+>     - Replaced usage of tracecmd_add_option_v() with tracecmd_add_option() API.
+>     - Added checks to prevent buffer overflow when sscanf (... "%s", buf) is used.
+>     - Return error in case memory allocation fails.
+>     - Return error if option string is not in the expected format.
+>     - Sort memory maps and use binary search to find matching library in the map.
+> ]
+> 
+>   include/trace-cmd/trace-cmd.h  |   9 ++
+>   lib/trace-cmd/trace-input.c    | 149 ++++++++++++++++++++++++++++++-
+>   tracecmd/include/trace-local.h |  10 +++
+>   tracecmd/trace-record.c        | 158 +++++++++++++++++++++++++++++++++
+>   4 files changed, 323 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+> index 6f62ab9..17edb9d 100644
+> --- a/include/trace-cmd/trace-cmd.h
+> +++ b/include/trace-cmd/trace-cmd.h
+> @@ -82,6 +82,7 @@ enum {
+>   	TRACECMD_OPTION_OFFSET,
+>   	TRACECMD_OPTION_CPUCOUNT,
+>   	TRACECMD_OPTION_VERSION,
+> +	TRACECMD_OPTION_PIDMMAPS,
+>   };
+>   
+>   enum {
+> @@ -97,6 +98,12 @@ struct tracecmd_ftrace {
+>   	int long_size;
+>   };
+>   
+> +struct lib_mem_map {
+> +	unsigned long long	start;
+> +	unsigned long long	end;
+> +	char			*lib_name;
+> +};
+> +
+>   typedef void (*tracecmd_show_data_func)(struct tracecmd_input *handle,
+>   					struct tep_record *record);
+>   typedef void (*tracecmd_handle_init_func)(struct tracecmd_input *handle,
+> @@ -208,6 +215,8 @@ unsigned long long tracecmd_page_ts(struct tracecmd_input *handle,
+>   unsigned int tracecmd_record_ts_delta(struct tracecmd_input *handle,
+>   				      struct tep_record *record);
+>   
+> +struct lib_mem_map *tracecmd_search_task_mmap(struct tracecmd_input *handle,
+> +					      int pid, unsigned long long addr);
+>   #ifndef SWIG
+>   /* hack for function graph work around */
+>   extern __thread struct tracecmd_input *tracecmd_curr_thread_handle;
+> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+> index 61566ba..7acecf3 100644
+> --- a/lib/trace-cmd/trace-input.c
+> +++ b/lib/trace-cmd/trace-input.c
+> @@ -101,6 +101,7 @@ struct tracecmd_input {
+>   	struct tracecmd_ftrace	finfo;
+>   
+>   	struct hook_list	*hooks;
+> +	struct pid_mem_maps	*pid_mmaps;
+>   	/* file information */
+>   	size_t			header_files_start;
+>   	size_t			ftrace_files_start;
+> @@ -2134,6 +2135,147 @@ void tracecmd_set_ts2secs(struct tracecmd_input *handle,
+>   	handle->use_trace_clock = false;
+>   }
+>   
+> +static int trace_pid_mmap_cmp(const void *a, const void *b)
+> +{
+> +	struct lib_mem_map *map_a = (struct lib_mem_map *)a;
+> +	struct lib_mem_map *map_b = (struct lib_mem_map *)b;
+> +
+> +	if (map_a->start > map_b->start)
+> +		return 1;
+> +	if (map_a->start < map_b->start)
+> +		return -1;
+> +	return 0;
+> +}
+> +
+> +#define STR_MMAP_LINE_MAX	(PATH_MAX+34)
+> +static int trace_pid_mmap_load(struct tracecmd_input *handle, char *buf)
+> +{
+> +	struct pid_mem_maps *maps = NULL;
+> +	char mapname[STR_MMAP_LINE_MAX];
+> +	char *line;
+> +	int res;
+> +	int ret;
+> +	int i;
+> +
+> +	maps = calloc(1, sizeof(*maps));
+> +	if (!maps)
+> +		return -ENOMEM;
+> +
+> +	ret  = -EINVAL;
+> +	line = strchr(buf, '\n');
+> +	if (!line)
+> +		goto out_fail;
+> +
+> +	*line = '\0';
+> +	if (strlen(buf) > STR_MMAP_LINE_MAX)
+> +		goto out_fail;
+> +
+> +	res = sscanf(buf, "%x %x %s", &maps->pid, &maps->nr_lib_maps, mapname);
+> +	if (res != 3)
+> +		goto out_fail;
+> +
+> +	ret  = -ENOMEM;
+> +	maps->proc_name = strdup(mapname);
+> +	if (!maps->proc_name)
+> +		goto out_fail;
+> +
+> +	maps->lib_maps = calloc(maps->nr_lib_maps, sizeof(struct lib_mem_map));
+> +	if (!maps->lib_maps)
+> +		goto out_fail;
+> +
+> +	buf = line+1;
 
--- 
-Francis Deslauriers
-Computer Engineer
-EfficiOS inc.
+according to the kernel coding style this line must look lo
+
+	buf = line + 1;
+	
+
+> +	line = strchr(buf, '\n');
+> +	for (i = 0; i < maps->nr_lib_maps; i++) {
+> +		if (!line)
+> +			break;
+> +		*line = '\0';
+> +		if (strlen(buf) > STR_MMAP_LINE_MAX)
+> +			break;
+> +		res = sscanf(buf, "%llx %llx %s", &maps->lib_maps[i].start,
+> +			     &maps->lib_maps[i].end, mapname);
+> +		if (res != 3)
+> +			break;
+> +		maps->lib_maps[i].lib_name = strdup(mapname);
+> +		if (!maps->lib_maps[i].lib_name)
+> +			goto out_fail;
+> +		buf = line+1;
+
+Same here.
+
+> +		line = strchr(buf, '\n');
+> +	}
+> +
+> +	ret  = -EINVAL;
+> +	if (i != maps->nr_lib_maps)
+> +		goto out_fail;
+> +
+> +	qsort(maps->lib_maps, maps->nr_lib_maps,
+> +	      sizeof(*maps->lib_maps), trace_pid_mmap_cmp);
+> +
+> +	maps->next = handle->pid_mmaps;
+> +	handle->pid_mmaps = maps;
+
+We need to have
+
+void free_pid_mmaps(struct pid_mem_maps *maps)
+
+and than have this function called in tracecmd_close(). Otherwise the 
+allocated memory will leak.
+
+
+> +
+> +	return 0;
+> +
+> +out_fail:
+> +	if (maps->lib_maps) {
+> +		for (i = 0; i < maps->nr_lib_maps; i++)
+> +			free(maps->lib_maps[i].lib_name);
+> +		free(maps->lib_maps);
+> +	}
+> +	free(maps->proc_name);
+> +	free(maps);
+> +
+> +	return ret;
+> +}
+> +
+> +static int trace_pid_mmap_search(const void *a, const void *b)
+> +{
+> +	struct lib_mem_map *key = (struct lib_mem_map *)a;
+> +	struct lib_mem_map *map = (struct lib_mem_map *)b;
+> +
+> +	if (key->start >= map->end)
+> +		return 1;
+> +	if (key->start < map->start)
+> +		return -1;
+> +	return 0;
+> +}
+> +
+> +/**
+> + * tracecmd_search_task_mmap - Search task memory address map
+> + * @handle: input handle to the trace.dat file
+> + * @pid: pid of the task
+> + * @addr: address from the task memory space.
+> + *
+> + * Map of the task memory can be saved in the trace.dat file, using the option
+> + * "--mmap". If there is such information, this API can be used to look up into
+> + * this memory map to find what library is loaded at the given @addr.
+> + *
+> + * A pointer to struct lib_mem_map is returned, containing the name of
+> + * the library at given task @addr and the library start and end addresses.
+> + */
+> +struct lib_mem_map *tracecmd_search_task_mmap(struct tracecmd_input *handle,
+> +					      int pid, unsigned long long addr)
+> +{
+> +	struct pid_mem_maps *maps;
+> +	struct lib_mem_map *lib;
+> +	struct lib_mem_map key;
+> +
+> +	if (!handle || !handle->pid_mmaps)
+> +		return NULL;
+> +
+> +	maps = handle->pid_mmaps;
+> +	while (maps) {
+> +		if (maps->pid == pid)
+> +			break;
+> +		maps = maps->next;
+> +	}
+> +	if (!maps || !maps->nr_lib_maps || !maps->lib_maps)
+> +		return NULL;
+> +	key.start = addr;
+> +	lib = bsearch(&key, maps->lib_maps, maps->nr_lib_maps,
+> +		      sizeof(*maps->lib_maps), trace_pid_mmap_search);
+> +
+> +	return lib;
+> +}
+> +
+>   static int handle_options(struct tracecmd_input *handle)
+>   {
+>   	unsigned long long offset;
+> @@ -2221,9 +2363,6 @@ static int handle_options(struct tracecmd_input *handle)
+>   		case TRACECMD_OPTION_UNAME:
+>   			handle->uname = strdup(buf);
+>   			break;
+> -		case TRACECMD_OPTION_VERSION:
+> -			handle->version = strdup(buf);
+> -			break;
+>   		case TRACECMD_OPTION_HOOK:
+>   			hook = tracecmd_create_event_hook(buf);
+>   			hook->next = handle->hooks;
+> @@ -2233,6 +2372,10 @@ static int handle_options(struct tracecmd_input *handle)
+>   			cpus = *(int *)buf;
+>   			handle->cpus = tep_read_number(handle->pevent, &cpus, 4);
+>   			break;
+> +		case TRACECMD_OPTION_PIDMMAPS:
+> +			if (buf[size] == '\0')
+> +				trace_pid_mmap_load(handle, buf);
+> +			break;
+>   		default:
+>   			warning("unknown option %d", option);
+>   			break;
+> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+> index 1cad3cc..ae1632c 100644
+> --- a/tracecmd/include/trace-local.h
+> +++ b/tracecmd/include/trace-local.h
+> @@ -157,6 +157,14 @@ struct func_list {
+>   	const char *mod;
+>   };
+>   
+> +struct pid_mem_maps {
+> +	struct pid_mem_maps	*next;
+> +	struct lib_mem_map	*lib_maps;
+> +	unsigned int		nr_lib_maps;
+> +	char			*proc_name;
+> +	int			pid;
+> +};
+> +
+>   struct buffer_instance {
+>   	struct buffer_instance	*next;
+>   	const char		*name;
+> @@ -183,6 +191,8 @@ struct buffer_instance {
+>   	struct tracecmd_msg_handle *msg_handle;
+>   	struct tracecmd_output *network_handle;
+>   
+> +	struct pid_mem_maps	*mem_maps;
+> +
+>   	char			*max_graph_depth;
+>   
+>   	int			flags;
+> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+> index 5dc6f17..edabf53 100644
+> --- a/tracecmd/trace-record.c
+> +++ b/tracecmd/trace-record.c
+> @@ -84,6 +84,7 @@ static int max_kb;
+>   static bool use_tcp;
+>   
+>   static int do_ptrace;
+> +static int get_mmap;
+>   
+>   static int filter_task;
+>   static int filter_pid = -1;
+> @@ -1062,6 +1063,119 @@ static char *make_pid_filter(char *curr_filter, const char *field)
+>   	return filter;
+>   }
+>   
+> +static int get_pid_mmaps(int pid)
+> +{
+> +	struct buffer_instance *instance = &top_instance;
+> +	struct pid_mem_maps *maps = instance->mem_maps;
+> +	struct pid_mem_maps *m;
+> +	unsigned long long begin, end, inode, tmp;
+> +	struct lib_mem_map *map;
+> +	char mapname[PATH_MAX+1];
+> +	char fname[PATH_MAX+1];
+> +	char buf[PATH_MAX+100];
+> +	char perm[5];
+> +	char dev[6];
+> +	FILE *f;
+> +	int ret;
+> +	int res;
+> +	int i;
+> +
+> +	sprintf(fname, "/proc/%d/exe", pid);
+> +	ret = readlink(fname, mapname, PATH_MAX);
+> +	if (ret >= PATH_MAX || ret < 0)
+> +		return -ENOENT;
+> +
+
+readlink() will not append a null byte to the end of mapname.
+You have to do this by hand.
+
+	mapname[ret] = '\0';
+
+
+> +	sprintf(fname, "/proc/%d/maps", pid);
+> +	f = fopen(fname, "r");
+> +	if (!f)
+> +		return -ENOENT;
+> +
+> +	while (maps) {
+> +		if (pid == maps->pid)
+> +			break;
+> +		maps = maps->next;
+> +	}
+> +
+> +	ret = -ENOMEM;
+> +	if (!maps) {
+> +		maps = calloc(1, sizeof(*maps));
+> +		if (!maps)
+> +			goto out_fail;
+> +		maps->pid = pid;
+> +		maps->next = instance->mem_maps;
+> +		instance->mem_maps = maps;
+> +	} else {
+> +		for (i = 0; i < maps->nr_lib_maps; i++)
+> +			free(maps->lib_maps[i].lib_name);
+> +		free(maps->lib_maps);
+> +		maps->lib_maps = NULL;
+> +		maps->nr_lib_maps = 0;
+> +		free(maps->proc_name);
+> +	}
+> +
+> +	maps->proc_name = strdup(mapname);
+> +	if (!maps->proc_name)
+> +		goto out;
+> +
+> +	while (fgets(buf, sizeof(buf), f)) {
+> +		mapname[0] = '\0';
+> +		res = sscanf(buf, "%llx-%llx %4s %llx %5s %lld %s",
+> +			     &begin, &end, perm, &tmp, dev, &inode, mapname);
+> +		if (res == 7 && mapname[0] != '\0') {
+> +			map = realloc(maps->lib_maps,
+> +				      (maps->nr_lib_maps+1)*sizeof(*map));
+
+minor style correction:
+(maps->nr_lib_maps + 1) * sizeof(*map));
+
+
+> +			if (!map)
+> +				goto out_fail;
+> +			map[maps->nr_lib_maps].end = end;
+> +			map[maps->nr_lib_maps].start = begin;
+> +			map[maps->nr_lib_maps].lib_name = strdup(mapname);
+> +			if (!map[maps->nr_lib_maps].lib_name)
+> +				goto out_fail;
+> +			maps->lib_maps = map;
+> +			maps->nr_lib_maps++;
+> +		}
+> +	}
+> +out:
+> +	fclose(f);
+> +	return 0;
+> +
+Not shure if silently freing only tha map that failed to alocate is the 
+proper thinng to do. Maybe we  should have an error message printed and 
+then free all maps?
+> +out_fail:
+> +	fclose(f);
+> +	if (maps) {
+> +		for (i = 0; i < maps->nr_lib_maps; i++)
+> +			free(maps->lib_maps[i].lib_name);
+> +		if (instance->mem_maps != maps) {
+> +			m = instance->mem_maps;
+> +			while (m) {
+> +				if (m->next == maps) {
+> +					m->next = maps->next;
+> +					break;
+> +				}
+> +				m = m->next;
+> +			}
+> +		} else
+> +			instance->mem_maps = maps->next;
+> +		free(maps->lib_maps);
+> +		maps->lib_maps = NULL;
+> +		maps->nr_lib_maps = 0;
+> +		free(maps->proc_name);
+> +		maps->proc_name = NULL;
+> +		free(maps);
+
+Not sure if silently freeing only the map that failed to allocate memory 
+is the proper thing to do. Maybe we should have an error message printed 
+and then free all maps?
+
+> +	}
+> +	return ret;
+> +}
+> +
+> +static void get_filter_pid_mmaps(void)
+> +{
+> +	struct filter_pids *p;
+> +
+> +	for (p = filter_pids; p; p = p->next) {
+> +		if (p->exclude)
+> +			continue;
+> +		get_pid_mmaps(p->pid);
+> +	}
+> +}
+> +
+>   static void update_task_filter(void)
+>   {
+>   	struct buffer_instance *instance;
+> @@ -1070,6 +1184,9 @@ static void update_task_filter(void)
+>   	if (no_filter)
+>   		return;
+>   
+> +	if (get_mmap && filter_pids)
+> +		get_filter_pid_mmaps();
+> +
+>   	if (filter_task)
+>   		add_filter_pid(pid, 0);
+>   
+> @@ -1264,6 +1381,8 @@ static void ptrace_wait(enum trace_type type, int main_pid)
+>   				break;
+>   
+>   			case PTRACE_EVENT_EXIT:
+> +				if (get_mmap)
+> +					get_pid_mmaps(main_pid);
+>   				ptrace(PTRACE_GETEVENTMSG, pid, NULL, &cstatus);
+>   				ptrace(PTRACE_DETACH, pid, NULL, NULL);
+>   				break;
+> @@ -3094,6 +3213,33 @@ static void append_buffer(struct tracecmd_output *handle,
+>   	}
+>   }
+>   
+> +
+> +static void
+> +add_pid_mem_maps(struct tracecmd_output *handle, struct buffer_instance *instance)
+> +{
+> +	struct pid_mem_maps *maps = instance->mem_maps;
+> +	struct trace_seq s;
+> +	int i;
+> +
+> +	trace_seq_init(&s);
+> +	while (maps) {
+> +		if (!maps->nr_lib_maps)
+> +			continue;
+> +		trace_seq_reset(&s);
+> +		trace_seq_printf(&s, "%x %x %s\n",
+> +				 maps->pid, maps->nr_lib_maps, maps->proc_name);
+> +		for (i = 0; i < maps->nr_lib_maps; i++)
+> +			trace_seq_printf(&s, "%llx %llx %s\n",
+> +					maps->lib_maps[i].start,
+> +					maps->lib_maps[i].end,
+> +					maps->lib_maps[i].lib_name);
+> +		tracecmd_add_option(handle, TRACECMD_OPTION_PIDMMAPS,
+> +				    s.len+1, s.buffer);
+
+s.len + 1, s.buffer);
+
+Thanks!
+Yordan
+
+> +		maps = maps->next;
+> +	}
+> +	trace_seq_destroy(&s);
+> +}
+> +
+>   static void
+>   add_buffer_stat(struct tracecmd_output *handle, struct buffer_instance *instance)
+>   {
+> @@ -3287,6 +3433,10 @@ static void record_data(struct common_record_context *ctx)
+>   		if (!no_top_instance() && !top_instance.msg_handle)
+>   			print_stat(&top_instance);
+>   
+> +		for_all_instances(instance) {
+> +			add_pid_mem_maps(handle, instance);
+> +		}
+> +
+>   		tracecmd_append_cpu_data(handle, local_cpu_count, temp_files);
+>   
+>   		for (i = 0; i < max_cpu_count; i++)
+> @@ -4397,6 +4547,7 @@ void update_first_instance(struct buffer_instance *instance, int topt)
+>   }
+>   
+>   enum {
+> +	OPT_mmap		= 244,
+>   	OPT_quiet		= 245,
+>   	OPT_debug		= 246,
+>   	OPT_no_filter		= 247,
+> @@ -4627,6 +4778,7 @@ static void parse_record_options(int argc,
+>   			{"debug", no_argument, NULL, OPT_debug},
+>   			{"quiet", no_argument, NULL, OPT_quiet},
+>   			{"help", no_argument, NULL, '?'},
+> +			{"mmap", no_argument, NULL, OPT_mmap},
+>   			{"module", required_argument, NULL, OPT_module},
+>   			{NULL, 0, NULL, 0}
+>   		};
+> @@ -4858,6 +5010,9 @@ static void parse_record_options(int argc,
+>   		case 'i':
+>   			ignore_event_not_found = 1;
+>   			break;
+> +		case OPT_mmap:
+> +			get_mmap = 1;
+> +			break;
+>   		case OPT_date:
+>   			ctx->date = 1;
+>   			if (ctx->data_flags & DATA_FL_OFFSET)
+> @@ -4924,6 +5079,9 @@ static void parse_record_options(int argc,
+>   		add_func(&ctx->instance->filter_funcs,
+>   			 ctx->instance->filter_mod, "*");
+>   
+> +	if (filter_task && get_mmap)
+> +		do_ptrace = 1;
+> +
+>   	if (do_ptrace && !filter_task && (filter_pid < 0))
+>   		die(" -c can only be used with -F (or -P with event-fork support)");
+>   	if (ctx->do_child && !filter_task &&! filter_pid)
+> 
