@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-16.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT,
 	USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4461EC48BD7
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Jun 2019 15:25:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A4E2C48BD6
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Jun 2019 15:27:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 170602064A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Jun 2019 15:25:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 600FA2064A
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Jun 2019 15:27:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ER6OJzlW"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DkpvBIpC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbfF0PZI (ORCPT
+        id S1726405AbfF0P1Q (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 27 Jun 2019 11:25:08 -0400
-Received: from mail-pg1-f202.google.com ([209.85.215.202]:53011 "EHLO
-        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbfF0PZI (ORCPT
+        Thu, 27 Jun 2019 11:27:16 -0400
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:53450 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726384AbfF0P1Q (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 27 Jun 2019 11:25:08 -0400
-Received: by mail-pg1-f202.google.com with SMTP id a13so1466703pgw.19
-        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Jun 2019 08:25:08 -0700 (PDT)
+        Thu, 27 Jun 2019 11:27:16 -0400
+Received: by mail-pf1-f202.google.com with SMTP id y5so1768882pfb.20
+        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Jun 2019 08:27:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:message-id:mime-version:subject:from:to:cc;
-        bh=fNPbpOxHirk0Y+1N9r1ssPgt+FSdATl608uUX95PuE8=;
-        b=ER6OJzlW7cNMCX8B7KowMCQOQPl04gBLT3Acc0Ju/VMrbFGSXHCTbazfVlYIHyN1ul
-         zkqpI65l0nkO1ShroCYXZLAvzasHJQk/hLSGO+zajHlJRVgE5AWffoKXSTMxAYcW0/wq
-         VoPAF9zj9W5X76bLhKiTgYLn/Ve5GiTuNt9Aa3UF0Tq0issM9nXyHYwUu3c0hnipb+n0
-         0tKHwN/kN1mwW9Z2fQ1HW9J32nMFyotwrsHfWHYB8uaFty50F2CMe58hsVfXWMTGjupj
-         B+dug6yAro655wbGIUk0I9MDAIlE3G3b6St8RtcjG3CgDU+S/5srwS0Sv/fvLDbxuwDc
-         q3ag==
+        bh=5v/hQydlmPHFrqtmzwxy/3jvZiELDO/xotb7PRYOapA=;
+        b=DkpvBIpCR9TkJ7FAOhNcmdrer+2Fi1ovQXCJ15oT7up28GojnVB7QdXU3uzhlQjfRu
+         wj+Ffexw3IxzEe6ymTMIPFbP31pMxBOm5hYgvmxaP1LQgljjzxutvU2ycoYIcOBqfqAE
+         9ZpxLXws2sKVioZ+2Hf7lv7YrjUwggdDyai622mDa4mUrmbKt3tOI7Z6Px87iBAUTeCW
+         ktqrOVUmbgFCMY5ugLCvnOD4B01KfFwatoI76D85daEe54oql/wlx6UkeNB9JApcBTSQ
+         Dj6R2j9wNzyXCXUSWZ5eqlesS4UCTGsR1gGPkOLA/T46i3TCVVHWCe3v7ifavcLq+XNp
+         cWnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=fNPbpOxHirk0Y+1N9r1ssPgt+FSdATl608uUX95PuE8=;
-        b=RcoouDcFX7vX6BOXSGbTWYOkxZSFnQKepxfpBVGXtLs+VIhBgkgtdqlzjyU8gfY1iD
-         chXGR3fVEpBM7mP9JcWUFsYKwBuNghnP+XVNiEMP/CtXtcr4AXc6WheqpqGf6rpxza8p
-         IIXpOj8kt6BI0mutz8+ignu+PH0naWPAzmvTMxwq3OJ3eaUe/cJr8f0tHa8GR3pecU2S
-         Y+IBnHCY8ww4nr+EVjgcuIVDh3WyjcSVGb23XKPAsp8l0jeYQCj93WPsaboQUPvG/Ntf
-         wYzTFnOiGtgeVCUwOn1S+yzIRTtg76+hr28IFiOuWI3DIaJUcTSYjFlw9I9/6vpFq+hp
-         m07Q==
-X-Gm-Message-State: APjAAAUv6/Sf2kp/+ZGRzNYuMxL6AQOdQbMVoZkauoJLeDDYhUN/HX84
-        IN3uIno1r7nA3sTSvHq3pNU5Nlt+SabL
-X-Google-Smtp-Source: APXvYqwxwA1eJ4CXGRouWm5t5OvHcWn51byt3jdcTfIQidLvDoJVrbOwKwr+BiSuM6Jus+pY5v7D3UHpaNW8
-X-Received: by 2002:a63:5045:: with SMTP id q5mr3838390pgl.380.1561649107560;
- Thu, 27 Jun 2019 08:25:07 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 08:25:02 -0700
-Message-Id: <20190627152502.174918-1-gthelen@google.com>
+        bh=5v/hQydlmPHFrqtmzwxy/3jvZiELDO/xotb7PRYOapA=;
+        b=V0PbgxYALpQ0ZHBEeKEOD2KTz2Xq90c92gkz1+UM41eLWiRTwxy2nbZ//wPcKCPbpS
+         swL7bhtJV044F4F/7QY/sskwVsCt9EcrC86k8phIcz2FiazqhX0xWD9oUD47igGGyvZ7
+         ONbrLClJrrWssem4BLHJOOqoHvJpNyvzCsvn5G/cthK1zLrKA4k0c1IB6Xaas59dFoKA
+         Cyzx4CCNwMDW09InyMCiHOTkKzreJP9HXBdiyfj9Y3g+cI3Z6v7Apy2MYyeNoiittvME
+         oEemnM9gw/RsaSY14mM6Lhm7TfrBfzFdwZdb5xMBNd75/Qn2IpyuaYSWT5dRw6P9mFWw
+         xR0A==
+X-Gm-Message-State: APjAAAU1pZAfxScHQuoy7PQkKJfuoN21sISAfCy+mqZWtfxI1Oqzx9KF
+        l3iZTTm9eqHu7Wzm/OhQjhuETAz89NCl
+X-Google-Smtp-Source: APXvYqwhqkuLpg68sYrvA8vs9l3uONCW/MZuX6bFh2xdb/WVe/Vum2sq9YtJj+bE77eyOLvitcE9JPZnJQqJ
+X-Received: by 2002:a63:246:: with SMTP id 67mr4287998pgc.20.1561649235181;
+ Thu, 27 Jun 2019 08:27:15 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 08:27:10 -0700
+Message-Id: <20190627152710.177848-1-gthelen@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [PATCH] trace-cmd: always initialize write_record() len
+Subject: [PATCH] trace-cmd: avoid using uninitialized handle
 From:   Greg Thelen <gthelen@google.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org, Greg Thelen <gthelen@google.com>
@@ -64,44 +64,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-write_record() uses an uninitializedd 'len' when record->size is 0.  I'm
-not sure how likely this case is.
+The put_together_file() 'out' error path uses uninitialized handle.
+Unconditionally initialize handle.
 
-To be safe and silence compiler warning, unconditionally initialize len.
-
+Fixes: 9ed499fccef5 ("trace-cmd: Fix record --date flag when sending tracing data to a listener")
 Signed-off-by: Greg Thelen <gthelen@google.com>
 ---
- tracecmd/trace-split.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ tracecmd/trace-listen.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index d27b3c65badc..6c8a774e13d0 100644
---- a/tracecmd/trace-split.c
-+++ b/tracecmd/trace-split.c
-@@ -80,7 +80,7 @@ static int write_record(struct tracecmd_input *handle,
- 	unsigned long long diff;
- 	struct tep_handle *pevent;
- 	void *page;
--	int len;
-+	int len = 0;
- 	char *ptr;
- 	int index = 0;
- 	int time;
-@@ -106,12 +106,8 @@ static int write_record(struct tracecmd_input *handle,
- 		return 0;
- 	}
- 
--	if (record->size) {
--		if (record->size < 28 * 4)
--			len = record->size / 4;
--		else
--			len = 0;
--	}
-+	if (record->size && (record->size < 28 * 4))
-+		len = record->size / 4;
- 
- 	time = (unsigned)diff;
- 	time = create_type_len(pevent, time, len);
+diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+index 3106022eeb39..9132582768ac 100644
+--- a/tracecmd/trace-listen.c
++++ b/tracecmd/trace-listen.c
+@@ -626,7 +626,7 @@ static void stop_all_readers(int cpus, int *pid_array)
+ static int put_together_file(int cpus, int ofd, const char *node,
+ 			     const char *port, bool write_options)
+ {
+-	struct tracecmd_output *handle;
++	struct tracecmd_output *handle = NULL;
+ 	char **temp_files;
+ 	int cpu;
+ 	int ret = -ENOMEM;
 -- 
 2.22.0.410.gd8fdbe21b5-goog
 
