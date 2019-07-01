@@ -2,68 +2,71 @@ Return-Path: <SRS0=mM2H=U6=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0B32C0650E
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Jul 2019 12:17:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60D0BC06511
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Jul 2019 12:17:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B005C20B7C
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Jul 2019 12:17:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 390A120B7C
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Jul 2019 12:17:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="czCf8s2W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uf0K5eXY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbfGAMRp (ORCPT
+        id S1727302AbfGAMRq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 1 Jul 2019 08:17:45 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:51401 "EHLO
+        Mon, 1 Jul 2019 08:17:46 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:55652 "EHLO
         mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727302AbfGAMRp (ORCPT
+        with ESMTP id S1727925AbfGAMRp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 1 Jul 2019 08:17:45 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 207so15602333wma.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Jul 2019 05:17:43 -0700 (PDT)
+Received: by mail-wm1-f66.google.com with SMTP id a15so15625658wmj.5
+        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Jul 2019 05:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LXv5hoCzWonx66UzAg38JBZH1Hd4WAbCCkPMxV6obu8=;
-        b=czCf8s2WcBFsNhu7MqTnHW83lgxxgpUUQnLfS+Aqzand/P+q3dsEUOYchAQ0F8af+N
-         WlF5kHSMSvpYmHYpkdYyXXWoCzk+QrkTckclkoCCadNp1dDtkavGZQSiDpZLfOgsh6OJ
-         ZcVUyGAozcItle5oGa1dNVYvJcFbtIPWjHU6G44l5a1JweVYoKFn0ZQQBP81zMoETxD1
-         B/XQYaDSXMbfR0MI4/Ngc0Uiazmr2nCXDzehBdP9atX4jWLSzV/jrIg6WTRVsx8rYPNE
-         gqQIgSTdIAh46C1mbgTlEIXUYbZc2Zd3m3NuOpAJ7f+/e8wlkVxnYgw9hAX7V5h4q+88
-         c9aQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=j7cr3StBGwcU2SsCSs1GWd+RPeSNRJZkMH6+uCYOwWc=;
+        b=Uf0K5eXYaC8doP0ZRP9+KpoV4etBHPf6KIg2Zd9Iwzu6JYCwtLMgy2iRdnyXZQS4h8
+         xKSLXo/RNhiLP+MQM8tcgoAaMFaorXJAuAeXt0MT+8sSfa0vjVQdtDLDsLQftfbqVOo6
+         6aObWqG1lS8ePtNh6pHFJvHfsRyvHLVxcdFidMLdNWI8X+DXfcBU1zUpKmLziXg33S+B
+         N0jIJ57d58UOf8jvuiWdeliJcKrbR3WTlq3i5RBY7gW9f6J+DhRfknkD3nSVMtCtf+Cq
+         epO4jAqSt4grtw/jm/2EEgxeqdXXE6RqXsH1SPBCRg0PwwTbDWCQAmJHEJ/uCgX+SdxS
+         Cs6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LXv5hoCzWonx66UzAg38JBZH1Hd4WAbCCkPMxV6obu8=;
-        b=JWTxrx5TSp5kcPufadg0zPWr9WNLq8AiPFpq8dCbWQ0Oby2NISEiJGiaaT4dLiJfpo
-         mToT7U54i+WHDZ0rD9e5+2FfazX6wKZeOOIwVwx9Nu3DAUM9xCcfpKF5irOgd7ZsK4I4
-         T4Np6UzWCj3xR5iDQRH5Fu12rXXd6X0h305xgSAbThnX4DU3rgqy77wGKm8DEhB6sokI
-         NJcm/aLKxKjnZIFxdO9ZSDLzF2bdzCnKBCIE231sCLF4mgp+c5Ns2cm2arT3l1kGSeQn
-         IObFivoql6agspMVE0fC8rQ53QemvkW0mNLIespEa20pf0NhEV7G0EvsfDPc0iFhIsu8
-         Edkw==
-X-Gm-Message-State: APjAAAWKD6joG+SzVu0ElBVsju7vO8lXO8QsL5xRem5CHD1OZfaBYZxa
-        C/+Ndt+H7MhEAbPf/lZmT0G1onwZD8s=
-X-Google-Smtp-Source: APXvYqyajP0G71M6U1QJ3tn8A11bUAVFE9EVJkpzky3IuhC3vAOeh6y9wtxkE4lJErEpknoRl/xeQw==
-X-Received: by 2002:a1c:1a88:: with SMTP id a130mr16890545wma.149.1561983463137;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=j7cr3StBGwcU2SsCSs1GWd+RPeSNRJZkMH6+uCYOwWc=;
+        b=d7sZO4H3Seq4oNAh0PK81hQcs4O9W5Tayi/GCLbMdd2cDC4am6je84O+vl2LINN8M2
+         GScyDaLXS1jUhMTGvxme4DdihEJplpX219bZl9lDbDW/ua1aDkxhXpb1gvlmb9m8P8sa
+         vbfTKC5J/A8uBWkHxcn2Bqs4bm5mgd4ZVtkXtp3NcseFKysIBrf3lWRpVFio2FTxzpB3
+         AlEMrLT0bLEu4EnduQ4OgPOtBo1j59vFQznX6Cv2J+44XwAPLxJ1aC5GulN8LBBtGKOE
+         6BHDbdX/x4JnvNKyRytDm9f382f5t85CHg4xWQ4snphqG9gNd/x5omQsz/eBPPGQi8on
+         Oyvw==
+X-Gm-Message-State: APjAAAWyF02blnUC6FTdlQ+WtOgWynQXeNMF9ZI4HtM32T/wRbg7w0m3
+        ef7XtvvKiDBa0UNrsEvZ0dE=
+X-Google-Smtp-Source: APXvYqwsabadEhyEnLy0hybmqzbFivvyLE+mEjQHuv3gZPGKM1vIUtdvg6YVHqyiatSfCSn4l6Ctvg==
+X-Received: by 2002:a1c:2d8b:: with SMTP id t133mr16941726wmt.57.1561983463798;
         Mon, 01 Jul 2019 05:17:43 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id g11sm8382520wru.24.2019.07.01.05.17.42
+        by smtp.gmail.com with ESMTPSA id g11sm8382520wru.24.2019.07.01.05.17.43
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 01 Jul 2019 05:17:42 -0700 (PDT)
+        Mon, 01 Jul 2019 05:17:43 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [RFC PATCH 0/3] Add support for text rendering
-Date:   Mon,  1 Jul 2019 15:17:17 +0300
-Message-Id: <20190701121720.18009-1-y.karadz@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Slavomir Kaslev <kaslevs@vmware.com>
+Subject: [RFC PATCH 1/3] kernel-shark: Simplify the drawing of the Triangle Fan
+Date:   Mon,  1 Jul 2019 15:17:18 +0300
+Message-Id: <20190701121720.18009-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190701121720.18009-1-y.karadz@gmail.com>
+References: <20190701121720.18009-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -71,24 +74,39 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Implemented using the single-file public domain library "stb_truetype":
-https://github.com/nothings/stb/blob/master/stb_truetype.h
+The central vertex of the Triangle Fan doesn't need to be an internal
+point. The first point of the polygon can be used instead.
 
-PS: Patch 1/3 is a simple fix suggested by Slavomir which strictly
-speaking is independent from the other two patches.
+Suggested-by: Slavomir Kaslev <kaslevs@vmware.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel-shark/src/libkshark-plot.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-Yordan Karadzhov (VMware) (3):
-  kernel-shark: Simplify the drawing of the Triangle Fan
-  kernel-shark: Add support for drawing text
-  kernel-shark: Add text rendering to the plotting example
-
- kernel-shark/examples/dataplot.cpp |    8 +
- kernel-shark/src/libkshark-plot.c  |  164 +-
- kernel-shark/src/libkshark-plot.h  |   35 +
- kernel-shark/src/stb_truetype.h    | 4882 ++++++++++++++++++++++++++++
- 4 files changed, 5076 insertions(+), 13 deletions(-)
- create mode 100644 kernel-shark/src/stb_truetype.h
-
+diff --git a/kernel-shark/src/libkshark-plot.c b/kernel-shark/src/libkshark-plot.c
+index 17d3b90..cdd0ef8 100644
+--- a/kernel-shark/src/libkshark-plot.c
++++ b/kernel-shark/src/libkshark-plot.c
+@@ -162,18 +162,9 @@ void ksplot_draw_polygon(const struct ksplot_point *points,
+ 		return;
+ 	}
+ 
+-	/* Obtain a point inside the surface of the polygon. */
+-	struct ksplot_point in_point;
+-	in_point.x = (points[0].x + points[2].x) / 2;
+-	in_point.y = (points[0].y + points[2].y) / 2;
+-
+-	/*
+-	 * Draw a Triangle Fan using the internal point as a central
+-	 * vertex.
+-	 */
++	/* Draw a Triangle Fan. */
+ 	glBegin(GL_TRIANGLE_FAN);
+ 	glColor3ub(col->red, col->green, col->blue);
+-	glVertex2i(in_point.x, in_point.y);
+ 	for (size_t i = 0; i < n_points; ++i)
+ 		glVertex2i(points[i].x, points[i].y);
+ 
 -- 
 2.20.1
 
