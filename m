@@ -1,99 +1,76 @@
-Return-Path: <SRS0=Bo3z=VA=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=uWkg=VB=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D956C0650E
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Jul 2019 12:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42E05C06516
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Jul 2019 09:03:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 45FF2218A0
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Jul 2019 12:16:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 128DC218A6
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Jul 2019 09:03:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IAMQ17s8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="If8K0jWC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbfGCMQs (ORCPT
+        id S1727147AbfGDJD4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 3 Jul 2019 08:16:48 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:39206 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbfGCMQs (ORCPT
+        Thu, 4 Jul 2019 05:03:56 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:43500 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727092AbfGDJD4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 3 Jul 2019 08:16:48 -0400
-Received: by mail-wr1-f66.google.com with SMTP id x4so2537529wrt.6
-        for <linux-trace-devel@vger.kernel.org>; Wed, 03 Jul 2019 05:16:46 -0700 (PDT)
+        Thu, 4 Jul 2019 05:03:56 -0400
+Received: by mail-wr1-f50.google.com with SMTP id p13so5727045wru.10;
+        Thu, 04 Jul 2019 02:03:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RogkDYnm1ncuO7Svv1mErHrEW2982ytOI6SdOjhNfrs=;
-        b=IAMQ17s88q0ysq3ksePgVd4i0AgNl6+tgE4GB2OAhUyn4USIAB/UZEbk54fdw+hB/5
-         Iinfn14/5P+i4hT1Iu8y8BV5+RDSAA+/C9m9XQNaFBDBUDSZnc8tHA3u4PoAgnK0UCEB
-         vDKdkqu1xP5qp+7k9QWa/1HPTFJE2WDXJX+0c9rx9xxyA4U5MxFTKPErCw6RatUFevpf
-         WjFf+2pajhNATKAq/oQBCW6QROU+jdEv6u9DOTq3ldlorbC6IaW6OYdn1k/kW5XV6m61
-         BE7tvk5swu1wN5NByGoSIMHwhvqqFf5agmwQU0fPhBDq8/Zwn8F4dDkcngGUfsHg7Cqe
-         1cwQ==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=tCk/pg2eCfIzWunVIZ/esQp3AcyOQV8Mpx8u/265ads=;
+        b=If8K0jWCCOog0NL7dj0U2K81gub9HQEqqNlDuwroHi0MLBSUa88oqmFuW7ekZl/LPO
+         LDi67LpDixgX94uBjFokEr9bWEYm5nkRAsjOIFwfgz9Q1xAoZ1YpgdNrqBGGNj0qUUoD
+         ub84/QxG9WCKdTGg0/i7QG+m2Fu/fnw99QMOl4La7CodBYHjzebTfh4WilpzT1O5PH6v
+         aJJa3//5UPsaVQskl/hdmEPlrhPOvsCGbStLBnEsZDr/vTifDd91oe6mhleVYb9oLOjn
+         7S/Fetwb3PGBvE2+fR+pF8R7ZjHIlIkDJSF8T6p9tEZGergV/WAoUmItZf4FxIAmfMGr
+         XQ2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RogkDYnm1ncuO7Svv1mErHrEW2982ytOI6SdOjhNfrs=;
-        b=QJ0yPpCckLBfvItwZWyAPt9xlAN3V/j3u723RZimbbyHxxRkadZ+48ABvvb+5Ra4AG
-         09uuMrIr7sIFOE5kE7ex7hBAhOk2BbuFgsbGMKKLsNpHnaXtMPpS3Y8bP8dTOHQXByCc
-         g5SndajEE46JXx92HGgkYrNmCXGhQBRU3EiGIOAon61SS1BxQyBkCe+DVLMBSoyV/rVX
-         wZYCxdEgK0w786Q/c4jEqyGA5p0EpBOyhduES+7A18xZVUfzn0pVuZehuDMfQrqfB7Bj
-         eb5REAv4xd0mXvr+ozeiuwH3wnavM0nYc613geolRbnYWin9eucyure7ym/dcVVrbQlK
-         pOzg==
-X-Gm-Message-State: APjAAAWSTB/8esopguE7wyrTg1G5absLV6V3CfL2M6i+FdHDtfCgPF0p
-        k8I7D7xa8ap/YnwTDnECB9g=
-X-Google-Smtp-Source: APXvYqy/v07bETbVWHacOPc2KqesG3syuaoYgBiGPijSbCRwl5K0aBxrg056qfxmSTiF4EVou34Ncw==
-X-Received: by 2002:a5d:5706:: with SMTP id a6mr26977925wrv.224.1562156205969;
-        Wed, 03 Jul 2019 05:16:45 -0700 (PDT)
-Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id s10sm2136244wrt.49.2019.07.03.05.16.44
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 03 Jul 2019 05:16:45 -0700 (PDT)
-From:   tz.stoyanov@gmail.com
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Fixed a potential problem with non-terminated string, returned by readlink()
-Date:   Wed,  3 Jul 2019 15:16:44 +0300
-Message-Id: <20190703121644.18680-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.21.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=tCk/pg2eCfIzWunVIZ/esQp3AcyOQV8Mpx8u/265ads=;
+        b=H49IoS8PrSOQK6KSTsmppuu2/APyEn5DwKk4Nkfck1ZaHZPjxjx5HnZ0xQ6cFTdwXn
+         ZPsgk/0vneU07zv2wTFU+LriyOeC+rRADmEv1wDnnk0U7GZco7KfoKlAgyKMN1z9wY2q
+         sdVJoVy0WstUtQVVurFZIOjhfIgc94m/tll9uLcvcjNqtyaclSI0imwsafaDczI50der
+         jxhq4S+MLjGZwcGUFytY9//u4EpNv7QYFGaYk99fXcw1lmUeGyCdbCLI0kvGpJV0Xucd
+         gC0K/U8q5MOqlSmfUtDJ5GCADzS0ZlWomTy/aKdacg/ly4cgTh5AY1yNokWsFAGuG9/l
+         VjGg==
+X-Gm-Message-State: APjAAAV97afJSdmzbX8uGMFgv3BrZVK5wUl8SW0jxjze2ZfAgzbMoyde
+        5HrCx3QwWvShLaKTzzST0PgKgNllf4aKbdgKHKTll6Dn
+X-Google-Smtp-Source: APXvYqxcQGXFNbzQP8f+hNbAbTPrxYenkpxyqRvjC3U6dV9iN+nh3OHp4xuTx+fQIdhFSz/HGDkjNw5IIGr52mGq4ek=
+X-Received: by 2002:adf:ec0c:: with SMTP id x12mr32924132wrn.342.1562231034341;
+ Thu, 04 Jul 2019 02:03:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Naruto Nguyen <narutonguyen2018@gmail.com>
+Date:   Thu, 4 Jul 2019 16:03:42 +0700
+Message-ID: <CANpxKHEVmPzxU5SwQV9Ka9z5f-8EYqS=eoD0XEqMkUVQ9tiTbw@mail.gmail.com>
+Subject: register_jprobe always fails with -22
+To:     linux-trace-devel@vger.kernel.org,
+        linux-trace-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Hi everyone,
 
-The buffer, returned by readlink() API, is not guaranteed to be a null terminated string.
-Explicitly adding '\0' at the end of the buffer is recommended, to ensure the string is
-null terminated and to avoid possible buffer overruns.
+I tried to write a sample jprobe as the link
+https://bugzilla.redhat.com/show_bug.cgi?id=1275809 (the sample is
+attached in the link). However the function register_jprobes always
+return -22 or -2. Could you please let me know what these errors means
+and how to fix it?
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- lib/trace-cmd/trace-util.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 190cf74..7c74bae 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -1373,6 +1373,7 @@ static char *trace_util_get_source_plugins_dir(void)
- 	ret = readlink("/proc/self/exe", path, PATH_MAX);
- 	if (ret > PATH_MAX || ret < 0)
- 		return NULL;
-+	path[ret] = 0;
- 
- 	dirname(path);
- 	p = strrchr(path, '/');
--- 
-2.21.0
-
+Thanks,
+Brs,
+Naruto
