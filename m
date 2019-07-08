@@ -2,179 +2,191 @@ Return-Path: <SRS0=JD1t=VF=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DB8DC606A7
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Jul 2019 09:19:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E56F5C606AF
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Jul 2019 13:26:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5E6BF20645
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Jul 2019 09:19:53 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/0s3efU"
+	by mail.kernel.org (Postfix) with ESMTP id B5CBF20844
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Jul 2019 13:26:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbfGHJTx (ORCPT
+        id S1729603AbfGHN0g (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 8 Jul 2019 05:19:53 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:39135 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbfGHJTw (ORCPT
+        Mon, 8 Jul 2019 09:26:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729537AbfGHN0g (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 8 Jul 2019 05:19:52 -0400
-Received: by mail-wm1-f47.google.com with SMTP id z23so15577385wma.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 08 Jul 2019 02:19:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mxpfCIOjMxhMdQIZu09IesIxfyD2tlwO4s5MBN7n5YA=;
-        b=R/0s3efURRaNnsrf62d69HqasbJk3Jyz3zmkavcIlrZRU6k6cMpTA77IS8Kt60KX73
-         4q153VKyJqBaB8+rs5nn+SB+ss+ZlSGodNoDeKB+4yiFQEPO5d2ZONsG43OmJCnS3a0l
-         XTUtj5M42KGdyMgj6lOEKYcDy6FpPPnv7ry2IT17XxwqXjsBHdyRMWFdHhSYbpx0BaFM
-         BgxBAIa1A+8xRnmZD1dL0pgnWuSYvRdtA17ddCoA2in+ScWyCzNngMuDH+mf2xiLpc1D
-         Xofr6FH0vmv1+a/vgj90DKo+od0xuhdoKU7gS72aqs1UYG2cbAf0c4HxyHnQcHfEGe2c
-         jP8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mxpfCIOjMxhMdQIZu09IesIxfyD2tlwO4s5MBN7n5YA=;
-        b=ff2KxXNfym8bLgtYMLCCIeBiUS9ZUPiDGOFSgHnww+ukrEIOFhajCSTwXgFCc5c/nt
-         JmYN0L3QLHNgyO2vhHgNFFdNFN/Qagv+1fiUZwDBPPuCCaC+2bY30aQkmjD5KNDwHcxV
-         w1kgqa8tuTW61c348IazMbkuXeTOGEAqSFId0ptdiuya+YePwfm7BCEq2ACmVphmcgiy
-         yh02N1/kaeIOHdiwVKJ1cjo4tmYbntizEfDRIDpWuoRUrU6oITGrJSaZMO2P4IpSgZZ4
-         rkUbz10Q5huKSJCxXc2ADjJjmsgdGKiy8Usrc/i6sdV3R1bSf5ZIt1PXWCZVg0Zop0Uc
-         Qb6g==
-X-Gm-Message-State: APjAAAU1JUSuJnZv0qHM6C7SN0RK0hXdxEeCaBP4c1hi8U9SqqWr9IAf
-        IRbKQszD5iQHt6lRcrSef3rhVPFk+nw=
-X-Google-Smtp-Source: APXvYqwXVXE1XnixUdyLq4GYx8pKk9+KV8k/9c+FFnqq3s4/7Il1kTraI5+CyiwmLUlDyzIa+5lUZw==
-X-Received: by 2002:a7b:c347:: with SMTP id l7mr15386215wmj.163.1562577590492;
-        Mon, 08 Jul 2019 02:19:50 -0700 (PDT)
-Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id y1sm13208191wma.32.2019.07.08.02.19.49
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 08 Jul 2019 02:19:50 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     rostedt@goodmis.org
+        Mon, 8 Jul 2019 09:26:36 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 378BA204EC;
+        Mon,  8 Jul 2019 13:26:34 +0000 (UTC)
+Date:   Mon, 8 Jul 2019 09:26:32 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
         Yordan Karadzhov <ykaradzhov@vmware.com>
-Subject: [PATCH v3] kernel-shark: Define a CMAKE_BUILD_TYPE "Package"
-Date:   Mon,  8 Jul 2019 12:19:45 +0300
-Message-Id: <20190708091945.439-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.20.1
+Subject: Re: [PATCH v3] kernel-shark: Define a CMAKE_BUILD_TYPE "Package"
+Message-ID: <20190708092632.0062411b@gandalf.local.home>
+In-Reply-To: <20190708091945.439-1-y.karadz@gmail.com>
+References: <20190708091945.439-1-y.karadz@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="MP_/wCpN1YMqD+hGPZu/oY67mJF"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Yordan Karadzhov <ykaradzhov@vmware.com>
+--MP_/wCpN1YMqD+hGPZu/oY67mJF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-A special build type dedicated for package maintainers is added.
-By default this build type adds the "-O3" compiler flag. Users
-can chose their own compiler flags by providing the corresponding
-CMAKE_XXXX_FLAGS_PACKAGE Command-Line options.
+On Mon,  8 Jul 2019 12:19:45 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-If no types is specified, the build type will be "Debug".
+> From: Yordan Karadzhov <ykaradzhov@vmware.com>
+> 
+> A special build type dedicated for package maintainers is added.
+> By default this build type adds the "-O3" compiler flag. Users
+> can chose their own compiler flags by providing the corresponding
+> CMAKE_XXXX_FLAGS_PACKAGE Command-Line options.
+> 
+> If no types is specified, the build type will be "Debug".
+> 
+> Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
+> 
 
-Signed-off-by: Yordan Karadzhov <ykaradzhov@vmware.com>
----
- kernel-shark/CMakeLists.txt | 34 +++++++++++++++++++++++++---------
- kernel-shark/README         | 22 ++++++++++++++++------
- 2 files changed, 41 insertions(+), 15 deletions(-)
+Thanks Yordan!
 
-diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
-index 64124b0..a0535d8 100644
---- a/kernel-shark/CMakeLists.txt
-+++ b/kernel-shark/CMakeLists.txt
-@@ -36,22 +36,38 @@ set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
- set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -pthread -fPIC")
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread -fPIC")
- 
--if(NOT _INSTALL_PREFIX)
--	set(_INSTALL_PREFIX "/usr/local")
--endif()
-+if (NOT CMAKE_BUILD_TYPE)
-+    set(CMAKE_BUILD_TYPE Debug)
-+endif (NOT CMAKE_BUILD_TYPE)
-+
-+message("\n Build type: ${CMAKE_BUILD_TYPE}")
-+
-+if (NOT CMAKE_C_FLAGS_PACKAGE)
-+    set(CMAKE_C_FLAGS_PACKAGE "-O3")
-+endif (NOT CMAKE_C_FLAGS_PACKAGE)
-+
-+if (NOT CMAKE_CXX_FLAGS_PACKAGE)
-+    set(CMAKE_CXX_FLAGS_PACKAGE "-O3")
-+endif (NOT CMAKE_CXX_FLAGS_PACKAGE)
-+
-+if (NOT _INSTALL_PREFIX)
-+    set(_INSTALL_PREFIX "/usr/local")
-+endif (NOT _INSTALL_PREFIX)
- 
- set(KS_PLUGIN_INSTALL_PREFIX ${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/plugins/)
- set(KS_ICON ksharkicon.png)
- 
--if (NOT _DEBUG)
-+set(CMAKE_INSTALL_RPATH "${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/")
-+
-+if (CMAKE_BUILD_TYPE MATCHES Package)
-+
-+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
- 
--	set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -O2")
--	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
-+else (CMAKE_BUILD_TYPE MATCHES Package)
- 
--endif (NOT _DEBUG)
-+    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
- 
--SET(CMAKE_INSTALL_RPATH "${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/")
--SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-+endif (CMAKE_BUILD_TYPE MATCHES Package)
- 
- include_directories(${KS_DIR}/src/
-                     ${KS_DIR}/build/src/
-diff --git a/kernel-shark/README b/kernel-shark/README
-index 379c390..75a0dd0 100644
---- a/kernel-shark/README
-+++ b/kernel-shark/README
-@@ -38,14 +38,24 @@ the original trace-cmd end traceevent libraries.
- 2.1.1 In order to create a Doxygen documentation add -D_DOXYGEN_DOC=1
- as a CMake Command-Line option.
- 
--2.1.2 In order to generates complete debug information to be used by GDB add
---D_DEBUG=1 as a CMake Command-Line option.
--
--2.1.3 By default, installation prefix is "/usr/local". It can be changed using
-+2.1.2 By default, installation prefix is "/usr/local". It can be changed using
- -D_INSTALL_PREFIX= as a CMake Command-Line option.
- 
--Example:
--    cmake -D_DOXYGEN_DOC=1 -D_DEBUG=1 -D_INSTALL_PREFIX=/usr ../
-+2.1.3 In addition to the standard CMake build types (Debug, Release,
-+RelWithDebInfo, MinSizeRel) KernelShark supports a "Package" build type.
-+By default this build type adds the "-O2" compiler flag. Package maintainers
-+can chose their own compiler flags by providing the corresponding
-+CMAKE_XXXX_FLAGS_PACKAGE Command-Line options (see the example below).
-+
-+Note that when built as a "Package" the RPATH-s of the executables are
-+set directly to _INSTALL_PREFIX/lib/kernelshark/
-+
-+If no build types is specified, the type will be "Debug".
-+
-+Examples:
-+    cmake -D_DOXYGEN_DOC=1 -D_INSTALL_PREFIX=/usr ../
-+
-+    cmake -DCMAKE_BUILD_TYPE=Package -DCMAKE_C_FLAGS_PACKAGE="-O3 -pedantic"  ../
- 
- 2.2.1 Use "make clean" if you want to delete all already compiled objects.
- 
--- 
-2.20.1
+I applied and pushed most your patches upstream.
 
+I started to play a little with the record feature, and found some
+issues.
+
+ 1) It still adds a -e'event' for all events when a system is selected.
+    Can we just make it use the system? -eirq instead of
+    -eirq:irq_handler_entry -eirq:irq_handler_exit -eirq...
+
+ 2) When I executed it, it gave me an error, and then crashed
+    kernelshark. It should check the status of the run before it tries
+    to reload it.
+
+ 3) I saved the report as the recorder was still running (but
+    kernelshark crashed). And then when I loaded the report (attached)
+    it just executed it. The "import" should just pull it in and load
+    the settings. This way, one could make updates to a default saved
+    record.
+
+These probably should be fixed before ks1.0 is released.
+
+Thanks!
+
+-- Steve
+
+--MP_/wCpN1YMqD+hGPZu/oY67mJF
+Content-Type: application/json
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=test-record.json
+
+ewogICAidHlwZSI6ICJrc2hhcmsuY29uZmlnLnJlY29yZCIsCiAgICJFdmVudHMiOiB7CiAgICAg
+InR5cGUiOiAia3NoYXJrLmNvbmZpZy5maWx0ZXIiLAogICAgICJFdmVudHMiOiBbCiAgICAgICB7
+CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX3ZlY3RvcnMiLAogICAgICAgICAibmFtZSI6ICJ2ZWN0
+b3JfYWN0aXZhdGUiCiAgICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycV92
+ZWN0b3JzIiwKICAgICAgICAgIm5hbWUiOiAicmVzY2hlZHVsZV9leGl0IgogICAgICAgfSwKICAg
+ICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJpcnFfbWF0cml4IiwKICAgICAgICAgIm5hbWUiOiAi
+aXJxX21hdHJpeF9yZXNlcnZlIgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6
+ICJpcnFfdmVjdG9ycyIsCiAgICAgICAgICJuYW1lIjogInZlY3Rvcl9jbGVhciIKICAgICAgIH0s
+CiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAic2NoZWQiLAogICAgICAgICAibmFtZSI6ICJz
+Y2hlZF9wcm9jZXNzX2ZvcmsiCiAgICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjog
+ImlycV92ZWN0b3JzIiwKICAgICAgICAgIm5hbWUiOiAieDg2X3BsYXRmb3JtX2lwaV9lbnRyeSIK
+ICAgICAgIH0sCiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX3ZlY3RvcnMiLAogICAg
+ICAgICAibmFtZSI6ICJkZWZlcnJlZF9lcnJvcl9hcGljX2V4aXQiCiAgICAgICB9LAogICAgICAg
+ewogICAgICAgICAic3lzdGVtIjogImlycV9tYXRyaXgiLAogICAgICAgICAibmFtZSI6ICJpcnFf
+bWF0cml4X2FsbG9jIgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJzY2hl
+ZCIsCiAgICAgICAgICJuYW1lIjogInNjaGVkX21pZ3JhdGVfdGFzayIKICAgICAgIH0sCiAgICAg
+ICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX3ZlY3RvcnMiLAogICAgICAgICAibmFtZSI6ICJ2
+ZWN0b3Jfc2V0dXAiCiAgICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycV92
+ZWN0b3JzIiwKICAgICAgICAgIm5hbWUiOiAibG9jYWxfdGltZXJfZXhpdCIKICAgICAgIH0sCiAg
+ICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxIiwKICAgICAgICAgIm5hbWUiOiAic29mdGly
+cV9lbnRyeSIKICAgICAgIH0sCiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX3ZlY3Rv
+cnMiLAogICAgICAgICAibmFtZSI6ICJjYWxsX2Z1bmN0aW9uX3NpbmdsZV9lbnRyeSIKICAgICAg
+IH0sCiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX21hdHJpeCIsCiAgICAgICAgICJu
+YW1lIjogImlycV9tYXRyaXhfYWxsb2NfcmVzZXJ2ZWQiCiAgICAgICB9LAogICAgICAgewogICAg
+ICAgICAic3lzdGVtIjogImlycV92ZWN0b3JzIiwKICAgICAgICAgIm5hbWUiOiAidmVjdG9yX2Fs
+bG9jIgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJpcnFfdmVjdG9ycyIs
+CiAgICAgICAgICJuYW1lIjogImlycV93b3JrX2V4aXQiCiAgICAgICB9LAogICAgICAgewogICAg
+ICAgICAic3lzdGVtIjogImlycV9tYXRyaXgiLAogICAgICAgICAibmFtZSI6ICJpcnFfbWF0cml4
+X29ubGluZSIKICAgICAgIH0sCiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX3ZlY3Rv
+cnMiLAogICAgICAgICAibmFtZSI6ICJ2ZWN0b3JfY29uZmlnIgogICAgICAgfSwKICAgICAgIHsK
+ICAgICAgICAgInN5c3RlbSI6ICJpcnFfdmVjdG9ycyIsCiAgICAgICAgICJuYW1lIjogImVycm9y
+X2FwaWNfZW50cnkiCiAgICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycV92
+ZWN0b3JzIiwKICAgICAgICAgIm5hbWUiOiAidGhyZXNob2xkX2FwaWNfZXhpdCIKICAgICAgIH0s
+CiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX21hdHJpeCIsCiAgICAgICAgICJuYW1l
+IjogImlycV9tYXRyaXhfYWxsb2NfbWFuYWdlZCIKICAgICAgIH0sCiAgICAgICB7CiAgICAgICAg
+ICJzeXN0ZW0iOiAiaXJxX3ZlY3RvcnMiLAogICAgICAgICAibmFtZSI6ICJ2ZWN0b3JfZGVhY3Rp
+dmF0ZSIKICAgICAgIH0sCiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxIiwKICAgICAg
+ICAgIm5hbWUiOiAiaXJxX2hhbmRsZXJfZW50cnkiCiAgICAgICB9LAogICAgICAgewogICAgICAg
+ICAic3lzdGVtIjogImlycV92ZWN0b3JzIiwKICAgICAgICAgIm5hbWUiOiAiY2FsbF9mdW5jdGlv
+bl9lbnRyeSIKICAgICAgIH0sCiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX21hdHJp
+eCIsCiAgICAgICAgICJuYW1lIjogImlycV9tYXRyaXhfcmVtb3ZlX3Jlc2VydmVkIgogICAgICAg
+fSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJpcnFfdmVjdG9ycyIsCiAgICAgICAgICJu
+YW1lIjogInZlY3Rvcl9yZXNlcnZlX21hbmFnZWQiCiAgICAgICB9LAogICAgICAgewogICAgICAg
+ICAic3lzdGVtIjogImlycV92ZWN0b3JzIiwKICAgICAgICAgIm5hbWUiOiAieDg2X3BsYXRmb3Jt
+X2lwaV9leGl0IgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJpcnFfdmVj
+dG9ycyIsCiAgICAgICAgICJuYW1lIjogInRoZXJtYWxfYXBpY19lbnRyeSIKICAgICAgIH0sCiAg
+ICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX21hdHJpeCIsCiAgICAgICAgICJuYW1lIjog
+ImlycV9tYXRyaXhfZnJlZSIKICAgICAgIH0sCiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAi
+aXJxX3ZlY3RvcnMiLAogICAgICAgICAibmFtZSI6ICJ2ZWN0b3JfZnJlZV9tb3ZlZCIKICAgICAg
+IH0sCiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX3ZlY3RvcnMiLAogICAgICAgICAi
+bmFtZSI6ICJzcHVyaW91c19hcGljX2VudHJ5IgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAg
+InN5c3RlbSI6ICJpcnEiLAogICAgICAgICAibmFtZSI6ICJzb2Z0aXJxX2V4aXQiCiAgICAgICB9
+LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycV92ZWN0b3JzIiwKICAgICAgICAgIm5h
+bWUiOiAiY2FsbF9mdW5jdGlvbl9zaW5nbGVfZXhpdCIKICAgICAgIH0sCiAgICAgICB7CiAgICAg
+ICAgICJzeXN0ZW0iOiAiaXJxX21hdHJpeCIsCiAgICAgICAgICJuYW1lIjogImlycV9tYXRyaXhf
+cmVzZXJ2ZV9tYW5hZ2VkIgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJz
+Y2hlZCIsCiAgICAgICAgICJuYW1lIjogInNjaGVkX3dha2luZyIKICAgICAgIH0sCiAgICAgICB7
+CiAgICAgICAgICJzeXN0ZW0iOiAiaXJxX3ZlY3RvcnMiLAogICAgICAgICAibmFtZSI6ICJ2ZWN0
+b3JfYWxsb2NfbWFuYWdlZCIKICAgICAgIH0sCiAgICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAi
+aXJxX3ZlY3RvcnMiLAogICAgICAgICAibmFtZSI6ICJyZXNjaGVkdWxlX2VudHJ5IgogICAgICAg
+fSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJpcnFfbWF0cml4IiwKICAgICAgICAgIm5h
+bWUiOiAiaXJxX21hdHJpeF9vZmZsaW5lIgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5
+c3RlbSI6ICJpcnFfdmVjdG9ycyIsCiAgICAgICAgICJuYW1lIjogInZlY3Rvcl91cGRhdGUiCiAg
+ICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycV92ZWN0b3JzIiwKICAgICAg
+ICAgIm5hbWUiOiAiZXJyb3JfYXBpY19leGl0IgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAg
+InN5c3RlbSI6ICJpcnFfdmVjdG9ycyIsCiAgICAgICAgICJuYW1lIjogImRlZmVycmVkX2Vycm9y
+X2FwaWNfZW50cnkiCiAgICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycV9t
+YXRyaXgiLAogICAgICAgICAibmFtZSI6ICJpcnFfbWF0cml4X2Fzc2lnbiIKICAgICAgIH0sCiAg
+ICAgICB7CiAgICAgICAgICJzeXN0ZW0iOiAic2NoZWQiLAogICAgICAgICAibmFtZSI6ICJzY2hl
+ZF9zd2l0Y2giCiAgICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycV92ZWN0
+b3JzIiwKICAgICAgICAgIm5hbWUiOiAidmVjdG9yX3RlYXJkb3duIgogICAgICAgfSwKICAgICAg
+IHsKICAgICAgICAgInN5c3RlbSI6ICJpcnFfdmVjdG9ycyIsCiAgICAgICAgICJuYW1lIjogImxv
+Y2FsX3RpbWVyX2VudHJ5IgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJz
+Y2hlZCIsCiAgICAgICAgICJuYW1lIjogInNjaGVkX3BpX3NldHByaW8iCiAgICAgICB9LAogICAg
+ICAgewogICAgICAgICAic3lzdGVtIjogImlycSIsCiAgICAgICAgICJuYW1lIjogImlycV9oYW5k
+bGVyX2V4aXQiCiAgICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycV92ZWN0
+b3JzIiwKICAgICAgICAgIm5hbWUiOiAiY2FsbF9mdW5jdGlvbl9leGl0IgogICAgICAgfSwKICAg
+ICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJpcnFfbWF0cml4IiwKICAgICAgICAgIm5hbWUiOiAi
+aXJxX21hdHJpeF9hc3NpZ25fc3lzdGVtIgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5
+c3RlbSI6ICJpcnFfdmVjdG9ycyIsCiAgICAgICAgICJuYW1lIjogInZlY3Rvcl9yZXNlcnZlIgog
+ICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJpcnFfdmVjdG9ycyIsCiAgICAg
+ICAgICJuYW1lIjogImlycV93b3JrX2VudHJ5IgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAg
+InN5c3RlbSI6ICJpcnFfdmVjdG9ycyIsCiAgICAgICAgICJuYW1lIjogInRoZXJtYWxfYXBpY19l
+eGl0IgogICAgICAgfSwKICAgICAgIHsKICAgICAgICAgInN5c3RlbSI6ICJzY2hlZCIsCiAgICAg
+ICAgICJuYW1lIjogInNjaGVkX3Byb2Nlc3NfZXhpdCIKICAgICAgIH0sCiAgICAgICB7CiAgICAg
+ICAgICJzeXN0ZW0iOiAiaXJxX3ZlY3RvcnMiLAogICAgICAgICAibmFtZSI6ICJzcHVyaW91c19h
+cGljX2V4aXQiCiAgICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycSIsCiAg
+ICAgICAgICJuYW1lIjogInNvZnRpcnFfcmFpc2UiCiAgICAgICB9LAogICAgICAgewogICAgICAg
+ICAic3lzdGVtIjogImlycV92ZWN0b3JzIiwKICAgICAgICAgIm5hbWUiOiAidGhyZXNob2xkX2Fw
+aWNfZW50cnkiCiAgICAgICB9LAogICAgICAgewogICAgICAgICAic3lzdGVtIjogImlycV9tYXRy
+aXgiLAogICAgICAgICAibmFtZSI6ICJpcnFfbWF0cml4X3JlbW92ZV9tYW5hZ2VkIgogICAgICAg
+fQogICAgIF0KICAgfSwKICAgIlBsdWdpbiI6ICJmdW5jdGlvbl9ncmFwaCIsCiAgICJPdXRwdXQi
+OiAiXC9yb290XC90cmFjZS10ZXN0LmRhdCIsCiAgICJDb21tYW5kIjogIlwvd29ya1wvY1wvbWln
+cmF0ZSIKIH0=
+
+--MP_/wCpN1YMqD+hGPZu/oY67mJF--
