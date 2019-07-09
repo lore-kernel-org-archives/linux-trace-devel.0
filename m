@@ -5,65 +5,65 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0746DC73C46
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 15:57:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D5DBC73C46
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 15:57:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D4EE7216E3
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 15:57:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 369BA216C4
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 15:57:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TfCHvVkf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SdTwv5qE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbfGIP5Y (ORCPT
+        id S1726238AbfGIP50 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Jul 2019 11:57:24 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:33840 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbfGIP5Y (ORCPT
+        Tue, 9 Jul 2019 11:57:26 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:50770 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726133AbfGIP5Z (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Jul 2019 11:57:24 -0400
-Received: by mail-wr1-f52.google.com with SMTP id 31so4834229wrm.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 09 Jul 2019 08:57:22 -0700 (PDT)
+        Tue, 9 Jul 2019 11:57:25 -0400
+Received: by mail-wm1-f46.google.com with SMTP id v15so3652444wml.0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 09 Jul 2019 08:57:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=G8BNxHGQFIurQtSbHNJIYbTT2zYIjn4djInsYOxdlEk=;
-        b=TfCHvVkfob2din3YdqoXLToDUCaXPMVqbvhk78XqIz5tCbv5HBGjskhytYQLutTuRQ
-         87ayPCrrH8AslLwkEZ+sg4aB20SVcsiluC1d8hqrh0aezq7eB9CbJ0IBcjf++InnfUNQ
-         G9TC/hOZktFVC42RAt59JDAymCaKPrImCwkgdyG0+F/T/AAPsYEntwyRAK5DVulwdXlo
-         3l9zuB0azI4kY2nkpdxh4S4QWTwEuQTW9qhG9lbfiVLfSDljh3bxvm0rJnFF9tqOxskr
-         GtwTm+pIxkNVM1YvptMsTlhItu6iX3LrDjq5Nss1W3Ms4q8BtquevJoE5WI82lB8d8E5
-         coNQ==
+        bh=4vTSVwzPagn4coALClzcY4CBNS9gpkyjygDFxvKLxyE=;
+        b=SdTwv5qEecv8z7SL7gA/w+C6qizCgHDFbH2s7GSFVqB27avatPjHMgpHIV9SzOu/NI
+         py4CNaBPerZjoGyBnefCPuYm0IitEk+GOg+y2m6tqZIzvKZlVpESN01CVAd8bEW0ruac
+         vDxXOxuowkFGIv8Go3A2JeD2YxX2XBAsWggwc+16bpzyytnpUME/eL/M/2U10shzcudt
+         1bqN/IHYfW9fbAQPbWPlcf9BuC255JE9N7oQCVkebKOpkfAyEN9JJcsvtaA7IvH/NpXX
+         0y09Bfe2ulTZYUFoHHlokuc5jBTsmyFPZQeRXUvUNbE99akXBWI9482jfqshC+zN5RQb
+         sK8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=G8BNxHGQFIurQtSbHNJIYbTT2zYIjn4djInsYOxdlEk=;
-        b=Ep4EO8leIx33X72tVB1YBhP626kZZsEpR7NQ3xJXhDogCl1HVqFs++9Zz0FwMQogvw
-         SIuSzw8NDMOC4oa1yQunvxm8t7sLluKMlk1ijfDiEJAjrHIY5YvaFV9QlTMXG026R7nW
-         DZRUweEyvpgW6guFkHEaQYXagaRJho+e2o5iUG8XySXhIpkmLNHL+lYmTYq2vhfxfgL+
-         S3/Mvt2AqIcSx60zooREbp3BRvkeb0XWREm0YORy/rYhgNROtj0Tok/yPCo7cWO92DKu
-         3aIsmb9B0oa+CN4KSO7BEdNBpIxYW+2N0b6GA6FFBv0vZCvmY801fUwzXtu90KpR6Gjn
-         bGlA==
-X-Gm-Message-State: APjAAAXh8iysYaetwEeZaHByq341x5uncEP1pYzALIySE/bpq+yEEfoR
-        0k5PoLtMZcL3i7PoR7xyoq8=
-X-Google-Smtp-Source: APXvYqyM6kMVzLYAhHKaIDGmalzs5K/Q9FE8CDzvHL103RZqdiPEd/Kb+Yi/Uly8+ipGJePCZbEFyA==
-X-Received: by 2002:adf:e50b:: with SMTP id j11mr25957430wrm.351.1562687842363;
-        Tue, 09 Jul 2019 08:57:22 -0700 (PDT)
+        bh=4vTSVwzPagn4coALClzcY4CBNS9gpkyjygDFxvKLxyE=;
+        b=HKgzizeuRg4eKtUHoeCEdmjF5RAPCELAuMAntgr3ag34qsYoZp5yJlYsrLWDVGuwhc
+         b8XIWTo+pdxYXD2140+78c2194nBSp3FCn6ipg7U8eyT/dGLvJbdmqJdPxN0snuMZ4tZ
+         81A/W8vAOS7rT+4pja3wFAj/U/BWVAdUFcbTHTtiZtU5/pXrwyf+7QaXvwPgiTM3e9gZ
+         wCqqUrPeNBBxYjUUvQIT++/LTvRt26MPNbaYX/5pj8+cuKXayODvLQlqC5J0ba3tta5U
+         cGMHGf5hURzpCj6f93cfGjc45SNFZneoWz5WC7noyC/saTMUPEVNdjRwsXVFh4C5hpwa
+         O8zA==
+X-Gm-Message-State: APjAAAXmngYNgrO0Lolxy/jKkw3/JiFU1SjtWPYKqI5gs8RnY8TStJUm
+        sCp5cabTDV34Szd9qWZUuPfMTn79HQI=
+X-Google-Smtp-Source: APXvYqzQae2iOFTojM1DqU8fyL29mpWJ9aLHQ4jaij3gyET0q4tNJBFwhxs03pZeODm4xEuGtdEsuQ==
+X-Received: by 2002:a7b:cbcb:: with SMTP id n11mr574565wmi.146.1562687843609;
+        Tue, 09 Jul 2019 08:57:23 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id v5sm24313746wre.50.2019.07.09.08.57.21
+        by smtp.gmail.com with ESMTPSA id v5sm24313746wre.50.2019.07.09.08.57.23
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 09 Jul 2019 08:57:22 -0700 (PDT)
+        Tue, 09 Jul 2019 08:57:23 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/8] kernel-shark: Add method for getting all selected events
-Date:   Tue,  9 Jul 2019 18:56:44 +0300
-Message-Id: <20190709155650.2345-3-y.karadz@gmail.com>
+Subject: [PATCH 3/8] kernel-shark: Optimize the command line options used by the capture dialog
+Date:   Tue,  9 Jul 2019 18:56:45 +0300
+Message-Id: <20190709155650.2345-4-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190709155650.2345-1-y.karadz@gmail.com>
 References: <20190709155650.2345-1-y.karadz@gmail.com>
@@ -74,82 +74,50 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A new method is added to the class KsEventsCheckBoxWidget. It returns
-a list of strings containing all selected events. If the whole system
-is selected (the top level checkbox is checked), only the name of the
-system is added to the list.
+Do not include all events belonging to a given system if the whole system
+is selected. Add only the name of the system instead. Do not specify a
+plugin if the selected plugin is "nop".
 
+Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsWidgetsLib.cpp | 41 +++++++++++++++++++++++++++++++
- kernel-shark/src/KsWidgetsLib.hpp |  2 ++
- 2 files changed, 43 insertions(+)
+ kernel-shark/src/KsCaptureDialog.cpp | 21 ++++++---------------
+ 1 file changed, 6 insertions(+), 15 deletions(-)
 
-diff --git a/kernel-shark/src/KsWidgetsLib.cpp b/kernel-shark/src/KsWidgetsLib.cpp
-index ea02b5e..1c55c79 100644
---- a/kernel-shark/src/KsWidgetsLib.cpp
-+++ b/kernel-shark/src/KsWidgetsLib.cpp
-@@ -706,6 +706,47 @@ KsEventsCheckBoxWidget::KsEventsCheckBoxWidget(struct tep_handle *tep,
- 	_adjustSize();
- }
+diff --git a/kernel-shark/src/KsCaptureDialog.cpp b/kernel-shark/src/KsCaptureDialog.cpp
+index b107595..7da6c08 100644
+--- a/kernel-shark/src/KsCaptureDialog.cpp
++++ b/kernel-shark/src/KsCaptureDialog.cpp
+@@ -143,23 +143,14 @@ QStringList KsCaptureControl::getArgs()
+ 	QStringList argv;
  
-+/**
-+ * @brief Get a list of all checked events. If the whole system is selected
-+ *	  (the top level checkbox is checked), only the name of the system is
-+ *	  added to the list.
-+ *
-+ * @param option: If True, "-e" is added as prefix to each element of the list.
-+ *
-+ * @returns A list of checked events or systems.
-+ */
-+QStringList KsEventsCheckBoxWidget::getCheckedEvents(bool option)
-+{
-+	QTreeWidgetItem *sysItem, *evtItem;
-+	QStringList list;
-+	QString optStr;
-+	int nSys, nEvts;
-+
-+	if (option)
-+		optStr = "-e";
-+
-+	nSys = _tree.topLevelItemCount();
-+	for(int t = 0; t < nSys; ++t) {
-+		sysItem = _tree.topLevelItem(t);
-+		if (sysItem->checkState(0) == Qt::Checked) {
-+			list << optStr + sysItem->text(0);
-+		} else {
-+			nEvts = sysItem->childCount();
-+			for (int c = 0; c < nEvts; ++c) {
-+				evtItem = sysItem->child(c);
-+				if (evtItem->checkState(0) == Qt::Checked) {
-+					list << optStr +
-+						sysItem->text(0) +
-+						":" +
-+						evtItem->text(0);
-+				}
-+			}
-+		}
-+	}
-+
-+	return list;
-+}
-+
- /** Remove a System from the Checkbox tree. */
- void KsEventsCheckBoxWidget::removeSystem(QString name) {
- 	QTreeWidgetItem *item =
-diff --git a/kernel-shark/src/KsWidgetsLib.hpp b/kernel-shark/src/KsWidgetsLib.hpp
-index 6f22374..0d79250 100644
---- a/kernel-shark/src/KsWidgetsLib.hpp
-+++ b/kernel-shark/src/KsWidgetsLib.hpp
-@@ -333,6 +333,8 @@ struct KsEventsCheckBoxWidget : public KsCheckBoxTreeWidget
- 	KsEventsCheckBoxWidget(struct tep_handle *pe,
- 			       QWidget *parent = nullptr);
+ 	argv << "record";
+-	argv << "-p" << _pluginsComboBox.currentText();
  
-+	QStringList getCheckedEvents(bool option);
-+
- 	void removeSystem(QString name);
- };
+-	if (_eventsWidget.all()) {
+-		argv << "-e" << "all";
+-	} else {
+-		QVector<int> evtIds = _eventsWidget.getCheckedIds();
+-		tep_event *event;
++	if (_pluginsComboBox.currentText() != "nop")
++		argv << "-p" << _pluginsComboBox.currentText();
  
+-		for (auto const &id: evtIds) {
+-			event = tep_find_event(_localTEP, id);
+-			if (!event)
+-				continue;
+-
+-			argv << "-e" + QString(event->system) +
+-				":" + QString(event->name);
+-		}
+-	}
++	if (_eventsWidget.all())
++		argv << "-e" << "all";
++	else
++		argv << _eventsWidget.getCheckedEvents(true);
+ 
+ 	argv << "-o" << outputFileName();
+ 	argv << _commandLineEdit.text().split(" ");
 -- 
 2.20.1
 
