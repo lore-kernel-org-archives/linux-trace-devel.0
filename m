@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F634C73C46
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 15:57:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9708FC73C53
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 15:57:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EC5BB216C4
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 15:57:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 702E8216C4
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 15:57:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dsnBZ+3x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sl9Gv1KX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbfGIP53 (ORCPT
+        id S1726298AbfGIP5b (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Jul 2019 11:57:29 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:36270 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbfGIP53 (ORCPT
+        Tue, 9 Jul 2019 11:57:31 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:37867 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726133AbfGIP5b (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Jul 2019 11:57:29 -0400
-Received: by mail-wm1-f65.google.com with SMTP id g67so3812983wme.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 09 Jul 2019 08:57:28 -0700 (PDT)
+        Tue, 9 Jul 2019 11:57:31 -0400
+Received: by mail-wr1-f67.google.com with SMTP id n9so12481439wrr.4
+        for <linux-trace-devel@vger.kernel.org>; Tue, 09 Jul 2019 08:57:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oafdOE8cfRFcWDHI3K/XrnurRFkCwhoOhyD3nfV4xjc=;
-        b=dsnBZ+3xtGobcd4JSiENGMzhLM9tNbjUdHw1/3UebxFHWXPssY7ep7lX4QIqQxjE56
-         FkaeiipwZVJMHtGjY/o8Ye1v+f5cZ0rsZa2rGRA7kZwpjsv6zJHFLkV4wj/yM8A/H6Ak
-         EKcrXnukrTc+amF6OeCxiO5n3zmJhlrjuvFt94XXgADGG9Nn2AJiPe8AVOBmMTFTLqpk
-         0iArAA84Q0nFVwbFFABU6b4Elr+VCUnzIW45aYO5Q5JK4115H7iXMk7ZFOcyY3SNgfOj
-         d0fNdLhEId2A8j/bTW6eGVGGLqnvzWJka4ZyWbIHhzCtW/5dHhAb1LoBLz1k0YZJnn7B
-         ZdaA==
+        bh=jyjy99QwM8/P9RxrZz9xRTDp6gY5k1+hpLrM5MKvJMg=;
+        b=sl9Gv1KXMzbYSePBa+XjxzCOvMlhYxL1s0j2Px1KFKlSziO9vdaFENhEqLQaKbq13/
+         XmR4mio6/gk7lmtUdOG1EjqypULQOaaMCewbsKhidp+uCbmE4Q9eMKJoh7wT7p2dEoKf
+         K7tr7NYg3FMgodRUiwlcU21SpGrKvMeVHao85HrrlwZrqWEaQiNgLrz1UnJvgLIWNlFD
+         4ZbOfidBRnU8IgFn9TI/ZgaEfSHhH2obZawmtELsDUI4zXq9bz63B8Ab16IhKhTMGbiV
+         URGKDm+No5KL7WpFzFdSz3q3hkJ0dtYFyxuTkdgDIcM4NL0RjkmLXfoe3u2OlW50BRju
+         1Kyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oafdOE8cfRFcWDHI3K/XrnurRFkCwhoOhyD3nfV4xjc=;
-        b=IudCVsRi6BwazfL1Gdgcjn+/z/MgvlNaPXfaUH4MMF6GiqN1DAmVeaiqSau+MBmzbD
-         +BOqAV1Fq5679nWkWBOGfs6yKHIMNd9OuSa2qRz4nN22sR8co5t28qHi3gSGSrsMC5ix
-         oIQLk30ID8dzjHVHykarsuF0phUUFsynwFLj9FKIugx28iGtXyXwP9Ne1CDAoaWiPLPo
-         Au+3gmNhVIPmnt9XrhaqTAktKQwc/KSgMz3dXtsURD4ph6CEoYWH/+Ti19nNGcaLKcIF
-         I0VoSgZHHbNG33WiY1GsbAzG8DAu2SULYn77HxOdXh6wbHP7mq8Hve4C+MOeNKDnIsUR
-         NErw==
-X-Gm-Message-State: APjAAAU8is7MN1VGpbQxgSRUog+sOSJAEC/0QumJb8BnoczGX5SKJfw/
-        FYLnAhiJVVVCtekn7KbolvM=
-X-Google-Smtp-Source: APXvYqzhhRbw/4AEN7R0yl6ZSKTv8OrxyAQJ5GuGWimKZ3tGoOv++2VoZqKCLL2hjxmvMTeDTinD8A==
-X-Received: by 2002:a7b:c0d0:: with SMTP id s16mr556271wmh.136.1562687847497;
-        Tue, 09 Jul 2019 08:57:27 -0700 (PDT)
+        bh=jyjy99QwM8/P9RxrZz9xRTDp6gY5k1+hpLrM5MKvJMg=;
+        b=b5qpctGuMmlTVl4/2Wu6zCMhiK4n72rFVLb8pXNPIL+zqY9WU86UCDAeoZD0hJtrKM
+         PXXU0PrSlljjMemK5WFp1i4YgKGLVj1axwZoEa0gPnjnchQD+Kxmmip+6wojIR4rQqNO
+         Bx/TfTQexif9MsT4L0oD+GIfy9Yfw1SLpacYAbtl3VbDig/TqRonK5SWD9i8EfesLUqY
+         MuWEut6GSXn/2VG1LtKb3+brkXt5uswepdlZpjhvsHKtI9NNB5Vadeop26TvIFJIOSCP
+         Q/qDFhoCUaqTHIIWYJyDM/fUXhYmJAYaEZyzKZjfGPFlL6rBJdBbuN8k+kBvm/LqVQeU
+         oXwg==
+X-Gm-Message-State: APjAAAX+gmP0c2qzQsSICvAm4AKVKiw6exxcFXAle4KZoUYQyDl3TJDC
+        syHNPjA/vFXRgmqGemZR2Rw=
+X-Google-Smtp-Source: APXvYqx3ksLNxi388AE6AOfOGB6c1eFEnqRiByS19nC3APHYp3eo0POHVRICUpaEqjrc7HHY/wvO/A==
+X-Received: by 2002:adf:f98a:: with SMTP id f10mr798449wrr.250.1562687849009;
+        Tue, 09 Jul 2019 08:57:29 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id v5sm24313746wre.50.2019.07.09.08.57.26
+        by smtp.gmail.com with ESMTPSA id v5sm24313746wre.50.2019.07.09.08.57.28
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 09 Jul 2019 08:57:27 -0700 (PDT)
+        Tue, 09 Jul 2019 08:57:28 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 6/8] kernel-shark: remove the "make install" suggestion for capture errors
-Date:   Tue,  9 Jul 2019 18:56:48 +0300
-Message-Id: <20190709155650.2345-7-y.karadz@gmail.com>
+Subject: [PATCH 7/8] kernel-shark: Disconnect "capture errors" before closing KernelShark GUI
+Date:   Tue,  9 Jul 2019 18:56:49 +0300
+Message-Id: <20190709155650.2345-8-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190709155650.2345-1-y.karadz@gmail.com>
 References: <20190709155650.2345-1-y.karadz@gmail.com>
@@ -74,28 +74,61 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The message is not appropriate, although it is most likely that the
-error occurs because the user didn't install KernelShark and it runs
-the executable from its build location.
+This is done because we do not want to show error messages if the Capture
+dialog is not closed.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 2 --
- 1 file changed, 2 deletions(-)
+ kernel-shark/src/KsMainWindow.cpp | 15 +++++++++++++--
+ kernel-shark/src/KsMainWindow.hpp |  2 ++
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 752a17a..3f238db 100644
+index 3f238db..55518a3 100644
 --- a/kernel-shark/src/KsMainWindow.cpp
 +++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -1154,8 +1154,6 @@ void KsMainWindow::_captureError(QProcess::ProcessError error)
- 	QString message = "Capture process failed:<br>";
+@@ -155,6 +155,16 @@ KsMainWindow::~KsMainWindow()
  
- 	message += capture->errorString();
--	message += "<br>Try doing:<br> sudo make install";
--
- 	_error(message, "captureFinishedErr", false, false);
+ 	_data.clear();
+ 
++	/*
++	 * Do not show error messages if the "capture" process is still
++	 * running (Capture dialog is not closed).
++	 */
++	if (_capture.state() != QProcess::NotRunning) {
++		disconnect(_captureErrorConnection);
++		_capture.close();
++		_capture.waitForFinished();
++	}
++
+ 	if (kshark_instance(&kshark_ctx))
+ 		kshark_free(kshark_ctx);
  }
+@@ -1129,8 +1139,9 @@ void KsMainWindow::_initCapture()
+ 	connect(&_capture,	SIGNAL(finished(int, QProcess::ExitStatus)),
+ 		this,		SLOT(_captureFinished(int, QProcess::ExitStatus)));
  
+-	connect(&_capture,	&QProcess::errorOccurred,
+-		this,		&KsMainWindow::_captureError);
++	_captureErrorConnection =
++		connect(&_capture,	&QProcess::errorOccurred,
++			this,		&KsMainWindow::_captureError);
+ 
+ 	connect(&_captureLocalServer,	&QLocalServer::newConnection,
+ 		this,			&KsMainWindow::_readSocket);
+diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
+index 22700d9..62e66a0 100644
+--- a/kernel-shark/src/KsMainWindow.hpp
++++ b/kernel-shark/src/KsMainWindow.hpp
+@@ -159,6 +159,8 @@ private:
+ 
+ 	QSettings	_settings;
+ 
++	QMetaObject::Connection		_captureErrorConnection;
++
+ 	void _open();
+ 
+ 	void _restoreSession();
 -- 
 2.20.1
 
