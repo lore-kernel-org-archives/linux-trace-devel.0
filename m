@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCF5FC73C50
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 14:26:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF9AAC73C46
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 14:29:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9FCBF20844
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 14:26:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7EB8F2082A
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Jul 2019 14:29:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jlbCD3xP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HR8JJID9"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbfGIO0M (ORCPT
+        id S1726055AbfGIO3N (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Jul 2019 10:26:12 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53460 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbfGIO0M (ORCPT
+        Tue, 9 Jul 2019 10:29:13 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:35951 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbfGIO3N (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Jul 2019 10:26:12 -0400
-Received: by mail-wm1-f66.google.com with SMTP id x15so3308883wmj.3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 09 Jul 2019 07:26:10 -0700 (PDT)
+        Tue, 9 Jul 2019 10:29:13 -0400
+Received: by mail-wm1-f67.google.com with SMTP id g67so3485124wme.1
+        for <linux-trace-devel@vger.kernel.org>; Tue, 09 Jul 2019 07:29:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ufJG7KSt2BmzqEdXqGBShMDTK10WgQch0/xjA9o1lRI=;
-        b=jlbCD3xPdgjLPaAE+zpvwFf7GOZmNbJlUuMjJvJ7rSW8McDAwmFJ+djpiuUaN3sL5m
-         JTVhJvVsTOs9WZWds3zbrK6DHBpcunJJfmeoBgLo1d2EK8lPRd5GLI7Nh3o4VEmlGu6b
-         WeK2Sgqw9/I8Ttd7q7s3qEPZ8bX09t3ahQJG4FsYXUSCnzM9piSM4lSlV61k3l/apHCV
-         36oKcuG/vbZSG8a3JdUIHEy5cuZ8VV4LFlJOX4BQmmxu9Qs0DPJXp78PsHB6IS3pqLQ7
-         E3m+QPH6LIhtw0cBz0qurYI3i+88MRskKEtkw6wVGGD0gC5RTidOopa3cbv8waDgatp9
-         7eFQ==
+        bh=XKN1EpQkbk/qIL6uRGEZvHmCde4vpiDSTvprsI22HUE=;
+        b=HR8JJID9kMV3x2oMTZwd8999L0kdFNxcsmR4jWL6RS5ESZhlOFMrpNBj76f+IXAX5/
+         fWeyMcD/YQlFa/8CNh01PwBEawM+c55qhqH2cB1f6IF8I1yQmNaRULoJoAi15iM4gWwB
+         s1jY7MfHKKNxIydNJ/8TR26Q5NZxLsgpY5LIYd+fCulB5bGXLsYjk4x2uK8yu566arPJ
+         7RjkM6HpbEZ6axWkXMX5r2znJ2Yp0tuiJwq6MHPCA9Kv/0nzqHZkgZsdDzmcqPOGgnR0
+         n71IZ2LqVawpni4YDyM7Gx9FG4Pw2kqPWmRTMIzN8I/zLgr7jb+ww5jpX0EtpqfkLmwx
+         HfCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ufJG7KSt2BmzqEdXqGBShMDTK10WgQch0/xjA9o1lRI=;
-        b=QoD7EY72hCREvsiGYStTMU836CewxV1JUo9YbPP1mENwX58r5Nv8/om12QnAYy9n4h
-         N/3Fqa6HAUevoHooiW7n9qtfnF/qvdbQY8RGg0ChMaDfkQRj1r9rPwNT7VSStvUHEVBO
-         smwKWcxF3cgRPdP/A5WEE7XfkEMstnHqth8dLvv9hmbyDY0RwGrSG93O9wdSQ5LECL1k
-         mvxrdRJMcsyfAgBBxrpUyYIJzUxLUTVYzv4HEFjtWBnjUnhALaavwffFYWvXfVDwVwfV
-         o+u8Drg+h7M6y6FTZbgKLid5GnGHItXqxKV8F51ZMsbJ+t+ANGF/6Z1CZ2Pa9oSq9sZW
-         thLw==
-X-Gm-Message-State: APjAAAV3NjfEi7ejtjeDRCmv07Q8wyOyAGLN3Jrue7E5JSOtC0UzX6HY
-        OKuC3z269tnI/O9Mm8cTX9mjHyNE
-X-Google-Smtp-Source: APXvYqz0leVDbUxLbJbS3L8+qgGzbLR5AyYD3iQeD1auKD670begJZrpJzRVF2UkR7m4SBqVKSHSqA==
-X-Received: by 2002:a1c:4d05:: with SMTP id o5mr237768wmh.63.1562682369244;
-        Tue, 09 Jul 2019 07:26:09 -0700 (PDT)
+        bh=XKN1EpQkbk/qIL6uRGEZvHmCde4vpiDSTvprsI22HUE=;
+        b=oV8w5HAJZ4rIaJ2q9kUi9a6BDUmbETrazO3yMi4hyf9+fZg2zEn1VN9lYgMLYlZz3u
+         Jvq45lmIhbdUJg83Zqx2C7K+cNDAJIDOybmByENiQdi4JSq/4/dlbshCZ2+XYdFVU/qJ
+         bxwyZe0YdCpjt0sKMETGrj03L9GQKuHl69dWxssJcbAp5dMeMLXkA7/l2AxXtOswA5Om
+         iuewrcuZs1RXks/YVtI64XFxVilrGWupINZwK8XrmwlIA2beMNNbKzWjOc/Zrosd8o10
+         2/rNzPwtw2f+1c3//+BiojXJOTMQyrLtXowPoO0lvYSYqsMseCxcAXmNo4tWZi7QCT4K
+         dfHg==
+X-Gm-Message-State: APjAAAX3BBudJP32eCXWIrDN+yTh6A56ekfpjFEGt7TVRW5mNmKBdO5j
+        cqXYkEMpZWaO4exkTD5qvnp7wxxa
+X-Google-Smtp-Source: APXvYqz+4kuGfCjLsef4ek5zd9zi/YfjEcXiicnMC9rKQ99UIYPVtPCfjPZWxtMfqTq5gME0fbM+WA==
+X-Received: by 2002:a7b:c928:: with SMTP id h8mr250601wml.93.1562682550360;
+        Tue, 09 Jul 2019 07:29:10 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id f18sm8597171wrt.43.2019.07.09.07.26.08
+        by smtp.gmail.com with ESMTPSA id s2sm2301928wmj.33.2019.07.09.07.29.09
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 09 Jul 2019 07:26:08 -0700 (PDT)
+        Tue, 09 Jul 2019 07:29:09 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2] trace-cmd: Add option to execute traced process as given user
-Date:   Tue,  9 Jul 2019 17:26:07 +0300
-Message-Id: <20190709142607.13414-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v3] trace-cmd: Add option to execute traced process as given user
+Date:   Tue,  9 Jul 2019 17:29:08 +0300
+Message-Id: <20190709142908.13776-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -78,9 +78,13 @@ Suggested-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
 [
-   v2 changes:
+   v3 changes:
       "--user" does not depend on option -F, it works with any command,
        specified as trace-cmd argument.
+   v2 changes:
+     - Check for errors in change_user(). If an error occurs while
+       changing the user, the message is printed and the traced 
+       process is not executed.
 ]
 
 
