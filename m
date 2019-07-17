@@ -2,134 +2,90 @@ Return-Path: <SRS0=BCkm=VO=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D6EDC76186
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Jul 2019 06:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BE09C76192
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Jul 2019 08:53:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 562DE21743
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Jul 2019 06:56:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D0AB02077C
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Jul 2019 08:53:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QpiL8McK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MjqvzOIV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbfGQG4D (ORCPT
+        id S1726188AbfGQIxg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 17 Jul 2019 02:56:03 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:54496 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbfGQG4D (ORCPT
+        Wed, 17 Jul 2019 04:53:36 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:54832 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbfGQIxg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 17 Jul 2019 02:56:03 -0400
-Received: by mail-wm1-f68.google.com with SMTP id p74so20910077wme.4
-        for <linux-trace-devel@vger.kernel.org>; Tue, 16 Jul 2019 23:56:02 -0700 (PDT)
+        Wed, 17 Jul 2019 04:53:36 -0400
+Received: by mail-wm1-f65.google.com with SMTP id p74so21266507wme.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Jul 2019 01:53:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=3+XErwZ34BplpJXQQ8/RkBKUYhzmEpLcAeQwjiV0pxk=;
-        b=QpiL8McKBIppbcC1dfqPnhNjsIf+5jS05E7WvMKaATqr5IOd9Rdv3TZTP9mxu7dB6w
-         WSgmVT4AAsyoDJ23kkadlEHnO4S2exgYR0HrK0Byp10M9xiRXMJjjMUvTmki9bly4Cdz
-         k5s6TKP2CBPqGKp42237+vLxNFpns/62mMh49AruLxybMpZFIwTw0EUCQeva5sDM3wGw
-         WWDaHlbeVZrpMvbI8TyD3gDxyWH+efTVWZeSwPPPRug+ESSjOyS0J6Be3Q5uC8ey0+4v
-         6G619djfM27okN7qnyhxcbFgG/MlYEWZQLz6QTmWB6tjoL63JnOKRtasZnRVhOwTN3u4
-         mLmg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b3GT1b5uvh7uZiyHBocSd/6MDhzcL8hqUa4RJ2qQG1E=;
+        b=MjqvzOIVMWwCg/Y243ooC5bODl0y8MskpCD9mnEyKUGOkUOrN6m149g12O+Hb8RsE+
+         3HRWfhot3GHKeyV0cZ8Cg9Dv7YDz55FN+mUR6H7vS2gLOPea+GHYaUGvoAO77PUPuGMt
+         yy8BHgHCqyWnlNySbfBdNGEZAIRLRBXu5ZLOLF35wE9y67EcbfdnGPKu00yUjLhJ30q4
+         B31ym2HyRtJ8y0lAnIm5T1wqgUz5PWFcl590W8FtZFunOi+jaPQrfZKNCPR5n+d8+pCJ
+         mg5kvccQc0Ip5YyGJ+NYXDc+/8loTqI16/lgyPtnRKCoFDAgu1PvEULDE0nyTjfW1ePT
+         C8lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=3+XErwZ34BplpJXQQ8/RkBKUYhzmEpLcAeQwjiV0pxk=;
-        b=b5Z/VpPMzGcT02I7gk4eesF3t41iQ2gOS+BBs5ddyvw4agRa124VtsHhBKVoHu1rAV
-         Tzs1tOPy+ZoujPvo6YMo1mfCyvSDqqxDAtJZvhNeRyYIcS4nf+63V92g4qJRcmMT/WAn
-         51L6mozXgcQh8SZqfRjm+pMknsx+KZsTAMolPIt9+kWKS49xlZ7axLDIai51zyNqsCex
-         wtQHotXvW+Y04nZo7yo1k5obsijm7VQuzD3JfVUNFycXvjObTDSJZ4XweHyjLTqoa+NT
-         334T3+c2Fquq7sNjyMhCkaedWg7OD43PFYQGlFe3XTOx3l4Dc0eN59o/iyWDM5esoKEc
-         BCsA==
-X-Gm-Message-State: APjAAAXkP5F5qCQidhF9DOHAiqMJlJXmnsHt6k2bwaAfUWZL3UqeIs5g
-        kTZktnmPAPXA27muxVrW4kysfP2Ng8I=
-X-Google-Smtp-Source: APXvYqwib9UuNwAwjA7Ug58o+lXngNbJ+D5n+Sm9pAL2dioSGEC7PV8L5+2S24D/FLcfXoBJ/pDmOw==
-X-Received: by 2002:a1c:6555:: with SMTP id z82mr35597012wmb.129.1563346561704;
-        Tue, 16 Jul 2019 23:56:01 -0700 (PDT)
-Received: from [10.27.112.183] ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id g8sm24223596wme.20.2019.07.16.23.56.00
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Jul 2019 23:56:00 -0700 (PDT)
-Subject: Re: [PATCH 4/4] kernel-shark: Use <br> for dialog and \n for console
- error messages
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org
-References: <20190710134636.116362181@goodmis.org>
- <20190710134725.599995325@goodmis.org>
+        bh=b3GT1b5uvh7uZiyHBocSd/6MDhzcL8hqUa4RJ2qQG1E=;
+        b=pL34y1EquBtHjGENL7SXPypwn195682rsGCkMJLRoNhnVhao2CxrSyhurmuBJo7ta8
+         6x7w1YOx0aVd4LOS7d0fqEp08p8Z10n2A4f6mgzntLP4spwst+e/6kDB4KY9NUGFRy6a
+         ULeolgcVBteq6U9rYr2mNOlSxPA6l/uvKlsp8UsO8qAzAcoOAwlhDmoYGpu6kIsUsyGs
+         cR2ciBh4SvDNGYbvoJY19LBpWjvx7vQFUPZWUoda6ffPZYxgyqKjkgqIUf9rMd2U+Y6F
+         /d0h2MFYRxJWqwSn4Ts+HYpx6SRFID1WGpAUb8bOVvHF0zDGWvob49wQJ3bevgZ126M7
+         Nc8w==
+X-Gm-Message-State: APjAAAUD2OTcesrwJmqIXnPWo6nsrAin3hrVRPqP3Sbthf5MNrIQf/qS
+        k+nn4GvbaScYgCS9ijb9UbM=
+X-Google-Smtp-Source: APXvYqyAxQmPW/KQ4FEpNlBzUPJ0SUyRLpI0Gudfv9kL+t/XUiF4RMqGpmQKs0ye2kf19KvIRLzfZA==
+X-Received: by 2002:a7b:c933:: with SMTP id h19mr36589676wml.52.1563353614627;
+        Wed, 17 Jul 2019 01:53:34 -0700 (PDT)
+Received: from mamba.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id w23sm24102127wmi.45.2019.07.17.01.53.33
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 17 Jul 2019 01:53:34 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <53f66061-89a4-8d81-f618-ef3a7b573517@gmail.com>
-Date:   Wed, 17 Jul 2019 09:55:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 0/2] Fixes for KS 1.0
+Date:   Wed, 17 Jul 2019 11:53:04 +0300
+Message-Id: <20190717085306.12393-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20190710134725.599995325@goodmis.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+It turns that there are number of ways to crash the GUI if you click
+buttons or play with the mouse before any data is loaded. This patch-set
+tries to get this fixed.
 
-On 10.07.19 г. 16:46 ч., Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> The Qt dialog boxes require '<br>' to print a new line but consoles require
-> a '\n'. Instead of printing '<br>' to the console or '\n' to the dialog,
-> always have the '\n' turn into '<br>' for the dialog and all '<br>' turn
-> into '\n' for the console.
-> 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->   kernel-shark/src/KsMainWindow.cpp | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-> index 54aa6d782ad1..29d44d9a9230 100644
-> --- a/kernel-shark/src/KsMainWindow.cpp
-> +++ b/kernel-shark/src/KsMainWindow.cpp
-> @@ -1028,10 +1028,12 @@ void KsMainWindow::loadDataFile(const QString& fileName)
->   	}
->   }
->   
-> -void KsMainWindow::_error(const QString &text, const QString &errCode,
-> +void KsMainWindow::_error(const QString &mesg, const QString &errCode,
->   			  bool resize, bool unloadPlugins)
->   {
->   	QErrorMessage *em = new QErrorMessage(this);
-> +	QString text = mesg;
-> +	QString html = mesg;
->   
->   	if (resize)
->   		_resizeEmpty();
-> @@ -1039,8 +1041,11 @@ void KsMainWindow::_error(const QString &text, const QString &errCode,
->   	if (unloadPlugins)
->   		_plugins.unloadAll();
->   
-> +	text.replace("<br>", "\n", Qt::CaseInsensitive);
-> +	html.replace("\n", "<br>", Qt::CaseInsensitive);
-> +
->   	qCritical().noquote() << "ERROR: " << text;
-> -	em->showMessage(text, errCode);
-> +	em->showMessage(html, errCode);
->   	em->exec();
->   }
->   
-> 
+Yordan Karadzhov (VMware) (2):
+  kernel-shark: Initialize the data-related fields of the model
+  kernel-shark: Always check if data is loaded before changing the
+    graphs
 
-All patches look good to me.
-Thanks!
-Yordan
+ kernel-shark/src/KsGLWidget.cpp    | 22 ++++++++++++++++++++--
+ kernel-shark/src/KsGLWidget.hpp    |  2 ++
+ kernel-shark/src/KsTraceGraph.cpp  |  9 +++++++++
+ kernel-shark/src/libkshark-model.c |  3 +++
+ 4 files changed, 34 insertions(+), 2 deletions(-)
 
-Reviewed-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-
+-- 
+2.20.1
 
