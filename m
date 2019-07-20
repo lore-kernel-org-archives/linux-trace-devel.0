@@ -6,31 +6,31 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0194C76198
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD694C76197
 	for <linux-trace-devel@archiver.kernel.org>; Sat, 20 Jul 2019 03:03:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C20F22082F
+	by mail.kernel.org (Postfix) with ESMTP id 961562082F
 	for <linux-trace-devel@archiver.kernel.org>; Sat, 20 Jul 2019 03:03:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbfGTDD5 (ORCPT
+        id S2390431AbfGTDD5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 19 Jul 2019 23:03:57 -0400
-Received: from smtp.gentoo.org ([140.211.166.183]:39666 "EHLO smtp.gentoo.org"
+Received: from smtp.gentoo.org ([140.211.166.183]:39664 "EHLO smtp.gentoo.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390400AbfGTDD5 (ORCPT
+        id S1728058AbfGTDD5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 19 Jul 2019 23:03:57 -0400
 Received: from chiana.gaikai.org (unknown [100.42.98.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: chutzpah)
-        by smtp.gentoo.org (Postfix) with ESMTPSA id AFED4348118
+        by smtp.gentoo.org (Postfix) with ESMTPSA id 81B6F34812A
         for <linux-trace-devel@vger.kernel.org>; Sat, 20 Jul 2019 03:03:56 +0000 (UTC)
 From:   Patrick McLean <chutzpah@gentoo.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 4/4] trace-cmd: Set SONAME on shared libraries
-Date:   Fri, 19 Jul 2019 20:03:44 -0700
-Message-Id: <20190720030344.1991393-5-chutzpah@gentoo.org>
+Subject: [PATCH 3/4] trace-cmd: Install all headers needed by kernelshark to proper paths
+Date:   Fri, 19 Jul 2019 20:03:43 -0700
+Message-Id: <20190720030344.1991393-4-chutzpah@gentoo.org>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190720030344.1991393-1-chutzpah@gentoo.org>
 References: <20190720030344.1991393-1-chutzpah@gentoo.org>
@@ -43,33 +43,37 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Patrick McLean <patrick.mclean@sony.com>
 
-Currently trace-cmd installs some shared libraries, but does not set a
-SONAME on these. This often violates distro policies, so it should at
-least set something.
+The trace-cmd build system installs headers for building kernelshark,
+but it is missing trace-seq.h and trace-filter-hash.h.
 
-This patch sets it to the name of the file, which is somewhat naieve,
-but works for many libraries. Generally it should be set to have an ABI
-version as the extension, so when the developer breaks ABI, they can
-change the soname.
+It additionally installs event-parse.h to the toplevel "trace-cmd"
+include directory, but the generated header includes it as
+"traceevent/event-parse.h" so the kernelshark build fails.
+
+This patch installs all the headers needed to build kernelshark to the
+appropiate directories.
 
 Signed-off-by: Patrick McLean <patrick.mclean@sony.com>
 ---
- scripts/utils.mk | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Makefile | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/utils.mk b/scripts/utils.mk
-index 260023a..9eb127d 100644
---- a/scripts/utils.mk
-+++ b/scripts/utils.mk
-@@ -54,7 +54,7 @@ do_build_static_lib =				\
+diff --git a/Makefile b/Makefile
+index 6b85e21..3bab851 100644
+--- a/Makefile
++++ b/Makefile
+@@ -345,8 +345,10 @@ install_gui: install_cmd gui
+ install_libs: libs
+ 	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ))
+ 	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ))
+-	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ))
++	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ)/traceevent)
++	$(Q)$(call do_install,$(src)/include/traceevent/trace-seq.h,$(includedir_SQ)/traceevent)
+ 	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ))
++	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-filter-hash.h,$(includedir_SQ))
  
- do_compile_shared_library =			\
- 	($(print_shared_lib_compile)		\
--	$(CC) --shared $^ -o $@)
-+	$(CC) --shared $^ -Wl,-soname,$@ -o $@)
- 
- do_compile_plugin_obj =				\
- 	($(print_plugin_obj_compile)		\
+ doc:
+ 	$(MAKE) -C $(src)/Documentation all
 -- 
 2.22.0
 
