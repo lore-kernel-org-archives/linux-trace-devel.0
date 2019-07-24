@@ -2,98 +2,74 @@ Return-Path: <SRS0=wCVW=VV=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67021C7618B
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Jul 2019 15:41:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C8EBC76186
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Jul 2019 19:13:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 16C8F206B8
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Jul 2019 15:41:23 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KTRx2ZzY"
+	by mail.kernel.org (Postfix) with ESMTP id 2565D21926
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Jul 2019 19:13:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727715AbfGXPlW (ORCPT
+        id S1727296AbfGXTNx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Jul 2019 11:41:22 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55484 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbfGXPlW (ORCPT
+        Wed, 24 Jul 2019 15:13:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726430AbfGXTNw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Jul 2019 11:41:22 -0400
-Received: by mail-wm1-f65.google.com with SMTP id a15so42258676wmj.5
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2019 08:41:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=85A9C8HeH4Yjsbu/IBi1pXxnaeb0xH9cjbozsUzat8Y=;
-        b=KTRx2ZzYPGa3i4U/J0ksfLla02xi42ORdZ8EEnYALtjwKYoC8g8v5Xk8Yt02bh6g8j
-         58nEt/C5subEVSRYeuBRAivjJuyo3QMON5wTD8sRnvBVBJk3elXU451TTsPN40iHX1ki
-         Z0+w9dBZxtfhS8Iro2UCyCzZHF6tuQkr6bfrCkyGd30e98YnBCwB0cqwwKiHFm0dDLNg
-         sktOYa3cC4b2w1jcX5RESyvK96EgX2+N2+5d4lz/xxhoWJcPeNqds5/IhiP2Tjv/7W3S
-         v9G++wz/KgNy+IyjqQvQyBDv+CnouGyWLqug+W3lyioX9ulvWH1BL0fwcsaltqbVttNX
-         cagA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=85A9C8HeH4Yjsbu/IBi1pXxnaeb0xH9cjbozsUzat8Y=;
-        b=jj5Fp5D6s9rCKJo5dKo8iiI/Xl1g7iXvfH5kJQgicRGjsOw4/+VI5i4qvO/sUwW/H6
-         RHEs0jjLIWsD5kOHBXe9UuVtvLCa1A7w+YNqrWWirM+PYCw83EpumQmFOpua5otTRoSq
-         eWDqtEvbazc4N+0kr63Nwtq1e99pdehoKdOPgqbNVotrFiRnPrKmZEl8sPIiCEmX6Xhc
-         Pq9Q41xG2fv6b1O8coX93foKBQKTqnGn2t5lUZ66hFrUPww/NJK+AzC1u1Vn61yat4ek
-         LGMWVTZ+enftImJUIOSX72LdlgRnvwOKPKZU3i7CKNll3ddkJD2M8gBYZ4MehWFSucKh
-         9loA==
-X-Gm-Message-State: APjAAAWoEh7W6n3U+MXrVRz2EktOzGa24acEzPovUj7pEJdy9hLP5qOE
-        XQYPEEdqbRC8MnCJZ+hfv2w=
-X-Google-Smtp-Source: APXvYqzHeEHj7iNGiaZywcc4HdgLIs+fMz3j4oVxyFJksV1Z4cZ/IXLUFIoXJms4XCdqWNXKiqTt3g==
-X-Received: by 2002:a05:600c:20c1:: with SMTP id y1mr77296419wmm.10.1563982880700;
-        Wed, 24 Jul 2019 08:41:20 -0700 (PDT)
-Received: from localhost.localdomain ([95.87.223.238])
-        by smtp.gmail.com with ESMTPSA id f17sm42005546wmf.27.2019.07.24.08.41.20
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 24 Jul 2019 08:41:20 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2] kernel-shark: Disable Capture if trace-cmd can't function
-Date:   Wed, 24 Jul 2019 18:41:10 +0300
-Message-Id: <20190724154110.23772-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 24 Jul 2019 15:13:52 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B80B0218F0;
+        Wed, 24 Jul 2019 19:13:51 +0000 (UTC)
+Date:   Wed, 24 Jul 2019 15:13:49 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     howaboutsynergy@pm.me, Patrick McLean <chutzpah@gentoo.org>
+Subject: trace-cmd: Only add udis86 CFLAGS and LDFLAGS if it is found
+Message-ID: <20190724151349.405d146b@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In the case of an error the "Capture" button of the Record dialog is
-disabled.
+[ Patrick, I don't have udis86 on my machines, can you test to see if
+  this will include it if you do not set NO_UDIS86? ]
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+As we need to update both LDFLAGS and CFLAGS, move the test to see if
+udisc86 is installed to a variable, and then set NO_UDIS86 if it is not
+found. This way we do not need to test if it exists twice, nor have
+LDFLAGS set unconditionally.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204277
+
+Reported-by: howaboutsynergy@pm.me
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel-shark/src/KsCaptureDialog.cpp | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel-shark/src/KsCaptureDialog.cpp b/kernel-shark/src/KsCaptureDialog.cpp
-index 2e6e8f9..888ffea 100644
---- a/kernel-shark/src/KsCaptureDialog.cpp
-+++ b/kernel-shark/src/KsCaptureDialog.cpp
-@@ -74,6 +74,9 @@ KsCaptureControl::KsCaptureControl(QWidget *parent)
- 		_topLayout.addWidget(errorLabel);
+diff --git a/Makefile b/Makefile
+index 0aa98517..e98535ea 100644
+--- a/Makefile
++++ b/Makefile
+@@ -136,9 +136,14 @@ export NO_PYTHON
+ test-build = $(if $(shell sh -c 'echo "$(1)" | \
+ 	$(CC) -o /dev/null -c -x c - > /dev/null 2>&1 && echo y'), $2)
  
- 		lamAddLine();
++UDIS86_AVAILABLE := $(call test-build,\#include <udis86.h>, y)
++ifneq ($(UDIS86_AVAILABLE), y)
++NO_UDIS86 := 1
++endif
 +
-+		/* Disable "Capture" buttons. */
-+		_captureButton.setDisabled(true);
- 	}
+ ifndef NO_UDIS86
+ # have udis86 disassembler library?
+-udis86-flags := $(call test-build,\#include <udis86.h>,-DHAVE_UDIS86 -ludis86)
++udis86-flags := -DHAVE_UDIS86 -ludis86
+ udis86-ldflags := -ludis86
+ endif # NO_UDIS86
  
- 	pluginList.prepend("nop");
--- 
-2.20.1
-
