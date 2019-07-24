@@ -8,65 +8,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7D8CC7618B
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Jul 2019 15:41:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67021C7618B
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Jul 2019 15:41:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BF675206B8
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Jul 2019 15:41:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 16C8F206B8
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Jul 2019 15:41:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EgjqJISs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KTRx2ZzY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726031AbfGXPlD (ORCPT
+        id S1727715AbfGXPlW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Jul 2019 11:41:03 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:41168 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbfGXPlD (ORCPT
+        Wed, 24 Jul 2019 11:41:22 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55484 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbfGXPlW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Jul 2019 11:41:03 -0400
-Received: by mail-wr1-f67.google.com with SMTP id c2so44293992wrm.8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2019 08:41:02 -0700 (PDT)
+        Wed, 24 Jul 2019 11:41:22 -0400
+Received: by mail-wm1-f65.google.com with SMTP id a15so42258676wmj.5
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Jul 2019 08:41:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3/2koJsAEbjHIuBnamymnthhFIJO79KbyPc3HmVywUc=;
-        b=EgjqJISsJt7qGgBefLI6r2OpFTNIq+1I5w8cspIabIDP8DJVJcXslL7ptUiTSLlEsh
-         NIxCi9kn4KV58yXgjQXXd7G2F8oigG/lsemJTTeNxIOaTrYj9x8Xkdj3Wzj6LLdpKFrs
-         rVNBCgj9D7f9CNiEQK7jH1nSv+AMdIh+XkxNI5WB+QRbNH05cNZp5TMhKYz+MdAHBB66
-         kRinDS055ZDccDkixNtTtDASPya4MKa6863naHOrEHnFftftr8HZqCaH2ADGRtpZqgR4
-         ul8GvTlyVstTwk/J4lkd0yYphgRkC2KpNm/aatno2b2domV6TcY4IcVAfdbOsYXKK+va
-         FOeQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=85A9C8HeH4Yjsbu/IBi1pXxnaeb0xH9cjbozsUzat8Y=;
+        b=KTRx2ZzYPGa3i4U/J0ksfLla02xi42ORdZ8EEnYALtjwKYoC8g8v5Xk8Yt02bh6g8j
+         58nEt/C5subEVSRYeuBRAivjJuyo3QMON5wTD8sRnvBVBJk3elXU451TTsPN40iHX1ki
+         Z0+w9dBZxtfhS8Iro2UCyCzZHF6tuQkr6bfrCkyGd30e98YnBCwB0cqwwKiHFm0dDLNg
+         sktOYa3cC4b2w1jcX5RESyvK96EgX2+N2+5d4lz/xxhoWJcPeNqds5/IhiP2Tjv/7W3S
+         v9G++wz/KgNy+IyjqQvQyBDv+CnouGyWLqug+W3lyioX9ulvWH1BL0fwcsaltqbVttNX
+         cagA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3/2koJsAEbjHIuBnamymnthhFIJO79KbyPc3HmVywUc=;
-        b=nr/vr+w0J4jFcOAVOVXMVcrqZoudG0HFW06rR2vqrJ3W7/330ZQrpmQmQES9tW/EG3
-         wvqcIoxNfUTMzmLeen41XbxZLW1+FXQk41DFpVPg84qwYCTEgGMQlR/9wHWnqQmoG+G0
-         V+3ZIXd+CT7QEOJNgmIlbX5eMNIfZMRhe1qkSJgfp+g+dWrWQ97Q33S9mbP1qJAtISDC
-         CiMD5zHro3N2zUwWykq19jnUGU6nZI1IlEqWlzRIyFfI1eDAZzKiC7Obufk66sZZoO0x
-         aAcK45yEPjoMDxSHqco+gX0kHazHR1SCD85bUej65M7vj3X8RSc8dSlklpL1Zmi0mMYC
-         TN7A==
-X-Gm-Message-State: APjAAAXid+lqRFpFcBd4Azq/6b6CrYSUOBmYhtgsTjdXwbVDP1aiACSi
-        reCERFfHrdKWXs+k+f+AsXg=
-X-Google-Smtp-Source: APXvYqwd/YYbJ7xcFuBYIwDClWz0b1PQ3RzxXX81JbsHWK1wlxLeeK8P8LqIqMYfriTYh7N5Y1WKlw==
-X-Received: by 2002:adf:f046:: with SMTP id t6mr3188786wro.307.1563982861826;
-        Wed, 24 Jul 2019 08:41:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=85A9C8HeH4Yjsbu/IBi1pXxnaeb0xH9cjbozsUzat8Y=;
+        b=jj5Fp5D6s9rCKJo5dKo8iiI/Xl1g7iXvfH5kJQgicRGjsOw4/+VI5i4qvO/sUwW/H6
+         RHEs0jjLIWsD5kOHBXe9UuVtvLCa1A7w+YNqrWWirM+PYCw83EpumQmFOpua5otTRoSq
+         eWDqtEvbazc4N+0kr63Nwtq1e99pdehoKdOPgqbNVotrFiRnPrKmZEl8sPIiCEmX6Xhc
+         Pq9Q41xG2fv6b1O8coX93foKBQKTqnGn2t5lUZ66hFrUPww/NJK+AzC1u1Vn61yat4ek
+         LGMWVTZ+enftImJUIOSX72LdlgRnvwOKPKZU3i7CKNll3ddkJD2M8gBYZ4MehWFSucKh
+         9loA==
+X-Gm-Message-State: APjAAAWoEh7W6n3U+MXrVRz2EktOzGa24acEzPovUj7pEJdy9hLP5qOE
+        XQYPEEdqbRC8MnCJZ+hfv2w=
+X-Google-Smtp-Source: APXvYqzHeEHj7iNGiaZywcc4HdgLIs+fMz3j4oVxyFJksV1Z4cZ/IXLUFIoXJms4XCdqWNXKiqTt3g==
+X-Received: by 2002:a05:600c:20c1:: with SMTP id y1mr77296419wmm.10.1563982880700;
+        Wed, 24 Jul 2019 08:41:20 -0700 (PDT)
 Received: from localhost.localdomain ([95.87.223.238])
-        by smtp.gmail.com with ESMTPSA id a64sm45510570wmf.1.2019.07.24.08.41.01
+        by smtp.gmail.com with ESMTPSA id f17sm42005546wmf.27.2019.07.24.08.41.20
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 24 Jul 2019 08:41:01 -0700 (PDT)
+        Wed, 24 Jul 2019 08:41:20 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 4/4] kernel-shark: Handle corrupted configuration file for the Capture dialog
-Date:   Wed, 24 Jul 2019 18:40:39 +0300
-Message-Id: <20190724154039.23705-5-y.karadz@gmail.com>
+Subject: [PATCH v2] kernel-shark: Disable Capture if trace-cmd can't function
+Date:   Wed, 24 Jul 2019 18:41:10 +0300
+Message-Id: <20190724154110.23772-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190724154039.23705-1-y.karadz@gmail.com>
-References: <20190724154039.23705-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -74,58 +72,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Error message will be printed to the console-like widget.
+In the case of an error the "Capture" button of the Record dialog is
+disabled.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsCaptureDialog.cpp | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ kernel-shark/src/KsCaptureDialog.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/kernel-shark/src/KsCaptureDialog.cpp b/kernel-shark/src/KsCaptureDialog.cpp
-index 02bbbbc..addd41d 100644
+index 2e6e8f9..888ffea 100644
 --- a/kernel-shark/src/KsCaptureDialog.cpp
 +++ b/kernel-shark/src/KsCaptureDialog.cpp
-@@ -201,6 +201,9 @@ void KsCaptureControl::_importSettings()
- 	tep_event **events;
- 	QString fileName;
+@@ -74,6 +74,9 @@ KsCaptureControl::KsCaptureControl(QWidget *parent)
+ 		_topLayout.addWidget(errorLabel);
  
-+	auto lamImportError = [this] () {
-+		emit print("ERROR: Unable to load the configuration file.\n");
-+	};
+ 		lamAddLine();
++
++		/* Disable "Capture" buttons. */
++		_captureButton.setDisabled(true);
+ 	}
  
- 	/** Get all available events. */
- 	events = tep_list_events(_localTEP, TEP_EVENT_SORT_SYSTEM);
-@@ -210,21 +213,27 @@ void KsCaptureControl::_importSettings()
- 				    "Kernel Shark Config files (*.json);;",
- 				    _lastFilePath);
- 
--	if (fileName.isEmpty())
-+	if (fileName.isEmpty()) {
-+		lamImportError();
- 		return;
-+	}
- 
- 	conf = kshark_open_config_file(fileName.toStdString().c_str(),
- 				       "kshark.config.record");
--	if (!conf)
-+	if (!conf) {
-+		lamImportError();
- 		return;
-+	}
- 
- 	/*
- 	 * Load the hash table of selected events from the configuration
- 	 * document.
- 	 */
- 	jevents = kshark_config_alloc(KS_CONFIG_JSON);
--	if (!kshark_config_doc_get(conf, "Events", jevents))
-+	if (!kshark_config_doc_get(conf, "Events", jevents)) {
-+		lamImportError();
- 		return;
-+	}
- 
- 	eventHash = tracecmd_filter_id_hash_alloc();
- 	nIds = kshark_import_event_filter(_localTEP, eventHash, "Events", jevents);
+ 	pluginList.prepend("nop");
 -- 
 2.20.1
 
