@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D71DC7618B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jul 2019 13:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB577C76191
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jul 2019 14:00:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 506A12075E
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jul 2019 13:59:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 836E72075E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jul 2019 14:00:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j6CfKaA7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ohcbJDZs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404572AbfGYN7a (ORCPT
+        id S2388214AbfGYOAu (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Jul 2019 09:59:30 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:51013 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404173AbfGYN73 (ORCPT
+        Thu, 25 Jul 2019 10:00:50 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:53422 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388171AbfGYOAu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Jul 2019 09:59:29 -0400
-Received: by mail-wm1-f67.google.com with SMTP id v15so45129302wml.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jul 2019 06:59:28 -0700 (PDT)
+        Thu, 25 Jul 2019 10:00:50 -0400
+Received: by mail-wm1-f65.google.com with SMTP id x15so45117013wmj.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jul 2019 07:00:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
         bh=GomAvNXaBSqcVI9jRv+cjI+OEHGhyGtVJzrhf20vSj0=;
-        b=j6CfKaA74GHIZXQ5e740Gz/oI/RchZ1WCDhM5g5pAEmv55iLMQH3kHIRpv0oq0ExGe
-         zoVw0qLaJ4gGJg4LaHvVqIK5yO/0hPWYp/2DiNXRqgj61uaR9KpA+oorxPiS2J2f+JV6
-         5jf/Wo6rLJCy+5UaeLG/zR9rveuWnn//nG0RNYXhNlDWncBP/rB9DmVRTc5B2+ZDJL4V
-         I5eyDY/8bA+k0USnoMwXrudafX7cQAnZv02Lp4ecaovhM9nKss/LJ3fwaUB/Si5ilFTF
-         9BMM6Hmm1wvuuBFrJ6+5vQt+WFRo9Pz45yU/21r4MV0llAglOVm5MgqGbDzmRJkp/Ge0
-         F++A==
+        b=ohcbJDZsncO7x9ZLh1fijfzlij2eYuOLZH75D9GP4NDXQwSReNlWCaFawC8BwEctgH
+         H5s6bGJg03RsuUmlkCDxYasH6R+g28Zk8mN//+maXZQBPnN5U3NHHK1HPeGBE9yXekXk
+         UuEHZvrGh+jvN/bx1RjE95URvC1CwO3z0xs/AtT63KrZ78wf5XjOGbLtrRL+3f53H54Z
+         EcA/v8qKlRvEpENnsEQ+U/920/Q5kqdMUCbvgVEONj9IOTsKLVpuAQN3TqVpj1b+8cHa
+         IGjlC/WfGj3s+HJn2p20YQxZaxjZptqV3Ltp+rZZ25E6lJMs3qvYc7mOyGPdO6sGbQ/t
+         II6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
         bh=GomAvNXaBSqcVI9jRv+cjI+OEHGhyGtVJzrhf20vSj0=;
-        b=q1MuRJpnr7TSBgXnp/f44WFA7tic0e9xGzgqNpquSJEOQG23lVrp/J7wXbMcFLrDVJ
-         hQRD2W4UhR9N3cSI05r7hNtzdB1zUYkF1WCvd1VZCLM3wgn2NF+ln3NOhsoZ6/SrZMsM
-         symGFlhVOa6yoRYo5lWNLowlT1AbveJOSyAwdBa2FHlqXUgr/b723O8rFAoBz4elMx+p
-         0cPY9FFwxovHj7p66YocJLXxQbCzSev5ZBnmlwwFxybntt5NIFEk12w0MteLkK2rh3J+
-         Ev4pAunB4Q13hse70YG5BnU9FIL0I9WjQ0ZFUjepVRiui5QXGWiN3HJ0pdL8KDHkHWV4
-         qd9Q==
-X-Gm-Message-State: APjAAAVMtnvWrVDMf9uIuJQ2AxGKnkVMtcso6S2+zPd6AE0IlwZ5LOgs
-        SkteTlbQiuzgxn/SkD4NQxYrWSr55HQ=
-X-Google-Smtp-Source: APXvYqyATemMk9iAs/OlsiTwYgAQ7EkNboRPWwJhIyOT1m58cl3DUtRfpLeL0n9tLkckitHmjqY0Gg==
-X-Received: by 2002:a05:600c:212:: with SMTP id 18mr30363295wmi.88.1564063167950;
-        Thu, 25 Jul 2019 06:59:27 -0700 (PDT)
-Received: from [10.27.112.116] ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id h14sm46839430wrs.66.2019.07.25.06.59.27
+        b=RaGuprb3qRENA7VeATFXjUIOukSY/nR/9lm/84f7eS3NMeqXoD+JHc8Vz6Icnc6Zui
+         7ZziEmSjscfhMfYcgMJXo3bvFUYK+9i7pPf0R2J9sLl3smmqVp3SpgFXVYxOsexAMyup
+         nKhpM6Ei+zN/xs987/EtKbu/X/g4LBzkRrta9dAbYdzuWEeAmkOGZAawa0gLCs67lK/N
+         LqPwiKgIuEfFz7iiuj4pbzOke0lt52dOR1mzyDxPHD5D+g6ocJthYNSNscghUa2/xdp7
+         Uv4fqdY5mo2JXLemKs8/jNInA5gZKGcIWEGi+pC3ckTlgeRx0Zv/f8NRcf3h3qo8fddX
+         l6Dg==
+X-Gm-Message-State: APjAAAXy4XoM/Fsw4g3OunMwhombR1vlrqzlG0T682vFMHx4mkDBtQni
+        8pcxsqCjnPgwU4t9CFx/nJZ1SX3Vi4w=
+X-Google-Smtp-Source: APXvYqz/4GheqiDT5qLElJvg6+YUXwH4Pl/liYk9Ydj4wirjiYVHLEHsGYuUoKVXVUDWSXHRXxehMA==
+X-Received: by 2002:a1c:968c:: with SMTP id y134mr75585028wmd.122.1564063248293;
+        Thu, 25 Jul 2019 07:00:48 -0700 (PDT)
+Received: from [10.30.204.163] ([146.247.46.6])
+        by smtp.gmail.com with ESMTPSA id c4sm39518053wrt.86.2019.07.25.07.00.47
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Jul 2019 06:59:27 -0700 (PDT)
+        Thu, 25 Jul 2019 07:00:47 -0700 (PDT)
 Subject: Re: [PATCH 1/2] kernel-shark: Execute kshark-record from same dir as
  kshark-su-record
 To:     Steven Rostedt <rostedt@goodmis.org>
@@ -66,8 +66,8 @@ References: <20190723225044.576298160@goodmis.org>
  <f9ac2e19-cc65-6496-5c42-9668337e6506@gmail.com>
  <20190725084514.410f1cb1@gandalf.local.home>
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <1b5e7a79-fdaf-94f9-1727-5688c189d738@gmail.com>
-Date:   Thu, 25 Jul 2019 16:59:14 +0300
+Message-ID: <14877974-6bac-9e72-3be9-c1d9c0439da1@gmail.com>
+Date:   Thu, 25 Jul 2019 17:00:35 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
@@ -130,4 +130,3 @@ kernel-shark/org.freedesktop.kshark-record.policy
 
 Thanks!
 Yordan
-
