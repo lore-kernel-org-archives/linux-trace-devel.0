@@ -6,36 +6,33 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE681C7618B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jul 2019 12:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C69A6C7618B
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jul 2019 12:49:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B042C217F4
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jul 2019 12:45:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A3F6F217F4
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jul 2019 12:49:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388101AbfGYMpR (ORCPT
+        id S2388889AbfGYMtf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Jul 2019 08:45:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
+        Thu, 25 Jul 2019 08:49:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387824AbfGYMpR (ORCPT
+        id S2389217AbfGYMtf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Jul 2019 08:45:17 -0400
+        Thu, 25 Jul 2019 08:49:35 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63580217F4;
-        Thu, 25 Jul 2019 12:45:16 +0000 (UTC)
-Date:   Thu, 25 Jul 2019 08:45:14 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id E5AF9217F4;
+        Thu, 25 Jul 2019 12:49:33 +0000 (UTC)
+Date:   Thu, 25 Jul 2019 08:49:32 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     Patrick McLean <chutzpah@gentoo.org>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 1/2] kernel-shark: Execute kshark-record from same dir
- as kshark-su-record
-Message-ID: <20190725084514.410f1cb1@gandalf.local.home>
-In-Reply-To: <f9ac2e19-cc65-6496-5c42-9668337e6506@gmail.com>
-References: <20190723225044.576298160@goodmis.org>
-        <20190723225238.701263380@goodmis.org>
-        <f9ac2e19-cc65-6496-5c42-9668337e6506@gmail.com>
+Subject: Re: [PATCH] trace-cmd: Generate proper soname
+Message-ID: <20190725084932.43e05c27@gandalf.local.home>
+In-Reply-To: <20190725014808.3646716-1-chutzpah@gentoo.org>
+References: <20190725014808.3646716-1-chutzpah@gentoo.org>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -45,39 +42,38 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 25 Jul 2019 12:01:34 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+On Wed, 24 Jul 2019 18:48:08 -0700
+Patrick McLean <chutzpah@gentoo.org> wrote:
 
+> From: Patrick McLean <patrick.mclean@sony.com>
+> 
+> The previous soname patch was an earlier version that included the full
+> path to the build output as the soname (not sure how that happened).
+> This just uses the basename as the soname, so ld will be able to
+> properly find the library.
 
-> I just realized that there is one problem with the patch. With this 
-> modification, you can use only the installed version of the script (so 
-> you more or less depend on PATH).
-> 
-> This will work:
->   kshark-su-record
-> 
-> This will work as well:
->   /usr/local/bin/kshark-su-record
-> 
-> However this will not work:
->   kernel-shark/bin/kshark-su-record
-> 
-> because you are trying to start with pkexec an executable from your $HOME
+Hi Patrick,
 
-What about this patch?
+You forgot to add the Signed-off-by, can you reply to this with one.
+Thanks. I can't add it without it.
 
 -- Steve
 
-diff --git a/kernel-shark/bin/kshark-su-record b/kernel-shark/bin/kshark-su-record
-index 8c9fbd02a351..152d0cdff3e7 100755
---- a/kernel-shark/bin/kshark-su-record
-+++ b/kernel-shark/bin/kshark-su-record
-@@ -6,4 +6,8 @@ then
- fi
- 
- THIS_DIR=`dirname $0`
-+if [ "${THIS_DIR#/}" == "${THIS_DIR}" ]
-+then
-+    THIS_DIR=`pwd`"/$THIS_DIR"
-+fi
- pkexec env DISPLAY=${DISPLAY} ${THIS_DIR}/kshark-record -o ${PWD}/trace.dat
+> ---
+>  scripts/utils.mk | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/utils.mk b/scripts/utils.mk
+> index 9eb127d..98d7b3c 100644
+> --- a/scripts/utils.mk
+> +++ b/scripts/utils.mk
+> @@ -54,7 +54,7 @@ do_build_static_lib =				\
+>  
+>  do_compile_shared_library =			\
+>  	($(print_shared_lib_compile)		\
+> -	$(CC) --shared $^ -Wl,-soname,$@ -o $@)
+> +	$(CC) --shared $^ -Wl,-soname,$(@F) -o $@)
+>  
+>  do_compile_plugin_obj =				\
+>  	($(print_plugin_obj_compile)		\
+
