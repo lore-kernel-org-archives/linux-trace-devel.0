@@ -1,80 +1,110 @@
-Return-Path: <SRS0=4zaN=V4=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=bY76=V5=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C307C32751
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 31 Jul 2019 12:27:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D58C7C433FF
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  1 Aug 2019 07:50:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 603B920693
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 31 Jul 2019 12:27:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D0682087E
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  1 Aug 2019 07:50:05 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kzvz/yvs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387577AbfGaM1U (ORCPT
+        id S1727837AbfHAHuF (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 31 Jul 2019 08:27:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387423AbfGaM1U (ORCPT
+        Thu, 1 Aug 2019 03:50:05 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:40651 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbfHAHuF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 31 Jul 2019 08:27:20 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6672620693;
-        Wed, 31 Jul 2019 12:27:19 +0000 (UTC)
-Date:   Wed, 31 Jul 2019 08:27:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+        Thu, 1 Aug 2019 03:50:05 -0400
+Received: by mail-wr1-f66.google.com with SMTP id r1so72436909wrl.7
+        for <linux-trace-devel@vger.kernel.org>; Thu, 01 Aug 2019 00:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7/WtxHwf1PtGtAyi9cdBzrEh6nGXbw8Dxi9/QmC/nLQ=;
+        b=kzvz/yvsv71dWfAnXmE+DLoc1CENZq5VHdqVvO7zXRc1s0rzkJmh6so73ZO8EXcmhw
+         jlMHYIptMwi+3OMw2vjD5BnlKSfxotlvSZ8bCwf5Ous1egWkaMWQgROz3V6lY1rPrcRD
+         /YyKSyJtSHIh6730Ymqaa2vWoIXGiUndkWlmZYWk5/MQPD/bJnA1FMwr+VT1e7LJ4oh1
+         rrUhT4IesSamMS4MrZReYvRk8wNtaihRF8JfB4HJsvEstIxqu9gP9/Rz73QUrrVo1I/K
+         sc2hHdxQ8uMoQPdqCmrBxm4MhFCI1OuB0JLIkMRG9+rrF09kFLsVzLY1iTgNx/jTRhhR
+         Eh7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7/WtxHwf1PtGtAyi9cdBzrEh6nGXbw8Dxi9/QmC/nLQ=;
+        b=JsfnLcm7k+SmQ4T9UjWwjoc5BEQGJKZv52LlZ/CmeEYfVLE3/sWQkaqiCLElLAPM0B
+         AaLgOuIcsVPP5AyKz7nrFnz5c+gBMZqqfaA1vjcp9PlKCNALWn9yjid3+wgwDzuu6csz
+         kBrcG4gpUIHru3tN/Ab5192HDDEXysocnGXZL87N9l5fMB6pbO/msWV3dvfZLxWeKygN
+         1MCJTcPETyA+Tc64bBj4SB6FYEz0Vk5dN9PbDs9NRz29sjb7gSdc5bXi4LlKBdMUa3tI
+         +Jb7u1z0jQClU1TqVXymLIVzF347OEShToSh3NxBi9wevOYAX3GG5RfYl6F0j8tDIyb5
+         OCnA==
+X-Gm-Message-State: APjAAAW+7B5ElTlbdUUenvGiliy1iIAenwByHTTi8TdLgju1B8kQVNkq
+        bwHqucKYjdbqFLiXjmzPqmUUdFJeDJ0=
+X-Google-Smtp-Source: APXvYqzngRP6RN3C8kvVBT6EjobJhkGfPJXiQxPnIAqvc/xzXnzHlcXPMjNFMDKwrbPWqKcUVe49+A==
+X-Received: by 2002:a5d:5450:: with SMTP id w16mr91320867wrv.128.1564645802791;
+        Thu, 01 Aug 2019 00:50:02 -0700 (PDT)
+Received: from oberon.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id u2sm4033483wmc.3.2019.08.01.00.50.01
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 01 Aug 2019 00:50:01 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] tools/lib/traceevent, tools/perf: Changes in
- tep_print_event_* APIs
-Message-ID: <20190731082717.1846993b@gandalf.local.home>
-In-Reply-To: <CAPpZLN7NAnDuvF08B6qAab83cudaEVa=aE=9=oL5pNkUmig5wA@mail.gmail.com>
-References: <20190730125028.24789-1-tz.stoyanov@gmail.com>
-        <20190730125028.24789-2-tz.stoyanov@gmail.com>
-        <20190730121245.2d14b2b6@gandalf.local.home>
-        <CAPpZLN7NAnDuvF08B6qAab83cudaEVa=aE=9=oL5pNkUmig5wA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Subject: [PATCH v3 0/3] Changes in few libtraceevent APIs
+Date:   Thu,  1 Aug 2019 10:49:56 +0300
+Message-Id: <20190801074959.22023-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 31 Jul 2019 15:16:13 +0300
-Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
+Before releasing libtraceevent as a standalone library, few
+APIs must be changed:
+ - Event printing interface is redesigned, to be more simple
+   and user friendly. Now the tep_print_event() API can be used 
+   to print various event information. All other event print APIs
+   are removed.
+ - Changed the user's plugin directory to 
+   ~/.local/lib/traceevent/plugins/ to be XDG compliant.
 
-> > > @@ -5413,18 +5419,20 @@ int tep_cmdline_pid(struct tep_handle *tep, struct tep_cmdline *cmdline)
-> > >  /**
-> > >   * tep_event_info - parse the data into the print format
-> > >   * @s: the trace_seq to write to
-> > > + * @format: printf format string. If any precision is specified in the string,
-> > > + *       print in raw data format  
-> >
-> > I'm curious to why this is needed?
-> >
-> > We can use a temp trace_seq like I mentioned above, and then apply the
-> > format to it at the end.
-> >  
-> We need a way to keep the tep_set_print_raw() functionality with the
-> new tep_print_event() API.
-> The user should have an option to print TEP_PRINT_INFO in raw format.
-> The only way to pass some
-> extra parameters to tep_print_event() is to use the printf format
-> string, "%s" in this case.
-> I choose to use "%s" width specifier to force TEP_PRINT_INFO in raw format.
-> The other possible solution could be to define a new
-> TEP_PRINT_INFO_RAW type for this use case.
+[
+ v3 changes:
+   - The user's plugin directory is changed to ~/.local/lib/traceevent/plugins/,
+     as Patrick McLean suggested.
+   - New tep_print_event() item is added - TEP_PRINT_INFO_RAW, to print
+     event information in raw format.
+   - Removed prefix "tep_" from newly added static functions and few
+     other changes, suggested by Steven Rostedt.
+]
+ 
+Tzvetomir Stoyanov (3):
+  tools/lib/traceevent, tools/perf: Changes in tep_print_event_* APIs
+  tools/lib/traceevent: Remove tep_register_trace_clock()
+  tools/lib/traceevent: Change user's plugin directory
 
-I like the idea of adding a new TEP_PRINT_INFO_RAW, as the other seems
-more of a "hack" to get that. It also removes the ability to pass in a
-string precision for a normal TEP_PRINT_INFO.
+ tools/lib/traceevent/Makefile            |   6 +-
+ tools/lib/traceevent/event-parse-api.c   |  40 ---
+ tools/lib/traceevent/event-parse-local.h |   6 -
+ tools/lib/traceevent/event-parse.c       | 333 +++++++++++++----------
+ tools/lib/traceevent/event-parse.h       |  30 +-
+ tools/lib/traceevent/event-plugin.c      |   2 +-
+ tools/perf/builtin-kmem.c                |   3 +-
+ tools/perf/util/sort.c                   |   3 +-
+ tools/perf/util/trace-event-parse.c      |   2 +-
+ 9 files changed, 207 insertions(+), 218 deletions(-)
 
-Thanks!
+-- 
+2.21.0
 
--- Steve
