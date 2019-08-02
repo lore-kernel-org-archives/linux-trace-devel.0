@@ -5,64 +5,64 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7A0FC32750
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Aug 2019 11:01:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D912C433FF
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Aug 2019 11:01:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AFE172087E
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Aug 2019 11:01:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25C7C206A3
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Aug 2019 11:01:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M4RlNyHw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SFD9rnrU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729582AbfHBLBJ (ORCPT
+        id S1729804AbfHBLBM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 2 Aug 2019 07:01:09 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:40124 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729419AbfHBLBJ (ORCPT
+        Fri, 2 Aug 2019 07:01:12 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:46460 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729711AbfHBLBM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Aug 2019 07:01:09 -0400
-Received: by mail-wm1-f67.google.com with SMTP id v19so65952889wmj.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Aug 2019 04:01:06 -0700 (PDT)
+        Fri, 2 Aug 2019 07:01:12 -0400
+Received: by mail-wr1-f52.google.com with SMTP id z1so76703360wru.13
+        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Aug 2019 04:01:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=irYH6v/bkKWfW2e45xE/2hDSHX8APebDZmcLY4XqWsc=;
-        b=M4RlNyHwbFqPq3uk3emK8pW8k9XQ6usbXCvlltPrV4uGwrbIHfvrmzo1zuURXzRwdV
-         kxLeBYTH4KKFLsTizjVc50p9Jl3A5Vh39rMlxxSFlCD216FUuM/+E99ToPn6HM6/uy+2
-         Lz7iH65tyAX+A2nW7xHylDOKp9h9a+OMreUm/kW9PE7Low90rO9Jh89itFlwHFt79GsV
-         tJ8ym58gK46XyOgeJhYxwcgPkjD4jASFf7uRYrOqvZ6sSkoSSHH6mx3knxKxJDGBxMW7
-         ySehCwvnaxtjW/s9pFFm4WgO/844+GysWuiLT7ycIkEm0BAMExvALeUjWUna/HcKhhtc
-         8Yzw==
+        bh=oQW3CapmXskHp+lUcyB/vJpUdC3NPHtv3CbqaaEHVtc=;
+        b=SFD9rnrUsomKCVkCsPFZUkw6wp7Z02696iYEAXV+Y3p7lvjAGu7yolXbGeKQvkm2ae
+         HGo4EP7r8lQU6SY0Bm9bGoNBExTfp6pw+aRPDW0SlxN05nA/aqRF+thCYzRcUl7IDG3s
+         ni/9+WmWZr3Uxtb1++pjJEBAqSeJvuYgLwgwVzBB+8r81x14ESGl0Kq6shpHPhuDnPdO
+         2d4qyrLRh48bCNw7w3BGitC3RzcAcJJwY14k1qcKEqQgo4+JLAvpVLFYXXRm6MPKJo6G
+         HXt+EU3HipqD9AGqZCv2iAB1aJLI6JqbhgZB67S5phkuYRPLxSe+FUD2kexqr2Dc0Bzz
+         fs8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=irYH6v/bkKWfW2e45xE/2hDSHX8APebDZmcLY4XqWsc=;
-        b=D3qnYM2tpYXkhs1J2fTzuwTY5y80Y9GPV6gy5BUyTV8u8ynXls7LljzhpxH0WNUNCk
-         5ZYK95vkGQIrwrKwOUvC8q+n/TTrEJPZRewt6tXwv41LxMUorNnhJLvQjHtrtbEowfHz
-         0in6ZqUTHyhj3B5mu3VGx8Ig8n0aT/4Exl9BpJOdVhjKVorPSepxqYyXFr3IkErh5VUT
-         mAY4kEsVjWIKYm1iLkFye+ZFVBeEHbAmKGYRO/AS4dnOmlntfAS7adorNKw2Bj9jwz7o
-         +QC9jtTCsHV/Yu601NMlLudvlrlUjdTBEWE7IsQASJ28RmxfP+kJ7ob7IAVtovhUAgaU
-         E8hw==
-X-Gm-Message-State: APjAAAVBfUsT5VFXYN6PxQYj27fE6TkkzlIBGQ71rNc0OtUAcjZyOBAk
-        rtenwFZv8CgI4fHTHifwZ2U=
-X-Google-Smtp-Source: APXvYqzjyMx3xrLrOsBjHOvMZyNfF2mpIESBJiGC0/L/Y/MIboHq6M3JfuCwFqn4kpXP/OJcB45++Q==
-X-Received: by 2002:a1c:f115:: with SMTP id p21mr3814480wmh.134.1564743666202;
-        Fri, 02 Aug 2019 04:01:06 -0700 (PDT)
+        bh=oQW3CapmXskHp+lUcyB/vJpUdC3NPHtv3CbqaaEHVtc=;
+        b=bpGA0UP6kbviYp0XM1Dihgr7mh2diNGDUTf2oD2k7lYMhJSsuhEfeiWgm6Bu+ANliK
+         CjpFt/QhUlC/0zXbeISqmAfLHiwoErT92d2kEGcnWlhRM/sBiqbCvc4yjaoK6GPwkwHk
+         HTcudVlmJbMzocjGCNWqTmUexEA0xLeKy9XL7u2lfV1LdKFRg5UBAnA6nKXbkRsCxkD1
+         IGMO/pHnc+d6RwIJw7hQJKx6v2MuX22AqwwZTXbG0qNQ7i3JJAwfaUgcolqdOBeF1ore
+         6Fw0GUFmYpThJH1TsxYqWRnzFZEYI3WErpfW9WRXaMTDdfdixjNhDuFEXSn9nKOs1s6B
+         zJmQ==
+X-Gm-Message-State: APjAAAXScQY0d5d8JhjHLwTjnfB6Mrg1v3sCPybGZfNtzgVj+esE05QM
+        hBIc1xAycFpFGZXhq66zCvk=
+X-Google-Smtp-Source: APXvYqwpALeTcDXmYYLf9Y1ScovH0Un+yR5SrTpRvw1gczVqwVFbyj3zuooq9DvbKeH/BzplmgA61Q==
+X-Received: by 2002:a5d:4e8a:: with SMTP id e10mr9112290wru.26.1564743670077;
+        Fri, 02 Aug 2019 04:01:10 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id r15sm79511433wrj.68.2019.08.02.04.01.04
+        by smtp.gmail.com with ESMTPSA id r15sm79511433wrj.68.2019.08.02.04.01.08
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 02 Aug 2019 04:01:05 -0700 (PDT)
+        Fri, 02 Aug 2019 04:01:09 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 1/6] trace-cmd: Move kernel_stack event handler to "function" plugin.
-Date:   Fri,  2 Aug 2019 14:00:56 +0300
-Message-Id: <20190802110101.14759-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 4/6] trace-cmd: Move libtraceevent plugins in its own directory.
+Date:   Fri,  2 Aug 2019 14:00:59 +0300
+Message-Id: <20190802110101.14759-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190802110101.14759-1-tz.stoyanov@gmail.com>
 References: <20190802110101.14759-1-tz.stoyanov@gmail.com>
@@ -73,150 +73,236 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The "kernel_stack" event handler does not depend on any trace-cmd
-context, it can be used aside from the application. The code is
-moved to libtraceevent "function" plugin.
+All existing plugins are moved from plugins/ to plugins/traceevent/
+directory, as all of them (except plugin_python) are designed to be
+used with the traceevent library. This change paves the way for
+implementing trace-cmd specific plugins.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-ftrace.c | 52 ------------------------------------
- plugins/plugin_function.c    | 41 ++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+), 52 deletions(-)
+ .gitignore                                    |  2 +-
+ Makefile                                      | 28 +++++++++----------
+ lib/trace-cmd/Makefile                        |  2 --
+ plugins/{ => traceevent}/Makefile             |  6 ++--
+ plugins/{ => traceevent}/plugin_blk.c         |  0
+ plugins/{ => traceevent}/plugin_cfg80211.c    |  0
+ plugins/{ => traceevent}/plugin_function.c    |  0
+ plugins/{ => traceevent}/plugin_futex.c       |  0
+ plugins/{ => traceevent}/plugin_hrtimer.c     |  0
+ plugins/{ => traceevent}/plugin_jbd2.c        |  0
+ plugins/{ => traceevent}/plugin_kmem.c        |  0
+ plugins/{ => traceevent}/plugin_kvm.c         |  0
+ plugins/{ => traceevent}/plugin_mac80211.c    |  0
+ plugins/{ => traceevent}/plugin_python.c      |  0
+ .../{ => traceevent}/plugin_sched_switch.c    |  0
+ plugins/{ => traceevent}/plugin_scsi.c        |  0
+ plugins/{ => traceevent}/plugin_tlb.c         |  0
+ plugins/{ => traceevent}/plugin_xen.c         |  0
+ 18 files changed, 18 insertions(+), 20 deletions(-)
+ rename plugins/{ => traceevent}/Makefile (93%)
+ rename plugins/{ => traceevent}/plugin_blk.c (100%)
+ rename plugins/{ => traceevent}/plugin_cfg80211.c (100%)
+ rename plugins/{ => traceevent}/plugin_function.c (100%)
+ rename plugins/{ => traceevent}/plugin_futex.c (100%)
+ rename plugins/{ => traceevent}/plugin_hrtimer.c (100%)
+ rename plugins/{ => traceevent}/plugin_jbd2.c (100%)
+ rename plugins/{ => traceevent}/plugin_kmem.c (100%)
+ rename plugins/{ => traceevent}/plugin_kvm.c (100%)
+ rename plugins/{ => traceevent}/plugin_mac80211.c (100%)
+ rename plugins/{ => traceevent}/plugin_python.c (100%)
+ rename plugins/{ => traceevent}/plugin_sched_switch.c (100%)
+ rename plugins/{ => traceevent}/plugin_scsi.c (100%)
+ rename plugins/{ => traceevent}/plugin_tlb.c (100%)
+ rename plugins/{ => traceevent}/plugin_xen.c (100%)
 
-diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
-index ed68099..22e5213 100644
---- a/lib/trace-cmd/trace-ftrace.c
-+++ b/lib/trace-cmd/trace-ftrace.c
-@@ -31,17 +31,6 @@ struct tep_plugin_option trace_ftrace_options[] = {
- static struct tep_plugin_option *fgraph_tail = &trace_ftrace_options[0];
- static struct tep_plugin_option *fgraph_depth = &trace_ftrace_options[1];
+diff --git a/.gitignore b/.gitignore
+index b7b405f..20bb5a3 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -18,5 +18,5 @@ ctracecmdgui_wrap.c
+ tags
+ TAGS
+ cscope*
+-trace_plugin_dir
++traceevent_plugin_dir
+ trace_python_dir
+diff --git a/Makefile b/Makefile
+index ad74a96..8b228f5 100644
+--- a/Makefile
++++ b/Makefile
+@@ -266,16 +266,16 @@ gui: force $(CMD_TARGETS) $(kshark-dir)/build/Makefile
+ trace-cmd: force $(LIBTRACEEVENT_STATIC) $(LIBTRACECMD_STATIC)
+ 	$(Q)$(MAKE) -C $(src)/tracecmd $(obj)/tracecmd/$@
  
--static void find_long_size(struct tracecmd_ftrace *finfo)
--{
--	finfo->long_size = tracecmd_long_size(finfo->handle);
--}
--
--#define long_size_check(handle)				\
--	do {						\
--		if (!finfo->long_size)				\
--			find_long_size(finfo);		\
--	} while (0)
--
- static int find_ret_event(struct tracecmd_ftrace *finfo, struct tep_handle *pevent)
- {
- 	struct tep_event *event;
-@@ -361,44 +350,6 @@ fgraph_ret_handler(struct trace_seq *s, struct tep_record *record,
- 	return 0;
- }
+-$(LIBTRACEEVENT_SHARED): force
++$(LIBTRACEEVENT_SHARED): force $(obj)/plugins/traceevent/traceevent_plugin_dir
+ 	$(Q)$(MAKE) -C $(src)/lib/traceevent $@
  
--static int
--trace_stack_handler(struct trace_seq *s, struct tep_record *record,
--		    struct tep_event *event, void *context)
--{
--	struct tracecmd_ftrace *finfo = context;
--	struct tep_format_field *field;
--	unsigned long long addr;
--	const char *func;
--	void *data = record->data;
--
--	field = tep_find_any_field(event, "caller");
--	if (!field) {
--		trace_seq_printf(s, "<CANT FIND FIELD %s>", "caller");
--		return 0;
--	}
--
--	trace_seq_puts(s, "<stack trace>\n");
--
--	long_size_check(finfo);
--
--	for (data += field->offset; data < record->data + record->size;
--	     data += finfo->long_size) {
--		addr = tep_read_number(event->tep, data, finfo->long_size);
--
--		if ((finfo->long_size == 8 && addr == (unsigned long long)-1) ||
--		    ((int)addr == -1))
--			break;
--
--		func = tep_find_function(event->tep, addr);
--		if (func)
--			trace_seq_printf(s, "=> %s (%llx)\n", func, addr);
--		else
--			trace_seq_printf(s, "=> %llx\n", addr);
--	}
--
--	return 0;
--}
--
- /**
-  * tracecmd_ftrace_load_options - load the ftrace options
-  *
-@@ -430,9 +381,6 @@ int tracecmd_ftrace_overrides(struct tracecmd_input *handle,
- 	tep_register_event_handler(pevent, -1, "ftrace", "funcgraph_exit",
- 				      fgraph_ret_handler, finfo);
+-$(LIBTRACEEVENT_STATIC): force
++$(LIBTRACEEVENT_STATIC): force $(obj)/plugins/traceevent/traceevent_plugin_dir
+ 	$(Q)$(MAKE) -C $(src)/lib/traceevent $@
  
--	tep_register_event_handler(pevent, -1, "ftrace", "kernel_stack",
--				      trace_stack_handler, finfo);
+-$(LIBTRACECMD_STATIC): force $(obj)/plugins/trace_plugin_dir
++$(LIBTRACECMD_STATIC): force
+ 	$(Q)$(MAKE) -C $(src)/lib/trace-cmd $@
+ 
+-$(LIBTRACECMD_SHARED): force $(obj)/plugins/trace_plugin_dir
++$(LIBTRACECMD_SHARED): force
+ 	$(Q)$(MAKE) -C $(src)/lib/trace-cmd $@
+ 
+ libtraceevent.so: $(LIBTRACEEVENT_SHARED)
+@@ -285,14 +285,14 @@ libtracecmd.so: $(LIBTRACECMD_SHARED)
+ 
+ libs: $(LIBTRACECMD_SHARED) $(LIBTRACEEVENT_SHARED)
+ 
+-plugins: force $(obj)/plugins/trace_plugin_dir $(obj)/plugins/trace_python_dir
+-	$(Q)$(MAKE) -C $(src)/plugins
++plugins: force $(obj)/plugins/traceevent/traceevent_plugin_dir $(obj)/plugins/traceevent/trace_python_dir
++	$(Q)$(MAKE) -C $(src)/plugins/traceevent
+ 
+-$(obj)/plugins/trace_plugin_dir: force
+-	$(Q)$(MAKE) -C $(src)/plugins $@
++$(obj)/plugins/traceevent/traceevent_plugin_dir: force
++	$(Q)$(MAKE) -C $(src)/plugins/traceevent $@
+ 
+-$(obj)/plugins/trace_python_dir: force
+-	$(Q)$(MAKE) -C $(src)/plugins $@
++$(obj)/plugins/traceevent/trace_python_dir: force
++	$(Q)$(MAKE) -C $(src)/plugins/traceevent $@
+ 
+ show_gui_make:
+ 	@echo "Note: to build the gui, type \"make gui\""
+@@ -318,7 +318,7 @@ cscope: force
+ 	$(call find_tag_files) | cscope -b -q
+ 
+ install_plugins: force
+-	$(Q)$(MAKE) -C $(src)/plugins $@
++	$(Q)$(MAKE) -C $(src)/plugins/traceevent $@
+ 
+ install_python: force
+ 	$(Q)$(MAKE) -C $(src)/python $@
+@@ -356,7 +356,7 @@ clean:
+ 	$(RM) tags TAGS cscope*
+ 	$(MAKE) -C $(src)/lib/traceevent clean
+ 	$(MAKE) -C $(src)/lib/trace-cmd clean
+-	$(MAKE) -C $(src)/plugins clean
++	$(MAKE) -C $(src)/plugins/traceevent clean
+ 	$(MAKE) -C $(src)/python clean
+ 	$(MAKE) -C $(src)/tracecmd clean
+ 	if [ -f $(kshark-dir)/build/Makefile ]; then $(MAKE) -C $(kshark-dir)/build clean; fi
+@@ -405,8 +405,8 @@ python-gui: $(PYTHON_GUI)
+ PHONY += python-plugin
+ python-plugin: $(PYTHON_PLUGINS)
+ 
+-plugin_python.so: force $(obj)/plugins/trace_python_dir
+-	$(Q)$(MAKE) -C $(src)/plugins $(obj)/plugins/plugin_python.so
++plugin_python.so: force $(obj)/plugins/traceevent/trace_python_dir
++	$(Q)$(MAKE) -C $(src)/plugins/traceevent $(obj)/plugins/traceevent/plugin_python.so
+ 
+ dist:
+ 	git archive --format=tar --prefix=trace-cmd-$(TRACECMD_VERSION)/ HEAD \
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index 44c1332..6f9a013 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -38,8 +38,6 @@ $(bdir)/libtracecmd.so: $(OBJS)
+ $(bdir)/%.o: %.c
+ 	$(Q)$(call do_fpic_compile)
+ 
+-$(bdir)/trace-util.o: $(obj)/plugins/trace_plugin_dir
 -
- 	trace_util_add_options("ftrace", trace_ftrace_options);
+ $(DEPS): $(bdir)/.%.d: %.c
+ 	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
  
- 	/* Store the func ret id and event for later use */
-diff --git a/plugins/plugin_function.c b/plugins/plugin_function.c
-index 91beb74..21ee531 100644
---- a/plugins/plugin_function.c
-+++ b/plugins/plugin_function.c
-@@ -169,11 +169,52 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
- 	return 0;
- }
+diff --git a/plugins/Makefile b/plugins/traceevent/Makefile
+similarity index 93%
+rename from plugins/Makefile
+rename to plugins/traceevent/Makefile
+index 4598e83..8ed65d3 100644
+--- a/plugins/Makefile
++++ b/plugins/traceevent/Makefile
+@@ -1,6 +1,6 @@
+ include $(src)/scripts/utils.mk
  
-+static int
-+trace_stack_handler(struct trace_seq *s, struct tep_record *record,
-+		    struct tep_event *event, void *context)
-+{
-+	struct tep_format_field *field;
-+	unsigned long long addr;
-+	const char *func;
-+	int long_size;
-+	void *data = record->data;
-+
-+	field = tep_find_any_field(event, "caller");
-+	if (!field) {
-+		trace_seq_printf(s, "<CANT FIND FIELD %s>", "caller");
-+		return 0;
-+	}
-+
-+	trace_seq_puts(s, "<stack trace >\n");
-+
-+	long_size = tep_get_long_size(event->tep);
-+
-+	for (data += field->offset; data < record->data + record->size;
-+	     data += long_size) {
-+		addr = tep_read_number(event->tep, data, long_size);
-+
-+		if ((long_size == 8 && addr == (unsigned long long)-1) ||
-+		    ((int)addr == -1))
-+			break;
-+
-+		func = tep_find_function(event->tep, addr);
-+		if (func)
-+			trace_seq_printf(s, "=> %s (%llx)\n", func, addr);
-+		else
-+			trace_seq_printf(s, "=> %llx\n", addr);
-+	}
-+
-+	return 0;
-+}
-+
- int TEP_PLUGIN_LOADER(struct tep_handle *tep)
- {
- 	tep_register_event_handler(tep, -1, "ftrace", "function",
- 				   function_handler, NULL);
+-bdir:=$(obj)/plugins
++bdir:=$(obj)/plugins/traceevent
  
-+	tep_register_event_handler(tep, -1, "ftrace", "kernel_stack",
-+				      trace_stack_handler, NULL);
-+
- 	trace_util_add_options("ftrace", plugin_options);
+ PLUGIN_OBJS =
+ PLUGIN_OBJS += plugin_jbd2.o
+@@ -61,7 +61,7 @@ install_plugins: $(PLUGINS_INSTALL)
+ # and $(PYTHON_DIR) change. Without them, a full clean build would necessary
+ # in order to get the binaries updated.
  
- 	return 0;
+-$(bdir)/trace_plugin_dir: $(bdir) force
++$(bdir)/traceevent_plugin_dir: $(bdir) force
+ 	$(Q)$(N)$(call update_dir, 'PLUGIN_DIR=$(PLUGIN_DIR)')
+ 
+ $(bdir)/trace_python_dir: $(bdir) force
+@@ -75,7 +75,7 @@ ifneq ($(dep_includes),)
+ endif
+ 
+ clean:
+-	$(RM) -f $(bdir)/*.a $(bdir)/*.so $(bdir)/*.o $(bdir)/.*.d $(bdir)/trace_plugin_dir $(bdir)/trace_python_dir
++	$(RM) -f $(bdir)/*.a $(bdir)/*.so $(bdir)/*.o $(bdir)/.*.d $(bdir)/traceevent_plugin_dir $(bdir)/trace_python_dir
+ 
+ force:
+ .PHONY: clean force
+diff --git a/plugins/plugin_blk.c b/plugins/traceevent/plugin_blk.c
+similarity index 100%
+rename from plugins/plugin_blk.c
+rename to plugins/traceevent/plugin_blk.c
+diff --git a/plugins/plugin_cfg80211.c b/plugins/traceevent/plugin_cfg80211.c
+similarity index 100%
+rename from plugins/plugin_cfg80211.c
+rename to plugins/traceevent/plugin_cfg80211.c
+diff --git a/plugins/plugin_function.c b/plugins/traceevent/plugin_function.c
+similarity index 100%
+rename from plugins/plugin_function.c
+rename to plugins/traceevent/plugin_function.c
+diff --git a/plugins/plugin_futex.c b/plugins/traceevent/plugin_futex.c
+similarity index 100%
+rename from plugins/plugin_futex.c
+rename to plugins/traceevent/plugin_futex.c
+diff --git a/plugins/plugin_hrtimer.c b/plugins/traceevent/plugin_hrtimer.c
+similarity index 100%
+rename from plugins/plugin_hrtimer.c
+rename to plugins/traceevent/plugin_hrtimer.c
+diff --git a/plugins/plugin_jbd2.c b/plugins/traceevent/plugin_jbd2.c
+similarity index 100%
+rename from plugins/plugin_jbd2.c
+rename to plugins/traceevent/plugin_jbd2.c
+diff --git a/plugins/plugin_kmem.c b/plugins/traceevent/plugin_kmem.c
+similarity index 100%
+rename from plugins/plugin_kmem.c
+rename to plugins/traceevent/plugin_kmem.c
+diff --git a/plugins/plugin_kvm.c b/plugins/traceevent/plugin_kvm.c
+similarity index 100%
+rename from plugins/plugin_kvm.c
+rename to plugins/traceevent/plugin_kvm.c
+diff --git a/plugins/plugin_mac80211.c b/plugins/traceevent/plugin_mac80211.c
+similarity index 100%
+rename from plugins/plugin_mac80211.c
+rename to plugins/traceevent/plugin_mac80211.c
+diff --git a/plugins/plugin_python.c b/plugins/traceevent/plugin_python.c
+similarity index 100%
+rename from plugins/plugin_python.c
+rename to plugins/traceevent/plugin_python.c
+diff --git a/plugins/plugin_sched_switch.c b/plugins/traceevent/plugin_sched_switch.c
+similarity index 100%
+rename from plugins/plugin_sched_switch.c
+rename to plugins/traceevent/plugin_sched_switch.c
+diff --git a/plugins/plugin_scsi.c b/plugins/traceevent/plugin_scsi.c
+similarity index 100%
+rename from plugins/plugin_scsi.c
+rename to plugins/traceevent/plugin_scsi.c
+diff --git a/plugins/plugin_tlb.c b/plugins/traceevent/plugin_tlb.c
+similarity index 100%
+rename from plugins/plugin_tlb.c
+rename to plugins/traceevent/plugin_tlb.c
+diff --git a/plugins/plugin_xen.c b/plugins/traceevent/plugin_xen.c
+similarity index 100%
+rename from plugins/plugin_xen.c
+rename to plugins/traceevent/plugin_xen.c
 -- 
 2.21.0
 
