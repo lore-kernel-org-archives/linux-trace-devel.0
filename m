@@ -1,71 +1,71 @@
-Return-Path: <SRS0=4i+i=V6=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=cY0P=WB=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 727B4C32750
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Aug 2019 11:01:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44911C433FF
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Aug 2019 10:26:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 39DC22087E
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Aug 2019 11:01:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1785120578
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Aug 2019 10:26:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pZQnXr4M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I3whiING"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbfHBLBP (ORCPT
+        id S1728086AbfHEK0y (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 2 Aug 2019 07:01:15 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46350 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729430AbfHBLBP (ORCPT
+        Mon, 5 Aug 2019 06:26:54 -0400
+Received: from mail-pl1-f176.google.com ([209.85.214.176]:35823 "EHLO
+        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728043AbfHEK0y (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Aug 2019 07:01:15 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z1so76703477wru.13
-        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Aug 2019 04:01:12 -0700 (PDT)
+        Mon, 5 Aug 2019 06:26:54 -0400
+Received: by mail-pl1-f176.google.com with SMTP id w24so36301068plp.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 05 Aug 2019 03:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hBXQStQUH38OFJFxvwv9NxlSSXIMvPmUF30az/v4TqY=;
-        b=pZQnXr4MW7veDhVSy8Wq2Wi0Gg5hBAawbdly6L0egTsgZ0u7BgOHG5p6qu5b2d8srD
-         2/OH8kzhcBLhmTk/d0ihJzM59oUOaNNOjd4dY6LlrpimAoIfYAZJAyNqnVw02KXCUZQz
-         TEX7R6mR/RhEiJjCAuI0q5wu5F2Kml5LPQAzfNkT8Axisu68s+cTTDQ+KJOJDULwuu6Y
-         IiOb3lnsGfzf03YvVJ1r44aWC6a5SoOn/v9JDMXJPUV9yfDhJ1bMDlxa+h55XZJHFtlD
-         IUdWtN9uzRK2abxNvjBAgqkKo6spilsXbfZZLbKlXBfGdxZDqFiSm20XBrDrUbad4q/2
-         fFAQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PaEof87/l2CSH7k/oYAMcB821mdfap6W4g9T3RgxBNg=;
+        b=I3whiINGB42OpMPQxOqv1YyMou3cUUYTIeanNf2TP5sU5aKKX4uQNfSV1ZrSWA/a0Z
+         1E9IeH9UIEX+E2ooK7PoKQ07ok+8/tHoTmw2k+O6lrtG5n/l9qZ7o4pQcF0J/bfwax1o
+         oZaZG+PGSTI97AZ9PR4n1hBgbpfKHdshmbUwn9tqqASvJ0coBI3isxWA5UqbKJsH3C+j
+         +mTLi3zU0jg1cDlZYctncmf9mlptJ5f2b0C4cJZ/Hho2aZGRyOB3PHHuL+Ldiv+VhjAg
+         W8rhMyIskez+RAqpkVVQTKRGFV6O5PHMzoOGrAjEkxiPlv3yM8GJHKw4N7V/od8wgiPn
+         4ksQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hBXQStQUH38OFJFxvwv9NxlSSXIMvPmUF30az/v4TqY=;
-        b=BjX8uRX7VKvqyB+0fVnkTA1JgjYB930damsmv7RcCgPIiP/vG6gy1zv6r6/oy6NkC8
-         54Mb3dLBMc9nj62SVy5KNTaAJNBMbmxTYBMUV27eCbnvmS31uSGf5lOXqWdWDryJO3MS
-         o4z57l98v9yj5GfNVn16/QrkeBwccmwINpSGMWh0KnQQzASL0wTi9SzeLczw7o5alFEM
-         qx01uEZw7sSlDmoVelGgkuAZy9dxmTRQiO/u2aig0FWbTldQ1mp6dKRVyM28ammnxQZ1
-         PuMfHomhz3hMD8jkKRN+w7WHJ7L1o2C2+faeZQRspndym7/EEKTEBqIYz4rKGU4tH2Lh
-         j8XA==
-X-Gm-Message-State: APjAAAWWIM6nNbYxc2Y5x5BZqCckfFLQJ5saBnWnz66P6mEd3nhBWBOP
-        Ld/7JjmDY7HtFLaH5w2aX1E=
-X-Google-Smtp-Source: APXvYqwSeSJTzIhQr077uvV32yoGu2xQSTRw4wGv1XPo4roZmxji3XisruuxlM/mpgydpYmiM8+8pQ==
-X-Received: by 2002:adf:e2c1:: with SMTP id d1mr153312274wrj.283.1564743672143;
-        Fri, 02 Aug 2019 04:01:12 -0700 (PDT)
-Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id r15sm79511433wrj.68.2019.08.02.04.01.11
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PaEof87/l2CSH7k/oYAMcB821mdfap6W4g9T3RgxBNg=;
+        b=FlcwqQV+QRga/9G7e5rdFr6bLZSQxd6CwepcvzuBuOx0uhjeIF8rMij/KyGuk1zH7i
+         NiYyn3f5k3HJ0JJhpBYjPcq+9q5dvyXyoYJ6QTIQ/hMHFVWs4ZlI/UIi+0AkviSQKOni
+         gsK0ajtYQQ3SwPqTVW1Kx0UW6mLLolq2Em0W+n7fOELoVrkiLXY4XnUZ+TTHb6C83NeE
+         sCRdS6bKz3ieQjWVrtSO1HGwsR7LhLAdCBz+5sCsB8JjD8bVtND8UW6wULQa5YvXs/+d
+         ovQ7ZmPaIh2ZdgLwuQaljJbNaST7xlBmsV+HNXpTybQzOlFunBiFxvaL7Mnbt+wAKasm
+         x/yA==
+X-Gm-Message-State: APjAAAW14YoIXLMPjtwMzPkBxRsk7zU4eifpNaFMcJqak+oemmU0M6A4
+        +/+zmNRr9pNIbZJQl789TCY=
+X-Google-Smtp-Source: APXvYqzQLcw9Gzn9RGbG9HjAXXQyNPCvr9/vQaLP/TK+qvcbc+VHj9aSXxKW8xzBRJy9Y4o7LuDnyw==
+X-Received: by 2002:a17:902:4623:: with SMTP id o32mr141251701pld.112.1565000813873;
+        Mon, 05 Aug 2019 03:26:53 -0700 (PDT)
+Received: from localhost.localdomain ([110.70.27.66])
+        by smtp.gmail.com with ESMTPSA id x13sm88613482pfn.6.2019.08.05.03.26.51
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 02 Aug 2019 04:01:11 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 6/6] trace-cmd: Change plugin install directories
-Date:   Fri,  2 Aug 2019 14:01:01 +0300
-Message-Id: <20190802110101.14759-7-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190802110101.14759-1-tz.stoyanov@gmail.com>
-References: <20190802110101.14759-1-tz.stoyanov@gmail.com>
+        Mon, 05 Aug 2019 03:26:53 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: [PATCH 1/2] parse-events: deref pointer for proper sizeof()
+Date:   Mon,  5 Aug 2019 19:26:45 +0900
+Message-Id: <20190805102646.31142-1-sergey.senozhatsky@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -73,130 +73,24 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-
-To be compliant with XDG user directory layout,
-the user's plugin directory is changed from
-~/.traceevent/plugins to ~/.local/lib/traceevent/plugins/
-Thanks to Patrick McLean:
-https://lore.kernel.org/linux-trace-devel/20190313144206.41e75cf8@patrickm/
-
-The system plugin directory is changed from
-(install_prefix)/lib/trace-cmd/plugins to (install_prefix)/lib/traceevent/plugins
-This change paves the way for implementing trace-cmd specific plugins.
-
-Suggested-by: Patrick McLean <chutzpah@gentoo.org>
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 ---
- Makefile                      | 16 ++++++++--------
- lib/traceevent/event-plugin.c |  6 +++---
- plugins/traceevent/Makefile   |  6 +++---
- 3 files changed, 14 insertions(+), 14 deletions(-)
+ parse-events.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 8b228f5..5bfb558 100644
---- a/Makefile
-+++ b/Makefile
-@@ -59,15 +59,15 @@ export img_install img_install_SQ
- export DESTDIR DESTDIR_SQ
+diff --git a/parse-events.c b/parse-events.c
+index 3d59d92..807fc53 100644
+--- a/parse-events.c
++++ b/parse-events.c
+@@ -2058,7 +2058,7 @@ process_fields(struct event_format *event, struct print_flag_sym **list, char **
+ 			goto out_free;
  
- ifeq ($(prefix),$(HOME))
--plugin_dir = $(HOME)/.trace-cmd/plugins
-+plugin_traceevent_dir = $(HOME)/.local/lib/traceevent/plugins
- python_dir = $(HOME)/.trace-cmd/python
- var_dir = $(HOME)/.trace-cmd/
- else
--plugin_dir = $(libdir)/trace-cmd/plugins
-+plugin_traceevent_dir = $(libdir)/traceevent/plugins
- python_dir = $(libdir)/trace-cmd/python
--PLUGIN_DIR = -DPLUGIN_DIR="$(plugin_dir)"
-+PLUGIN_TRACEEVENT_DIR = -DPLUGIN_DIR="$(plugin_traceevent_dir)"
- PYTHON_DIR = -DPYTHON_DIR="$(python_dir)"
--PLUGIN_DIR_SQ = '$(subst ','\'',$(PLUGIN_DIR))'
-+PLUGIN_TRACEEVENT_DIR_SQ = '$(subst ','\'',$(PLUGIN_TRACEEVENT_DIR))'
- PYTHON_DIR_SQ = '$(subst ','\'',$(PYTHON_DIR))'
- var_dir = /var
- endif
-@@ -75,7 +75,7 @@ endif
- # Shell quotes
- bindir_SQ = $(subst ','\'',$(bindir))
- bindir_relative_SQ = $(subst ','\'',$(bindir_relative))
--plugin_dir_SQ = $(subst ','\'',$(plugin_dir))
-+plugin_traceevent_dir_SQ = $(subst ','\'',$(plugin_traceevent_dir))
- python_dir_SQ = $(subst ','\'',$(python_dir))
+ 		field = malloc_or_die(sizeof(*field));
+-		memset(field, 0, sizeof(field));
++		memset(field, 0, sizeof(*field));
  
- VAR_DIR = -DVAR_DIR="$(var_dir)"
-@@ -88,10 +88,10 @@ HELP_DIR_SQ = '$(subst ','\'',$(HELP_DIR))'
- 
- BASH_COMPLETE_DIR ?= /etc/bash_completion.d
- 
--export PLUGIN_DIR
-+export PLUGIN_TRACEEVENT_DIR
- export PYTHON_DIR
- export PYTHON_DIR_SQ
--export plugin_dir_SQ
-+export plugin_traceevent_dir_SQ
- export python_dir_SQ
- export var_dir
- 
-@@ -235,7 +235,7 @@ LIBS += -laudit
- endif
- 
- # Append required CFLAGS
--override CFLAGS += $(INCLUDES) $(PLUGIN_DIR_SQ) $(VAR_DIR)
-+override CFLAGS += $(INCLUDES) $(PLUGIN_TRACEEVENT_DIR_SQ) $(VAR_DIR)
- override CFLAGS += $(udis86-flags) $(blk-flags)
- 
- CMD_TARGETS = trace-cmd $(BUILD_PYTHON)
-diff --git a/lib/traceevent/event-plugin.c b/lib/traceevent/event-plugin.c
-index fdaadba..383a8be 100644
---- a/lib/traceevent/event-plugin.c
-+++ b/lib/traceevent/event-plugin.c
-@@ -20,7 +20,7 @@
- #include "event-utils.h"
- #include "trace-seq.h"
- 
--#define LOCAL_PLUGIN_DIR ".traceevent/plugins"
-+#define LOCAL_PLUGIN_DIR ".local/lib/traceevent/plugins/"
- 
- static struct registered_plugin_options {
- 	struct registered_plugin_options	*next;
-@@ -579,9 +579,9 @@ void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
- 	 * If a system plugin directory was defined,
- 	 * check that first.
- 	 */
--#ifdef PLUGIN_DIR
-+#ifdef PLUGIN_TRACEEVENT_DIR
- 	if (!tep || !(tep->flags & TEP_DISABLE_SYS_PLUGINS))
--		load_plugins_dir(tep, suffix, PLUGIN_DIR,
-+		load_plugins_dir(tep, suffix, PLUGIN_TRACEEVENT_DIR,
- 				 load_plugin, data);
- #endif
- 
-diff --git a/plugins/traceevent/Makefile b/plugins/traceevent/Makefile
-index 8ed65d3..98fcc4d 100644
---- a/plugins/traceevent/Makefile
-+++ b/plugins/traceevent/Makefile
-@@ -53,16 +53,16 @@ $(bdir)/plugin_python.so: $(bdir)/%.so: $(bdir)/%.o
- PLUGINS_INSTALL = $(subst .so,.install,$(PLUGINS))
- 
- $(PLUGINS_INSTALL): $(bdir)/%.install : $(bdir)/%.so force
--	$(Q)$(call do_install_data,$<,$(plugin_dir_SQ))
-+	$(Q)$(call do_install_data,$<,$(plugin_traceevent_dir_SQ))
- 
- install_plugins: $(PLUGINS_INSTALL)
- 
--# The following targets are necessary to trigger a rebuild when $(PLUGIN_DIR)
-+# The following targets are necessary to trigger a rebuild when $(PLUGIN_TRACEEVENT_DIR)
- # and $(PYTHON_DIR) change. Without them, a full clean build would necessary
- # in order to get the binaries updated.
- 
- $(bdir)/traceevent_plugin_dir: $(bdir) force
--	$(Q)$(N)$(call update_dir, 'PLUGIN_DIR=$(PLUGIN_DIR)')
-+	$(Q)$(N)$(call update_dir, 'PLUGIN_TRACEEVENT_DIR=$(PLUGIN_TRACEEVENT_DIR)')
- 
- $(bdir)/trace_python_dir: $(bdir) force
- 	$(Q)$(N)$(call update_dir, 'PYTHON_DIR=$(PYTHON_DIR)')
+ 		value = arg_eval(arg);
+ 		field->value = strdup(value);
 -- 
-2.21.0
+2.22.0
 
