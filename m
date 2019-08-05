@@ -6,31 +6,31 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DE20C433FF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8C90C41514
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Aug 2019 20:44:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7AFF8216B7
+	by mail.kernel.org (Postfix) with ESMTP id C74BC214C6
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Aug 2019 20:44:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727460AbfHEUn5 (ORCPT
+        id S1730590AbfHEUn5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 5 Aug 2019 16:43:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37780 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:37758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730516AbfHEUn5 (ORCPT
+        id S1730055AbfHEUn5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 5 Aug 2019 16:43:57 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52B752186A;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B4E021738;
         Mon,  5 Aug 2019 20:43:56 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.92)
         (envelope-from <rostedt@goodmis.org>)
-        id 1hujpj-0008SC-F0; Mon, 05 Aug 2019 16:43:55 -0400
-Message-Id: <20190805204355.344622683@goodmis.org>
+        id 1hujpj-0008Ri-AG; Mon, 05 Aug 2019 16:43:55 -0400
+Message-Id: <20190805204355.195042846@goodmis.org>
 User-Agent: quilt/0.65
-Date:   Mon, 05 Aug 2019 16:43:15 -0400
+Date:   Mon, 05 Aug 2019 16:43:14 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -39,7 +39,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Patrick McLean <chutzpah@gentoo.org>,
         Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Subject: [PATCH 3/3] tools/lib/traceevent: Change users plugin directory
+Subject: [PATCH 2/3] tools/lib/traceevent: Remove tep_register_trace_clock()
 References: <20190805204312.169565525@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -50,57 +50,76 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-To be compliant with XDG user directory layout,
-the user's plugin directory is changed from
-~/.traceevent/plugins to ~/.local/lib/traceevent/plugins/
+The tep_register_trace_clock() API is used to instruct the
+traceevent library how to print the event time stamps. As event
+print interface if redesigned, this API is not needed any more.
+The new event print API is flexible and the user can specify how
+the time stamps are printed.
 
-Link: https://lore.kernel.org/linux-trace-devel/20190313144206.41e75cf8@patrickm/
-Link: http://lore.kernel.org/linux-trace-devel/20190801074959.22023-4-tz.stoyanov@gmail.com
+Link: http://lore.kernel.org/linux-trace-devel/20190801074959.22023-3-tz.stoyanov@gmail.com
 
-Suggested-by: Patrick McLean <chutzpah@gentoo.org>
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/Makefile       | 6 +++---
- tools/lib/traceevent/event-plugin.c | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ tools/lib/traceevent/event-parse-local.h |  2 --
+ tools/lib/traceevent/event-parse.c       | 11 -----------
+ tools/lib/traceevent/event-parse.h       |  1 -
+ 3 files changed, 14 deletions(-)
 
-diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index 3292c290654f..86ce17a1f7fb 100644
---- a/tools/lib/traceevent/Makefile
-+++ b/tools/lib/traceevent/Makefile
-@@ -62,15 +62,15 @@ set_plugin_dir := 1
+diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
+index 6e58ee1fe7c8..cee469803a34 100644
+--- a/tools/lib/traceevent/event-parse-local.h
++++ b/tools/lib/traceevent/event-parse-local.h
+@@ -81,8 +81,6 @@ struct tep_handle {
  
- # Set plugin_dir to preffered global plugin location
- # If we install under $HOME directory we go under
--# $(HOME)/.traceevent/plugins
-+# $(HOME)/.local/lib/traceevent/plugins
- #
- # We dont set PLUGIN_DIR in case we install under $HOME
- # directory, because by default the code looks under:
--# $(HOME)/.traceevent/plugins by default.
-+# $(HOME)/.local/lib/traceevent/plugins by default.
- #
- ifeq ($(plugin_dir),)
- ifeq ($(prefix),$(HOME))
--override plugin_dir = $(HOME)/.traceevent/plugins
-+override plugin_dir = $(HOME)/.local/lib/traceevent/plugins
- set_plugin_dir := 0
- else
- override plugin_dir = $(libdir)/traceevent/plugins
-diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index 8ca28de9337a..e1f7ddd5a6cf 100644
---- a/tools/lib/traceevent/event-plugin.c
-+++ b/tools/lib/traceevent/event-plugin.c
-@@ -18,7 +18,7 @@
- #include "event-utils.h"
- #include "trace-seq.h"
+ 	/* cache */
+ 	struct tep_event *last_event;
+-
+-	char *trace_clock;
+ };
  
--#define LOCAL_PLUGIN_DIR ".traceevent/plugins"
-+#define LOCAL_PLUGIN_DIR ".local/lib/traceevent/plugins/"
+ void tep_free_event(struct tep_event *event);
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index 0f2bc23efdca..93a21bdd0eaf 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -351,16 +351,6 @@ int tep_override_comm(struct tep_handle *tep, const char *comm, int pid)
+ 	return _tep_register_comm(tep, comm, pid, true);
+ }
  
- static struct registered_plugin_options {
- 	struct registered_plugin_options	*next;
+-int tep_register_trace_clock(struct tep_handle *tep, const char *trace_clock)
+-{
+-	tep->trace_clock = strdup(trace_clock);
+-	if (!tep->trace_clock) {
+-		errno = ENOMEM;
+-		return -1;
+-	}
+-	return 0;
+-}
+-
+ struct func_map {
+ 	unsigned long long		addr;
+ 	char				*func;
+@@ -7015,7 +7005,6 @@ void tep_free(struct tep_handle *tep)
+ 		free_handler(handle);
+ 	}
+ 
+-	free(tep->trace_clock);
+ 	free(tep->events);
+ 	free(tep->sort_events);
+ 	free(tep->func_resolver);
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
+index cf7f302eb44a..d438ee44289f 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -435,7 +435,6 @@ int tep_set_function_resolver(struct tep_handle *tep,
+ void tep_reset_function_resolver(struct tep_handle *tep);
+ int tep_register_comm(struct tep_handle *tep, const char *comm, int pid);
+ int tep_override_comm(struct tep_handle *tep, const char *comm, int pid);
+-int tep_register_trace_clock(struct tep_handle *tep, const char *trace_clock);
+ int tep_register_function(struct tep_handle *tep, char *name,
+ 			  unsigned long long addr, char *mod);
+ int tep_register_print_string(struct tep_handle *tep, const char *fmt,
 -- 
 2.20.1
 
