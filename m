@@ -6,38 +6,34 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EE6CC31E40
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Aug 2019 12:50:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA70C433FF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Aug 2019 13:27:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E0A2B20C01
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Aug 2019 12:50:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 08A3F20C01
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Aug 2019 13:27:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729898AbfHFMuf (ORCPT
+        id S1730177AbfHFN1G (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 6 Aug 2019 08:50:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55490 "EHLO mail.kernel.org"
+        Tue, 6 Aug 2019 09:27:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726036AbfHFMuf (ORCPT
+        id S1726036AbfHFN1E (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Aug 2019 08:50:35 -0400
+        Tue, 6 Aug 2019 09:27:04 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A8F220B1F;
-        Tue,  6 Aug 2019 12:50:33 +0000 (UTC)
-Date:   Tue, 6 Aug 2019 08:50:32 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 2888A20C01;
+        Tue,  6 Aug 2019 13:27:04 +0000 (UTC)
+Date:   Tue, 6 Aug 2019 09:27:02 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH 1/2] parse-events: deref pointer for proper sizeof()
-Message-ID: <20190806085032.59fabc25@gandalf.local.home>
-In-Reply-To: <20190806060730.GB16977@jagdpanzerIV>
-References: <20190805102646.31142-1-sergey.senozhatsky@gmail.com>
-        <20190805232103.04c6ad28@oasis.local.home>
-        <20190806051418.GB851@jagdpanzerIV>
-        <20190806054115.GA16977@jagdpanzerIV>
-        <20190806060730.GB16977@jagdpanzerIV>
+Subject: Re: [PATCH 0/2] [RFC] several build fixes
+Message-ID: <20190806092702.31e62a83@gandalf.local.home>
+In-Reply-To: <20190806055950.23842-1-sergey.senozhatsky@gmail.com>
+References: <20190806055950.23842-1-sergey.senozhatsky@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -47,24 +43,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 6 Aug 2019 15:07:30 +0900
+On Tue,  6 Aug 2019 14:59:48 +0900
 Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com> wrote:
 
-> On (08/06/19 14:41), Sergey Senozhatsky wrote:
-> > 
-> > This patch seems to do the trick for me.
-> >   
+> Hi,
 > 
-> D'oh...
+> 	RFC
 > 
-> Steven, please scratch all these patches which I have sent.
-> Something terribly wrong happened on my box and git didn't pull
-> the current master properly yesterday. Somehow. No sure I understand
-> how, tho. I looked at very outdated source code tree.
+> These patches fix v1.1.1 build on my system.
 > 
-> Sorry for the noise!!
 
-heh, no problem.
+Hi Sergey,
+
+v1.1.1 is 8 years old and no longer supported.
+
+Care to use the latest code? Otherwise, you'll need to simply maintain
+these changes locally.
+
+Thanks!
 
 -- Steve
+
+
+> Sergey Senozhatsky (2):
+>   parse-event: rename filter_arg_boolean arg
+>   makefile: fix python SyntaxError
+> 
+>  Makefile       |  2 +-
+>  parse-events.h |  2 +-
+>  parse-filter.c | 32 ++++++++++++++++----------------
+>  3 files changed, 18 insertions(+), 18 deletions(-)
+> 
 
