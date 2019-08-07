@@ -1,105 +1,118 @@
-Return-Path: <SRS0=jb6J=WC=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=VASF=WD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36B52C31E40
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Aug 2019 13:35:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C895C433FF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Aug 2019 12:14:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 04E0020C01
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Aug 2019 13:35:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3B56C21BF2
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Aug 2019 12:14:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aEu07eWq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Go/bTbFL"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731664AbfHFNf2 (ORCPT
+        id S1727096AbfHGMOw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 6 Aug 2019 09:35:28 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:38894 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726877AbfHFNf2 (ORCPT
+        Wed, 7 Aug 2019 08:14:52 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:51865 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726773AbfHGMOv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Aug 2019 09:35:28 -0400
-Received: by mail-pf1-f193.google.com with SMTP id y15so41541909pfn.5
-        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Aug 2019 06:35:28 -0700 (PDT)
+        Wed, 7 Aug 2019 08:14:51 -0400
+Received: by mail-wm1-f68.google.com with SMTP id 207so81605249wma.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 07 Aug 2019 05:14:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BRGCFZSd4uFPOqgLDxjKgwFsjRB+AaLq7Z10tehHOBE=;
-        b=aEu07eWqyKB1Ww8C6t8r57TRBx699nlTNv9aHVD95JNLEFvfizxiJSEedqvW7FG0I1
-         dUtcpmVnZQrOOTOLkUNjw8oBFuZK49CGlrMymmT7jd/TWrZDSGzwSxZIBxeQc86HHtPp
-         749fX9swxfT6b79AaYKGbUNtBGhVIqHTfzhjaqfgDIY4VlxQrfQKHq8tJeJXm52abeOg
-         AUqgS3LZSFcETRIe/2Dc2GnARKHvk1Mua5ggJ+HnriGhgvZliHRt1VvSAUs6FW6fbkUf
-         KxRlWLWgsHogaogogjpO5xWBbend0TSNUgEJH2/xs1IgtMUD+gopKkLWfvGNsJoyW/gI
-         7Izw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nlXoPubFdxpMU8uPmJoRRDkP4eFWiFs3MGsD9dAop7U=;
+        b=Go/bTbFLpETQE+UZ3uiubIX/dyfNLvOgCRIsKshHxbgtyYZQ2oYTl3aoYktRbQB6+s
+         sSouu2/0rw0VvWv2Lrfj5tcx/fsKZVF49AmC+xE96yoAPwwqg8eHngzgSKQqekBfFH+l
+         3SS3wHhGq7QS+4xbjjACLK4Tl5HvU82AF73SInnjtkqHGZqGKSHs6z4DrxO3Hy7fgp+R
+         2P96G6LAfJtrbYanlVNyrzbgYUKP57fjCOxBTpnlhqSJPt0SSM0so3Zu/6ANpyHQptn+
+         xKCweN8qvvcL98KO9H0j+fT0eW9qrnskpxKOj6os+pUXVoBiYh0tth3Zt4g0X5+f8g/y
+         2FgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BRGCFZSd4uFPOqgLDxjKgwFsjRB+AaLq7Z10tehHOBE=;
-        b=T6pJ1/cR5T6JMEqb+VCIk4F9Hvf0pbdHRRm2GghUvLMSSgwo3WNpRLSNKdmNhy/YN1
-         lU7yWLzX3svntVefcPMO2+A1/ewbHQrO3K0sitKgBU4VXGP0zIUSTGUVFtgZaJjy0hIC
-         5THSednqXpqVhiw73o3IHq4JDwlEUPf2orB9TrRBq2Y6VLOUlfQ/nDsjxZUNkq/dYOgL
-         N32vFdI6OZEWt+W/DnCQ8nBaF45Z3cTkarPo4oCKYoEFBxmRHFW9wyVVjXDcpvf78IGp
-         lepf8vQazoQGiBS+MRQpNWkRfwyXhzTGl2It9HHokplAfxN36Of4hGzXiVoeLPDfunep
-         XIWA==
-X-Gm-Message-State: APjAAAWV5CzJg2QF81FuCafij7jCd+Fln3YbABh0YmfqfXNrEW5Zz+sl
-        TXzvg9Iq5sLMcXY0pp/cdfI=
-X-Google-Smtp-Source: APXvYqz8w+CDraU5b7B1+B7agoFFtg5Lzd0NB9zngksY9a6e9Fla4GTBroqYzxBXzWcB4Pl3LvzKHw==
-X-Received: by 2002:aa7:957c:: with SMTP id x28mr3753928pfq.42.1565098527590;
-        Tue, 06 Aug 2019 06:35:27 -0700 (PDT)
-Received: from localhost ([121.137.63.184])
-        by smtp.gmail.com with ESMTPSA id x22sm94341388pff.5.2019.08.06.06.35.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nlXoPubFdxpMU8uPmJoRRDkP4eFWiFs3MGsD9dAop7U=;
+        b=qV8X5KpA/sx7Dss+nrhKLLY+rjSZv5RrtqC97WymCHmIY2dR3EzWagwgRrpLA4UKzE
+         AvfoEEnitrHs1uokArjlR90DTFVeGAL9pWQdXlJR3TTUP3s6apCsqG49yrAM94c6CJMW
+         ojrYajKA5QsKl8zvuqWe115vGwJwXyimToxcJeXhl4/kwEmF7S+BAXHl3GpuEAxrIFUf
+         njDQ2wluozU4QFWCrKT/EV58DfXxg4nSRzX6lgVBuqUxpMm/n2kCYqhqS5vjmyr0Nh9K
+         UD164EXLvxmemjuOGJBZpEUuhGKDpfkuk7Ne/uNHFnow+9Kz8kRT1Lcl9IdnkImgIj0q
+         E5BQ==
+X-Gm-Message-State: APjAAAWkLs188wqW/NXq9iEFN8kbtWLxncs4YU9XMYJNIFYWlNyn5TbD
+        KN16n4ZehXRP6mqXrKRblheOn4mBUpo=
+X-Google-Smtp-Source: APXvYqzWWSX7h6aUzwtS0iYISeppyh+zzGjerDwfTQwz6yJ+mnHSJhMseBGv5+PlmS/wLuM+4sOmVw==
+X-Received: by 2002:a1c:6406:: with SMTP id y6mr4099557wmb.146.1565180089505;
+        Wed, 07 Aug 2019 05:14:49 -0700 (PDT)
+Received: from oberon.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id q124sm5855068wma.33.2019.08.07.05.14.46
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 06 Aug 2019 06:35:26 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Tue, 6 Aug 2019 22:35:23 +0900
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-trace-devel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH 0/2] [RFC] several build fixes
-Message-ID: <20190806133523.GA16932@tigerII.localdomain>
-References: <20190806055950.23842-1-sergey.senozhatsky@gmail.com>
- <20190806092702.31e62a83@gandalf.local.home>
+        Wed, 07 Aug 2019 05:14:47 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] tools lib traceevent: Fix buffer overflow in arg_eval
+Date:   Wed,  7 Aug 2019 15:14:46 +0300
+Message-Id: <20190807121446.1833-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190806092702.31e62a83@gandalf.local.home>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On (08/06/19 09:27), Steven Rostedt wrote:
-> > Hi,
-> > 
-> > 	RFC
-> > 
-> > These patches fix v1.1.1 build on my system.
-> > 
-> 
-> Hi Sergey,
-> 
-> v1.1.1 is 8 years old and no longer supported.
-> 
-> Care to use the latest code? Otherwise, you'll need to simply maintain
-> these changes locally.
+From: Tony Jones <tonyj@suse.de>
 
-Hi Steven,
+Fix buffer overflow observed when running perf test.
 
-Nah, was just some weird fault on my side. A very weird one. Never mind
-those patches; I did git pull but it took 24h to realize that git pull
-didn't work out and I was still looking at commits from 2011. I was like
-"hold on a second, no way Steven would ever let this happen" and then I
-checked the repository state... Which I cloned in 2011, yes.
+The overflow is when trying to evaluate "1ULL << (64 - 1)" which is
+resulting in -9223372036854775808 which overflows the 20 character
+buffer.
 
-My apologies!
+If is possible this bug has been reported before but I still don't see
+any fix checked in:
 
-	-ss
+See: https://www.spinics.net/lists/linux-perf-users/msg07714.html
+
+Reported-by: Michael Sartain <mikesart@fastmail.com>
+Reported-by: Mathias Krause <minipli@googlemail.com>
+Signed-off-by: Tony Jones <tonyj@suse.de>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>
+Fixes: f7d82350e597 ("tools/events: Add files to create libtraceevent.a")
+Link: http://lkml.kernel.org/r/20190228015532.8941-1-tonyj@suse.de
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+[
+  Backport from kernel into the trace-cmd repo.
+]
+
+ lib/traceevent/event-parse.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+index 7cb2ae4..b36b536 100644
+--- a/lib/traceevent/event-parse.c
++++ b/lib/traceevent/event-parse.c
+@@ -2456,7 +2456,7 @@ static int arg_num_eval(struct tep_print_arg *arg, long long *val)
+ static char *arg_eval (struct tep_print_arg *arg)
+ {
+ 	long long val;
+-	static char buf[20];
++	static char buf[24];
+ 
+ 	switch (arg->type) {
+ 	case TEP_PRINT_ATOM:
+-- 
+2.21.0
+
