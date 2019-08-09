@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92A20C31E40
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3B9EC31E40
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 69BFC21783
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8A93E20B7C
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eNbDFdiX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XgPctS15"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbfHIIGr (ORCPT
+        id S2405690AbfHIIGt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Aug 2019 04:06:47 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:38770 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405567AbfHIIGr (ORCPT
+        Fri, 9 Aug 2019 04:06:49 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:38914 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405567AbfHIIGt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Aug 2019 04:06:47 -0400
-Received: by mail-wr1-f42.google.com with SMTP id g17so97367338wrr.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Aug 2019 01:06:45 -0700 (PDT)
+        Fri, 9 Aug 2019 04:06:49 -0400
+Received: by mail-wm1-f66.google.com with SMTP id u25so4756711wmc.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Aug 2019 01:06:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GzZW68YpzSYG7VmGJEFcAcop1rM6UBUGQUSzvNjpV+Y=;
-        b=eNbDFdiXQdayBeVcTNyBgVF0NDzhoqQP03nqMmXScf/C3LTX1J55zXnLCeHnYm3DGv
-         eUdlA0ueZB47BYi05n9y5SmkLEIrEW0tGksMtC4oeujpo9LuijpNCXUVLBygViMBojPa
-         MItfXDN6OEEk5SwzrZ9GLJ7BQXV7cfAHnNqdPVehU65a/Mzg98EmUIRYdPbEWeT8wsSd
-         /EvQ0BdA6Wx/Gi80UGBOn9COVhpcBd8e3lXj86Ta0FSRQvsdXbUFMgtAMe71XBfJwzuC
-         E5WfpAX2wjnqd/Fts1erLQXoCpjCowIM8DPUGM0O6A61H1k2RhhNM/6uYZwgYIqpdzjH
-         xU+Q==
+        bh=VqMOUTuD2s5Dbp59FMHyRSWw9hchSLCbb+LBTKkCOv0=;
+        b=XgPctS15VmVBrbuFUKDCuAqYuD+EsUdOptQ4SSfBKPVIf33XaqS89XChWgoNPpXE/i
+         Pw2TYdtUOJHiUe9lQjapIKAlVAFRUS+Y8q/IZXSVd9G5tXaGuXG4A3uLlWcFK/bAIMnk
+         zMs53olaf9LoQn0yElTC1/s8LgZRuDSiGAsIGvAyacj0lOPAB8vzRw3rgJut1LjRMcT0
+         enaryLh1fdZJzoJk7ShUiTdUajvNDci74S4+uYBEn6Iuo/qjB2EaHe9+Minksylzldql
+         xqRXlmB7cLC9216Uaq3AUehJujZ9+0RWHPT0pnNSOTR8hFHs0Cguxmg0vMDwXUdq/y0G
+         IYnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GzZW68YpzSYG7VmGJEFcAcop1rM6UBUGQUSzvNjpV+Y=;
-        b=uD0xNNslnOXmhPlkj2NkpaIaQZS7kNzxZmUbrhYI9Exc+TW+ZdNlNxQ4wG5OS+ZoUK
-         OPcoFYzixf+Zk3GuuTfpdbxo8ITOorW0Ip4lZVa2OAnNzP+PLFtHJF9qGuGiB7iJa5WL
-         lTd4S/v8TvZPVXDGBEs7P9ERXfEtbKl5V5kZkhSdzoizSzwD78YX+zyhXo5SB2Iyfq1O
-         k9UO8Bcwxb2xY/mnvzmyBZFJvf9c4HUMwa5NfQ8Go+KB9IC8MuD3589pMpwV1RAUtxZW
-         ZnI+qzySXIUCu3SlMBZEDRQieqw/Z5+noD7xVRUE0B4k0FHOzZtbXPEuc79a2+D3Vax3
-         zomA==
-X-Gm-Message-State: APjAAAURTb3Hq/3UJiSmaRrpcKwYjlaOSUAwZeEuYJpqOyNzwgxNA4QB
-        F1tMBgsaP/bqSegtrF2EDhY6C6nbwYA=
-X-Google-Smtp-Source: APXvYqxcyAJx8zxYy//x7TfX/L2EbmUJc6eaurIKrbv9/oc0Nkq0yWDTP/r5UCQpxtIFeA+3xi6YHA==
-X-Received: by 2002:adf:f883:: with SMTP id u3mr22113567wrp.0.1565338004908;
-        Fri, 09 Aug 2019 01:06:44 -0700 (PDT)
+        bh=VqMOUTuD2s5Dbp59FMHyRSWw9hchSLCbb+LBTKkCOv0=;
+        b=LDE5BWeC1RO1gLRLvxBF069/3LokuxG+6luJR6Nh8U6FNZOio/np5In+5ZxXY3PhSj
+         0ciK5TKirg7lNiNsqZ9VDK64cuv8LmUbsBw5JLLKnprkkRNobJw4rLrbXCHxIRiVuVpd
+         eaH/dZUHuCkU0IyM20bI/aUuUeKDpTgFmrG1cpYVSA5+ylQR/slclV5D1+9IOsrRGLDS
+         /FdEyDpDDn2OuaXA0CV/vQsu01Tt3ppLnShKSytfmDfDCV+++WA++wNbEkUCxSzgGFPD
+         wgBVWTPmXMZ2NmXLdqz/YS4IlMTILuynolysiV69dyVXgGHclH8/PDC/M7l7hTaYh9zi
+         Fkpg==
+X-Gm-Message-State: APjAAAWbXYYFBYzhV8y9ReyeD3O4ScIh8smNH0kHpqoWaKHOMRqVz/sJ
+        JYGMmXL6AqlwtdR4yFXuhB0=
+X-Google-Smtp-Source: APXvYqzGf5d21BPmT9EXM2MCivDs0G0cfbobE7RQjvcRa0EQg8THhO74BZRt6ZcT6DfLOSZmr3qg1Q==
+X-Received: by 2002:a7b:c149:: with SMTP id z9mr9570761wmi.0.1565338007162;
+        Fri, 09 Aug 2019 01:06:47 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id q124sm6964302wma.33.2019.08.09.01.06.44
+        by smtp.gmail.com with ESMTPSA id q124sm6964302wma.33.2019.08.09.01.06.46
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 09 Aug 2019 01:06:44 -0700 (PDT)
+        Fri, 09 Aug 2019 01:06:46 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, mike.auty@gmail.com,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/3] kernel-shark: Don't use pkexec when running as Root
-Date:   Fri,  9 Aug 2019 11:06:22 +0300
-Message-Id: <20190809080623.7548-3-y.karadz@gmail.com>
+Subject: [PATCH 3/3] kernel-shark: Use standart error message in KsMainWindow::_record()
+Date:   Fri,  9 Aug 2019 11:06:23 +0300
+Message-Id: <20190809080623.7548-4-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190809080623.7548-1-y.karadz@gmail.com>
 References: <20190809080623.7548-1-y.karadz@gmail.com>
@@ -74,93 +74,37 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-If KernelShark GUI has been started as Root we do not need to use
-"pkexec" when starting the Record dialog. Note that the actual place
-where "pkexec" gets used is in the script "kshark-su-record".
+The error message is printed using the method KsMainWindow::_error().
+The message itself remains unchanged. If we want to change the message,
+this can be done in another patch.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 47 +++++++++++++++++++++----------
- 1 file changed, 32 insertions(+), 15 deletions(-)
+ kernel-shark/src/KsMainWindow.cpp | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 2560bf8..e9c6d54 100644
+index e9c6d54..b462ded 100644
 --- a/kernel-shark/src/KsMainWindow.cpp
 +++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -883,23 +883,26 @@ void KsMainWindow::_pluginAdd()
+@@ -890,7 +890,6 @@ void KsMainWindow::_record()
+ #endif
  
- void KsMainWindow::_record()
- {
--#ifndef DO_AS_ROOT
-+	bool canDoAsRoot(false);
+ 	if (geteuid() && !canDoAsRoot) {
+-		QErrorMessage *em = new QErrorMessage(this);
+ 		QString message;
  
--	QErrorMessage *em = new QErrorMessage(this);
--	QString message;
--
--	message = "Record is currently not supported.";
--	message += " Install \"pkexec\" and then do:<br>";
--	message += " cd build <br> sudo ./cmake_uninstall.sh <br>";
--	message += " ./cmake_clean.sh <br> cmake .. <br> make <br>";
--	message += " sudo make install";
-+#ifdef DO_AS_ROOT
-+	canDoAsRoot = true;
-+#endif
+ 		message = "Record is currently not supported.";
+@@ -899,8 +898,7 @@ void KsMainWindow::_record()
+ 		message += " ./cmake_clean.sh <br> cmake .. <br> make <br>";
+ 		message += " sudo make install";
  
--	em->showMessage(message);
--	qCritical() << "ERROR: " << message;
-+	if (geteuid() && !canDoAsRoot) {
-+		QErrorMessage *em = new QErrorMessage(this);
-+		QString message;
+-		em->showMessage(message);
+-		qCritical() << "ERROR: " << message;
++		_error(message, "recordCantStart", false, false);
+ 		return;
+ 	}
  
--	return;
-+		message = "Record is currently not supported.";
-+		message += " Install \"pkexec\" and then do:<br>";
-+		message += " cd build <br> sudo ./cmake_uninstall.sh <br>";
-+		message += " ./cmake_clean.sh <br> cmake .. <br> make <br>";
-+		message += " sudo make install";
- 
--#endif
-+		em->showMessage(message);
-+		qCritical() << "ERROR: " << message;
-+		return;
-+	}
- 
- 	_capture.start();
- }
-@@ -1134,9 +1137,24 @@ void KsMainWindow::loadSession(const QString &fileName)
- 
- void KsMainWindow::_initCapture()
- {
-+	bool canDoAsRoot(false);
-+
- #ifdef DO_AS_ROOT
-+	canDoAsRoot = true;
-+#endif
-+
-+	if (geteuid() && !canDoAsRoot)
-+		return;
- 
--	_capture.setProgram("kshark-su-record");
-+	if (geteuid()) {
-+		_capture.setProgram("kshark-su-record");
-+	} else {
-+		QStringList argv;
-+
-+		_capture.setProgram("kshark-record");
-+		argv << QString("-o ") + QDir::homePath();
-+		_capture.setArguments(argv);
-+	}
- 
- 	connect(&_capture,	&QProcess::started,
- 		this,		&KsMainWindow::_captureStarted);
-@@ -1155,7 +1173,6 @@ void KsMainWindow::_initCapture()
- 	connect(&_captureLocalServer,	&QLocalServer::newConnection,
- 		this,			&KsMainWindow::_readSocket);
- 
--#endif
- }
- 
- void KsMainWindow::_captureStarted()
 -- 
 2.20.1
 
