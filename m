@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F52AC433FF
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92A20C31E40
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 632E120B7C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69BFC21783
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lpj0+HKv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eNbDFdiX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405612AbfHIIGp (ORCPT
+        id S1727063AbfHIIGr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Aug 2019 04:06:45 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53870 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405567AbfHIIGp (ORCPT
+        Fri, 9 Aug 2019 04:06:47 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:38770 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405567AbfHIIGr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Aug 2019 04:06:45 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 10so4761706wmp.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Aug 2019 01:06:43 -0700 (PDT)
+        Fri, 9 Aug 2019 04:06:47 -0400
+Received: by mail-wr1-f42.google.com with SMTP id g17so97367338wrr.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Aug 2019 01:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OcRJCWNzuK8DiQkEdzF/yO/qc30Q7ZChtZ7mfMlw4Zw=;
-        b=lpj0+HKvT5JnYHKAkLXs1jxeoYXm9mLNyrMk0wINffBuRw2GqGPxsdqWIJx7TlOpu6
-         ELMpEeJBRYQcugF3tntbbD06vvzktR03jn8hU/iQ96HdvpgC4G6TPJETZ6sfKk1dlf69
-         k5/g0hriCXqqjXR+WFGkWTZYsOcYYV/GgvVyMbpFp2SAM/cw5/JWVc2ox5SahVhYPppc
-         5LA8b07wx3iIYFOmwah5kc7PTZqg9GXMWIPmTxWkGFljD9GO+ltDmeXNEmCpif2XOxU0
-         S/BX53C5btt0+G2b1fb/CHL6N/dFgd9Q1ktBP2eL1FNV2hwPY4tHUiGA9qR7MjT6J1/G
-         M8kA==
+        bh=GzZW68YpzSYG7VmGJEFcAcop1rM6UBUGQUSzvNjpV+Y=;
+        b=eNbDFdiXQdayBeVcTNyBgVF0NDzhoqQP03nqMmXScf/C3LTX1J55zXnLCeHnYm3DGv
+         eUdlA0ueZB47BYi05n9y5SmkLEIrEW0tGksMtC4oeujpo9LuijpNCXUVLBygViMBojPa
+         MItfXDN6OEEk5SwzrZ9GLJ7BQXV7cfAHnNqdPVehU65a/Mzg98EmUIRYdPbEWeT8wsSd
+         /EvQ0BdA6Wx/Gi80UGBOn9COVhpcBd8e3lXj86Ta0FSRQvsdXbUFMgtAMe71XBfJwzuC
+         E5WfpAX2wjnqd/Fts1erLQXoCpjCowIM8DPUGM0O6A61H1k2RhhNM/6uYZwgYIqpdzjH
+         xU+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OcRJCWNzuK8DiQkEdzF/yO/qc30Q7ZChtZ7mfMlw4Zw=;
-        b=ChUdZ76CLE5hysoNJPIgNmlvDrseEeN035babBU+kzedDtWA3HAJYHYUU0Z3sA4ECz
-         6jn4d5qYCdqbbq5fgqvWAwuhy1UZcSAcNQ7w8Z+TO2D0raC0qcM3p66Pw2XJ0QnHEKlK
-         0OvCLunD4bXvfuLbX8uH821iD0H4+gexd2JtPhHaQgrO24J2f2j9/416Lm73ZN01rowF
-         rSgN0CbnL7wu1qOG3xanQby7xPMEdrKowKaPaQu+iwWkV2SHpFmP31ic3jRvGAzrKkRc
-         Yfst7hu3+jcE2PZIpeZ9fhrx7D/srwNF7cR7NTGnhGUWSlVfxon2Osp/YPxB+4XmzHoW
-         d+jg==
-X-Gm-Message-State: APjAAAWQzImi5bXd0wJYCMH7gvq11WIJF2fUb89wiHtqkxMNHvYZ1i4i
-        mlH1+L89f44MNaCyYXRMTe0=
-X-Google-Smtp-Source: APXvYqwKtwZeMbdaNsi43qZXLsW4/w4263xZJVF7VRMU5HMLDRccqdb3DYG6yNaDw2+vGS4qff0MTg==
-X-Received: by 2002:a05:600c:2549:: with SMTP id e9mr9343959wma.46.1565338003045;
-        Fri, 09 Aug 2019 01:06:43 -0700 (PDT)
+        bh=GzZW68YpzSYG7VmGJEFcAcop1rM6UBUGQUSzvNjpV+Y=;
+        b=uD0xNNslnOXmhPlkj2NkpaIaQZS7kNzxZmUbrhYI9Exc+TW+ZdNlNxQ4wG5OS+ZoUK
+         OPcoFYzixf+Zk3GuuTfpdbxo8ITOorW0Ip4lZVa2OAnNzP+PLFtHJF9qGuGiB7iJa5WL
+         lTd4S/v8TvZPVXDGBEs7P9ERXfEtbKl5V5kZkhSdzoizSzwD78YX+zyhXo5SB2Iyfq1O
+         k9UO8Bcwxb2xY/mnvzmyBZFJvf9c4HUMwa5NfQ8Go+KB9IC8MuD3589pMpwV1RAUtxZW
+         ZnI+qzySXIUCu3SlMBZEDRQieqw/Z5+noD7xVRUE0B4k0FHOzZtbXPEuc79a2+D3Vax3
+         zomA==
+X-Gm-Message-State: APjAAAURTb3Hq/3UJiSmaRrpcKwYjlaOSUAwZeEuYJpqOyNzwgxNA4QB
+        F1tMBgsaP/bqSegtrF2EDhY6C6nbwYA=
+X-Google-Smtp-Source: APXvYqxcyAJx8zxYy//x7TfX/L2EbmUJc6eaurIKrbv9/oc0Nkq0yWDTP/r5UCQpxtIFeA+3xi6YHA==
+X-Received: by 2002:adf:f883:: with SMTP id u3mr22113567wrp.0.1565338004908;
+        Fri, 09 Aug 2019 01:06:44 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id q124sm6964302wma.33.2019.08.09.01.06.42
+        by smtp.gmail.com with ESMTPSA id q124sm6964302wma.33.2019.08.09.01.06.44
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 09 Aug 2019 01:06:42 -0700 (PDT)
+        Fri, 09 Aug 2019 01:06:44 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, mike.auty@gmail.com,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/3] kernel-shark: Show warning message when running as Root
-Date:   Fri,  9 Aug 2019 11:06:21 +0300
-Message-Id: <20190809080623.7548-2-y.karadz@gmail.com>
+Subject: [PATCH 2/3] kernel-shark: Don't use pkexec when running as Root
+Date:   Fri,  9 Aug 2019 11:06:22 +0300
+Message-Id: <20190809080623.7548-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190809080623.7548-1-y.karadz@gmail.com>
 References: <20190809080623.7548-1-y.karadz@gmail.com>
@@ -74,73 +74,93 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Running the KernelShark GUI with Root privileges is not recommended due
-to security reasons. The user will be allowed to continue on its own risk.
+If KernelShark GUI has been started as Root we do not need to use
+"pkexec" when starting the Record dialog. Note that the actual place
+where "pkexec" gets used is in the script "kshark-su-record".
 
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204475
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 28 ++++++++++++++++++++++++++++
- kernel-shark/src/KsMainWindow.hpp |  2 ++
- 2 files changed, 30 insertions(+)
+ kernel-shark/src/KsMainWindow.cpp | 47 +++++++++++++++++++++----------
+ 1 file changed, 32 insertions(+), 15 deletions(-)
 
 diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 6439265..2560bf8 100644
+index 2560bf8..e9c6d54 100644
 --- a/kernel-shark/src/KsMainWindow.cpp
 +++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -76,6 +76,9 @@ KsMainWindow::KsMainWindow(QWidget *parent)
- 	_createMenus();
- 	_initCapture();
+@@ -883,23 +883,26 @@ void KsMainWindow::_pluginAdd()
  
-+	if (geteuid() == 0)
-+		_rootWarning();
-+
- 	_splitter.addWidget(&_graph);
- 	_splitter.addWidget(&_view);
- 	setCentralWidget(&_splitter);
-@@ -1271,3 +1274,28 @@ void KsMainWindow::_deselectB()
- 	_mState.updateLabels();
- 	_graph.glPtr()->model()->update();
- }
-+
-+void KsMainWindow::_rootWarning()
-+{
-+	QString cbFlag("noRootWorn");
-+
-+	if (_settings.value(cbFlag).toBool())
+ void KsMainWindow::_record()
+ {
+-#ifndef DO_AS_ROOT
++	bool canDoAsRoot(false);
+ 
+-	QErrorMessage *em = new QErrorMessage(this);
+-	QString message;
+-
+-	message = "Record is currently not supported.";
+-	message += " Install \"pkexec\" and then do:<br>";
+-	message += " cd build <br> sudo ./cmake_uninstall.sh <br>";
+-	message += " ./cmake_clean.sh <br> cmake .. <br> make <br>";
+-	message += " sudo make install";
++#ifdef DO_AS_ROOT
++	canDoAsRoot = true;
++#endif
+ 
+-	em->showMessage(message);
+-	qCritical() << "ERROR: " << message;
++	if (geteuid() && !canDoAsRoot) {
++		QErrorMessage *em = new QErrorMessage(this);
++		QString message;
+ 
+-	return;
++		message = "Record is currently not supported.";
++		message += " Install \"pkexec\" and then do:<br>";
++		message += " cd build <br> sudo ./cmake_uninstall.sh <br>";
++		message += " ./cmake_clean.sh <br> cmake .. <br> make <br>";
++		message += " sudo make install";
+ 
+-#endif
++		em->showMessage(message);
++		qCritical() << "ERROR: " << message;
 +		return;
-+
-+	QMessageBox warn;
-+	warn.setText("KernelShark will have Root privileges.");
-+	warn.setInformativeText("Continue on your one risk.");
-+	warn.setIcon(QMessageBox::Warning);
-+	warn.setStandardButtons(QMessageBox::Close);
-+
-+	QCheckBox cb("Don't show this message again.");
-+
-+	auto lamCbChec = [&] (int state) {
-+		if (state)
-+			_settings.setValue(cbFlag, true);
-+	};
-+
-+	connect(&cb, &QCheckBox::stateChanged, lamCbChec);
-+	warn.setCheckBox(&cb);
-+	warn.exec();
-+}
-diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-index 62e66a0..4a7b8ab 100644
---- a/kernel-shark/src/KsMainWindow.hpp
-+++ b/kernel-shark/src/KsMainWindow.hpp
-@@ -238,6 +238,8 @@ private:
++	}
  
- 	void _deselectB();
+ 	_capture.start();
+ }
+@@ -1134,9 +1137,24 @@ void KsMainWindow::loadSession(const QString &fileName)
  
-+	void _rootWarning();
+ void KsMainWindow::_initCapture()
+ {
++	bool canDoAsRoot(false);
 +
- 	void _updateFilterMenu();
+ #ifdef DO_AS_ROOT
++	canDoAsRoot = true;
++#endif
++
++	if (geteuid() && !canDoAsRoot)
++		return;
  
- 	void _filterSyncCBoxUpdate(kshark_context *kshark_ctx);
+-	_capture.setProgram("kshark-su-record");
++	if (geteuid()) {
++		_capture.setProgram("kshark-su-record");
++	} else {
++		QStringList argv;
++
++		_capture.setProgram("kshark-record");
++		argv << QString("-o ") + QDir::homePath();
++		_capture.setArguments(argv);
++	}
+ 
+ 	connect(&_capture,	&QProcess::started,
+ 		this,		&KsMainWindow::_captureStarted);
+@@ -1155,7 +1173,6 @@ void KsMainWindow::_initCapture()
+ 	connect(&_captureLocalServer,	&QLocalServer::newConnection,
+ 		this,			&KsMainWindow::_readSocket);
+ 
+-#endif
+ }
+ 
+ void KsMainWindow::_captureStarted()
 -- 
 2.20.1
 
