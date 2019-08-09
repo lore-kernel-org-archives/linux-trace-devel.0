@@ -2,109 +2,174 @@ Return-Path: <SRS0=Xrzw=WF=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3B9EC31E40
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED0D9C31E40
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 12:13:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8A93E20B7C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 08:06:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B9FCF20B7C
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Aug 2019 12:13:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XgPctS15"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GleFKiI8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405690AbfHIIGt (ORCPT
+        id S2406764AbfHIMN7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Aug 2019 04:06:49 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:38914 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405567AbfHIIGt (ORCPT
+        Fri, 9 Aug 2019 08:13:59 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:53489 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726232AbfHIMN7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Aug 2019 04:06:49 -0400
-Received: by mail-wm1-f66.google.com with SMTP id u25so4756711wmc.4
-        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Aug 2019 01:06:47 -0700 (PDT)
+        Fri, 9 Aug 2019 08:13:59 -0400
+Received: by mail-wm1-f67.google.com with SMTP id 10so5489133wmp.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Aug 2019 05:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VqMOUTuD2s5Dbp59FMHyRSWw9hchSLCbb+LBTKkCOv0=;
-        b=XgPctS15VmVBrbuFUKDCuAqYuD+EsUdOptQ4SSfBKPVIf33XaqS89XChWgoNPpXE/i
-         Pw2TYdtUOJHiUe9lQjapIKAlVAFRUS+Y8q/IZXSVd9G5tXaGuXG4A3uLlWcFK/bAIMnk
-         zMs53olaf9LoQn0yElTC1/s8LgZRuDSiGAsIGvAyacj0lOPAB8vzRw3rgJut1LjRMcT0
-         enaryLh1fdZJzoJk7ShUiTdUajvNDci74S4+uYBEn6Iuo/qjB2EaHe9+Minksylzldql
-         xqRXlmB7cLC9216Uaq3AUehJujZ9+0RWHPT0pnNSOTR8hFHs0Cguxmg0vMDwXUdq/y0G
-         IYnA==
+        h=subject:to:references:from:cc:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zEbNkJLy3jLwv3tY3FOMJN3RT/umpAemlOAIpfRnXaw=;
+        b=GleFKiI8ItyMIaUfyh0DcJ5XD82Qg4oP+sSDPu5wBpD/wY4K/vfJu/0FvzFu41Aj+X
+         3LMD5nvfqW6xzQ6d1NP52CEgTYY2r3hHYwifLXrm8LqZSZC0D/ojP77Wp7u5bIM7/3n4
+         BI5J/q+fyGzEiwuLEqe2uXfu5QPMGWvo1nkt3GnbL5cNFib+NqXRHtjMki5uRHXpE6Hq
+         hgCWpy+H8BEOTojeVi/p0mihvhzf8e2f1gy20jeYRtvFuymf7LSBp/Cudo2vG/DfoG1A
+         UQf86yIasqhwWHRHWpIiR0LjHqtZsfqAFYxg777x27boUja5M3Pub2uk5eZhNikMQE0e
+         l5WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VqMOUTuD2s5Dbp59FMHyRSWw9hchSLCbb+LBTKkCOv0=;
-        b=LDE5BWeC1RO1gLRLvxBF069/3LokuxG+6luJR6Nh8U6FNZOio/np5In+5ZxXY3PhSj
-         0ciK5TKirg7lNiNsqZ9VDK64cuv8LmUbsBw5JLLKnprkkRNobJw4rLrbXCHxIRiVuVpd
-         eaH/dZUHuCkU0IyM20bI/aUuUeKDpTgFmrG1cpYVSA5+ylQR/slclV5D1+9IOsrRGLDS
-         /FdEyDpDDn2OuaXA0CV/vQsu01Tt3ppLnShKSytfmDfDCV+++WA++wNbEkUCxSzgGFPD
-         wgBVWTPmXMZ2NmXLdqz/YS4IlMTILuynolysiV69dyVXgGHclH8/PDC/M7l7hTaYh9zi
-         Fkpg==
-X-Gm-Message-State: APjAAAWbXYYFBYzhV8y9ReyeD3O4ScIh8smNH0kHpqoWaKHOMRqVz/sJ
-        JYGMmXL6AqlwtdR4yFXuhB0=
-X-Google-Smtp-Source: APXvYqzGf5d21BPmT9EXM2MCivDs0G0cfbobE7RQjvcRa0EQg8THhO74BZRt6ZcT6DfLOSZmr3qg1Q==
-X-Received: by 2002:a7b:c149:: with SMTP id z9mr9570761wmi.0.1565338007162;
-        Fri, 09 Aug 2019 01:06:47 -0700 (PDT)
-Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id q124sm6964302wma.33.2019.08.09.01.06.46
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 09 Aug 2019 01:06:46 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, mike.auty@gmail.com,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 3/3] kernel-shark: Use standart error message in KsMainWindow::_record()
-Date:   Fri,  9 Aug 2019 11:06:23 +0300
-Message-Id: <20190809080623.7548-4-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190809080623.7548-1-y.karadz@gmail.com>
+        h=x-gm-message-state:subject:to:references:from:cc:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zEbNkJLy3jLwv3tY3FOMJN3RT/umpAemlOAIpfRnXaw=;
+        b=EKs7DX5aX0xp4rLpPVeZ0ylAq4HM81eMbEU8PIk0+X6hGJn0AwWTvFtQrSnGqCVmRE
+         +2XxGm0G0H36RbMjnvoVB86KtfcovAseBVA0sXb8Y3eI82VYNJEd1P9WzhSDhmTgdKgQ
+         ruWjqwiqDTZUpiLMhV/hamO029tEY0bF+ZJ8pdPSrMkTpXTOlpj/qgClzGDX7PYe6Pfr
+         1dg42RqDZe2Ob2nxK9fi5ydQSzhztMrh4TG7YKz77T63qRZEofnZUZZRtrw7AqMRuZSU
+         86/MvTJcqdwxWj5iD4X+SCX2+Wkx8gJzoBFaPVwI0qTB0mZEazDWapZkyuj1Bz/SyYDc
+         52ow==
+X-Gm-Message-State: APjAAAUlrjFFSMDl+9BOnB1FhAW8BPEzKS19ni9/Ta7qVMYYJAd6vgZ9
+        ts/9TEOPjzB1vMkvmwCzqS8=
+X-Google-Smtp-Source: APXvYqwtOufuaGucKVXm3bKGb1af4v32bA4A5OI1Zg3yqvMOTCAnocYYV1ps2MrcCX5t3+tZxDS7pw==
+X-Received: by 2002:a7b:c852:: with SMTP id c18mr3795929wml.44.1565352837216;
+        Fri, 09 Aug 2019 05:13:57 -0700 (PDT)
+Received: from [10.27.112.40] ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id q20sm26595406wrc.79.2019.08.09.05.13.56
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 09 Aug 2019 05:13:56 -0700 (PDT)
+Subject: Re: [PATCH 1/3] kernel-shark: Show warning message when running as
+ Root
+To:     Mike Auty <mike.auty@gmail.com>
 References: <20190809080623.7548-1-y.karadz@gmail.com>
+ <20190809080623.7548-2-y.karadz@gmail.com>
+ <430194dd-0e96-bb3a-a2de-e4379dd540a1@gmail.com>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Message-ID: <a4870c9e-2a1b-c8b8-d334-8c77851e5026@gmail.com>
+Date:   Fri, 9 Aug 2019 15:13:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <430194dd-0e96-bb3a-a2de-e4379dd540a1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The error message is printed using the method KsMainWindow::_error().
-The message itself remains unchanged. If we want to change the message,
-this can be done in another patch.
+Hey Mike,
+Very well spotted, thanks!
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- kernel-shark/src/KsMainWindow.cpp | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+It will be great if you can test the patches on your machine.
 
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index e9c6d54..b462ded 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -890,7 +890,6 @@ void KsMainWindow::_record()
- #endif
- 
- 	if (geteuid() && !canDoAsRoot) {
--		QErrorMessage *em = new QErrorMessage(this);
- 		QString message;
- 
- 		message = "Record is currently not supported.";
-@@ -899,8 +898,7 @@ void KsMainWindow::_record()
- 		message += " ./cmake_clean.sh <br> cmake .. <br> make <br>";
- 		message += " sudo make install";
- 
--		em->showMessage(message);
--		qCritical() << "ERROR: " << message;
-+		_error(message, "recordCantStart", false, false);
- 		return;
- 	}
- 
--- 
-2.20.1
+cheers,
+Yordan
 
+On 9.08.19 г. 13:33 ч., Mike Auty wrote:
+> Hiya,
+> 
+> I can't really review the rest of the code, my main language is python,
+> but I spotted a couple of minor typos that might be worth fixing?  I
+> didn't want to post them to everyone since they're fairly trivial.  5:S
+> 
+> "noRootWorn" might want to "noRootWarn"
+> "your one risk." might want to be "your own risk."
+> 
+> Thanks for putting the patches together so quickly!  5:)
+> 
+> Mike  5:)
+> 
+> On 09/08/2019 09:06, Yordan Karadzhov (VMware) wrote:
+>> Running the KernelShark GUI with Root privileges is not recommended due
+>> to security reasons. The user will be allowed to continue on its own risk.
+>>
+>> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204475
+>> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+>> ---
+>>   kernel-shark/src/KsMainWindow.cpp | 28 ++++++++++++++++++++++++++++
+>>   kernel-shark/src/KsMainWindow.hpp |  2 ++
+>>   2 files changed, 30 insertions(+)
+>>
+>> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+>> index 6439265..2560bf8 100644
+>> --- a/kernel-shark/src/KsMainWindow.cpp
+>> +++ b/kernel-shark/src/KsMainWindow.cpp
+>> @@ -76,6 +76,9 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+>>   	_createMenus();
+>>   	_initCapture();
+>>   
+>> +	if (geteuid() == 0)
+>> +		_rootWarning();
+>> +
+>>   	_splitter.addWidget(&_graph);
+>>   	_splitter.addWidget(&_view);
+>>   	setCentralWidget(&_splitter);
+>> @@ -1271,3 +1274,28 @@ void KsMainWindow::_deselectB()
+>>   	_mState.updateLabels();
+>>   	_graph.glPtr()->model()->update();
+>>   }
+>> +
+>> +void KsMainWindow::_rootWarning()
+>> +{
+>> +	QString cbFlag("noRootWorn");
+>> +
+>> +	if (_settings.value(cbFlag).toBool())
+>> +		return;
+>> +
+>> +	QMessageBox warn;
+>> +	warn.setText("KernelShark will have Root privileges.");
+>> +	warn.setInformativeText("Continue on your one risk.");
+>> +	warn.setIcon(QMessageBox::Warning);
+>> +	warn.setStandardButtons(QMessageBox::Close);
+>> +
+>> +	QCheckBox cb("Don't show this message again.");
+>> +
+>> +	auto lamCbChec = [&] (int state) {
+>> +		if (state)
+>> +			_settings.setValue(cbFlag, true);
+>> +	};
+>> +
+>> +	connect(&cb, &QCheckBox::stateChanged, lamCbChec);
+>> +	warn.setCheckBox(&cb);
+>> +	warn.exec();
+>> +}
+>> diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
+>> index 62e66a0..4a7b8ab 100644
+>> --- a/kernel-shark/src/KsMainWindow.hpp
+>> +++ b/kernel-shark/src/KsMainWindow.hpp
+>> @@ -238,6 +238,8 @@ private:
+>>   
+>>   	void _deselectB();
+>>   
+>> +	void _rootWarning();
+>> +
+>>   	void _updateFilterMenu();
+>>   
+>>   	void _filterSyncCBoxUpdate(kshark_context *kshark_ctx);
+>>
+> 
