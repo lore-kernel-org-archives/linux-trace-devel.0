@@ -2,67 +2,67 @@ Return-Path: <SRS0=RHP/=WK=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6F6EC0650F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Aug 2019 08:47:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6C7FC433FF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Aug 2019 08:47:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BDC012083B
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Aug 2019 08:47:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B1F322083B
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Aug 2019 08:47:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wijpw8w9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDALI7cX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbfHNIrV (ORCPT
+        id S1726132AbfHNIrX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 14 Aug 2019 04:47:21 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:50414 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbfHNIrV (ORCPT
+        Wed, 14 Aug 2019 04:47:23 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34111 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725905AbfHNIrX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 14 Aug 2019 04:47:21 -0400
-Received: by mail-wm1-f67.google.com with SMTP id v15so3841863wml.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Aug 2019 01:47:19 -0700 (PDT)
+        Wed, 14 Aug 2019 04:47:23 -0400
+Received: by mail-wr1-f66.google.com with SMTP id 31so110334873wrm.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Aug 2019 01:47:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WKJd7vwppU2A3MhUVsiKoIJntC1IGKSnIaai8zjmnpg=;
-        b=Wijpw8w9gDzB09oCkMsQTXGuwoLBLBqu7OqpA6gtHIW4jUPIcmzDKW7ApmNysKJkbg
-         MTE47zNYpcmFTrxR5MmG3sbqiuTeAVcVOQgP03rt3rR12UIQAmLVK1WWZMfTPqjd7mlE
-         yl2a7Pxycx04YLqmZZMUEdAR5Eu0VkXCfHINJdo/YEa7OomBIXj/Cg92VguGE5Q7M1CD
-         Cdnr4ttAdXy8Pz5Eci0elj56bWQ0nqkBNuzBE4/RmTyG+T/m4rgon4R6mn9wirXN6ijy
-         kNOtU0TnisjRFXoP2zmW1YAE2qqcUmPDbBRBRM7NSKuzUoV+9igWRykkneZMD4RWXHuo
-         1J2g==
+        bh=BOlQQC/LhTmortr7wCI14Q4XMaaRk4LvFnhRPQhaeVk=;
+        b=EDALI7cXlM1JvJoswI1dx2cG2cyiwYIkSo2T75/WROgk1yxA9fXliYPOSVbHYSJTdI
+         CxiyBlt4tIwqnqSffrVW10ZcuYUxaVdtKs/a5gvK5F1BZTcXX+A0VIa5rumHnYlOMP7P
+         DhXbMr8dS/mQwGIUqv3rtLudZsaPw6/1FwOP61tGj3PpdKwduXGLcd8wuguH+zlyuNfO
+         VmE9FVh+9glzEL66ZvPXJDgmlyNRe8ODdjB2EjLMxAdFlj0gPawuFj1579j4VRyM+6Vh
+         Z++5G7TQgtc+7Da7W0wlEg5aS9jMVHEkXhe013v7MC3pmsEprrY/hRBBP5+ed1Do6Qjc
+         jDog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WKJd7vwppU2A3MhUVsiKoIJntC1IGKSnIaai8zjmnpg=;
-        b=c0lm+afEa4sFc1R7kdWd9K8dJ97OFIJ+Y0p/b5eJGDZFF3Ye3vl+U2E9xiIh6MeXpB
-         A7QWvM1HAptFiHW7qboATAvgmB0B90DiUwGf4lUiQDMdufUZ/L4ee0Va7R2Pjf2Xxoo9
-         h71Ep7fjWr/CJ6m4t3QrhWgrvBcjexCNCYMQaoli8rXon/OVRAZ4nT7x4fNq7r63kIlU
-         kwjzGPyfOEswjTyE0N36Qez+btEkyrkqjax1zoVeCiTem6l/g5gFwgLNd6Dn0h/DIQhB
-         eM4Imizn4+OjqVl4hw73aleyL2286vkW6S5h/MF45kST1l7mwpTwR2MzXytZMxEIPvBJ
-         GtFw==
-X-Gm-Message-State: APjAAAUVmYAaW2XlKB1nB+whgKOTH8JlgSpD+Ya9+JSmL6+VWbvawcOL
-        gOKbX9xStwmJSWq/RG7ouNU=
-X-Google-Smtp-Source: APXvYqzSgFkruHabqlq/eEq6ZZlEyYqA5S6rucNywDWNgYo5/GycZ8oexrzctB2oLzzRNG89AAjlwg==
-X-Received: by 2002:a1c:9ec5:: with SMTP id h188mr2152692wme.176.1565772439145;
-        Wed, 14 Aug 2019 01:47:19 -0700 (PDT)
+        bh=BOlQQC/LhTmortr7wCI14Q4XMaaRk4LvFnhRPQhaeVk=;
+        b=tP4V/twrHze+5z2gckk6qhgHWCU18uZNedzMQIg0rENK/0fKo2y3vMibG1dKBlJYf4
+         u9IhiB1RG483qnQOHKXWnmcCOhVxsliyQC/mMdx5qsseaO6t6sWANLrHzdZvPZvhmOpS
+         R4EpIaImyomhGNmnhfloO+NUG+8GWuy4AnXtMgnNBQwJrdtL/dWkVx4jGAZ5w513MurC
+         RgLsZuu8RO7rwXDESCpqG4lgq0u1nDWnf5FXhC8Ywpg8YETNUk/Th8NIGwqe8T4LBMSR
+         E5Ku2VjepNcrzhrJzTYQJIm7Syb1dRfHzIh5L+EADHAMCg+6X3OKsnW62WTBadC+YSe5
+         2djA==
+X-Gm-Message-State: APjAAAVpi9pWoH4C+JdjC0jAfynUKvUzrSQ6u98kT83aXp15bB0BU95B
+        LQbZ5jkWBMZkySioGOrFHxgA+1k/wrU=
+X-Google-Smtp-Source: APXvYqzU+2oCsMER6tFnSAEHfTXRuSMVyMNo62fX229Dw0BdcPatjjvxi1ZKqhdjt4FuWPvL2k9q/A==
+X-Received: by 2002:a5d:4490:: with SMTP id j16mr24142596wrq.335.1565772440223;
+        Wed, 14 Aug 2019 01:47:20 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id c19sm2897481wml.13.2019.08.14.01.47.17
+        by smtp.gmail.com with ESMTPSA id c19sm2897481wml.13.2019.08.14.01.47.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2019 01:47:18 -0700 (PDT)
+        Wed, 14 Aug 2019 01:47:19 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 3/8] trace-cmd: Move trace-msg.c into the library.
-Date:   Wed, 14 Aug 2019 11:47:03 +0300
-Message-Id: <20190814084712.28188-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 4/8] trace-cmd: Move trace-cmd global variable "quiet" to libtracecmd
+Date:   Wed, 14 Aug 2019 11:47:04 +0300
+Message-Id: <20190814084712.28188-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190814084712.28188-1-tz.stoyanov@gmail.com>
 References: <20190814084712.28188-1-tz.stoyanov@gmail.com>
@@ -73,52 +73,166 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Functions, implemented in trace-msg.c file, do not depend on
-trace-cmd application context and can be used standalone.
-The file is moved from trace-cmd to libtracecmd.
+A trace-cmd global variable "quiet" is used from libtracecmd and
+should be defined there. A new library APIs are implemented to
+access it:
+ void tracecmd_set_quiet(int quiet);
+ int tracecmd_get_quiet(void);
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- {tracecmd/include => include/trace-cmd}/trace-msg.h | 0
- lib/trace-cmd/Makefile                              | 1 +
- {tracecmd => lib/trace-cmd}/trace-msg.c             | 0
- tracecmd/Makefile                                   | 1 -
- 4 files changed, 1 insertion(+), 1 deletion(-)
- rename {tracecmd/include => include/trace-cmd}/trace-msg.h (100%)
- rename {tracecmd => lib/trace-cmd}/trace-msg.c (100%)
+ include/trace-cmd/trace-cmd.h           |  3 +++
+ lib/trace-cmd/include/trace-cmd-local.h |  2 --
+ lib/trace-cmd/trace-output.c            |  4 ++--
+ lib/trace-cmd/trace-util.c              | 21 +++++++++++++++++++++
+ tracecmd/include/trace-local.h          |  1 -
+ tracecmd/trace-cmd.c                    |  1 -
+ tracecmd/trace-record.c                 |  6 +++---
+ 7 files changed, 29 insertions(+), 9 deletions(-)
 
-diff --git a/tracecmd/include/trace-msg.h b/include/trace-cmd/trace-msg.h
-similarity index 100%
-rename from tracecmd/include/trace-msg.h
-rename to include/trace-cmd/trace-msg.h
-diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
-index 0543b91..78875e4 100644
---- a/lib/trace-cmd/Makefile
-+++ b/lib/trace-cmd/Makefile
-@@ -14,6 +14,7 @@ OBJS += trace-output.o
- OBJS += trace-recorder.o
- OBJS += trace-util.o
- OBJS += trace-filter-hash.o
-+OBJS += trace-msg.o
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index c4a437a..5ce8fb3 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -49,6 +49,9 @@ enum {
+ void tracecmd_record_ref(struct tep_record *record);
+ void free_record(struct tep_record *record);
  
- # Additional util objects
- OBJS += trace-blk-hack.o
-diff --git a/tracecmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
-similarity index 100%
-rename from tracecmd/trace-msg.c
-rename to lib/trace-cmd/trace-msg.c
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index 6968f83..d491aae 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -30,7 +30,6 @@ TRACE_CMD_OBJS += trace-check-events.o
- TRACE_CMD_OBJS += trace-show.o
- TRACE_CMD_OBJS += trace-list.o
- TRACE_CMD_OBJS += trace-usage.o
--TRACE_CMD_OBJS += trace-msg.o
++void tracecmd_set_quiet(int quiet);
++int tracecmd_get_quiet(void);
++
+ struct tracecmd_input;
+ struct tracecmd_output;
+ struct tracecmd_recorder;
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index bad325f..09574db 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -18,8 +18,6 @@
+ #define STR(x)	_STR(x)
+ #define FILE_VERSION_STRING STR(FILE_VERSION)
  
- ALL_OBJS := $(TRACE_CMD_OBJS:%.o=$(bdir)/%.o)
+-extern int quiet;
+-
+ static ssize_t __do_write(int fd, const void *data, size_t size)
+ {
+ 	ssize_t tot = 0;
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 1f94346..35252ef 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -1157,7 +1157,7 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 		goto out_free;
  
+ 	for (i = 0; i < cpus; i++) {
+-		if (!quiet)
++		if (!tracecmd_get_quiet())
+ 			fprintf(stderr, "CPU%d data recorded at offset=0x%llx\n",
+ 				i, (unsigned long long) offsets[i]);
+ 		offset = lseek64(handle->fd, offsets[i], SEEK_SET);
+@@ -1172,7 +1172,7 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 			    check_size, sizes[i]);
+ 			goto out_free;
+ 		}
+-		if (!quiet)
++		if (!tracecmd_get_quiet())
+ 			fprintf(stderr, "    %llu bytes in size\n",
+ 				(unsigned long long)check_size);
+ 	}
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index 7c74bae..26b9a18 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -28,6 +28,7 @@
+ 
+ int tracecmd_disable_sys_plugins;
+ int tracecmd_disable_plugins;
++static int tracecmd_quiet;
+ 
+ static struct registered_plugin_options {
+ 	struct registered_plugin_options	*next;
+@@ -96,6 +97,26 @@ char **trace_util_list_plugin_options(void)
+ 	return list;
+ }
+ 
++/**
++ * tracecmd_set_quiet - Set if to print output to the screen
++ * @quiet: If non zero, print no output to the screen
++ *
++ */
++void tracecmd_set_quiet(int quiet)
++{
++	tracecmd_quiet = quiet;
++}
++
++/**
++ * tracecmd_get_quiet - Get if to print output to the screen
++ * Returns non zero, if no output to the screen should be printed
++ *
++ */
++int tracecmd_get_quiet(void)
++{
++	return tracecmd_quiet;
++}
++
+ void trace_util_free_plugin_options_list(char **list)
+ {
+ 	tracecmd_free_list(list);
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 78c52dc..23a3a29 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -13,7 +13,6 @@
+ #include "event-utils.h"
+ 
+ extern int debug;
+-extern int quiet;
+ 
+ /* fix stupid glib guint64 typecasts and printf formats */
+ typedef unsigned long long u64;
+diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
+index 797b303..5283ba7 100644
+--- a/tracecmd/trace-cmd.c
++++ b/tracecmd/trace-cmd.c
+@@ -17,7 +17,6 @@ int silence_warnings;
+ int show_status;
+ 
+ int debug;
+-int quiet;
+ 
+ void warning(const char *fmt, ...)
+ {
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index b2ed6bf..b25b659 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3387,7 +3387,7 @@ static void print_stat(struct buffer_instance *instance)
+ {
+ 	int cpu;
+ 
+-	if (quiet)
++	if (tracecmd_get_quiet())
+ 		return;
+ 
+ 	if (!is_top_instance(instance))
+@@ -4207,7 +4207,7 @@ static void check_plugin(const char *plugin)
+ 	}
+ 	die ("Plugin '%s' does not exist", plugin);
+  out:
+-	if (!quiet)
++	if (!tracecmd_get_quiet())
+ 		fprintf(stderr, "  plugin '%s'\n", plugin);
+ 	free(buf);
+ }
+@@ -5154,7 +5154,7 @@ static void parse_record_options(int argc,
+ 			break;
+ 		case OPT_quiet:
+ 		case 'q':
+-			quiet = 1;
++			tracecmd_set_quiet(1);
+ 			break;
+ 		default:
+ 			usage(argv);
 -- 
 2.21.0
 
