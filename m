@@ -2,67 +2,67 @@ Return-Path: <SRS0=RHP/=WK=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BA20C41514
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A27C41517
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Aug 2019 08:47:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3EB0B2084F
+	by mail.kernel.org (Postfix) with ESMTP id 6B2B0216F4
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Aug 2019 08:47:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mEzva+8q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RySAleaE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbfHNIr1 (ORCPT
+        id S1726119AbfHNIr1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 14 Aug 2019 04:47:27 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37041 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbfHNIr0 (ORCPT
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:43429 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725954AbfHNIrY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 14 Aug 2019 04:47:26 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z11so8362632wrt.4
-        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Aug 2019 01:47:25 -0700 (PDT)
+        Wed, 14 Aug 2019 04:47:24 -0400
+Received: by mail-wr1-f67.google.com with SMTP id y8so4352733wrn.10
+        for <linux-trace-devel@vger.kernel.org>; Wed, 14 Aug 2019 01:47:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bQBV9G+B2hAmMg3gfg98ZAsN206h3AQ53nVV5eoKMtE=;
-        b=mEzva+8qdXSEJG8GpJ/+RDde8LxacdkBEcnOeqKhteXqkNH4ImsUngu8XvYNIPt+lv
-         EV1JSW7aDNjQhzh00vVbFHaH8h5peuONt8EMuzSbkFOZaatP/t7KYSkU9/waXpP9BBqk
-         Krpt5stLEBCTLwOo7aNPswTd3hWGHNOx57PMR65G5fzOgw7bt2j1/6DGJD9nBGR8weay
-         ZX8VOYL//ty7PSgTdZO8hCN8IsvAwLz0X5iQWh8S6TxN+Aezd4Axk6KUgZmBP16NmVCQ
-         bisZVxeVZeC1RGDtLz5hCdavN1mAx/maPkMUlfDJ8P0fH3ZmtrbekoLvSzfq1B5YHePZ
-         yA7A==
+        bh=ATHkTl64dc+PwT9K6GwGHhzgZwXlEQJYJ3ZCQRQ0c4c=;
+        b=RySAleaE9dFDw6rM0dQyzsE9o1JISoR3Pk3HW9ecEkzWmujAiA8MeJycOSgsNrZ/3m
+         eUA+4pNUedTh3Bmgf+xD++GEBn9eSAQI1Bk0VFGWkMeZ91NoGzWlUAFaejJytkdYp2Zb
+         805wImL8474Mu+asSDrgIjfqXSHZkKWEl/mcQBGikYNxDfsvyIHrJxTnGuj7LCp3WAlk
+         1kiv2C8jbWrIqaayHOkhInz9kvPQrRhM7NahcXXjNADQ0MIcs4OlGE9VtL6Ug32qB4lZ
+         HmgDd8eN4ePkAJOEZuwpcgmku2XVRFQ4W6TuDqNNhbCnQYPGgl8WeZMyeiQFQKH2OGwc
+         3jnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bQBV9G+B2hAmMg3gfg98ZAsN206h3AQ53nVV5eoKMtE=;
-        b=kQrydbwCo9iw50OVrfs7eKtIMAPZ1dVmlmZUdDZQrvyWASqLxmOtGXH7upTypE42UM
-         HJhx1qGEG95kSslOEigLnXV6cS0xVQoH6I9cZ2XjFP+XW/BbyBk/559QRv6IFF1x/9qI
-         cGW0pAxTHgC2u1Y6EN4M2xverhcqw9J5LMGsps0SQEQjQiXPLhebkZniY4PJMWXgVt/K
-         uF0z03JWEPqu0S+IcqHmMfpc/FbzVdPCJjrdH45PCB9OC5ucgDRhbxjHLYVmqsCKnpa6
-         kfAfTHzpaRZMm/oPJ1MCjcgv9ps0iSbsbdhUOZX2WMHraqyjCqK+o2KfkiG5qVNk5bzs
-         Ab0g==
-X-Gm-Message-State: APjAAAV3FWwaIeiud1X7G8Lig6FtsuqAA8gBHAuAdKiJkheDqyMJ7COy
-        2p/j3G50SEFfNrUtt/0hvyFFW3hzqx0=
-X-Google-Smtp-Source: APXvYqwFz61Zy8hhYZ6SKKJmCzSZNtp/H2Lnspj+K1l8wmttZmM3QBudB5ZnjVQ7z2Y1J8POMVFhPA==
-X-Received: by 2002:adf:ec0d:: with SMTP id x13mr52958181wrn.240.1565772444503;
-        Wed, 14 Aug 2019 01:47:24 -0700 (PDT)
+        bh=ATHkTl64dc+PwT9K6GwGHhzgZwXlEQJYJ3ZCQRQ0c4c=;
+        b=pQsf0Z6nm0LUdNwkszS0M9vziItvKQ3gEbT/4iUgDVh2FWQf/hRwHkMSx6a8+XZnYM
+         2HSugkhhaTEDnlrr6esNLinV7lGKoJNJyW4ht6tq+7Kxg77Stf8T1RfzpJr+BxakdzGj
+         qRhW9j20MBMlZ2pxWlBijCGaDpl+XS8hJWXrGZ1PwG8rzjPfjfqXkNTWI91QaBmrhsGG
+         2mzVHnw2bkKQN3p38Efvap/tUbegUKtXqtoLWVmTw5lNiBUhqPgmE3cGs2Q2XiWhlonZ
+         2Ltk58PNWzukHmvy/C55wR3EwM8gHb+TCXA6F4m4/WPFHGMCkOQ3be0Lox+6ZfLSDZP6
+         EMZQ==
+X-Gm-Message-State: APjAAAVti9WTuhmmBpjIJCCC05r+9LaXWZhpbHTICXTsC9kk3jgBIDFQ
+        v5zqd2/zR7CRZx2Py0dMtWU=
+X-Google-Smtp-Source: APXvYqy+Sci8USWc9yVqHOKLwsskcDKSkFS4X7KDEckbPXa1Xpsw/B7KxL4ByhHcTyMdmd09KxNAeA==
+X-Received: by 2002:a5d:6b84:: with SMTP id n4mr42589226wrx.118.1565772441413;
+        Wed, 14 Aug 2019 01:47:21 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id c19sm2897481wml.13.2019.08.14.01.47.23
+        by smtp.gmail.com with ESMTPSA id c19sm2897481wml.13.2019.08.14.01.47.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2019 01:47:23 -0700 (PDT)
+        Wed, 14 Aug 2019 01:47:20 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 8/8] trace-cmd: Move tracecmd_stack_tracer_status() function to libtracecmd
-Date:   Wed, 14 Aug 2019 11:47:08 +0300
-Message-Id: <20190814084712.28188-9-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 5/8] trace-cmd: Move trace-cmd global variable "debug" to libtracecmd
+Date:   Wed, 14 Aug 2019 11:47:05 +0300
+Message-Id: <20190814084712.28188-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190814084712.28188-1-tz.stoyanov@gmail.com>
 References: <20190814084712.28188-1-tz.stoyanov@gmail.com>
@@ -73,162 +73,227 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-tracecmd_stack_tracer_status() function reads the stack tracer status
-from the proc file system. It does not depend on trace-cmd context and
-can be used standalone. The function is moved from trace-cmd application
-into libtracecmd.
+A trace-cmd global variable "debug" is used from libtracecmd and
+should be defined there. A new library APIs are implemented to
+access it:
+ void tracecmd_set_debug(bool debug);
+ bool tracecmd_get_debug(void);
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-util.c | 49 +++++++++++++++++++++++++++++++++
- tracecmd/trace-stack.c     | 56 ++------------------------------------
- 2 files changed, 51 insertions(+), 54 deletions(-)
+ include/trace-cmd/trace-cmd.h  |  3 +++
+ lib/trace-cmd/trace-msg.c      |  4 ++--
+ lib/trace-cmd/trace-util.c     | 21 +++++++++++++++++++++
+ tracecmd/include/trace-local.h |  2 --
+ tracecmd/trace-cmd.c           |  2 --
+ tracecmd/trace-list.c          |  2 +-
+ tracecmd/trace-listen.c        |  8 ++++----
+ tracecmd/trace-read.c          |  8 ++++----
+ tracecmd/trace-record.c        |  2 +-
+ 9 files changed, 36 insertions(+), 16 deletions(-)
 
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 5ce8fb3..b96de04 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -51,6 +51,9 @@ void free_record(struct tep_record *record);
+ 
+ void tracecmd_set_quiet(int quiet);
+ int tracecmd_get_quiet(void);
++void tracecmd_set_debug(bool debug);
++bool tracecmd_get_debug(void);
++
+ 
+ struct tracecmd_input;
+ struct tracecmd_output;
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index e2dd188..92562c7 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -32,7 +32,7 @@ static inline void dprint(const char *fmt, ...)
+ {
+ 	va_list ap;
+ 
+-	if (!debug)
++	if (!tracecmd_get_debug())
+ 		return;
+ 
+ 	va_start(ap, fmt);
+@@ -351,7 +351,7 @@ static int tracecmd_msg_recv_wait(int fd, struct tracecmd_msg *msg)
+ 
+ 	pfd.fd = fd;
+ 	pfd.events = POLLIN;
+-	ret = poll(&pfd, 1, debug ? -1 : msg_wait_to);
++	ret = poll(&pfd, 1, tracecmd_get_debug() ? -1 : msg_wait_to);
+ 	if (ret < 0)
+ 		return -errno;
+ 	else if (ret == 0)
 diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 8c1a0a0..d16a018 100644
+index 26b9a18..b5ce84f 100644
 --- a/lib/trace-cmd/trace-util.c
 +++ b/lib/trace-cmd/trace-util.c
-@@ -25,6 +25,7 @@
- #define LOCAL_PLUGIN_DIR ".trace-cmd/plugins"
- #define TRACEFS_PATH "/sys/kernel/tracing"
- #define DEBUGFS_PATH "/sys/kernel/debug"
-+#define PROC_STACK_FILE "/proc/sys/kernel/stack_tracer_enabled"
- 
+@@ -29,6 +29,7 @@
  int tracecmd_disable_sys_plugins;
  int tracecmd_disable_plugins;
-@@ -1787,3 +1788,51 @@ int trace_set_log_file(char *logfile)
- 	return 0;
+ static int tracecmd_quiet;
++static bool tracecmd_debug;
+ 
+ static struct registered_plugin_options {
+ 	struct registered_plugin_options	*next;
+@@ -117,6 +118,26 @@ int tracecmd_get_quiet(void)
+ 	return tracecmd_quiet;
  }
  
 +/**
-+ * tracecmd_stack_tracer_status - Check stack trace status
-+ * @status: Returned stack trace status:
-+ *		0 - not configured, disabled
-+ *		non 0 - enabled
++ * tracecmd_set_quiet - Set if to print output to the screen
++ * @quiet: If non zero, print no output to the screen
 + *
-+ * Returns -1 in case of an error, 0 if file does not exist
-+ *  (stack tracer not enabled) or 1 on successful completion.
 + */
-+int tracecmd_stack_tracer_status(int *status)
++void tracecmd_set_debug(bool debug)
 +{
-+	struct stat stat_buf;
-+	char buf[64];
-+	long num;
-+	int fd;
-+	int n;
-+
-+	if (stat(PROC_STACK_FILE, &stat_buf) < 0) {
-+		/* stack tracer not configured on running kernel */
-+		*status = 0; /* not configured means disabled */
-+		return 0;
-+	}
-+
-+	fd = open(PROC_STACK_FILE, O_RDONLY);
-+
-+	if (fd < 0)
-+		return -1;
-+
-+	n = read(fd, buf, sizeof(buf));
-+	close(fd);
-+
-+	if (n <= 0)
-+		return -1;
-+
-+	if (n >= sizeof(buf))
-+		return -1;
-+
-+	buf[n] = 0;
-+	errno = 0;
-+	num = strtol(buf, NULL, 10);
-+
-+	/* Check for various possible errors */
-+	if (num > INT_MAX || num < INT_MIN || (!num && errno))
-+		return -1;
-+
-+	*status = num;
-+	return 1; /* full success */
++	tracecmd_debug = debug;
 +}
-diff --git a/tracecmd/trace-stack.c b/tracecmd/trace-stack.c
-index 34b3b58..bb002c0 100644
---- a/tracecmd/trace-stack.c
-+++ b/tracecmd/trace-stack.c
-@@ -36,58 +36,6 @@ static void test_available(void)
- 		die("stack tracer not configured on running kernel");
- }
- 
--/*
-- * Returns:
-- *   -1 - Something went wrong
-- *    0 - File does not exist (stack tracer not enabled)
-- *    1 - Success
-- */
--static int read_proc(int *status)
--{
--	struct stat stat_buf;
--	char buf[64];
--	long num;
--	int fd;
--	int n;
--
--	if (stat(PROC_FILE, &stat_buf) < 0) {
--		/* stack tracer not configured on running kernel */
--		*status = 0; /* not configured means disabled */
--		return 0;
--	}
--
--	fd = open(PROC_FILE, O_RDONLY);
--
--	if (fd < 0)
--		return -1;
--
--	n = read(fd, buf, sizeof(buf));
--	close(fd);
--
--	if (n <= 0)
--		return -1;
--
--	if (n >= sizeof(buf))
--		return -1;
--
--	buf[n] = 0;
--	errno = 0;
--	num = strtol(buf, NULL, 10);
--
--	/* Check for various possible errors */
--	if (num > INT_MAX || num < INT_MIN || (!num && errno))
--		return -1;
--
--	*status = num;
--	return 1; /* full success */
--}
--
--/* Public wrapper of read_proc() */
--int tracecmd_stack_tracer_status(int *status)
--{
--	return read_proc(status);
--}
--
- /* NOTE: this implementation only accepts new_status in the range [0..9]. */
- static void change_stack_tracer_status(unsigned new_status)
++
++/**
++ * tracecmd_get_quiet - Get if to print output to the screen
++ * Returns non zero, if no output to the screen should be printed
++ *
++ */
++bool tracecmd_get_debug(void)
++{
++	return tracecmd_debug;
++}
++
+ void trace_util_free_plugin_options_list(char **list)
  {
-@@ -102,7 +50,7 @@ static void change_stack_tracer_status(unsigned new_status)
- 		return;
- 	}
+ 	tracecmd_free_list(list);
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 23a3a29..e2d5506 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -12,8 +12,6 @@
+ #include "trace-cmd.h"
+ #include "event-utils.h"
  
--	ret = read_proc(&status);
-+	ret = tracecmd_stack_tracer_status(&status);
- 	if (ret < 0)
- 		die("error reading %s", PROC_FILE);
+-extern int debug;
+-
+ /* fix stupid glib guint64 typecasts and printf formats */
+ typedef unsigned long long u64;
  
-@@ -160,7 +108,7 @@ static void read_trace(void)
- 	size_t n;
- 	int r;
+diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
+index 5283ba7..30691b6 100644
+--- a/tracecmd/trace-cmd.c
++++ b/tracecmd/trace-cmd.c
+@@ -16,8 +16,6 @@
+ int silence_warnings;
+ int show_status;
  
--	if (read_proc(&status) <= 0)
-+	if (tracecmd_stack_tracer_status(&status) <= 0)
- 		die("Invalid stack tracer state");
+-int debug;
+-
+ void warning(const char *fmt, ...)
+ {
+ 	va_list ap;
+diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
+index 00c6073..832540e 100644
+--- a/tracecmd/trace-list.c
++++ b/tracecmd/trace-list.c
+@@ -427,7 +427,7 @@ void trace_list(int argc, char **argv)
+ 				break;
+ 			case '-':
+ 				if (strcmp(argv[i], "--debug") == 0) {
+-					debug = true;
++					tracecmd_set_debug(true);
+ 					break;
+ 				}
+ 				fprintf(stderr, "list: invalid option -- '%s'\n",
+diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+index 3106022..3cbee67 100644
+--- a/tracecmd/trace-listen.c
++++ b/tracecmd/trace-listen.c
+@@ -717,7 +717,7 @@ static int do_fork(int cfd)
+ 	pid_t pid;
  
- 	if (status > 0)
+ 	/* in debug mode, we do not fork off children */
+-	if (debug)
++	if (tracecmd_get_debug())
+ 		return 0;
+ 
+ 	pid = fork();
+@@ -769,7 +769,7 @@ static int do_connection(int cfd, struct sockaddr_storage *peer_addr,
+ 
+ 	tracecmd_msg_handle_close(msg_handle);
+ 
+-	if (!debug)
++	if (!tracecmd_get_debug())
+ 		exit(0);
+ 
+ 	return 0;
+@@ -910,7 +910,7 @@ static void do_listen(char *port)
+ 	struct addrinfo *result, *rp;
+ 	int sfd, s;
+ 
+-	if (!debug)
++	if (!tracecmd_get_debug())
+ 		signal_setup(SIGCHLD, sigstub);
+ 
+ 	make_pid_file();
+@@ -1009,7 +1009,7 @@ void trace_listen(int argc, char **argv)
+ 			daemon = 1;
+ 			break;
+ 		case OPT_debug:
+-			debug = 1;
++			tracecmd_set_debug(true);
+ 			break;
+ 		default:
+ 			usage(argv);
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index d22c723..12b8b3d 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -782,10 +782,10 @@ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
+ 				 cpu, record->missed_events);
+ 	else if (record->missed_events < 0)
+ 		trace_seq_printf(&s, "CPU:%d [EVENTS DROPPED]\n", cpu);
+-	if (buffer_breaks || debug) {
++	if (buffer_breaks || tracecmd_get_debug()) {
+ 		if (tracecmd_record_at_buffer_start(handle, record)) {
+ 			trace_seq_printf(&s, "CPU:%d [SUBBUFFER START]", cpu);
+-			if (debug)
++			if (tracecmd_get_debug())
+ 				trace_seq_printf(&s, " [%lld:0x%llx]",
+ 						 tracecmd_page_ts(handle, record),
+ 						 record->offset & ~(page_size - 1));
+@@ -816,7 +816,7 @@ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
+ 		tep_print_event(pevent, &s, record, use_trace_clock);
+ 	if (s.len && *(s.buffer + s.len - 1) == '\n')
+ 		s.len--;
+-	if (debug) {
++	if (tracecmd_get_debug()) {
+ 		struct kbuffer *kbuf;
+ 		struct kbuffer_raw_info info;
+ 		void *page;
+@@ -1616,7 +1616,7 @@ void trace_report (int argc, char **argv)
+ 			break;
+ 		case OPT_debug:
+ 			buffer_breaks = 1;
+-			debug = 1;
++			tracecmd_set_debug(true);
+ 			break;
+ 		case OPT_profile:
+ 			profile = 1;
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index b25b659..32793b3 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -5143,7 +5143,7 @@ static void parse_record_options(int argc,
+ 			no_filter = true;
+ 			break;
+ 		case OPT_debug:
+-			debug = 1;
++			tracecmd_set_debug(true);
+ 			break;
+ 		case OPT_module:
+ 			if (ctx->instance->filter_mod)
 -- 
 2.21.0
 
