@@ -1,83 +1,155 @@
 Return-Path: <SRS0=NWyF=WX=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: **
-X-Spam-Status: No, score=2.1 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABE8FC3A5A3
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Aug 2019 11:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3A9EC3A5A3
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Aug 2019 13:14:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8793220828
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Aug 2019 11:59:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 87DB22077B
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 27 Aug 2019 13:14:38 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="alme2UGj"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbfH0L70 (ORCPT
+        id S1726678AbfH0NOi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 27 Aug 2019 07:59:26 -0400
-Received: from out3-srv2.flexfilter.nl ([46.17.2.242]:51365 "EHLO
-        out3-srv2.flexfilter.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbfH0L70 (ORCPT
+        Tue, 27 Aug 2019 09:14:38 -0400
+Received: from mail-wm1-f49.google.com ([209.85.128.49]:50368 "EHLO
+        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbfH0NOi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 27 Aug 2019 07:59:26 -0400
-X-Greylist: delayed 1429 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Aug 2019 07:59:24 EDT
-Received: from outgoingmail4.flexwebhosting.nl ([185.27.142.100])
-        by srv2a.flexfilter.nl with esmtp (Exim 4.89)
-        (envelope-from <welkom@coachpraktijkvoorwaarts.nl>)
-        id 1i2Zl2-0005vi-KU
-        for linux-trace-devel@vger.kernel.org; Tue, 27 Aug 2019 13:35:29 +0200
-Received: from srv20311.flexwebhosting.nl ([185.27.142.111])
-        by outgoingmail4.flexwebhosting.nl with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.92)
-        (envelope-from <welkom@coachpraktijkvoorwaarts.nl>)
-        id 1i2Zkw-0000NB-EV
-        for linux-trace-devel@vger.kernel.org; Tue, 27 Aug 2019 13:35:22 +0200
-Received: from pfis415100 by srv20311.flexwebhosting.nl with local (Exim 4.92.1)
-        (envelope-from <welkom@coachpraktijkvoorwaarts.nl>)
-        id 1i2Zkp-0008HU-6P
-        for linux-trace-devel@vger.kernel.org; Tue, 27 Aug 2019 13:35:15 +0200
-To:     linux-trace-devel@vger.kernel.org
-Subject: Kopie van: Meet a beautiful woman for sex right now
-X-PHP-Originating-Script: 568:class.phpmailer.php
-Date:   Tue, 27 Aug 2019 13:35:15 +0200
-From:   Coachpraktijk Voorwaarts <welkom@coachpraktijkvoorwaarts.nl>
-Reply-To: Charleshap <linux-trace-devel@vger.kernel.org>
-Message-ID: <cb6cf0945b98a0089af3ac7f57fa772c@coachpraktijkvoorwaarts.nl>
+        Tue, 27 Aug 2019 09:14:38 -0400
+Received: by mail-wm1-f49.google.com with SMTP id v15so3066184wml.0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 27 Aug 2019 06:14:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AVuoKEc67AQ2R7gFNAmAOcsb/8SDbnPmTkb0i76xelI=;
+        b=alme2UGjJeVxXuICA9ZYNOz7QYXzZAHOw0OhL4su56Ftd8JdcQ1G+Rk+OPh1R3aY0k
+         uKsyPg2gPUyDbxUagf2j+9+istR68D5rHS6E3dY/L/QMlm9X0BjBx5vRyqUIoW34MKyS
+         8D5IPkIGp4GW1KPc2oPqfVELVhoebR2UEdKGR2i2hDEUBWZephprZGC+a7PAZF/p0/Hk
+         geuzEgNCEwcbshY7N533qZZZWyfkGesGvLODwEKNgk5pLmMitIAFkz6xDQDnpqaQ2sA3
+         Fq5V4I1GEsqNPWur7xHzyPWDky4XkvCvcUk0QPAdIiFBeqpRFZmMrbfkaezIig6TFYIO
+         PxdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AVuoKEc67AQ2R7gFNAmAOcsb/8SDbnPmTkb0i76xelI=;
+        b=RrfovnYOw4IQwRdGOhYH1EihGmXXjt3NAGwib4vz9HdF3s5lpL7BmRG4T09uAFMAkj
+         Vrqy63a0JZBWCwkHNxlPc6K2Mc8vbU6pHiAISGA8I24nTr+uxVAcXgHXNOp5GT4IUEgT
+         qlFtzm1GycvSJX9Jnrs+ouvJXB9XAifuEDhFeYZejuecZsV9HC50gfqr2yqo+mfWRgSP
+         torkE9BbdYGGUUbllm5cNzz/wctT3p1RTWGqbr9BaXcit4XLnoW6+4vMTmMhEwkdz1zh
+         qOhE5rKicztOIit7J5EUyFmyge5w9wAszZLmA1yrTozsq6GxH2i9Y18AnXrd8nTPKxyJ
+         fzsg==
+X-Gm-Message-State: APjAAAXACou8TwSKJ7kYXbZQUCrBhFvmcg/Jd0TbOWxmTHT5KH60+0bG
+        n8TLFMKZwGHukYBUYfTbswI=
+X-Google-Smtp-Source: APXvYqzdl0++SGyDh9qVfQtCetEE9W3EWSTqsSyrvMB1F0AJcXnnaWlcZ/K6PjXqRhzGILjDBMa4Jw==
+X-Received: by 2002:a05:600c:551:: with SMTP id k17mr28800361wmc.53.1566911675547;
+        Tue, 27 Aug 2019 06:14:35 -0700 (PDT)
+Received: from mamba.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id z2sm3088234wmi.2.2019.08.27.06.14.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Aug 2019 06:14:34 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
+        Stephen Brennan <stephen@brennan.io>
+Subject: [PATCH] kernel-shark: Provide parsing for quotation marks in Record command line
+Date:   Tue, 27 Aug 2019 16:14:18 +0300
+Message-Id: <20190827131418.18713-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-X-Authenticated-Id: pfis415100
-X-Originating-IP: 185.27.142.100
-X-SpamExperts-Domain: fxwrelaydummydomein.nl
-X-SpamExperts-Username: 185.27.142.100
-Authentication-Results: flexfilter.nl; auth=pass smtp.auth=185.27.142.100@fxwrelaydummydomein.nl
-X-SpamExperts-Outgoing-Class: unsure
-X-SpamExperts-Outgoing-Evidence: Combined (0.76)
-X-Recommended-Action: accept
-X-Filter-ID: Mvzo4OR0dZXEDF/gcnlw0dHacFem4oEMoSF0RS12R++pSDasLI4SayDByyq9LIhV8o9kKks/tTW8
- wvr3U29yyETNWdUk1Ol2OGx3IfrIJKywOmJyM1qr8uRnWBrbSAGDodgVxDLD4mSUehuXnthDUXws
- 3TRjaC42FtNJuTWwh7y4Ye8oGxY8K2tO6W9M38Cc35HVnVk9VFi3rYAZ1I1p02Xx2azEPCntGfKY
- yhVHoIm0Kx1mT6amMG+J/+UsUMFwJcCoQBBlcIULC9kr1JEApZiGygEGB06iPpGEBF27K5RKRE1L
- 3R65cW6Tmkf9WoR3Lz/y+awqhw7CmTPsWtYsCYgKyEWnnpk3TSoBsqHH8iZY4iedii5TS5Cer+5p
- eBUkx5Ud6KLYOzpQNzeVja3v6MUNrBg3Gj2gFaI0hSRFv0KX6zdUoYfy+LHuIHPrvW7hbFTlbTMo
- 5CQE1Hb+DsdBb4WgtkyaRaxq6tVl++pE5oOcO0dvzPl2k+QS4nxKfCqVdQRhSTD0S3PA8VWuUVw9
- yCPYhSg70roBu7KjkIXAxyxWh1LsvgIaWHmdiqF4hbi2BC83BsQ4JD3u3keqrKTTUBoy4RjAUqxX
- X/HQWz77aicBIkUL/j1Y48GvmeURQjjEmfSjGv1q3YxXwtJGXK+wu9iepFyq9RUGONo9pMO5PCyz
- XUDwhkGoYbMGA3g66f6oQMLSh/PQTHPx1Mj2Fnw8wx70Y6L9A2qbwkmwjVPyO0lpL2fqVj9bN+Z3
- kWFjEFFmRK0rNF96MqE3PI/6O6rpcSHpNSUzJyrO3XK9oZFVnhnpeDWkGlxiD9AB6FNkrvFonEw+
- d60sEkyHnU2JFGgcgPfqweZ2IyY7d4D+b89wH0qaIrvHjZWN3MKFkx7o78OJP84vVVumNdU5NBXy
- hkTc1yqBx6423psTKSQ/uTNFvkzkO/MZ6QKyEiRhkcPEbRHzshzwFn9kn56epDjTv1JZF8HBBTal
- 9B5MGh1KWqMTD5VmMy/o83jVXTcfb9k0nLWbP3dKZVrlWOwMLk21mrjD7z3HBlfSrT4+l3Bn1Tnx
- LcKn8LpI8xeW37EHr0jfWL/qYwi94l7rx/bfQSjpsulct3B7HfKjI1eYNYaA4ur2/Is=
-X-Report-Abuse-To: spam@srv3a.flexfilter.nl
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Dit is een kopie van het volgende bericht dat door u gestuurd is aan Coachpraktijk Voorwaarts via Coachpraktijk Voorwaarts
+Shell-like parsing of quotation marks in the content of the "Command"
+field of the "Record" dialog will give more options to the users.
+For example, now we can trace
 
-Dit is een e-mailbericht via http://coachpraktijkvoorwaarts.nl/ van:
-Charleshap <linux-trace-devel@vger.kernel.org>
+ python -c 'print("hello world")'
 
-Find No String Girls Near Online for Sex Tonight: http://gmy.su/:AoQM?IzJC7m
+Suggested-by: Stephen Brennan <stephen@brennan.io>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204679
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel-shark/src/KsCaptureDialog.cpp | 38 ++++++++++++++++++++++++++--
+ 1 file changed, 36 insertions(+), 2 deletions(-)
+
+diff --git a/kernel-shark/src/KsCaptureDialog.cpp b/kernel-shark/src/KsCaptureDialog.cpp
+index dc1e9b2..b3393b6 100644
+--- a/kernel-shark/src/KsCaptureDialog.cpp
++++ b/kernel-shark/src/KsCaptureDialog.cpp
+@@ -157,7 +157,9 @@ KsCaptureControl::KsCaptureControl(QWidget *parent)
+  */
+ QStringList KsCaptureControl::getArgs()
+ {
++	QString::SplitBehavior opt = QString::SkipEmptyParts;
+ 	QStringList argv;
++	QString cmdTmp;
+ 
+ 	argv << "record";
+ 
+@@ -170,7 +172,36 @@ QStringList KsCaptureControl::getArgs()
+ 		argv << _eventsWidget.getCheckedEvents(true);
+ 
+ 	argv << "-o" << outputFileName();
+-	argv << _commandLineEdit.text().split(" ");
++
++	cmdTmp = _commandLineEdit.text();
++	if (!cmdTmp.contains('\'') && !cmdTmp.contains('\"')) {
++		/* Split all command line arguments. */
++		argv << cmdTmp.split(" ", opt);
++	} else {
++		int iOpenQuots, iCloseQuots, size = cmdTmp.size();
++		int iSingleQuots = (cmdTmp.count('\'') == 2) ? cmdTmp.indexOf('\'') : size;
++		int iDoubleQuots = (cmdTmp.count('\"') == 2) ? cmdTmp.indexOf('\"') : size;
++
++		if (iSingleQuots < iDoubleQuots) {
++			iOpenQuots = iSingleQuots;
++			iCloseQuots = cmdTmp.lastIndexOf('\'') + 1;
++		} else if (iDoubleQuots < iSingleQuots) {
++			iOpenQuots = iDoubleQuots;
++			iCloseQuots = cmdTmp.lastIndexOf('\"') + 1;
++		} else {
++			emit print("\nERROR: Unable to parse the command.");
++			return {};
++		}
++
++		/* Split the arguments. */
++		argv << cmdTmp.left(iOpenQuots).split(" ", opt);
++
++		/* Everything in between the quotation marks goes in one piece. */
++		argv << cmdTmp.mid(iOpenQuots, iCloseQuots - iOpenQuots);
++
++		/* Split the rest of the arguments. */
++		argv << cmdTmp.right(size - iCloseQuots).split(" ", opt);
++	}
+ 
+ 	return argv;
+ }
+@@ -350,7 +381,10 @@ void KsCaptureControl::_browse()
+ 
+ void KsCaptureControl::_apply()
+ {
+-	emit argsReady(getArgs().join(" "));
++	QStringList argv = getArgs();
++
++	if (argv.count())
++		emit argsReady(argv.join(" "));
+ }
+ 
+ /** @brief Create KsCaptureMonitor widget. */
+-- 
+2.20.1
 
