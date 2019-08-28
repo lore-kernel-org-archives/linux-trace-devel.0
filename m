@@ -6,34 +6,35 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CDE2C3A5A1
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 20:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEF96C3A5A1
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 20:17:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1344F22CF8
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 20:15:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C9360217F5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 20:17:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbfH1UPi (ORCPT
+        id S1726400AbfH1URE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Aug 2019 16:15:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44172 "EHLO mail.kernel.org"
+        Wed, 28 Aug 2019 16:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726315AbfH1UPi (ORCPT
+        id S1726315AbfH1URE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Aug 2019 16:15:38 -0400
+        Wed, 28 Aug 2019 16:17:04 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2230217F5;
-        Wed, 28 Aug 2019 20:15:36 +0000 (UTC)
-Date:   Wed, 28 Aug 2019 16:15:35 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id D3485217F5;
+        Wed, 28 Aug 2019 20:17:02 +0000 (UTC)
+Date:   Wed, 28 Aug 2019 16:17:01 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 6/8] trace-cmd: Move plog() function to libtracecmd.
-Message-ID: <20190828161535.00e11800@gandalf.local.home>
-In-Reply-To: <20190814084712.28188-7-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v2 7/8] trace-cmd: Move trace-cmd APIs from trace-cmd.h
+ to trace-local.h
+Message-ID: <20190828161701.5218d449@gandalf.local.home>
+In-Reply-To: <20190814084712.28188-8-tz.stoyanov@gmail.com>
 References: <20190814084712.28188-1-tz.stoyanov@gmail.com>
-        <20190814084712.28188-7-tz.stoyanov@gmail.com>
+        <20190814084712.28188-8-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,153 +44,84 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 14 Aug 2019 11:47:06 +0300
+On Wed, 14 Aug 2019 11:47:07 +0300
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> plog() function writes logs into a log file. It is used in
-> libtracecmd and its implementation should be there.
-> The function is moved from trace-cmd into the library, and 2
-> additional APIs are implemented:
-> 	int trace_set_log_file(char *logfile); - use it to set
-> the log file.
-> 	void plog_error(const char *fmt, ...); - use it to log
-> an error message into the file.
-> 
-> The plog() function is used also from pdie() in trace-cmd.
-> pdie() depends on trace-cmd context and cannot be moved to
-> the library. It is reimplemented as macros, in order to utilize
-> the new plog() library function.
+> These APIs depend on trace-cmd context and cannot be used standalone:
+> 	tracecmd_create_top_instance()
+> 	tracecmd_remove_instances()
+> 	tracecmd_filter_pid()
+> 	tracecmd_add_event()
+> 	tracecmd_enable_events()
+> 	tracecmd_disable_all_tracing()
+> 	tracecmd_disable_tracing()
+> 	tracecmd_enable_tracing()
+> 	tracecmd_stat_cpu()
+> They are implemented in trace-cmd application, but declared as APIs in
+> trace-cmd.h. The declarations are moved from trace-cmd.h to trace-local.h,
+> local header file visible only to trace-cmd application.
 > 
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->  include/trace-cmd/trace-cmd.h |  4 ++
->  include/trace-cmd/trace-msg.h |  3 --
->  lib/trace-cmd/trace-util.c    | 71 +++++++++++++++++++++++++++++++++++
->  tracecmd/trace-listen.c       | 69 ++++------------------------------
->  4 files changed, 83 insertions(+), 64 deletions(-)
+>  include/trace-cmd/trace-cmd.h  |  9 ---------
+>  tracecmd/include/trace-local.h | 11 +++++++++++
+>  2 files changed, 11 insertions(+), 9 deletions(-)
 > 
 > diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-> index b96de04..8db0686 100644
+> index 8db0686..2c8d798 100644
 > --- a/include/trace-cmd/trace-cmd.h
 > +++ b/include/trace-cmd/trace-cmd.h
-> @@ -398,6 +398,10 @@ struct hook_list {
->  struct hook_list *tracecmd_create_event_hook(const char *arg);
->  void tracecmd_free_hooks(struct hook_list *hooks);
+> @@ -137,8 +137,6 @@ int tracecmd_buffer_instances(struct tracecmd_input *handle);
+>  const char *tracecmd_buffer_instance_name(struct tracecmd_input *handle, int indx);
+>  struct tracecmd_input *tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx);
+>  int tracecmd_is_buffer_instance(struct tracecmd_input *handle);
+> -void tracecmd_create_top_instance(char *name);
+> -void tracecmd_remove_instances(void);
 >  
-> +void plog(const char *fmt, ...);
-> +void plog_error(const char *fmt, ...);
-
-If these are going to become visible in the library, then they need to
-have a prefix "tracecmd_" attached to them.
-
-> +int trace_set_log_file(char *logfile);
-> +
->  /* --- Hack! --- */
->  int tracecmd_blk_hack(struct tracecmd_input *handle);
+>  void tracecmd_set_ts_offset(struct tracecmd_input *handle, unsigned long long offset);
+>  void tracecmd_set_ts2secs(struct tracecmd_input *handle, unsigned long long hz);
+> @@ -304,14 +302,7 @@ struct tracecmd_recorder *tracecmd_create_buffer_recorder_maxkb(const char *file
 >  
-> diff --git a/include/trace-cmd/trace-msg.h b/include/trace-cmd/trace-msg.h
-> index b7fe10b..aab8a69 100644
-> --- a/include/trace-cmd/trace-msg.h
-> +++ b/include/trace-cmd/trace-msg.h
-> @@ -12,7 +12,4 @@
+>  int tracecmd_start_recording(struct tracecmd_recorder *recorder, unsigned long sleep);
+>  void tracecmd_stop_recording(struct tracecmd_recorder *recorder);
+> -void tracecmd_stat_cpu(struct trace_seq *s, int cpu);
+>  long tracecmd_flush_recording(struct tracecmd_recorder *recorder);
+> -void tracecmd_filter_pid(int pid, int exclude);
+> -int tracecmd_add_event(const char *event_str, int stack);
+> -void tracecmd_enable_events(void);
+> -void tracecmd_disable_all_tracing(int disable_tracer);
+> -void tracecmd_disable_tracing(void);
+> -void tracecmd_enable_tracing(void);
 >  
->  extern unsigned int page_size;
+>  enum tracecmd_msg_flags {
+>  	TRACECMD_MSG_FL_USE_TCP		= 1 << 0,
+> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+> index e2d5506..05760d8 100644
+> --- a/tracecmd/include/trace-local.h
+> +++ b/tracecmd/include/trace-local.h
+> @@ -216,6 +216,17 @@ void show_instance_file(struct buffer_instance *instance, const char *name);
 >  
-> -void plog(const char *fmt, ...);
-> -void pdie(const char *fmt, ...);
-> -
->  #endif /* _TRACE_MSG_H_ */
-> diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-> index b5ce84f..8c1a0a0 100644
-> --- a/lib/trace-cmd/trace-util.c
-> +++ b/lib/trace-cmd/trace-util.c
-> @@ -31,6 +31,8 @@ int tracecmd_disable_plugins;
->  static int tracecmd_quiet;
->  static bool tracecmd_debug;
+>  int count_cpus(void);
 >  
-> +static FILE *trace_logfp;
+> +/* moved from trace-cmd.h */
+> +void tracecmd_create_top_instance(char *name);
+> +void tracecmd_remove_instances(void);
+> +void tracecmd_filter_pid(int pid, int exclude);
+> +int tracecmd_add_event(const char *event_str, int stack);
+> +void tracecmd_enable_events(void);
+> +void tracecmd_disable_all_tracing(int disable_tracer);
+> +void tracecmd_disable_tracing(void);
+> +void tracecmd_enable_tracing(void);
+> +void tracecmd_stat_cpu(struct trace_seq *s, int cpu);
+> +
 
-As this is a static variable, we only need to call it logfp.
-
-> +
->  static struct registered_plugin_options {
->  	struct registered_plugin_options	*next;
->  	struct tep_plugin_option			*options;
-> @@ -1716,3 +1718,72 @@ void __weak *malloc_or_die(unsigned int size)
->  		die("malloc");
->  	return data;
->  }
-> +
-> +#define LOG_BUF_SIZE 1024
-> +static void __plog(const char *prefix, const char *fmt, va_list ap, FILE *fp)
-> +{
-> +	static int newline = 1;
-> +	char buf[LOG_BUF_SIZE];
-> +	int r;
-> +
-> +	r = vsnprintf(buf, LOG_BUF_SIZE, fmt, ap);
-> +
-> +	if (r > LOG_BUF_SIZE)
-> +		r = LOG_BUF_SIZE;
-> +
-> +	if (trace_logfp) {
-> +		if (newline)
-> +			fprintf(trace_logfp, "[%d]%s%.*s", getpid(), prefix, r, buf);
-> +		else
-> +			fprintf(trace_logfp, "[%d]%s%.*s", getpid(), prefix, r, buf);
-> +		newline = buf[r - 1] == '\n';
-> +		fflush(trace_logfp);
-> +		return;
-> +	}
-> +
-> +	fprintf(fp, "%.*s", r, buf);
-> +}
-> +
-> +void plog(const char *fmt, ...)
-> +{
-> +	va_list ap;
-> +
-> +	va_start(ap, fmt);
-> +	__plog("", fmt, ap, stdout);
-> +	va_end(ap);
-> +	/* Make sure it gets to the screen, in case we crash afterward */
-> +	fflush(stdout);
-> +}
-> +
-> +void plog_error(const char *fmt, ...)
-> +{
-> +	va_list ap;
-> +	char *str = "";
-> +
-> +	va_start(ap, fmt);
-> +	__plog("Error: ", fmt, ap, stderr);
-> +	va_end(ap);
-> +	if (errno)
-> +		str = strerror(errno);
-> +	if (trace_logfp)
-> +		fprintf(trace_logfp, "\n%s\n", str);
-> +	else
-> +		fprintf(stderr, "\n%s\n", str);
-> +}
-> +
-> +/**
-> + * trace_set_log_file - Set file for logging
-> + * @logfile: Name of the log file
-> + *
-> + * Returns 0 on successful completion or -1 in case of error
-> + */
-> +int trace_set_log_file(char *logfile)
-
-Should it be called tracecmd_set_logfile()?
+I'll take this patch, but I wonder if we should change "tracecmd_" to
+"trace_" to let it be known that these are local functions. That can be
+a later patch.
 
 -- Steve
 
-> +{
-> +	if (trace_logfp)
-> +		fclose(trace_logfp);
-> +	trace_logfp = fopen(logfile, "w");
-> +	if (!trace_logfp)
-> +		return -1;
-> +	return 0;
-> +}
-> +
+>  /* No longer in event-utils.h */
+>  void __noreturn die(const char *fmt, ...); /* Can be overriden */
+>  void *malloc_or_die(unsigned int size); /* Can be overridden */
+
