@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B72F4C3A5A1
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 11:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56CFAC3A5A1
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 11:25:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 845D72173E
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 11:25:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2C0F82173E
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 11:25:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZVqWp/BA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XKAr8GeT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbfH1LZE (ORCPT
+        id S1726408AbfH1LZH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Aug 2019 07:25:04 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:36821 "EHLO
+        Wed, 28 Aug 2019 07:25:07 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:36828 "EHLO
         mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbfH1LZE (ORCPT
+        with ESMTP id S1726368AbfH1LZG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Aug 2019 07:25:04 -0400
-Received: by mail-wm1-f68.google.com with SMTP id p13so2233260wmh.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Aug 2019 04:25:02 -0700 (PDT)
+        Wed, 28 Aug 2019 07:25:06 -0400
+Received: by mail-wm1-f68.google.com with SMTP id p13so2233378wmh.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Aug 2019 04:25:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NdOzju8h45Z5YBOmkFuoCNJV38KV0/qaAbJ+IxsLHV0=;
-        b=ZVqWp/BAUg0O0GdF5f6FtscFO6kM3ZpHL3FPCvsksNBlSOmqbqmaprYYuMmR5nwvSy
-         A8B6HQ0lQbjs2nIDxJnql3F60yfmwl4qzS0qW/xBPYNpf4GiSzrA/YrB67Qeuw4N3jOh
-         0nCGzcw7XQhU5d/R1jXcoV43n/e7XHzOlrHKrEWV7P5euePbERYErDZGtNrEsNLArpdn
-         oTRqvtK6VHL8j6LRXOieBBYS87CZd1tdzlQ7r1vpKBysQorHEuq+byEvsFB5O4PQHTYL
-         Nzf6oXkoOaBL+HDQwZTIDwpu9ppt7Q+/e8K1kh5DlmrolXJDYKJJub0nJgbql2CwLv8j
-         fHbw==
+        bh=ueWojPE0uYaqhVaCkvP31HnbARge98KstgiOIw7e4Us=;
+        b=XKAr8GeTXyZu7CO7hFcGuFvsue7Fiz8UqKOxm9d308W5HAJyV4bhHAm//Vt3RP8EIx
+         O8b6CDj1z8tWSDC+FWFs76LTkRpXa6E4OCDHIHHwsPS3f6aghicj8n3+kA3xcL9tXSC/
+         5ODp8aXOuZUQuGLXECI1WxGfaLoePTDAPAG3i9w728THUjl1TnlJri912QnveOu5kbQ2
+         ho+HXb7Ikz/33SzRNW3fxpU9ty0FQi3bRtnkRFzea+LnD05v6rlqP51/KA87c2J5Ru2N
+         DLyqnLLBWk+h0s0yZRvoSn8neA2mJWL4g3/wd2qXk20kThZlnvmXM5q0px5nkmVElAOG
+         cvrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NdOzju8h45Z5YBOmkFuoCNJV38KV0/qaAbJ+IxsLHV0=;
-        b=TT/qMDXX60FgEnxhCYU8Z5wtHNk6mvXha9cM+OG92nl+Ulx/nnPBb6VLJfqWopiPAi
-         ffOLaH52JOgca5YldG4zLQQXTifveYwf7/3s/WFm9q77eHAswooX+5wlNyTSkoCQJ+/g
-         i2Eikv97NdW7LkGP1h7Qj9pqLE+vOuMTX4XYBRl9t2IoFRrc9D/jIRO1aVagvxO2+UWj
-         1Q0OL0zZY+M0jXq0efnpFOXOtCQdewbP+rPaM0mj+/PHi+cQKWTThTm75wBOzZFwnBx7
-         TOJcC3q+iCL9hEDZRemHnHBkPuGe1PKQ9Inr7eAMorKW6GHStNpa6EBrfnVecPKQueaa
-         7ABg==
-X-Gm-Message-State: APjAAAV3X71APXiYtzWjTUQ5wjuSD6StsCJqVnykbDSMJK1GNmqEdlBZ
-        zngWRCNL8ffnZtrkn+MNqPU=
-X-Google-Smtp-Source: APXvYqwhcy1jRSANU263LkpfrO1CdzjoRTFgYWNikxwny4LRXsPG6P67DqlVxXLKL2t3z86AjPjiqg==
-X-Received: by 2002:a1c:4c04:: with SMTP id z4mr4253891wmf.1.1566991501863;
-        Wed, 28 Aug 2019 04:25:01 -0700 (PDT)
+        bh=ueWojPE0uYaqhVaCkvP31HnbARge98KstgiOIw7e4Us=;
+        b=sTsD1iAXzxqikKennPczff3CFEgzPxLKVtLOnJOxKIoxUNsLpm3FeeqyMZXGqlNUNY
+         Y9QnZKMG/fQlgE4zErZRb+TRK3KB1GIDIUzb7JbPS/RGTIKuv31znD/Fq6QOLkbs5H/f
+         3sJ894GiX/znXtd9igbtKd4trZauMwRbeCJ1kQgYoDjCaS5Edep43SWh0uM0RZzXUlHE
+         cc0rBNf0+HOtmwiYrH3iCdgJsQy4g6rMWo+vJ3Xv9f4cVHvjcqxxSHyiTUaJ+clLjhR2
+         1uK9lNg+Vx2Vvwh0kQR+DnPyo6t220nm9hf73RHMtAmuFPi9k6krCBhrOYCEsIyvQarL
+         4l3w==
+X-Gm-Message-State: APjAAAWf3YqCIDD18mNSSU1W1wi55Xy3G2zlVMvt6JwciJdRthSmUwCT
+        k1TFGTURLBi7zzc95honii+LzXLk
+X-Google-Smtp-Source: APXvYqwh7MYeRkfzDpYhRLTAr4npS6ierjo57tG2kCFu+n64C7QFQ1DCZ3MzNn8/txYfJ6KjcBkODg==
+X-Received: by 2002:a7b:c0d0:: with SMTP id s16mr4177028wmh.65.1566991503899;
+        Wed, 28 Aug 2019 04:25:03 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id c132sm2846766wme.27.2019.08.28.04.25.00
+        by smtp.gmail.com with ESMTPSA id c132sm2846766wme.27.2019.08.28.04.25.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 04:25:00 -0700 (PDT)
+        Wed, 28 Aug 2019 04:25:03 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v6 1/3] trace-cmd: Extend ptrace logic to work with multiple filtered pids
-Date:   Wed, 28 Aug 2019 14:24:55 +0300
-Message-Id: <20190828112457.10533-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v6 3/3] trace-cmd: Add option to execute traced process as given user
+Date:   Wed, 28 Aug 2019 14:24:57 +0300
+Message-Id: <20190828112457.10533-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190828112457.10533-1-tz.stoyanov@gmail.com>
 References: <20190828112457.10533-1-tz.stoyanov@gmail.com>
@@ -73,182 +73,159 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In the trace-record.c file there is a global variable named "filter_pid".
-It is not set anywhere in the code, but there is a logic which relies on it.
-This variable is a leftover from the past implementation of trace-cmd
-record "-P" option, when it was designed to filter only a single PID.
-Now "-P" option works with a list of PIDs, stored in filter_pids global
-list. The code is modified to work with filter_pids instead of filter_pid.
-This logic is used only if there is no ftrace "options/event-fork" on the
-system and we have ptrace support. There is one significant change in
-the trace-cmd record behavior in this specific use case:
-  - filtered pids are specified with the "-P" option.
-  - there is no ftrace "options/event-fork" on the system.
-  - there is ptrace support.
-The trace continues until Ctrl^C is hit or all filtered PIDs exit,
-whatever comes first.
+A new trace-cmd record option is added: "--user". When it is set with
+combination of option -F, the traced process is executed in the context
+of the specified user.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 69 +++++++++++++++++++++++++++++++++--------
- 1 file changed, 56 insertions(+), 13 deletions(-)
+ Documentation/trace-cmd-record.1.txt |  3 ++
+ tracecmd/trace-record.c              | 49 ++++++++++++++++++++++++++--
+ tracecmd/trace-usage.c               |  1 +
+ 3 files changed, 50 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/trace-cmd-record.1.txt b/Documentation/trace-cmd-record.1.txt
+index e697f03..bb18e88 100644
+--- a/Documentation/trace-cmd-record.1.txt
++++ b/Documentation/trace-cmd-record.1.txt
+@@ -119,6 +119,9 @@ OPTIONS
+      Used with either *-F* (or *-P* if kernel supports it) to trace the process'
+      children too.
+ 
++*--user*::
++     Execute the specified *command* as given user.
++
+ *-C* 'clock'::
+      Set the trace clock to "clock".
+ 
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 5dc6f17..917f52a 100644
+index 4a20339..9b7357f 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -86,7 +86,6 @@ static bool use_tcp;
- static int do_ptrace;
+@@ -33,6 +33,8 @@
+ #include <errno.h>
+ #include <limits.h>
+ #include <libgen.h>
++#include <pwd.h>
++#include <grp.h>
  
- static int filter_task;
--static int filter_pid = -1;
- static bool no_filter = false;
- 
- static int local_cpu_count;
-@@ -866,6 +865,13 @@ static void add_filter_pid(int pid, int exclude)
- 	struct filter_pids *p;
- 	char buf[100];
- 
-+	for (p = filter_pids; p; p = p->next) {
-+		if (p->pid == pid) {
-+			p->exclude = exclude;
-+			return;
-+		}
-+	}
-+
- 	p = malloc(sizeof(*p));
- 	if (!p)
- 		die("Failed to allocate pid filter");
-@@ -1223,17 +1229,36 @@ static void enable_ptrace(void)
- 	ptrace(PTRACE_TRACEME, 0, NULL, 0);
- }
- 
--static void ptrace_wait(enum trace_type type, int main_pid)
-+static void ptrace_wait(enum trace_type type)
- {
-+	struct filter_pids *fpid;
- 	unsigned long send_sig;
- 	unsigned long child;
- 	siginfo_t sig;
-+	int main_pids;
- 	int cstatus;
- 	int status;
-+	int i = 0;
-+	int *pids;
- 	int event;
- 	int pid;
- 	int ret;
- 
-+	pids = calloc(nr_filter_pids, sizeof(int));
-+	if (!pids) {
-+		warning("Unable to allocate array for %d PIDs", nr_filter_pids);
-+		return;
-+	}
-+
-+	for (fpid = filter_pids; fpid; fpid = fpid->next) {
-+		if (fpid->exclude)
-+			continue;
-+		pids[i++] = fpid->pid;
-+		if (i >= nr_filter_pids)
-+			break;
-+	}
-+	main_pids = i;
-+
- 	do {
- 		ret = trace_waitpid(type, -1, &status, WSTOPPED | __WALL);
- 		if (ret < 0)
-@@ -1275,11 +1300,24 @@ static void ptrace_wait(enum trace_type type, int main_pid)
- 			       PTRACE_O_TRACEEXIT);
- 			ptrace(PTRACE_CONT, pid, NULL, send_sig);
- 		}
--	} while (!finished && ret > 0 &&
--		 (!WIFEXITED(status) || pid != main_pid));
-+		if (WIFEXITED(status) ||
-+		   (WIFSTOPPED(status) && event == PTRACE_EVENT_EXIT)) {
-+			for (i = 0; i < nr_filter_pids; i++) {
-+				if (pid == pids[i]) {
-+					pids[i] = 0;
-+					main_pids--;
-+					if (!main_pids)
-+						finished = 1;
-+					break;
-+				}
-+			}
-+		}
-+	} while (!finished && ret > 0);
-+
-+	free(pids);
- }
- #else
--static inline void ptrace_wait(enum trace_type type, int main_pid) { }
-+static inline void ptrace_wait(enum trace_type type) { }
- static inline void enable_ptrace(void) { }
- static inline void ptrace_attach(int pid) { }
- 
-@@ -1289,8 +1327,8 @@ static void trace_or_sleep(enum trace_type type)
- {
- 	struct timeval tv = { 1 , 0 };
- 
--	if (do_ptrace && filter_pid >= 0)
--		ptrace_wait(type, filter_pid);
-+	if (do_ptrace && filter_pids)
-+		ptrace_wait(type);
- 	else if (type & TRACE_TYPE_STREAM)
- 		trace_stream_read(pids, recorder_threads, &tv);
- 	else
-@@ -1327,7 +1365,7 @@ static void run_cmd(enum trace_type type, int argc, char **argv)
- 	}
- 	if (do_ptrace) {
- 		add_filter_pid(pid, 0);
--		ptrace_wait(type, pid);
-+		ptrace_wait(type);
- 	} else
- 		trace_waitpid(type, pid, &status, 0);
- }
-@@ -2318,7 +2356,7 @@ create_event(struct buffer_instance *instance, char *path, struct event_list *ol
- 	*event = *old_event;
- 	add_event(instance, event);
- 
--	if (event->filter || filter_task || filter_pid) {
-+	if (event->filter || filter_task || filter_pids) {
- 		event->filter_file = strdup(path);
- 		if (!event->filter_file)
- 			die("malloc filter file");
-@@ -4924,9 +4962,9 @@ static void parse_record_options(int argc,
- 		add_func(&ctx->instance->filter_funcs,
- 			 ctx->instance->filter_mod, "*");
- 
--	if (do_ptrace && !filter_task && (filter_pid < 0))
-+	if (do_ptrace && !filter_task && !nr_filter_pids)
- 		die(" -c can only be used with -F (or -P with event-fork support)");
--	if (ctx->do_child && !filter_task &&! filter_pid)
-+	if (ctx->do_child && !filter_task && !nr_filter_pids)
- 		die(" -c can only be used with -P or -F");
- 
- 	if ((argc - optind) >= 2) {
-@@ -4997,6 +5035,7 @@ static void record_trace(int argc, char **argv,
- {
- 	enum trace_type type = get_trace_cmd_type(ctx->curr_cmd);
+ #include "version.h"
+ #include "trace-local.h"
+@@ -208,6 +210,7 @@ struct common_record_context {
  	struct buffer_instance *instance;
-+	struct filter_pids *pid;
+ 	const char *output;
+ 	char *date2ts;
++	char *user;
+ 	int data_flags;
  
- 	/*
- 	 * If top_instance doesn't have any plugins or events, then
-@@ -5083,8 +5122,12 @@ static void record_trace(int argc, char **argv,
+ 	int record_all;
+@@ -1457,7 +1460,34 @@ static void trace_or_sleep(enum trace_type type)
+ 		sleep(10);
+ }
+ 
+-static void run_cmd(enum trace_type type, int argc, char **argv)
++static int change_user(const char *user)
++{
++	struct passwd *pwd;
++
++	if (!user)
++		return 0;
++
++	pwd = getpwnam(user);
++	if (!pwd)
++		return -1;
++	if (initgroups(user, pwd->pw_gid) < 0)
++		return -1;
++	if (setgid(pwd->pw_gid) < 0)
++		return -1;
++	if (setuid(pwd->pw_uid) < 0)
++		return -1;
++
++	if (setenv("HOME", pwd->pw_dir, 1) < 0)
++		return -1;
++	if (setenv("USER", pwd->pw_name, 1) < 0)
++		return -1;
++	if (setenv("LOGNAME", pwd->pw_name, 1) < 0)
++		return -1;
++
++	return 0;
++}
++
++static void run_cmd(enum trace_type type, const char *user, int argc, char **argv)
+ {
+ 	int status;
+ 	int pid;
+@@ -1478,6 +1508,10 @@ static void run_cmd(enum trace_type type, int argc, char **argv)
+ 			dup2(save_stdout, 1);
+ 			close(save_stdout);
+ 		}
++
++		if (change_user(user) < 0)
++			die("Failed to change user to %s", user);
++
+ 		if (execvp(argv[0], argv)) {
+ 			fprintf(stderr, "\n********************\n");
+ 			fprintf(stderr, " Unable to exec %s\n", argv[0]);
+@@ -4592,6 +4626,7 @@ void update_first_instance(struct buffer_instance *instance, int topt)
+ }
+ 
+ enum {
++	OPT_user		= 243,
+ 	OPT_procmap		= 244,
+ 	OPT_quiet		= 245,
+ 	OPT_debug		= 246,
+@@ -4824,6 +4859,7 @@ static void parse_record_options(int argc,
+ 			{"quiet", no_argument, NULL, OPT_quiet},
+ 			{"help", no_argument, NULL, '?'},
+ 			{"proc-map", no_argument, NULL, OPT_procmap},
++			{"user", required_argument, NULL, OPT_user},
+ 			{"module", required_argument, NULL, OPT_module},
+ 			{NULL, 0, NULL, 0}
+ 		};
+@@ -5056,6 +5092,11 @@ static void parse_record_options(int argc,
+ 		case 'i':
+ 			ignore_event_not_found = 1;
+ 			break;
++		case OPT_user:
++			ctx->user = strdup(optarg);
++			if (!ctx->user)
++				die("Failed to allocate user name");
++			break;
+ 		case OPT_procmap:
+ 			get_procmap = 1;
+ 			break;
+@@ -5139,7 +5180,9 @@ static void parse_record_options(int argc,
+ 			    "Did you mean 'record'?");
+ 		ctx->run_command = 1;
+ 	}
+-
++	if (ctx->user && !ctx->run_command)
++		warning("--user %s is ignored, no command is specified",
++			ctx->user);
+ 	if (get_procmap) {
+ 		if (!ctx->run_command && !nr_filter_pids)
+ 			warning("--proc-map is ignored, no command or filtered PIDs are specified.");
+@@ -5287,7 +5330,7 @@ static void record_trace(int argc, char **argv,
+ 	}
+ 
+ 	if (ctx->run_command)
+-		run_cmd(type, (argc - optind) - 1, &argv[optind + 1]);
++		run_cmd(type, ctx->user, (argc - optind) - 1, &argv[optind + 1]);
+ 	else {
  		update_task_filter();
  		tracecmd_enable_tracing();
- 		/* We don't ptrace ourself */
--		if (do_ptrace && filter_pid >= 0)
--			ptrace_attach(filter_pid);
-+		if (do_ptrace && filter_pids) {
-+			for (pid = filter_pids; pid; pid = pid->next) {
-+				if (!pid->exclude)
-+					ptrace_attach(pid->pid);
-+			}
-+		}
- 		/* sleep till we are woken with Ctrl^C */
- 		printf("Hit Ctrl^C to stop recording\n");
- 		while (!finished)
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 7a67784..20cb66f 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -58,6 +58,7 @@ static struct usage_help usage_help[] = {
+ 		"          --max-graph-depth limit function_graph depth\n"
+ 		"          --no-filter include trace-cmd threads in the trace\n"
+ 		"          --proc-map save the traced processes address map into the trace.dat file\n"
++		"          --user execute the specified [command ...] as given user\n"
+ 	},
+ 	{
+ 		"start",
 -- 
 2.21.0
 
