@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D899C3A5A4
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 08:57:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D823C3A5A1
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 08:57:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 03A5F2189D
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 08:57:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 08E552339E
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 08:57:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rrcJdT7L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vJ4sZINh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbfH1I5y (ORCPT
+        id S1726440AbfH1I54 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Aug 2019 04:57:54 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45472 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbfH1I5y (ORCPT
+        Wed, 28 Aug 2019 04:57:56 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:37925 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbfH1I54 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Aug 2019 04:57:54 -0400
-Received: by mail-wr1-f66.google.com with SMTP id q12so1608613wrj.12
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Aug 2019 01:57:53 -0700 (PDT)
+        Wed, 28 Aug 2019 04:57:56 -0400
+Received: by mail-wm1-f67.google.com with SMTP id o184so1151112wme.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Aug 2019 01:57:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cvAw5cqGWJQCaxLK4o1tvUof4SkcEdE+z/wwuzAqZTM=;
-        b=rrcJdT7LwBYT+tX8E0w8pBT29XRCFmIHxIMTymw/R/16lChpuoCAnbdLsg98tRMOwO
-         ZdgHemeJsxcc8pyX+8k7lSHVb/4oDiZkeso365zRw/nZu7Mvk9Qqesor+zvrOEVfuQ8y
-         eH4QHXufGR4v3pQsriszZODMINZcTwNyv5FZ2WfK1pIQ7gUuF9cIxY1PlWawleqTsfIF
-         kYknupdiNLAqSfz5cC0xlqfbJKEcqYVIAbKE3559NqqnSyLsbSOVAxGzV6AAB9FeR030
-         Zl2EiP8xL3XRvoYIMSdXR+U6dvUC+b+jwtb53Y7yNCFDGvVR9WTzq+1N4arPpTwv9kgn
-         sDjA==
+        bh=kMzqp+bMChPRFBScO3nEZo1UAkgmucpEFNlaVmBUOCc=;
+        b=vJ4sZINh+soDfY5fclwXCIz1CVoWbBkftaq9xEeRQ7e68atvNIiHLAE+grmTrQjHlx
+         sE5MJwcEgPnbQ2mf25VoBdS38xnCIk+GTNMFMrLYnZQQZtZq1gMq+8zWwmKXIZ3cL5Ye
+         8pEM0ujsKbkcB3pfEdm028GSNHurmDtMthwMgUcfStrs+DhL/RY8U76JhnvCtZK2cpgv
+         LHpwlXM+PhyGkdBHufCur/ySxkIysXUhjMc3h2WErtmip6uGE/0v7+K1+u4lFy87pbsP
+         /JpcoE7woCsbs/rDFgQeOxOA74aQDAqxgyvuT2DuQxlR+0CphO7fKtDbON+6NudT5VeJ
+         6NeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cvAw5cqGWJQCaxLK4o1tvUof4SkcEdE+z/wwuzAqZTM=;
-        b=bBtDJ1Jm/utYqLfY1SzryECzSjwlH5Ufi7P5o0IY9ZHF4qM/wjYQyZHdNY6awsgBlg
-         VqdKQXZT4C3Da+z4EV4mDXVVYV51tkfH+UO3nVaaJBJNJkso5nTXkCmAh1iZEIV+Hl+g
-         v5AqCZuIXT0iVe98Vyc4AXvNKWSWa+Zvf/lkhFRW4lj6rU5FhvigHRazW/A8yEePxhwM
-         u6zoBNLEPbGHuh3v5pPKh2gPZStm4uEHxyyYS6PRiqRBW20Scut/ieht4kN8dgZs4QFt
-         t2ejCkqoDfWPt4fwoNe/ktleOh96s+HxuN4jdHlFtjw537qL+lBxQLhVXh0J05zV8t1J
-         hZXA==
-X-Gm-Message-State: APjAAAUDtbQNmSH0Mu8dYTe/1p811G7TVn3EZgJ8j27W8SQozah7Wg+3
-        GxZ6E6F2r+svy51hqbTOpMw=
-X-Google-Smtp-Source: APXvYqwxbznHPG48Zljyf5HZffAtrsY3/Ut7dyjWfo46WBwXoIOaiEOd5CaDuBJ9hPHl08JfXdTUcA==
-X-Received: by 2002:a5d:564f:: with SMTP id j15mr3111877wrw.326.1566982672568;
-        Wed, 28 Aug 2019 01:57:52 -0700 (PDT)
+        bh=kMzqp+bMChPRFBScO3nEZo1UAkgmucpEFNlaVmBUOCc=;
+        b=XpnWCQVsIV9c1UlNhY5O65LjftM+qS7hpH8hNsN6hHgSvourXOMo3GBIDBvqA297BK
+         AGGee1UzlnEOsvP8fY+IR31j+oCLDewRRJTwvKTdHrfXKSQSHRQJxXvThhhmmJwzp+dt
+         gtNAf6PBEzHTdAQAd+5s0epfLr8gJ+ZZyEkZT4UJBiUU66okpT1VsDXMHVi5vqrCojS2
+         CCfRbinNDPakQaXrctS5ASfPw+U9x9Vc1HzniSvKd6BnE8Z8hwtG9g1yT9LsI7ZhXkqH
+         MB+V2tVLveLJshagPHORk82Wd2E3pdwCPneOWEz2BuNfq7b4VHPgfdtYLWvytuouPUus
+         gGPA==
+X-Gm-Message-State: APjAAAU1R3loCK6rzMlUX44vJd1bIvafL4WYgk0/Vp9QotLjbpGln5ZK
+        wL6mOp7pG35f6TM9QCjX2FozafLP
+X-Google-Smtp-Source: APXvYqys8Wi+iBeflzi8b/Twq8OnYBlAEOHxqXYKIM3Phf1blQWi6rOwVxT6VtM71SPEQ8V09UPFFQ==
+X-Received: by 2002:a1c:e710:: with SMTP id e16mr3579655wmh.38.1566982673487;
+        Wed, 28 Aug 2019 01:57:53 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id u186sm2579433wmu.26.2019.08.28.01.57.51
+        by smtp.gmail.com with ESMTPSA id u186sm2579433wmu.26.2019.08.28.01.57.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 28 Aug 2019 01:57:52 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v12 4/9] trace-cmd: Added implementation of htonll() and ntohll()
-Date:   Wed, 28 Aug 2019 11:57:41 +0300
-Message-Id: <20190828085746.26231-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v12 5/9] trace-cmd: Refactored few functions in trace-record.c
+Date:   Wed, 28 Aug 2019 11:57:42 +0300
+Message-Id: <20190828085746.26231-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190828085746.26231-1-tz.stoyanov@gmail.com>
 References: <20190828085746.26231-1-tz.stoyanov@gmail.com>
@@ -75,33 +75,250 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Added implementation of htonll() and ntohll() as
-macros, if they are not already defined.
+In order to reuse the code inside the trace-cmd application, few
+functions from trace-record.c are refactored:
+  - make_instances() and tracecmd_remove_instances() are splited.
+New ones are created: tracecmd_make_instance() and tracecmd_remove_instance(),
+which are visible outside the trace-record.c
+  - Following functions are made non-static: tracecmd_init_instance()
+get_instance_dir(), write_instance_file(), write_tracing_on(),
+tracecmd_set_clock()
+  - New function is implemented: tracecmd_local_cpu_count(), an internal
+API to get local_cpu_count.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tracecmd/include/trace-msg.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ tracecmd/include/trace-local.h |  9 ++++
+ tracecmd/trace-record.c        | 88 +++++++++++++++++++---------------
+ 2 files changed, 59 insertions(+), 38 deletions(-)
 
-diff --git a/tracecmd/include/trace-msg.h b/tracecmd/include/trace-msg.h
-index b7fe10b..445f799 100644
---- a/tracecmd/include/trace-msg.h
-+++ b/tracecmd/include/trace-msg.h
-@@ -15,4 +15,14 @@ extern unsigned int page_size;
- void plog(const char *fmt, ...);
- void pdie(const char *fmt, ...);
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 29d0bf8..1d305bf 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -237,6 +237,15 @@ void update_first_instance(struct buffer_instance *instance, int topt);
+ void show_instance_file(struct buffer_instance *instance, const char *name);
  
-+#ifndef htonll
-+# if __BYTE_ORDER == __LITTLE_ENDIAN
-+#define htonll(x) __bswap_64(x)
-+#define ntohll(x) __bswap_64(x)
-+#else
-+#define htonll(x) (x)
-+#define ntohll(x) (x)
-+#endif
-+#endif
+ int count_cpus(void);
++void write_tracing_on(struct buffer_instance *instance, int on);
++char *get_instance_dir(struct buffer_instance *instance);
++int write_instance_file(struct buffer_instance *instance,
++			const char *file, const char *str, const char *type);
++void tracecmd_init_instance(struct buffer_instance *instance);
++void tracecmd_make_instance(struct buffer_instance *instance);
++int tracecmd_local_cpu_count(void);
++void tracecmd_set_clock(struct buffer_instance *instance);
++void tracecmd_remove_instance(struct buffer_instance *instance);
+ 
+ /* No longer in event-utils.h */
+ void __noreturn die(const char *fmt, ...); /* Can be overriden */
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index e844029..db1d37a 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -186,7 +186,7 @@ static inline int no_top_instance(void)
+ 	return first_instance != &top_instance;
+ }
+ 
+-static void init_instance(struct buffer_instance *instance)
++void tracecmd_init_instance(struct buffer_instance *instance)
+ {
+ 	instance->event_next = &instance->events;
+ }
+@@ -311,7 +311,7 @@ static void reset_save_file_cond(const char *file, int prio,
+  */
+ void add_instance(struct buffer_instance *instance, int cpu_count)
+ {
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
+ 	instance->next = buffer_instances;
+ 	if (first_instance == buffer_instances)
+ 		first_instance = instance;
+@@ -498,7 +498,7 @@ static void add_event(struct buffer_instance *instance, struct event_list *event
+ static void reset_event_list(struct buffer_instance *instance)
+ {
+ 	instance->events = NULL;
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
+ }
+ 
+ static char *get_temp_file(struct buffer_instance *instance, int cpu)
+@@ -804,8 +804,7 @@ get_instance_file(struct buffer_instance *instance, const char *file)
+ 	return path;
+ }
+ 
+-static char *
+-get_instance_dir(struct buffer_instance *instance)
++char *get_instance_dir(struct buffer_instance *instance)
+ {
+ 	char *buf;
+ 	char *path;
+@@ -849,9 +848,8 @@ static int write_file(const char *file, const char *str, const char *type)
+ 	return ret;
+ }
+ 
+-static int
+-write_instance_file(struct buffer_instance *instance,
+-		    const char *file, const char *str, const char *type)
++int write_instance_file(struct buffer_instance *instance,
++			const char *file, const char *str, const char *type)
+ {
+ 	char *path;
+ 	int ret;
+@@ -1993,7 +1991,7 @@ static int open_tracing_on(struct buffer_instance *instance)
+ 	return fd;
+ }
+ 
+-static void write_tracing_on(struct buffer_instance *instance, int on)
++void write_tracing_on(struct buffer_instance *instance, int on)
+ {
+ 	int ret;
+ 	int fd;
+@@ -2320,7 +2318,7 @@ void tracecmd_enable_events(void)
+ 	enable_events(first_instance);
+ }
+ 
+-static void set_clock(struct buffer_instance *instance)
++void tracecmd_set_clock(struct buffer_instance *instance)
+ {
+ 	char *path;
+ 	char *content;
+@@ -4471,49 +4469,58 @@ static void clear_func_filters(void)
+ 	}
+ }
+ 
+-static void make_instances(void)
++void tracecmd_make_instance(struct buffer_instance *instance)
+ {
+-	struct buffer_instance *instance;
+ 	struct stat st;
+ 	char *path;
+ 	int ret;
+ 
++	path = get_instance_dir(instance);
++	ret = stat(path, &st);
++	if (ret < 0) {
++		ret = mkdir(path, 0777);
++		if (ret < 0)
++			die("mkdir %s", path);
++	} else
++		/* Don't delete instances that already exist */
++		instance->flags |= BUFFER_FL_KEEP;
++	tracecmd_put_tracing_file(path);
 +
- #endif /* _TRACE_MSG_H_ */
++}
++
++static void make_instances(void)
++{
++	struct buffer_instance *instance;
++
+ 	for_each_instance(instance) {
+ 		if (is_guest(instance))
+ 			continue;
++		tracecmd_make_instance(instance);
++	}
++}
+ 
+-		path = get_instance_dir(instance);
+-		ret = stat(path, &st);
+-		if (ret < 0) {
+-			ret = mkdir(path, 0777);
+-			if (ret < 0)
+-				die("mkdir %s", path);
+-		} else
+-			/* Don't delete instances that already exist */
+-			instance->flags |= BUFFER_FL_KEEP;
+-		tracecmd_put_tracing_file(path);
++void tracecmd_remove_instance(struct buffer_instance *instance)
++{
++	char *path;
++
++	if (instance->tracing_on_fd > 0) {
++		close(instance->tracing_on_fd);
++		instance->tracing_on_fd = 0;
+ 	}
++	path = get_instance_dir(instance);
++	rmdir(path);
++	tracecmd_put_tracing_file(path);
+ }
+ 
+ void tracecmd_remove_instances(void)
+ {
+ 	struct buffer_instance *instance;
+-	char *path;
+-	int ret;
+ 
+ 	for_each_instance(instance) {
+ 		/* Only delete what we created */
+ 		if (is_guest(instance) || (instance->flags & BUFFER_FL_KEEP))
+ 			continue;
+-		if (instance->tracing_on_fd > 0) {
+-			close(instance->tracing_on_fd);
+-			instance->tracing_on_fd = 0;
+-		}
+-		path = get_instance_dir(instance);
+-		ret = rmdir(path);
+-		if (ret < 0)
+-			die("rmdir %s", path);
+-		tracecmd_put_tracing_file(path);
++		tracecmd_remove_instance(instance);
+ 	}
+ }
+ 
+@@ -5008,7 +5015,7 @@ void trace_stop(int argc, char **argv)
+ 	int topt = 0;
+ 	struct buffer_instance *instance = &top_instance;
+ 
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
+ 
+ 	for (;;) {
+ 		int c;
+@@ -5049,7 +5056,7 @@ void trace_restart(int argc, char **argv)
+ 	int topt = 0;
+ 	struct buffer_instance *instance = &top_instance;
+ 
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
+ 
+ 	for (;;) {
+ 		int c;
+@@ -5091,7 +5098,7 @@ void trace_reset(int argc, char **argv)
+ 	int topt = 0;
+ 	struct buffer_instance *instance = &top_instance;
+ 
+-	init_instance(instance);
++	tracecmd_init_instance(instance);
+ 
+ 	/* if last arg is -a, then -b and -d apply to all instances */
+ 	int last_specified_all = 0;
+@@ -5175,11 +5182,16 @@ static void init_common_record_context(struct common_record_context *ctx,
+ 	memset(ctx, 0, sizeof(*ctx));
+ 	ctx->instance = &top_instance;
+ 	ctx->curr_cmd = curr_cmd;
+-	init_instance(ctx->instance);
++	tracecmd_init_instance(ctx->instance);
+ 	local_cpu_count = count_cpus();
+ 	ctx->instance->cpu_count = local_cpu_count;
+ }
+ 
++int tracecmd_local_cpu_count(void)
++{
++	return local_cpu_count;
++}
++
+ #define IS_EXTRACT(ctx) ((ctx)->curr_cmd == CMD_extract)
+ #define IS_START(ctx) ((ctx)->curr_cmd == CMD_start)
+ #define IS_STREAM(ctx) ((ctx)->curr_cmd == CMD_stream)
+@@ -5762,7 +5774,7 @@ static void record_trace(int argc, char **argv,
+ 	tracecmd_disable_all_tracing(1);
+ 
+ 	for_all_instances(instance)
+-		set_clock(instance);
++		tracecmd_set_clock(instance);
+ 
+ 	/* Record records the date first */
+ 	if (ctx->date &&
 -- 
 2.21.0
 
