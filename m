@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59EA2C3A5A1
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 08:57:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7583BC3A5A1
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 08:57:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3074D23403
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 08:57:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4C4EA2189D
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Aug 2019 08:57:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NvMDTejl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JG6Z7Gxg"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbfH1I5w (ORCPT
+        id S1726436AbfH1I5y (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Aug 2019 04:57:52 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:53259 "EHLO
+        Wed, 28 Aug 2019 04:57:54 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:40810 "EHLO
         mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbfH1I5w (ORCPT
+        with ESMTP id S1726293AbfH1I5x (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Aug 2019 04:57:52 -0400
-Received: by mail-wm1-f65.google.com with SMTP id 10so1868354wmp.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Aug 2019 01:57:51 -0700 (PDT)
+        Wed, 28 Aug 2019 04:57:53 -0400
+Received: by mail-wm1-f65.google.com with SMTP id t9so805768wmi.5
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Aug 2019 01:57:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ur+VhcY0EeBF1+7rEL+sbjYCD3Z8tWJnvkXUHG7kPQw=;
-        b=NvMDTejlW0ikzqZifsY4MeQMunNm3U7G7Mrxf7BHp8M/Kpa6KSn+k87htATqnRbDQz
-         B5OwOub9CEGwd6J/PKbLw8nqxHeiyiWTJo/pUdjzxihbXdlRRz9yVnDJZC9LUuqbZCsz
-         wt6DGnSfi4Ao23sUO4CvMgxox+stqccvY2cXeQseBveoUDc/oLnVa0I0t8NqBcSgjtCt
-         tMDGsXcgXBchiuhkZDq58sfB5veXygZ9qiRFc0f0buFHNSTUu/uLXZiY9ZatUEBnV/q3
-         zj7mdnI3E5ApyPC7nALE0QU3uDZ3vJ3LVu8gw2wuSEswQnIhQXDiKY8qAGzV5p9kMqmY
-         rD5w==
+        bh=bJAVvyqSeoa1jAnD2+HN2Roj8blocYF3Ubt/w/PAf4I=;
+        b=JG6Z7GxglODV+p68avG+73XPcrhgj3oQ8lEnHpbvry4Ex0rZq95XhLwNS4e1HUPfKa
+         mUmQFNJ/NyukLkn29DDAhVGXiIUsN+pqPIFg2tE+28xABcL7sxLFj6Lz2YTL5Sij263S
+         2+Pzeh6FdCpnGxePElKrFMh3TcFz5IBwUeIh9Y5SoAe5hpleLMPyE3jiFPIFh5LNNQcH
+         4D5SdJQixXItITrUYIdqjBlsgRTmPvauZ3iKNmstnoFPvdDmta2MXp8+GQ5QA1fxNAIK
+         a7tMZNTEin1f2+hIzC47mWkrmGYfv8NXu03unCfl5j6NPd6UP7z0pyF7eCco82ydbQd7
+         nZAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ur+VhcY0EeBF1+7rEL+sbjYCD3Z8tWJnvkXUHG7kPQw=;
-        b=ThY+KzXok8cVAWlMRkgioUdDdjPxxYULTKnzwZGY85fs2rfgxMmKWVTceZ6MvqB8iX
-         ThTNNAi8mbK3hi1YpVYg7Ww+b3tYSglFHbkp8DrokI3naDevs6GBIJ5oI7VC28tyV5id
-         H7Ey+OilRIRZhUVXxHfhhD5Qj3Ju822csjwBMPFVAyG9SrC2fx/hsDQu9zze2mKqqx/K
-         +ada0AJF9f7dsOcKfYEDB/IXJVgPD4XbGUsEKENfonvsnJeQx+8bVuZ9TgcIT/O5BGh8
-         vZmAL1o1IZ3TnjC+Nrd8IReL5qbVI3Yy76dh/rr8MBjLqk51tjIawWbksYpmWKKNRm8E
-         73vw==
-X-Gm-Message-State: APjAAAV//2uJ6+QCv+ihRlHimtYdMjfY3RkdQMjW6RqxummTs8gEVPhR
-        qPgUQNmzNcfjmCJj+Viyq1g=
-X-Google-Smtp-Source: APXvYqx6e8w7r4m+hpki9vSncdpr5yCdohIuDEo06p85IfUJJHbFFFas9JJPslhEnoQGyGryv3/s0g==
-X-Received: by 2002:a05:600c:296:: with SMTP id 22mr3221731wmk.148.1566982670643;
-        Wed, 28 Aug 2019 01:57:50 -0700 (PDT)
+        bh=bJAVvyqSeoa1jAnD2+HN2Roj8blocYF3Ubt/w/PAf4I=;
+        b=pkZUSLAKdZ6bqwxDQD4KX1WulCWf2B3Lk8ZWkYAG+F5YyBDbNBpdZfhy/kdUpO+idh
+         /vixuTdRRb1vVwjzS8LoHlm2Se/0hnnGPk9YHrBwa3OXqH77nL9iSktuFdiiZzgGCi3j
+         YGUYXePiznKuhorpIMfJWtDF4hWNsIt7bkc87b0G88N7uvEs1FW2xUoDsuT5oT5GKRps
+         rYGtpnhZcZ3gLtmUmccc0b4Y0tmZhvizImQl67YBsd1p3MdKV6Q0pYcjDouTsjoGaJin
+         mqWiZprn+WQ8VThkhR3QctQhw/EvVrHFdhSDvoiGXfU7VLHVPXQWyEvX0w4FfDL8tn2A
+         L/1g==
+X-Gm-Message-State: APjAAAXoIOTw/yvpXMQTh9o6zwDVayaG8iDSsoLzG50RZgjzOf9Sfyv6
+        kQ5jKn69cO2DTkeoTE1mjzuXoefj
+X-Google-Smtp-Source: APXvYqxjdAKoC3a0p1bTDdAcbz8vL98NR9z7kLuc5KwLTCaxoZgpK7NY37hame73UXAAQV9L6+42Xw==
+X-Received: by 2002:a7b:c95a:: with SMTP id i26mr3559174wml.175.1566982671606;
+        Wed, 28 Aug 2019 01:57:51 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id u186sm2579433wmu.26.2019.08.28.01.57.49
+        by smtp.gmail.com with ESMTPSA id u186sm2579433wmu.26.2019.08.28.01.57.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 01:57:50 -0700 (PDT)
+        Wed, 28 Aug 2019 01:57:51 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v12 2/9] trace-cmd: Added support for negative time offsets in trace.dat file
-Date:   Wed, 28 Aug 2019 11:57:39 +0300
-Message-Id: <20190828085746.26231-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v12 3/9] trace-cmd: Fix tracecmd_read_page_record() to read more than one event
+Date:   Wed, 28 Aug 2019 11:57:40 +0300
+Message-Id: <20190828085746.26231-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190828085746.26231-1-tz.stoyanov@gmail.com>
 References: <20190828085746.26231-1-tz.stoyanov@gmail.com>
@@ -75,83 +75,49 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-When synchronizing timestamps between different machines, there are cases
-when the time offset is negative. This patch changes the way time offset is
-written and read from trace.dat file - as signed decimal, instead of hex.
+The kbuffer_next_event() will return the next event on the sub buffer.
+If we pass in the last_record to tracecmd_read_page_record(), it
+initializes the sub buffer, and by calling kbuffer_next_event()
+(instead of kbuffer_read_event()), the second event on the sub buffer
+is returned. This causes the match of the last_record not to match if
+the last_record happens to be the first event on the sub buffer.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- include/trace-cmd/trace-cmd.h | 2 +-
- lib/trace-cmd/trace-input.c   | 6 +++---
- tracecmd/trace-read.c         | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ lib/trace-cmd/trace-input.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index da29d53..c7cac98 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -129,7 +129,7 @@ int tracecmd_is_buffer_instance(struct tracecmd_input *handle);
- void tracecmd_create_top_instance(char *name);
- void tracecmd_remove_instances(void);
- 
--void tracecmd_set_ts_offset(struct tracecmd_input *handle, unsigned long long offset);
-+void tracecmd_set_ts_offset(struct tracecmd_input *handle, long long offset);
- void tracecmd_set_ts2secs(struct tracecmd_input *handle, unsigned long long hz);
- 
- void tracecmd_print_events(struct tracecmd_input *handle, const char *regex);
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 654101f..05e595f 100644
+index 05e595f..3bb17f9 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -90,7 +90,7 @@ struct tracecmd_input {
- 	bool			read_page;
- 	bool			use_pipe;
- 	struct cpu_data 	*cpu_data;
--	unsigned long long	ts_offset;
-+	long long		ts_offset;
- 	double			ts2secs;
- 	char *			cpustats;
- 	char *			uname;
-@@ -2121,7 +2121,7 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
- }
+@@ -1720,18 +1720,22 @@ tracecmd_read_page_record(struct tep_handle *pevent, void *page, int size,
+ 			goto out_free;
+ 		}
  
- void tracecmd_set_ts_offset(struct tracecmd_input *handle,
--			    unsigned long long offset)
-+			    long long offset)
- {
- 	handle->ts_offset = offset;
- }
-@@ -2138,7 +2138,7 @@ void tracecmd_set_ts2secs(struct tracecmd_input *handle,
+-		do {
++		ptr = kbuffer_read_event(kbuf, &ts);
++		while (ptr < last_record->data) {
+ 			ptr = kbuffer_next_event(kbuf, NULL);
+ 			if (!ptr)
+ 				break;
+-		} while (ptr < last_record->data);
++			if (ptr == last_record->data)
++				break;
++		}
+ 		if (ptr != last_record->data) {
+ 			warning("tracecmd_read_page_record: could not find last_record");
+ 			goto out_free;
+ 		}
+-	}
++		ptr = kbuffer_next_event(kbuf, &ts);
++	} else
++		ptr = kbuffer_read_event(kbuf, &ts);
  
- static int handle_options(struct tracecmd_input *handle)
- {
--	unsigned long long offset;
-+	long long offset;
- 	unsigned short option;
- 	unsigned int size;
- 	char *cpustats = NULL;
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index d22c723..8d98dd7 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -58,7 +58,7 @@ static struct list_head handle_list;
- struct input_files {
- 	struct list_head	list;
- 	const char		*file;
--	unsigned long long	tsoffset;
-+	long long		tsoffset;
- 	unsigned long long	ts2secs;
- };
- static struct list_head input_files;
-@@ -1422,7 +1422,7 @@ void trace_report (int argc, char **argv)
- 	struct input_files *inputs;
- 	struct handle_list *handles;
- 	enum output_type otype;
--	unsigned long long tsoffset = 0;
-+	long long tsoffset = 0;
- 	unsigned long long ts2secs = 0;
- 	unsigned long long ts2sc;
- 	int show_stat = 0;
+-	ptr = kbuffer_read_event(kbuf, &ts);
+ 	if (!ptr)
+ 		goto out_free;
+ 
 -- 
 2.21.0
 
