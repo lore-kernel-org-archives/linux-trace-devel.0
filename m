@@ -2,181 +2,181 @@ Return-Path: <SRS0=kCFW=WZ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0
+X-Spam-Status: No, score=-11.8 required=3.0
 	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A6FCC3A59F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Aug 2019 18:08:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A791C3A5A3
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Aug 2019 19:02:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 47C8520828
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Aug 2019 18:08:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 484F522CEA
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Aug 2019 19:02:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbfH2SIz (ORCPT
+        id S1728465AbfH2TCY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Aug 2019 14:08:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726739AbfH2SIz (ORCPT
+        Thu, 29 Aug 2019 15:02:24 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51565 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728968AbfH2TCU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Aug 2019 14:08:55 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6AA7820828;
-        Thu, 29 Aug 2019 18:08:53 +0000 (UTC)
-Date:   Thu, 29 Aug 2019 14:08:51 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v8] tools/lib/traceevent: Man pages for tep plugins APIs
-Message-ID: <20190829140851.11089ec9@gandalf.local.home>
-In-Reply-To: <20190730125040.24864-1-tz.stoyanov@gmail.com>
-References: <20190730125040.24864-1-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 29 Aug 2019 15:02:20 -0400
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1i3PgQ-0005IK-2G; Thu, 29 Aug 2019 21:02:10 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D02FF1C0DE7;
+        Thu, 29 Aug 2019 21:02:03 +0200 (CEST)
+Date:   Thu, 29 Aug 2019 19:02:03 -0000
+From:   "tip-bot2 for Steven Rostedt (VMware)" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] tools lib traceevent: Remove unneeded qsort and uses
+ memmove instead
+Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20190828191820.127233764@goodmis.org>
+References: <20190828191820.127233764@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <156710532375.10619.16987688702890392152.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 30 Jul 2019 15:50:40 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+The following commit has been merged into the perf/core branch of tip:
 
-> From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> 
-> Create man pages for libtraceevent APIs:
->   tep_load_plugins(),
->   tep_unload_plugin()
-> 
-> Suggested-by: Patrick McLean <chutzpah@gentoo.org>
-> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> ---
-> [
->  v8 changes:
->    - the user's plugin directory changed from 
->  ~/.config/traceevent/plugins/ to ~/.local/lib/traceevent/plugins/, 
->  as suggested by Patrick McLean.
->  https://lore.kernel.org/linux-trace-devel/20190313144206.41e75cf8@patrickm/
-> ]
-> 
->  .../Documentation/libtraceevent-plugins.txt   | 98 +++++++++++++++++++
->  1 file changed, 98 insertions(+)
->  create mode 100644 tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-> 
-> diff --git a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-> new file mode 100644
-> index 000000000000..ce0288719939
-> --- /dev/null
-> +++ b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-> @@ -0,0 +1,98 @@
-> +libtraceevent(3)
-> +================
-> +
-> +NAME
-> +----
-> +tep_load_plugins, tep_unload_plugins - Load / unload traceevent plugins.
-> +
-> +SYNOPSIS
-> +--------
-> +[verse]
-> +--
-> +*#include <event-parse.h>*
-> +
-> +struct tep_plugin_list pass:[*]*tep_load_plugins*(struct tep_handle pass:[*]_tep_);
-> +void *tep_unload_plugins*(struct tep_plugin_list pass:[*]_plugin_list_, struct tep_handle pass:[*]_tep_);
-> +--
-> +
-> +DESCRIPTION
-> +-----------
-> +The _tep_load_plugins()_ function loads all plugins, located in the plugin
-> +directories. The _tep_ argument is trace event parser context.
-> +The plugin directories are :
-> +[verse]
-> +--
-> +	- System's plugin directory, defined at the library compile time. It
-> +	  depends on the library installation prefix and usually is
-> +	  _(install_preffix)/lib/traceevent/plugins_
-> +	- Directory, defined by the environment variable _TRACEEVENT_PLUGIN_DIR_
-> +	- User's plugin directory, located at _~/.local/lib/traceevent/plugins_
-> +--
-> +Loading of plugins can be controlled by the _tep_flags_, using the
-> +_tep_set_flag()_ API:
-> +[verse]
-> +--
-> +	_TEP_DISABLE_SYS_PLUGINS_	- do not load plugins, located in
-> +					the system's plugin directory.
-> +	_TEP_DISABLE_PLUGINS_		- do not load any plugins.
-> +--
-> +The _tep_set_flag()_ API must be called before _tep_load_plugins()_.
+Commit-ID:     301011ba622513cb41ced59973972204e0da2f71
+Gitweb:        https://git.kernel.org/tip/301011ba622513cb41ced59973972204e0da2f71
+Author:        Steven Rostedt (VMware) <rostedt@goodmis.org>
+AuthorDate:    Wed, 28 Aug 2019 15:05:29 -04:00
+Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
+CommitterDate: Thu, 29 Aug 2019 08:36:12 -03:00
 
-I wouldn't say tep_set_flag() must be called, but instead say that it
-needs to be called first if the default (of loading all possible
-plugins) is not the desired case.
+tools lib traceevent: Remove unneeded qsort and uses memmove instead
 
--- Steve
+While reading a trace data file that had 100,000s of tasks, the process
+took an extremely long time. I profiled it down to add_new_comm(), which
+was doing a qsort() call on an array that was pretty much already sorted
+(all but the last element. qsort() isn't very efficient when dealing
+with mostly sorted arrays, and this definitely showed its issues.
 
+When adding a new task to the task list, instead of using qsort(), do
+another bsearch() with a function that will find the element before
+where the new task will be inserted in. Then simply shift the rest of
+the array, and insert the task where it belongs.
 
-> +
-> +The _tep_unload_plugins()_ function unloads the plugins, previously loaded by
-> +_tep_load_plugins()_. The _tep_ argument is trace event parser context. The
-> +_plugin_list_ is the list of loaded plugins, returned by
-> +the _tep_load_plugins()_ function.
-> +
-> +RETURN VALUE
-> +------------
-> +The _tep_load_plugins()_ function returns a list of successfully loaded plugins,
-> +or NULL in case no plugins are loaded.
-> +
-> +EXAMPLE
-> +-------
-> +[source,c]
-> +--
-> +#include <event-parse.h>
-> +...
-> +struct tep_handle *tep = tep_alloc();
-> +...
-> +struct tep_plugin_list *plugins = tep_load_plugins(tep);
-> +if (plugins == NULL) {
-> +	/* no plugins are loaded */
-> +}
-> +...
-> +tep_unload_plugins(plugins, tep);
-> +--
-> +
-> +FILES
-> +-----
-> +[verse]
-> +--
-> +*event-parse.h*
-> +	Header file to include in order to have access to the library APIs.
-> +*-ltraceevent*
-> +	Linker switch to add when building a program that uses the library.
-> +--
-> +
-> +SEE ALSO
-> +--------
-> +_libtraceevent(3)_, _trace-cmd(1)_, _tep_set_flag(3)_
-> +
-> +AUTHOR
-> +------
-> +[verse]
-> +--
-> +*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-> +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
-> +--
-> +REPORTING BUGS
-> +--------------
-> +Report bugs to  <linux-trace-devel@vger.kernel.org>
-> +
-> +LICENSE
-> +-------
-> +libtraceevent is Free Software licensed under the GNU LGPL 2.1
-> +
-> +RESOURCES
-> +---------
-> +https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+Fixes: f7d82350e597d ("tools/events: Add files to create libtraceevent.a")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: linux-trace-devel@vger.kernel.org
+Link: http://lkml.kernel.org/r/20190828191820.127233764@goodmis.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/lib/traceevent/event-parse.c | 55 +++++++++++++++++++++++++----
+ 1 file changed, 49 insertions(+), 6 deletions(-)
 
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index 13fd9fd..3e83636 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -142,6 +142,25 @@ static int cmdline_cmp(const void *a, const void *b)
+ 	return 0;
+ }
+ 
++/* Looking for where to place the key */
++static int cmdline_slot_cmp(const void *a, const void *b)
++{
++	const struct tep_cmdline *ca = a;
++	const struct tep_cmdline *cb = b;
++	const struct tep_cmdline *cb1 = cb + 1;
++
++	if (ca->pid < cb->pid)
++		return -1;
++
++	if (ca->pid > cb->pid) {
++		if (ca->pid <= cb1->pid)
++			return 0;
++		return 1;
++	}
++
++	return 0;
++}
++
+ struct cmdline_list {
+ 	struct cmdline_list	*next;
+ 	char			*comm;
+@@ -239,6 +258,7 @@ static int add_new_comm(struct tep_handle *tep,
+ 	struct tep_cmdline *cmdline;
+ 	struct tep_cmdline key;
+ 	char *new_comm;
++	int cnt;
+ 
+ 	if (!pid)
+ 		return 0;
+@@ -271,18 +291,41 @@ static int add_new_comm(struct tep_handle *tep,
+ 	}
+ 	tep->cmdlines = cmdlines;
+ 
+-	cmdlines[tep->cmdline_count].comm = strdup(comm);
+-	if (!cmdlines[tep->cmdline_count].comm) {
++	key.comm = strdup(comm);
++	if (!key.comm) {
+ 		errno = ENOMEM;
+ 		return -1;
+ 	}
+ 
+-	cmdlines[tep->cmdline_count].pid = pid;
+-		
+-	if (cmdlines[tep->cmdline_count].comm)
++	if (!tep->cmdline_count) {
++		/* no entries yet */
++		tep->cmdlines[0] = key;
+ 		tep->cmdline_count++;
++		return 0;
++	}
+ 
+-	qsort(cmdlines, tep->cmdline_count, sizeof(*cmdlines), cmdline_cmp);
++	/* Now find where we want to store the new cmdline */
++	cmdline = bsearch(&key, tep->cmdlines, tep->cmdline_count - 1,
++			  sizeof(*tep->cmdlines), cmdline_slot_cmp);
++
++	cnt = tep->cmdline_count;
++	if (cmdline) {
++		/* cmdline points to the one before the spot we want */
++		cmdline++;
++		cnt -= cmdline - tep->cmdlines;
++
++	} else {
++		/* The new entry is either before or after the list */
++		if (key.pid > tep->cmdlines[tep->cmdline_count - 1].pid) {
++			tep->cmdlines[tep->cmdline_count++] = key;
++			return 0;
++		}
++		cmdline = &tep->cmdlines[0];
++	}
++	memmove(cmdline + 1, cmdline, (cnt * sizeof(*cmdline)));
++	*cmdline = key;
++
++	tep->cmdline_count++;
+ 
+ 	return 0;
+ }
