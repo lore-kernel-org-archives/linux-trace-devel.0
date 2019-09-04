@@ -2,65 +2,197 @@ Return-Path: <SRS0=sqOa=W7=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71A93C3A5A7
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Sep 2019 11:55:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14869C3A5A9
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Sep 2019 20:17:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4FF4622DBF
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Sep 2019 11:55:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DD7A022CED
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Sep 2019 20:17:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1567628230;
+	bh=IRlgNYTNSwFPj1cdbWfjibr8ZzYIdPQrh+rK7T1XUHI=;
+	h=Subject:From:To:Cc:Date:List-ID:From;
+	b=SVMiH7XsBi9fWFAHJXpu0VnJ3g7m6kF300WQd2/GQDvkdTDHnM6i1BudCphtUS6K2
+	 ODfRCL+rFCcoViJJ0VBYXrqnAIqXvlkBcc9qxgm8J26zwMSV7k0RL54d5XaUcPnvO8
+	 xKyGqWrWX4zqMFNn0Aal1JErBGNdz3cZkog/R3M4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729859AbfIDLzJ (ORCPT
+        id S1728941AbfIDURH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Sep 2019 07:55:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37124 "EHLO mail.kernel.org"
+        Wed, 4 Sep 2019 16:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729356AbfIDLzJ (ORCPT
+        id S1727426AbfIDURH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Sep 2019 07:55:09 -0400
-Received: from oasis.local.home (bl11-233-114.dsl.telepac.pt [85.244.233.114])
+        Wed, 4 Sep 2019 16:17:07 -0400
+Received: from tzanussi-mobl (c-98-220-238-81.hsd1.il.comcast.net [98.220.238.81])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 798A022CF7;
-        Wed,  4 Sep 2019 11:55:07 +0000 (UTC)
-Date:   Wed, 4 Sep 2019 07:55:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Cc:     "Uhanov, Kirill" <kirill.uhanov@intel.com>
-Subject: [PATCH] trace-cmd: Fix typo in use of file descriptor in
- conditional
-Message-ID: <20190904075500.6c296198@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        by mail.kernel.org (Postfix) with ESMTPSA id A6B0A2087E;
+        Wed,  4 Sep 2019 20:17:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1567628226;
+        bh=IRlgNYTNSwFPj1cdbWfjibr8ZzYIdPQrh+rK7T1XUHI=;
+        h=Subject:From:To:Cc:Date:From;
+        b=vz4v7C1InUozBJY6dIHEifiAfNbTxRPOVsXo0oag2V0UTg5RV+FLXuh0G6OcPsSlv
+         FHXd1DklfrwLCeQm7C1H4FcOZXaXYMoyX6LLxCLErBvoDVY2B0N4+e7oQJX1dvdDAD
+         HRNCgdeFu9zZciUD7vNcegkXtq7uQWOvLQ+XFOCM=
+Message-ID: <1567628224.13841.4.camel@kernel.org>
+Subject: [PATCH] trace-cmd: Add proper KBUFFER_TYPE_TIME_STAMP handling
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 04 Sep 2019 15:17:04 -0500
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.1-1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Uhanov, Kirill" <kirill.uhanov@intel.com>
+From: Tom Zanussi <zanussi@kernel.org>
 
-tracecmd_create_buffer_recorder_maxkb() opens a file and uses fd2 as
-the variable name to store the descriptor but the proceeding check on
-the status of the opened file uses the variable name fd instead.
+Kernel commit dc4e2801d400 (ring-buffer: Redefine the unimplemented
+RINGBUF_TYPE_TIME_STAMP) changed the way the ring buffer timestamps
+work - after that commit the previously unimplemented
+RINGBUF_TYPE_TIME_STAMP type causes the time delta to be used as a
+timestamp rather than a delta to be added to the timestamp.
 
-Signed-off-by: Kirill Uhanov <kirill.uhanov@intel.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+The trace-cmd code didn't get updated to handle this, so misinterprets
+the event data for this case, which causes a cascade of errors,
+including trace-report not being able to identify synthetic (or any
+other) events generated by the histogram code (which uses TIME_STAMP
+mode).  For example, the following triggers along with the trace-cmd
+shown cause an UNKNOWN_EVENT error and trace-cmd report crash:
+
+  # echo 'wakeup_latency  u64 lat pid_t pid char comm[16]' > /sys/kernel/debug/tracing/synthetic_events
+
+  # echo 'hist:keys=pid:ts0=common_timestamp.usecs if comm=="ping"' > /sys/kernel/debug/tracing/events/sched/sched_wakeup/trigger
+  # echo 'hist:keys=next_pid:wakeup_lat=common_timestamp.usecs-$ts0:onmatch(sched.sched_wakeup).trace(wakeup_latency,$wakeup_lat,next_pid,next_comm) if next_comm=="ping"' > /sys/kernel/debug/tracing/events/sched/sched_switch/trigger
+  # echo 'hist:keys=comm,pid,lat:wakeup_lat=lat:sort=lat' > /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
+
+  # trace-cmd record -e wakeup_latency -e sched_wakeup -f comm==\"ping\" ping localhost -c 5
+
+  # trace-cmd report
+  CPU 0 is empty
+  CPU 1 is empty
+  CPU 2 is empty
+  CPU 3 is empty
+  CPU 5 is empty
+  CPU 6 is empty
+  CPU 7 is empty
+  cpus=8
+    ug! no event found for type 0
+  [UNKNOWN TYPE 0]
+    ug! no event found for type 11520
+  Segmentation fault (core dumped)
+
+After this patch we get the correct interpretation and the events are
+shown properly:
+
+  # trace-cmd report
+  CPU 0 is empty
+  CPU 1 is empty
+  CPU 2 is empty
+  CPU 3 is empty
+  CPU 5 is empty
+  CPU 6 is empty
+  CPU 7 is empty
+  cpus=8
+          <idle>-0     [004] 23284.341392: sched_wakeup:         ping:12031 [120] success=1 CPU:004
+          <idle>-0     [004] 23284.341464: wakeup_latency:       lat=58, pid=12031, comm=ping
+          <idle>-0     [004] 23285.365303: sched_wakeup:         ping:12031 [120] success=1 CPU:004
+          <idle>-0     [004] 23285.365382: wakeup_latency:       lat=64, pid=12031, comm=ping
+          <idle>-0     [004] 23286.389290: sched_wakeup:         ping:12031 [120] success=1 CPU:004
+          <idle>-0     [004] 23286.389378: wakeup_latency:       lat=72, pid=12031, comm=ping
+          <idle>-0     [004] 23287.413213: sched_wakeup:         ping:12031 [120] success=1 CPU:004
+          <idle>-0     [004] 23287.413291: wakeup_latency:       lat=64, pid=12031, comm=ping
+
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 ---
-diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
-index 0bd0657..650b259 100644
---- a/lib/trace-cmd/trace-recorder.c
-+++ b/lib/trace-cmd/trace-recorder.c
-@@ -244,7 +244,7 @@ tracecmd_create_buffer_recorder_maxkb(const char *file, int cpu, unsigned flags,
- 		goto out;
+ lib/traceevent/kbuffer-parse.c | 15 +++++++++------
+ tracecmd/trace-read.c          | 13 +++++++++----
+ 2 files changed, 18 insertions(+), 10 deletions(-)
+
+diff --git a/lib/traceevent/kbuffer-parse.c b/lib/traceevent/kbuffer-parse.c
+index 622f285..b18dedc 100644
+--- a/lib/traceevent/kbuffer-parse.c
++++ b/lib/traceevent/kbuffer-parse.c
+@@ -361,6 +361,7 @@ translate_data(struct kbuffer *kbuf, void *data, void **rptr,
+ 		break;
  
- 	fd2 = open(file2, O_RDWR | O_CREAT | O_TRUNC | O_LARGEFILE, 0644);
--	if (fd < 0)
-+	if (fd2 < 0)
- 		goto err;
+ 	case KBUFFER_TYPE_TIME_EXTEND:
++	case KBUFFER_TYPE_TIME_STAMP:
+ 		extend = read_4(kbuf, data);
+ 		data += 4;
+ 		extend <<= TS_SHIFT;
+@@ -369,10 +370,6 @@ translate_data(struct kbuffer *kbuf, void *data, void **rptr,
+ 		*length = 0;
+ 		break;
  
- 	recorder = tracecmd_create_buffer_recorder_fd2(fd, fd2, cpu, flags, buffer, maxkb);
+-	case KBUFFER_TYPE_TIME_STAMP:
+-		data += 12;
+-		*length = 0;
+-		break;
+ 	case 0:
+ 		*length = read_4(kbuf, data) - 4;
+ 		*length = (*length + 3) & ~3;
+@@ -397,7 +394,11 @@ static unsigned int update_pointers(struct kbuffer *kbuf)
+ 
+ 	type_len = translate_data(kbuf, ptr, &ptr, &delta, &length);
+ 
+-	kbuf->timestamp += delta;
++	if (type_len == KBUFFER_TYPE_TIME_STAMP)
++		kbuf->timestamp = delta;
++	else
++		kbuf->timestamp += delta;
++
+ 	kbuf->index = calc_index(kbuf, ptr);
+ 	kbuf->next = kbuf->index + length;
+ 
+@@ -454,7 +455,9 @@ static int __next_event(struct kbuffer *kbuf)
+ 		if (kbuf->next >= kbuf->size)
+ 			return -1;
+ 		type = update_pointers(kbuf);
+-	} while (type == KBUFFER_TYPE_TIME_EXTEND || type == KBUFFER_TYPE_PADDING);
++	} while (type == KBUFFER_TYPE_TIME_EXTEND ||
++		 type == KBUFFER_TYPE_TIME_STAMP ||
++		 type == KBUFFER_TYPE_PADDING);
+ 
+ 	return 0;
+ }
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 12b8b3d..a1371f4 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -846,12 +846,17 @@ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
+ 					trace_seq_printf(&s, "\n TIME EXTEND: ");
+ 					break;
+ 				case KBUFFER_TYPE_TIME_STAMP:
+-					trace_seq_printf(&s, "\n TIME STAMP?: ");
++					trace_seq_printf(&s, "\n TIME STAMP: ");
+ 					break;
+ 				}
+-				trace_seq_printf(&s, "delta:%lld length:%d",
+-						 pi->delta,
+-						 pi->length);
++				if (pi->type == KBUFFER_TYPE_TIME_STAMP)
++					trace_seq_printf(&s, "timestamp:%lld length:%d",
++							 pi->delta,
++							 pi->length);
++				else
++					trace_seq_printf(&s, "delta:%lld length:%d",
++							 pi->delta,
++							 pi->length);
+ 			}
+ 		}
+ 	}
+-- 
+2.14.1
+
