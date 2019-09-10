@@ -1,100 +1,132 @@
-Return-Path: <SRS0=pdxs=XB=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=H2rx=XF=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A80DC43140
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  6 Sep 2019 06:59:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD463C3A5A2
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Sep 2019 08:47:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 845422087E
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  6 Sep 2019 06:59:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BEA6221D7B
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 10 Sep 2019 08:47:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403997AbfIFG7V (ORCPT
+        id S2387595AbfIJIrN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 6 Sep 2019 02:59:21 -0400
-Received: from mga04.intel.com ([192.55.52.120]:44127 "EHLO mga04.intel.com"
+        Tue, 10 Sep 2019 04:47:13 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21856 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403977AbfIFG7V (ORCPT
+        id S1729100AbfIJIrM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 6 Sep 2019 02:59:21 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
+        Tue, 10 Sep 2019 04:47:12 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Sep 2019 23:59:20 -0700
-X-IronPort-AV: E=Sophos;i="5.64,472,1559545200"; 
-   d="scan'208";a="185704237"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Sep 2019 01:47:12 -0700
+X-IronPort-AV: E=Sophos;i="5.64,489,1559545200"; 
+   d="scan'208";a="335852641"
 Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Sep 2019 23:59:11 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 7014E2051A; Fri,  6 Sep 2019 09:59:07 +0300 (EEST)
-Date:   Fri, 6 Sep 2019 09:59:07 +0300
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Sep 2019 01:47:07 -0700
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 8C39D20A0F;
+        Tue, 10 Sep 2019 11:47:05 +0300 (EEST)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@linux.intel.com>)
+        id 1i7bnn-0004nN-7g; Tue, 10 Sep 2019 11:47:07 +0300
 From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>
+To:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        rafael@kernel.org
 Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Namhyung Kim <namhyung@kernel.org>, rafael@kernel.org,
+        linux-acpi@vger.kernel.org, devicetree@vger.kernel.org,
         Rob Herring <robh@kernel.org>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Joe Perches <joe@perches.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>, devicetree@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Subject: Re: [PATCH v4 07/11] lib/vsprintf: Remove support for %pF and %pf in
- favour of %pS and %ps
-Message-ID: <20190906065907.GH5475@paasikivi.fi.intel.com>
-References: <20190902083240.20367-1-sakari.ailus@linux.intel.com>
- <20190902083240.20367-8-sakari.ailus@linux.intel.com>
- <20190902143935.xtd44jdvhjuc2wxe@pathway.suse.cz>
- <20190902160139.GQ2680@smile.fi.intel.com>
- <20190903140420.kmb42cwr3scrfd3e@pathway.suse.cz>
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        linux-trace-devel@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH v6 01/12] tools lib traceevent: Convert remaining %p[fF] users to %p[sS]
+Date:   Tue, 10 Sep 2019 11:46:56 +0300
+Message-Id: <20190910084707.18380-2-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190910084707.18380-1-sakari.ailus@linux.intel.com>
+References: <20190910084707.18380-1-sakari.ailus@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190903140420.kmb42cwr3scrfd3e@pathway.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Sep 03, 2019 at 04:04:20PM +0200, Petr Mladek wrote:
-> On Mon 2019-09-02 19:01:39, Andy Shevchenko wrote:
-> > On Mon, Sep 02, 2019 at 04:39:35PM +0200, Petr Mladek wrote:
-> > > On Mon 2019-09-02 11:32:36, Sakari Ailus wrote:
-> > > > %pS and %ps are now the preferred conversion specifiers to print function
-> > > > names. The functionality is equivalent; remove the old, deprecated %pF
-> > > > and %pf support.
-> > > 
-> > > Hmm, I see the following in master:
-> > > 
-> > > $> git grep %pF
-> > > tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt:or events have "%pF" or "%pS" parameter in its format string. It is common to
-> > > 
-> > > $> git grep %pf
-> > > tools/lib/traceevent/event-parse.c:             if (asprintf(&format, "%%pf: (NO FORMAT FOUND at %llx)\n", addr) < 0)
-> > > tools/lib/traceevent/event-parse.c:     if (asprintf(&format, "%s: %s", "%pf", printk->printk) < 0)
-> > > 
-> > > I wonder how this is related to printk(). In each case, it seems
-> > 
-> > It's going thru binary printf() I suppose. The fist stage just saves the format
-> > string and argument addresses or so and prints in later on when user is looking
-> > for human-readable output.
-> 
-> It seems that vbin_printf() still thinks that %pf and %pF
-> handle function pointers. If I get it correctly, it just
-> stores the binary data and the formating is done when
-> tracing log is read. The idea is the function pointers
-> will stay the same.
-> 
-> We need to fix/obsolete this path as well.
+There are no in-kernel %p[fF] users left. Convert the traceevent tool,
+too, to align with the kernel.
 
-Agreed. I'll include a patch to do that in v6.
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: linux-trace-devel@vger.kernel.org
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+---
+ .../Documentation/libtraceevent-func_apis.txt          | 10 +++++-----
+ tools/lib/traceevent/event-parse.c                     |  7 +++----
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt b/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
+index 38bfea30a5f64..f6aca0df2151a 100644
+--- a/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
++++ b/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
+@@ -59,12 +59,12 @@ parser context.
+ 
+ The _tep_register_function()_ function registers a function name mapped to an
+ address and (optional) module. This mapping is used in case the function tracer
+-or events have "%pF" or "%pS" parameter in its format string. It is common to
+-pass in the kallsyms function names with their corresponding addresses with this
++or events have "%pS" parameter in its format string. It is common to pass in
++the kallsyms function names with their corresponding addresses with this
+ function. The _tep_ argument is the trace event parser context. The _name_ is
+-the name of the function, the string is copied internally. The _addr_ is
+-the start address of the function. The _mod_ is the kernel module
+-the function may be in (NULL for none).
++the name of the function, the string is copied internally. The _addr_ is the
++start address of the function. The _mod_ is the kernel module the function may
++be in (NULL for none).
+ 
+ The _tep_register_print_string()_ function  registers a string by the address
+ it was stored in the kernel. Some strings internal to the kernel with static
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index b36b536a9fcba..1d7927ff32660 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -4335,8 +4335,6 @@ static struct tep_print_arg *make_bprint_args(char *fmt, void *data, int size, s
+ 					switch (*ptr) {
+ 					case 's':
+ 					case 'S':
+-					case 'f':
+-					case 'F':
+ 					case 'x':
+ 						break;
+ 					default:
+@@ -4455,12 +4453,13 @@ get_bprint_format(void *data, int size __maybe_unused,
+ 
+ 	printk = find_printk(tep, addr);
+ 	if (!printk) {
+-		if (asprintf(&format, "%%pf: (NO FORMAT FOUND at %llx)\n", addr) < 0)
++		if (asprintf(&format, "%%ps: (NO FORMAT FOUND at %llx)\n",
++			     addr) < 0)
+ 			return NULL;
+ 		return format;
+ 	}
+ 
+-	if (asprintf(&format, "%s: %s", "%pf", printk->printk) < 0)
++	if (asprintf(&format, "%s: %s", "%ps", printk->printk) < 0)
+ 		return NULL;
+ 
+ 	return format;
 -- 
-Sakari Ailus
-sakari.ailus@linux.intel.com
+2.20.1
+
