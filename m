@@ -1,105 +1,216 @@
-Return-Path: <SRS0=Osg+=XL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=9KLN=XM=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57595C4CECD
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 16 Sep 2019 14:38:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEA38C4CECD
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Sep 2019 10:44:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 37B982067D
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 16 Sep 2019 14:38:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 825AB21881
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Sep 2019 10:44:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GUZYtj/u"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388766AbfIPOh6 (ORCPT
+        id S1726191AbfIQKo5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 16 Sep 2019 10:37:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726657AbfIPOh6 (ORCPT
+        Tue, 17 Sep 2019 06:44:57 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:39126 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbfIQKo4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 16 Sep 2019 10:37:58 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9888720830;
-        Mon, 16 Sep 2019 14:37:56 +0000 (UTC)
-Date:   Mon, 16 Sep 2019 10:37:55 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Joe Perches <joe@perches.com>, Petr Mladek <pmladek@suse.com>,
-        linux-kernel@vger.kernel.org, rafael@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        linux-trace-devel@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH v6 01/12] tools lib traceevent: Convert remaining %p[fF]
- users to %p[sS]
-Message-ID: <20190916103755.4c19eda9@gandalf.local.home>
-In-Reply-To: <20190916114158.GN5781@paasikivi.fi.intel.com>
-References: <20190910084707.18380-1-sakari.ailus@linux.intel.com>
-        <20190910084707.18380-2-sakari.ailus@linux.intel.com>
-        <20190910071837.2e9110f8@oasis.local.home>
-        <61a2b2ab4693535850306f396aac2a328e1d5a21.camel@perches.com>
-        <20190910142621.0bec208d@oasis.local.home>
-        <c458e734f5777561138b87228384808398547762.camel@perches.com>
-        <20190910150303.5a0d3904@oasis.local.home>
-        <c90c33b421c0fa0db5182d0f58c6ba6e86cf1622.camel@perches.com>
-        <20190916114158.GN5781@paasikivi.fi.intel.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 17 Sep 2019 06:44:56 -0400
+Received: by mail-wr1-f49.google.com with SMTP id r3so2603191wrj.6
+        for <linux-trace-devel@vger.kernel.org>; Tue, 17 Sep 2019 03:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1eTBsLhwuXQRKVrzrbGA32thwboSzmKqgC0tUVVspAg=;
+        b=GUZYtj/u1B+CbBBlE8aH1SrzEkXnwsSfrNI3D33MLlcQWRy8cJ/JRV2+HEjlmxACHf
+         /+p77+Bw7xaGU/RHiXf0gtKez54pfADeWNJTCz0ms8y9bsIO4BQaf8eTL388swNiqtFR
+         R++1v9CbRWmvN07hIhEMrVOqhAqyWsIpJpngGliNW0jiNltQqNV/R/ZY10gz1Jf8UE1Q
+         +/NTliNSixUnSADNnsvLcnnFGod8t8UY5uE4V/o2of3/xmMUO3ZaaesGwnCXVkYWiJ7+
+         mTs9a5YiDEuU6T0Jz0/6i9aw8gLb4truTk/cGAAQfvj+OsWpIZ6OWb7TSMN3n2q4NOi4
+         thNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1eTBsLhwuXQRKVrzrbGA32thwboSzmKqgC0tUVVspAg=;
+        b=ewhblt+U8ulSS5BKrcP/a1V8Huqu8NTtaa7lwFCWqfHpBavkvtUPirxEVzoR8fOEAm
+         gwKHjTdDs+ES7rtl3c6/YpAxfQVVlx6hC8Vk1AZOZ5caNuaqdiPNdBaszHRnO5YlEuu1
+         s6g97G+mZ+C7oFfAOJySsWYXeSvk1QUH6Tq9emc1zXlzZCe+5BNT+O8DAQrT+ad9ND1G
+         5yNivalVs8GT3pMZuJySp7UVLmM+C9sRiUhGyl2g31PxQ6O/GFodRfWQ/gS6BuXsHzB4
+         h98CyAEVHe4UjL4gXwLT4xeaDkuzSNUO68d6qvvcWkA1oEVF+eEDS8DIw13PtG7RA3Nb
+         cERg==
+X-Gm-Message-State: APjAAAWpIFk1krVIS4vzHgCl+OhB4eAn9OnpXpjDaeuN57y/JbxmRXpu
+        /Xu9GsM/c8haIyIi3jQkSqRpmxoX
+X-Google-Smtp-Source: APXvYqz3homhlGRUgrvmsAXupwqUi7go2XPqybpdrTt4HNHOGnT9Wc7ayK7UWGB7Ww7JC+3MP77ATg==
+X-Received: by 2002:a5d:4a8a:: with SMTP id o10mr2493860wrq.201.1568717094363;
+        Tue, 17 Sep 2019 03:44:54 -0700 (PDT)
+Received: from [10.27.113.15] ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id a10sm2185955wrm.52.2019.09.17.03.44.53
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Sep 2019 03:44:53 -0700 (PDT)
+Subject: Re: [PATCH] kernel-shark: Provide parsing for quotation marks in
+ Record command line
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Stephen Brennan <stephen@brennan.io>
+References: <20190827131418.18713-1-y.karadz@gmail.com>
+ <20190828092533.493ce25c@gandalf.local.home>
+ <20190828093007.0b0bdabb@gandalf.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <41a6b643-ce85-967e-a47f-99c32f1e2d6a@gmail.com>
+Date:   Tue, 17 Sep 2019 13:44:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20190828093007.0b0bdabb@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 16 Sep 2019 14:41:59 +0300
-Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
 
-> > Well, if you think that works, OK great.
-> > 
-> > But could that work?
-> > How would an individual trace record know if
-> > another trace record used %pfw?
-> > 
-> > Perhaps not reusing %pf, marking it reserved
-> > for a period of years, and using another unused
-> > prefix %p<type> like %pnfw may be simpler.  
+
+On 28.08.19 г. 14:30 ч., Steven Rostedt wrote:
+> On Wed, 28 Aug 2019 09:25:33 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> %p[Ff]w does not exist (I grepped for it) in older kernels since v3.0. So
-> kernel support for %p[fF] and %pfw are mutually exclusive. If you're ok
-> with that, I could change the patch to check %pf isn't followed by 'w',
-> in order to support %pf on older kernels.
-
-I think that's what I suggested to do.
-
+>> On Tue, 27 Aug 2019 16:14:18 +0300
+>> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+>>
+>>> +	cmdTmp = _commandLineEdit.text();
+>>> +	if (!cmdTmp.contains('\'') && !cmdTmp.contains('\"')) {
+>>> +		/* Split all command line arguments. */
+>>> +		argv << cmdTmp.split(" ", opt);
+>>> +	} else {
+>>> +		int iOpenQuots, iCloseQuots, size = cmdTmp.size();
+>>> +		int iSingleQuots = (cmdTmp.count('\'') == 2) ? cmdTmp.indexOf('\'') : size;
+>>> +		int iDoubleQuots = (cmdTmp.count('\"') == 2) ? cmdTmp.indexOf('\"') : size;
+>>> +
+>>> +		if (iSingleQuots < iDoubleQuots) {
+>>> +			iOpenQuots = iSingleQuots;
+>>> +			iCloseQuots = cmdTmp.lastIndexOf('\'') + 1;
+>>> +		} else if (iDoubleQuots < iSingleQuots) {
+>>> +			iOpenQuots = iDoubleQuots;
+>>> +			iCloseQuots = cmdTmp.lastIndexOf('\"') + 1;
+>>> +		} else {
+>>> +			emit print("\nERROR: Unable to parse the command.");
+>>> +			return {};
+>>> +		}
+>>> +
+>>> +		/* Split the arguments. */
+>>> +		argv << cmdTmp.left(iOpenQuots).split(" ", opt);
+>>> +
+>>> +		/* Everything in between the quotation marks goes in one piece. */
+>>> +		argv << cmdTmp.mid(iOpenQuots, iCloseQuots - iOpenQuots);
+>>> +
+>>> +		/* Split the rest of the arguments. */
+>>> +		argv << cmdTmp.right(size - iCloseQuots).split(" ", opt);
+>>> +	}
+>>
+>> This is where I hate C++, because it makes simple things so
+>> complicated ;-)
+>>
+>> What we need to do is simply:
+>>
+>> 	char *str = _commandLineEdit.text();
+>> 	char *last_word = str;
+>> 	char quote = 0;
+>> 	int i;
+>>
+>> 	// remove front and end spaces
+>> 	while (isspace(*str))
+>> 		str++;
+>> 	i = strlen(str);
+>> 	while (i > 0 && isspace(str[i-1])
+>> 		i--;
+>> 	str[i] = 0;
 > 
-> Although that still does not address using older tooling on newer kernels
-> with support for %pfw.
-
-That should be fine. I don't think it will crash those tools, they will
-just give out wrong information, and if people complain, we can try to
-get them to use the newer version of those tools ;-) (hopefully they
-don't complain to Linus).
-
+> Oops, need to have:
 > 
-> If you think that's an issue, I'll opt for another extension than %pfw,
-> which I chose originally since it's memorable --- fw for fwnode (names,
-> paths, and probably more in the future).
+> 	last_word = &str[i];
 > 
+> here.
+> 
+> -- Steve
+> 
+>>
+>> 	for (i = 0; str[i]; i++) {
+>> 		if (isspace(str[i]) && !quote) {
+>> 			str[i++] = 0;
+>> 			argv << last_word;
+>> 			while (isspace(str[i]))
+>> 				i++;
+>> 			last_word = &str[i];
+>> 		}
+>> 		switch(str[i]) {
+>> 		case '\\':
+>> 			i++;
+>> 			break;
+>> 		case '\'':
+>> 		case '"':
+>> 			if (!quote)
+>> 				quote = str[i];
+>> 			else if (quote == str[i])
+>> 				quote = 0;
+>> 			break;
+>> 		}
+>> 	}
+>> 	argv << last_word;
+>>
+>> Note, the above may be buggy, I didn't test it.
+>>
 
-I'm fine with the switch, as long as newer tools know how to handle it.
+Hi Steve,
 
-Make sure we also add a comment in the Linux kernel code that states
-that older kernels use to have 'f' and 'F' and that new tools look for
-'fw' to denote that this isn't an older kernel. This way, people will
-hopefully not add another 'fX' pointer name.
+I understand very well your feelings ;)
+However, I also really dislike eclectic programming stiles. Since this 
+is part of the C++/Qt code, I would prefer to stick to the C++/Qt way of 
+doing things.
 
--- Steve
+Here is a version of your code that is more C++/Qt-ish:
+
+
+	QString::SplitBehavior opt = QString::SkipEmptyParts;
+	QChar quote = 0;
+	int i, progress = 0, size;
+
+	cmd.remove(QChar('\\'));
+	size = cmd.count();
+	auto lamMid = [&] () {return cmd.mid(progress, i - progress);};
+	for (i = 0; i < size; ++i) {
+		if (cmd[i] == '\'' || cmd[i] == '"') {
+			if (quote.isNull()) {
+				args << lamMid().split(" ", opt);
+				quote = cmd[i++];
+				progress = i;
+			} else if (quote == cmd[i]) {
+				args << lamMid();
+				quote = 0;
+				progress = ++i;
+			}
+		}
+	}
+
+	args << cmd.right(size - progress).split(" ", opt);
+
+If you are OK with this I will send a new version of the patch.
+
+Thanks!
+Yordan
+
+
+
+>> -- Steve
+> 
