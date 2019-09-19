@@ -1,85 +1,111 @@
-Return-Path: <SRS0=S2sz=XN=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=Eaid=XO=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C41D7C4CEC9
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Sep 2019 15:22:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71489C49ED7
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Sep 2019 07:22:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 965BF218AE
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Sep 2019 15:22:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2DAA0217D6
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Sep 2019 07:22:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XrvHTGmO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbfIRPWY (ORCPT
+        id S1731989AbfISHW4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 18 Sep 2019 11:22:24 -0400
-Received: from mga18.intel.com ([134.134.136.126]:41972 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726982AbfIRPWY (ORCPT
+        Thu, 19 Sep 2019 03:22:56 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:40020 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731332AbfISHW4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 18 Sep 2019 11:22:24 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Sep 2019 08:22:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,521,1559545200"; 
-   d="scan'208";a="186494395"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Sep 2019 08:22:19 -0700
-Received: from andy by smile with local (Exim 4.92.1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1iAbmb-0001OA-Nd; Wed, 18 Sep 2019 18:22:17 +0300
-Date:   Wed, 18 Sep 2019 18:22:17 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, linux-acpi@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Joe Perches <joe@perches.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        linux-trace-devel@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH v7 01/13] tools lib traceevent: Convert remaining %p[fF]
- users to %p[sS]
-Message-ID: <20190918152217.GR2680@smile.fi.intel.com>
-References: <20190918133419.7969-1-sakari.ailus@linux.intel.com>
- <20190918133419.7969-2-sakari.ailus@linux.intel.com>
+        Thu, 19 Sep 2019 03:22:56 -0400
+Received: by mail-wm1-f68.google.com with SMTP id b24so2632830wmj.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Sep 2019 00:22:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oA7ulI4DLn0QJQoKpbCDminlOg00/fiVvwXOOJRMb5w=;
+        b=XrvHTGmOxWuZAkZuQ5isVm3Mr03NIFWsu4YlFq78iV/zwn873rmvTA6afSE4Up60Aj
+         x0Zdq7oacjOBf6ypqLdRBlSVrufXidQV9l9rSId0n7GPTV0Ep583pHj/Xu56z4xwgW3i
+         tsI02TrJ0NIUpqdBDHRIWzS3efTStGIHUKVR+F4ldY66xuO/O0L5fByWrjpFelJv8Dgi
+         qtSQLnSVJlO0DLKnXvoISOH2hAiN52SBBfVJg3tmvvw6ClENF5045T0WuQ79sNKaztbG
+         hwHXcPYJvsSjsYC+aFaCo5Q5A7pWVnpftn3oZeAvTzFuqFP3t7McZg16euBFfJk2O5aX
+         D1+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oA7ulI4DLn0QJQoKpbCDminlOg00/fiVvwXOOJRMb5w=;
+        b=NtzdvYZBn5Fhog9Pmm7QjRw7A6TsevmIH8S3z98UV6KAMeS8Sbvg1mfWv85I75fhOT
+         TNb0JoCi079iSBG1vKPhZKlpLfcbKYdayiiF9ehRL+9L8f8ON3e7XZqBJZc17wLs3ty6
+         94kS/uLJe/NypIciF1EzcRslKBSr6bJfpIblAQuzcZQhh8CoyOqkDeUXDkZtLfRbrTDO
+         5sqXG9jzcmBZ1esd2egEkwiUAdkDgyFVj2LsQklVU3J8ISM+LqNzmhGmAxICW8u+Jaq6
+         fwp8YkKWRArQKMd+funirsjWRHflct/+n8ZGfrYxXsoJ4kSW9Ok6p9l/EQfZ2WV/iXzn
+         Z62w==
+X-Gm-Message-State: APjAAAWdMOtlh0S8wNJO0UFat94SczqUNsQTT2sglx+vbGa5qv7sMWNT
+        xfssbFGhS1hdf2mp7yLekQ8ACtFd
+X-Google-Smtp-Source: APXvYqwJfrZQ2wGcF3p5TYHkdzwdVUaiuoneaY24bC/QJ05VrHtGGD7vHt+sb/Twre3f7we3H5cIJw==
+X-Received: by 2002:a1c:9ec9:: with SMTP id h192mr1540450wme.105.1568877774521;
+        Thu, 19 Sep 2019 00:22:54 -0700 (PDT)
+Received: from mamba.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id u25sm3579074wml.4.2019.09.19.00.22.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Sep 2019 00:22:53 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH] kernel-shark: Always show the true PID of the entry in the Context menu
+Date:   Thu, 19 Sep 2019 10:22:30 +0300
+Message-Id: <20190919072230.24945-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190918133419.7969-2-sakari.ailus@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Sep 18, 2019 at 04:34:07PM +0300, Sakari Ailus wrote:
-> There are no in-kernel %p[fF] users left. Convert the traceevent tool,
-> too, to align with the kernel.
+All data fields of the kshark_entry object can be modified by plugins
+(including the  Process Id). This is usually done in order to modify
+the way some events are visualized. However, the Context menu should
+always show the true (unmodified) value of the PID.
 
->  function. The _tep_ argument is the trace event parser context. The _name_ is
-> -the name of the function, the string is copied internally. The _addr_ is
-> -the start address of the function. The _mod_ is the kernel module
-> -the function may be in (NULL for none).
-> +the name of the function, the string is copied internally. The _addr_ is the
-> +start address of the function. The _mod_ is the kernel module the function may
-> +be in (NULL for none).
+Reported-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixing: 4828dc763 (kernel-shark-qt: Add centralized context menu for View and Graph widgets)
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel-shark/src/KsQuickContextMenu.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I think this is unneeded churn (reformating string). But since maintainer Acked
-this, I don't care much. But think about burden to the Git index in million of
-instances around the world.
-
+diff --git a/kernel-shark/src/KsQuickContextMenu.cpp b/kernel-shark/src/KsQuickContextMenu.cpp
+index 728ecbd..a84444e 100644
+--- a/kernel-shark/src/KsQuickContextMenu.cpp
++++ b/kernel-shark/src/KsQuickContextMenu.cpp
+@@ -142,7 +142,7 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data, size_t row,
+ 			descr = "Remove [";
+ 			descr += taskName;
+ 			descr += "-";
+-			descr += QString("%1").arg(_data->rows()[_row]->pid);
++			descr += QString("%1").arg(pid);
+ 			descr += "] plot";
+ 			lamAddAction(&_removeTaskPlotAction,
+ 				     &KsQuickContextMenu::_removeTaskPlot);
+@@ -150,7 +150,7 @@ KsQuickContextMenu::KsQuickContextMenu(KsDataStore *data, size_t row,
+ 			descr = "Add [";
+ 			descr += taskName;
+ 			descr += "-";
+-			descr += QString("%1").arg(_data->rows()[_row]->pid);
++			descr += QString("%1").arg(pid);
+ 			descr += "] plot";
+ 			lamAddAction(&_addTaskPlotAction,
+ 				     &KsQuickContextMenu::_addTaskPlot);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.20.1
 
