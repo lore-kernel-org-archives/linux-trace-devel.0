@@ -2,165 +2,220 @@ Return-Path: <SRS0=kuh0=XP=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02860C49ED7
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 14:28:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61A53C49ED7
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 14:55:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CEE6720882
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 14:28:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1568989706;
-	bh=Kp0F9xN2DY9KI2mFHvBUHu7JeaG+dR9flgRLbMMsFb8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=aECrjkgwLo2MDmxdfsjzr0laoQgT5tZEgJqQSXFHsVYpcQ4mCIwC4DT2bEXtEOWjB
-	 Cat46iFPRAqOyuyNd+btUKlpKWz0tRrtFASz/hZ3NpFZPCCU11/kUNypaIHnLctzil
-	 nugUcNdu/BJwwJWvAKssomeiFT4bwSuD9MvdCXIU=
+	by mail.kernel.org (Postfix) with ESMTP id 2284C207FC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 14:55:31 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=vmware.com header.i=@vmware.com header.b="vNWj5nqE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390154AbfITO2Z (ORCPT
+        id S2393228AbfITOza (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Sep 2019 10:28:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389512AbfITO1D (ORCPT
+        Fri, 20 Sep 2019 10:55:30 -0400
+Received: from mail-eopbgr750049.outbound.protection.outlook.com ([40.107.75.49]:27175
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389185AbfITOz3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 20 Sep 2019 10:27:03 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.35.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8516920C01;
-        Fri, 20 Sep 2019 14:26:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568989621;
-        bh=Kp0F9xN2DY9KI2mFHvBUHu7JeaG+dR9flgRLbMMsFb8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1lSu7XTlBVMrUGwrNJPF4Yo0VlQiHn6c3t/fp8gHGWeFTRgN6STBo/62eT6oHpd1M
-         PbV/gcUXgJ3n/nH/yj5N4zUzfuklV6gJ2+GhauH/X8P6ti73rOSJpaTCanS5NTWjAA
-         3JYqJC7UBv+it6c8rTlzyHNUNO6evNCz6FDzFoYY=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        devicetree@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Joe Perches <joe@perches.com>,
-        linux-acpi@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 25/31] tools lib traceevent: Convert remaining %p[fF] users to %p[sS]
-Date:   Fri, 20 Sep 2019 11:25:36 -0300
-Message-Id: <20190920142542.12047-26-acme@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190920142542.12047-1-acme@kernel.org>
-References: <20190920142542.12047-1-acme@kernel.org>
+        Fri, 20 Sep 2019 10:55:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZxUbQtIFJR3jSlFd/CPrQ8BM4CemghxhzD9/nlWKgci0++paCzMqWAYBKXHrPRN60zxBRFj2+S27UvlPf6fnTVE1hjQu+DIRGEHeq4Jj9PkAwxfZPBWZRc3EPJ14g+v4zY8pkAG/N+Q4HHFJyyPSW7dTAnhvy//MtYgEyiPQJS+EaCYlFxhTtokUqsf1c9/X0cOMP5+wYNR+ZnuJ3yvPpGqZhoBOqDXxzLX9axDPkLp5QpFb9lFwcu1EQOZAncRe+1ewAstHWJM1AgYwHxPrI10jph6WJY/WXMyqpiVIIWOC1Puac144jZvo8l+xN1szwE2KCOdoQ/yxdWUc/y27yw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3odzykhyhmWAmDiW2D61QfkwNTtEGMqT9RJG6ev/vb8=;
+ b=DHryhLvF+ZPTXX/uWS8ONr32fQLR3AeHqAdxTsbf6JjhOOux0JGHcF4uLcVk4vYrCIILgI7z+O2sHyD0ezl32wee/CaisOiwhVcF46Aw59UF6u5wmiWby8ZJANI8MWZrxHnZD+mOf93sOFCuO6rI3QgS1a2ZadUZJgwqwzPoy68nhx/dzVrvP5FTk/8ti1ZYD8x6Q/coT4xae1UJ9hwMSFu+ZfLutnQ+/zm/9sY2ItHtj9BZI3Itp1Ezko4qKr9CfZ9JLiF/+VuBt6Pp7lDxuT03Zol1xdd8KX6rqYGm9VBNy3RTFkTp+vr5us9BVgkq03MqPr+Mu1QKDkSGV6G/5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3odzykhyhmWAmDiW2D61QfkwNTtEGMqT9RJG6ev/vb8=;
+ b=vNWj5nqE4nz/heG9hX/nbG5cIqZnvAEwB0LbVekTTOng4U8imuRmPSvV2sY0El628eO62vdyLRh7UjWmDKxwD7sGFtdZ29MU63EaUfCn0L7ZnwvWz3iV4HJ3MEGxZTGC0s0HGbr3vmP8VVYP+C20Rw9xE6+4njr2HSZGh2WlsnI=
+Received: from SN6PR05MB4045.namprd05.prod.outlook.com (52.135.66.139) by
+ SN6PR05MB3933.namprd05.prod.outlook.com (52.132.125.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.17; Fri, 20 Sep 2019 14:55:25 +0000
+Received: from SN6PR05MB4045.namprd05.prod.outlook.com
+ ([fe80::5dd0:4ccb:3dbf:91f9]) by SN6PR05MB4045.namprd05.prod.outlook.com
+ ([fe80::5dd0:4ccb:3dbf:91f9%7]) with mapi id 15.20.2284.009; Fri, 20 Sep 2019
+ 14:55:25 +0000
+From:   Tzvetomir Stoyanov <tstoyanov@vmware.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH 1/5] trace-cmd: Move extract trace_clock into
+ trace-input.c
+Thread-Topic: [PATCH 1/5] trace-cmd: Move extract trace_clock into
+ trace-input.c
+Thread-Index: AQHVbcWPlgnJ2E8qfEO3VSt3S5l+hac0qziA
+Date:   Fri, 20 Sep 2019 14:55:23 +0000
+Message-ID: <CACqStofGsn5mTaT=+K1VSxPeHcfow5NHk3Jo54QBiwYA=79uAQ@mail.gmail.com>
+References: <20190918020334.344561631@goodmis.org>
+ <20190918020530.344889398@goodmis.org>
+In-Reply-To: <20190918020530.344889398@goodmis.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM0PR07CA0016.eurprd07.prod.outlook.com
+ (2603:10a6:208:ac::29) To SN6PR05MB4045.namprd05.prod.outlook.com
+ (2603:10b6:805:26::11)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=tstoyanov@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-gm-message-state: APjAAAUHeUTOB5U6Yd3gHcl4QswRRXNVM1KnftbRmjO9gGdAJJD7yv9x
+        K5oNkrUe7Ll422kJ/oXxweuAP1dRm8OhNEFblcw=
+x-google-smtp-source: APXvYqw3rzWfBJfqk1fzVa+4CaP+41jo9ZfdiTvXxjD2/jOLDAeQbgeesnUjv6ac/31xwPWRZLIA/J3vfnm2pWHHZmE=
+x-received: by 2002:a1c:4946:: with SMTP id w67mr3817489wma.131.1568991315250;
+ Fri, 20 Sep 2019 07:55:15 -0700 (PDT)
+x-gmail-original-message-id: <CACqStofGsn5mTaT=+K1VSxPeHcfow5NHk3Jo54QBiwYA=79uAQ@mail.gmail.com>
+x-originating-ip: [209.85.128.48]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2cd74a72-4551-4ff0-cd8c-08d73dda8f7a
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:SN6PR05MB3933;
+x-ms-traffictypediagnostic: SN6PR05MB3933:
+x-microsoft-antispam-prvs: <SN6PR05MB393342E8AD1C794DD12E0AE2DC880@SN6PR05MB3933.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 0166B75B74
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(366004)(376002)(346002)(39860400002)(396003)(199004)(189003)(316002)(25786009)(229853002)(6862004)(76176011)(11346002)(95326003)(6116002)(3846002)(8676002)(71190400001)(52116002)(81166006)(81156014)(99286004)(53546011)(386003)(86362001)(6506007)(66066001)(61266001)(5660300002)(8936002)(14444005)(446003)(55446002)(256004)(486006)(6436002)(186003)(14454004)(66446008)(6486002)(2906002)(6246003)(478600001)(6512007)(9686003)(498394004)(71200400001)(66476007)(4326008)(66946007)(64756008)(66556008)(102836004)(26005)(7736002)(305945005)(476003);DIR:OUT;SFP:1101;SCL:1;SRVR:SN6PR05MB3933;H:SN6PR05MB4045.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: VEaXfJu5vilWCD23UkE7qD8w7M1z387xogDfFelgwit4A1fLd0DwNBHUSvENFL5/zUbavVpu9zr+n0DTkrxzYjR7AKzkhLlN9xpI8+V6IdL/7ZujeeqgqQAUbFl6RnnnvbOYfTRafwUGmBBFN6lhge0jAepsGg/auTtJR/7RtuyW/WrLZzBdrS5kIfvqVoM/32P9kT8depE8MSkrO9drAIjHhivCqsWk6lkdOi5k0OFE4DImRCndLwUIl8W6CZlfnXH0RKzbKoz4rRcaYUkv/wPmusq5v/crYm+cnfJAo4ieicPb/mXRPY8Ix4HPxFiZfJDIKs/JfgUi1vvFUOz2uDnQxrHEj8ed0KUCR0Xy8KCp/xNk3rn6XMQybsrpv3Rm3bPwkW6Jlux3yicRJ26xuyCgI5iJSb6taYPOa0e+bN0=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <283644335D885A43BF4443F384C78C2B@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2cd74a72-4551-4ff0-cd8c-08d73dda8f7a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2019 14:55:23.3039
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5CX+l/CIgSSTvnPuzx8wLnZxbjF+ghv9JXkRnxx7NSRNBufRjB7Gsf9VbTfwpkVluHizIXs9Ued0MfZPy+RLqQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR05MB3933
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-
-There are no in-kernel %p[fF] users left. Convert the traceevent tool,
-too, to align with the kernel.
-
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: devicetree@vger.kernel.org
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Joe Perches <joe@perches.com>
-Cc: linux-acpi@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Rafael J. Wysocki <rafael@kernel.org>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Link: http://lore.kernel.org/lkml/20190918133419.7969-2-sakari.ailus@linux.intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- .../Documentation/libtraceevent-func_apis.txt  | 10 +++++-----
- tools/lib/traceevent/event-parse.c             | 18 ++++++++++++++----
- 2 files changed, 19 insertions(+), 9 deletions(-)
-
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt b/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
-index 38bfea30a5f6..f6aca0df2151 100644
---- a/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
-@@ -59,12 +59,12 @@ parser context.
- 
- The _tep_register_function()_ function registers a function name mapped to an
- address and (optional) module. This mapping is used in case the function tracer
--or events have "%pF" or "%pS" parameter in its format string. It is common to
--pass in the kallsyms function names with their corresponding addresses with this
-+or events have "%pS" parameter in its format string. It is common to pass in
-+the kallsyms function names with their corresponding addresses with this
- function. The _tep_ argument is the trace event parser context. The _name_ is
--the name of the function, the string is copied internally. The _addr_ is
--the start address of the function. The _mod_ is the kernel module
--the function may be in (NULL for none).
-+the name of the function, the string is copied internally. The _addr_ is the
-+start address of the function. The _mod_ is the kernel module the function may
-+be in (NULL for none).
- 
- The _tep_register_print_string()_ function  registers a string by the address
- it was stored in the kernel. Some strings internal to the kernel with static
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index bb22238debfe..6f842af4550b 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -4367,10 +4367,20 @@ static struct tep_print_arg *make_bprint_args(char *fmt, void *data, int size, s
- 					switch (*ptr) {
- 					case 's':
- 					case 'S':
--					case 'f':
--					case 'F':
- 					case 'x':
- 						break;
-+					case 'f':
-+					case 'F':
-+						/*
-+						 * Pre-5.5 kernels use %pf and
-+						 * %pF for printing symbols
-+						 * while kernels since 5.5 use
-+						 * %pfw for fwnodes. So check
-+						 * %p[fF] isn't followed by 'w'.
-+						 */
-+						if (ptr[1] != 'w')
-+							break;
-+						/* fall through */
- 					default:
- 						/*
- 						 * Older kernels do not process
-@@ -4487,12 +4497,12 @@ get_bprint_format(void *data, int size __maybe_unused,
- 
- 	printk = find_printk(tep, addr);
- 	if (!printk) {
--		if (asprintf(&format, "%%pf: (NO FORMAT FOUND at %llx)\n", addr) < 0)
-+		if (asprintf(&format, "%%ps: (NO FORMAT FOUND at %llx)\n", addr) < 0)
- 			return NULL;
- 		return format;
- 	}
- 
--	if (asprintf(&format, "%s: %s", "%pf", printk->printk) < 0)
-+	if (asprintf(&format, "%s: %s", "%ps", printk->printk) < 0)
- 		return NULL;
- 
- 	return format;
--- 
-2.21.0
-
+T24gV2VkLCBTZXAgMTgsIDIwMTkgYXQgNTowMyBBTSBTdGV2ZW4gUm9zdGVkdCA8cm9zdGVkdEBn
+b29kbWlzLm9yZz4gd3JvdGU6DQo+DQo+IEZyb206ICJTdGV2ZW4gUm9zdGVkdCAoVk13YXJlKSIg
+PHJvc3RlZHRAZ29vZG1pcy5vcmc+DQo+DQo+IE1vdmUgdGhlIGV4dHJhY3Rpbmcgb2YgdGhlIHRy
+YWNlX2Nsb2NrIGxvZ2ljIGludG8gdHJhY2UtaW5wdXQuYyBmcm9tDQo+IHRyYWNlLXV0aWwuYywg
+YW5kIHN0b3JlIGl0IGxvY2FsbHkgaW4gdGhlIHRyYWNlY21kX2lucHV0IGhhbmRsZXIuIFRoaXMg
+d2lsbA0KPiBhbGxvdyB1cyB0byByZW1vdmUgdGhlIHRyYWNlX2Nsb2NrIGxvZ2ljIGZyb20gZXZl
+bnRfcGFyc2UuYyBhcyBpdCBkb2Vzbid0DQo+IGJlbG9uZyB0aGVyZS4NCj4NCj4gU2lnbmVkLW9m
+Zi1ieTogU3RldmVuIFJvc3RlZHQgKFZNd2FyZSkgPHJvc3RlZHRAZ29vZG1pcy5vcmc+DQo+IC0t
+LQ0KPiAgaW5jbHVkZS90cmFjZS1jbWQvdHJhY2UtY21kLmggfCAgMyArKy0NCj4gIGxpYi90cmFj
+ZS1jbWQvdHJhY2UtaW5wdXQuYyAgIHwgMzMgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+Ky0tDQo+ICBsaWIvdHJhY2UtY21kL3RyYWNlLXV0aWwuYyAgICB8IDI3IC0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQ0KPiAgMyBmaWxlcyBjaGFuZ2VkLCAzMyBpbnNlcnRpb25zKCspLCAzMCBk
+ZWxldGlvbnMoLSkNCj4NCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdHJhY2UtY21kL3RyYWNlLWNt
+ZC5oIGIvaW5jbHVkZS90cmFjZS1jbWQvdHJhY2UtY21kLmgNCj4gaW5kZXggMDkyYmQ4OTZmYjA5
+Li5lYjM2YTFmMjBjMzAgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvdHJhY2UtY21kL3RyYWNlLWNt
+ZC5oDQo+ICsrKyBiL2luY2x1ZGUvdHJhY2UtY21kL3RyYWNlLWNtZC5oDQo+IEBAIC0xOCw3ICsx
+OCw2IEBADQo+ICAjZGVmaW5lIFRSQUNFQ01EX1BUUjJFUlIocHRyKSAgKCh1bmlzZ25lZCBsb25n
+KShwdHIpICYgflRSQUNFQ01EX0VSUl9NU0spDQo+DQo+ICB2b2lkIHRyYWNlY21kX3BhcnNlX2Nt
+ZGxpbmVzKHN0cnVjdCB0ZXBfaGFuZGxlICpwZXZlbnQsIGNoYXIgKmZpbGUsIGludCBzaXplKTsN
+Cj4gLXZvaWQgdHJhY2VjbWRfcGFyc2VfdHJhY2VfY2xvY2soc3RydWN0IHRlcF9oYW5kbGUgKnBl
+dmVudCwgY2hhciAqZmlsZSwgaW50IHNpemUpOw0KPiAgdm9pZCB0cmFjZWNtZF9wYXJzZV9wcm9j
+X2thbGxzeW1zKHN0cnVjdCB0ZXBfaGFuZGxlICpwZXZlbnQsIGNoYXIgKmZpbGUsIHVuc2lnbmVk
+IGludCBzaXplKTsNCj4gIHZvaWQgdHJhY2VjbWRfcGFyc2VfZnRyYWNlX3ByaW50ayhzdHJ1Y3Qg
+dGVwX2hhbmRsZSAqcGV2ZW50LCBjaGFyICpmaWxlLCB1bnNpZ25lZCBpbnQgc2l6ZSk7DQo+DQo+
+IEBAIC0xMjQsNiArMTIzLDggQEAgdm9pZCB0cmFjZWNtZF9zZXRfZmxhZyhzdHJ1Y3QgdHJhY2Vj
+bWRfaW5wdXQgKmhhbmRsZSwgaW50IGZsYWcpOw0KPiAgdm9pZCB0cmFjZWNtZF9jbGVhcl9mbGFn
+KHN0cnVjdCB0cmFjZWNtZF9pbnB1dCAqaGFuZGxlLCBpbnQgZmxhZyk7DQo+ICB1bnNpZ25lZCBs
+b25nIHRyYWNlY21kX2dldF9mbGFncyhzdHJ1Y3QgdHJhY2VjbWRfaW5wdXQgKmhhbmRsZSk7DQo+
+DQo+ICt2b2lkIHRyYWNlY21kX3BhcnNlX3RyYWNlX2Nsb2NrKHN0cnVjdCB0cmFjZWNtZF9pbnB1
+dCAqaGFuZGxlLCBjaGFyICpmaWxlLCBpbnQgc2l6ZSk7DQo+ICsNCj4gIGludCB0cmFjZWNtZF9t
+YWtlX3BpcGUoc3RydWN0IHRyYWNlY21kX2lucHV0ICpoYW5kbGUsIGludCBjcHUsIGludCBmZCwg
+aW50IGNwdXMpOw0KPg0KPiAgaW50IHRyYWNlY21kX2J1ZmZlcl9pbnN0YW5jZXMoc3RydWN0IHRy
+YWNlY21kX2lucHV0ICpoYW5kbGUpOw0KPiBkaWZmIC0tZ2l0IGEvbGliL3RyYWNlLWNtZC90cmFj
+ZS1pbnB1dC5jIGIvbGliL3RyYWNlLWNtZC90cmFjZS1pbnB1dC5jDQo+IGluZGV4IDhjY2ViMzFj
+ZWZlZi4uNTUzM2Q0MmZkN2MyIDEwMDY0NA0KPiAtLS0gYS9saWIvdHJhY2UtY21kL3RyYWNlLWlu
+cHV0LmMNCj4gKysrIGIvbGliL3RyYWNlLWNtZC90cmFjZS1pbnB1dC5jDQo+IEBAIC05NSw2ICs5
+NSw3IEBAIHN0cnVjdCB0cmFjZWNtZF9pbnB1dCB7DQo+ICAgICAgICAgY2hhciAqICAgICAgICAg
+ICAgICAgICAgY3B1c3RhdHM7DQo+ICAgICAgICAgY2hhciAqICAgICAgICAgICAgICAgICAgdW5h
+bWU7DQo+ICAgICAgICAgY2hhciAqICAgICAgICAgICAgICAgICAgdmVyc2lvbjsNCj4gKyAgICAg
+ICBjaGFyICogICAgICAgICAgICAgICAgICB0cmFjZV9jbG9jazsNCj4gICAgICAgICBzdHJ1Y3Qg
+aW5wdXRfYnVmZmVyX2luc3RhbmNlICAgICpidWZmZXJzOw0KPiAgICAgICAgIGludCAgICAgICAg
+ICAgICAgICAgICAgIHBhcnNpbmdfZmFpbHVyZXM7DQo+DQo+IEBAIC0yNTcxLDYgKzI1NzIsMzMg
+QEAgc3RhdGljIGludCByZWFkX2FuZF9wYXJzZV9jbWRsaW5lcyhzdHJ1Y3QgdHJhY2VjbWRfaW5w
+dXQgKmhhbmRsZSkNCj4gICAgICAgICByZXR1cm4gMDsNCj4gIH0NCj4NCj4gK3N0YXRpYyB2b2lk
+IGV4dHJhY3RfdHJhY2VfY2xvY2soc3RydWN0IHRyYWNlY21kX2lucHV0ICpoYW5kbGUsIGNoYXIg
+KmxpbmUpDQo+ICt7DQo+ICsgICAgICAgY2hhciAqZGF0YTsNCj4gKyAgICAgICBjaGFyICpjbG9j
+azsNCg0KSSB3b3VsZCByZWNvbW1lbmQgdG8gaW5pdGlhbGl6ZSBjbG9jayB3aXRoIE5VTEwsIHNv
+IGluIGNhc2Ugc3NjYW5mIGZhaWxzIGR1ZSB0bw0KYnJva2VuIGxpbmUgb3IgbWVtIGFsbG9jLCBo
+YW5kbGUtPnRyYWNlX2Nsb2NrIHdpbGwgbm90IHBvaW50IHRvIHJhbmRvbSBtZW1vcnkuDQoNCj4g
+KyAgICAgICBjaGFyICpuZXh0ID0gTlVMTDsNCj4gKw0KPiArICAgICAgIGRhdGEgPSBzdHJ0b2tf
+cihsaW5lLCAiW10iLCAmbmV4dCk7DQo+ICsgICAgICAgc3NjYW5mKGRhdGEsICIlbXMiLCAmY2xv
+Y2spOw0KPiArICAgICAgIC8qIFRPRE86IHJlcG9ydCBpZiBpdCBmYWlscyB0byBhbGxvY2F0ZSAq
+Lw0KPiArICAgICAgIGhhbmRsZS0+dHJhY2VfY2xvY2sgPSBjbG9jazsNCj4gK30NCj4gKw0KPiAr
+dm9pZCB0cmFjZWNtZF9wYXJzZV90cmFjZV9jbG9jayhzdHJ1Y3QgdHJhY2VjbWRfaW5wdXQgKmhh
+bmRsZSwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjaGFyICpmaWxlLCBpbnQg
+c2l6ZSBfX21heWJlX3VudXNlZCkNCj4gK3sNCj4gKyAgICAgICBjaGFyICpsaW5lOw0KPiArICAg
+ICAgIGNoYXIgKm5leHQgPSBOVUxMOw0KPiArDQo+ICsgICAgICAgbGluZSA9IHN0cnRva19yKGZp
+bGUsICIgIiwgJm5leHQpOw0KPiArICAgICAgIHdoaWxlIChsaW5lKSB7DQo+ICsgICAgICAgICAg
+ICAgICAvKiBjdXJyZW50IHRyYWNlX2Nsb2NrIGlzIHNob3duIGFzICJbbG9jYWxdIi4gKi8NCj4g
+KyAgICAgICAgICAgICAgIGlmICgqbGluZSA9PSAnWycpDQo+ICsgICAgICAgICAgICAgICAgICAg
+ICAgIHJldHVybiBleHRyYWN0X3RyYWNlX2Nsb2NrKGhhbmRsZSwgbGluZSk7DQo+ICsgICAgICAg
+ICAgICAgICBsaW5lID0gc3RydG9rX3IoTlVMTCwgIiAiLCAmbmV4dCk7DQo+ICsgICAgICAgfQ0K
+PiArfQ0KPiArDQo+ICBzdGF0aWMgaW50IHJlYWRfYW5kX3BhcnNlX3RyYWNlX2Nsb2NrKHN0cnVj
+dCB0cmFjZWNtZF9pbnB1dCAqaGFuZGxlLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCB0ZXBfaGFuZGxlICpwZXZlbnQpDQo+
+ICB7DQo+IEBAIC0yNTgwLDcgKzI2MDgsNyBAQCBzdGF0aWMgaW50IHJlYWRfYW5kX3BhcnNlX3Ry
+YWNlX2Nsb2NrKHN0cnVjdCB0cmFjZWNtZF9pbnB1dCAqaGFuZGxlLA0KPiAgICAgICAgIGlmIChy
+ZWFkX2RhdGFfYW5kX3NpemUoaGFuZGxlLCAmdHJhY2VfY2xvY2ssICZzaXplKSA8IDApDQo+ICAg
+ICAgICAgICAgICAgICByZXR1cm4gLTE7DQo+ICAgICAgICAgdHJhY2VfY2xvY2tbc2l6ZV0gPSAw
+Ow0KPiAtICAgICAgIHRyYWNlY21kX3BhcnNlX3RyYWNlX2Nsb2NrKHBldmVudCwgdHJhY2VfY2xv
+Y2ssIHNpemUpOw0KPiArICAgICAgIHRyYWNlY21kX3BhcnNlX3RyYWNlX2Nsb2NrKGhhbmRsZSwg
+dHJhY2VfY2xvY2ssIHNpemUpOw0KPiAgICAgICAgIGZyZWUodHJhY2VfY2xvY2spOw0KPiAgICAg
+ICAgIHJldHVybiAwOw0KPiAgfQ0KPiBAQCAtMjYxOCw3ICsyNjQ2LDcgQEAgaW50IHRyYWNlY21k
+X2luaXRfZGF0YShzdHJ1Y3QgdHJhY2VjbWRfaW5wdXQgKmhhbmRsZSkNCj4gICAgICAgICAgICAg
+ICAgIGlmIChyZWFkX2FuZF9wYXJzZV90cmFjZV9jbG9jayhoYW5kbGUsIHBldmVudCkgPCAwKSB7
+DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGNoYXIgY2xvY2tbXSA9ICJbbG9jYWxdIjsNCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgd2FybmluZygiRmlsZSBoYXMgdHJhY2VfY2xvY2sgYnVn
+LCB1c2luZyBsb2NhbCBjbG9jayIpOw0KPiAtICAgICAgICAgICAgICAgICAgICAgICB0cmFjZWNt
+ZF9wYXJzZV90cmFjZV9jbG9jayhwZXZlbnQsIGNsb2NrLCA4KTsNCj4gKyAgICAgICAgICAgICAg
+ICAgICAgICAgdHJhY2VjbWRfcGFyc2VfdHJhY2VfY2xvY2soaGFuZGxlLCBjbG9jaywgOCk7DQo+
+ICAgICAgICAgICAgICAgICB9DQo+ICAgICAgICAgfQ0KPg0KPiBAQCAtMzAxMSw2ICszMDM5LDcg
+QEAgdm9pZCB0cmFjZWNtZF9jbG9zZShzdHJ1Y3QgdHJhY2VjbWRfaW5wdXQgKmhhbmRsZSkNCj4g
+ICAgICAgICBmcmVlKGhhbmRsZS0+Y3B1c3RhdHMpOw0KPiAgICAgICAgIGZyZWUoaGFuZGxlLT5j
+cHVfZGF0YSk7DQo+ICAgICAgICAgZnJlZShoYW5kbGUtPnVuYW1lKTsNCj4gKyAgICAgICBmcmVl
+KGhhbmRsZS0+dHJhY2VfY2xvY2spOw0KPiAgICAgICAgIGNsb3NlKGhhbmRsZS0+ZmQpOw0KPg0K
+PiAgICAgICAgIHRyYWNlY21kX2ZyZWVfaG9va3MoaGFuZGxlLT5ob29rcyk7DQo+IGRpZmYgLS1n
+aXQgYS9saWIvdHJhY2UtY21kL3RyYWNlLXV0aWwuYyBiL2xpYi90cmFjZS1jbWQvdHJhY2UtdXRp
+bC5jDQo+IGluZGV4IGIwOGUzNzdjNjFiYS4uMzg1ODRjMjAwZmExIDEwMDY0NA0KPiAtLS0gYS9s
+aWIvdHJhY2UtY21kL3RyYWNlLXV0aWwuYw0KPiArKysgYi9saWIvdHJhY2UtY21kL3RyYWNlLXV0
+aWwuYw0KPiBAQCAtNzAsMzMgKzcwLDYgQEAgdm9pZCB0cmFjZWNtZF9wYXJzZV9jbWRsaW5lcyhz
+dHJ1Y3QgdGVwX2hhbmRsZSAqcGV2ZW50LA0KPiAgICAgICAgIH0NCj4gIH0NCj4NCj4gLXN0YXRp
+YyB2b2lkIGV4dHJhY3RfdHJhY2VfY2xvY2soc3RydWN0IHRlcF9oYW5kbGUgKnBldmVudCwgY2hh
+ciAqbGluZSkNCj4gLXsNCj4gLSAgICAgICBjaGFyICpkYXRhOw0KPiAtICAgICAgIGNoYXIgKmNs
+b2NrOw0KPiAtICAgICAgIGNoYXIgKm5leHQgPSBOVUxMOw0KPiAtDQo+IC0gICAgICAgZGF0YSA9
+IHN0cnRva19yKGxpbmUsICJbXSIsICZuZXh0KTsNCj4gLSAgICAgICBzc2NhbmYoZGF0YSwgIiVt
+cyIsICZjbG9jayk7DQo+IC0gICAgICAgdGVwX3JlZ2lzdGVyX3RyYWNlX2Nsb2NrKHBldmVudCwg
+Y2xvY2spOw0KPiAtICAgICAgIGZyZWUoY2xvY2spOw0KPiAtfQ0KPiAtDQo+IC12b2lkIHRyYWNl
+Y21kX3BhcnNlX3RyYWNlX2Nsb2NrKHN0cnVjdCB0ZXBfaGFuZGxlICpwZXZlbnQsDQo+IC0gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hhciAqZmlsZSwgaW50IHNpemUgX19tYXliZV91
+bnVzZWQpDQo+IC17DQo+IC0gICAgICAgY2hhciAqbGluZTsNCj4gLSAgICAgICBjaGFyICpuZXh0
+ID0gTlVMTDsNCj4gLQ0KPiAtICAgICAgIGxpbmUgPSBzdHJ0b2tfcihmaWxlLCAiICIsICZuZXh0
+KTsNCj4gLSAgICAgICB3aGlsZSAobGluZSkgew0KPiAtICAgICAgICAgICAgICAgLyogY3VycmVu
+dCB0cmFjZV9jbG9jayBpcyBzaG93biBhcyAiW2xvY2FsXSIuICovDQo+IC0gICAgICAgICAgICAg
+ICBpZiAoKmxpbmUgPT0gJ1snKQ0KPiAtICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gZXh0
+cmFjdF90cmFjZV9jbG9jayhwZXZlbnQsIGxpbmUpOw0KPiAtICAgICAgICAgICAgICAgbGluZSA9
+IHN0cnRva19yKE5VTEwsICIgIiwgJm5leHQpOw0KPiAtICAgICAgIH0NCj4gLX0NCj4gLQ0KPiAg
+dm9pZCB0cmFjZWNtZF9wYXJzZV9wcm9jX2thbGxzeW1zKHN0cnVjdCB0ZXBfaGFuZGxlICpwZXZl
+bnQsDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICBjaGFyICpmaWxlLCB1bnNpZ25lZCBpbnQg
+c2l6ZSBfX21heWJlX3VudXNlZCkNCj4gIHsNCj4gLS0NCj4gMi4yMC4xDQo+DQo+DQoNCg0KLS0g
+DQpUenZldG9taXIgKENlY28pIFN0b3lhbm92DQpWTXdhcmUgT3BlbiBTb3VyY2UgVGVjaG5vbG9n
+eSBDZW50ZXINCg==
