@@ -2,69 +2,68 @@ Return-Path: <SRS0=kuh0=XP=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E702C49ED7
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 12:01:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02860C49ED7
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 14:28:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6B008208C0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 12:01:39 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H4gRflK0"
+	by mail.kernel.org (Postfix) with ESMTP id CEE6720882
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 14:28:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1568989706;
+	bh=Kp0F9xN2DY9KI2mFHvBUHu7JeaG+dR9flgRLbMMsFb8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=aECrjkgwLo2MDmxdfsjzr0laoQgT5tZEgJqQSXFHsVYpcQ4mCIwC4DT2bEXtEOWjB
+	 Cat46iFPRAqOyuyNd+btUKlpKWz0tRrtFASz/hZ3NpFZPCCU11/kUNypaIHnLctzil
+	 nugUcNdu/BJwwJWvAKssomeiFT4bwSuD9MvdCXIU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406132AbfITMBj (ORCPT
+        id S2390154AbfITO2Z (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Sep 2019 08:01:39 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:45349 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406120AbfITMBj (ORCPT
+        Fri, 20 Sep 2019 10:28:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389512AbfITO1D (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 20 Sep 2019 08:01:39 -0400
-Received: by mail-wr1-f68.google.com with SMTP id r5so6451051wrm.12
-        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Sep 2019 05:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ngUDqMbjbqmKFktbgf4JJc5rd6kHgEE5QS5QXNTGoJw=;
-        b=H4gRflK0lAmeApwk4TP7TF2vCu4N8GyLVx2tD5knObRH1zVxigE+o8xBhT9wCmhbBG
-         PriVxwvszxD0Y+aRSwqiK5gzBOIVmkAezOSldmoCrAGBwDpsIsEfqUWRn/GxAkTA7Kov
-         crYmmCOhz4fHosriHWT29tCKV2UDsZwfqM3j/HZL9aknwwNdrQ0PeASN3RwGt3A6RTOb
-         4kDn7ZtuCMI6yQGzEtIJ2jeNKgUo4lNTq8r8J/jVqqkINoLv8dLSBifRCEPfutPCOWvQ
-         E2qh89n5BRzrltQkYQsRSgv6IWk2cRqXGTv8t/lv8JrklcwvxCz1osUv1Ycd9bW5odD7
-         +Ziw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ngUDqMbjbqmKFktbgf4JJc5rd6kHgEE5QS5QXNTGoJw=;
-        b=jmkmejuM6kfbCZpa1zpft3KbE1OM9Sp9ASk+5Jcjh2d8o086cu6TvGA6IKo53pkc5i
-         TmeeuBWHt0WiWJNF4YLMwyRLapd6iA3KBQxRuGIabv8ClkRtk8A84aXt+2ZMxmFq7Ej2
-         02QNH18RMSpehVKjsQ3vZhudJikAymU0L9R7ESbtO6zLLdrrQvT3c5zReuj+tgZMssbd
-         o2dYSd0K6NjVkzrJa0a6W6kB8jgPzJD132FeUM95HdY+RbG/y9/eHwl3ZfjRMO8agyzj
-         OKOQQGOHP1QBFxm/EPotHPJkK0d8VfYgUyYucq4bwZYSjNWft7BZu9ipM2Uq5Rkqb60+
-         1gcA==
-X-Gm-Message-State: APjAAAXaoZcFBKqVtq55ihQudOCM3UGn4qLqHuxHjpHGfOVV0JwCrU/R
-        d4Bt+SRfUMttPf8bpHYUcl8=
-X-Google-Smtp-Source: APXvYqxVQZ5AHcrXJ5TFQDbU3KJXEvDN2xyA5a56DjGZfjbUX7xrvW3Jg1fxmGFa1VhMrcGkgXdbeQ==
-X-Received: by 2002:adf:cc0a:: with SMTP id x10mr11537772wrh.195.1568980897838;
-        Fri, 20 Sep 2019 05:01:37 -0700 (PDT)
-Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id z189sm2679008wmc.25.2019.09.20.05.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Sep 2019 05:01:37 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2] trace-cmd: Correct the install paths of traceevent and trace-cmd libraries
-Date:   Fri, 20 Sep 2019 15:01:32 +0300
-Message-Id: <20190920120132.30824-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 20 Sep 2019 10:27:03 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.35.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8516920C01;
+        Fri, 20 Sep 2019 14:26:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1568989621;
+        bh=Kp0F9xN2DY9KI2mFHvBUHu7JeaG+dR9flgRLbMMsFb8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1lSu7XTlBVMrUGwrNJPF4Yo0VlQiHn6c3t/fp8gHGWeFTRgN6STBo/62eT6oHpd1M
+         PbV/gcUXgJ3n/nH/yj5N4zUzfuklV6gJ2+GhauH/X8P6ti73rOSJpaTCanS5NTWjAA
+         3JYqJC7UBv+it6c8rTlzyHNUNO6evNCz6FDzFoYY=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        devicetree@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Joe Perches <joe@perches.com>,
+        linux-acpi@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 25/31] tools lib traceevent: Convert remaining %p[fF] users to %p[sS]
+Date:   Fri, 20 Sep 2019 11:25:36 -0300
+Message-Id: <20190920142542.12047-26-acme@kernel.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190920142542.12047-1-acme@kernel.org>
+References: <20190920142542.12047-1-acme@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -72,47 +71,96 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In order to be able to use the installed versions of the library's headers
-(and the libraries itself) the directories structure of the source has to
-be reprodused in the install location.
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-This modification is needed by the NumPy interface of KernelShark.
+There are no in-kernel %p[fF] users left. Convert the traceevent tool,
+too, to align with the kernel.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: devicetree@vger.kernel.org
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: linux-acpi@vger.kernel.org
+Cc: linux-trace-devel@vger.kernel.org
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Rafael J. Wysocki <rafael@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Link: http://lore.kernel.org/lkml/20190918133419.7969-2-sakari.ailus@linux.intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- Makefile | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ .../Documentation/libtraceevent-func_apis.txt  | 10 +++++-----
+ tools/lib/traceevent/event-parse.c             | 18 ++++++++++++++----
+ 2 files changed, 19 insertions(+), 9 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index dabdf8d..6c66c02 100644
---- a/Makefile
-+++ b/Makefile
-@@ -48,7 +48,7 @@ img_install = $(prefix)/share/kernelshark/html/images
- img_install_SQ = '$(subst ','\'',$(img_install))'
- libdir ?= $(prefix)/lib
- libdir_SQ = '$(subst ','\'',$(libdir))'
--includedir = $(prefix)/include/trace-cmd
-+includedir = $(prefix)/include
- includedir_SQ = '$(subst ','\'',$(includedir))'
+diff --git a/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt b/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
+index 38bfea30a5f6..f6aca0df2151 100644
+--- a/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
++++ b/tools/lib/traceevent/Documentation/libtraceevent-func_apis.txt
+@@ -59,12 +59,12 @@ parser context.
  
- export man_dir man_dir_SQ html_install html_install_SQ INSTALL
-@@ -344,12 +344,12 @@ install_gui: install_cmd gui
- 	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build install
+ The _tep_register_function()_ function registers a function name mapped to an
+ address and (optional) module. This mapping is used in case the function tracer
+-or events have "%pF" or "%pS" parameter in its format string. It is common to
+-pass in the kallsyms function names with their corresponding addresses with this
++or events have "%pS" parameter in its format string. It is common to pass in
++the kallsyms function names with their corresponding addresses with this
+ function. The _tep_ argument is the trace event parser context. The _name_ is
+-the name of the function, the string is copied internally. The _addr_ is
+-the start address of the function. The _mod_ is the kernel module
+-the function may be in (NULL for none).
++the name of the function, the string is copied internally. The _addr_ is the
++start address of the function. The _mod_ is the kernel module the function may
++be in (NULL for none).
  
- install_libs: libs
--	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ))
--	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ))
-+	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ)/trace-cmd)
-+	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ)/traceevent)
- 	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ)/traceevent)
- 	$(Q)$(call do_install,$(src)/include/traceevent/trace-seq.h,$(includedir_SQ)/traceevent)
--	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ))
--	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-filter-hash.h,$(includedir_SQ))
-+	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ)/trace-cmd)
-+	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-filter-hash.h,$(includedir_SQ)/trace-cmd)
+ The _tep_register_print_string()_ function  registers a string by the address
+ it was stored in the kernel. Some strings internal to the kernel with static
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index bb22238debfe..6f842af4550b 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -4367,10 +4367,20 @@ static struct tep_print_arg *make_bprint_args(char *fmt, void *data, int size, s
+ 					switch (*ptr) {
+ 					case 's':
+ 					case 'S':
+-					case 'f':
+-					case 'F':
+ 					case 'x':
+ 						break;
++					case 'f':
++					case 'F':
++						/*
++						 * Pre-5.5 kernels use %pf and
++						 * %pF for printing symbols
++						 * while kernels since 5.5 use
++						 * %pfw for fwnodes. So check
++						 * %p[fF] isn't followed by 'w'.
++						 */
++						if (ptr[1] != 'w')
++							break;
++						/* fall through */
+ 					default:
+ 						/*
+ 						 * Older kernels do not process
+@@ -4487,12 +4497,12 @@ get_bprint_format(void *data, int size __maybe_unused,
  
- doc:
- 	$(MAKE) -C $(src)/Documentation all
+ 	printk = find_printk(tep, addr);
+ 	if (!printk) {
+-		if (asprintf(&format, "%%pf: (NO FORMAT FOUND at %llx)\n", addr) < 0)
++		if (asprintf(&format, "%%ps: (NO FORMAT FOUND at %llx)\n", addr) < 0)
+ 			return NULL;
+ 		return format;
+ 	}
+ 
+-	if (asprintf(&format, "%s: %s", "%pf", printk->printk) < 0)
++	if (asprintf(&format, "%s: %s", "%ps", printk->printk) < 0)
+ 		return NULL;
+ 
+ 	return format;
 -- 
-2.20.1
+2.21.0
 
