@@ -2,121 +2,103 @@ Return-Path: <SRS0=kuh0=XP=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA8ECC49ED7
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB374C49ED7
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:29:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A2D4C2086A
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:27:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BCB732086A
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:29:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jVQuJOhf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VwAApKpF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393465AbfITK1t (ORCPT
+        id S2403909AbfITK3N (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Sep 2019 06:27:49 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:39348 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393464AbfITK1s (ORCPT
+        Fri, 20 Sep 2019 06:29:13 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:38499 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391072AbfITK3M (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 20 Sep 2019 06:27:48 -0400
-Received: by mail-wm1-f65.google.com with SMTP id v17so1746982wml.4
-        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Sep 2019 03:27:45 -0700 (PDT)
+        Fri, 20 Sep 2019 06:29:12 -0400
+Received: by mail-wr1-f43.google.com with SMTP id l11so6204407wrx.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Sep 2019 03:29:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YKP0doev8PbEiB8V6RMDe5qv/YIE2yiWe358P0uLik4=;
-        b=jVQuJOhfAJnZND8LN7mtBzGeJf5Y5Tjj2GUAE6pSK/Bk8pw23QHYp0beshFD8Pr/By
-         7R6LlpZNpO9R1eCMrGdL1mClVZTFQQFkJfFIQxEd1kClfvUJYCa3EUoCLQnauRO7iDnq
-         nY7c7ArE53vIwrBLYFVZBhKE9WPIRx/BnPWm2oxlyJkV6OS4TUBUssklqtGts0cN0JY0
-         AedvrYrvGaiTW0uUArHgzHSduoZvvd4440Kp3mkdcvvN7Y1xY+4zoSMiCsxut4XTQsML
-         C+ylFGVCZwzqm3DNOxP1FisrP3FM5FiESW1uCTXb32SrfLvjaRx8oemI4xYo8XnlrikW
-         B9hw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NhU1z+L7ceZexQ6Y7QeA+F7a7qYchRpUtPh+QNb3ZFM=;
+        b=VwAApKpFtFSDlz64bthfCPzULOXoQvpF+8v3voQoPl0nUth3kz4XAjTr8Auv8WcIoQ
+         aUgCAILYU+nUs8qRjws5ur6ZYa0KQfHgBew7UnuocbFIkIbcj7eTQ7IcDiL79dPbZnuS
+         HzYFOoqErX8nktOPn/o3MYbxNO0yxmSr2/030Q9p/gTq8P1yjkhFPe/74/Ai6W38kiY2
+         E7uwUp+AgGSZfxDlJ0q3UWIdW0FoBmV2yil7412N39vVMBf7vMTeS1U2sikwuzW1Tywo
+         52nFBV1EEjP7ZKgzO1evjs78mTPffErTIXjaJHjdEHvK7bez3CwYMsmC08SpaZmEe7U7
+         QZmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=YKP0doev8PbEiB8V6RMDe5qv/YIE2yiWe358P0uLik4=;
-        b=MqDAYal3xXuZ8kD3VcLxchPoYs5OYIS85/zycU5hs4LYoTQlsC5L2/g64Ud6kFOGvD
-         oaWvtjNtVUvLsnkuhXG5GIQG0kfT0daWs3+sp8beeIz5tJ5GzcJnLGFXNxU8A39dJ0cT
-         pfwqwf20DH0MqhCE7WXliY7u0Vcc6VRiCuIY87XqAHAYfXAp3HZIJmHOMjaSiSPJzMLf
-         STl7O3+0EEY8iQj//tfjKOlMdWaJid7CuKU7ujWDdNVmepkuwm8tQPi5Turka9+VrjOq
-         8RygDNkzLKxX9ap0znAX7l3XWyxB3mKxoo5iPe5ItnMAgrlQZPF7kXc5PXm5dXxC0QAp
-         uyRw==
-X-Gm-Message-State: APjAAAXOyRP9i+3H3LYP1/VuS2ioZfFb5pmbtTbjZvFFf/nh93djabmF
-        /7oWiAa94TrRzcpA5seK/IlWwD88
-X-Google-Smtp-Source: APXvYqwW2Vl1VWgnTutrvWMGutEgVszm339fhOB5uWN6hc1yocgIwIeyJ9P33kWaGAreGgtX1aFwyw==
-X-Received: by 2002:a05:600c:2246:: with SMTP id a6mr2968615wmm.95.1568975265195;
-        Fri, 20 Sep 2019 03:27:45 -0700 (PDT)
-Received: from [10.27.113.15] ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id l6sm1741122wmg.2.2019.09.20.03.27.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 20 Sep 2019 03:27:44 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] kernel-shark: Show warning message when running as
- Root
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org, mike.auty@gmail.com
-References: <20190826155811.32021-1-y.karadz@gmail.com>
- <20190826155811.32021-2-y.karadz@gmail.com>
- <20190827182253.2d230e63@gandalf.local.home>
- <20190919163210.7740f372@gandalf.local.home>
+        bh=NhU1z+L7ceZexQ6Y7QeA+F7a7qYchRpUtPh+QNb3ZFM=;
+        b=KfhlFj111XwqTI29O2/jWPb/pmrLGcKZ6cDRKOSiqyLI2IniJAZjEr5tWfeaTxnB1Z
+         V3FwKZ1pwphUUE3UpxACcidq/CJpB1qcKWL5SHHS11T2q62bml6zrOPvDR4p8Et8yC8i
+         6nqDgyqFyf8AwvumIA2tnIw7Qev2901Q4UYeTlOr73icXgC5oEBpz0ygxFUeIuyMkmuw
+         XmprC5a9xotfIgoHRca8yD0o2atsYekj0kIPk6unvx+m5zFk5Tvdcl2ocC/ZgywQNvGI
+         mYOg3N8pNSAM0jzuV/wdqefc+b+zqBCR0GmSG/hRuaZYng1H37x5TydXGI58QTYAFHB0
+         7GOg==
+X-Gm-Message-State: APjAAAXkQQHSme8rCeqKi8/dS+J73Lv3/qsJrZc62LYJa5f94xoS9LXM
+        ayXiRDm6QeQWwuXDJHzSArle/LDZ
+X-Google-Smtp-Source: APXvYqwCFoYpmtEKfiI+y074r8YAcUCv2PZ6/97eWliMjvO9SukNVAi8D+3fwp8RYHW2DA865krCuA==
+X-Received: by 2002:a5d:49cb:: with SMTP id t11mr3797321wrs.158.1568975350972;
+        Fri, 20 Sep 2019 03:29:10 -0700 (PDT)
+Received: from mamba.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id k26sm1480136wmj.33.2019.09.20.03.29.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Sep 2019 03:29:10 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <af472fe3-4f01-f739-9f61-3a693a7ffc28@gmail.com>
-Date:   Fri, 20 Sep 2019 13:27:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v3 0/5] Handle the case when KernelShark is started as Root
+Date:   Fri, 20 Sep 2019 13:28:47 +0300
+Message-Id: <20190920102852.22769-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20190919163210.7740f372@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+A patch set implementing the improvements suggested here:
 
+https://bugzilla.kernel.org/show_bug.cgi?id=204475
 
-On 19.09.19 г. 23:32 ч., Steven Rostedt wrote:
-> On Tue, 27 Aug 2019 18:22:53 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
->> On Mon, 26 Aug 2019 18:58:07 +0300
->> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
->>
->>> +	warn.setText("KernelShark will have Root privileges.");
->>> +	warn.setInformativeText("Continue on your own risk.");
->>
->> This wasn't updated.
->>
->>   From: https://lore.kernel.org/linux-trace-devel/20190809091914.75f553b2@gandalf.local.home/
->>
->>>> +	QMessageBox warn;
->>>> +	warn.setText("KernelShark will have Root privileges.");
->>>> +	warn.setInformativeText("Continue on your one risk.");
->>>
->>> Probably better to say:
->>>
->>>    "KernelShark is running with Root privileges."
->>>    "Continue at your own risk."
->>
->> I could update the patch if you like, instead of sending out another
->> series. Let me finish the rest of the series.
->>
-> 
-> We decided in our meeting that you were going to send a v3, right? Just
-> want to make sure (too many things to keep track of ;-)
+Plus a minor improvements of the error messages printed when something
+goes wrong withe the "Record" dialog.  
 
-Yes, I am sending v3 right now.
-Y.
+v2 changes:
+  - Correcting typos in patch 1/5
+  - Fixing a bug in patch 2/5. trace-cmd now gets correctly formatted list
+  of command line arguments.
+  - Patches 4/5 and 5/5 are new.
 
-> 
-> Thanks!
-> 
-> -- Steve
-> 
+v3 changes:
+  - Polishing the text of the warning/error messages in patches 1/5 and
+  5/5. The modifications have been suggested by Steven.
+
+Yordan Karadzhov (VMware) (5):
+  kernel-shark: Show warning message when running as Root
+  kernel-shark: Don't use pkexec when running as Root
+  kernel-shark: Use standart error message in KsMainWindow::_record()
+  kernel-shark: Optimize the error messages when "Record" fails to start
+  kernel-shark: Better formatting of the error messages from "Record"
+
+ kernel-shark/src/KsMainWindow.cpp | 90 +++++++++++++++++++++++--------
+ kernel-shark/src/KsMainWindow.hpp |  4 ++
+ 2 files changed, 71 insertions(+), 23 deletions(-)
+
+-- 
+2.20.1
+
