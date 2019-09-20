@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68381C49ED7
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DCB6C49ED7
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:48:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3D140208C0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:48:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E0286207FC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:48:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="irEaqOCz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oac0dJtq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408702AbfITKsm (ORCPT
+        id S2408706AbfITKsn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Sep 2019 06:48:42 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:54962 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408703AbfITKsl (ORCPT
+        Fri, 20 Sep 2019 06:48:43 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:33216 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408703AbfITKsn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 20 Sep 2019 06:48:41 -0400
-Received: by mail-wm1-f65.google.com with SMTP id p7so1928238wmp.4
-        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Sep 2019 03:48:40 -0700 (PDT)
+        Fri, 20 Sep 2019 06:48:43 -0400
+Received: by mail-wm1-f66.google.com with SMTP id r17so9250988wme.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Sep 2019 03:48:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=x50sgX+AOCc0TaNi8TeHSnv6RAAO75E2B/Z9yeqSR9I=;
-        b=irEaqOCz3TVzVEgKM6PWuWOlI+8n1dTPa4w08dOaXjrzFIb1bqhztpK5qDY+IY070U
-         jWyaZg/NmuEq/ZOn5uQIyEb1yDu1r66mmzsZS3nfPeso/2Qb0n74WSIq/H4OxEjklWSU
-         rOctsus3QAMbbzvvCJ1Qed/IyXjW3IMDrmFNg1XuxOqJKvKoOUWhS/F1QsPydNHnsPh1
-         cU+aOQb4g4DUT/4HVZg1iQzY4j55RPtNZOSvOk9MSwFuaefqrUZ+n2CmES5akZQWLXwf
-         tZiCpcv2D7rttJt1/NECzkaoqv0XnY52KjmlyvvetrxRyrAOXs9J9dSBcwzxO2H9Z1OY
-         R7WQ==
+        bh=6FFwUsxoFzc+hY7PxaoFIpi3ees7WEwo0cj++kWpZQc=;
+        b=oac0dJtqGmCfP57ae6KbknbclHUw1a/AcHTYaeRbG4rWklbf68eXeFsm8Ut6eT6QtQ
+         89OkxStfHWpGD0I9DNNGU5S4lsfe2dzWpqzR6jMiEUOvGVBKUhNmQsUxLilZpGTjfxoZ
+         cCwIo3Zl8fLPusSxYyfKxhNFQvxjQH1sUHEuBan0N+UK1ij6w7sc66BER23JaLIY+nmU
+         Nb6i3OcGjbS1yF1UQgf9RPl2S9HxVSxTBMbRIuKuGu2HAcmX7US0wmgfRPYnSoMneBzC
+         Q1t9Zu75RAOfns7lrvAuUW/ykeIzecEg2a3zBkxbQnhMstTZ0wYWRITFR0551MPkX8BF
+         4MUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=x50sgX+AOCc0TaNi8TeHSnv6RAAO75E2B/Z9yeqSR9I=;
-        b=ArzqXHUvMXDEIMRFqZyHW2Rz5anDcMAPIFwHIkDunYtLKXAQANvmZasq5IppVv14Wr
-         Tvx5gUJV2eRVSkrPLFZEKF9RlcFM20rXINh5oSwfzrxVX+mK3Bq8N4jJQ7YKXUoyW6VX
-         o0PefweMrHWLs8tIbfKI075EYs6FPxgQ7Uw9xlTyPzAgyRHo9/j3HSmuMtSxJroRERm0
-         9B2l+EDoTfDG0v07ud9D715NBpgHbEOPOBjf9vMGz8aM7Q/9jbJkLfD1SoPR2hOfkh/n
-         fvdF9UOCWHDOQH4DNAAzWE1UvfR6YFDPOe59k65c5NepibNEk7Ed37tVGzroty+aV2GL
-         O3VA==
-X-Gm-Message-State: APjAAAX9P3mJV3QmMq///6zzb9+Kf4GYhepZrKuiiZ2opJdo2lRSvOWh
-        yBwV7z5h0b82rL2Y8ElNwsSw7+BX
-X-Google-Smtp-Source: APXvYqyAr4FAD9TF6SHzsoMG8pio0v3UpTkJNhHUDXKn15QaoIxIXp4z10Ez0Yw0pvdu70mbj6cFyg==
-X-Received: by 2002:a7b:c10b:: with SMTP id w11mr2893049wmi.108.1568976519742;
-        Fri, 20 Sep 2019 03:48:39 -0700 (PDT)
+        bh=6FFwUsxoFzc+hY7PxaoFIpi3ees7WEwo0cj++kWpZQc=;
+        b=OhZXgUu9Q+nF1Mubae583DiTG7iPyYnyklkBN8d16Jj9Ok4jxkbv6yzmI7TgT3BylC
+         58WrIdnFiXY66Ne2JwDMCabf6pZ9p9SBQpwUI/j/i3oGExkGpc8rdM3NgaCxo6pn9f8K
+         luUimIjRejVDFwu/K0I5e4pAtCLIkDuJbALgTo8WvWtky2Yuy2DoIMekNEDaYJ9CvouD
+         VdHeX2FLQ6Xd7RbUN7rfycxnGucIJvvH/llqZWRbm9swmgXHJVKO+4Cu42GPBDynkF1E
+         NZi4I/0FTcaK0ONjFy4AnedRCqI5BTt+xLIdP4jAon3rZnXFNe9XdlB9tQECJW/s72Uq
+         BhFw==
+X-Gm-Message-State: APjAAAWAhetWh/g+PGfkPuXsH2N/EX8ggcVa99eOX01uCz57M0oYtjgI
+        64LRcpee71d2LURSjFh2PZS9ZoTh
+X-Google-Smtp-Source: APXvYqwSXNylNonOqoRlzAcTtFsIbGlBvPhuqya/i/MLwNctgaCXi3hGv8Bte8h9ur5e8PMiqD4G0g==
+X-Received: by 2002:a1c:61d6:: with SMTP id v205mr1755798wmb.35.1568976521543;
+        Fri, 20 Sep 2019 03:48:41 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id t14sm1641978wrs.6.2019.09.20.03.48.39
+        by smtp.gmail.com with ESMTPSA id t14sm1641978wrs.6.2019.09.20.03.48.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Sep 2019 03:48:39 -0700 (PDT)
+        Fri, 20 Sep 2019 03:48:41 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/4] trace-cmd: Correct the install paths of traceevent and trace-cmd libraries
-Date:   Fri, 20 Sep 2019 13:48:29 +0300
-Message-Id: <20190920104831.23475-3-y.karadz@gmail.com>
+Subject: [PATCH 3/4] kernel-shark: Fix the file paths used by Doxygen
+Date:   Fri, 20 Sep 2019 13:48:30 +0300
+Message-Id: <20190920104831.23475-4-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190920104831.23475-1-y.karadz@gmail.com>
 References: <20190920104831.23475-1-y.karadz@gmail.com>
@@ -74,38 +74,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In order to be able to use the installed versions of the library's headers
-(and the libraries itself) the directories structure of the source has to
-be reprodused in the install location.
-
-This modification is needed by the NumPy interface of KernelShark.
+The Doxygen documentation, including its configuration file, have been
+moved to another directory. Therefore the paths, used by Doxygen to find
+its input, have to be changed accordingly.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Fixes: d4d68c9 (kernel-shark: Separate trace-cmd and kernelshark)
 ---
- Makefile | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel-shark/Documentation/doxygen/dox_config | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index dabdf8d..7124b2f 100644
---- a/Makefile
-+++ b/Makefile
-@@ -344,12 +344,12 @@ install_gui: install_cmd gui
- 	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build install
- 
- install_libs: libs
--	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ))
--	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ))
-+	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ)/trace-cmd)
-+	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ)/traceevent)
- 	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ)/traceevent)
- 	$(Q)$(call do_install,$(src)/include/traceevent/trace-seq.h,$(includedir_SQ)/traceevent)
--	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ))
--	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-filter-hash.h,$(includedir_SQ))
-+	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ)/trace-cmd)
-+	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-filter-hash.h,$(includedir_SQ)/trace-cmd)
- 
- doc:
- 	$(MAKE) -C $(src)/Documentation all
+diff --git a/kernel-shark/Documentation/doxygen/dox_config b/kernel-shark/Documentation/doxygen/dox_config
+index 43c7f84..89b9284 100644
+--- a/kernel-shark/Documentation/doxygen/dox_config
++++ b/kernel-shark/Documentation/doxygen/dox_config
+@@ -4,7 +4,7 @@
+ DOXYFILE_ENCODING      = UTF-8
+ PROJECT_NAME           = "KernelShark"
+ PROJECT_BRIEF = "Kernel Shark is a front-end reader of the Linux kernel tracing data."
+-INPUT                  = ../src/ ../src/plugins/
++INPUT                  = ../../src/ ../../src/plugins/
+ SOURCE_BROWSER         = YES
+ QT_AUTOBRIEF           = YES
+ TAB_SIZE               = 8
+@@ -13,4 +13,4 @@ CASE_SENSE_NAMES       = YES
+ SORT_MEMBER_DOCS       = NO
+ STRICT_PROTO_MATCHING  = YES
+ DOT_MULTI_TARGETS      = YES
+-PROJECT_LOGO           = ../icons/KS_logo_stacked.svg
++PROJECT_LOGO           = ../../icons/KS_logo_stacked.svg
 -- 
 2.20.1
 
