@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E7CDC4CEC9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68381C49ED7
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:48:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 04043207FC
+	by mail.kernel.org (Postfix) with ESMTP id 3D140208C0
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Sep 2019 10:48:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q6VTSELn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="irEaqOCz"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408704AbfITKsl (ORCPT
+        id S2408702AbfITKsm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Sep 2019 06:48:41 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:54963 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408702AbfITKsl (ORCPT
+        Fri, 20 Sep 2019 06:48:42 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:54962 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408703AbfITKsl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 20 Sep 2019 06:48:41 -0400
-Received: by mail-wm1-f68.google.com with SMTP id p7so1928173wmp.4
-        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Sep 2019 03:48:38 -0700 (PDT)
+Received: by mail-wm1-f65.google.com with SMTP id p7so1928238wmp.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Sep 2019 03:48:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Z4kc1j7WPaNizPMBT7tjDLvWgc64zJOz/Y5IipybVpo=;
-        b=Q6VTSELnh6IpMA/VXFfFqTwHd5dJ1SeCJEN1l7fqjwcCPX9c18XPTEMGgI0CZbi+xW
-         br+/pNV4vOJOQyZbSocMdvCQzuk9/RCbpUu2SgMBxQTFvM+BAAgH/6axzE8ZqB9EYiD/
-         WUegLXc60zNEIq4SPj7JPwQFXkFhu1NefcAzvPk3sT/jiDWi670r9VGbeDSnu1odRqcI
-         U3iojpsLGmV8YDImIsXIbo1kXKoRX8iYk2YksU2LD7oDjHgukF+5P+d2GHyEMyj3oHxo
-         RvfC7bsNAN67339CTndV/6ApZD24RVaRpjfHQJlVeQCb1TDkc1gJk6xVb5TWmRs0CFRb
-         Q+nw==
+        bh=x50sgX+AOCc0TaNi8TeHSnv6RAAO75E2B/Z9yeqSR9I=;
+        b=irEaqOCz3TVzVEgKM6PWuWOlI+8n1dTPa4w08dOaXjrzFIb1bqhztpK5qDY+IY070U
+         jWyaZg/NmuEq/ZOn5uQIyEb1yDu1r66mmzsZS3nfPeso/2Qb0n74WSIq/H4OxEjklWSU
+         rOctsus3QAMbbzvvCJ1Qed/IyXjW3IMDrmFNg1XuxOqJKvKoOUWhS/F1QsPydNHnsPh1
+         cU+aOQb4g4DUT/4HVZg1iQzY4j55RPtNZOSvOk9MSwFuaefqrUZ+n2CmES5akZQWLXwf
+         tZiCpcv2D7rttJt1/NECzkaoqv0XnY52KjmlyvvetrxRyrAOXs9J9dSBcwzxO2H9Z1OY
+         R7WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z4kc1j7WPaNizPMBT7tjDLvWgc64zJOz/Y5IipybVpo=;
-        b=gWFWHCNzDkpYsbCOhU/0HZ2rNbg9tFEQBzaoHGSF079d9Bu0doefyrB8Cs00jnNQcC
-         gNE/YqLhFuD8KNfwc1s967M4UNN4hG3MACZRJ++FBGWGOGbeyoaKQttuVZhDJR1gchjo
-         MUHFdnF0GcZIhNFbeDpN2bfjz+XeSrLXZ3qnFrEA8Hq04fc7bO8sPAado4TpZG3C/fW/
-         H4y9aqsV/xUpQ3/TF6a8ypXhOA0FmRIVGBIDynpA0bc9p9uRXzz/wyUzW1xcRuVZSySL
-         Uzutym0JP5NHZ7GxAt4p0f6mfnDYtmJG61kdJjfaI4cPnKXG8/Ka+c2ELVj9uzgjZjPR
-         erbg==
-X-Gm-Message-State: APjAAAUBC1aLqJvro6Kt6D7k8EwAPHT8rTEuD5Oggi6xWsXW+fUCqgrd
-        5rMVf1B9jriWWYFqK1iY16A=
-X-Google-Smtp-Source: APXvYqyDvrfuWukcSWPWb6YQhYeFTvfsj+z6/rivDrJ10qW5NiaIsuPEWvPR3vKgwZYDLIwujSdAlQ==
-X-Received: by 2002:a1c:1d84:: with SMTP id d126mr2988394wmd.58.1568976518236;
-        Fri, 20 Sep 2019 03:48:38 -0700 (PDT)
+        bh=x50sgX+AOCc0TaNi8TeHSnv6RAAO75E2B/Z9yeqSR9I=;
+        b=ArzqXHUvMXDEIMRFqZyHW2Rz5anDcMAPIFwHIkDunYtLKXAQANvmZasq5IppVv14Wr
+         Tvx5gUJV2eRVSkrPLFZEKF9RlcFM20rXINh5oSwfzrxVX+mK3Bq8N4jJQ7YKXUoyW6VX
+         o0PefweMrHWLs8tIbfKI075EYs6FPxgQ7Uw9xlTyPzAgyRHo9/j3HSmuMtSxJroRERm0
+         9B2l+EDoTfDG0v07ud9D715NBpgHbEOPOBjf9vMGz8aM7Q/9jbJkLfD1SoPR2hOfkh/n
+         fvdF9UOCWHDOQH4DNAAzWE1UvfR6YFDPOe59k65c5NepibNEk7Ed37tVGzroty+aV2GL
+         O3VA==
+X-Gm-Message-State: APjAAAX9P3mJV3QmMq///6zzb9+Kf4GYhepZrKuiiZ2opJdo2lRSvOWh
+        yBwV7z5h0b82rL2Y8ElNwsSw7+BX
+X-Google-Smtp-Source: APXvYqyAr4FAD9TF6SHzsoMG8pio0v3UpTkJNhHUDXKn15QaoIxIXp4z10Ez0Yw0pvdu70mbj6cFyg==
+X-Received: by 2002:a7b:c10b:: with SMTP id w11mr2893049wmi.108.1568976519742;
+        Fri, 20 Sep 2019 03:48:39 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id t14sm1641978wrs.6.2019.09.20.03.48.37
+        by smtp.gmail.com with ESMTPSA id t14sm1641978wrs.6.2019.09.20.03.48.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Sep 2019 03:48:37 -0700 (PDT)
+        Fri, 20 Sep 2019 03:48:39 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 1/4] kernel-shark: Use correct order when linking all depenancies
-Date:   Fri, 20 Sep 2019 13:48:28 +0300
-Message-Id: <20190920104831.23475-2-y.karadz@gmail.com>
+Subject: [PATCH 2/4] trace-cmd: Correct the install paths of traceevent and trace-cmd libraries
+Date:   Fri, 20 Sep 2019 13:48:29 +0300
+Message-Id: <20190920104831.23475-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190920104831.23475-1-y.karadz@gmail.com>
 References: <20190920104831.23475-1-y.karadz@gmail.com>
@@ -74,63 +74,38 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-I wasn't aware of the importance of the order in which the libraries are
-passed to the linker, so in the dependency list in src/CMakeLists.txt
-I naively started with the most basic libraries first. This is WRONG.
-The linker searches and resolves symbols in the order that they appear.
-If library A contains a call to a function from library B, we have to
-put A before B, otherwise the linker won't know that something in B
-needs to be resolved.
+In order to be able to use the installed versions of the library's headers
+(and the libraries itself) the directories structure of the source has to
+be reprodused in the install location.
+
+This modification is needed by the NumPy interface of KernelShark.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/CMakeLists.txt | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ Makefile | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel-shark/src/CMakeLists.txt b/kernel-shark/src/CMakeLists.txt
-index 21494cc..e20a030 100644
---- a/kernel-shark/src/CMakeLists.txt
-+++ b/kernel-shark/src/CMakeLists.txt
-@@ -7,10 +7,10 @@ add_library(kshark SHARED libkshark.c
-                           libkshark-configio.c
-                           libkshark-collection.c)
+diff --git a/Makefile b/Makefile
+index dabdf8d..7124b2f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -344,12 +344,12 @@ install_gui: install_cmd gui
+ 	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build install
  
--target_link_libraries(kshark ${CMAKE_DL_LIBS}
-+target_link_libraries(kshark ${TRACEEVENT_LIBRARY}
-+                             ${TRACECMD_LIBRARY}
-                              ${JSONC_LIBRARY}
--                             ${TRACEEVENT_LIBRARY}
--                             ${TRACECMD_LIBRARY})
-+                             ${CMAKE_DL_LIBS})
+ install_libs: libs
+-	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ))
+-	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ))
++	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ)/trace-cmd)
++	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ)/traceevent)
+ 	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ)/traceevent)
+ 	$(Q)$(call do_install,$(src)/include/traceevent/trace-seq.h,$(includedir_SQ)/traceevent)
+-	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ))
+-	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-filter-hash.h,$(includedir_SQ))
++	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ)/trace-cmd)
++	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-filter-hash.h,$(includedir_SQ)/trace-cmd)
  
- set_target_properties(kshark  PROPERTIES SUFFIX	".so.${KS_VERSION_STRING}")
- 
-@@ -23,8 +23,8 @@ if (OPENGL_FOUND AND GLUT_FOUND)
-                                      KsPlotTools.cpp)
- 
-     target_link_libraries(kshark-plot  kshark
--                                       ${OPENGL_LIBRARIES}
--                                       ${GLUT_LIBRARY})
-+                                       ${GLUT_LIBRARY}
-+                                       ${OPENGL_LIBRARIES})
- 
-     set_target_properties(kshark-plot PROPERTIES  SUFFIX ".so.${KS_VERSION_STRING}")
- 
-@@ -65,11 +65,11 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
-                                                             KsAdvFilteringDialog.cpp)
- 
-     target_link_libraries(kshark-gui kshark-plot
--                                     ${CMAKE_DL_LIBS}
-+                                     Qt5::Widgets
-+                                     Qt5::Network
-                                      ${TRACEEVENT_LIBRARY}
-                                      ${TRACECMD_LIBRARY}
--                                     Qt5::Widgets
--                                     Qt5::Network)
-+                                     ${CMAKE_DL_LIBS})
- 
-     set_target_properties(kshark-gui PROPERTIES  SUFFIX ".so.${KS_VERSION_STRING}")
- 
+ doc:
+ 	$(MAKE) -C $(src)/Documentation all
 -- 
 2.20.1
 
