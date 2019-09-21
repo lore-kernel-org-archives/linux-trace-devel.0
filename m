@@ -2,32 +2,46 @@ Return-Path: <SRS0=CEas=XQ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6F17C49ED7
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Sep 2019 12:20:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2292CC4360D
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Sep 2019 19:21:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ADE2F20717
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Sep 2019 12:20:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E667321835
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Sep 2019 19:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1569093671;
+	bh=j0to6bgCUsZE0XxIyWSeuw/6QHjOGtUvrMcN8EFYmK4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=YKb+PV7zPNxfbGnBMIjah4WMYSGVTODlv51GtVzKmbHFFpwBeNnOaBYrarpKAoigv
+	 ULez9XvEo7sb03VOL8eTv1bcHHUutR+86/3MS3Vsrzm8LPdbC/NEMVwmx9HNBIUeAh
+	 RZZLjl200viKsdphVoVCalX8ttCec0ZH7XUC29iI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437833AbfIUMUk (ORCPT
+        id S2387883AbfIUTVK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 21 Sep 2019 08:20:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58074 "EHLO mail.kernel.org"
+        Sat, 21 Sep 2019 15:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437826AbfIUMUj (ORCPT
+        id S2387853AbfIUTVK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 21 Sep 2019 08:20:39 -0400
-Received: from oasis.local.home (rrcs-24-39-165-138.nys.biz.rr.com [24.39.165.138])
+        Sat, 21 Sep 2019 15:21:10 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8982720717;
-        Sat, 21 Sep 2019 12:20:37 +0000 (UTC)
-Date:   Sat, 21 Sep 2019 08:20:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sasha Levin <sashal@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D9EF206B6;
+        Sat, 21 Sep 2019 19:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1569093669;
+        bh=j0to6bgCUsZE0XxIyWSeuw/6QHjOGtUvrMcN8EFYmK4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=omT7YqoxJ29+diKTG/rBh1gGynceLLK2NZmgblVXO3coic6tCvrRB5ytdBKVflgBA
+         u+4oyWS9arHhMrhVca2GO8gHA4nez5FhP4TgjliLUKDJYnmUpYbj4fkDVHa681R/X+
+         FmY9A/cmEtGWeZsIGc/om28tQKqrETrOFvPpUAKE=
+Date:   Sat, 21 Sep 2019 15:21:08 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org,
         Ingo Molnar <mingo@kernel.org>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
@@ -35,109 +49,49 @@ Cc:     Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org
 Subject: Re: [for-next][PATCH 3/8] tracing: Make sure variable reference
  alias has correct var_ref_idx
-Message-ID: <20190921082035.4fc9ccc5@oasis.local.home>
-In-Reply-To: <20190921120618.DF81120665@mail.kernel.org>
+Message-ID: <20190921192108.GB8171@sasha-vm>
 References: <20190919232359.825502403@goodmis.org>
-        <20190921120618.DF81120665@mail.kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20190921120618.DF81120665@mail.kernel.org>
+ <20190921082035.4fc9ccc5@oasis.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20190921082035.4fc9ccc5@oasis.local.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sat, 21 Sep 2019 12:06:18 +0000
-Sasha Levin <sashal@kernel.org> wrote:
+On Sat, Sep 21, 2019 at 08:20:35AM -0400, Steven Rostedt wrote:
+>On Sat, 21 Sep 2019 12:06:18 +0000
+>Sasha Levin <sashal@kernel.org> wrote:
+>
+>> Hi,
+>>
+>> [This is an automated email]
+>>
+>> This commit has been processed because it contains a "Fixes:" tag,
+>> fixing commit: .
+>>
+>> The bot has tested the following trees: v5.2.16, v4.19.74, v4.14.145, v4.9.193, v4.4.193.
+>
+>
+>The fixes tag is 7e8b88a30b085 which was added to mainline in 4.17.
+>According to this email, it applies fine to 5.2 and 4.19, but fails on
+>4.14 and earlier. As the commit was added in 4.17 that makes perfect
+>sense. Can you update your scripts to test when the fixes commit was
+>added, and not send spam about it not applying to stable trees where
+>it's not applicable.
 
-> Hi,
-> 
-> [This is an automated email]
-> 
-> This commit has been processed because it contains a "Fixes:" tag,
-> fixing commit: .
-> 
-> The bot has tested the following trees: v5.2.16, v4.19.74, v4.14.145, v4.9.193, v4.4.193.
+The script already does that. What happened here is that it got confused
+with your previous "Fixes:" statement in the commit message and went
+haywire.
 
-
-The fixes tag is 7e8b88a30b085 which was added to mainline in 4.17.
-According to this email, it applies fine to 5.2 and 4.19, but fails on
-4.14 and earlier. As the commit was added in 4.17 that makes perfect
-sense. Can you update your scripts to test when the fixes commit was
-added, and not send spam about it not applying to stable trees where
-it's not applicable.
-
-On a git repo containing only Linus's tree, I have:
-
-$ git describe --contains 7e8b88a30b085
-v4.17-rc1~28^2~43
-
-Which shows me when it was applied.
-
-Thanks!
-
--- Steve
+I thought that something like this shouldn't happen because I grep for
+"^fixes:", but looks like something is broken. I'll go fix that...
 
 
-
-> 
-> v5.2.16: Build OK!
-> v4.19.74: Build OK!
-> v4.14.145: Failed to apply! Possible dependencies:
->     00b4145298ae ("ring-buffer: Add interface for setting absolute time stamps")
->     067fe038e70f ("tracing: Add variable reference handling to hist triggers")
->     0d7a8325bf33 ("tracing: Clean up hist_field_flags enum")
->     100719dcef44 ("tracing: Add simple expression support to hist triggers")
->     30350d65ac56 ("tracing: Add variable support to hist triggers")
->     442c94846190 ("tracing: Add Documentation for log2 modifier")
->     5819eaddf35b ("tracing: Reimplement log2")
->     7e8b88a30b08 ("tracing: Add hist trigger support for variable reference aliases")
->     85013256cf01 ("tracing: Add hist_field_name() accessor")
->     860f9f6b02e9 ("tracing: Add usecs modifier for hist trigger timestamps")
->     8b7622bf94a4 ("tracing: Add cpu field for hist triggers")
->     ad42febe51ae ("tracing: Add hist trigger timestamp support")
->     b559d003a226 ("tracing: Add hist_data member to hist_field")
->     b8df4a3634e0 ("tracing: Move hist trigger Documentation to histogram.txt")
-> 
-> v4.9.193: Failed to apply! Possible dependencies:
->     00b4145298ae ("ring-buffer: Add interface for setting absolute time stamps")
->     067fe038e70f ("tracing: Add variable reference handling to hist triggers")
->     0d7a8325bf33 ("tracing: Clean up hist_field_flags enum")
->     100719dcef44 ("tracing: Add simple expression support to hist triggers")
->     30350d65ac56 ("tracing: Add variable support to hist triggers")
->     442c94846190 ("tracing: Add Documentation for log2 modifier")
->     5819eaddf35b ("tracing: Reimplement log2")
->     7e8b88a30b08 ("tracing: Add hist trigger support for variable reference aliases")
->     85013256cf01 ("tracing: Add hist_field_name() accessor")
->     860f9f6b02e9 ("tracing: Add usecs modifier for hist trigger timestamps")
->     8b7622bf94a4 ("tracing: Add cpu field for hist triggers")
->     ad42febe51ae ("tracing: Add hist trigger timestamp support")
->     b559d003a226 ("tracing: Add hist_data member to hist_field")
->     b8df4a3634e0 ("tracing: Move hist trigger Documentation to histogram.txt")
-> 
-> v4.4.193: Failed to apply! Possible dependencies:
->     08d43a5fa063 ("tracing: Add lock-free tracing_map")
->     0c4a6b4666e8 ("tracing: Add hist trigger 'hex' modifier for displaying numeric fields")
->     0fc3813ce103 ("tracing: Add 'hist' trigger Documentation")
->     52a7f16dedff ("tracing: Add support for multiple hist triggers per event")
->     5463bfda327b ("tracing: Add support for named hist triggers")
->     76a3b0c8ac34 ("tracing: Add hist trigger support for compound keys")
->     7e8b88a30b08 ("tracing: Add hist trigger support for variable reference aliases")
->     7ef224d1d0e3 ("tracing: Add 'hist' event trigger command")
->     83e99914c9e2 ("tracing: Add hist trigger support for pausing and continuing a trace")
->     8b7622bf94a4 ("tracing: Add cpu field for hist triggers")
->     b8df4a3634e0 ("tracing: Move hist trigger Documentation to histogram.txt")
->     c6afad49d127 ("tracing: Add hist trigger 'sym' and 'sym-offset' modifiers")
->     e62347d24534 ("tracing: Add hist trigger support for user-defined sorting ('sort=' param)")
->     f2606835d70d ("tracing: Add hist trigger support for multiple values ('vals=' param)")
-> 
-> 
-> NOTE: The patch will not be queued to stable trees until it is upstream.
-> 
-> How should we proceed with this patch?
-> 
-> --
-> Thanks,
-> Sasha
-
+--
+Thanks,
+Sasha
