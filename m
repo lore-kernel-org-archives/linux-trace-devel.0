@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D38C3A5A2
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 19:09:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8509C3A5A2
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 19:32:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 20E8D206C2
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 19:09:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9FFC3206C2
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 19:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1569179395;
-	bh=LsYsdVGs4V7IkchSF2wWNLWdAyxE/UN89uLgORJq4c4=;
+	s=default; t=1569180764;
+	bh=gDoMJ/kb/DKmiZLAj1iPf+wvICmVlOUmxNJiEv9/iT8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=GvQpp2143jEhI/P3RzqnVfIfQ0CxTjTeX2w3hzYOV5V6E93JxakDG/1yxNGPjpNiD
-	 JH2tR6qfeDHbpC1wrcB8FxrGZNDSICYrz2YcS/QhwjW8f7ukvCtrREY1sp+DaClqbh
-	 F0AuMfW3Lcl6Zs3Tw/V2CX6jS/iHq4JifAE0ceTs=
+	b=MiuEDmDemLUEQ39HrwDkaRE0nF8NA3qger8EEbZoQO396CKJ9lBt6L0DlfMISFKuB
+	 m+ERdyct2WN7mKIRkI8G4RxwcrCeTHlgqFOWaFo3RH0tXqh80Z16ooky94FFrECdw4
+	 R/qYFllwyvkjptw6IE0nrlf0zlnLuQEfSffS1Jv0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394978AbfIVS7B (ORCPT
+        id S2391384AbfIVSsH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 22 Sep 2019 14:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33884 "EHLO mail.kernel.org"
+        Sun, 22 Sep 2019 14:48:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389059AbfIVS7A (ORCPT
+        id S2388303AbfIVSsG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 22 Sep 2019 14:59:00 -0400
+        Sun, 22 Sep 2019 14:48:06 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C07A206C2;
-        Sun, 22 Sep 2019 18:58:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96E45214AF;
+        Sun, 22 Sep 2019 18:48:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569178739;
-        bh=LsYsdVGs4V7IkchSF2wWNLWdAyxE/UN89uLgORJq4c4=;
+        s=default; t=1569178084;
+        bh=gDoMJ/kb/DKmiZLAj1iPf+wvICmVlOUmxNJiEv9/iT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D7BfnEsKjXoOn3WfGPXmbIUAZDE9LUwRG1Yglyqkh64JrVVEnATsr84DDU8OGfzUt
-         Z4ZMSyQ2t2RMGRrTwtFTbRpybewB/zr2r04Ul4OJhst46Lal8xu/p1dLzAWKxV/vk4
-         mz7NZkJPu8IEL8S3uDUWdyxGfx4rx17x37mzLWic=
+        b=gcfthD4Oi0Mvvd4dfYcM62kK3+vAhfQJp3JHPteG13BTpM3ShDDYulLnkNULZO1/g
+         /zRXyY9xzbOeU2cRksrzl9XOo58QQBsxLpD/+NtVOieotd22d4x9dPpYppnWpOt2hi
+         VDbyeDiu2g4mYmcjWABJxZ+weJExGn/zShwDbS8s=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
@@ -51,12 +51,12 @@ Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 66/89] libtraceevent: Change users plugin directory
-Date:   Sun, 22 Sep 2019 14:56:54 -0400
-Message-Id: <20190922185717.3412-66-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.3 153/203] libtraceevent: Change users plugin directory
+Date:   Sun, 22 Sep 2019 14:42:59 -0400
+Message-Id: <20190922184350.30563-153-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190922185717.3412-1-sashal@kernel.org>
-References: <20190922185717.3412-1-sashal@kernel.org>
+In-Reply-To: <20190922184350.30563-1-sashal@kernel.org>
+References: <20190922184350.30563-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -93,10 +93,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index 46cd5f871ad76..a26c44cf31aa4 100644
+index 3292c290654f6..86ce17a1f7fb6 100644
 --- a/tools/lib/traceevent/Makefile
 +++ b/tools/lib/traceevent/Makefile
-@@ -55,15 +55,15 @@ set_plugin_dir := 1
+@@ -62,15 +62,15 @@ set_plugin_dir := 1
  
  # Set plugin_dir to preffered global plugin location
  # If we install under $HOME directory we go under
@@ -116,12 +116,12 @@ index 46cd5f871ad76..a26c44cf31aa4 100644
  else
  override plugin_dir = $(libdir)/traceevent/plugins
 diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index a16756ae35267..5fe7889606a23 100644
+index 8ca28de9337a5..e1f7ddd5a6cf0 100644
 --- a/tools/lib/traceevent/event-plugin.c
 +++ b/tools/lib/traceevent/event-plugin.c
-@@ -30,7 +30,7 @@
- #include "event-parse.h"
+@@ -18,7 +18,7 @@
  #include "event-utils.h"
+ #include "trace-seq.h"
  
 -#define LOCAL_PLUGIN_DIR ".traceevent/plugins"
 +#define LOCAL_PLUGIN_DIR ".local/lib/traceevent/plugins/"
