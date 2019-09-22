@@ -2,97 +2,132 @@ Return-Path: <SRS0=blxG=XR=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.4 required=3.0 tests=DATE_IN_PAST_06_12,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96911C3A5A6
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 04:22:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33AB2C4740C
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 18:53:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6AC62208C2
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 04:22:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0EA2721A4A
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 18:53:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1569178396;
+	bh=gDoMJ/kb/DKmiZLAj1iPf+wvICmVlOUmxNJiEv9/iT8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=PCQxrym+ZCL6GTwI7cU+ghG8wtAJk+RmfK5Wv2uw9jRDoJjNRmgZ2Z4DIJoORLD9U
+	 YuUObdua8O/Cn6MnLyMZ917HpzYjHfNF6V5mW1xuHgHgAp+R9sqniENUkrKnyZp4u8
+	 XjdCA8k+86Lwx+NQe0EaIXWo8FFRNnUXaxrd01cg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbfIVEWY convert rfc822-to-8bit (ORCPT
+        id S2393774AbfIVSxP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 22 Sep 2019 00:22:24 -0400
-Received: from smtprelay0161.hostedemail.com ([216.40.44.161]:40186 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725774AbfIVEWX (ORCPT
+        Sun, 22 Sep 2019 14:53:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390552AbfIVSxP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 22 Sep 2019 00:22:23 -0400
-X-Greylist: delayed 569 seconds by postgrey-1.27 at vger.kernel.org; Sun, 22 Sep 2019 00:22:22 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 547161801DBD1;
-        Sun, 22 Sep 2019 04:12:55 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 0E38F18029122;
-        Sun, 22 Sep 2019 04:12:52 +0000 (UTC)
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-HE-Tag: wish09_530bb02a28129
-X-Filterd-Recvd-Size: 2444
-Received: from [10.102.230.9] (unknown [185.81.136.21])
-        (Authenticated sender: rostedt@goodmis.org)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 22 Sep 2019 04:12:50 +0000 (UTC)
-Date:   Sat, 21 Sep 2019 15:23:26 -0400
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20190921192108.GB8171@sasha-vm>
-References: <20190919232359.825502403@goodmis.org> <20190921120618.DF81120665@mail.kernel.org> <20190921082035.4fc9ccc5@oasis.local.home> <20190921192108.GB8171@sasha-vm>
+        Sun, 22 Sep 2019 14:53:15 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 180D421D6C;
+        Sun, 22 Sep 2019 18:53:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1569178394;
+        bh=gDoMJ/kb/DKmiZLAj1iPf+wvICmVlOUmxNJiEv9/iT8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CHQRw9m8gH9Hig9NhIZCmiyD58uffScUIC6qXcOsgkOIWoYpBXDM2X5lNSajEXizd
+         oLk+N+sClfUq7RVNk5SpXp8C00L6saZrXaalBGXdNxK1YenBXLi3UJdyd97uuO/Xan
+         jcCxUcj0g49LHLlySUf+t70/OSrhTDTauxirCVWY=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Patrick McLean <chutzpah@gentoo.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 139/185] libtraceevent: Change users plugin directory
+Date:   Sun, 22 Sep 2019 14:48:37 -0400
+Message-Id: <20190922184924.32534-139-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190922184924.32534-1-sashal@kernel.org>
+References: <20190922184924.32534-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Subject: Re: [for-next][PATCH 3/8] tracing: Make sure variable reference alias has correct var_ref_idx
-To:     Sasha Levin <sashal@kernel.org>
-CC:     Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        stable@vger.kernel.org
-From:   Steven Rostedt <rostedt@goodmis.org>
-Message-ID: <DF859F5E-4DBB-43C8-BD25-7E261240AE8C@goodmis.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
+[ Upstream commit e97fd1383cd77c467d2aed7fa4e596789df83977 ]
 
-On September 21, 2019 3:21:08 PM EDT, Sasha Levin <sashal@kernel.org> wrote:
->On Sat, Sep 21, 2019 at 08:20:35AM -0400, Steven Rostedt wrote:
->>On Sat, 21 Sep 2019 12:06:18 +0000
->>Sasha Levin <sashal@kernel.org> wrote:
->>
->>> Hi,
->>>
->>> [This is an automated email]
->>>
->>> This commit has been processed because it contains a "Fixes:" tag,
->>> fixing commit: .
->>>
->>> The bot has tested the following trees: v5.2.16, v4.19.74,
->v4.14.145, v4.9.193, v4.4.193.
->>
->>
->>The fixes tag is 7e8b88a30b085 which was added to mainline in 4.17.
->>According to this email, it applies fine to 5.2 and 4.19, but fails on
->>4.14 and earlier. As the commit was added in 4.17 that makes perfect
->>sense. Can you update your scripts to test when the fixes commit was
->>added, and not send spam about it not applying to stable trees where
->>it's not applicable.
->
->The script already does that. What happened here is that it got
->confused
->with your previous "Fixes:" statement in the commit message and went
->haywire.
->
->I thought that something like this shouldn't happen because I grep for
->"^fixes:", but looks like something is broken. I'll go fix that...
+To be compliant with XDG user directory layout, the user's plugin
+directory is changed from ~/.traceevent/plugins to
+~/.local/lib/traceevent/plugins/
 
+Suggested-by: Patrick McLean <chutzpah@gentoo.org>
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Patrick McLean <chutzpah@gentoo.org>
+Cc: linux-trace-devel@vger.kernel.org
+Link: https://lore.kernel.org/linux-trace-devel/20190313144206.41e75cf8@patrickm/
+Link: http://lore.kernel.org/linux-trace-devel/20190801074959.22023-4-tz.stoyanov@gmail.com
+Link: http://lore.kernel.org/lkml/20190805204355.344622683@goodmis.org
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/lib/traceevent/Makefile       | 6 +++---
+ tools/lib/traceevent/event-plugin.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Thanks!
-
--- Steve
-
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index 3292c290654f6..86ce17a1f7fb6 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -62,15 +62,15 @@ set_plugin_dir := 1
+ 
+ # Set plugin_dir to preffered global plugin location
+ # If we install under $HOME directory we go under
+-# $(HOME)/.traceevent/plugins
++# $(HOME)/.local/lib/traceevent/plugins
+ #
+ # We dont set PLUGIN_DIR in case we install under $HOME
+ # directory, because by default the code looks under:
+-# $(HOME)/.traceevent/plugins by default.
++# $(HOME)/.local/lib/traceevent/plugins by default.
+ #
+ ifeq ($(plugin_dir),)
+ ifeq ($(prefix),$(HOME))
+-override plugin_dir = $(HOME)/.traceevent/plugins
++override plugin_dir = $(HOME)/.local/lib/traceevent/plugins
+ set_plugin_dir := 0
+ else
+ override plugin_dir = $(libdir)/traceevent/plugins
+diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
+index 8ca28de9337a5..e1f7ddd5a6cf0 100644
+--- a/tools/lib/traceevent/event-plugin.c
++++ b/tools/lib/traceevent/event-plugin.c
+@@ -18,7 +18,7 @@
+ #include "event-utils.h"
+ #include "trace-seq.h"
+ 
+-#define LOCAL_PLUGIN_DIR ".traceevent/plugins"
++#define LOCAL_PLUGIN_DIR ".local/lib/traceevent/plugins/"
+ 
+ static struct registered_plugin_options {
+ 	struct registered_plugin_options	*next;
 -- 
-Sent from my Android device with K-9 Mail. Please excuse my brevity and top posting.
+2.20.1
+
