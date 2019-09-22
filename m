@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFCF1C4740C
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 19:03:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 718E8C3A5A2
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 19:06:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 89072208C2
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 19:03:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B252208C2
+	for <linux-trace-devel@archiver.kernel.org>; Sun, 22 Sep 2019 19:06:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1569179017;
+	s=default; t=1569179193;
 	bh=7RMS4YktEnGBSooX125/Dw0SiOsFPkU0E3b2XtdJMjs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=w87f8rXy7u6hTFpK9Om2v6KVvt37IP1mnT7CkBbz6B7Cf8ljDRhd9t5oDR4hGTqz8
-	 nIhvDyA8c+Y9UAjZKgr3ihcTVsgaLBTVs0jGkSFPeriGyzlEVTMEavan7MXQd+W6BA
-	 kAbvonrNvww/xUn0yxGKJL/7z9tKJIPNuUyBo6qQ=
+	b=Ql8EE0ApmgKKbjNQ9kyurw4wYjDH3DacK70RDwPwzwatxtKsNkNHwV0CfGQIPpmK0
+	 ErCJoZmYVzmdCs4ktQ7IlSflABqgcYgEK5qbkjs6XcKy2nimFgdFZ3ViDZ0ok4SM3b
+	 aURoMfYNf1Y2sZjpC1dNSzA/aNvpJ2Xbc8akw0uQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392521AbfIVTDa (ORCPT
+        id S1730153AbfIVTG2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 22 Sep 2019 15:03:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38232 "EHLO mail.kernel.org"
+        Sun, 22 Sep 2019 15:06:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439079AbfIVTBy (ORCPT
+        id S2393371AbfIVTAd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 22 Sep 2019 15:01:54 -0400
+        Sun, 22 Sep 2019 15:00:33 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 011572184D;
-        Sun, 22 Sep 2019 19:01:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D04062184D;
+        Sun, 22 Sep 2019 19:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569178913;
+        s=default; t=1569178832;
         bh=7RMS4YktEnGBSooX125/Dw0SiOsFPkU0E3b2XtdJMjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q5nYrF9DzVklMkIZdUxdJuk1jmpiVAvTJXlYmwKKxwqJB591+6zBtLISn+j4m6oeU
-         MtoxcO2D0kCBRUFTx2fyO1HI4qhgUSahUzd00A4omKmkN1lHdJGSftvZlv481q+xTX
-         PzCjM5rryCOrjP5ZXK8CtY2YUDCILjdj6nJGGvbc=
+        b=fBMOjDTWJZ52iiFdM9m7DZQWs62mfHo14DEa5SPfHPVGvuQcLyFRf6Mv1SmurwNQd
+         FMlWD3NyI+acxD6uhmxiX0onwIMYzknsyJq4dZ495rq3Z57nXOUd6ZOLv60DkuYEpI
+         iCWiqzZOLzs2MX015qGhdxKEyKksWmIO2xMqt34Y=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
@@ -51,12 +51,12 @@ Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 31/44] libtraceevent: Change users plugin directory
-Date:   Sun, 22 Sep 2019 15:00:49 -0400
-Message-Id: <20190922190103.4906-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 41/60] libtraceevent: Change users plugin directory
+Date:   Sun, 22 Sep 2019 14:59:14 -0400
+Message-Id: <20190922185934.4305-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190922190103.4906-1-sashal@kernel.org>
-References: <20190922190103.4906-1-sashal@kernel.org>
+In-Reply-To: <20190922185934.4305-1-sashal@kernel.org>
+References: <20190922185934.4305-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
