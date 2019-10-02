@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70B70ECE58B
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Oct 2019 11:42:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6077C352AA
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Oct 2019 11:42:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 483CA21920
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Oct 2019 11:42:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B6AB21920
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  2 Oct 2019 11:42:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rZWOKf0F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rd20WqDM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbfJBLmB (ORCPT
+        id S1727223AbfJBLmC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 2 Oct 2019 07:42:01 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33215 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbfJBLmA (ORCPT
+        Wed, 2 Oct 2019 07:42:02 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33973 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726721AbfJBLmC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 2 Oct 2019 07:42:00 -0400
-Received: by mail-wr1-f68.google.com with SMTP id b9so19287812wrs.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 02 Oct 2019 04:41:57 -0700 (PDT)
+        Wed, 2 Oct 2019 07:42:02 -0400
+Received: by mail-wr1-f67.google.com with SMTP id a11so19301223wrx.1
+        for <linux-trace-devel@vger.kernel.org>; Wed, 02 Oct 2019 04:41:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7HVPvMkHId7shPJR7QSW7ONG80bylQ1cwLiTUhTiNkw=;
-        b=rZWOKf0FpyEUWs2dwVsl+aN0TYoJTMZc+Ia8qmYi02WZ7BoMC5edFKkm/jwMkzlwaZ
-         fBKqJkm8vapNeZpCE+SKugzvHJoKaxr7KDgxASXQF5WUNNYIZcI1VGsko17yL7H/gWFy
-         oYyCajSCNQYcVER5rBA7UiCJ109PrAXlknMccrcF+pnw81+Pz/INv/0Cdq93mCTgBo3C
-         yVB5MNV26YTS3MBHrAk77uHNAkNu5hmg4AHhE4EN4UK8URSZ9YttmUcycgUgtyUgUiBJ
-         pTeNK4E6a7/a070GJMuV/rGA5GxlOu+wopVeVXr/xGz4GDy6GquzqfwBgaswroP9cZLY
-         EqeQ==
+        bh=yjO1GI9WSTyl7GI7EAfh6xqtE/wh9IHfL7MdVWHzIWs=;
+        b=Rd20WqDMTtz1w4UismWXpCQ/BztUgNqY/h4VPHgv9nyidV6vaKH/doRAjcmkLMCBFP
+         PGiqW5vpWeU3pLTTN9upJlxUpinXpNvR9RiI+aN6YLq6dRSi/1gUsIHvt94myotg8E87
+         Olnl9BGaLRxNxI/n+MBQilQjJbltZJSYYdvQQlm5esBvbZXOgTATG2b4J1EtKaEifwer
+         Fo/WoO8Ck72vyUKuHea1A+u/YipMwWFuxgREmAqduXaMP9WEiXSAV6uX8C/btzOA5Ygw
+         ErUzTgx1m37+sfrrfR/0wIF7HiKbMJmNho04iUUoJWoHNsG4C5C+RyY1a7z9eU4XCmMf
+         POig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7HVPvMkHId7shPJR7QSW7ONG80bylQ1cwLiTUhTiNkw=;
-        b=Kyxhhr7vUMACdZdTg4orUAjQmiJbNLPZboj1/tkrdKC6h3CIzhpe2J0sArITzoVb0u
-         Pu0VLq6fWSjOZW3sNeN7NucqOgiQQpUpfm0c5V6VAmERj3o46yW5jiBsC3AOc1jAQURw
-         K6DaEtvQoHeHOcLD/cwkjOrx3oJpXijCSIDx97sawU4+ErCMX0u2M9BWDdQeSt8dD0He
-         HUMHsYYJh2mZdYNh1eYid2xU4XXUK0XRn7mWHl4Ia319aM772XrSyNc6Vz2OR9hFs271
-         UjHt1kWzj5vVrcnSgq2YXcHyI7oIs6MpKKq4x6HJuwWuH9N7rUOr3cqXctkQ2ht+D7Sb
-         JQBg==
-X-Gm-Message-State: APjAAAX54MDYG5cIl+GtYn+faOxcWyAvV6Id7jOD6v4u8qfmUfGpd7TM
-        AiMsxjIncwR5RHEPyZeDlkIRSAil
-X-Google-Smtp-Source: APXvYqwLfQMvS6y0wj/gAOLR5kP2Rf3gQAqVtx2FY4msC2kt6870vSG6phlLNSM8bjZ4+bQRl75urg==
-X-Received: by 2002:a5d:69c7:: with SMTP id s7mr2269996wrw.295.1570016517017;
-        Wed, 02 Oct 2019 04:41:57 -0700 (PDT)
+        bh=yjO1GI9WSTyl7GI7EAfh6xqtE/wh9IHfL7MdVWHzIWs=;
+        b=EdyclNumTUNH26PUL5OYwLyUcSsy54TFq1FCJw+3O5hq1Am2bEFDjWXVJpO26spyKo
+         p64Wx9pX1r9RMLswyn0v+HQY21zyzQOzWnQe1TdRMRwXPzJoXHmK9ColdnimtSIhb58V
+         DGKWQTI+oNQ08DNQy7CkyH+KStAP708vtVx6u+4YT1FJlC5nlkqRYmdyDtkdmNDPr3sT
+         igcFiyck+GNdi0MJWupYhZz+3BHEn4Ao7XhU8FJ3AAt+5s2Jvo8WJa06elRVnp4sFtj7
+         NMIOmObPUd42KhNjdqa/+U27dLye0QWCETvAxu9FlXOfrG/sipq9zq1N2q739b9csjKx
+         vmlA==
+X-Gm-Message-State: APjAAAVr1R6kPZSaCMpVZB8MSYFIrHHQnX1rscqHzVD4R2AChOdF9oCM
+        C+Wfj6jyhVmwHTxX62ud53zTR7ss
+X-Google-Smtp-Source: APXvYqzzJZBUZ7v1LUQa9xoDPfV7lj/BSTIdhGF3LKdjkfavHKcOtLjPYDjVINhJtKaifk5TNn/ChA==
+X-Received: by 2002:a5d:490f:: with SMTP id x15mr2238706wrq.375.1570016519252;
+        Wed, 02 Oct 2019 04:41:59 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id l4sm3004658wrw.6.2019.10.02.04.41.56
+        by smtp.gmail.com with ESMTPSA id l4sm3004658wrw.6.2019.10.02.04.41.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2019 04:41:56 -0700 (PDT)
+        Wed, 02 Oct 2019 04:41:58 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 2/5] trace-cmd: Rename plugin_python to plugin_python_loader.
-Date:   Wed,  2 Oct 2019 14:41:49 +0300
-Message-Id: <20191002114152.30048-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 4/5] trace-cmd: Change plugin install directories
+Date:   Wed,  2 Oct 2019 14:41:51 +0300
+Message-Id: <20191002114152.30048-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191002114152.30048-1-tz.stoyanov@gmail.com>
 References: <20191002114152.30048-1-tz.stoyanov@gmail.com>
@@ -73,82 +73,124 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The plugin_python is renamed to plugin_python_loader, to make
-the name more closer to the actual plugin role.
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
+To be compliant with XDG user directory layout,
+the user's plugin directory is changed from
+~/.traceevent/plugins to ~/.local/lib/traceevent/plugins/
+Thanks to Patrick McLean:
+https://lore.kernel.org/linux-trace-devel/20190313144206.41e75cf8@patrickm/
+
+The system plugin directory is changed from
+(install_prefix)/lib/trace-cmd/plugins to (install_prefix)/lib/traceevent/plugins
+This change paves the way for implementing trace-cmd specific plugins.
+
+Suggested-by: Patrick McLean <chutzpah@gentoo.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Makefile                                               | 10 +---------
- lib/traceevent/plugins/Makefile                        |  6 +++---
- .../{plugin_python.c => plugin_python_loader.c}        |  0
- 3 files changed, 4 insertions(+), 12 deletions(-)
- rename lib/traceevent/plugins/{plugin_python.c => plugin_python_loader.c} (100%)
+ Makefile                        | 16 ++++++++--------
+ lib/traceevent/event-plugin.c   |  6 +++---
+ lib/traceevent/plugins/Makefile |  4 ++--
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index f336f7a..e20eced 100644
+index e20eced..cb5b07b 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -116,8 +116,7 @@ PYTHON_PKGCONFIG_VERS ?= $(PYTHON_VERS)
+@@ -56,15 +56,15 @@ export img_install img_install_SQ
+ export DESTDIR DESTDIR_SQ
  
- # Can build python?
- ifeq ($(shell sh -c "pkg-config --cflags $(PYTHON_PKGCONFIG_VERS) > /dev/null 2>&1 && echo y"), y)
--	PYTHON_PLUGINS := plugin_python.so
--	BUILD_PYTHON := $(PYTHON) $(PYTHON_PLUGINS)
-+	BUILD_PYTHON := $(PYTHON)
- 	BUILD_PYTHON_WORKS := 1
+ ifeq ($(prefix),$(HOME))
+-plugin_dir = $(HOME)/.trace-cmd/plugins
++plugin_traceevent_dir = $(HOME)/.local/lib/traceevent/plugins
+ python_dir = $(HOME)/.trace-cmd/python
+ var_dir = $(HOME)/.trace-cmd/
  else
- 	BUILD_PYTHON := report_nopythondev
-@@ -125,7 +124,6 @@ else
+-plugin_dir = $(libdir)/trace-cmd/plugins
++plugin_traceevent_dir = $(libdir)/traceevent/plugins
+ python_dir ?= $(libdir)/trace-cmd/python
+-PLUGIN_DIR = -DPLUGIN_DIR="$(plugin_dir)"
++PLUGIN_DIR_TRACEEVENT = -DPLUGIN_TRACEEVENT_DIR="$(plugin_traceevent_dir)"
+ PYTHON_DIR = -DPYTHON_DIR="$(python_dir)"
+-PLUGIN_DIR_SQ = '$(subst ','\'',$(PLUGIN_DIR))'
++PLUGIN_DIR_TRACEEVENT_SQ = '$(subst ','\'',$(PLUGIN_DIR_TRACEEVENT))'
+ PYTHON_DIR_SQ = '$(subst ','\'',$(PYTHON_DIR))'
+ var_dir = /var
  endif
- endif # NO_PYTHON
+@@ -72,7 +72,7 @@ endif
+ # Shell quotes
+ bindir_SQ = $(subst ','\'',$(bindir))
+ bindir_relative_SQ = $(subst ','\'',$(bindir_relative))
+-plugin_dir_SQ = $(subst ','\'',$(plugin_dir))
++plugin_traceevent_dir_SQ = $(subst ','\'',$(plugin_traceevent_dir))
+ python_dir_SQ = $(subst ','\'',$(python_dir))
  
--export PYTHON_PLUGINS
- export BUILD_PYTHON_WORKS
- export NO_PYTHON
+ VAR_DIR = -DVAR_DIR="$(var_dir)"
+@@ -85,10 +85,10 @@ HELP_DIR_SQ = '$(subst ','\'',$(HELP_DIR))'
  
-@@ -418,12 +416,6 @@ python: $(PYTHON)
- PHONY += python-gui
- python-gui: $(PYTHON_GUI)
+ BASH_COMPLETE_DIR ?= /etc/bash_completion.d
  
--PHONY += python-plugin
--python-plugin: $(PYTHON_PLUGINS)
--
--plugin_python.so: force $(obj)/lib/traceevent/plugins/trace_python_dir
--	$(Q)$(MAKE) -C $(src)/lib/traceevent/plugins $(obj)/lib/traceevent/plugins/plugin_python.so
--
- dist:
- 	git archive --format=tar --prefix=trace-cmd-$(TRACECMD_VERSION)/ HEAD \
- 		> ../trace-cmd-$(TRACECMD_VERSION).tar
+-export PLUGIN_DIR
++export PLUGIN_DIR_TRACEEVENT
+ export PYTHON_DIR
+ export PYTHON_DIR_SQ
+-export plugin_dir_SQ
++export plugin_traceevent_dir_SQ
+ export python_dir_SQ
+ export var_dir
+ 
+@@ -239,7 +239,7 @@ LIBS += -laudit
+ endif
+ 
+ # Append required CFLAGS
+-override CFLAGS += $(INCLUDES) $(PLUGIN_DIR_SQ) $(VAR_DIR)
++override CFLAGS += $(INCLUDES) $(PLUGIN_DIR_TRACEEVENT_SQ) $(VAR_DIR)
+ override CFLAGS += $(udis86-flags) $(blk-flags)
+ override LDFLAGS += $(udis86-ldflags)
+ 
+diff --git a/lib/traceevent/event-plugin.c b/lib/traceevent/event-plugin.c
+index 4fc4ee3..88cd5f0 100644
+--- a/lib/traceevent/event-plugin.c
++++ b/lib/traceevent/event-plugin.c
+@@ -20,7 +20,7 @@
+ #include "event-utils.h"
+ #include "trace-seq.h"
+ 
+-#define LOCAL_PLUGIN_DIR ".traceevent/plugins"
++#define LOCAL_PLUGIN_DIR ".local/lib/traceevent/plugins/"
+ 
+ static struct registered_plugin_options {
+ 	struct registered_plugin_options	*next;
+@@ -579,9 +579,9 @@ void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
+ 	 * If a system plugin directory was defined,
+ 	 * check that first.
+ 	 */
+-#ifdef PLUGIN_DIR
++#ifdef PLUGIN_TRACEEVENT_DIR
+ 	if (!tep || !(tep->flags & TEP_DISABLE_SYS_PLUGINS))
+-		load_plugins_dir(tep, suffix, PLUGIN_DIR,
++		load_plugins_dir(tep, suffix, PLUGIN_TRACEEVENT_DIR,
+ 				 load_plugin, data);
+ #endif
+ 
 diff --git a/lib/traceevent/plugins/Makefile b/lib/traceevent/plugins/Makefile
-index e0a7566..061d919 100644
+index 061d919..4050019 100644
 --- a/lib/traceevent/plugins/Makefile
 +++ b/lib/traceevent/plugins/Makefile
-@@ -21,7 +21,7 @@ PLUGIN_OBJS := $(PLUGIN_OBJS:%.o=$(bdir)/%.o)
- PLUGIN_BUILD := $(PLUGIN_OBJS:$(bdir)/%.o=$(bdir)/%.so)
- PLUGINS := $(PLUGIN_BUILD)
- ifndef NO_PYTHON
--PLUGINS += $(bdir)/plugin_python.so
-+PLUGINS += $(bdir)/plugin_python_loader.so
- endif
- DEPS := $(PLUGIN_OBJS:$(bdir)/%.o=$(bdir)/.%.d)
- 
-@@ -44,10 +44,10 @@ $(DEPS): $(bdir)/.%.d: %.c
- 
- $(PLUGIN_OBJS): $(bdir)/%.o : $(bdir)/.%.d
- 
--$(bdir)/plugin_python.o: $(bdir)/%.o : %.c $(bdir)/trace_python_dir
-+$(bdir)/plugin_python_loader.o: $(bdir)/%.o : %.c $(bdir)/trace_python_dir
- 	$(Q)$(do_compile_python_plugin_obj)
- 
--$(bdir)/plugin_python.so: $(bdir)/%.so: $(bdir)/%.o
-+$(bdir)/plugin_python_loader.so: $(bdir)/%.so: $(bdir)/%.o
- 	$(Q)$(do_python_plugin_build)
- 
+@@ -53,11 +53,11 @@ $(bdir)/plugin_python_loader.so: $(bdir)/%.so: $(bdir)/%.o
  PLUGINS_INSTALL = $(subst .so,.install,$(PLUGINS))
-diff --git a/lib/traceevent/plugins/plugin_python.c b/lib/traceevent/plugins/plugin_python_loader.c
-similarity index 100%
-rename from lib/traceevent/plugins/plugin_python.c
-rename to lib/traceevent/plugins/plugin_python_loader.c
+ 
+ $(PLUGINS_INSTALL): $(bdir)/%.install : $(bdir)/%.so force
+-	$(Q)$(call do_install_data,$<,$(plugin_dir_SQ))
++	$(Q)$(call do_install_data,$<,$(plugin_traceevent_dir_SQ))
+ 
+ install_plugins: $(PLUGINS_INSTALL)
+ 
+-# The following targets are necessary to trigger a rebuild when $(PLUGIN_DIR)
++# The following targets are necessary to trigger a rebuild when $(PLUGIN_DIR_TRACEEVENT)
+ # and $(PYTHON_DIR) change. Without them, a full clean build would necessary
+ # in order to get the binaries updated.
+ 
 -- 
 2.21.0
 
