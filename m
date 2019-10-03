@@ -2,96 +2,135 @@ Return-Path: <SRS0=xFsM=X4=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 901F9C10F14
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 14:44:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83DF7C32792
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 16:48:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6CA2B215EA
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 14:44:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5764B20865
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 16:48:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1570121339;
+	bh=gDoMJ/kb/DKmiZLAj1iPf+wvICmVlOUmxNJiEv9/iT8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=HH1NC3J3lT87JBAJ40meLZDakfK3aikVLL4ArgH3YNA6gukiFcIbsgv9nc1vmEtx5
+	 SHPEwdW1IViShaTxvAkBtNorkndVoEwcAZmRipPJZ+fBwz0Fvfng1zAWIahlWc0mEY
+	 ixgP/gpzTVoUW0/1FFVMD/l6YezxD/fBKKzOqwec=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728345AbfJCOo4 (ORCPT
+        id S2405784AbfJCQs5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 3 Oct 2019 10:44:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51728 "EHLO mail.kernel.org"
+        Thu, 3 Oct 2019 12:48:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727943AbfJCOoz (ORCPT
+        id S2405642AbfJCQsC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 3 Oct 2019 10:44:55 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Thu, 3 Oct 2019 12:48:02 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31C7920865;
-        Thu,  3 Oct 2019 14:44:55 +0000 (UTC)
-Date:   Thu, 3 Oct 2019 10:44:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 3/2] trace-cmd: Optimize the logic of reset_cpu_mask()
-Message-ID: <20191003104453.51fbdadb@gandalf.local.home>
-In-Reply-To: <20191001145740.8866-1-tz.stoyanov@gmail.com>
-References: <20191001145740.8866-1-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64C062070B;
+        Thu,  3 Oct 2019 16:48:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570121280;
+        bh=gDoMJ/kb/DKmiZLAj1iPf+wvICmVlOUmxNJiEv9/iT8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HiU/jD7Yij8b4/TLqnFkq4kWi3vd6xiF6X8MtZ6L74rotjv10s1BabXhodCmUAXVj
+         /TB4Kcx/84MmO8nOQQkuLOCfDhQozNnH+gFoM5FPWSPbjVyZojM5W1sy3TOv6gJEF1
+         ZPGz3g380uW9/A653NUVDe7/C38Qz0EH+Pht54q4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Patrick McLean <chutzpah@gentoo.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.3 185/344] libtraceevent: Change users plugin directory
+Date:   Thu,  3 Oct 2019 17:52:30 +0200
+Message-Id: <20191003154558.469963340@linuxfoundation.org>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191003154540.062170222@linuxfoundation.org>
+References: <20191003154540.062170222@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+[ Upstream commit e97fd1383cd77c467d2aed7fa4e596789df83977 ]
 
-Change the logic of reset_cpu_mask() to be a little more condensed, and also
-move the buffer onto the stack and eliminate the warning message as we no
-longer need to use malloc.
+To be compliant with XDG user directory layout, the user's plugin
+directory is changed from ~/.traceevent/plugins to
+~/.local/lib/traceevent/plugins/
 
+Suggested-by: Patrick McLean <chutzpah@gentoo.org>
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Patrick McLean <chutzpah@gentoo.org>
+Cc: linux-trace-devel@vger.kernel.org
+Link: https://lore.kernel.org/linux-trace-devel/20190313144206.41e75cf8@patrickm/
+Link: http://lore.kernel.org/linux-trace-devel/20190801074959.22023-4-tz.stoyanov@gmail.com
+Link: http://lore.kernel.org/lkml/20190805204355.344622683@goodmis.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tracecmd/trace-record.c | 25 ++++++-------------------
- 1 file changed, 6 insertions(+), 19 deletions(-)
+ tools/lib/traceevent/Makefile       | 6 +++---
+ tools/lib/traceevent/event-plugin.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 6f3520cc..cfe67f90 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -4100,27 +4100,14 @@ static void reset_cpu_mask(void)
- {
- 	struct buffer_instance *instance;
- 	int cpus = count_cpus();
--	int fullwords;
--	char *buf;
--	int bits;
--	int len;
-+	int fullwords = (cpus - 1) / 32;
-+	int bits = (cpus - 1) % 32 + 1;
-+	int len = (fullwords + 1) * 9;
-+	char buf[len + 1];
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index 3292c290654f6..86ce17a1f7fb6 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -62,15 +62,15 @@ set_plugin_dir := 1
  
--	fullwords = cpus / 32;
--	bits = cpus % 32;
--	len = (fullwords + 1) * 9;
--
--	buf = malloc(len + 1);
--	if (!buf) {
--		warning("Unable to allocate %d bytes for cpu mask", len + 1);
--		return;
--	}
- 	buf[0] = '\0';
--	if (bits) {
--		sprintf(buf, "%x", (1 << bits) - 1);
--	} else if (fullwords) {
--		strcat(buf, "ffffffff");
--		fullwords--;
--	}
-+
-+	sprintf(buf, "%x", (unsigned int)((1ULL << bits) - 1));
- 	while (fullwords-- > 0)
- 		strcat(buf, ",ffffffff");
+ # Set plugin_dir to preffered global plugin location
+ # If we install under $HOME directory we go under
+-# $(HOME)/.traceevent/plugins
++# $(HOME)/.local/lib/traceevent/plugins
+ #
+ # We dont set PLUGIN_DIR in case we install under $HOME
+ # directory, because by default the code looks under:
+-# $(HOME)/.traceevent/plugins by default.
++# $(HOME)/.local/lib/traceevent/plugins by default.
+ #
+ ifeq ($(plugin_dir),)
+ ifeq ($(prefix),$(HOME))
+-override plugin_dir = $(HOME)/.traceevent/plugins
++override plugin_dir = $(HOME)/.local/lib/traceevent/plugins
+ set_plugin_dir := 0
+ else
+ override plugin_dir = $(libdir)/traceevent/plugins
+diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
+index 8ca28de9337a5..e1f7ddd5a6cf0 100644
+--- a/tools/lib/traceevent/event-plugin.c
++++ b/tools/lib/traceevent/event-plugin.c
+@@ -18,7 +18,7 @@
+ #include "event-utils.h"
+ #include "trace-seq.h"
  
+-#define LOCAL_PLUGIN_DIR ".traceevent/plugins"
++#define LOCAL_PLUGIN_DIR ".local/lib/traceevent/plugins/"
+ 
+ static struct registered_plugin_options {
+ 	struct registered_plugin_options	*next;
 -- 
 2.20.1
+
+
 
