@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83DF7C32792
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 16:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 975E5C4CED1
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 17:10:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5764B20865
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 16:48:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 692F82133F
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 17:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570121339;
+	s=default; t=1570122629;
 	bh=gDoMJ/kb/DKmiZLAj1iPf+wvICmVlOUmxNJiEv9/iT8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=HH1NC3J3lT87JBAJ40meLZDakfK3aikVLL4ArgH3YNA6gukiFcIbsgv9nc1vmEtx5
-	 SHPEwdW1IViShaTxvAkBtNorkndVoEwcAZmRipPJZ+fBwz0Fvfng1zAWIahlWc0mEY
-	 ixgP/gpzTVoUW0/1FFVMD/l6YezxD/fBKKzOqwec=
+	b=ULQ/yAQOrCMYS8o4LRcP8XTJ0Ix3fRXfh1K2XE+aDS/upJ8wEL2zy11gDtE+NMKeN
+	 Hss6sWs3KiDPfVRN1moeECW1URaeZcw91axrEdj69Eo11OSEpfV5vMC8VX3WZXBcgf
+	 PuKG6U6u5TpQJWrk/KTB8+g+xlSpU/LKp7Xle+aU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405784AbfJCQs5 (ORCPT
+        id S2391374AbfJCQdN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 3 Oct 2019 12:48:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33588 "EHLO mail.kernel.org"
+        Thu, 3 Oct 2019 12:33:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405642AbfJCQsC (ORCPT
+        id S2391965AbfJCQdN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 3 Oct 2019 12:48:02 -0400
+        Thu, 3 Oct 2019 12:33:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64C062070B;
-        Thu,  3 Oct 2019 16:48:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE5A82070B;
+        Thu,  3 Oct 2019 16:33:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570121280;
+        s=default; t=1570120392;
         bh=gDoMJ/kb/DKmiZLAj1iPf+wvICmVlOUmxNJiEv9/iT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HiU/jD7Yij8b4/TLqnFkq4kWi3vd6xiF6X8MtZ6L74rotjv10s1BabXhodCmUAXVj
-         /TB4Kcx/84MmO8nOQQkuLOCfDhQozNnH+gFoM5FPWSPbjVyZojM5W1sy3TOv6gJEF1
-         ZPGz3g380uW9/A653NUVDe7/C38Qz0EH+Pht54q4=
+        b=neNk76OvEx8VyHydzwhKBjR0i+e09MFZkw0hCYPgJgCfo5MN3/8Y30yFHgrHeDM+N
+         +Zzd912en8h1io/pWinTNqKDmXWxAir6UzLq75sIpo8GLOXtEA6aVV7uQCtX95paOV
+         oaMmfvkat3GHdvmC7GOsVJqrGmF1HxeA7KPiTmEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -52,12 +52,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.3 185/344] libtraceevent: Change users plugin directory
-Date:   Thu,  3 Oct 2019 17:52:30 +0200
-Message-Id: <20191003154558.469963340@linuxfoundation.org>
+Subject: [PATCH 5.2 167/313] libtraceevent: Change users plugin directory
+Date:   Thu,  3 Oct 2019 17:52:25 +0200
+Message-Id: <20191003154549.424121554@linuxfoundation.org>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191003154540.062170222@linuxfoundation.org>
-References: <20191003154540.062170222@linuxfoundation.org>
+In-Reply-To: <20191003154533.590915454@linuxfoundation.org>
+References: <20191003154533.590915454@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
