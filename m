@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9CFEC10F14
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 17:30:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA31EC4CED1
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 17:35:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 82B8220865
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 17:30:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B19AF2086A
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Oct 2019 17:35:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570123831;
-	bh=LsYsdVGs4V7IkchSF2wWNLWdAyxE/UN89uLgORJq4c4=;
+	s=default; t=1570124157;
+	bh=7RMS4YktEnGBSooX125/Dw0SiOsFPkU0E3b2XtdJMjs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=N60keWNXFBMPaWFNJbhlACbbBaLEzLRM+nz3pMN60wd1yHo0dFdW7vtN5jtPGaODN
-	 M3zS10MgjC8KgttkGmz01+B/7Tu5UqicweCU+M0Aykni3ajKWDukOzv5lR0vfscoJc
-	 0EhWkLF2og5bDfONTnb4jXdpO7FOL0c357Rul7cU=
+	b=DBa7Zas343HtZhmDzFsZ7lrzll5IKipDl8jN0+9pNbFnDflr+Pnc7xFUL6oBPtt9n
+	 62Gl+7/4NkOGDoCfDe/LPEJPbkKi6APuj32BfEPdr9s64LcU6NLh9I42PDc195Mqsd
+	 jJr0zf0O+qCQhRydEVfIeHhN2o1EWrjDlOWx4+iQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387822AbfJCQLV (ORCPT
+        id S1730244AbfJCQFb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 3 Oct 2019 12:11:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32972 "EHLO mail.kernel.org"
+        Thu, 3 Oct 2019 12:05:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387817AbfJCQLU (ORCPT
+        id S1732550AbfJCQFa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 3 Oct 2019 12:11:20 -0400
+        Thu, 3 Oct 2019 12:05:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 528F920700;
-        Thu,  3 Oct 2019 16:11:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B94A1207FF;
+        Thu,  3 Oct 2019 16:05:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570119079;
-        bh=LsYsdVGs4V7IkchSF2wWNLWdAyxE/UN89uLgORJq4c4=;
+        s=default; t=1570118729;
+        bh=7RMS4YktEnGBSooX125/Dw0SiOsFPkU0E3b2XtdJMjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hGWeEUCH7mnh/AmoSiKOtsrenhMYaU1uoqT0Y5Vi1P/PnkjjBcxgQ/gsQnnIb7M8Y
-         Pi0sORCPBy33NGme9fMGHrUct03WhxNaSijIjSGduu4kUNMarv4VH886ytCl5jUWBw
-         SmRw2Qc84PXDw4A89OTtApN7YuscauKK4felGXD0=
+        b=p0Ai2GNhSmP67CbXW5M3HzuwHilm7221Q102XPZ9v2GIke3WkH2vTnWl4kT0c0BGc
+         VaZPBtV0JwkIlVde5IlK90kAcuetYt+1as2lVnJtEWfkeaK6drX2INzNF3GGtCKHtx
+         nP5bywSRZOjokRnZP3Q3gYVUmA5ArVJpPvujMMgE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -52,12 +52,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 117/185] libtraceevent: Change users plugin directory
-Date:   Thu,  3 Oct 2019 17:53:15 +0200
-Message-Id: <20191003154504.677497152@linuxfoundation.org>
+Subject: [PATCH 4.9 079/129] libtraceevent: Change users plugin directory
+Date:   Thu,  3 Oct 2019 17:53:22 +0200
+Message-Id: <20191003154355.281204555@linuxfoundation.org>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191003154437.541662648@linuxfoundation.org>
-References: <20191003154437.541662648@linuxfoundation.org>
+In-Reply-To: <20191003154318.081116689@linuxfoundation.org>
+References: <20191003154318.081116689@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -94,10 +94,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index 46cd5f871ad76..a26c44cf31aa4 100644
+index 7851df1490e0a..cc3315da6dc39 100644
 --- a/tools/lib/traceevent/Makefile
 +++ b/tools/lib/traceevent/Makefile
-@@ -55,15 +55,15 @@ set_plugin_dir := 1
+@@ -54,15 +54,15 @@ set_plugin_dir := 1
  
  # Set plugin_dir to preffered global plugin location
  # If we install under $HOME directory we go under
