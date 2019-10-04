@@ -2,67 +2,70 @@ Return-Path: <SRS0=JRVv=X5=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41F77C4360C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Oct 2019 13:36:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CF4FC4CED1
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Oct 2019 13:36:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 120ED20700
+	by mail.kernel.org (Postfix) with ESMTP id D7FB820700
 	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Oct 2019 13:36:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K7SCXnGb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mb2hpcPS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388341AbfJDNgy (ORCPT
+        id S2388244AbfJDNgz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Oct 2019 09:36:54 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:35445 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388244AbfJDNgy (ORCPT
+        Fri, 4 Oct 2019 09:36:55 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:36365 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388272AbfJDNgz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Oct 2019 09:36:54 -0400
-Received: by mail-wr1-f45.google.com with SMTP id v8so7279949wrt.2
-        for <linux-trace-devel@vger.kernel.org>; Fri, 04 Oct 2019 06:36:51 -0700 (PDT)
+        Fri, 4 Oct 2019 09:36:55 -0400
+Received: by mail-wr1-f66.google.com with SMTP id y19so7273577wrd.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 04 Oct 2019 06:36:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nE68qNa1t73uyWgyc8Wd3klMPfsWRimBqKPD2QGEToE=;
-        b=K7SCXnGbzfWZUbHAaP0TZn8l9iRP84ZE5IHObhkJeqx2dMLodPfnPeQN1mKxJD8rK7
-         elzZaXjY1FQLQnTSo+iscVJUhGcQxxGS8v4wOZqUbRszVl46NuZ5Knc1CXCA3qHTJI+T
-         PaD4aV/JylR76zhjmk6OGOQYhwQji6X53dPxvvSu1wpLFHmNS8tl6CWAnlqRRp9y7xCm
-         bu9E2EBkGiAvclNVk5zgXh1QqV41zEnIPnW2aSuJRUSzjWNqCWeAPNN3rUpeRF8svLe0
-         bZg1jaQLmU+B2UG1d0Ulz2MHQO19m2NouWM4GD6lauDCFMFlp4vy7hFqWfVe2DmOavLw
-         grmA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7HVPvMkHId7shPJR7QSW7ONG80bylQ1cwLiTUhTiNkw=;
+        b=mb2hpcPSEGTDOBtb+fLRAV8tJCk27Qf2D203k0FYF0v6sKQduXmZBPoE52KX+oxbYg
+         FnvBc2LS9ZkG5sPAFA2Ec7zMnkYaLSgod62OGwWrmXfcbOOFR6cZwX3jGS/WDAnRpobt
+         g7F2zxNQx7cg21FKNMuJH77fpelvxt3aIGMwdSAezyCj6RiFqBYgoDUO7M8jDdEwYuD4
+         DM1gad/jdITNeEWDH3+tV3J46AfnTCtbIax5pkbStI0BjEyxhJLhF29Ozn1bwnhResT9
+         5rwzCphXyOI/ZpcSB8Rx3ioDm3QaH0GefKBgmpovFFWILvpkz7czf9FRLJfEQwr2x0xF
+         2QCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nE68qNa1t73uyWgyc8Wd3klMPfsWRimBqKPD2QGEToE=;
-        b=O3qrizhlPvumITs1FEvAgMiCpWXS4MGp7rz/xNAtPLwYcq59dCTnqy2F/EKJBmf/6y
-         r01Wxx+CPaPNynN7/DE3u2JyPBt4zFeBlZN46fn9PphfQlohEglHQMd1d67KPJkr/BvY
-         bHF0zMiOic8YlZ2ulgZVHWPcKRKFAfm9ipdU/bXETJpDm64njrCv/zqp0V5bC/Lbx0qH
-         Q8NEsWdDHfN7rV2X2HbrEmqXOI2qXcn8S6+ny8DXnpItXAa3LCcVD1/7xL8rATsoc3lS
-         Wau2OWJ+9zfq7oMZBlEBwPueOQBGlmELzNK62XpBurbc2ReElAaq8EjRSSjB7D3I0PnI
-         dPyA==
-X-Gm-Message-State: APjAAAWiAMDrA8/UiTaZDV8ycy+XproL8tEQjKBTpK9y2sPmdpNV9r9k
-        bIEGNpi+z9ysc6Ox6qd86FJ4ilOZ
-X-Google-Smtp-Source: APXvYqwRhGme1R5+zG5HjS/3+19dAoqXZ8sjDOT1dYwR7h8AQkWfzRodKrDmdPDR3RfDhG6ye+l8Ug==
-X-Received: by 2002:adf:fe11:: with SMTP id n17mr5211407wrr.221.1570196210736;
-        Fri, 04 Oct 2019 06:36:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7HVPvMkHId7shPJR7QSW7ONG80bylQ1cwLiTUhTiNkw=;
+        b=blscOD95XmeiEMcF7cz4hrbESEgoyxXqsMZxGdkrRr0ZvccN9mhkh7IUWkA2TkNL6+
+         1FyAIgeV/eXcddyEfnoBMo4BuBleYgsCUXiu9f2wPhyDHdhT4mEeaYfO+tjNGikLNSOD
+         efW9lKaGDmv9XRZ4NP+b7svHHhybNVz0lUMz8QGRymOSRVr+59WaZ5MRtkrCtzV+tltB
+         4DsQ8o9qg+LR1mBc1Qne6t+OPQJZN2b4suUA8PALDeUvrI9eoqsouOEzEt5sjAQzlMIb
+         ZB7owPUbnxitjX2Zxr2o1oZXl+AkeIoBDHxus3t7kIzyEecdtcZPl/sg8p+3BU1AAG4x
+         4D6A==
+X-Gm-Message-State: APjAAAXgmjqgMiU39BmgMozeCKdQQ3kFg1be2lNUopiAMoui1BYBBbk1
+        Jv8WZ4v3oaV3mN76wDHUZp4=
+X-Google-Smtp-Source: APXvYqzFH0j5oKzS2twpbQNKUos09NspFyhzAKPnCiLNKOqkwNvimjG1N2lLtbxiHBIDdvb75XafgA==
+X-Received: by 2002:a5d:4f8e:: with SMTP id d14mr11708228wru.384.1570196212954;
+        Fri, 04 Oct 2019 06:36:52 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id a10sm7029988wrm.52.2019.10.04.06.36.48
+        by smtp.gmail.com with ESMTPSA id a10sm7029988wrm.52.2019.10.04.06.36.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2019 06:36:49 -0700 (PDT)
+        Fri, 04 Oct 2019 06:36:52 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 0/5] Remove redundant trace-cmd plugin handling logic
-Date:   Fri,  4 Oct 2019 16:36:42 +0300
-Message-Id: <20191004133647.27759-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 2/5] trace-cmd: Rename plugin_python to plugin_python_loader.
+Date:   Fri,  4 Oct 2019 16:36:44 +0300
+Message-Id: <20191004133647.27759-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20191004133647.27759-1-tz.stoyanov@gmail.com>
+References: <20191004133647.27759-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -70,76 +73,82 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently there are no trace-cmd related plugins, all of them
-are designed to be used with libtraceeevnt. As both libtraceevent
-and trace-cmd have logic for managing plugins, the one in trace-cmd
-is redundant. Those redundant code is removed and replaced with calls
-to libtraceeevnt plugin APIs. When trace-cmd has to load any plugins,
-it uses libtraceeevnt to do the job.
+The plugin_python is renamed to plugin_python_loader, to make
+the name more closer to the actual plugin role.
 
-All existing plugins are moved from plugins/ to lib/traceevent/plugins
-directory, as all of them are designed to be used with the traceevent
-library.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ Makefile                                               | 10 +---------
+ lib/traceevent/plugins/Makefile                        |  6 +++---
+ .../{plugin_python.c => plugin_python_loader.c}        |  0
+ 3 files changed, 4 insertions(+), 12 deletions(-)
+ rename lib/traceevent/plugins/{plugin_python.c => plugin_python_loader.c} (100%)
 
-An initial infrastructure for trace-cmd specific plugins is added - 
-new lib/trace-cmd/plugins directory and an initial set of APIs
-for working with trace-cmd plugins.
-
-Tzvetomir Stoyanov (1):
-  trace-cmd: Change plugin install directories
-
-Tzvetomir Stoyanov (VMware) (4):
-  trace-cmd: Move libtraceevent plugins in its own directory.
-  trace-cmd: Rename plugin_python to plugin_python_loader.
-  trace-cmd: Load libtraceevent plugins from build folder, if exists.
-  trace-cmd: Add initial infrastructure for trace-cmd specific plugins.
-
- .gitignore                                    |   3 +-
- Makefile                                      |  83 +++--
- include/trace-cmd/trace-cmd.h                 |  43 +++
- include/traceevent/event-parse.h              |   3 +
- lib/trace-cmd/Makefile                        |   3 +-
- lib/trace-cmd/plugins/Makefile                |  58 ++++
- lib/trace-cmd/trace-input.c                   |   7 +-
- lib/trace-cmd/trace-plugin.c                  | 313 ++++++++++++++++++
- lib/trace-cmd/trace-util.c                    |  46 +++
- lib/traceevent/event-plugin.c                 |  44 ++-
- {plugins => lib/traceevent/plugins}/Makefile  |  16 +-
- .../traceevent/plugins}/plugin_blk.c          |   0
- .../traceevent/plugins}/plugin_cfg80211.c     |   0
- .../traceevent/plugins}/plugin_function.c     |   0
- .../traceevent/plugins}/plugin_futex.c        |   0
- .../traceevent/plugins}/plugin_hrtimer.c      |   0
- .../traceevent/plugins}/plugin_jbd2.c         |   0
- .../traceevent/plugins}/plugin_kmem.c         |   0
- .../traceevent/plugins}/plugin_kvm.c          |   0
- .../traceevent/plugins}/plugin_mac80211.c     |   0
- .../traceevent/plugins/plugin_python_loader.c |   0
- .../traceevent/plugins}/plugin_sched_switch.c |   0
- .../traceevent/plugins}/plugin_scsi.c         |   0
- .../traceevent/plugins}/plugin_tlb.c          |   0
- .../traceevent/plugins}/plugin_xen.c          |   0
- tracecmd/trace-check-events.c                 |   7 +-
- tracecmd/trace-list.c                         |  14 +-
- 27 files changed, 569 insertions(+), 71 deletions(-)
- create mode 100644 lib/trace-cmd/plugins/Makefile
- create mode 100644 lib/trace-cmd/trace-plugin.c
- rename {plugins => lib/traceevent/plugins}/Makefile (81%)
- rename {plugins => lib/traceevent/plugins}/plugin_blk.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_cfg80211.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_function.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_futex.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_hrtimer.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_jbd2.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_kmem.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_kvm.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_mac80211.c (100%)
- rename plugins/plugin_python.c => lib/traceevent/plugins/plugin_python_loader.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_sched_switch.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_scsi.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_tlb.c (100%)
- rename {plugins => lib/traceevent/plugins}/plugin_xen.c (100%)
-
+diff --git a/Makefile b/Makefile
+index f336f7a..e20eced 100644
+--- a/Makefile
++++ b/Makefile
+@@ -116,8 +116,7 @@ PYTHON_PKGCONFIG_VERS ?= $(PYTHON_VERS)
+ 
+ # Can build python?
+ ifeq ($(shell sh -c "pkg-config --cflags $(PYTHON_PKGCONFIG_VERS) > /dev/null 2>&1 && echo y"), y)
+-	PYTHON_PLUGINS := plugin_python.so
+-	BUILD_PYTHON := $(PYTHON) $(PYTHON_PLUGINS)
++	BUILD_PYTHON := $(PYTHON)
+ 	BUILD_PYTHON_WORKS := 1
+ else
+ 	BUILD_PYTHON := report_nopythondev
+@@ -125,7 +124,6 @@ else
+ endif
+ endif # NO_PYTHON
+ 
+-export PYTHON_PLUGINS
+ export BUILD_PYTHON_WORKS
+ export NO_PYTHON
+ 
+@@ -418,12 +416,6 @@ python: $(PYTHON)
+ PHONY += python-gui
+ python-gui: $(PYTHON_GUI)
+ 
+-PHONY += python-plugin
+-python-plugin: $(PYTHON_PLUGINS)
+-
+-plugin_python.so: force $(obj)/lib/traceevent/plugins/trace_python_dir
+-	$(Q)$(MAKE) -C $(src)/lib/traceevent/plugins $(obj)/lib/traceevent/plugins/plugin_python.so
+-
+ dist:
+ 	git archive --format=tar --prefix=trace-cmd-$(TRACECMD_VERSION)/ HEAD \
+ 		> ../trace-cmd-$(TRACECMD_VERSION).tar
+diff --git a/lib/traceevent/plugins/Makefile b/lib/traceevent/plugins/Makefile
+index e0a7566..061d919 100644
+--- a/lib/traceevent/plugins/Makefile
++++ b/lib/traceevent/plugins/Makefile
+@@ -21,7 +21,7 @@ PLUGIN_OBJS := $(PLUGIN_OBJS:%.o=$(bdir)/%.o)
+ PLUGIN_BUILD := $(PLUGIN_OBJS:$(bdir)/%.o=$(bdir)/%.so)
+ PLUGINS := $(PLUGIN_BUILD)
+ ifndef NO_PYTHON
+-PLUGINS += $(bdir)/plugin_python.so
++PLUGINS += $(bdir)/plugin_python_loader.so
+ endif
+ DEPS := $(PLUGIN_OBJS:$(bdir)/%.o=$(bdir)/.%.d)
+ 
+@@ -44,10 +44,10 @@ $(DEPS): $(bdir)/.%.d: %.c
+ 
+ $(PLUGIN_OBJS): $(bdir)/%.o : $(bdir)/.%.d
+ 
+-$(bdir)/plugin_python.o: $(bdir)/%.o : %.c $(bdir)/trace_python_dir
++$(bdir)/plugin_python_loader.o: $(bdir)/%.o : %.c $(bdir)/trace_python_dir
+ 	$(Q)$(do_compile_python_plugin_obj)
+ 
+-$(bdir)/plugin_python.so: $(bdir)/%.so: $(bdir)/%.o
++$(bdir)/plugin_python_loader.so: $(bdir)/%.so: $(bdir)/%.o
+ 	$(Q)$(do_python_plugin_build)
+ 
+ PLUGINS_INSTALL = $(subst .so,.install,$(PLUGINS))
+diff --git a/lib/traceevent/plugins/plugin_python.c b/lib/traceevent/plugins/plugin_python_loader.c
+similarity index 100%
+rename from lib/traceevent/plugins/plugin_python.c
+rename to lib/traceevent/plugins/plugin_python_loader.c
 -- 
 2.21.0
 
