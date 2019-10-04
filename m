@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9261C4360C
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Oct 2019 13:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7E24C47404
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Oct 2019 13:36:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 76B16222C0
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Oct 2019 13:36:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B092D222C4
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Oct 2019 13:36:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D1aBIIna"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="durrgv4P"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388393AbfJDNg5 (ORCPT
+        id S2388376AbfJDNg6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Oct 2019 09:36:57 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:35821 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388333AbfJDNg5 (ORCPT
+        Fri, 4 Oct 2019 09:36:58 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35824 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388197AbfJDNg6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Oct 2019 09:36:57 -0400
-Received: by mail-wr1-f68.google.com with SMTP id v8so7280219wrt.2
-        for <linux-trace-devel@vger.kernel.org>; Fri, 04 Oct 2019 06:36:54 -0700 (PDT)
+        Fri, 4 Oct 2019 09:36:58 -0400
+Received: by mail-wr1-f66.google.com with SMTP id v8so7280329wrt.2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 04 Oct 2019 06:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+ixZqoFA1AJg8a6gd1rG3bObRYvFcofEgjducAR42T0=;
-        b=D1aBIInap0A/dhsVohGMqezkRCEQsPCJcHhGGAcKTKS6a9U66acJi9Cu+USfVR2a0z
-         JraUZnmio6vmMZs4ohfQUbZox3cLgvu+9wFROePHdMMFKRgcf8FQ9bTXwcj2lZnVWtEN
-         VhJyc7+hPrb8v2BuPGf3FPKHEB2l0sJAQ1w25Y67sDGaSnFgpMzWP0ZhSR09nEZUJM3k
-         VXW3M+mQFd4VqEr9pbzlNM+cVB0PDxdzj6PDZcSnaMcvBB4+Li8vSJ4XqjPXr6q3qP/8
-         CRseIxVYI8dFJcnesDF5eFgSE2hhv3s5UQUgsG5iW7cPkbTdi8d7dQJIF/Yb0/ydyLlc
-         QLOA==
+        bh=GFx24vPKmjI9q3Fl4A5Pvwia71Hjh1qC/tqQN7Bsp48=;
+        b=durrgv4PyeVnhiagXpdyrPS7/a/Vu9RM0AvrDJbuUsFKrYv/FIPK/zwFfMF8Xfcpvk
+         TfBwdli3nZEXzQnmbyF2wQCHShYWkfDKU/H4vHFnEKhF/7q/opBJ6+Igau3Q74ZbbRCn
+         UTIHXatsIfx5nkkQDvPiTFP4XXrvxc9SuqQ9H2U6fdWoog36uJXI8nS9x4bydHxxwjuc
+         ebv4CEsKAiTrLkYOm5Q4Xx+IwWBfw4OJg03cYzgZjbftiQ2Zud44Ro2aWb4JhloM+YVL
+         yP2XYeiFcjnQe2qGn03ON9016AwU1q2w/2lhUcmUen3KZ+WPNMKBGx4cvPGAs/oVTeap
+         c4hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+ixZqoFA1AJg8a6gd1rG3bObRYvFcofEgjducAR42T0=;
-        b=ujhj2HHA+LD2kxYrq3XuSL5Cv9MY9KvKREYB19fPDYtWl8+QwyD8uU/Hiwh6LUkOgv
-         8IpRa8OBosawUkpi8LwELE40ENzE5FmA5bt5RydmQTSJFVhf8rsDsz+pVrcqVCk2FhHr
-         LNFhDvV+JeaSjJNafRCP+EJ0QOJyXt6CBwEiYYpqp/0g+tW3tMkUYJ7h+juQgveBMH6K
-         6WyCV1+wjg/eaxfXEn1XUcsZzq8t6WpuwXhvW2ASJKeXoWRN6KgajL8JVicYuiRenau3
-         pIYDLh1Y7AsVyAgF3BbquVWpk906asj1YGtc6TL2c7WynuYUiTfaT2D7cLjFIsj5kaal
-         KlSA==
-X-Gm-Message-State: APjAAAVSamJxJlcqGRAQb7HVZNU+nld+mursCbvhwt80xJfGPdcqmI9P
-        MDBDRKfWdKKpJoHCcLM7hNc=
-X-Google-Smtp-Source: APXvYqxuCVJ+dlzJ4mxZf1qHDOjbLujXnOgZ9tu0SqbXb9yHnP4hnI3yfdjFmbqADyVH5i1GW0yFIQ==
-X-Received: by 2002:a5d:63cb:: with SMTP id c11mr9564291wrw.281.1570196214023;
-        Fri, 04 Oct 2019 06:36:54 -0700 (PDT)
+        bh=GFx24vPKmjI9q3Fl4A5Pvwia71Hjh1qC/tqQN7Bsp48=;
+        b=Qj4mFXEbmvtS/raR/WX/alIHMtl8Tgy9i+VX4F7fFpp+soFBe0rAiq7wpkwkPm/36e
+         Rk1xt1kVVLOUalIFqfzhCI0pm4nD3Tb0lCqENQKFIzjq0uw6ASOV2200erKOD8bh0UV3
+         KHBY0qdDGiYxIwUf79CP75qD0CJHhl80My5dIX/WxtpnzfdpM6cpvGOY/7tmHuLYtGt1
+         JKkpbf+EULOPyzBo2qnn+/6MpOo+YQoaK+kM649BsYdzWWkN+eFdoHzg6yxUkzW2Zc1i
+         zcQfYJVR7gZFa5ovkxIEOPi1rpoFwKkdJQIO+gPKwjOAdh5PE147WShYuGZFnuanW98j
+         kTwg==
+X-Gm-Message-State: APjAAAVdubzKPnNAjlcTPy6+jYmC28JyWd3sbARX9++N93cxN65KMQb/
+        dsK3LqDr82pA3ulfc0ZNQBw=
+X-Google-Smtp-Source: APXvYqx7YlzHAeqDRZGWjroNpg/Py4C7siCq6rxEz1m6uU6FbPeIDSAJbJCVFdtzhUSfMS5tEfzwWQ==
+X-Received: by 2002:a5d:51c9:: with SMTP id n9mr6377016wrv.398.1570196215391;
+        Fri, 04 Oct 2019 06:36:55 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id a10sm7029988wrm.52.2019.10.04.06.36.52
+        by smtp.gmail.com with ESMTPSA id a10sm7029988wrm.52.2019.10.04.06.36.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2019 06:36:53 -0700 (PDT)
+        Fri, 04 Oct 2019 06:36:54 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 3/5] trace-cmd: Load libtraceevent plugins from build folder, if exists.
-Date:   Fri,  4 Oct 2019 16:36:45 +0300
-Message-Id: <20191004133647.27759-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 4/5] trace-cmd: Change plugin install directories
+Date:   Fri,  4 Oct 2019 16:36:46 +0300
+Message-Id: <20191004133647.27759-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191004133647.27759-1-tz.stoyanov@gmail.com>
 References: <20191004133647.27759-1-tz.stoyanov@gmail.com>
@@ -73,238 +73,125 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When a development version of trace-cmd is built and run on the machine,
-by default it loads only installed plugins, from system directories.
-Thus, the development plugins will not be loaded. To simplify the development
-process, a new logic is added:
-  At plugins load time, check the location of trace-cmd application and look
-  for "plugins" directory around it. If found, load plugins from it. Those
-  plugins will be loaded last, so in case of duplication the "development"
-  plugins win.
-A two new APIs are introduced to libtraceevent, in order to accomplish this
-logic:
- tep_load_plugins_dir() - loads tep plugins from a specific directory.
- tep_plugins_append() - Append two plugin lists.
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
+To be compliant with XDG user directory layout,
+the user's plugin directory is changed from
+~/.traceevent/plugins to ~/.local/lib/traceevent/plugins/
+
+Thanks to Patrick McLean:
+https://lore.kernel.org/linux-trace-devel/20190313144206.41e75cf8@patrickm/
+
+The system plugin directory is changed from
+(install_prefix)/lib/trace-cmd/plugins to (install_prefix)/lib/traceevent/plugins
+This change paves the way for implementing trace-cmd specific plugins.
+
+Suggested-by: Patrick McLean <chutzpah@gentoo.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h    |  2 ++
- include/traceevent/event-parse.h |  3 +++
- lib/trace-cmd/trace-input.c      |  7 +----
- lib/trace-cmd/trace-util.c       | 46 ++++++++++++++++++++++++++++++++
- lib/traceevent/event-plugin.c    | 38 ++++++++++++++++++++++++++
- tracecmd/trace-check-events.c    |  7 +----
- tracecmd/trace-list.c            | 14 ++--------
- 7 files changed, 93 insertions(+), 24 deletions(-)
+ Makefile                        | 16 ++++++++--------
+ lib/traceevent/event-plugin.c   |  6 +++---
+ lib/traceevent/plugins/Makefile |  4 ++--
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 092bd89..0593463 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -25,6 +25,8 @@ void tracecmd_parse_ftrace_printk(struct tep_handle *pevent, char *file, unsigne
- extern int tracecmd_disable_sys_plugins;
- extern int tracecmd_disable_plugins;
+diff --git a/Makefile b/Makefile
+index e20eced..cb5b07b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -56,15 +56,15 @@ export img_install img_install_SQ
+ export DESTDIR DESTDIR_SQ
  
-+struct tep_plugin_list *trace_load_tep_plugins(struct tep_handle *tep);
-+
- char **tracecmd_event_systems(const char *tracing_dir);
- char **tracecmd_system_events(const char *tracing_dir, const char *system);
- struct tep_handle *tracecmd_local_events(const char *tracing_dir);
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 99da5ef..b97a366 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -380,6 +380,9 @@ struct tep_plugin_list;
- #define INVALID_PLUGIN_LIST_OPTION	((char **)((unsigned long)-1))
+ ifeq ($(prefix),$(HOME))
+-plugin_dir = $(HOME)/.trace-cmd/plugins
++plugin_traceevent_dir = $(HOME)/.local/lib/traceevent/plugins
+ python_dir = $(HOME)/.trace-cmd/python
+ var_dir = $(HOME)/.trace-cmd/
+ else
+-plugin_dir = $(libdir)/trace-cmd/plugins
++plugin_traceevent_dir = $(libdir)/traceevent/plugins
+ python_dir ?= $(libdir)/trace-cmd/python
+-PLUGIN_DIR = -DPLUGIN_DIR="$(plugin_dir)"
++PLUGIN_DIR_TRACEEVENT = -DPLUGIN_TRACEEVENT_DIR="$(plugin_traceevent_dir)"
+ PYTHON_DIR = -DPYTHON_DIR="$(python_dir)"
+-PLUGIN_DIR_SQ = '$(subst ','\'',$(PLUGIN_DIR))'
++PLUGIN_DIR_TRACEEVENT_SQ = '$(subst ','\'',$(PLUGIN_DIR_TRACEEVENT))'
+ PYTHON_DIR_SQ = '$(subst ','\'',$(PYTHON_DIR))'
+ var_dir = /var
+ endif
+@@ -72,7 +72,7 @@ endif
+ # Shell quotes
+ bindir_SQ = $(subst ','\'',$(bindir))
+ bindir_relative_SQ = $(subst ','\'',$(bindir_relative))
+-plugin_dir_SQ = $(subst ','\'',$(plugin_dir))
++plugin_traceevent_dir_SQ = $(subst ','\'',$(plugin_traceevent_dir))
+ python_dir_SQ = $(subst ','\'',$(python_dir))
  
- struct tep_plugin_list *tep_load_plugins(struct tep_handle *tep);
-+struct tep_plugin_list *tep_load_plugins_dir(struct tep_handle *tep, char *path);
-+void tep_plugins_append(struct tep_plugin_list *list1,
-+			struct tep_plugin_list *list2);
- void tep_unload_plugins(struct tep_plugin_list *plugin_list,
- 			struct tep_handle *tep);
- void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 8cceb31..6e1fa2e 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -2850,15 +2850,10 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd)
- 	if (!handle->pevent)
- 		goto failed_read;
+ VAR_DIR = -DVAR_DIR="$(var_dir)"
+@@ -85,10 +85,10 @@ HELP_DIR_SQ = '$(subst ','\'',$(HELP_DIR))'
  
--	if (tracecmd_disable_plugins)
--		tep_set_flag(handle->pevent, TEP_DISABLE_PLUGINS);
--	if (tracecmd_disable_sys_plugins)
--		tep_set_flag(handle->pevent, TEP_DISABLE_SYS_PLUGINS);
--
- 	/* register default ftrace functions first */
- 	tracecmd_ftrace_overrides(handle, &handle->finfo);
+ BASH_COMPLETE_DIR ?= /etc/bash_completion.d
  
--	handle->plugin_list = tep_load_plugins(handle->pevent);
-+	handle->plugin_list = trace_load_tep_plugins(handle->pevent);
+-export PLUGIN_DIR
++export PLUGIN_DIR_TRACEEVENT
+ export PYTHON_DIR
+ export PYTHON_DIR_SQ
+-export plugin_dir_SQ
++export plugin_traceevent_dir_SQ
+ export python_dir_SQ
+ export var_dir
  
- 	tep_set_file_bigendian(handle->pevent, buf[0]);
- 	tep_set_local_bigendian(handle->pevent, tracecmd_host_bigendian());
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index b08e377..5a84fc3 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -884,6 +884,52 @@ void trace_util_free_plugin_files(char **files)
- 	free(files);
- }
+@@ -239,7 +239,7 @@ LIBS += -laudit
+ endif
  
-+static char *get_source_plugins_dir(void)
-+{
-+	char *p, path[PATH_MAX+1];
-+	int ret;
-+
-+	ret = readlink("/proc/self/exe", path, PATH_MAX);
-+	if (ret > PATH_MAX || ret < 0)
-+		return NULL;
-+
-+	dirname(path);
-+	p = strrchr(path, '/');
-+	if (!p)
-+		return NULL;
-+	/* Check if we are in the the source tree */
-+	if (strcmp(p, "/tracecmd") != 0)
-+		return NULL;
-+
-+	strcpy(p, "/lib/traceevent/plugins");
-+	return strdup(path);
-+}
-+
-+struct tep_plugin_list*
-+trace_load_tep_plugins(struct tep_handle *tep)
-+{
-+	struct tep_plugin_list *list_dev;
-+	struct tep_plugin_list *list;
-+	char *path;
-+
-+	if (tracecmd_disable_plugins)
-+		tep_set_flag(tep, TEP_DISABLE_PLUGINS);
-+	if (tracecmd_disable_sys_plugins)
-+		tep_set_flag(tep, TEP_DISABLE_SYS_PLUGINS);
-+
-+	list = tep_load_plugins(tep);
-+
-+	path = get_source_plugins_dir();
-+	if (path) {
-+		list_dev = tep_load_plugins_dir(tep, path);
-+		tep_plugins_append(list_dev, list);
-+		list = list_dev;
-+		free(path);
-+	}
-+
-+	return list;
-+}
-+
- char *tracecmd_get_tracing_file(const char *name)
- {
- 	static const char *tracing;
+ # Append required CFLAGS
+-override CFLAGS += $(INCLUDES) $(PLUGIN_DIR_SQ) $(VAR_DIR)
++override CFLAGS += $(INCLUDES) $(PLUGIN_DIR_TRACEEVENT_SQ) $(VAR_DIR)
+ override CFLAGS += $(udis86-flags) $(blk-flags)
+ override LDFLAGS += $(udis86-ldflags)
+ 
 diff --git a/lib/traceevent/event-plugin.c b/lib/traceevent/event-plugin.c
-index bc10205..b2a30bb 100644
+index b2a30bb..ce9d53c 100644
 --- a/lib/traceevent/event-plugin.c
 +++ b/lib/traceevent/event-plugin.c
-@@ -599,6 +599,44 @@ tep_load_plugins(struct tep_handle *tep)
- 	return list;
- }
+@@ -19,7 +19,7 @@
+ #include "event-utils.h"
+ #include "trace-seq.h"
  
-+/**
-+ * tep_load_plugins_dir - load traceevent plugins from a directory
-+ * @tep: Trace event handler.
-+ * @path: Path to a directory. All files with extension .so in that
-+ *	  directory will be loaded as plugins.
-+ *
-+ * Returns a list of loaded plugins
-+ */
-+struct tep_plugin_list*
-+tep_load_plugins_dir(struct tep_handle *tep, char *path)
-+{
-+	struct tep_plugin_list *list = NULL;
-+
-+	if (tep && tep->flags & TEP_DISABLE_PLUGINS)
-+		return NULL;
-+
-+	load_plugins_dir(tep, ".so", path, load_plugin, &list);
-+	return list;
-+}
-+
-+/**
-+ * tep_plugins_append - Concatenate two plugin lists.
-+ * @list1: The first plugin list.
-+ * @list2: The second plugin list.
-+ *
-+ * The second plugin list (list2) is appended to the first one (list1).
-+ */
-+void tep_plugins_append(struct tep_plugin_list *list1,
-+			struct tep_plugin_list *list2)
-+{
-+	struct tep_plugin_list *list = list1;
-+
-+	while (list && list->next)
-+		list = list->next;
-+	if (list)
-+		list->next = list2;
-+}
-+
- void
- tep_unload_plugins(struct tep_plugin_list *plugin_list, struct tep_handle *tep)
- {
-diff --git a/tracecmd/trace-check-events.c b/tracecmd/trace-check-events.c
-index b09fcd0..eb840c6 100644
---- a/tracecmd/trace-check-events.c
-+++ b/tracecmd/trace-check-events.c
-@@ -43,12 +43,7 @@ void trace_check_events(int argc, char **argv)
- 	if (!pevent)
- 		exit(EINVAL);
+-#define LOCAL_PLUGIN_DIR ".traceevent/plugins"
++#define LOCAL_PLUGIN_DIR ".local/lib/traceevent/plugins/"
  
--	if (tracecmd_disable_plugins)
--		tep_set_flag(pevent, TEP_DISABLE_PLUGINS);
--	if (tracecmd_disable_sys_plugins)
--		tep_set_flag(pevent, TEP_DISABLE_SYS_PLUGINS);
--
--	list = tep_load_plugins(pevent);
-+	list = trace_load_tep_plugins(pevent);
- 	ret = tracecmd_fill_local_events(tracing, pevent, &parsing_failures);
- 	if (ret || parsing_failures)
- 		ret = EINVAL;
-diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
-index 65099a5..840eeac 100644
---- a/tracecmd/trace-list.c
-+++ b/tracecmd/trace-list.c
-@@ -317,14 +317,9 @@ static void show_plugin_options(void)
- 	if (!pevent)
- 		die("Can not allocate pevent\n");
+ static struct registered_plugin_options {
+ 	struct registered_plugin_options	*next;
+@@ -557,9 +557,9 @@ void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
+ 	 * If a system plugin directory was defined,
+ 	 * check that first.
+ 	 */
+-#ifdef PLUGIN_DIR
++#ifdef PLUGIN_TRACEEVENT_DIR
+ 	if (!tep || !(tep->flags & TEP_DISABLE_SYS_PLUGINS))
+-		load_plugins_dir(tep, suffix, PLUGIN_DIR,
++		load_plugins_dir(tep, suffix, PLUGIN_TRACEEVENT_DIR,
+ 				 load_plugin, data);
+ #endif
  
--	if (tracecmd_disable_plugins)
--		tep_set_flag(pevent, TEP_DISABLE_PLUGINS);
--	if (tracecmd_disable_sys_plugins)
--		tep_set_flag(pevent, TEP_DISABLE_SYS_PLUGINS);
--
- 	trace_seq_init(&s);
+diff --git a/lib/traceevent/plugins/Makefile b/lib/traceevent/plugins/Makefile
+index 061d919..4050019 100644
+--- a/lib/traceevent/plugins/Makefile
++++ b/lib/traceevent/plugins/Makefile
+@@ -53,11 +53,11 @@ $(bdir)/plugin_python_loader.so: $(bdir)/%.so: $(bdir)/%.o
+ PLUGINS_INSTALL = $(subst .so,.install,$(PLUGINS))
  
--	list = tep_load_plugins(pevent);
-+	list = trace_load_tep_plugins(pevent);
- 	tep_plugin_print_options(&s);
- 	trace_seq_do_printf(&s);
- 	tep_unload_plugins(list, pevent);
-@@ -348,14 +343,9 @@ static void show_plugins(void)
- 	if (!pevent)
- 		die("Can not allocate pevent\n");
+ $(PLUGINS_INSTALL): $(bdir)/%.install : $(bdir)/%.so force
+-	$(Q)$(call do_install_data,$<,$(plugin_dir_SQ))
++	$(Q)$(call do_install_data,$<,$(plugin_traceevent_dir_SQ))
  
--	if (tracecmd_disable_plugins)
--		tep_set_flag(pevent, TEP_DISABLE_PLUGINS);
--	if (tracecmd_disable_sys_plugins)
--		tep_set_flag(pevent, TEP_DISABLE_SYS_PLUGINS);
--
- 	trace_seq_init(&s);
+ install_plugins: $(PLUGINS_INSTALL)
  
--	list = tep_load_plugins(pevent);
-+	list = trace_load_tep_plugins(pevent);
- 	tep_print_plugins(&s, "  ", "\n", list);
+-# The following targets are necessary to trigger a rebuild when $(PLUGIN_DIR)
++# The following targets are necessary to trigger a rebuild when $(PLUGIN_DIR_TRACEEVENT)
+ # and $(PYTHON_DIR) change. Without them, a full clean build would necessary
+ # in order to get the binaries updated.
  
- 	trace_seq_do_printf(&s);
 -- 
 2.21.0
 
