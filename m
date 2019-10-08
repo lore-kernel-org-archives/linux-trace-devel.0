@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E282ECE58E
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Oct 2019 08:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E1B1C4360C
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Oct 2019 08:15:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0179D206B6
+	by mail.kernel.org (Postfix) with ESMTP id E53D7206C2
 	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Oct 2019 08:15:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730567AbfJHIPs (ORCPT
+        id S1730568AbfJHIPt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 8 Oct 2019 04:15:48 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:39836 "EHLO
+        Tue, 8 Oct 2019 04:15:49 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37524 "EHLO
         mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730555AbfJHIPr (ORCPT
+        with ESMTP id S1730549AbfJHIPt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 8 Oct 2019 04:15:47 -0400
-Received: by mail-wm1-f66.google.com with SMTP id v17so2078382wml.4
-        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Oct 2019 01:15:46 -0700 (PDT)
+        Tue, 8 Oct 2019 04:15:49 -0400
+Received: by mail-wm1-f66.google.com with SMTP id f22so2094573wmc.2
+        for <linux-trace-devel@vger.kernel.org>; Tue, 08 Oct 2019 01:15:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qG6p9Lx7EzmJssjIPuMiImoRwqDax5ZXOWsOu9OXPno=;
-        b=PNyJu3Hcmoza2muhKihoPNmcEejDksKDu2VFoa4jWhkuCocBR/uv18qpkTeytPPw/F
-         8GPYBaLDn46v7B1/VNI8Q/qUhyW4J52kfYX8y1wg6u0srUBsI0qC1bX1MgcpdDBDla0P
-         wSl4AWtMYsF5l3EPtrMsnY0Uya4mtR/NZFalv+X0YWYypoHQeJ6Nt7BQ9IAQeWs//yTC
-         QcmxxIB3xxU8pEnr+SNSonOFhsP84FoDvKhn8q1vm2AaAbuzSLOanaIt8k4NG6RQEQxI
-         FM1ouDLM/hmmn5iraGBN7B543YM2nSYrmlHDS80QDxaZow0HjZtc8Kj8FZ2mDNCY0Yzg
-         /xvQ==
-X-Gm-Message-State: APjAAAVsPYrzw9MbXJovW8hXej9GUhhVLlsbwqDL/l+D9qYyaGQGGt7d
-        lnq6mHkxohNDv9d/e0Nonw==
-X-Google-Smtp-Source: APXvYqwCeGBRYFVruPQVdQ2hD5e3clShS1HkVM9lVDN8Lj/AhbgkETvDd/CA4bqlW3VY5mOdYkH5+w==
-X-Received: by 2002:a05:600c:351:: with SMTP id u17mr2639847wmd.1.1570522546091;
+        bh=Hh6jsS1FBPi5xDVsy9BUCd1MfW97JEpbT/f4CNhWnAE=;
+        b=NhxfpN0G93SXALULkykLgJUmFRZmwDyq6ptzb3ZAusDfL3PSPkoSvRFdS8Zds5JQxZ
+         H4/yaWJ+RbuCDY4BunOY6xIVbwzMQHlteRunon4qowuE6JxlOBIfwS8ZiWbLoXAHjMPP
+         v7jSvoGvtzNdteOfJDQrQvX6z3VhHTOwAVuyYpzH0Z3vl+rbF29coyUrFlgiz5cT4jqM
+         p3kDj/J4JOR47NEt4WiHg6G8rvekL5stwhTzJWoKMJ0GdjskqrFDC71A42VNW6Q1iD6s
+         cic9wX+zvEGarjXOoyxlISkYAuVYbgZXVUlGEt9in7p37HuXsx9YdKQ5tL4gYaE3d/bX
+         pfxA==
+X-Gm-Message-State: APjAAAXiRXzeye4hqV1l2KG2vceeoA+A+UNDOdV/l9MdOT9rk2bKsgE7
+        OhHW8wqnWshQvl39xk2glg==
+X-Google-Smtp-Source: APXvYqxMlN0LFJonQeOJdn3gYgJNwS9ItJut2oPnwq5tYImJTWD3dxFw5flBSMeJQgJ4ywJq76VD9g==
+X-Received: by 2002:a1c:6a0b:: with SMTP id f11mr2916853wmc.78.1570522546994;
         Tue, 08 Oct 2019 01:15:46 -0700 (PDT)
 Received: from box.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id f13sm2201440wmj.17.2019.10.08.01.15.45
+        by smtp.gmail.com with ESMTPSA id f13sm2201440wmj.17.2019.10.08.01.15.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2019 01:15:45 -0700 (PDT)
+        Tue, 08 Oct 2019 01:15:46 -0700 (PDT)
 From:   Slavomir Kaslev <kaslevs@vmware.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v15 02/13] trace-cmd: Detect if vsockets are available
-Date:   Tue,  8 Oct 2019 11:15:26 +0300
-Message-Id: <20191008081537.11536-3-kaslevs@vmware.com>
+Subject: [PATCH v15 03/13] trace-cmd: Add tracecmd_create_recorder_virt() function
+Date:   Tue,  8 Oct 2019 11:15:27 +0300
+Message-Id: <20191008081537.11536-4-kaslevs@vmware.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191008081537.11536-1-kaslevs@vmware.com>
 References: <20191008081537.11536-1-kaslevs@vmware.com>
@@ -58,35 +58,125 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Add tracecmd_create_recorder_virt() which creates tracecmd_recorder recording
+tracing data from the trace_fd parameter instead of from the local systems
+tracefs. It will be used for recording tracing data coming from VMs.
 
-Detect and define VSOCK if vsockets are available on the system.
-This macro is used to disable VM remote tracing features on older kernels.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Slavomir Kaslev <kaslevs@vmware.com>
 ---
- Makefile | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/trace-cmd/trace-cmd.h  |  1 +
+ lib/trace-cmd/trace-recorder.c | 61 +++++++++++++++++++++++++---------
+ 2 files changed, 47 insertions(+), 15 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index bbdf15e..9723d49 100644
---- a/Makefile
-+++ b/Makefile
-@@ -208,6 +208,13 @@ CFLAGS ?= -g -Wall
- CPPFLAGS ?=
- LDFLAGS ?=
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 00889fb..65bece5 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -293,6 +293,7 @@ enum {
+ void tracecmd_free_recorder(struct tracecmd_recorder *recorder);
+ struct tracecmd_recorder *tracecmd_create_recorder(const char *file, int cpu, unsigned flags);
+ struct tracecmd_recorder *tracecmd_create_recorder_fd(int fd, int cpu, unsigned flags);
++struct tracecmd_recorder *tracecmd_create_recorder_virt(const char *file, int cpu, unsigned flags, int trace_fd);
+ struct tracecmd_recorder *tracecmd_create_recorder_maxkb(const char *file, int cpu, unsigned flags, int maxkb);
+ struct tracecmd_recorder *tracecmd_create_buffer_recorder_fd(int fd, int cpu, unsigned flags, const char *buffer);
+ struct tracecmd_recorder *tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags, const char *buffer);
+diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
+index 650b259..7a4728f 100644
+--- a/lib/trace-cmd/trace-recorder.c
++++ b/lib/trace-cmd/trace-recorder.c
+@@ -154,16 +154,22 @@ tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
+ 	recorder->fd1 = fd;
+ 	recorder->fd2 = fd2;
  
-+VSOCK_DEFINED := $(shell if (echo "\#include <linux/vm_sockets.h>" | $(CC) -E - >/dev/null 2>&1) ; then echo 1; else echo 0 ; fi)
+-	if (flags & TRACECMD_RECORD_SNAPSHOT)
+-		ret = asprintf(&path, "%s/per_cpu/cpu%d/snapshot_raw", buffer, cpu);
+-	else
+-		ret = asprintf(&path, "%s/per_cpu/cpu%d/trace_pipe_raw", buffer, cpu);
+-	if (ret < 0)
+-		goto out_free;
++	if (buffer) {
++		if (flags & TRACECMD_RECORD_SNAPSHOT)
++			ret = asprintf(&path, "%s/per_cpu/cpu%d/snapshot_raw",
++				       buffer, cpu);
++		else
++			ret = asprintf(&path, "%s/per_cpu/cpu%d/trace_pipe_raw",
++				       buffer, cpu);
++		if (ret < 0)
++			goto out_free;
 +
-+export VSOCK_DEFINED
-+ifeq ($(VSOCK_DEFINED), 1)
-+CFLAGS += -DVSOCK
-+endif
-+
- export CFLAGS
- export INCLUDES
++		recorder->trace_fd = open(path, O_RDONLY);
++		free(path);
  
+-	recorder->trace_fd = open(path, O_RDONLY);
+-	if (recorder->trace_fd < 0)
+-		goto out_free;
++		if (recorder->trace_fd < 0)
++			goto out_free;
++	}
+ 
+ 	if ((recorder->flags & TRACECMD_RECORD_NOSPLICE) == 0) {
+ 		ret = pipe(recorder->brass);
+@@ -183,13 +189,9 @@ tracecmd_create_buffer_recorder_fd2(int fd, int fd2, int cpu, unsigned flags,
+ 		recorder->pipe_size = pipe_size;
+ 	}
+ 
+-	free(path);
+-
+ 	return recorder;
+ 
+  out_free:
+-	free(path);
+-
+ 	tracecmd_free_recorder(recorder);
+ 	return NULL;
+ }
+@@ -200,8 +202,9 @@ tracecmd_create_buffer_recorder_fd(int fd, int cpu, unsigned flags, const char *
+ 	return tracecmd_create_buffer_recorder_fd2(fd, -1, cpu, flags, buffer, 0);
+ }
+ 
+-struct tracecmd_recorder *
+-tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags, const char *buffer)
++static struct tracecmd_recorder *
++__tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags,
++				  const char *buffer)
+ {
+ 	struct tracecmd_recorder *recorder;
+ 	int fd;
+@@ -264,6 +267,34 @@ tracecmd_create_buffer_recorder_maxkb(const char *file, int cpu, unsigned flags,
+ 	goto out;
+ }
+ 
++struct tracecmd_recorder *
++tracecmd_create_buffer_recorder(const char *file, int cpu, unsigned flags,
++				const char *buffer)
++{
++	return __tracecmd_create_buffer_recorder(file, cpu, flags, buffer);
++}
++
++/**
++ * tracecmd_create_recorder_virt - Create a recorder reading tracing data
++ * from the trace_fd file descriptor instead of from the local tracefs
++ * @file: output filename where tracing data will be written
++ * @cpu: which CPU is being traced
++ * @flags: flags configuring the recorder (see TRACECMD_RECORDER_* enums)
++ * @trace_fd: file descriptor from where tracing data will be read
++ */
++struct tracecmd_recorder *
++tracecmd_create_recorder_virt(const char *file, int cpu, unsigned flags,
++			      int trace_fd)
++{
++	struct tracecmd_recorder *recorder;
++
++	recorder = __tracecmd_create_buffer_recorder(file, cpu, flags, NULL);
++	if (recorder)
++		recorder->trace_fd = trace_fd;
++
++	return recorder;
++}
++
+ struct tracecmd_recorder *tracecmd_create_recorder_fd(int fd, int cpu, unsigned flags)
+ {
+ 	const char *tracing;
 -- 
 2.20.1
 
