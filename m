@@ -2,58 +2,55 @@ Return-Path: <SRS0=o8EP=YD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6DDCC10F14
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Oct 2019 08:55:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36C3AECE58E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Oct 2019 08:58:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8F98B218AC
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Oct 2019 08:55:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0FEED21920
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Oct 2019 08:58:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570697714;
-	bh=PtwfxrY3qGfEkoS0hbLCZk9IvD+Q3DudzZOkh7MLpI0=;
+	s=default; t=1570697916;
+	bh=RGbsMYw9+rLEFO5N8Q1T3vut1c+0zUuAmpw9zyAiwcw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=vPi3VRzhAWa7jX7ZQSNJUqYcJotXac0Xdo/+1pgKzQkGgLmoHkgkVbS/zzuvHil1v
-	 oGF+L883q6xj/2EdRs/mKotBrWjzaEXD5tQ8C0XFMV0DUcG3uV7O8/QswoDK1Sa3pz
-	 5erdbW/4tmfGDupCplsJzB8N5zqN5dLP659dTL3A=
+	b=LREe/6/agcc4mr3EB5BJi7mOGe44ySa45+ZkYlvvez7a56+/a07z545Qv0LGD9ZPd
+	 s1hsIFR1eyt89YlL3QjCM7SM77Qc9FnVIyNmA96Is6Gr3j4No3no5euMgy9Ey5fVBn
+	 vaWKk4M0kcy/O7HKz03T0rdDZ9TJKeTvL0ZEMEMM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388333AbfJJIzL (ORCPT
+        id S2389165AbfJJIph (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Oct 2019 04:55:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56468 "EHLO mail.kernel.org"
+        Thu, 10 Oct 2019 04:45:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389850AbfJJIto (ORCPT
+        id S2387614AbfJJIpg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Oct 2019 04:49:44 -0400
+        Thu, 10 Oct 2019 04:45:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DA8B218AC;
-        Thu, 10 Oct 2019 08:49:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20482218AC;
+        Thu, 10 Oct 2019 08:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570697384;
-        bh=PtwfxrY3qGfEkoS0hbLCZk9IvD+Q3DudzZOkh7MLpI0=;
+        s=default; t=1570697135;
+        bh=RGbsMYw9+rLEFO5N8Q1T3vut1c+0zUuAmpw9zyAiwcw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pXJoTDlgie8a0r/oap6oWs32jzJAZ8h0CAKId1hA/bzrrgpA/hkek+SKVS9rczipD
-         /jv1KAlbCr7r5jryQxqfqEV51WGkWwtHeHsfL6j63W6lNvq+Yzo9YSxWmwlYaIBcnZ
-         y1bpQhEMvbXQ5t87G2skCQsWbPxvrLfP3PtvmOVg=
+        b=q0SgKqVO98vP3a/VG8zKQgL8PrUZI5lYxiHkpPoOwvpSkMztle2euKgp9ZCbBD5+u
+         C4iw6nrm42UkhR7e7v77dddH+5rH+lLqo5Oq8h3IVsflg40JrIsxurlL9Yl5Ve+Pc4
+         LGCyJRL35D7hYWG+gONFg/gND8sbXhnOfci7cNMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 083/114] tools lib traceevent: Do not free tep->cmdlines in add_new_comm() on failure
-Date:   Thu, 10 Oct 2019 10:36:30 +0200
-Message-Id: <20191010083612.408800292@linuxfoundation.org>
+        Tom Zanussi <zanussi@kernel.org>
+Subject: [PATCH 4.19 030/114] tracing: Make sure variable reference alias has correct var_ref_idx
+Date:   Thu, 10 Oct 2019 10:35:37 +0200
+Message-Id: <20191010083559.568035880@linuxfoundation.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191010083544.711104709@linuxfoundation.org>
 References: <20191010083544.711104709@linuxfoundation.org>
@@ -66,56 +63,97 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Tom Zanussi <zanussi@kernel.org>
 
-[ Upstream commit e0d2615856b2046c2e8d5bfd6933f37f69703b0b ]
+commit 17f8607a1658a8e70415eef67909f990d13017b5 upstream.
 
-If the re-allocation of tep->cmdlines succeeds, then the previous
-allocation of tep->cmdlines will be freed. If we later fail in
-add_new_comm(), we must not free cmdlines, and also should assign
-tep->cmdlines to the new allocation. Otherwise when freeing tep, the
-tep->cmdlines will be pointing to garbage.
+Original changelog from Steve Rostedt (except last sentence which
+explains the problem, and the Fixes: tag):
 
-Fixes: a6d2a61ac653a ("tools lib traceevent: Remove some die() calls")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: linux-trace-devel@vger.kernel.org
+I performed a three way histogram with the following commands:
+
+echo 'irq_lat u64 lat pid_t pid' > synthetic_events
+echo 'wake_lat u64 lat u64 irqlat pid_t pid' >> synthetic_events
+echo 'hist:keys=common_pid:irqts=common_timestamp.usecs if function == 0xffffffff81200580' > events/timer/hrtimer_start/trigger
+echo 'hist:keys=common_pid:lat=common_timestamp.usecs-$irqts:onmatch(timer.hrtimer_start).irq_lat($lat,pid) if common_flags & 1' > events/sched/sched_waking/trigger
+echo 'hist:keys=pid:wakets=common_timestamp.usecs,irqlat=lat' > events/synthetic/irq_lat/trigger
+echo 'hist:keys=next_pid:lat=common_timestamp.usecs-$wakets,irqlat=$irqlat:onmatch(synthetic.irq_lat).wake_lat($lat,$irqlat,next_pid)' > events/sched/sched_switch/trigger
+echo 1 > events/synthetic/wake_lat/enable
+
+Basically I wanted to see:
+
+ hrtimer_start (calling function tick_sched_timer)
+
+Note:
+
+  # grep tick_sched_timer /proc/kallsyms
+ffffffff81200580 t tick_sched_timer
+
+And save the time of that, and then record sched_waking if it is called
+in interrupt context and with the same pid as the hrtimer_start, it
+will record the latency between that and the waking event.
+
+I then look at when the task that is woken is scheduled in, and record
+the latency between the wakeup and the task running.
+
+At the end, the wake_lat synthetic event will show the wakeup to
+scheduled latency, as well as the irq latency in from hritmer_start to
+the wakeup. The problem is that I found this:
+
+          <idle>-0     [007] d...   190.485261: wake_lat: lat=27 irqlat=190485230 pid=698
+          <idle>-0     [005] d...   190.485283: wake_lat: lat=40 irqlat=190485239 pid=10
+          <idle>-0     [002] d...   190.488327: wake_lat: lat=56 irqlat=190488266 pid=335
+          <idle>-0     [005] d...   190.489330: wake_lat: lat=64 irqlat=190489262 pid=10
+          <idle>-0     [003] d...   190.490312: wake_lat: lat=43 irqlat=190490265 pid=77
+          <idle>-0     [005] d...   190.493322: wake_lat: lat=54 irqlat=190493262 pid=10
+          <idle>-0     [005] d...   190.497305: wake_lat: lat=35 irqlat=190497267 pid=10
+          <idle>-0     [005] d...   190.501319: wake_lat: lat=50 irqlat=190501264 pid=10
+
+The irqlat seemed quite large! Investigating this further, if I had
+enabled the irq_lat synthetic event, I noticed this:
+
+          <idle>-0     [002] d.s.   249.429308: irq_lat: lat=164968 pid=335
+          <idle>-0     [002] d...   249.429369: wake_lat: lat=55 irqlat=249429308 pid=335
+
+Notice that the timestamp of the irq_lat "249.429308" is awfully
+similar to the reported irqlat variable. In fact, all instances were
+like this. It appeared that:
+
+  irqlat=$irqlat
+
+Wasn't assigning the old $irqlat to the new irqlat variable, but
+instead was assigning the $irqts to it.
+
+The issue is that assigning the old $irqlat to the new irqlat variable
+creates a variable reference alias, but the alias creation code
+forgets to make sure the alias uses the same var_ref_idx to access the
+reference.
+
+Link: http://lkml.kernel.org/r/1567375321.5282.12.camel@kernel.org
+
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: linux-rt-users <linux-rt-users@vger.kernel.org>
 Cc: stable@vger.kernel.org
-Link: http://lkml.kernel.org/r/20190828191819.970121417@goodmis.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 7e8b88a30b085 ("tracing: Add hist trigger support for variable reference aliases")
+Reported-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/lib/traceevent/event-parse.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/trace/trace_events_hist.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index 6ccfd13d5cf9c..382e476629fb1 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -254,10 +254,10 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
- 		errno = ENOMEM;
- 		return -1;
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -2526,6 +2526,8 @@ static struct hist_field *create_alias(s
+ 		return NULL;
  	}
-+	pevent->cmdlines = cmdlines;
  
- 	cmdlines[pevent->cmdline_count].comm = strdup(comm);
- 	if (!cmdlines[pevent->cmdline_count].comm) {
--		free(cmdlines);
- 		errno = ENOMEM;
- 		return -1;
- 	}
-@@ -268,7 +268,6 @@ static int add_new_comm(struct tep_handle *pevent, const char *comm, int pid)
- 		pevent->cmdline_count++;
- 
- 	qsort(cmdlines, pevent->cmdline_count, sizeof(*cmdlines), cmdline_cmp);
--	pevent->cmdlines = cmdlines;
- 
- 	return 0;
++	alias->var_ref_idx = var_ref->var_ref_idx;
++
+ 	return alias;
  }
--- 
-2.20.1
-
+ 
 
 
