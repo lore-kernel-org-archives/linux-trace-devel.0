@@ -2,129 +2,81 @@ Return-Path: <SRS0=o8EP=YD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 220B9C10F14
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Oct 2019 21:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3772FC4360C
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Oct 2019 22:02:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E20A9214E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Oct 2019 21:25:03 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q6YGcS+o"
+	by mail.kernel.org (Postfix) with ESMTP id 0F22E218AC
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Oct 2019 22:02:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbfJJVZD (ORCPT
+        id S1727381AbfJJWCH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Oct 2019 17:25:03 -0400
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:41503 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbfJJVZD (ORCPT
+        Thu, 10 Oct 2019 18:02:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726983AbfJJWCH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Oct 2019 17:25:03 -0400
-Received: by mail-lj1-f179.google.com with SMTP id f5so7699801ljg.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Oct 2019 14:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=f90xKkaJL4etj1oD+PDWDp1y3j25xrlkUDtHcZWiu50=;
-        b=Q6YGcS+o1oUfNZQugT8nmhkYYjfcT+Raz0LISv2cVHsbfAL/8tLZfwyJ/ms8R8ngnX
-         fFc4IFB4QJrwyOFCiOz0yfy3nsqFH9T9DsREdkFXWpAeVayOsokyrQgnsIHA6XRE7mpw
-         MkhTF9uo9jYIZdCOvxfFbA/lc2EjIgUZwICChW9X1mZX7gC4sOpOG4hHvxN6Gw6AlrIN
-         h0I/nq7PMNNtYn5vobQ8oZsoW5xtEc1kxQpQsqecPKdqkaiXe/jiueH5MM/6aG8vMzv6
-         HBsFTWmjrQKE4ntroGwO7mUiOI1bj2PsPZ1ujH69pW/D4kKqRYcUFOmsOWFSxan4yMQ8
-         1YsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=f90xKkaJL4etj1oD+PDWDp1y3j25xrlkUDtHcZWiu50=;
-        b=o8wqhXa0ZA3l3yUkxjqd83ULRmKTrdvtrYxMLbpcTHt9C++WWnsfg1/KEqRdg4xR0u
-         eUFBWSWtvAZliYHpAUR2CrbJYuapQ8nsq5xowd4MmsTnLZ5j6c+9mJIbjui5i8Vbtnha
-         kr+17zLU2cmktRLAKPShofi0S1stdz7K0CtjigyNwIS3j7r2gsR6QQeElWppx7s8UsJv
-         0uNZLLs8yFnAKR9fAajicrKaj39D4sNF9irgLTpOp4DMcqSneuwzZHT3IsrW9vymIt1j
-         wiAe3fXewDfUYRoQ1LVRc9cBeg1dtO6LUaOI7aH6zASVoC1XbRIn3qjPfcnOoqM8DXa2
-         Fl0w==
-X-Gm-Message-State: APjAAAV/GRj8z8ZPmFvxyZodad6kB9IWvsrmaHMhhxbGVTDjto9v/ms+
-        aEjN93rFEDQ80RCpGZEJBVaRrzx++T4=
-X-Google-Smtp-Source: APXvYqyMtC6YariCxSN1RZormnVexElY+W2u3UmUKdx2ZH8kHXp5ZxcRPBSqoa6GOf0F6zOs536i5Q==
-X-Received: by 2002:a2e:82cd:: with SMTP id n13mr7507423ljh.156.1570742701283;
-        Thu, 10 Oct 2019 14:25:01 -0700 (PDT)
-Received: from localhost (128-72-185-159.broadband.corbina.ru. [128.72.185.159])
-        by smtp.gmail.com with ESMTPSA id 6sm1587053lfa.24.2019.10.10.14.25.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2019 14:25:00 -0700 (PDT)
-From:   Mikhail Rudenko <mike.rudenko@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Steven Rostedt <srostedt@redhat.com>,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
-        Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH 4/4] kernel-shark: Change KsDualMarker's inactive button style to default
-Date:   Fri, 11 Oct 2019 00:24:29 +0300
-Message-Id: <20191010212429.469155-5-mike.rudenko@gmail.com>
-X-Mailer: git-send-email 2.23.0
+        Thu, 10 Oct 2019 18:02:07 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7AD120B7C;
+        Thu, 10 Oct 2019 22:02:06 +0000 (UTC)
+Date:   Thu, 10 Oct 2019 18:02:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Steven Rostedt <srostedt@redhat.com>,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: Re: [PATCH 0/4] Fix KernelShark appearance on dark color schemes
+Message-ID: <20191010180205.06aab874@gandalf.local.home>
 In-Reply-To: <20191010212429.469155-1-mike.rudenko@gmail.com>
 References: <20191010212429.469155-1-mike.rudenko@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-At present, the style of an "inactive" KsDualMarker toolbar button is
-set to "system default background + rgb(70,70,70) text color". As a
-result, on dark qt color schemes (e.g. Breeze Dark) inactive button
-looks disabled ("gray on gray").
+On Fri, 11 Oct 2019 00:24:25 +0300
+Mikhail Rudenko <mike.rudenko@gmail.com> wrote:
 
-This patch addresses the issue by changing "inactive" button style to
-system default. This makes the UI intuitive across different color
-schemes.
+> Currently a few widgets in Kernel Shark UI use custom stylesheets,
+> unconditionally setting their background or text color (but not both!)
+> to hard-coded values. This has a side effect of widget text being
+> poorly readable on some color schemes (e.g. Breeze Dark, and dark
+> schemes in general). This patch series tries to address this issue.
+> 
+> The first three patches are trivial: they ensure that whenever the
+> background color of a widget is set to white via stylesheet, its text
+> color is set to black.
+> 
+> The fourth one changes "inactive" marker selection button style to
+> system default, making it look clickable on all color schemes.
+> 
+> Mikhail Rudenko (4):
+>   kernel-shark: Set text color to black in KsDualMarker's QLabels
+>   kernel-shark: Set text color to black in pointer position QLabel
+>   kernel-shark: Set text color to black in KsTraceGraph's axes labels
+>   kernel-shark: Change KsDualMarker's inactive button style to default
+> 
+>  kernel-shark/src/KsDualMarker.cpp | 11 ++---------
+>  kernel-shark/src/KsTraceGraph.cpp |  6 ++++--
+>  2 files changed, 6 insertions(+), 11 deletions(-)
 
-QStateMachine::setGlobalRestorePolicy is used for reducing the
-boilerplate of manually resetting button style when it becomes
-"inactive".
 
-Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
----
- kernel-shark/src/KsDualMarker.cpp | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-diff --git a/kernel-shark/src/KsDualMarker.cpp b/kernel-shark/src/KsDualMarker.cpp
-index 0070777..90c5373 100644
---- a/kernel-shark/src/KsDualMarker.cpp
-+++ b/kernel-shark/src/KsDualMarker.cpp
-@@ -171,20 +171,12 @@ KsDualMarkerSM::KsDualMarkerSM(QWidget *parent)
- 				"styleSheet",
- 				styleSheetA);
+Yordan,
 
--	_stateA->assignProperty(&_buttonB,
--				"styleSheet",
--				"color : rgb(70, 70, 70)");
--
- 	styleSheetB = "background : " +
- 		      _markB._color.name() +
- 		      "; color : white";
+If you are fine with these patches, could you pull them in and push
+them to the repo?
 
- 	_stateB = new QState;
- 	_stateB->setObjectName("B");
--	_stateB->assignProperty(&_buttonA,
--				"styleSheet",
--				"color : rgb(70, 70, 70)");
--
- 	_stateB->assignProperty(&_buttonB,
- 				"styleSheet",
- 				styleSheetB);
-@@ -223,6 +215,7 @@ KsDualMarkerSM::KsDualMarkerSM(QWidget *parent)
- 	connect(&_buttonA,	&KsMarkerButton::deselect,
- 		this,		&KsDualMarkerSM::deselectA);
+-- Steve
 
-+	_machine.setGlobalRestorePolicy(QState::RestoreProperties);
- 	_machine.addState(_stateA);
- 	_machine.addState(_stateB);
- 	_machine.setInitialState(_stateA);
---
-2.23.0
