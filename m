@@ -2,102 +2,130 @@ Return-Path: <SRS0=hDql=YE=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A31E5ECE58E
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Oct 2019 11:33:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA88EC47404
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Oct 2019 14:11:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7CBBC2084C
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Oct 2019 11:33:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7D85C20679
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Oct 2019 14:11:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sf7bho4d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d942ddMZ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbfJKLd6 (ORCPT
+        id S1727950AbfJKOL0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Oct 2019 07:33:58 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:38751 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727602AbfJKLd6 (ORCPT
+        Fri, 11 Oct 2019 10:11:26 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:41563 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728123AbfJKOL0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Oct 2019 07:33:58 -0400
-Received: by mail-wr1-f67.google.com with SMTP id y18so2063088wrn.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Oct 2019 04:33:55 -0700 (PDT)
+        Fri, 11 Oct 2019 10:11:26 -0400
+Received: by mail-wr1-f68.google.com with SMTP id q9so12105150wrm.8
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Oct 2019 07:11:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gm8wmexRP53SUBkaHahaaST/NA+TrutyjfB0sn4j31Q=;
-        b=Sf7bho4dSyJMFlNh4o72qp2Ds/RVEjRBJrr7IX/NTKm/b+Z9pxF5sxF8ZMhlUxj8mF
-         usvZGs7Fi0Z7tR3tHHnilIJcLUC3n1XPuclO3tuMSGwGDDSA+wYleW12g7jU6ShtODsC
-         ynSpvxdrSigEbzzOm+88F6NzO6LPdO1Pzgi7Boq3Bi4D19ytk1YFqn3H+pSqaTkoPyOp
-         TiNeH3UUY1+g4ZatvfrBHAHrFG3XnjoIw4nw3+k83HrX8RZ0ENaQTmuN++NEcaZRgyFi
-         PNOZiZUwQeuHk88ZTIkRhaasCJ3VIlnFWXxYpUC28BYaJkyVuJ8VhzyBI8fRep5fPbJA
-         gkWw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jqCDOz0ZyYjNXY1JyuliMSaVMwm+HCqBGKu2ZWihyDw=;
+        b=d942ddMZQAOAxrXlMfOY1H6wN3VMfA9GTpFlb1e3+7vCPuSNGEOmEbTxUzne/0N1Tz
+         ANic/Vdzydv5tFQq1WrQ7xFoSJVCDlFMPa1a9g5sBfU4KVIY1wx9aEamcnrhn20LaN3h
+         Vlda4KFBuD0Neo0CCCi99XmdaIjZQ9Ak8T4zb5ytMkeEsKeW66gbQ06eyyW4/puARMwh
+         6E9LdEozNU1qY3NB1F0J1cMdxHlkIiJRb4auYA+/Dap2aSLSRKO4ZpTDI13VUNK04yHM
+         MEtVhr1wdEsHXsw3jw0p+tZfUNS45yRL74TvmKk3ZnXlT3bDTdYak+yASwtIYMgM3TV3
+         h0Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Gm8wmexRP53SUBkaHahaaST/NA+TrutyjfB0sn4j31Q=;
-        b=jeh2blkeB9mOX9W1+/xh04rAZeH+3t6Xyv2mh/2Z3UIDM/faSQivoPE4rbqRT/3kJ5
-         lKUQva86jrsbgFBJbWUtaMvcViUZtxjOzqhx0XGSEaXr4Z5oJdHneyLhqTIl8VwjqGmh
-         0hhNN2gQTolsRlfBgHnWM5dag34cKQlQ3F/d+LUhwls6GMYXm92Ubf2lhgKfrVsvWyfN
-         SRMzdIhNapKOUrXUnbZgBEeVFsHpnkheNK/5i5Z/VnMivXmQrIb2xNU3JI0oPVjznfTu
-         ZlkBigx7Z69apIjlqajVwYfhYOoC72pTgyyex+fCWLmljFc3AFz9eaWZBlnuzme8d31O
-         fFJg==
-X-Gm-Message-State: APjAAAX5//Lmap6lFutELIvxU+yRV+VnjRW8ijecGXwKLMKgB4t6u/qp
-        tnfaRBtZbtjHJlAbRGxUfT0=
-X-Google-Smtp-Source: APXvYqxpY8tlD6OgMFYhw2APFCFc5zysh1IuAZt8VcnYZ6G/BdlZLkhB9fhlPkv/jcJvaLub/dCbKQ==
-X-Received: by 2002:adf:ebd1:: with SMTP id v17mr4559023wrn.204.1570793635190;
-        Fri, 11 Oct 2019 04:33:55 -0700 (PDT)
-Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id i7sm11566364wrm.87.2019.10.11.04.33.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Oct 2019 04:33:54 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Fix segmentation fault in tracecmd_read_at() in specific use case
-Date:   Fri, 11 Oct 2019 14:33:53 +0300
-Message-Id: <20191011113353.11652-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.21.0
+        bh=jqCDOz0ZyYjNXY1JyuliMSaVMwm+HCqBGKu2ZWihyDw=;
+        b=XE289jsEAL6u8PjLvEoH5Y02BTJcK6vX+qw5iJRP2TfhaV8yywAHWFoUwPGL+Ja6FT
+         ZldZ+zvk3i3ibT3+tGLfBmTuCXj/Gl0jblfFmKgLuZV5461HiY7sAL6lNAtok582fZOQ
+         oVNffSdLxz27qtb3OQSAgfSxggWx0dcocYs5QkkDIpo1SXh5QDVZtmkRYhhv51JCZWK0
+         m4GpaDVmNh2dbdZlF5tNoczB8VtidobOFe6dhpk7EhAqtzySWMk7nOn0T8q4zWtM4JLS
+         gXCVdkuQx9EwTQqjiCwt0KYy7GKCYZghbh47EfV9u4S6A/uMslI/0LrGF++dI+tbP90E
+         G0IA==
+X-Gm-Message-State: APjAAAWVRxuo4qhkUD0gnDMny/teuiSE7lDFR2P4VP0y2+krmBQXN2Wl
+        wt4WcFkbZ40Plk+uiLUa4u8=
+X-Google-Smtp-Source: APXvYqz9+kTvvn/kZdV1bZXY3nl4szGlt7cGOyEwicVP09gujAJJlQnYV6Wdt8MKl2Z2RZ4fgYgDaA==
+X-Received: by 2002:adf:a516:: with SMTP id i22mr14474607wrb.273.1570803083761;
+        Fri, 11 Oct 2019 07:11:23 -0700 (PDT)
+Received: from [10.27.112.40] ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id b186sm12798103wmd.16.2019.10.11.07.11.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Oct 2019 07:11:23 -0700 (PDT)
+Subject: Re: [PATCH 0/4] Fix KernelShark appearance on dark color schemes
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Steven Rostedt <srostedt@redhat.com>
+References: <20191010212429.469155-1-mike.rudenko@gmail.com>
+ <20191010180205.06aab874@gandalf.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <9a5c1135-12b9-27c2-159a-7468b0877650@gmail.com>
+Date:   Fri, 11 Oct 2019 17:11:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <20191010180205.06aab874@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-There is a segmentation fault in update_page_info() when the requested page
-is not loaded, handle->cpu_data[cpu].page is NULL. The problematic flow starts
-from tracecmd_read_at() API, when reading offset in the first page (less than 4K),
-and this page is still not loaded yet. The problem can be observed randomly -
-there is a sporadic KernelShark crash when loading a file, browsing and
-zooming events.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=205165
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- lib/trace-cmd/trace-input.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 6102eb3..da77418 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -1278,7 +1278,8 @@ tracecmd_read_at(struct tracecmd_input *handle, unsigned long long offset,
- 	/* check to see if we have this page already */
- 	for (cpu = 0; cpu < handle->cpus; cpu++) {
- 		if (handle->cpu_data[cpu].offset == page_offset &&
--		    handle->cpu_data[cpu].file_size)
-+		    handle->cpu_data[cpu].file_size &&
-+		    handle->cpu_data[cpu].page)
- 			break;
- 	}
- 
--- 
-2.21.0
+On 11.10.19 г. 1:02 ч., Steven Rostedt wrote:
+> On Fri, 11 Oct 2019 00:24:25 +0300
+> Mikhail Rudenko <mike.rudenko@gmail.com> wrote:
+> 
+>> Currently a few widgets in Kernel Shark UI use custom stylesheets,
+>> unconditionally setting their background or text color (but not both!)
+>> to hard-coded values. This has a side effect of widget text being
+>> poorly readable on some color schemes (e.g. Breeze Dark, and dark
+>> schemes in general). This patch series tries to address this issue.
+>>
+>> The first three patches are trivial: they ensure that whenever the
+>> background color of a widget is set to white via stylesheet, its text
+>> color is set to black.
+>>
+>> The fourth one changes "inactive" marker selection button style to
+>> system default, making it look clickable on all color schemes.
+>>
+>> Mikhail Rudenko (4):
+>>    kernel-shark: Set text color to black in KsDualMarker's QLabels
+>>    kernel-shark: Set text color to black in pointer position QLabel
+>>    kernel-shark: Set text color to black in KsTraceGraph's axes labels
+>>    kernel-shark: Change KsDualMarker's inactive button style to default
+>>
+>>   kernel-shark/src/KsDualMarker.cpp | 11 ++---------
+>>   kernel-shark/src/KsTraceGraph.cpp |  6 ++++--
+>>   2 files changed, 6 insertions(+), 11 deletions(-)
+> 
+> 
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
+> Yordan,
+> 
+> If you are fine with these patches, could you pull them in and push
+> them to the repo?
 
+Hi Mikhail,
+
+Thanks a lot!
+I am pushing the patches.
+Is is possible to send us a screenshot? I am curious to see how 
+KernelShark looks on your dark color scheme.
+
+cheers,
+Yordan
+
+> 
+> -- Steve
+> 
