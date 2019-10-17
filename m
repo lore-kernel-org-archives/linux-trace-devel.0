@@ -2,140 +2,69 @@ Return-Path: <SRS0=xBmi=YK=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F83BECE58E
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Oct 2019 11:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D66CAFA3736
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Oct 2019 12:31:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 802242089C
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Oct 2019 11:54:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B6E3F21835
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Oct 2019 12:31:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409327AbfJQLyP (ORCPT
+        id S2394176AbfJQMbk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 17 Oct 2019 07:54:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42224 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405897AbfJQLyP (ORCPT
+        Thu, 17 Oct 2019 08:31:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727054AbfJQMbk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 17 Oct 2019 07:54:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C3A38AEF6;
-        Thu, 17 Oct 2019 11:54:12 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id F3F9BDA808; Thu, 17 Oct 2019 13:54:23 +0200 (CEST)
-Date:   Thu, 17 Oct 2019 13:54:23 +0200
-From:   David Sterba <dsterba@suse.cz>
+        Thu, 17 Oct 2019 08:31:40 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F44B2067B;
+        Thu, 17 Oct 2019 12:31:38 +0000 (UTC)
+Date:   Thu, 17 Oct 2019 08:31:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
 To:     David Sterba <dsterba@suse.cz>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Subject: Re: [PATCH v2] tools/lib/traceevent, perf tools: Handle %pU format
  correctly
-Message-ID: <20191017115423.GH2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org
+Message-ID: <20191017083137.1984af24@gandalf.local.home>
+In-Reply-To: <20191017115423.GH2751@twin.jikos.cz>
 References: <20191017022800.31866-1-wqu@suse.com>
- <20191017115209.GG2751@twin.jikos.cz>
+        <20191017115209.GG2751@twin.jikos.cz>
+        <20191017115423.GH2751@twin.jikos.cz>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191017115209.GG2751@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 01:52:09PM +0200, David Sterba wrote:
-> On Thu, Oct 17, 2019 at 10:28:00AM +0800, Qu Wenruo wrote:
-> > [BUG]
-> > For btrfs related events, there is a field for fsid, but perf never
-> > parse it correctly.
+On Thu, 17 Oct 2019 13:54:23 +0200
+David Sterba <dsterba@suse.cz> wrote:
+
+> > So if there's an interest for very compact printing loop, something like
+> > this produces the same output:
 > > 
-> >  # perf trace -e btrfs:qgroup_meta_convert xfs_io -f -c "pwrite 0 4k" \
-> >    /mnt/btrfs/file1
-> >      0.000 xfs_io/77915 btrfs:qgroup_meta_reserve:(nil)U: refroot=5(FS_TREE) type=0x0 diff=2
-> >                                                   ^^^^^^ Not a correct UUID
-> >      ...
-> > 
-> > [CAUSE]
-> > The pretty_print() function doesn't handle the %pU format correctly.
-> > In fact it doesn't handle %pU as uuid at all.
-> > 
-> > [FIX]
-> > Add a new function, print_uuid_arg(), to handle %pU correctly.
-> > 
-> > Now perf trace can at least print fsid correctly:
-> >      0.000 xfs_io/79619 btrfs:qgroup_meta_reserve:23ad1511-dd83-47d4-a79c-e96625a15a6e refroot=5(FS_TREE) type=0x0 diff=2
-> > 
-> > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > ---
-> > Changelog:
-> > v2:
-> > - Use more comment explaining the finetunings we skipped for %pU*
-> > - Use more elegant way to output uuid string
-> > ---
-> >  tools/lib/traceevent/event-parse.c | 56 ++++++++++++++++++++++++++++++
-> >  1 file changed, 56 insertions(+)
-> > 
-> > diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-> > index d948475585ce..3c9473f46efe 100644
-> > --- a/tools/lib/traceevent/event-parse.c
-> > +++ b/tools/lib/traceevent/event-parse.c
-> > @@ -18,6 +18,7 @@
-> >  #include <errno.h>
-> >  #include <stdint.h>
-> >  #include <limits.h>
-> > +#include <linux/uuid.h>
-> >  #include <linux/time64.h>
-> >  
-> >  #include <netinet/in.h>
-> > @@ -4508,6 +4509,45 @@ get_bprint_format(void *data, int size __maybe_unused,
-> >  	return format;
-> >  }
-> >  
-> > +static void print_uuid_arg(struct trace_seq *s, void *data, int size,
-> > +			   struct tep_event *event, struct tep_print_arg *arg)
-> > +{
-> > +	unsigned char *buf;
-> > +	int i;
-> > +
-> > +	if (arg->type != TEP_PRINT_FIELD) {
-> > +		trace_seq_printf(s, "ARG TYPE NOT FIELID but %d", arg->type);
-> > +		return;
-> > +	}
-> > +
-> > +	if (!arg->field.field) {
-> > +		arg->field.field = tep_find_any_field(event, arg->field.name);
-> > +		if (!arg->field.field) {
-> > +			do_warning("%s: field %s not found",
-> > +				   __func__, arg->field.name);
-> > +			return;
-> > +		}
-> > +	}
-> > +	if (arg->field.field->size < 16) {
-> > +		trace_seq_printf(s, "INVALID UUID: size have %u expect 16",
-> > +				arg->field.field->size);
-> > +		return;
-> > +	}
+> > 	for (i = 0; i < 8; i++) {
+> > 		printf("%02X", buf[i]);
+> > 		printf("%02X", buf[i]);  
 > 
-> So if there's an interest for very compact printing loop, something like
-> this produces the same output:
+> Ok, test-before-post failure, this should be
 > 
-> 	for (i = 0; i < 8; i++) {
-> 		printf("%02X", buf[i]);
-> 		printf("%02X", buf[i]);
+> 		printf("%02X", buf[2 * i]);
+> 	        printf("%02X", buf[2 * i + 1]);
+> 
+> > 		if (1 <= i && i <= 4)
+> > 			putchar('-');
+> > 	}  
 
-Ok, test-before-post failure, this should be
+I'm fine if you want to post a v3 with this update.
 
-		printf("%02X", buf[2 * i]);
-	        printf("%02X", buf[2 * i + 1]);
-
-> 		if (1 <= i && i <= 4)
-> 			putchar('-');
-> 	}
+-- Steve
