@@ -8,62 +8,64 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38C2CCA9EA0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Oct 2019 14:58:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 175CECA9EAB
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Oct 2019 14:58:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0E41C222C5
+	by mail.kernel.org (Postfix) with ESMTP id E458F21852
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Oct 2019 14:58:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VNe5LWI0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Er14KFLW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501912AbfJRO6E (ORCPT
+        id S2505095AbfJRO6F (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 18 Oct 2019 10:58:04 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:43315 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388225AbfJRO6E (ORCPT
+        Fri, 18 Oct 2019 10:58:05 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:43319 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393933AbfJRO6F (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 18 Oct 2019 10:58:04 -0400
-Received: by mail-lj1-f194.google.com with SMTP id n14so6524363ljj.10
-        for <linux-trace-devel@vger.kernel.org>; Fri, 18 Oct 2019 07:58:02 -0700 (PDT)
+        Fri, 18 Oct 2019 10:58:05 -0400
+Received: by mail-lj1-f195.google.com with SMTP id n14so6524458ljj.10
+        for <linux-trace-devel@vger.kernel.org>; Fri, 18 Oct 2019 07:58:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U1AQi0Fr4289i6rijpCauP5CJWhpom154ZN6T8cg4Dw=;
-        b=VNe5LWI0WPoZZXb7+wxGWZNCrmqfJLTItDDNTUvBv7JaPk+N4v/opPYiweMhlEtkt5
-         AQYgoLXcbb315F7yBnewFHVeu42KiWVkvWdxLKp3dssmcXGHLS4f5BpkYgQcscw5ihlt
-         7xHToCPrfh5hlmSoidVrEHJxvA5yYx1Sp+rz+L8kofJB/u4ybKQ4EpYB2RfCy8kiLa20
-         ErD0SXsWzjCCpIag7p2wIsy5223WlwnazMSdKsWyb0/58LCdFV0Qistrgxt8mlYAI4yP
-         m8UOOpKrPXfq4wEx6Cn7a/Kmm+PLI/TiZI4tpFMI7HW+v1D/Pk+mKf92MhiFLGGBjCZE
-         aYmQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=sfz+dEoVlokTEsS0mqFVUQSYPQprrzzB0BMnVRCuOLU=;
+        b=Er14KFLWDHC+rOZdnTkz8B+WvKAOz7kQpUUzFnMXooEmKhDK+sVMS+QpihAjAN2hCn
+         3VouxHUFUqbYiaQf1x0wlaX1JohXvC2tm7P10/S8GZArUYdTtg5RRYP10NN22hed5OaJ
+         LCmtcw/oM8rmINjsmsvTPNLo9S9+AA1pW/p4DD2ADIevKBJ653OOyUx2wYRp61gcSmBw
+         bPmx9f9z+40gV4kVachbNyqwkF/Rb4Puio4poJZ3NHdi6d/GL0mYcwJXupK6VZiZ4eES
+         g+qA5x0sNnxnxma60noZ8bLMugzzdmlh4Tgc91DLTHQeYPqydoewBxB2yTeJdH7j04Br
+         UGWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U1AQi0Fr4289i6rijpCauP5CJWhpom154ZN6T8cg4Dw=;
-        b=t+Mkpp3mwvRSUHCxtBpg7WHeU+WvQ6/1Orw+Fb1CbDvcdGhe7QRFe6U3jyx0Pdm9zZ
-         e1IeTw3XwLnBw86TZ6987MMjML12QaSGbZG6+ekoYtnFh9rrYhGe9tqc+mnINtH/2QaT
-         s/vhYSWQsPPd8dYiwudGuWz239+f0c3T5vNxeEp6XALHcrV1BSApq4WYnYIW31B3/c+l
-         fdPmIZ5y2oxuN8UvpfZWMIoKcjgCAGPt1tPU0yFiVZsIfKowxLolUBgV9dwbKI2p7vmc
-         GpGydURm4U7Qmo1CgZshjF+3TxnL8ypE7mTJK1zJvCiBeZRtn5Uor1zJBqkJtppxcjGq
-         Q20g==
-X-Gm-Message-State: APjAAAVMyDrqfZ3o3ra5PCWBCWyQdtiA0+rfRvfd5BJP5S+qQsD0+65k
-        8A/clL57+NNWqk3LZrb2QmK1jjneVWE=
-X-Google-Smtp-Source: APXvYqyEDGyjbEGeWACzJzit527ZXYR15wYR6ud6VNGGDLW+64im/cMqZ9YWxeDHRwtHkXoJYYlofw==
-X-Received: by 2002:a2e:80d2:: with SMTP id r18mr82731ljg.228.1571410682222;
-        Fri, 18 Oct 2019 07:58:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=sfz+dEoVlokTEsS0mqFVUQSYPQprrzzB0BMnVRCuOLU=;
+        b=geOAfW2mX1HorTGd2VMe/JvZ5JeJdBWDXf2OC2TYQNzgCjSdUSaDE4tukk29BY3O6D
+         8qPA9gKSfucV8OD0vnXQhfux5ha5r/rBYLEk2jN01WHCcLxsoLKiZKkUXZXpwG8GPaUW
+         akGZbyoA94YAJVvp2HEi+5BFKTLBjMekN7VWBdZkPjXTq/hVZQqPs7C9zrz+SBRIh6Q6
+         AJ+oKz78QC6tIH1HgfiMewQqPSOTh71+yarMcolwvZ0now5HDbtZlUAeEhRfFrIUDd1n
+         mCI2B+drEwPev2CwQU515Hftn/+VGeVqXJf+cank8ef5Mcre3F5YLXLCehjPLbMO+3Ci
+         azyg==
+X-Gm-Message-State: APjAAAUWmWW7zSnee9W/4QJJ4SQNbrYXYmQ3juk5AOKVeGKtlC7bdNxF
+        2Cmu/VJOT20Kh0Lk+f8Mjkw/8Y9RuEc=
+X-Google-Smtp-Source: APXvYqyEVyTyb8NXoLSZwLiV3NHZoK4pP/FXlJgfq08uW/Les6yJGr/ycrSdM6ov07azi6bdPCumJA==
+X-Received: by 2002:a2e:87ca:: with SMTP id v10mr6371767ljj.43.1571410683810;
+        Fri, 18 Oct 2019 07:58:03 -0700 (PDT)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id e10sm3008331ljg.38.2019.10.18.07.58.00
+        by smtp.gmail.com with ESMTPSA id e10sm3008331ljg.38.2019.10.18.07.58.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Oct 2019 07:58:00 -0700 (PDT)
+        Fri, 18 Oct 2019 07:58:03 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/2] trace-cmd: Fix a crash on "trace-cmd reset" command
-Date:   Fri, 18 Oct 2019 17:57:58 +0300
-Message-Id: <20191018145759.15335-1-tz.stoyanov@gmail.com>
+Subject: [PATCH 2/2] trace-cmd: Check if ftrace file exists, before writing in it.
+Date:   Fri, 18 Oct 2019 17:57:59 +0300
+Message-Id: <20191018145759.15335-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20191018145759.15335-1-tz.stoyanov@gmail.com>
+References: <20191018145759.15335-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -71,27 +73,41 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A leftover in reset_cpu_mask() function causes a segmentation
-fault of "trace-cmd reset".
+Depending of the kernel configuration, some ftrace files are optional
+and may not exist. This should not confuse trace-cmd, as it is a valid
+case. One such case is tracing_max_latency file, when CONFIG_TRACER_MAX_TRACE
+or CONFIG_HWLAT_TRACER are not set.
+A check is added in write_instance_file() to ensure the file exist before trying
+to write in it.
 
+https://bugzilla.kernel.org/show_bug.cgi?id=205241
+
+Reported-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 2 --
- 1 file changed, 2 deletions(-)
+ tracecmd/trace-record.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index cfe67f9..81aca1f 100644
+index 81aca1f..c65731f 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -4113,8 +4113,6 @@ static void reset_cpu_mask(void)
+@@ -813,11 +813,14 @@ static int
+ write_instance_file(struct buffer_instance *instance,
+ 		    const char *file, const char *str, const char *type)
+ {
++	struct stat st;
+ 	char *path;
+ 	int ret;
  
- 	for_all_instances(instance)
- 		write_instance_file(instance, "tracing_cpumask", buf, "cpumask");
--
--	free(buf);
- }
+ 	path = get_instance_file(instance, file);
+-	ret = write_file(path, str, type);
++	ret = stat(path, &st);
++	if (ret == 0)
++		ret = write_file(path, str, type);
+ 	tracecmd_put_tracing_file(path);
  
- static void reset_event_pid(void)
+ 	return ret;
 -- 
 2.21.0
 
