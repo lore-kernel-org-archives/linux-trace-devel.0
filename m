@@ -1,85 +1,97 @@
-Return-Path: <SRS0=xBmi=YK=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=bpiG=YL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A727ECE58D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Oct 2019 21:30:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEAE6CA9EA0
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Oct 2019 07:47:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5C89821D7A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 17 Oct 2019 21:30:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B478521897
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 18 Oct 2019 07:47:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JJ5+RO1n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qBEGENIK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391395AbfJQVaH (ORCPT
+        id S2407679AbfJRHrq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 17 Oct 2019 17:30:07 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:43116 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732322AbfJQVaH (ORCPT
+        Fri, 18 Oct 2019 03:47:46 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:36037 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727388AbfJRHrq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 17 Oct 2019 17:30:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ddG8SSBXeHtQJjnOT9zp0H8FqPeFjXG/6++DCHq7Y3U=; b=JJ5+RO1nbc5RPXZO0h8IMN4RJ
-        e92r1vlygPa33RKRyNJyhKhytJAub1NRP3EaTujMAZl7OvCs1I3acpPRcZeLqDKm3P8+A31HJ1dRv
-        qqz4YGTTjlrDrWU+OpL0DdUbusmT3CUTm1ecX+92yCADv+YPQ+ZZ9sDxIHcTupHFxdfD2754ibbmi
-        //0P8Is0nHvoBtpa187gKKefIpwRsd3FDDDKW6Pe7H9LUHkEHAwSUZ0Y+kUuzHhTME+Z1mC2KnFTi
-        380ntvNi2DXS3/iaUZ4VfkfZj1wBtXQWyPb3NllLt1x64Of0/ebu550yrNnzx9GwyfsnmFF/OxG6Y
-        3kRyO+msg==;
-Received: from [177.158.182.196] (helo=sandy.ghostprotocols.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iLDLO-00028t-6U; Thu, 17 Oct 2019 21:30:02 +0000
-Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
-        id EE3DA11E4; Thu, 17 Oct 2019 18:29:52 -0300 (BRT)
-Date:   Thu, 17 Oct 2019 18:29:52 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH 1/2] perf: Iterate on tep event arrays directly
-Message-ID: <20191017212952.GA3884@redhat.com>
-References: <20191017210521.465613686@goodmis.org>
- <20191017210636.061448713@goodmis.org>
- <20191017212431.GF3600@kernel.org>
- <20191017172823.15f242eb@gandalf.local.home>
+        Fri, 18 Oct 2019 03:47:46 -0400
+Received: by mail-wm1-f65.google.com with SMTP id m18so5081831wmc.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 18 Oct 2019 00:47:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7X2qsJ74vhvdXE1votE/9VV4vTFGcJWaoW5AMUPUXwk=;
+        b=qBEGENIKjeqWlhaZ/EgvCx+dnfNpqlODiNXpv6Y0KzjsS8cwXfB5SBRwS0LXYv4ONa
+         9Jg178j1P1/myr19D1q3oQE9BrZx9OMV4pocERZAwecIC7IQODkMf4IsC5p/jmA7HKBf
+         7XHQFUhEbLLZ4h65AFgyX9bTrh8KcI7i9qXkbk5xyDYoMMTfZq1ilbPr5Jv9oaBfBPRb
+         5SJvqXHidj9FlqtpDWCXChM0LTsYYLKPFDeH+vazmGS7jbDqZTujAkndTAtn5oKEAchi
+         OYOfJ6m/+1GkReH1ZSNXgQM6gkjRSFFOHbLH2uHbLpDg1x0lUQnO+vD45y2oI1w6AqGR
+         1Pig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7X2qsJ74vhvdXE1votE/9VV4vTFGcJWaoW5AMUPUXwk=;
+        b=n2S/+ZxqSU+SdhyRZrghMduGetmtcjpGt0zNPbrNouCsgRhrQ25J/34rgKono8OX+6
+         NmPMr3xp/OHdncdyy933wspShZIhLa63c7LHngQzNosvebkaosNJxorms3OKyaUOrr8x
+         ZlzaSfyMzpKPgwk3MJ4/dRGt0T5FSqrFP8o+LbygWdG9nZzOyJw1yWSre9dms6g4IWwb
+         7mQ5IrNWWC0wOuE92uACO+xL/w7Kf0QhcEUJ4rEsYIQeqL3ou0we+MgoPHBQbfZHcnrI
+         LPyAiyu+pbZK3J0TvoVpi4hnHXPCMS+ZJqPgee9ObHlh4IfFd3MXPa5Rvn6Ddp0T0PXf
+         l/JQ==
+X-Gm-Message-State: APjAAAWsN5INwMgkVXT6nrX2hCimk+JzmQuzV3IAmvu4E5/PDIRoVHqc
+        Is3WGX43qa8UVsxYH0NSV3g=
+X-Google-Smtp-Source: APXvYqxzstojMcKbSjt/8JKzi+tESkkG583YpZX8Ag8wfpmKbOYoU/NhGGZkWfAVhUCqRbBZ1WrHLg==
+X-Received: by 2002:a05:600c:201:: with SMTP id 1mr3164157wmi.68.1571384863257;
+        Fri, 18 Oct 2019 00:47:43 -0700 (PDT)
+Received: from mamba.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id y13sm7740832wrg.8.2019.10.18.00.47.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Oct 2019 00:47:42 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: [PATCH 1/3] kernel-shark: Fix simple typo in the "File" menu.
+Date:   Fri, 18 Oct 2019 10:47:20 +0300
+Message-Id: <20191018074722.6976-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191017172823.15f242eb@gandalf.local.home>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.5.20 (2009-12-10)
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Em Thu, Oct 17, 2019 at 05:28:23PM -0400, Steven Rostedt escreveu:
-> On Thu, 17 Oct 2019 18:24:31 -0300
-> Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
-> 
-> > I'll add a:
-> > 
-> > Fixes: bb3dd7e7c4d5 ("tools lib traceevent, perf tools: Move struct tep_handler definition in a local header file")
-> > Cc: stable@vger.kernel.org : v4.20+
-> > 
-> > As this is when this problem starts causing the segfault when generating
-> > python scripts from perf.data files with multiple tracepoint events, ok?
-> 
-> Sure, go ahead. I realized I forgot to add a Fixes tag when sending it.
+Reported-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel-shark/src/KsMainWindow.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-np, I added it, thanks for the prompt fix!
+diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+index a583f5f..3402764 100644
+--- a/kernel-shark/src/KsMainWindow.cpp
++++ b/kernel-shark/src/KsMainWindow.cpp
+@@ -45,7 +45,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+   _openAction("Open", this),
+   _restoreSessionAction("Restore Last Session", this),
+   _importSessionAction("Import Session", this),
+-  _exportSessionAction("Export Sassion", this),
++  _exportSessionAction("Export Session", this),
+   _quitAction("Quit", this),
+   _importFilterAction("Import Filter", this),
+   _exportFilterAction("Export Filter", this),
+-- 
+2.20.1
 
-- Arnaldo
