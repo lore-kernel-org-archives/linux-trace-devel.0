@@ -2,228 +2,164 @@ Return-Path: <SRS0=j4Iw=YO=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C18BCA9EAF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Oct 2019 14:31:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99FF5CA9EAF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Oct 2019 14:41:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D91A920656
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Oct 2019 14:31:21 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="a2nc2y1O"
+	by mail.kernel.org (Postfix) with ESMTP id 77B492084C
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Oct 2019 14:41:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729266AbfJUObV (ORCPT
+        id S1727861AbfJUOlY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 21 Oct 2019 10:31:21 -0400
-Received: from mout.gmx.net ([212.227.15.15]:57677 "EHLO mout.gmx.net"
+        Mon, 21 Oct 2019 10:41:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729250AbfJUObV (ORCPT
+        id S1726987AbfJUOlY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 21 Oct 2019 10:31:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1571668244;
-        bh=EePPw+wrh+Gc/zgy4MR8TD7Xy4I5/BpREhRywY2t4fs=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=a2nc2y1Oc4PwOayL0dw0svpA7MPfwTFJR8hqHF2Wf4AkRRv8+kdFYnieR9qkl1jOK
-         zAOQI5nsV+yoPeE3dBopf6tEmsJewO096gZaMiQxni28mgqlCw98bjozOAKQQqmQ7a
-         R6WQuHkEXkS7+JyHEmyQWdQLyoucqgo7aWqOaRuQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTzay-1iVsOX3sNG-00R08p; Mon, 21
- Oct 2019 16:30:44 +0200
-Subject: Re: [PATCH v3] tools/lib/traceevent, perf tools: Handle %pU format
- correctly
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-References: <20191021094730.57332-1-wqu@suse.com>
- <20191021095625.2dfe3359@gandalf.local.home>
- <3830b0c5-5b76-36c1-5e3a-64dad62f76fb@gmx.com>
- <20191021102408.3bb4aa8b@gandalf.local.home>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <6bc13ae1-9f26-afaa-ddfa-f1dd1cdcf6df@gmx.com>
-Date:   Mon, 21 Oct 2019 22:30:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Mon, 21 Oct 2019 10:41:24 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3D0B20659;
+        Mon, 21 Oct 2019 14:41:22 +0000 (UTC)
+Date:   Mon, 21 Oct 2019 10:41:21 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Allende Imanol <iallende@ikerlan.es>
+Cc:     "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>,
+        "mingo@kernel.org" <mingo@kernel.org>
+Subject: Re: Deadlock with FTrace in child process
+Message-ID: <20191021104121.769f3162@gandalf.local.home>
+In-Reply-To: <DB8PR03MB5897244BE1F37E6A001C300FB66F0@DB8PR03MB5897.eurprd03.prod.outlook.com>
+References: <DB8PR03MB5897244BE1F37E6A001C300FB66F0@DB8PR03MB5897.eurprd03.prod.outlook.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20191021102408.3bb4aa8b@gandalf.local.home>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="kRK75qY8XO0KPvDdga5YiYwU861NrlrYq"
-X-Provags-ID: V03:K1:hU8tYSnAS7/A+mZdizc8L2PLkMa9cCBUtY4BOSl7sLhuL3lQ/IL
- MQkVBhZxvpqQzoE790JDBkXWuSKvFr1DIVQCR9ya3p3Y4XdaxlF/f6UZmpMOKjlzC8+An86
- LnLXZtqWIs49EuBJlnwXwWswB5ThSpJJ51GNoGQSQqEvOcNHCN9mBd4yTtF0TJNqf5s+oc5
- 3FNpaAg3/u6E/YxVV08Fg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JPH7HyLhsSk=:v5VhWjh6oBSMew2wHp898j
- I1xwW1zFVgoYPrEe1/eLyJNuecF+sPAKEGKqNQYlb9JrK7Rm8sQs0bmJhgCoZ90nSiCRw1fB1
- BkmbFosFAsUGNfxaNxUTwSqEzQ9gUWyUg1ZJDXzI5Lj47uXCKYtIYYWx+qbIMLeUfSuXP66Fq
- 9JDo1NpWU/3xdOID6XjBcoat/CjPWvS77AszLzHhadfYZnjzLCtovDcZsEkVnYVIaO/wxtftW
- KeOP1s2oj/lNapDdxKM/ANiZ6ARoS0RW/Kk6Zq6Z+1h4bp2KSxDWpTqF7Y1P0nF5jpjcuEEUo
- lMAc8hyXnG/PuqYFl3Kl2o6FXcW2UACy1YL8hCvVIP/p+Suv/ACWLl7U55qDWOdjFcfxhtu1B
- 79ubMZK0lIAdJud5J3GugFLqvQO5xG/sgQBYLfdaWt2PAM0ipuF6Ify72lNb3VMsngkNnEqp7
- qqctG/v3WzIUOaIRBgOPyhrm8CDpxb6QDw3jgU5mMt61pI+Tr2ApV0k1M9Y6jk9sTpDi3lRjn
- Q8463l4RtZzQH62obsYrL3pIQqNaZorr2AM1raJzuDiqUoK3Upz4QQYPlG3lpRUzeGwdgHy8z
- /kd9Pa+O3QPD/6sQsgrD+IHW8XZbgxAq5ttgnEeZ3TgZzHDkE1OIcMgHHmo6mHofQHjNyhGTr
- 3d7sTmq3Stb+i7PtCUfrBBer2E69BY7oWqS9wFciDoNprznyTrmAAdB7nTS2328g9K+poaqIT
- nfAhcmWVQP9eIF3xHgs8rX5ZIYO/BR+yeNSg+cQf/Fk8mXYfOJ7pw9Z451TmKOBfG7PlJMGR/
- oaKKmWTzzgIaZLCS87MJGMZhtoI52ZSS1PSO5qP+WkNZ8d48TE5Crh+INIJPx7NpLNplGb1Cn
- zsatHbeBDKiK2ashRay1TUdPYQg20I0a1Aw6vcKrkvXsyWdZM4ocBsc9nNulDfaE7/TAy03uy
- Jk+9wxbYznPVE80ciW59+S13PRABf3H08xNZn2cVnL6arKNYuwFj4m1s8iqtgGXVB71ZrvmvX
- E2syIVFw9Vqzthj/v2rsJnOgjdQLi3PKZAy6VgNGfS4/6GXDwFnVzZDRauLAty84LKVKzaS5e
- j8bAyFv7XOj7RNTGu4k10tsXGd2V0eWoN8WMqoJrCtcvYQvSRUQuqu113+nE9Cp0S/ZW1/pU1
- 4CO1E8JKkOiwbmkoujPyyafg2/yW+fa98zw3A/kE51vLhH8hPIbweXmTxDRNKG8A8udev14sY
- Vxz9CsjrrTgwPPy1EyuUevv+h8WjNV9G7O/jwFXVsRapXqzs+7cjqsBrU/wc=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kRK75qY8XO0KPvDdga5YiYwU861NrlrYq
-Content-Type: multipart/mixed; boundary="0UORsGsGef7r8Jf3kZC5RSapt5z05VLV0"
+On Sat, 19 Oct 2019 07:50:53 +0000
+Allende Imanol <iallende@ikerlan.es> wrote:
 
---0UORsGsGef7r8Jf3kZC5RSapt5z05VLV0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+> I am using Ftrace in a Ultra96 (arm64) 4.19.75-cip11 and it seems that
+> I have a deadlock situation. I have a simple application executed as a
+> child process from a python script. The child process reads from
+> /dev/urandom and writes in /dev/zero. Ftrace is set only for this child
+> process.
 
+Are you saying that ftrace is calling the blocked task?
 
-
-On 2019/10/21 =E4=B8=8B=E5=8D=8810:24, Steven Rostedt wrote:
-> On Mon, 21 Oct 2019 22:03:21 +0800
-> Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->=20
->> On 2019/10/21 =E4=B8=8B=E5=8D=889:56, Steven Rostedt wrote:
->>> On Mon, 21 Oct 2019 17:47:30 +0800
->>> Qu Wenruo <wqu@suse.com> wrote:
->>>  =20
->>>> +static void print_uuid_arg(struct trace_seq *s, void *data, int siz=
-e,
->>>> +			   struct tep_event *event, struct tep_print_arg *arg)
->>>> +{
->>>> +	unsigned char *buf;
->>>> +	int i;
->>>> +
->>>> +	if (arg->type !=3D TEP_PRINT_FIELD) {
->>>> +		trace_seq_printf(s, "ARG TYPE NOT FIELID but %d", arg->type);
->>>> +		return;
->>>> +	}
->>>> +
->>>> +	if (!arg->field.field) {
->>>> +		arg->field.field =3D tep_find_any_field(event, arg->field.name);
->>>> +		if (!arg->field.field) {
->>>> +			do_warning("%s: field %s not found",
->>>> +				   __func__, arg->field.name);
->>>> +			return;
->>>> +		}
->>>> +	}
->>>> +	if (arg->field.field->size < 16) {
->>>> +		trace_seq_printf(s, "INVALID UUID: size have %u expect 16",
->>>> +				arg->field.field->size);
->>>> +		return;
->>>> +	}
->>>> +	buf =3D data + arg->field.field->offset;
->>>> +
->>>> +	for (i =3D 0; i < 8; i++) {
->>>> +		trace_seq_printf(s, "%02x", buf[2 * i]);
->>>> +		trace_seq_printf(s, "%02x", buf[2 * i + 1]);
->>>> +		if (1 <=3D i && i <=3D 4) =20
->>>
->>> I'm fine with this patch except for one nit. The above is hard to rea=
-d
->>> (in my opinion), and I absolutely hate the "constant" compare to
->>> "variable" notation. Please change the above to:
->>>
->>> 		if (i >=3D 1 && i <=3D 4) =20
->>
->> Isn't this ( 1 <=3D i && i <=3D 4 ) easier to find out the lower and u=
-pper
->> boundary? only two numbers, both at the end of the expression.
->=20
-> I don't read it like that.
->=20
->>
->> I feel that ( i >=3D 1 && i <=3D 4 ) easier to write, but takes me ext=
-ra
->> half second to read, thus I changed to the current one.
->=20
-> How do you read it in English?
-
-How about mathematics interval?
-
-i in [1, 4].
-
-It looks way easier and simpler no matter what language you speak.
-
-Thanks,
-Qu
->=20
->   "If one is less than or equal to i and i is less than or equal to
->   four."
->=20
-> Or
->=20
->   "If i is greater than or equal to one and i is less than or equal to
->    four."
->=20
-> ?
->=20
-> I read it the second way, and I believe most English speakers read it
-> that way too.
->=20
-> It took me a minute or two to understand the original method, because
-> my mind likes to take a variable and keep it on the same side of the
-> comparison, and the variable should always be first.
->=20
-> -- Steve
->=20
->=20
+If you don't run ftrace, the task never gets stuck?
 
 
---0UORsGsGef7r8Jf3kZC5RSapt5z05VLV0--
+> 
+> After thousands of executions of the child process with a high IRQ and
+> CPU load (it varies in the number but it is quite reproducible) - the child
+> process gets blocked. But the system still is running.
+> 
+> The child process appears as "sleeping state" and if I try to do kill
+> -18 $pid it does not change.
+> 
+> In this case the child process is 4197 PID.
+> 
+> # ps -aux | grep python
+> root      1145  6.3  0.4  85448  9508 ?        S<l  00:00  23:02 python3 test_client.py
+> root      4197  0.0  0.4  85448  8256 ?        S<   05:53   0:00 python3 test_client.py
+> root      5279  0.0  0.0   2752   280 ttyPS0   S+   06:02   0:00 grep python
+> # cat /proc/4197/stack
+> [<0>] __switch_to+0x94/0xd0
+> [<0>] futex_wait_queue_me+0xd0/0x150
+> [<0>] futex_wait+0x12c/0x200
+> [<0>] do_futex+0x304/0xc10
 
---kRK75qY8XO0KPvDdga5YiYwU861NrlrYq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Looks like the task is blocked on a user space mutex (futex).
 
------BEGIN PGP SIGNATURE-----
+> [<0>] __arm64_sys_futex+0x154/0x190
+> [<0>] el0_svc_common+0xa0/0x170
+> [<0>] el0_svc_handler+0x38/0x80
+> [<0>] el0_svc+0x8/0xc
+> [<0>] 0xffffffffffffffff
+> 
+> 
+> The stack is more or less the same every time the block happens.
+> 
+> If I kill -9 the child process the execution loop will continue with
+> spawning the next child so it seems that the deadlock is really only
+> in the child process - but do not know why.
+> 
+> I am using function_graph traces and I added the funcgraph-proc,
+> noirq-info and nofuncgraphs-irq options. I disable tracing after each 
+> iteration, and I clear the trace buffer and pid set also.
+> 
+> I add the application that is executed as the child process:
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2twQ0ACgkQwj2R86El
-/qhFVggAniuiBCKU6wwng1t05Zuu0KgcKKLyevm5nnlJ0CyjnD2Mr+CSrWW7sBPS
-40XB6VK0hAuanH3CYSCEiChk0SeTbgfmV5J6tW5R5IlmeeWU/3jJPWI84x6GSOV3
-Ey/UilmJt3kf1MvG2Cxh0looif1H1NMSBRlg9dOkzx7xuopxWTa+bTZlYqPKZSz8
-ZY4l3LnHJ/OMZn1arg+KqEdUnaKLz0oFDZ3d7uB+oe3eScr4qajC4nxXtMRVL0Pk
-Lhz/GxlyXwpZds7WjUXtntts45/asZAUPlgUJfA/DG5dt9s+lVgwWvNi7pab1Lzy
-rr90lgsqXD6kFp61ncXaVSHMdk5ZMg==
-=rqfk
------END PGP SIGNATURE-----
+I don't understand what you meant by this. Is the below the code that
+gets stuck? But the above shows a python task?
 
---kRK75qY8XO0KPvDdga5YiYwU861NrlrYq--
+> 
+> #define DEV1 "/dev/urandom"
+> #define DEV2 "/dev/null"
+> 
+> int main(int argc, char **argv)
+> {
+>  unsigned char result;
+>  int fd1, fd2, ret;
+>  char res_str[10] = {0};
+> 
+>  fd1 = open(DEV1, O_RDONLY);
+>  fd2 = open(DEV2, O_WRONLY);
+> 
+>  ret = read(fd1, &result, 1);
+>  sprintf(res_str, "%d", result);
+>  ret = write(fd2, res_str, strlen(res_str));
+> 
+>  close(fd1);
+>  close(fd2);
+> 
+>  return ret;
+> }
+
+Can you give the full reproducer, and explain the problem in a bit more
+detail. I don't really see how ftrace is involved here, besides that
+you are running it.
+
+-- Steve
+
+> 
+> The preemption configuration is set to Preemptible kernel and the Ftrace
+> config is set:
+> CONFIG_FTRACE=y
+> CONFIG_FUNCTION_TRACER=y
+> CONFIG_FUNCTION_GRAPH_TRACER=y
+> # CONFIG_PREEMPTIRQ_EVENTS is not set
+> # CONFIG_IRQSOFF_TRACER is not set
+> # CONFIG_PREEMPT_TRACER is not set
+> # CONFIG_SCHED_TRACER is not set
+> # CONFIG_HWLAT_TRACER is not set
+> CONFIG_FTRACE_SYSCALLS=y
+> # CONFIG_TRACER_SNAPSHOT is not set
+> CONFIG_BRANCH_PROFILE_NONE=y
+> # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+> # CONFIG_PROFILE_ALL_BRANCHES is not set
+> CONFIG_STACK_TRACER=y
+> # CONFIG_BLK_DEV_IO_TRACE is not set
+> CONFIG_UPROBE_EVENTS=y
+> CONFIG_PROBE_EVENTS=y
+> CONFIG_DYNAMIC_FTRACE=y
+> # CONFIG_FUNCTION_PROFILER is not set
+> CONFIG_FTRACE_MCOUNT_RECORD=y
+> # CONFIG_FTRACE_STARTUP_TEST is not set
+> # CONFIG_HIST_TRIGGERS is not set
+> # CONFIG_TRACEPOINT_BENCHMARK is not set
+> # CONFIG_RING_BUFFER_BENCHMARK is not set
+> # CONFIG_RING_BUFFER_STARTUP_TEST is not set
+> # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+> # CONFIG_TRACE_EVAL_MAP_FILE is not set
+> CONFIG_TRACING_EVENTS_GPIO=y
+
