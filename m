@@ -1,141 +1,140 @@
-Return-Path: <SRS0=a4XR=YP=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=f3YT=YQ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CAC9CA9EA0
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Oct 2019 19:10:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28921CA9EB6
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Oct 2019 10:49:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 05EC121783
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Oct 2019 19:10:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE757214B2
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Oct 2019 10:49:14 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qGgkXKVY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732502AbfJVTKJ (ORCPT
+        id S2404467AbfJWKtO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Oct 2019 15:10:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729696AbfJVTKJ (ORCPT
+        Wed, 23 Oct 2019 06:49:14 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:40286 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404463AbfJWKtO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Oct 2019 15:10:09 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFF0821783;
-        Tue, 22 Oct 2019 19:10:08 +0000 (UTC)
-Date:   Tue, 22 Oct 2019 15:10:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+        Wed, 23 Oct 2019 06:49:14 -0400
+Received: by mail-lj1-f194.google.com with SMTP id u22so2558191lji.7
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Oct 2019 03:49:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=U8ch3yFmSxc9y9EUY7mFLORMVmdjWPTeoKK11/C1fNk=;
+        b=qGgkXKVY6IszxjflLgwHx3M1j0Hi9+NqtuYz43Al31BEQkMiWqp0/ooPVl7tkeJIm0
+         i0n7xN4VxnbkDKlUJF7X/RvIwbj8Gn7PQuw/FTj4x6pCrDLodtb1ccDKuEt7oInzt3qm
+         /ArhZJIGvZAdJvo/vZK0GPfE5AfSoqLmKTn+TS2RbJA1/7VsMnlCywvaQhdXIKI/HErU
+         R52MJjpE9Q1o0cjUISRJhat9yZ5COBsP1lhE+i8rrLooT2dvp7PTRaPvmoB3qFg8oOmX
+         xiH9IOnkuyRD2J3vBQf1k4kwpwUA70uCFiOT+d6CNH+ALNK9LvFrP3yO5OWrJRjusLtj
+         0lKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=U8ch3yFmSxc9y9EUY7mFLORMVmdjWPTeoKK11/C1fNk=;
+        b=pmEZnLUSdi+NA7UhMvcM4NddT4xZAu4B0yAKUyNZRRQyKkW/jzDfMsXa2zCaZlMwIA
+         tziWtCcxFtT/S6JX3HmWCB011Nqnz3U6kStTTS7+VjKHteUQrWZq4QTQKmICfFk/76ET
+         NnEnJc7qUoKdYEHsWBGrUYJj/G5ngnHt3/VCS0JLMN9qVwgNfC/ObE24eTobZUpGpazQ
+         CAmlYRuodxI5C+V4tJKFQSZVeyvlMkhWpOXQHnAaIZ5dk5GB34HfCr/+jlL6LOQepH5/
+         sMlf+33nmv3YUrBqYlfHMGjDCgAs2rP++Z0YvyqDDq/sPlaZBqskYLV/KAeTDiJHrArJ
+         nKzg==
+X-Gm-Message-State: APjAAAXtiSVYGdZf6j/mXwiPaeWK4RcVUytmylCQ2ud4NNgloz61ki3i
+        p+woVIFJDeb98BzeM/ghs1Nxo/mo
+X-Google-Smtp-Source: APXvYqy6c+s97HVjsvdmmAf8p7+cuyLhjs4468JTLq5xJeK6JWGnBhWv6VCXy58Q0uo3gBADncUZ0w==
+X-Received: by 2002:a2e:878a:: with SMTP id n10mr22450425lji.229.1571827752112;
+        Wed, 23 Oct 2019 03:49:12 -0700 (PDT)
+Received: from [10.27.112.58] ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id q27sm5825257lfn.96.2019.10.23.03.49.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Oct 2019 03:49:11 -0700 (PDT)
+Subject: Re: [PATCH 2/3] kernel-shark: Do not save the settings when running
+ as Root
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v12 7/9] trace-cmd: Implemented new API
- tracecmd_add_option_v()
-Message-ID: <20191022151007.77224d78@gandalf.local.home>
-In-Reply-To: <20190828085746.26231-8-tz.stoyanov@gmail.com>
-References: <20190828085746.26231-1-tz.stoyanov@gmail.com>
-        <20190828085746.26231-8-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+References: <20191018074722.6976-1-y.karadz@gmail.com>
+ <20191018074722.6976-2-y.karadz@gmail.com>
+ <20191018103238.3b3877cb@gandalf.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <05ece807-fb3f-fda5-e1f7-e04a63a1d0aa@gmail.com>
+Date:   Wed, 23 Oct 2019 13:49:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20191018103238.3b3877cb@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 28 Aug 2019 11:57:44 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> +/**
-> + * tracecmd_add_option - add options to the file
-> + * @handle: the output file handle name
-> + * @id: the id of the option
-> + * @size: the size of the option data
-> + * @data: the data to write to the file.
-> + *
-> + * Returns handle to update option if needed.
-> + *  Just the content can be updated, with smaller or equal to
-> + *  content than the specified size.
-> + */
-> +struct tracecmd_option *
-> +tracecmd_add_option(struct tracecmd_output *handle,
-> +		    unsigned short id, int size, const void *data)
-> +{
-> +	struct iovec vect;
-> +
-> +	vect.iov_base = (void *) data;
 
-Remove the space between (void *) and data.
+On 18.10.19 г. 17:32 ч., Steven Rostedt wrote:
+> On Fri, 18 Oct 2019 10:47:21 +0300
+> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+> 
+>> Do not save the settings if KernelShark is running with Root privileges.
+>> Otherwise the configuration file will be owned by Root and later the
+>> normal user will have no access to it.
+> 
+> Perhaps we should have the settings saved in the root home directory?
+> 
+> Reason being, I run kernelshark as root all the time (on my test boxes,
+> where I only log in as root).
+> 
+> And I would still like to have the settings saved. Maybe check if the
+> settings path is the same as $HOME variable?
+> 
 
-> +	vect.iov_len = size;
-> +	return tracecmd_add_option_v(handle, id, &vect, 1);
-> +}
-> +
->  int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
->  {
->  	cpus = convert_endian_4(handle, cpus);
-> @@ -979,6 +1013,56 @@ int tracecmd_write_options(struct tracecmd_output *handle)
->  	return 0;
->  }
->  
-> +int tracecmd_append_options(struct tracecmd_output *handle)
+OK I think I have a solution that does a better job. Do you prefer to 
+resend all 3 patches or just this one?
 
-Hmm, this was added with no users, and was not mentioned in the change
-log. Probably belongs in another patch.
+Thanks!
+Yordan
 
--- Steve
 
-> +{
-> +	struct tracecmd_option *options;
-> +	unsigned short option;
-> +	unsigned short endian2;
-> +	unsigned int endian4;
-> +	off_t offset;
-> +	int r;
-> +
-> +	/* If already written, ignore */
-> +	if (handle->options_written)
-> +		return 0;
-> +
-> +	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
-> +		return -1;
-> +	offset = lseek64(handle->fd, -2, SEEK_CUR);
-> +	if (offset == (off_t)-1)
-> +		return -1;
-> +
-> +	r = pread(handle->fd, &option, 2, offset);
-> +	if (r != 2 || option != TRACECMD_OPTION_DONE)
-> +		return -1;
-> +
-> +	list_for_each_entry(options, &handle->options, list) {
-> +		endian2 = convert_endian_2(handle, options->id);
-> +		if (do_write_check(handle, &endian2, 2))
-> +			return -1;
-> +
-> +		endian4 = convert_endian_4(handle, options->size);
-> +		if (do_write_check(handle, &endian4, 4))
-> +			return -1;
-> +
-> +		/* Save the data location in case it needs to be updated */
-> +		options->offset = lseek64(handle->fd, 0, SEEK_CUR);
-> +
-> +		if (do_write_check(handle, options->data,
-> +				   options->size))
-> +			return -1;
-> +	}
-> +
-> +	option = TRACECMD_OPTION_DONE;
-> +
-> +	if (do_write_check(handle, &option, 2))
-> +		return -1;
-> +
-> +	handle->options_written = 1;
-> +
-> +	return 0;
-> +}
-> +
->  int tracecmd_update_option(struct tracecmd_output *handle,
->  			   struct tracecmd_option *option, int size,
->  			   const void *data)
-
+> -- Steve
+> 
+>>
+>> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+>> ---
+>>   kernel-shark/src/KsMainWindow.cpp | 12 +++++++++---
+>>   1 file changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+>> index 3402764..6da8670 100644
+>> --- a/kernel-shark/src/KsMainWindow.cpp
+>> +++ b/kernel-shark/src/KsMainWindow.cpp
+>> @@ -152,9 +152,15 @@ KsMainWindow::~KsMainWindow()
+>>   					_session.getConfDocPtr());
+>>   	}
+>>   
+>> -	_settings.setValue("dataPath", _lastDataFilePath);
+>> -	_settings.setValue("confPath", _lastConfFilePath);
+>> -	_settings.setValue("pluginPath", _lastPluginFilePath);
+>> +	/*
+>> +	 * Do not save the settings if KernelShark is running with Root
+>> +	 * privileges. Otherwise the configuration file will be owned by Root.
+>> +	 */
+>> +	if (geteuid() != 0) {
+>> +		_settings.setValue("dataPath", _lastDataFilePath);
+>> +		_settings.setValue("confPath", _lastConfFilePath);
+>> +		_settings.setValue("pluginPath", _lastPluginFilePath);
+>> +	}
+>>   
+>>   	_data.clear();
+>>   
+> 
