@@ -8,64 +8,65 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C650BCA9EB6
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Oct 2019 12:21:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F13DACA9EB6
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Oct 2019 12:21:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 996D02086D
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Oct 2019 12:21:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C1DDF2086D
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Oct 2019 12:21:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XSiN7Yg8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m0ojksFO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405263AbfJWMVo (ORCPT
+        id S2405264AbfJWMVu (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 23 Oct 2019 08:21:44 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:40367 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbfJWMVo (ORCPT
+        Wed, 23 Oct 2019 08:21:50 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:38379 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbfJWMVu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 23 Oct 2019 08:21:44 -0400
-Received: by mail-lf1-f67.google.com with SMTP id i15so8456302lfo.7
-        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Oct 2019 05:21:41 -0700 (PDT)
+        Wed, 23 Oct 2019 08:21:50 -0400
+Received: by mail-lj1-f196.google.com with SMTP id q78so5753262lje.5
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Oct 2019 05:21:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7X2qsJ74vhvdXE1votE/9VV4vTFGcJWaoW5AMUPUXwk=;
-        b=XSiN7Yg87dIR4QHKssvFvOfLkQ2TJ5MYmUO2HeZOGO010wAYAmjP9qkiFrwTuI1WeT
-         LFkJdNHYy+7Xkvcekk0PLpfqmIaJBTabiKT9tAO/ir30fOandisT3Jl++QEEo8T2QVa7
-         YlBHEPp6KhiG2qFoI/m+V3cosBGBn2KASxlpQWXgyLA4FNA0AW3fyQe6Nwbc2Vb3XL05
-         KGVpFgDCpT7Jg/lWOUzUq7fPcLWw2YyANqcaS1Bo+PnGz07bqDSVyo3BDgUluDnrJdzE
-         5kKMT5/wmRn2v1Uzmm+xkEMSQKb9yXf7SDy48PKocfThFDMeqgx9+dE/eoAMshjrMWII
-         DnhA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pHBE4r8GHg8Nn4QAdx74R6dITon7K+LYUpfPkUj/jOQ=;
+        b=m0ojksFOM6eS6jtrlzznIyamm2rYakI04L02IfvBcD1T1MAn9eWQEp5iOr05DZJ/oA
+         w1WZL5nB02KUswPP42SlutHjKjpFg36+QUaecYcavwBb4qNQUwFNSQanQ5NPrzTNAkvQ
+         UBAlLbnIozu0+qPtpXKmD6Nm2WwxjYrGqp/YMOTI7Hb8r7sUXx55Ab8Tg60Av/LI0xvQ
+         iie5+qRJdqqi91OxUY5x9TAAsxbijYpazoIQRQIv2FrcfIzTO5J88s+8C1xa3e0iyJnn
+         NHPVrf8KkSSF51nmumA43Y0fi9GYqfFs15uuueJnpFQEF/pwLWezuVUSSjcuSzs8ZHMg
+         PMvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7X2qsJ74vhvdXE1votE/9VV4vTFGcJWaoW5AMUPUXwk=;
-        b=cyiz8PC21O1wUvcBQBx+BGSdc0tPw/Oq2Pp9885fa5ijxwd2HCvIUqRDoBVZIPpP8N
-         TNQMDwz0pMTjIVsm9pjnKlu60DXWV8nspyNtTpyeb87UiP9G6AgU2YDLVtS+/XthrSBq
-         Cob2YZwmwOsrdr2oFCa8itaYeL+wji9jSch4POafrghx+G0JWxJM3Xxq2M4hrfH2I3Fl
-         d1438OMAvpsM5KQOCDEwSXeuo22FqIrej0ea0Qfta+Lludd3zdioH8ASm6b8Tbf3YAQw
-         lmTlDw0wLJozbO8UWR+H6/tc9HE391hQM/D9v1H62Kjg5Wb2nQZdsZ8gZXUgY1SwAYWD
-         I2Rg==
-X-Gm-Message-State: APjAAAVCuS+PEPdD3j2x88spHJAsZ0FHLZDPJJGf0olBK4jDJGgPvgRs
-        Sk0W1EUJR/4Ev9BJyRSrOOg=
-X-Google-Smtp-Source: APXvYqwd5T2YhENJfATGTvkqOzoJ4bK+dYRMPujBCRXeoSPFHXuICBJqb5YIur0fLKknyOdZ4EZAsQ==
-X-Received: by 2002:a19:7d06:: with SMTP id y6mr7256299lfc.120.1571833300778;
-        Wed, 23 Oct 2019 05:21:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pHBE4r8GHg8Nn4QAdx74R6dITon7K+LYUpfPkUj/jOQ=;
+        b=MzckDqjsFArCuJrkAY4dCTHp6DKzk5AU8wxtAUqYCaEzx9U+BMT7NKHiiOjjKTVITX
+         sGoqko9Q0YRiPXl4r3DdEzSEXzNwwQgyaA0IvtGDXZIF27AaV/glo2RQ7BHqrNhAylYn
+         Z+ZoTXh6qeMD4cgO/t6UM3+0jmRjuhvZumUy072DhjmI9BpHPbFJaOk9EuMHIHzvgZNW
+         /ugOjydim50V/6O26aCbSohHEmEfQqk5BaKjJD0Z+0+7fgt0APGgk5D3xBIs9p6pfyXT
+         fOy7aq9zrHszPcp4txkznWstURpFD+3L0LMLMQg8t7vmrRkaNJWXvnO44zhqDEYwjMqC
+         2XXA==
+X-Gm-Message-State: APjAAAX9G536o265uz6rVxT3WrlBZ8+4Ih3QhSZ2H56zEWtjnpI5oOVe
+        ugAqQTJMQ7SRAUe/Wm1VIYY=
+X-Google-Smtp-Source: APXvYqwspm9D6ZtLM4HccZKwbaq8F4gUcM+DPIWVqxLq9Yc2v2syeGhkWh70ItsyvLwDV8tQvERg3A==
+X-Received: by 2002:a2e:a0ca:: with SMTP id f10mr300897ljm.84.1571833308447;
+        Wed, 23 Oct 2019 05:21:48 -0700 (PDT)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id g26sm10453566lje.80.2019.10.23.05.21.39
+        by smtp.gmail.com with ESMTPSA id g26sm10453566lje.80.2019.10.23.05.21.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2019 05:21:40 -0700 (PDT)
+        Wed, 23 Oct 2019 05:21:47 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: [PATCH v2 1/3] kernel-shark: Fix simple typo in the "File" menu.
-Date:   Wed, 23 Oct 2019 15:21:43 +0300
-Message-Id: <20191023122145.14314-1-y.karadz@gmail.com>
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v2 2/3] kernel-shark: Fix potential memory leak in libkshark-collection
+Date:   Wed, 23 Oct 2019 15:21:44 +0300
+Message-Id: <20191023122145.14314-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191023122145.14314-1-y.karadz@gmail.com>
+References: <20191023122145.14314-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -73,25 +74,66 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Reported-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+When searching for the entry, do not loop over the original list of
+requests. Use a copy instead. If we loop over the original list and
+no entry is found in the first element of the list, later the memory
+used for this first element will leak.
+
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel-shark/src/libkshark-collection.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index a583f5f..3402764 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -45,7 +45,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
-   _openAction("Open", this),
-   _restoreSessionAction("Restore Last Session", this),
-   _importSessionAction("Import Session", this),
--  _exportSessionAction("Export Sassion", this),
-+  _exportSessionAction("Export Session", this),
-   _quitAction("Quit", this),
-   _importFilterAction("Import Filter", this),
-   _exportFilterAction("Export Filter", this),
+diff --git a/kernel-shark/src/libkshark-collection.c b/kernel-shark/src/libkshark-collection.c
+index 02a014e..95fdbab 100644
+--- a/kernel-shark/src/libkshark-collection.c
++++ b/kernel-shark/src/libkshark-collection.c
+@@ -622,6 +622,7 @@ kshark_get_collection_entry_front(struct kshark_entry_request **req,
+ 				  ssize_t *index)
+ {
+ 	const struct kshark_entry *entry = NULL;
++	struct kshark_entry_request *list;
+ 	int req_count;
+ 
+ 	/*
+@@ -638,12 +639,10 @@ kshark_get_collection_entry_front(struct kshark_entry_request **req,
+ 	 * Loop over the list of redefined requests and search until you find
+ 	 * the first matching entry.
+ 	 */
+-	while (*req) {
+-		entry = kshark_get_entry_front(*req, data, index);
++	for (list = *req; list; list = list->next) {
++		entry = kshark_get_entry_front(list, data, index);
+ 		if (entry)
+ 			break;
+-
+-		*req = (*req)->next;
+ 	}
+ 
+ 	return entry;
+@@ -680,6 +679,7 @@ kshark_get_collection_entry_back(struct kshark_entry_request **req,
+ 				 ssize_t *index)
+ {
+ 	const struct kshark_entry *entry = NULL;
++	struct kshark_entry_request *list;
+ 	int req_count;
+ 
+ 	/*
+@@ -695,12 +695,10 @@ kshark_get_collection_entry_back(struct kshark_entry_request **req,
+ 	 * Loop over the list of redefined requests and search until you find
+ 	 * the first matching entry.
+ 	 */
+-	while (*req) {
+-		entry = kshark_get_entry_back(*req, data, index);
++	for (list = *req; list; list = list->next) {
++		entry = kshark_get_entry_back(list, data, index);
+ 		if (entry)
+ 			break;
+-
+-		*req = (*req)->next;
+ 	}
+ 
+ 	return entry;
 -- 
 2.20.1
 
