@@ -8,54 +8,58 @@ X-Spam-Status: No, score=-17.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
 	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B10A4CA9EA0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Oct 2019 06:41:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C17ECCA9EA0
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Oct 2019 06:42:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7C7BC2070B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Oct 2019 06:41:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9568720578
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Oct 2019 06:42:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DINXLls7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kNsa7d8G"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405207AbfJYGlz (ORCPT
+        id S2405209AbfJYGmH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 25 Oct 2019 02:41:55 -0400
-Received: from mail-pg1-f202.google.com ([209.85.215.202]:34340 "EHLO
-        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405128AbfJYGlz (ORCPT
+        Fri, 25 Oct 2019 02:42:07 -0400
+Received: from mail-pl1-f202.google.com ([209.85.214.202]:57160 "EHLO
+        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405128AbfJYGmH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 25 Oct 2019 02:41:55 -0400
-Received: by mail-pg1-f202.google.com with SMTP id l11so1046364pgg.1
-        for <linux-trace-devel@vger.kernel.org>; Thu, 24 Oct 2019 23:41:54 -0700 (PDT)
+        Fri, 25 Oct 2019 02:42:07 -0400
+Received: by mail-pl1-f202.google.com with SMTP id bb3so870347plb.23
+        for <linux-trace-devel@vger.kernel.org>; Thu, 24 Oct 2019 23:42:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=KUUaELA8d4HXU2ZHMkdW6TzhI4sH2z4LqT7wNCk5f/c=;
-        b=DINXLls7tg8HXdxf0tn78Fsgts4N3Fpn6ZZ9nQcFuZb7vay7A1UlBhQfF1EfbM/OBv
-         NTI+2734rVqNsYv8PtVj3csTaKgdq7RHJocaqK5rr04MHb6SDbWPIh/4NSX8AvDu8huj
-         FqK6WX8OR3cgUPZp0Sn81/MIxIdEkKx8gYIlKxaTL4SwCRE5c5zZEGdIedch02niLXSO
-         u0zmhTjAMqccz4QKOH2YihmI0p5tbJdz4YsHEuf/1YURmeEHhVLb6e2o0CsTGGvIiYdf
-         pTofuPSFGKGU3N60AbWWUHq4K2Y/Zp6iajC2s7KiffkvpUxMQGpB3+Fkfqp0Bif3xmQj
-         lIdw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=H0Y4KMySF9HHFl3PeG5Im4oEDqcG0H2luMTu3w3wsBs=;
+        b=kNsa7d8GZPViHnTdOxC9aKqqyJqXDbu9FPoQCZrHy3ZrMQEl2CM45koRcTFPzplZTZ
+         rzstxfcw4OBcJB53xgZdhXOK+IaOvRVpHWWpLlAvj3hWYspulnHVCpnPaGnYOOz4CrXU
+         7RVIzZSQUFczT+U4lOOzsV0VUljBJYgtSn8xeap3/V5zNaKT5gR6sjIY61VlP99jry2m
+         /DFnCigf45jaeDc7rRSEULnMRSvTlYdqCh5uVmsh7iRA1wJ9i3pXHvR/PiVQqiJW5j/L
+         rOX0b1vPeotISUDpB7my6kYBYCpAIwGd6OpTVXCcuuE5snEGGenBfftOcXB42pqKmw0d
+         gpaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=KUUaELA8d4HXU2ZHMkdW6TzhI4sH2z4LqT7wNCk5f/c=;
-        b=ZvwH+301B35+2ig/7I9ZLxYLV50zhkKgiqqS0JyF+t0i2V6z+ahpbaEm8yvRr/IwjK
-         jkftG54h1f75g6vfAJCnylFvOTHY1iYVaYwcK3PGug3GvNG+rlsq2+rBI0ByBtKcuvty
-         D0I86RcVvZJip0vBPVSgmdQEGzSOiymyg3q2bDcKy6X460XH/oUmi0myRC0Pqp5CT7kR
-         k6MRG3YOg2mxTS0GmzAXZzB8/yqDJVZtYiG50/HSYMbIVPNuTAxJKIokBEpr8dqB6VM6
-         hjTc7yKvFVAminB+vrcODUoGyI66ahSJCmsW4/2ZRjAGJofft2sB3mMlfcFiKc9R3gba
-         9lLw==
-X-Gm-Message-State: APjAAAUJAui1B3Ul0zh8aWQ7CmXljVBZRej8sxwGh8NHRrHJKal4AZM2
-        J2lC39z0SKo7SMXRxqKJ3IFiS9bylDHx
-X-Google-Smtp-Source: APXvYqzxKhLOpQHW6ZGjLtbxfY2kwv4aTQ/RhvqL1Jz4WYf2NA59ZqvIuprkcBYbVV0eAEih4cM1T3M3qDHn
-X-Received: by 2002:a63:8f5e:: with SMTP id r30mr2424783pgn.146.1571985714019;
- Thu, 24 Oct 2019 23:41:54 -0700 (PDT)
-Date:   Thu, 24 Oct 2019 23:39:56 -0700
-Message-Id: <20191025063957.21558-1-gthelen@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=H0Y4KMySF9HHFl3PeG5Im4oEDqcG0H2luMTu3w3wsBs=;
+        b=It+iTLFz/NhtbSR57caD5JuBzFERzhrC8MEd0MYq9K5RUCM7b0ga1+/TPd/TIMtu7l
+         YQadGGZrjkYGkaun8jzuEOJCDuV5OX3+red0GkzDTvjE2PFBaPfEyNiq7+NZQaWU9plO
+         c6zQqay7MZu6ai+hP09VQ+7SCb2YlkgZcEM3FdVXWOXEEHRra4SrhhW5h7MzWcBTsVoc
+         AeH7g1Ddq/KfidBwBEY8vqi5noUFktEFIrB8n3x37Tmx0B9JMtkddtqIN/Q9lAKlfLaI
+         UrHrJHBCiHiPdvsGT5uioQInyCqUo7pk+cG6yrFm5A1MbLiiQVZWkPrO+2zBJ2gOWzwM
+         NXFw==
+X-Gm-Message-State: APjAAAVdBLFdunrfFMoQrU3G8rQc8cq76Ad8LOxhuuD/45piSZ/HO4aI
+        uXng1ouKBOsyJu6Y0s6e0Tz89dppoec/
+X-Google-Smtp-Source: APXvYqxj2KrJSfCupPAVnHsgx4WyP4kx8+qYfNrmyNCZ8bC6T5YG62hBLn2J3jssM57DFF+JgnEc4YU7H+LU
+X-Received: by 2002:a63:f916:: with SMTP id h22mr2219870pgi.423.1571985724881;
+ Thu, 24 Oct 2019 23:42:04 -0700 (PDT)
+Date:   Thu, 24 Oct 2019 23:39:57 -0700
+In-Reply-To: <20191025063957.21558-1-gthelen@google.com>
+Message-Id: <20191025063957.21558-2-gthelen@google.com>
 Mime-Version: 1.0
+References: <20191025063957.21558-1-gthelen@google.com>
 X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
-Subject: [PATCH 1/2] trace-cmd: refactor print_update
+Subject: [PATCH 2/2] trace-cmd: respect -s/--silent
 From:   Greg Thelen <gthelen@google.com>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
@@ -66,52 +70,64 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Match utils.mk convention and use a conditional macro for printing
-'UPDATE' messages.
+Keep make -s,--silent from printing any progress messages.  Only show
+warnings and errors.  By default (without -s), there's no change.
 
 Signed-off-by: Greg Thelen <gthelen@google.com>
 ---
- scripts/utils.mk | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ Makefile         | 4 +++-
+ scripts/utils.mk | 9 +++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/utils.mk b/scripts/utils.mk
-index 98d7b3c726d8..8e4e4b5f3a4a 100644
---- a/scripts/utils.mk
-+++ b/scripts/utils.mk
-@@ -22,6 +22,7 @@ ifeq ($(VERBOSE),1)
-   print_plugin_obj_compile =
-   print_plugin_build =
-   print_install =
-+  print_update =
- else
-   Q = @
-   S = -s
-@@ -33,6 +34,7 @@ else
-   print_plugin_build =		echo '  $(GUI)BUILD PLUGIN       '$(GOBJ);
-   print_static_lib_build =	echo '  $(GUI)BUILD STATIC LIB   '$(GOBJ);
-   print_install =		echo '  $(GUI)INSTALL     '$(GSPACE)$1'	to	$(DESTDIR_SQ)$2';
-+  print_update =		echo '  $(GUI)UPDATE             '$(GOBJ);
+diff --git a/Makefile b/Makefile
+index bbdf15ea7af6..8f9eb0203c01 100644
+--- a/Makefile
++++ b/Makefile
+@@ -101,6 +101,8 @@ ifndef VERBOSE
+   VERBOSE = 0
  endif
  
- do_fpic_compile =					\
-@@ -96,7 +98,7 @@ define update_version.h
- 	if [ -r $@ ] && cmp -s $@ $@.tmp; then				\
- 		rm -f $@.tmp;						\
- 	else								\
--		echo '  UPDATE                 '$(notdir $(strip $@));	\
-+		$(print_update)						\
- 		mv -f $@.tmp $@;					\
- 	fi);
- endef
-@@ -106,7 +108,7 @@ define update_dir
- 	if [ -r $@ ] && cmp -s $@ $@.tmp; then				\
- 		rm -f $@.tmp;						\
- 	else								\
--		echo '  UPDATE                 '$(notdir $(strip $@));	\
-+		$(print_update)						\
- 		mv -f $@.tmp $@;					\
- 	fi);
- endef
++SILENT := $(if $(findstring s,$(filter-out --%,$(MAKEFLAGS))),1)
++
+ SWIG_DEFINED := $(shell if command -v swig; then echo 1; else echo 0; fi)
+ ifeq ($(SWIG_DEFINED), 0)
+ BUILD_PYTHON := report_noswig
+@@ -188,7 +190,7 @@ export LIBTRACEEVENT_DIR LIBTRACECMD_DIR
+ export LIBTRACECMD_STATIC LIBTRACECMD_SHARED
+ export LIBTRACEEVENT_STATIC LIBTRACEEVENT_SHARED
+ 
+-export Q VERBOSE EXT
++export Q SILENT VERBOSE EXT
+ 
+ # Include the utils
+ include scripts/utils.mk
+diff --git a/scripts/utils.mk b/scripts/utils.mk
+index 8e4e4b5f3a4a..d1d5135063fc 100644
+--- a/scripts/utils.mk
++++ b/scripts/utils.mk
+@@ -15,6 +15,13 @@ endif
+ ifeq ($(VERBOSE),1)
+   Q =
+   S =
++else
++  Q = @
++  S = -s
++endif
++
++# Use empty print_* macros if either SILENT or VERBOSE.
++ifeq ($(findstring 1,$(SILENT)$(VERBOSE)),1)
+   print_compile =
+   print_app_build =
+   print_fpic_compile =
+@@ -24,8 +31,6 @@ ifeq ($(VERBOSE),1)
+   print_install =
+   print_update =
+ else
+-  Q = @
+-  S = -s
+   print_compile =		echo '  $(GUI)COMPILE            '$(GOBJ);
+   print_app_build =		echo '  $(GUI)BUILD              '$(GOBJ);
+   print_fpic_compile =		echo '  $(GUI)COMPILE FPIC       '$(GOBJ);
 -- 
 2.24.0.rc0.303.g954a862665-goog
 
