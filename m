@@ -2,91 +2,116 @@ Return-Path: <SRS0=L246=YS=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64F9BCA9EAF
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Oct 2019 01:18:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B10A4CA9EA0
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Oct 2019 06:41:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 34EA321D7B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Oct 2019 01:18:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C7BC2070B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 25 Oct 2019 06:41:55 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DINXLls7"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388655AbfJYBSx (ORCPT
+        id S2405207AbfJYGlz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 24 Oct 2019 21:18:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388515AbfJYBSw (ORCPT
+        Fri, 25 Oct 2019 02:41:55 -0400
+Received: from mail-pg1-f202.google.com ([209.85.215.202]:34340 "EHLO
+        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405128AbfJYGlz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 24 Oct 2019 21:18:52 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCA2621D71;
-        Fri, 25 Oct 2019 01:18:51 +0000 (UTC)
-Date:   Thu, 24 Oct 2019 21:18:50 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Allende Imanol <iallende@ikerlan.es>
-Cc:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>,
-        "mingo@kernel.org" <mingo@kernel.org>
-Subject: Re: Deadlock with FTrace in child process
-Message-ID: <20191024211850.613279c6@gandalf.local.home>
-In-Reply-To: <DB8PR03MB589769D8EFD0DCE8AEC6D283B6650@DB8PR03MB5897.eurprd03.prod.outlook.com>
-References: <DB8PR03MB5897244BE1F37E6A001C300FB66F0@DB8PR03MB5897.eurprd03.prod.outlook.com>
-        <20191021104121.769f3162@gandalf.local.home>
-        <DB8PR03MB589769D8EFD0DCE8AEC6D283B6650@DB8PR03MB5897.eurprd03.prod.outlook.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Fri, 25 Oct 2019 02:41:55 -0400
+Received: by mail-pg1-f202.google.com with SMTP id l11so1046364pgg.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 24 Oct 2019 23:41:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=KUUaELA8d4HXU2ZHMkdW6TzhI4sH2z4LqT7wNCk5f/c=;
+        b=DINXLls7tg8HXdxf0tn78Fsgts4N3Fpn6ZZ9nQcFuZb7vay7A1UlBhQfF1EfbM/OBv
+         NTI+2734rVqNsYv8PtVj3csTaKgdq7RHJocaqK5rr04MHb6SDbWPIh/4NSX8AvDu8huj
+         FqK6WX8OR3cgUPZp0Sn81/MIxIdEkKx8gYIlKxaTL4SwCRE5c5zZEGdIedch02niLXSO
+         u0zmhTjAMqccz4QKOH2YihmI0p5tbJdz4YsHEuf/1YURmeEHhVLb6e2o0CsTGGvIiYdf
+         pTofuPSFGKGU3N60AbWWUHq4K2Y/Zp6iajC2s7KiffkvpUxMQGpB3+Fkfqp0Bif3xmQj
+         lIdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=KUUaELA8d4HXU2ZHMkdW6TzhI4sH2z4LqT7wNCk5f/c=;
+        b=ZvwH+301B35+2ig/7I9ZLxYLV50zhkKgiqqS0JyF+t0i2V6z+ahpbaEm8yvRr/IwjK
+         jkftG54h1f75g6vfAJCnylFvOTHY1iYVaYwcK3PGug3GvNG+rlsq2+rBI0ByBtKcuvty
+         D0I86RcVvZJip0vBPVSgmdQEGzSOiymyg3q2bDcKy6X460XH/oUmi0myRC0Pqp5CT7kR
+         k6MRG3YOg2mxTS0GmzAXZzB8/yqDJVZtYiG50/HSYMbIVPNuTAxJKIokBEpr8dqB6VM6
+         hjTc7yKvFVAminB+vrcODUoGyI66ahSJCmsW4/2ZRjAGJofft2sB3mMlfcFiKc9R3gba
+         9lLw==
+X-Gm-Message-State: APjAAAUJAui1B3Ul0zh8aWQ7CmXljVBZRej8sxwGh8NHRrHJKal4AZM2
+        J2lC39z0SKo7SMXRxqKJ3IFiS9bylDHx
+X-Google-Smtp-Source: APXvYqzxKhLOpQHW6ZGjLtbxfY2kwv4aTQ/RhvqL1Jz4WYf2NA59ZqvIuprkcBYbVV0eAEih4cM1T3M3qDHn
+X-Received: by 2002:a63:8f5e:: with SMTP id r30mr2424783pgn.146.1571985714019;
+ Thu, 24 Oct 2019 23:41:54 -0700 (PDT)
+Date:   Thu, 24 Oct 2019 23:39:56 -0700
+Message-Id: <20191025063957.21558-1-gthelen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
+Subject: [PATCH 1/2] trace-cmd: refactor print_update
+From:   Greg Thelen <gthelen@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org, Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 25 Oct 2019 00:44:56 +0000
-Allende Imanol <iallende@ikerlan.es> wrote:
+Match utils.mk convention and use a conditional macro for printing
+'UPDATE' messages.
 
-> > On Sat, 19 Oct 2019 07:50:53 +0000
-> > Allende Imanol <iallende@ikerlan.es> wrote:
-> >   
-> > > I am using Ftrace in a Ultra96 (arm64) 4.19.75-cip11 and it seems that
-> > > I have a deadlock situation. I have a simple application executed as a
-> > > child process from a python script. The child process reads from
-> > > /dev/urandom and writes in /dev/zero. Ftrace is set only for this child
-> > > process.  
-> > 
-> > Are you saying that ftrace is calling the blocked task?
-> > 
-> > If you don't run ftrace, the task never gets stuck?  
-> 
-> Without FTrace I did not get to achieve the same stuck scenario.
-> 
+Signed-off-by: Greg Thelen <gthelen@google.com>
+---
+ scripts/utils.mk | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-OK, so you see this with function graph tracer enabled. The lockup is
-that its stuck on a fast user-space mutex (futex). As function graph
-does nothing to touch user space, but it does greatly effect timings
-(function-graph is the slowest of the tracers), I'm guessing you have a
-race that causes a deadlock in your application somewhere, but without
-function graph tracing enabled, the race window is too small to trigger
-it.
+diff --git a/scripts/utils.mk b/scripts/utils.mk
+index 98d7b3c726d8..8e4e4b5f3a4a 100644
+--- a/scripts/utils.mk
++++ b/scripts/utils.mk
+@@ -22,6 +22,7 @@ ifeq ($(VERBOSE),1)
+   print_plugin_obj_compile =
+   print_plugin_build =
+   print_install =
++  print_update =
+ else
+   Q = @
+   S = -s
+@@ -33,6 +34,7 @@ else
+   print_plugin_build =		echo '  $(GUI)BUILD PLUGIN       '$(GOBJ);
+   print_static_lib_build =	echo '  $(GUI)BUILD STATIC LIB   '$(GOBJ);
+   print_install =		echo '  $(GUI)INSTALL     '$(GSPACE)$1'	to	$(DESTDIR_SQ)$2';
++  print_update =		echo '  $(GUI)UPDATE             '$(GOBJ);
+ endif
+ 
+ do_fpic_compile =					\
+@@ -96,7 +98,7 @@ define update_version.h
+ 	if [ -r $@ ] && cmp -s $@ $@.tmp; then				\
+ 		rm -f $@.tmp;						\
+ 	else								\
+-		echo '  UPDATE                 '$(notdir $(strip $@));	\
++		$(print_update)						\
+ 		mv -f $@.tmp $@;					\
+ 	fi);
+ endef
+@@ -106,7 +108,7 @@ define update_dir
+ 	if [ -r $@ ] && cmp -s $@ $@.tmp; then				\
+ 		rm -f $@.tmp;						\
+ 	else								\
+-		echo '  UPDATE                 '$(notdir $(strip $@));	\
++		$(print_update)						\
+ 		mv -f $@.tmp $@;					\
+ 	fi);
+ endef
+-- 
+2.24.0.rc0.303.g954a862665-goog
 
-I've hit bugs like this before. Ftrace isn't the cause, it's the
-instigator to help the real bug show its face.
-
-Try limiting what gets traced, by either entering in functions in the
-set_ftrace_notrace file, or entering in functions in the
-set_ftrace_filter file. If you put in just a few functions in the
-set_ftrace_filter file and you still see an issue, then you have a case
-that it is the function graph tracer.
-
-Start looking at the trace, and adding the most common functions used
-into the set_ftrace_notrace file and see if the bug goes away.
-
-Really, nothing in ftrace should cause an hang, except the fact that
-you application has a race condition in it that ftrace makes the race
-window big enough to trigger.
-
--- Steve
