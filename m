@@ -1,124 +1,169 @@
-Return-Path: <SRS0=bzY5=YX=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=EBFC=Y5=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D7B0CA9EC5
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Oct 2019 11:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2775C5DF62
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  5 Nov 2019 18:18:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 51E1A2054F
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 30 Oct 2019 11:21:57 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZXEXkY5N"
+	by mail.kernel.org (Postfix) with ESMTP id 7826221D6C
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  5 Nov 2019 18:18:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1572977916;
+	bh=CrHWuSYieCnWgLn1FrU4vSBdhvAzrmV0vb7wsK1WyzY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=wN1hEWl23pyVSaJIyXSDPGyA5IE4WC0L9o+2Ck0ypjjATh+u3UZf3mFP0qzl8FdTF
+	 u4o9jWbF+/0hxwjQO7VdUQzkIxbB6f3JaBjtRNOeeY3FvX5yarC3R27JgVPAv/T6Ns
+	 ulJ5qYihmlvpuJto8pu7wT3qC2W9e5qR+f97iF24=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726175AbfJ3LV5 (ORCPT
+        id S2390673AbfKESSd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 30 Oct 2019 07:21:57 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:38954 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726088AbfJ3LV4 (ORCPT
+        Tue, 5 Nov 2019 13:18:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390520AbfKESSc (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 30 Oct 2019 07:21:56 -0400
-Received: by mail-lj1-f196.google.com with SMTP id y3so2219616ljj.6
-        for <linux-trace-devel@vger.kernel.org>; Wed, 30 Oct 2019 04:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v+5tgIc7NKlP13RxDmMGjXSk9aMJhynDI2P7YlJkgyI=;
-        b=ZXEXkY5Ndof4MYocfA3heTD+yLCHvo6iFCvacATfbb7eg1Xl/gb2Ro79f5dWdFcwdh
-         65ewjNgF/7eHsTYh2tPSP/Pym1ZrM1o1rTRCVgr5pju5dr/i04YK8L/ELHBW3T/2ekJe
-         lic5Qv3eInHuscY8Aqsss33lm/yUpge67W1lPVOcJnzE5wIyOGvT6SchCL9xiSrTPj3y
-         RZEL0yuSlqAGpabX9wckGx0HkEp9tchgT1FkptWaGESXz3dJ+M7rfa9IjAfOHaox6zxn
-         CNC88dDtFcFL2SvcgjxM3kQ4PKANYLUhjFxo2WnzsOaVpBB16xdPMkL4N81PLiNrKdSs
-         jclg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v+5tgIc7NKlP13RxDmMGjXSk9aMJhynDI2P7YlJkgyI=;
-        b=Bb/H5+zWEyRqokG/UOPGds7zgFy9ShcDDICREevDOT4iZXji3fz2ge6Md+xQaIW1A4
-         EX1XfQffdXUsVsosczyBNzVYQnEG0sT91YM4BfnZUGVrM5Lp7DMAFvnIJpuOk1utWKe3
-         nP/a3dFBLtQ5QUnnvh5UEvz36Ljbx30+R5LzWvVR0ak5pK0HUmmqzq9nWHbcgbwl1BZe
-         w+aajVd6aLuphaWgP+57cJsVx7smR8kkEI+jybDgfEwZNBnpkQjqLZAtl9cJ6Y2aZ4uK
-         ruXT0t7/pnl9cWkTcLA6tRtme2DvlRtXbzSlcbgBWoFu4NFQztXgSQgYdHYScYhm+Si9
-         7OBA==
-X-Gm-Message-State: APjAAAUvt2o+SR8g7ENlRyAb8MNowTHm+0kCABBCb/dTcH8R9+tsUju4
-        nA8w57XNVOPPServQfLNUckY1c/7Li6r1nNsQKoaP1G7lAg=
-X-Google-Smtp-Source: APXvYqzLsjUmiyMk7mQIqEBkWx+7s2G2Uv4V174MWYGp6z7L0D2DpWf/lUoJ75gf1nkkcauibk3th80Nh4wXgy74MtM=
-X-Received: by 2002:a2e:9249:: with SMTP id v9mr2047103ljg.184.1572434514459;
- Wed, 30 Oct 2019 04:21:54 -0700 (PDT)
+        Tue, 5 Nov 2019 13:18:32 -0500
+Received: from quaco.ghostprotocols.net (unknown [177.195.215.116])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79E1B21928;
+        Tue,  5 Nov 2019 18:18:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572977911;
+        bh=CrHWuSYieCnWgLn1FrU4vSBdhvAzrmV0vb7wsK1WyzY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=O1fO8ENd+br8OLNWlqodkXYAwE7dN0z64fKvIrysiYxqDMOqKxG9qyERSjWJ+fzsB
+         2M4d8whUHXOuml+bBBt9xPgJRX28+QDJ3QjpCNOjyydr4JA16zeairbjYYbwFwxJWk
+         FHCkjSmNGDPx0q58ihJ6a/ATstRp0q0JHP+JjGww=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        linux-trace-devel@vger.kernel.org
+Subject: [PATCH 1/3] perf scripting engines: Iterate on tep event arrays directly
+Date:   Tue,  5 Nov 2019 15:18:16 -0300
+Message-Id: <20191105181818.26748-2-acme@kernel.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20191105181818.26748-1-acme@kernel.org>
+References: <20191105181818.26748-1-acme@kernel.org>
 MIME-Version: 1.0
-References: <20191029180731.2153b90c@canb.auug.org.au> <CADYN=9+aqqHVP8tKFFCTKi_zzSt=PW5JVyU2sdaThgrHpYSjzQ@mail.gmail.com>
- <20191030105553.GH25745@shell.armlinux.org.uk>
-In-Reply-To: <20191030105553.GH25745@shell.armlinux.org.uk>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Wed, 30 Oct 2019 12:21:43 +0100
-Message-ID: <CADYN=9L4i7BWcdhOdG-AFQjuZBU=gv7UjcV6CaO2f0q_KJKhVg@mail.gmail.com>
-Subject: Re: linux-next: Tree for Oct 29
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 30 Oct 2019 at 11:56, Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> Please trim your replies; there's no need to force everyone to page
-> through 500 lines of Stephen's email to get to the content of your
-> message.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Right, I'll keep that in mind next time.
+Instead of calling a useless (and broken) helper function to get the
+next event of a tep event array, just get the array directly and iterate
+over it.
 
->
-> On Wed, Oct 30, 2019 at 11:25:19AM +0100, Anders Roxell wrote:
-> > When I'm building an arm kernel with this .config [1], I can see this
-> > build error on next tag next-20191029 and next-20191030. Tag
-> > next-20191028 built fine.
-> >
-> >
-> > $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- -skj$(getconf
-> > _NPROCESSORS_ONLN) O=obj-arm-20191029 zImage
-> > arm-linux-gnueabi-ld: kernel/trace/trace_preemptirq.o: in function
-> > `trace_hardirqs_on':
-> > trace_preemptirq.c:(.text+0x2a0): undefined reference to `return_address'
-> > arm-linux-gnueabi-ld: trace_preemptirq.c:(.text+0x2dc): undefined
-> > reference to `return_address'
-> > arm-linux-gnueabi-ld: kernel/trace/trace_preemptirq.o: in function
-> > `trace_hardirqs_off':
-> > trace_preemptirq.c:(.text+0x468): undefined reference to `return_address'
-> > arm-linux-gnueabi-ld: trace_preemptirq.c:(.text+0x494): undefined
-> > reference to `return_address'
-> > arm-linux-gnueabi-ld: kernel/trace/trace_irqsoff.o: in function
-> > `start_critical_timings':
-> > trace_irqsoff.c:(.text+0x798): undefined reference to `return_address'
-> > arm-linux-gnueabi-ld:
-> > kernel/trace/trace_irqsoff.o:trace_irqsoff.c:(.text+0xed4): more
-> > undefined references to `return_address' follow
-> > make[1]: *** [/srv/src/kernel/next-testing/Makefile:1074: vmlinux] Error 1
-> > make[1]: Target 'zImage' not remade because of errors.
-> > make: *** [Makefile:179: sub-make] Error 2
-> > make: Target 'zImage' not remade because of errors.
->
-> Known problem with one of Ben Dooks patches, which was dropped very
-> quickly when Olof's builder spotted the issue...
+Note, the broken part was from trace_find_next_event() which after this
+will no longer be used, and can be removed.
 
-aha, I missed that.
+Committer notes:
 
-> though it looks like
-> I didn't push it out.
+This fixes a segfault when generating python scripts from perf.data
+files with multiple tracepoint events, i.e. the following use case is
+fixed by this patch:
 
-OK.
+  # perf record -e sched:* sleep 1
+  [ perf record: Woken up 31 times to write data ]
+  [ perf record: Captured and wrote 0.031 MB perf.data (9 samples) ]
+  # perf script -g python
+  Segmentation fault (core dumped)
+  #
 
-Cheers,
-Anders
+Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: linux-trace-devel@vger.kernel.org
+Link: http://lkml.kernel.org/r/20191017153733.630cd5eb@gandalf.local.home
+Link: http://lore.kernel.org/lkml/20191017210636.061448713@goodmis.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/util/scripting-engines/trace-event-perl.c   | 8 ++++++--
+ tools/perf/util/scripting-engines/trace-event-python.c | 9 +++++++--
+ 2 files changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/util/scripting-engines/trace-event-perl.c b/tools/perf/util/scripting-engines/trace-event-perl.c
+index 15961854ba67..741f040648b5 100644
+--- a/tools/perf/util/scripting-engines/trace-event-perl.c
++++ b/tools/perf/util/scripting-engines/trace-event-perl.c
+@@ -539,10 +539,11 @@ static int perl_stop_script(void)
+ 
+ static int perl_generate_script(struct tep_handle *pevent, const char *outfile)
+ {
++	int i, not_first, count, nr_events;
++	struct tep_event **all_events;
+ 	struct tep_event *event = NULL;
+ 	struct tep_format_field *f;
+ 	char fname[PATH_MAX];
+-	int not_first, count;
+ 	FILE *ofp;
+ 
+ 	sprintf(fname, "%s.pl", outfile);
+@@ -603,8 +604,11 @@ sub print_backtrace\n\
+ }\n\n\
+ ");
+ 
++	nr_events = tep_get_events_count(pevent);
++	all_events = tep_list_events(pevent, TEP_EVENT_SORT_ID);
+ 
+-	while ((event = trace_find_next_event(pevent, event))) {
++	for (i = 0; all_events && i < nr_events; i++) {
++		event = all_events[i];
+ 		fprintf(ofp, "sub %s::%s\n{\n", event->system, event->name);
+ 		fprintf(ofp, "\tmy (");
+ 
+diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
+index 5d341efc3237..93c03b39cd9c 100644
+--- a/tools/perf/util/scripting-engines/trace-event-python.c
++++ b/tools/perf/util/scripting-engines/trace-event-python.c
+@@ -1687,10 +1687,11 @@ static int python_stop_script(void)
+ 
+ static int python_generate_script(struct tep_handle *pevent, const char *outfile)
+ {
++	int i, not_first, count, nr_events;
++	struct tep_event **all_events;
+ 	struct tep_event *event = NULL;
+ 	struct tep_format_field *f;
+ 	char fname[PATH_MAX];
+-	int not_first, count;
+ 	FILE *ofp;
+ 
+ 	sprintf(fname, "%s.py", outfile);
+@@ -1735,7 +1736,11 @@ static int python_generate_script(struct tep_handle *pevent, const char *outfile
+ 	fprintf(ofp, "def trace_end():\n");
+ 	fprintf(ofp, "\tprint(\"in trace_end\")\n\n");
+ 
+-	while ((event = trace_find_next_event(pevent, event))) {
++	nr_events = tep_get_events_count(pevent);
++	all_events = tep_list_events(pevent, TEP_EVENT_SORT_ID);
++
++	for (i = 0; all_events && i < nr_events; i++) {
++		event = all_events[i];
+ 		fprintf(ofp, "def %s__%s(", event->system, event->name);
+ 		fprintf(ofp, "event_name, ");
+ 		fprintf(ofp, "context, ");
+-- 
+2.21.0
+
