@@ -6,33 +6,35 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FE44C5DF61
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Nov 2019 10:51:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 176A0C5DF60
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Nov 2019 10:51:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2175A21882
+	by mail.kernel.org (Postfix) with ESMTP id D4BDF214D8
 	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Nov 2019 10:51:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387831AbfKGKvO (ORCPT
+        id S2388112AbfKGKvP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Nov 2019 05:51:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:54068 "EHLO foss.arm.com"
+        Thu, 7 Nov 2019 05:51:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:54072 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727528AbfKGKvO (ORCPT
+        id S1727528AbfKGKvP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 7 Nov 2019 05:51:14 -0500
+        Thu, 7 Nov 2019 05:51:15 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB80631B;
-        Thu,  7 Nov 2019 02:51:13 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 899B17CD;
+        Thu,  7 Nov 2019 02:51:14 -0800 (PST)
 Received: from e120877-lin.cambridge.arm.com (unknown [10.1.195.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6ABB53F6C4;
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1A27F3F6C4;
         Thu,  7 Nov 2019 02:51:13 -0800 (PST)
 From:   vincent.donnefort@arm.com
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: [PATCH 1/2] trace-cmd: Enable kptr_restrict
-Date:   Thu,  7 Nov 2019 10:51:05 +0000
-Message-Id: <1573123866-348262-1-git-send-email-vincent.donnefort@arm.com>
+Subject: [PATCH 2/2] trace-cmd: Add an option to set saved_cmdlines_size
+Date:   Thu,  7 Nov 2019 10:51:06 +0000
+Message-Id: <1573123866-348262-2-git-send-email-vincent.donnefort@arm.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1573123866-348262-1-git-send-email-vincent.donnefort@arm.com>
+References: <1573123866-348262-1-git-send-email-vincent.donnefort@arm.com>
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
@@ -40,72 +42,103 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Vincent Donnefort <vincent.donnefort@arm.com>
 
-kptr_restrict might prevent trace-cmd from accessing /proc/kallsyms,
-leading to a trace without the kernel function names resolved.
+The tracing file saved_cmdlines_size allows setting the number of entries
+that saved_cmdlines will contain. The latter is then dumped into the
+trace.dat file to map PIDs with comm. The default value is 128.
 
 Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 41932ee..3c4f306 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -674,6 +674,39 @@ static int read_event_files(struct tracecmd_output *handle,
- 	return ret;
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 7260d27..a4e10a4 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -229,6 +229,7 @@ struct common_record_context {
+ 	int topt;
+ 	int do_child;
+ 	int run_command;
++	int saved_cmdlines_size;
+ };
+ 
+ static void add_reset_file(const char *file, const char *val, int prio)
+@@ -1810,6 +1811,39 @@ static void set_options(void)
+ 	}
  }
  
-+static void set_proc_kptr_restrict(int reset)
++static void set_saved_cmdlines_size(struct common_record_context *ctx)
 +{
-+	char *path = "/proc/sys/kernel/kptr_restrict";
-+	static char saved = 'X';
-+	int fd, ret = -1;
-+	char buf;
++	char *path, *str;
++	int fd, len, ret;
 +
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0)
++	if (!ctx->saved_cmdlines_size)
++		return;
++
++	path = tracecmd_get_tracing_file("saved_cmdlines_size");
++	if (!path)
 +		goto err;
 +
-+	if (reset) {
-+		buf = saved;
-+	} else {
-+		if (read(fd, &buf, 1) < 0)
-+			goto err;
-+		saved = buf;
-+		buf = '0';
-+	}
-+	close(fd);
++	reset_save_file(path, RESET_DEFAULT_PRIO);
 +
 +	fd = open(path, O_WRONLY);
++	tracecmd_put_tracing_file(path);
 +	if (fd < 0)
 +		goto err;
-+	if (write(fd, &buf, 1) > 0)
++
++	len = asprintf(&str, "%d", ctx->saved_cmdlines_size);
++	if (len < 0)
++		die("%s couldn't allocate memory", __func__);
++
++	if (write(fd, str, len) > 0)
 +		ret = 0;
++
++	close(fd);
++	free(str);
 +err:
-+	if (fd > 0)
-+		close(fd);
 +	if (ret)
-+		warning("can't set kptr_restrict");
++		warning("Couldn't set saved_cmdlines_size");
 +}
 +
- static int read_proc_kallsyms(struct tracecmd_output *handle,
- 			      const char *kallsyms)
+ static int trace_check_file_exists(struct buffer_instance *instance, char *file)
  {
-@@ -698,12 +731,16 @@ static int read_proc_kallsyms(struct tracecmd_output *handle,
- 	endian4 = convert_endian_4(handle, size);
- 	if (do_write_check(handle, &endian4, 4))
- 		return -1;
-+
-+	set_proc_kptr_restrict(0);
- 	check_size = copy_file(handle, path);
- 	if (size != check_size) {
- 		errno = EINVAL;
- 		warning("error in size of file '%s'", path);
-+		set_proc_kptr_restrict(1);
- 		return -1;
+ 	struct stat st;
+@@ -5480,7 +5514,7 @@ static void parse_record_options(int argc,
+ 		if (IS_EXTRACT(ctx))
+ 			opts = "+haf:Fp:co:O:sr:g:l:n:P:N:tb:B:ksiT";
+ 		else
+-			opts = "+hae:f:FA:p:cC:dDGo:O:s:r:vg:l:n:P:N:tb:R:B:ksSiTm:M:H:q";
++			opts = "+hae:f:FA:p:cC:dDGo:O:s:r:vg:l:n:P:N:tb:R:B:kK:sSiTm:M:H:qK";
+ 		c = getopt_long (argc-1, argv+1, opts, long_options, &option_index);
+ 		if (c == -1)
+ 			break;
+@@ -5741,6 +5775,9 @@ static void parse_record_options(int argc,
+ 		case 'k':
+ 			keep = 1;
+ 			break;
++		case 'K':
++			ctx->saved_cmdlines_size = atoi(optarg);
++			break;
+ 		case 'i':
+ 			ignore_event_not_found = 1;
+ 			break;
+@@ -5990,6 +6027,7 @@ static void record_trace(int argc, char **argv,
+ 			enable_events(instance);
  	}
-+	set_proc_kptr_restrict(1);
  
- 	return 0;
- }
++	set_saved_cmdlines_size(ctx);
+ 	set_buffer_size();
+ 	update_plugins(type);
+ 	set_options();
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index b5788f7..ddfb480 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -47,6 +47,7 @@ static struct usage_help usage_help[] = {
+ 		"          -b change kernel buffersize (in kilobytes per CPU)\n"
+ 		"          -B create sub buffer and following events will be enabled here\n"
+ 		"          -k do not reset the buffers after tracing.\n"
++		"          -K change kernel saved_cmdlines_size\n"
+ 		"          -i do not fail if an event is not found\n"
+ 		"          -q print no output to the screen\n"
+ 		"          --quiet print no output to the screen\n"
 -- 
 2.7.4
 
