@@ -1,89 +1,120 @@
-Return-Path: <SRS0=zoIR=ZD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=qtAn=ZE=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74E44C43331
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Nov 2019 23:02:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A651C43331
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Nov 2019 12:03:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4F73D2184C
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 Nov 2019 23:02:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5F8A32084E
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Nov 2019 12:03:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727133AbfKKXC1 (ORCPT
+        id S1726697AbfKLMDg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Nov 2019 18:02:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58818 "EHLO mail.kernel.org"
+        Tue, 12 Nov 2019 07:03:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:32788 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726923AbfKKXC0 (ORCPT
+        id S1725944AbfKLMDg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Nov 2019 18:02:26 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33AF6214DB;
-        Mon, 11 Nov 2019 23:02:26 +0000 (UTC)
-Date:   Mon, 11 Nov 2019 18:02:24 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     vincent.donnefort@arm.com
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] trace-cmd: Add support for built-in plugins
-Message-ID: <20191111180224.2992867b@gandalf.local.home>
-In-Reply-To: <1573126532-373130-1-git-send-email-vincent.donnefort@arm.com>
-References: <1573126532-373130-1-git-send-email-vincent.donnefort@arm.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Tue, 12 Nov 2019 07:03:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9297231B;
+        Tue, 12 Nov 2019 04:03:35 -0800 (PST)
+Received: from e120877-lin.cambridge.arm.com (e120877-lin.cambridge.arm.com [10.1.194.81])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1B5143F6C4;
+        Tue, 12 Nov 2019 04:03:34 -0800 (PST)
+From:   vincent.donnefort@arm.com
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH v2 1/2] trace-cmd: Enable kptr_restrict
+Date:   Tue, 12 Nov 2019 12:03:26 +0000
+Message-Id: <1573560207-52550-1-git-send-email-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <20191111175203.252cc439@gandalf.local.home>
+References: <20191111175203.252cc439@gandalf.local.home>
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+From: Vincent Donnefort <vincent.donnefort@arm.com>
 
-Hi Vincent,
+kptr_restrict might prevent trace-cmd from accessing /proc/kallsyms,
+leading to a trace without the kernel function names resolved.
 
-On Thu,  7 Nov 2019 11:35:32 +0000
-vincent.donnefort@arm.com wrote:
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 
-> From: Vincent Donnefort <vincent.donnefort@arm.com>
-> 
-> When building trace-cmd with the -static option, plugins might not work, if
-> the shared version for the Glibc is not available on the system. To still
-> give a chance to have plugins, a new built-in mechanism is introduced.
-> 
-> The built-in build support for a plugin can be easily enabled with the
-> declaration:
-> 
->  TEP_PLUGIN(plugin_name)
->  {
->          plugin_init()
->  }
-> 
->  /* optional */
->  TEP_PLUGIN(plugin_name)
->  {
->          plugin_exit()
->  }
-> 
-> Enabling as a first step, blk and sched_switch plugins as built-in.
-
-I don't have a problem with the idea of this patch. My concern is that
-the code in lib/traceevent will soon be obsoleted by using the
-libtraceevent library in the Linux kernel under tools/lib/traceevent.
-
-That means when we transition to the libtraceevent library, this work
-will be lost.
-
-Instead, could this be added to tools/lib/traceevent in the Linux
-kernel somehow, and instead of building it into the executable, perhaps
-make it part of the libtraceevent.a file (the static version of the
-libary).
-
-Thoughts?
-
--- Steve
-
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 41932ee..be4d3f5 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -674,6 +674,46 @@ static int read_event_files(struct tracecmd_output *handle,
+ 	return ret;
+ }
+ 
++#define KPTR_UNINITIALIZED 'X'
++
++static void set_proc_kptr_restrict(int reset)
++{
++	char *path = "/proc/sys/kernel/kptr_restrict";
++	static char saved = KPTR_UNINITIALIZED;
++	int fd, ret = -1;
++	struct stat st;
++	char buf;
++
++	if ((reset && saved == KPTR_UNINITIALIZED) ||
++	    (stat(path, &st) < 0))
++		return;
++
++	fd = open(path, O_RDONLY);
++	if (fd < 0)
++		goto err;
++
++	if (reset) {
++		buf = saved;
++	} else {
++		if (read(fd, &buf, 1) < 0)
++			goto err;
++		saved = buf;
++		buf = '0';
++	}
++	close(fd);
++
++	fd = open(path, O_WRONLY);
++	if (fd < 0)
++		goto err;
++	if (write(fd, &buf, 1) > 0)
++		ret = 0;
++err:
++	if (fd > 0)
++		close(fd);
++	if (ret)
++		warning("can't set kptr_restrict");
++}
++
+ static int read_proc_kallsyms(struct tracecmd_output *handle,
+ 			      const char *kallsyms)
+ {
+@@ -698,12 +738,16 @@ static int read_proc_kallsyms(struct tracecmd_output *handle,
+ 	endian4 = convert_endian_4(handle, size);
+ 	if (do_write_check(handle, &endian4, 4))
+ 		return -1;
++
++	set_proc_kptr_restrict(0);
+ 	check_size = copy_file(handle, path);
+ 	if (size != check_size) {
+ 		errno = EINVAL;
+ 		warning("error in size of file '%s'", path);
++		set_proc_kptr_restrict(1);
+ 		return -1;
+ 	}
++	set_proc_kptr_restrict(1);
+ 
+ 	return 0;
+ }
+-- 
+2.7.4
 
