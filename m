@@ -1,70 +1,120 @@
-Return-Path: <SRS0=qtAn=ZE=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=x7pb=ZF=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93350C43331
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Nov 2019 19:09:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F530C43331
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Nov 2019 12:14:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6B32B2196E
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Nov 2019 19:09:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D895206BA
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 13 Nov 2019 12:14:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbfKLTJX (ORCPT
+        id S1726592AbfKMMO3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Nov 2019 14:09:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33166 "EHLO mail.kernel.org"
+        Wed, 13 Nov 2019 07:14:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:51454 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726982AbfKLTJX (ORCPT
+        id S1725908AbfKMMO2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 12 Nov 2019 14:09:23 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 575BB21783;
-        Tue, 12 Nov 2019 19:09:22 +0000 (UTC)
-Date:   Tue, 12 Nov 2019 14:09:20 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] trace-cmd: Add an option to set saved_cmdlines_size
-Message-ID: <20191112140920.6bbed145@gandalf.local.home>
-In-Reply-To: <20191112190101.GA178419@e120877-lin.cambridge.arm.com>
-References: <1573123866-348262-1-git-send-email-vincent.donnefort@arm.com>
-        <1573123866-348262-2-git-send-email-vincent.donnefort@arm.com>
-        <20191111175203.252cc439@gandalf.local.home>
-        <20191112120314.GA41032@e120877-lin.cambridge.arm.com>
-        <20191112094037.651a156f@gandalf.local.home>
-        <20191112190101.GA178419@e120877-lin.cambridge.arm.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Wed, 13 Nov 2019 07:14:28 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 721467A7;
+        Wed, 13 Nov 2019 04:14:28 -0800 (PST)
+Received: from e120877-lin.cambridge.arm.com (e120877-lin.cambridge.arm.com [10.1.194.81])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 018203F6C4;
+        Wed, 13 Nov 2019 04:14:27 -0800 (PST)
+From:   vincent.donnefort@arm.com
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH v2 1/2] trace-cmd: Enable kptr_restrict
+Date:   Wed, 13 Nov 2019 12:14:16 +0000
+Message-Id: <1573647257-317361-1-git-send-email-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <20191112140920.6bbed145@gandalf.local.home>
+References: <20191112140920.6bbed145@gandalf.local.home>
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 12 Nov 2019 19:01:02 +0000
-Vincent Donnefort <vincent.donnefort@arm.com> wrote:
+From: Vincent Donnefort <vincent.donnefort@arm.com>
 
-> This was not a good idea in the end. We can't rely on the sysctl entries
-> threads-max or pid_max, as the pid/comm map is static and the maximum is
-> defined by PID_MAX_DEFAULT. I do not see any way of getting this value from
-> user-space.
-> 
-> We could though, as an alternative, use a hard-coded value of 32768 for
-> --cmdlines-size. Without being perfect, this should still be true for most of
-> the systems. PID_MAX_DEFAULT depends on CONFIG_BASE_SMALL and hasn't changed
-> since Linux started using Git.
+kptr_restrict might prevent trace-cmd from accessing /proc/kallsyms,
+leading to a trace without the kernel function names resolved.
 
-But that does take up a bit of memory in the kernel, which isn't
-probably needed. What we could do, is periodically record the contents
-of the file, and update the map at the end of the record.
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 
-Perhaps I should even make it so that we can just get notifications
-when it does get updated. But that would require a kernel change.
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 41932ee..be4d3f5 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -674,6 +674,46 @@ static int read_event_files(struct tracecmd_output *handle,
+ 	return ret;
+ }
+ 
++#define KPTR_UNINITIALIZED 'X'
++
++static void set_proc_kptr_restrict(int reset)
++{
++	char *path = "/proc/sys/kernel/kptr_restrict";
++	static char saved = KPTR_UNINITIALIZED;
++	int fd, ret = -1;
++	struct stat st;
++	char buf;
++
++	if ((reset && saved == KPTR_UNINITIALIZED) ||
++	    (stat(path, &st) < 0))
++		return;
++
++	fd = open(path, O_RDONLY);
++	if (fd < 0)
++		goto err;
++
++	if (reset) {
++		buf = saved;
++	} else {
++		if (read(fd, &buf, 1) < 0)
++			goto err;
++		saved = buf;
++		buf = '0';
++	}
++	close(fd);
++
++	fd = open(path, O_WRONLY);
++	if (fd < 0)
++		goto err;
++	if (write(fd, &buf, 1) > 0)
++		ret = 0;
++err:
++	if (fd > 0)
++		close(fd);
++	if (ret)
++		warning("can't set kptr_restrict");
++}
++
+ static int read_proc_kallsyms(struct tracecmd_output *handle,
+ 			      const char *kallsyms)
+ {
+@@ -698,12 +738,16 @@ static int read_proc_kallsyms(struct tracecmd_output *handle,
+ 	endian4 = convert_endian_4(handle, size);
+ 	if (do_write_check(handle, &endian4, 4))
+ 		return -1;
++
++	set_proc_kptr_restrict(0);
+ 	check_size = copy_file(handle, path);
+ 	if (size != check_size) {
+ 		errno = EINVAL;
+ 		warning("error in size of file '%s'", path);
++		set_proc_kptr_restrict(1);
+ 		return -1;
+ 	}
++	set_proc_kptr_restrict(1);
+ 
+ 	return 0;
+ }
+-- 
+2.7.4
 
--- Steve
