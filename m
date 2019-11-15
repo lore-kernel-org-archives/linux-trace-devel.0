@@ -1,143 +1,109 @@
-Return-Path: <SRS0=uJmw=ZG=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=AXMx=ZH=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.3 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9AD7C432C3
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Nov 2019 23:31:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 053CAC432C3
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Nov 2019 11:36:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9B91E20724
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 Nov 2019 23:31:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C9E7D2072D
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Nov 2019 11:36:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="o7cYWT2N"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gW3jOIAz"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbfKNXbb (ORCPT
+        id S1726983AbfKOLgQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 Nov 2019 18:31:31 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:39920 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726767AbfKNXbb (ORCPT
+        Fri, 15 Nov 2019 06:36:16 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:38067 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726521AbfKOLgQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 Nov 2019 18:31:31 -0500
-Received: by mail-qk1-f195.google.com with SMTP id 15so6631453qkh.6;
-        Thu, 14 Nov 2019 15:31:30 -0800 (PST)
+        Fri, 15 Nov 2019 06:36:16 -0500
+Received: by mail-wm1-f67.google.com with SMTP id z19so10047459wmk.3;
+        Fri, 15 Nov 2019 03:36:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:message-id;
-        bh=Qge9CCV+EX+KklZtFlR08GP7ynLSZVKpctR9wLJZkrk=;
-        b=o7cYWT2NAVBTODktXqN3bA5MNTX9oujvZ+1oQbd/jgb4c0pWMubNMRnizhS18w0N3F
-         RTUuhtyo182IjhuqjWUbPSJQnRXUaTyRyOChyC34m8VlymqsqQByM78aaTsm8WQmXRu/
-         3M5KHVNYv+4u2JW2r0k7LBLfK/PVkO7+B4lzyJC+ATHFVDY1W3MBOptKDktGXGf4sOaM
-         lYDtkrKg8J3hOHseidITWb6yw6RRteCZc+ucs8iLzUCLp+eStFbmD8vZFwRcq5HE7qpz
-         VTAqNSHMzz0hk1XkiPJxSKmUfpH24wxk6ZEfQRO9SzM9Ngq1h6f5f73KXWXcEe1VptSu
-         wluQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=IHg1oRX6A603aWd0opYOY7UZw/XHim2gNlaLlwMXeIo=;
+        b=gW3jOIAz5nyQ7JdZRrxRLsV7X23+HTXqldOrvQLfJHfEIABYUA9OcspuTCaZ382V1o
+         vAQVA6I7blvmHQiYwbXPQKPjY2+xcSeoR7zGECYWMCUME7J5ThSIq8jAP1AmVOfmfbHR
+         /IVH0j6F62MWEeu4IyMohiQtIurvYMq10l8HqAlWr1e3B0KqgIQ4hqw8F0vxG+MvhnZw
+         wkl7vBaA87Yxv2KB/iDqAFNIJoIE+n/Q4L3gzxmhYM9fiwrtlO0R0Y9t6BJXIlLOe9FP
+         6G48Cdqv7G9fzV4KmBLvoFkRLxGkrQ+nwRKDRPZe00TsP9MdxRg+nNpc/nHusR6Yl/WK
+         inYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:message-id;
-        bh=Qge9CCV+EX+KklZtFlR08GP7ynLSZVKpctR9wLJZkrk=;
-        b=FCHrVm2oacByDz/oToRsvweLGI5P7wpQntFj86HbDx5yoC6Dj5YcqLDYFU44rBxKz5
-         I2laOUS28/eBSx9ssUaq5DbdQKuq66qgDHbEakJQpwraLO+4PFTC2b/NmgtFfNkMXyyt
-         mNP2VSTshigPUrOx9n4fHwHiuEJOLkKWm1JkX660FUc1uW1Fbl9J81CrN9jLOs1TLT8Q
-         K9gY3i7TSmzGyxf3oeKpuHaUwDzyvLNpXsu0lD8lSYPWvbbeHmHXjZDiLiLR33qp1sZd
-         H0r7nL+EBVbipihyDRH4bbCT37IPmPci0yFJKwnCKYTt2c48CQ9A/fK1WZuBScczDNI4
-         peuQ==
-X-Gm-Message-State: APjAAAWiTfw1EsSGypKx5RUGBIZMxiLKLgGYbaj/kCzs9VGdbhrsS+HX
-        aC3jdQgTtT40it68OIcvZtQF4/1o
-X-Google-Smtp-Source: APXvYqyvMYZ8hJ6uDmNcs55NE/gS6PLnVHtMH2DMhGL/GQeqxUNy/0vu4dHELi5ALZixu8fUbnGFxw==
-X-Received: by 2002:ae9:e114:: with SMTP id g20mr9327083qkm.13.1573774290102;
-        Thu, 14 Nov 2019 15:31:30 -0800 (PST)
-Received: from [192.168.86.249] ([179.97.35.50])
-        by smtp.gmail.com with ESMTPSA id x1sm3818039qtf.81.2019.11.14.15.31.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IHg1oRX6A603aWd0opYOY7UZw/XHim2gNlaLlwMXeIo=;
+        b=YD0BbyEgYw2NAuWuXlXHirFjEXZNzlrtRxaiIORwxWOZD2sSkFMP/txNpKecuMBTrK
+         53zGApZhmSEd2GFVtZmBIBSUXsyCOoDBmPvyu2mgp+iE2RcMtraT935rZE+ii+c0qMcD
+         T1EylHjzBuMRqNYQeuDlY1pURnVckLl8PkR5NJzTbCWkmE/gcunhoCIOVD9KkKABAyeP
+         W4YinAHrRA6jbbWZSVk0ASVZQh69RUXyAl899hhi5AMKPH/BikMDVoSUI+MHn8AeP7vg
+         emg8I5vMOIkMSITX9J9xle5oWCbnIuatToVRQYMGir1Gu6g28Wb8FQOoYtIm8pjEUTGK
+         FoEw==
+X-Gm-Message-State: APjAAAVo9SJfBalAWWRu+KfOTL4YwMFpphg9Io38i4ZveGMix1c6VLGi
+        NQ12NdVI89Xo8xELBv3bkOxka7IQ
+X-Google-Smtp-Source: APXvYqydVfwXnuP4aYL1C+O9FmkRDGBRwttFJ5vzv0ZUYlQdQ7g5NcNWDIVNUdZ6USUjtOiooYY5GA==
+X-Received: by 2002:a7b:c3ce:: with SMTP id t14mr13326083wmj.22.1573817774233;
+        Fri, 15 Nov 2019 03:36:14 -0800 (PST)
+Received: from debian.office.codethink.co.uk ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id 17sm8756962wmg.19.2019.11.15.03.36.13
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Nov 2019 15:31:29 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Date:   Thu, 14 Nov 2019 20:30:30 -0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20191114174022.62c8259e@gandalf.local.home>
-References: <20191114133719.309-1-sudipm.mukherjee@gmail.com> <20191114174022.62c8259e@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] libtraceevent: fix header installation
-To:     Steven Rostedt <rostedt@goodmis.org>,
+        Fri, 15 Nov 2019 03:36:13 -0800 (PST)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     arnaldo.melo@gmail.com, Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-CC:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Message-ID: <76775DFB-79CB-4B85-86CE-EB9406976E9D@kernel.org>
+Subject: [PATCH 1/2] libtraceevent: fix lib installation
+Date:   Fri, 15 Nov 2019 11:36:09 +0000
+Message-Id: <20191115113610.21493-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On November 14, 2019 7:40:22 PM GMT-03:00, Steven Rostedt <rostedt@goodmis=
-=2Eorg> wrote:
->
->Arnaldo,
->
->Can you take this?
+When we use 'O=' with make to build libtraceevent in a separate folder
+it fails to install libtraceevent.a and libtraceevent.so.1.1.0 with the
+error:
+  INSTALL  /home/sudip/linux/obj-trace/libtraceevent.a
+  INSTALL  /home/sudip/linux/obj-trace/libtraceevent.so.1.1.0
+cp: cannot stat 'libtraceevent.a': No such file or directory
+Makefile:225: recipe for target 'install_lib' failed
+make: *** [install_lib] Error 1
 
-Sure
+I used the command:
+make O=../../../obj-trace DESTDIR=~/test prefix==/usr  install
 
->
->Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis=2Eorg>
->
->-- Steve
->
->
->On Thu, 14 Nov 2019 13:37:19 +0000
->Sudip Mukherjee <sudipm=2Emukherjee@gmail=2Ecom> wrote:
->
->> When we passed some location in DESTDIR, install_headers called
->> do_install with DESTDIR as part of the second argument=2E But
->do_install
->> is again using '$(DESTDIR_SQ)$2', so as a result the headers were
->> installed in a location $DESTDIR/$DESTDIR=2E In my testing I passed
->> DESTDIR=3D/home/sudip/test and the headers were installed in:
->> /home/sudip/test/home/sudip/test/usr/include/traceevent=2E
->> Lets remove DESTDIR from the second argument of do_install so that
->the
->> headers are installed in the correct location=2E
->>=20
->> Signed-off-by: Sudip Mukherjee <sudipm=2Emukherjee@gmail=2Ecom>
->> ---
->>=20
->> Hi Steve,
->> sent this earlier as an attachment to an email thread, not sure if
->you
->> saw it, so sending it now properly=2E
->> The other problem with the pkgconfig, I guess we can live with that
->for
->> now as that folder is given by pc_path=2E
->>=20
->>  tools/lib/traceevent/Makefile | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>=20
->> diff --git a/tools/lib/traceevent/Makefile
->b/tools/lib/traceevent/Makefile
->> index 5315f3787f8d=2E=2Ecbb429f55062 100644
->> --- a/tools/lib/traceevent/Makefile
->> +++ b/tools/lib/traceevent/Makefile
->> @@ -232,10 +232,10 @@ install_pkgconfig:
->> =20
->>  install_headers:
->>  	$(call QUIET_INSTALL, headers) \
->> -		$(call do_install,event-parse=2Eh,$(DESTDIR)$(includedir_SQ),644); \
->> -		$(call do_install,event-utils=2Eh,$(DESTDIR)$(includedir_SQ),644); \
->> -		$(call do_install,trace-seq=2Eh,$(DESTDIR)$(includedir_SQ),644); \
->> -		$(call do_install,kbuffer=2Eh,$(DESTDIR)$(includedir_SQ),644)
->> +		$(call do_install,event-parse=2Eh,$(includedir_SQ),644); \
->> +		$(call do_install,event-utils=2Eh,$(includedir_SQ),644); \
->> +		$(call do_install,trace-seq=2Eh,$(includedir_SQ),644); \
->> +		$(call do_install,kbuffer=2Eh,$(includedir_SQ),644)
->> =20
->>  install: install_lib
->> =20
+It turns out libtraceevent Makefile, even though it builds in a separate
+folder, searches for libtraceevent.a and libtraceevent.so.1.1.0 in its
+source folder.
+So, add the 'OUTPUT' prefix to the source path so that 'make' looks for
+the files in the correct place.
+
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ tools/lib/traceevent/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index cbb429f55062..83446fe2cf01 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -97,6 +97,7 @@ EVENT_PARSE_VERSION = $(EP_VERSION).$(EP_PATCHLEVEL).$(EP_EXTRAVERSION)
+ 
+ LIB_TARGET  = libtraceevent.a libtraceevent.so.$(EVENT_PARSE_VERSION)
+ LIB_INSTALL = libtraceevent.a libtraceevent.so*
++LIB_INSTALL := $(addprefix $(OUTPUT),$(LIB_INSTALL))
+ 
+ INCLUDES = -I. -I $(srctree)/tools/include $(CONFIG_INCLUDES)
+ 
+-- 
+2.11.0
 
