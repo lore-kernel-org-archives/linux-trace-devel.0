@@ -5,64 +5,64 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C58CC432C0
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:03:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69178C432C0
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:03:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3DFF220678
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:03:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E53C20678
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:03:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tLfByzw0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HglfTfN3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbfK0ODL (ORCPT
+        id S1727080AbfK0ODP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Nov 2019 09:03:11 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:36583 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727022AbfK0ODK (ORCPT
+        Wed, 27 Nov 2019 09:03:15 -0500
+Received: from mail-lj1-f171.google.com ([209.85.208.171]:37209 "EHLO
+        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727007AbfK0ODO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Nov 2019 09:03:10 -0500
-Received: by mail-lj1-f196.google.com with SMTP id k15so24632900lja.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Nov 2019 06:03:09 -0800 (PST)
+        Wed, 27 Nov 2019 09:03:14 -0500
+Received: by mail-lj1-f171.google.com with SMTP id d5so24626642ljl.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Nov 2019 06:03:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BjJ+tT+AgkBiCcWy5862LqL/Pge2Pf+XNzi+wq1cCK0=;
-        b=tLfByzw0Iz+olrYDDF0N9w1WfGih0Rv4LGj8JXOmhEcwKu1AlPS/VfOh8G8mx/cIdo
-         2N571ynpot2cieiLYMaRsW0mgrXkP0zWaXxjab+PmSmUYOeuhhyNDbwJC4F5UKxrwpe3
-         1qDvuSNvSceq41TdBGMzZsGAAVSxnYaDv47vw75y4189VQQqfkKh7GReGVNmOU4F3tzR
-         wW2EdNQczZffkj5X8QODkPhkCsXNGwxZY26AVKwkYmRjS68ePJNiVvNI8fUqCWR64T5d
-         yGhuP1UFm8RcF/rr+ULsMGViAvGg+twzOGFyYJcmtYYUGK8ndGvDSM4ovgUwY6GzE9wY
-         LT6w==
+        bh=gQh9/oLKZRFXepla4e/+ncwCFsvQpIPl37qcZ7uYCOk=;
+        b=HglfTfN3fGZQkKxwN65X8BhRRUV9CM9yMbc0BSCA7caDk+ya95c1X/qmGmHVle2f/i
+         DDXlopYixb4Yxgl7YFK3N1eAi72LniP/9TBbMxeo1dgnbmlo3GW4mM7ffh1WU8qy+vl9
+         mO1q9HZfwBC2HR6vu8ijHBIK95mokr57KBmJS6gR+t4IlT/AADuajl6drxg3ejHyaoLT
+         iCddAjyAJOVhWU99EzSJvPxjnGLnFFLE0hjNUoV3NaIJQc9UEVtUk477iQtVHj+3xpy9
+         DFUQ5T9o5zPP8E0+NqubEaXFmLoF/SIcOxOr+lP22vWp2v66ZthGdWf49EYK6LjXMCwX
+         Cgbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BjJ+tT+AgkBiCcWy5862LqL/Pge2Pf+XNzi+wq1cCK0=;
-        b=flxMeZkVfMagJMAEHjuDEdMJ82lqHQOZn/K3Hv1fIAx/Zpltzx6iBt8Uo5z2UVpdRi
-         nGzWsob/1KFmdt3YYyWf1Y8AHywEraryIJwoScQT2s8NnmKM31uJVYn9jDylVVENqSlz
-         G18G/eYJanq8jekHYHvAZNSlTMxfQLSpS3YdxvZGPOYv2MICbHQj/Xmufn1/PJUvw0PJ
-         DZ12c6wyOsdWO8opgwXzJ7G2M0J2NuIUvwbr0v8AWoTLHk5Ko7hIaN/cyLl+qh2oqHqE
-         JsfVxoBiBkifVKxNNdC1SMVDBa5JymTD2TXM61M7Pj5fDOTtjS9VGOHuKcye7BbcKjxd
-         zVCA==
-X-Gm-Message-State: APjAAAXN+6wcUz1dOllemygVSdhJWEMeFWcqOTzyFc/ukHOB8V7A9Dk1
-        k/KSUveb5q5jL+z7ShWIUbY=
-X-Google-Smtp-Source: APXvYqyyB//fGeWnRl8Yqd+WiO7OclshZw5+XOze+WgleNbypFera9yfTk5j51uTEy46jvW/GTI8Iw==
-X-Received: by 2002:a2e:93d5:: with SMTP id p21mr19128488ljh.50.1574863388401;
-        Wed, 27 Nov 2019 06:03:08 -0800 (PST)
+        bh=gQh9/oLKZRFXepla4e/+ncwCFsvQpIPl37qcZ7uYCOk=;
+        b=LQsBCI6U5blG8O/QCRJ0qo5TKLZwtb6qj33ai/jghWHqAj3FOs1MU1Ovg5GTMfYrI1
+         7uv4tZY+PWHHA6sGLT9HGY3i98rCrXaSDOyjOxQSGCoVf21xH6oxe6mb3RA7xd0QJ0aE
+         Rv73j1eYE/3CSDNCUWzaF42ntQrVZRGC1n7IkkDv60rifJTLeN/2EZr646k3PRmjE8Iv
+         tfg4RMcy18O81GbXz41AETgIOVchuvKrhu61rKV39vDR6+qANnk3IwgsTpV6e+QTODAR
+         v2CoWt/uhY6CETkiSuMyGGRFjAx5gaoROfDDQGrAKzuuYGrRGfUdKmiJwivm2EpmAW02
+         yheA==
+X-Gm-Message-State: APjAAAXnUNvhGea12jFBCHwq+IO7MPSC7QT0LRXREB0h0pGiy/X478ji
+        b0lCDTFfnKPD8HgzhtFjC9U=
+X-Google-Smtp-Source: APXvYqwPv8Q41Sgv5LK2NzLLE+u9S+nxO/ubDbCPOZ9uiYgJAXcUhii5/Vdlcf5XixrJVjEY/CBp4A==
+X-Received: by 2002:a05:651c:285:: with SMTP id b5mr5019043ljo.14.1574863391994;
+        Wed, 27 Nov 2019 06:03:11 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id y18sm7268660lja.12.2019.11.27.06.03.07
+        by smtp.gmail.com with ESMTPSA id y18sm7268660lja.12.2019.11.27.06.03.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2019 06:03:07 -0800 (PST)
+        Wed, 27 Nov 2019 06:03:11 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v14 16/19] trace-cmd: Refactor few trace-cmd internal functions.
-Date:   Wed, 27 Nov 2019 16:02:44 +0200
-Message-Id: <20191127140247.258766-17-tz.stoyanov@gmail.com>
+Subject: [PATCH v14 19/19] trace-cmd: Debug scripts for PTP-like algorithm for host - guest timestamp synchronization
+Date:   Wed, 27 Nov 2019 16:02:47 +0200
+Message-Id: <20191127140247.258766-20-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191127140247.258766-1-tz.stoyanov@gmail.com>
 References: <20191127140247.258766-1-tz.stoyanov@gmail.com>
@@ -73,108 +73,160 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In order to reuse code inside trace-cmd application context,
-few functions are made non static:
-	int make_vsock(unsigned int port);
-	int get_vsock_port(int sd, unsigned int *port);
-	int open_vsock(unsigned int cid, unsigned int port);
-	char *get_guest_file(const char *file, const char *guest);
+These scripts can be used to visualise debug files, written when the PTP-like algorithm
+is compiled with TSYNC_DEBUG defined. The files are located in the guest machine:
+    s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
+    res-cid*.txt - For each tracing session: all calculated clock offsets.
+
+tsync_hist.py plots a histogram, using data from a s-cid*.txt file:
+	"python tsync_hist.py s-cid2_1.txt"
+tsync_res.py plots a line, using data from res-cid*.txt file:
+	"python tsync_res.py res-cid2.txt"
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/include/trace-local.h | 8 ++++++++
- tracecmd/trace-agent.c         | 4 ++--
- tracecmd/trace-record.c        | 8 ++++----
- 3 files changed, 14 insertions(+), 6 deletions(-)
+ scripts/debug/tsync_hist.py | 57 +++++++++++++++++++++++++++++++++++++
+ scripts/debug/tsync_readme  | 13 +++++++++
+ scripts/debug/tsync_res.py  | 46 ++++++++++++++++++++++++++++++
+ 3 files changed, 116 insertions(+)
+ create mode 100644 scripts/debug/tsync_hist.py
+ create mode 100644 scripts/debug/tsync_readme
+ create mode 100644 scripts/debug/tsync_res.py
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index a6f79c5..17ef31a 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -19,6 +19,8 @@
- #define GUEST_FIFO_FMT		GUEST_DIR_FMT "/" GUEST_PIPE_NAME "%d"
- #define VIRTIO_FIFO_FMT		"/dev/virtio-ports/" GUEST_PIPE_NAME "%d"
- 
-+#define TRACE_FILENAME		"trace.dat"
+diff --git a/scripts/debug/tsync_hist.py b/scripts/debug/tsync_hist.py
+new file mode 100644
+index 0000000..819d1e8
+--- /dev/null
++++ b/scripts/debug/tsync_hist.py
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright (C) 2019, VMware Inc, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
++# Copyright (C) 2019, VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
 +
- /* fix stupid glib guint64 typecasts and printf formats */
- typedef unsigned long long u64;
- 
-@@ -258,6 +260,12 @@ void tracecmd_disable_tracing(void);
- void tracecmd_enable_tracing(void);
- void tracecmd_stat_cpu(struct trace_seq *s, int cpu);
- 
-+int make_vsock(unsigned int port);
-+int get_vsock_port(int sd, unsigned int *port);
-+int open_vsock(unsigned int cid, unsigned int port);
 +
-+char *get_guest_file(const char *file, const char *guest);
++import matplotlib.pyplot as plt
++import matplotlib.lines as mlines
++import numpy as np
++import sys
 +
- /* No longer in event-utils.h */
- void __noreturn die(const char *fmt, ...); /* Can be overriden */
- void *malloc_or_die(unsigned int size); /* Can be overridden */
-diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
-index cc330b7..530f972 100644
---- a/tracecmd/trace-agent.c
-+++ b/tracecmd/trace-agent.c
-@@ -40,7 +40,7 @@ static int get_local_cid(unsigned int *cid)
- 	return ret;
- }
- 
--static int make_vsock(unsigned int port)
-+int make_vsock(unsigned int port)
- {
- 	struct sockaddr_vm addr = {
- 		.svm_family = AF_VSOCK,
-@@ -64,7 +64,7 @@ static int make_vsock(unsigned int port)
- 	return sd;
- }
- 
--static int get_vsock_port(int sd, unsigned int *port)
-+int get_vsock_port(int sd, unsigned int *port)
- {
- 	struct sockaddr_vm addr;
- 	socklen_t addr_len = sizeof(addr);
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 4f18283..288dbcc 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -68,7 +68,7 @@ static int rt_prio;
- 
- static int keep;
- 
--static const char *output_file = "trace.dat";
-+static const char *output_file = TRACE_FILENAME;
- 
- static int latency;
- static int sleep_time = 1000;
-@@ -536,7 +536,7 @@ static char *get_temp_file(struct buffer_instance *instance, int cpu)
- 	return file;
- }
- 
--static char *get_guest_file(const char *file, const char *guest)
-+char *get_guest_file(const char *file, const char *guest)
- {
- 	const char *p;
- 	char *out = NULL;
-@@ -2772,7 +2772,7 @@ static int connect_port(const char *host, unsigned int port)
- }
- 
- #ifdef VSOCK
--static int open_vsock(unsigned int cid, unsigned int port)
-+int open_vsock(unsigned int cid, unsigned int port)
- {
- 	struct sockaddr_vm addr = {
- 		.svm_family = AF_VSOCK,
-@@ -2835,7 +2835,7 @@ static bool can_splice_read_vsock(void)
- }
- 
- #else
--static inline int open_vsock(unsigned int cid, unsigned int port)
-+int open_vsock(unsigned int cid, unsigned int port)
- {
- 	die("vsock is not supported");
- 	return -1;
++def newline(p1, p2):
++    ax = plt.gca()
++    xmin, xmax = ax.get_xbound()
++
++    if(p2[0] == p1[0]):
++        xmin = xmax = p1[0]
++        ymin, ymax = ax.get_ybound()
++    else:
++        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
++        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
++
++    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color='red')
++    ax.add_line(l)
++    return l
++
++
++data = np.loadtxt(fname = sys.argv[1])
++selected_ts  = data[-1, 1]
++selected_ofs = data[-1, 0]
++data = data[:-1,:]
++
++x = data[:, 1] - data[:, 0]
++
++mean = x.mean()
++std = x.std()
++
++num_bins = 500
++min = x.min() #+ .4 * (x.max() - x.min())
++max = x.max() #- .4 * (x.max() - x.min())
++bins = np.linspace(min, max, num_bins, endpoint = False, dtype=int)
++
++fig, ax = plt.subplots()
++
++# the histogram of the data
++n, bins, patches = ax.hist(x, bins, histtype=u'step');
++
++ax.set_xlabel('clock offset [$\mu$s]')
++ax.set_ylabel('entries')
++ax.set_title("$\sigma$=%i" % std)
++
++x1, y1 = [selected_ofs, min], [selected_ofs, max]
++newline(x1, y1)
++
++# Tweak spacing to prevent clipping of ylabel
++fig.tight_layout()
++plt.show()
+diff --git a/scripts/debug/tsync_readme b/scripts/debug/tsync_readme
+new file mode 100644
+index 0000000..7466bb3
+--- /dev/null
++++ b/scripts/debug/tsync_readme
+@@ -0,0 +1,13 @@
++PTP-like algorithm debug
++========================
++
++tsync_*.py scripts can be used to visualise debug files, written when the PTP-like algorithm
++is compiled with TSYNC_DEBUG defined. The files are located in the guest machine:
++    s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
++    res-cid*.txt - For each tracing session: all calculated clock offsets.
++
++tsync_hist.py plots a histogram, using data from a s-cid*.txt file:
++	"python tsync_hist.py s-cid2_1.txt"
++tsync_res.py plots a line, using data from res-cid*.txt file:
++	"python tsync_res.py res-cid2.txt"
++
+diff --git a/scripts/debug/tsync_res.py b/scripts/debug/tsync_res.py
+new file mode 100644
+index 0000000..7d10986
+--- /dev/null
++++ b/scripts/debug/tsync_res.py
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright (C) 2019, VMware Inc, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
++# Copyright (C) 2019, VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
++
++
++import matplotlib.pyplot as plt
++import matplotlib.lines as mlines
++import numpy as np
++import sys
++
++def newline(p1, p2):
++    ax = plt.gca()
++    xmin, xmax = ax.get_xbound()
++
++    if(p2[0] == p1[0]):
++        xmin = xmax = p1[0]
++        ymin, ymax = ax.get_ybound()
++    else:
++        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
++        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
++
++    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color='red')
++    ax.add_line(l)
++    return l
++
++data = np.loadtxt(fname = sys.argv[1])
++x = data[:, 0]
++y = data[:, 1]
++
++fig, ax = plt.subplots()
++
++ax.set_xlabel('samples (t)')
++ax.set_ylabel('clock offset')
++ax.set_title("$\delta$=%i ns" % (max(y) - min(y)))
++
++l = mlines.Line2D(x, y)
++ax.add_line(l)
++ax.set_xlim(min(x), max(x))
++ax.set_ylim(min(y), max(y) )
++
++print(min(y), max(y), max(y) - min(y))
++
++# Tweak spacing to prevent clipping of ylabel
++fig.tight_layout()
++plt.show()
 -- 
 2.23.0
 
