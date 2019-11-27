@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5A2AC432C3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFBB4C432C0
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:02:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BCD3620722
+	by mail.kernel.org (Postfix) with ESMTP id 8B40120678
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:02:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NK4yteiB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mmGfNhEG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbfK0OC7 (ORCPT
+        id S1727099AbfK0OC7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 27 Nov 2019 09:02:59 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:45411 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727092AbfK0OC7 (ORCPT
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:46204 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727090AbfK0OC7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 27 Nov 2019 09:02:59 -0500
-Received: by mail-lj1-f193.google.com with SMTP id n21so24574380ljg.12
-        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Nov 2019 06:02:57 -0800 (PST)
+Received: by mail-lf1-f65.google.com with SMTP id a17so17230642lfi.13
+        for <linux-trace-devel@vger.kernel.org>; Wed, 27 Nov 2019 06:02:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MDo/x8wn/ceP5KxNTdkVSVvKxX8fmIwrAlEm4BRjP/4=;
-        b=NK4yteiBuU6LnjIP5wcBeMva2fjrWkSrQFebfs04cyodCGNISL/sQ53zGwqrUJX9pV
-         RtQSg6Hq2Qs0wYqlTdIdMOECR+LvcZmZqFsqzVJxFvMxPBlr/kSCDLluhrNXgWd5mVME
-         i+6oyUwSZf+gHz5Dw48wWN3f4nzRii+ZOvflvVZv8Zzawo+9qeR44cS6GmQCvecg5sYH
-         rxi2ztuHNOwLKtSDwn5hCygK7oFksZKeNoO0+5Oa7tkxPtgvBXAx2pfQKJP1Ilz39RQp
-         xnrWL3nRV3Y8C/1Q0VMdrt/d/pJqvGr5PKaHwS4MHnm49D2SrPDSBagQC9spEtptY1q2
-         OPtA==
+        bh=ldCDagl9RqAknwMP7THNOte9M0qIZeza4fKWvwegzY0=;
+        b=mmGfNhEGvUlrI89jMcmxYhYcSfHHvrS+yYzPXmVVw3FRuRLoVGFtC/fcergINOjayD
+         H0qjFfCIvtz0hBvvSpgzcryvQbxweiHH3xaNA+Y1bh2KOzSOScwGLPLLi118RET3NX5Z
+         bWAlZzab8eFQq0ck4Oq41Khf1gcSNgocda2HJWZ0J0FMOBRnm7vyOeSc4jTMlzNEkZSr
+         IW55uXfk57c/X0FUV1C8Bosz9NkAlJwwhKjkDK3MYntXFtsaU4B6hmdvu/JEqxgZUX0B
+         x7/zgwY6xU1/98107ecvPalwIbMtV1cb7Q9kn58Vf0a1qb2xGsIK92sEa7PFn5fbQ9Q5
+         I8hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MDo/x8wn/ceP5KxNTdkVSVvKxX8fmIwrAlEm4BRjP/4=;
-        b=FAC4dsZLEb4IPOJbZZJxqOGFt6XcZPaWEFqrNEWFVLx+iBDpqAbTLSM6LWi6qXAs1r
-         DwunYpTdmL6CmrY9UApA9eAQYlKJsc69QO32Sz212FKube3+u5JUjSKKpf90szAlM/dM
-         KeehWWfuXhFja6m8mOlDdQNfnTAb7nHJGkeiEhCNV+Vufzzmdara6l2p18knFeHvKCHw
-         AkChtmg/6aFZWgFVA0g2XbUyoL3vSTJ8vEcrG0HrN/mgYO8WZZ3b0P3lhcVtZDM/PrKC
-         CPpOCO0XsKWvDyCyHUJIkDhmjv9Zp20nAr9NUyNqAlHLdOGSqsUNirjSOMfaii7R/RTE
-         LB3w==
-X-Gm-Message-State: APjAAAVslYUo8kRPGHy2yldba4qrswLKwQO6ZJMcpARHvR00vFWPY07I
-        atQMgLYPw3egNuscaiWiFpU=
-X-Google-Smtp-Source: APXvYqwzZqMVX9h9cR8g/ov5CyyEejWRtVHqaG4SRNJ8dDQ2pASVGF0l6Eu6aaFQGsm1xXD+d14vJA==
-X-Received: by 2002:a05:651c:289:: with SMTP id b9mr31825766ljo.80.1574863376588;
-        Wed, 27 Nov 2019 06:02:56 -0800 (PST)
+        bh=ldCDagl9RqAknwMP7THNOte9M0qIZeza4fKWvwegzY0=;
+        b=eJE3tmrQgCMOSQ66/+UP2aebWF9qzjXCgJBv8ig0yakXLtA4LRo//bznwIIfp2t/7i
+         wanuRwQej9TnCeA12cpC/vP6BFdKxhVX+NUe2DbJ0Lxuhwcj1F/fFEuzY94mkO/Jrbvy
+         R/bLpE5GWOQxo3tpGe83u9lT55UJboq3H5ePY2IhZbtFwn0/XWuErPc1e9lrwXsmwXRh
+         2nhYf9ebM9XB/ZrlGQX+G69XiTvMveDJGVFX2BRQjEYQbbMqZrJAFrh9LeCBGB2GM6nP
+         GlxyqDoshE9pBH+pZf0hAEyxilwcYuhMRZGJ21m0nMH8PbfM/86s8afeIN8u98YY9m/Y
+         Ch7g==
+X-Gm-Message-State: APjAAAU9wgRxvga4+onrE9/wSqf1JcDKOPWbtWpahdZ9RuA2O2lkcI82
+        plxA4fLKCpDkqVnxBqizhG9Mfg/NMlM=
+X-Google-Smtp-Source: APXvYqxk3Zege4jTqZwMOjs4rzSPXSyMosDGaJAKl68QuydbM+sOr5bM340ZVo3IaoY1gWpjnzUo6A==
+X-Received: by 2002:a19:ef10:: with SMTP id n16mr23114147lfh.187.1574863375461;
+        Wed, 27 Nov 2019 06:02:55 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id y18sm7268660lja.12.2019.11.27.06.02.55
+        by smtp.gmail.com with ESMTPSA id y18sm7268660lja.12.2019.11.27.06.02.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2019 06:02:56 -0800 (PST)
+        Wed, 27 Nov 2019 06:02:54 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v14 06/19] trace-cmd: Add new library API for reading ftrace buffers
-Date:   Wed, 27 Nov 2019 16:02:34 +0200
-Message-Id: <20191127140247.258766-7-tz.stoyanov@gmail.com>
+Subject: [PATCH v14 05/19] trace-cmd: Add new library API for local CPU count
+Date:   Wed, 27 Nov 2019 16:02:33 +0200
+Message-Id: <20191127140247.258766-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191127140247.258766-1-tz.stoyanov@gmail.com>
 References: <20191127140247.258766-1-tz.stoyanov@gmail.com>
@@ -73,165 +73,226 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A new libtracecmd API is introduced:
-
-	int tracecmd_iterate_raw_events(struct tep_handle *tep,
-					struct tracecmd_instance *instance,
-					int (*callback)(struct tep_event *,
-						   	struct tep_record *,
-						   	int, void *context),
-					void *callback_context);
-
-It reads events from trace_pipe_raw, per cpu ftrace buffer, and calls a user
-callback for each of them. The API is instance aware.
+In order to reuse the code, the function detecting the
+number of local CPU is moved from trace-cmd application to
+libtracecmd. The following new library API is introduced:
+	int tracecmd_count_cpus(void);
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h |   8 +++
- lib/trace-cmd/trace-util.c    | 114 ++++++++++++++++++++++++++++++++++
- 2 files changed, 122 insertions(+)
+ include/trace-cmd/trace-cmd.h  |  3 +++
+ lib/trace-cmd/trace-util.c     | 40 +++++++++++++++++++++++++++++
+ tracecmd/include/trace-local.h |  2 --
+ tracecmd/trace-agent.c         |  2 +-
+ tracecmd/trace-profile.c       |  2 +-
+ tracecmd/trace-record.c        | 46 +++-------------------------------
+ tracecmd/trace-stat.c          |  4 +--
+ 7 files changed, 50 insertions(+), 49 deletions(-)
 
 diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 5d4292e..831bb1a 100644
+index 5287d23..5d4292e 100644
 --- a/include/trace-cmd/trace-cmd.h
 +++ b/include/trace-cmd/trace-cmd.h
-@@ -380,6 +380,14 @@ char *tracecmd_read_instance_file(struct tracecmd_instance *instance,
+@@ -427,6 +427,9 @@ void tracecmd_plog(const char *fmt, ...);
+ void tracecmd_plog_error(const char *fmt, ...);
+ int tracecmd_set_logfile(char *logfile);
  
- void tracecmd_set_clock(struct tracecmd_instance *instance, char **old_clock);
- 
-+int tracecmd_iterate_raw_events(struct tep_handle *tep,
-+				struct tracecmd_instance *instance,
-+				   int (*callback)(struct tep_event *,
-+						   struct tep_record *,
-+						   int, void *context),
-+				void *callback_context);
++/* --- System --- */
++int tracecmd_count_cpus(void);
 +
-+
+ /* --- Hack! --- */
+ int tracecmd_blk_hack(struct tracecmd_input *handle);
  
- /* --- Plugin handling --- */
- extern struct tep_plugin_option trace_ftrace_options[];
 diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 1d90ed6..ee6f48a 100644
+index 7f6a628..1d90ed6 100644
 --- a/lib/trace-cmd/trace-util.c
 +++ b/lib/trace-cmd/trace-util.c
-@@ -1182,3 +1182,117 @@ int tracecmd_write_file(const char *file, const char *str, const char *type)
- 	}
- 	return ret;
+@@ -1109,6 +1109,46 @@ int tracecmd_stack_tracer_status(int *status)
+ 	return 1; /* full success */
  }
-+
-+static int
-+get_events_in_page(struct tep_handle *tep, void *page,
-+		   int size, int cpu,
-+		   int (*callback)(struct tep_event *,
-+				   struct tep_record *,
-+				   int, void *),
-+		   void *callback_context)
+ 
++int tracecmd_count_cpus(void)
 +{
-+	struct tep_record *last_record = NULL;
-+	struct tep_event *event = NULL;
-+	struct tep_record *record;
-+	int id, cnt = 0;
-+
-+	if (size <= 0)
-+		return 0;
-+
-+	while (true) {
-+		event = NULL;
-+		record = tracecmd_read_page_record(tep, page, size,
-+						   last_record);
-+		if (!record)
-+			break;
-+		free_record(last_record);
-+		id = tep_data_type(tep, record);
-+		event = tep_find_event(tep, id);
-+		if (event && callback) {
-+			if (callback(event, record, cpu, callback_context))
-+				break;
-+		}
-+		last_record = record;
-+	}
-+	free_record(last_record);
-+
-+	return cnt;
-+}
-+
-+/*
-+ * tracecmd_iterate_raw_events - Iterate through events in trace_pipe_raw
-+ *				 per CPU trace files
-+ * @tep: a handle to the trace event parser context
-+ * @instance: ftrace instance, can be NULL for the top instance
-+ * @callback: A user function, called for each record from the file.
-+ * @callback_context: A custom context, passed to the user callback function
-+ *
-+ * If the @callback returns non-zero, the iteration stops.
-+ *
-+ * Returns -1 in case of an error, or 0 otherwise.
-+ */
-+int tracecmd_iterate_raw_events(struct tep_handle *tep,
-+				struct tracecmd_instance *instance,
-+				int (*callback)(struct tep_event *,
-+						struct tep_record *,
-+						int, void *),
-+				void *callback_context)
-+{
-+	unsigned int p_size;
-+	struct dirent *dent;
-+	char file[PATH_MAX];
-+	void *page = NULL;
-+	struct stat st;
-+	char *path;
-+	DIR *dir;
-+	int ret;
-+	int cpu;
-+	int fd;
++	FILE *fp;
++	char buf[1024];
++	int cpus = 0;
++	char *pbuf;
++	size_t *pn;
++	size_t n;
 +	int r;
 +
-+	p_size = getpagesize();
-+	path = tracecmd_get_instance_file(instance, "per_cpu");
-+	if (!path)
-+		return -1;
-+	dir = opendir(path);
-+	if (!dir) {
-+		ret = -1;
-+		goto error;
-+	}
-+	page = malloc(p_size);
-+	if (!page) {
-+		ret = -1;
-+		goto error;
-+	}
-+	while ((dent = readdir(dir))) {
-+		const char *name = dent->d_name;
++	cpus = sysconf(_SC_NPROCESSORS_CONF);
++	if (cpus > 0)
++		return cpus;
 +
-+		if (strlen(name) < 4 || strncmp(name, "cpu", 3) != 0)
-+			continue;
-+		cpu = atoi(name + 3);
-+		sprintf(file, "%s/%s", path, name);
-+		ret = stat(file, &st);
-+		if (ret < 0 || !S_ISDIR(st.st_mode))
-+			continue;
++	warning("sysconf could not determine number of CPUS");
 +
-+		sprintf(file, "%s/%s/trace_pipe_raw", path, name);
-+		fd = open(file, O_RDONLY | O_NONBLOCK);
-+		if (fd < 0)
++	/* Do the hack to figure out # of CPUS */
++	n = 1024;
++	pn = &n;
++	pbuf = buf;
++
++	fp = fopen("/proc/cpuinfo", "r");
++	if (!fp)
++		die("Can not read cpuinfo");
++
++	while ((r = getline(&pbuf, pn, fp)) >= 0) {
++		char *p;
++
++		if (strncmp(buf, "processor", 9) != 0)
 +			continue;
-+		do {
-+			r = read(fd, page, p_size);
-+			if (r > 0)
-+				get_events_in_page(tep, page, r, cpu,
-+						   callback, callback_context);
-+		} while (r > 0);
-+		close(fd);
++		for (p = buf+9; isspace(*p); p++)
++			;
++		if (*p == ':')
++			cpus++;
 +	}
-+	ret = 0;
++	fclose(fp);
 +
-+error:
-+	if (dir)
-+		closedir(dir);
-+	free(page);
-+	tracecmd_put_tracing_file(path);
-+	return ret;
++	return cpus;
 +}
++
+ /*
+  * tracecmd_write_file - Write in trace file
+  * @file: Full name of the trace file.
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 3a05e9c..a51f0d0 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -243,8 +243,6 @@ void update_first_instance(struct buffer_instance *instance, int topt);
+ 
+ void show_instance_file(struct buffer_instance *instance, const char *name);
+ 
+-int count_cpus(void);
+-
+ /* moved from trace-cmd.h */
+ void tracecmd_create_top_instance(char *name);
+ void tracecmd_remove_instances(void);
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index 93e3edf..1c6e0a3 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -203,7 +203,7 @@ static void agent_serve(unsigned int port)
+ 
+ 	signal(SIGCHLD, handle_sigchld);
+ 
+-	nr_cpus = count_cpus();
++	nr_cpus = tracecmd_count_cpus();
+ 	page_size = getpagesize();
+ 
+ 	sd = make_vsock(port);
+diff --git a/tracecmd/trace-profile.c b/tracecmd/trace-profile.c
+index 231e381..cfae2a2 100644
+--- a/tracecmd/trace-profile.c
++++ b/tracecmd/trace-profile.c
+@@ -1314,7 +1314,7 @@ void trace_init_profile(struct tracecmd_input *handle, struct hook_list *hook,
+ 	 * system.
+ 	 */
+ 	if (!h->cpus)
+-		h->cpus = count_cpus();
++		h->cpus = tracecmd_count_cpus();
+ 
+ 	list_head_init(&h->migrate_starts);
+ 	h->cpu_starts = malloc(sizeof(*h->cpu_starts) * h->cpus);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 13a7cda..4459c90 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -2726,46 +2726,6 @@ static void expand_event_list(void)
+ 		expand_event_instance(instance);
+ }
+ 
+-int count_cpus(void)
+-{
+-	FILE *fp;
+-	char buf[1024];
+-	int cpus = 0;
+-	char *pbuf;
+-	size_t *pn;
+-	size_t n;
+-	int r;
+-
+-	cpus = sysconf(_SC_NPROCESSORS_CONF);
+-	if (cpus > 0)
+-		return cpus;
+-
+-	warning("sysconf could not determine number of CPUS");
+-
+-	/* Do the hack to figure out # of CPUS */
+-	n = 1024;
+-	pn = &n;
+-	pbuf = buf;
+-
+-	fp = fopen("/proc/cpuinfo", "r");
+-	if (!fp)
+-		die("Can not read cpuinfo");
+-
+-	while ((r = getline(&pbuf, pn, fp)) >= 0) {
+-		char *p;
+-
+-		if (strncmp(buf, "processor", 9) != 0)
+-			continue;
+-		for (p = buf+9; isspace(*p); p++)
+-			;
+-		if (*p == ':')
+-			cpus++;
+-	}
+-	fclose(fp);
+-
+-	return cpus;
+-}
+-
+ static void finish(int sig)
+ {
+ 	/* all done */
+@@ -4487,7 +4447,7 @@ static void reset_clock(void)
+ static void reset_cpu_mask(void)
+ {
+ 	struct buffer_instance *instance;
+-	int cpus = count_cpus();
++	int cpus = tracecmd_count_cpus();
+ 	int fullwords = (cpus - 1) / 32;
+ 	int bits = (cpus - 1) % 32 + 1;
+ 	int len = (fullwords + 1) * 9;
+@@ -5043,7 +5003,7 @@ void init_top_instance(void)
+ {
+ 	if (!top_instance.ftrace)
+ 		top_instance.ftrace = tracecmd_create_instance(NULL);
+-	top_instance.cpu_count = count_cpus();
++	top_instance.cpu_count = tracecmd_count_cpus();
+ 	top_instance.flags = BUFFER_FL_KEEP;
+ 	tracecmd_init_instance(&top_instance);
+ }
+@@ -5240,7 +5200,7 @@ static void init_common_record_context(struct common_record_context *ctx,
+ 	memset(ctx, 0, sizeof(*ctx));
+ 	ctx->instance = &top_instance;
+ 	ctx->curr_cmd = curr_cmd;
+-	local_cpu_count = count_cpus();
++	local_cpu_count = tracecmd_count_cpus();
+ 	init_top_instance();
+ }
+ 
+diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
+index 32aebc5..44ee559 100644
+--- a/tracecmd/trace-stat.c
++++ b/tracecmd/trace-stat.c
+@@ -737,7 +737,7 @@ static void report_cpumask(struct buffer_instance *instance)
+ 	cont = strstrip(str);
+ 
+ 	/* check to make sure all CPUs on this machine are set */
+-	cpus = count_cpus();
++	cpus = tracecmd_count_cpus();
+ 
+ 	for (i = strlen(cont) - 1; i >= 0 && cpus > 0; i--) {
+ 		if (cont[i] == ',')
+@@ -896,7 +896,7 @@ void trace_stat (int argc, char **argv)
+ 			instance = create_instance(optarg);
+ 			if (!instance)
+ 				die("Failed to create instance");
+-			add_instance(instance, count_cpus());
++			add_instance(instance, tracecmd_count_cpus());
+ 			/* top instance requires direct access */
+ 			if (!topt && is_top_instance(first_instance))
+ 				first_instance = instance;
 -- 
 2.23.0
 
