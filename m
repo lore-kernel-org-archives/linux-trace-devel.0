@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F243C432C0
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 18:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 702D6C432C0
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 20:13:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3F95820835
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 18:54:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5336020661
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 27 Nov 2019 20:13:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbfK0SyT (ORCPT
+        id S1727126AbfK0UNO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 27 Nov 2019 13:54:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33906 "EHLO mail.kernel.org"
+        Wed, 27 Nov 2019 15:13:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726984AbfK0SyS (ORCPT
+        id S1727010AbfK0UNO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 27 Nov 2019 13:54:18 -0500
+        Wed, 27 Nov 2019 15:13:14 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 515EF2080F;
-        Wed, 27 Nov 2019 18:54:18 +0000 (UTC)
-Date:   Wed, 27 Nov 2019 13:54:16 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 7864C20661;
+        Wed, 27 Nov 2019 20:13:12 +0000 (UTC)
+Date:   Wed, 27 Nov 2019 15:13:10 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] kernel-shark: Fix potential memory leak in
- libkshark-collection
-Message-ID: <20191127135416.6bcc0fd9@gandalf.local.home>
-In-Reply-To: <20191023122145.14314-2-y.karadz@gmail.com>
+Subject: Re: [PATCH v2 3/3] kernel-shark: When running as Root save all
+ config settings in /root/
+Message-ID: <20191127151310.680478f1@gandalf.local.home>
+In-Reply-To: <20191023122145.14314-3-y.karadz@gmail.com>
 References: <20191023122145.14314-1-y.karadz@gmail.com>
-        <20191023122145.14314-2-y.karadz@gmail.com>
+        <20191023122145.14314-3-y.karadz@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,94 +44,114 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 23 Oct 2019 15:21:44 +0300
+On Wed, 23 Oct 2019 15:21:45 +0300
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> When searching for the entry, do not loop over the original list of
-> requests. Use a copy instead. If we loop over the original list and
-> no entry is found in the first element of the list, later the memory
-> used for this first element will leak.
+> If KernelShark is running with Root privileges, do not save the settings
+> in the standard location. Otherwise the configuration files will be owned
+> by Root and later the normal user will have no access to those files.
+> 
+> The patch seems to do the right thing in all cases that I tested, however
+> there is definitely something that I do not understand. QDir::homePath()
+> always returns the path to the home of the normal user, even if I build
+> and run kernelshark as root (sudo -s).
 > 
 > Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 > ---
->  kernel-shark/src/libkshark-collection.c | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
+>  kernel-shark/src/KsMainWindow.cpp | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel-shark/src/libkshark-collection.c b/kernel-shark/src/libkshark-collection.c
-> index 02a014e..95fdbab 100644
-> --- a/kernel-shark/src/libkshark-collection.c
-> +++ b/kernel-shark/src/libkshark-collection.c
-> @@ -622,6 +622,7 @@ kshark_get_collection_entry_front(struct kshark_entry_request **req,
->  				  ssize_t *index)
+> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+> index 3402764..bd6c338 100644
+> --- a/kernel-shark/src/KsMainWindow.cpp
+> +++ b/kernel-shark/src/KsMainWindow.cpp
+> @@ -69,7 +69,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+>    _contentsAction("Contents", this),
+>    _bugReportAction("Report a bug", this),
+>    _deselectShortcut(this),
+> -  _settings("kernelshark.org", "Kernel Shark") // organization , application
+> +  _settings(_getCacheDir() + "/setting.ini", QSettings::IniFormat)
 >  {
->  	const struct kshark_entry *entry = NULL;
-> +	struct kshark_entry_request *list;
+>  	setWindowTitle("Kernel Shark");
+>  	_createActions();
+> @@ -431,6 +431,9 @@ QString KsMainWindow::_getCacheDir()
+>  		dir = QStandardPaths::writableLocation(appCachePath);
+>  		dir += "/kernelshark";
+>  
+> +		if (geteuid() == 0)
+> +			dir.replace(QDir::homePath(), "/root");
+> +
+>  		if (!QDir(dir).exists())
+>  			lamMakePath(false);
+>  	}
 
-Hi Yordan,
+I'll pull this patch in, but this assumes that root is always at /root.
+I've had machines where that was not the case. I wonder if we should
+add something like this on top of this patch. Not this change directly,
+(because this is me just writing C with at C++ compiler ;-), but
+something that is more the Qt way...
 
-I was looking at this patch in more detail, and I'm thinking that we
-don't need to pass in the address of the req pointer, but just the req
-pointer itself. The only place that I see the req pointer being
-modified is the failure case in map_collection_request_init() where it
-does:
+diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+index bd6c338f..56cf9b9b 100644
+--- a/kernel-shark/src/KsMainWindow.cpp
++++ b/kernel-shark/src/KsMainWindow.cpp
+@@ -31,6 +31,43 @@
+ #include "KsCaptureDialog.hpp"
+ #include "KsAdvFilteringDialog.hpp"
+ 
++static QString find_root_home(void)
++{
++	FILE *fp = fopen("/etc/passwd", "r");
++	char *buf;
++	char *sav;
++	char *id;
++	size_t n;
++
++	if (!fp)
++		return QString("/root");
++
++	n = 0;
++	while (getline(&buf, &n, fp) != -1) {
++		/* user */
++		strtok_r(buf, ":", &sav);
++		/* type */
++		strtok_r(NULL, ":", &sav);
++		/* pid */
++		id = strtok_r(NULL, ":", &sav);
++		if (atoi(id) != 0) {
++			n = 0;
++			free(buf);
++			continue;
++		}
++		/* gid */
++		strtok_r(NULL, ":", &sav);
++		/* group */
++		strtok_r(NULL, ":", &sav);
++		/* home */
++		QString ret = QString(strtok_r(NULL, ":", &sav));
++		free(buf);
++		return ret;
++	}
++	free(buf);
++	return QString("/root");
++}
++
+ /** Create KernelShark Main window. */
+ KsMainWindow::KsMainWindow(QWidget *parent)
+ : QMainWindow(parent),
+@@ -432,7 +469,8 @@ QString KsMainWindow::_getCacheDir()
+ 		dir += "/kernelshark";
+ 
+ 		if (geteuid() == 0)
+-			dir.replace(QDir::homePath(), "/root");
++			dir.replace(QDir::homePath(),
++				    find_root_home().toStdString().c_str());
+ 
+ 		if (!QDir(dir).exists())
+ 			lamMakePath(false);
 
-	kshark_free_entry_request(*req);
-	*req = NULL;
-
-But all callers do that free anyway.
-
-Maybe I'm missing something, but why are we passing in the pointer to
-the pointer of req, and not just the req pointer itself? I don't see a
-need to modify the pointer.
-
-Before this patch, *req is modified, but after this patch, it is not.
-If you pass in just "struct kshark_entry_request *req" then you don't
-even need to have the "list" variable, you could just use "req" because
-that would be a copy of the pointer.
+This reads the /etc/passwd file and searches for the pid of 0, and
+returns the home path for that user. On any error it just
+quietly defaults back to "/root".
 
 -- Steve
-
-
-
->  	int req_count;
->  
->  	/*
-> @@ -638,12 +639,10 @@ kshark_get_collection_entry_front(struct kshark_entry_request **req,
->  	 * Loop over the list of redefined requests and search until you find
->  	 * the first matching entry.
->  	 */
-> -	while (*req) {
-> -		entry = kshark_get_entry_front(*req, data, index);
-> +	for (list = *req; list; list = list->next) {
-> +		entry = kshark_get_entry_front(list, data, index);
->  		if (entry)
->  			break;
-> -
-> -		*req = (*req)->next;
->  	}
->  
->  	return entry;
-> @@ -680,6 +679,7 @@ kshark_get_collection_entry_back(struct kshark_entry_request **req,
->  				 ssize_t *index)
->  {
->  	const struct kshark_entry *entry = NULL;
-> +	struct kshark_entry_request *list;
->  	int req_count;
->  
->  	/*
-> @@ -695,12 +695,10 @@ kshark_get_collection_entry_back(struct kshark_entry_request **req,
->  	 * Loop over the list of redefined requests and search until you find
->  	 * the first matching entry.
->  	 */
-> -	while (*req) {
-> -		entry = kshark_get_entry_back(*req, data, index);
-> +	for (list = *req; list; list = list->next) {
-> +		entry = kshark_get_entry_back(list, data, index);
->  		if (entry)
->  			break;
-> -
-> -		*req = (*req)->next;
->  	}
->  
->  	return entry;
-
