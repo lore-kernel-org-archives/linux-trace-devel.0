@@ -7,60 +7,59 @@ X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 695EAC432C0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7514EC432C0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:06:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 41DD221771
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:58:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A0FB2084D
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:06:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RMxcnElL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gR7OGpEC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727642AbfK1O6T (ORCPT
+        id S1726401AbfK1PGA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Nov 2019 09:58:19 -0500
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:46990 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbfK1O6S (ORCPT
+        Thu, 28 Nov 2019 10:06:00 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:33800 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbfK1PF7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Nov 2019 09:58:18 -0500
-Received: by mail-pj1-f65.google.com with SMTP id z21so422689pjq.13
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 06:58:18 -0800 (PST)
+        Thu, 28 Nov 2019 10:05:59 -0500
+Received: by mail-pf1-f195.google.com with SMTP id n13so13295462pff.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 07:05:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ofzzLMeUvLtpO6voxM8jG8HHKlrbg871nMkONEinivo=;
-        b=RMxcnElLYA9zWNWRtPXzncKBI101kAKV9bfcbUjZ6e/bmzwxcVfgl4063kug9E6RZh
-         reg28x2YkdB/DgF99rncbXSrkAsodBoyYGgfpbPN9wg/B3opqAgHLY7arU0IEthngPbp
-         t7CAmMWSo8Gw7q9My9EgFXy2/j34hk+pjUgdnBPLWU8/d+jFJHBjhGabWc8TNkh9diM1
-         ExWPjhwA45SfCHL7yhj7q8ZEd4GhQlxW7jb+uzRS1/yu6QVEIq4uBuYvDM5gA4Zwnw9g
-         sa2z5qND7VmT//jnQOUbUBqi9i1D1zFO3qxJbtNkBNOD2d5Vnld2UylYXxZKyJBQ0tWU
-         6+2Q==
+        bh=IIFhKY8MkyIZzu9lXSkabK7FTRKmN9G58bXSG9a6eoU=;
+        b=gR7OGpECp3nl5ovZI8FP0K073vFAcs4/2LTc7Uyck3R7dLR9Fv1mt8oaI1OEGeUd2Y
+         gtHdf2Av96vHHeCj7GGUeAOCGfNqBGYZ1N3PJdsaf+cvpkcxusnRl98PjxZqRkBuZ7Px
+         HnwaJ09LBK6DlCwb9UDYK78J9QWk9j6tMTotKYVmD/MWA+kzyiQf5CkO5+EMyTFSIpzR
+         IhMJDm78Tf+3uiPLq/15ddYZAd2DeMo37YEvDdBrlXKZ/8HyvMWMgcFAponpRRnd4zuX
+         4Qu9sStLwJlTTMkKV6RePNOKm5+KAbuLyNextR1777MlndZpVS3IukWPm8SpklnyySI3
+         Yk9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ofzzLMeUvLtpO6voxM8jG8HHKlrbg871nMkONEinivo=;
-        b=KbgOrl31Ihnm1z85/tZlh8d6yDcWpzaLIMX6UQAm9omDmDemw7VcOHaxqZSddYX56W
-         pyIejQFq3bih+NXjk7zM3SqAoN5pXBa++bDqU3jrMEhEWYNylJPMjaqFLDNKuuo6hy5g
-         CI2Md6mINM5GGr89jUaCWKHblW45nv3wLKSRGRYwj59q4S/HtWnCTPD6rbSXnP4jAJkw
-         ClrOyzT1b/L5MxqFNv7NemROrYW0GupG7WZ0+70Y9zBNOPTQDoKn8TrxBFCC1QwOMBUD
-         kNcdbDbJojdaVoa9LwkHliIY7Qkx+TmvQAnz/ePvghNKa/zhML+kFES6qHoRKUHl0QjR
-         OZqA==
-X-Gm-Message-State: APjAAAX5BLV6nLTqZTi/Miw9WrI6ySiRHyESSW/zzqQo8Wu7N69oPnv7
-        Um9SayFrHrXgkfqlQzlrLReRJ0Ad4E7DeFMzIBU=
-X-Google-Smtp-Source: APXvYqzjWnmSmIL/LMU0WTgPNvoU7JpnERLpcAO62SmNP8cxlh60E4ywSFeQ0/HFxOSP+rEX1tmw0TE7LBSDF6xklWw=
-X-Received: by 2002:a17:90a:2947:: with SMTP id x7mr12954132pjf.136.1574953098032;
- Thu, 28 Nov 2019 06:58:18 -0800 (PST)
+        bh=IIFhKY8MkyIZzu9lXSkabK7FTRKmN9G58bXSG9a6eoU=;
+        b=loqVKADKWYhccmHdg5CqUYMXQf9rJ7pTZkfepj6Wz5hLSIinAbkiWov6z82b1C+2Hv
+         o5+EFbH9Jmkzhq8gy8NTnpmSJNnbkkUtvRrSY08GFXpdWHRoVrWml+Fcjo7oHms1h+3+
+         xgP62j1qcnXTIx7533njcdomjJhrPcO2Om6M/TbjwOBYXymnSIRJQVWASsFrrhqe2kJz
+         ExNHgOJTUZNp+jmWcr4mLAvZkXJIeEPYKV7Ep6na+z2sJ0pGly0Y1I8wlhT00FbLBxGB
+         4vbFRPyg9ueXq3+kFQx2wym7xr0b5G53U41pANH9QUg2mCeL4JzD/OyQ0JMUyq+/j0qk
+         uZpw==
+X-Gm-Message-State: APjAAAW58uCp8hSt44S2+QzdezFgQxosvNw9jalh0i03KmQbhUBJViXI
+        mhoRnw+w+AzJxo+mTj4RaSPv+KoaM+nrLYlb5uo=
+X-Google-Smtp-Source: APXvYqycyLBoQZ9C9p2nw4MDsTmfilo6+OM58turXJQyV2fWRf7B6cazfOWMvbBh2IoodkJkSCDcAFDKHs7WkWA6B9Y=
+X-Received: by 2002:a63:1916:: with SMTP id z22mr11678569pgl.206.1574953559106;
+ Thu, 28 Nov 2019 07:05:59 -0800 (PST)
 MIME-Version: 1.0
 References: <20191128085409.289684-1-tz.stoyanov@gmail.com>
- <20191128085409.289684-12-tz.stoyanov@gmail.com> <CAE0o1Ns2X+T_fyz7zR-npzMJ82+4oL-Qvt6q2YLUwgbjJkeDOQ@mail.gmail.com>
-In-Reply-To: <CAE0o1Ns2X+T_fyz7zR-npzMJ82+4oL-Qvt6q2YLUwgbjJkeDOQ@mail.gmail.com>
+ <20191128085409.289684-15-tz.stoyanov@gmail.com> <CAE0o1NvU+112Y-HkurJZHKj0ARW3mJvEquF6aB39KLkcnNkrQA@mail.gmail.com>
+In-Reply-To: <CAE0o1NvU+112Y-HkurJZHKj0ARW3mJvEquF6aB39KLkcnNkrQA@mail.gmail.com>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 28 Nov 2019 16:58:06 +0200
-Message-ID: <CAPpZLN4+uRCzUcjgH0nL_KKu39d5=EpEMUhLdVDRsmPEn4X-Lg@mail.gmail.com>
-Subject: Re: [PATCH v15 11/18] trace-cmd: Exchange tracing IDs between host
- and guest
+Date:   Thu, 28 Nov 2019 17:05:47 +0200
+Message-ID: <CAPpZLN63P=dc2ROsBPK6x=um8z8N3FML3T01kV7VzoVqsQgoFw@mail.gmail.com>
+Subject: Re: [PATCH v15 14/18] trace-cmd: Add host trace clock as guest trace argument
 To:     Slavomir Kaslev <slavomir.kaslev@gmail.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org
@@ -70,50 +69,55 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Nov 28, 2019 at 4:34 PM Slavomir Kaslev
+On Thu, Nov 28, 2019 at 4:45 PM Slavomir Kaslev
 <slavomir.kaslev@gmail.com> wrote:
 >
  ...
-> > -       ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv, &use_fifos);
-> > +       ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv,
-> > +                                         &use_fifos, &trace_id);
+> > +       struct buffer_instance *instance;
+> > +       bool guest_config = false;
 >
-> Why is `tracecmd_msg_recv_trace_req` receiving trace_id if it's
-> getting generated by the agent below?
+> guest_config is a bit vague of a name for what it's used here. Maybe
+> has_clock_arg?
 >
-Each peer generates its own trace id and stores it in its trace.dat
-file. tracecmd_msg_recv_trace_req() receives the trace ID of the host
-and tracecmd_msg_send_trace_resp() replies its own trace ID.
-May be it is a good idea in case of guest to not generate trace ID,
-but to use the one generated by the host ?
+The same flag is used for similar host config, which is applied to
+guests - in the following patches from the series.
 
-> >         if (ret < 0)
-> >                 die("Failed to receive trace request");
 > >
-> > @@ -153,13 +155,13 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
+> >         init_common_record_context(ctx, curr_cmd);
 > >
-> >         if (!use_fifos)
-> >                 make_vsocks(nr_cpus, fds, ports);
-> > -
-> > +       trace_id = tracecmd_generate_traceid();
-> >         ret = tracecmd_msg_send_trace_resp(msg_handle, nr_cpus, page_size,
-> > -                                          ports, use_fifos);
-> > +                                          ports, use_fifos, trace_id);
-> >         if (ret < 0)
-> >                 die("Failed to send trace response");
-> > -
-> > -       trace_record_agent(msg_handle, nr_cpus, fds, argc, argv, use_fifos);
-> > +       trace_record_agent(msg_handle, nr_cpus, fds, argc, argv,
-> > +                          use_fifos, trace_id);
+ ...
+> > +       if (guest_config) {
+> > +               /* If -C is specified, prepend clock to all guest VM flags */
+> > +               for_all_instances(instance) {
+> > +                       if (top_instance.ftrace->clock) {
+> > +                               if (is_guest(instance)) {
+> > +                                       add_argv(instance,
+> > +                                                (char *)top_instance.ftrace->clock,
+> > +                                                true);
+> > +                                       add_argv(instance, "-C", true);
+>
+> Shouldn't those two add_arvgv() calls be swapped?
+It is a little bit confusing, add_argv() actually prepends the
+arguments - so the last call puts the first argument in the list.
+The user specified arguments are always after those. When the args are
+parsed in the guest, in case of duplication, the last one wins.
+
+>
+> > +                               }
+> > +                       }
+> > +               }
+> > +       }
+> > +
+> >         if (!ctx->filtered && ctx->instance->filter_mod)
+> >                 add_func(&ctx->instance->filter_funcs,
+> >                          ctx->instance->filter_mod, "*");
+> > --
+> > 2.23.0
 > >
-> >         free(argv[0]);
-> >         free(argv);
 >
 > Cheers,
 >
 > -- Slavi
-
-
 
 -- 
 Tzvetomir (Ceco) Stoyanov
