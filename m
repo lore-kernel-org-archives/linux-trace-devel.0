@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-6.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0125BC432C3
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:45:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFEAAC432C0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:51:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CCCB92176D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:45:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8DFD321774
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:51:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AJajoTOa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U2kjEVF1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbfK1Opk (ORCPT
+        id S1726545AbfK1Ovs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Nov 2019 09:45:40 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:35412 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726582AbfK1Opk (ORCPT
+        Thu, 28 Nov 2019 09:51:48 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:42060 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726520AbfK1Ovs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Nov 2019 09:45:40 -0500
-Received: by mail-il1-f194.google.com with SMTP id g12so14978557ild.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 06:45:39 -0800 (PST)
+        Thu, 28 Nov 2019 09:51:48 -0500
+Received: by mail-io1-f67.google.com with SMTP id f25so3099902iog.9
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 06:51:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GLTK92kF0HgWdHvc2vLhBKyOYAd8NGuT+ogMYTGCL5E=;
-        b=AJajoTOavp4f4fnJ7ofHGAxfRySV11yXkg+sTo8H8UolgQmhaMY7tZ0B5yaH0J6bzr
-         uerue3iqXzJeyDE5aZFziHDzBELJ8CmnLBKgb4wZM3BIq3A0oYQJHxKl6rg1x5tF5UxN
-         FC8YWKOC+je8KedzAnpCmy92OsmEEN5u9Pgeb7nNz4JUSsEckmL9a8ukZ2rGcs4MrDr2
-         B/3+MIFuEvd+kvMGfZUE6EIFkXJGtfeIT+HkN2RhQx8U2UTuw/WWPKM0EFRvZtu26r5U
-         nHL07rgEcZe1oh2q0K9M7KP3KMGxLsM2MutcqqB4JMrVrAqbTQUlBzRfeBn1Bzqu8p43
-         bJMA==
+        bh=MEK43psFTFfG5djdFZBDO+VxrjizNrOyyGCHHKDbfpE=;
+        b=U2kjEVF1EVV+XntUatclWWqUiZ0DTR0k8IDo0JnUWAZhMdy7Gm12hIjeU9XRCjY2H2
+         EF8QitwyghllK/LiJesuRGsFshrhtFhpQhuPB+ynUc7Eq2T4lEl2oJs1FGSKXlGeZDXl
+         Xfhx69dFhJcueLl/jor+BwdPpfNbTH3P25/uGHSn3aj4l8Dvhq/EkvGePnB2lGGJ873/
+         ei/dzyXuINmsFSQnvZbnzt6o62h8L7zKgwinTIvTILk02FMiISreVXXx2xEnozuILVvr
+         R86vuSJRuMVwyma//QndGcHDAqg9XiOO03Aar5ZAWy4Jrrg0JgnomX9kqmkA1boD7mv7
+         00TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GLTK92kF0HgWdHvc2vLhBKyOYAd8NGuT+ogMYTGCL5E=;
-        b=HhfpzOrKe0HbdaIl+RtByCEXUBizckXO9TMKnxVlH4EFWwa89DmgN5QVhomj4BISJY
-         6RGip15PV7HT0TCK98TwuJQ/UjbB0oCqy3CbvblonYFF5qpbgXN7wCuWPpWdbL6jpFV5
-         1as8fFXQ+rRBX39X6vhp8PCJFPNgfCw7vUrAdhb9kixYcJzklJ9yqSPpMLC+bRFIjN8G
-         7nv9HEoATDXqvt1ZXZz8gG6PtepYj2xFsAE1HI9kuz+RSXvKBhU2VFOMNZ7l3FSCe6Zj
-         RY9PYZ3JpxlVzO681EOohLeDhzvLqIQGrLfP3PhZzHm8BijJgIjIty2IgEokIYDjSeRq
-         wmuw==
-X-Gm-Message-State: APjAAAVO/3rRDfizjEUmIPzxZg+29KpiHx0ZQFwGgvtbAawooHsYqc6U
-        j8ghN+w6UdboSF+avxf+W5jB/GNkrTEIEKob5Q==
-X-Google-Smtp-Source: APXvYqxXiuzqUMMqud7otDBNP63pQWJejOy788DHM1lRKYN0T1DTnd+pIFFWFoU+biKzPXHNPsEN25qjtRKe2ViZMJI=
-X-Received: by 2002:a92:bf08:: with SMTP id z8mr18036318ilh.11.1574952339376;
- Thu, 28 Nov 2019 06:45:39 -0800 (PST)
+        bh=MEK43psFTFfG5djdFZBDO+VxrjizNrOyyGCHHKDbfpE=;
+        b=rFjUn48dLUeu8nizGLV1lSKnNJmVMpY/BXxZg/4rULvd3Uw+qlhf+j1QS/EE4KrYxL
+         xqVpfHl9zmqtGa21wWNGht2WQDCX7pB0KP1AVMl2Icy0GL1Uh0l5n10fxfPGkgsk/n1I
+         JP5FUzvy+84YGILyEBEBRrfr/SsSvQnnpOvKLyMbvLbr+2fh6auyQ/Bakwl1cpv6luiq
+         +DGlokMozuWXCCoUh3r+DL+A+hK2uRaWnU9z7742Gyrv/vL4dQv6g55YeNNJDqgd9NS1
+         Y68gFRfhRHWqcKJKqHPqv2LwBz6Ck9HyQUAtvl7j3iwdOCpOLVnCMNjP8r+CLfdxMRLc
+         tS3g==
+X-Gm-Message-State: APjAAAVfs5eq+4MhBIPI+rdEzvJtk3p4ygvxf0dU1I4HPhCwRRYA6BQl
+        F18LfyxTh751cDZ/GAwmN9lUsDvvosE3Irg+qw==
+X-Google-Smtp-Source: APXvYqy36b40v63nrMdXplG6lNO0ggGBBLCu80onVoyF6YaUkjwlAe/kGihcM7ctmyl4Q/DNwFZkcTccRNTTwcac8/M=
+X-Received: by 2002:a6b:c305:: with SMTP id t5mr42340856iof.87.1574952706963;
+ Thu, 28 Nov 2019 06:51:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20191128085409.289684-1-tz.stoyanov@gmail.com> <20191128085409.289684-15-tz.stoyanov@gmail.com>
-In-Reply-To: <20191128085409.289684-15-tz.stoyanov@gmail.com>
+References: <20191128085409.289684-1-tz.stoyanov@gmail.com> <20191128085409.289684-16-tz.stoyanov@gmail.com>
+In-Reply-To: <20191128085409.289684-16-tz.stoyanov@gmail.com>
 From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Date:   Thu, 28 Nov 2019 16:45:28 +0200
-Message-ID: <CAE0o1NvU+112Y-HkurJZHKj0ARW3mJvEquF6aB39KLkcnNkrQA@mail.gmail.com>
-Subject: Re: [PATCH v15 14/18] trace-cmd: Add host trace clock as guest trace argument
+Date:   Thu, 28 Nov 2019 16:51:35 +0200
+Message-ID: <CAE0o1NupdFjJLnQ1dKVEUh91_fBiTt1nok+_7mLiOSZpcbFGKg@mail.gmail.com>
+Subject: Re: [PATCH v15 15/18] trace-cmd: Refactor few trace-cmd internal functions.
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org
@@ -71,79 +71,48 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 On Thu, Nov 28, 2019 at 11:01 AM Tzvetomir Stoyanov (VMware)
 <tz.stoyanov@gmail.com> wrote:
 >
-> When tracing host and guest machines, both should use the same
-> tracing clock for event timestamps. If a clock is specified
-> as host tracing argument, with option "-C clock_name", the same
-> is injected as guest tracing argument. If the user wants to use
-> different tracing clocks, it can specify it using "-C clock_name"
-> as guest tracing argument. In that case, the one specified by
-> the user has higher priority.
+> In order to reuse code inside trace-cmd application context,
+> few functions are made non static:
+>         int make_vsock(unsigned int port);
+>         int get_vsock_port(int sd, unsigned int *port);
+>         int open_vsock(unsigned int cid, unsigned int port);
+>         char *get_guest_file(const char *file, const char *guest);
 >
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->  tracecmd/trace-record.c | 19 +++++++++++++++++--
->  1 file changed, 17 insertions(+), 2 deletions(-)
+>  tracecmd/include/trace-local.h | 8 ++++++++
+>  tracecmd/trace-agent.c         | 4 ++--
+>  tracecmd/trace-record.c        | 8 ++++----
+>  3 files changed, 14 insertions(+), 6 deletions(-)
 >
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 49730d6..e7fb1bd 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -5405,6 +5405,8 @@ static void parse_record_options(int argc,
->         char *sav;
->         int name_counter = 0;
->         int neg_event = 0;
-> +       struct buffer_instance *instance;
-> +       bool guest_config = false;
-
-guest_config is a bit vague of a name for what it's used here. Maybe
-has_clock_arg?
-
+> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+> index a6f79c5..17ef31a 100644
+> --- a/tracecmd/include/trace-local.h
+> +++ b/tracecmd/include/trace-local.h
+> @@ -19,6 +19,8 @@
+>  #define GUEST_FIFO_FMT         GUEST_DIR_FMT "/" GUEST_PIPE_NAME "%d"
+>  #define VIRTIO_FIFO_FMT                "/dev/virtio-ports/" GUEST_PIPE_NAME "%d"
 >
->         init_common_record_context(ctx, curr_cmd);
->
-> @@ -5562,6 +5564,7 @@ static void parse_record_options(int argc,
->                         break;
->                 case 'C':
->                         ctx->instance->ftrace->clock = optarg;
-> +                       guest_config = true;
->                         break;
->                 case 'v':
->                         neg_event = 1;
-> @@ -5779,14 +5782,26 @@ static void parse_record_options(int argc,
->
->         /* If --date is specified, prepend it to all guest VM flags */
->         if (ctx->date) {
-> -               struct buffer_instance *instance;
-> -
->                 for_all_instances(instance) {
->                         if (is_guest(instance))
->                                 add_argv(instance, "--date", true);
->                 }
->         }
->
-> +       if (guest_config) {
-> +               /* If -C is specified, prepend clock to all guest VM flags */
-> +               for_all_instances(instance) {
-> +                       if (top_instance.ftrace->clock) {
-> +                               if (is_guest(instance)) {
-> +                                       add_argv(instance,
-> +                                                (char *)top_instance.ftrace->clock,
-> +                                                true);
-> +                                       add_argv(instance, "-C", true);
-
-Shouldn't those two add_arvgv() calls be swapped?
-
-> +                               }
-> +                       }
-> +               }
-> +       }
+> +#define TRACE_FILENAME         "trace.dat"
 > +
->         if (!ctx->filtered && ctx->instance->filter_mod)
->                 add_func(&ctx->instance->filter_funcs,
->                          ctx->instance->filter_mod, "*");
-> --
-> 2.23.0
+>  /* fix stupid glib guint64 typecasts and printf formats */
+>  typedef unsigned long long u64;
 >
+> @@ -258,6 +260,12 @@ void tracecmd_disable_tracing(void);
+>  void tracecmd_enable_tracing(void);
+>  void tracecmd_stat_cpu(struct trace_seq *s, int cpu);
+>
+> +int make_vsock(unsigned int port);
+> +int get_vsock_port(int sd, unsigned int *port);
+
+trace-agent.c is not getting compiled if VSOCK isn't defined so those
+functions won't be available then. Put them undef #ifdef VSOCK here
+too? Or have all vsock functions in a separate .c file, #ifdef-ed so
+that those functions do nothing when VSOCK is not defined?
+
+> +int open_vsock(unsigned int cid, unsigned int port);
+> +
+> +char *get_guest_file(const char *file, const char *guest);
 
 Cheers,
 
