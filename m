@@ -2,65 +2,65 @@ Return-Path: <SRS0=1fLi=ZU=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7514EC432C0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:06:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1BDBC432C0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:08:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4A0FB2084D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:06:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C31BD21741
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:08:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gR7OGpEC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pF+Okb93"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbfK1PGA (ORCPT
+        id S1726436AbfK1PIV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Nov 2019 10:06:00 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:33800 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbfK1PF7 (ORCPT
+        Thu, 28 Nov 2019 10:08:21 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:41954 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbfK1PIV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Nov 2019 10:05:59 -0500
-Received: by mail-pf1-f195.google.com with SMTP id n13so13295462pff.1
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 07:05:59 -0800 (PST)
+        Thu, 28 Nov 2019 10:08:21 -0500
+Received: by mail-io1-f68.google.com with SMTP id z26so25766360iot.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 07:08:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IIFhKY8MkyIZzu9lXSkabK7FTRKmN9G58bXSG9a6eoU=;
-        b=gR7OGpECp3nl5ovZI8FP0K073vFAcs4/2LTc7Uyck3R7dLR9Fv1mt8oaI1OEGeUd2Y
-         gtHdf2Av96vHHeCj7GGUeAOCGfNqBGYZ1N3PJdsaf+cvpkcxusnRl98PjxZqRkBuZ7Px
-         HnwaJ09LBK6DlCwb9UDYK78J9QWk9j6tMTotKYVmD/MWA+kzyiQf5CkO5+EMyTFSIpzR
-         IhMJDm78Tf+3uiPLq/15ddYZAd2DeMo37YEvDdBrlXKZ/8HyvMWMgcFAponpRRnd4zuX
-         4Qu9sStLwJlTTMkKV6RePNOKm5+KAbuLyNextR1777MlndZpVS3IukWPm8SpklnyySI3
-         Yk9Q==
+        bh=wFtuY7YYlsGiV8Od2WZGKXiaaer2N+uRT4+cyDkYcgI=;
+        b=pF+Okb93YfJaSmD3ZNezr4LrsWU19V1Mpd3N51lJbLKZ4I0yvbTljVTCl5Qh9eP4Uc
+         R1Vb4k9K/saUqvus6meCMg+rD7ksrwKZm92Jm6cRS3nHHvSsh9KR9QLgmC++DTXhekc7
+         60GFfRO0/otwt3qtWS0tx8eghIWTtKpRCfz1+OjhvYOHugVQindPiW/CQVdzSqPCGKmj
+         caNlvYnl01vSCbDZbVPQdjVtYw6YhqlYpABM2edAIgY6hMrUsc033X0YPQTvTiHpmhPa
+         mL1lqx/FzplmoiOf++OAA44J5EJqEHy4FtWPOBsam9wtteGyeWOupHBLygR4/oOaqsEn
+         H9sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IIFhKY8MkyIZzu9lXSkabK7FTRKmN9G58bXSG9a6eoU=;
-        b=loqVKADKWYhccmHdg5CqUYMXQf9rJ7pTZkfepj6Wz5hLSIinAbkiWov6z82b1C+2Hv
-         o5+EFbH9Jmkzhq8gy8NTnpmSJNnbkkUtvRrSY08GFXpdWHRoVrWml+Fcjo7oHms1h+3+
-         xgP62j1qcnXTIx7533njcdomjJhrPcO2Om6M/TbjwOBYXymnSIRJQVWASsFrrhqe2kJz
-         ExNHgOJTUZNp+jmWcr4mLAvZkXJIeEPYKV7Ep6na+z2sJ0pGly0Y1I8wlhT00FbLBxGB
-         4vbFRPyg9ueXq3+kFQx2wym7xr0b5G53U41pANH9QUg2mCeL4JzD/OyQ0JMUyq+/j0qk
-         uZpw==
-X-Gm-Message-State: APjAAAW58uCp8hSt44S2+QzdezFgQxosvNw9jalh0i03KmQbhUBJViXI
-        mhoRnw+w+AzJxo+mTj4RaSPv+KoaM+nrLYlb5uo=
-X-Google-Smtp-Source: APXvYqycyLBoQZ9C9p2nw4MDsTmfilo6+OM58turXJQyV2fWRf7B6cazfOWMvbBh2IoodkJkSCDcAFDKHs7WkWA6B9Y=
-X-Received: by 2002:a63:1916:: with SMTP id z22mr11678569pgl.206.1574953559106;
- Thu, 28 Nov 2019 07:05:59 -0800 (PST)
+        bh=wFtuY7YYlsGiV8Od2WZGKXiaaer2N+uRT4+cyDkYcgI=;
+        b=uEFfpEmSJqqsWmsXbHUFXqZm95Ojbdd0esapga7fx9YYwhy1X0pdJK749eAVkE8gn1
+         xRAn24B+A0UnTtaBo3F9+MCKz75azoym4QrqG4np1rBvTqCKy4TmOvhKV5EpCLwrkjHm
+         ZKVYLM1Pmfst8sbDipWWkhY0tjTpdRdB4iMUIGiv4EpymIOu4nxvVjksQjhBJ4PeGKJB
+         3nXutkQKIUOyZlDeYYK9nU+kdX/91AC4lhkhINh5oF5NU8nyMdKwdLk+apGwyaFKkpyU
+         sGfvTH+jTHFnH0u0gUO4S1Vof+H4xb+m0sr/CBD4y1naeXyACWnoZgji6+9Ih89KLB9G
+         JcNw==
+X-Gm-Message-State: APjAAAVyA2sZqUxbTZDgpM5O1Tma0lbVfzZVOPpqfuPTbbVf1TDflazE
+        SdY/CV9Vfc9uAx08JjKrjc5RHuP0R4sNOHdJNQ==
+X-Google-Smtp-Source: APXvYqzz4VrswngILkGa06/E+atrOe53GyPj1UlxE6LE24dDIzpzu/wCbWiFtgIY7KDHf9KpP9Wk4N/bheSdDSEjYaY=
+X-Received: by 2002:a05:6638:2b7:: with SMTP id d23mr1598177jaq.108.1574953700274;
+ Thu, 28 Nov 2019 07:08:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20191128085409.289684-1-tz.stoyanov@gmail.com>
- <20191128085409.289684-15-tz.stoyanov@gmail.com> <CAE0o1NvU+112Y-HkurJZHKj0ARW3mJvEquF6aB39KLkcnNkrQA@mail.gmail.com>
-In-Reply-To: <CAE0o1NvU+112Y-HkurJZHKj0ARW3mJvEquF6aB39KLkcnNkrQA@mail.gmail.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 28 Nov 2019 17:05:47 +0200
-Message-ID: <CAPpZLN63P=dc2ROsBPK6x=um8z8N3FML3T01kV7VzoVqsQgoFw@mail.gmail.com>
-Subject: Re: [PATCH v15 14/18] trace-cmd: Add host trace clock as guest trace argument
-To:     Slavomir Kaslev <slavomir.kaslev@gmail.com>
+References: <20191128085409.289684-1-tz.stoyanov@gmail.com> <20191128085409.289684-17-tz.stoyanov@gmail.com>
+In-Reply-To: <20191128085409.289684-17-tz.stoyanov@gmail.com>
+From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
+Date:   Thu, 28 Nov 2019 17:08:08 +0200
+Message-ID: <CAE0o1Nv33cEQGGX92XDCW7Y_E8CZ2uZ-ZKV=-_TkMeh3LB02DQ@mail.gmail.com>
+Subject: Re: [PATCH v15 16/18] trace-cmd: Basic infrastructure for host -
+ guest timestamp synchronization
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -69,56 +69,99 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Nov 28, 2019 at 4:45 PM Slavomir Kaslev
-<slavomir.kaslev@gmail.com> wrote:
->
- ...
-> > +       struct buffer_instance *instance;
-> > +       bool guest_config = false;
->
-> guest_config is a bit vague of a name for what it's used here. Maybe
-> has_clock_arg?
->
-The same flag is used for similar host config, which is applied to
-guests - in the following patches from the series.
+On Thu, Nov 28, 2019 at 11:02 AM Tzvetomir Stoyanov (VMware)
+<tz.stoyanov@gmail.com> wrote:
 
-> >
-> >         init_common_record_context(ctx, curr_cmd);
-> >
- ...
-> > +       if (guest_config) {
-> > +               /* If -C is specified, prepend clock to all guest VM flags */
-> > +               for_all_instances(instance) {
-> > +                       if (top_instance.ftrace->clock) {
-> > +                               if (is_guest(instance)) {
-> > +                                       add_argv(instance,
-> > +                                                (char *)top_instance.ftrace->clock,
-> > +                                                true);
-> > +                                       add_argv(instance, "-C", true);
->
-> Shouldn't those two add_arvgv() calls be swapped?
-It is a little bit confusing, add_argv() actually prepends the
-arguments - so the last call puts the first argument in the list.
-The user specified arguments are always after those. When the args are
-parsed in the guest, in case of duplication, the last one wins.
+[...]
 
+> --- a/Documentation/trace-cmd-record.1.txt
+> +++ b/Documentation/trace-cmd-record.1.txt
+> @@ -338,6 +338,12 @@ OPTIONS
+>      the offset will also be in nanoseconds even if the displayed units are
+>      in microseconds.
 >
-> > +                               }
-> > +                       }
-> > +               }
-> > +       }
-> > +
-> >         if (!ctx->filtered && ctx->instance->filter_mod)
-> >                 add_func(&ctx->instance->filter_funcs,
-> >                          ctx->instance->filter_mod, "*");
-> > --
-> > 2.23.0
-> >
+> +*--tsync-interval*::
+> +    Set the loop interval, in ms, for timestamps synchronization with guests:
+> +        If a negative number is specified, timestamps synchronization is disabled
+> +        If 0 is specified, no loop is performed - timestamps offset is calculated only twice,"
+> +        at the beginnig and at the end of the trace\n"
+
+Typo in "beginnig".
+
+[...]
+
+> diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+> index a34297f..8944013 100644
+> --- a/lib/trace-cmd/trace-msg.c
+> +++ b/lib/trace-cmd/trace-msg.c
+> @@ -26,8 +26,12 @@
+>  #include "trace-local.h"
+>  #include "trace-msg.h"
 >
-> Cheers,
+> +typedef __u16 u16;
+> +typedef __s16 s16;
+
+s16 and u16 seem to not be used.
+
+[...]
+
+> @@ -264,6 +278,17 @@ static int tracecmd_msg_send(int fd, struct tracecmd_msg *msg)
+>         return ret;
+>  }
 >
-> -- Slavi
+> +static int tracecmd_msg_send_nofree(int fd, struct tracecmd_msg *msg)
+> +{
+> +       int ret = 0;
+> +
+> +       ret = msg_write(fd, msg);
+> +       if (ret < 0)
+> +               ret = -ECOMM;
+> +
+> +       return ret;
+> +}
+
+Maybe reuse tracecmd_msg_send_nofree in tracecmd_msg_send above?
+
+[...]
+
+> +int tracecmd_msg_recv_time_sync(struct tracecmd_msg_handle *msg_handle,
+> +                               unsigned int *sync_protocol,
+> +                               unsigned int *sync_msg_id,
+> +                               unsigned int *payload_size, char **payload)
+> +{
+> +       struct tracecmd_msg msg;
+> +       int ret = -1;
+> +       int buf_size;
+> +
+> +       memset(&msg, 0, sizeof(msg));
+> +       ret = tracecmd_msg_recv(msg_handle->fd, &msg);
+> +       if (ret < 0)
+> +               goto out;
+> +
+> +       if (ntohl(msg.hdr.cmd) != MSG_TIME_SYNC) {
+> +               ret = -EOPNOTSUPP;
+> +               goto out;
+> +       }
+> +
+> +       if (sync_protocol)
+> +               *sync_protocol = ntohl(msg.tsync.sync_protocol);
+> +       if (sync_msg_id)
+> +               *sync_msg_id = ntohl(msg.tsync.sync_msg_id);
+> +
+> +       buf_size = msg_buf_len(&msg);
+> +       if (buf_size < 0) {
+> +               ret = -EINVAL;
+> +               goto out;
+> +       }
+> +
+> +       if (buf_size && payload && payload_size) {
+> +               if (*payload_size) {
+> +                       if (*payload_size != buf_size || *payload == NULL) {
+> +                               ret = -ENOMEM;
+
+Returning ENOMEM in this case is confusing. If this case is intended
+make it so that we don't allocate on each tracecmd_msg_recv_time_sync,
+maybe do realloc() here instead?
 
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+Slavomir Kaslev
