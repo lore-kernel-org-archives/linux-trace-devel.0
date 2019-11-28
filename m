@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FB6EC432C3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 679DEC43141
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 08:54:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0CE832176D
+	by mail.kernel.org (Postfix) with ESMTP id 3E80321775
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 08:54:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L/UrpPeY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sljDVfX1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727345AbfK1Iya (ORCPT
+        id S1727573AbfK1Iya (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 28 Nov 2019 03:54:30 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39039 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727232AbfK1Iya (ORCPT
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:36398 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727192AbfK1Iy3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Nov 2019 03:54:30 -0500
-Received: by mail-lj1-f193.google.com with SMTP id e10so18413195ljj.6
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 00:54:28 -0800 (PST)
+        Thu, 28 Nov 2019 03:54:29 -0500
+Received: by mail-lj1-f194.google.com with SMTP id k15so27611185lja.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 00:54:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wcQL78XUCyajNt4YlqnV1DffF7NrC/gu/1/VE/NGmdc=;
-        b=L/UrpPeYG7qZp7F/R1sNM+d1AhdyYytWEx8DoJdnRTI/lFDvGgQGGgTbFdOv1yLu4q
-         sq1Ib20lAmmhsDvyKOCEfC0cq+pkqjax4NS1lQxVl/8iLAzgksJx6MT3L5hGQLuttwQ6
-         4oxY/4kUKfpi12+R4WrwCuDDKcck0xntxugTpJfDcYMFt62XRuD5dkbM510WyZ4/boiz
-         Rw1LjuJk/AUkw4ek8wHgMdeRWlu939U7JF8Z6yUdpGoCPFeJZHBTIVKmh+ZOCWg8YAIB
-         ouzTVUgAB0evOX2H26BDMvSyqMnfINQCi8KbYGSC8xO7k/L3z8y+urIngiQerHCR2zVc
-         CG1A==
+        bh=7rulsqHWqiPANINuxP9O9HND35R2Nw4MwCZU59/68X0=;
+        b=sljDVfX1nUkV85AeZSzsYu+RwBJEKuA51jR6v0Y9ByUwmSfcf6QyDLu50kFgJtZpKH
+         dfXq7xdpbK+P/nGmtEe6PZ0bTbruthB/A3qTV25Gqt8kOKDDS+zQgkx19g5/atWk1m8N
+         dhV4DAZbedPiL1RHQStGYf7rXZkc2dMAvL/XD0ZOgIv6AiTD2lVn/+NwHF17+Z+aj7aa
+         fF3tdKk8NAzAuu91j6d31gieqFtbE6mbvK8YgaW28V2gNDOg2nhgEuWxdnCBhghlB2b3
+         ZA8T4vkrv6V3XoN7zSBJE3miPEaVROMLSQxP4zs1nNegd/ty2P1G5bcu5JzGYbU4dpQ2
+         j9mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wcQL78XUCyajNt4YlqnV1DffF7NrC/gu/1/VE/NGmdc=;
-        b=ub8hptb3sr078scdcB6CQXHXYYYyBf0ZRTtD06BAEL0BJE8bSLunUH4hEhZ2fH8UCW
-         Q2kaNvMTBNM0YZyGylnnGSDbEigv2558b1iRc9xPjW9NtHtlQtPY5/WsgNaCZwZw84Gz
-         gRjHpnnyrtGu1cmeTcWBzyEYhEx4gK3P9VZmQIk2dyiktJIuecjOftVLwwTm4naSj4rw
-         jT49S+jOWjT3MVKYsJuO3UVrvKbJKW8T73HFQlLimpEF4+TC5m2cvBEsSSJeVMJEuWau
-         Wu4d2pE9aZy6mTUFKuoWoRjTNdndNkbcNmQrlVgxFS8plSl3yaf32DHAbuUza+pioGdp
-         pEhg==
-X-Gm-Message-State: APjAAAWrk31lWQtAKDSZxQA7aUKR1uGta6wDmHUXi5GgBeqDwsNeBGuq
-        2h1aBSgeYSTdSm4HpC0jwJmKh97GcW4=
-X-Google-Smtp-Source: APXvYqzkDN7YIfxCP94dm+c0Ucqzw4XFSFdVPyLdCIEfOltphcvkcEX8NNo88n9/JWHZAJIWW6BF4g==
-X-Received: by 2002:a2e:548:: with SMTP id 69mr21576630ljf.67.1574931267330;
-        Thu, 28 Nov 2019 00:54:27 -0800 (PST)
+        bh=7rulsqHWqiPANINuxP9O9HND35R2Nw4MwCZU59/68X0=;
+        b=cxvIokFJeqC59c6EBFZKU/0yyoUTZAE4gq7E6fOdonJtgUtcCrK4MNr7fsU3iB4mtX
+         FwADG4WFliP1o0/b8OXHtIKrbVPFy9tn0Df/syAXrwVone/0XPdFNuli9eFHzkPZZn/P
+         y/SPeDN3s/iAExwEiAFPCxntEb0lzH7PKOc8A6L6816w/qx9HrFP5q35MqjnHoViu0MS
+         T6g/EUBhaO5VXQ1C6TmdM4u4w7zKFktBceLmdlpc4SGGLWXTybd9N5yj1dGrw6QFakLs
+         LjCr20bOZMqecYp7CANSxZxdETfGzw3KNhFchUTUF5TmE/mN03F3W/JFgZuGaXjwLCBl
+         FPCQ==
+X-Gm-Message-State: APjAAAUhONe4yOxar0poNlc5FzPiqMbr4lgId3XoPFf7Aoa1lvX/k7VG
+        Vc8idpgZ26GIW2KszomHN/5xsEe6mm4=
+X-Google-Smtp-Source: APXvYqwhz7ZwbFjx9RVpNZ306NTT0y5uwx5AxFrFT7h79x/2r8OoIyTUnoefSQgRlRTOp1xLEHUbQQ==
+X-Received: by 2002:a2e:c42:: with SMTP id o2mr20006077ljd.222.1574931265178;
+        Thu, 28 Nov 2019 00:54:25 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id z19sm8253735ljk.66.2019.11.28.00.54.26
+        by smtp.gmail.com with ESMTPSA id z19sm8253735ljk.66.2019.11.28.00.54.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Nov 2019 00:54:26 -0800 (PST)
+        Thu, 28 Nov 2019 00:54:24 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v15 13/18] trace-cmd: Add guest information in host's trace.dat file
-Date:   Thu, 28 Nov 2019 10:54:04 +0200
-Message-Id: <20191128085409.289684-14-tz.stoyanov@gmail.com>
+Subject: [PATCH v15 11/18] trace-cmd: Exchange tracing IDs between host and guest
+Date:   Thu, 28 Nov 2019 10:54:02 +0200
+Message-Id: <20191128085409.289684-12-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191128085409.289684-1-tz.stoyanov@gmail.com>
 References: <20191128085409.289684-1-tz.stoyanov@gmail.com>
@@ -73,264 +73,278 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-New trace.dat option is introduced: TRACECMD_OPTION_GUEST.
-Written in the host's trace.dat file, it contains information about
-guests, traced at the same time: guest trace ID, number of VCPUs and
-PIDs of the host tasks, running those VCPU. The data is stored in
-the file as NULL terminated string:
-	"Guest %s %llu %d\n" -> guest name, number of VCPUs
-	"%d %d\n" -> VCPU, PID of host task
-	.....
-	"%d %d\n" -> VCPU, PID of host task
+Extend the trace request and trace reply messages, to include also
+the IDs of host and guest tracing sessions. Those IDs are used to
+unambiguously match the tracing sessions, when reading trace.dat files.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h |   1 +
- lib/trace-cmd/trace-input.c   | 113 ++++++++++++++++++++++++++++++++++
- tracecmd/trace-record.c       |  45 ++++++++++++++
- 3 files changed, 159 insertions(+)
+ include/trace-cmd/trace-cmd.h  | 12 ++++++++----
+ lib/trace-cmd/trace-msg.c      | 31 +++++++++++++++++++++++--------
+ tracecmd/include/trace-local.h |  5 +++--
+ tracecmd/trace-agent.c         | 12 +++++++-----
+ tracecmd/trace-record.c        | 12 +++++++++---
+ 5 files changed, 50 insertions(+), 22 deletions(-)
 
 diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 1240b4a..17badf2 100644
+index 82def44..90fa146 100644
 --- a/include/trace-cmd/trace-cmd.h
 +++ b/include/trace-cmd/trace-cmd.h
-@@ -88,6 +88,7 @@ enum {
- 	TRACECMD_OPTION_PROCMAPS,
- 	TRACECMD_OPTION_TRACEID,
- 	TRACECMD_OPTION_TIME_SHIFT,
-+	TRACECMD_OPTION_GUEST,
- };
+@@ -353,16 +353,20 @@ bool tracecmd_msg_done(struct tracecmd_msg_handle *msg_handle);
+ void tracecmd_msg_set_done(struct tracecmd_msg_handle *msg_handle);
  
- enum {
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index a6b675a..e36ebaa 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -79,6 +79,14 @@ struct ts_offset_sample {
- 	long long	offset;
- };
+ int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
+-				int argc, char **argv, bool use_fifos);
++				int argc, char **argv, bool use_fifos,
++				unsigned long long trace_id);
+ int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
+-				int *argc, char ***argv, bool *use_fifos);
++				int *argc, char ***argv, bool *use_fifos,
++				unsigned long long *trace_id);
  
-+struct guest_trace_info {
-+	struct guest_trace_info	*next;
-+	char			*name;
-+	unsigned long long	trace_id;
-+	int			vcpu_count;
-+	int			*cpu_pid;
-+};
-+
- struct host_trace_info {
- 	bool			sync_enable;
- 	unsigned long long	trace_id;
-@@ -112,6 +120,7 @@ struct tracecmd_input {
- 	char *			trace_clock;
- 	struct input_buffer_instance	*buffers;
- 	int			parsing_failures;
-+	struct guest_trace_info	*guest;
+ int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
+ 				 int nr_cpus, int page_size,
+-				 unsigned int *ports, bool use_fifos);
++				 unsigned int *ports, bool use_fifos,
++				 unsigned long long trace_id);
+ int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
+ 				 int *nr_cpus, int *page_size,
+-				 unsigned int **ports, bool *use_fifos);
++				 unsigned int **ports, bool *use_fifos,
++				 unsigned long long *trace_id);
+ /* --- ftrace instances --- */
  
- 	struct tracecmd_ftrace	finfo;
+ struct tracecmd_instance {
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index 9c8a690..a34297f 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -63,12 +63,14 @@ struct tracecmd_msg_rinit {
+ struct tracecmd_msg_trace_req {
+ 	be32 flags;
+ 	be32 argc;
++	u64 trace_id;
+ } __attribute__((packed));
  
-@@ -2294,6 +2303,73 @@ static int trace_traceid_load(struct tracecmd_input *handle, char *buf)
- 	return -1;
+ struct tracecmd_msg_trace_resp {
+ 	be32 flags;
+ 	be32 cpus;
+ 	be32 page_size;
++	u64 trace_id;
+ } __attribute__((packed));
+ 
+ struct tracecmd_msg_header {
+@@ -811,7 +813,8 @@ int tracecmd_msg_wait_close_resp(struct tracecmd_msg_handle *msg_handle)
+ 	return tracecmd_msg_wait_for_cmd(msg_handle, MSG_CLOSE_RESP);
  }
  
-+static void trace_guests_free(struct tracecmd_input *handle)
-+{
-+	struct guest_trace_info *guest;
-+
-+	while (handle->guest) {
-+		guest = handle->guest;
-+		handle->guest = handle->guest->next;
-+		free(guest->name);
-+		free(guest->cpu_pid);
-+		free(guest);
-+	}
-+}
-+
-+static int trace_guest_load(struct tracecmd_input *handle, char *buf)
-+{
-+	struct guest_trace_info *guest = NULL;
-+	unsigned long long tid;
-+	char *line;
-+	int cpu, pid;
-+
-+	line = strchr(buf, '\n');
-+	if (!line)
-+		goto error;
-+	*line = '\0';
-+
-+	guest = calloc(1, sizeof(struct guest_trace_info));
-+	if (!guest)
-+		goto error;
-+
-+	if (sscanf(buf, "%*s %ms %llu %d", &guest->name, &tid, &cpu) != 3)
-+		goto error;
-+	guest->trace_id = tid;
-+	guest->vcpu_count = cpu;
-+
-+	guest->cpu_pid = calloc(guest->vcpu_count, sizeof(int));
-+	if (!guest->cpu_pid)
-+		goto error;
-+
-+	buf = line + 1;
-+	line = strchr(buf, '\n');
-+	while (line) {
-+		*line = '\0';
-+		if (sscanf(buf, "%d %d", &cpu, &pid) != 2)
-+			goto error;
-+
-+		if (cpu < guest->vcpu_count)
-+			guest->cpu_pid[cpu] = pid;
-+		buf = line + 1;
-+		if (!*buf)
-+			break;
-+
-+		line = strchr(buf, '\n');
-+	}
-+
-+	guest->next = handle->guest;
-+	handle->guest = guest;
-+	return 0;
-+
-+error:
-+	if (guest) {
-+		free(guest->cpu_pid);
-+		free(guest->name);
-+		free(guest);
-+	}
-+	return -1;
-+}
-+
- #define STR_PROCMAP_LINE_MAX	(PATH_MAX+22)
- static int trace_pid_map_load(struct tracecmd_input *handle, char *buf)
+-static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv, bool use_fifos)
++static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv,
++			  bool use_fifos, unsigned long long trace_id)
  {
-@@ -2558,6 +2634,10 @@ static int handle_options(struct tracecmd_input *handle)
- 			if (buf[size-1] == '\0')
- 				trace_traceid_load(handle, buf);
- 			break;
-+		case TRACECMD_OPTION_GUEST:
-+			if (buf[size-1] == '\0')
-+				trace_guest_load(handle, buf);
-+			break;
- 		default:
- 			warning("unknown option %d", option);
- 			break;
-@@ -3217,6 +3297,7 @@ void tracecmd_close(struct tracecmd_input *handle)
- 	handle->pid_maps = NULL;
- 
- 	trace_tsync_offset_free(&handle->host);
-+	trace_guests_free(handle);
- 
- 	if (handle->flags & TRACECMD_FL_BUFFER_INSTANCE)
- 		tracecmd_close(handle->parent);
-@@ -3673,6 +3754,38 @@ unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle)
- 	return handle->trace_id;
+ 	size_t args_size = 0;
+ 	char *p;
+@@ -823,6 +826,7 @@ static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv, bool
+ 	msg->hdr.size = htonl(ntohl(msg->hdr.size) + args_size);
+ 	msg->trace_req.flags = use_fifos ? htonl(MSG_TRACE_USE_FIFOS) : htonl(0);
+ 	msg->trace_req.argc = htonl(argc);
++	msg->trace_req.trace_id = htonll(trace_id);
+ 	msg->buf = calloc(args_size, 1);
+ 	if (!msg->buf)
+ 		return -ENOMEM;
+@@ -835,13 +839,15 @@ static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv, bool
  }
  
-+/**
-+ * tracecmd_get_guest_cpumap - get the mapping of guest VCPU to host process
-+ * @handle: input handle for the trace.dat file
-+ * @trace_id: ID of the guest tracing session
-+ *
-+ * Returns @name of the guest, number of VPUs (@vcpu_count)
-+ * and array @cpu_pid with size @vcpu_count. Array index is VCPU id, array
-+ * content is PID of the host process, running this VCPU.
-+ *
-+ * This information is stored in host trace.dat file
-+ */
-+int tracecmd_get_guest_cpumap(struct tracecmd_input *handle,
-+			      unsigned long long trace_id,
-+			      char *name,
-+			      int *vcpu_count, int *cpu_pid)
-+{
-+	struct guest_trace_info	*guest = handle->guest;
-+
-+	while (guest) {
-+		if (guest->trace_id == trace_id)
-+			break;
-+		guest = guest->next;
-+	}
-+	if (!guest)
-+		return -1;
-+
-+	name = guest->name;
-+	*vcpu_count = guest->vcpu_count;
-+	cpu_pid = guest->cpu_pid;
-+	return 0;
-+}
-+
- /**
-  * tracecmd_get_tsync_peer - get the trace session id of the peer host
-  * @handle: input handle for the trace.dat file
+ int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
+-				int argc, char **argv, bool use_fifos)
++				int argc, char **argv, bool use_fifos,
++				unsigned long long trace_id)
+ {
+ 	struct tracecmd_msg msg;
+ 	int ret;
+ 
+ 	tracecmd_msg_init(MSG_TRACE_REQ, &msg);
+-	ret = make_trace_req(&msg, argc, argv, use_fifos);
++	ret = make_trace_req(&msg, argc, argv,
++			     use_fifos, trace_id);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -854,7 +860,8 @@ int tracecmd_msg_send_trace_req(struct tracecmd_msg_handle *msg_handle,
+   *     free(argv);
+   */
+ int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
+-				int *argc, char ***argv, bool *use_fifos)
++				int *argc, char ***argv, bool *use_fifos,
++				unsigned long long *trace_id)
+ {
+ 	struct tracecmd_msg msg;
+ 	char *p, *buf_end, **args;
+@@ -901,6 +908,7 @@ int tracecmd_msg_recv_trace_req(struct tracecmd_msg_handle *msg_handle,
+ 	*argc = nr_args;
+ 	*argv = args;
+ 	*use_fifos = ntohl(msg.trace_req.flags) & MSG_TRACE_USE_FIFOS;
++	*trace_id = ntohll(msg.trace_req.trace_id);
+ 
+ 	/*
+ 	 * On success we're passing msg.buf to the caller through argv[0] so we
+@@ -921,7 +929,8 @@ out:
+ }
+ 
+ static int make_trace_resp(struct tracecmd_msg *msg, int page_size, int nr_cpus,
+-			   unsigned int *ports, bool use_fifos)
++			   unsigned int *ports, bool use_fifos,
++			   unsigned long long trace_id)
+ {
+ 	int data_size;
+ 
+@@ -935,19 +944,22 @@ static int make_trace_resp(struct tracecmd_msg *msg, int page_size, int nr_cpus,
+ 	msg->trace_resp.flags = use_fifos ? htonl(MSG_TRACE_USE_FIFOS) : htonl(0);
+ 	msg->trace_resp.cpus = htonl(nr_cpus);
+ 	msg->trace_resp.page_size = htonl(page_size);
++	msg->trace_resp.trace_id = htonll(trace_id);
+ 
+ 	return 0;
+ }
+ 
+ int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
+ 				 int nr_cpus, int page_size,
+-				 unsigned int *ports, bool use_fifos)
++				 unsigned int *ports, bool use_fifos,
++				 unsigned long long trace_id)
+ {
+ 	struct tracecmd_msg msg;
+ 	int ret;
+ 
+ 	tracecmd_msg_init(MSG_TRACE_RESP, &msg);
+-	ret = make_trace_resp(&msg, page_size, nr_cpus, ports, use_fifos);
++	ret = make_trace_resp(&msg, page_size, nr_cpus, ports,
++			      use_fifos, trace_id);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -956,13 +968,15 @@ int tracecmd_msg_send_trace_resp(struct tracecmd_msg_handle *msg_handle,
+ 
+ int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
+ 				 int *nr_cpus, int *page_size,
+-				 unsigned int **ports, bool *use_fifos)
++				 unsigned int **ports, bool *use_fifos,
++				 unsigned long long *trace_id)
+ {
+ 	struct tracecmd_msg msg;
+ 	char *p, *buf_end;
+ 	ssize_t buf_len;
+ 	int i, ret;
+ 
++	memset(&msg, 0, sizeof(msg));
+ 	ret = tracecmd_msg_recv(msg_handle->fd, &msg);
+ 	if (ret < 0)
+ 		return ret;
+@@ -981,6 +995,7 @@ int tracecmd_msg_recv_trace_resp(struct tracecmd_msg_handle *msg_handle,
+ 	*use_fifos = ntohl(msg.trace_resp.flags) & MSG_TRACE_USE_FIFOS;
+ 	*nr_cpus = ntohl(msg.trace_resp.cpus);
+ 	*page_size = ntohl(msg.trace_resp.page_size);
++	*trace_id = ntohll(msg.trace_resp.trace_id);
+ 	*ports = calloc(*nr_cpus, sizeof(**ports));
+ 	if (!*ports) {
+ 		ret = -ENOMEM;
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 6203e0d..a6f79c5 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -98,8 +98,9 @@ void trace_usage(int argc, char **argv);
+ 
+ int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
+ 		       int cpus, int *fds,
+-		       int argc, char **argv, bool use_fifos);
+-
++		       int argc, char **argv,
++		       bool use_fifos,
++		       unsigned long long trace_id);
+ struct hook_list;
+ 
+ void trace_init_profile(struct tracecmd_input *handle, struct hook_list *hooks,
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index 1c6e0a3..cc330b7 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -128,6 +128,7 @@ cleanup:
+ static void agent_handle(int sd, int nr_cpus, int page_size)
+ {
+ 	struct tracecmd_msg_handle *msg_handle;
++	unsigned long long trace_id;
+ 	unsigned int *ports;
+ 	char **argv = NULL;
+ 	int argc = 0;
+@@ -144,7 +145,8 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
+ 	if (!msg_handle)
+ 		die("Failed to allocate message handle");
+ 
+-	ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv, &use_fifos);
++	ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv,
++					  &use_fifos, &trace_id);
+ 	if (ret < 0)
+ 		die("Failed to receive trace request");
+ 
+@@ -153,13 +155,13 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
+ 
+ 	if (!use_fifos)
+ 		make_vsocks(nr_cpus, fds, ports);
+-
++	trace_id = tracecmd_generate_traceid();
+ 	ret = tracecmd_msg_send_trace_resp(msg_handle, nr_cpus, page_size,
+-					   ports, use_fifos);
++					   ports, use_fifos, trace_id);
+ 	if (ret < 0)
+ 		die("Failed to send trace response");
+-
+-	trace_record_agent(msg_handle, nr_cpus, fds, argc, argv, use_fifos);
++	trace_record_agent(msg_handle, nr_cpus, fds, argc, argv,
++			   use_fifos, trace_id);
+ 
+ 	free(argv[0]);
+ 	free(argv);
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index e51134f..49730d6 100644
+index 01a74f1..e51134f 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -2884,6 +2884,19 @@ struct guest {
- static struct guest *guests;
- static size_t guests_len;
+@@ -3507,12 +3507,16 @@ static void connect_to_agent(struct buffer_instance *instance)
+ 		die("Failed to allocate message handle");
  
-+static struct guest *get_guest_info(unsigned int guest_cid)
-+{
-+	int i;
+ 	ret = tracecmd_msg_send_trace_req(msg_handle, instance->argc,
+-					  instance->argv, use_fifos);
++					  instance->argv, use_fifos,
++					  top_instance.trace_id);
 +
-+	if (!guests)
-+		return NULL;
+ 	if (ret < 0)
+ 		die("Failed to send trace request");
+ 
+ 	ret = tracecmd_msg_recv_trace_resp(msg_handle, &nr_cpus, &page_size,
+-					   &ports, &use_fifos);
++					   &ports, &use_fifos,
++					   &instance->trace_id);
 +
-+	for (i = 0; i < guests_len; i++)
-+		if (guest_cid == guests[i].cid)
-+			return guests + i;
-+	return NULL;
-+}
-+
- static char *get_qemu_guest_name(char *arg)
+ 	if (ret < 0)
+ 		die("Failed to receive trace response");
+ 
+@@ -6117,7 +6121,8 @@ void trace_record(int argc, char **argv)
+ int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
+ 		       int cpus, int *fds,
+ 		       int argc, char **argv,
+-		       bool use_fifos)
++		       bool use_fifos,
++		       unsigned long long trace_id)
  {
- 	char *tok, *end = arg;
-@@ -3689,6 +3702,33 @@ static void append_buffer(struct tracecmd_output *handle,
- 	}
- }
+ 	struct common_record_context ctx;
+ 	char **argv_plus;
+@@ -6147,6 +6152,7 @@ int trace_record_agent(struct tracecmd_msg_handle *msg_handle,
+ 	ctx.instance->flags |= BUFFER_FL_AGENT;
+ 	ctx.instance->msg_handle = msg_handle;
+ 	msg_handle->version = V3_PROTOCOL;
++	top_instance.trace_id = trace_id;
+ 	record_trace(argc, argv, &ctx);
  
-+static void
-+add_guest_info(struct tracecmd_output *handle, struct buffer_instance *instance)
-+{
-+	struct guest *guest = get_guest_info(instance->cid);
-+	struct trace_seq s;
-+	int i;
-+
-+	if (!guest)
-+		return;
-+	for (i = 0; i < VCPUS_MAX; i++)
-+		if (!guest->cpu_pid[i])
-+			break;
-+
-+	trace_seq_init(&s);
-+
-+	trace_seq_printf(&s, "Guest %s %llu %d\n",
-+			 guest->name, instance->trace_id, i);
-+	for (i = 0; i < VCPUS_MAX; i++) {
-+		if (!guest->cpu_pid[i])
-+			break;
-+		trace_seq_printf(&s, "%d %d\n", i, guest->cpu_pid[i]);
-+	}
-+	trace_seq_terminate(&s);
-+	tracecmd_add_option(handle, TRACECMD_OPTION_GUEST,
-+			    s.len + 1, s.buffer);
-+	trace_seq_destroy(&s);
-+}
- 
- static void
- add_pid_maps(struct tracecmd_output *handle, struct buffer_instance *instance)
-@@ -3976,6 +4016,11 @@ static void record_data(struct common_record_context *ctx)
- 			add_pid_maps(handle, instance);
- 		}
- 
-+		for_all_instances(instance) {
-+			if (is_guest(instance))
-+				add_guest_info(handle, instance);
-+		}
-+
- 		tracecmd_append_cpu_data(handle, local_cpu_count, temp_files);
- 
- 		for (i = 0; i < max_cpu_count; i++)
+ 	free(argv_plus);
 -- 
 2.23.0
 
