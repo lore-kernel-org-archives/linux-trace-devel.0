@@ -2,65 +2,65 @@ Return-Path: <SRS0=1fLi=ZU=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1BDBC432C0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:08:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 283B8C432C0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:08:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C31BD21741
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:08:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE93C21741
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 15:08:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pF+Okb93"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L2hauguA"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbfK1PIV (ORCPT
+        id S1726655AbfK1PIq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Nov 2019 10:08:21 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:41954 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbfK1PIV (ORCPT
+        Thu, 28 Nov 2019 10:08:46 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:44385 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbfK1PIq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Nov 2019 10:08:21 -0500
-Received: by mail-io1-f68.google.com with SMTP id z26so25766360iot.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 07:08:21 -0800 (PST)
+        Thu, 28 Nov 2019 10:08:46 -0500
+Received: by mail-pj1-f66.google.com with SMTP id w8so11997830pjh.11
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 07:08:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wFtuY7YYlsGiV8Od2WZGKXiaaer2N+uRT4+cyDkYcgI=;
-        b=pF+Okb93YfJaSmD3ZNezr4LrsWU19V1Mpd3N51lJbLKZ4I0yvbTljVTCl5Qh9eP4Uc
-         R1Vb4k9K/saUqvus6meCMg+rD7ksrwKZm92Jm6cRS3nHHvSsh9KR9QLgmC++DTXhekc7
-         60GFfRO0/otwt3qtWS0tx8eghIWTtKpRCfz1+OjhvYOHugVQindPiW/CQVdzSqPCGKmj
-         caNlvYnl01vSCbDZbVPQdjVtYw6YhqlYpABM2edAIgY6hMrUsc033X0YPQTvTiHpmhPa
-         mL1lqx/FzplmoiOf++OAA44J5EJqEHy4FtWPOBsam9wtteGyeWOupHBLygR4/oOaqsEn
-         H9sQ==
+        bh=t1BX9TpRfttL6wG2miaxB3O9B1b8UFBfqREvadO+UD8=;
+        b=L2hauguAc48lGfI7pJd9Iqs273qnkUUMQm7A72Ah7tASrilvTXud82uHvLibo5nbzF
+         +72JBzUL08G3Du+K0s9Nu9HL7d9SVuiNSB7y3qNmL+ifDgzB0mCAhcVN2tRRRByIHuyl
+         ZqMqjSeDmXBVyQZhVnuvZvLr2oMXF9OfBhr4poCE8/VJ41Zh1a6e0Z4+jEM2CXy/SYRN
+         5dZKpCgeTkDXPh84Sl6HdsgK7PpF97+oH3ry2ZJXiug3VUrCiDPjMwpizRtbhG4z+6hg
+         amI9MQbNoNWVAfR1Oc82wVfHKRPMRwvQwAqNIANE9CMzw3JqtVZH9RIPlU6XLUaqLFkt
+         hMCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wFtuY7YYlsGiV8Od2WZGKXiaaer2N+uRT4+cyDkYcgI=;
-        b=uEFfpEmSJqqsWmsXbHUFXqZm95Ojbdd0esapga7fx9YYwhy1X0pdJK749eAVkE8gn1
-         xRAn24B+A0UnTtaBo3F9+MCKz75azoym4QrqG4np1rBvTqCKy4TmOvhKV5EpCLwrkjHm
-         ZKVYLM1Pmfst8sbDipWWkhY0tjTpdRdB4iMUIGiv4EpymIOu4nxvVjksQjhBJ4PeGKJB
-         3nXutkQKIUOyZlDeYYK9nU+kdX/91AC4lhkhINh5oF5NU8nyMdKwdLk+apGwyaFKkpyU
-         sGfvTH+jTHFnH0u0gUO4S1Vof+H4xb+m0sr/CBD4y1naeXyACWnoZgji6+9Ih89KLB9G
-         JcNw==
-X-Gm-Message-State: APjAAAVyA2sZqUxbTZDgpM5O1Tma0lbVfzZVOPpqfuPTbbVf1TDflazE
-        SdY/CV9Vfc9uAx08JjKrjc5RHuP0R4sNOHdJNQ==
-X-Google-Smtp-Source: APXvYqzz4VrswngILkGa06/E+atrOe53GyPj1UlxE6LE24dDIzpzu/wCbWiFtgIY7KDHf9KpP9Wk4N/bheSdDSEjYaY=
-X-Received: by 2002:a05:6638:2b7:: with SMTP id d23mr1598177jaq.108.1574953700274;
- Thu, 28 Nov 2019 07:08:20 -0800 (PST)
+        bh=t1BX9TpRfttL6wG2miaxB3O9B1b8UFBfqREvadO+UD8=;
+        b=Wjpbx4pWrxesrIagzks4sn6ICrBp6cqdbCTHlnNqarDfxBUcXoXg9I/dzcj18COXp/
+         2MNe60cbcNe5Y0Cdj6h0ncmLhXmS7pF/6oyAPfEvIzfxbTgE8cFQix6xhGxLYrvn7ra4
+         QkEVz5s/xvx9koxGdBjq+jl32PVEA8BAu8EeXJdxALSpR6E9cuh0K85EqWhBnOncnN5g
+         QcqNlTJ0KoI5HdcmlhqeUK2WDMcFly0NWN7gY/OTRlxDgxJvN2lHh7Sopjz/XHrm+YcR
+         lsRdd++PJw7yHa18MGEiRx5y17VMPh15Lxg4lvktPcAeJvKUwtZPpkjfjJru6XXBL9bX
+         Rz7Q==
+X-Gm-Message-State: APjAAAXnBLa0yg69h+KZPlu/ZrmkBx4ejZVEahsS/YXomuMinR3+AZ+t
+        Q6ZgTEQNnwDcStxMhHOR4Wswh4J9xDoMHA4/Bj0=
+X-Google-Smtp-Source: APXvYqzlBQQuRBgjYR2omRNbh+eolRE/ebpo6nZNyBTwBtWu8odMJ/DcgcgpOzpYqUnadLnanUuZ9T65bC9K8R1USQY=
+X-Received: by 2002:a17:90a:2947:: with SMTP id x7mr13008318pjf.136.1574953724460;
+ Thu, 28 Nov 2019 07:08:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20191128085409.289684-1-tz.stoyanov@gmail.com> <20191128085409.289684-17-tz.stoyanov@gmail.com>
-In-Reply-To: <20191128085409.289684-17-tz.stoyanov@gmail.com>
-From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Date:   Thu, 28 Nov 2019 17:08:08 +0200
-Message-ID: <CAE0o1Nv33cEQGGX92XDCW7Y_E8CZ2uZ-ZKV=-_TkMeh3LB02DQ@mail.gmail.com>
-Subject: Re: [PATCH v15 16/18] trace-cmd: Basic infrastructure for host -
- guest timestamp synchronization
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+References: <20191128085409.289684-1-tz.stoyanov@gmail.com>
+ <20191128085409.289684-16-tz.stoyanov@gmail.com> <CAE0o1NupdFjJLnQ1dKVEUh91_fBiTt1nok+_7mLiOSZpcbFGKg@mail.gmail.com>
+In-Reply-To: <CAE0o1NupdFjJLnQ1dKVEUh91_fBiTt1nok+_7mLiOSZpcbFGKg@mail.gmail.com>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Thu, 28 Nov 2019 17:08:33 +0200
+Message-ID: <CAPpZLN7s=FwSPitTYCftR+yWuVK=18yXfw5bRm=o_xCGDcPWAA@mail.gmail.com>
+Subject: Re: [PATCH v15 15/18] trace-cmd: Refactor few trace-cmd internal functions.
+To:     Slavomir Kaslev <slavomir.kaslev@gmail.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -69,99 +69,66 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Nov 28, 2019 at 11:02 AM Tzvetomir Stoyanov (VMware)
-<tz.stoyanov@gmail.com> wrote:
-
-[...]
-
-> --- a/Documentation/trace-cmd-record.1.txt
-> +++ b/Documentation/trace-cmd-record.1.txt
-> @@ -338,6 +338,12 @@ OPTIONS
->      the offset will also be in nanoseconds even if the displayed units are
->      in microseconds.
+On Thu, Nov 28, 2019 at 4:51 PM Slavomir Kaslev
+<slavomir.kaslev@gmail.com> wrote:
 >
-> +*--tsync-interval*::
-> +    Set the loop interval, in ms, for timestamps synchronization with guests:
-> +        If a negative number is specified, timestamps synchronization is disabled
-> +        If 0 is specified, no loop is performed - timestamps offset is calculated only twice,"
-> +        at the beginnig and at the end of the trace\n"
-
-Typo in "beginnig".
-
-[...]
-
-> diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
-> index a34297f..8944013 100644
-> --- a/lib/trace-cmd/trace-msg.c
-> +++ b/lib/trace-cmd/trace-msg.c
-> @@ -26,8 +26,12 @@
->  #include "trace-local.h"
->  #include "trace-msg.h"
+> On Thu, Nov 28, 2019 at 11:01 AM Tzvetomir Stoyanov (VMware)
+> <tz.stoyanov@gmail.com> wrote:
+> >
+> > In order to reuse code inside trace-cmd application context,
+> > few functions are made non static:
+> >         int make_vsock(unsigned int port);
+> >         int get_vsock_port(int sd, unsigned int *port);
+> >         int open_vsock(unsigned int cid, unsigned int port);
+> >         char *get_guest_file(const char *file, const char *guest);
+> >
+> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> > ---
+> >  tracecmd/include/trace-local.h | 8 ++++++++
+> >  tracecmd/trace-agent.c         | 4 ++--
+> >  tracecmd/trace-record.c        | 8 ++++----
+> >  3 files changed, 14 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+> > index a6f79c5..17ef31a 100644
+> > --- a/tracecmd/include/trace-local.h
+> > +++ b/tracecmd/include/trace-local.h
+> > @@ -19,6 +19,8 @@
+> >  #define GUEST_FIFO_FMT         GUEST_DIR_FMT "/" GUEST_PIPE_NAME "%d"
+> >  #define VIRTIO_FIFO_FMT                "/dev/virtio-ports/" GUEST_PIPE_NAME "%d"
+> >
+> > +#define TRACE_FILENAME         "trace.dat"
+> > +
+> >  /* fix stupid glib guint64 typecasts and printf formats */
+> >  typedef unsigned long long u64;
+> >
+> > @@ -258,6 +260,12 @@ void tracecmd_disable_tracing(void);
+> >  void tracecmd_enable_tracing(void);
+> >  void tracecmd_stat_cpu(struct trace_seq *s, int cpu);
+> >
+> > +int make_vsock(unsigned int port);
+> > +int get_vsock_port(int sd, unsigned int *port);
 >
-> +typedef __u16 u16;
-> +typedef __s16 s16;
-
-s16 and u16 seem to not be used.
-
-[...]
-
-> @@ -264,6 +278,17 @@ static int tracecmd_msg_send(int fd, struct tracecmd_msg *msg)
->         return ret;
->  }
+> trace-agent.c is not getting compiled if VSOCK isn't defined so those
+> functions won't be available then. Put them undef #ifdef VSOCK here
+> too? Or have all vsock functions in a separate .c file, #ifdef-ed so
+> that those functions do nothing when VSOCK is not defined?
 >
-> +static int tracecmd_msg_send_nofree(int fd, struct tracecmd_msg *msg)
-> +{
-> +       int ret = 0;
-> +
-> +       ret = msg_write(fd, msg);
-> +       if (ret < 0)
-> +               ret = -ECOMM;
-> +
-> +       return ret;
-> +}
 
-Maybe reuse tracecmd_msg_send_nofree in tracecmd_msg_send above?
+The implementation is not tested yet with not defined VSOCK, I'll test
+and fix those.
+Thanks!
 
-[...]
+> > +int open_vsock(unsigned int cid, unsigned int port);
+> > +
+> > +char *get_guest_file(const char *file, const char *guest);
+>
+> Cheers,
+>
+> -- Slavi
 
-> +int tracecmd_msg_recv_time_sync(struct tracecmd_msg_handle *msg_handle,
-> +                               unsigned int *sync_protocol,
-> +                               unsigned int *sync_msg_id,
-> +                               unsigned int *payload_size, char **payload)
-> +{
-> +       struct tracecmd_msg msg;
-> +       int ret = -1;
-> +       int buf_size;
-> +
-> +       memset(&msg, 0, sizeof(msg));
-> +       ret = tracecmd_msg_recv(msg_handle->fd, &msg);
-> +       if (ret < 0)
-> +               goto out;
-> +
-> +       if (ntohl(msg.hdr.cmd) != MSG_TIME_SYNC) {
-> +               ret = -EOPNOTSUPP;
-> +               goto out;
-> +       }
-> +
-> +       if (sync_protocol)
-> +               *sync_protocol = ntohl(msg.tsync.sync_protocol);
-> +       if (sync_msg_id)
-> +               *sync_msg_id = ntohl(msg.tsync.sync_msg_id);
-> +
-> +       buf_size = msg_buf_len(&msg);
-> +       if (buf_size < 0) {
-> +               ret = -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       if (buf_size && payload && payload_size) {
-> +               if (*payload_size) {
-> +                       if (*payload_size != buf_size || *payload == NULL) {
-> +                               ret = -ENOMEM;
 
-Returning ENOMEM in this case is confusing. If this case is intended
-make it so that we don't allocate on each tracecmd_msg_recv_time_sync,
-maybe do realloc() here instead?
 
 -- 
-Slavomir Kaslev
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
