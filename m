@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A9A2C43215
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9C96C43141
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 08:54:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 55C2D21787
+	by mail.kernel.org (Postfix) with ESMTP id 9EF432176D
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 08:54:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pBSFXy/P"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qF1y0IHt"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbfK1IyR (ORCPT
+        id S1726778AbfK1IyS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Nov 2019 03:54:17 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:33558 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbfK1IyR (ORCPT
+        Thu, 28 Nov 2019 03:54:18 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:33835 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726764AbfK1IyS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Nov 2019 03:54:17 -0500
-Received: by mail-lf1-f68.google.com with SMTP id d6so19454592lfc.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 00:54:16 -0800 (PST)
+        Thu, 28 Nov 2019 03:54:18 -0500
+Received: by mail-lj1-f194.google.com with SMTP id m6so20210464ljc.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 00:54:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xcPmnM5x0UQ4YKDSV2MogiGotivYJlB+VWUCe41AAqY=;
-        b=pBSFXy/PYAQzL4sNLUpF6KsPYaACDQnO/0Whfo0t7zfgb26X9LXunGE9fYQv4InNpJ
-         p+0MZvKDfHud7GmAi+OX1RO561ic3OO8OVP0QqraI3fN5iZxxGYEUMjuqK106HX6Q+4G
-         7w8DvBsPCKSpZ3qnMtUHnQErWoLdxmksUx0prm2qQa922CoXjm3G8/etSPB5ITlFLUzj
-         130yhQq5R6LbsFfaMIrjJXsTslA28HHmtLlVUaYVZKMUGofkod1AQOWE2RWEObTfCgit
-         py1H8ksSB7Vk/uZ0t0iokbaw/192X+mcsW3+RjEpP7fnz1YOc9xqYsC3GV4gyBW4EKEi
-         GeTg==
+        bh=fT9xQH8HUdkRlHUX669ipLmb6sWWPVwYlySY8sYag00=;
+        b=qF1y0IHtoOXJ+U2beD+37wJ+TlocOqAlGNPhfHIY8ZsyjXvonFhnsvhgODsMERmalN
+         yVqveNvIKFnoDD6VoqgtKyL1LwROlobdiPZ3I4MnqnjWHLrJWWleIZ11DhIZW27yV2V1
+         SWhK63NH5YEEvZ+mOtQob78ApC+KIcFEMMbmmdrSRxaAQruhTz4CkKrxqn2MZCcUQ8N4
+         UGpBDRjS0w+r1aPLBZut83fPpqaNAy6wjzS7mr9yHZy3caezozTvtNkLjRsI+u7hQgXw
+         iXqHBTboUZ6OKFDsX4JjRqpbbkSOXNMRxZVg2+b+V7w+ULkyWiA0J7VlD76nEvdBCRAP
+         d6ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xcPmnM5x0UQ4YKDSV2MogiGotivYJlB+VWUCe41AAqY=;
-        b=ciuiMtNjd3BD8n9G7o4W3ufMUtfDsT05fYw5Djj86YSTs4sV5S5C8h3mwLIg4ElUhl
-         0BW647tVWw6EB2Z5gs5IVaL9yFwBYOh6bwrj6hvJQwectVwcyfQ1pWSnxD9TfjVcyxTh
-         PArdy9OKEuECW0J2sNK2N8sQmzmqgTEvU5zc0mRtluXNaqkB7blqehSnUSTOGwLwf1QR
-         WHFIquHWfbYoKXnHyjZw2iDchX8+cTxDdx1/Z+zhDyUo9WgSOatzZLXCsg13phgtS9SD
-         N8IrXbDgCbdIRNXK1TKu1AZE2DRCXr9pfO4DL//z1XdivWpK3T9DdbMeTlO8WlCGcEf6
-         w2Mw==
-X-Gm-Message-State: APjAAAVbTuqNgYe8lay7HvIdkFLMZx2rECk/OZ8dSAlDwgosyKJf6CM6
-        1gnrwknIAqlnvm+5TbtEs2tb1c6UT4Q=
-X-Google-Smtp-Source: APXvYqyyMUfpdhsc0WtEWMrhJI8oGZzdXClYp96sPVt1O6GWHgtEMHE+hf7tRQC2Tis5kBpCxYr3GQ==
-X-Received: by 2002:ac2:5930:: with SMTP id v16mr17218846lfi.34.1574931255588;
-        Thu, 28 Nov 2019 00:54:15 -0800 (PST)
+        bh=fT9xQH8HUdkRlHUX669ipLmb6sWWPVwYlySY8sYag00=;
+        b=GWNi+gwD2xFXQJkDm1Ug2SvyaTiD0y6oOmNSaJX30QqMEHkb9U7O79fPsdJ+o1smWC
+         UhzJbCNGQh1J8xX+Jr4pSTVrpxCtSBkimfydFuClj66vQzT9zoC3aW774KIsKdjUiYQs
+         d1LvVc2Z4dgohaoMzOE1EuRBf20KJEyMImsC2C0VmuMNbuNyC+auosrJIu7DlRmxXYJO
+         oJj/1XiPQz/xJwWYLDP3iFDPHIIjmjASRFLLiecrLqHVywnyIirL4RwclFgFjZi9e/AY
+         8SOnwNbPgwEpvxaCh6HF5izyWaZ3wFXHiadWI9oAGj1dVdqMrqLasAIumr/ZmCkdrFzw
+         xYDw==
+X-Gm-Message-State: APjAAAX/cLX5IiE44IZfbG8XwZkZpEzrlPJT+yDtrB9+VKkB9TAAJ4vp
+        qCcPWMnGBC83uhPUw08CVeyla6UoZUk=
+X-Google-Smtp-Source: APXvYqyOZBz3pd7q4SjTjyortAE0PNVJeAfJYzJGvZiqbzFjgD0F/fzgi5cuE+SmCg9gMo9LaYym2Q==
+X-Received: by 2002:a05:651c:38f:: with SMTP id e15mr33460035ljp.107.1574931254484;
+        Thu, 28 Nov 2019 00:54:14 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id z19sm8253735ljk.66.2019.11.28.00.54.14
+        by smtp.gmail.com with ESMTPSA id z19sm8253735ljk.66.2019.11.28.00.54.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Nov 2019 00:54:15 -0800 (PST)
+        Thu, 28 Nov 2019 00:54:13 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v15 03/18] trace-cmd: Add implementations of htonll() and ntohll()
-Date:   Thu, 28 Nov 2019 10:53:54 +0200
-Message-Id: <20191128085409.289684-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v15 02/18] trace-cmd: Add support for negative time offsets in trace.dat file
+Date:   Thu, 28 Nov 2019 10:53:53 +0200
+Message-Id: <20191128085409.289684-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191128085409.289684-1-tz.stoyanov@gmail.com>
 References: <20191128085409.289684-1-tz.stoyanov@gmail.com>
@@ -75,33 +75,83 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-Implementations of htonll() and ntohll() are added as
-macros, if they are not already defined.
+When synchronizing timestamps between different machines, there are cases
+when the time offset is negative. This patch changes the way time offset is
+written and read from trace.dat file - as signed decimal, instead of hex.
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- include/trace-cmd/trace-msg.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ include/trace-cmd/trace-cmd.h | 2 +-
+ lib/trace-cmd/trace-input.c   | 6 +++---
+ tracecmd/trace-read.c         | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/trace-cmd/trace-msg.h b/include/trace-cmd/trace-msg.h
-index aab8a69..654ca43 100644
---- a/include/trace-cmd/trace-msg.h
-+++ b/include/trace-cmd/trace-msg.h
-@@ -12,4 +12,14 @@
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 9363a26..7f9cb73 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -138,7 +138,7 @@ const char *tracecmd_buffer_instance_name(struct tracecmd_input *handle, int ind
+ struct tracecmd_input *tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx);
+ int tracecmd_is_buffer_instance(struct tracecmd_input *handle);
  
- extern unsigned int page_size;
+-void tracecmd_set_ts_offset(struct tracecmd_input *handle, unsigned long long offset);
++void tracecmd_set_ts_offset(struct tracecmd_input *handle, long long offset);
+ void tracecmd_set_ts2secs(struct tracecmd_input *handle, unsigned long long hz);
  
-+#ifndef htonll
-+# if __BYTE_ORDER == __LITTLE_ENDIAN
-+#define htonll(x) __bswap_64(x)
-+#define ntohll(x) __bswap_64(x)
-+#else
-+#define htonll(x) (x)
-+#define ntohll(x) (x)
-+#endif
-+#endif
-+
- #endif /* _TRACE_MSG_H_ */
+ void tracecmd_print_events(struct tracecmd_input *handle, const char *regex);
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 3b187e3..91362f3 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -90,7 +90,7 @@ struct tracecmd_input {
+ 	bool			read_page;
+ 	bool			use_pipe;
+ 	struct cpu_data 	*cpu_data;
+-	unsigned long long	ts_offset;
++	long long		ts_offset;
+ 	double			ts2secs;
+ 	char *			cpustats;
+ 	char *			uname;
+@@ -2127,7 +2127,7 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
+ }
+ 
+ void tracecmd_set_ts_offset(struct tracecmd_input *handle,
+-			    unsigned long long offset)
++			    long long offset)
+ {
+ 	handle->ts_offset = offset;
+ }
+@@ -2305,7 +2305,7 @@ tracecmd_search_task_map(struct tracecmd_input *handle,
+ 
+ static int handle_options(struct tracecmd_input *handle)
+ {
+-	unsigned long long offset;
++	long long offset;
+ 	unsigned short option;
+ 	unsigned int size;
+ 	char *cpustats = NULL;
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 4958fa8..1875b75 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -58,7 +58,7 @@ static struct list_head handle_list;
+ struct input_files {
+ 	struct list_head	list;
+ 	const char		*file;
+-	unsigned long long	tsoffset;
++	long long		tsoffset;
+ 	unsigned long long	ts2secs;
+ };
+ static struct list_head input_files;
+@@ -1453,7 +1453,7 @@ void trace_report (int argc, char **argv)
+ 	struct input_files *inputs;
+ 	struct handle_list *handles;
+ 	enum output_type otype;
+-	unsigned long long tsoffset = 0;
++	long long tsoffset = 0;
+ 	unsigned long long ts2secs = 0;
+ 	unsigned long long ts2sc;
+ 	int show_stat = 0;
 -- 
 2.23.0
 
