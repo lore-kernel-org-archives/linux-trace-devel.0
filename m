@@ -5,73 +5,73 @@ X-Spam-Level:
 X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D2F5C432C0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 09:25:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA7CDC432C0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 11:29:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6FE6521741
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 09:25:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AE5F321781
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 11:29:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BvMrSVYp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PVM7vSaC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbfK1JZi (ORCPT
+        id S1726227AbfK1L3I (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Nov 2019 04:25:38 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:35451 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbfK1JZi (ORCPT
+        Thu, 28 Nov 2019 06:29:08 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:38247 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726054AbfK1L3I (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Nov 2019 04:25:38 -0500
-Received: by mail-lf1-f68.google.com with SMTP id r15so16566886lff.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 01:25:36 -0800 (PST)
+        Thu, 28 Nov 2019 06:29:08 -0500
+Received: by mail-lj1-f194.google.com with SMTP id k8so17570485ljh.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 03:29:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8JgviU3LbOJoGO7Xo+HUz8IjCkIWcmFCb2qg5QAZ3Sg=;
-        b=BvMrSVYpMXzyHBC7SELhr0epdP9G9wyTJNvhvDv7zDZ6orieUfu6WQStvZ+i0YBAvn
-         4Ju4c7F89hLgv/heMqV3Tk6rYTV9/JdEwTrL890bssKpnTNaYzpqJq5mvtLvNQv0Fthg
-         fYhlqPCP+sSdjMbeFqYA0xWgTvppVimKNEeqLGlJmbuOJ1e68kJlzA2gGxTXXQC9oMwM
-         MLEAa8YMz+7xfokb3LaIajUhdqIdfXSESK+/17QmqkHN3p0Tv4H/6HfwpNuSg7WbG2bG
-         +XI+Ldaw0xX1Uvj0X27ZpAfKeDPC9kSXryhfYi6dzOGk8hfmJAP9ouALtqQItCu4x7Ip
-         MOKA==
+        bh=Onc4vO8W/FGDY+252G6VDJOlY2/l9eEqT+YULvZfNR0=;
+        b=PVM7vSaCsXGdPhSG9TNp1u5J1kkQjShYQet1zBdCK5mmRRLSVe8tkMCsYPoJXp3aRM
+         QRFxz/8W3Oe4SXUV2cIYpg+0W0kp5YxYMzR1Iy3msbdBfCAOoyzPAeBBvK8gaSR7BvUl
+         u1t8NQFgdNxB6frOOdEOoN85LI9lEgIhSBHjx+tYthmnS8FpLJAMM+WFRaVRZG6KHvJh
+         wEZwQGty2Lzf+C0K0Wj80A610s5bxL9rceY7O2ctvnxdlT4EFdv3aJSZzp1CWxb2nMsE
+         5X3OZhbrzguZq8ylQtBD6bB/neCyin7ZA0g0F/kb8OZFOdbRIMHOgtTWWJ/IwkZ/OTV8
+         MEKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=8JgviU3LbOJoGO7Xo+HUz8IjCkIWcmFCb2qg5QAZ3Sg=;
-        b=QY5tZzgmWPatUj0BnUezcDpSvM0Xi81wImc7AiRe25nLRd2gyXqcwph7Miub4h3Am7
-         QmOCpjv2S90r3T1m8BBmGNYNBVWWCNErcSqgh9rc+Bvxzto9ydi8S/+e02/UC+8JO4C5
-         SreN0SC1BoqUqrWZK43l/vY2/JJqHHkUDuORmjehgZ4qBiMMqYX+ttpW+M1A1fyFEs/E
-         x47ScW+1xeGkuGbUQWn2ToPdiNyAfq4HrpUOQKXvgmc0u3/v0gQLkk8pdiBvbs8kCpNu
-         XJXKzkiVMJqiJ4G17Xt4cggBy5R/jfE4N+Zdd6GCo7U/1TR29LVpAv7KXkUVyPxRbOTA
-         +8uw==
-X-Gm-Message-State: APjAAAVzpnkrmm45FpFgH1AqDRcsohH9SGYy7jwX7YMNDV6iB0jQ9qv4
-        mQyBEO1bIRsATfusdORnhj3Bnb6R
-X-Google-Smtp-Source: APXvYqxJbkIIaST0rxOBR4lX7EnDdUR75u+FcVp3cFR+NG3Ml6BH1HbcOtJSFWmmLOGtRB2iyDPDgQ==
-X-Received: by 2002:ac2:410a:: with SMTP id b10mr4402503lfi.135.1574933135658;
-        Thu, 28 Nov 2019 01:25:35 -0800 (PST)
+        bh=Onc4vO8W/FGDY+252G6VDJOlY2/l9eEqT+YULvZfNR0=;
+        b=KU3BqfSXibCncdc7OavTK7gCLYCDS6NfQBjCNqmVFBzsMOTjH8nuU/ks9a/Ud+WzuX
+         yH9A/Hb+vZ1GLlKE45YRe5J8YXA9U03u2t30J6BkrJmLnJkvRuhTrrBr8df9mivWY+s/
+         wwKKdOMqYfdQWNZ5NffqmBtQ7avuh6eGBvXbXRrLUyh1JXVIaM0eJZxXOn2ksf3MEPv7
+         bewqb1+kTy5ucGXu231oumoSOsK+MjKkjDgHkZ7gW+LoKw0py02GPFDdSB4sVbRYlWim
+         0SjuVQxr5lwJuHBAynVlqMqbV0aIdKX9ayAUh2u0dpqAmL/iElOf+/wWxmXze9dy29+M
+         W4Fg==
+X-Gm-Message-State: APjAAAX+2AP0iCTChR332cPlOMALf33/VOqm5SqYTPQYKy9cv11TS0rM
+        c3REUywzV/f/C3/y5WblyB8dsjRR
+X-Google-Smtp-Source: APXvYqyu6QgTRpjfTcwFtImQdAuSNguI/1laYRSXTnpLfEVzQZvwL/EAha4CMZsNK30HlHusneYX2g==
+X-Received: by 2002:a2e:9e97:: with SMTP id f23mr34189332ljk.89.1574940544916;
+        Thu, 28 Nov 2019 03:29:04 -0800 (PST)
 Received: from [10.27.112.58] ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id u4sm8288799ljj.87.2019.11.28.01.25.34
+        by smtp.gmail.com with ESMTPSA id s76sm3153836lje.53.2019.11.28.03.29.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Nov 2019 01:25:35 -0800 (PST)
-Subject: Re: [PATCH v2 2/3] kernel-shark: Fix potential memory leak in
- libkshark-collection
+        Thu, 28 Nov 2019 03:29:04 -0800 (PST)
+Subject: Re: [PATCH v2 3/3] kernel-shark: When running as Root save all config
+ settings in /root/
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org
 References: <20191023122145.14314-1-y.karadz@gmail.com>
- <20191023122145.14314-2-y.karadz@gmail.com>
- <20191127135416.6bcc0fd9@gandalf.local.home>
+ <20191023122145.14314-3-y.karadz@gmail.com>
+ <20191127151310.680478f1@gandalf.local.home>
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <61ba76fd-25ba-821d-b8e8-0f3209f692b5@gmail.com>
-Date:   Thu, 28 Nov 2019 11:25:33 +0200
+Message-ID: <7e2a221d-d1f0-ec91-ae42-6a9d48440fc5@gmail.com>
+Date:   Thu, 28 Nov 2019 13:29:02 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20191127135416.6bcc0fd9@gandalf.local.home>
+In-Reply-To: <20191127151310.680478f1@gandalf.local.home>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,108 +82,127 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 
 
-On 27.11.19 г. 20:54 ч., Steven Rostedt wrote:
-> On Wed, 23 Oct 2019 15:21:44 +0300
+On 27.11.19 г. 22:13 ч., Steven Rostedt wrote:
+> On Wed, 23 Oct 2019 15:21:45 +0300
 > "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 > 
->> When searching for the entry, do not loop over the original list of
->> requests. Use a copy instead. If we loop over the original list and
->> no entry is found in the first element of the list, later the memory
->> used for this first element will leak.
+>> If KernelShark is running with Root privileges, do not save the settings
+>> in the standard location. Otherwise the configuration files will be owned
+>> by Root and later the normal user will have no access to those files.
+>>
+>> The patch seems to do the right thing in all cases that I tested, however
+>> there is definitely something that I do not understand. QDir::homePath()
+>> always returns the path to the home of the normal user, even if I build
+>> and run kernelshark as root (sudo -s).
 >>
 >> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 >> ---
->>   kernel-shark/src/libkshark-collection.c | 14 ++++++--------
->>   1 file changed, 6 insertions(+), 8 deletions(-)
+>>   kernel-shark/src/KsMainWindow.cpp | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
 >>
->> diff --git a/kernel-shark/src/libkshark-collection.c b/kernel-shark/src/libkshark-collection.c
->> index 02a014e..95fdbab 100644
->> --- a/kernel-shark/src/libkshark-collection.c
->> +++ b/kernel-shark/src/libkshark-collection.c
->> @@ -622,6 +622,7 @@ kshark_get_collection_entry_front(struct kshark_entry_request **req,
->>   				  ssize_t *index)
+>> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+>> index 3402764..bd6c338 100644
+>> --- a/kernel-shark/src/KsMainWindow.cpp
+>> +++ b/kernel-shark/src/KsMainWindow.cpp
+>> @@ -69,7 +69,7 @@ KsMainWindow::KsMainWindow(QWidget *parent)
+>>     _contentsAction("Contents", this),
+>>     _bugReportAction("Report a bug", this),
+>>     _deselectShortcut(this),
+>> -  _settings("kernelshark.org", "Kernel Shark") // organization , application
+>> +  _settings(_getCacheDir() + "/setting.ini", QSettings::IniFormat)
 >>   {
->>   	const struct kshark_entry *entry = NULL;
->> +	struct kshark_entry_request *list;
+>>   	setWindowTitle("Kernel Shark");
+>>   	_createActions();
+>> @@ -431,6 +431,9 @@ QString KsMainWindow::_getCacheDir()
+>>   		dir = QStandardPaths::writableLocation(appCachePath);
+>>   		dir += "/kernelshark";
+>>   
+>> +		if (geteuid() == 0)
+>> +			dir.replace(QDir::homePath(), "/root");
+>> +
+>>   		if (!QDir(dir).exists())
+>>   			lamMakePath(false);
+>>   	}
 > 
-> Hi Yordan,
+> I'll pull this patch in, but this assumes that root is always at /root.
+> I've had machines where that was not the case. I wonder if we should
+> add something like this on top of this patch. Not this change directly,
+> (because this is me just writing C with at C++ compiler ;-), but
+> something that is more the Qt way...
 > 
-> I was looking at this patch in more detail, and I'm thinking that we
-> don't need to pass in the address of the req pointer, but just the req
-> pointer itself. The only place that I see the req pointer being
-> modified is the failure case in map_collection_request_init() where it
-> does:
+> diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
+> index bd6c338f..56cf9b9b 100644
+> --- a/kernel-shark/src/KsMainWindow.cpp
+> +++ b/kernel-shark/src/KsMainWindow.cpp
+> @@ -31,6 +31,43 @@
+>   #include "KsCaptureDialog.hpp"
+>   #include "KsAdvFilteringDialog.hpp"
+>   
+> +static QString find_root_home(void)
+> +{
+> +	FILE *fp = fopen("/etc/passwd", "r");
+> +	char *buf;
+> +	char *sav;
+> +	char *id;
+> +	size_t n;
+> +
+> +	if (!fp)
+> +		return QString("/root");
+> +
+> +	n = 0;
+> +	while (getline(&buf, &n, fp) != -1) {
+> +		/* user */
+> +		strtok_r(buf, ":", &sav);
+> +		/* type */
+> +		strtok_r(NULL, ":", &sav);
+> +		/* pid */
+> +		id = strtok_r(NULL, ":", &sav);
+> +		if (atoi(id) != 0) {
+> +			n = 0;
+> +			free(buf);
+> +			continue;
+> +		}
+> +		/* gid */
+> +		strtok_r(NULL, ":", &sav);
+> +		/* group */
+> +		strtok_r(NULL, ":", &sav);
+> +		/* home */
+> +		QString ret = QString(strtok_r(NULL, ":", &sav));
+> +		free(buf);
+> +		return ret;
+> +	}
+> +	free(buf);
+> +	return QString("/root");
+> +}
+> +
+>   /** Create KernelShark Main window. */
+>   KsMainWindow::KsMainWindow(QWidget *parent)
+>   : QMainWindow(parent),
+> @@ -432,7 +469,8 @@ QString KsMainWindow::_getCacheDir()
+>   		dir += "/kernelshark";
+>   
+>   		if (geteuid() == 0)
+> -			dir.replace(QDir::homePath(), "/root");
+> +			dir.replace(QDir::homePath(),
+> +				    find_root_home().toStdString().c_str());
+>   
+>   		if (!QDir(dir).exists())
+>   			lamMakePath(false);
 > 
-> 	kshark_free_entry_request(*req);
-> 	*req = NULL;
+> This reads the /etc/passwd file and searches for the pid of 0, and
+> returns the home path for that user. On any error it just
+> quietly defaults back to "/root".
 > 
-> But all callers do that free anyway.
->
 
-Yes, because the caller is expected to do 
-kshark_free_entry_request(*req) at the end, here we have to set the 
-original pointer to NULL. Otherwise we will get double free error.
-I think this is what I have been trying to fix, when I introduced the 
-memory leak.
+Hi Steven,
 
-And yes, I agree with you that carrying the address of the pointer 
-through all these functions is a bit ugly.
+Very good point. Thanks a lot!
 
-Thanks!
+I am sending a Qt-ish looking patch ;)
+
+cheers,
 Yordan
 
-> Maybe I'm missing something, but why are we passing in the pointer to
-> the pointer of req, and not just the req pointer itself? I don't see a
-> need to modify the pointer.
-> 
-> Before this patch, *req is modified, but after this patch, it is not.
-> If you pass in just "struct kshark_entry_request *req" then you don't
-> even need to have the "list" variable, you could just use "req" because
-> that would be a copy of the pointer.
-> 
+
 > -- Steve
-> 
-> 
-> 
->>   	int req_count;
->>   
->>   	/*
->> @@ -638,12 +639,10 @@ kshark_get_collection_entry_front(struct kshark_entry_request **req,
->>   	 * Loop over the list of redefined requests and search until you find
->>   	 * the first matching entry.
->>   	 */
->> -	while (*req) {
->> -		entry = kshark_get_entry_front(*req, data, index);
->> +	for (list = *req; list; list = list->next) {
->> +		entry = kshark_get_entry_front(list, data, index);
->>   		if (entry)
->>   			break;
->> -
->> -		*req = (*req)->next;
->>   	}
->>   
->>   	return entry;
->> @@ -680,6 +679,7 @@ kshark_get_collection_entry_back(struct kshark_entry_request **req,
->>   				 ssize_t *index)
->>   {
->>   	const struct kshark_entry *entry = NULL;
->> +	struct kshark_entry_request *list;
->>   	int req_count;
->>   
->>   	/*
->> @@ -695,12 +695,10 @@ kshark_get_collection_entry_back(struct kshark_entry_request **req,
->>   	 * Loop over the list of redefined requests and search until you find
->>   	 * the first matching entry.
->>   	 */
->> -	while (*req) {
->> -		entry = kshark_get_entry_back(*req, data, index);
->> +	for (list = *req; list; list = list->next) {
->> +		entry = kshark_get_entry_back(list, data, index);
->>   		if (entry)
->>   			break;
->> -
->> -		*req = (*req)->next;
->>   	}
->>   
->>   	return entry;
 > 
