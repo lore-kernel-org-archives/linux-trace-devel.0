@@ -2,64 +2,66 @@ Return-Path: <SRS0=1fLi=ZU=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFEAAC432C0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:51:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 695EAC432C0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:58:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8DFD321774
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:51:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 41DD221771
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 Nov 2019 14:58:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U2kjEVF1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RMxcnElL"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbfK1Ovs (ORCPT
+        id S1727642AbfK1O6T (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 Nov 2019 09:51:48 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:42060 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbfK1Ovs (ORCPT
+        Thu, 28 Nov 2019 09:58:19 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:46990 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727070AbfK1O6S (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 Nov 2019 09:51:48 -0500
-Received: by mail-io1-f67.google.com with SMTP id f25so3099902iog.9
-        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 06:51:47 -0800 (PST)
+        Thu, 28 Nov 2019 09:58:18 -0500
+Received: by mail-pj1-f65.google.com with SMTP id z21so422689pjq.13
+        for <linux-trace-devel@vger.kernel.org>; Thu, 28 Nov 2019 06:58:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MEK43psFTFfG5djdFZBDO+VxrjizNrOyyGCHHKDbfpE=;
-        b=U2kjEVF1EVV+XntUatclWWqUiZ0DTR0k8IDo0JnUWAZhMdy7Gm12hIjeU9XRCjY2H2
-         EF8QitwyghllK/LiJesuRGsFshrhtFhpQhuPB+ynUc7Eq2T4lEl2oJs1FGSKXlGeZDXl
-         Xfhx69dFhJcueLl/jor+BwdPpfNbTH3P25/uGHSn3aj4l8Dvhq/EkvGePnB2lGGJ873/
-         ei/dzyXuINmsFSQnvZbnzt6o62h8L7zKgwinTIvTILk02FMiISreVXXx2xEnozuILVvr
-         R86vuSJRuMVwyma//QndGcHDAqg9XiOO03Aar5ZAWy4Jrrg0JgnomX9kqmkA1boD7mv7
-         00TQ==
+        bh=ofzzLMeUvLtpO6voxM8jG8HHKlrbg871nMkONEinivo=;
+        b=RMxcnElLYA9zWNWRtPXzncKBI101kAKV9bfcbUjZ6e/bmzwxcVfgl4063kug9E6RZh
+         reg28x2YkdB/DgF99rncbXSrkAsodBoyYGgfpbPN9wg/B3opqAgHLY7arU0IEthngPbp
+         t7CAmMWSo8Gw7q9My9EgFXy2/j34hk+pjUgdnBPLWU8/d+jFJHBjhGabWc8TNkh9diM1
+         ExWPjhwA45SfCHL7yhj7q8ZEd4GhQlxW7jb+uzRS1/yu6QVEIq4uBuYvDM5gA4Zwnw9g
+         sa2z5qND7VmT//jnQOUbUBqi9i1D1zFO3qxJbtNkBNOD2d5Vnld2UylYXxZKyJBQ0tWU
+         6+2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MEK43psFTFfG5djdFZBDO+VxrjizNrOyyGCHHKDbfpE=;
-        b=rFjUn48dLUeu8nizGLV1lSKnNJmVMpY/BXxZg/4rULvd3Uw+qlhf+j1QS/EE4KrYxL
-         xqVpfHl9zmqtGa21wWNGht2WQDCX7pB0KP1AVMl2Icy0GL1Uh0l5n10fxfPGkgsk/n1I
-         JP5FUzvy+84YGILyEBEBRrfr/SsSvQnnpOvKLyMbvLbr+2fh6auyQ/Bakwl1cpv6luiq
-         +DGlokMozuWXCCoUh3r+DL+A+hK2uRaWnU9z7742Gyrv/vL4dQv6g55YeNNJDqgd9NS1
-         Y68gFRfhRHWqcKJKqHPqv2LwBz6Ck9HyQUAtvl7j3iwdOCpOLVnCMNjP8r+CLfdxMRLc
-         tS3g==
-X-Gm-Message-State: APjAAAVfs5eq+4MhBIPI+rdEzvJtk3p4ygvxf0dU1I4HPhCwRRYA6BQl
-        F18LfyxTh751cDZ/GAwmN9lUsDvvosE3Irg+qw==
-X-Google-Smtp-Source: APXvYqy36b40v63nrMdXplG6lNO0ggGBBLCu80onVoyF6YaUkjwlAe/kGihcM7ctmyl4Q/DNwFZkcTccRNTTwcac8/M=
-X-Received: by 2002:a6b:c305:: with SMTP id t5mr42340856iof.87.1574952706963;
- Thu, 28 Nov 2019 06:51:46 -0800 (PST)
+        bh=ofzzLMeUvLtpO6voxM8jG8HHKlrbg871nMkONEinivo=;
+        b=KbgOrl31Ihnm1z85/tZlh8d6yDcWpzaLIMX6UQAm9omDmDemw7VcOHaxqZSddYX56W
+         pyIejQFq3bih+NXjk7zM3SqAoN5pXBa++bDqU3jrMEhEWYNylJPMjaqFLDNKuuo6hy5g
+         CI2Md6mINM5GGr89jUaCWKHblW45nv3wLKSRGRYwj59q4S/HtWnCTPD6rbSXnP4jAJkw
+         ClrOyzT1b/L5MxqFNv7NemROrYW0GupG7WZ0+70Y9zBNOPTQDoKn8TrxBFCC1QwOMBUD
+         kNcdbDbJojdaVoa9LwkHliIY7Qkx+TmvQAnz/ePvghNKa/zhML+kFES6qHoRKUHl0QjR
+         OZqA==
+X-Gm-Message-State: APjAAAX5BLV6nLTqZTi/Miw9WrI6ySiRHyESSW/zzqQo8Wu7N69oPnv7
+        Um9SayFrHrXgkfqlQzlrLReRJ0Ad4E7DeFMzIBU=
+X-Google-Smtp-Source: APXvYqzjWnmSmIL/LMU0WTgPNvoU7JpnERLpcAO62SmNP8cxlh60E4ywSFeQ0/HFxOSP+rEX1tmw0TE7LBSDF6xklWw=
+X-Received: by 2002:a17:90a:2947:: with SMTP id x7mr12954132pjf.136.1574953098032;
+ Thu, 28 Nov 2019 06:58:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20191128085409.289684-1-tz.stoyanov@gmail.com> <20191128085409.289684-16-tz.stoyanov@gmail.com>
-In-Reply-To: <20191128085409.289684-16-tz.stoyanov@gmail.com>
-From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Date:   Thu, 28 Nov 2019 16:51:35 +0200
-Message-ID: <CAE0o1NupdFjJLnQ1dKVEUh91_fBiTt1nok+_7mLiOSZpcbFGKg@mail.gmail.com>
-Subject: Re: [PATCH v15 15/18] trace-cmd: Refactor few trace-cmd internal functions.
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+References: <20191128085409.289684-1-tz.stoyanov@gmail.com>
+ <20191128085409.289684-12-tz.stoyanov@gmail.com> <CAE0o1Ns2X+T_fyz7zR-npzMJ82+4oL-Qvt6q2YLUwgbjJkeDOQ@mail.gmail.com>
+In-Reply-To: <CAE0o1Ns2X+T_fyz7zR-npzMJ82+4oL-Qvt6q2YLUwgbjJkeDOQ@mail.gmail.com>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Thu, 28 Nov 2019 16:58:06 +0200
+Message-ID: <CAPpZLN4+uRCzUcjgH0nL_KKu39d5=EpEMUhLdVDRsmPEn4X-Lg@mail.gmail.com>
+Subject: Re: [PATCH v15 11/18] trace-cmd: Exchange tracing IDs between host
+ and guest
+To:     Slavomir Kaslev <slavomir.kaslev@gmail.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -68,52 +70,51 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Nov 28, 2019 at 11:01 AM Tzvetomir Stoyanov (VMware)
-<tz.stoyanov@gmail.com> wrote:
+On Thu, Nov 28, 2019 at 4:34 PM Slavomir Kaslev
+<slavomir.kaslev@gmail.com> wrote:
 >
-> In order to reuse code inside trace-cmd application context,
-> few functions are made non static:
->         int make_vsock(unsigned int port);
->         int get_vsock_port(int sd, unsigned int *port);
->         int open_vsock(unsigned int cid, unsigned int port);
->         char *get_guest_file(const char *file, const char *guest);
+ ...
+> > -       ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv, &use_fifos);
+> > +       ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv,
+> > +                                         &use_fifos, &trace_id);
 >
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  tracecmd/include/trace-local.h | 8 ++++++++
->  tracecmd/trace-agent.c         | 4 ++--
->  tracecmd/trace-record.c        | 8 ++++----
->  3 files changed, 14 insertions(+), 6 deletions(-)
+> Why is `tracecmd_msg_recv_trace_req` receiving trace_id if it's
+> getting generated by the agent below?
 >
-> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-> index a6f79c5..17ef31a 100644
-> --- a/tracecmd/include/trace-local.h
-> +++ b/tracecmd/include/trace-local.h
-> @@ -19,6 +19,8 @@
->  #define GUEST_FIFO_FMT         GUEST_DIR_FMT "/" GUEST_PIPE_NAME "%d"
->  #define VIRTIO_FIFO_FMT                "/dev/virtio-ports/" GUEST_PIPE_NAME "%d"
->
-> +#define TRACE_FILENAME         "trace.dat"
-> +
->  /* fix stupid glib guint64 typecasts and printf formats */
->  typedef unsigned long long u64;
->
-> @@ -258,6 +260,12 @@ void tracecmd_disable_tracing(void);
->  void tracecmd_enable_tracing(void);
->  void tracecmd_stat_cpu(struct trace_seq *s, int cpu);
->
-> +int make_vsock(unsigned int port);
-> +int get_vsock_port(int sd, unsigned int *port);
+Each peer generates its own trace id and stores it in its trace.dat
+file. tracecmd_msg_recv_trace_req() receives the trace ID of the host
+and tracecmd_msg_send_trace_resp() replies its own trace ID.
+May be it is a good idea in case of guest to not generate trace ID,
+but to use the one generated by the host ?
 
-trace-agent.c is not getting compiled if VSOCK isn't defined so those
-functions won't be available then. Put them undef #ifdef VSOCK here
-too? Or have all vsock functions in a separate .c file, #ifdef-ed so
-that those functions do nothing when VSOCK is not defined?
+> >         if (ret < 0)
+> >                 die("Failed to receive trace request");
+> >
+> > @@ -153,13 +155,13 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
+> >
+> >         if (!use_fifos)
+> >                 make_vsocks(nr_cpus, fds, ports);
+> > -
+> > +       trace_id = tracecmd_generate_traceid();
+> >         ret = tracecmd_msg_send_trace_resp(msg_handle, nr_cpus, page_size,
+> > -                                          ports, use_fifos);
+> > +                                          ports, use_fifos, trace_id);
+> >         if (ret < 0)
+> >                 die("Failed to send trace response");
+> > -
+> > -       trace_record_agent(msg_handle, nr_cpus, fds, argc, argv, use_fifos);
+> > +       trace_record_agent(msg_handle, nr_cpus, fds, argc, argv,
+> > +                          use_fifos, trace_id);
+> >
+> >         free(argv[0]);
+> >         free(argv);
+>
+> Cheers,
+>
+> -- Slavi
 
-> +int open_vsock(unsigned int cid, unsigned int port);
-> +
-> +char *get_guest_file(const char *file, const char *guest);
 
-Cheers,
 
--- Slavi
+-- 
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
