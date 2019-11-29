@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 617F8C43141
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D240FC43215
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 36EE020833
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F2E0217D7
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dh+10bOJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lpXKQXoJ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbfK2KRs (ORCPT
+        id S1726878AbfK2KRr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Nov 2019 05:17:48 -0500
-Received: from mail-lj1-f174.google.com ([209.85.208.174]:45089 "EHLO
-        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbfK2KRr (ORCPT
+        Fri, 29 Nov 2019 05:17:47 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:33510 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726876AbfK2KRr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 29 Nov 2019 05:17:47 -0500
-Received: by mail-lj1-f174.google.com with SMTP id d20so1593371ljc.12
-        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Nov 2019 02:17:44 -0800 (PST)
+Received: by mail-lj1-f194.google.com with SMTP id t5so31423851ljk.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Nov 2019 02:17:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wMgCn+O1gDF3PGkitqN6z1Pc9HBAPztdVZ4+0qW0KJ0=;
-        b=dh+10bOJGddf/xxKbg5UNfCQNBdh6i11GRuvspPAiGgkCid2dXMC366n0kRlU9jXGn
-         W+fvG6nDOyLsw8eC2qiCYuj0Tbha4yML6AeW+gcBNFZWcm/fvUlXCApcjEFhOHk9sh+c
-         YwlHzxZ3qyySL++hwXJBgHeeyVR1sP3v6uil+d9KNb7WExic0zXcTbUvavtvTwq/uqZh
-         Pm6U5c4NixEKvciC4lltOfkrVWtKuUMg9c0YJjBrqqf00vuW53sWi7rS1/u2mbqUf5YI
-         STQ6uI0W3xEGLYVdN7v0Zq83Z4oWYQ0K68Bvspp1PzykhhkJI2/UVV7L8YWOUKByh4D7
-         Qywg==
+        bh=1vr5+JkKcuoZVsjx/XbK96E0u7JOyC3v723be9HMndo=;
+        b=lpXKQXoJ/ImxNQDY9CjvnD4g51Y7/KYuPuW+uKYffyk3ae9oCpDzktcqPb9p9GMkBQ
+         IrYy79l8rOkhX+vNwtHyAoQjxBAMXJD1yFi4BCHqbWvATDZXFJklcpdsWsPZ5/H7mDfE
+         n4t2m2BafzpEqvMPb+G/4sCCznPQ11RItK4x0+iBh0Li/fonZlYvaOWl1+EJpwb1m8ko
+         QnteNbIyy6T008JPxY9bO7iFbEjNbPPseYinmYcUDmQ4r168qLAK5PRI9s8fRqdkwkSM
+         dVJcgKv80FjOsLCe3vA607GlfOS7u6W+7ZjBU97VupIW2lGqYu3Z+DSE9nQqi2MI+h/Q
+         cAuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wMgCn+O1gDF3PGkitqN6z1Pc9HBAPztdVZ4+0qW0KJ0=;
-        b=Rx1Iymdx3PUDqh0HyUDQnOYhO4iLXCC88oDOtLbzHxzvTQWvsiGCKMx0e3zQHWPdGw
-         EIoqYrFOAptrfwRDBgbSYqxRQvdgfUv43FvOqgirVZWOkFMAMR6WbZ8BsiwkICD6c7ue
-         v+eulDfFEdld3xRYfExCJbMk6monx2VQG7Iti1BvjhjebBqs0zwRFIOHyBz5SD7jNeZm
-         EyCdaBOvXCRBl7WJKHLdNGBHzqnGjccGvMdf5txU76whxrkTrJii1BlQr0EY+87F079J
-         Liczt7oDTR3i8uUT6GpZ4CBwcmOaO7JhU2HvDGk9Ql6T8cneqBevu6sMU+kY9eVbJULW
-         QbHQ==
-X-Gm-Message-State: APjAAAWzseOn0nN00Cd8vjIL44iLpl3ojpZuR1hQvvttIJ4EPlUVe5ch
-        yKOnhMkRW++rxId6dIUxB+Q=
-X-Google-Smtp-Source: APXvYqwQqveVGcf31scKLwkn+RZd7O3krIBLjwAlY7XGUKjm3GVBxguwDZDB4FRZ9bRd1GzwNqOekg==
-X-Received: by 2002:a2e:3216:: with SMTP id y22mr22744662ljy.95.1575022663747;
-        Fri, 29 Nov 2019 02:17:43 -0800 (PST)
+        bh=1vr5+JkKcuoZVsjx/XbK96E0u7JOyC3v723be9HMndo=;
+        b=ge1MjAvGYhTeyKSweJx4vAWW0Ac33RNRUiVpk83uQw/DnFHZkmv46fIq0fbv1KJQ+z
+         tp61WRyYkrMZ2RHw0n0esjbJyA1sWsUM14IILkGCNbHP4dDlv+ljJFf1NmHP+SXZgeUP
+         Nu45WSXffizL2DJ/7NMJ7sGMUAno6/nw79hNYhacbssAzS3qpDlI+pEo6T44+IDCWL38
+         u34rMbJ7k+OkJGNhpdL5Zwny+P7xkfJ73wSKwW3TsC2SPR239RyPImprfqd7+Lb/i/q7
+         V9G2tz2vRj6OxzaYRxOXAnNNtx9eK4LaxcAdrrSr9gv0cbHR1LO1Nz3NCYflHG8Gacc5
+         Xt3Q==
+X-Gm-Message-State: APjAAAX919SWqj6lnmKFTnBTaLwHK4x1vYhhlYZt6M9lVVTic3lg7cc4
+        ZsmRB//xKPmUD9WKqsueYPE=
+X-Google-Smtp-Source: APXvYqzkW+ClWJIHFl/DnRmwpVPoFbfLfq7RszJEh3BslXOE9e4SUtAMr9aEIin4yluikQtUCP3hPg==
+X-Received: by 2002:a2e:85c3:: with SMTP id h3mr32531624ljj.122.1575022665092;
+        Fri, 29 Nov 2019 02:17:45 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x29sm11367935lfg.45.2019.11.29.02.17.42
+        by smtp.gmail.com with ESMTPSA id x29sm11367935lfg.45.2019.11.29.02.17.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2019 02:17:43 -0800 (PST)
+        Fri, 29 Nov 2019 02:17:44 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v16 06/18] trace-cmd: Add new library API for reading ftrace buffers
-Date:   Fri, 29 Nov 2019 12:17:21 +0200
-Message-Id: <20191129101733.375808-7-tz.stoyanov@gmail.com>
+Subject: [PATCH v16 07/18] trace-cmd: Find and store pids of tasks, which run virtual CPUs of given VM
+Date:   Fri, 29 Nov 2019 12:17:22 +0200
+Message-Id: <20191129101733.375808-8-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191129101733.375808-1-tz.stoyanov@gmail.com>
 References: <20191129101733.375808-1-tz.stoyanov@gmail.com>
@@ -73,165 +73,126 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A new libtracecmd API is introduced:
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-	int tracecmd_iterate_raw_events(struct tep_handle *tep,
-					struct tracecmd_instance *instance,
-					int (*callback)(struct tep_event *,
-						   	struct tep_record *,
-						   	int, void *context),
-					void *callback_context);
+In order to match host and guest events, a mapping between guest VCPU
+and the host task, running this VCPU is needed. Extended existing
+struct guest to hold such mapping and added logic in read_qemu_guests()
+function to initialize it. Implemented a new internal API,
+get_guest_vcpu_pid(), to retrieve VCPU-task mapping for given VM.
 
-It reads events from trace_pipe_raw, per cpu ftrace buffer, and calls a user
-callback for each of them. The API is instance aware.
-
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- include/trace-cmd/trace-cmd.h |   8 +++
- lib/trace-cmd/trace-util.c    | 114 ++++++++++++++++++++++++++++++++++
- 2 files changed, 122 insertions(+)
+ tracecmd/include/trace-local.h |  2 ++
+ tracecmd/trace-record.c        | 57 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 59 insertions(+)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 5d4292e..831bb1a 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -380,6 +380,14 @@ char *tracecmd_read_instance_file(struct tracecmd_instance *instance,
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index a51f0d0..51abef1 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -243,6 +243,8 @@ void update_first_instance(struct buffer_instance *instance, int topt);
  
- void tracecmd_set_clock(struct tracecmd_instance *instance, char **old_clock);
+ void show_instance_file(struct buffer_instance *instance, const char *name);
  
-+int tracecmd_iterate_raw_events(struct tep_handle *tep,
-+				struct tracecmd_instance *instance,
-+				   int (*callback)(struct tep_event *,
-+						   struct tep_record *,
-+						   int, void *context),
-+				void *callback_context);
++int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
 +
-+
- 
- /* --- Plugin handling --- */
- extern struct tep_plugin_option trace_ftrace_options[];
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index e019dce..a54a905 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -1185,3 +1185,117 @@ int tracecmd_write_file(const char *file, const char *str, const char *type)
- 	}
- 	return ret;
+ /* moved from trace-cmd.h */
+ void tracecmd_create_top_instance(char *name);
+ void tracecmd_remove_instances(void);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 4459c90..fd7ca82 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -2873,10 +2873,12 @@ static bool is_digits(const char *s)
+ 	return true;
  }
-+
-+static int
-+get_events_in_page(struct tep_handle *tep, void *page,
-+		   int size, int cpu,
-+		   int (*callback)(struct tep_event *,
-+				   struct tep_record *,
-+				   int, void *),
-+		   void *callback_context)
+ 
++#define VCPUS_MAX 256
+ struct guest {
+ 	char *name;
+ 	int cid;
+ 	int pid;
++	int cpu_pid[VCPUS_MAX];
+ };
+ 
+ static struct guest *guests;
+@@ -2894,6 +2896,46 @@ static char *get_qemu_guest_name(char *arg)
+ 	return arg;
+ }
+ 
++static void read_qemu_guests_pids(char *guest_task, struct guest *guest)
 +{
-+	struct tep_record *last_record = NULL;
-+	struct tep_event *event = NULL;
-+	struct tep_record *record;
-+	int id, cnt = 0;
-+
-+	if (size <= 0)
-+		return 0;
-+
-+	while (true) {
-+		event = NULL;
-+		record = tracecmd_read_page_record(tep, page, size,
-+						   last_record);
-+		if (!record)
-+			break;
-+		free_record(last_record);
-+		id = tep_data_type(tep, record);
-+		event = tep_find_event(tep, id);
-+		if (event && callback) {
-+			if (callback(event, record, cpu, callback_context))
-+				break;
-+		}
-+		last_record = record;
-+	}
-+	free_record(last_record);
-+
-+	return cnt;
-+}
-+
-+/*
-+ * tracecmd_iterate_raw_events - Iterate through events in trace_pipe_raw
-+ *				 per CPU trace files
-+ * @tep: a handle to the trace event parser context
-+ * @instance: ftrace instance, can be NULL for the top instance
-+ * @callback: A user function, called for each record from the file.
-+ * @callback_context: A custom context, passed to the user callback function
-+ *
-+ * If the @callback returns non-zero, the iteration stops.
-+ *
-+ * Returns -1 in case of an error, or 0 otherwise.
-+ */
-+int tracecmd_iterate_raw_events(struct tep_handle *tep,
-+				struct tracecmd_instance *instance,
-+				int (*callback)(struct tep_event *,
-+						struct tep_record *,
-+						int, void *),
-+				void *callback_context)
-+{
-+	unsigned int p_size;
-+	struct dirent *dent;
-+	char file[PATH_MAX];
-+	void *page = NULL;
-+	struct stat st;
-+	char *path;
++	struct dirent *entry;
++	char path[PATH_MAX];
++	char *buf = NULL;
++	size_t n = 0;
++	int vcpu;
 +	DIR *dir;
-+	int ret;
-+	int cpu;
-+	int fd;
-+	int r;
++	FILE *f;
 +
-+	p_size = getpagesize();
-+	path = tracecmd_get_instance_file(instance, "per_cpu");
-+	if (!path)
-+		return -1;
++	snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
 +	dir = opendir(path);
-+	if (!dir) {
-+		ret = -1;
-+		goto error;
-+	}
-+	page = malloc(p_size);
-+	if (!page) {
-+		ret = -1;
-+		goto error;
-+	}
-+	while ((dent = readdir(dir))) {
-+		const char *name = dent->d_name;
++	if (!dir)
++		return;
 +
-+		if (strlen(name) < 4 || strncmp(name, "cpu", 3) != 0)
-+			continue;
-+		cpu = atoi(name + 3);
-+		sprintf(file, "%s/%s", path, name);
-+		ret = stat(file, &st);
-+		if (ret < 0 || !S_ISDIR(st.st_mode))
++	while ((entry = readdir(dir))) {
++		if (!(entry->d_type == DT_DIR && is_digits(entry->d_name)))
 +			continue;
 +
-+		sprintf(file, "%s/%s/trace_pipe_raw", path, name);
-+		fd = open(file, O_RDONLY | O_NONBLOCK);
-+		if (fd < 0)
++		snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
++			 guest_task, entry->d_name);
++		f = fopen(path, "r");
++		if (!f)
 +			continue;
-+		do {
-+			r = read(fd, page, p_size);
-+			if (r > 0)
-+				get_events_in_page(tep, page, r, cpu,
-+						   callback, callback_context);
-+		} while (r > 0);
-+		close(fd);
-+	}
-+	ret = 0;
++		if (getline(&buf, &n, f) < 0)
++			goto next;
++		if (strncmp(buf, "CPU ", 4) != 0)
++			goto next;
 +
-+error:
-+	if (dir)
-+		closedir(dir);
-+	free(page);
-+	tracecmd_put_tracing_file(path);
-+	return ret;
++		vcpu = atoi(buf+4);
++		if (!(vcpu >= 0 && vcpu < VCPUS_MAX))
++			goto next;
++		guest->cpu_pid[vcpu] = atoi(entry->d_name);
++
++next:
++		fclose(f);
++	}
++	free(buf);
 +}
++
+ static void read_qemu_guests(void)
+ {
+ 	static bool initialized;
+@@ -2957,6 +2999,8 @@ static void read_qemu_guests(void)
+ 		if (!is_qemu)
+ 			goto next;
+ 
++		read_qemu_guests_pids(entry->d_name, &guest);
++
+ 		guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
+ 		if (!guests)
+ 			die("Can not allocate guest buffer");
+@@ -3002,6 +3046,19 @@ static char *parse_guest_name(char *guest, int *cid, int *port)
+ 	return guest;
+ }
+ 
++int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
++{
++	int i;
++
++	if (!guests || guest_vcpu >= VCPUS_MAX)
++		return -1;
++
++	for (i = 0; i < guests_len; i++)
++		if (guest_cid == guests[i].cid)
++			return guests[i].cpu_pid[guest_vcpu];
++	return -1;
++}
++
+ static void set_prio(int prio)
+ {
+ 	struct sched_param sp;
 -- 
 2.23.0
 
