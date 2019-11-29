@@ -2,140 +2,84 @@ Return-Path: <SRS0=Qwo8=ZV=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AD6DC432C0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:23:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21B92C432C3
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 18:44:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 46269215F1
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:23:10 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J8h0wK1g"
+	by mail.kernel.org (Postfix) with ESMTP id E4C0921774
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 18:44:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbfK2KXJ (ORCPT
+        id S1726970AbfK2Sot (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Nov 2019 05:23:09 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:41795 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbfK2KXJ (ORCPT
+        Fri, 29 Nov 2019 13:44:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726926AbfK2Sot (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Nov 2019 05:23:09 -0500
-Received: by mail-pg1-f193.google.com with SMTP id x8so457883pgk.8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Nov 2019 02:23:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ge5xaaCNhZfBGOjoIonSVHRjPNJGoneqoCmMv6NHLSY=;
-        b=J8h0wK1gqc8j4lBOaFB4nt9sgtK1BNwX9ah4HLPh7jtcbjX3b0Q3ebjzD6tSrdtV/y
-         X5qJ9vjyBzEevog9IoSZ2xSBdj321I/ZrY/BGr07JmQ+O5U/SyhiTZEtIpcry5ElfzZM
-         33caD5P3FPNwZ3d/Tu81TRCUjdkCj9NH80Myw1LovhfpCsEeVSHpzBISF3epR2m03nH8
-         b1hafCJ3efMXat9hRcS62tmQivOSxmZN6NPBmLsg8X79whqENN3HlnRD0N9Tgs+n0D+E
-         ShXoNjjCCq+rlRAlRrQWfgknIk/jPAO7L7HE9c0/fZIdHloSqPDUXU/WTY41kJ0FtAK6
-         /Vjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ge5xaaCNhZfBGOjoIonSVHRjPNJGoneqoCmMv6NHLSY=;
-        b=EcGtczC6pGSgNErWwWcJDdZtLe3ZpFxCgNBeyWXVAv37aTFboydlbBLRV7NMmMJqYQ
-         I5k6ruF7xVWi7lrtLwpL61RsF00YaDxYISz73GXoqUxhIO2J2PKvB58XaaCXg6a4Bma2
-         D2Z+u1j+Zxv75m/rwRO3dhXKE3VVcj46ucgSXLRQ5i23qkvLEX2Bf2C0FYdG80OdW/PK
-         x04+mqn0i7LJEHZ3vEBPDprDOvEH+ZA/Evm+tzTqfTpCahzT50V45xBW7PmabhclON5v
-         X6pA/MUEJGhhtvInWK1lfzX9mDWc7idKrJBsergsUuP4WdUsqQPJhiMzOpFgi0BsVWq3
-         2MAQ==
-X-Gm-Message-State: APjAAAXxBGZCANVOOHVuCfsr6cXuRjUY+XZ+JUY9BFfaKyZbFcHbCxkU
-        VY+LOjoBKXN1nGZcIIGOix3Vchh/kbn9NyJj0EJp/3PMJeA=
-X-Google-Smtp-Source: APXvYqxgXIXB/bNpS6RmPRomytN+auX9AizIGdemoGuFa3oWAS1qQ/3kPxcx1c31qGD3d3O/Vku9aDrWXB165JxHm0I=
-X-Received: by 2002:a63:1916:: with SMTP id z22mr15931670pgl.206.1575022989133;
- Fri, 29 Nov 2019 02:23:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20191128085409.289684-1-tz.stoyanov@gmail.com>
- <20191128085409.289684-12-tz.stoyanov@gmail.com> <CAE0o1Ns2X+T_fyz7zR-npzMJ82+4oL-Qvt6q2YLUwgbjJkeDOQ@mail.gmail.com>
- <CAPpZLN4+uRCzUcjgH0nL_KKu39d5=EpEMUhLdVDRsmPEn4X-Lg@mail.gmail.com>
-In-Reply-To: <CAPpZLN4+uRCzUcjgH0nL_KKu39d5=EpEMUhLdVDRsmPEn4X-Lg@mail.gmail.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Fri, 29 Nov 2019 12:22:57 +0200
-Message-ID: <CAPpZLN5UETUxHTD_OuXp_mCC4PJRzK9Ox_sASLG1fcmuZkgf=g@mail.gmail.com>
-Subject: Re: [PATCH v15 11/18] trace-cmd: Exchange tracing IDs between host
- and guest
+        Fri, 29 Nov 2019 13:44:49 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E70C21736;
+        Fri, 29 Nov 2019 18:44:48 +0000 (UTC)
+Date:   Fri, 29 Nov 2019 13:44:46 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
         linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] kernel-shark: Retrieve the home of root from
+ "/etc/passwd"
+Message-ID: <20191129134446.20a0ec3e@oasis.local.home>
+In-Reply-To: <CAE0o1Nvd1To0MtBAHdVQgb2g8h5Kh6s08hvxuXAz6fFVAXW-=w@mail.gmail.com>
+References: <20191128114500.6289-1-y.karadz@gmail.com>
+        <CAE0o1Nvd1To0MtBAHdVQgb2g8h5Kh6s08hvxuXAz6fFVAXW-=w@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Nov 28, 2019 at 4:58 PM Tzvetomir Stoyanov
-<tz.stoyanov@gmail.com> wrote:
->
-> On Thu, Nov 28, 2019 at 4:34 PM Slavomir Kaslev
-> <slavomir.kaslev@gmail.com> wrote:
-> >
->  ...
-> > > -       ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv, &use_fifos);
-> > > +       ret = tracecmd_msg_recv_trace_req(msg_handle, &argc, &argv,
-> > > +                                         &use_fifos, &trace_id);
-> >
-> > Why is `tracecmd_msg_recv_trace_req` receiving trace_id if it's
-> > getting generated by the agent below?
-> >
-> Each peer generates its own trace id and stores it in its trace.dat
-> file. tracecmd_msg_recv_trace_req() receives the trace ID of the host
-> and tracecmd_msg_send_trace_resp() replies its own trace ID.
-> May be it is a good idea in case of guest to not generate trace ID,
-> but to use the one generated by the host ?
+On Thu, 28 Nov 2019 16:27:11 +0200
+Slavomir Kaslev <slavomir.kaslev@gmail.com> wrote:
 
-Actually each peer in a tracing session must have its own, unique trace ID.
-These IDs are used to distinguish guests (in case there is more than one) in
-the host context. In the host's trace.dat file a TRACECMD_OPTION_GUEST
-option is written for each guest, describing guest VCPU - host PID mapping
-and guest's trace ID is used to identify guests.
-The host's trace ID is sent to the guest using tracecmd_msg_recv_trace_req()
-and indeed it is not used anywhere, but I prefer to keep this exchange
-part of the
-trace request / reply negotiation, it could be useful in the future.
+> On Thu, Nov 28, 2019 at 1:46 PM Yordan Karadzhov (VMware)
+> <y.karadz@gmail.com> wrote:
+> [...]
+> > +       auto lamRootHome = [] () {
+> > +               QFile fPswd("/etc/passwd");
+> > +               QString home("/root");
+> > +               QStringList userInfo;
+> > +
+> > +               fPswd.open(QIODevice::ReadOnly);
+> > +               if (!fPswd.isOpen())
+> > +                       return home;
+> > +
+> > +               QTextStream s(&fPswd);
+> > +               while (!s.atEnd()) {
+> > +                       userInfo = s.readLine().split(':');
+> > +
+> > +                       /* Check the User Id. */
+> > +                       if (userInfo[2].toInt() == 0) {
+> > +                               home = userInfo[5];
+> > +                               break;
+> > +                       }
+> > +               }
+> > +  
+> 
+> Another option is to use getpwent(3) [0] instead of parsing /etc/passwd by hand.
 
->
-> > >         if (ret < 0)
-> > >                 die("Failed to receive trace request");
-> > >
-> > > @@ -153,13 +155,13 @@ static void agent_handle(int sd, int nr_cpus, int page_size)
-> > >
-> > >         if (!use_fifos)
-> > >                 make_vsocks(nr_cpus, fds, ports);
-> > > -
-> > > +       trace_id = tracecmd_generate_traceid();
-> > >         ret = tracecmd_msg_send_trace_resp(msg_handle, nr_cpus, page_size,
-> > > -                                          ports, use_fifos);
-> > > +                                          ports, use_fifos, trace_id);
-> > >         if (ret < 0)
-> > >                 die("Failed to send trace response");
-> > > -
-> > > -       trace_record_agent(msg_handle, nr_cpus, fds, argc, argv, use_fifos);
-> > > +       trace_record_agent(msg_handle, nr_cpus, fds, argc, argv,
-> > > +                          use_fifos, trace_id);
-> > >
-> > >         free(argv[0]);
-> > >         free(argv);
-> >
-> > Cheers,
-> >
-> > -- Slavi
->
->
->
-> --
-> Tzvetomir (Ceco) Stoyanov
-> VMware Open Source Technology Center
+Thank you! My google fu is starting to show its age, as I did a bit of
+searching looking for a library function to parse passwd, knowing one had
+to be there, but came up empty. This is exactly what I was looking for.
 
+Yes, Yordan, I think using this would be the better option as if I had
+found it, it would have been what I would have suggested in the first
+place.
 
-
--- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+-- Steve
