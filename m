@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71731C43215
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7239EC43141
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 43FC720833
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 47FE4217BA
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NM7vcpV6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U0IX6ui8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725892AbfK2KRy (ORCPT
+        id S1726879AbfK2KRz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Nov 2019 05:17:54 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43463 "EHLO
+        Fri, 29 Nov 2019 05:17:55 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:40212 "EHLO
         mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726888AbfK2KRx (ORCPT
+        with ESMTP id S1726893AbfK2KRy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Nov 2019 05:17:53 -0500
-Received: by mail-lj1-f196.google.com with SMTP id a13so8225805ljm.10
-        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Nov 2019 02:17:51 -0800 (PST)
+        Fri, 29 Nov 2019 05:17:54 -0500
+Received: by mail-lj1-f196.google.com with SMTP id s22so12375463ljs.7
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Nov 2019 02:17:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=B224P4RxVMyJM0B0WPGLDNxjdh952JhNi7+WGoEhibc=;
-        b=NM7vcpV6JD20Gube/z5PZbW2IOGce3xjIW2CSYgqHUB0i5+QXU+JV+7S/mBd+TslgW
-         LrQ+Ms1wZYdTAOwUDfOuF0wP688ie2oCSz8LjacS/4Su5A1aOqFCDLEAA8Kxz+TZn4BM
-         5YDr/kVErI0+tUFBA09a/RYtLSUUabYd1QU5m0TACHIVZYCLPH4EN96fivkrmDSFknPO
-         ogrBix0rEA8K4DI5nnJ+KcwbqK09qpFiN82AH2No6iIuLetkJbBCG9otEstlNhQ3kUVm
-         QJHZ85ua7/ISRt5FgWeGgCTn6VHOIIh9MmQ6TfxAuN3AtJCQ4ZPIkWMYDe+ALpnC8Ia2
-         Q9Bw==
+        bh=TzKltY28zxysFwGXwi4Pp9PUBgVROhECvLFXCt3zpQw=;
+        b=U0IX6ui8tJai4aQB+t7e5/Ypu4NrLny7p81NlJDcE1aKpwNunPMssEvmtsoqT1ffyT
+         o5F0ugftF35XpgDAa5S43w9Jp+DmuoDdKxNhdbVQLTgyGS0kKRUYaJcMz8PPUOSN03jf
+         xNtNAOCyf9Hd/Ec/CGzkQhTWAjpx/EyVppZEXTZyfZVghHL4va5pi0hdHzjWFOheu5Jp
+         BvMJ6oBKF+k9eA2JW26CA7E8RziLu/p/icQq4ErvH4rVompjiICYU0Hjaa4HTvojtSFm
+         AeMwCzjCxMEvMMKYDwWLe1atBk8TufJCHelq5fcrjy+uGZVgAtI7btC5IQIoY/KcgurX
+         NBMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B224P4RxVMyJM0B0WPGLDNxjdh952JhNi7+WGoEhibc=;
-        b=S0VN+lEm10BLYU9c+6FW7jUYwtVIJD/1azIlcvv6eC8xyGC42LiCrwM+naUtXIlZCM
-         LjuOvvW4Om7AyhogGbGFjxpiTeBZ85ep0eriqKLLKVPwPK2JEILIpR9SZ+uCwr/GRlLa
-         G3yv0RZcF+oofHS/nyGc4psz7HhUl7/b2GjaWIWloX4yTbJ38SjPn9kdo1Oj72E2gqOC
-         GW7F96pPTJavL6spnRHFnr42MtCBQLKCzNwZ6P0ZpIoaxEkkHAIX5pUdY0+uhUE8KK2V
-         nRiqdFhYjhAkgwsMRtLjeKaRP6e2bKl9+h5qT4bjUXhqO1AwElUqsI2Ync99NwmGYohl
-         XPcA==
-X-Gm-Message-State: APjAAAUqwzC0cLwaqv+mts+kvgbQ16D9ivBcjnxkQGtPcKahShpomznz
-        9VFYJswV4T5GxkM3JXbhHEQvJugTSAo=
-X-Google-Smtp-Source: APXvYqwMJl37RbOFHw/Xlw1cemOA+C4tuwTQy3jmllTiq2/3VeE0wikwOG1tG1JkdnJbg5TqMAbeuA==
-X-Received: by 2002:a2e:b4dc:: with SMTP id r28mr9750694ljm.49.1575022670583;
-        Fri, 29 Nov 2019 02:17:50 -0800 (PST)
+        bh=TzKltY28zxysFwGXwi4Pp9PUBgVROhECvLFXCt3zpQw=;
+        b=j/CBNd+uqFxJN7wMYxDJFlU6lMHbvBOQbwxjlJRy6XzbPNtl6S5EYr9V86uQIJ97mf
+         +P3Mwn82ojD+a+I0mZdWWLENf8ahITKj9HuQY4KmVTEpDd9gl1ZSCrZJFViseJB8LMdV
+         E/Sh1G0FTgQER5yJ7uwu0Vrl7Mghe3/RCYi581j5izpMayCI2f1D5ivIGjZ8x0POWMxc
+         RfpPlroNxheIX0GGGvPMw0lwRvlmPLx54oWXS4IDuKK7HP/V7LiG2lIpSHBoE+rGEm1V
+         fD39KhBi01MPpthfuzOz885+VVfOYnQiOY8ibhFx0eY8GwnRuqE6bRaxGH6C1JqhP6Qb
+         w/AA==
+X-Gm-Message-State: APjAAAWeC7vW81tMemk3u+nLqApZbluhLwkaTjrlGE9SydOVhdzy7Kyh
+        RrK601EOVKEr4kAtcafgyxk=
+X-Google-Smtp-Source: APXvYqzsqACY5/66KFFVojYHDRd8kbz9mZ2XFsXdl4ANncZN5hLXpx09Y9SnST0lwYFcDbzqmg042w==
+X-Received: by 2002:a2e:9356:: with SMTP id m22mr25060046ljh.160.1575022672666;
+        Fri, 29 Nov 2019 02:17:52 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x29sm11367935lfg.45.2019.11.29.02.17.49
+        by smtp.gmail.com with ESMTPSA id x29sm11367935lfg.45.2019.11.29.02.17.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2019 02:17:50 -0800 (PST)
+        Fri, 29 Nov 2019 02:17:52 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v16 12/18] trace-cmd: Implement new option in trace.dat file: TRACECMD_OPTION_TIME_SHIFT
-Date:   Fri, 29 Nov 2019 12:17:27 +0200
-Message-Id: <20191129101733.375808-13-tz.stoyanov@gmail.com>
+Subject: [PATCH v16 14/18] trace-cmd: Add host trace clock as guest trace argument
+Date:   Fri, 29 Nov 2019 12:17:29 +0200
+Message-Id: <20191129101733.375808-15-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191129101733.375808-1-tz.stoyanov@gmail.com>
 References: <20191129101733.375808-1-tz.stoyanov@gmail.com>
@@ -73,288 +73,69 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+When tracing host and guest machines, both should use the same
+tracing clock for event timestamps. If a clock is specified
+as host tracing argument, with option "-C clock_name", the same
+is injected as guest tracing argument. If the user wants to use
+different tracing clocks, it can specify it using "-C clock_name"
+as guest tracing argument. In that case, the one specified by
+the user has higher priority.
 
-The TRACECMD_OPTION_TIME_SHIFT is used when synchronizing trace time stamps between
-two trace.dat files. It contains multiple long long (time, offset) pairs, describing
-time stamps _offset_, measured in the given local _time_. The content of the option
-buffer is:
- 8 bytes - long long integer, ID of the tracing session
- 4 bytes - integer, count of timestamp offsets
- long long array of size _count_, local time in which the offset is measured
- long long array of size _count_, offset of the time stamps
-
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h |   6 ++
- lib/trace-cmd/trace-input.c   | 170 +++++++++++++++++++++++++++++++++-
- 2 files changed, 174 insertions(+), 2 deletions(-)
+ tracecmd/trace-record.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 90fa146..1240b4a 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -87,6 +87,7 @@ enum {
- 	TRACECMD_OPTION_VERSION,
- 	TRACECMD_OPTION_PROCMAPS,
- 	TRACECMD_OPTION_TRACEID,
-+	TRACECMD_OPTION_TIME_SHIFT,
- };
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 49730d6..e7fb1bd 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -5405,6 +5405,8 @@ static void parse_record_options(int argc,
+ 	char *sav;
+ 	int name_counter = 0;
+ 	int neg_event = 0;
++	struct buffer_instance *instance;
++	bool guest_config = false;
  
- enum {
-@@ -130,6 +131,11 @@ void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
- void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
- unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
- unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle);
-+int tracecmd_get_guest_cpumap(struct tracecmd_input *handle,
-+			      unsigned long long trace_id,
-+			      char *name,
-+			      int *vcpu_count, int *cpu_pid);
-+unsigned long long tracecmd_get_tsync_peer(struct tracecmd_input *handle);
+ 	init_common_record_context(ctx, curr_cmd);
  
- void tracecmd_parse_trace_clock(struct tracecmd_input *handle, char *file, int size);
- 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 40d9825..a6b675a 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -74,6 +74,18 @@ struct input_buffer_instance {
- 	size_t			offset;
- };
- 
-+struct ts_offset_sample {
-+	long long	time;
-+	long long	offset;
-+};
-+
-+struct host_trace_info {
-+	bool			sync_enable;
-+	unsigned long long	trace_id;
-+	int			ts_samples_count;
-+	struct ts_offset_sample	*ts_samples;
-+};
-+
- struct tracecmd_input {
- 	struct tep_handle	*pevent;
- 	struct tep_plugin_list	*plugin_list;
-@@ -92,6 +104,7 @@ struct tracecmd_input {
- 	bool			use_pipe;
- 	struct cpu_data 	*cpu_data;
- 	long long		ts_offset;
-+	struct host_trace_info	host;
- 	double			ts2secs;
- 	char *			cpustats;
- 	char *			uname;
-@@ -1072,6 +1085,67 @@ static void free_next(struct tracecmd_input *handle, int cpu)
- 	free_record(record);
- }
- 
-+static inline unsigned long long
-+timestamp_correction_calc(unsigned long long ts, struct ts_offset_sample *min,
-+			  struct ts_offset_sample *max)
-+{
-+	long long tscor = min->offset +
-+			(((((long long)ts) - min->time)*
-+			(max->offset-min->offset))/(max->time-min->time));
-+
-+	if (tscor < 0)
-+		return ts - llabs(tscor);
-+
-+	return ts + tscor;
-+}
-+
-+static unsigned long long timestamp_correct(unsigned long long ts,
-+					    struct tracecmd_input *handle)
-+{
-+	struct host_trace_info	*host = &handle->host;
-+	int min, mid, max;
-+
-+	if (handle->ts_offset)
-+		return ts + handle->ts_offset;
-+
-+	if (!host->sync_enable || !host->ts_samples_count || !host->ts_samples)
-+		return ts;
-+
-+	/* We have one sample, nothing to calc here */
-+	if (host->ts_samples_count == 1)
-+		return ts + host->ts_samples[0].offset;
-+
-+	/* We have two samples, nothing to search here */
-+	if (host->ts_samples_count == 2)
-+		return timestamp_correction_calc(ts, &host->ts_samples[0],
-+						 &host->ts_samples[1]);
-+
-+	/* We have more than two samples */
-+	if (ts <= host->ts_samples[0].time)
-+		return timestamp_correction_calc(ts,
-+						 &host->ts_samples[0],
-+						 &host->ts_samples[1]);
-+	else if (ts >= host->ts_samples[host->ts_samples_count-1].time)
-+		return timestamp_correction_calc(ts,
-+						 &host->ts_samples[host->ts_samples_count-2],
-+						 &host->ts_samples[host->ts_samples_count-1]);
-+	min = 0;
-+	max = host->ts_samples_count-1;
-+	mid = (min + max)/2;
-+	while (min <= max) {
-+		if (ts < host->ts_samples[mid].time)
-+			max = mid - 1;
-+		else if (ts > host->ts_samples[mid].time)
-+			min = mid + 1;
-+		else
-+			break;
-+		mid = (min + max)/2;
-+	}
-+
-+	return timestamp_correction_calc(ts, &host->ts_samples[mid],
-+					 &host->ts_samples[mid+1]);
-+}
-+
- /*
-  * Page is mapped, now read in the page header info.
-  */
-@@ -1093,7 +1167,7 @@ static int update_page_info(struct tracecmd_input *handle, int cpu)
- 		    kbuffer_subbuffer_size(kbuf));
- 		return -1;
- 	}
--	handle->cpu_data[cpu].timestamp = kbuffer_timestamp(kbuf) + handle->ts_offset;
-+	handle->cpu_data[cpu].timestamp = timestamp_correct(kbuffer_timestamp(kbuf), handle);
- 
- 	if (handle->ts2secs)
- 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
-@@ -1820,7 +1894,7 @@ read_again:
- 		goto read_again;
- 	}
- 
--	handle->cpu_data[cpu].timestamp = ts + handle->ts_offset;
-+	handle->cpu_data[cpu].timestamp = timestamp_correct(ts, handle);
- 
- 	if (handle->ts2secs) {
- 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
-@@ -2143,6 +2217,47 @@ void tracecmd_set_ts2secs(struct tracecmd_input *handle,
- 	handle->use_trace_clock = false;
- }
- 
-+static int tsync_offset_cmp(const void *a, const void *b)
-+{
-+	struct ts_offset_sample *ts_a = (struct ts_offset_sample *)a;
-+	struct ts_offset_sample *ts_b = (struct ts_offset_sample *)b;
-+
-+	if (ts_a->time > ts_b->time)
-+		return 1;
-+	if (ts_a->time < ts_b->time)
-+		return -1;
-+	return 0;
-+}
-+
-+static void tsync_offset_load(struct tracecmd_input *handle, char *buf)
-+{
-+	struct host_trace_info *host = &handle->host;
-+	long long *buf8 = (long long *)buf;
-+	int i, j;
-+
-+	for (i = 0; i < host->ts_samples_count; i++) {
-+		host->ts_samples[i].time = tep_read_number(handle->pevent,
-+							   buf8 + i, 8);
-+		host->ts_samples[i].offset = tep_read_number(handle->pevent,
-+						buf8 + host->ts_samples_count+i, 8);
-+	}
-+	qsort(host->ts_samples, host->ts_samples_count,
-+	      sizeof(struct ts_offset_sample), tsync_offset_cmp);
-+	/* Filter possible samples with equal time */
-+	for (i = 0, j = 0; i < host->ts_samples_count; i++) {
-+		if (i == 0 || host->ts_samples[i].time != host->ts_samples[i-1].time)
-+			host->ts_samples[j++] = host->ts_samples[i];
-+	}
-+	host->ts_samples_count = j;
-+	host->sync_enable = true;
-+}
-+
-+static void trace_tsync_offset_free(struct host_trace_info *host)
-+{
-+	free(host->ts_samples);
-+	host->ts_samples = NULL;
-+}
-+
- static int trace_pid_map_cmp(const void *a, const void *b)
- {
- 	struct tracecmd_proc_addr_map *m_a = (struct tracecmd_proc_addr_map *)a;
-@@ -2323,6 +2438,7 @@ static int handle_options(struct tracecmd_input *handle)
- 	struct input_buffer_instance *buffer;
- 	struct hook_list *hook;
- 	char *buf;
-+	int sampes_size;
- 	int cpus;
- 
- 	/* By default, use usecs, unless told otherwise */
-@@ -2370,6 +2486,28 @@ static int handle_options(struct tracecmd_input *handle)
- 			offset = strtoll(buf, NULL, 0);
- 			handle->ts_offset += offset;
+@@ -5562,6 +5564,7 @@ static void parse_record_options(int argc,
  			break;
-+		case TRACECMD_OPTION_TIME_SHIFT:
-+			/*
-+			 * long long int (8 bytes) trace session ID
-+			 * int (4 bytes) count of timestamp offsets.
-+			 * long long array of size [count] of times,
-+			 *      when the offsets were calculated.
-+			 * long long array of size [count] of timestamp offsets.
-+			 */
-+			if (size < 12 || handle->flags & TRACECMD_FL_IGNORE_DATE)
-+				break;
-+			handle->host.trace_id = tep_read_number(handle->pevent,
-+								buf, 8);
-+			handle->host.ts_samples_count = tep_read_number(handle->pevent,
-+									buf + 8, 4);
-+			sampes_size = (8 * handle->host.ts_samples_count);
-+			if (size != (12 + (2 * sampes_size)))
-+				break;
-+			handle->host.ts_samples = malloc(2 * sampes_size);
-+			if (!handle->host.ts_samples)
-+				return -ENOMEM;
-+			tsync_offset_load(handle, buf + 12);
-+			break;
- 		case TRACECMD_OPTION_CPUSTAT:
- 			buf[size-1] = '\n';
- 			cpustats = realloc(cpustats, cpustats_size + size + 1);
-@@ -3078,6 +3216,8 @@ void tracecmd_close(struct tracecmd_input *handle)
- 	trace_pid_map_free(handle->pid_maps);
- 	handle->pid_maps = NULL;
+ 		case 'C':
+ 			ctx->instance->ftrace->clock = optarg;
++			guest_config = true;
+ 			break;
+ 		case 'v':
+ 			neg_event = 1;
+@@ -5779,14 +5782,26 @@ static void parse_record_options(int argc,
  
-+	trace_tsync_offset_free(&handle->host);
+ 	/* If --date is specified, prepend it to all guest VM flags */
+ 	if (ctx->date) {
+-		struct buffer_instance *instance;
+-
+ 		for_all_instances(instance) {
+ 			if (is_guest(instance))
+ 				add_argv(instance, "--date", true);
+ 		}
+ 	}
+ 
++	if (guest_config) {
++		/* If -C is specified, prepend clock to all guest VM flags */
++		for_all_instances(instance) {
++			if (top_instance.ftrace->clock) {
++				if (is_guest(instance)) {
++					add_argv(instance,
++						 (char *)top_instance.ftrace->clock,
++						 true);
++					add_argv(instance, "-C", true);
++				}
++			}
++		}
++	}
 +
- 	if (handle->flags & TRACECMD_FL_BUFFER_INSTANCE)
- 		tracecmd_close(handle->parent);
- 	else {
-@@ -3532,3 +3672,29 @@ unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle)
- {
- 	return handle->trace_id;
- }
-+
-+/**
-+ * tracecmd_get_tsync_peer - get the trace session id of the peer host
-+ * @handle: input handle for the trace.dat file
-+ *
-+ * Returns the trace id of the peer host, written in the trace file
-+ *
-+ * This information is stored in guest trace.dat file
-+ */
-+unsigned long long tracecmd_get_tsync_peer(struct tracecmd_input *handle)
-+{
-+	return handle->host.trace_id;
-+}
-+
-+/**
-+ * tracecmd_enable_tsync - enable / disable the timestamps correction
-+ * @handle: input handle for the trace.dat file
-+ * @enable: enable / disable the timestamps correction
-+ *
-+ * Enables or disables timestamps correction on file load, using the array of
-+ * recorded time offsets
-+ */
-+void tracecmd_enable_tsync(struct tracecmd_input *handle, bool enable)
-+{
-+	handle->host.sync_enable = enable;
-+}
+ 	if (!ctx->filtered && ctx->instance->filter_mod)
+ 		add_func(&ctx->instance->filter_funcs,
+ 			 ctx->instance->filter_mod, "*");
 -- 
 2.23.0
 
