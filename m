@@ -2,70 +2,67 @@ Return-Path: <SRS0=Qwo8=ZV=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E877FC432C0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2166BC43215
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AF3F4217BC
+	by mail.kernel.org (Postfix) with ESMTP id E7BC7217D7
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WeZwKjBk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mdep5VpQ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbfK2KRk (ORCPT
+        id S1726360AbfK2KRk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 29 Nov 2019 05:17:40 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:40183 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbfK2KRk (ORCPT
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:36733 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726215AbfK2KRk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 29 Nov 2019 05:17:40 -0500
-Received: by mail-lj1-f193.google.com with SMTP id s22so12374689ljs.7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Nov 2019 02:17:38 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id k15so31416368lja.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Nov 2019 02:17:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UlloWdexl+9O5OkTNnM3Udk0+LESBNPOa46PpvzWRgk=;
-        b=WeZwKjBkpvzkw7JFN7QE3x3spR7ke15R2A+zb2dv9J6aGW9paks0l8mOP+RhmtCH5+
-         S2iZi3ayPee+ESokVhdHzk5SwCO26R0lzkdJOd98xmgy+1lfpuijoT5voMFSfpCw4z67
-         jGdfNPyTNqTzCbwIP+2XKTeDNPbfRTDBzZ2MomoUzeWEmUh97cwGk0To3TgRSgcdeDA+
-         75sgzHYIGQJmeSDfvzQcuw1s2Cv010VjcBt5nWI57dKV0q2N4DxwPeoXCWu07o65hZjH
-         gb0nJavO4wlnSGJRYqZIV0agDVD0mskCe0PZ1S1to83MdUL9+22UDAi3JbcJXl17KL7C
-         1ajA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2XA+FUc2LtOXiY5fZbK16qWLC8mdHdGq4DtHkusIsnA=;
+        b=Mdep5VpQrP7D7Vw3VVH660SIulD6MLc69UUZMBBlgQdhwD9ceVlgnmCiMdmrCdNAmS
+         O8s4FEyk2p+43zBdLwG5U5vHD4VP3O2r1sNvPOnYbbF7k4VDbipsCbyN/i9h2UYXN49Z
+         +8/am+kScPZGlUtpNq53oAYUXYWGl3NDSI7DPp0Yrd9xBcoGVe6KYKMRNVD8Poz2yLgA
+         14u9sRPNvNbvM7rzqfZPUwa4BrB9WaukpVUDeZ8Pn7oUnxpK0ZODdFq7c7Btupcc6Nab
+         yvk3twvrJ3y+OL9wa99j2k7WeEaqkSFYWuW8qce9XWz2goE+IIolaQYUWp9hMi9BzirT
+         I1fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UlloWdexl+9O5OkTNnM3Udk0+LESBNPOa46PpvzWRgk=;
-        b=Ef2JnGe6XnySkIcFE55YOaA55UkYu6F4AOOW6fxHyloXT5C5XlZvvE5kiJHQaDOQjb
-         UzRSe/HwBao+8f35h4tSNYzOcxSieMZX4D7S7L5lVW89OY5DWis2wHoCLjVoILVGQW9E
-         uR8rxrly/sc4pY9pgL9xU1DUvj7J0z+UitrDA5jo2EStEAWE7WkNXsLl2xm4ngxcO3zz
-         l8vYhYpxSbGUJPggWSmscWEEw7Ru952cWwk2V3we7vbn7PSEW/zNM95gV44bgS/l71xP
-         aM5c/QYRTUsU4yP01S7qkiRqdSUyQakqki8re97Wkm32eKYXGHHG2fOcpvWsukrAtcVW
-         j0ow==
-X-Gm-Message-State: APjAAAUYzzznDCPg3oVoXBzel5jTfkCXZzGf2tWSgTriR50aj5yGxJDZ
-        LwAbAJRd5JXoNVbHt1KHQb25b5juyRk=
-X-Google-Smtp-Source: APXvYqyndyY5FOZ7/tSg0RZniiE/lbMvBaF7Bt29FRUgJCT+NXI1rHLeqYMnEMRVO1+b0xdIyE9UWg==
-X-Received: by 2002:a2e:9356:: with SMTP id m22mr25059350ljh.160.1575022657659;
-        Fri, 29 Nov 2019 02:17:37 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2XA+FUc2LtOXiY5fZbK16qWLC8mdHdGq4DtHkusIsnA=;
+        b=G7kZ69ZqwPWnJvBtdUO18yzM1wo6N29z70iPoGYRiw2kRZK4Hdu3c295VGgcvLb1K8
+         kkQF8v31EfRqR2rtTHsybFe+s5EhBJxs1ykI8KUZVJ2SCvH36BlQ4G4+ehJvx/5Zs9mA
+         2U7p93Gpdh9j3r1kUZdMq8e3OQ1YGXDJG5qc1Nl0b+GAGAvVJ+E7TDQ/VyOAzsfxrshP
+         RAK8ArZwP9bhmp8K/Vkgs5II7uoaV/ZNKC4XHB+RLx5cET4nFO0oTAS8cfzRDg+vMFw3
+         oSPTnKmL+gaEPk3vQBssCH5EPvV5fl0FbSBQOFcWD0Rut4DbeA0XN2YZhNExuekGiSbc
+         y6oQ==
+X-Gm-Message-State: APjAAAXkCBX2I42/Pd6N4bwCesv8iDTvnOfbDFUc/K/9ogL/7f6hDDio
+        qSaQR06VXkq7dEnx8eFIonVZY3gOva8=
+X-Google-Smtp-Source: APXvYqxCATEnu2fEL5+thHb4R4jPh6mjN8a30d/NVhS86VgJtMBMnZioh+RLhtnFkgdaTYllkpppHw==
+X-Received: by 2002:a2e:5751:: with SMTP id r17mr6586092ljd.254.1575022656588;
+        Fri, 29 Nov 2019 02:17:36 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x29sm11367935lfg.45.2019.11.29.02.17.36
+        by smtp.gmail.com with ESMTPSA id x29sm11367935lfg.45.2019.11.29.02.17.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2019 02:17:37 -0800 (PST)
+        Fri, 29 Nov 2019 02:17:35 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v16 01/18] trace-cmd: Implement new lib API: tracecmd_local_events_system()
-Date:   Fri, 29 Nov 2019 12:17:16 +0200
-Message-Id: <20191129101733.375808-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v16 00/18]Timestamp synchronization of host - guest tracing session
+Date:   Fri, 29 Nov 2019 12:17:15 +0200
+Message-Id: <20191129101733.375808-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191129101733.375808-1-tz.stoyanov@gmail.com>
-References: <20191129101733.375808-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -73,178 +70,172 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Basic infrastructure for host - guest timestamp synchronization and a
+POC implementation of PTP-like algorithm. 
 
-The new tracecmd lib API tracecmd_local_events_system() creates
-a tep handler and initializes it with the events of the
-specified subsystems.
+[
+ v16 changes:
+  - Fixed compilation in case no VSOCK is available (Thanks to Slavomir Kaslev)
+  - Fixed a typo in trace-cmd-record.1.txt (Thanks to Slavomir Kaslev)
+  - Added forgotten file in the patch "trace-cmd: Add new library APIs for
+    ftrace instances." - trace-instance.c
+  - Fixed few compilation warnings related to TSYNC_DEBUG code.
+  - Removed a blank line at the end of "tsync_readme" file. 
 
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
----
- include/trace-cmd/trace-cmd.h |   4 +-
- lib/trace-cmd/trace-util.c    | 102 +++++++++++++++++++++++-----------
- 2 files changed, 72 insertions(+), 34 deletions(-)
+ v15 changes:
+  - Removed the patch for "--proc-map" from the series, as it should not
+    be part of it.
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 13afce7..9363a26 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -27,8 +27,10 @@ extern int tracecmd_disable_plugins;
- char **tracecmd_event_systems(const char *tracing_dir);
- char **tracecmd_system_events(const char *tracing_dir, const char *system);
- struct tep_handle *tracecmd_local_events(const char *tracing_dir);
-+struct tep_handle *tracecmd_local_events_system(const char *tracing_dir,
-+						const char * const *sys_names);
- int tracecmd_fill_local_events(const char *tracing_dir,
--			       struct tep_handle *pevent, int *parsing_failures);
-+			       struct tep_handle *tep, int *parsing_failures);
- char **tracecmd_local_plugins(const char *tracing_dir);
- 
- char **tracecmd_add_list(char **list, const char *name, int len);
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index b5bb0d5..49a80ae 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -616,39 +616,20 @@ static int read_header(struct tep_handle *pevent, const char *events_dir)
- 	return ret;
- }
- 
--/**
-- * tracecmd_local_events - create a pevent from the events on system
-- * @tracing_dir: The directory that contains the events.
-- *
-- * Returns a pevent structure that contains the pevents local to
-- * the system.
-- */
--struct tep_handle *tracecmd_local_events(const char *tracing_dir)
-+static bool contains(const char *name, const char * const *names)
- {
--	struct tep_handle *pevent = NULL;
--
--	pevent = tep_alloc();
--	if (!pevent)
--		return NULL;
--
--	if (tracecmd_fill_local_events(tracing_dir, pevent, NULL)) {
--		tep_free(pevent);
--		pevent = NULL;
--	}
--
--	return pevent;
-+	if (!names)
-+		return false;
-+	for (; *names; names++)
-+		if (strcmp(name, *names) == 0)
-+			return true;
-+	return false;
- }
- 
--/**
-- * tracecmd_fill_local_events - Fill a pevent with the events on system
-- * @tracing_dir: The directory that contains the events.
-- * @pevent: Allocated pevent which will be filled
-- * @parsing_failures: return number of failures while parsing the event files
-- *
-- * Returns whether the operation succeeded
-- */
--int tracecmd_fill_local_events(const char *tracing_dir,
--			       struct tep_handle *pevent, int *parsing_failures)
-+static int tracecmd_fill_local_events_system(const char *tracing_dir,
-+					     struct tep_handle *tep,
-+					     const char * const *sys_names,
-+					     int *parsing_failures)
- {
- 	struct dirent *dent;
- 	char *events_dir;
-@@ -677,7 +658,7 @@ int tracecmd_fill_local_events(const char *tracing_dir,
- 		goto out_free;
- 	}
- 
--	ret = read_header(pevent, events_dir);
-+	ret = read_header(tep, events_dir);
- 	if (ret < 0) {
- 		ret = -1;
- 		goto out_free;
-@@ -690,7 +671,8 @@ int tracecmd_fill_local_events(const char *tracing_dir,
- 		if (strcmp(name, ".") == 0 ||
- 		    strcmp(name, "..") == 0)
- 			continue;
--
-+		if (sys_names && !contains(name, sys_names))
-+			continue;
- 		sys = append_file(events_dir, name);
- 		ret = stat(sys, &st);
- 		if (ret < 0 || !S_ISDIR(st.st_mode)) {
-@@ -698,7 +680,7 @@ int tracecmd_fill_local_events(const char *tracing_dir,
- 			continue;
- 		}
- 
--		ret = load_events(pevent, name, sys);
-+		ret = load_events(tep, name, sys);
- 
- 		free(sys);
- 
-@@ -716,6 +698,60 @@ int tracecmd_fill_local_events(const char *tracing_dir,
- 	return ret;
- }
- 
-+/**
-+ * tracecmd_local_events_system - create a tep from the events of the specified subsystem.
-+ *
-+ * @tracing_dir: The directory that contains the events.
-+ * @sys_name: Array of system names, to load the events from.
-+ * The last element from the array must be NULL
-+ *
-+ * Returns a tep structure that contains the tep local to
-+ * the system.
-+ */
-+struct tep_handle *tracecmd_local_events_system(const char *tracing_dir,
-+						const char * const *sys_names)
-+{
-+	struct tep_handle *tep = NULL;
-+
-+	tep = tep_alloc();
-+	if (!tep)
-+		return NULL;
-+
-+	if (tracecmd_fill_local_events_system(tracing_dir, tep, sys_names, NULL)) {
-+		tep_free(tep);
-+		tep = NULL;
-+	}
-+
-+	return tep;
-+}
-+
-+/**
-+ * tracecmd_local_events - create a pevent from the events on system
-+ * @tracing_dir: The directory that contains the events.
-+ *
-+ * Returns a pevent structure that contains the pevents local to
-+ * the system.
-+ */
-+struct tep_handle *tracecmd_local_events(const char *tracing_dir)
-+{
-+	return tracecmd_local_events_system(tracing_dir, NULL);
-+}
-+
-+/**
-+ * tracecmd_fill_local_events - Fill a pevent with the events on system
-+ * @tracing_dir: The directory that contains the events.
-+ * @tep: Allocated tep handler which will be filled
-+ * @parsing_failures: return number of failures while parsing the event files
-+ *
-+ * Returns whether the operation succeeded
-+ */
-+int tracecmd_fill_local_events(const char *tracing_dir,
-+			       struct tep_handle *tep, int *parsing_failures)
-+{
-+	return tracecmd_fill_local_events_system(tracing_dir, tep,
-+						 NULL, parsing_failures);
-+}
-+
- /**
-  * tracecmd_local_plugins - returns an array of available tracer plugins
-  * @tracing_dir: The directory that contains the tracing directory
+ v14 changes:
+  - Bring back the PTP-like algorithm and removed the ftrace event based logic.
+  - Reimplemented the PTP-like algorithm to use raw ftrace markers, instead of clock_gettime() API.
+  - Refactored the logic to be algorithm independent and plugin friendly.
+  - Implemented continuous timestamps synchronization, while the trace is running.
+  - Moved logic from trace-cmd application to libtracecmd, as new library APIs.
+  - Implemented new trace id functionality.
+  - Implemented new guest section in host trace.dat file.
+	
+ v13 changes:
+  - Remove few patches from the set, as they were merged.
+  - Rebased to the latest master, Slavomirs patchest "Add VM kernel tracing over
+    vsockets and FIFOs" got merged!
+ 	
+ v12 changes:
+  - Rebased on top of Slavomir's v13 "Add VM kernel tracing over vsockets and FIFOs"
+
+ v11 changes:
+  - Rebased on top of Slavomir's v10 "Add VM kernel tracing over vsockets and FIFOs"
+  - Addressed Slavomir's commnents from version 10 of the patch series.
+
+ v10 changes:
+  - Fixed broken compilation, call to timestamp_correction_calc() in timestamp_correct
+    was smashed.
+  - Replaced deprecated tep_data_event_from_type() API with tep_find_event().
+  - Fixed a warning on assignment const to non const.
+
+ v9 changes:
+  - Fixed implementation of binary search algorithm in timestamp_correct()
+
+ v8 changes:
+  - Added rmdir() call in tracecmd_remove_instance(), to completely remove the instance. 
+  However, there is an issue with deleting the instances using rmdir(), which is investigated.
+  - Few changes in read_qemu_guests_pids(), timestamp_correct(), tsync_offset_load() 
+ tracecmd_clock_context_new() and find_raw_events() suggested by Slavomir. 
+
+ v7 changes:
+  - Added warning messages in case time synchronization cannot be negotiated or fails.
+  - Few optimizations and checks in read_qemu_guests_pids(), tsync_offset_load(),
+    and find_raw_events(), suggested by Slavomir Kaslev.
+  - Reworked timestamp_correct() to not use static variables.
+  - Check TRACECMD_OPTION_TIME_SHIFT before reading time sync samples from the trace.dat file
+
+ v6 changes:
+  - Refactored tracecmd_msg_snd_time_sync() and tracecmd_msg_rcv_time_sync() functions:
+    removed any time sync calculations logic as separate functions in trace-timesync.c file
+  - Defined TSYNC_PROBE, TSYNC_REQ and TSYNC_RESP messages, in order to make the time sync
+    protocol comprehensible.
+  - Addressed Steven Rostedt comments.
+  - Addressed Slavomir Kaslev commnets.
+
+v5 changes:
+  - Rebased to Slavomir's v8 "Add VM kernel tracing over vsockets and FIFOs"
+    patch series.
+  - Implemented an algorithm for time drift correction.
+  - Addressed Slavomir's commnets.
+  - Refactored the code: moved all time sync specific implementation in trace-timesync.c
+  - Isolated all hardcoded event specific stuff in a structure, so it could be easily
+    moved to external plugins.
+  - Added a check for VSOCK support: do not perform vsock dependent time synchronisation
+    in case there is no VSOCK support.
+
+ v4 changes:
+  - Removed the implementation of PTP-like algorithm. The current
+    logic relies on matching time stamps of kvm_exit/virtio_transport_recv_pkt
+    events on host to virtio_transport_alloc_pkt/vp_notify events on guest.
+  - Rebased to Slavomir's v7 "Add VM kernel tracing over vsockets and FIFOs"
+    patch series.
+  - Decreased the time synch probes from 5000 to 300.
+  - Addressed Steven Rostedt comments.
+  - Code cleanup.
+
+ v3 changes:
+ - Removed any magic constants, used in the PTP-like algorithm,
+   as Slavomir Kaslev suggested.
+ - Implemented new algorithm, based on mapping kvm_exit events
+   in host context to vsock_send events in guest context,
+   suggested by Steven Rostedt.
+
+ v2 changes:
+  - Addressed Steven Rostedt comments.
+  - Modified PTP-like timestamps sync algorithm to gain more accuracy, with the
+    help of Yordan Karadzhov and Slavomir Kaslev.
+]
+
+Tzvetomir Stoyanov (7):
+  trace-cmd: Implement new lib API: tracecmd_local_events_system()
+  trace-cmd: Add support for negative time offsets in trace.dat file
+  trace-cmd: Add implementations of htonll() and ntohll()
+  trace-cmd: Add new library APIs for ftrace instances.
+  trace-cmd: Find and store pids of tasks, which run virtual CPUs of
+    given VM
+  trace-cmd: Implement new API tracecmd_add_option_v()
+  trace-cmd: Implement new option in trace.dat file:
+    TRACECMD_OPTION_TIME_SHIFT
+
+Tzvetomir Stoyanov (VMware) (11):
+  trace-cmd: Add new library API for local CPU count
+  trace-cmd: Add new library API for reading ftrace buffers
+  trace-cmd: Add new API to generate a unique ID of the tracing session
+  trace-cmd: Store the session tracing ID in the trace.dat file
+  trace-cmd: Exchange tracing IDs between host and guest
+  trace-cmd: Add guest information in host's trace.dat file
+  trace-cmd: Add host trace clock as guest trace argument
+  trace-cmd: Refactor few trace-cmd internal functions.
+  trace-cmd: Basic infrastructure for host - guest timestamp
+    synchronization
+  trace-cmd: [POC] PTP-like algorithm for host - guest timestamp
+    synchronization
+  trace-cmd: Debug scripts for PTP-like algorithm for host - guest
+    timestamp synchronization
+
+ Documentation/trace-cmd-record.1.txt      |   6 +
+ include/trace-cmd/trace-cmd.h             | 116 +++-
+ include/trace-cmd/trace-msg.h             |  10 +
+ include/traceevent/event-parse.h          |   1 +
+ lib/trace-cmd/Makefile                    |   3 +
+ lib/trace-cmd/include/trace-cmd-local.h   |  33 +-
+ lib/trace-cmd/include/trace-tsync-local.h |  36 ++
+ lib/trace-cmd/trace-input.c               | 314 +++++++++-
+ lib/trace-cmd/trace-instance.c            | 265 +++++++++
+ lib/trace-cmd/trace-msg.c                 | 162 +++++-
+ lib/trace-cmd/trace-output.c              | 116 +++-
+ lib/trace-cmd/trace-timesync-ptp.c        | 666 ++++++++++++++++++++++
+ lib/trace-cmd/trace-timesync.c            | 469 +++++++++++++++
+ lib/trace-cmd/trace-util.c                | 358 ++++++++++--
+ scripts/debug/tsync_hist.py               |  57 ++
+ scripts/debug/tsync_readme                |  12 +
+ scripts/debug/tsync_res.py                |  46 ++
+ tracecmd/Makefile                         |   3 +-
+ tracecmd/include/trace-local.h            |  33 +-
+ tracecmd/trace-agent.c                    |  48 +-
+ tracecmd/trace-list.c                     |   2 +-
+ tracecmd/trace-profile.c                  |   2 +-
+ tracecmd/trace-read.c                     |   4 +-
+ tracecmd/trace-record.c                   | 600 ++++++++++---------
+ tracecmd/trace-show.c                     |   2 +
+ tracecmd/trace-stat.c                     |  24 +-
+ tracecmd/trace-tsync.c                    | 268 +++++++++
+ tracecmd/trace-usage.c                    |   4 +
+ 28 files changed, 3216 insertions(+), 444 deletions(-)
+ create mode 100644 lib/trace-cmd/include/trace-tsync-local.h
+ create mode 100644 lib/trace-cmd/trace-instance.c
+ create mode 100644 lib/trace-cmd/trace-timesync-ptp.c
+ create mode 100644 lib/trace-cmd/trace-timesync.c
+ create mode 100644 scripts/debug/tsync_hist.py
+ create mode 100644 scripts/debug/tsync_readme
+ create mode 100644 scripts/debug/tsync_res.py
+ create mode 100644 tracecmd/trace-tsync.c
+
 -- 
 2.23.0
 
