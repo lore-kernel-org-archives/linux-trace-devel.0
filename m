@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D240FC43215
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CADFBC432C3
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9F2E0217D7
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A0DB1217BA
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 Nov 2019 10:17:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lpXKQXoJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUrTXRc9"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbfK2KRr (ORCPT
+        id S1726881AbfK2KRt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 29 Nov 2019 05:17:47 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:33510 "EHLO
+        Fri, 29 Nov 2019 05:17:49 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:35356 "EHLO
         mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbfK2KRr (ORCPT
+        with ESMTP id S1726871AbfK2KRt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 29 Nov 2019 05:17:47 -0500
-Received: by mail-lj1-f194.google.com with SMTP id t5so31423851ljk.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Nov 2019 02:17:45 -0800 (PST)
+        Fri, 29 Nov 2019 05:17:49 -0500
+Received: by mail-lj1-f194.google.com with SMTP id j6so22380754lja.2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 Nov 2019 02:17:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1vr5+JkKcuoZVsjx/XbK96E0u7JOyC3v723be9HMndo=;
-        b=lpXKQXoJ/ImxNQDY9CjvnD4g51Y7/KYuPuW+uKYffyk3ae9oCpDzktcqPb9p9GMkBQ
-         IrYy79l8rOkhX+vNwtHyAoQjxBAMXJD1yFi4BCHqbWvATDZXFJklcpdsWsPZ5/H7mDfE
-         n4t2m2BafzpEqvMPb+G/4sCCznPQ11RItK4x0+iBh0Li/fonZlYvaOWl1+EJpwb1m8ko
-         QnteNbIyy6T008JPxY9bO7iFbEjNbPPseYinmYcUDmQ4r168qLAK5PRI9s8fRqdkwkSM
-         dVJcgKv80FjOsLCe3vA607GlfOS7u6W+7ZjBU97VupIW2lGqYu3Z+DSE9nQqi2MI+h/Q
-         cAuQ==
+        bh=K8ZZRaXB75jmADvYv/7v8U9DJpWLr4FMA5xXySBgHmY=;
+        b=AUrTXRc9cHOIxCgKyEWe9zn3keZ+YLs2Kk7NsF314qNdus8VxHek0myaRBYR1lkr0R
+         iLZ8e8uGiixTdwz855QR7Ru2QRZSI/dgAcm5xHzIyWDkeOdUpUFjJLigdNIoaSUoB27A
+         rFEjjX4C2Vpb9kewuSBLILqXHriI9mVj9NpDvAW46SDjhvGp2ytxowliUyphvEEQoikI
+         4R/54G5hNxyK/xla6Mm7vDQd5lNnGREPbWJL9C6itkxqfjRkDEXzTIsOoo749VWLeSH7
+         sVgbcrsDsy0W1yqXaO57t7GLe27qq5Gwiw7gIdtN7+uTPYfNCihWvamtK8WKH9CjcoJo
+         S+FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1vr5+JkKcuoZVsjx/XbK96E0u7JOyC3v723be9HMndo=;
-        b=ge1MjAvGYhTeyKSweJx4vAWW0Ac33RNRUiVpk83uQw/DnFHZkmv46fIq0fbv1KJQ+z
-         tp61WRyYkrMZ2RHw0n0esjbJyA1sWsUM14IILkGCNbHP4dDlv+ljJFf1NmHP+SXZgeUP
-         Nu45WSXffizL2DJ/7NMJ7sGMUAno6/nw79hNYhacbssAzS3qpDlI+pEo6T44+IDCWL38
-         u34rMbJ7k+OkJGNhpdL5Zwny+P7xkfJ73wSKwW3TsC2SPR239RyPImprfqd7+Lb/i/q7
-         V9G2tz2vRj6OxzaYRxOXAnNNtx9eK4LaxcAdrrSr9gv0cbHR1LO1Nz3NCYflHG8Gacc5
-         Xt3Q==
-X-Gm-Message-State: APjAAAX919SWqj6lnmKFTnBTaLwHK4x1vYhhlYZt6M9lVVTic3lg7cc4
-        ZsmRB//xKPmUD9WKqsueYPE=
-X-Google-Smtp-Source: APXvYqzkW+ClWJIHFl/DnRmwpVPoFbfLfq7RszJEh3BslXOE9e4SUtAMr9aEIin4yluikQtUCP3hPg==
-X-Received: by 2002:a2e:85c3:: with SMTP id h3mr32531624ljj.122.1575022665092;
-        Fri, 29 Nov 2019 02:17:45 -0800 (PST)
+        bh=K8ZZRaXB75jmADvYv/7v8U9DJpWLr4FMA5xXySBgHmY=;
+        b=UARKoznNg9S2k/kxAktci3idPS4uLAk4eo3BzrOcDCA8x/7J2f50JhcRh3DVS4KH1P
+         NtPy9qfjlqYripzxrk+wejETLwz8R7B7AOCQt6UBdnABFaM3QO5D4kzd3cakcplS1JyJ
+         Lm+qe4TS16tW5cpGBSbLYEA7mONEUq4HB19P8I2zSpuHlOhZ9GAyg2h6cDdy56MlhZ/S
+         hNxkktojVtnXde2EOnu128/Q9gkGcyDbq3x++ksN0pJoy91QGVHNgp1d1VqiwhfOuUso
+         6E9zDNYrLIiEnrHDrZqKVGKyzpdpMVDTHNxzIpklRNhbcNBNc+liz09L4hOp120bIPre
+         oifg==
+X-Gm-Message-State: APjAAAVE/5W5YqHAiYimg/G8aEgWEUNYBonUMJNEQI/enCQNwnd75KdS
+        fdJntZfhQMDuMlVYHVJt9aU=
+X-Google-Smtp-Source: APXvYqwSGyOIImOvVdiB9Rz4GQmrbwYIP5C1GMdsRxQVdeTujWOqlrSCqwuopMgcni7hMwIwXyptdQ==
+X-Received: by 2002:a05:651c:285:: with SMTP id b5mr11434715ljo.14.1575022667275;
+        Fri, 29 Nov 2019 02:17:47 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x29sm11367935lfg.45.2019.11.29.02.17.43
+        by smtp.gmail.com with ESMTPSA id x29sm11367935lfg.45.2019.11.29.02.17.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2019 02:17:44 -0800 (PST)
+        Fri, 29 Nov 2019 02:17:46 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v16 07/18] trace-cmd: Find and store pids of tasks, which run virtual CPUs of given VM
-Date:   Fri, 29 Nov 2019 12:17:22 +0200
-Message-Id: <20191129101733.375808-8-tz.stoyanov@gmail.com>
+Subject: [PATCH v16 09/18] trace-cmd: Add new API to generate a unique ID of the tracing session
+Date:   Fri, 29 Nov 2019 12:17:24 +0200
+Message-Id: <20191129101733.375808-10-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191129101733.375808-1-tz.stoyanov@gmail.com>
 References: <20191129101733.375808-1-tz.stoyanov@gmail.com>
@@ -73,126 +73,100 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+A new libtracecmd API is implemented:
+	unsigned long long tracecmd_generate_traceid(void);
+At trace-cmd init phase a unique ID, used for the current tracing session.
 
-In order to match host and guest events, a mapping between guest VCPU
-and the host task, running this VCPU is needed. Extended existing
-struct guest to hold such mapping and added logic in read_qemu_guests()
-function to initialize it. Implemented a new internal API,
-get_guest_vcpu_pid(), to retrieve VCPU-task mapping for given VM.
-
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/include/trace-local.h |  2 ++
- tracecmd/trace-record.c        | 57 ++++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+)
+ include/trace-cmd/trace-cmd.h  |  1 +
+ lib/trace-cmd/trace-util.c     | 31 +++++++++++++++++++++++++++++++
+ tracecmd/include/trace-local.h |  1 +
+ tracecmd/trace-record.c        |  1 +
+ 4 files changed, 34 insertions(+)
 
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 47fa463..6d50b08 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -441,6 +441,7 @@ void tracecmd_plog_error(const char *fmt, ...);
+ int tracecmd_set_logfile(char *logfile);
+ 
+ /* --- System --- */
++unsigned long long tracecmd_generate_traceid(void);
+ int tracecmd_count_cpus(void);
+ 
+ /* --- Hack! --- */
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index a54a905..2231eb8 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -18,6 +18,8 @@
+ #include <sys/mount.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/sysinfo.h>
++#include <time.h>
+ 
+ #include "trace-cmd.h"
+ #include "event-utils.h"
+@@ -1299,3 +1301,32 @@ error:
+ 	tracecmd_put_tracing_file(path);
+ 	return ret;
+ }
++
++#define FNV_64_PRIME 0x100000001b3ULL
++unsigned long long tracecmd_generate_traceid(void)
++{
++	unsigned long long hash = 0;
++	unsigned char *ustr;
++	struct sysinfo sinfo;
++	struct timespec ts;
++	char *str = NULL;
++
++	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
++	sysinfo(&sinfo);
++	asprintf(&str, "%ld %ld %ld %ld %ld %ld %ld %ld %d",
++		 ts.tv_sec, ts.tv_nsec,
++		 sinfo.loads[0], sinfo.loads[1], sinfo.loads[2],
++		 sinfo.freeram, sinfo.sharedram, sinfo.freeswap,
++		 sinfo.procs);
++	if (!str)
++		return 0;
++	ustr = (unsigned char *)str;
++	hash = 0;
++	while (*ustr) {
++		hash ^= (unsigned long long)*ustr++;
++		hash *= FNV_64_PRIME;
++	}
++
++	free(str);
++	return hash;
++}
 diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index a51f0d0..51abef1 100644
+index 51abef1..6203e0d 100644
 --- a/tracecmd/include/trace-local.h
 +++ b/tracecmd/include/trace-local.h
-@@ -243,6 +243,8 @@ void update_first_instance(struct buffer_instance *instance, int topt);
- 
- void show_instance_file(struct buffer_instance *instance, const char *name);
- 
-+int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
-+
- /* moved from trace-cmd.h */
- void tracecmd_create_top_instance(char *name);
- void tracecmd_remove_instances(void);
+@@ -182,6 +182,7 @@ struct pid_addr_maps {
+ struct buffer_instance {
+ 	struct buffer_instance	*next;
+ 	struct tracecmd_instance	*ftrace;
++	unsigned long long	trace_id;
+ 	char			*cpumask;
+ 	struct event_list	*events;
+ 	struct event_list	**event_next;
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 4459c90..fd7ca82 100644
+index fd7ca82..1583c53 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -2873,10 +2873,12 @@ static bool is_digits(const char *s)
- 	return true;
+@@ -5062,6 +5062,7 @@ void init_top_instance(void)
+ 		top_instance.ftrace = tracecmd_create_instance(NULL);
+ 	top_instance.cpu_count = tracecmd_count_cpus();
+ 	top_instance.flags = BUFFER_FL_KEEP;
++	top_instance.trace_id = tracecmd_generate_traceid();
+ 	tracecmd_init_instance(&top_instance);
  }
  
-+#define VCPUS_MAX 256
- struct guest {
- 	char *name;
- 	int cid;
- 	int pid;
-+	int cpu_pid[VCPUS_MAX];
- };
- 
- static struct guest *guests;
-@@ -2894,6 +2896,46 @@ static char *get_qemu_guest_name(char *arg)
- 	return arg;
- }
- 
-+static void read_qemu_guests_pids(char *guest_task, struct guest *guest)
-+{
-+	struct dirent *entry;
-+	char path[PATH_MAX];
-+	char *buf = NULL;
-+	size_t n = 0;
-+	int vcpu;
-+	DIR *dir;
-+	FILE *f;
-+
-+	snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
-+	dir = opendir(path);
-+	if (!dir)
-+		return;
-+
-+	while ((entry = readdir(dir))) {
-+		if (!(entry->d_type == DT_DIR && is_digits(entry->d_name)))
-+			continue;
-+
-+		snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
-+			 guest_task, entry->d_name);
-+		f = fopen(path, "r");
-+		if (!f)
-+			continue;
-+		if (getline(&buf, &n, f) < 0)
-+			goto next;
-+		if (strncmp(buf, "CPU ", 4) != 0)
-+			goto next;
-+
-+		vcpu = atoi(buf+4);
-+		if (!(vcpu >= 0 && vcpu < VCPUS_MAX))
-+			goto next;
-+		guest->cpu_pid[vcpu] = atoi(entry->d_name);
-+
-+next:
-+		fclose(f);
-+	}
-+	free(buf);
-+}
-+
- static void read_qemu_guests(void)
- {
- 	static bool initialized;
-@@ -2957,6 +2999,8 @@ static void read_qemu_guests(void)
- 		if (!is_qemu)
- 			goto next;
- 
-+		read_qemu_guests_pids(entry->d_name, &guest);
-+
- 		guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
- 		if (!guests)
- 			die("Can not allocate guest buffer");
-@@ -3002,6 +3046,19 @@ static char *parse_guest_name(char *guest, int *cid, int *port)
- 	return guest;
- }
- 
-+int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
-+{
-+	int i;
-+
-+	if (!guests || guest_vcpu >= VCPUS_MAX)
-+		return -1;
-+
-+	for (i = 0; i < guests_len; i++)
-+		if (guest_cid == guests[i].cid)
-+			return guests[i].cpu_pid[guest_vcpu];
-+	return -1;
-+}
-+
- static void set_prio(int prio)
- {
- 	struct sched_param sp;
 -- 
 2.23.0
 
