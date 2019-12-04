@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27C32C43603
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:10:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B056C43603
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:36:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EC2102077B
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:10:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0B19E206DF
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:36:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbfLDVKx (ORCPT
+        id S1728011AbfLDVf7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Dec 2019 16:10:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57330 "EHLO mail.kernel.org"
+        Wed, 4 Dec 2019 16:35:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727930AbfLDVKx (ORCPT
+        id S1727982AbfLDVf7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Dec 2019 16:10:53 -0500
+        Wed, 4 Dec 2019 16:35:59 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7BCD2073C;
-        Wed,  4 Dec 2019 21:10:51 +0000 (UTC)
-Date:   Wed, 4 Dec 2019 16:10:50 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 807C5206DF;
+        Wed,  4 Dec 2019 21:35:58 +0000 (UTC)
+Date:   Wed, 4 Dec 2019 16:35:56 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v17 06/18] trace-cmd: Add new library API for reading
- ftrace buffers
-Message-ID: <20191204161050.16ab1910@gandalf.local.home>
-In-Reply-To: <20191203103522.482684-7-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v17 07/18] trace-cmd: Find and store pids of tasks,
+ which run virtual CPUs of given VM
+Message-ID: <20191204163556.197cc4f3@gandalf.local.home>
+In-Reply-To: <20191203103522.482684-8-tz.stoyanov@gmail.com>
 References: <20191203103522.482684-1-tz.stoyanov@gmail.com>
-        <20191203103522.482684-7-tz.stoyanov@gmail.com>
+        <20191203103522.482684-8-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,178 +44,141 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue,  3 Dec 2019 12:35:10 +0200
+On Tue,  3 Dec 2019 12:35:11 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> A new libtracecmd API is introduced:
+> From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 > 
-> 	int tracecmd_iterate_raw_events(struct tep_handle *tep,
-> 					struct tracecmd_instance *instance,
-> 					int (*callback)(struct tep_event *,
-> 						   	struct tep_record *,
-> 						   	int, void *context),
-> 					void *callback_context);
+> In order to match host and guest events, a mapping between guest VCPU
+> and the host task, running this VCPU is needed. Extended existing
+> struct guest to hold such mapping and added logic in read_qemu_guests()
+> function to initialize it. Implemented a new internal API,
+> get_guest_vcpu_pid(), to retrieve VCPU-task mapping for given VM.
 > 
-> It reads events from trace_pipe_raw, per cpu ftrace buffer, and calls a user
-> callback for each of them. The API is instance aware.
-
-Hmm, would be good to know what this would be used for.
-
-> 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 > ---
->  include/trace-cmd/trace-cmd.h |   8 +++
->  lib/trace-cmd/trace-util.c    | 114 ++++++++++++++++++++++++++++++++++
->  2 files changed, 122 insertions(+)
+>  tracecmd/include/trace-local.h |  2 ++
+>  tracecmd/trace-record.c        | 57 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 59 insertions(+)
 > 
-> diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-> index 5d4292e..831bb1a 100644
-> --- a/include/trace-cmd/trace-cmd.h
-> +++ b/include/trace-cmd/trace-cmd.h
-> @@ -380,6 +380,14 @@ char *tracecmd_read_instance_file(struct tracecmd_instance *instance,
+> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+> index a51f0d0..51abef1 100644
+> --- a/tracecmd/include/trace-local.h
+> +++ b/tracecmd/include/trace-local.h
+> @@ -243,6 +243,8 @@ void update_first_instance(struct buffer_instance *instance, int topt);
 >  
->  void tracecmd_set_clock(struct tracecmd_instance *instance, char **old_clock);
+>  void show_instance_file(struct buffer_instance *instance, const char *name);
 >  
-> +int tracecmd_iterate_raw_events(struct tep_handle *tep,
-> +				struct tracecmd_instance *instance,
-> +				   int (*callback)(struct tep_event *,
-> +						   struct tep_record *,
-> +						   int, void *context),
-> +				void *callback_context);
+> +int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
 > +
-> +
->  
->  /* --- Plugin handling --- */
->  extern struct tep_plugin_option trace_ftrace_options[];
-> diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-> index e019dce..a54a905 100644
-> --- a/lib/trace-cmd/trace-util.c
-> +++ b/lib/trace-cmd/trace-util.c
-> @@ -1185,3 +1185,117 @@ int tracecmd_write_file(const char *file, const char *str, const char *type)
->  	}
->  	return ret;
+>  /* moved from trace-cmd.h */
+>  void tracecmd_create_top_instance(char *name);
+>  void tracecmd_remove_instances(void);
+> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+> index 4459c90..fd7ca82 100644
+> --- a/tracecmd/trace-record.c
+> +++ b/tracecmd/trace-record.c
+> @@ -2873,10 +2873,12 @@ static bool is_digits(const char *s)
+>  	return true;
 >  }
-> +
-> +static int
-> +get_events_in_page(struct tep_handle *tep, void *page,
-> +		   int size, int cpu,
-> +		   int (*callback)(struct tep_event *,
-> +				   struct tep_record *,
-> +				   int, void *),
-> +		   void *callback_context)
+>  
+> +#define VCPUS_MAX 256
+>  struct guest {
+>  	char *name;
+>  	int cid;
+>  	int pid;
+> +	int cpu_pid[VCPUS_MAX];
+>  };
+>  
+>  static struct guest *guests;
+> @@ -2894,6 +2896,46 @@ static char *get_qemu_guest_name(char *arg)
+>  	return arg;
+>  }
+>  
+> +static void read_qemu_guests_pids(char *guest_task, struct guest *guest)
 > +{
-> +	struct tep_record *last_record = NULL;
-> +	struct tep_event *event = NULL;
-> +	struct tep_record *record;
-> +	int id, cnt = 0;
+> +	struct dirent *entry;
+> +	char path[PATH_MAX];
+> +	char *buf = NULL;
+> +	size_t n = 0;
+> +	int vcpu;
+> +	DIR *dir;
+> +	FILE *f;
 > +
-> +	if (size <= 0)
-> +		return 0;
+> +	snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
+> +	dir = opendir(path);
+> +	if (!dir)
+> +		return;
 > +
-> +	while (true) {
-> +		event = NULL;
-> +		record = tracecmd_read_page_record(tep, page, size,
-> +						   last_record);
-> +		if (!record)
-> +			break;
-> +		free_record(last_record);
-> +		id = tep_data_type(tep, record);
-> +		event = tep_find_event(tep, id);
-> +		if (event && callback) {
-> +			if (callback(event, record, cpu, callback_context))
+> +	while ((entry = readdir(dir))) {
+> +		if (!(entry->d_type == DT_DIR && is_digits(entry->d_name)))
+> +			continue;
+> +
+> +		snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
+> +			 guest_task, entry->d_name);
+> +		f = fopen(path, "r");
+> +		if (!f)
+> +			continue;
+> +		if (getline(&buf, &n, f) < 0)
+> +			goto next;
+> +		if (strncmp(buf, "CPU ", 4) != 0)
+> +			goto next;
+> +
+> +		vcpu = atoi(buf+4);
+> +		if (!(vcpu >= 0 && vcpu < VCPUS_MAX))
+> +			goto next;
+> +		guest->cpu_pid[vcpu] = atoi(entry->d_name);
+> +
+> +next:
 
-Hmm, need to be documented that breaking out of the loop will likely
-call future reads to lose events. The records on the page after the
-record that causes the break will be lost from future reads.
+I don't usually mind goto's but the above could be simply written as:
+
+
+		if (getline(&buf, &n, f) >= 0 &&
+		    strncmp(buf, "CPU ", 4) == 0) {
+			vcpu = atoi(buf + 4);
+			if (vcpu >= 0 && vcpu < VCPUS_MAX)
+				guest->cpu_pid[vcpu] = atoi(entry->d_name);
+		}
+
 
 -- Steve
 
-
-
-> +				break;
-> +		}
-> +		last_record = record;
+> +		fclose(f);
 > +	}
-> +	free_record(last_record);
-> +
-> +	return cnt;
+> +	free(buf);
 > +}
 > +
-> +/*
-> + * tracecmd_iterate_raw_events - Iterate through events in trace_pipe_raw
-> + *				 per CPU trace files
-> + * @tep: a handle to the trace event parser context
-> + * @instance: ftrace instance, can be NULL for the top instance
-> + * @callback: A user function, called for each record from the file.
-> + * @callback_context: A custom context, passed to the user callback function
-> + *
-> + * If the @callback returns non-zero, the iteration stops.
-> + *
-> + * Returns -1 in case of an error, or 0 otherwise.
-> + */
-> +int tracecmd_iterate_raw_events(struct tep_handle *tep,
-> +				struct tracecmd_instance *instance,
-> +				int (*callback)(struct tep_event *,
-> +						struct tep_record *,
-> +						int, void *),
-> +				void *callback_context)
+>  static void read_qemu_guests(void)
+>  {
+>  	static bool initialized;
+> @@ -2957,6 +2999,8 @@ static void read_qemu_guests(void)
+>  		if (!is_qemu)
+>  			goto next;
+>  
+> +		read_qemu_guests_pids(entry->d_name, &guest);
+> +
+>  		guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
+>  		if (!guests)
+>  			die("Can not allocate guest buffer");
+> @@ -3002,6 +3046,19 @@ static char *parse_guest_name(char *guest, int *cid, int *port)
+>  	return guest;
+>  }
+>  
+> +int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
 > +{
-> +	unsigned int p_size;
-> +	struct dirent *dent;
-> +	char file[PATH_MAX];
-> +	void *page = NULL;
-> +	struct stat st;
-> +	char *path;
-> +	DIR *dir;
-> +	int ret;
-> +	int cpu;
-> +	int fd;
-> +	int r;
+> +	int i;
 > +
-> +	p_size = getpagesize();
-> +	path = tracecmd_get_instance_file(instance, "per_cpu");
-> +	if (!path)
+> +	if (!guests || guest_vcpu >= VCPUS_MAX)
 > +		return -1;
-> +	dir = opendir(path);
-> +	if (!dir) {
-> +		ret = -1;
-> +		goto error;
-> +	}
-> +	page = malloc(p_size);
-> +	if (!page) {
-> +		ret = -1;
-> +		goto error;
-> +	}
-> +	while ((dent = readdir(dir))) {
-> +		const char *name = dent->d_name;
 > +
-> +		if (strlen(name) < 4 || strncmp(name, "cpu", 3) != 0)
-> +			continue;
-> +		cpu = atoi(name + 3);
-> +		sprintf(file, "%s/%s", path, name);
-> +		ret = stat(file, &st);
-> +		if (ret < 0 || !S_ISDIR(st.st_mode))
-> +			continue;
-> +
-> +		sprintf(file, "%s/%s/trace_pipe_raw", path, name);
-> +		fd = open(file, O_RDONLY | O_NONBLOCK);
-> +		if (fd < 0)
-> +			continue;
-> +		do {
-> +			r = read(fd, page, p_size);
-> +			if (r > 0)
-> +				get_events_in_page(tep, page, r, cpu,
-> +						   callback, callback_context);
-> +		} while (r > 0);
-> +		close(fd);
-> +	}
-> +	ret = 0;
-> +
-> +error:
-> +	if (dir)
-> +		closedir(dir);
-> +	free(page);
-> +	tracecmd_put_tracing_file(path);
-> +	return ret;
+> +	for (i = 0; i < guests_len; i++)
+> +		if (guest_cid == guests[i].cid)
+> +			return guests[i].cpu_pid[guest_vcpu];
+> +	return -1;
 > +}
+> +
+>  static void set_prio(int prio)
+>  {
+>  	struct sched_param sp;
 
