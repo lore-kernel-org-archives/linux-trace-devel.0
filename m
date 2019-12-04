@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FF45C43603
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Dec 2019 20:10:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27C32C43603
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:10:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 58D912077B
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Dec 2019 20:10:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EC2102077B
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:10:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbfLDUKA (ORCPT
+        id S1728117AbfLDVKx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Dec 2019 15:10:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60554 "EHLO mail.kernel.org"
+        Wed, 4 Dec 2019 16:10:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727033AbfLDUKA (ORCPT
+        id S1727930AbfLDVKx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Dec 2019 15:10:00 -0500
+        Wed, 4 Dec 2019 16:10:53 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E7B0205ED;
-        Wed,  4 Dec 2019 20:09:59 +0000 (UTC)
-Date:   Wed, 4 Dec 2019 15:09:57 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id C7BCD2073C;
+        Wed,  4 Dec 2019 21:10:51 +0000 (UTC)
+Date:   Wed, 4 Dec 2019 16:10:50 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v17 05/18] trace-cmd: Add new library API for local CPU
- count
-Message-ID: <20191204150957.07cef7d1@gandalf.local.home>
-In-Reply-To: <20191203103522.482684-6-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v17 06/18] trace-cmd: Add new library API for reading
+ ftrace buffers
+Message-ID: <20191204161050.16ab1910@gandalf.local.home>
+In-Reply-To: <20191203103522.482684-7-tz.stoyanov@gmail.com>
 References: <20191203103522.482684-1-tz.stoyanov@gmail.com>
-        <20191203103522.482684-6-tz.stoyanov@gmail.com>
+        <20191203103522.482684-7-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,110 +44,178 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue,  3 Dec 2019 12:35:09 +0200
+On Tue,  3 Dec 2019 12:35:10 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> In order to reuse the code, the function detecting the
-> number of local CPU is moved from trace-cmd application to
-> libtracecmd. The following new library API is introduced:
-> 	int tracecmd_count_cpus(void);
+> A new libtracecmd API is introduced:
+> 
+> 	int tracecmd_iterate_raw_events(struct tep_handle *tep,
+> 					struct tracecmd_instance *instance,
+> 					int (*callback)(struct tep_event *,
+> 						   	struct tep_record *,
+> 						   	int, void *context),
+> 					void *callback_context);
+> 
+> It reads events from trace_pipe_raw, per cpu ftrace buffer, and calls a user
+> callback for each of them. The API is instance aware.
+
+Hmm, would be good to know what this would be used for.
+
 > 
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->  include/trace-cmd/trace-cmd.h  |  3 +++
->  lib/trace-cmd/trace-util.c     | 40 +++++++++++++++++++++++++++++
->  tracecmd/include/trace-local.h |  2 --
->  tracecmd/trace-agent.c         |  2 +-
->  tracecmd/trace-profile.c       |  2 +-
->  tracecmd/trace-record.c        | 46 +++-------------------------------
->  tracecmd/trace-stat.c          |  4 +--
->  7 files changed, 50 insertions(+), 49 deletions(-)
+>  include/trace-cmd/trace-cmd.h |   8 +++
+>  lib/trace-cmd/trace-util.c    | 114 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 122 insertions(+)
 > 
 > diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-> index 5287d23..5d4292e 100644
+> index 5d4292e..831bb1a 100644
 > --- a/include/trace-cmd/trace-cmd.h
 > +++ b/include/trace-cmd/trace-cmd.h
-> @@ -427,6 +427,9 @@ void tracecmd_plog(const char *fmt, ...);
->  void tracecmd_plog_error(const char *fmt, ...);
->  int tracecmd_set_logfile(char *logfile);
+> @@ -380,6 +380,14 @@ char *tracecmd_read_instance_file(struct tracecmd_instance *instance,
 >  
-> +/* --- System --- */
-> +int tracecmd_count_cpus(void);
+>  void tracecmd_set_clock(struct tracecmd_instance *instance, char **old_clock);
+>  
+> +int tracecmd_iterate_raw_events(struct tep_handle *tep,
+> +				struct tracecmd_instance *instance,
+> +				   int (*callback)(struct tep_event *,
+> +						   struct tep_record *,
+> +						   int, void *context),
+> +				void *callback_context);
 > +
->  /* --- Hack! --- */
->  int tracecmd_blk_hack(struct tracecmd_input *handle);
+> +
 >  
+>  /* --- Plugin handling --- */
+>  extern struct tep_plugin_option trace_ftrace_options[];
 > diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-> index 4c70d9a..e019dce 100644
+> index e019dce..a54a905 100644
 > --- a/lib/trace-cmd/trace-util.c
 > +++ b/lib/trace-cmd/trace-util.c
-> @@ -1112,6 +1112,46 @@ int tracecmd_stack_tracer_status(int *status)
->  	return 1; /* full success */
+> @@ -1185,3 +1185,117 @@ int tracecmd_write_file(const char *file, const char *str, const char *type)
+>  	}
+>  	return ret;
 >  }
->  
-> +int tracecmd_count_cpus(void)
+> +
+> +static int
+> +get_events_in_page(struct tep_handle *tep, void *page,
+> +		   int size, int cpu,
+> +		   int (*callback)(struct tep_event *,
+> +				   struct tep_record *,
+> +				   int, void *),
+> +		   void *callback_context)
 > +{
-> +	FILE *fp;
-> +	char buf[1024];
-> +	int cpus = 0;
-> +	char *pbuf;
-> +	size_t *pn;
-> +	size_t n;
-> +	int r;
+> +	struct tep_record *last_record = NULL;
+> +	struct tep_event *event = NULL;
+> +	struct tep_record *record;
+> +	int id, cnt = 0;
 > +
-> +	cpus = sysconf(_SC_NPROCESSORS_CONF);
-> +	if (cpus > 0)
-> +		return cpus;
+> +	if (size <= 0)
+> +		return 0;
 > +
-> +	warning("sysconf could not determine number of CPUS");
+> +	while (true) {
+> +		event = NULL;
+> +		record = tracecmd_read_page_record(tep, page, size,
+> +						   last_record);
+> +		if (!record)
+> +			break;
+> +		free_record(last_record);
+> +		id = tep_data_type(tep, record);
+> +		event = tep_find_event(tep, id);
+> +		if (event && callback) {
+> +			if (callback(event, record, cpu, callback_context))
 
-As this is now a library function, probably should have a static
-variable here:
-
-	static int once;
-
-	if (!once) {
-		once++;
-		warning("...");
-	}
-
-No need to do more than one warning.
-
-
-> +
-> +	/* Do the hack to figure out # of CPUS */
-> +	n = 1024;
-> +	pn = &n;
-> +	pbuf = buf;
-> +
-> +	fp = fopen("/proc/cpuinfo", "r");
-> +	if (!fp)
-> +		die("Can not read cpuinfo");
-
-Need to get rid of the die(). Could be in a separate patch.
-
-Will also need to have the call sites check to see if the returned
-number is negative, and fail there.
+Hmm, need to be documented that breaking out of the loop will likely
+call future reads to lose events. The records on the page after the
+record that causes the break will be lost from future reads.
 
 -- Steve
 
-> +
-> +	while ((r = getline(&pbuf, pn, fp)) >= 0) {
-> +		char *p;
-> +
-> +		if (strncmp(buf, "processor", 9) != 0)
-> +			continue;
-> +		for (p = buf+9; isspace(*p); p++)
-> +			;
-> +		if (*p == ':')
-> +			cpus++;
+
+
+> +				break;
+> +		}
+> +		last_record = record;
 > +	}
-> +	fclose(fp);
+> +	free_record(last_record);
 > +
-> +	return cpus;
+> +	return cnt;
 > +}
 > +
->  /*
->   * tracecmd_write_file - Write in trace file
->   * @file: Full name of the trace file.
-> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+> +/*
+> + * tracecmd_iterate_raw_events - Iterate through events in trace_pipe_raw
+> + *				 per CPU trace files
+> + * @tep: a handle to the trace event parser context
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + * @callback: A user function, called for each record from the file.
+> + * @callback_context: A custom context, passed to the user callback function
+> + *
+> + * If the @callback returns non-zero, the iteration stops.
+> + *
+> + * Returns -1 in case of an error, or 0 otherwise.
+> + */
+> +int tracecmd_iterate_raw_events(struct tep_handle *tep,
+> +				struct tracecmd_instance *instance,
+> +				int (*callback)(struct tep_event *,
+> +						struct tep_record *,
+> +						int, void *),
+> +				void *callback_context)
+> +{
+> +	unsigned int p_size;
+> +	struct dirent *dent;
+> +	char file[PATH_MAX];
+> +	void *page = NULL;
+> +	struct stat st;
+> +	char *path;
+> +	DIR *dir;
+> +	int ret;
+> +	int cpu;
+> +	int fd;
+> +	int r;
+> +
+> +	p_size = getpagesize();
+> +	path = tracecmd_get_instance_file(instance, "per_cpu");
+> +	if (!path)
+> +		return -1;
+> +	dir = opendir(path);
+> +	if (!dir) {
+> +		ret = -1;
+> +		goto error;
+> +	}
+> +	page = malloc(p_size);
+> +	if (!page) {
+> +		ret = -1;
+> +		goto error;
+> +	}
+> +	while ((dent = readdir(dir))) {
+> +		const char *name = dent->d_name;
+> +
+> +		if (strlen(name) < 4 || strncmp(name, "cpu", 3) != 0)
+> +			continue;
+> +		cpu = atoi(name + 3);
+> +		sprintf(file, "%s/%s", path, name);
+> +		ret = stat(file, &st);
+> +		if (ret < 0 || !S_ISDIR(st.st_mode))
+> +			continue;
+> +
+> +		sprintf(file, "%s/%s/trace_pipe_raw", path, name);
+> +		fd = open(file, O_RDONLY | O_NONBLOCK);
+> +		if (fd < 0)
+> +			continue;
+> +		do {
+> +			r = read(fd, page, p_size);
+> +			if (r > 0)
+> +				get_events_in_page(tep, page, r, cpu,
+> +						   callback, callback_context);
+> +		} while (r > 0);
+> +		close(fd);
+> +	}
+> +	ret = 0;
+> +
+> +error:
+> +	if (dir)
+> +		closedir(dir);
+> +	free(page);
+> +	tracecmd_put_tracing_file(path);
+> +	return ret;
+> +}
+
