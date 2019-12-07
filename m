@@ -1,292 +1,137 @@
-Return-Path: <SRS0=a/08=Z3=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=wa5U=Z5=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60672C43603
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  5 Dec 2019 15:09:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D812C43603
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  7 Dec 2019 11:14:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 23C762464F
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  5 Dec 2019 15:09:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 595AD24677
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  7 Dec 2019 11:14:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jRrRaXGL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bZYbzzXN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbfLEPJm (ORCPT
+        id S1726289AbfLGLOq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 5 Dec 2019 10:09:42 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:45544 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729489AbfLEPJl (ORCPT
+        Sat, 7 Dec 2019 06:14:46 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:35785 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbfLGLOq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 5 Dec 2019 10:09:41 -0500
-Received: by mail-pl1-f193.google.com with SMTP id w7so1356553plz.12
-        for <linux-trace-devel@vger.kernel.org>; Thu, 05 Dec 2019 07:09:41 -0800 (PST)
+        Sat, 7 Dec 2019 06:14:46 -0500
+Received: by mail-wm1-f68.google.com with SMTP id c20so8449018wmb.0;
+        Sat, 07 Dec 2019 03:14:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iFMW5nINLoovzKJDh2YW8798FMR8y28FjBnViI58r9g=;
-        b=jRrRaXGL8+pIjv3iRdNz6y0ykGVDt+pgFw1IpNhNUKnUrejxJqgV1WV+V3HHKF8ZdM
-         ahAdoV1ePCkL10/gyzzWXzl+lZmQKXJn2SgPId0d5pm5lGHuMTgY47VBUnDujBMJsMv7
-         VCu3cIfhJLPEQIJ5QepGNHHoXTNFLWeyuIXl0IfPMa2cswKifxvJyNRCDqJHr8wIvbEh
-         nAb8eNI5oOjfSfTZ8piwUpuEf7NYxd92lmAzRn9GtCyrtgRgwxvIvVPluwnBLXppoXAR
-         thnoL6DrEoOZtbTA7WnpXIDBmT/7/oM/sTefI4EvLTqrnv3Ch0l+Foy1DCEQ1KT03GA9
-         Qvtg==
+        h=from:to:cc:subject:date:message-id;
+        bh=HUdFIVx2th3a0bTzer3FVDj/Iewx06i7IgtcXEeOoiY=;
+        b=bZYbzzXNc0ZgUJb7ev3S0jNCENJThXwsNWeZ3cJ3Z5ek1jlJAJzw6lnS+8PuWM4BRy
+         kg6r05GuR2GuN189FPLXkZh6Y4klKyux4jzk8XQyZYbRyYKwzi8ub1LFfzH1lM4rkN71
+         UxAadc+q/eiOfEjn2g/CCMHi7x6evvnSKGy8+nFyt3imB+a95F/j/PfA5wivYaH826ju
+         G+V/AfKZDKi0WK+s3xKINSbWqwZl2Fxw95+ahbYYZGt6sH0k9h/YK98cHQQ/0V49hiJr
+         aw9Ax4ILP3E8fmf8JCz0tmztxPRm9hcXuvUunmKfbnI91Wsf2/R8pH6QsKS3rYDNfsVj
+         pscg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iFMW5nINLoovzKJDh2YW8798FMR8y28FjBnViI58r9g=;
-        b=MdFmAF0xGh7ohoxGEey78kfGPab3pzObJramXaUJhghQQhJDimePhDhD3FNwIZqlHL
-         6nIjr98P+9/i7VcxG17JILjLkXQIQBoK2F2vEPQXnKV0dXx538uqak4wyV7gbcfx7WTB
-         TXK0zt3TFiXgdif/4QPoD6lJ/2Ppniz4H8vEhrmI+ToxSAXBI4OiS6LFuJ4pTBWX49Hx
-         ueYE9OWXsje+r0R4WjQP6wdaVtKxspTXyxGEmL/t8NlUgJWIbUTKnp1ClRlErs6ucr5L
-         xGetpA1cU5FQys/ev3GUZVYJq3h8eoEKJlHTEHkLF/pxKQMzmliLJ4rXg4uR7ABmm7LR
-         bpEQ==
-X-Gm-Message-State: APjAAAUEVans1q7uMU0ErfZkG47BwLtXBIvTSNIQImAAeEGLo3FdOb9k
-        pKEhLW7HjbBq6xYNI2l/PjCinuPajKeg4n7PaXk=
-X-Google-Smtp-Source: APXvYqwobbZpOI8RIYhrNk+9LOODAxRcN59AHYtwFE40tR1ZCwmuXYZJODmRt70juy13vl5ukbVsxLc7sb7o4pFM+3E=
-X-Received: by 2002:a17:902:8690:: with SMTP id g16mr9845305plo.194.1575558580530;
- Thu, 05 Dec 2019 07:09:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20191203103522.482684-1-tz.stoyanov@gmail.com>
- <20191203103522.482684-13-tz.stoyanov@gmail.com> <20191204194650.7055bc1c@gandalf.local.home>
-In-Reply-To: <20191204194650.7055bc1c@gandalf.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 5 Dec 2019 17:09:29 +0200
-Message-ID: <CAPpZLN5Fb29dCnHWBDdLt9d9guikb6KqawhYCwqcZVp91rAWBw@mail.gmail.com>
-Subject: Re: [PATCH v17 12/18] trace-cmd: Implement new option in trace.dat
- file: TRACECMD_OPTION_TIME_SHIFT
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HUdFIVx2th3a0bTzer3FVDj/Iewx06i7IgtcXEeOoiY=;
+        b=KcBABSCf9NmyvggCQFM96dSnRr7fjTzmbojrT7WIw/L8EVOJbSCqm0agLnvpoSm0so
+         zw8xDQXJa+EN97lGesDhsKo9fPX4VVJK0/iWljshmMfST8AUi+kn008jwuAFWXfPKPBA
+         pXERhU808F2hErqpP0HsVqL+s44ZPMOqPw+kgL7gN4GfKljX7T9mkbOb7/aKz8eN44I2
+         b3F/SEcU1Kf77GpLJ2wpvZIYVUm8YhVGR9pPOzvZTHX3ONxl2HI74iPvmJzlY+CJohuG
+         xxqc24LzYvREdnsodoxp0s5gIKjwIVQ1aG9uTt36HKBGOrRbNBFhXlx4dHctVkDbMhw7
+         U/BQ==
+X-Gm-Message-State: APjAAAULPm5Ubd899p+F+Dby8+ridZJK4Eb1TH1zGr0/TEzCslrYYrFo
+        GDNbnvBoRub0nKvhhQgLZFU=
+X-Google-Smtp-Source: APXvYqzk5XwcKSTUFMdpM/DSCrwTnN0PBPDDfRT+RlJDRdJ2zKgB/mlUT2CDg8zLmXxkZz9ZOmSwEg==
+X-Received: by 2002:a7b:c764:: with SMTP id x4mr15321560wmk.113.1575717284044;
+        Sat, 07 Dec 2019 03:14:44 -0800 (PST)
+Received: from debian.office.codethink.co.uk. ([78.40.148.180])
+        by smtp.gmail.com with ESMTPSA id a20sm6617475wmd.19.2019.12.07.03.14.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 07 Dec 2019 03:14:43 -0800 (PST)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@redhat.com>, rostedt@goodmis.org,
+        arnaldo.melo@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] libtraceevent: allow custom libdir path
+Date:   Sat,  7 Dec 2019 11:14:40 +0000
+Message-Id: <20191207111440.6574-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Dec 5, 2019 at 2:46 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-[ ... ]
-> > +static inline unsigned long long
-> > +timestamp_correction_calc(unsigned long long ts, struct ts_offset_sample *min,
-> > +                       struct ts_offset_sample *max)
-> > +{
-> > +     long long tscor = min->offset +
-> > +                     (((((long long)ts) - min->time)*
-> > +                     (max->offset-min->offset))/(max->time-min->time));
->
-> When every I see a division like this, I'd like to think we should add:
->
->         long long offset = ((long long)ts - min->time) *
->                         (max->offset - min->offset);
->         long long delta = max->time - min->time;
->         long long tscor = min->offset +
->                         (offset + delta / 2) / delta;
->
-> This handles rounding of delta instead of truncating. Also, it's best
-> to have spaces around operators, as it's hard to see where the variable
-> stops and the operation beings with max->time-min->time.
->
-> > +
-> > +     if (tscor < 0)
-> > +             return ts - llabs(tscor);
->
-> I'm curious to why the test and using llabs, instead of just returning:
->
->         ts + tscor ?
->
-> Is there a difference between that when tscor is negative and using
-> llabs?
->
-The only reason to use llabs() is mixed signed - unsigned calculation. As time
-correction tscor can be negative,  will it be converted to unsigned in
-"ts + tscor" ?
+When I use prefix=/usr and try to install libtraceevent in my laptop it
+tries to install in /usr/lib64. I am not having any folder as /usr/lib64
+and also the debian policy doesnot allow installing in /usr/lib64. It
+should be in /usr/lib/x86_64-linux-gnu/.
 
-> > +
-> > +     return ts + tscor;
-> > +}
-> > +
-> > +static unsigned long long timestamp_correct(unsigned long long ts,
-> > +                                         struct tracecmd_input *handle)
-> > +{
-> > +     struct host_trace_info  *host = &handle->host;
-> > +     int min, mid, max;
-> > +
-> > +     if (handle->ts_offset)
-> > +             return ts + handle->ts_offset;
-> > +
-> > +     if (!host->sync_enable || !host->ts_samples_count || !host->ts_samples)
-> > +             return ts;
->
-> Hmm, perhaps we should make host->sync_enable false when
-> host->ts_samples_count or host->ts_samples are NULL and remove the
-> extra checks? (slight optimization)
->
-> > +
-> > +     /* We have one sample, nothing to calc here */
-> > +     if (host->ts_samples_count == 1)
-> > +             return ts + host->ts_samples[0].offset;
-> > +
-> > +     /* We have two samples, nothing to search here */
-> > +     if (host->ts_samples_count == 2)
-> > +             return timestamp_correction_calc(ts, &host->ts_samples[0],
-> > +                                              &host->ts_samples[1]);
-> > +
-> > +     /* We have more than two samples */
-> > +     if (ts <= host->ts_samples[0].time)
-> > +             return timestamp_correction_calc(ts,
-> > +                                              &host->ts_samples[0],
-> > +                                              &host->ts_samples[1]);
-> > +     else if (ts >= host->ts_samples[host->ts_samples_count-1].time)
-> > +             return timestamp_correction_calc(ts,
-> > +                                              &host->ts_samples[host->ts_samples_count-2],
-> > +                                              &host->ts_samples[host->ts_samples_count-1]);
-> > +     min = 0;
-> > +     max = host->ts_samples_count-1;
-> > +     mid = (min + max)/2;
-> > +     while (min <= max) {
-> > +             if (ts < host->ts_samples[mid].time)
-> > +                     max = mid - 1;
-> > +             else if (ts > host->ts_samples[mid].time)
-> > +                     min = mid + 1;
-> > +             else
-> > +                     break;
-> > +             mid = (min + max)/2;
-> > +     }
->
-> Hmm, probably should libc's bsearch() instead of open coding a binary
-> search.
->
+Quote: No package for a 64 bit architecture may install files in
+	/usr/lib64/ or in a subdirectory of it.
+ref: https://www.debian.org/doc/debian-policy/ch-opersys.html
 
-I do not use bsearch() as there is no exact match it that search - only the
-interval in which the timestamp fits should be found. May be there is a way
-to use bsearch() in this scenario, I can think about it.
+Make it more flexible by allowing to mention libdir_relative while
+installing so that distros can mention the path according to their policy
+or use the default one.
 
-[ ...]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
 
-> >  }
-> >
-> > +static int tsync_offset_cmp(const void *a, const void *b)
-> > +{
-> > +     struct ts_offset_sample *ts_a = (struct ts_offset_sample *)a;
-> > +     struct ts_offset_sample *ts_b = (struct ts_offset_sample *)b;
-> > +
-> > +     if (ts_a->time > ts_b->time)
-> > +             return 1;
-> > +     if (ts_a->time < ts_b->time)
-> > +             return -1;
-> > +     return 0;
-> > +}
->
-> We have the compare function for bsearch() here.
->
+Hi Steve,
 
-We can use it only for exact match, cannot use the same function for finding the
-interval.
+And yet another one (hopefully the final one for now). I know I missed
+the merge window, but your Ack should be ok.
 
-[ ... ]
+ tools/lib/traceevent/Makefile         | 5 +++--
+ tools/lib/traceevent/plugins/Makefile | 5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-> >  static int trace_pid_map_cmp(const void *a, const void *b)
-> >  {
-> >       struct tracecmd_proc_addr_map *m_a = (struct tracecmd_proc_addr_map *)a;
-> > @@ -2323,6 +2438,7 @@ static int handle_options(struct tracecmd_input *handle)
-> >       struct input_buffer_instance *buffer;
-> >       struct hook_list *hook;
-> >       char *buf;
-> > +     int sampes_size;
->
-> "sampes"? Is this short for "samples"? Just use "samples_size" then.
->
-
-It's a typo, fixed it :)
-
->
-> >       int cpus;
-> >
-> >       /* By default, use usecs, unless told otherwise */
-> > @@ -2370,6 +2486,28 @@ static int handle_options(struct tracecmd_input *handle)
-> >                       offset = strtoll(buf, NULL, 0);
-> >                       handle->ts_offset += offset;
-> >                       break;
-> > +             case TRACECMD_OPTION_TIME_SHIFT:
-> > +                     /*
-> > +                      * long long int (8 bytes) trace session ID
-> > +                      * int (4 bytes) count of timestamp offsets.
-> > +                      * long long array of size [count] of times,
-> > +                      *      when the offsets were calculated.
-> > +                      * long long array of size [count] of timestamp offsets.
-> > +                      */
-> > +                     if (size < 12 || handle->flags & TRACECMD_FL_IGNORE_DATE)
-> > +                             break;
-> > +                     handle->host.trace_id = tep_read_number(handle->pevent,
-> > +                                                             buf, 8);
-> > +                     handle->host.ts_samples_count = tep_read_number(handle->pevent,
-> > +                                                                     buf + 8, 4);
-> > +                     sampes_size = (8 * handle->host.ts_samples_count);
-> > +                     if (size != (12 + (2 * sampes_size)))
-> > +                             break;
-> > +                     handle->host.ts_samples = malloc(2 * sampes_size);
-> > +                     if (!handle->host.ts_samples)
-> > +                             return -ENOMEM;
-> > +                     tsync_offset_load(handle, buf + 12);
-> > +                     break;
-> >               case TRACECMD_OPTION_CPUSTAT:
-> >                       buf[size-1] = '\n';
-> >                       cpustats = realloc(cpustats, cpustats_size + size + 1);
-> > @@ -3078,6 +3216,8 @@ void tracecmd_close(struct tracecmd_input *handle)
-> >       trace_pid_map_free(handle->pid_maps);
-> >       handle->pid_maps = NULL;
-> >
-> > +     trace_tsync_offset_free(&handle->host);
-> > +
-> >       if (handle->flags & TRACECMD_FL_BUFFER_INSTANCE)
-> >               tracecmd_close(handle->parent);
-> >       else {
-> > @@ -3532,3 +3672,29 @@ unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle)
-> >  {
-> >       return handle->trace_id;
-> >  }
-> > +
-> > +/**
-> > + * tracecmd_get_tsync_peer - get the trace session id of the peer host
-> > + * @handle: input handle for the trace.dat file
-> > + *
-> > + * Returns the trace id of the peer host, written in the trace file
-> > + *
-> > + * This information is stored in guest trace.dat file
-> > + */
-> > +unsigned long long tracecmd_get_tsync_peer(struct tracecmd_input *handle)
-> > +{
-> > +     return handle->host.trace_id;
-> > +}
-> > +
-> > +/**
-> > + * tracecmd_enable_tsync - enable / disable the timestamps correction
-> > + * @handle: input handle for the trace.dat file
-> > + * @enable: enable / disable the timestamps correction
-> > + *
-> > + * Enables or disables timestamps correction on file load, using the array of
-> > + * recorded time offsets
-> > + */
-> > +void tracecmd_enable_tsync(struct tracecmd_input *handle, bool enable)
-> > +{
->
-> Perhaps here we should check if samples are allocated already, and only
-> allow it to be enabled if they are.
->
-> -- Steve
->
->
-> > +     handle->host.sync_enable = enable;
-> > +}
->
-
-Thanks !
-
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index c5a03356a999..7e2450ddd7e1 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -39,11 +39,12 @@ DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
+ 
+ LP64 := $(shell echo __LP64__ | ${CC} ${CFLAGS} -E -x c - | tail -n 1)
+ ifeq ($(LP64), 1)
+-  libdir_relative = lib64
++  libdir_relative_temp = lib64
+ else
+-  libdir_relative = lib
++  libdir_relative_temp = lib
+ endif
+ 
++libdir_relative ?= $(libdir_relative_temp)
+ prefix ?= /usr/local
+ libdir = $(prefix)/$(libdir_relative)
+ man_dir = $(prefix)/share/man
+diff --git a/tools/lib/traceevent/plugins/Makefile b/tools/lib/traceevent/plugins/Makefile
+index f440989fa55e..edb046151305 100644
+--- a/tools/lib/traceevent/plugins/Makefile
++++ b/tools/lib/traceevent/plugins/Makefile
+@@ -32,11 +32,12 @@ DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
+ 
+ LP64 := $(shell echo __LP64__ | ${CC} ${CFLAGS} -E -x c - | tail -n 1)
+ ifeq ($(LP64), 1)
+-  libdir_relative = lib64
++  libdir_relative_tmp = lib64
+ else
+-  libdir_relative = lib
++  libdir_relative_tmp = lib
+ endif
+ 
++libdir_relative ?= $(libdir_relative_tmp)
+ prefix ?= /usr/local
+ libdir = $(prefix)/$(libdir_relative)
+ 
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.11.0
+
