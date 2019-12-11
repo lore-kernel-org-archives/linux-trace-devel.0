@@ -2,171 +2,95 @@ Return-Path: <SRS0=a1Iv=2B=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D485C43603
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 11 Dec 2019 08:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70D62C43603
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 11 Dec 2019 13:01:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5640620637
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 11 Dec 2019 08:21:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BBB682077B
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 11 Dec 2019 13:01:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HTtO3nIP"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="T8GaJY71"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbfLKIV5 (ORCPT
+        id S1729225AbfLKNBH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 11 Dec 2019 03:21:57 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:39052 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726983AbfLKIV5 (ORCPT
+        Wed, 11 Dec 2019 08:01:07 -0500
+Received: from shroom.duncanthrax.net ([178.63.180.169]:59223 "EHLO
+        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727402AbfLKNBH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 11 Dec 2019 03:21:57 -0500
-Received: by mail-pl1-f194.google.com with SMTP id o9so1125319plk.6
-        for <linux-trace-devel@vger.kernel.org>; Wed, 11 Dec 2019 00:21:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QbGHKf0ENjG97n7qmRnN0bEB8rfRI/9VctH85QIrMfI=;
-        b=HTtO3nIPKnozWWfq9ZTpNQwBHaIGx4jzp202CVo8KItgjv+wn1zuvHKyIMRjsgd3M9
-         0a8J8SZ+uXXsNDZvcpgG0c0PgXsxhoHH+hlhoxyfpVb4sLgPoQBi2H7MNrPo2dcSOHkB
-         Ej8K2Aa9DzCCDGyeNNQvTLT8q0K3nagJdxSwi+no4GUEPIpvsQWd+ps3FEcp1bvsNtzk
-         /+83T/E02EXF2+3yYWmmSbemEdcWuB2wgYS8v7w4wKSHFWzc/iMJIqEpuguFyQcbTDhx
-         NvbFC+Ny1RwIlQw9Tchgc/EUH2L4nZTqblUNf0WXOmdfcbDzQWXWi2uYrEuXTTq9vbWD
-         zVEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QbGHKf0ENjG97n7qmRnN0bEB8rfRI/9VctH85QIrMfI=;
-        b=SmWNre/1GV7ZaO7Va3LFzHMNaYD+dzEiQtunCeKICWvgd/3SrFa1sS13o9NfXliB0q
-         LaAr52v8k4FpgU0qWq2dBmyD3iSKcNtfH16+OnSTsd/EUO64v06UubHCftuuMmouRXZY
-         He+urOz8hOxdcI0uPp5D+0vDU57WavGa+1bqWFkHgXEnohiL+SmUvRDzWZ3Amcr2ERS+
-         XNZeGY9j/HRWUhD230dsTJ5AB3J5EtqQh/Vwh883yV0HlnhjVvi8Kfq+ble1h+imUB8y
-         PcECN3puoKu+/73moOQ3/48CtQ5G2jvGnuwIQxuMo1BEztCAeCfH89hOTnPkn1e5q0c1
-         Llag==
-X-Gm-Message-State: APjAAAXK3MOVOvJjwqYDFnytNux5pyFY97klHg8gVWx0jz2kqWc9cQ8q
-        uCFHsSEKg84xtBqmCwjI8z354R1Um5hxbippW4ZswGszjR0=
-X-Google-Smtp-Source: APXvYqwzT/Ze8YEdbrYlXtEbHkvxdBAUSEZePLeOt4B4ELW+3+jN1Xmj49/72p8a7+6sIr67IcSvmTH5uFIfESdyQvQ=
-X-Received: by 2002:a17:90a:19dd:: with SMTP id 29mr2208799pjj.32.1576052516074;
- Wed, 11 Dec 2019 00:21:56 -0800 (PST)
+        Wed, 11 Dec 2019 08:01:07 -0500
+X-Greylist: delayed 1668 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Dec 2019 08:01:06 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=duncanthrax.net; s=dkim; h=Content-Type:MIME-Version:Message-ID:Subject:To:
+        From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=oBMbXE8UpvXasjY1ZiOIc3DodwQGPRx/7lOyYb3GBHY=; b=T8GaJY719OTQybRw1nBWMBRO0S
+        GmfHwfBSDg+pw1nPCQ7wByFHqHqZQZiYUDohRyR927vC1xGg5FcImHdJV4Y3i2AqrvAr9Q5gnxAsA
+        ji3uY8cDxi3faBqhdcKoQE6I8LbNM01DuICCjLAkjDUjz2KiUOf720HGtLfHAdNw90x8=;
+Received: from [2a01:4f8:121:41fa::170] (helo=stackframe.org)
+        by smtp.duncanthrax.net with esmtpa (Exim 4.90_1)
+        (envelope-from <svens@stackframe.org>)
+        id 1if1B6-0003Hb-SC
+        for linux-trace-devel@vger.kernel.org; Wed, 11 Dec 2019 13:33:17 +0100
+Date:   Wed, 11 Dec 2019 13:33:16 +0100
+From:   Sven Schnelle <svens@stackframe.org>
+To:     linux-trace-devel@vger.kernel.org
+Subject: ftrace histogram sorting broken on BE architecures
+Message-ID: <20191211123316.GD12147@stackframe.org>
 MIME-Version: 1.0
-References: <20191203103522.482684-1-tz.stoyanov@gmail.com>
- <20191203103522.482684-15-tz.stoyanov@gmail.com> <20191209143101.146cb619@gandalf.local.home>
- <CAPpZLN6xhsdd8Xyocm2rRGesCsW5Wsk2X3ZiEvJW948xXda-kQ@mail.gmail.com> <20191210104829.36071c41@gandalf.local.home>
-In-Reply-To: <20191210104829.36071c41@gandalf.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Wed, 11 Dec 2019 10:21:44 +0200
-Message-ID: <CAPpZLN7bY8=PMwJnB02SRrdxiTRJjE-RwAwnADQBy5oFfhcffQ@mail.gmail.com>
-Subject: Re: [PATCH v17 14/18] trace-cmd: Add host trace clock as guest trace argument
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 5:48 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 10 Dec 2019 10:49:43 +0200
-> Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
->
-> > > > +     if (guest_config) {
-> > > > +             /* If -C is specified, prepend clock to all guest VM flags */
-> > > > +             for_all_instances(instance) {
-> > > > +                     if (top_instance.ftrace->clock) {
-> > > > +                             if (is_guest(instance)) {
-> > >
-> > > We should only append this, if the guest didn't have a clock set
-> > > already. As the change log seems to say, if the user states a "-C
-> > > clock" for the guest, that should take precedence over the host clock
-> > > set. That is, a user may specifically state that they are using a
-> > > different clock. If we have frequency and offset set, it should still
-> > > work with different clocks.
-> >
-> > The guest config string is not parsed in the host context, that's why the host
-> > doesn't know if a guest has an explicit  "-C clock" argument.
-> > I can parse the guest config here, but this will complicate the implementation.
-> > Using the current approach still guarantees that the user specified
-> > config has higher
-> > priority than injected one - add_argv() API prepends to the beginning
-> > of the string, so
-> > user arguments are always after the injected one. When guest parses
-> > the string, in case of
-> > duplicated "-C clock" arguments, the last one wins.
->
-> I'm confused. I'm looking at this:
->
->
->         for (;;) {
->                 [..]
->                 switch (c) {
->                 [..]
->                 case 'A':
->                         [..]
->                         ctx->instance->flags |= BUFFER_FL_GUEST;
->                 [..]
->                 case 'C':
->                         ctx->instance->ftrace->clock = optarg;
->                         guest_config = true;
->                         break;
->                 [..]
->                 }
->                 [..]
->         }
->         [..]
->         if (guest_config) {
->                 /* If -C is specified, prepend clock to all guest VM flags */
->                 for_all_instances(instance) {
->                         if (top_instance.ftrace->clock) {
->
-> Why can't we have here:
->
->  if (top_instance.ftrace->clock && !instance->ftrace->clock)
->
-> If the guest instance was given a -C, I would think we don't want to add
-> another -C to pass to that guest?
->
+Hi List,
 
-In case of a guest ("-A" option), the logic skips the switch(), so the
-guest args are not parsed.
-There is a check, right before the switch() :
+i was looking into a ftracetest failure on s390:
 
-        /*
-         * If the current instance is to record a guest, then save
-         * all the arguments for this instance.
-         */
-        if (c != 'B' && c != 'A' && is_guest(ctx->instance)) {
-            add_arg(ctx->instance, c, opts, long_options, optarg);
-            continue;
-        }
+# ./ftracetest test.d/trigger/trigger-hist.tc
+=== Ftrace unit tests ===
+[1] event trigger - test histogram trigger	[FAIL]
+[2] (instance)  event trigger - test histogram trigger	[FAIL]
 
-I can put inside that if() a check for "-C" guest argument, but it
-will look like a hack.
+from the -vvv log: ++ fail 'sort param on sched_process_fork did not work'
 
-The confusion is that guest_config is set to true for any "-C" host argument,
-including those for instances, but only the one from the top instance
-is used to inject
-guest clock arg.
+# cat events/sched/sched_process_fork/hist
 
+# event histogram
+#
+# trigger info: hist:keys=parent_pid,child_pid:vals=hitcount:sort=child_pid:size=2048 [active]
+#
 
-> -- Steve
->
->                                 if (is_guest(instance)) {
->                                         add_argv(instance,
->                                                  (char *)top_instance.ftrace->clock,
->                                                  true);
->                                         add_argv(instance, "-C", true);
->                                 }
->                         }
->                 }
->         }
+{ parent_pid:       1406, child_pid:       1428 } hitcount:          1
+{ parent_pid:       1406, child_pid:       1430 } hitcount:          1
+{ parent_pid:       1406, child_pid:       1427 } hitcount:          1
+{ parent_pid:       1406, child_pid:       1432 } hitcount:          1
+{ parent_pid:       1406, child_pid:       1431 } hitcount:          1
+{ parent_pid:       1406, child_pid:       1429 } hitcount:          1
 
+So the test is right, the entries are not sorted. After digging into the
+ftrace code i noticed that integer values always get extended to 64 bit
+in event_hist_trigger(), but cmp_entries_key() from tracing_map.c uses the
+type of the field (which is a pid_t, and therefore 4 bytes).
 
+On Little Endian this doesn't hurt, but on BE s390 this makes the compare
+function compare 4 zero bytes, which is the reason why sorting doesn't
+work. As a test i forced the compare function used in cmp_entries_key() to
+tracing_map_cmp_s64(), which made the ftrace tests pass.
 
--- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+I also tested this on 64 bit parisc with the same results, so the architecture
+doesn't seem make a difference (besides LE vs. BE)
+
+Any thoughts on how to fix this? I'm not sure whether i fully understand the
+ftrace maps... ;-)
+
+Best,
+Sven
