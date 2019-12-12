@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B199BC43603
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 09:03:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0974FC43603
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 09:03:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 878D12464B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 09:03:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D32112464B
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 09:03:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="s8zn7b6H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QcZMEG2b"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbfLLJDH (ORCPT
+        id S1728218AbfLLJDI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Dec 2019 04:03:07 -0500
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:46184 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728218AbfLLJDH (ORCPT
+        Thu, 12 Dec 2019 04:03:08 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:39807 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728256AbfLLJDI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Dec 2019 04:03:07 -0500
-Received: by mail-lf1-f50.google.com with SMTP id f15so1057197lfl.13
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Dec 2019 01:03:05 -0800 (PST)
+        Thu, 12 Dec 2019 04:03:08 -0500
+Received: by mail-lf1-f66.google.com with SMTP id y1so1086607lfb.6
+        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Dec 2019 01:03:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qDwePEGln2rZJFTcfkO11fGvFsmIaTgTUWpXtppzZdw=;
-        b=s8zn7b6H3ijz4U2YInQbfaPrJt8TxOfZzpRTLEPtFiyL7xf/7iFfMWsxtlFz1rX85B
-         RlvTCrU+uLYxYyeF5ZKwHuV/GEnwLpu3MJr/J5sR5d/LxQnpAMkQXmlD1F3sDi4HVlHS
-         20Oj3TOE8o4xPS0ZHTHrXGxu8hnduyKzoaq0ANoGxP5UenWe3Sf2OB7BQ9zsnFge+UJE
-         jnA64BTsP0k7nubLVVIqW8a1vGRNI9WBbRFlHRBIVKDOa5DBwqmrA8gEVE35dzhKc8Dv
-         HD+L/O6fc5jrVzC5SYJTl9vboch7KsQS6I7kZyPLeELMGMruvAf3XE4d6sQdtF2eXUp+
-         3lLA==
+        bh=gC9y5Vi2lQqNZJf6Se2uz2rT5mhaFKhXP+phl5JdvNA=;
+        b=QcZMEG2bnC/SUmm9tzYbMlM0DK9YcxJhXpfdRpgDLpGcwaGIJDJILDej8JQ5ub1b19
+         rIxVpcOmzomD7G0nywYsJPT66E7Cn8PnTBTXWWrFoQ/xh5VBo9j7KMJ4DOR1lu5y+D5z
+         6K0oXzoVc9P1PByrpnCBXQISOoiwibibw88DPWKDFdXebSkER+Pxn7Rnf2IMRymOGx+t
+         fb+6NFRUQG2MZjE3CNlMIruPrvmj5ezOGNwlZh9QQwNHD9N8ogPa0mzAUazL+DDFrLzp
+         FyzjOnFZ76CtooFOnDCkUZFFbAOvmxCdBvoBcohv6qrNc00Ggd5Q++TizZ3f1EN4YHHm
+         UpYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qDwePEGln2rZJFTcfkO11fGvFsmIaTgTUWpXtppzZdw=;
-        b=rlswwIClsbI6u+VgMzdoaLI5bHMUSpeO+zuhm5U8XQ/bCJCSvHko7y0//FVuBjyCtU
-         L+0zkSkGVt0VOrG0S2AFa+EeqykxhCAQ0t50iFP4FAYaPx6X6DuvOHCgpFnUHzHvqUUR
-         BfK2kOJ1BV8kslhgVUM9NALJFZ8eyW5vpHh5d9QS4NgR+yDYCyHUA3MdvdEhVpUYnSwK
-         zxUpwWytuhUEAX52enWSXedEGrOnihGb7dOKzJGzDs7ntYy+zl0+7rKKCDD0h+VsjMYD
-         Cb3/1sPmewU85ixOfnP3hhNObgbUu7nW/V4OWLUU8O2PaijXc3qtXjVavvam/hC9IYk5
-         gMNw==
-X-Gm-Message-State: APjAAAWiaiCNNVNDsGFYTgJ8du3h174TqYCnCvLuT4knLHtIPzOI897J
-        /YvO71VJrL7nE6/vT6q8eKsBvIlx
-X-Google-Smtp-Source: APXvYqwkOi8uEK18UNFkxtBQ2Un7ZABPVybLCYQaacVN6ugn6NJE7N1RKaLjwYmxK0QzjwVA45/08w==
-X-Received: by 2002:a19:6455:: with SMTP id b21mr4681359lfj.45.1576141384628;
-        Thu, 12 Dec 2019 01:03:04 -0800 (PST)
+        bh=gC9y5Vi2lQqNZJf6Se2uz2rT5mhaFKhXP+phl5JdvNA=;
+        b=Se78ZqVR9zk//FNSMgqTN3rKU5rqPplx6i9b5kCt6AY7Q66APXGUpKSW5bYsgu6jGR
+         i6LGQJbBWvb2QHQBsO1X/1FklOJUFaotnW9Q1MNcKcNe54zEQeEJSzFgZnh1xp7sxxaj
+         oFmqbJPA4DeJeLYOq0eucB8hQ8+zaUy7NJMBBPYLnz7n4NlCSASwlGBjE5YPReJygObc
+         tQbSqwJs9NiUd0ZtbQujIDddEDdQrT8cushEZg7QzKDKh7HU9o2/cC5glHgwQy2Ua8aQ
+         DkZk7Fr4k9cLDHFR0TFiY78t9STSlDQ1+QVjLfvcH/7dRZW71jh2rY0UHFCeXQsHxAhm
+         Whsg==
+X-Gm-Message-State: APjAAAW+ErQoEhO0PeFdkkR140T0m8HOa2/x/7k9aYcIYcogsaGOFNTE
+        1Ii6SLLAcA6lJyKaIoFREKzepR2T
+X-Google-Smtp-Source: APXvYqyolVADbiAYiwaeMlwsSQDhMPAajCcz0weC/TnR4nq/eZ1gQStfVBEK86JNWUo9VHJUWevjpA==
+X-Received: by 2002:ac2:5444:: with SMTP id d4mr5163131lfn.49.1576141386163;
+        Thu, 12 Dec 2019 01:03:06 -0800 (PST)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id u16sm2849908lfi.36.2019.12.12.01.03.03
+        by smtp.gmail.com with ESMTPSA id u16sm2849908lfi.36.2019.12.12.01.03.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2019 01:03:04 -0800 (PST)
+        Thu, 12 Dec 2019 01:03:05 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     rostedt@goodmis.org, Valentin.Schneider@arm.com,
         douglas.raillard@arm.com,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 4/5] Add "utils"
-Date:   Thu, 12 Dec 2019 11:02:31 +0200
-Message-Id: <20191212090232.24236-5-y.karadz@gmail.com>
+Subject: [PATCH 5/5] Adapt the sched_wakeup.py example script to use the new tracecruncher module
+Date:   Thu, 12 Dec 2019 11:02:32 +0200
+Message-Id: <20191212090232.24236-6-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191212090232.24236-1-y.karadz@gmail.com>
 References: <20191212090232.24236-1-y.karadz@gmail.com>
@@ -75,74 +75,107 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Place the rest of the code, that is pure Python in tracecrunche/utils.py
-
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- tracecruncher/utils.py | 54 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
- create mode 100644 tracecruncher/utils.py
+ examples/sched_wakeup.py | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/tracecruncher/utils.py b/tracecruncher/utils.py
-new file mode 100644
-index 0000000..f785c01
---- /dev/null
-+++ b/tracecruncher/utils.py
-@@ -0,0 +1,54 @@
-+"""
-+SPDX-License-Identifier: LGPL-2.1
-+
-+Copyright 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+"""
-+
-+import json
-+
-+from . import datawrapper as dw
-+from . import ksharkpy as ks
-+
-+def size(data):
-+    """ Get the number of trace records.
-+    """
-+    for key in dw.data_column_types:
-+        if data[key] is not None:
-+            return data[key].size
-+
-+    raise Exception('Data size is unknown.')
-+
-+def save_session(session, s):
-+    """ Save a KernelShark session description of a JSON file.
-+    """
-+    s.seek(0)
-+    json.dump(session, s, indent=4)
-+    s.truncate()
-+
-+
-+def new_gui_session(fname, sname):
-+    """ Generate and save a default KernelShark session description
-+        file (JSON).
-+    """
-+    ks.new_session_file(fname, sname)
-+
-+    with open(sname, 'r+') as s:
-+        session = json.load(s)
-+
-+        session['Filters']['filter mask'] = 7
-+        session['CPUPlots'] = []
-+        session['TaskPlots'] = []
-+        session['Splitter'] = [1, 1]
-+        session['MainWindow'] = [1200, 800]
-+        session['ViewTop'] = 0
-+        session['ColorScheme'] = 0.75
-+        session['Model']['bins'] = 1000
-+
-+        session['Markers']['markA'] = {}
-+        session['Markers']['markA']['isSet'] = False
-+        session['Markers']['markB'] = {}
-+        session['Markers']['markB']['isSet'] = False
-+        session['Markers']['Active'] = 'A'
-+
-+        save_session(session, s)
-+
+diff --git a/examples/sched_wakeup.py b/examples/sched_wakeup.py
+index 52f2688..41e0c9c 100755
+--- a/examples/sched_wakeup.py
++++ b/examples/sched_wakeup.py
+@@ -15,18 +15,18 @@ import matplotlib.pyplot as plt
+ import scipy.stats as st
+ import numpy as np
+ 
+-from ksharksetup import setup
+-# Always call setup() before importing ksharkpy!!!
+-setup()
++import tracecruncher.datawrapper as dw
++import tracecruncher.ksharkpy as ks
++import tracecruncher.ftracepy as ft
++import tracecruncher.utils as tc
+ 
+-import ksharkpy as ks
+ # Get the name of the user program.
+ if len(sys.argv) >= 2:
+     fname = str(sys.argv[1])
+ else:
+     fname = input('choose a trace file: ')
+ 
+-status = ks.open_file(fname)
++status = ks.open(fname)
+ if not status:
+     print ("Failed to open file ", fname)
+     sys.exit()
+@@ -35,7 +35,7 @@ ks.register_plugin('reg_pid')
+ 
+ # We do not need the Process Ids of the records.
+ # Do not load the "pid" data.
+-data = ks.load_data(pid_data=False)
++data = dw.load(pid_data=False)
+ tasks = ks.get_tasks()
+ 
+ # Get the name of the user program.
+@@ -48,8 +48,8 @@ else:
+ task_pid = tasks[prog_name][0]
+ 
+ # Get the Event Ids of the sched_switch and sched_waking events.
+-ss_eid = ks.event_id('sched', 'sched_switch')
+-w_eid = ks.event_id('sched', 'sched_waking')
++ss_eid = ft.event_id('sched', 'sched_switch')
++w_eid = ft.event_id('sched', 'sched_waking')
+ 
+ # Gey the size of the data.
+ i = data['offset'].size
+@@ -60,7 +60,7 @@ delta_max = i_ss_max = i_sw_max = 0
+ while i > 0:
+     i = i - 1
+     if data['event'][i] == ss_eid:
+-        next_pid = ks.read_event_field(offset=data['offset'][i],
++        next_pid = ft.read_event_field(offset=data['offset'][i],
+                                        event_id=ss_eid,
+                                        field='next_pid')
+ 
+@@ -77,9 +77,9 @@ while i > 0:
+                         break
+ 
+                 if data['event'][i] == ss_eid:
+-                    next_pid = ks.read_event_field(offset=data['offset'][i],
+-                                       event_id=ss_eid,
+-                                       field='next_pid')
++                    next_pid = ft.read_event_field(offset=data['offset'][i],
++                                                   event_id=ss_eid,
++                                                   field='next_pid')
+                     if next_pid == task_pid:
+                         # Second sched_switch for the same task. ?
+                         time_ss = data['time'][i]
+@@ -89,7 +89,7 @@ while i > 0:
+                     continue
+ 
+                 if (data['event'][i] == w_eid):
+-                    waking_pid = ks.read_event_field(offset=data['offset'][i],
++                    waking_pid = ft.read_event_field(offset=data['offset'][i],
+                                                      event_id=w_eid,
+                                                      field='pid')
+ 
+@@ -120,7 +120,7 @@ ax.hist(dt, bins=(100), histtype='step')
+ plt.show()
+ 
+ sname = 'sched.json'
+-ks.new_session(fname, sname)
++tc.new_gui_session(fname, sname)
+ 
+ with open(sname, 'r+') as s:
+     session = json.load(s)
+@@ -143,6 +143,6 @@ with open(sname, 'r+') as s:
+ 
+     session['ViewTop'] = int(i_sw_max) - 5
+ 
+-    ks.save_session(session, s)
++    tc.save_session(session, s)
+ 
+ ks.close()
 -- 
 2.20.1
 
