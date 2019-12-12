@@ -2,180 +2,177 @@ Return-Path: <SRS0=wXUw=2C=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0974FC43603
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 09:03:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 615EBC43603
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 12:34:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D32112464B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 09:03:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 24C9322B48
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 12:34:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QcZMEG2b"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MP0n7791"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbfLLJDI (ORCPT
+        id S1729093AbfLLMev (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Dec 2019 04:03:08 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:39807 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728256AbfLLJDI (ORCPT
+        Thu, 12 Dec 2019 07:34:51 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:34550 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729170AbfLLMev (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Dec 2019 04:03:08 -0500
-Received: by mail-lf1-f66.google.com with SMTP id y1so1086607lfb.6
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Dec 2019 01:03:07 -0800 (PST)
+        Thu, 12 Dec 2019 07:34:51 -0500
+Received: by mail-pj1-f65.google.com with SMTP id j11so995941pjs.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Dec 2019 04:34:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gC9y5Vi2lQqNZJf6Se2uz2rT5mhaFKhXP+phl5JdvNA=;
-        b=QcZMEG2bnC/SUmm9tzYbMlM0DK9YcxJhXpfdRpgDLpGcwaGIJDJILDej8JQ5ub1b19
-         rIxVpcOmzomD7G0nywYsJPT66E7Cn8PnTBTXWWrFoQ/xh5VBo9j7KMJ4DOR1lu5y+D5z
-         6K0oXzoVc9P1PByrpnCBXQISOoiwibibw88DPWKDFdXebSkER+Pxn7Rnf2IMRymOGx+t
-         fb+6NFRUQG2MZjE3CNlMIruPrvmj5ezOGNwlZh9QQwNHD9N8ogPa0mzAUazL+DDFrLzp
-         FyzjOnFZ76CtooFOnDCkUZFFbAOvmxCdBvoBcohv6qrNc00Ggd5Q++TizZ3f1EN4YHHm
-         UpYg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6ohX0KijNXau01/2aafaiWgl3pCQD9M4Y5W0MK84Gxc=;
+        b=MP0n7791xeJ5YtGcCQwqwuTLIG6x5Y3HWUHDCmfZYBuPL8+H0bTK0UNEcJO6R48mlL
+         oJk3wDipAbQoHqkmax2IV4t53OqPwyMkOC5bEZcVboM2yS+5ox3UXOh3lW5OijXDI5i8
+         SjT7KYzDsOocncTCkuLtM2iP8DIP47iMMJeqndK3KplGdoFA4lOhcijyDkDRnDzdzNYL
+         t9I3daUh/+ZqAFWjh9cAzpIQhi+XTH0TVt48wNLZWXsT3+vf3hrWjqt70MKMr+qmRn56
+         2NH4xOZhbS1gpjX+YOcAFGJII8ZXNVA1aP8rpuEfhOu60zdQgygem9bvTYQ3WWZxB3dF
+         Fmng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gC9y5Vi2lQqNZJf6Se2uz2rT5mhaFKhXP+phl5JdvNA=;
-        b=Se78ZqVR9zk//FNSMgqTN3rKU5rqPplx6i9b5kCt6AY7Q66APXGUpKSW5bYsgu6jGR
-         i6LGQJbBWvb2QHQBsO1X/1FklOJUFaotnW9Q1MNcKcNe54zEQeEJSzFgZnh1xp7sxxaj
-         oFmqbJPA4DeJeLYOq0eucB8hQ8+zaUy7NJMBBPYLnz7n4NlCSASwlGBjE5YPReJygObc
-         tQbSqwJs9NiUd0ZtbQujIDddEDdQrT8cushEZg7QzKDKh7HU9o2/cC5glHgwQy2Ua8aQ
-         DkZk7Fr4k9cLDHFR0TFiY78t9STSlDQ1+QVjLfvcH/7dRZW71jh2rY0UHFCeXQsHxAhm
-         Whsg==
-X-Gm-Message-State: APjAAAW+ErQoEhO0PeFdkkR140T0m8HOa2/x/7k9aYcIYcogsaGOFNTE
-        1Ii6SLLAcA6lJyKaIoFREKzepR2T
-X-Google-Smtp-Source: APXvYqyolVADbiAYiwaeMlwsSQDhMPAajCcz0weC/TnR4nq/eZ1gQStfVBEK86JNWUo9VHJUWevjpA==
-X-Received: by 2002:ac2:5444:: with SMTP id d4mr5163131lfn.49.1576141386163;
-        Thu, 12 Dec 2019 01:03:06 -0800 (PST)
-Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id u16sm2849908lfi.36.2019.12.12.01.03.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2019 01:03:05 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     rostedt@goodmis.org, Valentin.Schneider@arm.com,
-        douglas.raillard@arm.com,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 5/5] Adapt the sched_wakeup.py example script to use the new tracecruncher module
-Date:   Thu, 12 Dec 2019 11:02:32 +0200
-Message-Id: <20191212090232.24236-6-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191212090232.24236-1-y.karadz@gmail.com>
-References: <20191212090232.24236-1-y.karadz@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6ohX0KijNXau01/2aafaiWgl3pCQD9M4Y5W0MK84Gxc=;
+        b=dXQMB8ANmwijn2fSo6Oi5IfV2BloKwa5Ez25nNIFHe+7WHI/dRkbQYC/PAttbrcMw6
+         bHr+di00fBL30qyfp8DOpZjcZHOwo+lf9NkyZr/rUUcXChsBAh6RzRoSBr1uzi5uDBa6
+         eG4wz6SPdYxIHV2RMc9zooIpjLfavzS4hBSMgOVvBYTTUDQ57EvJT/AdHODW3gkJjCd5
+         xrmktU658uRkn6GIxKmdDMVmFLEMfaJQUHfkWSk2WvmhP0HfDok2mF5gICSwGYlmhBxD
+         +vOD8C53+ryE70vMGylKx80mdT5fHAsCCRnPMP879iDNEdxAHxCklkM5IVJGi5W/MHni
+         GgSw==
+X-Gm-Message-State: APjAAAWgBsn7ByJLKwLkvMO4wM4SekRgwL4vDJlBt8+VZw26dl0oOnmp
+        wwPTQF4bgSU8DHX0k8GBgFYXVK/qd7Y9gJjqTcIV8tgcNCw=
+X-Google-Smtp-Source: APXvYqyoh854VyLPmYC7oe20tpQSenQrSKDy9FVQLA+TYcerAW0+7SC6DgkV05vcHayDR0O+PHx6uVkCUs0Q2USZb8Y=
+X-Received: by 2002:a17:902:ba8c:: with SMTP id k12mr6723626pls.251.1576154090959;
+ Thu, 12 Dec 2019 04:34:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20191203103522.482684-1-tz.stoyanov@gmail.com>
+ <20191203103522.482684-17-tz.stoyanov@gmail.com> <20191210133919.47830c13@gandalf.local.home>
+In-Reply-To: <20191210133919.47830c13@gandalf.local.home>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Thu, 12 Dec 2019 14:34:39 +0200
+Message-ID: <CAPpZLN5A9Am1v+yrpXwyoGQkeqvSza5QxRon61oSbyMZ5K4ghg@mail.gmail.com>
+Subject: Re: [PATCH v17 16/18] trace-cmd: Basic infrastructure for host -
+ guest timestamp synchronization
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- examples/sched_wakeup.py | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ Thanks, Steven!
+I will prepare the next version addressing the comments.
 
-diff --git a/examples/sched_wakeup.py b/examples/sched_wakeup.py
-index 52f2688..41e0c9c 100755
---- a/examples/sched_wakeup.py
-+++ b/examples/sched_wakeup.py
-@@ -15,18 +15,18 @@ import matplotlib.pyplot as plt
- import scipy.stats as st
- import numpy as np
- 
--from ksharksetup import setup
--# Always call setup() before importing ksharkpy!!!
--setup()
-+import tracecruncher.datawrapper as dw
-+import tracecruncher.ksharkpy as ks
-+import tracecruncher.ftracepy as ft
-+import tracecruncher.utils as tc
- 
--import ksharkpy as ks
- # Get the name of the user program.
- if len(sys.argv) >= 2:
-     fname = str(sys.argv[1])
- else:
-     fname = input('choose a trace file: ')
- 
--status = ks.open_file(fname)
-+status = ks.open(fname)
- if not status:
-     print ("Failed to open file ", fname)
-     sys.exit()
-@@ -35,7 +35,7 @@ ks.register_plugin('reg_pid')
- 
- # We do not need the Process Ids of the records.
- # Do not load the "pid" data.
--data = ks.load_data(pid_data=False)
-+data = dw.load(pid_data=False)
- tasks = ks.get_tasks()
- 
- # Get the name of the user program.
-@@ -48,8 +48,8 @@ else:
- task_pid = tasks[prog_name][0]
- 
- # Get the Event Ids of the sched_switch and sched_waking events.
--ss_eid = ks.event_id('sched', 'sched_switch')
--w_eid = ks.event_id('sched', 'sched_waking')
-+ss_eid = ft.event_id('sched', 'sched_switch')
-+w_eid = ft.event_id('sched', 'sched_waking')
- 
- # Gey the size of the data.
- i = data['offset'].size
-@@ -60,7 +60,7 @@ delta_max = i_ss_max = i_sw_max = 0
- while i > 0:
-     i = i - 1
-     if data['event'][i] == ss_eid:
--        next_pid = ks.read_event_field(offset=data['offset'][i],
-+        next_pid = ft.read_event_field(offset=data['offset'][i],
-                                        event_id=ss_eid,
-                                        field='next_pid')
- 
-@@ -77,9 +77,9 @@ while i > 0:
-                         break
- 
-                 if data['event'][i] == ss_eid:
--                    next_pid = ks.read_event_field(offset=data['offset'][i],
--                                       event_id=ss_eid,
--                                       field='next_pid')
-+                    next_pid = ft.read_event_field(offset=data['offset'][i],
-+                                                   event_id=ss_eid,
-+                                                   field='next_pid')
-                     if next_pid == task_pid:
-                         # Second sched_switch for the same task. ?
-                         time_ss = data['time'][i]
-@@ -89,7 +89,7 @@ while i > 0:
-                     continue
- 
-                 if (data['event'][i] == w_eid):
--                    waking_pid = ks.read_event_field(offset=data['offset'][i],
-+                    waking_pid = ft.read_event_field(offset=data['offset'][i],
-                                                      event_id=w_eid,
-                                                      field='pid')
- 
-@@ -120,7 +120,7 @@ ax.hist(dt, bins=(100), histtype='step')
- plt.show()
- 
- sname = 'sched.json'
--ks.new_session(fname, sname)
-+tc.new_gui_session(fname, sname)
- 
- with open(sname, 'r+') as s:
-     session = json.load(s)
-@@ -143,6 +143,6 @@ with open(sname, 'r+') as s:
- 
-     session['ViewTop'] = int(i_sw_max) - 5
- 
--    ks.save_session(session, s)
-+    tc.save_session(session, s)
- 
- ks.close()
+On Tue, Dec 10, 2019 at 8:39 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+[ ... ]
+> >
+> > +static int tracecmd_msg_send_nofree(int fd, struct tracecmd_msg *msg)
+>
+> We probably shouldn't have a static function that starts with
+> "tracecmd_".
+
+I changed this one, but noticed few other static "tracecmd_" functions
+in the legacy code, will rename them in a separate patch.
+
+>
+[ ... ]
+> >  static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv,
+> > -                       bool use_fifos, unsigned long long trace_id)
+> > +                       bool use_fifos, unsigned long long trace_id,
+> > +                       unsigned int tsync_protos)
+> >  {
+> >       size_t args_size = 0;
+> >       char *p;
+> > @@ -824,7 +848,11 @@ static int make_trace_req(struct tracecmd_msg *msg, int argc, char **argv,
+> >               args_size += strlen(argv[i]) + 1;
+> >
+> >       msg->hdr.size = htonl(ntohl(msg->hdr.size) + args_size);
+> > -     msg->trace_req.flags = use_fifos ? htonl(MSG_TRACE_USE_FIFOS) : htonl(0);
+> > +     msg->trace_req.flags = 0;
+> > +     if (use_fifos)
+> > +             msg->trace_req.flags |= MSG_TRACE_USE_FIFOS;
+>
+> Why the change to flags here?
+
+Fixed, It was a leftover from a previous version of this patch, where
+flags were extended with time sync specific one.
+However, I removed that time sync specific flag but forgot about this change.
+
+>
+[ ... ]
+> > +
+> > +/**
+> > + * tracecmd_tsync_proto_select - Select time sync protocol, to be used for
+> > + *           timestamp synchronization with a peer.
+> > + *
+> > + * @protos: Bitmask of time sync protocols, supported by the peer.
+>
+> Hmm, so we are limiting the number of protocols that we will ever
+> support to 32? This makes me nervous (I always think of the famous
+> quote of "Who will ever need more than 64K of RAM?")
+>
+> To be safe, we should probably make this an array:
+>
+>         int tracecmd_tsync_proto_select(unsigned int *protos, int words)
+>
+> The proto_id should be a bit, not a mask, that is:
+>
+>         int word;
+>
+>         for (word = 0; word < words; word++) {
+>
+>                 for (proto = tsync_proto_list; proto; proto = proto->next) {
+>                         if (proto->proto_id < word * 32)
+>                                 continue;
+>
+>                         id = proto->proto_id - word * 32;
+>                         if (id >= 32)
+>                                 continue;
+>
+>                         if ((1 << id) & protos[word]) {
+>                                 if (selected)
+>                                         [...]
+>
+> While we only have a single word, callers would just do:
+>
+>         unsigned int protos;
+>
+>         ret = tracecmd_tsync_proto_select(&protos, 1);
+>
+> At least this will never limit us to just 32 protocols, even though we
+> will likely never need more. But we are safe if we ever do ;-)
+>
+
+I changed this and tracecmd_tsync_proto_getall() to work with
+unlimited bitmasks,
+but in order to support more than 32 protocols the trace request  packet must be
+changed. In the current patch I added field
+                                 be32 tsync_protos;
+in struct tracecmd_msg_trace_req, which is bitmask for all time sync
+protocols, supported
+by the host. Defining this as a fixed size bitmap simplifies a lot the
+protocol. We can add a
+dynamic bitmask as part of the trace request  packet payload, but that
+payload is already used
+for the trace arguments. We can extend the payload to hold both
+dynamic bitmask and trace arguments,
+but I think it will complicate a lot the packet handling and the
+benefit will be only the posibility to support
+more than 32 time sync protocols.
+
+> > + *
+[ ... ]
+
 -- 
-2.20.1
-
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
