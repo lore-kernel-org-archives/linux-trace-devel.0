@@ -2,83 +2,122 @@ Return-Path: <SRS0=wXUw=2C=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D136C00454
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 15:18:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0174C43603
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 16:19:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0912A2067C
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 15:18:23 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aqscslob"
+	by mail.kernel.org (Postfix) with ESMTP id CD2D321655
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Dec 2019 16:19:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728929AbfLLPSW (ORCPT
+        id S1729655AbfLLQTC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Dec 2019 10:18:22 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:33081 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728939AbfLLPSW (ORCPT
+        Thu, 12 Dec 2019 11:19:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729591AbfLLQTC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Dec 2019 10:18:22 -0500
-Received: by mail-io1-f65.google.com with SMTP id s25so3206875iob.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Dec 2019 07:18:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vlc7LfQTK4ryw6MypYbv7sjZW9QpLAQi0k68ADNHqFo=;
-        b=aqscslobFafCa4oX/UsLZUpSQGKAdiNyy1D4oNEc+ZR0fDHZXHZD//fN99RijaEAh7
-         pxNrsq9CFxctrfzzh9jIDvjj+1xR8+pvN0pDVR6xEibOAxaLIKpgKUZlTN6ijR10qjIF
-         2pI2pGxN6kGiy/8QmKEwia+aiymkaLXBYUGVTcrgnnjKK6dr+bYUT4TMb97p2OTvXCQS
-         /URDsJJlhvN2wBvq6NwOWr0C6I1TyYvNtNo3sv19TF0Oj927hXmb8FTZYVN3asix5y6o
-         5xh/6MkD/4LQ8ecXN8MiVdqe6J+0XEV6nZXjT64Fb2AjKka2rvCYVK5hIUV9StN72p7I
-         LRnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vlc7LfQTK4ryw6MypYbv7sjZW9QpLAQi0k68ADNHqFo=;
-        b=p0yWeJ6d7lKYHZcosVypeEShGTekPLLuSHzH5D5yh/fRS0WEqy6BZPvmXv8A6GneNZ
-         0mgar7Jfx/8jdwecsXCH/8FmjMVYT6ISlubRw58JNLsV4rlVcNVF4jM7ssqeBb0Nu6fV
-         8GhPLVah1OIDipHv5+bUe2hCMRUtm9SmwXRnZ1lPe17/iJNpozVrJlVxJqdPy2AxB0sW
-         gwlOMcyty6J3rKCamvWRvXEk+ESDbfBqvtl/zTSeburitsvRt4Mq/fV6d/8eb2MFeWa/
-         AyfeNilQ9fDNax7SOaSJfonHCR+dkh9kroSC4ZRAelZdQn5Ys/0hFFKWLfLVZ1lJfrX5
-         nIgA==
-X-Gm-Message-State: APjAAAWdePfMBfxds0c7PxH8Yx4SxHHf0jPvSZZvefS6Xz8xoS99IEDi
-        5PQOIwF8Tch02B7itsHc2DnUwWAJUPSNfnmChg==
-X-Google-Smtp-Source: APXvYqz1ZTsHHJEt4sthuM2jAO+WxodaQhU0C3hTDsLSlZzH9AlU/09AkoOMBcGDEzKm3MZHaTR/ZJd44GTgRxVRS40=
-X-Received: by 2002:a5d:8d95:: with SMTP id b21mr3382439ioj.303.1576163901825;
- Thu, 12 Dec 2019 07:18:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20191128114500.6289-1-y.karadz@gmail.com> <CAE0o1Nvd1To0MtBAHdVQgb2g8h5Kh6s08hvxuXAz6fFVAXW-=w@mail.gmail.com>
- <bf0dba9c-57de-a9f6-151c-cd40bbd1c312@gmail.com>
-In-Reply-To: <bf0dba9c-57de-a9f6-151c-cd40bbd1c312@gmail.com>
-From:   Slavomir Kaslev <slavomir.kaslev@gmail.com>
-Date:   Thu, 12 Dec 2019 17:18:10 +0200
-Message-ID: <CAE0o1NsqJVjFgPyF09x-Hwog8cVGzr-m74PgM04CJg1i+oEjxw@mail.gmail.com>
-Subject: Re: [PATCH] kernel-shark: Retrieve the home of root from "/etc/passwd"
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Thu, 12 Dec 2019 11:19:02 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93A7B2073B;
+        Thu, 12 Dec 2019 16:19:01 +0000 (UTC)
+Date:   Thu, 12 Dec 2019 11:19:00 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        arnaldo.melo@gmail.com, linux-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] libtraceevent: allow custom libdir path
+Message-ID: <20191212111900.3f46e033@gandalf.local.home>
+In-Reply-To: <20191207111440.6574-1-sudipm.mukherjee@gmail.com>
+References: <20191207111440.6574-1-sudipm.mukherjee@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 3:30 PM Yordan Karadzhov (VMware)
-<y.karadz@gmail.com> wrote:
-[...]
 
-> Thanks for pointing out this!
-> This simplifies the patch a lot. I am sending a new version.
+Arnaldo,
 
-I just saw the patch and I think I mislead you (sorry about that) by
-referring you to getpwent(3), since getpwuid(3) is a better match for
-this use-case and will make the patch even smaller.
+Can you pull this patch in?
 
--- 
-Slavomir Kaslev
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
+
+
+On Sat,  7 Dec 2019 11:14:40 +0000
+Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
+
+> When I use prefix=/usr and try to install libtraceevent in my laptop it
+> tries to install in /usr/lib64. I am not having any folder as /usr/lib64
+> and also the debian policy doesnot allow installing in /usr/lib64. It
+> should be in /usr/lib/x86_64-linux-gnu/.
+> 
+> Quote: No package for a 64 bit architecture may install files in
+> 	/usr/lib64/ or in a subdirectory of it.
+> ref: https://www.debian.org/doc/debian-policy/ch-opersys.html
+> 
+> Make it more flexible by allowing to mention libdir_relative while
+> installing so that distros can mention the path according to their policy
+> or use the default one.
+> 
+> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+> ---
+> 
+> Hi Steve,
+> 
+> And yet another one (hopefully the final one for now). I know I missed
+> the merge window, but your Ack should be ok.
+> 
+>  tools/lib/traceevent/Makefile         | 5 +++--
+>  tools/lib/traceevent/plugins/Makefile | 5 +++--
+>  2 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+> index c5a03356a999..7e2450ddd7e1 100644
+> --- a/tools/lib/traceevent/Makefile
+> +++ b/tools/lib/traceevent/Makefile
+> @@ -39,11 +39,12 @@ DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
+>  
+>  LP64 := $(shell echo __LP64__ | ${CC} ${CFLAGS} -E -x c - | tail -n 1)
+>  ifeq ($(LP64), 1)
+> -  libdir_relative = lib64
+> +  libdir_relative_temp = lib64
+>  else
+> -  libdir_relative = lib
+> +  libdir_relative_temp = lib
+>  endif
+>  
+> +libdir_relative ?= $(libdir_relative_temp)
+>  prefix ?= /usr/local
+>  libdir = $(prefix)/$(libdir_relative)
+>  man_dir = $(prefix)/share/man
+> diff --git a/tools/lib/traceevent/plugins/Makefile b/tools/lib/traceevent/plugins/Makefile
+> index f440989fa55e..edb046151305 100644
+> --- a/tools/lib/traceevent/plugins/Makefile
+> +++ b/tools/lib/traceevent/plugins/Makefile
+> @@ -32,11 +32,12 @@ DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
+>  
+>  LP64 := $(shell echo __LP64__ | ${CC} ${CFLAGS} -E -x c - | tail -n 1)
+>  ifeq ($(LP64), 1)
+> -  libdir_relative = lib64
+> +  libdir_relative_tmp = lib64
+>  else
+> -  libdir_relative = lib
+> +  libdir_relative_tmp = lib
+>  endif
+>  
+> +libdir_relative ?= $(libdir_relative_tmp)
+>  prefix ?= /usr/local
+>  libdir = $(prefix)/$(libdir_relative)
+>  
+
