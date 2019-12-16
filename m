@@ -2,68 +2,68 @@ Return-Path: <SRS0=pI6O=2G=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83422C43603
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 16 Dec 2019 13:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DCFEC2D0C0
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 16 Dec 2019 13:40:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 52EB920409
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 16 Dec 2019 13:40:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4EDE7206D8
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 16 Dec 2019 13:40:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GJkn6KQO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XTInKNzZ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbfLPNkX (ORCPT
+        id S1727609AbfLPNkY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 16 Dec 2019 08:40:23 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43843 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727609AbfLPNkX (ORCPT
+        Mon, 16 Dec 2019 08:40:24 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:32904 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727794AbfLPNkY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 16 Dec 2019 08:40:23 -0500
-Received: by mail-lj1-f196.google.com with SMTP id a13so6813946ljm.10
-        for <linux-trace-devel@vger.kernel.org>; Mon, 16 Dec 2019 05:40:21 -0800 (PST)
+        Mon, 16 Dec 2019 08:40:24 -0500
+Received: by mail-lj1-f195.google.com with SMTP id p8so218459ljg.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 16 Dec 2019 05:40:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EFVHEgHLJAebz5EwAeXRoL3zEoGbQptcoZphnGaS0/Q=;
-        b=GJkn6KQOPeT8S42qI8MHx/1jabscLqNYTrh7vcvB/QSn4cPe+2uftVqoY8S532Btfs
-         EJry0frOSWnUMmb+ol9v0d7W0oAgAZPFE0DuQYXNTN7Nu7PLSoDJxyIITbziNA1Qyq3E
-         18KZFn8jrFXS+3ZaOFVuTTapuiVyOQxt/2Vm5t7tWYPRcLgGlwqHmeedQ6iwcikqXUje
-         NtowMF1j58BuVSRYxEiXDwKhlTVqhMB48nkdbbNYUu4rZJpBQk2qA0hVZE0+jQH02/Tj
-         LawfKb7X03Rxl3ckARWRTl5UJggIv2oFyexpv9tKK9CwMH4ko8EBz0O3g8JbrwzLMWIe
-         y+GA==
+        bh=qxdYiAEaaXfDZ5DbjuOrrHG2NwSkMig4q0joPuoIsPU=;
+        b=XTInKNzZ7xRy02EG9hkzACnhOeOf76XvaPN9GWuCMX62w2ZRQ+z+jawF89flWRgn+K
+         GlrhaxhZD0mhslMwaLqVKew7mPSySOsPfrTwiXbPo4fOwjp0muk2bDIrS/5x6Yvc2CvM
+         bPZ2VT6uG5ncgklrcvawglzW/P5L3yFVz9mnvGgFbkylTrlGftJlWLiJaBD5k0s/fhkg
+         MDOaplFgfG7McpXglpFgIn644jKVlzIEqa/6p8SEMUf1UV2bSNHQFIHQ/07nxh4JIRWX
+         3kSobe+pZzjTL7RNORaaUmZDwcu7oJZ9o8u2ynDHHYI+iBxX6qkgTdE8qjMRaCRM5nWH
+         ay5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EFVHEgHLJAebz5EwAeXRoL3zEoGbQptcoZphnGaS0/Q=;
-        b=Z6iGVLGBaN00206v7ho+uZd9pzTPNtSNLeZ10fOHSUmPTofXfBMkPyk/KnM2TZGipo
-         g5c3nKUGtb8b/v4dbdARY7sM6IUWWmqTNgM6C3U8ylvkS0pewrE6auHHXNr8VlJtAfut
-         eDSNyfnn3JTVSaw/0qi3ToHM/EfF4SiakkAWSmzsztFiCJZUJBEEyxbkdkGP/0z+9iLA
-         diCYc1rLkle4QErBYsVEIPMfqD4brkQNMHEAuQncVhigfQfqrddLYsanr/IWOZhWfws5
-         SdQzue/bg1d17x9Xr1zRHD+vHwCNsTlBBvujBCprNTncHxYpjnPkCelehM4It378/xlq
-         avqA==
-X-Gm-Message-State: APjAAAU6gso1wDI+HAzjq4PkzBw9JKWv7u0GAR7llbY5WRONugjCF0Sa
-        1QGmr60tTq8RM7Skukj+EvU=
-X-Google-Smtp-Source: APXvYqyfrCOmjuGH9A3iyawuRfuedyamuMPb3mehPnQVfGNk8hlPqjlAQXTsVAMs5r1VkT/X+Xn3AA==
-X-Received: by 2002:a2e:b5d5:: with SMTP id g21mr19608185ljn.89.1576503620809;
-        Mon, 16 Dec 2019 05:40:20 -0800 (PST)
+        bh=qxdYiAEaaXfDZ5DbjuOrrHG2NwSkMig4q0joPuoIsPU=;
+        b=mCNMls0bBF9pr8AW/Xyy2a70HLIjqTS49RrspOhyJj3t4nleNA0r21ibKILbCNOyYC
+         jLleBy0NTrtMNN0jUI1VWYtQ+lT9VB0NUahAyyQohuPUj1VMQgEz2LvLqWQp/eTXBkT7
+         guNx3hEmRYq3XwYDxOP/5imRVpFjfcI0f1BzuGQ75Cnr64kMYAYMsRZSD2cJmDu1yl3h
+         abt62XicvohV5Fb1OMkfaLJTY1y569+kgMDhBC05+A6X6FmlW3r+cVaXdH15OBnteWJM
+         yiwAlXYazl10VKSaTcVtyGe8qA5WKNJ3LaNEm8YOIDPrz4wGt6pmMyRtY6S6lAj2j2qy
+         AU9Q==
+X-Gm-Message-State: APjAAAW4Tw3x0Hok2DKIyYxkqd7ERuAsdufpf7Z1WdgqBxjZlZ0Nooos
+        fux0+1tdtB31VssxtPZzhPWoQSyB
+X-Google-Smtp-Source: APXvYqymjbgqAstoF13sP2IAVwlFwC2JJ/zQGRGSvZ6jXRAN1yLewKXxZ/4/cQvP74w0sTucisef1w==
+X-Received: by 2002:a2e:a404:: with SMTP id p4mr18734650ljn.234.1576503622209;
+        Mon, 16 Dec 2019 05:40:22 -0800 (PST)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id 204sm7506118lfj.47.2019.12.16.05.40.20
+        by smtp.gmail.com with ESMTPSA id 204sm7506118lfj.47.2019.12.16.05.40.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2019 05:40:20 -0800 (PST)
+        Mon, 16 Dec 2019 05:40:21 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/3] kernel-shark: Avoid redrawing the graphs when switching the keyboard focus
-Date:   Mon, 16 Dec 2019 15:39:16 +0200
-Message-Id: <20191216133917.31690-2-y.karadz@gmail.com>
+Subject: [PATCH 3/3] kernel-shark: Search for visible entry only if this is really needed
+Date:   Mon, 16 Dec 2019 15:39:17 +0200
+Message-Id: <20191216133917.31690-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191216133917.31690-1-y.karadz@gmail.com>
 References: <20191216133917.31690-1-y.karadz@gmail.com>
@@ -74,46 +74,96 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Reimplementing the event handler of the focus event, in order to avoid
-the update (redrawing) of the graphs every time when the OpenGL widget
-grabs / releases the focus of the keyboard. This is done because we do
-not need to redraw, while on the other hand on large data-sets, redrawing
-can take a lot of time.
+ksmodel_task_visible_event_exist() and ksmodel_cpu_visible_event_exist()
+are relatively expensive operations. It make sense to perform those only
+if the entry that was found so far has been filtered out (is invisible).
+The patch also makes the processing of the CPU and Task graphs more
+consistent.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsGLWidget.hpp | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ kernel-shark/src/KsPlotTools.cpp | 42 ++++++++++++++++++++------------
+ 1 file changed, 27 insertions(+), 15 deletions(-)
 
-diff --git a/kernel-shark/src/KsGLWidget.hpp b/kernel-shark/src/KsGLWidget.hpp
-index 3d428b1..c6fd787 100644
---- a/kernel-shark/src/KsGLWidget.hpp
-+++ b/kernel-shark/src/KsGLWidget.hpp
-@@ -64,6 +64,24 @@ public:
+diff --git a/kernel-shark/src/KsPlotTools.cpp b/kernel-shark/src/KsPlotTools.cpp
+index a8eddcd..fe3008e 100644
+--- a/kernel-shark/src/KsPlotTools.cpp
++++ b/kernel-shark/src/KsPlotTools.cpp
+@@ -829,14 +829,17 @@ void Graph::fillCPUGraph(int cpu)
+ 			pidBack = KS_FILTERED_BIN;
  
- 	void loadColors();
+ 		visMask = 0x0;
+-		if (ksmodel_cpu_visible_event_exist(_histoPtr, bin,
+-							       cpu,
+-							       _collectionPtr,
+-							       &index))
+-
+-			visMask = _histoPtr->data[index]->visible;
+-		else if (eFront)
+-			visMask = eFront->visible;
++		if (eFront) {
++			if (!(eFront->visible & KS_EVENT_VIEW_FILTER_MASK) &&
++			    ksmodel_cpu_visible_event_exist(_histoPtr, bin,
++								       cpu,
++								       _collectionPtr,
++								       &index)) {
++				visMask = _histoPtr->data[index]->visible;
++			} else {
++				visMask = eFront->visible;
++			}
++		}
+ 	};
  
-+	/**
-+	 * Reimplementing the event handler of the focus event, in order to
-+	 * avoid the update (redrawing) of the graphs every time when the
-+	 * widget grabs the focus of the keyboard. This is done because we do
-+	 * not need to redraw, while on the other hand on large data-sets,
-+	 * redrawing can take a lot of time.
-+	 */
-+	void focusInEvent(QFocusEvent* e) override {}
-+
-+	/**
-+	 * Reimplementing the event handler of the focus event, in order to
-+	 * avoid the update (redrawing) of the graphs every time when the
-+	 * widget releases the focus of the keyboard. This is done because we
-+	 * do not need to redraw, while on the other hand on large data-sets,
-+	 * redrawing can take a lot of time.
-+	 */
-+	void focusOutEvent(QFocusEvent* e) override {}
-+
- 	/**
- 	 * Provide the widget with a pointer to the Dual Marker state machine
- 	 * object.
+ 	auto lamSetBin = [&] (int bin)
+@@ -918,6 +921,7 @@ void Graph::fillCPUGraph(int cpu)
+ void Graph::fillTaskGraph(int pid)
+ {
+ 	int cpuFront, cpuBack(0), pidFront(0), pidBack(0), lastCpu(-1), bin(0);
++	struct kshark_entry *eFront;
+ 	uint8_t visMask;
+ 	ssize_t index;
+ 
+@@ -991,12 +995,15 @@ void Graph::fillTaskGraph(int pid)
+ 
+ 	auto lamGetPidCPU = [&] (int bin)
+ 	{
++		eFront = nullptr;
+ 		/* Get the CPU used by this task. */
+ 		cpuFront = ksmodel_get_cpu_front(_histoPtr, bin,
+ 						 pid,
+ 						 false,
+ 						 _collectionPtr,
+-						 nullptr);
++						 &index);
++		if (index >= 0)
++			eFront = _histoPtr->data[index];
+ 
+ 		cpuBack = ksmodel_get_cpu_back(_histoPtr, bin,
+ 					       pid,
+@@ -1026,12 +1033,17 @@ void Graph::fillTaskGraph(int pid)
+ 						       nullptr);
+ 
+ 			visMask = 0x0;
+-			if (ksmodel_task_visible_event_exist(_histoPtr,
+-							     bin,
+-							     pid,
+-							     _collectionPtr,
+-							     &index)) {
+-				visMask = _histoPtr->data[index]->visible;
++			if (eFront) {
++				if (!(eFront->visible & KS_EVENT_VIEW_FILTER_MASK) &&
++				    ksmodel_task_visible_event_exist(_histoPtr,
++								     bin,
++								     pid,
++								     _collectionPtr,
++								     &index)) {
++					visMask = _histoPtr->data[index]->visible;
++				} else {
++					visMask = eFront->visible;
++				}
+ 			}
+ 		}
+ 	};
 -- 
 2.20.1
 
