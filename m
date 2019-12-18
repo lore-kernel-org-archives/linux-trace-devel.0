@@ -1,132 +1,84 @@
-Return-Path: <SRS0=euKJ=2H=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=nq8z=2I=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1621EC43603
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Dec 2019 11:32:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38597C43603
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Dec 2019 07:44:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E8D58218AC
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Dec 2019 11:32:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D507227BF
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Dec 2019 07:44:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727601AbfLQLcC (ORCPT
+        id S1725991AbfLRHoh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 17 Dec 2019 06:32:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55037 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbfLQLcC (ORCPT
+        Wed, 18 Dec 2019 02:44:37 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37416 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725882AbfLRHoh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 17 Dec 2019 06:32:02 -0500
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1ihB4z-0007ML-Sb; Tue, 17 Dec 2019 12:31:53 +0100
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 6B07A1C2A36;
-        Tue, 17 Dec 2019 12:31:53 +0100 (CET)
-Date:   Tue, 17 Dec 2019 11:31:53 -0000
-From:   "tip-bot2 for Sudip Mukherjee" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] libtraceevent: Allow custom libdir path
-Cc:     Sudipm Mukherjee <sudipm.mukherjee@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20191207111440.6574-1-sudipm.mukherjee@gmail.com>
-References: <20191207111440.6574-1-sudipm.mukherjee@gmail.com>
-MIME-Version: 1.0
-Message-ID: <157658231328.30329.8418426523383636239.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        Wed, 18 Dec 2019 02:44:37 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBI7c7ri135505
+        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Dec 2019 02:44:36 -0500
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2wy41rdene-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Dec 2019 02:44:36 -0500
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-trace-devel@vger.kernel.org> from <Sven.Schnelle@ibm.com>;
+        Wed, 18 Dec 2019 07:44:34 -0000
+Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 18 Dec 2019 07:44:32 -0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xBI7iVqP40042956
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Dec 2019 07:44:31 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 95A444C04E;
+        Wed, 18 Dec 2019 07:44:31 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 84ADF4C046;
+        Wed, 18 Dec 2019 07:44:31 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 18 Dec 2019 07:44:31 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
+        id 2D1A6E1339; Wed, 18 Dec 2019 08:44:31 +0100 (CET)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: ftrace fixes
+Date:   Wed, 18 Dec 2019 08:44:24 +0100
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+x-cbid: 19121807-0016-0000-0000-000002D61067
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19121807-0017-0000-0000-000033384CE7
+Message-Id: <20191218074427.96184-1-svens@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-18_01:2019-12-17,2019-12-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ adultscore=0 spamscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ suspectscore=0 mlxscore=0 mlxlogscore=625 clxscore=1011 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1910280000
+ definitions=main-1912180061
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+Hi Steve,
 
-Commit-ID:     c09982f8e2bae80a66232630ec4ba50afacea486
-Gitweb:        https://git.kernel.org/tip/c09982f8e2bae80a66232630ec4ba50afacea486
-Author:        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-AuthorDate:    Sat, 07 Dec 2019 11:14:40 
-Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Mon, 16 Dec 2019 13:40:26 -03:00
+here are a few other patches i made to fix some ftrace and ftrace test
+problems i've seen on s390.
 
-libtraceevent: Allow custom libdir path
+Regards
+Sven
 
-When I use prefix=/usr and try to install libtraceevent in my laptop it
-tries to install in /usr/lib64. I am not having any folder as /usr/lib64
-and also the debian policy doesnot allow installing in /usr/lib64. It
-should be in /usr/lib/x86_64-linux-gnu/.
 
-Quote: No package for a 64 bit architecture may install files in
-	/usr/lib64/ or in a subdirectory of it.
-
-ref: https://www.debian.org/doc/debian-policy/ch-opersys.html
-
-Make it more flexible by allowing to mention libdir_relative while
-installing so that distros can mention the path according to their
-policy or use the default one.
-
-Signed-off-by: Sudipm Mukherjee <sudipm.mukherjee@gmail.com>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Sudipm Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191207111440.6574-1-sudipm.mukherjee@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/lib/traceevent/Makefile         | 5 +++--
- tools/lib/traceevent/plugins/Makefile | 5 +++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index c5a0335..c874c01 100644
---- a/tools/lib/traceevent/Makefile
-+++ b/tools/lib/traceevent/Makefile
-@@ -39,11 +39,12 @@ DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
- 
- LP64 := $(shell echo __LP64__ | ${CC} ${CFLAGS} -E -x c - | tail -n 1)
- ifeq ($(LP64), 1)
--  libdir_relative = lib64
-+  libdir_relative_temp = lib64
- else
--  libdir_relative = lib
-+  libdir_relative_temp = lib
- endif
- 
-+libdir_relative ?= $(libdir_relative_temp)
- prefix ?= /usr/local
- libdir = $(prefix)/$(libdir_relative)
- man_dir = $(prefix)/share/man
-diff --git a/tools/lib/traceevent/plugins/Makefile b/tools/lib/traceevent/plugins/Makefile
-index f440989..349bb81 100644
---- a/tools/lib/traceevent/plugins/Makefile
-+++ b/tools/lib/traceevent/plugins/Makefile
-@@ -32,11 +32,12 @@ DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
- 
- LP64 := $(shell echo __LP64__ | ${CC} ${CFLAGS} -E -x c - | tail -n 1)
- ifeq ($(LP64), 1)
--  libdir_relative = lib64
-+  libdir_relative_tmp = lib64
- else
--  libdir_relative = lib
-+  libdir_relative_tmp = lib
- endif
- 
-+libdir_relative ?= $(libdir_relative_tmp)
- prefix ?= /usr/local
- libdir = $(prefix)/$(libdir_relative)
- 
