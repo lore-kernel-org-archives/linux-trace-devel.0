@@ -3,96 +3,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 962AAC43603
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Dec 2019 15:26:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0032C43603
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Dec 2019 15:33:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6ED9C2176D
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Dec 2019 15:26:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 81AEE2176D
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Dec 2019 15:33:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbfLRP0q (ORCPT
+        id S1726984AbfLRPdR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 18 Dec 2019 10:26:46 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25876 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726980AbfLRP0p (ORCPT
+        Wed, 18 Dec 2019 10:33:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726723AbfLRPdR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 18 Dec 2019 10:26:45 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBIFMdiS114630
-        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Dec 2019 10:26:45 -0500
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2wy7ub68b0-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Dec 2019 10:26:44 -0500
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-trace-devel@vger.kernel.org> from <svens@linux.ibm.com>;
-        Wed, 18 Dec 2019 15:26:42 -0000
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 18 Dec 2019 15:26:41 -0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xBIFQerW45482248
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Dec 2019 15:26:40 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA41152050;
-        Wed, 18 Dec 2019 15:26:39 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id BEBD652057;
-        Wed, 18 Dec 2019 15:26:39 +0000 (GMT)
-Date:   Wed, 18 Dec 2019 16:26:39 +0100
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 3/3] ftrace: fix endianness bug in histogram trigger
-References: <20191218074427.96184-1-svens@linux.ibm.com>
- <20191218074427.96184-4-svens@linux.ibm.com>
- <20191218102423.755eefdc@gandalf.local.home>
+        Wed, 18 Dec 2019 10:33:17 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C5AD206CB;
+        Wed, 18 Dec 2019 15:33:15 +0000 (UTC)
+Date:   Wed, 18 Dec 2019 10:33:14 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Tom Zanussi' <zanussi@kernel.org>,
+        Sven Schnelle <svens@stackframe.org>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: ftrace histogram sorting broken on BE architecures
+Message-ID: <20191218103314.4125cd2a@gandalf.local.home>
+In-Reply-To: <b4f7cbd8653e4e8eba5405b533c13469@AcuMS.aculab.com>
+References: <20191211123316.GD12147@stackframe.org>
+        <20191211103557.7bed6928@gandalf.local.home>
+        <20191211110959.2baeb70f@gandalf.local.home>
+        <1576178241.3309.2.camel@kernel.org>
+        <4805b40c3e1547f8a26eeac6932f6499@AcuMS.aculab.com>
+        <20191216110539.2b268d86@gandalf.local.home>
+        <548eb8ae4b8742e4bf122af98b208925@AcuMS.aculab.com>
+        <20191216132922.1bf6d5cd@gandalf.local.home>
+        <b4f7cbd8653e4e8eba5405b533c13469@AcuMS.aculab.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191218102423.755eefdc@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-TM-AS-GCONF: 00
-x-cbid: 19121815-0012-0000-0000-000003763AFC
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19121815-0013-0000-0000-000021B22A4E
-Message-Id: <20191218152639.GA8508@tuxmaker.boeblingen.de.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-18_04:2019-12-17,2019-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912180126
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steve,
+On Tue, 17 Dec 2019 10:05:57 +0000
+David Laight <David.Laight@ACULAB.COM> wrote:
 
-On Wed, Dec 18, 2019 at 10:24:23AM -0500, Steven Rostedt wrote:
-> On Wed, 18 Dec 2019 08:44:27 +0100
-> Sven Schnelle <svens@linux.ibm.com> wrote:
+> From: Steven Rostedt
+> > Sent: 16 December 2019 18:29
+> > On Mon, 16 Dec 2019 17:06:50 +0000
+> > David Laight <David.Laight@ACULAB.COM> wrote:
+> >   
+> > > > Where original_val_a could be a byte, short, int, long or long long.  
+> > >
+> > > I'd sort of guessed that, but then the pointer type passed to tracing_map_cmp_##type()
+> > > will always be 'u64 *' (since the field the address is taken of must be that type).
+> > > Then the (u64 *) casts are no longer needed.
+> > >
+> > > Possibly you can just pass the u64 values to:
+> > > tracing_map_cmp_##type(type a, type b)
+> > > {
+> > > 	return a > b ? 1 : a < b ? -1 : 0;
+> > > }
+> > >
+> > > The high bit masking and sign extension is then implicit in the call.  
+> > 
+> > But these are used to pass into a compare function that takes compare
+> > functions that are something other than numbers. They can be pointers
+> > to strings.  
 > 
-> > At least on PA-RISC and s390 synthetic histogram triggers are failing
-> > selftests because trace_event_raw_event_synth() always writes a 64 bit
-> > values, but the reader expects a field->size sized value. On little endian
-> > machines this doesn't hurt, but on big endian this makes the reader always
-> > read zero values.
+> In that case I think I'd embed the u64 inside a structure and pass the structure
+> address to the compare function.
 > 
-> Does this fix make the other one obsolete?
-> 
->   https://lore.kernel.org/r/20191211110959.2baeb70f@gandalf.local.home
 
-No, that's a completely different issue, so we need both.
+It's something we can clean up later. As this is going to be marked for
+stable, and the code still works, I would like to keep the change as
+simple as possible.
 
-Regards
-Sven
+Thanks!
 
+-- Steve
