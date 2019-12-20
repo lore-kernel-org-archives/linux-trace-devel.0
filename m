@@ -2,39 +2,39 @@ Return-Path: <SRS0=9eMf=2K=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03147C2D0D2
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Dec 2019 20:04:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE948C43603
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Dec 2019 20:52:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D628B218AC
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Dec 2019 20:04:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C8D7218AC
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Dec 2019 20:52:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727504AbfLTUEQ (ORCPT
+        id S1727422AbfLTUwY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Dec 2019 15:04:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37310 "EHLO mail.kernel.org"
+        Fri, 20 Dec 2019 15:52:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727411AbfLTUEQ (ORCPT
+        id S1727402AbfLTUwY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 20 Dec 2019 15:04:16 -0500
+        Fri, 20 Dec 2019 15:52:24 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4487A2146E;
-        Fri, 20 Dec 2019 20:04:15 +0000 (UTC)
-Date:   Fri, 20 Dec 2019 15:04:13 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B2E520866;
+        Fri, 20 Dec 2019 20:52:23 +0000 (UTC)
+Date:   Fri, 20 Dec 2019 15:52:21 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v18 10/18] trace-cmd: Store the session tracing ID in
- the trace.dat file
-Message-ID: <20191220150413.5d1c52e5@gandalf.local.home>
-In-Reply-To: <20191213153029.133570-11-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v18 13/18] trace-cmd: Add guest information in host's
+ trace.dat file
+Message-ID: <20191220155221.6face370@gandalf.local.home>
+In-Reply-To: <20191213153029.133570-14-tz.stoyanov@gmail.com>
 References: <20191213153029.133570-1-tz.stoyanov@gmail.com>
-        <20191213153029.133570-11-tz.stoyanov@gmail.com>
+        <20191213153029.133570-14-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,136 +44,19 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 13 Dec 2019 17:30:21 +0200
+On Fri, 13 Dec 2019 17:30:24 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> The ID of the current tracing session is stored in the trace.dat file.
-> A new file option is introduced:
-> 	TRACECMD_OPTION_TRACEID
-> The data is stored in the file as NULL terminated string:
-> 	"\nTraceID: %llu\n"
+> New trace.dat option is introduced: TRACECMD_OPTION_GUEST.
+> Written in the host's trace.dat file, it contains information about
+> guests, traced at the same time: guest trace ID, number of VCPUs and
+> PIDs of the host tasks, running those VCPU. The data is stored in
+> the file as NULL terminated string:
+> 	"Guest %s %llu %d\n" -> guest name, number of VCPUs
+> 	"%d %d\n" -> VCPU, PID of host task
+> 	.....
+> 	"%d %d\n" -> VCPU, PID of host task
 
-If the trace ID is just a 64 bit number, why is it stored in the file
-as a string?
+Why is this a string, and not a structure?
 
 -- Steve
-
-
-> A new libtracecmd API is introduced, to get the ID when the trace.dat file is read:
-> 	unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle);
-> 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  include/trace-cmd/trace-cmd.h |  2 ++
->  lib/trace-cmd/trace-input.c   | 25 +++++++++++++++++++++++++
->  tracecmd/trace-record.c       | 15 +++++++++++++++
->  3 files changed, 42 insertions(+)
-> 
-> diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-> index ad69313..6cc2913 100644
-> --- a/include/trace-cmd/trace-cmd.h
-> +++ b/include/trace-cmd/trace-cmd.h
-> @@ -86,6 +86,7 @@ enum {
->  	TRACECMD_OPTION_CPUCOUNT,
->  	TRACECMD_OPTION_VERSION,
->  	TRACECMD_OPTION_PROCMAPS,
-> +	TRACECMD_OPTION_TRACEID,
->  };
->  
->  enum {
-> @@ -128,6 +129,7 @@ int tracecmd_copy_headers(struct tracecmd_input *handle, int fd);
->  void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
->  void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
->  unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
-> +unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle);
->  
->  void tracecmd_parse_trace_clock(struct tracecmd_input *handle, char *file, int size);
->  
-> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index 91362f3..40d9825 100644
-> --- a/lib/trace-cmd/trace-input.c
-> +++ b/lib/trace-cmd/trace-input.c
-> @@ -79,6 +79,7 @@ struct tracecmd_input {
->  	struct tep_plugin_list	*plugin_list;
->  	struct tracecmd_input	*parent;
->  	unsigned long		flags;
-> +	unsigned long long	trace_id;
->  	int			fd;
->  	int			long_size;
->  	int			page_size;
-> @@ -2169,6 +2170,15 @@ static void procmap_free(struct pid_addr_maps *maps)
->  	free(maps);
->  }
->  
-> +static int trace_traceid_load(struct tracecmd_input *handle, char *buf)
-> +{
-> +
-> +	if (sscanf(buf, "%*s %llu", &handle->trace_id) == 1)
-> +		return 0;
-> +
-> +	return -1;
-> +}
-> +
->  #define STR_PROCMAP_LINE_MAX	(PATH_MAX+22)
->  static int trace_pid_map_load(struct tracecmd_input *handle, char *buf)
->  {
-> @@ -2406,6 +2416,10 @@ static int handle_options(struct tracecmd_input *handle)
->  			if (buf[size-1] == '\0')
->  				trace_pid_map_load(handle, buf);
->  			break;
-> +		case TRACECMD_OPTION_TRACEID:
-> +			if (buf[size-1] == '\0')
-> +				trace_traceid_load(handle, buf);
-> +			break;
->  		default:
->  			warning("unknown option %d", option);
->  			break;
-> @@ -3507,3 +3521,14 @@ void tracecmd_set_show_data_func(struct tracecmd_input *handle,
->  {
->  	handle->show_data_func = func;
->  }
-> +
-> +/**
-> + * tracecmd_get_traceid - get the trace id of the session
-> + * @handle: input handle for the trace.dat file
-> + *
-> + * Returns the trace id, written in the trace file
-> + */
-> +unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle)
-> +{
-> +	return handle->trace_id;
-> +}
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 7089f7b..b65aeb2 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -3714,6 +3714,19 @@ add_pid_maps(struct tracecmd_output *handle, struct buffer_instance *instance)
->  	trace_seq_destroy(&s);
->  }
->  
-> +static void
-> +add_trace_id(struct tracecmd_output *handle, struct buffer_instance *instance)
-> +{
-> +	char *str = NULL;
-> +	int len;
-> +
-> +	len = asprintf(&str, "\nTraceID: %llu\n", instance->trace_id);
-> +	if (len < 1)
-> +		return;
-> +	tracecmd_add_option(handle, TRACECMD_OPTION_TRACEID, len + 1, str);
-> +	free(str);
-> +}
-> +
->  static void
->  add_buffer_stat(struct tracecmd_output *handle, struct buffer_instance *instance)
->  {
-> @@ -3817,6 +3830,8 @@ static void add_options(struct tracecmd_output *handle, struct common_record_con
->  	add_option_hooks(handle);
->  	add_uname(handle);
->  	add_version(handle);
-> +	if (!no_top_instance())
-> +		add_trace_id(handle, &top_instance);
->  }
->  
->  static void write_guest_file(struct buffer_instance *instance)
-
