@@ -6,34 +6,35 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C09C43603
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Dec 2019 03:37:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DDB2C43603
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Dec 2019 03:55:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3C76E2467E
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Dec 2019 03:37:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2C11224676
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Dec 2019 03:55:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbfLTDhk (ORCPT
+        id S1727135AbfLTDzo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 19 Dec 2019 22:37:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35880 "EHLO mail.kernel.org"
+        Thu, 19 Dec 2019 22:55:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726964AbfLTDhj (ORCPT
+        id S1727119AbfLTDzo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 19 Dec 2019 22:37:39 -0500
+        Thu, 19 Dec 2019 22:55:44 -0500
 Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0670F2467E;
-        Fri, 20 Dec 2019 03:37:38 +0000 (UTC)
-Date:   Thu, 19 Dec 2019 22:37:37 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id D3C1024676;
+        Fri, 20 Dec 2019 03:55:43 +0000 (UTC)
+Date:   Thu, 19 Dec 2019 22:55:42 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
 Subject: Re: [PATCH 2/6] kernel-shark: Use new tracefs library
-Message-ID: <20191219223737.444470fb@rorschach.local.home>
-In-Reply-To: <20191219113502.28964-3-tz.stoyanov@gmail.com>
+Message-ID: <20191219225542.5a37cdaf@rorschach.local.home>
+In-Reply-To: <20191219223737.444470fb@rorschach.local.home>
 References: <20191219113502.28964-1-tz.stoyanov@gmail.com>
         <20191219113502.28964-3-tz.stoyanov@gmail.com>
+        <20191219223737.444470fb@rorschach.local.home>
 X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,23 +44,31 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 19 Dec 2019 13:34:58 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+On Thu, 19 Dec 2019 22:37:37 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> Link libtracefs to kernel-shark and use its API:
->   tracefs_get_tracing_dir()
+> On Thu, 19 Dec 2019 13:34:58 +0200
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 > 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  kernel-shark/CMakeLists.txt           |  3 ++-
->  kernel-shark/build/FindTraceCmd.cmake | 30 +++++++++++++++++++++++++++
->  kernel-shark/src/CMakeLists.txt       |  2 ++
->  kernel-shark/src/KsCaptureDialog.cpp  |  4 ++--
->  kernel-shark/src/libkshark.h          |  1 +
->  5 files changed, 37 insertions(+), 3 deletions(-)
+> > Link libtracefs to kernel-shark and use its API:
+> >   tracefs_get_tracing_dir()
+> > 
+> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> > ---
+> >  kernel-shark/CMakeLists.txt           |  3 ++-
+> >  kernel-shark/build/FindTraceCmd.cmake | 30 +++++++++++++++++++++++++++
+> >  kernel-shark/src/CMakeLists.txt       |  2 ++
+> >  kernel-shark/src/KsCaptureDialog.cpp  |  4 ++--
+> >  kernel-shark/src/libkshark.h          |  1 +
+> >  5 files changed, 37 insertions(+), 3 deletions(-)  
+> 
+> 
+> Note, I tried to build "make gui" with this and the previous patch
+> applied, and it failed. Make sure to test the KernelShark code as well.
+>
 
-
-Note, I tried to build "make gui" with this and the previous patch
-applied, and it failed. Make sure to test the KernelShark code as well.
+Ignore this comment. It's obviously bogus as this is for kernel-shark
+itself :-)  The patch didn't apply properly (due to updates I applied)
+and didn't notice that it applied with fuzz that caused the failure.
 
 -- Steve
