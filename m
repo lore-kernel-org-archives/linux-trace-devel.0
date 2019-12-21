@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A776EC43603
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Dec 2019 03:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52F62C43603
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Dec 2019 03:19:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 70FFB20866
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Dec 2019 03:03:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2612D206C3
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 21 Dec 2019 03:19:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbfLUDDf (ORCPT
+        id S1726571AbfLUDTs (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Dec 2019 22:03:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32892 "EHLO mail.kernel.org"
+        Fri, 20 Dec 2019 22:19:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbfLUDDf (ORCPT
+        id S1726537AbfLUDTr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 20 Dec 2019 22:03:35 -0500
+        Fri, 20 Dec 2019 22:19:47 -0500
 Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB83E20716;
-        Sat, 21 Dec 2019 03:03:34 +0000 (UTC)
-Date:   Fri, 20 Dec 2019 22:03:32 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id D94BA206C3;
+        Sat, 21 Dec 2019 03:19:46 +0000 (UTC)
+Date:   Fri, 20 Dec 2019 22:19:45 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v18 04/18] trace-cmd: Add new library APIs for ftrace
- instances.
-Message-ID: <20191220220332.517cb36f@rorschach.local.home>
-In-Reply-To: <20191213153029.133570-5-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v18 12/18] trace-cmd: Implement new option in trace.dat
+ file: TRACECMD_OPTION_TIME_SHIFT
+Message-ID: <20191220221945.79f7f466@rorschach.local.home>
+In-Reply-To: <20191213153029.133570-13-tz.stoyanov@gmail.com>
 References: <20191213153029.133570-1-tz.stoyanov@gmail.com>
-        <20191213153029.133570-5-tz.stoyanov@gmail.com>
+        <20191213153029.133570-13-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,142 +44,58 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 13 Dec 2019 17:30:15 +0200
+On Fri, 13 Dec 2019 17:30:23 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> +/**
-> + * tracecmd_get_instance_file - return the path to a instance file
-> + * @instance: buffer instance for the file, can be NULL for the top instance
-> + * @file: name of file to return
-> + *
-> + * Returns the path name of the @file for the given @instance
-> + *
-> + * Must use tracecmd_put_tracing_file() to free the returned string
-> + */
-> +char *
-> +tracecmd_get_instance_file(struct tracecmd_instance *instance, const char *file)
-> +{
-> +	char *path;
-> +	char *buf;
-> +	int ret;
-> +
-> +	if (instance && instance->name) {
-> +		ret = asprintf(&buf, "instances/%s/%s", instance->name, file);
-> +		if (ret < 0)
-> +			die("Failed to allocate name for %s/%s", instance->name, file);
-> +		path = tracecmd_get_tracing_file(buf);
-> +		free(buf);
-> +	} else
-> +		path = tracecmd_get_tracing_file(file);
-> +
-> +	return path;
-> +}
-> +
-> +/**
-> + * tracecmd_get_instance_file - return the path to a instance file
-> + * @instance: buffer instance for the file, can be NULL for the top instance
-> + * @file: name of file to return
-> + *
-> + * Returns the path name of the @file for the given @instance
-> + *
-> + * Must use tracecmd_put_tracing_file() to free the returned string
+> @@ -2370,6 +2489,28 @@ static int handle_options(struct tracecmd_input *handle)
+>  			offset = strtoll(buf, NULL, 0);
+>  			handle->ts_offset += offset;
+>  			break;
+> +		case TRACECMD_OPTION_TIME_SHIFT:
+> +			/*
+> +			 * long long int (8 bytes) trace session ID
+> +			 * int (4 bytes) count of timestamp offsets.
+> +			 * long long array of size [count] of times,
+> +			 *      when the offsets were calculated.
+> +			 * long long array of size [count] of timestamp offsets.
+> +			 */
+> +			if (size < 12 || handle->flags & TRACECMD_FL_IGNORE_DATE)
+> +				break;
+> +			handle->host.trace_id = tep_read_number(handle->pevent,
+> +								buf, 8);
+> +			handle->host.ts_samples_count = tep_read_number(handle->pevent,
+> +									buf + 8, 4);
+> +			samples_size = (8 * handle->host.ts_samples_count);
+> +			if (size != (12 + (2 * samples_size)))
+> +				break;
+> +			handle->host.ts_samples = malloc(2 * samples_size);
+> +			if (!handle->host.ts_samples)
+> +				return -ENOMEM;
+> +			tsync_offset_load(handle, buf + 12);
+> +			break;
+>  		case TRACECMD_OPTION_CPUSTAT:
+>  			buf[size-1] = '\n';
+>  			cpustats = realloc(cpustats, cpustats_size + size + 1);
+> @@ -3078,6 +3219,8 @@ void tracecmd_close(struct tracecmd_input *handle)
+>  	trace_pid_map_free(handle->pid_maps);
+>  	handle->pid_maps = NULL;
+>  
+> +	trace_tsync_offset_free(&handle->host);
 
-The above is a cut and paste of tracecmd_get_instance_file, not of the
-instance_dir.
+You need to add in tracecmd_buffer_instance_handle() something like:
 
-> + */
-> +char *tracecmd_get_instance_dir(struct tracecmd_instance *instance)
-> +{
-> +	char *buf;
-> +	char *path;
-> +	int ret;
-> +
-> +	if (instance->name) {
-> +		ret = asprintf(&buf, "instances/%s", instance->name);
-> +		if (ret < 0)
-> +			die("Failed to allocate for instance %s", instance->name);
-> +		path = tracecmd_get_tracing_file(buf);
-> +		free(buf);
-> +	} else
-> +		path = tracecmd_find_tracing_dir();
-> +
-> +	return path;
-> +}
-> +
-> +/**
-> + * tracecmd_write_instance_file - Write in trace file of specific instance
-> + * @instance: buffer instance for the file, can be NULL for the top instance
-> + * @file: name of the file
-> + * @str: Nul terminated string, that will be written in the file
-> + * @type: Nul terminated string, describing the current write operation
-> + *	  Used for logging purposes
-> + *
-> + * Returns the number of written bytes, or -1 in case of an error
-> + */
-> +int tracecmd_write_instance_file(struct tracecmd_instance *instance,
-> +				 const char *file, const char *str,
-> +				 const char *type)
+	memset(&new_handle->host, 0, sizeof(new_handle->host));
 
-I think we should get rid of the type and move the logic that needs it
-to the callers.
+or make a copy of it. Because if the host created sub buffers along
+with the top level, you get multiple frees on the host.ts_samples, as
+the new_handle will have a pointer to the original handle.
 
-
-> +{
-> +	struct stat st;
-> +	char *path;
-> +	int ret;
-> +
-> +	path = tracecmd_get_instance_file(instance, file);
-> +	ret = stat(path, &st);
-> +	if (ret == 0)
-> +		ret = tracecmd_write_file(path, str, type);
-> +	tracecmd_put_tracing_file(path);
-> +
-> +	return ret;
-> +}
-> +
-
-[..]
-
-> +/*
-> + * tracecmd_write_file - Write in trace file
-> + * @file: Full name of the trace file.
-> + * @str: Null terminated string, that will be written in the file.
-> + * @type: Null terminated string, describing the current write operation.
-> + *	  Used for logging purposes.
-> + *
-> + * Returns the number of written bytes, or -1 in case of an error
-> + */
-> +int tracecmd_write_file(const char *file, const char *str, const char *type)
-> +{
-> +	char buf[BUFSIZ];
-> +	int ret;
-> +	int fd;
-> +
-> +	fd = open(file, O_WRONLY | O_TRUNC);
-> +	if (fd < 0)
-> +		die("opening to '%s'", file);
-> +	ret = write(fd, str, strlen(str));
-> +	close(fd);
-> +	if (ret < 0 && type) {
-> +		/* write failed */
-> +		fd = open(file, O_RDONLY);
-> +		if (fd < 0)
-> +			die("writing to '%s'", file);
-> +		/* the filter has the error */
-> +		while ((ret = read(fd, buf, BUFSIZ)) > 0)
-> +			fprintf(stderr, "%.*s", ret, buf);
-> +		die("Failed %s of %s\n", type, file);
-
-Yeah, the above needs to be moved to the upper layers. It even has a
-comment about "the filter has the error". That's reference to the
-filter file of trace events, which is the only file that really does
-that.
+This is the same bug fixed by ca4b997b6505df3ce for trace_clock.
 
 -- Steve
 
-> +		close(fd);
-> +	}
-> +	return ret;
-> +}
-> 
+
+> +
+>  	if (handle->flags & TRACECMD_FL_BUFFER_INSTANCE)
+>  		tracecmd_close(handle->parent);
+>  	else {
