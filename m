@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E90E2C2D0CE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:58:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F639C3F68F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:07:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C1C7220CC7
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:58:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1E72F20828
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1577469510;
-	bh=CeEjd43JKGClgJcCmji5Y3DbpMh4kKHdTrFqyJWjyRE=;
+	s=default; t=1577470051;
+	bh=QwCiPWsHROdyM6XfCtmVRetKjby4HK+y9x9ed/v9fuk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=JKGnpPfZ2QycqDuD849gVVBcVjyk0lfecyZPlf8oH0jTmj3TncpJrCLt9etXP4ZCz
-	 AlCoe9pN+tW1Fs/rmUAgCcHTezmI7kiZ457wTL3mEnIAmhfBl1+55UvsILd94+yNsi
-	 6xd1kYgm3CRzt3gqwvTGaXBj+SDS4f7D0nPBBFJ8=
+	b=j/yKwKZTH8R7Je7kkfdKN8dvm4S9ojgb/IeaEVyXlvZwf5ng0B1M6Dm6WCLij7ql8
+	 ++UhLEDVKzvybKPTWqYa/HIzjK67FmeDiH8sV298EwrFZ0VIS1S5dEIW5G+4iKO4aO
+	 b0N9t8JO52045GmXmlOpG97/WXMiX2ASlC+6TD2I=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727407AbfL0RlV (ORCPT
+        id S1727689AbfL0SH0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 27 Dec 2019 12:41:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37518 "EHLO mail.kernel.org"
+        Fri, 27 Dec 2019 13:07:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727401AbfL0RlV (ORCPT
+        id S1726379AbfL0SC3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 27 Dec 2019 12:41:21 -0500
+        Fri, 27 Dec 2019 13:02:29 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B026D222C4;
-        Fri, 27 Dec 2019 17:41:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80FC42176D;
+        Fri, 27 Dec 2019 18:02:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577468480;
-        bh=CeEjd43JKGClgJcCmji5Y3DbpMh4kKHdTrFqyJWjyRE=;
+        s=default; t=1577469749;
+        bh=QwCiPWsHROdyM6XfCtmVRetKjby4HK+y9x9ed/v9fuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xI3XacBA/CjjliAG/dbzJh7EU7lOc3Kv1s77fjYk0heOaljYAROmn+aSIZF/r/u9I
-         2ONLha0Sna6mgm3dQS6DOYiHWwJ18/rd62cKbHnHAE3tD/R65sw3GWQhNBtwFZ1Ye2
-         N73sel9v6LziefiRlf431JnT8WnyoJSC9mwXKgWk=
+        b=fNFVA0gkok2ptmG6KfN+c8djHtZ6t+sI7Y8ZRW5FvZ5qhLnzeOoyRWT23syYgELa+
+         UfzoT4tgTOTu+MMiPkb+1SfAmnIxh2/iwRYibnfV0Up4L0TcGyALrvIJsEMdkoVT7m
+         W1J7JIx9SEQuc0c8gZSQXNMZ0o9pPwDLZkj2xkpk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
@@ -47,12 +47,12 @@ Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
         linux-trace-devel@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 019/187] libtraceevent: Fix lib installation with O=
-Date:   Fri, 27 Dec 2019 12:38:07 -0500
-Message-Id: <20191227174055.4923-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 05/57] libtraceevent: Fix lib installation with O=
+Date:   Fri, 27 Dec 2019 13:01:30 -0500
+Message-Id: <20191227180222.7076-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
-References: <20191227174055.4923-1-sashal@kernel.org>
+In-Reply-To: <20191227180222.7076-1-sashal@kernel.org>
+References: <20191227180222.7076-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -99,10 +99,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index 5315f3787f8d..d008e64042ce 100644
+index 8107f060fa84..a0ac01c647f5 100644
 --- a/tools/lib/traceevent/Makefile
 +++ b/tools/lib/traceevent/Makefile
-@@ -97,6 +97,7 @@ EVENT_PARSE_VERSION = $(EP_VERSION).$(EP_PATCHLEVEL).$(EP_EXTRAVERSION)
+@@ -115,6 +115,7 @@ EVENT_PARSE_VERSION = $(EP_VERSION).$(EP_PATCHLEVEL).$(EP_EXTRAVERSION)
  
  LIB_TARGET  = libtraceevent.a libtraceevent.so.$(EVENT_PARSE_VERSION)
  LIB_INSTALL = libtraceevent.a libtraceevent.so*
