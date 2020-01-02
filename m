@@ -2,103 +2,118 @@ Return-Path: <SRS0=z2Pp=2X=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BAC5C2D0DC
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jan 2020 17:20:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 096E5C2D0C2
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jan 2020 18:42:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E285221582
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jan 2020 17:20:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D30F121582
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jan 2020 18:42:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IF05QG46"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbgABRUH (ORCPT
+        id S1728116AbgABSm5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Jan 2020 12:20:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726125AbgABRUH (ORCPT
+        Thu, 2 Jan 2020 13:42:57 -0500
+Received: from mail-pl1-f173.google.com ([209.85.214.173]:45950 "EHLO
+        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727951AbgABSm5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Jan 2020 12:20:07 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C062020866;
-        Thu,  2 Jan 2020 17:20:05 +0000 (UTC)
-Date:   Thu, 2 Jan 2020 12:20:04 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
+        Thu, 2 Jan 2020 13:42:57 -0500
+Received: by mail-pl1-f173.google.com with SMTP id b22so18120216pls.12;
+        Thu, 02 Jan 2020 10:42:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=upDXg1HQxCmOX+Wo0UpQzF2oNBeqeBtaDLQzBiOWAiU=;
+        b=IF05QG462gkFQI9m0/q4zKZB7AsealoKYfGIJFckj3LZn6xUX/QScWbGRFLt957wIl
+         IwfRmwK0tAoGaQCu4z3nfmn1UiCJ/ro6C1Le2zEIBgCSrgiNLdpviUky38ZPQ+1iZ8au
+         MuMXLS5xNiTWUCYnTKWUHUlA4fHuLEK9K8dIc1aQXlpoARXOZ/2185nN4VV343Xgkb//
+         /7iJ+OtcDRZyEFusLK3OQDKg3hUe7+GC+Gb7T5UwVfkbelFrLfqtdR+EMNBJxSnYUOiC
+         7he9M1uH+jnJ4Tzep2VoPby4PxGZu+2XmgflzwMGjYHAapy+TpzD9wwIMyOMrAH1kwFM
+         Zpww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=upDXg1HQxCmOX+Wo0UpQzF2oNBeqeBtaDLQzBiOWAiU=;
+        b=afyZi9PR51JfH3y8Hw+WwBB5tHlRsUVHqR8bYwdHro2hAqpl3iyzc4MhQtfx7aD3t1
+         1ohtWSlYC9nQhcZ9eA9M3GABO4ORE4pmqL/YWRnxAxL50HYqZg3pCvRfAT5Zrk393JU7
+         bm4r8Pi3+LSuJ1c8oh+C6JIVklz4ms5UV37zj+/ElEZkoO8o4Q37YI8nVNT4BNQDtV9H
+         xgNrSigZtjeJVKmzOh2JrdoDE9GKtnni6IDMmbm0tlPcFxK3zVc39+r9zuOBgqxQSU+X
+         Q+QRFQT/8tFACuvL9EXKhewfIIwYm24ZRMsFvXvLOjiEXLfYnTe/DBsXuGvc6A0jNJK7
+         6Oyw==
+X-Gm-Message-State: APjAAAXpHvG1/oNrU5//O/WrD0n4qnAXFY5GKqBjVbLHMgFwMqZpAws6
+        5UmNF3LKB9hE6jHzBsc1Blk=
+X-Google-Smtp-Source: APXvYqx43jiagqz6pnYgyfPFM7j298+6dxeDN6b04GnIbyB7DUNKVM8J5H1aUqPu0g2HU4xIThYeOQ==
+X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr20848939pjx.13.1577990576595;
+        Thu, 02 Jan 2020 10:42:56 -0800 (PST)
+Received: from quaco.ghostprotocols.net ([179.97.35.50])
+        by smtp.gmail.com with ESMTPSA id w11sm63759017pfn.4.2020.01.02.10.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jan 2020 10:42:55 -0800 (PST)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D207740DFD; Thu,  2 Jan 2020 15:42:52 -0300 (-03)
+Date:   Thu, 2 Jan 2020 15:42:52 -0300
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [RFC] tools lib traceevent: How to do library versioning being in
- the Linux kernel source?
-Message-ID: <20200102122004.216c85da@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Subject: Re: [RFC] tools lib traceevent: How to do library versioning being
+ in the Linux kernel source?
+Message-ID: <20200102184252.GA8047@kernel.org>
+References: <20200102122004.216c85da@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200102122004.216c85da@gandalf.local.home>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-First, I hope everyone had a Happy New Year!
+Em Thu, Jan 02, 2020 at 12:20:04PM -0500, Steven Rostedt escreveu:
+> This is a problem with living in the Linux source tree as tags and
+> branches in Linus's tree are for only the Linux kernel source itself.
+> This may work fine for perf, as it's not a library and there's not
 
-Next, Sudip has been working to get the libtraceevent library into
-Debian. As this has been happening, I've been working at how to get all
-the projects that use this, to use the library installed on the system
-if it does exist. I'm hoping that once it's in Debian, the other
-distros will follow suit.
+[acme@quaco perf]$ git log --oneline tools/lib/perf
+6364e2891a4c libperf: Add man pages
+19e0154effb4 libperf: Move to tools/lib/perf
+[acme@quaco perf]$
 
-Currently, the home of libtraceevent lives in the Linux kernel source
-tree under tools/lib/traceevent. This was because perf uses it to parse
-the events, and it seemed logical (at the time) to use this location as
-the main source tree for the distributions.
+[acme@quaco perf]$ git log --follow --oneline tools/lib/perf/Makefile
+6364e2891a4c libperf: Add man pages
+19e0154effb4 libperf: Move to tools/lib/perf
+395e62cde10d libperf: Link static tests with libapi.a
+7728fa0cfaeb libperf: Adopt perf_mmap__consume() function from tools/perf
+fb4bf51fcc15 libperf: Add libperf dependency for tests targets
+d80a5540bccb libperf: Link libapi.a in libperf.so
+227cb129858a libperf: Add missing event.h file to install rule
+b81d39c7a1ef (tag: perf-core-for-mingo-5.4-20190820) libperf: Fix arch include paths
+6a94b52a71b7 libperf: Add tests support
+0a64d7091efd libperf: Add install targets
+47f9bccc79cb libperf: Add build version support
+314350491810 libperf: Make libperf.a part of the perf build
+[acme@quaco perf]$
 
-The problem I'm now having is that I'm looking at fixing and updating
-some of the code in this library, and since library versioning is
-critical for applications that depend on it, we need to have a way to
-update the versions, and this does not correspond with the Linux
-versions.
+libperf adopted the versioning and packaging practices introduced by
+tools/lib/bpf, perhaps you could do the same for tools/lib/traceevent
+and then we would have a standard for these cases?
 
-For example, we currently have:
+The problem of having libperf, libbpf in distros is already being
+tackled for quite a while, would be interesting to follow what has
+happened in that area as well, Jiri knows more about this, Jiri?
 
- libtraceevent.so.1.1.0
-
-If I make some bug fixes, I probably want to change it to:
-
- libtraceevent.so.1.1.1 or libtraceevent.so.1.2.0
-
-But if I change the API, which I plan on doing soon, I would probably
-need to update the major version.
-
- libtraceevent.so.2.0.0
-
-The thing is, we shouldn't be making these changes for every update
-that we send to the main kernel. I would like to have a minimum of tags
-to state what the version should be, and perhaps even branches for
-working on a development version.
-
-This is a problem with living in the Linux source tree as tags and
-branches in Linus's tree are for only the Linux kernel source itself.
-This may work fine for perf, as it's not a library and there's not
-tools depending on the version of it. But it is a problem when it comes
-to shared libraries.
-
-Should we move libtraceevent into a stand alone git repo (on
-kernel.org), that can have tags and branches specifically for it? We
-can keep a copy in the Linux source tree for perf to use till it
-becomes something that is reliably in all distributions. It's not like
-perf doesn't depend on other libraries today anyway.
-
-Thoughts or suggestions?
-
-Thanks!
-
--- Steve
+- Arnaldo
