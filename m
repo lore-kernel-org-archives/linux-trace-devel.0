@@ -7,113 +7,98 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 096E5C2D0C2
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jan 2020 18:42:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 198B4C3276C
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jan 2020 22:44:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D30F121582
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jan 2020 18:42:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E094F22314
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jan 2020 22:44:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IF05QG46"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AADIQQKS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgABSm5 (ORCPT
+        id S1729589AbgABWoN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Jan 2020 13:42:57 -0500
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:45950 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727951AbgABSm5 (ORCPT
+        Thu, 2 Jan 2020 17:44:13 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:39285 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729648AbgABWoL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Jan 2020 13:42:57 -0500
-Received: by mail-pl1-f173.google.com with SMTP id b22so18120216pls.12;
-        Thu, 02 Jan 2020 10:42:57 -0800 (PST)
+        Thu, 2 Jan 2020 17:44:11 -0500
+Received: by mail-ot1-f44.google.com with SMTP id 77so58836981oty.6;
+        Thu, 02 Jan 2020 14:44:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=upDXg1HQxCmOX+Wo0UpQzF2oNBeqeBtaDLQzBiOWAiU=;
-        b=IF05QG462gkFQI9m0/q4zKZB7AsealoKYfGIJFckj3LZn6xUX/QScWbGRFLt957wIl
-         IwfRmwK0tAoGaQCu4z3nfmn1UiCJ/ro6C1Le2zEIBgCSrgiNLdpviUky38ZPQ+1iZ8au
-         MuMXLS5xNiTWUCYnTKWUHUlA4fHuLEK9K8dIc1aQXlpoARXOZ/2185nN4VV343Xgkb//
-         /7iJ+OtcDRZyEFusLK3OQDKg3hUe7+GC+Gb7T5UwVfkbelFrLfqtdR+EMNBJxSnYUOiC
-         7he9M1uH+jnJ4Tzep2VoPby4PxGZu+2XmgflzwMGjYHAapy+TpzD9wwIMyOMrAH1kwFM
-         Zpww==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4UPLplmo5AOYVGqcjtpqI2E26h8IabatP5llWHkVEeo=;
+        b=AADIQQKSbx9mp65JscmKBxpR/0JaqscxGCSncyebyIfSDz1kdN6R6h8nbqhET796Dy
+         sM6c7h4ATffbD9uCsnCu+zMwCkEd5fl9w5L5qhRMaGnoTNfJZlSkwDK1PDguSXRx4zfq
+         T1R46eGsOTeSAwe2IIi5glKFv64W6gSBgOHaWthXgZxc51XBUDS46DcnDHzLiLBcJKpK
+         8Xf6q+6VkEMlaBgzWipPynZ9yHP1/9m6Tv7WpQgM5MA01v4252gIwsLkqmVZBoQoRcO0
+         K7jZ/jC93/aEv/DfT3eUyyGCtuId/mWMlTc+fvP3OjpJtEekLqZRo5/HJ+WITn0ipA0F
+         xB8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=upDXg1HQxCmOX+Wo0UpQzF2oNBeqeBtaDLQzBiOWAiU=;
-        b=afyZi9PR51JfH3y8Hw+WwBB5tHlRsUVHqR8bYwdHro2hAqpl3iyzc4MhQtfx7aD3t1
-         1ohtWSlYC9nQhcZ9eA9M3GABO4ORE4pmqL/YWRnxAxL50HYqZg3pCvRfAT5Zrk393JU7
-         bm4r8Pi3+LSuJ1c8oh+C6JIVklz4ms5UV37zj+/ElEZkoO8o4Q37YI8nVNT4BNQDtV9H
-         xgNrSigZtjeJVKmzOh2JrdoDE9GKtnni6IDMmbm0tlPcFxK3zVc39+r9zuOBgqxQSU+X
-         Q+QRFQT/8tFACuvL9EXKhewfIIwYm24ZRMsFvXvLOjiEXLfYnTe/DBsXuGvc6A0jNJK7
-         6Oyw==
-X-Gm-Message-State: APjAAAXpHvG1/oNrU5//O/WrD0n4qnAXFY5GKqBjVbLHMgFwMqZpAws6
-        5UmNF3LKB9hE6jHzBsc1Blk=
-X-Google-Smtp-Source: APXvYqx43jiagqz6pnYgyfPFM7j298+6dxeDN6b04GnIbyB7DUNKVM8J5H1aUqPu0g2HU4xIThYeOQ==
-X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr20848939pjx.13.1577990576595;
-        Thu, 02 Jan 2020 10:42:56 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([179.97.35.50])
-        by smtp.gmail.com with ESMTPSA id w11sm63759017pfn.4.2020.01.02.10.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jan 2020 10:42:55 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D207740DFD; Thu,  2 Jan 2020 15:42:52 -0300 (-03)
-Date:   Thu, 2 Jan 2020 15:42:52 -0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4UPLplmo5AOYVGqcjtpqI2E26h8IabatP5llWHkVEeo=;
+        b=LEDy9crY7arN/2cZQOpzsYbOQyMiZvW6ZFMksDsFqOud/zcyyWNsunlxIOrrOehFQg
+         a82EBYrFoWzULjDV9IRDwhNDrlPvRh5hynrmL398YrykFxpn3eukXCitlsodi0zV5Ikn
+         TQudHa8uyJQ2O/LSlmV7Jh+t6HfrMMwm/aBu1fYeE0bHLp6Pnzk7AJEqRCKCgdsp9erW
+         PwLGzPjc5t/zAVlcK0LJrzcQ+5NGb9KgSUzSC4PkD7aMwtpzSTvazXZpTb369Q00wUWw
+         R3zkkupP36G72H90UuFUDGXkMQMybHRl6wk+GsHUna3Uyfya+X6NPBzMezq1rLxjR9hU
+         abdA==
+X-Gm-Message-State: APjAAAUr1NcwPAUP9UCtEuYToLFYs0R1ZBeA1RwrYbo10GlHcAGb6poJ
+        t6WeHETuIAEctF8vZYfZ3U3HcZKdo+TztiFbgcw=
+X-Google-Smtp-Source: APXvYqwB9iEM7ZbeZGoKl9mZU5Op4kRYRl8Y6bsc7G1ZKimVF+NO5DgS7HD7lcUOx9nfnwLJ5dxNMgDpTjqrZeKeWuc=
+X-Received: by 2002:a05:6830:1e37:: with SMTP id t23mr9310819otr.16.1578005050928;
+ Thu, 02 Jan 2020 14:44:10 -0800 (PST)
+MIME-Version: 1.0
+References: <20200102122004.216c85da@gandalf.local.home>
+In-Reply-To: <20200102122004.216c85da@gandalf.local.home>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Thu, 2 Jan 2020 22:43:34 +0000
+Message-ID: <CADVatmO8mvhtgZ=CNv8uxhVkh2nqg5bjCLzTxyA9UDerRox8Ug@mail.gmail.com>
+Subject: Re: [RFC] tools lib traceevent: How to do library versioning being in
+ the Linux kernel source?
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [RFC] tools lib traceevent: How to do library versioning being
- in the Linux kernel source?
-Message-ID: <20200102184252.GA8047@kernel.org>
-References: <20200102122004.216c85da@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200102122004.216c85da@gandalf.local.home>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Em Thu, Jan 02, 2020 at 12:20:04PM -0500, Steven Rostedt escreveu:
-> This is a problem with living in the Linux source tree as tags and
-> branches in Linus's tree are for only the Linux kernel source itself.
-> This may work fine for perf, as it's not a library and there's not
+On Thu, Jan 2, 2020 at 5:20 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> First, I hope everyone had a Happy New Year!
 
-[acme@quaco perf]$ git log --oneline tools/lib/perf
-6364e2891a4c libperf: Add man pages
-19e0154effb4 libperf: Move to tools/lib/perf
-[acme@quaco perf]$
+Happy New Year to you too.
 
-[acme@quaco perf]$ git log --follow --oneline tools/lib/perf/Makefile
-6364e2891a4c libperf: Add man pages
-19e0154effb4 libperf: Move to tools/lib/perf
-395e62cde10d libperf: Link static tests with libapi.a
-7728fa0cfaeb libperf: Adopt perf_mmap__consume() function from tools/perf
-fb4bf51fcc15 libperf: Add libperf dependency for tests targets
-d80a5540bccb libperf: Link libapi.a in libperf.so
-227cb129858a libperf: Add missing event.h file to install rule
-b81d39c7a1ef (tag: perf-core-for-mingo-5.4-20190820) libperf: Fix arch include paths
-6a94b52a71b7 libperf: Add tests support
-0a64d7091efd libperf: Add install targets
-47f9bccc79cb libperf: Add build version support
-314350491810 libperf: Make libperf.a part of the perf build
-[acme@quaco perf]$
+>
+> Next, Sudip has been working to get the libtraceevent library into
+> Debian. As this has been happening, I've been working at how to get all
+> the projects that use this, to use the library installed on the system
+> if it does exist. I'm hoping that once it's in Debian, the other
+> distros will follow suit.
 
-libperf adopted the versioning and packaging practices introduced by
-tools/lib/bpf, perhaps you could do the same for tools/lib/traceevent
-and then we would have a standard for these cases?
+I have sent you another patch for libtraceevent. And, assuming that
+you will not have any objection to that patch libtraceevent has been
+merged in Debian and is now available in Debian Sid releases. Thanks
+to Ben for all his suggestion and help.
 
-The problem of having libperf, libbpf in distros is already being
-tackled for quite a while, would be interesting to follow what has
-happened in that area as well, Jiri knows more about this, Jiri?
+The packages are at:
+https://packages.debian.org/unstable/libtraceevent1
+https://packages.debian.org/unstable/libtraceevent-dev
+https://packages.debian.org/unstable/libtraceevent1-plugin
 
-- Arnaldo
+
+-- 
+Regards
+Sudip
