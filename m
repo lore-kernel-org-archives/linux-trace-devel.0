@@ -2,160 +2,96 @@ Return-Path: <SRS0=UiB3=23=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAF4FC33C8C
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:26:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1306C33C8C
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:30:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C0C9D206E6
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:26:27 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lsqGs8Ee"
+	by mail.kernel.org (Postfix) with ESMTP id 72CB8222D9
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:30:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgAFQ01 (ORCPT
+        id S1726536AbgAFQa3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 6 Jan 2020 11:26:27 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:33668 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgAFQ01 (ORCPT
+        Mon, 6 Jan 2020 11:30:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726518AbgAFQa3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 6 Jan 2020 11:26:27 -0500
-Received: by mail-qk1-f196.google.com with SMTP id d71so32070008qkc.0;
-        Mon, 06 Jan 2020 08:26:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JQtEouoO14ibFdu5R0ExtR9RU4wVGRzBfAmbFruyaUA=;
-        b=lsqGs8EeesC12VRJVQx6YbN9hunSXuCn1drlRK4CMOlEpjymNwTXoZPhVtdAu9W68a
-         g/6D0I0VDQbU0+0cBscdlRHLYxX1GiES5hDJl9A7NI4DuRjE5joFsdCh3kmBZJDLa6qv
-         eqmoz5OJEPgtMBXpWZxhpzMP3b/Pb6mHJ1Qeg4Drzpxs3kfddkhGXTJPYU637rkXcIHC
-         gMtiLP52kppQjBrGoQCXSWPZW2xxC5hYczQ+btKqZpdjzvdGCuJ3Ok/xtaQVa7xvCw03
-         +HCuY0b/rE0w5nA87S2l8EXtTIx25o3tCpge8IDI9DpdU4yyjZZYjvCb4QXEhe1M5c2/
-         V1QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JQtEouoO14ibFdu5R0ExtR9RU4wVGRzBfAmbFruyaUA=;
-        b=dTZ4zIrUg21sq/9AY3Vqo6sNELprk6mtiRH9/qk8FtxQLqt9CNh5kx4x//DGk829qz
-         HEL5QWeGDKbUKUJikvwPSUjtaXLfzN2vyzTvyYgyJrOMahv6vy63oIqwIfYwJPSozgOh
-         vJIqQJROUoLJwWelQ8qZotEJRmvbyCiVBYKyyI3WYegNMvVQtAYxX8qYvxXr2ERQ7XMQ
-         K7U/Auiqzm/GY8OHnGEe54yDDXwT/HefZKTj+nZxMKraTSdDmMRuNerD65HIeXMmlXwG
-         l9uGyxp6XxFYUuPpBuganJYz6oSm0qffOUu7k47NFfMDo/OGsZR4oXKi74RyacGopihq
-         Dodg==
-X-Gm-Message-State: APjAAAV8BRhwVI39Hwp69/9AY5DS0liBXkOjNIWa+eznZPspqDEwBYa1
-        BzKa6ZPVCay6ePC2JaVuSYM=
-X-Google-Smtp-Source: APXvYqwRYizllbxOp6iQxO2ykkiYb6oLHdpU3gYtOdzJqv+FHGnhZsdGq11wpHk/jKTPveEV4k1jug==
-X-Received: by 2002:a37:ad0e:: with SMTP id f14mr72323328qkm.213.1578327986104;
-        Mon, 06 Jan 2020 08:26:26 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([179.97.35.50])
-        by smtp.gmail.com with ESMTPSA id s26sm15805987qtc.43.2020.01.06.08.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2020 08:26:25 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 56B3F40DFD; Mon,  6 Jan 2020 13:26:23 -0300 (-03)
-Date:   Mon, 6 Jan 2020 13:26:23 -0300
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        users@linux.kernel.org
-Subject: Re: [RFC] tools lib traceevent: How to do library versioning being
- in the Linux kernel source?
-Message-ID: <20200106162623.GA11285@kernel.org>
-References: <20200102122004.216c85da@gandalf.local.home>
- <20200102234950.GA14768@krava>
- <20200102185853.0ed433e4@gandalf.local.home>
- <20200103133640.GD9715@krava>
- <20200103181614.7aa37f6d@gandalf.local.home>
- <20200106151902.GB236146@krava>
+        Mon, 6 Jan 2020 11:30:29 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BAB3208C4;
+        Mon,  6 Jan 2020 16:30:28 +0000 (UTC)
+Date:   Mon, 6 Jan 2020 11:30:26 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Ideals for tep plugin options
+Message-ID: <20200106113026.75893f92@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200106151902.GB236146@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Em Mon, Jan 06, 2020 at 04:19:02PM +0100, Jiri Olsa escreveu:
-> On Fri, Jan 03, 2020 at 06:16:14PM -0500, Steven Rostedt wrote:
-> > 
-> > [ Added Konstantin and kernel.org users mailing list ]
-> > 
-> > On Fri, 3 Jan 2020 14:36:40 +0100
-> > Jiri Olsa <jolsa@redhat.com> wrote:
-> > 
-> > > On Thu, Jan 02, 2020 at 06:58:53PM -0500, Steven Rostedt wrote:
-> > > > On Fri, 3 Jan 2020 00:49:50 +0100
-> > > > Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >   
-> > > > > > Should we move libtraceevent into a stand alone git repo (on
-> > > > > > kernel.org), that can have tags and branches specifically for it? We
-> > > > > > can keep a copy in the Linux source tree for perf to use till it    
-> > > > > 
-> > > > > so libbpf 'moved' for this reason to github repo,
-> > > > > but keeping the kernel as the true/first source,
-> > > > > and updating github repo when release is ready
-> > > > > 
-> > > > > libbpf github repo is then source for fedora (and others)
-> > > > > package  
-> > > > 
-> > > > Ah, so perhaps I should follow this? I could keep it a kernel.org repo
-> > > > (as I rather have it there anyway).  
-> > > 
-> > > sounds good, and if it works out, we'll follow you with libperf :-)
-> > > 
-> > > if you want to check on the libbpf:
-> > >   https://github.com/libbpf/libbpf
-> > > 
-> > > there might be some syncs scripts worth checking
-> > 
-> > I wonder if there should be a:
-> > 
-> >   git://git.kernel.org/pub/scm/utils/lib/
-> > 
-> > directory to have:
-> > 
-> >   git://git.kernel.org/pub/scm/utils/lib/traceevent/
-> >   git://git.kernel.org/pub/scm/utils/lib/libbpf/
-> >   git://git.kernel.org/pub/scm/utils/lib/libperf/
-> 
-> we could loose the 'lib' and just have:
-> 
->     git://git.kernel.org/pub/scm/utils/lib/perf/
+Hi Tzvetomir,
 
-So, we have:
+I was looking at the plugin options, and I believe it needs to be
+updated.
 
-https://www.kernel.org/pub/linux/kernel/tools/perf/
+1) the tep_plugin_option structure:
 
-trying to mimic the kernel sources tree structure, so perhaps we could
-have:
+  - rename "file" to "plugin"
+  - remove "plugin_alias"
 
-https://www.kernel.org/pub/linux/kernel/tools/lib/{perf,traceevent}/
+2) Currently we have the following plugin option functions exported in
+trace-cmd:
 
-To continue that directory tree mirror?
+ char **tep_plugin_list_options(void);
+ void tep_plugin_free_options_list(char **list);
+ int tep_plugin_add_options(const char *name,
+			   struct tep_plugin_option *options);
+ int tep_plugin_add_option(const char *name, const char *val);
+ void tep_plugin_remove_options(struct tep_plugin_option *options);
+ void tep_plugin_print_options(struct trace_seq *s);
+ void tep_print_plugins(struct trace_seq *s,
+			const char *prefix, const char *suffix,
+			const struct tep_plugin_list *list);
 
-> > That could hold the libraries that are tight to the kernel?
+What we should only have is:
 
-> I don't think libbpf will change now after they are settled in github,
-> but we could consider this for libperf
-> 
-> jirka
+ int tep_plugin_add_options(const char *plugin,
+			  struct tep_plugin_option *options);
+ int tep_plugin_set_option(const char *plugin, const char *name,
+			  const char *val);
+ int tep_plugin_remove_options(struct tep_plugin_option *options);
+ struct tep_plugin_option const * const tep_plugin_options_list(void);
 
--- 
 
-- Arnaldo
+Where:
+
+  tep_plugin_add_options() is basically the same as we have now. But we
+    should change it so that if "plugin" is already registered, it
+    should fail with -EBUSY.
+
+ tep_plugin_set_option() lets us update the option. If "plugin" is
+   NULL, then it will ignore that value, and will set all options with
+   "name" to "val", regardless of what plugin it belongs to.
+
+ tep_plugin_remove_options() is basically the same as what we have now,
+   and removes the options from the list.
+
+ tep_plugin_options_list() returns an immutable list of all the
+   registered plugin options. This is the list that the application can
+   use to see what options are registered, as well as their default
+   (and current) values.
+
+Does this make sense?
+
+-- Steve
