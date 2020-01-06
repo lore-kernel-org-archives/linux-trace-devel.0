@@ -6,31 +6,49 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1306C33C8C
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:30:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A20EC33C8C
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:36:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 72CB8222D9
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:30:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6E447208C4
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:36:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgAFQa3 (ORCPT
+        id S1726536AbgAFQgS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 6 Jan 2020 11:30:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53192 "EHLO mail.kernel.org"
+        Mon, 6 Jan 2020 11:36:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726518AbgAFQa3 (ORCPT
+        id S1726448AbgAFQgS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 6 Jan 2020 11:30:29 -0500
+        Mon, 6 Jan 2020 11:36:18 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BAB3208C4;
-        Mon,  6 Jan 2020 16:30:28 +0000 (UTC)
-Date:   Mon, 6 Jan 2020 11:30:26 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A192207FF;
+        Mon,  6 Jan 2020 16:36:16 +0000 (UTC)
+Date:   Mon, 6 Jan 2020 11:36:15 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Ideals for tep plugin options
-Message-ID: <20200106113026.75893f92@gandalf.local.home>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        users@linux.kernel.org
+Subject: Re: [RFC] tools lib traceevent: How to do library versioning being
+ in the Linux kernel source?
+Message-ID: <20200106113615.4545e3c5@gandalf.local.home>
+In-Reply-To: <20200106162623.GA11285@kernel.org>
+References: <20200102122004.216c85da@gandalf.local.home>
+        <20200102234950.GA14768@krava>
+        <20200102185853.0ed433e4@gandalf.local.home>
+        <20200103133640.GD9715@krava>
+        <20200103181614.7aa37f6d@gandalf.local.home>
+        <20200106151902.GB236146@krava>
+        <20200106162623.GA11285@kernel.org>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,58 +58,24 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Tzvetomir,
+On Mon, 6 Jan 2020 13:26:23 -0300
+Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
 
-I was looking at the plugin options, and I believe it needs to be
-updated.
+> So, we have:
+> 
+> https://www.kernel.org/pub/linux/kernel/tools/perf/
+> 
+> trying to mimic the kernel sources tree structure, so perhaps we could
+> have:
+> 
+> https://www.kernel.org/pub/linux/kernel/tools/lib/{perf,traceevent}/
+> 
+> To continue that directory tree mirror?
 
-1) the tep_plugin_option structure:
+Wouldn't that become a bit of manual work. Unlike perf, the versions
+will not correspond to the Linux kernel versions. They would need to
+follow library versioning.
 
-  - rename "file" to "plugin"
-  - remove "plugin_alias"
-
-2) Currently we have the following plugin option functions exported in
-trace-cmd:
-
- char **tep_plugin_list_options(void);
- void tep_plugin_free_options_list(char **list);
- int tep_plugin_add_options(const char *name,
-			   struct tep_plugin_option *options);
- int tep_plugin_add_option(const char *name, const char *val);
- void tep_plugin_remove_options(struct tep_plugin_option *options);
- void tep_plugin_print_options(struct trace_seq *s);
- void tep_print_plugins(struct trace_seq *s,
-			const char *prefix, const char *suffix,
-			const struct tep_plugin_list *list);
-
-What we should only have is:
-
- int tep_plugin_add_options(const char *plugin,
-			  struct tep_plugin_option *options);
- int tep_plugin_set_option(const char *plugin, const char *name,
-			  const char *val);
- int tep_plugin_remove_options(struct tep_plugin_option *options);
- struct tep_plugin_option const * const tep_plugin_options_list(void);
-
-
-Where:
-
-  tep_plugin_add_options() is basically the same as we have now. But we
-    should change it so that if "plugin" is already registered, it
-    should fail with -EBUSY.
-
- tep_plugin_set_option() lets us update the option. If "plugin" is
-   NULL, then it will ignore that value, and will set all options with
-   "name" to "val", regardless of what plugin it belongs to.
-
- tep_plugin_remove_options() is basically the same as what we have now,
-   and removes the options from the list.
-
- tep_plugin_options_list() returns an immutable list of all the
-   registered plugin options. This is the list that the application can
-   use to see what options are registered, as well as their default
-   (and current) values.
-
-Does this make sense?
+It would at a minimum require new scripting to get this right.
 
 -- Steve
