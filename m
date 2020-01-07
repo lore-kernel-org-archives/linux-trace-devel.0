@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-14.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EA51C33C8C
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jan 2020 17:03:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E9F7C33C8C
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jan 2020 17:03:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D20DF208C4
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jan 2020 17:03:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 46EC3208C4
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jan 2020 17:03:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W8nAj1pX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lWhPSK7M"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbgAGRDy (ORCPT
+        id S1728355AbgAGRD5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Jan 2020 12:03:54 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:37008 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728389AbgAGRDy (ORCPT
+        Tue, 7 Jan 2020 12:03:57 -0500
+Received: from mail-lj1-f182.google.com ([209.85.208.182]:43344 "EHLO
+        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728427AbgAGRD4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Jan 2020 12:03:54 -0500
-Received: by mail-lj1-f193.google.com with SMTP id o13so338640ljg.4
-        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Jan 2020 09:03:52 -0800 (PST)
+        Tue, 7 Jan 2020 12:03:56 -0500
+Received: by mail-lj1-f182.google.com with SMTP id a13so296674ljm.10
+        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Jan 2020 09:03:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CMy+xdAHTzaVs0eYAf0FikyjRMcLPts/9yGyyoGPqRA=;
-        b=W8nAj1pXLcd5HzjRaI43ytD+y1/a/R+yZIv2/84ecC/S5jTfCyPzXlsTq7VZ/G4RHY
-         f+FgRskWs9NWm1bp2hpJtbCAS2R9PuKBNR4QANnvXhY8dfUj4Q0BwdupEfqSmMo+pU1N
-         WKM5gyw8iBmqGxhxlKzJDCGgquMEiuZmgYIlpkqmLBi68hcF6NWaueR9NvFR73LQBrN6
-         KpW6FBCpZWWw41x07VEPslg9VSy8TErKYznPetevViFazKGUbzKtNlw0cO7A76RBb3hX
-         ztzYFcPf1NGY2RhUVoGULch/b/Zj6PVjbFhpxZqdWTbinWAbstgKgeb/MA7NcxIERF8P
-         rAQQ==
+        bh=OJLLPohVI6IFX7QUrGNPXztXCVZUmuK0fIA3rDXc+kY=;
+        b=lWhPSK7MpBC1INUTNPp9wlJff55ROde3KN2rC9RGkA6gO7BjcoylzvAQu4ogStxK1p
+         D8YJ7oQvqg8IMRnjqgULz2qLk0Vq0FyAeF5D2OIc5vH3xvvI+Plrn1oVBwbVPguT08id
+         8zmzYUT01P/6JtN9y5kdffOFe8iNV6wkp2BVtBbeCJXTU/rahphg6UgH3l/0W4hJVQvT
+         pBr8vw8W9ibmyb+iUVS+z/AFDcyGC11abAf10RoULpS3uA3Bu6aYZiX8P5AN+rWdxcfD
+         xjBYuGhSb6ioIh+lu+i6/iTN04wsVpoc0QDgn8I5Lr8twA0zDoA1RiPoHN5NWxaDWwEN
+         7vgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CMy+xdAHTzaVs0eYAf0FikyjRMcLPts/9yGyyoGPqRA=;
-        b=QkjvRXhR3a7UPhEg08Wn6bjyYsWGaJZmHKbC8SPePiCjdKMbxZXQkSdRSH05PZ8e0k
-         y0lTDG9TJQq6HWR0SeVeI65RXIqRCiy6XXjdlpHdQHkRdAJ7WKFyrId8T9SrJ+lq6N6b
-         n089sDxupAHLofTMhS/To8wTOffAMZVen/ZFEU8h/nNbIyXIKTR3uMlR+1A+2dJpOr58
-         pOiE6Yn3SW1mtbTkBSV8+joL/Y2444SNRMLRjmTZ1XdDSefrVIdt8nxUGvK5V/QNI59k
-         UqhScIlqAeQvB2jjqm7rzJ70+Ov2b1+LjGJoYWO8mT87jcrocHVlybpmBwtHdmgeOdst
-         INBw==
-X-Gm-Message-State: APjAAAWzlQ0eBXEFdf7FuE8yvE4QtjsPZFiQFq4zE16Q/ZrXhOYPDtrQ
-        G4thmzLW4SDsWTv+RabEoErJeli9
-X-Google-Smtp-Source: APXvYqzDOYBf/MShQ4zVshNrysRlqg8GZIkPaPpkn4VWdKTqFSWDaGoZhZm+LyzELVERWVLPBhDPAA==
-X-Received: by 2002:a2e:93d5:: with SMTP id p21mr316088ljh.50.1578416630930;
-        Tue, 07 Jan 2020 09:03:50 -0800 (PST)
+        bh=OJLLPohVI6IFX7QUrGNPXztXCVZUmuK0fIA3rDXc+kY=;
+        b=fOpL7Psx928HQk0BYJueZWgKwlg608oK4/S1ykpGXetRCERPjgWvmgitXIMIKUfL6z
+         Jy9orYs2IxbKnYqnMHKE34Zuoadn3p7LPhYtuwuEXorEAV2L9IyMilyzC27Ovhg/sawq
+         GM9Z6Xhg7pn4R2wOdxc+WN6LLysGDHPueKPbzUhPDrY2pm4L+ULOEofPJBNpPZsuNm+B
+         ixZ0dKAgiW+cCu7jDBJoEHlIy447whPN5JORYsc07Nc5SNvh9zB83wxp9Yd3ZrRe+WmC
+         P6dUuNwXaaM4eB+WAiiE8T0TyYtRkiTFO/xBtPlyrqwiS3o7Czi23tsIvFq0JPhxcOie
+         ybVg==
+X-Gm-Message-State: APjAAAWa9SeA7uXJD/0yT6MFpDD+HBP+OPpyISsHsglZT98l4qHSOseM
+        cibKBmJ8EsKN8y+BmxQUyZuSPZlM
+X-Google-Smtp-Source: APXvYqwbetJaTPKI7UyuqpviuD594fLEa7y25H+migR+ZQYGgI880EU5MA1z8p39I8v6OuRBXBdPaw==
+X-Received: by 2002:a05:651c:8f:: with SMTP id 15mr261695ljq.109.1578416632895;
+        Tue, 07 Jan 2020 09:03:52 -0800 (PST)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id d16sm140605lfa.16.2020.01.07.09.03.49
+        by smtp.gmail.com with ESMTPSA id d16sm140605lfa.16.2020.01.07.09.03.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2020 09:03:50 -0800 (PST)
+        Tue, 07 Jan 2020 09:03:52 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     rostedt@goodmis.org, Douglas.Raillard@arm.com,
         Valentin.Schneider@arm.com, nd@arm.com,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 01/12] trace-cruncher: Refactor the part of the interface that relies on libkshark
-Date:   Tue,  7 Jan 2020 19:03:01 +0200
-Message-Id: <20200107170312.27116-2-y.karadz@gmail.com>
+Subject: [PATCH v2 02/12] trace-cruncher: Refactor the part of the interface that relies on libtraceevent
+Date:   Tue,  7 Jan 2020 19:03:02 +0200
+Message-Id: <20200107170312.27116-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200107170312.27116-1-y.karadz@gmail.com>
 References: <20200107170312.27116-1-y.karadz@gmail.com>
@@ -75,294 +75,108 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is the first patch from a patch-set that aims to refactor
-trace-cruncher completely. The goal it to be able to build the
-project as a native Python package, which contains several
-sub-packages implemented as C extensions via the Python's C API.
-In this patch the part of the interface that relies on libkshark
-gets re-implemented as an extension called "tracecruncher.ksharkpy".
-Note that this new extension has a stand-alone build that is
-completely decoupled from the existing build system used by
-trace-cruncher.
+The part of the interface that relies on libtraceevent gets
+re-implemented as an extension called "tracecruncher.ftracepy".
+The new extension gets build together with the previously
+implemented "tracecruncher.ksharkpy" extension.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- setup.py                  |  43 ++++++
- src/common.h              |  19 +++
- src/ksharkpy.c            | 267 ++++++++++++++++++++++++++++++++++++++
- tracecruncher/__init__.py |   0
- 4 files changed, 329 insertions(+)
- create mode 100644 setup.py
- create mode 100644 src/common.h
- create mode 100644 src/ksharkpy.c
- create mode 100644 tracecruncher/__init__.py
+ setup.py       |  11 ++-
+ src/common.h   |   1 +
+ src/ftracepy.c | 233 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 244 insertions(+), 1 deletion(-)
+ create mode 100644 src/ftracepy.c
 
 diff --git a/setup.py b/setup.py
-new file mode 100644
-index 0000000..1a89dc6
---- /dev/null
+index 1a89dc6..62912e2 100644
+--- a/setup.py
 +++ b/setup.py
-@@ -0,0 +1,43 @@
-+#!/usr/bin/env python3
-+
-+"""
-+SPDX-License-Identifier: LGPL-2.1
-+
-+Copyright 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+"""
-+
-+from setuptools import setup, find_packages
-+from distutils.core import Extension
-+from Cython.Build import cythonize
-+
-+def main():
-+    kshark_path = '/usr/local/lib/kernelshark'
-+
-+    module_ks = Extension('tracecruncher.ksharkpy',
-+                          sources=['src/ksharkpy.c'],
-+                          library_dirs=[kshark_path],
-+                          runtime_library_dirs=[kshark_path],
-+                          libraries=['kshark'],
-+                          define_macros=[
-+                              ('LIB_KSHARK_PATH', '\"' + kshark_path + '/libkshark.so\"'),
-+                              ('KS_PLUGIN_DIR',   '\"' + kshark_path + '/plugins\"')
-+                              ],
+@@ -12,6 +12,8 @@ from Cython.Build import cythonize
+ 
+ def main():
+     kshark_path = '/usr/local/lib/kernelshark'
++    traceevent_path = '/usr/local/lib/traceevent/'
++    tracecmd_path = '/usr/local/lib/trace-cmd/'
+ 
+     module_ks = Extension('tracecruncher.ksharkpy',
+                           sources=['src/ksharkpy.c'],
+@@ -24,6 +26,13 @@ def main():
+                               ],
+                           )
+ 
++    module_ft = Extension('tracecruncher.ftracepy',
++                          sources=['src/ftracepy.c'],
++                          library_dirs=[kshark_path, traceevent_path, tracecmd_path],
++                          runtime_library_dirs=[kshark_path, traceevent_path, tracecmd_path],
++                          libraries=['kshark', 'traceevent', 'tracecmd'],
 +                          )
 +
-+    setup(name='tracecruncher',
-+          version='0.1.0',
-+          description='NumPy based interface for accessing tracing data in Python.',
-+          author='Yordan Karadzhov (VMware)',
-+          author_email='y.karadz@gmail.com',
-+          url='https://github.com/vmware/trace-cruncher',
-+          license='LGPL-2.1',
-+          packages=find_packages(),
-+          ext_modules=[module_ks],
-+          classifiers=[
-+              'Development Status :: 3 - Alpha',
-+              'Programming Language :: Python :: 3',
-+              ]
-+          )
-+
-+if __name__ == '__main__':
-+    main()
+     setup(name='tracecruncher',
+           version='0.1.0',
+           description='NumPy based interface for accessing tracing data in Python.',
+@@ -32,7 +41,7 @@ def main():
+           url='https://github.com/vmware/trace-cruncher',
+           license='LGPL-2.1',
+           packages=find_packages(),
+-          ext_modules=[module_ks],
++          ext_modules=[module_ks, module_ft],
+           classifiers=[
+               'Development Status :: 3 - Alpha',
+               'Programming Language :: Python :: 3',
 diff --git a/src/common.h b/src/common.h
-new file mode 100644
-index 0000000..d7d355a
---- /dev/null
+index d7d355a..632e17a 100644
+--- a/src/common.h
 +++ b/src/common.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: LGPL-2.1 */
-+
-+/*
-+ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ */
-+
-+#ifndef _TC_COMMON_H
-+#define _TC_COMMON_H
-+
-+#define TRACECRUNCHER_ERROR	tracecruncher_error
-+#define KSHARK_ERROR		kshark_error
-+
-+#define KS_INIT_ERROR \
-+	PyErr_SetString(KSHARK_ERROR, "libshark failed to initialize");
-+
-+#define KS_MEM_ERROR \
-+	PyErr_SetString(TRACECRUNCHER_ERROR, "failed to allocate memory");
-+
-+#endif
-diff --git a/src/ksharkpy.c b/src/ksharkpy.c
+@@ -9,6 +9,7 @@
+ 
+ #define TRACECRUNCHER_ERROR	tracecruncher_error
+ #define KSHARK_ERROR		kshark_error
++#define FTRACE_ERROR		ftrace_error
+ 
+ #define KS_INIT_ERROR \
+ 	PyErr_SetString(KSHARK_ERROR, "libshark failed to initialize");
+diff --git a/src/ftracepy.c b/src/ftracepy.c
 new file mode 100644
-index 0000000..5a15a77
+index 0000000..fd0832b
 --- /dev/null
-+++ b/src/ksharkpy.c
-@@ -0,0 +1,267 @@
++++ b/src/ftracepy.c
+@@ -0,0 +1,233 @@
 +// SPDX-License-Identifier: LGPL-2.1
 +
 +/*
 + * Copyright (C) 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 + */
 +
-+/** Use GNU C Library. */
-+#define _GNU_SOURCE 1
-+
-+// C
-+#include <stdio.h>
-+#include <dlfcn.h>
-+
 +// Python
 +#include <Python.h>
 +
++// trace-cmd
++#include "trace-cmd/trace-cmd.h"
++
 +// KernelShark
 +#include "kernelshark/libkshark.h"
-+#include "kernelshark/libkshark-plugin.h"
-+#include "kernelshark/libkshark-model.h"
 +
 +// trace-cruncher
 +#include "common.h"
 +
 +static PyObject *KSHARK_ERROR = NULL;
-+static PyObject *TRACECRUNCHER_ERROR = NULL;
++static PyObject *FTRACE_ERROR = NULL;
 +
-+static PyObject *method_open(PyObject *self, PyObject *args,
-+					     PyObject *kwargs)
++static PyObject *method_event_id(PyObject *self, PyObject *args,
++						 PyObject *kwargs)
 +{
 +	struct kshark_context *kshark_ctx = NULL;
-+	char *fname = NULL;
++	struct tep_event *event;
++	const char *system, *name;
 +
-+	static char *kwlist[] = {"fname", NULL};
-+	if(!PyArg_ParseTupleAndKeywords(args,
-+					kwargs,
-+					"s",
-+					kwlist,
-+					&fname)) {
-+		return NULL;
-+	}
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	if (!kshark_open(kshark_ctx, fname))
-+		return Py_False;
-+
-+	return Py_True;
-+}
-+
-+static PyObject* method_close(PyObject* self, PyObject* noarg)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	kshark_close(kshark_ctx);
-+
-+	Py_RETURN_NONE;
-+}
-+
-+static int compare(const void *a, const void *b)
-+{
-+	int a_i, b_i;
-+
-+	a_i = *(const int *) a;
-+	b_i = *(const int *) b;
-+
-+	if (a_i > b_i)
-+		return +1;
-+
-+	if (a_i < b_i)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static PyObject* method_get_tasks(PyObject* self, PyObject* noarg)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	const char *comm;
-+	int *pids;
-+	ssize_t i, n;
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	n = kshark_get_task_pids(kshark_ctx, &pids);
-+	if (n == 0) {
-+		PyErr_SetString(KSHARK_ERROR,
-+				"Failed to retrieve the PID-s of the tasks");
-+		return NULL;
-+	}
-+
-+	qsort(pids, n, sizeof(*pids), compare);
-+
-+	PyObject *tasks, *pid_list, *pid_val;
-+
-+	tasks = PyDict_New();
-+	for (i = 0; i < n; ++i) {
-+		comm = tep_data_comm_from_pid(kshark_ctx->pevent, pids[i]);
-+		pid_val = PyLong_FromLong(pids[i]);
-+		pid_list = PyDict_GetItemString(tasks, comm);
-+		if (!pid_list) {
-+			pid_list = PyList_New(1);
-+			PyList_SET_ITEM(pid_list, 0, pid_val);
-+			PyDict_SetItemString(tasks, comm, pid_list);
-+		} else {
-+			PyList_Append(pid_list, pid_val);
-+		}
-+	}
-+
-+	return tasks;
-+}
-+
-+static PyObject *method_register_plugin(PyObject *self, PyObject *args,
-+							PyObject *kwargs)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	char *plugin, *lib_file;
-+	int ret;
-+
-+	static char *kwlist[] = {"plugin", NULL};
-+	if (!PyArg_ParseTupleAndKeywords(args,
-+					 kwargs,
-+					 "s",
-+					 kwlist,
-+					 &plugin)) {
-+		return NULL;
-+	}
-+
-+	if (asprintf(&lib_file, "%s/plugin-%s.so", KS_PLUGIN_DIR, plugin) < 0) {
-+		KS_MEM_ERROR
-+		return NULL;
-+	}
-+
-+	if (!kshark_instance(&kshark_ctx)) {
-+		KS_INIT_ERROR
-+		return NULL;
-+	}
-+
-+	ret = kshark_register_plugin(kshark_ctx, lib_file);
-+	free(lib_file);
-+	if (ret < 0) {
-+		PyErr_Format(KSHARK_ERROR,
-+			     "libshark failed to load plugin '%s'",
-+			     plugin);
-+		return NULL;
-+	}
-+
-+	if (kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_INIT) < 0) {
-+		PyErr_SetString(KSHARK_ERROR,
-+				"libshark failed to handle its plugins");
-+		return NULL;
-+	}
-+
-+	Py_RETURN_NONE;
-+}
-+
-+static PyObject *method_new_session_file(PyObject *self, PyObject *args,
-+							 PyObject *kwargs)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	struct kshark_config_doc *session;
-+	struct kshark_config_doc *filters;
-+	struct kshark_config_doc *markers;
-+	struct kshark_config_doc *model;
-+	struct kshark_config_doc *file;
-+	struct kshark_trace_histo histo;
-+	const char *session_file, *data_file;
-+
-+	static char *kwlist[] = {"data_file", "session_file", NULL};
++	static char *kwlist[] = {"system", "event", NULL};
 +	if (!PyArg_ParseTupleAndKeywords(args,
 +					 kwargs,
 +					 "ss",
 +					 kwlist,
-+					 &data_file,
-+					 &session_file)) {
++					 &system,
++					 &name)) {
 +		return NULL;
 +	}
 +
@@ -371,82 +185,196 @@ index 0000000..5a15a77
 +		return NULL;
 +	}
 +
-+	session = kshark_config_new("kshark.config.session",
-+				    KS_CONFIG_JSON);
++	event = tep_find_event_by_name(kshark_ctx->pevent, system, name);
++	if (!event) {
++		PyErr_Format(FTRACE_ERROR,
++			     "Failed to find event '%s/%s'",
++			     system, name);
++	}
 +
-+	file = kshark_export_trace_file(data_file, KS_CONFIG_JSON);
-+	kshark_config_doc_add(session, "Data", file);
-+
-+	filters = kshark_export_all_filters(kshark_ctx, KS_CONFIG_JSON);
-+	kshark_config_doc_add(session, "Filters", filters);
-+
-+	ksmodel_init(&histo);
-+	model = kshark_export_model(&histo, KS_CONFIG_JSON);
-+	kshark_config_doc_add(session, "Model", model);
-+
-+	markers = kshark_config_new("kshark.config.markers", KS_CONFIG_JSON);
-+	kshark_config_doc_add(session, "Markers", markers);
-+
-+	kshark_save_config_file(session_file, session);
-+	kshark_free_config_doc(session);
-+
-+	Py_RETURN_NONE;
++	return PyLong_FromLong(event->id);
 +}
 +
-+static PyMethodDef ksharkpy_methods[] = {
-+	{"open",
-+	 (PyCFunction) method_open,
++static PyObject *method_read_event_field(PyObject *self, PyObject *args,
++							 PyObject *kwargs)
++{
++	struct kshark_context *kshark_ctx = NULL;
++	struct tep_format_field *evt_field;
++	struct tep_record *record;
++	struct tep_event *event;
++	unsigned long long val;
++	const char *field;
++	uint64_t offset;
++	int event_id, ret;
++
++	static char *kwlist[] = {"offset", "event_id", "field", NULL};
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"Lis",
++					kwlist,
++					&offset,
++					&event_id,
++					&field)) {
++		return NULL;
++	}
++
++	if (!kshark_instance(&kshark_ctx)) {
++		KS_INIT_ERROR
++		return NULL;
++	}
++
++	event = tep_find_event(kshark_ctx->pevent, event_id);
++	if (!event) {
++		PyErr_Format(FTRACE_ERROR,
++			     "Failed to find event '%i'",
++			     event_id);
++		return NULL;
++	}
++
++	evt_field = tep_find_any_field(event, field);
++	if (!evt_field) {
++		PyErr_Format(FTRACE_ERROR,
++			     "Failed to find field '%s' of event '%i'",
++			     field, event_id);
++		return NULL;
++	}
++
++	record = tracecmd_read_at(kshark_ctx->handle, offset, NULL);
++	if (!record) {
++		PyErr_Format(FTRACE_ERROR,
++			     "Failed to read record at offset '%i'",
++			     offset);
++		return NULL;
++	}
++
++	ret = tep_read_number_field(evt_field, record->data, &val);
++	free_record(record);
++
++	if (ret != 0) {
++		PyErr_Format(FTRACE_ERROR,
++			     "Failed to read field '%s' of event '%i'",
++			     field, event_id);
++		return NULL;
++	}
++
++	return PyLong_FromLong(val);
++}
++
++static PyObject *method_get_function(PyObject *self, PyObject *args,
++						     PyObject *kwargs)
++{
++	struct kshark_context *kshark_ctx = NULL;
++	unsigned long long address;
++	const char *func;
++
++	static char *kwlist[] = {"address", NULL};
++	if (!PyArg_ParseTupleAndKeywords(args,
++					 kwargs,
++					 "L",
++					 kwlist,
++					 &address)) {
++		return NULL;
++	}
++
++	if (!kshark_instance(&kshark_ctx)) {
++		KS_INIT_ERROR
++		return NULL;
++	}
++
++	func = tep_find_function(kshark_ctx->pevent, address);
++	if (!func)
++		Py_RETURN_NONE;
++
++	return PyUnicode_FromString(func);
++}
++
++static PyObject *method_map_instruction_address(PyObject *self, PyObject *args,
++								PyObject *kwargs)
++{
++	struct kshark_context *kshark_ctx = NULL;
++	struct tracecmd_proc_addr_map *mem_map;
++	unsigned long long proc_addr, obj_addr;
++	int pid;
++	PyObject *ret;
++
++	static char *kwlist[] = {"pid", "proc_addr", NULL};
++	if (!PyArg_ParseTupleAndKeywords(args,
++					 kwargs,
++					 "iL",
++					 kwlist,
++					 &pid,
++					 &proc_addr)) {
++		return NULL;
++	}
++
++	if (!kshark_instance(&kshark_ctx)) {
++		KS_INIT_ERROR
++		return NULL;
++	}
++
++	mem_map = tracecmd_search_task_map(kshark_ctx->handle,
++					   pid, proc_addr);
++
++	if (!mem_map)
++		Py_RETURN_NONE;
++
++	ret = PyDict_New();
++
++	PyDict_SetItemString(ret, "obj_file",
++			     PyUnicode_FromString(mem_map->lib_name));
++
++	obj_addr = proc_addr - mem_map->start;
++	PyDict_SetItemString(ret, "address", PyLong_FromLong(obj_addr));
++
++	return ret;
++}
++
++static PyMethodDef ftracepy_methods[] = {
++	{"event_id",
++	 (PyCFunction) method_event_id,
 +	 METH_VARARGS | METH_KEYWORDS,
-+	 "Open trace data file"
++	 "Get the Id of the event from its name"
 +	},
-+	{"close",
-+	 (PyCFunction) method_close,
-+	 METH_NOARGS,
-+	 "Close trace data file"
-+	},
-+	{"get_tasks",
-+	 (PyCFunction) method_get_tasks,
-+	 METH_NOARGS,
-+	 "Get all tasks recorded in a trace file"
-+	},
-+	{"register_plugin",
-+	 (PyCFunction) method_register_plugin,
++	{"read_event_field",
++	 (PyCFunction) method_read_event_field,
 +	 METH_VARARGS | METH_KEYWORDS,
-+	 "Load a plugin"
++	 "Get the value of an event field having a given name"
 +	},
-+	{"new_session_file",
-+	 (PyCFunction) method_new_session_file,
++	{"get_function",
++	 (PyCFunction) method_get_function,
 +	 METH_VARARGS | METH_KEYWORDS,
-+	 "Create new session description file"
++	 ""
++	},
++	{"map_instruction_address",
++	 (PyCFunction) method_map_instruction_address,
++	 METH_VARARGS | METH_KEYWORDS,
++	 ""
 +	},
 +	{NULL, NULL, 0, NULL}
 +};
 +
-+static struct PyModuleDef ksharkpy_module = {
++static struct PyModuleDef ftracepy_module = {
 +	PyModuleDef_HEAD_INIT,
-+	"ksharkpy",
++	"ftracepy",
 +	"",
 +	-1,
-+	ksharkpy_methods
++	ftracepy_methods
 +};
 +
-+PyMODINIT_FUNC PyInit_ksharkpy(void)
++PyMODINIT_FUNC PyInit_ftracepy(void)
 +{
-+	PyObject *module = PyModule_Create(&ksharkpy_module);
++	PyObject *module =  PyModule_Create(&ftracepy_module);
 +
-+	KSHARK_ERROR = PyErr_NewException("tracecruncher.ksharkpy.ks_error",
++	KSHARK_ERROR = PyErr_NewException("tracecruncher.ftracepy.ks_error",
 +					  NULL, NULL);
 +	PyModule_AddObject(module, "ks_error", KSHARK_ERROR);
 +
-+	TRACECRUNCHER_ERROR = PyErr_NewException("tracecruncher.tc_error",
-+						 NULL, NULL);
-+	PyModule_AddObject(module, "tc_error", TRACECRUNCHER_ERROR);
++	FTRACE_ERROR = PyErr_NewException("tracecruncher.ftracepy.ft_error",
++					  NULL, NULL);
++	PyModule_AddObject(module, "ft_error", FTRACE_ERROR);
 +
 +	return module;
 +}
-diff --git a/tracecruncher/__init__.py b/tracecruncher/__init__.py
-new file mode 100644
-index 0000000..e69de29
 -- 
 2.20.1
 
