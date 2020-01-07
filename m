@@ -2,69 +2,69 @@ Return-Path: <SRS0=g3Xf=24=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-14.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BE68C33C8C
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jan 2020 17:04:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49DA1C33C8C
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jan 2020 17:04:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D2674208C4
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jan 2020 17:04:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0056A214D8
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jan 2020 17:04:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WcYUM5+h"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ufSyh8g1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbgAGREI (ORCPT
+        id S1728455AbgAGREL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Jan 2020 12:04:08 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45670 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728407AbgAGREI (ORCPT
+        Tue, 7 Jan 2020 12:04:11 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:36589 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728378AbgAGREL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Jan 2020 12:04:08 -0500
-Received: by mail-lj1-f195.google.com with SMTP id j26so280628ljc.12
-        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Jan 2020 09:04:06 -0800 (PST)
+        Tue, 7 Jan 2020 12:04:11 -0500
+Received: by mail-lf1-f65.google.com with SMTP id n12so260222lfe.3
+        for <linux-trace-devel@vger.kernel.org>; Tue, 07 Jan 2020 09:04:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kd63WDXUZjvgY/3SLZ07Y3f2YcGuPCcgpMgK39TKhk8=;
-        b=WcYUM5+hVuxEBpvcFKDXtSK1r+DwGw9in7AL6iLZOJhqo8ngDQUkgmQS8JIfLFPrEW
-         WqkP+sV11nZUI1lAJgheURTel4oBYBtGluE3AYGn1v17Usg/PO/XIqq2pkxg4SMB3Pu6
-         FwbKd68iQxCuXUjbVveRKZ9bq7EC1m26Ia9f5v3ayUrUsimO5JYA7X/TTBeaEe0e7H5+
-         hlPgFQX+Y/9pgtHd0hBSTvRgb4/3kpgcxOOB13zdc7jWQu508pomhMDVJY/Q87lfUUsu
-         0Mxw9S6fkjXJ2GuVitn7ieGTAqw+p6tTEUd4pBq0Vu8RMQQkwezKUMVrw4Lc3DdWlFHH
-         2HqQ==
+        bh=JIbiFLTY+iln+xK3keCS5fbXFhlU2vbLli9rjpRqCCA=;
+        b=ufSyh8g1ciA0++ni1kOefXD8NfZXZIqsdPPHpfQIzUsLfTNzwA0QwDwS8kL7+f03Ma
+         4Tn0uNEuEOOCgmZZVZPd1Z4EJlxfu3g8KzmounQfas97Lh9TlY5WSav7N+BM8rsAx5I2
+         vewIqvOOkWmfDO7P5A41AccIv0dODfZbZbnEViXUmZxEMdBsYuzDjesw958Du7UgypzR
+         HPkgKLtnLYA8brE/QzKLKpr2s7IANrLPOiGbwWo0DrDs7WJY7AXIgxvSiZpOu0tzLFcn
+         XNIhemwbsyib3ICDEa0mgzjqh6FVDn434tHa2ZKqnKVJBi4QKdHcv7hjnWRPzA2Hwzbw
+         Onpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kd63WDXUZjvgY/3SLZ07Y3f2YcGuPCcgpMgK39TKhk8=;
-        b=gVGOsn4udBu+R8ojrUUzvwq8kolmqxrNdLcOK44kzAj4xju69WYFeGdNbVDKNdBIAo
-         tLbqIzsvevlEsAV9Ma24hCrJtCzkLjraoojIXXaR113JvvfyXyT8c9O8Xl1/u7eh1alI
-         Z+37iVWt/TChzFHTrY4/KJl6g7kl1GFso0YN83c2rVbq18pP8O2z8mKhH9fNXzylFc5Z
-         DPZrSxk3ha2ok8OE8AFoI5nJZisagDsAvh6Tvy8R52tk3Ig2shjbvBgDb0zWY3zUj3O4
-         oFrTdozd5A0Eb11V93f1+oVCaA1AR8GO1+H3HFoUiXuPaTg4inoDOznzSpxFvs6YpFLu
-         Lthw==
-X-Gm-Message-State: APjAAAU0sFIlJjV7ecxmFH4VB/+/i7tWEUj0N4fuy5TbfPtpFO+6UHm5
-        W9lW6ZKPnYCrLA3kSjd6jHZ972Oo
-X-Google-Smtp-Source: APXvYqwWz5qGBdkDn6DxSvbp6+RZFjSjgsyI7GrHVEmJvMJu/RPgLa1gxeR3ZvtGnvs3UQdLZaqgQg==
-X-Received: by 2002:a2e:b010:: with SMTP id y16mr295298ljk.238.1578416645009;
-        Tue, 07 Jan 2020 09:04:05 -0800 (PST)
+        bh=JIbiFLTY+iln+xK3keCS5fbXFhlU2vbLli9rjpRqCCA=;
+        b=Lchlx3xKQNimZlt6yKgCqDEkgssw6p3vwcX2oOLJWu+/FDirjugrkusezOXSuafSls
+         Pw9+VhN66zPJ9VXoKzHauonXoeDtACWNXKqM4C1setZKw8PqMbCS3BgSpWSfgY8tCRyC
+         +x1a9Egk1DiiqFruesXljzZSG7wEt8vXR+V3p3EYCY2I1jQgFUpzf0SU1YoDDS0aLvIr
+         bfskv2cqUMERjuRSuu8n/J4nR/OABnemRm1X+7+Az1x6se0zIQjxUGFzYd+2rYIifw/E
+         9hahM3/gbDUa4UEv5sDs7VXtIv2XlNHf0jBW2ql+X7CTXGl+cHvDHSrZgs4TjizwLyZn
+         e1ew==
+X-Gm-Message-State: APjAAAV+AZVar138qCbP2nVEVXDhDo779fZVTFqjC/7aCbW0xprPiAYs
+        xb5qmB7CCQNdjbBdG3pFI9dZnu9k
+X-Google-Smtp-Source: APXvYqxyK2bP1zTTblcSN7G5UzWAStlogqXGDePpyn9r/XMpHayzugqVSpeMEq0Sc0R0gL5kkbWfpA==
+X-Received: by 2002:ac2:5e78:: with SMTP id a24mr195001lfr.5.1578416647375;
+        Tue, 07 Jan 2020 09:04:07 -0800 (PST)
 Received: from mamba.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id d16sm140605lfa.16.2020.01.07.09.04.03
+        by smtp.gmail.com with ESMTPSA id d16sm140605lfa.16.2020.01.07.09.04.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2020 09:04:04 -0800 (PST)
+        Tue, 07 Jan 2020 09:04:06 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     rostedt@goodmis.org, Douglas.Raillard@arm.com,
         Valentin.Schneider@arm.com, nd@arm.com,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 08/12] trace-cruncher: Adapt page_faults.py to use the new module
-Date:   Tue,  7 Jan 2020 19:03:08 +0200
-Message-Id: <20200107170312.27116-9-y.karadz@gmail.com>
+Subject: [PATCH v2 09/12] trace-cruncher: Automate the third-party build
+Date:   Tue,  7 Jan 2020 19:03:09 +0200
+Message-Id: <20200107170312.27116-10-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200107170312.27116-1-y.karadz@gmail.com>
 References: <20200107170312.27116-1-y.karadz@gmail.com>
@@ -75,140 +75,475 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The patch contains some debugging as well.
+The goal is to provide a simple and intuitive installation procedure
+and in the same time to encapsulate the used third-party libraries
+inside the Python package. This way we avoid polluting the system-wide
+locations with the patched versions of the third-party libraries.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- examples/page_faults.py | 64 ++++++++++++++++++-----------------------
- 1 file changed, 28 insertions(+), 36 deletions(-)
+ ...-_DEVEL-_LIBS-and-_RPATH_TO_ORIGIN-b.patch | 160 ++++++++++++++++++
+ 0001-kernel-shark-Add-_DEVEL-build-flag.patch |  90 ----------
+ 0002-kernel-shark-Add-reg_pid-plugin.patch    |   8 +-
+ Makefile                                      |   4 +-
+ install_third_party.sh                        |  39 +++++
+ setup.py                                      |  32 ++--
+ src/ksharkpy.c                                |   4 +-
+ tracecruncher/__init__.py                     |   4 +
+ 8 files changed, 231 insertions(+), 110 deletions(-)
+ create mode 100644 0001-kernel-shark-Add-_DEVEL-_LIBS-and-_RPATH_TO_ORIGIN-b.patch
+ delete mode 100644 0001-kernel-shark-Add-_DEVEL-build-flag.patch
+ create mode 100755 install_third_party.sh
 
-diff --git a/examples/page_faults.py b/examples/page_faults.py
-index 446b12d..e0ce4e2 100755
---- a/examples/page_faults.py
-+++ b/examples/page_faults.py
-@@ -9,20 +9,14 @@ Copyright 2019 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
- import os
- import sys
- import subprocess as sp
--import json
+diff --git a/0001-kernel-shark-Add-_DEVEL-_LIBS-and-_RPATH_TO_ORIGIN-b.patch b/0001-kernel-shark-Add-_DEVEL-_LIBS-and-_RPATH_TO_ORIGIN-b.patch
+new file mode 100644
+index 0000000..68fb279
+--- /dev/null
++++ b/0001-kernel-shark-Add-_DEVEL-_LIBS-and-_RPATH_TO_ORIGIN-b.patch
+@@ -0,0 +1,160 @@
++From 9e3a3cb07674b787f64d2f4ee9cb4467745e815b Mon Sep 17 00:00:00 2001
++From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
++Date: Fri, 20 Sep 2019 14:31:15 +0300
++Subject: [PATCH 1/2] kernel-shark: Add _DEVEL, _LIBS and _RPATH_TO_ORIGIN
++ build flags
++
++If KernelShark is built with -D_LIBS=1 as a command-line argument
++for Cmake, only libkshark and libkshapr-plot will be compiled.
++
++If KernelShark is built with -D_DEVEL=1 as a command-line argument
++for Cmake, the headers of the libraries will be installed as well
++and a symbolic link that points to the version of the library
++being installed will be created.
++
++If built with -D_RPATH_TO_ORIGIN=1 the "rpath" of all libraries is
++set to "$ORIGIN".
++
++Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
++---
++ kernel-shark/CMakeLists.txt     | 23 ++++++++++++++------
++ kernel-shark/README             |  3 +++
++ kernel-shark/src/CMakeLists.txt | 37 +++++++++++++++++++++++++++++++--
++ 3 files changed, 55 insertions(+), 8 deletions(-)
++
++diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
++index 20478b9..ea3133c 100644
++--- a/kernel-shark/CMakeLists.txt
+++++ b/kernel-shark/CMakeLists.txt
++@@ -73,6 +73,12 @@ else (CMAKE_BUILD_TYPE MATCHES Package)
++ 
++ endif (CMAKE_BUILD_TYPE MATCHES Package)
++ 
+++if (_RPATH_TO_ORIGIN)
+++
+++    set(CMAKE_INSTALL_RPATH $ORIGIN)
+++
+++endif (_RPATH_TO_ORIGIN)
+++
++ include_directories(${KS_DIR}/src/
++                     ${KS_DIR}/build/src/
++                     ${JSONC_INCLUDE_DIR}
++@@ -84,7 +90,6 @@ message(STATUS "CXX flags    : " ${CMAKE_CXX_FLAGS})
++ message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS})
++ 
++ add_subdirectory(${KS_DIR}/src)
++-add_subdirectory(${KS_DIR}/examples)
++ 
++ if (_DOXYGEN_DOC AND DOXYGEN_FOUND)
++ 
++@@ -99,12 +104,18 @@ if (_DOXYGEN_DOC AND DOXYGEN_FOUND)
++                              "${KS_DIR}/Documentation/doxygen/html"
++                              "${KS_DIR}/Documentation/doxygen/latex")
++ 
++-endif ()
+++endif (_DOXYGEN_DOC AND DOXYGEN_FOUND)
+++
+++if (NOT _LIBS)
+++
+++    add_subdirectory(${KS_DIR}/examples)
+++
+++    configure_file(${KS_DIR}/build/ks.desktop.cmake
+++                   ${KS_DIR}/${KS_APP_NAME}.desktop)
++ 
++-configure_file( ${KS_DIR}/build/ks.desktop.cmake
++-                ${KS_DIR}/${KS_APP_NAME}.desktop)
+++    configure_file(${KS_DIR}/build/org.freedesktop.kshark-record.policy.cmake
+++                   ${KS_DIR}/org.freedesktop.kshark-record.policy)
++ 
++-configure_file( ${KS_DIR}/build/org.freedesktop.kshark-record.policy.cmake
++-                ${KS_DIR}/org.freedesktop.kshark-record.policy)
+++endif (NOT _LIBS)
++ 
++ message("")
++diff --git a/kernel-shark/README b/kernel-shark/README
++index 6c360bb..0f14212 100644
++--- a/kernel-shark/README
+++++ b/kernel-shark/README
++@@ -96,6 +96,9 @@ the dialog will derive the absolut path to the trace-cmd executable from
++ 
++ If no build types is specified, the type will be "RelWithDebInfo".
++ 
+++2.1.4 In order to install a development version (including headers e.t.c) add
+++-D_DEVEL=1 as a CMake Command-Line option.
+++
++ Examples:
++ 
++     cmake -D_DOXYGEN_DOC=1 -D_INSTALL_PREFIX=/usr ../
++diff --git a/kernel-shark/src/CMakeLists.txt b/kernel-shark/src/CMakeLists.txt
++index e20a030..f63da6a 100644
++--- a/kernel-shark/src/CMakeLists.txt
+++++ b/kernel-shark/src/CMakeLists.txt
++@@ -1,5 +1,13 @@
++ message("\n src ...")
++ 
+++macro(install_symlink filepath sympath)
+++    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${filepath} ${sympath})")
+++    install(CODE "LIST(APPEND CMAKE_INSTALL_MANIFEST_FILES ${sympath})")
+++    install(CODE "message(\"-- Created symlink: ${sympath} -> ${filepath}\")")
+++endmacro(install_symlink)
+++
+++set(KS_INCLUDS_DESTINATION "${_INSTALL_PREFIX}/include/${KS_APP_NAME}")
+++
++ message(STATUS "libkshark")
++ add_library(kshark SHARED libkshark.c
++                           libkshark-model.c
++@@ -16,6 +24,19 @@ set_target_properties(kshark  PROPERTIES SUFFIX	".so.${KS_VERSION_STRING}")
++ 
++ install(TARGETS kshark LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/${KS_APP_NAME})
++ 
+++if (_DEVEL)
+++
+++    install_symlink("libkshark.so.${KS_VERSION_STRING}"
+++                    "${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/libkshark.so")
+++
+++    install(FILES "${KS_DIR}/src/libkshark.h"
+++                  "${KS_DIR}/src/libkshark-plugin.h"
+++                  "${KS_DIR}/src/libkshark-model.h"
+++            DESTINATION ${KS_INCLUDS_DESTINATION}
+++            COMPONENT devel)
+++
+++endif (_DEVEL)
+++
++ if (OPENGL_FOUND AND GLUT_FOUND)
++ 
++     message(STATUS "libkshark-plot")
++@@ -30,9 +51,21 @@ if (OPENGL_FOUND AND GLUT_FOUND)
++ 
++     install(TARGETS kshark-plot LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/${KS_APP_NAME})
++ 
+++    if (_DEVEL)
+++
+++        install_symlink("libkshark-plot.so.${KS_VERSION_STRING}"
+++                        "${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/libkshark-plot.so")
+++
+++        install(FILES "${KS_DIR}/src/KsPlotTools.hpp"
+++                      "${KS_DIR}/src/libkshark-plot.h"
+++                DESTINATION ${KS_INCLUDS_DESTINATION}
+++                COMPONENT devel)
+++
+++    endif (_DEVEL)
+++
++ endif (OPENGL_FOUND AND GLUT_FOUND)
++ 
++-if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+++if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND NOT _LIBS)
++ 
++     message(STATUS "libkshark-gui")
++     set (ks-guiLib_hdr  KsUtils.hpp
++@@ -98,7 +131,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
++     install(PROGRAMS "${KS_DIR}/bin/kshark-su-record"
++             DESTINATION ${_INSTALL_PREFIX}/bin/)
++ 
++-endif (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+++endif (Qt5Widgets_FOUND AND Qt5Network_FOUND AND NOT _LIBS)
++ 
++ add_subdirectory(plugins)
++ 
++-- 
++2.20.1
++
+diff --git a/0001-kernel-shark-Add-_DEVEL-build-flag.patch b/0001-kernel-shark-Add-_DEVEL-build-flag.patch
+deleted file mode 100644
+index ddd3fd4..0000000
+--- a/0001-kernel-shark-Add-_DEVEL-build-flag.patch
++++ /dev/null
+@@ -1,90 +0,0 @@
+-From 6c9e3b3f29c8af4780bb46313c3af73fb5d852c7 Mon Sep 17 00:00:00 2001
+-From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+-Date: Fri, 20 Sep 2019 14:31:15 +0300
+-Subject: [PATCH 1/2] kernel-shark: Add _DEVEL build flag
 -
- import pprint as pr
--import matplotlib.pyplot as plt
--import scipy.stats as st
--import numpy as np
- from collections import Counter
- from tabulate import tabulate
- 
--from ksharksetup import setup
--# Always call setup() before importing ksharkpy!!!
--setup()
+-KernelShark can be built with -D_DEVEL=1 as a command-line argument
+-for Cmake. In this case the headers of the libraries will be installed
+-as well and a symbolic link that points to the version of the library
+-being installed will be created.
 -
--import ksharkpy as ks
-+from tracecruncher import datawrapper as dw
-+from tracecruncher import ksharkpy as ks
-+from tracecruncher import ftracepy as ft
-+import tracecruncher.utils as tc
- 
- def gdb_decode_address(obj_file, obj_address):
-     """ Use gdb to examine the contents of the memory at this
-@@ -33,7 +27,7 @@ def gdb_decode_address(obj_file, obj_address):
-                      '-ex',
-                      'x/i ' + str(obj_address),
-                      obj_file],
--                    stdout=sp.PIPE)
-+                     stdout=sp.PIPE)
- 
-     symbol = result.stdout.decode("utf-8").splitlines()
- 
-@@ -49,35 +43,35 @@ def gdb_decode_address(obj_file, obj_address):
- # Get the name of the tracing data file.
- fname = str(sys.argv[1])
- 
--ks.open_file(fname)
-+ks.open(fname)
- ks.register_plugin('reg_pid')
- 
--data = ks.load_data()
-+data = dw.load()
- tasks = ks.get_tasks()
- #pr.pprint(tasks)
- 
- # Get the Event Ids of the page_fault_user or page_fault_kernel events.
--pf_eid = ks.event_id('exceptions', 'page_fault_user')
-+pf_eid = ft.event_id('exceptions', 'page_fault_user')
- 
- # Gey the size of the data.
--d_size = ks.data_size(data)
-+d_size = tc.size(data)
- 
- # Get the name of the user program.
- prog_name = str(sys.argv[2])
- 
- table_headers = ['N p.f.', 'function', 'value', 'obj. file']
--table_list = []
- 
- # Loop over all tasks associated with the user program.
- for j in range(len(tasks[prog_name])):
-+    table_list = []
-     count = Counter()
-     task_pid = tasks[prog_name][j]
-     for i in range(0, d_size):
-         if data['event'][i] == pf_eid and data['pid'][i] == task_pid:
--            address = ks.read_event_field(offset=data['offset'][i],
-+            address = ft.read_event_field(offset=data['offset'][i],
-                                           event_id=pf_eid,
-                                           field='address')
--            ip = ks.read_event_field(offset=data['offset'][i],
-+            ip = ft.read_event_field(offset=data['offset'][i],
-                                      event_id=pf_eid,
-                                      field='ip')
-             count[ip] += 1
-@@ -92,29 +86,27 @@ for j in range(len(tasks[prog_name])):
-     if i_max > len(pf_list):
-         i_max = len(pf_list)
- 
-+    #print(pf_list[:25])
-     for i in range(0, i_max):
--        func = ks.get_function(pf_list[i][0])
--        func_info = [func]
--        if func.startswith('0x'):
--            # The name of the function cannot be determined. We have an
--            # instruction pointer instead. Most probably this is a user-space
--            # function.
--            address = int(func, 0)
--            instruction = ks.map_instruction_address(task_pid, address)
+-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+----
+- kernel-shark/README             |  3 +++
+- kernel-shark/src/CMakeLists.txt | 33 +++++++++++++++++++++++++++++++++
+- 2 files changed, 36 insertions(+)
 -
--            if instruction['obj_file'] != 'UNKNOWN':
-+        func_info = []
-+        address = int(pf_list[i][0])
-+        func = ft.get_function(address)
-+        if not func :
-+            # The name of the function cannot be determined. Most probably
-+            # this is a user-space function.
-+            instruction = ft.map_instruction_address(pid=task_pid,
-+                                                     proc_addr=address)
-+            if instruction:
-                 func_info = gdb_decode_address(instruction['obj_file'],
-                                                instruction['address'])
-             else:
--                func_info += ['', instruction['obj_file']]
+-diff --git a/kernel-shark/README b/kernel-shark/README
+-index 6c360bb..0f14212 100644
+---- a/kernel-shark/README
+-+++ b/kernel-shark/README
+-@@ -96,6 +96,9 @@ the dialog will derive the absolut path to the trace-cmd executable from
+- 
+- If no build types is specified, the type will be "RelWithDebInfo".
+- 
+-+2.1.4 In order to install a development version (including headers e.t.c) add
+-+-D_DEVEL=1 as a CMake Command-Line option.
+-+
+- Examples:
+- 
+-     cmake -D_DOXYGEN_DOC=1 -D_INSTALL_PREFIX=/usr ../
+-diff --git a/kernel-shark/src/CMakeLists.txt b/kernel-shark/src/CMakeLists.txt
+-index e20a030..305840b 100644
+---- a/kernel-shark/src/CMakeLists.txt
+-+++ b/kernel-shark/src/CMakeLists.txt
+-@@ -1,5 +1,13 @@
+- message("\n src ...")
+- 
+-+macro(install_symlink filepath sympath)
+-+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${filepath} ${sympath})")
+-+    install(CODE "LIST(APPEND CMAKE_INSTALL_MANIFEST_FILES ${sympath})")
+-+    install(CODE "message(\"-- Created symlink: ${sympath} -> ${filepath}\")")
+-+endmacro(install_symlink)
+-+
+-+set(KS_INCLUDS_DESTINATION "${_INSTALL_PREFIX}/include/${KS_APP_NAME}")
+-+
+- message(STATUS "libkshark")
+- add_library(kshark SHARED libkshark.c
+-                           libkshark-model.c
+-@@ -16,6 +24,19 @@ set_target_properties(kshark  PROPERTIES SUFFIX	".so.${KS_VERSION_STRING}")
+- 
+- install(TARGETS kshark LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/${KS_APP_NAME})
+- 
+-+if (_DEVEL)
+-+
+-+    install_symlink("libkshark.so.${KS_VERSION_STRING}"
+-+                    "${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/libkshark.so")
+-+
+-+    install(FILES "${KS_DIR}/src/libkshark.h"
+-+                  "${KS_DIR}/src/libkshark-plugin.h"
+-+                  "${KS_DIR}/src/libkshark-model.h"
+-+            DESTINATION ${KS_INCLUDS_DESTINATION}
+-+            COMPONENT devel)
+-+
+-+endif (_DEVEL)
+-+
+- if (OPENGL_FOUND AND GLUT_FOUND)
+- 
+-     message(STATUS "libkshark-plot")
+-@@ -30,6 +51,18 @@ if (OPENGL_FOUND AND GLUT_FOUND)
+- 
+-     install(TARGETS kshark-plot LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/${KS_APP_NAME})
+- 
+-+    if (_DEVEL)
+-+
+-+        install_symlink("libkshark-plot.so.${KS_VERSION_STRING}"
+-+                        "${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/libkshark-plot.so")
+-+
+-+        install(FILES "${KS_DIR}/src/KsPlotTools.hpp"
+-+                      "${KS_DIR}/src/libkshark-plot.h"
+-+                DESTINATION ${KS_INCLUDS_DESTINATION}
+-+                COMPONENT devel)
+-+
+-+    endif (_DEVEL)
+-+
+- endif (OPENGL_FOUND AND GLUT_FOUND)
+- 
+- if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+--- 
+-2.20.1
 -
--        else:
--            func_info = [func]
-+                func_info = ['addr: ' + hex(address), 'UNKNOWN']
+diff --git a/0002-kernel-shark-Add-reg_pid-plugin.patch b/0002-kernel-shark-Add-reg_pid-plugin.patch
+index 146e3e6..8edc91f 100644
+--- a/0002-kernel-shark-Add-reg_pid-plugin.patch
++++ b/0002-kernel-shark-Add-reg_pid-plugin.patch
+@@ -1,4 +1,4 @@
+-From b3efcb6368bc7f70a23e156dce6c58d09953889a Mon Sep 17 00:00:00 2001
++From dbfb97e61e9907df195970cf378740a1ee927de9 Mon Sep 17 00:00:00 2001
+ From: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+ Date: Wed, 9 Oct 2019 16:57:27 +0300
+ Subject: [PATCH 2/2] kernel-shark: Add "reg_pid" plugin
+@@ -33,7 +33,7 @@ index 6c77179..bf69945 100644
+  set(PLUGINS ${PLUGIN_LIST} PARENT_SCOPE)
+ diff --git a/kernel-shark/src/plugins/reg_pid.c b/kernel-shark/src/plugins/reg_pid.c
+ new file mode 100644
+-index 0000000..4116dd8
++index 0000000..df2e406
+ --- /dev/null
+ +++ b/kernel-shark/src/plugins/reg_pid.c
+ @@ -0,0 +1,189 @@
+@@ -216,14 +216,14 @@ index 0000000..4116dd8
+ +/** Load this plugin. */
+ +int KSHARK_PLUGIN_INITIALIZER(struct kshark_context *kshark_ctx)
+ +{
+-+// 	printf("--> pid_reg init\n");
+++	printf("--> pid_reg init\n");
+ +	return plugin_pid_reg_init(kshark_ctx);
+ +}
+ +
+ +/** Unload this plugin. */
+ +int KSHARK_PLUGIN_DEINITIALIZER(struct kshark_context *kshark_ctx)
+ +{
+-+// 	printf("<-- pid reg close\n");
+++	printf("<-- pid reg close\n");
+ +	return plugin_pid_reg_close(kshark_ctx);
+ +}
+ -- 
+diff --git a/Makefile b/Makefile
+index 735d43c..9f49184 100644
+--- a/Makefile
++++ b/Makefile
+@@ -5,10 +5,12 @@
+ #
  
-         table_list.append([pf_list[i][1]] + func_info)
+ all:
++	./install_third_party.sh
+ 	python3 setup.py build
  
--ks.close()
-+    print('\n{}-{}\n'.format(prog_name, task_pid),
-+          tabulate(table_list,
-+                   headers=table_headers,
-+                   tablefmt='simple'))
+ clean:
+-	rm -rf build src/datawrapper.c
++	rm -rf third_party build tracecruncher/lib
++	rm -f src/datawrapper.c
  
--print("\n", tabulate(table_list,
--                     headers=table_headers,
--                     tablefmt='simple'))
-+ks.close()
+ install:
+ 	python3 setup.py install --record install_manifest.txt
+diff --git a/install_third_party.sh b/install_third_party.sh
+new file mode 100755
+index 0000000..412885e
+--- /dev/null
++++ b/install_third_party.sh
+@@ -0,0 +1,39 @@
++#!/bin/bash
++
++TRUNK=${PWD}
++THIRD_PARTY_LIB=${TRUNK}/tracecruncher/lib/libtracecmd.so
++
++if [ -f ${THIRD_PARTY_LIB} ]; then
++    exit 0
++fi
++
++TAG=kernelshark-v1.1
++THIRD_PARTY_DIR=${TRUNK}/third_party
++mkdir ${THIRD_PARTY_DIR}
++cd ${THIRD_PARTY_DIR}
++
++echo 'Installing: ' ${TAG}
++
++git clone git://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git --branch=${TAG}
++
++cd trace-cmd
++git am ${TRUNK}/0001-kernel-shark-*
++git am ${TRUNK}/0002-kernel-shark-*
++
++make prefix=${THIRD_PARTY_DIR} install_libs
++
++cd kernel-shark/build/
++cmake -D_DEVEL=1 -D_LIBS=1 -D_INSTALL_PREFIX=${THIRD_PARTY_DIR} -D_RPATH_TO_ORIGIN=1 ..
++make install
++
++cd ${TRUNK}
++
++LIB_DIR=${TRUNK}/tracecruncher/lib/
++if [ ! -d "${LIB_DIR}" ]; then
++    mkdir ${LIB_DIR}
++fi
++
++cp -v ${THIRD_PARTY_DIR}/lib/kernelshark/libkshark.so.* ${TRUNK}/tracecruncher/lib/
++cp -v ${THIRD_PARTY_DIR}/lib/kernelshark/plugins/*.so ${TRUNK}/tracecruncher/lib/
++cp -v ${THIRD_PARTY_DIR}/lib/traceevent/*.so ${TRUNK}/tracecruncher/lib/
++cp -v ${THIRD_PARTY_DIR}/lib/trace-cmd/*.so ${TRUNK}/tracecruncher/lib/
+diff --git a/setup.py b/setup.py
+index 526e1e7..81f6e8e 100644
+--- a/setup.py
++++ b/setup.py
+@@ -12,34 +12,37 @@ from Cython.Build import cythonize
+ import numpy as np
+ 
+ def main():
+-    kshark_path = '/usr/local/lib/kernelshark'
+-    traceevent_path = '/usr/local/lib/traceevent/'
+-    tracecmd_path = '/usr/local/lib/trace-cmd/'
++    third_party = './third_party'
+ 
+     cythonize('src/datawrapper.pyx')
++
++    third_party_libdirs = [third_party+'/lib/kernelshark',
++                           third_party+'/lib/traceevent',
++                           third_party+'/lib/trace-cmd']
++
++    runtime_library_dirs=['$ORIGIN/lib']
++
+     module_data = Extension('tracecruncher.datawrapper',
+                             sources=['src/datawrapper.c'],
+-                            include_dirs=[np.get_include()],
+-                            library_dirs=[kshark_path, traceevent_path, tracecmd_path],
+-                            runtime_library_dirs=[kshark_path, traceevent_path, tracecmd_path],
++                            include_dirs=[np.get_include(), third_party+'/include'],
++                            library_dirs=third_party_libdirs,
++                            runtime_library_dirs=runtime_library_dirs,
+                             libraries=['kshark', 'traceevent', 'tracecmd']
+                             )
+ 
+     module_ks = Extension('tracecruncher.ksharkpy',
+                           sources=['src/ksharkpy.c'],
+-                          library_dirs=[kshark_path],
+-                          runtime_library_dirs=[kshark_path],
++                          include_dirs=[third_party+'/include'],
++                          library_dirs=third_party_libdirs,
++                          runtime_library_dirs=runtime_library_dirs,
+                           libraries=['kshark'],
+-                          define_macros=[
+-                              ('LIB_KSHARK_PATH', '\"' + kshark_path + '/libkshark.so\"'),
+-                              ('KS_PLUGIN_DIR',   '\"' + kshark_path + '/plugins\"')
+-                              ],
+                           )
+ 
+     module_ft = Extension('tracecruncher.ftracepy',
+                           sources=['src/ftracepy.c'],
+-                          library_dirs=[kshark_path, traceevent_path, tracecmd_path],
+-                          runtime_library_dirs=[kshark_path, traceevent_path, tracecmd_path],
++                          include_dirs=[third_party+'/include'],
++                          library_dirs=third_party_libdirs,
++                          runtime_library_dirs=runtime_library_dirs,
+                           libraries=['kshark', 'traceevent', 'tracecmd'],
+                           )
+ 
+@@ -52,6 +55,7 @@ def main():
+           license='LGPL-2.1',
+           packages=find_packages(),
+           ext_modules=[module_data, module_ks, module_ft],
++          package_data={'tracecruncher': ['lib/*.so*']},
+           classifiers=[
+               'Development Status :: 3 - Alpha',
+               'Programming Language :: Python :: 3',
+diff --git a/src/ksharkpy.c b/src/ksharkpy.c
+index 5a15a77..553c70a 100644
+--- a/src/ksharkpy.c
++++ b/src/ksharkpy.c
+@@ -137,7 +137,9 @@ static PyObject *method_register_plugin(PyObject *self, PyObject *args,
+ 		return NULL;
+ 	}
+ 
+-	if (asprintf(&lib_file, "%s/plugin-%s.so", KS_PLUGIN_DIR, plugin) < 0) {
++	if (asprintf(&lib_file, "%s/lib/plugin-%s.so",
++			        getenv("TRACE_CRUNCHER_PATH"),
++				plugin) < 0) {
+ 		KS_MEM_ERROR
+ 		return NULL;
+ 	}
+diff --git a/tracecruncher/__init__.py b/tracecruncher/__init__.py
+index e69de29..1b34d53 100644
+--- a/tracecruncher/__init__.py
++++ b/tracecruncher/__init__.py
+@@ -0,0 +1,4 @@
++import os
++
++pwd = os.path.dirname(os.path.abspath(__file__))
++os.environ['TRACE_CRUNCHER_PATH'] = pwd
 -- 
 2.20.1
 
