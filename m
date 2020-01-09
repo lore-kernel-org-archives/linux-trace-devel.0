@@ -1,4 +1,4 @@
-Return-Path: <SRS0=VTjS=25=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=s3Jp=26=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,36 +6,36 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E983C282DD
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Jan 2020 21:09:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECF5DC33CA2
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Jan 2020 02:33:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 09F4B20643
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Jan 2020 21:09:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C72B720705
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Jan 2020 02:33:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbgAHVJV (ORCPT
+        id S1726913AbgAICdB (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 8 Jan 2020 16:09:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
+        Wed, 8 Jan 2020 21:33:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726836AbgAHVJV (ORCPT
+        id S1726758AbgAICdB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 8 Jan 2020 16:09:21 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Wed, 8 Jan 2020 21:33:01 -0500
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0078E20643;
-        Wed,  8 Jan 2020 21:09:19 +0000 (UTC)
-Date:   Wed, 8 Jan 2020 16:09:18 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 1211020705;
+        Thu,  9 Jan 2020 02:32:59 +0000 (UTC)
+Date:   Wed, 8 Jan 2020 21:32:58 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
 Subject: Re: [PATCH v2 4/5] trace-cmd,kernel-shark: New libtracefs APIs for
  ftrace events and systems
-Message-ID: <20200108160918.32d81c4a@gandalf.local.home>
+Message-ID: <20200108213258.58661595@rorschach.local.home>
 In-Reply-To: <20200106154058.60660-5-tz.stoyanov@gmail.com>
 References: <20200106154058.60660-1-tz.stoyanov@gmail.com>
         <20200106154058.60660-5-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -47,246 +47,278 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 On Mon,  6 Jan 2020 17:40:57 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
+> +static char **add_list_string(char **list, const char *name, int len)
+> +{
+> +	if (!list)
+> +		list = malloc(sizeof(*list) * 2);
+> +	else
+> +		list = realloc(list, sizeof(*list) * (len + 2));
 
-> --- /dev/null
-> +++ b/lib/tracefs/tracefs-events.c
-> @@ -0,0 +1,476 @@
-> +// SPDX-License-Identifier: LGPL-2.1
-> +/*
-> + * Copyright (C) 2008, 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-> + *
-> + * Updates:
-> + * Copyright (C) 2019, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-> + *
-> + */
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <dirent.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
+I know this was copied from my old code, but this is to document that
+we need to add another patch (separate patch, to keep this patch as
+more of a move), but the above really should just be:
+
+	list = realloc(list, sizeof(*list) * (len + 2));
+
+as realloc is malloc when the first parameter is NULL.
+
+
+> +	if (!list)
+> +		return NULL;
 > +
-> +#include "kbuffer.h"
-> +#include "tracefs.h"
-> +#include "tracefs-local.h"
+> +	list[len] = strdup(name);
+> +	if (!list[len])
+> +		return NULL;
+> +
+> +	list[len + 1] = NULL;
+> +
+> +	return list;
+> +}
+> +
+> +static char *append_file(const char *dir, const char *name)
+> +{
+> +	char *file;
+> +	int ret;
+> +
+> +	ret = asprintf(&file, "%s/%s", dir, name);
+> +
+> +	return ret < 0 ? NULL : file;
+> +}
 > +
 > +/**
-> + * tracefs_read_page_record - read a record off of a page
-> + * @tep: tep used to parse the page
-> + * @page: the page to read
-> + * @size: the size of the page
-> + * @last_record: last record read from this page
+> + * tracefs_event_systems - return list of systems for tracing
+> + * @tracing_dir: directory holding the "events" directory
+> + *		 if NULL, top tracing directory is used
 > + *
-> + * If a ring buffer page is available, and the need to parse it
-> + * without having a handle, then this function can be used
+> + * Returns an allocated list of system names. Both the names and
+> + * the list must be freed with free()
+> + * The list returned ends with a "NULL" pointer
 
-Not having a handle to what? Ah, I wrote this back in 2011. And that
-"handle" meant a tracecmd_input_handle. Hmm, I think we need a
-tracefs_handle of some sort for this, because it will slow down
-tracefs_iterate_raw_events() very much so).
+We really should have a helper function to free this list. Perhaps we
+should call it: tracefs_list_free()?
 
-
-> + *
-> + * The @tep needs to be initialized to have the page header information
-> + * already available.
-> + *
-> + * The @last_record is used to know where to read the next record from
-> + * If @last_record is NULL, the first record on the page will be read
-> + *
-> + * Returns:
-> + *  A newly allocated record that must be freed with free_record() if
-
-Hmm, free_record() needs a prefix ("tracefs_") ?
-
-> + *  a record is found. Otherwise NULL is returned if the record is bad
-> + *  or no more records exist
 > + */
-> +struct tep_record *
-> +tracefs_read_page_record(struct tep_handle *tep, void *page, int size,
-> +			  struct tep_record *last_record)
+> +char **tracefs_event_systems(const char *tracing_dir)
 > +{
-> +	unsigned long long ts;
-> +	struct kbuffer *kbuf;
-> +	struct tep_record *record = NULL;
-> +	enum kbuffer_long_size long_size;
-> +	enum kbuffer_endian endian;
-> +	void *ptr;
+> +	struct dirent *dent;
+> +	char **systems = NULL;
+> +	char *events_dir;
+> +	struct stat st;
+> +	DIR *dir;
+> +	int len = 0;
+> +	int ret;
 > +
-> +	if (tep_is_file_bigendian(tep))
-> +		endian = KBUFFER_ENDIAN_BIG;
-> +	else
-> +		endian = KBUFFER_ENDIAN_LITTLE;
+> +	if (!tracing_dir)
+> +		tracing_dir = tracefs_get_tracing_dir();
 > +
-> +	if (tep_get_header_page_size(tep) == 8)
-> +		long_size = KBUFFER_LSIZE_8;
-> +	else
-> +		long_size = KBUFFER_LSIZE_4;
-> +
-> +	kbuf = kbuffer_alloc(long_size, endian);
-> +	if (!kbuf)
+> +	if (!tracing_dir)
 > +		return NULL;
 > +
-> +	kbuffer_load_subbuffer(kbuf, page);
-> +	if (kbuffer_subbuffer_size(kbuf) > size) {
-> +		warning("%s: page_size > size", __func__);
+> +	events_dir = append_file(tracing_dir, "events");
+> +	if (!events_dir)
+> +		return NULL;
+> +
+> +	/*
+> +	 * Search all the directories in the events directory,
+> +	 * and collect the ones that have the "enable" file.
+> +	 */
+> +	ret = stat(events_dir, &st);
+> +	if (ret < 0 || !S_ISDIR(st.st_mode))
 > +		goto out_free;
+> +
+> +	dir = opendir(events_dir);
+> +	if (!dir)
+> +		goto out_free;
+> +
+> +	while ((dent = readdir(dir))) {
+> +		const char *name = dent->d_name;
+> +		char *enable;
+> +		char *sys;
+> +
+> +		if (strcmp(name, ".") == 0 ||
+> +		    strcmp(name, "..") == 0)
+> +			continue;
+> +
+> +		sys = append_file(events_dir, name);
+> +		ret = stat(sys, &st);
+> +		if (ret < 0 || !S_ISDIR(st.st_mode)) {
+> +			free(sys);
+> +			continue;
+> +		}
+> +
+> +		enable = append_file(sys, "enable");
+> +
+> +		ret = stat(enable, &st);
+> +		if (ret >= 0)
+> +			systems = add_list_string(systems, name, len++);
+> +
+> +		free(enable);
+> +		free(sys);
 > +	}
 > +
-> +	if (last_record) {
-> +		if (last_record->data < page || last_record->data >= (page + size)) {
-> +			warning("%s: bad last record (size=%u)",
-> +				__func__, last_record->size);
-> +			goto out_free;
-> +		}
-> +
-> +		ptr = kbuffer_read_event(kbuf, &ts);
-> +		while (ptr < last_record->data) {
-
-Here we are doing a linear search of last_record.
-
-I could probably add a quicker solution to this by finding the next
-record by passing in last_record->data and last_record->ts to a kbuffer
-function, at the bottom.
-
-
-> +			ptr = kbuffer_next_event(kbuf, NULL);
-> +			if (!ptr)
-> +				break;
-> +			if (ptr == last_record->data)
-> +				break;
-> +		}
-> +		if (ptr != last_record->data) {
-> +			warning("$s: could not find last_record", __func__);
-> +			goto out_free;
-> +		}
-> +		ptr = kbuffer_next_event(kbuf, &ts);
-> +	} else
-> +		ptr = kbuffer_read_event(kbuf, &ts);
-> +
-> +	if (!ptr)
-> +		goto out_free;
-> +
-> +	record = malloc(sizeof(*record));
-> +	if (!record)
-> +		return NULL;
-> +	memset(record, 0, sizeof(*record));
-> +
-> +	record->ts = ts;
-> +	record->size = kbuffer_event_size(kbuf);
-> +	record->record_size = kbuffer_curr_size(kbuf);
-> +	record->cpu = 0;
-> +	record->data = ptr;
-> +	record->ref_count = 1;
+> +	closedir(dir);
 > +
 > + out_free:
-> +	kbuffer_free(kbuf);
-> +	return record;
+> +	free(events_dir);
+> +	return systems;
 > +}
 > +
-> +static void free_record(struct tep_record *record)
+> +/**
+> + * tracefs_system_events - return list of events for system
+> + * @tracing_dir: directory holding the "events" directory
+> + * @system: the system to return the events for
+> + *
+> + * Returns an allocated list of event names. Both the names and
+> + * the list must be freed with free()
+> + * The list returned ends with a "NULL" pointer
+
+And have this free with tracefs_list_free() too.
+
+> + */
+> +char **tracefs_system_events(const char *tracing_dir, const char *system)
 > +{
-> +	if (!record)
-> +		return;
+> +	struct dirent *dent;
+> +	char **events = NULL;
+> +	char *system_dir = NULL;
+> +	struct stat st;
+> +	DIR *dir;
+> +	int len = 0;
+> +	int ret;
 > +
-> +	if (record->ref_count > 0)
-> +		record->ref_count--;
-> +	if (record->ref_count)
-> +		return;
+> +	if (!tracing_dir)
+> +		tracing_dir = tracefs_get_tracing_dir();
 > +
-> +	free(record);
-> +}
+> +	if (!tracing_dir || !system)
+> +		return NULL;
 > +
-> +static int
-> +get_events_in_page(struct tep_handle *tep, void *page,
-> +		   int size, int cpu,
-> +		   int (*callback)(struct tep_event *,
-> +				   struct tep_record *,
-> +				   int, void *),
-> +		   void *callback_context)
-> +{
-> +	struct tep_record *last_record = NULL;
-> +	struct tep_event *event = NULL;
-> +	struct tep_record *record;
-> +	int id, cnt = 0;
+> +	asprintf(&system_dir, "%s/events/%s", tracing_dir, system);
+> +	if (!system_dir)
+> +		return NULL;
 > +
-> +	if (size <= 0)
-> +		return 0;
+> +	ret = stat(system_dir, &st);
+> +	if (ret < 0 || !S_ISDIR(st.st_mode))
+> +		goto out_free;
 > +
-> +	while (true) {
-> +		event = NULL;
-> +		record = tracefs_read_page_record(tep, page, size, last_record);
-
-This is very slow because the above function does a linear search to
-find the next record each time! It would be much better to keep a kbuf
-reference and use that.
-
-
-> +		if (!record)
-> +			break;
-> +		free_record(last_record);
-> +		id = tep_data_type(tep, record);
-> +		event = tep_find_event(tep, id);
-> +		if (event && callback) {
-> +			if (callback(event, record, cpu, callback_context))
-> +				break;
+> +	dir = opendir(system_dir);
+> +	if (!dir)
+> +		goto out_free;
+> +
+> +	while ((dent = readdir(dir))) {
+> +		const char *name = dent->d_name;
+> +		char *enable;
+> +		char *event;
+> +
+> +		if (strcmp(name, ".") == 0 ||
+> +		    strcmp(name, "..") == 0)
+> +			continue;
+> +
+> +		event = append_file(system_dir, name);
+> +		ret = stat(event, &st);
+> +		if (ret < 0 || !S_ISDIR(st.st_mode)) {
+> +			free(event);
+> +			continue;
 > +		}
-> +		last_record = record;
-> +	}
-> +	free_record(last_record);
 > +
-> +	return cnt;
+> +		enable = append_file(event, "enable");
+> +
+> +		ret = stat(enable, &st);
+> +		if (ret >= 0)
+> +			events = add_list_string(events, name, len++);
+> +
+> +		free(enable);
+> +		free(event);
+> +	}
+> +
+> +	closedir(dir);
+> +
+> + out_free:
+> +	free(system_dir);
+> +
+> +	return events;
 > +}
 > +
+> +/**
+> + * tracefs_local_plugins - returns an array of available tracer plugins
 
-Here's a patch (untested ;-) that should help speed up the reading by
-using the last record from before. This may even be able to help speed
-up other parts of the code.
+Let's not call this "local_plugins" as the name is a misnomer (what
+they were called back in 2010, but are no longer called that). Let's
+change this to their real name:
+
+	tracefs_tracers()
+
 
 -- Steve
 
-diff --git a/lib/traceevent/kbuffer-parse.c b/lib/traceevent/kbuffer-parse.c
-index b18dedc4..ecbb64e9 100644
---- a/lib/traceevent/kbuffer-parse.c
-+++ b/lib/traceevent/kbuffer-parse.c
-@@ -649,6 +649,40 @@ void *kbuffer_read_at_offset(struct kbuffer *kbuf, int offset,
- 	return data;
- }
- 
-+/**
-+ * kbuffer_set_position - set kbuf to index to a current offset and timestamp
-+ * @kbuf:	The kbuffer to read from
-+ * @offset:	The offset to set the current postion to
-+ * @ts:		The timestamp to set the kbuffer to.
-+ *
-+ * This routine is used to set the current position saved in @kbuf.
-+ * This can be used in conjunction with using kbuffer_curr_offset() to
-+ * get the offset of an event retrieved from the @kbuf subbuffer, and
-+ * also using the time stamp that was retrived from that same event.
-+ * This will set the position of @kbuf back to the state it was when
-+ * it returned that event.
-+ *
-+ * Returns zero on success, -1 otherwise.
-+ */
-+int kbuffer_set_position(struct kbuffer *kbuf, int offset,
-+			   unsigned long long *ts)
-+{
-+	int ret;
-+
-+	offset -= kbuf->start;
-+
-+	if (offset < 0 || offset >= kbuf->size || !ts)
-+		return -1;	/* Bad offset */
-+
-+	kbuf->next = offset;
-+	ret = next_event(kbuf);
-+	if (ret < 0)
-+		return -1;
-+
-+	kbuf->timestamp = *ts;
-+	return 0;
-+}
-+
- /**
-  * kbuffer_subbuffer_size - the size of the loaded subbuffer
-  * @kbuf:	The kbuffer to read from
+> + * @tracing_dir: The directory that contains the tracing directory
+> + *
+> + * Returns an allocate list of plugins. The array ends with NULL
+> + * Both the plugin names and array must be freed with free()
+> + */
+> +char **tracefs_local_plugins(const char *tracing_dir)
+> +{
+> +	char *available_tracers;
+> +	struct stat st;
+> +	char **plugins = NULL;
+> +	char *buf;
+> +	char *str, *saveptr;
+> +	char *plugin;
+> +	int slen;
+> +	int len;
+> +	int ret;
+> +
+> +	if (!tracing_dir)
+> +		return NULL;
+> +
+> +	available_tracers = append_file(tracing_dir, "available_tracers");
+> +	if (!available_tracers)
+> +		return NULL;
+> +
+> +	ret = stat(available_tracers, &st);
+> +	if (ret < 0)
+> +		goto out_free;
+> +
+> +	len = str_read_file(available_tracers, &buf);
+> +	if (len < 0)
+> +		goto out_free;
+> +
+> +	len = 0;
+> +	for (str = buf; ; str = NULL) {
+> +		plugin = strtok_r(str, " ", &saveptr);
+> +		if (!plugin)
+> +			break;
+> +		slen = strlen(plugin);
+> +		if (!slen)
+> +			continue;
+> +
+> +		/* chop off any newlines */
+> +		if (plugin[slen - 1] == '\n')
+> +			plugin[slen - 1] = '\0';
+> +
+> +		/* Skip the non tracers */
+> +		if (strcmp(plugin, "nop") == 0 ||
+> +		    strcmp(plugin, "none") == 0)
+> +			continue;
+> +
+> +		plugins = add_list_string(plugins, plugin, len++);
+> +	}
+> +	free(buf);
+> +
+> + out_free:
+> +	free(available_tracers);
+> +
+> +	return plugins;
+> +}
+> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+> index 62f67d5..1d91e87 100644
+> --- a/tracecmd/trace-record.c
+> +++ b/tracecmd/trace-record.c
+> @@ -4178,7 +4178,7 @@ find_ts_in_page(struct tep_handle *pevent, void *page, int size)
+>  		return 0;
+>  
+>  	while (!ts) {
+> -		record = tracecmd_read_page_record(pevent, page, size,
+> +		record = tracefs_read_page_record(pevent, page, size,
+>  						   last_record);
+>  		if (!record)
+>  			break;
+
