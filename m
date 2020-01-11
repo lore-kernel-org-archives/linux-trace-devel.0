@@ -1,96 +1,119 @@
-Return-Path: <SRS0=6mRI=27=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=bBQs=3A=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 432B6C282DD
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Jan 2020 14:26:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AD0DC33C9E
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 Jan 2020 10:08:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 05C612077C
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 10 Jan 2020 14:26:11 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nFxUOCPI"
+	by mail.kernel.org (Postfix) with ESMTP id 4315820880
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 Jan 2020 10:08:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1578737328;
+	bh=QwCiPWsHROdyM6XfCtmVRetKjby4HK+y9x9ed/v9fuk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=pvDxtMMzBVWesNfe1zU0J2f+oTJk4toAnDQEPwEJ2fLzkJowmNSsJgO4SMXQZYamL
+	 9s9eGMyD/9tUF4syPurDMFWlf++Szabb35fdWTQbTwMnWkyjbkp8lDSGBujyN+ZyR4
+	 U4ZojucbUG/T/hbunnelwEhkAeCA5DzZ/mmLQUcM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727797AbgAJO0K (ORCPT
+        id S1728949AbgAKKIr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 10 Jan 2020 09:26:10 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:45368 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727795AbgAJO0K (ORCPT
+        Sat, 11 Jan 2020 05:08:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728812AbgAKKIr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 10 Jan 2020 09:26:10 -0500
-Received: by mail-lj1-f193.google.com with SMTP id j26so2300296ljc.12
-        for <linux-trace-devel@vger.kernel.org>; Fri, 10 Jan 2020 06:26:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9fZQguXMCxmbQlI3DmBb1GPG0r68/54q9gWH/D8Fw/M=;
-        b=nFxUOCPI4NlmE6CgWFsqf3D5xi8gV2V/i2GQn3p+r9Z8fN9UpIFgLSCrrF35iV/fNj
-         j0HfV6A7+01ogU28SA/Q8PNf8ZlR4/m00zIqpbBp2BEtt8/GpmJ+tgAtdIaDltiGiNDy
-         evhbcHmLfRxBskKFS7Oj8tlg5n8GqbNGkdWq8PWL7hJBK0lNloV/mecYaahndENsMJja
-         O6H+RUQrIvwmxVGGcKs4rQDdhz1x4z7bUGG1E9gyoqapWODj6KiBWPI3PUuaTF6AgjVO
-         NfuhtK527X1waSAyBdgeFtXnhZXnGHTf85Zm9EzjKzT7U0CZ/qLDUnUyVct9NcXsaMB/
-         nPcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9fZQguXMCxmbQlI3DmBb1GPG0r68/54q9gWH/D8Fw/M=;
-        b=oUrdImbYod0pag/7yJHikftWX2x+JTLkafDPBrlNH86oPklTKStTvYe1YMGrMG0/XA
-         oJxcNKCHucCSSph8vNGvluY4KwOyKaYuy4qPY0TnXPP4YnWNu5wX+sogbi9iiXmBi0MD
-         T6HacYfde6PyQwgvBzPO0t3tbr5Xf/6vjj4IxI4Fs3mCc3banRbdYb51miuK2W83VMNb
-         AXjTF+GwPG5BgMkp2FADF1IfYQG9lGdkdjSj8oaTis7yQ1Iwr5fIIhrxENoTcMQbJ0Ic
-         SfvnLPPL6/JndDd5t3rV+cJEwZslOxhG8BVWowThrV02FumIM9bc2BO59dnpwmvNB5HS
-         z6Pg==
-X-Gm-Message-State: APjAAAUl6sDhBBrUUoVKDhzkItHEgqfZQzlub923kqBcMeC88GW61fPx
-        wPiT9WByPEtf0VF0Zh5/ET1mvFqXLyE=
-X-Google-Smtp-Source: APXvYqxGqkucKC+oQm/LKYvrUNzK5/VrfaO8fnbP4Awvs7oQHBJ3bi7IOp8hATf/1gUFO9tKYQQiLA==
-X-Received: by 2002:a2e:b0c9:: with SMTP id g9mr2848037ljl.134.1578666368481;
-        Fri, 10 Jan 2020 06:26:08 -0800 (PST)
-Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id z11sm1078991ljc.97.2020.01.10.06.26.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jan 2020 06:26:07 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Remove duplicated "list" command entry
-Date:   Fri, 10 Jan 2020 16:26:05 +0200
-Message-Id: <20200110142605.322787-1-tz.stoyanov@gmail.com>
+        Sat, 11 Jan 2020 05:08:47 -0500
+Received: from localhost (unknown [62.119.166.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BB782064C;
+        Sat, 11 Jan 2020 10:08:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578737327;
+        bh=QwCiPWsHROdyM6XfCtmVRetKjby4HK+y9x9ed/v9fuk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aI7I0PxNjqd8nvN4bOAKz3aK3Tm4GW0kLgWldw4STJ59mjR7tStyuulFLFDCEpit/
+         TEIcMh9SVvtNhtLecIa5XcNGg3CI3CoGYZvgPEY49gcokAE0mO2xlvMpin1hqA2LyH
+         WiuG5hgFc6R+HspzSnl15ErC5MYq10RmwUe8lP80=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Sudipm Mukherjee <sudipm.mukherjee@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        linux-trace-devel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 06/62] libtraceevent: Fix lib installation with O=
+Date:   Sat, 11 Jan 2020 10:49:48 +0100
+Message-Id: <20200111094840.134928601@linuxfoundation.org>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200111094837.425430968@linuxfoundation.org>
+References: <20200111094837.425430968@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Remove a leftover in trace-cmd command array, the
-"list" entry was duplicated by mistake.
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+[ Upstream commit 587db8ebdac2c5eb3a8851e16b26f2e2711ab797 ]
+
+When we use 'O=' with make to build libtraceevent in a separate folder
+it fails to install libtraceevent.a and libtraceevent.so.1.1.0 with the
+error:
+
+  INSTALL  /home/sudip/linux/obj-trace/libtraceevent.a
+  INSTALL  /home/sudip/linux/obj-trace/libtraceevent.so.1.1.0
+
+  cp: cannot stat 'libtraceevent.a': No such file or directory
+  Makefile:225: recipe for target 'install_lib' failed
+  make: *** [install_lib] Error 1
+
+I used the command:
+
+  make O=../../../obj-trace DESTDIR=~/test prefix==/usr  install
+
+It turns out libtraceevent Makefile, even though it builds in a separate
+folder, searches for libtraceevent.a and libtraceevent.so.1.1.0 in its
+source folder.
+
+So, add the 'OUTPUT' prefix to the source path so that 'make' looks for
+the files in the correct place.
+
+Signed-off-by: Sudipm Mukherjee <sudipm.mukherjee@gmail.com>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20191115113610.21493-1-sudipm.mukherjee@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tracecmd/trace-cmd.c | 1 -
- 1 file changed, 1 deletion(-)
+ tools/lib/traceevent/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-index 4e670f1..dbfcc97 100644
---- a/tracecmd/trace-cmd.c
-+++ b/tracecmd/trace-cmd.c
-@@ -101,7 +101,6 @@ struct command commands[] = {
- 	{"options", trace_option},
- 	{"show", trace_show},
- 	{"list", trace_list},
--	{"list", trace_list},
- 	{"help", trace_usage},
- 	{"dump", trace_dump},
- 	{"-h", trace_usage},
+diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
+index 8107f060fa84..a0ac01c647f5 100644
+--- a/tools/lib/traceevent/Makefile
++++ b/tools/lib/traceevent/Makefile
+@@ -115,6 +115,7 @@ EVENT_PARSE_VERSION = $(EP_VERSION).$(EP_PATCHLEVEL).$(EP_EXTRAVERSION)
+ 
+ LIB_TARGET  = libtraceevent.a libtraceevent.so.$(EVENT_PARSE_VERSION)
+ LIB_INSTALL = libtraceevent.a libtraceevent.so*
++LIB_INSTALL := $(addprefix $(OUTPUT),$(LIB_INSTALL))
+ 
+ INCLUDES = -I. -I $(srctree)/tools/include $(CONFIG_INCLUDES)
+ 
 -- 
-2.24.1
+2.20.1
+
+
 
