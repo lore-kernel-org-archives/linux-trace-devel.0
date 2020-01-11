@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76D30C33CA3
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 Jan 2020 10:15:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B31CCC33C9E
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 Jan 2020 10:22:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4D4DD214D8
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 Jan 2020 10:15:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 87B86205F4
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 11 Jan 2020 10:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578737710;
-	bh=rAMFqApMQxwITHsnu5Pg7D3xR8Q9/+Cve3z8RndOyT0=;
+	s=default; t=1578738140;
+	bh=CeEjd43JKGClgJcCmji5Y3DbpMh4kKHdTrFqyJWjyRE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=pqkKSziFletIpAvoLazP7OGZ50T1ZuSf5IdZXw0ccgxH056XkSVjJ6z5ubAP+W+aU
-	 Ww4xlevvPEFwMouvHxK9hCKCqjTCx2ILVaCYIK0WYOeX8k5kBKFHig4Ywzz4CDlhMB
-	 X8xPiJKTYcBeaA3fqdaGIefAqC0p1rGOySXGQWMc=
+	b=S5k3rddv4bW7qn9BIWxSzI4VWrKn9BbH0XMPKr/qHO1wW4xLiqMpXbrZqq3Bff63F
+	 CTphxS814rutJmeDzI9EkEq25dT4kquVgRA/JoF9sHvzRBb6hm4GW3wCNsqYkFhYkE
+	 UvCmkGa+9Pyd2PU8PE84Kad3e6IhGCkYrz5KMMls=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729866AbgAKKPI (ORCPT
+        id S1730609AbgAKKWR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 11 Jan 2020 05:15:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56058 "EHLO mail.kernel.org"
+        Sat, 11 Jan 2020 05:22:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730076AbgAKKPF (ORCPT
+        id S1730702AbgAKKWO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 11 Jan 2020 05:15:05 -0500
+        Sat, 11 Jan 2020 05:22:14 -0500
 Received: from localhost (unknown [62.119.166.9])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 802BD20848;
-        Sat, 11 Jan 2020 10:15:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDAFB20882;
+        Sat, 11 Jan 2020 10:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578737705;
-        bh=rAMFqApMQxwITHsnu5Pg7D3xR8Q9/+Cve3z8RndOyT0=;
+        s=default; t=1578738133;
+        bh=CeEjd43JKGClgJcCmji5Y3DbpMh4kKHdTrFqyJWjyRE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=peehkEUa5xYDB+E0Xl6TDK+YIEio3R2s5O7V/QJKuQgyzicHs1JO+iwUXgWLnlYLj
-         AHGT8K0B2fKE+X4WwTagd/34lJJAgWtL6xMlojpHQTHcC9H/YgYDiAOxsbqkvpb70x
-         RSK+FaT7ptSGgRXZ9xBl3TAwPpXz3x2DRzgxstd0=
+        b=xLhsUdFk2InQqDh+tu7cA80zeK3kNxFlsBrNteGrOeCocPzual8AHgtgWs7JyG9sm
+         1Kpl7+g2bnYuDygHxEjIPgs3viLzzoL+8bORCkocWA+p/gbnhQnN0jEXBgD0joKMVP
+         KttAfV0emGslbX+RBemLqhtNZoQ9HAe7to85FDB4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -49,12 +49,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-trace-devel@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 09/84] libtraceevent: Fix lib installation with O=
-Date:   Sat, 11 Jan 2020 10:49:46 +0100
-Message-Id: <20200111094847.691878589@linuxfoundation.org>
+Subject: [PATCH 5.4 015/165] libtraceevent: Fix lib installation with O=
+Date:   Sat, 11 Jan 2020 10:48:54 +0100
+Message-Id: <20200111094922.308968341@linuxfoundation.org>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200111094845.328046411@linuxfoundation.org>
-References: <20200111094845.328046411@linuxfoundation.org>
+In-Reply-To: <20200111094921.347491861@linuxfoundation.org>
+References: <20200111094921.347491861@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -101,10 +101,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/tools/lib/traceevent/Makefile b/tools/lib/traceevent/Makefile
-index bca0c9e5452c..05f8a0f27121 100644
+index 5315f3787f8d..d008e64042ce 100644
 --- a/tools/lib/traceevent/Makefile
 +++ b/tools/lib/traceevent/Makefile
-@@ -115,6 +115,7 @@ EVENT_PARSE_VERSION = $(EP_VERSION).$(EP_PATCHLEVEL).$(EP_EXTRAVERSION)
+@@ -97,6 +97,7 @@ EVENT_PARSE_VERSION = $(EP_VERSION).$(EP_PATCHLEVEL).$(EP_EXTRAVERSION)
  
  LIB_TARGET  = libtraceevent.a libtraceevent.so.$(EVENT_PARSE_VERSION)
  LIB_INSTALL = libtraceevent.a libtraceevent.so*
