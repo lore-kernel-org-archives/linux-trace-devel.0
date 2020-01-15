@@ -1,99 +1,138 @@
-Return-Path: <SRS0=c7rX=3B=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=5FGG=3E=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT,
-	USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60122C33CA2
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 12 Jan 2020 19:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B1E2C32771
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 Jan 2020 18:06:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 35D99214D8
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 12 Jan 2020 19:05:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 20C9F2187F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 15 Jan 2020 18:06:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qqEyKDxZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NlPIqJYM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733180AbgALTFj (ORCPT
+        id S1728896AbgAOSG4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 12 Jan 2020 14:05:39 -0500
-Received: from mail-qv1-f74.google.com ([209.85.219.74]:41153 "EHLO
-        mail-qv1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732957AbgALTFj (ORCPT
+        Wed, 15 Jan 2020 13:06:56 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:36714 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728921AbgAOSGz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 12 Jan 2020 14:05:39 -0500
-Received: by mail-qv1-f74.google.com with SMTP id u11so5062360qvo.8
-        for <linux-trace-devel@vger.kernel.org>; Sun, 12 Jan 2020 11:05:39 -0800 (PST)
+        Wed, 15 Jan 2020 13:06:55 -0500
+Received: by mail-lf1-f65.google.com with SMTP id n12so13438606lfe.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 15 Jan 2020 10:06:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=6NzsR4ctp5hW12AUwjvqmUeevYaG6W27v1XKfWdwNg0=;
-        b=qqEyKDxZCHKMVjJezlTg2WCQ7FknIJJH3hs45Gnb2kXhnpeUjC9EJXQkUpsBz16KtM
-         nQqK6BY/qNjUKMSuhqNX1KPlgt1TdGNZLLt0xtbfZFYlYeO63qVn/wREFYdJkcCvdb3K
-         j5LavypN1J7yCNG8J3bd2nXYh17WB3eQEnZJCgYG03P9yxVpX/o7I2r8Gp4aG/F/TkcW
-         TyGFCSFRLFLuheSuxZFLpVT5iKS4QsxxeKjIMJqKs8YU+FZLdVmqrmj6ouhDCj1WMPmg
-         lvV60/waXCiP5C3oUDOcsWjPfZRGv57Hti2RfQCmAiBuMiuBTvmkYyD19Fbi9C0nO0wA
-         6VjA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wjWZ6LjNbGV2kuay6QBMaTRMAQ7hbuEYFR3eyDBCrIU=;
+        b=NlPIqJYMZz9jwMtlrKkbr5U+S+M4Pi76vbARQCDgRQZVnM/DCWmiP69d4kH/DaiomE
+         KdKUNPy/nljgS8XySod7ND1HPPwV1aWpcm6HsZojcFRcqyrvZl1Mor0UItV96paE7zoc
+         KRTTZgzwkSd4zhrFFsnbOPAODXM/snMdNU5tG7LE6eCPYWHXJYZ9M2KDc+ceO6fz8rXj
+         VgxWRmdwdqDEr6Mdm9kBOjDhcsp6lD0OD6NvgEHME6r7z39tNuKBHj4+W3BsYZxIYC7E
+         m1sgBvXksLIelkKyatYMWHx0iiffP+I+9OqOhioO79Yp3mM5g0LDEWcqlNyVyTYWPqNM
+         7UzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=6NzsR4ctp5hW12AUwjvqmUeevYaG6W27v1XKfWdwNg0=;
-        b=dNqO4dxRi4cDij9fGK2t88mOFj49b/csjTgxTl380+zzvzV8MOyiNLGlPOWXy5SI3r
-         JvxqBRycFYnDUaKOQV2dLchnctYTCN/fFLVciYUyHKJuewmrFMMy2ZIdOKdiRxex1b3J
-         tZC8LgtEXgxvQqcTXlauI7nWJlORnjTsXNQrB/HpN7075FpK3H0MURsr9YktjqnY0rvx
-         4OZEnqs2OS1QPv4hcdQKXxaXF2NZ7SbeO0fIoZTVLnQcsugG+d+xhw7kkGMZs2V/vmG8
-         iOWa6I5Hec72HpgiEuhIo6STv1JQQzVFpCI64/dRaBNxIAx9q2l7k6YdxFF3XSysYjZv
-         t14A==
-X-Gm-Message-State: APjAAAXxWR9ywcJOHt9ocTGd9XkbzJhvvGOduBeppWcDWLtbB06U6F3z
-        4KA1Q9EPnN3xDd78yj/Qm2UE8Kz2wjtRyIW+0A8=
-X-Google-Smtp-Source: APXvYqyUCGnChABqOGJmlzNVIri71qGMU7KMqnq4Il2bFEJfeRxOur+oZnPP6qCVb344wzCQaI+xWiWuhnMZz5xdXRA=
-X-Received: by 2002:a37:aa11:: with SMTP id t17mr8106225qke.69.1578855938550;
- Sun, 12 Jan 2020 11:05:38 -0800 (PST)
-Date:   Sun, 12 Jan 2020 14:05:37 -0500
-Message-Id: <20200112190537.170197-1-marcgonzalez@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.25.0.rc1.283.g88dfdc4193-goog
-Subject: [PATCH] trace-cmd: generate cscope.files when building cscope index
-From:   Marcelo Diop-Gonzalez <marcgonzalez@google.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wjWZ6LjNbGV2kuay6QBMaTRMAQ7hbuEYFR3eyDBCrIU=;
+        b=Ml38Z0raDNzSDQxXdMD0zSPpyBpQEigjfFgyD54dGUBSWQf+7IWeaFMEZpeKnW6hur
+         7DLdBPh75IuiGobdSs3YzatdBJohUM5/abz1wC39sL15RJncXacxD1Q1v3rOvFKGWdAu
+         CgbqMlnGvGKoyyylo391jaYgjzDwidgapurrUW9yCH1VzWMKHQ0cf4mL/42uCkwwYilr
+         Z+24jt2XdUrf5FXU2k552EXQ/rkBy0ASFqTzeTD7uhFDWo2gZiw1cIuHb1v0ahVX3bV4
+         mxkjLcIu2Y/PP4z0zlwMCE+fEqM5it4qq2p8aTuuJWHzfGE3c760Qkp09pM+BV0uUkQL
+         1PlQ==
+X-Gm-Message-State: APjAAAXCpmI7+vjNjqfXThGk524HqbCn1YeitaV1TK7GA9qOLuyT41Dp
+        ZU5ot/wenU/Yk/ICX8xdBuKrW0QA2Yqbpg==
+X-Google-Smtp-Source: APXvYqzgD/9pc33QpQ6BjfbfnySfsbYnXy/L18Q4LFimNuRpnW7fDGpgXz+mIwhjqpukqMvWIfLf9Q==
+X-Received: by 2002:ac2:5592:: with SMTP id v18mr50007lfg.17.1579111613776;
+        Wed, 15 Jan 2020 10:06:53 -0800 (PST)
+Received: from localhost.localdomain (hq.kranx.com. [81.211.121.154])
+        by smtp.gmail.com with ESMTPSA id s12sm10992867ljo.9.2020.01.15.10.06.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jan 2020 10:06:53 -0800 (PST)
+From:   Ivan Prisyazhnyy <john.koepi@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ivan Prisyazhnyy <john.koepi@gmail.com>
+Subject: [PATCH bpf] traceevent: ignore __attribute__ in fields format
+Date:   Wed, 15 Jan 2020 20:06:45 +0200
+Message-Id: <20200115180645.53331-1-john.koepi@gmail.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <CAJ8z9b1RD4gyPg8_B2sW=ULEjLRLTZrCAWc=k2=d8wSrhMBbOQ@mail.gmail.com>
+References: <CAJ8z9b1RD4gyPg8_B2sW=ULEjLRLTZrCAWc=k2=d8wSrhMBbOQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Currently, running 'make cscope' gives this output:
+To support kernel (e.g. Arch linux) tracing that
+have events fields with C attributes (__attribute__((xxx))),
+traceevent must ignore __attribute__ parts when
+parsing fields types.
 
-rm -f cscope*
-find . -name '\.pc' -prune -o -name '*\.[ch]' -print -o -name '*\.[ch]pp' ! -name '\.#' -print | cscope -b -q
-cscope: no source files found
-make: *** [Makefile:351: cscope] Error 1
+An example from Arch linux kernel 4.2:
 
-By default, cscope looks in cscope.files for the list of
-sources, so printing the source file list to this file
-fixes the above error.
+  $ cat /sys/kernel/.../sys_enter_io_submit/format
+  ...
+  field:struct iocb __attribute__((user)) * ...
+                    ^^^
 
-Signed-off-by: Marcelo Diop-Gonzalez <marcgonzalez@google.com>
+This fix adds support for fields types C attributes
+parsing to event_read_fields function. When it sees
+__attribute__ ((attribute-list)) expression it skips
+it.
+
+Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=205857
+Base: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/
+Signed-off-by: Ivan Prisyazhnyy <john.koepi@gmail.com>
 ---
- Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/lib/traceevent/event-parse.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index efd9ed4..0b15bf5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -348,7 +348,8 @@ TAGS:	force
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index beaa8b8c08ff..fbc1ea536742 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -1486,6 +1486,28 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
+ 			    (event->flags & TEP_EVENT_FL_ISFTRACE &&
+ 			     type == TEP_EVENT_OP && strcmp(token, ".") == 0)) {
  
- cscope: force
- 	$(RM) cscope*
--	$(call find_tag_files) | cscope -b -q
-+	$(call find_tag_files) > cscope.files
-+	cscope -b -q
++				/* ignore C attributes: __attribute__((expr)) */
++				if (strcmp(token, "__attribute__") == 0) {
++					free(token);
++					for (int i = 0; i < 2; i++) {
++						if (read_expected_item(TEP_EVENT_DELIM, "(") < 0) {
++							goto fail_expect;
++						}
++					}
++					for (int brackets = 2; brackets > 0;) {
++						if (read_token(&token) == TEP_EVENT_NONE) {
++							do_warning_event(event, "%s: __attribute__ not full", __func__);
++							goto fail_expect;
++						}
++						if (strcmp(token, "(") == 0)
++							brackets++;
++						else if (strcmp(token, ")") == 0)
++							brackets--;
++						free(token);
++					}
++					continue;
++				}
++
+ 				if (strcmp(token, "*") == 0)
+ 					field->flags |= TEP_FIELD_IS_POINTER;
  
- install_plugins_traceevent: force
- 	$(Q)$(MAKE) -C $(src)/lib/traceevent/plugins install_plugins
 -- 
-2.20.1
+2.24.1
 
