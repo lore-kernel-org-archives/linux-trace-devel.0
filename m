@@ -1,74 +1,103 @@
-Return-Path: <SRS0=6JDs=3K=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=9Wso=3L=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F1B4C32771
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 21 Jan 2020 02:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75D89C2D0DB
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jan 2020 15:00:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DE3C524125
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 21 Jan 2020 02:18:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3FE1E2465B
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jan 2020 15:00:08 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DhQFegha"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727144AbgAUCSc (ORCPT
+        id S1725928AbgAVPAI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 20 Jan 2020 21:18:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726890AbgAUCSc (ORCPT
+        Wed, 22 Jan 2020 10:00:08 -0500
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:33677 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgAVPAH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 20 Jan 2020 21:18:32 -0500
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A793F2253D;
-        Tue, 21 Jan 2020 02:18:31 +0000 (UTC)
-Date:   Mon, 20 Jan 2020 21:18:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Marcelo Diop-Gonzalez <marcgonzalez@google.com>
+        Wed, 22 Jan 2020 10:00:07 -0500
+Received: by mail-lf1-f46.google.com with SMTP id n25so5594004lfl.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 22 Jan 2020 07:00:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5SE3DfvKO49A7Z6WCJJoDt70nEryyw/EhvqeA7MqhkA=;
+        b=DhQFeghaTyvUctAXZq1l7SLjojbf2/YMlBzIyuoUU38JU6Rvj5wASNE7RUNxLElz3C
+         kyxLZLgRaf0RnSdZ7q7QHpE9r7ikPZmAgqF+r1YNyxjFsfyAsCUbp7HKCQnOADKLch9n
+         my5mCRRLQynDM7NvOY5W0+A12e3wYyBSumYPU+UyG+dA1NiCI+ydu+gRpvsOok+TRLlo
+         6zW6K4KQtl2MVqOcDdKTfJsN8u92KOOD+925xA8lEpZ6MLvoIv9QVa+7AwOSqbk50sdF
+         3kxDx68w1rUhLPqQQ2Hb7K88BnTmva1xPa8oAHVviI8FjN+yJUM/TYwAUU3eFcRHQb7T
+         WSTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5SE3DfvKO49A7Z6WCJJoDt70nEryyw/EhvqeA7MqhkA=;
+        b=ZbbwrMRdXS+ALPp9XuGv1TfxEJEIFgcug11fPSkybkZljs+FurPdynkODnzlq2fXWT
+         r3FaONnyDdpaxYQVFKNMnteLjnyB0rf+mF3Iap1kVUixa7F5ARdqTeoQacxH2en4c5N4
+         tutUUN7vBb+FvolZIBPBdLlfLGLimJDTHtBxkiLzpTqfTlEfSPnUpYcApkxpNlAllBBh
+         sfh3dA/fvEDStLjk1eJLYGCDKEx/1zQytn84X79VLaes6v+BAjyy1P1eyS+bUUyFzfBY
+         0/Kga74bT3fnZ3kRuIrPsmEwku6k196gyfkrEQxxHWpCj94EUb5IM3gUtFMtWOnDg70x
+         h2JQ==
+X-Gm-Message-State: APjAAAVzk0NrOLwO0hjX4O2fRQAs3vVUAkjHZ7ILj2/H9HpqcGuCNJtE
+        aeRdiozuIjCrADDDW99OrLtWdoFg
+X-Google-Smtp-Source: APXvYqxzQJ3SHrJGrDisVCTfqjS/DBGx22XodwmPIjzSvTg8nKQTvnPqedHY3oIiJHpFO2pJX28cJw==
+X-Received: by 2002:a19:844:: with SMTP id 65mr2070840lfi.20.1579705205673;
+        Wed, 22 Jan 2020 07:00:05 -0800 (PST)
+Received: from oberon.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id l7sm20722803lfc.80.2020.01.22.07.00.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jan 2020 07:00:04 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] trace-cmd: free kbuf on malloc err in
- tracecmd_read_page_record()
-Message-ID: <20200120211829.4f9e94af@rorschach.local.home>
-In-Reply-To: <20200115200515.207711-1-marcgonzalez@google.com>
-References: <20200115200515.207711-1-marcgonzalez@google.com>
-X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Subject: [PATCH 0/7] trace-cmd,libtraceevent: Rework of plugin options APIs
+Date:   Wed, 22 Jan 2020 16:59:55 +0200
+Message-Id: <20200122150002.763233-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 15 Jan 2020 15:05:15 -0500
-Marcelo Diop-Gonzalez <marcgonzalez@google.com> wrote:
+In order to simplify libtracevents APIs, logic related to plugins and
+plugin options is reworked:
+ - Complex and not used APIs are removed.
+ - Logic for printing various information for plugins and plugin options
+   is moved from the library to the application.
+ - Additional checks are added when loading new plugins and options, to
+   avoid duplications.
 
-> This fixes an unlikely but possible leak
+Tzvetomir Stoyanov (VMware) (7):
+  trace-cmd,libtraceevent: Plugin options rework
+  trace-cmd,libtraceevent: Remove TEP_PLUGIN_OPTIONS
+  trace-cmd,libtraceevent: Check for plugin options duplication
+  trace-cmd,libtraceevent: Check for plugin duplication
+  trace-cmd,libtraceevent: Remove API for plugin options print
+  trace-cmd,libtraceevent: Remove API for plugin print
+  trace-cmd, kernelshark, libtraceevent: Changed tep_plugin_add_option()
+    API
 
-Applied, thanks Marcelo!
+ include/traceevent/event-parse.h         |  50 +---
+ kernel-shark/src/libkshark.c             |   4 +-
+ lib/trace-cmd/trace-ftrace.c             |   4 +-
+ lib/trace-cmd/trace-plugin.c             |   5 -
+ lib/traceevent/event-plugin.c            | 279 ++++++++++-------------
+ lib/traceevent/plugins/plugin_function.c |   6 +-
+ tracecmd/trace-list.c                    |  55 ++++-
+ tracecmd/trace-read.c                    |   2 +-
+ 8 files changed, 188 insertions(+), 217 deletions(-)
 
--- Steve
-
-> 
-> Signed-off-by: Marcelo Diop-Gonzalez <marcgonzalez@google.com>
-> ---
->  lib/trace-cmd/trace-input.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index ac30a60..68da3a7 100644
-> --- a/lib/trace-cmd/trace-input.c
-> +++ b/lib/trace-cmd/trace-input.c
-> @@ -1746,7 +1746,7 @@ tracecmd_read_page_record(struct tep_handle *pevent, void *page, int size,
->  
->  	record = malloc(sizeof(*record));
->  	if (!record)
-> -		return NULL;
-> +		goto out_free;
->  	memset(record, 0, sizeof(*record));
->  
->  	record->ts = ts;
+-- 
+2.24.1
 
