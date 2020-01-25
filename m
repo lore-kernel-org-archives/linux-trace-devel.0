@@ -6,35 +6,36 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FC7EC35243
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CCCEC32771
 	for <linux-trace-devel@archiver.kernel.org>; Sat, 25 Jan 2020 02:50:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7F5E0208C4
+	by mail.kernel.org (Postfix) with ESMTP id 53F482073B
 	for <linux-trace-devel@archiver.kernel.org>; Sat, 25 Jan 2020 02:50:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387709AbgAYCuf (ORCPT
+        id S2387699AbgAYCuf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 24 Jan 2020 21:50:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44694 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387675AbgAYCuf (ORCPT
+        id S2387709AbgAYCue (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 24 Jan 2020 21:50:35 -0500
+        Fri, 24 Jan 2020 21:50:34 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3FAF2075E
+        by mail.kernel.org (Postfix) with ESMTPSA id 92F8E2075D
         for <linux-trace-devel@vger.kernel.org>; Sat, 25 Jan 2020 02:50:33 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1ivBWq-000tpS-LQ
+        id 1ivBWq-000toy-GC
         for linux-trace-devel@vger.kernel.org; Fri, 24 Jan 2020 21:50:32 -0500
-Message-Id: <20200125025032.531690598@goodmis.org>
+Message-Id: <20200125025032.384557311@goodmis.org>
 User-Agent: quilt/0.65
-Date:   Fri, 24 Jan 2020 21:50:11 -0500
+Date:   Fri, 24 Jan 2020 21:50:10 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/3] trace-cmd: Fix the looping to clear triggers and filters
+Subject: [PATCH 2/3] trace-cmd: Remove error processing from write_file() use error_log
+ instead
 References: <20200125025008.757057369@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,321 +46,221 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The resetting of filters and triggers did a loop on each trigger and filter
-till it was cleared. The point being, it removed one trigger or filter at a
-time. This could cause an infinite loop due to some triggers requiring an
-"ordering" of removal. When histograms are used with synthetic events, one
-histogram will be attached to another histogram, and the remove of the
-first histogram will fail to be removed if the second histogram is still
-using it.
+When write_file() fails to write the contents given to it, it reads the file
+it tried to write to and prints that. This doesn't work for all intsance
+files, and newer kernels now have an "error_log" that is written to when
+something fails.
 
-As the code would just keep iterating on the same trigger file, and that
-file would never be cleared due to the histogram dependency, it went into an
-infinite loop.
-
-Instead of a loop that would read the file and try to remove the first
-trigger, read the entire file at once, then try removing the each of the
-the triggers that was read one at a time. After all have been attempted to
-be removed, re-read the file. If the file still has data, take note, and
-continue to the other files.
-
-After processing all the files, check to see how many files still had data,
-then loop through all the files again, doing the same thing, but only do it
-the number of times that there was content in the files, as that should
-remove all the triggers no matter what the dependency is.
-
-We could optimize this by only reseting the files that still had data in it,
-but that would require making full copy of the event_iter then running on
-that. As this doesn't happen much, doing a full scan again shoudn't be too
-much of an issue. But if it becomes one, then the optimization can still
-happen later.
+Move the processing of reading the file out of write_file() and check if
+error_log exists, and read from that when possible, and then default back to
+the file if error_log does not exist.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tracecmd/trace-record.c | 199 +++++++++++++++++++++++-----------------
- 1 file changed, 115 insertions(+), 84 deletions(-)
+ tracecmd/trace-record.c | 135 +++++++++++++++++++++++++++++++++-------
+ 1 file changed, 114 insertions(+), 21 deletions(-)
 
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index bfe4f7976cc2..4a49b640b66b 100644
+index efa7f8787bb7..bfe4f7976cc2 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -1899,44 +1899,6 @@ enum {
- 	STATE_COPY,
- };
- 
--static int find_trigger(const char *file, char *buf, int size, int fields)
--{
--	FILE *fp;
--	int state = STATE_NEWLINE;
--	int ch;
--	int len = 0;
--
--	fp = fopen(file, "r");
--	if (!fp)
--		return 0;
--
--	while ((ch = fgetc(fp)) != EOF) {
--		if (ch == '\n') {
--			if (state == STATE_COPY)
--				break;
--			state = STATE_NEWLINE;
--			continue;
--		}
--		if (state == STATE_SKIP)
--			continue;
--		if (state == STATE_NEWLINE && ch == '#') {
--			state = STATE_SKIP;
--			continue;
--		}
--		if (state == STATE_COPY && ch == ':' && --fields < 1)
--			break;
--
--		state = STATE_COPY;
--		buf[len++] = ch;
--		if (len == size - 1)
--			break;
--	}
--	buf[len] = 0;
--	fclose(fp);
--
--	return len;
--}
--
- static char *read_file(const char *file)
- {
- 	char stbuf[BUFSIZ];
-@@ -2056,34 +2018,63 @@ static void write_trigger(const char *file, const char *trigger)
- 		show_error(file, "trigger");
+@@ -790,28 +790,16 @@ static int set_ftrace(int set, int use_proc)
+ 	return 0;
  }
  
--static void write_func_filter(const char *file, const char *trigger)
--{
--	if (write_file(file, trigger) < 0)
--		show_error(file, "function filter");
--}
--
--static void clear_trigger(const char *file)
-+static int clear_trigger(const char *file)
+-static int write_file(const char *file, const char *str, const char *type)
++static int write_file(const char *file, const char *str)
  {
- 	char trigger[BUFSIZ];
-+	char *save = NULL;
-+	char *line;
-+	char *buf;
- 	int len;
-+	int ret;
-+
-+	buf = read_file(file);
-+	if (!buf) {
-+		perror(file);
-+		return 0;
-+	}
- 
- 	trigger[0] = '!';
- 
-+	for (line = strtok_r(buf, "\n", &save); line; line = strtok_r(NULL, "\n", &save)) {
-+		if (line[0] == '#')
-+			continue;
-+		len = strlen(line);
-+		if (len > BUFSIZ - 2)
-+			len = BUFSIZ - 2;
-+		strncpy(trigger + 1, line, len);
-+		trigger[len + 1] = '\0';
-+		/* We don't want any filters or extra on the line */
-+		strtok(trigger, " ");
-+		write_file(file, trigger);
-+	}
-+
-+	free(buf);
-+
- 	/*
--	 * To delete a trigger, we need to write a '!trigger'
--	 * to the file for each trigger.
-+	 * Some triggers have an order in removing them.
-+	 * They will not be removed if done in the wrong order.
- 	 */
--	do {
--		len = find_trigger(file, trigger+1, BUFSIZ-1, 3);
--		if (len)
--			write_trigger(file, trigger);
--	} while (len);
-+	buf = read_file(file);
-+	if (!buf)
-+		return 0;
-+
-+	ret = 0;
-+	for (line = strtok(buf, "\n"); line; line = strtok(NULL, "\n")) {
-+		if (line[0] == '#')
-+			continue;
-+		ret = 1;
-+		break;
-+	}
-+	free(buf);
-+	return ret;
- }
- 
- static void clear_func_filter(const char *file)
- {
--	char trigger[BUFSIZ];
-+	char filter[BUFSIZ];
- 	struct stat st;
-+	char *line;
-+	char *buf;
- 	char *p;
- 	int len;
+-	char buf[BUFSIZ];
+-	int fd;
  	int ret;
-@@ -2100,33 +2091,44 @@ static void clear_func_filter(const char *file)
++	int fd;
+ 
+ 	fd = open(file, O_WRONLY | O_TRUNC);
+ 	if (fd < 0)
  		die("opening to '%s'", file);
+ 	ret = write(fd, str, strlen(str));
  	close(fd);
+-	if (ret < 0 && type) {
+-		/* write failed */
+-		fd = open(file, O_RDONLY);
+-		if (fd < 0)
+-			die("writing to '%s'", file);
+-		/* the filter has the error */
+-		while ((ret = read(fd, buf, BUFSIZ)) > 0)
+-			fprintf(stderr, "%.*s", ret, buf);
+-		die("Failed %s of %s\n", type, file);
+-		close(fd);
+-	}
+ 	return ret;
+ }
  
--	/* Now remove triggers */
--	trigger[0] = '!';
-+	buf = read_file(file);
-+	if (!buf) {
-+		perror(file);
-+		return;
-+	}
+@@ -1949,9 +1937,112 @@ static int find_trigger(const char *file, char *buf, int size, int fields)
+ 	return len;
+ }
+ 
++static char *read_file(const char *file)
++{
++	char stbuf[BUFSIZ];
++	char *buf = NULL;
++	int size = 0;
++	char *nbuf;
++	int fd;
++	int r;
 +
-+	/* Now remove filters */
-+	filter[0] = '!';
- 
- 	/*
--	 * To delete a trigger, we need to write a '!trigger'
--	 * to the file for each trigger.
-+	 * To delete a filter, we need to write a '!filter'
-+	 * to the file for each filter.
- 	 */
--	do {
--		len = find_trigger(file, trigger+1, BUFSIZ-1, 3);
--		if (len) {
--			/*
--			 * To remove "unlimited" triggers, we must remove
--			 * the ":unlimited" from what we write.
--			 */
--			if ((p = strstr(trigger, ":unlimited"))) {
--				*p = '\0';
--				len = p - trigger;
--			}
--			/*
--			 * The write to this file expects white space
--			 * at the end :-p
--			 */
--			trigger[len] = '\n';
--			trigger[len+1] = '\0';
--			write_func_filter(file, trigger);
-+	for (line = strtok(buf, "\n"); line; line = strtok(NULL, "\n")) {
-+		if (line[0] == '#')
++	fd = open(file, O_RDONLY);
++	if (fd < 0)
++		return NULL;
++
++	do {
++		r = read(fd, stbuf, BUFSIZ);
++		if (r <= 0)
 +			continue;
-+		len = strlen(line);
-+		if (len > BUFSIZ - 2)
-+			len = BUFSIZ - 2;
-+
-+		strncpy(filter + 1, line, len);
-+		filter[len + 1] = '\0';
-+		/*
-+		 * To remove "unlimited" filters, we must remove
-+		 * the ":unlimited" from what we write.
-+		 */
-+		if ((p = strstr(filter, ":unlimited"))) {
-+			*p = '\0';
-+			len = p - filter;
- 		}
--	} while (len > 0);
-+		/*
-+		 * The write to this file expects white space
-+		 * at the end :-p
-+		 */
-+		filter[len] = '\n';
-+		filter[len+1] = '\0';
-+		write_file(file, filter);
-+	}
- }
- 
- static void update_reset_triggers(void)
-@@ -4435,8 +4437,8 @@ void set_buffer_size(void)
- 		set_buffer_size_instance(instance);
- }
- 
--static void
--process_event_trigger(char *path, struct event_iter *iter, enum event_process *processed)
-+static int
-+process_event_trigger(char *path, struct event_iter *iter)
- {
- 	const char *system = iter->system_dent->d_name;
- 	const char *event = iter->event_dent->d_name;
-@@ -4459,19 +4461,21 @@ process_event_trigger(char *path, struct event_iter *iter, enum event_process *p
- 	if (ret < 0)
- 		goto out;
- 
--	clear_trigger(trigger);
-+	ret = clear_trigger(trigger);
-  out:
- 	free(trigger);
- 	free(file);
-+	return ret;
- }
- 
- static void clear_instance_triggers(struct buffer_instance *instance)
- {
-+	enum event_iter_type type;
- 	struct event_iter *iter;
--	char *path;
- 	char *system;
--	enum event_iter_type type;
--	enum event_process processed = PROCESSED_NONE;
-+	char *path;
-+	int retry = 0;
-+	int ret;
- 
- 	path = tracefs_instance_get_file(instance->tracefs, "events");
- 	if (!path)
-@@ -4479,7 +4483,6 @@ static void clear_instance_triggers(struct buffer_instance *instance)
- 
- 	iter = trace_event_iter_alloc(path);
- 
--	processed = PROCESSED_NONE;
- 	system = NULL;
- 	while ((type = trace_event_iter_next(iter, path, system))) {
- 
-@@ -4488,11 +4491,39 @@ static void clear_instance_triggers(struct buffer_instance *instance)
- 			continue;
- 		}
- 
--		process_event_trigger(path, iter, &processed);
-+		ret = process_event_trigger(path, iter);
-+		if (ret > 0)
-+			retry++;
- 	}
- 
- 	trace_event_iter_free(iter);
- 
-+	if (retry) {
-+		int i;
-+
-+		/* Order matters for some triggers */
-+		for (i = 0; i < retry; i++) {
-+			int tries = 0;
-+
-+			iter = trace_event_iter_alloc(path);
-+			system = NULL;
-+			while ((type = trace_event_iter_next(iter, path, system))) {
-+
-+				if (type == EVENT_ITER_SYSTEM) {
-+					system = iter->system_dent->d_name;
-+					continue;
-+				}
-+
-+				ret = process_event_trigger(path, iter);
-+				if (ret > 0)
-+					tries++;
-+			}
-+			trace_event_iter_free(iter);
-+			if (!tries)
-+				break;
++		nbuf = realloc(buf, size+r+1);
++		if (!nbuf) {
++			free(buf);
++			buf = NULL;
++			break;
 +		}
++		buf = nbuf;
++		memcpy(buf+size, stbuf, r);
++		size += r;
++	} while (r > 0);
++
++	close(fd);
++	if (r == 0 && size > 0)
++		buf[size] = '\0';
++
++	return buf;
++}
++
++static void read_error_log(const char *log)
++{
++	char *buf, *line;
++	char *start = NULL;
++	char *p;
++
++	buf = read_file(log);
++	if (!buf)
++		return;
++
++	line = buf;
++
++	/* Only the last lines have meaning */
++	while ((p = strstr(line, "\n")) && p[1]) {
++		if (line[0] != ' ')
++			start = line;
++		line = p + 1;
 +	}
 +
- 	tracefs_put_tracing_file(path);
++	if (start)
++		printf("%s", start);
++
++	free(buf);
++}
++
++static void show_error(const char *file, const char *type)
++{
++	struct stat st;
++	char *path = strdup(file);
++	char *p;
++	int ret;
++
++	if (!path)
++		die("Could not allocate memory");
++
++	p = strstr(path, "tracing");
++	if (p) {
++		if (strncmp(p + sizeof("tracing"), "instances", sizeof("instances") - 1) == 0) {
++			p = strstr(p + sizeof("tracing") + sizeof("instances"), "/");
++			if (!p)
++				goto read_file;
++		} else {
++			p += sizeof("tracing") - 1;
++		}
++		ret = asprintf(&p, "%.*s/error_log", (int)(p - path), path);
++		if (ret < 0)
++			die("Could not allocate memory");
++		ret = stat(p, &st);
++		if (ret < 0) {
++			free(p);
++			goto read_file;
++		}
++		read_error_log(p);
++		goto out;
++	}
++
++ read_file:
++	p = read_file(path);
++	if (p)
++		printf("%s", p);
++
++ out:
++	printf("Failed %s of %s\n", type, file);
++	free(path);
++	return;
++}
++
+ static void write_filter(const char *file, const char *filter)
+ {
+-	write_file(file, filter, "filter");
++	if (write_file(file, filter) < 0)
++		show_error(file, "filter");
  }
+ 
+ static void clear_filter(const char *file)
+@@ -1961,12 +2052,14 @@ static void clear_filter(const char *file)
+ 
+ static void write_trigger(const char *file, const char *trigger)
+ {
+-	write_file(file, trigger, "trigger");
++	if (write_file(file, trigger) < 0)
++		show_error(file, "trigger");
+ }
+ 
+ static void write_func_filter(const char *file, const char *trigger)
+ {
+-	write_file(file, trigger, "function filter");
++	if (write_file(file, trigger) < 0)
++		show_error(file, "function filter");
+ }
+ 
+ static void clear_trigger(const char *file)
+@@ -2059,7 +2152,7 @@ static void update_reset_files(void)
+ 		reset_files = reset->next;
+ 
+ 		if (!keep)
+-			write_file(reset->path, reset->reset, "reset");
++			write_file(reset->path, reset->reset);
+ 		free(reset->path);
+ 		free(reset->reset);
+ 		free(reset);
+@@ -4193,7 +4286,7 @@ static unsigned long long find_time_stamp(struct tep_handle *tep)
+ }
+ 
+ 
+-static char *read_file(char *file, int *psize)
++static char *read_top_file(char *file, int *psize)
+ {
+ 	return tracefs_instance_file_read(top_instance.tracefs, file, psize);
+ }
+@@ -4231,7 +4324,7 @@ static char *get_date_to_ts(void)
+ 
+ 	tep_set_file_bigendian(tep, tracecmd_host_bigendian());
+ 
+-	buf = read_file("events/header_page", &size);
++	buf = read_top_file("events/header_page", &size);
+ 	if (!buf)
+ 		goto out_pevent;
+ 	ret = tep_parse_header_page(tep, buf, size, sizeof(unsigned long));
+@@ -4596,7 +4689,7 @@ static void check_plugin(const char *plugin)
+ 	if (strcmp(plugin, "nop") == 0)
+ 		return;
+ 
+-	buf = read_file("available_tracers", NULL);
++	buf = read_top_file("available_tracers", NULL);
+ 	if (!buf)
+ 		die("No plugins available");
  
 -- 
 2.24.1
