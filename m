@@ -2,67 +2,67 @@ Return-Path: <SRS0=ilnn=3S=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A54ECC33CB2
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11B2DC35240
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:54:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 779DA20708
+	by mail.kernel.org (Postfix) with ESMTP id D9DD320720
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:54:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rPv+EV52"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b3nQzOeb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbgA2Jyd (ORCPT
+        id S1726177AbgA2Jyd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 29 Jan 2020 04:54:33 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:44337 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgA2Jyd (ORCPT
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:46077 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgA2Jyd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 29 Jan 2020 04:54:33 -0500
-Received: by mail-lf1-f65.google.com with SMTP id v201so11418851lfa.11
-        for <linux-trace-devel@vger.kernel.org>; Wed, 29 Jan 2020 01:54:31 -0800 (PST)
+Received: by mail-lf1-f66.google.com with SMTP id 203so11408082lfa.12
+        for <linux-trace-devel@vger.kernel.org>; Wed, 29 Jan 2020 01:54:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MZSL4lSAr1LRR/QNV4EpJkgCnF+b0yunYxPJoPPBh9E=;
-        b=rPv+EV52273euSyyGgFxq9jlmJ1z6jUXgVuTY10xlamp8DIQhnKsFVe1ilVOwb1isv
-         kUnWpSNdkbzSVKah3gwkAJnsFBJExcNGC5JzMi2Ccv364h4eKRoOwHgc4b/87Yn2opzc
-         gVwTMpjexkEKkUG0sNNb06vTkIrCoC8H0bGymmkqF646rwuoaKGkfjPT9UYTtSbpXOGI
-         S+LjNOo6kJkqnLDom+Ozdh+agjTHbU9ojFIWpYc9ofC1Qh9kVHFV8KOER+W1RyUc+nHV
-         gLKSNGyXdAO3BAfAy57nTcwC6qnxMitfWmuBKAJuvsvziR1LRgvUWLeAvLc4FgcNMy+a
-         IKAQ==
+        bh=uts4suM7LY1xI8V7E+dXpEnUTc66uIwgsYyNjau4Mto=;
+        b=b3nQzOebmZQzdXagslkpK2/4auxGuyQ1k0jMh+dEpB/M4snv6mIXXxwLJUkrin7399
+         YT8sJ2ZhvHEBIizMKP26lG9r2pg7FCaveC5GRvUWcPaouegGihWHgklt7vydMtnSdTaZ
+         jFZK2pREjxSSpxw9WVXMMt/JAtcRasejvYiOe2RN68rZBWnTT94vs9GhCvd03ieBnYZd
+         AlqPH0yPGCy0uTOAgysbhQtAuRkbl+KRO673gEgRieBCqDE5fuTDvbFo4D+gfEcg5Rgt
+         xgqLf6bXsIyeF3A00903ac2V0/VRZchyJlNnsCIu1emYtYBi8RkUouMYTmj6tCT0dXPZ
+         QYtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MZSL4lSAr1LRR/QNV4EpJkgCnF+b0yunYxPJoPPBh9E=;
-        b=EfYUeVZtq+jlruSum0op1hUSInN6sXF+4bYNnvpsiSfJd4Xe3d4408Y+OcOq+RHUrJ
-         8W4mbvJ7bOwl0syV2Yx2W4QFPB0L28oa5xL4Q41ZAkOzOGeUNrEHGhJtLXZNNuQ3ypfw
-         ua9w0ojjkf9kfWuD+R2wMz21uupc6YBYRtv/HFegVj7KcMYWKw2KpIEhELcduis+ec+U
-         lj1KaxhJR306N+KcaUL6DCNbKtXdr6tMz0DRL5/l9qEJPvW0mUE5uevQLOpWpIw0efVp
-         /rNFyV3kSjLQNs0bgESQJ4Te1KE/TmGaOtnLWIKhyvFcpU6nMVdPVeE8eUlQc8xu0Jei
-         mi8g==
-X-Gm-Message-State: APjAAAWkjif7I/xFqw2tQl41OD6JfrITklsNhlJS4nfCh4zeJPSOsAky
-        Hn6/28w5DajdVrlYPSNs+3J+zqd+
-X-Google-Smtp-Source: APXvYqyo7Tkli13DB9yqNKuehuC/+1CjEkjEkQo+pHq7kX1RpuVx97CxJtcGiiKz6+A43uRYb/9xqA==
-X-Received: by 2002:a19:748:: with SMTP id 69mr5162834lfh.40.1580291670285;
-        Wed, 29 Jan 2020 01:54:30 -0800 (PST)
+        bh=uts4suM7LY1xI8V7E+dXpEnUTc66uIwgsYyNjau4Mto=;
+        b=Qvx0f4AOGMW2MVvQzUfF1GZtr+I2zh5SD1QcvSixOlM1aaqG0SyiAu3t36ikB9pQ/q
+         Dl+vevVsU554COW8vfPUfq/crRoBwj0MKWooC3kj6lsSdpm1qno74fD++FO5CcRbbln7
+         YU59dA/dG2OFp+jjW7rmphDOP7UjDQPq8bbhMvAtqF3G0IovxJ4mlTTkeVJH/mBLwta4
+         4JEbhneFPSKpYIsgqt34aUl9nkwOHoOrTGuXQu2Uw0JHEEd9AYty9uPE9gjvO0cBKM0k
+         FhRfnOe9zU6X6eVoS0fbBrGrREHAzdaM32peGZnoKY/J2rzoSloTvY4Wj3iH8imxrMaO
+         lhgA==
+X-Gm-Message-State: APjAAAWwQKXQrVqCIs90dKdkWG8+dxk5VAtB7sz6dTCJIoDNDNQzSatR
+        W+xTs4Oj1r/YZMC/Pg6I1l0=
+X-Google-Smtp-Source: APXvYqyeinPVqQcGEq8zcXKjrzkKucnKRXeFWoVPSQcWtOzvFUwj4NSfT4E7HN+XgFOfaGR5U0NetA==
+X-Received: by 2002:a19:4849:: with SMTP id v70mr5232732lfa.30.1580291671506;
+        Wed, 29 Jan 2020 01:54:31 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id q10sm648584ljj.60.2020.01.29.01.54.29
+        by smtp.gmail.com with ESMTPSA id q10sm648584ljj.60.2020.01.29.01.54.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jan 2020 01:54:29 -0800 (PST)
+        Wed, 29 Jan 2020 01:54:30 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 6/9] trace-cmd: Unit tests for libtracefs APIs related to ftrace instances
-Date:   Wed, 29 Jan 2020 11:54:18 +0200
-Message-Id: <20200129095421.881786-7-tz.stoyanov@gmail.com>
+Subject: [PATCH 7/9] trace-cmd: Unit tests for libtracefs APIs related to ftrace events and systems
+Date:   Wed, 29 Jan 2020 11:54:19 +0200
+Message-Id: <20200129095421.881786-8-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200129095421.881786-1-tz.stoyanov@gmail.com>
 References: <20200129095421.881786-1-tz.stoyanov@gmail.com>
@@ -74,157 +74,103 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Added unit tests for these APIs:
-  tracefs_instance_alloc()
-  tracefs_instance_get_name()
-  tracefs_instance_create()
-  tracefs_instance_get_dir()
-  tracefs_instance_get_file()
-  tracefs_instance_file_read()
-  tracefs_instance_file_write()
-  tracefs_instance_free()
+  tracefs_event_systems()
+  tracefs_system_events()
+  tracefs_list_free()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- utest/tracefs-utest.c | 122 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 122 insertions(+)
+ utest/tracefs-utest.c | 66 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
 diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 2e6e96f..7930c64 100644
+index 7930c64..e4ab64f 100644
 --- a/utest/tracefs-utest.c
 +++ b/utest/tracefs-utest.c
-@@ -138,6 +138,126 @@ static void test_trace_file(void)
- 	tracefs_put_tracing_file(file);
+@@ -9,6 +9,7 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <time.h>
++#include <dirent.h>
+ 
+ #include <CUnit/CUnit.h>
+ #include <CUnit/Basic.h>
+@@ -258,6 +259,69 @@ static void test_instance_file(void)
+ 	free(inst_dir);
  }
  
-+static void test_instance_file_read(struct tracefs_instance *inst, char *fname)
++static void exclude_string(char **strings, char *name)
 +{
-+	const char *tdir  = tracefs_get_tracing_dir();
-+	char buf[BUFSIZ];
-+	char *fpath;
-+	char *file;
-+	size_t fsize = 0;
-+	int size = 0;
-+	int fd;
++	int i;
 +
-+	if (inst) {
-+		CU_TEST(asprintf(&fpath, "%s/instances/%s/%s",
-+			tdir, tracefs_instance_get_name(inst), fname) > 0);
-+	} else {
-+		CU_TEST(asprintf(&fpath, "%s/%s", tdir, fname) > 0);
++	for (i = 0; strings[i]; i++) {
++		if (strcmp(strings[i], name) == 0) {
++			free(strings[i]);
++			strings[i] = strdup("/");
++			return;
++		}
 +	}
-+
-+	memset(buf, 0, BUFSIZ);
-+	fd = open(fpath, O_RDONLY);
-+	CU_TEST(fd >= 0);
-+	fsize = read(fd, buf, BUFSIZ);
-+	CU_TEST(fsize >= 0);
-+	close(fd);
-+	buf[BUFSIZ - 1] = 0;
-+
-+	file = tracefs_instance_file_read(inst, fname, &size);
-+	CU_TEST(file != NULL);
-+	CU_TEST(size == fsize);
-+	CU_TEST(strcmp(file, buf) == 0);
-+
-+	free(fpath);
-+	free(file);
 +}
 +
-+#define ALL_TRACERS	"available_tracers"
-+#define CUR_TRACER	"current_tracer"
-+static void test_instance_file(void)
++static void test_check_files(const char *fdir, char **files)
 +{
-+	struct tracefs_instance *instance = NULL;
-+	const char *name = get_rand_str();
-+	char *inst_name = NULL;
++	struct dirent *dent;
++	DIR *dir;
++	int i;
++
++	dir = opendir(fdir);
++	CU_TEST(dir != NULL);
++
++	while ((dent = readdir(dir)))
++		exclude_string(files, dent->d_name);
++
++	closedir(dir);
++
++	for (i = 0; files[i]; i++)
++		CU_TEST(files[i][0] == '/');
++}
++
++static void test_system_event(void)
++{
 +	const char *tdir;
-+	char *inst_file;
-+	char *inst_dir;
-+	struct stat st;
-+	char *fname;
-+	char *file1;
-+	char *file2;
-+	char *tracer;
-+	int size;
-+	int ret;
++	char **systems;
++	char **events;
++	char *sdir = NULL;
 +
 +	tdir  = tracefs_get_tracing_dir();
 +	CU_TEST(tdir != NULL);
-+	CU_TEST(asprintf(&inst_dir, "%s/instances/%s", tdir, name) > 0);
-+	CU_TEST(stat(inst_dir, &st) != 0);
 +
-+	instance = tracefs_instance_alloc(name);
-+	CU_TEST(instance != NULL);
-+	CU_TEST(stat(inst_dir, &st) != 0);
-+	inst_name = tracefs_instance_get_name(instance);
-+	CU_TEST(inst_name != NULL);
-+	CU_TEST(strcmp(inst_name, name) == 0);
++	systems = tracefs_event_systems(tdir);
++	CU_TEST(systems != NULL);
 +
-+	CU_TEST(tracefs_instance_create(instance) == 0);
-+	CU_TEST(stat(inst_dir, &st) == 0);
-+	CU_TEST(S_ISDIR(st.st_mode));
++	events = tracefs_system_events(tdir, systems[0]);
++	CU_TEST(events != NULL);
 +
-+	fname = tracefs_instance_get_dir(NULL);
-+	CU_TEST(fname != NULL);
-+	CU_TEST(strcmp(fname, tdir) == 0);
-+	free(fname);
++	asprintf(&sdir, "%s/events/%s", tdir, systems[0]);
++	CU_TEST(sdir != NULL);
++	test_check_files(sdir, events);
++	free(sdir);
++	sdir = NULL;
 +
-+	fname = tracefs_instance_get_dir(instance);
-+	CU_TEST(fname != NULL);
-+	CU_TEST(strcmp(fname, inst_dir) == 0);
-+	free(fname);
++	asprintf(&sdir, "%s/events", tdir);
++	CU_TEST(sdir != NULL);
++	test_check_files(sdir, systems);
 +
-+	CU_TEST(asprintf(&fname, "%s/"ALL_TRACERS, tdir) > 0);
-+	CU_TEST(fname != NULL);
-+	inst_file = tracefs_instance_get_file(NULL, ALL_TRACERS);
-+	CU_TEST(inst_file != NULL);
-+	CU_TEST(strcmp(fname, inst_file) == 0);
-+	tracefs_put_tracing_file(inst_file);
-+	free(fname);
++	tracefs_list_free(systems);
++	tracefs_list_free(events);
 +
-+	CU_TEST(asprintf(&fname, "%s/instances/%s/"ALL_TRACERS, tdir, name) > 0);
-+	CU_TEST(fname != NULL);
-+	CU_TEST(stat(fname, &st) == 0);
-+	inst_file = tracefs_instance_get_file(instance, ALL_TRACERS);
-+	CU_TEST(inst_file != NULL);
-+	CU_TEST(strcmp(fname, inst_file) == 0);
-+
-+	test_instance_file_read(NULL, ALL_TRACERS);
-+	test_instance_file_read(instance, ALL_TRACERS);
-+
-+	file1 = tracefs_instance_file_read(instance, ALL_TRACERS, NULL);
-+	CU_TEST(file1 != NULL);
-+	tracer = strtok(file1, " ");
-+	CU_TEST(tracer != NULL);
-+	ret = tracefs_instance_file_write(instance, CUR_TRACER, tracer);
-+	CU_TEST(ret == strlen(tracer));
-+	file2 = tracefs_instance_file_read(instance, CUR_TRACER, &size);
-+	CU_TEST(file2 != NULL);
-+	CU_TEST(size >= strlen(tracer));
-+	CU_TEST(strncmp(file2, tracer, strlen(tracer)) == 0);
-+	free(file1);
-+	free(file2);
-+
-+	tracefs_put_tracing_file(inst_file);
-+	free(fname);
-+
-+	CU_TEST(tracefs_instance_destroy(NULL) != 0);
-+	CU_TEST(tracefs_instance_destroy(instance) == 0);
-+	CU_TEST(tracefs_instance_destroy(instance) != 0);
-+	tracefs_instance_free(instance);
-+	CU_TEST(stat(inst_dir, &st) != 0);
-+	free(inst_dir);
++	free(sdir);
 +}
 +
  static int test_suite_destroy(void)
  {
  	tracefs_instance_destroy(test_instance);
-@@ -175,6 +295,8 @@ void test_tracefs_lib(void)
- 	}
- 	CU_add_test(suite, "tracing file / directory APIs",
+@@ -297,6 +361,8 @@ void test_tracefs_lib(void)
  		    test_trace_file);
-+	CU_add_test(suite, "instance file / directory APIs",
-+		    test_instance_file);
+ 	CU_add_test(suite, "instance file / directory APIs",
+ 		    test_instance_file);
++	CU_add_test(suite, "systems and events APIs",
++		    test_system_event);
  	CU_add_test(suite, "tracefs_iterate_raw_events API",
  		    test_iter_raw_events);
  }
