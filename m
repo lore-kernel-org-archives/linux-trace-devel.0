@@ -2,67 +2,70 @@ Return-Path: <SRS0=ilnn=3S=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02D5AC33CB2
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:54:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 195D8C35240
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:54:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C562A20708
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:54:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E0DD220708
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:54:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i9S36A6i"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FOvQwiky"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726114AbgA2JyZ (ORCPT
+        id S1726116AbgA2Jy0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 29 Jan 2020 04:54:25 -0500
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:44413 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgA2JyZ (ORCPT
+        Wed, 29 Jan 2020 04:54:26 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:46775 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726091AbgA2Jy0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 29 Jan 2020 04:54:25 -0500
-Received: by mail-lj1-f181.google.com with SMTP id q8so17698342ljj.11
-        for <linux-trace-devel@vger.kernel.org>; Wed, 29 Jan 2020 01:54:24 -0800 (PST)
+        Wed, 29 Jan 2020 04:54:26 -0500
+Received: by mail-lj1-f196.google.com with SMTP id x14so15361008ljd.13
+        for <linux-trace-devel@vger.kernel.org>; Wed, 29 Jan 2020 01:54:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xIum2rKl9q4t3jmOsjzfhfIX8s8KIg3Hwe46szfm3t8=;
-        b=i9S36A6i7kWlj/xskoBU38EXYGHpH58NSCYxWrFAGoOG32oSXGBOzLdnbGc7GhYMtN
-         J9Xh/aCAMLIjPnjS6kefzUp7n9LzXTERWiwQOB3GiNPOKaeI2i61UbC1FzO46lL+i0HU
-         CLkpzLBMaN2Dj4JXAF6jkaBT8fKzQxn+8SQK9crT9ILhFxlPY58S7Yrygh+lQbDuGXx2
-         fse4fsapCac2tbu6MlptbA6tVKqgkdw0elx6gZRJ4f/d54S3me6cSsozVHWheBsL0PRF
-         pov28h+utbQ68gES3hMl6444DzyaR9O4dJX6bNOQPhVkodOwL/98igIRfjuxZHCacLSm
-         ZX2Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=fc0j0BiA9SjJB9GgeDcl8wyZ3wbFf9Y07xK8FXQu8DY=;
+        b=FOvQwikywkATgZje/FzGJBsoZ1w3Eq+FdKhksTR7Zo/HuNZQZWGfVgs8LgKydT7jOb
+         pzU/Y5nwa8RzwokFosy/oFS+sgItABbRl5JQbHoimNUGXl9cHUjiEnGcwF+xwCXD2IR2
+         PKzPEYvWfIoUuTFvGgkp9pfiqEjRdile2hnMWBAMMgqE1u9GJNA70LMPXZmewyf6leAP
+         aAbYgd8Rh+cYn3eTa1GwdhTaFfY4Ss39ViLzqguifrG4WQjAWpZnNAvvWEVNQoNnWnl0
+         PIlU1fvU+WMZbvFcky9c9kZsBOTKFWD2BGBPz6iRIpfmJJXubaU34e9suVs53LvlNbYI
+         962w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xIum2rKl9q4t3jmOsjzfhfIX8s8KIg3Hwe46szfm3t8=;
-        b=D/cNVMwcfqrR1RoceehL+TfVIxAP4L9gujrpVt5vwEUvqx/UUVWHAhqwEKLd0UJTiD
-         j+jj+u1VemWBMBJfIvkFmlNjLpdFPLQqLPrKYf1RS6t+mojy62tdOn0JHXf+Wxr1PgE9
-         bo77sfKJhUmh+5+Jr9MtLag1IiPNVLKcSFkBj0Vjx3ZJ9ApwRaMQ1VUt5Cly4wVXJ0Tv
-         ZmfEzH81mQuhr9moYv0LlwPDFudpcfn6/H0UPbRYEniXKiFT5Z7vVoE5oxuuIvt7Wk4O
-         +gLfZWCXA8b/Y99B2B2V81eBNgMnMuYG164WaO53JwKMULcuUgGBE/vYH+2NN7c9UJ49
-         mLxw==
-X-Gm-Message-State: APjAAAWh1jsjNn2WhxtvXFFEtJ7NmIYqmSm5/SYxkZMiMQUc7FigMUhB
-        D6FAlquc2ws7OWhZPI1A/Lu15I50
-X-Google-Smtp-Source: APXvYqw/x6hg/FzwNAnU9gPLaGRBXrrrgonD8ynBZaR1OCTTj+wRHGnyYipFcJ/2dUKbXqWGHEc+qQ==
-X-Received: by 2002:a2e:9d0f:: with SMTP id t15mr15719711lji.171.1580291663384;
-        Wed, 29 Jan 2020 01:54:23 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fc0j0BiA9SjJB9GgeDcl8wyZ3wbFf9Y07xK8FXQu8DY=;
+        b=ZoPGrWAHYfIBKUQrkQ93g/qwS/M59B1VItHgQzj915+LZZGFszfkBDgVH4TlONqyf7
+         f1bTiiQeIKEyhq67LCmkP7wGmbPsLoOfuFAt3B1CCCGaWin4i+j6LwoP5/tgqIPFqeMT
+         WCq6Z7sXXOFutmtFCZQ4KXgxHW3t1r/Dm6yGMh+Cm7rnNP9YS0V8qpycSIOeJqFdiYbY
+         PV14EsCprr2/mDaDgt2IDi1R93/2VGb/h+XL+Avf60wy9Dn1lW1qhangB2KbrYmPHHvn
+         QF/n3SOo1wY+nJ25Hd63FTqJDIRifuFcOaGzC+TTTJ8D+scxLMPiS3Xf5Ksc6wDI2Vja
+         kO8g==
+X-Gm-Message-State: APjAAAXGSSOaSlwroz6o+NWb9hCKT/CZbKG103+Y9ao0A6kResq9CWWt
+        hTMxp4AezCuUAO8CQnIxTPJBHM12
+X-Google-Smtp-Source: APXvYqz9Vz0VYTIhe3EroIrdGGobrL0/i0/opIA9yV4y/K/HJP/oyy+SynUd39bfKbXZ4NaHdXhN0A==
+X-Received: by 2002:a2e:7e11:: with SMTP id z17mr12013789ljc.279.1580291664465;
+        Wed, 29 Jan 2020 01:54:24 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id q10sm648584ljj.60.2020.01.29.01.54.22
+        by smtp.gmail.com with ESMTPSA id q10sm648584ljj.60.2020.01.29.01.54.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jan 2020 01:54:22 -0800 (PST)
+        Wed, 29 Jan 2020 01:54:23 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 0/9] libtracefs: few fixes and a lot of unit tests
-Date:   Wed, 29 Jan 2020 11:54:12 +0200
-Message-Id: <20200129095421.881786-1-tz.stoyanov@gmail.com>
+Subject: [PATCH 1/9] trace-cmd: fix description of tracefs_get_tracing_dir() API
+Date:   Wed, 29 Jan 2020 11:54:13 +0200
+Message-Id: <20200129095421.881786-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200129095421.881786-1-tz.stoyanov@gmail.com>
+References: <20200129095421.881786-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -70,39 +73,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Few minor libtracefs fixes and a lot of new unit tests,
-covering all library APIs.
+The string, returned from this API must not be freed, as it is
+a pointer to a local static variable. This was not explicitly
+stated in the description of the API.
 
-Tzvetomir Stoyanov (VMware) (9):
-  trace-cmd: fix description of tracefs_get_tracing_dir() API
-  trace-cmd: Remove tracefs_read_page_record() API
-  trace-cmd: Add sanity check of tracefs_get_tracing_file() input
-    parameter.
-  trace-cmd: Unit test for libtracefs
-  trace-cmd: Unit tests for libtracefs APIs related to tracing file /
-    directory
-  trace-cmd: Unit tests for libtracefs APIs related to ftrace instances
-  trace-cmd: Unit tests for libtracefs APIs related to ftrace events and
-    systems
-  trace-cmd: Unit test for tracefs_tracers() API
-  trace-cmd: Unit tests for libtracefs APIs related to allocating a tep
-    handler based on local events
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ lib/tracefs/tracefs-utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- Makefile                    |  13 +-
- include/tracefs/tracefs.h   |   3 -
- lib/tracefs/tracefs-utils.c |   5 +-
- utest/Makefile              |  41 +++
- utest/README                |  15 ++
- utest/trace-utest.c         |  83 ++++++
- utest/trace-utest.h         |  11 +
- utest/tracefs-utest.c       | 491 ++++++++++++++++++++++++++++++++++++
- 8 files changed, 656 insertions(+), 6 deletions(-)
- create mode 100644 utest/Makefile
- create mode 100644 utest/README
- create mode 100644 utest/trace-utest.c
- create mode 100644 utest/trace-utest.h
- create mode 100644 utest/tracefs-utest.c
-
+diff --git a/lib/tracefs/tracefs-utils.c b/lib/tracefs/tracefs-utils.c
+index 658c852..de46aab 100644
+--- a/lib/tracefs/tracefs-utils.c
++++ b/lib/tracefs/tracefs-utils.c
+@@ -133,7 +133,7 @@ char *tracefs_find_tracing_dir(void)
+  * tracefs_get_tracing_dir - Get tracing directory
+  *
+  * Returns string containing the full path to the system's tracing directory.
+- * Must use tracefs_put_tracing_file() to free the returned string.
++ * The returned string must *not* be freed.
+  */
+ const char *tracefs_get_tracing_dir(void)
+ {
 -- 
 2.24.1
 
