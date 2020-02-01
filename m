@@ -1,150 +1,115 @@
-Return-Path: <SRS0=DRQG=3U=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=6MOi=3V=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	URIBL_DBL_ABUSE_MALW,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F148C2D0DB
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 31 Jan 2020 14:49:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAB10C33CB3
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  1 Feb 2020 16:19:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DF85F217BA
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 31 Jan 2020 14:49:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C5B8206E3
+	for <linux-trace-devel@archiver.kernel.org>; Sat,  1 Feb 2020 16:19:44 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cLFBTF/b"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgAaOt6 (ORCPT
+        id S1726670AbgBAQTo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 31 Jan 2020 09:49:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728825AbgAaOt6 (ORCPT
+        Sat, 1 Feb 2020 11:19:44 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:52656 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726622AbgBAQTo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 31 Jan 2020 09:49:58 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D64AD206D5;
-        Fri, 31 Jan 2020 14:49:56 +0000 (UTC)
-Date:   Fri, 31 Jan 2020 09:49:54 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v18 16/18] trace-cmd: Basic infrastructure for host -
- guest timestamp synchronization
-Message-ID: <20200131094954.7c553e85@gandalf.local.home>
-In-Reply-To: <CACqStoe7eoDN4bCBNf7oQBUJC10Rk8QB8S9EVmbkUss7Fntz7A@mail.gmail.com>
-References: <20191213153029.133570-1-tz.stoyanov@gmail.com>
-        <20191213153029.133570-17-tz.stoyanov@gmail.com>
-        <20191220234829.55000e54@rorschach.local.home>
-        <CACqStoe7eoDN4bCBNf7oQBUJC10Rk8QB8S9EVmbkUss7Fntz7A@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Sat, 1 Feb 2020 11:19:44 -0500
+Received: by mail-wm1-f66.google.com with SMTP id p9so11301774wmc.2;
+        Sat, 01 Feb 2020 08:19:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=i97V5nZM9oFzwMaxhJEd80SVB7v4vVuL/a+W4QAU/Yw=;
+        b=cLFBTF/by2QxFcaPwtxWeHYpUy8SCb9bUiZBV+igQMRIoKaqc4hSiacqejrAX6akLS
+         Kri1+XE6epF1klNBmLoh/opivEOyoMiOR/6rW3UGEPQHRlM8pP8VSIAKshiWikiZjnVe
+         iTdFf/L9axwbR606lLgNOrV+iUn+yZ2vwD+W4KKL2byyFTi0oiD0ptzsDUrWbmCZhoS5
+         PohpyxQCK4ok6HzihthEiOBV3oAFMxVXHroBu7mD6koXGy0hQ+LXkHyf8Rz2aHeq0bjN
+         JcbCxIVt4ez2p6mff/2VAA5lVUxnEsvkvq+2ZxKbNbvJrE41/z4uhJK60h51A3FoAvwT
+         fPVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=i97V5nZM9oFzwMaxhJEd80SVB7v4vVuL/a+W4QAU/Yw=;
+        b=ge5vjRgMjtxxWfzJ6fehWH8t3v52S+zyisWlAV8sdS3YVYVQyeNWLZ9EVuM8Z4D74s
+         WY+YaYJZ8OeGYHXwej9w3H1vTFf/kQdEBEidBDAtpwpkF5SgPC5PrXQ910qnQLfPMFlC
+         umLJL8Y8NRji9sP7uJaBvqfJDHNKRugr+yFhQr4CbGahM8IgyAZdlf0p+fl4Eh7OSFgZ
+         fCOcLcLero9qdxA+dlCXh8EG7BmokuQwrncdP6iaZTrYDCrn9AA6UyI2bjyChneDgtT6
+         W/uYddmglNBwiHxkl6BO7jg85enwIQ1xRNy0EfbwfLHBhcPg5Hk9SqvTrp26WcPHgmr4
+         ScAQ==
+X-Gm-Message-State: APjAAAV/HC4LevTQHVcVqrkwdp0BwsD90yOJuh7DBPCwiTm5XC44arWf
+        szYSN7GE1c9iyzmPCYbQU4VVYxasHvA=
+X-Google-Smtp-Source: APXvYqz2IAwlVsdI7YA9oOZw7h/Hk7zFrPLmwTvAB2vSHZJBC2gWa0kd/FiqWkjwT8zpAKjj+S5I2A==
+X-Received: by 2002:a1c:9d07:: with SMTP id g7mr18481728wme.130.1580573982505;
+        Sat, 01 Feb 2020 08:19:42 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d5f:200:619d:5ce8:4d82:51eb])
+        by smtp.gmail.com with ESMTPSA id n16sm17404611wro.88.2020.02.01.08.19.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Feb 2020 08:19:41 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH RFC] MAINTAINERS: add TRACE EVENT LIBRARY section
+Date:   Sat,  1 Feb 2020 17:19:31 +0100
+Message-Id: <20200201161931.29665-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 31 Jan 2020 09:53:41 +0000
-Tzvetomir Stoyanov <tstoyanov@vmware.com> wrote:
+The git history shows that the files under ./tools/lib/traceevent/ are
+being developed and maintained by Tzetomir Stoyanov and Steven Rostedt
+and are discussed on the linux-trace-devel list.
 
-> On Sat, Dec 21, 2019 at 6:48 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >  
->  [ .. ]
-> > > +#define PROTO_MASK_SIZE (sizeof(char))  
-> >
-> > I'm thinking that declaring a mask the size of 1 is a bit overkill.
-> >  
-> This define is a leftover from the previous implementation of this
-> bitmask, where
-> the size was 4 bytes. It was very easy to switch to 1 byte using the
-> define, that's
-> why I would prefer to keep it - in case we decide to change the size again.
-> The code below is written with the assumption that the size could be
-> more than 1 byte.
+Add a suitable section in MAINTAINERS for patches to reach them.
 
-OK, that makes more sense.
+This was identified with a small script that finds all files only
+belonging to "THE REST" according to the current MAINTAINERS file, and I
+acted upon its output.
 
-> 
-> [ .. ]
-> > > + */
-> > > +void tracecmd_tsync_free(struct tracecmd_time_sync *tsync)
-> > > +{
-> > > +     struct clock_sync_context *tsync_context;
-> > > +     struct tsync_proto *proto;
-> > > +
-> > > +     if (!tsync->context)
-> > > +             return;
-> > > +     tsync_context = (struct clock_sync_context *)tsync->context;
-> > > +
-> > > +     proto = tsync_proto_find(tsync->sync_proto);
-> > > +     if (proto && proto->clock_sync_free)
-> > > +             proto->clock_sync_free(tsync);
-> > > +
-> > > +     clock_synch_delete_instance(tsync_context->vinst);
-> > > +     tsync_context->vinst = NULL;
-> > > +
-> > > +     free(tsync_context->sync_ts);
-> > > +     free(tsync_context->sync_offsets);
-> > > +     tsync_context->sync_ts = NULL;
-> > > +     tsync_context->sync_offsets = NULL;
-> > > +     tsync_context->sync_count = 0;
-> > > +     tsync_context->sync_size = 0;
-> > > +     pthread_mutex_destroy(&tsync->lock);
-> > > +     pthread_cond_destroy(&tsync->cond);
-> > > +     free(tsync->clock_str);  
-> >
-> > I would think we would want a free(tsync) here. As the name of the
-> > function suggests.
-> >  
-> There is no API to allocate it, that's why this function does not free
-> the memory. There is one use case where this memory is not allocated,
-> and free(tsync) will not work for it.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Ceco, Steven, I added the information based on what I could see from an
+outsider view. Please change and more files to the entry if needed.
 
-Then perhaps we should call it: tracecmd_tsync_cleanup(), as that's
-what it is doing. _free() usually means you are actually freeing what
-you pass in.
+applies cleanly on current master and next-20200131
 
+Ceco, congrats becoming a kernel maintainer :)
 
-> 
-> [ .. ]
-> > > +
-> > > +unsigned int tracecmd_guest_tsync(char *tsync_protos,
-> > > +                               unsigned int tsync_protos_size, char *clock,
-> > > +                               unsigned int *tsync_port, pthread_t *thr_id)
-> > > +{
-> > > +     struct tracecmd_time_sync *tsync = NULL;
-> > > +     cpu_set_t *pin_mask = NULL;
-> > > +     pthread_attr_t attrib;
-> > > +     size_t mask_size = 0;
-> > > +     unsigned int proto;
-> > > +     int ret;
-> > > +     int fd;
-> > > +
-> > > +     fd = -1;
-> > > +     proto = tracecmd_tsync_proto_select(tsync_protos, tsync_protos_size);
-> > > +     if (!proto)
-> > > +             return 0;
-> > > +#ifdef VSOCK
-> > > +     fd = trace_make_vsock(VMADDR_PORT_ANY);
-> > > +     if (fd < 0)
-> > > +             goto error;
-> > > +
-> > > +     ret = trace_get_vsock_port(fd, tsync_port);
-> > > +     if (ret < 0)
-> > > +             goto error;
-> > > +#else
-> > > +     return 0;  
-> >
-> > If we have no synchronization support, shouldn't this return an error?  
-> 
-> This function returns the id of negotiated time sync protocol. 0 means the
-> negotiation was not successful, no protocol is selected. When the caller
-> receives 0, it means we have no synchronization with the peer.
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-OK, so this function definitely needs a "kernel doc" header explaining
-this.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1f77fb8cdde3..17eb358c3fda 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16903,6 +16903,13 @@ T:	git git://git.infradead.org/users/jjs/linux-tpmdd.git
+ S:	Maintained
+ F:	drivers/char/tpm/
+ 
++TRACE EVENT LIBRARY
++M:	Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
++M:	Steven Rostedt <rostedt@goodmis.org>
++L:	linux-trace-devel@vger.kernel.org
++S:	Maintained
++F:	tools/lib/traceevent/
++
+ TRACING
+ M:	Steven Rostedt <rostedt@goodmis.org>
+ M:	Ingo Molnar <mingo@redhat.com>
+-- 
+2.17.1
 
--- Steve
