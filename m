@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAB8FC2BA83
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  9 Feb 2020 03:42:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E25D4C2BA83
+	for <linux-trace-devel@archiver.kernel.org>; Sun,  9 Feb 2020 03:42:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8523020838
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  9 Feb 2020 03:42:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A66CD20820
+	for <linux-trace-devel@archiver.kernel.org>; Sun,  9 Feb 2020 03:42:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBpZPQoG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RC4+F37q"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbgBIDmo (ORCPT
+        id S1727574AbgBIDmr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 8 Feb 2020 22:42:44 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44329 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgBIDmo (ORCPT
+        Sat, 8 Feb 2020 22:42:47 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:42421 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgBIDmr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 8 Feb 2020 22:42:44 -0500
-Received: by mail-qt1-f195.google.com with SMTP id w8so2592143qts.11
-        for <linux-trace-devel@vger.kernel.org>; Sat, 08 Feb 2020 19:42:43 -0800 (PST)
+        Sat, 8 Feb 2020 22:42:47 -0500
+Received: by mail-qt1-f196.google.com with SMTP id r5so1270139qtt.9
+        for <linux-trace-devel@vger.kernel.org>; Sat, 08 Feb 2020 19:42:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BCxlMOGmgsljZIHVsHnoIG3O8Pe40VqDaaSkPEpw/vg=;
-        b=SBpZPQoGfzLK3JfE5doJtWZwghYhBUrBdLt+FbeWEMCxCZM8/GDPIrr0vQZHtz0MIe
-         JzSKrIxSidyGCTxmQ0N82RBnffXMLlZbv4v22rwPI2u812dpyui+RqHAovr8bo/nTrcl
-         0TNlosJNeVFOhaKODuY0ie8rAGX5sIIStoWZMJww2AcgQH945w6wdIUjsVPBjz2qcZhO
-         wfhs5TsPqAJQOF4tue78kEF1Z1e6WvyoKuO37CxxS47SPZqEjadeVKj7Gsd3QHp93RFT
-         OVHn/9YaMW+O4BuyDgB+mw/+g3JzGmbIKwIPnJadhtJhn0wwczDqbgYWt6wqVQJaBxFk
-         Wt8A==
+        bh=BUqN8wPRWAePsK+PA9vBL+gbwT+OA96z0Vmt8UbVGQw=;
+        b=RC4+F37q8vNssopb038LhVdRu0oPGV0BvEmrDlxOciecHFOa2de9eH7m+E01dcC54q
+         CPPj6H+bYa0K1bbowKyL509mDK8GhxtDdQ3FkNFrnHJS3k4Zw+DLH3Wz294hSZ2g60Qh
+         jGT3DO8AlMVk0WHF7iru/q+/0ernWDq2RyKnDppzX2vpYRcv6kNKgMQiQRd0oPJlPZ4M
+         WAaXB8BoTIuwRkf4wjjuFnExlVZuNMMlqsAKjex4as6/yfh0Z34UT8ruR7DvvO5TYeDx
+         jw2kcNeL1Eku/wBesl96HWUcHkH0h8lmjDKn+MwcdfOnsOJoW1ZBFV71BAOwPthpodBc
+         B/AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BCxlMOGmgsljZIHVsHnoIG3O8Pe40VqDaaSkPEpw/vg=;
-        b=fAIVm+e9qVKry9V9Rft5gUH06uxDNeCDzmkvIbiQX4/HnjVnvc6/hEdHAuOWsXw7vx
-         1aTOaWVyihHc0vnFYsRjHPmW81l08YmQdkDazuc2Cpe2VaDFXIe1it9aMabsmd/HvuCT
-         a+eBZXb6nEVUnmww3PeLUOMaA5urEGayhgKMe2cJBCMJx7AI3Ja7rN59zU7pdkZ6OW7j
-         YlBoVnxFiO9wDPxpBh18ClqQPEpPmk6nvY3ytpkgvdHdQ1IXpiws1Pcn7U1RJwd9XLAd
-         y3Ax6FYcxCW3BULnQnh4JZGMBi3L1ziW1+pKYRxWB3z2DhJwDYLZV0kio0c5yjSHa5vl
-         +EJw==
-X-Gm-Message-State: APjAAAUfN4j3xV5Pi0f28SH24ncJvsmatpadn4aBhbG6qifN8XsdGw/B
-        zHhTSNoRB+Fa60KmWGkShmg=
-X-Google-Smtp-Source: APXvYqy1l4Qe7NxnCznjGsV/eAFhkEH4Ypkm+TCAf5KuzOHA5v/VhsE7Q1l7WE/BHNUN67kKfbBG/A==
-X-Received: by 2002:aed:2321:: with SMTP id h30mr5058594qtc.355.1581219763313;
-        Sat, 08 Feb 2020 19:42:43 -0800 (PST)
+        bh=BUqN8wPRWAePsK+PA9vBL+gbwT+OA96z0Vmt8UbVGQw=;
+        b=Ek4H6xMLocaeDztW3/CSh68wLCBtjpUwiNMN/XxNrQHGb4sLO1+inIOG4KeRZ/27yg
+         7pPI1XveP49X0IfFoyIbfV7FInd4zf9lsw/ACoxcQIjbugmAXUloW/SrsaezqR5vvnle
+         2r3N4VecACuWu/hea9uxuxHkyI7FvqU9Q18cduE2ucczHH83FPH+Yo8tP0uaB1DBHn+/
+         vZaY0F5DUEx+nw7Q+GJur+pnyjK80gORlyiK2B64QT7G2Q4ftPErzI72ecYAzJLSkNKY
+         qaoIBnqc47qWZjsRd0LHx/mrPAEzlZJMDNBMjzHggNNDv0yWw/gxLm5zbC6pbqHlRXhl
+         djNA==
+X-Gm-Message-State: APjAAAV8XuaSQQfgFVWhWKPCx7j+jF0SKa2e/QTENc3doKqm9MBxIipJ
+        eumvQ6kXd4I7d6YR/pBnfWE=
+X-Google-Smtp-Source: APXvYqyoYrdkgLJJEBfhRNpihKTIGPO+ZnWv4daobw1hOm92rq30X0JSCvffU6/Crkb3i9zY4y4Mlg==
+X-Received: by 2002:ac8:38ae:: with SMTP id f43mr4932582qtc.291.1581219765750;
+        Sat, 08 Feb 2020 19:42:45 -0800 (PST)
 Received: from i7.lan (whoami.aosc.io. [104.224.149.185])
-        by smtp.gmail.com with ESMTPSA id g62sm3749947qkd.25.2020.02.08.19.42.41
+        by smtp.gmail.com with ESMTPSA id g62sm3749947qkd.25.2020.02.08.19.42.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Feb 2020 19:42:42 -0800 (PST)
+        Sat, 08 Feb 2020 19:42:45 -0800 (PST)
 From:   sztsian@gmail.com
 To:     tz.stoyanov@gmail.com, rostedt@goodmis.org
 Cc:     sztsian@gmail.com, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/2] KernelShark: Inherit libdir from Makefile
-Date:   Sun,  9 Feb 2020 11:42:25 +0800
-Message-Id: <20200209034226.287464-2-sztsian@gmail.com>
+Subject: [PATCH 2/2] trace-cmd: Clean up old gtk stuff
+Date:   Sun,  9 Feb 2020 11:42:26 +0800
+Message-Id: <20200209034226.287464-3-sztsian@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200209034226.287464-1-sztsian@gmail.com>
 References: <20200209034226.287464-1-sztsian@gmail.com>
@@ -75,107 +75,180 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Ziqian SUN (Zamir)" <sztsian@gmail.com>
 
-The trace-cmd makefile supports install lib into a different name like
-lib64. Now this patch implemented the same in kernel-shark.
-
-And in order to make debuginfo also lives in the same file structure,
-the compiling dir is changed to reflect libdir and prefix as well.
+With ab37762ba9ad06a4f3902ad53ac2e9104bfd651f the gtk stuff was removed
+from kernel-shark. This patch removes the python-gui which depends on
+the trace-view from the gtk stuff.
 
 Signed-off-by: Ziqian SUN (Zamir) <sztsian@gmail.com>
 ---
- Makefile                        |  2 +-
- kernel-shark/CMakeLists.txt     | 13 +++++++++----
- kernel-shark/src/CMakeLists.txt |  6 +++---
- 3 files changed, 13 insertions(+), 8 deletions(-)
+ Makefile              |  6 ---
+ python/Makefile       | 14 +------
+ python/ctracecmdgui.i | 88 -------------------------------------------
+ 3 files changed, 2 insertions(+), 106 deletions(-)
+ delete mode 100644 python/ctracecmdgui.i
 
 diff --git a/Makefile b/Makefile
-index d75f143..1aca807 100644
+index 1aca807..75bf1ef 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -295,7 +295,7 @@ CMAKE_COMMAND = /usr/bin/cmake
- BUILD_TYPE ?= RelWithDebInfo
+@@ -126,7 +126,6 @@ endif
  
- $(kshark-dir)/build/Makefile: $(kshark-dir)/CMakeLists.txt
--	$(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) -D_INSTALL_PREFIX=$(prefix) ..
-+	$(Q) cd $(kshark-dir)/build && $(CMAKE_COMMAND) -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) -D_INSTALL_PREFIX=$(prefix) -D_LIBDIR=$(libdir) ..
+ ifndef NO_PYTHON
+ PYTHON		:= ctracecmd.so
+-PYTHON_GUI	:= ctracecmd.so ctracecmdgui.so
  
- gui: force $(CMD_TARGETS) $(kshark-dir)/build/Makefile
- 	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build
-diff --git a/kernel-shark/CMakeLists.txt b/kernel-shark/CMakeLists.txt
-index 8786b83..6652d08 100644
---- a/kernel-shark/CMakeLists.txt
-+++ b/kernel-shark/CMakeLists.txt
-@@ -17,6 +17,10 @@ if (NOT _INSTALL_PREFIX)
-     set(_INSTALL_PREFIX "/usr/local")
- endif (NOT _INSTALL_PREFIX)
+ PYTHON_VERS ?= python
+ PYTHON_PKGCONFIG_VERS ?= $(PYTHON_VERS)
+@@ -473,14 +472,9 @@ export PYGTK_CFLAGS
+ ctracecmd.so: force $(LIBTRACECMD_STATIC)
+ 	$(Q)$(MAKE) -C $(src)/python $@
  
-+if (NOT _LIBDIR)
-+    set(_LIBDIR "${_INSTALL_PREFIX}/lib")
-+endif (NOT _LIBDIR)
-+
- include(${KS_DIR}/build/FindTraceCmd.cmake)
- include(${KS_DIR}/build/FindJSONC.cmake)
+-ctracecmdgui.so: force $(LIBTRACECMD_STATIC) trace-view
+-	$(Q)$(MAKE) -C $(src)/python $@
+-
+ PHONY += python
+ python: $(PYTHON)
  
-@@ -34,8 +38,8 @@ if (Qt5Widgets_FOUND)
+-PHONY += python-gui
+-python-gui: $(PYTHON_GUI)
  
- endif (Qt5Widgets_FOUND)
+ dist:
+ 	git archive --format=tar --prefix=trace-cmd-$(TRACECMD_VERSION)/ HEAD \
+diff --git a/python/Makefile b/python/Makefile
+index 85224af..deaa83e 100644
+--- a/python/Makefile
++++ b/python/Makefile
+@@ -1,13 +1,9 @@
+ include $(src)/scripts/utils.mk
  
--set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
--set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
-+set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/${_LIBDIR}")
-+set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/${_INSTALL_PREFIX}/bin")
+-TRACE_VIEW_OBJS =
+-TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view.o
+-TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view-store.o
+-
+ ifdef BUILD_PYTHON_WORKS
+ PYTHON_SO_INSTALL := ctracecmd.install
+ PYTHON_PY_PROGS := event-viewer.install
+-PYTHON_PY_LIBS := tracecmd.install tracecmdgui.install
++PYTHON_PY_LIBS := tracecmd.install
+ endif
  
- set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -pthread -fPIC")
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread -fPIC")
-@@ -54,14 +58,15 @@ if (NOT CMAKE_CXX_FLAGS_PACKAGE)
-     set(CMAKE_CXX_FLAGS_PACKAGE "-O3")
- endif (NOT CMAKE_CXX_FLAGS_PACKAGE)
+ ctracecmd.so: ctracecmd.i $(LIBTRACECMD_STATIC)
+@@ -15,12 +11,6 @@ ctracecmd.so: ctracecmd.i $(LIBTRACECMD_STATIC)
+ 	$(CC) -fpic -c $(CPPFLAGS) $(CFLAGS) $(PYTHON_INCLUDES)  ctracecmd_wrap.c
+ 	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so $(TRACE_LIBS)
  
--set(KS_PLUGIN_INSTALL_PREFIX ${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/plugins/)
-+set(KS_PLUGIN_INSTALL_PREFIX ${_LIBDIR}/${KS_APP_NAME}/plugins/)
+-ctracecmdgui.so: ctracecmdgui.i $(LIBTRACECMD_STATIC) $(TRACE_VIEW_OBJS)
+-	swig -Wall -python -noproxy -I$(src)/kernel-shark/include ctracecmdgui.i
+-	$(CC) -fpic -c  $(CPPFLAGS) $(CFLAGS) $(INCLUDES) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) ctracecmdgui_wrap.c
+-	$(CC) --shared $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC) $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so $(TRACE_LIBS)
+-
+-
+ $(PYTHON_SO_INSTALL): %.install : %.so force
+ 	$(Q)$(call do_install_data,$<,$(python_dir_SQ))
  
- set(KS_ICON        KS_icon_shark.svg)
- set(KS_ICON_FIN    KS_icon_fin.svg)
- set(KS_LOGO        KS_logo_symbol.svg)
- set(KS_LOGO_LABEL  KS_logo_horizontal.svg)
+@@ -34,7 +24,7 @@ install_python: $(PYTHON_SO_INSTALL) $(PYTHON_PY_PROGS) $(PYTHON_PY_LIBS)
  
--set(CMAKE_INSTALL_RPATH "${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/")
-+SET(CMAKE_INSTALL_RPATH "${_LIBDIR}/${KS_APP_NAME}/")
-+
  
- if (CMAKE_BUILD_TYPE MATCHES Package)
+ clean:
+-	$(RM) *.a *.so *.o .*.d ctracecmd_wrap.* ctracecmdgui_wrap.*
++	$(RM) *.a *.so *.o .*.d ctracecmd_wrap.*
  
-diff --git a/kernel-shark/src/CMakeLists.txt b/kernel-shark/src/CMakeLists.txt
-index 33b5db8..9666b18 100644
---- a/kernel-shark/src/CMakeLists.txt
-+++ b/kernel-shark/src/CMakeLists.txt
-@@ -15,7 +15,7 @@ target_link_libraries(kshark ${TRACEEVENT_LIBRARY}
- 
- set_target_properties(kshark  PROPERTIES SUFFIX	".so.${KS_VERSION_STRING}")
- 
--install(TARGETS kshark LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/${KS_APP_NAME})
-+install(TARGETS kshark LIBRARY DESTINATION ${_LIBDIR}/${KS_APP_NAME})
- 
- if (OPENGL_FOUND AND GLUT_FOUND)
- 
-@@ -29,7 +29,7 @@ if (OPENGL_FOUND AND GLUT_FOUND)
- 
-     set_target_properties(kshark-plot PROPERTIES  SUFFIX ".so.${KS_VERSION_STRING}")
- 
--    install(TARGETS kshark-plot LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/${KS_APP_NAME})
-+    install(TARGETS kshark-plot LIBRARY DESTINATION ${_LIBDIR}/${KS_APP_NAME})
- 
- endif (OPENGL_FOUND AND GLUT_FOUND)
- 
-@@ -85,7 +85,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
- 
-     install(TARGETS ${KS_APP_NAME} kshark-record kshark-gui
-             RUNTIME DESTINATION ${_INSTALL_PREFIX}/bin/
--            LIBRARY DESTINATION ${_INSTALL_PREFIX}/lib/${KS_APP_NAME}/)
-+            LIBRARY DESTINATION ${_LIBDIR}/${KS_APP_NAME}/)
- 
-     install(FILES "${KS_DIR}/${KS_APP_NAME}.desktop"
-             DESTINATION ${_INSTALL_PREFIX}/share/applications/)
+ force:
+ .PHONY: clean force
+diff --git a/python/ctracecmdgui.i b/python/ctracecmdgui.i
+deleted file mode 100644
+index 4a7c6ac..0000000
+--- a/python/ctracecmdgui.i
++++ /dev/null
+@@ -1,88 +0,0 @@
+-// ctracecmdgui.i
+-%module ctracecmdgui
+-%include typemaps.i
+-
+-%{
+-#include "trace-view-store.h"
+-#include <pygobject.h>
+-#include <pyglib.h>
+-#include <Python.h>
+-#include <memoryobject.h>
+-
+-extern GtkTreeModel *trace_view_store_as_gtk_tree_model(struct trace_view_store *store);
+-
+-PyObject *
+-pytype_from_gtype(GType gtype)
+-{
+-    PyTypeObject *pt = NULL;
+-    switch (gtype) {
+-    case G_TYPE_INT:
+-    case G_TYPE_UINT:
+-        pt = &PyLong_Type;
+-        break;
+-    case G_TYPE_STRING:
+-        pt = &PyUnicode_Type;
+-        break;
+-    default:
+-        return Py_None;
+-    }
+-    return (PyObject *)pt;
+-}
+-%}
+-
+-
+-/* return python longs from unsigned long long functions */
+-%typemap(out) unsigned long long {
+-    $result = PyLong_FromUnsignedLongLong((unsigned long long) $1);
+-}
+-
+-/* help swig cope with g* types */
+-#if PY_MAJOR_VERSION >= 3
+-%typemap(in) gint {
+-    $1 = PyLong_AsLong($input);
+-}
+-%typemap(out) gint {
+-    $result = PyLong_FromLong($1);
+-}
+-#else
+-%typemap(in) gint {
+-    $1 = PyInt_AsLong($input);
+-}
+-%typemap(out) gint {
+-    $result = PyInt_FromLong($1);
+-}
+-#endif
+-%typemap(in) guint {
+-    $1 = PyLong_AsUnsignedLong($input);
+-}
+-%typemap(out) guint {
+-    $result = PyLong_FromUnsignedLong($1);
+-}
+-%typemap(in) guint64 {
+-    $1 = PyLong_AsUnsignedLongLong($input);
+-}
+-%typemap(out) guint64 {
+-    $result = PyLong_FromUnsignedLongLong($1);
+-}
+-%typemap(out) GType {
+-    $result = pytype_from_gtype($1);
+-}
+-%typemap(out) GtkTreeModelFlags {
+-    $result = PyLong_FromLong($1);
+-}
+-
+-
+-%inline %{
+-GtkTreeModel *trace_view_store_as_gtk_tree_model(struct trace_view_store *store)
+-{
+-    return GTK_TREE_MODEL(store);
+-}
+-%}
+-
+-
+-/* SWIG can't grok these, define them to nothing */
+-#define __trace
+-#define __attribute__(x)
+-#define __thread
+-
+-%include "trace-view-store.h"
 -- 
 2.24.1
 
