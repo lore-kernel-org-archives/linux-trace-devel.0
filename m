@@ -1,4 +1,4 @@
-Return-Path: <SRS0=G/7s=35=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=56ke=36=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -8,64 +8,62 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E25D4C2BA83
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  9 Feb 2020 03:42:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEDD6C3B184
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 Feb 2020 08:50:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A66CD20820
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  9 Feb 2020 03:42:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ADEBD21739
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 Feb 2020 08:50:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RC4+F37q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLyMi+0Y"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727574AbgBIDmr (ORCPT
+        id S1727546AbgBJIu1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 8 Feb 2020 22:42:47 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:42421 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgBIDmr (ORCPT
+        Mon, 10 Feb 2020 03:50:27 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:42567 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727821AbgBJIuO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 8 Feb 2020 22:42:47 -0500
-Received: by mail-qt1-f196.google.com with SMTP id r5so1270139qtt.9
-        for <linux-trace-devel@vger.kernel.org>; Sat, 08 Feb 2020 19:42:46 -0800 (PST)
+        Mon, 10 Feb 2020 03:50:14 -0500
+Received: by mail-lj1-f195.google.com with SMTP id d10so6146191ljl.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 10 Feb 2020 00:50:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BUqN8wPRWAePsK+PA9vBL+gbwT+OA96z0Vmt8UbVGQw=;
-        b=RC4+F37q8vNssopb038LhVdRu0oPGV0BvEmrDlxOciecHFOa2de9eH7m+E01dcC54q
-         CPPj6H+bYa0K1bbowKyL509mDK8GhxtDdQ3FkNFrnHJS3k4Zw+DLH3Wz294hSZ2g60Qh
-         jGT3DO8AlMVk0WHF7iru/q+/0ernWDq2RyKnDppzX2vpYRcv6kNKgMQiQRd0oPJlPZ4M
-         WAaXB8BoTIuwRkf4wjjuFnExlVZuNMMlqsAKjex4as6/yfh0Z34UT8ruR7DvvO5TYeDx
-         jw2kcNeL1Eku/wBesl96HWUcHkH0h8lmjDKn+MwcdfOnsOJoW1ZBFV71BAOwPthpodBc
-         B/AQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LsVbX7qnbD0NR4wbJb0dlzjSRzpBheyaxWE84es4MJw=;
+        b=hLyMi+0YTrxkejEbsVJnZSexBJ2LGvaFcdBdvbaHnA6iRVRG2bNVjTpN3TsQOF3aiT
+         5cWL1IHI4Gyri4vJ/ScHdt77bmd5f27BoRCS9vjRt6vLtpICVFVMEKp3/Vku8bB5v9E8
+         hh8Ze7tX5+/O009O4vri5zSkDrGvTbCXG03nvyILRwwwits55o6+yKGVYisR4rividS7
+         0DrHkRP/Mz2sU/8TrzCmK5k7jN+X50GqdcY2woRgyW5SDJHtyfAquUmbNVUmPmSqcwUY
+         h7lUmew5qzhx6m71mtbiJQiiCFen5Niz/0f8GhSSRvWM6CYQp9FB6gvuxI/7M6o0TiVT
+         xVVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BUqN8wPRWAePsK+PA9vBL+gbwT+OA96z0Vmt8UbVGQw=;
-        b=Ek4H6xMLocaeDztW3/CSh68wLCBtjpUwiNMN/XxNrQHGb4sLO1+inIOG4KeRZ/27yg
-         7pPI1XveP49X0IfFoyIbfV7FInd4zf9lsw/ACoxcQIjbugmAXUloW/SrsaezqR5vvnle
-         2r3N4VecACuWu/hea9uxuxHkyI7FvqU9Q18cduE2ucczHH83FPH+Yo8tP0uaB1DBHn+/
-         vZaY0F5DUEx+nw7Q+GJur+pnyjK80gORlyiK2B64QT7G2Q4ftPErzI72ecYAzJLSkNKY
-         qaoIBnqc47qWZjsRd0LHx/mrPAEzlZJMDNBMjzHggNNDv0yWw/gxLm5zbC6pbqHlRXhl
-         djNA==
-X-Gm-Message-State: APjAAAV8XuaSQQfgFVWhWKPCx7j+jF0SKa2e/QTENc3doKqm9MBxIipJ
-        eumvQ6kXd4I7d6YR/pBnfWE=
-X-Google-Smtp-Source: APXvYqyoYrdkgLJJEBfhRNpihKTIGPO+ZnWv4daobw1hOm92rq30X0JSCvffU6/Crkb3i9zY4y4Mlg==
-X-Received: by 2002:ac8:38ae:: with SMTP id f43mr4932582qtc.291.1581219765750;
-        Sat, 08 Feb 2020 19:42:45 -0800 (PST)
-Received: from i7.lan (whoami.aosc.io. [104.224.149.185])
-        by smtp.gmail.com with ESMTPSA id g62sm3749947qkd.25.2020.02.08.19.42.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LsVbX7qnbD0NR4wbJb0dlzjSRzpBheyaxWE84es4MJw=;
+        b=CEMzmIjK0bTKg+xXeHQf9YRhnUty/o6TYDmCbP2vTuSTZSWMWaLdFKWbSw8j8LAT/l
+         QnPN1xNHVdOgXAD/m9IK+mAuxX3kE+Thh7SV7MQlmgB7uMMuWa/KmTuh2h2q2bCqjNs9
+         F3CEbX7EeHuLxFmBOT6byWvFOfWkbAjtyjvjG919z6/pNnXpvzpf9yRycRXzzUY6VM6W
+         hfXJwFKf5yP5P6h6yJAzEjBnOzGMFNi/KXp+4ffo4GwgqOAuxQArVLVjk5fNnnlb+sGi
+         KHD3hqyQx4dXTR28V+5g1B1c0hz90dWQfxnHpXeuY4TfWC8ZFLL2emWbFFczO7oFbCHV
+         MZ8Q==
+X-Gm-Message-State: APjAAAXK6c2efAaVPZ30ZBmnEFoYoR2PIXDzc93SlUlOTsgampD6b5y3
+        m0hpykHA77TJTPkLRyHv3E2jPqfY
+X-Google-Smtp-Source: APXvYqwaMgEZ2wy1s01tHlz+T5GxQKvELkYTPMW6sV0f2XeUbXfelcGByYsKvLdq8FwNrFH1J55q3A==
+X-Received: by 2002:a2e:965a:: with SMTP id z26mr246083ljh.104.1581324612951;
+        Mon, 10 Feb 2020 00:50:12 -0800 (PST)
+Received: from oberon.eng.vmware.com ([146.247.46.5])
+        by smtp.gmail.com with ESMTPSA id u19sm4907063lfu.68.2020.02.10.00.50.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Feb 2020 19:42:45 -0800 (PST)
-From:   sztsian@gmail.com
-To:     tz.stoyanov@gmail.com, rostedt@goodmis.org
-Cc:     sztsian@gmail.com, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/2] trace-cmd: Clean up old gtk stuff
-Date:   Sun,  9 Feb 2020 11:42:26 +0800
-Message-Id: <20200209034226.287464-3-sztsian@gmail.com>
+        Mon, 10 Feb 2020 00:50:12 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] trace-cmd: Fix "multiple definition" compiler errors
+Date:   Mon, 10 Feb 2020 10:50:10 +0200
+Message-Id: <20200210085010.7974-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200209034226.287464-1-sztsian@gmail.com>
-References: <20200209034226.287464-1-sztsian@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -73,182 +71,129 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Ziqian SUN (Zamir)" <sztsian@gmail.com>
+When compiling with gcc and option "-fno-common", there are
+errors because of multiple global variables with the same names.
+The "-fno-common" gcc option is turned on by default on gcc 10, so
+trace-cmd build fails on this compiler.
+Problem in reported by Ziqian SUN (Zamir):
+  https://bugzilla.kernel.org/show_bug.cgi?id=206467
 
-With ab37762ba9ad06a4f3902ad53ac2e9104bfd651f the gtk stuff was removed
-from kernel-shark. This patch removes the python-gui which depends on
-the trace-view from the gtk stuff.
+Proposed solution: set the variables to be static, as their scope is
+only the current C file.
 
-Signed-off-by: Ziqian SUN (Zamir) <sztsian@gmail.com>
+Reported-by: Ziqian SUN (Zamir) <sztsian@gmail.com>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Makefile              |  6 ---
- python/Makefile       | 14 +------
- python/ctracecmdgui.i | 88 -------------------------------------------
- 3 files changed, 2 insertions(+), 106 deletions(-)
- delete mode 100644 python/ctracecmdgui.i
+ tracecmd/trace-hist.c | 40 ++++++++++++++++++++--------------------
+ tracecmd/trace-mem.c  | 38 +++++++++++++++++++-------------------
+ 2 files changed, 39 insertions(+), 39 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 1aca807..75bf1ef 100644
---- a/Makefile
-+++ b/Makefile
-@@ -126,7 +126,6 @@ endif
+diff --git a/tracecmd/trace-hist.c b/tracecmd/trace-hist.c
+index c451826..fdfd4a1 100644
+--- a/tracecmd/trace-hist.c
++++ b/tracecmd/trace-hist.c
+@@ -27,26 +27,26 @@ static int kernel_stack_type;
  
- ifndef NO_PYTHON
- PYTHON		:= ctracecmd.so
--PYTHON_GUI	:= ctracecmd.so ctracecmdgui.so
+ static int long_size;
  
- PYTHON_VERS ?= python
- PYTHON_PKGCONFIG_VERS ?= $(PYTHON_VERS)
-@@ -473,14 +472,9 @@ export PYGTK_CFLAGS
- ctracecmd.so: force $(LIBTRACECMD_STATIC)
- 	$(Q)$(MAKE) -C $(src)/python $@
+-struct tep_format_field *common_type_field;
+-struct tep_format_field *common_pid_field;
+-struct tep_format_field *sched_wakeup_comm_field;
+-struct tep_format_field *sched_wakeup_new_comm_field;
+-struct tep_format_field *sched_wakeup_pid_field;
+-struct tep_format_field *sched_wakeup_new_pid_field;
+-struct tep_format_field *sched_switch_prev_field;
+-struct tep_format_field *sched_switch_next_field;
+-struct tep_format_field *sched_switch_prev_pid_field;
+-struct tep_format_field *sched_switch_next_pid_field;
+-struct tep_format_field *function_ip_field;
+-struct tep_format_field *function_parent_ip_field;
+-struct tep_format_field *function_graph_entry_func_field;
+-struct tep_format_field *function_graph_entry_depth_field;
+-struct tep_format_field *function_graph_exit_func_field;
+-struct tep_format_field *function_graph_exit_depth_field;
+-struct tep_format_field *function_graph_exit_calltime_field;
+-struct tep_format_field *function_graph_exit_rettime_field;
+-struct tep_format_field *function_graph_exit_overrun_field;
+-struct tep_format_field *kernel_stack_caller_field;
++static struct tep_format_field *common_type_field;
++static struct tep_format_field *common_pid_field;
++static struct tep_format_field *sched_wakeup_comm_field;
++static struct tep_format_field *sched_wakeup_new_comm_field;
++static struct tep_format_field *sched_wakeup_pid_field;
++static struct tep_format_field *sched_wakeup_new_pid_field;
++static struct tep_format_field *sched_switch_prev_field;
++static struct tep_format_field *sched_switch_next_field;
++static struct tep_format_field *sched_switch_prev_pid_field;
++static struct tep_format_field *sched_switch_next_pid_field;
++static struct tep_format_field *function_ip_field;
++static struct tep_format_field *function_parent_ip_field;
++static struct tep_format_field *function_graph_entry_func_field;
++static struct tep_format_field *function_graph_entry_depth_field;
++static struct tep_format_field *function_graph_exit_func_field;
++static struct tep_format_field *function_graph_exit_depth_field;
++static struct tep_format_field *function_graph_exit_calltime_field;
++static struct tep_format_field *function_graph_exit_rettime_field;
++static struct tep_format_field *function_graph_exit_overrun_field;
++static struct tep_format_field *kernel_stack_caller_field;
  
--ctracecmdgui.so: force $(LIBTRACECMD_STATIC) trace-view
--	$(Q)$(MAKE) -C $(src)/python $@
--
- PHONY += python
- python: $(PYTHON)
+ static int compact;
  
--PHONY += python-gui
--python-gui: $(PYTHON_GUI)
+diff --git a/tracecmd/trace-mem.c b/tracecmd/trace-mem.c
+index 37046fd..5caeeb6 100644
+--- a/tracecmd/trace-mem.c
++++ b/tracecmd/trace-mem.c
+@@ -30,31 +30,31 @@ static int kmem_cache_alloc_type;
+ static int kmem_cache_alloc_node_type;
+ static int kmem_cache_free_type;
  
- dist:
- 	git archive --format=tar --prefix=trace-cmd-$(TRACECMD_VERSION)/ HEAD \
-diff --git a/python/Makefile b/python/Makefile
-index 85224af..deaa83e 100644
---- a/python/Makefile
-+++ b/python/Makefile
-@@ -1,13 +1,9 @@
- include $(src)/scripts/utils.mk
+-struct tep_format_field *common_type_field;
++static struct tep_format_field *common_type_field;
  
--TRACE_VIEW_OBJS =
--TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view.o
--TRACE_VIEW_OBJS += $(obj)/kernel-shark/trace-view-store.o
--
- ifdef BUILD_PYTHON_WORKS
- PYTHON_SO_INSTALL := ctracecmd.install
- PYTHON_PY_PROGS := event-viewer.install
--PYTHON_PY_LIBS := tracecmd.install tracecmdgui.install
-+PYTHON_PY_LIBS := tracecmd.install
- endif
+-struct tep_format_field *kmalloc_callsite_field;
+-struct tep_format_field *kmalloc_bytes_req_field;
+-struct tep_format_field *kmalloc_bytes_alloc_field;
+-struct tep_format_field *kmalloc_ptr_field;
++static struct tep_format_field *kmalloc_callsite_field;
++static struct tep_format_field *kmalloc_bytes_req_field;
++static struct tep_format_field *kmalloc_bytes_alloc_field;
++static struct tep_format_field *kmalloc_ptr_field;
  
- ctracecmd.so: ctracecmd.i $(LIBTRACECMD_STATIC)
-@@ -15,12 +11,6 @@ ctracecmd.so: ctracecmd.i $(LIBTRACECMD_STATIC)
- 	$(CC) -fpic -c $(CPPFLAGS) $(CFLAGS) $(PYTHON_INCLUDES)  ctracecmd_wrap.c
- 	$(CC) --shared $(LIBTRACECMD_STATIC) $(LDFLAGS) ctracecmd_wrap.o -o ctracecmd.so $(TRACE_LIBS)
+-struct tep_format_field *kmalloc_node_callsite_field;
+-struct tep_format_field *kmalloc_node_bytes_req_field;
+-struct tep_format_field *kmalloc_node_bytes_alloc_field;
+-struct tep_format_field *kmalloc_node_ptr_field;
++static struct tep_format_field *kmalloc_node_callsite_field;
++static struct tep_format_field *kmalloc_node_bytes_req_field;
++static struct tep_format_field *kmalloc_node_bytes_alloc_field;
++static struct tep_format_field *kmalloc_node_ptr_field;
  
--ctracecmdgui.so: ctracecmdgui.i $(LIBTRACECMD_STATIC) $(TRACE_VIEW_OBJS)
--	swig -Wall -python -noproxy -I$(src)/kernel-shark/include ctracecmdgui.i
--	$(CC) -fpic -c  $(CPPFLAGS) $(CFLAGS) $(INCLUDES) $(PYTHON_INCLUDES) $(PYGTK_CFLAGS) ctracecmdgui_wrap.c
--	$(CC) --shared $(TRACE_VIEW_OBJS) $(LIBTRACECMD_STATIC) $(LDFLAGS) $(LIBS) $(CONFIG_LIBS) ctracecmdgui_wrap.o -o ctracecmdgui.so $(TRACE_LIBS)
--
--
- $(PYTHON_SO_INSTALL): %.install : %.so force
- 	$(Q)$(call do_install_data,$<,$(python_dir_SQ))
+-struct tep_format_field *kfree_ptr_field;
++static struct tep_format_field *kfree_ptr_field;
  
-@@ -34,7 +24,7 @@ install_python: $(PYTHON_SO_INSTALL) $(PYTHON_PY_PROGS) $(PYTHON_PY_LIBS)
+-struct tep_format_field *kmem_cache_callsite_field;
+-struct tep_format_field *kmem_cache_bytes_req_field;
+-struct tep_format_field *kmem_cache_bytes_alloc_field;
+-struct tep_format_field *kmem_cache_ptr_field;
++static struct tep_format_field *kmem_cache_callsite_field;
++static struct tep_format_field *kmem_cache_bytes_req_field;
++static struct tep_format_field *kmem_cache_bytes_alloc_field;
++static struct tep_format_field *kmem_cache_ptr_field;
  
+-struct tep_format_field *kmem_cache_node_callsite_field;
+-struct tep_format_field *kmem_cache_node_bytes_req_field;
+-struct tep_format_field *kmem_cache_node_bytes_alloc_field;
+-struct tep_format_field *kmem_cache_node_ptr_field;
++static struct tep_format_field *kmem_cache_node_callsite_field;
++static struct tep_format_field *kmem_cache_node_bytes_req_field;
++static struct tep_format_field *kmem_cache_node_bytes_alloc_field;
++static struct tep_format_field *kmem_cache_node_ptr_field;
  
- clean:
--	$(RM) *.a *.so *.o .*.d ctracecmd_wrap.* ctracecmdgui_wrap.*
-+	$(RM) *.a *.so *.o .*.d ctracecmd_wrap.*
+-struct tep_format_field *kmem_cache_free_ptr_field;
++static struct tep_format_field *kmem_cache_free_ptr_field;
  
- force:
- .PHONY: clean force
-diff --git a/python/ctracecmdgui.i b/python/ctracecmdgui.i
-deleted file mode 100644
-index 4a7c6ac..0000000
---- a/python/ctracecmdgui.i
-+++ /dev/null
-@@ -1,88 +0,0 @@
--// ctracecmdgui.i
--%module ctracecmdgui
--%include typemaps.i
--
--%{
--#include "trace-view-store.h"
--#include <pygobject.h>
--#include <pyglib.h>
--#include <Python.h>
--#include <memoryobject.h>
--
--extern GtkTreeModel *trace_view_store_as_gtk_tree_model(struct trace_view_store *store);
--
--PyObject *
--pytype_from_gtype(GType gtype)
--{
--    PyTypeObject *pt = NULL;
--    switch (gtype) {
--    case G_TYPE_INT:
--    case G_TYPE_UINT:
--        pt = &PyLong_Type;
--        break;
--    case G_TYPE_STRING:
--        pt = &PyUnicode_Type;
--        break;
--    default:
--        return Py_None;
--    }
--    return (PyObject *)pt;
--}
--%}
--
--
--/* return python longs from unsigned long long functions */
--%typemap(out) unsigned long long {
--    $result = PyLong_FromUnsignedLongLong((unsigned long long) $1);
--}
--
--/* help swig cope with g* types */
--#if PY_MAJOR_VERSION >= 3
--%typemap(in) gint {
--    $1 = PyLong_AsLong($input);
--}
--%typemap(out) gint {
--    $result = PyLong_FromLong($1);
--}
--#else
--%typemap(in) gint {
--    $1 = PyInt_AsLong($input);
--}
--%typemap(out) gint {
--    $result = PyInt_FromLong($1);
--}
--#endif
--%typemap(in) guint {
--    $1 = PyLong_AsUnsignedLong($input);
--}
--%typemap(out) guint {
--    $result = PyLong_FromUnsignedLong($1);
--}
--%typemap(in) guint64 {
--    $1 = PyLong_AsUnsignedLongLong($input);
--}
--%typemap(out) guint64 {
--    $result = PyLong_FromUnsignedLongLong($1);
--}
--%typemap(out) GType {
--    $result = pytype_from_gtype($1);
--}
--%typemap(out) GtkTreeModelFlags {
--    $result = PyLong_FromLong($1);
--}
--
--
--%inline %{
--GtkTreeModel *trace_view_store_as_gtk_tree_model(struct trace_view_store *store)
--{
--    return GTK_TREE_MODEL(store);
--}
--%}
--
--
--/* SWIG can't grok these, define them to nothing */
--#define __trace
--#define __attribute__(x)
--#define __thread
--
--%include "trace-view-store.h"
+ static void *zalloc(size_t size)
+ {
 -- 
 2.24.1
 
