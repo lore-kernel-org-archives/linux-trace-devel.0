@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D170C11D04
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 Feb 2020 09:43:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4197C11D04
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 Feb 2020 09:46:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 404EB24672
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 Feb 2020 09:43:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 827B524656
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 20 Feb 2020 09:46:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O0fFS8mX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F1fwfBe/"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgBTJnT (ORCPT
+        id S1726805AbgBTJqi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 20 Feb 2020 04:43:19 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:37013 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgBTJnT (ORCPT
+        Thu, 20 Feb 2020 04:46:38 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:34536 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726637AbgBTJqi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 20 Feb 2020 04:43:19 -0500
-Received: by mail-lj1-f194.google.com with SMTP id q23so3516971ljm.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 20 Feb 2020 01:43:18 -0800 (PST)
+        Thu, 20 Feb 2020 04:46:38 -0500
+Received: by mail-lj1-f193.google.com with SMTP id x7so3539322ljc.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 20 Feb 2020 01:46:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ibRHGLUXaVOzYWWQtziG654FEzW/c2Xw73ebhX/4a/0=;
-        b=O0fFS8mXEQzbunK8n0q49DxO/0ByOoQAICKF7nEITWhE26G0YoHvIgZsUSCPV30+mM
-         nH6HfwkLKmVJJcA9TL+CzYGO+4Kqbph7FKj+pZ6tibgcEFrgUdfBvLeFwtFAqX0A+n2v
-         hkGHibViA4AZYXSQyjmNzJ2+mJ/D6EQHG6dXlwKLuk+TGozrHgcdQQkg6jqQgBDosgP9
-         sk5jtNikI4jluEnmQrBQR82D6kPJPLrqvzI/VQv1L8CdxtQOiJ35s7D0uL0sxiMuKwU2
-         /pE0rJKqUPrjetW/F9ZU3skXq8Jl2AOem5uAWTGz2/y1yIVs/cQwZ0WPfkz/RboiuPl9
-         XLmw==
+        bh=Uqhm2j+3rv+og+v+YvH1n7/srCKTJWhqzajFus8nyI0=;
+        b=F1fwfBe/pKRT+oO6SFrAAkwrADi36cOtbWM2I4oxt88WuR0FK7vVmsaOzTR+NEvE4l
+         BaLsp9TG58IrHczkPbUKb66e90WG0zvQPIrR1w9olyo33WMBaQfEaSIpmcfi+FWiNLmS
+         o9F/C4lPNSvURwGhIkWvZ58d1nrgyGIFiOeqBeUt7uJn3QNYdId2rFHdF1uPmFLq9x//
+         JY2PbCzxlVb301sQu/Ig/ZG1U1Sq+23/0CSwLwfnoDTVCSeDi5Lish4O7l/y90VVBKqp
+         e0qzXJAIya/bbhIZRx0bamE3Kyw15loXSiujjT/oPe9/C1sMs9uS4rXrMMvknK/uqBbF
+         PuEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ibRHGLUXaVOzYWWQtziG654FEzW/c2Xw73ebhX/4a/0=;
-        b=XCB7xBAVM9r7zH02g9DeFl4ol6hEZMgy381fD5P9eY26mkZIgMeS6iR1gPsixTmz3z
-         rEL/KqOeAvtcjre1b76tgq7YGKaKFNGcopPmCi1S0pnba5+p2KZJ+acd8vUufeMquUVK
-         M64TT2ejBqJOcPEkrNiDFlEpTh8G2joNKNWvdmvSyb9ih22smmaFXIeNZ9uRLltfmOAX
-         TP37jbG/sxy84tUsPk9vQS/pBQSCZjt4NChwMRPKD5g3v4MdX6wh/10K6lmFe2C7W69C
-         gAVkLswiI+M/ljq7vitz64vKB74R6li6DzHISVOZRuG/Ywfq1ksg0CMeeqEqqRuj80BP
-         cV+A==
-X-Gm-Message-State: APjAAAVVHlab1e/zoksFvDXYZ6aSVZXrEMYPtWixVxY8MRalL3FGf5mp
-        7lbU7h0Y2p8oZr9iJ5Hqv6ONfgQ/
-X-Google-Smtp-Source: APXvYqwAKhTtngwA3JH6g7brUmJheHKWTGAmhqsNkUyvXX+2/DLA7q+UvWYJileFZN5sz6Tw2EXPxg==
-X-Received: by 2002:a2e:b5a5:: with SMTP id f5mr18200897ljn.162.1582191797482;
-        Thu, 20 Feb 2020 01:43:17 -0800 (PST)
+        bh=Uqhm2j+3rv+og+v+YvH1n7/srCKTJWhqzajFus8nyI0=;
+        b=JniiMds+oPDuLnXlDU9eTjdLueblSA93IYqI1S/poxXgJ193wyTyQgOYj0R5vpwrnT
+         7p+GJAqWkh+4G0h1R9bSD5eLlyymG91Zlq1TApAprNV8nLG3YAdDbMKZ46Gr6f6as65Y
+         tP1OAH+pLCpX78R+iBSlCy5ggEzPMdN4bfRc8iS4QbbIOGmiZEp2hz6Tqu6THBb5yDcj
+         q5Tvjd7yexvkvsusdwjg+3v8ZhoXAdbjtOndfLaudzlUjd2hB2RA37hj2noIXygTQi36
+         mtFxKDnXj8MojrXOuO4+COwGEei+aCSndXKZLkBQ0GTTJNYGsrjFwQgOzKExfbt+6Szr
+         bzlQ==
+X-Gm-Message-State: APjAAAUvaOvijgMRsEWPh0DGdqj0tb3TUx/agkGgyMdbNQ3W9Mh+SU4J
+        jUrhv7cM8m1gZlXsWB2f3sQCORoM
+X-Google-Smtp-Source: APXvYqyMznH+CxUIJp+Gf4AYhWeBdLHRQ6p8i9jBwuz4DZhmp0/gRx7SRA/DeJvJFsAMtxp4/8x1Zw==
+X-Received: by 2002:a2e:b4cf:: with SMTP id r15mr18433453ljm.52.1582191996010;
+        Thu, 20 Feb 2020 01:46:36 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id h24sm1412382ljc.84.2020.02.20.01.43.16
+        by smtp.gmail.com with ESMTPSA id l3sm1440201lja.78.2020.02.20.01.46.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2020 01:43:16 -0800 (PST)
+        Thu, 20 Feb 2020 01:46:35 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2] trace-cmd: Clear synthetic events on reset subcommand
-Date:   Thu, 20 Feb 2020 11:43:15 +0200
-Message-Id: <20200220094315.467649-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v3] trace-cmd: Clear synthetic events on reset subcommand
+Date:   Thu, 20 Feb 2020 11:46:33 +0200
+Message-Id: <20200220094633.468123-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -78,7 +78,8 @@ A logic is added to delete all entries from "synthetic_events" files.
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 
 ---
-v2: remove the warning in case there are no configured synthetic events
+v3: remove the warning in case there are no configured synthetic events
+v2: remove the patch from "SQL-like syntax for ftrace histograms configuration" patch set
 ---
  tracecmd/trace-record.c | 36 ++++++++++++++++++++++++++++++++++++
  1 file changed, 36 insertions(+)
