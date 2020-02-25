@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B77A5C35E04
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95522C35E04
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 93FCE206E6
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 71FF821927
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JpUE+cFA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jP3swYL5"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731149AbgBYSHn (ORCPT
+        id S1728476AbgBYSHp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 25 Feb 2020 13:07:43 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:45866 "EHLO
+        Tue, 25 Feb 2020 13:07:45 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:44154 "EHLO
         mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728762AbgBYSHn (ORCPT
+        with ESMTP id S1730799AbgBYSHp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 25 Feb 2020 13:07:43 -0500
-Received: by mail-lj1-f194.google.com with SMTP id e18so15047117ljn.12
-        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Feb 2020 10:07:40 -0800 (PST)
+        Tue, 25 Feb 2020 13:07:45 -0500
+Received: by mail-lj1-f194.google.com with SMTP id q8so15041306ljj.11
+        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Feb 2020 10:07:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=VxTZuCgsAECMs149+L1CDnuvd19WDlutn5UqJcE9bSE=;
-        b=JpUE+cFAfk5rg92q8zTx4xW0zVH21X7RjzJmjg1W18Euac9+tMLiMNScoyu1G8xp+x
-         KrPVvQhJjKumkqpJr1rskTHKw/8HZcp3LQEVGeFltF+mOSNxNkCfdd0ReFs21IRggqiq
-         30Sm2cEzQ3pXtdpc27QdsotFebBCMaHofaNQm0/1aOgT/Gjd1Or/yTduCQ8+cyI+YOsK
-         mEZQW00tcOsTiVzQFKQyygcIne5kgD1Yso4m3xbmOun2hmh8crG12tCGVJziL0LH8ay9
-         Ag85IPgOptKKKM3IqJBTbpI4hhmnVHQjQnmmP4C8WLVWc2Yzxt2cjwM2fTM8joX7t4I7
-         Litg==
+        bh=ioRTEZtW+2sz68dFd4pkQC4PCzG+F8u2ONRPmBzwiLE=;
+        b=jP3swYL5af6iDDp/AZ3CxNHWADQOqIBDDOdj12V16xd43wrs8VHqfPi3JJbAcVYJbT
+         v2sFpiKtpUz6Td8ZB0E0wB0M3lGzBB81V2EYI1Wdc3hmoFx0fBfjnyQmmac1EBAglQpu
+         tMObU+ZdLUYIM64/e87gp7Xy2oK9QPY10B3vI8ZIGGVJ7SysqJYsLc60ac6JV5HtuDhz
+         adfPrun/mDEnvsXHGxc+56D0bFVt8mQJ4OAWRgmWSM4BzcWx1kn33cE0oQrDQ+cfOUne
+         s9jaFHtpSWX6oPPUKOGqnG3wkHTVF6X6ijcrribLOzs+ZZCsMFeySeYFXnmxPmgv/QEd
+         ajWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VxTZuCgsAECMs149+L1CDnuvd19WDlutn5UqJcE9bSE=;
-        b=NqWuwnvHksQOulf7SKEZubEhQvZlORix3KgOtw0WecGmZkEzEEBvA9RashM97h/k/k
-         wnffZC46W7dJeoeHI9o+GpRGZnrcwjVRm1KHmN8T+UQRbIiA0/8rSH8Osl/PNjoSOf6g
-         zqV0/RikezEz8mbAJHTANrVzBCpClt56oVtLk50MY1nzNBOVvCSxhCS/LQX87vVObxz+
-         MjFTxuOe9rr/M0hyfutI40jrtt3Yj/4N1IOHCNwz0QS1/AugXsz4W+NKRI3+uIP42NG3
-         EXqS+vktcP6EavHvSOGsAC+E+t/uDS2ngS6mgIIR0DUh12/q28kgOZh5cIiA8Oz4TCIi
-         ZK2w==
-X-Gm-Message-State: ANhLgQ0MgbehyFBRGQ9dLu6GR9Z1gJm3as4vtFQHj84nZpp7Uy7uxDcD
-        VKuAlvhTDnF9q+zo6fhyXqxlarpXL6w=
-X-Google-Smtp-Source: APXvYqxSZRat+MqSaqOOOb0/3o8zJNLi95tBzaNRESYwI43jYRFNYaB7AS2qlLajJ/KbXDedgyRYJQ==
-X-Received: by 2002:a2e:9841:: with SMTP id e1mr162317ljj.23.1582654059572;
-        Tue, 25 Feb 2020 10:07:39 -0800 (PST)
+        bh=ioRTEZtW+2sz68dFd4pkQC4PCzG+F8u2ONRPmBzwiLE=;
+        b=O9ZEmnFCBtmDZddwtWs4FzbZvpkDWhy4vXlxWxFhVB9l9JSHgI4dwKRwBj3eA93r9C
+         tnpl7uNrFHGFNpEdoglhmBDgkzK0fPoTsym56Bz+78sWHSjgoDw+rPn65o/J3KQMmHPL
+         ErZN00tNERxKl/OO7pqNW1aoUPTM4egPAwsPLEFwy1BQp1/Wjw7f9pttDQ5izhzpZzfU
+         l6qiSfHutacPE//00X3z7ulRn2HHtpTyJnzEBJi/XxxJKfi/6uqOoHxcph/Yz24Mqjn9
+         ahzxiq9H5ZUe6TCXcS6J4GIBYwQZ1XKfvt2Z5G5mNmtF8LoMxLBe7MjcNsSzDFSZ06DI
+         F77Q==
+X-Gm-Message-State: ANhLgQ1WJBBic1xRvNFATv2vw+IIZ3T5V5IE2H88Zgdz3lb+RsnJT/xf
+        pVgkg0ABgnXz7Q7OP4fn71c2YRQjcLA=
+X-Google-Smtp-Source: APXvYqxlG85eac9a2hRHE/OP+MrGUjNx9qpuaeNmWp865aPgcgPsSgvvwY/su1N21ZktkpdA3U/Gaw==
+X-Received: by 2002:a2e:95c4:: with SMTP id y4mr193618ljh.38.1582654062408;
+        Tue, 25 Feb 2020 10:07:42 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id v15sm4141438lfg.51.2020.02.25.10.07.38
+        by smtp.gmail.com with ESMTPSA id v15sm4141438lfg.51.2020.02.25.10.07.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2020 10:07:38 -0800 (PST)
+        Tue, 25 Feb 2020 10:07:41 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 1/4] trace-cmd: Add new tracefs APIs for checking if a ftrace file / directory exists
-Date:   Tue, 25 Feb 2020 20:07:30 +0200
-Message-Id: <20200225180733.89344-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 3/4] trace-cmd: Clear synthetic events on reset subcommand
+Date:   Tue, 25 Feb 2020 20:07:32 +0200
+Message-Id: <20200225180733.89344-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200225180733.89344-1-tz.stoyanov@gmail.com>
 References: <20200225180733.89344-1-tz.stoyanov@gmail.com>
@@ -73,96 +73,75 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some ftrace files and directories are optional, depending on specific kernel configuration or version.
-It is a good practice to check if the file / directory exist, before trying to access it. There are a lot of places in trace-cmd implementation with such checks.
-The new libtracefs APIs can be used for this, they are ftarce instance aware:
- bool tracefs_file_exist(struct tracefs_instance *instance, char *name);
- bool tracefs_dir_exist(struct tracefs_instance *instance, char *name);
+The "trace-cmd reset" command is supposed to set the ftrace state to default.
+However, the synthetic events are not reseted.
+A logic is added to delete all entries from "synthetic_events" files.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- include/tracefs/tracefs.h      |  3 +++
- lib/tracefs/tracefs-instance.c | 49 +++++++++++++++++++++++++++++++++-
- 2 files changed, 51 insertions(+), 1 deletion(-)
 
-diff --git a/include/tracefs/tracefs.h b/include/tracefs/tracefs.h
-index 85690b66..bc8bebcb 100644
---- a/include/tracefs/tracefs.h
-+++ b/include/tracefs/tracefs.h
-@@ -33,6 +33,9 @@ int tracefs_instance_file_write(struct tracefs_instance *instance,
- char *tracefs_instance_file_read(struct tracefs_instance *instance,
- 				 char *file, int *psize);
- 
-+bool tracefs_file_exist(struct tracefs_instance *instance, char *name);
-+bool tracefs_dir_exist(struct tracefs_instance *instance, char *name);
-+
- /* events */
- void tracefs_list_free(char **list);
- char **tracefs_event_systems(const char *tracing_dir);
-diff --git a/lib/tracefs/tracefs-instance.c b/lib/tracefs/tracefs-instance.c
-index b96ab61c..67123e7c 100644
---- a/lib/tracefs/tracefs-instance.c
-+++ b/lib/tracefs/tracefs-instance.c
-@@ -13,7 +13,7 @@
- #include <errno.h>
- #include <sys/stat.h>
- #include <fcntl.h>
--
-+#include <linux/limits.h>
- #include "tracefs.h"
- #include "tracefs-local.h"
- 
-@@ -247,3 +247,50 @@ char *tracefs_instance_file_read(struct tracefs_instance *instance,
- 
- 	return buf;
+---
+v3: remove the warning in case there are no configured synthetic events
+v2: remove the patch from "SQL-like syntax for ftrace histograms configuration" patch set
+---
+ tracecmd/trace-record.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 4a49b640..7c76ffa8 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -4638,6 +4638,43 @@ static void clear_triggers(void)
+ 		clear_instance_triggers(instance);
  }
-+
-+static bool check_file_exist(struct tracefs_instance *instance,
-+			     char *name, bool dir)
+ 
++static void clear_all_synth_events(void)
 +{
-+	char file[PATH_MAX];
-+	struct stat st;
-+	char *path;
-+	int ret;
++	char sevent[BUFSIZ];
++	char *save = NULL;
++	char *line;
++	char *file;
++	char *buf;
++	int len;
 +
-+	path = tracefs_instance_get_dir(instance);
-+	snprintf(file, PATH_MAX, "%s/%s", path, name);
-+	tracefs_put_tracing_file(path);
-+	ret = stat(file, &st);
-+	if (ret < 0)
-+		return false;
++	if (!tracefs_file_exist(NULL, "synthetic_events"))
++		return;
++	file = tracefs_instance_get_file(NULL, "synthetic_events");
++	if (!file)
++		return;
 +
-+	if (dir && !S_ISDIR(st.st_mode))
-+		return false;
-+	if (!dir && S_ISDIR(st.st_mode))
-+		return false;
++	buf = read_file(file);
++	if (!buf)
++		goto out;
 +
-+	return true;
++	sevent[0] = '!';
++
++	for (line = strtok_r(buf, "\n", &save); line; line = strtok_r(NULL, "\n", &save)) {
++		len = strlen(line);
++		if (len > BUFSIZ - 2)
++			len = BUFSIZ - 2;
++		strncpy(sevent + 1, line, len);
++		sevent[len + 1] = '\0';
++		write_file(file, sevent);
++	}
++out:
++	free(buf);
++	tracefs_put_tracing_file(file);
++
 +}
 +
-+/**
-+ * tracefs_file_exist - Check if a file with given name exists in given instance
-+ * @instance: ftrace instance, can be NULL for the top instance
-+ * @name: name of the file
-+ *
-+ * Returns true if the file exists, false otherwise
-+ */
-+bool tracefs_file_exist(struct tracefs_instance *instance, char *name)
-+{
-+	return check_file_exist(instance, name, false);
-+}
 +
-+/**
-+ * tracefs_dir_exist - Check if a directory with given name exists in given instance
-+ * @instance: ftrace instance, can be NULL for the top instance
-+ * @name: name of the directory
-+ *
-+ * Returns true if the directory exists, false otherwise
-+ */
-+bool tracefs_dir_exist(struct tracefs_instance *instance, char *name)
-+{
-+	return check_file_exist(instance, name, true);
-+}
++
+ static void clear_func_filters(void)
+ {
+ 	struct buffer_instance *instance;
+@@ -5344,6 +5381,7 @@ void trace_reset(int argc, char **argv)
+ 	set_buffer_size();
+ 	clear_filters();
+ 	clear_triggers();
++	clear_all_synth_events();
+ 	/* set clock to "local" */
+ 	reset_clock();
+ 	reset_event_pid();
 -- 
 2.24.1
 
