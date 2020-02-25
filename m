@@ -2,67 +2,70 @@ Return-Path: <SRS0=gJb8=4N=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A718C35E01
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 837D4C35E01
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 01DEB206E6
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5FB44206E6
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tO5sA+w9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kYqvLwRg"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgBYSHk (ORCPT
+        id S1731192AbgBYSHn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 25 Feb 2020 13:07:40 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:40299 "EHLO
+        Tue, 25 Feb 2020 13:07:43 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:39607 "EHLO
         mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727983AbgBYSHk (ORCPT
+        with ESMTP id S1731149AbgBYSHn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 25 Feb 2020 13:07:40 -0500
-Received: by mail-lj1-f195.google.com with SMTP id n18so15088477ljo.7
-        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Feb 2020 10:07:39 -0800 (PST)
+        Tue, 25 Feb 2020 13:07:43 -0500
+Received: by mail-lj1-f195.google.com with SMTP id o15so15088929ljg.6
+        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Feb 2020 10:07:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=leVvPJ2nhMZF38DYif7VEYS+o6O/a3fvu5zarB0zgvU=;
-        b=tO5sA+w9HROZtS9fQiU0IfYj8q40ia1uQ3LyrrShy8fqS/GGUDdMRrC6Hnme2skvTh
-         HDLIo7Yb/KDIy6IcLvk5dluZOF8C+0kuSp5xtdhHxqb/ka9SsXM2EZDv91kBpy9T6I9B
-         McwiDzDRZk9RIw9unz62MrjKG+fhDO0G+xiapjtPf3CQdoKU2a/yUPgqnRIbc+evCskJ
-         6Q0wwwjiDsxoiz00goF677Yo9JOrJa4Oc8m3vant3VnLXIBxuWUvcbKeiIqv1NqHyR8G
-         HaIOT9MsfEUShZowRsavLdoOO03r6S7NYtXcnrQewt5qTOaoU2F14GGngNuVkP81eBos
-         3qxQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9Vc+kwOmUbzpTE/KOdHos8lFRoTNpj0rkr6VH01Ok+I=;
+        b=kYqvLwRgAsvCPKoUPGQ3QLZRSG4tA7wftZZHaVvGpLr1khJdpezET2KYmWOcf0tdm0
+         FFA5DTjb4DmFMUJPggjoX6NC4WDD1hGFD61A/nd34nA8Za0g5wfej+gq0OkoHEgh3aRw
+         fIAKXXnPViANDshWBhnvWi+q1Y8bddws7EkX7HaJDtdP4Ok7JYwZUuV5tGcetzUsdNmF
+         uxy+vk9MtOD8HW9E9wTDLOvFsBggOtfQ6I6lpKJzt0NOeDv/1DsusKUzmw7BP//4z7wU
+         ZzDHWrY1ZhjWoCiTibe+bRqwSpfvrxyeBW7uc++SRjlwx6cJKauMe+eCM4/n+ONIfjKP
+         SnTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=leVvPJ2nhMZF38DYif7VEYS+o6O/a3fvu5zarB0zgvU=;
-        b=XHQq6rnK9rcA5Dlh7VRz3Iop3i4l9tVdAPHqDI+Q6n9wmWpJkL4+d7DCcOXVaUh7tH
-         Zm+hyqXPTU8IIngHY1ybMDXlppsMiO3Vu2VjZAeeAyqfUzxvO3k4laj+NGcOmGNfb079
-         XQbVjz9l+CSAuUFnpIrJzc/1OXRSkeGwwAlQu7QmvgiWQuIwbwv5UUhOF9l7UcJ0YnIE
-         IHetnt39i9cc3+YZ7Frb4bZRLxVfmuAYNoyslflYLzEU3OETrvJbVl+4ZKDhU1QygVQf
-         Jk9nTDu03JPl+pksUc/6sk2rJ18l6x37lBO3ws9cTVb5wB9E2hnpNbdIcYxU2QKdim6b
-         ZEKg==
-X-Gm-Message-State: APjAAAWRY7mYy95ylOm2pIHLKkhdUenczNfa23UfNK2PUDcGOxA8gD+Z
-        n+JUu5mEgOB/FWZia3LwvHq6njelqPQ=
-X-Google-Smtp-Source: APXvYqzp0LztfNSWzk9lFzOKiKaL33Bu3NbIOPbMT8kUFbQKpXF7kAqBAthzkQbbeoDteLP9jwYR/Q==
-X-Received: by 2002:a2e:8e91:: with SMTP id z17mr163106ljk.13.1582654058163;
-        Tue, 25 Feb 2020 10:07:38 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9Vc+kwOmUbzpTE/KOdHos8lFRoTNpj0rkr6VH01Ok+I=;
+        b=WNzx96L4+9bGf8PfPOT9fBdFrXcY6bQrd+okIZIfNiw3L08XgQXihhf3XEv9QmiZtj
+         6FnzF01/gcYMWaxlgWxQRmphiP17riC1Ldd1gGgXrBq8u/GB4fv+zDf/DWZuKB0bpiLi
+         Jpj4pgR52k8nD1U7BwrA7MKWehJ/+pcv9KR5IAu3mM5BnCpQSv2wG0HfpLPXWPhbOhG3
+         Dak8IAOtO6L3cD2ytUQGfFfP+sjoA9U6ZUA1M6n1vAcV42+n+RFlsA4p5j9I34ePHBlR
+         u7HdGjBo6R5dNqUB3Je2XCDhUGG1iMhd9VOi5EvbKPTU0WWZkcjn+yfkv4VO1ncEbwXo
+         v7Ww==
+X-Gm-Message-State: APjAAAVADi2d1qrJcDDENFMXfegO7t1i1KBJgLVAG0rJYZYTvxHOKfYN
+        JoGi8VAg1kL7m7TO6/nODW9rkY/vWBA=
+X-Google-Smtp-Source: APXvYqxQaMZ5y/7fwpK6f8+02tP+H8qAvQU64wY1IkUs1QUvMRV2ucU47Gzzvxnw8Y8z5MU3agCNlA==
+X-Received: by 2002:a2e:9f52:: with SMTP id v18mr179917ljk.30.1582654061032;
+        Tue, 25 Feb 2020 10:07:41 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id v15sm4141438lfg.51.2020.02.25.10.07.36
+        by smtp.gmail.com with ESMTPSA id v15sm4141438lfg.51.2020.02.25.10.07.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2020 10:07:37 -0800 (PST)
+        Tue, 25 Feb 2020 10:07:40 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 0/4] Extend coverage of "trace-cmd reset" command
-Date:   Tue, 25 Feb 2020 20:07:29 +0200
-Message-Id: <20200225180733.89344-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 2/4] trace-cmd: Unit tests for new libtracefs APIs
+Date:   Tue, 25 Feb 2020 20:07:31 +0200
+Message-Id: <20200225180733.89344-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200225180733.89344-1-tz.stoyanov@gmail.com>
+References: <20200225180733.89344-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -70,39 +73,49 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The "trace-cmd reset" command is supposed to set the ftrace state to default.
-However, some ftrace configurations are not reseted: synthetic events and
-error_log file. The command is extended to clean these.
-Two new tracefs APIs were also implemented, to check if given ftrace
-file / directory exists:
+Unit tests for tracefs APIs, checking for ftrace file / directory existence:
   bool tracefs_file_exist(struct tracefs_instance *instance, char *name);
   bool tracefs_dir_exist(struct tracefs_instance *instance, char *name);
 
-[
- v2 changes:
-  - Removed these patches from the "SQL-like syntax for ftrace histograms
-    configuration" patch set, as they are not directly related to it.
- v3 changes:
-  - Remove the warning in case there are no configured synthetic events.
- v4 chanegs:
- - Implemented new tracefs APIs to check if given ftrace file /
-   directory exists. Use the new APIs to check if synthetic_events and
-   error_log files exist, before accessing them.
-]
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ utest/tracefs-utest.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-Tzvetomir Stoyanov (VMware) (4):
-  trace-cmd: Add new tracefs APIs for checking if a ftrace file /
-    directory exists
-  trace-cmd: Unit tests for new libtracefs APIs
-  trace-cmd: Clear synthetic events on reset subcommand
-  trace-cmd: Clear error log on reset subcommand
-
- include/tracefs/tracefs.h      |  3 ++
- lib/tracefs/tracefs-instance.c | 49 ++++++++++++++++++++++++++-
- tracecmd/trace-record.c        | 61 ++++++++++++++++++++++++++++++++++
- utest/tracefs-utest.c          | 16 +++++++++
- 4 files changed, 128 insertions(+), 1 deletion(-)
-
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 2473e893..3f57ecad 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -175,6 +175,7 @@ static void test_instance_file_read(struct tracefs_instance *inst, char *fname)
+ 
+ #define ALL_TRACERS	"available_tracers"
+ #define CUR_TRACER	"current_tracer"
++#define PER_CPU		"per_cpu"
+ static void test_instance_file(void)
+ {
+ 	struct tracefs_instance *instance = NULL;
+@@ -251,6 +252,21 @@ static void test_instance_file(void)
+ 	tracefs_put_tracing_file(inst_file);
+ 	free(fname);
+ 
++	CU_TEST(tracefs_file_exist(NULL, (char *)name) == false);
++	CU_TEST(tracefs_dir_exist(NULL, (char *)name) == false);
++	CU_TEST(tracefs_file_exist(instance, (char *)name) == false);
++	CU_TEST(tracefs_dir_exist(instance, (char *)name) == false);
++
++	CU_TEST(tracefs_file_exist(NULL, CUR_TRACER) == true);
++	CU_TEST(tracefs_dir_exist(NULL, CUR_TRACER) == false);
++	CU_TEST(tracefs_file_exist(instance, CUR_TRACER) == true);
++	CU_TEST(tracefs_dir_exist(instance, CUR_TRACER) == false);
++
++	CU_TEST(tracefs_file_exist(NULL, PER_CPU) == false);
++	CU_TEST(tracefs_dir_exist(NULL, PER_CPU) == true);
++	CU_TEST(tracefs_file_exist(instance, PER_CPU) == false);
++	CU_TEST(tracefs_dir_exist(instance, PER_CPU) == true);
++
+ 	CU_TEST(tracefs_instance_destroy(NULL) != 0);
+ 	CU_TEST(tracefs_instance_destroy(instance) == 0);
+ 	CU_TEST(tracefs_instance_destroy(instance) != 0);
 -- 
 2.24.1
 
