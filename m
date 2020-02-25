@@ -1,105 +1,108 @@
-Return-Path: <SRS0=Uklz=4M=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=gJb8=4N=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 208D5C38BE2
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Feb 2020 20:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A718C35E01
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E1F5F21927
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 24 Feb 2020 20:44:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 01DEB206E6
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 25 Feb 2020 18:07:40 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tO5sA+w9"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgBXUoN (ORCPT
+        id S1728367AbgBYSHk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 24 Feb 2020 15:44:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727249AbgBXUoN (ORCPT
+        Tue, 25 Feb 2020 13:07:40 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:40299 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727983AbgBYSHk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 24 Feb 2020 15:44:13 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD3A221927;
-        Mon, 24 Feb 2020 20:44:12 +0000 (UTC)
-Date:   Mon, 24 Feb 2020 15:44:11 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+        Tue, 25 Feb 2020 13:07:40 -0500
+Received: by mail-lj1-f195.google.com with SMTP id n18so15088477ljo.7
+        for <linux-trace-devel@vger.kernel.org>; Tue, 25 Feb 2020 10:07:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=leVvPJ2nhMZF38DYif7VEYS+o6O/a3fvu5zarB0zgvU=;
+        b=tO5sA+w9HROZtS9fQiU0IfYj8q40ia1uQ3LyrrShy8fqS/GGUDdMRrC6Hnme2skvTh
+         HDLIo7Yb/KDIy6IcLvk5dluZOF8C+0kuSp5xtdhHxqb/ka9SsXM2EZDv91kBpy9T6I9B
+         McwiDzDRZk9RIw9unz62MrjKG+fhDO0G+xiapjtPf3CQdoKU2a/yUPgqnRIbc+evCskJ
+         6Q0wwwjiDsxoiz00goF677Yo9JOrJa4Oc8m3vant3VnLXIBxuWUvcbKeiIqv1NqHyR8G
+         HaIOT9MsfEUShZowRsavLdoOO03r6S7NYtXcnrQewt5qTOaoU2F14GGngNuVkP81eBos
+         3qxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=leVvPJ2nhMZF38DYif7VEYS+o6O/a3fvu5zarB0zgvU=;
+        b=XHQq6rnK9rcA5Dlh7VRz3Iop3i4l9tVdAPHqDI+Q6n9wmWpJkL4+d7DCcOXVaUh7tH
+         Zm+hyqXPTU8IIngHY1ybMDXlppsMiO3Vu2VjZAeeAyqfUzxvO3k4laj+NGcOmGNfb079
+         XQbVjz9l+CSAuUFnpIrJzc/1OXRSkeGwwAlQu7QmvgiWQuIwbwv5UUhOF9l7UcJ0YnIE
+         IHetnt39i9cc3+YZ7Frb4bZRLxVfmuAYNoyslflYLzEU3OETrvJbVl+4ZKDhU1QygVQf
+         Jk9nTDu03JPl+pksUc/6sk2rJ18l6x37lBO3ws9cTVb5wB9E2hnpNbdIcYxU2QKdim6b
+         ZEKg==
+X-Gm-Message-State: APjAAAWRY7mYy95ylOm2pIHLKkhdUenczNfa23UfNK2PUDcGOxA8gD+Z
+        n+JUu5mEgOB/FWZia3LwvHq6njelqPQ=
+X-Google-Smtp-Source: APXvYqzp0LztfNSWzk9lFzOKiKaL33Bu3NbIOPbMT8kUFbQKpXF7kAqBAthzkQbbeoDteLP9jwYR/Q==
+X-Received: by 2002:a2e:8e91:: with SMTP id z17mr163106ljk.13.1582654058163;
+        Tue, 25 Feb 2020 10:07:38 -0800 (PST)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id v15sm4141438lfg.51.2020.02.25.10.07.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Feb 2020 10:07:37 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] trace-cmd: Clear error log on reset subcommand
-Message-ID: <20200224154411.3b8e63c9@gandalf.local.home>
-In-Reply-To: <20200219131410.447103-1-tz.stoyanov@gmail.com>
-References: <20200219131410.447103-1-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Subject: [PATCH v4 0/4] Extend coverage of "trace-cmd reset" command
+Date:   Tue, 25 Feb 2020 20:07:29 +0200
+Message-Id: <20200225180733.89344-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 19 Feb 2020 15:14:10 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+The "trace-cmd reset" command is supposed to set the ftrace state to default.
+However, some ftrace configurations are not reseted: synthetic events and
+error_log file. The command is extended to clean these.
+Two new tracefs APIs were also implemented, to check if given ftrace
+file / directory exists:
+  bool tracefs_file_exist(struct tracefs_instance *instance, char *name);
+  bool tracefs_dir_exist(struct tracefs_instance *instance, char *name);
 
-> The "trace-cmd reset" command is supposed to set the ftrace state to default.
-> However, the ftrace error logs are not reseted.
-> A logic is added to delete the content of "error_log" file when "trace-cmd reset" is executed.
-> 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  tracecmd/trace-record.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index b6a412e..3e0d066 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -4638,6 +4638,25 @@ static void clear_triggers(void)
->  		clear_instance_triggers(instance);
->  }
->  
-> +static void clear_instance_error_log(struct buffer_instance *instance)
-> +{
-> +	char *file;
-> +
-> +	file = tracefs_instance_get_file(instance->tracefs, "error_log");
-> +	if (!file)
-> +		return;
-> +	write_file(file, " ");
-> +	tracefs_put_tracing_file(file);
-> +}
+[
+ v2 changes:
+  - Removed these patches from the "SQL-like syntax for ftrace histograms
+    configuration" patch set, as they are not directly related to it.
+ v3 changes:
+  - Remove the warning in case there are no configured synthetic events.
+ v4 chanegs:
+ - Implemented new tracefs APIs to check if given ftrace file /
+   directory exists. Use the new APIs to check if synthetic_events and
+   error_log files exist, before accessing them.
+]
 
-The error_log file is not guaranteed to exist. Please add a check for
-existence via stat() (hmm, perhaps we should make a file_exists() helper
-function). Otherwise I get this:
+Tzvetomir Stoyanov (VMware) (4):
+  trace-cmd: Add new tracefs APIs for checking if a ftrace file /
+    directory exists
+  trace-cmd: Unit tests for new libtracefs APIs
+  trace-cmd: Clear synthetic events on reset subcommand
+  trace-cmd: Clear error log on reset subcommand
 
-# trace-cmd reset
-trace-cmd: No such file or directory
-  opening to '/debug/tracing/error_log'
+ include/tracefs/tracefs.h      |  3 ++
+ lib/tracefs/tracefs-instance.c | 49 ++++++++++++++++++++++++++-
+ tracecmd/trace-record.c        | 61 ++++++++++++++++++++++++++++++++++
+ utest/tracefs-utest.c          | 16 +++++++++
+ 4 files changed, 128 insertions(+), 1 deletion(-)
 
-
-> +
-> +static void clear_error_log(void)
-> +{
-> +	struct buffer_instance *instance;
-> +
-> +	for_all_instances(instance)
-> +		clear_instance_error_log(instance);
-> +}
-> +
->  static void clear_all_synth_events(void)
->  {
->  	char sevent[BUFSIZ];
-> @@ -5382,6 +5401,7 @@ void trace_reset(int argc, char **argv)
->  	clear_filters();
->  	clear_triggers();
->  	clear_all_synth_events();
-> +	clear_error_log();
->  	/* set clock to "local" */
->  	reset_clock();
->  	reset_event_pid();
+-- 
+2.24.1
 
