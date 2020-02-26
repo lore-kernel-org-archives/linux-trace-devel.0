@@ -2,67 +2,67 @@ Return-Path: <SRS0=1BtL=4O=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8699C4BA13
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Feb 2020 16:32:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D26EC4BA19
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Feb 2020 16:32:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7F2AA24670
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Feb 2020 16:32:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 52B7C206E6
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 26 Feb 2020 16:32:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tBQt+9oF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AeIz+1yB"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727381AbgBZQcH (ORCPT
+        id S1726905AbgBZQcI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 26 Feb 2020 11:32:07 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:40596 "EHLO
+        Wed, 26 Feb 2020 11:32:08 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:42173 "EHLO
         mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727168AbgBZQcH (ORCPT
+        with ESMTP id S1727173AbgBZQcH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 26 Feb 2020 11:32:07 -0500
-Received: by mail-lj1-f194.google.com with SMTP id n18so3804853ljo.7
-        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Feb 2020 08:32:05 -0800 (PST)
+Received: by mail-lj1-f194.google.com with SMTP id d10so3802525ljl.9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 26 Feb 2020 08:32:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hoA9+WGSbu8C2p4LQyj6mqpIZwKtFWUsPpsIzHeMVwk=;
-        b=tBQt+9oFdg5KpbnOebh7AZjciabIvUZnxGY9dIneJYZgAfVvUF3aLbPbm2iakccho1
-         mruAxBEuD5juhtMqeZ+ve5UfJu2ZTBo3ChIN7WZlAYNfaJygON2JGvTblf2puwrMKjzn
-         1Op7J5Jg2kWUJ4YP2BwXYCTHz25vypxVJoNettJdHMS8sBlx9Dq7ZZ/O1irrkv/vh9Su
-         gbQBnnu2byUbYWm6+mm2KTvPr83+syH4e2mkJr5fwBbuh9OvdFFbNmktIaqRlNDejzS0
-         uKtVKcecm1xcQ1QIEGVXk9oPEeIBKzYaF3SeU9QAYtwgXS3BcMDnstFY4u94F8rK+9Ra
-         P1Fg==
+        bh=ytAs4N8eHHrCE5vlEUflW+GDRTfBuxWUc/so7AGAKZ0=;
+        b=AeIz+1yB8F4MI/hr6SmTV7dcLgtKqj8QA/+ZmmrTJtgwqnBjIA88WyQvJhkA5i/Qjj
+         P94gpc+OxxU+l6mAm3lZZoVApJqtMg0hsMiBtzjJxGi3x3IJ0tzL0X93GEGSDF2xRbUA
+         eS/IKdXpwvXcDAsigvkMd1SmODkusn/3tlCkKqw27qVoJVehrf2LoYLnWhZ+DIMYA7PR
+         SiU5lf5QjaZHA/4HUTkjeBphFbY1vaGtFp0QO4KfaN6tmKyfYJ7aGMc8NPwxbr87t8Nk
+         FerIqItw3kS5ohQ+FWeCUUZ2eYzrbMgPaMt9KP6ECgZX8WK2GeX4Y6DSLZ/F5vPmiI8n
+         yVfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hoA9+WGSbu8C2p4LQyj6mqpIZwKtFWUsPpsIzHeMVwk=;
-        b=sgiEVdM3p1FwtDICB1orznFVWP2tTm8eR7p93tD8qvfy5bEXhucz0Z/Frf6VUuEYWV
-         mfZkQX3S/cQ0axvqPAxY8nnKjUjQHQBAzZFeU4Dfrxq4UDo1EZUHaUGjFRzclWwhBJOd
-         K6tJPw88KBZas0QYzt4xhxA/RvraVMH/JapYke/K0BEKVo7X861tvu/jNvj6re8zzMH2
-         xZFTmiV72qJtyoj3Czmr1+BwSB2eKO/5FHw42ryXwXoBWYElySuWDh7JxAclklwf7mDV
-         qxAfZl/mcozcSW4lB5wsWz7D3eWDC3uC7kci3NCBbW93eOaS55Lke3knePGfNpiJzu7q
-         RnRw==
-X-Gm-Message-State: APjAAAWJZavRv12riQKvDo4xfpeHNe2JtJ4G6l5kX0GXaAhoWgoACcEo
-        MICiyK+HHSYyczTOOmvdey0=
-X-Google-Smtp-Source: ADFU+vvSDb6V5DWmZ2pskwy7PlqHuhtb/DiUvresgvpBeSf2jhHBYA4M/BP04YccKNykE1xeantkCw==
-X-Received: by 2002:a2e:3504:: with SMTP id z4mr3508332ljz.273.1582734724563;
-        Wed, 26 Feb 2020 08:32:04 -0800 (PST)
+        bh=ytAs4N8eHHrCE5vlEUflW+GDRTfBuxWUc/so7AGAKZ0=;
+        b=XEuXLDNFaYiNTt+hKgOUXhUp1+aQwslhKQYEIvzP8TcpvGtQI9LIfkBlM9sTYbfvZX
+         JSa84KXv5AVhS9em9uSxrTowMJd+kNObkIF0AVV8+RcoWLk51zXlYKHBsYDqvKX+B9fc
+         yAB8+qlUrmiC6+flae8slFvjCqvaJJqClBcpyu3GdV+IK/Doj/HAI0yHUN1n3YDLNRIf
+         4dfLDKpwwozVuub9GC2aEGJ6W+3wArpGZsAzjg9rDpnQzgMFF5JrDPt8gnBWrYYGW5/Y
+         WOVs8cluMAVhS1HEHX9/rQFRY3eQk70+Vn99KV8nmcjvDuhjHyh/prQDf4Wxa5sbvqeE
+         nvYw==
+X-Gm-Message-State: APjAAAXx2vocNniKTkhmLigy+WYBXBsK81nns+2+JajrmO2Ly3M0tRRT
+        42W+MsMlwMR6b3sXE76aJWCND3XLkgM=
+X-Google-Smtp-Source: APXvYqy2myAgGbE66fycqoKrjoXOIROQqZ5SIrtdyd4MzfJEvjNGrlirGLdc3+YrwMHQjmPMQP24rQ==
+X-Received: by 2002:a05:651c:204f:: with SMTP id t15mr3357761ljo.240.1582734725884;
+        Wed, 26 Feb 2020 08:32:05 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s2sm1264133lfd.67.2020.02.26.08.32.03
+        by smtp.gmail.com with ESMTPSA id s2sm1264133lfd.67.2020.02.26.08.32.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Feb 2020 08:32:03 -0800 (PST)
+        Wed, 26 Feb 2020 08:32:05 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 2/5] trace-cmd: Unit test for tracefs_instance_file_append() API
-Date:   Wed, 26 Feb 2020 18:31:56 +0200
-Message-Id: <20200226163159.20232-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 3/5] trace-cmd: Add new libtraceevent flag to suppress parsing warnings
+Date:   Wed, 26 Feb 2020 18:31:57 +0200
+Message-Id: <20200226163159.20232-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200226163159.20232-1-tz.stoyanov@gmail.com>
 References: <20200226163159.20232-1-tz.stoyanov@gmail.com>
@@ -73,147 +73,67 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A unit test for tracefs_instance_file_append() API is added.
+When the event's format strings are parsed by tep_parse_format()
+API and there is a parsing error, a warning is printed. There are
+use cases when these errors are not important and should be suppressed.
+A new flag is added to
+ enum tep_flag {
+   ...
+   TEP_NO_PARSING_WARNINGS
+   ...
+ }
+for such use cases. It can be set / cleared / checked using
+the existing libtraceevent APIs:
+ void tep_set_flag(struct tep_handle *tep, int flag);
+ void tep_clear_flag(struct tep_handle *tep, enum tep_flag flag);
+ bool tep_test_flag(struct tep_handle *tep, enum tep_flag flag);
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- utest/tracefs-utest.c | 106 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 84 insertions(+), 22 deletions(-)
+ include/traceevent/event-parse.h | 2 ++
+ lib/traceevent/event-parse.c     | 6 ++++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 3f57ecad..1dc15e1b 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -176,6 +176,86 @@ static void test_instance_file_read(struct tracefs_instance *inst, char *fname)
- #define ALL_TRACERS	"available_tracers"
- #define CUR_TRACER	"current_tracer"
- #define PER_CPU		"per_cpu"
-+#define SYNTH_EVENTS	"synthetic_events"
-+static void test_trace_file_read(struct tracefs_instance *instance)
-+{
-+	test_instance_file_read(NULL, ALL_TRACERS);
-+	test_instance_file_read(instance, ALL_TRACERS);
-+}
-+
-+static void test_trace_file_write(struct tracefs_instance *instance)
-+{
-+	char *tracer;
-+	char *file1;
-+	char *file2;
-+	int size;
-+	int ret;
-+
-+	file1 = tracefs_instance_file_read(instance, ALL_TRACERS, NULL);
-+	CU_TEST(file1 != NULL);
-+	tracer = strtok(file1, " ");
-+	CU_TEST(tracer != NULL);
-+	ret = tracefs_instance_file_write(instance, CUR_TRACER, tracer);
-+	CU_TEST(ret == strlen(tracer));
-+	file2 = tracefs_instance_file_read(instance, CUR_TRACER, &size);
-+	CU_TEST(file2 != NULL);
-+	CU_TEST(size >= strlen(tracer));
-+	CU_TEST(strncmp(file2, tracer, strlen(tracer)) == 0);
-+	free(file1);
-+	free(file2);
-+}
-+
-+static bool check_file_line(struct tracefs_instance *instance,
-+			    char *fname, char *line, bool last)
-+{
-+	bool found = false;
-+	char *buf = NULL;
-+	char *l;
-+	int n;
-+
-+	buf = tracefs_instance_file_read(instance, fname, &n);
-+	if (!buf)
-+		return 0;
-+	l = strtok(buf, "\n");
-+	while (l) {
-+		if (strncmp(l, line, strlen(line)) == 0) {
-+			if (last) {
-+				if (strtok(NULL, "\n") == NULL)
-+					found = true;
-+			} else
-+				found = true;
-+			break;
-+		}
-+		l = strtok(NULL, "\n");
-+	}
-+	free(buf);
-+	return found;
-+}
-+
-+static void test_trace_file_append(struct tracefs_instance *instance)
-+{
-+	char *sevent1 = "first	u64 start; u64 end; pid_t pid; u64 delta";
-+	char *sevent2 = "second	u64 start; u64 end; pid_t pid; u64 delta";
-+	char buf[256];
-+	int ret;
-+
-+	if (!tracefs_file_exist(NULL, SYNTH_EVENTS))
-+		return;
-+
-+	CU_TEST(!check_file_line(NULL, SYNTH_EVENTS, sevent1, false));
-+	ret = tracefs_instance_file_append(NULL, SYNTH_EVENTS, sevent1);
-+	CU_TEST(ret == strlen(sevent1));
-+	CU_TEST(check_file_line(NULL, SYNTH_EVENTS, sevent1, true));
-+	ret = tracefs_instance_file_append(NULL, SYNTH_EVENTS, sevent2);
-+	CU_TEST(ret == strlen(sevent2));
-+	CU_TEST(check_file_line(NULL, SYNTH_EVENTS, sevent1, false));
-+	CU_TEST(check_file_line(NULL, SYNTH_EVENTS, sevent2, true));
-+	snprintf(buf, 256, "!%s", sevent1);
-+	tracefs_instance_file_write(NULL, SYNTH_EVENTS, buf);
-+	snprintf(buf, 256, "!%s", sevent2);
-+	tracefs_instance_file_write(NULL, SYNTH_EVENTS, buf);
-+}
-+
- static void test_instance_file(void)
+diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
+index 52bafa54..49e3d287 100644
+--- a/include/traceevent/event-parse.h
++++ b/include/traceevent/event-parse.h
+@@ -321,6 +321,8 @@ enum tep_flag {
+ 	TEP_NSEC_OUTPUT		= 1,	/* output in NSECS */
+ 	TEP_DISABLE_SYS_PLUGINS	= 1 << 1,
+ 	TEP_DISABLE_PLUGINS	= 1 << 2,
++	TEP_NO_PARSING_WARNINGS	= 1 << 3, /* Disable warnings while parsing
++					     event's format strings */
+ };
+ 
+ #define TEP_ERRORS 							      \
+diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+index 064c100d..61cd7ea1 100644
+--- a/lib/traceevent/event-parse.c
++++ b/lib/traceevent/event-parse.c
+@@ -6222,6 +6222,7 @@ enum tep_errno __tep_parse_format(struct tep_event **eventp,
+ 				  struct tep_handle *tep, const char *buf,
+ 				  unsigned long size, const char *sys)
  {
- 	struct tracefs_instance *instance = NULL;
-@@ -186,11 +266,6 @@ static void test_instance_file(void)
- 	char *inst_dir;
- 	struct stat st;
- 	char *fname;
--	char *file1;
--	char *file2;
--	char *tracer;
--	int size;
--	int ret;
++	int show_warning_state = show_warning;
+ 	struct tep_event *event;
+ 	int ret;
  
- 	tdir  = tracefs_get_tracing_dir();
- 	CU_TEST(tdir != NULL);
-@@ -232,26 +307,13 @@ static void test_instance_file(void)
- 	inst_file = tracefs_instance_get_file(instance, ALL_TRACERS);
- 	CU_TEST(inst_file != NULL);
- 	CU_TEST(strcmp(fname, inst_file) == 0);
--
--	test_instance_file_read(NULL, ALL_TRACERS);
--	test_instance_file_read(instance, ALL_TRACERS);
--
--	file1 = tracefs_instance_file_read(instance, ALL_TRACERS, NULL);
--	CU_TEST(file1 != NULL);
--	tracer = strtok(file1, " ");
--	CU_TEST(tracer != NULL);
--	ret = tracefs_instance_file_write(instance, CUR_TRACER, tracer);
--	CU_TEST(ret == strlen(tracer));
--	file2 = tracefs_instance_file_read(instance, CUR_TRACER, &size);
--	CU_TEST(file2 != NULL);
--	CU_TEST(size >= strlen(tracer));
--	CU_TEST(strncmp(file2, tracer, strlen(tracer)) == 0);
--	free(file1);
--	free(file2);
--
- 	tracefs_put_tracing_file(inst_file);
- 	free(fname);
+@@ -6274,11 +6275,12 @@ enum tep_errno __tep_parse_format(struct tep_event **eventp,
+ 	 * If the event has an override, don't print warnings if the event
+ 	 * print format fails to parse.
+ 	 */
+-	if (tep && find_event_handle(tep, event))
++	if (tep && (tep_test_flag(tep, TEP_NO_PARSING_WARNINGS) ||
++		    find_event_handle(tep, event)))
+ 		show_warning = 0;
  
-+	test_trace_file_read(instance);
-+	test_trace_file_write(instance);
-+	test_trace_file_append(instance);
-+
- 	CU_TEST(tracefs_file_exist(NULL, (char *)name) == false);
- 	CU_TEST(tracefs_dir_exist(NULL, (char *)name) == false);
- 	CU_TEST(tracefs_file_exist(instance, (char *)name) == false);
+ 	ret = event_read_print(event);
+-	show_warning = 1;
++	show_warning = show_warning_state;
+ 
+ 	if (ret < 0) {
+ 		ret = TEP_ERRNO__READ_PRINT_FAILED;
 -- 
 2.24.1
 
