@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7F5BC5ED3F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Feb 2020 14:20:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B40BC5ED41
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Feb 2020 14:20:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AFECA246AE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Feb 2020 14:20:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 33C3C20801
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Feb 2020 14:20:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+/tB3QH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UKM0ijk7"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389750AbgB0OUV (ORCPT
+        id S2389821AbgB0OUV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 27 Feb 2020 09:20:21 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:40077 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389828AbgB0OUP (ORCPT
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:33630 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389728AbgB0OUU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 27 Feb 2020 09:20:15 -0500
-Received: by mail-lj1-f194.google.com with SMTP id 143so3490219ljj.7
-        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Feb 2020 06:20:13 -0800 (PST)
+        Thu, 27 Feb 2020 09:20:20 -0500
+Received: by mail-lf1-f67.google.com with SMTP id n25so2233487lfl.0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Feb 2020 06:20:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MVPIveRg6oAAd84/z9Xl82WSwrk+YDdhl6fFI3ImcsY=;
-        b=E+/tB3QH5yyVv8Zlq/pZfiluSdBgZ67oYhsFfHMVKcbl9oNYdQNMsgtoNeF761XCx/
-         ypOXZQALp+lX3hmuns1rak18sEVXTCromOSExxcyqtczel06Zb1x8WgWjBWevqoVet5l
-         hcc3DbH7TLXlJgM8K+4XGlap6fBDaU+I936tynKx9ctdtNgiwpkYqhUhQ/UBQDXZiN4K
-         W6El+NwqFpOgg+xUgPEDndNhBLggjk0zSngoiGL8mh8Kf//5ezkkytobukOb7BZJxdOG
-         DPGfFMJRQTS0Z9hsZ1u5dleVLnkdIDBilkrLWv0AWVbqbKf/8JHV7212DxBJpa55i+J7
-         Xy8A==
+        bh=AvccRY29WAE6SEpT6cihqrMVaq3y+rDhD0g13g/YdTY=;
+        b=UKM0ijk76+AZNLXNqVyMXXsGhQByNSNUl1i95OJgBbEh8bC3A7djyZD1VV+CzcHjXW
+         tXhaE6cf3RMnyR1x7iGHVKGRacz8sMmr65HieJMpKTLm/9/KsyW35+f8XQ5xxfWnAyF3
+         MmaG8LBPOYryfjYayUQRcZXGjKdCnuxGCj/xl9395JgFVlxG2Znf0TNyg7TQ4SE6heq8
+         xAso1DOrml6/Jz4tM37GmrqKj8cwXMIsorqkn/kceFm4w0AA9VPC12lETnXkj76gBU8A
+         tfVq7o6+WUO4AP+l30L4GdoyC6tGVhn/uc4Q5R/su1IxUTnqJFZvEjI4bp48J+m6PDSw
+         ALhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MVPIveRg6oAAd84/z9Xl82WSwrk+YDdhl6fFI3ImcsY=;
-        b=X09a6OgSxQJ3HblyzWBueN4cFQyiR+QrKQV/SR1m0qQx9yyBdNowWN0H466XJ+9P4z
-         UHmtRwV3a0UAYNF7Mnor0OwllaFqEIh2V0gsQ4HK7CZL85jk2Us+rkf0h0qe2Sgt8x2H
-         wQiBbsCRsfqmnKKXujR3fC5HDY0ViKpetLtUvj9O3OS+lYgMTQ2/3gkomuBlmUFRWaua
-         DiWOcsEjD4/rdg2Q7dxm09wl91d5VSTPUeaqvZyTLyWGW9biowCR5dY97xSmUhAgl1y6
-         ZkZG0P7rjUdAK5h+AwUyWV7psxuuPcqMK8+Mj+VDG7FVVqhhimW57p+mfnHw17/+9898
-         iA0w==
-X-Gm-Message-State: ANhLgQ08Dk0V27QFEg340jODXw9s0mtnIiPwHE+2Y2sL4KeX0SkM8gcq
-        7+C+8jQvwBNmFIkuhAiS34E=
-X-Google-Smtp-Source: ADFU+vsfYR2psKFHQXQkxSG9sYjBgR/OXX3B4GHR9gfnAxZ4e3GLFMGwaFKgLsZWkA1fvO06QOSEYA==
-X-Received: by 2002:a2e:9708:: with SMTP id r8mr3009811lji.92.1582813212363;
-        Thu, 27 Feb 2020 06:20:12 -0800 (PST)
+        bh=AvccRY29WAE6SEpT6cihqrMVaq3y+rDhD0g13g/YdTY=;
+        b=iXy6Cur/tr7kNI1sBTXBjL8NwM+SNRt+i9Ji0XSwCcG13Kf0pDbcGI2+7ZmentmPDC
+         ADRR5Ndd3+djeyRMjqtjV/Hp7k08JpUuROPPWErEyZvUeocrH6hxzqG6b2bBN4M+AQQk
+         uJCzSn9Gxa9SeLMvcCsld9KklVUwFf9cTX9+CGjSheK27Y2HAi0n7uao2Kl0EFEaGr2p
+         0nV7e3htHLzyWcZNPHRAzn4xORqrY0P4PX4arma4AzuVhbX2CCGqHowj8BR7z/qmxQPQ
+         HBrj3yAvnPitLlzR2CPHox26e8XKoebceMLCxMVHTHMXTFy43u6rDYLIBE5hiDpMTrwz
+         k9IA==
+X-Gm-Message-State: ANhLgQ3q2a9r311mYwn0A16DG9fW5Z+JsVMbSyVwziGGmUSKvXfuJpWv
+        8STyU6l79t4cCORUohvwsAU=
+X-Google-Smtp-Source: ADFU+vvFh0SIcZXfq1Gcn3jCrwj+HncSlXSR/whWVqZIY452NMMLwoczsxfbT/09tZf4Rl1ckrexog==
+X-Received: by 2002:a19:8585:: with SMTP id h127mr2290681lfd.196.1582813218830;
+        Thu, 27 Feb 2020 06:20:18 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id l3sm3306437lja.78.2020.02.27.06.20.11
+        by smtp.gmail.com with ESMTPSA id l3sm3306437lja.78.2020.02.27.06.20.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2020 06:20:11 -0800 (PST)
+        Thu, 27 Feb 2020 06:20:18 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v20 06/15] trace-cmd: Store the session tracing ID in the trace.dat file
-Date:   Thu, 27 Feb 2020 16:19:52 +0200
-Message-Id: <20200227142001.61577-7-tz.stoyanov@gmail.com>
+Subject: [PATCH v20 11/15] trace-cmd: Add host trace clock as guest trace argument
+Date:   Thu, 27 Feb 2020 16:19:57 +0200
+Message-Id: <20200227142001.61577-12-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200227142001.61577-1-tz.stoyanov@gmail.com>
 References: <20200227142001.61577-1-tz.stoyanov@gmail.com>
@@ -73,135 +73,85 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The ID of the current tracing session is stored in the trace.dat file.
-A new file option is introduced:
-	TRACECMD_OPTION_TRACEID
-The data is stored in the file as unsigned long long integer
-A new libtracecmd API is introduced, to get the ID when the trace.dat file is read:
-	unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle);
+When tracing host and guest machines, both should use the same
+tracing clock for event timestamps. If a clock is specified
+as host tracing argument, with option "-C clock_name", the same
+is injected as guest tracing argument. If the user wants to use
+different tracing clocks, it can specify it using "-C clock_name"
+as guest tracing argument. In that case, the one specified by
+the user has higher priority.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h |  2 ++
- lib/trace-cmd/trace-input.c   | 16 ++++++++++++++++
- tracecmd/trace-dump.c         | 11 +++++++++++
- tracecmd/trace-record.c       |  9 +++++++++
- 4 files changed, 38 insertions(+)
+ tracecmd/include/trace-local.h |  1 +
+ tracecmd/trace-record.c        | 21 +++++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 7519e82a..6075a37e 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -109,6 +109,7 @@ enum {
- 	TRACECMD_OPTION_CPUCOUNT,
- 	TRACECMD_OPTION_VERSION,
- 	TRACECMD_OPTION_PROCMAPS,
-+	TRACECMD_OPTION_TRACEID,
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 4f2b5541..dc934f28 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -167,6 +167,7 @@ enum buffer_instance_flags {
+ 	BUFFER_FL_PROFILE	= 1 << 1,
+ 	BUFFER_FL_GUEST		= 1 << 2,
+ 	BUFFER_FL_AGENT		= 1 << 3,
++	BUFFER_FL_HAS_CLOCK	= 1 << 4,
  };
  
- enum {
-@@ -151,6 +152,7 @@ int tracecmd_copy_headers(struct tracecmd_input *handle, int fd);
- void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
- void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
- unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
-+unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle);
- 
- void tracecmd_parse_trace_clock(struct tracecmd_input *handle, char *file, int size);
- 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 842a4c3b..aca13c4e 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -82,6 +82,7 @@ struct tracecmd_input {
- 	struct tep_plugin_list	*plugin_list;
- 	struct tracecmd_input	*parent;
- 	unsigned long		flags;
-+	unsigned long long	trace_id;
- 	int			fd;
- 	int			long_size;
- 	int			page_size;
-@@ -2316,6 +2317,10 @@ static int handle_options(struct tracecmd_input *handle)
- 			if (buf[size-1] == '\0')
- 				trace_pid_map_load(handle, buf);
- 			break;
-+		case TRACECMD_OPTION_TRACEID:
-+			handle->trace_id = tep_read_number(handle->pevent,
-+							   &cpus, 8);
-+			break;
- 		default:
- 			warning("unknown option %d", option);
- 			break;
-@@ -3419,3 +3424,14 @@ void tracecmd_set_show_data_func(struct tracecmd_input *handle,
- {
- 	handle->show_data_func = func;
- }
-+
-+/**
-+ * tracecmd_get_traceid - get the trace id of the session
-+ * @handle: input handle for the trace.dat file
-+ *
-+ * Returns the trace id, written in the trace file
-+ */
-+unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle)
-+{
-+	return handle->trace_id;
-+}
-diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-index 415e9138..2dfeaa0f 100644
---- a/tracecmd/trace-dump.c
-+++ b/tracecmd/trace-dump.c
-@@ -358,6 +358,14 @@ static void dump_option_int(int fd, int size, char *desc)
- 	do_print(OPTIONS, "%d\n", val);
- }
- 
-+static void dump_option_xlong(int fd, int size, char *desc)
-+{
-+	long long val;
-+
-+	do_print(OPTIONS, "\t\t[Option %s, %d bytes]\n", desc, size);
-+	read_file_number(fd, &val, size);
-+	do_print(OPTIONS, "0x%llX\n", val);
-+}
- static void dump_options(int fd)
- {
- 	unsigned short option;
-@@ -408,6 +416,9 @@ static void dump_options(int fd)
- 		case TRACECMD_OPTION_PROCMAPS:
- 			dump_option_string(fd, size, "PROCMAPS");
- 			break;
-+		case TRACECMD_OPTION_TRACEID:
-+			dump_option_xlong(fd, size, "TRACEID");
-+			break;
- 		default:
- 			do_print(OPTIONS, " %d %d\t[Unknown option, size - skipping]\n",
- 				 option, size);
+ struct func_list {
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 5d31cad8..3e24eb43 100644
+index 5f799908..ee27cf0f 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -3895,6 +3895,13 @@ add_pid_maps(struct tracecmd_output *handle, struct buffer_instance *instance)
- 	trace_seq_destroy(&s);
- }
+@@ -5555,6 +5555,8 @@ static void parse_record_options(int argc,
+ 	char *sav;
+ 	int name_counter = 0;
+ 	int neg_event = 0;
++	struct buffer_instance *instance;
++	bool guest_sync_set = false;
  
-+static void
-+add_trace_id(struct tracecmd_output *handle, struct buffer_instance *instance)
-+{
-+	tracecmd_add_option(handle, TRACECMD_OPTION_TRACEID,
-+			    sizeof(long long), &instance->trace_id);
-+}
-+
- static void
- add_buffer_stat(struct tracecmd_output *handle, struct buffer_instance *instance)
- {
-@@ -4000,6 +4007,8 @@ static void add_options(struct tracecmd_output *handle, struct common_record_con
- 	add_option_hooks(handle);
- 	add_uname(handle);
- 	add_version(handle);
-+	if (!no_top_instance())
-+		add_trace_id(handle, &top_instance);
- }
+ 	init_common_record_context(ctx, curr_cmd);
  
- static void write_guest_file(struct buffer_instance *instance)
+@@ -5598,6 +5600,8 @@ static void parse_record_options(int argc,
+ 		 */
+ 		if (c != 'B' && c != 'A' && is_guest(ctx->instance)) {
+ 			add_arg(ctx->instance, c, opts, long_options, optarg);
++			if (c == 'C')
++				ctx->instance->flags |= BUFFER_FL_HAS_CLOCK;
+ 			continue;
+ 		}
+ 
+@@ -5712,6 +5716,9 @@ static void parse_record_options(int argc,
+ 			break;
+ 		case 'C':
+ 			ctx->instance->clock = optarg;
++			ctx->instance->flags |= BUFFER_FL_HAS_CLOCK;
++			if (is_top_instance(ctx->instance))
++				guest_sync_set = true;
+ 			break;
+ 		case 'v':
+ 			neg_event = 1;
+@@ -5936,6 +5943,20 @@ static void parse_record_options(int argc,
+ 				add_argv(instance, "--date", true);
+ 		}
+ 	}
++	if (guest_sync_set) {
++	/* If -C is specified, prepend clock to all guest VM flags */
++		for_all_instances(instance) {
++			if (top_instance.clock) {
++				if (is_guest(instance) &&
++				    !(instance->flags & BUFFER_FL_HAS_CLOCK)) {
++					add_argv(instance,
++						 (char *)top_instance.clock,
++						 true);
++					add_argv(instance, "-C", true);
++				}
++			}
++		}
++	}
+ 
+ 	if (!ctx->filtered && ctx->instance->filter_mod)
+ 		add_func(&ctx->instance->filter_funcs,
 -- 
 2.24.1
 
