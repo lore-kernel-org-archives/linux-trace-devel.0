@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1F11C3F35B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Feb 2020 14:20:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5CF1C3F348
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Feb 2020 14:20:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B951B2468F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Feb 2020 14:20:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BDA4D24690
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 27 Feb 2020 14:20:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uQwBJ9pp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GMlNI+2W"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730238AbgB0OUO (ORCPT
+        id S2389875AbgB0OUQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 27 Feb 2020 09:20:14 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:42069 "EHLO
+        Thu, 27 Feb 2020 09:20:16 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:41599 "EHLO
         mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389286AbgB0OUK (ORCPT
+        with ESMTP id S2389286AbgB0OUQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 27 Feb 2020 09:20:10 -0500
-Received: by mail-lj1-f193.google.com with SMTP id d10so3594407ljl.9
-        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Feb 2020 06:20:09 -0800 (PST)
+        Thu, 27 Feb 2020 09:20:16 -0500
+Received: by mail-lj1-f193.google.com with SMTP id h23so3600768ljc.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 27 Feb 2020 06:20:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yiF6QtTYqc6joapxz43L77Kv6esYCIHA1NtahqXpj5c=;
-        b=uQwBJ9ppMU2qlXp5UWyYUiABJpeprj4A8hMPF3IrhEe9q99uA5bFTnX8CcrWRnBlVE
-         u6/WAeccqCisKFEjK4fH5Z8H/IeDZ18wWoYCFjLS9uMnwKTmZjq8puyMbEBxCVpCaykC
-         52YMDB8gx9Yf/NzE/fig8HHtCqR4mjObRwq+WBsFZBoAysTWnshY/0/JRLBmyUxNaNQr
-         xPzYnxKnQIAHc4iHtj5fgJwQ7NsUcpL64V4f320YJ5lMtgcd8NJ8CDVSO7Vpbhvx4WVL
-         BN+m8wpF2ch2W5UeQ5eKx+EbxkKkWmEHQW3saOTFcgGbWpN+c6wvQYvCGbD2Ema41yvp
-         pzwg==
+        bh=Agm4aCXIkmbaB+Pv433vldzqvF/93gjO3Xrh7cZjFL8=;
+        b=GMlNI+2WF9G6lhAQ/dn6XKwlpYxRX//SI/Ip9vs+lN1L8aVTDU0BVncZm9DIaGkRKs
+         xeiCgCCDKwdWOO4zCmBAHsfERprT0FvoyhzvFRYnbx+XkjgQajbSCJs6+6otAHJSFbG/
+         H3qR9pH46AF0nSFC5ixBi0ASX1AjY+Iejw148AhoCdKhsIspO4m9QTWrfSm4r1Pd56ak
+         DG3vYKFi0IE94P4hYrEwSBZPMu6weNufwQBYa3j+Txtjm7qbSsZjVHzWvh5tJN3kafjM
+         OtM6e87XIANto+x6ho6JOiuYhlidV4ONqkl4pRyqclSp/bYMuNNSp8cAhu02oE/yxj5Q
+         jPhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yiF6QtTYqc6joapxz43L77Kv6esYCIHA1NtahqXpj5c=;
-        b=TQbhlcWSY3CCA5kWp/NV6/vvRSjwJMeo4k2jCZBpQa1gjXdTEok3PUkmOljwrPqHea
-         dCSNx2FQEROj8q47HXg2Lvaik2y5lMoKsiYSulMAeY2laxK3h/rLd2rgtLQGCL5lxrfe
-         o563JPB69F22QlgNi+T3oEEuJGMxKfBAmUMXHmTkbPEd9FKBNBf5rOdWtDG61OlQ/p/D
-         Ap1y3o2VAoKHg31KKgwIABQ/On23HhvLOJzq04Mgtbg506c6GqG0yAMQtmgTtO0vSzjD
-         ZqnEjwWhXQI8+Q9jCfryhyIQnko87bItOd2IQs22H/GYpz3lZfNxqcwKIjXwuzdOGIAo
-         85zQ==
-X-Gm-Message-State: ANhLgQ0kExz4qVkhgFPCw42UQsFbHw/ydsOn54tnMFknNNBdKTCbKQVr
-        WRFLPcfpRK4tCbCDGG3Py3wTOIBXxlU=
-X-Google-Smtp-Source: ADFU+vshd2DCLxc3QIU60l2hb6lX/J54gBxS53Z/HsYBIe9PdKoKLd8/N8Fv0sgi4VZ0+0nQ1mOVdA==
-X-Received: by 2002:a2e:9748:: with SMTP id f8mr3213392ljj.178.1582813208499;
-        Thu, 27 Feb 2020 06:20:08 -0800 (PST)
+        bh=Agm4aCXIkmbaB+Pv433vldzqvF/93gjO3Xrh7cZjFL8=;
+        b=Gk1fOlFvGIiBDk0yH3OKFRpF1f/Fqe76Ig1nIurKjO9qJ7C4UlcvNY5GvBhT5ssrEq
+         /YYOAWVI5QAPc/w05dHtxAxMrt2JgJm6TWFxBO1p+r5HPMma77KEk+8+JRUl55udwViq
+         3KO/9zW8Pyye35sTJjiQNc2ts7GXUg2zYJthUbZiTX9lJvWeJk9UKWwgbPDmSDRMG/9P
+         AT20BilgfYjshv+2jIMZnPC3hXWoTESwjTBCrS51AmvmU+eDLpoLwrJBVes8IVF/aIKu
+         k43+9C53keiJuRO+RjbJaZq2kXSNMP4D6Xig0/1O8PdjLZY19NdrwzeU9ggLm9+oFOYW
+         bIRg==
+X-Gm-Message-State: ANhLgQ1dPnHuw5wrwVh3RGd+qFW7HPDP007V4ebONQPnpFJV9B+FukT2
+        nQZmHik+i3RBSPG5Zdq+gaU=
+X-Google-Smtp-Source: ADFU+vtfEJa2/N0VcPpE9KEQ7MofuI6WwqHUxFw0hmLvc6RRtUibWLAs0PAj+HP5BNrBkIrAlQZ1nw==
+X-Received: by 2002:a2e:94c8:: with SMTP id r8mr3155536ljh.28.1582813213779;
+        Thu, 27 Feb 2020 06:20:13 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id l3sm3306437lja.78.2020.02.27.06.20.07
+        by smtp.gmail.com with ESMTPSA id l3sm3306437lja.78.2020.02.27.06.20.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2020 06:20:07 -0800 (PST)
+        Thu, 27 Feb 2020 06:20:13 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v20 03/15] trace-cmd: Find and store pids of tasks, which run virtual CPUs of given VM
-Date:   Thu, 27 Feb 2020 16:19:49 +0200
-Message-Id: <20200227142001.61577-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v20 07/15] trace-cmd: Add definitions of htonll() and ntohll()
+Date:   Thu, 27 Feb 2020 16:19:53 +0200
+Message-Id: <20200227142001.61577-8-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200227142001.61577-1-tz.stoyanov@gmail.com>
 References: <20200227142001.61577-1-tz.stoyanov@gmail.com>
@@ -75,145 +75,179 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-In order to match host and guest events, a mapping between guest VCPU
-and the host task, running this VCPU is needed. Extended existing
-struct guest to hold such mapping and added logic in read_qemu_guests()
-function to initialize it. Implemented a new internal API,
-get_guest_vcpu_pid(), to retrieve VCPU-task mapping for given VM.
+Reorganized libtracecmd internal headers:
+ - Renamed trace-cmd-local.h to trace-write-local.h
+This internal header implements static __do_write_check() function,
+used in trace-input.c, trace-output.c and trace-msg.c files.
+The header cannot be included in other files, which do not call
+__do_write_check(). The new name trace-write-local.h reflects more
+closely the purpose of the file.
+ - Added trace-cmd-local.h file, to share code inside libtracecmd.
+ - Added definitions of htonll() and ntohll(), if not already defined, in
+trace-cmd-local.h
 
 Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 ---
- tracecmd/include/trace-local.h |  2 +
- tracecmd/trace-record.c        | 77 ++++++++++++++++++++++++++++++++++
- 2 files changed, 79 insertions(+)
+ lib/trace-cmd/include/trace-cmd-local.h   | 45 ++++++-----------------
+ lib/trace-cmd/include/trace-write-local.h | 43 ++++++++++++++++++++++
+ lib/trace-cmd/trace-input.c               |  2 +-
+ lib/trace-cmd/trace-msg.c                 |  2 +-
+ lib/trace-cmd/trace-output.c              |  2 +
+ 5 files changed, 58 insertions(+), 36 deletions(-)
+ create mode 100644 lib/trace-cmd/include/trace-write-local.h
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 29f27793..a5cf0640 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -247,6 +247,8 @@ void update_first_instance(struct buffer_instance *instance, int topt);
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 09574dbd..95dce66c 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -6,10 +6,8 @@
+ #ifndef _TRACE_CMD_LOCAL_H
+ #define _TRACE_CMD_LOCAL_H
  
- void show_instance_file(struct buffer_instance *instance, const char *name);
+-/* Local for trace-input.c and trace-output.c */
+-
+-#include "trace-cmd.h"
+-#include "event-utils.h"
++/* Can be overridden */
++void warning(const char *fmt, ...);
  
-+int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
+ /* trace.dat file format version */
+ #define FILE_VERSION 6
+@@ -18,36 +16,15 @@
+ #define STR(x)	_STR(x)
+ #define FILE_VERSION_STRING STR(FILE_VERSION)
+ 
+-static ssize_t __do_write(int fd, const void *data, size_t size)
+-{
+-	ssize_t tot = 0;
+-	ssize_t w;
+-
+-	do {
+-		w = write(fd, data + tot, size - tot);
+-		tot += w;
+-
+-		if (!w)
+-			break;
+-		if (w < 0)
+-			return w;
+-	} while (tot != size);
+-
+-	return tot;
+-}
+-
+-static ssize_t
+-__do_write_check(int fd, const void *data, size_t size)
+-{
+-	ssize_t ret;
+-
+-	ret = __do_write(fd, data, size);
+-	if (ret < 0)
+-		return ret;
+-	if (ret != size)
+-		return -1;
++#ifndef htonll
++# if __BYTE_ORDER == __LITTLE_ENDIAN
++#define htonll(x) __bswap_64(x)
++#define ntohll(x) __bswap_64(x)
++#else
++#define htonll(x) (x)
++#define ntohll(x) (x)
++#endif
++#endif
+ 
+-	return 0;
+-}
+ 
+ #endif /* _TRACE_CMD_LOCAL_H */
+diff --git a/lib/trace-cmd/include/trace-write-local.h b/lib/trace-cmd/include/trace-write-local.h
+new file mode 100644
+index 00000000..94ad910b
+--- /dev/null
++++ b/lib/trace-cmd/include/trace-write-local.h
+@@ -0,0 +1,43 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++/*
++ * Copyright (C) 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
++ *
++ */
++#ifndef _TRACE_WRITE_LOCAL_H
++#define _TRACE_WRITE_LOCAL_H
 +
- /* moved from trace-cmd.h */
- void tracecmd_create_top_instance(char *name);
- void tracecmd_remove_instances(void);
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 28fe31b7..4370c964 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3035,11 +3035,30 @@ struct guest {
- 	char *name;
- 	int cid;
- 	int pid;
-+	int cpu_max;
-+	int *cpu_pid;
- };
- 
- static struct guest *guests;
- static size_t guests_len;
- 
-+static int set_vcpu_pid_mapping(struct guest *guest, int cpu, int pid)
++/* Local for trace-input.c, trace-output.c and trace-msg.c */
++
++static ssize_t __do_write(int fd, const void *data, size_t size)
 +{
-+	int *cpu_pid;
++	ssize_t tot = 0;
++	ssize_t w;
 +
-+	if (cpu < 0 || pid < 0)
++	do {
++		w = write(fd, data + tot, size - tot);
++		tot += w;
++
++		if (!w)
++			break;
++		if (w < 0)
++			return w;
++	} while (tot != size);
++
++	return tot;
++}
++
++static ssize_t
++__do_write_check(int fd, const void *data, size_t size)
++{
++	ssize_t ret;
++
++	ret = __do_write(fd, data, size);
++	if (ret < 0)
++		return ret;
++	if (ret != size)
 +		return -1;
-+	if (cpu >= guest->cpu_max) {
-+		cpu_pid = realloc(guest->cpu_pid, (cpu + 1) * sizeof(int));
-+		if (!cpu_pid)
-+			return -1;
-+		guest->cpu_max = cpu + 1;
-+		guest->cpu_pid = cpu_pid;
-+	}
-+	guest->cpu_pid[cpu] = pid;
++
 +	return 0;
 +}
 +
- static char *get_qemu_guest_name(char *arg)
- {
- 	char *tok, *end = arg;
-@@ -3052,6 +3071,46 @@ static char *get_qemu_guest_name(char *arg)
- 	return arg;
- }
++#endif /* _TRACE_WRITE_LOCAL_H */
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index aca13c4e..f5611b46 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -15,7 +15,7 @@
  
-+static void read_qemu_guests_pids(char *guest_task, struct guest *guest)
-+{
-+	struct dirent *entry;
-+	char path[PATH_MAX];
-+	char *buf = NULL;
-+	size_t n = 0;
-+	long int vcpu;
-+	long int pid;
-+	DIR *dir;
-+	FILE *f;
-+
-+	snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
-+	dir = opendir(path);
-+	if (!dir)
-+		return;
-+
-+	while ((entry = readdir(dir))) {
-+		if (!(entry->d_type == DT_DIR && is_digits(entry->d_name)))
-+			continue;
-+
-+		snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
-+			 guest_task, entry->d_name);
-+		f = fopen(path, "r");
-+		if (!f)
-+			continue;
-+
-+		if (getline(&buf, &n, f) >= 0 &&
-+		    strncmp(buf, "CPU ", 4) == 0) {
-+			vcpu = strtol(buf + 4, NULL, 10);
-+			pid = strtol(entry->d_name, NULL, 10);
-+			if (vcpu < INT_MAX && pid < INT_MAX &&
-+			    vcpu >= 0 && pid >= 0)
-+				set_vcpu_pid_mapping(guest, vcpu, pid);
-+		}
-+
-+		fclose(f);
-+	}
-+	free(buf);
-+}
-+
- static void read_qemu_guests(void)
- {
- 	static bool initialized;
-@@ -3115,6 +3174,8 @@ static void read_qemu_guests(void)
- 		if (!is_qemu)
- 			goto next;
+ #include <linux/time64.h>
  
-+		read_qemu_guests_pids(entry->d_name, &guest);
-+
- 		guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
- 		if (!guests)
- 			die("Can not allocate guest buffer");
-@@ -3160,6 +3221,22 @@ static char *parse_guest_name(char *guest, int *cid, int *port)
- 	return guest;
- }
+-#include "trace-cmd-local.h"
++#include "trace-write-local.h"
+ #include "trace-local.h"
+ #include "kbuffer.h"
+ #include "list.h"
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index 9c8a6908..85a2bae6 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -22,7 +22,7 @@
+ #include <sys/types.h>
+ #include <linux/types.h>
  
-+int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
-+{
-+	int i;
-+
-+	if (!guests)
-+		return -1;
-+
-+	for (i = 0; i < guests_len; i++) {
-+		if (!guests[i].cpu_pid || guest_vcpu >= guests[i].cpu_max)
-+			continue;
-+		if (guest_cid == guests[i].cid)
-+			return guests[i].cpu_pid[guest_vcpu];
-+	}
-+	return -1;
-+}
-+
- static void set_prio(int prio)
- {
- 	struct sched_param sp;
+-#include "trace-cmd-local.h"
++#include "trace-write-local.h"
+ #include "trace-local.h"
+ #include "trace-msg.h"
+ 
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index acdd2d57..4a9a857d 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -21,7 +21,9 @@
+ #include <glob.h>
+ 
+ #include "tracefs.h"
++#include "trace-cmd.h"
+ #include "trace-cmd-local.h"
++#include "trace-write-local.h"
+ #include "list.h"
+ #include "trace-msg.h"
+ 
 -- 
 2.24.1
 
