@@ -1,125 +1,278 @@
-Return-Path: <SRS0=9dw+=4R=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=nG5h=4T=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6284C3F2D2
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 29 Feb 2020 00:28:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42A3AC3F2D2
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:29:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7C2EA2469D
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 29 Feb 2020 00:28:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0A2B9246B4
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:29:19 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vORyykoE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbgB2A2O (ORCPT
+        id S1727323AbgCBJ3S (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 28 Feb 2020 19:28:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725957AbgB2A2O (ORCPT
+        Mon, 2 Mar 2020 04:29:18 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36903 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727107AbgCBJ3S (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 28 Feb 2020 19:28:14 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EF5E2469D;
-        Sat, 29 Feb 2020 00:28:13 +0000 (UTC)
-Date:   Fri, 28 Feb 2020 19:28:11 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v20 13/15] trace-cmd: Basic infrastructure for host -
- guest timestamp synchronization
-Message-ID: <20200228192811.77831fc9@gandalf.local.home>
-In-Reply-To: <20200227142001.61577-14-tz.stoyanov@gmail.com>
-References: <20200227142001.61577-1-tz.stoyanov@gmail.com>
-        <20200227142001.61577-14-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 2 Mar 2020 04:29:18 -0500
+Received: by mail-pg1-f195.google.com with SMTP id z12so5148377pgl.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 01:29:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PMfx9+p6QDhZVTfguad7WF1IY4mPzVo4yyasHAMM2CQ=;
+        b=vORyykoEQhKoPiyvuJ0B+U5Ui23zAm5CzFb+BcpqMqF9wdmGN9hyF88/EYGxb1aiaE
+         SkKUJhol5DQk+8nqLDLfsEulb8VheqZOdpYqw5CcAkjjyCNsAk7ScYLio1jZFvhaRcze
+         mSFVvNJvxXqCgvU1BEXgmPQYQQm+0YKblYimiG7Pc73jtCPA8s9EAreMBEioSDTiqB6Q
+         tWm7RaIWtAH5T39OWCr0Cg3QCGEwN2iauUFmAMwaXkVetArn/XUjQwyTfMRcUT2iSvHx
+         iOf+EKgdQIUgy/0S2wBwzAjGHw+eAD+/xv7Bc0bG8qq8yqINbgg+uWYQrbhXKaEoUGQU
+         DUNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PMfx9+p6QDhZVTfguad7WF1IY4mPzVo4yyasHAMM2CQ=;
+        b=h0KKETal6KpPCiYDcqSMOuxPXl0VJ/O1eV3Vjai0Hbb3XDoEm7ZcwrF10TGSjPavCa
+         hm8OVRd5iiiW3jMUxUJH9RfjxJbysbeFw0l2t3JEw8u0r512XIOfKp9cakxwUMLUtlV3
+         xJOhHWPk6Zpzg92V/0GXxlq95pBBEJo/nvXeLRonJ4RY3n4kQ2CI0s3XRWZJ2V6Uw8MZ
+         HsuAcDmazhiI6lTfMniN+n4exQbdA//83FvcYFSusI+VG07GkW1R7qCiu/06Z8ZEE1iy
+         jnxmFoxD7/88rONeE0Ba2x90qM3YVnyXplc0Gd+Z7rGqwRveLCGeDtRp1zXy5CwZ4njs
+         90Iw==
+X-Gm-Message-State: APjAAAW/dWaWvaZumyBeeU1W6xQXNjPhqJoojyN/EDRFzVS/cBY0FcAx
+        wv6mK3FZv/w2zSFze8dNzRO7deCZdpgpOeyAUAoKAhgi
+X-Google-Smtp-Source: APXvYqz0aElQRmCga/bF7+Afc8iUlcO1TsXiAWWB2nAnSGIpjzI7MpkNuM4KB4deLKgvvFmPsgaKHbM0aufNQFzgTSY=
+X-Received: by 2002:a62:7ccc:: with SMTP id x195mr15135925pfc.71.1583141357115;
+ Mon, 02 Mar 2020 01:29:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200227142001.61577-1-tz.stoyanov@gmail.com> <20200227142001.61577-4-tz.stoyanov@gmail.com>
+ <20200227122303.25dacb7b@gandalf.local.home>
+In-Reply-To: <20200227122303.25dacb7b@gandalf.local.home>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Mon, 2 Mar 2020 11:29:05 +0200
+Message-ID: <CAPpZLN4Y-tO-mkdJtPAkfs9JSwPuPUoFYfCX2TWY_gGAao4FSg@mail.gmail.com>
+Subject: Re: [PATCH v20 03/15] trace-cmd: Find and store pids of tasks, which
+ run virtual CPUs of given VM
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Thu, Feb 27, 2020 at 7:23 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu, 27 Feb 2020 16:19:49 +0200
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+>
+> > From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+> >
+> > In order to match host and guest events, a mapping between guest VCPU
+> > and the host task, running this VCPU is needed. Extended existing
+> > struct guest to hold such mapping and added logic in read_qemu_guests()
+> > function to initialize it. Implemented a new internal API,
+> > get_guest_vcpu_pid(), to retrieve VCPU-task mapping for given VM.
+> >
+> > Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+> > ---
+> >  tracecmd/include/trace-local.h |  2 +
+> >  tracecmd/trace-record.c        | 77 ++++++++++++++++++++++++++++++++++
+> >  2 files changed, 79 insertions(+)
+> >
+> > diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+> > index 29f27793..a5cf0640 100644
+> > --- a/tracecmd/include/trace-local.h
+> > +++ b/tracecmd/include/trace-local.h
+> > @@ -247,6 +247,8 @@ void update_first_instance(struct buffer_instance *instance, int topt);
+> >
+> >  void show_instance_file(struct buffer_instance *instance, const char *name);
+> >
+> > +int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
+> > +
+> >  /* moved from trace-cmd.h */
+> >  void tracecmd_create_top_instance(char *name);
+> >  void tracecmd_remove_instances(void);
+> > diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+> > index 28fe31b7..4370c964 100644
+> > --- a/tracecmd/trace-record.c
+> > +++ b/tracecmd/trace-record.c
+> > @@ -3035,11 +3035,30 @@ struct guest {
+> >       char *name;
+> >       int cid;
+> >       int pid;
+> > +     int cpu_max;
+> > +     int *cpu_pid;
+> >  };
+> >
+> >  static struct guest *guests;
+> >  static size_t guests_len;
+> >
+> > +static int set_vcpu_pid_mapping(struct guest *guest, int cpu, int pid)
+> > +{
+> > +     int *cpu_pid;
+> > +
+> > +     if (cpu < 0 || pid < 0)
+> > +             return -1;
+>
+> This check makes the check before its call not needed (see below).
+>
+> > +     if (cpu >= guest->cpu_max) {
+> > +             cpu_pid = realloc(guest->cpu_pid, (cpu + 1) * sizeof(int));
+>
+> It is possible that the cpu numbers may be sparse, which means we should we
+> should probably initialize the new numbers as...
+>
+> > +             if (!cpu_pid)
+> > +                     return -1;
+>
+>                 /* Handle sparse CPU numbers */
+>                 for (i = guest->cpu_max; i < cpu; i++)
+>                         guest->cpu_pid[i] = -1;
+>
+> Note, the above wont loop at all if there's no sparse CPUs (missing
+> numbers).
+>
+> > +             guest->cpu_max = cpu + 1;
+> > +             guest->cpu_pid = cpu_pid;
+> > +     }
+> > +     guest->cpu_pid[cpu] = pid;
+> > +     return 0;
+> > +}
+> > +
+> >  static char *get_qemu_guest_name(char *arg)
+> >  {
+> >       char *tok, *end = arg;
+> > @@ -3052,6 +3071,46 @@ static char *get_qemu_guest_name(char *arg)
+> >       return arg;
+> >  }
+> >
+> > +static void read_qemu_guests_pids(char *guest_task, struct guest *guest)
+>
+> Probably should return a status.
+>
+> > +{
+> > +     struct dirent *entry;
+> > +     char path[PATH_MAX];
+> > +     char *buf = NULL;
+> > +     size_t n = 0;
+> > +     long int vcpu;
+> > +     long int pid;
+>
+> "int" is not needed. Just "long" is good enough.
+>
+>         long vcpu;
+>         long pid;
+>
+> Although, I doubt there will be more than 4 billion of either of these, so
+> they should probably be just "int". Which means you don't need the INT_MAX
+> checks.
+>
+The reason I use long is strtol(), which returns long integer. In case
+of an error, this API returns LONG_MAX or LONG_MIN.
+The set_vcpu_pid_mapping() accepts int, that's why I put these checks
+- to filter possible strtol() parsing errors and int overflow.
+I'll keep the checks and remove the duplicated ones in set_vcpu_pid_mapping()
 
-Now that I'm playing with patch 14, I took more interest in this code.
+> > +     DIR *dir;
+> > +     FILE *f;
+> > +
+> > +     snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
+> > +     dir = opendir(path);
+> > +     if (!dir)
+> > +             return;
+> > +
+> > +     while ((entry = readdir(dir))) {
+> > +             if (!(entry->d_type == DT_DIR && is_digits(entry->d_name)))
+> > +                     continue;
+> > +
+> > +             snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
+> > +                      guest_task, entry->d_name);
+> > +             f = fopen(path, "r");
+> > +             if (!f)
+> > +                     continue;
+> > +
+> > +             if (getline(&buf, &n, f) >= 0 &&
+> > +                 strncmp(buf, "CPU ", 4) == 0) {
+> > +                     vcpu = strtol(buf + 4, NULL, 10);
+> > +                     pid = strtol(entry->d_name, NULL, 10);
+> > +                     if (vcpu < INT_MAX && pid < INT_MAX &&
+> > +                         vcpu >= 0 && pid >= 0)
+>
+> The vcpu >= 0 && pid >= 0 are not needed due to the check in the function.
+>
+> > +                             set_vcpu_pid_mapping(guest, vcpu, pid);
+>
+> Probably should check the return status of this function, and report a
+> warning if it fails.
+>
+> > +             }
+> > +
+> > +             fclose(f);
+> > +     }
+> > +     free(buf);
+> > +}
+> > +
+> >  static void read_qemu_guests(void)
+> >  {
+> >       static bool initialized;
+> > @@ -3115,6 +3174,8 @@ static void read_qemu_guests(void)
+> >               if (!is_qemu)
+> >                       goto next;
+> >
+> > +             read_qemu_guests_pids(entry->d_name, &guest);
+>
+> Should probably check the status of the above function. Die on error?
 
-On Thu, 27 Feb 2020 16:19:59 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+I'll put a warning, as this failure is not critical - the guest
+tracing will still work, even without this mapping.
 
-> +
-> +#define PROTO_MASK_SIZE (sizeof(char))
+Thanks, Steven!
+>
+> > +
+> >               guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
+> >               if (!guests)
+> >                       die("Can not allocate guest buffer");
+> > @@ -3160,6 +3221,22 @@ static char *parse_guest_name(char *guest, int *cid, int *port)
+> >       return guest;
+> >  }
+> >
+> > +int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
+> > +{
+> > +     int i;
+> > +
+> > +     if (!guests)
+> > +             return -1;
+> > +
+> > +     for (i = 0; i < guests_len; i++) {
+> > +             if (!guests[i].cpu_pid || guest_vcpu >= guests[i].cpu_max)
+>
+> As a cpu_pid may be zero (unlikely), and the code I showed above
+> initialized sparse cpus as -1, then this should be guests[i].cpu_pid < 0.
+>
+> -- Steve
+>
+> > +                     continue;
+> > +             if (guest_cid == guests[i].cid)
+> > +                     return guests[i].cpu_pid[guest_vcpu];
+> > +     }
+> > +     return -1;
+> > +}
+> > +
+> >  static void set_prio(int prio)
+> >  {
+> >       struct sched_param sp;
+>
 
-Hmm, this is the size in bytes of the mask, not bits. You may need both.
 
-#define PROTO_MASK_BITS (PROTO_MASK_SIZE * 8)
-
-Because we can have up to 8 protocols per mask size (8 bits in a byte).
-
-> +/**
-> + * tracecmd_tsync_proto_select - Select time sync protocol, to be used for
-> + *		timestamp synchronization with a peer
-> + *
-> + * @proto_mask: bitmask array of time sync protocols, supported by the peer
-> + * @length: size of the @protos array
-> + *
-> + * Retuns Id of a time sync protocol, that can be used with the peer, or 0
-> + *	  in case there is no match with supported protocols
-> + */
-> +unsigned int tracecmd_tsync_proto_select(char *proto_mask, int length)
-> +{
-> +	struct tsync_proto *selected = NULL;
-> +	struct tsync_proto *proto;
-> +	int word;
-> +	int id;
-> +
-> +	for (word = 0; word < length; word++) {
-> +		for (proto = tsync_proto_list; proto; proto = proto->next) {
-> +			if (proto->proto_id < word * PROTO_MASK_SIZE)
-> +				continue;
-
-The above should be: proto->proto_id < word * PROTO_MASK_BITS
-
-Because what you have currently is:
-
-   proto->proto_id < word * 1
-
-
-> +
-> +			id = proto->proto_id - word * PROTO_MASK_SIZE;
-
-And here you want PROTO_MASK_BITS, otherwise if we have a proto_id of 2
-(which would fit as a bit in a char), this would become:
-
-	id = 2 - 0 * 1 = 1
-
-> +			if (id >= PROTO_MASK_SIZE)
-
-Then this is: 2 >= 1 which would skip it.
-
-Hmm, maybe you don't even need PROTO_MASK_SIZE and only need
-PROTO_MASK_BITS.
-
--- Steve
-
-> +				continue;
-> +
-> +			if ((1 << id) & proto_mask[word]) {
-> +				if (selected) {
-> +					if (selected->weight < proto->weight)
-> +						selected = proto;
-> +				} else
-> +					selected = proto;
-> +			}
-> +		}
-> +	}
-> +
-> +	if (selected)
-> +		return selected->proto_id;
-> +
-> +	return 0;
-> +}
-> +
+--
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
