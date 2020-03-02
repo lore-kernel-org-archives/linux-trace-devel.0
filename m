@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5109C3F2D2
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C507C3F2D1
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BCC6720870
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 648AA20870
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZlecpJsl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tVgmd50m"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727198AbgCBKOU (ORCPT
+        id S1727349AbgCBKOY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 2 Mar 2020 05:14:20 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:33618 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727450AbgCBKOU (ORCPT
+        Mon, 2 Mar 2020 05:14:24 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:42314 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727450AbgCBKOY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 05:14:20 -0500
-Received: by mail-lf1-f66.google.com with SMTP id c20so2887785lfb.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 02:14:19 -0800 (PST)
+        Mon, 2 Mar 2020 05:14:24 -0500
+Received: by mail-lf1-f67.google.com with SMTP id 83so7519353lfh.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 02:14:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=k1H6SKZmy23mE04cheSQlM6psr5j7HrgIb8irbx1qXE=;
-        b=ZlecpJslDJklaxfKhkxgY62KkVn5/GENoz7FamutP+MXmtf+IH7rPb/Q/rcnnmTJJa
-         gFoW9OQo8HHDGn0NYhL1eEdWcv7dY1mik+VPqexPpCi0/p0T6uMISIAHH6Zduk0JURzw
-         BSMgIXn1mD1VkS6jUh/8Ovb+dkcmxvuA1xR1MaKTwXzz3+/8Qsz1oy5x1rUOaMXL6nRz
-         Qe0gCFvnW+RFnN8f6DcDnXVXRWs6WKakeap0zZBrV11cRk+YMpULWrSySryuftAaJwIS
-         Ez+Q+udvu5oAPr+fnRqjgYVYwwvrcxBlCZh3smSMlw+FLSwK1mVdDlBXK7re83CZd5pS
-         goCA==
+        bh=KpJnerk41m58vhJzBj+GyTr+GQi3dk7pf6r0+CAqYos=;
+        b=tVgmd50m/X2DWXgFfDZo020K0ZH6GkveUzKJQnBnuTMemh/eSdYomtW5EHVE7lFasA
+         I67Iqumxnk3ic8+wkSzWXIOYkqIO/Hw9Fx1Dp3EnyC9f7vbJpclHqNFlpqhfjWKXCiYX
+         RZMmWD87FFhUEtX3AUhNqDWWeLf8CMZxMFRGOd3Rcl4Xt4RmpzDdwTB1o+8pmjnCgrdQ
+         7VyzXRpi1Rlh9qn9LgdAmW6nStkH2cV9+SRrW1DqmYqJIvKSiNKB1O5ccxY459/0caTa
+         JrH5u/cJ+Bmg5wnuZvlRZSIJOkzQjGbPG/fqshWunI59sn2E9vDZrgovRMvQhYiKKw+S
+         lQZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=k1H6SKZmy23mE04cheSQlM6psr5j7HrgIb8irbx1qXE=;
-        b=JAHO6kciTjZZltEPzYcNyVv+ASp/Mry6R9gfhc4m5uC8EvM+/kxNu2GcDSUYHM/8jY
-         IfA8RmwGl5U4JHYqT37S6JvBWIqeYzGxISJRJCLp4xFxGTbE53NJcjQrmKCG6Xcjgiwj
-         mrgYXK6+vJuBUe0hDcjb1A/8XGZ4+RTuPjv++oEl0XiNCrgNhbHNubbyqxNU5gP0WIgf
-         vBjhNLQ1tt5vpgZyncBYlo5VOmdt+sdwYzoSzDoqXSQr4oW5z5xPmfVmAPGr+rdADmiX
-         11MzIkto374FdKNVtx7apcSL8wWLE468gm/VdfpXJ37ncf7P3nvp7rBVns1zpyjV7ZLH
-         duSw==
-X-Gm-Message-State: ANhLgQ0IXYrFffe5A8ma0HH1A8d4ZkEzafZNO3PHEV4ADRnsvO87esNN
-        4v/AVs1l57s3f7eTpFoHhVg=
-X-Google-Smtp-Source: ADFU+vu2PT/ATexIiAjrOHi+Ezx5tGsCHdmSMWK7tB+Hb7oLsmT1kw86m2TdBlAb6XDN4h5Zjj42lw==
-X-Received: by 2002:a05:6512:3b0:: with SMTP id v16mr10221051lfp.88.1583144058470;
-        Mon, 02 Mar 2020 02:14:18 -0800 (PST)
+        bh=KpJnerk41m58vhJzBj+GyTr+GQi3dk7pf6r0+CAqYos=;
+        b=bhVx/tmPuT/xCS9AAiSDejEm/0vufY4p15RkswS3C9feDPJyQpfW9uX01VBqPaQ9Mn
+         lIESxkiq70mjRzGCx7uOEbQWwvhNDOczV7arnqdDXSdJ4RFUZzpswl2mzJdFub8wuH1J
+         a6GI1wWgQR1dPvnrFtk59YuymhYbRWnnaZDe1d7k75bc1KnljIQC3vjTl/NYTsAgc9rT
+         KoAy2iaxPq1blM+KIDj6mCSyXUOdzv+Gnzslfw9DlNwdySytx84zD9EdAyly+ncD5iMk
+         jSZeytYsmqq6n6OaVXRWZMim06rmlss1RhotKUuMYGzZGnt9bJrKYbkHpFIySxJ7XaLH
+         Rdew==
+X-Gm-Message-State: ANhLgQ0FvL+SNWDkl4zqTEbY1HwZXmvtc5f0ykHQdldLWvHeSkiYDUWJ
+        BjrAyHdaiTD3u7obJOJVGcxbCRed
+X-Google-Smtp-Source: ADFU+vsHGGRMpif8kyWy9aED3/TyV6/2c953YeZzdqYPbYvDTO8tPFMpJZWt4Yt+dzZZ6t1ONiX2UA==
+X-Received: by 2002:a05:6512:31d5:: with SMTP id j21mr3053893lfe.23.1583144059692;
+        Mon, 02 Mar 2020 02:14:19 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x10sm11048236ljd.68.2020.03.02.02.14.17
+        by smtp.gmail.com with ESMTPSA id x10sm11048236ljd.68.2020.03.02.02.14.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2020 02:14:17 -0800 (PST)
+        Mon, 02 Mar 2020 02:14:19 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v21 09/13] trace-cmd: Add host trace clock as guest trace argument
-Date:   Mon,  2 Mar 2020 12:14:00 +0200
-Message-Id: <20200302101404.150035-10-tz.stoyanov@gmail.com>
+Subject: [PATCH v21 10/13] trace-cmd: Refactor few trace-cmd internal functions.
+Date:   Mon,  2 Mar 2020 12:14:01 +0200
+Message-Id: <20200302101404.150035-11-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200302101404.150035-1-tz.stoyanov@gmail.com>
 References: <20200302101404.150035-1-tz.stoyanov@gmail.com>
@@ -73,85 +73,154 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When tracing host and guest machines, both should use the same
-tracing clock for event timestamps. If a clock is specified
-as host tracing argument, with option "-C clock_name", the same
-is injected as guest tracing argument. If the user wants to use
-different tracing clocks, it can specify it using "-C clock_name"
-as guest tracing argument. In that case, the one specified by
-the user has higher priority.
+In order to reuse code inside trace-cmd application context,
+few functions are made non static and "trace_" is prepended
+to their names:
+	int trace_make_vsock(unsigned int port);
+	int trace_get_vsock_port(int sd, unsigned int *port);
+	int trace_open_vsock(unsigned int cid, unsigned int port);
+	char *trace_get_guest_file(const char *file, const char *guest);
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/include/trace-local.h |  1 +
- tracecmd/trace-record.c        | 21 +++++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ tracecmd/include/trace-local.h |  6 ++++++
+ tracecmd/trace-agent.c         | 10 +++++-----
+ tracecmd/trace-record.c        | 18 +++++++++---------
+ 3 files changed, 20 insertions(+), 14 deletions(-)
 
 diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 4f2b5541..dc934f28 100644
+index dc934f28..95d0026b 100644
 --- a/tracecmd/include/trace-local.h
 +++ b/tracecmd/include/trace-local.h
-@@ -167,6 +167,7 @@ enum buffer_instance_flags {
- 	BUFFER_FL_PROFILE	= 1 << 1,
- 	BUFFER_FL_GUEST		= 1 << 2,
- 	BUFFER_FL_AGENT		= 1 << 3,
-+	BUFFER_FL_HAS_CLOCK	= 1 << 4,
- };
+@@ -263,6 +263,12 @@ void tracecmd_disable_tracing(void);
+ void tracecmd_enable_tracing(void);
+ void tracecmd_stat_cpu(struct trace_seq *s, int cpu);
  
- struct func_list {
++int trace_make_vsock(unsigned int port);
++int trace_get_vsock_port(int sd, unsigned int *port);
++int trace_open_vsock(unsigned int cid, unsigned int port);
++
++char *trace_get_guest_file(const char *file, const char *guest);
++
+ /* No longer in event-utils.h */
+ void __noreturn die(const char *fmt, ...); /* Can be overriden */
+ void *malloc_or_die(unsigned int size); /* Can be overridden */
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index 52d27195..a8ef0852 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -40,7 +40,7 @@ static int get_local_cid(unsigned int *cid)
+ 	return ret;
+ }
+ 
+-static int make_vsock(unsigned int port)
++int trace_make_vsock(unsigned int port)
+ {
+ 	struct sockaddr_vm addr = {
+ 		.svm_family = AF_VSOCK,
+@@ -64,7 +64,7 @@ static int make_vsock(unsigned int port)
+ 	return sd;
+ }
+ 
+-static int get_vsock_port(int sd, unsigned int *port)
++int trace_get_vsock_port(int sd, unsigned int *port)
+ {
+ 	struct sockaddr_vm addr;
+ 	socklen_t addr_len = sizeof(addr);
+@@ -87,11 +87,11 @@ static void make_vsocks(int nr, int *fds, unsigned int *ports)
+ 	int i, fd, ret;
+ 
+ 	for (i = 0; i < nr; i++) {
+-		fd = make_vsock(VMADDR_PORT_ANY);
++		fd = trace_make_vsock(VMADDR_PORT_ANY);
+ 		if (fd < 0)
+ 			die("Failed to open vsocket");
+ 
+-		ret = get_vsock_port(fd, &port);
++		ret = trace_get_vsock_port(fd, &port);
+ 		if (ret < 0)
+ 			die("Failed to get vsocket address");
+ 
+@@ -210,7 +210,7 @@ static void agent_serve(unsigned int port)
+ 	nr_cpus = tracecmd_count_cpus();
+ 	page_size = getpagesize();
+ 
+-	sd = make_vsock(port);
++	sd = trace_make_vsock(port);
+ 	if (sd < 0)
+ 		die("Failed to open vsocket");
+ 
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 15cae9be..e0b18044 100644
+index e0b18044..174a9bdd 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -5598,6 +5598,8 @@ static void parse_record_options(int argc,
- 	char *sav;
- 	int name_counter = 0;
- 	int neg_event = 0;
-+	struct buffer_instance *instance;
-+	bool guest_sync_set = false;
+@@ -537,7 +537,7 @@ static char *get_temp_file(struct buffer_instance *instance, int cpu)
+ 	return file;
+ }
  
- 	init_common_record_context(ctx, curr_cmd);
+-static char *get_guest_file(const char *file, const char *guest)
++char *trace_get_guest_file(const char *file, const char *guest)
+ {
+ 	const char *p;
+ 	char *out = NULL;
+@@ -2930,7 +2930,7 @@ static int connect_port(const char *host, unsigned int port)
+ }
  
-@@ -5641,6 +5643,8 @@ static void parse_record_options(int argc,
- 		 */
- 		if (c != 'B' && c != 'A' && is_guest(ctx->instance)) {
- 			add_arg(ctx->instance, c, opts, long_options, optarg);
-+			if (c == 'C')
-+				ctx->instance->flags |= BUFFER_FL_HAS_CLOCK;
- 			continue;
- 		}
+ #ifdef VSOCK
+-static int open_vsock(unsigned int cid, unsigned int port)
++int trace_open_vsock(unsigned int cid, unsigned int port)
+ {
+ 	struct sockaddr_vm addr = {
+ 		.svm_family = AF_VSOCK,
+@@ -2993,7 +2993,7 @@ static bool can_splice_read_vsock(void)
+ }
  
-@@ -5755,6 +5759,9 @@ static void parse_record_options(int argc,
- 			break;
- 		case 'C':
- 			ctx->instance->clock = optarg;
-+			ctx->instance->flags |= BUFFER_FL_HAS_CLOCK;
-+			if (is_top_instance(ctx->instance))
-+				guest_sync_set = true;
- 			break;
- 		case 'v':
- 			neg_event = 1;
-@@ -5979,6 +5986,20 @@ static void parse_record_options(int argc,
- 				add_argv(instance, "--date", true);
- 		}
+ #else
+-static inline int open_vsock(unsigned int cid, unsigned int port)
++int trace_open_vsock(unsigned int cid, unsigned int port)
+ {
+ 	die("vsock is not supported");
+ 	return -1;
+@@ -3304,7 +3304,7 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
+ 		if (instance->use_fifos)
+ 			fd = instance->fds[cpu];
+ 		else
+-			fd = open_vsock(instance->cid, instance->client_ports[cpu]);
++			fd = trace_open_vsock(instance->cid, instance->client_ports[cpu]);
+ 		if (fd < 0)
+ 			die("Failed to connect to agent");
+ 
+@@ -3696,7 +3696,7 @@ static void connect_to_agent(struct buffer_instance *instance)
+ 		use_fifos = nr_fifos > 0;
  	}
-+	if (guest_sync_set) {
-+	/* If -C is specified, prepend clock to all guest VM flags */
-+		for_all_instances(instance) {
-+			if (top_instance.clock) {
-+				if (is_guest(instance) &&
-+				    !(instance->flags & BUFFER_FL_HAS_CLOCK)) {
-+					add_argv(instance,
-+						 (char *)top_instance.clock,
-+						 true);
-+					add_argv(instance, "-C", true);
-+				}
-+			}
-+		}
-+	}
  
- 	if (!ctx->filtered && ctx->instance->filter_mod)
- 		add_func(&ctx->instance->filter_funcs,
+-	sd = open_vsock(instance->cid, instance->port);
++	sd = trace_open_vsock(instance->cid, instance->port);
+ 	if (sd < 0)
+ 		die("Failed to connect to vsocket @%u:%u",
+ 		    instance->cid, instance->port);
+@@ -3747,8 +3747,8 @@ static void setup_guest(struct buffer_instance *instance)
+ 	int fd;
+ 
+ 	/* Create a place to store the guest meta data */
+-	file = get_guest_file(output_file,
+-			      tracefs_instance_get_name(instance->tracefs));
++	file = trace_get_guest_file(output_file,
++				    tracefs_instance_get_name(instance->tracefs));
+ 	if (!file)
+ 		die("Failed to allocate memory");
+ 
+@@ -4084,8 +4084,8 @@ static void write_guest_file(struct buffer_instance *instance)
+ 	char **temp_files;
+ 	int i, fd;
+ 
+-	file = get_guest_file(output_file,
+-			      tracefs_instance_get_name(instance->tracefs));
++	file = trace_get_guest_file(output_file,
++				    tracefs_instance_get_name(instance->tracefs));
+ 	if (!file)
+ 		die("Failed to allocate memory");
+ 
 -- 
 2.24.1
 
