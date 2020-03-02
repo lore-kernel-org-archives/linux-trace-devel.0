@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB090C3F2D1
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02AB9C3F2D2
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:44:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ADE2B246BB
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:31:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C6504246BE
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:44:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JhJOALxM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pa+xYdzb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgCBJbp (ORCPT
+        id S1726674AbgCBJoE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 2 Mar 2020 04:31:45 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:33486 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726382AbgCBJbp (ORCPT
+        Mon, 2 Mar 2020 04:44:04 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:44988 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgCBJoE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 04:31:45 -0500
-Received: by mail-pl1-f196.google.com with SMTP id ay11so3984622plb.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 01:31:45 -0800 (PST)
+        Mon, 2 Mar 2020 04:44:04 -0500
+Received: by mail-pf1-f195.google.com with SMTP id y5so5294455pfb.11
+        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 01:44:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=V2zSYRRosMzatzYcp3AwkBbp6WQFc01D87HW7oUE2x8=;
-        b=JhJOALxMVfvBDc1DEBwi3U37NP7/9TtUhckTP6puGwPudoMzjpZ4qZWzGkHh9kjTj5
-         E0+Mbf8qH2zK51XXI5IbFqF8us/AIEg+/f/G59EGOUN+xb2UhQhDjOCeXl8SH6mqEuWV
-         iyZDji5uRWiHKBUWon6JLb8hkVtujLg+OUbttpXtdqQ6ioaE3ERimzJM3ENq2+GpUXwF
-         cHVVF0VYNDRU9M5lo2XieyxOCTd8IZ5EwRYELsDzp7MuqhcUrN9VkuRqsr1bsb7cqQ8D
-         gLTClUAn5RkXTawc5gUPB2QUg5Hkwcfseuq6xW6bcIVEXuXkUdb7gqYhqkZs3SBgEVdc
-         5XQw==
+        bh=WCEthpR+KH1E5n68apZMLxsfrFFA/lb3BzmzQh5B+38=;
+        b=Pa+xYdzbFv28svaqjbx1kvIqQ8Fe8ToCvARtf9vhr0InuA3J0LiGiaXk7RtnF5vNeu
+         FWM2uLqYDhiwp72s2/n8S4VYr5oY0W6ygw7tsRhv7x8t3Kr0QWzUchWo7vT7L2txL4XH
+         cm4tHjBxEFrj01fvnsc+6hI1qmP3CKzYelJVAPJWeEscOJw8g2C0Vze9Ge5Py5taC9aP
+         xGeqzeB2jc2u0470PSTlh8PagQWpCoWPC0LvvZn5Odn9w76u8o9MocJgqbIHL5W5ng99
+         ndGVqN1qo0V33FoE9aQBxOh6rhN9Lf5h9POxMB2McEeiMMTWE0ZyWhFOZL4pKQtboGZV
+         rWBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=V2zSYRRosMzatzYcp3AwkBbp6WQFc01D87HW7oUE2x8=;
-        b=tdTsk6kB5zkUTWxQ8G9BOOH7QlzLewFK/Nps8V3GzrH4n5cFXt8eb7f+ZHL2piA6iP
-         4hP4v2ryIuBiI3SU/xD3JKAvemID1vjHyArQo5BMAcuFSuSmwhBswAUovPUSNNzz6zRY
-         2RQzAIXT9rEqVWM1X72cO5PZj50ymvLXXsxv4BksMl713d5zUQMIKuwRtkRAU/qOuUaJ
-         DMK7lcvXvVCHdm81K6MiXK7fLQZhUendO+UBngN0KkE5/x1AYUDaKPnToa3zU97t8vF1
-         wZGJ53btp7zppCXj/Ay+IDjIZnOTsObaJWFxY+nAXbdlC21xlxA6AthpJsFzUkiQqzwS
-         pbvg==
-X-Gm-Message-State: ANhLgQ0wDVFT4aE6mPvSvfvhhG4lJ1oEmmC0OWFAZ2bTIaIMsows2Qo2
-        dPKb/qxm9UuzO9YsTp1mgzOXDT4lnfXMWgSLIqvqAhX/
-X-Google-Smtp-Source: ADFU+vs8Ac32QeBFM1/41sreg4ee8j5tZbIibFtiyyCm9xR1bAb0JP7NnspnMSV503xTSnInxe46R7KXVO0ku/Eyf+o=
-X-Received: by 2002:a17:902:467:: with SMTP id 94mr5799270ple.302.1583141504747;
- Mon, 02 Mar 2020 01:31:44 -0800 (PST)
+        bh=WCEthpR+KH1E5n68apZMLxsfrFFA/lb3BzmzQh5B+38=;
+        b=ozeHwOTqMpCsxEViM7eMrShOahYfGjopJ+EV5LZ9b1DGr/gXr5g6af8K7dO5naMw7D
+         /cQ4xn31ADG7HTtZ3r9dPYmyh0/k1fakqN7l5Exp0Qw7nD+mqMfcl9RrLHZpLgJrd9ZQ
+         J1LTI6+3jA38XiMTk9yfQQ9vO7YwX5ND6k0hsNOtwDKpMred6CPWptIqnnMlPWaZLXQx
+         mfLFPwGSFk7P5ptwAmebsB2/8gHERmUVenA49W1A5qmNM8Ad75sZRbbZRzPGvu+adfYw
+         m0e84iMgBE+gjNakW6TQzZKe9zFBu90/zFEtgbl/xyFk+hYMxcNGT00shkYSl4q/8q8S
+         Homg==
+X-Gm-Message-State: APjAAAVnkS6vCzjaACtRLHtSxHVKoubfoBYP5bgFXcLL4gjQtQlHxpFX
+        mLBl6zys4Q278sDQbuPYabCQ1ned0X8BInrhjITGIn3r
+X-Google-Smtp-Source: APXvYqwFWiQUt3/mwwk8WYwNJRjekb6rvjWsHBORt1Bc/erq0AOB9Jsq902dZgjuTbTWZ+5Ba7iNycf1GqIc0ncv6KA=
+X-Received: by 2002:a63:565e:: with SMTP id g30mr18369172pgm.206.1583142243738;
+ Mon, 02 Mar 2020 01:44:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20190828112457.10533-1-tz.stoyanov@gmail.com> <20190828112457.10533-3-tz.stoyanov@gmail.com>
- <20200228181807.5d9f9636@gandalf.local.home>
-In-Reply-To: <20200228181807.5d9f9636@gandalf.local.home>
+References: <20200227142001.61577-1-tz.stoyanov@gmail.com> <20200227142001.61577-14-tz.stoyanov@gmail.com>
+ <20200228192811.77831fc9@gandalf.local.home>
+In-Reply-To: <20200228192811.77831fc9@gandalf.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 2 Mar 2020 11:31:33 +0200
-Message-ID: <CAPpZLN6VFh8PKLFafM-QjCBpcvdhxDdj0+9kPsuAXq-8B2vQtw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] trace-cmd: Save the tracee address map into the
- trace.dat file.
+Date:   Mon, 2 Mar 2020 11:43:52 +0200
+Message-ID: <CAPpZLN67B53wpkZATXnXViaTYW=t9XsX0hVQXu==EtLFzNhotA@mail.gmail.com>
+Subject: Re: [PATCH v20 13/15] trace-cmd: Basic infrastructure for host -
+ guest timestamp synchronization
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -69,34 +69,102 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sat, Feb 29, 2020 at 1:18 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Sat, Feb 29, 2020 at 2:28 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On Wed, 28 Aug 2019 14:24:56 +0300
+>
+> Now that I'm playing with patch 14, I took more interest in this code.
+>
+> On Thu, 27 Feb 2020 16:19:59 +0200
 > "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 >
-> > @@ -2223,9 +2385,6 @@ static int handle_options(struct tracecmd_input *handle)
-> >               case TRACECMD_OPTION_UNAME:
-> >                       handle->uname = strdup(buf);
-> >                       break;
-> > -             case TRACECMD_OPTION_VERSION:
-> > -                     handle->version = strdup(buf);
-> > -                     break;
+> > +
+> > +#define PROTO_MASK_SIZE (sizeof(char))
 >
-> I've been wondering why I've been getting "unknown option 9" for some time.
-> Was there any reason to remove this?
-
-It looks like a merging issue, I cannot remember any logical reason to
-remove it intentionally.
-
-
+> Hmm, this is the size in bytes of the mask, not bits. You may need both.
 >
+> #define PROTO_MASK_BITS (PROTO_MASK_SIZE * 8)
+>
+> Because we can have up to 8 protocols per mask size (8 bits in a byte).
+>
+> > +/**
+> > + * tracecmd_tsync_proto_select - Select time sync protocol, to be used for
+> > + *           timestamp synchronization with a peer
+> > + *
+> > + * @proto_mask: bitmask array of time sync protocols, supported by the peer
+> > + * @length: size of the @protos array
+> > + *
+> > + * Retuns Id of a time sync protocol, that can be used with the peer, or 0
+> > + *     in case there is no match with supported protocols
+> > + */
+> > +unsigned int tracecmd_tsync_proto_select(char *proto_mask, int length)
+> > +{
+> > +     struct tsync_proto *selected = NULL;
+> > +     struct tsync_proto *proto;
+> > +     int word;
+> > +     int id;
+> > +
+> > +     for (word = 0; word < length; word++) {
+> > +             for (proto = tsync_proto_list; proto; proto = proto->next) {
+> > +                     if (proto->proto_id < word * PROTO_MASK_SIZE)
+> > +                             continue;
+>
+> The above should be: proto->proto_id < word * PROTO_MASK_BITS
+>
+> Because what you have currently is:
+>
+>    proto->proto_id < word * 1
+>
+>
+> > +
+> > +                     id = proto->proto_id - word * PROTO_MASK_SIZE;
+>
+> And here you want PROTO_MASK_BITS, otherwise if we have a proto_id of 2
+> (which would fit as a bit in a char), this would become:
+>
+>         id = 2 - 0 * 1 = 1
+>
+> > +                     if (id >= PROTO_MASK_SIZE)
+>
+> Then this is: 2 >= 1 which would skip it.
+>
+> Hmm, maybe you don't even need PROTO_MASK_SIZE and only need
+> PROTO_MASK_BITS.
+>
+The PROTO_MASK_SIZE is the size of 1 word of the mask array, in bytes.
+In the first implementation the array was of integers, and the define
+was 4. It was very easy to switch to char, that's why I prefer to keep
+the implementation as is - even though that "proto->proto_id < word *
+1".
+The confusion is the name of the variable "id", which is actually the
+index of the bit inside the given bitmask's word. In the example of
+proto_id 2:
+  - the word is 0, this proto_id is in the first word from the bitmask array.
+  - the index of the bit in this word is 2 ( id = 2 - 0 * 1 = 2 )
+  - then we can check if the bit, representing the proto_id 2 is up:
+        if ((1 << id) & proto_mask[word]) ...
+
+
+
 > -- Steve
 >
->
-> >               case TRACECMD_OPTION_HOOK:
-> >                       hook = tracecmd_create_event_hook(buf);
-> >                       hook->next = handle->hooks;
-> > @@ -2235,6 +2394,10 @@ static int handle_options(struct tracecmd_input *handle)
+> > +                             continue;
+> > +
+> > +                     if ((1 << id) & proto_mask[word]) {
+> > +                             if (selected) {
+> > +                                     if (selected->weight < proto->weight)
+> > +                                             selected = proto;
+> > +                             } else
+> > +                                     selected = proto;
+> > +                     }
+> > +             }
+> > +     }
+> > +
+> > +     if (selected)
+> > +             return selected->proto_id;
+> > +
+> > +     return 0;
+> > +}
+> > +
 
 
 
