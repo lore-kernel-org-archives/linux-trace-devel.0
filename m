@@ -8,61 +8,61 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C507C3F2D1
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A225C3F2D1
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 648AA20870
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1FECB208C3
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tVgmd50m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I8l8aSQM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgCBKOY (ORCPT
+        id S1727076AbgCBKO0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 2 Mar 2020 05:14:24 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:42314 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727450AbgCBKOY (ORCPT
+        Mon, 2 Mar 2020 05:14:26 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:42091 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgCBKOZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 05:14:24 -0500
-Received: by mail-lf1-f67.google.com with SMTP id 83so7519353lfh.9
-        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 02:14:20 -0800 (PST)
+        Mon, 2 Mar 2020 05:14:25 -0500
+Received: by mail-lj1-f196.google.com with SMTP id d10so11047516ljl.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 02:14:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KpJnerk41m58vhJzBj+GyTr+GQi3dk7pf6r0+CAqYos=;
-        b=tVgmd50m/X2DWXgFfDZo020K0ZH6GkveUzKJQnBnuTMemh/eSdYomtW5EHVE7lFasA
-         I67Iqumxnk3ic8+wkSzWXIOYkqIO/Hw9Fx1Dp3EnyC9f7vbJpclHqNFlpqhfjWKXCiYX
-         RZMmWD87FFhUEtX3AUhNqDWWeLf8CMZxMFRGOd3Rcl4Xt4RmpzDdwTB1o+8pmjnCgrdQ
-         7VyzXRpi1Rlh9qn9LgdAmW6nStkH2cV9+SRrW1DqmYqJIvKSiNKB1O5ccxY459/0caTa
-         JrH5u/cJ+Bmg5wnuZvlRZSIJOkzQjGbPG/fqshWunI59sn2E9vDZrgovRMvQhYiKKw+S
-         lQZA==
+        bh=I6Tz7njIjcDeDIqlk0H5K0MjmyPIR1DWZmB3bs2pWMA=;
+        b=I8l8aSQMNhD6iCykX9dD83ehMOa1kXHuzM8DlXkYs4/cz3NhdRmJlLD0S+hRlxd+ug
+         a+gR8EkJZqFwmJsvOdraQ0QrSVWwqUiaVdy+knETl8PB/MFfLGJIlyZIXP1ppplazlKo
+         buCUsIbk3TZi3wmuWcCjnXILEiVErl6lH/XCTn6+59gJzWnPbVnnLAU1VLcAoNkteb2x
+         +kDzA330eY1WEydr2I2y+6TKYWjvJi554HYRhoPTUooiyxLog61GgyvwNco1P0oMs6WP
+         yAl7lNsUpaGdxq2FCEC0MDvgODip8o/uwrVML9Vjq1QBsT9BNlwaTIa0MKHjFs8Mun8w
+         yfrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KpJnerk41m58vhJzBj+GyTr+GQi3dk7pf6r0+CAqYos=;
-        b=bhVx/tmPuT/xCS9AAiSDejEm/0vufY4p15RkswS3C9feDPJyQpfW9uX01VBqPaQ9Mn
-         lIESxkiq70mjRzGCx7uOEbQWwvhNDOczV7arnqdDXSdJ4RFUZzpswl2mzJdFub8wuH1J
-         a6GI1wWgQR1dPvnrFtk59YuymhYbRWnnaZDe1d7k75bc1KnljIQC3vjTl/NYTsAgc9rT
-         KoAy2iaxPq1blM+KIDj6mCSyXUOdzv+Gnzslfw9DlNwdySytx84zD9EdAyly+ncD5iMk
-         jSZeytYsmqq6n6OaVXRWZMim06rmlss1RhotKUuMYGzZGnt9bJrKYbkHpFIySxJ7XaLH
-         Rdew==
-X-Gm-Message-State: ANhLgQ0FvL+SNWDkl4zqTEbY1HwZXmvtc5f0ykHQdldLWvHeSkiYDUWJ
-        BjrAyHdaiTD3u7obJOJVGcxbCRed
-X-Google-Smtp-Source: ADFU+vsHGGRMpif8kyWy9aED3/TyV6/2c953YeZzdqYPbYvDTO8tPFMpJZWt4Yt+dzZZ6t1ONiX2UA==
-X-Received: by 2002:a05:6512:31d5:: with SMTP id j21mr3053893lfe.23.1583144059692;
-        Mon, 02 Mar 2020 02:14:19 -0800 (PST)
+        bh=I6Tz7njIjcDeDIqlk0H5K0MjmyPIR1DWZmB3bs2pWMA=;
+        b=XB/HP9l5zKjtv6+LROtF/fEjL9RTXoMWFfkBSCF8Xfgh8WNQsGQEKKATrnguENp5h0
+         XFq8AuI1mgHmNK4NWZDTA3Ld1S4IFhOitJ4ZNtYn3GOP9U9XglWRlgyQyyPeKg/47b7e
+         akMXNhwIjaMoIZg6I2EewZJiqh/5kzSvwZXfvTaj5c3LO32s5p+xzF/jaFPtGhmBPnAO
+         3fr3VNHY3vWhe+8lpn2jTz+1GuLpshz6ZSGmVzxDjxeE/nsJ234eqsD5ondEcZLMRx6F
+         x8XdyECPGgC1/8YfksFhHRi/TWwr0nP5U7Rpc4s7HGzaWf30hy/Vox84LlZBzUUi/Izv
+         H1ng==
+X-Gm-Message-State: ANhLgQ2x0PDeQrqfIWP918JMl+RypagCNXAE5JGUGKtwIa/ixmTA9c2S
+        J4iekYf520iP4O4Qsny0TGncfiht
+X-Google-Smtp-Source: ADFU+vsPoKev7r5V6+Oqp37oNj7ZuECVkcKEdASPltzxgCAcnvRbKklHg3oNpJ4IfPGsNd6swl0ivQ==
+X-Received: by 2002:a2e:b54a:: with SMTP id a10mr11487492ljn.47.1583144062259;
+        Mon, 02 Mar 2020 02:14:22 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x10sm11048236ljd.68.2020.03.02.02.14.18
+        by smtp.gmail.com with ESMTPSA id x10sm11048236ljd.68.2020.03.02.02.14.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2020 02:14:19 -0800 (PST)
+        Mon, 02 Mar 2020 02:14:21 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v21 10/13] trace-cmd: Refactor few trace-cmd internal functions.
-Date:   Mon,  2 Mar 2020 12:14:01 +0200
-Message-Id: <20200302101404.150035-11-tz.stoyanov@gmail.com>
+Subject: [PATCH v21 12/13] trace-cmd: [POC] PTP-like algorithm for host - guest timestamp synchronization
+Date:   Mon,  2 Mar 2020 12:14:03 +0200
+Message-Id: <20200302101404.150035-13-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200302101404.150035-1-tz.stoyanov@gmail.com>
 References: <20200302101404.150035-1-tz.stoyanov@gmail.com>
@@ -73,153 +73,814 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In order to reuse code inside trace-cmd application context,
-few functions are made non static and "trace_" is prepended
-to their names:
-	int trace_make_vsock(unsigned int port);
-	int trace_get_vsock_port(int sd, unsigned int *port);
-	int trace_open_vsock(unsigned int cid, unsigned int port);
-	char *trace_get_guest_file(const char *file, const char *guest);
+PTP protocol is designed for synchronizing clocks of machines in a local network.
+The same approach can be used for host - guest timestamp synchronization.
+This implementation uses ftrace raw markers to track trace timestamps of PTP events.
+The patch is a POC, two different algorithms for PTP calculations are proposed:
+  - Choosing the sample with the fastest response time for calculating the clocks offset.
+  - Calculating the clocks offset using the average of all PTP samples.
+
+The implementation can be tuned using those parameters:
+ - #define FASTEST_RESPONSE - is defined, the sample with the fastest response time
+    is used for calculating the clocks offset. Otherwise the histogram of all samples is used.
+ - #define PTP_SYNC_LOOP 340 - defines the number of samples, used for one calculation.
+ - --tsync-interval - a trace-cmd argument, choose the intervals between offset calculations,
+	performed continuously during the trace.
+ - #define TSYNC_DEBUG - if defined, a debug information is collected and stored in files,
+   in the guest machine:
+     s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
+     res-cid*.txt - For each tracing session: all calculated clock offsets.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/include/trace-local.h |  6 ++++++
- tracecmd/trace-agent.c         | 10 +++++-----
- tracecmd/trace-record.c        | 18 +++++++++---------
- 3 files changed, 20 insertions(+), 14 deletions(-)
+ include/trace-cmd/trace-cmd.h      |   1 +
+ lib/trace-cmd/Makefile             |   1 +
+ lib/trace-cmd/trace-timesync-ptp.c | 651 +++++++++++++++++++++++++++++
+ lib/trace-cmd/trace-timesync.c     |   8 +
+ tracecmd/trace-agent.c             |   2 +
+ tracecmd/trace-record.c            |  23 +-
+ 6 files changed, 678 insertions(+), 8 deletions(-)
+ create mode 100644 lib/trace-cmd/trace-timesync-ptp.c
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index dc934f28..95d0026b 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -263,6 +263,12 @@ void tracecmd_disable_tracing(void);
- void tracecmd_enable_tracing(void);
- void tracecmd_stat_cpu(struct trace_seq *s, int cpu);
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 42b47e2f..b5207248 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -414,6 +414,7 @@ int tracecmd_msg_recv_time_sync(struct tracecmd_msg_handle *msg_handle,
  
-+int trace_make_vsock(unsigned int port);
-+int trace_get_vsock_port(int sd, unsigned int *port);
-+int trace_open_vsock(unsigned int cid, unsigned int port);
+ enum{
+ 	TRACECMD_TIME_SYNC_PROTO_NONE	= 0,
++	TRACECMD_TIME_SYNC_PROTO_PTP	= 1,
+ };
+ enum{
+ 	TRACECMD_TIME_SYNC_CMD_PROBE	= 1,
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index ab7440ac..79672529 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -17,6 +17,7 @@ OBJS += trace-filter-hash.o
+ OBJS += trace-msg.o
+ OBJS += trace-plugin.o
+ OBJS += trace-timesync.o
++OBJS += trace-timesync-ptp.o
+ 
+ # Additional util objects
+ OBJS += trace-blk-hack.o
+diff --git a/lib/trace-cmd/trace-timesync-ptp.c b/lib/trace-cmd/trace-timesync-ptp.c
+new file mode 100644
+index 00000000..d1e2fae8
+--- /dev/null
++++ b/lib/trace-cmd/trace-timesync-ptp.c
+@@ -0,0 +1,651 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2019, VMware, Tzvetomir Stoyanov tz.stoyanov@gmail.com>
++ *
++ */
 +
-+char *trace_get_guest_file(const char *file, const char *guest);
++#include <fcntl.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <arpa/inet.h>
++#include <linux/vm_sockets.h>
++#include <sys/types.h>
++#include <linux/types.h>
++#include <time.h>
++#include <sched.h>
++#include "trace-cmd.h"
++#include "tracefs.h"
++#include "trace-tsync-local.h"
++#include "trace-msg.h"
++#include "trace-cmd-local.h"
 +
- /* No longer in event-utils.h */
- void __noreturn die(const char *fmt, ...); /* Can be overriden */
- void *malloc_or_die(unsigned int size); /* Can be overridden */
++typedef __be32 be32;
++typedef __u64 u64;
++typedef __s64 s64;
++
++#define PTP_SYNC_LOOP	340
++
++#define PTP_SYNC_PKT_START	1
++#define PTP_SYNC_PKT_PROBE	2
++#define PTP_SYNC_PKT_PROBES	3
++#define PTP_SYNC_PKT_OFFSET	4
++#define PTP_SYNC_PKT_END	5
++
++#define TSYNC_DEBUG
++
++struct ptp_clock_sync {
++	struct tep_handle	*tep;
++	int			raw_id;
++	int			marker_fd;
++	int			series_id;
++	int			debug_fd;
++
++};
++
++struct ptp_clock_start_msg {
++	be32	series_id;
++} __attribute__((packed));
++
++struct ptp_clock_sample {
++	s64		ts;
++	be32		id;
++} __attribute__((packed));
++
++struct ptp_clock_result_msg {
++	be32			series_id;
++	be32			count;
++	struct ptp_clock_sample	samples[2*PTP_SYNC_LOOP];
++} __attribute__((packed));
++
++struct ptp_clock_offset_msg {
++	s64	ts;
++	s64	offset;
++};
++
++struct ptp_markers_context {
++	struct clock_sync_context	*clock;
++	struct ptp_clock_sync		*ptp;
++	int				size;
++	struct ptp_clock_result_msg	msg;
++};
++
++struct ptp_marker_buf {
++	int local_cid;
++	int remote_cid;
++	int count;
++	int packet_id;
++} __attribute__((packed));
++
++struct ptp_marker {
++	int series_id;
++	struct ptp_marker_buf data;
++} __attribute__((packed));
++
++static int ptp_clock_sync_init(struct tracecmd_time_sync *tsync)
++{
++	const char *systems[] = {"ftrace", NULL};
++	struct clock_sync_context *clock_context;
++	struct ptp_clock_sync *ptp;
++	struct tep_event *raw;
++	char *path;
++
++	if (!tsync || !tsync->context)
++		return -1;
++	clock_context = (struct clock_sync_context *)tsync->context;
++	if (clock_context->proto_data)
++		return 0;
++
++	ptp = calloc(1, sizeof(struct ptp_clock_sync));
++	if (!ptp)
++		return -1;
++
++	ptp->marker_fd = -1;
++	ptp->debug_fd = -1;
++
++	path = tracefs_instance_get_dir(clock_context->instance);
++	if (!path)
++		goto error;
++	ptp->tep = tracefs_local_events_system(path, systems);
++	tracefs_put_tracing_file(path);
++	if (!ptp->tep)
++		goto error;
++	raw = tep_find_event_by_name(ptp->tep, "ftrace", "raw_data");
++	if (!raw)
++		goto error;
++
++	ptp->raw_id = raw->id;
++	tep_set_file_bigendian(ptp->tep, tracecmd_host_bigendian());
++	tep_set_local_bigendian(ptp->tep, tracecmd_host_bigendian());
++
++	path = tracefs_instance_get_file(clock_context->instance, "trace_marker_raw");
++	if (!path)
++		goto error;
++	ptp->marker_fd = open(path, O_WRONLY);
++	tracefs_put_tracing_file(path);
++
++	clock_context->proto_data = ptp;
++
++#ifdef TSYNC_DEBUG
++	if (clock_context->is_server) {
++		char buff[256];
++		int res_fd;
++
++		sprintf(buff, "res-cid%d.txt", clock_context->remote_cid);
++
++		res_fd = open(buff, O_CREAT|O_WRONLY|O_TRUNC, 0644);
++		if (res_fd > 0)
++			close(res_fd);
++	}
++#endif
++
++	return 0;
++
++error:
++	if (ptp) {
++		tep_free(ptp->tep);
++		if (ptp->marker_fd >= 0)
++			close(ptp->marker_fd);
++	}
++	free(ptp);
++	return -1;
++}
++
++static int ptp_clock_sync_free(struct tracecmd_time_sync *tsync)
++{
++	struct clock_sync_context *clock_context;
++	struct ptp_clock_sync *ptp;
++
++	if (!tsync || !tsync->context)
++		return -1;
++	clock_context = (struct clock_sync_context *)tsync->context;
++
++	if (clock_context && clock_context->proto_data) {
++		ptp = (struct ptp_clock_sync *)clock_context->proto_data;
++		tep_free(ptp->tep);
++		if (ptp->marker_fd >= 0)
++			close(ptp->marker_fd);
++		if (ptp->debug_fd >= 0)
++			close(ptp->debug_fd);
++		free(clock_context->proto_data);
++		clock_context->proto_data = NULL;
++	}
++	return 0;
++}
++
++static int ptp_marker_find(struct tep_event *event, struct tep_record *record,
++			   int cpu, void *context)
++{
++	struct ptp_markers_context *ctx;
++	struct tep_format_field *field;
++	struct tep_format_field *id;
++	struct ptp_marker *marker;
++	int index = -1;
++
++	ctx = (struct ptp_markers_context *)context;
++
++	/* Make sure this is our event */
++	if (event->id != ctx->ptp->raw_id)
++		return 0;
++	id = tep_find_field(event, "id");
++	field = tep_find_field(event, "buf");
++	if (field && id &&
++	    record->size >= (id->offset + sizeof(struct ptp_marker))) {
++		marker = (struct ptp_marker *)(record->data + id->offset);
++		if (marker->data.local_cid == ctx->clock->local_cid &&
++		    marker->data.remote_cid == ctx->clock->remote_cid &&
++		    marker->series_id == ctx->ptp->series_id &&
++		    marker->data.count) {
++			if (marker->data.packet_id == 'r' &&
++			    marker->data.count <= ctx->size) {
++				index = marker->data.count - 1;
++			} else if (marker->data.packet_id == 's' &&
++				  marker->data.count*2 <= ctx->size){
++				index = ctx->size / 2 + marker->data.count - 1;
++			}
++		}
++		if (index >= 0) {
++			ctx->msg.samples[index].id = marker->data.count;
++			ctx->msg.samples[index].ts = record->ts;
++			ctx->msg.count++;
++		}
++	}
++
++	return 0;
++}
++
++//#define FASTEST_RESPONSE
++
++#ifdef FASTEST_RESPONSE
++static int ptp_calc_offset(struct clock_sync_context *clock,
++			   struct ptp_clock_result_msg *server,
++			   struct ptp_clock_result_msg *client,
++			   long long *offset_ret, long long *ts_ret,
++			   int *bad_probes)
++{
++	struct ptp_clock_sample *sample_send;
++	long long delta_min = 0;
++	long long offset = 0;
++	long long delta = 0;
++	long long ts = 0;
++	int i;
++
++	*bad_probes = 0;
++	sample_send = server->samples + (server->count / 2);
++	for (i = 0; i * 2 < server->count && i < client->count; i++) {
++		if (!server->samples[i].ts ||
++		    !sample_send[i].ts ||
++		    !client->samples[i].ts ||
++		    server->samples[i].id != sample_send[i].id ||
++		    server->samples[i].id != client->samples[i].id) {
++			(*bad_probes)++;
++			continue;
++		}
++
++		ts = (sample_send[i].ts + server->samples[i].ts) / 2;
++		offset = client->samples[i].ts - ts;
++
++		delta = server->samples[i].ts - sample_send[i].ts;
++		if (!delta_min || delta_min > delta) {
++			delta_min = delta;
++			*offset_ret = offset;
++			*ts_ret = ts;
++		}
++#ifdef TSYNC_DEBUG
++		{
++			struct ptp_clock_sync *ptp;
++
++			ptp = (struct ptp_clock_sync *)clock->proto_data;
++			if (ptp && ptp->debug_fd > 0) {
++				char buff[256];
++
++				sprintf(buff, "%lld %lld %lld\n",
++					ts, client->samples[i].ts, offset);
++				write(ptp->debug_fd, buff, strlen(buff));
++			}
++		}
++#endif
++	}
++
++	return 0;
++}
++
++#else /* histogram */
++
++static int ptp_calc_offset(struct clock_sync_context *clock,
++			   struct ptp_clock_result_msg *server,
++			   struct ptp_clock_result_msg *client,
++			   long long *offset_ret, long long *ts_ret,
++			   int *bad_probes)
++{
++	struct ptp_clock_sample *sample_send;
++	long long timestamps[PTP_SYNC_LOOP];
++	long long offsets[PTP_SYNC_LOOP];
++	int hist[PTP_SYNC_LOOP];
++	long long offset_max = 0;
++	long long offset_min = 0;
++	int ind, max = 0;
++	long long bin;
++	int i, k = 0;
++
++	*bad_probes = 0;
++	memset(hist, 0, sizeof(int) * PTP_SYNC_LOOP);
++	sample_send = server->samples + (server->count / 2);
++	for (i = 0; i * 2 < server->count && i < client->count; i++) {
++		if (!server->samples[i].ts ||
++		    !sample_send[i].ts ||
++		    !client->samples[i].ts ||
++		    server->samples[i].id != sample_send[i].id ||
++		    server->samples[i].id != client->samples[i].id) {
++			(*bad_probes)++;
++			continue;
++		}
++
++		timestamps[k] = (sample_send[i].ts + server->samples[i].ts) / 2;
++		offsets[k] = client->samples[i].ts - timestamps[k];
++		if (!offset_max || offset_max < llabs(offsets[k]))
++			offset_max = llabs(offsets[k]);
++		if (!offset_min || offset_min > llabs(offsets[k]))
++			offset_min = llabs(offsets[k]);
++#ifdef TSYNC_DEBUG
++		{
++			struct ptp_clock_sync *ptp;
++
++			ptp = (struct ptp_clock_sync *)clock->proto_data;
++
++			if (ptp && ptp->debug_fd > 0) {
++				char buff[256];
++
++				sprintf(buff, "%lld %lld %lld\n",
++					timestamps[k],
++					client->samples[i].ts, offsets[k]);
++				write(ptp->debug_fd, buff, strlen(buff));
++			}
++		}
++#endif
++		k++;
++	}
++
++	bin = (offset_max - offset_min) / PTP_SYNC_LOOP;
++	for (i = 0; i < k; i++) {
++		ind = (llabs(offsets[i]) - offset_min) / bin;
++		if (ind < PTP_SYNC_LOOP) {
++			hist[ind]++;
++			if (max < hist[ind]) {
++				max = hist[ind];
++				*offset_ret = offsets[i];
++				*ts_ret = timestamps[i];
++			}
++		}
++	}
++
++	return 0;
++}
++#endif
++
++static void ntoh_ptp_results(struct ptp_clock_result_msg *msg)
++{
++	int i;
++
++	msg->count = ntohl(msg->count);
++	for (i = 0; i < msg->count; i++) {
++		msg->samples[i].id = ntohl(msg->samples[i].id);
++		msg->samples[i].ts = ntohll(msg->samples[i].ts);
++	}
++	msg->series_id = ntohl(msg->series_id);
++}
++
++
++static void hton_ptp_results(struct ptp_clock_result_msg *msg)
++{
++	int i;
++
++	for (i = 0; i < msg->count; i++) {
++		msg->samples[i].id = htonl(msg->samples[i].id);
++		msg->samples[i].ts = htonll(msg->samples[i].ts);
++	}
++	msg->series_id = htonl(msg->series_id);
++	msg->count = htonl(msg->count);
++}
++
++static int ptp_clock_client(struct tracecmd_time_sync *tsync,
++			    long long *offset, long long *timestamp)
++{
++	struct clock_sync_context *clock_context;
++	struct ptp_clock_offset_msg res_offset;
++	unsigned int sync_proto, sync_msg;
++	struct ptp_clock_start_msg start;
++	struct ptp_markers_context ctx;
++	struct ptp_clock_sync *ptp;
++	struct ptp_marker marker;
++	unsigned int size;
++	char *msg;
++	int count;
++	int ret;
++
++	if (!tsync || !tsync->context || !tsync->msg_handle)
++		return -1;
++
++	clock_context = (struct clock_sync_context *)tsync->context;
++	if (clock_context->proto_data == NULL)
++		return -1;
++
++	ptp = (struct ptp_clock_sync *)clock_context->proto_data;
++	size = sizeof(start);
++	msg = (char *)&start;
++	ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++					  &sync_proto, &sync_msg,
++					  &size, &msg);
++	if (ret || sync_proto != TRACECMD_TIME_SYNC_PROTO_PTP ||
++	    sync_msg != PTP_SYNC_PKT_START)
++		return -1;
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle,
++					  TRACECMD_TIME_SYNC_PROTO_PTP,
++					  PTP_SYNC_PKT_START, sizeof(start),
++					  (char *)&start);
++	marker.data.local_cid = clock_context->local_cid;
++	marker.data.remote_cid = clock_context->remote_cid;
++	marker.series_id = ntohl(start.series_id);
++	marker.data.packet_id = 'r';
++	ptp->series_id = marker.series_id;
++	msg = (char *)&count;
++	size = sizeof(count);
++	while (true) {
++		count = 0;
++		ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++						  &sync_proto, &sync_msg,
++						  &size, &msg);
++		if (ret || sync_proto != TRACECMD_TIME_SYNC_PROTO_PTP ||
++		    sync_msg != PTP_SYNC_PKT_PROBE || !ntohl(count))
++			break;
++
++		marker.data.count = ntohl(count);
++		write(ptp->marker_fd, &marker, sizeof(marker));
++		ret = tracecmd_msg_send_time_sync(tsync->msg_handle,
++						 TRACECMD_TIME_SYNC_PROTO_PTP,
++						 PTP_SYNC_PKT_PROBE,
++						 sizeof(count), (char *)&count);
++		if (ret)
++			break;
++	}
++
++	if (sync_proto != TRACECMD_TIME_SYNC_PROTO_PTP ||
++	    sync_msg != PTP_SYNC_PKT_END)
++		return -1;
++
++	ctx.size = PTP_SYNC_LOOP;
++	ctx.ptp = ptp;
++	ctx.clock = clock_context;
++	ctx.msg.count = 0;
++	ctx.msg.series_id = ptp->series_id;
++	tracefs_iterate_raw_events(ptp->tep, clock_context->instance,
++				   ptp_marker_find, &ctx);
++	hton_ptp_results(&ctx.msg);
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle,
++					  TRACECMD_TIME_SYNC_PROTO_PTP,
++					  PTP_SYNC_PKT_PROBES,
++					  sizeof(ctx.msg), (char *)&ctx.msg);
++
++	msg = (char *)&res_offset;
++	size = sizeof(res_offset);
++	ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++					  &sync_proto, &sync_msg,
++					  &size, (char **)&msg);
++	if (ret || sync_proto != TRACECMD_TIME_SYNC_PROTO_PTP ||
++	    sync_msg != PTP_SYNC_PKT_OFFSET)
++		return -1;
++
++	*offset = ntohll(res_offset.offset);
++	*timestamp = ntohll(res_offset.ts);
++
++	return 0;
++}
++
++
++static int ptp_clock_server(struct tracecmd_time_sync *tsync,
++			    long long *offset, long long *timestamp)
++{
++	struct ptp_clock_result_msg *results = NULL;
++	struct clock_sync_context *clock_context;
++	struct ptp_clock_offset_msg res_offset;
++	unsigned int sync_proto, sync_msg;
++	struct ptp_clock_start_msg start;
++	struct ptp_markers_context ctx;
++	int sync_loop = PTP_SYNC_LOOP;
++	struct ptp_clock_sync *ptp;
++	struct ptp_marker marker;
++	unsigned int size;
++	int bad_probes;
++	int count = 1;
++	int msg_count;
++	int msg_ret;
++	char *msg;
++	int ret;
++
++	if (!tsync || !tsync->context || !tsync->msg_handle)
++		return -1;
++
++	clock_context = (struct clock_sync_context *)tsync->context;
++	if (clock_context->proto_data == NULL)
++		return -1;
++
++	ptp = (struct ptp_clock_sync *)clock_context->proto_data;
++	start.series_id = htonl(ptp->series_id + 1);
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle,
++					 TRACECMD_TIME_SYNC_PROTO_PTP,
++					 PTP_SYNC_PKT_START, sizeof(start),
++					 (char *)&start);
++	if (!ret)
++		ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++						  &sync_proto, &sync_msg,
++						  NULL, NULL);
++	if (ret || sync_proto != TRACECMD_TIME_SYNC_PROTO_PTP ||
++	    sync_msg != PTP_SYNC_PKT_START)
++		return -1;
++
++	tracefs_instance_file_write(clock_context->instance, "trace", "\0");
++
++	ptp->series_id++;
++	marker.data.local_cid = clock_context->local_cid;
++	marker.data.remote_cid = clock_context->remote_cid;
++	marker.series_id = ptp->series_id;
++	msg = (char *)&msg_ret;
++	size = sizeof(msg_ret);
++	do {
++		marker.data.count = count++;
++		marker.data.packet_id = 's';
++		msg_count = htonl(marker.data.count);
++		write(ptp->marker_fd, &marker, sizeof(marker));
++		ret = tracecmd_msg_send_time_sync(tsync->msg_handle,
++						 TRACECMD_TIME_SYNC_PROTO_PTP,
++						 PTP_SYNC_PKT_PROBE,
++						 sizeof(msg_count),
++						 (char *)&msg_count);
++		if (!ret)
++			ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++							  &sync_proto, &sync_msg,
++							  &size, &msg);
++
++		marker.data.packet_id = 'r';
++		write(ptp->marker_fd, &marker, sizeof(marker));
++		if (ret || sync_proto != TRACECMD_TIME_SYNC_PROTO_PTP ||
++		    sync_msg != PTP_SYNC_PKT_PROBE ||
++		    ntohl(msg_ret) != marker.data.count)
++			break;
++	} while (--sync_loop);
++
++	if (sync_loop)
++		return -1;
++
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle,
++					  TRACECMD_TIME_SYNC_PROTO_PTP,
++					  PTP_SYNC_PKT_END, 0, NULL);
++
++	size = 0;
++	ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++					  &sync_proto, &sync_msg,
++					  &size, (char **)&results);
++	if (ret || sync_proto != TRACECMD_TIME_SYNC_PROTO_PTP ||
++	    sync_msg != PTP_SYNC_PKT_PROBES || size == 0 || results == NULL)
++		return -1;
++
++	ntoh_ptp_results(results);
++
++	ctx.size = 2*PTP_SYNC_LOOP;
++	ctx.ptp = ptp;
++	ctx.clock = clock_context;
++	ctx.msg.count = 0;
++	ctx.msg.series_id = ptp->series_id;
++	tracefs_iterate_raw_events(ptp->tep, clock_context->instance,
++				   ptp_marker_find, &ctx);
++
++	ptp_calc_offset(clock_context, &ctx.msg, results, offset,
++			timestamp, &bad_probes);
++
++#ifdef TSYNC_DEBUG
++	{
++		char buff[256];
++		int res_fd;
++
++		sprintf(buff, "res-cid%d.txt", clock_context->remote_cid);
++
++		res_fd = open(buff, O_WRONLY|O_APPEND, 0644);
++		if (res_fd > 0) {
++			if (*offset && *timestamp) {
++				sprintf(buff, "%d %lld %lld\n",
++					ptp->series_id, *offset, *timestamp);
++				write(res_fd, buff, strlen(buff));
++			}
++			close(res_fd);
++		}
++
++		printf("\n calculated offset %d: %lld, %d probes, filtered out %d\n\r",
++			ptp->series_id, *offset, results->count, bad_probes);
++		if (ptp && ptp->debug_fd > 0) {
++			sprintf(buff, "%lld %lld 0\n", *offset, *timestamp);
++			write(ptp->debug_fd, buff, strlen(buff));
++			close(ptp->debug_fd);
++			ptp->debug_fd = -1;
++		}
++
++	}
++#endif
++
++	res_offset.offset = htonll(*offset);
++	res_offset.ts = htonll(*timestamp);
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle,
++					  TRACECMD_TIME_SYNC_PROTO_PTP,
++					  PTP_SYNC_PKT_OFFSET,
++					  sizeof(res_offset),
++					  (char *)&res_offset);
++
++	free(results);
++	return 0;
++}
++
++static int ptp_clock_sync_calc(struct tracecmd_time_sync *tsync,
++			       long long *offset, long long *timestamp)
++{
++	struct clock_sync_context *clock_context;
++	int ret;
++
++	if (!tsync || !tsync->context)
++		return -1;
++	clock_context = (struct clock_sync_context *)tsync->context;
++
++#ifdef TSYNC_DEBUG
++	if (clock_context->is_server) {
++		struct ptp_clock_sync *ptp;
++		char buff[256];
++
++		ptp = (struct ptp_clock_sync *)clock_context->proto_data;
++		if (ptp->debug_fd > 0)
++			close(ptp->debug_fd);
++		sprintf(buff, "s-cid%d_%d.txt",
++				clock_context->remote_cid, ptp->series_id+1);
++		ptp->debug_fd = open(buff, O_CREAT|O_WRONLY|O_TRUNC, 0644);
++	}
++#endif
++
++
++	if (clock_context->is_server)
++		ret = ptp_clock_server(tsync, offset, timestamp);
++	else
++		ret = ptp_clock_client(tsync, offset, timestamp);
++
++	return ret;
++}
++
++int ptp_clock_sync_register(void)
++{
++	return tracecmd_tsync_proto_register(TRACECMD_TIME_SYNC_PROTO_PTP,
++					     TRACECMD_TIME_SYNC_PROTO_PTP_WEIGHT,
++					     ptp_clock_sync_init,
++					     ptp_clock_sync_free,
++					     ptp_clock_sync_calc);
++
++}
++
++int ptp_clock_sync_unregister(void)
++{
++	return tracecmd_tsync_proto_unregister(TRACECMD_TIME_SYNC_PROTO_PTP);
++}
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index 0534b14f..68d53127 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -46,6 +46,14 @@ static struct tsync_proto *tsync_proto_find(unsigned int proto_id)
+ 	return NULL;
+ }
+ 
++/**
++ * tracecmd_tsync_init - Initialize the global, per task, time sync data.
++ */
++void tracecmd_tsync_init(void)
++{
++	ptp_clock_sync_register();
++}
++
+ int tracecmd_tsync_proto_register(unsigned int proto_id, int weight,
+ 				int (*init)(struct tracecmd_time_sync *),
+ 				int (*free)(struct tracecmd_time_sync *),
 diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
-index 52d27195..a8ef0852 100644
+index b5816966..2fd09dc3 100644
 --- a/tracecmd/trace-agent.c
 +++ b/tracecmd/trace-agent.c
-@@ -40,7 +40,7 @@ static int get_local_cid(unsigned int *cid)
- 	return ret;
- }
- 
--static int make_vsock(unsigned int port)
-+int trace_make_vsock(unsigned int port)
- {
- 	struct sockaddr_vm addr = {
- 		.svm_family = AF_VSOCK,
-@@ -64,7 +64,7 @@ static int make_vsock(unsigned int port)
- 	return sd;
- }
- 
--static int get_vsock_port(int sd, unsigned int *port)
-+int trace_get_vsock_port(int sd, unsigned int *port)
- {
- 	struct sockaddr_vm addr;
- 	socklen_t addr_len = sizeof(addr);
-@@ -87,11 +87,11 @@ static void make_vsocks(int nr, int *fds, unsigned int *ports)
- 	int i, fd, ret;
- 
- 	for (i = 0; i < nr; i++) {
--		fd = make_vsock(VMADDR_PORT_ANY);
-+		fd = trace_make_vsock(VMADDR_PORT_ANY);
- 		if (fd < 0)
- 			die("Failed to open vsocket");
- 
--		ret = get_vsock_port(fd, &port);
-+		ret = trace_get_vsock_port(fd, &port);
- 		if (ret < 0)
- 			die("Failed to get vsocket address");
- 
-@@ -210,7 +210,7 @@ static void agent_serve(unsigned int port)
- 	nr_cpus = tracecmd_count_cpus();
- 	page_size = getpagesize();
- 
--	sd = make_vsock(port);
-+	sd = trace_make_vsock(port);
+@@ -247,6 +247,8 @@ static void agent_serve(unsigned int port)
  	if (sd < 0)
  		die("Failed to open vsocket");
  
++	tracecmd_tsync_init();
++
+ 	if (!get_local_cid(&cid))
+ 		printf("listening on @%u:%u\n", cid, port);
+ 
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index e0b18044..174a9bdd 100644
+index 0a287f24..8045494c 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -537,7 +537,7 @@ static char *get_temp_file(struct buffer_instance *instance, int cpu)
- 	return file;
+@@ -6129,10 +6129,6 @@ static bool has_local_instances(void)
+ 	return false;
  }
  
--static char *get_guest_file(const char *file, const char *guest)
-+char *trace_get_guest_file(const char *file, const char *guest)
+-/*
+- * This function contains common code for the following commands:
+- * record, start, stream, profile.
+- */
+ static void record_trace(int argc, char **argv,
+ 			 struct common_record_context *ctx)
  {
- 	const char *p;
- 	char *out = NULL;
-@@ -2930,7 +2930,7 @@ static int connect_port(const char *host, unsigned int port)
+@@ -6266,12 +6262,23 @@ static void record_trace(int argc, char **argv,
+ 	finalize_record_trace(ctx);
  }
  
- #ifdef VSOCK
--static int open_vsock(unsigned int cid, unsigned int port)
-+int trace_open_vsock(unsigned int cid, unsigned int port)
++/*
++ * This function contains common code for the following commands:
++ * record, start, stream, profile.
++ */
++static void record_trace_command(int argc, char **argv,
++				 struct common_record_context *ctx)
++{
++	tracecmd_tsync_init();
++	record_trace(argc, argv, ctx);
++}
++
+ void trace_start(int argc, char **argv)
  {
- 	struct sockaddr_vm addr = {
- 		.svm_family = AF_VSOCK,
-@@ -2993,7 +2993,7 @@ static bool can_splice_read_vsock(void)
+ 	struct common_record_context ctx;
+ 
+ 	parse_record_options(argc, argv, CMD_start, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
  }
  
- #else
--static inline int open_vsock(unsigned int cid, unsigned int port)
-+int trace_open_vsock(unsigned int cid, unsigned int port)
- {
- 	die("vsock is not supported");
- 	return -1;
-@@ -3304,7 +3304,7 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
- 		if (instance->use_fifos)
- 			fd = instance->fds[cpu];
- 		else
--			fd = open_vsock(instance->cid, instance->client_ports[cpu]);
-+			fd = trace_open_vsock(instance->cid, instance->client_ports[cpu]);
- 		if (fd < 0)
- 			die("Failed to connect to agent");
+@@ -6351,7 +6358,7 @@ void trace_stream(int argc, char **argv)
+ 	struct common_record_context ctx;
  
-@@ -3696,7 +3696,7 @@ static void connect_to_agent(struct buffer_instance *instance)
- 		use_fifos = nr_fifos > 0;
- 	}
+ 	parse_record_options(argc, argv, CMD_stream, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
+ }
  
--	sd = open_vsock(instance->cid, instance->port);
-+	sd = trace_open_vsock(instance->cid, instance->port);
- 	if (sd < 0)
- 		die("Failed to connect to vsocket @%u:%u",
- 		    instance->cid, instance->port);
-@@ -3747,8 +3747,8 @@ static void setup_guest(struct buffer_instance *instance)
- 	int fd;
+@@ -6370,7 +6377,7 @@ void trace_profile(int argc, char **argv)
+ 	if (!buffer_instances)
+ 		top_instance.flags |= BUFFER_FL_PROFILE;
  
- 	/* Create a place to store the guest meta data */
--	file = get_guest_file(output_file,
--			      tracefs_instance_get_name(instance->tracefs));
-+	file = trace_get_guest_file(output_file,
-+				    tracefs_instance_get_name(instance->tracefs));
- 	if (!file)
- 		die("Failed to allocate memory");
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	do_trace_profile();
+ 	exit(0);
+ }
+@@ -6389,7 +6396,7 @@ void trace_record(int argc, char **argv)
+ 	struct common_record_context ctx;
  
-@@ -4084,8 +4084,8 @@ static void write_guest_file(struct buffer_instance *instance)
- 	char **temp_files;
- 	int i, fd;
- 
--	file = get_guest_file(output_file,
--			      tracefs_instance_get_name(instance->tracefs));
-+	file = trace_get_guest_file(output_file,
-+				    tracefs_instance_get_name(instance->tracefs));
- 	if (!file)
- 		die("Failed to allocate memory");
+ 	parse_record_options(argc, argv, CMD_record, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
+ }
  
 -- 
 2.24.1
