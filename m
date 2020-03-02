@@ -2,65 +2,65 @@ Return-Path: <SRS0=nG5h=4T=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42A3AC3F2D2
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB090C3F2D1
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:31:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0A2B9246B4
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:29:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ADE2B246BB
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 09:31:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vORyykoE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JhJOALxM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727323AbgCBJ3S (ORCPT
+        id S1727076AbgCBJbp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 2 Mar 2020 04:29:18 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:36903 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgCBJ3S (ORCPT
+        Mon, 2 Mar 2020 04:31:45 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:33486 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726382AbgCBJbp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 04:29:18 -0500
-Received: by mail-pg1-f195.google.com with SMTP id z12so5148377pgl.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 01:29:17 -0800 (PST)
+        Mon, 2 Mar 2020 04:31:45 -0500
+Received: by mail-pl1-f196.google.com with SMTP id ay11so3984622plb.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 01:31:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PMfx9+p6QDhZVTfguad7WF1IY4mPzVo4yyasHAMM2CQ=;
-        b=vORyykoEQhKoPiyvuJ0B+U5Ui23zAm5CzFb+BcpqMqF9wdmGN9hyF88/EYGxb1aiaE
-         SkKUJhol5DQk+8nqLDLfsEulb8VheqZOdpYqw5CcAkjjyCNsAk7ScYLio1jZFvhaRcze
-         mSFVvNJvxXqCgvU1BEXgmPQYQQm+0YKblYimiG7Pc73jtCPA8s9EAreMBEioSDTiqB6Q
-         tWm7RaIWtAH5T39OWCr0Cg3QCGEwN2iauUFmAMwaXkVetArn/XUjQwyTfMRcUT2iSvHx
-         iOf+EKgdQIUgy/0S2wBwzAjGHw+eAD+/xv7Bc0bG8qq8yqINbgg+uWYQrbhXKaEoUGQU
-         DUNw==
+        bh=V2zSYRRosMzatzYcp3AwkBbp6WQFc01D87HW7oUE2x8=;
+        b=JhJOALxMVfvBDc1DEBwi3U37NP7/9TtUhckTP6puGwPudoMzjpZ4qZWzGkHh9kjTj5
+         E0+Mbf8qH2zK51XXI5IbFqF8us/AIEg+/f/G59EGOUN+xb2UhQhDjOCeXl8SH6mqEuWV
+         iyZDji5uRWiHKBUWon6JLb8hkVtujLg+OUbttpXtdqQ6ioaE3ERimzJM3ENq2+GpUXwF
+         cHVVF0VYNDRU9M5lo2XieyxOCTd8IZ5EwRYELsDzp7MuqhcUrN9VkuRqsr1bsb7cqQ8D
+         gLTClUAn5RkXTawc5gUPB2QUg5Hkwcfseuq6xW6bcIVEXuXkUdb7gqYhqkZs3SBgEVdc
+         5XQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PMfx9+p6QDhZVTfguad7WF1IY4mPzVo4yyasHAMM2CQ=;
-        b=h0KKETal6KpPCiYDcqSMOuxPXl0VJ/O1eV3Vjai0Hbb3XDoEm7ZcwrF10TGSjPavCa
-         hm8OVRd5iiiW3jMUxUJH9RfjxJbysbeFw0l2t3JEw8u0r512XIOfKp9cakxwUMLUtlV3
-         xJOhHWPk6Zpzg92V/0GXxlq95pBBEJo/nvXeLRonJ4RY3n4kQ2CI0s3XRWZJ2V6Uw8MZ
-         HsuAcDmazhiI6lTfMniN+n4exQbdA//83FvcYFSusI+VG07GkW1R7qCiu/06Z8ZEE1iy
-         jnxmFoxD7/88rONeE0Ba2x90qM3YVnyXplc0Gd+Z7rGqwRveLCGeDtRp1zXy5CwZ4njs
-         90Iw==
-X-Gm-Message-State: APjAAAW/dWaWvaZumyBeeU1W6xQXNjPhqJoojyN/EDRFzVS/cBY0FcAx
-        wv6mK3FZv/w2zSFze8dNzRO7deCZdpgpOeyAUAoKAhgi
-X-Google-Smtp-Source: APXvYqz0aElQRmCga/bF7+Afc8iUlcO1TsXiAWWB2nAnSGIpjzI7MpkNuM4KB4deLKgvvFmPsgaKHbM0aufNQFzgTSY=
-X-Received: by 2002:a62:7ccc:: with SMTP id x195mr15135925pfc.71.1583141357115;
- Mon, 02 Mar 2020 01:29:17 -0800 (PST)
+        bh=V2zSYRRosMzatzYcp3AwkBbp6WQFc01D87HW7oUE2x8=;
+        b=tdTsk6kB5zkUTWxQ8G9BOOH7QlzLewFK/Nps8V3GzrH4n5cFXt8eb7f+ZHL2piA6iP
+         4hP4v2ryIuBiI3SU/xD3JKAvemID1vjHyArQo5BMAcuFSuSmwhBswAUovPUSNNzz6zRY
+         2RQzAIXT9rEqVWM1X72cO5PZj50ymvLXXsxv4BksMl713d5zUQMIKuwRtkRAU/qOuUaJ
+         DMK7lcvXvVCHdm81K6MiXK7fLQZhUendO+UBngN0KkE5/x1AYUDaKPnToa3zU97t8vF1
+         wZGJ53btp7zppCXj/Ay+IDjIZnOTsObaJWFxY+nAXbdlC21xlxA6AthpJsFzUkiQqzwS
+         pbvg==
+X-Gm-Message-State: ANhLgQ0wDVFT4aE6mPvSvfvhhG4lJ1oEmmC0OWFAZ2bTIaIMsows2Qo2
+        dPKb/qxm9UuzO9YsTp1mgzOXDT4lnfXMWgSLIqvqAhX/
+X-Google-Smtp-Source: ADFU+vs8Ac32QeBFM1/41sreg4ee8j5tZbIibFtiyyCm9xR1bAb0JP7NnspnMSV503xTSnInxe46R7KXVO0ku/Eyf+o=
+X-Received: by 2002:a17:902:467:: with SMTP id 94mr5799270ple.302.1583141504747;
+ Mon, 02 Mar 2020 01:31:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20200227142001.61577-1-tz.stoyanov@gmail.com> <20200227142001.61577-4-tz.stoyanov@gmail.com>
- <20200227122303.25dacb7b@gandalf.local.home>
-In-Reply-To: <20200227122303.25dacb7b@gandalf.local.home>
+References: <20190828112457.10533-1-tz.stoyanov@gmail.com> <20190828112457.10533-3-tz.stoyanov@gmail.com>
+ <20200228181807.5d9f9636@gandalf.local.home>
+In-Reply-To: <20200228181807.5d9f9636@gandalf.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 2 Mar 2020 11:29:05 +0200
-Message-ID: <CAPpZLN4Y-tO-mkdJtPAkfs9JSwPuPUoFYfCX2TWY_gGAao4FSg@mail.gmail.com>
-Subject: Re: [PATCH v20 03/15] trace-cmd: Find and store pids of tasks, which
- run virtual CPUs of given VM
+Date:   Mon, 2 Mar 2020 11:31:33 +0200
+Message-ID: <CAPpZLN6VFh8PKLFafM-QjCBpcvdhxDdj0+9kPsuAXq-8B2vQtw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/3] trace-cmd: Save the tracee address map into the
+ trace.dat file.
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -69,208 +69,35 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Feb 27, 2020 at 7:23 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Sat, Feb 29, 2020 at 1:18 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On Thu, 27 Feb 2020 16:19:49 +0200
+> On Wed, 28 Aug 2019 14:24:56 +0300
 > "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 >
-> > From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> >
-> > In order to match host and guest events, a mapping between guest VCPU
-> > and the host task, running this VCPU is needed. Extended existing
-> > struct guest to hold such mapping and added logic in read_qemu_guests()
-> > function to initialize it. Implemented a new internal API,
-> > get_guest_vcpu_pid(), to retrieve VCPU-task mapping for given VM.
-> >
-> > Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-> > ---
-> >  tracecmd/include/trace-local.h |  2 +
-> >  tracecmd/trace-record.c        | 77 ++++++++++++++++++++++++++++++++++
-> >  2 files changed, 79 insertions(+)
-> >
-> > diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-> > index 29f27793..a5cf0640 100644
-> > --- a/tracecmd/include/trace-local.h
-> > +++ b/tracecmd/include/trace-local.h
-> > @@ -247,6 +247,8 @@ void update_first_instance(struct buffer_instance *instance, int topt);
-> >
-> >  void show_instance_file(struct buffer_instance *instance, const char *name);
-> >
-> > +int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
-> > +
-> >  /* moved from trace-cmd.h */
-> >  void tracecmd_create_top_instance(char *name);
-> >  void tracecmd_remove_instances(void);
-> > diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> > index 28fe31b7..4370c964 100644
-> > --- a/tracecmd/trace-record.c
-> > +++ b/tracecmd/trace-record.c
-> > @@ -3035,11 +3035,30 @@ struct guest {
-> >       char *name;
-> >       int cid;
-> >       int pid;
-> > +     int cpu_max;
-> > +     int *cpu_pid;
-> >  };
-> >
-> >  static struct guest *guests;
-> >  static size_t guests_len;
-> >
-> > +static int set_vcpu_pid_mapping(struct guest *guest, int cpu, int pid)
-> > +{
-> > +     int *cpu_pid;
-> > +
-> > +     if (cpu < 0 || pid < 0)
-> > +             return -1;
+> > @@ -2223,9 +2385,6 @@ static int handle_options(struct tracecmd_input *handle)
+> >               case TRACECMD_OPTION_UNAME:
+> >                       handle->uname = strdup(buf);
+> >                       break;
+> > -             case TRACECMD_OPTION_VERSION:
+> > -                     handle->version = strdup(buf);
+> > -                     break;
 >
-> This check makes the check before its call not needed (see below).
->
-> > +     if (cpu >= guest->cpu_max) {
-> > +             cpu_pid = realloc(guest->cpu_pid, (cpu + 1) * sizeof(int));
->
-> It is possible that the cpu numbers may be sparse, which means we should we
-> should probably initialize the new numbers as...
->
-> > +             if (!cpu_pid)
-> > +                     return -1;
->
->                 /* Handle sparse CPU numbers */
->                 for (i = guest->cpu_max; i < cpu; i++)
->                         guest->cpu_pid[i] = -1;
->
-> Note, the above wont loop at all if there's no sparse CPUs (missing
-> numbers).
->
-> > +             guest->cpu_max = cpu + 1;
-> > +             guest->cpu_pid = cpu_pid;
-> > +     }
-> > +     guest->cpu_pid[cpu] = pid;
-> > +     return 0;
-> > +}
-> > +
-> >  static char *get_qemu_guest_name(char *arg)
-> >  {
-> >       char *tok, *end = arg;
-> > @@ -3052,6 +3071,46 @@ static char *get_qemu_guest_name(char *arg)
-> >       return arg;
-> >  }
-> >
-> > +static void read_qemu_guests_pids(char *guest_task, struct guest *guest)
->
-> Probably should return a status.
->
-> > +{
-> > +     struct dirent *entry;
-> > +     char path[PATH_MAX];
-> > +     char *buf = NULL;
-> > +     size_t n = 0;
-> > +     long int vcpu;
-> > +     long int pid;
->
-> "int" is not needed. Just "long" is good enough.
->
->         long vcpu;
->         long pid;
->
-> Although, I doubt there will be more than 4 billion of either of these, so
-> they should probably be just "int". Which means you don't need the INT_MAX
-> checks.
->
-The reason I use long is strtol(), which returns long integer. In case
-of an error, this API returns LONG_MAX or LONG_MIN.
-The set_vcpu_pid_mapping() accepts int, that's why I put these checks
-- to filter possible strtol() parsing errors and int overflow.
-I'll keep the checks and remove the duplicated ones in set_vcpu_pid_mapping()
+> I've been wondering why I've been getting "unknown option 9" for some time.
+> Was there any reason to remove this?
 
-> > +     DIR *dir;
-> > +     FILE *f;
-> > +
-> > +     snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
-> > +     dir = opendir(path);
-> > +     if (!dir)
-> > +             return;
-> > +
-> > +     while ((entry = readdir(dir))) {
-> > +             if (!(entry->d_type == DT_DIR && is_digits(entry->d_name)))
-> > +                     continue;
-> > +
-> > +             snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
-> > +                      guest_task, entry->d_name);
-> > +             f = fopen(path, "r");
-> > +             if (!f)
-> > +                     continue;
-> > +
-> > +             if (getline(&buf, &n, f) >= 0 &&
-> > +                 strncmp(buf, "CPU ", 4) == 0) {
-> > +                     vcpu = strtol(buf + 4, NULL, 10);
-> > +                     pid = strtol(entry->d_name, NULL, 10);
-> > +                     if (vcpu < INT_MAX && pid < INT_MAX &&
-> > +                         vcpu >= 0 && pid >= 0)
->
-> The vcpu >= 0 && pid >= 0 are not needed due to the check in the function.
->
-> > +                             set_vcpu_pid_mapping(guest, vcpu, pid);
->
-> Probably should check the return status of this function, and report a
-> warning if it fails.
->
-> > +             }
-> > +
-> > +             fclose(f);
-> > +     }
-> > +     free(buf);
-> > +}
-> > +
-> >  static void read_qemu_guests(void)
-> >  {
-> >       static bool initialized;
-> > @@ -3115,6 +3174,8 @@ static void read_qemu_guests(void)
-> >               if (!is_qemu)
-> >                       goto next;
-> >
-> > +             read_qemu_guests_pids(entry->d_name, &guest);
->
-> Should probably check the status of the above function. Die on error?
+It looks like a merging issue, I cannot remember any logical reason to
+remove it intentionally.
 
-I'll put a warning, as this failure is not critical - the guest
-tracing will still work, even without this mapping.
 
-Thanks, Steven!
->
-> > +
-> >               guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
-> >               if (!guests)
-> >                       die("Can not allocate guest buffer");
-> > @@ -3160,6 +3221,22 @@ static char *parse_guest_name(char *guest, int *cid, int *port)
-> >       return guest;
-> >  }
-> >
-> > +int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
-> > +{
-> > +     int i;
-> > +
-> > +     if (!guests)
-> > +             return -1;
-> > +
-> > +     for (i = 0; i < guests_len; i++) {
-> > +             if (!guests[i].cpu_pid || guest_vcpu >= guests[i].cpu_max)
->
-> As a cpu_pid may be zero (unlikely), and the code I showed above
-> initialized sparse cpus as -1, then this should be guests[i].cpu_pid < 0.
 >
 > -- Steve
 >
-> > +                     continue;
-> > +             if (guest_cid == guests[i].cid)
-> > +                     return guests[i].cpu_pid[guest_vcpu];
-> > +     }
-> > +     return -1;
-> > +}
-> > +
-> >  static void set_prio(int prio)
-> >  {
-> >       struct sched_param sp;
 >
+> >               case TRACECMD_OPTION_HOOK:
+> >                       hook = tracecmd_create_event_hook(buf);
+> >                       hook->next = handle->hooks;
+> > @@ -2235,6 +2394,10 @@ static int handle_options(struct tracecmd_input *handle)
+
 
 
 --
