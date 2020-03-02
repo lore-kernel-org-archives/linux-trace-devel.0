@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C82BC3F2CD
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 16:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AB7FC3F2D9
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 16:43:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7D86021775
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 16:33:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3CEB32173E
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 16:43:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgCBQdl (ORCPT
+        id S1727183AbgCBQnh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 2 Mar 2020 11:33:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45868 "EHLO mail.kernel.org"
+        Mon, 2 Mar 2020 11:43:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726775AbgCBQdl (ORCPT
+        id S1727359AbgCBQnh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 11:33:41 -0500
+        Mon, 2 Mar 2020 11:43:37 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7384421775;
-        Mon,  2 Mar 2020 16:33:40 +0000 (UTC)
-Date:   Mon, 2 Mar 2020 11:33:39 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 360B12173E;
+        Mon,  2 Mar 2020 16:43:37 +0000 (UTC)
+Date:   Mon, 2 Mar 2020 11:43:35 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v21 01/13] trace-cmd: Find and store pids of tasks,
- which run virtual CPUs of given VM
-Message-ID: <20200302113339.0e61b83c@gandalf.local.home>
-In-Reply-To: <20200302101404.150035-2-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v21 11/13] trace-cmd: Basic infrastructure for host -
+ guest timestamp synchronization
+Message-ID: <20200302114335.364b10e1@gandalf.local.home>
+In-Reply-To: <20200302101404.150035-12-tz.stoyanov@gmail.com>
 References: <20200302101404.150035-1-tz.stoyanov@gmail.com>
-        <20200302101404.150035-2-tz.stoyanov@gmail.com>
+        <20200302101404.150035-12-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,30 +44,24 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon,  2 Mar 2020 12:13:52 +0200
+On Mon,  2 Mar 2020 12:14:02 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> +static int set_vcpu_pid_mapping(struct guest *guest, int cpu, int pid)
-> +{
-> +	int *cpu_pid;
-> +	int i;
-> +
-> +	if (cpu >= guest->cpu_max) {
-> +		cpu_pid = realloc(guest->cpu_pid, (cpu + 1) * sizeof(int));
-> +		if (!cpu_pid)
-> +			return -1;
-> +		/* Handle sparse CPU numbers */
-> +		for (i = guest->cpu_max; i < cpu; i++)
-> +			guest->cpu_pid[i] = -1;
+> @@ -940,7 +1215,11 @@ static int make_trace_resp(struct tracecmd_msg *msg, int page_size, int nr_cpus,
+>  	write_uints(msg->buf, data_size, ports, nr_cpus);
+>  
+>  	msg->hdr.size = htonl(ntohl(msg->hdr.size) + data_size);
+> -	msg->trace_resp.flags = use_fifos ? htonl(MSG_TRACE_USE_FIFOS) : htonl(0);
+> +	msg->trace_req.flags = use_fifos ? MSG_TRACE_USE_FIFOS : 0;
 
-That needs to be: cpu_pid[i] = -1; as realloc() may have freed
-guest->cpu_pid here.
+Is there a reason to use "msg->trace_req" instead of "msg->trace_resp"?
 
 -- Steve
 
-> +		guest->cpu_max = cpu + 1;
-> +		guest->cpu_pid = cpu_pid;
-> +	}
-> +	guest->cpu_pid[cpu] = pid;
-> +	return 0;
-> +}
+> +	msg->trace_resp.flags = htonl(msg->trace_resp.flags);
+> +	msg->trace_resp.tsync_proto = htonl(tsync_proto);
+> +	msg->trace_resp.tsync_port = htonl(tsync_port);
+> +
+>  	msg->trace_resp.cpus = htonl(nr_cpus);
+>  	msg->trace_resp.page_size = htonl(page_size);
+>  	msg->trace_resp.trace_id = htonll(trace_id);
