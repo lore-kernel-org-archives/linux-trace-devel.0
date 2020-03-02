@@ -2,67 +2,70 @@ Return-Path: <SRS0=nG5h=4T=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E5E9C3F2D1
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FD3FC3F2D1
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F368820870
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4928F20870
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  2 Mar 2020 10:14:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jMh+rP4p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jm3+Og7t"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgCBKOJ (ORCPT
+        id S1727349AbgCBKON (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 2 Mar 2020 05:14:09 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39712 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726874AbgCBKOJ (ORCPT
+        Mon, 2 Mar 2020 05:14:13 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:36088 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727198AbgCBKOM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 05:14:09 -0500
-Received: by mail-lj1-f193.google.com with SMTP id o15so11056441ljg.6
-        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 02:14:08 -0800 (PST)
+        Mon, 2 Mar 2020 05:14:12 -0500
+Received: by mail-lf1-f67.google.com with SMTP id s1so7040117lfd.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 02 Mar 2020 02:14:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZWZ/yluxsqdAps7Or+7vNs7FWZbm/aUJaON3W/0wQNs=;
-        b=jMh+rP4p4Ju3p4jcQToroDbPnsVf+BH3cg3XcV6VllqRiBypVe5qPKN8w3v2h7i5gr
-         qCmNUGoWFhgOShSnGtbL7Ene9giwTPIvjxTqWw2G3pMi4kbZeR8btOJSDA3ywcVs6r8R
-         UsX8ze2bYdztHXUdK/SQMN5pBDPLVCB2hOgviFPJJGnf1H6Wqbribie+YbnsCOkHFTYS
-         RfUm09iUTkJ47f762HBc+lH/0DvJBbBgY2IZi7zcbcjBilItZyk2Y3cyL3MrRUbzgg1w
-         l8OTFpFhffc4Utw2/6HvCyhNFMOXhAj1qSbP2EWfqwhgeALW4iDUtmOz//Ai9reF4sIX
-         Jiqw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=I+b2zBGjmBqRku6irUNtdhWVk0yViz/UwFkx6VNXX6E=;
+        b=jm3+Og7tmob1EW069gkVO/XA0RPXtWiEzlQNHVAlKMOnENDo22MLCJzAsxSkiPgFSc
+         bpOzVDsbd6BkvXffnlVp8xkTzRdBDyJyUAC1jq6q33Gx4qqZBYZ/d/PTKfihajSuij8Z
+         7rWqyYYVEqvQ9IuO3lb/hkP58Dio5c5HPTSJftrHm4W2fpXQ3tc6cGt0Fe7BnTjU+mSw
+         GElKVzXCvzz9POS15iyzPRFGnBjG4PC7nfdNnnSSGdOqCitj2YnKRYnyiCaP4amx9Otv
+         eu06XkXkrlxPmc0G7CNDfprn8nWelhZQ4OwN41iVyv7SWZSIN9xjqjpJ80mXbKG9t38U
+         uRNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZWZ/yluxsqdAps7Or+7vNs7FWZbm/aUJaON3W/0wQNs=;
-        b=MSKzpcopecuxmyGgbrc5Ucl0E7KZNOuuRBy53vcjQOai617D5m+Ldon/+qkvvDilEA
-         dvtfpRMoUIlYLBSdKT5JwBssD2U9UNarIlNzfWJsIB2jOGmXs6IUWaqIJm7LEHbVRFtp
-         Uv+8HPDU4WDiHNAVnSA/Hkhv8PnJ7EWAtlkokQARizMObPVQmNjTs3t6pu7SEKvhS2py
-         6qAeBtvATWlUHVZUZ4pDVQoD4lT185SG1UhWMYrO07GoJ3ahJDKjYLTcr3Q5ErAb7IEa
-         02oAHIvDEhMhytm1OoDsofGcTrXMiivFGOA2/AfZdJ6EHSSTVlap6vAhrcpGQtpx5Brh
-         vacA==
-X-Gm-Message-State: ANhLgQ3WySi1VRvuPoxzEz+RVxusj6sQcws5IV7pK+OWLjID0iWyNuNd
-        XoSBwINEw8PG4Udv5h7THoGfUbFW
-X-Google-Smtp-Source: ADFU+vvEFbfNRJy2zbWbtxU/v73gqTi5AHyI1bENIsZtI+mXeLF1g7OHxKEAq5WpDYdWDQGOaAwczg==
-X-Received: by 2002:a2e:6815:: with SMTP id c21mr10125997lja.10.1583144047400;
-        Mon, 02 Mar 2020 02:14:07 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=I+b2zBGjmBqRku6irUNtdhWVk0yViz/UwFkx6VNXX6E=;
+        b=G/mNOsM2AS4+n1HC5RZjyEEcI8lFBT+xmv8Cg1POTs0e5A0NkEDm8EuonwY9qUKmWF
+         1/WZTcRNnbJx0slpn3Yl1qxMvw7rHahL3c/NDWhHrP9PDCVQPAPoTsqnmlSH6nlJWO+s
+         4bDDdqOCsYKiiJR8EUY1G5FivMKyM2kQWBkY3AtPxK18OatBE0P/o5/3q9Y7bd9j4Yc7
+         bGhTrP3nKSY2VFQcvKbh4QQbhj14dlh+4vJ5SmCf0H2ELnqCrmQGDwdIPi7bEDa9fIar
+         aKfBqn1zd/7vqwXKjrqLuWwY6BozU+dF1vYz1YFC0PLHK8jA/x77UgLn7mrMQz9TT0IY
+         YjQw==
+X-Gm-Message-State: ANhLgQ046gUGD3GZI/72NkHZtbRnVBAbor900E6jlvlkX7uU4T8H3e5Z
+        ZcKuXQPe532MBVqUVNmjSgM=
+X-Google-Smtp-Source: ADFU+vvMpJgaGdzkHTHiNO4Hfzv3hBXoyNIimiu0CauN/BcJkx1JngC5D6Dd47Ej013y9VQx5SFNsg==
+X-Received: by 2002:a05:6512:3191:: with SMTP id i17mr8543399lfe.33.1583144048640;
+        Mon, 02 Mar 2020 02:14:08 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id x10sm11048236ljd.68.2020.03.02.02.14.05
+        by smtp.gmail.com with ESMTPSA id x10sm11048236ljd.68.2020.03.02.02.14.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2020 02:14:06 -0800 (PST)
+        Mon, 02 Mar 2020 02:14:07 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v21 00/13]  Timestamp synchronization of host - guest tracing session
-Date:   Mon,  2 Mar 2020 12:13:51 +0200
-Message-Id: <20200302101404.150035-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v21 01/13] trace-cmd: Find and store pids of tasks, which run virtual CPUs of given VM
+Date:   Mon,  2 Mar 2020 12:13:52 +0200
+Message-Id: <20200302101404.150035-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200302101404.150035-1-tz.stoyanov@gmail.com>
+References: <20200302101404.150035-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -70,203 +73,154 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Basic infrastructure for host - guest timestamp synchronization and a
-POC implementation of PTP-like algorithm. 
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-[
- v21 changes:
-  - Rebased on top of latest master.
-  - Remove these two patches from the set, as they are already merged:
-       trace-cmd: Add new library API for local CPU count
-       trace-cmd: Add support for negative time offsets in trace.dat file
-  - Added more descriptive warning message when fails to extract Time Shift
-    information from the trace.dat file.
-  - Added a warning message when fails to obtain vcpu - pid mappings.
-  - Handle the case with sparse VCPU numbers in VCPU - PID mapping
-    array.
-  - Fixed broken recording over FIFOs.
- v20 changes:
-  - Rebased on top of latest master.
-  - Removed the VCPUS_MAX hardcoded limit, reimplemented the cpu_pid[] array
-    to be dynamically allocated.
-  - Added a warning when reading of TRACECMD_OPTION_TIME_SHIFT option
-    fails, due to unexpected option's size.
-  - Improved loading of TRACECMD_OPTION_GUEST option data, as Steven
-    suggested.
- v19 changes:
-  - Rebased on top of latest master. The librtacefs is already merged,
-    this allows to drop few patches from the set and use librtacefs APIs
-    instead.
-  - Reimplemented all new trace.dat options to be in binary format,
-    instead of text. Leverage the new "trace-cmd dump" sub command to
-    track what is written in the file.
-  - Addressed Steven's comments.
+In order to match host and guest events, a mapping between guest VCPU
+and the host task, running this VCPU is needed. Extended existing
+struct guest to hold such mapping and added logic in read_qemu_guests()
+function to initialize it. Implemented a new internal API,
+get_guest_vcpu_pid(), to retrieve VCPU-task mapping for given VM.
 
- v18 changes: addressed Steven Rostdet comments:
-  - Replaced semaphores with pthread mutexes.
-  - Made bitmask with time sync protocols unlimited, so we can support
-    more than 32 protocols. That required to redesign the trace request
-    packet format.
-  - A lot of small fixes.
-	
- v17 changes:
-  - Implemented new PTP logic for calculating the clocks offset, using
-    histogram of all PTP samples. It gives better results than the logic
-    with the fastest response time, so set the new one as default in the
-    POC patch.
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+---
+ tracecmd/include/trace-local.h |  2 +
+ tracecmd/trace-record.c        | 84 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 86 insertions(+)
 
- v16 changes:
-  - Fixed compilation in case no VSOCK is available (Thanks to Slavomir Kaslev)
-  - Fixed a typo in trace-cmd-record.1.txt (Thanks to Slavomir Kaslev)
-  - Added forgotten file in the patch "trace-cmd: Add new library APIs for
-    ftrace instances." - trace-instance.c
-  - Fixed few compilation warnings related to TSYNC_DEBUG code.
-  - Removed a blank line at the end of "tsync_readme" file. 
-
- v15 changes:
-  - Removed the patch for "--proc-map" from the series, as it should not
-    be part of it.
-
- v14 changes:
-  - Bring back the PTP-like algorithm and removed the ftrace event based logic.
-  - Reimplemented the PTP-like algorithm to use raw ftrace markers, instead of clock_gettime() API.
-  - Refactored the logic to be algorithm independent and plugin friendly.
-  - Implemented continuous timestamps synchronization, while the trace is running.
-  - Moved logic from trace-cmd application to libtracecmd, as new library APIs.
-  - Implemented new trace id functionality.
-  - Implemented new guest section in host trace.dat file.
-	
- v13 changes:
-  - Remove few patches from the set, as they were merged.
-  - Rebased to the latest master, Slavomirs patchest "Add VM kernel tracing over
-    vsockets and FIFOs" got merged!
- 	
- v12 changes:
-  - Rebased on top of Slavomir's v13 "Add VM kernel tracing over vsockets and FIFOs"
-
- v11 changes:
-  - Rebased on top of Slavomir's v10 "Add VM kernel tracing over vsockets and FIFOs"
-  - Addressed Slavomir's commnents from version 10 of the patch series.
-
- v10 changes:
-  - Fixed broken compilation, call to timestamp_correction_calc() in timestamp_correct
-    was smashed.
-  - Replaced deprecated tep_data_event_from_type() API with tep_find_event().
-  - Fixed a warning on assignment const to non const.
-
- v9 changes:
-  - Fixed implementation of binary search algorithm in timestamp_correct()
-
- v8 changes:
-  - Added rmdir() call in tracecmd_remove_instance(), to completely remove the instance. 
-  However, there is an issue with deleting the instances using rmdir(), which is investigated.
-  - Few changes in read_qemu_guests_pids(), timestamp_correct(), tsync_offset_load() 
- tracecmd_clock_context_new() and find_raw_events() suggested by Slavomir. 
-
- v7 changes:
-  - Added warning messages in case time synchronization cannot be negotiated or fails.
-  - Few optimizations and checks in read_qemu_guests_pids(), tsync_offset_load(),
-    and find_raw_events(), suggested by Slavomir Kaslev.
-  - Reworked timestamp_correct() to not use static variables.
-  - Check TRACECMD_OPTION_TIME_SHIFT before reading time sync samples from the trace.dat file
-
- v6 changes:
-  - Refactored tracecmd_msg_snd_time_sync() and tracecmd_msg_rcv_time_sync() functions:
-    removed any time sync calculations logic as separate functions in trace-timesync.c file
-  - Defined TSYNC_PROBE, TSYNC_REQ and TSYNC_RESP messages, in order to make the time sync
-    protocol comprehensible.
-  - Addressed Steven Rostedt comments.
-  - Addressed Slavomir Kaslev commnets.
-
-v5 changes:
-  - Rebased to Slavomir's v8 "Add VM kernel tracing over vsockets and FIFOs"
-    patch series.
-  - Implemented an algorithm for time drift correction.
-  - Addressed Slavomir's commnets.
-  - Refactored the code: moved all time sync specific implementation in trace-timesync.c
-  - Isolated all hardcoded event specific stuff in a structure, so it could be easily
-    moved to external plugins.
-  - Added a check for VSOCK support: do not perform vsock dependent time synchronisation
-    in case there is no VSOCK support.
-
- v4 changes:
-  - Removed the implementation of PTP-like algorithm. The current
-    logic relies on matching time stamps of kvm_exit/virtio_transport_recv_pkt
-    events on host to virtio_transport_alloc_pkt/vp_notify events on guest.
-  - Rebased to Slavomir's v7 "Add VM kernel tracing over vsockets and FIFOs"
-    patch series.
-  - Decreased the time synch probes from 5000 to 300.
-  - Addressed Steven Rostedt comments.
-  - Code cleanup.
-
- v3 changes:
- - Removed any magic constants, used in the PTP-like algorithm,
-   as Slavomir Kaslev suggested.
- - Implemented new algorithm, based on mapping kvm_exit events
-   in host context to vsock_send events in guest context,
-   suggested by Steven Rostedt.
-
- v2 changes:
-  - Addressed Steven Rostedt comments.
-  - Modified PTP-like timestamps sync algorithm to gain more accuracy, with the
-    help of Yordan Karadzhov and Slavomir Kaslev.
-]
-
-Tzvetomir Stoyanov (4):
-  trace-cmd: Find and store pids of tasks, which run virtual CPUs of
-    given VM
-  trace-cmd: Implement new API tracecmd_add_option_v()
-  trace-cmd: Add definitions of htonll() and ntohll()
-  trace-cmd: Implement new option in trace.dat file:
-    TRACECMD_OPTION_TIME_SHIFT
-
-Tzvetomir Stoyanov (VMware) (9):
-  trace-cmd: Add new API to generate a unique ID of the tracing session
-  trace-cmd: Store the session tracing ID in the trace.dat file
-  trace-cmd: Exchange tracing IDs between host and guest
-  trace-cmd: Add guest information in host's trace.dat file
-  trace-cmd: Add host trace clock as guest trace argument
-  trace-cmd: Refactor few trace-cmd internal functions.
-  trace-cmd: Basic infrastructure for host - guest timestamp
-    synchronization
-  trace-cmd: [POC] PTP-like algorithm for host - guest timestamp
-    synchronization
-  trace-cmd: Debug scripts for PTP-like algorithm for host - guest
-    timestamp synchronization
-
- Documentation/trace-cmd-record.1.txt      |   7 +
- include/trace-cmd/trace-cmd.h             |  79 ++-
- include/traceevent/event-parse.h          |   1 +
- lib/trace-cmd/Makefile                    |   2 +
- lib/trace-cmd/include/trace-cmd-local.h   |  45 +-
- lib/trace-cmd/include/trace-tsync-local.h |  38 ++
- lib/trace-cmd/include/trace-write-local.h |  43 ++
- lib/trace-cmd/trace-input.c               | 332 ++++++++++-
- lib/trace-cmd/trace-msg.c                 | 402 +++++++++++--
- lib/trace-cmd/trace-output.c              | 119 +++-
- lib/trace-cmd/trace-timesync-ptp.c        | 651 ++++++++++++++++++++++
- lib/trace-cmd/trace-timesync.c            | 506 +++++++++++++++++
- lib/trace-cmd/trace-util.c                |  37 ++
- scripts/debug/tsync_hist.py               |  57 ++
- scripts/debug/tsync_readme                |  12 +
- scripts/debug/tsync_res.py                |  46 ++
- tracecmd/Makefile                         |   3 +-
- tracecmd/include/trace-local.h            |  24 +-
- tracecmd/trace-agent.c                    |  57 +-
- tracecmd/trace-dump.c                     | 122 ++++
- tracecmd/trace-record.c                   | 263 ++++++++-
- tracecmd/trace-tsync.c                    | 272 +++++++++
- tracecmd/trace-usage.c                    |   4 +
- 23 files changed, 2981 insertions(+), 141 deletions(-)
- create mode 100644 lib/trace-cmd/include/trace-tsync-local.h
- create mode 100644 lib/trace-cmd/include/trace-write-local.h
- create mode 100644 lib/trace-cmd/trace-timesync-ptp.c
- create mode 100644 lib/trace-cmd/trace-timesync.c
- create mode 100644 scripts/debug/tsync_hist.py
- create mode 100644 scripts/debug/tsync_readme
- create mode 100644 scripts/debug/tsync_res.py
- create mode 100644 tracecmd/trace-tsync.c
-
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 29f27793..a5cf0640 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -247,6 +247,8 @@ void update_first_instance(struct buffer_instance *instance, int topt);
+ 
+ void show_instance_file(struct buffer_instance *instance, const char *name);
+ 
++int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
++
+ /* moved from trace-cmd.h */
+ void tracecmd_create_top_instance(char *name);
+ void tracecmd_remove_instances(void);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 0a3851ad..3cbc832c 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3035,11 +3035,32 @@ struct guest {
+ 	char *name;
+ 	int cid;
+ 	int pid;
++	int cpu_max;
++	int *cpu_pid;
+ };
+ 
+ static struct guest *guests;
+ static size_t guests_len;
+ 
++static int set_vcpu_pid_mapping(struct guest *guest, int cpu, int pid)
++{
++	int *cpu_pid;
++	int i;
++
++	if (cpu >= guest->cpu_max) {
++		cpu_pid = realloc(guest->cpu_pid, (cpu + 1) * sizeof(int));
++		if (!cpu_pid)
++			return -1;
++		/* Handle sparse CPU numbers */
++		for (i = guest->cpu_max; i < cpu; i++)
++			guest->cpu_pid[i] = -1;
++		guest->cpu_max = cpu + 1;
++		guest->cpu_pid = cpu_pid;
++	}
++	guest->cpu_pid[cpu] = pid;
++	return 0;
++}
++
+ static char *get_qemu_guest_name(char *arg)
+ {
+ 	char *tok, *end = arg;
+@@ -3052,6 +3073,49 @@ static char *get_qemu_guest_name(char *arg)
+ 	return arg;
+ }
+ 
++static int read_qemu_guests_pids(char *guest_task, struct guest *guest)
++{
++	struct dirent *entry;
++	char path[PATH_MAX];
++	char *buf = NULL;
++	size_t n = 0;
++	long vcpu;
++	long pid;
++	DIR *dir;
++	FILE *f;
++
++	snprintf(path, sizeof(path), "/proc/%s/task", guest_task);
++	dir = opendir(path);
++	if (!dir)
++		return -1;
++
++	while ((entry = readdir(dir))) {
++		if (!(entry->d_type == DT_DIR && is_digits(entry->d_name)))
++			continue;
++
++		snprintf(path, sizeof(path), "/proc/%s/task/%s/comm",
++			 guest_task, entry->d_name);
++		f = fopen(path, "r");
++		if (!f)
++			continue;
++
++		if (getline(&buf, &n, f) >= 0 &&
++		    strncmp(buf, "CPU ", 4) == 0) {
++			vcpu = strtol(buf + 4, NULL, 10);
++			pid = strtol(entry->d_name, NULL, 10);
++			if (vcpu < INT_MAX && pid < INT_MAX &&
++			    vcpu >= 0 && pid >= 0) {
++				if (set_vcpu_pid_mapping(guest, vcpu, pid))
++					return -1;
++			}
++		}
++
++		fclose(f);
++	}
++	free(buf);
++	return 0;
++}
++
+ static void read_qemu_guests(void)
+ {
+ 	static bool initialized;
+@@ -3115,6 +3179,10 @@ static void read_qemu_guests(void)
+ 		if (!is_qemu)
+ 			goto next;
+ 
++		if (read_qemu_guests_pids(entry->d_name, &guest))
++			warning("Failed to retrieve VPCU - PID mapping for guest %s",
++					guest.name ? guest.name : "Unknown");
++
+ 		guests = realloc(guests, (guests_len + 1) * sizeof(*guests));
+ 		if (!guests)
+ 			die("Can not allocate guest buffer");
+@@ -3160,6 +3228,22 @@ static char *parse_guest_name(char *guest, int *cid, int *port)
+ 	return guest;
+ }
+ 
++int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu)
++{
++	int i;
++
++	if (!guests)
++		return -1;
++
++	for (i = 0; i < guests_len; i++) {
++		if (guests[i].cpu_pid < 0 || guest_vcpu >= guests[i].cpu_max)
++			continue;
++		if (guest_cid == guests[i].cid)
++			return guests[i].cpu_pid[guest_vcpu];
++	}
++	return -1;
++}
++
+ static void set_prio(int prio)
+ {
+ 	struct sched_param sp;
 -- 
 2.24.1
 
