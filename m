@@ -5,64 +5,64 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1486C3F2D8
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Mar 2020 09:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7583C3F2CD
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Mar 2020 09:12:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B05042072D
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Mar 2020 09:12:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A01E921739
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Mar 2020 09:12:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m3hTwv9t"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aVgooqXi"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725271AbgCDJM2 (ORCPT
+        id S1728702AbgCDJMa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Mar 2020 04:12:28 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:41238 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728319AbgCDJM2 (ORCPT
+        Wed, 4 Mar 2020 04:12:30 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:42163 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728319AbgCDJMa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Mar 2020 04:12:28 -0500
-Received: by mail-lf1-f68.google.com with SMTP id y17so861678lfe.8
-        for <linux-trace-devel@vger.kernel.org>; Wed, 04 Mar 2020 01:12:26 -0800 (PST)
+        Wed, 4 Mar 2020 04:12:30 -0500
+Received: by mail-lj1-f193.google.com with SMTP id q19so1135648ljp.9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 04 Mar 2020 01:12:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HT/OFwCq9NMeexvwL+8+0hJRAzEV1ED9p/K4+kIVNa4=;
-        b=m3hTwv9tN5aHSwMPVhabm6QO2yUMgvzeZ40i4t11ECGfPa7T/dyISTmLLaLbC/VqQn
-         RyezMV2yKA/b6ts0s7zsur8MelLb4QCuZLdvpjGbu/72U1aMn3zZYqixvpJbmcrEltha
-         b7vtDes5rlLv3HEz8r9/vygB2RU3mWk8VMGUI4nNhTycoYpQI4oWj8cazl0RQDgUM+7y
-         3doeHZ18scVyMYsW2SciRytG4s2S2lMMDgaFNcf+yBSpe8J6i5mYncrEYnhj8ECrSJUQ
-         t8bsy8KEngQmYAd7wz0XM1WL8faCq8ArQcVVZt/G5SPIBjcUDhqimE3Ct6aJXE5yd0og
-         JLZQ==
+        bh=fiR+wh9IW65zkRqBY7CB/WIupofLmJUZXqDzSgDnfNc=;
+        b=aVgooqXi6sYCVQTfH3ZF0mYpdjMUMad9ON+eKNEswYN0WYWdvxz2BdjmfJSH+6hh+R
+         +bkMxIcyH4K0qTQu4nTccP+pw284nfWQjY19Ou3ISiHXByvA0Oe0i2ae8BRdHU5uqP0K
+         fDkplYD5us8Gqrmor9unF9XebM1Z0vdEd1MaP/MCqfBiJjBH0pKarJ2kFjxkkGKFcXxo
+         sOb3hBPkN+38zGgkPsoq2sBUlv7N0WhEldzpBdAGIpvcuOWx1qV/TicCsYDOgr+GpaW8
+         09FlDsSwQbgfISzyTbmpwFU2qR98AzH9FhUPcJ+Ar0pRUxJYXLp50mQAE68TSbtOT4EP
+         glRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HT/OFwCq9NMeexvwL+8+0hJRAzEV1ED9p/K4+kIVNa4=;
-        b=HDlhHTvOOhlY7H0ypDVlqZqG/HsnwcLqqzsUbtOvx2MY6EXc2tZ1hYq9QXhEN7utmV
-         woftMK1cuvkym9JgzKxhlXZmlSYABdMI7pRL/trRGXFSha+KCE7rEawUSniTYqd+TpZ4
-         KoPgz3/Tou3qV7KSvkVjT9OLKSOD+08JYRQML199UqYHDFi48uGhtYp2WqwlrFxvzPGa
-         uDHKKshlp3pk3Jwynp9G/zjMCbMZSIhOW+vvwKLnZcPqExR+0yArRsPtFw5B6O8YemLL
-         V5wzhOmoKW0WeT80h+U0nU/2VB+hes5hqZmcw3P1+xU9csrvwZYCPPaAkTpuFTCztL73
-         72KA==
-X-Gm-Message-State: ANhLgQ1s4EFCXlXhuUlYUV+PCaRaen5gKUHhoTvk9DJGWRmqqMznI9wr
-        P2gavHIBxKAIlrlsMveXxcNGQjCO
-X-Google-Smtp-Source: ADFU+vusvum7zZCy55m2qR+nUVHs6GMKL34SYyX1oNc1Z/o+zm2+7V2Gnj0WbxGYGErrh14j7rOa0g==
-X-Received: by 2002:a05:6512:6c7:: with SMTP id u7mr1478359lff.176.1583313145491;
-        Wed, 04 Mar 2020 01:12:25 -0800 (PST)
+        bh=fiR+wh9IW65zkRqBY7CB/WIupofLmJUZXqDzSgDnfNc=;
+        b=Bk/LH/woEgW2I7pVltzbbS4cbTb6FHwF2i2H/Jc7rWOyL9MQRYioJRoE1qS0FOsaB+
+         Y6hIppOAEHuVjgJhf6hE0RorN3VRBASkAPZeP/E4TjdoR4N4RnGXPY913a5JlHx1f2PB
+         6WXOsPR6jXFfykoKAKTsu7zk79HdVqqW3wo88W6J0upaufyqTzY0QNhBOG3MMFwAPsX6
+         wOI5SCqEvfuk3N+3wGeG6JxRtc+s2gU9bIyq+diaypQiqXrfKqs1xpaTgMouefD8y0I7
+         yoKR2e+uTxdGh/vgrBfpvGyfr/HpaI0mJcvtauA7acnd+D3jvHwy1VXgJBlW5TW0VfsW
+         mbeA==
+X-Gm-Message-State: ANhLgQ2cXRce4rMaYbObVIRCkRI2vXPsT30ALj8hIThr/5CJ+KeU00Xf
+        KbGAZumPyMxNLrlrKXqhuko=
+X-Google-Smtp-Source: ADFU+vu5uEc7W6L+2z4OEfa7rtWLAWHtn0CFTR1kvHUFBrUsHorDY90hD2/KzndZSwVHkzwcISzhAw==
+X-Received: by 2002:a2e:b895:: with SMTP id r21mr1441628ljp.126.1583313146697;
+        Wed, 04 Mar 2020 01:12:26 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id v15sm13327462lfg.51.2020.03.04.01.12.24
+        by smtp.gmail.com with ESMTPSA id v15sm13327462lfg.51.2020.03.04.01.12.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 01:12:24 -0800 (PST)
+        Wed, 04 Mar 2020 01:12:26 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v22 02/13] trace-cmd: Implement new API tracecmd_add_option_v()
-Date:   Wed,  4 Mar 2020 11:12:09 +0200
-Message-Id: <20200304091220.30936-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v22 03/13] trace-cmd: Add new API to generate a unique ID of the tracing session
+Date:   Wed,  4 Mar 2020 11:12:10 +0200
+Message-Id: <20200304091220.30936-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200304091220.30936-1-tz.stoyanov@gmail.com>
 References: <20200304091220.30936-1-tz.stoyanov@gmail.com>
@@ -73,222 +73,106 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+A new libtracecmd API is implemented:
+	unsigned long long tracecmd_generate_traceid(void);
+At trace-cmd init phase a unique ID, used for the current tracing session.
 
-A new tracecmd API tracecmd_add_option_v() is introduced.
-It adds new option in trace.dat, similar to tracecmd_add_option(),
-but the option's data is passed as list of buffers. The standard
-struct iovec is used as input parameter, containing the option's
-data buffers.
-
-Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h    |   5 ++
- include/traceevent/event-parse.h |   1 +
- lib/trace-cmd/trace-output.c     | 117 +++++++++++++++++++++++++++----
- 3 files changed, 108 insertions(+), 15 deletions(-)
+ include/trace-cmd/trace-cmd.h  |  1 +
+ lib/trace-cmd/trace-util.c     | 37 ++++++++++++++++++++++++++++++++++
+ tracecmd/include/trace-local.h |  1 +
+ tracecmd/trace-record.c        |  1 +
+ 4 files changed, 40 insertions(+)
 
 diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index d1b4a60f..b6393a89 100644
+index b6393a89..7519e82a 100644
 --- a/include/trace-cmd/trace-cmd.h
 +++ b/include/trace-cmd/trace-cmd.h
-@@ -278,11 +278,16 @@ struct tracecmd_output *tracecmd_create_init_file_override(const char *output_fi
- struct tracecmd_option *tracecmd_add_option(struct tracecmd_output *handle,
- 					    unsigned short id, int size,
- 					    const void *data);
-+struct tracecmd_option *
-+tracecmd_add_option_v(struct tracecmd_output *handle,
-+		      unsigned short id, const struct iovec *vector, int count);
-+
- struct tracecmd_option *tracecmd_add_buffer_option(struct tracecmd_output *handle,
- 						   const char *name, int cpus);
+@@ -415,6 +415,7 @@ void tracecmd_plog_error(const char *fmt, ...);
+ int tracecmd_set_logfile(char *logfile);
  
- int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
- int tracecmd_write_options(struct tracecmd_output *handle);
-+int tracecmd_append_options(struct tracecmd_output *handle);
- int tracecmd_update_option(struct tracecmd_output *handle,
- 			   struct tracecmd_option *option, int size,
- 			   const void *data);
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 52bafa54..cfab6005 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -11,6 +11,7 @@
- #include <stdio.h>
- #include <regex.h>
- #include <string.h>
-+#include <sys/uio.h>
+ /* --- System --- */
++unsigned long long tracecmd_generate_traceid(void);
+ int tracecmd_count_cpus(void);
  
- #include "traceevent/trace-seq.h"
+ /* --- Hack! --- */
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index b8841393..04dc804c 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -18,6 +18,8 @@
+ #include <sys/mount.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/sysinfo.h>
++#include <time.h>
  
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index a3dda270..acdd2d57 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -951,21 +951,27 @@ static struct tracecmd_output *create_file(const char *output_file,
+ #include "trace-cmd.h"
+ #include "event-utils.h"
+@@ -510,3 +512,38 @@ int tracecmd_count_cpus(void)
+ 
+ 	return cpus;
  }
- 
- /**
-- * tracecmd_add_option - add options to the file
-+ * tracecmd_add_option_v - add options to the file
-  * @handle: the output file handle name
-  * @id: the id of the option
-  * @size: the size of the option data
-- * @data: the data to write to the file.
-+ * @data: the data to write to the file
-+ * @vector: array of vectors, pointing to the data to write in the file
-+ * @count: number of items in the vector array
-+ *
-  *
-  * Returns handle to update option if needed.
-  *  Just the content can be updated, with smaller or equal to
-  *  content than the specified size.
-  */
- struct tracecmd_option *
--tracecmd_add_option(struct tracecmd_output *handle,
--		    unsigned short id, int size, const void *data)
-+tracecmd_add_option_v(struct tracecmd_output *handle,
-+		      unsigned short id, const struct iovec *vector, int count)
 +
- {
- 	struct tracecmd_option *option;
-+	char *data = NULL;
-+	int i, size = 0;
- 
- 	/*
- 	 * We can only add options before they were written.
-@@ -974,32 +980,63 @@ tracecmd_add_option(struct tracecmd_output *handle,
- 	if (handle->options_written)
- 		return NULL;
- 
--	handle->nr_options++;
-+	for (i = 0; i < count; i++)
-+		size += vector[i].iov_len;
-+	/* Some IDs (like TRACECMD_OPTION_TRACECLOCK) pass vector with 0 / NULL data */
-+	if (size) {
-+		data = malloc(size);
-+		if (!data) {
-+			warning("Insufficient memory");
-+			return NULL;
-+		}
-+	}
- 
- 	option = malloc(sizeof(*option));
- 	if (!option) {
- 		warning("Could not allocate space for option");
-+		free(data);
- 		return NULL;
- 	}
- 
--	option->id = id;
--	option->size = size;
--	option->data = malloc(size);
--	if (!option->data) {
--		warning("Insufficient memory");
--		free(option);
--		return NULL;
-+	handle->nr_options++;
-+	option->data = data;
-+	for (i = 0; i < count; i++) {
-+		if (vector[i].iov_base && vector[i].iov_len) {
-+			memcpy(data, vector[i].iov_base, vector[i].iov_len);
-+			data += vector[i].iov_len;
-+		}
- 	}
- 
--	/* Some IDs (like TRACECMD_OPTION_TRACECLOCK) pass 0 / NULL data */
--	if (size)
--		memcpy(option->data, data, size);
-+	option->size = size;
-+	option->id = id;
- 
- 	list_add_tail(&option->list, &handle->options);
- 
- 	return option;
- }
- 
-+/**
-+ * tracecmd_add_option - add options to the file
-+ * @handle: the output file handle name
-+ * @id: the id of the option
-+ * @size: the size of the option data
-+ * @data: the data to write to the file
++#define FNV_64_PRIME 0x100000001b3ULL
++/*
++ * tracecmd_generate_traceid - Generate a unique ID, used to identify
++ *			       the current tracing session
 + *
-+ * Returns handle to update option if needed
-+ *  Just the content can be updated, with smaller or equal to
-+ *  content than the specified size
++ * Returns unique ID
 + */
-+struct tracecmd_option *
-+tracecmd_add_option(struct tracecmd_output *handle,
-+		    unsigned short id, int size, const void *data)
++unsigned long long tracecmd_generate_traceid(void)
 +{
-+	struct iovec vect;
++	unsigned long long hash = 0;
++	unsigned char *ustr;
++	struct sysinfo sinfo;
++	struct timespec ts;
++	char *str = NULL;
 +
-+	vect.iov_base = (void *) data;
-+	vect.iov_len = size;
-+	return tracecmd_add_option_v(handle, id, &vect, 1);
-+}
-+
- int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
- {
- 	cpus = convert_endian_4(handle, cpus);
-@@ -1047,6 +1084,56 @@ int tracecmd_write_options(struct tracecmd_output *handle)
- 	return 0;
- }
- 
-+int tracecmd_append_options(struct tracecmd_output *handle)
-+{
-+	struct tracecmd_option *options;
-+	unsigned short option;
-+	unsigned short endian2;
-+	unsigned int endian4;
-+	off_t offset;
-+	int r;
-+
-+	/* If already written, ignore */
-+	if (handle->options_written)
++	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
++	sysinfo(&sinfo);
++	asprintf(&str, "%ld %ld %ld %ld %ld %ld %ld %ld %d",
++		 ts.tv_sec, ts.tv_nsec,
++		 sinfo.loads[0], sinfo.loads[1], sinfo.loads[2],
++		 sinfo.freeram, sinfo.sharedram, sinfo.freeswap,
++		 sinfo.procs);
++	if (!str)
 +		return 0;
-+
-+	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
-+		return -1;
-+	offset = lseek64(handle->fd, -2, SEEK_CUR);
-+	if (offset == (off_t)-1)
-+		return -1;
-+
-+	r = pread(handle->fd, &option, 2, offset);
-+	if (r != 2 || option != TRACECMD_OPTION_DONE)
-+		return -1;
-+
-+	list_for_each_entry(options, &handle->options, list) {
-+		endian2 = convert_endian_2(handle, options->id);
-+		if (do_write_check(handle, &endian2, 2))
-+			return -1;
-+
-+		endian4 = convert_endian_4(handle, options->size);
-+		if (do_write_check(handle, &endian4, 4))
-+			return -1;
-+
-+		/* Save the data location in case it needs to be updated */
-+		options->offset = lseek64(handle->fd, 0, SEEK_CUR);
-+
-+		if (do_write_check(handle, options->data,
-+				   options->size))
-+			return -1;
++	ustr = (unsigned char *)str;
++	hash = 0;
++	while (*ustr) {
++		hash ^= (unsigned long long)*ustr++;
++		hash *= FNV_64_PRIME;
 +	}
 +
-+	option = TRACECMD_OPTION_DONE;
-+
-+	if (do_write_check(handle, &option, 2))
-+		return -1;
-+
-+	handle->options_written = 1;
-+
-+	return 0;
++	free(str);
++	return hash;
 +}
-+
- int tracecmd_update_option(struct tracecmd_output *handle,
- 			   struct tracecmd_option *option, int size,
- 			   const void *data)
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index a5cf0640..6fe22bb0 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -185,6 +185,7 @@ struct pid_addr_maps {
+ struct buffer_instance {
+ 	struct buffer_instance	*next;
+ 	struct tracefs_instance	*tracefs;
++	unsigned long long	trace_id;
+ 	char			*cpumask;
+ 	struct event_list	*events;
+ 	struct event_list	**event_next;
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 9ed79856..9cd8f590 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -5247,6 +5247,7 @@ void init_top_instance(void)
+ 		top_instance.tracefs = tracefs_instance_alloc(NULL);
+ 	top_instance.cpu_count = tracecmd_count_cpus();
+ 	top_instance.flags = BUFFER_FL_KEEP;
++	top_instance.trace_id = tracecmd_generate_traceid();
+ 	init_instance(&top_instance);
+ }
+ 
 -- 
 2.24.1
 
