@@ -2,67 +2,70 @@ Return-Path: <SRS0=Pf13=4V=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF690C3F2D1
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Mar 2020 09:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1486C3F2D8
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Mar 2020 09:12:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9774C2073B
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Mar 2020 09:12:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B05042072D
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  4 Mar 2020 09:12:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3EgZIR2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m3hTwv9t"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgCDJM1 (ORCPT
+        id S1725271AbgCDJM2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 4 Mar 2020 04:12:27 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:45924 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725271AbgCDJM1 (ORCPT
+        Wed, 4 Mar 2020 04:12:28 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:41238 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728319AbgCDJM2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 4 Mar 2020 04:12:27 -0500
-Received: by mail-lf1-f66.google.com with SMTP id b13so849900lfb.12
-        for <linux-trace-devel@vger.kernel.org>; Wed, 04 Mar 2020 01:12:23 -0800 (PST)
+        Wed, 4 Mar 2020 04:12:28 -0500
+Received: by mail-lf1-f68.google.com with SMTP id y17so861678lfe.8
+        for <linux-trace-devel@vger.kernel.org>; Wed, 04 Mar 2020 01:12:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=faNirakbGteDSe9+BdU2CuANx4uisOGVZHNOTKDoKx8=;
-        b=Z3EgZIR2MBguCZR9nm9o5itQyzlYvgRK9gp34Wp9jllRtz2gCHdYGIImOyIreEjNOl
-         H+F0aQCi8TsLadw33Nv7kadOPBYLeSiiP3ttFOs1AO++Ob+ltEmRAu4Nv7A3mEOmR0jg
-         AJ0O+SwNwlM/h+0NMhhP+AGs5P3aqUcnwikYLzrqZsqDVBqIKaf0T4MPx6bpoclGg7iW
-         h7erv5GsvocSkbZUQkG0c/Jg9MtpNHW9a4xXmKcu69JNJBpZNrMm41VPjR8BgPX/wW+m
-         0TTe8Sg/EDsaUskqooHcFWdF9TrlnPligu6RRnUBVK5bm+q4z2nziHOjHxZ1qAiYJYiZ
-         GcVg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HT/OFwCq9NMeexvwL+8+0hJRAzEV1ED9p/K4+kIVNa4=;
+        b=m3hTwv9tN5aHSwMPVhabm6QO2yUMgvzeZ40i4t11ECGfPa7T/dyISTmLLaLbC/VqQn
+         RyezMV2yKA/b6ts0s7zsur8MelLb4QCuZLdvpjGbu/72U1aMn3zZYqixvpJbmcrEltha
+         b7vtDes5rlLv3HEz8r9/vygB2RU3mWk8VMGUI4nNhTycoYpQI4oWj8cazl0RQDgUM+7y
+         3doeHZ18scVyMYsW2SciRytG4s2S2lMMDgaFNcf+yBSpe8J6i5mYncrEYnhj8ECrSJUQ
+         t8bsy8KEngQmYAd7wz0XM1WL8faCq8ArQcVVZt/G5SPIBjcUDhqimE3Ct6aJXE5yd0og
+         JLZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=faNirakbGteDSe9+BdU2CuANx4uisOGVZHNOTKDoKx8=;
-        b=n9ux+1lZbX6IzQZaZYDO8uv40Q5oqQTiCQUD6kCO28TeUt3bBzTc4nHTKHO6d4r2wJ
-         7Qsx0Q3LlDN2C0nQNHfcKxKrgsK6h3v3DtV+OSaihIa0QZDmJER3GspbMWaABwh+4f8i
-         2OJblwicuJAi/ddf3W1nfcEA1Qm8MSAoCRnizzvDao/VpM+Us5YWgvyY02uAa2AKu4W9
-         s7ODacnfccZbADLIndR9gKtvyFTIgsypOczrUQQROqGMh2/9UT/37eCPUBV5EANE1xuM
-         CfDFCisGRaNlgucsrVSep2sF0+JkE+3dy9d91KzLa6rYSQEV945yPxfnh2uHFSty4D1Q
-         RF2g==
-X-Gm-Message-State: ANhLgQ0Tq6HLLFz1515lEMwxqbuHgIbUwo6hseFIpzIs1JNeTg0vym/F
-        aregXONXNGpNY2RLfi1YXm1dH9uV
-X-Google-Smtp-Source: ADFU+vvb0l3We9nIJH/xb56A3JkaqW32h/1Cq/9vYKcKB1euIKyXNbMTLVKzb+ASg2WOmMp+1qv35Q==
-X-Received: by 2002:a19:c1cd:: with SMTP id r196mr1456463lff.22.1583313142528;
-        Wed, 04 Mar 2020 01:12:22 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HT/OFwCq9NMeexvwL+8+0hJRAzEV1ED9p/K4+kIVNa4=;
+        b=HDlhHTvOOhlY7H0ypDVlqZqG/HsnwcLqqzsUbtOvx2MY6EXc2tZ1hYq9QXhEN7utmV
+         woftMK1cuvkym9JgzKxhlXZmlSYABdMI7pRL/trRGXFSha+KCE7rEawUSniTYqd+TpZ4
+         KoPgz3/Tou3qV7KSvkVjT9OLKSOD+08JYRQML199UqYHDFi48uGhtYp2WqwlrFxvzPGa
+         uDHKKshlp3pk3Jwynp9G/zjMCbMZSIhOW+vvwKLnZcPqExR+0yArRsPtFw5B6O8YemLL
+         V5wzhOmoKW0WeT80h+U0nU/2VB+hes5hqZmcw3P1+xU9csrvwZYCPPaAkTpuFTCztL73
+         72KA==
+X-Gm-Message-State: ANhLgQ1s4EFCXlXhuUlYUV+PCaRaen5gKUHhoTvk9DJGWRmqqMznI9wr
+        P2gavHIBxKAIlrlsMveXxcNGQjCO
+X-Google-Smtp-Source: ADFU+vusvum7zZCy55m2qR+nUVHs6GMKL34SYyX1oNc1Z/o+zm2+7V2Gnj0WbxGYGErrh14j7rOa0g==
+X-Received: by 2002:a05:6512:6c7:: with SMTP id u7mr1478359lff.176.1583313145491;
+        Wed, 04 Mar 2020 01:12:25 -0800 (PST)
 Received: from oberon.eng.vmware.com ([146.247.46.5])
-        by smtp.gmail.com with ESMTPSA id v15sm13327462lfg.51.2020.03.04.01.12.21
+        by smtp.gmail.com with ESMTPSA id v15sm13327462lfg.51.2020.03.04.01.12.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 01:12:21 -0800 (PST)
+        Wed, 04 Mar 2020 01:12:24 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v22 00/13]  Timestamp synchronization of host - guest tracing session
-Date:   Wed,  4 Mar 2020 11:12:07 +0200
-Message-Id: <20200304091220.30936-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v22 02/13] trace-cmd: Implement new API tracecmd_add_option_v()
+Date:   Wed,  4 Mar 2020 11:12:09 +0200
+Message-Id: <20200304091220.30936-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200304091220.30936-1-tz.stoyanov@gmail.com>
+References: <20200304091220.30936-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -70,210 +73,222 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Basic infrastructure for host - guest timestamp synchronization and a
-POC implementation of PTP-like algorithm. 
+From: Tzvetomir Stoyanov <tstoyanov@vmware.com>
 
-[
- v22 changes, addressed Steven's comments:
-  - Fixed error flow in read_qemu_guests_pids(), free allocated resources
-    in case of an error.
-  - Fixed initialisation of reallocated memmory in set_vcpu_pid_mapping().
-  - Fixed bitmask logic in tracecmd_tsync_proto_select().
-  - Fixed usage of wrong structure in make_trace_resp().
+A new tracecmd API tracecmd_add_option_v() is introduced.
+It adds new option in trace.dat, similar to tracecmd_add_option(),
+but the option's data is passed as list of buffers. The standard
+struct iovec is used as input parameter, containing the option's
+data buffers.
 
- v21 changes:
-  - Rebased on top of latest master.
-  - Remove these two patches from the set, as they are already merged:
-       trace-cmd: Add new library API for local CPU count
-       trace-cmd: Add support for negative time offsets in trace.dat file
-  - Added more descriptive warning message when fails to extract Time Shift
-    information from the trace.dat file.
-  - Added a warning message when fails to obtain vcpu - pid mappings.
-  - Handle the case with sparse VCPU numbers in VCPU - PID mapping
-    array.
-  - Fixed broken recording over FIFOs.
- v20 changes:
-  - Rebased on top of latest master.
-  - Removed the VCPUS_MAX hardcoded limit, reimplemented the cpu_pid[] array
-    to be dynamically allocated.
-  - Added a warning when reading of TRACECMD_OPTION_TIME_SHIFT option
-    fails, due to unexpected option's size.
-  - Improved loading of TRACECMD_OPTION_GUEST option data, as Steven
-    suggested.
- v19 changes:
-  - Rebased on top of latest master. The librtacefs is already merged,
-    this allows to drop few patches from the set and use librtacefs APIs
-    instead.
-  - Reimplemented all new trace.dat options to be in binary format,
-    instead of text. Leverage the new "trace-cmd dump" sub command to
-    track what is written in the file.
-  - Addressed Steven's comments.
+Signed-off-by: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+---
+ include/trace-cmd/trace-cmd.h    |   5 ++
+ include/traceevent/event-parse.h |   1 +
+ lib/trace-cmd/trace-output.c     | 117 +++++++++++++++++++++++++++----
+ 3 files changed, 108 insertions(+), 15 deletions(-)
 
- v18 changes: addressed Steven Rostdet comments:
-  - Replaced semaphores with pthread mutexes.
-  - Made bitmask with time sync protocols unlimited, so we can support
-    more than 32 protocols. That required to redesign the trace request
-    packet format.
-  - A lot of small fixes.
-	
- v17 changes:
-  - Implemented new PTP logic for calculating the clocks offset, using
-    histogram of all PTP samples. It gives better results than the logic
-    with the fastest response time, so set the new one as default in the
-    POC patch.
-
- v16 changes:
-  - Fixed compilation in case no VSOCK is available (Thanks to Slavomir Kaslev)
-  - Fixed a typo in trace-cmd-record.1.txt (Thanks to Slavomir Kaslev)
-  - Added forgotten file in the patch "trace-cmd: Add new library APIs for
-    ftrace instances." - trace-instance.c
-  - Fixed few compilation warnings related to TSYNC_DEBUG code.
-  - Removed a blank line at the end of "tsync_readme" file. 
-
- v15 changes:
-  - Removed the patch for "--proc-map" from the series, as it should not
-    be part of it.
-
- v14 changes:
-  - Bring back the PTP-like algorithm and removed the ftrace event based logic.
-  - Reimplemented the PTP-like algorithm to use raw ftrace markers, instead of clock_gettime() API.
-  - Refactored the logic to be algorithm independent and plugin friendly.
-  - Implemented continuous timestamps synchronization, while the trace is running.
-  - Moved logic from trace-cmd application to libtracecmd, as new library APIs.
-  - Implemented new trace id functionality.
-  - Implemented new guest section in host trace.dat file.
-	
- v13 changes:
-  - Remove few patches from the set, as they were merged.
-  - Rebased to the latest master, Slavomirs patchest "Add VM kernel tracing over
-    vsockets and FIFOs" got merged!
- 	
- v12 changes:
-  - Rebased on top of Slavomir's v13 "Add VM kernel tracing over vsockets and FIFOs"
-
- v11 changes:
-  - Rebased on top of Slavomir's v10 "Add VM kernel tracing over vsockets and FIFOs"
-  - Addressed Slavomir's commnents from version 10 of the patch series.
-
- v10 changes:
-  - Fixed broken compilation, call to timestamp_correction_calc() in timestamp_correct
-    was smashed.
-  - Replaced deprecated tep_data_event_from_type() API with tep_find_event().
-  - Fixed a warning on assignment const to non const.
-
- v9 changes:
-  - Fixed implementation of binary search algorithm in timestamp_correct()
-
- v8 changes:
-  - Added rmdir() call in tracecmd_remove_instance(), to completely remove the instance. 
-  However, there is an issue with deleting the instances using rmdir(), which is investigated.
-  - Few changes in read_qemu_guests_pids(), timestamp_correct(), tsync_offset_load() 
- tracecmd_clock_context_new() and find_raw_events() suggested by Slavomir. 
-
- v7 changes:
-  - Added warning messages in case time synchronization cannot be negotiated or fails.
-  - Few optimizations and checks in read_qemu_guests_pids(), tsync_offset_load(),
-    and find_raw_events(), suggested by Slavomir Kaslev.
-  - Reworked timestamp_correct() to not use static variables.
-  - Check TRACECMD_OPTION_TIME_SHIFT before reading time sync samples from the trace.dat file
-
- v6 changes:
-  - Refactored tracecmd_msg_snd_time_sync() and tracecmd_msg_rcv_time_sync() functions:
-    removed any time sync calculations logic as separate functions in trace-timesync.c file
-  - Defined TSYNC_PROBE, TSYNC_REQ and TSYNC_RESP messages, in order to make the time sync
-    protocol comprehensible.
-  - Addressed Steven Rostedt comments.
-  - Addressed Slavomir Kaslev commnets.
-
-v5 changes:
-  - Rebased to Slavomir's v8 "Add VM kernel tracing over vsockets and FIFOs"
-    patch series.
-  - Implemented an algorithm for time drift correction.
-  - Addressed Slavomir's commnets.
-  - Refactored the code: moved all time sync specific implementation in trace-timesync.c
-  - Isolated all hardcoded event specific stuff in a structure, so it could be easily
-    moved to external plugins.
-  - Added a check for VSOCK support: do not perform vsock dependent time synchronisation
-    in case there is no VSOCK support.
-
- v4 changes:
-  - Removed the implementation of PTP-like algorithm. The current
-    logic relies on matching time stamps of kvm_exit/virtio_transport_recv_pkt
-    events on host to virtio_transport_alloc_pkt/vp_notify events on guest.
-  - Rebased to Slavomir's v7 "Add VM kernel tracing over vsockets and FIFOs"
-    patch series.
-  - Decreased the time synch probes from 5000 to 300.
-  - Addressed Steven Rostedt comments.
-  - Code cleanup.
-
- v3 changes:
- - Removed any magic constants, used in the PTP-like algorithm,
-   as Slavomir Kaslev suggested.
- - Implemented new algorithm, based on mapping kvm_exit events
-   in host context to vsock_send events in guest context,
-   suggested by Steven Rostedt.
-
- v2 changes:
-  - Addressed Steven Rostedt comments.
-  - Modified PTP-like timestamps sync algorithm to gain more accuracy, with the
-    help of Yordan Karadzhov and Slavomir Kaslev.
-]
-
-Tzvetomir Stoyanov (4):
-  trace-cmd: Find and store pids of tasks, which run virtual CPUs of
-    given VM
-  trace-cmd: Implement new API tracecmd_add_option_v()
-  trace-cmd: Add definitions of htonll() and ntohll()
-  trace-cmd: Implement new option in trace.dat file:
-    TRACECMD_OPTION_TIME_SHIFT
-
-Tzvetomir Stoyanov (VMware) (9):
-  trace-cmd: Add new API to generate a unique ID of the tracing session
-  trace-cmd: Store the session tracing ID in the trace.dat file
-  trace-cmd: Exchange tracing IDs between host and guest
-  trace-cmd: Add guest information in host's trace.dat file
-  trace-cmd: Add host trace clock as guest trace argument
-  trace-cmd: Refactor few trace-cmd internal functions.
-  trace-cmd: Basic infrastructure for host - guest timestamp
-    synchronization
-  trace-cmd: [POC] PTP-like algorithm for host - guest timestamp
-    synchronization
-  trace-cmd: Debug scripts for PTP-like algorithm for host - guest
-    timestamp synchronization
-
- Documentation/trace-cmd-record.1.txt      |   7 +
- include/trace-cmd/trace-cmd.h             |  79 ++-
- include/traceevent/event-parse.h          |   1 +
- lib/trace-cmd/Makefile                    |   2 +
- lib/trace-cmd/include/trace-cmd-local.h   |  45 +-
- lib/trace-cmd/include/trace-tsync-local.h |  38 ++
- lib/trace-cmd/include/trace-write-local.h |  43 ++
- lib/trace-cmd/trace-input.c               | 332 ++++++++++-
- lib/trace-cmd/trace-msg.c                 | 402 +++++++++++--
- lib/trace-cmd/trace-output.c              | 119 +++-
- lib/trace-cmd/trace-timesync-ptp.c        | 651 ++++++++++++++++++++++
- lib/trace-cmd/trace-timesync.c            | 507 +++++++++++++++++
- lib/trace-cmd/trace-util.c                |  37 ++
- scripts/debug/tsync_hist.py               |  57 ++
- scripts/debug/tsync_readme                |  12 +
- scripts/debug/tsync_res.py                |  46 ++
- tracecmd/Makefile                         |   3 +-
- tracecmd/include/trace-local.h            |  24 +-
- tracecmd/trace-agent.c                    |  57 +-
- tracecmd/trace-dump.c                     | 122 ++++
- tracecmd/trace-record.c                   | 264 ++++++++-
- tracecmd/trace-tsync.c                    | 272 +++++++++
- tracecmd/trace-usage.c                    |   4 +
- 23 files changed, 2983 insertions(+), 141 deletions(-)
- create mode 100644 lib/trace-cmd/include/trace-tsync-local.h
- create mode 100644 lib/trace-cmd/include/trace-write-local.h
- create mode 100644 lib/trace-cmd/trace-timesync-ptp.c
- create mode 100644 lib/trace-cmd/trace-timesync.c
- create mode 100644 scripts/debug/tsync_hist.py
- create mode 100644 scripts/debug/tsync_readme
- create mode 100644 scripts/debug/tsync_res.py
- create mode 100644 tracecmd/trace-tsync.c
-
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index d1b4a60f..b6393a89 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -278,11 +278,16 @@ struct tracecmd_output *tracecmd_create_init_file_override(const char *output_fi
+ struct tracecmd_option *tracecmd_add_option(struct tracecmd_output *handle,
+ 					    unsigned short id, int size,
+ 					    const void *data);
++struct tracecmd_option *
++tracecmd_add_option_v(struct tracecmd_output *handle,
++		      unsigned short id, const struct iovec *vector, int count);
++
+ struct tracecmd_option *tracecmd_add_buffer_option(struct tracecmd_output *handle,
+ 						   const char *name, int cpus);
+ 
+ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
+ int tracecmd_write_options(struct tracecmd_output *handle);
++int tracecmd_append_options(struct tracecmd_output *handle);
+ int tracecmd_update_option(struct tracecmd_output *handle,
+ 			   struct tracecmd_option *option, int size,
+ 			   const void *data);
+diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
+index 52bafa54..cfab6005 100644
+--- a/include/traceevent/event-parse.h
++++ b/include/traceevent/event-parse.h
+@@ -11,6 +11,7 @@
+ #include <stdio.h>
+ #include <regex.h>
+ #include <string.h>
++#include <sys/uio.h>
+ 
+ #include "traceevent/trace-seq.h"
+ 
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index a3dda270..acdd2d57 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -951,21 +951,27 @@ static struct tracecmd_output *create_file(const char *output_file,
+ }
+ 
+ /**
+- * tracecmd_add_option - add options to the file
++ * tracecmd_add_option_v - add options to the file
+  * @handle: the output file handle name
+  * @id: the id of the option
+  * @size: the size of the option data
+- * @data: the data to write to the file.
++ * @data: the data to write to the file
++ * @vector: array of vectors, pointing to the data to write in the file
++ * @count: number of items in the vector array
++ *
+  *
+  * Returns handle to update option if needed.
+  *  Just the content can be updated, with smaller or equal to
+  *  content than the specified size.
+  */
+ struct tracecmd_option *
+-tracecmd_add_option(struct tracecmd_output *handle,
+-		    unsigned short id, int size, const void *data)
++tracecmd_add_option_v(struct tracecmd_output *handle,
++		      unsigned short id, const struct iovec *vector, int count)
++
+ {
+ 	struct tracecmd_option *option;
++	char *data = NULL;
++	int i, size = 0;
+ 
+ 	/*
+ 	 * We can only add options before they were written.
+@@ -974,32 +980,63 @@ tracecmd_add_option(struct tracecmd_output *handle,
+ 	if (handle->options_written)
+ 		return NULL;
+ 
+-	handle->nr_options++;
++	for (i = 0; i < count; i++)
++		size += vector[i].iov_len;
++	/* Some IDs (like TRACECMD_OPTION_TRACECLOCK) pass vector with 0 / NULL data */
++	if (size) {
++		data = malloc(size);
++		if (!data) {
++			warning("Insufficient memory");
++			return NULL;
++		}
++	}
+ 
+ 	option = malloc(sizeof(*option));
+ 	if (!option) {
+ 		warning("Could not allocate space for option");
++		free(data);
+ 		return NULL;
+ 	}
+ 
+-	option->id = id;
+-	option->size = size;
+-	option->data = malloc(size);
+-	if (!option->data) {
+-		warning("Insufficient memory");
+-		free(option);
+-		return NULL;
++	handle->nr_options++;
++	option->data = data;
++	for (i = 0; i < count; i++) {
++		if (vector[i].iov_base && vector[i].iov_len) {
++			memcpy(data, vector[i].iov_base, vector[i].iov_len);
++			data += vector[i].iov_len;
++		}
+ 	}
+ 
+-	/* Some IDs (like TRACECMD_OPTION_TRACECLOCK) pass 0 / NULL data */
+-	if (size)
+-		memcpy(option->data, data, size);
++	option->size = size;
++	option->id = id;
+ 
+ 	list_add_tail(&option->list, &handle->options);
+ 
+ 	return option;
+ }
+ 
++/**
++ * tracecmd_add_option - add options to the file
++ * @handle: the output file handle name
++ * @id: the id of the option
++ * @size: the size of the option data
++ * @data: the data to write to the file
++ *
++ * Returns handle to update option if needed
++ *  Just the content can be updated, with smaller or equal to
++ *  content than the specified size
++ */
++struct tracecmd_option *
++tracecmd_add_option(struct tracecmd_output *handle,
++		    unsigned short id, int size, const void *data)
++{
++	struct iovec vect;
++
++	vect.iov_base = (void *) data;
++	vect.iov_len = size;
++	return tracecmd_add_option_v(handle, id, &vect, 1);
++}
++
+ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
+ {
+ 	cpus = convert_endian_4(handle, cpus);
+@@ -1047,6 +1084,56 @@ int tracecmd_write_options(struct tracecmd_output *handle)
+ 	return 0;
+ }
+ 
++int tracecmd_append_options(struct tracecmd_output *handle)
++{
++	struct tracecmd_option *options;
++	unsigned short option;
++	unsigned short endian2;
++	unsigned int endian4;
++	off_t offset;
++	int r;
++
++	/* If already written, ignore */
++	if (handle->options_written)
++		return 0;
++
++	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
++		return -1;
++	offset = lseek64(handle->fd, -2, SEEK_CUR);
++	if (offset == (off_t)-1)
++		return -1;
++
++	r = pread(handle->fd, &option, 2, offset);
++	if (r != 2 || option != TRACECMD_OPTION_DONE)
++		return -1;
++
++	list_for_each_entry(options, &handle->options, list) {
++		endian2 = convert_endian_2(handle, options->id);
++		if (do_write_check(handle, &endian2, 2))
++			return -1;
++
++		endian4 = convert_endian_4(handle, options->size);
++		if (do_write_check(handle, &endian4, 4))
++			return -1;
++
++		/* Save the data location in case it needs to be updated */
++		options->offset = lseek64(handle->fd, 0, SEEK_CUR);
++
++		if (do_write_check(handle, options->data,
++				   options->size))
++			return -1;
++	}
++
++	option = TRACECMD_OPTION_DONE;
++
++	if (do_write_check(handle, &option, 2))
++		return -1;
++
++	handle->options_written = 1;
++
++	return 0;
++}
++
+ int tracecmd_update_option(struct tracecmd_output *handle,
+ 			   struct tracecmd_option *option, int size,
+ 			   const void *data)
 -- 
 2.24.1
 
