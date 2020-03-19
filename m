@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ABBDC43332
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Mar 2020 14:12:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3ED1C4332D
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Mar 2020 14:12:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E73E720CC7
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Mar 2020 14:12:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ABB25214DB
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Mar 2020 14:12:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ULja2hzQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gWVgQfSv"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbgCSOMb (ORCPT
+        id S1727763AbgCSOMp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 19 Mar 2020 10:12:31 -0400
-Received: from mail-lj1-f182.google.com ([209.85.208.182]:41127 "EHLO
-        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727842AbgCSOLD (ORCPT
+        Thu, 19 Mar 2020 10:12:45 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:36537 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727782AbgCSOK6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 19 Mar 2020 10:11:03 -0400
-Received: by mail-lj1-f182.google.com with SMTP id o10so2630902ljc.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Mar 2020 07:11:02 -0700 (PDT)
+        Thu, 19 Mar 2020 10:10:58 -0400
+Received: by mail-lj1-f196.google.com with SMTP id g12so2661494ljj.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Mar 2020 07:10:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=B8GB/zARppi5VQsVLUke38/sanKYcAT6PYGrz43u9SU=;
-        b=ULja2hzQOH80iwA+POZV6VhJF17ckWTJjikP7BO6pfm6mZNOWoLlaMQqMoL2jufBY/
-         6cRoWEIchWMIIout0Za2oJpMdMC/nEWNGMjGU5cAeLh1ZVC2EvMR106yu4ZT9dgFXRH+
-         H20gcc/Hw1lEst5pW7yINS/qp6scju3a4JLJqA4uFXF3lvPqo16AwK+V/utGpyaRpH3b
-         +pesERuw/dsj32EBAegOs647BhaMcBDFM3khjSNNHBMY6KvUxc9KhZn5rftCF6isuw27
-         BOy7i2SbKhjJ+ERMxSr4ES0ff1yNe0LoLznZZOIc3dtRcEBuVWBcY9oNQ6jWqZsH6sWn
-         MXWw==
+        bh=2Nv98FMZeYOyy4jWPQ3hjKcfqW2wE9ocQVzMSiGDpvQ=;
+        b=gWVgQfSvhOXpD+LZV+ydqMrEwfzBEV2wUVDjjIla1mz9tB+B1FCXrQh4EndgV7Ewi2
+         jGTEQkzLX6iEGqLA0x7JW/xqx69GT34nTDXNf/tJqFdncZlr5Zi768r2m0BBd+uJ6/Ph
+         Yp4BdstcJJiOK9gKXy41UL8lx/uiT+2rhIZE9GCzHtkqe0dj/ulzrh7XxOdOCQkX3EhO
+         IWPcvPaYI++QpFf/x+gVlG5OY1N2AbS8pmPyW48CuwegnXZHA2OaxaKvnuQ3mP6zGbd+
+         okCoO6Fl98DyM5+wK+67uwIYwt/BeUrUH+N6n/NGYgn79WydqYaKH4vNeAjD+IJR5ycn
+         n+NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B8GB/zARppi5VQsVLUke38/sanKYcAT6PYGrz43u9SU=;
-        b=pE5pTqnhbQF6rOwWJkhwXhpINjQVoY8kN6dtduPM5OK423jeMmwbLLLtoUV62vzXLL
-         j8kXSxIR68Rt0g39MdT7KuAfe+t/o9sUEPxlR8GJYInaOUqNoEjNm1+hsZzZJxq9Usho
-         M864UgJb6oNBCQw/gti53THSgcgM2J4OE3xX6Yjrmv36qkAC8ngQouE1HrA7WAjzhLV4
-         HH7wt8/OznFgQa9EPEPtyvAXZ9wYAs2u4GOCyVGIUnn9h9pkISZtpgykBOchxwIFoR9J
-         jagok6NpYF9YcHaLMmntuN8JlgbokpSSjBzXqhi1DIrWaqECgn4LHu6q2IQFKPz5vcyz
-         oTQA==
-X-Gm-Message-State: ANhLgQ2yqVu7yJCIAj3MvdQlZcKOyb5p+WBJI7/LyeYLjjnl2zxbw+4P
-        03Ol8iMaLIrsD0VsOnorv00=
-X-Google-Smtp-Source: ADFU+vt4hYmFpWStJ9GT3wG1IP/9AcUVlfeupa29+QYlbCuieGXC9eOxiEbg6lyTgMPLTOAQwgIFJw==
-X-Received: by 2002:a2e:858c:: with SMTP id b12mr2353613lji.160.1584627061358;
-        Thu, 19 Mar 2020 07:11:01 -0700 (PDT)
+        bh=2Nv98FMZeYOyy4jWPQ3hjKcfqW2wE9ocQVzMSiGDpvQ=;
+        b=FfsKIng0GfGYwt3M5TLLyG0YstIVWdH4ldiLywFbw3nQV+6qcKJwbqBB4nncidfNRV
+         pCvVY5G7mSo3J/Lv5iKTewJPaROxIdVy7pDTCcmktskAAx6Snrvnkx9clrjST4IwLf5Y
+         JjcXExvIrV3/Kpo3cLzsIApiuZIJ5EobYyqHp2zitUSgyLb7/XOR4ZAIVlEBup0QGhsY
+         aKON360a5SbN6Yk7XvCm8NqFcThJZN0b7lExETc94NJeCrS+XMMeJC/HGYUva+B1Pqcc
+         egKTNOMTjtuqKjmZpXgDmV+oWUGRP2s503k/x52D1T+wIH9vRO3LaP+XSvVeRSgM06LO
+         gB7Q==
+X-Gm-Message-State: ANhLgQ27MSbecyGH9ptl7AVVS+ih1KnkAa0HXtMcwDfU0HZ2r4Bp8C6m
+        mGl32CWnXzpWy7tCX39+w+w=
+X-Google-Smtp-Source: ADFU+vvXJWUx3vd8c5mGfupKGFEOHA9e15u6U1qY3Fxp7/mqdG2gA+azVlKjH+gbqP236J8HR1f/YA==
+X-Received: by 2002:a05:651c:233:: with SMTP id z19mr2161827ljn.176.1584627057532;
+        Thu, 19 Mar 2020 07:10:57 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.93.223])
-        by smtp.gmail.com with ESMTPSA id u14sm1817605ljj.54.2020.03.19.07.11.00
+        by smtp.gmail.com with ESMTPSA id u14sm1817605ljj.54.2020.03.19.07.10.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Mar 2020 07:11:00 -0700 (PDT)
+        Thu, 19 Mar 2020 07:10:57 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 4/5] kernel-shark: Remove unused methods from KsMainWindow class
-Date:   Thu, 19 Mar 2020 16:10:30 +0200
-Message-Id: <20200319141031.3774-5-y.karadz@gmail.com>
+Subject: [PATCH 2/5] kernel-shark: Fix bug in bool kshark_export_all_cpu_filters()
+Date:   Thu, 19 Mar 2020 16:10:28 +0200
+Message-Id: <20200319141031.3774-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200319141031.3774-1-y.karadz@gmail.com>
 References: <20200319141031.3774-1-y.karadz@gmail.com>
@@ -74,126 +74,33 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-We used to have menu actions for applying negative ID filters (do not
-show) for PIDs and CPU IDs. At some point we decided to remove all menu
-actions for negative filters in order to avoid users being confused by
-the possible unexpected behavior in the case when both positive (show
-only) and negative filters are set. However we kept the corresponding
-private methods, just in case we want to restore the menu actions in
-the future. We can now finally remove those methods, because in the
-following patch the logic will be optimized to automatically decide
-whether is more efficient to use positive or negative filter.
+It makes no sense to check if a Task filter is set, before exporting
+a CPU filter. This is most probably a copy/paste bug.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsMainWindow.cpp | 69 -------------------------------
- kernel-shark/src/KsMainWindow.hpp |  4 --
- 2 files changed, 73 deletions(-)
+ kernel-shark/src/libkshark-configio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index a5a399c..9b5fc2d 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -669,41 +669,6 @@ void KsMainWindow::_showTasks()
- 	dialog->show();
- }
+diff --git a/kernel-shark/src/libkshark-configio.c b/kernel-shark/src/libkshark-configio.c
+index f01a39b..cb7ca54 100644
+--- a/kernel-shark/src/libkshark-configio.c
++++ b/kernel-shark/src/libkshark-configio.c
+@@ -1407,12 +1407,12 @@ bool kshark_export_all_cpu_filters(struct kshark_context *kshark_ctx,
+ 		return false;
  
--void KsMainWindow::_hideTasks()
--{
--	kshark_context *kshark_ctx(nullptr);
--	KsCheckBoxWidget *tasks_cbd;
--	KsCheckBoxDialog *dialog;
--
--	if (!kshark_instance(&kshark_ctx))
--		return;
--
--	tasks_cbd = new KsTasksCheckBoxWidget(_data.tep(), false, this);
--	dialog = new KsCheckBoxDialog(tasks_cbd, this);
--
--	if (!kshark_ctx->hide_task_filter ||
--	    !kshark_ctx->hide_task_filter->count) {
--		tasks_cbd->setDefault(false);
--	} else {
--		QVector<int> pids = KsUtils::getPidList();
--		int nPids = pids.count();
--		QVector<bool> v(nPids, false);
--
--		for (int i = 0; i < nPids; ++i) {
--			if (tracecmd_filter_id_find(kshark_ctx->hide_task_filter,
--						    pids[i]))
--				v[i] = true;
--		}
--
--		tasks_cbd->set(v);
--	}
--
--	connect(dialog,		&KsCheckBoxDialog::apply,
--		&_data,		&KsDataStore::applyNegTaskFilter);
--
--	dialog->show();
--}
--
- void KsMainWindow::_showCPUs()
- {
- 	kshark_context *kshark_ctx(nullptr);
-@@ -737,40 +702,6 @@ void KsMainWindow::_showCPUs()
- 	dialog->show();
- }
+ 	/* Save a filter only if it contains Id values. */
+-	if (kshark_this_filter_is_set(kshark_ctx->show_task_filter))
++	if (kshark_this_filter_is_set(kshark_ctx->show_cpu_filter))
+ 		ret &= kshark_export_filter_array(kshark_ctx->show_cpu_filter,
+ 						  KS_SHOW_CPU_FILTER_NAME,
+ 						  *conf);
  
--void KsMainWindow::_hideCPUs()
--{
--	kshark_context *kshark_ctx(nullptr);
--	KsCheckBoxWidget *cpu_cbd;
--	KsCheckBoxDialog *dialog;
--
--	if (!kshark_instance(&kshark_ctx))
--		return;
--
--	cpu_cbd = new KsCPUCheckBoxWidget(_data.tep(), this);
--	dialog = new KsCheckBoxDialog(cpu_cbd, this);
--
--	if (!kshark_ctx->hide_cpu_filter ||
--	    !kshark_ctx->hide_cpu_filter->count) {
--		cpu_cbd->setDefault(false);
--	} else {
--		int nCPUs = tep_get_cpus(_data.tep());
--		QVector<bool> v(nCPUs, false);
--
--		for (int i = 0; i < nCPUs; ++i) {
--			if (tracecmd_filter_id_find(kshark_ctx->hide_cpu_filter,
--						    i))
--				v[i] = true;
--		}
--
--		cpu_cbd->set(v);
--	}
--
--	connect(dialog,		&KsCheckBoxDialog::apply,
--		&_data,		&KsDataStore::applyNegCPUFilter);
--
--	dialog->show();
--}
--
- void KsMainWindow::_advancedFiltering()
- {
- 	KsAdvFilteringDialog *dialog;
-diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-index eef4f96..59030e4 100644
---- a/kernel-shark/src/KsMainWindow.hpp
-+++ b/kernel-shark/src/KsMainWindow.hpp
-@@ -181,12 +181,8 @@ private:
- 
- 	void _showTasks();
- 
--	void _hideTasks();
--
- 	void _showCPUs();
- 
--	void _hideCPUs();
--
- 	void _advancedFiltering();
- 
- 	void _clearFilters();
+-	if (kshark_this_filter_is_set(kshark_ctx->hide_task_filter))
++	if (kshark_this_filter_is_set(kshark_ctx->hide_cpu_filter))
+ 		ret &= kshark_export_filter_array(kshark_ctx->hide_cpu_filter,
+ 						  KS_HIDE_CPU_FILTER_NAME,
+ 						  *conf);
 -- 
 2.20.1
 
