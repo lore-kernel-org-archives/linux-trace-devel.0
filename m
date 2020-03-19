@@ -1,218 +1,205 @@
-Return-Path: <SRS0=4xj7=42=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=DKMX=5E=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9D55C10F29
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  9 Mar 2020 19:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC0F4C4332E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Mar 2020 14:10:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CFD5B2465A
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  9 Mar 2020 19:05:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 72A0721655
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Mar 2020 14:10:58 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l0f4sUuF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgCITF3 (ORCPT
+        id S1727763AbgCSOK5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 9 Mar 2020 15:05:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727855AbgCITF2 (ORCPT
+        Thu, 19 Mar 2020 10:10:57 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:40360 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727732AbgCSOK5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 9 Mar 2020 15:05:28 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1469A24655
-        for <linux-trace-devel@vger.kernel.org>; Mon,  9 Mar 2020 19:05:28 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.93)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1jBNiR-0033C6-0P
-        for linux-trace-devel@vger.kernel.org; Mon, 09 Mar 2020 15:05:27 -0400
-Message-Id: <20200309190526.886340672@goodmis.org>
-User-Agent: quilt/0.65
-Date:   Mon, 09 Mar 2020 15:04:51 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/2] trace-cmd: Have instances include a copy of its output file
-References: <20200309190449.207021960@goodmis.org>
+        Thu, 19 Mar 2020 10:10:57 -0400
+Received: by mail-lf1-f67.google.com with SMTP id j17so1742805lfe.7
+        for <linux-trace-devel@vger.kernel.org>; Thu, 19 Mar 2020 07:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=H3MPEHHYof7ZrvtG0+umwwT4+AgM2wjLWG9PGuFbOzQ=;
+        b=l0f4sUuF4smhxxA4IR/s7k9R1uF5TLP8qPPzi5oZDbpE7VkXnN19mdNtLvgz1sZxaz
+         rTmOl05UwTCpuoabx2hxKGqF/EMu06jM91m6FtFF0pSa+Jgo/60qQRi8Xl3jP2U9Frib
+         9l33Q2s4JMMqxBxcQQvliSV9yi+JBaVh/JhjbLtoFdQAjEL/0x3M/EcnghyjcJ5aT2g4
+         VEXOu6wtkXQsircM6spQLk2jgg3WpeEwL0Sn3T1PlfRdJ5MGugzZZc5DqgNzFkrS59f0
+         pnikUGel0KTkBZGdb3ZnipwjbhXcmGW4x5exByYm8x0YZOrzBjSNRCNi8p6apb8Xuhmt
+         CP+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=H3MPEHHYof7ZrvtG0+umwwT4+AgM2wjLWG9PGuFbOzQ=;
+        b=kdYkR7FVpu6Z7+UpPGEKqQlqhJVuhPfM2PIbaZMZ5lJEU/YJbuKKSxkQeXSo3LCF5d
+         BEaHwyafd039asoluf2h22EPYBd6SdjHRzh1r6rSt6rDhLKnmGO6hGgjXi1tvcMnE3yd
+         MViA2WEkMZo2WSEEzpoGt5kdhCrkMdJX14RT1iz+JoTtFXndixNGcykMGynWGLbFZ+YJ
+         rDUzxCSkMs9T3tNvORama5TI7jtnMDC8V8Os5SzHzUkQbH5OLEe9iTUgj0GGkqEvCrFA
+         BT8N/w8YfchMEu4p4wtl4Zkb0VENoLTc+dJCeJ32uSfQ6YZaLUZHI3vvqlZoscCipq5I
+         9zdA==
+X-Gm-Message-State: ANhLgQ0a2URVibrK0D8iNpdYf+oHaPJoNtSVECjEH/HSMUlqnUb9CEoJ
+        cP8o441ulBhMI/nGJdDV90Q=
+X-Google-Smtp-Source: ADFU+vtmXOCWO5hEvqsKccznHN+1fM8To1yjewqsv3RJHwCeCR9VNl9Gyy6HVDZ5betsSGrTf5uJRg==
+X-Received: by 2002:a05:6512:49e:: with SMTP id v30mr2259481lfq.158.1584627055007;
+        Thu, 19 Mar 2020 07:10:55 -0700 (PDT)
+Received: from localhost.localdomain ([84.40.93.223])
+        by smtp.gmail.com with ESMTPSA id u14sm1817605ljj.54.2020.03.19.07.10.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Mar 2020 07:10:54 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 1/5] kernel-shark: Add method for checking if a given ID filter is set
+Date:   Thu, 19 Mar 2020 16:10:27 +0200
+Message-Id: <20200319141031.3774-2-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200319141031.3774-1-y.karadz@gmail.com>
+References: <20200319141031.3774-1-y.karadz@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+The method is already defined and used as a static function in
+libkshark.c and libkshark-configio.c (basically having two identical
+copies). Now we are making this method part of the API. We will later
+use this method in the GUI (following patch).
 
-Instead of having a global "output_file", store the output file in the
-instance itself. That way it can be used instead of having to pass around
-a global variable.
-
-This also fixes a bug when an output file option is used, and it can break
-the recording of the guest, as the tsync currently looks for the "default"
-recording name. Instead, it can now look at the output file stored in the
-instance (which will hold the guest name).
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- tracecmd/include/trace-local.h |  1 +
- tracecmd/trace-record.c        | 31 ++++++++++++++++---------------
- tracecmd/trace-tsync.c         |  6 ++----
- 3 files changed, 19 insertions(+), 19 deletions(-)
+ kernel-shark/src/libkshark-configio.c | 17 ++++++-----------
+ kernel-shark/src/libkshark.c          | 21 ++++++++++++++-------
+ kernel-shark/src/libkshark.h          |  2 ++
+ 3 files changed, 22 insertions(+), 18 deletions(-)
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 5ef569f03553..0f58c7721b88 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -189,6 +189,7 @@ struct buffer_instance {
- 	struct tracefs_instance	*tracefs;
- 	unsigned long long	trace_id;
- 	char			*cpumask;
-+	char			*output_file;
- 	struct event_list	*events;
- 	struct event_list	**event_next;
+diff --git a/kernel-shark/src/libkshark-configio.c b/kernel-shark/src/libkshark-configio.c
+index 5d7323f..f01a39b 100644
+--- a/kernel-shark/src/libkshark-configio.c
++++ b/kernel-shark/src/libkshark-configio.c
+@@ -1306,11 +1306,6 @@ bool kshark_import_user_mask(struct kshark_context *kshark_ctx,
+ 	}
+ }
  
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 280dc9ddf23a..c945a56ab7ab 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -69,8 +69,6 @@ static int rt_prio;
- 
- static int keep;
- 
--static const char *output_file = DEFAULT_INPUT_FILE;
+-static bool filter_is_set(struct tracecmd_filter_id *filter)
+-{
+-	return filter && filter->count;
+-}
 -
- static int latency;
- static int sleep_time = 1000;
- static int recorder_threads;
-@@ -524,6 +522,7 @@ static void reset_event_list(struct buffer_instance *instance)
+ /**
+  * @brief Record the current configuration of "show task" and "hide task"
+  *	  filters into a Json document.
+@@ -1335,13 +1330,13 @@ bool kshark_export_all_event_filters(struct kshark_context *kshark_ctx,
+ 		return false;
  
- static char *get_temp_file(struct buffer_instance *instance, int cpu)
+ 	/* Save a filter only if it contains Id values. */
+-	if (filter_is_set(kshark_ctx->show_event_filter))
++	if (kshark_this_filter_is_set(kshark_ctx->show_event_filter))
+ 		ret &= kshark_export_event_filter(kshark_ctx->pevent,
+ 						  kshark_ctx->show_event_filter,
+ 						  KS_SHOW_EVENT_FILTER_NAME,
+ 						  *conf);
+ 
+-	if (filter_is_set(kshark_ctx->hide_event_filter))
++	if (kshark_this_filter_is_set(kshark_ctx->hide_event_filter))
+ 		ret &= kshark_export_event_filter(kshark_ctx->pevent,
+ 						  kshark_ctx->hide_event_filter,
+ 						  KS_HIDE_EVENT_FILTER_NAME,
+@@ -1374,12 +1369,12 @@ bool kshark_export_all_task_filters(struct kshark_context *kshark_ctx,
+ 		return false;
+ 
+ 	/* Save a filter only if it contains Id values. */
+-	if (filter_is_set(kshark_ctx->show_task_filter))
++	if (kshark_this_filter_is_set(kshark_ctx->show_task_filter))
+ 		ret &= kshark_export_filter_array(kshark_ctx->show_task_filter,
+ 						  KS_SHOW_TASK_FILTER_NAME,
+ 						  *conf);
+ 
+-	if (filter_is_set(kshark_ctx->hide_task_filter))
++	if (kshark_this_filter_is_set(kshark_ctx->hide_task_filter))
+ 		ret &= kshark_export_filter_array(kshark_ctx->hide_task_filter,
+ 						  KS_HIDE_TASK_FILTER_NAME,
+ 						  *conf);
+@@ -1412,12 +1407,12 @@ bool kshark_export_all_cpu_filters(struct kshark_context *kshark_ctx,
+ 		return false;
+ 
+ 	/* Save a filter only if it contains Id values. */
+-	if (filter_is_set(kshark_ctx->show_task_filter))
++	if (kshark_this_filter_is_set(kshark_ctx->show_task_filter))
+ 		ret &= kshark_export_filter_array(kshark_ctx->show_cpu_filter,
+ 						  KS_SHOW_CPU_FILTER_NAME,
+ 						  *conf);
+ 
+-	if (filter_is_set(kshark_ctx->hide_task_filter))
++	if (kshark_this_filter_is_set(kshark_ctx->hide_task_filter))
+ 		ret &= kshark_export_filter_array(kshark_ctx->hide_cpu_filter,
+ 						  KS_HIDE_CPU_FILTER_NAME,
+ 						  *conf);
+diff --git a/kernel-shark/src/libkshark.c b/kernel-shark/src/libkshark.c
+index a361578..0905359 100644
+--- a/kernel-shark/src/libkshark.c
++++ b/kernel-shark/src/libkshark.c
+@@ -445,7 +445,14 @@ void kshark_filter_clear(struct kshark_context *kshark_ctx, int filter_id)
+ 	tracecmd_filter_id_clear(filter);
+ }
+ 
+-static bool filter_is_set(struct tracecmd_filter_id *filter)
++/**
++ * @brief Check if a given Id filter is set.
++ *
++ * @param filter: Input location for the Id filster.
++ *
++ * @returns True if the Id filter is set, otherwise False.
++ */
++bool kshark_this_filter_is_set(struct tracecmd_filter_id *filter)
  {
-+	const char *output_file = instance->output_file;
- 	const char *name;
- 	char *file = NULL;
- 	int size;
-@@ -572,6 +571,7 @@ static void put_temp_file(char *file)
- 
- static void delete_temp_file(struct buffer_instance *instance, int cpu)
+ 	return filter && filter->count;
+ }
+@@ -459,12 +466,12 @@ static bool filter_is_set(struct tracecmd_filter_id *filter)
+  */
+ bool kshark_filter_is_set(struct kshark_context *kshark_ctx)
  {
-+	const char *output_file = instance->output_file;
- 	const char *name;
- 	char file[PATH_MAX];
+-	return filter_is_set(kshark_ctx->show_task_filter) ||
+-	       filter_is_set(kshark_ctx->hide_task_filter) ||
+-	       filter_is_set(kshark_ctx->show_cpu_filter) ||
+-	       filter_is_set(kshark_ctx->hide_cpu_filter) ||
+-	       filter_is_set(kshark_ctx->show_event_filter) ||
+-	       filter_is_set(kshark_ctx->hide_event_filter);
++	return kshark_this_filter_is_set(kshark_ctx->show_task_filter) ||
++-              kshark_this_filter_is_set(kshark_ctx->hide_task_filter) ||
++-              kshark_this_filter_is_set(kshark_ctx->show_cpu_filter) ||
++-              kshark_this_filter_is_set(kshark_ctx->hide_cpu_filter) ||
++-              kshark_this_filter_is_set(kshark_ctx->show_event_filter) ||
++-              kshark_this_filter_is_set(kshark_ctx->hide_event_filter);
+ }
  
-@@ -3777,6 +3777,7 @@ static void connect_to_agent(struct buffer_instance *instance)
- static void setup_guest(struct buffer_instance *instance)
- {
- 	struct tracecmd_msg_handle *msg_handle = instance->msg_handle;
-+	const char *output_file = instance->output_file;
- 	char *file;
- 	int fd;
+ static inline void unset_event_filter_flag(struct kshark_context *kshark_ctx,
+diff --git a/kernel-shark/src/libkshark.h b/kernel-shark/src/libkshark.h
+index e795ed4..0d6c50d 100644
+--- a/kernel-shark/src/libkshark.h
++++ b/kernel-shark/src/libkshark.h
+@@ -261,6 +261,8 @@ void kshark_filter_add_id(struct kshark_context *kshark_ctx,
  
-@@ -3786,8 +3787,10 @@ static void setup_guest(struct buffer_instance *instance)
- 	if (!file)
- 		die("Failed to allocate memory");
+ void kshark_filter_clear(struct kshark_context *kshark_ctx, int filter_id);
  
-+	free(instance->output_file);
-+	instance->output_file = file;
++bool kshark_this_filter_is_set(struct tracecmd_filter_id *filter);
 +
- 	fd = open(file, O_CREAT|O_WRONLY|O_TRUNC, 0644);
--	put_temp_file(file);
- 	if (fd < 0)
- 		die("Failed to open", file);
+ bool kshark_filter_is_set(struct kshark_context *kshark_ctx);
  
-@@ -4119,15 +4122,10 @@ static void write_guest_file(struct buffer_instance *instance)
- 	char **temp_files;
- 	int i, fd;
- 
--	file = trace_get_guest_file(output_file,
--				    tracefs_instance_get_name(instance->tracefs));
--	if (!file)
--		die("Failed to allocate memory");
--
-+	file = instance->output_file;
- 	fd = open(file, O_RDWR);
- 	if (fd < 0)
- 		die("error opening %s", file);
--	put_temp_file(file);
- 
- 	handle = tracecmd_get_output_handle_fd(fd);
- 	if (!handle)
-@@ -4176,7 +4174,7 @@ static void record_data(struct common_record_context *ctx)
- 		return;
- 
- 	if (latency) {
--		handle = tracecmd_create_file_latency(output_file, local_cpu_count);
-+		handle = tracecmd_create_file_latency(ctx->output, local_cpu_count);
- 		tracecmd_set_quiet(handle, quiet);
- 	} else {
- 		if (!local_cpu_count)
-@@ -4207,7 +4205,7 @@ static void record_data(struct common_record_context *ctx)
- 				touch_file(temp_files[i]);
- 		}
- 
--		handle = tracecmd_create_init_file_glob(output_file, listed_events);
-+		handle = tracecmd_create_init_file_glob(ctx->output, listed_events);
- 		if (!handle)
- 			die("Error creating output file");
- 		tracecmd_set_quiet(handle, quiet);
-@@ -6165,11 +6163,14 @@ static void record_trace(int argc, char **argv,
- 	check_doing_something();
- 	check_function_plugin();
- 
--	if (ctx->output)
--		output_file = ctx->output;
-+	if (!ctx->output)
-+		ctx->output = DEFAULT_INPUT_FILE;
- 
- 	/* Save the state of tracing_on before starting */
- 	for_all_instances(instance) {
-+		instance->output_file = strdup(ctx->output);
-+		if (!instance->output_file)
-+			die("Failed to allocate output file name for instance");
- 		if (!ctx->manual && instance->flags & BUFFER_FL_PROFILE)
- 			enable_profile(instance);
- 
-@@ -6300,8 +6301,8 @@ void trace_extract(int argc, char **argv)
- 	update_first_instance(ctx.instance, 1);
- 	check_function_plugin();
- 
--	if (ctx.output)
--		output_file = ctx.output;
-+	if (!ctx.output)
-+		ctx.output = DEFAULT_INPUT_FILE;
- 
- 	/* Save the state of tracing_on before starting */
- 	for_all_instances(instance) {
-diff --git a/tracecmd/trace-tsync.c b/tracecmd/trace-tsync.c
-index eab2fda5b120..e639788d2f3f 100644
---- a/tracecmd/trace-tsync.c
-+++ b/tracecmd/trace-tsync.c
-@@ -130,7 +130,7 @@ static void write_guest_time_shift(struct buffer_instance *instance)
- 	struct iovec vector[4];
- 	long long *offsets;
- 	long long *ts;
--	char *file;
-+	const char *file;
- 	int count;
- 	int ret;
- 	int fd;
-@@ -139,12 +139,10 @@ static void write_guest_time_shift(struct buffer_instance *instance)
- 	if (ret < 0 || !count || !ts || !offsets)
- 		return;
- 
--	file = trace_get_guest_file(DEFAULT_INPUT_FILE,
--				tracefs_instance_get_name(instance->tracefs));
-+	file = instance->output_file;
- 	fd = open(file, O_RDWR);
- 	if (fd < 0)
- 		die("error opening %s", file);
--	free(file);
- 	handle = tracecmd_get_output_handle_fd(fd);
- 	vector[0].iov_len = 8;
- 	vector[0].iov_base = &top_instance.trace_id;
+ void kshark_filter_entries(struct kshark_context *kshark_ctx,
 -- 
-2.25.0
-
+2.20.1
 
