@@ -8,64 +8,62 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D357C43331
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Apr 2020 10:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8248C43331
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Apr 2020 11:00:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4602B20658
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Apr 2020 10:58:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B318A206F8
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Apr 2020 11:00:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rSwpwdEb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WqM/CD32"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388004AbgDBK6r (ORCPT
+        id S2387476AbgDBLAP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Apr 2020 06:58:47 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:40384 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728803AbgDBK6q (ORCPT
+        Thu, 2 Apr 2020 07:00:15 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:43137 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728803AbgDBLAP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Apr 2020 06:58:46 -0400
-Received: by mail-lj1-f193.google.com with SMTP id 19so2719126ljj.7
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Apr 2020 03:58:41 -0700 (PDT)
+        Thu, 2 Apr 2020 07:00:15 -0400
+Received: by mail-lf1-f67.google.com with SMTP id n20so2293910lfl.10
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Apr 2020 04:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xb/uYyCoEdLR/B/sSR5J/eq1FOvJPZaC4tyuxkAJhQk=;
-        b=rSwpwdEbUUXTF+8zuU6EPBVuOEaombm+WHpPRsEU87sEPw9IhPDvHX3IuCC1w9uRVa
-         G1+wSVj+VCzC/CCnYmvBN2I7hWUEPuEDRySvhIbimcqm1YQR2YorfaczMoaIqIdqd+fU
-         Zm9jyXNyiG1yxnfSHGvF8fW+y9IYbjfNSrHwtgQgjP5EmdOvBzouKH3GPdL0qywvKtQc
-         3rLsbbRdtVqJhjAS28Btd5HJdNUUDKyTfaPx52/moh0k4CGQyjwu86K7YicpdZmd9sJW
-         nMGoFDiVCeIX6imh/3QqQB4Ss/mGDfgZp2kc+TjEDgIA5puCffyOmgu1Dd0tr+xPPGoQ
-         JEqQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e3sg2NbhAbiy2SgdTDVquTcl4Fkh+a8KDnG0VV7fEO0=;
+        b=WqM/CD32iDKVVlGiCtfMa2URcAfnmQfchS4wCkWbOF8ivdL7k5t3sdbeLdubX0V3Ny
+         tQ91WvsrAeb7LGJVo9QOMBTTJZZD/nn7Ub9oHDjdtBWtIb8tWJXkw7RdQXIIlwVkqxyi
+         L8FX6yVgoqvfYJmAv+yPl2CTAQQaaywxCLBitKH2s/oaX+7h+Q38MQi490D/48OGMw5M
+         3XfyOQkl/ZS4TXDcv9ETJceLn4o9OCvqHyawd+nfU6s6y+pOnK334KROVopbOEsn57kv
+         CghsvacFZKJtBRjP26nA5jucjf7wSu41qNml+KcpgM2R0UQLR72FE2oxx5aHpzLbD5dv
+         AhEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xb/uYyCoEdLR/B/sSR5J/eq1FOvJPZaC4tyuxkAJhQk=;
-        b=JGOfzcK433qlH/FRGF4tSKvt4nNDw25iIxYAhCDyRp2lpNQBv1MZM0QiASoQPAObcd
-         u18ROPUOwYw9JYrIokv8a1J9E87QLZwD70tZcTcq31wRKI/MgwzfwMs9LPVtVgmWbioL
-         gTLSFf7heRXETIELdpoO0Gk8TzLzT3Eh+ntGe5UknodB37CcnvVFZuVB0hbNEe8nwRW0
-         HaS+r3uSo7GnSzzWDDX8oZEQecDREKF9+UTlob6ojGShJo36CAmA1cCMUvibf3NCKQsr
-         uyUSo1cm4hDwTm4+rhxGdXuiSW2XbKHaeQTvuz6FzdLPwX6UAJ4OGSPmh5pCX6Ye5hUf
-         wdxQ==
-X-Gm-Message-State: AGi0PuajcgoqLB+JcwdhsIz4G9n5DNQg+3Xx4q0kZg+202RdoJbM5Vq5
-        ffOOIvMFmW3WgtW3z/Blhj9AY8pYha0=
-X-Google-Smtp-Source: APiQypIGLBvX7RwlR0gzkCt+ZVVc5C69CSZWop2d/pZq0GXZct9m1HTZL+6zwRpO0mO666hpK9OYzg==
-X-Received: by 2002:a2e:9252:: with SMTP id v18mr1679303ljg.114.1585825120886;
-        Thu, 02 Apr 2020 03:58:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e3sg2NbhAbiy2SgdTDVquTcl4Fkh+a8KDnG0VV7fEO0=;
+        b=lp/KZNlo/aT+u3Y+QdRo4QmSb8ydef59y/RzbOe+6ji2sLtagCAhJ+fvTnWdbG0h+n
+         al6sztN2gMShLQWgMFOGBc6Cos1Bf74odbgB3OfDlawLudNyYd58p4BwWUHbu7dY3yCv
+         znd8muTWspu3b2y4RyWjtbya2/HSBHn4ULHYBeDezwK57o+zX17TltVUKxn2ZyclJx61
+         tMf8wsjYsvzgb0t66g2L1A62FwZ32fwu+haeDTVMt/sWe2plrY0SMz8+kfGFCoiaQfQP
+         OnsZV+hvjERQj/8yyD/lRBhkPubtWxlOTMv9+d1SqNFhRbGTZwiLYHVOtnOq04KqTb3e
+         Q2Uw==
+X-Gm-Message-State: AGi0PubGgAF2c04DtF0zV9/0+60bDkWn5X4AxsdSujMAlVfF+/G0yXAO
+        XmE3W58N54Hj+1yWupwoNG+clXGYM/o=
+X-Google-Smtp-Source: APiQypLNX7LM07ToZ9pvEKDJ7epKI08opINFDsf0ZrgPvEH5z2xjJOPDGqY9U3qX+V++L1SHlxK/+A==
+X-Received: by 2002:a05:6512:3115:: with SMTP id n21mr1805404lfb.51.1585825213097;
+        Thu, 02 Apr 2020 04:00:13 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id c2sm3779803lfb.43.2020.04.02.03.58.39
+        by smtp.gmail.com with ESMTPSA id z1sm3706252lfe.49.2020.04.02.04.00.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 03:58:40 -0700 (PDT)
+        Thu, 02 Apr 2020 04:00:12 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 5/5] trace-cmd: Use per CPU synchronization data when calculating timestamps offsets
-Date:   Thu,  2 Apr 2020 13:58:31 +0300
-Message-Id: <20200402105831.263753-6-tz.stoyanov@gmail.com>
+Subject: [PATCH] trace-cmd: Fix possible usage of not null-terminated string
+Date:   Thu,  2 Apr 2020 14:00:10 +0300
+Message-Id: <20200402110010.264073-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200402105831.263753-1-tz.stoyanov@gmail.com>
-References: <20200402105831.263753-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -73,368 +71,43 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When per CPU synchronization data is available in trace.dat file, use them when
-synchronizing event timestamps between host and guest machines.
-This change is for testing purposes only, the code is not optimized and relies
-on few assumptions. To use the per CPU data, the host sched events of tasks, running
-each guest VCPU, must be available in the host tracing file. The host tracing must be recorded
-with at least the "-e sched" option. The migration of VCPUs between host CPUs is extracted
-using these events from the host trace file. This information is mandatory for the algorithm.
+According to the
+   readlink(const char *filename, char *buffer, size_t size);
+documentation, the terminating '\0' is not written in the buffer.
+As the buffer that is passed to this API is not initialized, this
+can lead to working with not null-terminated string.
+The problem was detected by valgrind.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 269 +++++++++++++++++++++++++++++++++---
- 1 file changed, 249 insertions(+), 20 deletions(-)
+ lib/trace-cmd/trace-plugin.c | 1 +
+ lib/trace-cmd/trace-util.c   | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index e02cb879..1fb806c9 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -77,6 +77,16 @@ struct input_buffer_instance {
- 	size_t			offset;
- };
+diff --git a/lib/trace-cmd/trace-plugin.c b/lib/trace-cmd/trace-plugin.c
+index 6bec18bc..92f9edf3 100644
+--- a/lib/trace-cmd/trace-plugin.c
++++ b/lib/trace-cmd/trace-plugin.c
+@@ -199,6 +199,7 @@ static char *get_source_plugins_dir(void)
+ 	if (ret > PATH_MAX || ret < 0)
+ 		return NULL;
  
-+struct ts_sched_cpu {
-+	unsigned long long	ts;
-+	int			host_cpu;
-+};
-+
-+struct vcpu_sched_data {
-+	int			cpu_sched_count;
-+	struct ts_sched_cpu	*cpu_sched;
-+};
-+
- struct ts_offset_sample {
- 	long long	time;
- 	long long	offset;
-@@ -99,6 +109,8 @@ struct host_trace_info {
- 	unsigned long long	peer_trace_id;
- 	bool			sync_enable;
- 	struct tracecmd_input	*peer_data;
-+	int			vcpu_count;
-+	struct vcpu_sched_data *vcpu_sched;
- 	int			cpu_count;
- 	struct ts_offset_cpu	*cpu_time_offsets;
- };
-@@ -1119,27 +1131,12 @@ timestamp_correction_calc(unsigned long long ts, struct ts_offset_sample *min,
- 	return ts + tscor;
- }
++	path[ret] = 0;
+ 	dirname(path);
+ 	p = strrchr(path, '/');
+ 	if (!p)
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index 04dc804c..0ead96ea 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -269,6 +269,7 @@ static char *get_source_plugins_dir(void)
+ 	if (ret > PATH_MAX || ret < 0)
+ 		return NULL;
  
--static unsigned long long timestamp_correct(unsigned long long ts,
--					    struct tracecmd_input *handle)
-+static unsigned long long timestamp_correct_cpu(unsigned long long ts,
-+						struct ts_offset_cpu *cpu_offset)
- {
--	struct host_trace_info	*host = &handle->host;
--	struct ts_offset_cpu *cpu_offset = NULL;
- 	int min, mid, max;
--	int i;
- 
--	if (handle->ts_offset)
--		return ts + handle->ts_offset;
- 
--	if (!host->sync_enable)
--		return ts;
--
--	/* ToDo - find actual host CPU of this guest ts */
--	for (i = 0; i < host->cpu_count; i++) {
--		if (host->cpu_time_offsets[i].ts_samples_count) {
--			cpu_offset = &host->cpu_time_offsets[i];
--			break;
--		}
--	}
- 	if (!cpu_offset)
- 		return ts;
- 
-@@ -1178,6 +1175,90 @@ static unsigned long long timestamp_correct(unsigned long long ts,
- 					 &cpu_offset->ts_samples[mid+1]);
- }
- 
-+static struct ts_offset_cpu *timestamp_host_cpu_offset(struct host_trace_info *host,
-+						       int cpu)
-+{
-+	int i;
-+
-+	if (cpu >= 0 && cpu < host->cpu_count)
-+		return host->cpu_time_offsets + cpu;
-+
-+	if (cpu < 0) {
-+		for (i = 0; i < host->cpu_count; i++) {
-+			if (host->cpu_time_offsets[i].ts_samples_count)
-+				return host->cpu_time_offsets + i;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static int timestamp_vcpu_to_cpu_ts(struct host_trace_info *host,
-+				    int vcpu, unsigned long long ts)
-+{
-+	struct vcpu_sched_data *sched;
-+	int min, mid, max;
-+
-+	if (vcpu < 0 || vcpu >= host->vcpu_count || !host->vcpu_sched)
-+		return -1;
-+
-+	sched = host->vcpu_sched + vcpu;
-+	if (!sched)
-+		return -1;
-+
-+	min = 0;
-+	max = sched->cpu_sched_count - 1;
-+	mid = (min + max)/2;
-+	while (min <= max) {
-+		if (ts < sched->cpu_sched[mid].ts)
-+			max = mid - 1;
-+		else if (ts > sched->cpu_sched[mid].ts)
-+			min = mid + 1;
-+		else
-+			break;
-+		mid = (min + max)/2;
-+	}
-+
-+	return sched->cpu_sched[mid].host_cpu;
-+
-+}
-+
-+static int timestamp_vcpu_to_cpu(struct host_trace_info *host,
-+				 int vcpu,
-+				 unsigned long long ts)
-+{
-+	struct ts_offset_cpu *cpu_offset = NULL;
-+	unsigned long long ts_guess;
-+	int cpu;
-+
-+	cpu_offset = timestamp_host_cpu_offset(host, -1);
-+	ts_guess = timestamp_correct_cpu(ts, cpu_offset);
-+	cpu = timestamp_vcpu_to_cpu_ts(host, vcpu, ts_guess);
-+
-+	return cpu;
-+}
-+
-+static unsigned long long timestamp_correct(unsigned long long ts, int cpu,
-+					    struct tracecmd_input *handle)
-+{
-+	struct ts_offset_cpu *cpu_offset = NULL;
-+	int host_cpu;
-+
-+	if (handle->ts_offset)
-+		return ts + handle->ts_offset;
-+
-+	if (!handle->host.sync_enable)
-+		return ts;
-+	if (handle->host.cpu_count == 1)
-+		host_cpu = 0;
-+	else
-+		host_cpu = timestamp_vcpu_to_cpu(&handle->host, cpu, ts);
-+
-+	cpu_offset = timestamp_host_cpu_offset(&handle->host, host_cpu);
-+
-+	return timestamp_correct_cpu(ts, cpu_offset);;
-+}
-+
- /*
-  * Page is mapped, now read in the page header info.
-  */
-@@ -1199,7 +1280,8 @@ static int update_page_info(struct tracecmd_input *handle, int cpu)
- 		    kbuffer_subbuffer_size(kbuf));
- 		return -1;
- 	}
--	handle->cpu_data[cpu].timestamp = timestamp_correct(kbuffer_timestamp(kbuf), handle);
-+	handle->cpu_data[cpu].timestamp = timestamp_correct(kbuffer_timestamp(kbuf),
-+							    cpu, handle);
- 
- 	if (handle->ts2secs)
- 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
-@@ -1832,7 +1914,7 @@ read_again:
- 		goto read_again;
- 	}
- 
--	handle->cpu_data[cpu].timestamp = timestamp_correct(ts, handle);
-+	handle->cpu_data[cpu].timestamp = timestamp_correct(ts, cpu, handle);
- 
- 	if (handle->ts2secs) {
- 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
-@@ -2226,10 +2308,146 @@ error:
- 	return -1;
- }
- 
-+static int tsync_store_cpu_sched_data(unsigned long long ts, int cpu,
-+				      int *sched_cpu_count,
-+				      struct ts_sched_cpu **sched_array)
-+{
-+	struct ts_sched_cpu *sched;
-+
-+	sched = realloc(*sched_array,
-+			(*sched_cpu_count + 1) * sizeof(struct ts_sched_cpu));
-+	if (!sched)
-+		return -1;
-+
-+	sched[*sched_cpu_count].ts = ts;
-+	sched[*sched_cpu_count].host_cpu = cpu;
-+	*sched_array = sched;
-+	(*sched_cpu_count)++;
-+	return 0;
-+}
-+
-+static int tsync_compact_cpu_sched_data(int *sched_cpu_count,
-+					struct ts_sched_cpu **sched_array)
-+{
-+	struct ts_sched_cpu *sched;
-+	int cpu = -1;
-+	int count;
-+	int i, j;
-+
-+	for (j = 0, i = 0; i < *sched_cpu_count; i++) {
-+		if (cpu == (*sched_array)[i].host_cpu)
-+			continue;
-+		cpu = (*sched_array)[i].host_cpu;
-+		j++;
-+	}
-+	sched = calloc(j, sizeof(struct ts_sched_cpu));
-+	if (!sched)
-+		return -1;
-+	count = j;
-+	for (i = 0, j = 0; i < *sched_cpu_count && j < count; i++) {
-+		if (cpu == (*sched_array)[i].host_cpu)
-+			continue;
-+		memcpy(sched + j, (*sched_array) + i, sizeof(struct ts_sched_cpu));
-+		cpu = (*sched_array)[i].host_cpu;
-+		j++;
-+	}
-+	*sched_cpu_count = j;
-+	free(*sched_array);
-+	*sched_array = sched;
-+
-+	return 0;
-+}
-+
-+static int trace_pid_sched_cmp(const void *a, const void *b)
-+{
-+	struct ts_sched_cpu *m_a = (struct ts_sched_cpu *)a;
-+	struct ts_sched_cpu *m_b = (struct ts_sched_cpu *)b;
-+
-+	if (m_a->ts > m_b->ts)
-+		return 1;
-+	if (m_a->ts < m_b->ts)
-+		return -1;
-+	return 0;
-+}
-+
-+static int tsync_load_cpu_sched_data(struct host_trace_info *host,
-+				     struct guest_trace_info *guest)
-+{
-+	struct tracecmd_input *peer = host->peer_data;
-+	struct tep_format_field	*next_pid = NULL;
-+	struct tep_event *sched_event;
-+	unsigned long long pid;
-+	struct tep_record *rec;
-+	int i, j;
-+	int ret = -1;
-+	int *sched_cpu_count = NULL;
-+	struct ts_sched_cpu **sched =  NULL;
-+
-+	if (!peer)
-+		return -1;
-+
-+	sched_event = tep_find_event_by_name(peer->pevent,
-+					     "sched", "sched_switch");
-+	if (sched_event)
-+		next_pid = tep_find_any_field(sched_event, "next_pid");
-+	if (!next_pid)
-+		return -1;
-+	sched = calloc(guest->vcpu_count, sizeof(struct ts_sched_cpu *));
-+	sched_cpu_count = calloc(guest->vcpu_count, sizeof(int));
-+	if (!sched || !sched_cpu_count)
-+		goto error;
-+	for (i = 0; i < peer->cpus; i++) {
-+		for (rec = tracecmd_read_cpu_first(peer, i);
-+		     rec; rec = tracecmd_read_data(peer, i)) {
-+			if (tep_data_type(peer->pevent, rec) != sched_event->id)
-+				continue;
-+			if (tep_read_number_field(next_pid, rec->data, &pid))
-+				continue;
-+			for (j = 0; j < guest->vcpu_count; j++) {
-+				if (guest->cpu_pid[j] < 0)
-+					continue;
-+				if (pid != guest->cpu_pid[j])
-+					continue;
-+				ret = tsync_store_cpu_sched_data(rec->ts,
-+								 rec->cpu,
-+								 &sched_cpu_count[j],
-+								 &sched[j]);
-+				if (ret)
-+					goto error;
-+			}
-+		}
-+	}
-+	host->vcpu_sched = calloc(guest->vcpu_count, sizeof(struct vcpu_sched_data));
-+	if (!host->vcpu_sched)
-+		goto error;
-+	host->vcpu_count = guest->vcpu_count;
-+	for (i = 0; i < guest->vcpu_count; i++) {
-+		if (!sched[i])
-+			continue;
-+		qsort(sched[i], sched_cpu_count[i],
-+			sizeof(struct ts_sched_cpu), trace_pid_sched_cmp);
-+		tsync_compact_cpu_sched_data(&sched_cpu_count[i],
-+					     &sched[i]);
-+		host->vcpu_sched[i].cpu_sched = sched[i];
-+		host->vcpu_sched[i].cpu_sched_count = sched_cpu_count[i];
-+	}
-+	ret = 0;
-+
-+error:
-+	if (ret && sched) {
-+		for (i = 0; i < guest->vcpu_count; i++)
-+			free(sched[i]);
-+	}
-+	free(sched);
-+	free(sched_cpu_count);
-+	return ret;
-+}
-+
- static void tsync_check_enable(struct tracecmd_input *handle)
- {
- 	struct host_trace_info	*host = &handle->host;
- 	struct guest_trace_info *guest;
-+	int ret;
- 
- 	host->sync_enable = false;
- 
-@@ -2247,7 +2465,12 @@ static void tsync_check_enable(struct tracecmd_input *handle)
- 	if (!guest)
- 		return;
- 
--	host->sync_enable = true;
-+	ret = 0;
-+	if (host->cpu_count > 1)
-+		ret = tsync_load_cpu_sched_data(host, guest);
-+
-+	if (!ret)
-+		host->sync_enable = true;
- }
- 
- static int tsync_offset_load(struct tracecmd_input *handle,
-@@ -2290,11 +2513,17 @@ static void trace_tsync_offset_free(struct host_trace_info *host)
- 
- 	for (i = 0; i < host->cpu_count; i++)
- 		free(host->cpu_time_offsets[i].ts_samples);
-+	for (i = 0; i < host->vcpu_count; i++)
-+		free(host->vcpu_sched[i].cpu_sched);
- 
- 	free(host->cpu_time_offsets);
- 	host->cpu_time_offsets = NULL;
- 	host->cpu_count = 0;
- 
-+	free(host->vcpu_sched);
-+	host->vcpu_sched = NULL;
-+	host->vcpu_count = 0;
-+
- 	if (host->peer_data) {
- 		tracecmd_close(host->peer_data);
- 		host->peer_data = NULL;
++	path[ret] = 0;
+ 	dirname(path);
+ 	p = strrchr(path, '/');
+ 	if (!p)
 -- 
 2.25.1
 
