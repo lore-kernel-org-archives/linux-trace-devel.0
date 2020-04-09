@@ -2,191 +2,154 @@ Return-Path: <SRS0=lsLa=5Z=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3C1DC2BBC7
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Apr 2020 14:25:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7CDAC2BA19
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:22:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 88D1220771
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Apr 2020 14:25:22 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IxI7gn7v"
+	by mail.kernel.org (Postfix) with ESMTP id C549520757
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Apr 2020 18:22:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727481AbgDIOZV (ORCPT
+        id S1726470AbgDISWR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 9 Apr 2020 10:25:21 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:33591 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727162AbgDIOZV (ORCPT
+        Thu, 9 Apr 2020 14:22:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgDISWR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 9 Apr 2020 10:25:21 -0400
-Received: by mail-lj1-f195.google.com with SMTP id q22so7899337ljg.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 09 Apr 2020 07:25:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NZ9YLofvrpGVpsRUBmuxxvKQiZ0sjpDDHRzKMyKVSWw=;
-        b=IxI7gn7vq+ZxhRwjI6ONOCLGQl09qtPmPQ5v8lwe+uWG5mePMDmeQyrwRG4HwofbLB
-         M6UI3f7Z+BdksW3Dx5FPJ7JNQRygL0OE3j6pMVbI+Xomm0sixtXTp+VawnSP1jRkjugp
-         Q+JD+m/cKCGuQJH3VaXJiTinlppXzT5eg70YPrxhTV7HanOZbIotV4QwMc39bIVohEaZ
-         acqGk53MXgb/xix+APsSM75+bRGScAGJYycGQYiQUJYsg3n1+0/mc7AWrdFWpqv2A0wj
-         7OIP60GBuCbH+6PRUzyWzMzPyLovmIdpcvRvluQ2C/BRJKIYx1aNKncK4unYDny0Sz0u
-         Wn6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NZ9YLofvrpGVpsRUBmuxxvKQiZ0sjpDDHRzKMyKVSWw=;
-        b=GtcWHhJzWvm2CtnfQmwxm2tBYhM3uer5wY7cIKcAyhoEWJWi0feWhfDwiY4wlrlnVH
-         yMpaockoqZxpRtbNX3t9L6Z1kDsfAsMH9bucsaheVavCOe4yRkrjnuWz+V1WFmM8fet9
-         zukoM0MkirJC7B9b0PDrI/HMnE6l4dggJK39P0E/3owmOElF9fYx1u+nx4KWmop0LnxL
-         +YfaL10mKbcdDAQPiUu/kjz+v1zC3bQBeIAkEgrUdt7aBqK7ERx7YCcuaQEDs4J9s9QO
-         JXjFGgMy3WrdyClZFQdLiiIQGuwCq0kU57OzD0CSxiwxPfkcJ1Q6BvJ5vpdAf5VFgx2H
-         ESjA==
-X-Gm-Message-State: AGi0PuYL9AD2sRFPXHWN94qrPNqLvnUGV+nsJYZt1wfBkYYtzdrOHmLB
-        TISV9opADKGhMeWXcTiOpuI=
-X-Google-Smtp-Source: APiQypIvWs4v8EOAXY5Otu3PgZyCgRTXfh8MZzTBhc85r6zSXN6SgJIoM2CsZyy7IRia24a8zbJmPg==
-X-Received: by 2002:a2e:97c2:: with SMTP id m2mr28172ljj.228.1586442319664;
-        Thu, 09 Apr 2020 07:25:19 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id e7sm181230lfc.72.2020.04.09.07.25.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 07:25:19 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
+        Thu, 9 Apr 2020 14:22:17 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7594F20753;
+        Thu,  9 Apr 2020 18:22:17 +0000 (UTC)
+Date:   Thu, 9 Apr 2020 14:22:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2] kernel-shark-2.alpha: Use new tracecmd APIs to open guest tracing file
-Date:   Thu,  9 Apr 2020 17:25:11 +0300
-Message-Id: <20200409142511.82228-5-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200409142511.82228-1-tz.stoyanov@gmail.com>
-References: <20200409142511.82228-1-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v4 1/4] trace-cmd: Add new tracefs APIs for checking if
+ a ftrace file / directory exists
+Message-ID: <20200409142215.29607d07@gandalf.local.home>
+In-Reply-To: <20200225180733.89344-2-tz.stoyanov@gmail.com>
+References: <20200225180733.89344-1-tz.stoyanov@gmail.com>
+        <20200225180733.89344-2-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
+On Tue, 25 Feb 2020 20:07:30 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-The new tracecmd API tracecmd_open_head() allows opening a trace.dat
-file on stages. First, only the headers from the file are read and parsed,
-without reading the tracing data.
-The tracecmd_set_merge_peer() API is used to bind a tracing peer to
-this file, before parsing the trace data. This affects events timestamps
-correction when the tracing data is loaded.
-The tracecmd_get_guest_cpumap() API is used to find dependencies between
-all files and find a possible tracing peers.
+> Some ftrace files and directories are optional, depending on specific kernel configuration or version.
+> It is a good practice to check if the file / directory exist, before trying to access it. There are a lot of places in trace-cmd implementation with such checks.
+> The new libtracefs APIs can be used for this, they are ftarce instance aware:
+>  bool tracefs_file_exist(struct tracefs_instance *instance, char *name);
+>  bool tracefs_dir_exist(struct tracefs_instance *instance, char *name);
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+>  include/tracefs/tracefs.h      |  3 +++
+>  lib/tracefs/tracefs-instance.c | 49 +++++++++++++++++++++++++++++++++-
+>  2 files changed, 51 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/tracefs/tracefs.h b/include/tracefs/tracefs.h
+> index 85690b66..bc8bebcb 100644
+> --- a/include/tracefs/tracefs.h
+> +++ b/include/tracefs/tracefs.h
+> @@ -33,6 +33,9 @@ int tracefs_instance_file_write(struct tracefs_instance *instance,
+>  char *tracefs_instance_file_read(struct tracefs_instance *instance,
+>  				 char *file, int *psize);
+>  
+> +bool tracefs_file_exist(struct tracefs_instance *instance, char *name);
+> +bool tracefs_dir_exist(struct tracefs_instance *instance, char *name);
+> +
+>  /* events */
+>  void tracefs_list_free(char **list);
+>  char **tracefs_event_systems(const char *tracing_dir);
+> diff --git a/lib/tracefs/tracefs-instance.c b/lib/tracefs/tracefs-instance.c
+> index b96ab61c..67123e7c 100644
+> --- a/lib/tracefs/tracefs-instance.c
+> +++ b/lib/tracefs/tracefs-instance.c
+> @@ -13,7 +13,7 @@
+>  #include <errno.h>
+>  #include <sys/stat.h>
+>  #include <fcntl.h>
+> -
+> +#include <linux/limits.h>
+>  #include "tracefs.h"
+>  #include "tracefs-local.h"
+>  
+> @@ -247,3 +247,50 @@ char *tracefs_instance_file_read(struct tracefs_instance *instance,
+>  
+>  	return buf;
+>  }
+> +
+> +static bool check_file_exist(struct tracefs_instance *instance,
+> +			     char *name, bool dir)
+> +{
+> +	char file[PATH_MAX];
+> +	struct stat st;
+> +	char *path;
+> +	int ret;
+> +
+> +	path = tracefs_instance_get_dir(instance);
+> +	snprintf(file, PATH_MAX, "%s/%s", path, name);
+> +	tracefs_put_tracing_file(path);
+> +	ret = stat(file, &st);
+> +	if (ret < 0)
+> +		return false;
+> +
+> +	if (dir && !S_ISDIR(st.st_mode))
+> +		return false;
+> +	if (!dir && S_ISDIR(st.st_mode))
+> +		return false;
+> +
+> +	return true;
 
-This change depends on these trace-cmd patch sets:
-  "Useful APIs for merging tracing files"
-https://patchwork.kernel.org/project/linux-trace-devel/list/?series=268745
-  "Split reading the trace.dat options from trace data"
-https://patchwork.kernel.org/project/linux-trace-devel/list/?series=268743
+BTW, the above can be converted to just:
 
-Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
----
- src/libkshark-tepdata.c | 59 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 58 insertions(+), 1 deletion(-)
+	return !dir == !S_ISDIR(st.st_mode);
 
-diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-index 8678e12..c68b52a 100644
---- a/src/libkshark-tepdata.c
-+++ b/src/libkshark-tepdata.c
-@@ -985,6 +985,45 @@ const char *tep_plugin_names[] = {"sched_events",
- 
- #define LINUX_IDLE_TASK_PID	0
- 
-+/** Find a host stream from the same tracing session, that has guest information */
-+struct tracecmd_input *kshark_tep_find_merge_peer(struct kshark_context *kshark_ctx,
-+						  struct tracecmd_input *handle)
-+{
-+	struct tracecmd_input *peer_handle = NULL;
-+	struct kshark_data_stream *peer_stream;
-+	unsigned long long trace_id;
-+	int *streamIds = NULL;
-+	int ret;
-+	int i;
-+
-+	trace_id = tracecmd_get_traceid(handle);
-+	if (!trace_id)
-+		goto out;
-+
-+	streamIds = kshark_all_streams(kshark_ctx);
-+	if (!streamIds)
-+		goto out;
-+	for (i = 0; i < kshark_ctx->n_streams; i++) {
-+		peer_stream = kshark_get_data_stream(kshark_ctx, streamIds[i]);
-+		if (!peer_stream || peer_stream->format != KS_TEP_DATA)
-+			continue;
-+		peer_handle = kshark_get_tep_input(peer_stream);
-+		if (!peer_handle)
-+			continue;
-+		ret = tracecmd_get_guest_cpumap(peer_handle, trace_id,
-+						NULL, NULL, NULL);
-+		if (!ret)
-+			break;
-+	}
-+
-+	if (i == kshark_ctx->n_streams)
-+		peer_handle = NULL;
-+
-+out:
-+	free(streamIds);
-+	return peer_handle;
-+}
-+
- /** Initialize the FTRACE data input (from file). */
- int kshark_tep_init_input(struct kshark_data_stream *stream,
- 			  const char *file)
-@@ -992,8 +1031,10 @@ int kshark_tep_init_input(struct kshark_data_stream *stream,
- 	struct kshark_context *kshark_ctx = NULL;
- 	struct tepdata_handle *tep_handle;
- 	struct kshark_plugin_list *plugin;
-+	struct tracecmd_input *merge_peer;
- 	struct tep_event *event;
- 	int i, n_tep_plugins;
-+	int ret;
- 
- 	if (!kshark_instance(&kshark_ctx) || !init_thread_seq())
- 		return -EEXIST;
-@@ -1009,13 +1050,29 @@ int kshark_tep_init_input(struct kshark_data_stream *stream,
- 	if (!tep_handle)
- 		return -EFAULT;
- 
--	tep_handle->input = tracecmd_open(file);
-+	/** Open the tracing file, parse headers and create trace input context */
-+	tep_handle->input = tracecmd_open_head(file);
- 	if (!tep_handle->input) {
- 		free(tep_handle);
- 		stream->interface.handle = NULL;
- 		return -EEXIST;
- 	}
- 
-+	/** Find a merge peer from the same tracing session */
-+	merge_peer = kshark_tep_find_merge_peer(kshark_ctx, tep_handle->input);
-+	if (merge_peer)
-+		tracecmd_set_merge_peer(tep_handle->input, merge_peer);
-+
-+	/** Read the racing data from the file */
-+	ret = tracecmd_init_data(tep_handle->input);
-+
-+	if (ret < 0) {
-+		tracecmd_close(tep_handle->input);
-+		free(tep_handle);
-+		stream->interface.handle = NULL;
-+		return -EEXIST;
-+	}
-+
- 	tep_handle->tep = tracecmd_get_pevent(tep_handle->input);
- 
- 	tep_handle->sched_switch_event_id = -EINVAL;
--- 
-2.25.1
+
+> +}
+> +
+> +/**
+> + * tracefs_file_exist - Check if a file with given name exists in given instance
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + * @name: name of the file
+> + *
+> + * Returns true if the file exists, false otherwise
+
+Probably should comment that this will return false if the "file" exists
+but is a directory.
+
+Is there any reason we would not want to return true here if it was a
+directory? A directory is just another kind of "file" (in the Unix world).
+
+-- Steve
+
+> + */
+> +bool tracefs_file_exist(struct tracefs_instance *instance, char *name)
+> +{
+> +	return check_file_exist(instance, name, false);
+> +}
+> +
+> +/**
+> + * tracefs_dir_exist - Check if a directory with given name exists in given instance
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + * @name: name of the directory
+> + *
+> + * Returns true if the directory exists, false otherwise
+> + */
+> +bool tracefs_dir_exist(struct tracefs_instance *instance, char *name)
+> +{
+> +	return check_file_exist(instance, name, true);
+> +}
 
