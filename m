@@ -1,113 +1,86 @@
-Return-Path: <SRS0=vGr1=5W=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=lsLa=5Z=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8BA4C2BA19
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:33:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46B8DC2BA2B
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Apr 2020 13:28:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 962FB23EF6
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Apr 2020 14:33:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 08DE9208FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  9 Apr 2020 13:28:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BigSGrd6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cTnJacqM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgDFOdO (ORCPT
+        id S1726650AbgDIN2C (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 6 Apr 2020 10:33:14 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:46244 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728406AbgDFOdO (ORCPT
+        Thu, 9 Apr 2020 09:28:02 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:34040 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726632AbgDIN2B (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:33:14 -0400
-Received: by mail-pl1-f196.google.com with SMTP id s23so5963278plq.13
-        for <linux-trace-devel@vger.kernel.org>; Mon, 06 Apr 2020 07:33:13 -0700 (PDT)
+        Thu, 9 Apr 2020 09:28:01 -0400
+Received: by mail-lf1-f43.google.com with SMTP id x23so7900328lfq.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 09 Apr 2020 06:28:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=N+16lScq/K94HbX533KDB9IV83/nbtEACUkxQU67O2c=;
-        b=BigSGrd62jFLw3dP+CvDe9evmR6L70xPWGvzojYyiHTnQDZBWGkYcahLxaloqLNYYp
-         q1qvK/i2HhQNtm0rQFf54cg8hv0AkbbBvd1n7hAEHxHq5tHmEJLT050MTNOLZHNr+1MG
-         M8tTKe2g+tuq1Sdhd509be6rbBStSXl1140nK1xANylNLi1cKShs8oatoM/2LrLHI/gw
-         gcsBsm6mC5FUXUljIH7Keh7gHu/xvNSaE/ed42n//kieJjNP5xUuoXqSge8GBEnSyD5O
-         nDpdvFMXl1vhezeR29In8BsDQl+IbspE60FcJWRpy/nTMN9A3IVGWCceDLqVEgQz6Ir1
-         QDig==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+iDGuPZB8ElDv6syznIuOvWtfbCUX/l6SWZghpd5bJo=;
+        b=cTnJacqMvYA60Oa/M3EjkMIhxE2VIkWL+cCwqsf73RNr24Yb+dFOvV/qnzIWzaC0Dq
+         uQ3OeqN2uyQgbKwuypeeDhiMR2wrIa9cfftEp2iWwM3k3O9s+9DS6/bcnQMUjT0qhbpH
+         TzxCdpXbbBTv7uFQhqLcZYS2ZfOt3iVWj++Ssnw++74usGbDLI6TEaSLucg4qmNJQAK/
+         d5IuQ3DO839pnFPwuhMKXW241XSTKN1CtUQdxf5b2AX/zRJfq2RqXpFnKGy2k7lWBCz4
+         xHZHzeLF0Fko2vDT81JHuo7W3WEEgwf+cveL7Yplp+A/cW9q37ycqyPiIrYV4wPGCn7h
+         qkvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=N+16lScq/K94HbX533KDB9IV83/nbtEACUkxQU67O2c=;
-        b=I1xRkLTaFMhLUSFK/su0IQjnKa+ymnYRjYlT4LJnmubQPCdacPXVdjx5Dip3GU8Par
-         HLqqOLWNvEyQniv7WfgWzDNJZjLkGdUMXaXUkL6javZAMHv4+nNVNAlymPrmtmrOuvi6
-         435rR2bVXQkkZOoKsACEUhP64NzVkBUrrYG9f3qbPobJrQJ3yhbEy7kEJfnwApezrrfL
-         NbK0l/AbWC+6OO4X7ZkwWJ+kRyM+4ykwaiSvpuYfPDNz80AKxImC+Yeo8vFhFwRXxZtK
-         wa0hkQzPVc7TECE9/nw9eI8qnXOBc1F0Uh5AYook7VFRCXno6oxyJ55Laq3JI5yWKlMp
-         ONpQ==
-X-Gm-Message-State: AGi0PuYxCt/HIngLB+VXlAVaLUsL337Cew3nDj/Q6FpcP2VTSbpSi48s
-        iY2ZLA8qDdbA4uiScU9EFVK7eE/C0jdaM1a47uJma7crGOM=
-X-Google-Smtp-Source: APiQypLZMzSwsAqnN3DgdF8JQbVf8wzY1I4LKhGS+N1E9Z6+u+2Wqu/9X5ieX1+pSVyICA6Vb6lOteH8YjR8LrZtnqw=
-X-Received: by 2002:a17:902:b617:: with SMTP id b23mr1600770pls.194.1586183592529;
- Mon, 06 Apr 2020 07:33:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+iDGuPZB8ElDv6syznIuOvWtfbCUX/l6SWZghpd5bJo=;
+        b=YASQdRuD3TJWwfDDU/XXcZu9pjgCrpHrMc0zJoaaloLCFZcmuJ2BXmhFAd5CKHbA3G
+         nBz5dbMNAcWO2+hdpBlaVQ3lloNrTlEkGWes5LI+5yxZyiirrfCgc684YD1ILPOhWnrX
+         j4hs9aaFhn7MyrD+PB6NsRCUrL2lbDhQeoYc2oRm3fwdQwtGgphV0/6E/WGMhmajffv3
+         xzoFDrSYB+LbtyrNSIlYWwrMlNpUgT8j6ATBKUuuzLtoWYHfQiPc8Qkgi/mCUU0Xxudd
+         1Ruhnaf9bdLgZVJw49DXtFhqmXeyGqB9h7fHyYdiu3/50PIl1RJI/fup0MeTtZuDJnz6
+         fPtQ==
+X-Gm-Message-State: AGi0Pua6stInX1INIYRrGcyklQuq8ujMpS9Anm3FwDOP3VzgACXzt0bs
+        dusMarmJitGTruKgMm7xNJ9zTdSu3l8=
+X-Google-Smtp-Source: APiQypKzR/ou5VBEIVpDIwm9n+nxN5VkOq+VBI+VvebOw/99kCEeU+bMZTH9s7KO4NsmIs1KURCxVA==
+X-Received: by 2002:ac2:46e5:: with SMTP id q5mr7015314lfo.11.1586438880161;
+        Thu, 09 Apr 2020 06:28:00 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id f2sm1067220lfl.18.2020.04.09.06.27.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 06:27:59 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH 0/2] Small trace-cmd fixes
+Date:   Thu,  9 Apr 2020 16:27:54 +0300
+Message-Id: <20200409132756.79402-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200401164509.191494-1-tz.stoyanov@gmail.com>
- <0f53a13b-f1ff-f467-0f95-899ca404b5b0@gmail.com> <CAPpZLN7NLm=r3y76M1oZAVRh5S7FOCk6-ieSKOzZVtMOCJ=uxQ@mail.gmail.com>
- <5b55ebc5-d682-f934-a643-c0fe65fba003@gmail.com> <CAPpZLN61s-7SY_Ey8Qu7n+=v0FE6VVgxoTp-qrGgit0=Rj_0SQ@mail.gmail.com>
- <3e45fc77-619f-3d3e-3f48-47d0fcf29f1d@gmail.com>
-In-Reply-To: <3e45fc77-619f-3d3e-3f48-47d0fcf29f1d@gmail.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 6 Apr 2020 17:33:00 +0300
-Message-ID: <CAPpZLN5d4Q9k48hoC=VBTAs3g=KGTL11f_dT+5HYVf1jwq6NJw@mail.gmail.com>
-Subject: Re: [PATCH] kernel-shark-2.alpha: Use new tracecmd API to open guest
- tracing file
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 4:24 PM Yordan Karadzhov (VMware)
-<y.karadz@gmail.com> wrote:
->
->
->
-> On 3.04.20 =D0=B3. 20:12 =D1=87., Tzvetomir Stoyanov wrote:
-> >> Maybe it has to be a bit more sophisticated. Does the "primary" stream
-> >> know how to recognize its "secondary" streams?
-> >>
-> > Yes, there are tracing IDs in both host and guest files. When these IDs=
- match,
-> > files are from a same tracing session.
-> > I can add "parent_stream_id" member in "struct kshark_data_stream" and
-> > initialize it
-> > when reading the files, according to the trace IDs.
->
-> Not sure if this is the right place to put this information. I do not
-> want to have "tep data" specific fields in "struct kshark_data_stream".
-> Is it possible to have this mapping stored in in "struct tepdata_handle"
-> instead.
-Actually, the only new thing in "struct kshark_data_stream" will be the id =
-of
-the parent stream, "int parent_stream_id". All tracecmd specific mappings a=
-re in
-"struct tracecmd_input" and will be accessible via tracecmd APIs.
-Currently I assume that the stream with ID 0 is parent to all other
-streams, opened with "-a" option.
-This assumption will be removed when this "parent_stream_id" is introduced.
+Small fixes, good to have in the next trace-cmd release.
 
->
-> Thanks!
-> Yordan
+Tzvetomir Stoyanov (VMware) (2):
+  trace-cmd: Fix possible usage of not null-terminated string
+  trace-cmd: Fix reading of the traceid option from trace.dat file
 
+ lib/trace-cmd/trace-input.c  | 4 +++-
+ lib/trace-cmd/trace-plugin.c | 1 +
+ lib/trace-cmd/trace-util.c   | 1 +
+ 3 files changed, 5 insertions(+), 1 deletion(-)
 
+-- 
+2.25.1
 
---=20
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
