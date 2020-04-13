@@ -2,105 +2,92 @@ Return-Path: <SRS0=pFV5=55=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79AAFC2BA19
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Apr 2020 07:26:16 +0000 (UTC)
-Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 357D020737
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Apr 2020 07:26:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 357D020737
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cn.fujitsu.com
-Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-trace-devel-owner@vger.kernel.org
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99534C2BA19
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Apr 2020 08:33:10 +0000 (UTC)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.kernel.org (Postfix) with ESMTP id 69DC6206E9
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 13 Apr 2020 08:33:10 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="n719eV9I"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729276AbgDMH0P (ORCPT
+        id S1727971AbgDMI35 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Apr 2020 03:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:60290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727612AbgDMH0P (ORCPT
+        Mon, 13 Apr 2020 04:29:57 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:34198 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727777AbgDMI35 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Apr 2020 03:26:15 -0400
-Received: from heian.cn.fujitsu.com (mail.cn.fujitsu.com [183.91.158.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2657C008651;
-        Mon, 13 Apr 2020 00:26:14 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="5.72,377,1580745600"; 
-   d="scan'208";a="88939532"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 13 Apr 2020 15:26:13 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id A6AFD50A9999;
-        Mon, 13 Apr 2020 15:15:42 +0800 (CST)
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (10.167.33.83) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 13 Apr 2020 15:26:13 +0800
-Received: from Fedora-31.g08.fujitsu.local (10.167.220.31) by
- G08CNEXCHPEKD02.g08.fujitsu.local (10.167.33.89) with Microsoft SMTP Server
- id 14.3.439.0; Mon, 13 Apr 2020 15:26:09 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-To:     <rostedt@goodmis.org>, <mingo@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-trace-devel@vger.kernel.org>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>
-Subject: [PATCH] tracing: Fix the race between registering 'snapshot' event trigger and triggering 'snapshot' operation
-Date:   Mon, 13 Apr 2020 15:12:52 +0800
-Message-ID: <20200413071252.13720-1-yangx.jy@cn.fujitsu.com>
+        Mon, 13 Apr 2020 04:29:57 -0400
+Received: by mail-wr1-f45.google.com with SMTP id d27so153053wra.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Apr 2020 01:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8uaOkRKdLJs3YM+Vb8851VPenW7Ew1FwCTl2rpf6wGE=;
+        b=n719eV9Iz2GpefwxlvguiVzRqbnY0/V7wq5Yr9ZKazpm/d8AGbIuzy7rLfgqomLLhM
+         D6jQCn/20dZU+JCjWniEPcIWpBykzaZceWyCLFrDDpIERxmwWT4nYEpT1fhGYQ5V9MGW
+         9oFGvpJYR5XWb4NJLFMmF9qFDTYBni+1FwRbVFxYlIKKsIP0ewdxX9EtDoi7AGeaNXmw
+         o1an9r0Z+O+fI0izrivywnnqJnSVa0eSwMRRnZRG/bShOCUBPvq4c4Pcdb0oolt3jqtD
+         9quWT0cUJrmjwHpFZ98uSTEugngbkbrp61pAkLbIbWLPWpuyA2baR5k0V0e3tU2OJUI8
+         I9Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8uaOkRKdLJs3YM+Vb8851VPenW7Ew1FwCTl2rpf6wGE=;
+        b=AZ+lMEzRVkbLdhU4+1IY7FibIURCDX4qHi33I3OCDMQNUtaI9QWQXoVPBMYGcQRv5L
+         3IUYGeEEwYQW5lgHYL6AAaRS+uye7HyMQ2lOpdpazxeqkiC6oXIzZn8ByNVvAgcTcxUT
+         L7cyCd5SCbKYjX1879tKvt53i9qEqLe3u5OaH7r7P7AFIpgkf6cSbW03TD/gAJqN6oxq
+         w7wXQWCahnBbPhEmS8pA75w4z13QxXNqgY2sl3mCW+m5RDzHdnWlTN7u7fT7IBqiz7cP
+         6JJAFkF/XndjwkEktjDX5grkUgYqbbKQovrnHVVDc92RTyGE3u6qIytamgUV4Brp6Q9y
+         7CnA==
+X-Gm-Message-State: AGi0PuZziBblKyjb9GiUF1Luenq6E6+aLjs1eaDCGjVwstj4/oDN76zg
+        5dtORsKUnfRmPgwVxAt0cwpZM3cCA1s=
+X-Google-Smtp-Source: APiQypJ1uAvaRgf/NjDqF1q2MsThc+IrRkRtPeyjDXa+ljt9HoI4xfe2EDy4b2PzQIPhSCh6Jwl57A==
+X-Received: by 2002:a2e:9b41:: with SMTP id o1mr10099170ljj.145.1586766217344;
+        Mon, 13 Apr 2020 01:23:37 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id b9sm9463605lfp.27.2020.04.13.01.23.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 01:23:36 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2 0/2] Useful APIs for merging tracing files
+Date:   Mon, 13 Apr 2020 11:23:32 +0300
+Message-Id: <20200413082334.164158-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: A6AFD50A9999.ACC61
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Traced event can trigger 'snapshot' operation(i.e. calls snapshot_trigger()
-or snapshot_count_trigger()) when register_snapshot_trigger() has completed
-registration but doesn't allocate spare buffer for 'snapshot' event trigger.
-'snapshot' operation always detects the lack of allocated buffer in the rare
-case so make register_snapshot_trigger() allocate spare buffer first.
+Helper APIs, used when opening and merging files from same tracing
+session.
 
-trigger-snapshot.tc in kselftest reproduces the issue on slow vm:
------------------------------------------------------------
-cat trace
-...
-ftracetest-3028  [002] ....   236.784290: sched_process_fork: comm=ftracetest pid=3028 child_comm=ftracetest child_pid=3036
-     <...>-2875  [003] ....   240.460335: tracing_snapshot_instance_cond: *** SNAPSHOT NOT ALLOCATED ***
-     <...>-2875  [003] ....   240.460338: tracing_snapshot_instance_cond: *** stopping trace here!   ***
------------------------------------------------------------
+[
+ v2 changes:
+  - Renamed tracecmd_set_merge_peer() to tracecmd_pair_peer()
+    and introduced tracecmd_unpair_peer() 
+]
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- kernel/trace/trace_events_trigger.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Tzvetomir Stoyanov (VMware) (2):
+  trace-cmd: Add new APIs to pair and unpair tracing peers
+  trace-cmd: Validate input parameters of tracecmd_get_guest_cpumap()
+    API
 
-diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
-index dd34a1b46a86..00e54cdcef3e 100644
---- a/kernel/trace/trace_events_trigger.c
-+++ b/kernel/trace/trace_events_trigger.c
-@@ -1088,9 +1088,13 @@ register_snapshot_trigger(char *glob, struct event_trigger_ops *ops,
- 			  struct event_trigger_data *data,
- 			  struct trace_event_file *file)
- {
--	int ret = register_trigger(glob, ops, data, file);
-+	int alloc_ret, ret;
- 
--	if (ret > 0 && tracing_alloc_snapshot_instance(file->tr) != 0) {
-+	alloc_ret = tracing_alloc_snapshot_instance(file->tr);
-+
-+	ret = register_trigger(glob, ops, data, file);
-+
-+	if (ret > 0 && alloc_ret != 0) {
- 		unregister_trigger(glob, ops, data, file);
- 		ret = 0;
- 	}
+ include/trace-cmd/trace-cmd.h |   3 +
+ lib/trace-cmd/trace-input.c   | 104 +++++++++++++++++++++++++++++++---
+ 2 files changed, 100 insertions(+), 7 deletions(-)
+
 -- 
 2.25.1
-
-
 
