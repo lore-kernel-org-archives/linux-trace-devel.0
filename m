@@ -2,174 +2,128 @@ Return-Path: <SRS0=o21U=56=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39E58C2BB86
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Apr 2020 01:46:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACAE6C2BB86
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Apr 2020 02:00:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 23F7C20775
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Apr 2020 01:46:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7AD7A2076D
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Apr 2020 02:00:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbgDNBqO (ORCPT
+        id S2403915AbgDNB76 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 13 Apr 2020 21:46:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403847AbgDNBqN (ORCPT
+        Mon, 13 Apr 2020 21:59:58 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:22422 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727867AbgDNB75 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 13 Apr 2020 21:46:13 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 574F5206B6
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Apr 2020 01:46:12 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.93)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1jOAeR-004H43-8m
-        for linux-trace-devel@vger.kernel.org; Mon, 13 Apr 2020 21:46:11 -0400
-Message-Id: <20200414014611.146422111@goodmis.org>
-User-Agent: quilt/0.65
-Date:   Mon, 13 Apr 2020 21:44:04 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/2] trace-cmd: Use "exists" instead of "exist"
-References: <20200414014403.968063641@goodmis.org>
+        Mon, 13 Apr 2020 21:59:57 -0400
+X-IronPort-AV: E=Sophos;i="5.72,381,1580745600"; 
+   d="scan'208";a="88984692"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 14 Apr 2020 09:59:53 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 4E67649DF135;
+        Tue, 14 Apr 2020 09:49:22 +0800 (CST)
+Received: from [10.167.220.69] (10.167.220.69) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 14 Apr 2020 09:59:50 +0800
+Message-ID: <5E951914.70104@cn.fujitsu.com>
+Date:   Tue, 14 Apr 2020 09:59:48 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] tracing: Fix the race between registering 'snapshot'
+ event trigger and triggering 'snapshot' operation
+References: <20200413071252.13720-1-yangx.jy@cn.fujitsu.com> <20200413110207.01a48591@gandalf.local.home>
+In-Reply-To: <20200413110207.01a48591@gandalf.local.home>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.167.220.69]
+X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
+X-yoursite-MailScanner-ID: 4E67649DF135.AAE37
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On 2020/4/13 23:02, Steven Rostedt wrote:
+> On Mon, 13 Apr 2020 15:12:52 +0800
+> Xiao Yang<yangx.jy@cn.fujitsu.com>  wrote:
+>
+>> Traced event can trigger 'snapshot' operation(i.e. calls snapshot_trigger()
+>> or snapshot_count_trigger()) when register_snapshot_trigger() has completed
+>> registration but doesn't allocate spare buffer for 'snapshot' event trigger.
+>> 'snapshot' operation always detects the lack of allocated buffer in the rare
+>> case so make register_snapshot_trigger() allocate spare buffer first.
+>>
+>> trigger-snapshot.tc in kselftest reproduces the issue on slow vm:
+>> -----------------------------------------------------------
+>> cat trace
+>> ...
+>> ftracetest-3028  [002] ....   236.784290: sched_process_fork: comm=ftracetest pid=3028 child_comm=ftracetest child_pid=3036
+>>       <...>-2875  [003] ....   240.460335: tracing_snapshot_instance_cond: *** SNAPSHOT NOT ALLOCATED ***
+>>       <...>-2875  [003] ....   240.460338: tracing_snapshot_instance_cond: *** stopping trace here!   ***
+>> -----------------------------------------------------------
+>>
+>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>> ---
+>>   kernel/trace/trace_events_trigger.c | 8 ++++++--
+>>   1 file changed, 6 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
+>> index dd34a1b46a86..00e54cdcef3e 100644
+>> --- a/kernel/trace/trace_events_trigger.c
+>> +++ b/kernel/trace/trace_events_trigger.c
+>> @@ -1088,9 +1088,13 @@ register_snapshot_trigger(char *glob, struct event_trigger_ops *ops,
+>>   			  struct event_trigger_data *data,
+>>   			  struct trace_event_file *file)
+>>   {
+>> -	int ret = register_trigger(glob, ops, data, file);
+>> +	int alloc_ret, ret;
+>>
+>> -	if (ret>  0&&  tracing_alloc_snapshot_instance(file->tr) != 0) {
+>> +	alloc_ret = tracing_alloc_snapshot_instance(file->tr);
+>> +
+>> +	ret = register_trigger(glob, ops, data, file);
+>> +
+>> +	if (ret>  0&&  alloc_ret != 0) {
+>>   		unregister_trigger(glob, ops, data, file);
+>>   		ret = 0;
+>>   	}
+>
+>
+> Why register if the allocation failed? Just switch the logic:
+>
+> 	int ret = tracing_alloc_snapshot_instance(file->tr);
+>
+> 	if (ret != 0)
+> 		return 0;
+>
+> 	return register_trigger(glob, ops, data, file);
+Hi Steve,
 
-As a native English speaker, I find that the words "file_exists" and
-"dir_exists" sounds better to the ear than "file_exist" and "dir_exist".
-As "exist" is for the plural, and "exists" is for the singular.
+It looks simpler and better.
+I think we can drop the unnecessary ret variable as well.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- include/tracefs/tracefs.h      |  4 ++--
- lib/tracefs/tracefs-instance.c | 14 +++++++-------
- tracecmd/trace-record.c        |  2 +-
- utest/tracefs-utest.c          | 28 ++++++++++++++--------------
- 4 files changed, 24 insertions(+), 24 deletions(-)
+Thanks,
+Xiao Yang
+>
+>
+> -- Steve
+>
+>
+> .
+>
 
-diff --git a/include/tracefs/tracefs.h b/include/tracefs/tracefs.h
-index bc8bebcb05a0..8ee7ba6e9d7a 100644
---- a/include/tracefs/tracefs.h
-+++ b/include/tracefs/tracefs.h
-@@ -33,8 +33,8 @@ int tracefs_instance_file_write(struct tracefs_instance *instance,
- char *tracefs_instance_file_read(struct tracefs_instance *instance,
- 				 char *file, int *psize);
- 
--bool tracefs_file_exist(struct tracefs_instance *instance, char *name);
--bool tracefs_dir_exist(struct tracefs_instance *instance, char *name);
-+bool tracefs_file_exists(struct tracefs_instance *instance, char *name);
-+bool tracefs_dir_exists(struct tracefs_instance *instance, char *name);
- 
- /* events */
- void tracefs_list_free(char **list);
-diff --git a/lib/tracefs/tracefs-instance.c b/lib/tracefs/tracefs-instance.c
-index 67123e7c14bf..a8729406b9fc 100644
---- a/lib/tracefs/tracefs-instance.c
-+++ b/lib/tracefs/tracefs-instance.c
-@@ -248,7 +248,7 @@ char *tracefs_instance_file_read(struct tracefs_instance *instance,
- 	return buf;
- }
- 
--static bool check_file_exist(struct tracefs_instance *instance,
-+static bool check_file_exists(struct tracefs_instance *instance,
- 			     char *name, bool dir)
- {
- 	char file[PATH_MAX];
-@@ -272,25 +272,25 @@ static bool check_file_exist(struct tracefs_instance *instance,
- }
- 
- /**
-- * tracefs_file_exist - Check if a file with given name exists in given instance
-+ * tracefs_file_exists - Check if a file with given name exists in given instance
-  * @instance: ftrace instance, can be NULL for the top instance
-  * @name: name of the file
-  *
-  * Returns true if the file exists, false otherwise
-  */
--bool tracefs_file_exist(struct tracefs_instance *instance, char *name)
-+bool tracefs_file_exists(struct tracefs_instance *instance, char *name)
- {
--	return check_file_exist(instance, name, false);
-+	return check_file_exists(instance, name, false);
- }
- 
- /**
-- * tracefs_dir_exist - Check if a directory with given name exists in given instance
-+ * tracefs_dir_exists - Check if a directory with given name exists in given instance
-  * @instance: ftrace instance, can be NULL for the top instance
-  * @name: name of the directory
-  *
-  * Returns true if the directory exists, false otherwise
-  */
--bool tracefs_dir_exist(struct tracefs_instance *instance, char *name)
-+bool tracefs_dir_exists(struct tracefs_instance *instance, char *name)
- {
--	return check_file_exist(instance, name, true);
-+	return check_file_exists(instance, name, true);
- }
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 955ab75d1b47..d89b32d3e2dd 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -4791,7 +4791,7 @@ static void clear_instance_error_log(struct buffer_instance *instance)
- {
- 	char *file;
- 
--	if (!tracefs_file_exist(instance->tracefs, "error_log"))
-+	if (!tracefs_file_exists(instance->tracefs, "error_log"))
- 		return;
- 
- 	file = tracefs_instance_get_file(instance->tracefs, "error_log");
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 3f57ecad3962..1c1465767ecc 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -252,20 +252,20 @@ static void test_instance_file(void)
- 	tracefs_put_tracing_file(inst_file);
- 	free(fname);
- 
--	CU_TEST(tracefs_file_exist(NULL, (char *)name) == false);
--	CU_TEST(tracefs_dir_exist(NULL, (char *)name) == false);
--	CU_TEST(tracefs_file_exist(instance, (char *)name) == false);
--	CU_TEST(tracefs_dir_exist(instance, (char *)name) == false);
--
--	CU_TEST(tracefs_file_exist(NULL, CUR_TRACER) == true);
--	CU_TEST(tracefs_dir_exist(NULL, CUR_TRACER) == false);
--	CU_TEST(tracefs_file_exist(instance, CUR_TRACER) == true);
--	CU_TEST(tracefs_dir_exist(instance, CUR_TRACER) == false);
--
--	CU_TEST(tracefs_file_exist(NULL, PER_CPU) == false);
--	CU_TEST(tracefs_dir_exist(NULL, PER_CPU) == true);
--	CU_TEST(tracefs_file_exist(instance, PER_CPU) == false);
--	CU_TEST(tracefs_dir_exist(instance, PER_CPU) == true);
-+	CU_TEST(tracefs_file_exists(NULL, (char *)name) == false);
-+	CU_TEST(tracefs_dir_exists(NULL, (char *)name) == false);
-+	CU_TEST(tracefs_file_exists(instance, (char *)name) == false);
-+	CU_TEST(tracefs_dir_exists(instance, (char *)name) == false);
-+
-+	CU_TEST(tracefs_file_exists(NULL, CUR_TRACER) == true);
-+	CU_TEST(tracefs_dir_exists(NULL, CUR_TRACER) == false);
-+	CU_TEST(tracefs_file_exists(instance, CUR_TRACER) == true);
-+	CU_TEST(tracefs_dir_exists(instance, CUR_TRACER) == false);
-+
-+	CU_TEST(tracefs_file_exists(NULL, PER_CPU) == false);
-+	CU_TEST(tracefs_dir_exists(NULL, PER_CPU) == true);
-+	CU_TEST(tracefs_file_exists(instance, PER_CPU) == false);
-+	CU_TEST(tracefs_dir_exists(instance, PER_CPU) == true);
- 
- 	CU_TEST(tracefs_instance_destroy(NULL) != 0);
- 	CU_TEST(tracefs_instance_destroy(instance) == 0);
--- 
-2.25.1
 
 
