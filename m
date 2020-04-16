@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07E07C352BE
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Apr 2020 16:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFA1AC2BB85
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Apr 2020 16:01:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D723B214AF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Apr 2020 16:01:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9892322244
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Apr 2020 16:01:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k8foOUSz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MPkn7neo"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636449AbgDPQBY (ORCPT
+        id S2442834AbgDPQBY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 16 Apr 2020 12:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2636453AbgDPQAx (ORCPT
+        by vger.kernel.org with ESMTP id S2636455AbgDPQAy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:00:53 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B876C061A10
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Apr 2020 09:00:52 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id u10so5978338lfo.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Apr 2020 09:00:52 -0700 (PDT)
+        Thu, 16 Apr 2020 12:00:54 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A24C061A0C
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Apr 2020 09:00:53 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x23so6002795lfq.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Apr 2020 09:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nABmTfUbCyU9kNO2bmfKjOVwTjnhkFAo2s5xCd797zI=;
-        b=k8foOUSzeb6VH7QaII+x1b0OKPRBr0qscl3aKpLC9qs91julziMxqCFTPtpFjYT6Ay
-         5cgAl6pgI1/5WzvJERt/dIGYunuDw4qL3+7jhnS/K9ExziNNf0hiF0MyAxH3AorSEphC
-         U17QMlJs47pYsDztQp0cPFBxuUaPidqM699q8nAwMq7TECPZVdeHU849+kUzrDxWbuVv
-         GAlvnXl8oGtoTNf742c1qAIjxaw2TH9AR4yW4xuVuWY+xyR7NG7N320EUz7qbQbZfEMO
-         ZuqFz90X7k2wxQU6wQZAhTh852fr4jFAuGpY8iETroboOLKYEMdDDoolPFrXRBEkYkmF
-         S9Mg==
+        bh=3WVkPHngvnXTMaSfW2K6KinwonLP6NtsBf6vtsn95lA=;
+        b=MPkn7neorpWQaZ+/iv4TuGlF0he3pWO/kIj1eINTgRHbSVLSwtFsVfkBzJJVvtOxyz
+         TcZ8ZO2lyaMATyYHLoZfjFm55InkYuAFFZ1yRLe+jnhRfOrwJSxB7gAkbW2Teb3rOkJG
+         WvTY4P9cY+BcEblut3RE6gAmRHYbfCRLRS9FdPjw1g0X9wSXhkJoGzU4MjP+hG2qIcnc
+         DDi8F7NPhRn//HUooxR5mPhHjiMz1AnWsvoj9G4s+ApOlUEBAuw6y8hw5D85wVmJNB5X
+         J0OrpVZTEi0b8G4GKT27DuVBjK0hPAiPXX0W8mkBVO6d4fZHwk8gK7LqBCRiV7Ox1FyR
+         7gow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nABmTfUbCyU9kNO2bmfKjOVwTjnhkFAo2s5xCd797zI=;
-        b=h8qDzM89tG315lFlpA3DLTQOAd52QvortAAI/gzhUZD3cTVandvUEem0+I5+Jui580
-         dZTwR9siavi7FFxVaiT2asp2ASjRjcP3bvxLCEr1mr3KGLWd9OPrzYhnaYsQD6OKV8pm
-         tWGk2MQQ27Et3Bxwjw6r4v2MxLZDaJ4ggXGnx0/X26c6OORoGlxlCF6yjKY9oN8E2dJa
-         WVRFhks3ygVC23Y0MjiN5yV2/t656NnuY5A4uEI2AtCo2jjHqztgEHdWdj1WcTjaiWCK
-         P5FpOsJOmYlUQN8+o3OQWguPdV4SotNPcZQFKWEuenglJlGyLc11DF7gKcdsrtXK5x7d
-         uNwA==
-X-Gm-Message-State: AGi0PubSfREYdNtX8+q+C4M7EMzW9E/KBOXzl5wnNlGABbbDVm9BMUu2
-        In9RyeW0hg3yARBOLIFlFuM=
-X-Google-Smtp-Source: APiQypJbjguuSp7eWgnJlrLz2QrVZF1rcXNqznWiC+XIZfrOTHRXS/3IzQGfqq1vAxhCvT7sAXsNpQ==
-X-Received: by 2002:ac2:4a9d:: with SMTP id l29mr6085006lfp.4.1587052850672;
-        Thu, 16 Apr 2020 09:00:50 -0700 (PDT)
+        bh=3WVkPHngvnXTMaSfW2K6KinwonLP6NtsBf6vtsn95lA=;
+        b=AweuuEIXpsX7GX1EpOhvTvP/LXVp4rG3QiTUjlb1Lc20AzSUXtV+D64/QH299AaDYr
+         EwNdSEtKbadJ9LBwrGbVPBByUe0/C5tB+B82Dna2jZnep84wDdE85yL6NTgwgbbXTXti
+         o5ecATBL8j8zVM0cPIzk1lKalR6cjqz5yO+fqfcYMy1Pn9L85b7TI8+yffePkTFvE9zP
+         n/dQRetRXcana4stb9B+dbn7BAhHsCLDUK2ci1Bu2LKim4ynLAvUlMfM31eMl8LthbWH
+         WttrfUrqdE6K++L5eeqwKCZLkOGJjPgqD/DlcTuO8RCUpr1eK4S2YwiWGQZCIM9QROsc
+         tntQ==
+X-Gm-Message-State: AGi0PubocWTelwkRShz1K11BySvibT2e/5CiyyTRiX0dDtAIVGDWXB6I
+        QYdcSZTyv4RQ7QuuUAKQVGGEVfM5Kr4=
+X-Google-Smtp-Source: APiQypLAr48t5lZVTrXUGzrNoK/xUW827ct3/n2YhS8RxnDm5JLgyzOZ+IOefOcOaUGQBuGPMi3pHg==
+X-Received: by 2002:a19:c194:: with SMTP id r142mr6640985lff.7.1587052851980;
+        Thu, 16 Apr 2020 09:00:51 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id u2sm9030413lfk.67.2020.04.16.09.00.49
+        by smtp.gmail.com with ESMTPSA id u2sm9030413lfk.67.2020.04.16.09.00.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 09:00:50 -0700 (PDT)
+        Thu, 16 Apr 2020 09:00:51 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 1/5] kernel-shark-2.alpha: Adjust the width of marker buttons
-Date:   Thu, 16 Apr 2020 19:00:43 +0300
-Message-Id: <20200416160047.77118-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 2/5] kernel-shark-2.alpha: Use new tracecmd APIs to open guest tracing file
+Date:   Thu, 16 Apr 2020 19:00:44 +0300
+Message-Id: <20200416160047.77118-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200416160047.77118-1-tz.stoyanov@gmail.com>
 References: <20200416160047.77118-1-tz.stoyanov@gmail.com>
@@ -76,31 +76,120 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Tzvetomir (VMware) Stoyanov <tz.stoyanov@gmail.com>
+From: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
 
-Both "Marker A" and "Marker B" buttons were too tight to fit the button's label on them.
-Add some extra space.
+The new tracecmd API tracecmd_open_head() allows opening a trace.dat
+file on stages. First, only the headers from the file are read and parsed,
+without reading the tracing data.
+The tracecmd_pair_peer() API is used to bind a tracing peer to
+this file, before parsing the trace data. This affects events timestamps
+correction when the tracing data is loaded.
+The tracecmd_get_guest_cpumap() API is used to find dependencies between
+all files and find a possible tracing peers.
+
+This change depends on these trace-cmd patch sets:
+  "Useful APIs for merging tracing files"
+https://patchwork.kernel.org/project/linux-trace-devel/list/?series=268745
+  "Split reading the trace.dat options from trace data"
+https://patchwork.kernel.org/project/linux-trace-devel/list/?series=268743
 
 Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
 ---
- src/KsDualMarker.cpp | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/libkshark-tepdata.c | 59 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 58 insertions(+), 1 deletion(-)
 
-diff --git a/src/KsDualMarker.cpp b/src/KsDualMarker.cpp
-index 3e0b462..e2b8ac1 100644
---- a/src/KsDualMarker.cpp
-+++ b/src/KsDualMarker.cpp
-@@ -145,8 +145,8 @@ KsDualMarkerSM::KsDualMarkerSM(QWidget *parent)
- {
- 	QString styleSheetA, styleSheetB;
+diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
+index 8678e12..f280e57 100644
+--- a/src/libkshark-tepdata.c
++++ b/src/libkshark-tepdata.c
+@@ -985,6 +985,45 @@ const char *tep_plugin_names[] = {"sched_events",
  
--	_buttonA.setFixedWidth(STRING_WIDTH(" Marker A "));
--	_buttonB.setFixedWidth(STRING_WIDTH(" Marker B "));
-+	_buttonA.setFixedWidth(STRING_WIDTH(" Marker A ") + FONT_WIDTH);
-+	_buttonB.setFixedWidth(STRING_WIDTH(" Marker B ") + FONT_WIDTH);
+ #define LINUX_IDLE_TASK_PID	0
  
- 	for (auto const &l: {&_labelMA, &_labelMB, &_labelDelta}) {
- 		l->setFrameStyle(QFrame::Panel | QFrame::Sunken);
++/** Find a host stream from the same tracing session, that has guest information */
++struct tracecmd_input *kshark_tep_find_merge_peer(struct kshark_context *kshark_ctx,
++						  struct tracecmd_input *handle)
++{
++	struct tracecmd_input *peer_handle = NULL;
++	struct kshark_data_stream *peer_stream;
++	unsigned long long trace_id;
++	int *streamIds = NULL;
++	int ret;
++	int i;
++
++	trace_id = tracecmd_get_traceid(handle);
++	if (!trace_id)
++		goto out;
++
++	streamIds = kshark_all_streams(kshark_ctx);
++	if (!streamIds)
++		goto out;
++	for (i = 0; i < kshark_ctx->n_streams; i++) {
++		peer_stream = kshark_get_data_stream(kshark_ctx, streamIds[i]);
++		if (!peer_stream || peer_stream->format != KS_TEP_DATA)
++			continue;
++		peer_handle = kshark_get_tep_input(peer_stream);
++		if (!peer_handle)
++			continue;
++		ret = tracecmd_get_guest_cpumap(peer_handle, trace_id,
++						NULL, NULL, NULL);
++		if (!ret)
++			break;
++	}
++
++	if (i == kshark_ctx->n_streams)
++		peer_handle = NULL;
++
++out:
++	free(streamIds);
++	return peer_handle;
++}
++
+ /** Initialize the FTRACE data input (from file). */
+ int kshark_tep_init_input(struct kshark_data_stream *stream,
+ 			  const char *file)
+@@ -992,8 +1031,10 @@ int kshark_tep_init_input(struct kshark_data_stream *stream,
+ 	struct kshark_context *kshark_ctx = NULL;
+ 	struct tepdata_handle *tep_handle;
+ 	struct kshark_plugin_list *plugin;
++	struct tracecmd_input *merge_peer;
+ 	struct tep_event *event;
+ 	int i, n_tep_plugins;
++	int ret;
+ 
+ 	if (!kshark_instance(&kshark_ctx) || !init_thread_seq())
+ 		return -EEXIST;
+@@ -1009,13 +1050,29 @@ int kshark_tep_init_input(struct kshark_data_stream *stream,
+ 	if (!tep_handle)
+ 		return -EFAULT;
+ 
+-	tep_handle->input = tracecmd_open(file);
++	/** Open the tracing file, parse headers and create trace input context */
++	tep_handle->input = tracecmd_open_head(file);
+ 	if (!tep_handle->input) {
+ 		free(tep_handle);
+ 		stream->interface.handle = NULL;
+ 		return -EEXIST;
+ 	}
+ 
++	/** Find a merge peer from the same tracing session */
++	merge_peer = kshark_tep_find_merge_peer(kshark_ctx, tep_handle->input);
++	if (merge_peer)
++		tracecmd_pair_peer(tep_handle->input, merge_peer);
++
++	/** Read the racing data from the file */
++	ret = tracecmd_init_data(tep_handle->input);
++
++	if (ret < 0) {
++		tracecmd_close(tep_handle->input);
++		free(tep_handle);
++		stream->interface.handle = NULL;
++		return -EEXIST;
++	}
++
+ 	tep_handle->tep = tracecmd_get_pevent(tep_handle->input);
+ 
+ 	tep_handle->sched_switch_event_id = -EINVAL;
 -- 
 2.25.1
 
