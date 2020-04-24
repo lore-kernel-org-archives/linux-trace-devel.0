@@ -2,129 +2,107 @@ Return-Path: <SRS0=pvIb=6I=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62AD1C55186
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Apr 2020 09:26:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D524C2BA1A
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Apr 2020 09:27:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4B94E20728
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Apr 2020 09:26:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 75B0A20724
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 24 Apr 2020 09:27:54 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UKxB/pLv"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgDXJ0i (ORCPT
+        id S1726494AbgDXJ1y (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 24 Apr 2020 05:26:38 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:13424 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726582AbgDXJ0h (ORCPT
+        Fri, 24 Apr 2020 05:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726347AbgDXJ1x (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 24 Apr 2020 05:26:37 -0400
-X-IronPort-AV: E=Sophos;i="5.73,311,1583164800"; 
-   d="scan'208";a="90107731"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 24 Apr 2020 17:26:34 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 3577E4BCC89E;
-        Fri, 24 Apr 2020 17:15:57 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 24 Apr 2020 17:26:33 +0800
-Message-ID: <5EA2B0C8.2080706@cn.fujitsu.com>
-Date:   Fri, 24 Apr 2020 17:26:32 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+        Fri, 24 Apr 2020 05:27:53 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7923CC09B045
+        for <linux-trace-devel@vger.kernel.org>; Fri, 24 Apr 2020 02:27:53 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id g4so9257655ljl.2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 24 Apr 2020 02:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gYAxOQKkIDCa54Ge0rrWt+vvMIG9IKQAfcWX/gk0B/4=;
+        b=UKxB/pLvbwYaVpSPDKTuQCxlrXGK2gxhfiDZdF/5vlJo95kfE9IcxAX2zyASzRmDsj
+         MTI/Sug8fG/dsWmxO6Zj0F4MuIqpckPRQ/GjHuTIVajcOpX00bBpFc19t8I8X7/DTr7U
+         hEcaYPPnVI6QdwHi21v4wUkZ4GYU0nZETDz3yQgI1b8aW8PWSreo+XYjzVKpxH66z7nh
+         pUqhSzEUW2CwoqUgd8rqhlGeMj3Y+yEhlkfhdBVXvfWHDhbCsnWf8h0lNYMSaYXUa3vy
+         h5QHKS6S1S3QAV1uC5BGB/tGnwuG+ysMUUC1BB7wP2w8MQc8hqmfca1esIvROvfc065j
+         usvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gYAxOQKkIDCa54Ge0rrWt+vvMIG9IKQAfcWX/gk0B/4=;
+        b=YLjet0QpKRcMIs+1WTdFz3hGhb/dJj5RDOJjZz4rwbExUYX5vCzBfgPhNXMZn+Cb8p
+         +DEIZWfl3KrFfGM5+YEX9PHoZ+VZYP/7k7s7KnKhEH3ZrK+3YHpf4FyqX8FIKoy0naNl
+         zGZDYpNGaTqM0a7p0gcoMELIMuvjbywhA8X+96Mpxu0qV1rZS7CkK/avv8qzrdtMLoJO
+         8p8n8vU/zbwghyUTd988cwXEUGb1ZWfiTYLve3DfwU5YR9Sfenv2AN5yJKfBbgUPE3Y4
+         jCeU5kXUn3eP+U+4GF6tbK1uvtW1DwiQ/iLlEyTZ54vB1kUwssiN49Sn7qT4mGwpw2o9
+         by3A==
+X-Gm-Message-State: AGi0PuZ2giq/cC1haKxIoc1W+Xdr5m3gteC7ZdPycSmnWW6GZCr+3vOQ
+        IhDcWtbxiS4UMZu3AoYNf4BUxdclqPs=
+X-Google-Smtp-Source: APiQypLnzj3k+XUkVylRX0HDGX/rwc+Uqp7npzaMi4gJvSSdUwo6j8f+14nZ2mF+2Q+LIUUCE3R+nA==
+X-Received: by 2002:a2e:8083:: with SMTP id i3mr5329944ljg.175.1587720471834;
+        Fri, 24 Apr 2020 02:27:51 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id s30sm4077841lfc.93.2020.04.24.02.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Apr 2020 02:27:51 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] trace-cmd: Do not enable timestamps synchronization by default
+Date:   Fri, 24 Apr 2020 12:27:49 +0300
+Message-Id: <20200424092749.638101-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.25.3
 MIME-Version: 1.0
-To:     Steven Rostedt <rostedt@goodmis.org>, <joel@joelfernandes.org>
-CC:     <linux-kselftest@vger.kernel.org>,
-        <linux-trace-devel@vger.kernel.org>,
-        Xiao Yang <ice_yangxiao@163.com>
-Subject: preemptirq_delay_test module can trigger crash on arm64 vm
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: 3577E4BCC89E.AD8D7
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steve, Joel
+When a timestamps synchronization data is detected in the trace file options,
+and if this data is valid - timestamps correction is enabled by default. This
+behavior was for PoC stage of the patches and should not be used in the final
+version.
+Timestamps synchronization should be enabled only if the file is opened
+together with a file from the same tracing session. A new APIs were introduced
+and already merged upstream for pairing peers from the same session. There is a
+KernelShark patch which uses those new APIs to pair peers from the same session,
+when loading the tracing files.
+The default behavior, indented to be used for the PoC should be removed.
 
-Sorry to bother you.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ lib/trace-cmd/trace-input.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-On my slow arm64 vm, inserting and removing preemptirq_delay_test module
-in loops triggers kernel panic sometimes.
-
-Reproduce steps:
-Do the following steps in loops(more than 10 times):
-[root@CentOS81-aarch64 ]# modprobe preemptirq_delay_test
-test_mode=preempt delay=500000; rmmod preemptirq_delay_test
-
-Call Trace:
--------------------------------------------------------------------
-[172413.750294] Unable to handle kernel paging request at virtual
-address fffffe0009010280
-[172413.790511] Mem abort info:
-[172413.791129]   ESR = 0x86000007
-[172413.791656]   EC = 0x21: IABT (current EL), IL = 32 bits
-[172413.792322]   SET = 0, FnV = 0
-[172413.792793]   EA = 0, S1PTW = 0
-[172413.794082] swapper pgtable: 64k pages, 42-bit VAs,
-pgdp=0000000040ef0000
-[172413.794556] [fffffe0009010280] pgd=00000000bfff0003,
-pud=00000000bfff0003, pmd=00000000bfff0003, pte=0000000000000000
-[172413.795690] Internal error: Oops: 86000007 [#1] PREEMPT SMP
-[172413.796285] Modules linked in: sunrpc vfat fat ext4 mbcache jbd2
-crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce ip_tables xfs
-libcrc32c virtio_net net_failover failover virtio_blk virtio_mmio [last
-unloaded: preemptirq_delay_test]
-[172413.797797] CPU: 1 PID: 15750 Comm: preempt_test Not tainted
-5.6.0-rc7 #17
-[172413.798275] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0
-02/06/2015
-[172413.799049] pstate: 40000005 (nZcv daif -PAN -UAO)
-[172413.799934] pc : 0xfffffe0009010280
-[172413.800230] lr : 0xfffffe0009010280
-[172413.800497] sp : fffffe001390fe00
-[172413.800799] x29: fffffe001390fe00 x28: 0000000000000000
-[172413.801263] x27: 0000000000000000 x26: fffffe0009010000
-[172413.801726] x25: 0000000000000000 x24: fffffe00114a3670
-[172413.802164] x23: fffffe0010d1d150 x22: fffffe0016b2f9e8
-[172413.802635] x21: 0000000000000000 x20: fffffe0009030008
-[172413.803191] x19: fffffe0009030000 x18: 0000000000000000
-[172413.803672] x17: 0000000000000000 x16: 0000000000000000
-[172413.804118] x15: 0000000000000000 x14: 0000000000000000
-[172413.804558] x13: 0000000000000000 x12: 0000000000000000
-[172413.805013] x11: 0000000000000000 x10: 0000000000000d50
-[172413.805441] x9 : fffffe001390fd10 x8 : fffffc00762930b0
-[172413.805944] x7 : 00000000fa83b2da x6 : 0000000000000000
-[172413.806455] x5 : fffffe001127c000 x4 : fffffe006ed00000
-[172413.806874] x3 : fffffe001127cf50 x2 : 0000000000000002
-[172413.807312] x1 : 0000000000000000 x0 : 0000000000000228
-[172413.807869] Call trace:
-[172413.808146]  0xfffffe0009010280
-[172413.808436]  0xfffffe0009010294
-[172413.808723]  0xfffffe0009010050
-[172413.809519]  kthread+0x110/0x118
-[172413.809734]  ret_from_fork+0x10/0x18
-[172413.810338] Code: bad PC value
-[172413.811203] ---[ end trace 69c688402fdc8bb1 ]---
-[172413.811670] Kernel panic - not syncing: Fatal exception
-[172413.812108] SMP: stopping secondary CPUs
-[172413.812733] Kernel Offset: disabled
-[172413.813043] CPU features: 0x10002,20006082
-[172413.813387] Memory Limit: none
-[172413.813849] ---[ end Kernel panic - not syncing: Fatal exception]---
--------------------------------------------------------------------
-
-Do you have any suggestion about the issue.
-
-Thanks,
-Xiao Yang
-
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 55c3d80a..25422755 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -2191,8 +2191,6 @@ static void tsync_offset_load(struct tracecmd_input *handle, char *buf)
+ 			host->ts_samples[j++] = host->ts_samples[i];
+ 	}
+ 	host->ts_samples_count = j;
+-	if (j)
+-		host->sync_enable = true;
+ }
+ 
+ static void tsync_check_enable(struct tracecmd_input *handle)
+-- 
+2.25.3
 
