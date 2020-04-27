@@ -2,131 +2,197 @@ Return-Path: <SRS0=eYsA=6L=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD178C54FCB
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 27 Apr 2020 15:42:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90699C4CECC
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 27 Apr 2020 19:18:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 86CF4206B6
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 27 Apr 2020 15:42:23 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V2cipviU"
+	by mail.kernel.org (Postfix) with ESMTP id 7E23820775
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 27 Apr 2020 19:18:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgD0PmX (ORCPT
+        id S1726364AbgD0TSF convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 27 Apr 2020 11:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727073AbgD0PmX (ORCPT
+        Mon, 27 Apr 2020 15:18:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726315AbgD0TSF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 27 Apr 2020 11:42:23 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF79EC0610D5
-        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Apr 2020 08:42:22 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id j3so18043342ljg.8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Apr 2020 08:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hrnnB6MN0NTDjJnvUCSUU9EAtiOKZnt8mbbgqwsDoYQ=;
-        b=V2cipviU4cyqxz3WP1TK6r6wZ3R10PBJIwym8DHgbpohIbsQ9RLg0nogtAqVVteu6a
-         3VhGU1Cflx7getZ1/hvsFuqQB7pb62kZCsNqN9dQe2RVGmZwCTF3cFswzx4vDw7GYQcM
-         pHgcvASZYdP1cXcyZ+QLgoJyMWc0SEb2risbfMAS0+vOEoS1js66ojs63rcRBwe7jv13
-         iv2//VcF71Dt/xrDer+9NnjkKGZW4zW3qUXttA9FS/jCLt0KrzgjB/01q2KDZNq2cqsk
-         M648CAdZLPI5h9jztnju+kpYKmWehaAp8epdX75mVwaj7xyeWL3OfYLTf2PuyXCk2qiU
-         bs8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hrnnB6MN0NTDjJnvUCSUU9EAtiOKZnt8mbbgqwsDoYQ=;
-        b=q8K+8+A5ctDd7GpQD+eeDqCo0HAIOt8c8p1Xe9uHCW4AflAhWgHeROMJ/TlwgWiBeG
-         BKlk9yRjXWF9Bmbd+C4XtwsZSfHOzkknjDt1impbdRRCjgP1tFHZs0pnOp/PqUBEWaeo
-         J3pagS/Z4LLqvEnUhGVED2EOp7ur3JRZxupvVgltC+TzkK0RicEvRrrHYO3laxttki3f
-         ohB0YryCNQVP4R4RQ86t302fzuv/m/2gXCL3Ncz0ct+V9FcCETbHl1gLFgtM6Lhhbi0c
-         1bzAz61HFKEWF8hRfma8WmJRvYTzcqoMoR9wnSdlfS8p0oAI0VziTmIszqF90p1JcugQ
-         htUg==
-X-Gm-Message-State: AGi0PuYN64TLBdt0S34vTdF/1XESm9uRCdrKkNWrF2pj/OOTsbFXtCpw
-        SEbg7loJ5Qz6TYqueW7bhig=
-X-Google-Smtp-Source: APiQypLFdiwhztwneomR35LhTeq0GkXKfT0O55wn3UoXfBWTKw3AIjjtwhBIO6wEf5r7fiVdHFlSoA==
-X-Received: by 2002:a05:651c:319:: with SMTP id a25mr13613780ljp.209.1588002141060;
-        Mon, 27 Apr 2020 08:42:21 -0700 (PDT)
-Received: from localhost.localdomain ([84.40.73.119])
-        by smtp.gmail.com with ESMTPSA id s8sm11515524lfd.61.2020.04.27.08.42.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 08:42:20 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, julia.lawall@inria.fr,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 3/3] kernel-shark: Set a maximum number of plots to be shown by default
-Date:   Mon, 27 Apr 2020 18:41:52 +0300
-Message-Id: <20200427154152.20592-4-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200427154152.20592-1-y.karadz@gmail.com>
-References: <20200427154152.20592-1-y.karadz@gmail.com>
+        Mon, 27 Apr 2020 15:18:05 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BE6620775;
+        Mon, 27 Apr 2020 19:18:03 +0000 (UTC)
+Date:   Mon, 27 Apr 2020 15:18:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 2/3] kernel-shark: Change the mechanism of the
+ multi-threaded search
+Message-ID: <20200427151802.7a3a9be3@gandalf.local.home>
+In-Reply-To: <69e2a749-8582-35dc-0a6d-5d08988d4a5c@gmail.com>
+References: <20200330161723.29816-1-y.karadz@gmail.com>
+        <20200330161723.29816-3-y.karadz@gmail.com>
+        <20200424161246.4d9f22b8@gandalf.local.home>
+        <69e2a749-8582-35dc-0a6d-5d08988d4a5c@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Set a maximum number of CPU plots to be shown by default. No more than
-16 CPU plots will be shown if no command line options, per-selecting
-the plots, are provided. This will be useful when opening trace file
-containing hundreds of CPU cores.
+On Mon, 27 Apr 2020 17:44:49 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-Suggested-by: Julia Lawall  <julia.lawall@inria.fr>
----
- kernel-shark/src/KsGLWidget.cpp | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+> On 24.04.20 г. 23:12 ч., Steven Rostedt wrote:
+> > 
+> > After applying this patch, I was hitting a lockup with this file:
+> > 
+> > http://rostedt.org/private/trace-all.dat.xz
+> > 
+> > By selecting "Event" and searching for "sched" it would hang at %87
+> >   
+> 
+> Hi Steven,
+> Very well spotted. I am not able to reproduce the bug directly, but I 
+> guess this is because you are running this on a machine that has 24 CPU 
+> cores (or 12 and hyper-trading enabled).
 
-diff --git a/kernel-shark/src/KsGLWidget.cpp b/kernel-shark/src/KsGLWidget.cpp
-index e930006..78ded33 100644
---- a/kernel-shark/src/KsGLWidget.cpp
-+++ b/kernel-shark/src/KsGLWidget.cpp
-@@ -340,6 +340,11 @@ void KsGLWidget::keyReleaseEvent(QKeyEvent *event)
- 	return;
- }
- 
-+/**
-+ * The maximum number of CPU plots to be shown by default when the GUI starts.
-+ */
-+#define KS_MAX_START_PLOTS 16
-+
- /**
-  * @brief Load and show trace data.
-  *
-@@ -358,7 +363,6 @@ void KsGLWidget::loadData(KsDataStore *data)
- 	 * One bin will correspond to one pixel.
- 	 */
- 	nBins = width() - _hMargin * 2;
--	nCPUs = tep_get_cpus(_data->tep());
- 
- 	_model.reset();
- 
-@@ -368,8 +372,13 @@ void KsGLWidget::loadData(KsDataStore *data)
- 	ksmodel_set_bining(_model.histo(), nBins, tMin, tMax);
- 	_model.fill(_data->rows(), _data->size());
- 
--	/* Make a default CPU list. All CPUs will be plotted. */
-+	/* Make a default CPU list. All CPUs (or the first N_max) will be plotted. */
- 	_cpuList = {};
-+
-+	nCPUs = tep_get_cpus(_data->tep());
-+	if (nCPUs > KS_MAX_START_PLOTS)
-+		nCPUs = KS_MAX_START_PLOTS;
-+
- 	for (int i = 0; i < nCPUs; ++i)
- 		_cpuList.append(i);
- 
--- 
-2.20.1
+Yep (12 and hyperthreading).
+
+> 
+> > I found the bug below.
+> > 
+> > On Mon, 30 Mar 2020 19:17:22 +0300
+> > "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+> >   
+> >> --- a/kernel-shark/src/KsModels.cpp
+> >> +++ b/kernel-shark/src/KsModels.cpp
+> >> @@ -52,22 +52,25 @@ size_t KsFilterProxyModel::_search(int column,
+> >>   				   const QString &searchText,
+> >>   				   search_condition_func cond,
+> >>   				   QList<int> *matchList,
+> >> +				   int step,
+> >>   				   int first, int last,
+> >>   				   QProgressBar *pb,
+> >>   				   QLabel *l,
+> >> +				   int *lastRowSearched,
+> >>   				   bool notify)
+> >>   {
+> >>   	int index, row, nRows(last - first + 1);
+> >> -	int pbCount(1);
+> >> +	int milestone(1), pbCount(1);
+> >>   	QString item;
+> >>   
+> >>   	if (nRows > KS_PROGRESS_BAR_MAX)
+> >> -		pbCount = nRows / (KS_PROGRESS_BAR_MAX - _searchProgress);
+> >> +		milestone = pbCount = nRows / (KS_PROGRESS_BAR_MAX - step -
+> >> +					       _searchProgress);  
+> 
+> The problem will show up if this division has no remainder.
+
+Yeah, I figured.
+
+> 
+> >>   	else
+> >>   		_searchProgress = KS_PROGRESS_BAR_MAX - nRows;
+> >>   
+> >>   	/* Loop over the items of the proxy model. */
+> >> -	for (index = first; index <= last; ++index) {
+> >> +	for (index = first; index <= last; index += step) {
+> >>   		/*
+> >>   		 * Use the index of the proxy model to retrieve the value
+> >>   		 * of the row number in the base model.
+> >> @@ -78,17 +81,23 @@ size_t KsFilterProxyModel::_search(int column,
+> >>   			matchList->append(row);
+> >>   
+> >>   		if (_searchStop) {
+> >> -			if (notify) {
+> >> -				_searchProgress = KS_PROGRESS_BAR_MAX;
+> >> +			if (lastRowSearched)
+> >> +				*lastRowSearched = index;
+> >> +
+> >> +			if (notify)
+> >>   				_pbCond.notify_one();
+> >> -			}
+> >>   
+> >>   			break;
+> >>   		}
+> >>   
+> >>   		/* Deal with the Progress bar of the seatch. */
+> >> -		if ((index - first) % pbCount == 0) {
+> >> +		if ((index - first) > milestone) {  
+> > 
+> > Changing the above to:
+> > 
+> > 		if ((index - first) >= milestone) {
+> > 
+> > fixes it.  
+> 
+> Correct.
+> 
+> >   
+> >> +			milestone += pbCount;
+> >>   			if (notify) {
+> >> +				/*
+> >> +				 * This is a multi-threaded search. Notify
+> >> +				 * the main thread to update the progress bar.
+> >> +				 */
+> >>   				std::lock_guard<std::mutex> lk(_mutex);
+> >>   				++_searchProgress;
+> >>   				_pbCond.notify_one();
+> >> @@ -100,6 +109,7 @@ size_t KsFilterProxyModel::_search(int column,
+> >>   
+> >>   				if (l)
+> >>   					l->setText(QString(" %1").arg(matchList->count()));
+> >> +
+> >>   				QApplication::processEvents();
+> >>   			}
+> >>   		}  
+> > 
+> > 
+> >   Otherwise it looks like it leaves out the final update and the
+> > code hangs here:
+> > 
+> > 	/* Start all other threads. */
+> > 	for (int r = 1; r < nThreads; ++r)
+> > 		maps.push_back(std::async(lamSearchMap,
+> > 					  startFrom + r,
+> > 					  false)); // notify = false
+> > 
+> > 	while (_searchFSM.getState() == search_state_t::InProgress_s &&
+> > 	       _proxyModel.searchProgress() < KS_PROGRESS_BAR_MAX - nThreads) {  
+> 
+> Alternative fix can be to changing the above to:
+> 	       _proxyModel.searchProgress() < KS_PROGRESS_BAR_MAX - nThreads - 1) {
+> 
+> I would say we can apply both. What do you think?
+
+I'll try it out and let you know.
+
+Thanks Yordan!
+
+-- Steve
+
+> 
+> Thanks!
+> Yordan
+> 
+> > 		std::unique_lock<std::mutex> lk(_proxyModel._mutex);
+> > 		_proxyModel._pbCond.wait(lk);
+> > 
+> > < It's stuck above >
+> > 
+> > 		_searchFSM.setProgress(_proxyModel.searchProgress());
+> > 		QApplication::processEvents();
+> > 	}
+> > 
+> > 
+> > -- Steve
+> >   
 
