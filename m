@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE954C8300B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DAB4C8300C
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CEB6A2078D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E05812076D
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DQHcR05w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eQ+LEoBO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726550AbgD3MW3 (ORCPT
+        id S1726770AbgD3MWa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 30 Apr 2020 08:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
+        Thu, 30 Apr 2020 08:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726500AbgD3MW3 (ORCPT
+        by vger.kernel.org with ESMTP id S1726500AbgD3MWa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:22:29 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2389C035494
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:28 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id a21so6231382ljb.9
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:28 -0700 (PDT)
+        Thu, 30 Apr 2020 08:22:30 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDCDC035494
+        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:30 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id a21so6203650ljj.11
+        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dMFrehiR+oXsmQhOwuztFId6VaI3Xo62DKdaSY9qRDY=;
-        b=DQHcR05wJeKoP284a0LQEvPq3ujfxLYJlmdq7zaMKTMVzTf3JKm4eEEvJkF/vUSZSe
-         CgRbp1snUXAUhej0BhSIfhOImMzte3NaPaI49Q2vyLpCm/DMntNw/8rInyT+ayQKRX6I
-         PGSZnup9XKcSlp9pOLe6Tc5cunpNQwcfu90nn/waGijq0IHJp4+UgdMV7ZrNE9/QIVNr
-         J0YrMJCVKNDKasRXNusQkbJ+6sWuK1CPTB8WWBEqCo1uPWna7Di9zBIf3V0OgU3xiwqb
-         DFUHet73bjQcxLKg3CK2N53U87dilDZk7/rGLg1TGKc2WenZwzPiTdC5AzlRd1L8cg+E
-         mXYw==
+        bh=Fni3boaJXyriszWVM3CfKGyDpgww0el+dA3bYTKikKk=;
+        b=eQ+LEoBO1FsG38aNlg+1F5Npw/fMXlRuJ4Z3+Mldt9folXIK/hu59eMJ2tSWgCaE0b
+         XgGK1Mtj3coRFvEdZHtD1PEAj1ej5Bh1TaY7rnhdT7LH4nsMhB/kJOwrlKo5BJ8oKBgA
+         8RZtaCXXlaz8N26hWiorNDNCbmiJEZQSz+1VTH+PWDBSsgSx7I55oAxCdtI7SuYchiP1
+         E+0zM7L5aKStq2w1Sq6MLiVlNHL+QwJP5FSLbDpFWJTkZgrSsp3YSqRLcuQyaWeyB390
+         OLLormLDOD9jstrxYBH2zIuqDRAGgdgCTxtnm9mAhAj+OjUPyujIjL1VBczQmnYONic/
+         sIKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dMFrehiR+oXsmQhOwuztFId6VaI3Xo62DKdaSY9qRDY=;
-        b=HHIXdKwKDT2UWZSn+4VhscW1vwYSAcsn0lqtQ354xtrbuySdhB3M3geIxNFNrwyG7V
-         NLi0Kkjm0Nuz3Ivgzlyk9NQ2fxuzPJjAVWU2cKpgGNvTiO6b6fEfumEQUKz+OC1eSXhC
-         MKhlRnPJeZ2LxdWOGqRc7IHwlshi9O5n3hEHyiZLQj1Gvfbas0WA6ftimV6v+pEiHljl
-         xVi1LsKO4A5m4BHXHhlPGf9vrjH6uNldZJqxpviwDR8nRwPUitmpoNeHOiHThUXT2oJM
-         P0HrKzsy1DfIxls4XEtLHXo2sqOvPwGR1dauKYE5EKfnjrk1if9JdTHzFVICGi3TQ+64
-         w7VA==
-X-Gm-Message-State: AGi0PuaIpyBoVRqCLbRiy+rs/zHx9iPrIAjbsthVobL3Kah2Ay1Aw/f6
-        MN2W6dy+3W/+KznZABcH7YEVB8s6x/8=
-X-Google-Smtp-Source: APiQypLH+2msD8bKI1cLJvKZxDPG7Pei2+DZwtXxQVtryGr7rDNQNNllXZCjkO10YfRSqqYSPlIFPQ==
-X-Received: by 2002:a2e:b162:: with SMTP id a2mr2042015ljm.25.1588249347394;
-        Thu, 30 Apr 2020 05:22:27 -0700 (PDT)
+        bh=Fni3boaJXyriszWVM3CfKGyDpgww0el+dA3bYTKikKk=;
+        b=H105m1vb/Sotu1URRcIrdBF/SIVeHPi0k2pHT2CRH+3jXT2g1PmLkqCRVveYgd55it
+         cXcNlphSRa93fpOJFDpQBqW3QFYhcq+5NZb/GL4Moh/DrLxawwPO1HfLYoJHWHaF8Y9N
+         C7cDLPqkAPiTp7cDeNVuaW8C9n6IhZSplzghJpzWXKB08pagqcm+JFdYj42GyA/bGw/j
+         n/rMqfEDqoLouR9+0DHCqv9ugHTmKLsA6IJ6JTD7GdcmW7RuRoGjL2dPMYtsmxRBhLJk
+         MMgdqXOMm6Y80sD8axA+bUerxaQQUJbMyk7pS3j/zoZr6pfP49eG1enHHJvS5Uvt1uxT
+         CZgA==
+X-Gm-Message-State: AGi0Pub+9LbgBrr3Y4JLvscsGdtJBLkKorCaZpB+W+FBuojrKDiwlwql
+        SUgpkJmvVpAeHQJ7JafGIks=
+X-Google-Smtp-Source: APiQypIV3hafq6UZsdTdSXlW8w8o0wZCa35bjXcOuE7bMXHCR5Ve/g8DHyStlGj3kkgHa0el+iwPgQ==
+X-Received: by 2002:a2e:9207:: with SMTP id k7mr2048062ljg.124.1588249348596;
+        Thu, 30 Apr 2020 05:22:28 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id a26sm4793168lfl.66.2020.04.30.05.22.26
+        by smtp.gmail.com with ESMTPSA id a26sm4793168lfl.66.2020.04.30.05.22.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 05:22:26 -0700 (PDT)
+        Thu, 30 Apr 2020 05:22:27 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/4] trace-cmd: Fix trace-cmd report crash while displaying trace.dat in specific use case
-Date:   Thu, 30 Apr 2020 15:22:19 +0300
-Message-Id: <20200430122222.101276-2-tz.stoyanov@gmail.com>
+Subject: [PATCH 2/4] trace-cmd: Add "main" in the output of trace-cmd stat when displaying main instance
+Date:   Thu, 30 Apr 2020 15:22:20 +0300
+Message-Id: <20200430122222.101276-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200430122222.101276-1-tz.stoyanov@gmail.com>
 References: <20200430122222.101276-1-tz.stoyanov@gmail.com>
@@ -76,37 +76,30 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The trace-cmd report command crashes while displaying a file recorded with "--proc-map" and "-B" options:
-#trace-cmd record --proc-map  -B test -e sched -F sleep 1
-The "--proc-map" options saves the address map of "sleep" into the trace.dat file. This
-information is used by KernelShark. The "-B" options traces the specified events into a
-ftrace instance "test".
-When such file is opened using libtracecmd APIs, the proc-map is parsed and saved into
-a tracecmd_input handler, as linked list "pid_maps". Later, when the ftrace instance
-"test" is parsed, a copy of this handler is used to fill it with the instance's trace data.
-Both tracecmd_input handlers share the same "pid_maps" list, thus leads to a double
-free of the list, when  handlers are destroyed.
-As this "pid_maps" is not used in ftrace buffers, the "pid_maps" list of the copy can be
-initialized to NULL.
+By default, "trace-cmd stat" command prints status of the main ftrace instance. When more
+instances are configured, the user could be confused which status is displayed.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tracecmd/trace-stat.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 55c3d80a..7583d5cb 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -3712,6 +3712,8 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
+diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
+index c5057978..dcf2789c 100644
+--- a/tracecmd/trace-stat.c
++++ b/tracecmd/trace-stat.c
+@@ -920,8 +920,10 @@ static void stat_instance(struct buffer_instance *instance)
+ 			printf("---------------\n");
+ 		printf("Instance: %s\n",
+ 			tracefs_instance_get_name(instance->tracefs));
+-	} else
++	} else {
+ 		report_instances();
++		printf("\nInstance: main\n\n");
++	}
  
- 	new_handle->flags |= TRACECMD_FL_BUFFER_INSTANCE;
- 
-+	new_handle->pid_maps = NULL;
-+
- 	/* Save where we currently are */
- 	offset = lseek64(handle->fd, 0, SEEK_CUR);
- 
+ 	report_plugin(instance);
+ 	report_events(instance);
 -- 
 2.25.4
 
