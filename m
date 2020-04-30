@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D3C1C8300A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10E00C8300B
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1C1282076D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E00D52076D
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g9SexKs9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LXGR+CJb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgD3MWb (ORCPT
+        id S1726781AbgD3MWd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 30 Apr 2020 08:22:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        Thu, 30 Apr 2020 08:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726500AbgD3MWb (ORCPT
+        by vger.kernel.org with ESMTP id S1726500AbgD3MWd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:22:31 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506DCC035494
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:31 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id f18so6208174lja.13
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:31 -0700 (PDT)
+        Thu, 30 Apr 2020 08:22:33 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D36C035494
+        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:33 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b2so6255027ljp.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DZT5tWoSHDQAvAO50v+sySA4a79lkTuf/l0j81w5//0=;
-        b=g9SexKs9zqqIF0R/04d5bUwAlpLOUi1/zg3nSbwLaUSvJ1M9epuyUjEJiuCWezZtHO
-         zr9gT28YZ7EdeS1jRSHr2hfmQUYJSOC4X6JvRPKfv3UXEE2KC6es+8KmJCTeaWOBwaD4
-         Qn5M63vKYlKo7DylVkr9xSGLB3Q6482eEmGwbkt7TEVAOjAtbw2Tc5sLZl48WiDAjnOj
-         uCXpUhWKF6MJe2QIfmMICgvK7BMN7dUBB699c1QFRqz3IvXJDasca6URUtNRKwqDxMiR
-         GQE96GwV3dqdchQlzPC9pGiJ1S5JSdVTwTg+g2AmVfRniv8g3Wu49jG9UHIYOdRje2+I
-         CaAg==
+        bh=1Wdph4dvvQ7ZWMW79jnjXB5svR+IBQaXspcv5zle/SY=;
+        b=LXGR+CJb9D56bLfI3HBbmrAkd3myfcKmziC2v9bCgDHaGsw/bGenvTiOvKpncvQ7v2
+         pLAl9dEFkTQWkiiNk3CW9HYLl5tsHbQq2M2U06mllBIOUT5Zon2Fu82vLCH+bUrDzqHX
+         SoFnCmA8R2QCjLJs15/zhoCQT6Tb4WSoNRL1lbofombDHY2El4r47ywe7nP5o1B2L2eK
+         wQPHf4icTwVRZFnWNEw1bivtD3/GX8MTf35+MYzvuooyqdXQ6VxAnN/X7aXKznvxXuZa
+         u7gcKulnloZXmzf+KlZiOTWDDmhrB1DIZ8Nz0LJ+mnPCpdIM2M4i+zwMMR2s5droEtu6
+         IYDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DZT5tWoSHDQAvAO50v+sySA4a79lkTuf/l0j81w5//0=;
-        b=FkWuohDL2lQbiELOY2V+kmXRQFhglA8uLKJlDdLttlssa/V8+deOAzRWKSfIyv/VNP
-         Sjb7cJCQQUxx24NSfZlzYZaJ6fKjO01wfiFJLTUPROlYSppUpAMW5dXRZWHBUqyAgXt1
-         DZlIL1zvVX2ERiQnD8UJTHG/npr5K19gHsVaEIgt7QyA5+6Ucru2gDidT8Y65JpHYJ+c
-         IWMvBOtwCUx1iRTJB9iV0KjQVsqxkc4zzoQBvJBL8oULQi+uI6c6Eg9lxBeuqpn3XyLk
-         kDWi5NrCLbcJI5ACpRU5KEzzShafkg9BrW4I5eAOTbskaN3a2p6TNcubtQuDDscZi6p4
-         gpUA==
-X-Gm-Message-State: AGi0Pub/8wcDPvGFoI38PFJ/+8RNMGYOhHt2yVej05Q35gOqK46y58Kn
-        XoxnvWjiWSdw4b87xCOiYUw=
-X-Google-Smtp-Source: APiQypIr8D/eYNAhxeYh2E+0guqFJqliQ8qwaN4JrODeJD095spTPRh/bMf/13WONPioRNyDH//pPQ==
-X-Received: by 2002:a2e:3208:: with SMTP id y8mr2083714ljy.282.1588249349845;
-        Thu, 30 Apr 2020 05:22:29 -0700 (PDT)
+        bh=1Wdph4dvvQ7ZWMW79jnjXB5svR+IBQaXspcv5zle/SY=;
+        b=huuSjA7Fr/d0av2h+sL0zX7XngfAcxAy3GdePanmmwJRe2d7o28l5mSdm8n38uTEDr
+         DuCg0znQ0rAdBBfCep/+z07K+dCyQ56zg/8PShQQJxliltZSEUBwOcmOLh7XJ99RUHUE
+         IG9LXTeSo4KGkkcPRuIRz5fXphZ01pIdyBn34WPnwDcnD9SFkmCw6DPrm2yJkKFJF+Jd
+         p8K1Wr9kkQr0LOLAuy8RSXG1TbIqoZbwY5yM2yKAX537sRDQZv8uv8r6mqrS/DwarpVu
+         wqmmjCHKrlehyOwUfxHVhrxPVU/PzeFCRGb6xjrvmbYxbDwKeelYr7XMpcz7xIMozd/c
+         wtMw==
+X-Gm-Message-State: AGi0PuZFbeF6lkJKv6i6aDrNvDj2p+aDs4IFzCe5hr+4oO+E6sJvsIRI
+        MTnbv2wO1WBqIVw5qdHc4t0=
+X-Google-Smtp-Source: APiQypLVevHvwNhOjb4dx8GrLuDk4Ut3E72FyMLzUUODvqVeRoLQcOLD1lCK2ezdPPMvSCEc7U2pgw==
+X-Received: by 2002:a2e:99cc:: with SMTP id l12mr2111400ljj.290.1588249351529;
+        Thu, 30 Apr 2020 05:22:31 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id a26sm4793168lfl.66.2020.04.30.05.22.28
+        by smtp.gmail.com with ESMTPSA id a26sm4793168lfl.66.2020.04.30.05.22.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 05:22:29 -0700 (PDT)
+        Thu, 30 Apr 2020 05:22:30 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/4] trace-cmd: Create ftrace instances before using them.
-Date:   Thu, 30 Apr 2020 15:22:21 +0300
-Message-Id: <20200430122222.101276-4-tz.stoyanov@gmail.com>
+Subject: [PATCH 4/4] trace-cmd: Do not try to update parent's memory from a fork()-ed child
+Date:   Thu, 30 Apr 2020 15:22:22 +0300
+Message-Id: <20200430122222.101276-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200430122222.101276-1-tz.stoyanov@gmail.com>
 References: <20200430122222.101276-1-tz.stoyanov@gmail.com>
@@ -76,37 +76,88 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Ftrace instances should be created physically in the tracefs, before
-trying to access its files. In record_trace() function, the call to
-make_instances() should be before the logic which reads the instance's
-tracing file.
+When trace-cmd runs a command, specified with the "-F" flag, it forks a
+child process and executes the command in its context. This child process
+receives a full copy of the parents memory at the moment of fork(). When
+it modifies this copy, the parent memory is not affected. Calling the
+function update_task_filter() in the child context will operate on a valid
+data, but will not update anything in the parent's databases.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tracecmd/trace-record.c | 34 +++++++++++++++++++++++++++++-----
+ 1 file changed, 29 insertions(+), 5 deletions(-)
 
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index d8c24ebf..1e4d38fa 100644
+index 1e4d38fa..2b5cd42a 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -6222,6 +6222,8 @@ static void record_trace(int argc, char **argv,
- 	if (!ctx->output)
- 		ctx->output = DEFAULT_INPUT_FILE;
+@@ -11,6 +11,7 @@
+ #include <stdarg.h>
+ #include <getopt.h>
+ #include <time.h>
++#include <semaphore.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/time.h>
+@@ -1487,18 +1488,35 @@ static int change_user(const char *user)
+ 	return 0;
+ }
  
-+	make_instances();
++#define TRACE_RUN_SEM	"trace_cmd_semaphore_run"
++#define TRACE_INIT_SEM	"trace_cmd_semaphore_init"
+ static void run_cmd(enum trace_type type, const char *user, int argc, char **argv)
+ {
++	sem_t *sem_init;
++	sem_t *sem_run;
+ 	int status;
+ 	int pid;
+ 
++	sem_init = sem_open(TRACE_INIT_SEM, O_CREAT, S_IRUSR|S_IWUSR, 0);
++	if (sem_init == SEM_FAILED)
++		die("failed to init trace_cmd init semaphore");
 +
- 	/* Save the state of tracing_on before starting */
- 	for_all_instances(instance) {
- 		instance->output_file = strdup(ctx->output);
-@@ -6236,8 +6238,6 @@ static void record_trace(int argc, char **argv,
- 			instance->tracing_on_init_val = 1;
++	sem_run = sem_open(TRACE_RUN_SEM, O_CREAT, S_IRUSR|S_IWUSR, 0);
++	if (sem_run == SEM_FAILED) {
++		sem_close(sem_init);
++		sem_unlink(TRACE_INIT_SEM);
++		die("failed to init trace_cmd run semaphore");
++	}
++
+ 	if ((pid = fork()) < 0)
+ 		die("failed to fork");
+ 	if (!pid) {
+ 		/* child */
+-		update_task_filter();
++		sem_wait(sem_init);
+ 		tracecmd_enable_tracing();
+ 		enable_ptrace();
++		sem_post(sem_run);
++
+ 		/*
+ 		 * If we are using stderr for stdout, switch
+ 		 * it back to the saved stdout for the code we run.
+@@ -1519,11 +1537,17 @@ static void run_cmd(enum trace_type type, const char *user, int argc, char **arg
+ 			die("Failed to exec %s", argv[0]);
+ 		}
  	}
- 
--	make_instances();
--
- 	if (ctx->events)
- 		expand_event_list();
+-	if (do_ptrace) {
+-		add_filter_pid(pid, 0);
+-		ptrace_attach(pid);
++	update_task_filter();
++	sem_post(sem_init);
++	sem_wait(sem_run);
++	sem_close(sem_init);
++	sem_unlink(TRACE_INIT_SEM);
++	sem_close(sem_run);
++	sem_unlink(TRACE_RUN_SEM);
++
++	if (do_ptrace)
+ 		ptrace_wait(type);
+-	} else
++	else
+ 		trace_waitpid(type, pid, &status, 0);
+ }
  
 -- 
 2.25.4
