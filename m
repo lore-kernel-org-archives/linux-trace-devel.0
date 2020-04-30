@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DAB4C8300C
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D3C1C8300A
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E05812076D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1C1282076D
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Apr 2020 12:22:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eQ+LEoBO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g9SexKs9"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgD3MWa (ORCPT
+        id S1726774AbgD3MWb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 30 Apr 2020 08:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
+        Thu, 30 Apr 2020 08:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726500AbgD3MWa (ORCPT
+        by vger.kernel.org with ESMTP id S1726500AbgD3MWb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:22:30 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDCDC035494
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:30 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a21so6203650ljj.11
-        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:30 -0700 (PDT)
+        Thu, 30 Apr 2020 08:22:31 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506DCC035494
+        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:31 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id f18so6208174lja.13
+        for <linux-trace-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:22:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Fni3boaJXyriszWVM3CfKGyDpgww0el+dA3bYTKikKk=;
-        b=eQ+LEoBO1FsG38aNlg+1F5Npw/fMXlRuJ4Z3+Mldt9folXIK/hu59eMJ2tSWgCaE0b
-         XgGK1Mtj3coRFvEdZHtD1PEAj1ej5Bh1TaY7rnhdT7LH4nsMhB/kJOwrlKo5BJ8oKBgA
-         8RZtaCXXlaz8N26hWiorNDNCbmiJEZQSz+1VTH+PWDBSsgSx7I55oAxCdtI7SuYchiP1
-         E+0zM7L5aKStq2w1Sq6MLiVlNHL+QwJP5FSLbDpFWJTkZgrSsp3YSqRLcuQyaWeyB390
-         OLLormLDOD9jstrxYBH2zIuqDRAGgdgCTxtnm9mAhAj+OjUPyujIjL1VBczQmnYONic/
-         sIKA==
+        bh=DZT5tWoSHDQAvAO50v+sySA4a79lkTuf/l0j81w5//0=;
+        b=g9SexKs9zqqIF0R/04d5bUwAlpLOUi1/zg3nSbwLaUSvJ1M9epuyUjEJiuCWezZtHO
+         zr9gT28YZ7EdeS1jRSHr2hfmQUYJSOC4X6JvRPKfv3UXEE2KC6es+8KmJCTeaWOBwaD4
+         Qn5M63vKYlKo7DylVkr9xSGLB3Q6482eEmGwbkt7TEVAOjAtbw2Tc5sLZl48WiDAjnOj
+         uCXpUhWKF6MJe2QIfmMICgvK7BMN7dUBB699c1QFRqz3IvXJDasca6URUtNRKwqDxMiR
+         GQE96GwV3dqdchQlzPC9pGiJ1S5JSdVTwTg+g2AmVfRniv8g3Wu49jG9UHIYOdRje2+I
+         CaAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Fni3boaJXyriszWVM3CfKGyDpgww0el+dA3bYTKikKk=;
-        b=H105m1vb/Sotu1URRcIrdBF/SIVeHPi0k2pHT2CRH+3jXT2g1PmLkqCRVveYgd55it
-         cXcNlphSRa93fpOJFDpQBqW3QFYhcq+5NZb/GL4Moh/DrLxawwPO1HfLYoJHWHaF8Y9N
-         C7cDLPqkAPiTp7cDeNVuaW8C9n6IhZSplzghJpzWXKB08pagqcm+JFdYj42GyA/bGw/j
-         n/rMqfEDqoLouR9+0DHCqv9ugHTmKLsA6IJ6JTD7GdcmW7RuRoGjL2dPMYtsmxRBhLJk
-         MMgdqXOMm6Y80sD8axA+bUerxaQQUJbMyk7pS3j/zoZr6pfP49eG1enHHJvS5Uvt1uxT
-         CZgA==
-X-Gm-Message-State: AGi0Pub+9LbgBrr3Y4JLvscsGdtJBLkKorCaZpB+W+FBuojrKDiwlwql
-        SUgpkJmvVpAeHQJ7JafGIks=
-X-Google-Smtp-Source: APiQypIV3hafq6UZsdTdSXlW8w8o0wZCa35bjXcOuE7bMXHCR5Ve/g8DHyStlGj3kkgHa0el+iwPgQ==
-X-Received: by 2002:a2e:9207:: with SMTP id k7mr2048062ljg.124.1588249348596;
-        Thu, 30 Apr 2020 05:22:28 -0700 (PDT)
+        bh=DZT5tWoSHDQAvAO50v+sySA4a79lkTuf/l0j81w5//0=;
+        b=FkWuohDL2lQbiELOY2V+kmXRQFhglA8uLKJlDdLttlssa/V8+deOAzRWKSfIyv/VNP
+         Sjb7cJCQQUxx24NSfZlzYZaJ6fKjO01wfiFJLTUPROlYSppUpAMW5dXRZWHBUqyAgXt1
+         DZlIL1zvVX2ERiQnD8UJTHG/npr5K19gHsVaEIgt7QyA5+6Ucru2gDidT8Y65JpHYJ+c
+         IWMvBOtwCUx1iRTJB9iV0KjQVsqxkc4zzoQBvJBL8oULQi+uI6c6Eg9lxBeuqpn3XyLk
+         kDWi5NrCLbcJI5ACpRU5KEzzShafkg9BrW4I5eAOTbskaN3a2p6TNcubtQuDDscZi6p4
+         gpUA==
+X-Gm-Message-State: AGi0Pub/8wcDPvGFoI38PFJ/+8RNMGYOhHt2yVej05Q35gOqK46y58Kn
+        XoxnvWjiWSdw4b87xCOiYUw=
+X-Google-Smtp-Source: APiQypIr8D/eYNAhxeYh2E+0guqFJqliQ8qwaN4JrODeJD095spTPRh/bMf/13WONPioRNyDH//pPQ==
+X-Received: by 2002:a2e:3208:: with SMTP id y8mr2083714ljy.282.1588249349845;
+        Thu, 30 Apr 2020 05:22:29 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id a26sm4793168lfl.66.2020.04.30.05.22.27
+        by smtp.gmail.com with ESMTPSA id a26sm4793168lfl.66.2020.04.30.05.22.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 05:22:27 -0700 (PDT)
+        Thu, 30 Apr 2020 05:22:29 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/4] trace-cmd: Add "main" in the output of trace-cmd stat when displaying main instance
-Date:   Thu, 30 Apr 2020 15:22:20 +0300
-Message-Id: <20200430122222.101276-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 3/4] trace-cmd: Create ftrace instances before using them.
+Date:   Thu, 30 Apr 2020 15:22:21 +0300
+Message-Id: <20200430122222.101276-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200430122222.101276-1-tz.stoyanov@gmail.com>
 References: <20200430122222.101276-1-tz.stoyanov@gmail.com>
@@ -76,30 +76,38 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-By default, "trace-cmd stat" command prints status of the main ftrace instance. When more
-instances are configured, the user could be confused which status is displayed.
+Ftrace instances should be created physically in the tracefs, before
+trying to access its files. In record_trace() function, the call to
+make_instances() should be before the logic which reads the instance's
+tracing file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-stat.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tracecmd/trace-record.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
-index c5057978..dcf2789c 100644
---- a/tracecmd/trace-stat.c
-+++ b/tracecmd/trace-stat.c
-@@ -920,8 +920,10 @@ static void stat_instance(struct buffer_instance *instance)
- 			printf("---------------\n");
- 		printf("Instance: %s\n",
- 			tracefs_instance_get_name(instance->tracefs));
--	} else
-+	} else {
- 		report_instances();
-+		printf("\nInstance: main\n\n");
-+	}
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index d8c24ebf..1e4d38fa 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -6222,6 +6222,8 @@ static void record_trace(int argc, char **argv,
+ 	if (!ctx->output)
+ 		ctx->output = DEFAULT_INPUT_FILE;
  
- 	report_plugin(instance);
- 	report_events(instance);
++	make_instances();
++
+ 	/* Save the state of tracing_on before starting */
+ 	for_all_instances(instance) {
+ 		instance->output_file = strdup(ctx->output);
+@@ -6236,8 +6238,6 @@ static void record_trace(int argc, char **argv,
+ 			instance->tracing_on_init_val = 1;
+ 	}
+ 
+-	make_instances();
+-
+ 	if (ctx->events)
+ 		expand_event_list();
+ 
 -- 
 2.25.4
 
