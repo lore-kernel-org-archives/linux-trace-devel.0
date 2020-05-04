@@ -8,65 +8,65 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4175C4724C
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 May 2020 17:44:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0FC1C3A5A9
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 May 2020 17:44:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A4584206A4
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 May 2020 17:44:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 79569206A4
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 May 2020 17:44:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pdtjXBE3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UaVFBi1Y"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729597AbgEDRoD (ORCPT
+        id S1730049AbgEDRoG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 May 2020 13:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
+        Mon, 4 May 2020 13:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729386AbgEDRoD (ORCPT
+        by vger.kernel.org with ESMTP id S1729386AbgEDRoG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 May 2020 13:44:03 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D836AC061A0E
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 May 2020 10:44:02 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id w20so10615320ljj.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 04 May 2020 10:44:02 -0700 (PDT)
+        Mon, 4 May 2020 13:44:06 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEE2C061A0E
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 May 2020 10:44:05 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id e25so10581214ljg.5
+        for <linux-trace-devel@vger.kernel.org>; Mon, 04 May 2020 10:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5U7V11sF6B4edbELusw9zRX3HMyHnqKm/W8MFjoIFAo=;
-        b=pdtjXBE3J3RCWyuUZzPDm0KVywuOGTrKuX4DkPbrC6ndZcQ53QbI23lhx+Mr3YEirR
-         9FHOfF/HCrwIkg8+Dwkh62zNtlQaCmIfDNurEfUAK0zrmEfitK/GuLveIlO4BH0J/JZ9
-         x9TbSWuYrT0i4Nu2VwqA75AyguCJrlVFOjE5fmI2YBd75GsEnyHqyAYTutTB9EgRYnKG
-         PQaxDjumpTfZIdm+Tr7XG7cr2z8VwrtxVKatfbepQGMoG5Wj38Qsl/v2fvFfNfuQgFie
-         gVVHWQGi/3E6dENgDSgZ/jJhOiIl8FH9amgLg5ovElIs+0Wxg7Iw9V46igo5k3pOddLg
-         9gjg==
+        bh=rG8yJs61XD1TWHQlVU7KyM8bnL1CHmqpFcRNzYR+gls=;
+        b=UaVFBi1YTTdOkL+AxH5sqcsR6LuD/ugUcHMSyq+cYI5AtQAbCOs+QRSWw24uVTuWMF
+         v04wp7TMkP1C03+AR1TxvFIZB0SiPm3ZPzf7q7ncJP6M4db4Jffups0AW1PbbI0lE7Gf
+         GaxsBFowm7IkMf42xb8P28OIexMqbm5VMm2WJ3GlX6CAVCVm07/IqFnrXYQ4h7y78u2A
+         XuWO74JZ7NlYJyZHlxjSbldCV3BCAcepepVoveSqKmA4yFd9py7Aa5c0XtN4moGGXDbg
+         XkABeaY4VtJLUY67vjXOCSMKo+DEj2XYLfrka7B++OjcPDAjmTAFsawNYakc+QmLCnuC
+         aXDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5U7V11sF6B4edbELusw9zRX3HMyHnqKm/W8MFjoIFAo=;
-        b=BZM6WZusJR86XJ6kFNipwJ2Av/N/5Q5VHwJnwkVDaB1PY3vdVskiDTHJZMQBc/9oCz
-         VbQoN2rqMfFdu1i2nAAfTXm4XrHCej4DbANwcNVCX8H6QTM4QtF8tsfJUOOs8mV5yMAW
-         /Z6XKOkLDdLEiF2jnwSk7rgr+iSHyb3sHWDTTQ9Wd5627boFJAzcOppEUZlf/pC8qjtc
-         7G82hyXInBiy8qHtybTawHN4sIGUrMVJNJeo7Eyny3x40zIkFOtBPYTykyONHbojmNUP
-         Zlqrs0i/94jageZHS/R4MjJktnUGmzAzoRAKxFcZK+/eMDOETP/quvMfoUztJfRW10RT
-         wi6g==
-X-Gm-Message-State: AGi0PuYEiJ67E2RtKj4oewArG7H4jrBr4k7CNLljTQVUgpMKi7xjlUN0
-        +1kH6JUS9V0MUAi7yKgiKc0=
-X-Google-Smtp-Source: APiQypKkVz0Hfrz64Jn0ARktbWVo302UCnidDR8NjTIqfNBb2Yi+LY2jcJw+R32t5rg045YYU2uCjQ==
-X-Received: by 2002:a2e:d1a:: with SMTP id 26mr11270940ljn.160.1588614241307;
-        Mon, 04 May 2020 10:44:01 -0700 (PDT)
+        bh=rG8yJs61XD1TWHQlVU7KyM8bnL1CHmqpFcRNzYR+gls=;
+        b=MMfSDukfcgOHSX3BRodSN6c3yBxjFlrjamBMJV18k4565f0df6CxJBZAdQdSyWqkyU
+         KYbDf0wDfHK1iYv6dD3arbukwO2eLqEE4Tyoe5llLk6MMCT+ZLyzS2zD3LWXCEpq9kcn
+         J0EgTkharV4fVX/cy+A2dAkrLnoAGfIpg+QzZWshbdLzTe0NgEHsjFXhIRCtlhV5d+h/
+         lpQTZyokjpLvfSCtnZB3eZti6whQemV9uHS9Jot7PaR4yX9CbLLp7MhCnQdJaqbUIYKc
+         EATLt/BMDhTWNqAaRcgLZZKHA+TATefew6B015sPjDjspy18a31KYyFTW6drGsMrjd96
+         TCNg==
+X-Gm-Message-State: AGi0PuY02GmFLjd3xt5t9g7KMZUJV46EjtM1OKTRlJ+X9l2FJPvdB4X9
+        pxN+tHq82JjLsXf0sQxacRhx6iMyEy4=
+X-Google-Smtp-Source: APiQypKcwrfOSuUXUS72moq5jNEeEyLtqNMS/WotC0rUNF3y7GyicbcHEEGawLGacMKv6dV48oSnnQ==
+X-Received: by 2002:a2e:9e45:: with SMTP id g5mr11459241ljk.180.1588614243811;
+        Mon, 04 May 2020 10:44:03 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.73.119])
-        by smtp.gmail.com with ESMTPSA id g10sm10260845lfc.95.2020.05.04.10.44.00
+        by smtp.gmail.com with ESMTPSA id g10sm10260845lfc.95.2020.05.04.10.44.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 10:44:00 -0700 (PDT)
+        Mon, 04 May 2020 10:44:02 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 1/3] kernel-shark: Simplify the search methods in class KsTraceViewer
-Date:   Mon,  4 May 2020 20:43:40 +0300
-Message-Id: <20200504174342.24615-2-y.karadz@gmail.com>
+Subject: [PATCH v2 2/3] kernel-shark: Change the mechanism of the multi-threaded search
+Date:   Mon,  4 May 2020 20:43:41 +0300
+Message-Id: <20200504174342.24615-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200504174342.24615-1-y.karadz@gmail.com>
 References: <20200504174342.24615-1-y.karadz@gmail.com>
@@ -77,71 +77,416 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patch defines two identical private methods for single-threaded
-and multi-threaded search inside the data table. This is done as a
-preparation for the following patch that will change the mechanism
-of the multi-threaded search.
+We switch from classical Map-Reduce approach in which the data is
+divided in sub-sets and each thread searches into its own sub-set
+to a solution in which all thread are progressing in the data in
+parallel. Note that the Map-Reduce solution is more efficient
+because at the end when we merge the searching results we simply
+have to append the outputs of the threads, while in the case of
+a parallel search we hare to also sort the merged outputs of the
+threads. However, the parallel search allows the user to stop and
+later restart the search at any time. The GUI buttons, needed to
+stop and restart the multi-threaded search will be enabled in the
+following patch.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsTraceViewer.cpp | 12 ++++++------
- kernel-shark/src/KsTraceViewer.hpp |  5 +++--
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ kernel-shark/src/KsModels.cpp      |  89 +++++++++++++------
+ kernel-shark/src/KsModels.hpp      |  16 ++--
+ kernel-shark/src/KsSearchFSM.hpp   |   5 +-
+ kernel-shark/src/KsTraceViewer.cpp | 135 +++++++++++++++++++++++------
+ 4 files changed, 183 insertions(+), 62 deletions(-)
 
+diff --git a/kernel-shark/src/KsModels.cpp b/kernel-shark/src/KsModels.cpp
+index b89fee8..51a7b79 100644
+--- a/kernel-shark/src/KsModels.cpp
++++ b/kernel-shark/src/KsModels.cpp
+@@ -52,22 +52,25 @@ size_t KsFilterProxyModel::_search(int column,
+ 				   const QString &searchText,
+ 				   search_condition_func cond,
+ 				   QList<int> *matchList,
++				   int step,
+ 				   int first, int last,
+ 				   QProgressBar *pb,
+ 				   QLabel *l,
++				   int *lastRowSearched,
+ 				   bool notify)
+ {
+ 	int index, row, nRows(last - first + 1);
+-	int pbCount(1);
++	int milestone(1), pbCount(1);
+ 	QString item;
+ 
+ 	if (nRows > KS_PROGRESS_BAR_MAX)
+-		pbCount = nRows / (KS_PROGRESS_BAR_MAX - _searchProgress);
++		milestone = pbCount = nRows / (KS_PROGRESS_BAR_MAX - step -
++					       _searchProgress);
+ 	else
+ 		_searchProgress = KS_PROGRESS_BAR_MAX - nRows;
+ 
+ 	/* Loop over the items of the proxy model. */
+-	for (index = first; index <= last; ++index) {
++	for (index = first; index <= last; index += step) {
+ 		/*
+ 		 * Use the index of the proxy model to retrieve the value
+ 		 * of the row number in the base model.
+@@ -78,17 +81,23 @@ size_t KsFilterProxyModel::_search(int column,
+ 			matchList->append(row);
+ 
+ 		if (_searchStop) {
+-			if (notify) {
+-				_searchProgress = KS_PROGRESS_BAR_MAX;
++			if (lastRowSearched)
++				*lastRowSearched = index;
++
++			if (notify)
+ 				_pbCond.notify_one();
+-			}
+ 
+ 			break;
+ 		}
+ 
+ 		/* Deal with the Progress bar of the seatch. */
+-		if ((index - first) % pbCount == 0) {
++		if ((index - first) >= milestone) {
++			milestone += pbCount;
+ 			if (notify) {
++				/*
++				 * This is a multi-threaded search. Notify
++				 * the main thread to update the progress bar.
++				 */
+ 				std::lock_guard<std::mutex> lk(_mutex);
+ 				++_searchProgress;
+ 				_pbCond.notify_one();
+@@ -100,6 +109,7 @@ size_t KsFilterProxyModel::_search(int column,
+ 
+ 				if (l)
+ 					l->setText(QString(" %1").arg(matchList->count()));
++
+ 				QApplication::processEvents();
+ 			}
+ 		}
+@@ -130,8 +140,17 @@ size_t KsFilterProxyModel::search(int column,
+ 				  QLabel *l)
+ {
+ 	int nRows = rowCount({});
+-	_search(column, searchText, cond, matchList,
+-		0, nRows - 1, pb, l, false);
++	_search(column,
++		searchText,
++		cond,
++		matchList,
++		1,		// step
++		0,		// first
++		nRows - 1,	// last
++		pb,
++		l,
++		nullptr,
++		false);
+ 
+ 	return matchList->count();
+ }
+@@ -148,16 +167,17 @@ size_t KsFilterProxyModel::search(KsSearchFSM *sm, QList<int> *matchList)
+ {
+ 	int nRows = rowCount({});
+ 
+-	sm->_lastRowSearched =
+-		_search(sm->column(),
+-			sm->searchText(),
+-			sm->condition(),
+-			matchList,
+-			sm->_lastRowSearched + 1,
+-			nRows - 1,
+-			&sm->_searchProgBar,
+-			&sm->_searchCountLabel,
+-			false);
++	_search(sm->column(),
++		sm->searchText(),
++		sm->condition(),
++		matchList,
++		1,				// step
++		sm->_lastRowSearched + 1,	// first
++		nRows - 1,			// last
++		&sm->_searchProgBar,
++		&sm->_searchCountLabel,
++		&sm->_lastRowSearched,
++		false);
+ 
+ 	return matchList->count();
+ }
+@@ -168,26 +188,41 @@ size_t KsFilterProxyModel::search(KsSearchFSM *sm, QList<int> *matchList)
+  * @param column: The number of the column to search in.
+  * @param searchText: The text to search for.
+  * @param cond: Matching condition function.
++ * @param step: The step used by the thread of the search when looping over
++ *		the data.
+  * @param first: Row index specifying the position inside the table from
+  *		 where the search starts.
+  * @param last:  Row index specifying the position inside the table from
+  *		 where the search ends.
++ * @param lastRowSearched: Output location for parameter showing the index of
++ *			   the last searched item (data row).
+  * @param notify: Input location for flag specifying if the search has to
+  *		  notify the main thread when to update the progress bar.
+  *
+  * @returns A list containing the row indexes of the cells satisfying matching
+  *	    condition.
+  */
+-QList<int> KsFilterProxyModel::searchMap(int column,
+-					 const QString &searchText,
+-					 search_condition_func cond,
+-					 int first,
+-					 int last,
+-					 bool notify)
++QList<int> KsFilterProxyModel::searchThread(int column,
++					    const QString &searchText,
++					    search_condition_func cond,
++					    int step,
++					    int first,
++					    int last,
++					    int *lastRowSearched,
++					    bool notify)
+ {
+ 	QList<int> matchList;
+-	_search(column, searchText, cond, &matchList, first, last,
+-		nullptr, nullptr, notify);
++	_search(column,
++		searchText,
++		cond,
++		&matchList,
++		step,
++		first,
++		last,
++		nullptr,
++		nullptr,
++		lastRowSearched,
++		notify);
+ 
+ 	return matchList;
+ }
+diff --git a/kernel-shark/src/KsModels.hpp b/kernel-shark/src/KsModels.hpp
+index 3faaf4a..d360ad6 100644
+--- a/kernel-shark/src/KsModels.hpp
++++ b/kernel-shark/src/KsModels.hpp
+@@ -170,12 +170,14 @@ public:
+ 
+ 	size_t search(KsSearchFSM *sm, QList<int> *matchList);
+ 
+-	QList<int> searchMap(int column,
+-			     const QString  &searchText,
+-			     search_condition_func  cond,
+-			     int first,
+-			     int last,
+-			     bool notify);
++	QList<int> searchThread(int column,
++				const QString &searchText,
++				search_condition_func cond,
++				int step,
++				int first,
++				int last,
++				int *lastRowSearched,
++				bool notify);
+ 
+ 	/** Get the progress of the search. */
+ 	int searchProgress() const {return _searchProgress;}
+@@ -223,9 +225,11 @@ private:
+ 		       const QString &searchText,
+ 		       search_condition_func cond,
+ 		       QList<int> *matchList,
++		       int step,
+ 		       int first, int last,
+ 		       QProgressBar *pb,
+ 		       QLabel *l,
++		       int *lastRowSearched,
+ 		       bool notify);
+ };
+ 
+diff --git a/kernel-shark/src/KsSearchFSM.hpp b/kernel-shark/src/KsSearchFSM.hpp
+index 2089912..6a01d61 100644
+--- a/kernel-shark/src/KsSearchFSM.hpp
++++ b/kernel-shark/src/KsSearchFSM.hpp
+@@ -168,9 +168,10 @@ public:
+ 
+ 	/**
+ 	 * Last row, tested for matching. To be used when restarting the
+-	 * search.
++	 * search. Note that the field uses "int" as a type because this
++	 * is the type supported by the Qt widget (QTableView).
+ 	 */
+-	ssize_t		_lastRowSearched;
++	int		_lastRowSearched;
+ 
+ //! @cond Doxygen_Suppress
+ 
 diff --git a/kernel-shark/src/KsTraceViewer.cpp b/kernel-shark/src/KsTraceViewer.cpp
-index c176cef..0694532 100644
+index 0694532..0e0e3d4 100644
 --- a/kernel-shark/src/KsTraceViewer.cpp
 +++ b/kernel-shark/src/KsTraceViewer.cpp
-@@ -621,9 +621,9 @@ size_t KsTraceViewer::_searchItems()
+@@ -12,6 +12,7 @@
+ // C++11
+ #include <thread>
+ #include <future>
++#include <queue>
  
- 		if (column == KsViewModel::TRACE_VIEW_COL_INFO ||
- 		    column == KsViewModel::TRACE_VIEW_COL_LAT)
--			_proxyModel.search(&_searchFSM, &_matchList);
-+			_searchItemsST();
- 		else
--			_searchItemsMapReduce(column, searchText, _searchFSM.condition());
-+			_searchItemsMT();
- 	}
- 
- 	count = _matchList.count();
-@@ -673,9 +673,7 @@ void KsTraceViewer::_setSearchIterator(int row)
- 	}
- }
- 
--void KsTraceViewer::_searchItemsMapReduce(int column,
--					  const QString &searchText,
--					  search_condition_func cond)
-+void KsTraceViewer::_searchItemsMT()
+ // KernelShark
+ #include "KsQuickContextMenu.hpp"
+@@ -676,49 +677,129 @@ void KsTraceViewer::_setSearchIterator(int row)
+ void KsTraceViewer::_searchItemsMT()
  {
  	int nThreads = std::thread::hardware_concurrency();
++	int startFrom, nRows(_proxyModel.rowCount({}));
  	std::vector<QPair<int, int>> ranges(nThreads);
-@@ -685,7 +683,9 @@ void KsTraceViewer::_searchItemsMapReduce(int column,
- 
- 	auto lamSearchMap = [&] (const QPair<int, int> &range,
- 				 bool notify) {
--		return _proxyModel.searchMap(column, searchText, cond,
-+		return _proxyModel.searchMap(_searchFSM._columnComboBox.currentIndex(),
-+					     _searchFSM._searchLineEdit.text(),
-+					     _searchFSM.condition(),
- 					     range.first, range.second,
- 					     notify);
- 	};
-diff --git a/kernel-shark/src/KsTraceViewer.hpp b/kernel-shark/src/KsTraceViewer.hpp
-index cf529ba..6080d0d 100644
---- a/kernel-shark/src/KsTraceViewer.hpp
-+++ b/kernel-shark/src/KsTraceViewer.hpp
-@@ -132,8 +132,9 @@ private:
- 
- 	size_t _searchItems();
- 
--	void _searchItemsMapReduce(int column, const QString &searchText,
--				   search_condition_func cond);
-+	void _searchItemsST() {_proxyModel.search(&_searchFSM, &_matchList);}
+ 	std::vector<std::future<QList<int>>> maps;
+-	int i(0), nRows(_proxyModel.rowCount({}));
+-	int delta(nRows / nThreads);
+-
+-	auto lamSearchMap = [&] (const QPair<int, int> &range,
+-				 bool notify) {
+-		return _proxyModel.searchMap(_searchFSM._columnComboBox.currentIndex(),
+-					     _searchFSM._searchLineEdit.text(),
+-					     _searchFSM.condition(),
+-					     range.first, range.second,
+-					     notify);
++	std::mutex lrs_mtx;
 +
-+	void _searchItemsMT();
++	auto lamLRSUpdate = [&] (int lastRowSearched) {
++		std::lock_guard<std::mutex> lock(lrs_mtx);
++
++		if (_searchFSM._lastRowSearched > lastRowSearched ||
++		    _searchFSM._lastRowSearched < 0) {
++			/*
++			 * This thread has been slower and processed
++			 * less data. Take the place where it stopped
++			 * as a starting point of the next search.
++			 */
++			_searchFSM._lastRowSearched = lastRowSearched;
++		}
+ 	};
  
- 	void _searchEditText(const QString &);
+-	auto lamSearchReduce = [&] (QList<int> &resultList,
+-				    const QList<int> &mapList) {
+-		resultList << mapList;
+-		_searchFSM.incrementProgress();
++	auto lamSearchMap = [&] (const int first, bool notify) {
++		int lastRowSearched;
++		QList<int> list;
++
++		list = _proxyModel.searchThread(_searchFSM._columnComboBox.currentIndex(),
++						_searchFSM._searchLineEdit.text(),
++						_searchFSM.condition(),
++						nThreads,
++						first, nRows - 1,
++						&lastRowSearched,
++						notify);
++
++		lamLRSUpdate(lastRowSearched);
++
++		return list;
+ 	};
  
+-	for (auto &r: ranges) {
+-		r.first = (i++) * delta;
+-		r.second = r.first + delta - 1;
+-	}
++	using merge_pair_t = std::pair<int, int>;
++	using merge_container_t = std::vector<merge_pair_t>;
+ 
+-	/*
+-	 * If the range is not multiple of the number of threads, adjust
+-	 * the last range interval.
+-	 */
+-	ranges.back().second = nRows - 1;
+-	maps.push_back(std::async(lamSearchMap, ranges[0], true));
++	auto lamComp = [] (const merge_pair_t& itemA, const merge_pair_t& itemB) {
++		return itemA.second > itemB.second;
++	};
++
++	using merge_queue_t = std::priority_queue<merge_pair_t,
++						  merge_container_t,
++						  decltype(lamComp)>;
++
++	auto lamSearchMerge = [&] (QList<int> &resultList,
++				   QVector< QList<int> >&mapList) {
++		merge_queue_t queue(lamComp);
++		int id, stop(-1);
++
++		auto pop = [&] () {
++			if (queue.size() == 0)
++				return stop;
++
++			auto item = queue.top();
++			queue.pop();
++
++			if (!mapList[item.first].empty()) {
++				/*
++				 * Replace the popped item with the next
++				 * matching item fron the same search thread.
++				 */
++				queue.push(std::make_pair(item.first,
++							  mapList[item.first].front()));
++				mapList[item.first].pop_front();
++			}
++
++			if (_searchFSM.getState() == search_state_t::Paused_s &&
++			    item.second > _searchFSM._lastRowSearched) {
++				/*
++				 * The search has been paused and we already
++				 * passed the last row searched by the slowest
++				 * search thread. Stop here and ignore all
++				 * following matches found by faster threads.
++				 */
++				return stop;
++			}
++
++			return item.second;
++		};
++
++		for (int i = 0; i < mapList.size(); ++i)
++			if ( mapList[i].count()) {
++				queue.push(std::make_pair(i, mapList[i].front()));
++				mapList[i].pop_front();
++			}
++
++		id = pop();
++		while (id >= 0) {
++			resultList.append(id);
++			id = pop();
++		}
++	};
++
++	startFrom = _searchFSM._lastRowSearched + 1;
++	_searchFSM._lastRowSearched = -1;
++
++	/* Start the thread that will update the progress bar. */
++	maps.push_back(std::async(lamSearchMap,
++				  startFrom,
++				  true)); // notify = true
++
++	/* Start all other threads. */
+ 	for (int r = 1; r < nThreads; ++r)
+-		maps.push_back(std::async(lamSearchMap, ranges[r], false));
++		maps.push_back(std::async(lamSearchMap,
++					  startFrom + r,
++					  false)); // notify = false
+ 
+-	while (_proxyModel.searchProgress() < KS_PROGRESS_BAR_MAX - nThreads) {
++	while (_searchFSM.getState() == search_state_t::InProgress_s &&
++	       _proxyModel.searchProgress() < KS_PROGRESS_BAR_MAX - nThreads - 1) {
+ 		std::unique_lock<std::mutex> lk(_proxyModel._mutex);
+ 		_proxyModel._pbCond.wait(lk);
+ 		_searchFSM.setProgress(_proxyModel.searchProgress());
+ 		QApplication::processEvents();
+ 	}
+ 
++	QVector<QList<int>> res;
+ 	for (auto &m: maps)
+-		lamSearchReduce(_matchList, m.get());
++		res.append(std::move(m.get()));
++
++	lamSearchMerge(_matchList, res);
+ }
+ 
+ /**
 -- 
 2.20.1
 
