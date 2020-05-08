@@ -8,65 +8,66 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 676E2C38A2A
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 May 2020 15:23:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C2B7C47247
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 May 2020 15:23:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 457C3214D8
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 May 2020 15:23:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C867214D8
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 May 2020 15:23:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WafJPnXV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PeQvWOfR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgEHPXZ (ORCPT
+        id S1727030AbgEHPX0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 May 2020 11:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56292 "EHLO
+        Fri, 8 May 2020 11:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726922AbgEHPXY (ORCPT
+        with ESMTP id S1726922AbgEHPXZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 May 2020 11:23:24 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FDBC061A0C
-        for <linux-trace-devel@vger.kernel.org>; Fri,  8 May 2020 08:23:23 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id g10so1702548lfj.13
-        for <linux-trace-devel@vger.kernel.org>; Fri, 08 May 2020 08:23:22 -0700 (PDT)
+        Fri, 8 May 2020 11:23:25 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C1CC061A0C
+        for <linux-trace-devel@vger.kernel.org>; Fri,  8 May 2020 08:23:25 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id e25so2076040ljg.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 May 2020 08:23:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lTxYXmCND4/OE3RUcjHoEnYdVSUXDPzJVkv/UEEKKp0=;
-        b=WafJPnXVTYAe8m8l1khwJDmtagpnQiyzXC8eF5PEGuZrJE1Hn3pT4pBsSEse/VuDtR
-         5At3QcrbdA+jWLbkLT4/u1WA//hU9eEyfMw14xv1FcOwRu4lTM/OLy8wAdHaRApM4sKv
-         kuK7QbGuh8DhXcF2DqBOomubWnQ/1q9yxefP7yKf0JjBOLUSTK4ASt1sCM743qF3csSw
-         CJMByMcpA9+VeKtHA4ViieOXXmhd1laVziF4zYeP3rkc+HjyNjcJrQANb9+hX6OUVQCU
-         YeP+jQ6rYDMtKW7Oq+zS9C6pvkQa+2WCt5u9MSl313mIrtv03DVVdyaVF6c+TrdGQQ/x
-         +lYQ==
+        bh=UUXxr+xgbcEYOkT1di2VL8kwLKqLNzPMA1snU9UZn0g=;
+        b=PeQvWOfRvgckCjluk8nrJIeFE7fIVCZu9kN+H/8PfPHq3Qo4B01RaFlrLRMfL23Bms
+         1N6JsNvsoGKE9ef5soseC9lA78OI3hy6Vx/npcVS85WcmP9DoTMXstIB1L/SDbBW9MwB
+         e1lO8+ZolLWaukw3LP0qc5M7FQoT+7YqnM89q1TW5zQBMESjH1fnkbPgcv/TumQyPY8k
+         tyYxnWG30CwaO4bE5RZlGQ6AlH5hBJ9uWpKHS5pf2jFHylrLbopiRMnazgFe3zQLm0NW
+         sRY73sasz8XsZJvRxHq/kAqPgUlDjkKU9zpTeR/slaLXc7iNZWemZWDQwVPEZE65ozYi
+         /47Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lTxYXmCND4/OE3RUcjHoEnYdVSUXDPzJVkv/UEEKKp0=;
-        b=Ixw+FwZYVy86Rr+kTW0M7JWcIRs+9mUp0NEoLWdNu8VdRxS9sbOVFLrx72jNExR1G+
-         n217I+r2rNz4zKAuWNLgA0xTg2h8A/ajeK3QKzifRRrRad2xViFr2OpAhaeQcQBR4mKn
-         uk2QsOY5XVAsf4GZjSupibUt+H0SwFWP+Fl8sRLypkPycOY+VhS0Jf6BvKK8M61dDj9o
-         0ncuUQIyo9wRmBkJPdmIE2mF5v4WBUucYyBVrEmdfxdJw8g/P/97YExcwjwcDaVYA4lD
-         R2So7q1JKt4c5u58MavgWIM0nuFJ5ACA7MbBGplJGrnYB0qt+wbPZDpz7UPBDoJNu/eK
-         oJrQ==
-X-Gm-Message-State: AOAM533acT+5DcU0FOV+YXKp9HmBKghAf6PtZqhWo1Wv0SUD6gzYcUeD
-        izyO25fMZWJ99CHNHVXGZZ1UyDe0/4w=
-X-Google-Smtp-Source: ABdhPJxqxwe9ynf830hcL+rcGb3K2B7/kgrSzp8zaKbGl173LnzGeX7g8UNKINDt2BdZSZ/8KjFvKA==
-X-Received: by 2002:a19:ad45:: with SMTP id s5mr2308940lfd.106.1588951401432;
-        Fri, 08 May 2020 08:23:21 -0700 (PDT)
+        bh=UUXxr+xgbcEYOkT1di2VL8kwLKqLNzPMA1snU9UZn0g=;
+        b=j1rQo7dZ7zKa2LqIRNaB6eMxFrS7NXp1dVr44MA2B8yeRf6ehjn4ZITnDqM965Ki7n
+         /NFw5AxluKaKg1yg+3g/ICw6+euzY/7o3e/IXDcfVK7JCHX/GBXTC1lMbxYhEbJJots6
+         ufjcCj9+zCxIAgiT6tLj+K5D5ta6VdB09O+1xhoM4b5HhiTJjcs0PGCGuDODdQifaU+A
+         EFYR6Qr55SsTApqP5WwcTDA+nCqjcT9j+20QGGYKZrjHTCypUiUPeAzsmt7k0DyXWKgp
+         fnTvnVzMVh+9hN2Lw6xHK4FKDldvu07IdZB4Gk4RC/arUBWxCPA0pLmCKB5KD45xAKN1
+         YhnQ==
+X-Gm-Message-State: AOAM533McymuYoYCBL1GMZyn+aHjb+BaFGqzOc3+neSljYvvqRkD0EHt
+        DFxcHe2+aDomK0C20BLCUp4=
+X-Google-Smtp-Source: ABdhPJwqOBwXcHGu7peZd8CplY6d5JTaQEYyLuGWKOqzOukfR6bUgLa3gquMY7xQMGm9aMRPAoOptA==
+X-Received: by 2002:a2e:a311:: with SMTP id l17mr2092894lje.106.1588951403849;
+        Fri, 08 May 2020 08:23:23 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.73.119])
-        by smtp.gmail.com with ESMTPSA id q20sm1466497lfm.35.2020.05.08.08.23.18
+        by smtp.gmail.com with ESMTPSA id q20sm1466497lfm.35.2020.05.08.08.23.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 08:23:20 -0700 (PDT)
+        Fri, 08 May 2020 08:23:23 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3 1/3] kernel-shark: Add methods for selecting the plots to be shown
-Date:   Fri,  8 May 2020 18:23:00 +0300
-Message-Id: <20200508152302.27843-2-y.karadz@gmail.com>
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH v3 2/3] kernel-shark: Add command line options for selecting plots to be shown
+Date:   Fri,  8 May 2020 18:23:01 +0300
+Message-Id: <20200508152302.27843-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200508152302.27843-1-y.karadz@gmail.com>
 References: <20200508152302.27843-1-y.karadz@gmail.com>
@@ -77,81 +78,137 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The methods are added to the public interface of the KsMainWindow class
-and can be used to pre-select the CPU and Task plots to be shown, before
-opening the GUI.
+Example:
+  kernelshark -i mytrace.dat --cpu '1,4-7' --pid 11
+
+This will show CPUs: 1, 4, 5, 6, 7 and task(PID): 11.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Suggested-by: Julia Lawall  <julia.lawall@inria.fr>
 ---
- kernel-shark/src/KsMainWindow.cpp | 39 +++++++++++++++++++++++++++++++
- kernel-shark/src/KsMainWindow.hpp |  4 ++++
- 2 files changed, 43 insertions(+)
+ kernel-shark/src/KsUtils.cpp     | 24 +++++++++++++++++++
+ kernel-shark/src/KsUtils.hpp     |  2 ++
+ kernel-shark/src/kernelshark.cpp | 41 +++++++++++++++++++++++++++++---
+ 3 files changed, 64 insertions(+), 3 deletions(-)
 
-diff --git a/kernel-shark/src/KsMainWindow.cpp b/kernel-shark/src/KsMainWindow.cpp
-index 1f56645..fc4e9a9 100644
---- a/kernel-shark/src/KsMainWindow.cpp
-+++ b/kernel-shark/src/KsMainWindow.cpp
-@@ -172,6 +172,45 @@ KsMainWindow::~KsMainWindow()
- 		kshark_free(kshark_ctx);
+diff --git a/kernel-shark/src/KsUtils.cpp b/kernel-shark/src/KsUtils.cpp
+index 77d0c7c..8c61b3f 100644
+--- a/kernel-shark/src/KsUtils.cpp
++++ b/kernel-shark/src/KsUtils.cpp
+@@ -336,6 +336,30 @@ QStringList splitArguments(QString cmd)
+ 	return argv;
  }
  
-+/** Set the list ot CPU cores to be plotted. */
-+void KsMainWindow::setCPUPlots(QVector<int> cpus)
++/** Parse a string containing Ids. The string can be of the form "1 4-7 9". */
++QVector<int> parseIdList(QString v_str)
 +{
-+	int nCPUs = tep_get_cpus(_data.tep());
-+	auto lamCPUCheck = [=] (int cpu) {
-+		if (cpu >= nCPUs) {
-+			qWarning() << "Warning: No CPU" << cpu << "found in the data.";
-+			return true;
++	QStringList list = v_str.split(",", QString::SkipEmptyParts);
++	QVector<int> v;
++
++	for (auto item: list) {
++		int i = item.indexOf('-');
++		if (i > 0) {
++			/* This item is an interval. */
++			int to = item.right(item.size() - i - 1).toInt();
++			int from = item.left(i).toInt();
++			int s = v.size();
++
++			v.resize(s + to - from + 1);
++			std::iota(v.begin() + s, v.end(), from);
++		} else {
++			v.append(item.toInt());
 +		}
++	}
 +
-+		return false;
-+	};
-+
-+	cpus.erase(std::remove_if(cpus.begin(), cpus.end(), lamCPUCheck),
-+		   cpus.end());
-+
-+	_graph.cpuReDraw(cpus);
++	return v;
 +}
 +
-+/** Set the list ot tasks (pids) to be plotted. */
-+void KsMainWindow::setTaskPlots(QVector<int> pids)
-+{
-+	QVector<int> allPids = KsUtils::getPidList();
-+	auto lamPidCheck = [=] (int pid) {
-+		int i = allPids.indexOf(pid);
-+		if (i < 0) {
-+			qWarning() << "Warning: No Pid" << pid << "found in the data.";
-+			return true;
-+		}
+ }; // KsUtils
+ 
+ /** A stream operator for converting QColor into KsPlot::Color. */
+diff --git a/kernel-shark/src/KsUtils.hpp b/kernel-shark/src/KsUtils.hpp
+index f44139b..8293e7d 100644
+--- a/kernel-shark/src/KsUtils.hpp
++++ b/kernel-shark/src/KsUtils.hpp
+@@ -136,6 +136,8 @@ QString getSaveFile(QWidget *parent,
+ 
+ QStringList splitArguments(QString cmd);
+ 
++QVector<int> parseIdList(QString v_str);
 +
-+		return false;
-+	};
+ }; // KsUtils
+ 
+ /** Identifier of the Dual Marker active state. */
+diff --git a/kernel-shark/src/kernelshark.cpp b/kernel-shark/src/kernelshark.cpp
+index 1ec6678..0de80af 100644
+--- a/kernel-shark/src/kernelshark.cpp
++++ b/kernel-shark/src/kernelshark.cpp
+@@ -29,20 +29,43 @@ void usage(const char *prog)
+ 	printf("  -u	unregister plugin, use plugin name or absolute path\n");
+ 	printf("  -s	import a session\n");
+ 	printf("  -l	import the last session\n");
++	puts(" --cpu	show plots for CPU cores, default is \"show all\"");
++	puts(" --pid	show plots for tasks, default is \"do not show\"");
++	puts("\n example:");
++	puts("  kernelshark -i mytrace.dat --cpu 1,4-7 --pid 11 -p path/to/my/plugin/myplugin.so\n");
+ }
+ 
++#define KS_LONG_OPTS 0
++static option longOptions[] = {
++	{"help", no_argument, nullptr, 'h'},
++	{"pid", required_argument, nullptr, KS_LONG_OPTS},
++	{"cpu", required_argument, nullptr, KS_LONG_OPTS},
++	{nullptr, 0, nullptr, 0}
++};
 +
-+	pids.erase(std::remove_if(pids.begin(), pids.end(), lamPidCheck),
-+		   pids.end());
+ int main(int argc, char **argv)
+ {
+ 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+ 	QApplication a(argc, argv);
+ 
++	QVector<int> cpuPlots, taskPlots;
++	bool fromSession = false;
++	int optionIndex = 0;
+ 	KsMainWindow ks;
+-
+ 	int c;
+-	bool fromSession = false;
+ 
+-	while ((c = getopt(argc, argv, "hvi:p:u:s:l")) != -1) {
++	while ((c = getopt_long(argc, argv, "hvi:p:u:s:l",
++					    longOptions,
++					    &optionIndex)) != -1) {
+ 		switch(c) {
++		case KS_LONG_OPTS:
++			if (strcmp(longOptions[optionIndex].name, "cpu") == 0)
++				cpuPlots.append(KsUtils::parseIdList(QString(optarg)));
++			else if (strcmp(longOptions[optionIndex].name, "pid") == 0)
++				taskPlots.append(KsUtils::parseIdList(QString(optarg)));
 +
-+	_graph.taskReDraw(pids);
-+}
++			break;
 +
- /**
-  * Reimplemented event handler used to update the geometry of the window on
-  * resize events.
-diff --git a/kernel-shark/src/KsMainWindow.hpp b/kernel-shark/src/KsMainWindow.hpp
-index 997ea54..2fac107 100644
---- a/kernel-shark/src/KsMainWindow.hpp
-+++ b/kernel-shark/src/KsMainWindow.hpp
-@@ -62,6 +62,10 @@ public:
- 		_plugins.unregisterPlugin(plugin);
+ 		case 'h':
+ 			usage(argv[0]);
+ 			return 0;
+@@ -95,6 +118,18 @@ int main(int argc, char **argv)
+ 			ks.loadDataFile(QString(input_file));
  	}
  
-+	void setCPUPlots(QVector<int> cpus);
++	auto lamOrderIds = [] (QVector<int> &ids) {
++		/* Sort and erase duplicates. */
++		std::sort(ids.begin(), ids.end());
++		ids.erase(std::unique(ids.begin(), ids.end()), ids.end());
++		return ids;
++	};
 +
-+	void setTaskPlots(QVector<int> pids);
++	if (cpuPlots.count() || taskPlots.count()) {
++		ks.setCPUPlots(lamOrderIds(cpuPlots));
++		ks.setTaskPlots(lamOrderIds(taskPlots));
++	}
 +
- 	void resizeEvent(QResizeEvent* event);
- 
- 	/** Set the Full Screen mode. */
+ 	ks.show();
+ 	return a.exec();
+ }
 -- 
 2.20.1
 
