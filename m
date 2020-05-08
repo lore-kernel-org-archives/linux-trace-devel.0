@@ -2,136 +2,97 @@ Return-Path: <SRS0=aZMu=6W=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC043C38A2A
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 May 2020 13:11:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA57BC47254
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 May 2020 13:14:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B3CEB249A4
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 May 2020 13:11:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 919BD20870
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 May 2020 13:14:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lsmGU4A2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iREBKBN8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730303AbgEHNLM (ORCPT
+        id S1729527AbgEHNOc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 May 2020 09:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
+        Fri, 8 May 2020 09:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729273AbgEHNLJ (ORCPT
+        by vger.kernel.org with ESMTP id S1729496AbgEHMq4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 May 2020 09:11:09 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B614DC05BD43
-        for <linux-trace-devel@vger.kernel.org>; Fri,  8 May 2020 06:11:08 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id a4so1351098lfh.12
-        for <linux-trace-devel@vger.kernel.org>; Fri, 08 May 2020 06:11:08 -0700 (PDT)
+        Fri, 8 May 2020 08:46:56 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88361C05BD43
+        for <linux-trace-devel@vger.kernel.org>; Fri,  8 May 2020 05:46:56 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id r66so8299606oie.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 May 2020 05:46:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=smMBqsAAsQuYkg3qUQhq7eBScl0h8QjEGbaSIim0uzw=;
-        b=lsmGU4A2d0WR7US6X2mB/McN0UFw0pMPk5bnnl0IikKN3J+3gCk1nVv3QlgKHoK1qv
-         lMXchvpL4wnXDZG67y880cD4/bsqc5SIXk2o3+YUbv7sT4i7nR2ZsThAk3c1LcqsFxkb
-         uSmBGyEWlpqfBceExzj7lwbK4LhZQtQsWZgllg6Joq1A0/2QP0B2Qiwe7qfpxChuNp7z
-         dGq62eUzxlGYArHIZmhCB1n3Wt4e4eCKumjYJ4BAJxEFQdv61ncap9M/vquDsvABRVte
-         qKaFNaiplp4QdSeD5syp/0M91Emz6kHbWSHQxlOT1rLIbZWYpq5yYLm1RjXXGv+Eufip
-         8sZQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MU2o2U9j5OVyPBrkDtHokwEm2GEbzWTWZHovzYr7d6c=;
+        b=iREBKBN8KRbUi72ifTO+4YzDD7l+eTlr1/5m8wNFTC2HxuDdIjCrfdepgrb4y7PfAZ
+         Yjt8kN5vIq46oIVQdnbqnq2uULWSl2yvccwq+lUtt08DrNmHpDjl+NMFULktgMeo7zuq
+         HkIYBz2KN245AvsuDRtIKc7/j7w9vxcz3bsP0juwTHo7lpxw6/jeI9Xs58k5iZBFguZK
+         4VxE0DXOciE8mvx4TyeG4ERytfMbi/nSbo/PG2yv2QLwNYhTqagZgXLtxRD84cUEgZ9/
+         W/VKLeAiNydw76+wre9sN1JS2q2p11dFx9HuPf9ZnsQet7fV63zEOX8fQSOr9/IuJ/pt
+         WpFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=smMBqsAAsQuYkg3qUQhq7eBScl0h8QjEGbaSIim0uzw=;
-        b=GrpdIEvgrTydn+/rLlZPkOEFLW5FAKH5//3JP5KCAAs6eefYx5qtKBLs9Nr2CKJuJG
-         ITTAnt36VLYLAQJ/p4H7ED/u882WFkVSEuULvBioW3YCON4CeXUgO9tXjTaudZU56sMm
-         4cGuOE4zIruIVKYFTvu/JLmDc/TU32WI2xpbBz/bn/W2+f6AcSL5EUO1mNDHouH/vsXX
-         ssAAaV29xGD/if7ib7YZ34jfdhuw35cl/QDebmP+6+4L+sWi+bs73oNFrF5lNj6Yxk+t
-         NjQRGejmxNPaIq8IZvm5Q/Qc9GuAy2sj/4m5NIfjby8/sXJ/0Fc8MhodQD37G75f/ACc
-         hm1w==
-X-Gm-Message-State: AOAM532RfG6mYFyhWEns8sAQoZxQYkPmh/gdGxbMgaNJu040x3mS5d8G
-        uXFPf8LxstUby6Uf3U7FWga0SPNSiNI=
-X-Google-Smtp-Source: ABdhPJwew1kKVnDqebAm6W4mz3Q3EmcqKv2IFtTwu2JOofnLjFIcxRtK/cCoozU7yuChtPGp1X06jA==
-X-Received: by 2002:a05:6512:10cd:: with SMTP id k13mr1737936lfg.153.1588943466772;
-        Fri, 08 May 2020 06:11:06 -0700 (PDT)
-Received: from [192.168.0.106] ([84.40.73.119])
-        by smtp.gmail.com with ESMTPSA id l8sm1164109ljo.5.2020.05.08.06.11.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 May 2020 06:11:06 -0700 (PDT)
-Subject: Re: [PATCH 2/2] kernel-shark: Add command line options for selecting
- plots to be shown
-To:     Julia Lawall <julia.lawall@inria.fr>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org
-References: <20200424132542.1620-1-y.karadz@gmail.com>
- <20200424132542.1620-3-y.karadz@gmail.com>
- <20200504151335.6088dda5@gandalf.local.home>
- <alpine.DEB.2.21.2005042117020.13990@hadrien>
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <0d955df3-b881-b317-b040-4e508268faec@gmail.com>
-Date:   Fri, 8 May 2020 16:11:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MU2o2U9j5OVyPBrkDtHokwEm2GEbzWTWZHovzYr7d6c=;
+        b=kMEzH6jk7jzZr41J7NokBsu9bsbL0ptwa/RzOJS29SVxj6FL0GdKR8zsuYRtbyA9Io
+         XQhRrPf4v6gmrJ5JZfxbWCe+6dNJgrASZ5kNKtrL21e2Xy11zMrKpKd7JK72tMniiBDi
+         2+KoR954q7shvuQx0vMe2TmtVw9uSZfzUJ1w6hQiZJ5dTxhD1Qq+6aev7Bf2LuJibp4n
+         v3YtvBlsx8et+W9qehsCHMVtm64I/pd9oWuGuA175oUE+ybB/FVK3nUwJErxnaoQORf6
+         SiOwxaA4FAIdbDlr22ArCWyhuV2KaAXE/CCv55QEM8560hUU71dRJiijY7cZrZq6Zg91
+         klBw==
+X-Gm-Message-State: AGi0PuY1TzeUCucO5M+nifKj9jNGShtsVLimALaaGFGWPDvcn0831sIz
+        78p8645/SuGZIiKzbwI50VqUQdH6uUPomnLKYsKFfbFI
+X-Google-Smtp-Source: APiQypLDmCcwWsgu7mMvM/1LxysDEtGBPdD1vEeqya7nnlJ+ergNgnT75hRenyetAsKPtCtFybk+SeVwHWPodJRFk30=
+X-Received: by 2002:aca:1007:: with SMTP id 7mr10470597oiq.139.1588942015885;
+ Fri, 08 May 2020 05:46:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2005042117020.13990@hadrien>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200417203914.26358-1-sudipm.mukherjee@gmail.com>
+ <20200420154325.6072d96b@gandalf.local.home> <20200420155320.55d3c3f2@gandalf.local.home>
+ <CADVatmN4Xv00=VvWma9kRwYhsX=jzFn3t8052y1o54srEt6LfQ@mail.gmail.com>
+In-Reply-To: <CADVatmN4Xv00=VvWma9kRwYhsX=jzFn3t8052y1o54srEt6LfQ@mail.gmail.com>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Fri, 8 May 2020 13:46:19 +0100
+Message-ID: <CADVatmMaEd3jaT0UoGi2C2Xx7dNSaGmiaVcAk89SPCRAjEfGwg@mail.gmail.com>
+Subject: Re: [PATCH] trace-cmd: Fix build with gcc-10
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Mon, Apr 20, 2020 at 11:37 PM Sudip Mukherjee
+<sudipm.mukherjee@gmail.com> wrote:
+>
+> On Mon, Apr 20, 2020 at 8:53 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Mon, 20 Apr 2020 15:43:25 -0400
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > > On Fri, 17 Apr 2020 21:39:14 +0100
+> > > Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
+> > >
+> > > > The build fails while building with gcc-10 with the error:
+> > > > multiple definition of `common_type_field'
+> > >
+> <snip>
+> >
+> > OK, I'll take this patch, and may even enable a -fno-common to find other
+> > cases of this without having to wait till my distro adds gcc 10 by default.
 
+A gentle ping.
 
-On 4.05.20 г. 22:17 ч., Julia Lawall wrote:
-> 
-> 
-> On Mon, 4 May 2020, Steven Rostedt wrote:
-> 
->> On Fri, 24 Apr 2020 16:25:42 +0300
->> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
->>
->>> Example:
->>>    kernelshark -i mytrace.dat --cpu '1 4-7' --pid 11
->>
->> Can we change this to use a comma instead of a space. Then we don't need to
->> worry about quotes.
-> 
-> This seems like a good idea.  I was away from it a few days, and my first
-> intuition was to use a comma.
-> 
-> julia
-> 
-
-
-OK, I will send new version of the patches.
-
-Thanks a lot!
-Yordan
-
-
->>
->>    kernelshark -i mytrace.dat --cpu 1,4-7
->>
->> That's the common format for other unix command lines. See taskset for
->> instance.
->>
->> -- Steve
->>
->>
->>>
->>> This will show CPUs: 1, 4, 5, 6, 7 and task(PID): 11.
->>>
->>> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
->>> Suggested-by: Julia Lawall  <julia.lawall@inria.fr>
->>> ---
->>>   kernel-shark/src/KsUtils.cpp     | 24 ++++++++++++++++++++++++
->>>   kernel-shark/src/KsUtils.hpp     |  2 ++
->>>   kernel-shark/src/kernelshark.cpp | 32 +++++++++++++++++++++++++++++---
->>>   3 files changed, 55 insertions(+), 3 deletions(-)
->>>
->>>
->>
+-- 
+Regards
+Sudip
