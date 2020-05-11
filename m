@@ -1,86 +1,82 @@
-Return-Path: <SRS0=2y7b=6Y=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=tfm2=6Z=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.3 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FCE9C38A2A
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 10 May 2020 16:18:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6048CC54E8D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 May 2020 13:52:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7ABB820801
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 10 May 2020 16:18:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3CC2A207FF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 May 2020 13:52:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N0SesddC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IC6Jzqgj"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729022AbgEJQSW (ORCPT
+        id S1729640AbgEKNwM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 10 May 2020 12:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
+        Mon, 11 May 2020 09:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726446AbgEJQSV (ORCPT
+        by vger.kernel.org with ESMTP id S1729555AbgEKNwL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 10 May 2020 12:18:21 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87984C061A0C;
-        Sun, 10 May 2020 09:18:21 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id x12so5901074qts.9;
-        Sun, 10 May 2020 09:18:21 -0700 (PDT)
+        Mon, 11 May 2020 09:52:11 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606C7C061A0C
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 May 2020 06:52:11 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 8so4863104lfp.4
+        for <linux-trace-devel@vger.kernel.org>; Mon, 11 May 2020 06:52:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=CCDwBmXaa9BIAQ2zuOaJ1GngjhFRFzM8zE9mn4mKapw=;
-        b=N0SesddCH/TSHZU0Arzstfn5pbmtr8zI0DuwZP+16wTEmKDnRweZ/zK8QpEFbnEKsQ
-         9YwAiYPkz0JVUiPMwaO72qCcrLH59HiIlSls6+4HvWPV2C/vShdLjE+zus8PhYm+zmr6
-         IwYimCg6OAhhgNqw5rIs41cbwV9hw9AHoT6kzU9C5l4qo+yJ04UBoxEa2jTFpaBusmPw
-         11pOoCpHqmgaGnZg3mJ/WTVAe1uNdEmAEp1LfeNqQXsxEYZKif2qtvI9MT/znrXzx9vm
-         wLYR8VN6q38xXijuanahV5OnsqRtdENy/mqJG2iwkn1BRUug8TD2w+6O0cy77PW0RO4s
-         l3UA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=caMs2OKKOxzD+zR1Guw5jCaLcREqk2vN2JnYS/PeF5s=;
+        b=IC6Jzqgjr8oa1FZ8ffbPS6hZlQffSVEcCHh46tAS7ECbl0NNk4WKNf+0hKgXL41pEn
+         ZJYMiVLFwrRQZzZvLGfQGynRacPgDy4NvwnSsDpW1jV16cn3wuapYW7eWtz0KXSCgAvA
+         SmSZZxFEunthxa28ZvIVScVZ3SA8fRFwalh7l2fBoXac2YWSyuEpEf6kQxkUYoNuOJb6
+         U+2jiXL4kHXWzYWqC5kS8DziaI1R2AU83TtDXd9TMeas+yoVZTzDqMIivX6dGsOYWq5M
+         5JVXeA+fzJgt989Zbzlx0+pcZiZbbupHq55auR1YTdwiU/S2aHdTOpOgkIS4+eCXrlMP
+         UMJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=CCDwBmXaa9BIAQ2zuOaJ1GngjhFRFzM8zE9mn4mKapw=;
-        b=ZcubsPBLdiHwBUiQbaD16hf3lSzlyr8bFILmu0EX2btJ1zfXHbdOA877mweZw5MXe+
-         rbO5XG2CIKK0Z7U82CH2PoIoqPk7HxeBQNh/jFqFMWypjmV0t9ysxJyizTfL/Zn/J/9M
-         zUsIXmkD761K6SwANP21Gc3QGu68TIjTcqMJkTcjFXlKo2r4XO8u4vyT32bvjW8/tgON
-         dEtWfmTCQG9wfwWVx0goDQjwjfzA0pAHq5oB9OEdvkqYR/VNasbnlk0njFLzaJUtZ6tB
-         7XUscuFARzjadcHbMofS8WVR0WEZd3NCHyh6yVL7Tezc2eGHvd/AJxBn5ubQeKWUugbF
-         LAjA==
-X-Gm-Message-State: AGi0PuYYIdHsQpeDP4Mg+bzDF3cInFveIX3QW6eJrJAdic8mDbCvDAVX
-        p2clCNgZKocsWmtmnrfQ16dwsUF9t4w=
-X-Google-Smtp-Source: APiQypIWVHulUPbfG29QekqU8prAAB1vTCUuwZld8aMu1x7lVWdsXWHr5FIAt6vZ2QFMov/q0nmnYQ==
-X-Received: by 2002:ac8:66da:: with SMTP id m26mr12251999qtp.342.1589127500684;
-        Sun, 10 May 2020 09:18:20 -0700 (PDT)
-Received: from [192.168.86.185] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id k138sm2776710qke.55.2020.05.10.09.18.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 10 May 2020 09:18:20 -0700 (PDT)
-Date:   Sun, 10 May 2020 13:18:12 -0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20200510112336.444906c1@oasis.local.home>
-References: <20200510150628.16610-1-changbin.du@gmail.com> <20200510112336.444906c1@oasis.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 00/19] perf: ftrace enhancement
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=caMs2OKKOxzD+zR1Guw5jCaLcREqk2vN2JnYS/PeF5s=;
+        b=mv4Axo7bb9InQ1d8DVqWXtMVVdOuiNPHpYEuQz5iVu55e2rQ6hfdXsfWqd89UxdxJW
+         q3FU4R+pe6LD1AyDFTg3MbHBjYc/G73oSpaOtNVSHj1aUE57wAXClc/3gH3dQ7OmG80b
+         hKrNtIDaTF5LOsssbiBB04417UrLVTiH039Hv5zg/jlZem243Hl9DZMJnFAJ3zuKLExH
+         LnhaxPAfqjnsN6m6HfGKkAQrAXjor+vo0C3bVWwOHrLGlK2vVmsyq+bGfNzBqp1CTued
+         mW5xlcvc4DcD4xkZ9rKUPo/qSVEEVOiPevqY8vOSUnsKYRYuCVVQYSlp9J3UXWWmP3Gy
+         +p+w==
+X-Gm-Message-State: AOAM532+6N8ITw8vdqlX948kOIXZgXCMHlVbwY6W32jgem27d64QwMEQ
+        NgfJAVDTxHViLpXYm8MY5vc=
+X-Google-Smtp-Source: ABdhPJw+07BSLtPpkxz/bfJ3xINeaHHm+0gNy6Pno5umyP0MHOiSfQubByz6YV/DZXTlwPcAywF/7A==
+X-Received: by 2002:a19:f70f:: with SMTP id z15mr11079192lfe.53.1589205129879;
+        Mon, 11 May 2020 06:52:09 -0700 (PDT)
+Received: from [192.168.0.106] ([84.40.73.119])
+        by smtp.gmail.com with ESMTPSA id d8sm11092376lfl.51.2020.05.11.06.52.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2020 06:52:09 -0700 (PDT)
+Subject: Re: [PATCH] kernelshark: Make fontHeight() and stringWidth() static
 To:     Steven Rostedt <rostedt@goodmis.org>,
-        Changbin Du <changbin.du@gmail.com>
-CC:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org,
         "linux-trace-devel@vger.kernel.org" 
         <linux-trace-devel@vger.kernel.org>
-From:   Arnaldo Melo <arnaldo.melo@gmail.com>
-Message-ID: <3F63D994-4AD6-4EDE-899B-4B5D6B416B6D@gmail.com>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+References: <20200510111720.2e041431@oasis.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <3bf272bc-38f4-e283-1657-df08c124f9e1@gmail.com>
+Date:   Mon, 11 May 2020 16:52:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200510111720.2e041431@oasis.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
@@ -88,105 +84,51 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 
 
-On May 10, 2020 12:23:36 PM GMT-03:00, Steven Rostedt <rostedt@goodmis=2Eo=
-rg> wrote:
->On Sun, 10 May 2020 23:06:09 +0800
->Changbin Du <changbin=2Edu@gmail=2Ecom> wrote:
->
->> The perf has basic kernel ftrace support but lack support of most
->tracing
->> options=2E This serias is target to enhance the perf ftrace
->functionality so
->> that we can make full use of kernel ftrace with only perf=2E
->>=20
->> In general, this serias be cataloged into two main changes:
->>   1) Improve usability of existing functions=2E For example, we don't
->need to type
->>      extra option to select the tracer=2E
->>   2) Add new options to support all other ftrace functions=2E
->>=20
->> Here is a glance of all ftrace functions with this serias:
->>   * - improved existing options=2E
->>   + - new added options=2E
->>=20
->> $ sudo perf ftrace -h
->>=20
->>  Usage: perf ftrace [<options>] [<command>]
->>     or: perf ftrace [<options>] -- <command> [<options>]
->>=20
->> *   -a, --all-cpus        system-wide collection from all CPUs
->> +   -b, --buffer-size <n>
->>                           size of per cpu buffer in kb
->>     -C, --cpu <cpu>       list of cpus to monitor
->> +   -d, --delay <n>       Wait <n> ms before tracing
->>     -D, --graph-depth <n>
->>                           Max depth for function graph tracer
->> *   -G, --graph-funcs <func>
->>                           Set graph filter on given functions (imply
->to use function_graph tracer)
->>     -g, --nograph-funcs <func>
->>                           Set nograph filter on given functions
->(imply to use function_graph tracer)
->> +   -L, --list-functions  List available functions to filter
->> +   -l, --long-info       Show process names, PIDs, timestamps,
->irq-info if available
->>     -N, --notrace-funcs <func>
->>                           do not trace given functions
->> +   -P, --no-pager        Do not use pager
->>     -p, --pid <pid>       trace on existing process id
->> +   -s, --func-stack-trace
->>                           Show kernel stack trace for function tracer
->> +   -t, --tid <tid>       trace on existing thread id (exclusive to
->--pid)
->>     -T, --trace-funcs <func>
->>                           trace given functions only
->> +   -u, --userstacktrace  Show stacktrace of the current user space
->thread
->>     -v, --verbose         be more verbose
->> +       --funcgraph-tail  Show function tails comment (function_graph
->only)
->> +       --latency-format  displays additional information about the
->latency (function_graph only)
->> +       --nofuncgraph-irqs
->>                           Ignore functions that happen inside
->interrupt (function_graph only)
->> +       --nosleep-time    Measure on-CPU time only (function_graph
->only)
->> +       --trace-children  Trace children processes
->> +       --tracing-thresh <n>
->>                           Only show functions of which the duration
->is greater than <n>=C2=B5s
->>=20
->
->Note, we are working on making more of the trace-cmd functionality into
->libraries=2E See this work here:
->
->https://lore=2Ekernel=2Eorg/r/20191219113502=2E28964-2-tz=2Estoyanov@gmai=
-l=2Ecom
->
->Which introduces a libtracefs, that is to handle all the work needed to
->interact with the tracefs directory=2E This will also be useful for perf
->to read the event directory without having to open code that work=2E
->
->I'm all for giving perf the functionality of ftrace, but I would like
->to have it do so with a more generic solution that other tools could
->benefit from as well=2E
->
+On 10.05.20 г. 18:17 ч., Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> Gcc 10 is much more picky about globals being defined in multiple objects
+> even if they are the same function. The functions fontHeight() and
+> stringWidth() are defined in a header file which places them in multiple
+> objects. They need to be static otherwise gcc 10 will not be able to build.
+> 
+> Link: https://lore.kernel.org/linux-trace-devel/CADVatmN=Z0ASVXUBTyAu6F_TWoWiKiKsgm404rOx7Oh-a6LiQg@mail.gmail.com/
+> 
+> Reported-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-I think in time things will fall into place, 'perf ftrace' has potential a=
-s a way for perf users to have a familiar interface to ftrace, and that I t=
-hink it's its raison d'=C3=AAtre, in time well go on finding ways to have c=
-ommon code=2E
+Hi Sudip and Steven,
 
-Tomorrow I'll go over this patch set,
+Thanks a lot for reporting and fixing the problem!
+Yordan
 
-Thanks,
 
-- Arnaldo
+Reviewed-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 
->Thanks!
->
->-- Steve
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+> ---
+>   kernel-shark/src/KsUtils.hpp | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel-shark/src/KsUtils.hpp b/kernel-shark/src/KsUtils.hpp
+> index f44139bb..272a27d1 100644
+> --- a/kernel-shark/src/KsUtils.hpp
+> +++ b/kernel-shark/src/KsUtils.hpp
+> @@ -32,7 +32,7 @@
+>   
+>   //! @cond Doxygen_Suppress
+>   
+> -auto fontHeight = []()
+> +static auto fontHeight = []()
+>   {
+>   	QFont font;
+>   	QFontMetrics fm(font);
+> @@ -40,7 +40,7 @@ auto fontHeight = []()
+>   	return fm.height();
+>   };
+>   
+> -auto stringWidth = [](QString s)
+> +static auto stringWidth = [](QString s)
+>   {
+>   	QFont font;
+>   	QFontMetrics fm(font);
+> 
