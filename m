@@ -1,134 +1,230 @@
-Return-Path: <SRS0=tfm2=6Z=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=k6k0=62=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6048CC54E8D
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 May 2020 13:52:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E7B1C54E8D
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 May 2020 14:26:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3CC2A207FF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 11 May 2020 13:52:12 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IC6Jzqgj"
+	by mail.kernel.org (Postfix) with ESMTP id 4575220752
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 May 2020 14:26:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729640AbgEKNwM (ORCPT
+        id S1730194AbgELO0O (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 May 2020 09:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729555AbgEKNwL (ORCPT
+        Tue, 12 May 2020 10:26:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730192AbgELO0N (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 May 2020 09:52:11 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606C7C061A0C
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 May 2020 06:52:11 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id 8so4863104lfp.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 May 2020 06:52:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=caMs2OKKOxzD+zR1Guw5jCaLcREqk2vN2JnYS/PeF5s=;
-        b=IC6Jzqgjr8oa1FZ8ffbPS6hZlQffSVEcCHh46tAS7ECbl0NNk4WKNf+0hKgXL41pEn
-         ZJYMiVLFwrRQZzZvLGfQGynRacPgDy4NvwnSsDpW1jV16cn3wuapYW7eWtz0KXSCgAvA
-         SmSZZxFEunthxa28ZvIVScVZ3SA8fRFwalh7l2fBoXac2YWSyuEpEf6kQxkUYoNuOJb6
-         U+2jiXL4kHXWzYWqC5kS8DziaI1R2AU83TtDXd9TMeas+yoVZTzDqMIivX6dGsOYWq5M
-         5JVXeA+fzJgt989Zbzlx0+pcZiZbbupHq55auR1YTdwiU/S2aHdTOpOgkIS4+eCXrlMP
-         UMJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=caMs2OKKOxzD+zR1Guw5jCaLcREqk2vN2JnYS/PeF5s=;
-        b=mv4Axo7bb9InQ1d8DVqWXtMVVdOuiNPHpYEuQz5iVu55e2rQ6hfdXsfWqd89UxdxJW
-         q3FU4R+pe6LD1AyDFTg3MbHBjYc/G73oSpaOtNVSHj1aUE57wAXClc/3gH3dQ7OmG80b
-         hKrNtIDaTF5LOsssbiBB04417UrLVTiH039Hv5zg/jlZem243Hl9DZMJnFAJ3zuKLExH
-         LnhaxPAfqjnsN6m6HfGKkAQrAXjor+vo0C3bVWwOHrLGlK2vVmsyq+bGfNzBqp1CTued
-         mW5xlcvc4DcD4xkZ9rKUPo/qSVEEVOiPevqY8vOSUnsKYRYuCVVQYSlp9J3UXWWmP3Gy
-         +p+w==
-X-Gm-Message-State: AOAM532+6N8ITw8vdqlX948kOIXZgXCMHlVbwY6W32jgem27d64QwMEQ
-        NgfJAVDTxHViLpXYm8MY5vc=
-X-Google-Smtp-Source: ABdhPJw+07BSLtPpkxz/bfJ3xINeaHHm+0gNy6Pno5umyP0MHOiSfQubByz6YV/DZXTlwPcAywF/7A==
-X-Received: by 2002:a19:f70f:: with SMTP id z15mr11079192lfe.53.1589205129879;
-        Mon, 11 May 2020 06:52:09 -0700 (PDT)
-Received: from [192.168.0.106] ([84.40.73.119])
-        by smtp.gmail.com with ESMTPSA id d8sm11092376lfl.51.2020.05.11.06.52.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 May 2020 06:52:09 -0700 (PDT)
-Subject: Re: [PATCH] kernelshark: Make fontHeight() and stringWidth() static
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-References: <20200510111720.2e041431@oasis.local.home>
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <3bf272bc-38f4-e283-1657-df08c124f9e1@gmail.com>
-Date:   Mon, 11 May 2020 16:52:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 12 May 2020 10:26:13 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE9DE20673;
+        Tue, 12 May 2020 14:26:12 +0000 (UTC)
+Date:   Tue, 12 May 2020 10:26:11 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH] trace-cmd: Add support for more printk format
+ specifiers
+Message-ID: <20200512102611.62504f3d@gandalf.local.home>
+In-Reply-To: <20200508094547.2420964-1-tz.stoyanov@gmail.com>
+References: <20200508094547.2420964-1-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200510111720.2e041431@oasis.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Fri,  8 May 2020 12:45:47 +0300
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
+Hi Tzvetomir,
 
-On 10.05.20 г. 18:17 ч., Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+First, please add some blank lines in the change log. It gets a bit run-on,
+and hard to read without them.
+
+> The printk format specifiers used in event's print format files extend
+> the standard printf formats. There are a lot of new options related to
+> printing pointers and kernel specific structures. Currently trace-cmd
+> does not support many of them.
+
+<blank line here>
+
+> Support for these new printk specifiers is added to the pretty_print()
+> function:
+>  - UUID/GUID address: %pU[bBlL]
+>  - Raw buffer as a hex string: %*ph[CDN]
+
+<blank line here>
+
+> add these ones are improved:
+
+s/add these ones are improved:/These are improved:/
+
+>  - MAC address: %pMF, %pM and %pmR
+>  - IPv4 adderss: %p[Ii]4[hnbl]
+
+<blank line here>
+
+> Function pretty_print() is refactored. The logic for printing pointers
+> %p[...] is moved to its own function.
 > 
-> Gcc 10 is much more picky about globals being defined in multiple objects
-> even if they are the same function. The functions fontHeight() and
-> stringWidth() are defined in a header file which places them in multiple
-> objects. They need to be static otherwise gcc 10 will not be able to build.
-> 
-> Link: https://lore.kernel.org/linux-trace-devel/CADVatmN=Z0ASVXUBTyAu6F_TWoWiKiKsgm404rOx7Oh-a6LiQg@mail.gmail.com/
-> 
-> Reported-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207605
+> Reported-by: Johannes Berg <johannes@sipsolutions.net>
 
-Hi Sudip and Steven,
+Also, its good to include anyone listed in the tags in the Cc of the patch.
+I added Johannes here.
 
-Thanks a lot for reporting and fixing the problem!
-Yordan
-
-
-Reviewed-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->   kernel-shark/src/KsUtils.hpp | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>  lib/traceevent/event-parse.c | 363 ++++++++++++++++++++++++++++-------
+>  1 file changed, 289 insertions(+), 74 deletions(-)
 > 
-> diff --git a/kernel-shark/src/KsUtils.hpp b/kernel-shark/src/KsUtils.hpp
-> index f44139bb..272a27d1 100644
-> --- a/kernel-shark/src/KsUtils.hpp
-> +++ b/kernel-shark/src/KsUtils.hpp
-> @@ -32,7 +32,7 @@
->   
->   //! @cond Doxygen_Suppress
->   
-> -auto fontHeight = []()
-> +static auto fontHeight = []()
->   {
->   	QFont font;
->   	QFontMetrics fm(font);
-> @@ -40,7 +40,7 @@ auto fontHeight = []()
->   	return fm.height();
->   };
->   
-> -auto stringWidth = [](QString s)
-> +static auto stringWidth = [](QString s)
->   {
->   	QFont font;
->   	QFontMetrics fm(font);
-> 
+> diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+> index 064c100d..879e4bf8 100644
+> --- a/lib/traceevent/event-parse.c
+> +++ b/lib/traceevent/event-parse.c
+> @@ -4510,43 +4510,93 @@ get_bprint_format(void *data, int size __maybe_unused,
+>  	return format;
+>  }
+>  
+> -static void print_mac_arg(struct trace_seq *s, int mac, void *data, int size,
+> -			  struct tep_event *event, struct tep_print_arg *arg)
+> +static int print_mac_arg(struct trace_seq *s, const char *format,
+> +			 void *data, int size, struct tep_event *event,
+> +			 struct tep_print_arg *arg)
+>  {
+> -	unsigned char *buf;
+>  	const char *fmt = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x";
+> +	unsigned char *buf;
+> +	int ret = 0;
+> +	bool reverse = false;
+
+Upside-down x-mas tree please ;-)
+
+	const char *fmt = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x";
+	bool reverse = false;
+	unsigned char *buf;
+	int ret = 0;
+
+>  
+>  	if (arg->type == TEP_PRINT_FUNC) {
+>  		process_defined_func(s, data, size, event, arg);
+> -		return;
+> +		return 0;
+>  	}
+>  
+>  	if (arg->type != TEP_PRINT_FIELD) {
+>  		trace_seq_printf(s, "ARG TYPE NOT FIELD BUT %d",
+>  				 arg->type);
+> -		return;
+> +		return 0;
+>  	}
+>  
+> -	if (mac == 'm')
+> +	if (*format == 'm')
+>  		fmt = "%.2x%.2x%.2x%.2x%.2x%.2x";
+> +
+
+Make the condition below "else if" as it's a bit better code generation,
+and also comments to the reader of the code that only one of these can be
+true.
+
+> +	if (format[1] == 'F' && *format == 'M') {
+
+If using "format[1]" then please use "format[0]" instead of *format. And
+you can swap them as well:
+
+	if (format[0] == 'M' && format[1] == 'F') {
+
+As then the reader can see this would be if the format started with "MF".
+
+
+> +		fmt = "%.2x-%.2x-%.2x-%.2x-%.2x-%.2x";
+> +		ret++;
+> +	}
+
+
+> +	if (format[1] == 'R') {
+> +		reverse = true;
+> +		ret++;
+> +	}
+> +
+>  	if (!arg->field.field) {
+>  		arg->field.field =
+>  			tep_find_any_field(event, arg->field.name);
+>  		if (!arg->field.field) {
+>  			do_warning_event(event, "%s: field %s not found",
+>  					 __func__, arg->field.name);
+> -			return;
+> +			return ret;
+>  		}
+>  	}
+>  	if (arg->field.field->size != 6) {
+>  		trace_seq_printf(s, "INVALIDMAC");
+> -		return;
+> +		return ret;
+>  	}
+> +
+>  	buf = data + arg->field.field->offset;
+> -	trace_seq_printf(s, fmt, buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
+> +	if (reverse)
+> +		trace_seq_printf(s, fmt, buf[5], buf[4], buf[3], buf[2], buf[1], buf[0]);
+> +	else
+> +		trace_seq_printf(s, fmt, buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
+> +
+> +	return ret;
+>  }
+>  
+> -static void print_ip4_addr(struct trace_seq *s, char i, unsigned char *buf)
+> +static int parse_ip4_print_args(const char *ptr, bool *reverse)
+> +{
+> +	int ret = 0;
+> +
+> +	*reverse = false;
+> +
+> +	/* hnbl */
+> +	switch (*ptr) {
+> +	case 'h':
+> +#ifdef __BIG_ENDIAN
+
+Do we care what the machine is? Shouldn't this be checking if the file is
+big endian or not?
+
+I'll wait for a v2 and then start testing it.
+
+Thanks Ceco!
+
+-- Steve
+
+> +		*reverse = false;
+> +#else
+> +		*reverse = true;
+> +#endif
+> +		ret++;
+> +	break;
+> +	case 'l':
+> +		*reverse = true;
+> +		ret++;
+> +	break;
+> +	case 'n':
+> +	case 'b':
+> +		ret++;
+> +		/* fall through */
+> +	default:
+> +		*reverse = false;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+
