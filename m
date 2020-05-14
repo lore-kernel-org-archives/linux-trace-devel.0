@@ -8,65 +8,66 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8C8AC433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 May 2020 07:12:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 544F8C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 May 2020 16:43:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BA3E0206B6
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 May 2020 07:12:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2744F206DC
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 14 May 2020 16:43:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qxnkj5RB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gNhq4APO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725909AbgENHMs (ORCPT
+        id S1726084AbgENQn2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 14 May 2020 03:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
+        Thu, 14 May 2020 12:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgENHMs (ORCPT
+        with ESMTP id S1726017AbgENQn1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 14 May 2020 03:12:48 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA241C061A0C
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 May 2020 00:12:47 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id z22so1729423lfd.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 May 2020 00:12:47 -0700 (PDT)
+        Thu, 14 May 2020 12:43:27 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550E7C061A0C
+        for <linux-trace-devel@vger.kernel.org>; Thu, 14 May 2020 09:43:26 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id ee19so1976675qvb.11
+        for <linux-trace-devel@vger.kernel.org>; Thu, 14 May 2020 09:43:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ky22I7a1QQ3fpcvuvt7oAfbwXlRZw0yIpzRa2X5tVe4=;
-        b=qxnkj5RBYqHp73vcmOtdgUuJpCh8bSHHEDRylVR86qI2LZyQONLQvnUJotLWh3aaJq
-         lI7IC/i2WEC5nWm87IY9zRwiYQJx2TlfNr5KfEHukwgY4aY6f5dMU9O7w6fhHMoJwBC0
-         ewsupsF2mNlnDOa0ZYOSA+jVtYC6Xfx71LxfZZzyKQIPdtXhwhdWxCmsX1+l1Z0HpJEI
-         iXjxQc9Vt+qxucmk9f1FTaklqlsxnF07OGIQM2JH78UsCk12TEkQMYvBcSmRxs6YLjJH
-         DBIlDwtFIGjibos3IuSqAoBrfjHVeI5p4zyDEqY6ya2FUpyc5wOfuHirdHCh+abd9+Ll
-         uVRQ==
+        bh=yhhGy+ya5ScSsIcmsj0dNTrwQuXMxofKznZaLjjvFPQ=;
+        b=gNhq4APOV6kT7Ef5d/vPPLGsaVqNHMW3gboYW8d/Cbix9TjfUABiUNHmh9YLtxjizv
+         9mYuo9G4R+NmqkMIPirekGsMYuOthovRHuy6loVN44qEfMPJTK4J2LVPy9GqumZSqp6n
+         smDx3KAH1bpQVwW/ienPHXtWTQZWb3QI4jEoDXN23ToTaLT4zG6CZmHixw37pmOJ8pr0
+         aegcP950qSFkblE41yB8PAFUWBSpwQQXQknAWqBq8TwKjzqJQ1yVZF5ERgxc6rKXpmXy
+         SrO90MBc8BCwPUKe9FUHF13Gm7cJG7zW1iJh23+iIvu/U69JGGFsUcVGP3yotKoT6bqz
+         rZVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ky22I7a1QQ3fpcvuvt7oAfbwXlRZw0yIpzRa2X5tVe4=;
-        b=NmCH/RX/5MHnY4Zo/62dCNZjybnt7F1qZIvpJK46bKeuMA6o1hlIRQI5xwsOtyEj6G
-         EsUsP5H2W1ur48z2RkxxgCyG5lHKlHPphLLtAn/2LlEczO4qQXAyhN7CSnvxY1VNHj2S
-         qLqe+aSlJdBBgA0NvsaNS9LTqjVZnar4eqFD3Oil894mDayP7UvLSppYYOvcVDkul0lE
-         z0C/J1u3PYxyNDS5eUnt/k/UEhqK9zavLowqslBmQUVeOIdiTeExCkZt8TCtTObZzGbH
-         fScwo5XcyF2hAgiRrGx3huBkTbQLouMVF9Ftzb90MEAmiitMoQf+A0WkEqbHl/yuQ77W
-         QWjw==
-X-Gm-Message-State: AOAM5302kPZGcfkh2p/pCkO2UFpcY4lE/ep4evExlthoS2wBcIabbPvP
-        7/QImrv1vJd9bEDdjcPy3Dg=
-X-Google-Smtp-Source: ABdhPJyzYcKNFQlLo67Rz+UwfhMxDj0ZUIqjhgkMwIZsSwjRRpFiDc2n4g0iRS6TuO8utTmLoI8aDA==
-X-Received: by 2002:ac2:4286:: with SMTP id m6mr2280201lfh.84.1589440366082;
-        Thu, 14 May 2020 00:12:46 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id b28sm942832ljo.1.2020.05.14.00.12.45
+        bh=yhhGy+ya5ScSsIcmsj0dNTrwQuXMxofKznZaLjjvFPQ=;
+        b=WjqfDU0pT4ALvITk9HAxdiXcYFiCZ6sax8Sgvpp9tcv4DcTeP+uAhMEX2roT4zG1tp
+         1IphGUAwmWSnoasq1nr+FaRBu7Ozchg8ED3ygkFPbdOxd6/X3nh7GnkckzjnlVMqTjjT
+         XQOQBq4/oVoaA09xpMxbT3uwqniQF9e/nPGbO5CkueFxqnwEoUWb2pc9GgJEuf9Wvv/9
+         6VRKKQR0SeHYMNWYxqEDRHnt4TEyDTcJ391jaD1+vfF6yr7skau61zVN5JLU8PhrIWSC
+         FoZJoMPUm6SrvUw9HGu++cGGhm8yuKV1us3NuqlBU6DI4S6UUOrZ4PJl5n6mzO7JCpZR
+         5HkA==
+X-Gm-Message-State: AOAM531sZcwrBQdEf7Bo+EFEsavcSxabCV69RxpOaoabH3cEBPgZE6wl
+        ZzELBcti/x5udNlI0xOQszw=
+X-Google-Smtp-Source: ABdhPJw5No+trd6HRj6aZfwefgXb2La8GmOQcF5cK+P8M3QADBt8C02wOjkbAQRvjuOOBBlhyRYVjQ==
+X-Received: by 2002:a0c:f054:: with SMTP id b20mr5551401qvl.112.1589474604638;
+        Thu, 14 May 2020 09:43:24 -0700 (PDT)
+Received: from localhost.localdomain (cpe-65-30-164-238.wi.res.rr.com. [65.30.164.238])
+        by smtp.gmail.com with ESMTPSA id h22sm2591277qtn.23.2020.05.14.09.43.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2020 00:12:45 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+        Thu, 14 May 2020 09:43:23 -0700 (PDT)
+From:   Bijan Tabatabai <bijan311@gmail.com>
 To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Optimize pretty_print() function
-Date:   Thu, 14 May 2020 10:12:43 +0300
-Message-Id: <20200514071243.2396492-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.26.2
+Cc:     linux-trace-devel@vger.kernel.org,
+        Bijan Tabatabai <bijan311@yahoo.com>
+Subject: [PATCH v4] trace-cmd: Stop recording when processes traced with -P exit
+Date:   Thu, 14 May 2020 11:42:44 -0500
+Message-Id: <20200514164244.12858-1-bijan311@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -74,812 +75,175 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Each time the pretty_print() function is called to print an event,
-the event's format string is parsed. As this format string does not
-change, this parsing can be done only once - when the event struct
-is initialized.
+From: Bijan Tabatabai <bijan311@yahoo.com>
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+When the -F flag is used in trace-cmd record, trace-cmd stops recording
+when the executable it is tracing terminates.
+This patch makes the -P flag act similarly.
+
+Signed-off-by: Bijan Tabatabai <bijan311@yahoo.com>
 ---
-The patch depends on:
-  [PATCH v3] trace-cmd: Add support for more printk format specifiers
+ v4 fixes a bug where trace-cmd would stop tracing after the processes in
+ the first instance exited.
+---
+ tracecmd/include/trace-local.h |  2 +
+ tracecmd/trace-record.c        | 91 +++++++++++++++++++++++++++++++++-
+ 2 files changed, 92 insertions(+), 1 deletion(-)
 
- include/traceevent/event-parse.h   |   3 +
- lib/traceevent/event-parse-local.h |  17 +
- lib/traceevent/event-parse.c       | 676 ++++++++++++++++++++---------
- 3 files changed, 498 insertions(+), 198 deletions(-)
-
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index cfab6005..9560267f 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -259,9 +259,12 @@ struct tep_print_arg {
- 	};
- };
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 4c6a63d..5d58550 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -215,9 +215,11 @@ struct buffer_instance {
  
-+struct tep_print_parse;
-+
- struct tep_print_fmt {
- 	char			*format;
- 	struct tep_print_arg	*args;
-+	struct tep_print_parse	*print_cache;
- };
+ 	struct opt_list		*options;
+ 	struct filter_pids	*filter_pids;
++	struct filter_pids	*process_pids;
+ 	char			*common_pid_filter;
+ 	int			nr_filter_pids;
+ 	int			len_filter_pids;
++	int			nr_process_pids;
+ 	bool			ptrace_child;
  
- struct tep_event {
-diff --git a/lib/traceevent/event-parse-local.h b/lib/traceevent/event-parse-local.h
-index 96a0b0ca..e71296a6 100644
---- a/lib/traceevent/event-parse-local.h
-+++ b/lib/traceevent/event-parse-local.h
-@@ -85,6 +85,23 @@ struct tep_handle {
- 	struct tep_plugins_dir *plugins_dir;
- };
- 
-+enum tep_print_parse_type {
-+	PRINT_FMT_STING,
-+	PRINT_FMT_ARG_DIGIT,
-+	PRINT_FMT_ARG_POINTER,
-+	PRINT_FMT_ARG_STRING,
-+};
-+
-+struct tep_print_parse {
-+	struct tep_print_parse	*next;
-+
-+	char				*format;
-+	int				ls;
-+	enum tep_print_parse_type	type;
-+	struct tep_print_arg		*arg;
-+	struct tep_print_arg		*len_as_arg;
-+};
-+
- void tep_free_event(struct tep_event *event);
- void tep_free_format_field(struct tep_format_field *field);
- void tep_free_plugin_paths(struct tep_handle *tep);
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 707e6786..3821b4da 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -5161,13 +5161,25 @@ static int print_function(struct trace_seq *s, const char *format,
- 	return 0;
+ 	int			have_set_event_pid;
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index d0619ba..cb1634d 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -16,6 +16,7 @@
+ #include <sys/time.h>
+ #include <sys/wait.h>
+ #include <sys/socket.h>
++#include <sys/syscall.h>
+ #include <sys/utsname.h>
+ #ifndef NO_PTRACE
+ #include <sys/ptrace.h>
+@@ -33,6 +34,7 @@
+ #include <errno.h>
+ #include <limits.h>
+ #include <libgen.h>
++#include <poll.h>
+ #include <pwd.h>
+ #include <grp.h>
+ #ifdef VSOCK
+@@ -1230,6 +1232,81 @@ static pid_t trace_waitpid(enum trace_type type, pid_t pid, int *status, int opt
+ 			trace_stream_read(pids, recorder_threads, &tv);
+ 	} while (1);
  }
- 
--static int print_pointer(struct trace_seq *s, const char *format, int plen,
--			 void *data, int size,
--			 struct tep_event *event, struct tep_print_arg *arg)
-+static int print_arg_pointer(struct trace_seq *s, const char *format, int plen,
-+			     void *data, int size,
-+			     struct tep_event *event, struct tep_print_arg *arg)
- {
- 	unsigned long long val;
- 	int ret = 1;
- 
-+	if (arg->type == TEP_PRINT_BSTRING) {
-+		trace_seq_puts(s, arg->string.string);
-+		return 0;
-+	}
-+	while (*format) {
-+		if (*format == 'p') {
-+			format++;
++
++#ifndef __NR_pidfd_open
++#define __NR_pidfd_open 434
++#endif
++
++static int pidfd_open(pid_t pid, unsigned int flags) {
++	return syscall(__NR_pidfd_open, pid, flags);
++}
++
++static int trace_waitpidfd(id_t pidfd) {
++	struct pollfd pollfd;
++
++	pollfd.fd = pidfd;
++	pollfd.events = POLLIN;
++
++	while (!finished) {
++		int ret = poll(&pollfd, 1, -1);
++		/* If waitid was interrupted, keep waiting */
++		if (ret < 0 && errno == EINTR)
++			continue;
++		else if (ret < 0)
++			return 1;
++		else
 +			break;
-+		}
-+		format++;
 +	}
 +
- 	switch (*format) {
- 	case 'F':
- 	case 'f':
-@@ -5203,231 +5215,495 @@ static int print_pointer(struct trace_seq *s, const char *format, int plen,
- 
- }
- 
--static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_event *event)
-+static int print_arg_number(struct trace_seq *s, const char *format, int plen,
-+			    void *data, int size, int ls,
-+			    struct tep_event *event, struct tep_print_arg *arg)
- {
--	struct tep_handle *tep = event->tep;
--	struct tep_print_fmt *print_fmt = &event->print_fmt;
--	struct tep_print_arg *arg = print_fmt->args;
--	struct tep_print_arg *args = NULL;
--	const char *ptr = print_fmt->format;
- 	unsigned long long val;
--	const char *saveptr;
-+
-+	val = eval_num_arg(data, size, event, arg);
-+
-+	switch (ls) {
-+	case -2:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (char)val);
-+		else
-+			trace_seq_printf(s, format, (char)val);
-+		break;
-+	case -1:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (short)val);
-+		else
-+			trace_seq_printf(s, format, (short)val);
-+		break;
-+	case 0:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (int)val);
-+		else
-+			trace_seq_printf(s, format, (int)val);
-+		break;
-+	case 1:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (long)val);
-+		else
-+			trace_seq_printf(s, format, (long)val);
-+		break;
-+	case 2:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (long long)val);
-+		else
-+			trace_seq_printf(s, format, (long long)val);
-+		break;
-+	default:
-+		do_warning_event(event, "bad count (%d)", ls);
-+		event->flags |= TEP_EVENT_FL_FAILED;
-+	}
 +	return 0;
 +}
 +
-+
-+static void print_arg_string(struct trace_seq *s, const char *format, int plen,
-+			     void *data, int size,
-+			     struct tep_event *event, struct tep_print_arg *arg)
-+{
- 	struct trace_seq p;
--	char *bprint_fmt = NULL;
--	char format[32];
--	int len_as_arg;
--	int len_arg = 0;
--	int len;
--	int ls;
--	int ret;
- 
--	if (event->flags & TEP_EVENT_FL_FAILED) {
--		trace_seq_printf(s, "[FAILED TO PARSE]");
--		tep_print_fields(s, data, size, event);
--		return;
-+	/* Use helper trace_seq */
-+	trace_seq_init(&p);
-+	print_str_arg(&p, data, size, event,
-+		      format, plen, arg);
-+	trace_seq_terminate(&p);
-+	trace_seq_puts(s, p.buffer);
-+	trace_seq_destroy(&p);
-+}
-+
-+static int parse_arg_format_pointer(const char *format)
-+{
++static int trace_wait_for_processes(struct buffer_instance *instance) {
 +	int ret = 0;
-+	int index;
-+	int loop;
++	int nr_fds = 0;
++	int i;
++	int *pidfds;
++	struct filter_pids *pid;
 +
-+	switch (*format) {
-+	case 'F':
-+	case 'S':
-+	case 'f':
-+	case 's':
-+		ret++;
-+		break;
-+	case 'M':
-+		/* MF */
-+		if (format[1] == 'F')
-+			ret++;
-+		/* fall through */
-+	case 'm':
-+		/* [mM]R */
-+		if (format[1] == 'R')
-+			ret++;
-+		ret++;
-+		break;
-+	case 'I':
-+	case 'i':
-+		index = 2;
-+		loop = 1;
-+		switch (format[1]) {
-+		case 'S':
-+			/*[S][pfs]*/
-+			while (loop) {
-+				switch (format[index]) {
-+				case 'p':
-+				case 'f':
-+				case 's':
-+					ret++;
-+					index++;
-+					break;
-+				default:
-+					loop = 0;
-+				}
-+			}
-+			/* fall through */
-+		case '4':
-+			/* [4S][hnbl] */
-+			switch (format[index]) {
-+			case 'h':
-+			case 'n':
-+			case 'l':
-+			case 'b':
-+				ret++;
-+				index++;
-+				break;
-+			}
-+			if (format[1] == '4') {
-+				ret++;
-+				break;
-+			}
-+			/* fall through */
-+		case '6':
-+			/* [6S]c */
-+			if (format[index] == 'c') {
-+				ret++;
-+				index++;
-+			}
-+			ret++;
-+			break;
++	pidfds = malloc(sizeof(int) * instance->nr_process_pids);
++	if (!pidfds)
++		return 1;
++
++	for (pid = instance->process_pids;
++	     pid && instance->nr_process_pids;
++	     pid = pid->next) {
++		if (pid->exclude) {
++			instance->nr_process_pids--;
++			continue;
 +		}
-+		ret++;
-+		break;
-+	case 'U':
-+		switch (format[1]) {
-+		case 'L':
-+		case 'l':
-+		case 'B':
-+		case 'b':
-+			ret++;
-+			break;
++		pidfds[nr_fds] = pidfd_open(pid->pid, 0);
++
++		/* If the pid doesn't exist, the process has probably exited */
++		if (pidfds[nr_fds] < 0 && errno == ESRCH) {
++			instance->nr_process_pids--;
++			continue;
++		} else if (pidfds[nr_fds] < 0) {
++			ret = 1;
++			goto out;
 +		}
-+		ret++;
-+		break;
-+	case 'h':
-+		switch (format[1]) {
-+		case 'C':
-+		case 'D':
-+		case 'N':
-+			ret++;
-+			break;
-+		}
-+		ret++;
-+		break;
-+	default:
-+		break;
- 	}
- 
--	if (event->flags & TEP_EVENT_FL_ISBPRINT) {
--		bprint_fmt = get_bprint_format(data, size, event);
--		args = make_bprint_args(bprint_fmt, data, size, event);
--		arg = args;
--		ptr = bprint_fmt;
-+	return ret;
-+}
 +
-+static void free_parse_args(struct tep_print_parse *arg)
-+{
-+	struct tep_print_parse *del;
-+
-+	while (arg) {
-+		del = arg;
-+		arg = del->next;
-+		free(del->format);
-+		free(del);
- 	}
-+}
- 
--	for (; *ptr; ptr++) {
--		ls = 0;
--		if (*ptr == '\\') {
--			ptr++;
--			switch (*ptr) {
-+static int parse_arg_add(struct tep_print_parse **parse, char *format,
-+			 enum tep_print_parse_type type,
-+			 struct tep_print_arg *arg,
-+			 struct tep_print_arg *len_as_arg,
-+			 int ls)
-+{
-+	struct tep_print_parse *parg = NULL, *last;
-+
-+	parg = calloc(1, sizeof(*parg));
-+	if (!parg)
-+		goto error;
-+	parg->format = strdup(format);
-+	if (!parg->format)
-+		goto error;
-+	parg->type = type;
-+	parg->arg = arg;
-+	parg->len_as_arg = len_as_arg;
-+	parg->ls = ls;
-+
-+	last = *parse;
-+	if (last) {
-+		while (last->next)
-+			last = last->next;
-+		last->next = parg;
-+	} else
-+		*parse = parg;
-+
-+	return 0;
-+error:
-+	if (parg) {
-+		free(parg->format);
-+		free(parg);
-+	}
-+	return -1;
-+}
-+
-+static int parse_arg_format(struct tep_print_parse **parse,
-+			    struct tep_event *event,
-+			    const char *format, struct tep_print_arg **arg)
-+{
-+	struct tep_print_arg *len_arg = NULL;
-+	char print_format[32];
-+	const char *start = format;
-+	int ret = 0;
-+	int ls = 0;
-+	int res;
-+	int len;
-+
-+	if (*format != '%')
-+		return ret;
-+	format++;
-+
-+	/* %% */
-+	if (*format == '%')
-+		return ret;
-+	ret++;
-+
-+	for (; *format; format++) {
-+		switch (*format) {
-+		case '#':
-+			/* FIXME: need to handle properly */
-+			break;
-+		case 'h':
-+			ls--;
-+			break;
-+		case 'l':
-+			ls++;
-+			break;
-+		case 'L':
-+			ls = 2;
-+			break;
-+		case '.':
-+		case 'z':
-+		case 'Z':
-+		case '0' ... '9':
-+		case '-':
-+			break;
-+		case '*':
-+			/* The argument is the length. */
-+			if (!arg) {
-+				do_warning_event(event, "no argument match");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				goto out_failed;
-+			}
-+			len_arg = *arg;
-+			*arg = (*arg)->next;
-+			break;
-+		case 'p':
-+			if (!*arg)
-+				goto out_failed;
-+			res = parse_arg_format_pointer(format + 1);
-+			if (res > 0) {
-+				format += res;
-+				ret += res;
-+			}
-+			len = ((unsigned long)format + 1) -
-+				(unsigned long)start;
-+			/* should never happen */
-+			if (len > 31) {
-+				do_warning_event(event, "bad format!");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				len = 31;
-+			}
-+			memcpy(print_format, start, len);
-+			print_format[len] = 0;
-+
-+			parse_arg_add(parse, print_format,
-+				      PRINT_FMT_ARG_POINTER, *arg, len_arg, ls);
-+			*arg = (*arg)->next;
-+			ret++;
-+			return ret;
-+		case 'd':
-+		case 'u':
-+		case 'i':
-+		case 'x':
-+		case 'X':
-+		case 'o':
-+			if (!arg) {
-+				do_warning_event(event, "no argument match");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				goto out_failed;
-+			}
-+
-+			len = ((unsigned long)format + 1) -
-+				(unsigned long)start;
-+
-+			/* should never happen */
-+			if (len > 31) {
-+				do_warning_event(event, "bad format!");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				len = 31;
-+			}
-+			memcpy(print_format, start, len);
-+			print_format[len] = 0;
-+
-+			if (event->tep->long_size == 8 && ls == 1 &&
-+			    sizeof(long) != 8) {
-+				char *p;
-+
-+				/* make %l into %ll */
-+				if (ls == 1 && (p = strchr(print_format, 'l')))
-+					memmove(p+1, p, strlen(p)+1);
-+				ls = 2;
-+			}
-+			if (ls < -2 || ls > 2) {
-+				do_warning_event(event, "bad count (%d)", ls);
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+			}
-+			parse_arg_add(parse, print_format,
-+				      PRINT_FMT_ARG_DIGIT, *arg, len_arg, ls);
-+			*arg = (*arg)->next;
-+			ret++;
-+			return ret;
-+		case 's':
-+			if (!arg) {
-+				do_warning_event(event, "no matching argument");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				goto out_failed;
-+			}
-+
-+			len = ((unsigned long)format + 1) -
-+				(unsigned long)start;
-+
-+			/* should never happen */
-+			if (len > 31) {
-+				do_warning_event(event, "bad format!");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				len = 31;
-+			}
-+
-+			memcpy(print_format, start, len);
-+			print_format[len] = 0;
-+
-+			parse_arg_add(parse, print_format,
-+					PRINT_FMT_ARG_STRING, *arg, len_arg, 0);
-+			*arg = (*arg)->next;
-+			ret++;
-+			return ret;
-+		default:
-+			snprintf(print_format, 32, ">%c<", *format);
-+			parse_arg_add(parse, print_format,
-+					PRINT_FMT_STING, NULL, NULL, 0);
-+			ret++;
-+			return ret;
-+		}
-+		ret++;
++		nr_fds++;
++		instance->nr_process_pids--;
 +	}
 +
++	for (i = 0; i < nr_fds; i++) {
++		if (trace_waitpidfd(pidfds[i])) {
++			ret = 1;
++			goto out;
++		}
++	}
++
++out:
++	for (i = 0; i < nr_fds; i++)
++		close(pidfds[i]);
++	free(pidfds);
 +	return ret;
-+out_failed:
-+	return -1;
 +}
-+
-+static int parse_arg_string(struct tep_print_parse **parse, const char *format)
-+{
-+	struct trace_seq s;
-+	int ret = 0;
-+
-+	trace_seq_init(&s);
-+	for (; *format; format++) {
-+		if (*format == '\\') {
-+			format++;
-+			ret++;
-+			switch (*format) {
- 			case 'n':
--				trace_seq_putc(s, '\n');
-+				trace_seq_putc(&s, '\n');
- 				break;
- 			case 't':
--				trace_seq_putc(s, '\t');
-+				trace_seq_putc(&s, '\t');
- 				break;
- 			case 'r':
--				trace_seq_putc(s, '\r');
-+				trace_seq_putc(&s, '\r');
- 				break;
- 			case '\\':
--				trace_seq_putc(s, '\\');
-+				trace_seq_putc(&s, '\\');
- 				break;
- 			default:
--				trace_seq_putc(s, *ptr);
-+				trace_seq_putc(&s, *format);
- 				break;
+ #ifndef NO_PTRACE
+ 
+ /**
+@@ -5866,7 +5943,9 @@ static void parse_record_options(int argc,
+ 				fpids_count += add_filter_pid(ctx->instance,
+ 							      atoi(pid), 0);
+ 				pid = strtok_r(NULL, ",", &sav);
++				ctx->instance->nr_process_pids++;
  			}
--
--		} else if (*ptr == '%') {
--			saveptr = ptr;
--			len_as_arg = 0;
-- cont_process:
--			ptr++;
--			switch (*ptr) {
--			case '%':
--				trace_seq_putc(s, '%');
--				break;
--			case '#':
--				/* FIXME: need to handle properly */
--				goto cont_process;
--			case 'h':
--				ls--;
--				goto cont_process;
--			case 'l':
--				ls++;
--				goto cont_process;
--			case 'L':
--				ls = 2;
--				goto cont_process;
--			case '*':
--				/* The argument is the length. */
--				if (!arg) {
--					do_warning_event(event, "no argument match");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					goto out_failed;
--				}
--				len_arg = eval_num_arg(data, size, event, arg);
--				len_as_arg = 1;
--				arg = arg->next;
--				goto cont_process;
--			case '.':
--			case 'z':
--			case 'Z':
--			case '0' ... '9':
--			case '-':
--				goto cont_process;
--			case 'p':
--				if (arg->type == TEP_PRINT_BSTRING) {
--					if (isalnum(ptr[1]))
--						ptr++;
--					trace_seq_puts(s, arg->string.string);
--					arg = arg->next;
--					break;
--				}
--				ret = print_pointer(s, ptr + 1,
--						    len_as_arg ? len_arg : 1,
--						    data, size,
--						    event, arg);
--				arg = arg->next;
--				if (ret > 0)
--					ptr += ret;
-+		} else if (*format == '%') {
-+			if (*(format + 1) == '%') {
-+				trace_seq_putc(&s, '%');
-+				format++;
-+				ret++;
-+			} else
- 				break;
--			case 'd':
--			case 'u':
--			case 'i':
--			case 'x':
--			case 'X':
--			case 'o':
--				if (!arg) {
--					do_warning_event(event, "no argument match");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					goto out_failed;
--				}
--
--				len = ((unsigned long)ptr + 1) -
--					(unsigned long)saveptr;
--
--				/* should never happen */
--				if (len > 31) {
--					do_warning_event(event, "bad format!");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					len = 31;
--				}
--
--				memcpy(format, saveptr, len);
--				format[len] = 0;
--
--				val = eval_num_arg(data, size, event, arg);
--				arg = arg->next;
-+		} else
-+			trace_seq_putc(&s, *format);
++			ctx->instance->process_pids = ctx->instance->filter_pids;
+ 			free(pids);
+ 			break;
+ 		case 'c':
+@@ -6345,6 +6424,7 @@ static void record_trace(int argc, char **argv,
+ 		tracecmd_msg_wait_close(ctx->instance->msg_handle);
+ 	} else {
+ 		bool pwait = false;
++		bool wait_indefinitely = false;
  
--				if (tep->long_size == 8 && ls == 1 &&
--				    sizeof(long) != 8) {
--					char *p;
-+		ret++;
-+	}
-+	trace_seq_terminate(&s);
-+	parse_arg_add(parse, s.buffer, PRINT_FMT_STING, NULL, NULL, 0);
-+	trace_seq_destroy(&s);
- 
--					/* make %l into %ll */
--					if (ls == 1 && (p = strchr(format, 'l')))
--						memmove(p+1, p, strlen(p)+1);
--					ls = 2;
--				}
--				switch (ls) {
--				case -2:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg, (char)val);
--					else
--						trace_seq_printf(s, format, (char)val);
--					break;
--				case -1:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg, (short)val);
--					else
--						trace_seq_printf(s, format, (short)val);
--					break;
--				case 0:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg, (int)val);
--					else
--						trace_seq_printf(s, format, (int)val);
--					break;
--				case 1:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg, (long)val);
--					else
--						trace_seq_printf(s, format, (long)val);
--					break;
--				case 2:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg,
--								 (long long)val);
--					else
--						trace_seq_printf(s, format, (long long)val);
--					break;
--				default:
--					do_warning_event(event, "bad count (%d)", ls);
--					event->flags |= TEP_EVENT_FL_FAILED;
--				}
--				break;
--			case 's':
--				if (!arg) {
--					do_warning_event(event, "no matching argument");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					goto out_failed;
--				}
-+	return ret;
-+}
- 
--				len = ((unsigned long)ptr + 1) -
--					(unsigned long)saveptr;
-+static struct tep_print_parse *
-+parse_args(struct tep_event *event, const char *format, struct tep_print_arg *arg)
-+{
-+	struct tep_print_parse *parse = NULL;
-+	int ret;
-+	int len;
- 
--				/* should never happen */
--				if (len > 31) {
--					do_warning_event(event, "bad format!");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					len = 31;
--				}
-+	len = strlen(format);
-+	while (*format) {
-+		if (*format == '%' && *(format + 1) != '%')
-+			ret = parse_arg_format(&parse, event, format, &arg);
-+		else
-+			ret = parse_arg_string(&parse, format);
-+		len -= ret;
-+		if (len > 0)
-+			format += ret;
-+		else
-+			break;
-+	}
-+	return parse;
-+}
- 
--				memcpy(format, saveptr, len);
--				format[len] = 0;
--				if (!len_as_arg)
--					len_arg = -1;
--				/* Use helper trace_seq */
--				trace_seq_init(&p);
--				print_str_arg(&p, data, size, event,
--					      format, len_arg, arg);
--				trace_seq_terminate(&p);
--				trace_seq_puts(s, p.buffer);
--				trace_seq_destroy(&p);
--				arg = arg->next;
--				break;
--			default:
--				trace_seq_printf(s, ">%c<", *ptr);
-+static void print_event_cache(struct tep_print_parse *parse, struct trace_seq *s,
-+			      void *data, int size, struct tep_event *event)
-+{
-+	int len_arg;
- 
--			}
--		} else
--			trace_seq_putc(s, *ptr);
-+	while (parse) {
-+		if (parse->len_as_arg)
-+			len_arg = eval_num_arg(data, size, event, parse->len_as_arg);
-+		switch (parse->type) {
-+		case PRINT_FMT_ARG_DIGIT:
-+			print_arg_number(s, parse->format,
-+					parse->len_as_arg ? len_arg : -1, data,
-+					 size, parse->ls, event, parse->arg);
-+			break;
-+		case PRINT_FMT_ARG_POINTER:
-+			print_arg_pointer(s, parse->format,
-+					  parse->len_as_arg ? len_arg : 1,
-+					  data, size, event, parse->arg);
-+			break;
-+		case PRINT_FMT_ARG_STRING:
-+			print_arg_string(s, parse->format,
-+					 parse->len_as_arg ? len_arg : -1,
-+					 data, size, event, parse->arg);
-+			break;
-+		case PRINT_FMT_STING:
-+		default:
-+			trace_seq_printf(s, "%s", parse->format);
-+			break;
-+		}
-+		parse = parse->next;
- 	}
-+}
-+
-+static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_event *event)
-+{
-+	struct tep_print_parse *parse = event->print_fmt.print_cache;
-+	struct tep_print_arg *args = NULL;
-+	char *bprint_fmt = NULL;
- 
- 	if (event->flags & TEP_EVENT_FL_FAILED) {
--out_failed:
- 		trace_seq_printf(s, "[FAILED TO PARSE]");
-+		tep_print_fields(s, data, size, event);
-+		return;
- 	}
- 
--	if (args) {
-+	if (event->flags & TEP_EVENT_FL_ISBPRINT) {
-+		bprint_fmt = get_bprint_format(data, size, event);
-+		args = make_bprint_args(bprint_fmt, data, size, event);
-+		parse = parse_args(event, bprint_fmt, args);
-+	}
-+
-+	print_event_cache(parse, s, data, size, event);
-+
-+	if (event->flags & TEP_EVENT_FL_ISBPRINT) {
-+		free_parse_args(parse);
- 		free_args(args);
- 		free(bprint_fmt);
- 	}
-@@ -6526,9 +6802,13 @@ enum tep_errno __tep_parse_format(struct tep_event **eventp,
- 			*list = arg;
- 			list = &arg->next;
+ 		update_task_filter();
+ 		tracecmd_enable_tracing();
+@@ -6361,7 +6441,16 @@ static void record_trace(int argc, char **argv,
  		}
--		return 0;
+ 		/* sleep till we are woken with Ctrl^C */
+ 		printf("Hit Ctrl^C to stop recording\n");
+-		while (!finished)
++		for_all_instances(instance) {
++			/* If an instance is not tracing individual processes
++			 * or there is an error while waiting for a process to
++			 * exit, fallback to waiting indefinitely.
++			 */
++			if (!instance->nr_process_pids
++			    || trace_wait_for_processes(instance))
++				wait_indefinitely = true;
++		}
++		while (!finished && wait_indefinitely)
+ 			trace_or_sleep(type, pwait);
  	}
- 
-+	if (!(event->flags & TEP_EVENT_FL_ISBPRINT))
-+		event->print_fmt.print_cache = parse_args(event,
-+							  event->print_fmt.format,
-+							  event->print_fmt.args);
-+
- 	return 0;
- 
-  event_parse_failed:
-@@ -7195,7 +7475,7 @@ void tep_free_event(struct tep_event *event)
- 
- 	free(event->print_fmt.format);
- 	free_args(event->print_fmt.args);
--
-+	free_parse_args(event->print_fmt.print_cache);
- 	free(event);
- }
  
 -- 
-2.26.2
+2.25.1
 
