@@ -1,79 +1,339 @@
-Return-Path: <SRS0=Poap=7K=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=SVAg=7L=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DEA2C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 May 2020 12:29:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B60AC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 May 2020 07:02:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1F4E320888
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 28 May 2020 12:29:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 59637208A7
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 29 May 2020 07:02:27 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VIlfLSjR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389751AbgE1M3B (ORCPT
+        id S1725601AbgE2HC1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 28 May 2020 08:29:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389675AbgE1M27 (ORCPT
+        Fri, 29 May 2020 03:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbgE2HC0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 28 May 2020 08:28:59 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 378B020888;
-        Thu, 28 May 2020 12:28:59 +0000 (UTC)
-Date:   Thu, 28 May 2020 08:28:57 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+        Fri, 29 May 2020 03:02:26 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA05C08C5C6
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 May 2020 00:02:25 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r7so2219488wro.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 May 2020 00:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Vndpo+9iuB4M5uT9H1n2fqUMMagZ9/T4HQMnpmz0IMk=;
+        b=VIlfLSjRpUjIo8/USbebOC9JVqOH4c13yUNzYdKSv3iepIRGkofawJ6vaCeXt4YC6o
+         GACk64Wnv71lwO5E68fnucRO56fj6xRUbAUswp8GE5i/Sd9/Dk3i8zyzy0jJqiENbJg4
+         M8V5Oy/+r6xcy15yJnHCKynIwOTNEtPIlPWu0NhZSdN9KXmUIqAJR8gvK94k85n/qSEu
+         uUNkyuBRztKXuEZD8iIHTdEbP5ANBymMEHnfEwgwKG9aXRy33eLTZLrUgXlEchHtE7pD
+         UvQhZlnBqLnxFKKZG4dt8Y2ZZIEzs9yGAQX3kVkiw/0WvXaaoJHbCZE10m9Xv9wnNzuq
+         xPqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Vndpo+9iuB4M5uT9H1n2fqUMMagZ9/T4HQMnpmz0IMk=;
+        b=JHJIS4JE7qTAj/5S7I/IDvfnEDJkt5oR7judFwS0SK052rfA7+6IkFgn4zfgo3GV8y
+         qVsE8XeyYjG2FlzhBll9LhHtc0E9GeHKHCIajes3lM7OB7UHjkM1WdvlVkiKlPv6WrUT
+         njqQJIa1dnAXb1WdLk/fji8m+FSF7GLuIo9A2jJmZjSS1SL9C8T6fDSOePOU6hUu5GAp
+         pCacQPlllU5hjJp4UdbtXJMgd0ZOzWQldFbru5hLM9Pb2t6dOo4ld1t2zSV2IIYyHd0Q
+         Lw5Ao6Bnph416mJQEgeg7GhWplPmgCUPE7ngbyTl2L6Igt6WgIA9brdXPPIbrEdGBz3u
+         KnwQ==
+X-Gm-Message-State: AOAM53142+8fs746al/qXV7mZDu09yVaDM/Bv1696vbz6xpkph+mHxUL
+        nJRROP62bG8qhWOs8nwx+RmhiXRnoyg=
+X-Google-Smtp-Source: ABdhPJzxifsb43nQ580hGRSa/bMBV1LudKE7Nv7rxiQZ1igtpt3ECMKCisVRRnPDT+94CWxdj4R3Yg==
+X-Received: by 2002:adf:f4d2:: with SMTP id h18mr7305142wrp.370.1590735743625;
+        Fri, 29 May 2020 00:02:23 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id q13sm3440294wro.5.2020.05.29.00.02.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 00:02:22 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] kernel-shark: Do not change the PLUGIN_UNTOUCHED bit
- flag when filtering
-Message-ID: <20200528082857.7672f263@gandalf.local.home>
-In-Reply-To: <20200528111917.339007-1-y.karadz@gmail.com>
-References: <20200528111917.339007-1-y.karadz@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Subject: [PATCH 2/2] trace-cmd: Man page for "set" subcommand
+Date:   Fri, 29 May 2020 10:02:20 +0300
+Message-Id: <20200529070220.482278-2-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200529070220.482278-1-tz.stoyanov@gmail.com>
+References: <20200529070220.482278-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 28 May 2020 14:19:17 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+Man page, describing the new "trace-cmd set" subcommand
 
-> The "visible" field of the entry has one special bit flag, that helps
-> the GUI to display the original tracing data (as recorded) regardless
-> of the possible modifications made by the plugins. This bit flag must
-> be preserved when applying or removing filters.
-> 
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  kernel-shark/src/libkshark.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel-shark/src/libkshark.c b/kernel-shark/src/libkshark.c
-> index 0905359..52aacd3 100644
-> --- a/kernel-shark/src/libkshark.c
-> +++ b/kernel-shark/src/libkshark.c
-> @@ -489,6 +489,11 @@ static inline void unset_event_filter_flag(struct kshark_context *kshark_ctx,
->  	e->visible &= ~event_mask;
->  }
->  
-> +static void set_all_visible(uint16_t *v) {
-> +	/*  Keep the original value of the PLUGIN_UNTOUCHED bit flag. */
-> +	*v |= 0xFF & ~KS_PLUGIN_UNTOUCHED_MASK;
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ Documentation/trace-cmd-set.1.txt | 244 ++++++++++++++++++++++++++++++
+ 1 file changed, 244 insertions(+)
+ create mode 100644 Documentation/trace-cmd-set.1.txt
 
-This patch is fine as is, but we really should add a KS_PLUGIN_MASK that
-encompasses all bits, and replace the 0xFF with that.
+diff --git a/Documentation/trace-cmd-set.1.txt b/Documentation/trace-cmd-set.1.txt
+new file mode 100644
+index 00000000..c4217f0c
+--- /dev/null
++++ b/Documentation/trace-cmd-set.1.txt
+@@ -0,0 +1,244 @@
++TRACE-CMD-SET(1)
++================
++
++NAME
++----
++trace-cmd-set - set a configuration parameter of the Ftrace Linux internal tracer
++
++SYNOPSIS
++--------
++*trace-cmd set* ['OPTIONS']
++
++DESCRIPTION
++-----------
++The trace-cmd(1) set command will set a configuration parameter of the Ftrace
++Linux kernel tracer. The configured ftrace state can be restored to default
++using the trace-cmd-reset(1) command.
++
++OPTIONS
++-------
++*-p* 'tracer'::
++    Specify a tracer. Tracers usually do more than just trace an event.
++    Common tracers are: *function*, *function_graph*, *preemptirqsoff*,
++    *irqsoff*, *preemptoff* and *wakeup*. A tracer must be supported by the
++    running kernel. To see a list of available tracers, see trace-cmd-list(1).
++
++*-e* 'event'::
++    Specify an event to trace. Various static trace points have been added to
++    the Linux kernel. They are grouped by subsystem where you can enable all
++    events of a given subsystem or specify specific events to be enabled. The
++    'event' is of the format "subsystem:event-name". You can also just specify
++    the subsystem without the ':event-name' or the event-name without the
++    "subsystem:". Using "-e sched_switch" will enable the "sched_switch" event
++    where as, "-e sched" will enable all events under the "sched" subsystem.
++
++    The 'event' can also contain glob expressions. That is, "*stat*" will
++    select all events (or subsystems) that have the characters "stat" in their
++    names.
++
++    The keyword 'all' can be used to enable all events.
++
++*-T*::
++    Enable a stacktrace on each event. For example:
++
++          <idle>-0     [003] 58549.289091: sched_switch:         kworker/0:1:0 [120] R ==> trace-cmd:2603 [120]
++          <idle>-0     [003] 58549.289092: kernel_stack:         <stack trace>
++=> schedule (ffffffff814b260e)
++=> cpu_idle (ffffffff8100a38c)
++=> start_secondary (ffffffff814ab828)
++
++*--func-stack*::
++    Enable a stack trace on all functions. Note this is only applicable
++    for the "function" plugin tracer, and will only take effect if the
++    -l option is used and succeeds in limiting functions. If the function
++    tracer is not filtered, and the stack trace is enabled, you can live
++    lock the machine.
++
++*-f* 'filter'::
++    Specify a filter for the previous event. This must come after a *-e*. This
++    will filter what events get recorded based on the content of the event.
++    Filtering is passed to the kernel directly so what filtering is allowed
++    may depend on what version of the kernel you have. Basically, it will
++    let you use C notation to check if an event should be processed or not.
++
++----------------------------------------
++    ==, >=, <=, >, <, &, |, && and ||
++----------------------------------------
++
++    The above are usually safe to use to compare fields.
++
++*-R* 'trigger'::
++    Specify a trigger for the previous event. This must come after a *-e*.
++    This will add a given trigger to the given event. To only enable the trigger
++    and not the event itself, then place the event after the *-v* option.
++
++    See Documentation/trace/events.txt in the Linux kernel source for more
++    information on triggers.
++
++*-v*::
++    This will cause all events specified after it on the command line to not
++    be traced. This is useful for selecting a subsystem to be traced but to
++    leave out various events. For Example: "-e sched -v -e "\*stat\*"" will
++    enable all events in the sched subsystem except those that have "stat" in
++    their names.
++
++    Note: the *-v* option was taken from the way grep(1) inverts the following
++    matches.
++
++*-P* 'pid'::
++    This will filter only the specified process IDs. Using *-P* will let you
++    trace only events that are caused by the process.
++
++*-c*::
++     Used *-P* to trace the process' children too (if kernel supports it).
++
++*-C* 'clock'::
++     Set the trace clock to "clock".
++
++     Use trace-cmd(1) list -C to see what clocks are available.
++
++*-l* 'function-name'::
++    This will limit the 'function' and 'function_graph' tracers to only trace
++    the given function name. More than one *-l* may be specified on the
++    command line to trace more than one function. The limited use of glob
++    expressions are also allowed. These are 'match\*' to only filter functions
++    that start with 'match'. '\*match' to only filter functions that end with
++    'match'. '\*match\*' to only filter on functions that contain 'match'.
++
++*-g* 'function-name'::
++    This option is for the function_graph plugin. It will graph the given
++    function. That is, it will only trace the function and all functions that
++    it calls. You can have more than one *-g* on the command line.
++
++*-n* 'function-name'::
++    This has the opposite effect of *-l*. The function given with the *-n*
++    option will not be traced. This takes precedence, that is, if you include
++    the same function for both *-n* and *-l*, it will not be traced.
++
++*-d*::
++    Some tracer plugins enable the function tracer by default. Like the
++    latency tracers. This option prevents the function tracer from being
++    enabled at start up.
++
++*-D*::
++    The option *-d* will try to use the function-trace option to disable the
++    function tracer (if available), otherwise it defaults to the proc file:
++    /proc/sys/kernel/ftrace_enabled, but will not touch it if the function-trace
++    option is available.  The *-D* option will disable both the ftrace_enabled
++    proc file as well as the function-trace option if it exists.
++
++    Note, this disable function tracing for all users, which includes users
++    outside of ftrace tracers (stack_tracer, perf, etc).
++
++*-O* 'option'::
++    Ftrace has various options that can be enabled or disabled. This allows
++    you to set them. Appending the text 'no' to an option disables it.
++    For example: "-O nograph-time" will disable the "graph-time" Ftrace
++    option.
++
++*-b* 'size'::
++    This sets the ring buffer size to 'size' kilobytes. Because the Ftrace
++    ring buffer is per CPU, this size is the size of each per CPU ring buffer
++    inside the kernel. Using "-b 10000" on a machine with 4 CPUs will make
++    Ftrace have a total buffer size of 40 Megs.
++
++*-B* 'buffer-name'::
++    If the kernel supports multiple buffers, this will add a buffer with
++    the given name. If the buffer name already exists, that buffer is just
++    reset.
++
++    After a buffer name is stated, all events added after that will be
++    associated with that buffer. If no buffer is specified, or an event
++    is specified before a buffer name, it will be associated with the
++    main (toplevel) buffer.
++
++     trace-cmd set -e sched -B block -e block -B time -e timer sleep 1
++
++    The above is will enable all sched events in the main buffer. It will
++    then create a 'block' buffer instance and enable all block events within
++    that buffer. A 'time' buffer instance is created and all timer events
++    will be enabled for that event.
++
++*-m* 'size'::
++    The max size in kilobytes that a per cpu buffer should be. Note, due
++    to rounding to page size, the number may not be totally correct.
++    Also, this is performed by switching between two buffers that are half
++    the given size thus the output may not be of the given size even if
++    much more was written.
++
++    Use this to prevent running out of diskspace for long runs.
++
++*-M* 'cpumask'::
++    Set the cpumask for to trace. It only affects the last buffer instance
++    given. If supplied before any buffer instance, then it affects the
++    main buffer. The value supplied must be a hex number.
++
++     trace-cmd record -p function -M c -B events13 -e all -M 5
++
++    If the -M is left out, then the mask stays the same. To enable all
++    CPUs, pass in a value of '-1'.
++
++*-i*::
++    By default, if an event is listed that trace-cmd does not find, it
++    will exit with an error. This option will just ignore events that are
++    listed on the command line but are not found on the system.
++
++*-q* | *--quiet*::
++    Suppresses normal output, except for errors.
++
++*--max-graph-depth* 'depth'::
++    Set the maximum depth the function_graph tracer will trace into a function.
++    A value of one will only show where userspace enters the kernel but not any
++    functions called in the kernel. The default is zero, which means no limit.
++
++*--module* 'module'::
++    Filter a module's name in function tracing. It is equivalent to adding
++    ':mod:module' after all other functions being filtered. If no other function
++    filter is listed, then all modules functions will be filtered in the filter.
++
++    '--module snd'  is equivalent to  '-l :mod:snd'
++
++    '--module snd -l "*jack*"' is equivalent to '-l "*jack*:mod:snd"'
++
++    '--module snd -n "*"' is equivalent to '-n :mod:snd'
++
++*--stderr*::
++    Have output go to stderr instead of stdout, but the output of the command
++    executed will not be changed. This is useful if you want to monitor the
++    output of the command being executed, but not see the output from trace-cmd.
++
++EXAMPLES
++--------
++
++Enable all events for tracing:
++
++------------------------------
++ # trace-cmd set -e all
++------------------------------
++
++Set the function tracer:
++
++------------------------------
++ # trace-cmd set -p function
++------------------------------
++
++
++SEE ALSO
++--------
++trace-cmd(1), trace-cmd-report(1), trace-cmd-start(1), trace-cmd-stop(1),
++trace-cmd-extract(1), trace-cmd-reset(1), trace-cmd-split(1),
++trace-cmd-list(1), trace-cmd-listen(1), trace-cmd-profile(1)
++
++AUTHOR
++------
++Written by Steven Rostedt, <rostedt@goodmis.org>
++
++RESOURCES
++---------
++git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
++
++COPYING
++-------
++Copyright \(C) 2010 Red Hat, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
++
+-- 
+2.26.2
 
--- Steve
-
-
-> +}
-> +
-> 
