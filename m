@@ -2,113 +2,158 @@ Return-Path: <SRS0=8+AL=7P=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3A19C433DF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 14:18:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8D01C433DF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 22:16:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB604207ED
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 14:18:21 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PGWMfTik"
+	by mail.kernel.org (Postfix) with ESMTP id C76C72067B
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 22:16:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgFBOSV (ORCPT
+        id S1726174AbgFBWQW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 2 Jun 2020 10:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726000AbgFBOSV (ORCPT
+        Tue, 2 Jun 2020 18:16:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgFBWQU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 2 Jun 2020 10:18:21 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48EAC08C5C0
-        for <linux-trace-devel@vger.kernel.org>; Tue,  2 Jun 2020 07:18:19 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j10so3573125wrw.8
-        for <linux-trace-devel@vger.kernel.org>; Tue, 02 Jun 2020 07:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fzjowpvh2Pi6KtACb2XyjwLGsViu1RiXohbLUScu+Uc=;
-        b=PGWMfTikUQCT+kHB/haVCBvZFqPErUI3Rmf8qZs7QpKYBSnu3sWDwVT8/LTBgICiqo
-         gf8yxwRXjybKitCp9o+nphCdI09ubVyFMZKbn6A1ertl9OpLk/ffmargLqU8A9ELZSmO
-         4KKtDvKieDPyk3UfrGXF99wXjCX5qK2R+8zGx+5acESGu6TT6nt7G7N8wBhnqI0spKkx
-         mnS9Cxj5QtSnGU2vFDZvmBr+b4c9nuVYxVXyNXtCHzrxYy6p9WQY7ibJrXy3E0FVTzWX
-         K8pdnFxNgyWN01dDgW7onyyMJHDO5QHo3Pg68B8jZFqtdOQsnzOY/HxZQvQqi+v9oOaM
-         e9vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fzjowpvh2Pi6KtACb2XyjwLGsViu1RiXohbLUScu+Uc=;
-        b=kRexYZz7cF1o5tKmgVoRTAYd1C01XzHPKAieuxP3q2ITYVhKHLJp12Fq+srhcqkZPh
-         dJuI1aVmBnZwis6NQFivO3JD6xgqZTubSWiE0/mmTpsOlmvNaSRUkg3/5GTNzuCYowAJ
-         k7OVKgF7fCXAdlRsTJeUQsnVaocun8MnYlq1N8RzEgF6yTTOqH9Q2103nr9cnt3pD1hF
-         rPK4an77YqymLXwtK4P0r6a5t/pdLa+btKoTTqSlQI6M3hJ84xNwYQmOeqLGXy3shcvt
-         BUx/7P/kwUv7AXRVDMnevMZf8OEX0exPhWBT4zTTcAB5lesLLtjTOn4dCpSo8BT3Y5f4
-         cTIA==
-X-Gm-Message-State: AOAM531z9yIY9z18sY1RqzR9CywpdOVMIvOKYDsp9mgsqM8bu8if9C+I
-        YukH9tZfM1Azo30ViT1bv9zKiczBYJI=
-X-Google-Smtp-Source: ABdhPJw8uIRJ9viI1kR0HukcSssjJgG2Wjh2MCdkFJ3YGNdSAEz4bSBFH3UfrOhyWlgMBc7HQWFMSw==
-X-Received: by 2002:adf:fd4f:: with SMTP id h15mr26221053wrs.397.1591107498397;
-        Tue, 02 Jun 2020 07:18:18 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id 23sm3884730wmo.18.2020.06.02.07.18.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 07:18:17 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Add description of "-G" option
-Date:   Tue,  2 Jun 2020 17:18:15 +0300
-Message-Id: <20200602141815.80269-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 2 Jun 2020 18:16:20 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 255D62067B
+        for <linux-trace-devel@vger.kernel.org>; Tue,  2 Jun 2020 22:16:20 +0000 (UTC)
+Date:   Tue, 2 Jun 2020 18:16:18 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd: Fix build dependencies
+Message-ID: <20200602181618.737914a8@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Documented "trace-cmd record -G" option in man page and in the usage output.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+After having trace-cmd break because not all proper files are being compiled
+when needed, I looked into why the dependencies were not working. I found
+that the .foo.d files that were being created required having the full path
+of the object file in them. Without that, the dependencies were being
+ignored.
+
+By adding "-MT $(bdir)/$*.o", to the dependency creating rules, the full
+path would be added to targets for the object files, and this makes the
+depencies work again.
+
+Fixes: 60f0a40bb ("trace-cmd: Make libtraceevent buildable out-of-tree")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/trace-cmd-record.1.txt | 4 ++++
- tracecmd/trace-usage.c               | 1 +
- 2 files changed, 5 insertions(+)
+ lib/trace-cmd/Makefile          | 2 +-
+ lib/trace-cmd/plugins/Makefile  | 2 +-
+ lib/traceevent/Makefile         | 2 +-
+ lib/traceevent/plugins/Makefile | 2 +-
+ lib/tracefs/Makefile            | 2 +-
+ tracecmd/Makefile               | 2 +-
+ utest/Makefile                  | 1 +
+ 7 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/trace-cmd-record.1.txt b/Documentation/trace-cmd-record.1.txt
-index f5ecad5c..99d1a156 100644
---- a/Documentation/trace-cmd-record.1.txt
-+++ b/Documentation/trace-cmd-record.1.txt
-@@ -312,6 +312,10 @@ OPTIONS
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index ab7440ac..994ae94d 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -45,7 +45,7 @@ $(bdir)/%.o: %.c
+ 	$(Q)$(call do_fpic_compile)
  
-     See trace-cmd-profile(1) for more details and examples.
+ $(DEPS): $(bdir)/.%.d: %.c
+-	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
++	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
  
-+*-G*::
-+    Set interrupt (soft and hard) events as global (associated to CPU
-+    instead of tasks). Only works for --profile.
-+
- *-H* 'event-hooks'::
-     Add custom event matching to connect any two events together. When not
-     used with *--profile*, it will save the parameter and this will be
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 0c0e12f4..63d6eb41 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -53,6 +53,7 @@ static struct usage_help usage_help[] = {
- 		"          --module filter module name\n"
- 		"          --by-comm used with --profile, merge events for related comms\n"
- 		"          --profile enable tracing options needed for report --profile\n"
-+		"          -G when profiling, set soft and hard irqs as global\n"
- 		"          --func-stack perform a stack trace for function tracer\n"
- 		"             (use with caution)\n"
- 		"          --max-graph-depth limit function_graph depth\n"
+ $(OBJS): $(bdir)/%.o : $(bdir)/.%.d
+ 
+diff --git a/lib/trace-cmd/plugins/Makefile b/lib/trace-cmd/plugins/Makefile
+index 240e6be3..ed5a9cea 100644
+--- a/lib/trace-cmd/plugins/Makefile
++++ b/lib/trace-cmd/plugins/Makefile
+@@ -26,7 +26,7 @@ $(PLUGIN_BUILD): $(bdir)/%.so: $(bdir)/%.o
+ 	$(Q)$(do_plugin_build)
+ 
+ $(DEPS): $(bdir)/.%.d: %.c
+-	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
++	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
+ 
+ $(PLUGIN_OBJS): $(bdir)/%.o : $(bdir)/.%.d
+ 
+diff --git a/lib/traceevent/Makefile b/lib/traceevent/Makefile
+index c3f09572..d0666911 100644
+--- a/lib/traceevent/Makefile
++++ b/lib/traceevent/Makefile
+@@ -37,7 +37,7 @@ $(bdir)/%.o: %.c
+ 	$(Q)$(call do_fpic_compile)
+ 
+ $(DEPS): $(bdir)/.%.d: %.c
+-	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
++	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
+ 
+ $(OBJS): $(bdir)/%.o : $(bdir)/.%.d
+ 
+diff --git a/lib/traceevent/plugins/Makefile b/lib/traceevent/plugins/Makefile
+index 40500194..21e933af 100644
+--- a/lib/traceevent/plugins/Makefile
++++ b/lib/traceevent/plugins/Makefile
+@@ -40,7 +40,7 @@ $(PLUGIN_BUILD): $(bdir)/%.so: $(bdir)/%.o
+ 	$(Q)$(do_plugin_build)
+ 
+ $(DEPS): $(bdir)/.%.d: %.c
+-	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
++	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
+ 
+ $(PLUGIN_OBJS): $(bdir)/%.o : $(bdir)/.%.d
+ 
+diff --git a/lib/tracefs/Makefile b/lib/tracefs/Makefile
+index f6d93ec8..b810bbf4 100644
+--- a/lib/tracefs/Makefile
++++ b/lib/tracefs/Makefile
+@@ -34,7 +34,7 @@ $(bdir)/%.o: %.c
+ 	$(Q)$(call do_fpic_compile)
+ 
+ $(DEPS): $(bdir)/.%.d: %.c
+-	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
++	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
+ 
+ $(OBJS): $(bdir)/%.o : $(bdir)/.%.d
+ 
+diff --git a/tracecmd/Makefile b/tracecmd/Makefile
+index 17e67600..5a7f7d2b 100644
+--- a/tracecmd/Makefile
++++ b/tracecmd/Makefile
+@@ -70,7 +70,7 @@ $(bdir)/%.o: %.c
+ 	$(Q)$(call do_compile)
+ 
+ $(all_deps): $(bdir)/.%.d: %.c
+-	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
++	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
+ 
+ $(all_deps): $(TC_VERSION)
+ 
+diff --git a/utest/Makefile b/utest/Makefile
+index 55aa46ab..d635650d 100644
+--- a/utest/Makefile
++++ b/utest/Makefile
+@@ -30,6 +30,7 @@ $(bdir)/%.o: %.c
+ 
+ $(DEPS): $(bdir)/.%.d: %.c
+ 	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
++	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
+ 
+ $(OBJS): $(bdir)/%.o : $(bdir)/.%.d
+ 
 -- 
-2.26.2
+2.25.4
 
