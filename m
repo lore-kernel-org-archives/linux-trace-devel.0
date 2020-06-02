@@ -2,73 +2,71 @@ Return-Path: <SRS0=8+AL=7P=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BAEEC433DF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 14:09:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3A19C433DF
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 14:18:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3F5AD20772
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 14:09:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AB604207ED
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 14:18:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YUzlTje3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PGWMfTik"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgFBOJX (ORCPT
+        id S1726043AbgFBOSV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 2 Jun 2020 10:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
+        Tue, 2 Jun 2020 10:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgFBOJW (ORCPT
+        with ESMTP id S1726000AbgFBOSV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 2 Jun 2020 10:09:22 -0400
+        Tue, 2 Jun 2020 10:18:21 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62ACC08C5C0
-        for <linux-trace-devel@vger.kernel.org>; Tue,  2 Jun 2020 07:09:20 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id c3so3519479wru.12
-        for <linux-trace-devel@vger.kernel.org>; Tue, 02 Jun 2020 07:09:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48EAC08C5C0
+        for <linux-trace-devel@vger.kernel.org>; Tue,  2 Jun 2020 07:18:19 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j10so3573125wrw.8
+        for <linux-trace-devel@vger.kernel.org>; Tue, 02 Jun 2020 07:18:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y4m+eJGvSOV8gS/Oi+PJvRWoXnhsABtZZ/1MN2XGn/4=;
-        b=YUzlTje3QFNE7+BajSXBc2RFLGgr36n2eBQGhdzIWwArU39F0yLFn9XOPr39U71/RE
-         Eih4nDZy05TTXYH3fLwL0MpmB6zi/0TMsHt+K1N1pnDhQw4HdasiJyMo6Pg6f2ixSHyg
-         IULToPB7gs/in1+Jf5Kd7SFX8iknDX4olD9jkwxo8fqOnV2LYIjtskJfTWDIla7F9EVE
-         QVF20ivp591XiDFgNbplA42qrtpyp0267dS7/LxuM/voWG6GTGZtve4hSlA5ZGgZOMUQ
-         x9F/T55e5kcJHz6XcMNud6qrumD3ptyX3txNXBA79qj3Vo53fotbq7miJ+1552W9sG6d
-         pNoA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fzjowpvh2Pi6KtACb2XyjwLGsViu1RiXohbLUScu+Uc=;
+        b=PGWMfTikUQCT+kHB/haVCBvZFqPErUI3Rmf8qZs7QpKYBSnu3sWDwVT8/LTBgICiqo
+         gf8yxwRXjybKitCp9o+nphCdI09ubVyFMZKbn6A1ertl9OpLk/ffmargLqU8A9ELZSmO
+         4KKtDvKieDPyk3UfrGXF99wXjCX5qK2R+8zGx+5acESGu6TT6nt7G7N8wBhnqI0spKkx
+         mnS9Cxj5QtSnGU2vFDZvmBr+b4c9nuVYxVXyNXtCHzrxYy6p9WQY7ibJrXy3E0FVTzWX
+         K8pdnFxNgyWN01dDgW7onyyMJHDO5QHo3Pg68B8jZFqtdOQsnzOY/HxZQvQqi+v9oOaM
+         e9vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y4m+eJGvSOV8gS/Oi+PJvRWoXnhsABtZZ/1MN2XGn/4=;
-        b=avUdFdobgVw2LBILJHz3jM788wd0M7OE6kOYvFnYLYa+No7rR41lxc3tjUAquB8Qh0
-         PAkS/OaC6GpNqwepUhuCgofaNVMHWEhMhzJmTJYM1XtaZkRzBkRTUeeOsU9aOUXWdT/p
-         mNR0m+8aeyoI6Ee+bRJtORqCJaaEsdLtAolNWft7I3HlmLJXrPwAyk7eZqER/pN50Hfo
-         aMG9bxJiCpVmnYeIBL+JnL8ARjnqW/sIjn0kUMBLBnbjvuCedgULj/tpNbgcuLKpF6KE
-         jKenci9PZ6AV4mqUaDllzTjpkYgM6a5zTZaTMjdoHoi5FBm6tdMubJEA8IJ1HXLECADA
-         uXkg==
-X-Gm-Message-State: AOAM5308WAwiIWnsFDWqQJa6QhE7SFMUt3j5VHfNplN0aMYUa19DisvB
-        x06GCEesP23iaKEGTL5XSxQ7fSEZON4=
-X-Google-Smtp-Source: ABdhPJzY5vK8odHj9Z7a02x+k+SRpzEp+/1QoJdgN9GP9xI6JZfGpl/iHka+NMPkMvxz3VWbswrBNg==
-X-Received: by 2002:a5d:6751:: with SMTP id l17mr28652105wrw.179.1591106959481;
-        Tue, 02 Jun 2020 07:09:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fzjowpvh2Pi6KtACb2XyjwLGsViu1RiXohbLUScu+Uc=;
+        b=kRexYZz7cF1o5tKmgVoRTAYd1C01XzHPKAieuxP3q2ITYVhKHLJp12Fq+srhcqkZPh
+         dJuI1aVmBnZwis6NQFivO3JD6xgqZTubSWiE0/mmTpsOlmvNaSRUkg3/5GTNzuCYowAJ
+         k7OVKgF7fCXAdlRsTJeUQsnVaocun8MnYlq1N8RzEgF6yTTOqH9Q2103nr9cnt3pD1hF
+         rPK4an77YqymLXwtK4P0r6a5t/pdLa+btKoTTqSlQI6M3hJ84xNwYQmOeqLGXy3shcvt
+         BUx/7P/kwUv7AXRVDMnevMZf8OEX0exPhWBT4zTTcAB5lesLLtjTOn4dCpSo8BT3Y5f4
+         cTIA==
+X-Gm-Message-State: AOAM531z9yIY9z18sY1RqzR9CywpdOVMIvOKYDsp9mgsqM8bu8if9C+I
+        YukH9tZfM1Azo30ViT1bv9zKiczBYJI=
+X-Google-Smtp-Source: ABdhPJw8uIRJ9viI1kR0HukcSssjJgG2Wjh2MCdkFJ3YGNdSAEz4bSBFH3UfrOhyWlgMBc7HQWFMSw==
+X-Received: by 2002:adf:fd4f:: with SMTP id h15mr26221053wrs.397.1591107498397;
+        Tue, 02 Jun 2020 07:18:18 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w3sm3849551wmg.44.2020.06.02.07.09.18
+        by smtp.gmail.com with ESMTPSA id 23sm3884730wmo.18.2020.06.02.07.18.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 07:09:18 -0700 (PDT)
+        Tue, 02 Jun 2020 07:18:17 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 3/3] trace-cmd: Man page for "set" subcommand
-Date:   Tue,  2 Jun 2020 17:09:12 +0300
-Message-Id: <20200602140912.78031-4-tz.stoyanov@gmail.com>
+Subject: [PATCH] trace-cmd: Add description of "-G" option
+Date:   Tue,  2 Jun 2020 17:18:15 +0300
+Message-Id: <20200602141815.80269-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200602140912.78031-1-tz.stoyanov@gmail.com>
-References: <20200602140912.78031-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -76,274 +74,41 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Man page, describing the new "trace-cmd set" subcommand
+Documented "trace-cmd record -G" option in man page and in the usage output.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/trace-cmd-set.1.txt | 254 ++++++++++++++++++++++++++++++
- 1 file changed, 254 insertions(+)
- create mode 100644 Documentation/trace-cmd-set.1.txt
+ Documentation/trace-cmd-record.1.txt | 4 ++++
+ tracecmd/trace-usage.c               | 1 +
+ 2 files changed, 5 insertions(+)
 
-diff --git a/Documentation/trace-cmd-set.1.txt b/Documentation/trace-cmd-set.1.txt
-new file mode 100644
-index 00000000..faf0b740
---- /dev/null
-+++ b/Documentation/trace-cmd-set.1.txt
-@@ -0,0 +1,254 @@
-+TRACE-CMD-SET(1)
-+================
+diff --git a/Documentation/trace-cmd-record.1.txt b/Documentation/trace-cmd-record.1.txt
+index f5ecad5c..99d1a156 100644
+--- a/Documentation/trace-cmd-record.1.txt
++++ b/Documentation/trace-cmd-record.1.txt
+@@ -312,6 +312,10 @@ OPTIONS
+ 
+     See trace-cmd-profile(1) for more details and examples.
+ 
++*-G*::
++    Set interrupt (soft and hard) events as global (associated to CPU
++    instead of tasks). Only works for --profile.
 +
-+NAME
-+----
-+trace-cmd-set - set a configuration parameter of the Ftrace Linux internal tracer
-+
-+SYNOPSIS
-+--------
-+*trace-cmd set* ['OPTIONS'] ['command']
-+
-+DESCRIPTION
-+-----------
-+The trace-cmd(1) set command will set a configuration parameter of the Ftrace
-+Linux kernel tracer. The specified *command* will be run after the ftrace state
-+is set. The configured ftrace state can be restored to default
-+using the trace-cmd-reset(1) command.
-+
-+OPTIONS
-+-------
-+*-p* 'tracer'::
-+    Specify a tracer. Tracers usually do more than just trace an event.
-+    Common tracers are: *function*, *function_graph*, *preemptirqsoff*,
-+    *irqsoff*, *preemptoff* and *wakeup*. A tracer must be supported by the
-+    running kernel. To see a list of available tracers, see trace-cmd-list(1).
-+
-+*-e* 'event'::
-+    Specify an event to trace. Various static trace points have been added to
-+    the Linux kernel. They are grouped by subsystem where you can enable all
-+    events of a given subsystem or specify specific events to be enabled. The
-+    'event' is of the format "subsystem:event-name". You can also just specify
-+    the subsystem without the ':event-name' or the event-name without the
-+    "subsystem:". Using "-e sched_switch" will enable the "sched_switch" event
-+    where as, "-e sched" will enable all events under the "sched" subsystem.
-+
-+    The 'event' can also contain glob expressions. That is, "*stat*" will
-+    select all events (or subsystems) that have the characters "stat" in their
-+    names.
-+
-+    The keyword 'all' can be used to enable all events.
-+
-+*-T*::
-+    Enable a stacktrace on each event. For example:
-+
-+          <idle>-0     [003] 58549.289091: sched_switch:         kworker/0:1:0 [120] R ==> trace-cmd:2603 [120]
-+          <idle>-0     [003] 58549.289092: kernel_stack:         <stack trace>
-+=> schedule (ffffffff814b260e)
-+=> cpu_idle (ffffffff8100a38c)
-+=> start_secondary (ffffffff814ab828)
-+
-+*--func-stack*::
-+    Enable a stack trace on all functions. Note this is only applicable
-+    for the "function" plugin tracer, and will only take effect if the
-+    -l option is used and succeeds in limiting functions. If the function
-+    tracer is not filtered, and the stack trace is enabled, you can live
-+    lock the machine.
-+
-+*-f* 'filter'::
-+    Specify a filter for the previous event. This must come after a *-e*. This
-+    will filter what events get recorded based on the content of the event.
-+    Filtering is passed to the kernel directly so what filtering is allowed
-+    may depend on what version of the kernel you have. Basically, it will
-+    let you use C notation to check if an event should be processed or not.
-+
-+----------------------------------------
-+    ==, >=, <=, >, <, &, |, && and ||
-+----------------------------------------
-+
-+    The above are usually safe to use to compare fields.
-+
-+*-R* 'trigger'::
-+    Specify a trigger for the previous event. This must come after a *-e*.
-+    This will add a given trigger to the given event. To only enable the trigger
-+    and not the event itself, then place the event after the *-v* option.
-+
-+    See Documentation/trace/events.txt in the Linux kernel source for more
-+    information on triggers.
-+
-+*-v*::
-+    This will cause all events specified after it on the command line to not
-+    be traced. This is useful for selecting a subsystem to be traced but to
-+    leave out various events. For Example: "-e sched -v -e "\*stat\*"" will
-+    enable all events in the sched subsystem except those that have "stat" in
-+    their names.
-+
-+    Note: the *-v* option was taken from the way grep(1) inverts the following
-+    matches.
-+
-+*-P* 'pid'::
-+    This will filter only the specified process IDs. Using *-P* will let you
-+    trace only events that are caused by the process.
-+
-+*-c*::
-+     Used *-P* to trace the process' children too (if kernel supports it).
-+
-+*--user*::
-+     Execute the specified *command* as given user.
-+
-+*-C* 'clock'::
-+     Set the trace clock to "clock".
-+
-+     Use trace-cmd(1) list -C to see what clocks are available.
-+
-+*-l* 'function-name'::
-+    This will limit the 'function' and 'function_graph' tracers to only trace
-+    the given function name. More than one *-l* may be specified on the
-+    command line to trace more than one function. The limited use of glob
-+    expressions are also allowed. These are 'match\*' to only filter functions
-+    that start with 'match'. '\*match' to only filter functions that end with
-+    'match'. '\*match\*' to only filter on functions that contain 'match'.
-+
-+*-g* 'function-name'::
-+    This option is for the function_graph plugin. It will graph the given
-+    function. That is, it will only trace the function and all functions that
-+    it calls. You can have more than one *-g* on the command line.
-+
-+*-n* 'function-name'::
-+    This has the opposite effect of *-l*. The function given with the *-n*
-+    option will not be traced. This takes precedence, that is, if you include
-+    the same function for both *-n* and *-l*, it will not be traced.
-+
-+*-d*::
-+    Some tracer plugins enable the function tracer by default. Like the
-+    latency tracers. This option prevents the function tracer from being
-+    enabled at start up.
-+
-+*-D*::
-+    The option *-d* will try to use the function-trace option to disable the
-+    function tracer (if available), otherwise it defaults to the proc file:
-+    /proc/sys/kernel/ftrace_enabled, but will not touch it if the function-trace
-+    option is available.  The *-D* option will disable both the ftrace_enabled
-+    proc file as well as the function-trace option if it exists.
-+
-+    Note, this disable function tracing for all users, which includes users
-+    outside of ftrace tracers (stack_tracer, perf, etc).
-+
-+*-O* 'option'::
-+    Ftrace has various options that can be enabled or disabled. This allows
-+    you to set them. Appending the text 'no' to an option disables it.
-+    For example: "-O nograph-time" will disable the "graph-time" Ftrace
-+    option.
-+
-+*-b* 'size'::
-+    This sets the ring buffer size to 'size' kilobytes. Because the Ftrace
-+    ring buffer is per CPU, this size is the size of each per CPU ring buffer
-+    inside the kernel. Using "-b 10000" on a machine with 4 CPUs will make
-+    Ftrace have a total buffer size of 40 Megs.
-+
-+*-B* 'buffer-name'::
-+    If the kernel supports multiple buffers, this will add a buffer with
-+    the given name. If the buffer name already exists, that buffer is just
-+    reset.
-+
-+    After a buffer name is stated, all events added after that will be
-+    associated with that buffer. If no buffer is specified, or an event
-+    is specified before a buffer name, it will be associated with the
-+    main (toplevel) buffer.
-+
-+     trace-cmd set -e sched -B block -e block -B time -e timer sleep 1
-+
-+    The above is will enable all sched events in the main buffer. It will
-+    then create a 'block' buffer instance and enable all block events within
-+    that buffer. A 'time' buffer instance is created and all timer events
-+    will be enabled for that event.
-+
-+*-m* 'size'::
-+    The max size in kilobytes that a per cpu buffer should be. Note, due
-+    to rounding to page size, the number may not be totally correct.
-+    Also, this is performed by switching between two buffers that are half
-+    the given size thus the output may not be of the given size even if
-+    much more was written.
-+
-+    Use this to prevent running out of diskspace for long runs.
-+
-+*-M* 'cpumask'::
-+    Set the cpumask for to trace. It only affects the last buffer instance
-+    given. If supplied before any buffer instance, then it affects the
-+    main buffer. The value supplied must be a hex number.
-+
-+     trace-cmd set -p function -M c -B events13 -e all -M 5
-+
-+    If the -M is left out, then the mask stays the same. To enable all
-+    CPUs, pass in a value of '-1'.
-+
-+*-i*::
-+    By default, if an event is listed that trace-cmd does not find, it
-+    will exit with an error. This option will just ignore events that are
-+    listed on the command line but are not found on the system.
-+
-+*-q* | *--quiet*::
-+    Suppresses normal output, except for errors.
-+
-+*--max-graph-depth* 'depth'::
-+    Set the maximum depth the function_graph tracer will trace into a function.
-+    A value of one will only show where userspace enters the kernel but not any
-+    functions called in the kernel. The default is zero, which means no limit.
-+
-+*--cmdlines-size* 'size'::
-+    Set the number of entries the kernel tracing file "saved_cmdlines" can
-+    contain. This file is a circular buffer which stores the mapping between
-+    cmdlines and PIDs. If full, it leads to unresolved cmdlines ("<...>") within
-+    the trace. The kernel default value is 128.
-+
-+*--module* 'module'::
-+    Filter a module's name in function tracing. It is equivalent to adding
-+    ':mod:module' after all other functions being filtered. If no other function
-+    filter is listed, then all modules functions will be filtered in the filter.
-+
-+    '--module snd'  is equivalent to  '-l :mod:snd'
-+
-+    '--module snd -l "*jack*"' is equivalent to '-l "*jack*:mod:snd"'
-+
-+    '--module snd -n "*"' is equivalent to '-n :mod:snd'
-+
-+*--stderr*::
-+    Have output go to stderr instead of stdout, but the output of the command
-+    executed will not be changed. This is useful if you want to monitor the
-+    output of the command being executed, but not see the output from trace-cmd.
-+
-+EXAMPLES
-+--------
-+
-+Enable all events for tracing:
-+
-+------------------------------
-+ # trace-cmd set -e all
-+------------------------------
-+
-+Set the function tracer:
-+
-+------------------------------
-+ # trace-cmd set -p function
-+------------------------------
-+
-+
-+SEE ALSO
-+--------
-+trace-cmd(1), trace-cmd-report(1), trace-cmd-start(1), trace-cmd-stop(1),
-+trace-cmd-extract(1), trace-cmd-reset(1), trace-cmd-split(1),
-+trace-cmd-list(1), trace-cmd-listen(1), trace-cmd-profile(1)
-+
-+AUTHOR
-+------
-+Written by Steven Rostedt, <rostedt@goodmis.org>
-+
-+RESOURCES
-+---------
-+git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+
-+COPYING
-+-------
-+Copyright \(C) 2010 Red Hat, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-+
+ *-H* 'event-hooks'::
+     Add custom event matching to connect any two events together. When not
+     used with *--profile*, it will save the parameter and this will be
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 0c0e12f4..63d6eb41 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -53,6 +53,7 @@ static struct usage_help usage_help[] = {
+ 		"          --module filter module name\n"
+ 		"          --by-comm used with --profile, merge events for related comms\n"
+ 		"          --profile enable tracing options needed for report --profile\n"
++		"          -G when profiling, set soft and hard irqs as global\n"
+ 		"          --func-stack perform a stack trace for function tracer\n"
+ 		"             (use with caution)\n"
+ 		"          --max-graph-depth limit function_graph depth\n"
 -- 
 2.26.2
 
