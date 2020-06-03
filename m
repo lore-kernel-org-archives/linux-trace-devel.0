@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAA53C433E2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7546C433E4
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Jun 2020 12:15:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9A578206A2
+	by mail.kernel.org (Postfix) with ESMTP id B8434207D0
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Jun 2020 12:15:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KQX4fsn9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LJmeud8n"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgFCMPQ (ORCPT
+        id S1726126AbgFCMPO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 3 Jun 2020 08:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
+        Wed, 3 Jun 2020 08:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726165AbgFCMPP (ORCPT
+        with ESMTP id S1726129AbgFCMPM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:15:15 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0186AC08C5C0
-        for <linux-trace-devel@vger.kernel.org>; Wed,  3 Jun 2020 05:15:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k26so1800702wmi.4
-        for <linux-trace-devel@vger.kernel.org>; Wed, 03 Jun 2020 05:15:14 -0700 (PDT)
+        Wed, 3 Jun 2020 08:15:12 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA38C08C5C2
+        for <linux-trace-devel@vger.kernel.org>; Wed,  3 Jun 2020 05:15:12 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id t18so2111158wru.6
+        for <linux-trace-devel@vger.kernel.org>; Wed, 03 Jun 2020 05:15:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=X77pVfnQfxk8jwVhme3isU2BXnW8UBv5iFVdIwihdmo=;
-        b=KQX4fsn9GA5+9VVsjTzbwTzo1nBqNICZU704anGKB4saaPlRIfdU+D+WJ6r2GV4heP
-         u41A6iwbN3Y6yicRaTQHVboZFPtihukJAp0RTS3SljW6hdeqY9PZVrsaJlf+mzCAaJm4
-         2zldfpLkfh8MQ3Vkt0i5EuokJTKOBC2TkMxCi2U71iJnrh3UTe/X3c0TZ9asyESCKq8/
-         S9wI9ShCEJWI5P/AB1FgQ5s8zOJgVAQfmCoHOw9jgBzQ4t+oqalNxtOMXJ90Q2mWGE/7
-         oTfZVAnHHSM7Th9d+wP4nNzzZgJAULpNEYLLfjKOU81n/zNuOCUVWW2fjrk/Z5cURrJP
-         3soA==
+        bh=AsL63vTHYo7MoccUS6BbmgMiws0ppX4pyfdzbqmX5y8=;
+        b=LJmeud8nQFz+lA6u93CO1iM/K+iL1O+Y+NDzSEfVn+UsTLt3xMAjDGEqBj5Y8R7SsR
+         11eIQjX268xpZG18fIF9WlOs32IK1kzgpkAhS2PM7IVydzTdP5LKdZTRHQhvabOSzMgM
+         Nv2FxkrxS3XZQqwg4sIbrYrLAj8t+LS7UPcKq/R3TkQTzKzO1c5dMtrVnyCP2FAtt4/E
+         aflZK1Kkz4ne+hlLce/8UhTCy67YSR/Zyz9eIdDO7nb5Bin3yQ5aHgtqjuR8Gidvfx6m
+         FfFpBbmWTSpbi0xaJ3rQ3ZQIH9arqxvpy/+OxHu7kULyWdHZ2gNB4QQBbNNGb1/j2Huf
+         lIgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=X77pVfnQfxk8jwVhme3isU2BXnW8UBv5iFVdIwihdmo=;
-        b=OlaUr0jejC3oz+77p9lxYnUMKuKXI+zSmnxPetRlBGdRP+QWyxPAUXUavft95ND6A0
-         wYsWCe/3w2ZuewRyZz1DDnh75FKvhz58uaGs63CWX5Lw9/PGvfMTICG+rqDwBwu5kh7D
-         g/Zp9y1uUMHzOZm0K4PYgdDyC83EiZjQeuEOE9xMDe3XMl8sTogie+WDUS3kRfEth56o
-         DeEIEqNN8eTgpdvROkO7Oc2qBRGVEPweiQDLevJtqTHfLQZqg5FB5WHgNeFXLmKYwG/B
-         bbQ3bxeOxfWtB1T8O1dRNixYa5xJb9rrfxtYXOPF7c45l88gypHAJtsOC2CWzPeGcK16
-         audA==
-X-Gm-Message-State: AOAM533n71R936d5pmUmR7gJTj3XL3E/TIcaG5tLqxQi2CN5dtDPaki0
-        1wlSOzXUCggvermqYnvrCNyVsAxCW+o=
-X-Google-Smtp-Source: ABdhPJxRMhBTvaAGLfbsiplJG/1fVQ9Mx5LvNcCBG8FzWhsCbp+RhOn+Ku6GV3LYud3ezXGr7V6yBw==
-X-Received: by 2002:a7b:c761:: with SMTP id x1mr8987199wmk.90.1591186513588;
-        Wed, 03 Jun 2020 05:15:13 -0700 (PDT)
+        bh=AsL63vTHYo7MoccUS6BbmgMiws0ppX4pyfdzbqmX5y8=;
+        b=T7apw8AI6jqQ5Jx9Lw9pBTPAsTAHrxn9I033ldoxnAJgo6KlBg0o39GrCdlXYTk+/U
+         tHUfXRzz7l+zOQN9uueT/pIzS1UsPloEAXeECu+G67sRWZUKpMh8Cfu1l5jMDe47qmue
+         pDobPr2HlQiVPV+onRMwnlUOqJv0XYL6VoD7NOyfe2BPl8zZX1tIr4rADoh59yNvedTe
+         BBD9Vl4J40yF6UoUnkIM6vvIBrfLpAU4/qtIKYwqqeFInNljo9yKBW+2oYccMXnP2+wX
+         4b1Di3335ATms+W2Wxa/lLTFjPXC/XBaLUHewwExbh9YVJletcRUY0h3jdrJkZ2MO2oH
+         IDNg==
+X-Gm-Message-State: AOAM533lkKB/6iXb7nCibBkN4aDpQF0aTJxRUb456jNzb/Q2EXWc8OC/
+        g309QapERrK0Wg65b92fwlK5elk1O3Y=
+X-Google-Smtp-Source: ABdhPJxjbHqHCtnUFsf1VU3LaaJkuZ7SjsfVP902vYKWc8Z1UZsZRxXot5PH25GC0hbccHCoFp0ysg==
+X-Received: by 2002:adf:edc8:: with SMTP id v8mr29472030wro.176.1591186510869;
+        Wed, 03 Jun 2020 05:15:10 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id u3sm2657042wmg.38.2020.06.03.05.15.12
+        by smtp.gmail.com with ESMTPSA id u3sm2657042wmg.38.2020.06.03.05.15.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 05:15:12 -0700 (PDT)
+        Wed, 03 Jun 2020 05:15:10 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 4/5] trace-cmd: Extend option "-v" to delete an ftrace instance
-Date:   Wed,  3 Jun 2020 15:15:05 +0300
-Message-Id: <20200603121506.49992-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 2/5] trace-cmd: Add new subcommand "set"
+Date:   Wed,  3 Jun 2020 15:15:03 +0300
+Message-Id: <20200603121506.49992-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200603121506.49992-1-tz.stoyanov@gmail.com>
 References: <20200603121506.49992-1-tz.stoyanov@gmail.com>
@@ -76,285 +76,349 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Extended the "trace-cmd set" option "-v" to delete the instance specified
-after it on the command line with "-B". For example:
- trace-cmd set -v -B bar -B foo
-will delete instance bar and create a new instance foo.
+The command "set" configures various ftarce parameters, like "record"
+and "start" commands, but does not reset ftrace state on exit.
 
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207781
+Reported-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/trace-cmd-set.1.txt | 19 +++++++----
- tracecmd/include/trace-local.h    |  1 +
- tracecmd/trace-record.c           | 55 ++++++++++++++++++++++++++++---
- tracecmd/trace-usage.c            |  4 +--
- 4 files changed, 65 insertions(+), 14 deletions(-)
+ tracecmd/include/trace-local.h |  2 ++
+ tracecmd/trace-cmd.c           |  1 +
+ tracecmd/trace-record.c        | 61 ++++++++++++++++++++++++++++------
+ tracecmd/trace-usage.c         | 35 +++++++++++++++++++
+ 4 files changed, 89 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/trace-cmd-set.1.txt b/Documentation/trace-cmd-set.1.txt
-index faf0b740..af1f69c6 100644
---- a/Documentation/trace-cmd-set.1.txt
-+++ b/Documentation/trace-cmd-set.1.txt
-@@ -77,15 +77,20 @@ OPTIONS
-     information on triggers.
- 
- *-v*::
--    This will cause all events specified after it on the command line to not
--    be traced. This is useful for selecting a subsystem to be traced but to
--    leave out various events. For Example: "-e sched -v -e "\*stat\*"" will
--    enable all events in the sched subsystem except those that have "stat" in
--    their names.
--
-+    This will negate options specified after it on the command line. It affects:
-+[verse]
-+--
-+     *-e*: Causes all specified events to not be traced. This is useful for
-+           selecting a subsystem to be traced but to leave out various events.
-+           For example: "-e sched -v -e "\*stat\*"" will enable all events in
-+           the sched subsystem except those that have "stat" in their names.
-+     *-B*: Deletes the specified ftrace instance. There must be no
-+           configuration options related to this instance in the command line.
-+           For example: "-v -B bar -B foo" will delete instance bar and create
-+           a new instance foo.
-     Note: the *-v* option was taken from the way grep(1) inverts the following
-     matches.
--
-+--
- *-P* 'pid'::
-     This will filter only the specified process IDs. Using *-P* will let you
-     trace only events that are caused by the process.
 diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 5ec05149..d148aa16 100644
+index 5d585509..5ec05149 100644
 --- a/tracecmd/include/trace-local.h
 +++ b/tracecmd/include/trace-local.h
-@@ -205,6 +205,7 @@ struct buffer_instance {
- 	char			*output_file;
- 	struct event_list	*events;
- 	struct event_list	**event_next;
-+	bool			delete;
+@@ -57,6 +57,8 @@ void trace_reset(int argc, char **argv);
  
- 	struct event_list	*sched_switch_event;
- 	struct event_list	*sched_wakeup_event;
+ void trace_start(int argc, char **argv);
+ 
++void trace_set(int argc, char **argv);
++
+ void trace_extract(int argc, char **argv);
+ 
+ void trace_stream(int argc, char **argv);
+diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
+index dbfcc974..7376c5a5 100644
+--- a/tracecmd/trace-cmd.c
++++ b/tracecmd/trace-cmd.c
+@@ -90,6 +90,7 @@ struct command commands[] = {
+ 	{"check-events", trace_check_events},
+ 	{"record", trace_record},
+ 	{"start", trace_start},
++	{"set", trace_set},
+ 	{"extract", trace_extract},
+ 	{"stop", trace_stop},
+ 	{"stream", trace_stream},
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index d5515c52..ab085f80 100644
+index f345c6d6..d5515c52 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -5797,6 +5797,27 @@ static inline void cmd_check_die(struct common_record_context *ctx,
- 		    "Did you mean 'record'?", param, cmd);
- }
+@@ -63,6 +63,7 @@ enum trace_type {
+ 	TRACE_TYPE_START	= (1 << 1),
+ 	TRACE_TYPE_STREAM	= (1 << 2),
+ 	TRACE_TYPE_EXTRACT	= (1 << 3),
++	TRACE_TYPE_SET		= (1 << 4),
+ };
  
-+static inline void remove_instances(struct buffer_instance *instances)
-+{
-+	struct buffer_instance *del;
+ static tracecmd_handle_init_func handle_init = NULL;
+@@ -185,6 +186,7 @@ enum trace_cmd {
+ 	CMD_profile,
+ 	CMD_record,
+ 	CMD_record_agent,
++	CMD_set,
+ };
+ 
+ struct common_record_context {
+@@ -1598,7 +1600,8 @@ static void run_cmd(enum trace_type type, const char *user, int argc, char **arg
+ 		/* child */
+ 		update_task_filter();
+ 		tracecmd_enable_tracing();
+-		if (type != TRACE_TYPE_START)
++		if (type != TRACE_TYPE_START &&
++		    type != TRACE_TYPE_SET)
+ 			enable_ptrace();
+ 		/*
+ 		 * If we are using stderr for stdout, switch
+@@ -1620,7 +1623,7 @@ static void run_cmd(enum trace_type type, const char *user, int argc, char **arg
+ 			die("Failed to exec %s", argv[0]);
+ 		}
+ 	}
+-	if (type & TRACE_TYPE_START)
++	if (type & (TRACE_TYPE_START | TRACE_TYPE_SET))
+ 		exit(0);
+ 	if (do_ptrace) {
+ 		ptrace_attach(NULL, pid);
+@@ -5722,6 +5725,7 @@ static void init_common_record_context(struct common_record_context *ctx,
+ 
+ #define IS_EXTRACT(ctx) ((ctx)->curr_cmd == CMD_extract)
+ #define IS_START(ctx) ((ctx)->curr_cmd == CMD_start)
++#define IS_CMDSET(ctx) ((ctx)->curr_cmd == CMD_set)
+ #define IS_STREAM(ctx) ((ctx)->curr_cmd == CMD_stream)
+ #define IS_PROFILE(ctx) ((ctx)->curr_cmd == CMD_profile)
+ #define IS_RECORD(ctx) ((ctx)->curr_cmd == CMD_record)
+@@ -5814,6 +5818,9 @@ static void parse_record_options(int argc,
+ 
+ 	init_common_record_context(ctx, curr_cmd);
+ 
++	if (IS_CMDSET(ctx))
++		keep = 1;
 +
-+	while (instances) {
-+		del = instances;
-+		instances = instances->next;
-+		tracefs_instance_destroy(del->tracefs);
-+		tracefs_instance_free(del->tracefs);
-+		free(del);
-+	}
-+}
-+
-+static inline void
-+check_instance_die(struct buffer_instance *instance, char *param)
-+{
-+	if (instance->delete)
-+		die("Instance %s is marked for deletion, invalid option %s",
-+		    tracefs_instance_get_name(instance->tracefs), param);
-+}
-+
- static void parse_record_options(int argc,
- 				 char **argv,
- 				 enum trace_cmd curr_cmd,
-@@ -5810,8 +5831,8 @@ static void parse_record_options(int argc,
- 	char *pid;
- 	char *sav;
- 	int name_counter = 0;
--	int neg_event = 0;
--	struct buffer_instance *instance;
-+	int negative = 0;
-+	struct buffer_instance *instance, *del_list = NULL;
- 	bool guest_sync_set = false;
- 	int do_children = 0;
- 	int fpids_count = 0;
-@@ -5881,6 +5902,7 @@ static void parse_record_options(int argc,
- 			}
+ 	for (;;) {
+ 		int option_index = 0;
+ 		int ret;
+@@ -5865,6 +5872,7 @@ static void parse_record_options(int argc,
+ 			usage(argv);
  			break;
- 		case 'e':
-+			check_instance_die(ctx->instance, "-e");
- 			ctx->events = 1;
- 			event = malloc(sizeof(*event));
- 			if (!event)
-@@ -5888,7 +5910,7 @@ static void parse_record_options(int argc,
- 			memset(event, 0, sizeof(*event));
- 			event->event = optarg;
- 			add_event(ctx->instance, event);
--			event->neg = neg_event;
-+			event->neg = negative;
- 			event->filter = NULL;
- 			last_event = event;
- 
-@@ -5954,6 +5976,7 @@ static void parse_record_options(int argc,
+ 		case 'a':
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-a");
+ 			if (IS_EXTRACT(ctx)) {
+ 				add_all_instances();
+ 			} else {
+@@ -5942,6 +5950,7 @@ static void parse_record_options(int argc,
+ 			filter_task = 1;
+ 			break;
+ 		case 'G':
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-G");
  			ctx->global = 1;
  			break;
  		case 'P':
-+			check_instance_die(ctx->instance, "-P");
- 			test_set_event_pid(ctx->instance);
- 			pids = strdup(optarg);
- 			if (!pids)
-@@ -5969,6 +5992,7 @@ static void parse_record_options(int argc,
- 			free(pids);
+@@ -6017,6 +6026,7 @@ static void parse_record_options(int argc,
+ 			ctx->disable = 1;
  			break;
- 		case 'c':
-+			check_instance_die(ctx->instance, "-c");
- 			test_set_event_pid(ctx->instance);
- 			do_children = 1;
- 			if (!ctx->instance->have_event_fork) {
-@@ -5985,13 +6009,14 @@ static void parse_record_options(int argc,
- 				save_option(ctx->instance, "function-fork");
- 			break;
- 		case 'C':
-+			check_instance_die(ctx->instance, "-C");
- 			ctx->instance->clock = optarg;
- 			ctx->instance->flags |= BUFFER_FL_HAS_CLOCK;
- 			if (is_top_instance(ctx->instance))
- 				guest_sync_set = true;
- 			break;
- 		case 'v':
--			neg_event = 1;
-+			negative = 1;
- 			break;
- 		case 'l':
- 			add_func(&ctx->instance->filter_funcs,
-@@ -5999,15 +6024,18 @@ static void parse_record_options(int argc,
- 			ctx->filtered = 1;
- 			break;
- 		case 'n':
-+			check_instance_die(ctx->instance, "-n");
- 			add_func(&ctx->instance->notrace_funcs,
- 				 ctx->instance->filter_mod, optarg);
- 			ctx->filtered = 1;
- 			break;
- 		case 'g':
-+			check_instance_die(ctx->instance, "-g");
- 			add_func(&graph_funcs, ctx->instance->filter_mod, optarg);
- 			ctx->filtered = 1;
- 			break;
- 		case 'p':
-+			check_instance_die(ctx->instance, "-p");
- 			if (ctx->instance->plugin)
- 				die("only one plugin allowed");
- 			for (plugin = optarg; isspace(*plugin); plugin++)
-@@ -6057,14 +6085,17 @@ static void parse_record_options(int argc,
- 			}
- 			break;
- 		case 'O':
-+			check_instance_die(ctx->instance, "-O");
- 			option = optarg;
- 			save_option(ctx->instance, option);
- 			break;
- 		case 'T':
-+			check_instance_die(ctx->instance, "-T");
+ 		case 'o':
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-o");
+ 			if (IS_RECORD_AGENT(ctx))
+ 				die("-o incompatible with agent recording");
+ 			if (host)
+@@ -6054,10 +6064,12 @@ static void parse_record_options(int argc,
  			save_option(ctx->instance, "stacktrace");
  			break;
  		case 'H':
- 			cmd_check_die(ctx, CMD_set, *(argv+1), "-H");
-+			check_instance_die(ctx->instance, "-H");
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-H");
  			add_hook(ctx->instance, optarg);
  			ctx->events = 1;
  			break;
-@@ -6109,6 +6140,7 @@ static void parse_record_options(int argc,
- 			max_kb = atoi(optarg);
+ 		case 's':
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-s");
+ 			if (IS_EXTRACT(ctx)) {
+ 				if (optarg)
+ 					usage(argv);
+@@ -6069,15 +6081,18 @@ static void parse_record_options(int argc,
+ 			sleep_time = atoi(optarg);
  			break;
- 		case 'M':
-+			check_instance_die(ctx->instance, "-M");
+ 		case 'S':
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-S");
+ 			ctx->manual = 1;
+ 			/* User sets events for profiling */
+ 			if (!event)
+ 				ctx->events = 0;
+ 			break;
+ 		case 'r':
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-r");
+ 			rt_prio = atoi(optarg);
+ 			break;
+ 		case 'N':
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-N");
+ 			if (!IS_RECORD(ctx))
+ 				die("-N only available with record");
+ 			if (IS_RECORD_AGENT(ctx))
+@@ -6097,6 +6112,7 @@ static void parse_record_options(int argc,
  			ctx->instance->cpumask = alloc_mask_from_hex(ctx->instance, optarg);
  			break;
  		case 't':
-@@ -6119,13 +6151,20 @@ static void parse_record_options(int argc,
- 				use_tcp = 1;
- 			break;
- 		case 'b':
-+			check_instance_die(ctx->instance, "-b");
- 			ctx->instance->buffer_size = atoi(optarg);
- 			break;
- 		case 'B':
- 			ctx->instance = create_instance(optarg);
- 			if (!ctx->instance)
- 				die("Failed to create instance");
--			add_instance(ctx->instance, local_cpu_count);
-+			ctx->instance->delete = negative;
-+			negative = 0;
-+			if (ctx->instance->delete) {
-+				ctx->instance->next = del_list;
-+				del_list = ctx->instance;
-+			} else
-+				add_instance(ctx->instance, local_cpu_count);
- 			if (IS_PROFILE(ctx))
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-t");
+ 			if (IS_EXTRACT(ctx))
+ 				ctx->topt = 1; /* Extract top instance also */
+ 			else
+@@ -6114,6 +6130,7 @@ static void parse_record_options(int argc,
  				ctx->instance->flags |= BUFFER_FL_PROFILE;
  			break;
-@@ -6144,6 +6183,7 @@ static void parse_record_options(int argc,
+ 		case 'k':
++			cmd_check_die(ctx, CMD_set, *(argv+1), "-k");
+ 			keep = 1;
+ 			break;
+ 		case 'i':
+@@ -6126,9 +6143,11 @@ static void parse_record_options(int argc,
+ 			break;
  		case OPT_procmap:
  			cmd_check_die(ctx, CMD_start, *(argv+1), "--proc-map");
- 			cmd_check_die(ctx, CMD_set, *(argv+1), "--proc-map");
-+			check_instance_die(ctx->instance, "--proc-map");
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--proc-map");
  			ctx->instance->get_procmap = 1;
  			break;
  		case OPT_date:
-@@ -6166,6 +6206,7 @@ static void parse_record_options(int argc,
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--date");
+ 			ctx->date = 1;
+ 			if (ctx->data_flags & DATA_FL_OFFSET)
+ 				die("Can not use both --date and --ts-offset");
+@@ -6138,12 +6157,15 @@ static void parse_record_options(int argc,
+ 			func_stack = 1;
+ 			break;
+ 		case OPT_nosplice:
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--nosplice");
+ 			recorder_flags |= TRACECMD_RECORD_NOSPLICE;
+ 			break;
+ 		case OPT_nofifos:
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--nofifos");
+ 			no_fifos = true;
  			break;
  		case OPT_profile:
- 			cmd_check_die(ctx, CMD_set, *(argv+1), "--profile");
-+			check_instance_die(ctx->instance, "--profile");
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--profile");
  			handle_init = trace_init_profile;
  			ctx->instance->flags |= BUFFER_FL_PROFILE;
  			ctx->events = 1;
-@@ -6190,6 +6231,7 @@ static void parse_record_options(int argc,
- 			ctx->data_flags |= DATA_FL_OFFSET;
+@@ -6157,9 +6179,11 @@ static void parse_record_options(int argc,
+ 			dup2(2, 1);
  			break;
- 		case OPT_max_graph_depth:
-+			check_instance_die(ctx->instance, "--max-graph-depth");
- 			free(ctx->instance->max_graph_depth);
- 			ctx->instance->max_graph_depth = strdup(optarg);
- 			if (!ctx->instance->max_graph_depth)
-@@ -6206,6 +6248,7 @@ static void parse_record_options(int argc,
- 			tracecmd_set_debug(true);
+ 		case OPT_bycomm:
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--by-comm");
+ 			trace_profile_set_merge_like_comms();
  			break;
- 		case OPT_module:
-+			check_instance_die(ctx->instance, "--module");
- 			if (ctx->instance->filter_mod)
- 				add_func(&ctx->instance->filter_funcs,
- 					 ctx->instance->filter_mod, "*");
-@@ -6226,6 +6269,8 @@ static void parse_record_options(int argc,
+ 		case OPT_tsoffset:
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--ts-offset");
+ 			ctx->date2ts = strdup(optarg);
+ 			if (ctx->data_flags & DATA_FL_DATE)
+ 				die("Can not use both --date and --ts-offset");
+@@ -6175,6 +6199,7 @@ static void parse_record_options(int argc,
+ 			ctx->saved_cmdlines_size = atoi(optarg);
+ 			break;
+ 		case OPT_no_filter:
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--no-filter");
+ 			no_filter = true;
+ 			break;
+ 		case OPT_debug:
+@@ -6188,6 +6213,7 @@ static void parse_record_options(int argc,
+ 			ctx->filtered = 0;
+ 			break;
+ 		case OPT_tsyncinterval:
++			cmd_check_die(ctx, CMD_set, *(argv+1), "--tsync-interval");
+ 			top_instance.tsync.loop_interval = atoi(optarg);
+ 			guest_sync_set = true;
+ 			break;
+@@ -6253,8 +6279,8 @@ static void parse_record_options(int argc,
  		}
  	}
  
-+	remove_instances(del_list);
+-	if (do_ptrace && IS_START(ctx))
+-		die("ptrace not supported with command start");
++	if (do_ptrace && (IS_START(ctx) || IS_CMDSET(ctx)))
++		die("ptrace not supported with command %s", *(argv+1));
+ 
+ 	for_all_instances(instance) {
+ 		if (instance->get_procmap && !instance->nr_filter_pids) {
+@@ -6277,7 +6303,8 @@ static enum trace_type get_trace_cmd_type(enum trace_cmd cmd)
+ 		{CMD_extract, TRACE_TYPE_EXTRACT},
+ 		{CMD_profile, TRACE_TYPE_STREAM},
+ 		{CMD_start, TRACE_TYPE_START},
+-		{CMD_record_agent, TRACE_TYPE_RECORD}
++		{CMD_record_agent, TRACE_TYPE_RECORD},
++		{CMD_set, TRACE_TYPE_SET}
+ 	};
+ 
+ 	for (int i = 0; i < ARRAY_SIZE(trace_type_per_command); i++) {
+@@ -6354,8 +6381,10 @@ static void record_trace(int argc, char **argv,
+ 		ctx->topt = 1;
+ 
+ 	update_first_instance(ctx->instance, ctx->topt);
+-	check_doing_something();
+-	check_function_plugin();
++	if (!IS_CMDSET(ctx)) {
++		check_doing_something();
++		check_function_plugin();
++	}
+ 
+ 	if (!ctx->output)
+ 		ctx->output = DEFAULT_INPUT_FILE;
+@@ -6383,7 +6412,8 @@ static void record_trace(int argc, char **argv,
+ 
+ 	if (!is_guest(ctx->instance))
+ 		fset = set_ftrace(!ctx->disable, ctx->total_disable);
+-	tracecmd_disable_all_tracing(1);
++	if (!IS_CMDSET(ctx))
++		tracecmd_disable_all_tracing(1);
+ 
+ 	for_all_instances(instance)
+ 		set_clock(instance);
+@@ -6435,9 +6465,11 @@ static void record_trace(int argc, char **argv,
+ 		bool wait_indefinitely = false;
+ 
+ 		update_task_filter();
+-		tracecmd_enable_tracing();
+ 
+-		if (type & TRACE_TYPE_START)
++		if (!IS_CMDSET(ctx))
++			tracecmd_enable_tracing();
 +
- 	/* If --date is specified, prepend it to all guest VM flags */
- 	if (ctx->date) {
- 		struct buffer_instance *instance;
++		if (type & (TRACE_TYPE_START | TRACE_TYPE_SET))
+ 			exit(0);
+ 
+ 		/* We don't ptrace ourself */
+@@ -6498,6 +6530,15 @@ void trace_start(int argc, char **argv)
+ 	exit(0);
+ }
+ 
++void trace_set(int argc, char **argv)
++{
++	struct common_record_context ctx;
++
++	parse_record_options(argc, argv, CMD_set, &ctx);
++	record_trace(argc, argv, &ctx);
++	exit(0);
++}
++
+ void trace_extract(int argc, char **argv)
+ {
+ 	struct common_record_context ctx;
 diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 0c0e12f4..96647a1e 100644
+index 58bca9e4..0c0e12f4 100644
 --- a/tracecmd/trace-usage.c
 +++ b/tracecmd/trace-usage.c
-@@ -34,7 +34,7 @@ static struct usage_help usage_help[] = {
- 		"          -n do not trace function\n"
- 		"          -m max size per CPU in kilobytes\n"
- 		"          -M set CPU mask to trace\n"
--		"          -v will negate all -e after it (disable those events)\n"
-+		"          -v will negate all -e (disable those events) and -B (delete those instances) after it\n"
- 		"          -d disable function tracer when running\n"
- 		"          -D Full disable of function tracing (for all users)\n"
- 		"          -o data output file [default trace.dat]\n"
-@@ -84,7 +84,7 @@ static struct usage_help usage_help[] = {
- 		"          -n do not trace function\n"
- 		"          -m max size per CPU in kilobytes\n"
- 		"          -M set CPU mask to trace\n"
--		"          -v will negate all -e after it (disable those events)\n"
-+		"          -v will negate all -e (disable those events) and -B (delete those instances) after it\n"
- 		"          -d disable function tracer when running\n"
- 		"          -D Full disable of function tracing (for all users)\n"
- 		"          -O option to enable (or disable)\n"
+@@ -65,6 +65,41 @@ static struct usage_help usage_help[] = {
+ 		"               If 0 is specified, no loop is performed - timestamps offset is calculated only twice,"
+ 		"                                                         at the beginnig and at the end of the trace\n"
+ 	},
++	{
++		"set",
++		"set a ftarce configuration parameter",
++		" %s set [-v][-e event [-f filter]][-p plugin][-F][-d][-D] \\\n"
++		"           [-q][-s usecs][-O option ][-l func][-g func][-n func] \\\n"
++		"           [-P pid][-b size][-B buf][-m max][-C clock][command ...]\n"
++		"          -e enable event\n"
++		"          -f filter for previous -e event\n"
++		"          -R trigger for previous -e event\n"
++		"          -p set ftrace plugin\n"
++		"          -P set PIDs to be traced\n"
++		"          -c also trace the children of -F (or -P if kernel supports it)\n"
++		"          -C set the trace clock\n"
++		"          -T do a stacktrace on all events\n"
++		"          -l filter function name\n"
++		"          -g set graph function\n"
++		"          -n do not trace function\n"
++		"          -m max size per CPU in kilobytes\n"
++		"          -M set CPU mask to trace\n"
++		"          -v will negate all -e after it (disable those events)\n"
++		"          -d disable function tracer when running\n"
++		"          -D Full disable of function tracing (for all users)\n"
++		"          -O option to enable (or disable)\n"
++		"          -b change kernel buffersize (in kilobytes per CPU)\n"
++		"          -B create sub buffer and following events will be enabled here\n"
++		"          -i do not fail if an event is not found\n"
++		"          -q print no output to the screen\n"
++		"          --quiet print no output to the screen\n"
++		"          --module filter module name\n"
++		"          --func-stack perform a stack trace for function tracer\n"
++		"             (use with caution)\n"
++		"          --max-graph-depth limit function_graph depth\n"
++		"          --cmdlines-size change kernel saved_cmdlines_size\n"
++		"          --user execute the specified [command ...] as given user\n"
++	},
+ 	{
+ 		"start",
+ 		"start tracing without recording into a file",
 -- 
 2.26.2
 
