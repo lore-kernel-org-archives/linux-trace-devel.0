@@ -1,159 +1,103 @@
-Return-Path: <SRS0=8+AL=7P=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=eJz3=7Q=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8D01C433DF
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 22:16:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 712CEC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Jun 2020 12:15:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C76C72067B
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  2 Jun 2020 22:16:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51DEF206A2
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Jun 2020 12:15:16 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D4W077pg"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgFBWQW (ORCPT
+        id S1726117AbgFCMPP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 2 Jun 2020 18:16:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgFBWQU (ORCPT
+        Wed, 3 Jun 2020 08:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgFCMPL (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 2 Jun 2020 18:16:20 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 255D62067B
-        for <linux-trace-devel@vger.kernel.org>; Tue,  2 Jun 2020 22:16:20 +0000 (UTC)
-Date:   Tue, 2 Jun 2020 18:16:18 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd: Fix build dependencies
-Message-ID: <20200602181618.737914a8@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 3 Jun 2020 08:15:11 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEC7C08C5C0
+        for <linux-trace-devel@vger.kernel.org>; Wed,  3 Jun 2020 05:15:10 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q25so1812764wmj.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 03 Jun 2020 05:15:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yhDWCExksgcRUyerjmdhBUtM0sNJiqdMCgw0Actq+mQ=;
+        b=D4W077pgkzkawE6BD6DeKzKrXrxeA5zxwDP4HJ8QmbbGXkQFjsZDQJDFGboJRZkw07
+         Ee57ejnZ63Za9s782QtuYVPaGctp5ig8UA7bXW/g+UvAabhfkXEJ4aXVPLjk4YG/TFAD
+         AXflImOrRV1WIsHu21aXcnWau+6n4KZFXlis8HJCZf2eeCS49hb4r8QTcZrlfhFRNFjY
+         /0fQs8J7wN8ljn9FctLG79MB6nwmJ389dhmhyUz7vYgloo/nz8sayqilNpmzOGOvtxaI
+         qOGmYmBIVf8S+6Um+wuRGg7lKJS8+vrk6YAtDQSuxQyhyimmnLOaCJaKol3IMebqgqX2
+         Yy7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yhDWCExksgcRUyerjmdhBUtM0sNJiqdMCgw0Actq+mQ=;
+        b=D06Gvz5B7a79jw9+m0y1xVZYsR2KkTx4NMhkr2XfhDWvb2Q+FXGt/dS2nsgeW782jx
+         H4iryzlW3VD1UDh73LgOaMguSfNaHjaUKpc8ORRP6u5W3edHBUcmQ/fkzAlXvpYaxAz8
+         Fu49w+xTzqi6jIm2kzELrLLQbwz4LEdasRT7RojUrvKrIsLCVpRWoUZRq+7BSpnxyn37
+         rs3xwtWGrFTKshfTDF6cB+piN+H6sPl70BjvYhT1gHsHlpFTcLD9k4/ySt34YSlU8P/f
+         ElitDLczKiJr6VMEXtcdYe8E2IKgWqyN2N++bzROJSgCTIEIG6qAP0CnFrYkRNG75uOn
+         +rDA==
+X-Gm-Message-State: AOAM531Ul2h5c5rsmC2djt6J/X9ujZ0aJwNFYquvMIK5V/Cm1rfMFoNk
+        QMpdOi/tOmd/6vyfDbXfQEeVEispyWI=
+X-Google-Smtp-Source: ABdhPJxSforOunDAqkYwmtV+7S9qk7fqR27X0mnFVvBGRl7JmFGWy1NbL4PM4Fs/dDwNBWiRhGXrbg==
+X-Received: by 2002:a05:600c:c3:: with SMTP id u3mr8041578wmm.108.1591186508625;
+        Wed, 03 Jun 2020 05:15:08 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id u3sm2657042wmg.38.2020.06.03.05.15.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 05:15:07 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v3 0/5] New trace-cmd "set" command and changes in "start"
+Date:   Wed,  3 Jun 2020 15:15:01 +0300
+Message-Id: <20200603121506.49992-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+"trace-cmd start": Enable to run and filter a command.
+"trace-cmd set": Introduce a new sub command. It works the same way as
+"start", except it does not clear the ftrace state.
 
-After having trace-cmd break because not all proper files are being compiled
-when needed, I looked into why the dependencies were not working. I found
-that the .foo.d files that were being created required having the full path
-of the object file in them. Without that, the dependencies were being
-ignored.
+v3 changes:
+  - Added new path in the set:
+   "trace-cmd: Extend option "-v" to delete an ftrace instance" 
 
-By adding "-MT $(bdir)/$*.o", to the dependency creating rules, the full
-path would be added to targets for the object files, and this makes the
-depencies work again.
+Tzvetomir Stoyanov (VMware) (5):
+  trace-cmd: Enable "trace-cmd start" to run a command
+  trace-cmd: Add new subcommand "set"
+  trace-cmd: Man page for "set" subcommand
+  trace-cmd: Extend option "-v" to delete an ftrace instance
+  trace-cmd: Add description of "-G" option
 
-Fixes: 60f0a40bb ("trace-cmd: Make libtraceevent buildable out-of-tree")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- lib/trace-cmd/Makefile          | 2 +-
- lib/trace-cmd/plugins/Makefile  | 2 +-
- lib/traceevent/Makefile         | 2 +-
- lib/traceevent/plugins/Makefile | 2 +-
- lib/tracefs/Makefile            | 2 +-
- tracecmd/Makefile               | 2 +-
- utest/Makefile                  | 1 +
- 7 files changed, 7 insertions(+), 6 deletions(-)
+ Documentation/trace-cmd-record.1.txt |   4 +
+ Documentation/trace-cmd-set.1.txt    | 259 +++++++++++++++++++++++++++
+ Documentation/trace-cmd-start.1.txt  |   2 +-
+ tracecmd/include/trace-local.h       |   3 +
+ tracecmd/trace-cmd.c                 |   1 +
+ tracecmd/trace-record.c              | 134 ++++++++++++--
+ tracecmd/trace-usage.c               |  40 ++++-
+ 7 files changed, 422 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/trace-cmd-set.1.txt
 
-diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
-index ab7440ac..994ae94d 100644
---- a/lib/trace-cmd/Makefile
-+++ b/lib/trace-cmd/Makefile
-@@ -45,7 +45,7 @@ $(bdir)/%.o: %.c
- 	$(Q)$(call do_fpic_compile)
- 
- $(DEPS): $(bdir)/.%.d: %.c
--	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
-+	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
- 
- $(OBJS): $(bdir)/%.o : $(bdir)/.%.d
- 
-diff --git a/lib/trace-cmd/plugins/Makefile b/lib/trace-cmd/plugins/Makefile
-index 240e6be3..ed5a9cea 100644
---- a/lib/trace-cmd/plugins/Makefile
-+++ b/lib/trace-cmd/plugins/Makefile
-@@ -26,7 +26,7 @@ $(PLUGIN_BUILD): $(bdir)/%.so: $(bdir)/%.o
- 	$(Q)$(do_plugin_build)
- 
- $(DEPS): $(bdir)/.%.d: %.c
--	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
-+	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
- 
- $(PLUGIN_OBJS): $(bdir)/%.o : $(bdir)/.%.d
- 
-diff --git a/lib/traceevent/Makefile b/lib/traceevent/Makefile
-index c3f09572..d0666911 100644
---- a/lib/traceevent/Makefile
-+++ b/lib/traceevent/Makefile
-@@ -37,7 +37,7 @@ $(bdir)/%.o: %.c
- 	$(Q)$(call do_fpic_compile)
- 
- $(DEPS): $(bdir)/.%.d: %.c
--	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
-+	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
- 
- $(OBJS): $(bdir)/%.o : $(bdir)/.%.d
- 
-diff --git a/lib/traceevent/plugins/Makefile b/lib/traceevent/plugins/Makefile
-index 40500194..21e933af 100644
---- a/lib/traceevent/plugins/Makefile
-+++ b/lib/traceevent/plugins/Makefile
-@@ -40,7 +40,7 @@ $(PLUGIN_BUILD): $(bdir)/%.so: $(bdir)/%.o
- 	$(Q)$(do_plugin_build)
- 
- $(DEPS): $(bdir)/.%.d: %.c
--	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
-+	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
- 
- $(PLUGIN_OBJS): $(bdir)/%.o : $(bdir)/.%.d
- 
-diff --git a/lib/tracefs/Makefile b/lib/tracefs/Makefile
-index f6d93ec8..b810bbf4 100644
---- a/lib/tracefs/Makefile
-+++ b/lib/tracefs/Makefile
-@@ -34,7 +34,7 @@ $(bdir)/%.o: %.c
- 	$(Q)$(call do_fpic_compile)
- 
- $(DEPS): $(bdir)/.%.d: %.c
--	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
-+	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
- 
- $(OBJS): $(bdir)/%.o : $(bdir)/.%.d
- 
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index 17e67600..5a7f7d2b 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -70,7 +70,7 @@ $(bdir)/%.o: %.c
- 	$(Q)$(call do_compile)
- 
- $(all_deps): $(bdir)/.%.d: %.c
--	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
-+	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
- 
- $(all_deps): $(TC_VERSION)
- 
-diff --git a/utest/Makefile b/utest/Makefile
-index 55aa46ab..d635650d 100644
---- a/utest/Makefile
-+++ b/utest/Makefile
-@@ -30,6 +30,7 @@ $(bdir)/%.o: %.c
- 
- $(DEPS): $(bdir)/.%.d: %.c
- 	$(Q)$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@
-+	$(Q)$(CC) -M -MT $(bdir)/$*.o $(CPPFLAGS) $(CFLAGS) $< > $@
- 
- $(OBJS): $(bdir)/%.o : $(bdir)/.%.d
- 
 -- 
-2.25.4
+2.26.2
 
