@@ -2,70 +2,70 @@ Return-Path: <SRS0=eJz3=7Q=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-14.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7546C433E4
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E1F1C433E1
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Jun 2020 12:15:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B8434207D0
+	by mail.kernel.org (Postfix) with ESMTP id 6E91420679
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Jun 2020 12:15:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LJmeud8n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k7hceWEe"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgFCMPO (ORCPT
+        id S1726129AbgFCMPP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 3 Jun 2020 08:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        Wed, 3 Jun 2020 08:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgFCMPM (ORCPT
+        with ESMTP id S1726141AbgFCMPO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:15:12 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA38C08C5C2
-        for <linux-trace-devel@vger.kernel.org>; Wed,  3 Jun 2020 05:15:12 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id t18so2111158wru.6
-        for <linux-trace-devel@vger.kernel.org>; Wed, 03 Jun 2020 05:15:12 -0700 (PDT)
+        Wed, 3 Jun 2020 08:15:14 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D39C08C5C3
+        for <linux-trace-devel@vger.kernel.org>; Wed,  3 Jun 2020 05:15:13 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id j198so4421398wmj.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 03 Jun 2020 05:15:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AsL63vTHYo7MoccUS6BbmgMiws0ppX4pyfdzbqmX5y8=;
-        b=LJmeud8nQFz+lA6u93CO1iM/K+iL1O+Y+NDzSEfVn+UsTLt3xMAjDGEqBj5Y8R7SsR
-         11eIQjX268xpZG18fIF9WlOs32IK1kzgpkAhS2PM7IVydzTdP5LKdZTRHQhvabOSzMgM
-         Nv2FxkrxS3XZQqwg4sIbrYrLAj8t+LS7UPcKq/R3TkQTzKzO1c5dMtrVnyCP2FAtt4/E
-         aflZK1Kkz4ne+hlLce/8UhTCy67YSR/Zyz9eIdDO7nb5Bin3yQ5aHgtqjuR8Gidvfx6m
-         FfFpBbmWTSpbi0xaJ3rQ3ZQIH9arqxvpy/+OxHu7kULyWdHZ2gNB4QQBbNNGb1/j2Huf
-         lIgw==
+        bh=y4m+eJGvSOV8gS/Oi+PJvRWoXnhsABtZZ/1MN2XGn/4=;
+        b=k7hceWEeGgOZS5Y9lOjv4gfYtHyITxxVp7Pzs0VLY6JmBIKaqubrXkcCZFCyHB5Eaz
+         e+yHxgI2nZgEj1rMrCWHbeZ8eceKloZLq061fYSj5iYtzTPCmFepC6E/dECwWQFIAuf3
+         fWC1xCco4aEE/NkTPlCyUzArxhXfTGWclO/V/bS6I18fcCGxxmMyzeTpzikdL5qEeSgy
+         O2s4M/8IDegVY1SP+Ao7u4TCmrJWyFDY7dY6KkCrH/B92kB81PsDxNn5iCADfovj6keW
+         BC2JXHB0vFmvcn3w9yIlO06nZkGmLHiFokP70LDhU6KzqYO/kX/f6atMQpshWTHFDmOw
+         weGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AsL63vTHYo7MoccUS6BbmgMiws0ppX4pyfdzbqmX5y8=;
-        b=T7apw8AI6jqQ5Jx9Lw9pBTPAsTAHrxn9I033ldoxnAJgo6KlBg0o39GrCdlXYTk+/U
-         tHUfXRzz7l+zOQN9uueT/pIzS1UsPloEAXeECu+G67sRWZUKpMh8Cfu1l5jMDe47qmue
-         pDobPr2HlQiVPV+onRMwnlUOqJv0XYL6VoD7NOyfe2BPl8zZX1tIr4rADoh59yNvedTe
-         BBD9Vl4J40yF6UoUnkIM6vvIBrfLpAU4/qtIKYwqqeFInNljo9yKBW+2oYccMXnP2+wX
-         4b1Di3335ATms+W2Wxa/lLTFjPXC/XBaLUHewwExbh9YVJletcRUY0h3jdrJkZ2MO2oH
-         IDNg==
-X-Gm-Message-State: AOAM533lkKB/6iXb7nCibBkN4aDpQF0aTJxRUb456jNzb/Q2EXWc8OC/
-        g309QapERrK0Wg65b92fwlK5elk1O3Y=
-X-Google-Smtp-Source: ABdhPJxjbHqHCtnUFsf1VU3LaaJkuZ7SjsfVP902vYKWc8Z1UZsZRxXot5PH25GC0hbccHCoFp0ysg==
-X-Received: by 2002:adf:edc8:: with SMTP id v8mr29472030wro.176.1591186510869;
-        Wed, 03 Jun 2020 05:15:10 -0700 (PDT)
+        bh=y4m+eJGvSOV8gS/Oi+PJvRWoXnhsABtZZ/1MN2XGn/4=;
+        b=tZsjBZxf4AGozb7ouYkdb6LD8qFfEgcTZTWT/13Zl6yYY0vRTkiJOMrjbZFVhRiI73
+         2ly+Zm+LxwlOrqfrTrkd9B1/GlEAmy9F/+unDcsMpGodky+LbD5hhkKrjCvP8MQ5pnwq
+         uCGpeUZqgYLge6m7GDDacm223TAzXWHZNP7NBGiyYoCWq70xrN0btVXvsnRj54iZkUre
+         C6JP2+q+BZ+MoX8LbC1qA0Lt8+RIJ3hUkwDEZxnCeo5/EVE3VmLJfTeh6MuSOV0ADfg3
+         wxuPKZcARk+VK+BTd+KC8G9z0hHUW3wUwCJ5YLFE6w2PSyyUzZt//qV+WUz/ylxkZKjn
+         Ciqw==
+X-Gm-Message-State: AOAM531GWG7qhteVJQOj91/Z3UmeYnMMuyCvUCDNwmJoJq16aXb3dXyk
+        jDkNupwgP4X58tgxGpfzEtM=
+X-Google-Smtp-Source: ABdhPJyJqJ5x1NJSedHayy/UtAfxLeRsMkWQt3nCkPBIvEIoR8vpp2wTiFSW2gLLwCBIToZ8kRtuFA==
+X-Received: by 2002:a05:600c:2218:: with SMTP id z24mr8237575wml.24.1591186512299;
+        Wed, 03 Jun 2020 05:15:12 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id u3sm2657042wmg.38.2020.06.03.05.15.09
+        by smtp.gmail.com with ESMTPSA id u3sm2657042wmg.38.2020.06.03.05.15.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 05:15:10 -0700 (PDT)
+        Wed, 03 Jun 2020 05:15:11 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 2/5] trace-cmd: Add new subcommand "set"
-Date:   Wed,  3 Jun 2020 15:15:03 +0300
-Message-Id: <20200603121506.49992-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 3/5] trace-cmd: Man page for "set" subcommand
+Date:   Wed,  3 Jun 2020 15:15:04 +0300
+Message-Id: <20200603121506.49992-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200603121506.49992-1-tz.stoyanov@gmail.com>
 References: <20200603121506.49992-1-tz.stoyanov@gmail.com>
@@ -76,349 +76,274 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The command "set" configures various ftarce parameters, like "record"
-and "start" commands, but does not reset ftrace state on exit.
+Man page, describing the new "trace-cmd set" subcommand
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207781
-Reported-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/include/trace-local.h |  2 ++
- tracecmd/trace-cmd.c           |  1 +
- tracecmd/trace-record.c        | 61 ++++++++++++++++++++++++++++------
- tracecmd/trace-usage.c         | 35 +++++++++++++++++++
- 4 files changed, 89 insertions(+), 10 deletions(-)
+ Documentation/trace-cmd-set.1.txt | 254 ++++++++++++++++++++++++++++++
+ 1 file changed, 254 insertions(+)
+ create mode 100644 Documentation/trace-cmd-set.1.txt
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 5d585509..5ec05149 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -57,6 +57,8 @@ void trace_reset(int argc, char **argv);
- 
- void trace_start(int argc, char **argv);
- 
-+void trace_set(int argc, char **argv);
+diff --git a/Documentation/trace-cmd-set.1.txt b/Documentation/trace-cmd-set.1.txt
+new file mode 100644
+index 00000000..faf0b740
+--- /dev/null
++++ b/Documentation/trace-cmd-set.1.txt
+@@ -0,0 +1,254 @@
++TRACE-CMD-SET(1)
++================
 +
- void trace_extract(int argc, char **argv);
- 
- void trace_stream(int argc, char **argv);
-diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-index dbfcc974..7376c5a5 100644
---- a/tracecmd/trace-cmd.c
-+++ b/tracecmd/trace-cmd.c
-@@ -90,6 +90,7 @@ struct command commands[] = {
- 	{"check-events", trace_check_events},
- 	{"record", trace_record},
- 	{"start", trace_start},
-+	{"set", trace_set},
- 	{"extract", trace_extract},
- 	{"stop", trace_stop},
- 	{"stream", trace_stream},
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index f345c6d6..d5515c52 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -63,6 +63,7 @@ enum trace_type {
- 	TRACE_TYPE_START	= (1 << 1),
- 	TRACE_TYPE_STREAM	= (1 << 2),
- 	TRACE_TYPE_EXTRACT	= (1 << 3),
-+	TRACE_TYPE_SET		= (1 << 4),
- };
- 
- static tracecmd_handle_init_func handle_init = NULL;
-@@ -185,6 +186,7 @@ enum trace_cmd {
- 	CMD_profile,
- 	CMD_record,
- 	CMD_record_agent,
-+	CMD_set,
- };
- 
- struct common_record_context {
-@@ -1598,7 +1600,8 @@ static void run_cmd(enum trace_type type, const char *user, int argc, char **arg
- 		/* child */
- 		update_task_filter();
- 		tracecmd_enable_tracing();
--		if (type != TRACE_TYPE_START)
-+		if (type != TRACE_TYPE_START &&
-+		    type != TRACE_TYPE_SET)
- 			enable_ptrace();
- 		/*
- 		 * If we are using stderr for stdout, switch
-@@ -1620,7 +1623,7 @@ static void run_cmd(enum trace_type type, const char *user, int argc, char **arg
- 			die("Failed to exec %s", argv[0]);
- 		}
- 	}
--	if (type & TRACE_TYPE_START)
-+	if (type & (TRACE_TYPE_START | TRACE_TYPE_SET))
- 		exit(0);
- 	if (do_ptrace) {
- 		ptrace_attach(NULL, pid);
-@@ -5722,6 +5725,7 @@ static void init_common_record_context(struct common_record_context *ctx,
- 
- #define IS_EXTRACT(ctx) ((ctx)->curr_cmd == CMD_extract)
- #define IS_START(ctx) ((ctx)->curr_cmd == CMD_start)
-+#define IS_CMDSET(ctx) ((ctx)->curr_cmd == CMD_set)
- #define IS_STREAM(ctx) ((ctx)->curr_cmd == CMD_stream)
- #define IS_PROFILE(ctx) ((ctx)->curr_cmd == CMD_profile)
- #define IS_RECORD(ctx) ((ctx)->curr_cmd == CMD_record)
-@@ -5814,6 +5818,9 @@ static void parse_record_options(int argc,
- 
- 	init_common_record_context(ctx, curr_cmd);
- 
-+	if (IS_CMDSET(ctx))
-+		keep = 1;
++NAME
++----
++trace-cmd-set - set a configuration parameter of the Ftrace Linux internal tracer
 +
- 	for (;;) {
- 		int option_index = 0;
- 		int ret;
-@@ -5865,6 +5872,7 @@ static void parse_record_options(int argc,
- 			usage(argv);
- 			break;
- 		case 'a':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-a");
- 			if (IS_EXTRACT(ctx)) {
- 				add_all_instances();
- 			} else {
-@@ -5942,6 +5950,7 @@ static void parse_record_options(int argc,
- 			filter_task = 1;
- 			break;
- 		case 'G':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-G");
- 			ctx->global = 1;
- 			break;
- 		case 'P':
-@@ -6017,6 +6026,7 @@ static void parse_record_options(int argc,
- 			ctx->disable = 1;
- 			break;
- 		case 'o':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-o");
- 			if (IS_RECORD_AGENT(ctx))
- 				die("-o incompatible with agent recording");
- 			if (host)
-@@ -6054,10 +6064,12 @@ static void parse_record_options(int argc,
- 			save_option(ctx->instance, "stacktrace");
- 			break;
- 		case 'H':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-H");
- 			add_hook(ctx->instance, optarg);
- 			ctx->events = 1;
- 			break;
- 		case 's':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-s");
- 			if (IS_EXTRACT(ctx)) {
- 				if (optarg)
- 					usage(argv);
-@@ -6069,15 +6081,18 @@ static void parse_record_options(int argc,
- 			sleep_time = atoi(optarg);
- 			break;
- 		case 'S':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-S");
- 			ctx->manual = 1;
- 			/* User sets events for profiling */
- 			if (!event)
- 				ctx->events = 0;
- 			break;
- 		case 'r':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-r");
- 			rt_prio = atoi(optarg);
- 			break;
- 		case 'N':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-N");
- 			if (!IS_RECORD(ctx))
- 				die("-N only available with record");
- 			if (IS_RECORD_AGENT(ctx))
-@@ -6097,6 +6112,7 @@ static void parse_record_options(int argc,
- 			ctx->instance->cpumask = alloc_mask_from_hex(ctx->instance, optarg);
- 			break;
- 		case 't':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-t");
- 			if (IS_EXTRACT(ctx))
- 				ctx->topt = 1; /* Extract top instance also */
- 			else
-@@ -6114,6 +6130,7 @@ static void parse_record_options(int argc,
- 				ctx->instance->flags |= BUFFER_FL_PROFILE;
- 			break;
- 		case 'k':
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "-k");
- 			keep = 1;
- 			break;
- 		case 'i':
-@@ -6126,9 +6143,11 @@ static void parse_record_options(int argc,
- 			break;
- 		case OPT_procmap:
- 			cmd_check_die(ctx, CMD_start, *(argv+1), "--proc-map");
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--proc-map");
- 			ctx->instance->get_procmap = 1;
- 			break;
- 		case OPT_date:
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--date");
- 			ctx->date = 1;
- 			if (ctx->data_flags & DATA_FL_OFFSET)
- 				die("Can not use both --date and --ts-offset");
-@@ -6138,12 +6157,15 @@ static void parse_record_options(int argc,
- 			func_stack = 1;
- 			break;
- 		case OPT_nosplice:
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--nosplice");
- 			recorder_flags |= TRACECMD_RECORD_NOSPLICE;
- 			break;
- 		case OPT_nofifos:
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--nofifos");
- 			no_fifos = true;
- 			break;
- 		case OPT_profile:
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--profile");
- 			handle_init = trace_init_profile;
- 			ctx->instance->flags |= BUFFER_FL_PROFILE;
- 			ctx->events = 1;
-@@ -6157,9 +6179,11 @@ static void parse_record_options(int argc,
- 			dup2(2, 1);
- 			break;
- 		case OPT_bycomm:
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--by-comm");
- 			trace_profile_set_merge_like_comms();
- 			break;
- 		case OPT_tsoffset:
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--ts-offset");
- 			ctx->date2ts = strdup(optarg);
- 			if (ctx->data_flags & DATA_FL_DATE)
- 				die("Can not use both --date and --ts-offset");
-@@ -6175,6 +6199,7 @@ static void parse_record_options(int argc,
- 			ctx->saved_cmdlines_size = atoi(optarg);
- 			break;
- 		case OPT_no_filter:
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--no-filter");
- 			no_filter = true;
- 			break;
- 		case OPT_debug:
-@@ -6188,6 +6213,7 @@ static void parse_record_options(int argc,
- 			ctx->filtered = 0;
- 			break;
- 		case OPT_tsyncinterval:
-+			cmd_check_die(ctx, CMD_set, *(argv+1), "--tsync-interval");
- 			top_instance.tsync.loop_interval = atoi(optarg);
- 			guest_sync_set = true;
- 			break;
-@@ -6253,8 +6279,8 @@ static void parse_record_options(int argc,
- 		}
- 	}
- 
--	if (do_ptrace && IS_START(ctx))
--		die("ptrace not supported with command start");
-+	if (do_ptrace && (IS_START(ctx) || IS_CMDSET(ctx)))
-+		die("ptrace not supported with command %s", *(argv+1));
- 
- 	for_all_instances(instance) {
- 		if (instance->get_procmap && !instance->nr_filter_pids) {
-@@ -6277,7 +6303,8 @@ static enum trace_type get_trace_cmd_type(enum trace_cmd cmd)
- 		{CMD_extract, TRACE_TYPE_EXTRACT},
- 		{CMD_profile, TRACE_TYPE_STREAM},
- 		{CMD_start, TRACE_TYPE_START},
--		{CMD_record_agent, TRACE_TYPE_RECORD}
-+		{CMD_record_agent, TRACE_TYPE_RECORD},
-+		{CMD_set, TRACE_TYPE_SET}
- 	};
- 
- 	for (int i = 0; i < ARRAY_SIZE(trace_type_per_command); i++) {
-@@ -6354,8 +6381,10 @@ static void record_trace(int argc, char **argv,
- 		ctx->topt = 1;
- 
- 	update_first_instance(ctx->instance, ctx->topt);
--	check_doing_something();
--	check_function_plugin();
-+	if (!IS_CMDSET(ctx)) {
-+		check_doing_something();
-+		check_function_plugin();
-+	}
- 
- 	if (!ctx->output)
- 		ctx->output = DEFAULT_INPUT_FILE;
-@@ -6383,7 +6412,8 @@ static void record_trace(int argc, char **argv,
- 
- 	if (!is_guest(ctx->instance))
- 		fset = set_ftrace(!ctx->disable, ctx->total_disable);
--	tracecmd_disable_all_tracing(1);
-+	if (!IS_CMDSET(ctx))
-+		tracecmd_disable_all_tracing(1);
- 
- 	for_all_instances(instance)
- 		set_clock(instance);
-@@ -6435,9 +6465,11 @@ static void record_trace(int argc, char **argv,
- 		bool wait_indefinitely = false;
- 
- 		update_task_filter();
--		tracecmd_enable_tracing();
- 
--		if (type & TRACE_TYPE_START)
-+		if (!IS_CMDSET(ctx))
-+			tracecmd_enable_tracing();
++SYNOPSIS
++--------
++*trace-cmd set* ['OPTIONS'] ['command']
 +
-+		if (type & (TRACE_TYPE_START | TRACE_TYPE_SET))
- 			exit(0);
- 
- 		/* We don't ptrace ourself */
-@@ -6498,6 +6530,15 @@ void trace_start(int argc, char **argv)
- 	exit(0);
- }
- 
-+void trace_set(int argc, char **argv)
-+{
-+	struct common_record_context ctx;
++DESCRIPTION
++-----------
++The trace-cmd(1) set command will set a configuration parameter of the Ftrace
++Linux kernel tracer. The specified *command* will be run after the ftrace state
++is set. The configured ftrace state can be restored to default
++using the trace-cmd-reset(1) command.
 +
-+	parse_record_options(argc, argv, CMD_set, &ctx);
-+	record_trace(argc, argv, &ctx);
-+	exit(0);
-+}
++OPTIONS
++-------
++*-p* 'tracer'::
++    Specify a tracer. Tracers usually do more than just trace an event.
++    Common tracers are: *function*, *function_graph*, *preemptirqsoff*,
++    *irqsoff*, *preemptoff* and *wakeup*. A tracer must be supported by the
++    running kernel. To see a list of available tracers, see trace-cmd-list(1).
 +
- void trace_extract(int argc, char **argv)
- {
- 	struct common_record_context ctx;
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 58bca9e4..0c0e12f4 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -65,6 +65,41 @@ static struct usage_help usage_help[] = {
- 		"               If 0 is specified, no loop is performed - timestamps offset is calculated only twice,"
- 		"                                                         at the beginnig and at the end of the trace\n"
- 	},
-+	{
-+		"set",
-+		"set a ftarce configuration parameter",
-+		" %s set [-v][-e event [-f filter]][-p plugin][-F][-d][-D] \\\n"
-+		"           [-q][-s usecs][-O option ][-l func][-g func][-n func] \\\n"
-+		"           [-P pid][-b size][-B buf][-m max][-C clock][command ...]\n"
-+		"          -e enable event\n"
-+		"          -f filter for previous -e event\n"
-+		"          -R trigger for previous -e event\n"
-+		"          -p set ftrace plugin\n"
-+		"          -P set PIDs to be traced\n"
-+		"          -c also trace the children of -F (or -P if kernel supports it)\n"
-+		"          -C set the trace clock\n"
-+		"          -T do a stacktrace on all events\n"
-+		"          -l filter function name\n"
-+		"          -g set graph function\n"
-+		"          -n do not trace function\n"
-+		"          -m max size per CPU in kilobytes\n"
-+		"          -M set CPU mask to trace\n"
-+		"          -v will negate all -e after it (disable those events)\n"
-+		"          -d disable function tracer when running\n"
-+		"          -D Full disable of function tracing (for all users)\n"
-+		"          -O option to enable (or disable)\n"
-+		"          -b change kernel buffersize (in kilobytes per CPU)\n"
-+		"          -B create sub buffer and following events will be enabled here\n"
-+		"          -i do not fail if an event is not found\n"
-+		"          -q print no output to the screen\n"
-+		"          --quiet print no output to the screen\n"
-+		"          --module filter module name\n"
-+		"          --func-stack perform a stack trace for function tracer\n"
-+		"             (use with caution)\n"
-+		"          --max-graph-depth limit function_graph depth\n"
-+		"          --cmdlines-size change kernel saved_cmdlines_size\n"
-+		"          --user execute the specified [command ...] as given user\n"
-+	},
- 	{
- 		"start",
- 		"start tracing without recording into a file",
++*-e* 'event'::
++    Specify an event to trace. Various static trace points have been added to
++    the Linux kernel. They are grouped by subsystem where you can enable all
++    events of a given subsystem or specify specific events to be enabled. The
++    'event' is of the format "subsystem:event-name". You can also just specify
++    the subsystem without the ':event-name' or the event-name without the
++    "subsystem:". Using "-e sched_switch" will enable the "sched_switch" event
++    where as, "-e sched" will enable all events under the "sched" subsystem.
++
++    The 'event' can also contain glob expressions. That is, "*stat*" will
++    select all events (or subsystems) that have the characters "stat" in their
++    names.
++
++    The keyword 'all' can be used to enable all events.
++
++*-T*::
++    Enable a stacktrace on each event. For example:
++
++          <idle>-0     [003] 58549.289091: sched_switch:         kworker/0:1:0 [120] R ==> trace-cmd:2603 [120]
++          <idle>-0     [003] 58549.289092: kernel_stack:         <stack trace>
++=> schedule (ffffffff814b260e)
++=> cpu_idle (ffffffff8100a38c)
++=> start_secondary (ffffffff814ab828)
++
++*--func-stack*::
++    Enable a stack trace on all functions. Note this is only applicable
++    for the "function" plugin tracer, and will only take effect if the
++    -l option is used and succeeds in limiting functions. If the function
++    tracer is not filtered, and the stack trace is enabled, you can live
++    lock the machine.
++
++*-f* 'filter'::
++    Specify a filter for the previous event. This must come after a *-e*. This
++    will filter what events get recorded based on the content of the event.
++    Filtering is passed to the kernel directly so what filtering is allowed
++    may depend on what version of the kernel you have. Basically, it will
++    let you use C notation to check if an event should be processed or not.
++
++----------------------------------------
++    ==, >=, <=, >, <, &, |, && and ||
++----------------------------------------
++
++    The above are usually safe to use to compare fields.
++
++*-R* 'trigger'::
++    Specify a trigger for the previous event. This must come after a *-e*.
++    This will add a given trigger to the given event. To only enable the trigger
++    and not the event itself, then place the event after the *-v* option.
++
++    See Documentation/trace/events.txt in the Linux kernel source for more
++    information on triggers.
++
++*-v*::
++    This will cause all events specified after it on the command line to not
++    be traced. This is useful for selecting a subsystem to be traced but to
++    leave out various events. For Example: "-e sched -v -e "\*stat\*"" will
++    enable all events in the sched subsystem except those that have "stat" in
++    their names.
++
++    Note: the *-v* option was taken from the way grep(1) inverts the following
++    matches.
++
++*-P* 'pid'::
++    This will filter only the specified process IDs. Using *-P* will let you
++    trace only events that are caused by the process.
++
++*-c*::
++     Used *-P* to trace the process' children too (if kernel supports it).
++
++*--user*::
++     Execute the specified *command* as given user.
++
++*-C* 'clock'::
++     Set the trace clock to "clock".
++
++     Use trace-cmd(1) list -C to see what clocks are available.
++
++*-l* 'function-name'::
++    This will limit the 'function' and 'function_graph' tracers to only trace
++    the given function name. More than one *-l* may be specified on the
++    command line to trace more than one function. The limited use of glob
++    expressions are also allowed. These are 'match\*' to only filter functions
++    that start with 'match'. '\*match' to only filter functions that end with
++    'match'. '\*match\*' to only filter on functions that contain 'match'.
++
++*-g* 'function-name'::
++    This option is for the function_graph plugin. It will graph the given
++    function. That is, it will only trace the function and all functions that
++    it calls. You can have more than one *-g* on the command line.
++
++*-n* 'function-name'::
++    This has the opposite effect of *-l*. The function given with the *-n*
++    option will not be traced. This takes precedence, that is, if you include
++    the same function for both *-n* and *-l*, it will not be traced.
++
++*-d*::
++    Some tracer plugins enable the function tracer by default. Like the
++    latency tracers. This option prevents the function tracer from being
++    enabled at start up.
++
++*-D*::
++    The option *-d* will try to use the function-trace option to disable the
++    function tracer (if available), otherwise it defaults to the proc file:
++    /proc/sys/kernel/ftrace_enabled, but will not touch it if the function-trace
++    option is available.  The *-D* option will disable both the ftrace_enabled
++    proc file as well as the function-trace option if it exists.
++
++    Note, this disable function tracing for all users, which includes users
++    outside of ftrace tracers (stack_tracer, perf, etc).
++
++*-O* 'option'::
++    Ftrace has various options that can be enabled or disabled. This allows
++    you to set them. Appending the text 'no' to an option disables it.
++    For example: "-O nograph-time" will disable the "graph-time" Ftrace
++    option.
++
++*-b* 'size'::
++    This sets the ring buffer size to 'size' kilobytes. Because the Ftrace
++    ring buffer is per CPU, this size is the size of each per CPU ring buffer
++    inside the kernel. Using "-b 10000" on a machine with 4 CPUs will make
++    Ftrace have a total buffer size of 40 Megs.
++
++*-B* 'buffer-name'::
++    If the kernel supports multiple buffers, this will add a buffer with
++    the given name. If the buffer name already exists, that buffer is just
++    reset.
++
++    After a buffer name is stated, all events added after that will be
++    associated with that buffer. If no buffer is specified, or an event
++    is specified before a buffer name, it will be associated with the
++    main (toplevel) buffer.
++
++     trace-cmd set -e sched -B block -e block -B time -e timer sleep 1
++
++    The above is will enable all sched events in the main buffer. It will
++    then create a 'block' buffer instance and enable all block events within
++    that buffer. A 'time' buffer instance is created and all timer events
++    will be enabled for that event.
++
++*-m* 'size'::
++    The max size in kilobytes that a per cpu buffer should be. Note, due
++    to rounding to page size, the number may not be totally correct.
++    Also, this is performed by switching between two buffers that are half
++    the given size thus the output may not be of the given size even if
++    much more was written.
++
++    Use this to prevent running out of diskspace for long runs.
++
++*-M* 'cpumask'::
++    Set the cpumask for to trace. It only affects the last buffer instance
++    given. If supplied before any buffer instance, then it affects the
++    main buffer. The value supplied must be a hex number.
++
++     trace-cmd set -p function -M c -B events13 -e all -M 5
++
++    If the -M is left out, then the mask stays the same. To enable all
++    CPUs, pass in a value of '-1'.
++
++*-i*::
++    By default, if an event is listed that trace-cmd does not find, it
++    will exit with an error. This option will just ignore events that are
++    listed on the command line but are not found on the system.
++
++*-q* | *--quiet*::
++    Suppresses normal output, except for errors.
++
++*--max-graph-depth* 'depth'::
++    Set the maximum depth the function_graph tracer will trace into a function.
++    A value of one will only show where userspace enters the kernel but not any
++    functions called in the kernel. The default is zero, which means no limit.
++
++*--cmdlines-size* 'size'::
++    Set the number of entries the kernel tracing file "saved_cmdlines" can
++    contain. This file is a circular buffer which stores the mapping between
++    cmdlines and PIDs. If full, it leads to unresolved cmdlines ("<...>") within
++    the trace. The kernel default value is 128.
++
++*--module* 'module'::
++    Filter a module's name in function tracing. It is equivalent to adding
++    ':mod:module' after all other functions being filtered. If no other function
++    filter is listed, then all modules functions will be filtered in the filter.
++
++    '--module snd'  is equivalent to  '-l :mod:snd'
++
++    '--module snd -l "*jack*"' is equivalent to '-l "*jack*:mod:snd"'
++
++    '--module snd -n "*"' is equivalent to '-n :mod:snd'
++
++*--stderr*::
++    Have output go to stderr instead of stdout, but the output of the command
++    executed will not be changed. This is useful if you want to monitor the
++    output of the command being executed, but not see the output from trace-cmd.
++
++EXAMPLES
++--------
++
++Enable all events for tracing:
++
++------------------------------
++ # trace-cmd set -e all
++------------------------------
++
++Set the function tracer:
++
++------------------------------
++ # trace-cmd set -p function
++------------------------------
++
++
++SEE ALSO
++--------
++trace-cmd(1), trace-cmd-report(1), trace-cmd-start(1), trace-cmd-stop(1),
++trace-cmd-extract(1), trace-cmd-reset(1), trace-cmd-split(1),
++trace-cmd-list(1), trace-cmd-listen(1), trace-cmd-profile(1)
++
++AUTHOR
++------
++Written by Steven Rostedt, <rostedt@goodmis.org>
++
++RESOURCES
++---------
++git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
++
++COPYING
++-------
++Copyright \(C) 2010 Red Hat, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
++
 -- 
 2.26.2
 
