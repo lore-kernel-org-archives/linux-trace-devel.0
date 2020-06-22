@@ -2,99 +2,112 @@ Return-Path: <SRS0=YrCp=AD=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94625C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA906C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:36:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 65FB420738
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:36:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C7E5520738
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:36:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NsMbqmqj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uczHyeDM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729318AbgFVOg4 (ORCPT
+        id S1729355AbgFVOg6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 22 Jun 2020 10:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
+        Mon, 22 Jun 2020 10:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729334AbgFVOgz (ORCPT
+        with ESMTP id S1729334AbgFVOg5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 22 Jun 2020 10:36:55 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F046C061573
-        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jun 2020 07:36:55 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id e15so3428162edr.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jun 2020 07:36:55 -0700 (PDT)
+        Mon, 22 Jun 2020 10:36:57 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75111C061795
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jun 2020 07:36:57 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id dr13so18240791ejc.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jun 2020 07:36:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z3nPEXIYRlp8UMT1NEuvKHPFZJG659vQMRnwYcHkHug=;
-        b=NsMbqmqj8BAaJn64rzaNEx3JcRy2BznLX3eRJQGq+boFh+fobZ5NYiZFlqqhgbg0yv
-         T1DxbqLNJalwwEkfulW4Rt8vOmiBwDG6e/TPo9CNnMhOuvtHA+aH6tFECyzbBIJepfyM
-         biLKMyarWgY0BOo1TLKP5i9W6kGfUb66sw0lUd2gYLVjCxZv8tf3bYf7xnqFl0lvPgXB
-         xAcEtTy7Clsg4BQwL2paD8sT8ypk83RbdQLfcXSv+xZNNzcY9uxJVFxFsxllRb0OABBs
-         wKmggy5DWDiKojZgUMS+SJtPf9aMvEqezrwS564SbPpuSKaKPV2SiZRwvcRytLj0hHM+
-         PGVg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HT5STaF/nN8C6Lwu7PGD0AkZTJeAsUMMC/qwWQVhojU=;
+        b=uczHyeDMteKtZ5jHOLjf7s4Dz8Qoo9rE0v2duWZ4jZqXnOKcRgDz4ss+hdyrqRF1+G
+         ltUKCCX4CKoCY6AHa/k7rMNxeWuI1iYQGv9DB06D3MOvOjNgAYYhbypmyg/9kjbKPSnI
+         bPiLqfdRcP2Gkt2z4SUqBF5A5FaWBYXbCJ+Bxdh/gjVUCx524DudTLh1OWpai4cNg40o
+         7KAiYfatZjAGGctr0qvcKZ8yDPcHD0NIOrg3aSrWM8Thz8pXd3lz2ILo4yTjQPi0yzP1
+         7M1Avs4aE6OVKDMfUMPmob6YxG3oc9Aci01Sxun0v8RfVGj1hsWvAm9SSL0sXNyOybzd
+         y6bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z3nPEXIYRlp8UMT1NEuvKHPFZJG659vQMRnwYcHkHug=;
-        b=o9EWqu+m0PkLriX0z1W0M9oAd0NPfwM+9LajAN8xlshpvY2AGdWuNdRUgaIVveZEax
-         1kgZWKLWqNO+NmaGRDB3Oe0uPMOFwbQXpdB2vjY2tzqy9BawQ//HPi+rUmVcRtyOQ/U7
-         cmzdKaZhd1h2ecJW/pjlQlxXHASzvTXn9mSmFVuPNAz4ahYfnwAsT3UUt7ju746X3Ebz
-         bofFwpQiaXhpnYXa0d49yXZT57yseCb2WXUhMQOfBduyrfR9kyIHGjqdsLU2pswmXCF2
-         BT8k6clfTkyeRvo8ERHSY8DOZcHARorgmuHYYXaBdmtwsw1L/KW3EzjIgBoLAIugfev6
-         oESw==
-X-Gm-Message-State: AOAM533PPWCgB1e3ykLhH09NCW6yo7tJrfbyGN0IF4MGHs6hOG6wz+1b
-        ENiCbrqrJbGTWXrAkv4DqjE=
-X-Google-Smtp-Source: ABdhPJyeLi1zybjWnkg+A+tmWJMRII8WHfKzo+jqbmMfXflbZp9TczVE7iceyfycGOHgnsvmWZGAXA==
-X-Received: by 2002:a50:8e1e:: with SMTP id 30mr6725986edw.283.1592836614028;
-        Mon, 22 Jun 2020 07:36:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HT5STaF/nN8C6Lwu7PGD0AkZTJeAsUMMC/qwWQVhojU=;
+        b=WU2wUM5OAsq2zt9eGRb9o/NLWeiRSKuta8uEdGK0fLty8OMAT1WoHxkLxvUCP6Snis
+         wW/0WzVsR2nn/v8VRBgyIm3aZPNyRkWLNBEm4HVv+Jth8xZq50HetpTsurIrHbIfQj0D
+         GohYQ5zYpjP82+IFNKW5s6S0qBA1iowhbr+HlUZ/nJC7L9x1026fOfU5OIOHACfizrzj
+         5ItpojEzt3oFuz7ccJG3x6f5IrRk75S8rjNadXpLwHKAyj9JKU5J21SQ+J7c1qaTnWHs
+         kgPs8lsGC7DepykqV80YpoUQa7Y1MbFHxSypR6/IVXWqA3KhIgeuplSXCLwDxZr7p0AD
+         HE8w==
+X-Gm-Message-State: AOAM531aSJi/ZnmoJ0UydHIiImwYBwMPGRrNlGww0J8aqcG4cD6uay24
+        xhI6QCil2rULB/jmId5HfuA=
+X-Google-Smtp-Source: ABdhPJxeTH4osRLx98cHHq+UuJIRoGGJsVfWhOrZjtz1gryfBoZo+uMeTuDfVHS+dYeaMIiaXXoXqg==
+X-Received: by 2002:a17:906:4f13:: with SMTP id t19mr15365489eju.269.1592836616180;
+        Mon, 22 Jun 2020 07:36:56 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z1sm11810259eji.92.2020.06.22.07.36.52
+        by smtp.gmail.com with ESMTPSA id z1sm11810259eji.92.2020.06.22.07.36.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 07:36:53 -0700 (PDT)
+        Mon, 22 Jun 2020 07:36:55 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 0/4]Synchronize libtraceevent with kernel tree
-Date:   Mon, 22 Jun 2020 17:36:47 +0300
-Message-Id: <20200622143651.179674-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 2/4] trace-cmd traceevent: Fix memory leakage in filter_event
+Date:   Mon, 22 Jun 2020 17:36:49 +0300
+Message-Id: <20200622143651.179674-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200622143651.179674-1-tz.stoyanov@gmail.com>
+References: <20200622143651.179674-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Backported few traceevent library patches from kernel's tools/lib/traceevent
-v2 changes:
- - Signed off patches by me ( Tzvetomir Stoyanov (VMware) )
+From: Hewenliang <hewenliang4@huawei.com>
 
-He Zhe (1):
-  trace-cmd traceevent: Take care of return value of asprintf
+It is necessary to call free_arg(arg) when add_filter_type() returns NULL
+in filter_event().
 
-Hewenliang (1):
-  trace-cmd traceevent: Fix memory leakage in filter_event
+Signed-off-by: Hewenliang <hewenliang4@huawei.com>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Feilong Lin <linfeilong@huawei.com>
+Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Link: http://lore.kernel.org/lkml/20191209063549.59941-1-hewenliang4@huawei.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ lib/traceevent/parse-filter.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Paolo Bonzini (1):
-  trace-cmd traceevent: update KVM plugin
-
-Zou Wei (1):
-  trace-cmd libtraceevent: Remove unneeded semicolon
-
- lib/traceevent/kbuffer-parse.c      |  2 +-
- lib/traceevent/parse-filter.c       | 33 +++++++++++++++++++----------
- lib/traceevent/plugins/plugin_kvm.c | 25 +++++++++++++++-------
- 3 files changed, 40 insertions(+), 20 deletions(-)
-
+diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
+index f3cbf86e..20eed719 100644
+--- a/lib/traceevent/parse-filter.c
++++ b/lib/traceevent/parse-filter.c
+@@ -1228,8 +1228,10 @@ filter_event(struct tep_event_filter *filter, struct tep_event *event,
+ 	}
+ 
+ 	filter_type = add_filter_type(filter, event->id);
+-	if (filter_type == NULL)
++	if (filter_type == NULL) {
++		free_arg(arg);
+ 		return TEP_ERRNO__MEM_ALLOC_FAILED;
++	}
+ 
+ 	if (filter_type->filter)
+ 		free_arg(filter_type->filter);
 -- 
 2.26.2
 
