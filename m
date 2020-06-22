@@ -8,190 +8,152 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DACBFC433E2
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:36:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09B9EC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:37:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BA41C20738
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:36:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D9FB120738
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Jun 2020 14:37:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pGdeV4F1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XazdNAzQ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729349AbgFVOg7 (ORCPT
+        id S1729376AbgFVOhA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 22 Jun 2020 10:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        Mon, 22 Jun 2020 10:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729356AbgFVOg6 (ORCPT
+        with ESMTP id S1729356AbgFVOg7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 22 Jun 2020 10:36:58 -0400
+        Mon, 22 Jun 2020 10:36:59 -0400
 Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DE9C061573
-        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jun 2020 07:36:58 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id w6so6921569ejq.6
-        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jun 2020 07:36:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701C6C061573
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jun 2020 07:36:59 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id n24so18281206ejd.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Jun 2020 07:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RpEZAQASn/MEe7KO20veQ6QBQbUzxeiSAm06DQ59vp4=;
-        b=pGdeV4F1FeAaRW3gxYYG1lf8wiA6Yb5Zy+P2Ll8a5jflzqtUROBNFq6RwvjWY7e365
-         JbV2gb/CE7npuLfudgIkJw/+qGgr/Lp2BCcnYYXfDNYLnoKrxdcLFEkDyWyN8cmTsrQB
-         6BfvvqbgyHXOh9kxf2PEh/ElJOJ76MiZMvHH6DYXYqZnr9K9U2GYg3FAJ9NgD+7oqwkX
-         5YHAmlG8aKkmDrZKlQKuTpFyX1cgxDHZ2/X1ErMnGz4yQCvtS39LUDLYpg3QWeq/AJ1K
-         5Nw1+ZiBDnQj6yy25c5E7/jVnTSq772BeJkK+HjLFZ9L3tEfe1YGkjZ3i/sbvFWy9z0v
-         DvdQ==
+        bh=qBOjP8ipEmc/TrWTrsO+XeN1pI727V8e9caJnqdouHk=;
+        b=XazdNAzQJXvOFNHLPYE3MAyM67oUCiuqwKMI0fcAHDPPQcQs6JhgEVvV597C3PNyKF
+         wtCu5fk13TlFV1sQ582fFny6Ep1k9Q8XKMJkyOTki+np+JCwNJuoptn+A8gMyjm5cMJq
+         fp+8mV9SBBClfYyYbEeB8QOfzKE5h5FPohQyqKSFtcd80gRtaWJvoxdL4qUa9Nrjy7lb
+         IwObkmlDUcqC2jGJx57qcBTuB7x2OEJ7tGP0xRBjnOfauL36fGnLV1HwtZvLoLAP13e6
+         s+UyyB1U+63nVeAtloUgMp193grtymZ4/+/1gZRqiIHTG87F+N6c4ROsb8BspnVPTxAH
+         WwtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RpEZAQASn/MEe7KO20veQ6QBQbUzxeiSAm06DQ59vp4=;
-        b=sYyGl6iIBRoDeML7tqPUZUyKqkmbt4hOghQZEj1nhnsh2F8VTkyNg1ukjhM3/sbmkG
-         C38LmFS/qSkOOa3kTMdDGlTT6dkqesTMH7jNWX/e8SPPSaaJWSAoJM4FpQ76kpwUeJV7
-         KS3/DVltu5esUsfWpX7J3gTiwJrzlHzO645xPkDlHfI5u9Tk7R+RhNLc8Uc5oY2PLWe/
-         R/8Jk5EnglFZLbwytc2dL03AHxFM9e1JBXojumvvgkb7iksOwwrRy54Fs7DW+XGbiPGc
-         Gkgw8izbTJt7KOS0Y1YtAK3xgdBWrL5zvmY9hLTrROApeL34oRhirfneamNBNPrs74tg
-         X5FQ==
-X-Gm-Message-State: AOAM532zCS8ZOiflQaUPpdMEmkuarbxidBPD7ibmZmP3uQ9WKLcwEz2N
-        LTjxLnyFK1uMOwCHz3iYhwojLaINIWY=
-X-Google-Smtp-Source: ABdhPJzCQBj556fkptqonDImUl8MmiYfV9WXcXTJ3v/rCBgb7Y1RYTfxtfvZr8P5UJj0SBnvjrlLsQ==
-X-Received: by 2002:a17:906:c14f:: with SMTP id dp15mr15916096ejc.454.1592836617249;
-        Mon, 22 Jun 2020 07:36:57 -0700 (PDT)
+        bh=qBOjP8ipEmc/TrWTrsO+XeN1pI727V8e9caJnqdouHk=;
+        b=pfVWpUVm0veSlEzeZIB+42Im9HdC/8/p5qS/cNzCUzfQRcAi+vvnXFboMlRvceUnK7
+         ZwiSYV1PmvMLlqwsEjFfm2FSQva2bXdZMm8LftQzKh0ewijDIHK2sEKnCYa/yD/rNSEF
+         BOToMg1EIIDBk1JhuNESkz5XmTF2wgvtvoZAjPMnuRhFu7rkC5dasQNbXISv72S6WETj
+         amNSGx8CllYAC/nIDQ2iJecD1pamTpygBEFXoyeyvljQIMX6WlA5wQzakn1SA/nI6VHr
+         rOr/ucSs0V3XSBWMLAgDysOgw8GKcgixWNuQKJglR9R3DcMGIxByKR6MK/8FOQiI2g44
+         NUeA==
+X-Gm-Message-State: AOAM530wtuNLdcdsIKZ/ncNqWSKFHeBzaHxEv+ip0bI8AIhtR0I1dGP9
+        f6FPOfdiUaN3Ld9l2d42CDaF4GRRZHY=
+X-Google-Smtp-Source: ABdhPJzDlw4tMgMXXNf4L5Bz44SDUrzkWsPDOGLSyN8qxVWW10dRdloqw/Si5X2CMbifHm7+IS+3FA==
+X-Received: by 2002:a17:906:d791:: with SMTP id pj17mr15907121ejb.352.1592836618214;
+        Mon, 22 Jun 2020 07:36:58 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z1sm11810259eji.92.2020.06.22.07.36.56
+        by smtp.gmail.com with ESMTPSA id z1sm11810259eji.92.2020.06.22.07.36.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 07:36:56 -0700 (PDT)
+        Mon, 22 Jun 2020 07:36:57 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 3/4] trace-cmd traceevent: Take care of return value of asprintf
-Date:   Mon, 22 Jun 2020 17:36:50 +0300
-Message-Id: <20200622143651.179674-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 4/4] trace-cmd traceevent: update KVM plugin
+Date:   Mon, 22 Jun 2020 17:36:51 +0300
+Message-Id: <20200622143651.179674-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200622143651.179674-1-tz.stoyanov@gmail.com>
 References: <20200622143651.179674-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: He Zhe <zhe.he@windriver.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-According to the API, if memory allocation wasn't possible, or some
-other error occurs, asprintf will return -1, and the contents of strp
-below are undefined.
+The format of the role word has changed through the years and the plugin
+was never updated; some VMX exit reasons were missing too.
 
-  int asprintf(char **strp, const char *fmt, ...);
-
-This patch takes care of return value of asprintf to make it less error
-prone and prevent the following build warning.
-
-  ignoring return value of ‘asprintf’, declared with attribute warn_unused_result [-Wunused-result]
-
-Signed-off-by: He Zhe <zhe.he@windriver.com>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc: hewenliang4@huawei.com
-Link: http://lore.kernel.org/lkml/1582163930-233692-1-git-send-email-zhe.he@windriver.com
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Acked-by: Steven Rostedt <rostedt@goodmis.org>
+Cc: David Ahern <dsahern@gmail.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: kvm@vger.kernel.org
+Link: http://lkml.kernel.org/r/1443695293-31127-1-git-send-email-pbonzini@redhat.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/traceevent/parse-filter.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ lib/traceevent/plugins/plugin_kvm.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
-diff --git a/lib/traceevent/parse-filter.c b/lib/traceevent/parse-filter.c
-index 20eed719..c271aeeb 100644
---- a/lib/traceevent/parse-filter.c
-+++ b/lib/traceevent/parse-filter.c
-@@ -1958,7 +1958,8 @@ static char *op_to_str(struct tep_event_filter *filter, struct tep_filter_arg *a
- 				default:
- 					break;
- 				}
--				asprintf(&str, val ? "TRUE" : "FALSE");
-+				if (asprintf(&str, val ? "TRUE" : "FALSE") < 0)
-+					str = NULL;
- 				break;
- 			}
- 		}
-@@ -1976,7 +1977,8 @@ static char *op_to_str(struct tep_event_filter *filter, struct tep_filter_arg *a
- 			break;
- 		}
+diff --git a/lib/traceevent/plugins/plugin_kvm.c b/lib/traceevent/plugins/plugin_kvm.c
+index 6c744328..f9f12e57 100644
+--- a/lib/traceevent/plugins/plugin_kvm.c
++++ b/lib/traceevent/plugins/plugin_kvm.c
+@@ -110,7 +110,10 @@ static const char *disassemble(unsigned char *insn, int len, uint64_t rip,
+ 	_ER(WBINVD,		54)		\
+ 	_ER(XSETBV,		55)		\
+ 	_ER(APIC_WRITE,		56)		\
+-	_ER(INVPCID,		58)
++	_ER(INVPCID,		58)		\
++	_ER(PML_FULL,		62)		\
++	_ER(XSAVES,		63)		\
++	_ER(XRSTORS,		64)
  
--		asprintf(&str, "(%s) %s (%s)", left, op, right);
-+		if (asprintf(&str, "(%s) %s (%s)", left, op, right) < 0)
-+			str = NULL;
- 		break;
+ #define SVM_EXIT_REASONS \
+ 	_ER(EXIT_READ_CR0,	0x000)		\
+@@ -357,15 +360,18 @@ static int kvm_nested_vmexit_handler(struct trace_seq *s, struct tep_record *rec
+ union kvm_mmu_page_role {
+ 	unsigned word;
+ 	struct {
+-		unsigned glevels:4;
+ 		unsigned level:4;
++		unsigned cr4_pae:1;
+ 		unsigned quadrant:2;
+-		unsigned pad_for_nice_hex_output:6;
+ 		unsigned direct:1;
+ 		unsigned access:3;
+ 		unsigned invalid:1;
+-		unsigned cr4_pge:1;
+ 		unsigned nxe:1;
++		unsigned cr0_wp:1;
++		unsigned smep_and_not_wp:1;
++		unsigned smap_and_not_wp:1;
++		unsigned pad_for_nice_hex_output:8;
++		unsigned smm:8;
+ 	};
+ };
  
- 	case TEP_FILTER_OP_NOT:
-@@ -1992,10 +1994,12 @@ static char *op_to_str(struct tep_event_filter *filter, struct tep_filter_arg *a
- 			right_val = 0;
- 		if (right_val >= 0) {
- 			/* just return the opposite */
--			asprintf(&str, right_val ? "FALSE" : "TRUE");
-+			if (asprintf(&str, right_val ? "FALSE" : "TRUE") < 0)
-+				str = NULL;
- 			break;
- 		}
--		asprintf(&str, "%s(%s)", op, right);
-+		if (asprintf(&str, "%s(%s)", op, right) < 0)
-+			str = NULL;
- 		break;
+@@ -389,15 +395,18 @@ static int kvm_mmu_print_role(struct trace_seq *s, struct tep_record *record,
+ 	if (tep_is_file_bigendian(event->tep) ==
+ 	    tep_is_local_bigendian(event->tep)) {
  
- 	default:
-@@ -2011,7 +2015,8 @@ static char *val_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
- {
- 	char *str = NULL;
+-		trace_seq_printf(s, "%u/%u q%u%s %s%s %spge %snxe",
++		trace_seq_printf(s, "%u q%u%s %s%s %spae %snxe %swp%s%s%s",
+ 				 role.level,
+-				 role.glevels,
+ 				 role.quadrant,
+ 				 role.direct ? " direct" : "",
+ 				 access_str[role.access],
+ 				 role.invalid ? " invalid" : "",
+-				 role.cr4_pge ? "" : "!",
+-				 role.nxe ? "" : "!");
++				 role.cr4_pae ? "" : "!",
++				 role.nxe ? "" : "!",
++				 role.cr0_wp ? "" : "!",
++				 role.smep_and_not_wp ? " smep" : "",
++				 role.smap_and_not_wp ? " smap" : "",
++				 role.smm ? " smm" : "");
+ 	} else
+ 		trace_seq_printf(s, "WORD: %08x", role.word);
  
--	asprintf(&str, "%lld", arg->value.val);
-+	if (asprintf(&str, "%lld", arg->value.val) < 0)
-+		str = NULL;
- 
- 	return str;
- }
-@@ -2069,7 +2074,8 @@ static char *exp_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
- 		break;
- 	}
- 
--	asprintf(&str, "%s %s %s", lstr, op, rstr);
-+	if (asprintf(&str, "%s %s %s", lstr, op, rstr) < 0)
-+		str = NULL;
- out:
- 	free(lstr);
- 	free(rstr);
-@@ -2113,7 +2119,8 @@ static char *num_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
- 		if (!op)
- 			op = "<=";
- 
--		asprintf(&str, "%s %s %s", lstr, op, rstr);
-+		if (asprintf(&str, "%s %s %s", lstr, op, rstr) < 0)
-+			str = NULL;
- 		break;
- 
- 	default:
-@@ -2148,8 +2155,9 @@ static char *str_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
- 		if (!op)
- 			op = "!~";
- 
--		asprintf(&str, "%s %s \"%s\"",
--			 arg->str.field->name, op, arg->str.val);
-+		if (asprintf(&str, "%s %s \"%s\"",
-+			 arg->str.field->name, op, arg->str.val) < 0)
-+			str = NULL;
- 		break;
- 
- 	default:
-@@ -2165,7 +2173,8 @@ static char *arg_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
- 
- 	switch (arg->type) {
- 	case TEP_FILTER_ARG_BOOLEAN:
--		asprintf(&str, arg->boolean.value ? "TRUE" : "FALSE");
-+		if (asprintf(&str, arg->boolean.value ? "TRUE" : "FALSE") < 0)
-+			str = NULL;
- 		return str;
- 
- 	case TEP_FILTER_ARG_OP:
 -- 
 2.26.2
 
