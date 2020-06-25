@@ -2,70 +2,73 @@ Return-Path: <SRS0=vwyE=AG=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1375C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jun 2020 10:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36D57C433DF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jun 2020 10:05:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CBD29206B7
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jun 2020 10:05:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1268B206B7
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jun 2020 10:05:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hppOUCSw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="n+1ToWxg"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390025AbgFYKFV (ORCPT
+        id S2390893AbgFYKFW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Jun 2020 06:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
+        Thu, 25 Jun 2020 06:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390020AbgFYKFU (ORCPT
+        with ESMTP id S2390020AbgFYKFW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Jun 2020 06:05:20 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAFCC061573
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jun 2020 03:05:19 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id o2so5303626wmh.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jun 2020 03:05:19 -0700 (PDT)
+        Thu, 25 Jun 2020 06:05:22 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EE6C0613ED
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jun 2020 03:05:20 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id o11so5193122wrv.9
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jun 2020 03:05:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZL9wck4hxQX7CTyDJQW7jLLwSa1LayNeEecIS+qfNKo=;
-        b=hppOUCSwa2NExyfok4v7KAP+sfK02XFQWGnK0YTLJEfFcuj/Pz+aCi9ypWGLMxdzRO
-         R2N3lmjRR1a/9OEqoyfEkXKZkuOYWnX7I3My0OrDszODp4lO/u7JNtbHPQTG+hzJ9/+c
-         fFR90O8OQiNTTs5MktLZwRoEv5IVp48TZcsB/6zW0q8xC0W01aVzvqgLzGK+P3CSjKxz
-         FHCIgtFZkevFW8qioSf9agkUlk5+8bACysdJjV//MdvN6eXmC+7ncmBSyIl9k0kfHAHw
-         7kpd7DpNuNfqokC1g10Mz3TsJDLQmdRsGdmawWptyezXoX6bxmqYws+1qV22ohLaDdZz
-         seEQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XCjt/ozGiUaOAslcpeKzqmb1/OXF/vjBKlNteYsSH7c=;
+        b=n+1ToWxgtNj4LFnuiyNHah4mzQng5V4yxJTqfHVKJUj8jBXr3vbAgxI4GJxiivOnbN
+         LaI8rvYLkOqdAEyT2QCoL0rYuXeIlxwIW2ft1Uevn3Q3Q55kPq/xeuX4ziaK7ZFnzhgg
+         dQVesXt/NKSmd667QXJBb7BkiuZiKqpaxLjln7gmgQOzjfAxRBY9Q/3ZDm6nqExysixZ
+         JsxJ4MspQwAUDzeC0lH7pLiGU/gZT+Dm6y86YyxGyCb7KUu0MeqrEmdOz5gKeFG6EdLo
+         fhxCjtNCglQlHNHsjIje66XOsKHHios5ABTjmu/n+UcVTV6l4q1dfBhovXuhAGU7ke55
+         7PFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZL9wck4hxQX7CTyDJQW7jLLwSa1LayNeEecIS+qfNKo=;
-        b=AsprEbDMANHQLIqIyCMxk7uLMi6BMXx52yCk3DSVLHfQjBJIPI5ST2gtPCMzm15s62
-         wQEtEbJsYbSmDDHa1fXctk0WFAgSKE57UnIVrDti1cOZB1AJLGM8l8owWtURm62fzXAr
-         zuQi49Wp3iKdytOGKPkWuRUJAcF//WV+t8zoeLuC8VZxj/7tfWhHQm2k2vApYu+lq7uM
-         mlRJrx3Xv4/RI5aU3fbzyudJFvYwKea6Psv86z5C//7+yJ9pPUHlgqy98WPumyP+kgji
-         uD+pIo6mK+e/DCqfUpEDcVnCre7tQ0Cnqwn6RsmAvgcd4hIXWAowgQBsP+zSl32d8OF9
-         tVzQ==
-X-Gm-Message-State: AOAM531PaYzcYa/c5HjSqjJo719huN/Mlk+zAmw+EjNVxdXkMlJlWbRW
-        S/ZhbIE0BddO7Vq2uRX2nu4=
-X-Google-Smtp-Source: ABdhPJzeFNet1S8GiqqqgtcSRkQkU48kBgo+T/OQi2dPahK41mX2HnlTkfZUOupVf2x+FU4C2buvLQ==
-X-Received: by 2002:a1c:bc8a:: with SMTP id m132mr1811547wmf.1.1593079518335;
-        Thu, 25 Jun 2020 03:05:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XCjt/ozGiUaOAslcpeKzqmb1/OXF/vjBKlNteYsSH7c=;
+        b=p/AvlmI9gQZ2hG9noM8rgv6vPIu07b5yI9Cpj+Kb5fT0jWHUe0GkZDsann9enGu2a8
+         CG3T0xhlcIkybzzUTJXNWsx8Z4P0hnvDJJlSMuUxt3UHSkviMa4ZuSxaAfDgiZOz0WMB
+         ekCecNATYndq5In0NpZIZUbAqXrmivG+f9fbEYl+Nm0qt674q5d14yp+V9ayeITpTznt
+         iJj/SvzoGqOt35Und8akDU2j45u9HkpAcXtOWJfWU+VOOhoO6wBrVMgIHrjg/1W9whJE
+         dQDGTpdpHqWNnk+2+cvLCkLAxwVz9Bgxg3hZn93M7lP0R7Mnm2onGf+xaMsQrY9kPnN5
+         m8YQ==
+X-Gm-Message-State: AOAM531TTo0iRgpCFK6gZikpEJezUHhhR5f4ZXAx7F1O5AINhD5cvMO8
+        sKgwpRLd4Ui+LJPZaWJUNG0=
+X-Google-Smtp-Source: ABdhPJwltkP8ZvUys/wv0O0y1FzFVcSnCW5nncXFVNlX2ynK2wQjripalyAroQinLO6K+Fw442/0xw==
+X-Received: by 2002:adf:aa42:: with SMTP id q2mr37802551wrd.360.1593079519357;
+        Thu, 25 Jun 2020 03:05:19 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id v7sm31268204wrp.45.2020.06.25.03.05.17
+        by smtp.gmail.com with ESMTPSA id v7sm31268204wrp.45.2020.06.25.03.05.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 03:05:17 -0700 (PDT)
+        Thu, 25 Jun 2020 03:05:18 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 00/15] Synchronize libtraceevent with trace-cmd
-Date:   Thu, 25 Jun 2020 13:05:07 +0300
-Message-Id: <20200625100516.365338-1-tz.stoyanov@gmail.com>
+Subject: [PATCH 01/15] tools lib traceevent: Add --debug to trace-cmd report
+Date:   Thu, 25 Jun 2020 13:05:08 +0300
+Message-Id: <20200625100516.365338-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200625100516.365338-1-tz.stoyanov@gmail.com>
+References: <20200625100516.365338-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
@@ -73,59 +76,70 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Backported traceevent library patches from trace-cmd lib/traceevent
+From: Steven Rostedt (Red Hat) <rostedt@goodmis.org>
 
-Jan Kiszka (2):
-  tools lib traceevent: Add more SVM exit reasons
-  tools lib traceevent: Fix reporting of unknown SVM exit reasons
+Add --debug option to trace-cmd report that enables page boundary recording
+as well as time stamp info to be printed.
 
-Julia Cartwright (1):
-  tools lib traceevent: Add plugin for decoding syscalls/sys_enter_futex
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ tools/lib/traceevent/kbuffer-parse.c | 28 ++++++++++++++++++++++++++++
+ tools/lib/traceevent/kbuffer.h       |  2 ++
+ 2 files changed, 30 insertions(+)
 
-Steven Rostedt (Red Hat) (2):
-  tools lib traceevent: Add --debug to trace-cmd report
-  tools lib traceevent: Add plugin for tlb_flush
-
-Steven Rostedt (VMware) (3):
-  tools lib traceevent: Add -O offset for function plugin
-  tools lib traceevent: Add builtin handler for trace_marker_raw
-  tools lib traceevent: Change to SPDX License format
-
-Tom Zanussi (1):
-  tools lib traceevent: Add proper KBUFFER_TYPE_TIME_STAMP handling
-
-Tzvetomir Stoyanov (VMware) (6):
-  tools lib traceevent: Remove trace-cmd plugin handling routines
-  tools lib traceevent: Move plugin options from trace-cmd to
-    libtraceevent.
-  tools lib traceevent: Introduced new traceevent API, for adding new
-    plugins directories.
-  tools lib traceevent: Add support for more printk format specifiers
-  tools lib traceevent: Optimize pretty_print() function
-  tools lib traceevent: Move kernel_stack event handler to "function"
-    plugin.
-
- tools/lib/traceevent/event-parse-local.h      |   22 +-
- tools/lib/traceevent/event-parse.c            | 1004 ++++++++++++-----
- tools/lib/traceevent/event-parse.h            |   34 +-
- tools/lib/traceevent/event-plugin.c           |  261 ++++-
- tools/lib/traceevent/kbuffer-parse.c          |   43 +-
- tools/lib/traceevent/kbuffer.h                |   19 +-
- tools/lib/traceevent/plugins/Build            |    2 +
- tools/lib/traceevent/plugins/Makefile         |    2 +
- .../lib/traceevent/plugins/plugin_function.c  |  123 +-
- tools/lib/traceevent/plugins/plugin_futex.c   |  123 ++
- tools/lib/traceevent/plugins/plugin_hrtimer.c |   17 +-
- tools/lib/traceevent/plugins/plugin_jbd2.c    |   17 +-
- tools/lib/traceevent/plugins/plugin_kmem.c    |   17 +-
- tools/lib/traceevent/plugins/plugin_kvm.c     |   42 +-
- .../lib/traceevent/plugins/plugin_mac80211.c  |   17 +-
- .../traceevent/plugins/plugin_sched_switch.c  |   17 +-
- tools/lib/traceevent/plugins/plugin_tlb.c     |   66 ++
- 17 files changed, 1406 insertions(+), 420 deletions(-)
- create mode 100644 tools/lib/traceevent/plugins/plugin_futex.c
- create mode 100644 tools/lib/traceevent/plugins/plugin_tlb.c
-
+diff --git a/tools/lib/traceevent/kbuffer-parse.c b/tools/lib/traceevent/kbuffer-parse.c
+index 27f3b07fdae8..583db99aee94 100644
+--- a/tools/lib/traceevent/kbuffer-parse.c
++++ b/tools/lib/traceevent/kbuffer-parse.c
+@@ -546,6 +546,34 @@ int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer)
+ 	return 0;
+ }
+ 
++/**
++ * kbuffer_subbuf_timestamp - read the timestamp from a sub buffer
++ * @kbuf:      The kbuffer to load
++ * @subbuf:    The subbuffer to read from.
++ *
++ * Return the timestamp from a subbuffer.
++ */
++unsigned long long kbuffer_subbuf_timestamp(struct kbuffer *kbuf, void *subbuf)
++{
++	return kbuf->read_8(subbuf);
++}
++
++/**
++ * kbuffer_ptr_delta - read the delta field from a record
++ * @kbuf:      The kbuffer to load
++ * @ptr:       The record in the buffe.
++ *
++ * Return the timestamp delta from a record
++ */
++unsigned int kbuffer_ptr_delta(struct kbuffer *kbuf, void *ptr)
++{
++	unsigned int type_len_ts;
++
++	type_len_ts = read_4(kbuf, ptr);
++	return ts4host(kbuf, type_len_ts);
++}
++
++
+ /**
+  * kbuffer_read_event - read the next event in the kbuffer subbuffer
+  * @kbuf:	The kbuffer to read from
+diff --git a/tools/lib/traceevent/kbuffer.h b/tools/lib/traceevent/kbuffer.h
+index ed4d697fc137..5fa8292e341b 100644
+--- a/tools/lib/traceevent/kbuffer.h
++++ b/tools/lib/traceevent/kbuffer.h
+@@ -49,6 +49,8 @@ int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer);
+ void *kbuffer_read_event(struct kbuffer *kbuf, unsigned long long *ts);
+ void *kbuffer_next_event(struct kbuffer *kbuf, unsigned long long *ts);
+ unsigned long long kbuffer_timestamp(struct kbuffer *kbuf);
++unsigned long long kbuffer_subbuf_timestamp(struct kbuffer *kbuf, void *subbuf);
++unsigned int kbuffer_ptr_delta(struct kbuffer *kbuf, void *ptr);
+ 
+ void *kbuffer_translate_data(int swap, void *data, unsigned int *size);
+ 
 -- 
 2.26.2
 
