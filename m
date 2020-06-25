@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BC1FC433E1
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jun 2020 10:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C901C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jun 2020 10:05:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D7752076E
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jun 2020 10:05:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D54F206B7
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Jun 2020 10:05:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JD8OR3x5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ssHlncAz"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390020AbgFYKFX (ORCPT
+        id S2390895AbgFYKFZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Jun 2020 06:05:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
+        Thu, 25 Jun 2020 06:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390891AbgFYKFW (ORCPT
+        with ESMTP id S2390891AbgFYKFY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Jun 2020 06:05:22 -0400
+        Thu, 25 Jun 2020 06:05:24 -0400
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF453C061573
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jun 2020 03:05:21 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g75so4942785wme.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jun 2020 03:05:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EAE9C0613ED
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jun 2020 03:05:22 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l2so3817042wmf.0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Jun 2020 03:05:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/CpQ4TKXB4oSJlA07MFdqGq0VyfGfA3Bz33BRX1HVIY=;
-        b=JD8OR3x5vhZ2YTVa+j4MKg8lZjsHdnv1sIBr/odJ/ibj5XhIPiQo3j4Rep9Laerqqd
-         cfEJ9SJIGxDxN7xNeF8lwFF7+J1s7WyDtIcJx+jsQTztw0MC6+ugIZUzwdN85sSaIerq
-         1Oq6/0FAz90FTrxgcdmKqjzmoRl5Bcp8bXYjHWjiYcwUkyKpTu6KD7KGNgETYu2a0RIe
-         YKiRcYbOuKlQRcxHbkTPEn2w24ipNaFUUKwmw4LaKX/XUocshEORbwZFZUp3oJIvFrhs
-         R2ITMtqB25hHj3YoDEkvCRwPXa3dJFENoRr0DfqHSgZaU8map7C9mbKQg4+H0WmU9AgY
-         wJZA==
+        bh=bovpBewt1CLAHKzR6yCJWnBBJD8ipwJkK5F7yOD1C/8=;
+        b=ssHlncAz+bX2I7JH/+p1+nuSGzMCs1kwrh+/pKP31BwpK4T8jHNxStlC7SOpY6dJil
+         9mA7xmSaTbXvltHX1WPXd+yXAolQ9XxIe157Q2PVfWCvjhInJyBODWvZlk2tWiACvv12
+         FM4WCCpiPNmzgqlwY8I44ubgxzZrt+g2QS93HKFMHEaBh1G2uZuUIJloQASmczKAWekO
+         dJIUXoFj2dtzIZH7cGAXIjseagM00jH2c7z+M/cfgsqm4OYgHqXgFfjEN9SQM95L8pe3
+         AVvgFs3i/5MiUHtm0EP/n2dldsmLHKPAYkVCqCgTXryEI5qps1mcBlKCfbsTaUab3yoy
+         /F8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/CpQ4TKXB4oSJlA07MFdqGq0VyfGfA3Bz33BRX1HVIY=;
-        b=LgVN2WlTVzWJTHNMc2fkO42bfJfbr82r020pGKuz2fGMyy7C9xYiBZ4juU2IzghB53
-         nNSJ/Ia0nlrwLA93TOQcY8qy2sdRPvKmDfmxA81s56LSseaiYdk83/F+INDJU12KJo+F
-         fbRUjBzpQAEI6G28gjc1ZZQJs8YH+zkvk+a3WxTsKAV6y2rtWPS2AOFe92Uaa03oRuzL
-         EUZbIlxPtdjFJst0e5er3rnFslmeaPq/dPc1EN4xxEOOhbTBaN03fuWohjbDRsR6aidG
-         DyPF2yD55jYOExHGywGdAsA7WomIis05IOgGtbLQ5p+jokzHzcEbYXD7VHdQ0pkvvBRA
-         3cvg==
-X-Gm-Message-State: AOAM533svtX2cSGnYFrkrnq+2s1NbmNnrgY62o/feCuWcaLHJLf5iokE
-        HLhu0GT3Ra9iZQtwzuF4U1IiKYpR3s0=
-X-Google-Smtp-Source: ABdhPJzEbL8sEYCEnseEJrwW/EGGJDluaOq7nUW75ToWqWc6o2TLurbH7nMeddwJqlLHGtfn9dHmVw==
-X-Received: by 2002:a1c:f707:: with SMTP id v7mr2455302wmh.2.1593079520457;
-        Thu, 25 Jun 2020 03:05:20 -0700 (PDT)
+        bh=bovpBewt1CLAHKzR6yCJWnBBJD8ipwJkK5F7yOD1C/8=;
+        b=OGC1tOQ6WfVJomQC63gkBjWBrfdTLZM5p35r5fG9WdReGAb4/bpwFQwcZWFBDJEgSL
+         1qRANU1/AQ8q3LWEFQCbF+b3+SOQPvN60+GFTkScY5GqS2VZeluD36R02Y0n4261wSR8
+         uQkyP1zW++hDsOgi18kzbVsX4x/O/bD1B+B37FKolHvOHeSTxSuUjmbcelr7cZgyfaEy
+         /5WDzTXgURZFY+8v+oWm7LhqU0KJ2cwYCZerezcxHlReUf+swshAofhUqw6MTafLO+Wd
+         kwAW7BFjZyIg3Jz70TL0w3ADY0YwG4sHFuQSxQ1KyhyhTg3uAO+trzGF6Y8qUO5gP4+U
+         eqRQ==
+X-Gm-Message-State: AOAM531RpbOqAwmKZjgiKJWs1GGCf9+R7gE1E36rWYeNU0tuEa2Y9gES
+        YcuKr7qaOE6LSIiXq8kuDLfRIKs/8/g=
+X-Google-Smtp-Source: ABdhPJyiB1Gc+yamknRaO2aelv4yOqe/Rvy7xBL4vA/LcD3rLXsg0+ox+ueT/1A6z111rjkMhz4V/Q==
+X-Received: by 2002:a1c:2146:: with SMTP id h67mr2598952wmh.46.1593079521422;
+        Thu, 25 Jun 2020 03:05:21 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id v7sm31268204wrp.45.2020.06.25.03.05.19
+        by smtp.gmail.com with ESMTPSA id v7sm31268204wrp.45.2020.06.25.03.05.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 03:05:19 -0700 (PDT)
+        Thu, 25 Jun 2020 03:05:20 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 02/15] tools lib traceevent: Add proper KBUFFER_TYPE_TIME_STAMP handling
-Date:   Thu, 25 Jun 2020 13:05:09 +0300
-Message-Id: <20200625100516.365338-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 03/15] tools lib traceevent: Remove trace-cmd plugin handling routines
+Date:   Thu, 25 Jun 2020 13:05:10 +0300
+Message-Id: <20200625100516.365338-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200625100516.365338-1-tz.stoyanov@gmail.com>
 References: <20200625100516.365338-1-tz.stoyanov@gmail.com>
@@ -76,120 +76,103 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Tom Zanussi <zanussi@kernel.org>
+Currently there are no trace-cmd related plugins, all of them
+are designed to be used with libtraceeevnt. As both libtraceevent
+and trace-cmd have logic for managing plugins, the one in trace-cmd
+is redundant. Those redundant code is removed and replaced with calls
+to libtraceeevnt plugin APIs. When trace-cmd has to load any plugins,
+it uses libtraceeevnt to do the job.
 
-Kernel commit dc4e2801d400 (ring-buffer: Redefine the unimplemented
-RINGBUF_TYPE_TIME_STAMP) changed the way the ring buffer timestamps
-work - after that commit the previously unimplemented
-RINGBUF_TYPE_TIME_STAMP type causes the time delta to be used as a
-timestamp rather than a delta to be added to the timestamp.
+Removed trace-cmd functions:
+  tracecmd_load_plugins()
+  tracecmd_unload_plugins()
+  trace_util_load_plugins()
+  trace_util_read_plugin_options()
+  trace_util_free_options()
+  trace_util_print_plugins()
+  trace_util_free_plugin_options_list()
 
-The trace-cmd code didn't get updated to handle this, so misinterprets
-the event data for this case, which causes a cascade of errors,
-including trace-report not being able to identify synthetic (or any
-other) events generated by the histogram code (which uses TIME_STAMP
-mode).  For example, the following triggers along with the trace-cmd
-shown cause an UNKNOWN_EVENT error and trace-cmd report crash:
+A new libtraceevent API is added:
+  tep_load_plugins_hook() - the local static
+function load_plugins() is exposed as API, as this
+functionality is needed be trace-cmd.
 
-  # echo 'wakeup_latency  u64 lat pid_t pid char comm[16]' > /sys/kernel/debug/tracing/synthetic_events
+Link: http://lore.kernel.org/linux-trace-devel/20190802110101.14759-4-tz.stoyanov@gmail.com
 
-  # echo 'hist:keys=pid:ts0=common_timestamp.usecs if comm=="ping"' > /sys/kernel/debug/tracing/events/sched/sched_wakeup/trigger
-  # echo 'hist:keys=next_pid:wakeup_lat=common_timestamp.usecs-$ts0:onmatch(sched.sched_wakeup).trace(wakeup_latency,$wakeup_lat,next_pid,next_comm) if next_comm=="ping"' > /sys/kernel/debug/tracing/events/sched/sched_switch/trigger
-  # echo 'hist:keys=comm,pid,lat:wakeup_lat=lat:sort=lat' > /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
-
-  # trace-cmd record -e wakeup_latency -e sched_wakeup -f comm==\"ping\" ping localhost -c 5
-
-  # trace-cmd report
-  CPU 0 is empty
-  CPU 1 is empty
-  CPU 2 is empty
-  CPU 3 is empty
-  CPU 5 is empty
-  CPU 6 is empty
-  CPU 7 is empty
-  cpus=8
-    ug! no event found for type 0
-  [UNKNOWN TYPE 0]
-    ug! no event found for type 11520
-  Segmentation fault (core dumped)
-
-After this patch we get the correct interpretation and the events are
-shown properly:
-
-  # trace-cmd report
-  CPU 0 is empty
-  CPU 1 is empty
-  CPU 2 is empty
-  CPU 3 is empty
-  CPU 5 is empty
-  CPU 6 is empty
-  CPU 7 is empty
-  cpus=8
-          <idle>-0     [004] 23284.341392: sched_wakeup:         ping:12031 [120] success=1 CPU:004
-          <idle>-0     [004] 23284.341464: wakeup_latency:       lat=58, pid=12031, comm=ping
-          <idle>-0     [004] 23285.365303: sched_wakeup:         ping:12031 [120] success=1 CPU:004
-          <idle>-0     [004] 23285.365382: wakeup_latency:       lat=64, pid=12031, comm=ping
-          <idle>-0     [004] 23286.389290: sched_wakeup:         ping:12031 [120] success=1 CPU:004
-          <idle>-0     [004] 23286.389378: wakeup_latency:       lat=72, pid=12031, comm=ping
-          <idle>-0     [004] 23287.413213: sched_wakeup:         ping:12031 [120] success=1 CPU:004
-          <idle>-0     [004] 23287.413291: wakeup_latency:       lat=64, pid=12031, comm=ping
-
-Link: http://lkml.kernel.org/r/1567628224.13841.4.camel@kernel.org
-
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/kbuffer-parse.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ tools/lib/traceevent/event-parse.h  |  6 ++++++
+ tools/lib/traceevent/event-plugin.c | 19 +++++++++----------
+ 2 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/tools/lib/traceevent/kbuffer-parse.c b/tools/lib/traceevent/kbuffer-parse.c
-index 583db99aee94..f1640d651c8a 100644
---- a/tools/lib/traceevent/kbuffer-parse.c
-+++ b/tools/lib/traceevent/kbuffer-parse.c
-@@ -361,6 +361,7 @@ translate_data(struct kbuffer *kbuf, void *data, void **rptr,
- 		break;
- 
- 	case KBUFFER_TYPE_TIME_EXTEND:
-+	case KBUFFER_TYPE_TIME_STAMP:
- 		extend = read_4(kbuf, data);
- 		data += 4;
- 		extend <<= TS_SHIFT;
-@@ -369,10 +370,6 @@ translate_data(struct kbuffer *kbuf, void *data, void **rptr,
- 		*length = 0;
- 		break;
- 
--	case KBUFFER_TYPE_TIME_STAMP:
--		data += 12;
--		*length = 0;
--		break;
- 	case 0:
- 		*length = read_4(kbuf, data) - 4;
- 		*length = (*length + 3) & ~3;
-@@ -397,7 +394,11 @@ static unsigned int update_pointers(struct kbuffer *kbuf)
- 
- 	type_len = translate_data(kbuf, ptr, &ptr, &delta, &length);
- 
--	kbuf->timestamp += delta;
-+	if (type_len == KBUFFER_TYPE_TIME_STAMP)
-+		kbuf->timestamp = delta;
-+	else
-+		kbuf->timestamp += delta;
-+
- 	kbuf->index = calc_index(kbuf, ptr);
- 	kbuf->next = kbuf->index + length;
- 
-@@ -454,7 +455,9 @@ static int __next_event(struct kbuffer *kbuf)
- 		if (kbuf->next >= kbuf->size)
- 			return -1;
- 		type = update_pointers(kbuf);
--	} while (type == KBUFFER_TYPE_TIME_EXTEND || type == KBUFFER_TYPE_PADDING);
-+	} while (type == KBUFFER_TYPE_TIME_EXTEND ||
-+		 type == KBUFFER_TYPE_TIME_STAMP ||
-+		 type == KBUFFER_TYPE_PADDING);
- 
- 	return 0;
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
+index b77837f75a0d..776c7c24ee79 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -396,6 +396,12 @@ struct tep_plugin_list;
+ struct tep_plugin_list *tep_load_plugins(struct tep_handle *tep);
+ void tep_unload_plugins(struct tep_plugin_list *plugin_list,
+ 			struct tep_handle *tep);
++void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
++			   void (*load_plugin)(struct tep_handle *tep,
++					       const char *path,
++					       const char *name,
++					       void *data),
++			   void *data);
+ char **tep_plugin_list_options(void);
+ void tep_plugin_free_options_list(char **list);
+ int tep_plugin_add_options(const char *name,
+diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
+index e1f7ddd5a6cf..b53d9a53bcf9 100644
+--- a/tools/lib/traceevent/event-plugin.c
++++ b/tools/lib/traceevent/event-plugin.c
+@@ -365,20 +365,19 @@ load_plugins_dir(struct tep_handle *tep, const char *suffix,
+ 	closedir(dir);
  }
+ 
+-static void
+-load_plugins(struct tep_handle *tep, const char *suffix,
+-	     void (*load_plugin)(struct tep_handle *tep,
+-				 const char *path,
+-				 const char *name,
+-				 void *data),
+-	     void *data)
++void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
++			   void (*load_plugin)(struct tep_handle *tep,
++					       const char *path,
++					       const char *name,
++					       void *data),
++			   void *data)
+ {
+ 	char *home;
+ 	char *path;
+ 	char *envdir;
+ 	int ret;
+ 
+-	if (tep->flags & TEP_DISABLE_PLUGINS)
++	if (tep && tep->flags & TEP_DISABLE_PLUGINS)
+ 		return;
+ 
+ 	/*
+@@ -386,7 +385,7 @@ load_plugins(struct tep_handle *tep, const char *suffix,
+ 	 * check that first.
+ 	 */
+ #ifdef PLUGIN_DIR
+-	if (!(tep->flags & TEP_DISABLE_SYS_PLUGINS))
++	if (!tep || !(tep->flags & TEP_DISABLE_SYS_PLUGINS))
+ 		load_plugins_dir(tep, suffix, PLUGIN_DIR,
+ 				 load_plugin, data);
+ #endif
+@@ -423,7 +422,7 @@ tep_load_plugins(struct tep_handle *tep)
+ {
+ 	struct tep_plugin_list *list = NULL;
+ 
+-	load_plugins(tep, ".so", load_plugin, &list);
++	tep_load_plugins_hook(tep, ".so", load_plugin, &list);
+ 	return list;
+ }
+ 
 -- 
 2.26.2
 
