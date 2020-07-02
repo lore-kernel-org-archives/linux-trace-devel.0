@@ -3,43 +3,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C827C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C29F7C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:12:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3DC3321531
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:12:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A09E121534
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:12:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgGBRMC (ORCPT
+        id S1727868AbgGBRMH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Jul 2020 13:12:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38134 "EHLO mail.kernel.org"
+        Thu, 2 Jul 2020 13:12:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727781AbgGBRMC (ORCPT
+        id S1727792AbgGBRMC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 2 Jul 2020 13:12:02 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE2F0208C7;
+        by mail.kernel.org (Postfix) with ESMTPSA id E4F9D21473;
         Thu,  2 Jul 2020 17:12:00 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jr2kf-004Aqp-Mx; Thu, 02 Jul 2020 13:11:57 -0400
-Message-ID: <20200702171157.567123615@goodmis.org>
+        id 1jr2kg-004Asp-C7; Thu, 02 Jul 2020 13:11:58 -0400
+Message-ID: <20200702171158.240195038@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 02 Jul 2020 13:10:21 -0400
+Date:   Thu, 02 Jul 2020 13:10:25 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 5/9] tools lib traceevent: Introduced new traceevent API, for adding new
- plugins directories.
+Subject: [PATCH 9/9] tools lib traceevent: Add more SVM exit reasons
 References: <20200702171016.178196716@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,208 +48,63 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+From: Jan Kiszka <jan.kiszka@siemens.com>
 
-Implement new traceevent plugin API, which can be used to add new plugins
-directories:
-enum tep_plugin_load_priority {
-	TEP_PLUGIN_FIRST,
-	TEP_PLUGIN_LAST,
-};
-int tep_add_plugin_path(struct tep_handle *tep, char *path,
-			enum tep_plugin_load_priority prio);
+Exceptions require individual decoding (only feasible intercepts
+listed), XSETBV was missing and the AVIC brought in two new exit codes.
 
-It adds the "path" as new plugin directory, in the context of
-the handler "tep". The tep_load_plugins() API searches for plugins
-in this new location. Depending of the priority "prio", the plugins
-from this directory are loaded before (TEP_PLUGIN_FIRST) or after
-(TEP_PLUGIN_LAST) the ordinary libtraceevent plugin locations.
+Link: http://lkml.kernel.org/r/5741D822.3030203@web.de
+Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-10-tz.stoyanov@gmail.com
 
-Link: http://lore.kernel.org/linux-trace-devel/20191007114947.17104-2-tz.stoyanov@gmail.com
-Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-6-tz.stoyanov@gmail.com
-
+Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/event-parse-local.h |  5 +-
- tools/lib/traceevent/event-parse.c       |  1 +
- tools/lib/traceevent/event-parse.h       |  7 +++
- tools/lib/traceevent/event-plugin.c      | 70 ++++++++++++++++++++++++
- 4 files changed, 82 insertions(+), 1 deletion(-)
+ tools/lib/traceevent/plugins/plugin_kvm.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
-index cee469803a34..96a0b0ca0675 100644
---- a/tools/lib/traceevent/event-parse-local.h
-+++ b/tools/lib/traceevent/event-parse-local.h
-@@ -13,6 +13,7 @@ struct func_map;
- struct func_list;
- struct event_handler;
- struct func_resolver;
-+struct tep_plugins_dir;
+diff --git a/tools/lib/traceevent/plugins/plugin_kvm.c b/tools/lib/traceevent/plugins/plugin_kvm.c
+index c8e623065a7e..768c658f5904 100644
+--- a/tools/lib/traceevent/plugins/plugin_kvm.c
++++ b/tools/lib/traceevent/plugins/plugin_kvm.c
+@@ -155,7 +155,23 @@ static const char *disassemble(unsigned char *insn, int len, uint64_t rip,
+ 	_ER(EXIT_WRITE_DR5,	0x035)		\
+ 	_ER(EXIT_WRITE_DR6,	0x036)		\
+ 	_ER(EXIT_WRITE_DR7,	0x037)		\
+-	_ER(EXIT_EXCP_BASE,     0x040)		\
++	_ER(EXIT_EXCP_DE,	0x040)		\
++	_ER(EXIT_EXCP_DB,	0x041)		\
++	_ER(EXIT_EXCP_BP,	0x043)		\
++	_ER(EXIT_EXCP_OF,	0x044)		\
++	_ER(EXIT_EXCP_BR,	0x045)		\
++	_ER(EXIT_EXCP_UD,	0x046)		\
++	_ER(EXIT_EXCP_NM,	0x047)		\
++	_ER(EXIT_EXCP_DF,	0x048)		\
++	_ER(EXIT_EXCP_TS,	0x04a)		\
++	_ER(EXIT_EXCP_NP,	0x04b)		\
++	_ER(EXIT_EXCP_SS,	0x04c)		\
++	_ER(EXIT_EXCP_GP,	0x04d)		\
++	_ER(EXIT_EXCP_PF,	0x04e)		\
++	_ER(EXIT_EXCP_MF,	0x050)		\
++	_ER(EXIT_EXCP_AC,	0x051)		\
++	_ER(EXIT_EXCP_MC,	0x052)		\
++	_ER(EXIT_EXCP_XF,	0x053)		\
+ 	_ER(EXIT_INTR,		0x060)		\
+ 	_ER(EXIT_NMI,		0x061)		\
+ 	_ER(EXIT_SMI,		0x062)		\
+@@ -201,7 +217,10 @@ static const char *disassemble(unsigned char *insn, int len, uint64_t rip,
+ 	_ER(EXIT_MONITOR,	0x08a)		\
+ 	_ER(EXIT_MWAIT,		0x08b)		\
+ 	_ER(EXIT_MWAIT_COND,	0x08c)		\
+-	_ER(EXIT_NPF,		0x400)		\
++	_ER(EXIT_XSETBV,	0x08d)		\
++	_ER(EXIT_NPF, 		0x400)		\
++	_ER(EXIT_AVIC_INCOMPLETE_IPI,		0x401)	\
++	_ER(EXIT_AVIC_UNACCELERATED_ACCESS,	0x402)	\
+ 	_ER(EXIT_ERR,		-1)
  
- struct tep_handle {
- 	int ref_count;
-@@ -47,7 +48,6 @@ struct tep_handle {
- 	struct printk_list *printklist;
- 	unsigned int printk_count;
- 
--
- 	struct tep_event **events;
- 	int nr_events;
- 	struct tep_event **sort_events;
-@@ -81,10 +81,13 @@ struct tep_handle {
- 
- 	/* cache */
- 	struct tep_event *last_event;
-+
-+	struct tep_plugins_dir *plugins_dir;
- };
- 
- void tep_free_event(struct tep_event *event);
- void tep_free_format_field(struct tep_format_field *field);
-+void tep_free_plugin_paths(struct tep_handle *tep);
- 
- unsigned short tep_data2host2(struct tep_handle *tep, unsigned short data);
- unsigned int tep_data2host4(struct tep_handle *tep, unsigned int data);
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index e1bd2a93c6db..064c100d2d5a 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -7065,6 +7065,7 @@ void tep_free(struct tep_handle *tep)
- 	free(tep->events);
- 	free(tep->sort_events);
- 	free(tep->func_resolver);
-+	tep_free_plugin_paths(tep);
- 
- 	free(tep);
- }
-diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index 02c0438527de..91f462f5a606 100644
---- a/tools/lib/traceevent/event-parse.h
-+++ b/tools/lib/traceevent/event-parse.h
-@@ -393,6 +393,13 @@ struct tep_plugin_list;
- 
- #define INVALID_PLUGIN_LIST_OPTION	((char **)((unsigned long)-1))
- 
-+enum tep_plugin_load_priority {
-+	TEP_PLUGIN_FIRST,
-+	TEP_PLUGIN_LAST,
-+};
-+
-+int tep_add_plugin_path(struct tep_handle *tep, char *path,
-+			enum tep_plugin_load_priority prio);
- struct tep_plugin_list *tep_load_plugins(struct tep_handle *tep);
- void tep_unload_plugins(struct tep_plugin_list *plugin_list,
- 			struct tep_handle *tep);
-diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index e8f4329ba8e0..1d4f1809cf17 100644
---- a/tools/lib/traceevent/event-plugin.c
-+++ b/tools/lib/traceevent/event-plugin.c
-@@ -39,6 +39,12 @@ struct tep_plugin_list {
- 	void			*handle;
- };
- 
-+struct tep_plugins_dir {
-+	struct tep_plugins_dir		*next;
-+	char				*path;
-+	enum tep_plugin_load_priority	prio;
-+};
-+
- static void lower_case(char *str)
- {
- 	if (!str)
-@@ -544,6 +550,7 @@ void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
- 					       void *data),
- 			   void *data)
- {
-+	struct tep_plugins_dir *dir = NULL;
- 	char *home;
- 	char *path;
- 	char *envdir;
-@@ -552,6 +559,15 @@ void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
- 	if (tep && tep->flags & TEP_DISABLE_PLUGINS)
- 		return;
- 
-+	if (tep)
-+		dir = tep->plugins_dir;
-+	while (dir) {
-+		if (dir->prio == TEP_PLUGIN_FIRST)
-+			load_plugins_dir(tep, suffix, dir->path,
-+					 load_plugin, data);
-+		dir = dir->next;
-+	}
-+
- 	/*
- 	 * If a system plugin directory was defined,
- 	 * check that first.
-@@ -586,6 +602,15 @@ void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
- 
- 	load_plugins_dir(tep, suffix, path, load_plugin, data);
- 
-+	if (tep)
-+		dir = tep->plugins_dir;
-+	while (dir) {
-+		if (dir->prio == TEP_PLUGIN_LAST)
-+			load_plugins_dir(tep, suffix, dir->path,
-+					 load_plugin, data);
-+		dir = dir->next;
-+	}
-+
- 	free(path);
- }
- 
-@@ -598,6 +623,51 @@ tep_load_plugins(struct tep_handle *tep)
- 	return list;
- }
- 
-+/**
-+ * tep_add_plugin_path - Add a new plugin directory.
-+ * @tep: Trace event handler.
-+ * @path: Path to a directory. All files with extension .so in that
-+ *	  directory will be loaded as plugins.
-+ *@prio: Load priority of the plugins in that directory.
-+ *
-+ * Returns -1 in case of an error, 0 otherwise.
-+ */
-+int tep_add_plugin_path(struct tep_handle *tep, char *path,
-+			enum tep_plugin_load_priority prio)
-+{
-+	struct tep_plugins_dir *dir;
-+
-+	if (!tep || !path)
-+		return -1;
-+
-+	dir = calloc(1, sizeof(*dir));
-+	if (!dir)
-+		return -1;
-+
-+	dir->path = strdup(path);
-+	dir->prio = prio;
-+	dir->next = tep->plugins_dir;
-+	tep->plugins_dir = dir;
-+
-+	return 0;
-+}
-+
-+void tep_free_plugin_paths(struct tep_handle *tep)
-+{
-+	struct tep_plugins_dir *dir;
-+
-+	if (!tep)
-+		return;
-+
-+	dir = tep->plugins_dir;
-+	while (dir) {
-+		tep->plugins_dir = tep->plugins_dir->next;
-+		free(dir->path);
-+		free(dir);
-+		dir = tep->plugins_dir;
-+	}
-+}
-+
- void
- tep_unload_plugins(struct tep_plugin_list *plugin_list, struct tep_handle *tep)
- {
+ #define _ER(reason, val)	{ #reason, val },
 -- 
 2.26.2
 
