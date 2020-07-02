@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90BA8C433DF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:50:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EB7BC433E5
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:50:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6EA3020702
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:50:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 726F420702
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:50:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sxLb1jGU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PSUuxhYs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgGBRt7 (ORCPT
+        id S1727995AbgGBRuC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Jul 2020 13:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
+        Thu, 2 Jul 2020 13:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727985AbgGBRt6 (ORCPT
+        with ESMTP id S1727993AbgGBRt7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:49:58 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBA1C08C5C1
-        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Jul 2020 10:49:58 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f18so21454076wrs.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Jul 2020 10:49:58 -0700 (PDT)
+        Thu, 2 Jul 2020 13:49:59 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A810EC08C5C1
+        for <linux-trace-devel@vger.kernel.org>; Thu,  2 Jul 2020 10:49:59 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id s10so29479207wrw.12
+        for <linux-trace-devel@vger.kernel.org>; Thu, 02 Jul 2020 10:49:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=h7Ck6dWhaMy9XxuQAS45jH4/gGQNVyX8Ys6+xcSHVKI=;
-        b=sxLb1jGUV2gJ/dspoPKiorJf2dNfhu9DOcc0nemHyGw3eQrMO+6Og+FGrtbSkVXQ84
-         QXZLHYsbYYC3HCEVz6/lUl/VJ/ArNRMPy94w2ZRz3iV7+RJ5ejZdcF9+s2U6dwv9dZ1g
-         IyV2oCQ0S0PIQhHsIQwckvR8KTDsZ4O94vegkW+ZJteGtV+bdS4UR7JN2umRjdRIww1e
-         bB2LgMRpQ2o0kEQpcCKUXTzXbw7jIOZzJNXwFiMnEnoFydwW4Pdry6JWAIXdfYb1uDfy
-         Naq59v/ZGtM+r3RUd0CvmNBmzrBhvQ+PhRoG4/Iu7DWf+RkQCqScq8q8nRrvPF5LpX+X
-         LROw==
+        bh=AO0rqh9LvR1SLCmlfVTZOByM+aU7lXTEh8gvSds/9/Q=;
+        b=PSUuxhYsccKfjQFf8jQgH796VXlDvRHG+GyOX0DFIcyBp/vL94XIlsQ+j5/VzO1IgT
+         yWU2H31A6pgnqKXD1wuliQQJcy5+y7hkyEhVyYf5aLFhZu3/7LB5sQX9D25xonUAaUGT
+         tuQrCKeq00Ubqc9jDaxwpdW1SbqngewG+GxiK9UAbdXzH6VmJXHhu2HfqwHC5ZISRUCK
+         4tfLkrCw9Tcy71vhjvMuZrOeprTaCCHU/0Vp2UtMAcvFzf/D0geW+yeT7TerNNU9hQcp
+         5hLQLqQixFkPgQvZA07RZehaCQs0UK4FYHlTHtRzo9Z4AxeibAJZqfpvsM3gaHh+m4eH
+         KeKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=h7Ck6dWhaMy9XxuQAS45jH4/gGQNVyX8Ys6+xcSHVKI=;
-        b=WOU4bWXJHabKUS2yAPzU2wdadeiA8GG4hOgBEcNaG3FW9Rb0QvWBVLi/+OGEu5KTH3
-         I1yRcNa1Ty/AwICi/cs5tLKCMp6ZB37E9tFTMglcss9aOTmdJaa7Uv9pZq3daI6PhqXy
-         inkVCafEOVTlxDRPITWqEIQ9C7PTOorV7ZIopCKXYLgSa/1qfudtaS+V5Cfa6UMvtFT+
-         069dHzfkIhp8/H5xXlHQIJsIzM4IhMXCe7gUiJLfSPPJqEl7uMcy0paFgoBtEPabiy/M
-         EQjWPPzStubdxiC4K/OacLgkKb9wqeMmABouc5ZyQdavn7tEL03yAH11Mp5ZqbNiDrIr
-         EcPA==
-X-Gm-Message-State: AOAM531ffbpKtzI635hay8Ox/d3Uoc6TO63coLcLL2KjDCwfu2L3D+2p
-        gkBqO1lPZSlnMYhR3sz1ZSB04+MF/fk=
-X-Google-Smtp-Source: ABdhPJxmkNxoMqHv5s/noQmQmiQl3SiXuYw/m3ULYYo1jj22QWybCM4fgy+uzsfiVcANQcRsiHG0vQ==
-X-Received: by 2002:adf:f445:: with SMTP id f5mr33294675wrp.339.1593712197240;
-        Thu, 02 Jul 2020 10:49:57 -0700 (PDT)
+        bh=AO0rqh9LvR1SLCmlfVTZOByM+aU7lXTEh8gvSds/9/Q=;
+        b=BwBS1PwL5ZWzCKStT0O48+KI456XU3esEzgyqQtdLXX00UtaG4JLK9jKjII2dTaD9L
+         1tpsyeMDgc8EXylOPHPbMHdJowXVSKzAWSuQYJgTNxSPeeVLlRAwzELQBZePRiEU92eH
+         NldgCceN2TXVc0EFxOBO+ORkdqO9JZaHPZSZpHi0gKlKIFbR831cJA1cb/okp1mxb4Vk
+         obWZZe66zbbBvJiEJtOqgIDntcubsiToH8yn3JE4mltVlCmh0eHdW5nSjk4g80KvTMQK
+         G9hQV7cI1mSK398kNEY8gHlBesriwA2xQuu/ZbD+y3U2Cf97igHmSq59H+6+M7KcvC7Y
+         YOMQ==
+X-Gm-Message-State: AOAM530N2v+FTT9JEx2UX7z1WL5eGrVEEau2jWGtTRKFNyx99vIIMzNj
+        uEEuwHlpOpx7w2rYtfqPhLnMf4oj/jM=
+X-Google-Smtp-Source: ABdhPJyQ1GpjQUfpqFnDcsTTK4p9AQrKTTveO3S8Ltk0Wr0+J83Ku/Dbrdf0y4CyZ5Ug/ZMPDz67yw==
+X-Received: by 2002:adf:cc85:: with SMTP id p5mr32117274wrj.273.1593712198460;
+        Thu, 02 Jul 2020 10:49:58 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id g82sm9289319wma.37.2020.07.02.10.49.56
+        by smtp.gmail.com with ESMTPSA id g82sm9289319wma.37.2020.07.02.10.49.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 10:49:56 -0700 (PDT)
+        Thu, 02 Jul 2020 10:49:57 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 12/15] tools lib traceevent: Move kernel_stack event handler to "function" plugin.
-Date:   Thu,  2 Jul 2020 20:49:47 +0300
-Message-Id: <20200702174950.123454-4-tz.stoyanov@gmail.com>
+Subject: [PATCH 13/15] tools lib traceevent: Add builtin handler for trace_marker_raw
+Date:   Thu,  2 Jul 2020 20:49:48 +0300
+Message-Id: <20200702174950.123454-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200702174950.123454-1-tz.stoyanov@gmail.com>
 References: <20200702174950.123454-1-tz.stoyanov@gmail.com>
@@ -76,59 +76,65 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The "kernel_stack" event handler does not depend on any trace-cmd
-context, it can be used aside from the application. The code is
-moved to libtraceevent "function" plugin.
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Link: http://lore.kernel.org/linux-trace-devel/20190726124308.18735-2-tz.stoyanov@gmail.com
+When something is written into trace_marker_raw, it goes in as a binary. But
+the printk_fmt() of the event that is created (raw_data)'s format file only
+prints the first byte of data:
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+  print fmt: "id:%04x %08x", REC->id, (int)REC->buf[0]
+
+This is no very useful if we want to see the full data output.
+
+Implement the processing of the raw_data event like it is in the kernel.
+
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
  .../lib/traceevent/plugins/plugin_function.c  | 41 +++++++++++++++++++
  1 file changed, 41 insertions(+)
 
 diff --git a/tools/lib/traceevent/plugins/plugin_function.c b/tools/lib/traceevent/plugins/plugin_function.c
-index cafddd6be983..c7d321968f39 100644
+index c7d321968f39..7e8e29b43d1c 100644
 --- a/tools/lib/traceevent/plugins/plugin_function.c
 +++ b/tools/lib/traceevent/plugins/plugin_function.c
-@@ -184,11 +184,52 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
+@@ -222,6 +222,44 @@ trace_stack_handler(struct trace_seq *s, struct tep_record *record,
  	return 0;
  }
  
 +static int
-+trace_stack_handler(struct trace_seq *s, struct tep_record *record,
++trace_raw_data_handler(struct trace_seq *s, struct tep_record *record,
 +		    struct tep_event *event, void *context)
 +{
 +	struct tep_format_field *field;
-+	unsigned long long addr;
-+	const char *func;
++	unsigned long long id;
 +	int long_size;
 +	void *data = record->data;
 +
-+	field = tep_find_any_field(event, "caller");
++	if (tep_get_field_val(s, event, "id", record, &id, 1))
++		return trace_seq_putc(s, '!');
++
++	trace_seq_printf(s, "# %llx", id);
++
++	field = tep_find_any_field(event, "buf");
 +	if (!field) {
-+		trace_seq_printf(s, "<CANT FIND FIELD %s>", "caller");
++		trace_seq_printf(s, "<CANT FIND FIELD %s>", "buf");
 +		return 0;
 +	}
-+
-+	trace_seq_puts(s, "<stack trace >\n");
 +
 +	long_size = tep_get_long_size(event->tep);
 +
 +	for (data += field->offset; data < record->data + record->size;
 +	     data += long_size) {
-+		addr = tep_read_number(event->tep, data, long_size);
++		int size = sizeof(long);
++		int left = (record->data + record->size) - data;
++		int i;
 +
-+		if ((long_size == 8 && addr == (unsigned long long)-1) ||
-+		    ((int)addr == -1))
-+			break;
++		if (size > left)
++			size = left;
 +
-+		func = tep_find_function(event->tep, addr);
-+		if (func)
-+			trace_seq_printf(s, "=> %s (%llx)\n", func, addr);
-+		else
-+			trace_seq_printf(s, "=> %llx\n", addr);
++		for (i = 0; i < size; i++)
++			trace_seq_printf(s, " %02x", *(unsigned char *)(data + i));
 +	}
 +
 +	return 0;
@@ -137,10 +143,12 @@ index cafddd6be983..c7d321968f39 100644
  int TEP_PLUGIN_LOADER(struct tep_handle *tep)
  {
  	tep_register_event_handler(tep, -1, "ftrace", "function",
- 				   function_handler, NULL);
+@@ -230,6 +268,9 @@ int TEP_PLUGIN_LOADER(struct tep_handle *tep)
+ 	tep_register_event_handler(tep, -1, "ftrace", "kernel_stack",
+ 				      trace_stack_handler, NULL);
  
-+	tep_register_event_handler(tep, -1, "ftrace", "kernel_stack",
-+				      trace_stack_handler, NULL);
++	tep_register_event_handler(tep, -1, "ftrace", "raw_data",
++				      trace_raw_data_handler, NULL);
 +
  	tep_plugin_add_options("ftrace", plugin_options);
  
