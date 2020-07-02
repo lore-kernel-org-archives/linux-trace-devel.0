@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6929C433DF
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 18:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15E5AC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 18:57:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B72AB208FE
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 18:57:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ECB36207CD
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 18:57:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgGBS5H (ORCPT
+        id S1726396AbgGBS5v (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Jul 2020 14:57:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48528 "EHLO mail.kernel.org"
+        Thu, 2 Jul 2020 14:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726147AbgGBS5G (ORCPT
+        id S1726183AbgGBS5H (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Jul 2020 14:57:06 -0400
+        Thu, 2 Jul 2020 14:57:07 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCC5D21D92;
-        Thu,  2 Jul 2020 18:57:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E98421D7D;
+        Thu,  2 Jul 2020 18:57:06 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jr4OO-004BDw-Qc; Thu, 02 Jul 2020 14:57:04 -0400
-Message-ID: <20200702185704.706977382@goodmis.org>
+        id 1jr4OP-004BGW-In; Thu, 02 Jul 2020 14:57:05 -0400
+Message-ID: <20200702185705.445969275@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 02 Jul 2020 14:53:52 -0400
+Date:   Thu, 02 Jul 2020 14:53:57 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -38,7 +38,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH v2 08/15] tools lib traceevent: Add plugin for tlb_flush
+Subject: [PATCH v2 13/15] tools lib traceevent: Add builtin handler for trace_marker_raw
 References: <20200702185344.913492689@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,133 +47,87 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The tlb_flush tracepoints uses enums that are not yet known by
-the traceevent library. Add a plugin to handle that.
+When something is written into trace_marker_raw, it goes in as a binary. But
+the printk_fmt() of the event that is created (raw_data)'s format file only
+prints the first byte of data:
 
-Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-9-tz.stoyanov@gmail.com
+  print fmt: "id:%04x %08x", REC->id, (int)REC->buf[0]
 
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+This is not very useful if we want to see the full data output.
+
+Implement the processing of the raw_data event like it is in the kernel.
+
+Link: http://lore.kernel.org/linux-trace-devel/20200702174950.123454-5-tz.stoyanov@gmail.com
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 [ Ported from trace-cmd.git ]
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/plugins/Build        |  1 +
- tools/lib/traceevent/plugins/Makefile     |  1 +
- tools/lib/traceevent/plugins/plugin_tlb.c | 81 +++++++++++++++++++++++
- 3 files changed, 83 insertions(+)
- create mode 100644 tools/lib/traceevent/plugins/plugin_tlb.c
+ .../lib/traceevent/plugins/plugin_function.c  | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/tools/lib/traceevent/plugins/Build b/tools/lib/traceevent/plugins/Build
-index 210d26910613..b866f231a536 100644
---- a/tools/lib/traceevent/plugins/Build
-+++ b/tools/lib/traceevent/plugins/Build
-@@ -8,3 +8,4 @@ plugin_function-y     += plugin_function.o
- plugin_xen-y          += plugin_xen.o
- plugin_scsi-y         += plugin_scsi.o
- plugin_cfg80211-y     += plugin_cfg80211.o
-+plugin_tlb-y          += plugin_tlb.o
-\ No newline at end of file
-diff --git a/tools/lib/traceevent/plugins/Makefile b/tools/lib/traceevent/plugins/Makefile
-index 349bb81482ab..8e72707e8630 100644
---- a/tools/lib/traceevent/plugins/Makefile
-+++ b/tools/lib/traceevent/plugins/Makefile
-@@ -137,6 +137,7 @@ PLUGINS += plugin_function.so
- PLUGINS += plugin_xen.so
- PLUGINS += plugin_scsi.so
- PLUGINS += plugin_cfg80211.so
-+PLUGINS += plugin_tlb.so
+diff --git a/tools/lib/traceevent/plugins/plugin_function.c b/tools/lib/traceevent/plugins/plugin_function.c
+index c7d321968f39..7e8e29b43d1c 100644
+--- a/tools/lib/traceevent/plugins/plugin_function.c
++++ b/tools/lib/traceevent/plugins/plugin_function.c
+@@ -222,6 +222,44 @@ trace_stack_handler(struct trace_seq *s, struct tep_record *record,
+ 	return 0;
+ }
  
- PLUGINS    := $(addprefix $(OUTPUT),$(PLUGINS))
- PLUGINS_IN := $(PLUGINS:.so=-in.o)
-diff --git a/tools/lib/traceevent/plugins/plugin_tlb.c b/tools/lib/traceevent/plugins/plugin_tlb.c
-new file mode 100644
-index 000000000000..1adade776306
---- /dev/null
-+++ b/tools/lib/traceevent/plugins/plugin_tlb.c
-@@ -0,0 +1,81 @@
-+/*
-+ * Copyright (C) 2015 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU Lesser General Public
-+ * License as published by the Free Software Foundation;
-+ * version 2.1 of the License (not later!)
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU Lesser General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU Lesser General Public
-+ * License along with this program; if not,  see <http://www.gnu.org/licenses>
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ */
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#include "event-parse.h"
-+
-+enum tlb_flush_reason {
-+	TLB_FLUSH_ON_TASK_SWITCH,
-+	TLB_REMOTE_SHOOTDOWN,
-+	TLB_LOCAL_SHOOTDOWN,
-+	TLB_LOCAL_MM_SHOOTDOWN,
-+	NR_TLB_FLUSH_REASONS,
-+};
-+
-+static int tlb_flush_handler(struct trace_seq *s, struct tep_record *record,
-+			     struct tep_event *event, void *context)
++static int
++trace_raw_data_handler(struct trace_seq *s, struct tep_record *record,
++		    struct tep_event *event, void *context)
 +{
-+	unsigned long long val;
++	struct tep_format_field *field;
++	unsigned long long id;
++	int long_size;
++	void *data = record->data;
 +
-+	trace_seq_printf(s, "pages=");
++	if (tep_get_field_val(s, event, "id", record, &id, 1))
++		return trace_seq_putc(s, '!');
 +
-+	tep_print_num_field(s, "%ld", event, "pages", record, 1);
++	trace_seq_printf(s, "# %llx", id);
 +
-+	if (tep_get_field_val(s, event, "reason", record, &val, 1) < 0)
-+		return -1;
-+
-+	trace_seq_puts(s, " reason=");
-+
-+	switch (val) {
-+	case TLB_FLUSH_ON_TASK_SWITCH:
-+		trace_seq_puts(s, "flush on task switch");
-+		break;
-+	case TLB_REMOTE_SHOOTDOWN:
-+		trace_seq_puts(s, "remote shootdown");
-+		break;
-+	case TLB_LOCAL_SHOOTDOWN:
-+		trace_seq_puts(s, "local shootdown");
-+		break;
-+	case TLB_LOCAL_MM_SHOOTDOWN:
-+		trace_seq_puts(s, "local mm shootdown");
-+		break;
++	field = tep_find_any_field(event, "buf");
++	if (!field) {
++		trace_seq_printf(s, "<CANT FIND FIELD %s>", "buf");
++		return 0;
 +	}
 +
-+	trace_seq_printf(s, " (%lld)", val);
++	long_size = tep_get_long_size(event->tep);
++
++	for (data += field->offset; data < record->data + record->size;
++	     data += long_size) {
++		int size = sizeof(long);
++		int left = (record->data + record->size) - data;
++		int i;
++
++		if (size > left)
++			size = left;
++
++		for (i = 0; i < size; i++)
++			trace_seq_printf(s, " %02x", *(unsigned char *)(data + i));
++	}
 +
 +	return 0;
 +}
 +
-+int TEP_PLUGIN_LOADER(struct tep_handle *tep)
-+{
-+	tep_register_event_handler(tep, -1, "tlb", "tlb_flush",
-+				   tlb_flush_handler, NULL);
+ int TEP_PLUGIN_LOADER(struct tep_handle *tep)
+ {
+ 	tep_register_event_handler(tep, -1, "ftrace", "function",
+@@ -230,6 +268,9 @@ int TEP_PLUGIN_LOADER(struct tep_handle *tep)
+ 	tep_register_event_handler(tep, -1, "ftrace", "kernel_stack",
+ 				      trace_stack_handler, NULL);
+ 
++	tep_register_event_handler(tep, -1, "ftrace", "raw_data",
++				      trace_raw_data_handler, NULL);
 +
-+	return 0;
-+}
-+
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *tep)
-+{
-+	tep_unregister_event_handler(tep, -1,
-+				     "tlb", "tlb_flush",
-+				     tlb_flush_handler, NULL);
-+}
+ 	tep_plugin_add_options("ftrace", plugin_options);
+ 
+ 	return 0;
 -- 
 2.26.2
 
