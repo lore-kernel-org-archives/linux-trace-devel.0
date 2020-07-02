@@ -3,34 +3,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2083C433E1
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F47BC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:12:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 89D7D21534
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:12:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0430321534
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  2 Jul 2020 17:12:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgGBRMG (ORCPT
+        id S1727074AbgGBRM2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 2 Jul 2020 13:12:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38150 "EHLO mail.kernel.org"
+        Thu, 2 Jul 2020 13:12:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727802AbgGBRMD (ORCPT
+        id S1727057AbgGBRMB (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:12:03 -0400
+        Thu, 2 Jul 2020 13:12:01 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB87120870;
+        by mail.kernel.org (Postfix) with ESMTPSA id DD22F2088E;
         Thu,  2 Jul 2020 17:12:00 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jr2kg-004Arp-27; Thu, 02 Jul 2020 13:11:58 -0400
-Message-ID: <20200702171157.917975124@goodmis.org>
+        id 1jr2kf-004AqK-HW; Thu, 02 Jul 2020 13:11:57 -0400
+Message-ID: <20200702171157.394068203@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 02 Jul 2020 13:10:23 -0400
+Date:   Thu, 02 Jul 2020 13:10:20 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -38,7 +38,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 7/9] tools lib traceevent: Optimize pretty_print() function
+Subject: [PATCH 4/9] tools lib traceevent: Add interface for options to plugins
 References: <20200702171016.178196716@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,810 +49,245 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-Each time the pretty_print() function is called to print an event,
-the event's format string is parsed. As this format string does not
-change, this parsing can be done only once - when the event struct
-is initialized.
+Add tep_plugin_add_option() and tep_plugin_print_options() to lib traceevent
+library that allows plugins to have their own options. For example, the
+function plugin by default does not print the parent, as it uses the parent
+to do the indenting. The "parent" option is created by the function plugin
+that will print the parent of the function like it does in the trace file.
 
-Link: https://lore.kernel.org/linux-trace-devel/20200529134929.537110-1-tz.stoyanov@gmail.com
-Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-8-tz.stoyanov@gmail.com
+The tep_plugin_add_option() is used to set a plugin option.
+
+The tep_plugin_print_options() will print out the list of options that a
+plugin has defined.
+
+Link: http://lore.kernel.org/linux-trace-devel/20190802110101.14759-3-tz.stoyanov@gmail.com
+Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-5-tz.stoyanov@gmail.com
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/event-parse-local.h |  17 +
- tools/lib/traceevent/event-parse.c       | 672 ++++++++++++++++-------
- tools/lib/traceevent/event-parse.h       |   3 +
- 3 files changed, 495 insertions(+), 197 deletions(-)
+ tools/lib/traceevent/event-parse.h  |   2 +
+ tools/lib/traceevent/event-plugin.c | 172 ++++++++++++++++++++++++++++
+ 2 files changed, 174 insertions(+)
 
-diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
-index 96a0b0ca0675..e71296a62236 100644
---- a/tools/lib/traceevent/event-parse-local.h
-+++ b/tools/lib/traceevent/event-parse-local.h
-@@ -85,6 +85,23 @@ struct tep_handle {
- 	struct tep_plugins_dir *plugins_dir;
- };
- 
-+enum tep_print_parse_type {
-+	PRINT_FMT_STING,
-+	PRINT_FMT_ARG_DIGIT,
-+	PRINT_FMT_ARG_POINTER,
-+	PRINT_FMT_ARG_STRING,
-+};
-+
-+struct tep_print_parse {
-+	struct tep_print_parse	*next;
-+
-+	char				*format;
-+	int				ls;
-+	enum tep_print_parse_type	type;
-+	struct tep_print_arg		*arg;
-+	struct tep_print_arg		*len_as_arg;
-+};
-+
- void tep_free_event(struct tep_event *event);
- void tep_free_format_field(struct tep_format_field *field);
- void tep_free_plugin_paths(struct tep_handle *tep);
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index c28cbba34d39..d8115d7af812 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -5161,13 +5161,25 @@ static int print_function(struct trace_seq *s, const char *format,
- 	return 0;
- }
- 
--static int print_pointer(struct trace_seq *s, const char *format, int plen,
--			 void *data, int size,
--			 struct tep_event *event, struct tep_print_arg *arg)
-+static int print_arg_pointer(struct trace_seq *s, const char *format, int plen,
-+			     void *data, int size,
-+			     struct tep_event *event, struct tep_print_arg *arg)
- {
- 	unsigned long long val;
- 	int ret = 1;
- 
-+	if (arg->type == TEP_PRINT_BSTRING) {
-+		trace_seq_puts(s, arg->string.string);
-+		return 0;
-+	}
-+	while (*format) {
-+		if (*format == 'p') {
-+			format++;
-+			break;
-+		}
-+		format++;
-+	}
-+
- 	switch (*format) {
- 	case 'F':
- 	case 'f':
-@@ -5200,231 +5212,493 @@ static int print_pointer(struct trace_seq *s, const char *format, int plen,
- 
- }
- 
--static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_event *event)
-+static int print_arg_number(struct trace_seq *s, const char *format, int plen,
-+			    void *data, int size, int ls,
-+			    struct tep_event *event, struct tep_print_arg *arg)
- {
--	struct tep_handle *tep = event->tep;
--	struct tep_print_fmt *print_fmt = &event->print_fmt;
--	struct tep_print_arg *arg = print_fmt->args;
--	struct tep_print_arg *args = NULL;
--	const char *ptr = print_fmt->format;
- 	unsigned long long val;
--	const char *saveptr;
-+
-+	val = eval_num_arg(data, size, event, arg);
-+
-+	switch (ls) {
-+	case -2:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (char)val);
-+		else
-+			trace_seq_printf(s, format, (char)val);
-+		break;
-+	case -1:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (short)val);
-+		else
-+			trace_seq_printf(s, format, (short)val);
-+		break;
-+	case 0:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (int)val);
-+		else
-+			trace_seq_printf(s, format, (int)val);
-+		break;
-+	case 1:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (long)val);
-+		else
-+			trace_seq_printf(s, format, (long)val);
-+		break;
-+	case 2:
-+		if (plen >= 0)
-+			trace_seq_printf(s, format, plen, (long long)val);
-+		else
-+			trace_seq_printf(s, format, (long long)val);
-+		break;
-+	default:
-+		do_warning_event(event, "bad count (%d)", ls);
-+		event->flags |= TEP_EVENT_FL_FAILED;
-+	}
-+	return 0;
-+}
-+
-+
-+static void print_arg_string(struct trace_seq *s, const char *format, int plen,
-+			     void *data, int size,
-+			     struct tep_event *event, struct tep_print_arg *arg)
-+{
- 	struct trace_seq p;
--	char *bprint_fmt = NULL;
--	char format[32];
--	int len_as_arg;
--	int len_arg = 0;
--	int len;
--	int ls;
--	int ret;
- 
--	if (event->flags & TEP_EVENT_FL_FAILED) {
--		trace_seq_printf(s, "[FAILED TO PARSE]");
--		tep_print_fields(s, data, size, event);
--		return;
-+	/* Use helper trace_seq */
-+	trace_seq_init(&p);
-+	print_str_arg(&p, data, size, event,
-+		      format, plen, arg);
-+	trace_seq_terminate(&p);
-+	trace_seq_puts(s, p.buffer);
-+	trace_seq_destroy(&p);
-+}
-+
-+static int parse_arg_format_pointer(const char *format)
-+{
-+	int ret = 0;
-+	int index;
-+	int loop;
-+
-+	switch (*format) {
-+	case 'F':
-+	case 'S':
-+	case 'f':
-+	case 's':
-+		ret++;
-+		break;
-+	case 'M':
-+	case 'm':
-+		/* [mM]R , [mM]F */
-+		switch (format[1]) {
-+		case 'R':
-+		case 'F':
-+			ret++;
-+			break;
-+		}
-+		ret++;
-+		break;
-+	case 'I':
-+	case 'i':
-+		index = 2;
-+		loop = 1;
-+		switch (format[1]) {
-+		case 'S':
-+			/*[S][pfs]*/
-+			while (loop) {
-+				switch (format[index]) {
-+				case 'p':
-+				case 'f':
-+				case 's':
-+					ret++;
-+					index++;
-+					break;
-+				default:
-+					loop = 0;
-+					break;
-+				}
-+			}
-+			/* fall through */
-+		case '4':
-+			/* [4S][hnbl] */
-+			switch (format[index]) {
-+			case 'h':
-+			case 'n':
-+			case 'l':
-+			case 'b':
-+				ret++;
-+				index++;
-+				break;
-+			}
-+			if (format[1] == '4') {
-+				ret++;
-+				break;
-+			}
-+			/* fall through */
-+		case '6':
-+			/* [6S]c */
-+			if (format[index] == 'c')
-+				ret++;
-+			ret++;
-+			break;
-+		}
-+		ret++;
-+		break;
-+	case 'U':
-+		switch (format[1]) {
-+		case 'L':
-+		case 'l':
-+		case 'B':
-+		case 'b':
-+			ret++;
-+			break;
-+		}
-+		ret++;
-+		break;
-+	case 'h':
-+		switch (format[1]) {
-+		case 'C':
-+		case 'D':
-+		case 'N':
-+			ret++;
-+			break;
-+		}
-+		ret++;
-+		break;
-+	default:
-+		break;
- 	}
- 
--	if (event->flags & TEP_EVENT_FL_ISBPRINT) {
--		bprint_fmt = get_bprint_format(data, size, event);
--		args = make_bprint_args(bprint_fmt, data, size, event);
--		arg = args;
--		ptr = bprint_fmt;
-+	return ret;
-+}
-+
-+static void free_parse_args(struct tep_print_parse *arg)
-+{
-+	struct tep_print_parse *del;
-+
-+	while (arg) {
-+		del = arg;
-+		arg = del->next;
-+		free(del->format);
-+		free(del);
- 	}
-+}
- 
--	for (; *ptr; ptr++) {
--		ls = 0;
--		if (*ptr == '\\') {
--			ptr++;
--			switch (*ptr) {
-+static int parse_arg_add(struct tep_print_parse **parse, char *format,
-+			 enum tep_print_parse_type type,
-+			 struct tep_print_arg *arg,
-+			 struct tep_print_arg *len_as_arg,
-+			 int ls)
-+{
-+	struct tep_print_parse *parg = NULL;
-+
-+	parg = calloc(1, sizeof(*parg));
-+	if (!parg)
-+		goto error;
-+	parg->format = strdup(format);
-+	if (!parg->format)
-+		goto error;
-+	parg->type = type;
-+	parg->arg = arg;
-+	parg->len_as_arg = len_as_arg;
-+	parg->ls = ls;
-+	*parse = parg;
-+	return 0;
-+error:
-+	if (parg) {
-+		free(parg->format);
-+		free(parg);
-+	}
-+	return -1;
-+}
-+
-+static int parse_arg_format(struct tep_print_parse **parse,
-+			    struct tep_event *event,
-+			    const char *format, struct tep_print_arg **arg)
-+{
-+	struct tep_print_arg *len_arg = NULL;
-+	char print_format[32];
-+	const char *start = format;
-+	int ret = 0;
-+	int ls = 0;
-+	int res;
-+	int len;
-+
-+	format++;
-+	ret++;
-+	for (; *format; format++) {
-+		switch (*format) {
-+		case '#':
-+			/* FIXME: need to handle properly */
-+			break;
-+		case 'h':
-+			ls--;
-+			break;
-+		case 'l':
-+			ls++;
-+			break;
-+		case 'L':
-+			ls = 2;
-+			break;
-+		case '.':
-+		case 'z':
-+		case 'Z':
-+		case '0' ... '9':
-+		case '-':
-+			break;
-+		case '*':
-+			/* The argument is the length. */
-+			if (!*arg) {
-+				do_warning_event(event, "no argument match");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				goto out_failed;
-+			}
-+			if (len_arg) {
-+				do_warning_event(event, "argument already matched");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				goto out_failed;
-+			}
-+			len_arg = *arg;
-+			*arg = (*arg)->next;
-+			break;
-+		case 'p':
-+			if (!*arg) {
-+				do_warning_event(event, "no argument match");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				goto out_failed;
-+			}
-+			res = parse_arg_format_pointer(format + 1);
-+			if (res > 0) {
-+				format += res;
-+				ret += res;
-+			}
-+			len = ((unsigned long)format + 1) -
-+				(unsigned long)start;
-+			/* should never happen */
-+			if (len > 31) {
-+				do_warning_event(event, "bad format!");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				len = 31;
-+			}
-+			memcpy(print_format, start, len);
-+			print_format[len] = 0;
-+
-+			parse_arg_add(parse, print_format,
-+				      PRINT_FMT_ARG_POINTER, *arg, len_arg, ls);
-+			*arg = (*arg)->next;
-+			ret++;
-+			return ret;
-+		case 'd':
-+		case 'u':
-+		case 'i':
-+		case 'x':
-+		case 'X':
-+		case 'o':
-+			if (!*arg) {
-+				do_warning_event(event, "no argument match");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				goto out_failed;
-+			}
-+
-+			len = ((unsigned long)format + 1) -
-+				(unsigned long)start;
-+
-+			/* should never happen */
-+			if (len > 30) {
-+				do_warning_event(event, "bad format!");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				len = 31;
-+			}
-+			memcpy(print_format, start, len);
-+			print_format[len] = 0;
-+
-+			if (event->tep->long_size == 8 && ls == 1 &&
-+			    sizeof(long) != 8) {
-+				char *p;
-+
-+				/* make %l into %ll */
-+				if (ls == 1 && (p = strchr(print_format, 'l')))
-+					memmove(p+1, p, strlen(p)+1);
-+				ls = 2;
-+			}
-+			if (ls < -2 || ls > 2) {
-+				do_warning_event(event, "bad count (%d)", ls);
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+			}
-+			parse_arg_add(parse, print_format,
-+				      PRINT_FMT_ARG_DIGIT, *arg, len_arg, ls);
-+			*arg = (*arg)->next;
-+			ret++;
-+			return ret;
-+		case 's':
-+			if (!*arg) {
-+				do_warning_event(event, "no matching argument");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				goto out_failed;
-+			}
-+
-+			len = ((unsigned long)format + 1) -
-+				(unsigned long)start;
-+
-+			/* should never happen */
-+			if (len > 31) {
-+				do_warning_event(event, "bad format!");
-+				event->flags |= TEP_EVENT_FL_FAILED;
-+				len = 31;
-+			}
-+
-+			memcpy(print_format, start, len);
-+			print_format[len] = 0;
-+
-+			parse_arg_add(parse, print_format,
-+					PRINT_FMT_ARG_STRING, *arg, len_arg, 0);
-+			*arg = (*arg)->next;
-+			ret++;
-+			return ret;
-+		default:
-+			snprintf(print_format, 32, ">%c<", *format);
-+			parse_arg_add(parse, print_format,
-+					PRINT_FMT_STING, NULL, NULL, 0);
-+			ret++;
-+			return ret;
-+		}
-+		ret++;
-+	}
-+
-+out_failed:
-+	return ret;
-+
-+}
-+
-+static int parse_arg_string(struct tep_print_parse **parse, const char *format)
-+{
-+	struct trace_seq s;
-+	int ret = 0;
-+
-+	trace_seq_init(&s);
-+	for (; *format; format++) {
-+		if (*format == '\\') {
-+			format++;
-+			ret++;
-+			switch (*format) {
- 			case 'n':
--				trace_seq_putc(s, '\n');
-+				trace_seq_putc(&s, '\n');
- 				break;
- 			case 't':
--				trace_seq_putc(s, '\t');
-+				trace_seq_putc(&s, '\t');
- 				break;
- 			case 'r':
--				trace_seq_putc(s, '\r');
-+				trace_seq_putc(&s, '\r');
- 				break;
- 			case '\\':
--				trace_seq_putc(s, '\\');
-+				trace_seq_putc(&s, '\\');
- 				break;
- 			default:
--				trace_seq_putc(s, *ptr);
-+				trace_seq_putc(&s, *format);
- 				break;
- 			}
--
--		} else if (*ptr == '%') {
--			saveptr = ptr;
--			len_as_arg = 0;
-- cont_process:
--			ptr++;
--			switch (*ptr) {
--			case '%':
--				trace_seq_putc(s, '%');
--				break;
--			case '#':
--				/* FIXME: need to handle properly */
--				goto cont_process;
--			case 'h':
--				ls--;
--				goto cont_process;
--			case 'l':
--				ls++;
--				goto cont_process;
--			case 'L':
--				ls = 2;
--				goto cont_process;
--			case '*':
--				/* The argument is the length. */
--				if (!arg) {
--					do_warning_event(event, "no argument match");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					goto out_failed;
--				}
--				len_arg = eval_num_arg(data, size, event, arg);
--				len_as_arg = 1;
--				arg = arg->next;
--				goto cont_process;
--			case '.':
--			case 'z':
--			case 'Z':
--			case '0' ... '9':
--			case '-':
--				goto cont_process;
--			case 'p':
--				if (arg->type == TEP_PRINT_BSTRING) {
--					if (isalnum(ptr[1]))
--						ptr++;
--					trace_seq_puts(s, arg->string.string);
--					arg = arg->next;
--					break;
--				}
--				ret = print_pointer(s, ptr + 1,
--						    len_as_arg ? len_arg : 1,
--						    data, size,
--						    event, arg);
--				arg = arg->next;
--				if (ret > 0)
--					ptr += ret;
-+		} else if (*format == '%') {
-+			if (*(format + 1) == '%') {
-+				trace_seq_putc(&s, '%');
-+				format++;
-+				ret++;
-+			} else
- 				break;
--			case 'd':
--			case 'u':
--			case 'i':
--			case 'x':
--			case 'X':
--			case 'o':
--				if (!arg) {
--					do_warning_event(event, "no argument match");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					goto out_failed;
--				}
--
--				len = ((unsigned long)ptr + 1) -
--					(unsigned long)saveptr;
--
--				/* should never happen */
--				if (len > 31) {
--					do_warning_event(event, "bad format!");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					len = 31;
--				}
--
--				memcpy(format, saveptr, len);
--				format[len] = 0;
-+		} else
-+			trace_seq_putc(&s, *format);
- 
--				val = eval_num_arg(data, size, event, arg);
--				arg = arg->next;
-+		ret++;
-+	}
-+	trace_seq_terminate(&s);
-+	parse_arg_add(parse, s.buffer, PRINT_FMT_STING, NULL, NULL, 0);
-+	trace_seq_destroy(&s);
- 
--				if (tep->long_size == 8 && ls == 1 &&
--				    sizeof(long) != 8) {
--					char *p;
-+	return ret;
-+}
- 
--					/* make %l into %ll */
--					if (ls == 1 && (p = strchr(format, 'l')))
--						memmove(p+1, p, strlen(p)+1);
--					ls = 2;
--				}
--				switch (ls) {
--				case -2:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg, (char)val);
--					else
--						trace_seq_printf(s, format, (char)val);
--					break;
--				case -1:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg, (short)val);
--					else
--						trace_seq_printf(s, format, (short)val);
--					break;
--				case 0:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg, (int)val);
--					else
--						trace_seq_printf(s, format, (int)val);
--					break;
--				case 1:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg, (long)val);
--					else
--						trace_seq_printf(s, format, (long)val);
--					break;
--				case 2:
--					if (len_as_arg)
--						trace_seq_printf(s, format, len_arg,
--								 (long long)val);
--					else
--						trace_seq_printf(s, format, (long long)val);
--					break;
--				default:
--					do_warning_event(event, "bad count (%d)", ls);
--					event->flags |= TEP_EVENT_FL_FAILED;
--				}
--				break;
--			case 's':
--				if (!arg) {
--					do_warning_event(event, "no matching argument");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					goto out_failed;
--				}
-+static struct tep_print_parse *
-+parse_args(struct tep_event *event, const char *format, struct tep_print_arg *arg)
-+{
-+	struct tep_print_parse *parse_ret = NULL;
-+	struct tep_print_parse **parse = NULL;
-+	int ret;
-+	int len;
- 
--				len = ((unsigned long)ptr + 1) -
--					(unsigned long)saveptr;
-+	len = strlen(format);
-+	while (*format) {
-+		if (!parse_ret)
-+			parse = &parse_ret;
-+		if (*format == '%' && *(format + 1) != '%')
-+			ret = parse_arg_format(parse, event, format, &arg);
-+		else
-+			ret = parse_arg_string(parse, format);
-+		if (*parse)
-+			parse = &((*parse)->next);
- 
--				/* should never happen */
--				if (len > 31) {
--					do_warning_event(event, "bad format!");
--					event->flags |= TEP_EVENT_FL_FAILED;
--					len = 31;
--				}
-+		len -= ret;
-+		if (len > 0)
-+			format += ret;
-+		else
-+			break;
-+	}
-+	return parse_ret;
-+}
- 
--				memcpy(format, saveptr, len);
--				format[len] = 0;
--				if (!len_as_arg)
--					len_arg = -1;
--				/* Use helper trace_seq */
--				trace_seq_init(&p);
--				print_str_arg(&p, data, size, event,
--					      format, len_arg, arg);
--				trace_seq_terminate(&p);
--				trace_seq_puts(s, p.buffer);
--				trace_seq_destroy(&p);
--				arg = arg->next;
--				break;
--			default:
--				trace_seq_printf(s, ">%c<", *ptr);
-+static void print_event_cache(struct tep_print_parse *parse, struct trace_seq *s,
-+			      void *data, int size, struct tep_event *event)
-+{
-+	int len_arg;
- 
--			}
--		} else
--			trace_seq_putc(s, *ptr);
-+	while (parse) {
-+		if (parse->len_as_arg)
-+			len_arg = eval_num_arg(data, size, event, parse->len_as_arg);
-+		switch (parse->type) {
-+		case PRINT_FMT_ARG_DIGIT:
-+			print_arg_number(s, parse->format,
-+					parse->len_as_arg ? len_arg : -1, data,
-+					 size, parse->ls, event, parse->arg);
-+			break;
-+		case PRINT_FMT_ARG_POINTER:
-+			print_arg_pointer(s, parse->format,
-+					  parse->len_as_arg ? len_arg : 1,
-+					  data, size, event, parse->arg);
-+			break;
-+		case PRINT_FMT_ARG_STRING:
-+			print_arg_string(s, parse->format,
-+					 parse->len_as_arg ? len_arg : -1,
-+					 data, size, event, parse->arg);
-+			break;
-+		case PRINT_FMT_STING:
-+		default:
-+			trace_seq_printf(s, "%s", parse->format);
-+			break;
-+		}
-+		parse = parse->next;
- 	}
-+}
-+
-+static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_event *event)
-+{
-+	struct tep_print_parse *parse = event->print_fmt.print_cache;
-+	struct tep_print_arg *args = NULL;
-+	char *bprint_fmt = NULL;
- 
- 	if (event->flags & TEP_EVENT_FL_FAILED) {
--out_failed:
- 		trace_seq_printf(s, "[FAILED TO PARSE]");
-+		tep_print_fields(s, data, size, event);
-+		return;
-+	}
-+
-+	if (event->flags & TEP_EVENT_FL_ISBPRINT) {
-+		bprint_fmt = get_bprint_format(data, size, event);
-+		args = make_bprint_args(bprint_fmt, data, size, event);
-+		parse = parse_args(event, bprint_fmt, args);
- 	}
- 
--	if (args) {
-+	print_event_cache(parse, s, data, size, event);
-+
-+	if (event->flags & TEP_EVENT_FL_ISBPRINT) {
-+		free_parse_args(parse);
- 		free_args(args);
- 		free(bprint_fmt);
- 	}
-@@ -6523,9 +6797,13 @@ enum tep_errno __tep_parse_format(struct tep_event **eventp,
- 			*list = arg;
- 			list = &arg->next;
- 		}
--		return 0;
- 	}
- 
-+	if (!(event->flags & TEP_EVENT_FL_ISBPRINT))
-+		event->print_fmt.print_cache = parse_args(event,
-+							  event->print_fmt.format,
-+							  event->print_fmt.args);
-+
- 	return 0;
- 
-  event_parse_failed:
-@@ -7192,7 +7470,7 @@ void tep_free_event(struct tep_event *event)
- 
- 	free(event->print_fmt.format);
- 	free_args(event->print_fmt.args);
--
-+	free_parse_args(event->print_fmt.print_cache);
- 	free(event);
- }
- 
 diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
-index 91f462f5a606..ac162472268b 100644
+index 776c7c24ee79..02c0438527de 100644
 --- a/tools/lib/traceevent/event-parse.h
 +++ b/tools/lib/traceevent/event-parse.h
-@@ -272,9 +272,12 @@ struct tep_print_arg {
- 	};
- };
+@@ -406,7 +406,9 @@ char **tep_plugin_list_options(void);
+ void tep_plugin_free_options_list(char **list);
+ int tep_plugin_add_options(const char *name,
+ 			   struct tep_plugin_option *options);
++int tep_plugin_add_option(const char *name, const char *val);
+ void tep_plugin_remove_options(struct tep_plugin_option *options);
++void tep_plugin_print_options(struct trace_seq *s);
+ void tep_print_plugins(struct trace_seq *s,
+ 			const char *prefix, const char *suffix,
+ 			const struct tep_plugin_list *list);
+diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
+index b53d9a53bcf9..e8f4329ba8e0 100644
+--- a/tools/lib/traceevent/event-plugin.c
++++ b/tools/lib/traceevent/event-plugin.c
+@@ -13,6 +13,7 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <dirent.h>
++#include <errno.h>
+ #include "event-parse.h"
+ #include "event-parse-local.h"
+ #include "event-utils.h"
+@@ -247,6 +248,166 @@ void tep_plugin_remove_options(struct tep_plugin_option *options)
+ 	}
+ }
  
-+struct tep_print_parse;
++static void parse_option_name(char **option, char **plugin)
++{
++	char *p;
 +
- struct tep_print_fmt {
- 	char			*format;
- 	struct tep_print_arg	*args;
-+	struct tep_print_parse	*print_cache;
- };
++	*plugin = NULL;
++
++	if ((p = strstr(*option, ":"))) {
++		*plugin = *option;
++		*p = '\0';
++		*option = strdup(p + 1);
++		if (!*option)
++			return;
++	}
++}
++
++static struct tep_plugin_option *
++find_registered_option(const char *plugin, const char *option)
++{
++	struct registered_plugin_options *reg;
++	struct tep_plugin_option *op;
++	const char *op_plugin;
++
++	for (reg = registered_options; reg; reg = reg->next) {
++		for (op = reg->options; op->name; op++) {
++			if (op->plugin_alias)
++				op_plugin = op->plugin_alias;
++			else
++				op_plugin = op->file;
++
++			if (plugin && strcmp(plugin, op_plugin) != 0)
++				continue;
++			if (strcmp(option, op->name) != 0)
++				continue;
++
++			return op;
++		}
++	}
++
++	return NULL;
++}
++
++static int process_option(const char *plugin, const char *option, const char *val)
++{
++	struct tep_plugin_option *op;
++
++	op = find_registered_option(plugin, option);
++	if (!op)
++		return 0;
++
++	return update_option_value(op, val);
++}
++
++/**
++ * tep_plugin_add_option - add an option/val pair to set plugin options
++ * @name: The name of the option (format: <plugin>:<option> or just <option>)
++ * @val: (optiona) the value for the option
++ *
++ * Modify a plugin option. If @val is given than the value of the option
++ * is set (note, some options just take a boolean, so @val must be either
++ * "1" or "0" or "true" or "false").
++ */
++int tep_plugin_add_option(const char *name, const char *val)
++{
++	struct trace_plugin_options *op;
++	char *option_str;
++	char *plugin;
++
++	option_str = strdup(name);
++	if (!option_str)
++		return -ENOMEM;
++
++	parse_option_name(&option_str, &plugin);
++
++	/* If the option exists, update the val */
++	for (op = trace_plugin_options; op; op = op->next) {
++		/* Both must be NULL or not NULL */
++		if ((!plugin || !op->plugin) && plugin != op->plugin)
++			continue;
++		if (plugin && strcmp(plugin, op->plugin) != 0)
++			continue;
++		if (strcmp(op->option, option_str) != 0)
++			continue;
++
++		/* update option */
++		free(op->value);
++		if (val) {
++			op->value = strdup(val);
++			if (!op->value)
++				goto out_free;
++		} else
++			op->value = NULL;
++
++		/* plugin and option_str don't get freed at the end */
++		free(plugin);
++		free(option_str);
++
++		plugin = op->plugin;
++		option_str = op->option;
++		break;
++	}
++
++	/* If not found, create */
++	if (!op) {
++		op = malloc(sizeof(*op));
++		if (!op)
++			return -ENOMEM;
++		memset(op, 0, sizeof(*op));
++		op->next = trace_plugin_options;
++		trace_plugin_options = op;
++
++		op->plugin = plugin;
++		op->option = option_str;
++
++		if (val) {
++			op->value = strdup(val);
++			if (!op->value)
++				goto out_free;
++		}
++	}
++
++	return process_option(plugin, option_str, val);
++ out_free:
++	free(option_str);
++	return -ENOMEM;
++}
++
++static void print_op_data(struct trace_seq *s, const char *name,
++			  const char *op)
++{
++	if (op)
++		trace_seq_printf(s, "%8s:\t%s\n", name, op);
++}
++
++/**
++ * tep_plugin_print_options - print out the registered plugin options
++ * @s: The trace_seq descriptor to write the plugin options into
++ *
++ * Writes a list of options into trace_seq @s.
++ */
++void tep_plugin_print_options(struct trace_seq *s)
++{
++	struct registered_plugin_options *reg;
++	struct tep_plugin_option *op;
++
++	for (reg = registered_options; reg; reg = reg->next) {
++		if (reg != registered_options)
++			trace_seq_printf(s, "============\n");
++		for (op = reg->options; op->name; op++) {
++			if (op != reg->options)
++				trace_seq_printf(s, "------------\n");
++			print_op_data(s, "file", op->file);
++			print_op_data(s, "plugin", op->plugin_alias);
++			print_op_data(s, "option", op->name);
++			print_op_data(s, "desc", op->description);
++			print_op_data(s, "value", op->value);
++			trace_seq_printf(s, "%8s:\t%d\n", "set", op->set);
++		}
++	}
++}
++
+ /**
+  * tep_print_plugins - print out the list of plugins loaded
+  * @s: the trace_seq descripter to write to
+@@ -273,6 +434,7 @@ load_plugin(struct tep_handle *tep, const char *path,
+ 	    const char *file, void *data)
+ {
+ 	struct tep_plugin_list **plugin_list = data;
++	struct tep_plugin_option *options;
+ 	tep_plugin_load_func func;
+ 	struct tep_plugin_list *list;
+ 	const char *alias;
+@@ -297,6 +459,16 @@ load_plugin(struct tep_handle *tep, const char *path,
+ 	if (!alias)
+ 		alias = file;
  
- struct tep_event {
++	options = dlsym(handle, TEP_PLUGIN_OPTIONS_NAME);
++	if (options) {
++		while (options->name) {
++			ret = update_option(alias, options);
++			if (ret < 0)
++				goto out_free;
++			options++;
++		}
++	}
++
+ 	func = dlsym(handle, TEP_PLUGIN_LOADER_NAME);
+ 	if (!func) {
+ 		warning("could not find func '%s' in plugin '%s'\n%s\n",
 -- 
 2.26.2
 
