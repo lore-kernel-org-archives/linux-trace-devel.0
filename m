@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 186F4C433DF
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jul 2020 15:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E77FC433DF
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jul 2020 15:47:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DFA4620715
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jul 2020 15:14:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 79E9A20720
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  6 Jul 2020 15:47:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="r4FwmzB4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sx8JsAk4"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729273AbgGFPOI (ORCPT
+        id S1729348AbgGFPrS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 6 Jul 2020 11:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        Mon, 6 Jul 2020 11:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729242AbgGFPOI (ORCPT
+        with ESMTP id S1729372AbgGFPrS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:14:08 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA90C061755
-        for <linux-trace-devel@vger.kernel.org>; Mon,  6 Jul 2020 08:14:08 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id j18so39820800wmi.3
-        for <linux-trace-devel@vger.kernel.org>; Mon, 06 Jul 2020 08:14:07 -0700 (PDT)
+        Mon, 6 Jul 2020 11:47:18 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FE7C061794
+        for <linux-trace-devel@vger.kernel.org>; Mon,  6 Jul 2020 08:47:17 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id f18so42783739wml.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 06 Jul 2020 08:47:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=UtsR8fgJn1aQT32Y2gqG9XSqWI5oTNdkHEsR2KtxXs4=;
-        b=r4FwmzB4PYDuEq2SuJSgJZkMGQMct4Ld+jq0EIqQUfzGZSOU7hmqh2QGtFocLl3okp
-         XW4PnXN9DNwkyNUhdUzYxnxp90VKjQKcv8Y0NHlwSzGUuJ0vYwKR05txSuLCmCCasxHi
-         yiIyy+dXU4g/vxhEQqjmOA7MQnUkC89MSIooDMEjm3W8gtHP0lyciURtrV1u/OYSLDps
-         1I33GZ8NuS76KtSjs9H5cBwrhopz88DPIDZIqJ7oXX3dbTDSAQprb4ETQBlLC5FE03pF
-         YcSnjniqss7JkFbg2bKMg95DnwDsOQZ3/KOw70SLV/17QoHPH9m+TSdb26Wz4t4tHyQW
-         56KQ==
+        bh=ZGA+BJt07LJzII0rPVumQ7zBXEEpMg/lQptLMLnM3FU=;
+        b=Sx8JsAk43u6QXQF4y1hRo1xj8lhSw7IyCos6jN/1x5TRCohk2/P8zn1MitEu24pHbn
+         GtIseruPn+WTDN5jOl5/A/uZGGhZIZywi6FAm5BnCCtmfxkNt56FaLGEgQQYCYzU9hlb
+         cPNqeOpZ3eaNAMzKqIjfVS0yFkFxCPHzz2Z5B0xJXi2SbXSXctBzwFq3eFGJeb/e1ER2
+         k3eG76Sy6tUpUE9uvEM8+yuufWRGR92xn9qyYKaIusvr8L/U3TX1LH5IQkSDmNJirssd
+         9uwdKGzsfeUDoDlwQjIg1KojCZM644YrUGy2yZVfn4N3d5AVBTBFpGNph1qzjeGhmX+1
+         ukdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=UtsR8fgJn1aQT32Y2gqG9XSqWI5oTNdkHEsR2KtxXs4=;
-        b=CMttTJi/wmtqXKnNVB0cEkeN3XF2c2C0/p9UO/Y55X2VVmmsyN7LxcXZ7sYzzIdA4p
-         LxcSOq0Xd+0FIsaCxDvPKp1pgKLLiwATahu3faoTR3nrGPRG8zdRbyTmpEFWNlQ89tei
-         DtpUjgfIbt2o6y4Cr2Q8Bm19gXJP3D7LlhK/VLOTLclBOi3IMlmeIyjSjMxN7nX0iGno
-         TI0J7/j54PkD1IwIUari2uS1u7n07/qmzQep/+mz1tEDPfsJCaH1S9w+k77vsNBkRHhb
-         BEws+FYXAmhFD5lmJ+yYsODLwwqepIvWNuDtjNT935OEaR3YP3lG8v+Zt2NzLGdpOzbc
-         Zkeg==
-X-Gm-Message-State: AOAM5330RkuGqlrO3yrrvYgvF5hHnds1j8WSYQBRmwF7i4dKrhkmubkc
-        vys0dalDzhzuV3gitr3fsZ3TnL07L2k=
-X-Google-Smtp-Source: ABdhPJwidDiWoc4xrNtl4O/7FhTbXm3KgC6M4KUefWqUDMFmn9RALsWGLDxgeSESQ2E82tgkmbr62w==
-X-Received: by 2002:a7b:ce87:: with SMTP id q7mr52346230wmj.39.1594048446778;
-        Mon, 06 Jul 2020 08:14:06 -0700 (PDT)
+        bh=ZGA+BJt07LJzII0rPVumQ7zBXEEpMg/lQptLMLnM3FU=;
+        b=H/Gocbomzp4jrGirigAecwcgVjlQmx7qUGDpXATa/ovQtqmz/3jAjqkL9xhoC0Ej00
+         Cp/M3DeKuxN+u+KJG4XhW68uUKawxY5EmzFLWgR+n36Ey52AGSPoUFFL7eZEvRyf6toG
+         q+Tl7RDYqV78EexdxeebUgrlQJBFQWv+zFCRuioiFWZSY/j+xUhT+5xwXn/nc7ydLLMR
+         1vYqqCy3ozxoJB0lo8YLRUHqtv+9DC45WNGn8fPVFX0lA4fDt2RDzq2/CTpEISIPFqaL
+         i0PaO9qviOGP7JdQPr3+FHJE4MWIXGFMfTlrcHtB1RIrUNZsFhbUylvKY7jvIDEO9a2F
+         WgIw==
+X-Gm-Message-State: AOAM531FcNHgZblmzShIVPPnKKyhM5MxG0kG70jdy2IeQZkMUtgX/t4K
+        KgKQhSSpNp8txo8LB5O+JB8NpQRveZY=
+X-Google-Smtp-Source: ABdhPJzkfkWJRTqvMyS5fkvQfaetenaPq5TUu/azDoZoyF96Ppdr+Xk7nNkDbng5pGpykofuxQ39qQ==
+X-Received: by 2002:a1c:964d:: with SMTP id y74mr45921512wmd.80.1594050436452;
+        Mon, 06 Jul 2020 08:47:16 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id c206sm25024856wmf.36.2020.07.06.08.14.05
+        by smtp.gmail.com with ESMTPSA id d2sm25136813wrs.95.2020.07.06.08.47.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 08:14:05 -0700 (PDT)
+        Mon, 06 Jul 2020 08:47:15 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Add helper function to get the time stamp print format
-Date:   Mon,  6 Jul 2020 18:14:04 +0300
-Message-Id: <20200706151404.25603-1-tz.stoyanov@gmail.com>
+Subject: [PATCH] trace-cmd: Fix kbuffer_start_of_data() to return the first record
+Date:   Mon,  6 Jul 2020 18:47:14 +0300
+Message-Id: <20200706154714.27566-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -74,73 +74,58 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Printing time stamps depends on:
- - traced data - if we display latency tracing or normal events
- - user defined time precision - up to nanoseconds or microseconds
-In few places in the code there is logic to get the print
-time stamp format based on these criteria. That code is replaced
-with a helper function, to make the implementation more consistent.
+The first record in a ring buffer page may not allways be at the
+beginning of the page. There could be time-extends injected before it.
+In this case kbuffer_start_of_data() will not return the first record,
+as expected. Additional filed "start" is added in kbuffer struct, to hold
+the offset of the first record from the page and kbuffer_start_of_data()
+is modified to use it.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-read.c | 31 ++++++++++++++++++++++++++++---
- 1 file changed, 28 insertions(+), 3 deletions(-)
+ lib/traceevent/kbuffer-parse.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index c1f840d5..f1ba7835 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -141,13 +141,38 @@ static void print_event_name(struct trace_seq *s, struct tep_event *event)
- 		trace_seq_printf(s, "%.*s", 20 - len, spaces);
+diff --git a/lib/traceevent/kbuffer-parse.c b/lib/traceevent/kbuffer-parse.c
+index 2c5f00a9..844db976 100644
+--- a/lib/traceevent/kbuffer-parse.c
++++ b/lib/traceevent/kbuffer-parse.c
+@@ -35,6 +35,7 @@ enum {
+  * @next		- offset from @data to the start of next event
+  * @size		- The size of data on @data
+  * @start		- The offset from @subbuffer where @data lives
++ * @first		- The offset from @subbuffer where the first non time stamp event lives
+  *
+  * @read_4		- Function to read 4 raw bytes (may swap)
+  * @read_8		- Function to read 8 raw bytes (may swap)
+@@ -51,6 +52,7 @@ struct kbuffer {
+ 	unsigned int		next;
+ 	unsigned int		size;
+ 	unsigned int		start;
++	unsigned int		first;
+ 
+ 	unsigned int (*read_4)(void *ptr);
+ 	unsigned long long (*read_8)(void *ptr);
+@@ -546,6 +548,9 @@ int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer)
+ 
+ 	next_event(kbuf);
+ 
++	/* save the first record from the page */
++	kbuf->first = kbuf->curr;
++
+ 	return 0;
  }
  
-+enum time_fmt {
-+	TIME_FMT_LAT		= 1,
-+	TIME_FMT_NORMAL		= 2,
-+};
-+
-+static const char *time_format(struct tracecmd_input *handle, enum time_fmt tf)
-+{
-+	struct tep_handle *tep = tracecmd_get_pevent(handle);
-+
-+	switch (tf) {
-+	case TIME_FMT_LAT:
-+		if (latency_format)
-+			return "%8.8s-%-5d %3d";
-+		return "%16s-%-5d [%03d]";
-+	default:
-+		if (tracecmd_get_flags(handle) & TRACECMD_FL_IN_USECS) {
-+			if (tep_test_flag(tep, TEP_NSEC_OUTPUT))
-+				return " %9.1d";
-+			else
-+				return " %6.1000d";
-+		} else
-+			return "%12d:";
-+	}
-+}
-+
- static void print_event(struct trace_seq *s, struct tracecmd_input *handle,
- 			struct tep_record *record)
+@@ -755,7 +760,7 @@ void kbuffer_set_old_format(struct kbuffer *kbuf)
+  */
+ int kbuffer_start_of_data(struct kbuffer *kbuf)
  {
- 	struct tep_handle *tep = tracecmd_get_pevent(handle);
- 	struct tep_event *event;
--	const char *lfmt = latency_format ? "%8.8s-%-5d %3d" : "%16s-%-5d [%03d]";
--	const char *tfmt = tracecmd_get_flags(handle) & TRACECMD_FL_IN_USECS ? " %6.1000d:" : "%12d:";
-+	const char *lfmt = time_format(handle, TIME_FMT_LAT);
-+	const char *tfmt = time_format(handle, TIME_FMT_NORMAL);
+-	return kbuf->start;
++	return kbuf->first + kbuf->start;
+ }
  
- 	event = tep_find_event_by_record(tep, record);
- 	tep_print_event(tep, s, record, lfmt, TEP_PRINT_COMM,
-@@ -781,7 +806,7 @@ static void finish_wakeup(void)
- void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
- {
- 	tracecmd_show_data_func func = tracecmd_get_show_data_func(handle);
--	const char *tfmt = tracecmd_get_flags(handle) & TRACECMD_FL_IN_USECS ? " %6.1000d:" : "%12d:";
-+	const char *tfmt = time_format(handle, TIME_FMT_NORMAL);
- 	struct tep_handle *pevent;
- 	struct tep_event *event;
- 	struct trace_seq s;
+ /**
 -- 
 2.26.2
 
