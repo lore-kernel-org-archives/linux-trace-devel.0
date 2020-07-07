@@ -6,26 +6,26 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49D52C433E1
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:30:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C12FBC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:31:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 293F2204EC
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:30:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A71272085B
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:31:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729272AbgGGPaf (ORCPT
+        id S1730226AbgGGPbn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Jul 2020 11:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37644 "EHLO mail.kernel.org"
+        Tue, 7 Jul 2020 11:31:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729592AbgGGPYK (ORCPT
+        id S1728661AbgGGPbm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:24:10 -0400
+        Tue, 7 Jul 2020 11:31:42 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B76F3207CD;
-        Tue,  7 Jul 2020 15:24:08 +0000 (UTC)
-Date:   Tue, 7 Jul 2020 11:24:07 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id C8FEB204EC;
+        Tue,  7 Jul 2020 15:31:40 +0000 (UTC)
+Date:   Tue, 7 Jul 2020 11:31:38 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Namhyung Kim <namhyung@kernel.org>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
@@ -34,13 +34,13 @@ Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: Re: [PATCH v2 05/15] tools lib traceevent: Introduced new
- traceevent API, for adding new plugins directories.
-Message-ID: <20200707112407.746cca77@oasis.local.home>
-In-Reply-To: <CAM9d7chfvJwodpVrHGc5E2J80peRojmYV_fD8x3cpn9HFRUw2g@mail.gmail.com>
+Subject: Re: [PATCH v2 07/15] tools lib traceevent: Optimize pretty_print()
+ function
+Message-ID: <20200707113138.5a7a27f5@oasis.local.home>
+In-Reply-To: <CAM9d7cj1LJ=QO8QxhBo_oDM9APpAswX4BbTwge0JhZ3Y4-Bv9w@mail.gmail.com>
 References: <20200702185344.913492689@goodmis.org>
-        <20200702185704.248123446@goodmis.org>
-        <CAM9d7chfvJwodpVrHGc5E2J80peRojmYV_fD8x3cpn9HFRUw2g@mail.gmail.com>
+        <20200702185704.559785000@goodmis.org>
+        <CAM9d7cj1LJ=QO8QxhBo_oDM9APpAswX4BbTwge0JhZ3Y4-Bv9w@mail.gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -50,83 +50,25 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 8 Jul 2020 00:06:38 +0900
+On Wed, 8 Jul 2020 00:11:10 +0900
 Namhyung Kim <namhyung@kernel.org> wrote:
+
+> > --- a/tools/lib/traceevent/event-parse-local.h
+> > +++ b/tools/lib/traceevent/event-parse-local.h
+> > @@ -85,6 +85,23 @@ struct tep_handle {
+> >         struct tep_plugins_dir *plugins_dir;
+> >  };
 > >
-> > +/**
-> > + * tep_add_plugin_path - Add a new plugin directory.
-> > + * @tep: Trace event handler.
-> > + * @path: Path to a directory. All files with extension .so in that  
+> > +enum tep_print_parse_type {
+> > +       PRINT_FMT_STING,  
 > 
-> Is the extension (".so") fixed?  I think a new API has the suffix argument
-> which may change it... ?
+> STRING ?
 
-So this should add a "suffix" argument? NULL for ".so"?
-
-> 
-> 
-> > + *       directory will be loaded as plugins.
-> > + *@prio: Load priority of the plugins in that directory.
-> > + *
-> > + * Returns -1 in case of an error, 0 otherwise.
-> > + */
-> > +int tep_add_plugin_path(struct tep_handle *tep, char *path,
-> > +                       enum tep_plugin_load_priority prio)
-> > +{
-> > +       struct tep_plugins_dir *dir;
-> > +
-> > +       if (!tep || !path)
-> > +               return -1;
-> > +
-> > +       dir = calloc(1, sizeof(*dir));
-> > +       if (!dir)
-> > +               return -1;
-> > +
-> > +       dir->path = strdup(path);  
-> 
-> It needs to check the return value..
-
-Yes it does indeed.
-
-BTW, since these patches are already in trace-cmd.git, would be OK if
-we just write patches on top of this series to address your concerns.
-This way, we would be also adding them to trace-cmd.git as well.
-
-I eventually want a separate libraries repo on kernel.org that this
-lives in and remove it from the tools/lib directory of the kernel.
+Nice catch! ;-)
 
 -- Steve
 
-
 > 
-> > +       dir->prio = prio;
-> > +       dir->next = tep->plugins_dir;
-> > +       tep->plugins_dir = dir;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +void tep_free_plugin_paths(struct tep_handle *tep)
-> > +{
-> > +       struct tep_plugins_dir *dir;
-> > +
-> > +       if (!tep)
-> > +               return;
-> > +
-> > +       dir = tep->plugins_dir;
-> > +       while (dir) {
-> > +               tep->plugins_dir = tep->plugins_dir->next;
-> > +               free(dir->path);
-> > +               free(dir);
-> > +               dir = tep->plugins_dir;
-> > +       }
-> > +}
-> > +
-> >  void
-> >  tep_unload_plugins(struct tep_plugin_list *plugin_list, struct tep_handle *tep)
-> >  {
-> > --
-> > 2.26.2
-> >
-> >  
-
+> > +       PRINT_FMT_ARG_DIGIT,
+> > +       PRINT_FMT_ARG_POINTER,
+> > +       PRINT_FMT_ARG_STRING,
