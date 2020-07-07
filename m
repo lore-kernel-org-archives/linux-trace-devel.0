@@ -2,104 +2,165 @@ Return-Path: <SRS0=/1KP=AS=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FAC7C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:11:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C002FC433E1
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:20:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 30B5C2082F
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:11:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D139207BB
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1594134691;
-	bh=PqU1iyClieuo239iU5loC0OdtGBXkNz5pdOKjsTYV3A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=sZ9tjls4P2plwU9W3tG0FTHH2NRxkLtof6ZRVqVW1CnIh6AfSoD6Ri3/tqUE8jvRp
-	 LYC1tyPr8snqN+3NxlzOfYE4seYM4PwTiYgUozm8Jek3LmMsXkUj6P1bp9GGcA+hki
-	 +kWqNAbmUi7swvgseJIjEJx3bG7meO1XrqOhdDCQ=
+	s=default; t=1594135204;
+	bh=IKRcYbDIFHiIBRV8TpFGBWYGnR6Vj1rFMLD4iE/uvww=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=btbko8LrT2E4YPpK1CytlOUSm2BQe7Kh8TN7HLh8Yz3/Cgy20D5E6X+SR/319nJbR
+	 7a9rFnxlKXpNVLZNln7PiI9KoHZeNCpbbFrJeVQb2wStDBOAm5ljdg7vNACYaHXBj5
+	 qDe+h7WNWIy32dyH78aOPJvdTw3lbt3olfR6/SV8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbgGGPLY (ORCPT
+        id S1729458AbgGGPUE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Jul 2020 11:11:24 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:39732 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728122AbgGGPLY (ORCPT
+        Tue, 7 Jul 2020 11:20:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728665AbgGGPTz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:11:24 -0400
-Received: by mail-wm1-f68.google.com with SMTP id w3so34447238wmi.4;
-        Tue, 07 Jul 2020 08:11:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P5HQjNhCixCjoEKGC+mEwSigDVUlJKQtv6gsV/u680E=;
-        b=orQoXrHBJ67jA8inU9zrJKp1jPrgB33p9/bbz8rE/Rp0iP/1QxTcFuj0a8zxMmZtTr
-         StZYxb/6XTLaZvaV1J4cYf6Xi4AZaiG+uBLm4gusjF/aaRT/RUK2r24LJ7jeZFX6jBrz
-         Kh0ySpjJgfLQevHtIGMs8drMNdOYeLtNgGPBCq4Kp/PJdoLxPUvZ0yx8FLCz4CJl22IB
-         CpXsdgkyOmmh9/TyCnICdeFg7E1OwlKPM0GVs5equ01QQ32c6u7VbS1VvX5LWjGyWYdC
-         EnUXRVmIoiiYUW/pSHl3m4iT5kVpcKOVJQ6Nbsstk5AqGyl7aT8b8pF/ERoDpMrLroa4
-         JQ/w==
-X-Gm-Message-State: AOAM532oOxYQgIDYEQS4GXFpAnHisR78jkzgsoazK8+BhOVwTfU0naIk
-        ITYMuvF7VdVrfdDKPnBkZXiKTcjkwgU+NL5qY08=
-X-Google-Smtp-Source: ABdhPJyQCGg9VpFaZNj2dsCnv1aNhRU0Me+z25bKOzZYWQuHvqUD1GvpUMhPeoP8ERgj++srxuOXiyeQkmBYw1KVhAI=
-X-Received: by 2002:a05:600c:410f:: with SMTP id j15mr4610640wmi.128.1594134681738;
- Tue, 07 Jul 2020 08:11:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200702185344.913492689@goodmis.org> <20200702185704.559785000@goodmis.org>
-In-Reply-To: <20200702185704.559785000@goodmis.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 8 Jul 2020 00:11:10 +0900
-Message-ID: <CAM9d7cj1LJ=QO8QxhBo_oDM9APpAswX4BbTwge0JhZ3Y4-Bv9w@mail.gmail.com>
-Subject: Re: [PATCH v2 07/15] tools lib traceevent: Optimize pretty_print() function
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Tue, 7 Jul 2020 11:19:55 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF0F52065D;
+        Tue,  7 Jul 2020 15:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594135194;
+        bh=IKRcYbDIFHiIBRV8TpFGBWYGnR6Vj1rFMLD4iE/uvww=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=u/gEFadkt2IeOzhPSikGLfnkNW34+z5L8CsNyGN4ZHMLaz+vuhAAY0y61k7AKs8D4
+         2TR0KN2dIKbTXpQuASSfgBNoQDYpVtt8dcH3yv3Qc3CT4yyFp+4lhy1XOOXHNCHzcC
+         0IOXulRQJ5E+Oe5uSH9aveAzoRI4zdn/8KXGcNmc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jaewon Kim <jaewon31.kim@samsung.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kees Kook <keescook@chromium.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-trace-devel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 11/65] tools lib traceevent: Handle __attribute__((user)) in field names
+Date:   Tue,  7 Jul 2020 17:16:50 +0200
+Message-Id: <20200707145752.996517502@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Jul 3, 2020 at 3:57 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
->
-> Each time the pretty_print() function is called to print an event,
-> the event's format string is parsed. As this format string does not
-> change, this parsing can be done only once - when the event struct
-> is initialized.
->
-> Link: https://lore.kernel.org/linux-trace-devel/20200529134929.537110-1-tz.stoyanov@gmail.com
-> Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-8-tz.stoyanov@gmail.com
->
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  tools/lib/traceevent/event-parse-local.h |  17 +
->  tools/lib/traceevent/event-parse.c       | 672 ++++++++++++++++-------
->  tools/lib/traceevent/event-parse.h       |   3 +
->  3 files changed, 495 insertions(+), 197 deletions(-)
->
-> diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
-> index 96a0b0ca0675..e71296a62236 100644
-> --- a/tools/lib/traceevent/event-parse-local.h
-> +++ b/tools/lib/traceevent/event-parse-local.h
-> @@ -85,6 +85,23 @@ struct tep_handle {
->         struct tep_plugins_dir *plugins_dir;
->  };
->
-> +enum tep_print_parse_type {
-> +       PRINT_FMT_STING,
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-STRING ?
+[ Upstream commit 74621d929d944529a5e2878a84f48bfa6fb69a66 ]
 
-> +       PRINT_FMT_ARG_DIGIT,
-> +       PRINT_FMT_ARG_POINTER,
-> +       PRINT_FMT_ARG_STRING,
-> +};
+Commit c61f13eaa1ee1 ("gcc-plugins: Add structleak for more stack
+initialization") added "__attribute__((user))" to the user when
+stackleak detector is enabled. This now appears in the field format of
+system call trace events for system calls that have user buffers. The
+"__attribute__((user))" breaks the parsing in libtraceevent. That needs
+to be handled.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jaewon Kim <jaewon31.kim@samsung.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kees Kook <keescook@chromium.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: linux-mm@kvack.org
+Cc: linux-trace-devel@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20200324200956.663647256@goodmis.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/lib/traceevent/event-parse.c | 39 +++++++++++++++++++++++++++++-
+ 1 file changed, 38 insertions(+), 1 deletion(-)
+
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index 4bc3e1b906652..798284f511f16 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -1444,6 +1444,7 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
+ 	enum tep_event_type type;
+ 	char *token;
+ 	char *last_token;
++	char *delim = " ";
+ 	int count = 0;
+ 	int ret;
+ 
+@@ -1504,13 +1505,49 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
+ 					field->flags |= TEP_FIELD_IS_POINTER;
+ 
+ 				if (field->type) {
+-					ret = append(&field->type, " ", last_token);
++					ret = append(&field->type, delim, last_token);
+ 					free(last_token);
+ 					if (ret < 0)
+ 						goto fail;
+ 				} else
+ 					field->type = last_token;
+ 				last_token = token;
++				delim = " ";
++				continue;
++			}
++
++			/* Handle __attribute__((user)) */
++			if ((type == TEP_EVENT_DELIM) &&
++			    strcmp("__attribute__", last_token) == 0 &&
++			    token[0] == '(') {
++				int depth = 1;
++				int ret;
++
++				ret = append(&field->type, " ", last_token);
++				ret |= append(&field->type, "", "(");
++				if (ret < 0)
++					goto fail;
++
++				delim = " ";
++				while ((type = read_token(&token)) != TEP_EVENT_NONE) {
++					if (type == TEP_EVENT_DELIM) {
++						if (token[0] == '(')
++							depth++;
++						else if (token[0] == ')')
++							depth--;
++						if (!depth)
++							break;
++						ret = append(&field->type, "", token);
++						delim = "";
++					} else {
++						ret = append(&field->type, delim, token);
++						delim = " ";
++					}
++					if (ret < 0)
++						goto fail;
++					free(last_token);
++					last_token = token;
++				}
+ 				continue;
+ 			}
+ 			break;
+-- 
+2.25.1
+
+
+
