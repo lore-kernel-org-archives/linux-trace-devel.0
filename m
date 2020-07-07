@@ -5,41 +5,41 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C002FC433E1
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:20:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D945C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:29:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9D139207BB
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:20:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5C4C6206F6
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  7 Jul 2020 15:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1594135204;
-	bh=IKRcYbDIFHiIBRV8TpFGBWYGnR6Vj1rFMLD4iE/uvww=;
+	s=default; t=1594135776;
+	bh=W6ZCKqVWmrvLUaqsfEod1eJbx0YNy6bRzf5/LmCVh4U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=btbko8LrT2E4YPpK1CytlOUSm2BQe7Kh8TN7HLh8Yz3/Cgy20D5E6X+SR/319nJbR
-	 7a9rFnxlKXpNVLZNln7PiI9KoHZeNCpbbFrJeVQb2wStDBOAm5ljdg7vNACYaHXBj5
-	 qDe+h7WNWIy32dyH78aOPJvdTw3lbt3olfR6/SV8=
+	b=nIIL/f2dJL3aHTP+Sj6DZ8mMOO6IPyfr1DTM9hiNeZPir0ObKtCTpSjarLmSpbAdn
+	 2YR3l44vXWQf+DCY+Ag+nq6HoVulP1Ft9M8P/o3JdOZGjLB93wme8CFUJQwQscY+Fr
+	 klI3jdWcNgGf6Wl0pUi7n8PFnXzXtgojr6YYqSW0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729458AbgGGPUE (ORCPT
+        id S1729720AbgGGPYu (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 7 Jul 2020 11:20:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59732 "EHLO mail.kernel.org"
+        Tue, 7 Jul 2020 11:24:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728665AbgGGPTz (ORCPT
+        id S1730134AbgGGPYs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:19:55 -0400
+        Tue, 7 Jul 2020 11:24:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF0F52065D;
-        Tue,  7 Jul 2020 15:19:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05764206F6;
+        Tue,  7 Jul 2020 15:24:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135194;
-        bh=IKRcYbDIFHiIBRV8TpFGBWYGnR6Vj1rFMLD4iE/uvww=;
+        s=default; t=1594135487;
+        bh=W6ZCKqVWmrvLUaqsfEod1eJbx0YNy6bRzf5/LmCVh4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u/gEFadkt2IeOzhPSikGLfnkNW34+z5L8CsNyGN4ZHMLaz+vuhAAY0y61k7AKs8D4
-         2TR0KN2dIKbTXpQuASSfgBNoQDYpVtt8dcH3yv3Qc3CT4yyFp+4lhy1XOOXHNCHzcC
-         0IOXulRQJ5E+Oe5uSH9aveAzoRI4zdn/8KXGcNmc=
+        b=Slzv2ZvB469YModFStwUPPWyAosKdk3rj+WiiRZojZLyBla4VYSkip/12E+NBS+M1
+         RLqQR/L54+eqZMBzXUxSFU4pvlp1/VkiCKlsFWj/1XA09HR0bjSsuAtOdfSvKxtPsc
+         HBKygFj74HSRUD+gWtHcR6+44XS8PvQEG6ssMBMg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -54,12 +54,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-trace-devel@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 11/65] tools lib traceevent: Handle __attribute__((user)) in field names
-Date:   Tue,  7 Jul 2020 17:16:50 +0200
-Message-Id: <20200707145752.996517502@linuxfoundation.org>
+Subject: [PATCH 5.7 031/112] tools lib traceevent: Handle __attribute__((user)) in field names
+Date:   Tue,  7 Jul 2020 17:16:36 +0200
+Message-Id: <20200707145802.467329359@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
+References: <20200707145800.925304888@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -97,7 +97,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 38 insertions(+), 1 deletion(-)
 
 diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index 4bc3e1b906652..798284f511f16 100644
+index eec96c31ea9e5..010e60d5a0817 100644
 --- a/tools/lib/traceevent/event-parse.c
 +++ b/tools/lib/traceevent/event-parse.c
 @@ -1444,6 +1444,7 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
