@@ -6,36 +6,35 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50D82C433DF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86FA8C433E2
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Jul 2020 20:30:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 372A82078A
+	by mail.kernel.org (Postfix) with ESMTP id 656A1207DF
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  8 Jul 2020 20:30:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725915AbgGHUaU (ORCPT
+        id S1726140AbgGHUaU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 8 Jul 2020 16:30:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38790 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:38786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgGHUaT (ORCPT
+        id S1725964AbgGHUaS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 8 Jul 2020 16:30:19 -0400
+        Wed, 8 Jul 2020 16:30:18 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B55620775;
-        Wed,  8 Jul 2020 20:30:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6949A20772
+        for <linux-trace-devel@vger.kernel.org>; Wed,  8 Jul 2020 20:30:18 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jtGht-004NNa-4v; Wed, 08 Jul 2020 16:30:17 -0400
-Message-ID: <20200708203017.038156451@goodmis.org>
+        id 1jtGht-004NOe-E0
+        for linux-trace-devel@vger.kernel.org; Wed, 08 Jul 2020 16:30:17 -0400
+Message-ID: <20200708203017.319177062@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Jul 2020 16:28:52 -0400
+Date:   Wed, 08 Jul 2020 16:28:54 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 2/5] tools lib traceveent: Fix kbuffer_start_of_data() to return the first
- record
+Subject: [PATCH 4/5] tools lib traceevent: Let function symbols be used in operations
 References: <20200708202850.764168067@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +43,91 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The first record in a ring buffer page may not allways be at the
-beginning of the page. There could be time-extends injected before it.
-In this case kbuffer_start_of_data() will not return the first record,
-as expected. Additional field "start" is added in kbuffer struct, to hold
-the offset of the first record from the page and kbuffer_start_of_data()
-is modified to use it.
+The preemptirq events records only 32 bits for the locations of where the
+events occur. It records the offset from _stext to do so. But the
+libtraceevent does not handle function names in operations to add offsets
+to.
 
-Link: https://lore.kernel.org/linux-trace-devel/20200706154714.27566-1-tz.stoyanov@gmail.com
+Have the eval_num_arg() check if the value found is zero and then check if
+it is a string. If it is a string value, check if that string matches any
+function. If it does, then evaluate the function symbol and replace the
+value with the actual number to complete the calculation.
 
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205953
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-[ Finished the patch from Steven ]
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/traceevent/kbuffer-parse.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ lib/traceevent/event-parse.c | 49 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 1 deletion(-)
 
-diff --git a/lib/traceevent/kbuffer-parse.c b/lib/traceevent/kbuffer-parse.c
-index 2c5f00a9e786..844db976b38c 100644
---- a/lib/traceevent/kbuffer-parse.c
-+++ b/lib/traceevent/kbuffer-parse.c
-@@ -35,6 +35,7 @@ enum {
-  * @next		- offset from @data to the start of next event
-  * @size		- The size of data on @data
-  * @start		- The offset from @subbuffer where @data lives
-+ * @first		- The offset from @subbuffer where the first non time stamp event lives
-  *
-  * @read_4		- Function to read 4 raw bytes (may swap)
-  * @read_8		- Function to read 8 raw bytes (may swap)
-@@ -51,6 +52,7 @@ struct kbuffer {
- 	unsigned int		next;
- 	unsigned int		size;
- 	unsigned int		start;
-+	unsigned int		first;
+diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
+index ee16be96697b..77c3249220d3 100644
+--- a/lib/traceevent/event-parse.c
++++ b/lib/traceevent/event-parse.c
+@@ -3649,6 +3649,50 @@ tep_find_event_by_name(struct tep_handle *tep,
+ 	return event;
+ }
  
- 	unsigned int (*read_4)(void *ptr);
- 	unsigned long long (*read_8)(void *ptr);
-@@ -546,6 +548,9 @@ int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer)
- 
- 	next_event(kbuf);
- 
-+	/* save the first record from the page */
-+	kbuf->first = kbuf->curr;
++static unsigned long long test_for_symbol(struct tep_handle *tep,
++					  struct tep_print_arg *arg)
++{
++	unsigned long long val = 0;
++	struct func_list *item = tep->funclist;
++	char *func;
++	int i;
 +
- 	return 0;
- }
- 
-@@ -755,7 +760,7 @@ void kbuffer_set_old_format(struct kbuffer *kbuf)
-  */
- int kbuffer_start_of_data(struct kbuffer *kbuf)
++	if (isdigit(arg->atom.atom[0]))
++		return 0;
++
++	/* Linear search but only happens once (see after the loop) */
++	for (i = 0; i < (int)tep->func_count; i++) {
++		unsigned long long addr;
++		const char *name;
++
++		if (tep->func_map) {
++			addr = tep->func_map[i].addr;
++			name = tep->func_map[i].func;
++		} else if (item) {
++			addr = item->addr;
++			name = item->func;
++			item = item->next;
++		} else
++			break;
++
++		if (strcmp(arg->atom.atom, name) == 0) {
++			val = addr;
++			break;
++		}
++	}
++
++	/*
++	 * This modifies the arg to hardcode the value
++	 * and will not loop again.
++	 */
++	func = realloc(arg->atom.atom, 32);
++	if (func) {
++		snprintf(func, 32, "%lld", val);
++		arg->atom.atom = func;
++	}
++	return val;
++}
++
+ static unsigned long long
+ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg *arg)
  {
--	return kbuf->start;
-+	return kbuf->first + kbuf->start;
- }
- 
- /**
+@@ -3665,7 +3709,10 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
+ 		/* ?? */
+ 		return 0;
+ 	case TEP_PRINT_ATOM:
+-		return strtoull(arg->atom.atom, NULL, 0);
++		val = strtoull(arg->atom.atom, NULL, 0);
++		if (!val)
++			val = test_for_symbol(tep, arg);
++		return val;
+ 	case TEP_PRINT_FIELD:
+ 		if (!arg->field.field) {
+ 			arg->field.field = tep_find_any_field(event, arg->field.name);
 -- 
 2.26.2
 
