@@ -2,102 +2,95 @@ Return-Path: <SRS0=mFmS=AZ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77285C433E4
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 10:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5460FC433E1
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 12:07:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 553ED20BED
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 10:30:36 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k4nxWdjJ"
+	by mail.kernel.org (Postfix) with ESMTP id 2B3712220D
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 12:07:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1594728446;
+	bh=5gZk47XXu8yR80kSOWxlW8zxVFUEtfc0FzWPBqAWDf8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=TnJwJ4hSN8Mc2bQ4GdJgqxcAhaXxKnSb2nDNoO8AWqEGHFnCKmLLMAeXWgK8m9z1J
+	 KQb36aPfTMD6boucvEZqgu1Abbipysooqr5IxMD5u6uQPXRveWsHQOwfR8lIXZ3JVP
+	 8ICyZFcEqgVmTnFHaYtLrMMs8PRnqr1CoOi2rfgU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgGNKag (ORCPT
+        id S1726889AbgGNMH0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Jul 2020 06:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgGNKaf (ORCPT
+        Tue, 14 Jul 2020 08:07:26 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:42542 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgGNMHZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:30:35 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699F7C061755
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jul 2020 03:30:35 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id bm28so14482422edb.2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jul 2020 03:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EFtQCEGxZfHXqFTgwcMKjWf970He+JLrGeG10kqL8H8=;
-        b=k4nxWdjJO6Pa3phOy0I9mpAf3Fc70F1CjMUTRfd1vdBJ7+pHDQQB0IQ8a1nD131VV0
-         TzXq1gKL8umH6ENJRwQxftFS8YcVVrfgJlRwXpP3uPxp+5Y1IOFYB9mHBkk+xeI2qrSH
-         d5baQQ+R84Bv4WzvzmftSuCQqY6S08yQKCKemHAwWHwejFhEGSoozGBqvvd4S6sG+wnH
-         neymkPWAIJzxeSWSjpy9nAKuxfGV2q+TyCo4hwVTnEEXOjpgMjfq/tV9ihu0Jcd9uMfx
-         NsPudw08bKjsbNu/OlYz8nFURvgmISZNi7qbwIZfGiZI1Syv7Orcgfcfk+NX+e+Qu+Tq
-         64vA==
+        Tue, 14 Jul 2020 08:07:25 -0400
+Received: by mail-wr1-f67.google.com with SMTP id o11so21187073wrv.9
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jul 2020 05:07:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EFtQCEGxZfHXqFTgwcMKjWf970He+JLrGeG10kqL8H8=;
-        b=b2Ge5Xh8a16bEj9EplYX4hq0a3/j8Uo1tnc6o+yiNrw61C6Rv6We6IrMT4ZhOn+Syr
-         raMKekMSWB6vB/mEPimwdLCT5gyJDN+mooQxgYFoPGydheUNf96/peRMmhS+Paw97Ew8
-         WsnG6ihUloB//r0iKbbVxvUnDthsA1BwUSrEjydbCGN2Ffof6kwhAW1q5/kr+m6Gi3+u
-         F9CNf1C18MR1urMGYhjg5SXxijUxRR3xYIXefLk8j67e/94nSkNK1IakX7vyUkCBUnuq
-         UqCC5/tDnjFw4g8+I0Cp1cPsJFq9povbZcQiBKsaXdeYNNtylQ9HYkOR43xIP3GP4D2Q
-         ayRQ==
-X-Gm-Message-State: AOAM531n1VBeAfbeTSn7vnXB8Udpa5Naugnk4ywkglg4tllxk3YxmSlH
-        Pz1FKMEmku7UI2DB/aAC21Q=
-X-Google-Smtp-Source: ABdhPJxiRiyqkxGVSoqR1a3LET9cQhbZqk9qQZIMpTPJ5kB2zGofCWJcnb7jMnclJhReekN4rZoUgQ==
-X-Received: by 2002:a50:ccc7:: with SMTP id b7mr3991471edj.9.1594722634155;
-        Tue, 14 Jul 2020 03:30:34 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id gr15sm11766034ejb.84.2020.07.14.03.30.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 03:30:33 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org, namhyung@kernel.org
-Subject: [PATCH 3/8] trace-cmd: Fix typo in tep_plugin_add_option() description
-Date:   Tue, 14 Jul 2020 13:30:22 +0300
-Message-Id: <20200714103027.2477584-4-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200714103027.2477584-1-tz.stoyanov@gmail.com>
-References: <20200714103027.2477584-1-tz.stoyanov@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8GwwxZbyvmYxzmY5/CPV+UmKkS1ECz0kGB2RSAn/dsU=;
+        b=OSLpgk00k4CtXU+PSoCqsyo2RU41x7SuEPxaAxsYy5SilFQD+TQM6BxqLk7Be+gUPJ
+         3Od3a65KK5eFClU2qkdNXAPVqCq4OomlKnN02C4zM9S1gLpoPGX43d+s/p/LrXRv3hfz
+         ciTzTkO1inlU+Y69wEhTHqakJ/ykqU38IQ4p/m0tKBkIZ6hWec/zWmcrghVZQhjcShOx
+         vPH7/FPza9Dxx6pSm7wxBVjuK66XU4aQ54G6RpF4Eo962Ar8g6KK9isBDs/RIhmeDFS1
+         nBSmuX+wvByMNju6Cm7hc2zJLHUzijQLD13S9UpfHE/ABF1ibKPVaSWQDZQulfF2+Dbu
+         eWrQ==
+X-Gm-Message-State: AOAM530IsgWP0cODfEOpw5WTIKNv0r7GOEuXMvvl7Iw32hR89zYrXZbh
+        GwqcFa3tEHW6jqcLyeZ8FPSFpgGz/2bRPQTLC1FZqw==
+X-Google-Smtp-Source: ABdhPJzpYiKC7wx6elgKBjfx6F8BJFGhVv+taXkq4OnaQ8ooY0eM25aDQNTfVWPnNFL/yvukjBVChYw83t780wVaVXg=
+X-Received: by 2002:adf:fcc5:: with SMTP id f5mr5446622wrs.60.1594728443684;
+ Tue, 14 Jul 2020 05:07:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200714103027.2477584-1-tz.stoyanov@gmail.com>
+In-Reply-To: <20200714103027.2477584-1-tz.stoyanov@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 14 Jul 2020 21:07:12 +0900
+Message-ID: <CAM9d7cg-5sJ-iqCU25MqmdTOdoWPqcyFJFqdc67PdRwjwqqPsA@mail.gmail.com>
+Subject: Re: [PATCH 0/8] Few libtraceeevnt fixes, suggested Namhyung Kim
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A type "optiona" -> "optional" is fixed in description of
-tep_plugin_add_option() API.
+Hello,
 
-Suggested-by: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- lib/traceevent/event-plugin.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Jul 14, 2020 at 7:30 PM Tzvetomir Stoyanov (VMware)
+<tz.stoyanov@gmail.com> wrote:
+>
+> Fixes in libtraceeevnt, suggested by Namhyung Kim <namhyung@kernel.org>
+>
+> Tzvetomir Stoyanov (VMware) (8):
+>   trace-cmd: Document tep_load_plugins_hook()
+>   trace-cmd: Handle strdup() error in parse_option_name()
+>   trace-cmd: Fix typo in tep_plugin_add_option() description
+>   trace-cmd: Improve error handling of tep_plugin_add_option() API
+>   trace-cmd: Fixed broken indentation in parse_ip4_print_args()
+>   trace-cmd: Fixed type in PRINT_FMT_STING
+>   trace-cmd: Fixed description of tep_add_plugin_path() API
+>   trace-cmd: Handle possible strdup() error in tep_add_plugin_path() API
 
-diff --git a/lib/traceevent/event-plugin.c b/lib/traceevent/event-plugin.c
-index b97d0c7e..03f26c8c 100644
---- a/lib/traceevent/event-plugin.c
-+++ b/lib/traceevent/event-plugin.c
-@@ -310,7 +310,7 @@ static int process_option(const char *plugin, const char *option, const char *va
- /**
-  * tep_plugin_add_option - add an option/val pair to set plugin options
-  * @name: The name of the option (format: <plugin>:<option> or just <option>)
-- * @val: (optiona) the value for the option
-+ * @val: (optional) the value for the option
-  *
-  * Modify a plugin option. If @val is given than the value of the option
-  * is set (note, some options just take a boolean, so @val must be either
--- 
-2.26.2
+Shouldn't the prefix be libtraceevent ?  Other than that,
 
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks
+Namhyung
+
+>
+>  lib/traceevent/event-parse-local.h |  2 +-
+>  lib/traceevent/event-parse.c       | 10 +++---
+>  lib/traceevent/event-plugin.c      | 50 ++++++++++++++++++++++--------
+>  3 files changed, 43 insertions(+), 19 deletions(-)
+>
+> --
+> 2.26.2
+>
