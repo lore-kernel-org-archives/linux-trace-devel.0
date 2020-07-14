@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3C79C433E7
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 10:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 551D1C433E2
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 10:30:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8295720BED
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 10:30:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 315A720BED
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 10:30:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dCruk4G2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ftvVnWYY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbgGNKah (ORCPT
+        id S1725841AbgGNKae (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Jul 2020 06:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        Tue, 14 Jul 2020 06:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgGNKag (ORCPT
+        with ESMTP id S1725906AbgGNKad (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:30:36 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A780C061755
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jul 2020 03:30:36 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id d16so16457444edz.12
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jul 2020 03:30:36 -0700 (PDT)
+        Tue, 14 Jul 2020 06:30:33 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CCDC061794
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jul 2020 03:30:33 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id br7so7140997ejb.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jul 2020 03:30:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iE9gll+SY41Am9ztFMMTcM8u+I8iQO5hjgDgbWgQkCM=;
-        b=dCruk4G28LqdzOX3wOAilctFuH0bCDRyxPKoUPd9U+ARxRV0f0dNKWPOEQ7z3ryqXi
-         n90uevGcWBDXBR1RQvEWJ1BGTLuzURgRrFcd7zQqHiCiPaQyV2AD1h/8+RDueif7+DIM
-         jp4xhT57KUSr9NKzzUa47gUwkkeJ11YJjNFLMyJifvWHYuIQ0ONnBoquG4bkYOMjv5ln
-         G27WUtCcoC9ByNY68hRo1mWQhrcB+pQuVUpgmDMJaqVPSbFOn4NBn2jSxekQ0zii2fcC
-         37SvOV4TxBUZ56WnfNab+s7crUnRvFJktQP6+YgoS79dCs50o+DfRTwwFiz2s8f87HBv
-         e63w==
+        bh=/PgwyIv2vHoWG0mPE0Hb/mlAaSJmCHcX1IdjRgbhDqU=;
+        b=ftvVnWYYgR0c7uYtUHwt8xbdZ9cjy19taN/wvQ8jp+u3fRZo55mdAyJrxeTdYDx/Lq
+         LOMQ85wxV5hJ5w9k3di1DLHW9IDe7ZQOsRP3P0Pwizv8t0oawX6sDYAaDVtVZUNXKh2G
+         EZBaUnNM1eGUpgNZ056pMPamw0nNThTiompgjGr4o8j3z9eCIjHpQIrIRz4TFJUuhKkZ
+         9OS6tDUrFmd/0uAhGjnBuFMPndvNVQ4SFplSCLu0sLgbcFE2n9u5otHrSS9AEgfj3wj7
+         e/m64nMmJc7DA9uLyhOwiYMIidP3jLMgYaZM8TFIO9m/xbQYfYixmPy22Zo/Dxdi9pt0
+         TlQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iE9gll+SY41Am9ztFMMTcM8u+I8iQO5hjgDgbWgQkCM=;
-        b=Zz1zzMmZwpRzbgJJIoGaDgYUwG/UhOxfJDagLvGZbHE1ZDQUp245O2ZPGBolJK/JMo
-         NgpLfjSfhTKpQH+O06WBJE9thF4CPycjwAu59KE4Y4kR8NXTquPpPyPR5LEN+sHqIt09
-         KRppmoueSf2OPAb6UajYpFWOvHgTU+MDlkgIax1pJAN06K5bM/Jr5UybuErmSS3UsDb2
-         gX6XgS5YcbmIk2/oiKj8gVU3ey9PLwuBXxhImP7PZo7pEAnu310+Gqm/CpI2+LVtQLVg
-         fh6Y37QTS+sNNkxJHEiYCHIXf40EhOR/wvBj63ONmM1m9LNNE0lGtuJIQz4McoCIgj4U
-         71QA==
-X-Gm-Message-State: AOAM533dDbZkms4q0BQkmuKE+tr3wSPEe3k1UkihlUp2lMYB2qTsYY3F
-        vrC1tkc905wqIx/WDpedYs0=
-X-Google-Smtp-Source: ABdhPJwTOj4Y5vH6d/xRIwQoc3wnwTItwuwP/4s56C+YoUer8pCiQOtkw8j2g9X2pinuhdsrNI9wkg==
-X-Received: by 2002:a05:6402:1803:: with SMTP id g3mr3564557edy.377.1594722635429;
-        Tue, 14 Jul 2020 03:30:35 -0700 (PDT)
+        bh=/PgwyIv2vHoWG0mPE0Hb/mlAaSJmCHcX1IdjRgbhDqU=;
+        b=nUN4x0Hy669vDAsaWShmBMgNst8R29eAL8DRJF57Tr1tG6cp6CkZUnGqj1ixW4t6GM
+         dqqpeb53HFjz6w4dKdd0+1VGLZTKPC6WBE5IjrG+p31Lg/hDa2AEMgzspzNlVHV0ZFa6
+         inzFK72h53K+BvU5lYYfIKeBLVEc7IELxgu+yZRm/TidC3/ZBPA8COofoNutgYaaTyPL
+         iCTyx5dVHWW7w2Kl6uoqaKA7dcuo9NxWtfQaTbTJcXbAdrmPlmtGs6RoesZID8dc3Cv0
+         fNMOfPI1nax+AnjZDZIgpEge4jO+0Yyd91SgGvpi7VtQxmfD1mM/Jj6uJ1uxUR66cr1U
+         hOOw==
+X-Gm-Message-State: AOAM533/1LM2dzfrq9bkkJu/gA0yY1mpqRXHSl/wqWyd0s+dbqo8wRWm
+        gMlopvzbq5SQsQ8u7rOB2S8=
+X-Google-Smtp-Source: ABdhPJxcRMxpUszishbtkEB2bHLckRnttzzvX62KYfGOhZc1d6Cl7jCDJPDe/PxFq6uB5TC5EA/Wpg==
+X-Received: by 2002:a17:906:6004:: with SMTP id o4mr3913196ejj.411.1594722631894;
+        Tue, 14 Jul 2020 03:30:31 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id gr15sm11766034ejb.84.2020.07.14.03.30.34
+        by smtp.gmail.com with ESMTPSA id gr15sm11766034ejb.84.2020.07.14.03.30.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 03:30:34 -0700 (PDT)
+        Tue, 14 Jul 2020 03:30:31 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, namhyung@kernel.org
-Subject: [PATCH 4/8] trace-cmd: Improve error handling of tep_plugin_add_option() API
-Date:   Tue, 14 Jul 2020 13:30:23 +0300
-Message-Id: <20200714103027.2477584-5-tz.stoyanov@gmail.com>
+Subject: [PATCH 1/8] trace-cmd: Document tep_load_plugins_hook()
+Date:   Tue, 14 Jul 2020 13:30:20 +0300
+Message-Id: <20200714103027.2477584-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200714103027.2477584-1-tz.stoyanov@gmail.com>
 References: <20200714103027.2477584-1-tz.stoyanov@gmail.com>
@@ -76,52 +76,41 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In case of memory error, ensure all allocated resources are freed.
-Do not append broken option in trace_plugin_options list.
+Add description of tep_load_plugins_hook() traceevent API.
 
 Suggested-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/traceevent/event-plugin.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ lib/traceevent/event-plugin.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/lib/traceevent/event-plugin.c b/lib/traceevent/event-plugin.c
-index 03f26c8c..aa868133 100644
+index 30c1526d..c11636ce 100644
 --- a/lib/traceevent/event-plugin.c
 +++ b/lib/traceevent/event-plugin.c
-@@ -361,23 +361,25 @@ int tep_plugin_add_option(const char *name, const char *val)
- 	if (!op) {
- 		op = malloc(sizeof(*op));
- 		if (!op)
--			return -ENOMEM;
-+			goto out_free;
- 		memset(op, 0, sizeof(*op));
--		op->next = trace_plugin_options;
--		trace_plugin_options = op;
--
- 		op->plugin = plugin;
- 		op->option = option_str;
--
- 		if (val) {
- 			op->value = strdup(val);
--			if (!op->value)
-+			if (!op->value) {
-+				free(op);
- 				goto out_free;
-+			}
- 		}
-+		op->next = trace_plugin_options;
-+		trace_plugin_options = op;
- 	}
- 
- 	return process_option(plugin, option_str, val);
-- out_free:
-+
-+out_free:
-+	free(plugin);
- 	free(option_str);
- 	return -ENOMEM;
+@@ -544,6 +544,22 @@ load_plugins_dir(struct tep_handle *tep, const char *suffix,
+ 	closedir(dir);
  }
+ 
++/**
++ * tep_load_plugins_hook - call a user specified callback to load a plugin
++ * @tep: handler to traceevent context
++ * @suffix: filter only plugin files with given suffix
++ * @load_plugin: user specified callback, called for each plugin file
++ * @data: custom context, passed to @load_plugin
++ *
++ * Searches for traceevent plugin files and calls @load_plugin for each
++ * The order of plugins search is:
++ *  - Directories, specified in @tep->plugins_dir and priority TEP_PLUGIN_FIRST
++ *  - Directory, specified at compile time with PLUGIN_TRACEEVENT_DIR
++ *  - Directory, specified by environment variable TRACEEVENT_PLUGIN_DIR
++ *  - In user's home: ~/.local/lib/traceevent/plugins/
++ *  - Directories, specified in @tep->plugins_dir and priority TEP_PLUGIN_LAST
++ *
++ */
+ void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
+ 			   void (*load_plugin)(struct tep_handle *tep,
+ 					       const char *path,
 -- 
 2.26.2
 
