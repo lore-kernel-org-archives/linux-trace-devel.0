@@ -7,36 +7,36 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7DAAC433E7
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 144A9C433DF
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 21:23:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C6A4A206F5
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 21:23:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E5EF22074A
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 14 Jul 2020 21:23:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbgGNVXW (ORCPT
+        id S1726960AbgGNVXV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 14 Jul 2020 17:23:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60768 "EHLO mail.kernel.org"
+        Tue, 14 Jul 2020 17:23:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728098AbgGNVXW (ORCPT
+        id S1728054AbgGNVXV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:23:22 -0400
+        Tue, 14 Jul 2020 17:23:21 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B75A3206F5;
+        by mail.kernel.org (Postfix) with ESMTPSA id 19D0F206F0;
         Tue, 14 Jul 2020 21:23:21 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jvSOW-004vaA-P7; Tue, 14 Jul 2020 17:23:20 -0400
-Message-ID: <20200714212320.643881701@goodmis.org>
+        id 1jvSOW-004vY6-5T; Tue, 14 Jul 2020 17:23:20 -0400
+Message-ID: <20200714212320.046471564@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 14 Jul 2020 17:19:35 -0400
+Date:   Tue, 14 Jul 2020 17:19:31 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Namhyung Kim <namhyung@kernel.org>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 6/8] libtraceevent: Fixed type in PRINT_FMT_STING
+Subject: [PATCH 2/8] libtraceevent: Handle strdup() error in parse_option_name()
 References: <20200714211929.828530560@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,64 +47,54 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-PRINT_FMT_STING -> PRINT_FMT_STRING
+Modified internal function parse_option_name() to return error and handle
+that error in function callers in case strdup() fails.
 
-Link: https://lore.kernel.org/r/CAM9d7cj1LJ=QO8QxhBo_oDM9APpAswX4BbTwge0JhZ3Y4-Bv9w@mail.gmail.com
-Link: https://lore.kernel.org/linux-trace-devel/20200714103027.2477584-7-tz.stoyanov@gmail.com
+Link: https://lore.kernel.org/r/CAM9d7cizjF+fbK7YzmsBDgrx__4YAOsmEq67D3sWET8FF+YdFA@mail.gmail.com
+Link: https://lore.kernel.org/linux-trace-devel/20200714103027.2477584-3-tz.stoyanov@gmail.com
 
 Suggested-by: Namhyung Kim <namhyung@kernel.org>
 Acked-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- lib/traceevent/event-parse-local.h | 2 +-
- lib/traceevent/event-parse.c       | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ lib/traceevent/event-plugin.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/lib/traceevent/event-parse-local.h b/lib/traceevent/event-parse-local.h
-index e71296a62236..d805a920af6f 100644
---- a/lib/traceevent/event-parse-local.h
-+++ b/lib/traceevent/event-parse-local.h
-@@ -86,7 +86,7 @@ struct tep_handle {
- };
- 
- enum tep_print_parse_type {
--	PRINT_FMT_STING,
-+	PRINT_FMT_STRING,
- 	PRINT_FMT_ARG_DIGIT,
- 	PRINT_FMT_ARG_POINTER,
- 	PRINT_FMT_ARG_STRING,
-diff --git a/lib/traceevent/event-parse.c b/lib/traceevent/event-parse.c
-index 4de9729ccc05..186fee3364e3 100644
---- a/lib/traceevent/event-parse.c
-+++ b/lib/traceevent/event-parse.c
-@@ -5659,7 +5659,7 @@ static int parse_arg_format(struct tep_print_parse **parse,
- 		default:
- 			snprintf(print_format, 32, ">%c<", *format);
- 			parse_arg_add(parse, print_format,
--					PRINT_FMT_STING, NULL, NULL, 0);
-+					PRINT_FMT_STRING, NULL, NULL, 0);
- 			ret++;
- 			return ret;
- 		}
-@@ -5711,7 +5711,7 @@ static int parse_arg_string(struct tep_print_parse **parse, const char *format)
- 		ret++;
+diff --git a/lib/traceevent/event-plugin.c b/lib/traceevent/event-plugin.c
+index c11636cea380..b97d0c7e95bf 100644
+--- a/lib/traceevent/event-plugin.c
++++ b/lib/traceevent/event-plugin.c
+@@ -254,7 +254,7 @@ void tep_plugin_remove_options(struct tep_plugin_option *options)
  	}
- 	trace_seq_terminate(&s);
--	parse_arg_add(parse, s.buffer, PRINT_FMT_STING, NULL, NULL, 0);
-+	parse_arg_add(parse, s.buffer, PRINT_FMT_STRING, NULL, NULL, 0);
- 	trace_seq_destroy(&s);
+ }
  
- 	return ret;
-@@ -5769,7 +5769,7 @@ static void print_event_cache(struct tep_print_parse *parse, struct trace_seq *s
- 					 parse->len_as_arg ? len_arg : -1,
- 					 data, size, event, parse->arg);
- 			break;
--		case PRINT_FMT_STING:
-+		case PRINT_FMT_STRING:
- 		default:
- 			trace_seq_printf(s, "%s", parse->format);
- 			break;
+-static void parse_option_name(char **option, char **plugin)
++static int parse_option_name(char **option, char **plugin)
+ {
+ 	char *p;
+ 
+@@ -265,8 +265,9 @@ static void parse_option_name(char **option, char **plugin)
+ 		*p = '\0';
+ 		*option = strdup(p + 1);
+ 		if (!*option)
+-			return;
++			return -1;
+ 	}
++	return 0;
+ }
+ 
+ static struct tep_plugin_option *
+@@ -325,7 +326,8 @@ int tep_plugin_add_option(const char *name, const char *val)
+ 	if (!option_str)
+ 		return -ENOMEM;
+ 
+-	parse_option_name(&option_str, &plugin);
++	if (parse_option_name(&option_str, &plugin) < 0)
++		return -ENOMEM;
+ 
+ 	/* If the option exists, update the val */
+ 	for (op = trace_plugin_options; op; op = op->next) {
 -- 
 2.26.2
 
