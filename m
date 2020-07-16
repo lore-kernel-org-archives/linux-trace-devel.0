@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC06C433F1
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jul 2020 09:19:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F422BC433EC
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jul 2020 09:19:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 69F8720656
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jul 2020 09:19:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D2CC020775
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jul 2020 09:19:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OhAIbvMA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nawK2vyp"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgGPJTi (ORCPT
+        id S1726411AbgGPJTf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Jul 2020 05:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
+        Thu, 16 Jul 2020 05:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbgGPJTh (ORCPT
+        with ESMTP id S1726250AbgGPJTf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:19:37 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B84C061755
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Jul 2020 02:19:37 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id a1so4220019edt.10
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Jul 2020 02:19:37 -0700 (PDT)
+        Thu, 16 Jul 2020 05:19:35 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BB6C061755
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Jul 2020 02:19:34 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id n26so5853752ejx.0
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Jul 2020 02:19:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Hcz6JMCY2WohNVrTck3zudmbEe34LQkHVJbEtMwC8vw=;
-        b=OhAIbvMA9ZBZSAvZj8OkWSXjIOAg3fYMj+lfzudaD8PB2rG+HIaTJ0vF3DYWaOBGzc
-         U1P0Fkgn8qsn0NgO53vl1SfRVBmwDUfmjJQzdqrGcacUGp/dQmteaL9Odq98gRUqw6/C
-         iY052z5YDDbqdMKA7CTb+EQOChmDu8tkMq/RqnatXh8oHxQ+0GG3qKh6QojIPk9j8rY3
-         9EGLn3BcjnGyKW8/VwmPerLP5hj74SPTLYWFS4VbfJs3S8bHYnqiVpJBV0JTa2lb662n
-         AVGfejH8V/DVQ/nMeq/W0DnWN6qGVxjhAnzj5w/gR6VeoTrgPSGTpiV5d7PejFGBhJlK
-         Q+FQ==
+        bh=3nw1KI6LWm7v8BJsU/Inqrz/v/JDXfD4XkVchaAkiGo=;
+        b=nawK2vypwmrxrltGXjdmNdRmQ46Lkwq0P70J7OXiDLa8UIy/cTs45UqH8ab6BwaLZh
+         5c0k0LTybUs5VdhKuc12f7dac9OjIZlzZ3Tysfp4Vuye146gD7i0MddsWulPF9tjQfJO
+         na5e3AmORDq+Kb/ZFdvd8pB1hzsc7J9CFkh+5cqoZ6R2LbpKIStK5m1UPPt1BKWYLQje
+         /vdFmjsQm0Hb2oJKC8OBwlmIS39c6puBjnBQo7HwPRRTxgae849Q+wLGaAhO/SFpxlxz
+         g1WN9/eDqK68wksU/HL/0KHZm/9Td5US0tFJaCOp1BxoLGs5YB8+FEEfvBFSUyNkkt36
+         GorQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Hcz6JMCY2WohNVrTck3zudmbEe34LQkHVJbEtMwC8vw=;
-        b=TVRH3R5G/fdwktZVmIVlJvMs+QbtO7GIGD0IZCuKv3ivO4S/OLDhT8cqond6ipnGP6
-         YvBkYuoqUP6BzSHM+PO8SUj3WjZac4mPakLmVCgttnOeHYZ7i/A170+39TjMYWi8ccxL
-         fmSQ4LxPeOrR/+TYilLxcLKpSKckrlfkFTjo3d/lOZCktnfRkQFgW/xQi9vEOe7tDqd4
-         FnbQp2nPTDdiNmDws01EHnN2fYA6IcjY91+ydBuQNHfctytT3PY58iFW2xA9sP2t6/lb
-         Oshr/h3IFG4BZZpGgLnTDqrqaq51Npdy0mp3YPV1a+wEcBdHDuDqHJneM6HNmYwaHSlI
-         2zKg==
-X-Gm-Message-State: AOAM5328+V3eO3iGOEdrU2clf0VpPv+lT93qxF2xOf5LKyhFu7KSp4qv
-        n90NF4vE5B7bVhp+QJ+yO5qKiaHjZpc=
-X-Google-Smtp-Source: ABdhPJzAquvPOoHwIoNaMmERdbMK8rqJvSnI1hg7ecvlojeJBIacubs2LuG+OpNaP7VUUYudnDzkyw==
-X-Received: by 2002:aa7:d4d2:: with SMTP id t18mr3501623edr.166.1594891176101;
-        Thu, 16 Jul 2020 02:19:36 -0700 (PDT)
+        bh=3nw1KI6LWm7v8BJsU/Inqrz/v/JDXfD4XkVchaAkiGo=;
+        b=KUNqQtomWDd2uvYSIZARX0OH3GJSmdGh4uOLxEs+fY4+eFb14t/At4zGyRBy1URYJw
+         sH5X7oNPAzTVOb2rIGYJRNH4B0NNjz2DkLH5Q9OE08QYMNS1gUtGebZUvCzuJ+dsxpRe
+         g1YHOJEmWm5XtB60OXqi30pO7TIoes2RVHdGJX4VljOpkw0L+qNXYXEXaH32CJSnggnY
+         5x0y2am0Ca5i+IqzRLsFjqrOwgbJ9ioK96wgPRmlpCi/kk6Xfn1Qmqh4dJxKkmWNqdzk
+         jeOAQvJeHvDGHU5Q5IQrQdB9c3AwV/YtVefabntvOOdMOyi5pG80SiM3o155srOEevvO
+         GM0Q==
+X-Gm-Message-State: AOAM532SRD3QwpEMYayaWAugwdbsWfrC9FrQHe2OY9wSl+5i9Sg4+lpw
+        fopmQpsRZjctO43CaP8w7RM=
+X-Google-Smtp-Source: ABdhPJwu1evrxffzRnCnzWgHMdglGnybSb/89vQAIPH6fjgwQswSdTzJTr0tkjv/ctq19A2IWbXrkA==
+X-Received: by 2002:a17:906:57c5:: with SMTP id u5mr2677336ejr.311.1594891173623;
+        Thu, 16 Jul 2020 02:19:33 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id x9sm4431534ejw.28.2020.07.16.02.19.34
+        by smtp.gmail.com with ESMTPSA id x9sm4431534ejw.28.2020.07.16.02.19.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 02:19:35 -0700 (PDT)
+        Thu, 16 Jul 2020 02:19:33 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 8/8] tools lib traceevent: Handle possible strdup() error in tep_add_plugin_path() API
-Date:   Thu, 16 Jul 2020 12:19:23 +0300
-Message-Id: <20200716091923.2613228-9-tz.stoyanov@gmail.com>
+Subject: [PATCH 6/8] tools lib traceevent: Fixed type in PRINT_FMT_STING
+Date:   Thu, 16 Jul 2020 12:19:21 +0300
+Message-Id: <20200716091923.2613228-7-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200716091923.2613228-1-tz.stoyanov@gmail.com>
 References: <20200716091923.2613228-1-tz.stoyanov@gmail.com>
@@ -76,35 +76,64 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Free allocated resources and return -1 in case strdup() fails in
-tep_add_plugin_path() API.
+PRINT_FMT_STING -> PRINT_FMT_STRING
 
-Link: https://lore.kernel.org/r/CAM9d7chfvJwodpVrHGc5E2J80peRojmYV_fD8x3cpn9HFRUw2g@mail.gmail.com
-Link: https://lore.kernel.org/linux-trace-devel/20200714103027.2477584-9-tz.stoyanov@gmail.com
+Link: https://lore.kernel.org/r/CAM9d7cj1LJ=QO8QxhBo_oDM9APpAswX4BbTwge0JhZ3Y4-Bv9w@mail.gmail.com
+Link: https://lore.kernel.org/linux-trace-devel/20200714103027.2477584-7-tz.stoyanov@gmail.com
 
 Suggested-by: Namhyung Kim <namhyung@kernel.org>
 Acked-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/event-plugin.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/lib/traceevent/event-parse-local.h | 2 +-
+ tools/lib/traceevent/event-parse.c       | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index f0877a7e3e8d..e7c2acb8680f 100644
---- a/tools/lib/traceevent/event-plugin.c
-+++ b/tools/lib/traceevent/event-plugin.c
-@@ -665,6 +665,10 @@ int tep_add_plugin_path(struct tep_handle *tep, char *path,
- 		return -1;
+diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
+index e71296a62236..d805a920af6f 100644
+--- a/tools/lib/traceevent/event-parse-local.h
++++ b/tools/lib/traceevent/event-parse-local.h
+@@ -86,7 +86,7 @@ struct tep_handle {
+ };
  
- 	dir->path = strdup(path);
-+	if (!dir->path) {
-+		free(dir);
-+		return -1;
-+	}
- 	dir->prio = prio;
- 	dir->next = tep->plugins_dir;
- 	tep->plugins_dir = dir;
+ enum tep_print_parse_type {
+-	PRINT_FMT_STING,
++	PRINT_FMT_STRING,
+ 	PRINT_FMT_ARG_DIGIT,
+ 	PRINT_FMT_ARG_POINTER,
+ 	PRINT_FMT_ARG_STRING,
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index 8ee83f1e4e01..af56b60e5f89 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -5612,7 +5612,7 @@ static int parse_arg_format(struct tep_print_parse **parse,
+ 		default:
+ 			snprintf(print_format, 32, ">%c<", *format);
+ 			parse_arg_add(parse, print_format,
+-					PRINT_FMT_STING, NULL, NULL, 0);
++					PRINT_FMT_STRING, NULL, NULL, 0);
+ 			ret++;
+ 			return ret;
+ 		}
+@@ -5664,7 +5664,7 @@ static int parse_arg_string(struct tep_print_parse **parse, const char *format)
+ 		ret++;
+ 	}
+ 	trace_seq_terminate(&s);
+-	parse_arg_add(parse, s.buffer, PRINT_FMT_STING, NULL, NULL, 0);
++	parse_arg_add(parse, s.buffer, PRINT_FMT_STRING, NULL, NULL, 0);
+ 	trace_seq_destroy(&s);
+ 
+ 	return ret;
+@@ -5722,7 +5722,7 @@ static void print_event_cache(struct tep_print_parse *parse, struct trace_seq *s
+ 					 parse->len_as_arg ? len_arg : -1,
+ 					 data, size, event, parse->arg);
+ 			break;
+-		case PRINT_FMT_STING:
++		case PRINT_FMT_STRING:
+ 		default:
+ 			trace_seq_printf(s, "%s", parse->format);
+ 			break;
 -- 
 2.26.2
 
