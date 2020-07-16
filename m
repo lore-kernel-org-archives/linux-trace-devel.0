@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECBC6C433DF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jul 2020 09:20:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43CB4C433EA
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jul 2020 09:20:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CCA35206C1
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jul 2020 09:20:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 22C8A206C1
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 16 Jul 2020 09:20:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z+CFnnob"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pJiC0xIR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbgGPJUU (ORCPT
+        id S1726350AbgGPJU1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 16 Jul 2020 05:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
+        Thu, 16 Jul 2020 05:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgGPJUT (ORCPT
+        with ESMTP id S1726201AbgGPJU1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:20:19 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6B9C061755
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Jul 2020 02:20:19 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id rk21so5828783ejb.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Jul 2020 02:20:19 -0700 (PDT)
+        Thu, 16 Jul 2020 05:20:27 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B13DC061755
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Jul 2020 02:20:27 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id ga4so5787088ejb.11
+        for <linux-trace-devel@vger.kernel.org>; Thu, 16 Jul 2020 02:20:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AvdrCYaja6El0tIcdXmkEmAN0iDUN7i43Om0l/9Yck0=;
-        b=Z+CFnnobihvWKKO55Z94iOANPtmTf7EKl4gJj/nrJEiNyKnbe6PzViAXXggHwuZZaL
-         N/OhUuSGA5zDgAz40piAozNPOAhkYKQElVwcu9gLyve7zNKUuQoYsR2C1LEYJOnFFYr0
-         b1B4DOfkt1J+5X8DfBN7M6XWHsxKRoYgze3ZlVfAouxNBflrFfvG84OgNqBZ/WVMWzbX
-         u0Xp6imJw6MlMIo6lxVCsBVnq41n2cQQ8BGgkpSoD7X0YxIg24rEqzGvLx/61G280VSI
-         qhpvSh3oLd4Z+fukfbq5nOv94jl624t3ngxdxxzVgMFHjb4UKh+fPyFkRICc9JLIanzL
-         3dNA==
+        bh=Afnm1XJPghycfFBTXXC1c4C7hw4aUgP2Ne/OsI1KDuU=;
+        b=pJiC0xIR3E/Yhq8I4gA03BzoIcP5QjV3BtEIxK6jDsrhz3nUcVfSClYrJp+VQplB7B
+         140FGiX5Q8CaHLLn6E33/hEifoWZEzXCleaD26qAE6bIG6BdtYYILv0maPX4r3EYam3g
+         9SniQGT4n83BGAmYytQAH+mP5ufOGLUWEi5aNT4VkmMaQqIeEuWI81W7rYKkSbdsaJ2h
+         dIPMNVtzaXY6OsxgiwDhLw1s28AQDd9km1ujTI/qxLi74p/oH28KMXCFWGmGgHwqJkui
+         QtHT/DdTqxmf01hCtGXO8wscJzATFVqlv89/MzlDW5q5Zm4Bb1zb/q/s8Ku3nPcZTlME
+         DWuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AvdrCYaja6El0tIcdXmkEmAN0iDUN7i43Om0l/9Yck0=;
-        b=g1vVBzj/S29gwvJdKkwtftHyRkpYj4S1xppIwkE0X2WZB7yXRja9LXNh4IBzHstGn9
-         wks3Mklg4iIxk1jlLRR54vRcXDHZ675Y6YUt2LDCb71AHEaW+10NEBiT4c7Gg9vxleoU
-         Qoi9EaHWKumIQZh5oEoyXXeWJ/tP0NDDWOWwb3TQeihvddlTB1BNlTvT9nc3nPfqBShZ
-         f5zXgoQQQpx2giSUrPs9aijkdtGjbLGlRh2XmS4tivoGR6R22WLkvJMxFasajfNXAXiJ
-         vdbHC4+mTWXwkyAp3qIq6qxHOxEnBHq2E+sIyv+AZateRYKpH7H8o31mYk+j+phAMGw8
-         QvHQ==
-X-Gm-Message-State: AOAM530uDgVz/kVxmBQZk0Eb+/dL2JdesavglgY6HouUB9Fi94sYvipC
-        Ld7jgwIU/m15GWicJdI442w=
-X-Google-Smtp-Source: ABdhPJxVhDK++MDlvMrbog3HsGBEA9VZSIRVAuSwyEXcpzC2R+84upJTwm5P4AZ61ulP1DY1/USngA==
-X-Received: by 2002:a17:906:3146:: with SMTP id e6mr2795197eje.2.1594891218401;
-        Thu, 16 Jul 2020 02:20:18 -0700 (PDT)
+        bh=Afnm1XJPghycfFBTXXC1c4C7hw4aUgP2Ne/OsI1KDuU=;
+        b=Odzd1rnaJMA3ucXwp9XvHowuwIlNheJaedVgvGlExpTm9cywhkoJ/GHcY/hagrc4Gl
+         /BJc247ZmS8NMtp/+m6xQij29Fp9TQNjN/7+i9cc8/7YL1e+fFV+0tw5w3HHkJIwG2Me
+         51eTu1mbeVb7xzoUHmaWEzqZ3thu6Uqe1CyaYpTF+M/OyGwPAr7egxMH0osoZbJRjb1G
+         k/XSWrKWi6OdOrIynyb1GmrojEiLiEK2lnd5dZEyG7bvPGpMVJR8kqJYzhvfKOR5Wkgn
+         zeM8VN2ES8oqrcqCw8XTMXhTtUFVEFP2ACInwsP3DUhIOSr63y4ktLU0wX90tWRnVNxR
+         HBTA==
+X-Gm-Message-State: AOAM530XOGgTF5SGWwJcej5YT8aB/X8FhZZ5jqjAad+2vGPXlzq1dTg6
+        lK3QZ+LjWKUc3Vdrf9hSxWxea07Vi88=
+X-Google-Smtp-Source: ABdhPJwqfRYMz2evtdc5dTOqQRIHbgbYXYn8Rex4lsywmrxtN5ohKnt23PUXdgkIsdoxq1T5Gbv8kA==
+X-Received: by 2002:a17:906:1499:: with SMTP id x25mr2774266ejc.406.1594891225932;
+        Thu, 16 Jul 2020 02:20:25 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id y1sm5129117ede.7.2020.07.16.02.20.17
+        by smtp.gmail.com with ESMTPSA id y1sm5129117ede.7.2020.07.16.02.20.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 02:20:17 -0700 (PDT)
+        Thu, 16 Jul 2020 02:20:25 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, namhyung@kernel.org
-Subject: [PATCH 1/8] tools lib traceevent: Document tep_load_plugins_hook()
-Date:   Thu, 16 Jul 2020 12:20:07 +0300
-Message-Id: <20200716092014.2613403-2-tz.stoyanov@gmail.com>
+Subject: [PATCH 7/8] tools lib traceevent: Fixed description of tep_add_plugin_path() API
+Date:   Thu, 16 Jul 2020 12:20:13 +0300
+Message-Id: <20200716092014.2613403-8-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200716092014.2613403-1-tz.stoyanov@gmail.com>
 References: <20200716092014.2613403-1-tz.stoyanov@gmail.com>
@@ -76,117 +76,36 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add description of tep_load_plugins_hook() traceevent API. Updated
-library man pages with description of the tep_load_plugins_hook() API.
+Changed the description of tep_add_plugin_path() API to reflect the
+logic of the function. The suffix of plugin files is not hardcoded
+to ".so", it depends on the custom plugin loader callback.
 
-Link: https://lore.kernel.org/r/CAM9d7cgLBWCrEHwz+Lhv5x5EXGcNWB0QQoeGh3OKh2JfR=dV9Q@mail.gmail.com
-Link: https://lore.kernel.org/linux-trace-devel/20200714103027.2477584-2-tz.stoyanov@gmail.com
+Link: https://lore.kernel.org/CAM9d7cgMgqFDvKhs6xwdBSMsaG=3ZG0RtxwgQDCTLGkML1MY4Q@mail.gmail.com
+Link: https://lore.kernel.org/linux-trace-devel/20200714103027.2477584-8-tz.stoyanov@gmail.com
 
 Suggested-by: Namhyung Kim <namhyung@kernel.org>
 Acked-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../Documentation/libtraceevent-plugins.txt   | 25 ++++++++++++++++++-
- tools/lib/traceevent/event-plugin.c           | 16 ++++++++++++
- 2 files changed, 40 insertions(+), 1 deletion(-)
+ tools/lib/traceevent/event-plugin.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-index 596032ade31f..4d6394397d92 100644
---- a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-@@ -3,7 +3,7 @@ libtraceevent(3)
- 
- NAME
- ----
--tep_load_plugins, tep_unload_plugins - Load / unload traceevent plugins.
-+tep_load_plugins, tep_unload_plugins, tep_load_plugins_hook - Load / unload traceevent plugins.
- 
- SYNOPSIS
- --------
-@@ -13,6 +13,12 @@ SYNOPSIS
- 
- struct tep_plugin_list pass:[*]*tep_load_plugins*(struct tep_handle pass:[*]_tep_);
- void *tep_unload_plugins*(struct tep_plugin_list pass:[*]_plugin_list_, struct tep_handle pass:[*]_tep_);
-+void *tep_load_plugins_hook*(struct tep_handle pass:[*]_tep_, const char pass:[*]_suffix_,
-+			   void (pass:[*]_load_plugin_)(struct tep_handle pass:[*]tep,
-+					       const char pass:[*]path,
-+					       const char pass:[*]name,
-+					       void pass:[*]data),
-+			   void pass:[*]_data_);
- --
- 
- DESCRIPTION
-@@ -22,11 +28,13 @@ directories. The _tep_ argument is trace event parser context.
- The plugin directories are :
- [verse]
- --
-+	- Directories, specified in _tep_->plugins_dir with priority TEP_PLUGIN_FIRST
- 	- System's plugin directory, defined at the library compile time. It
- 	  depends on the library installation prefix and usually is
- 	  _(install_preffix)/lib/traceevent/plugins_
- 	- Directory, defined by the environment variable _TRACEEVENT_PLUGIN_DIR_
- 	- User's plugin directory, located at _~/.local/lib/traceevent/plugins_
-+	- Directories, specified in _tep_->plugins_dir with priority TEP_PLUGIN_LAST
- --
- Loading of plugins can be controlled by the _tep_flags_, using the
- _tep_set_flag()_ API:
-@@ -44,6 +52,12 @@ _tep_load_plugins()_. The _tep_ argument is trace event parser context. The
- _plugin_list_ is the list of loaded plugins, returned by
- the _tep_load_plugins()_ function.
- 
-+The _tep_load_plugins_hook_ function walks through all directories with plugins
-+and calls user specified _load_plugin()_ hook for each plugin file. Only files
-+with given _suffix_ are considered to be plugins. The _data_ is a user specified
-+context, passed to _load_plugin()_. Directories and the walk order are the same
-+as in _tep_load_plugins()_ API.
-+
- RETURN VALUE
- ------------
- The _tep_load_plugins()_ function returns a list of successfully loaded plugins,
-@@ -63,6 +77,15 @@ if (plugins == NULL) {
- }
- ...
- tep_unload_plugins(plugins, tep);
-+...
-+void print_plugin(struct tep_handle *tep, const char *path,
-+		  const char *name, void *data)
-+{
-+	pritnf("Found libtraceevent plugin %s/%s\n", path, name);
-+}
-+...
-+tep_load_plugins_hook(tep, ".so", print_plugin, NULL);
-+...
- --
- 
- FILES
 diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index 1d4f1809cf17..aa6f43290cd3 100644
+index 6b84b9c4e6ba..f0877a7e3e8d 100644
 --- a/tools/lib/traceevent/event-plugin.c
 +++ b/tools/lib/traceevent/event-plugin.c
-@@ -543,6 +543,22 @@ load_plugins_dir(struct tep_handle *tep, const char *suffix,
- 	closedir(dir);
- }
- 
-+/**
-+ * tep_load_plugins_hook - call a user specified callback to load a plugin
-+ * @tep: handler to traceevent context
-+ * @suffix: filter only plugin files with given suffix
-+ * @load_plugin: user specified callback, called for each plugin file
-+ * @data: custom context, passed to @load_plugin
-+ *
-+ * Searches for traceevent plugin files and calls @load_plugin for each
-+ * The order of plugins search is:
-+ *  - Directories, specified in @tep->plugins_dir and priority TEP_PLUGIN_FIRST
-+ *  - Directory, specified at compile time with PLUGIN_TRACEEVENT_DIR
-+ *  - Directory, specified by environment variable TRACEEVENT_PLUGIN_DIR
-+ *  - In user's home: ~/.local/lib/traceevent/plugins/
-+ *  - Directories, specified in @tep->plugins_dir and priority TEP_PLUGIN_LAST
-+ *
-+ */
- void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
- 			   void (*load_plugin)(struct tep_handle *tep,
- 					       const char *path,
+@@ -646,8 +646,8 @@ tep_load_plugins(struct tep_handle *tep)
+ /**
+  * tep_add_plugin_path - Add a new plugin directory.
+  * @tep: Trace event handler.
+- * @path: Path to a directory. All files with extension .so in that
+- *	  directory will be loaded as plugins.
++ * @path: Path to a directory. All plugin files in that
++ *	  directory will be loaded.
+  *@prio: Load priority of the plugins in that directory.
+  *
+  * Returns -1 in case of an error, 0 otherwise.
 -- 
 2.26.2
 
