@@ -2,152 +2,212 @@ Return-Path: <SRS0=fBth=A4=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07D03C433E7
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Jul 2020 16:12:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA409C433DF
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Jul 2020 16:21:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3C8B2076D
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Jul 2020 16:12:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C5BDD206BE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 17 Jul 2020 16:21:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1595002879;
+	bh=7bAMu+D1zihO27beX7hMew2U5gWFnm+GfutUcV82X5k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=gfmQc0SGrgs3cXlfR9JfpZQgvOfnH8Ks/vx/imq5+LoYaLGr8lJR/CsdIzod0u4Fw
+	 mkdA/qgjeprnTFI0FgXOk0KPtz9umd3uVtnZ60BOhOLjuTFPPPS4znX0FlWB2m2Y06
+	 +Y7vtsGZqqhAS28UCRrsepSOSx6oX6hNVpMR0emw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgGQQMm (ORCPT
+        id S1726351AbgGQQVT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 17 Jul 2020 12:12:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46020 "EHLO mail.kernel.org"
+        Fri, 17 Jul 2020 12:21:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727786AbgGQQMj (ORCPT
+        id S1726232AbgGQQVT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:12:39 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        Fri, 17 Jul 2020 12:21:19 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BAAD2070E;
-        Fri, 17 Jul 2020 16:12:35 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 12:12:33 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Linux-trace Users <linux-trace-users@vger.kernel.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 3AAC12065F;
+        Fri, 17 Jul 2020 16:21:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595002878;
+        bh=7bAMu+D1zihO27beX7hMew2U5gWFnm+GfutUcV82X5k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OLbDHZBrksefEhcLpDgKCVrwvboT02eS7kdwdrhqaUxabPI1G2iHjRWa08fLU1aap
+         AYiRfImNNOJpLtfSwI5XW88tYh0Cuu/fxwTqukrIzooZBAOpsYfPWLJV+T/cjnmdDk
+         zup3vFYi7KIVGQPkjzeKniHAiwD9AAs0LYpFIiRE=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3C89C40482; Fri, 17 Jul 2020 13:21:16 -0300 (-03)
+Date:   Fri, 17 Jul 2020 13:21:16 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org,
         "linux-trace-devel@vger.kernel.org" 
         <linux-trace-devel@vger.kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Yordan Karadzhov <y.karadz@gmail.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Changbin Du <changbin.du@gmail.com>,
-        Patrick McLean <chutzpah@gentoo.org>,
-        Josh Boyer <jwboyer@fedoraproject.org>,
-        Clark Williams <williams@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        John Kacur <jkacur@redhat.com>, Tony Jones <tonyj@suse.de>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Wagner <wagi@monom.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Josef Bacik <jbacik@fb.com>, troyengel@gmail.com,
-        Behan Webster <behanw@converseincode.com>
-Subject: [ANNOUNCE] trace-cmd 2.9
-Message-ID: <20200717121233.5d0d131c@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Subject: Re: [PATCH v5 02/17] perf ftrace: add option '-F/--funcs' to list
+ available functions
+Message-ID: <20200717162116.GB712240@kernel.org>
+References: <20200711124035.6513-1-changbin.du@gmail.com>
+ <20200711124035.6513-3-changbin.du@gmail.com>
+ <20200717110504.1650fbdc@oasis.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717110504.1650fbdc@oasis.local.home>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-I'm happy to announce that after over a year, we finally are able to
-release trace-cmd version 2.9!
+Em Fri, Jul 17, 2020 at 11:05:04AM -0400, Steven Rostedt escreveu:
+> On Sat, 11 Jul 2020 20:40:20 +0800
+> Changbin Du <changbin.du@gmail.com> wrote:
+> 
+> > This adds an option '-F/--funcs' to list all available functions to trace,
+> > which is read from tracing file 'available_filter_functions'.
+> > 
+> > $ sudo ./perf ftrace -F | head
+> > trace_initcall_finish_cb
+> > initcall_blacklisted
+> > do_one_initcall
+> > do_one_initcall
+> > trace_initcall_start_cb
+> > run_init_process
+> > try_to_run_init_process
+> > match_dev_by_label
+> > match_dev_by_uuid
+> > rootfs_init_fs_context
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > 
+> > ---
+> > v2: option name '-l/--list-functions' -> '-F/--funcs'
+> > ---
+> >  tools/perf/Documentation/perf-ftrace.txt |  4 +++
+> >  tools/perf/builtin-ftrace.c              | 43 ++++++++++++++++++++++++
+> >  2 files changed, 47 insertions(+)
+> > 
+> > diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
+> > index 952e46669168..d79560dea19f 100644
+> > --- a/tools/perf/Documentation/perf-ftrace.txt
+> > +++ b/tools/perf/Documentation/perf-ftrace.txt
+> > @@ -30,6 +30,10 @@ OPTIONS
+> >  --verbose=::
+> >          Verbosity level.
+> >  
+> > +-F::
+> > +--funcs::
+> > +        List all available functions to trace.
+> > +
+> >  -p::
+> >  --pid=::
+> >  	Trace on existing process id (comma separated list).
+> > diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+> > index 5f53da87040d..244cc8e6bd60 100644
+> > --- a/tools/perf/builtin-ftrace.c
+> > +++ b/tools/perf/builtin-ftrace.c
+> > @@ -32,6 +32,7 @@ struct perf_ftrace {
+> >  	struct evlist		*evlist;
+> >  	struct target		target;
+> >  	const char		*tracer;
+> > +	bool			list_avail_functions;
+> >  	struct list_head	filters;
+> >  	struct list_head	notrace;
+> >  	struct list_head	graph_funcs;
+> > @@ -127,6 +128,43 @@ static int append_tracing_file(const char *name, const char *val)
+> >  	return __write_tracing_file(name, val, true);
+> >  }
 
+> > +static int read_tracing_file_to_stdout(const char *name)
+> > +{
+ 
+> All this is looking like its duplicating code that we are working on
+> for libtracefs. 
+ 
+> Would you like to start contributing to that, and when we get the
+> libtracefs.so packed in distributions, we can easily create the
+> perf ftrace without having to rewrite the wheel 10 times?
 
-Features and user visible updates since 2.8:
+Or we can use as soon as it is available, not preventing 'perf ftrace'
+from having to wait for libtracefs.so?
 
- - git hash is now visible in trace-cmd --version output
+Duplication is normal at some point, Changbin is moving 'perf ftrace'
+forward, and has been doing this thru several patch series revisions, if
+we continue putting new requirements, it gets tiresome at some point :-\
 
- - Build: python-dir can be specified on the command line for python
-   location.
+- Arnaldo
+ 
+> -- Steve
+> 
+> 
+> > +	char buf[4096];
+> > +	char *file;
+> > +	int fd;
+> > +	int ret = -1;
+> > +
+> > +	file = get_tracing_file(name);
+> > +	if (!file) {
+> > +		pr_debug("cannot get tracing file: %s\n", name);
+> > +		return -1;
+> > +	}
+> > +
+> > +	fd = open(file, O_RDONLY);
+> > +	if (fd < 0) {
+> > +		pr_debug("cannot open tracing file: %s: %s\n",
+> > +			 name, str_error_r(errno, buf, sizeof(buf)));
+> > +		goto out;
+> > +	}
+> > +
+> > +	/* read contents to stdout */
+> > +	while (true) {
+> > +		int n = read(fd, buf, sizeof(buf));
+> > +		if (n <= 0)
+> > +			goto out_close;
+> > +		if (fwrite(buf, n, 1, stdout) != 1)
+> > +			goto out_close;
+> > +	}
+> > +	ret = 0;
+> > +
+> > +out_close:
+> > +	close(fd);
+> > +out:
+> > +	put_tracing_file(file);
+> > +	return ret;
+> > +}
+> > +
+> >  static int reset_tracing_cpu(void);
+> >  static void reset_tracing_filters(void);
+> >  
+> > @@ -301,6 +339,9 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
+> >  	signal(SIGCHLD, sig_handler);
+> >  	signal(SIGPIPE, sig_handler);
+> >  
+> > +	if (ftrace->list_avail_functions)
+> > +		return read_tracing_file_to_stdout("available_filter_functions");
+> > +
+> >  	if (reset_tracing_files(ftrace) < 0) {
+> >  		pr_err("failed to reset ftrace\n");
+> >  		goto out;
+> > @@ -470,6 +511,8 @@ int cmd_ftrace(int argc, const char **argv)
+> >  	const struct option ftrace_options[] = {
+> >  	OPT_STRING('t', "tracer", &ftrace.tracer, "tracer",
+> >  		   "tracer to use: function or function_graph (This option is deprecated)"),
+> > +	OPT_BOOLEAN('F', "funcs", &ftrace.list_avail_functions,
+> > +		    "Show available functions to filter"),
+> >  	OPT_STRING('p', "pid", &ftrace.target.pid, "pid",
+> >  		   "trace on existing process id"),
+> >  	OPT_INCR('v', "verbose", &verbose,
+> 
 
- - Build: NO_UDIS86 on make command line to disable udisc86.
+-- 
 
- - Build: All headers needed by kernelshark installed.
-
- - Added --proc-map to trace-cmd record.
-   Records the /proc/<pid>/maps of the traced file.
-   Used for seeing where page_faults happen (trace-cruncher can use it)
-
- - Add --user to trace-cmd record, to allow to suid to another user to
-   execute the command also on the command line. Useful as trace-cmd needs
-   to be run as root to start the tracing, but when root should not be used
-   as the application being traced.
-
- - Build: Install path of plugins have changed:
-                   ~/.traceevent/plugins/ --> ~/.local/lib/traceevent/plugins/
-   (install_prefix)/lib/trace-cmd/plugins --> (install_prefix)/lib/traceevent/plugins
-
- - trace-cmd reset will now clear the tracing_cpumask file.
-
- - ** NEW ** trace-cmd clear
-   Clear the trace file.
-
- - ** NEW ** trace-cmd agent
-   Can be run on a guest, which will listen on a vsock for commands.
-   trace-cmd report -A Gust <options for guest>
-   Will connect to the guest agent and have the agent run tracing commands
-   sending the data back to the host. See man pages for more details.
-   (note, the synchronization of time stamps is not yet available,
-    that will be coming in the next release of trace-cmd).
-
- - ** NEW ** trace-cmd setup-guest
-   Sets up fifos for a guest and host communications instead of vsocks.
-
- - Add --cmdline_size option to trace-cmd record.
-   Changes the number of process names that are saved in the cache while
-   tracing.
-
- - ** NEW ** trace-cmd dump
-   Dumps out raw data of the trace.dat file.
-
- - Build: New: make test
-   Builds and runs various unit tests.
-
- - More information from trace-cmd stat.
-
- - trace-cmd reset will now clear the error log.
-
- - Add option '-s' to trace-cmd list.
-   This will list the available systems (not events).
-
- - Recording will now stop if -P is on the command line of trace-cmd record
-   and those processes all exit.
-
- - trace-cmd start can now run commands.
-   This is useful when -F and -c are specified on the command line.
-   New "--fork" command line to have trace-cmd not wait for the command to
-   finish before exiting.
-
- - ** New ** trace-cmd set command.
-   Used to set or unset options without messing with other ftrace options.
-
-Plus many fixes and infrastructure improvements.
-Changes are also made to set up having libtraceevent, libtracefs and
-kernelshark be moved into their own git repositories.
-
-We plan on working more more aggressively on the libraries and the tool
-set, such that 3.0 wont take a year to be released.
-
-For more information please visit: https://trace-cmd.org
-
-If you would like to contribute, check out the above web site for where
-we do our development, and feel free to contact us on how to get
-involved.
-
-Enjoy,
-
--- Steve
+- Arnaldo
