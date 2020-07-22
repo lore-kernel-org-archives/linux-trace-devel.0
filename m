@@ -6,31 +6,31 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E743BC43457
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:18:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B3E5C43459
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:18:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CF40322D6E
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:18:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE3E4207DD
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:18:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731781AbgGVBSa (ORCPT
+        id S1731769AbgGVBS3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 21 Jul 2020 21:18:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37078 "EHLO mail.kernel.org"
+        Tue, 21 Jul 2020 21:18:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731645AbgGVBR4 (ORCPT
+        id S1731657AbgGVBR4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 21 Jul 2020 21:17:56 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 702EF22CAE;
+        by mail.kernel.org (Postfix) with ESMTPSA id EA84022CA1;
         Wed, 22 Jul 2020 01:17:55 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jy3OM-005sE2-Cl; Tue, 21 Jul 2020 21:17:54 -0400
-Message-ID: <20200722011754.279610254@goodmis.org>
+        id 1jy3OM-005sG6-W6; Tue, 21 Jul 2020 21:17:55 -0400
+Message-ID: <20200722011754.869289038@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 21 Jul 2020 21:16:41 -0400
+Date:   Tue, 21 Jul 2020 21:16:45 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -38,7 +38,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 13/23 v3] tools lib traceevent: Add builtin handler for trace_marker_raw
+Subject: [PATCH 17/23 v3] tools lib traceevent: Handle strdup() error in parse_option_name()
 References: <20200722011628.925541477@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,87 +47,57 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-When something is written into trace_marker_raw, it goes in as a binary. But
-the printk_fmt() of the event that is created (raw_data)'s format file only
-prints the first byte of data:
+Modified internal function parse_option_name() to return error and handle
+that error in function callers in case strdup() fails.
 
-  print fmt: "id:%04x %08x", REC->id, (int)REC->buf[0]
+Link: https://lore.kernel.org/r/CAM9d7cizjF+fbK7YzmsBDgrx__4YAOsmEq67D3sWET8FF+YdFA@mail.gmail.com
+Link: https://lore.kernel.org/linux-trace-devel/20200714103027.2477584-3-tz.stoyanov@gmail.com
+Link: https://lore.kernel.org/linux-trace-devel/20200716092014.2613403-3-tz.stoyanov@gmail.com
 
-This is not very useful if we want to see the full data output.
-
-Implement the processing of the raw_data event like it is in the kernel.
-
-Link: http://lore.kernel.org/linux-trace-devel/20200702174950.123454-5-tz.stoyanov@gmail.com
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-[ Ported from trace-cmd.git ]
+Suggested-by: Namhyung Kim <namhyung@kernel.org>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../lib/traceevent/plugins/plugin_function.c  | 41 +++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ tools/lib/traceevent/event-plugin.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/traceevent/plugins/plugin_function.c b/tools/lib/traceevent/plugins/plugin_function.c
-index c7d321968f39..7e8e29b43d1c 100644
---- a/tools/lib/traceevent/plugins/plugin_function.c
-+++ b/tools/lib/traceevent/plugins/plugin_function.c
-@@ -222,6 +222,44 @@ trace_stack_handler(struct trace_seq *s, struct tep_record *record,
- 	return 0;
+diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
+index aa6f43290cd3..a39eeb6ef1f2 100644
+--- a/tools/lib/traceevent/event-plugin.c
++++ b/tools/lib/traceevent/event-plugin.c
+@@ -254,7 +254,7 @@ void tep_plugin_remove_options(struct tep_plugin_option *options)
+ 	}
  }
  
-+static int
-+trace_raw_data_handler(struct trace_seq *s, struct tep_record *record,
-+		    struct tep_event *event, void *context)
-+{
-+	struct tep_format_field *field;
-+	unsigned long long id;
-+	int long_size;
-+	void *data = record->data;
-+
-+	if (tep_get_field_val(s, event, "id", record, &id, 1))
-+		return trace_seq_putc(s, '!');
-+
-+	trace_seq_printf(s, "# %llx", id);
-+
-+	field = tep_find_any_field(event, "buf");
-+	if (!field) {
-+		trace_seq_printf(s, "<CANT FIND FIELD %s>", "buf");
-+		return 0;
-+	}
-+
-+	long_size = tep_get_long_size(event->tep);
-+
-+	for (data += field->offset; data < record->data + record->size;
-+	     data += long_size) {
-+		int size = sizeof(long);
-+		int left = (record->data + record->size) - data;
-+		int i;
-+
-+		if (size > left)
-+			size = left;
-+
-+		for (i = 0; i < size; i++)
-+			trace_seq_printf(s, " %02x", *(unsigned char *)(data + i));
-+	}
-+
-+	return 0;
-+}
-+
- int TEP_PLUGIN_LOADER(struct tep_handle *tep)
+-static void parse_option_name(char **option, char **plugin)
++static int parse_option_name(char **option, char **plugin)
  {
- 	tep_register_event_handler(tep, -1, "ftrace", "function",
-@@ -230,6 +268,9 @@ int TEP_PLUGIN_LOADER(struct tep_handle *tep)
- 	tep_register_event_handler(tep, -1, "ftrace", "kernel_stack",
- 				      trace_stack_handler, NULL);
+ 	char *p;
  
-+	tep_register_event_handler(tep, -1, "ftrace", "raw_data",
-+				      trace_raw_data_handler, NULL);
-+
- 	tep_plugin_add_options("ftrace", plugin_options);
+@@ -265,8 +265,9 @@ static void parse_option_name(char **option, char **plugin)
+ 		*p = '\0';
+ 		*option = strdup(p + 1);
+ 		if (!*option)
+-			return;
++			return -1;
+ 	}
++	return 0;
+ }
  
- 	return 0;
+ static struct tep_plugin_option *
+@@ -325,7 +326,8 @@ int tep_plugin_add_option(const char *name, const char *val)
+ 	if (!option_str)
+ 		return -ENOMEM;
+ 
+-	parse_option_name(&option_str, &plugin);
++	if (parse_option_name(&option_str, &plugin) < 0)
++		return -ENOMEM;
+ 
+ 	/* If the option exists, update the val */
+ 	for (op = trace_plugin_options; op; op = op->next) {
 -- 
 2.26.2
 
