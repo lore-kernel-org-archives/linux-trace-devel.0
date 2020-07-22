@@ -6,31 +6,31 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A56E0C43458
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:18:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21CE9C433EB
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:18:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C97022D6E
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:18:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 03B21207DD
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:18:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731774AbgGVBS3 (ORCPT
+        id S1731817AbgGVBSn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 21 Jul 2020 21:18:29 -0400
+        Tue, 21 Jul 2020 21:18:43 -0400
 Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731654AbgGVBR4 (ORCPT
+        id S1731633AbgGVBRz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 21 Jul 2020 21:17:56 -0400
+        Tue, 21 Jul 2020 21:17:55 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D409522CF6;
+        by mail.kernel.org (Postfix) with ESMTPSA id 05DC5208E4;
         Wed, 22 Jul 2020 01:17:55 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jy3OM-005sFa-R8; Tue, 21 Jul 2020 21:17:54 -0400
-Message-ID: <20200722011754.720060785@goodmis.org>
+        id 1jy3OL-005sCU-UU; Tue, 21 Jul 2020 21:17:53 -0400
+Message-ID: <20200722011753.827936853@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 21 Jul 2020 21:16:44 -0400
+Date:   Tue, 21 Jul 2020 21:16:38 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -38,7 +38,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 16/23 v3] tools lib traceevent: Document tep_load_plugins_hook()
+Subject: [PATCH 10/23 v3] tools lib traceevent: Add offset option for function plugin
 References: <20200722011628.925541477@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,120 +47,88 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add description of tep_load_plugins_hook() traceevent API. Updated
-library man pages with description of the tep_load_plugins_hook() API.
+When the offset option is set for the function plugin enabled, it will
+display the offset of the functions along with their names.  This helps in
+finding exactly where a function was called by its parent.
 
-Link: https://lore.kernel.org/r/CAM9d7cgLBWCrEHwz+Lhv5x5EXGcNWB0QQoeGh3OKh2JfR=dV9Q@mail.gmail.com
-Link: https://lore.kernel.org/linux-trace-devel/20200714103027.2477584-2-tz.stoyanov@gmail.com
-Link: https://lore.kernel.org/linux-trace-devel/20200716092014.2613403-2-tz.stoyanov@gmail.com
+ trace-cmd report -O parent -O offset
+[..]
+        rcuc/163-1330  [163]   740.653251: function: _raw_spin_lock+0x0  <-- rcu_cpu_kthread+0x4d8
 
-Suggested-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Link: http://lore.kernel.org/linux-trace-devel/20200702174950.123454-2-tz.stoyanov@gmail.com
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+[ Ported from trace-cmd.git ]
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../Documentation/libtraceevent-plugins.txt   | 25 ++++++++++++++++++-
- tools/lib/traceevent/event-plugin.c           | 16 ++++++++++++
- 2 files changed, 40 insertions(+), 1 deletion(-)
+ .../lib/traceevent/plugins/plugin_function.c  | 24 +++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-index 596032ade31f..4d6394397d92 100644
---- a/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-+++ b/tools/lib/traceevent/Documentation/libtraceevent-plugins.txt
-@@ -3,7 +3,7 @@ libtraceevent(3)
+diff --git a/tools/lib/traceevent/plugins/plugin_function.c b/tools/lib/traceevent/plugins/plugin_function.c
+index 7770fcb78e0f..cafddd6be983 100644
+--- a/tools/lib/traceevent/plugins/plugin_function.c
++++ b/tools/lib/traceevent/plugins/plugin_function.c
+@@ -49,6 +49,13 @@ struct tep_plugin_option plugin_options[] =
+ 		"Try to show function call indents, based on parents",
+ 		.set = 1,
+ 	},
++	{
++		.name = "offset",
++		.plugin_alias = "ftrace",
++		.description =
++		"Show function names as well as their offsets",
++		.set = 0,
++	},
+ 	{
+ 		.name = NULL,
+ 	}
+@@ -56,6 +63,7 @@ struct tep_plugin_option plugin_options[] =
  
- NAME
- ----
--tep_load_plugins, tep_unload_plugins - Load / unload traceevent plugins.
-+tep_load_plugins, tep_unload_plugins, tep_load_plugins_hook - Load / unload traceevent plugins.
+ static struct tep_plugin_option *ftrace_parent = &plugin_options[0];
+ static struct tep_plugin_option *ftrace_indent = &plugin_options[1];
++static struct tep_plugin_option *ftrace_offset = &plugin_options[2];
  
- SYNOPSIS
- --------
-@@ -13,6 +13,12 @@ SYNOPSIS
- 
- struct tep_plugin_list pass:[*]*tep_load_plugins*(struct tep_handle pass:[*]_tep_);
- void *tep_unload_plugins*(struct tep_plugin_list pass:[*]_plugin_list_, struct tep_handle pass:[*]_tep_);
-+void *tep_load_plugins_hook*(struct tep_handle pass:[*]_tep_, const char pass:[*]_suffix_,
-+			   void (pass:[*]_load_plugin_)(struct tep_handle pass:[*]tep,
-+					       const char pass:[*]path,
-+					       const char pass:[*]name,
-+					       void pass:[*]data),
-+			   void pass:[*]_data_);
- --
- 
- DESCRIPTION
-@@ -22,11 +28,13 @@ directories. The _tep_ argument is trace event parser context.
- The plugin directories are :
- [verse]
- --
-+	- Directories, specified in _tep_->plugins_dir with priority TEP_PLUGIN_FIRST
- 	- System's plugin directory, defined at the library compile time. It
- 	  depends on the library installation prefix and usually is
- 	  _(install_preffix)/lib/traceevent/plugins_
- 	- Directory, defined by the environment variable _TRACEEVENT_PLUGIN_DIR_
- 	- User's plugin directory, located at _~/.local/lib/traceevent/plugins_
-+	- Directories, specified in _tep_->plugins_dir with priority TEP_PLUGIN_LAST
- --
- Loading of plugins can be controlled by the _tep_flags_, using the
- _tep_set_flag()_ API:
-@@ -44,6 +52,12 @@ _tep_load_plugins()_. The _tep_ argument is trace event parser context. The
- _plugin_list_ is the list of loaded plugins, returned by
- the _tep_load_plugins()_ function.
- 
-+The _tep_load_plugins_hook_ function walks through all directories with plugins
-+and calls user specified _load_plugin()_ hook for each plugin file. Only files
-+with given _suffix_ are considered to be plugins. The _data_ is a user specified
-+context, passed to _load_plugin()_. Directories and the walk order are the same
-+as in _tep_load_plugins()_ API.
-+
- RETURN VALUE
- ------------
- The _tep_load_plugins()_ function returns a list of successfully loaded plugins,
-@@ -63,6 +77,15 @@ if (plugins == NULL) {
+ static void add_child(struct func_stack *stack, const char *child, int pos)
+ {
+@@ -123,6 +131,18 @@ static int add_and_get_index(const char *parent, const char *child, int cpu)
+ 	return 0;
  }
- ...
- tep_unload_plugins(plugins, tep);
-+...
-+void print_plugin(struct tep_handle *tep, const char *path,
-+		  const char *name, void *data)
+ 
++static void show_function(struct trace_seq *s, struct tep_handle *tep,
++			  const char *func, unsigned long long function)
 +{
-+	pritnf("Found libtraceevent plugin %s/%s\n", path, name);
++	unsigned long long offset;
++
++	trace_seq_printf(s, "%s", func);
++	if (ftrace_offset->set) {
++		offset = tep_find_function_address(tep, function);
++		trace_seq_printf(s, "+0x%x ", (int)(function - offset));
++	}
 +}
-+...
-+tep_load_plugins_hook(tep, ".so", print_plugin, NULL);
-+...
- --
++
+ static int function_handler(struct trace_seq *s, struct tep_record *record,
+ 			    struct tep_event *event, void *context)
+ {
+@@ -149,14 +169,14 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
+ 	trace_seq_printf(s, "%*s", index*3, "");
  
- FILES
-diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
-index 1d4f1809cf17..aa6f43290cd3 100644
---- a/tools/lib/traceevent/event-plugin.c
-+++ b/tools/lib/traceevent/event-plugin.c
-@@ -543,6 +543,22 @@ load_plugins_dir(struct tep_handle *tep, const char *suffix,
- 	closedir(dir);
- }
+ 	if (func)
+-		trace_seq_printf(s, "%s", func);
++		show_function(s, tep, func, function);
+ 	else
+ 		trace_seq_printf(s, "0x%llx", function);
  
-+/**
-+ * tep_load_plugins_hook - call a user specified callback to load a plugin
-+ * @tep: handler to traceevent context
-+ * @suffix: filter only plugin files with given suffix
-+ * @load_plugin: user specified callback, called for each plugin file
-+ * @data: custom context, passed to @load_plugin
-+ *
-+ * Searches for traceevent plugin files and calls @load_plugin for each
-+ * The order of plugins search is:
-+ *  - Directories, specified in @tep->plugins_dir and priority TEP_PLUGIN_FIRST
-+ *  - Directory, specified at compile time with PLUGIN_TRACEEVENT_DIR
-+ *  - Directory, specified by environment variable TRACEEVENT_PLUGIN_DIR
-+ *  - In user's home: ~/.local/lib/traceevent/plugins/
-+ *  - Directories, specified in @tep->plugins_dir and priority TEP_PLUGIN_LAST
-+ *
-+ */
- void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
- 			   void (*load_plugin)(struct tep_handle *tep,
- 					       const char *path,
+ 	if (ftrace_parent->set) {
+ 		trace_seq_printf(s, " <-- ");
+ 		if (parent)
+-			trace_seq_printf(s, "%s", parent);
++			show_function(s, tep, parent, pfunction);
+ 		else
+ 			trace_seq_printf(s, "0x%llx", pfunction);
+ 	}
 -- 
 2.26.2
 
