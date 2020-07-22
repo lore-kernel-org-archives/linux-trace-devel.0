@@ -6,40 +6,39 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 033EBC433E1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30DEBC433DF
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:19:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D353922D71
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:19:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1883A22D71
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:19:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731844AbgGVBS5 (ORCPT
+        id S1731635AbgGVBRz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 21 Jul 2020 21:18:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731632AbgGVBRz (ORCPT
-        <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 21 Jul 2020 21:17:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731606AbgGVBRy (ORCPT
+        <rfc822;linux-trace-devel@vger.kernel.org>);
+        Tue, 21 Jul 2020 21:17:54 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA27B22C9C;
-        Wed, 22 Jul 2020 01:17:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D513722CB3;
+        Wed, 22 Jul 2020 01:17:53 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jy3OL-005sBy-Q1; Tue, 21 Jul 2020 21:17:53 -0400
-Message-ID: <20200722011753.688153525@goodmis.org>
+        id 1jy3OK-005s8r-Rk; Tue, 21 Jul 2020 21:17:52 -0400
+Message-ID: <20200722011752.736597249@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 21 Jul 2020 21:16:37 -0400
+Date:   Tue, 21 Jul 2020 21:16:31 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 09/23 v3] tools lib traceevent: Add more SVM exit reasons
+Subject: [PATCH 03/23 v3] tools lib traceevent: Add tep_load_plugins_hook() API
 References: <20200722011628.925541477@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,64 +47,89 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-Exceptions require individual decoding (only feasible intercepts
-listed), XSETBV was missing and the AVIC brought in two new exit codes.
+Add the API function tep_load_plugins_hook() to the traceevent API to allow
+tools a common method to load in the plugins that are part of the lib
+traceevent library.
 
-Link: http://lkml.kernel.org/r/5741D822.3030203@web.de
-Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-10-tz.stoyanov@gmail.com
+Link: http://lore.kernel.org/linux-trace-devel/20190802110101.14759-4-tz.stoyanov@gmail.com
+Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-4-tz.stoyanov@gmail.com
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-[ Ported from trace-cmd.git ]
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/plugins/plugin_kvm.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ tools/lib/traceevent/event-parse.h  |  6 ++++++
+ tools/lib/traceevent/event-plugin.c | 19 +++++++++----------
+ 2 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/tools/lib/traceevent/plugins/plugin_kvm.c b/tools/lib/traceevent/plugins/plugin_kvm.c
-index c8e623065a7e..768c658f5904 100644
---- a/tools/lib/traceevent/plugins/plugin_kvm.c
-+++ b/tools/lib/traceevent/plugins/plugin_kvm.c
-@@ -155,7 +155,23 @@ static const char *disassemble(unsigned char *insn, int len, uint64_t rip,
- 	_ER(EXIT_WRITE_DR5,	0x035)		\
- 	_ER(EXIT_WRITE_DR6,	0x036)		\
- 	_ER(EXIT_WRITE_DR7,	0x037)		\
--	_ER(EXIT_EXCP_BASE,     0x040)		\
-+	_ER(EXIT_EXCP_DE,	0x040)		\
-+	_ER(EXIT_EXCP_DB,	0x041)		\
-+	_ER(EXIT_EXCP_BP,	0x043)		\
-+	_ER(EXIT_EXCP_OF,	0x044)		\
-+	_ER(EXIT_EXCP_BR,	0x045)		\
-+	_ER(EXIT_EXCP_UD,	0x046)		\
-+	_ER(EXIT_EXCP_NM,	0x047)		\
-+	_ER(EXIT_EXCP_DF,	0x048)		\
-+	_ER(EXIT_EXCP_TS,	0x04a)		\
-+	_ER(EXIT_EXCP_NP,	0x04b)		\
-+	_ER(EXIT_EXCP_SS,	0x04c)		\
-+	_ER(EXIT_EXCP_GP,	0x04d)		\
-+	_ER(EXIT_EXCP_PF,	0x04e)		\
-+	_ER(EXIT_EXCP_MF,	0x050)		\
-+	_ER(EXIT_EXCP_AC,	0x051)		\
-+	_ER(EXIT_EXCP_MC,	0x052)		\
-+	_ER(EXIT_EXCP_XF,	0x053)		\
- 	_ER(EXIT_INTR,		0x060)		\
- 	_ER(EXIT_NMI,		0x061)		\
- 	_ER(EXIT_SMI,		0x062)		\
-@@ -201,7 +217,10 @@ static const char *disassemble(unsigned char *insn, int len, uint64_t rip,
- 	_ER(EXIT_MONITOR,	0x08a)		\
- 	_ER(EXIT_MWAIT,		0x08b)		\
- 	_ER(EXIT_MWAIT_COND,	0x08c)		\
--	_ER(EXIT_NPF,		0x400)		\
-+	_ER(EXIT_XSETBV,	0x08d)		\
-+	_ER(EXIT_NPF, 		0x400)		\
-+	_ER(EXIT_AVIC_INCOMPLETE_IPI,		0x401)	\
-+	_ER(EXIT_AVIC_UNACCELERATED_ACCESS,	0x402)	\
- 	_ER(EXIT_ERR,		-1)
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
+index b77837f75a0d..776c7c24ee79 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -396,6 +396,12 @@ struct tep_plugin_list;
+ struct tep_plugin_list *tep_load_plugins(struct tep_handle *tep);
+ void tep_unload_plugins(struct tep_plugin_list *plugin_list,
+ 			struct tep_handle *tep);
++void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
++			   void (*load_plugin)(struct tep_handle *tep,
++					       const char *path,
++					       const char *name,
++					       void *data),
++			   void *data);
+ char **tep_plugin_list_options(void);
+ void tep_plugin_free_options_list(char **list);
+ int tep_plugin_add_options(const char *name,
+diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
+index e1f7ddd5a6cf..b53d9a53bcf9 100644
+--- a/tools/lib/traceevent/event-plugin.c
++++ b/tools/lib/traceevent/event-plugin.c
+@@ -365,20 +365,19 @@ load_plugins_dir(struct tep_handle *tep, const char *suffix,
+ 	closedir(dir);
+ }
  
- #define _ER(reason, val)	{ #reason, val },
+-static void
+-load_plugins(struct tep_handle *tep, const char *suffix,
+-	     void (*load_plugin)(struct tep_handle *tep,
+-				 const char *path,
+-				 const char *name,
+-				 void *data),
+-	     void *data)
++void tep_load_plugins_hook(struct tep_handle *tep, const char *suffix,
++			   void (*load_plugin)(struct tep_handle *tep,
++					       const char *path,
++					       const char *name,
++					       void *data),
++			   void *data)
+ {
+ 	char *home;
+ 	char *path;
+ 	char *envdir;
+ 	int ret;
+ 
+-	if (tep->flags & TEP_DISABLE_PLUGINS)
++	if (tep && tep->flags & TEP_DISABLE_PLUGINS)
+ 		return;
+ 
+ 	/*
+@@ -386,7 +385,7 @@ load_plugins(struct tep_handle *tep, const char *suffix,
+ 	 * check that first.
+ 	 */
+ #ifdef PLUGIN_DIR
+-	if (!(tep->flags & TEP_DISABLE_SYS_PLUGINS))
++	if (!tep || !(tep->flags & TEP_DISABLE_SYS_PLUGINS))
+ 		load_plugins_dir(tep, suffix, PLUGIN_DIR,
+ 				 load_plugin, data);
+ #endif
+@@ -423,7 +422,7 @@ tep_load_plugins(struct tep_handle *tep)
+ {
+ 	struct tep_plugin_list *list = NULL;
+ 
+-	load_plugins(tep, ".so", load_plugin, &list);
++	tep_load_plugins_hook(tep, ".so", load_plugin, &list);
+ 	return list;
+ }
+ 
 -- 
 2.26.2
 
