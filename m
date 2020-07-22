@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C89A8C433F1
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD1FCC433E5
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:17:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B13BA207DD
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:19:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9EB8322CF7
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:17:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731632AbgGVBTB (ORCPT
+        id S1731650AbgGVBRz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 21 Jul 2020 21:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731630AbgGVBRz (ORCPT
-        <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 21 Jul 2020 21:17:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731610AbgGVBRy (ORCPT
+        <rfc822;linux-trace-devel@vger.kernel.org>);
+        Tue, 21 Jul 2020 21:17:54 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A738922D0A;
-        Wed, 22 Jul 2020 01:17:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8BE522CBB;
+        Wed, 22 Jul 2020 01:17:53 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jy3OL-005sBS-LZ; Tue, 21 Jul 2020 21:17:53 -0400
-Message-ID: <20200722011753.546498613@goodmis.org>
+        id 1jy3OL-005s9N-0C; Tue, 21 Jul 2020 21:17:53 -0400
+Message-ID: <20200722011752.880144560@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 21 Jul 2020 21:16:36 -0400
+Date:   Tue, 21 Jul 2020 21:16:32 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -38,7 +38,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 08/23 v3] tools lib traceevent: Add plugin for tlb_flush
+Subject: [PATCH 04/23 v3] tools lib traceevent: Add interface for options to plugins
 References: <20200722011628.925541477@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,133 +47,245 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
+From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-The tlb_flush tracepoints uses enums that are not yet known by
-the traceevent library. Add a plugin to handle that.
+Add tep_plugin_add_option() and tep_plugin_print_options() to lib traceevent
+library that allows plugins to have their own options. For example, the
+function plugin by default does not print the parent, as it uses the parent
+to do the indenting. The "parent" option is created by the function plugin
+that will print the parent of the function like it does in the trace file.
 
-Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-9-tz.stoyanov@gmail.com
+The tep_plugin_print_options() will print out the list of options that a
+plugin has defined.
 
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-[ Ported from trace-cmd.git ]
+Link: http://lore.kernel.org/linux-trace-devel/20190802110101.14759-3-tz.stoyanov@gmail.com
+Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-5-tz.stoyanov@gmail.com
+
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/plugins/Build        |  1 +
- tools/lib/traceevent/plugins/Makefile     |  1 +
- tools/lib/traceevent/plugins/plugin_tlb.c | 81 +++++++++++++++++++++++
- 3 files changed, 83 insertions(+)
- create mode 100644 tools/lib/traceevent/plugins/plugin_tlb.c
+ tools/lib/traceevent/event-parse.h  |   2 +
+ tools/lib/traceevent/event-plugin.c | 172 ++++++++++++++++++++++++++++
+ 2 files changed, 174 insertions(+)
 
-diff --git a/tools/lib/traceevent/plugins/Build b/tools/lib/traceevent/plugins/Build
-index 210d26910613..b866f231a536 100644
---- a/tools/lib/traceevent/plugins/Build
-+++ b/tools/lib/traceevent/plugins/Build
-@@ -8,3 +8,4 @@ plugin_function-y     += plugin_function.o
- plugin_xen-y          += plugin_xen.o
- plugin_scsi-y         += plugin_scsi.o
- plugin_cfg80211-y     += plugin_cfg80211.o
-+plugin_tlb-y          += plugin_tlb.o
-\ No newline at end of file
-diff --git a/tools/lib/traceevent/plugins/Makefile b/tools/lib/traceevent/plugins/Makefile
-index 349bb81482ab..8e72707e8630 100644
---- a/tools/lib/traceevent/plugins/Makefile
-+++ b/tools/lib/traceevent/plugins/Makefile
-@@ -137,6 +137,7 @@ PLUGINS += plugin_function.so
- PLUGINS += plugin_xen.so
- PLUGINS += plugin_scsi.so
- PLUGINS += plugin_cfg80211.so
-+PLUGINS += plugin_tlb.so
+diff --git a/tools/lib/traceevent/event-parse.h b/tools/lib/traceevent/event-parse.h
+index 776c7c24ee79..02c0438527de 100644
+--- a/tools/lib/traceevent/event-parse.h
++++ b/tools/lib/traceevent/event-parse.h
+@@ -406,7 +406,9 @@ char **tep_plugin_list_options(void);
+ void tep_plugin_free_options_list(char **list);
+ int tep_plugin_add_options(const char *name,
+ 			   struct tep_plugin_option *options);
++int tep_plugin_add_option(const char *name, const char *val);
+ void tep_plugin_remove_options(struct tep_plugin_option *options);
++void tep_plugin_print_options(struct trace_seq *s);
+ void tep_print_plugins(struct trace_seq *s,
+ 			const char *prefix, const char *suffix,
+ 			const struct tep_plugin_list *list);
+diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
+index b53d9a53bcf9..e8f4329ba8e0 100644
+--- a/tools/lib/traceevent/event-plugin.c
++++ b/tools/lib/traceevent/event-plugin.c
+@@ -13,6 +13,7 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <dirent.h>
++#include <errno.h>
+ #include "event-parse.h"
+ #include "event-parse-local.h"
+ #include "event-utils.h"
+@@ -247,6 +248,166 @@ void tep_plugin_remove_options(struct tep_plugin_option *options)
+ 	}
+ }
  
- PLUGINS    := $(addprefix $(OUTPUT),$(PLUGINS))
- PLUGINS_IN := $(PLUGINS:.so=-in.o)
-diff --git a/tools/lib/traceevent/plugins/plugin_tlb.c b/tools/lib/traceevent/plugins/plugin_tlb.c
-new file mode 100644
-index 000000000000..1adade776306
---- /dev/null
-+++ b/tools/lib/traceevent/plugins/plugin_tlb.c
-@@ -0,0 +1,81 @@
-+/*
-+ * Copyright (C) 2015 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU Lesser General Public
-+ * License as published by the Free Software Foundation;
-+ * version 2.1 of the License (not later!)
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU Lesser General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU Lesser General Public
-+ * License along with this program; if not,  see <http://www.gnu.org/licenses>
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ */
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#include "event-parse.h"
-+
-+enum tlb_flush_reason {
-+	TLB_FLUSH_ON_TASK_SWITCH,
-+	TLB_REMOTE_SHOOTDOWN,
-+	TLB_LOCAL_SHOOTDOWN,
-+	TLB_LOCAL_MM_SHOOTDOWN,
-+	NR_TLB_FLUSH_REASONS,
-+};
-+
-+static int tlb_flush_handler(struct trace_seq *s, struct tep_record *record,
-+			     struct tep_event *event, void *context)
++static void parse_option_name(char **option, char **plugin)
 +{
-+	unsigned long long val;
++	char *p;
 +
-+	trace_seq_printf(s, "pages=");
++	*plugin = NULL;
 +
-+	tep_print_num_field(s, "%ld", event, "pages", record, 1);
++	if ((p = strstr(*option, ":"))) {
++		*plugin = *option;
++		*p = '\0';
++		*option = strdup(p + 1);
++		if (!*option)
++			return;
++	}
++}
 +
-+	if (tep_get_field_val(s, event, "reason", record, &val, 1) < 0)
-+		return -1;
++static struct tep_plugin_option *
++find_registered_option(const char *plugin, const char *option)
++{
++	struct registered_plugin_options *reg;
++	struct tep_plugin_option *op;
++	const char *op_plugin;
 +
-+	trace_seq_puts(s, " reason=");
++	for (reg = registered_options; reg; reg = reg->next) {
++		for (op = reg->options; op->name; op++) {
++			if (op->plugin_alias)
++				op_plugin = op->plugin_alias;
++			else
++				op_plugin = op->file;
 +
-+	switch (val) {
-+	case TLB_FLUSH_ON_TASK_SWITCH:
-+		trace_seq_puts(s, "flush on task switch");
-+		break;
-+	case TLB_REMOTE_SHOOTDOWN:
-+		trace_seq_puts(s, "remote shootdown");
-+		break;
-+	case TLB_LOCAL_SHOOTDOWN:
-+		trace_seq_puts(s, "local shootdown");
-+		break;
-+	case TLB_LOCAL_MM_SHOOTDOWN:
-+		trace_seq_puts(s, "local mm shootdown");
++			if (plugin && strcmp(plugin, op_plugin) != 0)
++				continue;
++			if (strcmp(option, op->name) != 0)
++				continue;
++
++			return op;
++		}
++	}
++
++	return NULL;
++}
++
++static int process_option(const char *plugin, const char *option, const char *val)
++{
++	struct tep_plugin_option *op;
++
++	op = find_registered_option(plugin, option);
++	if (!op)
++		return 0;
++
++	return update_option_value(op, val);
++}
++
++/**
++ * tep_plugin_add_option - add an option/val pair to set plugin options
++ * @name: The name of the option (format: <plugin>:<option> or just <option>)
++ * @val: (optiona) the value for the option
++ *
++ * Modify a plugin option. If @val is given than the value of the option
++ * is set (note, some options just take a boolean, so @val must be either
++ * "1" or "0" or "true" or "false").
++ */
++int tep_plugin_add_option(const char *name, const char *val)
++{
++	struct trace_plugin_options *op;
++	char *option_str;
++	char *plugin;
++
++	option_str = strdup(name);
++	if (!option_str)
++		return -ENOMEM;
++
++	parse_option_name(&option_str, &plugin);
++
++	/* If the option exists, update the val */
++	for (op = trace_plugin_options; op; op = op->next) {
++		/* Both must be NULL or not NULL */
++		if ((!plugin || !op->plugin) && plugin != op->plugin)
++			continue;
++		if (plugin && strcmp(plugin, op->plugin) != 0)
++			continue;
++		if (strcmp(op->option, option_str) != 0)
++			continue;
++
++		/* update option */
++		free(op->value);
++		if (val) {
++			op->value = strdup(val);
++			if (!op->value)
++				goto out_free;
++		} else
++			op->value = NULL;
++
++		/* plugin and option_str don't get freed at the end */
++		free(plugin);
++		free(option_str);
++
++		plugin = op->plugin;
++		option_str = op->option;
 +		break;
 +	}
 +
-+	trace_seq_printf(s, " (%lld)", val);
++	/* If not found, create */
++	if (!op) {
++		op = malloc(sizeof(*op));
++		if (!op)
++			return -ENOMEM;
++		memset(op, 0, sizeof(*op));
++		op->next = trace_plugin_options;
++		trace_plugin_options = op;
 +
-+	return 0;
++		op->plugin = plugin;
++		op->option = option_str;
++
++		if (val) {
++			op->value = strdup(val);
++			if (!op->value)
++				goto out_free;
++		}
++	}
++
++	return process_option(plugin, option_str, val);
++ out_free:
++	free(option_str);
++	return -ENOMEM;
 +}
 +
-+int TEP_PLUGIN_LOADER(struct tep_handle *tep)
++static void print_op_data(struct trace_seq *s, const char *name,
++			  const char *op)
 +{
-+	tep_register_event_handler(tep, -1, "tlb", "tlb_flush",
-+				   tlb_flush_handler, NULL);
-+
-+	return 0;
++	if (op)
++		trace_seq_printf(s, "%8s:\t%s\n", name, op);
 +}
 +
-+void TEP_PLUGIN_UNLOADER(struct tep_handle *tep)
++/**
++ * tep_plugin_print_options - print out the registered plugin options
++ * @s: The trace_seq descriptor to write the plugin options into
++ *
++ * Writes a list of options into trace_seq @s.
++ */
++void tep_plugin_print_options(struct trace_seq *s)
 +{
-+	tep_unregister_event_handler(tep, -1,
-+				     "tlb", "tlb_flush",
-+				     tlb_flush_handler, NULL);
++	struct registered_plugin_options *reg;
++	struct tep_plugin_option *op;
++
++	for (reg = registered_options; reg; reg = reg->next) {
++		if (reg != registered_options)
++			trace_seq_printf(s, "============\n");
++		for (op = reg->options; op->name; op++) {
++			if (op != reg->options)
++				trace_seq_printf(s, "------------\n");
++			print_op_data(s, "file", op->file);
++			print_op_data(s, "plugin", op->plugin_alias);
++			print_op_data(s, "option", op->name);
++			print_op_data(s, "desc", op->description);
++			print_op_data(s, "value", op->value);
++			trace_seq_printf(s, "%8s:\t%d\n", "set", op->set);
++		}
++	}
 +}
++
+ /**
+  * tep_print_plugins - print out the list of plugins loaded
+  * @s: the trace_seq descripter to write to
+@@ -273,6 +434,7 @@ load_plugin(struct tep_handle *tep, const char *path,
+ 	    const char *file, void *data)
+ {
+ 	struct tep_plugin_list **plugin_list = data;
++	struct tep_plugin_option *options;
+ 	tep_plugin_load_func func;
+ 	struct tep_plugin_list *list;
+ 	const char *alias;
+@@ -297,6 +459,16 @@ load_plugin(struct tep_handle *tep, const char *path,
+ 	if (!alias)
+ 		alias = file;
+ 
++	options = dlsym(handle, TEP_PLUGIN_OPTIONS_NAME);
++	if (options) {
++		while (options->name) {
++			ret = update_option(alias, options);
++			if (ret < 0)
++				goto out_free;
++			options++;
++		}
++	}
++
+ 	func = dlsym(handle, TEP_PLUGIN_LOADER_NAME);
+ 	if (!func) {
+ 		warning("could not find func '%s' in plugin '%s'\n%s\n",
 -- 
 2.26.2
 
