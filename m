@@ -6,31 +6,31 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C48E4C433E3
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:17:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36F71C433E7
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:17:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A1B0722CA0
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:17:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 089B822D37
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 22 Jul 2020 01:17:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731612AbgGVBRy (ORCPT
+        id S1731672AbgGVBR5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 21 Jul 2020 21:17:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36706 "EHLO mail.kernel.org"
+        Tue, 21 Jul 2020 21:17:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731570AbgGVBRy (ORCPT
+        id S1731662AbgGVBR5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 21 Jul 2020 21:17:54 -0400
+        Tue, 21 Jul 2020 21:17:57 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B6542176B;
-        Wed, 22 Jul 2020 01:17:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4490022D01;
+        Wed, 22 Jul 2020 01:17:56 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jy3OK-005s7n-HR; Tue, 21 Jul 2020 21:17:52 -0400
-Message-ID: <20200722011752.413388509@goodmis.org>
+        id 1jy3ON-005sH8-9Q; Tue, 21 Jul 2020 21:17:55 -0400
+Message-ID: <20200722011755.158091410@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 21 Jul 2020 21:16:29 -0400
+Date:   Tue, 21 Jul 2020 21:16:47 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -38,7 +38,8 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 01/23 v3] tools lib traceevent: Add API to read time information from kbuffer
+Subject: [PATCH 19/23 v3] tools lib traceevent: Improve error handling of
+ tep_plugin_add_option() API
 References: <20200722011628.925541477@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,79 +48,60 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
+From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-Add the functions kbuffer_subbuf_timestamp() and kbuffer_ptr_delta() to get
-the timing data stored in the ring buffer that is used to produced the time
-stamps of the records.
+In case of memory error, ensure all allocated resources are freed.
+Do not append broken option in trace_plugin_options list.
 
-This is useful for tools like trace-cmd to be able to display the content of
-the read data to understand why the records show the time stamps that they
-do.
+Link: https://lore.kernel.org/r/CAM9d7cizjF+fbK7YzmsBDgrx__4YAOsmEq67D3sWET8FF+YdFA@mail.gmail.com
+Link: https://lore.kernel.org/linux-trace-devel/20200714103027.2477584-5-tz.stoyanov@gmail.com
+Link: https://lore.kernel.org/linux-trace-devel/20200716092014.2613403-5-tz.stoyanov@gmail.com
 
-Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-2-tz.stoyanov@gmail.com
-
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-[ Ported from trace-cmd.git ]
+Suggested-by: Namhyung Kim <namhyung@kernel.org>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/lib/traceevent/kbuffer-parse.c | 28 ++++++++++++++++++++++++++++
- tools/lib/traceevent/kbuffer.h       |  2 ++
- 2 files changed, 30 insertions(+)
+ tools/lib/traceevent/event-plugin.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/tools/lib/traceevent/kbuffer-parse.c b/tools/lib/traceevent/kbuffer-parse.c
-index 27f3b07fdae8..583db99aee94 100644
---- a/tools/lib/traceevent/kbuffer-parse.c
-+++ b/tools/lib/traceevent/kbuffer-parse.c
-@@ -546,6 +546,34 @@ int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer)
- 	return 0;
+diff --git a/tools/lib/traceevent/event-plugin.c b/tools/lib/traceevent/event-plugin.c
+index f8d253a61970..6b84b9c4e6ba 100644
+--- a/tools/lib/traceevent/event-plugin.c
++++ b/tools/lib/traceevent/event-plugin.c
+@@ -361,23 +361,25 @@ int tep_plugin_add_option(const char *name, const char *val)
+ 	if (!op) {
+ 		op = malloc(sizeof(*op));
+ 		if (!op)
+-			return -ENOMEM;
++			goto out_free;
+ 		memset(op, 0, sizeof(*op));
+-		op->next = trace_plugin_options;
+-		trace_plugin_options = op;
+-
+ 		op->plugin = plugin;
+ 		op->option = option_str;
+-
+ 		if (val) {
+ 			op->value = strdup(val);
+-			if (!op->value)
++			if (!op->value) {
++				free(op);
+ 				goto out_free;
++			}
+ 		}
++		op->next = trace_plugin_options;
++		trace_plugin_options = op;
+ 	}
+ 
+ 	return process_option(plugin, option_str, val);
+- out_free:
++
++out_free:
++	free(plugin);
+ 	free(option_str);
+ 	return -ENOMEM;
  }
- 
-+/**
-+ * kbuffer_subbuf_timestamp - read the timestamp from a sub buffer
-+ * @kbuf:      The kbuffer to load
-+ * @subbuf:    The subbuffer to read from.
-+ *
-+ * Return the timestamp from a subbuffer.
-+ */
-+unsigned long long kbuffer_subbuf_timestamp(struct kbuffer *kbuf, void *subbuf)
-+{
-+	return kbuf->read_8(subbuf);
-+}
-+
-+/**
-+ * kbuffer_ptr_delta - read the delta field from a record
-+ * @kbuf:      The kbuffer to load
-+ * @ptr:       The record in the buffe.
-+ *
-+ * Return the timestamp delta from a record
-+ */
-+unsigned int kbuffer_ptr_delta(struct kbuffer *kbuf, void *ptr)
-+{
-+	unsigned int type_len_ts;
-+
-+	type_len_ts = read_4(kbuf, ptr);
-+	return ts4host(kbuf, type_len_ts);
-+}
-+
-+
- /**
-  * kbuffer_read_event - read the next event in the kbuffer subbuffer
-  * @kbuf:	The kbuffer to read from
-diff --git a/tools/lib/traceevent/kbuffer.h b/tools/lib/traceevent/kbuffer.h
-index ed4d697fc137..5fa8292e341b 100644
---- a/tools/lib/traceevent/kbuffer.h
-+++ b/tools/lib/traceevent/kbuffer.h
-@@ -49,6 +49,8 @@ int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer);
- void *kbuffer_read_event(struct kbuffer *kbuf, unsigned long long *ts);
- void *kbuffer_next_event(struct kbuffer *kbuf, unsigned long long *ts);
- unsigned long long kbuffer_timestamp(struct kbuffer *kbuf);
-+unsigned long long kbuffer_subbuf_timestamp(struct kbuffer *kbuf, void *subbuf);
-+unsigned int kbuffer_ptr_delta(struct kbuffer *kbuf, void *ptr);
- 
- void *kbuffer_translate_data(int swap, void *data, unsigned int *size);
- 
 -- 
 2.26.2
 
