@@ -8,69 +8,68 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91C2BC433EA
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 27 Jul 2020 07:18:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAE10C433EC
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 27 Jul 2020 07:18:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E00720672
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 27 Jul 2020 07:18:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BACE920792
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 27 Jul 2020 07:18:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TVsdpRxV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RO6qjVNc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgG0HSa (ORCPT
+        id S1726444AbgG0HSb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 27 Jul 2020 03:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
+        Mon, 27 Jul 2020 03:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgG0HS3 (ORCPT
+        with ESMTP id S1726171AbgG0HSb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:18:29 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B54C0619D2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Jul 2020 00:18:29 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 184so13649801wmb.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Jul 2020 00:18:29 -0700 (PDT)
+        Mon, 27 Jul 2020 03:18:31 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E8BC0619D2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Jul 2020 00:18:30 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z18so10172952wrm.12
+        for <linux-trace-devel@vger.kernel.org>; Mon, 27 Jul 2020 00:18:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xX9tbAaXa30JAoxFlbW3MjjRPYPFtUW0nlkm78CuPKI=;
-        b=TVsdpRxVRVfo7xvb2lqUlPL31TwIDfm1VxSaKJMcYp0jGB2pgCP5iYa6Qs/UnEsoD8
-         ynIL8Pl/D2kggNxYUiH1OAIl6a9OSSxXhvGzoTNUqUMfQ9C5tai/9vi2C/un7Nui8h8M
-         hOzhGO/9aC4LdewRCiXXDcbzwyKySVP3vw3PZFHB+wnW2JAEkbek/EpxkW6fpHrkfXio
-         WCo9YFbXO1POUx76bEwhFA9iXO/xL32UySdCSr6jVT/lB3pkWCXKFQIt6upUFfw8/6wV
-         xdG3dDaXdbvHXrcfCla+hRsVzPoCLFWvF03Ca83gCZQzI+dxAXLAhxxg9SZNdgGR3zoQ
-         Cg2A==
+        bh=bYLkuNrXDKiXPijLaugrWX0mIr9Lg917hMvbMjuz0Jg=;
+        b=RO6qjVNc9KA9rZojoSByVbD3dFnxiGnXLN2sPd5/3joU17jNNbINJ0aXKJDy6hbYbR
+         q2sAyaYUjMqv5LanikTulyETz2fcD+gNJGd4oFMTLW/35Xh1SHrH1qyeXHDVjan1X8Kd
+         LdwqBH7W3+6Kry/uGm5JLC+Cobaegru2ZEC33NRSQ/2ox0+CyxbfaHBzy1Zt5u8cbrE3
+         DCCe3CIYv7xfWAkLLerzLhZiWoJudwkItahv6pmBCOTQTRriCrbp/Q9jVTapSt38aF18
+         5AL42OR+3z4xL/y+cbRik+M2DfKEKNBQPdG+thrfU0f+r9bIyiJzP7p6TvHd64bF2ZKR
+         RGRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xX9tbAaXa30JAoxFlbW3MjjRPYPFtUW0nlkm78CuPKI=;
-        b=BRdDk3XueKtwoHyb1ll5B3jAV60ptMVWmL0H3660f72RMsQiQE3uXqXiMyCD935+I8
-         w+YLno+0vd2QtDcTHHVjDnE1jEApKqXvVV/21LzVRhaIhdt5jNBGx0d/TrGG9FN+6KRT
-         4ToA2ucMR/f9vjdBjBqeRYs5P/5DYw4qzYPXnTOhj+gVHvEyyNjUSUo0Qc1yePMLY2fi
-         kzS/skjTJJ12wdyKKZz/O5bP4uBVKmBzON0Juv/WmLbJUf6g/39TBcQsRHFqagel5dI4
-         4PbDpfuBO64pcBvBPics4GnlXcVM1wUuL/2/vfjlcPfPcHvrk0X7BS3dJ36omHdlr3nS
-         RQ6A==
-X-Gm-Message-State: AOAM531MjmL6sJt2e5ET+Se+RHhsZrI+B1a+5fa9ggfsVZGR95arq8MQ
-        Z8KISShPdKR4BertvOe4oXk=
-X-Google-Smtp-Source: ABdhPJx2OkiHr71ng4x0R22O0Z5k3DJJ0DI7jM/QQC1Eb6MShU4c/Tmh44jn/BN6cliITuFr3so/sA==
-X-Received: by 2002:a1c:5646:: with SMTP id k67mr20020883wmb.61.1595834308430;
-        Mon, 27 Jul 2020 00:18:28 -0700 (PDT)
+        bh=bYLkuNrXDKiXPijLaugrWX0mIr9Lg917hMvbMjuz0Jg=;
+        b=TAFIAnSfCb+3tbLIs65EP18AHA09S6S+5jbxyCraA5heYdw4U3SHov46/Wa4uOzDs+
+         Fj6iVfYI14tXyXI5FJKcS5O7gvz1lb877TgmfbfJSg2BeenWJU2UZCjcsbgh+AE7os8q
+         C6Yc6xGN6PuCTIOtEAzeo+NEuyMenk6lj2/zhTTNVyLCUeIwhnCnIOgFcbKoELb6ej7P
+         noO2tZvGQKiP/gFBAyWuk+M4Scvthdwy1iabnHC5whmS9kFof9pWCzCLGDoplolf7kBQ
+         8IRtf6TkxA3bXrWshyOqWalXBnouFwkoXbu3DDdiCoPCceGplxHZFTgYWg/Ij4V1LXIz
+         ypdA==
+X-Gm-Message-State: AOAM530cHsxcb0KuM3D56xgYez7997pUqeylvT7gYfWziYO7fG1kpMh4
+        M0OK5T+jPk9XXRE4s18m8qo=
+X-Google-Smtp-Source: ABdhPJxuyUfJcmaKn/Tky0dTBczH098OVGWtXo1NSL2qQlJir3+sWFWvlD8XGdW/4I3w4wNAbGn1sw==
+X-Received: by 2002:a5d:514c:: with SMTP id u12mr19794076wrt.90.1595834309747;
+        Mon, 27 Jul 2020 00:18:29 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id j24sm12312162wrb.49.2020.07.27.00.18.27
+        by smtp.gmail.com with ESMTPSA id j24sm12312162wrb.49.2020.07.27.00.18.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 00:18:27 -0700 (PDT)
+        Mon, 27 Jul 2020 00:18:29 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/5] KernelShark: Fix compilation issues on  Fedora 32
-Date:   Mon, 27 Jul 2020 10:18:20 +0300
-Message-Id: <20200727071823.169962-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 3/5] KernelShark: Fix combo plot plugin crash in case of multiple streams
+Date:   Mon, 27 Jul 2020 10:18:21 +0300
+Message-Id: <20200727071823.169962-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200727071823.169962-1-tz.stoyanov@gmail.com>
 References: <20200727071823.169962-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
@@ -79,66 +78,33 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
 
-Included <string.h> to fix this compilation error:
-   "error: ‘string’ in namespace ‘std’ does not name a type"
-Converted fontHeight and stringWidth to inline to fix these
-compilation errors:
-   "multiple definition of `fontHeight';"
-   "multiple definition of `stringWidth';"
+Added a check if there is a host-guest mapping in the loaded
+multiple streams. If there is no such mapping, print an error and
+exit the KsComboPlotDialog::update() function.
 
 Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
 ---
- src/KsPlotTools.cpp | 1 +
- src/KsPlotTools.hpp | 1 +
- src/KsUtils.hpp     | 4 ++--
- 3 files changed, 4 insertions(+), 2 deletions(-)
+ src/plugins/KVMCombo.cpp | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
-index 17db451..7dcd4f2 100644
---- a/src/KsPlotTools.cpp
-+++ b/src/KsPlotTools.cpp
-@@ -12,6 +12,7 @@
- // C
- #include <math.h>
- #include <cstring>
-+#include <string>
+diff --git a/src/plugins/KVMCombo.cpp b/src/plugins/KVMCombo.cpp
+index ceb1f47..3ec36b6 100644
+--- a/src/plugins/KVMCombo.cpp
++++ b/src/plugins/KVMCombo.cpp
+@@ -246,7 +246,12 @@ void KsComboPlotDialog::update()
+ 	_guestMap = nullptr;
+ 	_guestMapCount = 0;
+ 	ret = kshark_tracecmd_get_hostguest_mapping(&_guestMap);
+-	if (ret > 0)
++	if (ret <= 0) {
++		QString err("Cannot find host / guest tracing into the loaded streams");
++		QMessageBox msgBox;
++		msgBox.critical(nullptr, "Error", err);
++		return;
++	} else
+ 		_guestMapCount = ret;
  
- // C++
- #include <algorithm>
-diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
-index 75fb4da..c66fea3 100644
---- a/src/KsPlotTools.hpp
-+++ b/src/KsPlotTools.hpp
-@@ -14,6 +14,7 @@
- 
- // C
- #include <math.h>
-+#include <string>
- 
- // C++
- #include <limits>
-diff --git a/src/KsUtils.hpp b/src/KsUtils.hpp
-index cfb45f4..5857099 100644
---- a/src/KsUtils.hpp
-+++ b/src/KsUtils.hpp
-@@ -36,7 +36,7 @@
- 
- //! @cond Doxygen_Suppress
- 
--auto fontHeight = []()
-+inline auto fontHeight = []()
- {
- 	QFont font;
- 	QFontMetrics fm(font);
-@@ -44,7 +44,7 @@ auto fontHeight = []()
- 	return fm.height();
- };
- 
--auto stringWidth = [](QString s)
-+inline auto stringWidth = [](QString s)
- {
- 	QFont font;
- 	QFontMetrics fm(font);
+ 	KsUtils::setElidedText(&_hostFileLabel,
 -- 
 2.26.2
 
