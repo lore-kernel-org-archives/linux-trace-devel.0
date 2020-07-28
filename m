@@ -7,114 +7,92 @@ X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E92A5C433E3
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jul 2020 13:23:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E33CFC433E8
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jul 2020 13:26:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C5699206D7
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jul 2020 13:23:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CDB3A206F5
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 28 Jul 2020 13:26:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729984AbgG1NXY convert rfc822-to-8bit (ORCPT
+        id S1730087AbgG1N0o (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 28 Jul 2020 09:23:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44252 "EHLO mail.kernel.org"
+        Tue, 28 Jul 2020 09:26:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729433AbgG1NXY (ORCPT
+        id S1729896AbgG1N0o (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:23:24 -0400
+        Tue, 28 Jul 2020 09:26:44 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B122E206D7;
-        Tue, 28 Jul 2020 13:23:23 +0000 (UTC)
-Date:   Tue, 28 Jul 2020 09:23:22 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id EFB7F206D7;
+        Tue, 28 Jul 2020 13:26:43 +0000 (UTC)
+Date:   Tue, 28 Jul 2020 09:26:42 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 2/5] KernelShark: Fix compilation issues on  Fedora 32
-Message-ID: <20200728092322.346d827c@oasis.local.home>
-In-Reply-To: <20200727071823.169962-3-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH 3/5] KernelShark: Fix combo plot plugin crash in case of
+ multiple streams
+Message-ID: <20200728092642.31345031@oasis.local.home>
+In-Reply-To: <20200727071823.169962-4-tz.stoyanov@gmail.com>
 References: <20200727071823.169962-1-tz.stoyanov@gmail.com>
-        <20200727071823.169962-3-tz.stoyanov@gmail.com>
+        <20200727071823.169962-4-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 27 Jul 2020 10:18:20 +0300
+On Mon, 27 Jul 2020 10:18:21 +0300
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
 > From: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
 > 
-> Included <string.h> to fix this compilation error:
-
-s/<string.h>/<string>
-
->    "error: ‘string’ in namespace ‘std’ does not name a type"
-> Converted fontHeight and stringWidth to inline to fix these
-> compilation errors:
->    "multiple definition of `fontHeight';"
->    "multiple definition of `stringWidth';"
+> Added a check if there is a host-guest mapping in the loaded
+> multiple streams. If there is no such mapping, print an error and
+> exit the KsComboPlotDialog::update() function.
 > 
+> Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
+> ---
+>  src/plugins/KVMCombo.cpp | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/src/plugins/KVMCombo.cpp b/src/plugins/KVMCombo.cpp
+> index ceb1f47..3ec36b6 100644
+> --- a/src/plugins/KVMCombo.cpp
+> +++ b/src/plugins/KVMCombo.cpp
+> @@ -246,7 +246,12 @@ void KsComboPlotDialog::update()
+>  	_guestMap = nullptr;
+>  	_guestMapCount = 0;
+>  	ret = kshark_tracecmd_get_hostguest_mapping(&_guestMap);
+> -	if (ret > 0)
+> +	if (ret <= 0) {
+> +		QString err("Cannot find host / guest tracing into the loaded streams");
+> +		QMessageBox msgBox;
+> +		msgBox.critical(nullptr, "Error", err);
+> +		return;
+> +	} else
+>  		_guestMapCount = ret;
+>
+
+Just a nit, but if we are following Linux coding styles, the above
+should be:
+
+	if (ret <= 0) {
+		[..]
+	} else {
+		_guestMapCount = ret;
+	}
+
+As it is looked down upon to have part of an if block have brackets and
+another part without. But I'll leave that up to Yordan to decide ;-)
 
 Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
--- Steve
 
-> Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
-> ---
->  src/KsPlotTools.cpp | 1 +
->  src/KsPlotTools.hpp | 1 +
->  src/KsUtils.hpp     | 4 ++--
->  3 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
-> index 17db451..7dcd4f2 100644
-> --- a/src/KsPlotTools.cpp
-> +++ b/src/KsPlotTools.cpp
-> @@ -12,6 +12,7 @@
->  // C
->  #include <math.h>
->  #include <cstring>
-> +#include <string>
->  
->  // C++
->  #include <algorithm>
-> diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
-> index 75fb4da..c66fea3 100644
-> --- a/src/KsPlotTools.hpp
-> +++ b/src/KsPlotTools.hpp
-> @@ -14,6 +14,7 @@
->  
->  // C
->  #include <math.h>
-> +#include <string>
->  
->  // C++
->  #include <limits>
-> diff --git a/src/KsUtils.hpp b/src/KsUtils.hpp
-> index cfb45f4..5857099 100644
-> --- a/src/KsUtils.hpp
-> +++ b/src/KsUtils.hpp
-> @@ -36,7 +36,7 @@
->  
->  //! @cond Doxygen_Suppress
->  
-> -auto fontHeight = []()
-> +inline auto fontHeight = []()
->  {
->  	QFont font;
->  	QFontMetrics fm(font);
-> @@ -44,7 +44,7 @@ auto fontHeight = []()
->  	return fm.height();
->  };
->  
-> -auto stringWidth = [](QString s)
-> +inline auto stringWidth = [](QString s)
->  {
->  	QFont font;
->  	QFontMetrics fm(font);
+-- Steve
+ 
+>  	KsUtils::setElidedText(&_hostFileLabel,
 
