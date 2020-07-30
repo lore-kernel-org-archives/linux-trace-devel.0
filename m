@@ -2,103 +2,106 @@ Return-Path: <SRS0=u2KR=BJ=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12BB3C433DF
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Jul 2020 10:03:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0300C433DF
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Jul 2020 15:17:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E10442083B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Jul 2020 10:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596103379;
-	bh=ouovVngIf6hDa3uFlgNThQq8UIE6cztUpcfjbYWOwVs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=SLMJKEHw1FDnAwS5cfejZkPTErO3JdASSW3ms5Uqr1m4CJ6Rnd8TWhNpAORoWHajG
-	 ESUaUU/n8Mgtu3oCx6qd9Wq9fAZXNJcncXeUM2UNSP0j30cWb7VjBEVuDL5AvLN9Z2
-	 i1UgVFCbIXKoNbK4MQwQzI612DHz6lB4oDjdoeQI=
+	by mail.kernel.org (Postfix) with ESMTP id D507F206F5
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 30 Jul 2020 15:17:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgG3KC7 (ORCPT
+        id S1726581AbgG3PRw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 30 Jul 2020 06:02:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726847AbgG3KC7 (ORCPT
+        Thu, 30 Jul 2020 11:17:52 -0400
+Received: from alt13.smtp-out.videotron.ca ([135.19.0.26]:24965 "EHLO
+        alt12.smtp-out.videotron.ca" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726353AbgG3PRv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 30 Jul 2020 06:02:59 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79DF32082E;
-        Thu, 30 Jul 2020 10:02:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596103378;
-        bh=ouovVngIf6hDa3uFlgNThQq8UIE6cztUpcfjbYWOwVs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sk+oNz+4irgtf3PrewYvTnknti2OGjheC4boupamTF9AQp8qVnQmVzLQ83/Eyez0J
-         4GWbDo5SfpHo3hZNBXCsdYu/9AjrrnObzNEy/S4HYaT5HWiYwu2X8bLjqDAeIu/l5/
-         +j+0YV3fcNAUhOJdmVR/nsYq61bzrlHv7njx+4lA=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9EDC040E57; Thu, 30 Jul 2020 07:02:56 -0300 (-03)
-Date:   Thu, 30 Jul 2020 07:02:56 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+        Thu, 30 Jul 2020 11:17:51 -0400
+X-Greylist: delayed 901 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Jul 2020 11:17:51 EDT
+Received: from localhost.localdomain ([192.226.245.209])
+        by Videotron with SMTP
+        id 1A52kEoPBhH1B1A53kEauU; Thu, 30 Jul 2020 11:02:50 -0400
+X-Authority-Analysis: v=2.3 cv=NIqrBHyg c=1 sm=1 tr=0
+ a=ArMVbEtQkEv2v9ei/Xv1Bw==:117 a=ArMVbEtQkEv2v9ei/Xv1Bw==:17 a=7d_E57ReAAAA:8
+ a=INfwVe45x8SIc9xGMEMA:9 a=jhqOcbufqs7Y1TYCrUUU:22
+From:   Philippe Duplessis-Guindon <pduplessis@efficios.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ben Hutchings <ben@decadent.org.uk>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] libtraceevent: Fix build with binutils 2.35
-Message-ID: <20200730100256.GC424218@kernel.org>
-References: <20200725010623.GA194964@decadent.org.uk>
- <20200728121908.GG40195@kernel.org>
- <20200728090806.10e43f96@oasis.local.home>
- <20200729205927.GH433799@kernel.org>
- <20200729201143.455ffcc2@oasis.local.home>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Philippe Duplessis-Guindon <pduplessis@efficios.com>
+Subject: [PATCH] tools lib traceevent: Fix memory leak in process_dynamic_array_len
+Date:   Thu, 30 Jul 2020 11:02:36 -0400
+Message-Id: <20200730150236.5392-1-pduplessis@efficios.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729201143.455ffcc2@oasis.local.home>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfKrvZMAmVn6rM7Dd8RTQ/XAWR2HUC/p4IgR+Ar2GqqfkRH9865DguEo8WNInMJezOSotzt8dgJ29q+NJ5awPdkBhIFtuqsu01f6tg+4T2tAiLbddyrfs
+ 78/8NmXa2Ky80VQxmI8t64cUPL7DOh/Ivpmbp8RaKq+iBZmhq9c/2a6PU+onDTOn8vNIXz1WEOWkO7DYmi65a3iPpKP3tKVhWRa8cKgaTYe6zqgs86m37o7/
+ keBUO0OwByHMzPTk4snSfOn/9arqNSBg3utM9JtnrwM=
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Em Wed, Jul 29, 2020 at 08:11:43PM -0400, Steven Rostedt escreveu:
-> On Wed, 29 Jul 2020 17:59:27 -0300
-> Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> 
-> > Em Tue, Jul 28, 2020 at 09:08:06AM -0400, Steven Rostedt escreveu:
-> > > On Tue, 28 Jul 2020 09:19:08 -0300
-> > > Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > >   
-> > > > Em Sat, Jul 25, 2020 at 02:06:23AM +0100, Ben Hutchings escreveu:  
-> > > > > In binutils 2.35, 'nm -D' changed to show symbol versions along with
-> > > > > symbol names, with the usual @@ separator.  When generating
-> > > > > libtraceevent-dynamic-list we need just the names, so strip off the
-> > > > > version suffix if present.    
-> > > > 
-> > > > Steven, have you seen this one?  
-> > > 
-> > > Yeah, I saw it. Just haven't gotten to it yet ;-)  
-> > 
-> > So, I've stumbled on this on debian:experimental:
-> > 
-> >   LINK     /tmp/build/perf/perf
-> > /usr/bin/ld:/tmp/build/perf/libtraceevent-dynamic-list:2: ignoring invalid character `@' in script
-> > /usr/bin/ld:/tmp/build/perf/libtraceevent-dynamic-list:2: ignoring invalid character `@' in script
-> > /usr/bin/ld:/tmp/build/perf/libtraceevent-dynamic-list:2: syntax error in dynamic list
-> > collect2: error: ld returned 1 exit status
-> > make[2]: *** [Makefile.perf:637: /tmp/build/perf/perf] Error 1
-> > 
-> > I'll tentatively add this patch to see if it then passes all the tests
-> > everywhere...
-> > 
-> > -
-> 
-> I'd say go ahead and apply it.
-> 
-> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+I compiled with AddressSanitizer and I had these memory leaks while I
+was using the tep_parse_format function:
 
-Done, thanks, testing finished in all containers without build problems.
+    Direct leak of 28 byte(s) in 4 object(s) allocated from:
+        #0 0x7fb07db49ffe in __interceptor_realloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10dffe)
+        #1 0x7fb07a724228 in extend_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:985
+        #2 0x7fb07a724c21 in __read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1140
+        #3 0x7fb07a724f78 in read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1206
+        #4 0x7fb07a725191 in __read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1291
+        #5 0x7fb07a7251df in read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1299
+        #6 0x7fb07a72e6c8 in process_dynamic_array_len /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:2849
+        #7 0x7fb07a7304b8 in process_function /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3161
+        #8 0x7fb07a730900 in process_arg_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3207
+        #9 0x7fb07a727c0b in process_arg /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1786
+        #10 0x7fb07a731080 in event_read_print_args /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3285
+        #11 0x7fb07a731722 in event_read_print /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3369
+        #12 0x7fb07a740054 in __tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6335
+        #13 0x7fb07a74047a in __parse_event /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6389
+        #14 0x7fb07a740536 in tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6431
+        #15 0x7fb07a785acf in parse_event ../../../src/fs-src/fs.c:251
+        #16 0x7fb07a785ccd in parse_systems ../../../src/fs-src/fs.c:284
+        #17 0x7fb07a786fb3 in read_metadata ../../../src/fs-src/fs.c:593
+        #18 0x7fb07a78760e in ftrace_fs_source_init ../../../src/fs-src/fs.c:727
+        #19 0x7fb07d90c19c in add_component_with_init_method_data ../../../../src/lib/graph/graph.c:1048
+        #20 0x7fb07d90c87b in add_source_component_with_initialize_method_data ../../../../src/lib/graph/graph.c:1127
+        #21 0x7fb07d90c92a in bt_graph_add_source_component ../../../../src/lib/graph/graph.c:1152
+        #22 0x55db11aa632e in cmd_run_ctx_create_components_from_config_components ../../../src/cli/babeltrace2.c:2252
+        #23 0x55db11aa6fda in cmd_run_ctx_create_components ../../../src/cli/babeltrace2.c:2347
+        #24 0x55db11aa780c in cmd_run ../../../src/cli/babeltrace2.c:2461
+        #25 0x55db11aa8a7d in main ../../../src/cli/babeltrace2.c:2673
+        #26 0x7fb07d5460b2 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x270b2)
 
-- Arnaldo
+The token variable in the process_dynamic_array_len function is
+allocated in the read_expect_type function, but is not freed before
+calling the read_token function.
+
+Free the token variable before calling read_token in order to plug the
+leak.
+
+Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
+---
+ tools/lib/traceevent/event-parse.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index 5b36c589a029..ba4f33804af1 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -2861,6 +2861,7 @@ process_dynamic_array_len(struct tep_event *event, struct tep_print_arg *arg,
+ 	if (read_expected(TEP_EVENT_DELIM, ")") < 0)
+ 		goto out_err;
+ 
++	free_token(token);
+ 	type = read_token(&token);
+ 	*tok = token;
+ 
+-- 
+2.25.1
+
