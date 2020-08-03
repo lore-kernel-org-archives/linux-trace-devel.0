@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96C5EC433E0
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  3 Aug 2020 12:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D2A2C433E3
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  3 Aug 2020 12:53:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 69F4A2054F
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  3 Aug 2020 12:43:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0E7892064B
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  3 Aug 2020 12:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596458622;
-	bh=pPLMt+TyjFNT7l3WxNhNb9IrLTc7yKu/fEg5hGC/7gw=;
+	s=default; t=1596459239;
+	bh=gbZfDeAEN0uq8VausNRrRU0+Yp0+lrHqt7Bn1plSna0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=SanWuAvpY88OXpW0FHeW3OqaFOaySZJbdyZJpW/aQ9YGdZY/XpX/BG/zCMcWzcIqT
-	 M6UaJewJf5OTVfv5vpIcvX34IuzDrRZvTkM6xykJ2ly33vN5gk+I6kcn4A0Vb+JInV
-	 qhp5BuO5zbdh6pTDAnGihZrRSlV3nKtNDsvPqbPU=
+	b=wzyu59uNjtz6dNtpPgOgKp1lTc4xRiZZxbNOPkMcZ6dHX0+3eWO4xF4gIVODyEVsX
+	 +EVbAPKG1QoV3F11kZLNS1Fnl+l+ukOL7ETcmPINFpmrsj2C1t5OeaxZZhL0hcFu8k
+	 Hv3wMQtgpqMWr8A+3L81USYs896q8PYzggpraf98=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728882AbgHCM3S (ORCPT
+        id S1727936AbgHCMXu (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 3 Aug 2020 08:29:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55626 "EHLO mail.kernel.org"
+        Mon, 3 Aug 2020 08:23:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728877AbgHCM3R (ORCPT
+        id S1727929AbgHCMXt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 3 Aug 2020 08:29:17 -0400
+        Mon, 3 Aug 2020 08:23:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04E582086A;
-        Mon,  3 Aug 2020 12:29:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02B97207FB;
+        Mon,  3 Aug 2020 12:23:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596457755;
-        bh=pPLMt+TyjFNT7l3WxNhNb9IrLTc7yKu/fEg5hGC/7gw=;
+        s=default; t=1596457428;
+        bh=gbZfDeAEN0uq8VausNRrRU0+Yp0+lrHqt7Bn1plSna0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1AbOmEUBv54zdtqa3MKqBecToMmye8LmofEoDDRrxwF2DQVfaAgFxa2WuzzW57D84
-         6a2jn76xoxA7mbZaIqFfMV4OujU3ICw4MDrGutc4rte83L8R8AmDFDUxg6jh1JRLyE
-         LsVe93spUaMKiD+uI75BgvgBfC2C0qbtvNWp4GSw=
+        b=NzvFGUnp5qfejh766tyvNmqyZbK5vQsgWbiQjGSfpQige1fL0Z4XwGfSnlUaTP9FS
+         u2XXrJeKOu+Dh0sUbghyMWrZTqLHnp3j/2s4pCMV9Uktz7P84MT1oy6E1AFLGceipz
+         X0y7LPr84YI6fXF4dZ0N8U+SnsTuNT/ysccS0ofw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -48,12 +48,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         linux-trace-devel@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.4 32/90] libtraceevent: Fix build with binutils 2.35
-Date:   Mon,  3 Aug 2020 14:18:54 +0200
-Message-Id: <20200803121859.168687426@linuxfoundation.org>
+Subject: [PATCH 5.7 033/120] libtraceevent: Fix build with binutils 2.35
+Date:   Mon,  3 Aug 2020 14:18:11 +0200
+Message-Id: <20200803121904.444006355@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200803121857.546052424@linuxfoundation.org>
-References: <20200803121857.546052424@linuxfoundation.org>
+In-Reply-To: <20200803121902.860751811@linuxfoundation.org>
+References: <20200803121902.860751811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -86,7 +86,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/tools/lib/traceevent/plugins/Makefile
 +++ b/tools/lib/traceevent/plugins/Makefile
-@@ -196,7 +196,7 @@ define do_generate_dynamic_list_file
+@@ -197,7 +197,7 @@ define do_generate_dynamic_list_file
  	xargs echo "U w W" | tr 'w ' 'W\n' | sort -u | xargs echo`;\
  	if [ "$$symbol_type" = "U W" ];then				\
  		(echo '{';                                              \
