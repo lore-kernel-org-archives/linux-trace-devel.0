@@ -1,117 +1,92 @@
-Return-Path: <SRS0=HSPc=CM=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=hB+T=CU=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F189AC43461
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Sep 2020 14:52:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8CD3C433E2
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Sep 2020 02:08:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C5B8620716
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  3 Sep 2020 14:52:42 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nRlUjlG/"
+	by mail.kernel.org (Postfix) with ESMTP id A502021941
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Sep 2020 02:08:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729156AbgICOwj (ORCPT
+        id S1725300AbgIKCIY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 3 Sep 2020 10:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728956AbgICOMi (ORCPT
+        Thu, 10 Sep 2020 22:08:24 -0400
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:50128 "EHLO
+        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725298AbgIKCIY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:12:38 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FC3C0610E2
-        for <linux-trace-devel@vger.kernel.org>; Thu,  3 Sep 2020 06:53:59 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id m6so3375326wrn.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 03 Sep 2020 06:53:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3ooYTwrrCrgnLuYhmjc7crBbdIBy/Rm0bQBrh+HsgJg=;
-        b=nRlUjlG/+cm/92XN1xFis+KtA3g7yqqvXXgcZ3ONRn6kfo5u2X/+DDLlFLtioIN4Ec
-         V13l7gKoZK+eUrLOH3yn2NqxrP3pDdPQ+PlQzIjqqbPZXH/BehSVffMDthBd0AXd7Ade
-         E+X7fRrEGcFzWUnPJZuLNOLwvo52I/JkpM4RAamvQEkG9n1inTpC2TuntsZaGjMsiM/H
-         bWmZL/oxWiQbkkTn4XU1kJSNpfbDJFbkeWDqgZor3O4vAT5nCPVEz83dCHHK+xhkQpXM
-         bLfA3sdOmZEHXOg6II2TS2tugyvwXnTD9sSIJnvmUlx7rWKBGn+c9JwowyNGJ2AaKEjv
-         LHqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3ooYTwrrCrgnLuYhmjc7crBbdIBy/Rm0bQBrh+HsgJg=;
-        b=K7wh2H3tByj6rSIqMAB+sdJN830dx3gCs7aSFJhJ8rL/3gm++sw++kuG2ApRzYWZs0
-         o7jL+heMmL+3UKAhGz6/j2+eEU8eFVFGYC97bnEr2fpF1SQ1e8Jswxk0jrhfsnRUgY0g
-         B1U8bSjV4FAD9QivL1V/jPaFEsfUXj59n5UxvDdUFH2eqeurw7UUfvejhd/R9TSfn2dv
-         A+q2UtyIKrfeDHzdVCAQF0bIMGnp5E9tj0vlWcvpD1mbGXRGfMi5pvKDahzgH5s416bE
-         YxE6uIFZ/Jzl+Rp+3XcGMb0GS8OL3DoQ4FaxapteyewntvgiwA4eHc12zQZs4Jr3mFbH
-         t8Sw==
-X-Gm-Message-State: AOAM533p+q0lKtlBI5GIOHbZYuamM0DWHiFcovVewW6+PorRA3xNvp2J
-        +D8CoGIPPYOoSQDpyssV+4FR5PGXQ/A=
-X-Google-Smtp-Source: ABdhPJx3e4M1bhh9fBgHLymhhzNN1j1RyUMje0lVtnO2R6BMvM5gEG4YDlng9HdYSNTQgQjqrc01BQ==
-X-Received: by 2002:a5d:48c3:: with SMTP id p3mr2507469wrs.69.1599141237613;
-        Thu, 03 Sep 2020 06:53:57 -0700 (PDT)
-Received: from [192.168.0.108] ([95.87.199.108])
-        by smtp.gmail.com with ESMTPSA id r14sm5064166wrc.41.2020.09.03.06.53.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 06:53:56 -0700 (PDT)
-Subject: Re: [PATCH] KernelShark: Add guest's stream ID to the combobox item.
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        rostedt@goodmis.org
+        Thu, 10 Sep 2020 22:08:24 -0400
+Received: from [192.168.4.242] (helo=deadeye)
+        by shadbolt.decadent.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1kGYUA-00006I-U9; Fri, 11 Sep 2020 03:08:23 +0100
+Received: from ben by deadeye with local (Exim 4.94)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1kGYU9-000SOJ-HN; Fri, 11 Sep 2020 03:08:21 +0100
+Message-ID: <e4afdd82deb5e023d53231bb13e08dca78085fb0.camel@decadent.org.uk>
+Subject: tep_free_plugin_paths() function in libtraceevent
+From:   Ben Hutchings <ben@decadent.org.uk>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     linux-trace-devel@vger.kernel.org
-References: <20200902161118.46163-1-tz.stoyanov@gmail.com>
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <5a3cc0b3-5301-22fd-a116-9800dc5ea146@gmail.com>
-Date:   Thu, 3 Sep 2020 16:53:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Date:   Fri, 11 Sep 2020 03:08:16 +0100
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-zhVWXYKVDbdWc0cu7h6P"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-In-Reply-To: <20200902161118.46163-1-tz.stoyanov@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 192.168.4.242
+X-SA-Exim-Mail-From: ben@decadent.org.uk
+X-SA-Exim-Scanned: No (on shadbolt.decadent.org.uk); SAEximRunCond expanded to false
 Sender: linux-trace-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 
+--=-zhVWXYKVDbdWc0cu7h6P
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2.09.20 г. 19:11 ч., Tzvetomir Stoyanov (VMware) wrote:
-> From: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
-> 
-> When a new stream is added to the list of guest streams in the ComboBox
-> plugin, attach the stream ID to the entry as well. Later, when the
-> stream is selected from the list, this ID is used to get information of
-> the stream.
-> 
-> Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
-> ---
->   src/plugins/KVMCombo.cpp | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/src/plugins/KVMCombo.cpp b/src/plugins/KVMCombo.cpp
-> index 4ca33d4..bc3c6b0 100644
-> --- a/src/plugins/KVMCombo.cpp
-> +++ b/src/plugins/KVMCombo.cpp
-> @@ -269,7 +269,7 @@ void KsComboPlotDialog::update()
->   			continue;
->   
->   		streamName = KsUtils::streamDescription(kshark_ctx->stream[sd]);
-> -		_guestStreamComboBox.addItem(streamName);
-> +		_guestStreamComboBox.addItem(streamName, sd);
->   		color << colTable[sd];
->   		_guestStreamComboBox.setItemData(i, QBrush(color),
->   						    Qt::BackgroundRole);
-> 
+I noticed that the new function tep_free_plugin_paths() is exported
+from libtraceevent, but is only declared in a private header file.
 
-Thanks Ceco!
-The patch is applied.
+If it's meant to be part of the API, it should be declared in a public
+header file.  If not, I think it should be hidden from library users.
 
-Yordan
+(I think there are other only functions with this issue; this just came
+to my attention because the Debian packaging tools prompted me to
+update the symbol-to-minimum-version mapping.)
+
+Ben.
+
+--=20
+Ben Hutchings
+Never put off till tomorrow what you can avoid all together.
+
+
+--=-zhVWXYKVDbdWc0cu7h6P
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAl9a3BAACgkQ57/I7JWG
+EQnQZQ/5AThSewg1FDqHC+/K2M00sDPl5SkdpUU32w6e3M8LG6ZfSVG0yqd8I5E/
+DihpxTUKx6/rPM1tSNS4cA3PEUznsTYbwNb2HWEBx4VtHpCsUSFpKW/F4W1Qe0g9
+PZq4Zf6w8MYhfI//IeasYPvkJUdHOiWLK6xvkIbZwxKMSJScuVuhUzK7bb83G3KD
+okqShjBBH4A+8UwnFTwNVm/9fU4JovDCmpIX0Vxg2NHW1DUu12JXSIkD5ripeH8B
+/qoEHhXKXFwG7FJpqja0ewqpms/g8JInV2RLvlbc0vFjRlI7hkUtRJ/YqBXnJpXS
+NFRqUxb3TPvoObIId6W701MldXh6ErMsqTMbEsWaRvxb/alVHhVPecLM6fgsAtyI
+nWf0yH69S//N6K83OAYNTRno89LCNRnD15Qe4bWsh+5eubr0IY4Vxw+U3jqaNoc/
+AC8l0tRnZF6pyAJc+as9JgwZcEF//D5qU5Wpi57KWwDPfmxO6mSBlQiSGFaUO+57
+ZpMQ7MGh+3DCiQTeyymwdgk8KHrZLXnQ3BGxJasNiDK191wmamRQTizkzeNSKzbL
+RtjICY6PtlBA8lfKf3D52INyGEB44PEjrnmocpsrh/PieAjyJB+Dfg+VTaKWPGPI
+0zsSpLqX7S1AZ6txtHb3ToNtz+wUgT8Egc+j7F5rZeq4VhRIM+I=
+=ctia
+-----END PGP SIGNATURE-----
+
+--=-zhVWXYKVDbdWc0cu7h6P--
