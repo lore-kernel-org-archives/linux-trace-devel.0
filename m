@@ -8,65 +8,65 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E69E8C43461
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Sep 2020 06:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0429AC433E2
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Sep 2020 06:50:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 99F08208E4
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Sep 2020 06:50:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A0ECB208E4
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Sep 2020 06:50:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XpFfqeV0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nVTflLHx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgIPGum (ORCPT
+        id S1726189AbgIPGup (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 16 Sep 2020 02:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
+        Wed, 16 Sep 2020 02:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgIPGul (ORCPT
+        with ESMTP id S1726100AbgIPGun (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 16 Sep 2020 02:50:41 -0400
+        Wed, 16 Sep 2020 02:50:43 -0400
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB668C06174A
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Sep 2020 23:50:40 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k18so1708120wmj.5
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Sep 2020 23:50:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229CAC06174A
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Sep 2020 23:50:43 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id a9so1723006wmm.2
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Sep 2020 23:50:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1O4oy929EsjdKBRqEYo9j4n/1OGlYV9VezHHXlxYp4o=;
-        b=XpFfqeV08Xs9JIqL7/toysfDcPKKYUbwG+nvI6XkvrNMjSWi+ZEkAbq5PhtHuc9kAi
-         qN6C/elU1EY5V4ivgL8+KK1KpLAXxrjiLSkiv9j7+gyVmHnprTAJDSA3Yp07DIl9tDlF
-         GxNoP90WNg78urMrfTICNCB11k5p3PAHapFdurTYstCG5rZWJdP2CWQlEXwA8sJMhNbO
-         32bRplEU6uOnEWqnwbiAKZqjFSf7k6sINJ50BusH/4WnwuYlhiUz0mnCYtZxHf1Cs8he
-         17yiXfcnBSADZYi4+xknWpFRJxsg/eviYlUhQRXMRfLxOM5Ut5iY4bhvxbmZHXxUO9iH
-         HsDQ==
+        bh=+KZBIOcQJGO9I4kPWIAQkCtXcR3Btg9aV1WDBLfLbGw=;
+        b=nVTflLHx8AnmBOtxWJiRZN48D/KbDhZq3BU4XBt5n/SUhqmT7QsalIEE2WcqRI9Pe5
+         F77rIS3LfDTbGNPDdIRUDcZNsj74i3Fgl/7ZSSs4S2xgPjTvbNPQUTj7613vkkZk7tHX
+         GwUzuw+GESCext10mL9PNsnt53+hzetDYvp1lkOSJ8LY1LDWZ5U94hR2ruDd35o8pTOG
+         X/nOxCtnWtcUMjjDjCPS5RT0f1FeNNVtqH8xOqwtQtQbQGuvHlGCjXyBKLO1FQZrKE0I
+         k34wEOasC6ZlFSGxjfPr60W0+P+mIV5rX+26nF0dz6HRE7vL+1Qqm/C5D4r8t/W54Voj
+         3u3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1O4oy929EsjdKBRqEYo9j4n/1OGlYV9VezHHXlxYp4o=;
-        b=oIh9L4r9gBThqwg8LQElMG2g80LZwdhiOvrLzRhSniMeZ5Nr8oGy/LlQjTNY7v9apW
-         bO9t05QtwzTxLwtPvCtS/FSZma2BDE4xwS2ID6Kc1ravtDe1L7R56jcuwAj+AjMUVKvj
-         RpQL7OBzo/+yaNZHcopxoiBIYrSRX7w4+W8a8x1kUD/jM9a1VXbQqX8Zn3Ih2pM2XVwF
-         cOQbOaN89K0RdvO9Ry5hgd2R9yNik1Ep6+X/C7F5kqPj7mZFCx5abkIn9cDXPuAbcL8n
-         CbvBrsuYG5B2BTX9nEbOKI5IDpK415qGkcW3O3smf2YloE74pjzRC3iOsl5T/U7GecqD
-         qWXw==
-X-Gm-Message-State: AOAM532jVSoo8zdJmFHYyHa3oPX7itsRZprmiHBlbnXrzMDRnry/TwqO
-        gD6eJ/ny6AnjWhAlmWuvSB9za5w2q30=
-X-Google-Smtp-Source: ABdhPJwnn/sAQjhdpa4LoyXrgTZNXR/7BtMEBZy8skU3csqr66ys9QqrbmdxP2lCl8cEgLlR7iXhlg==
-X-Received: by 2002:a1c:9885:: with SMTP id a127mr3012464wme.8.1600239039342;
-        Tue, 15 Sep 2020 23:50:39 -0700 (PDT)
+        bh=+KZBIOcQJGO9I4kPWIAQkCtXcR3Btg9aV1WDBLfLbGw=;
+        b=fumzFaQDZkdcK9LVLVFWrE61Bwud5yd1uo782QjONQ5MnIV0kgeJQa4EKR9WGTcZFB
+         xQoJuvgLtYQbYyLtPk8t3DjqHyHGs9XfX9/m1GUv6g7ANiykxILFXCrwg0Sx0HRKri1W
+         A2kgjiHTgMHBVEFSy4Tm7o/wRp6TN4oVB/icUTuKPyUO7JeWOH5ew74hxiiO+GuiRdOV
+         Cpnjnioyxl+E15KNC/B+OUTbGvusAF4RNMpyVHWJmYfU9RlArMJOUCa+/fhheVgx4jBZ
+         HuyxEHoJeoYY6qlUyWp0tOqFqe72+ZyHPJndg288ODsQdvfy6ZKurN6uo40R1MF2kZbP
+         Pxag==
+X-Gm-Message-State: AOAM530CAixkcpCI8P0y3STur292jbcm2FhkJsjc8wZQYmrGCJDty4nh
+        uWRFcZAUwx9KdYnVTsK99s0ZIjvtjnY=
+X-Google-Smtp-Source: ABdhPJwVjHW4MBPWzuh+1NZ9lJWhZcc952uqFTx3zJoVwJLG04krntOhR3mGLB0byptCb7B721FRAg==
+X-Received: by 2002:a7b:c751:: with SMTP id w17mr2917729wmk.97.1600239041689;
+        Tue, 15 Sep 2020 23:50:41 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.93.108])
-        by smtp.gmail.com with ESMTPSA id u126sm4229028wmu.9.2020.09.15.23.50.38
+        by smtp.gmail.com with ESMTPSA id u126sm4229028wmu.9.2020.09.15.23.50.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 23:50:38 -0700 (PDT)
+        Tue, 15 Sep 2020 23:50:41 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     rostedt@goodmis.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/4] kernel-shark: Have correct screen geometry on high-resolution screens
-Date:   Wed, 16 Sep 2020 09:50:05 +0300
-Message-Id: <20200916065007.9755-2-y.karadz@gmail.com>
+Subject: [PATCH 3/4] kernel-shark: Check if Qt has been found when building the examples
+Date:   Wed, 16 Sep 2020 09:50:06 +0300
+Message-Id: <20200916065007.9755-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200916065007.9755-1-y.karadz@gmail.com>
 References: <20200916065007.9755-1-y.karadz@gmail.com>
@@ -77,44 +77,39 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A scale factor (also called "Device Pixel Ratio") is often applied in
-the display settings when running on laptops having high-resolution
-screens. Take this scale factor into consideration when calculating
-the screen size.
-
-Note that the size of some widget is set to be a fractions of the total
-size of the screen.
+Some of the examples depend on Qt. Check if Qt exists befor trying
+to build these examples.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel-shark/src/KsUtils.hpp | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ kernel-shark/examples/CMakeLists.txt | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/kernel-shark/src/KsUtils.hpp b/kernel-shark/src/KsUtils.hpp
-index 2772b84..a07af1a 100644
---- a/kernel-shark/src/KsUtils.hpp
-+++ b/kernel-shark/src/KsUtils.hpp
-@@ -25,10 +25,18 @@
- #include "KsPlotTools.hpp"
+diff --git a/kernel-shark/examples/CMakeLists.txt b/kernel-shark/examples/CMakeLists.txt
+index 35e6b1e..032f305 100644
+--- a/kernel-shark/examples/CMakeLists.txt
++++ b/kernel-shark/examples/CMakeLists.txt
+@@ -20,10 +20,14 @@ message(STATUS "dataplot")
+ add_executable(dplot          dataplot.cpp)
+ target_link_libraries(dplot   kshark-plot)
  
- /** Macro providing the height of the screen in pixels. */
--#define SCREEN_HEIGHT  QGuiApplication::screens()[0]->geometry().height()
-+#define SCREEN_HEIGHT \
-+	( \
-+	QGuiApplication::screens()[0]->geometry().height() / \
-+	QApplication::desktop()->devicePixelRatio() \
-+	)
+-message(STATUS "widgetdemo")
+-add_executable(widgetdemo          widgetdemo.cpp)
+-target_link_libraries(widgetdemo   kshark-gui)
++if (Qt5Widgets_FOUND)
  
- /** Macro providing the width of the screen in pixels. */
--#define SCREEN_WIDTH   QGuiApplication::screens()[0]->geometry().width()
-+#define SCREEN_WIDTH \
-+	( \
-+	QGuiApplication::screens()[0]->geometry().width() / \
-+	QApplication::desktop()->devicePixelRatio() \
-+	)
- 
- //! @cond Doxygen_Suppress
- 
+-message(STATUS "cmd_split")
+-add_executable(cmd_split           cmd_split.cpp)
+-target_link_libraries(cmd_split    kshark-gui)
++    message(STATUS "widgetdemo")
++    add_executable(widgetdemo          widgetdemo.cpp)
++    target_link_libraries(widgetdemo   kshark-gui)
++
++    message(STATUS "cmd_split")
++    add_executable(cmd_split           cmd_split.cpp)
++    target_link_libraries(cmd_split    kshark-gui)
++
++endif (Qt5Widgets_FOUND)
 -- 
 2.26.2
 
