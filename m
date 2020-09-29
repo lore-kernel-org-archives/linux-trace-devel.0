@@ -8,65 +8,65 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70336C4727C
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Sep 2020 13:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2938C4741F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Sep 2020 13:41:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1AAD02145D
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Sep 2020 13:41:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5A65C208FE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 29 Sep 2020 13:41:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AunuJ9Kw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ugk4JzML"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbgI2Nlu (ORCPT
+        id S1730043AbgI2Nly (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 29 Sep 2020 09:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        Tue, 29 Sep 2020 09:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730077AbgI2Nlu (ORCPT
+        with ESMTP id S1729975AbgI2Nlx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 29 Sep 2020 09:41:50 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CC5C061755
-        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Sep 2020 06:41:50 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id w2so4692481wmi.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Sep 2020 06:41:50 -0700 (PDT)
+        Tue, 29 Sep 2020 09:41:53 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20460C0613D0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Sep 2020 06:41:52 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id k18so4854706wmj.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 29 Sep 2020 06:41:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uS+5BN0qQCxrHNROdqulT/alM50jLxxFwUBjYKYY2ro=;
-        b=AunuJ9KwTW80Hnnc+G2V5yWhbn/pujnHT+PAnttRZyhUlS2cVkYrgS2mZeMvU3P7Xv
-         XtxGyYrMx2348PuU3Jad2Z83wxlQ1PYK9yFKIFBvGREGCBxZJMbW71gJQsTPfkiECrb8
-         1uErG3n/+6/CLtd7fTWGieIT5MrLdDSpZ/qEAtDnRAF1sncYdPRci7zSlpkrS2Eyy9ez
-         4WISqNupTFyLGtVob+NeJnORJIrj7pNTM4XBCP98e0mGXTRbZetA9s6gUfPzu3VvVbOT
-         IN5lHXwKdUJKylKL/3hIEIzANtdNLXdsTimMKAGRupYOr8j8+z7rwmumwQjVTeRAMPYy
-         3ayA==
+        bh=ZUrqS/GpSejn2uuqZhUncbHZ8n9JUDOzQHUiRMQRzu4=;
+        b=Ugk4JzMLQwFp/Mi69XU3kgxVVPWSrOe2rGP4sJmn14GDTfdZIOto0G23um0Tp/rJ//
+         AW7kjDeM713Fls2NfPdT0r0nLaZx3aa4pNTGfT2B6ISbhtIzh1Snpg5UV5zzrGXzPZDm
+         JMV1wNZ2xPDba8hGkmUrmzuTrWZ5P0aA7HlWB6MMXNXQDIvgERqqBz/kteQzg4RPxQ5X
+         QVGsz5QxQSrIzJE55gHkRFmu+TQTxIYAmFj2eMgrHOIQ5FFe1Iy0IauyX//AnZAq+JBS
+         hDy34/byz9Z1+nadCPQ9+H8gVSPi/0LVzlcuUIVKdMTDSPf9P7AaA1ldOruAMkk1YWzH
+         z/hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uS+5BN0qQCxrHNROdqulT/alM50jLxxFwUBjYKYY2ro=;
-        b=OgqqMlteb98Sua0WAFIhNPGMvMTZ2GDE8H0rBK1CHs3np65CH5MkGPyndO6XmQcRhe
-         IxjtEjtFdIAG4yMY+cObmjR1AOPVgdaHF8FBh6BJfyo9X7Rsyb0LTYrN4vBKKiZvYb2A
-         XurdX1TlYHq0yXAaa74KsGNRWJ4LCA0vCK/ycKsBBxnm6srR8hfqc00szPvenZj3IrBU
-         49QkrsZAdwPX8XlSLW2F9876odjherkFd5Ix6gXkbvZCH+72PNYbtU16ycqsNo6YGD/A
-         vaf5RvuHUTfvL47G3QbjaASuMMdE2pKaHYYsQiTMvuJrVT+fuE7E5iLAkpjD9jNZm5pa
-         xygg==
-X-Gm-Message-State: AOAM533RqXdwrhHoKmvr45U4ffumBiZuU4f/fX8epg5JS4moxjMIR9hF
-        z8LuMBNBxGsBOPsoOoCy9vI=
-X-Google-Smtp-Source: ABdhPJxUuE6sabSjDC0RzSl/gM+Mh+Q6sQ8NbQlBRVY2AiiW4BkQ1fPdpWGupXOLMrs6WUxm5SnCZQ==
-X-Received: by 2002:a7b:ca42:: with SMTP id m2mr4804160wml.145.1601386908905;
-        Tue, 29 Sep 2020 06:41:48 -0700 (PDT)
+        bh=ZUrqS/GpSejn2uuqZhUncbHZ8n9JUDOzQHUiRMQRzu4=;
+        b=YprXoJfaLJp9vEb+592mu14r8vDhDtG9Bs5ndcmschR2Y3duEQZ7kJwaITlTreGp8q
+         QUc8y3V5nW/ZzdiJsMSeFg1huDhE6une2i723TNm79GjGV+wUbafidVvq7L/rHmOyUR9
+         k/fJ8OM2d+DqGIXsZYLwTCER9+M7UysW0e1lqjXDFmvKQV6d7Npm52nktyPSF+XAo3Ei
+         1MztaN/BkgBl5XyUXtLabpA1siqsPJUS5EEj7QFBl+W8Uex74Uvrp9MguVhlQRvnp6/o
+         ZPhvJ7UJzv/qZ30Jx3Ft+kHsmHVD0AZBXNhRbtAUf+0bsTCGfl+1bgCArl8xoT44xYwX
+         ypbg==
+X-Gm-Message-State: AOAM530o/xKVGtIg35hhYvedhAib/yukssJzfV7jGb8E70xppYiSh9Kp
+        ImaoIRBDVlu9Ml8Z7X7IpqI=
+X-Google-Smtp-Source: ABdhPJz4Ov4xWF1tFVjIEfi6SrztOGxxUVvEEvSVlWxJsO6mSpghZkXbTdkPIytvWlVJ4VcEjCYuSQ==
+X-Received: by 2002:a1c:2e08:: with SMTP id u8mr4941497wmu.156.1601386910793;
+        Tue, 29 Sep 2020 06:41:50 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.93.108])
-        by smtp.gmail.com with ESMTPSA id b84sm6162792wmd.0.2020.09.29.06.41.47
+        by smtp.gmail.com with ESMTPSA id b84sm6162792wmd.0.2020.09.29.06.41.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 06:41:48 -0700 (PDT)
+        Tue, 29 Sep 2020 06:41:50 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 03/15] kernel-shark: Start introducing KernelShark 2.0
-Date:   Tue, 29 Sep 2020 16:41:11 +0300
-Message-Id: <20200929134123.178688-4-y.karadz@gmail.com>
+Subject: [PATCH 04/15] kernel-shark: Use only signed types in kshark_entry
+Date:   Tue, 29 Sep 2020 16:41:12 +0300
+Message-Id: <20200929134123.178688-5-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200929134123.178688-1-y.karadz@gmail.com>
 References: <20200929134123.178688-1-y.karadz@gmail.com>
@@ -76,152 +76,52 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This is the very first patch from a series of patches that will
-introduce KernelShark 2.0. The new version implies significant
-changes in the low level C API, used by the KernelShark GUI. As
-a consequence of the API modifications, significant changes are
-needed in every source file of the project. Because, we want to
-avoid having a huge and ugly single commit that will be extremely
-hard to review, we will introduce a regression. We will first
-disable the compilation of all sub-components of KernelShark,
-except the API itself. This is done by bypassing the search of
-the necessary third party components (OpenGL and Qt). Later we
-will introduce the changes of the API in several sub-steps and
-will re-enable one by one the modified components of the GUI.
+Using uint64_t for the value of the offset was just wrong. According
+to the POSIX standard off_t is a signed integer type with unspecified
+size. Here we stick to a 64 bit integer, because this size guaranties
+optimal packing of the kshark_entry structure.
+
+Using unsigned values for the timestamps is also a source of problems
+and has been a reason for the introduction of multiple bugs in the past.
+In principal the value of the timestamps cannot be negative. However,
+this value must have the same type as the values used to define the
+state of the visualization model, like the range of the model or the
+size of the bin. The model state definitions should not take negative
+values as well, however their values are recalculated automatically when
+the user browses the data and those calculations may result in negative
+values in some corner cases. Because of this it is better to use a
+signed integer type and treat the negative values as an indicator
+of an error rather than have the negative result of the calculations
+casted into unsigned type which results into unpredictable behavior of
+the model.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- CMakeLists.txt          | 10 ++++-----
- build/deff.h.cmake      | 14 ++-----------
- examples/CMakeLists.txt | 46 ++++++++++++++++++++---------------------
- src/CMakeLists.txt      |  6 +++---
- 4 files changed, 33 insertions(+), 43 deletions(-)
+ src/libkshark.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c95249e..ccca95c 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -26,12 +26,12 @@ include(${KS_DIR}/build/FindJSONC.cmake)
+diff --git a/src/libkshark.h b/src/libkshark.h
+index 0d6c50d..9eecc2d 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -61,7 +61,7 @@ struct kshark_entry {
+ 	int32_t		event_id;
  
- find_package(Doxygen)
+ 	/** The offset into the trace file, used to find the record. */
+-	uint64_t	offset;
++	int64_t		offset;
  
--set(OpenGL_GL_PREFERENCE LEGACY)
--find_package(OpenGL)
--find_package(GLUT)
-+# set(OpenGL_GL_PREFERENCE LEGACY)
-+# find_package(OpenGL)
-+# find_package(GLUT)
+ 	/**
+ 	 * The time of the record in nano seconds. The value is taken from
+@@ -69,7 +69,7 @@ struct kshark_entry {
+ 	 * dependent. The time usually is the timestamp from when the system
+ 	 * started.
+ 	 */
+-	uint64_t	ts;
++	int64_t		ts;
+ };
  
--find_package(Qt5Widgets 5.7.1)
--find_package(Qt5Network)
-+# find_package(Qt5Widgets 5.7.1)
-+# find_package(Qt5Network)
- if (Qt5Widgets_FOUND)
- 
-     message(STATUS "Found Qt5Widgets:  (version ${Qt5Widgets_VERSION})")
-diff --git a/build/deff.h.cmake b/build/deff.h.cmake
-index 79726ff..e398c0c 100644
---- a/build/deff.h.cmake
-+++ b/build/deff.h.cmake
-@@ -23,17 +23,7 @@
- /** "pkexec" executable. */
- #cmakedefine DO_AS_ROOT "@DO_AS_ROOT@"
- 
--#ifdef __cplusplus
--
--	#include <QString>
--
--	/**
--	 * String containing semicolon-separated list of plugin names.
--	 * The plugins to be loaded when KernelShark starts are tagged
--	 * with "default".
--	 */
--	const QString plugins = "@PLUGINS@";
--
--#endif /* __cplusplus */
-+/** Semicolon-separated list of plugin names. */
-+#define KS_BUILTIN_PLUGINS "@PLUGINS@"
- 
- #endif // _KS_CONFIG_H
-diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
-index 032f305..8d40e42 100644
---- a/examples/CMakeLists.txt
-+++ b/examples/CMakeLists.txt
-@@ -8,26 +8,26 @@ message(STATUS "datafilter")
- add_executable(dfilter          datafilter.c)
- target_link_libraries(dfilter   kshark)
- 
--message(STATUS "datahisto")
--add_executable(dhisto          datahisto.c)
--target_link_libraries(dhisto   kshark)
--
--message(STATUS "confogio")
--add_executable(confio          configio.c)
--target_link_libraries(confio   kshark)
--
--message(STATUS "dataplot")
--add_executable(dplot          dataplot.cpp)
--target_link_libraries(dplot   kshark-plot)
--
--if (Qt5Widgets_FOUND)
--
--    message(STATUS "widgetdemo")
--    add_executable(widgetdemo          widgetdemo.cpp)
--    target_link_libraries(widgetdemo   kshark-gui)
--
--    message(STATUS "cmd_split")
--    add_executable(cmd_split           cmd_split.cpp)
--    target_link_libraries(cmd_split    kshark-gui)
--
--endif (Qt5Widgets_FOUND)
-+# message(STATUS "datahisto")
-+# add_executable(dhisto          datahisto.c)
-+# target_link_libraries(dhisto   kshark)
-+#
-+# message(STATUS "confogio")
-+# add_executable(confio          configio.c)
-+# target_link_libraries(confio   kshark)
-+#
-+# message(STATUS "dataplot")
-+# add_executable(dplot          dataplot.cpp)
-+# target_link_libraries(dplot   kshark-plot)
-+#
-+# if (Qt5Widgets_FOUND)
-+#
-+#     message(STATUS "widgetdemo")
-+#     add_executable(widgetdemo          widgetdemo.cpp)
-+#     target_link_libraries(widgetdemo   kshark-gui)
-+#
-+#     message(STATUS "cmd_split")
-+#     add_executable(cmd_split           cmd_split.cpp)
-+#     target_link_libraries(cmd_split    kshark-gui)
-+#
-+# endif (Qt5Widgets_FOUND)
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 457c100..2e092b2 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -2,9 +2,9 @@ message("\n src ...")
- 
- message(STATUS "libkshark")
- add_library(kshark SHARED libkshark.c
--                          libkshark-model.c
-+#                           libkshark-model.c
-                           libkshark-plugin.c
--                          libkshark-configio.c
-+#                           libkshark-configio.c
-                           libkshark-collection.c)
- 
- target_link_libraries(kshark ${TRACECMD_LIBRARY}
-@@ -99,7 +99,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
- 
- endif (Qt5Widgets_FOUND AND Qt5Network_FOUND)
- 
--add_subdirectory(plugins)
-+# add_subdirectory(plugins)
- 
- find_program(DO_AS_ROOT pkexec)
- 
+ /** Size of the task's hash table. */
 -- 
 2.25.1
 
