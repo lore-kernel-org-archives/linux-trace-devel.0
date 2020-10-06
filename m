@@ -1,142 +1,144 @@
-Return-Path: <SRS0=sBA1=DL=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=r7Bw=DN=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A7A0C4727D
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  4 Oct 2020 07:09:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9DE8C4363D
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Oct 2020 21:02:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB531206C1
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  4 Oct 2020 07:09:46 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DJQIXK4s"
+	by mail.kernel.org (Postfix) with ESMTP id 77EC0208B8
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Oct 2020 21:02:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725891AbgJDHJq (ORCPT
+        id S1727338AbgJFVCZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 4 Oct 2020 03:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDHJq (ORCPT
+        Tue, 6 Oct 2020 17:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727305AbgJFVCZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 4 Oct 2020 03:09:46 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EBBC0613CE
-        for <linux-trace-devel@vger.kernel.org>; Sun,  4 Oct 2020 00:09:46 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id nl2so1192317pjb.1
-        for <linux-trace-devel@vger.kernel.org>; Sun, 04 Oct 2020 00:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=neJa1ShGBIQVDpEru5n8wNoR6Aswp1kb/DCpNq9I2zw=;
-        b=DJQIXK4s5jZO1Op0CDE0kv7CNSl+xnPMqsq0HZ30Xwlv5ntARToXjoxpasS/76bF8N
-         TVPyXTovKYAxMIm3oaL8Stdn1Tk5VJJsXIN4hmOBvfjyK78GQRatcJStfyxEpC3Jayrq
-         6AcPjk2DzJuHDIWccGYvBws2vj3btdM00bDhW4oXJ/VP67jdBnvA6/YmpzmVupmlHMBJ
-         t7oEl6S2dNyl1BCE68D757nsXTzd5R7g0ck73bj4fMN2yxEMyhtd3ZNveoIWChlXis1R
-         XclDok40zIycw21wnXAzAtzpBIRr6sfE6+CdecA2w626x0NeNpmGJ7PVAwMxG+pqDsWH
-         sWqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=neJa1ShGBIQVDpEru5n8wNoR6Aswp1kb/DCpNq9I2zw=;
-        b=pu7OMVOUY9osiyaXkUk7DMEAR+ozmfG1tPlvPwTqEVXNV/Fh6CZrTRCjCfbTWYQk9T
-         flqVT1JNQknxXGpE+9sogIi+uOE7HeGxZdm3bPSZ4FwtqoZN4GEaFcpwKNBmxA1M88yf
-         sLBpZAs5e+vz8qy6no+jQu2J3zymImsklfbUeMI0aVoI5/NGDHGR38yHljVCMY5O62ZI
-         OqhTILghBLVzOzC9upgyVCI9Ca5zOoGGlvlHFdL7zlXvnVaIXHPMFt0muJD+H0qgNzXd
-         /FPLYlQDHqGmOtwa6l1eDNl8fMFukxQ5DISGTDx1JuYCTwqOopY9DWz/cfY9pUevt6Z/
-         xL/Q==
-X-Gm-Message-State: AOAM530v7xHryoAlJdxxjkJCahA+orbDxUcu83PffTUOazonJCy7PAt+
-        gZtH+vBUk4g06hf/08mnBvAglWB8AV2Bjg==
-X-Google-Smtp-Source: ABdhPJy71lwa+kOZzwe2r8NfR8D0siPTCLCW2a75qO7bHCt5xPdxxb5+rfwXclbshXmubVpeSh7pFw==
-X-Received: by 2002:a17:90a:dc07:: with SMTP id i7mr10679738pjv.111.1601795385885;
-        Sun, 04 Oct 2020 00:09:45 -0700 (PDT)
-Received: from i7.zsun.org (h150-66-46-238.ablenetvps.ne.jp. [150.66.46.238])
-        by smtp.gmail.com with ESMTPSA id j26sm7731874pfa.160.2020.10.04.00.09.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Oct 2020 00:09:44 -0700 (PDT)
-Subject: Re: Co-existing of traceevent of trace-cmd and perf
-To:     Vitaly Chikunov <vt@altlinux.org>
-Cc:     linux-trace-devel@vger.kernel.org, tstoyanov@vmware.com,
-        Jiri Olsa <jolsa@redhat.com>, zsun@redhat.com
-References: <1baba359-fd07-1a61-0158-e65c6b06425f@gmail.com>
- <3dc91d46-e359-472b-4faf-d9b324cc4c8d@gmail.com>
- <20200930172112.qxb6shj5jkmlfpmt@altlinux.org>
-From:   Zamir SUN <sztsian@gmail.com>
-Message-ID: <56b36750-9c4b-375a-e21d-f3a7f27c32af@gmail.com>
-Date:   Sun, 4 Oct 2020 15:09:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 6 Oct 2020 17:02:25 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A48D2087E;
+        Tue,  6 Oct 2020 21:02:24 +0000 (UTC)
+Date:   Tue, 6 Oct 2020 17:02:22 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 05/15] kernel-shark: Introduce libkshark-hash
+Message-ID: <20201006170222.0093ab92@gandalf.local.home>
+In-Reply-To: <20200929134123.178688-6-y.karadz@gmail.com>
+References: <20200929134123.178688-1-y.karadz@gmail.com>
+        <20200929134123.178688-6-y.karadz@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200930172112.qxb6shj5jkmlfpmt@altlinux.org>
-Content-Type: text/plain; charset=koi8-r; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Tue, 29 Sep 2020 16:41:13 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+
+> +/**
+> + * Create new hash table of Ids.
+> + */
+> +struct kshark_hash_id *kshark_hash_id_alloc(size_t n_bits)
+> +{
+> +	struct kshark_hash_id *hash;
+> +	size_t size;
+> +
+> +	hash = calloc(1, sizeof(*hash));
+> +	assert(hash);
+
+For failed memory, is the general plan to just crash? (assert) or return
+NULL?
+
+> +
+> +	hash->n_bits = n_bits;
+> +	hash->count = 0;
+> +
+> +	size = hash_size(hash);
+> +	hash->hash = calloc(size, sizeof(*hash->hash));
+
+In either case, this needs to be checked too.
+
+> +
+> +	return hash;
+> +}
+> +
+> +/** Free the hash table of Ids. */
+> +void kshark_hash_id_free(struct kshark_hash_id *hash)
+> +{
+> +	if (!hash)
+> +		return;
+> +
+> +	kshark_hash_id_clear(hash);
+> +	free(hash->hash);
+> +	free(hash);
+> +}
+> +
+
+> diff --git a/src/libkshark.h b/src/libkshark.h
+> index 9eecc2d..57bd5e5 100644
+> --- a/src/libkshark.h
+> +++ b/src/libkshark.h
+> @@ -33,6 +33,7 @@ extern "C" {
+>  // KernelShark
+>  #include "libkshark-plugin.h"
+>  
+> +
+
+Extra white space.
+
+>  /**
+>   * Kernel Shark entry contains all information from one trace record needed
+>   * in order to  visualize the time-series of trace records. The part of the
+> @@ -72,6 +73,52 @@ struct kshark_entry {
+>  	int64_t		ts;
+>  };
+>  
+> +/** Size of the task'c hash table in terms of bits being used by the key. */
+
+ "task'c" ?
+
+-- Steve
 
 
-On 10/1/20 1:21 AM, Vitaly Chikunov wrote:
-> Zamir, Steven,
-> 
-> On Tue, Sep 29, 2020 at 10:16:33PM +0800, Zamir SUN wrote:
->> On 9/29/20 9:44 PM, Zamir SUN wrote:
->>> I'm packaging trace-cmd 2.9 into Fedora.
->>>
->>> Back in trace-cmd 2.8, all the plugins are under
->>> $(libdir)/trace-cmd/plugins. While as of trace-cmd 2.9, I find the
->>> traceevent plugins are installed in $(libdir) by default. This brings up
->>> an interesting situation - the perf tool also contains a copy of the
->>> traceevent in the same directory. So this means trace-cmd and perf have
->>> file conflicts. In terms of packaging, this means users can only install
->>> one of them, not in parallel (at least for Fedora). So I'd like to see
->>> if there are existing proposals or suggestions for which one is expected
->>> to be used by other utilities? Or is there any official plan to move one
->>> of them to the other directory?
->>>
->>> I'm copying Tzvetomir and Jiri as I think you're the first people for
->>> getting the plugins in this directory for trace-cmd and perf
->>> respectively.
->>>
->>
->> Sorry, I just saw an email from Steven mentioning there will be a stand
->> alone libtraceevent. However I did not find it in git.kernel.org. So I
->> probably should ask if the stand alone version of libtraceevent is ready
->> now?
-> 
-> In anticipation of this change I temporary packaged (for ALT) traceevent
-> into %_libdir while keeping traceevent form perf in %_libexecdir (for a
-> backward compatibility).
-> 
-
-Hi Vitaly,
-
-Thanks for the details. I will consider applying something similar to 
-what you did for trace-cmd before the new library is being used by both 
-in Fedora.
-
-> Thanks,
-> 
->>
->> Thanks.
->>
->>> Thanks in advance.
->>>
->>
->> -- 
->> Zamir SUN
->> Fedora user
->> GPG : 1D86 6D4A 49CE 4BBD 72CF FCF5 D856 6E11 F2A0 525E
-
--- 
-Zamir SUN
-Fedora user
-GPG : 1D86 6D4A 49CE 4BBD 72CF FCF5 D856 6E11 F2A0 525E
+> +#define KS_TASK_HASH_NBITS	16
+> +
+> +/** Size of the hash table of Ids in terms of bits being used by the key. */
+> +#define KS_FILTER_HASH_NBITS	8
+> +
+> +/** A bucket for the hash table of integer Id numbers (kshark_hash_id). */
+> +struct kshark_hash_id_item {
+> +	/** Pointer to the Id in this bucket. */
+> +	struct kshark_hash_id_item	*next;
+> +
+> +	/** The Id value. */
+> +	int				id;
+> +};
+> +
+> +/**
+> + * Hash table of integer Id numbers. To be used for fast filter of trace
+> + * entries.
+> + */
+> +struct kshark_hash_id {
+> +	/** Array of buckets. */
+> +	struct kshark_hash_id_item	**hash;
+> +
+> +	/** The number of Ids in the table. */
+> +	size_t	count;
+> +
+> +	/**
+> +	 * The number of bits used by the hashing function.
+> +	 * Note that the number of buckets in the table if given by
+> +	 * 1 << n_bits.
+> +	 */
+> +	size_t	n_bits;
+> +};
