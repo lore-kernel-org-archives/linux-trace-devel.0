@@ -5,67 +5,67 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 087E5C43457
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:03:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7BF7C433E7
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:03:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B16EA22267
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:03:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D2A722267
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:03:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="glZJqUIg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lht4XK9P"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731698AbgJIODr (ORCPT
+        id S1731820AbgJIODt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Oct 2020 10:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
+        Fri, 9 Oct 2020 10:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729045AbgJIODr (ORCPT
+        with ESMTP id S1729045AbgJIODt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:03:47 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B91C0613D2
-        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Oct 2020 07:03:47 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id ce10so13253934ejc.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Oct 2020 07:03:46 -0700 (PDT)
+        Fri, 9 Oct 2020 10:03:49 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD069C0613D2
+        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Oct 2020 07:03:48 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id t25so13184539ejd.13
+        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Oct 2020 07:03:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=h/TVH0zLajB5A3taL79irddG3+ArIdtOwP3V/LBUyPs=;
-        b=glZJqUIgS2lO18JTcrVpfnVXVeOwY547GePvgFafuoCLQYfXCGfG5a5DIYsz3tNkWM
-         V+beP1eIWgQ6pe2jNz6xYT90TKLN3PpHHflACNry8gkG2X7sZn1MEZYIPiSdlALYgEGl
-         fIknqs/3fQLa8JdJz9GXTi0jtkY4nOE/sEO30VhKHh8kF3/HITMrke9C7TyPnus1ndCe
-         FnvgHnZeADMYNCgN1plQrpc5jOAbHnglTU2OP0xMch9BvIP5XYyIjl0UPexLU4ZVJ0Kh
-         c+j4aZ+1BgCrauEuBbrdPWVZvqsrJ9r89O5oneCMFBBz4Apb7FDwUbJofWWoNEu1N4N5
-         uZ8w==
+        bh=m8EODmOObj5hq8GGBMpIQngPSwLhMeE4S33NXmLIPeM=;
+        b=lht4XK9Pwx2OsJf/Zx7IaXjcTK3MWg5GQwO/ClypKZI/ER2iVkt3LH3DBehmz5ocds
+         0v8wNhzWGW9KYEh4qomsx43fbbgZiWXq6IJeZHGTOvXhjzRi7WISdly9CM8FNU71sOFR
+         y1LeZ92tLbVLRfoNdp6sd2puXgXoDp4jC/zwJDZ3XagSi5RnRlf2/MMDdqwJqzfRslaH
+         49jvil4pNgoWW+nZ6iTpNc/YJdYIHrN8HmyBb+QUzFS0VwhfJAe08DsH1MCTowQIKfUI
+         D88IqJjd2MDxZgYuP2nPpQKbTkqW4u3g98BoKN03PWmEAHX7IvWnGKZ+eqzB49ZoTYh5
+         ZIxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=h/TVH0zLajB5A3taL79irddG3+ArIdtOwP3V/LBUyPs=;
-        b=RKt2ht/lsDIJyr62OiMiR3ufEz5ie76Rb2cC/JjmVJTJ7/NwYxrdEhKXw9/fTcvGhG
-         Y5NkpizMRmQJSbC2IrfNF0JbDwrS8ZRWDwsMhyBKfPZSzNdsczLy+eozxGJqjtUfIVsG
-         13BYVHUwQVWv+Q5AhvH/q4/zORMzXbozPCaFY/CECVQZBYHhaWnGI8fj+WSm/HJ4E67W
-         NjNsFsxWSGcLrcZ8qc/cAYsPJIK5UFww8PTim4FCS3OrKi1PM0xGSngQyqHR+M3wLXUK
-         YXkPj1G2paLX7T4JOQtqGULoryyc/JF5pUy8T9L5yOItXoiGV2MBRM5SnhAYSkXENJtu
-         pE7A==
-X-Gm-Message-State: AOAM530yfI0dUHTyc59LTCpmiAULdXAWEwUd/2Xyp4baKehrRV58r7ZF
-        HxiBPR4Ynx8gRwZU1etVGvIptKI+nIW60OL6
-X-Google-Smtp-Source: ABdhPJzomAGJw0kx7xRLn5o66fyuWmq/rN+wYpxwdC8mxunhxbt47nf209/3yzZd1orXCNdACNi47Q==
-X-Received: by 2002:a17:906:c1c3:: with SMTP id bw3mr14184011ejb.516.1602252225548;
-        Fri, 09 Oct 2020 07:03:45 -0700 (PDT)
+        bh=m8EODmOObj5hq8GGBMpIQngPSwLhMeE4S33NXmLIPeM=;
+        b=UK1dfZg/3Is6/FalauxTM5hFvJ2WhN90wg8msnI5rzyJ+60yLrKAOnx2FUg/cKJUdX
+         hTy6anrNld7d5L0pmGufvadWIz3C3EJnPUPllf5oOPa3FmShgtcxWLkKDJz6cqriGKht
+         rfOP2EKU+hUwiLvaArOz1Ud4i/KzH4u5+sHJExQBTM1pesx6qVSSz6KMeFsZAviVbM7T
+         yTD87ZQaTpvCtcB5+mSmu+gHiTz3qa10m0sBIbgPuVA0F/dfTI8IywrXUFZI47PllfQI
+         PrA35+BzBMtcVggZSNQBjmZkjgjvrWWEw7Wei+YwwteqNtEzwKQnBTdxZLyjgJAoW2nQ
+         KRIA==
+X-Gm-Message-State: AOAM531cHBIr7MkFDNd1utLSZfh1U7j3ahlvfn+PLMNymi8IEXO1h05c
+        oLIOxn+os3/kl+CENURS9VkbBIXgl2X8bHpO
+X-Google-Smtp-Source: ABdhPJzTTa91OKk/75e7U21pePxcR2lpaF6WMlweWcGofgLhXlo4p33w3rDd1CW495BEw2SXhJ5A/g==
+X-Received: by 2002:a17:906:7fd7:: with SMTP id r23mr2226011ejs.310.1602252227280;
+        Fri, 09 Oct 2020 07:03:47 -0700 (PDT)
 Received: from localhost.localdomain ([151.251.253.218])
-        by smtp.gmail.com with ESMTPSA id ck19sm6362483ejb.99.2020.10.09.07.03.44
+        by smtp.gmail.com with ESMTPSA id ck19sm6362483ejb.99.2020.10.09.07.03.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 07:03:44 -0700 (PDT)
+        Fri, 09 Oct 2020 07:03:46 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v24 02/10] trace-cmd: Debug scripts for PTP-like algorithm for host - guest timestamp synchronization
-Date:   Fri,  9 Oct 2020 17:03:30 +0300
-Message-Id: <20201009140338.25260-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v24 03/10] trace-cmd: Add trace-cmd library APIs for ftrace clock name
+Date:   Fri,  9 Oct 2020 17:03:31 +0300
+Message-Id: <20201009140338.25260-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201009140338.25260-1-tz.stoyanov@gmail.com>
 References: <20201009140338.25260-1-tz.stoyanov@gmail.com>
@@ -75,159 +75,98 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-These scripts can be used to visualise debug files, written when the PTP-like algorithm
-is compiled with TSYNC_DEBUG defined. The files are located in the guest machine:
-    s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
-    res-cid*.txt - For each tracing session: all calculated clock offsets.
-
-tsync_hist.py plots a histogram, using data from a s-cid*.txt file:
-	"python tsync_hist.py s-cid2_1.txt"
-tsync_res.py plots a line, using data from res-cid*.txt file:
-	"python tsync_res.py res-cid2.txt"
+Added enum with ftrace clock IDs and APIs to convert ftrace name to ID
+and vice versa, as part of libtracecmd.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- scripts/debug/tsync_hist.py | 57 +++++++++++++++++++++++++++++++++++++
- scripts/debug/tsync_readme  | 12 ++++++++
- scripts/debug/tsync_res.py  | 46 ++++++++++++++++++++++++++++++
- 3 files changed, 115 insertions(+)
- create mode 100644 scripts/debug/tsync_hist.py
- create mode 100644 scripts/debug/tsync_readme
- create mode 100644 scripts/debug/tsync_res.py
+ include/trace-cmd/trace-cmd.h | 16 +++++++++++++
+ lib/trace-cmd/trace-util.c    | 45 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+)
 
-diff --git a/scripts/debug/tsync_hist.py b/scripts/debug/tsync_hist.py
-new file mode 100644
-index 00000000..819d1e8f
---- /dev/null
-+++ b/scripts/debug/tsync_hist.py
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2019, VMware Inc, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-+# Copyright (C) 2019, VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index f9c1f843..393a2e7b 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -415,6 +415,22 @@ int tracecmd_msg_recv_time_sync(struct tracecmd_msg_handle *msg_handle,
+ 				unsigned int *sync_msg_id,
+ 				unsigned int *payload_size, char **payload);
+ 
++enum tracecmd_clocks {
++	TRACECMD_CLOCK_UNKNOWN	= 0,
++	TRACECMD_CLOCK_LOCAL	= 1,
++	TRACECMD_CLOCK_GLOBAL	= 1 << 1,
++	TRACECMD_CLOCK_COUNTER	= 1 << 2,
++	TRACECMD_CLOCK_UPTIME	= 1 << 3,
++	TRACECMD_CLOCK_PERF	= 1 << 4,
++	TRACECMD_CLOCK_MONO	= 1 << 5,
++	TRACECMD_CLOCK_MONO_RAW	= 1 << 6,
++	TRACECMD_CLOCK_BOOT	= 1 << 7,
++	TRACECMD_CLOCK_X86_TSC	= 1 << 8
++};
 +
++enum tracecmd_clocks tracecmd_clock_str2id(const char *clock);
++char *tracecmd_clock_id2str(enum tracecmd_clocks clock);
 +
-+import matplotlib.pyplot as plt
-+import matplotlib.lines as mlines
-+import numpy as np
-+import sys
+ /* --- Timestamp synchronization --- */
+ 
+ enum{
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index 0ead96ea..e20362e3 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -33,6 +33,51 @@ static bool debug;
+ 
+ static FILE *logfp;
+ 
++const static struct {
++	char *clock_str;
++	enum tracecmd_clocks clock_id;
++} trace_clocks[] = {
++	{"local", TRACECMD_CLOCK_LOCAL},
++	{"global", TRACECMD_CLOCK_GLOBAL},
++	{"counter", TRACECMD_CLOCK_COUNTER},
++	{"uptime", TRACECMD_CLOCK_UPTIME},
++	{"perf", TRACECMD_CLOCK_PERF},
++	{"mono", TRACECMD_CLOCK_MONO},
++	{"mono_raw", TRACECMD_CLOCK_MONO_RAW},
++	{"boot", TRACECMD_CLOCK_BOOT},
++	{"x86-tsc", TRACECMD_CLOCK_X86_TSC},
++	{NULL, -1}
++};
 +
-+def newline(p1, p2):
-+    ax = plt.gca()
-+    xmin, xmax = ax.get_xbound()
++/**
++ * tracecmd_clock_str2id - Convert ftrace clock name to clock ID
++ * @clock: Ftrace clock name
++ * Returns ID of the ftrace clock
++ */
++enum tracecmd_clocks tracecmd_clock_str2id(const char *clock)
++{
++	for (int i = 0; trace_clocks[i].clock_str; i++) {
++		if (!strncmp(clock, trace_clocks[i].clock_str,
++		    strlen(trace_clocks[i].clock_str)))
++			return trace_clocks[i].clock_id;
++	}
++	return TRACECMD_CLOCK_UNKNOWN;
++}
 +
-+    if(p2[0] == p1[0]):
-+        xmin = xmax = p1[0]
-+        ymin, ymax = ax.get_ybound()
-+    else:
-+        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
-+        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
++/**
++ * tracecmd_clock_id2str - Convert clock ID to ftare clock name
++ * @clock: Clock ID
++ * Returns name of a ftrace clock
++ */
++char *tracecmd_clock_id2str(enum tracecmd_clocks clock)
++{
++	for (int i = 0; trace_clocks[i].clock_str; i++) {
++		if (trace_clocks[i].clock_id == clock)
++			return trace_clocks[i].clock_str;
++	}
++	return NULL;
++}
 +
-+    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color='red')
-+    ax.add_line(l)
-+    return l
-+
-+
-+data = np.loadtxt(fname = sys.argv[1])
-+selected_ts  = data[-1, 1]
-+selected_ofs = data[-1, 0]
-+data = data[:-1,:]
-+
-+x = data[:, 1] - data[:, 0]
-+
-+mean = x.mean()
-+std = x.std()
-+
-+num_bins = 500
-+min = x.min() #+ .4 * (x.max() - x.min())
-+max = x.max() #- .4 * (x.max() - x.min())
-+bins = np.linspace(min, max, num_bins, endpoint = False, dtype=int)
-+
-+fig, ax = plt.subplots()
-+
-+# the histogram of the data
-+n, bins, patches = ax.hist(x, bins, histtype=u'step');
-+
-+ax.set_xlabel('clock offset [$\mu$s]')
-+ax.set_ylabel('entries')
-+ax.set_title("$\sigma$=%i" % std)
-+
-+x1, y1 = [selected_ofs, min], [selected_ofs, max]
-+newline(x1, y1)
-+
-+# Tweak spacing to prevent clipping of ylabel
-+fig.tight_layout()
-+plt.show()
-diff --git a/scripts/debug/tsync_readme b/scripts/debug/tsync_readme
-new file mode 100644
-index 00000000..f3ebb25d
---- /dev/null
-+++ b/scripts/debug/tsync_readme
-@@ -0,0 +1,12 @@
-+PTP-like algorithm debug
-+========================
-+
-+tsync_*.py scripts can be used to visualise debug files, written when the PTP-like algorithm
-+is compiled with TSYNC_DEBUG defined. The files are located in the guest machine:
-+    s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
-+    res-cid*.txt - For each tracing session: all calculated clock offsets.
-+
-+tsync_hist.py plots a histogram, using data from a s-cid*.txt file:
-+	"python tsync_hist.py s-cid2_1.txt"
-+tsync_res.py plots a line, using data from res-cid*.txt file:
-+	"python tsync_res.py res-cid2.txt"
-diff --git a/scripts/debug/tsync_res.py b/scripts/debug/tsync_res.py
-new file mode 100644
-index 00000000..7d109863
---- /dev/null
-+++ b/scripts/debug/tsync_res.py
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2019, VMware Inc, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-+# Copyright (C) 2019, VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
-+
-+
-+import matplotlib.pyplot as plt
-+import matplotlib.lines as mlines
-+import numpy as np
-+import sys
-+
-+def newline(p1, p2):
-+    ax = plt.gca()
-+    xmin, xmax = ax.get_xbound()
-+
-+    if(p2[0] == p1[0]):
-+        xmin = xmax = p1[0]
-+        ymin, ymax = ax.get_ybound()
-+    else:
-+        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
-+        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
-+
-+    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color='red')
-+    ax.add_line(l)
-+    return l
-+
-+data = np.loadtxt(fname = sys.argv[1])
-+x = data[:, 0]
-+y = data[:, 1]
-+
-+fig, ax = plt.subplots()
-+
-+ax.set_xlabel('samples (t)')
-+ax.set_ylabel('clock offset')
-+ax.set_title("$\delta$=%i ns" % (max(y) - min(y)))
-+
-+l = mlines.Line2D(x, y)
-+ax.add_line(l)
-+ax.set_xlim(min(x), max(x))
-+ax.set_ylim(min(y), max(y) )
-+
-+print(min(y), max(y), max(y) - min(y))
-+
-+# Tweak spacing to prevent clipping of ylabel
-+fig.tight_layout()
-+plt.show()
+ /**
+  * tracecmd_set_debug - Set debug mode of the tracecmd library
+  * @set_debug: The new "debug" mode. If true, the tracecmd library is
 -- 
 2.26.2
 
