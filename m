@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94429C433E7
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F070C433E7
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:04:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 480BA222C4
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:03:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C624522267
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Oct 2020 14:03:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mgLUI8FZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QUj4Dh5s"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgJIOD5 (ORCPT
+        id S2387416AbgJIOD7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Oct 2020 10:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
+        Fri, 9 Oct 2020 10:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387416AbgJIOD4 (ORCPT
+        with ESMTP id S1729347AbgJIOD7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:03:56 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E811C0613D5
-        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Oct 2020 07:03:56 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id p15so13237502ejm.7
-        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Oct 2020 07:03:56 -0700 (PDT)
+        Fri, 9 Oct 2020 10:03:59 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA8FC0613D2
+        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Oct 2020 07:03:57 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id p15so13237618ejm.7
+        for <linux-trace-devel@vger.kernel.org>; Fri, 09 Oct 2020 07:03:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xTepxL7zWXwNOSHTVl8Wl3ZjVMbnCa1UtuCYvEN7BSQ=;
-        b=mgLUI8FZ4FJBqYHwsIJ4M+atPiYbpj6+rmSduN7wOeNsj4E6O05uFaaAq+YTv3b55U
-         2oyvxI1nyvAuXQuOXaUjVy/Cf1SH9tgPvZbIFiEt+7yOV2SBZAwMjVp3Wo+xbCkKtkHn
-         Hg7HUTCjk8dn4aFhN+sM3UGK3ZiLevrWkDB+AjOY1ZBp019BKotp9YkGGZYVskcrmDco
-         k52Px+56On/E/W1uV4sau30DtLdh2MxAKCrOhZM/YY9Fzhm9ycgTEIiRGaN0GuqL8NxU
-         qFm5yKrBK9Nt55/c2Hyw31Ne2yiphdv+LkZTzYbv306mooayLAjPAgW0F0t7uXKQxSg9
-         UmCg==
+        bh=kWUa9elM/32MOlBImDPhdkbbNdIMDTU8dzsrjWEnb84=;
+        b=QUj4Dh5sO07WfzsnWl2KlzYkV8kgBAQv7VXedXfw9g7I2uG2fJh3XsW8r6T3W9nwWU
+         P+Eh4FVrnnqykBo3dR4uiFpLDK7gcYmyEz6FxdnHMmR6k3AorijttaCsTXPXoEViFdo/
+         UJ4TGgE0ffYF2H5cTBR4+NGGETlTo/J37NPlzYhnGoCVNRRx9j3TD6pejtvqSDOk6LH/
+         LFOjbeKTMcxdxWQyScny5CD68iXQLzGQrq/z8imjVeOJctbCayfPkawZjTJG/KmvInHL
+         z8K1uI8MAB5xUmODfcKflEP0GJ97lsJElXsrsxRmaMUySNmINPsQGccD2NAEvSAGBRxX
+         xrgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xTepxL7zWXwNOSHTVl8Wl3ZjVMbnCa1UtuCYvEN7BSQ=;
-        b=a/tmoqxyyrCW10sJDBe0uNG7dtw8ZbAsCUZdaEiCV15KEkiSsIQl7JQJkGD0IypmsS
-         wW7TTTl1Z5JKbHc7mCPP4DetKeh9e2HdzF8wAYltCruI+2iY9qvEVqjJrqMwLHapLNym
-         FuI1F7DcD+/ptAuvmJuKPgCFj5kmrVSKkLut1HzPlfmOyQb4k0qvcS9VSz+TPTvVnVDj
-         gWXypKJQR8+5eqXqPq+pVN+flqhQVKfsMdmkGVvfu5NdhQp0MtBGjSwG00t/UzBKySoU
-         /ST54aWu906Y0WL5Y0mzu/KEoDXrAuI8SJi88iI87f7dQGTkZLtw0T3BXvLAEnHgauSl
-         +fsQ==
-X-Gm-Message-State: AOAM530e0Yf9gGHIANwofhxG5nDQUtOnSkRmtokW0wbwnQ7dI8c92iA9
-        IMq6PmJe054yK2Sjwe1WlvzXrYN9KzoTTQuu
-X-Google-Smtp-Source: ABdhPJxhVeOPH55g4bf1xg9EFpk5azSsF35wveT7t5zW5FRePe+gDafhjCebUDro+NViOinuIFrQNA==
-X-Received: by 2002:a17:906:b104:: with SMTP id u4mr14000558ejy.121.1602252235086;
-        Fri, 09 Oct 2020 07:03:55 -0700 (PDT)
+        bh=kWUa9elM/32MOlBImDPhdkbbNdIMDTU8dzsrjWEnb84=;
+        b=VbKJw0sVptdjj1hoej3f5th4yxtvr5TWuwLhesLU6PH0dhlnOn4QQFBXGNJuZwWvk8
+         Pq9dc/TSv2sDzU2hcnhfsGpXAFHP7340MEWp97PdoVGtoHzNlwOBPRLqfPqhq+7T+RAZ
+         LQ37xjTirS1nbs7Pv+QuDJmtsrU74/CBdEuPvhmfZb8vSSOdj8dESenOVQ53V9x9mPqf
+         HAKgosqI3xoS8VrNIU813E2dUbyrERH/bvw0+3j8bc6UJuxcjwVJwRGi2L4LjWtwa9sL
+         uwpvLNNO2RQkA/kfxYWDeEajw+DuXMtEG47Gqex2MgKOfkiNmgzkuDhza7c/73nVbmpH
+         2J4w==
+X-Gm-Message-State: AOAM530VeCcZ+zrfHT2kYP/KQtTP+RoIF44GDbs3b+nTOgNAnotgIq2D
+        mjO62/dfKkQqY2L4euEIyHU=
+X-Google-Smtp-Source: ABdhPJxNiLEdZ/Zu46R/9r2B88MQ2I2qSYgMVqLm3wknN/1tu+tKT14SIbY1PHHZGLJ2yk8n5ApNxQ==
+X-Received: by 2002:a17:906:4c84:: with SMTP id q4mr14716281eju.525.1602252236430;
+        Fri, 09 Oct 2020 07:03:56 -0700 (PDT)
 Received: from localhost.localdomain ([151.251.253.218])
-        by smtp.gmail.com with ESMTPSA id ck19sm6362483ejb.99.2020.10.09.07.03.53
+        by smtp.gmail.com with ESMTPSA id ck19sm6362483ejb.99.2020.10.09.07.03.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 07:03:54 -0700 (PDT)
+        Fri, 09 Oct 2020 07:03:55 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v24 08/10] trace-cmd: Add guest CPU count PID in tracecmd_time_sync struct
-Date:   Fri,  9 Oct 2020 17:03:36 +0300
-Message-Id: <20201009140338.25260-9-tz.stoyanov@gmail.com>
+Subject: [PATCH v24 09/10] trace-cmd: Fixed bitmask logic tracecmd_tsync_proto_getall()
+Date:   Fri,  9 Oct 2020 17:03:37 +0300
+Message-Id: <20201009140338.25260-10-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201009140338.25260-1-tz.stoyanov@gmail.com>
 References: <20201009140338.25260-1-tz.stoyanov@gmail.com>
@@ -75,57 +75,47 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The tracecmd_time_sync struct holds the timestamp synchronization
-context, used by the timestamp synchronization plugins. Guest CPU count and
-PID of the host task, running the guest, is important information which
-may be needed by the plugins.
+The tracecmd_tsync_proto_getall () function returns a bitmask of all
+registered timestamp synchronization plugins, which match given criteria.
+There was a bug in that logic - it was working with wrong bitmask size,
+ which leads to broken bitmask.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h | 4 ++++
- tracecmd/trace-tsync.c        | 7 ++++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ lib/trace-cmd/trace-timesync.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index f1068c49..48ed4bc0 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -457,6 +457,10 @@ struct tracecmd_time_sync {
- 	char				*clock_str;
- 	struct tracecmd_msg_handle	*msg_handle;
- 	void				*context;
-+
-+	int				guest_pid;
-+	int				vcpu_count;
-+
- };
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index 10ab82f0..2fbb319b 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -217,21 +217,21 @@ int tracecmd_tsync_proto_getall(char **proto_mask, int *words, const char *clock
+ 		if (proto->proto_id > proto_max)
+ 			proto_max = proto->proto_id;
  
- void tracecmd_tsync_init(void);
-diff --git a/tracecmd/trace-tsync.c b/tracecmd/trace-tsync.c
-index 051b1003..27718172 100644
---- a/tracecmd/trace-tsync.c
-+++ b/tracecmd/trace-tsync.c
-@@ -77,6 +77,7 @@ int tracecmd_host_tsync(struct buffer_instance *instance,
- {
- 	struct tracecmd_msg_handle *msg_handle = NULL;
- 	cpu_set_t *pin_mask = NULL;
-+	struct trace_guest *guest;
- 	pthread_attr_t attrib;
- 	size_t mask_size = 0;
- 	int ret;
-@@ -84,7 +85,11 @@ int tracecmd_host_tsync(struct buffer_instance *instance,
- 
- 	if (!instance->tsync.sync_proto)
+-	count = proto_max / PROTO_MASK_SIZE + 1;
+-	protos = calloc(count, sizeof(char));
++	count = proto_max / PROTO_MASK_BITS + 1;
++	protos = calloc(count, PROTO_MASK_SIZE);
+ 	if (!protos)
  		return -1;
--
-+	guest = get_guest_by_cid(instance->cid);
-+	if (guest == NULL)
-+		return -1;
-+	instance->tsync.guest_pid = guest->pid;
-+	instance->tsync.vcpu_count = guest->cpu_max;
- 	fd = trace_open_vsock(instance->cid, tsync_port);
- 	if (fd < 0) {
- 		ret = -1;
+ 
+ 	for (proto = tsync_proto_list; proto; proto = proto->next) {
+-		if ((proto->proto_id / PROTO_MASK_SIZE) >= count)
++		if ((proto->proto_id / PROTO_MASK_BITS) >= count)
+ 			continue;
+ 		if (!(proto->roles & role))
+ 			continue;
+ 		if (proto->supported_clocks && clock_id &&
+ 		    !(proto->supported_clocks & clock_id))
+ 			continue;
+-		protos[proto->proto_id / PROTO_MASK_SIZE] |=
+-				(1 << (proto->proto_id % PROTO_MASK_SIZE));
++		protos[proto->proto_id / PROTO_MASK_BITS] |=
++				(1 << (proto->proto_id % PROTO_MASK_BITS));
+ 	}
+ 
+ 	*proto_mask = protos;
 -- 
 2.26.2
 
