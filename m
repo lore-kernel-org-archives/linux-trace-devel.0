@@ -2,509 +2,171 @@ Return-Path: <SRS0=H9Ya=DT=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4EC5C43467
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:03:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5181C433E7
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:03:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AC74120757
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:03:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9DC5F2074D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:03:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KiZI3BNt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VKfOtRUN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390849AbgJLODN (ORCPT
+        id S1730556AbgJLNgw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 12 Oct 2020 10:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
+        Mon, 12 Oct 2020 09:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730986AbgJLNhM (ORCPT
+        with ESMTP id S1730850AbgJLNfs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:37:12 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4568EC0613D7
-        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:34 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id n15so19248080wrq.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:34 -0700 (PDT)
+        Mon, 12 Oct 2020 09:35:48 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB099C0613D1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:35:47 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id g12so19212751wrp.10
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PZVK5ur0QLZJDpDbIdcvUN+KV9jiO+1gHCwDpEfkeJI=;
-        b=KiZI3BNtwAxiPErVU7GGfVztqvHcGu8tUCBrWFC68/IhUG5ZIPPxPk9pLewpKdYh02
-         osakk0ut6Bwfk6lMC9bXKAG8IDv90y+PO7V16kNdHNNpvXKJrRgylXDEkfgWSpC7N3+m
-         JOlb2fi3AHAuyYqaXpEfNDYIwEmol7H0eKZ1RdEB8YVRWml09F8GhuFJKKJoWO3Fhpso
-         NitWDfsR0VcTMpUPzma1Ryj9xGP3bkzIrpSVdyN2NY7kXGWmeNXVpzNHpFvY4qfXJOoJ
-         TP/ozUdW3aPN5SW/Qm/svxqTu8lWrCLZsJLJyU+sK6GPsxKhb2S2vnoWCDJzPKws6ITf
-         6U7A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xFbxRmZ9J+MsVek7xmGJcKnoh+9xSOpqnIscGXKz9Ns=;
+        b=VKfOtRUNqOQYwtadveHvD22Z7fBQzyQUhM6TVfRBR/D+j0W5f2dMG1aA9RPewUGqAF
+         xf4BaVTrhsZ2y3t828BdsC+rCpS7CaKGDfbIPIdVw6gZ99NaeOfFg6awPa/7ybHvF7dp
+         c2EcB+Ejmr9u4HCRBb9F0Gv+1CxRKh7Os4vq+FvM+4D5jA0WU1eXOt1xav9QUY1ATSWP
+         mLAe8h3gxWhumxjr+2MjbpBTLIgeKsbOzJvvmiNuEV0ql0QHhToOX3ElLI35uxP5iNl6
+         ZSzDqWBwMRi7MtQCd6mkzi31X3a1tFPqZ2dUJTeNlfpEBPmEI/UmY2ErId3ElZQ05Y/b
+         Czrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PZVK5ur0QLZJDpDbIdcvUN+KV9jiO+1gHCwDpEfkeJI=;
-        b=DN42HvZU1fRy9eAjNz40FJOkvpQfE2zZ44S9aUakP/Nrt1czck5xiFWJQamxd8X25f
-         G9VIBoEYP7DIcJutBzWw68C2npTpZqfdzT3pLqRhuTgmaLGUM++Oi74EJEuSBzTJVhD5
-         yBhY1grr94ko9N0BQx7fdXILZ+cgWnW2n+Vcrt++2+AgWWb1uZU9zxEYQG/ciPe+9lfd
-         w5eDPPF1KsiknuzyeHjSOiIyPN9ToBS21LgNSf03tZtGyg+Iszb1KQdC1uZxTqtW98nF
-         GyUDzChjrBTOzHiM/2K4vxsT5c8sDxdHs9AQp9+hujIZxSc28df897HS+JUAWyIpVsmc
-         LnAw==
-X-Gm-Message-State: AOAM530c6gm1HcbwbKD7Wx8+h/xSYw0T7awq95g8Cs97LnbYg3PeSlXb
-        RPeDx6xstq82nQiatolnItE=
-X-Google-Smtp-Source: ABdhPJw5LYDqCMd4BVgymmC5gYo6TskIkuDfI9J9FGym2RrdnHR0SXb54Kw0+Irf9W8W5auEOMR7VQ==
-X-Received: by 2002:adf:f88a:: with SMTP id u10mr2346647wrp.1.1602509792776;
-        Mon, 12 Oct 2020 06:36:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xFbxRmZ9J+MsVek7xmGJcKnoh+9xSOpqnIscGXKz9Ns=;
+        b=S7qi3Jh6aq5QhgGNZz2EK9Zuwdm50HBF/rNH8BYBtJPNPc7BexieDLqaOYV0HwD75L
+         +UgYK4ISds2763Jzo/DgPlHRaCRKh+2dq/mnwCrqourlWsCl8ikvcGl8WstbI2+Lvmor
+         SSIFcIT9paH79T3KGQcJT9FyaiR8dO/PdA0pzCR3bfHJ2arcw7DNbyWEMCkmR6yBl4RF
+         DNKTo8160g24Y6D5vM6fTd6z2qN0zXSLb3iFsOU90jDwYGasRUipgbyKURNk8txeDF4L
+         5XZLTpimCKke0j8+Z9YwSM/y9ikZ9r/Ega2mm72xe0NhQwz6uEKB0ljsmWZMrotBldw5
+         T8NA==
+X-Gm-Message-State: AOAM532aQ/cuO2LNAfSONWnmkunSSbOjsDvdZsBcVesEERqr1LMqj3VV
+        BDpzbRcMtTBy5zQG6xE++Nc=
+X-Google-Smtp-Source: ABdhPJy5bdjmGC56gKjVNW/leA4zMXErpuslpIIfX/OpKW2FfsEID+gYNKJbn/rlEWjUpxCF6wPCpw==
+X-Received: by 2002:adf:9461:: with SMTP id 88mr30305059wrq.307.1602509746667;
+        Mon, 12 Oct 2020 06:35:46 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.93.41])
-        by smtp.gmail.com with ESMTPSA id k5sm23145388wmb.19.2020.10.12.06.36.31
+        by smtp.gmail.com with ESMTPSA id k5sm23145388wmb.19.2020.10.12.06.35.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 06:36:31 -0700 (PDT)
+        Mon, 12 Oct 2020 06:35:45 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 14/20] kernel-shark: Provide merging of multiple data streams
-Date:   Mon, 12 Oct 2020 16:35:17 +0300
-Message-Id: <20201012133523.469040-15-y.karadz@gmail.com>
+Subject: [PATCH v2 00/20] Start KernelShark v2 transformation
+Date:   Mon, 12 Oct 2020 16:35:03 +0300
+Message-Id: <20201012133523.469040-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201012133523.469040-1-y.karadz@gmail.com>
-References: <20201012133523.469040-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The C API provides loading of the trace data in two different forms.
-The firs one is an array of kshark_entries and is being used by the
-KernelShark GUI. The second is a matrix-like structure that has all
-the fields of the kshark_entry stored in separate arrays, forming the
-columns of the matrix. The second form of the data is used by
-trace-cruncher. In this patch we add methods for merging of several
-data streams into a single data set. Both kshark_entries and matrix
-forms of the data are supported. This patch includes a simple example
-that demonstrate how to open a file that contains multiple buffers.
-Each buffers is loaded into a separate Data stream and those streams
-are merged together.
+In this patch-set we are starting the introduction of the changes
+in the C API of libkshark. The goal of this transformation is to
+turn KernelShark into a general purpose toolkit for analysis of
+tracing data that is no longer strongly coupled to the Ftrace/trace-cmd
+data format. At the end of the transformation KernelShark will be able
+to merge and simultaneously visualize data from different tracers,
+recorded in different data formats. It will also significantly extend
+the possibilities for user customization.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- examples/CMakeLists.txt    |   4 +
- examples/multibufferload.c |  60 +++++++++
- src/libkshark.c            | 255 +++++++++++++++++++++++++++++++++++++
- src/libkshark.h            |  47 +++++++
- 4 files changed, 366 insertions(+)
+This  patch-set transforms the way KernelShark processes the raw tracing
+data. Later, in a consecutive patch-sets we will introduce the changes
+in the visualization instruments and in the KernelShark GUI itself.
+
+Changes is v2:
+ * Tried to address review comments for "kernel-shark: Introduce libkshark-hash"
+
+ * The huge patch "kernel-shark: Integrate the stream definitions with
+the C API" in the previous version is now split into 8 smaller patches.
+The last of these 8 new patches (kernel-shark: Complete the stream
+integration) is still a bit entangled. I can try to further break this
+patch in future versions of the patch-set, if this is needed.
+
+
+Steven,
+Please review very carefully patches:
+  kernel-shark: Introduce Data streams
+  kernel-shark: Add basic methods for Data streams
+  kernel-shark: Add stream interface for trace-cmd data
+  kernel-shark: Start using data streams
+  kernel-shark: Provide merging of multiple data streams
+  kernel-shark: Add methods for time calibration
+
+Please review VERY carefully patche:
+  kernel-shark: Redesign the plugin interface
+
+You may treat this one as a complete rewrite. Also it may be useful
+to see how the redesigned code is being used in the new version of
+the sched_events plugin here:
+https://github.com/yordan-karadzhov/kernel-shark-v2.beta/blob/master/src/plugins/sched_events.c
+https://github.com/yordan-karadzhov/kernel-shark-v2.beta/blob/master/src/plugins/SchedEvents.cpp
+
+Thanks!
+Yordan
+
+
+Yordan Karadzhov (VMware) (20):
+  kernel-shark: Start introducing KernelShark 2.0
+  kernel-shark: Use only signed types in kshark_entry
+  kernel-shark: Introduce libkshark-hash
+  kernel-shark: Introduce Data streams
+  kernel-shark: Add stream_id to kshark_entry
+  kernel-shark: Rename static methods in libkshark
+  kernel-shark: Add basic methods for Data streams
+  kernel-shark: Housekeeping before implementing stream interface
+  kernel-shark: Add stream interface for trace-cmd data
+  kernel-shark: Start using data streams
+  kernel-shark: Remove dead code
+  kernel-shark: Redesign the plugin interface
+  kernel-shark: Complete the stream integration
+  kernel-shark: Provide merging of multiple data streams
+  kernel-shark: Integrate the stream definitions with data model
+  kernel-shark: Use only signed types for model defs
+  kernel-shark: Add ksmodel_get_bin()
+  kernel-shark: Protect ksmodel_set_in_range_bining()
+  kernel-shark: Add methods for time calibration
+  kernel-shark: Integrate streams with libkshark-configio
+
+ CMakeLists.txt             |   10 +-
+ build/deff.h.cmake         |   14 +-
+ examples/CMakeLists.txt    |   34 +-
+ examples/configio.c        |   20 +-
+ examples/datafilter.c      |   67 +-
+ examples/datahisto.c       |   38 +-
+ examples/dataload.c        |   21 +-
+ examples/multibufferload.c |   60 +
+ src/CMakeLists.txt         |    7 +-
+ src/libkshark-collection.c |  121 +-
+ src/libkshark-configio.c   | 1173 +++++++++++++++---
+ src/libkshark-hash.c       |  239 ++++
+ src/libkshark-model.c      |  154 ++-
+ src/libkshark-model.h      |   55 +-
+ src/libkshark-plugin.c     |  597 ++++++++--
+ src/libkshark-plugin.h     |  279 +++--
+ src/libkshark-tepdata.c    | 1754 +++++++++++++++++++++++++++
+ src/libkshark-tepdata.h    |  100 ++
+ src/libkshark.c            | 2302 +++++++++++++++++-------------------
+ src/libkshark.h            |  779 ++++++++++--
+ 20 files changed, 5908 insertions(+), 1916 deletions(-)
  create mode 100644 examples/multibufferload.c
+ create mode 100644 src/libkshark-hash.c
+ create mode 100644 src/libkshark-tepdata.c
+ create mode 100644 src/libkshark-tepdata.h
 
-diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
-index 8d40e42c..831eee24 100644
---- a/examples/CMakeLists.txt
-+++ b/examples/CMakeLists.txt
-@@ -8,6 +8,10 @@ message(STATUS "datafilter")
- add_executable(dfilter          datafilter.c)
- target_link_libraries(dfilter   kshark)
- 
-+message(STATUS "multibufferload")
-+add_executable(mbload          multibufferload.c)
-+target_link_libraries(mbload   kshark)
-+
- # message(STATUS "datahisto")
- # add_executable(dhisto          datahisto.c)
- # target_link_libraries(dhisto   kshark)
-diff --git a/examples/multibufferload.c b/examples/multibufferload.c
-new file mode 100644
-index 00000000..70b2733a
---- /dev/null
-+++ b/examples/multibufferload.c
-@@ -0,0 +1,60 @@
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+#include "libkshark.h"
-+#include "libkshark-tepdata.h"
-+
-+const char *default_file = "trace.dat";
-+
-+void put_entry(struct kshark_entry *e)
-+{
-+	char *entry_str = kshark_dump_entry(e);
-+	puts(entry_str);
-+	free(entry_str);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct kshark_context *kshark_ctx;
-+	struct kshark_entry **data = NULL;
-+	ssize_t r, n_rows;
-+	int sd;
-+
-+	/* Create a new kshark session. */
-+	kshark_ctx = NULL;
-+	if (!kshark_instance(&kshark_ctx))
-+		return 1;
-+
-+	/* Open a trace data file produced by trace-cmd. */
-+	if (argc > 1)
-+		sd = kshark_open(kshark_ctx, argv[1]);
-+	else
-+		sd = kshark_open(kshark_ctx, default_file);
-+
-+	if (sd < 0) {
-+		kshark_free(kshark_ctx);
-+		return 1;
-+	}
-+
-+	/* Initialize data streams for all buffers in this file. */
-+	kshark_tep_init_all_buffers(kshark_ctx, sd);
-+
-+	/* Load all buffers. */
-+	n_rows = kshark_load_all_entries(kshark_ctx, &data);
-+
-+	/* Print to the screen the first 20 entries. */
-+	for (r = 0; r < 20; ++r)
-+		put_entry(data[r]);
-+
-+	/* Free the memory. */
-+	for (r = 0; r < n_rows; ++r)
-+		free(data[r]);
-+	free(data);
-+
-+	kshark_close_all(kshark_ctx);
-+
-+	/* Close the session. */
-+	kshark_free(kshark_ctx);
-+
-+	return 0;
-+}
-diff --git a/src/libkshark.c b/src/libkshark.c
-index 6ce7b6ba..6f99dd6c 100644
---- a/src/libkshark.c
-+++ b/src/libkshark.c
-@@ -1258,3 +1258,258 @@ kshark_get_entry_back(const struct kshark_entry_request *req,
- 
- 	return get_entry(req, data, index, req->first, end, -1);
- }
-+
-+static int first_in_time_entry(struct kshark_entry_data_set *buffer, int n_buffers, size_t *count)
-+{
-+	int64_t t_min = INT64_MAX;
-+	int i, min = -1;
-+
-+	for (i = 0; i < n_buffers; ++i) {
-+		if (count[i] == buffer[i].n_rows)
-+			continue;
-+
-+		if (t_min > buffer[i].data[count[i]]->ts) {
-+			t_min = buffer[i].data[count[i]]->ts;
-+			min = i;
-+		}
-+	}
-+
-+	return min;
-+}
-+
-+/**
-+ * @brief Merge trace data streams.
-+ *
-+ * @param buffers: Input location for the data-sets to be merged.
-+ * @param n_buffers: The number of the data-sets to be merged.
-+ *
-+ * @returns Merged and sorted in time trace data entries. The user is
-+ *	    responsible for freeing the elements of the outputted array.
-+ */
-+struct kshark_entry **
-+kshark_merge_data_entries(struct kshark_entry_data_set *buffers, int n_buffers)
-+{
-+	struct kshark_entry **merged_data;
-+	size_t i, tot = 0, count[n_buffers];
-+	int i_first;
-+
-+	if (n_buffers < 2) {
-+		fputs("kshark_merge_data_entries needs multipl data sets.\n",
-+		      stderr);
-+		return NULL;
-+	}
-+
-+	for (i = 0; i < n_buffers; ++i) {
-+		count[i] = 0;
-+		if (buffers[i].n_rows > 0)
-+			tot += buffers[i].n_rows;
-+	}
-+
-+	merged_data = calloc(tot, sizeof(*merged_data));
-+	if (!merged_data) {
-+		fputs("Failed to allocate memory for mergeing data entries.\n",
-+		      stderr);
-+		return NULL;
-+	}
-+
-+	for (i = 0; i < tot; ++i) {
-+		i_first = first_in_time_entry(buffers, n_buffers, count);
-+		assert(i_first >= 0);
-+		merged_data[i] = buffers[i_first].data[count[i_first]];
-+		++count[i_first];
-+	}
-+
-+	return merged_data;
-+}
-+
-+static ssize_t load_all_entries(struct kshark_context *kshark_ctx,
-+				struct kshark_entry **loaded_rows,
-+				ssize_t n_loaded,
-+				int sd_first_new, int n_streams,
-+				struct kshark_entry ***data_rows)
-+{
-+	int i, j = 0, n_data_sets;
-+	ssize_t data_size = 0;
-+
-+	if (n_streams <= 0 || sd_first_new < 0)
-+		return data_size;
-+
-+	n_data_sets = n_streams - sd_first_new;
-+	if (loaded_rows && n_loaded > 0)
-+		++n_data_sets;
-+
-+	struct kshark_entry_data_set buffers[n_data_sets];
-+	memset(buffers, 0, sizeof(buffers));
-+
-+	if (loaded_rows && n_loaded > 0) {
-+		/* Add the data that is already loaded. */
-+		data_size = buffers[n_data_sets - 1].n_rows = n_loaded;
-+		buffers[n_data_sets - 1].data = loaded_rows;
-+	}
-+
-+	/* Add the data of the new streams. */
-+	for (i = sd_first_new; i < n_streams; ++i) {
-+		buffers[j].data = NULL;
-+		buffers[j].n_rows = kshark_load_entries(kshark_ctx, i,
-+							&buffers[j].data);
-+
-+		if (buffers[j].n_rows < 0) {
-+			/* Loading failed. */
-+			data_size = buffers[j].n_rows;
-+			goto error;
-+		}
-+
-+		data_size += buffers[j++].n_rows;
-+	}
-+
-+	if (n_data_sets == 1) {
-+		*data_rows = buffers[0].data;
-+	} else {
-+		/* Merge all streams. */
-+		*data_rows = kshark_merge_data_entries(buffers, n_data_sets);
-+	}
-+
-+ error:
-+	for (i = 1; i < n_data_sets; ++i)
-+		free(buffers[i].data);
-+
-+	return data_size;
-+}
-+
-+/**
-+ * @brief Load the content of the all opened data file into an array of
-+ *	  kshark_entries.
-+ *	  If one or more filters are set, the "visible" fields of each entry
-+ *	  is updated according to the criteria provided by the filters. The
-+ *	  field "filter_mask" of the session's context is used to control the
-+ *	  level of visibility/invisibility of the filtered entries.
-+ *
-+ * @param kshark_ctx: Input location for context pointer.
-+ * @param data_rows: Output location for the trace data. The user is
-+ *		     responsible for freeing the elements of the outputted
-+ *		     array.
-+ *
-+ * @returns The size of the outputted data in the case of success, or a
-+ *	    negative error code on failure.
-+ */
-+ssize_t kshark_load_all_entries(struct kshark_context *kshark_ctx,
-+				struct kshark_entry ***data_rows)
-+{
-+	return load_all_entries(kshark_ctx,
-+				NULL, 0,
-+				0,
-+				kshark_ctx->n_streams,
-+				data_rows);
-+}
-+
-+/**
-+ * @brief Append the content of the all opened data file into an array of
-+ *	  kshark_entries.
-+ *	  If one or more filters are set, the "visible" fields of each entry
-+ *	  is updated according to the criteria provided by the filters. The
-+ *	  field "filter_mask" of the session's context is used to control the
-+ *	  level of visibility/invisibility of the filtered entries.
-+ *
-+ * @param kshark_ctx: Input location for context pointer.
-+ * @param prior_data: Input location for the already loaded trace data.
-+ * @param n_prior_rows: The size of the already loaded trace data.
-+ * @param sd_first_new: Data stream identifier of the first data stream to be
-+ *			appended.
-+ * @param merged_data: Output location for the trace data. The user is
-+ *		       responsible for freeing the elements of the outputted
-+ *		       array.
-+ * @returns The size of the outputted data in the case of success, or a
-+ *	    negative error code on failure.
-+ */
-+ssize_t kshark_append_all_entries(struct kshark_context *kshark_ctx,
-+				  struct kshark_entry **prior_data,
-+				  ssize_t n_prior_rows,
-+				  int sd_first_new,
-+				  struct kshark_entry ***merged_data)
-+{
-+	return load_all_entries(kshark_ctx,
-+				prior_data,
-+				n_prior_rows,
-+			        sd_first_new,
-+				kshark_ctx->n_streams,
-+				merged_data);
-+}
-+
-+static int first_in_time_row(struct kshark_matrix_data_set *buffers, int n_buffers, size_t *count)
-+{
-+	int64_t t_min = INT64_MAX;
-+	int i, min = -1;
-+
-+	for (i = 0; i < n_buffers; ++i) {
-+		if (count[i] == buffers[i].n_rows)
-+			continue;
-+
-+		if (t_min > buffers[i].ts_array[count[i]]) {
-+			t_min = buffers[i].ts_array[count[i]];
-+			min = i;
-+		}
-+	}
-+
-+	return min;
-+}
-+
-+/**
-+ * @brief Merge trace data streams.
-+ *
-+ * @param buffers: Input location for the data-sets to be merged.
-+ * @param n_buffers: The number of the data-sets to be merged.
-+ *
-+ * @returns Merged and sorted in time trace data matrix. The user is
-+ *	    responsible for freeing the columns (arrays) of the outputted
-+ *	    matrix.
-+ */
-+struct kshark_matrix_data_set
-+kshark_merge_data_matrices(struct kshark_matrix_data_set *buffers, int n_buffers)
-+{
-+	struct kshark_matrix_data_set merged_data;
-+	size_t i, tot = 0, count[n_buffers];
-+	int i_first;
-+	bool status;
-+
-+	merged_data.n_rows = -1;
-+	if (n_buffers < 2) {
-+		fputs("kshark_merge_data_matrices needs multipl data sets.\n",
-+		      stderr);
-+		goto end;
-+	}
-+
-+	for (i = 0; i < n_buffers; ++i) {
-+		count[i] = 0;
-+		if (buffers[i].n_rows > 0)
-+			tot += buffers[i].n_rows;
-+	}
-+
-+	status = kshark_data_matrix_alloc(tot, &merged_data.cpu_array,
-+					       &merged_data.pid_array,
-+					       &merged_data.event_array,
-+					       &merged_data.offset_array,
-+					       &merged_data.ts_array);
-+	if (!status) {
-+		fputs("Failed to allocate memory for mergeing data matrices.\n",
-+		      stderr);
-+		goto end;
-+	}
-+
-+	merged_data.n_rows = tot;
-+
-+	for (i = 0; i < tot; ++i) {
-+		i_first = first_in_time_row(buffers, n_buffers, count);
-+		assert(i_first >= 0);
-+
-+		merged_data.cpu_array[i] = buffers[i_first].cpu_array[count[i_first]];
-+		merged_data.pid_array[i] = buffers[i_first].pid_array[count[i_first]];
-+		merged_data.event_array[i] = buffers[i_first].event_array[count[i_first]];
-+		merged_data.offset_array[i] = buffers[i_first].offset_array[count[i_first]];
-+		merged_data.ts_array[i] = buffers[i_first].ts_array[count[i_first]];
-+
-+		++count[i_first];
-+	}
-+
-+ end:
-+	return merged_data;
-+}
-diff --git a/src/libkshark.h b/src/libkshark.h
-index 7239f56e..fbe1b2ac 100644
---- a/src/libkshark.h
-+++ b/src/libkshark.h
-@@ -1059,12 +1059,59 @@ struct kshark_config_doc *kshark_open_config_file(const char *file_name,
- 
- struct kshark_config_doc *kshark_json_to_conf(struct json_object *jobj);
- 
-+/** Structure representing a data set made of KernelShark entries. */
-+struct kshark_entry_data_set {
-+	/** Array of entries pointers. */
-+	struct kshark_entry **data;
-+
-+	/** The size of the data set. */
-+	ssize_t n_rows;
-+};
-+
-+struct kshark_entry **
-+kshark_merge_data_entries(struct kshark_entry_data_set *buffers,
-+			  int n_buffers);
-+
-+ssize_t kshark_load_all_entries(struct kshark_context *kshark_ctx,
-+				struct kshark_entry ***data_rows);
-+
-+ssize_t kshark_append_all_entries(struct kshark_context *kshark_ctx,
-+				  struct kshark_entry **prior_data,
-+				  ssize_t n_prior_rows,
-+				  int first_streams,
-+				  struct kshark_entry ***merged_data);
-+
- bool kshark_data_matrix_alloc(size_t n_rows, int16_t **cpu_array,
- 					     int32_t **pid_array,
- 					     int32_t **event_array,
- 					     int64_t **offset_array,
- 					     int64_t **ts_array);
- 
-+/** Structure representing a data set made of data columns (arrays). */
-+struct kshark_matrix_data_set {
-+	/** CPU Id column. */
-+	int16_t *cpu_array;
-+
-+	/** PID column. */
-+	int32_t *pid_array;
-+
-+	/** Event Id column. */
-+	int32_t *event_array;
-+
-+	/** Record offset column. */
-+	int64_t *offset_array;
-+
-+	/** Timestamp column. */
-+	int64_t *ts_array;
-+
-+	/** The size of the data set. */
-+	ssize_t n_rows;
-+};
-+
-+struct kshark_matrix_data_set
-+kshark_merge_data_matrices(struct kshark_matrix_data_set *buffers,
-+			   int n_buffers);
-+
- #ifdef __cplusplus
- }
- #endif
 -- 
 2.25.1
 
