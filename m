@@ -2,75 +2,69 @@ Return-Path: <SRS0=H9Ya=DT=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDD87C433DF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 17:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B1BBC433E7
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 18:41:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A549820797
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 17:58:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1A12E2087D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 18:41:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390821AbgJLR6J (ORCPT
+        id S1730386AbgJLSla (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 12 Oct 2020 13:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        Mon, 12 Oct 2020 14:41:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42542 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390820AbgJLR6J (ORCPT
+        id S1726742AbgJLSla (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:58:09 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90D4A205CA;
-        Mon, 12 Oct 2020 17:58:06 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 13:58:04 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zamir SUN <sztsian@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Subject: Re: libtraceevent: make doc-install tries different file names than
- generated
-Message-ID: <20201012135804.2489f70e@gandalf.local.home>
-In-Reply-To: <b592e388-5af1-5269-37ce-8ca9e91c84dd@gmail.com>
-References: <7cdec98e-3184-4ddc-e78c-867a9650e636@gmail.com>
-        <20201009104954.0fd440b5@gandalf.local.home>
-        <b592e388-5af1-5269-37ce-8ca9e91c84dd@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 12 Oct 2020 14:41:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0507AAC4C;
+        Mon, 12 Oct 2020 18:41:29 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 11:41:20 -0700
+From:   Tony Jones <tonyj@suse.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Zamir SUN <sztsian@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        zsun@redhat.com, Vitaly Chikunov <vt@altlinux.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        John Kacur <jkacur@redhat.com>,
+        Clark Williams <williams@redhat.com>, powertop@lists.01.org,
+        Al Stone <ahs3@debian.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: [ANNOUNCE] libtraceevent.git
+Message-ID: <20201012184120.GN13697@suse.de>
+References: <20201007130750.49349844@gandalf.local.home>
+ <20201012101208.GF1099489@krava>
+ <20201012111950.55a73588@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012111950.55a73588@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 12 Oct 2020 20:35:20 +0800
-Zamir SUN <sztsian@gmail.com> wrote:
+On Mon, Oct 12, 2020 at 11:19:50AM -0400, Steven Rostedt wrote:
 
-> Hi Steve,
-> 
-> I just tried compiling the document. IIUC with this patch, the man pages 
-> are generated. Most of them still have tep_ prefix. Not sure if this is 
-> intended so I'm posting the list of generated man page in gist as it's a 
-> bit long.
-> https://gist.github.com/sztsian/442db46a48c1d1ec3500b161a1232a0a
-> 
-> OTOH, I notice that a lot of generation tasks was executing during the 
-> doc-install phase. I'm really not familiar with man page compiling, so 
-> can you check if this is an intended way? I posted the doc-install log 
-> in the following link.
-> 
-> https://gist.github.com/sztsian/6d1588272c07c7b2c3bed14a049b7df2
-> 
+> Once it's shown that it works for all the package maintainers, I will tag
+> it which should create the tarballs automatically on the above link.
 
-Bah, I'm not sure how the documentation build system here works. Ideally,
-we want to make sure that "man tep_.." works, and people don't need to
-state "man libtraceevent_...", as the tep_* commands are what will be used.
+Hi.
 
-Let me investigate this.
+It builds fine for me after manually creating the tarball from git.  
+Once there is an official versioned tarball I'll push it into
+openSUSE.
 
-Thanks!
+I presume some perf Makefile changes will be forthcoming to use it,
+rather than continuing to force build it out of TRACE_EVENT_DIR
 
--- Steve
+Tony
