@@ -8,65 +8,65 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E55A1C433DF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 13:37:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31561C43457
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 13:37:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A15AA22244
+	by mail.kernel.org (Postfix) with ESMTP id E010C2222E
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 13:37:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nRblHlQp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UOHpDeYm"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731066AbgJLNh2 (ORCPT
+        id S1730992AbgJLNh1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 12 Oct 2020 09:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58778 "EHLO
+        Mon, 12 Oct 2020 09:37:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730985AbgJLNhM (ORCPT
+        with ESMTP id S1729934AbgJLNhO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:37:12 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E00C0613D9
-        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:37 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id h7so19259717wre.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:37 -0700 (PDT)
+        Mon, 12 Oct 2020 09:37:14 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E036CC0613DC
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:42 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x7so10627979wrl.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iIx7+grTv/751ft5w1VwxSU0mvVww6kVQ6CUeDcj3aM=;
-        b=nRblHlQpbiYrdUgpQKDlR+FFt+yx0dPc/2jZSxn3ihnuToHb17VZiyrN0WaPDNVX01
-         U9J+vILbZ3AQtNRHXHqrERL7JMxOH50pR6CK4BgEiu5QP1hhW8FvB6B8om51mIqevxll
-         50sNe5rbVIVUzqOrTBqbiLCzytWhUDIYAaqPTtWqL0KKDURYQyhoEFT1DSFMePEkUnwO
-         zrT1NDsGQupdaPWTG5fxWXTmQ1HOY1ZE/QyDLD0pqvCOb7KSk4DfifMEmd9K9UZhM5BT
-         3+xrNvLPRPtIdKDLJvMq7O+z3RcPHD2OGOuezbovFyRCrZz1yEYFVlKy6YpE8DR7uNYK
-         5nBg==
+        bh=0ZiYvgJmwEaAbc61G30SdrrBhl//EoKenKIaWmqCYPg=;
+        b=UOHpDeYmchR+ZPDTkvzgyy0vSrhEDG1ZfqKT3l7lS4Gq9nvBfYcSwbIrQYBdHT54TI
+         1HUtc3PS4ZTSocnRU55mFUzzwjaxiyd4E5Y/hwq8vlIuBpbsiYzPLNJkFcf8La+S9W96
+         AtPoIyU1Eq7B3Cuji9D46pBAnw0SIJchBBQuoDQ4LTafA0cBROy8+CSviuOd6NPntcna
+         laBqdRUFV/OuJJdkN9E5OtT0yq8BpOhIx+meKKk1LYFNh24vZL8KhF0tFT2/4zkYDhAQ
+         ERsMSJafEA/5vd63rgEY25f6P6rnLt9CEeRTw8QBTlw0qugNxhsh7MUnA64yqOa3Sh6c
+         smPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iIx7+grTv/751ft5w1VwxSU0mvVww6kVQ6CUeDcj3aM=;
-        b=oYxMg+qCk/N8uZJVqHKT1Gq5sgwbfLg28FZRI7eykSmXNnQixrbQWcrAbiRGHUFvi2
-         e/8Wie3mLZCyuI5rLobF5O0YkVY6X3AD4AS/leOM6hRG8lod8mTxW4vQqLYT/uLptt0D
-         pOaO5h73jpRthAU02Dpt8JIMRNYd+E38JAOr13c0LdtKpZEaA1544pzR6rWYpRLRAg8A
-         xavmMX6DfBLhbewnd4r5xAhdYklFVT7A98Z+/YVC7SXbN/Sl78FttobrP5WLqlSMIJWK
-         d+jewbIeuN7z1KYsJuVHEh39AP424rdu3Hb4WfUEXVhPrwnHJrQlqlA6TP5i6O38Nh8A
-         02cQ==
-X-Gm-Message-State: AOAM533vBhYvQI2b9MriZMqCzQwvBo1p1UBrfpAi1OGbJxxSluT0F9+L
-        RxVg8P2kt42/ozxx8oyji1g=
-X-Google-Smtp-Source: ABdhPJxBVheYGcgQ+7Nwxm70J/Pr9r05QeyIbyQ9yG2qJ1xMfqwh5VEPvOYMjldtQ7oUP2aj7AAzqA==
-X-Received: by 2002:adf:b30c:: with SMTP id j12mr15254116wrd.82.1602509796658;
-        Mon, 12 Oct 2020 06:36:36 -0700 (PDT)
+        bh=0ZiYvgJmwEaAbc61G30SdrrBhl//EoKenKIaWmqCYPg=;
+        b=Pnrq585Md7hYGaWyVC4DwYuYZLjF5/Gl7euEDo+u34/A+5qb3By88lE3G4P4KSk1pp
+         9wWb2nqo5S4O+L0InQONocgdgaBqqt7Tgsl/uLuSAFp1vTFmaygAux8fDkTFYSTdo9nE
+         uhUYqcUUVag606TGjqdPj4OmsdfnQcRy+ra0p3LElfCY2dWUkPHZvm09cAls5LaW6o1N
+         Vfrak26myjjy+3z/qu8cgcpOAIRsHZwik4ISj6kapDpvrV2z4ZIb6D84cwS9dnGiwF01
+         Qf4Pwx2NPnr7xWSrci7mudELRJYWxCjO86t8YNmIUqbcGptk9ILUsHnHfl5UpGmyUXUD
+         yBIQ==
+X-Gm-Message-State: AOAM530+QeE0z2ACN6KOYEnV1rHXUW8vy6VYLCz0k6Ojg67wF1qFpFx6
+        VN7hR09s4CEmMzWZHU2nWNu+GmYJjrY=
+X-Google-Smtp-Source: ABdhPJx4zwhaRhg0Ft5pF5b63b7NUu2oAvY2/ZxsXNbKv/H+mfCzJ9gMFK4W1JhTXF4EWSMCurKYSA==
+X-Received: by 2002:a5d:5092:: with SMTP id a18mr26328164wrt.323.1602509801592;
+        Mon, 12 Oct 2020 06:36:41 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.93.41])
-        by smtp.gmail.com with ESMTPSA id k5sm23145388wmb.19.2020.10.12.06.36.35
+        by smtp.gmail.com with ESMTPSA id k5sm23145388wmb.19.2020.10.12.06.36.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 06:36:36 -0700 (PDT)
+        Mon, 12 Oct 2020 06:36:41 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 16/20] kernel-shark: Use only signed types for model defs
-Date:   Mon, 12 Oct 2020 16:35:19 +0300
-Message-Id: <20201012133523.469040-17-y.karadz@gmail.com>
+Subject: [PATCH v2 19/20] kernel-shark: Add methods for time calibration
+Date:   Mon, 12 Oct 2020 16:35:22 +0300
+Message-Id: <20201012133523.469040-20-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201012133523.469040-1-y.karadz@gmail.com>
 References: <20201012133523.469040-1-y.karadz@gmail.com>
@@ -76,127 +76,241 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-All variables that are used to describe the state of the model, like
-the range of the model or the size of the bin must have signed integer
-types. This is a continuation of the change started  by switching to
-signed timestamps.
+We add an infrastructure for correcting the timestamps of the entries.
+This is needed in order to correlate Data streams that have been
+recorded using non-synchronized clocks. The infrastructure can handle
+an arbitrary timestamps correction formula, however for the moment we
+only provide calibration that adds a constant offset.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark-model.c | 12 ++++++------
- src/libkshark-model.h | 18 +++++++++---------
- 2 files changed, 15 insertions(+), 15 deletions(-)
+ src/libkshark-tepdata.c | 13 +++++-
+ src/libkshark.c         | 99 +++++++++++++++++++++++++++++++++++++++++
+ src/libkshark.h         | 27 +++++++++++
+ 3 files changed, 138 insertions(+), 1 deletion(-)
 
-diff --git a/src/libkshark-model.c b/src/libkshark-model.c
-index 97cff314..f3864bfd 100644
---- a/src/libkshark-model.c
-+++ b/src/libkshark-model.c
-@@ -91,10 +91,10 @@ static bool ksmodel_histo_alloc(struct kshark_trace_histo *histo, size_t n)
+diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
+index d9d57843..31cb33d5 100644
+--- a/src/libkshark-tepdata.c
++++ b/src/libkshark-tepdata.c
+@@ -296,6 +296,9 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
+ 					entry = &temp_rec->entry;
+ 					missed_events_action(stream, rec, entry);
+ 
++					/* Apply time calibration. */
++					kshark_postprocess_entry(stream, rec, entry);
++
+ 					entry->stream_id = stream->stream_id;
+ 
+ 					temp_next = &temp_rec->next;
+@@ -316,6 +319,12 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
+ 
+ 				entry->stream_id = stream->stream_id;
+ 
++				/*
++				 * Post-process the content of the entry. This includes
++				 * time calibration and event-specific plugin actions.
++				 */
++				kshark_postprocess_entry(stream, rec, entry);
++
+ 				pid = entry->pid;
+ 
+ 				/* Apply Id filtering. */
+@@ -481,8 +490,10 @@ static ssize_t tepdata_load_matrix(struct kshark_data_stream *stream,
+ 			if (cpu_array)
+ 				(*cpu_array)[count] = e->cpu;
+ 
+-			if (ts_array)
++			if (ts_array) {
++				kshark_calib_entry(stream, e);
+ 				(*ts_array)[count] = e->ts;
++			}
+ 
+ 			if (pid_array)
+ 				(*pid_array)[count] = e->pid;
+diff --git a/src/libkshark.c b/src/libkshark.c
+index 6f99dd6c..33476ed0 100644
+--- a/src/libkshark.c
++++ b/src/libkshark.c
+@@ -131,6 +131,7 @@ static void kshark_stream_free(struct kshark_data_stream *stream)
+ 
+ 	kshark_hash_id_free(stream->tasks);
+ 
++	free(stream->calib_array);
+ 	free(stream->file);
+ 	free(stream->name);
+ 	free(stream);
+@@ -862,6 +863,37 @@ void kshark_plugin_actions(struct kshark_data_stream *stream,
+ 	}
  }
  
- static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
--					size_t n, uint64_t min, uint64_t max,
-+					size_t n, int64_t min, int64_t max,
- 					bool force_in_range)
++/**
++ * @brief Time calibration of the timestamp of the entry.
++ *
++ * @param stream: Input location for a Trace data stream pointer.
++ * @param entry: Output location for entry.
++ */
++void kshark_calib_entry(struct kshark_data_stream *stream,
++			struct kshark_entry *entry)
++{
++	if (stream->calib && stream->calib_array) {
++		/* Calibrate the timestamp of the entry. */
++		stream->calib(&entry->ts, stream->calib_array);
++	}
++}
++
++/**
++ * @brief Post-process the content of the entry. This includes time calibration
++ *	  and all registered event-specific plugin actions.
++ *
++ * @param stream: Input location for a Trace data stream pointer.
++ * @param record: Input location for the trace record.
++ * @param entry: Output location for entry.
++ */
++void kshark_postprocess_entry(struct kshark_data_stream *stream,
++			      void *record, struct kshark_entry *entry)
++{
++	kshark_calib_entry(stream, entry);
++
++	kshark_plugin_actions(stream, record, entry);
++}
++
+ static inline void free_ptr(void *ptr)
  {
--	uint64_t corrected_range, delta_range, range = max - min;
-+	int64_t corrected_range, delta_range, range = max - min;
- 	struct kshark_entry *last;
- 
- 	/* The size of the bin must be >= 1, hence the range must be >= n. */
-@@ -163,7 +163,7 @@ static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
-  * @param max: Upper edge of the time-window to be visualized.
-  */
- void ksmodel_set_bining(struct kshark_trace_histo *histo,
--			size_t n, uint64_t min, uint64_t max)
-+			size_t n, int64_t min, int64_t max)
- {
- 	ksmodel_set_in_range_bining(histo, n, min, max, false);
- }
-@@ -256,7 +256,7 @@ static size_t ksmodel_set_upper_edge(struct kshark_trace_histo *histo)
- static void ksmodel_set_next_bin_edge(struct kshark_trace_histo *histo,
- 				      size_t bin, size_t last_row)
- {
--	uint64_t time_min, time_max;
-+	int64_t time_min, time_max;
- 	size_t next_bin = bin + 1;
- 	ssize_t row;
- 
-@@ -598,9 +598,9 @@ void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n)
-  * @param histo: Input location for the model descriptor.
-  * @param ts: position in time to be visualized.
-  */
--void ksmodel_jump_to(struct kshark_trace_histo *histo, uint64_t ts)
-+void ksmodel_jump_to(struct kshark_trace_histo *histo, int64_t ts)
- {
--	uint64_t min, max, range_min;
-+	int64_t min, max, range_min;
- 
- 	if (ts > histo->min && ts < histo->max) {
- 		/*
-diff --git a/src/libkshark-model.h b/src/libkshark-model.h
-index 87e252eb..b8624809 100644
---- a/src/libkshark-model.h
-+++ b/src/libkshark-model.h
-@@ -58,16 +58,16 @@ struct kshark_trace_histo {
- 	 * Lower edge of the time-window to be visualized. Only entries having
- 	 * timestamp >= min will be visualized.
- 	 */
--	uint64_t		min;
-+	int64_t			min;
- 
- 	/**
- 	 * Upper edge of the time-window to be visualized. Only entries having
- 	 * timestamp <= max will be visualized.
- 	 */
--	uint64_t		max;
-+	int64_t			max;
- 
- 	/** The size in time for each bin. */
--	uint64_t		bin_size;
-+	int64_t			bin_size;
- 
- 	/** Number of bins. */
- 	int			n_bins;
-@@ -78,7 +78,7 @@ void ksmodel_init(struct kshark_trace_histo *histo);
- void ksmodel_clear(struct kshark_trace_histo *histo);
- 
- void ksmodel_set_bining(struct kshark_trace_histo *histo,
--			size_t n, uint64_t min, uint64_t max);
-+			size_t n, int64_t min, int64_t max);
- 
- void ksmodel_fill(struct kshark_trace_histo *histo,
- 		  struct kshark_entry **data, size_t n);
-@@ -89,7 +89,7 @@ void ksmodel_shift_forward(struct kshark_trace_histo *histo, size_t n);
- 
- void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n);
- 
--void ksmodel_jump_to(struct kshark_trace_histo *histo, uint64_t ts);
-+void ksmodel_jump_to(struct kshark_trace_histo *histo, int64_t ts);
- 
- void ksmodel_zoom_out(struct kshark_trace_histo *histo,
- 		      double r, int mark);
-@@ -163,16 +163,16 @@ ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
- 			       struct kshark_entry_collection *col,
- 			       ssize_t *index);
- 
--static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
-+static inline int64_t ksmodel_bin_ts(struct kshark_trace_histo *histo,
- 				      int bin)
- {
--	return (histo->min + bin*histo->bin_size) * 1e-9;
-+	return (histo->min + bin*histo->bin_size);
+ 	if (ptr)
+@@ -1259,6 +1291,73 @@ kshark_get_entry_back(const struct kshark_entry_request *req,
+ 	return get_entry(req, data, index, req->first, end, -1);
  }
  
--static inline uint64_t ksmodel_bin_ts(struct kshark_trace_histo *histo,
-+static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
- 				      int bin)
++static int compare_time(const void* a, const void* b)
++{
++	const struct kshark_entry *entry_a, *entry_b;
++
++	entry_a = *(const struct kshark_entry **) a;
++	entry_b = *(const struct kshark_entry **) b;
++
++	if (entry_a->ts > entry_b->ts)
++		return 1;
++
++	if (entry_a->ts < entry_b->ts)
++		return -1;
++
++	return 0;
++}
++
++static void kshark_data_qsort(struct kshark_entry **entries, size_t size)
++{
++	qsort(entries, size, sizeof(struct kshark_entry *), compare_time);
++}
++
++/**
++ * Add constant offset to the timestamp of the entry. To be used by the sream
++ * object as a System clock calibration callback function.
++ */
++void kshark_offset_calib(int64_t *ts, int64_t *argv)
++{
++	*ts += argv[0];
++}
++
++/**
++ * @brief Apply constant offset to the timestamps of all entries from a given
++ *	  Data stream.
++ *
++ * @param kshark_ctx: Input location for the session context pointer.
++ * @param entries: Input location for the trace data.
++ * @param size: The size of the trace data.
++ * @param sd: Data stream identifier.
++ * @param offset: The constant offset to be added (in nanosecond).
++ */
++void kshark_set_clock_offset(struct kshark_context *kshark_ctx,
++			     struct kshark_entry **entries, size_t size,
++			     int sd, int64_t offset)
++{
++	struct kshark_data_stream *stream;
++	int64_t correction;
++
++	stream = kshark_get_data_stream(kshark_ctx, sd);
++	if (!stream)
++		return;
++
++	if (!stream->calib_array) {
++		stream->calib = kshark_offset_calib;
++		stream->calib_array = calloc(1, sizeof(*stream->calib_array));
++		stream->calib_array_size = 1;
++	}
++
++	correction = offset - stream->calib_array[0];
++	stream->calib_array[0] = offset;
++
++	for (size_t i = 0; i < size; ++i)
++		if (entries[i]->stream_id == sd)
++			entries[i]->ts += correction;
++
++	kshark_data_qsort(entries, size);
++}
++
+ static int first_in_time_entry(struct kshark_entry_data_set *buffer, int n_buffers, size_t *count)
  {
--	return (histo->min + bin*histo->bin_size);
-+	return ksmodel_bin_ts(histo, bin) * 1e-9;
- }
+ 	int64_t t_min = INT64_MAX;
+diff --git a/src/libkshark.h b/src/libkshark.h
+index fbe1b2ac..dc30665b 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -115,6 +115,12 @@ void kshark_hash_id_free(struct kshark_hash_id *hash);
  
- #ifdef __cplusplus
+ int *kshark_hash_ids(struct kshark_hash_id *hash);
+ 
++/**
++ * Timestamp calibration function type. To be user for system clock
++ * calibration.
++ */
++typedef void (*time_calib_func) (int64_t *, int64_t *);
++
+ struct kshark_data_stream;
+ 
+ /** A function type to be used to initialize the interface of the data stream. */
+@@ -315,6 +321,15 @@ struct kshark_data_stream {
+ 	/** The number of plugins registered for this stream.*/
+ 	int			n_plugins;
+ 
++	/** System clock calibration function. */
++	time_calib_func		calib;
++
++	/** An array of time calibration constants. */
++	int64_t			*calib_array;
++
++	/** The size of the array of time calibration constants. */
++	size_t			calib_array_size;
++
+ 	/** List of Plugin's Event handlers. */
+ 	struct kshark_event_proc_handler	*event_handlers;
+ 
+@@ -669,6 +684,12 @@ void kshark_clear_all_filters(struct kshark_context *kshark_ctx,
+ void kshark_plugin_actions(struct kshark_data_stream *stream,
+ 			   void *record, struct kshark_entry *entry);
+ 
++void kshark_calib_entry(struct kshark_data_stream *stream,
++			struct kshark_entry *entry);
++
++void kshark_postprocess_entry(struct kshark_data_stream *stream,
++			      void *record, struct kshark_entry *entry);
++
+ /** Search failed identifiers. */
+ enum kshark_search_failed {
+ 	/** All entries have greater timestamps. */
+@@ -1059,6 +1080,12 @@ struct kshark_config_doc *kshark_open_config_file(const char *file_name,
+ 
+ struct kshark_config_doc *kshark_json_to_conf(struct json_object *jobj);
+ 
++void kshark_offset_calib(int64_t *ts, int64_t *atgv);
++
++void kshark_set_clock_offset(struct kshark_context *kshark_ctx,
++			     struct kshark_entry **entries, size_t size,
++			     int sd, int64_t offset);
++
+ /** Structure representing a data set made of KernelShark entries. */
+ struct kshark_entry_data_set {
+ 	/** Array of entries pointers. */
 -- 
 2.25.1
 
