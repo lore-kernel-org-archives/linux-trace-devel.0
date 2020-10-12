@@ -8,65 +8,65 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38A4DC4363A
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:04:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D088CC433DF
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:04:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EC7422074D
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:03:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 658FF2074D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:04:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E9GxBnJc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ucXP910q"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390876AbgJLOD7 (ORCPT
+        id S2390874AbgJLOD6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 12 Oct 2020 10:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58646 "EHLO
+        Mon, 12 Oct 2020 10:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730092AbgJLNgY (ORCPT
+        with ESMTP id S1730520AbgJLNgb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:36:24 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8F0C0613D0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:24 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id g12so19215260wrp.10
-        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:24 -0700 (PDT)
+        Mon, 12 Oct 2020 09:36:31 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7627BC0613D2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:28 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id e18so19213248wrw.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iSvPNSvY1rc27cfoldeTUIyAHo6w1VQDUQGUzaZxf3w=;
-        b=E9GxBnJcS84V0P76c4eJiS5w10UnpP9IeK9q5fo/uqSxHnvOaf6jHtKftzr3CEKfFs
-         B66BwOa9pnRSur82gZV83iCW85BBTybZlwmpr6z0RkgwsaIw+QIw79Hb7XjZx9pV62x3
-         Rxd9lIoNSZXvo6l8HdRzVH9TJU0MbpaCdCjXN0JAnVFoD3mgcIeF9jannBa48lNJw44j
-         EbA3AhGHhy6JOBBLEAT8LmesRIj/85nKldhSpu47vH3yxCgC3NikeZoizsMD1ViwDv59
-         /GY1isdIM+vCxbWqXk++VTGUBubrfMfUQfjNX4k/5XJSllYeGUEJyEBUpkhV8sOyaR/Y
-         qi1Q==
+        bh=eVMccU+LWENSynKb+x3Hkzr8j4uPK2gAme6zDwP6Sus=;
+        b=ucXP910qRAvzX5zBZRaaPG37IOdXNlz/3xWUrIkWbsUN82L9rb4wwMU+UVepaubCma
+         tJHm1Men2rvLRozGoCnbKj+/41QJ1HgWKtVLtjDYaTRY5EcLvRV8Tg21NQam6/dObHyD
+         0XVhC4ihRwH0gQZKRyPh/Xo39KtbqeBccIGKsdVR9ZFJZaA2TgNEFRQ5bkNk0riGA93z
+         5rTMOkm6qod7RJSz7cFeUmv7tVqvDP/r/HjVc7/iZ+5x4hueN9Q8RLElD9rIHk82YEJJ
+         bdrwWeqgRMMRvp5EUG2ZpLsjCPRXhpkK7a8Jj6o9Cq2g6pN3dO38oR5M197gqWgXdzT/
+         4g6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iSvPNSvY1rc27cfoldeTUIyAHo6w1VQDUQGUzaZxf3w=;
-        b=Xymp/8+M9BTmuCdUOthVtO2nvYm9h9Xg1sSVoFEtM7T4MmCJDYPigDSYYCd+Il1jMf
-         9VyVDZiM7XyRPbUDMZ0v1YTx2eXIgRf6MdfGf6iIYXIwzFjiupOL7xVFumkJjcOEWHAF
-         2icIUS8jEriEZdfQGKc0GsaFnO2qko2KtPewX2skFhtsqjGpoT48x+SSsVR64sijasi8
-         py/HMALHjKpnZGUYDuhj9O71WdrpAHlpD6gjkfnh/tgMzeKg+TFdC9JXGX5E8ucp6me6
-         bvcoGThkOxIbmCZ/6UsD7TdMzrwsFYlZ3nydWkXS1ZVLqjr0jWU2cN0kQX1ykCCluTAb
-         1grQ==
-X-Gm-Message-State: AOAM532kGskI6Cr6e+o6CcJWZBO+KKgoRI+ZoA94rZAdAel0p+vYfh7r
-        9Mshf+vEAczash/mYAjakz4=
-X-Google-Smtp-Source: ABdhPJysotGPoNv7fQOHf+zdSU4mcESQ5pbxC/sePT1BgSci6w7J8LgAIqokLsAY1wVF3/lzUMYbNg==
-X-Received: by 2002:adf:ecc8:: with SMTP id s8mr17325819wro.328.1602509782316;
-        Mon, 12 Oct 2020 06:36:22 -0700 (PDT)
+        bh=eVMccU+LWENSynKb+x3Hkzr8j4uPK2gAme6zDwP6Sus=;
+        b=cLKiqSqPvS80TRBrNnnFU1U5ySYuOP7dSfmmuZjGo1LMkv5F/KXfOTDzP8BPDK+cfH
+         49UnZYtln+hO3zX4X3jDCvbA0CcZp6bqofnZiPEmx4zScZc/6Dvq45SIpXNiKpKrbE3O
+         p/4CoJdzLQ0ZxkKBuG8ZYIcmWMpABtdiQW7mqEgyW//M4wEElKcXxN9NYMthSqC5Nae4
+         3wuaHuKVhpTdhy04VkFDaN32aAg+kLH89IovJtE9A3hDGRaGN5T62OTlClDliF/fpSaO
+         ZO0h77e3DqxskWWY6Y2Fq1iOnfUwGqYOBkqpZt28u+kxdys9iS+lPb6VTkNpfpyJPVla
+         r15Q==
+X-Gm-Message-State: AOAM533OKGncsGxjys/5hfaA7XRyuoBc1cF0AqXOb6Ku1nchofEofYcr
+        +Wlkdj4W/oJ8iFZTqUBzUG8=
+X-Google-Smtp-Source: ABdhPJxs6v+Ag5Hr6DQ3GA5gAFIocDZIPcsxZ4LT1B73f6RG9bP0vhq9du6flNx9UOrdDXeDTXYVzg==
+X-Received: by 2002:a5d:5092:: with SMTP id a18mr26327114wrt.323.1602509786843;
+        Mon, 12 Oct 2020 06:36:26 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.93.41])
-        by smtp.gmail.com with ESMTPSA id k5sm23145388wmb.19.2020.10.12.06.36.21
+        by smtp.gmail.com with ESMTPSA id k5sm23145388wmb.19.2020.10.12.06.36.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 06:36:21 -0700 (PDT)
+        Mon, 12 Oct 2020 06:36:26 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 09/20] kernel-shark: Add stream interface for trace-cmd data
-Date:   Mon, 12 Oct 2020 16:35:12 +0300
-Message-Id: <20201012133523.469040-10-y.karadz@gmail.com>
+Subject: [PATCH v2 11/20] kernel-shark: Remove dead code
+Date:   Mon, 12 Oct 2020 16:35:14 +0300
+Message-Id: <20201012133523.469040-12-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201012133523.469040-1-y.karadz@gmail.com>
 References: <20201012133523.469040-1-y.karadz@gmail.com>
@@ -76,1488 +76,1033 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Here we provide an implementation of the Data stream interface that will
-process the trace-cmd (Ftrace) data. This can be considered the most
-essential change in the transformation of the C API towards version 2.
-However, for the moment we only have stand alone definitions that are not
-made functional yet. The actual integration with the API will be
-introduced in the following patches.
+Clean up the old readout code that is no longer used after switching
+to the implementation provided by the Data stream interface.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/CMakeLists.txt      |    1 +
- src/libkshark-tepdata.c | 1391 +++++++++++++++++++++++++++++++++++++++
- src/libkshark-tepdata.h |   51 ++
- 3 files changed, 1443 insertions(+)
- create mode 100644 src/libkshark-tepdata.c
- create mode 100644 src/libkshark-tepdata.h
+ src/libkshark.c | 807 +-----------------------------------------------
+ src/libkshark.h |  77 +----
+ 2 files changed, 2 insertions(+), 882 deletions(-)
 
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 39c4dcf0..2bdab1a5 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -5,6 +5,7 @@ add_library(kshark SHARED libkshark.c
-                           libkshark-hash.c
- #                           libkshark-model.c
-                           libkshark-plugin.c
-+                          libkshark-tepdata.c
- #                           libkshark-configio.c
-                           libkshark-collection.c)
+diff --git a/src/libkshark.c b/src/libkshark.c
+index 6eff53e5..e363395a 100644
+--- a/src/libkshark.c
++++ b/src/libkshark.c
+@@ -6,7 +6,7 @@
  
-diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-new file mode 100644
-index 00000000..30c383c8
---- /dev/null
-+++ b/src/libkshark-tepdata.c
-@@ -0,0 +1,1391 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+
-+/*
-+ * Copyright (C) 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+ */
-+
-+/**
-+ *  @file    libkshark-tepdata.c
-+ *  @brief   Interface for processing of FTRACE (trace-cmd) data.
-+ */
-+
-+
-+// C
-+#ifndef _GNU_SOURCE
-+/** Use GNU C Library. */
-+#define _GNU_SOURCE
-+#endif // _GNU_SOURCE
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+// trace-cmd
-+#include "trace-cmd/trace-cmd.h"
-+#include "tracefs/tracefs.h"
-+
-+// KernelShark
-+#include "libkshark.h"
-+#include "libkshark-plugin.h"
-+#include "libkshark-tepdata.h"
-+
-+static __thread struct trace_seq seq;
-+
-+static bool init_thread_seq(void)
-+{
-+	if (!seq.buffer)
-+		trace_seq_init(&seq);
-+
-+	return seq.buffer != NULL;
-+}
-+
-+/** Structure for handling all unique attributes of the FTRACE data. */
-+struct tepdata_handle {
-+	/** Page event used to parse the page. */
-+	struct tep_handle	*tep; /* MUST BE FIRST ENTRY */
-+
-+	/** Input handle for the trace data file. */
-+	struct tracecmd_input	*input;
-+
-+	/**
-+	 * Filter allowing sophisticated filtering based on the content of
-+	 * the event.
-+	 */
-+	struct tep_event_filter	*advanced_event_filter;
-+
-+	/** The unique Id of the sched_switch_event event. */
-+	int sched_switch_event_id;
-+
-+	/** Pointer to the sched_switch_next_field format descriptor. */
-+	struct tep_format_field	*sched_switch_next_field;
-+
-+	/** Pointer to the sched_switch_comm_field format descriptor. */
-+	struct tep_format_field	*sched_switch_comm_field;
-+};
-+
-+/** Get the Page event object used to parse the page. */
-+struct tep_handle *kshark_get_tep(struct kshark_data_stream *stream)
-+{
-+	if (stream->format != KS_TEP_DATA)
-+		return NULL;
-+
-+	struct tepdata_handle *tep_handle = stream->interface.handle;
-+	return tep_handle->tep;
-+}
-+
-+/** Get the input handle for the trace data file */
-+struct tracecmd_input *kshark_get_tep_input(struct kshark_data_stream *stream)
-+{
-+	if (stream->format != KS_TEP_DATA)
-+		return NULL;
-+
-+	struct tepdata_handle *tep_handle = stream->interface.handle;
-+	return tep_handle->input;
-+}
-+
-+static inline struct tep_event_filter *
-+get_adv_filter(struct kshark_data_stream *stream)
-+{
-+	if (stream->format != KS_TEP_DATA)
-+		return NULL;
-+
-+	struct tepdata_handle *tep_handle = stream->interface.handle;
-+	return tep_handle->advanced_event_filter;
-+}
-+
-+static int get_sched_switch_id(struct kshark_data_stream *stream)
-+{
-+	if (stream->format != KS_TEP_DATA)
-+		return -EINVAL;
-+
-+	struct tepdata_handle *tep_handle = stream->interface.handle;
-+	return tep_handle->sched_switch_event_id;
-+}
-+
-+static struct tep_format_field *get_sched_next(struct kshark_data_stream *stream)
-+{
-+	if (stream->format != KS_TEP_DATA)
-+		return NULL;
-+
-+	struct tepdata_handle *tep_handle = stream->interface.handle;
-+	return tep_handle->sched_switch_next_field;
-+}
-+
-+static struct tep_format_field *get_sched_comm(struct kshark_data_stream *stream)
-+{
-+	if (stream->format != KS_TEP_DATA)
-+		return NULL;
-+
-+	struct tepdata_handle *tep_handle = stream->interface.handle;
-+	return tep_handle->sched_switch_comm_field;
-+}
-+
-+static void set_entry_values(struct kshark_data_stream *stream,
-+			     struct tep_record *record,
-+			     struct kshark_entry *entry)
-+{
-+	/* Offset of the record */
-+	entry->offset = record->offset;
-+
-+	/* CPU Id of the record */
-+	entry->cpu = record->cpu;
-+
-+	/* Time stamp of the record */
-+	entry->ts = record->ts;
-+
-+	/* Event Id of the record */
-+	entry->event_id = tep_data_type(kshark_get_tep(stream), record);
-+
-+	/*
-+	 * Is visible mask. This default value means that the entry
-+	 * is visible everywhere.
-+	 */
-+	entry->visible = 0xFF;
-+
-+	/* Process Id of the record */
-+	entry->pid = tep_data_pid(kshark_get_tep(stream), record);
-+}
-+
-+/** Prior time offset of the "missed_events" entry. */
-+#define ME_ENTRY_TIME_SHIFT	10
-+
-+static void missed_events_action(struct kshark_data_stream *stream,
-+				 struct tep_record *record,
-+				 struct kshark_entry *entry)
-+{
-+	/*
-+	 * Use the offset field of the entry to store the number of missed
-+	 * events.
-+	 */
-+	entry->offset = record->missed_events;
-+
-+	entry->cpu = record->cpu;
-+
-+	/*
-+	 * Position the "missed_events" entry a bit before (in time)
-+	 * the original record.
-+	 */
-+	entry->ts = record->ts - ME_ENTRY_TIME_SHIFT;
-+
-+	/* All custom entries must have negative event Identifiers. */
-+	entry->event_id = KS_EVENT_OVERFLOW;
-+
-+	entry->visible = 0xFF;
-+
-+	entry->pid = tep_data_pid(kshark_get_tep(stream), record);
-+}
-+
-+/**
-+ * rec_list is used to pass the data to the load functions.
-+ * The rec_list will contain the list of entries from the source,
-+ * and will be a link list of per CPU entries.
-+ */
-+struct rec_list {
-+	union {
-+		/* Used by kshark_load_data_records */
-+		struct {
-+			/** next pointer, matches entry->next */
-+			struct rec_list		*next;
-+			/** pointer to the raw record data */
-+			struct tep_record	*rec;
-+		};
-+		/** entry - Used for kshark_load_data_entries() */
-+		struct kshark_entry		entry;
-+	};
-+};
-+
-+static int get_next_pid(struct kshark_data_stream *stream,
-+			struct tep_record *record)
-+{
-+	unsigned long long val;
-+	int ret;
-+
-+	ret = tep_read_number_field(get_sched_next(stream),
-+				    record->data, &val);
-+
-+	return ret ? : val;
-+}
-+
-+static void register_command(struct kshark_data_stream *stream,
-+			     struct tep_record *record,
-+			     int pid)
-+{
-+	struct tep_format_field *comm_field = get_sched_comm(stream);
-+	const char *comm = record->data + comm_field->offset;
-+	/*
-+	 * TODO: The retrieve of the name of the command above needs to be
-+	 * implemented as a wrapper function in libtracevent.
-+	 */
-+
-+	if (!tep_is_pid_registered(kshark_get_tep(stream), pid))
-+			tep_register_comm(kshark_get_tep(stream), comm, pid);
-+}
-+
-+/**
-+ * rec_type defines what type of rec_list is being used.
-+ */
-+enum rec_type {
-+	REC_RECORD,
-+	REC_ENTRY,
-+};
-+
-+static void free_rec_list(struct rec_list **rec_list, int n_cpus,
-+			  enum rec_type type)
-+{
-+	struct rec_list *temp_rec;
-+	int cpu;
-+
-+	for (cpu = 0; cpu < n_cpus; ++cpu) {
-+		while (rec_list[cpu]) {
-+			temp_rec = rec_list[cpu];
-+			rec_list[cpu] = temp_rec->next;
-+			if (type == REC_RECORD)
-+				free_record(temp_rec->rec);
-+			free(temp_rec);
-+		}
-+	}
-+	free(rec_list);
-+}
-+
-+static ssize_t get_records(struct kshark_context *kshark_ctx,
-+			   struct kshark_data_stream *stream,
-+			   struct rec_list ***rec_list,
-+			   enum rec_type type)
-+{
-+	struct tep_event_filter *adv_filter = NULL;
-+	struct rec_list **temp_next;
-+	struct rec_list **cpu_list;
-+	struct rec_list *temp_rec;
-+	struct tep_record *rec;
-+	ssize_t count, total = 0;
-+	int pid, next_pid, cpu;
-+
-+	cpu_list = calloc(stream->n_cpus, sizeof(*cpu_list));
-+	if (!cpu_list)
-+		return -ENOMEM;
-+
-+	if (type == REC_ENTRY)
-+		adv_filter = get_adv_filter(stream);
-+
-+	for (cpu = 0; cpu < stream->n_cpus; ++cpu) {
-+		count = 0;
-+		cpu_list[cpu] = NULL;
-+		temp_next = &cpu_list[cpu];
-+
-+		rec = tracecmd_read_cpu_first(kshark_get_tep_input(stream), cpu);
-+		while (rec) {
-+			*temp_next = temp_rec = calloc(1, sizeof(*temp_rec));
-+			if (!temp_rec)
-+				goto fail;
-+
-+			temp_rec->next = NULL;
-+
-+			switch (type) {
-+			case REC_RECORD:
-+				temp_rec->rec = rec;
-+				pid = tep_data_pid(kshark_get_tep(stream), rec);
-+				break;
-+			case REC_ENTRY: {
-+				struct kshark_entry *entry;
-+
-+				if (rec->missed_events) {
-+					/*
-+					 * Insert a custom "missed_events" entry just
-+					 * befor this record.
-+					 */
-+					entry = &temp_rec->entry;
-+					missed_events_action(stream, rec, entry);
-+
-+					entry->stream_id = stream->stream_id;
-+
-+					temp_next = &temp_rec->next;
-+					++count;
-+
-+					/* Now allocate a new rec_list node and comtinue. */
-+					*temp_next = temp_rec = calloc(1, sizeof(*temp_rec));
-+				}
-+
-+				entry = &temp_rec->entry;
-+				set_entry_values(stream, rec, entry);
-+
-+				if(entry->event_id == get_sched_switch_id(stream)) {
-+					next_pid = get_next_pid(stream, rec);
-+					if (next_pid >= 0)
-+						register_command(stream, rec, next_pid);
-+				}
-+
-+				entry->stream_id = stream->stream_id;
-+
-+				pid = entry->pid;
-+
-+				/* Apply advanced event filtering. */
-+				if (adv_filter && adv_filter->filters &&
-+				    tep_filter_match(adv_filter, rec) != FILTER_MATCH)
-+					unset_event_filter_flag(kshark_ctx, entry);
-+
-+				free_record(rec);
-+				break;
-+			} /* REC_ENTRY */
-+			}
-+
-+			kshark_hash_id_add(stream->tasks, pid);
-+
-+			temp_next = &temp_rec->next;
-+
-+			++count;
-+			rec = tracecmd_read_data(kshark_get_tep_input(stream), cpu);
-+		}
-+
-+		total += count;
-+	}
-+
-+	*rec_list = cpu_list;
-+	return total;
-+
-+ fail:
-+	free_rec_list(cpu_list, stream->n_cpus, type);
-+	return -ENOMEM;
-+}
-+
-+static int pick_next_cpu(struct rec_list **rec_list, int n_cpus,
-+			 enum rec_type type)
-+{
-+	uint64_t ts = 0;
-+	uint64_t rec_ts;
-+	int next_cpu = -1;
-+	int cpu;
-+
-+	for (cpu = 0; cpu < n_cpus; ++cpu) {
-+		if (!rec_list[cpu])
-+			continue;
-+
-+		switch (type) {
-+		case REC_RECORD:
-+			rec_ts = rec_list[cpu]->rec->ts;
-+			break;
-+		case REC_ENTRY:
-+			rec_ts = rec_list[cpu]->entry.ts;
-+			break;
-+		}
-+		if (!ts || rec_ts < ts) {
-+			ts = rec_ts;
-+			next_cpu = cpu;
-+		}
-+	}
-+
-+	return next_cpu;
-+}
-+
-+/**
-+ * @brief Load the content of the trace data file asociated with a given
-+ *	  Data stream into an array of kshark_entries. This function
-+ *	  provides an abstraction of the entries from the raw data
-+ *	  that is read, however the "latency" and the "info" fields can be
-+ *	  accessed only via the offset into the file. This makes the access
-+ *	  to these two fields much slower.
-+ *	  If one or more filters are set, the "visible" fields of each entry
-+ *	  is updated according to the criteria provided by the filters. The
-+ *	  field "filter_mask" of the session's context is used to control the
-+ *	  level of visibility/invisibility of the filtered entries.
-+ *
-+ * @param stream: Input location for the FTRACE data stream pointer.
-+ * @param kshark_ctx: Input location for context pointer.
-+ * @param data_rows: Output location for the trace data. The user is
-+ *		     responsible for freeing the elements of the outputted
-+ *		     array.
-+ *
-+ * @returns The size of the outputted data in the case of success, or a
-+ *	    negative error code on failure.
-+ */
-+ssize_t tepdata_load_entries(struct kshark_data_stream *stream,
-+				struct kshark_context *kshark_ctx,
-+				struct kshark_entry ***data_rows)
-+{
-+	enum rec_type type = REC_ENTRY;
-+	struct kshark_entry **rows;
-+	struct rec_list **rec_list;
-+	ssize_t count, total = 0;
-+
-+	total = get_records(kshark_ctx, stream, &rec_list, type);
-+	if (total < 0)
-+		goto fail;
-+
-+	rows = calloc(total, sizeof(struct kshark_entry *));
-+	if (!rows)
-+		goto fail_free;
-+
-+	for (count = 0; count < total; count++) {
-+		int next_cpu;
-+
-+		next_cpu = pick_next_cpu(rec_list, stream->n_cpus, type);
-+
-+		if (next_cpu >= 0) {
-+			rows[count] = &rec_list[next_cpu]->entry;
-+			rec_list[next_cpu] = rec_list[next_cpu]->next;
-+		}
-+	}
-+
-+	/* There should be no entries left in rec_list. */
-+	free_rec_list(rec_list, stream->n_cpus, type);
-+	*data_rows = rows;
-+
-+	return total;
-+
-+ fail_free:
-+	free_rec_list(rec_list, stream->n_cpus, type);
-+
-+ fail:
-+	fprintf(stderr, "Failed to allocate memory during data loading.\n");
-+	return -ENOMEM;
-+}
-+
-+static ssize_t tepdata_load_matrix(struct kshark_data_stream *stream,
-+				   struct kshark_context *kshark_ctx,
-+				   int16_t **cpu_array,
-+				   int32_t **pid_array,
-+				   int32_t **event_array,
-+				   int64_t **offset_array,
-+				   int64_t **ts_array)
-+{
-+	enum rec_type type = REC_ENTRY;
-+	struct rec_list **rec_list;
-+	ssize_t count, total = 0;
-+	bool status;
-+
-+	total = get_records(kshark_ctx, stream, &rec_list, type);
-+	if (total < 0)
-+		goto fail;
-+
-+	status = kshark_data_matrix_alloc(total, cpu_array,
-+						 pid_array,
-+						 event_array,
-+						 offset_array,
-+						 ts_array);
-+	if (!status)
-+		goto fail_free;
-+
-+	for (count = 0; count < total; count++) {
-+		int next_cpu;
-+
-+		next_cpu = pick_next_cpu(rec_list, stream->n_cpus, type);
-+		if (next_cpu >= 0) {
-+			struct rec_list *rec = rec_list[next_cpu];
-+			struct kshark_entry *e = &rec->entry;
-+
-+			if (offset_array)
-+				(*offset_array)[count] = e->offset;
-+
-+			if (cpu_array)
-+				(*cpu_array)[count] = e->cpu;
-+
-+			if (ts_array)
-+				(*ts_array)[count] = e->ts;
-+
-+			if (pid_array)
-+				(*pid_array)[count] = e->pid;
-+
-+			if (event_array)
-+				(*event_array)[count] = e->event_id;
-+
-+			rec_list[next_cpu] = rec_list[next_cpu]->next;
-+			free(rec);
-+		}
-+	}
-+
-+	/* There should be no entries left in rec_list. */
-+	free_rec_list(rec_list, stream->n_cpus, type);
-+	return total;
-+
-+ fail_free:
-+	free_rec_list(rec_list, stream->n_cpus, type);
-+
-+ fail:
-+	fprintf(stderr, "Failed to allocate memory during data loading.\n");
-+	return -ENOMEM;
-+}
-+
-+/**
-+ * @brief Load the content of the trace data file into an array of
-+ *	  tep_records. Use this function only if you need fast access
-+ *	  to all fields of the record.
-+ *
-+ * @param kshark_ctx: Input location for the session context pointer.
-+ * @param sd: Data stream identifier.
-+ * @param data_rows: Output location for the trace data. Use free_record()
-+ *	 	     to free the elements of the outputted array.
-+ *
-+ * @returns The size of the outputted data in the case of success, or a
-+ *	    negative error code on failure.
-+ */
-+ssize_t kshark_load_tep_records(struct kshark_context *kshark_ctx, int sd,
-+				struct tep_record ***data_rows)
-+{
-+	struct kshark_data_stream *stream;
-+	enum rec_type type = REC_RECORD;
-+	struct rec_list **rec_list;
-+	struct rec_list *temp_rec;
-+	struct tep_record **rows;
-+	struct tep_record *rec;
-+	ssize_t count, total = 0;
-+
-+	if (*data_rows)
-+		free(*data_rows);
-+
-+	stream = kshark_get_data_stream(kshark_ctx, sd);
-+	if (!stream)
-+		return -EBADF;
-+
-+	total = get_records(kshark_ctx, stream, &rec_list, type);
-+	if (total < 0)
-+		goto fail;
-+
-+	rows = calloc(total, sizeof(struct tep_record *));
-+	if (!rows)
-+		goto fail_free;
-+
-+	for (count = 0; count < total; count++) {
-+		int next_cpu;
-+
-+		next_cpu = pick_next_cpu(rec_list, stream->n_cpus, type);
-+
-+		if (next_cpu >= 0) {
-+			rec = rec_list[next_cpu]->rec;
-+			rows[count] = rec;
-+
-+			temp_rec = rec_list[next_cpu];
-+			rec_list[next_cpu] = rec_list[next_cpu]->next;
-+			free(temp_rec);
-+			/* The record is still referenced in rows */
-+		}
-+	}
-+
-+	/* There should be no records left in rec_list */
-+	free_rec_list(rec_list, stream->n_cpus, type);
-+	*data_rows = rows;
-+	return total;
-+
-+ fail_free:
-+	free_rec_list(rec_list, stream->n_cpus, type);
-+
-+ fail:
-+	fprintf(stderr, "Failed to allocate memory during data loading.\n");
-+	return -ENOMEM;
-+}
-+
-+static const int tepdata_get_event_id(struct kshark_data_stream *stream,
-+				      const struct kshark_entry *entry)
-+{
-+	int event_id = KS_EMPTY_BIN;
-+	struct tep_record *record;
-+
-+	if (entry->visible & KS_PLUGIN_UNTOUCHED_MASK) {
-+		event_id = entry->event_id;
-+	} else {
-+		/*
-+		 * The entry has been touched by a plugin callback function.
-+		 * Because of this we do not trust the value of
-+		 * "entry->event_id".
-+		 *
-+		 * Currently the data reading operations are not thread-safe.
-+		 * Use a mutex to protect the access.
-+		 */
-+		pthread_mutex_lock(&stream->input_mutex);
-+
-+		record = tracecmd_read_at(kshark_get_tep_input(stream),
-+					  entry->offset, NULL);
-+
-+		if (record)
-+			event_id = tep_data_type(kshark_get_tep(stream), record);
-+
-+		free_record(record);
-+
-+		pthread_mutex_unlock(&stream->input_mutex);
-+	}
-+
-+	return (event_id == -1)? -EFAULT : event_id;
-+}
-+
-+static char* missed_events_dump(struct kshark_data_stream *stream,
-+				      const struct kshark_entry *entry,
-+				      bool get_info)
-+{
-+	char *buffer;
-+	int size = 0;
-+
-+	if (get_info)
-+		size = asprintf(&buffer, "missed_events=%i",
-+				(int) entry->offset);
-+	else
-+		size = asprintf(&buffer, "missed_events");
-+
-+	if (size > 0)
-+		return buffer;
-+
-+	return NULL;
-+}
-+
-+static char *tepdata_get_event_name(struct kshark_data_stream *stream,
-+				    const struct kshark_entry *entry)
-+{
-+	struct tep_event *event;
-+	char *buffer;
-+
-+	int event_id = stream->interface.get_event_id(stream, entry);
-+	if (event_id == -EFAULT)
-+		return NULL;
-+
-+	if (event_id < 0) {
-+		switch (event_id) {
-+		case KS_EVENT_OVERFLOW:
-+			return missed_events_dump(stream, entry, false);
-+		default:
-+			return NULL;
-+		}
-+	}
-+
-+	/*
-+	 * Currently the data reading operations are not thread-safe.
-+	 * Use a mutex to protect the access.
-+	 */
-+	pthread_mutex_lock(&stream->input_mutex);
-+
-+	event = tep_find_event(kshark_get_tep(stream), event_id);
-+
-+	pthread_mutex_unlock(&stream->input_mutex);
-+
-+	if (!event ||
-+            asprintf(&buffer, "%s/%s", event->system, event->name) <= 0)
-+		return NULL;
-+
-+	return buffer;
-+}
-+
-+static const int tepdata_get_pid(struct kshark_data_stream *stream,
-+				 const struct kshark_entry *entry)
-+{
-+	struct tep_record *record;
-+	int pid = KS_EMPTY_BIN;
-+
-+	if (entry->visible & KS_PLUGIN_UNTOUCHED_MASK) {
-+		pid = entry->pid;
-+	} else {
-+		/*
-+		 * The entry has been touched by a plugin callback function.
-+		 * Because of this we do not trust the value of "entry->pid".
-+		 *
-+		 * Currently the data reading operations are not thread-safe.
-+		 * Use a mutex to protect the access.
-+		 */
-+		pthread_mutex_lock(&stream->input_mutex);
-+
-+		record = tracecmd_read_at(kshark_get_tep_input(stream),
-+					  entry->offset, NULL);
-+
-+		if (record)
-+			pid = tep_data_pid(kshark_get_tep(stream), record);
-+
-+		free_record(record);
-+
-+		pthread_mutex_unlock(&stream->input_mutex);
-+	}
-+
-+	return pid;
-+}
-+
-+static char *tepdata_get_task(struct kshark_data_stream *stream,
-+			      const struct kshark_entry *entry)
-+{
-+	int pid = stream->interface.get_pid(stream, entry);
-+	const char *task;
-+	char *buffer;
-+
-+	task = tep_data_comm_from_pid(kshark_get_tep(stream), pid);
-+	if (asprintf(&buffer, "%s", task)  <= 0)
-+		return NULL;
-+
-+	return buffer;
-+}
-+
-+static char *tepdata_get_latency(struct kshark_data_stream *stream,
-+				 const struct kshark_entry *entry)
-+{
-+	struct tep_record *record;
-+	char *buffer;
-+
-+	/* Check if this is a "Missed event" (event_id < 0). */
-+	if (!init_thread_seq() || entry->event_id < 0)
-+		return NULL;
-+
-+	/*
-+	 * Currently the data reading operations are not thread-safe.
-+	 * Use a mutex to protect the access.
-+	 */
-+	pthread_mutex_lock(&stream->input_mutex);
-+
-+	record = tracecmd_read_at(kshark_get_tep_input(stream), entry->offset, NULL);
-+
-+	if (!record)
-+		return NULL;
-+
-+	trace_seq_reset(&seq);
-+	tep_print_event(kshark_get_tep(stream), &seq, record,
-+			"%s", TEP_PRINT_LATENCY);
-+
-+	free_record(record);
-+
-+	pthread_mutex_unlock(&stream->input_mutex);
-+
-+	if (asprintf(&buffer, "%s", seq.buffer)  <= 0)
-+		return NULL;
-+
-+	return buffer;
-+}
-+
-+static char *get_info_str(struct kshark_data_stream *stream,
-+			  struct tep_record *record,
-+			  struct tep_event *event)
-+{
-+	char *pos, *buffer;
-+
-+	if (!init_thread_seq() || !record || !event)
-+		return NULL;
-+
-+	trace_seq_reset(&seq);
-+	tep_print_event(kshark_get_tep(stream), &seq, record,
-+			"%s", TEP_PRINT_INFO);
-+
-+	/*
-+	 * The event info string contains a trailing newline.
-+	 * Remove this newline.
-+	 */
-+	if ((pos = strchr(seq.buffer, '\n')) != NULL)
-+		*pos = '\0';
-+
-+	if (asprintf(&buffer, "%s", seq.buffer)  <= 0)
-+		return NULL;
-+
-+	return buffer;
-+}
-+
-+static char *tepdata_get_info(struct kshark_data_stream *stream,
-+			      const struct kshark_entry *entry)
-+{
-+	struct tep_record *record;
-+	struct tep_event *event;
-+	char *info = NULL;
-+	int event_id;
-+
-+	if (entry->event_id < 0) {
-+		switch (entry->event_id) {
-+		case KS_EVENT_OVERFLOW:
-+			return missed_events_dump(stream, entry, true);
-+		default:
-+			return NULL;
-+		}
-+	}
-+
-+	/*
-+	 * Currently the data reading operations are not thread-safe.
-+	 * Use a mutex to protect the access.
-+	 */
-+	pthread_mutex_lock(&stream->input_mutex);
-+
-+	record = tracecmd_read_at(kshark_get_tep_input(stream), entry->offset, NULL);
-+	if (!record) {
-+		pthread_mutex_unlock(&stream->input_mutex);
-+		return NULL;
-+	}
-+
-+	event_id = tep_data_type(kshark_get_tep(stream), record);
-+	event = tep_find_event(kshark_get_tep(stream), event_id);
-+
-+	if (event)
-+		info = get_info_str(stream, record, event);
-+
-+	free_record(record);
-+
-+	pthread_mutex_unlock(&stream->input_mutex);
-+
-+	return info;
-+}
-+
-+static int *tepdata_get_event_ids(struct kshark_data_stream *stream)
-+{
-+	struct tep_event **events;
-+	int i, *evt_ids;
-+
-+	events = tep_list_events(kshark_get_tep(stream), TEP_EVENT_SORT_SYSTEM);
-+	evt_ids = malloc(stream->n_events * sizeof(*evt_ids));
-+
-+	for (i = 0; i < stream->n_events ; ++i)
-+		evt_ids[i] = events[i]->id;
-+
-+	return evt_ids;
-+}
-+
-+static int tepdata_get_field_names(struct kshark_data_stream *stream,
-+				   const struct kshark_entry *entry,
-+				   char ***fields_str)
-+{
-+	struct tep_format_field *field, **fields;
-+	struct tep_event *event;
-+	int i= 0, nr_fields;
-+	char **buffer;
-+
-+	*fields_str = NULL;
-+	event = tep_find_event(kshark_get_tep(stream), entry->event_id);
-+	if (!event)
-+		return 0;
-+
-+	nr_fields = event->format.nr_fields + event->format.nr_common;
-+	buffer = calloc(nr_fields, sizeof(**fields_str));
-+
-+	fields = tep_event_common_fields(event);
-+	for (field = *fields; field; field = field->next)
-+		if (asprintf(&buffer[i++], "%s", field->name) <= 0)
-+			goto fail;
-+
-+	free(fields);
-+
-+	fields = tep_event_fields(event);
-+	for (field = *fields; field; field = field->next)
-+		if (asprintf(&buffer[i++], "%s", field->name) <= 0)
-+			goto fail;
-+
-+	free(fields);
-+
-+	*fields_str = buffer;
-+	return nr_fields;
-+
-+ fail:
-+	for (i = 0; i < nr_fields; ++i)
-+		free(buffer[i]);
-+
-+	return -EFAULT;
-+}
-+
-+/**
-+ * Custom entry info function type. To be user for dumping info for custom
-+ * KernelShark entryes.
-+ */
-+typedef char *(tepdata_custom_info_func)(struct kshark_data_stream *,
-+					const struct kshark_entry *,
-+					bool);
-+
-+static char* tepdata_dump_custom_entry(struct kshark_data_stream *stream,
-+				       const struct kshark_entry *entry,
-+				       tepdata_custom_info_func info_func)
-+{
-+	char *entry_str;
-+	int size = 0;
-+
-+	size = asprintf(&entry_str, "%" PRIu64 "; %s-%i; CPU %i; ; %s; %s; 0x%x",
-+			entry->ts,
-+			tep_data_comm_from_pid(kshark_get_tep(stream), entry->pid),
-+			entry->pid,
-+			entry->cpu,
-+			info_func(stream, entry, false),
-+			info_func(stream, entry, true),
-+			entry->visible);
-+
-+	if (size > 0)
-+		return entry_str;
-+
-+	return NULL;
-+}
-+
-+/**
-+ * @brief Dump into a string the content of one entry. The function allocates
-+ *	  a null terminated string and returns a pointer to this string.
-+ *
-+ * @param stream: Input location for the FTRACE data stream pointer.
-+ * @param entry: A Kernel Shark entry to be printed.
-+ *
-+ * @returns The returned string contains a semicolon-separated list of data
-+ *	    fields. The user has to free the returned string.
-+ */
-+static char *tepdata_dump_entry(struct kshark_data_stream *stream,
-+				const struct kshark_entry *entry)
-+{
-+	char *entry_str, *task, *latency, *event, *info;
-+	struct kshark_context *kshark_ctx = NULL;
-+	int n = 0;
-+
-+	if (!kshark_instance(&kshark_ctx) || !init_thread_seq())
-+		return NULL;
-+
-+	if (entry->event_id >= 0) {
-+		if (kshark_get_tep(stream)) {
-+			task = stream->interface.get_task(stream, entry);
-+			latency = stream->interface.get_latency(stream, entry);
-+			event = stream->interface.get_event_name(stream, entry);
-+			info = stream->interface.get_info(stream, entry);
-+
-+			n = asprintf(&entry_str,
-+				     "%i; %" PRIu64 "; %s-%i; CPU %i; %s; %s; %s; 0x%x",
-+				     entry->stream_id,
-+				     entry->ts,
-+				     task,
-+				     stream->interface.get_pid(stream, entry),
-+				     entry->cpu,
-+				     latency,
-+				     event,
-+				     info,
-+				     entry->visible);
-+
-+			free(task);
-+			free(latency);
-+			free(event);
-+			free(info);
-+		} else {
-+			n = asprintf(&entry_str,
-+				     "%i; %li; [UNKNOWN TASK]-%i; CPU %i; ; [UNKNOWN EVENT]; [NO INFO]; 0x%x",
-+				     entry->stream_id,
-+				     entry->ts,
-+				     stream->interface.get_pid(stream, entry),
-+				     entry->cpu,
-+				     entry->visible);
-+		}
-+
-+		if (n < 1)
-+			return NULL;
-+	} else {
-+		switch (entry->event_id) {
-+		case KS_EVENT_OVERFLOW:
-+			entry_str = tepdata_dump_custom_entry(stream, entry,
-+							     missed_events_dump);
-+		default:
-+			return NULL;
-+		}
-+	}
-+
-+	return entry_str;
-+}
-+
-+static const int tepdata_find_event_id(struct kshark_data_stream *stream,
-+				       const char *event_name)
-+{
-+	struct tep_event *event;
-+	char *buffer, *system, *name;
-+
-+	if (asprintf(&buffer, "%s", event_name) < 1)
-+		return -1;
-+
-+	system = strtok(buffer, "/");
-+	name = strtok(NULL, "");
-+	if (!system || !name)
-+		return -1;
-+
-+	event = tep_find_event_by_name(kshark_get_tep(stream), system, name);
-+
-+	free(buffer);
-+
-+	if (!event)
-+		return -1;
-+
-+	return event->id;
-+}
-+
-+static struct tep_format_field *
-+get_evt_field(struct kshark_data_stream *stream,
-+	      int event_id, const char *field_name)
-+{
-+	struct tep_event *event = tep_find_event(kshark_get_tep(stream),
-+						 event_id);
-+	if (!event)
-+		return NULL;
-+
-+	return tep_find_any_field(event, field_name);
-+}
-+
-+/**
-+ * @brief  Get the type of a trace record field. For the moment only integer
-+ *	   fields are supported.
-+ *
-+ * @param stream: Input location for the FTRACE data stream pointer.
-+ * @param entry: Input location for the Kernel Shark entry asociated with thes
-+ *		 record.
-+ * @param field: The name of the field.
-+ *
-+ * @returns KS_INTEGER_FIELD in case the field has an integer type. Otherwise
-+ *	    KS_INVALIDE_FIELD.
-+ */
-+kshark_event_field_format
-+tepdata_get_field_type(struct kshark_data_stream *stream,
-+		       const struct kshark_entry *entry,
-+		       const char *field)
-+{
-+	struct tep_format_field *evt_field;
-+	int mask = ~(TEP_FIELD_IS_SIGNED |
-+		     TEP_FIELD_IS_LONG |
-+		     TEP_FIELD_IS_FLAG);
-+
-+	evt_field = get_evt_field(stream, entry->event_id, field);
-+	if (!evt_field)
-+		return KS_INVALIDE_FIELD;
-+
-+	if (mask & evt_field->flags)
-+		return KS_INVALIDE_FIELD;
-+
-+	return KS_INTEGER_FIELD;
-+}
-+
-+/**
-+ * @brief  Get the value of a trace record field.
-+ *
-+ * @param stream: Input location for the FTRACE data stream pointer.
-+ * @param rec: Input location for the trace record.
-+ * @param field: The name of the field.
-+ * @param val: Output location for the field value.
-+ *
-+ * @returns Returns 0 on success, otherwise a negative error code..
-+ */
-+int tepdata_read_record_field(struct kshark_data_stream *stream,
-+			      void *rec,
-+			      const char *field, int64_t *val)
-+{
-+	struct tep_format_field *evt_field;
-+	struct tep_record *record = rec;
-+	int event_id, ret;
-+
-+	if (!record)
-+		return -EFAULT;
-+
-+	event_id = tep_data_type(kshark_get_tep(stream), record);
-+	evt_field = get_evt_field(stream, event_id, field);
-+	if (!evt_field)
-+		return -EINVAL;
-+
-+	ret = tep_read_number_field(evt_field, record->data,
-+				    (unsigned long long *) val);
-+
-+	return ret;
-+}
-+
-+/**
-+ * @brief  Get the value of a trace record field.
-+ *
-+ * @param stream: Input location for the FTRACE data stream pointer.
-+ * @param entry: Input location for the Kernel Shark entry asociated with thes
-+ *		 record.
-+ * @param field: The name of the field.
-+ * @param val: Output location for the field value.
-+ *
-+ * @returns Returns 0 on success, otherwise a negative error code.
-+ */
-+int tepdata_read_event_field(struct kshark_data_stream *stream,
-+			     const struct kshark_entry *entry,
-+			     const char *field, int64_t *val)
-+{
-+	struct tep_format_field *evt_field;
-+	struct tep_record *record;
-+	int ret;
-+
-+	evt_field = get_evt_field(stream, entry->event_id, field);
-+	if (!evt_field)
-+		return -EINVAL;
-+
-+	record = tracecmd_read_at(kshark_get_tep_input(stream),
-+				  entry->offset, NULL);
-+	if (!record)
-+		return -EFAULT;
-+
-+	ret = tep_read_number_field(evt_field, record->data,
-+				    (unsigned long long *) val);
-+	free_record(record);
-+
-+	return ret;
-+}
-+
-+/** Initialize all methods used by a stream of FTRACE data. */
-+static void kshark_tep_init_methods(struct kshark_data_stream *stream)
-+{
-+	stream->interface.get_pid = tepdata_get_pid;
-+	stream->interface.get_task = tepdata_get_task;
-+	stream->interface.get_event_id = tepdata_get_event_id;
-+	stream->interface.get_event_name = tepdata_get_event_name;
-+	stream->interface.get_latency = tepdata_get_latency;
-+	stream->interface.get_info = tepdata_get_info;
-+	stream->interface.find_event_id = tepdata_find_event_id;
-+	stream->interface.get_all_event_ids = tepdata_get_event_ids;
-+	stream->interface.dump_entry = tepdata_dump_entry;
-+	stream->interface.get_all_field_names = tepdata_get_field_names;
-+	stream->interface.get_event_field_type = tepdata_get_field_type;
-+	stream->interface.read_record_field_int64 = tepdata_read_record_field;
-+	stream->interface.read_event_field_int64 = tepdata_read_event_field;
-+	stream->interface.load_entries = tepdata_load_entries;
-+	stream->interface.load_matrix = tepdata_load_matrix;
-+}
-+
-+/** Find a host stream from the same tracing session, that has guest information */
-+static struct tracecmd_input *
-+kshark_tep_find_merge_peer(struct kshark_context *kshark_ctx,
-+			   struct tracecmd_input *handle)
-+{
-+	struct tracecmd_input *peer_handle = NULL;
-+	struct kshark_data_stream *peer_stream;
-+	unsigned long long trace_id;
-+	int *stream_ids = NULL;
-+	int ret;
-+	int i;
-+
-+	trace_id = tracecmd_get_traceid(handle);
-+	if (!trace_id)
-+		goto out;
-+
-+	stream_ids = kshark_all_streams(kshark_ctx);
-+	if (!stream_ids)
-+		goto out;
-+
-+	for (i = 0; i < kshark_ctx->n_streams - 1; i++) {
-+		peer_stream = kshark_get_data_stream(kshark_ctx, stream_ids[i]);
-+		if (!peer_stream || peer_stream->format != KS_TEP_DATA)
-+			continue;
-+
-+		peer_handle = kshark_get_tep_input(peer_stream);
-+		if (!peer_handle)
-+			continue;
-+
-+		ret = tracecmd_get_guest_cpumap(peer_handle, trace_id,
-+						NULL, NULL, NULL);
-+		if (!ret)
-+			break;
-+	}
-+
-+	if (i == kshark_ctx->n_streams)
-+		peer_handle = NULL;
-+
-+out:
-+	free(stream_ids);
-+	return peer_handle;
-+}
-+
-+/** The Process Id of the Idle tasks is zero. */
-+#define LINUX_IDLE_TASK_PID	0
-+
-+static int kshark_tep_stream_init(struct kshark_data_stream *stream,
-+				  struct tracecmd_input *input)
-+{
-+	struct tepdata_handle *tep_handle;
-+	struct tep_event *event;
-+
-+	tep_handle = calloc(1, sizeof(*tep_handle));
-+	if (!tep_handle)
-+		goto fail;
-+
-+	tep_handle->input = input;
-+	tep_handle->tep = tracecmd_get_pevent(tep_handle->input);
-+	if (!tep_handle->tep)
-+		goto fail;
-+
-+	tep_handle->sched_switch_event_id = -EINVAL;
-+	event = tep_find_event_by_name(tep_handle->tep,
-+				       "sched", "sched_switch");
-+	if (event) {
-+		tep_handle->sched_switch_event_id = event->id;
-+
-+		tep_handle->sched_switch_next_field =
-+			tep_find_any_field(event, "next_pid");
-+
-+		tep_handle->sched_switch_comm_field =
-+			tep_find_field(event, "next_comm");
-+	}
-+
-+	stream->n_cpus = tep_get_cpus(tep_handle->tep);
-+	stream->n_events = tep_get_events_count(tep_handle->tep);
-+	stream->idle_pid = LINUX_IDLE_TASK_PID;
-+
-+	tep_handle->advanced_event_filter =
-+		tep_filter_alloc(tep_handle->tep);
-+
-+	kshark_tep_init_methods(stream);
-+
-+	stream->interface.handle = tep_handle;
-+
-+	return 0;
-+
-+ fail:
-+	free(tep_handle);
-+	stream->interface.handle = NULL;
-+	return -EFAULT;
-+}
-+
-+/** Initialize the FTRACE data input (from file). */
-+int kshark_tep_init_input(struct kshark_data_stream *stream,
-+			  const char *file)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
-+	struct tracecmd_input *merge_peer;
-+	struct tracecmd_input *input;
-+
-+	if (!kshark_instance(&kshark_ctx) || !init_thread_seq())
-+		return -EEXIST;
-+
-+	/*
-+	 * Turn off function trace indent and turn on show parent
-+	 * if possible.
-+	 */
-+	tep_plugin_add_option("ftrace:parent", "1");
-+	tep_plugin_add_option("ftrace:indent", "0");
-+
-+	input = tracecmd_open_head(file);
-+	if (!input)
-+		return -EEXIST;
-+
-+	/* Find a merge peer from the same tracing session. */
-+	merge_peer = kshark_tep_find_merge_peer(kshark_ctx, input);
-+	if (merge_peer)
-+		tracecmd_pair_peer(input, merge_peer);
-+
-+	/* Read the tracing data from the file. */
-+	if (tracecmd_init_data(input) < 0)
-+		goto fail;
-+
-+	/* Initialize the stream asociated with the main buffer. */
-+	if (kshark_tep_stream_init(stream, input) < 0)
-+		goto fail;
-+
-+	stream->name = strdup("top");
-+
-+	return 0;
-+
-+ fail:
-+	tracecmd_close(input);
-+	return -EFAULT;
-+}
-+
-+/** Initialize using the locally available tracing events. */
-+int kshark_tep_init_local(struct kshark_data_stream *stream)
-+{
-+	struct tepdata_handle *tep_handle;
-+
-+	tep_handle = calloc(1, sizeof(*tep_handle));
-+	if (!tep_handle)
-+		return -EFAULT;
-+
-+	tep_handle->tep = tracefs_local_events(tracefs_get_tracing_dir());
-+	if (!tep_handle->tep)
-+		goto fail;
-+
-+	stream->n_events = tep_get_events_count(tep_handle->tep);
-+	stream->n_cpus =  tep_get_cpus(tep_handle->tep);
-+	stream->format = KS_TEP_DATA;
-+	if (asprintf(&stream->file, "Local system") <= 0)
-+		goto fail;
-+
-+	stream->interface.handle = tep_handle;
-+	kshark_tep_init_methods(stream);
-+
-+	return 0;
-+
-+ fail:
-+	free(tep_handle);
-+	stream->interface.handle = NULL;
-+	return -EFAULT;
-+}
-+
-+/** Method used to close a stream of FTRACE data. */
-+void kshark_tep_close_interface(struct kshark_data_stream *stream)
-+{
-+	struct tepdata_handle *tep_handle = stream->interface.handle;
-+
-+	if (seq.buffer)
-+		trace_seq_destroy(&seq);
-+
-+	if (tep_handle->advanced_event_filter) {
-+		tep_filter_reset(tep_handle->advanced_event_filter);
-+		tep_filter_free(tep_handle->advanced_event_filter);
-+		tep_handle->advanced_event_filter = NULL;
-+	}
-+
-+	if (tep_handle->input)
-+		tracecmd_close(tep_handle->input);
-+
-+	free(tep_handle);
-+	stream->interface.handle = NULL;
-+}
-+
-+/** Check if the filter any filter is set. */
-+bool kshark_tep_filter_is_set(struct kshark_data_stream *stream)
-+{
-+	struct tep_event_filter *adv_filter = get_adv_filter(stream);
-+
-+	if (adv_filter && adv_filter->filters)
-+		return true;
-+
-+	return false;
-+}
-+
-+/**
-+ * @brief Add a filter based on the content of the event.
-+ *
-+ * @param stream: Input location for the FTRACE data stream pointer.
-+ * @param filter_str: The definition of the filter.
-+ *
-+ * @returns 0 if the filter was successfully added or a negative error code.
-+ */
-+int kshark_tep_add_filter_str(struct kshark_data_stream *stream,
-+			       const char *filter_str)
-+{
-+	struct tep_event_filter *adv_filter = get_adv_filter(stream);
-+	int ret = tep_filter_add_filter_str(adv_filter, filter_str);
-+
-+	if (ret < 0) {
-+		char error_str[200];
-+		int error_status =
-+			tep_strerror(kshark_get_tep(stream), ret, error_str,
-+				     sizeof(error_str));
-+
-+		if (error_status == 0)
-+			fprintf(stderr, "filter failed due to: %s\n",
-+					error_str);
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * @brief Get a string showing the filter definition.
-+ *
-+ * @param stream: Input location for the FTRACE data stream pointer.
-+ * @param event_id: The unique Id of the event type of the filter.
-+ *
-+ * @returns A string that displays the filter contents. This string must be
-+ *	    freed with free(str). NULL is returned if no filter is found or
-+ *	    allocation failed.
-+ */
-+char *kshark_tep_filter_make_string(struct kshark_data_stream *stream,
-+				    int event_id)
-+{
-+	struct tep_event_filter *adv_filter = get_adv_filter(stream);
-+
-+	return tep_filter_make_string(adv_filter, event_id);
-+}
-+
-+/**
-+ * @brief Remove a filter based on the content of the event.
-+ *
-+ * @param stream: Input location for the FTRACE data stream pointer.
-+ * @param event_id: The unique Id of the event type of the filter.
-+ *
-+ * @return 1: if an event was removed or 0 if the event was not found.
-+ */
-+int kshark_tep_filter_remove_event(struct kshark_data_stream *stream,
-+				   int event_id)
-+{
-+	struct tep_event_filter *adv_filter = get_adv_filter(stream);
-+
-+	return tep_filter_remove_event(adv_filter, event_id);
-+}
-+
-+/** Reset all filters based on the content of the event. */
-+void kshark_tep_filter_reset(struct kshark_data_stream *stream)
-+{
-+	return tep_filter_reset(get_adv_filter(stream));
-+}
-+
-+/** Get an array of available tracer plugins. */
-+char **kshark_tracecmd_local_plugins()
-+{
-+	return tracefs_tracers(tracefs_get_tracing_dir());
-+}
-diff --git a/src/libkshark-tepdata.h b/src/libkshark-tepdata.h
-new file mode 100644
-index 00000000..a2bd211e
---- /dev/null
-+++ b/src/libkshark-tepdata.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: LGPL-2.1 */
-+
-+/*
-+ * Copyright (C) 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+ */
-+
-+/**
-+ *  @file    libkshark-tepdata.h
-+ *  @brief   Interface for processing of FTRACE (trace-cmd) data.
-+ */
-+
-+#ifndef _KSHARK_TEPDATA_H
-+#define _KSHARK_TEPDATA_H
-+
-+// KernelShark
-+#include "libkshark.h"
-+
-+#ifdef __cplusplus
-+extern "C" {
-+#endif
-+
-+int kshark_tep_init_input(struct kshark_data_stream *stream,
-+			  const char *file);
-+
-+int kshark_tep_init_local(struct kshark_data_stream *stream);
-+
-+void kshark_tep_close_interface(struct kshark_data_stream *stream);
-+
-+bool kshark_tep_filter_is_set(struct kshark_data_stream *stream);
-+
-+int kshark_tep_add_filter_str(struct kshark_data_stream *stream,
-+			      const char *filter_str);
-+
-+char *kshark_tep_filter_make_string(struct kshark_data_stream *stream,
-+				    int event_id);
-+
-+int kshark_tep_filter_remove_event(struct kshark_data_stream *stream,
-+				   int event_id);
-+
-+void kshark_tep_filter_reset(struct kshark_data_stream *stream);
-+
-+char **kshark_tracecmd_local_plugins();
-+
-+ssize_t kshark_load_tep_records(struct kshark_context *kshark_ctx, int sd,
-+				struct tep_record ***data_rows);
-+
-+#ifdef __cplusplus
-+}
-+#endif
-+
-+#endif // _KSHARK_TEPDATA_H
+  /**
+  *  @file    libkshark.c
+- *  @brief   API for processing of FTRACE (trace-cmd) data.
++ *  @brief   API for processing of tracing data.
+  */
+ 
+ /** Use GNU C Library. */
+@@ -21,8 +21,6 @@
+ #include "libkshark.h"
+ #include "libkshark-tepdata.h"
+ 
+-static __thread struct trace_seq seq;
+-
+ static struct kshark_context *kshark_context_handler = NULL;
+ 
+ static bool kshark_default_context(struct kshark_context **context)
+@@ -62,14 +60,6 @@ static bool kshark_default_context(struct kshark_context **context)
+ 	return true;
+ }
+ 
+-static bool init_thread_seq(void)
+-{
+-	if (!seq.buffer)
+-		trace_seq_init(&seq);
+-
+-	return seq.buffer != NULL;
+-}
+-
+ /**
+  * @brief Initialize a kshark session. This function must be called before
+  *	  calling any other kshark function. If the session has been
+@@ -106,9 +96,6 @@ bool kshark_instance(struct kshark_context **kshark_ctx)
+ 		}
+ 	}
+ 
+-	if (!init_thread_seq())
+-		return false;
+-
+ 	return true;
+ }
+ 
+@@ -487,42 +474,6 @@ char *kshark_event_from_id(int sd, int event_id)
+ 	return stream->interface.get_event_name(stream, &e);
+ }
+ 
+-static struct kshark_task_list *
+-kshark_find_task(struct kshark_context *kshark_ctx, uint32_t key, int pid)
+-{
+-	struct kshark_task_list *list;
+-
+-	for (list = kshark_ctx->tasks[key]; list; list = list->next) {
+-		if (list->pid == pid)
+-			return list;
+-	}
+-
+-	return NULL;
+-}
+-
+-static struct kshark_task_list *
+-kshark_add_task(struct kshark_context *kshark_ctx, int pid)
+-{
+-	struct kshark_task_list *list;
+-	uint32_t key;
+-
+-	key = tracecmd_quick_hash(pid, KS_TASK_HASH_SHIFT);
+-
+-	list = kshark_find_task(kshark_ctx, key, pid);
+-	if (list)
+-		return list;
+-
+-	list = malloc(sizeof(*list));
+-	if (!list)
+-		return NULL;
+-
+-	list->pid = pid;
+-	list->next = kshark_ctx->tasks[key];
+-	kshark_ctx->tasks[key] = list;
+-
+-	return list;
+-}
+-
+ /**
+  * @brief Get an array containing the Process Ids of all tasks presented in
+  *	  the loaded trace data file.
+@@ -751,400 +702,6 @@ void kshark_clear_all_filters(struct kshark_context *kshark_ctx,
+ 		set_all_visible(&data[i]->visible);
+ }
+ 
+-static void kshark_set_entry_values(struct kshark_context *kshark_ctx,
+-				    struct tep_record *record,
+-				    struct kshark_entry *entry)
+-{
+-	/* Offset of the record */
+-	entry->offset = record->offset;
+-
+-	/* CPU Id of the record */
+-	entry->cpu = record->cpu;
+-
+-	/* Time stamp of the record */
+-	entry->ts = record->ts;
+-
+-	/* Event Id of the record */
+-	entry->event_id = tep_data_type(kshark_ctx->pevent, record);
+-
+-	/*
+-	 * Is visible mask. This default value means that the entry
+-	 * is visible everywhere.
+-	 */
+-	entry->visible = 0xFF;
+-
+-	/* Process Id of the record */
+-	entry->pid = tep_data_pid(kshark_ctx->pevent, record);
+-}
+-
+-/** Prior time offset of the "missed_events" entry. */
+-#define ME_ENTRY_TIME_SHIFT	10
+-
+-static void missed_events_action(struct kshark_context *kshark_ctx,
+-				 struct tep_record *record,
+-				 struct kshark_entry *entry)
+-{
+-	/*
+-	 * Use the offset field of the entry to store the number of missed
+-	 * events.
+-	 */
+-	entry->offset = record->missed_events;
+-
+-	entry->cpu = record->cpu;
+-
+-	/*
+-	 * Position the "missed_events" entry a bit before (in time)
+-	 * the original record.
+-	 */
+-	entry->ts = record->ts - ME_ENTRY_TIME_SHIFT;
+-
+-	/* All custom entries must have negative event Identifiers. */
+-	entry->event_id = KS_EVENT_OVERFLOW;
+-
+-	entry->visible = 0xFF;
+-
+-	entry->pid = tep_data_pid(kshark_ctx->pevent, record);
+-}
+-
+-static const char* missed_events_dump(struct kshark_context *kshark_ctx,
+-				      const struct kshark_entry *entry,
+-				      bool get_info)
+-{
+-	int size = 0;
+-	static char *buffer;
+-
+-	if (get_info)
+-		size = asprintf(&buffer, "missed_events=%i", (int) entry->offset);
+-	else
+-		size = asprintf(&buffer, "missed_events");
+-	if (size > 0)
+-		return buffer;
+-
+-	return NULL;
+-}
+-
+-/**
+- * rec_list is used to pass the data to the load functions.
+- * The rec_list will contain the list of entries from the source,
+- * and will be a link list of per CPU entries.
+- */
+-struct rec_list {
+-	union {
+-		/* Used by kshark_load_data_records */
+-		struct {
+-			/** next pointer, matches entry->next */
+-			struct rec_list		*next;
+-			/** pointer to the raw record data */
+-			struct tep_record	*rec;
+-		};
+-		/** entry - Used for kshark_load_data_entries() */
+-		struct kshark_entry		entry;
+-	};
+-};
+-
+-/**
+- * rec_type defines what type of rec_list is being used.
+- */
+-enum rec_type {
+-	REC_RECORD,
+-	REC_ENTRY,
+-};
+-
+-static void free_rec_list(struct rec_list **rec_list, int n_cpus,
+-			  enum rec_type type)
+-{
+-	struct rec_list *temp_rec;
+-	int cpu;
+-
+-	for (cpu = 0; cpu < n_cpus; ++cpu) {
+-		while (rec_list[cpu]) {
+-			temp_rec = rec_list[cpu];
+-			rec_list[cpu] = temp_rec->next;
+-			if (type == REC_RECORD)
+-				free_record(temp_rec->rec);
+-			free(temp_rec);
+-		}
+-	}
+-	free(rec_list);
+-}
+-
+-static ssize_t get_records(struct kshark_context *kshark_ctx,
+-			   struct rec_list ***rec_list, enum rec_type type)
+-{
+-	struct kshark_event_handler *evt_handler;
+-	struct tep_event_filter *adv_filter;
+-	struct kshark_task_list *task;
+-	struct tep_record *rec;
+-	struct rec_list **temp_next;
+-	struct rec_list **cpu_list;
+-	struct rec_list *temp_rec;
+-	size_t count, total = 0;
+-	int n_cpus;
+-	int pid;
+-	int cpu;
+-
+-	n_cpus = tracecmd_cpus(kshark_ctx->handle);
+-	cpu_list = calloc(n_cpus, sizeof(*cpu_list));
+-	if (!cpu_list)
+-		return -ENOMEM;
+-
+-	/* Just to shorten the name */
+-	if (type == REC_ENTRY)
+-		adv_filter = kshark_ctx->advanced_event_filter;
+-
+-	for (cpu = 0; cpu < n_cpus; ++cpu) {
+-		count = 0;
+-		cpu_list[cpu] = NULL;
+-		temp_next = &cpu_list[cpu];
+-
+-		rec = tracecmd_read_cpu_first(kshark_ctx->handle, cpu);
+-		while (rec) {
+-			*temp_next = temp_rec = calloc(1, sizeof(*temp_rec));
+-			if (!temp_rec)
+-				goto fail;
+-
+-			temp_rec->next = NULL;
+-
+-			switch (type) {
+-			case REC_RECORD:
+-				temp_rec->rec = rec;
+-				pid = tep_data_pid(kshark_ctx->pevent, rec);
+-				break;
+-			case REC_ENTRY: {
+-				struct kshark_entry *entry;
+-				int ret;
+-
+-				if (rec->missed_events) {
+-					/*
+-					 * Insert a custom "missed_events" entry just
+-					 * befor this record.
+-					 */
+-					entry = &temp_rec->entry;
+-					missed_events_action(kshark_ctx, rec, entry);
+-
+-					temp_next = &temp_rec->next;
+-					++count;
+-
+-					/* Now allocate a new rec_list node and comtinue. */
+-					*temp_next = temp_rec = calloc(1, sizeof(*temp_rec));
+-				}
+-
+-				entry = &temp_rec->entry;
+-				kshark_set_entry_values(kshark_ctx, rec, entry);
+-
+-				/* Execute all plugin-provided actions (if any). */
+-				evt_handler = kshark_ctx->event_handlers;
+-				while ((evt_handler = kshark_find_event_handler(evt_handler,
+-										entry->event_id))) {
+-					evt_handler->event_func(kshark_ctx, rec, entry);
+-					evt_handler = evt_handler->next;
+-					entry->visible &= ~KS_PLUGIN_UNTOUCHED_MASK;
+-				}
+-
+-				pid = entry->pid;
+-				/* Apply event filtering. */
+-				ret = FILTER_MATCH;
+-				if (adv_filter->filters)
+-					ret = tep_filter_match(adv_filter, rec);
+-
+-				if (!kshark_show_event(kshark_ctx, entry->event_id) ||
+-				    ret != FILTER_MATCH) {
+-					unset_event_filter_flag(kshark_ctx, entry);
+-				}
+-
+-				/* Apply CPU filtering. */
+-				if (!kshark_show_cpu(kshark_ctx, entry->pid)) {
+-					entry->visible &= ~kshark_ctx->filter_mask;
+-				}
+-
+-				/* Apply task filtering. */
+-				if (!kshark_show_task(kshark_ctx, entry->pid)) {
+-					entry->visible &= ~kshark_ctx->filter_mask;
+-				}
+-				free_record(rec);
+-				break;
+-			} /* REC_ENTRY */
+-			}
+-
+-			task = kshark_add_task(kshark_ctx, pid);
+-			if (!task) {
+-				free_record(rec);
+-				goto fail;
+-			}
+-
+-			temp_next = &temp_rec->next;
+-
+-			++count;
+-			rec = tracecmd_read_data(kshark_ctx->handle, cpu);
+-		}
+-
+-		total += count;
+-	}
+-
+-	*rec_list = cpu_list;
+-	return total;
+-
+- fail:
+-	free_rec_list(cpu_list, n_cpus, type);
+-	return -ENOMEM;
+-}
+-
+-static int pick_next_cpu(struct rec_list **rec_list, int n_cpus,
+-			 enum rec_type type)
+-{
+-	uint64_t ts = 0;
+-	uint64_t rec_ts;
+-	int next_cpu = -1;
+-	int cpu;
+-
+-	for (cpu = 0; cpu < n_cpus; ++cpu) {
+-		if (!rec_list[cpu])
+-			continue;
+-
+-		switch (type) {
+-		case REC_RECORD:
+-			rec_ts = rec_list[cpu]->rec->ts;
+-			break;
+-		case REC_ENTRY:
+-			rec_ts = rec_list[cpu]->entry.ts;
+-			break;
+-		}
+-		if (!ts || rec_ts < ts) {
+-			ts = rec_ts;
+-			next_cpu = cpu;
+-		}
+-	}
+-
+-	return next_cpu;
+-}
+-
+-/**
+- * @brief Load the content of the trace data file into an array of
+- *	  kshark_entries. This function provides an abstraction of the
+- *	  entries from the raw data that is read, however the "latency"
+- *	  and the "info" fields can be accessed only via the offset
+- *	  into the file. This makes the access to these two fields much
+- *	  slower.
+- *	  If one or more filters are set, the "visible" fields of each entry
+- *	  is updated according to the criteria provided by the filters. The
+- *	  field "filter_mask" of the session's context is used to control the
+- *	  level of visibility/invisibility of the filtered entries.
+- *
+- * @param kshark_ctx: Input location for context pointer.
+- * @param data_rows: Output location for the trace data. The user is
+- *		     responsible for freeing the elements of the outputted
+- *		     array.
+- *
+- * @returns The size of the outputted data in the case of success, or a
+- *	    negative error code on failure.
+- */
+-ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+-				 struct kshark_entry ***data_rows)
+-{
+-	struct kshark_entry **rows;
+-	struct rec_list **rec_list;
+-	enum rec_type type = REC_ENTRY;
+-	ssize_t count, total = 0;
+-	int n_cpus;
+-
+-	if (*data_rows)
+-		free(*data_rows);
+-
+-	total = get_records(kshark_ctx, &rec_list, type);
+-	if (total < 0)
+-		goto fail;
+-
+-	n_cpus = tracecmd_cpus(kshark_ctx->handle);
+-
+-	rows = calloc(total, sizeof(struct kshark_entry *));
+-	if (!rows)
+-		goto fail_free;
+-
+-	for (count = 0; count < total; count++) {
+-		int next_cpu;
+-
+-		next_cpu = pick_next_cpu(rec_list, n_cpus, type);
+-
+-		if (next_cpu >= 0) {
+-			rows[count] = &rec_list[next_cpu]->entry;
+-			rec_list[next_cpu] = rec_list[next_cpu]->next;
+-		}
+-	}
+-
+-	free_rec_list(rec_list, n_cpus, type);
+-	*data_rows = rows;
+-	return total;
+-
+- fail_free:
+-	free_rec_list(rec_list, n_cpus, type);
+-
+- fail:
+-	fprintf(stderr, "Failed to allocate memory during data loading.\n");
+-	return -ENOMEM;
+-}
+-
+-/**
+- * @brief Load the content of the trace data file into an array of
+- *	  tep_records. Use this function only if you need fast access
+- *	  to all fields of the record.
+- *
+- * @param kshark_ctx: Input location for the session context pointer.
+- * @param data_rows: Output location for the trace data. Use free_record()
+- *	 	     to free the elements of the outputted array.
+- *
+- * @returns The size of the outputted data in the case of success, or a
+- *	    negative error code on failure.
+- */
+-ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
+-				 struct tep_record ***data_rows)
+-{
+-	struct tep_record **rows;
+-	struct tep_record *rec;
+-	struct rec_list **rec_list;
+-	struct rec_list *temp_rec;
+-	enum rec_type type = REC_RECORD;
+-	ssize_t count, total = 0;
+-	int n_cpus;
+-
+-	total = get_records(kshark_ctx, &rec_list, type);
+-	if (total < 0)
+-		goto fail;
+-
+-	n_cpus = tracecmd_cpus(kshark_ctx->handle);
+-
+-	rows = calloc(total, sizeof(struct tep_record *));
+-	if (!rows)
+-		goto fail_free;
+-
+-	for (count = 0; count < total; count++) {
+-		int next_cpu;
+-
+-		next_cpu = pick_next_cpu(rec_list, n_cpus, type);
+-
+-		if (next_cpu >= 0) {
+-			rec = rec_list[next_cpu]->rec;
+-			rows[count] = rec;
+-
+-			temp_rec = rec_list[next_cpu];
+-			rec_list[next_cpu] = rec_list[next_cpu]->next;
+-			free(temp_rec);
+-			/* The record is still referenced in rows */
+-		}
+-	}
+-
+-	/* There should be no records left in rec_list */
+-	free_rec_list(rec_list, n_cpus, type);
+-	*data_rows = rows;
+-	return total;
+-
+- fail_free:
+-	free_rec_list(rec_list, n_cpus, type);
+-
+- fail:
+-	fprintf(stderr, "Failed to allocate memory during data loading.\n");
+-	return -ENOMEM;
+-}
+-
+ static inline void free_ptr(void *ptr)
+ {
+ 	if (ptr)
+@@ -1216,294 +773,6 @@ bool kshark_data_matrix_alloc(size_t n_rows, int16_t **cpu_array,
+ 	return false;
+ }
+ 
+-static const char *get_latency(struct tep_handle *pe,
+-			       struct tep_record *record)
+-{
+-	if (!record)
+-		return NULL;
+-
+-	trace_seq_reset(&seq);
+-	tep_print_event(pe, &seq, record, "%s", TEP_PRINT_LATENCY);
+-	return seq.buffer;
+-}
+-
+-static const char *get_info(struct tep_handle *pe,
+-				   struct tep_record *record,
+-				   struct tep_event *event)
+-{
+-	char *pos;
+-
+-	if (!record || !event)
+-		return NULL;
+-
+-	trace_seq_reset(&seq);
+-	tep_print_event(pe, &seq, record, "%s", TEP_PRINT_INFO);
+-
+-	/*
+-	 * The event info string contains a trailing newline.
+-	 * Remove this newline.
+-	 */
+-	if ((pos = strchr(seq.buffer, '\n')) != NULL)
+-		*pos = '\0';
+-
+-	return seq.buffer;
+-}
+-
+-/**
+- * @brief This function allows for an easy access to the original value of the
+- *	  Process Id as recorded in the tep_record object. The record is read
+- *	  from the file only in the case of an entry being touched by a plugin.
+- *	  Be aware that using the kshark_get_X_easy functions can be
+- *	  inefficient if you need an access to more than one of the data fields
+- *	  of the record.
+- *
+- * @param entry: Input location for the KernelShark entry.
+- *
+- * @returns The original value of the Process Id as recorded in the
+- *	    tep_record object on success, otherwise negative error code.
+- */
+-int kshark_get_pid_easy(struct kshark_entry *entry)
+-{
+-	struct kshark_context *kshark_ctx = NULL;
+-	struct tep_record *data;
+-	int pid;
+-
+-	if (!kshark_instance(&kshark_ctx))
+-		return -ENODEV;
+-
+-	if (entry->visible & KS_PLUGIN_UNTOUCHED_MASK) {
+-		pid = entry->pid;
+-	} else {
+-		/*
+-		 * The entry has been touched by a plugin callback function.
+-		 * Because of this we do not trust the value of "entry->pid".
+-		 *
+-		 * Currently the data reading operations are not thread-safe.
+-		 * Use a mutex to protect the access.
+-		 */
+-		pthread_mutex_lock(&kshark_ctx->input_mutex);
+-
+-		data = tracecmd_read_at(kshark_ctx->handle, entry->offset,
+-					NULL);
+-		pid = tep_data_pid(kshark_ctx->pevent, data);
+-		free_record(data);
+-
+-		pthread_mutex_unlock(&kshark_ctx->input_mutex);
+-	}
+-
+-	return pid;
+-}
+-
+-/**
+- * @brief This function allows for an easy access to the original value of the
+- *	  Task name as recorded in the tep_record object. The record is read
+- *	  from the file only in the case of an entry being touched by a plugin.
+- *	  Be aware that using the kshark_get_X_easy functions can be
+- *	  inefficient if you need an access to more than one of the data fields
+- *	  of the record.
+- *
+- * @param entry: Input location for the KernelShark entry.
+- *
+- * @returns The original name of the task, retrieved from the Process Id
+- *	    recorded in the tep_record object on success, otherwise NULL.
+- */
+-const char *kshark_get_task_easy(struct kshark_entry *entry)
+-{
+-	struct kshark_context *kshark_ctx = NULL;
+-	int pid = kshark_get_pid_easy(entry);
+-
+-	if (pid < 0)
+-		return NULL;
+-
+-	kshark_instance(&kshark_ctx);
+-	return tep_data_comm_from_pid(kshark_ctx->pevent, pid);
+-}
+-
+-/**
+- * @brief This function allows for an easy access to the latency information
+- *	  recorded in the tep_record object. The record is read from the file
+- *	  using the offset field of kshark_entry. Be aware that using the
+- *	  kshark_get_X_easy functions can be inefficient if you need an access
+- *	  to more than one of the data fields of the record.
+- *
+- * @param entry: Input location for the KernelShark entry.
+- *
+- * @returns On success the function returns a string showing the latency
+- *	    information, coded into 5 fields:
+- *	    interrupts disabled, need rescheduling, hard/soft interrupt,
+- *	    preempt count and lock depth. On failure it returns NULL.
+- */
+-const char *kshark_get_latency_easy(struct kshark_entry *entry)
+-{
+-	struct kshark_context *kshark_ctx = NULL;
+-	struct tep_record *data;
+-	const char *lat;
+-
+-	if (!kshark_instance(&kshark_ctx))
+-		return NULL;
+-
+-	if (entry->event_id < 0)
+-		return NULL;
+-
+-	/*
+-	 * Currently the data reading operations are not thread-safe.
+-	 * Use a mutex to protect the access.
+-	 */
+-	pthread_mutex_lock(&kshark_ctx->input_mutex);
+-
+-	data = tracecmd_read_at(kshark_ctx->handle, entry->offset, NULL);
+-	lat = get_latency(kshark_ctx->pevent, data);
+-	free_record(data);
+-
+-	pthread_mutex_unlock(&kshark_ctx->input_mutex);
+-
+-	return lat;
+-}
+-
+-/**
+- * @brief This function allows for an easy access to the original value of the
+- *	  Event Id as recorded in the tep_record object. The record is read
+- *	  from the file only in the case of an entry being touched by a plugin.
+- *	  Be aware that using the kshark_get_X_easy functions can be
+- *	  inefficient if you need an access to more than one of the data fields
+- *	  of the record.
+- *
+- * @param entry: Input location for the KernelShark entry.
+- *
+- * @returns The original value of the Event Id as recorded in the
+- *	    tep_record object on success, otherwise negative error code.
+- */
+-int kshark_get_event_id_easy(struct kshark_entry *entry)
+-{
+-	struct kshark_context *kshark_ctx = NULL;
+-	struct tep_record *data;
+-	int event_id;
+-
+-	if (!kshark_instance(&kshark_ctx))
+-		return -ENODEV;
+-
+-	if (entry->visible & KS_PLUGIN_UNTOUCHED_MASK) {
+-		event_id = entry->event_id;
+-	} else {
+-		/*
+-		 * The entry has been touched by a plugin callback function.
+-		 * Because of this we do not trust the value of
+-		 * "entry->event_id".
+-		 *
+-		 * Currently the data reading operations are not thread-safe.
+-		 * Use a mutex to protect the access.
+-		 */
+-		pthread_mutex_lock(&kshark_ctx->input_mutex);
+-
+-		data = tracecmd_read_at(kshark_ctx->handle, entry->offset,
+-					NULL);
+-		event_id = tep_data_type(kshark_ctx->pevent, data);
+-		free_record(data);
+-
+-		pthread_mutex_unlock(&kshark_ctx->input_mutex);
+-	}
+-
+-	return (event_id == -1)? -EFAULT : event_id;
+-}
+-
+-/**
+- * @brief This function allows for an easy access to the original name of the
+- *	  trace event as recorded in the tep_record object. The record is read
+- *	  from the file only in the case of an entry being touched by a plugin.
+- *	  Be aware that using the kshark_get_X_easy functions can be
+- *	  inefficient if you need an access to more than one of the data fields
+- *	  of the record.
+- *
+- * @param entry: Input location for the KernelShark entry.
+- *
+- * @returns The mane of the trace event recorded in the tep_record object on
+- *	    success, otherwise "[UNKNOWN EVENT]" or NULL.
+- */
+-const char *kshark_get_event_name_easy(struct kshark_entry *entry)
+-{
+-	struct kshark_context *kshark_ctx = NULL;
+-	struct tep_event *event;
+-
+-	int event_id = kshark_get_event_id_easy(entry);
+-	if (event_id == -EFAULT)
+-		return NULL;
+-
+-	kshark_instance(&kshark_ctx);
+-
+-	if (event_id < 0) {
+-		switch (event_id) {
+-		case KS_EVENT_OVERFLOW:
+-			return missed_events_dump(kshark_ctx, entry, false);
+-		default:
+-			return NULL;
+-		}
+-	}
+-
+-	/*
+-	 * Currently the data reading operations are not thread-safe.
+-	 * Use a mutex to protect the access.
+-	 */
+-	pthread_mutex_lock(&kshark_ctx->input_mutex);
+-	event = tep_find_event(kshark_ctx->pevent, event_id);
+-	pthread_mutex_unlock(&kshark_ctx->input_mutex);
+-
+-	if (event)
+-		return event->name;
+-
+-	return "[UNKNOWN EVENT]";
+-}
+-
+-/**
+- * @brief This function allows for an easy access to the tep_record's info
+- *	  streang. The record is read from the file using the offset field of
+- *	  kshark_entry. Be aware that using the kshark_get_X_easy functions can
+- *	  be inefficient if you need an access to more than one of the data
+- *	  fields of the record.
+- *
+- * @param entry: Input location for the KernelShark entry.
+- *
+- * @returns A string showing the data output of the trace event on success,
+- *	    otherwise NULL.
+- */
+-const char *kshark_get_info_easy(struct kshark_entry *entry)
+-{
+-	struct kshark_context *kshark_ctx = NULL;
+-	struct tep_event *event;
+-	struct tep_record *data;
+-	const char *info = NULL;
+-	int event_id;
+-
+-	if (!kshark_instance(&kshark_ctx))
+-		return NULL;
+-
+-	if (entry->event_id < 0) {
+-		switch (entry->event_id) {
+-		case KS_EVENT_OVERFLOW:
+-			return missed_events_dump(kshark_ctx, entry, true);
+-		default:
+-			return NULL;
+-		}
+-	}
+-
+-	/*
+-	 * Currently the data reading operations are not thread-safe.
+-	 * Use a mutex to protect the access.
+-	 */
+-	pthread_mutex_lock(&kshark_ctx->input_mutex);
+-
+-	data = tracecmd_read_at(kshark_ctx->handle, entry->offset, NULL);
+-	event_id = tep_data_type(kshark_ctx->pevent, data);
+-	event = tep_find_event(kshark_ctx->pevent, event_id);
+-	if (event)
+-		info = get_info(kshark_ctx->pevent, data, event);
+-
+-	free_record(data);
+-
+-	pthread_mutex_unlock(&kshark_ctx->input_mutex);
+-
+-	return info;
+-}
+-
+ /**
+  * @brief Convert the timestamp of the trace record (nanosecond precision) into
+  *	  seconds and microseconds.
+@@ -1520,44 +789,6 @@ void kshark_convert_nano(uint64_t time, uint64_t *sec, uint64_t *usec)
+ 	*usec = (time - s * 1000000000ULL) / 1000;
+ }
+ 
+-/**
+- * @brief Dump into a string the content a custom entry. The function allocates
+- *	  a null terminated string and returns a pointer to this string.
+- *
+- * @param kshark_ctx: Input location for the session context pointer.
+- * @param entry: A Kernel Shark entry to be printed.
+- * @param info_func:
+- *
+- * @returns The returned string contains a semicolon-separated list of data
+- *	    fields. The user has to free the returned string.
+- */
+-char* kshark_dump_custom_entry(struct kshark_context *kshark_ctx,
+-			       const struct kshark_entry *entry,
+-			       kshark_custom_info_func info_func)
+-{
+-	const char *event_name, *task, *info;
+-	char *entry_str;
+-	int size = 0;
+-
+-	task = tep_data_comm_from_pid(kshark_ctx->pevent, entry->pid);
+-	event_name = info_func(kshark_ctx, entry, false);
+-	info = info_func(kshark_ctx, entry, true);
+-
+-	size = asprintf(&entry_str, "%" PRIu64 "; %s-%i; CPU %i; ; %s; %s",
+-			entry->ts,
+-			task,
+-			entry->pid,
+-			entry->cpu,
+-			event_name,
+-			info);
+-
+-	if (size > 0)
+-		return entry_str;
+-
+-	return NULL;
+-}
+-
+-
+ /**
+  * @brief Binary search inside a time-sorted array of kshark_entries.
+  *
+@@ -1594,42 +825,6 @@ ssize_t kshark_find_entry_by_time(uint64_t time,
+ 	return h;
+ }
+ 
+-/**
+- * @brief Binary search inside a time-sorted array of tep_records.
+- *
+- * @param time: The value of time to search for.
+- * @param data: Input location for the trace data.
+- * @param l: Array index specifying the lower edge of the range to search in.
+- * @param h: Array index specifying the upper edge of the range to search in.
+- *
+- * @returns On success, the first tep_record inside the range, having a
+-	    timestamp equal or bigger than "time".
+-	    If all entries inside the range have timestamps greater than "time"
+-	    the function returns BSEARCH_ALL_GREATER (negative value).
+-	    If all entries inside the range have timestamps smaller than "time"
+-	    the function returns BSEARCH_ALL_SMALLER (negative value).
+- */
+-ssize_t kshark_find_record_by_time(uint64_t time,
+-				   struct tep_record **data,
+-				   size_t l, size_t h)
+-{
+-	size_t mid;
+-
+-	if (data[l]->ts > time)
+-		return BSEARCH_ALL_GREATER;
+-
+-	if (data[h]->ts < time)
+-		return BSEARCH_ALL_SMALLER;
+-
+-	/*
+-	 * After executing the BSEARCH macro, "l" will be the index of the last
+-	 * record having timestamp < time and "h" will be the index of the
+-	 * first record having timestamp >= time.
+-	 */
+-	BSEARCH(h, l, data[mid]->ts < time);
+-	return h;
+-}
+-
+ /**
+  * @brief Simple Pid matching function to be user for data requests.
+  *
+diff --git a/src/libkshark.h b/src/libkshark.h
+index ef48d94b..54c71a77 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -6,7 +6,7 @@
+ 
+  /**
+  *  @file    libkshark.h
+- *  @brief   API for processing of FTRACE (trace-cmd) data.
++ *  @brief   API for processing of tracing data.
+  */
+ 
+ #ifndef _LIB_KSHARK_H
+@@ -27,8 +27,6 @@ extern "C" {
+ // trace-cmd
+ #include "trace-cmd/trace-cmd.h"
+ #include "trace-cmd/trace-filter-hash.h"
+-#include "traceevent/event-parse.h"
+-#include "tracefs/tracefs.h"
+ 
+ // KernelShark
+ #include "libkshark-plugin.h"
+@@ -325,19 +323,6 @@ struct kshark_data_stream {
+ /** Hard-coded maximum number of data stream. */
+ #define KS_MAX_NUM_STREAMS	127
+ 
+-/** Size of the task's hash table. */
+-#define KS_TASK_HASH_SHIFT 16
+-#define KS_TASK_HASH_SIZE (1 << KS_TASK_HASH_SHIFT)
+-
+-/** Linked list of tasks. */
+-struct kshark_task_list {
+-	/** Pointer to the next task's PID. */
+-	struct kshark_task_list	*next;
+-
+-	/** PID of a task. */
+-	int			 pid;
+-};
+-
+ /** Structure representing a kshark session. */
+ struct kshark_context {
+ 	/** Array of data stream descriptors. */
+@@ -346,15 +331,6 @@ struct kshark_context {
+ 	/** The number of data streams. */
+ 	int				n_streams;
+ 
+-	/** Input handle for the trace data file. */
+-	struct tracecmd_input	*handle;
+-
+-	/** Page event used to parse the page. */
+-	struct tep_handle	*pevent;
+-
+-	/** Hash table of task PIDs. */
+-	struct kshark_task_list	*tasks[KS_TASK_HASH_SIZE];
+-
+ 	/** A mutex, used to protect the access to the input file. */
+ 	pthread_mutex_t		input_mutex;
+ 
+@@ -415,19 +391,6 @@ kshark_get_stream_from_entry(const struct kshark_entry *entry);
+ 
+ int *kshark_all_streams(struct kshark_context *kshark_ctx);
+ 
+-ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+-				 struct kshark_entry ***data_rows);
+-
+-ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
+-				 struct tep_record ***data_rows);
+-
+-size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
+-			       uint64_t **offset_array,
+-			       uint16_t **cpu_array,
+-			       uint64_t **ts_array,
+-			       uint16_t **pid_array,
+-			       int **event_array);
+-
+ ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int sd,
+ 			     int **pids);
+ 
+@@ -441,18 +404,6 @@ char *kshark_comm_from_pid(int sd, int pid);
+ 
+ char *kshark_event_from_id(int sd, int event_id);
+ 
+-int kshark_get_pid_easy(struct kshark_entry *entry);
+-
+-const char *kshark_get_task_easy(struct kshark_entry *entry);
+-
+-const char *kshark_get_latency_easy(struct kshark_entry *entry);
+-
+-int kshark_get_event_id_easy(struct kshark_entry *entry);
+-
+-const char *kshark_get_event_name_easy(struct kshark_entry *entry);
+-
+-const char *kshark_get_info_easy(struct kshark_entry *entry);
+-
+ void kshark_convert_nano(uint64_t time, uint64_t *sec, uint64_t *usec);
+ 
+ static inline int kshark_get_pid(const struct kshark_entry *entry)
+@@ -617,18 +568,6 @@ static inline ssize_t kshark_load_matrix(struct kshark_context *kshark_ctx,
+ 								 ts_array);
+ }
+ 
+-/**
+- * Custom entry info function type. To be user for dumping info for custom
+- * KernelShark entryes.
+- */
+-typedef const char *(kshark_custom_info_func)(struct kshark_context *,
+-					      const struct kshark_entry *,
+-					      bool);
+-
+-char* kshark_dump_custom_entry(struct kshark_context *kshark_ctx,
+-			       const struct kshark_entry *entry,
+-			       kshark_custom_info_func info_func);
+-
+ /** Bit masks used to control the visibility of the entry after filtering. */
+ enum kshark_filter_masks {
+ 	/**
+@@ -751,10 +690,6 @@ ssize_t kshark_find_entry_by_time(uint64_t time,
+ 				  struct kshark_entry **data_rows,
+ 				  size_t l, size_t h);
+ 
+-ssize_t kshark_find_record_by_time(uint64_t time,
+-				   struct tep_record **data_rows,
+-				   size_t l, size_t h);
+-
+ bool kshark_match_pid(struct kshark_context *kshark_ctx,
+ 		      struct kshark_entry *e, int pid);
+ 
+@@ -1039,16 +974,6 @@ bool kshark_export_adv_filters(struct kshark_context *kshark_ctx,
+ bool kshark_import_adv_filters(struct kshark_context *kshark_ctx,
+ 			       struct kshark_config_doc *conf);
+ 
+-bool kshark_export_event_filter(struct tep_handle *pevent,
+-				struct tracecmd_filter_id *filter,
+-				const char *filter_name,
+-				struct kshark_config_doc *conf);
+-
+-int kshark_import_event_filter(struct tep_handle *pevent,
+-			       struct tracecmd_filter_id *filter,
+-			       const char *filter_name,
+-			       struct kshark_config_doc *conf);
+-
+ bool kshark_export_user_mask(struct kshark_context *kshark_ctx,
+ 			     struct kshark_config_doc **conf);
+ 
 -- 
 2.25.1
 
