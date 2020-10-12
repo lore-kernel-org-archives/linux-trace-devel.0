@@ -2,119 +2,122 @@ Return-Path: <SRS0=H9Ya=DT=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D09DC433E7
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 10:36:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A8A5C433E7
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 12:30:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C69AA208FE
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 10:36:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 483F3208D5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 12:30:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IQAMJVeC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IsLiNyue"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387573AbgJLKgK (ORCPT
+        id S2388435AbgJLMaZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 12 Oct 2020 06:36:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53144 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387536AbgJLKgK (ORCPT
+        Mon, 12 Oct 2020 08:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388334AbgJLMaZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:36:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602498968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e7Xk0qyHOBfk4sUAOvT0bJnN0sVSulkImHrJ66Dlx2k=;
-        b=IQAMJVeC4LiTnQVPPSvFY5/k5YKxp3p5xpS+Vy1SUCl9xeLjjAAjAD8dW9Ms3ysIAqLwRq
-        RtPws8Khp2+L0qNkwtSyOJHPjua9xnsBzfHodSwEuC+AoxGFGrxmA77ulB1DUD8JBq1LW1
-        i/0NJQ7HRo8p1YuY3RiMosbvR5AaAMg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-91-bfn4AL3sOBSyofzYolpmJQ-1; Mon, 12 Oct 2020 06:36:05 -0400
-X-MC-Unique: bfn4AL3sOBSyofzYolpmJQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A5061879514;
-        Mon, 12 Oct 2020 10:36:02 +0000 (UTC)
-Received: from krava (unknown [10.40.195.81])
-        by smtp.corp.redhat.com (Postfix) with SMTP id A3C9A1A8EC;
-        Mon, 12 Oct 2020 10:35:58 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 12:35:57 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Zamir SUN <sztsian@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "Ziqian SUN (Zamir)" <zsun@redhat.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
-        Clark Williams <williams@redhat.com>, powertop@lists.01.org,
-        Al Stone <ahs3@debian.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [ANNOUNCE] libtraceevent.git
-Message-ID: <20201012103557.GG1099489@krava>
-References: <20201007130750.49349844@gandalf.local.home>
- <20201012101208.GF1099489@krava>
- <CAHnb8o4tPPGEP1u8LUcip__XrRKT5U-hrAQCry3JJk9SKKqqag@mail.gmail.com>
+        Mon, 12 Oct 2020 08:30:25 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3122FC0613D0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 05:30:24 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id b193so13202118pga.6
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 05:30:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tNeAJUdIVMTAla6D+E2Zq7NH5DEHNWqtLJ6ArsRCFgA=;
+        b=IsLiNyueQg3M7jajuJZ+ETbF5UM5A8YcLLIbp0NKtLR4mMOlc24mKXoJW7IdK/l0sm
+         cZL9vZ5U+s6etpaVzGStCxe0LAxDJZf1FZNHnTpXz6VBfP8omTeIhxSDUIs9gdxP8Pvk
+         JvikQAWsKRNf+5y8HM9JzPWtdPqrE4Hv7AbMQxpI1rVXukxSuoNdpNREeRAi7MVBLN6u
+         26VZ88/dgySvCC/0v4Ml9tcvChRd2E2eiAbSymgKQR+7DEDVL7wgW+5QHNo+b2UzVH6e
+         DARcu5xgG92zKLAuQjkujkUrkeO63Z1ikj10fO8/NoN0fLc3xEd89IXaZRdf3qD+GfWa
+         yjWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tNeAJUdIVMTAla6D+E2Zq7NH5DEHNWqtLJ6ArsRCFgA=;
+        b=B07TkS9RoE+M1J8l9HleG8ypX32gASgdqrEwULCv/homh/hDVqM8F9WQVAnfdHaDXF
+         ePK2eQG3c//ZgQETn6cQBw2Kp59T8osfaMPOAu7MD66LaF1PIz9LHb4Yf6P9Zsi+JtnU
+         OVOjM/8aYqbV71Y6ZtqZcQ4xxWhOIe3xEpWb5rjeKgZRMY5sj4eXS2vibot6aT0ZCQ/w
+         oLOSsD4HXjrj/qJqvCK6VUIjuRC1sG10jTo0cZyilRRC/mj+pZMYU1tLGuO5910WXYEQ
+         ACveaZgWIdk+JWIvCeraLH59/9A7r9jZ4bkAuo6XmU2907RjeDhRwY+8pYEpNPKfHNGi
+         +dIg==
+X-Gm-Message-State: AOAM532NJjGlBEwcvlotzAQjUlZ5xEGEmjulxRPhMFpaCS8/AL9ncXyg
+        CfDi3XOLe10Bv1QBb+9j9Kbeh6MmY7OyARFwl6k=
+X-Google-Smtp-Source: ABdhPJxwLRmQ0ZoTKTsZChLDubtzqaXhgbrekT9gyd8pXl6iWzKv2WxrnDfBi5w/Fh76eixok9G9jA==
+X-Received: by 2002:a17:90a:7f8b:: with SMTP id m11mr19679086pjl.121.1602505822992;
+        Mon, 12 Oct 2020 05:30:22 -0700 (PDT)
+Received: from i7.zsun.org (h150-66-46-238.ablenetvps.ne.jp. [150.66.46.238])
+        by smtp.gmail.com with ESMTPSA id s8sm19249660pjl.41.2020.10.12.05.30.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 05:30:22 -0700 (PDT)
+Subject: Re: [PATCH] Documentation: Fix include level of Makefile scripts
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     tz.stoyanov@gmail.com, linux-trace-devel@vger.kernel.org
+References: <20201008071858.96786-1-sztsian@gmail.com>
+ <7897620c-3039-5e4f-09d9-41606673fa63@gmail.com>
+ <20201009105441.3c92e560@gandalf.local.home>
+From:   Zamir SUN <sztsian@gmail.com>
+Message-ID: <4116a10f-d3f8-25a0-29fb-62835b40e475@gmail.com>
+Date:   Mon, 12 Oct 2020 20:30:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHnb8o4tPPGEP1u8LUcip__XrRKT5U-hrAQCry3JJk9SKKqqag@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20201009105441.3c92e560@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 06:19:14PM +0800, Zamir SUN wrote:
-> On Mon, Oct 12, 2020 at 6:12 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Wed, Oct 07, 2020 at 01:07:50PM -0400, Steven Rostedt wrote:
-> > > I split out tools/lib/traceevent from the kernel tree using "git subtree",
-> > > which recreates all the commits of a directory and makes that directory a
-> > > stand alone. I then updated the Makefiles, and copied over some of the
-> > > header files used to build the library. I pushed this up to:
-> > >
-> > >   https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
-> > >
-> > > My hope is that this will now be the source of all updates to the
-> > > libtraceevent library that can be used as a stand alone package that both
-> > > perf and tracecmd can use. I would also like powertop and rasdaemon to use
-> > > this as well.
-> >
-> > hi,
-> > I'm adding this as fedora package, is there a source arhive somewhere
-> > in git.kernel.org for libtraceevent that spec could download?
-> >
-> 
-> Hi Jiri,
-> 
-> I was also working on it before. My way to get the source code is to
-> manually generate the tarball like what trace-cmd did before.
-> 
-> See my copr
-> https://copr.fedorainfracloud.org/coprs/zsun/test/build/1699358/
-> And the spec
-> 
-> https://download.copr.fedorainfracloud.org/results/zsun/test/fedora-rawhide-x86_64/01699358-libtraceevent/libtraceevent.spec
-> 
-> I haven't have time to follow-up Steven's reply of Oct 9th about the
-> document compiling yet. If you are willing to work on it now maybe you
-> can start on top of mine. Otherwise I'll follow-up the packaging
-> later.
 
-we discussed on irc and Zamir will continue on this ;-)
-plz let me know if I can help with something
 
-thanks,
-jirka
+On 10/9/20 10:54 PM, Steven Rostedt wrote:
+> On Thu, 8 Oct 2020 15:30:08 +0800
+> Zamir SUN <sztsian@gmail.com> wrote:
+> 
+>> Note, this patch is for libtraceevent.
+>>
+>> And I think it makes more sense to port the missing
+>> scripts/utilities.mak by the maintainer rather than sending a patchset
+>> with lots of historical commits from kernel, so I did not include that
+>> part here.
+>>
+>> HTH.
+> 
+> Thanks!
+> 
+> I reverted the copy and brought over the history of the Makefiles, scripts
+> and include headers. I also included utilities.mak.
+> 
+> When this becomes something that can be installed as a package, I'll give
+> it an official tag: libtraceevent-v1.1.0
+> 
+Hi Steve,
 
+Thanks. As of the following commit, I can compile the library without 
+extra patch now.
+
+commit 5dd505f3aba255c5fbc2a6dbed57fcba51b400f6 (origin/libtraceevent, 
+origin/HEAD)
+Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Date:   Fri Oct 9 10:56:07 2020 -0400
+
+     lib traceevent: Remove trace-cmd references from Makefile
+
+
+-- 
+Zamir SUN
+Fedora user
+GPG : 1D86 6D4A 49CE 4BBD 72CF FCF5 D856 6E11 F2A0 525E
