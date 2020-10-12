@@ -8,65 +8,65 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0796FC43457
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5928C43467
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:04:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C67C720757
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:04:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C96320757
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 14:04:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLnwIwgg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qOkq6rE3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730983AbgJLOEp (ORCPT
+        id S2390919AbgJLOEr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 12 Oct 2020 10:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
+        Mon, 12 Oct 2020 10:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730967AbgJLNgG (ORCPT
+        with ESMTP id S1730953AbgJLNgE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:36:06 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E7BC0613D0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:06 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id s9so7131824wro.8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:05 -0700 (PDT)
+        Mon, 12 Oct 2020 09:36:04 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F634C0613D1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:04 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id j136so17576511wmj.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 12 Oct 2020 06:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OwtSLj7I8f/64psYLH3fd6P0TG/AuHXoRS4W45a7JkQ=;
-        b=hLnwIwggxCUQYZ4PL7ghA9XRxEuQRPJf/yrg9uF52RmGxiHD72qx+esM5U3fS+crYp
-         aqP57n/ekc0b/iZMdvDFs+Qn1Kz8egJgWS3Fhod4epXeEUSpbySUk04qNoCT/x83e81Q
-         cAH7M58TpDt9HMQbkM+gOHsVGT3yPV7oFA9rVf7J++ea05U/XEwq63bZPuICMtOYNw0A
-         2zKQF14dCy8A/QZ8tYSgCHKGyZ2I9EVl8qCFYL4fFsAH9vnGP6tYohi6GrHIs7u4UlMQ
-         rbJ0cnV25mgEvnxXD2IDRlcVVdOXfnNdt/Pqga5T356NaqbIBmiGWzSz5g2yBCsL8FUm
-         T1Wg==
+        bh=eoqAnrsjvwy1ZKKAHaVz6ED3inWdsijpE+tgXuw5Q/o=;
+        b=qOkq6rE3vIPxUzAuQ5W/Q5wEvNwTqc9lT+HCUG8P9hJ8lAyCP4M0DKoYrf/zA6JcVo
+         YFUOJSd+bJvwMlXi+epah64513TcwqiyC0PNvQZyHg1Btoohp0W4d1cRj/ONvDcWnENw
+         oCsAqD9kTEW10OY9/1ph0zFXbCaoEdBrg3FCJ+FKU5VbEI+99J7bf4d2HH0Z95GKILD4
+         FXf7Ff2uAAFhJpiKc21RvmhTHGLaGM2VrxyMn36l2RbANIrjiqA/Ps+eef7L/M0UOV2W
+         qswvW4PRxQzlrR0zXe/ZJSr1zdUPdIt6X6NdQ21ayPuKR8Li2BV70MRqYz0UceNyl65E
+         uFDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OwtSLj7I8f/64psYLH3fd6P0TG/AuHXoRS4W45a7JkQ=;
-        b=tYXeYbp3uVwmFkSLsgIvg0cuFlreshWrIZlc3F2RHsFSHzJEB1OwaMTg59NrYxa6tM
-         Nt0qy2dY5RJ4WuxRuG7WppSWC8m/EuviP69SQu/6hp8yc1gXPYPdv535cYdAQ0xwz/q7
-         OZxV1M75yrA+QLZa5+Balaycg7vQbPxrLIJjD+yF7BQOhjfAeTDSepexjbYZ80NrcwWb
-         iLgT1u3iM+ZbqUAccroEl0pH5udfEwzYhyDmCYekRTf5nfj2fLDZ8WcArO1d6u763jbU
-         9Y5EMz1udY/iHKJuoRkkP9AlG2lWvaRQ7blwuhhKXpP08/9DkWqfupZsKMMUFniaCvkS
-         xEZA==
-X-Gm-Message-State: AOAM531awF/xBDLIidp/AiBVQpxKGv0Pyx2dXJrcxPqf0BQ+kl6WyMFD
-        Cbc7Pjtyals4mEUDryeGhfE=
-X-Google-Smtp-Source: ABdhPJy11UuZNmj92KbpOdqF4A73MxYUpron6wuQDF6CYj9C5+KcLGjKJ9cJTvQ7xixB16BnnzZ/ow==
-X-Received: by 2002:adf:cd0c:: with SMTP id w12mr29529069wrm.305.1602509764598;
-        Mon, 12 Oct 2020 06:36:04 -0700 (PDT)
+        bh=eoqAnrsjvwy1ZKKAHaVz6ED3inWdsijpE+tgXuw5Q/o=;
+        b=YpLUAe9vueyqkyers1GFmZZaSm/REg3yD0MTnOt0DCV7Aw7d3+whA2JKlAd+HYZHqx
+         5F3nZGii+HjGM0sdaVgUbOPfb9eHqaKDeLVY1bH+Qemyf0FiBtH0HizbQYMkVLj19amc
+         +qAODCrafYrvmtDQuOtywFSLYUaddhWHBkHd86ePtYai1ShVfqrGeHnp46SL2GKacsgm
+         l5EFjrJmyT6WXW05QRrgoO6DNxVbiDjjiQHSBUAlKrshfZr9TtgCcbpkI9h3uCqHUBha
+         W3gY8pXQEYbdJ5k2fX9WN3M4cB9C4S87KaQr8bevKcVzqUMqXKBOz7iDZlDNRKaYmXoN
+         kS1A==
+X-Gm-Message-State: AOAM5303Qg0SZ5ndV36Z1JN1xLj3OfW8atsJ+2tftYaQLHMaL/BowlJo
+        +ed0HeVzH/q8CAb+6GFwvt0=
+X-Google-Smtp-Source: ABdhPJx5aqLNYGYyBhYH+i90siRDZWzuwPGizDfm5A9xsXdV8/0e93WRI0D2RgNE+3xK0rQz/mXepA==
+X-Received: by 2002:a05:600c:21d9:: with SMTP id x25mr10412027wmj.145.1602509762666;
+        Mon, 12 Oct 2020 06:36:02 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.93.41])
-        by smtp.gmail.com with ESMTPSA id k5sm23145388wmb.19.2020.10.12.06.36.03
+        by smtp.gmail.com with ESMTPSA id k5sm23145388wmb.19.2020.10.12.06.36.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 06:36:04 -0700 (PDT)
+        Mon, 12 Oct 2020 06:36:02 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 04/20] kernel-shark: Introduce Data streams
-Date:   Mon, 12 Oct 2020 16:35:07 +0300
-Message-Id: <20201012133523.469040-5-y.karadz@gmail.com>
+Subject: [PATCH v2 03/20] kernel-shark: Introduce libkshark-hash
+Date:   Mon, 12 Oct 2020 16:35:06 +0300
+Message-Id: <20201012133523.469040-4-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201012133523.469040-1-y.karadz@gmail.com>
 References: <20201012133523.469040-1-y.karadz@gmail.com>
@@ -76,228 +76,331 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-With the help of Data stream, KernelShark will be able to load and
-merge multiple trace files (streams). Each stream can have different
-plugins or filters, registered for it, which means that the raw trace
-data of the streams can have different formats, and will allow for a
-great degree of customization of the provided data visualization. In
-this patch we only provide the basic definitions. The actual integration
-of the Data streams into the C API of KernelShark will happen in the
-following patches.
+So far KernelShark have been using an implementation of a hash table
+from trace-cmd/include/trace-cmd/trace-filter-hash.h. However it turns
+that KernelShark is the only user of trace-filter-hash, which means
+that it make more sense to make this implementation of the hash table
+part of KernelShark. In this patch we adapt the original trace-cmd
+implementation and change the naming convention used.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark.h | 201 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 201 insertions(+)
+ src/CMakeLists.txt   |   1 +
+ src/libkshark-hash.c | 239 +++++++++++++++++++++++++++++++++++++++++++
+ src/libkshark.h      |  46 +++++++++
+ 3 files changed, 286 insertions(+)
+ create mode 100644 src/libkshark-hash.c
 
-diff --git a/src/libkshark.h b/src/libkshark.h
-index 0182cf6d..1165c512 100644
---- a/src/libkshark.h
-+++ b/src/libkshark.h
-@@ -118,6 +118,207 @@ void kshark_hash_id_free(struct kshark_hash_id *hash);
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 2e092b2e..39c4dcf0 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -2,6 +2,7 @@ message("\n src ...")
  
- int *kshark_hash_ids(struct kshark_hash_id *hash);
- 
-+struct kshark_data_stream;
+ message(STATUS "libkshark")
+ add_library(kshark SHARED libkshark.c
++                          libkshark-hash.c
+ #                           libkshark-model.c
+                           libkshark-plugin.c
+ #                           libkshark-configio.c
+diff --git a/src/libkshark-hash.c b/src/libkshark-hash.c
+new file mode 100644
+index 00000000..89c021ba
+--- /dev/null
++++ b/src/libkshark-hash.c
+@@ -0,0 +1,239 @@
++// SPDX-License-Identifier: LGPL-2.1
 +
-+/** A function type to be used to initialize the interface of the data stream. */
-+typedef int (*interface_init_func) (struct kshark_data_stream *,
-+				    const char *);
-+
-+/** A function type to be used to initialize the interface of the data stream. */
-+typedef int (*interface_close_func) (struct kshark_data_stream *,
-+				     const char *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef char *(*stream_get_str_func) (struct kshark_data_stream *,
-+				      const struct kshark_entry *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef const int (*stream_get_int_func) (struct kshark_data_stream *,
-+					  const struct kshark_entry *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef int (*stream_find_id_func) (struct kshark_data_stream *,
-+				    const char *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef int *(*stream_get_ids_func) (struct kshark_data_stream *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef int (*stream_get_names_func) (struct kshark_data_stream *,
-+				      const struct kshark_entry *,
-+				      char ***);
-+
-+/** Event field format identifier. */
-+typedef enum kshark_event_field_format {
-+	/** A field of unknown type. */
-+	KS_INVALIDE_FIELD,
-+
-+	/** Integer number */
-+	KS_INTEGER_FIELD,
-+
-+	/** Floating-point number */
-+	KS_FLOAT_FIELD
-+} kshark_event_field_format;
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef kshark_event_field_format
-+(*stream_event_field_type) (struct kshark_data_stream *,
-+			    const struct kshark_entry *,
-+			    const char *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef const int (*stream_read_event_field) (struct kshark_data_stream *,
-+					      const struct kshark_entry *,
-+					      const char *,
-+					      int64_t *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef const int (*stream_read_record_field) (struct kshark_data_stream *,
-+					       void *,
-+					       const char *,
-+					       int64_t *);
-+
-+struct kshark_context;
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef ssize_t (*load_entries_func) (struct kshark_data_stream *,
-+				      struct kshark_context *,
-+				      struct kshark_entry ***);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef ssize_t (*load_matrix_func) (struct kshark_data_stream *,
-+				     struct kshark_context *,
-+				     int16_t **cpu_array,
-+				     int32_t **pid_array,
-+				     int32_t **event_array,
-+				     int64_t **offset_array,
-+				     int64_t **ts_array);
-+
-+/** Data format identifier. */
-+typedef enum kshark_data_format {
-+	/** A data of unknown type. */
-+	KS_INVALIDE_DATA,
-+
-+	/** Ftrace data. */
-+	KS_TEP_DATA,
-+
-+	/** VMware SchedTrace data. */
-+	KS_VMW_ST_DATA,
-+} kshark_data_format;
++/*
++ * Copyright (C) 2009, Steven Rostedt <srostedt@redhat.com>
++ * Copyright (C) 2018 VMware Inc, Steven Rostedt <rostedt@goodmis.org>
++ */
 +
 +/**
-+ * Structure representing the interface of methods used to operate over
-+ * the data from a given stream.
++ *  @file    libkshark-hash.c
++ *  @brief   Hash table of integer Id numbers.
 + */
-+struct kshark_data_stream_interface {
-+	/** Method used to retrieve the Process Id of the entry. */
-+	stream_get_int_func	get_pid;
 +
-+	/** Method used to retrieve the Event Id of the entry. */
-+	stream_get_int_func	get_event_id;
++// C
++#include <stdio.h>
++#include <stdlib.h>
++#include <assert.h>
 +
-+	/** Method used to retrieve the Event name of the entry. */
-+	stream_get_str_func	get_event_name;
++// KernelShark
++#include "libkshark.h"
 +
-+	/** Method used to retrieve the Task name of the entry. */
-+	stream_get_str_func	get_task;
++/**
++ * @brief: quick_hash - A quick (non secured) hash alogirthm
++ * @param val: The value to perform the hash on
++ * @param bits: The size in bits you need to return
++ *
++ * This is a quick hashing function adapted from Donald E. Knuth's 32
++ * bit multiplicative hash. See The Art of Computer Programming (TAOCP).
++ * Multiplication by the Prime number, closest to the golden ratio of
++ * 2^32.
++ *
++ * "bits" is used to max the result for use cases that require
++ * a power of 2 return value that is less than 32 bits. Any value
++ * of "bits" greater than 31 (or zero), will simply return the full hash
++ * on "val".
++ */
++static inline uint32_t quick_hash(uint32_t val, unsigned int bits)
++{
++	val *= UINT32_C(2654435761);
 +
-+	/** Method used to retrieve the Latency of the entry. */
-+	stream_get_str_func	get_latency;
++	if (!bits || bits > 31)
++		return val;
 +
-+	/** Method used to retrieve the Info string of the entry. */
-+	stream_get_str_func	get_info;
++	return val & ((1 << bits) - 1);
++}
 +
-+	/** Method used to retrieve Id of the Event from its name. */
-+	stream_find_id_func	find_event_id;
++static size_t hash_size(struct kshark_hash_id *hash)
++{
++	return (1 << hash->n_bits);
++}
 +
-+	/** Method used to retrieve the array of Ids of all Events. */
-+	stream_get_ids_func	get_all_event_ids;
++/**
++ * Create new hash table of Ids.
++ */
++struct kshark_hash_id *kshark_hash_id_alloc(size_t n_bits)
++{
++	struct kshark_hash_id *hash;
++	size_t size;
 +
-+	/** Method used to dump the entry's content to string. */
-+	stream_get_str_func	dump_entry;
++	hash = calloc(1, sizeof(*hash));
++	if (!hash)
++		goto fail;
 +
-+	/**
-+	 * Method used to retrieve the array of all field names of a given
-+	 * event.
-+	 */
-+	stream_get_names_func	get_all_field_names;
++	hash->n_bits = n_bits;
++	hash->count = 0;
 +
-+	/** Method used to access the type of an event's data field. */
-+	stream_event_field_type		get_event_field_type;
++	size = hash_size(hash);
++	hash->hash = calloc(size, sizeof(*hash->hash));
++	if (!hash->hash)
++		goto fail;
 +
-+	/** Method used to access the value of an event's data field. */
-+	stream_read_event_field		read_event_field_int64;
++	return hash;
 +
-+	/** Method used to access the value of an event's data field. */
-+	stream_read_record_field	read_record_field_int64;
++ fail:
++	fprintf(stderr, "Failed to allocate memory for hash table.\n");
++	kshark_hash_id_free(hash);
++	return NULL;
++}
 +
-+	/** Method used to load the data in the form of entries. */
-+	load_entries_func	load_entries;
++/** Free the hash table of Ids. */
++void kshark_hash_id_free(struct kshark_hash_id *hash)
++{
++	if (!hash)
++		return;
 +
-+	/** Method used to load the data in matrix form. */
-+	load_matrix_func	load_matrix;
++	if (hash->hash) {
++		kshark_hash_id_clear(hash);
++		free(hash->hash);
++	}
 +
-+	/** Generic data handle. */
-+	void			*handle;
++	free(hash);
++}
++
++/**
++ * @brief Check if an Id with a given value exists in this hash table.
++ */
++bool kshark_hash_id_find(struct kshark_hash_id *hash, int id)
++{
++	uint32_t key = quick_hash(id, hash->n_bits);
++	struct kshark_hash_id_item *item;
++
++	for (item = hash->hash[key]; item; item = item->next)
++		if (item->id == id)
++			break;
++
++	return !!(unsigned long) item;
++}
++
++/**
++ * @brief Add Id to the hash table.
++ *
++ * @param hash: The hash table to add to.
++ * @param id: The Id number to be added.
++ *
++ * @returns Zero if the Id already exists in the table, one if the Id has been
++ *	    added and negative errno code on failure.
++ */
++int kshark_hash_id_add(struct kshark_hash_id *hash, int id)
++{
++	uint32_t key = quick_hash(id, hash->n_bits);
++	struct kshark_hash_id_item *item;
++
++	if (kshark_hash_id_find(hash, id))
++		return 0;
++
++	item = calloc(1, sizeof(*item));
++	if (!item) {
++		fprintf(stderr,
++			"Failed to allocate memory for hash table item.\n");
++		return -ENOMEM;
++	}
++
++	item->id = id;
++	item->next = hash->hash[key];
++	hash->hash[key] = item;
++	hash->count++;
++
++	return 1;
++}
++
++/**
++ * @brief Remove Id from the hash table.
++ */
++void kshark_hash_id_remove(struct kshark_hash_id *hash, int id)
++{
++	struct kshark_hash_id_item *item, **next;
++	int key = quick_hash(id, hash->n_bits);
++
++	next = &hash->hash[key];
++	while (*next) {
++		if ((*next)->id == id)
++			break;
++		next = &(*next)->next;
++	}
++
++	if (!*next)
++		return;
++
++	assert(hash->count);
++
++	hash->count--;
++	item = *next;
++	*next = item->next;
++
++	free(item);
++}
++
++/** Remove (free) all Ids (items) from this hash table. */
++void kshark_hash_id_clear(struct kshark_hash_id *hash)
++{
++	struct kshark_hash_id_item *item, *next;
++	size_t size;
++	int i;
++
++	if (!hash || ! hash->hash)
++		return;
++
++	size = hash_size(hash);
++	for (i = 0; i < size; i++) {
++		next = hash->hash[i];
++		if (!next)
++			continue;
++
++		hash->hash[i] = NULL;
++		while (next) {
++			item = next;
++			next = item->next;
++			free(item);
++		}
++	}
++
++	hash->count = 0;
++}
++
++static int compare_ids(const void* a, const void* b)
++{
++	int arg1 = *(const int*)a;
++	int arg2 = *(const int*)b;
++
++	if (arg1 < arg2)
++		return -1;
++
++	if (arg1 > arg2)
++		return 1;
++
++	return 0;
++}
++
++/**
++ * @brief Get a sorted array containing all Ids of this hash table.
++ */
++int *kshark_hash_ids(struct kshark_hash_id *hash)
++{
++	struct kshark_hash_id_item *item;
++	size_t size = hash_size(hash);
++	int count = 0, i;
++	int *ids;
++
++	if (!hash->count)
++		return NULL;
++
++	ids = calloc(hash->count, sizeof(*ids));
++	if (!ids) {
++		fprintf(stderr,
++			"Failed to allocate memory for Id array.\n");
++		return NULL;
++	}
++
++	for (i = 0; i < size; i++) {
++		item = hash->hash[i];
++		while (item) {
++			ids[count++] = item->id;
++			item = item->next;
++		}
++	}
++
++	qsort(ids, hash->count, sizeof(*ids), compare_ids);
++
++	return ids;
++}
+diff --git a/src/libkshark.h b/src/libkshark.h
+index 9eecc2d0..0182cf6d 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -72,6 +72,52 @@ struct kshark_entry {
+ 	int64_t		ts;
+ };
+ 
++/** Size of the hash table of PIDs in terms of bits being used by the key. */
++#define KS_TASK_HASH_NBITS	16
++
++/** Size of the hash table of Ids in terms of bits being used by the key. */
++#define KS_FILTER_HASH_NBITS	8
++
++/** A bucket for the hash table of integer Id numbers (kshark_hash_id). */
++struct kshark_hash_id_item {
++	/** Pointer to the Id in this bucket. */
++	struct kshark_hash_id_item	*next;
++
++	/** The Id value. */
++	int				id;
 +};
 +
-+/** Structure representing a stream of trace data. */
-+struct kshark_data_stream {
-+	/** Data stream identifier. */
-+	uint8_t			stream_id;
++/**
++ * Hash table of integer Id numbers. To be used for fast filter of trace
++ * entries.
++ */
++struct kshark_hash_id {
++	/** Array of buckets. */
++	struct kshark_hash_id_item	**hash;
 +
-+	/** The number of CPUs presented in this data stream. */
-+	int			n_cpus;
-+
-+	/**
-+	 * The number of distinct event types presented in this data stream.
-+	 */
-+	int 			n_events;
-+
-+	/** The Process Id of the Idle task. */
-+	int			idle_pid;
-+
-+	/** Trace data file pathname. */
-+	char			*file;
-+
-+	/** Stream name. */
-+	char			*name;
-+
-+	/** Hash table of task PIDs. */
-+	struct kshark_hash_id	*tasks;
-+
-+	/** A mutex, used to protect the access to the input file. */
-+	pthread_mutex_t		input_mutex;
-+
-+	/** Hash of tasks to filter on. */
-+	struct kshark_hash_id	*show_task_filter;
-+
-+	/** Hash of tasks to not display. */
-+	struct kshark_hash_id	*hide_task_filter;
-+
-+	/** Hash of events to filter on. */
-+	struct kshark_hash_id	*show_event_filter;
-+
-+	/** Hash of events to not display. */
-+	struct kshark_hash_id	*hide_event_filter;
-+
-+	/** Hash of CPUs to filter on. */
-+	struct kshark_hash_id	*show_cpu_filter;
-+
-+	/** Hash of CPUs to not display. */
-+	struct kshark_hash_id	*hide_cpu_filter;
-+
-+	/** The type of the data. */
-+	enum kshark_data_format		format;
++	/** The number of Ids in the table. */
++	size_t	count;
 +
 +	/**
-+	 * The interface of methods used to operate over the data from a given
-+	 * stream.
++	 * The number of bits used by the hashing function.
++	 * Note that the number of buckets in the table if given by
++	 * 1 << n_bits.
 +	 */
-+	struct kshark_data_stream_interface	interface;
++	size_t	n_bits;
 +};
++
++bool kshark_hash_id_find(struct kshark_hash_id *hash, int id);
++
++int kshark_hash_id_add(struct kshark_hash_id *hash, int id);
++
++void kshark_hash_id_clear(struct kshark_hash_id *hash);
++
++struct kshark_hash_id *kshark_hash_id_alloc(size_t n_bits);
++
++void kshark_hash_id_free(struct kshark_hash_id *hash);
++
++int *kshark_hash_ids(struct kshark_hash_id *hash);
 +
  /** Size of the task's hash table. */
  #define KS_TASK_HASH_SHIFT 16
