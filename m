@@ -2,33 +2,70 @@ Return-Path: <SRS0=H9Ya=DT=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3ABDC433DF
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 19:17:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E86CFC433E7
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 20:24:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C5A220BED
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 19:17:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7E4A020BED
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 12 Oct 2020 20:24:52 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D+8uHOnk"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390896AbgJLTRh (ORCPT
+        id S1727582AbgJLUYw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 12 Oct 2020 15:17:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730857AbgJLTRh (ORCPT
+        Mon, 12 Oct 2020 16:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727151AbgJLUYv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:17:37 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 216172074A;
-        Mon, 12 Oct 2020 19:17:34 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 15:17:32 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tony Jones <tonyj@suse.de>
-Cc:     Jiri Olsa <jolsa@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
+        Mon, 12 Oct 2020 16:24:51 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D88C0613D0;
+        Mon, 12 Oct 2020 13:24:51 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id h6so14297657ybi.11;
+        Mon, 12 Oct 2020 13:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mPDRTH/UAmqiZe/Nd+O6hbWblTr9qXFpQQlns3fD3iE=;
+        b=D+8uHOnkHBz6iSEEfFJ/OjAVHb1XtTdx+1e95GnMxjpu2pF+zhCl3FqZcj8HMxQPsM
+         CgzHOcJDIsv8FtmwI+zARpBurSzoWLIFx0o0d2KnZmnf6NGQ3rljyb3w9+Zv1xiJFnj6
+         wLouEidevcL8/eRNQUyKqudfW7Xt7YnjqVHlJK417GWp22ga2YM6TLZP2ANJnMwg71JM
+         B1/ZMT3jwjNVaMVuyQEHj41h+mefdvIwc+yAW07bYiDG4mdPeQYZMrt4u9w+kCs+7sGO
+         JB1LXZ5A0BcPxHVJ9GFWx7EWAYUWVsdarZsIAmm6G3jD38jJJZTtKiiqFOEoJR+weFg7
+         9OQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mPDRTH/UAmqiZe/Nd+O6hbWblTr9qXFpQQlns3fD3iE=;
+        b=HtA4aA3rXKT5mvfjphpToSb/l8Ath/i+HuiaymX33frHYfU8Zvr2PuzarMt8rOmbwV
+         64maD29S4Ws6WhXNT4qL20oe+U7su4r7yDvle/KtsePzSx6I3ouCdMprlXGs9gWZEgjb
+         zD/1+TDKj+lytxh+FvwYV0undEcPKp90AZb2MtH8L7NMV1BPTOHcLQsFy9a56tkuj9PY
+         S2O97c1hZe5pjhkUVhsnOrzUAPkYM2SuJXUH6xIwCPaBzoEeKMcFwSTQmFYb7XvbNf+G
+         QU6AVmE/V+bYmSVaO9tboHzcm0hnNzclgMyod54bltjP3qSAh1Vp0dGfqsnxTOdW94PE
+         DKSQ==
+X-Gm-Message-State: AOAM53392t/ez/q8hXf7Yn0MYOjeG2kz/Rf6k45w129zhPV8lMndqZ0A
+        PrkP342PlzDs2ETUuBFCAggiCReSF9avqSRBLm44ZYx2o6InZw==
+X-Google-Smtp-Source: ABdhPJwA8pSXy3h5uyuwCmRBdEH4YIZ7cz8KHMk0jhM+8tfmo+ZE+GC3QpYs2LgLTOIEKlk08PwWU+EL1WTTWBWyFRI=
+X-Received: by 2002:a25:b88d:: with SMTP id w13mr14219456ybj.39.1602534291042;
+ Mon, 12 Oct 2020 13:24:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201007130750.49349844@gandalf.local.home> <20201012101208.GF1099489@krava>
+ <20201012111950.55a73588@gandalf.local.home> <20201012184120.GN13697@suse.de> <20201012151732.6e439886@gandalf.local.home>
+In-Reply-To: <20201012151732.6e439886@gandalf.local.home>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Mon, 12 Oct 2020 21:24:14 +0100
+Message-ID: <CADVatmNwkpArcEqDfFYPrFxpSWuSoDiVAKVBQsaW9zAide-jTg@mail.gmail.com>
+Subject: Re: [ANNOUNCE] libtraceevent.git
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tony Jones <tonyj@suse.de>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
         Zamir SUN <sztsian@gmail.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -36,126 +73,54 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
         Tzvetomir Stoyanov <tstoyanov@vmware.com>,
         Yordan Karadzhov <ykaradzhov@vmware.com>,
         Ben Hutchings <ben@decadent.org.uk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
         John Kacur <jkacur@redhat.com>,
         Clark Williams <williams@redhat.com>,
         Al Stone <ahs3@debian.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [ANNOUNCE] libtraceevent.git
-Message-ID: <20201012151732.6e439886@gandalf.local.home>
-In-Reply-To: <20201012184120.GN13697@suse.de>
-References: <20201007130750.49349844@gandalf.local.home>
-        <20201012101208.GF1099489@krava>
-        <20201012111950.55a73588@gandalf.local.home>
-        <20201012184120.GN13697@suse.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+Hi Steve,
 
-[ Removing the powertop mailing list because it's rejecting everything ]
+On Mon, Oct 12, 2020 at 8:17 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+>
+> [ Removing the powertop mailing list because it's rejecting everything ]
+>
+> On Mon, 12 Oct 2020 11:41:20 -0700
+> Tony Jones <tonyj@suse.de> wrote:
+>
+> > On Mon, Oct 12, 2020 at 11:19:50AM -0400, Steven Rostedt wrote:
+> >
+> > > Once it's shown that it works for all the package maintainers, I will tag
+> > > it which should create the tarballs automatically on the above link.
+> >
 
-On Mon, 12 Oct 2020 11:41:20 -0700
-Tony Jones <tonyj@suse.de> wrote:
+Works for me.
 
-> On Mon, Oct 12, 2020 at 11:19:50AM -0400, Steven Rostedt wrote:
-> 
-> > Once it's shown that it works for all the package maintainers, I will tag
-> > it which should create the tarballs automatically on the above link.  
-> 
-> Hi.
-> 
-> It builds fine for me after manually creating the tarball from git.  
-> Once there is an official versioned tarball I'll push it into
-> openSUSE.
-> 
-> I presume some perf Makefile changes will be forthcoming to use it,
-> rather than continuing to force build it out of TRACE_EVENT_DIR
-> 
+> Can you see if this patch fixes your current issue?
+>
+> -- Steve
+>
+> diff --git a/Documentation/Makefile b/Documentation/Makefile
+> index edb8623..3a981be 100644
+> --- a/Documentation/Makefile
+> +++ b/Documentation/Makefile
+> @@ -157,7 +157,7 @@ endif
+>  do-install-man: man
+>         $(call QUIET_INSTALL, Documentation-man) \
+>                 $(INSTALL) -d -m 755 $(DESTDIR)$(man3dir); \
+> -               $(INSTALL) -m 644 $(DOC_MAN3) $(DESTDIR)$(man3dir);
+> +               $(INSTALL) -m 644 $(OUTPUT)*.3 $(DESTDIR)$(man3dir);
+>
+>  install-man: check-man-tools man do-install-man
+>
 
-Zamir found this issue with the Documentation man pages:
-
-Note, I'm not sure the proper way to fix this. I think this is the last
-issue I need to resolve before making the tag.
-
--- Steve
+I faced the same problem and this patch worked for me.
 
 
-On Thu, 8 Oct 2020 17:50:19 +0800
-Zamir SUN <sztsian@gmail.com> wrote:
-
-> Hi,
-> 
-> When I try to compiling the document of libtraceevent with the fix I 
-> mentioned in [1] applied, make doc-install fails with errors like
-> 
-> "/usr/bin/install: cannot stat 'libtraceevent-record_parse.3': No such 
-> file or directory"
-> 
-> Checking the compiled documents I see a lot of tep_*.3 generated, and 
-> some libtraceevent_*.html. However no libtraceevent_*.3.
-> 
-> $ ls Documentation/*3 | head
-> Documentation/libtraceevent.3
-> Documentation/tep_alloc.3
-> Documentation/tep_clear_flag.3
-> Documentation/tep_cmdline_pid.3
-> Documentation/tep_data_comm_from_pid.3
-> Documentation/tep_data_flags.3
-> Documentation/tep_data_pid.3
-> Documentation/tep_data_pid_from_comm.3
-> Documentation/tep_data_preempt_count.3
-> Documentation/tep_data_type.3
-> ls Documentation/*html | head
-> Documentation/libtraceevent-commands.html
-> Documentation/libtraceevent-cpus.html
-> Documentation/libtraceevent-endian_read.html
-> Documentation/libtraceevent-event_find.html
-> Documentation/libtraceevent-event_get.html
-> Documentation/libtraceevent-event_list.html
-> Documentation/libtraceevent-event_print.html
-> Documentation/libtraceevent-field_find.html
-> Documentation/libtraceevent-field_get_val.html
-> Documentation/libtraceevent-field_print.html
-> 
-> I also tried to port the Makefile from trace-cmd/Documentation to the 
-> document dir, and it still only generates tep_*.3 files, so I feel this 
-> is not the issue with the patch from [1].
-> 
-> As for my local environment, I have xmlto and asciidoc installed[2], but 
-> not asciidoctor. I expect asciidoc could generate the documentations 
-> like what it did in trace-cmd before.
-> 
-> Any idea if this is issue with my environment or it's something that 
-> need to be implemented in the Makefile?
->  
-
-Hi Zamir,
-
-Thanks a lot for looking into this. I took your advice and reverted my
-blind copy of the Makefiles, scripts and include headers, and instead
-copied over their full history from the Linux kernel Tools directory.
-
-You can see that update no (which now includes the utilities.mak as well).
-
-Can you see if this patch fixes your current issue?
-
--- Steve
-
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index edb8623..3a981be 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -157,7 +157,7 @@ endif
- do-install-man: man
- 	$(call QUIET_INSTALL, Documentation-man) \
- 		$(INSTALL) -d -m 755 $(DESTDIR)$(man3dir); \
--		$(INSTALL) -m 644 $(DOC_MAN3) $(DESTDIR)$(man3dir);
-+		$(INSTALL) -m 644 $(OUTPUT)*.3 $(DESTDIR)$(man3dir);
- 
- install-man: check-man-tools man do-install-man
- 
+-- 
+Regards
+Sudip
