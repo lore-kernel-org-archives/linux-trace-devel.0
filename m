@@ -1,39 +1,41 @@
-Return-Path: <SRS0=7UrD=DV=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=6QNz=DW=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD3BAC433E7
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Oct 2020 23:52:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93C35C433E7
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 15 Oct 2020 21:24:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 876AF214D8
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 14 Oct 2020 23:52:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 484CF2076A
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 15 Oct 2020 21:24:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729462AbgJNXwy (ORCPT
+        id S1729961AbgJOVYX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 14 Oct 2020 19:52:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52478 "EHLO mail.kernel.org"
+        Thu, 15 Oct 2020 17:24:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728370AbgJNXwy (ORCPT
+        id S1728409AbgJOVYX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 14 Oct 2020 19:52:54 -0400
+        Thu, 15 Oct 2020 17:24:23 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C2B3208D5;
-        Wed, 14 Oct 2020 23:52:51 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 19:52:49 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A5E220759;
+        Thu, 15 Oct 2020 21:24:22 +0000 (UTC)
+Date:   Thu, 15 Oct 2020 17:24:20 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 13/20] kernel-shark: Complete the stream integration
-Message-ID: <20201014195249.16929c28@gandalf.local.home>
-In-Reply-To: <20201012133523.469040-14-y.karadz@gmail.com>
-References: <20201012133523.469040-1-y.karadz@gmail.com>
-        <20201012133523.469040-14-y.karadz@gmail.com>
+Subject: Re: [PATCH v24 01/10] trace-cmd: [POC] PTP-like algorithm for host
+ - guest timestamp synchronization
+Message-ID: <20201015172420.699a4cdc@gandalf.local.home>
+In-Reply-To: <20201009140338.25260-2-tz.stoyanov@gmail.com>
+References: <20201009140338.25260-1-tz.stoyanov@gmail.com>
+        <20201009140338.25260-2-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,869 +44,541 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Fri,  9 Oct 2020 17:03:29 +0300
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-> index 30c383c8..d9d57843 100644
-> --- a/src/libkshark-tepdata.c
-> +++ b/src/libkshark-tepdata.c
-> @@ -318,6 +318,9 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
+> PTP protocol is designed for synchronizing clocks of machines in a local network.
+> The same approach can be used for host - guest timestamp synchronization.
+> This implementation uses ftrace raw markers to track trace timestamps of PTP events.
+> The patch is a POC, two different algorithms for PTP calculations are proposed:
+>   - Choosing the sample with the fastest response time for calculating the clocks offset.
+>   - Calculating the clocks offset using the average of all PTP samples.
+> 
+> The implementation can be tuned using those parameters:
+>  - #define FASTEST_RESPONSE - is defined, the sample with the fastest response time
+>     is used for calculating the clocks offset. Otherwise the histogram of all samples is used.
+>  - #define PTP_SYNC_LOOP 340 - defines the number of samples, used for one calculation.
+>  - --tsync-interval - a trace-cmd argument, choose the intervals between offset calculations,
+> 	performed continuously during the trace.
+>  - #define TSYNC_DEBUG - if defined, a debug information is collected and stored in files,
+>    in the guest machine:
+>      s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
+>      res-cid*.txt - For each tracing session: all calculated clock offsets.
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+>  include/trace-cmd/trace-cmd.h      |   1 +
+>  lib/trace-cmd/Makefile             |   1 +
+>  lib/trace-cmd/trace-timesync-ptp.c | 690 +++++++++++++++++++++++++++++
+>  lib/trace-cmd/trace-timesync.c     |   8 +
+>  tracecmd/trace-agent.c             |   2 +
+>  tracecmd/trace-record.c            |  23 +-
+>  6 files changed, 717 insertions(+), 8 deletions(-)
+>  create mode 100644 lib/trace-cmd/trace-timesync-ptp.c
+> 
+> diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+> index f3c95f30..f9c1f843 100644
+> --- a/include/trace-cmd/trace-cmd.h
+> +++ b/include/trace-cmd/trace-cmd.h
+> @@ -419,6 +419,7 @@ int tracecmd_msg_recv_time_sync(struct tracecmd_msg_handle *msg_handle,
 >  
->  				pid = entry->pid;
+>  enum{
+>  	TRACECMD_TIME_SYNC_PROTO_NONE	= 0,
+> +	TRACECMD_TIME_SYNC_PROTO_PTP	= 1,
+>  };
+>  enum{
+>  	TRACECMD_TIME_SYNC_CMD_PROBE	= 1,
+> diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+> index 666a1ebf..7cab7514 100644
+> --- a/lib/trace-cmd/Makefile
+> +++ b/lib/trace-cmd/Makefile
+> @@ -18,6 +18,7 @@ OBJS += trace-msg.o
+>  OBJS += trace-plugin.o
+>  ifeq ($(VSOCK_DEFINED), 1)
+>  OBJS += trace-timesync.o
+> +OBJS += trace-timesync-ptp.o
+>  endif
 >  
-> +				/* Apply Id filtering. */
-> +				kshark_apply_filters(kshark_ctx, stream, entry);
+>  # Additional util objects
+> diff --git a/lib/trace-cmd/trace-timesync-ptp.c b/lib/trace-cmd/trace-timesync-ptp.c
+> new file mode 100644
+> index 00000000..19e2f647
+> --- /dev/null
+> +++ b/lib/trace-cmd/trace-timesync-ptp.c
+> @@ -0,0 +1,690 @@
+> +// SPDX-License-Identifier: LGPL-2.1
+> +/*
+> + * Copyright (C) 2019, VMware, Tzvetomir Stoyanov tz.stoyanov@gmail.com>
+> + *
+> + */
 > +
->  				/* Apply advanced event filtering. */
->  				if (adv_filter && adv_filter->filters &&
->  				    tep_filter_match(adv_filter, rec) != FILTER_MATCH)
-> @@ -1160,6 +1163,43 @@ out:
->  	return peer_handle;
->  }
->  
-> +/** A list of built in default plugins for FTRACE (trace-cmd) data. */
-> +const char *tep_plugin_names[] = {
-> +	"sched_events",
-> +	"missed_events",
-> +	"kvm_combo",
+> +#include <fcntl.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <arpa/inet.h>
+> +#include <linux/vm_sockets.h>
+> +#include <sys/types.h>
+> +#include <linux/types.h>
+> +#include <time.h>
+> +#include <sched.h>
+> +#include "trace-cmd.h"
+> +#include "tracefs.h"
+> +#include "trace-tsync-local.h"
+> +#include "trace-msg.h"
+> +#include "trace-cmd-local.h"
+> +
+> +typedef __be32 be32;
+> +typedef __u64 u64;
+> +typedef __s64 s64;
+> +
+> +#define PTP_SYNC_LOOP	340
+> +
+> +#define PTP_SYNC_PKT_START	1
+> +#define PTP_SYNC_PKT_PROBE	2
+> +#define PTP_SYNC_PKT_PROBES	3
+> +#define PTP_SYNC_PKT_OFFSET	4
+> +#define PTP_SYNC_PKT_END	5
+> +
+> +/* print time sync debug messages */
+> +#define TSYNC_DEBUG
+> +
+> +struct ptp_clock_sync {
+> +	struct tep_handle	*tep;
+> +	int			raw_id;
+> +	int			marker_fd;
+> +	int			series_id;
+> +	int			flags;
+> +	int			debug_fd;
 > +};
 > +
-> +/**
-> + * Register to the data stream all default plugins for FTRACE (trace-cmd) data.
+> +enum {
+> +/* Consider only the probe with fastest response time,
+> + * otherwise make a histogram from all probes.
 > + */
-> +int kshark_tep_handle_plugins(struct kshark_context *kshark_ctx, int sd)
+> +	PTP_FLAG_FASTEST_RESPONSE		= (1 << 0),
+> +/* Use trace marker to get the clock,
+> + * otherwise use directly the system clock
+> + */
+
+Nit, multi-line comments should be:
+
+/*
+ * Use trace marker to get the clock,
+ * otherwise use directly the system clock
+ */
+
+Although Linux networking code does the above, that's only allowed because
+Linus likes David Miller, and he allows him to request that in his
+networking code. ;-)
+
+Also, the grammar of the above should be:
+
+ "Use trace marker to get the clock, otherwise use the system clock
+ directly."
+
+
+
+> +	PTP_FLAG_USE_MARKER			= (1 << 1),
+> +};
+> +static int ptp_flags = PTP_FLAG_FASTEST_RESPONSE | PTP_FLAG_USE_MARKER;
+> +
+> +struct ptp_clock_start_msg {
+> +	be32	series_id;
+> +	be32	flags;
+> +} __attribute__((packed));
+
+We should define a macro: __packed and use that instead. Makes the code
+look cleaner.
+
+> +
+> +struct ptp_clock_sample {
+> +	s64		ts;
+> +	be32		id;
+> +} __attribute__((packed));
+> +
+> +struct ptp_clock_result_msg {
+> +	be32			series_id;
+> +	be32			count;
+> +	struct ptp_clock_sample	samples[2*PTP_SYNC_LOOP];
+> +} __attribute__((packed));
+> +
+> +struct ptp_clock_offset_msg {
+> +	s64	ts;
+> +	s64	offset;
+> +};
+> +
+> +struct ptp_markers_context {
+> +	struct clock_sync_context	*clock;
+> +	struct ptp_clock_sync		*ptp;
+> +	int				size;
+> +	struct ptp_clock_result_msg	msg;
+> +};
+
+Me being picky about holes in structures, as "int" is 4 bytes, it should be
+either at the end or mapped with other elements of 4 bytes. That is, msg
+and size should be swapped.
+
+> +
+> +struct ptp_marker_buf {
+> +	int local_cid;
+> +	int remote_cid;
+> +	int count;
+> +	int packet_id;
+> +} __attribute__((packed));
+> +
+> +struct ptp_marker {
+> +	int series_id;
+> +	struct ptp_marker_buf data;
+> +} __attribute__((packed));
+> +
+> +static int ptp_clock_sync_init(struct tracecmd_time_sync *tsync)
 > +{
-> +	int i, n_tep_plugins = sizeof(tep_plugin_names) / sizeof (const char *);
-
-
-Note, a safer way is:
-
-	n_tep_plugins = sizeof(tep_plugins_names) / sizeof(tep_plugin_names[0]);
-
-Or use the ARRAY_SIZE() macro from trace-cmd.git/include/trace-cmd/trace-cmd.h:
-
-#define ARRAY_SIZE(_a) (sizeof(_a) / sizeof((_a)[0]))
-
-	n_tep_plugins = ARRAY_SIZE(tep_plugins_names);
-
-  ;-)
-
-
-> +	struct kshark_plugin_list *plugin;
-> +	struct kshark_data_stream *stream;
+> +	const char *systems[] = {"ftrace", NULL};
+> +	struct clock_sync_context *clock_context;
+> +	struct ptp_clock_sync *ptp;
+> +	struct tep_event *raw;
+> +	char *path;
 > +
-> +	stream = kshark_get_data_stream(kshark_ctx, sd);
-> +	if (!stream)
-> +		return -EEXIST;
+> +	if (!tsync || !tsync->context)
+> +		return -1;
+> +	clock_context = (struct clock_sync_context *)tsync->context;
+> +	if (clock_context->proto_data)
+> +		return 0;
 > +
-> +	for (i = 0; i < n_tep_plugins; ++i) {
-> +		plugin = kshark_find_plugin_by_name(kshark_ctx->plugins,
-> +						    tep_plugin_names[i]);
+> +	ptp = calloc(1, sizeof(struct ptp_clock_sync));
+> +	if (!ptp)
+> +		return -1;
 > +
-> +		if (plugin && plugin->process_interface) {
-> +			kshark_register_plugin_to_stream(stream,
-> +							 plugin->process_interface,
-> +							 true);
-> +		} else {
-> +			fprintf(stderr, "Plugin \"%s\" not found.\n",
-> +				tep_plugin_names[i]);
-> +		}
+> +	ptp->marker_fd = -1;
+> +	ptp->debug_fd = -1;
+> +
+> +	path = tracefs_instance_get_dir(clock_context->instance);
+> +	if (!path)
+> +		goto error;
+> +	ptp->tep = tracefs_local_events_system(path, systems);
+> +	tracefs_put_tracing_file(path);
+> +	if (!ptp->tep)
+> +		goto error;
+> +	raw = tep_find_event_by_name(ptp->tep, "ftrace", "raw_data");
+> +	if (!raw)
+> +		goto error;
+> +
+> +	ptp->raw_id = raw->id;
+> +	tep_set_file_bigendian(ptp->tep, tracecmd_host_bigendian());
+> +	tep_set_local_bigendian(ptp->tep, tracecmd_host_bigendian());
+> +
+> +	path = tracefs_instance_get_file(clock_context->instance, "trace_marker_raw");
+> +	if (!path)
+> +		goto error;
+> +	ptp->marker_fd = open(path, O_WRONLY);
+> +	tracefs_put_tracing_file(path);
+> +
+> +	clock_context->proto_data = ptp;
+> +
+> +#ifdef TSYNC_DEBUG
+> +	if (clock_context->is_server) {
+> +		char buff[256];
+> +		int res_fd;
+> +
+> +		sprintf(buff, "res-cid%d.txt", clock_context->remote_cid);
+> +
+> +		res_fd = open(buff, O_CREAT|O_WRONLY|O_TRUNC, 0644);
+> +		if (res_fd > 0)
+> +			close(res_fd);
+> +	}
+> +#endif
+> +
+> +	return 0;
+> +
+> +error:
+> +	if (ptp) {
+> +		tep_free(ptp->tep);
+> +		if (ptp->marker_fd >= 0)
+> +			close(ptp->marker_fd);
+> +	}
+> +	free(ptp);
+> +	return -1;
+> +}
+> +
+> +static int ptp_clock_sync_free(struct tracecmd_time_sync *tsync)
+> +{
+> +	struct clock_sync_context *clock_context;
+> +	struct ptp_clock_sync *ptp;
+> +
+> +	if (!tsync || !tsync->context)
+> +		return -1;
+> +	clock_context = (struct clock_sync_context *)tsync->context;
+> +
+> +	if (clock_context && clock_context->proto_data) {
+> +		ptp = (struct ptp_clock_sync *)clock_context->proto_data;
+> +		tep_free(ptp->tep);
+> +		if (ptp->marker_fd >= 0)
+> +			close(ptp->marker_fd);
+> +		if (ptp->debug_fd >= 0)
+> +			close(ptp->debug_fd);
+> +		free(clock_context->proto_data);
+> +		clock_context->proto_data = NULL;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void ptp_probe_store(struct ptp_markers_context *ctx,
+> +			    struct ptp_marker *marker,
+> +			    unsigned long long ts)
+> +{
+> +	int index = -1;
+> +
+> +	if (marker->data.packet_id == 'r' &&
+> +	    marker->data.count <= ctx->size) {
+> +		index = marker->data.count - 1;
+> +	} else if (marker->data.packet_id == 's' &&
+> +		  marker->data.count*2 <= ctx->size){
+> +		index = ctx->size / 2 + marker->data.count - 1;
+
+These calculations should be turned into macros, or at the very least have
+comments to why this is done.
+
+Also, data.count for both should always be less than or equal ctx->size /
+2, right?
+
+If the ctx->size is for both, then the count should only be half. Wouldn't
+the 'r' packet start writing over the 's' packets if it is not? If this is
+the case, then we could simplify this to:
+
+	if (marker->data.count > ctx->size / 2)
+		return;
+
+	index = marker->data_count - 1;
+
+	switch (marker->data.packet_id) {
+	case 'r':
+		break;
+	case 's':
+		index += ctx->size / 2;
+		break;
+	default:
+		return;
+	}
+
+	ctx->msg.samples[index].id = marker->data.count;
+	ctx->msg.samples[index].ts = ts;
+	ctx->msg.count++;
+
+BTW, when would the samples[index].id ever equal to something other than
+the index + 1, or index + size / 2 + 1?
+
 > +	}
 > +
-> +	return kshark_handle_all_dpis(stream, KSHARK_PLUGIN_INIT);
+> +	if (index >= 0) {
+> +		ctx->msg.samples[index].id = marker->data.count;
+> +		ctx->msg.samples[index].ts = ts;
+> +		ctx->msg.count++;
+> +	}
 > +}
 > +
->  /** The Process Id of the Idle tasks is zero. */
->  #define LINUX_IDLE_TASK_PID	0
->  
-> @@ -1210,6 +1250,172 @@ static int kshark_tep_stream_init(struct kshark_data_stream *stream,
->  	return -EFAULT;
->  }
->  
-> +static struct tracecmd_input *get_top_input(struct kshark_context *kshark_ctx,
-> +					    int sd)
+> +static int ptp_marker_find(struct tep_event *event, struct tep_record *record,
+> +			   int cpu, void *context)
 > +{
-> +	struct kshark_data_stream *top_stream;
+> +	struct ptp_markers_context *ctx;
+> +	struct tep_format_field *field;
+> +	struct tep_format_field *id;
+> +	struct ptp_marker *marker;
 > +
-> +	top_stream = kshark_get_data_stream(kshark_ctx, sd);
-> +	if (!top_stream)
-> +		return NULL;
+> +	ctx = (struct ptp_markers_context *)context;
 > +
-> +	return kshark_get_tep_input(top_stream);
-> +}
-> +
-> +/**
-> + * @brief Get an array containing the names of all buffers in FTRACE data
-> + *	  file.
-> + *
-> + * @param kshark_ctx: Input location for context pointer.
-> + * @param sd: Data stream identifier of the top buffers in the FTRACE data
-> + *	  file.
-> + * @param n_buffers: Output location for the size of the outputted array,
-> + *	    or a negative error code on failure.
-> + *
-> + * @returns Array of strings on success, or NULL on failure. The user is
-> + *	    responsible for freeing the elements of the outputted array.
-> + */
-> +char **kshark_tep_get_buffer_names(struct kshark_context *kshark_ctx, int sd,
-> +				   int *n_buffers)
-> +{
-> +	struct tracecmd_input *top_input;
-> +	char **buffer_names;
-> +	int i, n;
-> +
-> +	top_input = get_top_input(kshark_ctx, sd);
-> +	if (!top_input) {
-> +		*n_buffers = -EFAULT;
-> +		return NULL;
+> +	/* Make sure this is our event */
+> +	if (event->id != ctx->ptp->raw_id)
+> +		return 0;
+> +	id = tep_find_field(event, "id");
+> +	field = tep_find_field(event, "buf");
+
+These probably could be saved and reused, instead of searching for them
+each time. Could probably be saved in the context before even calling this.
+Save the id and field when saving the raw_id.
+
+> +	if (field && id &&
+> +	    record->size >= (id->offset + sizeof(struct ptp_marker))) {
+> +		marker = (struct ptp_marker *)(record->data + id->offset);
+> +		if (marker->data.local_cid == ctx->clock->local_cid &&
+> +		    marker->data.remote_cid == ctx->clock->remote_cid &&
+> +		    marker->series_id == ctx->ptp->series_id &&
+> +		    marker->data.count)
+> +			ptp_probe_store(ctx, marker, record->ts);
 > +	}
 > +
-> +	n = tracecmd_buffer_instances(top_input);
-> +	buffer_names = malloc(n * sizeof(char *));
-
-Need to check buffer_names.
-
-> +
-> +	for (i = 0; i < n; ++i)
-> +		buffer_names[i] =
-> +			strdup(tracecmd_buffer_instance_name(top_input, i));
-> +
-
-And each buffer_names[i].
-
-> +	*n_buffers = n;
-> +	return buffer_names;
+> +	return 0;
 > +}
 > +
-> +static void set_stream_fields(struct tracecmd_input *top_input, int i,
-> +			      const char *file,
-> +			      const char *name,
-> +			      struct kshark_data_stream *buffer_stream,
-> +			      struct tracecmd_input **buffer_input)
+> +static int ptp_calc_offset_fastest(struct clock_sync_context *clock,
+> +			   struct ptp_clock_result_msg *server,
+> +			   struct ptp_clock_result_msg *client,
+> +			   long long *offset_ret, long long *ts_ret,
+> +			   int *bad_probes)
 > +{
-> +	*buffer_input = tracecmd_buffer_instance_handle(top_input, i);
-> +
-> +	buffer_stream->name = strdup(name);
-> +	buffer_stream->file = strdup(file);
+> +	struct ptp_clock_sample *sample_send;
+> +	long long delta_min = 0;
 
-And the ->name and ->file.
+If you set delta_min to LLONG_MAX...
 
-> +	buffer_stream->format = KS_TEP_DATA;
-> +}
-> +
-> +/**
-> + * @brief Open a given buffers in FTRACE (trace-cmd) data file.
-> + *
-> + * @param kshark_ctx: Input location for context pointer.
-> + * @param sd: Data stream identifier of the top buffers in the FTRACE data
-> + *	  file.
-> + * @param buffer_name: The name of the buffer to open.
-> + *
-> + * @returns Data stream identifier of the buffer on success. Otherwise a
-> + *	    negative error code.
-> + */
-> +int kshark_tep_open_buffer(struct kshark_context *kshark_ctx, int sd,
-> +			   const char *buffer_name)
-> +{
-> +	struct kshark_data_stream *top_stream, *buffer_stream;
-> +	struct tracecmd_input *top_input, *buffer_input;
-> +	int i, sd_buffer, n_buffers, ret = -ENODATA;
-> +	char **names;
-> +
-> +	top_stream = kshark_get_data_stream(kshark_ctx, sd);
-> +	if (!top_stream)
-> +		return -EFAULT;
-> +
-> +	top_input = kshark_get_tep_input(top_stream);
-> +	if (!top_input)
-> +		return -EFAULT;
-> +
-> +	names = kshark_tep_get_buffer_names(kshark_ctx, sd, &n_buffers);
-> +
-> +	sd_buffer = kshark_add_stream(kshark_ctx);
-> +	buffer_stream = kshark_get_data_stream(kshark_ctx, sd_buffer);
-> +	if (!buffer_stream)
-> +		return -EFAULT;
-> +
-> +	for (i = 0; i < n_buffers; ++i) {
-> +		if (strcmp(buffer_name, names[i]) == 0) {
-> +			set_stream_fields(top_input, i,
-> +					  top_stream->file,
-> +					  buffer_name,
-> +					  buffer_stream,
-> +					  &buffer_input);
-> +
-> +			ret = kshark_tep_stream_init(buffer_stream,
-> +						     buffer_input);
-> +			break;
-> +		}
-> +	}
-> +
-> +	for (i = 0; i < n_buffers; ++i)
-> +		free(names[i]);
-> +	free(names);
-> +
-> +	return (ret < 0)? ret : buffer_stream->stream_id;
-> +}
-> +
-> +/**
-> + * @brief Initialize data streams for all buffers in a FTRACE (trace-cmd) data
-> + *	  file.
-> + *
-> + * @param kshark_ctx: Input location for context pointer.
-> + * @param sd: Data stream identifier of the top buffers in the FTRACE data
-> + *	  file.
-> + *
-> + * @returns The total number of data streams initialized on success. Otherwise
-> + *	    a negative error code.
-> + */
-> +int kshark_tep_init_all_buffers(struct kshark_context *kshark_ctx,
-> +				int sd)
-> +{
-> +	struct kshark_data_stream *top_stream, *buffer_stream;
-> +	struct tracecmd_input *buffer_input;
-> +	struct tracecmd_input *top_input;
-> +	int i, n_buffers, sd_buffer, ret;
-> +
-> +	top_stream = kshark_get_data_stream(kshark_ctx, sd);
-> +	if (!top_stream)
-> +		return -EFAULT;
-> +
-> +	top_input = kshark_get_tep_input(top_stream);
-> +	if (!top_input)
-> +		return -EFAULT;
-> +
-> +	n_buffers = tracecmd_buffer_instances(top_input);
-> +	for (i = 0; i < n_buffers; ++i) {
-> +		sd_buffer = kshark_add_stream(kshark_ctx);
-> +		if (sd_buffer < 0)
-> +			return -EFAULT;
-> +
-> +		buffer_stream = kshark_ctx->stream[sd_buffer];
-> +
-> +		set_stream_fields(top_input, i,
-> +				  top_stream->file,
-> +				  tracecmd_buffer_instance_name(top_input, i),
-> +				  buffer_stream,
-> +				  &buffer_input);
-> +
-> +		ret = kshark_tep_stream_init(buffer_stream, buffer_input);
-> +		if (ret != 0)
-> +			return -EFAULT;
-> +	}
-> +
-> +	return n_buffers;
-> +}
-> +
->  /** Initialize the FTRACE data input (from file). */
->  int kshark_tep_init_input(struct kshark_data_stream *stream,
->  			  const char *file)
-> @@ -1389,3 +1595,149 @@ char **kshark_tracecmd_local_plugins()
->  {
->  	return tracefs_tracers(tracefs_get_tracing_dir());
->  }
-> +
-> +/**
-> + * @brief Free an array, allocated by kshark_tracecmd_get_hostguest_mapping() API
-> + *
-> + *
-> + * @param map: Array, allocated by kshark_tracecmd_get_hostguest_mapping() API
-> + * @param count: Number of entries in the array
-> + *
-> + */
-> +void kshark_tracecmd_free_hostguest_map(struct kshark_host_guest_map *map, int count)
-> +{
+> +	long long offset = 0;
+> +	long long delta = 0;
+> +	long long ts = 0;
 > +	int i;
 > +
-> +	if (!map)
-> +		return;
-> +	for (i = 0; i < count; i++) {
-> +		free(map[i].guest_name);
-> +		free(map[i].cpu_pid);
-> +		memset(&map[i], 0, sizeof(*map));
-> +	}
-> +	free(map);
-> +}
-> +
-> +/**
-> + * @brief Get mapping of guest VCPU to host task, running that VCPU.
-> + *	  Array of mappings for each guest is allocated and returned
-> + *	  in map input parameter.
-> + *
-> + *
-> + * @param map: Returns allocated array of kshark_host_guest_map structures, each
-> + *	       one describing VCPUs mapping of one guest.
-> + *
-> + * @return The number of entries in the *map array, or a negative error code on
-> + *	   failure.
-> + */
-> +int kshark_tracecmd_get_hostguest_mapping(struct kshark_host_guest_map **map)
-> +{
-> +	struct kshark_host_guest_map *gmap = NULL;
-> +	struct tracecmd_input *peer_handle = NULL;
-> +	struct kshark_data_stream *peer_stream;
-> +	struct tracecmd_input *guest_handle = NULL;
-> +	struct kshark_data_stream *guest_stream;
-> +	struct kshark_context *kshark_ctx = NULL;
-> +	unsigned long long trace_id;
-> +	const char *name;
-> +	int vcpu_count;
-> +	const int *cpu_pid;
-> +	int *stream_ids;
-> +	int i, j, k;
-> +	int count = 0;
-> +	int ret;
-> +
-> +	if (!map || !kshark_instance(&kshark_ctx))
-> +		return -EFAULT;
-> +	if (*map)
-> +		return -EEXIST;
-> +
-> +	stream_ids = kshark_all_streams(kshark_ctx);
-> +	for (i = 0; i < kshark_ctx->n_streams; i++) {
-> +		guest_stream = kshark_get_data_stream(kshark_ctx, stream_ids[i]);
-> +		if (!guest_stream || guest_stream->format != KS_TEP_DATA)
+> +	*bad_probes = 0;
+> +	sample_send = server->samples + (server->count / 2);
+> +	for (i = 0; i * 2 < server->count && i < client->count; i++) {
+
+Instead of both checks, you could have:
+
+	max_i = server->count / 2 < client->count ? server->count / 2 :
+		client->count;
+
+	for (i = 0; i < max_i; i++) {
+
+> +		if (!server->samples[i].ts ||
+> +		    !sample_send[i].ts ||
+> +		    !client->samples[i].ts ||
+> +		    server->samples[i].id != sample_send[i].id ||
+> +		    server->samples[i].id != client->samples[i].id) {
+> +			(*bad_probes)++;
 > +			continue;
-> +		guest_handle = kshark_get_tep_input(guest_stream);
-> +		if (!guest_handle)
-> +			continue;
-> +		trace_id = tracecmd_get_traceid(guest_handle);
-> +		if (!trace_id)
-> +			continue;
-> +		for (j = 0; j < kshark_ctx->n_streams; j++) {
-> +			if (stream_ids[i] == stream_ids[j])
-> +				continue;
-> +			peer_stream = kshark_get_data_stream(kshark_ctx, stream_ids[j]);
-> +			if (!peer_stream || peer_stream->format != KS_TEP_DATA)
-> +				continue;
-> +			peer_handle = kshark_get_tep_input(peer_stream);
-> +			if (!peer_handle)
-> +				continue;
-> +			ret = tracecmd_get_guest_cpumap(peer_handle, trace_id,
-> +							&name, &vcpu_count, &cpu_pid);
-> +			if (!ret && vcpu_count) {
-> +				gmap = realloc(*map,
-> +					       (count + 1) * sizeof(struct kshark_host_guest_map));
-> +				if (!gmap)
-> +					goto mem_error;
-> +				*map = gmap;
-> +				memset(&gmap[count], 0, sizeof(struct kshark_host_guest_map));
-> +				count++;
-> +				gmap[count - 1].guest_id = stream_ids[i];
-> +				gmap[count - 1].host_id = stream_ids[j];
-> +				gmap[count - 1].guest_name = strdup(name);
-> +				if (!gmap[count - 1].guest_name)
-> +					goto mem_error;
-> +				gmap[count - 1].vcpu_count = vcpu_count;
-> +				gmap[count - 1].cpu_pid = malloc(sizeof(int) * vcpu_count);
-> +				if (!gmap[count - 1].cpu_pid)
-> +					goto mem_error;
-> +				for (k = 0; k < vcpu_count; k++)
-> +					gmap[count - 1].cpu_pid[k] = cpu_pid[k];
-> +				break;
+> +		}
+> +
+> +		ts = (sample_send[i].ts + server->samples[i].ts) / 2;
+> +		offset = client->samples[i].ts - ts;
+> +
+> +		delta = server->samples[i].ts - sample_send[i].ts;
+> +		if (!delta_min || delta_min > delta) {
+
+... you can make this just (delta_min > delta) and not check the !delta_min.
+
+> +			delta_min = delta;
+> +			*offset_ret = offset;
+> +			*ts_ret = ts;
+> +		}
+> +#ifdef TSYNC_DEBUG
+> +		{
+> +			struct ptp_clock_sync *ptp;
+> +
+> +			ptp = (struct ptp_clock_sync *)clock->proto_data;
+> +			if (ptp && ptp->debug_fd > 0) {
+> +				char buff[256];
+> +
+> +				sprintf(buff, "%lld %lld %lld\n",
+> +					ts, client->samples[i].ts, offset);
+> +				write(ptp->debug_fd, buff, strlen(buff));
 > +			}
 > +		}
+> +#endif
 > +	}
 > +
-> +	free(stream_ids);
-> +	return count;
-> +
-> +mem_error:
-> +	free(stream_ids);
-> +	if (*map) {
-> +		kshark_tracecmd_free_hostguest_map(*map, count);
-> +		*map = NULL;
-> +	}
-> +
-> +	return -ENOMEM;
+> +	return 0;
 > +}
 > +
-> +/**
-> + * @brief Find the data stream corresponding the top buffer of a FTRACE
-> + *	  (trace-cmd) data file.
-> + *
-> + * @param kshark_ctx: Input location for context pointer.
-> + * @param file: The name of the file.
-> + *
-> + * @returns Data stream identifier of the top buffers in the FTRACE data
-> + *	    fileon success. Otherwise a negative error code.
-> + */
-> +int kshark_tep_find_top_stream(struct kshark_context *kshark_ctx,
-> +			       const char *file)
+> +static int ptp_calc_offset_hist(struct clock_sync_context *clock,
+> +			   struct ptp_clock_result_msg *server,
+> +			   struct ptp_clock_result_msg *client,
+> +			   long long *offset_ret, long long *ts_ret,
+> +			   int *bad_probes)
 > +{
-> +	struct kshark_data_stream *top_stream = NULL, *stream;
-> +	int i, *stream_ids = kshark_all_streams(kshark_ctx);
+> +	struct ptp_clock_sample *sample_send;
+> +	long long timestamps[PTP_SYNC_LOOP];
+> +	long long offsets[PTP_SYNC_LOOP];
+> +	int hist[PTP_SYNC_LOOP];
+> +	long long offset_max = 0;
+> +	long long offset_min = 0;
+> +	int ind, max = 0;
+> +	long long bin;
+> +	int i, k = 0;
 > +
-> +	for (i = 0; i < kshark_ctx->n_streams; ++i) {
-> +		stream = kshark_ctx->stream[stream_ids[i]];
-> +		if (strcmp(stream->file, file) == 0 &&
-> +		    strcmp(stream->name, "top") == 0)
+> +	*bad_probes = 0;
+> +	memset(hist, 0, sizeof(int) * PTP_SYNC_LOOP);
+> +	sample_send = server->samples + (server->count / 2);
+> +	for (i = 0; i * 2 < server->count && i < client->count; i++) {
+> +		if (!server->samples[i].ts ||
+> +		    !sample_send[i].ts ||
+> +		    !client->samples[i].ts ||
+> +		    server->samples[i].id != sample_send[i].id ||
+> +		    server->samples[i].id != client->samples[i].id) {
+> +			(*bad_probes)++;
+> +			continue;
 
-I noticed that you hardcode the top_stream name as "top". A couple of
-comments. One, good software practice is not to have any open constants.
-That is, always use a macro, as it makes it easier to go global changes
-later on. Also, don't call it "top". What happens if I make an instance
-called "top". Will it confuse this?
+Since this check is done twice, it would be good to make it into a static
+inline function:
 
-Maybe make it a non printable character:
+static inline bool good_probe(struct ptp_clock_sample *server_sample,
+			      struct ptp_clock_sample *send_sample,
+			      struct ptp_clock_sample *client_sample,
+			      int *bad_probes)
+{
+	if (server_sample->ts && send_sample->ts && client_sample->ts &&
+	    server_sample->id == send_sample->id &&
+	    server_sample->id == client_sample->id)
+		return true;
+	(*bad_probes)++;
+	return false;
+}
 
-const char top_name[] = { 0x1b, 0x00 }; // Non printable character
-#define TOP_NAME	(char *)&top_name
+Then you just need:
 
-Or something like this.
+		if (!good_sample(&server->samples[i], &sample_send[i],
+				 &client->samples[i], bad_probes))
+			continue;
 
+for both locations.
 
-> +			top_stream = stream;
-> +	}
-> +
-> +	free(stream_ids);
-> +
-> +	if (!top_stream)
-> +		return -EEXIST;
-> +
-> +	return top_stream->stream_id;
-> +}
-> diff --git a/src/libkshark-tepdata.h b/src/libkshark-tepdata.h
-> index a2bd211e..b6c9439e 100644
-> --- a/src/libkshark-tepdata.h
-> +++ b/src/libkshark-tepdata.h
-> @@ -41,9 +41,58 @@ void kshark_tep_filter_reset(struct kshark_data_stream *stream);
->  
->  char **kshark_tracecmd_local_plugins();
->  
-> +struct tep_handle;
-> +
-> +struct tep_handle *kshark_get_tep(struct kshark_data_stream *stream);
-> +
-> +struct tracecmd_input;
-> +
-> +struct tracecmd_input *kshark_get_tep_input(struct kshark_data_stream *stream);
-> +
-> +struct tep_record;
-> +
->  ssize_t kshark_load_tep_records(struct kshark_context *kshark_ctx, int sd,
->  				struct tep_record ***data_rows);
->  
-> +/**
-> + * Structure representing the mapping between the virtual CPUs and their
-> + * corresponding processes in the host.
-> + */
-> +struct kshark_host_guest_map {
-> +	/** ID of guest stream */
-> +	int guest_id;
-> +
-> +	/** ID of host stream */
-> +	int host_id;
-> +
-> +	/** Guest name */
-> +	char *guest_name;
-> +
-> +	/** Number of guest's CPUs in *cpu_pid array */
-> +	int vcpu_count;
-> +
-> +	/** Array of host task PIDs, index is the VCPU id */
-> +	int *cpu_pid;
-> +};
-> +
-> +void kshark_tracecmd_free_hostguest_map(struct kshark_host_guest_map *map,
-> +					int count);
-> +
-> +int kshark_tracecmd_get_hostguest_mapping(struct kshark_host_guest_map **map);
-> +
-> +char **kshark_tep_get_buffer_names(struct kshark_context *kshark_ctx, int sd,
-> +				   int *n_buffers);
-> +
-> +int kshark_tep_open_buffer(struct kshark_context *kshark_ctx, int sd,
-> +			   const char *buffer_name);
-> +
-> +int kshark_tep_init_all_buffers(struct kshark_context *kshark_ctx, int sd);
-> +
-> +int kshark_tep_handle_plugins(struct kshark_context *kshark_ctx, int sd);
-> +
-> +int kshark_tep_find_top_stream(struct kshark_context *kshark_ctx,
-> +			       const char *file);
-> +
->  #ifdef __cplusplus
->  }
->  #endif
-> diff --git a/src/libkshark.c b/src/libkshark.c
-> index bd2e4cc0..6ce7b6ba 100644
-> --- a/src/libkshark.c
-> +++ b/src/libkshark.c
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: LGPL-2.1
->  
->  /*
-> - * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-> + * Copyright (C) 2017 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
->   */
->  
->   /**
-> @@ -9,8 +9,10 @@
->   *  @brief   API for processing of tracing data.
->   */
->  
-> +#ifndef _GNU_SOURCE
->  /** Use GNU C Library. */
-> -#define _GNU_SOURCE 1
-> +#define _GNU_SOURCE
-> +#endif // _GNU_SOURCE
->  
->  // C
->  #include <stdlib.h>
-> @@ -36,16 +38,6 @@ static bool kshark_default_context(struct kshark_context **context)
->  				    sizeof(*kshark_ctx->stream));
->  
->  	kshark_ctx->collections = NULL;
-> -	kshark_ctx->plugins = NULL;
-> -
-> -	kshark_ctx->show_task_filter = tracecmd_filter_id_hash_alloc();
-> -	kshark_ctx->hide_task_filter = tracecmd_filter_id_hash_alloc();
-> -
-> -	kshark_ctx->show_event_filter = tracecmd_filter_id_hash_alloc();
-> -	kshark_ctx->hide_event_filter = tracecmd_filter_id_hash_alloc();
-> -
-> -	kshark_ctx->show_cpu_filter = tracecmd_filter_id_hash_alloc();
-> -	kshark_ctx->hide_cpu_filter = tracecmd_filter_id_hash_alloc();
->  
->  	kshark_ctx->filter_mask = 0x0;
->  
-> @@ -386,6 +378,12 @@ void kshark_close(struct kshark_context *kshark_ctx, int sd)
->  	if (!stream)
->  		return;
->  
-> +	/*
-> +	 * All data collections are file specific. Make sure that collections
-> +	 * from this file are not going to be used with another file.
-> +	 */
-> +	kshark_unregister_stream_collections(&kshark_ctx->collections, sd);
-> +
->  	/* Close all active plugins for this stream. */
->  	if (stream->plugins) {
->  		kshark_handle_all_dpis(stream, KSHARK_PLUGIN_CLOSE);
-> @@ -530,103 +528,134 @@ ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int sd,
->  	return stream->tasks->count;
->  }
->  
-> -static bool filter_find(struct tracecmd_filter_id *filter, int pid,
-> +static bool filter_find(struct kshark_hash_id *filter, int pid,
->  			bool test)
->  {
->  	return !filter || !filter->count ||
-> -		!!(unsigned long)tracecmd_filter_id_find(filter, pid) == test;
-> +	       kshark_hash_id_find(filter, pid) == test;
->  }
->  
-> -static bool kshark_show_task(struct kshark_context *kshark_ctx, int pid)
-> +static bool kshark_show_task(struct kshark_data_stream *stream, int pid)
->  {
-> -	return filter_find(kshark_ctx->show_task_filter, pid, true) &&
-> -	       filter_find(kshark_ctx->hide_task_filter, pid, false);
-> +	return filter_find(stream->show_task_filter, pid, true) &&
-> +	       filter_find(stream->hide_task_filter, pid, false);
->  }
->  
-> -static bool kshark_show_event(struct kshark_context *kshark_ctx, int pid)
-> +static bool kshark_show_event(struct kshark_data_stream *stream, int pid)
->  {
-> -	return filter_find(kshark_ctx->show_event_filter, pid, true) &&
-> -	       filter_find(kshark_ctx->hide_event_filter, pid, false);
-> +	return filter_find(stream->show_event_filter, pid, true) &&
-> +	       filter_find(stream->hide_event_filter, pid, false);
->  }
->  
-> -static bool kshark_show_cpu(struct kshark_context *kshark_ctx, int cpu)
-> +static bool kshark_show_cpu(struct kshark_data_stream *stream, int cpu)
->  {
-> -	return filter_find(kshark_ctx->show_cpu_filter, cpu, true) &&
-> -	       filter_find(kshark_ctx->hide_cpu_filter, cpu, false);
-> +	return filter_find(stream->show_cpu_filter, cpu, true) &&
-> +	       filter_find(stream->hide_cpu_filter, cpu, false);
-> +}
-> +
-> +static struct kshark_hash_id *get_filter(struct kshark_context *kshark_ctx,
-> +					 int sd,
-> +					 enum kshark_filter_type filter_id)
-> +{
-> +	struct kshark_data_stream *stream;
-> +
-> +	stream = kshark_get_data_stream(kshark_ctx, sd);
-> +	if (!stream)
-> +		return NULL;
-> +
-> +	return kshark_get_filter(stream, filter_id);
->  }
->  
->  /**
-> - * @brief Add an Id value to the filster specified by "filter_id".
-> + * @brief Get an Id Filter.
-> + *
-> + * @param stream: Input location for a Trace data stream pointer.
-> + * @param filter_id: Identifier of the filter.
-> + */
-> +struct kshark_hash_id *
-> +kshark_get_filter(struct kshark_data_stream *stream,
-> +		  enum kshark_filter_type filter_id)
-> +{
-> +	switch (filter_id) {
-> +	case KS_SHOW_CPU_FILTER:
-> +		return stream->show_cpu_filter;
-> +	case KS_HIDE_CPU_FILTER:
-> +		return stream->hide_cpu_filter;
-> +	case KS_SHOW_EVENT_FILTER:
-> +		return stream->show_event_filter;
-> +	case KS_HIDE_EVENT_FILTER:
-> +		return stream->hide_event_filter;
-> +	case KS_SHOW_TASK_FILTER:
-> +		return stream->show_task_filter;
-> +	case KS_HIDE_TASK_FILTER:
-> +		return stream->hide_task_filter;
-> +	default:
-> +		return NULL;
-> +	}
-> +}
-> +
-> +/**
-> + * @brief Add an Id value to the filter specified by "filter_id".
->   *
->   * @param kshark_ctx: Input location for the session context pointer.
-> + * @param sd: Data stream identifier.
->   * @param filter_id: Identifier of the filter.
->   * @param id: Id value to be added to the filter.
->   */
-> -void kshark_filter_add_id(struct kshark_context *kshark_ctx,
-> +void kshark_filter_add_id(struct kshark_context *kshark_ctx, int sd,
->  			  int filter_id, int id)
->  {
-> -	struct tracecmd_filter_id *filter;
-> +	struct kshark_hash_id *filter;
->  
-> -	switch (filter_id) {
-> -		case KS_SHOW_CPU_FILTER:
-> -			filter = kshark_ctx->show_cpu_filter;
-> -			break;
-> -		case KS_HIDE_CPU_FILTER:
-> -			filter = kshark_ctx->hide_cpu_filter;
-> -			break;
-> -		case KS_SHOW_EVENT_FILTER:
-> -			filter = kshark_ctx->show_event_filter;
-> -			break;
-> -		case KS_HIDE_EVENT_FILTER:
-> -			filter = kshark_ctx->hide_event_filter;
-> -			break;
-> -		case KS_SHOW_TASK_FILTER:
-> -			filter = kshark_ctx->show_task_filter;
-> -			break;
-> -		case KS_HIDE_TASK_FILTER:
-> -			filter = kshark_ctx->hide_task_filter;
-> -			break;
-> -		default:
-> -			return;
-> +	filter = get_filter(kshark_ctx, sd, filter_id);
-> +	if (filter)
-> +		kshark_hash_id_add(filter, id);
-> +}
-> +
-> +/**
-> + * @brief Get an array containing all Ids associated with a given Id Filter.
-> + *
-> + * @param kshark_ctx: Input location for context pointer.
-> + * @param sd: Data stream identifier.
-> + * @param filter_id: Identifier of the filter.
-> + * @param n: Output location for the size of the returned array.
-> + *
-> + * @return The user is responsible for freeing the array.
-> + */
-> +int *kshark_get_filter_ids(struct kshark_context *kshark_ctx, int sd,
-> +			   int filter_id, int *n)
-> +{
-> +	struct kshark_hash_id *filter;
-> +
-> +	filter = get_filter(kshark_ctx, sd, filter_id);
-> +	if (filter) {
-> +		if (n)
-> +			*n = filter->count;
-> +
-> +		return kshark_hash_ids(filter);
->  	}
->  
-> -	tracecmd_filter_id_add(filter, id);
-> +	if (n)
-> +		*n = 0;
-> +
-> +	return NULL;
->  }
->  
->  /**
-> - * @brief Clear (reset) the filster specified by "filter_id".
-> + * @brief Clear (reset) the filter specified by "filter_id".
->   *
->   * @param kshark_ctx: Input location for the session context pointer.
-> + * @param sd: Data stream identifier.
->   * @param filter_id: Identifier of the filter.
->   */
-> -void kshark_filter_clear(struct kshark_context *kshark_ctx, int filter_id)
-> +void kshark_filter_clear(struct kshark_context *kshark_ctx, int sd,
-> +			 int filter_id)
->  {
-> -	struct tracecmd_filter_id *filter;
-> -
-> -	switch (filter_id) {
-> -		case KS_SHOW_CPU_FILTER:
-> -			filter = kshark_ctx->show_cpu_filter;
-> -			break;
-> -		case KS_HIDE_CPU_FILTER:
-> -			filter = kshark_ctx->hide_cpu_filter;
-> -			break;
-> -		case KS_SHOW_EVENT_FILTER:
-> -			filter = kshark_ctx->show_event_filter;
-> -			break;
-> -		case KS_HIDE_EVENT_FILTER:
-> -			filter = kshark_ctx->hide_event_filter;
-> -			break;
-> -		case KS_SHOW_TASK_FILTER:
-> -			filter = kshark_ctx->show_task_filter;
-> -			break;
-> -		case KS_HIDE_TASK_FILTER:
-> -			filter = kshark_ctx->hide_task_filter;
-> -			break;
-> -		default:
-> -			return;
-> -	}
-> +	struct kshark_hash_id *filter;
->  
-> -	tracecmd_filter_id_clear(filter);
-> +	filter = get_filter(kshark_ctx, sd, filter_id);
-> +	if (filter)
-> +		kshark_hash_id_clear(filter);
->  }
->  
->  /**
-> @@ -636,7 +665,7 @@ void kshark_filter_clear(struct kshark_context *kshark_ctx, int filter_id)
->   *
->   * @returns True if the Id filter is set, otherwise False.
->   */
-> -bool kshark_this_filter_is_set(struct tracecmd_filter_id *filter)
-> +bool kshark_this_filter_is_set(struct kshark_hash_id *filter)
->  {
->  	return filter && filter->count;
->  }
-> @@ -645,17 +674,49 @@ bool kshark_this_filter_is_set(struct tracecmd_filter_id *filter)
->   * @brief Check if an Id filter is set.
->   *
->   * @param kshark_ctx: Input location for the session context pointer.
-> + * @param sd: Data stream identifier.
->   *
-> - * @returns True if at least one Id filter is set, otherwise False.
-> + * @returns True if at least one Id filter of the stream is set, otherwise
-> + *	    False.
->   */
-> -bool kshark_filter_is_set(struct kshark_context *kshark_ctx)
-> +bool kshark_filter_is_set(struct kshark_context *kshark_ctx, int sd)
->  {
-> -	return kshark_this_filter_is_set(kshark_ctx->show_task_filter) ||
-> --              kshark_this_filter_is_set(kshark_ctx->hide_task_filter) ||
-> --              kshark_this_filter_is_set(kshark_ctx->show_cpu_filter) ||
-> --              kshark_this_filter_is_set(kshark_ctx->hide_cpu_filter) ||
-> --              kshark_this_filter_is_set(kshark_ctx->show_event_filter) ||
-> --              kshark_this_filter_is_set(kshark_ctx->hide_event_filter);
-> +	struct kshark_data_stream *stream;
-> +
-> +	stream = kshark_get_data_stream(kshark_ctx, sd);
-> +	if (!stream)
-> +		return false;
-> +
-> +	return kshark_this_filter_is_set(stream->show_task_filter) ||
-> +	       kshark_this_filter_is_set(stream->hide_task_filter)  ||
-> +	       kshark_this_filter_is_set(stream->show_cpu_filter)   ||
-> +	       kshark_this_filter_is_set(stream->hide_cpu_filter)   ||
-> +	       kshark_this_filter_is_set(stream->show_event_filter) ||
-> +	       kshark_this_filter_is_set(stream->hide_event_filter);
-> +}
-> +
-> +/**
-> + * @brief Apply filters to a given entry.
-> + *
-> + * @param kshark_ctx: Input location for the session context pointer.
-> + * @param stream: Input location for a Trace data stream pointer.
-> + * @param entry: Input location for entry.
-> + */
-> +void kshark_apply_filters(struct kshark_context *kshark_ctx,
-> +			  struct kshark_data_stream *stream,
-> +			  struct kshark_entry *entry)
-> +{
-> +	/* Apply event filtering. */
-> +	if (!kshark_show_event(stream, entry->event_id))
-> +		unset_event_filter_flag(kshark_ctx, entry);
-> +
-> +	/* Apply CPU filtering. */
-> +	if (!kshark_show_cpu(stream, entry->cpu))
-> +		entry->visible &= ~kshark_ctx->filter_mask;
-> +
-> +	/* Apply task filtering. */
-> +	if (!kshark_show_task(stream, entry->pid))
-> +		entry->visible &= ~kshark_ctx->filter_mask;
->  }
->  
->  static void set_all_visible(uint8_t *v) {
-> @@ -663,56 +724,100 @@ static void set_all_visible(uint8_t *v) {
->  	*v |= 0xFF & ~KS_PLUGIN_UNTOUCHED_MASK;
->  }
->  
-> +static void filter_entries(struct kshark_context *kshark_ctx, int sd,
-> +			   struct kshark_entry **data, size_t n_entries)
-> +{
-> +	struct kshark_data_stream *stream = NULL;
-> +	size_t i;
-> +
-> +	/* Sanity checks before starting. */
-> +	if (sd >= 0) {
-> +		/* We will filter particular Data stream. */
-> +		stream = kshark_get_data_stream(kshark_ctx, sd);
-> +		if (!stream)
-> +			return;
-> +
-> +		if (stream->format == KS_TEP_DATA &&
-> +		    kshark_tep_filter_is_set(stream)) {
-> +			/* The advanced filter is set. */
-> +			fprintf(stderr,
-> +				"Failed to filter (sd = %i)!\n", sd);
-> +			fprintf(stderr,
-> +				"Reset the Advanced filter or reload the data.\n");
-> +
-> +			return;
 > +		}
 > +
-> +		if (!kshark_filter_is_set(kshark_ctx, sd))
-> +			return;
+> +		timestamps[k] = (sample_send[i].ts + server->samples[i].ts) / 2;
+> +		offsets[k] = client->samples[i].ts - timestamps[k];
+> +		if (!offset_max || offset_max < llabs(offsets[k]))
+> +			offset_max = llabs(offsets[k]);
+
+No need for the offset_max check.
+
+> +		if (!offset_min || offset_min > llabs(offsets[k]))
+
+Same trick with LLONG_MAX.
+
+> +			offset_min = llabs(offsets[k]);
+> +#ifdef TSYNC_DEBUG
+> +		{
+> +			struct ptp_clock_sync *ptp;
+> +
+> +			ptp = (struct ptp_clock_sync *)clock->proto_data;
+> +
+> +			if (ptp && ptp->debug_fd > 0) {
+> +				char buff[256];
+> +
+> +				sprintf(buff, "%lld %lld %lld\n",
+> +					timestamps[k],
+> +					client->samples[i].ts, offsets[k]);
+> +				write(ptp->debug_fd, buff, strlen(buff));
+> +			}
+> +		}
+> +#endif
+> +		k++;
 > +	}
 > +
-> +	/* Apply only the Id filters. */
-> +	for (i = 0; i < n_entries; ++i) {
-> +		if (sd >= 0) {
-> +			/*
-> +			 * We only filter particular stream. Chack is the entry
-> +			 * belongs to this stream.
-> +			 */
-> +			if (data[i]->stream_id != sd)
-> +				continue;
-> +		} else {
-> +			/* We filter all streams. */
-> +			stream = kshark_ctx->stream[data[i]->stream_id];
+> +	bin = (offset_max - offset_min) / PTP_SYNC_LOOP;
+> +	for (i = 0; i < k; i++) {
+> +		ind = (llabs(offsets[i]) - offset_min) / bin;
+> +		if (ind < PTP_SYNC_LOOP) {
+> +			hist[ind]++;
+> +			if (max < hist[ind]) {
+> +				max = hist[ind];
+> +				*offset_ret = offsets[i];
+> +				*ts_ret = timestamps[i];
+> +			}
 
-Like we have discussed, we should be able to get a stream from the
-kshark_ctx and the content of data[i], if we make data[i] point to a
-pointer to an entry.
+I'm curious to how accurate this is?
 
 -- Steve
 
-
 > +		}
-> +
-> +		/* Start with and entry which is visible everywhere. */
-> +		set_all_visible(&data[i]->visible);
-> +
-> +		/* Apply Id filtering. */
-> +		kshark_apply_filters(kshark_ctx, stream, data[i]);
 > +	}
+> +
+> +	return 0;
 > +}
 > +
