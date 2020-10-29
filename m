@@ -1,178 +1,195 @@
-Return-Path: <SRS0=0pJJ=EB=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=entZ=EE=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB34FC2D0A3
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Oct 2020 07:38:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FFAAC2D0A3
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Oct 2020 10:08:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5E2C7223AB
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Oct 2020 07:38:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 944DC2076E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Oct 2020 10:08:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDoe4FaV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xf4Af6l4"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769971AbgJZHiV (ORCPT
+        id S1725773AbgJ2KI2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 26 Oct 2020 03:38:21 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:55980 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1769970AbgJZHiU (ORCPT
+        Thu, 29 Oct 2020 06:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgJ2KI2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 26 Oct 2020 03:38:20 -0400
-Received: by mail-pj1-f68.google.com with SMTP id c17so2746641pjo.5
-        for <linux-trace-devel@vger.kernel.org>; Mon, 26 Oct 2020 00:38:20 -0700 (PDT)
+        Thu, 29 Oct 2020 06:08:28 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D30BC0613CF
+        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Oct 2020 03:08:26 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c16so1845198wmd.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Oct 2020 03:08:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ztabRgQCO4tzpda0ipjhj3iQW4nXr8tYeNkQTKDBNlY=;
-        b=iDoe4FaVziGqU3RYVP8nZQXGQw1GTcnfXTwkbRgHCRwSNEats+yNs/w4w0y89OpSJO
-         hC7qGVs8aTKg2N3QiPg7x4xJbLNov5Sn/1tmMKfEmPgrjrYjQkXpUbl9J9Cv33ES4J+C
-         NOX0+QIkGOWyecbyopFcOsGrJhI6IsLKbohtczq/LpM3ZQUCI97Ua/ryXZt9H4JNqbmd
-         5HOWXuBeGxr7BhkYVXF3/5/fW1O+Knkcj1g7JlcDss/Z4apc8BxpZBAD9r4e8Y8QhYeW
-         oPJd8QJZlWc19zD3ais2om9cSQEFW/1mbQQ8ksw3uitAYDTRBD+CZAgFikZW2UjoeZhO
-         U/IQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h/YmW9hLf54hcdEBbDjehcadyyVw9bt+9qjzpk01BwI=;
+        b=Xf4Af6l46PyqM/mK0XO37od84JKM6mSED7TaOff8du/oRsfgMIozL1MSYJMa5rMv2Q
+         KLfNKQ9dyQFs/aT8oM5F3UFvtSVjuCI+4X1Zdq4a7cBl+cz3MMWbwUQW426Wp8gxPGCj
+         O3e5ycFqbPSH7IES8CLMiGXPS32erG3P9WiLZG2GXVR82vB/vpH9hNHvTJpg8DrZrbQg
+         QXzN69q+VOO/TUIO2QaosgcwBDh0/W+pUmgsG35Hv5FYVdliH4vjRmq8uud65qVvmHzi
+         pAX0mw6jdIanVd5aQLnbJ/xB5tfVwSUR1kDXne/QkHuBVCGp/njVovm88XpQ0J4qb8n/
+         QcHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ztabRgQCO4tzpda0ipjhj3iQW4nXr8tYeNkQTKDBNlY=;
-        b=M9pZOZw2DnV/5VJKI7wEkAS4Zr/+/Ts+9DsUzRe3XuYnDFBTKcuF790SBpKYksJo3m
-         SWbAR7bRpn8gOHsf20/YnXep2lHaRHLK+3vArqtXnZwj2JLwnepjN5h2A7V7wuuvOFWJ
-         rN4O258f8mF0rWE+L5dOz0608RM9m1ENXXrbl0Zw6+RggF37TrmLRiSxjNrO81cKl/wu
-         Kzh+ddNf+FmyAV58jl30iYfHgdJJelWXpOCSmVW2P0mgtgY/Grb+P0/Hb10LTkyNzB2M
-         iFAbP11WkpBGhoKILWbkS1c6MxdkvCV1JgvbVol5XGaHR2+IV2bLcyUZst6WseKmA8Jk
-         oBlA==
-X-Gm-Message-State: AOAM531FFvUeYvIWiVBSZUT4C3jnzCupFVJmv/LCnzdIGmmLMYY6j6xs
-        kX0IWzR2yrXyAUYhF57HcAArILpSwWtAXlSenojBh8/0gtc8lVJ+
-X-Google-Smtp-Source: ABdhPJyApIj4VemZ5MZAVj52Z8kr5T7/XrU7wHjAGyCAKY5blFa2txkFsDFKVwYqGJk5K+93i/liI31rIgQLxiwQJM4=
-X-Received: by 2002:a17:90a:498d:: with SMTP id d13mr18904360pjh.100.1603697899930;
- Mon, 26 Oct 2020 00:38:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201009140338.25260-1-tz.stoyanov@gmail.com> <20201009140338.25260-2-tz.stoyanov@gmail.com>
- <20201015172420.699a4cdc@gandalf.local.home>
-In-Reply-To: <20201015172420.699a4cdc@gandalf.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 26 Oct 2020 09:38:03 +0200
-Message-ID: <CAPpZLN6C8Q1EJLurdmTTZ44m-eA6Jk0yE8qGA9B+fa7=hbY5sg@mail.gmail.com>
-Subject: Re: [PATCH v24 01/10] trace-cmd: [POC] PTP-like algorithm for host -
- guest timestamp synchronization
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h/YmW9hLf54hcdEBbDjehcadyyVw9bt+9qjzpk01BwI=;
+        b=LYURoXG/KgspAWltHzupPQBavhjh/ihT1b+bKAq7bPJnBy/WNoWzVwPgO+2GRI/hsD
+         cyH+cYQnovN66TaV3HE22uBh3I7Vy5DpYJKKOIdOa9QsPAhTXPVH0Jw5eEvmMU2EyNXE
+         yuGm8BgG6+5pHe3rmMqBazA3bbWRNjSXmPXee8HhzBep3Zys8c1e+gLVnUWWXsSGgDOr
+         5X8celdxRVZpV131KzI91oJggqQTFeIco6QvgmPpXXEq9LoqwFKGngdjXceF53QKUm3r
+         m6HJwvZpQTA+XreiTVv6w9s3wFSYrRG4qOypAuJTO4nB30mPuiAtZt7dxZ60Pdqshxi4
+         PVsQ==
+X-Gm-Message-State: AOAM531oS90GuWyoQpHqcGKlrqUo7gAHH0DicNidz0oGc8OGXQMHxahU
+        krGaL6kZ4yYBm0WsQf/EPK7N14JYq18=
+X-Google-Smtp-Source: ABdhPJwdC2IMlKBml0AR4p7JOanu/em3NDLSjCajTa3oWBuZEEQqe+51aRAt1+WnZt7mOMD9OFgYPg==
+X-Received: by 2002:a1c:7dc5:: with SMTP id y188mr3405836wmc.37.1603966102010;
+        Thu, 29 Oct 2020 03:08:22 -0700 (PDT)
+Received: from [192.168.0.108] ([84.40.73.62])
+        by smtp.gmail.com with ESMTPSA id e2sm4458037wrr.85.2020.10.29.03.08.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 03:08:21 -0700 (PDT)
+Subject: Re: [PATCH v2 05/20] kernel-shark: Add stream_id to kshark_entry
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-trace-devel@vger.kernel.org
+References: <20201012133523.469040-1-y.karadz@gmail.com>
+ <20201012133523.469040-6-y.karadz@gmail.com>
+ <20201012200544.03d67163@oasis.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <5f9cca7b-301c-d9f7-86ce-dbdb62dc9b12@gmail.com>
+Date:   Thu, 29 Oct 2020 12:08:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201012200544.03d67163@oasis.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 12:24 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-[...]
-> > +
-> > +static void ptp_probe_store(struct ptp_markers_context *ctx,
-> > +                         struct ptp_marker *marker,
-> > +                         unsigned long long ts)
-> > +{
-> > +     int index = -1;
-> > +
-> > +     if (marker->data.packet_id == 'r' &&
-> > +         marker->data.count <= ctx->size) {
-> > +             index = marker->data.count - 1;
-> > +     } else if (marker->data.packet_id == 's' &&
-> > +               marker->data.count*2 <= ctx->size){
-> > +             index = ctx->size / 2 + marker->data.count - 1;
->
-> These calculations should be turned into macros, or at the very least have
-> comments to why this is done.
->
-> Also, data.count for both should always be less than or equal ctx->size /
-> 2, right?
->
-> If the ctx->size is for both, then the count should only be half. Wouldn't
-> the 'r' packet start writing over the 's' packets if it is not? If this is
-> the case, then we could simplify this to:
->
->         if (marker->data.count > ctx->size / 2)
->                 return;
->
->         index = marker->data_count - 1;
->
->         switch (marker->data.packet_id) {
->         case 'r':
->                 break;
->         case 's':
->                 index += ctx->size / 2;
->                 break;
->         default:
->                 return;
->         }
->
->         ctx->msg.samples[index].id = marker->data.count;
->         ctx->msg.samples[index].ts = ts;
->         ctx->msg.count++;
->
-> BTW, when would the samples[index].id ever equal to something other than
-> the index + 1, or index + size / 2 + 1?
->
-I'll add comment to the ptp_probe_store() function, describing its
-logic. It is a little
-bit confusing, as it handles both cases - server and client. The
-server tracks both sent
-and returned probes, in that case the array size is 2 * max data count
-- first are stored
-returned probes, after them are sent probes. In the client context,
-there are only returned
-probes and the array size is max data count. The samples[index].id is
-always the count
-of the current probe, it could be index + 1 or index + size / 2 + 1
-only, no other values.
-I store it in the ID field, as in the server context there are two
-entries (sent and received)
-with the same probe count, and it is easier to match both based on
-this ID when do the
-calculations. I can use the index only, to find both sent and returned
-probes and to assume
-that both probes match, but I prefered to use this ID to verify if
-both records are from
-the same probe.
 
-[...]
-> > +
-> > +     bin = (offset_max - offset_min) / PTP_SYNC_LOOP;
-> > +     for (i = 0; i < k; i++) {
-> > +             ind = (llabs(offsets[i]) - offset_min) / bin;
-> > +             if (ind < PTP_SYNC_LOOP) {
-> > +                     hist[ind]++;
-> > +                     if (max < hist[ind]) {
-> > +                             max = hist[ind];
-> > +                             *offset_ret = offsets[i];
-> > +                             *ts_ret = timestamps[i];
-> > +                     }
->
-> I'm curious to how accurate this is?
->
-Using the histogram logic, an accuracy from 200ns up to 15 000ns can
-be achieved,
-results vary a lot. The accuracy of the fastest response logic is
-around 1000ns - 3000ns usually.
 
+On 13.10.20 г. 3:05 ч., Steven Rostedt wrote:
+> On Mon, 12 Oct 2020 16:35:08 +0300
+> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+> 
+>> kshark_entry contains all information from one trace record, needed
+>> in order to visualize the time-series of trace records. Here we
+>> reorganize data fields to kshark_entry in order to make room for
+>> the unique identifier of the Data stream this entry belongs to.
+>>
+>> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+>> ---
+>>   src/libkshark.c |  2 +-
+>>   src/libkshark.h | 12 +++++++++---
+>>   2 files changed, 10 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/src/libkshark.c b/src/libkshark.c
+>> index 52aacd30..92e2450c 100644
+>> --- a/src/libkshark.c
+>> +++ b/src/libkshark.c
+>> @@ -489,7 +489,7 @@ static inline void unset_event_filter_flag(struct kshark_context *kshark_ctx,
+>>   	e->visible &= ~event_mask;
+>>   }
+>>   
+>> -static void set_all_visible(uint16_t *v) {
+>> +static void set_all_visible(uint8_t *v) {
+>>   	/*  Keep the original value of the PLUGIN_UNTOUCHED bit flag. */
+>>   	*v |= 0xFF & ~KS_PLUGIN_UNTOUCHED_MASK;
+>>   }
+>> diff --git a/src/libkshark.h b/src/libkshark.h
+>> index 1165c512..fe0ba7f2 100644
+>> --- a/src/libkshark.h
+>> +++ b/src/libkshark.h
+>> @@ -1,7 +1,7 @@
+>>   /* SPDX-License-Identifier: LGPL-2.1 */
+>>   
+>>   /*
+>> - * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
+>> + * Copyright (C) 2017 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+>>    */
+>>   
+>>    /**
+>> @@ -49,7 +49,10 @@ struct kshark_entry {
+>>   	 * kshark_filter_masks to check the level of visibility/invisibility
+>>   	 * of the entry.
+>>   	 */
+>> -	uint16_t	visible;
+>> +	uint8_t		visible;
+> 
+> Why did the visible variable turn from 16bits to 8 bits?
+> 
+> That should be stated in the change log.
+> 
+
+After further discussing this on a call with Steven we decided to keep 
+the "visible" field 16 bit and to define the "stream_id" to be a 16 bit 
+integer as well. Those 16 bit will be taken from the event_id. This is 
+OK because the Id of the trace event is coded with only 16 bit in the 
+kernel anyway.
+
+>> +
+>> +	/** Data stream identifier. */
+>> +	int8_t		stream_id;
+>>   
+>>   	/** The CPU core of the record. */
+>>   	int16_t		cpu;
+>> @@ -57,7 +60,7 @@ struct kshark_entry {
+>>   	/** The PID of the task the record was generated. */
+>>   	int32_t		pid;
+>>   
+>> -	/** Unique Id ot the trace event type. */
+>> +	/** Unique Id of the trace event type. */
+>>   	int32_t		event_id;
+>>   
+>>   	/** The offset into the trace file, used to find the record. */
+>> @@ -319,6 +322,9 @@ struct kshark_data_stream {
+>>   	struct kshark_data_stream_interface	interface;
+>>   };
+>>   
+>> +/** Hard-coded maximum number of data stream. */
+>> +#define KS_MAX_NUM_STREAMS	127
+> 
+> Will this become a variable?
+> 
+> Let's say we have a really powerful machine with a lot of memory. And
+> we have a data file with 500 CPUs traced, and we want to look at all of
+> them? Will this be a hard limit to change in the future without recompiling.
+> 
+> I've been hit by restrictions like this in code in the past, and know
+> that things like this can stay in the code for a long time, to a point
+> where they are no longer reasonable. I just want to make sure that we
+> don't get stuck with that. I've learned to look at all hard limits with
+> extra care, knowing that they are always a pain point in the future.
+
+
+Now when we have 16 bit available for coding the stream Id, we no longer 
+need to enforce such a small limit for the total number of streams loaded.
+
+Thanks Steven!
+
+Yordan
+
+> 
 > -- Steve
-
-Thanks Steve!
-I'll send the next version of the patch set addressing these comments.
-
->
-> > +             }
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-
-
-
---
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+> 
+> 
+>> +
+>>   /** Size of the task's hash table. */
+>>   #define KS_TASK_HASH_SHIFT 16
+>>   #define KS_TASK_HASH_SIZE (1 << KS_TASK_HASH_SHIFT)
+> 
