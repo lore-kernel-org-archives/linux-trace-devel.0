@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CBD9C55178
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Oct 2020 11:18:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAFC8C55178
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Oct 2020 11:18:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DE0E720796
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Oct 2020 11:18:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 917E52076B
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Oct 2020 11:18:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rcfq/8Rg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eHqNwyiy"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727502AbgJ2LS0 (ORCPT
+        id S1727402AbgJ2LSb (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Oct 2020 07:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        Thu, 29 Oct 2020 07:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727484AbgJ2LS0 (ORCPT
+        with ESMTP id S1727517AbgJ2LS2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:18:26 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97570C0613CF
-        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Oct 2020 04:18:25 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id n18so2316790wrs.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Oct 2020 04:18:25 -0700 (PDT)
+        Thu, 29 Oct 2020 07:18:28 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93D8C0613D3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Oct 2020 04:18:27 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k10so981763wrw.13
+        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Oct 2020 04:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QYaNTjkzM/NU4fiSxZjBlvOYiFYCZJuXfOaHoIjd6MY=;
-        b=rcfq/8Rg0LAwa5NQpQqkPZYX8XjCCClXNC7z2Zo2lqO5SmNCxe9AXmuFwGVGf2ag/V
-         ugRBzAR3gan7Pc6MJacmGhkyvhq6sJqnZ4ulCN3bKY2/We/SVnyS6VpffaeJri6DCPPs
-         0qTOgGI1lwgkM9+dhTW7c1mV0RoazxNh+VOLChvRcF44fdphwRYc5YdKGN/sl4DHWx+4
-         d+p/xZkr2AQaFkyQ9LdEeNcBYklzfdGkWFbbd58iqx/TiIKxm2MMvEEeU6n5shkvS+y1
-         jpOZWig8aRsEQLFwCozNG4bNYFTd9BPCCIIrHOPon6cfdMp35udvxuVhu0sOI3syuwIF
-         bg6g==
+        bh=MqxGgrpZYfQSn1TJE5oKSGtG4OzwEvpheqILMhjdA4E=;
+        b=eHqNwyiyyA1fIKwmgrvLG1KsBfn3vBQleqCX36Md2hEl4oweX0QP18RnWwQxdw8mp7
+         yUHHS2HBLTof21NYWpGwhY3DkzXGbrTlWwWq3udTZrWranMPc2h3dbqPnZ1bDLn0xB0V
+         Bg4bmLtICYkp0ZYKTpHSJVoIzMQlSIVh/vzMhZGVhjRWKmqbqtcStKzjU9dVtX1lDucc
+         TUNkU7Oe6HSPQ6zM2WwOphhy/6ueiREPRFoJi/cbFMil8DIfeIquz0gVxsSfRy0rIqCA
+         B1P/C3kU3iP4iN+U7XbyFuUWDHtDPVP8YUt46XVoLPlr5/f6DUyS1rZ0urwRRBu9eW3S
+         xRdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QYaNTjkzM/NU4fiSxZjBlvOYiFYCZJuXfOaHoIjd6MY=;
-        b=StbfuZLf/vN4xTjvvAidq5Z1Bvktp9cYEt8JQS/qKr/I24hvbsAvRAo5vMonunH8TL
-         o1FiWtTcH2k2TJnT120U+kYTFrMVkr6Xj/10Hnbg7yOxV+pYfOObpnSassQmsFpx5Zvo
-         DdUeLxO1dLxtHRb/PIgmsT3nwZaabu1BsX80YdtmyVmFPQ9+WjpKD+p65q2tbcGeRWeJ
-         PBcvp3cheMokgNMU/lIUMaTXOJKkeDo3vnmcAPUFNI/Jlj/fR4cWbePiHAJvlXsEpeeU
-         yhdd4YvM6qmxRmDg/Al1Z8rHENVi9i9tcPuRXhwJYiBAW+9lFsV5fEkRtFpCqO/k+vu9
-         63uQ==
-X-Gm-Message-State: AOAM530j/C7KI10vIt46s5H2+E1qG61vnE85JzozMypdYcedJ+FDd+et
-        QaWeAHD6sgANPWtIrABsPOOnBPS+Ha8kGyLn
-X-Google-Smtp-Source: ABdhPJx3hOeQDoPjJOmTjQcm0jlC8dzkfiKHYI6drW00PiRzs2JHTwuFUxtkpKfV21FZ//DYHbcbnQ==
-X-Received: by 2002:adf:fe4b:: with SMTP id m11mr4678316wrs.98.1603970304313;
-        Thu, 29 Oct 2020 04:18:24 -0700 (PDT)
+        bh=MqxGgrpZYfQSn1TJE5oKSGtG4OzwEvpheqILMhjdA4E=;
+        b=s7DfOJsdXzB2BHvSZgQhKazl79QxwNN8O+4Jl1oJehj5LXINZlJbm5wd4TvvIKFN6P
+         A6t31Y6TT5rVz3wB3IjY6sWBXxhHW5Vpp+E5s/MvXViXMVDTRbh4KNjZESK016JLr/Eb
+         LwfBjxSsREg2dM+t4RQ7wx7Ek188MiN+qDtmQkTR3RjtakVdO+0LvyE5HhIsakRFxN7V
+         STY0SFSgmZosN9GuFviqT574WilI9I4iIu6xLfgcs3L94nM+D8CsMB0KIkjbs5w9bJvH
+         JLB3mCo2AA/mX2tsgOE0QcGp4q7EV8htLmqdrKY23LX+48DbIvFl9VdntsNG1vYilxc3
+         j7EA==
+X-Gm-Message-State: AOAM532oYxdliOcK8KyMkxHerpTNGtdXhT+fnCidYxVkmkruRLe6AC6/
+        xs/eXM3QEG1J0IFXBi1UkKM3+JEdLIndxLcT
+X-Google-Smtp-Source: ABdhPJxD1FofchFf/sqDajvLl7WJ4C+YIL7duuyqNONLsHw+y2XomCimnJjCARsX5aY0jKFw/aBOQA==
+X-Received: by 2002:adf:9e08:: with SMTP id u8mr4766171wre.282.1603970306679;
+        Thu, 29 Oct 2020 04:18:26 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id a199sm4308067wmd.8.2020.10.29.04.18.23
+        by smtp.gmail.com with ESMTPSA id a199sm4308067wmd.8.2020.10.29.04.18.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 04:18:23 -0700 (PDT)
+        Thu, 29 Oct 2020 04:18:25 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v25 05/16] trace-cmd: Add clock parameter to timestamp synchronization plugins
-Date:   Thu, 29 Oct 2020 13:18:05 +0200
-Message-Id: <20201029111816.247241-6-tz.stoyanov@gmail.com>
+Subject: [PATCH v25 07/16] trace-cmd: Add host / guest role in timestamp synchronization context
+Date:   Thu, 29 Oct 2020 13:18:07 +0200
+Message-Id: <20201029111816.247241-8-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201029111816.247241-1-tz.stoyanov@gmail.com>
 References: <20201029111816.247241-1-tz.stoyanov@gmail.com>
@@ -75,187 +75,54 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Some timestamp synchronization plugins may not support all ftrace
-clocks. Added logic to timestamp synchronization plugins to declare what
-ftace clocks they support. Added logic to select plugin depending on the
-ftrace clock used in the current trace session and supported clocks.
+Added new parameter in timestamp synchronization context, holding the
+current role in the timestamp synchronization process - host or guest.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h             |  4 ++--
- lib/trace-cmd/include/trace-tsync-local.h |  1 +
- lib/trace-cmd/trace-timesync.c            | 29 +++++++++++++++++++----
- tracecmd/trace-record.c                   | 10 +++++++-
- tracecmd/trace-tsync.c                    |  2 +-
- 5 files changed, 38 insertions(+), 8 deletions(-)
+ lib/trace-cmd/include/trace-tsync-local.h | 1 +
+ lib/trace-cmd/trace-timesync.c            | 9 ++++++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index b48381cd..21028940 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -448,8 +448,8 @@ struct tracecmd_time_sync {
- };
- 
- void tracecmd_tsync_init(void);
--int tracecmd_tsync_proto_getall(char ***protos);
--char *tracecmd_tsync_proto_select(char **protos);
-+int tracecmd_tsync_proto_getall(char ***protos, const char *clock);
-+char *tracecmd_tsync_proto_select(char **protos, char *clock);
- bool tsync_proto_is_supported(char *proto_name);
- void tracecmd_tsync_with_host(struct tracecmd_time_sync *tsync);
- void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync);
 diff --git a/lib/trace-cmd/include/trace-tsync-local.h b/lib/trace-cmd/include/trace-tsync-local.h
-index 1f3bc443..25d5b4e8 100644
+index 33add609..793737e8 100644
 --- a/lib/trace-cmd/include/trace-tsync-local.h
 +++ b/lib/trace-cmd/include/trace-tsync-local.h
-@@ -27,6 +27,7 @@ struct clock_sync_context {
- };
+@@ -11,6 +11,7 @@
+ struct clock_sync_context {
+ 	void				*proto_data;	/* time sync protocol specific data */
+ 	bool				is_server;	/* server side time sync role */
++	bool				is_guest;	/* guest or host time sync role */
+ 	struct tracefs_instance		*instance;	/* ftrace buffer, used for time sync events */
  
- int tracecmd_tsync_proto_register(char *proto_name, int accuracy,
-+				  int supported_clocks,
- 				  int (*init)(struct tracecmd_time_sync *),
- 				  int (*free)(struct tracecmd_time_sync *),
- 				  int (*calc)(struct tracecmd_time_sync *,
+ 	/* Arrays with calculated time offsets at given time */
 diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
-index 58c92ef3..8ca47bf6 100644
+index d461392b..12e00686 100644
 --- a/lib/trace-cmd/trace-timesync.c
 +++ b/lib/trace-cmd/trace-timesync.c
-@@ -26,6 +26,7 @@ struct tsync_proto {
- 	struct tsync_proto *next;
- 	char proto_name[TRACECMD_TSYNC_PNAME_LENGTH];
- 	int accuracy;
-+	int supported_clocks;
- 
- 	int (*clock_sync_init)(struct tracecmd_time_sync *clock_context);
- 	int (*clock_sync_free)(struct tracecmd_time_sync *clock_context);
-@@ -50,6 +51,7 @@ static struct tsync_proto *tsync_proto_find(char *proto_name)
+@@ -283,7 +283,7 @@ clock_synch_delete_instance(struct tracefs_instance *inst)
+ 	tracefs_instance_free(inst);
  }
  
- int tracecmd_tsync_proto_register(char *proto_name, int accuracy,
-+				  int supported_clocks,
- 				  int (*init)(struct tracecmd_time_sync *),
- 				  int (*free)(struct tracecmd_time_sync *),
- 				  int (*calc)(struct tracecmd_time_sync *,
-@@ -64,6 +66,7 @@ int tracecmd_tsync_proto_register(char *proto_name, int accuracy,
- 		return -1;
- 	strncpy(proto->proto_name, proto_name, TRACECMD_TSYNC_PNAME_LENGTH);
- 	proto->accuracy = accuracy;
-+	proto->supported_clocks = supported_clocks;
- 	proto->clock_sync_init = init;
- 	proto->clock_sync_free = free;
- 	proto->clock_sync_calc = calc;
-@@ -137,20 +140,26 @@ int tracecmd_tsync_get_offsets(struct tracecmd_time_sync *tsync,
-  *		timestamp synchronization with a peer
-  *
-  * @protos: array of pointers to protocol names
-+ * @clock : trace clock
-  *
-  * Retuns pointer to a protocol name, that can be used with the peer, or NULL
-  *	  in case there is no match with supported protocols.
-  *	  The returned string MUST NOT be freed by the caller
-  */
--char *tracecmd_tsync_proto_select(char **protos)
-+char *tracecmd_tsync_proto_select(char **protos, char *clock)
+-static int clock_context_init(struct tracecmd_time_sync *tsync, bool server)
++static int clock_context_init(struct tracecmd_time_sync *tsync, bool guest)
  {
- 	struct tsync_proto *selected = NULL;
- 	struct tsync_proto *proto;
- 	char **pname;
-+	int clock_id = 0;
- 
-+	clock_id = tracecmd_clock_str2id(clock);
- 	pname = protos;
- 	while (*pname) {
- 		for (proto = tsync_proto_list; proto; proto = proto->next) {
-+			if (proto->supported_clocks && clock_id &&
-+			    !(proto->supported_clocks & clock_id))
-+				continue;
- 			if (strncmp(proto->proto_name, *pname, TRACECMD_TSYNC_PNAME_LENGTH))
- 				continue;
- 			if (selected) {
-@@ -173,26 +182,38 @@ char *tracecmd_tsync_proto_select(char **protos)
-  *				 time sync protocols
-  * @protos: return, allocated array of time sync protocol names,
-  *	       supported by the peer. Must be freed by free()
-+ * @clock: selected trace clock
-  *
-  * If completed successfully 0 is returned and allocated array in @protos of
-  * strings. The last array entry is NULL.  In case of an error, -1 is returned.
-  * @protos must be freed with free()
-  */
--int tracecmd_tsync_proto_getall(char ***protos)
-+int tracecmd_tsync_proto_getall(char ***protos, const char *clock)
- {
- 	struct tsync_proto *proto;
-+	int clock_id = 0;
- 	int count = 1;
- 	int i;
- 
--	for (proto = tsync_proto_list; proto; proto = proto->next)
-+	if (clock)
-+		clock_id =  tracecmd_clock_str2id(clock);
-+	for (proto = tsync_proto_list; proto; proto = proto->next) {
-+		if (proto->supported_clocks && clock_id &&
-+		    !(proto->supported_clocks & clock_id))
-+			continue;
- 		count++;
-+	}
- 
- 	*protos = calloc(count, sizeof(char *));
- 	if (!protos)
+ 	struct clock_sync_context *clock = NULL;
+ 	struct tsync_proto *protocol;
+@@ -298,8 +298,11 @@ static int clock_context_init(struct tracecmd_time_sync *tsync, bool server)
+ 	clock = calloc(1, sizeof(struct clock_sync_context));
+ 	if (!clock)
  		return -1;
- 
--	for (i = 0, proto = tsync_proto_list; proto && i < (count - 1); proto = proto->next)
-+	for (i = 0, proto = tsync_proto_list; proto && i < (count - 1); proto = proto->next) {
-+		if (proto->supported_clocks && clock_id &&
-+		    !(proto->supported_clocks & clock_id))
-+			continue;
- 		(*protos)[i++] = proto->proto_name;
-+	}
- 
- 	return 0;
- }
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 1149aaaa..41e0dd3a 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -3675,8 +3675,11 @@ static void connect_to_agent(struct buffer_instance *instance)
- 	if (!msg_handle)
- 		die("Failed to allocate message handle");
- 
-+	if (!instance->clock)
-+		instance->clock = tracefs_get_clock(NULL);
-+
- 	if (instance->tsync.loop_interval >= 0)
--		tracecmd_tsync_proto_getall(&protos);
-+		tracecmd_tsync_proto_getall(&protos, instance->clock);
- 
- 	ret = tracecmd_msg_send_trace_req(msg_handle, instance->argc,
- 					  instance->argv, use_fifos,
-@@ -6112,6 +6115,11 @@ static void parse_record_options(int argc,
- 						 (char *)top_instance.clock,
- 						 true);
- 					add_argv(instance, "-C", true);
-+					if (!instance->clock) {
-+						instance->clock = strdup((char *)top_instance.clock);
-+						if (!instance->clock)
-+							die("Could not allocate instance clock");
-+					}
- 				}
- 			}
- 			instance->tsync.loop_interval = top_instance.tsync.loop_interval;
-diff --git a/tracecmd/trace-tsync.c b/tracecmd/trace-tsync.c
-index bd96110d..2c8afe30 100644
---- a/tracecmd/trace-tsync.c
-+++ b/tracecmd/trace-tsync.c
-@@ -219,7 +219,7 @@ char *tracecmd_guest_tsync(char **tsync_protos, char *clock,
- 	int fd;
- 
- 	fd = -1;
--	proto = tracecmd_tsync_proto_select(tsync_protos);
-+	proto = tracecmd_tsync_proto_select(tsync_protos, clock);
- 	if (!proto)
- 		return NULL;
- #ifdef VSOCK
+-
+-	clock->is_server = server;
++	clock->is_guest = guest;
++	if (clock->is_guest)
++		clock->is_server = true;
++	else
++		clock->is_server = false;
+ 	if (get_vsocket_params(tsync->msg_handle->fd, &clock->local_cid,
+ 			       &clock->local_port, &clock->remote_cid,
+ 			       &clock->remote_port))
 -- 
 2.26.2
 
