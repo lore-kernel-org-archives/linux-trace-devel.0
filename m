@@ -6,26 +6,26 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C2F2C56201
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 01:56:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6695CC388F9
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 01:56:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EA13F206CA
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 01:56:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1532A2076E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 01:56:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725290AbgKLBbB (ORCPT
+        id S1725999AbgKLBbB (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 11 Nov 2020 20:31:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44264 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726479AbgKKWnS (ORCPT
+        id S1725290AbgKKWnF (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:43:18 -0500
+        Wed, 11 Nov 2020 17:43:05 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D569208FE;
-        Wed, 11 Nov 2020 22:43:17 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 17:43:15 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DB42208B8;
+        Wed, 11 Nov 2020 22:43:04 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 17:43:02 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
@@ -42,6 +42,7 @@ Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
+Message-ID: <20201111224302.pxS1jA_GiZZoX8KiSnto2a-ozGhyNo8gKTRmeYgSbRA@z>
 
 On Tue, 10 Nov 2020 14:22:45 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
@@ -68,7 +69,3 @@ I think we only need the tracefs_instance_get_name() to be const.
 
 Previously, I thought we were passing back internal pointers, but if we are
 making strings with strdup, then we don't need to use const char *.
-
--- Steve
-
-
