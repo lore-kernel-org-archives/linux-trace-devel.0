@@ -2,146 +2,108 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 766CCC56201
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 05:41:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34349C55ABD
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 09:11:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1B9C621534
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 05:41:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CCFE7216FD
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 09:11:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SbNydkP5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hmzFCUqT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgKLFiH (ORCPT
+        id S1727654AbgKLJLP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Nov 2020 00:38:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        Thu, 12 Nov 2020 04:11:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728497AbgKLFBW (ORCPT
+        with ESMTP id S1726725AbgKLJLN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Nov 2020 00:01:22 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C176C0613D1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 11 Nov 2020 21:01:22 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id e7so3359874pfn.12
-        for <linux-trace-devel@vger.kernel.org>; Wed, 11 Nov 2020 21:01:22 -0800 (PST)
+        Thu, 12 Nov 2020 04:11:13 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D50DC0613D1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 01:11:12 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id 23so5154408wrc.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 01:11:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fqzAJ1ej8zEOmgsNjLIVeFtuw6Y9CzIa7wbIRQiFOko=;
-        b=SbNydkP5w3ptfsu/YK64hDLUsBe17XE9rbXiWViNRq9E7rxw1yasfgUsRjkzDnCJzT
-         WQUkHj9SIyaDqr25FSlP8gE+qRjrV/SXueppp5iYXUfX1n4gP1fCJxXQMnequO7hFcFU
-         OttZ5wv+Cv3Ny+irXMAsaW2O3IZv/lXcs5oF3EcJTNPAhVUZ26VsfprjKfOcUhbwTBiT
-         kBLQcTfzkOSIgVakfhWSJ7YPjd/1V2nKnFduJUORZtj4c+D9Ws3wuIhVDaCMvP1+15KJ
-         d82P+AUWS069U0VRTJkqL9lq20Lwb33I6fJNOvOLKe+KKjPZJwX1nq2qptOaWdUa1rN3
-         8DBQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2b3JiwpRarVNWxGZcuoCzu3nFOcrh+GkF9zBr4kNLJY=;
+        b=hmzFCUqTiel8hMp7VP1niebKnFGh+/Npg/E60d9BUG1AI9RZdM/rIfTHc5soYAgyzW
+         +CrsK999YAyYrj+3i2GkjZaTJDC9aGuRSFcoNYmdfokhCVPDNLi1l3c48CZEekWc9Qpq
+         HyaxOKOLcJ0S1x9judjtLtC2v8Qj6ducmHzfGbvRpYm5xB9C6/bQCXKqvcqW7KPsrc1g
+         4KD2ptt5KnVg7SNhQdEPqxMDx00JwjQVDyf8baU5F8F/jUtNoc4uAVXCRE+mMLNM3Y8x
+         88kEkOd3oqy/nebpoJw/C5J+31CJXR/Y2R68khGjGFISUgeUmj97k0MMlv6KyriMxyGx
+         9dcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fqzAJ1ej8zEOmgsNjLIVeFtuw6Y9CzIa7wbIRQiFOko=;
-        b=R4mbPmCUL0t94ON5V5V6iD1OjuDoW8QOR2UHZCZGaizomHWTprrclUJGX/rQnRL8Wf
-         rzn4kHw6fCxgRO9l3wLlBganQOpb15LwpidcL1SHJvA7NnUuKgfYMGOh49VGYRsJn62+
-         Htuw2JKFdAmam+YyAy5d9yOt8qIu+1n9dL5q0VxEecTtgEegfnnYQAqwos5pUVXzitHJ
-         mp/gGUvJWittuuAq85UE1+4axEpi/UgupPXSCz/pbMCk4EeHnHXuL9M4wdolpYk3//08
-         5I9fVmvQUkpre7a0dDGaQRXqI222GPDe/tlOVq1TPBYemtcxqNXcbwYjvA7feUnnVRj6
-         qbfA==
-X-Gm-Message-State: AOAM533BPMRIvGdudXz424zvfT0V7v1GOVmmTObsR608D/U3B3LOiV4C
-        KAE2AxaEM96m3N0HfSM300z+U9mL29BqJsm7jTobRAeK183f7nfn
-X-Google-Smtp-Source: ABdhPJytb8Et0R6dZOU9A253j2LKOJZMsy+/S4mblhZd6d9vSry7BGQfodSrU16wg0GzjFwfPwsYWuk7ZQY4A5d62CA=
-X-Received: by 2002:a05:6a00:228a:b029:18b:212a:1af7 with SMTP id
- f10-20020a056a00228ab029018b212a1af7mr26733842pfe.55.1605157281840; Wed, 11
- Nov 2020 21:01:21 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2b3JiwpRarVNWxGZcuoCzu3nFOcrh+GkF9zBr4kNLJY=;
+        b=fMuBsJsNb+5kNQ5mb8afTxwcnXVo+TKid6i6zLu/vUGKGAhkmmQqKLhE8OQvKFZiee
+         uomQRDpikHcKdmNDMiZyEDhqdZ20XuKr0a2mmO0bDbMcqrPFq6shOYldUGVICageYh9L
+         d/e6JY+Y+d26dv5tcFtGyVefU8JM5wnD1mU0BDl6Cl4XTPDJg3cXK851VeLAii+BDgkV
+         LyZUHbTyW3SBo4DDsRFGyOFg1Diqvxgytl6WvrUgO21M7R3SgIdim4GqLLrnQN0D9DCS
+         O+a156bCAu6Sv4Rk4hbMUHgc8xlswAsfIVzRqMIbvefrT10l+19hXYcdh/t43V00V23n
+         7Z1Q==
+X-Gm-Message-State: AOAM531vhMqpeKvEQGPZqh/UhWY/YlHmQlTFxuI4/cTufefHSVpLNl4y
+        2XaC/jSFcsnCF2SindSWy+EH4GbQvNmNodWd
+X-Google-Smtp-Source: ABdhPJwcDMK0ih7vNBWPBvL6pcQCQUMen/EeMMpPCIads5IuROdp743jKirfPDpNbh72FwadBMO/lg==
+X-Received: by 2002:adf:97dd:: with SMTP id t29mr35373708wrb.185.1605172271233;
+        Thu, 12 Nov 2020 01:11:11 -0800 (PST)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id r18sm6705718wrj.50.2020.11.12.01.11.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 01:11:10 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v3 0/6] libtracefs fixes and improvements
+Date:   Thu, 12 Nov 2020 11:11:03 +0200
+Message-Id: <20201112091109.1239169-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201110122249.911664-1-tz.stoyanov@gmail.com>
- <20201110122249.911664-6-tz.stoyanov@gmail.com> <20201111203130.38d68859@oasis.local.home>
-In-Reply-To: <20201111203130.38d68859@oasis.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 12 Nov 2020 07:01:05 +0200
-Message-ID: <CAPpZLN7qdZYMQvWvd6_uMr+65ZRQYUZXSmossPJeTNJna+o7pg@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] libtracefs: Add new tracefs API tracefs_instances_walk()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 3:31 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 10 Nov 2020 14:22:48 +0200
-> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-> \> +
-> > +/**
-> > + * tracefs_instances_walk - Iterate through all ftrace instances in the system
-> > + * @callback: user callback, called for each instance. Instance name is passed
-> > + *         as input parameter. If the @callback returns non-zero,
-> > + *         the iteration stops.
-> > + * @context: user context, passed to the @callback.
-> > + *
-> > + * Returns -1 in case of an error, 0 otherwise.
-> > + */
-> > +int tracefs_instances_walk(int (*callback)(const char *, void *), void *context)
-> > +{
-> > +     struct dirent *dent;
-> > +     char *path = NULL;
-> > +     DIR *dir = NULL;
-> > +     struct stat st;
-> > +     int fret = -1;
-> > +     int ret;
-> > +
-> > +     path = tracefs_get_tracing_file("instances");
-> > +     if (!path)
-> > +             return -1;
-> > +     ret = stat(path, &st);
-> > +     if (ret < 0 || !S_ISDIR(st.st_mode))
-> > +             goto out;
-> > +
-> > +     dir = opendir(path);
-> > +     if (!dir)
-> > +             goto out;
-> > +     fret = 0;
-> > +     while ((dent = readdir(dir))) {
-> > +             char *instance;
-> > +
-> > +             if (strcmp(dent->d_name, ".") == 0 ||
-> > +                 strcmp(dent->d_name, "..") == 0)
-> > +                     continue;
-> > +             instance = trace_append_file(path, dent->d_name);
-> > +             ret = stat(instance, &st);
-> > +             free(instance);
-> > +             if (ret < 0 || !S_ISDIR(st.st_mode))
-> > +                     continue;
-> > +             if (callback(dent->d_name, context))
->
-> Should we notify the caller of this function if the callback returned
-> non zero?
->
->
-> > +                     break;
-> > +     }
-> > +
-> > +out:
->
-> Hmm, would dir ever be anything but non NULL here?
->
-It could be NULL if opendir() or stat() fails.
+A few final tracefs library fixes and improvements, before releasing it as
+an official library.
 
-Thanks, Steve! I'll address your comments in the next version of the patch set.
-> -- Steve
->
-> > +     if (dir)
-> > +             closedir(dir);
-> > +     tracefs_put_tracing_file(path);
-> > +     return fret;
-> > +}
+v3 chabges:
+ - Addressed Steven's comments.
+v2 changes:
+ - Change tracefs_instance_create() to return pointer to allocated trace
+   instance structure
+ - Add new API: tracefs_instance_is_new() to check if the trace instance is
+   newly created by the library.
 
+Tzvetomir Stoyanov (VMware) (6):
+  trace-cmd: Change tracefs.h include path
+  libtracefs: Change get name API to return constant string
+  libtracefs: Add new API to check if instance exists
+  libtracefs: Combine allocate and create APIs into one
+  libtracefs: Add new tracefs API tracefs_instances_walk()
+  trace-cmd: Add new libtrasefs API to get the current trace clock
 
+ include/trace-cmd/trace-cmd.h       |   1 +
+ include/tracefs/tracefs.h           |  10 +-
+ lib/trace-cmd/trace-timesync.c      |   3 +-
+ lib/tracefs/include/tracefs-local.h |   1 +
+ lib/tracefs/tracefs-events.c        |  26 ++---
+ lib/tracefs/tracefs-instance.c      | 173 +++++++++++++++++++++++++---
+ tracecmd/include/trace-local.h      |   4 +-
+ tracecmd/trace-record.c             |  72 ++++++------
+ tracecmd/trace-show.c               |   2 +-
+ tracecmd/trace-stat.c               |  83 ++++---------
+ utest/tracefs-utest.c               | 107 ++++++++++++++---
+ 11 files changed, 327 insertions(+), 155 deletions(-)
 
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.28.0
+
