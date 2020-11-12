@@ -8,140 +8,182 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C3ECC55ABD
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 11:45:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98FFAC2D0A3
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 11:53:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1CA082222A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 11:45:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2DF17221FE
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 11:53:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="o+mBJBYv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PBk9dT20"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgKLLpN (ORCPT
+        id S1728061AbgKLLxV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Nov 2020 06:45:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
+        Thu, 12 Nov 2020 06:53:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728218AbgKLLoV (ORCPT
+        with ESMTP id S1728278AbgKLLwR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:44:21 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62175C0613D6
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 03:44:21 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a65so5235353wme.1
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 03:44:21 -0800 (PST)
+        Thu, 12 Nov 2020 06:52:17 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3504C0613D6
+        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 03:52:12 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id l1so5674182wrb.9
+        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 03:52:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BOxT7SB6HuPrVowds0wta+FRQeXG7ABBqiTvuQDB4XY=;
-        b=o+mBJBYvg1gBix3p8JkWVdxPwumz2XIpQJ36x17Vnp/YMaqxhJAbZilRPS+9Mbz18r
-         eZa0FoQ6yS5+YbaA/EMWxJ8gL7cGPUFuOrfYghweOEftRhCVuEVCFZeUnw6rJ8x4ywFR
-         PczbeTSIGMzMxH+QzvZ+Sw63m4R5NfjSik3ERMhkLhcpUsReGzsj91Xvv1Lt8DFZ99gU
-         aTEBb89CBqN+8ktXh/MLYuXGeO9EkGL1qDN23jcRYK9dP4/QDIlKIg8kdRs82rA4qiYo
-         eAUgAmTNSykjsYvyatVqDbVSf++uKXbHiRH/PoH0mosXUbU4qqJsE1cjUr+zuHdaIEUc
-         KhtQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Rxg/qDkcmkzIN9cuMzBkiMiMvkhFjDrl4jaDGnRZZmk=;
+        b=PBk9dT20QPpNcPYv1FcZ5l2Huzahd3rIjLEywTDR/y33/rk587h4paZXHEjorKXuIp
+         oYyGaSTynlotc2zSE51K/e5Pzd3l0XN4LUQcw1wa60PJbbYuweFv/NiV5L3PTHZS4ZyX
+         tUsy9/k+aQS/QramMN4Rd8DucjMlUC1r1hgJ65MSoPrJsC436cxDtFBE5IPcA28sNI3O
+         brzVEmJVVUnf42n8k1Oc9rEWkxsgr+UgFYmkwLCJr8gU5YfwIpHLEGqVwwpxVMT9It3w
+         Gt2DFqvPrz1MoYvNaHQdDO6Mh70blXj5OoKE8nkOpbk39uH5UYNlATZR00h4A31GsZ1C
+         bUtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BOxT7SB6HuPrVowds0wta+FRQeXG7ABBqiTvuQDB4XY=;
-        b=pRYoKWJzB6ToXEf6xtkhX34uUwnQjnHo+EXbYpzTbejn7ilweQiHXk0bhM7FoiRZkV
-         39JD+obkuTx3zCjro1FdWIHv+oLW9onuI/CSQC6lvsEBBgcq1HMmduLbTbU88w/WI+kC
-         Zi4CAc4u2mQXWvjTYeKXvC8OgocLL7aY2A5+tewrlY6Q1oplGU1iy7RPlzkof7ApvbJf
-         wgI9iaCHT4uyyUEMa4oXBEbzchwnMYpmPWs4zOPWX+cdcPlmtREl47z4+JK5mY3qd3fM
-         XSfdAOBgZhUngyznHcyskrmmUo79cRVE9dHtpFG1mJZQyT7PVWCwpxhWw3W7hL96H51T
-         427g==
-X-Gm-Message-State: AOAM531iyIWo2eU01F8b1AMu+I4VvzTf11Fe3ZGIwPhBh+/aHj5789a1
-        HbXvcUv+iMH6wSOgfNdT/ZrloJet91YhkEfE
-X-Google-Smtp-Source: ABdhPJy04EoY1Qjsw5uUOzbIDwbCC6tzRLN4Eih26/X1+Mc7xxXIPJKNDSANAq8xWDW5eXrona+a5A==
-X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr9821602wmf.154.1605181460075;
-        Thu, 12 Nov 2020 03:44:20 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Rxg/qDkcmkzIN9cuMzBkiMiMvkhFjDrl4jaDGnRZZmk=;
+        b=YkV9BBqJLAqGJLfl2Km7BpFgCdPYW8S2y/LxDXbuHyYiViptlcSpDvZ6Brxt2XBG3m
+         OQ/U+lImfHtBFIzZNEcAhNb8IOU77Hs4JmnU16pW7/YvFVDEvz1uD4Ji5yhI6jujHB9h
+         Mj9sZhrT1JzRsRsc70J92I9bXer/2OA6oGmlmB0U+9z51U9jMGG8lulEQD8/+DBzX4NC
+         3wh0SLbnO1SSFYGx33ou+lANj48UJg9P4kwSFxjdWARCDkEr5NQ9m7OVc7w8XswOsrnv
+         qUI78HaVxaH9vWx3CHYMvigSHKQ1yJlZhFRIK2RjxCnOCPVSyZkzFOSZ7rbdaLSBRjaD
+         TafQ==
+X-Gm-Message-State: AOAM531TZOSZbxZFg5voMScu3q+2niHwo4HUQHskIfYlHw9jpsvPvT0P
+        vw28idePLncGLeYwGuRSu88=
+X-Google-Smtp-Source: ABdhPJzQy0eXBLgUMNcxpN2tDm/Qf/9HTWTyhJrwqPta9AcUMjSkZyalNPTAl0vYVF5Lwo4shDJK+A==
+X-Received: by 2002:a05:6000:187:: with SMTP id p7mr3509251wrx.240.1605181931774;
+        Thu, 12 Nov 2020 03:52:11 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id 15sm6081146wmg.1.2020.11.12.03.44.18
+        by smtp.gmail.com with ESMTPSA id d2sm1258657wra.73.2020.11.12.03.52.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 03:44:19 -0800 (PST)
+        Thu, 12 Nov 2020 03:52:11 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] KernelShark: Remove unneeded libtracecmd dependencies
-Date:   Thu, 12 Nov 2020 13:44:17 +0200
-Message-Id: <20201112114417.1250217-1-tz.stoyanov@gmail.com>
+Subject: [PATCH 1/2] libtraceevent: Remove plugins dependencies of libtracecmd
+Date:   Thu, 12 Nov 2020 13:52:07 +0200
+Message-Id: <20201112115208.1250789-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201112115208.1250789-1-tz.stoyanov@gmail.com>
+References: <20201112115208.1250789-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
+None of the libtraceevent plugins should depend on libtracecmd, they
+should depend only on the traceevent library.
 
-Remove unused "trace-cmd.h" includes.
-
-Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- src/KsAdvFilteringDialog.cpp | 3 ---
- src/KsCaptureDialog.hpp      | 3 ---
- src/plugins/KVMCombo.cpp     | 3 ---
- src/plugins/sched_events.c   | 4 ++--
- 4 files changed, 2 insertions(+), 11 deletions(-)
+ lib/traceevent/plugins/plugin_blk.c          | 10 +++++++---
+ lib/traceevent/plugins/plugin_function.c     |  2 +-
+ lib/traceevent/plugins/plugin_futex.c        |  6 +++++-
+ lib/traceevent/plugins/plugin_kmem.c         |  2 +-
+ lib/traceevent/plugins/plugin_sched_switch.c |  2 +-
+ 5 files changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/src/KsAdvFilteringDialog.cpp b/src/KsAdvFilteringDialog.cpp
-index 7f404b8..9f4cc9b 100644
---- a/src/KsAdvFilteringDialog.cpp
-+++ b/src/KsAdvFilteringDialog.cpp
-@@ -9,9 +9,6 @@
-  *  @brief   GUI Dialog for Advanced filtering settings.
-  */
+diff --git a/lib/traceevent/plugins/plugin_blk.c b/lib/traceevent/plugins/plugin_blk.c
+index ea3a9cf6..04d99a21 100644
+--- a/lib/traceevent/plugins/plugin_blk.c
++++ b/lib/traceevent/plugins/plugin_blk.c
+@@ -8,13 +8,17 @@
  
--// trace-cmd
--#include "trace-cmd/trace-cmd.h"
--
- // KernelShark
- #include "libkshark.h"
- #include "libkshark-tepdata.h"
-diff --git a/src/KsCaptureDialog.hpp b/src/KsCaptureDialog.hpp
-index e86b47f..fe6a2a6 100644
---- a/src/KsCaptureDialog.hpp
-+++ b/src/KsCaptureDialog.hpp
-@@ -15,9 +15,6 @@
- // Qt
- #include <QtWidgets>
+ #include <linux/blktrace_api.h>
  
--// trace-cmd
--#include "trace-cmd/trace-cmd.h"
--
- // KernelShark
- #include "KsWidgetsLib.hpp"
+-#include "trace-cmd.h"
++#include "event-parse.h"
  
-diff --git a/src/plugins/KVMCombo.cpp b/src/plugins/KVMCombo.cpp
-index bc3c6b0..25deefd 100644
---- a/src/plugins/KVMCombo.cpp
-+++ b/src/plugins/KVMCombo.cpp
-@@ -12,9 +12,6 @@
- // C++
- #include <iostream>
+ #define MINORBITS	20
+ #define MINORMASK	((1U << MINORBITS) - 1)
+ #define MAJOR(dev)	((unsigned int) ((dev) >> MINORBITS))
+ #define MINOR(dev)	((unsigned int) ((dev) & MINORMASK))
  
--// trace-cmd
--#include "trace-cmd/trace-cmd.h"
--
- // KernelShark
- #include "libkshark.h"
- #include "libkshark-tepdata.h"
-diff --git a/src/plugins/sched_events.c b/src/plugins/sched_events.c
-index 5a46932..034ffa0 100644
---- a/src/plugins/sched_events.c
-+++ b/src/plugins/sched_events.c
-@@ -14,8 +14,8 @@
- #include <stdio.h>
- #include <assert.h>
++#ifndef ARRAY_SIZE
++#define ARRAY_SIZE(_a) (sizeof(_a) / sizeof((_a)[0]))
++#endif
++
+ struct blk_data {
+ 	unsigned long long	sector;
+ 	struct tep_event	*event;
+@@ -129,7 +133,7 @@ static unsigned int be32_to_cpu(unsigned int val)
+ {
+ 	unsigned int swap;
  
--// trace-cmd
--#include "trace-cmd/trace-cmd.h"
-+// libtraceevent
-+#include "traceevent/event-parse.h"
+-	if (tracecmd_host_bigendian())
++	if (tep_is_bigendian())
+ 		return val;
  
- // KernelShark
- #include "plugins/sched_events.h"
+ 	swap = ((val & 0xffULL) << 24) |
+@@ -144,7 +148,7 @@ static unsigned long long be64_to_cpu(unsigned long long val)
+ {
+ 	unsigned long long swap;
+ 
+-	if (tracecmd_host_bigendian())
++	if (tep_is_bigendian())
+ 		return val;
+ 
+ 	swap = ((val & 0xffULL) << 56) |
+diff --git a/lib/traceevent/plugins/plugin_function.c b/lib/traceevent/plugins/plugin_function.c
+index 938b7410..807b16e1 100644
+--- a/lib/traceevent/plugins/plugin_function.c
++++ b/lib/traceevent/plugins/plugin_function.c
+@@ -6,7 +6,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-#include "trace-cmd.h"
++#include "event-parse.h"
+ #include "event-utils.h"
+ #include "trace-seq.h"
+ 
+diff --git a/lib/traceevent/plugins/plugin_futex.c b/lib/traceevent/plugins/plugin_futex.c
+index 1e235c2a..b8eb8a5f 100644
+--- a/lib/traceevent/plugins/plugin_futex.c
++++ b/lib/traceevent/plugins/plugin_futex.c
+@@ -10,7 +10,11 @@
+ #include <string.h>
+ #include <linux/futex.h>
+ 
+-#include "trace-cmd.h"
++#include "event-parse.h"
++
++#ifndef ARRAY_SIZE
++#define ARRAY_SIZE(_a) (sizeof(_a) / sizeof((_a)[0]))
++#endif
+ 
+ struct futex_args {
+ 	unsigned long long	uaddr;
+diff --git a/lib/traceevent/plugins/plugin_kmem.c b/lib/traceevent/plugins/plugin_kmem.c
+index 1117bdd2..45696f12 100644
+--- a/lib/traceevent/plugins/plugin_kmem.c
++++ b/lib/traceevent/plugins/plugin_kmem.c
+@@ -6,7 +6,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-#include "trace-cmd.h"
++#include "event-parse.h"
+ #include "trace-seq.h"
+ 
+ static int call_site_handler(struct trace_seq *s, struct tep_record *record,
+diff --git a/lib/traceevent/plugins/plugin_sched_switch.c b/lib/traceevent/plugins/plugin_sched_switch.c
+index 566f1661..8c90677c 100644
+--- a/lib/traceevent/plugins/plugin_sched_switch.c
++++ b/lib/traceevent/plugins/plugin_sched_switch.c
+@@ -6,7 +6,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-#include "trace-cmd.h"
++#include "event-parse.h"
+ #include "trace-seq.h"
+ 
+ static void write_state(struct trace_seq *s, int val)
 -- 
 2.28.0
 
