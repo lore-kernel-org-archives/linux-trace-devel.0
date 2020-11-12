@@ -8,65 +8,65 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1864C56201
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 14:24:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77619C5519F
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 14:24:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4075422248
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 14:24:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 21BFA22248
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 14:24:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eggALqLA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NrFfgR6Z"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgKLOYU (ORCPT
+        id S1728086AbgKLOYV (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Nov 2020 09:24:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
+        Thu, 12 Nov 2020 09:24:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728032AbgKLOYT (ORCPT
+        with ESMTP id S1728032AbgKLOYV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:24:19 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70839C0613D1
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 06:24:19 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id 23so6173648wrc.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 06:24:19 -0800 (PST)
+        Thu, 12 Nov 2020 09:24:21 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0552FC0613D1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 06:24:21 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id j7so6205592wrp.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 12 Nov 2020 06:24:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=brj/ma/BezjNCjSr7nSJMQRV7h6HXKYX9dOEEXs1ssg=;
-        b=eggALqLA/e0I7HxFd3cwL5064TsQdWe2yldlGZ6aecSlIgEETH5o6xeRZrih9jojV5
-         CjUcTBWM0bL6KblLACWpVEdsyTIov7TyZ5YXUiukZGKAeld+Fc53YrjMuqhMhFcVKYs5
-         X2RxheHivvT96ZUTPc4HzWPUnV1xTz7I/2ZLnrYXjnWPmTdOaEry0a5QIqBCu/qHaVQg
-         1tEuAlcSqt1I8ccyoVSXE45Vw9V0DCzePelFDxO0vjkjMjhrtYJaHKzCzA/5r/K7PRZ7
-         6QAMhLXSg9WNGCLkTSg5VbfpA5pC0RVRJNlgcB3NgC+PlKV7mcRTF4cROkkBUASlImyA
-         AlUQ==
+        bh=Abs1Q4oLMte7gYT/AzauP/BoKt49DCtdWJqWH25Dm2g=;
+        b=NrFfgR6Z7FhM/wKK49lalcy+D50z88jWwLBvDOkJG9M5l6KpaQN0spdjOp8PhJCKl7
+         K0O8iUxtCKr/1LKUJykOwohAr0VsOYSHOAv9q6P85ZfPWzrZZ9KGXBiJEb7R+GG5zGyo
+         JUz3nrEq0pY6qNASDogfPX7oO6cF2Go3jPrBVo9aClIZTTXsyMmiXDmxNGShAB0IBZ2h
+         NKb047PilyVHn6MKyNI7zqMY7zNZrzlZp+luORs1B0bryUSn6K5OQPQDHoRZigOwx37j
+         7W4oqzfMjA0aiJk0E3CUYaUns49gWCa+0kjUiDswwkMMmx+68L89GBRSyVWD07kiFULe
+         OkoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=brj/ma/BezjNCjSr7nSJMQRV7h6HXKYX9dOEEXs1ssg=;
-        b=Pycdbd3muVmChz6sRvJyDXKm6V4YLzpWdF4n+EDJYTnG/+8NBi6lM6WlalxGovEcpw
-         Ee7wxADNPNwmLQfxDueFA4j6K5Tu6RVkOTzp5pv4LWng7W9B96aQv2ZS9wJWijiXKGmc
-         PkQHkZD84Ok9ZJEvYmJW8H9ukbfMYMLhvWCafCdxLw4aaTuLlVYa+9ER9KCtt5mWI4v4
-         e/9z4gz8BK9wGNxH5wDpd2DOOKaSxY9LJtRfBv1KimEnHzvq+AH/ZJwcwkIjkyQV+ir+
-         szP9uk7G6TlJWfeyMsG1aJjyvEMUCcSqvZc4OHMRPeqVR0Wrk6rfD7hwRmToc6pYDbPm
-         u9dQ==
-X-Gm-Message-State: AOAM532IDtyqWSnLFqGB9w/MXc0yQA3vV0RxVpkFfxnVsmE5Uc5IcMEd
-        2IBp4RwesmREpA5Gwc1WbtI=
-X-Google-Smtp-Source: ABdhPJxLjxdx23TEGbDop1pMT5srKTJ5I5Sl62SsEheTD08E6f4iWYsMoDNVVAz0QsNfLGnqgJ4ViQ==
-X-Received: by 2002:adf:ef48:: with SMTP id c8mr36761663wrp.399.1605191058211;
-        Thu, 12 Nov 2020 06:24:18 -0800 (PST)
+        bh=Abs1Q4oLMte7gYT/AzauP/BoKt49DCtdWJqWH25Dm2g=;
+        b=dcezE2ER0IfDEypiIIFudfi3NJpSlk8cptEp0farHFZ7I+koXba8UXBup5fCbbv0/Y
+         27Zu+45L0s1Ycv69wivbLoX8VY4yFiI3zlLkng0CXOxcItGlMgcHGPY0gCg/YZFHKk0V
+         05rrcdhLEwtA1fHJefM9Z8f1Q1LnvX3sGwx8e9XqQcolZYed2CgWvAAMoBJUAp5xKu0y
+         0E46D7Ox1sha/fLPzxBnvXrfduzokvk6uFr+21HEbv0oGq/xXDKAM9X6hOlyUlQvxAGY
+         q1PThU/LppHKAody+tbRm6McX5mg9bn5jXUNEK+zsUk/i/S9HAKatQmShjch96uBbVYs
+         hdrw==
+X-Gm-Message-State: AOAM532mklECT+kLKClT698cIbYNxQyYlCQHBhOhkf4XtJ2pQg3yxhAB
+        W/jHcEDmouKXcj+WaQq5yJApP6lrkco=
+X-Google-Smtp-Source: ABdhPJxobnMZZ+7y9alYzk/+fWHl+NVRt/B0s5A5GlZsCZ+ik64g5WfRe6IYrbeVY48vHvf3W6bkZA==
+X-Received: by 2002:a5d:4c8c:: with SMTP id z12mr8882580wrs.248.1605191059807;
+        Thu, 12 Nov 2020 06:24:19 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.214])
-        by smtp.gmail.com with ESMTPSA id h15sm6950685wrw.15.2020.11.12.06.24.17
+        by smtp.gmail.com with ESMTPSA id h15sm6950685wrw.15.2020.11.12.06.24.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 06:24:17 -0800 (PST)
+        Thu, 12 Nov 2020 06:24:19 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3 04/20] kernel-shark: Introduce Data streams
-Date:   Thu, 12 Nov 2020 16:23:42 +0200
-Message-Id: <20201112142358.36821-5-y.karadz@gmail.com>
+Subject: [PATCH v3 05/20] kernel-shark: Rename static methods in libkshark
+Date:   Thu, 12 Nov 2020 16:23:43 +0200
+Message-Id: <20201112142358.36821-6-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112142358.36821-1-y.karadz@gmail.com>
 References: <20201112142358.36821-1-y.karadz@gmail.com>
@@ -76,247 +76,75 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-With the help of Data stream, KernelShark will be able to load and
-merge multiple trace files (streams). Each stream can have different
-plugins or filters, registered for it, which means that the raw trace
-data of the streams can have different formats, and will allow for a
-great degree of customization of the provided data visualization. In
-this patch we only provide the basic definitions. The actual integration
-of the Data streams into the C API of KernelShark will happen in the
-following patches.
+"kshark" prefix is needed only for the public methods of the API.
+We are changing the names of those static methods because we need to
+use those names when integrating the data streams into the API.i
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark.h | 216 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 216 insertions(+)
+ src/libkshark.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/src/libkshark.h b/src/libkshark.h
-index cc20077f..c8fdd266 100644
---- a/src/libkshark.h
-+++ b/src/libkshark.h
-@@ -121,6 +121,222 @@ void kshark_hash_id_free(struct kshark_hash_id *hash);
+diff --git a/src/libkshark.c b/src/libkshark.c
+index 52aacd30..f3323ae3 100644
+--- a/src/libkshark.c
++++ b/src/libkshark.c
+@@ -1097,8 +1097,8 @@ size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
+ 	return -ENOMEM;
+ }
  
- int *kshark_hash_ids(struct kshark_hash_id *hash);
+-static const char *kshark_get_latency(struct tep_handle *pe,
+-				      struct tep_record *record)
++static const char *get_latency(struct tep_handle *pe,
++			       struct tep_record *record)
+ {
+ 	if (!record)
+ 		return NULL;
+@@ -1108,7 +1108,7 @@ static const char *kshark_get_latency(struct tep_handle *pe,
+ 	return seq.buffer;
+ }
  
-+struct kshark_data_stream;
-+
-+/** A function type to be used to initialize the interface of the data stream. */
-+typedef int (*interface_init_func) (struct kshark_data_stream *,
-+				    const char *);
-+
-+/** A function type to be used to initialize the interface of the data stream. */
-+typedef int (*interface_close_func) (struct kshark_data_stream *,
-+				     const char *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef char *(*stream_get_str_func) (struct kshark_data_stream *,
-+				      const struct kshark_entry *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef const int (*stream_get_int_func) (struct kshark_data_stream *,
-+					  const struct kshark_entry *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef int (*stream_find_id_func) (struct kshark_data_stream *,
-+				    const char *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef int *(*stream_get_ids_func) (struct kshark_data_stream *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef int (*stream_get_names_func) (struct kshark_data_stream *,
-+				      const struct kshark_entry *,
-+				      char ***);
-+
-+/** Event field format identifier. */
-+typedef enum kshark_event_field_format {
-+	/** A field of unknown type. */
-+	KS_INVALIDE_FIELD,
-+
-+	/** Integer number */
-+	KS_INTEGER_FIELD,
-+
-+	/** Floating-point number */
-+	KS_FLOAT_FIELD
-+} kshark_event_field_format;
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef kshark_event_field_format
-+(*stream_event_field_type) (struct kshark_data_stream *,
-+			    const struct kshark_entry *,
-+			    const char *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef const int (*stream_read_event_field) (struct kshark_data_stream *,
-+					      const struct kshark_entry *,
-+					      const char *,
-+					      int64_t *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef const int (*stream_read_record_field) (struct kshark_data_stream *,
-+					       void *,
-+					       const char *,
-+					       int64_t *);
-+
-+struct kshark_context;
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef ssize_t (*load_entries_func) (struct kshark_data_stream *,
-+				      struct kshark_context *,
-+				      struct kshark_entry ***);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef ssize_t (*load_matrix_func) (struct kshark_data_stream *,
-+				     struct kshark_context *,
-+				     int16_t **event_array,
-+				     int16_t **cpu_array,
-+				     int32_t **pid_array,
-+				     int64_t **offset_array,
-+				     int64_t **ts_array);
-+
-+/** Data format identifier. */
-+typedef enum kshark_data_format {
-+	/** A data of unknown type. */
-+	KS_INVALIDE_DATA,
-+
-+	/** Ftrace data. */
-+	KS_TEP_DATA,
-+
-+	/** VMware SchedTrace data. */
-+	KS_VMW_ST_DATA,
-+} kshark_data_format;
-+
-+/** Data interface identifier. */
-+typedef enum kshark_data_interface_id {
-+	/** An interface with unknown type. */
-+	KS_INVALIDE_INTERFACE,
-+
-+	/** Generic interface suitable for Ftrace data. */
-+	KS_GENERIC_DATA_INTERFACE,
-+} kshark_data_interface_id;
-+
-+/**
-+ * Structure representing the interface of methods used to operate over
-+ * the data from a given stream.
-+ */
-+struct kshark_generic_stream_interface {
-+	/** Interface version identifier. */
-+	kshark_data_interface_id	type; /* MUST BE FIRST ENTRY. */
-+
-+	/** Method used to retrieve the Process Id of the entry. */
-+	stream_get_int_func	get_pid;
-+
-+	/** Method used to retrieve the Event Id of the entry. */
-+	stream_get_int_func	get_event_id;
-+
-+	/** Method used to retrieve the Event name of the entry. */
-+	stream_get_str_func	get_event_name;
-+
-+	/** Method used to retrieve the Task name of the entry. */
-+	stream_get_str_func	get_task;
-+
-+	/** Method used to retrieve the Info string of the entry. */
-+	stream_get_str_func	get_info;
-+
-+	/**
-+	 * Method used to retrieve an unspecified auxiliary info of the trace
-+	 * record.
-+	 */
-+	stream_get_str_func	aux_info;
-+
-+	/** Method used to retrieve Id of the Event from its name. */
-+	stream_find_id_func	find_event_id;
-+
-+	/** Method used to retrieve the array of Ids of all Events. */
-+	stream_get_ids_func	get_all_event_ids;
-+
-+	/** Method used to dump the entry's content to string. */
-+	stream_get_str_func	dump_entry;
-+
-+	/**
-+	 * Method used to retrieve the array of all field names of a given
-+	 * event.
-+	 */
-+	stream_get_names_func	get_all_event_field_names;
-+
-+	/** Method used to access the type of an event's data field. */
-+	stream_event_field_type		get_event_field_type;
-+
-+	/** Method used to access the value of an event's data field. */
-+	stream_read_event_field		read_event_field_int64;
-+
-+	/** Method used to access the value of an event's data field. */
-+	stream_read_record_field	read_record_field_int64;
-+
-+	/** Method used to load the data in the form of entries. */
-+	load_entries_func	load_entries;
-+
-+	/** Method used to load the data in matrix form. */
-+	load_matrix_func	load_matrix;
-+
-+	/** Generic data handle. */
-+	void			*handle;
-+};
-+
-+/** Structure representing a stream of trace data. */
-+struct kshark_data_stream {
-+	/** Data stream identifier. */
-+	uint16_t		stream_id;
-+
-+	/** The number of CPUs presented in this data stream. */
-+	int			n_cpus;
-+
-+	/**
-+	 * The number of distinct event types presented in this data stream.
-+	 */
-+	int			n_events;
-+
-+	/** The Process Id of the Idle task. */
-+	int			idle_pid;
-+
-+	/** Trace data file pathname. */
-+	char			*file;
-+
-+	/** Stream name. */
-+	char			*name;
-+
-+	/** Hash table of task PIDs. */
-+	struct kshark_hash_id	*tasks;
-+
-+	/** A mutex, used to protect the access to the input file. */
-+	pthread_mutex_t		input_mutex;
-+
-+	/** Hash of tasks to filter on. */
-+	struct kshark_hash_id	*show_task_filter;
-+
-+	/** Hash of tasks to not display. */
-+	struct kshark_hash_id	*hide_task_filter;
-+
-+	/** Hash of events to filter on. */
-+	struct kshark_hash_id	*show_event_filter;
-+
-+	/** Hash of events to not display. */
-+	struct kshark_hash_id	*hide_event_filter;
-+
-+	/** Hash of CPUs to filter on. */
-+	struct kshark_hash_id	*show_cpu_filter;
-+
-+	/** Hash of CPUs to not display. */
-+	struct kshark_hash_id	*hide_cpu_filter;
-+
-+	/** The type of the data. */
-+	enum kshark_data_format		format;
-+
-+	/**
-+	 * The interface of methods used to operate over the data from a given
-+	 * stream.
-+	 */
-+	void				*interface;
-+};
-+
- /** Size of the task's hash table. */
- #define KS_TASK_HASH_SHIFT 16
- #define KS_TASK_HASH_SIZE (1 << KS_TASK_HASH_SHIFT)
+-static const char *kshark_get_info(struct tep_handle *pe,
++static const char *get_info(struct tep_handle *pe,
+ 				   struct tep_record *record,
+ 				   struct tep_event *event)
+ {
+@@ -1233,7 +1233,7 @@ const char *kshark_get_latency_easy(struct kshark_entry *entry)
+ 	pthread_mutex_lock(&kshark_ctx->input_mutex);
+ 
+ 	data = tracecmd_read_at(kshark_ctx->handle, entry->offset, NULL);
+-	lat = kshark_get_latency(kshark_ctx->pevent, data);
++	lat = get_latency(kshark_ctx->pevent, data);
+ 	free_record(data);
+ 
+ 	pthread_mutex_unlock(&kshark_ctx->input_mutex);
+@@ -1376,7 +1376,7 @@ const char *kshark_get_info_easy(struct kshark_entry *entry)
+ 	event_id = tep_data_type(kshark_ctx->pevent, data);
+ 	event = tep_find_event(kshark_ctx->pevent, event_id);
+ 	if (event)
+-		info = kshark_get_info(kshark_ctx->pevent, data, event);
++		info = get_info(kshark_ctx->pevent, data, event);
+ 
+ 	free_record(data);
+ 
+@@ -1471,7 +1471,7 @@ char* kshark_dump_entry(const struct kshark_entry *entry)
+ 		event = tep_find_event(kshark_ctx->pevent, entry->event_id);
+ 
+ 		event_name = event? event->name : "[UNKNOWN EVENT]";
+-		lat = kshark_get_latency(kshark_ctx->pevent, data);
++		lat = get_latency(kshark_ctx->pevent, data);
+ 
+ 		size = asprintf(&temp_str, "%" PRIu64 "; %s-%i; CPU %i; %s;",
+ 				entry->ts,
+@@ -1480,7 +1480,7 @@ char* kshark_dump_entry(const struct kshark_entry *entry)
+ 				entry->cpu,
+ 				lat);
+ 
+-		info = kshark_get_info(kshark_ctx->pevent, data, event);
++		info = get_info(kshark_ctx->pevent, data, event);
+ 
+ 		if (size > 0) {
+ 			size = asprintf(&entry_str, "%s %s; %s; 0x%x",
 -- 
 2.25.1
 
