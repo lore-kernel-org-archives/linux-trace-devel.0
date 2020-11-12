@@ -2,39 +2,39 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD772C2D0E4
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 20:50:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C129C2D0E4
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 21:17:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5851421D91
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 20:50:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C3171216C4
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 12 Nov 2020 21:17:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgKLUuz (ORCPT
+        id S1726473AbgKLVRY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 12 Nov 2020 15:50:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60096 "EHLO mail.kernel.org"
+        Thu, 12 Nov 2020 16:17:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727126AbgKLUuz (ORCPT
+        id S1726337AbgKLVRY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:50:55 -0500
+        Thu, 12 Nov 2020 16:17:24 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8367321D7F;
-        Thu, 12 Nov 2020 20:50:53 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 15:50:51 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id AA1DB207DE;
+        Thu, 12 Nov 2020 21:17:21 +0000 (UTC)
+Date:   Thu, 12 Nov 2020 16:17:20 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v3 04/20] kernel-shark: Introduce Data streams
-Message-ID: <20201112155051.18e226e9@gandalf.local.home>
-In-Reply-To: <20201112142358.36821-5-y.karadz@gmail.com>
+Subject: Re: [PATCH v3 06/20] kernel-shark: Add basic methods for Data
+ streams
+Message-ID: <20201112161720.425de3b8@gandalf.local.home>
+In-Reply-To: <20201112142358.36821-7-y.karadz@gmail.com>
 References: <20201112142358.36821-1-y.karadz@gmail.com>
-        <20201112142358.36821-5-y.karadz@gmail.com>
+        <20201112142358.36821-7-y.karadz@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,152 +43,608 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 12 Nov 2020 16:23:42 +0200
+On Thu, 12 Nov 2020 16:23:44 +0200
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> With the help of Data stream, KernelShark will be able to load and
-> merge multiple trace files (streams). Each stream can have different
-> plugins or filters, registered for it, which means that the raw trace
-> data of the streams can have different formats, and will allow for a
-> great degree of customization of the provided data visualization. In
-> this patch we only provide the basic definitions. The actual integration
-> of the Data streams into the C API of KernelShark will happen in the
-> following patches.
-> 
-> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-> ---
->  src/libkshark.h | 216 ++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 216 insertions(+)
-> 
-> diff --git a/src/libkshark.h b/src/libkshark.h
-> index cc20077f..c8fdd266 100644
-> --- a/src/libkshark.h
-> +++ b/src/libkshark.h
-> @@ -121,6 +121,222 @@ void kshark_hash_id_free(struct kshark_hash_id *hash);
+> +/**
+> + * @brief Add new Data stream.
+> + *
+> + * @param kshark_ctx: Input location for context pointer.
+> + *
+> + * @returns Zero on success or a negative errno code on failure.
+> + */
+> +int kshark_add_stream(struct kshark_context *kshark_ctx)
+> +{
+> +	struct kshark_data_stream *stream;
+> +	int new_stream;
+> +
+> +	if (kshark_ctx->stream_info.next_free_stream_id ==
+> +	    kshark_ctx->stream_info.array_size) {
+> +		printf("realloc %i\n", 2 * kshark_ctx->stream_info.array_size);
+
+ Some left over debugging? ^^^
+
+Also, you probably want a check to make sure that you don't get bigger than
+KS_DEFAULT_NUM_STRINGS, otherwise the stream id wont fit into event id.
+
+Oh, and KS_DEFAULT_NUM_STRINGS probably needs to be increased to the new
+max stream id.
+
+
+> +		struct kshark_data_stream **streams_tmp;
+> +
+> +		streams_tmp = realloc(kshark_ctx->stream,
+> +				      2 * kshark_ctx->stream_info.array_size * sizeof(*kshark_ctx->stream));
+> +		if (!streams_tmp)
+> +			return -ENOMEM;
+> +
+> +		kshark_ctx->stream = streams_tmp;
+> +		kshark_ctx->stream_info.array_size *= 2;
+> +	}
+> +
+> +	stream = kshark_stream_alloc();
+> +	if (!stream)
+> +		return -ENOMEM;
+> +
+> +	if (pthread_mutex_init(&stream->input_mutex, NULL) != 0) {
+> +		kshark_stream_free(stream);
+> +		return -EAGAIN;
+> +	}
+> +
+> +	if (kshark_ctx->stream_info.next_free_stream_id >
+> +	    kshark_ctx->stream_info.max_stream_id) {
+> +		new_stream = ++kshark_ctx->stream_info.max_stream_id;
+> +
+> +		kshark_ctx->stream_info.next_free_stream_id = new_stream + 1;
+> +
+> +		kshark_ctx->stream[new_stream] = stream;
+> +		stream->stream_id = new_stream;
+> +	} else {
+> +		new_stream = kshark_ctx->stream_info.next_free_stream_id;
+> +
+> +		kshark_ctx->stream_info.next_free_stream_id =
+> +			index_from_ptr(kshark_ctx->stream[new_stream]);
+> +
+> +		kshark_ctx->stream[new_stream] = stream;
+> +		stream->stream_id = new_stream;
+> +	}
+> +
+> +	kshark_ctx->n_streams++;
+> +
+> +	return stream->stream_id;
+> +}
+> +
+> +/**
+> + * @brief Remove Data stream.
+> + *
+> + * @param kshark_ctx: Input location for context pointer.
+> + * @param sd: Data stream identifier.
+> + *
+> + * @returns Zero on success or a negative errno code on failure.
+> + */
+> +int kshark_remove_stream(struct kshark_context *kshark_ctx, int sd)
+> +{
+> +	struct kshark_data_stream *stream;
+> +
+> +	stream = kshark_get_data_stream(kshark_ctx, sd);
+> +	if (!stream)
+> +		return -EFAULT;
+> +
+> +	kshark_stream_free(stream);
+> +	kshark_ctx->stream[sd] =
+> +		index_to_ptr(kshark_ctx->stream_info.next_free_stream_id);
+> +	kshark_ctx->stream_info.next_free_stream_id = sd;
+> +	kshark_ctx->n_streams--;
+> +
+> +	return 0;
+> +}
+> +
+> +static bool kshark_is_valid_stream(void *ptr)
+> +{
+> +	unsigned long p = (unsigned long) ptr;
+> +	bool v = !((p & ~INDEX_MASK) == INVALID_STREAM_MASK);
+> +
+> +	return p && v;
+> +}
+> +
+> +/**
+> + * @brief Get the Data stream object having given Id.
+> + *
+> + * @param kshark_ctx: Input location for context pointer.
+> + * @param sd: Data stream identifier.
+> + *
+> + * @returns Pointer to a Data stream object if the sream exists. Otherwise
+> + *	    NULL.
+> + */
+> +struct kshark_data_stream *
+> +kshark_get_data_stream(struct kshark_context *kshark_ctx, int sd)
+> +{
+> +	if (sd >= 0 && sd < KS_DEFAULT_NUM_STREAMS)
+
+The above should probably be:
+	if (sd >= 0 && sd <= kshark_ctx->stream_info.max_stream_id)
+
+Because the array is not of KS_DEFAULT_NUM_STREAMS in size, if sd is
+greater than max_stream_id and less then KS_DEFAULT_NUM_STREAMS this code
+will access non allocated memory.
+
+> +		if (kshark_ctx->stream[sd] &&
+> +		    kshark_is_valid_stream(kshark_ctx->stream[sd]))
+> +			return kshark_ctx->stream[sd];
+> +
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * @brief Get the Data stream object corresponding to a given entry
+> + *
+> + * @param entry: Input location for the KernelShark entry.
+> + *
+> + * @returns Pointer to a Data stream object on success. Otherwise NULL.
+> + */
+> +struct kshark_data_stream *
+> +kshark_get_stream_from_entry(const struct kshark_entry *entry)
+> +{
+> +	struct kshark_context *kshark_ctx = NULL;
+> +
+> +	if (!kshark_instance(&kshark_ctx))
+> +		return NULL;
+> +
+> +	return kshark_get_data_stream(kshark_ctx, entry->stream_id);
+> +}
+> +
+> +/**
+> + * @brief Get an array containing the Ids of all opened Trace data streams.
+> + * 	  The User is responsible for freeing the array.
+> + *
+> + * @param kshark_ctx: Input location for context pointer.
+> + */
+> +int *kshark_all_streams(struct kshark_context *kshark_ctx)
+> +{
+> +	int *ids, i, count = 0;
+> +
+> +	ids = calloc(kshark_ctx->n_streams, (sizeof(*ids)));
+> +	if (!ids)
+> +		return NULL;
+> +
+> +	for (i = 0; i <= kshark_ctx->stream_info.max_stream_id; ++i)
+> +		if (kshark_ctx->stream[i] &&
+> +		    kshark_is_valid_stream(kshark_ctx->stream[i]))
+> +			ids[count++] = i;
+> +
+> +	return ids;
+> +}
+>  /**
+>   * @brief Close the trace data file and free the trace data handle.
+>   *
+> @@ -252,6 +484,474 @@ void kshark_free(struct kshark_context *kshark_ctx)
+>  	free(kshark_ctx);
+>  }
 >  
->  int *kshark_hash_ids(struct kshark_hash_id *hash);
->  
-> +struct kshark_data_stream;
+> +/* Quiet warnings over documenting simple defs. */
+> +//! @cond Doxygen_Suppress
 > +
-> +/** A function type to be used to initialize the interface of the data stream. */
-> +typedef int (*interface_init_func) (struct kshark_data_stream *,
-> +				    const char *);
+> +#define BROKEN_STREAM(stream) (!stream || !stream->interface)
 > +
-> +/** A function type to be used to initialize the interface of the data stream. */
-> +typedef int (*interface_close_func) (struct kshark_data_stream *,
-> +				     const char *);
+> +//! @endcond
+> +
+> +/**
+> + * @brief Get the name of the command/task from its Process Id.
+> + *
+> + * @param sd: Data stream identifier.
+> + * @param pid: Process Id of the command/task.
+> + */
+> +char *kshark_comm_from_pid(int sd, int pid)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_context *kshark_ctx = NULL;
+> +	struct kshark_data_stream *stream;
+> +	struct kshark_entry e;
+> +
+> +	if (!kshark_instance(&kshark_ctx))
+> +		return NULL;
+> +
+> +	stream = kshark_get_data_stream(kshark_ctx, sd);
+> +	if (BROKEN_STREAM(stream))
+> +		return NULL;
 
-These two typedefs should probably be introduced when a patch that uses them
-is added. Otherwise they are basically meaningless for the reviewer.
+Is kshark_get_data_stream() ever used without stream->interface? At least
+in this patch, all callers of kshark_get_data_stream() or
+kshark_get_stream_from_entry() (which the last thing it does is call
+kshark_get_data_stream()), is followed by this BROKEN_STREAM() check.
 
-Also, it the above looks like a cut-and-paste error as the close has the
-same description as the init.
+Would it make more sense to put in kshark_get_data_stream() the check for
+stream->interface, and return NULL if that's not set? Then we can remove
+all of the BROKEN_STREAM() callers and just have:
 
-I don't even see the above used in later patches :-/
+	if (!stream)
+		return NULL;
 
-
-> +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef char *(*stream_get_str_func) (struct kshark_data_stream *,
-> +				      const struct kshark_entry *);
-> +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef const int (*stream_get_int_func) (struct kshark_data_stream *,
-> +					  const struct kshark_entry *);
-> +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef int (*stream_find_id_func) (struct kshark_data_stream *,
-> +				    const char *);
-> +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef int *(*stream_get_ids_func) (struct kshark_data_stream *);
-> +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef int (*stream_get_names_func) (struct kshark_data_stream *,
-> +				      const struct kshark_entry *,
-> +				      char ***);
-> +
-> +/** Event field format identifier. */
-> +typedef enum kshark_event_field_format {
-> +	/** A field of unknown type. */
-> +	KS_INVALIDE_FIELD,
-
-	KS_INVALID_FIELD ?
 
 > +
-> +	/** Integer number */
-> +	KS_INTEGER_FIELD,
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_task) {
+> +		e.visible = KS_PLUGIN_UNTOUCHED_MASK;
+> +		e.pid = pid;
 > +
-> +	/** Floating-point number */
-> +	KS_FLOAT_FIELD
-> +} kshark_event_field_format;
+> +		return interface->get_task(stream, &e);
+> +	}
 > +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef kshark_event_field_format
-> +(*stream_event_field_type) (struct kshark_data_stream *,
-> +			    const struct kshark_entry *,
-> +			    const char *);
+> +	return NULL;
+> +}
 > +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef const int (*stream_read_event_field) (struct kshark_data_stream *,
-> +					      const struct kshark_entry *,
-> +					      const char *,
-> +					      int64_t *);
+> +/**
+> + * @brief Get the name of the event from its Id.
+> + *
+> + * @param sd: Data stream identifier.
+> + * @param event_id: The unique Id of the event type.
+> + */
+> +char *kshark_event_from_id(int sd, int event_id)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_context *kshark_ctx = NULL;
+> +	struct kshark_data_stream *stream;
+> +	struct kshark_entry e;
 > +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef const int (*stream_read_record_field) (struct kshark_data_stream *,
-> +					       void *,
-> +					       const char *,
-> +					       int64_t *);
+> +	if (!kshark_instance(&kshark_ctx))
+> +		return NULL;
 > +
-> +struct kshark_context;
+> +	stream = kshark_get_data_stream(kshark_ctx, sd);
+> +	if (BROKEN_STREAM(stream))
+> +		return NULL;
 > +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef ssize_t (*load_entries_func) (struct kshark_data_stream *,
-> +				      struct kshark_context *,
-> +				      struct kshark_entry ***);
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_event_name) {
+> +		e.visible = KS_PLUGIN_UNTOUCHED_MASK;
+> +		e.event_id = event_id;
 > +
-> +/** A function type to be used by the method interface of the data stream. */
-> +typedef ssize_t (*load_matrix_func) (struct kshark_data_stream *,
-> +				     struct kshark_context *,
-> +				     int16_t **event_array,
-> +				     int16_t **cpu_array,
-> +				     int32_t **pid_array,
-> +				     int64_t **offset_array,
-> +				     int64_t **ts_array);
+> +		return interface->get_event_name(stream, &e);
+> +	}
 > +
-> +/** Data format identifier. */
-> +typedef enum kshark_data_format {
-> +	/** A data of unknown type. */
-> +	KS_INVALIDE_DATA,
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * @brief Get the original process Id of the entry. Using this function make
+> + *	  sense only in cases when the original value can be overwritten by
+> + *	  plugins. If you know that no plugins are loaded use "entry->pid"
+> + *	  directly.
+> + *
+> + * @param entry: Input location for an entry.
+> + */
+> +int kshark_get_pid(const struct kshark_entry *entry)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_data_stream *stream =
+> +		kshark_get_stream_from_entry(entry);
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return -EFAULT;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_pid)
+> +		return -EFAULT;
+> +
+> +	return interface->get_pid(stream, entry);
+> +}
+> +
+> +/**
+> + * @brief Get the original event Id of the entry. Using this function make
+> + *	  sense only in cases when the original value can be overwritten by
+> + *	  plugins. If you know that no plugins are loaded use "entry->event_id"
+> + *	  directly.
+> + *
+> + * @param entry: Input location for an entry.
+> + */
+> +int kshark_get_event_id(const struct kshark_entry *entry)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_data_stream *stream =
+> +		kshark_get_stream_from_entry(entry);
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return -EFAULT;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_event_id)
+> +		return interface->get_event_id(stream, entry);
+> +
+> +	return -EFAULT;
+> +}
+> +
+> +/**
+> + * @brief Get an array of all event Ids for a given data stream.
+> + *
+> + * @param stream: Input location for a Trace data stream pointer.
+> + *
+> + * @returns An array of event Ids. The user is responsible for freeing the
+> + *	    outputted array.
+> + */
+> +int *kshark_get_all_event_ids(struct kshark_data_stream *stream)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return NULL;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_all_event_ids)
+> +		return interface->get_all_event_ids(stream);
+> +
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * @brief Find the event Ids corresponding to a given event name.
+> + *
+> + * @param stream: Input location for a Trace data stream pointer.
+> + * @param event_name: The name of the event.
+> + *
+> + * @returns Event Ids number.
+> + */
+> +int kshark_find_event_id(struct kshark_data_stream *stream,
+> +			 const char *event_name)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return -EFAULT;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->find_event_id)
+> +		return interface->find_event_id(stream, event_name);
+> +
+> +	return -EFAULT;
+> +}
+> +
+> +/**
+> + * @brief Find the event name corresponding to a given entry.
+> + *
+> + * @param entry: Input location for an entry.
+> + *
+> + * @returns The mane of the event on success, or NULL in case of failure.
+> + *	    The use is responsible for freeing the output string.
+> + */
+> +char *kshark_get_event_name(const struct kshark_entry *entry)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_data_stream *stream =
+> +		kshark_get_stream_from_entry(entry);
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return NULL;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_event_name)
+> +		return interface->get_event_name(stream, entry);
+> +
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * @brief Find the task name corresponding to a given entry.
+> + *
+> + * @param entry: Input location for an entry.
+> + *
+> + * @returns The mane of the task on success, or NULL in case of failure.
+> + *	    The use is responsible for freeing the output string.
+> + */
+> +char *kshark_get_task(const struct kshark_entry *entry)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_data_stream *stream =
+> +		kshark_get_stream_from_entry(entry);
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return NULL;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_task)
+> +		return interface->get_task(stream, entry);
+> +
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * @brief Get the basic information (text) about the entry.
+> + *
+> + * @param entry: Input location for an entry.
+> + *
+> + * @returns A the info text. The user is responsible for freeing the
+> + *	    outputted string.
+> + */
+> +char *kshark_get_info(const struct kshark_entry *entry)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_data_stream *stream =
+> +		kshark_get_stream_from_entry(entry);
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return NULL;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_info)
+> +		return interface->get_info(stream, entry);
+> +
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * @brief Get the auxiliary information about the entry. In the case of
+> + * 	  TEP (Ftrace) data, this function provides the latency info.
+> + *
+> + * @param entry: Input location for an entry.
+> + *
+> + * @returns A the auxiliary text info. The user is responsible for freeing the
+> + *	    outputted string.
+> + */
+> +char *kshark_get_aux_info(const struct kshark_entry *entry)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_data_stream *stream =
+> +		kshark_get_stream_from_entry(entry);
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return NULL;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->aux_info)
+> +		return interface->aux_info(stream, entry);
+> +
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * @brief Get an array of all data field names associated with a given entry.
+> + *
+> + * @param entry: Input location for an entry.
+> + * @param fields: Output location of the array of field names. The user is
+> + *		  responsible for freeing the elements of the outputted array.
+> + *
+> + * @returns Total number of event fields on success, or a negative errno in
+> + *	    the case of a failure.
+> + */
+> +int kshark_get_all_event_field_names(const struct kshark_entry *entry,
+> +				     char ***fields)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_data_stream *stream =
+> +		kshark_get_stream_from_entry(entry);
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return -EFAULT;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_all_event_field_names)
+> +		return interface->get_all_event_field_names(stream,
+> +							    entry, fields);
+> +
+> +	return -EFAULT;
+> +}
+> +
+> +/**
+> + * @brief Get the value type of an event field corresponding to a given entry.
+> + *
+> + * @param entry: Input location for an entry.
+> + * @param field: The name of the data field.
+> + *
+> + * @returns The type of the data field on success, or KS_INVALIDE_FIELD in
+> + *	    the case of a failure.
+> + */
+> +kshark_event_field_format
+> +kshark_get_event_field_type(const struct kshark_entry *entry,
+> +			    const char *field)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_data_stream *stream =
+> +		kshark_get_stream_from_entry(entry);
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return KS_INVALIDE_FIELD;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->get_event_field_type)
+> +		return interface->get_event_field_type(stream, entry, field);
+> +
+> +	return KS_INVALIDE_FIELD;
+> +}
+> +
+> +/**
+> + * @brief Get the value of an event field in a given trace record.
+> + *
+> + * @param stream: Input location for a Trace data stream pointer.
+> + * @param rec: Input location for a record.
+> + * @param field: The name of the data field.
+> + * @param val: Output location for the value of the field.
+> + *
+> + * @returns Zero on success or a negative errno in the case of a failure.
+> + */
+> +int kshark_read_record_field_int(struct kshark_data_stream *stream, void *rec,
+> +				 const char *field, int64_t *val)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return -EFAULT;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->read_record_field_int64)
+> +		return interface->read_record_field_int64(stream, rec,
+> +							  field, val);
+> +
+> +	return -EFAULT;
+> +}
+> +
+> +/**
+> + * @brief Get the value of an event field corresponding to a given entry.
+> + *	  The value is retrieved via the offset in the file of the original
+> + *	  record.
+> + *
+> + * @param entry: Input location for an entry.
+> + * @param field: The name of the data field.
+> + * @param val: Output location for the value of the field.
+> + *
+> + * @returns Zero on success or a negative errno in the case of a failure.
+> + */
+> +int kshark_read_event_field_int(const struct kshark_entry *entry,
+> +				const char* field, int64_t *val)
+> +{
+> +	struct kshark_generic_stream_interface *interface;
+> +	struct kshark_data_stream *stream =
+> +		kshark_get_stream_from_entry(entry);
+> +
+> +	if (BROKEN_STREAM(stream))
+> +		return -EFAULT;
+> +
+> +	interface = stream->interface;
+> +	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
+> +	    interface->read_event_field_int64)
+> +		return interface->read_event_field_int64(stream, entry, field, val);
+> +
+> +	return -EFAULT;
+> +}
+> +
+> +/** @brief Print the entry. */
+> +void kshark_print_entry(const struct kshark_entry *entry)
+> +{
+> +	char *entry_str = kshark_dump_entry(entry);
 
-	KS_INVALID_DATA ?
-
-> +
-> +	/** Ftrace data. */
-> +	KS_TEP_DATA,
-> +
-> +	/** VMware SchedTrace data. */
-> +	KS_VMW_ST_DATA,
-> +} kshark_data_format;
-
-I wonder if this should be a string value that gets registered? Otherwise
-we will have to be the registry of every new stream format added.
-
-This is the approach that Tzvetomir took for protocol ids, because that way
-we don't need to keep track of them:
-
- https://lore.kernel.org/r/20201029111816.247241-2-tz.stoyanov@gmail.com
+Should there be a "if (!entry_str) return;" check here?
 
 -- Steve
 
 > +
-> +/** Data interface identifier. */
-> +typedef enum kshark_data_interface_id {
-> +	/** An interface with unknown type. */
-> +	KS_INVALIDE_INTERFACE,
+> +	puts(entry_str);
+> +	free(entry_str);
+> +}
 > +
-> +	/** Generic interface suitable for Ftrace data. */
-> +	KS_GENERIC_DATA_INTERFACE,
-> +} kshark_data_interface_id;
-> +
+> +/**
+> + * @brief Load the content of the trace data file asociated with a given
+> + *	  Data stream into an array of kshark_entries.
+> + *	  If one or more filters are set, the "visible" fields of each entry
+> + *	  is updated according to the criteria provided by the filters. The
+> + *	  field "filter_mask" of the session's context is used to control the
+> + *	  level of visibility/invisibility of the filtered entries.
+> + *
+> + * @param kshark_ctx: Input location for context pointer.
+> + * @param sd: Data stream identifier.
+> + * @param data_rows: Output location for the trace data. The user is
+> + *		     responsible for freeing the elements of the outputted
+> + *		     array.
+> + *
+> + * @returns The size of the outputted data in the case of success, or a
+> + *	    negative error code on failure.
+> + */
