@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58DADC6379D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E851AC63798
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Nov 2020 07:46:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EC30124655
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Nov 2020 07:46:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9748424655
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 17 Nov 2020 07:46:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PqdivUwP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jTKSzFgE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgKQHqI (ORCPT
+        id S1726851AbgKQHqJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 17 Nov 2020 02:46:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
+        Tue, 17 Nov 2020 02:46:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgKQHqI (ORCPT
+        with ESMTP id S1726739AbgKQHqJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:46:08 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195C5C0613CF
-        for <linux-trace-devel@vger.kernel.org>; Mon, 16 Nov 2020 23:46:08 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a3so2270299wmb.5
-        for <linux-trace-devel@vger.kernel.org>; Mon, 16 Nov 2020 23:46:08 -0800 (PST)
+        Tue, 17 Nov 2020 02:46:09 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE897C0617A6
+        for <linux-trace-devel@vger.kernel.org>; Mon, 16 Nov 2020 23:46:06 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id h2so2298075wmm.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 16 Nov 2020 23:46:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a0BXJFLP9r760PeySqozYiXxxNG+9OaFqqkDaZ9tHkc=;
-        b=PqdivUwPGSKL3k4Nb04+Euj9YGULQ6Ean1/WeeP6HVNMOiDk6b1sCn2CzOQfSyxdM5
-         HmLIybBJEPreUqPEAWpdihg1dMZ/UhF6WX8Vn+tENlWxXCSmXgndOowWbjQGxZ/V3yOu
-         u6TiTHgs7IT1Sc2mUScibVAph/L2OIsR5g5wC8RVrZ7A09jzvY3bA4QszKyZclIkkhG2
-         ERZhQPyLZTuQhJtBaVH/Y1Us1iJGxZT9bU5QDLB2XkT+nyIpRR8gz2m8hjQveRN8a2wX
-         KIEA/lU8eARP53lti4ws1HHGXWxWKBqrqJg6djeqrG/OaZGT1NPQNYYOyCfiug5b2baj
-         AieQ==
+        bh=CCjEqe8jSQYrlOrmWcVStDng7Pk07R7EA1ORk6dypRM=;
+        b=jTKSzFgEYRHvHd+eKkraZQWnSY4KExc5e+Oyf4RvFbX28CZQlBPcG4KYA8xllemoZ2
+         +BH6Zts+YCsFUaH2rmzpvhXBUvz6NBA99KICGGeH0KeGDOvyM9+Po9AmMAcwJqBTN4zX
+         U3bzz2FsR5qnk+bEzLnLDZBeJYjLg80qv1wAQjCs5c6gDL+cgkYiEaFfD/ZTQyXMMM24
+         Yh+26qCNbxxX1zFp6w5ogzJeAX38CUIeCdErpHHXliUKlwfqA92ixcaJLVHqeyi4r3lc
+         lqQmaiAj2LaHcqbNSoI7UUXgUPhzfW+vYEm75ki+wXgfJITYqn6TLOCS6nXClwvJl4d7
+         kKsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a0BXJFLP9r760PeySqozYiXxxNG+9OaFqqkDaZ9tHkc=;
-        b=Tp/hhNreKReuyFY9P6HBC/4R+ieQRSRsbF2L9p8MJpuKBWRbbdUvOu56IkURwCL3N9
-         zHgLWl8mpT//JDu9xeEyh7d5N2e1FeoOWfMWgYziB8QP1O6s46Y1UOhqutC4I/MiR7Wj
-         xFgIDZTK6LILZHa93k5Cdtn4ARlTAYqvU/m0c2iwuIrk0HjSVWEuKi9TD9wBcgHZ2ZRO
-         pRANOQ9umw90VooO0bkKadB0zMfevw5SUywLks/hgHR9XNJtzvIAy5doVPT1x/BzX0wx
-         xwNMCtAbdR5Ck1IW3ulT4TXyg29xOIYAO+4LhuIxQD4sOVIK3B02l6jbDocfZvqfNsEM
-         4Jmg==
-X-Gm-Message-State: AOAM531POU7CoPPGKpIt4DUE8dZROTzBt5ox1J6SDpH86hUdmxHnxM8k
-        pTMCXN9cVFuwAXbhOtKBDfx09eaEjlkP8SvB
-X-Google-Smtp-Source: ABdhPJwKTmxX60rDnpCBFiGPBMwtfuRo/vyjDVPjkM28rq3pLVrYTmqgb/xQ5z7YpuDQ3OtP+6mCAA==
-X-Received: by 2002:a1c:bc08:: with SMTP id m8mr3011032wmf.137.1605599166796;
-        Mon, 16 Nov 2020 23:46:06 -0800 (PST)
+        bh=CCjEqe8jSQYrlOrmWcVStDng7Pk07R7EA1ORk6dypRM=;
+        b=ZDeFKeKT1inr0Z4/9PgfUU22aiNs5z/4D2R77gmIu0Q57RzKSOMgUunFh8lhmCkdeu
+         hVTBjqNAtp97Dk4a9FNhUSo8rWfgpWae/ff1BcJSW0ilK5QjcnLL2vM1Euj6gC16J0bv
+         GoZAyQVk4NizQ+bB5kwx1V6q+bmytm6GZy2dxuM93ByNLbfKWT+WAxtp203tnywhw+Sg
+         rQgndY7+PYyHVnC7FCilQshWhxpe0fHo3BvY9IKWBqjbbzEHFlXvVrr0pv4JwVNQq/vz
+         ObHAJW2t5M9I/YlfzHpWq3g5s1c9HBO1hP+ZQQGqJzQDNLOOy2GmmN1HRoIZN6b4Z0T9
+         CJiQ==
+X-Gm-Message-State: AOAM5303xDBTTlYhD5QRhNRnDzRzDGW8P0Wkn6tRM2mDvTlz1Fac8lYp
+        zCiycNc6W1A/YLtCMdZL678=
+X-Google-Smtp-Source: ABdhPJzzxwrnKgnIwMjLi7VKpDNJD3IulxHoYelEu1/if349r3PYRxISvum35NfFkPXX/jPMAuBRzw==
+X-Received: by 2002:a05:600c:2949:: with SMTP id n9mr2744833wmd.29.1605599165555;
+        Mon, 16 Nov 2020 23:46:05 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id d3sm25752046wre.91.2020.11.16.23.46.05
+        by smtp.gmail.com with ESMTPSA id d3sm25752046wre.91.2020.11.16.23.46.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 23:46:06 -0800 (PST)
+        Mon, 16 Nov 2020 23:46:04 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 6/8] libtracefs: Add new tracefs API tracefs_instances_walk()
-Date:   Tue, 17 Nov 2020 09:45:55 +0200
-Message-Id: <20201117074557.180602-7-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 5/8] libtracefs: Combine allocate and create APIs into one
+Date:   Tue, 17 Nov 2020 09:45:54 +0200
+Message-Id: <20201117074557.180602-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201117074557.180602-1-tz.stoyanov@gmail.com>
 References: <20201117074557.180602-1-tz.stoyanov@gmail.com>
@@ -75,323 +75,458 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The logic for finding all configured ftrace instances is encapuslated in
-a new tracefs_instances_walk() API. A user specified callback is
-called for each ftrace instance in the system, excpet for the top level
-one.
-The implementation of "trace-cmd stat" is modified to use the new API.
+Having two APIs for allocating and creating trace instance can be
+confusing. The tracefs_instance_alloc() is removed and its logic is
+moved to tracefs_instance_create() API. This single API first creates
+the instance in the system (if it does not exist) and then allocates and
+initializes tracefs_instance structure. Trace-cmd code and unit tests are
+modified to use the new API.
+A new API is introduced, to check if the tracefs instance is newly
+created by the library or if it already exist.
+  tracefs_instance_is_new()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/tracefs/tracefs.h           |  1 +
- lib/tracefs/include/tracefs-local.h |  1 +
- lib/tracefs/tracefs-events.c        | 14 ++++----
- lib/tracefs/tracefs-instance.c      | 55 +++++++++++++++++++++++++++++
- tracecmd/trace-stat.c               | 52 +++++++--------------------
- utest/tracefs-utest.c               | 52 +++++++++++++++++++++++++++
- 6 files changed, 129 insertions(+), 46 deletions(-)
+ include/tracefs/tracefs.h      |  4 +-
+ lib/trace-cmd/trace-timesync.c |  3 +-
+ lib/tracefs/tracefs-instance.c | 80 ++++++++++++++++++++++++++++------
+ tracecmd/include/trace-local.h |  4 +-
+ tracecmd/trace-record.c        | 70 ++++++++++++++---------------
+ tracecmd/trace-show.c          |  2 +-
+ tracecmd/trace-stat.c          |  2 +-
+ utest/tracefs-utest.c          | 25 +++++------
+ 8 files changed, 117 insertions(+), 73 deletions(-)
 
 diff --git a/include/tracefs/tracefs.h b/include/tracefs/tracefs.h
-index 388d8f94..bcf3dd64 100644
+index ef806d3c..388d8f94 100644
 --- a/include/tracefs/tracefs.h
 +++ b/include/tracefs/tracefs.h
-@@ -32,6 +32,7 @@ int tracefs_instance_file_write(struct tracefs_instance *instance,
- 				const char *file, const char *str);
- char *tracefs_instance_file_read(struct tracefs_instance *instance,
- 				 char *file, int *psize);
-+int tracefs_instances_walk(int (*callback)(const char *, void *), void *context);
+@@ -20,10 +20,10 @@ char *tracefs_find_tracing_dir(void);
+ /* ftarce instances */
+ struct tracefs_instance;
  
- bool tracefs_instance_exists(const char *name);
- bool tracefs_file_exists(struct tracefs_instance *instance, char *name);
-diff --git a/lib/tracefs/include/tracefs-local.h b/lib/tracefs/include/tracefs-local.h
-index fe327a0f..08b67fa9 100644
---- a/lib/tracefs/include/tracefs-local.h
-+++ b/lib/tracefs/include/tracefs-local.h
-@@ -9,5 +9,6 @@
- /* Can be overridden */
- void warning(const char *fmt, ...);
- int str_read_file(const char *file, char **buffer);
-+char *trace_append_file(const char *dir, const char *name);
+-struct tracefs_instance *tracefs_instance_alloc(const char *name);
+ void tracefs_instance_free(struct tracefs_instance *instance);
+-int tracefs_instance_create(struct tracefs_instance *instance);
++struct tracefs_instance *tracefs_instance_create(const char *name);
+ int tracefs_instance_destroy(struct tracefs_instance *instance);
++bool tracefs_instance_is_new(struct tracefs_instance *instance);
+ const char *tracefs_instance_get_name(struct tracefs_instance *instance);
+ char *
+ tracefs_instance_get_file(struct tracefs_instance *instance, const char *file);
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index 35a41394..7a6a7eb6 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -240,11 +240,10 @@ clock_synch_create_instance(const char *clock, unsigned int cid)
  
- #endif /* _TRACE_FS_LOCAL_H */
-diff --git a/lib/tracefs/tracefs-events.c b/lib/tracefs/tracefs-events.c
-index 6b796382..f2c6046c 100644
---- a/lib/tracefs/tracefs-events.c
-+++ b/lib/tracefs/tracefs-events.c
-@@ -210,7 +210,7 @@ static char **add_list_string(char **list, const char *name, int len)
- 	return list;
- }
+ 	snprintf(inst_name, 256, "clock_synch-%d", cid);
  
--static char *append_file(const char *dir, const char *name)
-+char *trace_append_file(const char *dir, const char *name)
- {
- 	char *file;
- 	int ret;
-@@ -265,7 +265,7 @@ char **tracefs_event_systems(const char *tracing_dir)
- 	if (!tracing_dir)
+-	instance = tracefs_instance_alloc(inst_name);
++	instance = tracefs_instance_create(inst_name);
+ 	if (!instance)
  		return NULL;
  
--	events_dir = append_file(tracing_dir, "events");
-+	events_dir = trace_append_file(tracing_dir, "events");
- 	if (!events_dir)
- 		return NULL;
- 
-@@ -290,14 +290,14 @@ char **tracefs_event_systems(const char *tracing_dir)
- 		    strcmp(name, "..") == 0)
- 			continue;
- 
--		sys = append_file(events_dir, name);
-+		sys = trace_append_file(events_dir, name);
- 		ret = stat(sys, &st);
- 		if (ret < 0 || !S_ISDIR(st.st_mode)) {
- 			free(sys);
- 			continue;
- 		}
- 
--		enable = append_file(sys, "enable");
-+		enable = trace_append_file(sys, "enable");
- 
- 		ret = stat(enable, &st);
- 		if (ret >= 0)
-@@ -359,7 +359,7 @@ char **tracefs_system_events(const char *tracing_dir, const char *system)
- 		    strcmp(name, "..") == 0)
- 			continue;
- 
--		event = append_file(system_dir, name);
-+		event = trace_append_file(system_dir, name);
- 		ret = stat(event, &st);
- 		if (ret < 0 || !S_ISDIR(st.st_mode)) {
- 			free(event);
-@@ -401,7 +401,7 @@ char **tracefs_tracers(const char *tracing_dir)
- 	if (!tracing_dir)
- 		return NULL;
- 
--	available_tracers = append_file(tracing_dir, "available_tracers");
-+	available_tracers = trace_append_file(tracing_dir, "available_tracers");
- 	if (!available_tracers)
- 		return NULL;
- 
-@@ -493,7 +493,7 @@ static int read_header(struct tep_handle *tep, const char *tracing_dir)
- 	int len;
- 	int ret = -1;
- 
--	header = append_file(tracing_dir, "events/header_page");
-+	header = trace_append_file(tracing_dir, "events/header_page");
- 
- 	ret = stat(header, &st);
- 	if (ret < 0)
+-	tracefs_instance_create(instance);
+ 	tracefs_instance_file_write(instance, "trace", "\0");
+ 	if (clock)
+ 		tracefs_instance_file_write(instance, "trace_clock", clock);
 diff --git a/lib/tracefs/tracefs-instance.c b/lib/tracefs/tracefs-instance.c
-index d7a29e7d..d05e08b1 100644
+index 06f33c35..d7a29e7d 100644
 --- a/lib/tracefs/tracefs-instance.c
 +++ b/lib/tracefs/tracefs-instance.c
-@@ -13,6 +13,7 @@
- #include <errno.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-+#include <dirent.h>
- #include <linux/limits.h>
+@@ -17,17 +17,19 @@
  #include "tracefs.h"
  #include "tracefs-local.h"
-@@ -363,3 +364,57 @@ bool tracefs_dir_exists(struct tracefs_instance *instance, char *name)
+ 
++#define FLAG_INSTANCE_NEWLY_CREATED	(1 << 0)
+ struct tracefs_instance {
+-	char *name;
++	char	*name;
++	int	flags;
+ };
+ 
+ /**
+- * tracefs_instance_alloc - allocate a new ftrace instance
++ * instance_alloc - allocate a new ftrace instance
+  * @name: The name of the instance (instance will point to this)
+  *
+  * Returns a newly allocated instance, or NULL in case of an error.
+  */
+-struct tracefs_instance *tracefs_instance_alloc(const char *name)
++static struct tracefs_instance *instance_alloc(const char *name)
  {
- 	return check_file_exists(instance, name, true);
+ 	struct tracefs_instance *instance;
+ 
+@@ -45,7 +47,7 @@ struct tracefs_instance *tracefs_instance_alloc(const char *name)
+ 
+ /**
+  * tracefs_instance_free - Free an instance, previously allocated by
+-			   tracefs_instance_alloc()
++			   tracefs_instance_create()
+  * @instance: Pointer to the instance to be freed
+  *
+  */
+@@ -57,27 +59,77 @@ void tracefs_instance_free(struct tracefs_instance *instance)
+ 	free(instance);
  }
-+
-+/**
-+ * tracefs_instances_walk - Iterate through all ftrace instances in the system
-+ * @callback: user callback, called for each instance. Instance name is passed
-+ *	      as input parameter. If the @callback returns non-zero,
-+ *	      the iteration stops.
-+ * @context: user context, passed to the @callback.
-+ *
-+ * Returns -1 in case of an error, 1 if the iteration was stopped because of the
-+ * callback return value or 0 otherwise.
-+ */
-+int tracefs_instances_walk(int (*callback)(const char *, void *), void *context)
+ 
++static mode_t get_trace_file_permissions(char *name)
 +{
-+	struct dirent *dent;
-+	char *path = NULL;
-+	DIR *dir = NULL;
++	mode_t rmode = 0;
 +	struct stat st;
-+	int fret = -1;
++	char *path;
 +	int ret;
 +
-+	path = tracefs_get_tracing_file("instances");
++	path = tracefs_get_tracing_file(name);
 +	if (!path)
-+		return -1;
++		return 0;
 +	ret = stat(path, &st);
-+	if (ret < 0 || !S_ISDIR(st.st_mode))
++	if (ret)
 +		goto out;
-+
-+	dir = opendir(path);
-+	if (!dir)
-+		goto out;
-+	fret = 0;
-+	while ((dent = readdir(dir))) {
-+		char *instance;
-+
-+		if (strcmp(dent->d_name, ".") == 0 ||
-+		    strcmp(dent->d_name, "..") == 0)
-+			continue;
-+		instance = trace_append_file(path, dent->d_name);
-+		ret = stat(instance, &st);
-+		free(instance);
-+		if (ret < 0 || !S_ISDIR(st.st_mode))
-+			continue;
-+		if (callback(dent->d_name, context)) {
-+			fret = 1;
-+			break;
-+		}
-+	}
-+
++	rmode = st.st_mode & ACCESSPERMS;
 +out:
-+	if (dir)
-+		closedir(dir);
 +	tracefs_put_tracing_file(path);
-+	return fret;
++	return rmode;
 +}
++
++/**
++ * tracefs_instance_is_new - Check if the instance is newly created by the library
++ * @instance: Pointer to an ftrace instance
++ *
++ * Returns true, if the ftrace instance is newly created by the library or
++ * false otherwise.
++ */
++bool tracefs_instance_is_new(struct tracefs_instance *instance)
++{
++	if (instance && (instance->flags & FLAG_INSTANCE_NEWLY_CREATED))
++		return true;
++	return false;
++}
++
+ /**
+  * tracefs_instance_create - Create a new ftrace instance
+- * @instance: Pointer to the instance to be created
++ * @name: Name of the instance to be created
+  *
+- * Returns 1 if the instance already exist, 0 if the instance
+- * is created successful or -1 in case of an error
++ * Allocates and initializes a new instance structure. If the instance does not
++ * exist in the system, create it.
++ * Returns a pointer to a newly allocated instance, or NULL in case of an error.
++ * The returned instance must be freed by tracefs_instance_free().
+  */
+-int tracefs_instance_create(struct tracefs_instance *instance)
++struct tracefs_instance *tracefs_instance_create(const char *name)
+ {
++	struct tracefs_instance *inst = NULL;
+ 	struct stat st;
++	mode_t mode;
+ 	char *path;
+ 	int ret;
+ 
+-	path = tracefs_instance_get_dir(instance);
++	inst = instance_alloc(name);
++	if (!inst)
++		return NULL;
++
++	path = tracefs_instance_get_dir(inst);
+ 	ret = stat(path, &st);
+-	if (ret < 0)
+-		ret = mkdir(path, 0777);
+-	else
+-		ret = 1;
++	if (ret < 0) {
++		/* Cannot create the top instance, if it does not exist! */
++		if (!name)
++			goto error;
++		mode = get_trace_file_permissions("instances");
++		if (mkdir(path, mode))
++			goto error;
++		inst->flags |= FLAG_INSTANCE_NEWLY_CREATED;
++	}
+ 	tracefs_put_tracing_file(path);
+-	return ret;
++	return inst;
++
++error:
++	tracefs_instance_free(inst);
++	return NULL;
+ }
+ 
+ /**
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index d148aa16..207aa68f 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -199,6 +199,7 @@ struct filter_pids {
+ 
+ struct buffer_instance {
+ 	struct buffer_instance	*next;
++	char			*name;
+ 	struct tracefs_instance	*tracefs;
+ 	unsigned long long	trace_id;
+ 	char			*cpumask;
+@@ -277,7 +278,7 @@ extern struct buffer_instance *first_instance;
+ #define is_agent(instance)	((instance)->flags & BUFFER_FL_AGENT)
+ #define is_guest(instance)	((instance)->flags & BUFFER_FL_GUEST)
+ 
+-struct buffer_instance *create_instance(const char *name);
++struct buffer_instance *allocate_instance(const char *name);
+ void add_instance(struct buffer_instance *instance, int cpu_count);
+ void update_first_instance(struct buffer_instance *instance, int topt);
+ 
+@@ -286,7 +287,6 @@ void show_instance_file(struct buffer_instance *instance, const char *name);
+ int get_guest_vcpu_pid(unsigned int guest_cid, unsigned int guest_vcpu);
+ 
+ /* moved from trace-cmd.h */
+-void tracecmd_create_top_instance(char *name);
+ void tracecmd_remove_instances(void);
+ int tracecmd_add_event(const char *event_str, int stack);
+ void tracecmd_enable_events(void);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 8cd44dd0..908adb93 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -351,27 +351,37 @@ static void test_set_event_pid(struct buffer_instance *instance)
+ }
+ 
+ /**
+- * create_instance - allocate a new buffer instance
++ * allocate_instance - allocate a new buffer instance,
++ *			it must exist in the ftrace system
+  * @name: The name of the instance (instance will point to this)
+  *
+- * Returns a newly allocated instance. Note that @name will not be
+- * copied, and the instance buffer will point to the string itself.
++ * Returns a newly allocated instance. In case of an error or if the
++ * instance does not exist in the ftrace system, NULL is returned.
+  */
+-struct buffer_instance *create_instance(const char *name)
++struct buffer_instance *allocate_instance(const char *name)
+ {
+ 	struct buffer_instance *instance;
+ 
+-	instance = malloc(sizeof(*instance));
++	instance = calloc(1, sizeof(*instance));
+ 	if (!instance)
+ 		return NULL;
+-	memset(instance, 0, sizeof(*instance));
+-	instance->tracefs = tracefs_instance_alloc(name);
+-	if (!instance->tracefs) {
+-		free(instance);
+-		return NULL;
++	if (name)
++		instance->name = strdup(name);
++	if (tracefs_instance_exists(name)) {
++		instance->tracefs = tracefs_instance_create(name);
++		if (!instance->tracefs)
++			goto error;
+ 	}
+ 
+ 	return instance;
++
++error:
++	if (instance) {
++		free(instance->name);
++		tracefs_instance_free(instance->tracefs);
++		free(instance);
++	}
++	return NULL;
+ }
+ 
+ static int __add_all_instances(const char *tracing_dir)
+@@ -418,7 +428,7 @@ static int __add_all_instances(const char *tracing_dir)
+ 		}
+ 		free(instance_path);
+ 
+-		instance = create_instance(name);
++		instance = allocate_instance(name);
+ 		if (!instance)
+ 			die("Failed to create instance");
+ 		add_instance(instance, local_cpu_count);
+@@ -5034,9 +5044,11 @@ static void make_instances(void)
+ 	for_each_instance(instance) {
+ 		if (is_guest(instance))
+ 			continue;
+-		if (tracefs_instance_create(instance->tracefs) > 0) {
++		if (instance->name && !instance->tracefs) {
++			instance->tracefs = tracefs_instance_create(instance->name);
+ 			/* Don't delete instances that already exist */
+-			instance->flags |= BUFFER_FL_KEEP;
++			if (instance->tracefs && !tracefs_instance_is_new(instance->tracefs))
++				instance->flags |= BUFFER_FL_KEEP;
+ 		}
+ 	}
+ }
+@@ -5057,25 +5069,6 @@ void tracecmd_remove_instances(void)
+ 	}
+ }
+ 
+-/**
+- * tracecmd_create_top_instance - create a top named instance
+- * @name: name of the instance to use.
+- *
+- * This is a library function for tools that want to do their tracing inside of
+- * an instance.  All it does is create an instance and set it as a top instance,
+- * you don't want to call this more than once, and you want to call
+- * tracecmd_remove_instances to undo your work.
+- */
+-void tracecmd_create_top_instance(char *name)
+-{
+-	struct buffer_instance *instance;
+-
+-	instance = create_instance(name);
+-	add_instance(instance, local_cpu_count);
+-	update_first_instance(instance, 0);
+-	make_instances();
+-}
+-
+ static void check_plugin(const char *plugin)
+ {
+ 	char *buf;
+@@ -5533,7 +5526,7 @@ void update_first_instance(struct buffer_instance *instance, int topt)
+ void init_top_instance(void)
+ {
+ 	if (!top_instance.tracefs)
+-		top_instance.tracefs = tracefs_instance_alloc(NULL);
++		top_instance.tracefs = tracefs_instance_create(NULL);
+ 	top_instance.cpu_count = tracecmd_count_cpus();
+ 	top_instance.flags = BUFFER_FL_KEEP;
+ 	top_instance.trace_id = tracecmd_generate_traceid();
+@@ -5580,7 +5573,7 @@ void trace_stop(int argc, char **argv)
+ 			usage(argv);
+ 			break;
+ 		case 'B':
+-			instance = create_instance(optarg);
++			instance = allocate_instance(optarg);
+ 			if (!instance)
+ 				die("Failed to create instance");
+ 			add_instance(instance, local_cpu_count);
+@@ -5620,7 +5613,7 @@ void trace_restart(int argc, char **argv)
+ 			usage(argv);
+ 			break;
+ 		case 'B':
+-			instance = create_instance(optarg);
++			instance = allocate_instance(optarg);
+ 			if (!instance)
+ 				die("Failed to create instance");
+ 			add_instance(instance, local_cpu_count);
+@@ -5678,7 +5671,7 @@ void trace_reset(int argc, char **argv)
+ 		}
+ 		case 'B':
+ 			last_specified_all = 0;
+-			instance = create_instance(optarg);
++			instance = allocate_instance(optarg);
+ 			if (!instance)
+ 				die("Failed to create instance");
+ 			add_instance(instance, local_cpu_count);
+@@ -5821,6 +5814,7 @@ static inline void remove_instances(struct buffer_instance *instances)
+ 	while (instances) {
+ 		del = instances;
+ 		instances = instances->next;
++		free(del->name);
+ 		tracefs_instance_destroy(del->tracefs);
+ 		tracefs_instance_free(del->tracefs);
+ 		free(del);
+@@ -5978,7 +5972,7 @@ static void parse_record_options(int argc,
+ 					die("Failed to allocate guest name");
+ 			}
+ 
+-			ctx->instance = create_instance(name);
++			ctx->instance = allocate_instance(name);
+ 			ctx->instance->flags |= BUFFER_FL_GUEST;
+ 			ctx->instance->cid = cid;
+ 			ctx->instance->port = port;
+@@ -6173,7 +6167,7 @@ static void parse_record_options(int argc,
+ 			ctx->instance->buffer_size = atoi(optarg);
+ 			break;
+ 		case 'B':
+-			ctx->instance = create_instance(optarg);
++			ctx->instance = allocate_instance(optarg);
+ 			if (!ctx->instance)
+ 				die("Failed to create instance");
+ 			ctx->instance->delete = negative;
+diff --git a/tracecmd/trace-show.c b/tracecmd/trace-show.c
+index a6f21027..eb328527 100644
+--- a/tracecmd/trace-show.c
++++ b/tracecmd/trace-show.c
+@@ -64,7 +64,7 @@ void trace_show(int argc, char **argv)
+ 			if (buffer)
+ 				die("Can only show one buffer at a time");
+ 			buffer = optarg;
+-			instance = create_instance(optarg);
++			instance = allocate_instance(optarg);
+ 			if (!instance)
+ 				die("Failed to create instance");
+ 			break;
 diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
-index 5f79ff8a..e6678eab 100644
+index 260d0c37..5f79ff8a 100644
 --- a/tracecmd/trace-stat.c
 +++ b/tracecmd/trace-stat.c
-@@ -7,7 +7,6 @@
- #include <sys/stat.h>
- #include <stdlib.h>
- #include <stdio.h>
--#include <dirent.h>
- #include <getopt.h>
- #include <unistd.h>
- #include <fcntl.h>
-@@ -140,48 +139,23 @@ static void report_file(struct buffer_instance *instance,
- 	free(str);
- }
- 
--static void report_instances(void)
-+static int report_instance(const char *name, void *data)
- {
--	struct dirent *dent;
--	bool first = true;
--	char *path = NULL;
--	DIR *dir = NULL;
--	struct stat st;
--	int ret;
--
--	path = tracefs_get_tracing_file("instances");
--	if (!path)
--		return;
--	ret = stat(path, &st);
--	if (ret < 0 || !S_ISDIR(st.st_mode))
--		goto out;
--
--	dir = opendir(path);
--	if (!dir)
--		goto out;
--
--	while ((dent = readdir(dir))) {
--		char *instance;
-+	bool *first = (bool *)data;
- 
--		if (strcmp(dent->d_name, ".") == 0 ||
--		    strcmp(dent->d_name, "..") == 0)
--			continue;
--		instance = append_file(path, dent->d_name);
--		ret = stat(instance, &st);
--		free(instance);
--		if (ret < 0 || !S_ISDIR(st.st_mode))
--			continue;
--		if (first) {
--			first = false;
--			printf("\nInstances:\n");
--		}
--		printf(" %s\n", dent->d_name);
-+	if (*first) {
-+		*first = false;
-+		printf("\nInstances:\n");
- 	}
-+	printf(" %s\n", name);
-+	return 0;
-+}
- 
--out:
--	if (dir)
--		closedir(dir);
--	tracefs_put_tracing_file(path);
-+static void report_instances(void)
-+{
-+	bool first = true;
-+
-+	tracefs_instances_walk(report_instance, &first);
- }
- 
- struct event_iter *trace_event_iter_alloc(const char *path)
+@@ -926,7 +926,7 @@ void trace_stat (int argc, char **argv)
+ 			usage(argv);
+ 			break;
+ 		case 'B':
+-			instance = create_instance(optarg);
++			instance = allocate_instance(optarg);
+ 			if (!instance)
+ 				die("Failed to create instance");
+ 			add_instance(instance, tracecmd_count_cpus());
 diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 31031661..c42fea12 100644
+index 2febdb88..31031661 100644
 --- a/utest/tracefs-utest.c
 +++ b/utest/tracefs-utest.c
-@@ -462,6 +462,55 @@ static void test_local_events(void)
- 	tracefs_list_free(systems);
- }
- 
-+struct test_walk_instance {
-+	struct tracefs_instance *instance;
-+	bool found;
-+};
-+#define WALK_COUNT 10
-+int test_instances_walk_cb(const char *name, void *data)
-+{
-+	struct test_walk_instance *instances  = (struct test_walk_instance *)data;
-+	int i;
-+
-+	CU_TEST(instances != NULL);
-+	CU_TEST(name != NULL);
-+
-+	for (i = 0; i < WALK_COUNT; i++) {
-+		if (!strcmp(name,
-+			    tracefs_instance_get_name(instances[i].instance))) {
-+			instances[i].found = true;
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void test_instances_walk(void)
-+{
-+	struct test_walk_instance instances[WALK_COUNT];
-+	int i;
-+
-+	memset(instances, 0, WALK_COUNT * sizeof(struct test_walk_instance));
-+	for (i = 0; i < WALK_COUNT; i++) {
-+		instances[i].instance = tracefs_instance_create(get_rand_str());
-+		CU_TEST(instances[i].instance != NULL);
-+	}
-+
-+	CU_TEST(tracefs_instances_walk(test_instances_walk_cb, instances) == 0);
-+	for (i = 0; i < WALK_COUNT; i++) {
-+		CU_TEST(instances[i].found);
-+		tracefs_instance_destroy(instances[i].instance);
-+		instances[i].found = false;
-+	}
-+
-+	CU_TEST(tracefs_instances_walk(test_instances_walk_cb, instances) == 0);
-+	for (i = 0; i < WALK_COUNT; i++) {
-+		CU_TEST(!instances[i].found);
-+		tracefs_instance_free(instances[i].instance);
-+	}
-+}
-+
- static int test_suite_destroy(void)
+@@ -179,6 +179,7 @@ static void test_instance_file_read(struct tracefs_instance *inst, char *fname)
+ static void test_instance_file(void)
  {
- 	tracefs_instance_destroy(test_instance);
-@@ -505,4 +554,7 @@ void test_tracefs_lib(void)
- 		    test_tracers);
- 	CU_add_test(suite, "tracefs_local events API",
- 		    test_local_events);
-+	CU_add_test(suite, "tracefs_instances_walk API",
-+		    test_instances_walk);
-+
- }
+ 	struct tracefs_instance *instance = NULL;
++	struct tracefs_instance *second = NULL;
+ 	const char *name = get_rand_str();
+ 	const char *inst_name = NULL;
+ 	const char *tdir;
+@@ -198,17 +199,19 @@ static void test_instance_file(void)
+ 	CU_TEST(stat(inst_dir, &st) != 0);
+ 
+ 	CU_TEST(tracefs_instance_exists(name) == false);
+-	instance = tracefs_instance_alloc(name);
++	instance = tracefs_instance_create(name);
+ 	CU_TEST(instance != NULL);
+-	CU_TEST(stat(inst_dir, &st) != 0);
+-	inst_name = tracefs_instance_get_name(instance);
+-	CU_TEST(inst_name != NULL);
+-	CU_TEST(strcmp(inst_name, name) == 0);
+-
+-	CU_TEST(tracefs_instance_create(instance) == 0);
++	CU_TEST(tracefs_instance_is_new(instance));
++	second = tracefs_instance_create(name);
++	CU_TEST(second != NULL);
++	CU_TEST(!tracefs_instance_is_new(second));
++	tracefs_instance_free(second);
+ 	CU_TEST(tracefs_instance_exists(name) == true);
+ 	CU_TEST(stat(inst_dir, &st) == 0);
+ 	CU_TEST(S_ISDIR(st.st_mode));
++	inst_name = tracefs_instance_get_name(instance);
++	CU_TEST(inst_name != NULL);
++	CU_TEST(strcmp(inst_name, name) == 0);
+ 
+ 	fname = tracefs_instance_get_dir(NULL);
+ 	CU_TEST(fname != NULL);
+@@ -474,12 +477,8 @@ static int test_suite_init(void)
+ 	test_tep = tracefs_local_events_system(NULL, systems);
+ 	if (test_tep == NULL)
+ 		return 1;
+-
+-	test_instance = tracefs_instance_alloc(TEST_INSTANCE_NAME);
+-	if (test_instance == NULL)
+-		return 1;
+-
+-	if (tracefs_instance_create(test_instance) < 0)
++	test_instance = tracefs_instance_create(TEST_INSTANCE_NAME);
++	if (!test_instance)
+ 		return 1;
+ 
+ 	return 0;
 -- 
 2.28.0
 
