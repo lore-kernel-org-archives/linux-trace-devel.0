@@ -8,65 +8,65 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74BAAC64E7A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8630C64E75
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:51:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 35107246EB
+	by mail.kernel.org (Postfix) with ESMTP id 73F5C246EE
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:51:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kvnOUakI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="s5wnttxE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbgKROun (ORCPT
+        id S1727202AbgKROup (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 18 Nov 2020 09:50:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
+        Wed, 18 Nov 2020 09:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727199AbgKROun (ORCPT
+        with ESMTP id S1727199AbgKROuo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:50:43 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F931C061A48
-        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2020 06:50:43 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id r17so2529958wrw.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2020 06:50:43 -0800 (PST)
+        Wed, 18 Nov 2020 09:50:44 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F06C0613D4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2020 06:50:44 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id s13so2971802wmh.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2020 06:50:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iIx7+grTv/751ft5w1VwxSU0mvVww6kVQ6CUeDcj3aM=;
-        b=kvnOUakIfbR2qscfJyM45Tec3DsuKox+blC4QGrQUsw99+XDzXzUZNw7K0nHH5kIQm
-         FzPDIneTbCN0ajlh1JnOLFLFrwKzQdgsMVlF6hDH2cIZV7O/8fwc7l+eGOWv+cooVAnj
-         2TyLvEG880NyxOqC+2vodo47IF1LnD9caFT3nH7uPqWIgi/PpDq3RqjirxV/qT0z6Pkj
-         +WmfhwQzYZI5stKVuZdCBVrOx/fQ0nheUjdsFPRuSIOShoz+GwZAO2yCuuqcqB3Ahh79
-         +kW7XVi8xD3d/tmw1aIswrcA72r3NQP6SSpOccFfkgAgoSVH0vmaGb70dETw7IAJ5apb
-         fONA==
+        bh=N7pkMWcXJFtNywsHJwHLLOPKrqZCvPFvqytyCVXU6To=;
+        b=s5wnttxEAY2qim32vPFY1w+U2+mlGeCQyDltmz2/twyxX29RSXhtT7GE15FAF3ciX4
+         g42ek/E3nQnJmM4WSuqBzxRQlel1rAUF3Mw5x1JZbhPuGacYZ/9MlE1oSisGm8r2euVh
+         6f9a9qqTwZu17Mh3lG9jOn/TYF20jY7hPQZy39Pz4lhOzu86lOw0f5dAvYmyIaOdIMRE
+         cQV1B0MIuVa1eDF90tF0j3pj4Y+oiTSA61DLzp3dsw5Z+hAIqsh3VCUI1tzTUqLzd2J4
+         8d8EeT+KnBGIztyNcm5PzOnb/xSVYol9Rt5Slv2GUjo/OJPM2SfdFrPrR4zCLKTAB3xb
+         VO8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iIx7+grTv/751ft5w1VwxSU0mvVww6kVQ6CUeDcj3aM=;
-        b=eJ9rDBhaCmF6u54gvB37llOb8UM6KC7M/fPV0zv1TyEiJS8M+PnHrSiQWtG5IZqeZY
-         Hf2Y3jnzlnE58KeQqc4JjUbYum7AU0YRISXBulDFMLCpo/Wh/muCbP31XfW/QJ4/2jlY
-         stYbj5kEHM5OBDRPqfM0Hdel2siEd9v7XyffJpXFv97ca3uMsoHpQhRMLYSs3TXAfVFT
-         D+lqHSdyKJY0rOVoCuMJbhu+OHwulMrFkesAKIWpiWqGs2LamW7CroFQqHXdXEKYJcYU
-         utNB+2ZiQel0hSo+VhZo1fD9m5iYrZkq2Jm/0lZBYCYm2SM8PSNSoqny5XQ7IuGdvfl6
-         FMYw==
-X-Gm-Message-State: AOAM532VVxbSvKmSKsmCQ3rP2ajhbyeoqF/GguV206Wax1wiqa5CAkAj
-        rZAyHN2D/E1LxMvd9PI/BHcIQ3tPyek=
-X-Google-Smtp-Source: ABdhPJywpDTPNUPSjcGswHHuLO62qpIoboSRb60PUw/GXjJQnZzRMWlvdIu84bm+YtoexpYqRIxfpw==
-X-Received: by 2002:adf:9e4d:: with SMTP id v13mr5269633wre.135.1605711041792;
-        Wed, 18 Nov 2020 06:50:41 -0800 (PST)
+        bh=N7pkMWcXJFtNywsHJwHLLOPKrqZCvPFvqytyCVXU6To=;
+        b=BOTg4McWGl4MdhBPm/Xk48K2zKss7WwLEynEReoLN4ITCA3IchDxftkihB8T2v/xnp
+         9pglhrcwUSBp+Ut2SgK7Aj0r1SV+fhVSnr35NHfXN9Er5nY3NCDfDIc8XL8q6UUOj6r5
+         ASifUQ8CejBNl48yg28KcONys60TzMXq7gJ8uAPoGgyWiCwcWSCWDFFqV8Ii3c0E9HPb
+         vdC/BcPGv/nfEQ1aDYQEE2YGlTVSbEIDaAzOhL7LCYQkmnhi7I3RTDkaOc7zFZ+6+VGw
+         8ethqbue8GG+BzQef+H5IGB6eYn/M/vkDx3G0ila3nZtpuINaKIyGuT+HRGMdtOGeybS
+         5Daw==
+X-Gm-Message-State: AOAM530DeaBf0mfq6BuyrJr/wTKmqcsiwrZ0rKVr/i2xMMx8a6H6oV2r
+        EtOlnsYwzP0b2n+1cuPErJM=
+X-Google-Smtp-Source: ABdhPJy3Ecj0uXyYOi99myfSMSYezqyfJMJvjzlAVcDR8NLNtm6BujVEpcqdd90ZrGPpwVPJa2shUQ==
+X-Received: by 2002:a7b:cb09:: with SMTP id u9mr398503wmj.49.1605711043142;
+        Wed, 18 Nov 2020 06:50:43 -0800 (PST)
 Received: from localhost.localdomain ([84.40.93.58])
-        by smtp.gmail.com with ESMTPSA id s202sm3926190wme.39.2020.11.18.06.50.40
+        by smtp.gmail.com with ESMTPSA id s202sm3926190wme.39.2020.11.18.06.50.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 06:50:41 -0800 (PST)
+        Wed, 18 Nov 2020 06:50:42 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v4 16/20] kernel-shark: Use only signed types for model defs
-Date:   Wed, 18 Nov 2020 16:49:59 +0200
-Message-Id: <20201118145003.156542-17-y.karadz@gmail.com>
+Subject: [PATCH v4 17/20] kernel-shark: Add ksmodel_get_bin()
+Date:   Wed, 18 Nov 2020 16:50:00 +0200
+Message-Id: <20201118145003.156542-18-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201118145003.156542-1-y.karadz@gmail.com>
 References: <20201118145003.156542-1-y.karadz@gmail.com>
@@ -76,127 +76,64 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-All variables that are used to describe the state of the model, like
-the range of the model or the size of the bin must have signed integer
-types. This is a continuation of the change started  by switching to
-signed timestamps.
+The method retrieves the Id of the bin of the model that contains
+given entry.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark-model.c | 12 ++++++------
- src/libkshark-model.h | 18 +++++++++---------
- 2 files changed, 15 insertions(+), 15 deletions(-)
+ src/libkshark-model.c | 27 +++++++++++++++++++++++++++
+ src/libkshark-model.h |  3 +++
+ 2 files changed, 30 insertions(+)
 
 diff --git a/src/libkshark-model.c b/src/libkshark-model.c
-index 97cff314..f3864bfd 100644
+index f3864bfd..2301b069 100644
 --- a/src/libkshark-model.c
 +++ b/src/libkshark-model.c
-@@ -91,10 +91,10 @@ static bool ksmodel_histo_alloc(struct kshark_trace_histo *histo, size_t n)
+@@ -1325,3 +1325,30 @@ ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
+ 				       match_pid_missed_events, sd, &pid,
+ 				       col, index);
  }
- 
- static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
--					size_t n, uint64_t min, uint64_t max,
-+					size_t n, int64_t min, int64_t max,
- 					bool force_in_range)
- {
--	uint64_t corrected_range, delta_range, range = max - min;
-+	int64_t corrected_range, delta_range, range = max - min;
- 	struct kshark_entry *last;
- 
- 	/* The size of the bin must be >= 1, hence the range must be >= n. */
-@@ -163,7 +163,7 @@ static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
-  * @param max: Upper edge of the time-window to be visualized.
-  */
- void ksmodel_set_bining(struct kshark_trace_histo *histo,
--			size_t n, uint64_t min, uint64_t max)
-+			size_t n, int64_t min, int64_t max)
- {
- 	ksmodel_set_in_range_bining(histo, n, min, max, false);
- }
-@@ -256,7 +256,7 @@ static size_t ksmodel_set_upper_edge(struct kshark_trace_histo *histo)
- static void ksmodel_set_next_bin_edge(struct kshark_trace_histo *histo,
- 				      size_t bin, size_t last_row)
- {
--	uint64_t time_min, time_max;
-+	int64_t time_min, time_max;
- 	size_t next_bin = bin + 1;
- 	ssize_t row;
- 
-@@ -598,9 +598,9 @@ void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n)
-  * @param histo: Input location for the model descriptor.
-  * @param ts: position in time to be visualized.
-  */
--void ksmodel_jump_to(struct kshark_trace_histo *histo, uint64_t ts)
-+void ksmodel_jump_to(struct kshark_trace_histo *histo, int64_t ts)
- {
--	uint64_t min, max, range_min;
-+	int64_t min, max, range_min;
- 
- 	if (ts > histo->min && ts < histo->max) {
- 		/*
++
++/**
++ * @brief Find the bin Id of a give entry.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param entry: Input location for entry.
++ *
++ * @returns If the timestamp of the entry is inside the range of the model the
++ * 	    function returns the Id of the bin it belongs to.
++ * 	    If the timestamp of the entry is outside of the range of the model
++ * 	    the function returns UPPER_OVERFLOW_BIN or LOWER_OVERFLOW_BIN
++ * 	    (negative values).
++ */
++int ksmodel_get_bin(struct kshark_trace_histo *histo,
++		    const struct kshark_entry *entry)
++{
++	if (entry->ts < histo->min)
++		return UPPER_OVERFLOW_BIN;
++
++	if (entry->ts > histo->max)
++		return LOWER_OVERFLOW_BIN;
++
++	if (entry->ts == histo->max)
++		return histo->n_bins - 1;
++
++	return  (entry->ts - histo->min) / histo->bin_size;
++}
 diff --git a/src/libkshark-model.h b/src/libkshark-model.h
-index 87e252eb..b8624809 100644
+index b8624809..8989ee0e 100644
 --- a/src/libkshark-model.h
 +++ b/src/libkshark-model.h
-@@ -58,16 +58,16 @@ struct kshark_trace_histo {
- 	 * Lower edge of the time-window to be visualized. Only entries having
- 	 * timestamp >= min will be visualized.
- 	 */
--	uint64_t		min;
-+	int64_t			min;
- 
- 	/**
- 	 * Upper edge of the time-window to be visualized. Only entries having
- 	 * timestamp <= max will be visualized.
- 	 */
--	uint64_t		max;
-+	int64_t			max;
- 
- 	/** The size in time for each bin. */
--	uint64_t		bin_size;
-+	int64_t			bin_size;
- 
- 	/** Number of bins. */
- 	int			n_bins;
-@@ -78,7 +78,7 @@ void ksmodel_init(struct kshark_trace_histo *histo);
- void ksmodel_clear(struct kshark_trace_histo *histo);
- 
- void ksmodel_set_bining(struct kshark_trace_histo *histo,
--			size_t n, uint64_t min, uint64_t max);
-+			size_t n, int64_t min, int64_t max);
- 
- void ksmodel_fill(struct kshark_trace_histo *histo,
- 		  struct kshark_entry **data, size_t n);
-@@ -89,7 +89,7 @@ void ksmodel_shift_forward(struct kshark_trace_histo *histo, size_t n);
- 
- void ksmodel_shift_backward(struct kshark_trace_histo *histo, size_t n);
- 
--void ksmodel_jump_to(struct kshark_trace_histo *histo, uint64_t ts);
-+void ksmodel_jump_to(struct kshark_trace_histo *histo, int64_t ts);
- 
- void ksmodel_zoom_out(struct kshark_trace_histo *histo,
- 		      double r, int mark);
-@@ -163,16 +163,16 @@ ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
- 			       struct kshark_entry_collection *col,
- 			       ssize_t *index);
- 
--static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
-+static inline int64_t ksmodel_bin_ts(struct kshark_trace_histo *histo,
- 				      int bin)
- {
--	return (histo->min + bin*histo->bin_size) * 1e-9;
-+	return (histo->min + bin*histo->bin_size);
+@@ -175,6 +175,9 @@ static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
+ 	return ksmodel_bin_ts(histo, bin) * 1e-9;
  }
  
--static inline uint64_t ksmodel_bin_ts(struct kshark_trace_histo *histo,
-+static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
- 				      int bin)
- {
--	return (histo->min + bin*histo->bin_size);
-+	return ksmodel_bin_ts(histo, bin) * 1e-9;
- }
- 
++int ksmodel_get_bin(struct kshark_trace_histo *histo,
++		    const struct kshark_entry *entry);
++
  #ifdef __cplusplus
+ }
+ #endif // __cplusplus
 -- 
 2.25.1
 
