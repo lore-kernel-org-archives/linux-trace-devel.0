@@ -8,65 +8,65 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A36D4C6369E
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA3DEC6379D
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:51:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 42C45246F9
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:50:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A046246EE
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:51:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AFSpRiN7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e82vfmYe"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbgKROui (ORCPT
+        id S1726969AbgKROum (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 18 Nov 2020 09:50:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
+        Wed, 18 Nov 2020 09:50:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727180AbgKROuh (ORCPT
+        with ESMTP id S1727187AbgKROul (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:50:37 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DAFC0613D4
-        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2020 06:50:37 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id c198so1387286wmd.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2020 06:50:37 -0800 (PST)
+        Wed, 18 Nov 2020 09:50:41 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E219C061A48
+        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2020 06:50:41 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id k2so2515955wrx.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2020 06:50:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=K9H56CktTRS6Fsm2+3MQmQSYpy9yAHmV+l/ZklP8OYk=;
-        b=AFSpRiN7uCeT0Gm6od/FcPsvsaZUVweDimL0cPjaRKaPBnOP3ihkunlaKba7f6y1cm
-         1WqIFkmYIVX/zuhq0rszd+PunLvVMIPdT2SKRu+A8vd+siINFLNUA9zuxhTSbpB4WNOm
-         4JE6+mp7cS7xrd+vWEHwmTdUqPJc3QzgOO6Egxg4RYw23EAQqGhrRGIs+2xQ+Jx1v0qq
-         QVe+ueCpf99ENY5m+puXH+osA2dVTNx5jET8c1ZG1fizD4XAKAll+bMDdglIPhiYx1Zz
-         InxlVG14Ltd/c8IH6lQ7KmXlP81DAhfFfFNKIxk3VeHu91vcOxW9B5mK2r3JmNllAHLf
-         Bi+A==
+        bh=U8Qprx7akq7E+77dhdKZ0WAUS+SSFOPoha6Q16ou9QA=;
+        b=e82vfmYePIRdMIC8614ED897kx3rhnUJpOUZ82c8FoAmF4SQGLTseWCpwRMpmU7My9
+         NvPJlCjSrNA9Q9tR1cbBq5/P1qZa/DPA7N7RhaFE2r8ZkmAdqn71JJp48wWoeb4rAx2W
+         X8W258ReZ+xnSN3bXBhg0R4oCTl+92JtgSgX7k/CdnDJpK8EKNNMDHPaPVYIQTqhdqjl
+         +RKm2E+cdw/sXTGXyWsXPXesNok3cUIFOtLduByLaZsR94fZgBD/6J7C94gzehRAlvz+
+         sn57VryXFiKyQd9WXLXG9lrwMFiHz4N4SUj4eCB2NT8nz6IZjPiX2eaP+FS84J/hD376
+         ivyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K9H56CktTRS6Fsm2+3MQmQSYpy9yAHmV+l/ZklP8OYk=;
-        b=aze3KgYsWgM8zqs9JnGMZ+ecNalFrlNIGVfKvLvv02eHcesEodOZeULmRDncyL6I2y
-         tvTVk3g89vwrEeYbVb3XO0Q/s+1iVGA/6cGel6X/6XRvgmO4YQz5CPe9QuO/9I0Dh9Lm
-         YTbBhi+DjIrwa9y7ly5+rdLrR6SmfRenMN5gSuYD0LnRpTRQLj/jZyQRLF2jlnvztz4Y
-         zYgT4eJjAaXGM2ZHj/HVKnRkVCxoNHgiEpAv9q5m4p2g9hEOswfz+sTaWC1o0MIsHNvt
-         /MM4+1ZeI6AW4rj1R/rCO/xROPbrBuV2ctLwm9f6ga5ndyxKWGJemx9q2B+VLdOBiHqp
-         AZQg==
-X-Gm-Message-State: AOAM531sPKKRH3c4B14JWBsGAJLgXOEQMSvGkGXT0+05PYwKv/x4Q2c5
-        6wOEDvWE2wHoEfXHoM5+JEU=
-X-Google-Smtp-Source: ABdhPJw5gYGkOcbtyOv4YsexOFLhaK9cxGLNeLXLweaB0KGyxJ0VCzqRD0qxfDlIFPTzRVSJfEnTWQ==
-X-Received: by 2002:a1c:21c1:: with SMTP id h184mr451952wmh.106.1605711035593;
-        Wed, 18 Nov 2020 06:50:35 -0800 (PST)
+        bh=U8Qprx7akq7E+77dhdKZ0WAUS+SSFOPoha6Q16ou9QA=;
+        b=AaDgppm0Exg/04WZ6CanCAS7UtYoM6cfrldemKTawKExVphTe5CbLC/u2v1zuUutGe
+         eNph3TA8iwbd1gPqNI/W6gcYY1qHN8M7AfIJl7jCHyZFPwhwP+wGAwUOVSqtBAPexJH/
+         dMHXH85lqNoztH3bSMz7r9S7Ca1HN15AET4gPClMBG55f+JsOdED1oC8BFIpOp6SBhML
+         zEeUGZoYBuZl7EosMk/JG030ntELnIIisYY+cObmNhF6Q5oVPQCnqKN3OCORHPKKQ/6U
+         SoefcWKa5UFoER09OZ5gmp782LufNG/aslm9KmuZY0/DoVLUcsXcdAQbBUtyhtTf4mbH
+         qgGg==
+X-Gm-Message-State: AOAM532Wwi6vLy4kVG08YFnZ0ZPeVWQfcXQAzjarTLPWLP2/5aSUolJA
+        tsdTkta672tHLX59MsJYzxuYcNldx+A=
+X-Google-Smtp-Source: ABdhPJwrnGRaaVhIlBbtFrPyqtWv76t9a5VkPblKRTvUgJzSYzpXd0pmczYLcGoR3Acd9LqyDqR3aQ==
+X-Received: by 2002:adf:9066:: with SMTP id h93mr5511057wrh.166.1605711039840;
+        Wed, 18 Nov 2020 06:50:39 -0800 (PST)
 Received: from localhost.localdomain ([84.40.93.58])
-        by smtp.gmail.com with ESMTPSA id s202sm3926190wme.39.2020.11.18.06.50.34
+        by smtp.gmail.com with ESMTPSA id s202sm3926190wme.39.2020.11.18.06.50.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 06:50:35 -0800 (PST)
+        Wed, 18 Nov 2020 06:50:39 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v4 10/20] kernel-shark: Start using data streams
-Date:   Wed, 18 Nov 2020 16:49:53 +0200
-Message-Id: <20201118145003.156542-11-y.karadz@gmail.com>
+Subject: [PATCH v4 14/20] kernel-shark: Provide merging of multiple data streams
+Date:   Wed, 18 Nov 2020 16:49:57 +0200
+Message-Id: <20201118145003.156542-15-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201118145003.156542-1-y.karadz@gmail.com>
 References: <20201118145003.156542-1-y.karadz@gmail.com>
@@ -76,590 +76,435 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Here we switch to using the trace data readout, provided by the Data
-stream interface. The actual implementation of the new readout was
-done in the previous commits.
+The C API provides loading of the trace data in two different forms.
+The firs one is an array of kshark_entries and is being used by the
+KernelShark GUI. The second is a matrix-like structure that has all
+the fields of the kshark_entry stored in separate arrays, forming the
+columns of the matrix. The second form of the data is used by
+trace-cruncher. In this patch we add methods for merging of several
+data streams into a single data set. Both kshark_entries and matrix
+forms of the data are supported. This patch includes a simple example
+that demonstrate how to open a file that contains multiple buffers.
+Each buffers is loaded into a separate Data stream and those streams
+are merged together.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- examples/dataload.c |  28 ++--
- src/libkshark.c     | 342 ++++++++++++++++++--------------------------
- src/libkshark.h     |  14 +-
- 3 files changed, 164 insertions(+), 220 deletions(-)
+ examples/CMakeLists.txt    |   4 +
+ examples/multibufferload.c |  60 +++++++++
+ src/libkshark.c            | 255 +++++++++++++++++++++++++++++++++++++
+ src/libkshark.h            |  47 +++++++
+ 4 files changed, 366 insertions(+)
+ create mode 100644 examples/multibufferload.c
 
-diff --git a/examples/dataload.c b/examples/dataload.c
-index 15c5de05..e259b3ad 100644
---- a/examples/dataload.c
-+++ b/examples/dataload.c
-@@ -19,8 +19,7 @@ int main(int argc, char **argv)
- 	struct kshark_entry **data = NULL;
- 	ssize_t r, n_rows, n_tasks;
- 	char *entry_str;
--	bool status;
--	int *pids;
-+	int sd, *pids;
+diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
+index 8d40e42c..831eee24 100644
+--- a/examples/CMakeLists.txt
++++ b/examples/CMakeLists.txt
+@@ -8,6 +8,10 @@ message(STATUS "datafilter")
+ add_executable(dfilter          datafilter.c)
+ target_link_libraries(dfilter   kshark)
  
- 	/* Create a new kshark session. */
- 	kshark_ctx = NULL;
-@@ -29,30 +28,28 @@ int main(int argc, char **argv)
- 
- 	/* Open a trace data file produced by trace-cmd. */
- 	if (argc > 1)
--		status = kshark_open(kshark_ctx, argv[1]);
-+		sd = kshark_open(kshark_ctx, argv[1]);
- 	else
--		status = kshark_open(kshark_ctx, default_file);
-+		sd = kshark_open(kshark_ctx, default_file);
- 
--	if (!status) {
-+	if (sd < 0) {
- 		kshark_free(kshark_ctx);
- 		return 1;
- 	}
- 
- 	/* Load the content of the file into an array of entries. */
--	n_rows = kshark_load_data_entries(kshark_ctx, &data);
-+	n_rows = kshark_load_entries(kshark_ctx, sd, &data);
- 	if (n_rows < 1) {
- 		kshark_free(kshark_ctx);
- 		return 1;
- 	}
- 
- 	/* Print to the screen the list of all tasks. */
--	n_tasks = kshark_get_task_pids(kshark_ctx, &pids);
-+	n_tasks = kshark_get_task_pids(kshark_ctx, sd, &pids);
- 	for (r = 0; r < n_tasks; ++r) {
--		const char *task_str =
--			tep_data_comm_from_pid(kshark_ctx->pevent,
--					       pids[r]);
--
-+		char *task_str = kshark_comm_from_pid(sd, pids[r]);
- 		printf("task: %s-%i\n", task_str, pids[r]);
-+		free(task_str);
- 	}
- 
- 	free(pids);
-@@ -69,11 +66,8 @@ int main(int argc, char **argv)
- 	puts("\n...\n");
- 
- 	/* Print the last 10 entries. */
--	for (r = n_rows - 10; r < n_rows; ++r) {
--		entry_str = kshark_dump_entry(data[r]);
--		puts(entry_str);
--		free(entry_str);
--	}
-+	for (r = n_rows - 10; r < n_rows; ++r)
-+		kshark_print_entry(data[r]);
- 
- 	/* Free the memory. */
- 	for (r = 0; r < n_rows; ++r)
-@@ -82,7 +76,7 @@ int main(int argc, char **argv)
- 	free(data);
- 
- 	/* Close the file. */
--	kshark_close(kshark_ctx);
-+	kshark_close(kshark_ctx, sd);
- 
- 	/* Close the session. */
- 	kshark_free(kshark_ctx);
-diff --git a/src/libkshark.c b/src/libkshark.c
-index 422fb7d4..af1545d7 100644
---- a/src/libkshark.c
-+++ b/src/libkshark.c
-@@ -19,6 +19,7 @@
- 
- // KernelShark
- #include "libkshark.h"
++message(STATUS "multibufferload")
++add_executable(mbload          multibufferload.c)
++target_link_libraries(mbload   kshark)
++
+ # message(STATUS "datahisto")
+ # add_executable(dhisto          datahisto.c)
+ # target_link_libraries(dhisto   kshark)
+diff --git a/examples/multibufferload.c b/examples/multibufferload.c
+new file mode 100644
+index 00000000..70b2733a
+--- /dev/null
++++ b/examples/multibufferload.c
+@@ -0,0 +1,60 @@
++#include <stdio.h>
++#include <stdlib.h>
++
++#include "libkshark.h"
 +#include "libkshark-tepdata.h"
- 
- static __thread struct trace_seq seq;
- 
-@@ -32,6 +33,9 @@ static bool kshark_default_context(struct kshark_context **context)
- 	if (!kshark_ctx)
- 		return false;
- 
-+	kshark_ctx->stream = calloc(KS_DEFAULT_NUM_STREAMS,
-+				    sizeof(*kshark_ctx->stream));
 +
- 	kshark_ctx->event_handlers = NULL;
- 	kshark_ctx->collections = NULL;
- 	kshark_ctx->plugins = NULL;
-@@ -47,6 +51,9 @@ static bool kshark_default_context(struct kshark_context **context)
- 
- 	kshark_ctx->filter_mask = 0x0;
- 
-+	kshark_ctx->stream_info.array_size = KS_DEFAULT_NUM_STREAMS;
-+	kshark_ctx->stream_info.max_stream_id = -1;
++const char *default_file = "trace.dat";
 +
- 	/* Will free kshark_context_handler. */
- 	kshark_free(NULL);
- 
-@@ -108,62 +115,30 @@ bool kshark_instance(struct kshark_context **kshark_ctx)
- 	return true;
- }
- 
--static void kshark_free_task_list(struct kshark_context *kshark_ctx)
--{
--	struct kshark_task_list *task;
--	int i;
--
--	if (!kshark_ctx)
--		return;
--
--	for (i = 0; i < KS_TASK_HASH_SIZE; ++i) {
--		while (kshark_ctx->tasks[i]) {
--			task = kshark_ctx->tasks[i];
--			kshark_ctx->tasks[i] = task->next;
--			free(task);
--		}
--	}
--}
--
- /**
-  * @brief Open and prepare for reading a trace data file specified by "file".
-- *	  If the specified file does not exist, or contains no trace data,
-- *	  the function returns false.
-  *
-  * @param kshark_ctx: Input location for context pointer.
-  * @param file: The file to load.
-  *
-- * @returns True on success, or false on failure.
-+ * @returns The Id number of the data stream associated with this file on success.
-+ * 	    Otherwise a negative errno code.
-  */
--bool kshark_open(struct kshark_context *kshark_ctx, const char *file)
-+int kshark_open(struct kshark_context *kshark_ctx, const char *file)
- {
--	struct tracecmd_input *handle;
-+	int sd, rt;
- 
--	kshark_free_task_list(kshark_ctx);
-+	sd = kshark_add_stream(kshark_ctx);
-+	if (sd < 0)
-+		return sd;
- 
--	handle = tracecmd_open(file);
--	if (!handle)
--		return false;
--
--	if (pthread_mutex_init(&kshark_ctx->input_mutex, NULL) != 0) {
--		tracecmd_close(handle);
--		return false;
-+	rt = kshark_stream_open(kshark_ctx->stream[sd], file);
-+	if (rt < 0) {
-+		kshark_remove_stream(kshark_ctx, sd);
-+		return rt;
- 	}
- 
--	kshark_ctx->handle = handle;
--	kshark_ctx->pevent = tracecmd_get_pevent(handle);
--
--	kshark_ctx->advanced_event_filter =
--		tep_filter_alloc(kshark_ctx->pevent);
--
--	/*
--	 * Turn off function trace indent and turn on show parent
--	 * if possible.
--	 */
--	tep_plugin_add_option("ftrace:parent", "1");
--	tep_plugin_add_option("ftrace:indent", "0");
--
--	return true;
-+	return sd;
- }
- 
- static void kshark_stream_free(struct kshark_data_stream *stream)
-@@ -327,6 +302,34 @@ int kshark_add_stream(struct kshark_context *kshark_ctx)
- 	return stream->stream_id;
- }
- 
-+/**
-+ * @brief Use an existing Trace data stream to open and prepare for reading
-+ *	  a trace data file specified by "file".
-+ *
-+ * @param stream: Input location for a Trace data stream pointer.
-+ * @param file: The file to load.
-+ *
-+ * @returns Zero on success or a negative error code in the case of an errno.
-+ */
-+int kshark_stream_open(struct kshark_data_stream *stream, const char *file)
++void put_entry(struct kshark_entry *e)
 +{
-+	struct kshark_context *kshark_ctx = NULL;
++	char *entry_str = kshark_dump_entry(e);
++	puts(entry_str);
++	free(entry_str);
++}
 +
-+	if (!stream || !kshark_instance(&kshark_ctx))
-+		return -EFAULT;
++int main(int argc, char **argv)
++{
++	struct kshark_context *kshark_ctx;
++	struct kshark_entry **data = NULL;
++	ssize_t r, n_rows;
++	int sd;
 +
-+	stream->file = strdup(file);
++	/* Create a new kshark session. */
++	kshark_ctx = NULL;
++	if (!kshark_instance(&kshark_ctx))
++		return 1;
 +
-+	if (kshark_tep_check_data(file)) {
-+		kshark_set_data_format(stream->data_format,
-+				       TEP_DATA_FORMAT_IDENTIFIER);
++	/* Open a trace data file produced by trace-cmd. */
++	if (argc > 1)
++		sd = kshark_open(kshark_ctx, argv[1]);
++	else
++		sd = kshark_open(kshark_ctx, default_file);
 +
-+		return kshark_tep_init_input(stream, file);
++	if (sd < 0) {
++		kshark_free(kshark_ctx);
++		return 1;
 +	}
 +
-+	return -ENODATA;
-+}
++	/* Initialize data streams for all buffers in this file. */
++	kshark_tep_init_all_buffers(kshark_ctx, sd);
 +
- /**
-  * @brief Remove Data stream.
-  *
-@@ -417,45 +420,74 @@ int *kshark_all_streams(struct kshark_context *kshark_ctx)
- 
- 	return ids;
- }
++	/* Load all buffers. */
++	n_rows = kshark_load_all_entries(kshark_ctx, &data);
 +
-+static int kshark_stream_close(struct kshark_data_stream *stream)
-+{
-+	struct kshark_context *kshark_ctx = NULL;
++	/* Print to the screen the first 20 entries. */
++	for (r = 0; r < 20; ++r)
++		put_entry(data[r]);
 +
-+	if (!stream || !kshark_instance(&kshark_ctx))
-+		return -EFAULT;
++	/* Free the memory. */
++	for (r = 0; r < n_rows; ++r)
++		free(data[r]);
++	free(data);
 +
-+	/*
-+	 * All filters are file specific. Make sure that all Process Ids and
-+	 * Event Ids from this file are not going to be used with another file.
-+	 */
-+	kshark_hash_id_clear(stream->show_task_filter);
-+	kshark_hash_id_clear(stream->hide_task_filter);
-+	kshark_hash_id_clear(stream->show_event_filter);
-+	kshark_hash_id_clear(stream->hide_event_filter);
-+	kshark_hash_id_clear(stream->show_cpu_filter);
-+	kshark_hash_id_clear(stream->hide_cpu_filter);
-+
-+	if (kshark_is_tep(stream))
-+		return kshark_tep_close_interface(stream);
-+
-+	return -ENODATA;
-+}
-+
- /**
-  * @brief Close the trace data file and free the trace data handle.
-  *
-  * @param kshark_ctx: Input location for the session context pointer.
-+ * @param sd: Data stream identifier.
-+ *
-+ * @returns Zero on success or a negative errno code on failure.
-  */
--void kshark_close(struct kshark_context *kshark_ctx)
-+int kshark_close(struct kshark_context *kshark_ctx, int sd)
- {
--	if (!kshark_ctx || !kshark_ctx->handle)
--		return;
-+	struct kshark_data_stream *stream;
-+	int ret;
- 
--	/*
--	 * All filters are file specific. Make sure that the Pids and Event Ids
--	 * from this file are not going to be used with another file.
--	 */
--	tracecmd_filter_id_clear(kshark_ctx->show_task_filter);
--	tracecmd_filter_id_clear(kshark_ctx->hide_task_filter);
--	tracecmd_filter_id_clear(kshark_ctx->show_event_filter);
--	tracecmd_filter_id_clear(kshark_ctx->hide_event_filter);
--	tracecmd_filter_id_clear(kshark_ctx->show_cpu_filter);
--	tracecmd_filter_id_clear(kshark_ctx->hide_cpu_filter);
--
--	if (kshark_ctx->advanced_event_filter) {
--		tep_filter_reset(kshark_ctx->advanced_event_filter);
--		tep_filter_free(kshark_ctx->advanced_event_filter);
--		kshark_ctx->advanced_event_filter = NULL;
--	}
-+	stream = kshark_get_data_stream(kshark_ctx, sd);
-+	if (!stream)
-+		return -EFAULT;
-+
-+	ret = kshark_stream_close(stream);
-+	kshark_remove_stream(kshark_ctx, stream->stream_id);
-+
-+	return ret;
-+}
-+
-+/**
-+ * @brief Close all currently open trace data file and free the trace data handle.
-+ *
-+ * @param kshark_ctx: Input location for the session context pointer.
-+ */
-+void kshark_close_all(struct kshark_context *kshark_ctx)
-+{
-+	int i, *stream_ids, n_streams;
-+
-+	stream_ids = kshark_all_streams(kshark_ctx);
- 
- 	/*
--	 * All data collections are file specific. Make sure that collections
--	 * from this file are not going to be used with another file.
-+	 * Get a copy of shark_ctx->n_streams befor you start closing. Be aware
-+	 * that kshark_close() will decrement shark_ctx->n_streams.
- 	 */
--	kshark_free_collection_list(kshark_ctx->collections);
--	kshark_ctx->collections = NULL;
-+	n_streams = kshark_ctx->n_streams;
-+	for (i = 0; i < n_streams; ++i)
-+		kshark_close(kshark_ctx, stream_ids[i]);
- 
--	tracecmd_close(kshark_ctx->handle);
--	kshark_ctx->handle = NULL;
--	kshark_ctx->pevent = NULL;
--
--	pthread_mutex_destroy(&kshark_ctx->input_mutex);
-+	free(stream_ids);
- }
- 
- /**
-@@ -463,7 +495,7 @@ void kshark_close(struct kshark_context *kshark_ctx)
-  *	  open trace data files and before your application terminates.
-  *
-  * @param kshark_ctx: Optional input location for session context pointer.
-- *		      If it points to a context of a sessuin, that sessuin
-+ *		      If it points to a context of a session, that session
-  *		      will be deinitialize. If it points to NULL, it will
-  *		      deinitialize the current session.
-  */
-@@ -477,25 +509,12 @@ void kshark_free(struct kshark_context *kshark_ctx)
- 		/* kshark_ctx_handler will be set to NULL below. */
- 	}
- 
--	tracecmd_filter_id_hash_free(kshark_ctx->show_task_filter);
--	tracecmd_filter_id_hash_free(kshark_ctx->hide_task_filter);
--
--	tracecmd_filter_id_hash_free(kshark_ctx->show_event_filter);
--	tracecmd_filter_id_hash_free(kshark_ctx->hide_event_filter);
 +	kshark_close_all(kshark_ctx);
++
++	/* Close the session. */
++	kshark_free(kshark_ctx);
++
++	return 0;
++}
+diff --git a/src/libkshark.c b/src/libkshark.c
+index 5b444418..9675618e 100644
+--- a/src/libkshark.c
++++ b/src/libkshark.c
+@@ -1760,3 +1760,258 @@ kshark_get_entry_back(const struct kshark_entry_request *req,
  
--	tracecmd_filter_id_hash_free(kshark_ctx->show_cpu_filter);
--	tracecmd_filter_id_hash_free(kshark_ctx->hide_cpu_filter);
-+	free(kshark_ctx->stream);
- 
--	if (kshark_ctx->plugins) {
--		kshark_handle_plugins(kshark_ctx, KSHARK_PLUGIN_CLOSE);
-+	if (kshark_ctx->plugins)
- 		kshark_free_plugin_list(kshark_ctx->plugins);
--		kshark_free_event_handler_list(kshark_ctx->event_handlers);
--	}
--
--	kshark_free_task_list(kshark_ctx);
--
--	if (seq.buffer)
--		trace_seq_destroy(&seq);
- 
- 	if (kshark_ctx == kshark_context_handler)
- 		kshark_context_handler = NULL;
-@@ -878,6 +897,31 @@ int kshark_read_event_field_int(const struct kshark_entry *entry,
- 	return -EFAULT;
+ 	return get_entry(req, data, index, req->first, end, -1);
  }
- 
-+/**
-+ * @brief Get a summary of the entry.
-+ *
-+ * @param entry: Input location for an entry.
-+ *
-+ * @returns A summary text info. The user is responsible for freeing the
-+ *	    outputted string.
-+ */
-+char *kshark_dump_entry(const struct kshark_entry *entry)
++
++static int first_in_time_entry(struct kshark_entry_data_set *buffer, int n_buffers, size_t *count)
 +{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
++	int64_t t_min = INT64_MAX;
++	int i, min = -1;
 +
-+	if (!stream)
-+		return NULL;
++	for (i = 0; i < n_buffers; ++i) {
++		if (count[i] == buffer[i].n_rows)
++			continue;
 +
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->dump_entry)
-+		return interface->dump_entry(stream, entry);
++		if (t_min > buffer[i].data[count[i]]->ts) {
++			t_min = buffer[i].data[count[i]]->ts;
++			min = i;
++		}
++	}
 +
-+	return NULL;
++	return min;
 +}
 +
- /** @brief Print the entry. */
- void kshark_print_entry(const struct kshark_entry *entry)
- {
-@@ -1008,57 +1052,24 @@ kshark_add_task(struct kshark_context *kshark_ctx, int pid)
-  *	  the loaded trace data file.
-  *
-  * @param kshark_ctx: Input location for context pointer.
-+ * @param sd: Data stream identifier.
-  * @param pids: Output location for the Pids of the tasks. The user is
-  *		responsible for freeing the elements of the outputted array.
-  *
-  * @returns The size of the outputted array of Pids in the case of success,
-  *	    or a negative error code on failure.
-  */
--ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int **pids)
-+ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int sd,
-+			     int **pids)
- {
--	size_t i, pid_count = 0, pid_size = KS_TASK_HASH_SIZE;
--	struct kshark_task_list *list;
--	int *temp_pids;
--
--	*pids = calloc(pid_size, sizeof(int));
--	if (!*pids)
--		goto fail;
--
--	for (i = 0; i < KS_TASK_HASH_SIZE; ++i) {
--		list = kshark_ctx->tasks[i];
--		while (list) {
--			(*pids)[pid_count] = list->pid;
--			list = list->next;
--			if (++pid_count >= pid_size) {
--				pid_size *= 2;
--				temp_pids = realloc(*pids, pid_size * sizeof(int));
--				if (!temp_pids) {
--					goto fail;
--				}
--				*pids = temp_pids;
--			}
--		}
--	}
--
--	if (pid_count) {
--		temp_pids = realloc(*pids, pid_count * sizeof(int));
--		if (!temp_pids)
--			goto fail;
--
--		/* Paranoid: In the unlikely case of shrinking *pids, realloc moves it */
--		*pids = temp_pids;
--	} else {
--		free(*pids);
--		*pids = NULL;
--	}
-+	struct kshark_data_stream *stream;
- 
--	return pid_count;
-+	stream = kshark_get_data_stream(kshark_ctx, sd);
-+	if (!stream)
-+		return -EBADF;
- 
--fail:
--	fprintf(stderr, "Failed to allocate memory for Task Pids.\n");
--	free(*pids);
--	*pids = NULL;
--	return -ENOMEM;
-+	*pids = kshark_hash_ids(stream->tasks);
-+	return stream->tasks->count;
- }
- 
- static bool filter_find(struct tracecmd_filter_id *filter, int pid,
-@@ -2070,75 +2081,6 @@ char* kshark_dump_custom_entry(struct kshark_context *kshark_ctx,
- 	return NULL;
- }
- 
--/**
-- * @brief Dump into a string the content of one entry. The function allocates
-- *	  a null terminated string and returns a pointer to this string. The
-- *	  user has to free the returned string.
-- *
-- * @param entry: A Kernel Shark entry to be printed.
-- *
-- * @returns The returned string contains a semicolon-separated list of data
-- *	    fields.
-- */
--char* kshark_dump_entry(const struct kshark_entry *entry)
--{
--	const char *event_name, *task, *lat, *info;
--	struct kshark_context *kshark_ctx;
--	char *temp_str, *entry_str;
--	int size = 0;
--
--	kshark_ctx = NULL;
--	if (!kshark_instance(&kshark_ctx) || !init_thread_seq())
--		return NULL;
--
--	task = tep_data_comm_from_pid(kshark_ctx->pevent, entry->pid);
--
--	if (entry->event_id >= 0) {
--		struct tep_event *event;
--		struct tep_record *data;
--
--		data = tracecmd_read_at(kshark_ctx->handle, entry->offset,
--					NULL);
--
--		event = tep_find_event(kshark_ctx->pevent, entry->event_id);
--
--		event_name = event? event->name : "[UNKNOWN EVENT]";
--		lat = get_latency(kshark_ctx->pevent, data);
--
--		size = asprintf(&temp_str, "%" PRIu64 "; %s-%i; CPU %i; %s;",
--				entry->ts,
--				task,
--				entry->pid,
--				entry->cpu,
--				lat);
--
--		info = get_info(kshark_ctx->pevent, data, event);
--
--		if (size > 0) {
--			size = asprintf(&entry_str, "%s %s; %s; 0x%x",
--					temp_str,
--					event_name,
--					info,
--					entry->visible);
--
--			free(temp_str);
--		}
--
--		free_record(data);
--		if (size < 1)
--			entry_str = NULL;
--	} else {
--		switch (entry->event_id) {
--		case KS_EVENT_OVERFLOW:
--			entry_str = kshark_dump_custom_entry(kshark_ctx, entry,
--							     missed_events_dump);
--		default:
--			entry_str = NULL;
--		}
--	}
--
--	return entry_str;
--}
- 
- /**
-  * @brief Binary search inside a time-sorted array of kshark_entries.
++/**
++ * @brief Merge trace data streams.
++ *
++ * @param buffers: Input location for the data-sets to be merged.
++ * @param n_buffers: The number of the data-sets to be merged.
++ *
++ * @returns Merged and sorted in time trace data entries. The user is
++ *	    responsible for freeing the elements of the outputted array.
++ */
++struct kshark_entry **
++kshark_merge_data_entries(struct kshark_entry_data_set *buffers, int n_buffers)
++{
++	struct kshark_entry **merged_data;
++	size_t i, tot = 0, count[n_buffers];
++	int i_first;
++
++	if (n_buffers < 2) {
++		fputs("kshark_merge_data_entries needs multipl data sets.\n",
++		      stderr);
++		return NULL;
++	}
++
++	for (i = 0; i < n_buffers; ++i) {
++		count[i] = 0;
++		if (buffers[i].n_rows > 0)
++			tot += buffers[i].n_rows;
++	}
++
++	merged_data = calloc(tot, sizeof(*merged_data));
++	if (!merged_data) {
++		fputs("Failed to allocate memory for mergeing data entries.\n",
++		      stderr);
++		return NULL;
++	}
++
++	for (i = 0; i < tot; ++i) {
++		i_first = first_in_time_entry(buffers, n_buffers, count);
++		assert(i_first >= 0);
++		merged_data[i] = buffers[i_first].data[count[i_first]];
++		++count[i_first];
++	}
++
++	return merged_data;
++}
++
++static ssize_t load_all_entries(struct kshark_context *kshark_ctx,
++				struct kshark_entry **loaded_rows,
++				ssize_t n_loaded,
++				int sd_first_new, int n_streams,
++				struct kshark_entry ***data_rows)
++{
++	int i, j = 0, n_data_sets;
++	ssize_t data_size = 0;
++
++	if (n_streams <= 0 || sd_first_new < 0)
++		return data_size;
++
++	n_data_sets = n_streams - sd_first_new;
++	if (loaded_rows && n_loaded > 0)
++		++n_data_sets;
++
++	struct kshark_entry_data_set buffers[n_data_sets];
++	memset(buffers, 0, sizeof(buffers));
++
++	if (loaded_rows && n_loaded > 0) {
++		/* Add the data that is already loaded. */
++		data_size = buffers[n_data_sets - 1].n_rows = n_loaded;
++		buffers[n_data_sets - 1].data = loaded_rows;
++	}
++
++	/* Add the data of the new streams. */
++	for (i = sd_first_new; i < n_streams; ++i) {
++		buffers[j].data = NULL;
++		buffers[j].n_rows = kshark_load_entries(kshark_ctx, i,
++							&buffers[j].data);
++
++		if (buffers[j].n_rows < 0) {
++			/* Loading failed. */
++			data_size = buffers[j].n_rows;
++			goto error;
++		}
++
++		data_size += buffers[j++].n_rows;
++	}
++
++	if (n_data_sets == 1) {
++		*data_rows = buffers[0].data;
++	} else {
++		/* Merge all streams. */
++		*data_rows = kshark_merge_data_entries(buffers, n_data_sets);
++	}
++
++ error:
++	for (i = 1; i < n_data_sets; ++i)
++		free(buffers[i].data);
++
++	return data_size;
++}
++
++/**
++ * @brief Load the content of the all opened data file into an array of
++ *	  kshark_entries.
++ *	  If one or more filters are set, the "visible" fields of each entry
++ *	  is updated according to the criteria provided by the filters. The
++ *	  field "filter_mask" of the session's context is used to control the
++ *	  level of visibility/invisibility of the filtered entries.
++ *
++ * @param kshark_ctx: Input location for context pointer.
++ * @param data_rows: Output location for the trace data. The user is
++ *		     responsible for freeing the elements of the outputted
++ *		     array.
++ *
++ * @returns The size of the outputted data in the case of success, or a
++ *	    negative error code on failure.
++ */
++ssize_t kshark_load_all_entries(struct kshark_context *kshark_ctx,
++				struct kshark_entry ***data_rows)
++{
++	return load_all_entries(kshark_ctx,
++				NULL, 0,
++				0,
++				kshark_ctx->n_streams,
++				data_rows);
++}
++
++/**
++ * @brief Append the content of the all opened data file into an array of
++ *	  kshark_entries.
++ *	  If one or more filters are set, the "visible" fields of each entry
++ *	  is updated according to the criteria provided by the filters. The
++ *	  field "filter_mask" of the session's context is used to control the
++ *	  level of visibility/invisibility of the filtered entries.
++ *
++ * @param kshark_ctx: Input location for context pointer.
++ * @param prior_data: Input location for the already loaded trace data.
++ * @param n_prior_rows: The size of the already loaded trace data.
++ * @param sd_first_new: Data stream identifier of the first data stream to be
++ *			appended.
++ * @param merged_data: Output location for the trace data. The user is
++ *		       responsible for freeing the elements of the outputted
++ *		       array.
++ * @returns The size of the outputted data in the case of success, or a
++ *	    negative error code on failure.
++ */
++ssize_t kshark_append_all_entries(struct kshark_context *kshark_ctx,
++				  struct kshark_entry **prior_data,
++				  ssize_t n_prior_rows,
++				  int sd_first_new,
++				  struct kshark_entry ***merged_data)
++{
++	return load_all_entries(kshark_ctx,
++				prior_data,
++				n_prior_rows,
++			        sd_first_new,
++				kshark_ctx->n_streams,
++				merged_data);
++}
++
++static int first_in_time_row(struct kshark_matrix_data_set *buffers, int n_buffers, size_t *count)
++{
++	int64_t t_min = INT64_MAX;
++	int i, min = -1;
++
++	for (i = 0; i < n_buffers; ++i) {
++		if (count[i] == buffers[i].n_rows)
++			continue;
++
++		if (t_min > buffers[i].ts_array[count[i]]) {
++			t_min = buffers[i].ts_array[count[i]];
++			min = i;
++		}
++	}
++
++	return min;
++}
++
++/**
++ * @brief Merge trace data streams.
++ *
++ * @param buffers: Input location for the data-sets to be merged.
++ * @param n_buffers: The number of the data-sets to be merged.
++ *
++ * @returns Merged and sorted in time trace data matrix. The user is
++ *	    responsible for freeing the columns (arrays) of the outputted
++ *	    matrix.
++ */
++struct kshark_matrix_data_set
++kshark_merge_data_matrices(struct kshark_matrix_data_set *buffers, int n_buffers)
++{
++	struct kshark_matrix_data_set merged_data;
++	size_t i, tot = 0, count[n_buffers];
++	int i_first;
++	bool status;
++
++	merged_data.n_rows = -1;
++	if (n_buffers < 2) {
++		fputs("kshark_merge_data_matrices needs multipl data sets.\n",
++		      stderr);
++		goto end;
++	}
++
++	for (i = 0; i < n_buffers; ++i) {
++		count[i] = 0;
++		if (buffers[i].n_rows > 0)
++			tot += buffers[i].n_rows;
++	}
++
++	status = kshark_data_matrix_alloc(tot, &merged_data.event_array,
++					       &merged_data.cpu_array,
++					       &merged_data.pid_array,
++					       &merged_data.offset_array,
++					       &merged_data.ts_array);
++	if (!status) {
++		fputs("Failed to allocate memory for mergeing data matrices.\n",
++		      stderr);
++		goto end;
++	}
++
++	merged_data.n_rows = tot;
++
++	for (i = 0; i < tot; ++i) {
++		i_first = first_in_time_row(buffers, n_buffers, count);
++		assert(i_first >= 0);
++
++		merged_data.cpu_array[i] = buffers[i_first].cpu_array[count[i_first]];
++		merged_data.pid_array[i] = buffers[i_first].pid_array[count[i_first]];
++		merged_data.event_array[i] = buffers[i_first].event_array[count[i_first]];
++		merged_data.offset_array[i] = buffers[i_first].offset_array[count[i_first]];
++		merged_data.ts_array[i] = buffers[i_first].ts_array[count[i_first]];
++
++		++count[i_first];
++	}
++
++ end:
++	return merged_data;
++}
 diff --git a/src/libkshark.h b/src/libkshark.h
-index 36d60001..523bdb6a 100644
+index 0a560f14..edf3dcf4 100644
 --- a/src/libkshark.h
 +++ b/src/libkshark.h
-@@ -342,6 +342,9 @@ static inline char *kshark_set_data_format(char *dest_format,
- 	return strncpy(dest_format, src_format, KS_DATA_FORMAT_SIZE - 1);
+@@ -980,12 +980,59 @@ struct kshark_config_doc *kshark_open_config_file(const char *file_name,
+ 
+ struct kshark_config_doc *kshark_json_to_conf(struct json_object *jobj);
+ 
++/** Structure representing a data set made of KernelShark entries. */
++struct kshark_entry_data_set {
++	/** Array of entries pointers. */
++	struct kshark_entry **data;
++
++	/** The size of the data set. */
++	ssize_t n_rows;
++};
++
++struct kshark_entry **
++kshark_merge_data_entries(struct kshark_entry_data_set *buffers,
++			  int n_buffers);
++
++ssize_t kshark_load_all_entries(struct kshark_context *kshark_ctx,
++				struct kshark_entry ***data_rows);
++
++ssize_t kshark_append_all_entries(struct kshark_context *kshark_ctx,
++				  struct kshark_entry **prior_data,
++				  ssize_t n_prior_rows,
++				  int first_streams,
++				  struct kshark_entry ***merged_data);
++
+ bool kshark_data_matrix_alloc(size_t n_rows, int16_t **event_array,
+ 					     int16_t **cpu_array,
+ 					     int32_t **pid_array,
+ 					     int64_t **offset_array,
+ 					     int64_t **ts_array);
+ 
++/** Structure representing a data set made of data columns (arrays). */
++struct kshark_matrix_data_set {
++	/** Event Id column. */
++	int16_t *event_array;
++
++	/** CPU Id column. */
++	int16_t *cpu_array;
++
++	/** PID column. */
++	int32_t *pid_array;
++
++	/** Record offset column. */
++	int64_t *offset_array;
++
++	/** Timestamp column. */
++	int64_t *ts_array;
++
++	/** The size of the data set. */
++	ssize_t n_rows;
++};
++
++struct kshark_matrix_data_set
++kshark_merge_data_matrices(struct kshark_matrix_data_set *buffers,
++			   int n_buffers);
++
+ #ifdef __cplusplus
  }
- 
-+/** Hard-coded default number of data streams available at initialization. */
-+#define KS_DEFAULT_NUM_STREAMS	256
-+
- /** Size of the task's hash table. */
- #define KS_TASK_HASH_SHIFT 16
- #define KS_TASK_HASH_SIZE (1 << KS_TASK_HASH_SHIFT)
-@@ -436,7 +439,9 @@ struct kshark_context {
- 
- bool kshark_instance(struct kshark_context **kshark_ctx);
- 
--bool kshark_open(struct kshark_context *kshark_ctx, const char *file);
-+int kshark_open(struct kshark_context *kshark_ctx, const char *file);
-+
-+int kshark_stream_open(struct kshark_data_stream *stream, const char *file);
- 
- int kshark_add_stream(struct kshark_context *kshark_ctx);
- 
-@@ -456,9 +461,12 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
- ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
- 				 struct tep_record ***data_rows);
- 
--ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int **pids);
-+ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int sd,
-+			     int **pids);
-+
-+int kshark_close(struct kshark_context *kshark_ctx, int sd);
- 
--void kshark_close(struct kshark_context *kshark_ctx);
-+void kshark_close_all(struct kshark_context *kshark_ctx);
- 
- void kshark_free(struct kshark_context *kshark_ctx);
- 
+ #endif
 -- 
 2.25.1
 
