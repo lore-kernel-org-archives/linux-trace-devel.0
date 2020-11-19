@@ -6,37 +6,37 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 768CCC6379D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Nov 2020 16:39:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A38A0C63697
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Nov 2020 16:43:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2785522264
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Nov 2020 16:39:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5527A2222A
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 19 Nov 2020 16:43:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728766AbgKSQi6 (ORCPT
+        id S1728262AbgKSQnk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 19 Nov 2020 11:38:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50864 "EHLO mail.kernel.org"
+        Thu, 19 Nov 2020 11:43:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727832AbgKSQi5 (ORCPT
+        id S1728202AbgKSQnk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:38:57 -0500
+        Thu, 19 Nov 2020 11:43:40 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EA7C2220B;
-        Thu, 19 Nov 2020 16:38:56 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 11:38:55 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 5516422227;
+        Thu, 19 Nov 2020 16:43:39 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 11:43:37 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v4 06/20] kernel-shark: Add basic methods for Data
+Subject: Re: [PATCH v4 14/20] kernel-shark: Provide merging of multiple data
  streams
-Message-ID: <20201119113855.6d0df6a6@gandalf.local.home>
-In-Reply-To: <3ea5483a-9cb7-cbf0-e3ab-0b354228a387@gmail.com>
+Message-ID: <20201119114337.01d5657a@gandalf.local.home>
+In-Reply-To: <83fe0b27-f5cb-a1cf-6afd-bf48cd2f61bc@gmail.com>
 References: <20201118145003.156542-1-y.karadz@gmail.com>
-        <20201118145003.156542-7-y.karadz@gmail.com>
-        <20201118171314.16662a9f@oasis.local.home>
-        <3ea5483a-9cb7-cbf0-e3ab-0b354228a387@gmail.com>
+        <20201118145003.156542-15-y.karadz@gmail.com>
+        <20201118210025.0bc6326b@oasis.local.home>
+        <83fe0b27-f5cb-a1cf-6afd-bf48cd2f61bc@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -45,28 +45,25 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 19 Nov 2020 18:01:30 +0200
+On Thu, 19 Nov 2020 18:14:36 +0200
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> Hi Steven,
+> >   
+> >> +
+> >> +	if (sd < 0) {
+> >> +		kshark_free(kshark_ctx);
+> >> +		return 1;
+> >> +	}
+> >> +
+> >> +	/* Initialize data streams for all buffers in this file. */
+> >> +	kshark_tep_init_all_buffers(kshark_ctx, sd);  
 > 
-> I have no strong preference about having or not having this extra space.
-> For me, having the space makes the C-like casting look more similar to a 
-> new declaration on contrary to the C++-like casting that will be 
-> something like this
+> And here is the place where it opens in separate streams the other 
+> buffers that are in the same file.
 > 
-> 	unsigned long i(340);
-> 	char c = char(i);
-> 
-> and looks more like a constructor call.
-> Of course C++ will not let you cast number to pointer this way.
 
-As long as you are consistent, but I'm just letting you know the
-appropriate style for the Linux kernel, which is no space:
-
-	type x = (type)y;
-
-But again, this is really up to you, but just be aware if you submit to the
-kernel, the above is the expected style.
+Ah so it requires that the file have buffers recorded. OK, I'll try it out.
 
 -- Steve
+
+
