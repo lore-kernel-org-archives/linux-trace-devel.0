@@ -2,128 +2,108 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 997A8C56201
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Nov 2020 14:08:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22F76C63777
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Nov 2020 17:50:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5AFB22236F
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Nov 2020 14:08:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AA2972240B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Nov 2020 17:50:56 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Uw5l71ZN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727560AbgKTOIb convert rfc822-to-8bit (ORCPT
+        id S1728891AbgKTRug (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Nov 2020 09:08:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgKTOIa (ORCPT
+        Fri, 20 Nov 2020 12:50:36 -0500
+Received: from mail.efficios.com ([167.114.26.124]:39148 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728771AbgKTRuf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:08:30 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1AC02223F;
-        Fri, 20 Nov 2020 14:08:29 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 09:08:28 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Dario Faggioli <dfaggioli@suse.com>
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: Accuracy of traces sync [Was: Re: [PATCH] Fix `make -jN
- trace-cmd gui`]
-Message-ID: <20201120090828.4b62d4b7@gandalf.local.home>
-In-Reply-To: <849f846631f3014c3eff7f37a7d61493e2af66a9.camel@suse.com>
-References: <160564780533.18208.2518938894299815863.stgit@toolbox-dario-user-work>
-        <20201119220910.1a8ec625@oasis.local.home>
-        <64d58c3297d6915362678c5799bd3d363489bda3.camel@suse.com>
-        <02672da2-8b62-a573-786d-1cb8f5970e85@gmail.com>
-        <849f846631f3014c3eff7f37a7d61493e2af66a9.camel@suse.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 20 Nov 2020 12:50:35 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id C0C532F9333
+        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Nov 2020 12:50:34 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id A0EI25EY0exE for <linux-trace-devel@vger.kernel.org>;
+        Fri, 20 Nov 2020 12:50:34 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7CE942F9332
+        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Nov 2020 12:50:34 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7CE942F9332
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1605894634;
+        bh=R1ibHBy4yrxgAfAi0/rXumalIAD+pqYMzDArLQ1r7IE=;
+        h=To:From:Message-ID:Date:MIME-Version;
+        b=Uw5l71ZNHuLDiUoyeiBqMcfQ/oD9mJt5PCdwOs8eHiOufikY9m6LUQ9OU58W8vSM2
+         47/aOIrtm6NDGXxG3yS0Rg5LOZ43k0H5gIpegUGxtcia5wnplUWCHFhgtHVSAfG3DC
+         J2c2iSkdPuYTYxqvFTI00Slsp3vcgxO4kBRjthxZJW+112qYBiojJzoIC97EBRejYo
+         atq5pWFsaciHWCBhB1RxEA4BavpUP9+qXWd7O4lEwZVoxfibINDK2MeLiyUjtqVc7E
+         fLWdKl7VOdcy+Kqttu4D9dRk18Ao/BEudcYZ5VSmDU1lDLZa7gYy1z60NS36lfEjD5
+         ZUhzeyN7qFn6g==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id LIrYb5rq50j3 for <linux-trace-devel@vger.kernel.org>;
+        Fri, 20 Nov 2020 12:50:34 -0500 (EST)
+Received: from [172.16.0.90] (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
+        by mail.efficios.com (Postfix) with ESMTPSA id 3942C2F9331
+        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Nov 2020 12:50:34 -0500 (EST)
+To:     linux-trace-devel@vger.kernel.org
+From:   Philippe Duplessis-Guindon <pduplessis@efficios.com>
+Subject: Duplicate fields in event format of `regcache_sync `
+Message-ID: <53fe53a9-0589-2bc6-1883-6f696fdee9ac@efficios.com>
+Date:   Fri, 20 Nov 2020 12:50:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 20 Nov 2020 14:43:21 +0100
-Dario Faggioli <dfaggioli@suse.com> wrote:
+Hi,
 
-> On Fri, 2020-11-20 at 14:32 +0200, Yordan Karadzhov (VMware) wrote:
-> > On 20.11.20 г. 14:06 ч., Dario Faggioli wrote:  
-> > > >   
-> > > Yep, sure! I followed the talks you've been giving about it at
-> > > events, and I even played a little with what you have here:
-> > > 
-> > > https://github.com/yordan-karadzhov/kernel-shark-2.alpha
-> > > 
-> > > The host-guest tracing part, as I think you can guess.  
-> > 
-> > Ciao Dario,
-> >  
-> Hey!
-> 
-> > I am very happy to hear that. The timestamp synchronization patches
-> > for 
-> > trace-cmd are almost ready to go upstream.
-> >   
-> Yes, I tried those patches!
-> 
-> In fact, now that I have you here, do you mind if I change the subject
-> and ask a quick question about them?
-> 
-> So, you often say that "the accuracy of the synchronization protocol is
-> XX ms". Now, I guess that means that an event in the guest and the
+I am doing an ftrace plugin for Babeltrace 2 [1], and while I was 
+parsing the event fields I had an error saying that `regcache_sync` has 
+2 fields named `type`. The problem seems to come from the 
+drivers/base/regmap/trace.h file [2]. This is the patch where this was 
+added: [3]. The `int field` type is not assigned, so I was wondering if 
+it is normal that the field is there.
 
-Note, we are usually microsecond (us) apart, not millisecond (ms) ;-)
+This is the format of this event:
 
-> corresponding event in the host (or vice versa) are XX ms apart. And
-> that's even after the synchronization of the two traces, is that right?
+$ sudo cat /sys/kernel/debug/tracing/events/regmap/regcache_sync/format
+name: regcache_sync
+ID: 1216
+format:
+   field:unsigned short common_type;    offset:0;    size:2;    signed:0;
+   field:unsigned char common_flags;    offset:2;    size:1;    signed:0;
+   field:unsigned char common_preempt_count; offset:3; size:1;signed:0;
+   field:int common_pid;    offset:4;    size:4;    signed:1;
 
-At plumbers we talked with Thomas Gleixner and he suggested ideas of how to
-get to the actual shifts used in the hardware that should give us exact
-timestamp offsets. We are currently working on that. But in the mean time,
-the P2P is giving us somewhere between 5 and 10 us accuracy. And that's
-simply because the jitter of the vsock connection (which is used for the
-synchronization at start and end of the traces) has a 5 to 10 us jitter,
-and it's not possible to get a more accurate than the medium that is being
-used.
+   field:__data_loc char[] name;    offset:8;    size:4;    signed:1;
+   field:__data_loc char[] status;    offset:12;    size:4;    signed:1;
+   field:__data_loc char[] type;    offset:16;    size:4;    signed:1;
+   field:int type;    offset:20;    size:4;    signed:1;
 
-> 
-> Question is, how do you measure that? Sure, I can look manually for an
-> occurrence of the pattern that I described above: i.e., an event in the
-> guest, then the corresponding one in the host and compute the
-> difference between the timestamps.
+   print fmt: "%s type=%s status=%s", __get_str(name), __get_str(type), 
+__get_str(status)
 
-You mean, how we measure the accuracy? It's usually done by seeing when we
-have events from the guest showing up when we should be in the host (it's
-like seeing events from userspace when you are in the kernel).
+Thank you,
 
-> 
-> But do you have a way to do so automatically, or with a script/program,
-> etc?
+Philippe
 
-We have talked about having something scan to find cases where the guest
-event happens in kernel and do some post processing shifting, but haven't
-gotten there yet. If the hardware settings can work, then there will be no
-need to do so.
 
--- Steve
+[1] https://babeltrace.org/
 
-> 
-> I saw that the series included a patch which was meant at debugging and
-> profiling PTP, but even with that one applied and having it generate
-> the graphs, I have not been able to get that info without manual
-> inspection.
-> 
-> > And we are currently reviewing a beta version of KernelShark_2 that
-> > will 
-> > include the guest/host visualization.
-> > As Steven said: stay tuned!
-> >   
-> You bet I will. :-P
-> 
-> Thanks and Regards
+[2] 
+https://github.com/torvalds/linux/blob/master/drivers/base/regmap/trace.h#L129
 
+[3] 
+https://github.com/torvalds/linux/commit/593600890110c02eb471cf844649dee213870416
