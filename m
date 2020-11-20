@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 204DFC6379D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51390C63798
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Nov 2020 09:51:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B1BC6222BA
+	by mail.kernel.org (Postfix) with ESMTP id EE466204EF
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 20 Nov 2020 09:51:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqI6RXlI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tOeThnBG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbgKTJvA (ORCPT
+        id S1727271AbgKTJvB (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 20 Nov 2020 04:51:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
+        Fri, 20 Nov 2020 04:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgKTJu7 (ORCPT
+        with ESMTP id S1727058AbgKTJu6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:50:59 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53203C0613CF
-        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Nov 2020 01:50:59 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id i19so11994099ejx.9
-        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Nov 2020 01:50:59 -0800 (PST)
+        Fri, 20 Nov 2020 04:50:58 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6B7C0613CF
+        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Nov 2020 01:50:58 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id m16so8894560edr.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 20 Nov 2020 01:50:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=czyqGmgKbCcgaaaHz6VPe+qqM2yow6LxeEk/djHfMcE=;
-        b=kqI6RXlI5s/bTR+nXHHzkp2UPn3xFJeBX34HhFVW0tnu9k4SktQ+O2TcVtwAiIzyPy
-         +hynI37jkouDYdoLrA+yZ8EwdLf/f9SHW6E3G5PJYxvb96cMKcWVgtTz26y8hGqH00X0
-         U2WdOmtGZPlk9I8sVbZTZ22GItVyTWNEcXv+mQuusNkRujx25opdxLo9EHVrc25puk22
-         6udKWhwVvckJejhEJZkCLnYH8pJrS5Am8hB2kmddU/3XGYNik7Q4QCwJReJvT0xGsRNR
-         Lpy1dieb+alt3quoKAhv+YUToxPMQyhJUQid6GYrKHgoTJyiFhuDkjEE/WirR9TClDgX
-         CqwQ==
+        bh=wriBU+rl4vgI+CCPNszDbWo8+4LWfdsPTrG/FLV03E0=;
+        b=tOeThnBGDTvpe8LG8jNzCt8T2NQY6HBCTQzDF4OY9UvVq3Hu11PMIn0XLqZKEqDIZ3
+         0ogd2YsS+9yEzgGrn2GmByTysaiE5H/S95IdaDbad+K2H15kjoYnum8zgGvd2SKf4Pb7
+         Dx9HarW24HflaQi88ZP7M4boz/BgotbxOoYUmTYvYd/4FxRfynWmKMgR4bAQjcWLZ1qi
+         BQelCBvFQs9X8M9czMEKYEXvDCggunjGLHgmXxQfOi8wzUYR/sZ9hH+q8t8S1jAobWID
+         nyXiL2TNGsPbhmTwB+bZLg11e9ClYsNgwZN24xSu5MlpcUm+MS1tuDPTcyMjra5i1d8n
+         G+8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=czyqGmgKbCcgaaaHz6VPe+qqM2yow6LxeEk/djHfMcE=;
-        b=I98VdHRQGRDubJSXCnI+EjREsaAH9YYdWNFgB0//kJHzFrafsYKwAv/kOHdB90uKdw
-         fzI+Qce2zBWCqUHbsKV5PDnbCrOB4ueu3PBvJ+KJqe5zQ4AObYO/ZMyxkGaeE0Q1ewRw
-         J2ZtM9Ny5bB8oBMJFYUtyddgc/5TXU469q7qKCwARnulKE9cF4D3K54KJcJXZK72hUMM
-         SRwQBwJwNb/kEbACPVGtNu9IvldgUkcwSjiw/C9KGnJxaxcwoRQ5xsvvexh0PTqPwbbb
-         T0laBrY2O2+Zr+6ft4l+gOZrgrBGIhKH81/2cy7Brd8eMsubfhxzNL/0dqAugWqprDWm
-         mv5w==
-X-Gm-Message-State: AOAM530PLc5n8BbrZxWj6q40r7EBJU48a0UbpxAH14UEg3IXQluTTaMt
-        j+I6IL/RAPahB8uVDAqye3s=
-X-Google-Smtp-Source: ABdhPJwQ8PyLPMSHRgb6eemZEHeCCaQk5EgdVAlXvKXynSBqkp9cdDkrt03mM5+kK2hyz3FKQMymfA==
-X-Received: by 2002:a17:907:3d8d:: with SMTP id he13mr15523254ejc.306.1605865858009;
-        Fri, 20 Nov 2020 01:50:58 -0800 (PST)
+        bh=wriBU+rl4vgI+CCPNszDbWo8+4LWfdsPTrG/FLV03E0=;
+        b=Z6VXFIsD33Fm7LMktUJmLYOCBtjIKT0alEB+GiznZqxDSnKqE8iGp7CbwjHU//z1BT
+         MIRqYks3QQ4BzZgDyFi2xzTRju87eWI5VX/Viig4NrNDIqCcxUX3RZszTx+FBt665thc
+         5DDtd5izF1cbDtr9dBtitMnkdw6B+KUR6JT63r9uOTiEfZTiKUETxwiSyizdPAEvtcnj
+         r3A9S9NX4hvh7VjqT91eo4WZoM9NQvK3UPF07BnHfpsD5WcAENXF8J8CW1aW7yxbZOiU
+         tSa2XTTV9i4mpDMaBnDsHBuEK5Wcn+ykrvNGEGCsAdh+FxHFiilNZhbXs4udqvjVwpn1
+         Jthw==
+X-Gm-Message-State: AOAM533u8lY31MgSRpeL15+75fHrkSgWvDh4casqNIajTNoNDCza4hyq
+        sM52K7fTHQfjWlFfIHm8nFs=
+X-Google-Smtp-Source: ABdhPJz7beAXt+YXsfAUrRxzeBoVvlFnH3ftjAqkCLxQ8BaDJ+S3+RZ3rlrURhuMCswFpkO+PGX3pQ==
+X-Received: by 2002:aa7:d54a:: with SMTP id u10mr10762403edr.168.1605865856848;
+        Fri, 20 Nov 2020 01:50:56 -0800 (PST)
 Received: from localhost.localdomain ([84.40.93.58])
-        by smtp.gmail.com with ESMTPSA id e17sm861995edc.45.2020.11.20.01.50.57
+        by smtp.gmail.com with ESMTPSA id e17sm861995edc.45.2020.11.20.01.50.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 01:50:57 -0800 (PST)
+        Fri, 20 Nov 2020 01:50:56 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 3/4] kernel-shark: Add ksplot_draw_polyline()
-Date:   Fri, 20 Nov 2020 11:50:30 +0200
-Message-Id: <20201120095031.271735-4-y.karadz@gmail.com>
+Subject: [PATCH 2/4] kernel-shark: Make GLUT optional dependency
+Date:   Fri, 20 Nov 2020 11:50:29 +0200
+Message-Id: <20201120095031.271735-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201120095031.271735-1-y.karadz@gmail.com>
 References: <20201120095031.271735-1-y.karadz@gmail.com>
@@ -76,81 +76,141 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The method draws continuous line between an ordered array of
-points (poly-line).
+GLUT is not needed in order to build the KernelShark GUI. Currently
+it is being used only by the plotting example, so it makes more sense
+to removed it from the list of compulsory third party packages.
+The patch optimizes the way the OpenGL and GLUT headers are included
+and removes some duplicated code.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Signen-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark-plot.c | 32 ++++++++++++++++++++++++++------
- src/libkshark-plot.h |  5 +++++
- 2 files changed, 31 insertions(+), 6 deletions(-)
+ build/deff.h.cmake   |  3 +++
+ src/CMakeLists.txt   |  4 ++--
+ src/libkshark-plot.c | 20 +++++++-------------
+ src/libkshark-plot.h | 11 +++++++++++
+ 4 files changed, 23 insertions(+), 15 deletions(-)
 
+diff --git a/build/deff.h.cmake b/build/deff.h.cmake
+index e398c0ca..868ffeca 100644
+--- a/build/deff.h.cmake
++++ b/build/deff.h.cmake
+@@ -23,6 +23,9 @@
+ /** "pkexec" executable. */
+ #cmakedefine DO_AS_ROOT "@DO_AS_ROOT@"
+ 
++/** GLUT has been found. */
++#cmakedefine GLUT_FOUND
++
+ /** Semicolon-separated list of plugin names. */
+ #define KS_BUILTIN_PLUGINS "@PLUGINS@"
+ 
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 3a07d824..cbd45ed7 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -19,7 +19,7 @@ set_target_properties(kshark  PROPERTIES SUFFIX	".so.${KS_VERSION_STRING}")
+ 
+ install(TARGETS kshark LIBRARY DESTINATION ${_LIBDIR}/${KS_APP_NAME})
+ 
+-if (OPENGL_FOUND AND GLUT_FOUND)
++if (OPENGL_FOUND)
+ 
+     message(STATUS "libkshark-plot")
+     add_library(kshark-plot  SHARED  libkshark-plot.c)
+@@ -33,7 +33,7 @@ if (OPENGL_FOUND AND GLUT_FOUND)
+ 
+     install(TARGETS kshark-plot LIBRARY DESTINATION ${_LIBDIR}/${KS_APP_NAME})
+ 
+-endif (OPENGL_FOUND AND GLUT_FOUND)
++endif (OPENGL_FOUND)
+ 
+ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+ 
 diff --git a/src/libkshark-plot.c b/src/libkshark-plot.c
-index f2c5be30..dc49fbd9 100644
+index 06483334..f2c5be30 100644
 --- a/src/libkshark-plot.c
 +++ b/src/libkshark-plot.c
-@@ -150,6 +150,30 @@ void ksplot_draw_line(const struct ksplot_point *a,
- 	glEnd();
- }
+@@ -18,10 +18,6 @@
+ #include <string.h>
+ #include <stdio.h>
  
-+/**
-+ * @brief Draw the a polyline.
-+ *
-+ * @param points: Input location for the array of points defining the polyline.
-+ * @param n_points: The size of the array of points.
-+ * @param col: The color of the polyline.
-+ * @param size: The size of the polyline.
-+ */
-+void ksplot_draw_polyline(const struct ksplot_point *points,
-+			  size_t n_points,
-+			  const struct ksplot_color *col,
-+			  float size)
-+{
-+	if (!points || !n_points || !col || size < .5f)
-+		return;
+-// OpenGL
+-#include <GL/freeglut.h>
+-#include <GL/gl.h>
+-
+ // KernelShark
+ #include "libkshark-plot.h"
+ 
+@@ -36,6 +32,10 @@
+ #define STBTT_STATIC
+ #include "stb_truetype.h"
+ 
++#ifdef GLUT_FOUND
 +
-+	/* Loop over the points of the polygon and draw connecting lines. */
-+	for(size_t i = 1; i < n_points; ++i)
-+		ksplot_draw_line(&points[i - 1],
-+				 &points[i],
-+				 col,
-+				 size);
-+}
++#include <GL/freeglut.h>
 +
  /**
-  * @brief Draw a polygon.
+  * @brief Create an empty scene for drawing.
   *
-@@ -211,12 +235,8 @@ void ksplot_draw_polygon_contour(const struct ksplot_point *points,
- 	if (!points || !n_points || !col || size < .5f)
- 		return;
+@@ -60,17 +60,11 @@ void ksplot_make_scene(int width, int height)
+ 	/* Open the screen window. */
+ 	glutCreateWindow("KernelShark Plot");
  
--	/* Loop over the points of the polygon and draw connecting lines. */
--	for(size_t i = 1; i < n_points; ++i)
--		ksplot_draw_line(&points[i - 1],
--				 &points[i],
--				 col,
--				 size);
-+	/* Loop over the points of the polygon and draw a polyline. */
-+	ksplot_draw_polyline(points, n_points, col, size);
+-	/*
+-	 * Set the origin of the coordinate system to be the top left corner.
+-	 * The "Y" coordinate is inverted.
+-	 */
+-	gluOrtho2D(0, width, height, 0);
+-	glViewport(0, 0, width, height);
+-
+-	glMatrixMode(GL_PROJECTION);
+-	glLoadIdentity();
++	ksplot_resize_opengl(width, height);
+ }
  
- 	/* Close the contour. */
- 	ksplot_draw_line(&points[0],
++#endif // GLUT_FOUND
++
+ /**
+  * @brief Initialize OpenGL.
+  *
 diff --git a/src/libkshark-plot.h b/src/libkshark-plot.h
-index 063740d9..d881b20a 100644
+index 0edf5d50..063740d9 100644
 --- a/src/libkshark-plot.h
 +++ b/src/libkshark-plot.h
-@@ -72,6 +72,11 @@ void ksplot_draw_line(const struct ksplot_point *a,
- 		      const struct ksplot_color *col,
- 		      float size);
+@@ -15,6 +15,10 @@
+ // C
+ #include <stdbool.h>
  
-+void ksplot_draw_polyline(const struct ksplot_point *points,
-+			  size_t n_points,
-+			  const struct ksplot_color *col,
-+			  float size);
++// OpenGL
++#include <GL/gl.h>
++#include <GL/glu.h>
 +
- void ksplot_draw_polygon(const struct ksplot_point *points,
- 			 size_t n_points,
- 			 const struct ksplot_color *col,
+ /*
+  * STB TrueType (single-file public domain library)
+  * https://github.com/nothings/stb
+@@ -25,6 +29,9 @@
+ extern "C" {
+ #endif
+ 
++// KernelShark
++#include "KsCmakeDef.hpp"
++
+ /** Structure defining a RGB color. */
+ struct ksplot_color {
+ 	/** The Red component of the color. */
+@@ -46,8 +53,12 @@ struct ksplot_point {
+ 	int y;
+ };
+ 
++#ifdef GLUT_FOUND
++
+ void ksplot_make_scene(int width, int height);
+ 
++#endif // GLUT_FOUND
++
+ void ksplot_init_opengl(int dpr);
+ 
+ void ksplot_resize_opengl(int width, int height);
 -- 
 2.25.1
 
