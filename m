@@ -7,35 +7,36 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA0BDC63697
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91D1DC63798
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 23 Nov 2020 18:49:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B6BC20657
+	by mail.kernel.org (Postfix) with ESMTP id 4319A20724
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 23 Nov 2020 18:49:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729071AbgKWStl (ORCPT
+        id S1728971AbgKWStl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 23 Nov 2020 13:49:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44486 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729089AbgKWStl (ORCPT
+        id S1729071AbgKWStl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 23 Nov 2020 13:49:41 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C23420724
+        by mail.kernel.org (Postfix) with ESMTPSA id 06F4920702
         for <linux-trace-devel@vger.kernel.org>; Mon, 23 Nov 2020 18:49:41 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1khGuC-0017Y7-4f
+        id 1khGuC-0017Xc-0G
         for linux-trace-devel@vger.kernel.org; Mon, 23 Nov 2020 13:49:40 -0500
-Message-ID: <20201123184940.031517790@goodmis.org>
+Message-ID: <20201123184939.887690370@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 23 Nov 2020 13:48:43 -0500
+Date:   Mon, 23 Nov 2020 13:48:42 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/2] libtracevent: Remove tempfile libtraceevent.pc
+Subject: [PATCH 1/2] libtraceevent: Add libtraceevent.so.$(EP_VERSION) to targets and fix
+ links
 References: <20201123184841.548901150@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -45,30 +46,56 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-"make install" copies libtraceevent.pc.template to libtraceevent.pc and then
-modifies it for the installation. This command is usually executed as root,
-and when finished, it leaves behind the libtraceevent.pc file owned by root.
+"make clean" left a broken symbolic link of libtraceevent.so.1 around,
+because the clean target removes $(TARGET) and *.so, where $(TARGET) removes
+the so that libtraceevent.so.1 points to, and *.so removes the symbolic link
+that points to libtraceevent.so.1. But nothing removes libtraceevent.so.1.
 
-Have the "make install" clean up and remove the temporary libtraceevent.pc
-file, so that root owned files do not get left behind.
+Add both libtraceevent.so and libtraceevent.so.<major_version> to the
+LIB_TARGETS variable (for cleaning them up), and also to fix the links, as
+before it was:
+
+ libtraceevent.so -> libtraceevent.so.1.1.0
+ libtraceveent.so.1 -> libtraceveent.so.1.1.0
+
+Where it should be a cascade of:
+
+ libtraceevent.so -> libtraceevent.so.1
+ libtraceevent.so.1 -> libtraceevent.so.1.1.0
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ Makefile | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 2a6bfcce814f..775fbd2b3f0e 100644
+index 9e2b428760a4..2a6bfcce814f 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -218,6 +218,7 @@ define do_install_pkgconfig_file
- 		sed -i "s|LIB_DIR|${libdir}|g" ${PKG_CONFIG_FILE}; \
- 		sed -i "s|HEADER_DIR|$(includedir)|g" ${PKG_CONFIG_FILE}; \
- 		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
-+		${RM} ${PKG_CONFIG_FILE}; \
- 	else 									\
- 		(echo Failed to locate pkg-config directory) 1>&2;		\
- 	fi
+@@ -91,7 +91,7 @@ N		=
+ 
+ EVENT_PARSE_VERSION = $(EP_VERSION).$(EP_PATCHLEVEL).$(EP_EXTRAVERSION)
+ 
+-LIB_TARGET  = libtraceevent.a libtraceevent.so.$(EVENT_PARSE_VERSION)
++LIB_TARGET  = libtraceevent.a libtraceevent.so libtraceevent.so.$(EP_VERSION) libtraceevent.so.$(EVENT_PARSE_VERSION)
+ LIB_INSTALL = libtraceevent.a libtraceevent.so*
+ LIB_INSTALL := $(addprefix $(OUTPUT),$(LIB_INSTALL))
+ 
+@@ -139,8 +139,12 @@ $(TE_IN): force
+ 
+ $(OUTPUT)libtraceevent.so.$(EVENT_PARSE_VERSION): $(TE_IN)
+ 	$(QUIET_LINK)$(CC) --shared $(LDFLAGS) $^ -Wl,-soname,libtraceevent.so.$(EP_VERSION) -o $@
+-	@ln -sf $(@F) $(OUTPUT)libtraceevent.so
+-	@ln -sf $(@F) $(OUTPUT)libtraceevent.so.$(EP_VERSION)
++
++$(OUTPUT)libtraceevent.so: $(OUTPUT)libtraceevent.so.$(EP_VERSION)
++	@ln -sf $(<F) $@
++
++$(OUTPUT)libtraceevent.so.$(EP_VERSION): $(OUTPUT)libtraceevent.so.$(EVENT_PARSE_VERSION)
++	@ln -sf $(<F) $@
+ 
+ $(OUTPUT)libtraceevent.a: $(TE_IN)
+ 	$(QUIET_LINK)$(RM) $@; $(AR) rcs $@ $^
 -- 
 2.28.0
 
