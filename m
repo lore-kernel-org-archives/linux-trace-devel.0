@@ -2,95 +2,127 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18C2AC56201
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 24 Nov 2020 14:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C8A5C64E75
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 24 Nov 2020 14:12:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AD0AD206FB
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 24 Nov 2020 14:04:49 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=cogeco.ca header.i=@cogeco.ca header.b="bL8i71xu"
+	by mail.kernel.org (Postfix) with ESMTP id B529C206FB
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 24 Nov 2020 14:12:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731049AbgKXOE3 (ORCPT
+        id S1730558AbgKXOMp (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 24 Nov 2020 09:04:29 -0500
-Received: from mail8130c14.megamailservers.com ([66.226.81.30]:36388 "EHLO
-        mail8130c14.megamailservers.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729631AbgKXOE2 (ORCPT
+        Tue, 24 Nov 2020 09:12:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730003AbgKXOMo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 24 Nov 2020 09:04:28 -0500
-X-Greylist: delayed 394 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 09:04:27 EST
-Received: from laptop-stagiaire.cogeco.local (205-237-37-161.resi.cgocable.ca [205.237.37.161])
-        by mail8130c14.megamailservers.com (mail8130c14) with ESMTP id 71071925B9DFA;
-        Tue, 24 Nov 2020 08:57:39 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cogeco.ca; s=email;
-        t=1606226272; bh=5XvQdPYTylaRI8rioJopVJ3xTlgNPLbCIOmMKOpVpRY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bL8i71xuq3Qz8+1FzpPtEN25syfDxgGSeux/6glbpQiHKRjC2oHn+o+Tx5uTtOcii
-         MwBLo/OsO3hInzJEsXdon+1nIIhT+zUbsqP9AWBvEXybDGwD7uN5VaAzG/18TNX10z
-         XSNhZgIKTVTtyCwjRHt6lp0GxGWa6nJcxevNnXZA=
-Feedback-ID: pduplessis@effi
-From:   Philippe Duplessis-Guindon <pduplessis@efficios.com>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org,
-        broonie@kernel.org,
-        Philippe Duplessis-Guindon <pduplessis@efficios.com>
-Subject: [RFC PATCH v2] tracing: Remove duplicate `type` field from regmap `regcache_sync` trace event
-Date:   Tue, 24 Nov 2020 08:57:30 -0500
-Message-Id: <20201124135730.9185-1-pduplessis@efficios.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Nov 2020 09:12:44 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9123D206FB;
+        Tue, 24 Nov 2020 14:12:43 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 09:12:41 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: [PATCH v2] libtracevent: Build libtraceevent.pc via "make" not
+ "make install"
+Message-ID: <20201124091241.3c0dbbc4@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CSC:  0
-X-CHA:  v=2.3 cv=AtiQI91P c=1 sm=1 tr=0 a=f1nIe4+vFTFun24hu6c7KQ==:117
-        a=f1nIe4+vFTFun24hu6c7KQ==:17 a=10vEtgdfLSAA:10 a=7d_E57ReAAAA:8
-        a=0rblXdn-GvIh5LTTVtcA:9 a=jhqOcbufqs7Y1TYCrUUU:22
-X-CTCH-RefID: str=0001.0A742F1A.5FBD1160.0025,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-X-CTCH-VOD: Unknown
-X-CTCH-Spam: Unknown
-X-CTCH-Score: 0.000
-X-CTCH-Rules: 
-X-CTCH-Flags: 0
-X-CTCH-ScoreCust: 0.000
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMSCORE: -100
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudegkedgheekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffquffvqffrkfetpdfqfgfvnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheprfhhihhlihhpphgvucffuhhplhgvshhsihhsqdfiuhhinhguohhnuceophguuhhplhgvshhsihhssegvfhhfihgtihhoshdrtghomheqnecuggftrfgrthhtvghrnhepleeugfehfeekieekfeetgfehgefhudevhedtveegkedthefgieeggeeiieekhefhnecukfhppedvtdehrddvfeejrdefjedrudeiudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvtdehrddvfeejrdefjedrudeiuddphhgvlhhopehlrghpthhophdqshhtrghgihgrihhrvgdrtghoghgvtghordhlohgtrghlpdhmrghilhhfrhhomheprfhhihhlihhpphgvucffuhhplhgvshhsihhsqdfiuhhinhguohhnuceophguuhhplhgvshhsihhssegvfhhfihgtihhoshdrtghomheqpdhrtghpthhtoheplhhinhhugidqthhrrggtvgdquggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrohhsthgvughtsehgohhoughmihhsrdhorhhgpdhrtghpthhtohepmhgrthhhihgvuhdruggvshhnohihvghrshesvghffhhitghiohhsrdgtohhmpdhrtghpthhtohep
- lhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghrohhonhhivgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphguuhhplhgvshhsihhssegvfhhfihgtihhoshdrtghomh
-X-Origin-Country: CA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-I have an error saying that `regcache_sync` has 2 fields named `type`
-while using libtraceevent.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Erase the `int field` type, which is not assigned. This field is
-introduced by mistake and this commit removes it.
+"make install" copies libtraceevent.pc.template to libtraceevent.pc and then
+modifies it for the installation. This command is usually executed as root,
+and when finished, it leaves behind the libtraceevent.pc file owned by root
+and that may not be modified by the owner of the directory.
 
-Fixes commit 593600890110c ("regmap: Add the regcache_sync trace event")
+Instead, have the libtraceevent.pc file created via normal "make" and then
+have the "make install" copy it to the system location.
 
-Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
+Link: https://lore.kernel.org/linux-trace-devel/20201123184940.031517790@goodmis.org
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- drivers/base/regmap/trace.h | 1 -
- 1 file changed, 1 deletion(-)
+ Changes since v1:
+    - Have libtraceevent.pc created by "make" and not simply remove
+      it after creation from the "make install". This allows us to be
+      able to debug it, if it was not created properly.
+         (Tzvetomir Stoyanov)
 
-diff --git a/drivers/base/regmap/trace.h b/drivers/base/regmap/trace.h
-index d4066fa079ab..9abee14df9ee 100644
---- a/drivers/base/regmap/trace.h
-+++ b/drivers/base/regmap/trace.h
-@@ -126,7 +126,6 @@ TRACE_EVENT(regcache_sync,
- 		__string(       name,           regmap_name(map)	)
- 		__string(	status,		status			)
- 		__string(	type,		type			)
--		__field(	int,		type			)
- 	),
+ Makefile | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 2a6bfcc..318ec55 100644
+--- a/Makefile
++++ b/Makefile
+@@ -52,6 +52,9 @@ includedir_relative = traceevent
+ includedir = $(prefix)/include/$(includedir_relative)
+ includedir_SQ = '$(subst ','\'',$(includedir))'
  
- 	TP_fast_assign(
++PKG_CONFIG_SOURCE_FILE = libtraceevent.pc
++PKG_CONFIG_FILE := $(addprefix $(OUTPUT),$(PKG_CONFIG_SOURCE_FILE))
++
+ export man_dir man_dir_SQ INSTALL
+ export DESTDIR DESTDIR_SQ
+ export EVENT_PARSE_VERSION
+@@ -126,7 +129,7 @@ build := -f $(srctree)/build/Makefile.build dir=. obj
+ TE_IN      := $(OUTPUT)libtraceevent-in.o
+ LIB_TARGET := $(addprefix $(OUTPUT),$(LIB_TARGET))
+ 
+-CMD_TARGETS = $(LIB_TARGET)
++CMD_TARGETS = $(LIB_TARGET) $(PKG_CONFIG_FILE)
+ 
+ TARGETS = $(CMD_TARGETS)
+ 
+@@ -208,15 +211,19 @@ define do_install
+ 	$(INSTALL) $(if $3,-m $3,) $1 '$(DESTDIR_SQ)$2'
+ endef
+ 
+-PKG_CONFIG_SOURCE_FILE = libtraceevent.pc
+-PKG_CONFIG_FILE := $(addprefix $(OUTPUT),$(PKG_CONFIG_SOURCE_FILE))
++define do_make_pkgconfig_file
++	cp -f ${PKG_CONFIG_SOURCE_FILE}.template ${PKG_CONFIG_FILE};	\
++	sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE}; 		\
++	sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
++	sed -i "s|LIB_DIR|${libdir}|g" ${PKG_CONFIG_FILE}; \
++	sed -i "s|HEADER_DIR|$(includedir)|g" ${PKG_CONFIG_FILE};
++endef
++
++$(PKG_CONFIG_FILE) : ${PKG_CONFIG_SOURCE_FILE}.template
++	$(QUIET_GEN) $(call do_make_pkgconfig_file,$(prefix))
++
+ define do_install_pkgconfig_file
+ 	if [ -n "${pkgconfig_dir}" ]; then 					\
+-		cp -f ${PKG_CONFIG_SOURCE_FILE}.template ${PKG_CONFIG_FILE};	\
+-		sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE}; 		\
+-		sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
+-		sed -i "s|LIB_DIR|${libdir}|g" ${PKG_CONFIG_FILE}; \
+-		sed -i "s|HEADER_DIR|$(includedir)|g" ${PKG_CONFIG_FILE}; \
+ 		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
+ 	else 									\
+ 		(echo Failed to locate pkg-config directory) 1>&2;		\
+@@ -228,7 +235,7 @@ install_lib: all_cmd install_plugins install_headers install_pkgconfig
+ 		$(call do_install_mkdir,$(libdir_SQ)); \
+ 		cp -fpR $(LIB_INSTALL) $(DESTDIR)$(libdir_SQ)
+ 
+-install_pkgconfig:
++install_pkgconfig: $(PKG_CONFIG_FILE)
+ 	$(call QUIET_INSTALL, $(PKG_CONFIG_FILE)) \
+ 		$(call do_install_pkgconfig_file,$(prefix))
+ 
 -- 
-2.25.1
+2.25.4
 
