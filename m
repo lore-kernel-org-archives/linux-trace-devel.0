@@ -2,69 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27E94C63777
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 24 Nov 2020 16:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EECD3C63777
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 24 Nov 2020 16:21:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A69B3206C0
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 24 Nov 2020 16:20:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8697B206B7
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 24 Nov 2020 16:21:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tUkdz/Dy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I7ObwY3d"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390116AbgKXQUX (ORCPT
+        id S2390341AbgKXQVf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 24 Nov 2020 11:20:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
+        Tue, 24 Nov 2020 11:21:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389861AbgKXQUW (ORCPT
+        with ESMTP id S2390271AbgKXQVf (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:20:22 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C18C0617A6
-        for <linux-trace-devel@vger.kernel.org>; Tue, 24 Nov 2020 08:20:22 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id m9so17900089pgb.4
-        for <linux-trace-devel@vger.kernel.org>; Tue, 24 Nov 2020 08:20:22 -0800 (PST)
+        Tue, 24 Nov 2020 11:21:35 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF751C0613D6
+        for <linux-trace-devel@vger.kernel.org>; Tue, 24 Nov 2020 08:21:33 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w187so4466323pfd.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 24 Nov 2020 08:21:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sPTxVqOHYf9EETuDtTbpQk3pMAxFWGrjJ9jN0G9AcgU=;
-        b=tUkdz/DygfHCb4Bz8QyNfginmP1mvgAl0SAjcZL9WFBumiF+rMnscUdkiTpBcsX27N
-         ExnkD36Jln/wBTyeksn6aWphHivVXNreA6wAi4L49sVxvQtkRDhto/9uGo5BMzk1XvRA
-         p+m0IaqAfE3D21BQfO6WXbCjq0cZUrsoe10iAwCsRvO5r4pt+H1vVCwM8IB4MJPXC04D
-         UjhPKinrTTLPCmUOOQa+XS/aycV6+tPVba9Lst6JhMyThKRml7W07gorD70MCrjEq0je
-         6Pmw3ispz+ug9k3s/oPLfCLXmRR6iTjIFUT0/6GpGTxtxS4Jj5+t93M+UdXlR4QubzhT
-         Bv/w==
+        bh=Y/ocHGGLOFMq2WK670g34Y05nlTyxsB/mDdxx5sPUnk=;
+        b=I7ObwY3duSrYaR0JIrwAP6J23JD7X+CyN00E9KfmY8/MfuLVjaIQUWK++7qazGcZrS
+         p379xHup8O0/w70SrpJhlJlTQP0ylr8t+3sULgZJKeQEaHSgmqges1jwo2z2fTsDmvIv
+         ke4VCf6fx3TEe9tjcawCaj2kKbHZF1+K2YyWH9yumh5B2ISYHUI1f4aTxaHOQuFG6Y3M
+         ExRl5pk6wMGmXjBtDpLR0wJVNKPVDQteWccZp69cXtDAKFVgFcQOwYH96wZXaAyJftvT
+         dY7SXJ+O9WRQikE5NNxblABbXFcSxWqr8b7c6nK0o/t+TKqa5f5344kuEc0DqA+pZa0X
+         VBpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sPTxVqOHYf9EETuDtTbpQk3pMAxFWGrjJ9jN0G9AcgU=;
-        b=geoRM4o/v6tcFrO2PNV77W9A8Q4iPKySxTqw3CntceSS/bfRoqvY+o2u/P8W5KoRyo
-         loJld5FCLOlqb8fIenq1zbdvZRSHzxVC9UMeBotVpyze5OYw0Z0nzY7m57QI2xky5CQy
-         wriyh2rollM0jsopRwj5kafQBWxu3QvTJWvtjMkYkc46U4N97vdTl+TESNHClAyK2YQD
-         vjVXdnB4zVJx6ND+SMk/6+P4v8RMtg/yEtYp9MpY0BSQT1YgYm9fHEnfaLm/vQHBj4DA
-         qPEiLaOkWYgkTw160lj7/Fbg1oTjjdEKm+iKGyFGFQzYqD/CgW6/evLwGa8NvJuYWiW0
-         0hOA==
-X-Gm-Message-State: AOAM532Cv1+dseXe1pIJ9OJO592HwPJikgFIjFgnekjxOgKb7OsTVsis
-        QV60wgPk6KD1HwAlcxleCBJt8dtNNm/tyO7tdi2TS+mCqECwOZ4R
-X-Google-Smtp-Source: ABdhPJxg92TJY2WTcKO4uoFBemgKwVWMPA9JCPsed98kYnKUkhVZYTGs8lYf25dNEb8pAU1obPTp9UvlRAOvfTw15Vo=
-X-Received: by 2002:aa7:8a03:0:b029:198:2bb5:2cf0 with SMTP id
- m3-20020aa78a030000b02901982bb52cf0mr4485083pfa.81.1606234822272; Tue, 24 Nov
- 2020 08:20:22 -0800 (PST)
+        bh=Y/ocHGGLOFMq2WK670g34Y05nlTyxsB/mDdxx5sPUnk=;
+        b=RkhzSPql9jdb5N8pxMwVQdm7BaBXBbHUzKA6QRJqFliDhqrhWfJxMmSFgD57A7uPuq
+         L6EBGJJ7TCOUHrbc1FdukRRhV3LeC+dc17R30rr57XQ6pcK8PXkTpKGiTTJ7SArqfb6X
+         OqS2bjgrIV7TCkGiB+px9AXSjWb/rpVCiXXLO6qocT82IZ6zsL2Htn6rOaVAQr+dsSlk
+         dcR7qLGq34bhRZQMI18BJ6FICVDOHxtfruHWi7qyKMp+DPFrtjnnQhvHIi/ikN/PyD1l
+         1QoS9BdIIGAe08SmCsYFinTNa/blffxXOLHwXvJs9T8cAssqtZZDTZk/TZIovNCRmQdn
+         tJrw==
+X-Gm-Message-State: AOAM532mhTcNO81JCCLKM2rbEFNXGWSbEoOx8WDpMdUPS79IOZ6iS9sJ
+        lL3zDYQIxbvOGJ1oWpS32AN+Ol8myxqS/0u0GL3Wqx3xhovDQZVy
+X-Google-Smtp-Source: ABdhPJw2Cdb2OhQWfOQMhvtgsm6W18+mHW4xKc3gSmuPwFerA45hXYCRU9y3GOFA9LzyUhrFy8XDWW4oZw3kgtZAtmE=
+X-Received: by 2002:a17:90a:aa0e:: with SMTP id k14mr5860956pjq.153.1606234893311;
+ Tue, 24 Nov 2020 08:21:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201123154607.5e43e1ff@gandalf.local.home>
-In-Reply-To: <20201123154607.5e43e1ff@gandalf.local.home>
+References: <20201124091241.3c0dbbc4@gandalf.local.home>
+In-Reply-To: <20201124091241.3c0dbbc4@gandalf.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Tue, 24 Nov 2020 18:20:05 +0200
-Message-ID: <CAPpZLN5-A+vcPc+XmPUaF3E9zXwO473UaqaUWerZBj-jT8JF4g@mail.gmail.com>
-Subject: Re: [PATCH v2] tracefs events: Do not process str_read_file() if size
- is zero
+Date:   Tue, 24 Nov 2020 18:21:16 +0200
+Message-ID: <CAPpZLN4p1Buzs19t6Uy1xthgAMCxTcF12bE5JTv9SpEjd0j0eA@mail.gmail.com>
+Subject: Re: [PATCH v2] libtracevent: Build libtraceevent.pc via "make" not
+ "make install"
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -72,70 +71,97 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:50 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Nov 24, 2020 at 4:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
 > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 >
-> If a file has no size (nothing is read), then str_read_file() frees the
-> buffer and returns zero. The problem is that all callers of str_read_file()
-> uses the buffer supplied if the value returned is not a negative. This
-> causes the freed buffer being used by the callers if the file read existed
-> but had no content.
+> "make install" copies libtraceevent.pc.template to libtraceevent.pc and then
+> modifies it for the installation. This command is usually executed as root,
+> and when finished, it leaves behind the libtraceevent.pc file owned by root
+> and that may not be modified by the owner of the directory.
 >
-> This is apparent when using a copy of the tracefs directory, where some file
-> exist, but have no content, then loading the events would cause a segfault.
+> Instead, have the libtraceevent.pc file created via normal "make" and then
+> have the "make install" copy it to the system location.
 >
-> Change the callers to check the return value of str_read_file() for zero or
-> negative, and do not go further if it is.
+> Link: https://lore.kernel.org/linux-trace-devel/20201123184940.031517790@goodmis.org
 >
 > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > ---
-> Changes since v1:
+>  Changes since v1:
+>     - Have libtraceevent.pc created by "make" and not simply remove
+>       it after creation from the "make install". This allows us to be
+>       able to debug it, if it was not created properly.
+>          (Tzvetomir Stoyanov)
 >
->    Have the callers of str_read_file() check for less than zero, as
->    the first patch would never allocate the passed in buffer.
+>  Makefile | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
 >
->  tracefs-events.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> diff --git a/Makefile b/Makefile
+> index 2a6bfcc..318ec55 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -52,6 +52,9 @@ includedir_relative = traceevent
+>  includedir = $(prefix)/include/$(includedir_relative)
+>  includedir_SQ = '$(subst ','\'',$(includedir))'
 >
-> diff --git a/tracefs-events.c b/tracefs-events.c
-> index ca1d22b..631c310 100644
-> --- a/tracefs-events.c
-> +++ b/tracefs-events.c
-> @@ -411,7 +411,7 @@ char **tracefs_tracers(const char *tracing_dir)
->                 goto out_free;
+> +PKG_CONFIG_SOURCE_FILE = libtraceevent.pc
+> +PKG_CONFIG_FILE := $(addprefix $(OUTPUT),$(PKG_CONFIG_SOURCE_FILE))
+> +
+>  export man_dir man_dir_SQ INSTALL
+>  export DESTDIR DESTDIR_SQ
+>  export EVENT_PARSE_VERSION
+> @@ -126,7 +129,7 @@ build := -f $(srctree)/build/Makefile.build dir=. obj
+>  TE_IN      := $(OUTPUT)libtraceevent-in.o
+>  LIB_TARGET := $(addprefix $(OUTPUT),$(LIB_TARGET))
 >
->         len = str_read_file(available_tracers, &buf);
-> -       if (len < 0)
-> +       if (len <= 0)
->                 goto out_free;
+> -CMD_TARGETS = $(LIB_TARGET)
+> +CMD_TARGETS = $(LIB_TARGET) $(PKG_CONFIG_FILE)
 >
->         len = 0;
-> @@ -471,7 +471,7 @@ static int load_events(struct tep_handle *tep,
->                         goto next_event;
+>  TARGETS = $(CMD_TARGETS)
 >
->                 len = str_read_file(format, &buf);
-> -               if (len < 0)
-> +               if (len <= 0)
->                         goto next_event;
+> @@ -208,15 +211,19 @@ define do_install
+>         $(INSTALL) $(if $3,-m $3,) $1 '$(DESTDIR_SQ)$2'
+>  endef
 >
->                 ret = tep_parse_event(tep, buf, len, system);
-> @@ -501,7 +501,7 @@ static int read_header(struct tep_handle *tep, const char *tracing_dir)
->                 goto out;
+> -PKG_CONFIG_SOURCE_FILE = libtraceevent.pc
+> -PKG_CONFIG_FILE := $(addprefix $(OUTPUT),$(PKG_CONFIG_SOURCE_FILE))
+> +define do_make_pkgconfig_file
+> +       cp -f ${PKG_CONFIG_SOURCE_FILE}.template ${PKG_CONFIG_FILE};    \
+> +       sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE};            \
+> +       sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
+> +       sed -i "s|LIB_DIR|${libdir}|g" ${PKG_CONFIG_FILE}; \
+> +       sed -i "s|HEADER_DIR|$(includedir)|g" ${PKG_CONFIG_FILE};
+> +endef
+> +
+> +$(PKG_CONFIG_FILE) : ${PKG_CONFIG_SOURCE_FILE}.template
+> +       $(QUIET_GEN) $(call do_make_pkgconfig_file,$(prefix))
+> +
+>  define do_install_pkgconfig_file
+>         if [ -n "${pkgconfig_dir}" ]; then                                      \
+> -               cp -f ${PKG_CONFIG_SOURCE_FILE}.template ${PKG_CONFIG_FILE};    \
+> -               sed -i "s|INSTALL_PREFIX|${1}|g" ${PKG_CONFIG_FILE};            \
+> -               sed -i "s|LIB_VERSION|${EVENT_PARSE_VERSION}|g" ${PKG_CONFIG_FILE}; \
+> -               sed -i "s|LIB_DIR|${libdir}|g" ${PKG_CONFIG_FILE}; \
+> -               sed -i "s|HEADER_DIR|$(includedir)|g" ${PKG_CONFIG_FILE}; \
+>                 $(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644);     \
+>         else                                                                    \
+>                 (echo Failed to locate pkg-config directory) 1>&2;              \
+> @@ -228,7 +235,7 @@ install_lib: all_cmd install_plugins install_headers install_pkgconfig
+>                 $(call do_install_mkdir,$(libdir_SQ)); \
+>                 cp -fpR $(LIB_INSTALL) $(DESTDIR)$(libdir_SQ)
 >
->         len = str_read_file(header, &buf);
-> -       if (len < 0)
-> +       if (len <= 0)
->                 goto out;
+> -install_pkgconfig:
+> +install_pkgconfig: $(PKG_CONFIG_FILE)
+>         $(call QUIET_INSTALL, $(PKG_CONFIG_FILE)) \
+>                 $(call do_install_pkgconfig_file,$(prefix))
 >
->         tep_parse_header_page(tep, buf, len, sizeof(long));
 > --
 > 2.25.4
 >
-Thanks, looks good to me.
+
+Thanks Steven!
 Acked-by: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 
-
---
+-- 
 Tzvetomir (Ceco) Stoyanov
 VMware Open Source Technology Center
