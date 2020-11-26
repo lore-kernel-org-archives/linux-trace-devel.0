@@ -2,191 +2,235 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0609BC56202
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 26 Nov 2020 03:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87283C56202
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 26 Nov 2020 07:27:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 80369217A0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 26 Nov 2020 03:53:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 28F482173E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 26 Nov 2020 07:27:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NkY/QcSF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qyBlJncR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731133AbgKZDxb (ORCPT
+        id S1728911AbgKZH1M (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 25 Nov 2020 22:53:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        Thu, 26 Nov 2020 02:27:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730187AbgKZDxa (ORCPT
+        with ESMTP id S1728158AbgKZH1M (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 25 Nov 2020 22:53:30 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7076C0613D4
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Nov 2020 19:53:30 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x15so492055pll.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Nov 2020 19:53:30 -0800 (PST)
+        Thu, 26 Nov 2020 02:27:12 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4ACFC0613D4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Nov 2020 23:27:10 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id s8so981601wrw.10
+        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Nov 2020 23:27:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yeUwR9x8KiF4pSg7hqbOZ9n4J6EZm50vIEAT2mBsfNU=;
-        b=NkY/QcSFGQ6FS7TzQ1G4Ee/LUVz3PdVKbSlyMJxGL6KW6qccUHWUIqVOAJ0qvVuP3S
-         412/Ip1Uw2A/hWJCpD9gN7hJ32HcIDlrwH/JTR0MliF+QWOwFMtMSFZdAaffevQH/LEz
-         Rc+3bLb9A+FE9fKQg7YsVcfdf9XkklAIlIF5XPuCBk6pHqfByUMmKd8lBlpciRrTwKqP
-         oBQnbiVqeabqMQiYI++G45BctNMH1KxVYuvxNCwN/EDpHB9zO7RDZO2ttyT8ear2hrUs
-         Wi4txmERssiepxwHSBb22sz6nlhiG6xxO+vKum11W8KxXtM2/nBjNCpRIcLbRBFkpl4A
-         9H9g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Llu2Skm02HiDX4FSNXvE4g1GDhZi4n3F9/6+Mqhmm6k=;
+        b=qyBlJncRLgHzHLG3n3wn6OJ2Z2U5sjXQHXtPY/IrSGx9hxelw6cx6y923H4UoqqCiM
+         6XGMGdos1rivrUyXMuvDhftLHwN3JEPiPpurNDiqyK1qhzvba8njeVUb0DxQdxGvo7Yr
+         y3yd+SNgYznnbwdFdIZwOmcw7V5xAAaivc0o/SqRdCu+7CJ/4k9CPDE3rpwJo+mnBWq1
+         KcGnT2wViOQqo1p4u8SSa6cWG9dEh+KjVXAE2yzN3+jBwDo6OvVgIX1c1ASYMaVrJHnP
+         IivmlXbAgJBN0oMw2npQsoUaD8ur+4PM8dnCRIKaImd1h06fKM/21CznJT+rguUifSya
+         D3Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yeUwR9x8KiF4pSg7hqbOZ9n4J6EZm50vIEAT2mBsfNU=;
-        b=TObSAD3CE0+kuLIL/VyUqgJAcqX+Dd2KjQWLXozylPBZ7IC4DIjKe+8pHzPz0vQY1t
-         lQ+tFr5pVJAwG2fZCZHsKc+wCG2nzLuUbvcio0gs8LnuxFFjWx1HrG3cWAo+ifS6gDkY
-         8pGxhe0HLGhUdV5l3iYjr2oaMz9mEwz2IrdofkgKZypegVMuprYQft8ba3+lwxJvgnjv
-         Fs+Sarh0mhhwDZ06W92m2/AvHlQTaA1XcUVBy28vEBEFowidsxkrLmRlMLHfzz+a2pIL
-         ocK972mOj4GdKLvn3/VezGSzZb8t7FhJbklC88BdDZqGoCNcnlo/qcbySvxvqRSp7S8m
-         nmAQ==
-X-Gm-Message-State: AOAM531ovVLHjzjOdRi/PaZ9VlAIHVZj4iGViS1/jQWX2RBfGaPxydAK
-        YaIzseYmJxt70gnxW/VUeWJOf+1uV3KuSzVoXtikPnFZb48dWg==
-X-Google-Smtp-Source: ABdhPJxS/RlIf61FjpgY2zYph1fWVH3E9ok1OBJZL/QwCvl791wqgRyzTl4+3ESnwUIGGP9jfAquMNUrTING1NVxGAA=
-X-Received: by 2002:a17:902:ed52:b029:d7:d0af:f89f with SMTP id
- y18-20020a170902ed52b02900d7d0aff89fmr1176072plb.26.1606362810045; Wed, 25
- Nov 2020 19:53:30 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Llu2Skm02HiDX4FSNXvE4g1GDhZi4n3F9/6+Mqhmm6k=;
+        b=mc51YZqIHFUo+0f/vhGt62aH6AmdhCyMV1xi8vhPZC2z5Nb9HU0fgjd2zcG+eJZLCj
+         sXGR69ILt4UGXVQ+WQNSHISxOj5ujALf5VaZXyqY/F8f6U7DP7IZ0HAT7Cemebd7I3gl
+         HlPfddNra3Sv0umRQUjvsWw982msG7XJTZ1IDdGW3HtZu6Yt3lQuuOJ9gdJm4E6GToXc
+         pgp9SWVy0cANN1esLMLx+GHx0JMh9WfM9DIV8tFWCm6tl4mVwvlR+78DlHLN85UrJIhq
+         /o4pCmyDyDBVK7rnj/RBHBE3I5ZNPqVPGp3jXS44eyllAeTHhusDCzROFq6yfR4Drkps
+         h9kg==
+X-Gm-Message-State: AOAM532HYq/t8pdY5C+m73VtS5a9UWJhLEcN0EkzoKJwCb/SRJvHAxQ5
+        Ros2PxOUGHTmGNuXmUlXzh+i3gRzCKstk7hU
+X-Google-Smtp-Source: ABdhPJx/dKwJhhie7sIbkRXm00YfFw0mtmITZvM0XpaGsktzi0i7vjnFsFsQqWlW2UotilnKRfaYQA==
+X-Received: by 2002:a5d:4b09:: with SMTP id v9mr2089925wrq.394.1606375629680;
+        Wed, 25 Nov 2020 23:27:09 -0800 (PST)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id n10sm7468481wrv.77.2020.11.25.23.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 23:27:09 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] trace-cmd: Use system trace libraries, if available
+Date:   Thu, 26 Nov 2020 09:27:07 +0200
+Message-Id: <20201126072707.906347-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <160564780533.18208.2518938894299815863.stgit@toolbox-dario-user-work>
- <20201119220910.1a8ec625@oasis.local.home> <64d58c3297d6915362678c5799bd3d363489bda3.camel@suse.com>
- <02672da2-8b62-a573-786d-1cb8f5970e85@gmail.com> <849f846631f3014c3eff7f37a7d61493e2af66a9.camel@suse.com>
- <20201120090828.4b62d4b7@gandalf.local.home> <4aafe6e3fd34a17ab4c9bf4514b5a9b7d65ca6ea.camel@suse.com>
-In-Reply-To: <4aafe6e3fd34a17ab4c9bf4514b5a9b7d65ca6ea.camel@suse.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 26 Nov 2020 05:53:13 +0200
-Message-ID: <CAPpZLN70+CkZWPK_XAv3WyPUC02yY98WoMwqMCNu2sRQiQ_QCA@mail.gmail.com>
-Subject: Re: Accuracy of traces sync [Was: Re: [PATCH] Fix `make -jN trace-cmd gui`]
-To:     Dario Faggioli <dfaggioli@suse.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 2:15 AM Dario Faggioli <dfaggioli@suse.com> wrote:
->
-> On Fri, 2020-11-20 at 09:08 -0500, Steven Rostedt wrote:
-> > On Fri, 20 Nov 2020 14:43:21 +0100
-> > Dario Faggioli <dfaggioli@suse.com> wrote:
-> > >
-> > > So, you often say that "the accuracy of the synchronization
-> > > protocol is
-> > > XX ms". Now, I guess that means that an event in the guest and the
-> >
-> > Note, we are usually microsecond (us) apart, not millisecond (ms) ;-)
-> >
-> Ah, yes, sure... And sorry about that! I know it us, I'm not sure how I
-> ended up writing ms. That would be quite terrible indeed! :-D
->
-> > > corresponding event in the host (or vice versa) are XX ms apart.
-> > > And
-> > > that's even after the synchronization of the two traces, is that
-> > > right?
-> >
-> > At plumbers we talked with Thomas Gleixner and he suggested ideas of
-> > how to
-> > get to the actual shifts used in the hardware that should give us
-> > exact
-> > timestamp offsets. We are currently working on that.
-> >
-> Yes, I remember that, I attended the BoF.
->
-> > But in the mean time,
-> > the P2P is giving us somewhere between 5 and 10 us accuracy. And
-> > that's
-> > simply because the jitter of the vsock connection (which is used for
-> > the
-> > synchronization at start and end of the traces) has a 5 to 10 us
-> > jitter,
-> > and it's not possible to get a more accurate than the medium that is
-> > being
-> > used.
-> >
-> Yes, with a student that I was helping with his thesis, we applied one
-> debug patch to trace-cmd that you have on this list, and we tried the
-> different synchronization strategies, frequency, etc.
->
-> > > Question is, how do you measure that? Sure, I can look manually for
-> > > an
-> > > occurrence of the pattern that I described above: i.e., an event in
-> > > the
-> > > guest, then the corresponding one in the host and compute the
-> > > difference between the timestamps.
-> >
-> > You mean, how we measure the accuracy? It's usually done by seeing
-> > when we
-> > have events from the guest showing up when we should be in the host
-> > (it's
-> > like seeing events from userspace when you are in the kernel).
-> >
-> Ok, makes sense. I need to try it first hand to make sure I've properly
-> understood it, though. I'll collect some more tracing and looks for
-> situations like these.
->
-> Thanks!
->
-> > > But do you have a way to do so automatically, or with a
-> > > script/program,
-> > > etc?
-> >
-> > We have talked about having something scan to find cases where the
-> > guest
-> > event happens in kernel and do some post processing shifting, but
-> > haven't
-> > gotten there yet.
-> >
-> Yep, as said, I was thinking at it as a way to measure how accurately
-> the traces are synched, but indeed once one has it, it can even use it
-> to actually synch them better.
+Check if libtraceevent and libtracefs are installed in the system and
+use them, otherwise build and use the local implementations.
 
-Hi Dario
-There is one approach to measure the accuracy of the synchronisation.
-May be you remember the suggestions proposed in the BoF - KVM exposes
-the clock offset and scaling factor in the /proc FS. In the last
-version of the time
-sync patch set, v25, I've implemented such logic - when x86-tsc is used for
-trace clock source, the offset is read from the KVM debug FS. In theory this
-should bring the best synchronisation, but I still see some guest events in
-wrong order according to the host events.
-I use the offset exposed from KVM as a reference - run PTP algorithm using
-the x86-tsc trace clock and compare the calculated offset with the one from
-the KVM debug FS.
-We still need to find a way to improve the synchronisation accuracy for cases
-when other hypervisors and trace clocks are used.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ Makefile                | 40 ++++++++++++++++++++++++++++------------
+ lib/traceevent/Makefile |  2 ++
+ lib/tracefs/Makefile    |  2 ++
+ tracecmd/Makefile       |  6 ++++--
+ 4 files changed, 36 insertions(+), 14 deletions(-)
 
+diff --git a/Makefile b/Makefile
+index 8626b91b..c6cdeeae 100644
+--- a/Makefile
++++ b/Makefile
+@@ -191,6 +191,8 @@ export prefix bindir src obj kshark-dir
+ 
+ LIBS = -ldl
+ 
++
++LIBTRACEEVENT=libtraceevent
+ LIBTRACEEVENT_DIR = $(obj)/lib/traceevent
+ LIBTRACEEVENT_STATIC = $(LIBTRACEEVENT_DIR)/libtraceevent.a
+ LIBTRACEEVENT_SHARED = $(LIBTRACEEVENT_DIR)/libtraceevent.so
+@@ -199,35 +201,48 @@ LIBTRACECMD_DIR = $(obj)/lib/trace-cmd
+ LIBTRACECMD_STATIC = $(LIBTRACECMD_DIR)/libtracecmd.a
+ LIBTRACECMD_SHARED = $(LIBTRACECMD_DIR)/libtracecmd.so
+ 
++LIBTRACEFS=libtracefs
+ LIBTRACEFS_DIR = $(obj)/lib/tracefs
+ LIBTRACEFS_STATIC = $(LIBTRACEFS_DIR)/libtracefs.a
+ LIBTRACEFS_SHARED = $(LIBTRACEFS_DIR)/libtracefs.so
+ 
+-TRACE_LIBS = -L$(LIBTRACECMD_DIR) -ltracecmd		\
+-	     -L$(LIBTRACEEVENT_DIR) -ltraceevent	\
+-	     -L$(LIBTRACEFS_DIR) -ltracefs
++ifeq ($(shell sh -c "pkg-config --cflags $(LIBTRACEEVENT) > /dev/null 2>&1 && echo y"), y)
++LIBTRACEEVENT_CFLAGS = $(shell sh -c "pkg-config --cflags $(LIBTRACEEVENT)")
++LIBTRACEEVENT_LDLAGS = $(shell sh -c "pkg-config --libs $(LIBTRACEEVENT)")
++else
++LIBTRACEEVENT_CFLAGS = -I$(src)/include/traceevent -I$(src)/lib/traceevent/include
++LIBTRACEEVENT_LDLAGS = -L$(LIBTRACEEVENT_DIR) -ltraceevent
++LIBTRACEEVENT_STATIC_BUILD = $(LIBTRACEEVENT_STATIC)
++endif
++
++ifeq ($(shell sh -c "pkg-config --cflags $(LIBTRACEFS) > /dev/null 2>&1 && echo y"), y)
++LIBTRACEFS_CFLAGS = $(shell sh -c "pkg-config --cflags $(LIBTRACEFS)")
++LIBTRACEFS_LDLAGS = $(shell sh -c "pkg-config --libs $(LIBTRACEFS)")
++else
++LIBTRACEFS_CFLAGS = -I$(src)/include/tracefs
++LIBTRACEFS_LDLAGS = -L$(LIBTRACEFS_DIR) -ltracefs
++LIBTRACEFS_STATIC_BUILD = $(LIBTRACEFS_STATIC)
++endif
++
++
++TRACE_LIBS = -L$(LIBTRACECMD_DIR) -ltracecmd	\
++	     $(LIBTRACEEVENT_LDLAGS) $(LIBTRACEFS_LDLAGS)
+ 
+ export LIBS TRACE_LIBS
+ export LIBTRACEEVENT_DIR LIBTRACECMD_DIR LIBTRACEFS_DIR
+ export LIBTRACECMD_STATIC LIBTRACECMD_SHARED
+-export LIBTRACEEVENT_STATIC LIBTRACEEVENT_SHARED
+-export LIBTRACEFS_STATIC LIBTRACEFS_SHARED
+-
+ export Q SILENT VERBOSE EXT
+ 
+ # Include the utils
+ include scripts/utils.mk
+ 
+ INCLUDES = -I$(src)/include -I$(src)/../../include
+-INCLUDES += -I$(src)/include/traceevent
+ INCLUDES += -I$(src)/include/trace-cmd
+-INCLUDES += -I$(src)/include/tracefs
+-INCLUDES += -I$(src)/lib/traceevent/include
+ INCLUDES += -I$(src)/lib/trace-cmd/include
+ INCLUDES += -I$(src)/lib/trace-cmd/include/private
+-INCLUDES += -I$(src)/lib/tracefs/include
+ INCLUDES += -I$(src)/tracecmd/include
+-INCLUDES += -I$(obj)/tracecmd/include
++INCLUDES += $(LIBTRACEEVENT_CFLAGS)
++INCLUDES += $(LIBTRACEFS_CFLAGS)
+ 
+ include $(src)/features.mk
+ 
+@@ -288,6 +303,7 @@ CMD_TARGETS = trace-cmd $(BUILD_PYTHON)
+ #    Default we just build trace-cmd
+ #
+ #    If you want kernelshark, then do:  make gui
++#    If you want all libraries, then do: make libs
+ ###
+ 
+ all: all_cmd plugins show_gui_make
+@@ -309,7 +325,7 @@ gui: force
+ 	@echo "gui build complete"
+ 	@echo "  kernelshark located at $(kshark-dir)/bin"
+ 
+-trace-cmd: force $(LIBTRACEEVENT_STATIC) $(LIBTRACECMD_STATIC) $(LIBTRACEFS_STATIC) \
++trace-cmd: force $(LIBTRACEEVENT_STATIC_BUILD) $(LIBTRACECMD_STATIC) $(LIBTRACEFS_STATIC_BUILD) \
+ 	force $(obj)/lib/trace-cmd/plugins/tracecmd_plugin_dir
+ 	$(Q)$(MAKE) -C $(src)/tracecmd $(obj)/tracecmd/$@
+ 
+diff --git a/lib/traceevent/Makefile b/lib/traceevent/Makefile
+index d0666911..c7f7cda0 100644
+--- a/lib/traceevent/Makefile
++++ b/lib/traceevent/Makefile
+@@ -6,6 +6,8 @@ bdir:=$(obj)/lib/traceevent
+ 
+ DEFAULT_TARGET = $(bdir)/libtraceevent.a
+ 
++CFLAGS += -I$(bdir)/include
++
+ OBJS =
+ OBJS += event-parse.o
+ OBJS += event-plugin.o
+diff --git a/lib/tracefs/Makefile b/lib/tracefs/Makefile
+index cbcce362..89519517 100644
+--- a/lib/tracefs/Makefile
++++ b/lib/tracefs/Makefile
+@@ -6,6 +6,8 @@ bdir:=$(obj)/lib/tracefs
+ 
+ DEFAULT_TARGET = $(bdir)/libtracefs.a
+ 
++CFLAGS += -I$(bdir)/include
++
+ OBJS =
+ OBJS += tracefs-utils.o
+ OBJS += tracefs-instance.o
+diff --git a/tracecmd/Makefile b/tracecmd/Makefile
+index 01f36c61..de14176e 100644
+--- a/tracecmd/Makefile
++++ b/tracecmd/Makefile
+@@ -11,6 +11,8 @@ TARGETS = $(bdir)/trace-cmd $(TC_VERSION)
+ BUILDGUI := 0
+ include $(src)/scripts/utils.mk
+ 
++CFLAGS += -I$(bdir)/include
++
+ TRACE_CMD_OBJS =
+ TRACE_CMD_OBJS += trace-cmd.o
+ TRACE_CMD_OBJS += trace-record.o
+@@ -47,7 +49,7 @@ all_objs := $(sort $(ALL_OBJS))
+ all_deps := $(all_objs:$(bdir)/%.o=$(bdir)/.%.d)
+ 
+ CONFIG_INCLUDES =
+-CONFIG_LIBS	= -lrt -lpthread
++CONFIG_LIBS	= -lrt -lpthread $(TRACE_LIBS)
+ CONFIG_FLAGS	=
+ 
+ all: $(TARGETS)
+@@ -67,7 +69,7 @@ $(all_objs): | $(bdir)
+ $(bdir)/trace-cmd: $(ALL_OBJS)
+ 	$(Q)$(do_app_build)
+ 
+-$(bdir)/trace-cmd: $(LIBTRACECMD_STATIC) $(LIBTRACEEVENT_STATIC) $(LIBTRACEFS_STATIC)
++$(bdir)/trace-cmd: $(LIBTRACECMD_STATIC)
+ 
+ $(bdir)/%.o: %.c
+ 	$(Q)$(call do_compile)
+-- 
+2.28.0
 
->
-> But I understand how it's rather tricky.
->
-> > If the hardware settings can work, then there will be no
-> > need to do so.
-> >
-> Indeed. Well, perhaps it could still be useful, as a test/check whether
-> things are working? :-)
->
-> Regards
-> --
-> Dario Faggioli, Ph.D
-> http://about.me/dario.faggioli
-> Virtualization Software Engineer
-> SUSE Labs, SUSE https://www.suse.com/
-> -------------------------------------------------------------------
-> <<This happens because _I_ choose it to happen!>> (Raistlin Majere)
-
-
-
---
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
