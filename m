@@ -5,322 +5,195 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 617F8C56202
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 26 Nov 2020 07:37:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEFDDC64E7B
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 28 Nov 2020 22:03:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E5D692075A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 26 Nov 2020 07:37:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7ECE92344C
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 28 Nov 2020 22:03:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="icwCh3VL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="psNlDFWt"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbgKZHhJ (ORCPT
+        id S2387509AbgK1Vuq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 26 Nov 2020 02:37:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
+        Sat, 28 Nov 2020 16:50:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730641AbgKZHhJ (ORCPT
+        with ESMTP id S2387510AbgK1TXP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 26 Nov 2020 02:37:09 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F991C0613D4
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Nov 2020 23:37:09 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id k14so1041549wrn.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 25 Nov 2020 23:37:09 -0800 (PST)
+        Sat, 28 Nov 2020 14:23:15 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FA1C0613D2
+        for <linux-trace-devel@vger.kernel.org>; Sat, 28 Nov 2020 11:22:35 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id d3so5318956wmb.4
+        for <linux-trace-devel@vger.kernel.org>; Sat, 28 Nov 2020 11:22:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NHLMidEyzdMVeiqp0doN0UhjRgj0ncwXQngTZtz86r8=;
-        b=icwCh3VLfYHI8Q3/Rhk/yE179wsp1rKC1yfdaCHx6HvBNrykIjI+mj2/pqLO1thwlq
-         fkHNM0zryaiTaNZNnwAvrxD+iixWpiSDj6QWX2y/ZGDzpxHX583/jVg4EMRgjXUuqBpL
-         ZFqBOlwbGIizahuHfov0FqoWWVUV2xP5vM3vjM0AHCftKbidni92dWJFaXvgYE7eUNDT
-         T8G5miQFsLpvP7kzW5x60ialMTqO46uzLNEE4wS+D2xwzszfrfVCwY4zue+x/2rtTVss
-         HF9E0fK4gec6FQvYAhh1Ct7d08FrhfLMNC+usWY7CfpXoxT7VW24uu8e+TnBfwaTtgdu
-         uY/A==
+        bh=KnGWmKbQ6rw4aJkrnvltHZrldobCoChGcW/soZIIJiY=;
+        b=psNlDFWt+jICkG8EguWan4VdxcAjEkRNom51XDSBNp9R+J6GxPHL0EWip8OTtAtI99
+         M64NNIN4uzcYRc2qAbg6X6Mqtq2COr53QtPmzFFzr2NQSO3hm5bxmOi+SW/8uFafmRG7
+         6EeLCX1YyORx0lw14uVZcULERtOE/mIUZPtgJR3uKDM5/sLaM04J2gSAlgm5CXenpK8h
+         UNIUxh01ddNXJvImqNrrBsPJgbPeUbjAtWE6mVYTzHCI9GQ5OZLL2A3JH7a/g6GU/jdx
+         Rjs/4BXSAg9qT4o4dDgU8sCpT4ApWyQyiWnLv+petYYmbG+ezML2MK2QZlocduAUKCjH
+         KPPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NHLMidEyzdMVeiqp0doN0UhjRgj0ncwXQngTZtz86r8=;
-        b=rF6Vc6lLtUogfcg6FJKMKTpxZIsXxeLDi+ixxGfG4wB11VsPlhYw92nE3VmXPCqeyb
-         Ovg8YyDxIZV49XZZQxPBz+jMxnqitoJOrQS8VHq8MUiRvPPNXiBShhRCK9z59LHWD58j
-         c2nov3asoQ1QZcWhs1XnW3LLabpapyPT6O1v1vPj2vqgJp0BhISODxZ9poyKRn2TI6/R
-         atlyKImvJ+iAi9FBCVziEc2xSByA9aucFqDaTwDdJZhlJdJ8cKSK9ZZBdzWtjYXD2Glg
-         dgTFz/DoOpJcEabctt193iuACyHS+8qxXESjs5xr3VH9Ee4EKBCIjh3EX2o7mIW9tYwO
-         rayw==
-X-Gm-Message-State: AOAM533vYhWmJkDenX9PQlhAqaRr9aAGtc2i6BahZU7iM3g+55hXctko
-        JtcyEJSXtTobpk6Ajd/RyFZANeutraUyjTpd
-X-Google-Smtp-Source: ABdhPJx03frEo7seImZay9LTycDJCPMWEUDHdEQwK0QNzd8pKA4r+Nda5JqmRpvga43XTkki8iFPtw==
-X-Received: by 2002:adf:fd03:: with SMTP id e3mr2069660wrr.303.1606376227727;
-        Wed, 25 Nov 2020 23:37:07 -0800 (PST)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s8sm7963435wrn.33.2020.11.25.23.37.06
+        bh=KnGWmKbQ6rw4aJkrnvltHZrldobCoChGcW/soZIIJiY=;
+        b=E1XL04cKS5W6tEjUko1d8C3hq/yGU1Tr6ESQb49ZeSK4PXWi1rH4Zq/lp4kR7XmUML
+         778MoCpNfjneHHa8t3jwioSQymgTpFWdOapmjTmU7J6IwDaojcfBzlH5kJrH3SVCPMi0
+         Z7gWE3Drf6n3ZhYnvoaOQVjNpYaiQ9dYxSehmRhtQ276kLDbIS2RQ2iXbmVheSAVamh5
+         K9MuhLtuB8YpBVtJ0jLjgyr9aivkxtn6vS/8/eWIeL6hxlI+3Us4XXtERywnorLQkeT7
+         c4I8ST0ARFfLksunwWGqbS2OKdWg4ioeUXxSTYU7eC50YuxDl+cFseehbkHchGgtLRtP
+         5Grg==
+X-Gm-Message-State: AOAM533ZI9XmB/NA+01JPBizyK1kJqnm3q9qeqWWFhVJr4aND4VqKh5K
+        RO3fOAfiY0Pc0pWuwMK0nKj8mpD2tqo=
+X-Google-Smtp-Source: ABdhPJxRE5Mt7mDb+8jTOAa6ik1TFz2Ksw3VEs5kebhP6G5QTYx1D5Olz8fgEbUpHzd/a3lrRF2UhA==
+X-Received: by 2002:a1c:4456:: with SMTP id r83mr7096728wma.108.1606591353638;
+        Sat, 28 Nov 2020 11:22:33 -0800 (PST)
+Received: from localhost.localdomain (5-13-193-159.residential.rdsnet.ro. [5.13.193.159])
+        by smtp.gmail.com with ESMTPSA id i11sm21914871wro.85.2020.11.28.11.22.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 23:37:06 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2] trace-cmd: Enhance "trace-cmd clear" to be instance aware
-Date:   Thu, 26 Nov 2020 09:37:05 +0200
-Message-Id: <20201126073705.907666-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Sat, 28 Nov 2020 11:22:32 -0800 (PST)
+From:   Beniamin Sandu <beniaminsandu@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Beniamin Sandu <beniaminsandu@gmail.com>
+Subject: [PATCH] trace-cmd: make it build against musl C library
+Date:   Sat, 28 Nov 2020 21:22:21 +0200
+Message-Id: <20201128192221.1165671-1-beniaminsandu@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added new options "trace-cmd clear -B <name> -a" which allow the command
-to work per ftrace instance:
--B clear the given buffer (may specify multiple -B)
--a clear all existing buffers, including the top level one
+* add some missing headers and macros
+* set pthread affinity using pthread_setaffinity_np after creating the thread
+instead of pthread_attr_setaffinity_np (which seems to not be implemented
+in musl)
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Tested using https://musl.cc/x86_64-linux-musl-native.tgz
+
+Signed-off-by: Beniamin Sandu <beniaminsandu@gmail.com>
 ---
-v2 changes:
- - Changed the implementation to use the latest libtracefs APIs. 
+ lib/trace-cmd/include/private/trace-cmd-private.h |  1 +
+ lib/trace-cmd/include/trace-cmd-local.h           |  1 +
+ lib/tracefs/include/tracefs-local.h               | 12 ++++++++++++
+ lib/tracefs/tracefs-events.c                      |  1 +
+ tracecmd/include/trace-local.h                    |  1 +
+ tracecmd/trace-tsync.c                            | 11 +++++++----
+ 6 files changed, 23 insertions(+), 4 deletions(-)
 
- Documentation/trace-cmd-clear.1.txt |  13 ++-
- tracecmd/Makefile                   |   1 +
- tracecmd/trace-clear.c              | 126 ++++++++++++++++++++++++++++
- tracecmd/trace-record.c             |  24 ------
- tracecmd/trace-usage.c              |   4 +-
- 5 files changed, 142 insertions(+), 26 deletions(-)
- create mode 100644 tracecmd/trace-clear.c
-
-diff --git a/Documentation/trace-cmd-clear.1.txt b/Documentation/trace-cmd-clear.1.txt
-index 67e5851a..a0ae36e9 100644
---- a/Documentation/trace-cmd-clear.1.txt
-+++ b/Documentation/trace-cmd-clear.1.txt
-@@ -7,12 +7,23 @@ trace-cmd-clear - clear the Ftrace buffer.
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 458760e..a0dac5d 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -6,6 +6,7 @@
+ #ifndef _TRACE_CMD_PRIVATE_H
+ #define _TRACE_CMD_PRIVATE_H
  
- SYNOPSIS
- --------
--*trace-cmd clear*
-+*trace-cmd clear* ['OPTIONS']
++#include <sys/types.h>
+ #include "traceevent/event-parse.h"
+ #include "trace-cmd/trace-cmd.h"
  
- DESCRIPTION
- -----------
- The *trace-cmd(1) clear* clears the content of the Ftrace ring buffer.
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index d0a7365..0cd2744 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -6,6 +6,7 @@
+ #ifndef _TRACE_CMD_LOCAL_H
+ #define _TRACE_CMD_LOCAL_H
  
-+OPTIONS
-+-------
-+*-B* 'buffer-name'::
-+    If the kernel supports multiple buffers, this will clear only the given
-+    buffer. It does not affect any other buffers. This may be used multiple
-+    times to specify different buffers. The top level buffer will not be
-+    clearded if this option is given.
-+
-+*-a*::
-+    Clear all existing buffers, including the top level one.
-+
- SEE ALSO
- --------
- trace-cmd(1), trace-cmd-record(1), trace-cmd-report(1), trace-cmd-start(1),
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index 5e59adf8..01f36c61 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -31,6 +31,7 @@ TRACE_CMD_OBJS += trace-show.o
- TRACE_CMD_OBJS += trace-list.o
- TRACE_CMD_OBJS += trace-usage.o
- TRACE_CMD_OBJS += trace-dump.o
-+TRACE_CMD_OBJS += trace-clear.o
- ifeq ($(VSOCK_DEFINED), 1)
- TRACE_CMD_OBJS += trace-tsync.o
- endif
-diff --git a/tracecmd/trace-clear.c b/tracecmd/trace-clear.c
-new file mode 100644
-index 00000000..608b9598
---- /dev/null
-+++ b/tracecmd/trace-clear.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+/*
-+ * Copyright (C) 2008, 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-+ *
-+ * Updates:
-+ * Copyright (C) 2020, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-+ *
-+ */
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+
-+#include "tracefs.h"
-+#include "trace-local.h"
-+
-+struct instances_list {
-+	struct instances_list *next;
-+	struct tracefs_instance *instance;
-+};
-+
-+static int add_new_instance(struct instances_list **list, char *name)
-+{
-+	struct instances_list *new;
-+
-+	if (!tracefs_instance_exists(name))
-+		return -1;
-+	new = calloc(1, sizeof(*new));
-+	if (!new)
-+		return -1;
-+	new->instance = tracefs_instance_create(name);
-+	if (!new->instance) {
-+		free(new);
-+		return -1;
-+	}
-+
-+	new->next = *list;
-+	*list = new;
-+	return 0;
-+}
-+
-+static int add_instance_walk(const char *name, void *data)
-+{
-+	return add_new_instance((struct instances_list **)data, (char *)name);
-+}
-+
-+static void clear_list(struct instances_list *list)
-+{
-+	struct instances_list *del;
-+
-+	while (list) {
-+		del = list;
-+		list = list->next;
-+		tracefs_instance_free(del->instance);
-+		free(del);
-+	}
-+}
-+
-+static void clear_instance_trace(struct tracefs_instance *instance)
-+{
-+	FILE *fp;
-+	char *path;
-+
-+	/* reset the trace */
-+	path = tracefs_instance_get_file(instance, "trace");
-+	fp = fopen(path, "w");
-+	if (!fp)
-+		die("writing to '%s'", path);
-+	tracefs_put_tracing_file(path);
-+	fwrite("0", 1, 1, fp);
-+	fclose(fp);
-+}
-+
-+static void clear_trace(struct instances_list *instances)
-+{
-+	if (instances) {
-+		while (instances) {
-+			clear_instance_trace(instances->instance);
-+			instances = instances->next;
-+		}
-+	} else
-+		clear_instance_trace(NULL);
-+}
-+
-+void trace_clear(int argc, char **argv)
-+{
-+	struct instances_list *instances = NULL;
-+	bool all = false;
-+	int c;
-+
-+	for (;;) {
-+		int option_index = 0;
-+		static struct option long_options[] = {
-+			{"all", no_argument, NULL, 'a'},
-+			{"help", no_argument, NULL, '?'},
-+			{NULL, 0, NULL, 0}
-+		};
-+
-+		c = getopt_long (argc-1, argv+1, "+haB:",
-+				 long_options, &option_index);
-+		if (c == -1)
-+			break;
-+		switch (c) {
-+		case 'B':
-+			if (add_new_instance(&instances, optarg))
-+				die("Failed to allocate instance %s", optarg);
-+			break;
-+		case 'a':
-+			all = true;
-+			if (tracefs_instances_walk(add_instance_walk, &instances))
-+				die("Failed to add all instances");
-+			break;
-+		case 'h':
-+		case '?':
-+		default:
-+			usage(argv);
-+			break;
-+		}
-+	}
-+
-+	clear_trace(instances);
-+	if (all)
-+		clear_trace(NULL);
-+	clear_list(instances);
-+	exit(0);
-+}
-+
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 908adb93..3a63f1bd 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -845,21 +845,6 @@ static void clear_trace_instances(void)
- 		__clear_trace(instance);
- }
++#include <byteswap.h>
+ #include "trace-cmd-private.h"
  
--static void clear_trace(void)
--{
--	FILE *fp;
--	char *path;
--
--	/* reset the trace */
--	path = tracefs_get_tracing_file("trace");
--	fp = fopen(path, "w");
--	if (!fp)
--		die("writing to '%s'", path);
--	tracefs_put_tracing_file(path);
--	fwrite("0", 1, 1, fp);
--	fclose(fp);
--}
--
- static void reset_max_latency(struct buffer_instance *instance)
- {
- 	tracefs_instance_file_write(instance->tracefs,
-@@ -6701,15 +6686,6 @@ void trace_profile(int argc, char **argv)
- 	exit(0);
- }
+ /* Can be overridden */
+diff --git a/lib/tracefs/include/tracefs-local.h b/lib/tracefs/include/tracefs-local.h
+index 9cc371b..bdbf89e 100644
+--- a/lib/tracefs/include/tracefs-local.h
++++ b/lib/tracefs/include/tracefs-local.h
+@@ -13,4 +13,16 @@ void warning(const char *fmt, ...);
+ int str_read_file(const char *file, char **buffer);
+ char *trace_append_file(const char *dir, const char *name);
  
--void trace_clear(int argc, char **argv)
--{
--	if (argc > 2)
--		usage(argv);
--	else
--		clear_trace();
--	exit(0);
--}
--
- void trace_record(int argc, char **argv)
- {
- 	struct common_record_context ctx;
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 3f0b2d07..79610bd3 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -180,7 +180,9 @@ static struct usage_help usage_help[] = {
- 	{
- 		"clear",
- 		"clear the trace buffers",
--		" %s clear\n"
-+		" %s clear [-B buf][-a]\n"
-+		"          -B clear the given buffer (may specify multiple -B)\n"
-+		"          -a clear all existing buffers, including the top level one\n"
- 	},
- 	{
- 		"report",
++#ifndef ACCESSPERMS
++#define ACCESSPERMS (S_IRWXU|S_IRWXG|S_IRWXO) /* 0777 */
++#endif
++
++#ifndef ALLPERMS
++#define ALLPERMS (S_ISUID|S_ISGID|S_ISVTX|S_IRWXU|S_IRWXG|S_IRWXO) /* 07777 */
++#endif
++
++#ifndef DEFFILEMODE
++#define DEFFILEMODE (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH) /* 0666*/
++#endif
++
+ #endif /* _TRACE_FS_LOCAL_H */
+diff --git a/lib/tracefs/tracefs-events.c b/lib/tracefs/tracefs-events.c
+index 80a25ee..a4e5215 100644
+--- a/lib/tracefs/tracefs-events.c
++++ b/lib/tracefs/tracefs-events.c
+@@ -13,6 +13,7 @@
+ #include <errno.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
++#include <limits.h>
+ 
+ #include "kbuffer.h"
+ #include "tracefs.h"
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 28d1b4e..85c7e03 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -8,6 +8,7 @@
+ 
+ #include <sys/types.h>
+ #include <dirent.h>	/* for DIR */
++#include <limits.h>
+ 
+ #include "trace-cmd-private.h"
+ #include "event-utils.h"
+diff --git a/tracecmd/trace-tsync.c b/tracecmd/trace-tsync.c
+index e639788..2cbe7f2 100644
+--- a/tracecmd/trace-tsync.c
++++ b/tracecmd/trace-tsync.c
+@@ -104,11 +104,13 @@ int tracecmd_host_tsync(struct buffer_instance *instance,
+ 
+ 	pthread_attr_init(&attrib);
+ 	pthread_attr_setdetachstate(&attrib, PTHREAD_CREATE_JOINABLE);
+-	if (!get_first_cpu(&pin_mask, &mask_size))
+-		pthread_attr_setaffinity_np(&attrib, mask_size, pin_mask);
+ 
+ 	ret = pthread_create(&instance->tsync_thread, &attrib,
+ 			     tsync_host_thread, &instance->tsync);
++
++	if (!get_first_cpu(&pin_mask, &mask_size))
++		pthread_setaffinity_np(instance->tsync_thread, mask_size, pin_mask);
++
+ 	if (!ret)
+ 		instance->tsync_thread_running = true;
+ 	if (pin_mask)
+@@ -243,11 +245,12 @@ unsigned int tracecmd_guest_tsync(char *tsync_protos,
+ 	pthread_attr_init(&attrib);
+ 	tsync->sync_proto = proto;
+ 	pthread_attr_setdetachstate(&attrib, PTHREAD_CREATE_JOINABLE);
+-	if (!get_first_cpu(&pin_mask, &mask_size))
+-		pthread_attr_setaffinity_np(&attrib, mask_size, pin_mask);
+ 
+ 	ret = pthread_create(thr_id, &attrib, tsync_agent_thread, tsync);
+ 
++	if (!get_first_cpu(&pin_mask, &mask_size))
++		pthread_setaffinity_np(*thr_id, mask_size, pin_mask);
++
+ 	if (pin_mask)
+ 		CPU_FREE(pin_mask);
+ 	pthread_attr_destroy(&attrib);
 -- 
-2.28.0
+2.25.1
 
