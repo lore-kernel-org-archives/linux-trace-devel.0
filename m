@@ -2,68 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15F2DC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Dec 2020 08:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F32DCC4361A
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Dec 2020 08:50:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BBE6F225A9
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Dec 2020 08:48:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 96E7322795
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  4 Dec 2020 08:50:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgLDIsX (ORCPT
+        id S1729028AbgLDIt5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 4 Dec 2020 03:48:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41156 "EHLO
+        Fri, 4 Dec 2020 03:49:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbgLDIsX (ORCPT
+        with ESMTP id S1727479AbgLDIt5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:48:23 -0500
+        Fri, 4 Dec 2020 03:49:57 -0500
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4B7C061A51
-        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Dec 2020 00:47:42 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id e25so6321122wme.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 04 Dec 2020 00:47:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0616C061A4F
+        for <linux-trace-devel@vger.kernel.org>; Fri,  4 Dec 2020 00:49:16 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 3so6255843wmg.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 04 Dec 2020 00:49:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nzPH7CDfA5/LehvmQvd6ASuGRUmAUBWTTV1qLByrxR0=;
-        b=i/6wkGi2vnkbjHLfLZdnodDp0u1rNi9hLMl80eYWMiDHByqa/fx8UbczG+tVuDWltp
-         2pnzqqXAjZmJeD43TrfE+RO46Gb91bQjBoxr8EkKVLf2L2Z888/fEafKBe5Sd5pR2uj0
-         sYhDifnNFgplQLmu7mfwTBc26U0DbuQv0l9Fk765IqW0m8oLXb5KQ4LueqkpY0Wr3Xho
-         GMwzrLL0Zlpc20pcn5jPWj76a3ZIecZvx/5iLSoxYh941zTCHzmpp+ENTcG2QXnq/xk6
-         O65DZl+aitVf9t7roh6DVRlp0dCotrjkg+Ux4FEMOr1mi9nFMW5xVZXBQBKGvkNgcsrh
-         g+Rg==
+        bh=0X4eG/49OxbKTq7FhhZxQUnrSfRSMqzvazDVSEegpaA=;
+        b=OvtCspQtEQT+ExjqNYh4vtRsttSOFjYg6M2AWyZ9XhmgGLgCFKVgz561u3ARHZNwQj
+         xPcE1JobBdInt+42g6/h7oUXeUzh+1UGwC2b3T/yAEwY29pt3PcqXRdmBIrLch6LS60k
+         dwZDl+/KSW8mwb3HI3E5Z3L0qGku/U16sGO1gURIdMlA9AihbtqfDAAaCaRmpTrEsYE3
+         S0Zgf9i1ycIyRO7tW3lF7GHsyWz5HpvXMDbaGmiyKKl6jtlFxWtnoyOL+5li/8oln3qK
+         VlzbJz18rMBV6QaZnKNiaJjbTr2GmgJ2mhDqQpvJkAtpDb3qkRSrCOE38xKvl7dzKjL4
+         YmTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nzPH7CDfA5/LehvmQvd6ASuGRUmAUBWTTV1qLByrxR0=;
-        b=PjD8KAjYOwDAuUHQp+/ufm3OOfkGM1S4nTq/IaKyYUqRRx2GZle4CW411EzLuYYwIO
-         vBPxLEd3h/uZPRZSnFmPxqVUzqVZmLcCf+4KQNG/vAmpoDehhR78bOq6/SOv72TnwSGR
-         gN7K3+rGigQD/KrGI7s4k306JyHQwJjYI+fBbbO1yFoYEWQg50zuKlZWD+ZRETw1dYQT
-         0D6ILY/OPRRb/w6rxEabg4lPQ2Y8ZsdU684M2O8TK6e59rctDphuUU5Z7uJA6BXoBy0I
-         fSPkGYwh2vaGhespU9yF6X24DncNWWAvVmlfN7AYbFFPErR8u/YTmuDHQSt0TRjcWVZv
-         MfaA==
-X-Gm-Message-State: AOAM531OGSVIrPMAAE8KzMp4gHh0ViMrhGPw6rcN3TohEgfahWd/WTwr
-        0I/W4PmlkLh4zEWo/MumKGp6HA1Xjb68owwL
-X-Google-Smtp-Source: ABdhPJyxOaMmyIgFQpK+GupVwS37qT3NH5i2BePrc8fXgtGVn22ig32vb2tVNWkoSV46+t8s8Nh/Tg==
-X-Received: by 2002:a1c:dc83:: with SMTP id t125mr2996507wmg.12.1607071661541;
-        Fri, 04 Dec 2020 00:47:41 -0800 (PST)
+        bh=0X4eG/49OxbKTq7FhhZxQUnrSfRSMqzvazDVSEegpaA=;
+        b=edy5c3vyE/vSqRlx8xzmzP9votq0o3IQp2QKgNg8MLexD7k5WxYxfP8vJYDaJX9ymG
+         sd1ePk+tluyRsreRdQxjWbxWmdPq4mYG03XcjBhast6xQQNRZbmrCNV8lHtdCpqP3mAq
+         HxeYA7X1ebprTvXS67Cpm6rMsBrGCvBJDfXKFaiVcrflrLre6Znj16I17E84flDh9zjp
+         mXesAEtzCX9WrQ/NWtPVyOGOzsKg0kMKHuZ3XNtTBtHbqfuOpbQG9CkH3jdmCDot3Z/r
+         EvBS+DFiMgHizK4DbnzQ5nbtyfY4wNu8VRVU+7mP4YFJDU6Fj96DFvKqtF6dSM1ytCxW
+         0YTg==
+X-Gm-Message-State: AOAM530VbtdRJoeut48gwpI4qHT8HuAJPYpwN4oFI68MIK9AZfIROLId
+        H2epHEPl9d5vm8DODw9Qk11CWrTDV5/SD1Np
+X-Google-Smtp-Source: ABdhPJxAYNUUR6NWGW0drl0PBikS74SKlALLfi8hwdy9fJ5Tv4hH3z1xiOlcxcaUz8MhILFEcHXD5Q==
+X-Received: by 2002:a1c:e901:: with SMTP id q1mr3007058wmc.148.1607071755419;
+        Fri, 04 Dec 2020 00:49:15 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id a15sm2756175wrn.75.2020.12.04.00.47.40
+        by smtp.gmail.com with ESMTPSA id y130sm2377007wmc.22.2020.12.04.00.49.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 00:47:40 -0800 (PST)
+        Fri, 04 Dec 2020 00:49:14 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] libtracefs: Extend tracefs_iterate_raw_events() to iterate per CPU
-Date:   Fri,  4 Dec 2020 10:47:39 +0200
-Message-Id: <20201204084739.555327-1-tz.stoyanov@gmail.com>
+Subject: [PATCH] libtracefs: Unit test for tracefs_iterate_raw_events() per CPU
+Date:   Fri,  4 Dec 2020 10:49:13 +0200
+Message-Id: <20201204084913.555490-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -73,67 +73,160 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
 
-There are some use cases where only raw events from particular CPUs
-should be iterated. An additional parameter is added to this API which
-allows only trace buffers for specified CPUs to be iterated.
+The tracefs_iterate_raw_events() unit test is extended to verify per CPU
+iteration.
 
 Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
 ---
- include/tracefs.h | 2 ++
- tracefs-events.c  | 6 ++++++
- 2 files changed, 8 insertions(+)
+This path depends on "libtracefs: Add unit tests" patch.
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 3358e33..ce8b09c 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -6,6 +6,7 @@
- #ifndef _TRACE_FS_H
- #define _TRACE_FS_H
+ utest/tracefs-utest.c | 89 ++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 70 insertions(+), 19 deletions(-)
+
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 24ea0fc..941b9cf 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -18,25 +18,34 @@
  
-+#include <sched.h>
- #include "traceevent/event-parse.h"
+ #define TRACEFS_SUITE		"trasefs library"
+ #define TEST_INSTANCE_NAME	"cunit_test_iter"
+-#define TEST_ARRAY_SIZE		50
++#define TEST_ARRAY_SIZE		500
  
- char *tracefs_get_tracing_file(const char *name);
-@@ -44,6 +45,7 @@ char **tracefs_event_systems(const char *tracing_dir);
- char **tracefs_system_events(const char *tracing_dir, const char *system);
- int tracefs_iterate_raw_events(struct tep_handle *tep,
- 				struct tracefs_instance *instance,
-+				cpu_set_t *cpus, int cpu_size,
- 				int (*callback)(struct tep_event *,
- 						struct tep_record *,
- 						int, void *),
-diff --git a/tracefs-events.c b/tracefs-events.c
-index ee45988..4431f77 100644
---- a/tracefs-events.c
-+++ b/tracefs-events.c
-@@ -117,6 +117,9 @@ get_events_in_page(struct tep_handle *tep, void *page,
-  *				per CPU trace buffers
-  * @tep: a handle to the trace event parser context
-  * @instance: ftrace instance, can be NULL for the top instance
-+ * @cpus: Iterate only through the buffers of CPUs, set in the mask.
-+ *	  If NULL, iterate through all CPUs.
-+ * @cpu_size: size of @cpus set
-  * @callback: A user function, called for each record from the file
-  * @callback_context: A custom context, passed to the user callback function
-  *
-@@ -127,6 +130,7 @@ get_events_in_page(struct tep_handle *tep, void *page,
-  */
- int tracefs_iterate_raw_events(struct tep_handle *tep,
- 				struct tracefs_instance *instance,
-+				cpu_set_t *cpus, int cpu_size,
- 				int (*callback)(struct tep_event *,
- 						struct tep_record *,
- 						int, void *),
-@@ -167,6 +171,8 @@ int tracefs_iterate_raw_events(struct tep_handle *tep,
- 		if (strlen(name) < 4 || strncmp(name, "cpu", 3) != 0)
- 			continue;
- 		cpu = atoi(name + 3);
-+		if (cpus && !CPU_ISSET_S(cpu, cpu_size, cpus))
-+			continue;
- 		sprintf(file, "%s/%s", path, name);
- 		ret = stat(file, &st);
- 		if (ret < 0 || !S_ISDIR(st.st_mode))
+ static struct tracefs_instance *test_instance;
+ static struct tep_handle *test_tep;
+-static int test_array[TEST_ARRAY_SIZE];
++struct test_sample {
++	int cpu;
++	int value;
++};
++static struct test_sample test_array[TEST_ARRAY_SIZE];
+ static int test_found;
+ 
+ static int test_callback(struct tep_event *event, struct tep_record *record,
+ 			  int cpu, void *context)
+ {
+ 	struct tep_format_field *field;
+-	int val, i;
++	struct test_sample *sample;
++	int *cpu_test = (int *)context;
++	int i;
+ 
++	if (cpu_test && *cpu_test >= 0 && *cpu_test != cpu)
++		return 0;
+ 	field = tep_find_field(event, "buf");
+ 	if (field) {
+-		val = *((int *)(record->data + field->offset));
++		sample = ((struct test_sample *)(record->data + field->offset));
+ 		for (i = 0; i < TEST_ARRAY_SIZE; i++) {
+-			if (test_array[i] == val) {
+-				test_array[i] = 0;
++			if (test_array[i].value == sample->value &&
++			    test_array[i].cpu == cpu) {
++				test_array[i].value = 0;
+ 				test_found++;
+ 				break;
+ 			}
+@@ -48,43 +57,85 @@ static int test_callback(struct tep_event *event, struct tep_record *record,
+ 
+ static void test_iter_write(void)
+ {
++	int cpus = sysconf(_SC_NPROCESSORS_CONF);
++	cpu_set_t *cpuset, *cpusave;
++	int cpu_size;
+ 	char *path;
+ 	int i, fd;
+ 	int ret;
++	cpuset = CPU_ALLOC(cpus);
++	cpusave = CPU_ALLOC(cpus);
++	cpu_size = CPU_ALLOC_SIZE(cpus);
++	CPU_ZERO_S(cpu_size, cpuset);
++
++	sched_getaffinity(0, cpu_size, cpusave);
+ 
+ 	path = tracefs_instance_get_file(test_instance, "trace_marker");
+ 	CU_TEST(path != NULL);
+ 	fd = open(path, O_WRONLY);
++	tracefs_put_tracing_file(path);
+ 	CU_TEST(fd >= 0);
+ 
+ 	for (i = 0; i < TEST_ARRAY_SIZE; i++) {
+-		test_array[i] = random();
+-		ret = write(fd, test_array + i, sizeof(int));
+-		CU_TEST(ret == sizeof(int));
++		test_array[i].cpu = rand() % cpus;
++		test_array[i].value = random();
++		if (!test_array[i].value)
++			test_array[i].value++;
++		CU_TEST(test_array[i].cpu < cpus);
++		CPU_ZERO_S(cpu_size, cpuset);
++		CPU_SET(test_array[i].cpu, cpuset);
++		sched_setaffinity(0, cpu_size, cpuset);
++		ret = write(fd, test_array + i, sizeof(struct test_sample));
++		CU_TEST(ret == sizeof(struct test_sample));
+ 	}
+ 
+-	tracefs_put_tracing_file(path);
++	sched_setaffinity(0, cpu_size, cpusave);
+ 	close(fd);
+ }
+ 
+ 
++static void iter_raw_events_on_cpu(int cpu)
++{
++	int check = 0;
++	int ret;
++	int i;
++
++	test_found = 0;
++	test_iter_write();
++	ret = tracefs_iterate_raw_events(test_tep, test_instance, NULL, 0,
++					 test_callback, &cpu);
++	CU_TEST(ret == 0);
++	if (cpu < 0) {
++		CU_TEST(test_found == TEST_ARRAY_SIZE);
++	} else {
++		for (i = 0; i < TEST_ARRAY_SIZE; i++) {
++			if (test_array[i].cpu == cpu) {
++				check++;
++				CU_TEST(test_array[i].value == 0)
++			} else {
++				CU_TEST(test_array[i].value != 0)
++			}
++		}
++		CU_TEST(test_found == check);
++	}
++}
++
+ static void test_iter_raw_events(void)
+ {
++	int cpus = sysconf(_SC_NPROCESSORS_CONF);
+ 	int ret;
++	int i;
+ 
+-	ret = tracefs_iterate_raw_events(NULL, test_instance, test_callback, NULL);
++	ret = tracefs_iterate_raw_events(NULL, test_instance, NULL, 0, test_callback, NULL);
+ 	CU_TEST(ret < 0);
+-	ret = tracefs_iterate_raw_events(test_tep, NULL, test_callback, NULL);
++	ret = tracefs_iterate_raw_events(test_tep, NULL, NULL, 0, test_callback, NULL);
+ 	CU_TEST(ret == 0);
+-	ret = tracefs_iterate_raw_events(test_tep, test_instance, NULL, NULL);
++	ret = tracefs_iterate_raw_events(test_tep, test_instance, NULL, 0, NULL, NULL);
+ 	CU_TEST(ret < 0);
+ 
+-	test_found = 0;
+-	test_iter_write();
+-	ret = tracefs_iterate_raw_events(test_tep, test_instance,
+-					 test_callback, NULL);
+-	CU_TEST(ret == 0);
+-	CU_TEST(test_found == TEST_ARRAY_SIZE);
++	iter_raw_events_on_cpu(-1);
++	for (i = 0; i < cpus; i++)
++		iter_raw_events_on_cpu(i);
+ }
+ 
+ #define RAND_STR_SIZE 20
 -- 
 2.28.0
 
