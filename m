@@ -2,55 +2,54 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7963C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Dec 2020 02:56:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1287C1B0D9
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Dec 2020 12:15:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 72A0323976
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Dec 2020 02:56:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 75DD0239D0
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  8 Dec 2020 12:15:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbgLHC4F (ORCPT
+        id S1729363AbgLHMO5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 7 Dec 2020 21:56:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45110 "EHLO mail.kernel.org"
+        Tue, 8 Dec 2020 07:14:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726830AbgLHC4E (ORCPT
+        id S1727524AbgLHMO5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:56:04 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E20D823976;
-        Tue,  8 Dec 2020 02:55:22 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 21:55:20 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
+        Tue, 8 Dec 2020 07:14:57 -0500
+Date:   Tue, 8 Dec 2020 21:14:11 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607429655;
+        bh=reAqiJ4yz80XfZvNe68XrEKawPn513UBEdmtUQULeZ4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=indu95/XuY6fGS0WbUMpoSSLswgtz0mSIpLRXXD7pHyC9n4O6tBHOsSnRC4hUShIm
+         b+mRJb0EQVZlCXPnMAu9W67P4Mxu9NgK/dBD8R0NLZ8pZ1i10gcgd6zKraKFqmi7ZL
+         ybCu7ShSStRXfoMnVUFPJfVxvkRJ8tH5ws9z+C0pKuOPKZuuv/n4919xsqYNaZVUZ8
+         ZVRFP5TIyuLlgyJ5hJaxpvmcYY8YEmP0AfEbuHGWEEm8/xC+QkJEMHRk4OcxvBddDg
+         p54bpgGe2FeX2Pykm5+7ZnMoFRlf8c7i8KWW32j7nGvHs8OBG3d//YtsJVS3+HXW8q
+         w9CtiUm3/43vw==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Shuah Khan <skhan@linuxfoundation.org>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>
 Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
  buffer timestamps
-Message-ID: <20201207215520.3da609f4@oasis.local.home>
+Message-Id: <20201208211411.e41849908381eb493adce0f5@kernel.org>
 In-Reply-To: <20201201160656.7cc6a5e8@gandalf.local.home>
 References: <20201201160656.7cc6a5e8@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
-
-
-Masami?
-
--- Steve
-
 
 On Tue, 1 Dec 2020 16:06:56 -0500
 Steven Rostedt <rostedt@goodmis.org> wrote:
@@ -69,16 +68,37 @@ Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
 > This was a very useful tool, and can be used to make sure that the ring
 > buffer's timestamps are consistently monotonic.
+
+Yeah, this sounds good to me.
+
 > 
 > Adding this to the ftrace selftests seems to be a way that this can be
 > tested more often. But this would introduce the first binary code to the
 > ftracetests.
-> 
+
+No problem. I think it is better to be placed under ftracetest/bin/ and
+add a PATH before running testcases.
+
 > To make sure that the tests still work on embedded devices (where a
 > compiler may not even exist), and also since this binary incorporates the
 > yet-to-be-released libtracefs library, if the make fails, the test exits
 > with UNTESTED. The UNTESTED is documented as being a place holder which
 > this would be if the make does not work.
+
+Hmm, in some embedded environment, we may not have make nor gcc.
+So it would be better to be build in the kselftest build process as similar
+to the other kselftests.
+
+What about putting the source code under ftracetest/src/. For the embedded
+devices, it can be built with cross-tools (and make it static binary if
+needed) and install it under ftracetest/bin. If we have no cross-build
+tool etc. we just skip building the binary under ftracetest/bin. And if 
+the testcase finds there is no binary, it just returns UNRESOLVED or UNTESTED.
+
+(currently I returns UNRESOLVED when the test target kmodule is not found)
+
+Thank you,
+
 > 
 > Thoughts?
 > 
@@ -550,3 +570,6 @@ Steven Rostedt <rostedt@goodmis.org> wrote:
 > +cd $TRACING_DIR
 > +
 
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
