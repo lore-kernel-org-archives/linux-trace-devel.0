@@ -2,181 +2,111 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFC4BC4361B
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:47:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9101AC4361B
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 14:15:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9625A23AC4
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:47:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 537D123B42
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 14:15:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732444AbgLINr3 (ORCPT
+        id S1732132AbgLIOPJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Dec 2020 08:47:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
+        Wed, 9 Dec 2020 09:15:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732440AbgLINr3 (ORCPT
+        with ESMTP id S1729786AbgLIOPI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:47:29 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE31FC061285
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 05:46:16 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id r14so1822239wrn.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 05:46:16 -0800 (PST)
+        Wed, 9 Dec 2020 09:15:08 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB83C0613CF
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 06:14:28 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id x6so1898800wro.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 06:14:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jgl455XwHK5OdxmBO7abn5gsz+5Hs22napmQo7sYKTw=;
-        b=JZetE0QGoC1zt4I5XvNL5tW9KiW0hP/RF7NPY5PN2VZ/gzJbercvu+F8y8QYXrIIpK
-         VZM2NzqO4KXtETb3rek/YQ96kskZOUzBQcUoMaSuGk0qUv/ZL4z8V8pvPpAJNbCGxOJy
-         3VInqfc15K1aLwXZF67Kry+HGIMzlvg0NC2Zh9T/6UazVOF0I2nUVXjzj1P9aX4R6b23
-         nShSUB/w6KbqwnBfz9XCWxYWHPynadxL2Hs3EDpTteSVM6UfDElnlMCFr8idfv+3BqnV
-         WS7NVPRCAo+eVDi2DeuusDlTAEei8hKZYhY89KDdNW0e8qY22jH66SNYapwtEi2G8SN8
-         6YlA==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6Lo+jQPhYg2SHUMj7c7W5hF9qqrP9AzYGkOH7kXPNFM=;
+        b=g1iKH/uOeiw6cVde6XKzMtYu0CkRXBGtSjEOSL4kH570Misp65EWNAC1fO2p3gzBHq
+         SgmGRsGuVSnL1VZ4tm1oyT3+ASONMH8DbBs1/ddKDFhcIgMyykYj8Sa4NUga+NoclTGi
+         34vX1KfYOKl/GhEY4z8rr2TlxEXAZfWNVeV8Ps0hoYnNE1AKve7hCadHGuZad8GYn605
+         fWfje0iNB6iqfCeg60yTOV7YNOVWnPMURvtPNxwV/AowL+BW2IiHKoH/QkQXpR+9a7+u
+         VvDCSdP0NhU/g6zdbtjBgRQmQ9sm3XOb00LnvTPYeT+0PYkeUohGr/x0YnuoYk9JC2LC
+         hLoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jgl455XwHK5OdxmBO7abn5gsz+5Hs22napmQo7sYKTw=;
-        b=MzFrK7VYl+7zHwGusjlN5MbDVZ9J1M58KeTgCZ+rlzFy18g799bGUI+7fwJFQGlYe8
-         17Apxl6CH7OuqxpDi9ObdiBl5KCWDqU3fLquTCWSiZSQ6OlACH827S6TpG7K+4gkgljI
-         KPCD/fWed71IuPtEMB9Y61Ux34cq3g76fT38XjthPIEr53mII02bgxnonzCwsL6Zw4hA
-         44ReyfUiSuYtPNTU7dHVn+duUtsPhiXP2G+JR+BAuk/9Rg64u+s57ViJTkMIGYftpTQ1
-         DkFkf5ZRMJYVv4A3v8LA7pkpuD7NVqVXUpAGt7/R1s2r6qT89+iVcJbgyScvgeDamv+H
-         w9fA==
-X-Gm-Message-State: AOAM532aJfKbWAm/7tAzGWvkZEdjdno6uPy2C/fQZCVEqhgEF8vthbRP
-        T/vbd6FVveB/G0yc9/giJg8=
-X-Google-Smtp-Source: ABdhPJzdFPw0rx6nO1ljxhZQ5kenPqTlBeTcAXlqVjBNh1OyZ2rIHw76ZXTDLN6kizwsYNTp9eAt0Q==
-X-Received: by 2002:a5d:5005:: with SMTP id e5mr2739151wrt.279.1607521575651;
-        Wed, 09 Dec 2020 05:46:15 -0800 (PST)
-Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id s1sm4029431wrv.97.2020.12.09.05.46.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 05:46:15 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6Lo+jQPhYg2SHUMj7c7W5hF9qqrP9AzYGkOH7kXPNFM=;
+        b=kt6KMQoLXZwvaqVVq+Mp/RFg3aK99qXSBqvjywCn++sjRKOCH7n/mpjouRRzfChjGT
+         eEgJOVAJT79TD7nIFndMGCKGLti+E9B/YwDjsrOtzoIQLdD7KmmCc1JnLb4/LLi/7GjM
+         gy8d7/k4UYE1sPHmgt1FhG4WbCUnSAXMvgfpg4YEdIua87Oxr2etYDJQso27ndY36IiL
+         xr6tUd4pULc5Jxb7oPWRZqAufDa5ekXHhxkWLjBqSxG/D470/JNOei7eApErCTta8Drg
+         blM6svENop2uX3KUmVMzWV2Ezpso0u387Rxy9Im7LZuwFWY6vXjUk9IUi59VrjZ7lu42
+         tZkw==
+X-Gm-Message-State: AOAM531EXQUXgQoudmEuUhlTggvvjikF4iolBbb4Oi2sllXuYDtQ3Cjd
+        KrTEfsJeIL2oqgIyr6D8NyfDuTZ/SX0=
+X-Google-Smtp-Source: ABdhPJyJnhAISLYEDy1QEk+lgmsyVHiEeimNYBYxm1yb8rB5laBKv218hrR6Wk7C+cYW1V/DNUgGwQ==
+X-Received: by 2002:a5d:5643:: with SMTP id j3mr2862100wrw.43.1607523266940;
+        Wed, 09 Dec 2020 06:14:26 -0800 (PST)
+Received: from [192.168.0.108] ([95.87.199.104])
+        by smtp.gmail.com with ESMTPSA id t1sm3984472wro.27.2020.12.09.06.14.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 06:14:26 -0800 (PST)
+Subject: Re: [PATCH 1/4] kernel-shark: Add support for drawing text
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 10/10] kernel-shark: Add double click interface to PlotObject
-Date:   Wed,  9 Dec 2020 15:45:30 +0200
-Message-Id: <20201209134530.428368-11-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201209134530.428368-1-y.karadz@gmail.com>
-References: <20201209134530.428368-1-y.karadz@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org
+References: <20201120095031.271735-1-y.karadz@gmail.com>
+ <20201120095031.271735-2-y.karadz@gmail.com>
+ <20201204183127.186a7f87@gandalf.local.home>
+ <aebedfc4-1f00-11a0-7c20-61eb927d96e0@gmail.com>
+Message-ID: <9ee14e92-3644-486a-6f6c-3f0dd4464426@gmail.com>
+Date:   Wed, 9 Dec 2020 16:14:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <aebedfc4-1f00-11a0-7c20-61eb927d96e0@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The interface consists of two virtual methods that have to be implemented
-by the inheriting classes. The first implements the double-click action
-of the object while the second one calculates the distance between the
-object and the exact position of the mouse click. The second method is
-used by the GUI to decide if the double-click action has to be executed
-or not. The patch contains a simple method for retrieving the geometrical
-center of a Shape. This helper method can be useful when implementing the
-calculation of the distance in the inheriting classes.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- src/KsPlotTools.cpp | 31 +++++++++++++++++++++++++++++++
- src/KsPlotTools.hpp | 14 ++++++++++++++
- 2 files changed, 45 insertions(+)
 
-diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
-index 8d38009..ac9c5b2 100644
---- a/src/KsPlotTools.cpp
-+++ b/src/KsPlotTools.cpp
-@@ -251,6 +251,21 @@ Color getColor(const ColorTable *colors, int id)
- 	return {};
- }
- 
-+/**
-+ * @brief A method to be implemented in the inheriting class. It calculates
-+ *	  the distance between the position of the click and the shape. This
-+ *	  distance is used by the GUI to decide if the corresponding
-+ *	  "Double click" action of the shape must be executed. The default
-+ *	  implementation returns infinity.
-+ *
-+ * @param x: The X coordinate of the click.
-+ * @param y: The Y coordinate of the click.
-+ */
-+double PlotObject::distance(int x, int y) const
-+{
-+	return std::numeric_limits<double>::max();
-+}
-+
- /**
-  * @brief Create a default Shape.
-  */
-@@ -298,6 +313,22 @@ Shape::~Shape() {
- 	delete[] _points;
- }
- 
-+/** @brief Get the coordinates of the geometrical center of this shape. */
-+ksplot_point Shape::center() const
-+{
-+	ksplot_point c = {0, 0};
-+
-+	for (size_t i = 0; i < _nPoints; ++i) {
-+		c.x += _points[i].x;
-+		c.y += _points[i].y;
-+	}
-+
-+	c.x /= _nPoints;
-+	c.y /= _nPoints;
-+
-+	return c;
-+}
-+
- /** Assignment operator. */
- void Shape::operator=(const Shape &s)
- {
-diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
-index b9b93f3..c993181 100644
---- a/src/KsPlotTools.hpp
-+++ b/src/KsPlotTools.hpp
-@@ -103,6 +103,16 @@ public:
- 			_draw(_color, _size);
- 	}
- 
-+	/**
-+	 * Generic action to be executed when the objects is double clicked.
-+	 */
-+	void doubleClick() const {
-+		if (_visible)
-+			_doubleClick();
-+	}
-+
-+	virtual double distance(int x, int y) const;
-+
- 	/** Is this object visible. */
- 	bool	_visible;
- 
-@@ -114,6 +124,8 @@ public:
- 
- private:
- 	virtual void _draw(const Color &col, float s) const = 0;
-+
-+	virtual void _doubleClick() const {}
- };
- 
- /** List of graphical element. */
-@@ -135,6 +147,8 @@ public:
- 	/* Keep this destructor virtual. */
- 	virtual ~Shape();
- 
-+	ksplot_point center() const;
-+
- 	void operator=(const Shape &s);
- 
- 	void setPoint(size_t i, int x, int y);
--- 
-2.25.1
+On 9.12.20 г. 15:30 ч., Yordan Karadzhov (VMware) wrote:
+>>
+>>   #ifdef __cplusplus
+>>   }
+>>   #endif
+>> diff --git a/src/stb_truetype.h b/src/stb_truetype.h
+>> new file mode 100644
+>> index 00000000..62595a15
+>> --- /dev/null
+>> +++ b/src/stb_truetype.h
+> 
+> I'm assuming the rest is what you took from public domain?
 
+Yes, the rest is the public domain source code.
+Thanks!
+Y.
+
+> 
+>> @@ -0,0 +1,5011 @@
+>> +// stb_truetype.h - v1.24 - public domain
+>> +// authored from 2009-2020 by Sean Barrett / RAD Game Tools
+>> +//
+>> +// 
+>> =======================================================================
+>> +//
+>> +//    NO SECURITY GUARANTEE -- DO NOT USE THIS ON UNTRUSTED FONT FILES
+>> +//
+>> +// This library does no range
