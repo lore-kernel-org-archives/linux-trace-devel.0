@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 224A4C4361B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8F2CC4167B
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:42:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CD91423BDF
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:42:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 82BE123AC4
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:42:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732125AbgLINm6 (ORCPT
+        id S1732477AbgLINm7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Dec 2020 08:42:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57420 "EHLO
+        Wed, 9 Dec 2020 08:42:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732503AbgLINm6 (ORCPT
+        with ESMTP id S1732435AbgLINm7 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:42:58 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16D3C0613D6
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 05:42:17 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id t4so1776700wrr.12
-        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 05:42:17 -0800 (PST)
+        Wed, 9 Dec 2020 08:42:59 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F60C061793
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 05:42:18 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id w206so923084wma.0
+        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 05:42:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZUrqS/GpSejn2uuqZhUncbHZ8n9JUDOzQHUiRMQRzu4=;
-        b=aVV/kN+dssCRTtf1aPo7KCUZsnozgSjOididm/1PjpryQQ+J6kT129w/aZfu6iqlHu
-         Q1xIZAceLpJLceHbI7wBeZA1qY3/yIcAUATVfLATn1R25EsJLKPUFnpzvCPedolqQGlx
-         ULadcsoGUfb+ykDkUuXgcsVPsbcqABdHswGkDbhOaz+Ien3wETQNv3RY9L5hwJ48/rUr
-         GlQJ5uDmprguIdGjDGxPKLCkUoDyNrzcSoDTBeLdPAGtQaBUxR3gpy4eVJsKHSy3NCxg
-         NWWasxx82OhgYBMCdoe9ORKH2Z4zQm/K9dnnlOpjD6mNrDDhwTZKimpRhzbklU42sjuU
-         /YKQ==
+        bh=XbQnZ1JSgLUJnIWGmM1pYLsDVWl11jQpo0kl7PGJx0A=;
+        b=sOzR4lenHGdTxsc56yp4fFvHEfCZVrXX/Io1jmtk8y/IQgASdEEgwOw8mBYQcHWOPW
+         hEOKF3BS1FrSdofX8QWpEbp0YVBeXLJwsIDFfQxx1poqsv93ftGV9KXl2UPnTUN2L7vj
+         fp1GFEfchR15N+TtSOFd9xQBLzcTskRhO9/eD2PQey6OcmkufYhgs1NKswXA7P5p3Obm
+         mpQ3WdG7MWhWF+TyTiWDvFbrdss40LFldC8dgRtzUfgiwfbTTVBtdXy3LRY2HvNYr+7X
+         XK4KMG09SuLPlzRzUMrB8rv/Ab/GScpkMLU3fyd61vF8nCgMXkB86HaHC851KivB7btu
+         b9hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZUrqS/GpSejn2uuqZhUncbHZ8n9JUDOzQHUiRMQRzu4=;
-        b=PYQd2lCDUM79cwJZ/MW1SPNfICm8HdWFT7DqaCalYhUNoAHBFv7lROaozxgij+cmRp
-         B/eEiohCfKbrTwIdxOtvtMkxuZ10L8E37zcWwXIemEsAydpFEX2YCxjKwSqsrN1L+ON1
-         HNREeacpHS6dSfpMfAhHZfB1P5waATKnUAHo8pb3ETf4sEfWKk8zQDhA78eZUPu35lhp
-         PXIsBGwspYUzDQ9jQqO2AldL1vpLhYmZmSu2RHodE9JhDu++D4QQxrwSerXqKXuzhAus
-         SEwaB6zxQLPYJdX5cBK4/R5zGbRKwOhSu/sRvW+9qPM/5r9Mhnxv2ee+HdmBeewLDEIZ
-         B1xg==
-X-Gm-Message-State: AOAM531WCwiZrrZv0kymyvMFr7U3LEZ76hNfcwOeVKm9/huD127Nbc6J
-        1ug63N4p26FzpPZ7wATPLKl9rHVc10c=
-X-Google-Smtp-Source: ABdhPJypyC+BvWwIjbWO2N0PrpVuWG4/utPET28lLgkY9hBSqkfHtF7RDFmiLsVjZqK4Seb2FVkmQw==
-X-Received: by 2002:adf:fa0c:: with SMTP id m12mr2872875wrr.222.1607521336469;
-        Wed, 09 Dec 2020 05:42:16 -0800 (PST)
+        bh=XbQnZ1JSgLUJnIWGmM1pYLsDVWl11jQpo0kl7PGJx0A=;
+        b=oCxe00UpRFa7VHlNFzEIxPoBsuGMtVbnbzDqsTJdw+Ckzb2Z4Ca8rxS7MWQgJLpOT7
+         +7LBN8166OwfmnpxJC/UmZOsqoZm5+dPiHsS5WZ8Nbj7vEDz2FMq6tBt2VUVvAp3RBf5
+         M4FsexEMY1Xmjs0ZQJGQ6HFGXE/9haq6iAxkTGHIQfhHywypmk5U23Zy09L01+wHh5HQ
+         bVHFQEj2BbrEDrlp3XcYCXCNNba536ezlocPOoJOuZYUL0Eg4ohMwWy96WsZSbBc4I0g
+         es+wI2f2YnxjTn/M+xTZZaDufw3YaARUCXyBNX+o6+41jXCyYF7k0WtdQtKqDFeLzmL/
+         5uiA==
+X-Gm-Message-State: AOAM531QCdhgeyDRMi/aMvQyglMnw3KClNGt82VQxPrBjp1OFjaXbGHR
+        ZyrNEP8CK0y87Vq2rqcC31KLcjRj/ko=
+X-Google-Smtp-Source: ABdhPJxqHeARmn19IounFoNkykByMSMvE0Zsx/jM7NhX3BdXyaDFH2F8lsqhYO+aqX6SlrTmfk2geg==
+X-Received: by 2002:a1c:55c2:: with SMTP id j185mr2755117wmb.89.1607521337467;
+        Wed, 09 Dec 2020 05:42:17 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id q143sm3871071wme.28.2020.12.09.05.42.15
+        by smtp.gmail.com with ESMTPSA id q143sm3871071wme.28.2020.12.09.05.42.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 09 Dec 2020 05:42:16 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v6 01/27] kernel-shark: Use only signed types in kshark_entry
-Date:   Wed,  9 Dec 2020 15:41:37 +0200
-Message-Id: <20201209134203.428068-2-y.karadz@gmail.com>
+Subject: [PATCH v6 02/27] kernel-shark: Add stream_id to kshark_entry
+Date:   Wed,  9 Dec 2020 15:41:38 +0200
+Message-Id: <20201209134203.428068-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201209134203.428068-1-y.karadz@gmail.com>
 References: <20201209134203.428068-1-y.karadz@gmail.com>
@@ -74,52 +74,59 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Using uint64_t for the value of the offset was just wrong. According
-to the POSIX standard off_t is a signed integer type with unspecified
-size. Here we stick to a 64 bit integer, because this size guaranties
-optimal packing of the kshark_entry structure.
+kshark_entry contains all information from one trace record, needed
+in order to visualize the time-series of trace records. Here we
+reorganize the data fields of kshark_entry in order to make room for
+the unique identifier of the Data stream this entry belongs to.
 
-Using unsigned values for the timestamps is also a source of problems
-and has been a reason for the introduction of multiple bugs in the past.
-In principal the value of the timestamps cannot be negative. However,
-this value must have the same type as the values used to define the
-state of the visualization model, like the range of the model or the
-size of the bin. The model state definitions should not take negative
-values as well, however their values are recalculated automatically when
-the user browses the data and those calculations may result in negative
-values in some corner cases. Because of this it is better to use a
-signed integer type and treat the negative values as an indicator
-of an error rather than have the negative result of the calculations
-casted into unsigned type which results into unpredictable behavior of
-the model.
+The Id is coded in 16 bits that are taken from the "event_id" field.
+So far "event_id" uses 32 bits but we found that it is coded with only
+16 bits inside the kernel, so we still have 16 unused (spare) bits in
+it.
+
+Because the stream Id is coded with int8_t, we need to set an upper
+limit (127) for the total number of Data streams loaded.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/libkshark.h | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/src/libkshark.h b/src/libkshark.h
-index 0d6c50d..9eecc2d 100644
+index 9eecc2d..7d8b53b 100644
 --- a/src/libkshark.h
 +++ b/src/libkshark.h
-@@ -61,7 +61,7 @@ struct kshark_entry {
- 	int32_t		event_id;
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: LGPL-2.1 */
  
- 	/** The offset into the trace file, used to find the record. */
--	uint64_t	offset;
-+	int64_t		offset;
+ /*
+- * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+  */
  
- 	/**
- 	 * The time of the record in nano seconds. The value is taken from
-@@ -69,7 +69,7 @@ struct kshark_entry {
- 	 * dependent. The time usually is the timestamp from when the system
- 	 * started.
+  /**
+@@ -51,15 +51,18 @@ struct kshark_entry {
  	 */
--	uint64_t	ts;
-+	int64_t		ts;
- };
+ 	uint16_t	visible;
  
- /** Size of the task's hash table. */
++	/** Data stream identifier. */
++	int16_t		stream_id;
++
++	/** Unique Id of the trace event type. */
++	int16_t		event_id;
++
+ 	/** The CPU core of the record. */
+ 	int16_t		cpu;
+ 
+ 	/** The PID of the task the record was generated. */
+ 	int32_t		pid;
+ 
+-	/** Unique Id ot the trace event type. */
+-	int32_t		event_id;
+-
+ 	/** The offset into the trace file, used to find the record. */
+ 	int64_t		offset;
+ 
 -- 
 2.25.1
 
