@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC09DC4167B
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:44:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 528B4C2BB40
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:44:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B60C523A02
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:44:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1D3A023A02
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:44:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732604AbgLINoT (ORCPT
+        id S1732623AbgLINoU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Dec 2020 08:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57658 "EHLO
+        Wed, 9 Dec 2020 08:44:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732623AbgLINoS (ORCPT
+        with ESMTP id S1732627AbgLINoT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:44:18 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D61C0619D2
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 05:42:40 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id q75so1718865wme.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 05:42:40 -0800 (PST)
+        Wed, 9 Dec 2020 08:44:19 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA421C0619D7
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 05:42:43 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id d3so1517956wmb.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 05:42:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DA5GhfxNhqzr5EyzsPBOzVZcoECLT/tXeBT2VbxoeEE=;
-        b=J2flTilJ37C+sWsyCknW5Xm6LbsQAlNNnVKyn6+6nJv/0VemIQeTlRX7NBWFgVH/Hu
-         YkFMbyTV6zx8ZCh8LEWeh9dwNNG3+C4ER0BYDfhkjYiCEKfJ9Ap1IhhavkZY54zAMq2Z
-         nGhMEvsy54ebXm5VOLBpb1UaEhjlw+bFi55sy4sKaJoNLcVXXzKjK5LlmGtBF1iJgTfJ
-         yD6ceF4f68w4ib02V9xsDz8NgiJF6KTWY2etA0Fnwyds7f5xM+VanSBVrVVqtLdTu+eb
-         JL7Z5SPWhimKoKvHcnc2Xap5vYNEgUXhDXdWiCJJKaJdk+gIoNbx8rg0h0uuDaipRsHv
-         twcg==
+        bh=TUWBfZ26wexvniEj7Ku7Ku7CEywO7ZiFvPGFqaZnChE=;
+        b=bAxeD0WvhroxQ8T+0Vsyhx/MmuyDfgA4gEs3gyl7TW4fCg1kDt8nyR4o8VnHccMrCJ
+         NFtMVuEZMF6Ha+P7jvHVXw1RiAYZLzkIE5nkjRM58gh9hQGbThcTZRHRhpLrE4+8vj3t
+         vzY/MI+ImAvR9OvBxuNk3QKvjBsc9s7OMym2BeR2gTYGMVCOFDx9LCXtH9WB+g/E3+EJ
+         ww1SNabt6KMr/h4Ya7yRZ0PBn/wFOLlVgiz0Jk37q58aR2dYj/DTNROQGGZUoo+Hv/WY
+         S4lzPwD3rCvvizpgYwAODdOX+8BE+S5DXvMSqfoZ2Bk2eUD6NRutXJTBzg+gFN7RHXmP
+         Pcuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DA5GhfxNhqzr5EyzsPBOzVZcoECLT/tXeBT2VbxoeEE=;
-        b=f3su4grM75VUnoupAauw4KEV6HbkcbG0jYWBaaWFn+k0EWytaukgF9h7noVoP6clSP
-         qyTodf8Hn0Gwe2l2k9CwnvKijLqBfN1oqBsdmbHhzn/CF2dKLk4OtKxXxN2EsKVN+VV9
-         4A2aEg4OA5idZzscac/bRdo3jBAe1Uom7mfPqpB+XSnvTdRpju6FvR26IdYLULaoHp23
-         5UNL/AiCGFfo6XgLFlMEAZw3HZOU4DaeLKoGw1wk3PJaj7n7r+VY3hIVEF7Ob8oSvgCz
-         cdRGNea+AxwICX3cC7xqje+Bukk3EDSyPlLIGhUSYHviCEV9Lvx2vDOxB3sAe0cjvF0h
-         WXnw==
-X-Gm-Message-State: AOAM532lDuy6PPHgy3mhXOQWaPICh4cIgBsvwKJ80AysLS9490jvLijA
-        aobRXNvU9Vr9MT0Ujm3J3xE=
-X-Google-Smtp-Source: ABdhPJxiyCJyiAzXZmPehnhZmUu1vyufd62srXETWJdZCLtv08ZUwQIu1DP422c0IpqU3/c1IYGD4Q==
-X-Received: by 2002:a7b:cb04:: with SMTP id u4mr2864677wmj.74.1607521359317;
-        Wed, 09 Dec 2020 05:42:39 -0800 (PST)
+        bh=TUWBfZ26wexvniEj7Ku7Ku7CEywO7ZiFvPGFqaZnChE=;
+        b=ModsH+3oWDJ/BYitrQKRBrN+DXb1KkvN9lHQuOpVTZqJ5GQVMFRQw24cNQ48rlhwz5
+         Dcv9lw0ytlMQSWxHbwgMf3SxhqsQg6AGTqmOt2w3LczRLMRx9L/AWyRe7VsU81FU3GtV
+         Iw79vrUAlyIqKm9eIRzFr6eIXR4H/l7i8/qdf1eNX+cJiijVE5K+eC3LyyJ38PGg+vz+
+         /cUpb/fzQpZnXelJimLscq//swA53oqOcyFFJodtfKEMqRbba3APB6Gdr4dy3leq6D/X
+         ZYT46bikBZ1LTkDV6z0kCxaxg1NU8KWOiKW49ITeHau0dn1lHZA5yO4yHpg0I24SC3EV
+         jV9Q==
+X-Gm-Message-State: AOAM531UY6uSV7BBz7VLcZqFCwwM8hx3Z9JNjHHi87uRW46G7mopGKh0
+        Ju2yjrcNklDFQztnmdDgMVJ7UNPvWEA=
+X-Google-Smtp-Source: ABdhPJzBtFWb3a3AxJcfHDMAlbnRLXrG9/AL8SrfhFRDF9uF2EW5PriSFiPTUDF6IEdGiA54gPCOww==
+X-Received: by 2002:a7b:c055:: with SMTP id u21mr2889704wmc.130.1607521362672;
+        Wed, 09 Dec 2020 05:42:42 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id q143sm3871071wme.28.2020.12.09.05.42.38
+        by smtp.gmail.com with ESMTPSA id q143sm3871071wme.28.2020.12.09.05.42.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 05:42:38 -0800 (PST)
+        Wed, 09 Dec 2020 05:42:42 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v6 22/27] kernel-shark: Make GLUT optional dependency
-Date:   Wed,  9 Dec 2020 15:41:58 +0200
-Message-Id: <20201209134203.428068-23-y.karadz@gmail.com>
+Subject: [PATCH v6 25/27] kernel-shark: Do not use the ARRAY_SIZE macro
+Date:   Wed,  9 Dec 2020 15:42:01 +0200
+Message-Id: <20201209134203.428068-26-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201209134203.428068-1-y.karadz@gmail.com>
 References: <20201209134203.428068-1-y.karadz@gmail.com>
@@ -74,141 +74,32 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-GLUT is not needed in order to build the KernelShark GUI. Currently
-it is being used only by the plotting example, so it makes more sense
-to removed it from the list of compulsory third party packages.
-The patch optimizes the way the OpenGL and GLUT headers are included
-and removes some duplicated code.
+This macro is no longer available in the trace-cmd public header.
+Since it is used in only one place, we will just replace it with
+the corresponding code.
 
-Signen-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- build/deff.h.cmake   |  3 +++
- src/CMakeLists.txt   |  4 ++--
- src/libkshark-plot.c | 20 +++++++-------------
- src/libkshark-plot.h | 11 +++++++++++
- 4 files changed, 23 insertions(+), 15 deletions(-)
+ src/libkshark-tepdata.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/build/deff.h.cmake b/build/deff.h.cmake
-index e398c0c..868ffec 100644
---- a/build/deff.h.cmake
-+++ b/build/deff.h.cmake
-@@ -23,6 +23,9 @@
- /** "pkexec" executable. */
- #cmakedefine DO_AS_ROOT "@DO_AS_ROOT@"
+diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
+index 0b23912..5fc1eb8 100644
+--- a/src/libkshark-tepdata.c
++++ b/src/libkshark-tepdata.c
+@@ -1261,10 +1261,11 @@ const char *tep_plugin_names[] = {
+  */
+ int kshark_tep_handle_plugins(struct kshark_context *kshark_ctx, int sd)
+ {
+-	int i, n_tep_plugins = ARRAY_SIZE(tep_plugin_names);
+ 	struct kshark_plugin_list *plugin;
+ 	struct kshark_data_stream *stream;
++	int i, n_tep_plugins;
  
-+/** GLUT has been found. */
-+#cmakedefine GLUT_FOUND
-+
- /** Semicolon-separated list of plugin names. */
- #define KS_BUILTIN_PLUGINS "@PLUGINS@"
- 
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 3a07d82..cbd45ed 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -19,7 +19,7 @@ set_target_properties(kshark  PROPERTIES SUFFIX	".so.${KS_VERSION_STRING}")
- 
- install(TARGETS kshark LIBRARY DESTINATION ${_LIBDIR}/${KS_APP_NAME})
- 
--if (OPENGL_FOUND AND GLUT_FOUND)
-+if (OPENGL_FOUND)
- 
-     message(STATUS "libkshark-plot")
-     add_library(kshark-plot  SHARED  libkshark-plot.c)
-@@ -33,7 +33,7 @@ if (OPENGL_FOUND AND GLUT_FOUND)
- 
-     install(TARGETS kshark-plot LIBRARY DESTINATION ${_LIBDIR}/${KS_APP_NAME})
- 
--endif (OPENGL_FOUND AND GLUT_FOUND)
-+endif (OPENGL_FOUND)
- 
- if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
- 
-diff --git a/src/libkshark-plot.c b/src/libkshark-plot.c
-index 0c6b1a5..1c45f44 100644
---- a/src/libkshark-plot.c
-+++ b/src/libkshark-plot.c
-@@ -19,10 +19,6 @@
- #include <string.h>
- #include <stdio.h>
- 
--// OpenGL
--#include <GL/freeglut.h>
--#include <GL/gl.h>
--
- // KernelShark
- #include "libkshark-plot.h"
- 
-@@ -37,6 +33,10 @@
- #define STBTT_STATIC
- #include "stb_truetype.h"
- 
-+#ifdef GLUT_FOUND
-+
-+#include <GL/freeglut.h>
-+
- /**
-  * @brief Create an empty scene for drawing.
-  *
-@@ -61,17 +61,11 @@ void ksplot_make_scene(int width, int height)
- 	/* Open the screen window. */
- 	glutCreateWindow("KernelShark Plot");
- 
--	/*
--	 * Set the origin of the coordinate system to be the top left corner.
--	 * The "Y" coordinate is inverted.
--	 */
--	gluOrtho2D(0, width, height, 0);
--	glViewport(0, 0, width, height);
--
--	glMatrixMode(GL_PROJECTION);
--	glLoadIdentity();
-+	ksplot_resize_opengl(width, height);
- }
- 
-+#endif // GLUT_FOUND
-+
- /**
-  * @brief Initialize OpenGL.
-  *
-diff --git a/src/libkshark-plot.h b/src/libkshark-plot.h
-index 0edf5d5..063740d 100644
---- a/src/libkshark-plot.h
-+++ b/src/libkshark-plot.h
-@@ -15,6 +15,10 @@
- // C
- #include <stdbool.h>
- 
-+// OpenGL
-+#include <GL/gl.h>
-+#include <GL/glu.h>
-+
- /*
-  * STB TrueType (single-file public domain library)
-  * https://github.com/nothings/stb
-@@ -25,6 +29,9 @@
- extern "C" {
- #endif
- 
-+// KernelShark
-+#include "KsCmakeDef.hpp"
-+
- /** Structure defining a RGB color. */
- struct ksplot_color {
- 	/** The Red component of the color. */
-@@ -46,8 +53,12 @@ struct ksplot_point {
- 	int y;
- };
- 
-+#ifdef GLUT_FOUND
-+
- void ksplot_make_scene(int width, int height);
- 
-+#endif // GLUT_FOUND
-+
- void ksplot_init_opengl(int dpr);
- 
- void ksplot_resize_opengl(int width, int height);
++	n_tep_plugins = (sizeof(tep_plugin_names) / sizeof((tep_plugin_names)[0]));
+ 	stream = kshark_get_data_stream(kshark_ctx, sd);
+ 	if (!stream)
+ 		return -EEXIST;
 -- 
 2.25.1
 
