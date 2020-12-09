@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D740C4361B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1FBBC433FE
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:47:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 54F5123AC4
+	by mail.kernel.org (Postfix) with ESMTP id 7944623B52
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:47:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732439AbgLINr1 (ORCPT
+        id S1732405AbgLINr1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 9 Dec 2020 08:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732405AbgLINr0 (ORCPT
+        with ESMTP id S1732415AbgLINr1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:47:26 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08E9C0617B0
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 05:46:12 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id m5so1802444wrx.9
-        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 05:46:12 -0800 (PST)
+        Wed, 9 Dec 2020 08:47:27 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F9DC06138C
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 05:46:13 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id t16so1815133wra.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 05:46:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zX3Jx/rqMTuIRQADtuT1k2P3h10g6nJEdPWVUEWe854=;
-        b=jmYOn3u+d051EJrLnMHtep3W9PUVQ08C8OoeZoQyWq0OwxC71KbfpMwawAlFnjw6n+
-         9rJJv11cS/F8ZRLbKc15dBgcuEpNkopvgG4BSzZUTAPwxx+9G9WcOTauG+uK9kARPgGe
-         G4+ztTsutP2vnMNLbZ3DQYDRoHDtplnrXrFk9XnCmYVmLKYLmjYenTPOzSJsPFnY8FDq
-         h8FaN1aZpnkRKcOExIeNraWbTL9MsU0fEZbhyZ6wFEAk3AeumAjl50Oemet/gVZk3Jd9
-         WOaz08T2lrow+sLN6I9F+3b69/+yDmYBwwccGOvxuqMohhyCwwABpLrskaiIMzLCqGQR
-         YSDg==
+        bh=vMtoru4ysgIyI4OZqBtUfzLnZQxv1b5TDuVhnuc4b6I=;
+        b=hwFWwzDqMRooLivcT+4m7iDv2AJU2vzWVjH3Kff5j2O+TzSsRHowQUMmuIgpWPEOn7
+         gDYciTI0Si2lxyJNzmkrGmF62Rlofop68PtwrgclDyzmfvvqYgWdeFsgPIgj3jBDeh6j
+         /hsmxO32DLt1I/AWaeCl26LR1Jwue2G61OaRFuXVtbfgyUN7tZ6Vy6TpHbUKLno1HqLf
+         V7hF3WSwvhl7xIqPfcaMT/U9noXykmjdnvRiU73xVjs7ULn4jT+qaRhU6K9CxHvehbw0
+         xmyCcD5jPB7ku1UTHj3bzixoApx7uTvEygpNEtKfSRanLtKxhomRNyMzlzdYPLWvKuR/
+         039w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zX3Jx/rqMTuIRQADtuT1k2P3h10g6nJEdPWVUEWe854=;
-        b=ojUBFuOGyJusPav09REafSC+srPD4wEAZe83M1cSKWq5LDyaM4Jik0ro+0qJqN3ibw
-         9OfKdC5qe+M1/gya9up919AaRk3SpA7/ZQvktNgTNM3YfVHi+5fd80Yu/Q4/ctljN3+J
-         Pw9kl+3jMHwLZHXgzJ6ZIkUDfTq4wLPa1VAvv0/YOM2N0XxK5iv4pkuxyNcdYiSLMZmN
-         pEjDN8uCfvaY5YZQjzbbmyDeDtaWQqauzaxlEsz98IDhhGS4PI9QChc4qYBwY3CveE6a
-         EgOSE/Z1gwsIETu8gV8qbIcGvkhjd1Z8u69yRcP4GLa2vnYVsuRcrOurt1YkSb+qOot3
-         +WWQ==
-X-Gm-Message-State: AOAM531pblXGbWTTQuTfGL30u4WXxyemsxDO/NEGILqWP5wNCbfkQIFY
-        RSAzUxCGoWhbMIYHV39Uen4=
-X-Google-Smtp-Source: ABdhPJzFYdkIi+1afHABr8C7scShqdy+6wP39wtwf2VJR3y7r+BZ3ZxkuqEXxxXuVwFFMvw/NppbYg==
-X-Received: by 2002:a5d:4f8a:: with SMTP id d10mr2766066wru.219.1607521571476;
-        Wed, 09 Dec 2020 05:46:11 -0800 (PST)
+        bh=vMtoru4ysgIyI4OZqBtUfzLnZQxv1b5TDuVhnuc4b6I=;
+        b=LrC6WNk+YUyfzPCLOXe23DBHY9jU1kBAs/9lSA800V9SSbh7HkImDWj4Ov0x+eDaUc
+         PVXYBnQyuhEF52tgGwlmpivvBtK34/7OKOA48T7qXt6oykvgjZrk9abRhtVg7m9wzf49
+         m/QAKue9og6y1htxvH2+NqxretZcJpkp7IqoR+B9+VC2We7jY9IlW9KNORUBdrJCYMic
+         hhiRjXoZ707/WTxbvBRsYjsuL1zHu/9iZfdK6I7lLI/tA5x3v+oEXN+SqxF5drmMf5qG
+         nCHy4o78uYswXoYw7zfbon6ZmfV63he65jErECMiI3VcM3cXwKW6K9dldVov/7zFlS0P
+         Nu3g==
+X-Gm-Message-State: AOAM533ZvlRHjyEO0Jz7duCt5WuKl0g0Vd/QlyGNYtlCoOo1+95WpZYU
+        Yw/r5hmIITeSWq2xjfkJy/6vZKknzMU=
+X-Google-Smtp-Source: ABdhPJySiw/TQ6/25WKKX7Imq/GmOIEFXQiTQMq8YPqDOvRzKZhnoI8gTWgo/WtPcesg/GQx3UuAyA==
+X-Received: by 2002:adf:a319:: with SMTP id c25mr2868589wrb.262.1607521572400;
+        Wed, 09 Dec 2020 05:46:12 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id s1sm4029431wrv.97.2020.12.09.05.46.10
+        by smtp.gmail.com with ESMTPSA id s1sm4029431wrv.97.2020.12.09.05.46.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 09 Dec 2020 05:46:11 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 06/10] kernel-shark: Make the label part of the graph
-Date:   Wed,  9 Dec 2020 15:45:26 +0200
-Message-Id: <20201209134530.428368-7-y.karadz@gmail.com>
+Subject: [PATCH 07/10] kernel-shark: Remove the hard-coded Idle PID
+Date:   Wed,  9 Dec 2020 15:45:27 +0200
+Message-Id: <20201209134530.428368-8-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201209134530.428368-1-y.karadz@gmail.com>
 References: <20201209134530.428368-1-y.karadz@gmail.com>
@@ -74,163 +74,174 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The capability to draw text with OpenGL is used. With this
-functionality we will no longer need to create special Qt widgets
-containing the text of the labels and carefully align those widgets
-next to the OpenGL plotting area. This will greatly simplify the
-internel structure of the TraceGraph widget.
+KernelShark plots differently all events coming from Idle tasks.
+This is done in order to provide more intuitive visualization of
+the Idleness of the system. So far the process Id of the Idle task
+was assumed to be Zero. However this is true only for Linux systems.
+In this patch we make the PID of the Idle task configurable.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/KsPlotTools.cpp | 34 +++++++++++++++++++++++++---------
- src/KsPlotTools.hpp | 18 +++++++++++++++---
- 2 files changed, 40 insertions(+), 12 deletions(-)
+ src/KsPlotTools.cpp | 48 +++++++++++++++++++++++++++++++++------------
+ src/KsPlotTools.hpp | 22 +++++++++------------
+ 2 files changed, 44 insertions(+), 26 deletions(-)
 
 diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
-index 4bf08ef..d952f5e 100644
+index d952f5e..529f737 100644
 --- a/src/KsPlotTools.cpp
 +++ b/src/KsPlotTools.cpp
-@@ -759,6 +759,7 @@ Graph::Graph()
+@@ -755,12 +755,13 @@ Graph::Graph()
+ : _histoPtr(nullptr),
+   _bins(nullptr),
+   _size(0),
+-  _hMargin(30),
    _collectionPtr(nullptr),
    _binColors(nullptr),
    _ensembleColors(nullptr),
-+  _label(),
-   _zeroSuppress(false)
+   _label(),
+-  _zeroSuppress(false)
++  _idleSuppress(false),
++  _idlePid(0),
++  _drawBase(true)
  {}
  
-@@ -777,6 +778,7 @@ Graph::Graph(kshark_trace_histo *histo, KsPlot::ColorTable *bct, KsPlot::ColorTa
+ /**
+@@ -774,12 +775,13 @@ Graph::Graph(kshark_trace_histo *histo, KsPlot::ColorTable *bct, KsPlot::ColorTa
+ : _histoPtr(histo),
+   _bins(new(std::nothrow) Bin[histo->n_bins]),
+   _size(histo->n_bins),
+-  _hMargin(30),
    _collectionPtr(nullptr),
    _binColors(bct),
    _ensembleColors(ect),
-+  _label(),
-   _zeroSuppress(false)
+   _label(),
+-  _zeroSuppress(false)
++  _idleSuppress(false),
++  _idlePid(0),
++  _drawBase(true)
  {
  	if (!_bins) {
-@@ -795,10 +797,15 @@ Graph::~Graph()
- 	delete[] _bins;
+ 		_size = 0;
+@@ -904,6 +906,20 @@ void Graph::setLabelAppearance(ksplot_font *f, Color col, int lSize, int hMargin
+ 	}
  }
  
-+int Graph::_firstBinOffset()
++/**
++ * @brief Set Idle Suppression. If True, the bins containing Idle task records
++ *	  are not grouped together.
++ *
++ * @param is: If True, Idle is suppressed.
++ * @param ip: The process Id of the Idle task. If Idle is not suppressed, this
++ *	      value has no effect.
++ */
++void Graph::setIdleSuppressed(bool is, int ip)
 +{
-+	return _labelSize + 2 * _hMargin;
++	_idleSuppress = is;
++	_idlePid = ip;
 +}
 +
- void Graph::_initBins()
- {
- 	for (int i = 0; i < _size; ++i) {
--		_bins[i]._base.setX(i + _hMargin);
-+		_bins[i]._base.setX(i + _firstBinOffset());
- 		_bins[i]._base.setY(0);
- 		_bins[i]._val.setX(_bins[i]._base.x());
- 		_bins[i]._val.setY(_bins[i]._base.y());
-@@ -852,6 +859,8 @@ void Graph::setBase(int b)
- 	if (b == _bins[0]._base.y()) // Nothing to do.
- 		return;
- 
-+	_label.setBoxAppearance(_label._color, _labelSize, height());
-+
- 	for (int i = 0; i < _size; ++i) {
- 		mod = _bins[i].mod();
- 		_bins[i]._base.setY(b);
-@@ -870,24 +879,29 @@ void Graph::setHeight(int h)
- }
- 
  /**
-- * @brief Set the size of the white space added on both sides of the Graph.
-+ * @brief Set the color and the dimensions of the graph's label.
+  * @brief Set the value of a given bin.
   *
-- * @param hMargin: the size of the white space in pixels.
-+ * @param f: The font to be used to draw the labels.
-+ * @param col: The color of the ComboGraph's label.
-+ * @param lSize: the size of the graph's label in pixels.
-+ * @param hMargin: the size of the white margine space in pixels.
-  */
--void Graph::setHMargin(int hMargin)
-+void Graph::setLabelAppearance(ksplot_font *f, Color col, int lSize, int hMargin)
- {
- 	if (!_size)
- 		return;
- 
--	if (hMargin == _bins[0]._base.x()) // Nothing to do.
--		return;
-+	_labelSize = lSize;
-+	_hMargin = hMargin;
-+
-+	_label.setPos({_hMargin, base()});
-+	_label.setFont(f);
-+	_label.setBoxAppearance(col, lSize, height());
- 
- 	for (int i = 0; i < _size; ++i) {
--		_bins[i]._base.setX(i + hMargin);
-+		_bins[i]._base.setX(i + _firstBinOffset());
- 		_bins[i]._val.setX(_bins[i]._base.x());
- 	}
--
--	_hMargin = hMargin;
+@@ -916,7 +932,7 @@ void Graph::setBinValue(int bin, int val)
  }
  
  /**
-@@ -1312,6 +1326,8 @@ void Graph::draw(float size)
- 	int lastPid(-1), b(0), boxH(_height * .3);
- 	Rectangle taskBox;
+- * @brief Set the Process Id (Front and Back) a given bin.
++ * @brief Set the Process Id (Front and Back) of a given bin.
+  *
+  * @param bin: Bin Id.
+  * @param pidF: The Process Id detected at the from (first in time) edge of
+@@ -1328,22 +1344,28 @@ void Graph::draw(float size)
  
-+	_label.draw();
+ 	_label.draw();
+ 
+-	/*
+-	 * Start by drawing a line between the base points of the first and
+-	 * the last bin.
+-	 */
+-	drawLine(_bins[0]._base, _bins[_size - 1]._base, {}, size);
++	if (_drawBase) {
++		/*
++		 * Start by drawing a line between the base points of the first and
++		 * the last bin.
++		 */
++		drawLine(_bins[0]._base, _bins[_size - 1]._base, {}, size);
++	}
+ 
+ 	/* Draw as vartical lines all bins containing data. */
+ 	for (int i = 0; i < _size; ++i)
+-		if (_bins[i]._idFront >= 0 || _bins[i]._idBack >= 0)
++		if (_bins[i]._idFront >= 0 || _bins[i]._idBack >= 0 ||
++		    _bins[i]._idFront == _idlePid || _bins[i]._idBack ==_idlePid)
+ 			if (_bins[i]._visMask & KS_EVENT_VIEW_FILTER_MASK) {
+ 				_bins[i]._size = size;
+ 				_bins[i].draw();
+ 			}
+ 
+ 	auto lamCheckEnsblVal = [this] (int v) {
+-		return v > 0 || (v == 0 && !this->_zeroSuppress);
++		if (_idleSuppress && v == _idlePid)
++			return false;
 +
++		return v >= 0;
+ 	};
+ 
  	/*
- 	 * Start by drawing a line between the base points of the first and
- 	 * the last bin.
+@@ -1424,4 +1446,4 @@ void Graph::draw(float size)
+ 	}
+ }
+ 
+-}; // KsPlot
++} // KsPlot
 diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
-index 287e0fb..8f530b0 100644
+index 8f530b0..5ce8f6f 100644
 --- a/src/KsPlotTools.hpp
 +++ b/src/KsPlotTools.hpp
-@@ -506,7 +506,11 @@ public:
- 	/** @brief Get a particular bin. */
- 	const Bin &bin(int bin) const {return _bins[bin];}
- 
--	void setHMargin(int hMargin);
-+	/** Set the text of the graph's label. */
-+	void setLabelText(std::string text) {_label.setText(text);}
-+
-+	void setLabelAppearance(ksplot_font *f, Color col,
-+				int lSize, int hMargin);
- 
- 	/**
- 	 * Check if this graph is Zero Suppressed. Zero Suppressed means that
-@@ -521,7 +525,7 @@ public:
+@@ -449,7 +449,7 @@ public:
  	 */
- 	void setZeroSuppressed(bool zs) {_zeroSuppress = zs;}
+ 	Graph(const Graph &) = delete;
  
--private:
-+protected:
+-	/* Disable moving. Same as copying.*/
++	/* Disable moving. Same as copying. */
+ 	Graph(Graph &&) = delete;
+ 
+ 	Graph(kshark_trace_histo *histo, KsPlot::ColorTable *bct,
+@@ -512,18 +512,10 @@ public:
+ 	void setLabelAppearance(ksplot_font *f, Color col,
+ 				int lSize, int hMargin);
+ 
+-	/**
+-	 * Check if this graph is Zero Suppressed. Zero Suppressed means that
+-	 * bins having Id value = 0 (Idle task records) are not grouped
+-	 * together.
+-	 */
+-	bool zeroSuppressed(bool zs) {return _zeroSuppress;}
++	void setIdleSuppressed(bool is, int ip = 0);
+ 
+-	/**
+-	 * Set Zero Suppression. If True, the bins having Id value = 0 (Idle
+-	 * task records) are not grouped together.
+-	 */
+-	void setZeroSuppressed(bool zs) {_zeroSuppress = zs;}
++	/** Draw the base line of the graph or not. */
++	void setDrawBase(bool b) {_drawBase = b;}
+ 
+ protected:
  	/** Pointer to the model descriptor object. */
- 	kshark_trace_histo	*_histoPtr;
+@@ -559,7 +551,11 @@ protected:
+ private:
+ 	TextBox		_label;
  
-@@ -537,6 +541,9 @@ private:
- 	 */
- 	int			_hMargin;
- 
-+	/** The horizontal size of the Graph's label. */
-+	int			_labelSize;
+-	bool			_zeroSuppress;
++	bool	_idleSuppress;
 +
- 	/** The vertical size (height) of the Graph. */
- 	int			_height;
- 
-@@ -549,9 +556,14 @@ private:
- 	/** Hash table of ensemble's colors. */
- 	ColorTable		*_ensembleColors;
- 
-+private:
-+	TextBox		_label;
++	int	_idlePid;
 +
- 	bool			_zeroSuppress;
++	bool	_drawBase;
  
--	void _initBins();
-+	void	_initBins();
-+
-+	int	_firstBinOffset();
- };
+ 	void	_initBins();
  
- }; // KsPlot
 -- 
 2.25.1
 
