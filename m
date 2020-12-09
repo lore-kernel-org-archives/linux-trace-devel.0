@@ -2,40 +2,35 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDC20C4167B
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 16:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 068DFC4361B
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 22:51:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A0CDC22BF3
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 16:35:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A896223A22
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 22:51:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbgLIQfT (ORCPT
+        id S2388233AbgLIWvO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Dec 2020 11:35:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42294 "EHLO mail.kernel.org"
+        Wed, 9 Dec 2020 17:51:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727894AbgLIQfS (ORCPT
+        id S1725965AbgLIWvO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:35:18 -0500
+        Wed, 9 Dec 2020 17:51:14 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11EE222BF3;
-        Wed,  9 Dec 2020 16:34:37 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 11:34:36 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id B452023770
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 22:50:33 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 17:50:32 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 1/4] kernel-shark: Add support for drawing text
-Message-ID: <20201209113436.6782bf6a@gandalf.local.home>
-In-Reply-To: <aebedfc4-1f00-11a0-7c20-61eb927d96e0@gmail.com>
-References: <20201120095031.271735-1-y.karadz@gmail.com>
-        <20201120095031.271735-2-y.karadz@gmail.com>
-        <20201204183127.186a7f87@gandalf.local.home>
-        <aebedfc4-1f00-11a0-7c20-61eb927d96e0@gmail.com>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtraceevent: Add -ldl to the libtraceevent.so
+Message-ID: <20201209175032.265c1441@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,40 +39,51 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 9 Dec 2020 15:30:38 +0200
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-> >> +		stbtt_GetBakedQuad(font->cdata,
-> >> +				   KS_FONT_BITMAP_SIZE,
-> >> +				   KS_FONT_BITMAP_SIZE,
-> >> +				   *text - KS_SPACE_CHAR,
-> >> +				   &x, &y,
-> >> +				   &quad,
-> >> +				   1);
-> >> +
-> >> +		glTexCoord2f(quad.s0, quad.t1);
-> >> +		glVertex2f(quad.x0, quad.y1);
-> >> +
-> >> +		glTexCoord2f(quad.s1, quad.t1);
-> >> +		glVertex2f(quad.x1, quad.y1);
-> >> +
-> >> +		glTexCoord2f(quad.s1, quad.t0);
-> >> +		glVertex2f(quad.x1, quad.y0);
-> >> +
-> >> +		glTexCoord2f(quad.s0, quad.t0);
-> >> +		glVertex2f(quad.x0, quad.y0);  
-> > 
-> > How is the x and y moved to the next location?  
-> 
-> Actually the "y" does not change at all here, because for the moment we 
-> can't draw multi-line text. "x" gets incremented inside 
-> stbtt_GetBakedQuad(). The horizontal advance of the character is used to 
-> calculate the new position.
+libtraceevent.so does some dlopen() and other dynamic linking features that
+requires the libdl library. There's no reason that users of libtraceevent.so
+need to include -ldl if the application itself is not doing dynamic linking.
 
-A comment next to that should be stated.
+Have the build include -ldl into libtraceevent.so, such that it's in the
+binary for the user to use.
 
-	/* x is incremented here to a new position */
-	stbtt_GetBakedQuad(....)
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ Makefile | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/Makefile b/Makefile
+index 318ec55..ea00085 100644
+--- a/Makefile
++++ b/Makefile
+@@ -107,6 +107,8 @@ else
+   CFLAGS := -g -Wall
+ endif
+ 
++LIBS = -ldl
++
+ # Append required CFLAGS
+ override CFLAGS += -fPIC
+ override CFLAGS += $(CONFIG_FLAGS) $(INCLUDES) $(PLUGIN_DIR_SQ)
+@@ -141,7 +143,7 @@ $(TE_IN): force
+ 	$(Q)$(MAKE) $(build)=libtraceevent
+ 
+ $(OUTPUT)libtraceevent.so.$(EVENT_PARSE_VERSION): $(TE_IN)
+-	$(QUIET_LINK)$(CC) --shared $(LDFLAGS) $^ -Wl,-soname,libtraceevent.so.$(EP_VERSION) -o $@
++	$(QUIET_LINK)$(CC) --shared $(LDFLAGS) $^ -Wl,-soname,libtraceevent.so.$(EP_VERSION) -o $@  $(LIBS)
+ 
+ $(OUTPUT)libtraceevent.so: $(OUTPUT)libtraceevent.so.$(EP_VERSION)
+ 	@ln -sf $(<F) $@
+@@ -153,7 +155,7 @@ $(OUTPUT)libtraceevent.a: $(TE_IN)
+ 	$(QUIET_LINK)$(RM) $@; $(AR) rcs $@ $^
+ 
+ $(OUTPUT)%.so: $(OUTPUT)%-in.o
+-	$(QUIET_LINK)$(CC) $(CFLAGS) -shared $(LDFLAGS) -nostartfiles -o $@ $^
++	$(QUIET_LINK)$(CC) $(CFLAGS) -shared $(LDFLAGS) -nostartfiles -o $@ $^ $(LIBS)
+ 
+ define make_version.h
+   (echo '/* This file is automatically generated. Do not modify. */';		\
+-- 
+2.25.4
 
--- Steve
