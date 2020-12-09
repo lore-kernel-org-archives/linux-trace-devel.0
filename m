@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C79FC4361B
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:43:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33F86C2BB40
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:43:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0B84223BC7
+	by mail.kernel.org (Postfix) with ESMTP id ED56D23BCD
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:43:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732159AbgLINni (ORCPT
+        id S1732554AbgLINnj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Dec 2020 08:43:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
+        Wed, 9 Dec 2020 08:43:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732499AbgLINni (ORCPT
+        with ESMTP id S1732503AbgLINnj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:43:38 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0722C0617B0
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 05:42:23 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id r14so1809371wrn.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 05:42:23 -0800 (PST)
+        Wed, 9 Dec 2020 08:43:39 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF31C061282
+        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 05:42:26 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id y17so1782688wrr.10
+        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 05:42:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FAcnTRaceqthQhPFAQC9KyrKCn2bq2MdpKl6FMEdbDg=;
-        b=bABWuFhFYSOIkUZjCxs38G6OuMSHFo6U9Vbvn09dOEy40Ua/82jsg1wWMRUHmhiFna
-         JhpO+NmLdhf9KhYJS/uAypg4+ntE0D0xHjldRhCWo7nEWK7UrUy/AUaJbKX8+8Cm7ZA0
-         jiOs8702GjAaxMlkvOvDf42LTHpmutvFUBd4EfVa60brrFe+AVz6UEIFFzuHC3JlGYTk
-         6vfCzgvVTsAKNMxvQh4txGNnbPnCaT9oy35JXmQvA44IggHLKskFScdFgP9+MZ4+E/a9
-         6Z0YgSvmmTJA+v2i6zAzvw49MCDfdlHQd4ACILGEErt/5d5/EB0lAV0G4Vmt6KMnca4O
-         Ncrg==
+        bh=gQkzxzgDxlUbgkD6+rnNVel0YvBLl+8Ksx7B0ChAixk=;
+        b=KnyjwMSzWUQ9EUKkSmytzo8IVT62ZZl3HprOt4hdp1bvtkxJACEacPWxHYGGNRcWHt
+         CUZsEDmPlqipjcZszIs+fQaOQi8Iokc+5oIS/C7ddNR30gw2L4K7CV5I16VE34bZ0tlM
+         faRlSWSOZ0l8JguHz3PYnUJdv2VJH5cZJDM2EUow4gAYLD6SWPP14ajXPGIJT2tcMbds
+         v2ghlKfUeJn6VQ7NPKUMFMKJxCvvrSfXVPukd/Bih9undkrM35BH6YRJRuVwFFqOEKZd
+         +qVREuSp0OuwKfTLOd1cyWLjQ76oMBLXjsELCpeH900GyO925uHl6kZMcCsFvax1Irhf
+         hqeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FAcnTRaceqthQhPFAQC9KyrKCn2bq2MdpKl6FMEdbDg=;
-        b=d1sngvXPZjF5aNwj2QMHN1nkud1ru2Ss+K2JuKvO+qSzINOZ3UR6dH6q6zuEEGzZm7
-         c3L7X3M8ex+1bq8xJ3dV6m7oA7rp0Z843CQr8Zw16DaHRqjzjKzwufWDXceABtoJL9mc
-         5QsRGZDH3becuE8+DiuA/EqhkhbgC0IDULvMhOBZ5bXYolEPU/SvvlqgYwpPmP5Hx0MU
-         Qlc6zEbOBCIGeSoiq46Q+qZj0KsxJYSI42YeZjGCNFpoRZhv5ETPefmoEHlMpw5frVfv
-         5NOPVYDC2QgOT9KGRflkUs3XsBy4XKtpCaOCEsjcocyujhXRLtFeyUSW7ev9WLzNOac6
-         L9aA==
-X-Gm-Message-State: AOAM5337gezVG4Q/3gyOeRlYXcfHwHV/MrhVbbMuIeo2ybZxVP+GKpXX
-        vWX9OIFl4KrPoGT9qbzc+Zw=
-X-Google-Smtp-Source: ABdhPJx28UPRjKrdzrKiG6CekA0lsTCvOVjfHAPPxQP6V4jXzrku05dAsHuCGnLgqxlGZKz/ACGcnw==
-X-Received: by 2002:a5d:6749:: with SMTP id l9mr2820553wrw.395.1607521342631;
-        Wed, 09 Dec 2020 05:42:22 -0800 (PST)
+        bh=gQkzxzgDxlUbgkD6+rnNVel0YvBLl+8Ksx7B0ChAixk=;
+        b=dozlRbBd6Acrbak9V397vRMKowmw1jMo3m+HatHuLKH8CSBC0x4nYvZ88QNh5xo6bV
+         XjMOYHusnCKgb/0c5LBgmnUj4TFiZzjNbszUCLPiaYqXgyzZe9luhuYLLMipWv8MVfAr
+         ysNHbm0xEDr4h7v94wnzoDRNKyBfSG5g05Bub/9jHDKEvIvguWZXWHtli1RbpwCvYI0R
+         PAknN/si2M13kcdbl30G/hy32fckuUjr+4XYZ1h6Luapx2znC9X9pO1UHBen3bnY1qyI
+         t+7btTBzkbq9WzHBmhcPp5fImnN0I+uBG/scjaPynFcsVcDekn7mvhVGRZl6qCpnYaB9
+         Yjzw==
+X-Gm-Message-State: AOAM530wKlsQfzo2W7j71QVei7EtbMJ54yx1wcuhcBCONPaigbgpc2oD
+        e5K2zLXc8oRGuNibaJMyyDk=
+X-Google-Smtp-Source: ABdhPJwr0LaS2brWTmmRQMrx2aFLTe2C/Zho/7vdHX/Vdht3rBoklEjlPqsIxgzt9+I2QC1gNpzvbA==
+X-Received: by 2002:a5d:4e04:: with SMTP id p4mr1449815wrt.373.1607521344950;
+        Wed, 09 Dec 2020 05:42:24 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id q143sm3871071wme.28.2020.12.09.05.42.21
+        by smtp.gmail.com with ESMTPSA id q143sm3871071wme.28.2020.12.09.05.42.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 05:42:22 -0800 (PST)
+        Wed, 09 Dec 2020 05:42:24 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v6 07/27] kernel-shark: Housekeeping before implementing stream interface
-Date:   Wed,  9 Dec 2020 15:41:43 +0200
-Message-Id: <20201209134203.428068-8-y.karadz@gmail.com>
+Subject: [PATCH v6 09/27] kernel-shark: Start introducing KernelShark 2.0
+Date:   Wed,  9 Dec 2020 15:41:45 +0200
+Message-Id: <20201209134203.428068-10-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201209134203.428068-1-y.karadz@gmail.com>
 References: <20201209134203.428068-1-y.karadz@gmail.com>
@@ -74,221 +74,162 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-kshark_load data_matrix() is a method that is used only in trace-cruncher
-prototype. The version of this function that is currently part of the API
-is anyway not compatible with the latest version of trace-cruncher because
-of the mismatch of the argument types, so we can directly remove the
-existing implementation. An equivalent functionality will be provided as
-part of the implantation of the Data stream interface in the following
-patch. Here we just make kshark_data_matrix_alloc() and
-unset_event_filter_flag() public, because the methods will be used in the
-stream interface implementation.
+This is the very first patch from a series of patches that will
+introduce KernelShark 2.0. The new version will take advantage
+of the definition of Data streams and will imply significant
+changes in the low level C API, used by the KernelShark GUI. As
+a consequence of the API modifications, significant changes are
+needed in every source file of the project. Because, we want to
+avoid having a huge and ugly single commit that will be extremely
+hard to review, we will introduce a regression. We will first
+disable the compilation of all sub-components of KernelShark,
+except the API itself. This is done by bypassing the search of
+the necessary third party components (OpenGL and Qt). Later we
+will introduce the changes of the API in several sub-steps and
+will re-enable one by one the modified components of the GUI.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark.c | 121 ++++++++----------------------------------------
- src/libkshark.h |  28 ++++++++---
- 2 files changed, 40 insertions(+), 109 deletions(-)
+ CMakeLists.txt          | 10 ++++----
+ build/deff.h.cmake      | 14 ++---------
+ examples/CMakeLists.txt | 54 ++++++++++++++++++++---------------------
+ src/CMakeLists.txt      |  6 ++---
+ 4 files changed, 37 insertions(+), 47 deletions(-)
 
-diff --git a/src/libkshark.c b/src/libkshark.c
-index e8d3507..9cd6afb 100644
---- a/src/libkshark.c
-+++ b/src/libkshark.c
-@@ -1190,21 +1190,6 @@ bool kshark_filter_is_set(struct kshark_context *kshark_ctx)
- -              kshark_this_filter_is_set(kshark_ctx->hide_event_filter);
- }
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c95249e..ccca95c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,12 +26,12 @@ include(${KS_DIR}/build/FindJSONC.cmake)
  
--static inline void unset_event_filter_flag(struct kshark_context *kshark_ctx,
--					   struct kshark_entry *e)
--{
--	/*
--	 * All entries, filtered-out by the event filters, will be treated
--	 * differently, when visualized. Because of this, ignore the value
--	 * of the GRAPH_VIEW flag provided by the user via
--	 * kshark_ctx->filter_mask. The value of the EVENT_VIEW flag in
--	 * kshark_ctx->filter_mask will be used instead.
+ find_package(Doxygen)
+ 
+-set(OpenGL_GL_PREFERENCE LEGACY)
+-find_package(OpenGL)
+-find_package(GLUT)
++# set(OpenGL_GL_PREFERENCE LEGACY)
++# find_package(OpenGL)
++# find_package(GLUT)
+ 
+-find_package(Qt5Widgets 5.7.1)
+-find_package(Qt5Network)
++# find_package(Qt5Widgets 5.7.1)
++# find_package(Qt5Network)
+ if (Qt5Widgets_FOUND)
+ 
+     message(STATUS "Found Qt5Widgets:  (version ${Qt5Widgets_VERSION})")
+diff --git a/build/deff.h.cmake b/build/deff.h.cmake
+index 79726ff..e398c0c 100644
+--- a/build/deff.h.cmake
++++ b/build/deff.h.cmake
+@@ -23,17 +23,7 @@
+ /** "pkexec" executable. */
+ #cmakedefine DO_AS_ROOT "@DO_AS_ROOT@"
+ 
+-#ifdef __cplusplus
+-
+-	#include <QString>
+-
+-	/**
+-	 * String containing semicolon-separated list of plugin names.
+-	 * The plugins to be loaded when KernelShark starts are tagged
+-	 * with "default".
 -	 */
--	int event_mask = kshark_ctx->filter_mask & ~KS_GRAPH_VIEW_FILTER_MASK;
+-	const QString plugins = "@PLUGINS@";
 -
--	e->visible &= ~event_mask;
--}
--
- static void set_all_visible(uint16_t *v) {
- 	/*  Keep the original value of the PLUGIN_UNTOUCHED bit flag. */
- 	*v |= 0xFF & ~KS_PLUGIN_UNTOUCHED_MASK;
-@@ -1680,11 +1665,25 @@ static inline void free_ptr(void *ptr)
- 		free(*(void **)ptr);
- }
+-#endif /* __cplusplus */
++/** Semicolon-separated list of plugin names. */
++#define KS_BUILTIN_PLUGINS "@PLUGINS@"
  
--static bool data_matrix_alloc(size_t n_rows, uint64_t **offset_array,
--					     uint16_t **cpu_array,
--					     uint64_t **ts_array,
--					     uint16_t **pid_array,
--					     int **event_array)
-+/**
-+ * @brief Allocate data arrays (matrix columns) to be used to load the tracing
-+ *	  data into a data matrix form.
-+ *
-+ * @param n_rows: Number matrix rows to be allocated. Must be equal to the
-+ *	 	  number of trace records.
-+ * @param cpu_array: Output location for the CPU Id column.
-+ * @param pid_array: Output location for the PID column.
-+ * @param event_array: Output location for the Event Id column.
-+ * @param offset_array: Output location for the record offset column.
-+ * @param ts_array: Output location for the timestamp column.
-+ *
-+ * @returns True on success. Else false.
-+ */
-+bool kshark_data_matrix_alloc(size_t n_rows, int16_t **event_array,
-+					     int16_t **cpu_array,
-+					     int32_t **pid_array,
-+					     int64_t **offset_array,
-+					     int64_t **ts_array)
- {
- 	if (offset_array) {
- 		*offset_array = calloc(n_rows, sizeof(**offset_array));
-@@ -1731,88 +1730,6 @@ static bool data_matrix_alloc(size_t n_rows, uint64_t **offset_array,
- 	return false;
- }
+ #endif // _KS_CONFIG_H
+diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
+index 032f305..f6ed897 100644
+--- a/examples/CMakeLists.txt
++++ b/examples/CMakeLists.txt
+@@ -4,30 +4,30 @@ message(STATUS "dataload")
+ add_executable(dload          dataload.c)
+ target_link_libraries(dload   kshark)
  
--/**
-- * @brief Load the content of the trace data file into a table / matrix made
-- *	  of columns / arrays of data. The user is responsible for freeing the
-- *	  elements of the outputted array
-- *
-- * @param kshark_ctx: Input location for the session context pointer.
-- * @param offset_array: Output location for the array of record offsets.
-- * @param cpu_array: Output location for the array of CPU Ids.
-- * @param ts_array: Output location for the array of timestamps.
-- * @param pid_array: Output location for the array of Process Ids.
-- * @param event_array: Output location for the array of Event Ids.
-- *
-- * @returns The size of the outputted arrays in the case of success, or a
-- *	    negative error code on failure.
-- */
--size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
--			       uint64_t **offset_array,
--			       uint16_t **cpu_array,
--			       uint64_t **ts_array,
--			       uint16_t **pid_array,
--			       int **event_array)
--{
--	enum rec_type type = REC_ENTRY;
--	struct rec_list **rec_list;
--	ssize_t count, total = 0;
--	bool status;
--	int n_cpus;
+-message(STATUS "datafilter")
+-add_executable(dfilter          datafilter.c)
+-target_link_libraries(dfilter   kshark)
 -
--	total = get_records(kshark_ctx, &rec_list, type);
--	if (total < 0)
--		goto fail;
+-message(STATUS "datahisto")
+-add_executable(dhisto          datahisto.c)
+-target_link_libraries(dhisto   kshark)
 -
--	n_cpus = tracecmd_cpus(kshark_ctx->handle);
+-message(STATUS "confogio")
+-add_executable(confio          configio.c)
+-target_link_libraries(confio   kshark)
 -
--	status = data_matrix_alloc(total, offset_array,
--					  cpu_array,
--					  ts_array,
--					  pid_array,
--					  event_array);
--	if (!status)
--		goto fail_free;
+-message(STATUS "dataplot")
+-add_executable(dplot          dataplot.cpp)
+-target_link_libraries(dplot   kshark-plot)
 -
--	for (count = 0; count < total; count++) {
--		int next_cpu;
+-if (Qt5Widgets_FOUND)
 -
--		next_cpu = pick_next_cpu(rec_list, n_cpus, type);
--		if (next_cpu >= 0) {
--			struct rec_list *rec = rec_list[next_cpu];
--			struct kshark_entry *e = &rec->entry;
+-    message(STATUS "widgetdemo")
+-    add_executable(widgetdemo          widgetdemo.cpp)
+-    target_link_libraries(widgetdemo   kshark-gui)
 -
--			if (offset_array)
--				(*offset_array)[count] = e->offset;
+-    message(STATUS "cmd_split")
+-    add_executable(cmd_split           cmd_split.cpp)
+-    target_link_libraries(cmd_split    kshark-gui)
 -
--			if (cpu_array)
--				(*cpu_array)[count] = e->cpu;
--
--			if (ts_array)
--				(*ts_array)[count] = e->ts;
--
--			if (pid_array)
--				(*pid_array)[count] = e->pid;
--
--			if (event_array)
--				(*event_array)[count] = e->event_id;
--
--			rec_list[next_cpu] = rec_list[next_cpu]->next;
--			free(rec);
--		}
--	}
--
--	/* There should be no entries left in rec_list. */
--	free_rec_list(rec_list, n_cpus, type);
--	return total;
--
-- fail_free:
--	free_rec_list(rec_list, n_cpus, type);
--
-- fail:
--	fprintf(stderr, "Failed to allocate memory during data loading.\n");
--	return -ENOMEM;
--}
--
- static const char *get_latency(struct tep_handle *pe,
- 			       struct tep_record *record)
- {
-diff --git a/src/libkshark.h b/src/libkshark.h
-index 77fa4c5..36d6000 100644
---- a/src/libkshark.h
-+++ b/src/libkshark.h
-@@ -456,13 +456,6 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
- ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
- 				 struct tep_record ***data_rows);
+-endif (Qt5Widgets_FOUND)
++# message(STATUS "datafilter")
++# add_executable(dfilter          datafilter.c)
++# target_link_libraries(dfilter   kshark)
++#
++# message(STATUS "datahisto")
++# add_executable(dhisto          datahisto.c)
++# target_link_libraries(dhisto   kshark)
++#
++# message(STATUS "confogio")
++# add_executable(confio          configio.c)
++# target_link_libraries(confio   kshark)
++#
++# message(STATUS "dataplot")
++# add_executable(dplot          dataplot.cpp)
++# target_link_libraries(dplot   kshark-plot)
++#
++# if (Qt5Widgets_FOUND)
++#
++#     message(STATUS "widgetdemo")
++#     add_executable(widgetdemo          widgetdemo.cpp)
++#     target_link_libraries(widgetdemo   kshark-gui)
++#
++#     message(STATUS "cmd_split")
++#     add_executable(cmd_split           cmd_split.cpp)
++#     target_link_libraries(cmd_split    kshark-gui)
++#
++# endif (Qt5Widgets_FOUND)
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 4d4f37b..2bdab1a 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -3,10 +3,10 @@ message("\n src ...")
+ message(STATUS "libkshark")
+ add_library(kshark SHARED libkshark.c
+                           libkshark-hash.c
+-                          libkshark-model.c
++#                           libkshark-model.c
+                           libkshark-plugin.c
+                           libkshark-tepdata.c
+-                          libkshark-configio.c
++#                           libkshark-configio.c
+                           libkshark-collection.c)
  
--size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
--			       uint64_t **offset_array,
--			       uint16_t **cpu_array,
--			       uint64_t **ts_array,
--			       uint16_t **pid_array,
--			       int **event_array);
--
- ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int **pids);
+ target_link_libraries(kshark ${TRACECMD_LIBRARY}
+@@ -101,7 +101,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
  
- void kshark_close(struct kshark_context *kshark_ctx);
-@@ -617,6 +610,21 @@ bool kshark_this_filter_is_set(struct tracecmd_filter_id *filter);
+ endif (Qt5Widgets_FOUND AND Qt5Network_FOUND)
  
- bool kshark_filter_is_set(struct kshark_context *kshark_ctx);
+-add_subdirectory(plugins)
++# add_subdirectory(plugins)
  
-+static inline void unset_event_filter_flag(struct kshark_context *kshark_ctx,
-+					   struct kshark_entry *e)
-+{
-+	/*
-+	 * All entries, filtered-out by the event filters, will be treated
-+	 * differently, when visualized. Because of this, ignore the value
-+	 * of the GRAPH_VIEW flag provided by the user via
-+	 * stream->filter_mask. The value of the EVENT_VIEW flag in
-+	 * stream->filter_mask will be used instead.
-+	 */
-+	int event_mask = kshark_ctx->filter_mask & ~KS_GRAPH_VIEW_FILTER_MASK;
-+
-+	e->visible &= ~event_mask;
-+}
-+
- void kshark_filter_entries(struct kshark_context *kshark_ctx,
- 			   struct kshark_entry **data,
- 			   size_t n_entries);
-@@ -995,6 +1003,12 @@ struct kshark_config_doc *kshark_open_config_file(const char *file_name,
+ find_program(DO_AS_ROOT pkexec)
  
- struct kshark_config_doc *kshark_json_to_conf(struct json_object *jobj);
- 
-+bool kshark_data_matrix_alloc(size_t n_rows, int16_t **event_array,
-+					     int16_t **cpu_array,
-+					     int32_t **pid_array,
-+					     int64_t **offset_array,
-+					     int64_t **ts_array);
-+
- #ifdef __cplusplus
- }
- #endif
 -- 
 2.25.1
 
