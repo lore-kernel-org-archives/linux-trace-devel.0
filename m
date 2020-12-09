@@ -2,100 +2,92 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADFE0C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 14:50:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02EB1C19425
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 14:50:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 778A7233EA
+	by mail.kernel.org (Postfix) with ESMTP id C173F233EA
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  9 Dec 2020 14:50:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733134AbgLIOuY (ORCPT
+        id S1733120AbgLIOuJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 9 Dec 2020 09:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733117AbgLIOuU (ORCPT
+        Wed, 9 Dec 2020 09:50:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733117AbgLIOuJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:50:20 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15543C061794
-        for <linux-trace-devel@vger.kernel.org>; Wed,  9 Dec 2020 06:49:40 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id 4so1048088plk.5
-        for <linux-trace-devel@vger.kernel.org>; Wed, 09 Dec 2020 06:49:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XEPh8PD7eqjAEpwZk8T5/6LYnwunIle+n0ehVbqwCds=;
-        b=AgVkQ1sYNyEJ1xtN+mIyYW5jz/5N+M9ooRr2Y+bcYRbpBeso9rbFHLBesPZo4uwSex
-         m4pv7TjNKEyWClXGSVMKHjaTdL+LxvUOTIoXkzmysRKhF30C4OvDDWH6fBNBBzNMmOli
-         ySs/xr4m34cVf/09MO9zfeawFnIXMFyWnVkb962X61ERRiDJ4hHkP6nx+JWO+/toItZ/
-         kp6IXtLzEkA0ESbpsnNQXzpSBhk60UaP1OQ9/xkNaHCGQS7176ZmhywTDwW38C99JFDB
-         KCX5adF1/L7qttrGbdGDiXy44pTiUiveeV+j14zOFVa90WRKAmK51mJYVTdSNuFI5FuY
-         WrHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XEPh8PD7eqjAEpwZk8T5/6LYnwunIle+n0ehVbqwCds=;
-        b=TmIc7F9mRCzcholj2uj4lgH9fdd0ja6Aj94J4pO8mjCz0ggqJXWSrNOJOfV4gA54fh
-         jX3ZjZ98kQYPDvUivkA7QEX9kil5hkpkDCtd5wMMLS4u1bZcIFoRtPa250QDrUSYi8tu
-         4NJDRfDMUhkuVKZ05reVlakuz6zC0r2kdRR4RC2+27gceCOiuptSVdMqxQaitcAyqdt6
-         6nRP4MAlkAsL5qZM5dydyyt50KFG/X6+nZdHGmm1M/uOztD2j8zaq63THuEm4hf8AaIB
-         XB21wBBaRLGmd08uYGWL0QlkgSJlfaJkMK4ivYGDVEZwETtQ6BKqMMFuD3yitF/MS/DZ
-         1KEg==
-X-Gm-Message-State: AOAM530f13gZZVVyqmZWLqH54q6EOt4C7M3NtP/Qdh9e0XHo5I9lhl3e
-        yIoQ2Q2HJWqI9DZkEJw9S6hRA/38Q3BYRHLkElpmeFIM7O2XVU7G
-X-Google-Smtp-Source: ABdhPJzuH3g1XJ4+WHdmy9eNNWfo/WMH7tVDd5aeXK7QFQdZmQMdivMSEbLJ2QNGsyJpWFpHdHnncSkpdhTuvzBPtow=
-X-Received: by 2002:a17:90a:66ce:: with SMTP id z14mr2485774pjl.153.1607525379650;
- Wed, 09 Dec 2020 06:49:39 -0800 (PST)
+        Wed, 9 Dec 2020 09:50:09 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5954233EA;
+        Wed,  9 Dec 2020 14:49:20 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 09:49:19 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
+ buffer timestamps
+Message-ID: <20201209094919.31724179@gandalf.local.home>
+In-Reply-To: <20201209083954.5f7321a7551013aa95c0a459@kernel.org>
+References: <20201201160656.7cc6a5e8@gandalf.local.home>
+        <20201208211411.e41849908381eb493adce0f5@kernel.org>
+        <20201208100024.42bbcd23@gandalf.local.home>
+        <20201209083954.5f7321a7551013aa95c0a459@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201208215404.135186972@goodmis.org>
-In-Reply-To: <20201208215404.135186972@goodmis.org>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Wed, 9 Dec 2020 16:49:22 +0200
-Message-ID: <CAPpZLN5tOGVM=PmFUH49-iuDRGSKptPjcSpPB=EoFB2Fw84Ngw@mail.gmail.com>
-Subject: Re: [PATCH 0/6] libtracefs: Clean up of the source directory
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 11:57 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> Steven Rostedt (VMware) (6):
->       libtracefs: Move features.mk into scripts directory
->       libtracefs: Remove LIBTRACEFS_DIR as it is the same as bdir
->       libtracefs: Use LIBTRACEFS_STATIC/SHARED instead of open coding them
->       libtracefs: Move source files to new src/ directory
->       libtracefs: Use pkg-config to find libtraceevent
->       libtracefs: Have make clean remove the .so.X file
->
+On Wed, 9 Dec 2020 08:39:54 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-The changes look good to me.
-Acked-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
-> ----
->  Makefile                                     | 54 +++++++++++-----------------
->  features.mk => scripts/features.mk           |  0
->  tracefs-events.c => src/tracefs-events.c     |  0
->  tracefs-instance.c => src/tracefs-instance.c |  0
->  tracefs-utils.c => src/tracefs-utils.c       |  0
->  utest/Makefile                               |  2 +-
->  6 files changed, 22 insertions(+), 34 deletions(-)
->  rename features.mk => scripts/features.mk (100%)
->  rename tracefs-events.c => src/tracefs-events.c (100%)
->  rename tracefs-instance.c => src/tracefs-instance.c (100%)
->  rename tracefs-utils.c => src/tracefs-utils.c (100%)
+> > OK. I'll look at how to make this for both cases (embedded and not).
+> > Because, my current case is to copy the selftests to the machine and run
+> > them there. So my use case requires the build to happen at test time. But I
+> > can make it where it wont build if the binary already exists.  
+> 
+> For that case, what about just "make clean" before copy, then the binary
+> will be removed? 
 
+I just meant that the binary build should not depend on anything outside
+the directory. It should be able to be built if you just copy the
+ftracetest directory and run there.
 
+> 
+> >   
+> > > (currently I returns UNRESOLVED when the test target kmodule is not found)  
+> > 
+> > I used UNTESTED for a couple of reasons. I figured "UNRESOLVED" was for
+> > lack of kernel features or modules. But this is not a lack of the kernel,
+> > but a lack of user space. If something in user space is lacking (a tool,
+> > library, or binary), then I thought UNTESTED would be a better option. But
+> > if you have a strong opinion on it, I'll change it to UNRESOLVED, otherwise
+> > I'll keep UNTESTED.  
+> 
+> The idea of UNTESTED/UNRESOLVED (and UNSUPPORTED) came from POSIX standard,
+> it is expained in dejagnu's manual:
+> 
+> https://www.gnu.org/software/dejagnu/manual/A-POSIX-Conforming-Test-Framework.html
+> 
+> In this case, user can build the user space binary for the environment but
+> does't, so I think UNRESOLVED will fit to that case.
+> 
+> So strictly speaking, UNTESTED is just a placeholder which will be implemented
+> in the future. (hmm, it will be a good chance to write a document for it)
 
--- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+OK, I'll change it to UNRESOLVED. One reason I used UNTESTED, is that the
+build wont happen until libtracefs is packaged and released (or you
+download and build it yourself). And it's just getting ready now. So in
+essence, this is currently just a "placeholder" ;-)
+
+-- Steve
