@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29A66C2BB40
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38106C1B0D9
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Dec 2020 02:30:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E588B23D20
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Dec 2020 02:30:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 12E0523C43
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Dec 2020 02:30:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbgLJCa0 (ORCPT
+        id S1728580AbgLJCa0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 9 Dec 2020 21:30:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39368 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:39378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728580AbgLJCa0 (ORCPT
+        id S1728584AbgLJCa0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 9 Dec 2020 21:30:26 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B7BD23D4E
+        by mail.kernel.org (Postfix) with ESMTPSA id 85E7123C44
         for <linux-trace-devel@vger.kernel.org>; Thu, 10 Dec 2020 02:29:44 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1knBiB-00049L-B0
+        id 1knBiB-00049p-GH
         for linux-trace-devel@vger.kernel.org; Wed, 09 Dec 2020 21:29:43 -0500
-Message-ID: <20201210022943.172449411@goodmis.org>
+Message-ID: <20201210022943.377786365@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 09 Dec 2020 21:29:09 -0500
+Date:   Wed, 09 Dec 2020 21:29:10 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/9] trace-cmd: Add --ts-check option to report
+Subject: [PATCH 4/9] trace-cmd: Update .gitignore
 References: <20201210022906.112066412@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,141 +45,94 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add a --ts-check option to trace-cmd report that will make sure that the
-timestamps do not go backwards, and will print out an error message if they
-do.
+The .gitignore file is somewhat out of date. Update the main file as well as
+adding a .gitignore in the tracecmd and kernel-shark directories.
 
-Link: https://lore.kernel.org/linux-trace-devel/20201201183656.012642117@goodmis.org
+Remove the exec names that use to be included in the top level directory,
+and place them into the .gitignore in the directories that may build them.
+
+Ignore files caused by running "patch".
+
+Add *.data for perf files that may be in the directory.
+
+Add .pc and patches/ to ignore quilt directories.
+
+Add #*# to ignore emacs meta files.
+
+Add a .gitignore file in kernel-shark to include all the files that are
+built by the kernelshark build.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/trace-cmd-report.1.txt |  4 ++++
- tracecmd/trace-read.c                | 29 +++++++++++++++++++++++++++-
- tracecmd/trace-usage.c               |  1 +
- 3 files changed, 33 insertions(+), 1 deletion(-)
+ .gitignore              | 10 ++++++----
+ kernel-shark/.gitignore | 22 ++++++++++++++++++++++
+ tracecmd/.gitignore     |  1 +
+ 3 files changed, 29 insertions(+), 4 deletions(-)
+ create mode 100644 kernel-shark/.gitignore
+ create mode 100644 tracecmd/.gitignore
 
-diff --git a/Documentation/trace-cmd-report.1.txt b/Documentation/trace-cmd-report.1.txt
-index 864eb2d71f6a..de616cf4b47a 100644
---- a/Documentation/trace-cmd-report.1.txt
-+++ b/Documentation/trace-cmd-report.1.txt
-@@ -305,6 +305,10 @@ OPTIONS
-      Show the time differences between events. The difference will appear in
-      parenthesis just after the timestamp.
- 
-+*--ts-check*::
-+     Make sure no timestamp goes backwards, and if it does, print out a warning
-+     message of the fact.
+diff --git a/.gitignore b/.gitignore
+index 6759e51117a9..ca6c9cb68f6f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,16 +1,18 @@
+ *.o
+-trace-cmd
+ *.so
+ *.a
+ *.dat
++*.data
+ *.patch
+ .*.d
++*.orig
++*.rej
++.pc
+ *~
+-kernelshark
+-trace-graph
+-trace-view
+ *.pyc
+ *.swp
++\#*\#
++patches/
+ tc_version.h
+ ks_version.h
+ ctracecmd_wrap.c
+diff --git a/kernel-shark/.gitignore b/kernel-shark/.gitignore
+new file mode 100644
+index 000000000000..a752f4ed2706
+--- /dev/null
++++ b/kernel-shark/.gitignore
+@@ -0,0 +1,22 @@
++bin/cmd_split
++bin/confio
++bin/dfilter
++bin/dhisto
++bin/dload
++bin/dplot
++bin/kernelshark
++bin/kshark-record
++bin/widgetdemo
++build/CMakeCache.txt
++build/CMakeDoxyfile.in
++build/CMakeDoxygenDefaults.cmake
++build/CMakeFiles/
++build/Makefile
++build/cmake_install.cmake
++build/examples/
++build/src/
++kernelshark.desktop
++lib/
++org.freedesktop.kshark-record.policy
++src/KsCmakeDef.hpp
 +
- EXAMPLES
- --------
- 
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index e18110745d37..0b3eb1bc1cd9 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -99,6 +99,7 @@ static int no_irqs;
- static int no_softirqs;
- 
- static int tsdiff;
-+static int tscheck;
- 
- static int latency_format;
- static bool raw_format;
-@@ -1192,6 +1193,7 @@ enum output_type {
- static void read_data_info(struct list_head *handle_list, enum output_type otype,
- 			   int global)
- {
-+	unsigned long long *last_timestamp;
- 	struct handle_list *handles;
- 	struct handle_list *last_handle;
- 	struct tep_record *record;
-@@ -1216,6 +1218,10 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
- 		print_handle_file(handles);
- 		printf("cpus=%d\n", cpus);
- 
-+		last_timestamp = calloc(cpus, sizeof(*last_timestamp));
-+		if (!last_timestamp)
-+			die("allocating timestamps");
-+
- 		/* Latency trace is just all ASCII */
- 		if (ret > 0) {
- 			if (multi_inputs)
-@@ -1286,6 +1292,8 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
- 
- 		list_for_each_entry(handles, handle_list, list) {
- 			record = get_next_record(handles);
-+			if (!record)
-+				continue;
- 			if (!last_record ||
- 			    (record && record->ts < last_record->ts)) {
- 				last_record = record;
-@@ -1293,12 +1301,26 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
- 			}
- 		}
- 		if (last_record) {
-+			int cpu = last_record->cpu;
-+			if (cpu >= cpus)
-+				die("cpu %d creater than %d\n", cpu, cpus);
-+			if (tscheck &&
-+			    last_timestamp[cpu] > last_record->ts) {
-+				errno = 0;
-+				warning("WARNING: Record on cpu %d went backwards: %lld to %lld delta: -%lld\n",
-+					cpu, last_timestamp[cpu],
-+					last_record->ts,
-+					last_timestamp[cpu] - last_record->ts);
-+			}
-+			last_timestamp[cpu] = last_record->ts;
- 			print_handle_file(last_handle);
- 			trace_show_data(last_handle->handle, last_record);
- 			free_handle_record(last_handle);
- 		}
- 	} while (last_record);
- 
-+	free(last_timestamp);
-+
- 	if (profile)
- 		do_trace_profile();
- 
-@@ -1463,7 +1485,8 @@ static void add_hook(const char *arg)
- }
- 
- enum {
--	OPT_version	= 238,
-+	OPT_version	= 237,
-+	OPT_tscheck	= 238,
- 	OPT_tsdiff	= 239,
- 	OPT_ts2secs	= 240,
- 	OPT_tsoffset	= 241,
-@@ -1550,6 +1573,7 @@ void trace_report (int argc, char **argv)
- 			{"ts-offset", required_argument, NULL, OPT_tsoffset},
- 			{"ts2secs", required_argument, NULL, OPT_ts2secs},
- 			{"ts-diff", no_argument, NULL, OPT_tsdiff},
-+			{"ts-check", no_argument, NULL, OPT_tscheck},
- 			{"help", no_argument, NULL, '?'},
- 			{NULL, 0, NULL, 0}
- 		};
-@@ -1719,6 +1743,9 @@ void trace_report (int argc, char **argv)
- 		case OPT_tsdiff:
- 			tsdiff = 1;
- 			break;
-+		case OPT_tscheck:
-+			tscheck = 1;
-+			break;
- 		default:
- 			usage(argv);
- 		}
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 5d73c5982984..0a338ed7d19c 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -229,6 +229,7 @@ static struct usage_help usage_help[] = {
- 		"                     Affects the previous data file, unless there was no\n"
- 		"                     previous data file, in which case it becomes default\n"
- 		"          --ts-diff Show the delta timestamp between events.\n"
-+		"          --ts-check Check to make sure no time stamp on any CPU goes backwards.\n"
- 	},
- 	{
- 		"stream",
+diff --git a/tracecmd/.gitignore b/tracecmd/.gitignore
+new file mode 100644
+index 000000000000..30f93eb4ec2c
+--- /dev/null
++++ b/tracecmd/.gitignore
+@@ -0,0 +1 @@
++trace-cmd
 -- 
 2.29.2
 
