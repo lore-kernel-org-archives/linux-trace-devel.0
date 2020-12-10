@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BA3BC4361B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Dec 2020 16:45:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3226C4167B
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Dec 2020 16:47:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 035AA23C82
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Dec 2020 16:45:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B618623C82
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Dec 2020 16:47:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729816AbgLJQpU convert rfc822-to-8bit (ORCPT
+        id S2391115AbgLJQom convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Dec 2020 11:45:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34064 "EHLO mail.kernel.org"
+        Thu, 10 Dec 2020 11:44:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391917AbgLJQpN (ORCPT
+        id S1732770AbgLJQoe (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:45:13 -0500
+        Thu, 10 Dec 2020 11:44:34 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 662E023C82
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Dec 2020 16:44:30 +0000 (UTC)
-Date:   Thu, 10 Dec 2020 11:44:28 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 7812423B26
+        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Dec 2020 16:43:50 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 11:43:48 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracefs: Add license information
-Message-ID: <20201210114428.15b25dd8@gandalf.local.home>
+Subject: [PATCH] libtraceevent: Add license information
+Message-ID: <20201210114348.6f2b9e8d@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,13 +46,12 @@ use in a LICENSES directory.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- LICENSES/GPL-2.0    | 359 +++++++++++++++++++++++++++++++
- LICENSES/LGPL-2.1   | 503 ++++++++++++++++++++++++++++++++++++++++++++
- scripts/features.mk |   1 +
- scripts/utils.mk    |   1 +
- src/Makefile        |   1 +
- utest/Makefile      |   1 +
- 6 files changed, 866 insertions(+)
+ LICENSES/GPL-2.0      | 359 ++++++++++++++++++++++++++++++
+ LICENSES/LGPL-2.1     | 503 ++++++++++++++++++++++++++++++++++++++++++
+ build/Build.include   |   1 +
+ scripts/utilities.mak |   1 +
+ src/Makefile          |   1 +
+ 5 files changed, 865 insertions(+)
  create mode 100644 LICENSES/GPL-2.0
  create mode 100644 LICENSES/LGPL-2.1
 
@@ -933,41 +932,32 @@ index 0000000..27bb434
 +signature of Ty Coon, 1 April 1990
 +Ty Coon, President of Vice
 +That's all there is to it!
-diff --git a/scripts/features.mk b/scripts/features.mk
-index cb2e8bd..9c7f8c3 100644
---- a/scripts/features.mk
-+++ b/scripts/features.mk
+diff --git a/build/Build.include b/build/Build.include
+index 585486e..b4c1786 100644
+--- a/build/Build.include
++++ b/build/Build.include
 @@ -1,3 +1,4 @@
 +# SPDX-License-Identifier: GPL-2.0
- 
- # taken from perf which was based on Linux Kbuild
- # try-cc
-diff --git a/scripts/utils.mk b/scripts/utils.mk
-index 1ee283f..7967a4f 100644
---- a/scripts/utils.mk
-+++ b/scripts/utils.mk
+ ###
+ # build: Generic definitions
+ #
+diff --git a/scripts/utilities.mak b/scripts/utilities.mak
+index c16ce83..4852b55 100644
+--- a/scripts/utilities.mak
++++ b/scripts/utilities.mak
 @@ -1,3 +1,4 @@
-+# SPDX-License-Identifier: LGPL-2.1
- 
- # Utils
++# SPDX-License-Identifier: GPL-2.0
+ # This allows us to work with the newline character:
+ define newline
  
 diff --git a/src/Makefile b/src/Makefile
-index 1dbbf64..1b06655 100644
+index a51b3a4..b7159be 100644
 --- a/src/Makefile
 +++ b/src/Makefile
 @@ -1,3 +1,4 @@
 +# SPDX-License-Identifier: LGPL-2.1
  
- include $(src)/scripts/utils.mk
- 
-diff --git a/utest/Makefile b/utest/Makefile
-index 9f96c4e..6505a3e 100644
---- a/utest/Makefile
-+++ b/utest/Makefile
-@@ -1,3 +1,4 @@
-+# SPDX-License-Identifier: LGPL-2.1
- 
- include $(src)/scripts/utils.mk
+ include ../scripts/Makefile.include
  
 -- 
 2.25.4
