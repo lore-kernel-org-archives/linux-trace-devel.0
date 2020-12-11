@@ -2,302 +2,231 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11E6BC4361B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:14:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5308AC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:14:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B7298207A4
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:14:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0B55A207A4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:14:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406381AbgLKOrF (ORCPT
+        id S2406203AbgLKOrM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Dec 2020 09:47:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47278 "EHLO
+        Fri, 11 Dec 2020 09:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406352AbgLKOqf (ORCPT
+        with ESMTP id S2406324AbgLKOqC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:46:35 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77184C061285
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:32 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id e25so8822237wme.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:32 -0800 (PST)
+        Fri, 11 Dec 2020 09:46:02 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4292C0613CF
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:21 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id a11so1554836wrr.13
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wOx613aSKDpx0X4AETU2Hg1vVtj/o4ph9w0WDm7FBzA=;
-        b=NZku1R0JTUSya+sz/gsvtnzV8fxs3Djzva0ak21oIAT6YFVzb0Qqtl7tPH0S/I1KPd
-         HDp1x+795K62D9/kaRGKECqtOhkgU0Su1gQ0wN+zh/jYEblCQvjPs3ReeLd5DQcd+yB7
-         bScPShEA2h42sbsvrGvzdZ1oXIKjx6iubHnGA8m11Q2qOMU8faxTW5O3/VVd+UIFVums
-         CZ0DszpGG80JuRC1mzIdBjbI6CXMvMMAfj+Zq7j/P7g7nHLC/Z/hDLIc95NCkPMRZIMG
-         C0GmdQ1Rr/4PGJBLgJEvCGv5412oW902em9/EvFd3eH6hh/txhfB6YbHZPHpb9P4fasc
-         9rZg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JZy3S9KYXoyelUtnHyD2k8tW1N/cWWOYLtUTEJoHam0=;
+        b=NR3onixVsO+FNVliCNN22M5krik6JXVOvNgwUwIKgb2T+fsYxN5Ty3Echn9JblR2z8
+         M9VhlQWbN+8lCSvAPfx3i7oVC6qvu1g+UoMLf9X+VT1PeZB4LhuVxslIi5vflAiMwgXY
+         X2sx2ZNJ8p3zejn5IDAB4ndkp5A/XU15AodMaBSIDe19eNG0orsNxycOJYhqFT17rCXL
+         lji+24gehGwPr4iPMV76aWTMG79wLkVVRj9m/L8vyyPA5fFRQ19iGIsVBcIlcm5ZExJT
+         jHIeh9ma+ljGC8p30ZAdW4CmkpE2TQff/e1lYGkW7kVuQmRPpGVm3YCY6qwgzchPC3B+
+         keUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wOx613aSKDpx0X4AETU2Hg1vVtj/o4ph9w0WDm7FBzA=;
-        b=S8iqQwfQnu0MmmPC8vktlT7OZiIEAjakIELGMSKr6BVO8INQ4ND2opshZIUhn6NdO0
-         tY5jWs+x0NASPWEoOFPCs70BKs89IXC5yFjpDBoM2/3/UfR7K+S+8SrX9osRVKO4C348
-         vT3v2Mzrpkdd5Y+3em5QeifVbvuOPkzNHQEQ2VVhKml3x03r6L3wNJ2knYTPnYyCTrpA
-         Luuuxc5iz46o727JeIggyq2l8QmgPzo5tU65oPd8cjVahBfq20aIDTyZJ7ZSiqlANpmC
-         bDbbkXgoj6lGrKfMLSo9+HOV09WLrKbjAlKK36X1Vj5zzicvIaIMas+V0ai/29Ogn4eX
-         hiVw==
-X-Gm-Message-State: AOAM531r5a1a9eM+XCiNTBwfoNGG7o414MMBISYEw/bpiUvOax2fmwn8
-        qtT+c0dRb0g27Gnkv32Y4d0uLiD4tNU=
-X-Google-Smtp-Source: ABdhPJzsYqpK8JNig173wk94yPI5ChuZubfRoZ/dG2aPskgTV9VuWQKpFHSOKc1c9Krndk/mDJ0Ffw==
-X-Received: by 2002:a1c:b78a:: with SMTP id h132mr13712651wmf.141.1607697931129;
-        Fri, 11 Dec 2020 06:45:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JZy3S9KYXoyelUtnHyD2k8tW1N/cWWOYLtUTEJoHam0=;
+        b=l8s+QURFFWDXBPb1i9/GDf8phxjL5rPMeKgcM3lTL3XaE7h4a70UiweAXsSRyBWCcg
+         CwTzjMyw4i5UorRfYUK/KZ5RxAqhtEd56z2O4rqaVSDtz7Uu3Eq2KxFiZjdlO53El7gk
+         UxC6Jea90vpxP6Cdw5l85TmkwC97fHsJmOPwLoizVNvDxqZaQHG9zoDwd4kQ9A3SEWvl
+         UaujeZv11NTAxAmdhBj9IgkTf9nymHU1fSdc4t+U9RNFIU3UHX2KDSaMbmeXLwI1AHuh
+         25n7yEgDe59/RgLotqT0UigaaqVQbVa/Um4Zwv0dc6uMhoFjXnjsmGrgLTMwXlF+hkOS
+         EwXQ==
+X-Gm-Message-State: AOAM531pFKY0R39Cx/1mQaMRFe+MN9YdfKI+crBg10nebhBUr/i/pxkm
+        8oZ8q4AePAlp5zsiqEpyV/M=
+X-Google-Smtp-Source: ABdhPJweYPcwFr3+Zyd8VoOsElxDU6/IMcFHT2jmZXF5DcjPVUlgrS9YtB45bu5A8sfHd4hHC/IHtg==
+X-Received: by 2002:a5d:400c:: with SMTP id n12mr14574382wrp.218.1607697920396;
+        Fri, 11 Dec 2020 06:45:20 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id y2sm14471471wma.6.2020.12.11.06.45.29
+        by smtp.gmail.com with ESMTPSA id y2sm14471471wma.6.2020.12.11.06.45.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 06:45:30 -0800 (PST)
+        Fri, 11 Dec 2020 06:45:19 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v7 09/32] kernel-shark: Introduce Data streams
-Date:   Fri, 11 Dec 2020 16:44:48 +0200
-Message-Id: <20201211144511.575346-10-y.karadz@gmail.com>
+Subject: [PATCH v7 00/32] Start KernelShark v2 transformation
+Date:   Fri, 11 Dec 2020 16:44:39 +0200
+Message-Id: <20201211144511.575346-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201211144511.575346-1-y.karadz@gmail.com>
-References: <20201211144511.575346-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-With the help of Data stream, KernelShark will be able to load and
-merge multiple trace files (streams). Each stream can have different
-plugins or filters, registered for it, which means that the raw trace
-data of the streams can have different formats, and will allow for a
-great degree of customization of the provided data visualization. In
-this patch we only provide the basic definitions. The actual integration
-of the Data streams into the C API of KernelShark will happen in the
-following patches.
+In this patch-set we are starting the introduction of the changes
+in the C API of libkshark. The goal of this transformation is to
+turn KernelShark into a general purpose toolkit for analysis of
+tracing data that is no longer strongly coupled to the Ftrace/trace-cmd
+data format. At the end of the transformation KernelShark will be able
+to merge and simultaneously visualize data from different tracers,
+recorded in different data formats. It will also significantly extend
+the possibilities for user customization.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- src/libkshark.h | 199 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 199 insertions(+)
+This  patch-set transforms the way KernelShark processes the raw tracing
+data. Later, in a consecutive patch-sets we will introduce the changes
+in the visualization instruments and in the KernelShark GUI itself.
 
-diff --git a/src/libkshark.h b/src/libkshark.h
-index cc20077..9f7b6b1 100644
---- a/src/libkshark.h
-+++ b/src/libkshark.h
-@@ -121,6 +121,205 @@ void kshark_hash_id_free(struct kshark_hash_id *hash);
- 
- int *kshark_hash_ids(struct kshark_hash_id *hash);
- 
-+struct kshark_data_stream;
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef char *(*stream_get_str_func) (struct kshark_data_stream *,
-+				      const struct kshark_entry *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef const int (*stream_get_int_func) (struct kshark_data_stream *,
-+					  const struct kshark_entry *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef int (*stream_find_id_func) (struct kshark_data_stream *,
-+				    const char *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef int *(*stream_get_ids_func) (struct kshark_data_stream *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef int (*stream_get_names_func) (struct kshark_data_stream *,
-+				      const struct kshark_entry *,
-+				      char ***);
-+
-+/** Event field format identifier. */
-+typedef enum kshark_event_field_format {
-+	/** A field of unknown type. */
-+	KS_INVALID_FIELD,
-+
-+	/** Integer number */
-+	KS_INTEGER_FIELD,
-+
-+	/** Floating-point number */
-+	KS_FLOAT_FIELD
-+} kshark_event_field_format;
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef kshark_event_field_format
-+(*stream_event_field_type) (struct kshark_data_stream *,
-+			    const struct kshark_entry *,
-+			    const char *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef const int (*stream_read_event_field) (struct kshark_data_stream *,
-+					      const struct kshark_entry *,
-+					      const char *,
-+					      int64_t *);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef const int (*stream_read_record_field) (struct kshark_data_stream *,
-+					       void *,
-+					       const char *,
-+					       int64_t *);
-+
-+struct kshark_context;
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef ssize_t (*load_entries_func) (struct kshark_data_stream *,
-+				      struct kshark_context *,
-+				      struct kshark_entry ***);
-+
-+/** A function type to be used by the method interface of the data stream. */
-+typedef ssize_t (*load_matrix_func) (struct kshark_data_stream *,
-+				     struct kshark_context *,
-+				     int16_t **event_array,
-+				     int16_t **cpu_array,
-+				     int32_t **pid_array,
-+				     int64_t **offset_array,
-+				     int64_t **ts_array);
-+
-+/** Data interface identifier. */
-+typedef enum kshark_data_interface_id {
-+	/** An interface with unknown type. */
-+	KS_INVALID_INTERFACE,
-+
-+	/** Generic interface suitable for Ftrace data. */
-+	KS_GENERIC_DATA_INTERFACE,
-+} kshark_data_interface_id;
-+
-+/**
-+ * Structure representing the interface of methods used to operate over
-+ * the data from a given stream.
-+ */
-+struct kshark_generic_stream_interface {
-+	/** Interface version identifier. */
-+	kshark_data_interface_id	type; /* MUST BE FIRST ENTRY. */
-+
-+	/** Method used to retrieve the Process Id of the entry. */
-+	stream_get_int_func	get_pid;
-+
-+	/** Method used to retrieve the Event Id of the entry. */
-+	stream_get_int_func	get_event_id;
-+
-+	/** Method used to retrieve the Event name of the entry. */
-+	stream_get_str_func	get_event_name;
-+
-+	/** Method used to retrieve the Task name of the entry. */
-+	stream_get_str_func	get_task;
-+
-+	/** Method used to retrieve the Info string of the entry. */
-+	stream_get_str_func	get_info;
-+
-+	/**
-+	 * Method used to retrieve an unspecified auxiliary info of the trace
-+	 * record.
-+	 */
-+	stream_get_str_func	aux_info;
-+
-+	/** Method used to retrieve Id of the Event from its name. */
-+	stream_find_id_func	find_event_id;
-+
-+	/** Method used to retrieve the array of Ids of all Events. */
-+	stream_get_ids_func	get_all_event_ids;
-+
-+	/** Method used to dump the entry's content to string. */
-+	stream_get_str_func	dump_entry;
-+
-+	/**
-+	 * Method used to retrieve the array of all field names of a given
-+	 * event.
-+	 */
-+	stream_get_names_func	get_all_event_field_names;
-+
-+	/** Method used to access the type of an event's data field. */
-+	stream_event_field_type		get_event_field_type;
-+
-+	/** Method used to access the value of an event's data field. */
-+	stream_read_event_field		read_event_field_int64;
-+
-+	/** Method used to access the value of an event's data field. */
-+	stream_read_record_field	read_record_field_int64;
-+
-+	/** Method used to load the data in the form of entries. */
-+	load_entries_func	load_entries;
-+
-+	/** Method used to load the data in matrix form. */
-+	load_matrix_func	load_matrix;
-+
-+	/** Generic data handle. */
-+	void			*handle;
-+};
-+
-+/** The limit in size of the data format identifier string. */
-+#define KS_DATA_FORMAT_SIZE	15
-+
-+/** Structure representing a stream of trace data. */
-+struct kshark_data_stream {
-+	/** Data stream identifier. */
-+	uint16_t		stream_id;
-+
-+	/** The number of CPUs presented in this data stream. */
-+	int			n_cpus;
-+
-+	/**
-+	 * The number of distinct event types presented in this data stream.
-+	 */
-+	int			n_events;
-+
-+	/** The Process Id of the Idle task. */
-+	int			idle_pid;
-+
-+	/** Trace data file pathname. */
-+	char			*file;
-+
-+	/** Stream name. */
-+	char			*name;
-+
-+	/** Hash table of task PIDs. */
-+	struct kshark_hash_id	*tasks;
-+
-+	/** A mutex, used to protect the access to the input file. */
-+	pthread_mutex_t		input_mutex;
-+
-+	/** Hash of tasks to filter on. */
-+	struct kshark_hash_id	*show_task_filter;
-+
-+	/** Hash of tasks to not display. */
-+	struct kshark_hash_id	*hide_task_filter;
-+
-+	/** Hash of events to filter on. */
-+	struct kshark_hash_id	*show_event_filter;
-+
-+	/** Hash of events to not display. */
-+	struct kshark_hash_id	*hide_event_filter;
-+
-+	/** Hash of CPUs to filter on. */
-+	struct kshark_hash_id	*show_cpu_filter;
-+
-+	/** Hash of CPUs to not display. */
-+	struct kshark_hash_id	*hide_cpu_filter;
-+
-+	/** The type of the data. */
-+	char			data_format[KS_DATA_FORMAT_SIZE];
-+
-+	/**
-+	 * The interface of methods used to operate over the data from a given
-+	 * stream.
-+	 */
-+	void				*interface;
-+};
-+
- /** Size of the task's hash table. */
- #define KS_TASK_HASH_SHIFT 16
- #define KS_TASK_HASH_SIZE (1 << KS_TASK_HASH_SHIFT)
+Changes in v7:
+ * Patches 1-5 are new, but these are only infrastructureal changes
+   that have no functional effects on the API.
+   - License info is added.
+   - README is updated.
+   - KernelShark now builds and links against the stand-alone versions
+     of libtraceevent and libtracefs.
+
+Changes in v6:
+ * The patches from the "OpenGL wrapper" patch-set (already reviewed by
+   Steven) have been added here (patches 21-24).
+
+ * Patches 25-27 are new, but these are only infrastructureal changes
+   that have no functional effects on the API.
+
+
+Changes in v5:
+ * Only minor modifications addressing issues pointed out by Steven in
+   his reviews of v4.
+
+Changes in v4:
+ * The integer data format identifier is replaced with a string value
+   that gets registered by the readout plugin.
+
+ * Plus several small modifications addressing the issues pointed out
+   by Steven.
+
+
+Changes in v3.
+  This version contains number of small modifications addressing the
+  issues pointed out by Steven in his review. However, it also contains
+  the following major changes:
+
+   * The session context (kshark_context) holds a pointer to unspecified
+     data processing interface (void *interface). This will allow to
+     easily introduce new versions of this interface in the future, while
+     keeping the interface that we have now for backward compatibility.
+     The necessary type checking when using the interface made the helper
+     functions wrapping the corresponding methods of the interface
+     relatively complicated, so the implementations have been moved from
+     the header to the source file.
+
+   * A more sophisticated management of the Data stream descriptors that
+     can handle the case when Data streams are constantly added and
+     removed has been implemented. The design for this change was
+     suggested by Steven in his review.
+
+
+Changes in v2:
+ * Tried to address review comments for "kernel-shark: Introduce libkshark-hash"
+
+ * The huge patch "kernel-shark: Integrate the stream definitions with
+the C API" in the previous version is now split into 8 smaller patches.
+The last of these 8 new patches (kernel-shark: Complete the stream
+integration) is still a bit entangled. I can try to further break this
+patch in future versions of the patch-set, if this is needed.
+
+Yordan Karadzhov (1):
+  kernel-shark: Add "github Actions" workflow
+
+Yordan Karadzhov (VMware) (31):
+  kernel-shark: Add license information
+  kernel-shark: Change the CMake minimum version required
+  kernel-shark: Use libtraceevent and libtracefs
+  kernel-shark: Update README
+  kernel-shark: Define build target for JSONC
+  kernel-shark: Use only signed types in kshark_entry
+  kernel-shark: Add stream_id to kshark_entry
+  kernel-shark: Introduce libkshark-hash
+  kernel-shark: Introduce Data streams
+  kernel-shark: Rename static methods in libkshark
+  kernel-shark: Add basic methods for Data streams
+  kernel-shark: Housekeeping before implementing stream interface
+  kernel-shark: Add stream interface for trace-cmd data
+  kernel-shark: Start introducing KernelShark 2.0
+  kernel-shark: Start using data streams
+  kernel-shark: Remove dead code
+  kernel-shark: Redesign the plugin interface
+  kernel-shark: Complete the stream integration
+  kernel-shark: Provide merging of multiple data streams
+  kernel-shark: Integrate the stream definitions with data model
+  kernel-shark: Use only signed types for model defs
+  kernel-shark: Add ksmodel_get_bin()
+  kernel-shark: Protect ksmodel_set_in_range_bining()
+  kernel-shark: Add methods for time calibration
+  kernel-shark: Integrate streams with libkshark-configio
+  kernel-shark: Add support for drawing text
+  kernel-shark: Make GLUT optional dependency
+  kernel-shark: Add ksplot_draw_polyline()
+  kernel-shark: Optimize ksplot_draw_polygon()
+  kernel-shark: Do not use the ARRAY_SIZE macro
+  kernel-shark: Add basic infrastructure for testing
+
+ .github/workflows/main.yml       |   61 +
+ CMakeLists.txt                   |   25 +-
+ Documentation/doxygen/dox_config |    1 +
+ LICENSES/GPL-2.0                 |  359 +++
+ LICENSES/LGPL-2.1                |  503 +++
+ README                           |  129 +-
+ build/FindJSONC.cmake            |   70 +-
+ build/FindTraceCmd.cmake         |   53 +-
+ build/FindTraceEvent.cmake       |   75 +
+ build/FindTraceFS.cmake          |   75 +
+ build/cmake_clean.sh             |    4 +
+ build/deff.h.cmake               |   15 +-
+ examples/CMakeLists.txt          |   34 +-
+ examples/configio.c              |   20 +-
+ examples/datafilter.c            |   67 +-
+ examples/datahisto.c             |   38 +-
+ examples/dataload.c              |   28 +-
+ examples/multibufferload.c       |   53 +
+ src/CMakeLists.txt               |   18 +-
+ src/libkshark-collection.c       |  121 +-
+ src/libkshark-configio.c         | 1208 +++++--
+ src/libkshark-hash.c             |  239 ++
+ src/libkshark-model.c            |  154 +-
+ src/libkshark-model.h            |   55 +-
+ src/libkshark-plot.c             |  317 +-
+ src/libkshark-plot.h             |   73 +
+ src/libkshark-plugin.c           |  658 +++-
+ src/libkshark-plugin.h           |  294 +-
+ src/libkshark-tepdata.c          | 1914 ++++++++++++
+ src/libkshark-tepdata.h          |  112 +
+ src/libkshark.c                  | 2619 +++++++++-------
+ src/libkshark.h                  |  704 ++++-
+ src/stb_truetype.h               | 5011 ++++++++++++++++++++++++++++++
+ tests/CMakeLists.txt             |   14 +
+ tests/libkshark-tests.cpp        |   48 +
+ 35 files changed, 13177 insertions(+), 1992 deletions(-)
+ create mode 100644 .github/workflows/main.yml
+ create mode 100644 LICENSES/GPL-2.0
+ create mode 100644 LICENSES/LGPL-2.1
+ create mode 100644 build/FindTraceEvent.cmake
+ create mode 100644 build/FindTraceFS.cmake
+ create mode 100644 examples/multibufferload.c
+ create mode 100644 src/libkshark-hash.c
+ create mode 100644 src/libkshark-tepdata.c
+ create mode 100644 src/libkshark-tepdata.h
+ create mode 100644 src/stb_truetype.h
+ create mode 100644 tests/CMakeLists.txt
+ create mode 100644 tests/libkshark-tests.cpp
+
 -- 
 2.25.1
 
