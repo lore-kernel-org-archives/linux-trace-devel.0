@@ -5,66 +5,66 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39B28C4361B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:54:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81D8DC4361B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:54:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DE7C923B31
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:54:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3F17523B31
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:54:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392737AbgLKPKT (ORCPT
+        id S2437698AbgLKPLM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Dec 2020 10:10:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
+        Fri, 11 Dec 2020 10:11:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392736AbgLKPJg (ORCPT
+        with ESMTP id S2437703AbgLKPKa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:09:36 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85365C061285
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:23 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id g185so8897067wmf.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:23 -0800 (PST)
+        Fri, 11 Dec 2020 10:10:30 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28066C0619DB
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:49 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id c5so5738595wrp.6
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6llSx7hgEf2smLRrpCsAO3FdE7ck0dMBR2Ily4Dh5nc=;
-        b=s0I15DezZzi+V7CPcjqbSbS+8b9zVaWjih8f+wtmdihQhvRxvC5u7zS0thTLpT9Aqk
-         4Q7bo37OHJ1yK4HRy23ekAw/7cejokMUCD18tBY+eoGopVvfnUqIlrdr0Ui5jbJyvcmv
-         4Q1GiF/vCy7IYw/dfNL34q3qF96LWV5qIVPFY0Vr0FkJBE4ENHaSSDAUG0tz7wVlClPN
-         Iz8WqB0oklLF3CozPj5SgR8+bchiWX4R2BZM3af51+ePH5WBIR/mP5Rxo6gPE9tnSnb1
-         13LlAkBAFFfII0cz4dYcpWtfj9Drlqe/383D4VhgTp/CUBd3l1vYmCSD7i9cd8n2qatY
-         IWhw==
+        bh=YqCIYkci5/qTLDcsXiPAIutZAsoiZlUF5X7OYfhyass=;
+        b=k9UsT5/OdWbYYLrsSXCzbR1IYG3iWQEcsfU1t7zDfxlS+2za6kWaRzBOxNbTFUWMnD
+         /lhS+yeYLbCf8lFfUyapnnlilsp0sEuGvFxn6+fT0wgj0ZLmy8W8fQSyAdUpqPmFDF4W
+         +WTyYNBtGk/Owny5+3+pqydh46J+qt7j8ceTSofi0qQ+o2s0hDX1douq6NJ6O1m+PBrr
+         cG0/cwwddcgHxpdCoDdWE6k8x4+KIZrdC9znt+WwFacSP780snqwFswpcBVHS2JHhuHq
+         epSioWRCL+XcyEevMlWpbH7DQ+geFMxa2FZ754L7z+u7eMKk1uEpj0Mwp/GvMLPxzHJt
+         hU6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6llSx7hgEf2smLRrpCsAO3FdE7ck0dMBR2Ily4Dh5nc=;
-        b=emo5qe0xIuBdMG2oEmK4obXsz30P4/lLslvmt8OyAvVoQOifPKBFoHN7Gz+bjp5r8h
-         Znb7lXwqsB0/rl9jpPw0K900r3VXe6RLFQBJRpwWVyQppcgZicWVEg8CpDDiWzxjff0y
-         EsHcYU0TekRuMUoT1GYSeEUE9Frd7xfNm/XT5cZUhxBNfq7SmCj/UvjjWPHX9/TaRUmV
-         y11/9KvP9ZIVAAvTg7NmR0n4ET2QSvFxDBO7oNHj2Pyx6XLhud/JK+mHXlB75uWjKvOl
-         Bm/y89+RhjjhThw8yjRuA+8bCD+lZOdMKoXd0Vh0nzYqypSyQJ5kPvxN7cKieLYlms4f
-         T8Lg==
-X-Gm-Message-State: AOAM532S0klvCNtjLPuwui96+7mgP/zku79j6RZY2F0iKewSN4ZqTFDZ
-        Z60DR98jdkmIY+UuGYfpEqQ=
-X-Google-Smtp-Source: ABdhPJyjF8yA7G8MUyiHvAZxpyOZ0zCa4GoKi/M7akyJHc/iwpUFL9YLvzB+ORagh8J1zjjfx8FJJA==
-X-Received: by 2002:a1c:454:: with SMTP id 81mr14053537wme.178.1607699302355;
-        Fri, 11 Dec 2020 07:08:22 -0800 (PST)
+        bh=YqCIYkci5/qTLDcsXiPAIutZAsoiZlUF5X7OYfhyass=;
+        b=CcqI/hnYfA41wmIUsGUAiSJj0UbivPwvU6kiCsaxQPTWjE5reOl6cIW3Zhb9ZaCEio
+         ULkOMdw3ifNK1B4MAToQcf8estb8UadvMZpYov0chxCOCcNrb5+UZsZhkV3EEltIp4ds
+         lgctd4nZnSpwRLxGv35aWjUfAQGG3Ox7laPOeERl7Y/HmI+FvhjR8Ck+eOcZJTMOlC5D
+         8x6/zHr8+tm/ILo8HpVdKr2P9lkL46puNN1AaFicNo1yVbHpQ0eDzBBaEwliquJilsOT
+         c9ftbq4A9T1+celHHCGNjcBttSJFU/x5qC1iSpFNN44pX8TbnbQmR3qhKmN0QzOM4iyo
+         t93Q==
+X-Gm-Message-State: AOAM530dRuOwTQEUU1N2Y0sK+P72BZHgaDW0w7uwNpFI0OX1aWDqjyTj
+        HzlerMM9c5Yumg0L7nE5ELlu0F6PYBk=
+X-Google-Smtp-Source: ABdhPJyR+bdKGnGmkBY98+MPKpX490fYBYAOySE4z7zVqklshPTbP5cdlBu/yehKG8LV+5xBr9iacg==
+X-Received: by 2002:adf:eb07:: with SMTP id s7mr14504044wrn.414.1607699327917;
+        Fri, 11 Dec 2020 07:08:47 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id w17sm15620948wru.82.2020.12.11.07.08.21
+        by smtp.gmail.com with ESMTPSA id w17sm15620948wru.82.2020.12.11.07.08.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 07:08:21 -0800 (PST)
+        Fri, 11 Dec 2020 07:08:47 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v7 10/32] kernel-shark: Rename static methods in libkshark
-Date:   Fri, 11 Dec 2020 17:07:34 +0200
-Message-Id: <20201211150756.577366-11-y.karadz@gmail.com>
+Subject: [PATCH v7 31/32] kernel-shark: Add basic infrastructure for testing
+Date:   Fri, 11 Dec 2020 17:07:55 +0200
+Message-Id: <20201211150756.577366-32-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201211150756.577366-1-y.karadz@gmail.com>
 References: <20201211150756.577366-1-y.karadz@gmail.com>
@@ -74,75 +74,145 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-"kshark" prefix is needed only for the public methods of the API.
-We are changing the names of those static methods because we need to
-use those names when integrating the data streams into the API.i
+The tasting infrastructure is based on GTest (CMake-provided
+feature for automated testing) and Boost Test Library. In the
+patch we also provide a very simple test of adding/removing
+Data streams. For the moment this single test is used mainly to
+validate the proper functioning of the tasting infrastructure
+itself. A proper test coverage of the libraries is yet to be
+implemented. In a following patch we will integrate the tasting
+infrastructure into a "github Actions" workflow that will help
+the CI process.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ CMakeLists.txt            |  9 ++++++++
+ build/cmake_clean.sh      |  4 ++++
+ tests/CMakeLists.txt      | 14 ++++++++++++
+ tests/libkshark-tests.cpp | 48 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 75 insertions(+)
+ create mode 100644 tests/CMakeLists.txt
+ create mode 100644 tests/libkshark-tests.cpp
 
-diff --git a/src/libkshark.c b/src/libkshark.c
-index a14d3c5..0acce90 100644
---- a/src/libkshark.c
-+++ b/src/libkshark.c
-@@ -1097,8 +1097,8 @@ size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
- 	return -ENOMEM;
- }
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 44071a6..303e47e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -42,6 +42,8 @@ if (Qt5Widgets_FOUND)
  
--static const char *kshark_get_latency(struct tep_handle *pe,
--				      struct tep_record *record)
-+static const char *get_latency(struct tep_handle *pe,
-+			       struct tep_record *record)
- {
- 	if (!record)
- 		return NULL;
-@@ -1108,7 +1108,7 @@ static const char *kshark_get_latency(struct tep_handle *pe,
- 	return seq.buffer;
- }
+ endif (Qt5Widgets_FOUND)
  
--static const char *kshark_get_info(struct tep_handle *pe,
-+static const char *get_info(struct tep_handle *pe,
- 				   struct tep_record *record,
- 				   struct tep_event *event)
- {
-@@ -1233,7 +1233,7 @@ const char *kshark_get_latency_easy(struct kshark_entry *entry)
- 	pthread_mutex_lock(&kshark_ctx->input_mutex);
++find_package (Boost COMPONENTS unit_test_framework)
++
+ set(LIBRARY_OUTPUT_PATH    "${KS_DIR}/lib")
+ set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
  
- 	data = tracecmd_read_at(kshark_ctx->handle, entry->offset, NULL);
--	lat = kshark_get_latency(kshark_ctx->pevent, data);
-+	lat = get_latency(kshark_ctx->pevent, data);
- 	free_record(data);
+@@ -93,6 +95,13 @@ message(STATUS "Linker flags : " ${CMAKE_EXE_LINKER_FLAGS})
+ add_subdirectory(${KS_DIR}/src)
+ add_subdirectory(${KS_DIR}/examples)
  
- 	pthread_mutex_unlock(&kshark_ctx->input_mutex);
-@@ -1376,7 +1376,7 @@ const char *kshark_get_info_easy(struct kshark_entry *entry)
- 	event_id = tep_data_type(kshark_ctx->pevent, data);
- 	event = tep_find_event(kshark_ctx->pevent, event_id);
- 	if (event)
--		info = kshark_get_info(kshark_ctx->pevent, data, event);
-+		info = get_info(kshark_ctx->pevent, data, event);
++if (Boost_FOUND)
++
++    enable_testing()
++    add_subdirectory(${KS_DIR}/tests)
++
++endif()
++
+ if (_DOXYGEN_DOC AND DOXYGEN_FOUND)
  
- 	free_record(data);
- 
-@@ -1471,7 +1471,7 @@ char* kshark_dump_entry(const struct kshark_entry *entry)
- 		event = tep_find_event(kshark_ctx->pevent, entry->event_id);
- 
- 		event_name = event? event->name : "[UNKNOWN EVENT]";
--		lat = kshark_get_latency(kshark_ctx->pevent, data);
-+		lat = get_latency(kshark_ctx->pevent, data);
- 
- 		size = asprintf(&temp_str, "%" PRIu64 "; %s-%i; CPU %i; %s;",
- 				entry->ts,
-@@ -1480,7 +1480,7 @@ char* kshark_dump_entry(const struct kshark_entry *entry)
- 				entry->cpu,
- 				lat);
- 
--		info = kshark_get_info(kshark_ctx->pevent, data, event);
-+		info = get_info(kshark_ctx->pevent, data, event);
- 
- 		if (size > 0) {
- 			size = asprintf(&entry_str, "%s %s; %s; 0x%x",
+     message("\n doxygen documentation ...")
+diff --git a/build/cmake_clean.sh b/build/cmake_clean.sh
+index 2e7c8f9..f70b545 100755
+--- a/build/cmake_clean.sh
++++ b/build/cmake_clean.sh
+@@ -2,9 +2,13 @@ make clean
+ rm CMakeCache.txt
+ rm cmake_install.cmake
+ rm Makefile
++rm CTestTestfile.cmake
++rm DartConfiguration.tcl
+ rm -rf CMakeFiles/
+ rm -rf src/
+ rm -rf examples/
++rm -rf tests/
++rm -rf Testing/
+ rm -f ../lib/*
+ rm ../kernelshark.desktop
+ rm ../org.freedesktop.kshark-record.policy
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+new file mode 100644
+index 0000000..a1e3085
+--- /dev/null
++++ b/tests/CMakeLists.txt
+@@ -0,0 +1,14 @@
++message("\n tests ...")
++
++set(KS_TEST_DIR                      "${KS_DIR}/tests")
++set(EXECUTABLE_OUTPUT_PATH           ${KS_TEST_DIR})
++
++add_executable(kshark-tests          libkshark-tests.cpp)
++target_include_directories(kshark-tests PRIVATE ${Boost_INCLUDE_DIRS})
++target_compile_definitions(kshark-tests PRIVATE "BOOST_TEST_DYN_LINK=1")
++target_link_libraries(kshark-tests   kshark
++                                     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
++
++add_test(NAME              "libkshark_tests"
++         COMMAND           ${KS_TEST_DIR}/kshark-tests --log_format=HRF
++         WORKING_DIRECTORY ${KS_TEST_DIR})
+diff --git a/tests/libkshark-tests.cpp b/tests/libkshark-tests.cpp
+new file mode 100644
+index 0000000..27c1171
+--- /dev/null
++++ b/tests/libkshark-tests.cpp
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: LGPL-2.1
++
++/*
++ * Copyright (C) 2020 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
++ */
++
++// Boost
++#define BOOST_TEST_MODULE KernelSharkTests
++#include <boost/test/unit_test.hpp>
++
++// KernelShark
++#include "libkshark.h"
++
++#define N_TEST_STREAMS	1000
++
++BOOST_AUTO_TEST_CASE(add_remove_streams)
++{
++	struct kshark_context *kshark_ctx = NULL;
++	int sd, free = 0, i;
++
++	kshark_instance(&kshark_ctx);
++
++	for (i = 0; i < N_TEST_STREAMS; ++i) {
++		sd = kshark_add_stream(kshark_ctx);
++		BOOST_CHECK_EQUAL(sd, free);
++
++		kshark_add_stream(kshark_ctx);
++
++		free = i / 2;
++		kshark_remove_stream(kshark_ctx, free);
++		sd = kshark_add_stream(kshark_ctx);
++		BOOST_CHECK_EQUAL(sd, free);
++
++		free = i / 2 + 1;
++		kshark_remove_stream(kshark_ctx, free);
++	}
++
++	BOOST_CHECK_EQUAL(kshark_ctx->n_streams, N_TEST_STREAMS);
++
++	while (sd > 0)
++		sd = kshark_add_stream(kshark_ctx);
++
++	BOOST_CHECK_EQUAL(kshark_ctx->n_streams, INT16_MAX + 1);
++	BOOST_CHECK_EQUAL(kshark_ctx->stream_info.array_size, INT16_MAX + 1);
++	BOOST_CHECK_EQUAL(sd, -ENODEV);
++
++	kshark_close_all(kshark_ctx);
++}
 -- 
 2.25.1
 
