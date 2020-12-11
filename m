@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BD79C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AC46C4361B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:57:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DFDE23F29
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:56:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D350823F29
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:57:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392029AbgLKRLQ (ORCPT
+        id S2394580AbgLKRLW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Dec 2020 12:11:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44502 "EHLO mail.kernel.org"
+        Fri, 11 Dec 2020 12:11:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393493AbgLKRLA (ORCPT
+        id S2392395AbgLKRLA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 11 Dec 2020 12:11:00 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CAC323E20
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C3F723DE3
         for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 17:10:14 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1knlvp-000HdU-Bb
+        id 1knlvp-000Hcz-3x
         for linux-trace-devel@vger.kernel.org; Fri, 11 Dec 2020 12:10:13 -0500
-Message-ID: <20201211171013.160572044@goodmis.org>
+Message-ID: <20201211171012.973902180@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 11 Dec 2020 12:08:44 -0500
+Date:   Fri, 11 Dec 2020 12:08:43 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 02/13] trace-cmd: Allow overriding of pkg-config
+Subject: [PATCH 01/13] trace-cmd: Add missing SPDX headers
 References: <20201211170842.611554918@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -45,74 +45,159 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Change the Makefile to allow overriding of what is used for pkg-config.
+Some files in the directory were missing the necessary SPDX headers to
+describe what license the file is under. These were added.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ features.mk                                   | 1 +
+ include/linux/time64.h                        | 2 ++
+ lib/trace-cmd/Makefile                        | 2 +-
+ lib/trace-cmd/include/private/trace-msg.h     | 1 +
+ lib/traceevent/Makefile                       | 2 +-
+ lib/traceevent/plugins/Makefile               | 2 ++
+ lib/traceevent/plugins/plugin_python_loader.c | 1 +
+ lib/tracefs/Makefile                          | 2 +-
+ python/Makefile                               | 2 ++
+ scripts/utils.mk                              | 1 +
+ tracecmd/Makefile                             | 1 +
+ tracecmd/include/bug.h                        | 1 +
+ tracecmd/trace-usage.c                        | 1 +
+ utest/Makefile                                | 1 +
+ 14 files changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 3334d92c2b85..8edd217b87b5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -26,6 +26,7 @@ endef
- # Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
- $(call allow-override,CC,$(CROSS_COMPILE)gcc)
- $(call allow-override,AR,$(CROSS_COMPILE)ar)
-+$(call allow-override,PKG_CONFIG,pkg-config)
+diff --git a/features.mk b/features.mk
+index 9c9d63c13a23..53f35fd4ed17 100644
+--- a/features.mk
++++ b/features.mk
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
  
- EXT = -std=gnu99
- INSTALL = install
-@@ -133,7 +134,7 @@ PYTHON_VERS ?= python
- PYTHON_PKGCONFIG_VERS ?= $(PYTHON_VERS)
+ # taken from perf which was based on Linux Kbuild
+ # try-cc
+diff --git a/include/linux/time64.h b/include/linux/time64.h
+index df9265483d65..3961589e7d51 100644
+--- a/include/linux/time64.h
++++ b/include/linux/time64.h
+@@ -1,3 +1,5 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
+ #ifndef _TOOLS_LINUX_TIME64_H
+ #define _TOOLS_LINUX_TIME64_H
  
- # Can build python?
--ifeq ($(shell sh -c "pkg-config --cflags $(PYTHON_PKGCONFIG_VERS) > /dev/null 2>&1 && echo y"), y)
-+ifeq ($(shell sh -c "$(PKG_CONFIG) --cflags $(PYTHON_PKGCONFIG_VERS) > /dev/null 2>&1 && echo y"), y)
- 	BUILD_PYTHON := $(PYTHON)
- 	BUILD_PYTHON_WORKS := 1
- else
-@@ -206,9 +207,9 @@ LIBTRACEFS_DIR = $(obj)/lib/tracefs
- LIBTRACEFS_STATIC = $(LIBTRACEFS_DIR)/libtracefs.a
- LIBTRACEFS_SHARED = $(LIBTRACEFS_DIR)/libtracefs.so
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index 666a1ebf1c19..a3a1075a7ebd 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -1,4 +1,4 @@
+-
++# SPDX-License-Identifier: GPL-2.0
  
--ifeq ($(shell sh -c "pkg-config --cflags $(LIBTRACEEVENT) > /dev/null 2>&1 && echo y"), y)
--LIBTRACEEVENT_CFLAGS = $(shell sh -c "pkg-config --cflags $(LIBTRACEEVENT)")
--LIBTRACEEVENT_LDLAGS = $(shell sh -c "pkg-config --libs $(LIBTRACEEVENT)")
-+ifeq ($(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEEVENT) > /dev/null 2>&1 && echo y"), y)
-+LIBTRACEEVENT_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEEVENT)")
-+LIBTRACEEVENT_LDLAGS = $(shell sh -c "$(PKG_CONFIG) --libs $(LIBTRACEEVENT)")
- else
- LIBTRACEEVENT_CFLAGS = -I$(src)/include/traceevent -I$(src)/lib/traceevent/include
- LIBTRACEEVENT_LDLAGS = -L$(LIBTRACEEVENT_DIR) -ltraceevent
-@@ -218,9 +219,9 @@ endif
+ include $(src)/scripts/utils.mk
  
- export LIBTRACEEVENT_CFLAGS LIBTRACEEVENT_LDLAGS
+diff --git a/lib/trace-cmd/include/private/trace-msg.h b/lib/trace-cmd/include/private/trace-msg.h
+index aab8a69381e1..cfcf9615958c 100644
+--- a/lib/trace-cmd/include/private/trace-msg.h
++++ b/lib/trace-cmd/include/private/trace-msg.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
+ #ifndef _TRACE_MSG_H_
+ #define _TRACE_MSG_H_
  
--ifeq ($(shell sh -c "pkg-config --cflags $(LIBTRACEFS) > /dev/null 2>&1 && echo y"), y)
--LIBTRACEFS_CFLAGS = $(shell sh -c "pkg-config --cflags $(LIBTRACEFS)")
--LIBTRACEFS_LDLAGS = $(shell sh -c "pkg-config --libs $(LIBTRACEFS)")
-+ifeq ($(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEFS) > /dev/null 2>&1 && echo y"), y)
-+LIBTRACEFS_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEFS)")
-+LIBTRACEFS_LDLAGS = $(shell sh -c "$(PKG_CONFIG) --libs $(LIBTRACEFS)")
- else
- LIBTRACEFS_CFLAGS = -I$(src)/include/tracefs
- LIBTRACEFS_LDLAGS = -L$(LIBTRACEFS_DIR) -ltracefs
-@@ -494,10 +495,10 @@ report_nopythondev: force
- 	$(Q)echo
+diff --git a/lib/traceevent/Makefile b/lib/traceevent/Makefile
+index c7f7cda07c91..0f9e5db8f7df 100644
+--- a/lib/traceevent/Makefile
++++ b/lib/traceevent/Makefile
+@@ -1,4 +1,4 @@
+-
++# SPDX-License-Identifier: GPL-2.0
  
- ifndef NO_PYTHON
--PYTHON_INCLUDES = `pkg-config --cflags $(PYTHON_PKGCONFIG_VERS)`
--PYTHON_LDFLAGS = `pkg-config --libs $(PYTHON_PKGCONFIG_VERS)` \
-+PYTHON_INCLUDES = `$(PKG_CONFIG) --cflags $(PYTHON_PKGCONFIG_VERS)`
-+PYTHON_LDFLAGS = `$(PKG_CONFIG) --libs $(PYTHON_PKGCONFIG_VERS)` \
- 		$(shell $(PYTHON_VERS)-config --ldflags)
--PYGTK_CFLAGS = `pkg-config --cflags pygtk-2.0`
-+PYGTK_CFLAGS = `$(PKG_CONFIG) --cflags pygtk-2.0`
- else
- PYTHON_INCLUDES =
- PYTHON_LDFLAGS =
+ include $(src)/scripts/utils.mk
+ 
+diff --git a/lib/traceevent/plugins/Makefile b/lib/traceevent/plugins/Makefile
+index 21e933affb12..d0afb590675a 100644
+--- a/lib/traceevent/plugins/Makefile
++++ b/lib/traceevent/plugins/Makefile
+@@ -1,3 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0
++
+ include $(src)/scripts/utils.mk
+ 
+ bdir:=$(obj)/lib/traceevent/plugins
+diff --git a/lib/traceevent/plugins/plugin_python_loader.c b/lib/traceevent/plugins/plugin_python_loader.c
+index 01bdfad341a3..c9a88e4ff44f 100644
+--- a/lib/traceevent/plugins/plugin_python_loader.c
++++ b/lib/traceevent/plugins/plugin_python_loader.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: LGPL-2.1
+ #include <Python.h>
+ #include <stdio.h>
+ #include "event-parse.h"
+diff --git a/lib/tracefs/Makefile b/lib/tracefs/Makefile
+index 895195172ffe..590a0ffed91a 100644
+--- a/lib/tracefs/Makefile
++++ b/lib/tracefs/Makefile
+@@ -1,4 +1,4 @@
+-
++# SPDX-License-Identifier: LGPL-2.1
+ 
+ include $(src)/scripts/utils.mk
+ 
+diff --git a/python/Makefile b/python/Makefile
+index deaa83ee94cc..d2906c4fd1c4 100644
+--- a/python/Makefile
++++ b/python/Makefile
+@@ -1,3 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0
++
+ include $(src)/scripts/utils.mk
+ 
+ ifdef BUILD_PYTHON_WORKS
+diff --git a/scripts/utils.mk b/scripts/utils.mk
+index ccd4840f9364..5c47cb420af0 100644
+--- a/scripts/utils.mk
++++ b/scripts/utils.mk
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
+ 
+ # Utils
+ 
+diff --git a/tracecmd/Makefile b/tracecmd/Makefile
+index de14176e2654..c02851a88f3e 100644
+--- a/tracecmd/Makefile
++++ b/tracecmd/Makefile
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
+ 
+ VERSION := $(TC_VERSION)
+ PATCHLEVEL := $(TC_PATCHLEVEL)
+diff --git a/tracecmd/include/bug.h b/tracecmd/include/bug.h
+index 5d5ef9f0f570..9222f935c5c0 100644
+--- a/tracecmd/include/bug.h
++++ b/tracecmd/include/bug.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
+ #ifndef __TRACE_CMD_BUG
+ #define __TRACE_CMD_BUG
+ 
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 0a338ed7d19c..1a7abd5887c1 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/utest/Makefile b/utest/Makefile
+index 55828abb59e3..2cf9974591d8 100644
+--- a/utest/Makefile
++++ b/utest/Makefile
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
+ 
+ include $(src)/scripts/utils.mk
+ 
 -- 
 2.29.2
 
