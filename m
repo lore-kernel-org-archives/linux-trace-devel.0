@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B05DEC4361B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:51:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57D91C4361B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:52:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C26723329
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:51:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C640323329
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:52:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392675AbgLKPKS (ORCPT
+        id S2392884AbgLKPKd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Dec 2020 10:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
+        Fri, 11 Dec 2020 10:10:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392737AbgLKPJg (ORCPT
+        with ESMTP id S2392806AbgLKPJ5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:09:36 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AE7C061248
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:25 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id x22so7814625wmc.5
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:25 -0800 (PST)
+        Fri, 11 Dec 2020 10:09:57 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC52C0611CD
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:33 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id t16so9364752wra.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Cb28+IWX0C+IUpfk+cZIiQp4K7QlA2IXUSEpOakivcM=;
-        b=L5A9Gzl6/GpqtB+/zkNkLNJgDG/r9l4VbBoDZukeQQvyDida3E/RTNmyTIiKzQ4su0
-         H5Xm+yepPOU0gcIGbAqYeniiSOnm2F2Vp6QXYbj6vRWFWGj6YQTJbxwsmGWymXAFclh9
-         ZIchxUuV3D59oUWKnSnLKOH+hqraMO2r3tnf+smfnAJkHMCrDEtPkIWugn2iv9MtOwco
-         5FotSZ6DgBHUGQiVIEZOSsBgKyqs085fjcZVjh8PXi3Hx/lfnk0R8SqzWVChVGBfgZdt
-         oQCrBb6NYaoOzPOjN0vz9H82ntaJ+Pg594OoG+3NoeeO7SximUDCvhsDXibY+LIc/qgN
-         nRSQ==
+        bh=2X0fnAxLnJlRbARb+BzeeeYDjjRcx2Nmv4XmVk2oCOg=;
+        b=u7k1r1yu9tdikN4lRiCr/OYXzK9Q88eiO6iUceE+wlsU2ubonERJdOAWTorIL9Ed5q
+         FQ20d4RPfUd4/yTLwPlbzKHOngccAh1+cIblHYGaKimi6avkKBizFjYuLn5vGHK+jH2/
+         4GO2CE+47lNfTlzeXc0+HDiQTU9DdFp9kpAuXuvXLfvG1O/IA6npT9S+pVbV2nOgKR7U
+         CDrGni8ic2FHo8bVce0i+vblej2HTqYvcnAoRK+OEZ7DDiyXC324/h4oSPE+2yG8fIQV
+         uRO72QO9mPUL0VWUQ9ctWp16pptTy3vmlsfAtG++9Ly7IQ7WsEWHE7bwwuJKQHZ0I8fv
+         2Wrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Cb28+IWX0C+IUpfk+cZIiQp4K7QlA2IXUSEpOakivcM=;
-        b=msh709U23PXmFKnBSn+V/AQh+DRTjQEehYRtDHz8TBNNZHSey2KJjsd/GzIKguSCwd
-         nbP6N1UbgYlyEYKV4gW5p/o+uLq6xEC9sfrFSWPhI2CxOOBZt3UU5cRGw6tiZ8QdunzZ
-         3apLV6+ixrRHhlrNoACA5UNQb7N/7fXSz+WoklNTVkIJ/TnHugilvrKgC72mTJ8c5Awx
-         L3Kwx1inFVZNdBELY33NKLkGt4qc86KCBMFalhtxfahfRdoKe5KBUPTF00WHkIzg1Fuc
-         d3/WWn/wguGzsjQSeVKqBKQif+qD1P8/Y4kF4jFzVGhNjiKHot0g0ae9Gq1dvi4ga+4R
-         Nx2g==
-X-Gm-Message-State: AOAM531I5cOJPtWy+DqOn4ugGKgQY9eZxpG9t8oKUIGlogIffmdWVycj
-        YzJjlfcAbvFX6GueZLGBlxrEL8VRW20=
-X-Google-Smtp-Source: ABdhPJyR2KmMh1c9S5hWdfyhoajlP8t8Z0nthGiCpZfJvP9l9zU06A2DjpkBMJY6vD6Wz6JRP+5JDQ==
-X-Received: by 2002:a7b:cf37:: with SMTP id m23mr13967994wmg.37.1607699303843;
-        Fri, 11 Dec 2020 07:08:23 -0800 (PST)
+        bh=2X0fnAxLnJlRbARb+BzeeeYDjjRcx2Nmv4XmVk2oCOg=;
+        b=rCPDfCvjVjr8PBVLnY/8Gb3vY0RgsRaqyurYSIKkg7/PIxEs3IUVQDhGkb6Ke5UUjM
+         WqhyZDhuknIX7AiN+N86aBmh0EWyiPWmmmvaCacIxwewikG4UP8r58NgW0rbALI9RhT2
+         HQjXXlySkpBnWsWo53zAKJJ18hNSl8QMPr7GhKGLedrMR3QItrKYwxgFGnatez8K4uNv
+         Reyqe9C/6qeiqkPhx5iFOgwNwjx07CBASnWbfxleiE3/x28DmKQVEbStuh1i7fS3np9U
+         PiJS8tWY1eWpvXI3RTeSyiVnBozof3qqNwlUKILlKmUPYaKS7c/omB7XI0AZvtukaPiU
+         NvKg==
+X-Gm-Message-State: AOAM531DV712aFrLq+BrKnEtTm1W3ffm3hc3edMLUzm0qUfFG7t06kHu
+        +kJOZDDbIYkYZ3/vxSCX1Z8=
+X-Google-Smtp-Source: ABdhPJyIaP0v/XIVT5o0t9IxfC9Tl5RUMmeB7VWbODv4CNwkPePbzu4x9adeMDV8Tov1yaIWLhfG5g==
+X-Received: by 2002:adf:cc81:: with SMTP id p1mr12407118wrj.339.1607699311345;
+        Fri, 11 Dec 2020 07:08:31 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id w17sm15620948wru.82.2020.12.11.07.08.22
+        by smtp.gmail.com with ESMTPSA id w17sm15620948wru.82.2020.12.11.07.08.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 07:08:23 -0800 (PST)
+        Fri, 11 Dec 2020 07:08:30 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v7 11/32] kernel-shark: Add basic methods for Data streams
-Date:   Fri, 11 Dec 2020 17:07:35 +0200
-Message-Id: <20201211150756.577366-12-y.karadz@gmail.com>
+Subject: [PATCH v7 17/32] kernel-shark: Redesign the plugin interface
+Date:   Fri, 11 Dec 2020 17:07:41 +0200
+Message-Id: <20201211150756.577366-18-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201211150756.577366-1-y.karadz@gmail.com>
 References: <20201211150756.577366-1-y.karadz@gmail.com>
@@ -74,910 +74,1444 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Here we introduce the basic mechanisms for using data streams.
-For the moment these are just stand alone definitions and the
-integration with the API is yet to be introduced in the following
-patches.
+This patch can be treated as an almost complete rewrite of the way
+the C API of KernelShark deals with plugins. First of all, the two
+pluggable user actions (one executed during data loading and another
+executed during plotting) have separate handlers. This way the user
+can register only one of the two callback functions, if this is what
+is needed.
+
+The second substantial change is that instead of having a single
+interface for loading the plugin, we now have 3 different interfaces.
+The one that exists in version 1 of KernelShark is now renamed to
+Data Processing Interface (dpi).
+
+The first new interface for loading can be used to register user
+provided implementation of the Data stream readout and is called Data
+Readout Interface (dri). Via this  plugin loading interface the user
+can open trace data having an arbitrary format. In order to make this
+possible the user has to provide a plugin that contains an implementation
+of the data readout methods defined by the kshark_data_stream_interface
+and to register all those methods.
+
+The second new plugin loading interface is called Control interface
+and can be used to provide the plugin with an access to the GUI's Main
+window object. Via this interface the plugin can became capable to
+modify the GUI. Such a modification for example can be to add new
+dialog to the menus or to change the state of the GUI (to select entry
+1with the marker, to zoom, ...).
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark.c | 716 ++++++++++++++++++++++++++++++++++++++++++++++++
- src/libkshark.h | 104 +++++++
- 2 files changed, 820 insertions(+)
+ src/libkshark-plugin.c | 658 +++++++++++++++++++++++++++++++++++------
+ src/libkshark-plugin.h | 294 ++++++++++++++----
+ src/libkshark.c        |  48 ++-
+ src/libkshark.h        |  28 +-
+ 4 files changed, 866 insertions(+), 162 deletions(-)
 
-diff --git a/src/libkshark.c b/src/libkshark.c
-index 0acce90..bf465b5 100644
---- a/src/libkshark.c
-+++ b/src/libkshark.c
-@@ -166,6 +166,258 @@ bool kshark_open(struct kshark_context *kshark_ctx, const char *file)
- 	return true;
+diff --git a/src/libkshark-plugin.c b/src/libkshark-plugin.c
+index 4b21392..74a5862 100644
+--- a/src/libkshark-plugin.c
++++ b/src/libkshark-plugin.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: LGPL-2.1
+ 
+ /*
+- * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+  */
+ 
+  /**
+@@ -13,8 +13,7 @@
+ #ifndef _GNU_SOURCE
+ /** Use GNU C Library. */
+ #define _GNU_SOURCE
+-
+-#endif
++#endif // _GNU_SOURCE
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -25,25 +24,39 @@
+ 
+ // KernelShark
+ #include "libkshark-plugin.h"
++#include "libkshark-tepdata.h"
+ #include "libkshark.h"
+ 
+-static struct kshark_event_handler *
+-gui_event_handler_alloc(int event_id,
+-			kshark_plugin_event_handler_func evt_func,
+-			kshark_plugin_draw_handler_func dw_func)
++static struct kshark_event_proc_handler *
++data_event_handler_alloc(int event_id,
++			 kshark_plugin_event_handler_func evt_func)
+ {
+-	struct kshark_event_handler *handler = malloc(sizeof(*handler));
++	struct kshark_event_proc_handler *handler = malloc(sizeof(*handler));
+ 
+ 	if (!handler) {
+-		fprintf(stderr,
+-			"failed to allocate memory for gui eventhandler");
++		fputs("failed to allocate memory for event handler\n", stderr);
+ 		return NULL;
+ 	}
+ 
+ 	handler->next = NULL;
+ 	handler->id = event_id;
+ 	handler->event_func = evt_func;
+-	handler->draw_func = dw_func;
++
++	return handler;
++}
++
++static struct kshark_draw_handler *
++data_draw_handler_alloc(kshark_plugin_draw_handler_func draw_func)
++{
++	struct kshark_draw_handler *handler = malloc(sizeof(*handler));
++
++	if (!handler) {
++		fputs("failed to allocate memory for draw handler\n", stderr);
++		return NULL;
++	}
++
++	handler->next = NULL;
++	handler->draw_func = draw_func;
+ 
+ 	return handler;
+ }
+@@ -55,8 +68,8 @@ gui_event_handler_alloc(int event_id,
+  * @param handlers: Input location for the Event handler list.
+  * @param event_id: Event Id to search for.
+  */
+-struct kshark_event_handler *
+-kshark_find_event_handler(struct kshark_event_handler *handlers, int event_id)
++struct kshark_event_proc_handler *
++kshark_find_event_handler(struct kshark_event_proc_handler *handlers, int event_id)
+ {
+ 	for (; handlers; handlers = handlers->next)
+ 		if (handlers->id == event_id)
+@@ -68,26 +81,25 @@ kshark_find_event_handler(struct kshark_event_handler *handlers, int event_id)
+ /**
+  * @brief Add new event handler to an existing list of handlers.
+  *
+- * @param handlers: Input location for the Event handler list.
++ * @param stream: Input location for a Trace data stream pointer.
+  * @param event_id: Event Id.
+  * @param evt_func: Input location for an Event action provided by the plugin.
+- * @param dw_func: Input location for a Draw action provided by the plugin.
+  *
+  * @returns Zero on success, or a negative error code on failure.
+  */
+-int kshark_register_event_handler(struct kshark_event_handler **handlers,
++int kshark_register_event_handler(struct kshark_data_stream *stream,
+ 				  int event_id,
+-				  kshark_plugin_event_handler_func evt_func,
+-				  kshark_plugin_draw_handler_func dw_func)
++				  kshark_plugin_event_handler_func evt_func)
+ {
+-	struct kshark_event_handler *handler =
+-		gui_event_handler_alloc(event_id, evt_func, dw_func);
++	struct kshark_event_proc_handler *handler =
++		data_event_handler_alloc(event_id, evt_func);
+ 
+ 	if(!handler)
+ 		return -ENOMEM;
+ 
+-	handler->next = *handlers;
+-	*handlers = handler;
++	handler->next = stream->event_handlers;
++	stream->event_handlers = handler;
++
+ 	return 0;
  }
  
-+static void kshark_stream_free(struct kshark_data_stream *stream)
-+{
-+	if (!stream)
-+		return;
+@@ -95,30 +107,29 @@ int kshark_register_event_handler(struct kshark_event_handler **handlers,
+  * @brief Search the list for a specific plugin handle. If such a plugin handle
+  *	  exists, unregister (remove and free) this handle from the list.
+  *
+- * @param handlers: Input location for the Event handler list.
++ * @param stream: Input location for a Trace data stream pointer.
+  * @param event_id: Event Id of the plugin handler to be unregistered.
+- * @param evt_func: Event action function of the handler to be unregistered.
+- * @param dw_func: Draw action function of the handler to be unregistered.
++ * @param evt_func: Event action function to be unregistered.
+  */
+-void kshark_unregister_event_handler(struct kshark_event_handler **handlers,
+-				     int event_id,
+-				     kshark_plugin_event_handler_func evt_func,
+-				     kshark_plugin_draw_handler_func dw_func)
++int kshark_unregister_event_handler(struct kshark_data_stream *stream,
++				    int event_id,
++				    kshark_plugin_event_handler_func evt_func)
+ {
+-	struct kshark_event_handler **last;
++	struct kshark_event_proc_handler **last;
+ 
+-	for (last = handlers; *last; last = &(*last)->next) {
++	for (last = &stream->event_handlers; *last; last = &(*last)->next) {
+ 		if ((*last)->id == event_id &&
+-		    (*last)->event_func == evt_func &&
+-		    (*last)->draw_func == dw_func) {
+-			struct kshark_event_handler *this_handler;
++		    (*last)->event_func == evt_func) {
++			struct kshark_event_proc_handler *this_handler;
+ 			this_handler = *last;
+ 			*last = this_handler->next;
+ 			free(this_handler);
+ 
+-			return;
++			return 0;
+ 		}
+ 	}
 +
-+	kshark_hash_id_free(stream->show_task_filter);
-+	kshark_hash_id_free(stream->hide_task_filter);
-+
-+	kshark_hash_id_free(stream->show_event_filter);
-+	kshark_hash_id_free(stream->hide_event_filter);
-+
-+	kshark_hash_id_free(stream->show_cpu_filter);
-+	kshark_hash_id_free(stream->hide_cpu_filter);
-+
-+	kshark_hash_id_free(stream->tasks);
-+
-+	free(stream->file);
-+	free(stream->name);
-+	free(stream->interface);
-+	free(stream);
-+}
-+
-+static struct kshark_data_stream *kshark_stream_alloc()
-+{
-+	struct kshark_data_stream *stream;
-+
-+	stream = calloc(1, sizeof(*stream));
-+	if (!stream)
-+		goto fail;
-+
-+	stream->show_task_filter = kshark_hash_id_alloc(KS_FILTER_HASH_NBITS);
-+	stream->hide_task_filter = kshark_hash_id_alloc(KS_FILTER_HASH_NBITS);
-+
-+	stream->show_event_filter = kshark_hash_id_alloc(KS_FILTER_HASH_NBITS);
-+	stream->hide_event_filter = kshark_hash_id_alloc(KS_FILTER_HASH_NBITS);
-+
-+	stream->show_cpu_filter = kshark_hash_id_alloc(KS_FILTER_HASH_NBITS);
-+	stream->hide_cpu_filter = kshark_hash_id_alloc(KS_FILTER_HASH_NBITS);
-+
-+	stream->tasks = kshark_hash_id_alloc(KS_TASK_HASH_NBITS);
-+
-+	if (!stream->show_task_filter ||
-+	    !stream->hide_task_filter ||
-+	    !stream->show_event_filter ||
-+	    !stream->hide_event_filter ||
-+	    !stream->tasks) {
-+		    goto fail;
-+	}
-+
-+	kshark_set_data_format(stream->data_format, KS_INVALID_DATA);
-+	stream->name = strdup(KS_UNNAMED);
-+
-+	return stream;
-+
-+ fail:
-+	kshark_stream_free(stream);
-+
-+	return NULL;
-+}
++	return -EFAULT;
+ }
+ 
+ /**
+@@ -126,9 +137,9 @@ void kshark_unregister_event_handler(struct kshark_event_handler **handlers,
+  *
+  * @param handlers: Input location for the Event handler list.
+  */
+-void kshark_free_event_handler_list(struct kshark_event_handler *handlers)
++void kshark_free_event_handler_list(struct kshark_event_proc_handler *handlers)
+ {
+-	struct kshark_event_handler *last;
++	struct kshark_event_proc_handler *last;
+ 
+ 	while (handlers) {
+ 		last = handlers;
+@@ -137,98 +148,255 @@ void kshark_free_event_handler_list(struct kshark_event_handler *handlers)
+ 	}
+ }
+ 
 +/**
-+ * The maximum number of Data streams that can be added simultaneously.
-+ * The limit is determined by the 16 bit integer used to store the stream Id
-+ * inside struct kshark_entry.
-+ */
-+#define KS_MAX_STREAM_ID	INT16_MAX
-+
-+/**
-+ * Bit mask (0 - 15) used when converting indexes to pointers and vise-versa.
-+ */
-+#define INDEX_MASK		UINT16_MAX
-+
-+/**
-+ * Bit mask (16 - 31/63) used when converting indexes to pointers and
-+ * vise-versa.
-+ */
-+#define INVALID_STREAM_MASK	(~((unsigned long) INDEX_MASK))
-+
-+static int index_from_ptr(void *ptr)
-+{
-+	unsigned long index = (unsigned long) ptr;
-+
-+	return (int) (index & INDEX_MASK);
-+}
-+
-+static void *index_to_ptr(unsigned int index)
-+{
-+	unsigned long p;
-+
-+	p = INVALID_STREAM_MASK | index;
-+
-+	return (void *) p;
-+}
-+
-+static bool kshark_is_valid_stream(void *ptr)
-+{
-+	unsigned long p = (unsigned long) ptr;
-+	bool v = !((p & ~INDEX_MASK) == INVALID_STREAM_MASK);
-+
-+	return p && v;
-+}
-+
-+/**
-+ * @brief Add new Data stream.
++ * @brief Add new event handler to an existing list of handlers.
 + *
-+ * @param kshark_ctx: Input location for context pointer.
++ * @param stream: Input location for a Trace data stream pointer.
++ * @param draw_func: Input location for a Draw action provided by the plugin.
 + *
-+ * @returns Zero on success or a negative errno code on failure.
++ * @returns Zero on success, or a negative error code on failure.
 + */
-+int kshark_add_stream(struct kshark_context *kshark_ctx)
++int kshark_register_draw_handler(struct kshark_data_stream *stream,
++				 kshark_plugin_draw_handler_func draw_func)
 +{
-+	struct kshark_data_stream *stream;
-+	int new_stream;
++	struct kshark_draw_handler *handler = data_draw_handler_alloc(draw_func);
 +
-+	if(kshark_ctx->stream_info.next_free_stream_id > KS_MAX_STREAM_ID)
-+		return -ENODEV;
-+
-+	if (kshark_ctx->stream_info.next_free_stream_id ==
-+	    kshark_ctx->stream_info.array_size) {
-+		size_t new_size = 2 * kshark_ctx->stream_info.array_size;
-+		struct kshark_data_stream **streams_tmp;
-+
-+		streams_tmp = realloc(kshark_ctx->stream,
-+				      new_size * sizeof(*kshark_ctx->stream));
-+		if (!streams_tmp)
-+			return -ENOMEM;
-+
-+		kshark_ctx->stream = streams_tmp;
-+		kshark_ctx->stream_info.array_size = new_size;
-+	}
-+
-+	stream = kshark_stream_alloc();
-+	if (!stream)
++	if(!handler)
 +		return -ENOMEM;
 +
-+	if (pthread_mutex_init(&stream->input_mutex, NULL) != 0) {
-+		kshark_stream_free(stream);
-+		return -EAGAIN;
-+	}
-+
-+	if (kshark_ctx->stream_info.next_free_stream_id >
-+	    kshark_ctx->stream_info.max_stream_id) {
-+		new_stream = ++kshark_ctx->stream_info.max_stream_id;
-+
-+		kshark_ctx->stream_info.next_free_stream_id = new_stream + 1;
-+
-+		kshark_ctx->stream[new_stream] = stream;
-+		stream->stream_id = new_stream;
-+	} else {
-+		new_stream = kshark_ctx->stream_info.next_free_stream_id;
-+
-+		kshark_ctx->stream_info.next_free_stream_id =
-+			index_from_ptr(kshark_ctx->stream[new_stream]);
-+
-+		kshark_ctx->stream[new_stream] = stream;
-+		stream->stream_id = new_stream;
-+	}
-+
-+	kshark_ctx->n_streams++;
-+
-+	return stream->stream_id;
-+}
-+
-+/**
-+ * @brief Remove Data stream.
-+ *
-+ * @param kshark_ctx: Input location for context pointer.
-+ * @param sd: Data stream identifier.
-+ *
-+ * @returns Zero on success or a negative errno code on failure.
-+ */
-+int kshark_remove_stream(struct kshark_context *kshark_ctx, int sd)
-+{
-+	struct kshark_data_stream *stream;
-+
-+	if (sd < 0 ||
-+	    sd > kshark_ctx->stream_info.max_stream_id ||
-+	    !kshark_is_valid_stream(kshark_ctx->stream[sd]))
-+		return -EFAULT;
-+
-+	stream = kshark_ctx->stream[sd];
-+
-+	pthread_mutex_destroy(&stream->input_mutex);
-+
-+	kshark_stream_free(stream);
-+	kshark_ctx->stream[sd] =
-+		index_to_ptr(kshark_ctx->stream_info.next_free_stream_id);
-+	kshark_ctx->stream_info.next_free_stream_id = sd;
-+	kshark_ctx->n_streams--;
++	handler->next = stream->draw_handlers;
++	stream->draw_handlers = handler;
 +
 +	return 0;
 +}
 +
 +/**
-+ * @brief Get the Data stream object having given Id.
++ * @brief Search the list for a specific plugin handle. If such a plugin handle
++ *	  exists, unregister (remove and free) this handle from the list.
 + *
-+ * @param kshark_ctx: Input location for context pointer.
-+ * @param sd: Data stream identifier.
-+ *
-+ * @returns Pointer to a Data stream object if the sream exists. Otherwise
-+ *	    NULL.
++ * @param stream: Input location for a Trace data stream pointer.
++ * @param draw_func: Draw action function to be unregistered.
 + */
-+struct kshark_data_stream *
-+kshark_get_data_stream(struct kshark_context *kshark_ctx, int sd)
++void kshark_unregister_draw_handler(struct kshark_data_stream *stream,
++				    kshark_plugin_draw_handler_func draw_func)
 +{
-+	if (sd >= 0 && sd <= kshark_ctx->stream_info.max_stream_id)
-+		if (kshark_ctx->stream[sd] &&
-+		    kshark_is_valid_stream(kshark_ctx->stream[sd]) &&
-+		    kshark_ctx->stream[sd]->interface)
-+			return kshark_ctx->stream[sd];
++	struct kshark_draw_handler **last;
++
++	for (last = &stream->draw_handlers; *last; last = &(*last)->next) {
++		if ((*last)->draw_func == draw_func) {
++			struct kshark_draw_handler *this_handler;
++			this_handler = *last;
++			*last = this_handler->next;
++			free(this_handler);
++
++			return;
++		}
++	}
++}
++
++/**
++ * @brief Free all DRaw handlers in a given list.
++ *
++ * @param handlers: Input location for the Draw handler list.
++ */
++void kshark_free_draw_handler_list(struct kshark_draw_handler *handlers)
++{
++	struct kshark_draw_handler *last;
++
++	while (handlers) {
++		last = handlers;
++		handlers = handlers->next;
++		free(last);
++	}
++}
++
++/** Close and free this plugin. */
++static void free_plugin(struct kshark_plugin_list *plugin)
++{
++	dlclose(plugin->handle);
++
++	if (plugin->process_interface){
++		free(plugin->process_interface->name);
++		free(plugin->process_interface);
++	}
++
++	if (plugin->readout_interface) {
++		free(plugin->readout_interface->name);
++		free(plugin->readout_interface);
++	}
++
++	free(plugin->name);
++	free(plugin->file);
++	free(plugin);
++}
++
+ /**
+  * @brief Allocate memory for a new plugin. Add this plugin to the list of
+- *	  plugins used by the session.
++ *	  plugins.
+  *
+  * @param kshark_ctx: Input location for the session context pointer.
++ * @param name: The name of the plugin to register.
+  * @param file: The plugin object file to load.
+  *
+- * @returns Zero on success, or a negative error code on failure.
++ * @returns The plugin object on success, or NULL on failure.
+  */
+-int kshark_register_plugin(struct kshark_context *kshark_ctx,
+-			   const char *file)
++struct kshark_plugin_list *
++kshark_register_plugin(struct kshark_context *kshark_ctx,
++		       const char *name,
++		       const char *file)
+ {
+-	struct kshark_plugin_list *plugin = kshark_ctx->plugins;
++	kshark_plugin_load_func init_func, close_func;
++	kshark_check_data_func check_func;
++	kshark_format_func format_func;
++	struct kshark_plugin_list *plugin;
+ 	struct stat st;
+ 	int ret;
+ 
+-	while (plugin) {
+-		if (strcmp(plugin->file, file) == 0)
+-			return -EEXIST;
++	printf("loading plugin \"%s\" from %s\n", name, file);
+ 
+-		plugin = plugin->next;
++	plugin = kshark_find_plugin(kshark_ctx->plugins, file);
++	if(plugin) {
++		fputs("the plugin is already loaded.\n", stderr);
++		return NULL;
+ 	}
+ 
+ 	ret = stat(file, &st);
+ 	if (ret < 0) {
+-		fprintf(stderr, "plugin %s not found\n", file);
+-		return -ENODEV;
++		fprintf(stderr, "plugin %s not found.\n", file);
++		return NULL;
+ 	}
+ 
+-	plugin = calloc(sizeof(struct kshark_plugin_list), 1);
++	plugin = calloc(1, sizeof(struct kshark_plugin_list));
+ 	if (!plugin) {
+-		fprintf(stderr, "failed to allocate memory for plugin\n");
+-		return -ENOMEM;
++		fputs("failed to allocate memory for plugin.\n", stderr);
++		return NULL;
+ 	}
+ 
+-	if (asprintf(&plugin->file, "%s", file) <= 0) {
++	plugin->handle = dlopen(file, RTLD_NOW | RTLD_GLOBAL);
++	if (!plugin->handle) {
+ 		fprintf(stderr,
+-			"failed to allocate memory for plugin file name");
+-		return -ENOMEM;
++			"failed to open plugin file.\n%s\n",
++			dlerror());
++		goto fail;
+ 	}
+ 
+-	plugin->handle = dlopen(plugin->file, RTLD_NOW | RTLD_GLOBAL);
+-	if (!plugin->handle)
++	plugin->file = strdup(file);
++	plugin->name = strdup(name);
++	if (!plugin->file|| !plugin->name)
+ 		goto fail;
+ 
+-	plugin->init = dlsym(plugin->handle,
+-			     KSHARK_PLUGIN_INITIALIZER_NAME);
++	plugin->ctrl_interface =
++		dlsym(plugin->handle, KSHARK_MENU_PLUGIN_INITIALIZER_NAME);
++
++	init_func = dlsym(plugin->handle,
++			  KSHARK_PLOT_PLUGIN_INITIALIZER_NAME);
++
++	close_func = dlsym(plugin->handle,
++			   KSHARK_PLOT_PLUGIN_DEINITIALIZER_NAME);
++
++	if (init_func && close_func) {
++		plugin->process_interface =
++			calloc(1, sizeof(*plugin->process_interface));
++
++		if (!plugin->process_interface)
++			goto fail;
++
++		plugin->process_interface->name = strdup(plugin->name);
++		if (!plugin->process_interface->name)
++			goto fail;
++
++		plugin->process_interface->init = init_func;
++		plugin->process_interface->close = close_func;
++	} else if (init_func || close_func) {
++		fprintf(stderr,
++			"incomplete draw interface found (will be ignored).\n%s\n",
++			dlerror());
++	}
++
++	init_func = dlsym(plugin->handle,
++			  KSHARK_INPUT_INITIALIZER_NAME);
++
++	close_func = dlsym(plugin->handle,
++			   KSHARK_INPUT_DEINITIALIZER_NAME);
++
++	check_func = dlsym(plugin->handle,
++			   KSHARK_INPUT_CHECK_NAME);
+ 
+-	plugin->close = dlsym(plugin->handle,
+-			      KSHARK_PLUGIN_DEINITIALIZER_NAME);
++	format_func = dlsym(plugin->handle,
++			    KSHARK_INPUT_FORMAT_NAME);
+ 
+-	if (!plugin->init || !plugin->close)
++	if (init_func && close_func && check_func && format_func) {
++		plugin->readout_interface =
++			calloc(1, sizeof(*plugin->readout_interface));
++
++		if (!plugin->readout_interface)
++			goto fail;
++
++		plugin->readout_interface->name = strdup(plugin->name);
++		if (!plugin->readout_interface->name)
++			goto fail;
++
++		plugin->readout_interface->init = init_func;
++		plugin->readout_interface->close = close_func;
++		plugin->readout_interface->check_data = check_func;
++
++		kshark_set_data_format(plugin->readout_interface->data_format,
++				       format_func());
++
++		kshark_register_input(kshark_ctx, plugin->readout_interface);
++	} else if (init_func || close_func || check_func) {
++		fprintf(stderr,
++			"incomplete input interface found (will be ignored).\n%s\n",
++			dlerror());
++	}
++
++	if (!plugin->process_interface &&
++	    !plugin->readout_interface &&
++	    !plugin->ctrl_interface) {
++		fputs("no interfaces found in this plugin.\n", stderr);
+ 		goto fail;
++	}
+ 
+ 	plugin->next = kshark_ctx->plugins;
+ 	kshark_ctx->plugins = plugin;
++	kshark_ctx->n_plugins++;
+ 
+-	return 0;
++	return plugin;
+ 
+  fail:
+-	fprintf(stderr, "cannot load plugin '%s'\n%s\n",
+-		plugin->file, dlerror());
++	fprintf(stderr, "cannot load plugin '%s'\n", file);
+ 
+-	if (plugin->handle) {
++	if (plugin->handle)
+ 		dlclose(plugin->handle);
+-		plugin->handle = NULL;
+-	}
+ 
+-	free(plugin);
++	free_plugin(plugin);
+ 
+-	return EFAULT;
++	return NULL;
+ }
+ 
+ /**
+  * @brief Unrgister a plugin.
+  *
+- * @param kshark_ctx: Input location for context pointer.
++ * @param kshark_ctx: Input location for the session context pointer.
++ * @param name: The name of the plugin to unregister.
+  * @param file: The plugin object file to unregister.
+  */
+ void kshark_unregister_plugin(struct kshark_context *kshark_ctx,
++			      const char *name,
+ 			      const char *file)
+ {
+ 	struct kshark_plugin_list **last;
+ 
+ 	for (last = &kshark_ctx->plugins; *last; last = &(*last)->next) {
+-		if (strcmp((*last)->file, file) == 0) {
++		if (strcmp((*last)->process_interface->name, name) == 0 &&
++		    strcmp((*last)->file, file) == 0) {
+ 			struct kshark_plugin_list *this_plugin;
++
+ 			this_plugin = *last;
+ 			*last = this_plugin->next;
++			free_plugin(this_plugin);
+ 
+-			dlclose(this_plugin->handle);
+-			free(this_plugin);
++			kshark_ctx->n_plugins--;
+ 
+ 			return;
+ 		}
+@@ -248,48 +416,346 @@ void kshark_free_plugin_list(struct kshark_plugin_list *plugins)
+ 		last = plugins;
+ 		plugins = plugins->next;
+ 
+-		free(last->file);
+-		dlclose(last->handle);
++		free_plugin(last);
++	}
++}
++
++/**
++ * @brief Register a data readout interface (input).
++ *
++ * @param kshark_ctx: Input location for the context pointer.
++ * @param plugin: Input location for the data readout interface (input).
++ */
++struct kshark_dri_list *
++kshark_register_input(struct kshark_context *kshark_ctx,
++		      struct kshark_dri *plugin)
++{
++	struct kshark_dri_list *input;
++	struct kshark_dri_list **last;
++	const char *name_err, *format_err;
++
++	if (strcmp(plugin->data_format, TEP_DATA_FORMAT_IDENTIFIER) == 0) {
++		name_err = "built in";
++		format_err = TEP_DATA_FORMAT_IDENTIFIER;
++			goto conflict;
++	}
++
++	for (last = &kshark_ctx->inputs; *last; last = &(*last)->next)
++		if (strcmp((*last)->interface->name, plugin->name) == 0 ||
++		    strcmp((*last)->interface->data_format, plugin->data_format) == 0 ) {
++			name_err = (*last)->interface->name;
++			format_err = (*last)->interface->data_format;
++			goto conflict;
++		}
++
++	input = calloc(1, sizeof(*input));
++	if (!input) {
++		fputs("failed to allocate memory for readout plugin.\n", stderr);
++		return NULL;
++	}
++
++	input->interface = plugin;
++	input->next = kshark_ctx->inputs;
++	kshark_ctx->inputs = input;
++
++	return input;
++
++ conflict:
++	fprintf(stderr,
++		"Failed to register readout plugin (name=\'%s\', data_format=\'%s\')\n",
++		plugin->name, plugin->data_format);
++
++	fprintf(stderr,
++		"Conflict with registered readout  (name=\'%s\', data_format=\'%s\')\n",
++		name_err, format_err);
 +
 +	return NULL;
 +}
 +
 +/**
-+ * @brief Get the Data stream object corresponding to a given entry
++ * @brief Unrgister a data readout interface (input).
 + *
-+ * @param entry: Input location for the KernelShark entry.
-+ *
-+ * @returns Pointer to a Data stream object on success. Otherwise NULL.
++ * @param kshark_ctx: Input location for the context pointer.
++ * @param name: The data readout's name.
 + */
-+struct kshark_data_stream *
-+kshark_get_stream_from_entry(const struct kshark_entry *entry)
++void kshark_unregister_input(struct kshark_context *kshark_ctx,
++			     const char *name)
 +{
-+	struct kshark_context *kshark_ctx = NULL;
++	struct kshark_dri_list **last;
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return NULL;
++	for (last = &kshark_ctx->inputs; *last; last = &(*last)->next) {
++		if (strcmp((*last)->interface->name, name) == 0) {
++			struct kshark_dri_list *this_input;
++			this_input = *last;
++			*last = this_input->next;
 +
-+	return kshark_get_data_stream(kshark_ctx, entry->stream_id);
++			free(this_input);
++
++			return;
++		}
++	}
++}
+ 
++/**
++ * @brief Free a list of plugin interfaces.
++ *
++ * @param plugins: Input location for the plugins list.
++ */
++void
++kshark_free_dpi_list(struct kshark_dpi_list *plugins)
++{
++	struct kshark_dpi_list *last;
++
++	while (plugins) {
++		last = plugins;
++		plugins = plugins->next;
+ 		free(last);
+ 	}
+ }
+ 
+ /**
+- * @brief Use this function to initialize/update/deinitialize all registered
+- *	  plugins.
++ * @brief Find a plugin by its library file.
+  *
+- * @param kshark_ctx: Input location for context pointer.
++ * @param plugins: A list of plugins to search in.
++ * @param lib: The plugin object file to load.
++ *
++ * @returns The plugin object on success, or NULL on failure.
++ */
++struct kshark_plugin_list *
++kshark_find_plugin(struct kshark_plugin_list *plugins, const char *lib)
++{
++	for (; plugins; plugins = plugins->next)
++		if (strcmp(plugins->file, lib) == 0)
++			return plugins;
++
++	return NULL;
 +}
 +
 +/**
-+ * @brief Get an array containing the Ids of all opened Trace data streams.
-+ * 	  The User is responsible for freeing the array.
++ * @brief Find a plugin by its name.
 + *
-+ * @param kshark_ctx: Input location for context pointer.
++ * @param plugins: A list of plugins to search in.
++ * @param name: The plugin object file to load.
++ *
++ * @returns The plugin object on success, or NULL on failure.
 + */
-+int *kshark_all_streams(struct kshark_context *kshark_ctx)
++struct kshark_plugin_list *
++kshark_find_plugin_by_name(struct kshark_plugin_list *plugins,
++			   const char *name)
 +{
-+	int *ids, i, count = 0;
++	for (; plugins; plugins = plugins->next)
++		if (strcmp(plugins->name, name) == 0)
++			return plugins;
 +
-+	ids = calloc(kshark_ctx->n_streams, (sizeof(*ids)));
-+	if (!ids)
-+		return NULL;
-+
-+	for (i = 0; i <= kshark_ctx->stream_info.max_stream_id; ++i)
-+		if (kshark_ctx->stream[i] &&
-+		    kshark_is_valid_stream(kshark_ctx->stream[i]))
-+			ids[count++] = i;
-+
-+	return ids;
++	return NULL;
 +}
- /**
-  * @brief Close the trace data file and free the trace data handle.
++
++/**
++ * @brief Register plugin to a given data stream without initializing it.
++ *	  In order to initialize this plugin use kshark_handle_dpi() or
++ *	  kshark_handle_all_dpis().
++ *
++ * @param stream: Input location for a Trace data stream pointer.
++ * @param plugin: Input location for the data processing interface.
++ * @param active: If false, the plugin will be registered but disabled.
++ *		  Otherwise the plugin will be active.
++ *
++ * @returns The plugin object on success, or NULL on failure.
++ */
++struct kshark_dpi_list *
++kshark_register_plugin_to_stream(struct kshark_data_stream *stream,
++				 struct kshark_dpi *plugin,
++				 bool active)
++{
++	struct kshark_dpi_list *plugin_list = stream->plugins;
++
++	/* Check if the plugin is already registered to this stream. */
++	while (plugin_list) {
++		if (strcmp(plugin_list->interface->name, plugin->name) == 0 &&
++		    plugin_list->interface->init == plugin->init &&
++		    plugin_list->interface->close == plugin->close) {
++			/*
++			 * The plugin has been registered already. Check if it
++			 * is initialized and if this is the case, close the
++			 * existing initialization. This way we guarantee a
++			 * clean new initialization from.
++			 */
++			if (plugin_list->status & KSHARK_PLUGIN_LOADED)
++				kshark_handle_dpi(stream, plugin_list,
++						  KSHARK_PLUGIN_CLOSE);
++
++			plugin_list->status =
++				active ? KSHARK_PLUGIN_ENABLED : 0;
++
++			return plugin_list;
++		}
++
++		plugin_list = plugin_list->next;
++	}
++
++	plugin_list = calloc(1, sizeof(*plugin_list));
++	plugin_list->interface = plugin;
++
++	if (active)
++		plugin_list->status = KSHARK_PLUGIN_ENABLED;
++
++	plugin_list->next = stream->plugins;
++	stream->plugins = plugin_list;
++	stream->n_plugins++;
++
++	return plugin_list;
++}
++
++/**
++ * @brief Unregister plugin to a given data stream.
++ *
++ * @param stream: Input location for a Trace data stream pointer.
++ * @param plugin: Input location for the data processing interface.
++ */
++void kshark_unregister_plugin_from_stream(struct kshark_data_stream *stream,
++				          struct kshark_dpi *plugin)
++{
++	struct kshark_dpi_list **last;
++
++	for (last = &stream->plugins; *last; last = &(*last)->next) {
++		if ((*last)->interface->init == plugin->init &&
++		    (*last)->interface->close == plugin->close &&
++		    strcmp((*last)->interface->name, plugin->name) == 0) {
++			struct kshark_dpi_list *this_plugin;
++
++			this_plugin = *last;
++			*last = this_plugin->next;
++			this_plugin->interface->close(stream);
++			free(this_plugin);
++
++			stream->n_plugins--;
++
++			return;
++		}
++	}
++}
++
++static void plugin_init(struct kshark_data_stream *stream,
++			struct kshark_dpi_list *plugin)
++{
++	int handler_count = plugin->interface->init(stream);
++
++	if (handler_count > 0) {
++		plugin->status &= ~KSHARK_PLUGIN_FAILED;
++		plugin->status |= KSHARK_PLUGIN_LOADED;
++	} else {
++		if (strcmp(stream->name, KS_UNNAMED) == 0) {
++			fprintf(stderr,
++			"plugin \"%s\" failed to initialize on stream %s\n",
++			plugin->interface->name,
++			stream->file);
++		} else {
++		fprintf(stderr,
++			"plugin \"%s\" failed to initialize on stream %s:%s\n",
++			plugin->interface->name,
++			stream->file,
++			stream->name);
++		}
++
++		plugin->status |= KSHARK_PLUGIN_FAILED;
++		plugin->status &= ~KSHARK_PLUGIN_LOADED;
++	}
++}
++
++static void plugin_close(struct kshark_data_stream *stream,
++			 struct kshark_dpi_list *plugin)
++{
++	plugin->interface->close(stream);
++	plugin->status &= ~KSHARK_PLUGIN_LOADED;
++}
++
++/**
++ * @brief Use this function to initialize/update/deinitialize a plugin for
++ *	  a given Data stream.
++ *
++ * @param stream: Input location for a Trace data stream pointer.
++ * @param plugin: The plugin to be handled.
+  * @param task_id: Action identifier specifying the action to be executed.
   *
-@@ -252,6 +504,470 @@ void kshark_free(struct kshark_context *kshark_ctx)
- 	free(kshark_ctx);
+  * @returns The number of successful added/removed plugin handlers on success,
+  *	    or a negative error code on failure.
+  */
+-int kshark_handle_plugins(struct kshark_context *kshark_ctx,
+-			  enum kshark_plugin_actions task_id)
++int kshark_handle_dpi(struct kshark_data_stream *stream,
++		      struct kshark_dpi_list *plugin,
++		      enum kshark_plugin_actions task_id)
+ {
+-	struct kshark_plugin_list *plugin;
+ 	int handler_count = 0;
+ 
+-	for (plugin = kshark_ctx->plugins; plugin; plugin = plugin->next) {
+-		switch (task_id) {
+-		case KSHARK_PLUGIN_INIT:
+-			handler_count += plugin->init(kshark_ctx);
+-			break;
++	switch (task_id) {
++	case KSHARK_PLUGIN_INIT:
++		if (plugin->status & KSHARK_PLUGIN_ENABLED)
++			plugin_init(stream, plugin);
+ 
+-		case KSHARK_PLUGIN_UPDATE:
+-			plugin->close(kshark_ctx);
+-			handler_count += plugin->init(kshark_ctx);
+-			break;
++		break;
+ 
+-		case KSHARK_PLUGIN_CLOSE:
+-			handler_count += plugin->close(kshark_ctx);
+-			break;
++	case KSHARK_PLUGIN_UPDATE:
++		if (plugin->status & KSHARK_PLUGIN_LOADED)
++			plugin_close(stream, plugin);
+ 
+-		default:
+-			return -EINVAL;
+-		}
++		plugin->status &= ~KSHARK_PLUGIN_FAILED;
++
++		if (plugin->status & KSHARK_PLUGIN_ENABLED)
++			plugin_init(stream, plugin);
++
++		break;
++
++	case KSHARK_PLUGIN_CLOSE:
++		if (plugin->status & KSHARK_PLUGIN_LOADED)
++			plugin_close(stream, plugin);
++
++		plugin->status &= ~KSHARK_PLUGIN_FAILED;
++		break;
++
++	default:
++		return -EINVAL;
+ 	}
+ 
+ 	return handler_count;
+ }
++
++/**
++ * @brief Use this function to initialize/update/deinitialize all registered
++ *	  data processing plugins for a given Data stream.
++ *
++ * @param stream: Input location for a Trace data stream pointer.
++ * @param task_id: Action identifier specifying the action to be executed. Can
++ *		   be KSHARK_PLUGIN_INIT, KSHARK_PLUGIN_UPDATE or
++ *		   KSHARK_PLUGIN_CLOSE.
++ *
++ * @returns The number of successful added/removed plugin handlers on success,
++ *	    or a negative error code on failure.
++ */
++int kshark_handle_all_dpis(struct kshark_data_stream *stream,
++			   enum kshark_plugin_actions task_id)
++{
++	struct kshark_dpi_list *plugin;
++	int handler_count = 0;
++
++	for (plugin = stream->plugins; plugin; plugin = plugin->next)
++		handler_count +=
++			kshark_handle_dpi(stream, plugin, task_id);
++
++	return handler_count;
++}
++
++/**
++ * @brief Free all readout interfaces in a given list.
++ *
++ * @param inputs: Input location for the inputs list.
++ */
++void kshark_free_dri_list(struct kshark_dri_list *inputs)
++{
++	struct kshark_dri_list *last;
++
++	while (inputs) {
++		last = inputs;
++		inputs = inputs->next;
++
++		free(last);
++	}
++}
+diff --git a/src/libkshark-plugin.h b/src/libkshark-plugin.h
+index b3cf1c6..1a642ad 100644
+--- a/src/libkshark-plugin.h
++++ b/src/libkshark-plugin.h
+@@ -4,10 +4,10 @@
+  * Copyright (C) 2016 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
+  */
+ 
+- /**
+-  *  @file    libkshark-plugin.h
+-  *  @brief   KernelShark plugins.
+-  */
++/**
++ *  @file    libkshark-plugin.h
++ *  @brief   KernelShark plugins.
++ */
+ 
+ #ifndef _KSHARK_PLUGIN_H
+ #define _KSHARK_PLUGIN_H
+@@ -16,35 +16,51 @@
+ extern "C" {
+ #endif // __cplusplus
+ 
+-// trace-cmd
+-#include "traceevent/event-parse.h"
++// C
++#include <stdint.h>
++#include <stdbool.h>
+ 
+ /* Quiet warnings over documenting simple structures */
+ //! @cond Doxygen_Suppress
+ 
+-#define KSHARK_PLUGIN_INITIALIZER kshark_plugin_initializer
+-
+-#define KSHARK_PLUGIN_DEINITIALIZER kshark_plugin_deinitializer
+-
+ #define _MAKE_STR(x)	#x
++
+ #define MAKE_STR(x)	_MAKE_STR(x)
+ 
+-#define KSHARK_PLUGIN_INITIALIZER_NAME MAKE_STR(KSHARK_PLUGIN_INITIALIZER)
++#define KSHARK_PLOT_PLUGIN_INITIALIZER kshark_data_plugin_initializer
+ 
+-#define KSHARK_PLUGIN_DEINITIALIZER_NAME MAKE_STR(KSHARK_PLUGIN_DEINITIALIZER)
++#define KSHARK_PLOT_PLUGIN_DEINITIALIZER kshark_data_plugin_deinitializer
+ 
+-struct kshark_context;
++#define KSHARK_PLOT_PLUGIN_INITIALIZER_NAME MAKE_STR(KSHARK_PLOT_PLUGIN_INITIALIZER)
++
++#define KSHARK_PLOT_PLUGIN_DEINITIALIZER_NAME MAKE_STR(KSHARK_PLOT_PLUGIN_DEINITIALIZER)
++
++#define KSHARK_MENU_PLUGIN_INITIALIZER kshark_plugin_menu_initializer
++
++#define KSHARK_MENU_PLUGIN_INITIALIZER_NAME MAKE_STR(KSHARK_MENU_PLUGIN_INITIALIZER)
++
++#define KSHARK_INPUT_INITIALIZER kshark_input_initializer
++
++#define KSHARK_INPUT_DEINITIALIZER kshark_input_deinitializer
++
++#define KSHARK_INPUT_CHECK kshark_input_check
++
++#define KSHARK_INPUT_FORMAT kshark_input_format
++
++#define KSHARK_INPUT_INITIALIZER_NAME MAKE_STR(KSHARK_INPUT_INITIALIZER)
+ 
++#define KSHARK_INPUT_DEINITIALIZER_NAME MAKE_STR(KSHARK_INPUT_DEINITIALIZER)
++
++#define KSHARK_INPUT_CHECK_NAME MAKE_STR(KSHARK_INPUT_CHECK)
++
++#define KSHARK_INPUT_FORMAT_NAME MAKE_STR(KSHARK_INPUT_FORMAT)
++
++struct kshark_data_stream;
++struct kshark_context;
+ struct kshark_entry;
+ 
+ //! @endcond
+ 
+-/**
+- * A function type to be used when defining load/reload/unload plugin
+- * functions.
+- */
+-typedef int (*kshark_plugin_load_func)(struct kshark_context *);
+-
+ struct kshark_trace_histo;
+ 
+ /**
+@@ -57,18 +73,17 @@ struct kshark_cpp_argv {
+ };
+ 
+ /** A function type to be used when defining plugin functions for drawing. */
+-typedef void
+-(*kshark_plugin_draw_handler_func)(struct kshark_cpp_argv *argv,
+-				   int val, int draw_action);
++typedef void (*kshark_plugin_draw_handler_func)(struct kshark_cpp_argv *argv,
++						int sd,
++						int val,
++						int draw_action);
+ 
+ /**
+  * A function type to be used when defining plugin functions for data
+  * manipulation.
+  */
+-typedef void
+-(*kshark_plugin_event_handler_func)(struct kshark_context *kshark_ctx,
+-				    struct tep_record *rec,
+-				    struct kshark_entry *e);
++typedef void (*kshark_plugin_event_handler_func)(struct kshark_data_stream *stream,
++						 void *rec, struct kshark_entry *e);
+ 
+ /** Plugin action identifier. */
+ enum kshark_plugin_actions {
+@@ -89,30 +104,39 @@ enum kshark_plugin_actions {
+ 	 * plugins.
+ 	 */
+ 	KSHARK_PLUGIN_CLOSE,
++};
+ 
++/** Plotting action identifier. */
++enum kshark_plotting_actions {
+ 	/**
+ 	 * Task draw action. This action identifier is used by the plugin draw
+ 	 * function.
+ 	 */
+-	KSHARK_PLUGIN_TASK_DRAW,
++	KSHARK_TASK_DRAW	= 1 << 0,
+ 
+ 	/**
+ 	 * CPU draw action. This action identifier is used by the plugin draw
+ 	 * function.
+ 	 */
+-	KSHARK_PLUGIN_CPU_DRAW,
++	KSHARK_CPU_DRAW		= 1 << 1,
++
++	/**
++	 * Draw action for the Host graph in Virtual Combos. This action
++	 * identifier is used by the plugin draw function.
++	 */
++	KSHARK_HOST_DRAW	= 1 << 2,
++
++	/**
++	 * Draw action for the Guest graph in Virtual Combos. This action
++	 * identifier is used by the plugin draw function.
++	 */
++	KSHARK_GUEST_DRAW	= 1 << 3,
+ };
+ 
+-/**
+- * Plugin Event handler structure, defining the properties of the required
+- * kshark_entry.
+- */
+-struct kshark_event_handler {
++/** Plugin's Trace event processing handler structure. */
++struct kshark_event_proc_handler {
+ 	/** Pointer to the next Plugin Event handler. */
+-	struct kshark_event_handler		*next;
+-
+-	/** Unique Id ot the trace event type. */
+-	int					id;
++	struct kshark_event_proc_handler		*next;
+ 
+ 	/**
+ 	 * Event action function. This action can be used to modify the content
+@@ -120,6 +144,28 @@ struct kshark_event_handler {
+ 	 */
+ 	kshark_plugin_event_handler_func	event_func;
+ 
++	/** Unique Id ot the trace event type. */
++	int id;
++};
++
++struct kshark_event_proc_handler *
++kshark_find_event_handler(struct kshark_event_proc_handler *handlers, int event_id);
++
++int kshark_register_event_handler(struct kshark_data_stream *stream,
++				  int event_id,
++				  kshark_plugin_event_handler_func evt_func);
++
++int kshark_unregister_event_handler(struct kshark_data_stream *stream,
++				    int event_id,
++				    kshark_plugin_event_handler_func evt_func);
++
++void kshark_free_event_handler_list(struct kshark_event_proc_handler *handlers);
++
++/** Plugin's drawing handler structure. */
++struct kshark_draw_handler {
++	/** Pointer to the next Plugin Event handler. */
++	struct kshark_draw_handler		*next;
++
+ 	/**
+ 	 * Draw action function. This action can be used to draw additional
+ 	 * graphical elements (shapes) for all kshark_entries having Event Ids
+@@ -128,31 +174,73 @@ struct kshark_event_handler {
+ 	kshark_plugin_draw_handler_func		draw_func;
+ };
+ 
+-struct kshark_event_handler *
+-kshark_find_event_handler(struct kshark_event_handler *handlers, int event_id);
++int kshark_register_draw_handler(struct kshark_data_stream *stream,
++				 kshark_plugin_draw_handler_func draw_func);
+ 
+-int kshark_register_event_handler(struct kshark_event_handler **handlers,
+-				  int event_id,
+-				  kshark_plugin_event_handler_func evt_func,
+-				  kshark_plugin_draw_handler_func dw_func);
++void kshark_unregister_draw_handler(struct kshark_data_stream *stream,
++				    kshark_plugin_draw_handler_func draw_func);
+ 
+-void kshark_unregister_event_handler(struct kshark_event_handler **handlers,
+-				     int event_id,
+-				     kshark_plugin_event_handler_func evt_func,
+-				     kshark_plugin_draw_handler_func dw_func);
++void kshark_free_draw_handler_list(struct kshark_draw_handler *handlers);
+ 
+-void kshark_free_event_handler_list(struct kshark_event_handler *handlers);
++/**
++ * A function type to be used when defining load/reload/unload plugin
++ * functions.
++ */
++typedef int (*kshark_plugin_load_func)(struct kshark_data_stream *);
+ 
+-/** Linked list of plugins. */
+-struct kshark_plugin_list {
+-	/** Pointer to the next Plugin. */
+-	struct kshark_plugin_list	*next;
++/**
++ * A function type to be used when defining data check function for the plugin.
++ */
++typedef bool (*kshark_check_data_func)(const char *file_name);
+ 
+-	/** The plugin object file to load. */
+-	char				*file;
++/**
++ * A function type to be used when defining data format function for the plugin.
++ */
++typedef const char *(*kshark_format_func) ();
++
++/**
++ * A function type to be used when defining plugin's configuration/control
++ * function.
++ */
++typedef void *(*kshark_plugin_ctrl_func)(void *);
++
++/** The limit in size of the data format identifier string. */
++#define KS_DATA_FORMAT_SIZE	15
+ 
+-	/** Plugin Event handler. */
+-	void				*handle;
++/** Plugable Data Readout Interface (dri). */
++struct kshark_dri {
++	/** A short name for this data input. */
++	char				*name;
++
++	/** Data format identifier. */
++	char				data_format[KS_DATA_FORMAT_SIZE];
++
++	/** Callback function for initialization of the data input. */
++	kshark_plugin_load_func		init;
++
++	/** Callback function for deinitialization of the data input. */
++	kshark_plugin_load_func		close;
++
++	/**
++	 * Callback function for checking if the data input is applicable for
++	 * a given data file.
++	 */
++	kshark_check_data_func		check_data;
++};
++
++/** Linked list of Data Readout Interfaces (dri). */
++struct kshark_dri_list {
++	/** Pointer to the next input interface. */
++	struct kshark_dri_list		*next;
++
++	/** Pointer to the interface of methods used by the input. */
++	struct kshark_dri		*interface;
++};
++
++/** Plugable Data Processing Interface (dpi). */
++struct kshark_dpi {
++	/** The plugin's short name. */
++	char				*name;
+ 
+ 	/** Callback function for initialization of the plugin. */
+ 	kshark_plugin_load_func		init;
+@@ -161,16 +249,102 @@ struct kshark_plugin_list {
+ 	kshark_plugin_load_func		close;
+ };
+ 
+-int kshark_register_plugin(struct kshark_context *kshark_ctx,
+-			   const char *file);
++/** Linked list of data processing interfaces (dpi). */
++struct kshark_dpi_list {
++	/** Pointer to the next plugin interface. */
++	struct kshark_dpi_list		*next;
++
++	/** Pointer to the interface of methods used by the plugin. */
++	struct kshark_dpi		*interface;
++
++	/**
++	 * The status of the interface.
++	 */
++	int				status;
++};
++
++struct kshark_dri_list *
++kshark_register_input(struct kshark_context *kshark_ctx,
++		      struct kshark_dri *plugin);
++
++void kshark_unregister_input(struct kshark_context *kshark_ctx,
++			     const char *file);
++
++void kshark_free_dri_list(struct kshark_dri_list *inputs);
++
++/** Linked list of plugins. */
++struct kshark_plugin_list {
++	/** Pointer to the next plugin. */
++	struct kshark_plugin_list	*next;
++
++	/** The plugin's short name. */
++	char	*name;
++
++	/** The plugin object file to load. */
++	char	*file;
++
++	/** Plugin's object file handler. */
++	void	*handle;
++
++	/**
++	 * Control interface of the plugin. Can be used to configure
++	 * the plugin.
++	 */
++	kshark_plugin_ctrl_func		ctrl_interface;
++
++	/** The interface of methods used by a data processing plugin. */
++	struct kshark_dpi		*process_interface;
++
++	/** The interface of methods used by a data readout plugin. */
++	struct kshark_dri		*readout_interface;
++};
++
++/** Plugin status identifiers. */
++enum kshark_plugin_status {
++	/** The plugin is enabled. */
++	KSHARK_PLUGIN_ENABLED	= 1 << 0,
++
++	/** The plugin is successfully loaded. */
++	KSHARK_PLUGIN_LOADED	= 1 << 1,
++
++	/** The plugin failed to initialization. */
++	KSHARK_PLUGIN_FAILED	= 1 << 2,
++};
++
++struct kshark_plugin_list *
++kshark_register_plugin(struct kshark_context *kshark_ctx,
++		       const char *name,
++		       const char *file);
+ 
+ void kshark_unregister_plugin(struct kshark_context *kshark_ctx,
++			      const char *name,
+ 			      const char *file);
+ 
+ void kshark_free_plugin_list(struct kshark_plugin_list *plugins);
+ 
+-int kshark_handle_plugins(struct kshark_context *kshark_ctx,
+-			  enum kshark_plugin_actions  task_id);
++void kshark_free_dpi_list(struct kshark_dpi_list *plugins);
++
++struct kshark_plugin_list *
++kshark_find_plugin(struct kshark_plugin_list *plugins, const char *file);
++
++struct kshark_plugin_list *
++kshark_find_plugin_by_name(struct kshark_plugin_list *plugins,
++			   const char *name);
++
++struct kshark_dpi_list *
++kshark_register_plugin_to_stream(struct kshark_data_stream *stream,
++				 struct kshark_dpi *plugin,
++				 bool active);
++
++void kshark_unregister_plugin_from_stream(struct kshark_data_stream *stream,
++					  struct kshark_dpi *plugin);
++
++int kshark_handle_dpi(struct kshark_data_stream *stream,
++		      struct kshark_dpi_list *plugin,
++		      enum kshark_plugin_actions task_id);
++
++int kshark_handle_all_dpis(struct kshark_data_stream *stream,
++			   enum kshark_plugin_actions  task_id);
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/src/libkshark.c b/src/libkshark.c
+index f5a5aeb..d85f894 100644
+--- a/src/libkshark.c
++++ b/src/libkshark.c
+@@ -16,6 +16,7 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <assert.h>
++#include <string.h>
+ 
+ // KernelShark
+ #include "libkshark.h"
+@@ -36,7 +37,6 @@ static bool kshark_default_context(struct kshark_context **context)
+ 	kshark_ctx->stream_info.array_size = KS_DEFAULT_NUM_STREAMS;
+ 	kshark_ctx->stream_info.max_stream_id = -1;
+ 
+-	kshark_ctx->event_handlers = NULL;
+ 	kshark_ctx->collections = NULL;
+ 	kshark_ctx->plugins = NULL;
+ 
+@@ -304,6 +304,7 @@ int kshark_add_stream(struct kshark_context *kshark_ctx)
+ int kshark_stream_open(struct kshark_data_stream *stream, const char *file)
+ {
+ 	struct kshark_context *kshark_ctx = NULL;
++	struct kshark_dri_list *input;
+ 
+ 	if (!stream || !kshark_instance(&kshark_ctx))
+ 		return -EFAULT;
+@@ -319,6 +320,14 @@ int kshark_stream_open(struct kshark_data_stream *stream, const char *file)
+ 		return kshark_tep_init_input(stream);
+ 	}
+ 
++	for (input = kshark_ctx->inputs; input; input = input->next)
++		if (input->interface->check_data(file)) {
++			strcpy(stream->data_format,
++			       input->interface->data_format);
++
++			return input->interface->init(stream);
++		}
++
+ 	return -ENODATA;
+ }
+ 
+@@ -416,6 +425,7 @@ int *kshark_all_streams(struct kshark_context *kshark_ctx)
+ static int kshark_stream_close(struct kshark_data_stream *stream)
+ {
+ 	struct kshark_context *kshark_ctx = NULL;
++	struct kshark_dri_list *input;
+ 
+ 	if (!stream || !kshark_instance(&kshark_ctx))
+ 		return -EFAULT;
+@@ -434,6 +444,10 @@ static int kshark_stream_close(struct kshark_data_stream *stream)
+ 	if (kshark_is_tep(stream))
+ 		return kshark_tep_close_interface(stream);
+ 
++	for (input = kshark_ctx->inputs; input; input = input->next)
++		if (strcmp(stream->data_format, input->interface->data_format) == 0)
++			return input->interface->close(stream);
++
+ 	return -ENODATA;
+ }
+ 
+@@ -454,6 +468,13 @@ int kshark_close(struct kshark_context *kshark_ctx, int sd)
+ 	if (!stream)
+ 		return -EFAULT;
+ 
++	/* Close all active plugins for this stream. */
++	if (stream->plugins) {
++		kshark_handle_all_dpis(stream, KSHARK_PLUGIN_CLOSE);
++		kshark_free_event_handler_list(stream->event_handlers);
++		kshark_free_dpi_list(stream->plugins);
++	}
++
+ 	ret = kshark_stream_close(stream);
+ 	kshark_remove_stream(kshark_ctx, stream->stream_id);
+ 
+@@ -499,6 +520,8 @@ void kshark_free(struct kshark_context *kshark_ctx)
+ 	if (kshark_ctx->plugins)
+ 		kshark_free_plugin_list(kshark_ctx->plugins);
+ 
++	kshark_free_dri_list(kshark_ctx->inputs);
++
+ 	if (kshark_ctx == kshark_context_handler)
+ 		kshark_context_handler = NULL;
+ 
+@@ -1222,6 +1245,29 @@ void kshark_clear_all_filters(struct kshark_context *kshark_ctx,
+ 		set_all_visible(&data[i]->visible);
  }
  
 +/**
-+ * @brief Get the name of the command/task from its Process Id.
++ * @brief Process all registered event-specific plugin actions.
 + *
-+ * @param sd: Data stream identifier.
-+ * @param pid: Process Id of the command/task.
++ * @param stream: Input location for a Trace data stream pointer.
++ * @param record: Input location for the trace record.
++ * @param entry: Output location for entry.
 + */
-+char *kshark_comm_from_pid(int sd, int pid)
++void kshark_plugin_actions(struct kshark_data_stream *stream,
++			   void *record, struct kshark_entry *entry)
 +{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_context *kshark_ctx = NULL;
-+	struct kshark_data_stream *stream;
-+	struct kshark_entry e;
++	if (stream->event_handlers) {
++		/* Execute all plugin-provided actions for this event (if any). */
++		struct kshark_event_proc_handler *evt_handler = stream->event_handlers;
 +
-+	if (!kshark_instance(&kshark_ctx))
-+		return NULL;
-+
-+	stream = kshark_get_data_stream(kshark_ctx, sd);
-+	if (!stream)
-+		return NULL;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_task) {
-+		e.visible = KS_PLUGIN_UNTOUCHED_MASK;
-+		e.pid = pid;
-+
-+		return interface->get_task(stream, &e);
++		while ((evt_handler = kshark_find_event_handler(evt_handler,
++								entry->event_id))) {
++			evt_handler->event_func(stream, record, entry);
++			evt_handler = evt_handler->next;
++			entry->visible &= ~KS_PLUGIN_UNTOUCHED_MASK;
++		}
 +	}
-+
-+	return NULL;
 +}
 +
-+/**
-+ * @brief Get the name of the event from its Id.
-+ *
-+ * @param sd: Data stream identifier.
-+ * @param event_id: The unique Id of the event type.
-+ */
-+char *kshark_event_from_id(int sd, int event_id)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_context *kshark_ctx = NULL;
-+	struct kshark_data_stream *stream;
-+	struct kshark_entry e;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return NULL;
-+
-+	stream = kshark_get_data_stream(kshark_ctx, sd);
-+	if (!stream)
-+		return NULL;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_event_name) {
-+		e.visible = KS_PLUGIN_UNTOUCHED_MASK;
-+		e.event_id = event_id;
-+
-+		return interface->get_event_name(stream, &e);
-+	}
-+
-+	return NULL;
-+}
-+
-+/**
-+ * @brief Get the original process Id of the entry. Using this function make
-+ *	  sense only in cases when the original value can be overwritten by
-+ *	  plugins. If you know that no plugins are loaded use "entry->pid"
-+ *	  directly.
-+ *
-+ * @param entry: Input location for an entry.
-+ */
-+int kshark_get_pid(const struct kshark_entry *entry)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
-+
-+	if (!stream)
-+		return -EFAULT;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_pid)
-+		return interface->get_pid(stream, entry);
-+
-+	return -EFAULT;
-+}
-+
-+/**
-+ * @brief Get the original event Id of the entry. Using this function make
-+ *	  sense only in cases when the original value can be overwritten by
-+ *	  plugins. If you know that no plugins are loaded use "entry->event_id"
-+ *	  directly.
-+ *
-+ * @param entry: Input location for an entry.
-+ */
-+int kshark_get_event_id(const struct kshark_entry *entry)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
-+
-+	if (!stream)
-+		return -EFAULT;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_event_id)
-+		return interface->get_event_id(stream, entry);
-+
-+	return -EFAULT;
-+}
-+
-+/**
-+ * @brief Get an array of all event Ids for a given data stream.
-+ *
-+ * @param stream: Input location for a Trace data stream pointer.
-+ *
-+ * @returns An array of event Ids. The user is responsible for freeing the
-+ *	    outputted array.
-+ */
-+int *kshark_get_all_event_ids(struct kshark_data_stream *stream)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+
-+	if (!stream)
-+		return NULL;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_all_event_ids)
-+		return interface->get_all_event_ids(stream);
-+
-+	return NULL;
-+}
-+
-+/**
-+ * @brief Find the event Ids corresponding to a given event name.
-+ *
-+ * @param stream: Input location for a Trace data stream pointer.
-+ * @param event_name: The name of the event.
-+ *
-+ * @returns Event Ids number.
-+ */
-+int kshark_find_event_id(struct kshark_data_stream *stream,
-+			 const char *event_name)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+
-+	if (!stream)
-+		return -EFAULT;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->find_event_id)
-+		return interface->find_event_id(stream, event_name);
-+
-+	return -EFAULT;
-+}
-+
-+/**
-+ * @brief Find the event name corresponding to a given entry.
-+ *
-+ * @param entry: Input location for an entry.
-+ *
-+ * @returns The mane of the event on success, or NULL in case of failure.
-+ *	    The use is responsible for freeing the output string.
-+ */
-+char *kshark_get_event_name(const struct kshark_entry *entry)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
-+
-+	if (!stream)
-+		return NULL;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_event_name)
-+		return interface->get_event_name(stream, entry);
-+
-+	return NULL;
-+}
-+
-+/**
-+ * @brief Find the task name corresponding to a given entry.
-+ *
-+ * @param entry: Input location for an entry.
-+ *
-+ * @returns The mane of the task on success, or NULL in case of failure.
-+ *	    The use is responsible for freeing the output string.
-+ */
-+char *kshark_get_task(const struct kshark_entry *entry)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
-+
-+	if (!stream)
-+		return NULL;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_task)
-+		return interface->get_task(stream, entry);
-+
-+	return NULL;
-+}
-+
-+/**
-+ * @brief Get the basic information (text) about the entry.
-+ *
-+ * @param entry: Input location for an entry.
-+ *
-+ * @returns A the info text. The user is responsible for freeing the
-+ *	    outputted string.
-+ */
-+char *kshark_get_info(const struct kshark_entry *entry)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
-+
-+	if (!stream)
-+		return NULL;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_info)
-+		return interface->get_info(stream, entry);
-+
-+	return NULL;
-+}
-+
-+/**
-+ * @brief Get the auxiliary information about the entry. In the case of
-+ * 	  TEP (Ftrace) data, this function provides the latency info.
-+ *
-+ * @param entry: Input location for an entry.
-+ *
-+ * @returns A the auxiliary text info. The user is responsible for freeing the
-+ *	    outputted string.
-+ */
-+char *kshark_get_aux_info(const struct kshark_entry *entry)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
-+
-+	if (!stream)
-+		return NULL;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->aux_info)
-+		return interface->aux_info(stream, entry);
-+
-+	return NULL;
-+}
-+
-+/**
-+ * @brief Get an array of all data field names associated with a given entry.
-+ *
-+ * @param entry: Input location for an entry.
-+ * @param fields: Output location of the array of field names. The user is
-+ *		  responsible for freeing the elements of the outputted array.
-+ *
-+ * @returns Total number of event fields on success, or a negative errno in
-+ *	    the case of a failure.
-+ */
-+int kshark_get_all_event_field_names(const struct kshark_entry *entry,
-+				     char ***fields)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
-+
-+	if (!stream)
-+		return -EFAULT;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_all_event_field_names)
-+		return interface->get_all_event_field_names(stream,
-+							    entry, fields);
-+
-+	return -EFAULT;
-+}
-+
-+/**
-+ * @brief Get the value type of an event field corresponding to a given entry.
-+ *
-+ * @param entry: Input location for an entry.
-+ * @param field: The name of the data field.
-+ *
-+ * @returns The type of the data field on success, or KS_INVALID_FIELD in
-+ *	    the case of a failure.
-+ */
-+kshark_event_field_format
-+kshark_get_event_field_type(const struct kshark_entry *entry,
-+			    const char *field)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
-+
-+	if (!stream)
-+		return KS_INVALID_FIELD;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->get_event_field_type)
-+		return interface->get_event_field_type(stream, entry, field);
-+
-+	return KS_INVALID_FIELD;
-+}
-+
-+/**
-+ * @brief Get the value of an event field in a given trace record.
-+ *
-+ * @param stream: Input location for a Trace data stream pointer.
-+ * @param rec: Input location for a record.
-+ * @param field: The name of the data field.
-+ * @param val: Output location for the value of the field.
-+ *
-+ * @returns Zero on success or a negative errno in the case of a failure.
-+ */
-+int kshark_read_record_field_int(struct kshark_data_stream *stream, void *rec,
-+				 const char *field, int64_t *val)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+
-+	if (!stream)
-+		return -EFAULT;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->read_record_field_int64)
-+		return interface->read_record_field_int64(stream, rec,
-+							  field, val);
-+
-+	return -EFAULT;
-+}
-+
-+/**
-+ * @brief Get the value of an event field corresponding to a given entry.
-+ *	  The value is retrieved via the offset in the file of the original
-+ *	  record.
-+ *
-+ * @param entry: Input location for an entry.
-+ * @param field: The name of the data field.
-+ * @param val: Output location for the value of the field.
-+ *
-+ * @returns Zero on success or a negative errno in the case of a failure.
-+ */
-+int kshark_read_event_field_int(const struct kshark_entry *entry,
-+				const char* field, int64_t *val)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_stream_from_entry(entry);
-+
-+	if (!stream)
-+		return -EFAULT;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->read_event_field_int64)
-+		return interface->read_event_field_int64(stream, entry, field, val);
-+
-+	return -EFAULT;
-+}
-+
-+/** @brief Print the entry. */
-+void kshark_print_entry(const struct kshark_entry *entry)
-+{
-+	char *entry_str = kshark_dump_entry(entry);
-+
-+	if (!entry_str)
-+		puts("(nil)");
-+
-+	puts(entry_str);
-+	free(entry_str);
-+}
-+
-+/**
-+ * @brief Load the content of the trace data file asociated with a given
-+ *	  Data stream into an array of kshark_entries.
-+ *	  If one or more filters are set, the "visible" fields of each entry
-+ *	  is updated according to the criteria provided by the filters. The
-+ *	  field "filter_mask" of the session's context is used to control the
-+ *	  level of visibility/invisibility of the filtered entries.
-+ *
-+ * @param kshark_ctx: Input location for context pointer.
-+ * @param sd: Data stream identifier.
-+ * @param data_rows: Output location for the trace data. The user is
-+ *		     responsible for freeing the elements of the outputted
-+ *		     array.
-+ *
-+ * @returns The size of the outputted data in the case of success, or a
-+ *	    negative error code on failure.
-+ */
-+ssize_t kshark_load_entries(struct kshark_context *kshark_ctx, int sd,
-+			    struct kshark_entry ***data_rows)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_data_stream(kshark_ctx, sd);
-+
-+	if (!stream)
-+		return -EFAULT;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->load_entries)
-+		return interface->load_entries(stream, kshark_ctx, data_rows);
-+
-+	return -EFAULT;
-+}
-+
-+/**
-+ * @brief Load the content of the trace data file asociated with a given
-+ *	  Data stream into a data matrix. The user is responsible
-+ *	  for freeing the outputted data.
-+ *
-+ * @param kshark_ctx: Input location for context pointer.
-+ * @param sd: Data stream identifier.
-+ * @param cpu_array: Output location for the CPU column (array) of the matrix.
-+ * @param event_array: Output location for the Event Id column (array) of the
-+ *		       matrix.
-+ * @param pid_array: Output location for the PID column (array) of the matrix.
-+ * @param offset_array: Output location for the offset column (array) of the
-+ *			matrix.
-+ * @param ts_array: Output location for the time stamp column (array) of the
-+ *		    matrix.
-+ */
-+ssize_t kshark_load_matrix(struct kshark_context *kshark_ctx, int sd,
-+			   int16_t **event_array,
-+			   int16_t **cpu_array,
-+			   int32_t **pid_array,
-+			   int64_t **offset_array,
-+			   int64_t **ts_array)
-+{
-+	struct kshark_generic_stream_interface *interface;
-+	struct kshark_data_stream *stream =
-+		kshark_get_data_stream(kshark_ctx, sd);
-+
-+	if (!stream)
-+		return -EFAULT;
-+
-+	interface = stream->interface;
-+	if (interface->type == KS_GENERIC_DATA_INTERFACE &&
-+	    interface->load_matrix)
-+		return interface->load_matrix(stream, kshark_ctx, event_array,
-+								  cpu_array,
-+								  pid_array,
-+								  offset_array,
-+								  ts_array);
-+
-+	return -EFAULT;
-+}
-+
- static struct kshark_task_list *
- kshark_find_task(struct kshark_context *kshark_ctx, uint32_t key, int pid)
+ static inline void free_ptr(void *ptr)
  {
+ 	if (ptr)
 diff --git a/src/libkshark.h b/src/libkshark.h
-index 9f7b6b1..77fa4c5 100644
+index 835be96..95f501d 100644
 --- a/src/libkshark.h
 +++ b/src/libkshark.h
-@@ -121,6 +121,19 @@ void kshark_hash_id_free(struct kshark_hash_id *hash);
- 
- int *kshark_hash_ids(struct kshark_hash_id *hash);
- 
-+/* Quiet warnings over documenting simple structures */
-+//! @cond Doxygen_Suppress
-+
-+static const char top_name[] = { 0x1b, 0x00 }; // Non printable character
-+
-+//! @endcond
-+
-+/**
-+ * Non printable character used for the name in the case when the name has to
-+ * be ignored.
-+ */
-+#define KS_UNNAMED	(char *) &top_name
-+
- struct kshark_data_stream;
- 
- /** A function type to be used by the method interface of the data stream. */
-@@ -264,6 +277,9 @@ struct kshark_generic_stream_interface {
- /** The limit in size of the data format identifier string. */
- #define KS_DATA_FORMAT_SIZE	15
- 
-+/** Data format identifier string indicating invalid data. */
-+#define KS_INVALID_DATA		"invalid data"
-+
- /** Structure representing a stream of trace data. */
- struct kshark_data_stream {
- 	/** Data stream identifier. */
-@@ -320,6 +336,12 @@ struct kshark_data_stream {
- 	void				*interface;
+@@ -272,9 +272,6 @@ struct kshark_generic_stream_interface {
+ 	void			*handle;
  };
  
-+static inline char *kshark_set_data_format(char *dest_format,
-+					   const char *src_format)
-+{
-+	return strncpy(dest_format, src_format, KS_DATA_FORMAT_SIZE - 1);
-+}
+-/** The limit in size of the data format identifier string. */
+-#define KS_DATA_FORMAT_SIZE	15
+-
+ /** Data format identifier string indicating invalid data. */
+ #define KS_INVALID_DATA		"invalid data"
+ 
+@@ -327,6 +324,18 @@ struct kshark_data_stream {
+ 	/** The type of the data. */
+ 	char			data_format[KS_DATA_FORMAT_SIZE];
+ 
++	/** List of Plugin interfaces. */
++	struct kshark_dpi_list	*plugins;
 +
- /** Size of the task's hash table. */
- #define KS_TASK_HASH_SHIFT 16
- #define KS_TASK_HASH_SIZE (1 << KS_TASK_HASH_SHIFT)
-@@ -333,8 +355,32 @@ struct kshark_task_list {
- 	int			 pid;
++	/** The number of plugins registered for this stream.*/
++	int			n_plugins;
++
++	/** List of Plugin's Event handlers. */
++	struct kshark_event_proc_handler	*event_handlers;
++
++	/** List of Plugin's Draw handlers. */
++	struct kshark_draw_handler		*draw_handlers;
++
+ 	/**
+ 	 * The interface of methods used to operate over the data from a given
+ 	 * stream.
+@@ -406,11 +415,17 @@ struct kshark_context {
+ 	/** List of Data collections. */
+ 	struct kshark_entry_collection *collections;
+ 
++	/** List of data readout interfaces. */
++	struct kshark_dri_list		*inputs;
++
++	/** The number of readout interfaces. */
++	int				n_inputs;
++
+ 	/** List of Plugins. */
+ 	struct kshark_plugin_list	*plugins;
+ 
+-	/** List of Plugin Event handlers. */
+-	struct kshark_event_handler	*event_handlers;
++	/** The number of plugins. */
++	int				n_plugins;
  };
  
-+/**
-+ * Structure representing the parameters of the stream descriptor array owned
-+ * by the kshark session.
-+ */
-+struct kshark_stream_array_descriptor {
-+	/** The identifier of the Data stream added. */
-+	int		max_stream_id;
-+
-+	/** The the next free Data stream identifier (index). */
-+	int		next_free_stream_id;
-+
-+	/** The capacity of the array of stream objects (pointers). */
-+	int		array_size;
-+};
-+
- /** Structure representing a kshark session. */
- struct kshark_context {
-+	/** Array of data stream descriptors. */
-+	struct kshark_data_stream	**stream;
-+
-+	/** The number of data streams. */
-+	int				n_streams;
-+
-+	/** Parameters of the stream descriptor array. */
-+	struct kshark_stream_array_descriptor	stream_info;
-+
- 	/** Input handle for the trace data file. */
- 	struct tracecmd_input	*handle;
+ bool kshark_instance(struct kshark_context **kshark_ctx);
+@@ -587,6 +602,9 @@ void kshark_clear_all_filters(struct kshark_context *kshark_ctx,
+ 			      struct kshark_entry **data,
+ 			      size_t n_entries);
  
-@@ -392,6 +438,18 @@ bool kshark_instance(struct kshark_context **kshark_ctx);
- 
- bool kshark_open(struct kshark_context *kshark_ctx, const char *file);
- 
-+int kshark_add_stream(struct kshark_context *kshark_ctx);
++void kshark_plugin_actions(struct kshark_data_stream *stream,
++			   void *record, struct kshark_entry *entry);
 +
-+int kshark_remove_stream(struct kshark_context *kshark_ctx, int sd);
-+
-+struct kshark_data_stream *
-+kshark_get_data_stream(struct kshark_context *kshark_ctx, int sd);
-+
-+struct kshark_data_stream *
-+kshark_get_stream_from_entry(const struct kshark_entry *entry);
-+
-+int *kshark_all_streams(struct kshark_context *kshark_ctx);
-+
- ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
- 				 struct kshark_entry ***data_rows);
- 
-@@ -411,6 +469,10 @@ void kshark_close(struct kshark_context *kshark_ctx);
- 
- void kshark_free(struct kshark_context *kshark_ctx);
- 
-+char *kshark_comm_from_pid(int sd, int pid);
-+
-+char *kshark_event_from_id(int sd, int event_id);
-+
- int kshark_get_pid_easy(struct kshark_entry *entry);
- 
- const char *kshark_get_task_easy(struct kshark_entry *entry);
-@@ -427,6 +489,48 @@ void kshark_convert_nano(uint64_t time, uint64_t *sec, uint64_t *usec);
- 
- char* kshark_dump_entry(const struct kshark_entry *entry);
- 
-+void kshark_print_entry(const struct kshark_entry *entry);
-+
-+int kshark_get_pid(const struct kshark_entry *entry);
-+
-+int kshark_get_event_id(const struct kshark_entry *entry);
-+
-+int *kshark_get_all_event_ids(struct kshark_data_stream *stream);
-+
-+int kshark_find_event_id(struct kshark_data_stream *stream,
-+			 const char *event_name);
-+
-+char *kshark_get_event_name(const struct kshark_entry *entry);
-+
-+char *kshark_get_task(const struct kshark_entry *entry);
-+
-+char *kshark_get_info(const struct kshark_entry *entry);
-+
-+char *kshark_get_aux_info(const struct kshark_entry *entry);
-+
-+kshark_event_field_format
-+kshark_get_event_field_type(const struct kshark_entry *entry,
-+			    const char *field);
-+
-+int kshark_get_all_event_field_names(const struct kshark_entry *entry,
-+				     char ***field);
-+
-+int kshark_read_record_field_int(struct kshark_data_stream *stream, void *rec,
-+				 const char *field, int64_t *val);
-+
-+int kshark_read_event_field_int(const struct kshark_entry *entry,
-+				const char* field, int64_t *val);
-+
-+ssize_t kshark_load_entries(struct kshark_context *kshark_ctx, int sd,
-+			    struct kshark_entry ***data_rows);
-+
-+ssize_t kshark_load_matrix(struct kshark_context *kshark_ctx, int sd,
-+			   int16_t **event_array,
-+			   int16_t **cpu_array,
-+			   int32_t **pid_array,
-+			   int64_t **offset_array,
-+			   int64_t **ts_array);
-+
- /**
-  * Custom entry info function type. To be user for dumping info for custom
-  * KernelShark entryes.
+ /** Search failed identifiers. */
+ enum kshark_search_failed {
+ 	/** All entries have timestamps greater timestamps. */
 -- 
 2.25.1
 
