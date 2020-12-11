@@ -2,231 +2,221 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5308AC433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:14:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3162C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:15:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0B55A207A4
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:14:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4FD29207A4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:15:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406203AbgLKOrM (ORCPT
+        id S2406324AbgLKOrN (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Dec 2020 09:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
+        Fri, 11 Dec 2020 09:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406324AbgLKOqC (ORCPT
+        with ESMTP id S2406377AbgLKOqY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:46:02 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4292C0613CF
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:21 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id a11so1554836wrr.13
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:21 -0800 (PST)
+        Fri, 11 Dec 2020 09:46:24 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA42C0617A7
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:27 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id y17so9267185wrr.10
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JZy3S9KYXoyelUtnHyD2k8tW1N/cWWOYLtUTEJoHam0=;
-        b=NR3onixVsO+FNVliCNN22M5krik6JXVOvNgwUwIKgb2T+fsYxN5Ty3Echn9JblR2z8
-         M9VhlQWbN+8lCSvAPfx3i7oVC6qvu1g+UoMLf9X+VT1PeZB4LhuVxslIi5vflAiMwgXY
-         X2sx2ZNJ8p3zejn5IDAB4ndkp5A/XU15AodMaBSIDe19eNG0orsNxycOJYhqFT17rCXL
-         lji+24gehGwPr4iPMV76aWTMG79wLkVVRj9m/L8vyyPA5fFRQ19iGIsVBcIlcm5ZExJT
-         jHIeh9ma+ljGC8p30ZAdW4CmkpE2TQff/e1lYGkW7kVuQmRPpGVm3YCY6qwgzchPC3B+
-         keUQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=I0NmFYspL0nWDyoDHbxV8zk5GA140LeU8XNBINoc6GA=;
+        b=bpRq/2GTugqnxIUhv5rf7pDIohx7fR95cnYz+2DWreXwDwmtGwTEeDoydMWUaFIEho
+         3QqZzrQh3LjnJFK8jOY3IYku2CqBwmEGwa7vNQ6uzCqBCurxfBABeSSeNGEAjOPEFOza
+         IktwCd7b9poic3L2dQRM/NoqMgW1SWeVyS4mRdr5Wb9F6Wjp1veSofU6Ap0nYbnBl3jn
+         K5vFN8U3VfYK3FXogybGJaALu5dlw3hc1HMgeMx29gSVkfj4g7iVCVe64L4SxxWxDks6
+         V1Y/Zc0oCHds+aiXjmWvEcgNxlX5gw8OrL063OjXnaYXJM23QCiKzRG/7emvxfQ3cl9b
+         HhIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JZy3S9KYXoyelUtnHyD2k8tW1N/cWWOYLtUTEJoHam0=;
-        b=l8s+QURFFWDXBPb1i9/GDf8phxjL5rPMeKgcM3lTL3XaE7h4a70UiweAXsSRyBWCcg
-         CwTzjMyw4i5UorRfYUK/KZ5RxAqhtEd56z2O4rqaVSDtz7Uu3Eq2KxFiZjdlO53El7gk
-         UxC6Jea90vpxP6Cdw5l85TmkwC97fHsJmOPwLoizVNvDxqZaQHG9zoDwd4kQ9A3SEWvl
-         UaujeZv11NTAxAmdhBj9IgkTf9nymHU1fSdc4t+U9RNFIU3UHX2KDSaMbmeXLwI1AHuh
-         25n7yEgDe59/RgLotqT0UigaaqVQbVa/Um4Zwv0dc6uMhoFjXnjsmGrgLTMwXlF+hkOS
-         EwXQ==
-X-Gm-Message-State: AOAM531pFKY0R39Cx/1mQaMRFe+MN9YdfKI+crBg10nebhBUr/i/pxkm
-        8oZ8q4AePAlp5zsiqEpyV/M=
-X-Google-Smtp-Source: ABdhPJweYPcwFr3+Zyd8VoOsElxDU6/IMcFHT2jmZXF5DcjPVUlgrS9YtB45bu5A8sfHd4hHC/IHtg==
-X-Received: by 2002:a5d:400c:: with SMTP id n12mr14574382wrp.218.1607697920396;
-        Fri, 11 Dec 2020 06:45:20 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=I0NmFYspL0nWDyoDHbxV8zk5GA140LeU8XNBINoc6GA=;
+        b=FHgAxVZ6zDGjyC6h2Yijdl6DNlT8y3oBUb0EUm6jw4gKYDJYJ7Een0CrKtR1p2+KIy
+         f9HwArkbq6Ya1DPSdnUkCy+zyeEhntdDL1QnDkz3Lc6CbmCsOrsUGEbOwvlkMTSFehRa
+         9PlYT4wJX24VU5My0XB7iOTf5gxJlJpB2/rrUggWh8APldSSKglCL6UfdSEdTJNpp0+C
+         zJ3Wqe6o2ABuUmCioXGmWP4gyqU/l3+whFGqT64+EKB0ecbEneE8lUPc/9AeJ/gjLMoE
+         DGxxtFWQd6BFskHX6Q1NE2U5r9DZ49UaXNMaaTCnxkgr8d9ecRXFI4/clCB55TgN+qhY
+         dRpA==
+X-Gm-Message-State: AOAM530dXhPWyUXWHwmbYvD7RK0cx2VcSWv3glimt0isYbr9bekaEeoL
+        uxMe4GBTAOlDqi0G5ZggAQI=
+X-Google-Smtp-Source: ABdhPJwuQHBTIF1X60NW+ox1K9QacoDVdHYJFmlfDcDkOsMZSrdzTPcRJcSOD2qt1mZiWzJFs70JEw==
+X-Received: by 2002:a5d:604a:: with SMTP id j10mr11858254wrt.290.1607697926446;
+        Fri, 11 Dec 2020 06:45:26 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id y2sm14471471wma.6.2020.12.11.06.45.18
+        by smtp.gmail.com with ESMTPSA id y2sm14471471wma.6.2020.12.11.06.45.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 06:45:19 -0800 (PST)
+        Fri, 11 Dec 2020 06:45:25 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v7 00/32] Start KernelShark v2 transformation
-Date:   Fri, 11 Dec 2020 16:44:39 +0200
-Message-Id: <20201211144511.575346-1-y.karadz@gmail.com>
+Subject: [PATCH v7 05/32] kernel-shark: Define build target for JSONC
+Date:   Fri, 11 Dec 2020 16:44:44 +0200
+Message-Id: <20201211144511.575346-6-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201211144511.575346-1-y.karadz@gmail.com>
+References: <20201211144511.575346-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In this patch-set we are starting the introduction of the changes
-in the C API of libkshark. The goal of this transformation is to
-turn KernelShark into a general purpose toolkit for analysis of
-tracing data that is no longer strongly coupled to the Ftrace/trace-cmd
-data format. At the end of the transformation KernelShark will be able
-to merge and simultaneously visualize data from different tracers,
-recorded in different data formats. It will also significantly extend
-the possibilities for user customization.
+Having the JSONC libs as a target simplifies the build/linking of
+the KernelShark libraries and executables because all necessary
+information, like include paths, compiler flags and library names
+can be retriever directly from the target.
 
-This  patch-set transforms the way KernelShark processes the raw tracing
-data. Later, in a consecutive patch-sets we will introduce the changes
-in the visualization instruments and in the KernelShark GUI itself.
+The patch also adds to FindJSONC.cmake the standard module
+documentation header.
 
-Changes in v7:
- * Patches 1-5 are new, but these are only infrastructureal changes
-   that have no functional effects on the API.
-   - License info is added.
-   - README is updated.
-   - KernelShark now builds and links against the stand-alone versions
-     of libtraceevent and libtracefs.
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ CMakeLists.txt        |  4 +--
+ build/FindJSONC.cmake | 70 +++++++++++++++++++++++++++++++++----------
+ src/CMakeLists.txt    |  2 +-
+ 3 files changed, 57 insertions(+), 19 deletions(-)
 
-Changes in v6:
- * The patches from the "OpenGL wrapper" patch-set (already reviewed by
-   Steven) have been added here (patches 21-24).
-
- * Patches 25-27 are new, but these are only infrastructureal changes
-   that have no functional effects on the API.
-
-
-Changes in v5:
- * Only minor modifications addressing issues pointed out by Steven in
-   his reviews of v4.
-
-Changes in v4:
- * The integer data format identifier is replaced with a string value
-   that gets registered by the readout plugin.
-
- * Plus several small modifications addressing the issues pointed out
-   by Steven.
-
-
-Changes in v3.
-  This version contains number of small modifications addressing the
-  issues pointed out by Steven in his review. However, it also contains
-  the following major changes:
-
-   * The session context (kshark_context) holds a pointer to unspecified
-     data processing interface (void *interface). This will allow to
-     easily introduce new versions of this interface in the future, while
-     keeping the interface that we have now for backward compatibility.
-     The necessary type checking when using the interface made the helper
-     functions wrapping the corresponding methods of the interface
-     relatively complicated, so the implementations have been moved from
-     the header to the source file.
-
-   * A more sophisticated management of the Data stream descriptors that
-     can handle the case when Data streams are constantly added and
-     removed has been implemented. The design for this change was
-     suggested by Steven in his review.
-
-
-Changes in v2:
- * Tried to address review comments for "kernel-shark: Introduce libkshark-hash"
-
- * The huge patch "kernel-shark: Integrate the stream definitions with
-the C API" in the previous version is now split into 8 smaller patches.
-The last of these 8 new patches (kernel-shark: Complete the stream
-integration) is still a bit entangled. I can try to further break this
-patch in future versions of the patch-set, if this is needed.
-
-Yordan Karadzhov (1):
-  kernel-shark: Add "github Actions" workflow
-
-Yordan Karadzhov (VMware) (31):
-  kernel-shark: Add license information
-  kernel-shark: Change the CMake minimum version required
-  kernel-shark: Use libtraceevent and libtracefs
-  kernel-shark: Update README
-  kernel-shark: Define build target for JSONC
-  kernel-shark: Use only signed types in kshark_entry
-  kernel-shark: Add stream_id to kshark_entry
-  kernel-shark: Introduce libkshark-hash
-  kernel-shark: Introduce Data streams
-  kernel-shark: Rename static methods in libkshark
-  kernel-shark: Add basic methods for Data streams
-  kernel-shark: Housekeeping before implementing stream interface
-  kernel-shark: Add stream interface for trace-cmd data
-  kernel-shark: Start introducing KernelShark 2.0
-  kernel-shark: Start using data streams
-  kernel-shark: Remove dead code
-  kernel-shark: Redesign the plugin interface
-  kernel-shark: Complete the stream integration
-  kernel-shark: Provide merging of multiple data streams
-  kernel-shark: Integrate the stream definitions with data model
-  kernel-shark: Use only signed types for model defs
-  kernel-shark: Add ksmodel_get_bin()
-  kernel-shark: Protect ksmodel_set_in_range_bining()
-  kernel-shark: Add methods for time calibration
-  kernel-shark: Integrate streams with libkshark-configio
-  kernel-shark: Add support for drawing text
-  kernel-shark: Make GLUT optional dependency
-  kernel-shark: Add ksplot_draw_polyline()
-  kernel-shark: Optimize ksplot_draw_polygon()
-  kernel-shark: Do not use the ARRAY_SIZE macro
-  kernel-shark: Add basic infrastructure for testing
-
- .github/workflows/main.yml       |   61 +
- CMakeLists.txt                   |   25 +-
- Documentation/doxygen/dox_config |    1 +
- LICENSES/GPL-2.0                 |  359 +++
- LICENSES/LGPL-2.1                |  503 +++
- README                           |  129 +-
- build/FindJSONC.cmake            |   70 +-
- build/FindTraceCmd.cmake         |   53 +-
- build/FindTraceEvent.cmake       |   75 +
- build/FindTraceFS.cmake          |   75 +
- build/cmake_clean.sh             |    4 +
- build/deff.h.cmake               |   15 +-
- examples/CMakeLists.txt          |   34 +-
- examples/configio.c              |   20 +-
- examples/datafilter.c            |   67 +-
- examples/datahisto.c             |   38 +-
- examples/dataload.c              |   28 +-
- examples/multibufferload.c       |   53 +
- src/CMakeLists.txt               |   18 +-
- src/libkshark-collection.c       |  121 +-
- src/libkshark-configio.c         | 1208 +++++--
- src/libkshark-hash.c             |  239 ++
- src/libkshark-model.c            |  154 +-
- src/libkshark-model.h            |   55 +-
- src/libkshark-plot.c             |  317 +-
- src/libkshark-plot.h             |   73 +
- src/libkshark-plugin.c           |  658 +++-
- src/libkshark-plugin.h           |  294 +-
- src/libkshark-tepdata.c          | 1914 ++++++++++++
- src/libkshark-tepdata.h          |  112 +
- src/libkshark.c                  | 2619 +++++++++-------
- src/libkshark.h                  |  704 ++++-
- src/stb_truetype.h               | 5011 ++++++++++++++++++++++++++++++
- tests/CMakeLists.txt             |   14 +
- tests/libkshark-tests.cpp        |   48 +
- 35 files changed, 13177 insertions(+), 1992 deletions(-)
- create mode 100644 .github/workflows/main.yml
- create mode 100644 LICENSES/GPL-2.0
- create mode 100644 LICENSES/LGPL-2.1
- create mode 100644 build/FindTraceEvent.cmake
- create mode 100644 build/FindTraceFS.cmake
- create mode 100644 examples/multibufferload.c
- create mode 100644 src/libkshark-hash.c
- create mode 100644 src/libkshark-tepdata.c
- create mode 100644 src/libkshark-tepdata.h
- create mode 100644 src/stb_truetype.h
- create mode 100644 tests/CMakeLists.txt
- create mode 100644 tests/libkshark-tests.cpp
-
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 007f46a..a66050f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,8 +26,7 @@ include(${KS_DIR}/build/FindTraceCmd.cmake)
+ set(CMAKE_MODULE_PATH "${KS_DIR}/build")
+ find_package(TraceEvent REQUIRED)
+ find_package(TraceFS    REQUIRED)
+-
+-include(${KS_DIR}/build/FindJSONC.cmake)
++find_package(JSONC      REQUIRED)
+ 
+ find_package(Doxygen)
+ 
+@@ -84,7 +83,6 @@ endif (CMAKE_BUILD_TYPE MATCHES Package)
+ 
+ include_directories(${KS_DIR}/src/
+                     ${KS_DIR}/build/src/
+-                    ${JSONC_INCLUDE_DIR}
+                     ${TRACECMD_INCLUDE_DIR})
+ 
+ message("")
+diff --git a/build/FindJSONC.cmake b/build/FindJSONC.cmake
+index 3bae20f..2d0d41f 100644
+--- a/build/FindJSONC.cmake
++++ b/build/FindJSONC.cmake
+@@ -1,13 +1,44 @@
+-# - Try to find json-c
+-# https://cmake.org/Wiki/CMake:How_To_Find_Libraries
+-# Once done this will define
+-#  JSONC_FOUND - System has json-c
+-#  JSONC_INCLUDE_DIRS - The json-c include directories
+-#  JSONC_LIBRARIES - The libraries needed to use json-c
+-#  JSONC_DEFINITIONS - Compiler switches required for using json-c
+-
+-find_package(PkgConfig)
++
++#[=======================================================================[.rst:
++FindJSONC
++-------
++
++Finds the traceevent library.
++
++Imported Targets
++^^^^^^^^^^^^^^^^
++
++This module defines the :prop_tgt:`IMPORTED` targets:
++
++``jsonc::jsonc``
++ Defined if the system has json-c.
++
++Result Variables
++^^^^^^^^^^^^^^^^
++
++``JSONC_FOUND``
++  True if the system has the json-c library.
++``JSONC_VERSION``
++  The version of the json-c library which was found.
++``JSONC_INCLUDE_DIRS``
++  Include directories needed to use json-c.
++``JSONC_LIBRARIES``
++  Libraries needed to link to json-c.
++
++Cache Variables
++^^^^^^^^^^^^^^^
++
++``JSONC_INCLUDE_DIR``
++  The directory containing ``json.h``.
++``JSONC_LIBRARY``
++  The path to the traceevent library.
++
++#]=======================================================================]
++
++find_package(PkgConfig QUIET)
+ pkg_check_modules(PC_JSONC QUIET json-c)
++
++set(JSONC_VERSION     ${PC_JSONC_VERSION})
+ set(JSONC_DEFINITIONS ${PC_JSONC_CFLAGS_OTHER})
+ 
+ find_path(JSONC_INCLUDE_DIR json.h
+@@ -20,19 +51,28 @@ find_library(JSONC_LIBRARY NAMES json-c libjson-c
+ find_library(JSONC_LIBRARY NAMES json-c libjson-c
+              HINTS ${PC_JSON-C_LIBDIR} ${PC_JSON-C_LIBRARY_DIRS})
+ 
++mark_as_advanced(JSONC_INCLUDE_DIR JSONC_LIBRARY)
++
+ include(FindPackageHandleStandardArgs)
+ # handle the QUIETLY and REQUIRED arguments and set JSONC_FOUND to TRUE
+ # if all listed variables are TRUE
+ find_package_handle_standard_args(JSONC DEFAULT_MSG
+                                   JSONC_LIBRARY JSONC_INCLUDE_DIR)
+ 
+-if (NOT JSONC_FOUND)
++if(JSONC_FOUND)
+ 
+-  message(FATAL_ERROR "Json-C is Required!\n")
++  set(JSONC_LIBRARIES    ${JSONC_LIBRARY})
++  set(JSONC_INCLUDE_DIRS ${JSONC_INCLUDE_DIR})
+ 
+-endif (NOT JSONC_FOUND)
++  if(NOT TARGET jsonc::jsonc)
++    add_library(jsonc::jsonc UNKNOWN IMPORTED)
+ 
+-mark_as_advanced(JSONC_INCLUDE_DIR JSONC_LIBRARY)
++    set_target_properties(jsonc::jsonc
++                          PROPERTIES
++                            INTERFACE_INCLUDE_DIRECTORIES "${JSONC_INCLUDE_DIRS}"
++                            INTERFACE_COMPILE_DEFINITIONS "${JSONC_DEFINITIONS}"
++                            IMPORTED_LINK_INTERFACE_LANGUAGES "C"
++                            IMPORTED_LOCATION "${JSONC_LIBRARIES}")
++  endif()
+ 
+-set(JSONC_LIBRARIES    ${JSONC_LIBRARY})
+-set(JSONC_INCLUDE_DIRS ${JSONC_INCLUDE_DIR})
++endif()
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 7474e9d..213ce87 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -10,7 +10,7 @@ add_library(kshark SHARED libkshark.c
+ target_link_libraries(kshark ${TRACECMD_LIBRARY}
+                              trace::fs
+                              trace::event
+-                             ${JSONC_LIBRARY}
++                             jsonc::jsonc
+                              ${CMAKE_DL_LIBS})
+ 
+ set_target_properties(kshark  PROPERTIES SUFFIX	".so.${KS_VERSION_STRING}")
 -- 
 2.25.1
 
