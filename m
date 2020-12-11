@@ -7,36 +7,35 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E340C4361B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:58:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 668D5C4361B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:58:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0395F23F38
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:58:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3DAD123F38
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:58:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392307AbgLKRMJ (ORCPT
+        id S1730528AbgLKRMJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 11 Dec 2020 12:12:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44796 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394869AbgLKRLm (ORCPT
+        id S2394874AbgLKRLm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Fri, 11 Dec 2020 12:11:42 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF7EC23EF4
+        by mail.kernel.org (Postfix) with ESMTPSA id C32C623EF3
         for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 17:10:15 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1knlvr-000HiK-02
-        for linux-trace-devel@vger.kernel.org; Fri, 11 Dec 2020 12:10:15 -0500
-Message-ID: <20201211171014.867885861@goodmis.org>
+        id 1knlvq-000Hhq-R5
+        for linux-trace-devel@vger.kernel.org; Fri, 11 Dec 2020 12:10:14 -0500
+Message-ID: <20201211171014.706323506@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 11 Dec 2020 12:08:54 -0500
+Date:   Fri, 11 Dec 2020 12:08:53 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 12/13] trace-cmd: Do not build shared libraries for libtracefs and
- libtraceevent
+Subject: [PATCH 11/13] trace-cmd: Do not install libtracefs nor libtraceevent libraries
 References: <20201211170842.611554918@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -46,111 +45,55 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-As libtraceevent and libtracefs are now packaged separately and are built
-from their own corresponding repos, the local copy that trace-cmd uses is
-only in the case that the libraries are not present on the local system.
-In this case, trace-cmd should build its wont static library and link to
-that. This will be deprecated in the future and trace-cmd will eventually
-depend on the external libraries for libtracefs and libtraceevent.
+Now that both libtraceevent and libtracefs have their own repos and are
+packaged separately from trace-cmd, do not install the libraries even if
+they do not exist on the system. Anything that depends on those libraries
+are require to get them from their corresponding repos and not depend on
+trace-cmd for them from now on.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile                | 13 +------------
- lib/traceevent/Makefile |  5 +----
- lib/tracefs/Makefile    |  5 +----
- 3 files changed, 3 insertions(+), 20 deletions(-)
+ Makefile | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 737e54d82697..1f7cab57cd7d 100644
+index 30528952740d..737e54d82697 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -234,12 +234,10 @@ export LIBTRACECMD_SHARED_VERSION LIBTRACECMD_SHARED_SO
- LIBTRACEEVENT=libtraceevent
- LIBTRACEEVENT_DIR = $(obj)/lib/traceevent
- LIBTRACEEVENT_STATIC = $(LIBTRACEEVENT_DIR)/libtraceevent.a
--LIBTRACEEVENT_SHARED = $(LIBTRACEEVENT_DIR)/libtraceevent.so
- 
- LIBTRACEFS=libtracefs
- LIBTRACEFS_DIR = $(obj)/lib/tracefs
- LIBTRACEFS_STATIC = $(LIBTRACEFS_DIR)/libtracefs.a
--LIBTRACEFS_SHARED = $(LIBTRACEFS_DIR)/libtracefs.so
- 
- ifeq ($(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEEVENT) > /dev/null 2>&1 && echo y"), y)
- LIBTRACEEVENT_CFLAGS = $(shell sh -c "$(PKG_CONFIG) --cflags $(LIBTRACEEVENT)")
-@@ -369,10 +367,6 @@ trace-cmd: force $(LIBTRACEEVENT_STATIC_BUILD) $(LIBTRACECMD_STATIC) $(LIBTRACEF
- 	force $(obj)/lib/trace-cmd/plugins/tracecmd_plugin_dir
- 	$(Q)$(MAKE) -C $(src)/tracecmd $(obj)/tracecmd/$@
- 
--$(LIBTRACEEVENT_SHARED): force $(obj)/lib/traceevent/plugins/trace_python_dir \
--			 $(obj)/lib/traceevent/plugins/traceevent_plugin_dir
--	$(Q)$(MAKE) -C $(src)/lib/traceevent $@
--
- $(LIBTRACEEVENT_STATIC): force $(obj)/lib/traceevent/plugins/trace_python_dir \
- 			 $(obj)/lib/traceevent/plugins/traceevent_plugin_dir
- 	$(Q)$(MAKE) -C $(src)/lib/traceevent $@
-@@ -386,17 +380,12 @@ $(LIBTRACECMD_SHARED): force $(LIBTRACEEVENT_SHARED_BUILD)
- $(LIBTRACEFS_STATIC): force
- 	$(Q)$(MAKE) -C $(src)/lib/tracefs $@
- 
--$(LIBTRACEFS_SHARED): force
--	$(Q)$(MAKE) -C $(src)/lib/tracefs $@
--
--libtraceevent.so: $(LIBTRACEEVENT_SHARED)
- libtraceevent.a: $(LIBTRACEEVENT_STATIC)
- libtracecmd.a: $(LIBTRACECMD_STATIC)
- libtracecmd.so: $(LIBTRACECMD_SHARED)
- libtracefs.a: $(LIBTRACEFS_STATIC)
--libtracefs.so: $(LIBTRACEFS_SHARED)
- 
--libs: $(LIBTRACECMD_SHARED) $(LIBTRACEEVENT_SHARED_BUILD) $(LIBTRACEFS_SHARED_BUILD)
-+libs: $(LIBTRACECMD_SHARED) $(LIBTRACEEVENT_STATIC_BUILD) $(LIBTRACEFS_STATIC_BUILD)
- 
- test: force $(LIBTRACEEVENT_STATIC_BUILD) $(LIBTRACEFS_STATIC_BUILD) $(LIBTRACECMD_STATIC)
- ifneq ($(CUNIT_INSTALLED),1)
-diff --git a/lib/traceevent/Makefile b/lib/traceevent/Makefile
-index 0f9e5db8f7df..edb2fccfff07 100644
---- a/lib/traceevent/Makefile
-+++ b/lib/traceevent/Makefile
-@@ -32,9 +32,6 @@ $(DEPS): | $(bdir)
- $(bdir)/libtraceevent.a: $(OBJS)
- 	$(Q)$(call do_build_static_lib)
- 
--$(bdir)/libtraceevent.so: $(OBJS)
--	$(Q)$(call do_compile_shared_library)
--
- $(bdir)/%.o: %.c
- 	$(Q)$(call do_fpic_compile)
- 
-@@ -50,6 +47,6 @@ ifneq ($(dep_includes),)
+@@ -248,7 +248,6 @@ else
+ LIBTRACEEVENT_CFLAGS = -I$(src)/include/traceevent -I$(src)/lib/traceevent/include
+ LIBTRACEEVENT_LDLAGS = -L$(LIBTRACEEVENT_DIR) -ltraceevent
+ LIBTRACEEVENT_STATIC_BUILD = $(LIBTRACEEVENT_STATIC)
+-INSTALL_TRACEEVENT = install_traceevent
  endif
  
- clean:
--	$(RM) -f $(bdir)/*.a $(bdir)/*.so $(bdir)/*.o $(bdir)/.*.d
-+	$(RM) -f $(bdir)/*.a $(bdir)/*.o $(bdir)/.*.d
- 
- .PHONY: clean
-diff --git a/lib/tracefs/Makefile b/lib/tracefs/Makefile
-index 590a0ffed91a..33112690914d 100644
---- a/lib/tracefs/Makefile
-+++ b/lib/tracefs/Makefile
-@@ -29,9 +29,6 @@ LIBS = -L$(obj)/lib/traceevent -ltraceevent
- $(bdir)/libtracefs.a: $(OBJS)
- 	$(Q)$(call do_build_static_lib)
- 
--$(bdir)/libtracefs.so: $(OBJS)
--	$(Q)$(call do_compile_shared_library)
--
- $(bdir)/%.o: %.c
- 	$(Q)$(call do_fpic_compile)
- 
-@@ -47,6 +44,6 @@ ifneq ($(dep_includes),)
+ export LIBTRACEEVENT_CFLAGS LIBTRACEEVENT_LDLAGS
+@@ -260,7 +259,6 @@ else
+ LIBTRACEFS_CFLAGS = -I$(src)/include/tracefs
+ LIBTRACEFS_LDLAGS = -L$(LIBTRACEFS_DIR) -ltracefs
+ LIBTRACEFS_STATIC_BUILD = $(LIBTRACEFS_STATIC)
+-INSTALL_TRACEFS = install_tracefs
  endif
  
- clean:
--	$(RM) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.o $(bdir)/.*.d
-+	$(RM) $(bdir)/*.a $(bdir)/*.o $(bdir)/.*.d
+ export LIBTRACEFS_CFLAGS LIBTRACEFS_LDLAGS
+@@ -471,16 +469,7 @@ install: install_cmd
+ install_gui: install_cmd gui
+ 	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build install
  
- .PHONY: clean
+-install_traceevent: $(LIBTRACEEVENT_STATIC_BUILD)
+-	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ)/traceevent)
+-	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ)/traceevent)
+-	$(Q)$(call do_install,$(src)/include/traceevent/trace-seq.h,$(includedir_SQ)/traceevent)
+-
+-install_tracefs: $(LIBTRACEFS_STATIC_BUILD)
+-	$(Q)$(call do_install,$(LIBTRACEFS_SHARED),$(libdir_SQ)/tracefs)
+-	$(Q)$(call do_install,$(src)/include/tracefs/tracefs.h,$(includedir_SQ)/tracefs)
+-
+-install_libs: libs $(INSTALL_TRACEEVENT) $(INSTALL_TRACEFS)
++install_libs: libs
+ 	$(Q)$(MAKE) -C $(src)/lib/trace-cmd/ $@
+ 
+ doc:
 -- 
 2.29.2
 
