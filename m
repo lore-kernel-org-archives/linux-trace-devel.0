@@ -5,66 +5,66 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B089C4361B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 16:16:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01D14C4361B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 16:16:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 570942246B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 16:16:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A2B6F2246B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 16:16:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437937AbgLKP2J (ORCPT
+        id S2392552AbgLKP2L (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Dec 2020 10:28:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
+        Fri, 11 Dec 2020 10:28:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392552AbgLKPJb (ORCPT
+        with ESMTP id S2392740AbgLKPJg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:09:31 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EFFC0617A6
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:16 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id a12so9362039wrv.8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:16 -0800 (PST)
+        Fri, 11 Dec 2020 10:09:36 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28726C061257
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:26 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 3so8884682wmg.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=I0NmFYspL0nWDyoDHbxV8zk5GA140LeU8XNBINoc6GA=;
-        b=XEn06CScHSkYkbhJCD+r8rXgp3pfyma9qV7hZQOHRjFP2N1fcZQh3Ok80Tt4hp69AP
-         RqVt35wv4GHbLQT2AbxiNXyEyLDKsJvbg2XR49JTj8vz6k8b4tYTFkYafzpFhw3pegc5
-         z5Z1K9Lcyei3nI8NahaL9Wr8fEcb/nJWCoSlW7rlbSt0l7SBQQPwYJGkp/BYns+0c0S0
-         7bBfOPKNtlkv0yO1CaHstNu1PUc2vSTpHLTrIZrn+S3hqEuotuQ9xdrB1vjzGCbpSHd+
-         LeLvdattimtynOWcmf8eVUqQAPwpqDewU95g2WKJ/I/l8Eosg1noyedvIYXsKBOtPYnO
-         jPbg==
+        bh=kkVp2NXhtdmUDS/PytGsMp0SegHWLSG7KQnWOwatHsQ=;
+        b=PY/xwhpY+gMF47xqSQatlfQpNlI5zLOJJcqv0dJqISiwhietV8oOiJ3JDgfYPCsz8e
+         WKnpuoUYx322AXW+IdOmq1sHVlg9sWM/8790llf5ui/9V9ckTEYL9LreQeNz7RzW40bS
+         O6aWul2QYSSGAvwdg7zM5UKQNqAM2RGT6GN6H8kCGxTxRttJS6UgO5XCR6WVJe3zFBSH
+         OG86YNN8jG6OnCSyz2Za8ZoiNOupYuKKoAAjvgTNf5vf5Ia5cW11PYX9dv9LibrmWPKW
+         6bsRnOBcWAfu4w3jrux/5xnblpkyMiwaETLk+xwRs83gwezkejeJ7MjExdI+Hq8KJQcQ
+         2dDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=I0NmFYspL0nWDyoDHbxV8zk5GA140LeU8XNBINoc6GA=;
-        b=ZnW6/Vtxe/PSnoUyK8ezDPc6tDQkBnhpdi/BuGuDqldZlmQfVR7NEJE2khTV/MakvH
-         CyOhMWc6PBerDGVv8b+oxwc6xnZchUqmwtWh2a1V0uZE7e58/KCnOzO8fWoVHa5ztsW7
-         jTZiT4Pijgqj0uK95j22W0SW6KqYp75ScpX+QkkqGn4A+a1er8XXVjfmAiJdvapFyZ1+
-         uAm/jYgtQNG9cX+23qARV1sR6q1KzONuIDROZzjno2uC/ahNhtwbo+oyZ5cWaEw2iAiD
-         /K2ClDovfGZeiCz8CZbShb/jDPtTI6IZLXT7D4cG966a3vhBDQpqQ3VweH8NuASfvhgL
-         Z6sw==
-X-Gm-Message-State: AOAM531Kf+K64SIPiu5rGUkqsweMgYDiu5+zHe9ITzrFPivf1kukgoHA
-        8dPJrRZx7z0qR/SPF23wHD0=
-X-Google-Smtp-Source: ABdhPJyjxxnTeP7EWIA5V6+gfDD3UVPESAbw0ECBAzXmZQt4zAbviljXuEZ/FRs83AoODDgbV1Lw1A==
-X-Received: by 2002:adf:efc5:: with SMTP id i5mr14176815wrp.377.1607699295507;
-        Fri, 11 Dec 2020 07:08:15 -0800 (PST)
+        bh=kkVp2NXhtdmUDS/PytGsMp0SegHWLSG7KQnWOwatHsQ=;
+        b=Ttha5pBQvAsj+TsU9okPKbUoxEbkU1kN+ggErkeaSeRq4DPvVa88hyfukSViMU6V8x
+         JlYcw2qW6zHXNSz3dCyYuXDZ0mj/GEcssUEqQFISC0tv7Gj7TNIyWnMN84uxj5nmJVOr
+         WkmOew0nk7dh7xnPJB0f6VGjKr7u/huQiGPnibE4sDDmM8caalp3ea82sI+yIvGBnEVS
+         cnzOEmdl1Q0JV6/gWml31+KZVdMB6faUDg3Bxg4Cssr84UUtIx/Wz37gt81RmoilRI7e
+         l/6wdeJ6Fw7/WII3Sn6Xfnb6yCpHanbWnO5T3AW7uFwu1d8c81rDNji9hyBCzEdm+0Al
+         xLFQ==
+X-Gm-Message-State: AOAM530p/1ILqfPdZiLgXchN+th61VFa2loegwEN2UP7TbfMuteFvkE4
+        mWwDqv31Bz8f9PwwfcIbzi8=
+X-Google-Smtp-Source: ABdhPJy9Cx31b3nyshaHusOE9FdW7up9dD293roJHpDnjuYGgt3UsALp15l/ws6DDF7XUfkC68gFQg==
+X-Received: by 2002:a05:600c:2219:: with SMTP id z25mr3117559wml.27.1607699304833;
+        Fri, 11 Dec 2020 07:08:24 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id w17sm15620948wru.82.2020.12.11.07.08.14
+        by smtp.gmail.com with ESMTPSA id w17sm15620948wru.82.2020.12.11.07.08.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 07:08:14 -0800 (PST)
+        Fri, 11 Dec 2020 07:08:24 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v7 05/32] kernel-shark: Define build target for JSONC
-Date:   Fri, 11 Dec 2020 17:07:29 +0200
-Message-Id: <20201211150756.577366-6-y.karadz@gmail.com>
+Subject: [PATCH v7 12/32] kernel-shark: Housekeeping before implementing stream interface
+Date:   Fri, 11 Dec 2020 17:07:36 +0200
+Message-Id: <20201211150756.577366-13-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201211150756.577366-1-y.karadz@gmail.com>
 References: <20201211150756.577366-1-y.karadz@gmail.com>
@@ -74,149 +74,221 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Having the JSONC libs as a target simplifies the build/linking of
-the KernelShark libraries and executables because all necessary
-information, like include paths, compiler flags and library names
-can be retriever directly from the target.
-
-The patch also adds to FindJSONC.cmake the standard module
-documentation header.
+kshark_load data_matrix() is a method that is used only in trace-cruncher
+prototype. The version of this function that is currently part of the API
+is anyway not compatible with the latest version of trace-cruncher because
+of the mismatch of the argument types, so we can directly remove the
+existing implementation. An equivalent functionality will be provided as
+part of the implantation of the Data stream interface in the following
+patch. Here we just make kshark_data_matrix_alloc() and
+unset_event_filter_flag() public, because the methods will be used in the
+stream interface implementation.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- CMakeLists.txt        |  4 +--
- build/FindJSONC.cmake | 70 +++++++++++++++++++++++++++++++++----------
- src/CMakeLists.txt    |  2 +-
- 3 files changed, 57 insertions(+), 19 deletions(-)
+ src/libkshark.c | 121 ++++++++----------------------------------------
+ src/libkshark.h |  28 ++++++++---
+ 2 files changed, 40 insertions(+), 109 deletions(-)
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 007f46a..a66050f 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -26,8 +26,7 @@ include(${KS_DIR}/build/FindTraceCmd.cmake)
- set(CMAKE_MODULE_PATH "${KS_DIR}/build")
- find_package(TraceEvent REQUIRED)
- find_package(TraceFS    REQUIRED)
+diff --git a/src/libkshark.c b/src/libkshark.c
+index bf465b5..ff0fe12 100644
+--- a/src/libkshark.c
++++ b/src/libkshark.c
+@@ -1190,21 +1190,6 @@ bool kshark_filter_is_set(struct kshark_context *kshark_ctx)
+ -              kshark_this_filter_is_set(kshark_ctx->hide_event_filter);
+ }
+ 
+-static inline void unset_event_filter_flag(struct kshark_context *kshark_ctx,
+-					   struct kshark_entry *e)
+-{
+-	/*
+-	 * All entries, filtered-out by the event filters, will be treated
+-	 * differently, when visualized. Because of this, ignore the value
+-	 * of the GRAPH_VIEW flag provided by the user via
+-	 * kshark_ctx->filter_mask. The value of the EVENT_VIEW flag in
+-	 * kshark_ctx->filter_mask will be used instead.
+-	 */
+-	int event_mask = kshark_ctx->filter_mask & ~KS_GRAPH_VIEW_FILTER_MASK;
 -
--include(${KS_DIR}/build/FindJSONC.cmake)
-+find_package(JSONC      REQUIRED)
- 
- find_package(Doxygen)
- 
-@@ -84,7 +83,6 @@ endif (CMAKE_BUILD_TYPE MATCHES Package)
- 
- include_directories(${KS_DIR}/src/
-                     ${KS_DIR}/build/src/
--                    ${JSONC_INCLUDE_DIR}
-                     ${TRACECMD_INCLUDE_DIR})
- 
- message("")
-diff --git a/build/FindJSONC.cmake b/build/FindJSONC.cmake
-index 3bae20f..2d0d41f 100644
---- a/build/FindJSONC.cmake
-+++ b/build/FindJSONC.cmake
-@@ -1,13 +1,44 @@
--# - Try to find json-c
--# https://cmake.org/Wiki/CMake:How_To_Find_Libraries
--# Once done this will define
--#  JSONC_FOUND - System has json-c
--#  JSONC_INCLUDE_DIRS - The json-c include directories
--#  JSONC_LIBRARIES - The libraries needed to use json-c
--#  JSONC_DEFINITIONS - Compiler switches required for using json-c
+-	e->visible &= ~event_mask;
+-}
 -
--find_package(PkgConfig)
-+
-+#[=======================================================================[.rst:
-+FindJSONC
-+-------
-+
-+Finds the traceevent library.
-+
-+Imported Targets
-+^^^^^^^^^^^^^^^^
-+
-+This module defines the :prop_tgt:`IMPORTED` targets:
-+
-+``jsonc::jsonc``
-+ Defined if the system has json-c.
-+
-+Result Variables
-+^^^^^^^^^^^^^^^^
-+
-+``JSONC_FOUND``
-+  True if the system has the json-c library.
-+``JSONC_VERSION``
-+  The version of the json-c library which was found.
-+``JSONC_INCLUDE_DIRS``
-+  Include directories needed to use json-c.
-+``JSONC_LIBRARIES``
-+  Libraries needed to link to json-c.
-+
-+Cache Variables
-+^^^^^^^^^^^^^^^
-+
-+``JSONC_INCLUDE_DIR``
-+  The directory containing ``json.h``.
-+``JSONC_LIBRARY``
-+  The path to the traceevent library.
-+
-+#]=======================================================================]
-+
-+find_package(PkgConfig QUIET)
- pkg_check_modules(PC_JSONC QUIET json-c)
-+
-+set(JSONC_VERSION     ${PC_JSONC_VERSION})
- set(JSONC_DEFINITIONS ${PC_JSONC_CFLAGS_OTHER})
+ static void set_all_visible(uint16_t *v) {
+ 	/*  Keep the original value of the PLUGIN_UNTOUCHED bit flag. */
+ 	*v |= 0xFF & ~KS_PLUGIN_UNTOUCHED_MASK;
+@@ -1680,11 +1665,25 @@ static inline void free_ptr(void *ptr)
+ 		free(*(void **)ptr);
+ }
  
- find_path(JSONC_INCLUDE_DIR json.h
-@@ -20,19 +51,28 @@ find_library(JSONC_LIBRARY NAMES json-c libjson-c
- find_library(JSONC_LIBRARY NAMES json-c libjson-c
-              HINTS ${PC_JSON-C_LIBDIR} ${PC_JSON-C_LIBRARY_DIRS})
+-static bool data_matrix_alloc(size_t n_rows, uint64_t **offset_array,
+-					     uint16_t **cpu_array,
+-					     uint64_t **ts_array,
+-					     uint16_t **pid_array,
+-					     int **event_array)
++/**
++ * @brief Allocate data arrays (matrix columns) to be used to load the tracing
++ *	  data into a data matrix form.
++ *
++ * @param n_rows: Number matrix rows to be allocated. Must be equal to the
++ *	 	  number of trace records.
++ * @param cpu_array: Output location for the CPU Id column.
++ * @param pid_array: Output location for the PID column.
++ * @param event_array: Output location for the Event Id column.
++ * @param offset_array: Output location for the record offset column.
++ * @param ts_array: Output location for the timestamp column.
++ *
++ * @returns True on success. Else false.
++ */
++bool kshark_data_matrix_alloc(size_t n_rows, int16_t **event_array,
++					     int16_t **cpu_array,
++					     int32_t **pid_array,
++					     int64_t **offset_array,
++					     int64_t **ts_array)
+ {
+ 	if (offset_array) {
+ 		*offset_array = calloc(n_rows, sizeof(**offset_array));
+@@ -1731,88 +1730,6 @@ static bool data_matrix_alloc(size_t n_rows, uint64_t **offset_array,
+ 	return false;
+ }
  
-+mark_as_advanced(JSONC_INCLUDE_DIR JSONC_LIBRARY)
+-/**
+- * @brief Load the content of the trace data file into a table / matrix made
+- *	  of columns / arrays of data. The user is responsible for freeing the
+- *	  elements of the outputted array
+- *
+- * @param kshark_ctx: Input location for the session context pointer.
+- * @param offset_array: Output location for the array of record offsets.
+- * @param cpu_array: Output location for the array of CPU Ids.
+- * @param ts_array: Output location for the array of timestamps.
+- * @param pid_array: Output location for the array of Process Ids.
+- * @param event_array: Output location for the array of Event Ids.
+- *
+- * @returns The size of the outputted arrays in the case of success, or a
+- *	    negative error code on failure.
+- */
+-size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
+-			       uint64_t **offset_array,
+-			       uint16_t **cpu_array,
+-			       uint64_t **ts_array,
+-			       uint16_t **pid_array,
+-			       int **event_array)
+-{
+-	enum rec_type type = REC_ENTRY;
+-	struct rec_list **rec_list;
+-	ssize_t count, total = 0;
+-	bool status;
+-	int n_cpus;
+-
+-	total = get_records(kshark_ctx, &rec_list, type);
+-	if (total < 0)
+-		goto fail;
+-
+-	n_cpus = tep_get_cpus(kshark_ctx->pevent);
+-
+-	status = data_matrix_alloc(total, offset_array,
+-					  cpu_array,
+-					  ts_array,
+-					  pid_array,
+-					  event_array);
+-	if (!status)
+-		goto fail_free;
+-
+-	for (count = 0; count < total; count++) {
+-		int next_cpu;
+-
+-		next_cpu = pick_next_cpu(rec_list, n_cpus, type);
+-		if (next_cpu >= 0) {
+-			struct rec_list *rec = rec_list[next_cpu];
+-			struct kshark_entry *e = &rec->entry;
+-
+-			if (offset_array)
+-				(*offset_array)[count] = e->offset;
+-
+-			if (cpu_array)
+-				(*cpu_array)[count] = e->cpu;
+-
+-			if (ts_array)
+-				(*ts_array)[count] = e->ts;
+-
+-			if (pid_array)
+-				(*pid_array)[count] = e->pid;
+-
+-			if (event_array)
+-				(*event_array)[count] = e->event_id;
+-
+-			rec_list[next_cpu] = rec_list[next_cpu]->next;
+-			free(rec);
+-		}
+-	}
+-
+-	/* There should be no entries left in rec_list. */
+-	free_rec_list(rec_list, n_cpus, type);
+-	return total;
+-
+- fail_free:
+-	free_rec_list(rec_list, n_cpus, type);
+-
+- fail:
+-	fprintf(stderr, "Failed to allocate memory during data loading.\n");
+-	return -ENOMEM;
+-}
+-
+ static const char *get_latency(struct tep_handle *pe,
+ 			       struct tep_record *record)
+ {
+diff --git a/src/libkshark.h b/src/libkshark.h
+index 77fa4c5..36d6000 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -456,13 +456,6 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+ ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
+ 				 struct tep_record ***data_rows);
+ 
+-size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
+-			       uint64_t **offset_array,
+-			       uint16_t **cpu_array,
+-			       uint64_t **ts_array,
+-			       uint16_t **pid_array,
+-			       int **event_array);
+-
+ ssize_t kshark_get_task_pids(struct kshark_context *kshark_ctx, int **pids);
+ 
+ void kshark_close(struct kshark_context *kshark_ctx);
+@@ -617,6 +610,21 @@ bool kshark_this_filter_is_set(struct tracecmd_filter_id *filter);
+ 
+ bool kshark_filter_is_set(struct kshark_context *kshark_ctx);
+ 
++static inline void unset_event_filter_flag(struct kshark_context *kshark_ctx,
++					   struct kshark_entry *e)
++{
++	/*
++	 * All entries, filtered-out by the event filters, will be treated
++	 * differently, when visualized. Because of this, ignore the value
++	 * of the GRAPH_VIEW flag provided by the user via
++	 * stream->filter_mask. The value of the EVENT_VIEW flag in
++	 * stream->filter_mask will be used instead.
++	 */
++	int event_mask = kshark_ctx->filter_mask & ~KS_GRAPH_VIEW_FILTER_MASK;
 +
- include(FindPackageHandleStandardArgs)
- # handle the QUIETLY and REQUIRED arguments and set JSONC_FOUND to TRUE
- # if all listed variables are TRUE
- find_package_handle_standard_args(JSONC DEFAULT_MSG
-                                   JSONC_LIBRARY JSONC_INCLUDE_DIR)
++	e->visible &= ~event_mask;
++}
++
+ void kshark_filter_entries(struct kshark_context *kshark_ctx,
+ 			   struct kshark_entry **data,
+ 			   size_t n_entries);
+@@ -995,6 +1003,12 @@ struct kshark_config_doc *kshark_open_config_file(const char *file_name,
  
--if (NOT JSONC_FOUND)
-+if(JSONC_FOUND)
+ struct kshark_config_doc *kshark_json_to_conf(struct json_object *jobj);
  
--  message(FATAL_ERROR "Json-C is Required!\n")
-+  set(JSONC_LIBRARIES    ${JSONC_LIBRARY})
-+  set(JSONC_INCLUDE_DIRS ${JSONC_INCLUDE_DIR})
- 
--endif (NOT JSONC_FOUND)
-+  if(NOT TARGET jsonc::jsonc)
-+    add_library(jsonc::jsonc UNKNOWN IMPORTED)
- 
--mark_as_advanced(JSONC_INCLUDE_DIR JSONC_LIBRARY)
-+    set_target_properties(jsonc::jsonc
-+                          PROPERTIES
-+                            INTERFACE_INCLUDE_DIRECTORIES "${JSONC_INCLUDE_DIRS}"
-+                            INTERFACE_COMPILE_DEFINITIONS "${JSONC_DEFINITIONS}"
-+                            IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-+                            IMPORTED_LOCATION "${JSONC_LIBRARIES}")
-+  endif()
- 
--set(JSONC_LIBRARIES    ${JSONC_LIBRARY})
--set(JSONC_INCLUDE_DIRS ${JSONC_INCLUDE_DIR})
-+endif()
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 7474e9d..213ce87 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -10,7 +10,7 @@ add_library(kshark SHARED libkshark.c
- target_link_libraries(kshark ${TRACECMD_LIBRARY}
-                              trace::fs
-                              trace::event
--                             ${JSONC_LIBRARY}
-+                             jsonc::jsonc
-                              ${CMAKE_DL_LIBS})
- 
- set_target_properties(kshark  PROPERTIES SUFFIX	".so.${KS_VERSION_STRING}")
++bool kshark_data_matrix_alloc(size_t n_rows, int16_t **event_array,
++					     int16_t **cpu_array,
++					     int32_t **pid_array,
++					     int64_t **offset_array,
++					     int64_t **ts_array);
++
+ #ifdef __cplusplus
+ }
+ #endif
 -- 
 2.25.1
 
