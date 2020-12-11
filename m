@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFE54C4361B
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39B28C4361B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:54:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 943EE23A7C
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:54:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DE7C923B31
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:54:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437695AbgLKPKg (ORCPT
+        id S2392737AbgLKPKT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Dec 2020 10:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        Fri, 11 Dec 2020 10:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437699AbgLKPKW (ORCPT
+        with ESMTP id S2392736AbgLKPJg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:10:22 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FEFC0619D8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:45 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id r3so9397554wrt.2
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:45 -0800 (PST)
+        Fri, 11 Dec 2020 10:09:36 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85365C061285
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:23 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id g185so8897067wmf.3
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 07:08:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zKDG/9XZbnGW4hCDetg6B4UM+/yqlFKJwoWhpahy2EM=;
-        b=ml0dSEXj3mdAWUCKRgPMjPem0RJ4IAXzZ8el2Mik/WrwSRDuUfn22pgOI6bxg2BhEP
-         yN926GxYBFs5YJjksZhnGvC0mHh0KHNIDEpHFuTdbEl9a1WKc6fJoY3ie7/rGGAd/z56
-         TPikk1V5EL5/FUlZ1gOX1nfH893taW28NU4w2KTrFcaHIyisbQeKwn/+/HHKXyRUnBME
-         EZhRseW2zI3VVZrqxiCDffYwiTy3QRzvjQZ4b2VXpea4cbWXx285c9wiLsqtsBR9GWMp
-         2Nus3fC3D6Dm/CG10edM6mFR0cBtpFYDt0l1oER+basu8NF458vcg1SSmmpraTAT5uSt
-         ELRQ==
+        bh=6llSx7hgEf2smLRrpCsAO3FdE7ck0dMBR2Ily4Dh5nc=;
+        b=s0I15DezZzi+V7CPcjqbSbS+8b9zVaWjih8f+wtmdihQhvRxvC5u7zS0thTLpT9Aqk
+         4Q7bo37OHJ1yK4HRy23ekAw/7cejokMUCD18tBY+eoGopVvfnUqIlrdr0Ui5jbJyvcmv
+         4Q1GiF/vCy7IYw/dfNL34q3qF96LWV5qIVPFY0Vr0FkJBE4ENHaSSDAUG0tz7wVlClPN
+         Iz8WqB0oklLF3CozPj5SgR8+bchiWX4R2BZM3af51+ePH5WBIR/mP5Rxo6gPE9tnSnb1
+         13LlAkBAFFfII0cz4dYcpWtfj9Drlqe/383D4VhgTp/CUBd3l1vYmCSD7i9cd8n2qatY
+         IWhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zKDG/9XZbnGW4hCDetg6B4UM+/yqlFKJwoWhpahy2EM=;
-        b=EOe1PcehjVqahAysAo6F7jQpU+GwsbpQq1o+o6eXRK0+JNEO9QWE8u7mDT9ruaQfPi
-         f0/DvLXhVUxG+IVJ1vNg/9SGs6Pa1VPBMomiWXlMIexRtIYjmEHZrtOtRLDwn+OB6v0x
-         NkePCawB8Gdx/kJCQ0IKXWZm+Ga7BShmr/K3NGRHctD1wgXBEPOevMlHqQyqsSChnxGY
-         UTzPFLPhs5HE1fnO2DwkRi28nrLm3NLt8hn5YTYnn+D/VkIDaMkbDe9oXvSoybFk4wlG
-         IQVg5KhfqJY00bmvpghJZ9aW2Nq/qZ3UgKG2vDN7i7ozlOMsSsQaOMT8SPi4FEfPMk1w
-         uzdQ==
-X-Gm-Message-State: AOAM533bu8ib4ct4lgtz5ex2FnXqYyhj4z51VcCfZqEWjlAkxjsH1LHs
-        hLlfbVgwiphGqdnZTzhHcE+5qlVITw0=
-X-Google-Smtp-Source: ABdhPJxa19gcyH131NM7LeHoIa/bP+4FOX0BpqZ6GNCIUWyIibH8Up+oxkyVYlXzFrY0bLcYRoUm1g==
-X-Received: by 2002:a5d:6845:: with SMTP id o5mr14273548wrw.421.1607699324498;
-        Fri, 11 Dec 2020 07:08:44 -0800 (PST)
+        bh=6llSx7hgEf2smLRrpCsAO3FdE7ck0dMBR2Ily4Dh5nc=;
+        b=emo5qe0xIuBdMG2oEmK4obXsz30P4/lLslvmt8OyAvVoQOifPKBFoHN7Gz+bjp5r8h
+         Znb7lXwqsB0/rl9jpPw0K900r3VXe6RLFQBJRpwWVyQppcgZicWVEg8CpDDiWzxjff0y
+         EsHcYU0TekRuMUoT1GYSeEUE9Frd7xfNm/XT5cZUhxBNfq7SmCj/UvjjWPHX9/TaRUmV
+         y11/9KvP9ZIVAAvTg7NmR0n4ET2QSvFxDBO7oNHj2Pyx6XLhud/JK+mHXlB75uWjKvOl
+         Bm/y89+RhjjhThw8yjRuA+8bCD+lZOdMKoXd0Vh0nzYqypSyQJ5kPvxN7cKieLYlms4f
+         T8Lg==
+X-Gm-Message-State: AOAM532S0klvCNtjLPuwui96+7mgP/zku79j6RZY2F0iKewSN4ZqTFDZ
+        Z60DR98jdkmIY+UuGYfpEqQ=
+X-Google-Smtp-Source: ABdhPJyjF8yA7G8MUyiHvAZxpyOZ0zCa4GoKi/M7akyJHc/iwpUFL9YLvzB+ORagh8J1zjjfx8FJJA==
+X-Received: by 2002:a1c:454:: with SMTP id 81mr14053537wme.178.1607699302355;
+        Fri, 11 Dec 2020 07:08:22 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.104])
-        by smtp.gmail.com with ESMTPSA id w17sm15620948wru.82.2020.12.11.07.08.43
+        by smtp.gmail.com with ESMTPSA id w17sm15620948wru.82.2020.12.11.07.08.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 07:08:43 -0800 (PST)
+        Fri, 11 Dec 2020 07:08:21 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v7 28/32] kernel-shark: Add ksplot_draw_polyline()
-Date:   Fri, 11 Dec 2020 17:07:52 +0200
-Message-Id: <20201211150756.577366-29-y.karadz@gmail.com>
+Subject: [PATCH v7 10/32] kernel-shark: Rename static methods in libkshark
+Date:   Fri, 11 Dec 2020 17:07:34 +0200
+Message-Id: <20201211150756.577366-11-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201211150756.577366-1-y.karadz@gmail.com>
 References: <20201211150756.577366-1-y.karadz@gmail.com>
@@ -74,81 +74,75 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The method draws continuous line between an ordered array of
-points (poly-line).
+"kshark" prefix is needed only for the public methods of the API.
+We are changing the names of those static methods because we need to
+use those names when integrating the data streams into the API.i
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark-plot.c | 32 ++++++++++++++++++++++++++------
- src/libkshark-plot.h |  5 +++++
- 2 files changed, 31 insertions(+), 6 deletions(-)
+ src/libkshark.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/src/libkshark-plot.c b/src/libkshark-plot.c
-index c9a3530..597e5c2 100644
---- a/src/libkshark-plot.c
-+++ b/src/libkshark-plot.c
-@@ -151,6 +151,30 @@ void ksplot_draw_line(const struct ksplot_point *a,
- 	glEnd();
+diff --git a/src/libkshark.c b/src/libkshark.c
+index a14d3c5..0acce90 100644
+--- a/src/libkshark.c
++++ b/src/libkshark.c
+@@ -1097,8 +1097,8 @@ size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
+ 	return -ENOMEM;
  }
  
-+/**
-+ * @brief Draw the a polyline.
-+ *
-+ * @param points: Input location for the array of points defining the polyline.
-+ * @param n_points: The size of the array of points.
-+ * @param col: The color of the polyline.
-+ * @param size: The size of the polyline.
-+ */
-+void ksplot_draw_polyline(const struct ksplot_point *points,
-+			  size_t n_points,
-+			  const struct ksplot_color *col,
-+			  float size)
-+{
-+	if (!points || !n_points || !col || size < .5f)
-+		return;
-+
-+	/* Loop over the points of the polygon and draw connecting lines. */
-+	for(size_t i = 1; i < n_points; ++i)
-+		ksplot_draw_line(&points[i - 1],
-+				 &points[i],
-+				 col,
-+				 size);
-+}
-+
- /**
-  * @brief Draw a polygon.
-  *
-@@ -212,12 +236,8 @@ void ksplot_draw_polygon_contour(const struct ksplot_point *points,
- 	if (!points || !n_points || !col || size < .5f)
- 		return;
+-static const char *kshark_get_latency(struct tep_handle *pe,
+-				      struct tep_record *record)
++static const char *get_latency(struct tep_handle *pe,
++			       struct tep_record *record)
+ {
+ 	if (!record)
+ 		return NULL;
+@@ -1108,7 +1108,7 @@ static const char *kshark_get_latency(struct tep_handle *pe,
+ 	return seq.buffer;
+ }
  
--	/* Loop over the points of the polygon and draw connecting lines. */
--	for(size_t i = 1; i < n_points; ++i)
--		ksplot_draw_line(&points[i - 1],
--				 &points[i],
--				 col,
--				 size);
-+	/* Loop over the points of the polygon and draw a polyline. */
-+	ksplot_draw_polyline(points, n_points, col, size);
+-static const char *kshark_get_info(struct tep_handle *pe,
++static const char *get_info(struct tep_handle *pe,
+ 				   struct tep_record *record,
+ 				   struct tep_event *event)
+ {
+@@ -1233,7 +1233,7 @@ const char *kshark_get_latency_easy(struct kshark_entry *entry)
+ 	pthread_mutex_lock(&kshark_ctx->input_mutex);
  
- 	/* Close the contour. */
- 	ksplot_draw_line(&points[0],
-diff --git a/src/libkshark-plot.h b/src/libkshark-plot.h
-index 063740d..d881b20 100644
---- a/src/libkshark-plot.h
-+++ b/src/libkshark-plot.h
-@@ -72,6 +72,11 @@ void ksplot_draw_line(const struct ksplot_point *a,
- 		      const struct ksplot_color *col,
- 		      float size);
+ 	data = tracecmd_read_at(kshark_ctx->handle, entry->offset, NULL);
+-	lat = kshark_get_latency(kshark_ctx->pevent, data);
++	lat = get_latency(kshark_ctx->pevent, data);
+ 	free_record(data);
  
-+void ksplot_draw_polyline(const struct ksplot_point *points,
-+			  size_t n_points,
-+			  const struct ksplot_color *col,
-+			  float size);
-+
- void ksplot_draw_polygon(const struct ksplot_point *points,
- 			 size_t n_points,
- 			 const struct ksplot_color *col,
+ 	pthread_mutex_unlock(&kshark_ctx->input_mutex);
+@@ -1376,7 +1376,7 @@ const char *kshark_get_info_easy(struct kshark_entry *entry)
+ 	event_id = tep_data_type(kshark_ctx->pevent, data);
+ 	event = tep_find_event(kshark_ctx->pevent, event_id);
+ 	if (event)
+-		info = kshark_get_info(kshark_ctx->pevent, data, event);
++		info = get_info(kshark_ctx->pevent, data, event);
+ 
+ 	free_record(data);
+ 
+@@ -1471,7 +1471,7 @@ char* kshark_dump_entry(const struct kshark_entry *entry)
+ 		event = tep_find_event(kshark_ctx->pevent, entry->event_id);
+ 
+ 		event_name = event? event->name : "[UNKNOWN EVENT]";
+-		lat = kshark_get_latency(kshark_ctx->pevent, data);
++		lat = get_latency(kshark_ctx->pevent, data);
+ 
+ 		size = asprintf(&temp_str, "%" PRIu64 "; %s-%i; CPU %i; %s;",
+ 				entry->ts,
+@@ -1480,7 +1480,7 @@ char* kshark_dump_entry(const struct kshark_entry *entry)
+ 				entry->cpu,
+ 				lat);
+ 
+-		info = kshark_get_info(kshark_ctx->pevent, data, event);
++		info = get_info(kshark_ctx->pevent, data, event);
+ 
+ 		if (size > 0) {
+ 			size = asprintf(&entry_str, "%s %s; %s; 0x%x",
 -- 
 2.25.1
 
