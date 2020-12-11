@@ -2,198 +2,124 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C4B5C4361B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Dec 2020 19:58:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68EFBC433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:12:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DC9A722571
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 10 Dec 2020 19:58:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3BB4520657
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 15:12:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404286AbgLJT5x (ORCPT
+        id S2406325AbgLKOqC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 10 Dec 2020 14:57:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393366AbgLJT5t (ORCPT
+        Fri, 11 Dec 2020 09:46:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406331AbgLKOpx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:57:49 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3000522E00
-        for <linux-trace-devel@vger.kernel.org>; Thu, 10 Dec 2020 19:57:09 +0000 (UTC)
-Date:   Thu, 10 Dec 2020 14:57:07 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd: Add missing SPDX headers
-Message-ID: <20201210145707.5b34b035@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 11 Dec 2020 09:45:53 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167ABC0617B0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:29 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id r7so9288178wrc.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZUrqS/GpSejn2uuqZhUncbHZ8n9JUDOzQHUiRMQRzu4=;
+        b=fAwam8/n7ZbkXwT0VUBxL0VQ1Vze/oj/ob1tA25xWurleSNUimIhye4cCvMYYxOOQV
+         Rh4OH5s3rX1SG0IKZjLy6bS6coEhpUBNut5P3cwwZ/cJYJXtl5q+r0ONhwIwh/qhvZgL
+         ioa8Y7UoqoFiBjBMMxEH8JQ8RR3c1OOIRX0MHj+UaOwF7vag60ASyF51VQRZXLhqbKux
+         gXk5EEux2kJofyWFaqlPqSTSQvD85J9cxunMv8yIbL8cIHleFf+TgDe2c0yhXz0zTER6
+         dIzCvEowyu3pSskk0/eHfKzt6deM1HsguRjmfogWLyD4/yM6PLGo6TlXlNaU6QPLzllX
+         D8Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZUrqS/GpSejn2uuqZhUncbHZ8n9JUDOzQHUiRMQRzu4=;
+        b=Es5oknj4kAyv8VotWZ233A8b6DLMfHUUGvXwIPCjePlF1LSYJav8HYxQMKReUjxMnr
+         7d9V71NsHrkuBRvMQxHPMrvxOFB+nyOiBbCjOQgFnyd77yCodR4i/g3f85s8zJqWF78X
+         ZVsPsCdWOGSO62tUA6B0vctnAPA2slwwLRpVPrL6BHOFykv4BgESXqXLKQbmhtfUXGBD
+         vQcNSdDC1TOFC8JsLTaTLxoKV2tA39jB49TJ5YOGqcjbSYfsnClthZqr8jop2E7rFi8R
+         XoT/RqKsBzjPwXMD76KrjkHV3p796ev1AaQGI9Y5I9ldH7ba4iUElUmlih3TMnooXyxz
+         kLHg==
+X-Gm-Message-State: AOAM532JffjB4LVs2uwbWVQ2KwD0VYDMD1scb/r3dxNwiBZjbKz2QT83
+        G25lUHJsdEhXEtbbTplf4Dc=
+X-Google-Smtp-Source: ABdhPJzy5EcjDctVxpwBfTjYvPBrlCGuPHaOS4QBzFFIAA6rRhgCfvf1HUuCYbyoVO2fRHKm0LNzuQ==
+X-Received: by 2002:a5d:4c4d:: with SMTP id n13mr14480698wrt.356.1607697927832;
+        Fri, 11 Dec 2020 06:45:27 -0800 (PST)
+Received: from localhost.localdomain ([95.87.199.104])
+        by smtp.gmail.com with ESMTPSA id y2sm14471471wma.6.2020.12.11.06.45.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 06:45:27 -0800 (PST)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v7 06/32] kernel-shark: Use only signed types in kshark_entry
+Date:   Fri, 11 Dec 2020 16:44:45 +0200
+Message-Id: <20201211144511.575346-7-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201211144511.575346-1-y.karadz@gmail.com>
+References: <20201211144511.575346-1-y.karadz@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Using uint64_t for the value of the offset was just wrong. According
+to the POSIX standard off_t is a signed integer type with unspecified
+size. Here we stick to a 64 bit integer, because this size guaranties
+optimal packing of the kshark_entry structure.
 
-Some files in the directory were missing the necessary SPDX headers to
-describe what license the file is under. These were added.
+Using unsigned values for the timestamps is also a source of problems
+and has been a reason for the introduction of multiple bugs in the past.
+In principal the value of the timestamps cannot be negative. However,
+this value must have the same type as the values used to define the
+state of the visualization model, like the range of the model or the
+size of the bin. The model state definitions should not take negative
+values as well, however their values are recalculated automatically when
+the user browses the data and those calculations may result in negative
+values in some corner cases. Because of this it is better to use a
+signed integer type and treat the negative values as an indicator
+of an error rather than have the negative result of the calculations
+casted into unsigned type which results into unpredictable behavior of
+the model.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- features.mk                                   | 1 +
- include/linux/time64.h                        | 2 ++
- lib/trace-cmd/Makefile                        | 2 +-
- lib/trace-cmd/include/private/trace-msg.h     | 1 +
- lib/traceevent/Makefile                       | 2 +-
- lib/traceevent/plugins/Makefile               | 2 ++
- lib/traceevent/plugins/plugin_python_loader.c | 1 +
- lib/tracefs/Makefile                          | 2 +-
- python/Makefile                               | 2 ++
- scripts/utils.mk                              | 1 +
- tracecmd/Makefile                             | 1 +
- tracecmd/include/bug.h                        | 1 +
- tracecmd/trace-usage.c                        | 1 +
- utest/Makefile                                | 1 +
- 14 files changed, 17 insertions(+), 3 deletions(-)
+ src/libkshark.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/features.mk b/features.mk
-index 9c9d63c1..53f35fd4 100644
---- a/features.mk
-+++ b/features.mk
-@@ -1,3 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
+diff --git a/src/libkshark.h b/src/libkshark.h
+index 0d6c50d..9eecc2d 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -61,7 +61,7 @@ struct kshark_entry {
+ 	int32_t		event_id;
  
- # taken from perf which was based on Linux Kbuild
- # try-cc
-diff --git a/include/linux/time64.h b/include/linux/time64.h
-index df926548..3961589e 100644
---- a/include/linux/time64.h
-+++ b/include/linux/time64.h
-@@ -1,3 +1,5 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
- #ifndef _TOOLS_LINUX_TIME64_H
- #define _TOOLS_LINUX_TIME64_H
+ 	/** The offset into the trace file, used to find the record. */
+-	uint64_t	offset;
++	int64_t		offset;
  
-diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
-index 666a1ebf..a3a1075a 100644
---- a/lib/trace-cmd/Makefile
-+++ b/lib/trace-cmd/Makefile
-@@ -1,4 +1,4 @@
--
-+# SPDX-License-Identifier: GPL-2.0
+ 	/**
+ 	 * The time of the record in nano seconds. The value is taken from
+@@ -69,7 +69,7 @@ struct kshark_entry {
+ 	 * dependent. The time usually is the timestamp from when the system
+ 	 * started.
+ 	 */
+-	uint64_t	ts;
++	int64_t		ts;
+ };
  
- include $(src)/scripts/utils.mk
- 
-diff --git a/lib/trace-cmd/include/private/trace-msg.h
-b/lib/trace-cmd/include/private/trace-msg.h index aab8a693..cfcf9615 100644
---- a/lib/trace-cmd/include/private/trace-msg.h
-+++ b/lib/trace-cmd/include/private/trace-msg.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: LGPL-2.1 */
- #ifndef _TRACE_MSG_H_
- #define _TRACE_MSG_H_
- 
-diff --git a/lib/traceevent/Makefile b/lib/traceevent/Makefile
-index c7f7cda0..0f9e5db8 100644
---- a/lib/traceevent/Makefile
-+++ b/lib/traceevent/Makefile
-@@ -1,4 +1,4 @@
--
-+# SPDX-License-Identifier: GPL-2.0
- 
- include $(src)/scripts/utils.mk
- 
-diff --git a/lib/traceevent/plugins/Makefile
-b/lib/traceevent/plugins/Makefile index 21e933af..d0afb590 100644
---- a/lib/traceevent/plugins/Makefile
-+++ b/lib/traceevent/plugins/Makefile
-@@ -1,3 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
- include $(src)/scripts/utils.mk
- 
- bdir:=$(obj)/lib/traceevent/plugins
-diff --git a/lib/traceevent/plugins/plugin_python_loader.c
-b/lib/traceevent/plugins/plugin_python_loader.c index 01bdfad3..c9a88e4f
-100644 --- a/lib/traceevent/plugins/plugin_python_loader.c
-+++ b/lib/traceevent/plugins/plugin_python_loader.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: LGPL-2.1
- #include <Python.h>
- #include <stdio.h>
- #include "event-parse.h"
-diff --git a/lib/tracefs/Makefile b/lib/tracefs/Makefile
-index 89519517..590a0ffe 100644
---- a/lib/tracefs/Makefile
-+++ b/lib/tracefs/Makefile
-@@ -1,4 +1,4 @@
--
-+# SPDX-License-Identifier: LGPL-2.1
- 
- include $(src)/scripts/utils.mk
- 
-diff --git a/python/Makefile b/python/Makefile
-index deaa83ee..d2906c4f 100644
---- a/python/Makefile
-+++ b/python/Makefile
-@@ -1,3 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
- include $(src)/scripts/utils.mk
- 
- ifdef BUILD_PYTHON_WORKS
-diff --git a/scripts/utils.mk b/scripts/utils.mk
-index ccd4840f..5c47cb42 100644
---- a/scripts/utils.mk
-+++ b/scripts/utils.mk
-@@ -1,3 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
- 
- # Utils
- 
-diff --git a/tracecmd/Makefile b/tracecmd/Makefile
-index de14176e..c02851a8 100644
---- a/tracecmd/Makefile
-+++ b/tracecmd/Makefile
-@@ -1,3 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
- 
- VERSION := $(TC_VERSION)
- PATCHLEVEL := $(TC_PATCHLEVEL)
-diff --git a/tracecmd/include/bug.h b/tracecmd/include/bug.h
-index 5d5ef9f0..9222f935 100644
---- a/tracecmd/include/bug.h
-+++ b/tracecmd/include/bug.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: LGPL-2.1 */
- #ifndef __TRACE_CMD_BUG
- #define __TRACE_CMD_BUG
- 
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 0a338ed7..1a7abd58 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-diff --git a/utest/Makefile b/utest/Makefile
-index 55828abb..2cf99745 100644
---- a/utest/Makefile
-+++ b/utest/Makefile
-@@ -1,3 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
- 
- include $(src)/scripts/utils.mk
- 
+ /** Size of the task's hash table. */
 -- 
-2.25.4
+2.25.1
 
