@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D0A7C433FE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:58:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D69A8C433FE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:58:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E93323F38
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:58:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A6B5323E1B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 11 Dec 2020 18:58:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391168AbgLKRMJ (ORCPT
+        id S1732770AbgLKRMK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 11 Dec 2020 12:12:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44790 "EHLO mail.kernel.org"
+        Fri, 11 Dec 2020 12:12:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730528AbgLKRLm (ORCPT
+        id S2394583AbgLKRLl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:11:42 -0500
+        Fri, 11 Dec 2020 12:11:41 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 000B023ECD
-        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 17:10:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2626A23E1B
+        for <linux-trace-devel@vger.kernel.org>; Fri, 11 Dec 2020 17:10:15 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1knlvq-000HfQ-0j
+        id 1knlvq-000Hfu-68
         for linux-trace-devel@vger.kernel.org; Fri, 11 Dec 2020 12:10:14 -0500
-Message-ID: <20201211171013.891812161@goodmis.org>
+Message-ID: <20201211171014.051912406@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 11 Dec 2020 12:08:48 -0500
+Date:   Fri, 11 Dec 2020 12:08:49 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 06/13] trace-cmd: Clean up the Makefiles a little
+Subject: [PATCH 07/13] trace-cmd: Remove making of ld.so.conf.d/trace.conf
 References: <20201211170842.611554918@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -45,74 +45,68 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Organize the Makefiles a little:
-
- Move the definition of LIBTRACECMD_SHARED_VERSION and LIBTRACECMD_SHARED_SO
- to the top level Makefile.
-
- Move the exports for LIBTRACECMD_* right below their definitions.
-
- Move the LIBTRACECMD_* definitions above the LIBTRACEEVENT_* definitions,
- as LIBTRACECMD_* is the main code here.
+Updating the ld.conf.d directory is an unneeded maintenance burden for
+installation. Simply make the libtracecmd.so be installed in the default
+lib{64} directory instead, and not in its own trace-cmd/ directory within
+the lib{64} directory.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile               | 13 ++++++++-----
- lib/trace-cmd/Makefile |  4 ----
- 2 files changed, 8 insertions(+), 9 deletions(-)
+ Makefile         |  4 ----
+ scripts/utils.mk | 10 ----------
+ 2 files changed, 14 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 24b2b8f652f7..3e07be45f84e 100644
+index 3e07be45f84e..0c5da92b54b6 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -215,16 +215,20 @@ export prefix bindir src obj kshark-dir
+@@ -111,7 +111,6 @@ HELP_DIR_SQ = '$(subst ','\'',$(HELP_DIR))'
  
- LIBS = -ldl
+ BASH_COMPLETE_DIR ?= $(etcdir)/bash_completion.d
+ LD_SO_CONF_DIR ?= $(etcdir)/ld.so.conf.d
+-TRACE_LD_FILE ?= trace.conf
  
-+LIBTRACECMD_DIR = $(obj)/lib/trace-cmd
-+LIBTRACECMD_STATIC = $(LIBTRACECMD_DIR)/libtracecmd.a
-+LIBTRACECMD_SHARED = $(LIBTRACECMD_DIR)/libtracecmd.so.$(LIBTRACECMD_VERSION)
-+LIBTRACECMD_SHARED_VERSION = $(shell echo $(LIBTRACECMD_SHARED) | sed -e 's/\(\.so\.[0-9]*\).*/\1/')
-+LIBTRACECMD_SHARED_SO = $(shell echo $(LIBTRACECMD_SHARED) | sed -e 's/\(\.so\).*/\1/')
-+
-+export LIBTRACECMD_STATIC LIBTRACECMD_SHARED
-+export LIBTRACECMD_SHARED_VERSION LIBTRACECMD_SHARED_SO
+ export PLUGIN_DIR_TRACEEVENT
+ export PLUGIN_DIR_TRACECMD
+@@ -468,17 +467,14 @@ install_traceevent: $(LIBTRACEEVENT_STATIC_BUILD)
+ 	$(Q)$(call do_install,$(LIBTRACEEVENT_SHARED),$(libdir_SQ)/traceevent)
+ 	$(Q)$(call do_install,$(src)/include/traceevent/event-parse.h,$(includedir_SQ)/traceevent)
+ 	$(Q)$(call do_install,$(src)/include/traceevent/trace-seq.h,$(includedir_SQ)/traceevent)
+-	$(Q)$(call do_install_ld,$(TRACE_LD_FILE),$(LD_SO_CONF_DIR),$(libdir_SQ)/traceevent)
  
- LIBTRACEEVENT=libtraceevent
- LIBTRACEEVENT_DIR = $(obj)/lib/traceevent
- LIBTRACEEVENT_STATIC = $(LIBTRACEEVENT_DIR)/libtraceevent.a
- LIBTRACEEVENT_SHARED = $(LIBTRACEEVENT_DIR)/libtraceevent.so
+ install_tracefs: $(LIBTRACEFS_STATIC_BUILD)
+ 	$(Q)$(call do_install,$(LIBTRACEFS_SHARED),$(libdir_SQ)/tracefs)
+ 	$(Q)$(call do_install,$(src)/include/tracefs/tracefs.h,$(includedir_SQ)/tracefs)
+-	$(Q)$(call do_install_ld,$(TRACE_LD_FILE),$(LD_SO_CONF_DIR),$(libdir_SQ)/tracefs)
  
--LIBTRACECMD_DIR = $(obj)/lib/trace-cmd
--LIBTRACECMD_STATIC = $(LIBTRACECMD_DIR)/libtracecmd.a
--LIBTRACECMD_SHARED = $(LIBTRACECMD_DIR)/libtracecmd.so.$(LIBTRACECMD_VERSION)
+ install_libs: libs $(INSTALL_TRACEEVENT) $(INSTALL_TRACEFS)
+ 	$(Q)$(call do_install,$(LIBTRACECMD_SHARED),$(libdir_SQ)/trace-cmd)
+ 	$(Q)$(call do_install,$(src)/include/trace-cmd/trace-cmd.h,$(includedir_SQ)/trace-cmd)
+-	$(Q)$(call do_install_ld,$(TRACE_LD_FILE),$(LD_SO_CONF_DIR),$(libdir_SQ)/trace-cmd)
+ 
+ doc:
+ 	$(MAKE) -C $(src)/Documentation all
+diff --git a/scripts/utils.mk b/scripts/utils.mk
+index 2e79f1a6ca0e..1d090d8ac001 100644
+--- a/scripts/utils.mk
++++ b/scripts/utils.mk
+@@ -135,16 +135,6 @@ define do_install_data
+ 	$(INSTALL) -m 644 $1 '$(DESTDIR_SQ)$2'
+ endef
+ 
+-define do_install_ld
+-	if [ -d '$(DESTDIR_SQ)$2' ]; then				\
+-		$(print_install)					\
+-		if ! grep -q $3 $(DESTDIR_SQ)$2/$1 2>/dev/null; then	\
+-			echo '$3' >> $(DESTDIR_SQ)$2/$1;		\
+-			ldconfig;					\
+-		fi							\
+-	fi
+-endef
 -
- LIBTRACEFS=libtracefs
- LIBTRACEFS_DIR = $(obj)/lib/tracefs
- LIBTRACEFS_STATIC = $(LIBTRACEFS_DIR)/libtracefs.a
-@@ -259,7 +263,6 @@ TRACE_LIBS = -L$(LIBTRACECMD_DIR) -ltracecmd	\
- 
- export LIBS TRACE_LIBS
- export LIBTRACEEVENT_DIR LIBTRACECMD_DIR LIBTRACEFS_DIR
--export LIBTRACECMD_STATIC LIBTRACECMD_SHARED
- export Q SILENT VERBOSE EXT
- 
- # Include the utils
-diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
-index ec68831de610..cd66eaa8ea6c 100644
---- a/lib/trace-cmd/Makefile
-+++ b/lib/trace-cmd/Makefile
-@@ -40,10 +40,6 @@ $(LIBTRACECMD_STATIC): $(OBJS)
- 
- LIBS = -L$(obj)/lib/traceevent -ltraceevent
- 
--LIBTRACECMD_SHARED_VERSION = $(shell echo $(LIBTRACECMD_SHARED) | sed -e 's/\(\.so\.[0-9]*\).*/\1/')
--
--LIBTRACECMD_SHARED_SO = $(shell echo $(LIBTRACECMD_SHARED) | sed -e 's/\(\.so\).*/\1/')
--
- $(LIBTRACECMD_SHARED_VERSION): $(LIBTRACECMD_SHARED)
- 	@ln -sf $(<F) $@
- 
+ define do_install_pkgconfig_file
+ 	if [ -n "${pkgconfig_dir}" ]; then 					\
+ 		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
 -- 
 2.29.2
 
