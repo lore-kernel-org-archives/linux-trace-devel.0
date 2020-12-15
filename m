@@ -2,126 +2,70 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 960FBC4361B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Dec 2020 16:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FDE8C2BB9A
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Dec 2020 16:42:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C88C2078B
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Dec 2020 16:29:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 11E3F223D6
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Dec 2020 16:42:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731109AbgLOQ24 (ORCPT
+        id S1725947AbgLOQlt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Dec 2020 11:28:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48632 "EHLO mail.kernel.org"
+        Tue, 15 Dec 2020 11:41:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731098AbgLOQ2u (ORCPT
+        id S1725850AbgLOQlt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:28:50 -0500
+        Tue, 15 Dec 2020 11:41:49 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19702224F4
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Dec 2020 16:28:09 +0000 (UTC)
-Date:   Tue, 15 Dec 2020 11:28:07 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 05C8622573
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Dec 2020 16:41:09 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kpDNr-000nHM-PI
+        for linux-trace-devel@vger.kernel.org; Tue, 15 Dec 2020 11:41:07 -0500
+Message-ID: <20201215164107.647287878@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Tue, 15 Dec 2020 11:40:32 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3] libtracefs: Add trace.conf for ld.so if needed
-Message-ID: <20201215112807.5b99788a@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH 2/3] libtracefs: Print installing messages
+References: <20201215164030.520449524@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-15
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-It cannot be guaranteed that the system the library is being installed on
-has ld.so set to search the location of where libtracefs.so is installed.
-
-During the install process, check if the path is found in ld.so.conf.d/ and
-if not, test if an executable can be built and find the library. If it can
-not, then add the path to ld.so.conf.d/trace.conf, and run ldconfig again.
+The make install did not show anything being installed. When files are being
+installed, they should be printed that they are being installed.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
-  Changes since v2:
-    - Quiet errors in compiling or running test program in install.
-      Add print of installing trace.conf if needed.
+ scripts/utils.mk | 1 +
+ 1 file changed, 1 insertion(+)
 
- Makefile | 27 +++++++++++++++++++++++++++
- test.c   |  7 +++++++
- 2 files changed, 34 insertions(+)
- create mode 100644 test.c
-
-diff --git a/Makefile b/Makefile
-index b4d0a72..5e78314 100644
---- a/Makefile
-+++ b/Makefile
-@@ -28,6 +28,8 @@ endef
- $(call allow-override,CC,$(CROSS_COMPILE)gcc)
- $(call allow-override,AR,$(CROSS_COMPILE)ar)
- $(call allow-override,PKG_CONFIG,pkg-config)
-+$(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
-+$(call allow-override,LDCONFIG,ldconfig)
+diff --git a/scripts/utils.mk b/scripts/utils.mk
+index 71985e6a28b1..ad73814c5664 100644
+--- a/scripts/utils.mk
++++ b/scripts/utils.mk
+@@ -126,6 +126,7 @@ define do_install_mkdir
+ endef
  
- EXT = -std=gnu99
- INSTALL = install
-@@ -235,11 +237,36 @@ cscope: force
- 	$(RM) cscope*
- 	$(call find_tag_files) | cscope -b -q
- 
-+ifeq ("$(DESTDIR)", "")
-+# If DESTDIR is not defined, then test if after installing the library
-+# and running ldconfig, if the library is visible by ld.so.
-+# If not, add the path to /etc/ld.so.conf.d/trace.conf and run ldconfig again.
-+define install_ld_config
-+	$(LDCONFIG); \
-+	if ! grep "^$(libdir)$$" $(LD_SO_CONF_PATH)/* &> /dev/null ; then \
-+		$(CC) -o $(OUTPUT)test $(srctree)/test.c -I $(includedir_SQ) \
-+			-L $(libdir_SQ) -ltracefs &> /dev/null; \
-+		if ! $(OUTPUT)test &> /dev/null; then \
-+			$(call print_install, trace.conf, $(LD_SO_CONF_PATH)) \
-+			echo $(libdir_SQ) >> $(LD_SO_CONF_PATH)/trace.conf; \
-+			$(LDCONFIG); \
-+		fi; \
-+		$(RM) $(OUTPUT)test; \
-+	fi
-+endef
-+else
-+# If installing to a location for another machine or package, do not bother
-+# with running ldconfig.
-+define install_ld_config
-+endef
-+endif # DESTDIR = ""
-+
- install_libs: libs install_pkgconfig
- 	$(Q)$(call do_install,$(LIBTRACEFS_SHARED),$(libdir_SQ)); \
- 		cp -fpR $(LIB_INSTALL) $(DESTDIR)$(libdir_SQ)
- 	$(Q)$(call do_install,$(src)/include/tracefs.h,$(includedir_SQ))
- 	$(Q)$(call do_install_ld,$(TRACE_LD_FILE),$(LD_SO_CONF_DIR),$(libdir_SQ))
-+	$(Q)$(call install_ld_config)
- 
- install: install_libs
- 
-diff --git a/test.c b/test.c
-new file mode 100644
-index 0000000..daf99d6
---- /dev/null
-+++ b/test.c
-@@ -0,0 +1,7 @@
-+#include <tracefs.h>
-+
-+int main()
-+{
-+	tracefs_get_tracing_dir();
-+	return 0;
-+}
+ define do_install
++	$(print_install)				\
+ 	$(call do_install_mkdir,$2);			\
+ 	$(INSTALL) $(if $3,-m $3,) $1 '$(DESTDIR_SQ)$2'
+ endef
 -- 
-2.25.4
+2.29.2
+
 
