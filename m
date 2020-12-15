@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DAB3C2BB48
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Dec 2020 15:55:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8BCAC4361B
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Dec 2020 16:15:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 097DC2255F
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Dec 2020 15:55:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7014220786
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 15 Dec 2020 16:15:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730455AbgLOPyc (ORCPT
+        id S1730246AbgLOQPh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Dec 2020 10:54:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41580 "EHLO mail.kernel.org"
+        Tue, 15 Dec 2020 11:15:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729966AbgLOPyW (ORCPT
+        id S1730307AbgLOQP3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:54:22 -0500
+        Tue, 15 Dec 2020 11:15:29 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3EBF22509
-        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Dec 2020 15:53:41 +0000 (UTC)
-Date:   Tue, 15 Dec 2020 10:53:40 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id BF19A20786
+        for <linux-trace-devel@vger.kernel.org>; Tue, 15 Dec 2020 16:14:47 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 11:14:45 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3] libtraceevent: Add trace.conf for ld.so if needed
-Message-ID: <20201215105340.58afff26@gandalf.local.home>
+Subject: [PATCH v4] libtraceevent: Add trace.conf for ld.so if needed
+Message-ID: <20201215111445.4fd8f73e@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -50,18 +50,19 @@ not, then add the path to ld.so.conf.d/trace.conf, and run ldconfig again.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
-  Changes since v2:
-    Do not show error messages of build or running of test program.
-    Print "INSTALL trace.conf" if it does install the file.
+  Changes from v3:
+    I made the mistake of creating the file locally, and then moving it to
+    the location. But this breaks if trace.conf already has a different
+    path for a different library.
 
- Makefile                 | 31 ++++++++++++++++++++++++++++++-
+ Makefile                 | 30 +++++++++++++++++++++++++++++-
  scripts/Makefile.include |  1 +
  test.c                   |  7 +++++++
- 3 files changed, 38 insertions(+), 1 deletion(-)
+ 3 files changed, 37 insertions(+), 1 deletion(-)
  create mode 100644 test.c
 
 diff --git a/Makefile b/Makefile
-index 9044536..d6bc864 100644
+index 9044536..12ae490 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -23,6 +23,8 @@ $(call allow-override,CC,$(CROSS_COMPILE)gcc)
@@ -73,7 +74,7 @@ index 9044536..d6bc864 100644
  
  EXT = -std=gnu99
  INSTALL = install
-@@ -241,10 +243,37 @@ define do_install_pkgconfig_file
+@@ -241,10 +243,36 @@ define do_install_pkgconfig_file
  	fi
  endef
  
@@ -88,9 +89,8 @@ index 9044536..d6bc864 100644
 +		$(CC) -o $(OUTPUT)test $(srctree)/test.c -I $(includedir_SQ) \
 +			-L $(libdir_SQ) -ltraceevent &>/dev/null; \
 +		if ! $(OUTPUT)test &> /dev/null; then \
-+			echo $(libdir_SQ) >> $(OUTPUT)trace.conf; \
 +			$(call PRINT_INSTALL, trace.conf) \
-+			mv $(OUTPUT)trace.conf $(LD_SO_CONF_PATH); \
++			echo $(libdir_SQ) >> $(LD_SO_CONF_PATH)/trace.conf; \
 +			$(LDCONFIG); \
 +		fi; \
 +		$(RM) $(OUTPUT)test; \
