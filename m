@@ -7,35 +7,36 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A79BC0018C
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Dec 2020 04:43:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED1C0C4361B
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Dec 2020 04:43:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5110D23137
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Dec 2020 04:43:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BFEC523139
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Dec 2020 04:43:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725287AbgLPEmy (ORCPT
+        id S1725796AbgLPEnS (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Dec 2020 23:42:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48618 "EHLO mail.kernel.org"
+        Tue, 15 Dec 2020 23:43:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbgLPEmy (ORCPT
+        id S1725788AbgLPEnS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 15 Dec 2020 23:42:54 -0500
+        Tue, 15 Dec 2020 23:43:18 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 471C123133
+        by mail.kernel.org (Postfix) with ESMTPSA id A328823139
         for <linux-trace-devel@vger.kernel.org>; Wed, 16 Dec 2020 04:42:14 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kpOdh-000qyL-Aa
+        id 1kpOdh-000qzJ-MT
         for linux-trace-devel@vger.kernel.org; Tue, 15 Dec 2020 23:42:13 -0500
-Message-ID: <20201216044213.152508008@goodmis.org>
+Message-ID: <20201216044213.537553785@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 15 Dec 2020 23:41:52 -0500
+Date:   Tue, 15 Dec 2020 23:41:54 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 02/12] trace-cmd: Have etcdir always be at the root directory
+Subject: [PATCH 04/12] trace-cmd: Use the LIBTRACE{EVENT,FS}_LIBS for building
+ libtracecmd.so
 References: <20201216044150.375001748@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,32 +46,30 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-There's a test if prefix == /usr/local and if so, then etcdir is set to
-"/etc", otherwise it is set to $(prefix)/etc, which is not correct.
-
-Always have etcdir = "/etc".
+Currently the path of the libtraceevent library is hardcoded when building
+libtracecmd.so, and libtracefs is not even specified. In order to use
+libtracecmd.so without needing to add -ltraceevent or -ltracefs, use the
+defined LIBTRACEVENT_LIBS and LIBTRACEFS_LIBS for the LIBS macro to build
+libtracecmd.so.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile | 4 ----
- 1 file changed, 4 deletions(-)
+ lib/trace-cmd/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 595c8443e572..f8252ba83352 100644
---- a/Makefile
-+++ b/Makefile
-@@ -72,11 +72,7 @@ includedir_SQ = '$(subst ','\'',$(includedir))'
- pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
- 			--variable pc_path pkg-config | tr ":" " "))
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index 838a59ddf332..75e4fea4e3e0 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -38,7 +38,7 @@ $(DEPS): | $(bdir)
+ $(LIBTRACECMD_STATIC): $(OBJS)
+ 	$(Q)$(call do_build_static_lib)
  
--ifeq ($(prefix),/usr/local)
- etcdir ?= /etc
--else
--etcdir ?= $(prefix)/etc
--endif
- etcdir_SQ = '$(subst ','\'',$(etcdir))'
+-LIBS = -L$(obj)/lib/traceevent -ltraceevent
++LIBS = $(LIBTRACEEVENT_LDLAGS) $(LIBTRACEFS_LDLAGS)
  
- export man_dir man_dir_SQ html_install html_install_SQ INSTALL
+ $(LIBTRACECMD_SHARED_VERSION): $(LIBTRACECMD_SHARED)
+ 	@ln -sf $(<F) $@
 -- 
 2.29.2
 
