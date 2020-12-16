@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E4AEC2BBCD
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A79BC0018C
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Dec 2020 04:43:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B10523371
+	by mail.kernel.org (Postfix) with ESMTP id 5110D23137
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Dec 2020 04:43:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725710AbgLPEmz (ORCPT
+        id S1725287AbgLPEmy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 15 Dec 2020 23:42:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48630 "EHLO mail.kernel.org"
+        Tue, 15 Dec 2020 23:42:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725771AbgLPEmy (ORCPT
+        id S1725710AbgLPEmy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 15 Dec 2020 23:42:54 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7736523137
+        by mail.kernel.org (Postfix) with ESMTPSA id 471C123133
         for <linux-trace-devel@vger.kernel.org>; Wed, 16 Dec 2020 04:42:14 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kpOdh-000qyp-GJ
+        id 1kpOdh-000qyL-Aa
         for linux-trace-devel@vger.kernel.org; Tue, 15 Dec 2020 23:42:13 -0500
-Message-ID: <20201216044213.357761288@goodmis.org>
+Message-ID: <20201216044213.152508008@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 15 Dec 2020 23:41:53 -0500
+Date:   Tue, 15 Dec 2020 23:41:52 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 03/12] trace-cmd: Remove unused variable LD_SO_CONF_DIR
+Subject: [PATCH 02/12] trace-cmd: Have etcdir always be at the root directory
 References: <20201216044150.375001748@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,25 +45,32 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The LD_SO_CONF_DIR variable in the Makefile is not used anywhere. Remove it.
+There's a test if prefix == /usr/local and if so, then etcdir is set to
+"/etc", otherwise it is set to $(prefix)/etc, which is not correct.
+
+Always have etcdir = "/etc".
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile | 1 -
- 1 file changed, 1 deletion(-)
+ Makefile | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index f8252ba83352..e956a2e6e8b6 100644
+index 595c8443e572..f8252ba83352 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -114,7 +114,6 @@ HELP_DIR_SQ = '$(subst ','\'',$(HELP_DIR))'
- #' emacs highlighting gets confused by the above escaped quote.
+@@ -72,11 +72,7 @@ includedir_SQ = '$(subst ','\'',$(includedir))'
+ pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
+ 			--variable pc_path pkg-config | tr ":" " "))
  
- BASH_COMPLETE_DIR ?= $(etcdir)/bash_completion.d
--LD_SO_CONF_DIR ?= $(etcdir)/ld.so.conf.d
+-ifeq ($(prefix),/usr/local)
+ etcdir ?= /etc
+-else
+-etcdir ?= $(prefix)/etc
+-endif
+ etcdir_SQ = '$(subst ','\'',$(etcdir))'
  
- export PLUGIN_DIR_TRACEEVENT
- export PLUGIN_DIR_TRACECMD
+ export man_dir man_dir_SQ html_install html_install_SQ INSTALL
 -- 
 2.29.2
 
