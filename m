@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07C1EC4361B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24047C2BBCA
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Dec 2020 20:13:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ADAA423600
+	by mail.kernel.org (Postfix) with ESMTP id D52B123619
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 16 Dec 2020 20:13:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbgLPUM4 (ORCPT
+        id S1726964AbgLPUM4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 16 Dec 2020 15:12:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35238 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:35240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726964AbgLPUM4 (ORCPT
+        id S1728558AbgLPUM4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 16 Dec 2020 15:12:56 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 173EB23719
-        for <linux-trace-devel@vger.kernel.org>; Wed, 16 Dec 2020 20:11:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80C5B23731;
+        Wed, 16 Dec 2020 20:11:36 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kpd95-000vvz-3t
-        for linux-trace-devel@vger.kernel.org; Wed, 16 Dec 2020 15:11:35 -0500
-Message-ID: <20201216201134.980643943@goodmis.org>
+        id 1kpd95-000vwx-HD; Wed, 16 Dec 2020 15:11:35 -0500
+Message-ID: <20201216201135.380840809@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 16 Dec 2020 15:11:12 -0500
+Date:   Wed, 16 Dec 2020 15:11:14 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 6/8] libtracefs: Remove unneccessary TRACE_LIBS variable
+Cc:     Yordan Karadzhov <ykaradzhov@vmware.com>
+Subject: [PATCH 8/8] libtracefs: Add -rpath to libtracefs.so
 References: <20201216201106.170659791@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -45,34 +45,29 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The TRACE_LIBS variable in the Makefile is not not used anywhere. Simply
-have LIBS equal LIBTRACEEVENT_LIBS, and export LIBS instead.
+Pass in "-rpath=$ORIGIN" to the linker when building libtracefs.so, such
+that the path for libtraceevent.so might be found if it is installed in the
+same location as libtracefs.
 
+Suggested-by: Yordan Karadzhov <ykaradzhov@vmware.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ scripts/utils.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 142b824ca421..a8b888958614 100644
---- a/Makefile
-+++ b/Makefile
-@@ -129,12 +129,12 @@ export prefix bindir src obj bdir
- LIBTRACEFS_STATIC = $(bdir)/libtracefs.a
- LIBTRACEFS_SHARED = $(bdir)/libtracefs.so.$(TRACEFS_VERSION)
+diff --git a/scripts/utils.mk b/scripts/utils.mk
+index 0d3c3194f6c5..7742e1981cef 100644
+--- a/scripts/utils.mk
++++ b/scripts/utils.mk
+@@ -56,7 +56,7 @@ do_build_static_lib =				\
  
--TRACE_LIBS = $(LIBTRACEEVENT_LIBS)
--
- PKG_CONFIG_SOURCE_FILE = libtracefs.pc
- PKG_CONFIG_FILE := $(addprefix $(obj)/,$(PKG_CONFIG_SOURCE_FILE))
+ do_compile_shared_library =			\
+ 	($(print_shared_lib_compile)		\
+-	$(CC) --shared $^ -Wl,-soname,$(@F) -o $@ $(LIBS))
++	$(CC) --shared $^ '-Wl,-soname,$(@F),-rpath=$$ORIGIN' -o $@ $(LIBS))
  
--export LIBS TRACE_LIBS
-+LIBS = $(LIBTRACEEVENT_LIBS)
-+
-+export LIBS
- export LIBTRACEFS_STATIC LIBTRACEFS_SHARED
- 
- export Q SILENT VERBOSE EXT
+ do_compile_plugin_obj =				\
+ 	($(print_plugin_obj_compile)		\
 -- 
 2.29.2
 
