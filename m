@@ -5,65 +5,65 @@ X-Spam-Level:
 X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EFEAC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D359AC433E6
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 06:04:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6603D22513
+	by mail.kernel.org (Postfix) with ESMTP id A95C422513
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 06:04:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbgLUGEC (ORCPT
+        id S1728128AbgLUGEC (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 21 Dec 2020 01:04:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728128AbgLUGEC (ORCPT
+        with ESMTP id S1728183AbgLUGEC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 21 Dec 2020 01:04:02 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4647DC0611CE
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:04 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id ce23so11785889ejb.8
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:04 -0800 (PST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C90C0611CF
+        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:05 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id q22so11821695eja.2
+        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QsqMVQCfhuTivF9IcYxjxO3F76SUYIobWK4h1GVmQUA=;
-        b=uDnLG3++V3HZ4KvrkmWLN9IXljxXlrO/I0XGF4UYpHzWHx9Kt+SFQn5GiowpiA9U8w
-         1T06mDKXScP/intS+PhcUzXYxY6P/LWfxPGvj6yKTarXmcxoSSNwSzpG0NaxWKb9n2qy
-         RDUDXKQ6ExgXBYxyutjBeLN4BILGUiqKPv8dMJBBM1BviPF1ucj7Oihm42ZUKfv48Bz5
-         ZZkiuXzCOJKosy80Q9id2H1Jmj1rChhQsWdx69S1r1WXBVif1mWTi0QPobJmlW+zfT+b
-         /Mcxygmn/09Ct45R7Gsfi8LDKAgkR9WA1Tve7dkblmkTR2dNd0a+pqf4XWbUpF91UC26
-         0PEw==
+        bh=UGI7x9XGf8QdyR8SMGBQIxUmxZG5OF3RDAyFwTys9vM=;
+        b=GIS/eIUx7i/JAVzWDaGkZa+Wlj1Cq4VYZmbnsBnV7SOmmXo0BoBSVPiYo9t3de7GlW
+         5QMqC3Ma7p0ouC1MS/yOlmZtO66OmpDlqyDOjfiQ8nVi9m8dp0fUWbvz69dXt1/jpt1b
+         D8hD1aw0ee1q2taIj4KPfHIaJ4Vtt+ZKUCv2yRJdUiFkOhzzYx+OCqnOqi8AqG0R137M
+         zFgLUd9EDCwGvTAzULwnpO+XoDh6C3AneDaiF0ErQGhyszX0evAUIU1RYKqrmOYpfZwC
+         nxy7RSDdgDuAW5yFosqrgJ/qpSVXWG1ZA7/ZuUCfmBlo3UT2EIFmqR40lyQcLKtT0+BE
+         hWrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QsqMVQCfhuTivF9IcYxjxO3F76SUYIobWK4h1GVmQUA=;
-        b=GWLiIFaC0Q38q06UDMCJ6LD7SazEJ2LPP8UeASCbuWMWSIvXQWXBWdC22CXQXY1tr5
-         6ksmfK2P0QTxkktLUQFIOFZev/RZIz35tLTuyyr2mK0mqp/AfU6MlACltZvOYjMASoQI
-         NXUuEREa/H6De+KwTizl7b69vp4Qj7aH6JoFXCBYYxapnj4xwp1J+VTfzMGN3FWsX8rp
-         6zMyoA4ueBcqeNac8NypUEMNAvLNJJ/1Alf2akLz4ZSk/vxVoEWYxP+NcLGwQIfZEWCQ
-         Szt6miko9cHlpCeVikWkGS4Cj3e/LUkVHdCFf4HdFzR0O6c1WKqK8lPbuRd+eP96SkgX
-         eM+Q==
-X-Gm-Message-State: AOAM530WjUz4zPV03adZ5h1wUm245zQ3MSvg2XFLCXWUbkgr8QFSa+O0
-        1vh07DA3XR/IwcXhqjl4gRX7Qoej+ozvktyV
-X-Google-Smtp-Source: ABdhPJxqyh1SAAYkfBoDhsuXdshrAkR16ylV16jU3GGFGM7AK3lT5zFHiSNYuseVanu0TDR9/A9HFw==
-X-Received: by 2002:a17:906:168f:: with SMTP id s15mr13703268ejd.180.1608530583065;
-        Sun, 20 Dec 2020 22:03:03 -0800 (PST)
+        bh=UGI7x9XGf8QdyR8SMGBQIxUmxZG5OF3RDAyFwTys9vM=;
+        b=ofLSIzlgBl4JjxxAVWsJb+mfHTBgFbLN8yZ8781kKVi1gjkmlV392WcybMT29sq8WJ
+         K6RdUm2OIMlKkiZINgN67gIIbQupGie/7h/j9i251eUBHKNm6NO1irW83ucfi6hJN4m+
+         ua5sq51i/J8QaMRZijw8HY9XRcuRH1ZKo2eiEhEmCwkHd1c4Ne9egqWEK9fFNK+IyJpE
+         1sgFKo9WhX8bawPHnisHo6RpVKWDTPBsSgfr0vXZ9z3/n21lHrwDWWAmuDH67QJWWIwL
+         fRBvM6szhrRlONTOwCs4bCAyMio2zjYN7w14LYY7C5HNdUfhSoTtDixpy3jwduAh8CXu
+         oMfA==
+X-Gm-Message-State: AOAM532l/37fXG5cOjf/GghMk96fUY8o/5uxfvR+Ym4KlKM7sZLB2rC0
+        uFlWgLXchhqD0qBqFI/3jgo=
+X-Google-Smtp-Source: ABdhPJxhC4a0lZ/13B2uhko3YWJocySrGMkQYPSqKFAoHN2YMhnM/YGeVHQ27XK5Snf+atNVQv9glw==
+X-Received: by 2002:a17:907:720e:: with SMTP id dr14mr13996188ejc.303.1608530584253;
+        Sun, 20 Dec 2020 22:03:04 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z10sm8560885ejl.30.2020.12.20.22.03.01
+        by smtp.gmail.com with ESMTPSA id z10sm8560885ejl.30.2020.12.20.22.03.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 22:03:02 -0800 (PST)
+        Sun, 20 Dec 2020 22:03:03 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 6/8] libtracefs man pages: helper APIs for working with trace instances.
-Date:   Mon, 21 Dec 2020 08:02:50 +0200
-Message-Id: <20201221060252.177890-7-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 7/8] libtracefs man pages: APIs for initializing a tep handler with trace events from the local system.
+Date:   Mon, 21 Dec 2020 08:02:51 +0200
+Message-Id: <20201221060252.177890-8-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201221060252.177890-1-tz.stoyanov@gmail.com>
 References: <20201221060252.177890-1-tz.stoyanov@gmail.com>
@@ -74,99 +74,118 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Documented APIs:
-tracefs_instance_get_name()
-tracefs_instances_walk()
-tracefs_instance_exists()
+tracefs_local_events()
+tracefs_local_events_system()
+tracefs_fill_local_events()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/libtracefs-instances-utils.txt | 112 +++++++++++++++++++
- 1 file changed, 112 insertions(+)
- create mode 100644 Documentation/libtracefs-instances-utils.txt
+ Documentation/libtracefs-events-tep.txt | 131 ++++++++++++++++++++++++
+ 1 file changed, 131 insertions(+)
+ create mode 100644 Documentation/libtracefs-events-tep.txt
 
-diff --git a/Documentation/libtracefs-instances-utils.txt b/Documentation/libtracefs-instances-utils.txt
+diff --git a/Documentation/libtracefs-events-tep.txt b/Documentation/libtracefs-events-tep.txt
 new file mode 100644
-index 0000000..aa5efbd
+index 0000000..a01ce0e
 --- /dev/null
-+++ b/Documentation/libtracefs-instances-utils.txt
-@@ -0,0 +1,112 @@
++++ b/Documentation/libtracefs-events-tep.txt
+@@ -0,0 +1,131 @@
 +libtracefs(3)
 +=============
 +
 +NAME
 +----
-+tracefs_instance_get_name, tracefs_instances_walk, tracefs_instance_exists -
-+Helper functions for working with tracing instances.
++tracefs_local_events, tracefs_local_events_system, tracefs_fill_local_events -
++Initialize a tep handler with trace events from the local system.
 +
 +SYNOPSIS
 +--------
 +[verse]
 +--
 +*#include <tracefs.h>*
++*#include <event-parse.h>*
 +
-+const char pass:[*]*tracefs_instance_get_name*(struct tracefs_instance pass:[*]_instance_);
-+int *tracefs_instances_walk*(int (pass:[*]_callback_)(const char pass:[*], void pass:[*]), void pass:[*]_context)_;
-+bool *tracefs_instance_exists*(const char pass:[*]_name_);
++struct tep_handle pass:[*]*tracefs_local_events*(const char pass:[*]_tracing_dir_);
++struct tep_handle pass:[*]*tracefs_local_events_system*(const char pass:[*]_tracing_dir_, const char pass:[*] const pass:[*]_sys_names_);
++int *tracefs_fill_local_events*(const char pass:[*]_tracing_dir_, struct tep_handle pass:[*]_tep_, int pass:[*]_parsing_failures_);
 +
 +--
 +
 +DESCRIPTION
 +-----------
-+Helper functions for working with trace instances.
++Functions for initializing a tep handler with trace events from the local system.
 +
-+The _tracefs_instance_get_name()_ function returns the name of the given _instance_.
-+Note that the top instance has no name, the function returns NULL for it.
++The _tracefs_local_events()_ function allocates a new _tep_ handler and
++initializes it with events from all trace systems, located in the given
++_tracing_dir_ directory. This could be NULL or tracefs mount point, for
++trace events in top instance, or full path to a trace instance, for trace
++events in that instance.
 +
-+The _tracefs_instances_walk()_ function walks through all configured tracing
-+instances in the system and calls _callback_ for each one of them. The _context_
-+argument is passed to the _callback_, together with the instance name. If the
-+_callback_ returns non-zero, the iteration stops. Note, the _callback_ is not
-+called for the top top instance.
++The _tracefs_local_events_system()_ function allocates a new _tep_ handler
++and initializes it with events from specified trace systems _sys_names_,
++located in the given _tracing_dir_ directory. This could be NULL or tracefs
++mount point, for trace events in top instance, or full path to a trace instance,
++for trace events in that instance. The _sys_names_ argument is an array of
++trace system names, that will be used for _tep_ handler initialization.
++The last element in that array must be a NULL pointer.
 +
-+The _tracefs_instance_exists()_ function checks if an instance with the given
-+_name_ exists in the system.
++The _tracefs_fill_local_events()_ function initializes already allocated _tep_
++handler with events from all trace systems, located in the given _tracing_dir_
++directory. This could be NULL or tracefs mount point, for trace events in
++the top instance, or full path to a trace instance, for trace events in that
++instance. The _tep_ argument must be a pointer to already allocated tep
++handler, that is going to be initialized. The _parsing_failures_ argument
++could be NULL or a pointer to an integer, where the number of failures while
++parsing the event files are returned.
 +
 +RETURN VALUE
 +------------
-+The _tracefs_instance_get_name()_ returns a string or NULL in case of the top
-+instance. The returned string must _not_ be freed.
++The _tracefs_local_events()_ and _tracefs_local_events_system()_ functions
++return pointer to allocated and initialized _tep_ handler, or NULL in
++case of an error. The returned _tep_ handler must be freed with _tep_free()_.
 +
-+The _tracefs_instances_walk()_ function returns 0, if all instances were iterated, 1
-+if the iteration was stopped by the _callback_, or -1 in case of an error.
-+
-+The _tracefs_instance_exists()_ returns true if an instance with the given name
-+exists in the system or false otherwise.
++The _tracefs_fill_local_events()_ function returns -1 in case of an error or
++0 otherwise.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <tracefs.h>
++#include <event-parse.h>
 +
-+struct tracefs_instance *inst;
-+....
-+char *name = tracefs_instance_get_name(inst);
-+
-+	if(name) {
-+		/* Got name of the instance */
-+	}
-+
++struct tep_event *tep;
 +...
-+static int instance_walk(char *name, void *context)
-+{
-+	/* Got instance with name */
-+	return 0;
-+}
-+...
-+	if (tracefs_instances_walk(instance_walk, NULL) < 0) {
-+		/* Error walking through the instances */
++	tep = tracefs_local_events(NULL);
++	if (!tep) {
++		/* Failed to initialise tep handler with local events from top instance */
++		...
 +	}
 +...
-+	if (tracefs_instance_exists("foo")) {
-+		/* There is instance with name foo in the system */
-+	} else {
-+		/* There is no instance with name foo in the system */
++	tep_free(tep);
++...
++	const char *systems[] = {"ftrace", "irq", NULL};
++	tep = tracefs_local_events_system(NULL, systems);
++	if (!tep) {
++		/* Failed to initialise tep handler with local events from
++		 * ftrace and irq systems in top instance.
++		 */
++		...
 +	}
++...
++	tep_free(tep);
++...
++	int parsing_failures;
++	tep = tep_alloc();
++	if (!tep) {
++		/* Failed to allocate a tep handler */
++		...
++	}
++	if (tracefs_fill_local_events(NULL, tep, &parsing_failures) < 0) {
++		/* Failed to initialise tep handler with local events from top instance */
++	}
++...
++	tep_free(tep);
 +--
 +FILES
 +-----
