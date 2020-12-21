@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B61DC433E9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DC3AC43381
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 06:03:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 307D522B2A
+	by mail.kernel.org (Postfix) with ESMTP id 59A6222513
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 06:03:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727517AbgLUGD6 (ORCPT
+        id S1727566AbgLUGD6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 21 Dec 2020 01:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727566AbgLUGD5 (ORCPT
+        with ESMTP id S1727670AbgLUGD5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 21 Dec 2020 01:03:57 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0735C0611CA
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:02:58 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id j16so8504392edr.0
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:02:58 -0800 (PST)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F57C0611CB
+        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:00 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id c7so8456586edv.6
+        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JNU1XUFo7bjZBFqse0EpQDDMCTQQR1xGfjDNxFxj3eM=;
-        b=IbFQPpcv/wch8GXXONbdKZmyboG8pegCSaUyJJSO0NBzm7DEgwcGdHWcUyXSguOlaG
-         dC9tapfJSLmLBcP6GELGIRoExpqhIB+FVunHPpdJl3GNZJyl0FrT+vngnXHm7PyTn2Ux
-         nXTlkbLesk94S8VX/dW5TV6qf8372jC2v94+zxwvVHt1b/265M2VLgyXCRftQY2vRmq1
-         C8A9ZxtLHAwRocYPqWIPLFQ/AiNGFjF+yAAjmCn4frmZ3Sg68ojqa/zQMy5/x071d+nk
-         xfYJv0Wnr6H9nMDw0Fd8q7EyZ3MMunvI0HT6URsVhDXCBGyoO3dQWWOWDKReoxHQVAek
-         3l+g==
+        bh=5GZNYh356HhEcIbSlefkqNxXutdLhcij5aCTg2yE2II=;
+        b=OOu9G1N2Ngbo7GeJyj7bZ10neJjiIn1F4udsLj79TmDadjVsAB0ivDh1T6UL1gyiGZ
+         55iSwoWnqy58LU02bJcZuHafFW8ErVIvFkUuGMz1Ps4bnKRCSwep5fmoCQv/k5qV6V5e
+         jQHNjmAjoYdwuqNsobnGO7OHKzs+BNpLKyWW7QDS8IkatyI0l79RKKEFIjAR2qXgTnt0
+         wsTBuwunIRdR2QbGvyApPh5pe3IXgQQ2Wdee8apfjEsEMR++kWP2rD3bPZ26Dk3ma/pw
+         RpR0ZqNJFF+rlFnkOgyWnpc9QiQJxolVHc3rfvz64njdazV6MvZrDCgc7hnRM0r1jTjg
+         O8dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JNU1XUFo7bjZBFqse0EpQDDMCTQQR1xGfjDNxFxj3eM=;
-        b=oE/07lIXgv8Rm9M3xHTHd/DZeI1Sxa+0q4/ULfw7HqYfPuzTZpKSjXMvIt/4o4F/MM
-         eIX+70LQUREjHrijTWgU3fiC6xLb4AdfYQmejI9Qd66AqZyXyNhOD6e88VJis6osMOOA
-         eV2t7E22U3R5VrONgVGMJCC2/y4kr/Cj1PhvQT7tlz/5+/90VQXof3dQTx7//jJKdxDA
-         wmJGYJ66jE2mGrwPbTjQ2zC0V5m9/9w4o1r26S10GfPt1ojKQAtdsl+fqfcPY7DuG1+1
-         qHYvap8G4SI0NMOcT1W8PJ+jltaJ1Z+ar6zb1jBw/88AAVpT9kKFTYBch0KozkE79cnA
-         9PaQ==
-X-Gm-Message-State: AOAM53087aTI/94YrQB/YPKDABHf4ijej05CKzkh8eHLjzz0aGzE32ax
-        kDVTsBYBwM8lt7AJyoc3DNQ=
-X-Google-Smtp-Source: ABdhPJxses2puSu0SaGcUI9yRahwdztjAhct4VYAR/iAQZcb9H0c4309VpueGcYZo9ozzjqZq5u7Lg==
-X-Received: by 2002:aa7:d608:: with SMTP id c8mr14405498edr.260.1608530577619;
-        Sun, 20 Dec 2020 22:02:57 -0800 (PST)
+        bh=5GZNYh356HhEcIbSlefkqNxXutdLhcij5aCTg2yE2II=;
+        b=HT/glIEpWUnoADoomPyjLhwhx31BhvZTmeUp2AqzpaZDLCrQ86P8f/tfnpPGhwJzl4
+         kM2pu4/BI/COKlIJ5/oGhg5WbRMKTwx8qTTu5PnnHci7Ic3kuKsntBYXLLCm4pklqKtM
+         kFGBbVDHogwcKJzwF5LYXz0x+uy0N28rxe61vK1/FYbGxe/AXk+EReJnWp1tZNxmj1VQ
+         1364w6gCv/tM89RFYF3D1nqqDciOtj5YEi+HL7y8o2Avjhcfn3eQbF1RI+k4MvWFgCFn
+         B0W0sB4URbuKCGIdmeOdIHyyTaHVVd/mbic442yDW+h846hHB0Yw20L4l1ausiMbQk/j
+         iGKw==
+X-Gm-Message-State: AOAM532GeI/rxqwqvvVMvuLfF1k68KwnYr+wVZteQaOiJqSGiCzXyEe4
+        wU/PDzVyZE3BTATxHhuOzS0=
+X-Google-Smtp-Source: ABdhPJyL4jkks0W5LxtMxW0vS0iwIw4ffjnz4Fn6OEalAXCTBYBsXjA5Oa5f9BqFRYUzjODLP4hzZQ==
+X-Received: by 2002:a05:6402:a45:: with SMTP id bt5mr14721203edb.130.1608530578840;
+        Sun, 20 Dec 2020 22:02:58 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z10sm8560885ejl.30.2020.12.20.22.02.56
+        by smtp.gmail.com with ESMTPSA id z10sm8560885ejl.30.2020.12.20.22.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 22:02:56 -0800 (PST)
+        Sun, 20 Dec 2020 22:02:58 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 2/8] libtracefs man pages: APIs for locating trace directory and files.
-Date:   Mon, 21 Dec 2020 08:02:46 +0200
-Message-Id: <20201221060252.177890-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 3/8] libtracefs man pages: APIs for working with trace systems and events.
+Date:   Mon, 21 Dec 2020 08:02:47 +0200
+Message-Id: <20201221060252.177890-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201221060252.177890-1-tz.stoyanov@gmail.com>
 References: <20201221060252.177890-1-tz.stoyanov@gmail.com>
@@ -74,30 +74,29 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Documented APIs:
-tracefs_get_tracing_file()
-tracefs_put_tracing_file()
-tracefs_get_tracing_dir()
-tracefs_find_tracing_dir()
+tracefs_event_systems()
+tracefs_system_events()
+tracefs_iterate_raw_events()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/libtracefs-files.txt | 97 ++++++++++++++++++++++++++++++
- 1 file changed, 97 insertions(+)
- create mode 100644 Documentation/libtracefs-files.txt
+ Documentation/libtracefs-events.txt | 143 ++++++++++++++++++++++++++++
+ 1 file changed, 143 insertions(+)
+ create mode 100644 Documentation/libtracefs-events.txt
 
-diff --git a/Documentation/libtracefs-files.txt b/Documentation/libtracefs-files.txt
+diff --git a/Documentation/libtracefs-events.txt b/Documentation/libtracefs-events.txt
 new file mode 100644
-index 0000000..8bf9d75
+index 0000000..3a51055
 --- /dev/null
-+++ b/Documentation/libtracefs-files.txt
-@@ -0,0 +1,97 @@
++++ b/Documentation/libtracefs-events.txt
+@@ -0,0 +1,143 @@
 +libtracefs(3)
 +=============
 +
 +NAME
 +----
-+tracefs_get_tracing_file, tracefs_put_tracing_file, tracefs_tracing_dir -
-+Find locations of trace directory and files.
++tracefs_event_systems, tracefs_system_events, tracefs_iterate_raw_events -
++Work with trace systems and events.
 +
 +SYNOPSIS
 +--------
@@ -105,54 +104,100 @@ index 0000000..8bf9d75
 +--
 +*#include <tracefs.h>*
 +
-+char pass:[*]*tracefs_get_tracing_file*(const char pass:[*]_name_);
-+void *tracefs_put_tracing_file*(char pass:[*]_name_);
-+const char pass:[*]*tracefs_tracing_dir*(void);
++char pass:[*]pass:[*]*tracefs_event_systems*(const char pass:[*]_tracing_dir_);
++char pass:[*]pass:[*]*tracefs_system_events*(const char pass:[*]_tracing_dir_, const char pass:[*]_system_);
++int *tracefs_iterate_raw_events*(struct tep_handle pass:[*]_tep_, struct tracefs_instance pass:[*]_instance_, cpu_set_t pass:[*]_cpus_, int _cpu_size_, int (pass:[*]_callback_)(struct tep_event pass:[*], struct tep_record pass:[*], int, void pass:[*]), void pass:[*]_callback_context_);
++
 +--
 +
 +DESCRIPTION
 +-----------
-+This set of APIs can be used to find the full path of the trace file
-+system mount point and trace files in it.
++Trace systems and events related APIs.
 +
-+The _tracefs_get_tracing_file()_ function returns the full path of the
-+file with given _name_ in the trace file system. The function works
-+only with files in the trasefs main directory, it is not trace instance
-+aware. It is recommended to use _tracefs_instance_get_file()_ and
-+_tracefs_instance_get_dir()_ instead. The returned string must be freed
-+with _tracefs_put_tracing_file()_.
++The _tracefs_event_systems()_ function returns array of strings with the
++names of all registered trace systems, located in the given _tracing_dir_
++directory. This could be NULL or the location of the tracefs mount point
++for the trace systems of the local machine, or it may be a path to a copy
++of the tracefs directory from another machine. The last entry in the array
++is a NULL pointer. The array must be freed with _tracefs_list_free()_ API.
 +
-+The _tracefs_put_tracing_file()_ function frees trace file name,
-+returned by _tracefs_get_tracing_file()_.
++The _tracefs_system_events()_ function returns array of strings with the
++names of all registered trace events for given trace system specified by
++_system_, located in the given _tracing_dir_ directory. This could be NULL
++or the location of the tracefs mount point for the trace systems of the
++local machine, or it may be a path to a copy of the tracefs directory
++from another machine. The last entry in the array as a NULL pointer.
++The array must be freed with _tracefs_list_free()_ API.
 +
-+The _tracefs_tracing_dir()_ function returns the full path to the
-+trace file system. In the first function call, the mount point of the
-+tracing file system is located, cached and returned. It will mount it,
-+if it is not mounted. On any subsequent call the cached path is returned.
-+The return string must _not_ be freed.
++The _tracefs_interate_raw_events()_ function will read the tracefs raw
++data buffers and call the specified _callback_ function for every event it
++encounters. An initialized _tep_ handler is required (See
++_tracefs_local_events_(3)). If _instance_ is NULL, then the toplevel
++tracefs buffer is used, otherwise the buffer for the corresponding
++_instance_ is read. To filter only on a subset of CPUs, _cpus_ and
++_cpu_size_ may be set to only call _callback_ with events that occurred on
++the CPUs specified, otherwise if _cpus_ is NULL then the _callback_
++function will be called for all events, and _cpu_size_ is ignored. The
++_callback_ function will be called with the following parameters: A
++pointer to a struct tep_event that corresponds to the type of event the
++record is; The record representing the event; The CPU that the event
++occurred on; and a pointer to user specified _context_. If the _callback_
++returns non-zero, the iteration stops.
++
 +
 +RETURN VALUE
 +------------
-+The _tracefs_get_tracing_file()_ function returns a string or NULL in case
-+of an error. The returned string must be freed with _tracefs_put_tracing_file()_.
++The _tracefs_event_systems()_ and __tracefs_system_events()_ functions return
++an array of strings. The last element in that array is a NULL pointer. The array
++must be freed with _tracefs_list_free()_ API. In case of an error, NULL is returned.
 +
-+The _tracefs_tracing_dir()_ function returns a constant string or NULL
-+in case of an error. The returned string must _not_ be freed.
++The _tracefs_iterate_raw_events()_ function returns -1 in case of an error or
++0 otherwise.
 +
 +EXAMPLE
 +-------
 +[source,c]
 +--
 +#include <tracefs.h>
-+...
-+char *trace_on = tracefs_get_tracing_file("tracing_on");
-+	if (trace_on) {
-+		...
-+		tracefs_put_tracing_file(trace_on);
-+	}
-+...
-+const char *trace_dir = tracefs_tracing_dir();
 +
++char **systems = tracefs_event_systems(NULL);
++
++	if (systems) {
++		int i = 0;
++		/* Got registered trace systems from the top trace instance */
++		while (systems[i]) {
++			char **events = tracefs_system_events(NULL, systems[i]);
++			if (events) {
++				/* Got registered events in system[i] from the top trace instance */
++				int j = 0;
++
++				while (events[j]) {
++					/* Got event[j] in system[i] from the top trace instance */
++					j++;
++				}
++				tracefs_list_free(events);
++			}
++			i++;
++		}
++		tracefs_list_free(systems);
++	}
++....
++static int records_walk(struct tep_event *tep, struct tep_record *record, int cpu, void *context)
++{
++	/* Got recorded event on cpu */
++	return 0;
++}
++...
++struct tep_event *tep = tracefs_local_events(NULL);
++
++	if (!tep) {
++		/* Failed to initialise tep handler with local events */
++		...
++	}
++	if (tracefs_iterate_raw_events(tep, NULL, NULL, 0, records_walk, NULL) < 0) {
++		/* Error walking through the recorded raw events */
++	}
++	tep_free(tep);
 +--
 +FILES
 +-----
