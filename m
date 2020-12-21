@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9607C4332D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB3B7C4332B
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 06:03:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8F0EA22513
+	by mail.kernel.org (Postfix) with ESMTP id AEAC622B2D
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 06:03:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727670AbgLUGD6 (ORCPT
+        id S1727837AbgLUGD6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 21 Dec 2020 01:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49530 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727837AbgLUGD5 (ORCPT
+        with ESMTP id S1728050AbgLUGD5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 21 Dec 2020 01:03:57 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F93C0611CC
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:01 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id g20so11834465ejb.1
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:01 -0800 (PST)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BC3C0611CD
+        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:02 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id i24so8466038edj.8
+        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 22:03:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+A8+Hn7YDKykiwvd1w4P2UVCb0lnehfD8DN5Tp5AImQ=;
-        b=f7GurZX/AyMvVbmdUMnNS+DpytEcA4Evbp3XDU+ZROD6Wp+l0dJBsp5jwVZdkJHeq7
-         XS9ZFXe2JGL0eBTeuOJ168drPL31R0lgCAIBvklCW6uL7ORhS6TyKkN9wJniFF3TRzHF
-         oukSO3QtywoTuIRYzskLwfxIkXuD73aI5q6U7rQ3I47dB+uTkVo9ASNIZe36khAMqvLj
-         7h0opIbwGuJdWYaGzKOorrth+tpeqxF6MfI981PCK8/VmP6sEVjfnplUF3H4L/YGRN15
-         a5+0Btf8h/4aNU55W+MLZ7YFZJVyoTmF9iS7AxN22QTK+38hsSn8Y7qN2LgU26p1pg6A
-         CDGA==
+        bh=KxK4jW156xLsSBmOYzmXTCWc9wZHIsV4UBpC0gCdWoQ=;
+        b=Cp/QtCb3aYixgUoRk1n0JiO3O/v1p41mGeQ9DuI4ALwrzBZldD7BsEZGzb6EU+MOXF
+         ytJAl5DpEC4GKDEjHmRvp2lcWIGqWrPeIrcETnkrK+8YQGJ+aUt/0nxiPNc/bJnZTLg1
+         9tX+BxMEEOI4M2kD6ddwD7AKng4de+bvPanl/hPrghGoWVr+sXw9LuYXu9VFI9eDZlCM
+         lHcvE54wrKqfuNfYt4bEgoRD4mhH37VpGeBLhSAUrZC0FJV4oVRrtG+THr/dSq6TQml8
+         3VW29rdqGLC87LOjrt2ocW2w9ZLw2WTgTf/5nA6PSfv2/62CWnjfwEwfsJczDVcED791
+         gQ7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+A8+Hn7YDKykiwvd1w4P2UVCb0lnehfD8DN5Tp5AImQ=;
-        b=LFgiPN39gM9ewjrO4nS6mUw2anSGhJjp8pBZoBL0NkzCk+1BrwymqPBMw6dhcW7Yql
-         AmePYgwrVeppVd7EWfGiA5pm4nh/zwslH2zxqcDy6Ala8DRuBJO9KRS9hSYlwyvL7NEt
-         mt5IQKqEbsJChwjOO9azueDmDlxhS70Y2LB4WgFGHVR2JzNPii566w2PtNBv8XlntB2f
-         5+2WJMRIRXNsWP8WKfvgzVnZsfLbbW5c6bxekCSTT6FU8Bk32HZ2I6n2+sixFa/cKdBg
-         lHwUvcgYa1w7Aix+oeC4GIdoTf7znwgmoC7I0E8UydBtk6PAz3Q6IemodA75IUC2oiUT
-         +tsw==
-X-Gm-Message-State: AOAM531R5D11M77ERvq6e61g2e054rd/tG7j+9LtKKtkHBdzQVxoupxd
-        1si5Y3djEJz80+ElQ6rt/8mDHBlPiI2XH16Z
-X-Google-Smtp-Source: ABdhPJyDI4l/wb1dP/cbUDsNT/QXpqTofndDiOyoYMhbyxyQKM98GQXY7TJ2RYWq64ht+tK1GII4Dg==
-X-Received: by 2002:a17:907:2071:: with SMTP id qp17mr14177068ejb.110.1608530580099;
-        Sun, 20 Dec 2020 22:03:00 -0800 (PST)
+        bh=KxK4jW156xLsSBmOYzmXTCWc9wZHIsV4UBpC0gCdWoQ=;
+        b=huiT13ykEHoGkQixSP4sGt2waATvJrZYiKgzrTJWEejGedQjdcsPmslX6djNe55PbO
+         yM3hpe1eACgUS062siDMojoM53cbfydQRNgRfLTQh21OJuiYOjcFAy2l64ENIFzF8hUy
+         JREm1pjjKWIi0HX5Zg++mMRJXa9XjnObFqmABSzYV29NssPGDt0sdHIHQGBlxNddGkal
+         iM20wawE1vGY5qNBCsWmXhGlYfy5r15k+8lL+3icJFAtLKDZhOoLk/rcoNG5CtTzl1dw
+         jT9O54Qc1ytn6QtaiCshDKToWbbA0JY9kx1HdAW91XjTsRKekqD/1g8INev6gVdzuVo1
+         XmGA==
+X-Gm-Message-State: AOAM532f+/Pt/xr4CTKqrZpRIDNZp4TpN40T0aVv/RLKV1d1sNfa+Dwi
+        vXQBS408LW7cfFR77+EEYvUNy8tBg4QWl/pm
+X-Google-Smtp-Source: ABdhPJxHBP6Ifz+pEIHFg4jJQA/owawLZj6Hf6kstz6Dh0v8FfrwuDfTWh1UMlEsk+XuHmQRM2HOGw==
+X-Received: by 2002:aa7:d297:: with SMTP id w23mr14634300edq.374.1608530581628;
+        Sun, 20 Dec 2020 22:03:01 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z10sm8560885ejl.30.2020.12.20.22.02.58
+        by smtp.gmail.com with ESMTPSA id z10sm8560885ejl.30.2020.12.20.22.03.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 22:02:59 -0800 (PST)
+        Sun, 20 Dec 2020 22:03:00 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 4/8] libtracefs man pages: APIs for managing trace instances.
-Date:   Mon, 21 Dec 2020 08:02:48 +0200
-Message-Id: <20201221060252.177890-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 5/8] libtracefs man pages: APIs for working with files in trace instances.
+Date:   Mon, 21 Dec 2020 08:02:49 +0200
+Message-Id: <20201221060252.177890-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201221060252.177890-1-tz.stoyanov@gmail.com>
 References: <20201221060252.177890-1-tz.stoyanov@gmail.com>
@@ -74,30 +74,33 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Documented APIs:
-tracefs_instance_create()
-tracefs_instance_destroy()
-tracefs_instance_free()
-tracefs_instance_is_new()
+tracefs_file_exists()
+tracefs_dir_exists()
+tracefs_instance_get_file()
+tracefs_instance_get_dir()
+tracefs_instance_file_write()
+tracefs_instance_file_read()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/libtracefs-instances-manage.txt | 111 ++++++++++++++++++
- 1 file changed, 111 insertions(+)
- create mode 100644 Documentation/libtracefs-instances-manage.txt
+ Documentation/libtracefs-instances-files.txt | 160 +++++++++++++++++++
+ 1 file changed, 160 insertions(+)
+ create mode 100644 Documentation/libtracefs-instances-files.txt
 
-diff --git a/Documentation/libtracefs-instances-manage.txt b/Documentation/libtracefs-instances-manage.txt
+diff --git a/Documentation/libtracefs-instances-files.txt b/Documentation/libtracefs-instances-files.txt
 new file mode 100644
-index 0000000..aca2161
+index 0000000..7f9d381
 --- /dev/null
-+++ b/Documentation/libtracefs-instances-manage.txt
-@@ -0,0 +1,111 @@
++++ b/Documentation/libtracefs-instances-files.txt
+@@ -0,0 +1,160 @@
 +libtracefs(3)
 +=============
 +
 +NAME
 +----
-+tracefs_instance_create, tracefs_instance_destroy, tracefs_instance_free,
-+tracefs_instance_is_new - Manage trace instances.
++tracefs_file_exists, tracefs_dir_exists, tracefs_instance_get_file,
++tracefs_instance_get_dir, tracefs_instance_file_write,
++tracefs_instance_file_read - Work with files in tracing instances.
 +
 +SYNOPSIS
 +--------
@@ -105,49 +108,55 @@ index 0000000..aca2161
 +--
 +*#include <tracefs.h>*
 +
-+struct tracefs_instance pass:[*]*tracefs_instance_create*(const char pass:[*]_name_);
-+int *tracefs_instance_destroy*(struct tracefs_instance pass:[*]_instance_);
-+void *tracefs_instance_free*(struct tracefs_instance pass:[*]_instance_);
-+bool *tracefs_instance_is_new*(struct tracefs_instance pass:[*]_instance_);
++bool *tracefs_file_exists*(struct tracefs_instance pass:[*]_instance_, char pass:[*]_name_);
++bool *tracefs_dir_exists*(struct tracefs_instance pass:[*]_instance_, char pass:[*]_name_);
++char pass:[*]*tracefs_instance_get_file*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_);
++char pass:[*]*tracefs_instance_get_dir*(struct tracefs_instance pass:[*]_instance_);
++int *tracefs_instance_file_write*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, const char pass:[*]_str_);
++char pass:[*]*tracefs_instance_file_read*(struct tracefs_instance pass:[*]_instance_, char pass:[*]_file_, int pass:[*]_psize_);
 +
 +--
 +
 +DESCRIPTION
 +-----------
-+This set of functions can be used to manage trace instances. A trace
-+instance is a sub buffer used by the Linux tracing system. Given a unique
-+name, the events enabled in an instance do not affect the main tracing
-+system, nor other instances, as events enabled in the main tracing system
-+or other instances do not affect the given instance.
++This set of APIs can be used to work with trace files in all trace instances.
++Each of these APIs take an _instance_ argument, that can be NULL to act
++on the top level instance. Otherwise, it acts on an instance created with
++*tracefs_insance_create*(3)
 +
-+The _tracefs_instance_create()_ function allocates and initializes a new
-+tracefs_instance structure and returns it. If the instance does not yet
-+exist in the system, it will be created.
++The _tracefs_file_exists()_ function checks if a file with _name_ exists in _instance_.
 +
-+The _tracefs_instance_destroy()_ frees the _instance_ structure, and will
-+also remove the trace instance from the system.
++The _tracefs_dir_exists()_ function checks if a directory with _name_ exists in _instance_.
 +
-+The _tracefs_instance_free()_ function frees the tracefs_instance structure,
-+without removing the trace instance from the system.
++The _tracefs_instance_get_file()_ function returns the full path of the file
++with given _name_ in _instance_. Note, it does not check if the file exists in
++the instance.
 +
-+The _tracefs_instance_is_new()_ function checks if the given _instance_ is
-+newly created by _tracefs_instance_create()_, or it has been in the system
-+before that.
++The _tracefs_instance_get_dir()_ function  returns the full path of the directory
++with given _name_ in _instance_. Note, it does not check if the directory exists
++in the instance.
++
++The _tracefs_instance_file_write()_ function writes a string _str_ in a _file_ from
++the given _instance_, without the terminating NULL character.
++
++The _tracefs_instance_file_read()_ function reads the content of a _file_  from
++the given _instance_.
 +
 +RETURN VALUE
 +------------
-+The _tracefs_instance_create()_ function returns a pointer to a newly allocated
-+tracefs_instance structure. It must be freed with _tracefs_instance_destroy()_ or
-+_tracefs_instance_free()_.
++The _tracefs_file_exists()_ and  _tracefs_dir_exists()_ functions return true if the
++file / directory exist in the given instance or false if it does not exist.
 +
-+The _tracefs_instance_destroy()_ function returns -1 in case of an error,
-+or 0 otherwise.
++The _tracefs_instance_get_file()_ and _tracefs_instance_get_dir()_ functions return
++a string or NULL in case of an error. The returned string must be freed with
++_tracefs_put_tracing_file()_.
 +
-+The _tracefs_instance_is_new()_ function returns true if the
-+_tracefs_instance_create() that allocated _instance_ also created the
-+trace instance in the system, or false if the trace instance already
-+existed in the system when _instance_ was allocated by
-+_tracefs_instance_create()_.
++The _tracefs_instance_file_write()_ function returns the number of written bytes,
++or -1 in case of an error.
++
++The _tracefs_instance_file_read()_ function returns a pointer to a NULL terminated
++string, read from the file, or NULL in case of an error. The returned string must
++be freed with free().
 +
 +EXAMPLE
 +-------
@@ -159,6 +168,48 @@ index 0000000..aca2161
 +	if (!inst) {
 +		/* Error creating a new trace instance */
 +		...
++	}
++
++	if (tracefs_file_exists(inst,"trace_clock")) {
++		/* The instance foo supports trace clock */
++		char *path, *clock;
++		int size;
++
++		path =  = tracefs_instance_get_file(inst, "trace_clock")
++		if (!path) {
++			/* Error getting the path to trace_clock file in instance foo */
++			...
++		}
++		...
++		tracefs_put_tracing_file(path);
++
++		clock = tracefs_instance_file_read(inst, "trace_clock", &size);
++		if (!clock) {
++			/* Failed to read trace_clock file in instance foo */
++			...
++		}
++		...
++		free(clock);
++
++		if (tracefs_instance_file_write(inst, "trace_clock", "global") != strlen("global")) {
++			/* Failed to set gloabl trace clock in instance foo */
++			...
++		}
++	} else {
++		/* The instance foo does not support trace clock */
++	}
++
++	if (tracefs_dir_exists(inst,"options")) {
++		/* The instance foo supports trace options */
++		char *path = tracefs_instance_get_file(inst, "options");
++		if (!path) {
++			/* Error getting the path to options directory in instance foo */
++			...
++		}
++
++		tracefs_put_tracing_file(path);
++	} else {
++		/* The instance foo does not support trace options */
 +	}
 +
 +	...
