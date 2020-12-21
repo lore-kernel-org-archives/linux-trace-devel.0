@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D748C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 07:30:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22FD3C433E6
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 07:30:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CB27F22BF5
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 07:30:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D34F622BF5
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 21 Dec 2020 07:30:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725969AbgLUHaG (ORCPT
+        id S1726104AbgLUHaH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 21 Dec 2020 02:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
+        Mon, 21 Dec 2020 02:30:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgLUHaG (ORCPT
+        with ESMTP id S1725791AbgLUHaH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 21 Dec 2020 02:30:06 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD795C061282
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 23:29:25 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id ce23so12023870ejb.8
-        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 23:29:25 -0800 (PST)
+        Mon, 21 Dec 2020 02:30:07 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5A9C061285
+        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 23:29:26 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id c7so8613059edv.6
+        for <linux-trace-devel@vger.kernel.org>; Sun, 20 Dec 2020 23:29:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UvTa6jHZPvaqZxavZCvidd9MQcdy4FAbirIum5UqORY=;
-        b=NQiy4C4P4Vlf/ymo2UA5wqEy+vLJkfzQ8o9d/CrcMJWWvOcz4eGRdjZ8FcFv7rwfvR
-         6E7NVkNuhygENA9ctgW+5edDE/5IASv5/7HeNvjQdTe6zhlW3pbMAtxDbjw0XjcKG71k
-         SrRCemFgk9fdSptVg9c5Vsp4p/0tunCAD7RaJuh5cmwal6uIIc/2tQbBKNXbUYRXOXSL
-         /PqmXBXwqd9KwDrDf3NrR9FcmReCP2fGxce2uVXzQmh5hX3sQw65PySOfFgAuXivRrHF
-         xQ8lIxrrX3ySZRpMFSJjv3xuIxZUpZTdsHKg3Oe6dxdPJb6up5J3WpHQBw+7COYmYo0f
-         wkEw==
+        bh=eIGTSgRbnNsOsPsNO3RYNDZet+2VPX793uphEbNmeXg=;
+        b=oYYnGnSE5JAQSTHJLQMI4v/guJIHLVdhAH4FdQlqmiJLTMOT8PTqlNVZHZpHs7Kiyv
+         W7x/53dafuspRmbBqgsfZSfIYP/PXzOj/f8kzKDkSQrc3yGdXnNW3IbiXjZrWD9NnoQp
+         gOVOralBEaP3E72JEArkuMDi1wNYVH/ptsIpxe7vbnZG2W6ILxaRLFXXIEIYz88OeOIE
+         ekwxjm09retj8xqc9zyTJyAMxCal/dYAA9KYs9DUscA9Fcft5sZ5S5vqRy6YlzaZlh9g
+         IB0s6uJ7DwyGAs53q3JZ0lLn22mbJwflX+eu7l7A7vc38WEp81PbJzZVO5jFAO7wQ0Yu
+         Rpxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UvTa6jHZPvaqZxavZCvidd9MQcdy4FAbirIum5UqORY=;
-        b=Z5ilYNGd9SRzNGM2oytc0bO9W2I4qvm1iHb3tyfBwgBulPUswhQ4icxYTT6cHm2mDN
-         K+CjpLEv9fFOkXcxfEyxCrAmvgV/Wq/cqbwplFJmZfn7UaOQGu6LikWLhF0qqBL44gLe
-         xPLOgS8mO5Fw2kCmFbivgDlkNQmK6oCytVxjB81pvuiy7zbrlau27gOyZR2PSvNyV5vu
-         zVyFrHixpt5RelhjqO8zrC8B23/tvT37acmDQCAMs9K0pEPuhSCAW5pbsIA/1/awnP8S
-         ZRU+AaSALOsp+YZI2kdWjeb0Q90z52ppZA5JemOhkcK9RVDXlG0bvDV9DPTOYGgP3PST
-         eInA==
-X-Gm-Message-State: AOAM530gNwT/K/V4MRHQwCP7fuTfZK5WCGfW4+uTSrjcfujEFVEG4ei9
-        Cry9oCtCr9FTOCKsPw4DxhQ=
-X-Google-Smtp-Source: ABdhPJw1y/+zGh70F01afkmT530JghHa5yPd5M1qw+oGrC7ql94jaiC0FbtiOKCFYkyotXdBw8ffLg==
-X-Received: by 2002:a17:906:3953:: with SMTP id g19mr13985356eje.429.1608535764514;
-        Sun, 20 Dec 2020 23:29:24 -0800 (PST)
+        bh=eIGTSgRbnNsOsPsNO3RYNDZet+2VPX793uphEbNmeXg=;
+        b=LZx/nY3ZuITBOJx8/JM9pgYFyjNzPUbE1C6fqZcyLhtYHYXalkwhdx35Kwf6Lecis9
+         cK/ViuZCsG3s1UyknIfj4YdWBgHQS+zOZ/TjjyiNtU3sZbwCfEGJUp/9jxr3OjxioJH/
+         QJyBSRYPlPeVjgMje5pwpBPv2wZvnfcwc1Bm1envmYSRXxlqePBKaPHsLXU/J5UIsjp7
+         yesAs8sUG7AWl3+Ur/YR+NTNo8QI1bY/u3BHfnUSI3GAiHRkB32rLMbVu4yNUNxiLKgI
+         VGf10J0gRnO0DSibwvoU5XdTrIHFya7uhiTzCAIO8iYF+67TOU8xSuNx+MMw7PL/PbWZ
+         XwDw==
+X-Gm-Message-State: AOAM532Km+N6sGRMmKLx6lEmtwvO1M3K3GuNw8miuQv9IL5xVBz+KJYz
+        BtP/4LnhME45Bar0zBOytDg=
+X-Google-Smtp-Source: ABdhPJwuHBaVR2Hlw8xvN4is9gCQN1GgSmOXtR6KWye1X7or7kaf6bF4yjFNv/+Ulax6if/UpisikQ==
+X-Received: by 2002:a50:f40e:: with SMTP id r14mr14534780edm.5.1608535765679;
+        Sun, 20 Dec 2020 23:29:25 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id h12sm8557429eja.113.2020.12.20.23.29.23
+        by smtp.gmail.com with ESMTPSA id h12sm8557429eja.113.2020.12.20.23.29.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 23:29:23 -0800 (PST)
+        Sun, 20 Dec 2020 23:29:24 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 1/2] libtracefs: Remove tracefs_find_tracing_dir() API
-Date:   Mon, 21 Dec 2020 09:29:20 +0200
-Message-Id: <20201221072921.210230-2-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 2/2] libtracefs: Rename tracefs_get_tracing_dir() to tracefs_tracing_dir()
+Date:   Mon, 21 Dec 2020 09:29:21 +0200
+Message-Id: <20201221072921.210230-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201221072921.210230-1-tz.stoyanov@gmail.com>
 References: <20201221072921.210230-1-tz.stoyanov@gmail.com>
@@ -73,129 +73,181 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-There are two APIs to get the tracefs mount point:
-tracefs_get_tracing_dir() and tracefs_find_tracing_dir().
-The only difference between them is that the first returns
-a static cashed string and the second a newly allocated string.
-In order not to confused the users with too many APIs that do
-the same, the tracefs_find_tracing_dir() is removed as an API,
-renamed to trace_find_tracing_dir() and is used only as library
-internal function.
+The tracefs_get_tracing_dir() API mounts, locates and returns tracefs
+mount point. In order to reflect more closely its logic, it is renamed
+to tracefs_tracing_dir().
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/tracefs-local.h | 2 ++
- include/tracefs.h       | 3 ---
- src/tracefs-instance.c  | 2 +-
- src/tracefs-utils.c     | 8 ++++----
- utest/tracefs-utest.c   | 9 ---------
- 5 files changed, 7 insertions(+), 17 deletions(-)
+ include/tracefs.h     |  4 ++--
+ src/tracefs-events.c  |  8 ++++----
+ src/tracefs-utils.c   |  6 +++---
+ test.c                |  2 +-
+ utest/tracefs-utest.c | 14 +++++++-------
+ 5 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index bdbf89e..3a7ec32 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -10,8 +10,10 @@
- 
- /* Can be overridden */
- void warning(const char *fmt, ...);
-+
- int str_read_file(const char *file, char **buffer);
- char *trace_append_file(const char *dir, const char *name);
-+char *trace_find_tracing_dir(void);
- 
- #ifndef ACCESSPERMS
- #define ACCESSPERMS (S_IRWXU|S_IRWXG|S_IRWXO) /* 0777 */
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 5cbe898..ae4ffa0 100644
+index ae4ffa0..3d70aca 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -15,9 +15,6 @@ void tracefs_put_tracing_file(char *name);
- /* tracefs_get_tracing_dir must *not* be freed */
- const char *tracefs_get_tracing_dir(void);
+@@ -12,8 +12,8 @@
+ char *tracefs_get_tracing_file(const char *name);
+ void tracefs_put_tracing_file(char *name);
  
--/* tracefs_find_tracing_dir must be freed */
--char *tracefs_find_tracing_dir(void);
--
+-/* tracefs_get_tracing_dir must *not* be freed */
+-const char *tracefs_get_tracing_dir(void);
++/* the returned string must *not* be freed */
++const char *tracefs_tracing_dir(void);
+ 
  /* ftrace instances */
  struct tracefs_instance;
+diff --git a/src/tracefs-events.c b/src/tracefs-events.c
+index 58fa153..825f916 100644
+--- a/src/tracefs-events.c
++++ b/src/tracefs-events.c
+@@ -268,7 +268,7 @@ char **tracefs_event_systems(const char *tracing_dir)
+ 	int ret;
  
-diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index e9e24ef..bf3de7c 100644
---- a/src/tracefs-instance.c
-+++ b/src/tracefs-instance.c
-@@ -210,7 +210,7 @@ char *tracefs_instance_get_dir(struct tracefs_instance *instance)
- 		path = tracefs_get_tracing_file(buf);
- 		free(buf);
- 	} else
--		path = tracefs_find_tracing_dir();
-+		path = trace_find_tracing_dir();
+ 	if (!tracing_dir)
+-		tracing_dir = tracefs_get_tracing_dir();
++		tracing_dir = tracefs_tracing_dir();
  
- 	return path;
- }
+ 	if (!tracing_dir)
+ 		return NULL;
+@@ -342,7 +342,7 @@ char **tracefs_system_events(const char *tracing_dir, const char *system)
+ 	int ret;
+ 
+ 	if (!tracing_dir)
+-		tracing_dir = tracefs_get_tracing_dir();
++		tracing_dir = tracefs_tracing_dir();
+ 
+ 	if (!tracing_dir || !system)
+ 		return NULL;
+@@ -407,7 +407,7 @@ char **tracefs_tracers(const char *tracing_dir)
+ 	int ret;
+ 
+ 	if (!tracing_dir)
+-		tracing_dir = tracefs_get_tracing_dir();
++		tracing_dir = tracefs_tracing_dir();
+ 
+ 	if (!tracing_dir)
+ 		return NULL;
+@@ -544,7 +544,7 @@ static int fill_local_events_system(const char *tracing_dir,
+ 	int i;
+ 
+ 	if (!tracing_dir)
+-		tracing_dir = tracefs_get_tracing_dir();
++		tracing_dir = tracefs_tracing_dir();
+ 	if (!tracing_dir)
+ 		return -1;
+ 
 diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index 326b455..d9850d9 100644
+index d9850d9..0e96f8e 100644
 --- a/src/tracefs-utils.c
 +++ b/src/tracefs-utils.c
-@@ -60,12 +60,12 @@ static int mount_debugfs(void)
+@@ -131,12 +131,12 @@ __hidden char *trace_find_tracing_dir(void)
  }
  
  /**
-- * tracefs_find_tracing_dir - Find tracing directory
-+ * trace_find_tracing_dir - Find tracing directory
+- * tracefs_get_tracing_dir - Get tracing directory
++ * tracefs_tracing_dir - Get tracing directory
   *
   * Returns string containing the full path to the system's tracing directory.
-  * The string must be freed by free()
+  * The returned string must *not* be freed.
   */
--char *tracefs_find_tracing_dir(void)
-+__hidden char *trace_find_tracing_dir(void)
+-const char *tracefs_get_tracing_dir(void)
++const char *tracefs_tracing_dir(void)
  {
- 	char *debug_str = NULL;
- 	char fspath[PATH_MAX+1];
-@@ -143,7 +143,7 @@ const char *tracefs_get_tracing_dir(void)
- 	if (tracing_dir)
- 		return tracing_dir;
+ 	static const char *tracing_dir;
  
--	tracing_dir = tracefs_find_tracing_dir();
-+	tracing_dir = trace_find_tracing_dir();
- 	return tracing_dir;
+@@ -182,7 +182,7 @@ char *tracefs_get_tracing_file(const char *name)
+  * tracefs_put_tracing_file - Free tracing file or directory name
+  *
+  * Frees tracing file or directory, returned by
+- * tracefs_get_tracing_file() or tracefs_get_tracing_dir() APIs
++ * tracefs_get_tracing_file()API.
+  */
+ void tracefs_put_tracing_file(char *name)
+ {
+diff --git a/test.c b/test.c
+index daf99d6..d38fc92 100644
+--- a/test.c
++++ b/test.c
+@@ -2,6 +2,6 @@
+ 
+ int main()
+ {
+-	tracefs_get_tracing_dir();
++	tracefs_tracing_dir();
+ 	return 0;
  }
- 
-@@ -166,7 +166,7 @@ char *tracefs_get_tracing_file(const char *name)
- 		return NULL;
- 
- 	if (!tracing) {
--		tracing = tracefs_find_tracing_dir();
-+		tracing = trace_find_tracing_dir();
- 		if (!tracing)
- 			return NULL;
- 	}
 diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 941b9cf..965f1ec 100644
+index 965f1ec..b45a3c6 100644
 --- a/utest/tracefs-utest.c
 +++ b/utest/tracefs-utest.c
-@@ -162,21 +162,12 @@ static void test_trace_file(void)
- 	const char *tdir;
+@@ -163,7 +163,7 @@ static void test_trace_file(void)
  	struct stat st;
  	char *file;
--	char *dir;
--
--	dir = tracefs_find_tracing_dir();
--	CU_TEST(dir != NULL);
--	CU_TEST(stat(dir, &st) == 0);
--	CU_TEST(S_ISDIR(st.st_mode));
  
- 	tdir  = tracefs_get_tracing_dir();
+-	tdir  = tracefs_get_tracing_dir();
++	tdir  = tracefs_tracing_dir();
  	CU_TEST(tdir != NULL);
  	CU_TEST(stat(tdir, &st) == 0);
  	CU_TEST(S_ISDIR(st.st_mode));
+@@ -183,7 +183,7 @@ static void test_trace_file(void)
  
--	CU_TEST(strcmp(dir, tdir) == 0);
--	free(dir);
--
- 	file = tracefs_get_tracing_file(NULL);
- 	CU_TEST(file == NULL);
- 	file = tracefs_get_tracing_file(tmp);
+ static void test_instance_file_read(struct tracefs_instance *inst, char *fname)
+ {
+-	const char *tdir  = tracefs_get_tracing_dir();
++	const char *tdir  = tracefs_tracing_dir();
+ 	char buf[BUFSIZ];
+ 	char *fpath;
+ 	char *file;
+@@ -235,7 +235,7 @@ static void test_instance_file(void)
+ 	int size;
+ 	int ret;
+ 
+-	tdir  = tracefs_get_tracing_dir();
++	tdir  = tracefs_tracing_dir();
+ 	CU_TEST(tdir != NULL);
+ 	CU_TEST(asprintf(&inst_dir, "%s/instances/%s", tdir, name) > 0);
+ 	CU_TEST(stat(inst_dir, &st) != 0);
+@@ -360,7 +360,7 @@ static void test_system_event(void)
+ 	char **events;
+ 	char *sdir = NULL;
+ 
+-	tdir  = tracefs_get_tracing_dir();
++	tdir  = tracefs_tracing_dir();
+ 	CU_TEST(tdir != NULL);
+ 
+ 	systems = tracefs_event_systems(tdir);
+@@ -393,7 +393,7 @@ static void test_tracers(void)
+ 	char *tracer;
+ 	int i;
+ 
+-	tdir  = tracefs_get_tracing_dir();
++	tdir  = tracefs_tracing_dir();
+ 	CU_TEST(tdir != NULL);
+ 
+ 	tracers = tracefs_tracers(tdir);
+@@ -424,7 +424,7 @@ static void test_check_events(struct tep_handle *tep, char *system, bool exist)
+ 	DIR *dir;
+ 	int fd;
+ 
+-	tdir  = tracefs_get_tracing_dir();
++	tdir  = tracefs_tracing_dir();
+ 	CU_TEST(tdir != NULL);
+ 
+ 	asprintf(&edir, "%s/events/%s", tdir, system);
+@@ -461,7 +461,7 @@ static void test_local_events(void)
+ 	char *lsystems[3];
+ 	int i;
+ 
+-	tdir  = tracefs_get_tracing_dir();
++	tdir  = tracefs_tracing_dir();
+ 	CU_TEST(tdir != NULL);
+ 
+ 	tep = tracefs_local_events(tdir);
 -- 
 2.28.0
 
