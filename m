@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D93F3C43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA125C433E6
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Dec 2020 12:10:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AF6662312E
+	by mail.kernel.org (Postfix) with ESMTP id 9343123133
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 22 Dec 2020 12:10:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgLVMKi (ORCPT
+        id S1726419AbgLVMKi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Tue, 22 Dec 2020 07:10:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726166AbgLVMKi (ORCPT
+        with ESMTP id S1726166AbgLVMKh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Dec 2020 07:10:38 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A9BC061793
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 04:09:57 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id m5so14279465wrx.9
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 04:09:57 -0800 (PST)
+        Tue, 22 Dec 2020 07:10:37 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4B8C0613D6
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 04:09:56 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id w5so14285765wrm.11
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 04:09:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fOhc0oTL/0y+7z+VzwCQrA+h8dPpfqWXzd4rl+UI8/0=;
-        b=FFlWudLBi0hc58zIJxHmbo7GzdgoNgLpFiN5zaF/tAV5MucxALNEi5yUV8dzoAw3k7
-         FeWR+tze1B1bqIH/KaEZ9NOgNOj6mWya5NHPUss8hr7tnbchxQKZtaHqwEzYo/24CYwl
-         NKJ4Y5rd3yrNPfI7WXmnxYY+qhZHPrhfFkC16Tbq+2++N8Va5+V2hjcTmLy6tpt0L/LG
-         zDBULFrkME3nwbKfNC3rro+/kKfJPOFKKaUdILQoDfU+JEpwNtS3NOBAQ6iqyEsKk8JK
-         paZcstIu/K6h2vwmFdLzLpxvXhFJrjkKtJHIrwx8IzX5UKXz0HHQMv9EMFGoHCiwXz5h
-         czlg==
+        bh=AMpGp1bqQ1Tl8P/g3BR6X4xURISxpVHw1Cdv8qWqrcI=;
+        b=CRBVXPYiF79yExQf0RWKb9gd3CIdMQru1AN0nVraKrJgUD+PW8+iU6ZouNpCieRfKt
+         nAxTrzGtPdAYSMidTYFMyJAKjXlGLfL4SOxkWQz1AK98cRivuSBKpKaSgvfZo+BcmOee
+         P0QPE7TNu9T7FvooBIusvurSX6QML63WaQEk6qYixI4VEGi/3LNeHJF84cZnTD8cstS9
+         xdvQ0qxCq0djJw5OFDo7a4s7Pq3kT8vxJ0ObHIYsKRvrp8KJXBQZdOUU9Fqi4aGmuYVH
+         9fNRmHPsSWUUn/YKW0Ah0e8CY+FnSL98xPzfBZVQsFeJhmeEeIOpIkWCDbrZiiu5zFfG
+         2ZfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fOhc0oTL/0y+7z+VzwCQrA+h8dPpfqWXzd4rl+UI8/0=;
-        b=DYTmkXiHsH3mtjDp1ZE+1XbboTcLzVwKlfNKX4pGHV2Ysb66LT2SK1k33H1fG7hh+r
-         yi5TxNG9/i3xLjkCe5yq2yPwLfVP5fmnArE5tgWDNSd8+BvDMszQgDJroJ5AFuYnZn8k
-         KkMbf5U/0Qd1B/AD++6BRCze6zJE6vxH/Uy1bomZnbxQKqDgTe2gpbyN6SuYgLDmu6Wz
-         Uii207t3MTnlifkOUZ6xWdPYXMX+hIzzyKWEUet7gEhXTtzL/cGEbNlAwe1QtodMBT4v
-         y8nzomoFRC9FZ9uJuZo45/bn4wQmi1wgVHk2Le1EZ/JTt6plQ1ICCbNt/SU6ACopeyj6
-         /4fw==
-X-Gm-Message-State: AOAM530yJpJxhsRqXoEJTesWpphQOCRXgpeDkhKwLzzNbdHWoYK0J7cn
-        JjVZaFemZrA+6YOA13QVlNJ9p5L6tbKyZUiS
-X-Google-Smtp-Source: ABdhPJyrlnOG2/m16ynD0E4rsBQmqQWTqHC/J/7/qRbuKNz0aK/fMieegOj5qAcp4aB2NKRP2em7Pg==
-X-Received: by 2002:a05:6000:1152:: with SMTP id d18mr24053915wrx.6.1608638996347;
-        Tue, 22 Dec 2020 04:09:56 -0800 (PST)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w3sm28168576wma.3.2020.12.22.04.09.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=AMpGp1bqQ1Tl8P/g3BR6X4xURISxpVHw1Cdv8qWqrcI=;
+        b=qnv1clT5YWcaODJLWnqvJI9Vz+CrcU6qRfyYilQXnhLS967qWl/dAEInceNy0Bap4l
+         //MH+cz87J1jUL/hyuW8pvW/7yf27Ts8C3np2e/B/YS6cAugKDEYPq06Yy9rklFTf1qV
+         J1cFSTRALp8RQupktBsnlDLSbxd+NSNUHSKLP8PBzq/tHBeUAy1lFakUTTUCj8yxKjm7
+         5QOyBDgfLwLc7uMz7QrIDF6J2CBmAYpWd5a2HnCndN7NnwUPz6ZOsV+thCPsrTH9Y8vJ
+         cgG/mTqSBV17IGijVMp7W8zmnlIlk2lYoDCfjZiyVq6vr4jS3+K2ttgluqOfWMx1pGbj
+         bBRw==
+X-Gm-Message-State: AOAM533hoR2+uU+x3NfzdFZkheqMU5JJSFfrjeRgYNv+6zib9UNf++Yn
+        erXLHfaBXhe94efzIEXlaAU2SEOoR7QkaboS
+X-Google-Smtp-Source: ABdhPJzfgQxsIiVm7b3B0sGAsZL2jfpFVayiuxUPGGPu5Rceay3jplKVpqdKYBVR1THU4MsUBn31Tw==
+X-Received: by 2002:adf:f10f:: with SMTP id r15mr24362607wro.302.1608638995175;
         Tue, 22 Dec 2020 04:09:55 -0800 (PST)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id w3sm28168576wma.3.2020.12.22.04.09.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 04:09:54 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/2] trace-cmd: Rename tracecmd_get_pevent() to tracecmd_get_tep()
-Date:   Tue, 22 Dec 2020 14:09:51 +0200
-Message-Id: <20201222120951.492370-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 1/2] trace-cmd: Rename free_record() to tracecmd_free_record()
+Date:   Tue, 22 Dec 2020 14:09:50 +0200
+Message-Id: <20201222120951.492370-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201222120951.492370-1-tz.stoyanov@gmail.com>
 References: <20201222120951.492370-1-tz.stoyanov@gmail.com>
@@ -73,286 +73,464 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The name of the trace event context from libtraceevent library
-is tep, all APIs that work with a pointer to this context should refer
-to it as "tep".
+The free_record() function is a libtracecmd API used to free a trace
+record read from a trace file. It should follow the tracecmd library
+naming convention, start with a "tracecmd_ prefix.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h  |  2 +-
- kernel-shark/src/libkshark.c   |  2 +-
- lib/trace-cmd/trace-blk-hack.c |  2 +-
- lib/trace-cmd/trace-ftrace.c   |  2 +-
- lib/trace-cmd/trace-input.c    |  4 ++--
- lib/trace-cmd/trace-output.c   |  8 ++++----
- tracecmd/trace-hist.c          |  2 +-
- tracecmd/trace-mem.c           |  2 +-
- tracecmd/trace-profile.c       |  2 +-
- tracecmd/trace-read.c          | 22 +++++++++++-----------
- tracecmd/trace-split.c         |  4 ++--
- 11 files changed, 26 insertions(+), 26 deletions(-)
+ include/trace-cmd/trace-cmd.h           |  2 +-
+ kernel-shark/src/libkshark.c            | 18 +++++++++---------
+ kernel-shark/src/plugins/sched_events.c |  4 ++--
+ lib/trace-cmd/trace-ftrace.c            |  2 +-
+ lib/trace-cmd/trace-input.c             | 16 ++++++++--------
+ tracecmd/trace-hist.c                   |  2 +-
+ tracecmd/trace-mem.c                    |  2 +-
+ tracecmd/trace-profile.c                | 12 ++++++------
+ tracecmd/trace-read.c                   | 14 +++++++-------
+ tracecmd/trace-split.c                  | 16 ++++++++--------
+ tracecmd/trace-stream.c                 |  2 +-
+ 11 files changed, 45 insertions(+), 45 deletions(-)
 
 diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 9d9a61d3..75352309 100644
+index 9751ac3b..9d9a61d3 100644
 --- a/include/trace-cmd/trace-cmd.h
 +++ b/include/trace-cmd/trace-cmd.h
-@@ -26,7 +26,7 @@ tracecmd_read_at(struct tracecmd_input *handle, unsigned long long offset,
+@@ -24,7 +24,7 @@ tracecmd_read_data(struct tracecmd_input *handle, int cpu);
+ struct tep_record *
+ tracecmd_read_at(struct tracecmd_input *handle, unsigned long long offset,
  		 int *cpu);
- void tracecmd_free_record(struct tep_record *record);
+-void free_record(struct tep_record *record);
++void tracecmd_free_record(struct tep_record *record);
  
--struct tep_handle *tracecmd_get_pevent(struct tracecmd_input *handle);
-+struct tep_handle *tracecmd_get_tep(struct tracecmd_input *handle);
+ struct tep_handle *tracecmd_get_pevent(struct tracecmd_input *handle);
  unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle);
- int tracecmd_get_guest_cpumap(struct tracecmd_input *handle,
- 			      unsigned long long trace_id,
 diff --git a/kernel-shark/src/libkshark.c b/kernel-shark/src/libkshark.c
-index 9823ccc9..8f5dcb00 100644
+index 4e625a25..9823ccc9 100644
 --- a/kernel-shark/src/libkshark.c
 +++ b/kernel-shark/src/libkshark.c
-@@ -155,7 +155,7 @@ bool kshark_open(struct kshark_context *kshark_ctx, const char *file)
+@@ -678,7 +678,7 @@ static void free_rec_list(struct rec_list **rec_list, int n_cpus,
+ 			temp_rec = rec_list[cpu];
+ 			rec_list[cpu] = temp_rec->next;
+ 			if (type == REC_RECORD)
+-				free_record(temp_rec->rec);
++				tracecmd_free_record(temp_rec->rec);
+ 			free(temp_rec);
+ 		}
  	}
+@@ -778,14 +778,14 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
+ 				if (!kshark_show_task(kshark_ctx, entry->pid)) {
+ 					entry->visible &= ~kshark_ctx->filter_mask;
+ 				}
+-				free_record(rec);
++				tracecmd_free_record(rec);
+ 				break;
+ 			} /* REC_ENTRY */
+ 			}
  
- 	kshark_ctx->handle = handle;
--	kshark_ctx->pevent = tracecmd_get_pevent(handle);
-+	kshark_ctx->pevent = tracecmd_get_tep(handle);
+ 			task = kshark_add_task(kshark_ctx, pid);
+ 			if (!task) {
+-				free_record(rec);
++				tracecmd_free_record(rec);
+ 				goto fail;
+ 			}
  
- 	kshark_ctx->advanced_event_filter =
- 		tep_filter_alloc(kshark_ctx->pevent);
-diff --git a/lib/trace-cmd/trace-blk-hack.c b/lib/trace-cmd/trace-blk-hack.c
-index 4f5953ad..2a05cf98 100644
---- a/lib/trace-cmd/trace-blk-hack.c
-+++ b/lib/trace-cmd/trace-blk-hack.c
-@@ -39,7 +39,7 @@ int tracecmd_blk_hack(struct tracecmd_input *handle)
- 	int l;
- 	int r;
+@@ -906,7 +906,7 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+  *	  to all fields of the record.
+  *
+  * @param kshark_ctx: Input location for the session context pointer.
+- * @param data_rows: Output location for the trace data. Use free_record()
++ * @param data_rows: Output location for the trace data. Use tracecmd_free_record()
+  *	 	     to free the elements of the outputted array.
+  *
+  * @returns The size of the outputted data in the case of success, or a
+@@ -1171,7 +1171,7 @@ int kshark_get_pid_easy(struct kshark_entry *entry)
+ 		data = tracecmd_read_at(kshark_ctx->handle, entry->offset,
+ 					NULL);
+ 		pid = tep_data_pid(kshark_ctx->pevent, data);
+-		free_record(data);
++		tracecmd_free_record(data);
  
--	pevent = tracecmd_get_pevent(handle);
-+	pevent = tracecmd_get_tep(handle);
- 
- 	/*
- 	 * Unfortunately, the TRACE_BLK has changed a bit.
-diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
-index 03e60eb0..f74f7c2e 100644
---- a/lib/trace-cmd/trace-ftrace.c
-+++ b/lib/trace-cmd/trace-ftrace.c
-@@ -370,7 +370,7 @@ int tracecmd_ftrace_overrides(struct tracecmd_input *handle,
- 
- 	finfo->handle = handle;
- 
--	pevent = tracecmd_get_pevent(handle);
-+	pevent = tracecmd_get_tep(handle);
- 
- 	tep_register_event_handler(pevent, -1, "ftrace", "function",
- 				      function_handler, NULL);
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index e57492e9..9dda0dd5 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -3776,10 +3776,10 @@ int tracecmd_cpus(struct tracecmd_input *handle)
- }
- 
- /**
-- * tracecmd_get_pevent - return the pevent handle
-+ * tracecmd_get_tep - return the tep handle
-  * @handle: input handle for the trace.dat file
-  */
--struct tep_handle *tracecmd_get_pevent(struct tracecmd_input *handle)
-+struct tep_handle *tracecmd_get_tep(struct tracecmd_input *handle)
- {
- 	return handle->pevent;
- }
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index de76e3e7..032c8ff4 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -877,9 +877,9 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
- 
- 	/* get endian and page size */
- 	if (ihandle) {
--		pevent = tracecmd_get_pevent(ihandle);
-+		pevent = tracecmd_get_tep(ihandle);
- 		/* Use the pevent of the ihandle for later writes */
--		handle->pevent = tracecmd_get_pevent(ihandle);
-+		handle->pevent = tracecmd_get_tep(ihandle);
- 		tep_ref(pevent);
- 		if (tep_is_file_bigendian(pevent))
- 			buf[0] = 1;
-@@ -1433,9 +1433,9 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- 	handle->fd = fd;
- 
- 	/* get endian and page size */
--	pevent = tracecmd_get_pevent(ihandle);
-+	pevent = tracecmd_get_tep(ihandle);
- 	/* Use the pevent of the ihandle for later writes */
--	handle->pevent = tracecmd_get_pevent(ihandle);
-+	handle->pevent = tracecmd_get_tep(ihandle);
- 	tep_ref(pevent);
- 	handle->page_size = tracecmd_page_size(ihandle);
- 	list_head_init(&handle->options);
-diff --git a/tracecmd/trace-hist.c b/tracecmd/trace-hist.c
-index 76e8cae2..ea9b2bef 100644
---- a/tracecmd/trace-hist.c
-+++ b/tracecmd/trace-hist.c
-@@ -933,7 +933,7 @@ static void print_chains(struct tep_handle *pevent)
- 
- static void do_trace_hist(struct tracecmd_input *handle)
- {
--	struct tep_handle *pevent = tracecmd_get_pevent(handle);
-+	struct tep_handle *pevent = tracecmd_get_tep(handle);
- 	struct tep_record *record;
- 	struct tep_event *event;
- 	int cpus;
-diff --git a/tracecmd/trace-mem.c b/tracecmd/trace-mem.c
-index c6cc7dee..2eb75a00 100644
---- a/tracecmd/trace-mem.c
-+++ b/tracecmd/trace-mem.c
-@@ -461,7 +461,7 @@ static void print_list(void)
- 
- static void do_trace_mem(struct tracecmd_input *handle)
- {
--	struct tep_handle *pevent = tracecmd_get_pevent(handle);
-+	struct tep_handle *pevent = tracecmd_get_tep(handle);
- 	struct tep_record *record;
- 	struct tep_event *event;
- 	int missed_events = 0;
-diff --git a/tracecmd/trace-profile.c b/tracecmd/trace-profile.c
-index b82110e6..e3a75143 100644
---- a/tracecmd/trace-profile.c
-+++ b/tracecmd/trace-profile.c
-@@ -1267,7 +1267,7 @@ static int handle_sched_wakeup_event(struct handle_data *h,
- void trace_init_profile(struct tracecmd_input *handle, struct hook_list *hook,
- 			int global)
- {
--	struct tep_handle *pevent = tracecmd_get_pevent(handle);
-+	struct tep_handle *pevent = tracecmd_get_tep(handle);
- 	struct tep_format_field **fields;
- 	struct handle_data *h;
- 	struct event_data *event_data;
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index 11293bc8..d07f4efe 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -150,7 +150,7 @@ enum time_fmt {
- 
- static const char *time_format(struct tracecmd_input *handle, enum time_fmt tf)
- {
--	struct tep_handle *tep = tracecmd_get_pevent(handle);
-+	struct tep_handle *tep = tracecmd_get_tep(handle);
- 
- 	switch (tf) {
- 	case TIME_FMT_LAT:
-@@ -171,7 +171,7 @@ static const char *time_format(struct tracecmd_input *handle, enum time_fmt tf)
- static void print_event(struct trace_seq *s, struct tracecmd_input *handle,
- 			struct tep_record *record)
- {
--	struct tep_handle *tep = tracecmd_get_pevent(handle);
-+	struct tep_handle *tep = tracecmd_get_tep(handle);
- 	struct tep_event *event;
- 	const char *lfmt = time_format(handle, TIME_FMT_LAT);
- 	const char *tfmt = time_format(handle, TIME_FMT_NORMAL);
-@@ -481,7 +481,7 @@ static void convert_comm_filter(struct tracecmd_input *handle)
- 	if (!comm_list)
- 		return;
- 
--	pevent = tracecmd_get_pevent(handle);
-+	pevent = tracecmd_get_tep(handle);
- 
- 	/* Seach for comm names and get their pids */
- 	for (list = comm_list; list; list = list->next) {
-@@ -545,7 +545,7 @@ static void process_filters(struct handle_list *handles)
- 	int filters = 0;
- 	int ret;
- 
--	pevent = tracecmd_get_pevent(handles->handle);
-+	pevent = tracecmd_get_tep(handles->handle);
- 
- 	make_pid_filter(handles->handle);
- 
-@@ -592,7 +592,7 @@ static void init_wakeup(struct tracecmd_input *handle)
- 	if (!show_wakeup)
- 		return;
- 
--	pevent = tracecmd_get_pevent(handle);
-+	pevent = tracecmd_get_tep(handle);
- 
- 	trace_hash_init(&wakeup_hash, WAKEUP_HASH_SIZE);
- 
-@@ -829,7 +829,7 @@ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
- 		return;
+ 		pthread_mutex_unlock(&kshark_ctx->input_mutex);
  	}
+@@ -1238,7 +1238,7 @@ const char *kshark_get_latency_easy(struct kshark_entry *entry)
  
--	pevent = tracecmd_get_pevent(handle);
-+	pevent = tracecmd_get_tep(handle);
- 	event = tep_find_event_by_record(pevent, record);
- 	use_trace_clock = tracecmd_get_use_trace_clock(handle);
+ 	data = tracecmd_read_at(kshark_ctx->handle, entry->offset, NULL);
+ 	lat = kshark_get_latency(kshark_ctx->pevent, data);
+-	free_record(data);
++	tracecmd_free_record(data);
  
-@@ -1028,7 +1028,7 @@ test_stacktrace(struct handle_list *handles, struct tep_record *record,
- 				die("Failed to allocate for %d cpus", info->nr_cpus);
- 			memset(info->cpus, 0, sizeof(*info->cpus));
+ 	pthread_mutex_unlock(&kshark_ctx->input_mutex);
  
--			pevent = tracecmd_get_pevent(h->handle);
-+			pevent = tracecmd_get_tep(h->handle);
- 			event = tep_find_event_by_name(pevent, "ftrace",
- 						       "kernel_stack");
- 			if (event)
-@@ -1044,7 +1044,7 @@ test_stacktrace(struct handle_list *handles, struct tep_record *record,
+@@ -1283,7 +1283,7 @@ int kshark_get_event_id_easy(struct kshark_entry *entry)
+ 		data = tracecmd_read_at(kshark_ctx->handle, entry->offset,
+ 					NULL);
+ 		event_id = tep_data_type(kshark_ctx->pevent, data);
+-		free_record(data);
++		tracecmd_free_record(data);
+ 
+ 		pthread_mutex_unlock(&kshark_ctx->input_mutex);
  	}
+@@ -1382,7 +1382,7 @@ const char *kshark_get_info_easy(struct kshark_entry *entry)
+ 	if (event)
+ 		info = kshark_get_info(kshark_ctx->pevent, data, event);
  
- 	handle = handles->handle;
--	pevent = tracecmd_get_pevent(handle);
-+	pevent = tracecmd_get_tep(handle);
+-	free_record(data);
++	tracecmd_free_record(data);
  
- 	for (info = infos; info; info = info->next)
- 		if (info->handles == handles)
-@@ -1087,7 +1087,7 @@ static struct tep_record *get_next_record(struct handle_list *handles)
- 	if (handles->done)
- 		return NULL;
+ 	pthread_mutex_unlock(&kshark_ctx->input_mutex);
  
--	pevent = tracecmd_get_pevent(handles->handle);
-+	pevent = tracecmd_get_tep(handles->handle);
- 
- 	do {
- 		if (filter_cpus) {
-@@ -1247,7 +1247,7 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
+@@ -1496,7 +1496,7 @@ char* kshark_dump_entry(const struct kshark_entry *entry)
+ 			free(temp_str);
  		}
  
- 		/* Find the kernel_stacktrace if available */
--		pevent = tracecmd_get_pevent(handles->handle);
-+		pevent = tracecmd_get_tep(handles->handle);
- 		event = tep_find_event_by_name(pevent, "ftrace", "kernel_stack");
- 		if (event)
- 			stacktrace_id = event->id;
-@@ -1795,7 +1795,7 @@ void trace_report (int argc, char **argv)
- 		else if (ts2secs)
- 			tracecmd_set_ts2secs(handle, ts2secs);
+-		free_record(data);
++		tracecmd_free_record(data);
+ 		if (size < 1)
+ 			entry_str = NULL;
+ 	} else {
+diff --git a/kernel-shark/src/plugins/sched_events.c b/kernel-shark/src/plugins/sched_events.c
+index d0fd15e0..4b671f16 100644
+--- a/kernel-shark/src/plugins/sched_events.c
++++ b/kernel-shark/src/plugins/sched_events.c
+@@ -160,7 +160,7 @@ static int find_wakeup_pid(struct kshark_context *kshark_ctx, struct kshark_entr
  
--		pevent = tracecmd_get_pevent(handle);
-+		pevent = tracecmd_get_tep(handle);
+ 	record = tracecmd_read_at(kshark_ctx->handle, e->offset, NULL);
+ 	ret = tep_read_number_field(pid_field, record->data, &val);
+-	free_record(record);
++	tracecmd_free_record(record);
  
- 		if (nanosec)
- 			tep_set_flag(pevent, TEP_NSEC_OUTPUT);
+ 	if (ret)
+ 		return -1;
+@@ -252,7 +252,7 @@ bool plugin_switch_match_rec_pid(struct kshark_context *kshark_ctx,
+ 		if (ret == 0 && !(val & 0x7f))
+ 			switch_pid = tep_data_pid(plugin_ctx->pevent, record);
+ 
+-		free_record(record);
++		tracecmd_free_record(record);
+ 	}
+ 
+ 	if (switch_pid >= 0 && switch_pid == pid)
+diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
+index df7335f0..03e60eb0 100644
+--- a/lib/trace-cmd/trace-ftrace.c
++++ b/lib/trace-cmd/trace-ftrace.c
+@@ -292,7 +292,7 @@ fgraph_ent_handler(struct trace_seq *s, struct tep_record *record,
+ 		 * returns the return of the function
+ 		 */
+ 		print_graph_entry_leaf(s, event, record, rec, finfo);
+-		free_record(rec);
++		tracecmd_free_record(rec);
+ 	} else
+ 		print_graph_nested(s, event, record);
+ 
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index af97883e..e57492e9 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -1072,7 +1072,7 @@ static void __free_record(struct tep_record *record)
+ 	free(record);
+ }
+ 
+-void free_record(struct tep_record *record)
++void tracecmd_free_record(struct tep_record *record)
+ {
+ 	if (!record)
+ 		return;
+@@ -1116,7 +1116,7 @@ static void free_next(struct tracecmd_input *handle, int cpu)
+ 	handle->cpu_data[cpu].next = NULL;
+ 
+ 	record->locked = 0;
+-	free_record(record);
++	tracecmd_free_record(record);
+ }
+ 
+ static inline unsigned long long
+@@ -1503,7 +1503,7 @@ tracecmd_read_cpu_last(struct tracecmd_input *handle, int cpu)
+ 	offset = page_offset;
+ 
+ 	do {
+-		free_record(record);
++		tracecmd_free_record(record);
+ 		record = tracecmd_read_data(handle, cpu);
+ 		if (record)
+ 			offset = record->offset;
+@@ -1988,7 +1988,7 @@ tracecmd_peek_next_data(struct tracecmd_input *handle, int *rec_cpu)
+  * Note, this is not that fast of an algorithm, since it needs
+  * to build the timestamp for the record.
+  *
+- * The record returned must be freed with free_record().
++ * The record returned must be freed with tracecmd_free_record().
+  */
+ struct tep_record *
+ tracecmd_read_prev(struct tracecmd_input *handle, struct tep_record *record)
+@@ -2028,9 +2028,9 @@ tracecmd_read_prev(struct tracecmd_input *handle, struct tep_record *record)
+ 		if (record->offset == offset)
+ 			break;
+ 		index = record->offset - page_offset;
+-		free_record(record);
++		tracecmd_free_record(record);
+ 	}
+-	free_record(record);
++	tracecmd_free_record(record);
+ 
+ 	if (index)
+ 		/* we found our record */
+@@ -2054,14 +2054,14 @@ tracecmd_read_prev(struct tracecmd_input *handle, struct tep_record *record)
+ 		do {
+ 			if (record) {
+ 				index = record->offset - page_offset;
+-				free_record(record);
++				tracecmd_free_record(record);
+ 			}
+ 			record = tracecmd_read_data(handle, cpu);
+ 			/* Should not happen */
+ 			if (!record)
+ 				return NULL;
+ 		} while (record->offset != offset);
+-		free_record(record);
++		tracecmd_free_record(record);
+ 
+ 		if (index)
+ 			/* we found our record */
+diff --git a/tracecmd/trace-hist.c b/tracecmd/trace-hist.c
+index c4d8b403..76e8cae2 100644
+--- a/tracecmd/trace-hist.c
++++ b/tracecmd/trace-hist.c
+@@ -985,7 +985,7 @@ static void do_trace_hist(struct tracecmd_input *handle)
+ 				flush_stack();
+ 
+ 			process_record(pevent, record);
+-			free_record(record);
++			tracecmd_free_record(record);
+ 		}
+ 	}
+ 
+diff --git a/tracecmd/trace-mem.c b/tracecmd/trace-mem.c
+index 76f38fa7..c6cc7dee 100644
+--- a/tracecmd/trace-mem.c
++++ b/tracecmd/trace-mem.c
+@@ -508,7 +508,7 @@ static void do_trace_mem(struct tracecmd_input *handle)
+ 			missed_events = 1;
+ 
+ 		process_record(pevent, record);
+-		free_record(record);
++		tracecmd_free_record(record);
+ 	}
+ 
+ 	sort_list();
+diff --git a/tracecmd/trace-profile.c b/tracecmd/trace-profile.c
+index cfae2a22..b82110e6 100644
+--- a/tracecmd/trace-profile.c
++++ b/tracecmd/trace-profile.c
+@@ -393,7 +393,7 @@ static void free_start(struct start_data *start)
+ 	if (start->task->last_start == start)
+ 		start->task->last_start = NULL;
+ 	if (start->stack.record)
+-		free_record(start->stack.record);
++		tracecmd_free_record(start->stack.record);
+ 	trace_hash_del(&start->hash);
+ 	list_del(&start->list);
+ 	free(start);
+@@ -442,7 +442,7 @@ add_and_free_start(struct task_data *task, struct start_data *start,
+ 
+ 		add_event_stack(event_hash, caller, size, delta,
+ 				start->stack.record->ts);
+-		free_record(start->stack.record);
++		tracecmd_free_record(start->stack.record);
+ 		start->stack.record = NULL;
+ 	}
+ 
+@@ -786,7 +786,7 @@ static void trace_profile_record(struct tracecmd_input *handle,
+ 
+ 	/* If the last stack hasn't changed, free it */
+ 	if (stack_record && task->last_stack == stack_record) {
+-		free_record(stack_record);
++		tracecmd_free_record(stack_record);
+ 		task->last_stack = NULL;
+ 	}
+ }
+@@ -1069,7 +1069,7 @@ static int handle_stacktrace_event(struct handle_data *h,
+ 		return -1;
+ 
+ 	if (task->last_stack) {
+-		free_record(task->last_stack);
++		tracecmd_free_record(task->last_stack);
+ 		task->last_stack = NULL;
+ 	}
+ 
+@@ -2138,7 +2138,7 @@ static void __free_task(struct task_data *task)
+ 		trace_hash_while_item(item, bucket) {
+ 			start = start_from_item(item);
+ 			if (start->stack.record)
+-				free_record(start->stack.record);
++				tracecmd_free_record(start->stack.record);
+ 			list_del(&start->list);
+ 			trace_hash_del(item);
+ 			free(start);
+@@ -2156,7 +2156,7 @@ static void __free_task(struct task_data *task)
+ 	trace_hash_free(&task->event_hash);
+ 
+ 	if (task->last_stack)
+-		free_record(task->last_stack);
++		tracecmd_free_record(task->last_stack);
+ }
+ 
+ static void free_task(struct task_data *task)
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 0b3eb1bc..11293bc8 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -209,7 +209,7 @@ static void show_test(struct tracecmd_input *handle)
+ 	trace_seq_destroy(&s);
+ 	printf("\n");
+ 
+-	free_record(record);
++	tracecmd_free_record(record);
+ }
+ 
+ static void test_save(struct tep_record *record, int cpu)
+@@ -253,7 +253,7 @@ static void show_test(struct tracecmd_input *handle)
+ 	trace_seq_destroy(&s);
+ 	printf("\n");
+ 
+-	free_record(record);
++	tracecmd_free_record(record);
+ }
+ 
+ static void test_save(struct tep_record *record, int cpu)
+@@ -291,7 +291,7 @@ static void show_test(struct tracecmd_input *handle)
+ 	trace_seq_destroy(&s);
+ 	printf("\n");
+ 
+-	free_record(record);
++	tracecmd_free_record(record);
+ 
+ 	record = tracecmd_read_cpu_last(handle, cpu);
+ 	if (!record) {
+@@ -307,7 +307,7 @@ static void show_test(struct tracecmd_input *handle)
+ 	trace_seq_destroy(&s);
+ 	printf("\n");
+ 
+-	free_record(record);
++	tracecmd_free_record(record);
+ }
+ static void test_save(struct tep_record *record, int cpu)
+ {
+@@ -1122,7 +1122,7 @@ static struct tep_record *get_next_record(struct handle_list *handles)
+ 				    test_stacktrace(handles, record, 0))
+ 					found = 1;
+ 				else
+-					free_record(record);
++					tracecmd_free_record(record);
+ 				break;
+ 			case FILTER_NONE:
+ 			case FILTER_MATCH:
+@@ -1135,7 +1135,7 @@ static struct tep_record *get_next_record(struct handle_list *handles)
+ 				}
+ 				/* fall through */
+ 			default:
+-				free_record(record);
++				tracecmd_free_record(record);
+ 			}
+ 		}
+ 	} while (record && !found);
+@@ -1155,7 +1155,7 @@ static void free_handle_record(struct handle_list *handles)
+ 	if (!handles->record)
+ 		return;
+ 
+-	free_record(handles->record);
++	tracecmd_free_record(handles->record);
+ 	handles->record = NULL;
+ }
+ 
 diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index f6ab970b..9d347b36 100644
+index bb2c3d53..f6ab970b 100644
 --- a/tracecmd/trace-split.c
 +++ b/tracecmd/trace-split.c
-@@ -87,7 +87,7 @@ static int write_record(struct tracecmd_input *handle,
+@@ -214,7 +214,7 @@ static int parse_cpu(struct tracecmd_input *handle,
+ 	if (start) {
+ 		set_cpu_time(handle, percpu, start, cpu, cpus);
+ 		while (record && record->ts < start) {
+-			free_record(record);
++			tracecmd_free_record(record);
+ 			record = read_record(handle, percpu, &cpu);
+ 		}
+ 	} else if (record)
+@@ -249,7 +249,7 @@ static int parse_cpu(struct tracecmd_input *handle,
+ 		cpu_data[cpu].offset = record->offset;
  
- 	page = cpu_data->page;
+ 		if (write_record(handle, record, &cpu_data[cpu], type)) {
+-			free_record(record);
++			tracecmd_free_record(record);
+ 			record = read_record(handle, percpu, &cpu);
  
--	pevent = tracecmd_get_pevent(handle);
-+	pevent = tracecmd_get_tep(handle);
+ 			/* if we hit the end of the cpu, clear the offset */
+@@ -268,7 +268,7 @@ static int parse_cpu(struct tracecmd_input *handle,
+ 				if (record &&
+ 				    record->ts >
+ 				    (start + (unsigned long long)count_limit * 1000000000ULL)) {
+-					free_record(record);
++					tracecmd_free_record(record);
+ 					record = NULL;
+ 				}
+ 				break;
+@@ -276,7 +276,7 @@ static int parse_cpu(struct tracecmd_input *handle,
+ 				if (record &&
+ 				    record->ts >
+ 				    (start + (unsigned long long)count_limit * 1000000ULL)) {
+-					free_record(record);
++					tracecmd_free_record(record);
+ 					record = NULL;
+ 				}
+ 				break;
+@@ -284,13 +284,13 @@ static int parse_cpu(struct tracecmd_input *handle,
+ 				if (record &&
+ 				    record->ts >
+ 				    (start + (unsigned long long)count_limit * 1000ULL)) {
+-					free_record(record);
++					tracecmd_free_record(record);
+ 					record = NULL;
+ 				}
+ 				break;
+ 			case SPLIT_EVENTS:
+ 				if (++count >= count_limit) {
+-					free_record(record);
++					tracecmd_free_record(record);
+ 					record = NULL;
+ 				}
+ 				break;
+@@ -301,7 +301,7 @@ static int parse_cpu(struct tracecmd_input *handle,
+ 	}
  
- 	ptr = page + cpu_data->index;
+ 	if (record)
+-		free_record(record);
++		tracecmd_free_record(record);
  
-@@ -191,7 +191,7 @@ static int parse_cpu(struct tracecmd_input *handle,
- 
- 	long_size = tracecmd_long_size(handle);
- 	page_size = tracecmd_page_size(handle);
--	pevent = tracecmd_get_pevent(handle);
-+	pevent = tracecmd_get_tep(handle);
- 
- 	/* Force new creation of first page */
  	if (percpu) {
+ 		if (cpu_data[cpu].page) {
+@@ -393,7 +393,7 @@ static double parse_file(struct tracecmd_input *handle,
+ 			record = tracecmd_read_at(handle, cpu_data[cpu].offset, NULL);
+ 			if (record && (!current || record->ts > current))
+ 				current = record->ts + 1;
+-			free_record(record);
++			tracecmd_free_record(record);
+ 		}
+ 		unlink(cpu_data[cpu].file);
+ 		free(cpu_data[cpu].file);
+diff --git a/tracecmd/trace-stream.c b/tracecmd/trace-stream.c
+index 3814a357..54c21c78 100644
+--- a/tracecmd/trace-stream.c
++++ b/tracecmd/trace-stream.c
+@@ -115,7 +115,7 @@ int trace_stream_read(struct pid_record_data *pids, int nr_pids, struct timeval
+ 	}
+ 	if (last_pid) {
+ 		trace_show_data(last_pid->instance->handle, last_pid->record);
+-		free_record(last_pid->record);
++		tracecmd_free_record(last_pid->record);
+ 		last_pid->record = NULL;
+ 		return 1;
+ 	}
 -- 
 2.28.0
 
