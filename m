@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF766C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:38:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C4A6C433E6
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:38:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A61942168B
+	by mail.kernel.org (Postfix) with ESMTP id E96962168B
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:38:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbgLWEiK (ORCPT
+        id S1726778AbgLWEiZ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Dec 2020 23:38:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57238 "EHLO
+        Tue, 22 Dec 2020 23:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgLWEiK (ORCPT
+        with ESMTP id S1726161AbgLWEiZ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Dec 2020 23:38:10 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB78BC0613D3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:37:29 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id g25so660188wmh.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:37:29 -0800 (PST)
+        Tue, 22 Dec 2020 23:38:25 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AC4C0613D6
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:37:45 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id y17so17311671wrr.10
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:37:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=vZ9qwwiziAwIcPEajSzRnH9oEnPakVP/7KZJjJOWl0A=;
-        b=urpHyOK03WGqPJURgmR6RQprLUr4SWC+4S1ym7tFqOhmVYgefm1gTPdR0aEtKyizjj
-         BMfiPVQ2vDu+clQuHIhIgspgcMpmiFJA1I9Cs/AR9dA29Jk0BriAW5U9UiveQ3Q/2v8g
-         9JvvNkQtV0tdp60bCatZX11yfQkOo3LiGqzG1FEnsflmNhRewG/XeOjnbATU53CP7OYt
-         KCgWGgAouSetklOMpwRQJ9JBee6Rq3c8Gt9Q7D/5tHYmyLT4VukGX0Wermc6kBvgZXFw
-         hUd1+gHwCJ5bLgP08y2oTRRLVDgmuJdbRg4ai/x/UaCJPlW8Cni4JBnKQqVXANr0nJKR
-         u0gg==
+        bh=YkxACEhkbj67PmSMUWvHsjTIFIrxPLfdCS7sVujNVrc=;
+        b=ua42+PHCBKxkOzu3hbq6kScu4SGCfICnEf/fdBUx5XzVSS/fxIKDUwQvwiSx6W+3B3
+         hCzZWsPY0orAaTnx3UhaWf2xGVFP5xwf1L52BKPyQhKVM3Uz3sOdTzjFPHawG7gyACZD
+         W9HenELbQ4/3JrUwg8BlDxtmACqZb9oscytaOCpUkjX3Q/Rzc5SEPjNC4LbwKpAhTsaE
+         QbXL+DjbPZj2D1fUiEdD7IYFAy73pZejq3jP6ErsH6/JzbA7kSLX3jk2Sb6pgEUDL8UU
+         khGE24A9IpY4QGgKCV3mn4MO1MT1BCG08xnxGF4B7XylF62r+s83nbzUFsruSHg5cmqU
+         lxOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=vZ9qwwiziAwIcPEajSzRnH9oEnPakVP/7KZJjJOWl0A=;
-        b=hZGog69qZRnGdSokQPFsN0WmIF2N9CFB5+FmBmGRZXXT4PkH98M6GlMtyOpwNuxNN5
-         7OTp3ZHFTpvaKrl5+0JdPpaBtMapa+OizqECXbuhwZppEh8rbdHNFnYvZ3CP3Uj7IzQL
-         id7K7M9ws9sa+S55t+5GVjQFJBcwDLo+hfBc21q7riqxpPW0vOrWg29p7E/k6/zteFvV
-         NmU5cfuH2tqPVANA7hb1NRpt5OtShdvQ0S14IrSTfP4TVshETILB6VZ0iKW7ZEsr2oJ4
-         DytIoUgdDNote+HdiNg+hpFGSsiz+c/oD/rEreIIPuE6xcZxD+CoExHq51upcPUwSblW
-         uhGQ==
-X-Gm-Message-State: AOAM532azxhz6z045q4lTT2lB0jQQy5vaxPwP6oqQJ0e2xY5fqytS3AA
-        S4mBQs/mib8+zd77U3KxOqBfvZsDkNcXbhkM
-X-Google-Smtp-Source: ABdhPJy4QCncH61PMssJbvr8OeSrTLhoGLss+HWnByDnjlZkyHA98HwHTreW5dbIYI0j39fr4ARaTg==
-X-Received: by 2002:a1c:9d8b:: with SMTP id g133mr24886913wme.189.1608698248394;
-        Tue, 22 Dec 2020 20:37:28 -0800 (PST)
+        bh=YkxACEhkbj67PmSMUWvHsjTIFIrxPLfdCS7sVujNVrc=;
+        b=c7Knp1jgV2IpY5cZ3cYi77FJ33bDPIN0MHRNAw9jjVgi51mDrk+7TUQEu2SclKM7r5
+         OmEiM06pdEn7zr82/s2dcOxNmeuiGwTw8ajhR+znKyW144zJrdX70OGtdvImFl5YOCTR
+         hdMAlslFERHXdqenTRmxGIWZZdMoPonsG3Ocnl7W9EFL0VKwLhkchj7ovUmPDFqbNivS
+         MVyLuJiER1Yy3txnQJDBehCyGuVgWx4xqlyEY1iiTalWFIKmNDBE35F/kSmPueslZQDP
+         Apz+pFj4b3iUl2gsZsRe1j4ONFqqVxjr4muUnqNtI88dTTgAWosiuXHt/BCnp0aQvTRn
+         i/ng==
+X-Gm-Message-State: AOAM533WwA2/hUBV2gJk17S4wIrOMgLzO5lqpStwVDRr/ZeD/nkTxPCv
+        Ii6tKjMORXC5U2+5Oc5UrvWTkB6NBc83Ymdj
+X-Google-Smtp-Source: ABdhPJyzPO1rMUJwJdT0sgS7Z//+7eoBPnSirvx4iCbCIcNGnlwrIghHRJ3y6Mrhu/JC3fYfJoxKKA==
+X-Received: by 2002:a5d:6845:: with SMTP id o5mr26964460wrw.421.1608698263910;
+        Tue, 22 Dec 2020 20:37:43 -0800 (PST)
 Received: from oberon.vmware.com ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id a17sm34548836wrs.20.2020.12.22.20.37.27
+        by smtp.gmail.com with ESMTPSA id g5sm32763481wro.60.2020.12.22.20.37.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 20:37:27 -0800 (PST)
+        Tue, 22 Dec 2020 20:37:43 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] libtracefs: Add COPYING section to man pages
-Date:   Wed, 23 Dec 2020 06:37:26 +0200
-Message-Id: <20201223043726.587033-1-tz.stoyanov@gmail.com>
+Subject: [PATCH] libtraceevent: Update the RESOURCES section of debug man pages
+Date:   Wed, 23 Dec 2020 06:37:42 +0200
+Message-Id: <20201223043742.587178-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,143 +71,25 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A COPYING with VMware Copyright \(C) was added to all libtracefs man
-pages.
+The traceevent library has a new repo and all its man pages should point
+to it. The debug man page still points the old repo, updated it with
+  https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/libtracefs-events-tep.txt       | 7 ++++++-
- Documentation/libtracefs-events.txt           | 5 +++++
- Documentation/libtracefs-files.txt            | 7 ++++++-
- Documentation/libtracefs-instances-files.txt  | 7 ++++++-
- Documentation/libtracefs-instances-manage.txt | 5 +++++
- Documentation/libtracefs-instances-utils.txt  | 7 ++++++-
- Documentation/libtracefs-utils.txt            | 7 ++++++-
- Documentation/libtracefs.txt                  | 7 ++++++-
- 8 files changed, 46 insertions(+), 6 deletions(-)
+ Documentation/libtraceevent-debug.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/libtracefs-events-tep.txt b/Documentation/libtracefs-events-tep.txt
-index f7d7a61..e0be02c 100644
---- a/Documentation/libtracefs-events-tep.txt
-+++ b/Documentation/libtracefs-events-tep.txt
-@@ -127,4 +127,9 @@ libtracefs is Free Software licensed under the GNU LGPL 2.1
+diff --git a/Documentation/libtraceevent-debug.txt b/Documentation/libtraceevent-debug.txt
+index a0be84f..3ba573a 100644
+--- a/Documentation/libtraceevent-debug.txt
++++ b/Documentation/libtraceevent-debug.txt
+@@ -92,4 +92,4 @@ libtraceevent is Free Software licensed under the GNU LGPL 2.1
  
  RESOURCES
  ---------
--https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-\ No newline at end of file
-+https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libtracefs-events.txt b/Documentation/libtracefs-events.txt
-index 685dbd2..9608a12 100644
---- a/Documentation/libtracefs-events.txt
-+++ b/Documentation/libtracefs-events.txt
-@@ -141,3 +141,8 @@ libtracefs is Free Software licensed under the GNU LGPL 2.1
- RESOURCES
- ---------
- https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libtracefs-files.txt b/Documentation/libtracefs-files.txt
-index 8bf9d75..dc85f2d 100644
---- a/Documentation/libtracefs-files.txt
-+++ b/Documentation/libtracefs-files.txt
-@@ -94,4 +94,9 @@ libtracefs is Free Software licensed under the GNU LGPL 2.1
- 
- RESOURCES
- ---------
--https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-\ No newline at end of file
-+https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libtracefs-instances-files.txt b/Documentation/libtracefs-instances-files.txt
-index 7f9d381..9b18b73 100644
---- a/Documentation/libtracefs-instances-files.txt
-+++ b/Documentation/libtracefs-instances-files.txt
-@@ -157,4 +157,9 @@ libtracefs is Free Software licensed under the GNU LGPL 2.1
- 
- RESOURCES
- ---------
--https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-\ No newline at end of file
-+https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libtracefs-instances-manage.txt b/Documentation/libtracefs-instances-manage.txt
-index 1601c5b..a831ef2 100644
---- a/Documentation/libtracefs-instances-manage.txt
-+++ b/Documentation/libtracefs-instances-manage.txt
-@@ -109,3 +109,8 @@ libtracefs is Free Software licensed under the GNU LGPL 2.1
- RESOURCES
- ---------
- https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libtracefs-instances-utils.txt b/Documentation/libtracefs-instances-utils.txt
-index aa5efbd..3bd54a5 100644
---- a/Documentation/libtracefs-instances-utils.txt
-+++ b/Documentation/libtracefs-instances-utils.txt
-@@ -109,4 +109,9 @@ libtracefs is Free Software licensed under the GNU LGPL 2.1
- 
- RESOURCES
- ---------
--https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-\ No newline at end of file
-+https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libtracefs-utils.txt b/Documentation/libtracefs-utils.txt
-index 03bc39b..41544ab 100644
---- a/Documentation/libtracefs-utils.txt
-+++ b/Documentation/libtracefs-utils.txt
-@@ -100,4 +100,9 @@ libtracefs is Free Software licensed under the GNU LGPL 2.1
- 
- RESOURCES
- ---------
--https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-\ No newline at end of file
-+https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index bd40f1f..ddbf783 100644
---- a/Documentation/libtracefs.txt
-+++ b/Documentation/libtracefs.txt
-@@ -81,4 +81,9 @@ libtracefs is Free Software licensed under the GNU LGPL 2.1
- 
- RESOURCES
- ---------
--https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-\ No newline at end of file
-+https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
-+
-+COPYING
-+-------
-+Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
-+the terms of the GNU Public License (GPL).
+-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
++https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
 -- 
 2.28.0
 
