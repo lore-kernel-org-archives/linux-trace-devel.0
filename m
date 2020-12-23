@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C3EEC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:35:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BBD2C433E9
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:35:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 11B1720936
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:35:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1FE6120936
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:35:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgLWEfQ (ORCPT
+        id S1726611AbgLWEfR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Dec 2020 23:35:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
+        Tue, 22 Dec 2020 23:35:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgLWEfQ (ORCPT
+        with ESMTP id S1726282AbgLWEfR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Dec 2020 23:35:16 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0174C061794
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:35 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id 91so17341526wrj.7
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:35 -0800 (PST)
+        Tue, 22 Dec 2020 23:35:17 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34236C06179C
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:37 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id r7so17324045wrc.5
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=G4+1mxLSkD5Jqgk/EFsgqdRCUpuErUS8PeWMv+kyQw4=;
-        b=jBHAMn28GPMz84tMnno3cj8B6DZdg2dfMmcHPoB2PnMxZXzi4cLG0GLt0xtQKwv54F
-         HHEncXDT0FjPXhZUtry06wEXAsrvrZ5jH2xeIstyZWypC0+WR1MUkbxlMfgXjSA+bhC3
-         Cx8L1eXatIfLb+flVu71VdrpMDWXtv22ex8075WN8ukBVQTuoZOiL5KY2x69rJNvVgHS
-         jtz6JPrgU7sIResfBxTNB8mk214jMiLMYtdNuQT3mfZ8HoNjAn6/wxkP2U5bhzp2Q2kt
-         9FKHvftbAft0QdHxAaxKS+yeFPCbu9Jaq8Cb8e1nzgn5CjnJIRJYEn2HvE20GkfJWnUi
-         dfAQ==
+        bh=CaRcTEAnNWGAxloB4vhh3lunl1bHioPlNW9EEp0sJWk=;
+        b=eZCD/m2mHBK9ZKWzw3IKN33aRIZf2LGQ+zvE6uZq8gCIhxWEjbOfVErPWCb2Jh5MYH
+         Oa4q1u0QRTiDuIRjZlcFu9+XHQiDcHrUDjLa77f+/UtTahLuk1it+xeNcQFnAr4C63jj
+         QQMPBQ9Y0PS7fNp4aA55Ym8FLXWGqqYGsayjsupOF6ULC1sN7y+Qy4jghNdt15FQcNgO
+         S5sUq+qWAoE5yUwyJTCKiPEmDBbdi7lPFMEJw48dGTZpg89cZxzW2P3FmwOdvSm1hsBt
+         OBQm2AphQk/PRfiCysBG0UTO7xu8W/OnHNsTBJXHbD03LMPC2BNADpECLl5C5r/0Qocm
+         eLgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=G4+1mxLSkD5Jqgk/EFsgqdRCUpuErUS8PeWMv+kyQw4=;
-        b=XFTqtKAUMROhHtRAITZzlkyXf3Eg0GvSonYG1EiiD41gfAG6+zPjGKAWI/uZtR4YRy
-         WVd9IG0MyGBUE/PN+7y3LLkOi4t/TTfYfWushNMur7k5Ek3Ti5cwA0XGqtEm6Tj86H3E
-         UzZzkKs9USxa6TPPnG82c4S6vwM+Uivq+wmr1qdtUCXdlRdPVUNLaKSx6tkVmAgrXp6V
-         tU3YDkDHJwhddw5LJLifaKzXpYQ1dJ/FBPt7J+VSNa9HMfvIA43zk8x3fhooENmj2etw
-         Q9+f+QPFHb9jxg3PHJZFxUF5gLgDg/KJja99CT9EHjFJtGYvUsYgBe2rIx+TqCSc23+7
-         QimA==
-X-Gm-Message-State: AOAM533SN2u0tjW4C/5CQdaHBZ9IpjtBjxIbn4KN0uk4YECDlZvee3Vn
-        AImsAUPKWtOzfcOOuoWMO38mdk2zGg3VB/77
-X-Google-Smtp-Source: ABdhPJx40dkhsSh1kEvvo37dodCWD3BEXbROpa0Tuw5e5uCjXKAuY+/8GSUPEgU9h9ya2optWlcbpQ==
-X-Received: by 2002:a5d:4f90:: with SMTP id d16mr26943581wru.120.1608698074763;
-        Tue, 22 Dec 2020 20:34:34 -0800 (PST)
+        bh=CaRcTEAnNWGAxloB4vhh3lunl1bHioPlNW9EEp0sJWk=;
+        b=IdZor7mU+z36cRcNRMHUM7RKKpKV1Yic2Rvx3Hj1IyRutq7k3Rfy17o6Sx8d9cg14V
+         0uVDmmuw8tAiMDkwXLgpOrBiVIjaXzpqr6Zyejdb7CpBE5KZMhicKy0hxbC0fpACNKX3
+         moJKXdd0NjsNF53H/y81GpPvs4z3LQLdeWxp/K8Dvyf/TFF1m7w2wZcDQb5/UlgHNog8
+         IiRR2b3f7NsRbfqcLHVSqSm6LKuhMac2WnKWPZeVkTkSO9nSuJ7JUvyajCXlFHEw66SG
+         sYlnVHntg11ASGSbyPY50LGXFAa3Tl02gfVRhSqjOv3l9ferTmBesCnpxPIh+nG8nyTM
+         fImQ==
+X-Gm-Message-State: AOAM530JWK0SP2Y7rfv+EnoO0sc0OYECuPalm1PFjrS2cUVJtwDkpsBT
+        PDeT7Bv4bFbkh5X6qXX1Sl6k7t2R1xNJYrIK
+X-Google-Smtp-Source: ABdhPJx24iDdmAFP1U/lxKrpiBrD37OqqVIZlQg1wmk6HpGJZj+jpapbcOZAHwt5lr/K7zdXTOZcTA==
+X-Received: by 2002:a5d:4104:: with SMTP id l4mr27757645wrp.340.1608698075935;
+        Tue, 22 Dec 2020 20:34:35 -0800 (PST)
 Received: from oberon.vmware.com ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s13sm28909095wmj.28.2020.12.22.20.34.33
+        by smtp.gmail.com with ESMTPSA id s13sm28909095wmj.28.2020.12.22.20.34.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 20:34:33 -0800 (PST)
+        Tue, 22 Dec 2020 20:34:35 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/6] trace-cmd library man pages: Read recorded events from a trace file.
-Date:   Wed, 23 Dec 2020 06:34:26 +0200
-Message-Id: <20201223043429.586162-4-tz.stoyanov@gmail.com>
+Subject: [PATCH 4/6] trace-cmd library man pages: Open and close trace file.
+Date:   Wed, 23 Dec 2020 06:34:27 +0200
+Message-Id: <20201223043429.586162-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201223043429.586162-1-tz.stoyanov@gmail.com>
 References: <20201223043429.586162-1-tz.stoyanov@gmail.com>
@@ -74,33 +74,27 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Documented APIs:
- tracecmd_init_data()
- tracecmd_read_cpu_first()
- tracecmd_read_data()
- tracecmd_read_at()
- tracecmd_free_record()
- tracecmd_get_tep()
+ tracecmd_open_head()
+ tracecmd_close()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../libtracecmd/libtracecmd-record.3.txt      | 152 ++++++++++++++++++
- 1 file changed, 152 insertions(+)
- create mode 100644 Documentation/libtracecmd/libtracecmd-record.3.txt
+ .../libtracecmd/libtracecmd-files.3.txt       | 92 +++++++++++++++++++
+ 1 file changed, 92 insertions(+)
+ create mode 100644 Documentation/libtracecmd/libtracecmd-files.3.txt
 
-diff --git a/Documentation/libtracecmd/libtracecmd-record.3.txt b/Documentation/libtracecmd/libtracecmd-record.3.txt
+diff --git a/Documentation/libtracecmd/libtracecmd-files.3.txt b/Documentation/libtracecmd/libtracecmd-files.3.txt
 new file mode 100644
-index 00000000..194b1670
+index 00000000..7cf12ea4
 --- /dev/null
-+++ b/Documentation/libtracecmd/libtracecmd-record.3.txt
-@@ -0,0 +1,152 @@
++++ b/Documentation/libtracecmd/libtracecmd-files.3.txt
+@@ -0,0 +1,92 @@
 +libtracecmd(3)
 +=============
 +
 +NAME
 +----
-+tracecmd_init_data, tracecmd_read_cpu_first, tracecmd_read_data
-+tracecmd_read_at, tracecmd_free_record, tracecmd_get_tep
-+- Read recorded events from a trace file.
++tracecmd_open_head, tracecmd_close - Open and close trace file.
 +
 +SYNOPSIS
 +--------
@@ -108,58 +102,30 @@ index 00000000..194b1670
 +--
 +*#include <trace-cmd.h>*
 +
-+int *tracecmd_init_data*(struct tracecmd_input pass:[*]_handle_);
-+struct tep_record pass:[*]*tracecmd_read_cpu_first*(struct tracecmd_input pass:[*]_handle_, int _cpu_);
-+struct tep_record pass:[*]*tracecmd_read_data*(struct tracecmd_input pass:[*]_handle_, int _cpu_);
-+struct tep_record pass:[*]*tracecmd_read_at*(struct tracecmd_input pass:[*]_handle_, unsigned long long _offset_, int pass:[*]_cpu_);
-+void *tracecmd_free_record*(struct tep_record pass:[*]_record_);
-+struct tep_handle pass:[*]*tracecmd_get_tep*(struct tracecmd_input pass:[*]_handle_);
++struct tracecmd_input pass:[*]*tracecmd_open_head*(const char pass:[*]_file_);
++void *tracecmd_close*(struct tracecmd_input pass:[*]_handle_);
 +--
 +
 +DESCRIPTION
 +-----------
-+This set of APIs can be used to read tracing data from a trace file opened
-+with _tracecmd_open_head()(3)_
++This set of APIs can be used to open and close a trace file recorded by
++_trace-cmd(1)_ and containing tracing information from ftrace, the official
++Linux kernel tracer. The opened file is represented by a _tracecmd_input_
++structure, all other library APIs that work with the file require a pointer
++to the structure.
 +
-+The _tracecmd_init_data()_ function initializes the _handle_ for reading
-+trace data from the file associated with it. This API must be called before
-+any of the _tracecmd_read__ APIs.
++The _tracecmd_open_head()_ function opens a given trace _file_, parses the
++headers from the file, allocates and initializes _tracecmd_input_ structure
++representing the file.
 +
-+The _tracecmd_read_cpu_first()_ function reads the first trace record
-+for a given _cpu_ from a trace file associated with _handle_. The returned
-+record must be freed with _tracecmd_free_record()_.
-+
-+The _tracecmd_read_data()_ function reads the next trace record for
-+a given _cpu_ from a trace file associated with _handle_ and increments
-+the read location pointer, so that the next call to _tracecmd_read_data()_
-+will not read the same record again. The returned record must be freed
-+with _tracecmd_free_record()_.
-+
-+The _tracecmd_read_at()_ function reads a trace record from a specific
-+_offset_ within the file associated with _handle_. The CPU on which the
-+recorded event occurred is stored in the _cpu_. The function does not
-+change the current read location pointer. The returned record must be
-+freed with _tracecmd_free_record()_.
-+
-+The _tracecmd_free_record()_ function frees a _record_ returned by any
-+of the _tracecmd_read__ APIs.
-+
-+The _tracecmd_get_tep()_ function returns a tep context for a given
-+_handle_.
++The _tracecmd_close()_ function frees a _handle_, pointer to tracecmd_input
++structure, previously allocated with _tracecmd_open_head()_.
 +
 +RETURN VALUE
 +------------
-+The _tracecmd_init_data()_ function returns -1 in case of an error or
-+0 otherwise.
-+
-+The _tracecmd_read_cpu_first()_, _tracecmd_read_data()_ and
-+_tracecmd_read_at()_ functions return a pointer to struct tep_record or
-+NULL in case of an error.The returned record must be freed with
-+_tracecmd_free_record()_.
-+
-+The _tracecmd_get_tep()_ function returns a pointer to tep context or
-+NULL if there is no tep context for the given _handle_. The returned
-+tep pointer must *not* be freed.
++The _tracecmd_open_head()_ function returns a pointer to tracecmd_input
++structure or NULL in case of an error. The returned structure must be free
++with _tracecmd_close()_.
 +
 +EXAMPLE
 +-------
@@ -171,36 +137,6 @@ index 00000000..194b1670
 +	if (!handle) {
 +		/* Failed to open trace.dat file */
 +	}
-+...
-+unsigned long long offset = 0;
-+struct tep_record *rec;
-+int cpu = 0;
-+
-+	if (tracecmd_init_data(handle) < 0) {
-+		/* Failed to initialize hadle for reading the trace data */
-+	}
-+
-+	rec = tracecmd_read_cpu_first(handle, cpu);
-+	while (rec) {
-+		...
-+		if ( /* some interesting record noticed */) {
-+			/* store the offset of the interesting record */
-+			offset = rec->offset;
-+		}
-+		...
-+		tracecmd_free_record(rec);
-+		rec = tracecmd_read_data(handle, cpu);
-+	}
-+	...
-+	if (offset) {
-+		rec = tracecmd_read_at(handle, offset, &cpu);
-+		if (rec) {
-+			/* Got record at offset on cpu */
-+			...
-+			tracecmd_free_record(rec);
-+		}
-+	}
-+
 +...
 +	tracecmd_close(hadle);
 +
