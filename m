@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CE9BC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E6C3C433E6
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:36:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F2CAC20936
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:36:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1A65020E65
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:36:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgLWEfx (ORCPT
+        id S1725300AbgLWEfx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Tue, 22 Dec 2020 23:35:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLWEfx (ORCPT
+        with ESMTP id S1726068AbgLWEfx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 22 Dec 2020 23:35:53 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AF8C0617A6
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:38 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id t16so17342086wra.3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:38 -0800 (PST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700B2C061282
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:39 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id i9so17340534wrc.4
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a8kbvUB7yNA5wDS1jH+zjTLod7h9tLFimIPqZVWdYJU=;
-        b=WLvX97jGSQubXRd16bJc7yQPjgl8iXNOyKvl+BWvvJARAG3inkGPjL2sD6NoQq/rUv
-         6eTaFNbTwC6srf1/zJiyJdj6ug5V4dj4XwxLPrGz7EfWvd04wdidcmYNParSffBKRU7e
-         ZpKHnIh1J3pamYO/Xom6HAH6YP1CbTzVPVBKyf7FhxMxp9iuM3lyUyab+CKuR0C/Qmc2
-         txcyfzSmjJ0BpnpwijOCmxal9OBWSQ0cmXqRIYVSDfaG+NhdEFb3v3xpssvlUOSGVlbN
-         5OdrfrSHiid8BXcIWgxUWo3KXKF0iMksqe0zUbYrfXl7EM1SweZ8OvudRQeHugkqY7lf
-         mUmQ==
+        bh=hQKKW+dU4a3WmtsXmhKRYuX+tH83jmdgb3mS+hBgz/I=;
+        b=If1c4rkWotzblYTzWmKK7nj5p69LHGlEatUEGBKtdAUJdUvjpjCk54brK7DA6JZ2qC
+         x/Y7o4CMrbSBJPp8YLEp7srEyqvhqko5usCGLwIrjnYPHsPt0lgKf+aRNRxUnvDa0HTA
+         ZhkscuA499CbqoUdr+QC6gzWnYFC1eJ7krtOT+3QiR9KLJUY5qnNGfX8L8BBasMvkIGA
+         AbYUXsNLLq3NGq0f3sRxJ/1IWCXRpaBsvn+ct8HguWsunjRTQOkCG+NpfnOjCZlxiAJl
+         pxXCR6dofetDw9ko813i2Z33G3ka7z41k93umLhRY8mhQmWHPzS/X33oXZs9ykX/q7tD
+         /8BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a8kbvUB7yNA5wDS1jH+zjTLod7h9tLFimIPqZVWdYJU=;
-        b=slR69NW+VuOjlwGb87WLHSmaJZ1pVUYa01gxyj7qaC8OgWYX+4Wv/VtibgbFWfsCGd
-         PIkfBEY6lY0X6D+ig7ZYF8gDbSFfrzM2A6s7LXP33E++FqA2sMDn869i1yF48MiHAu9D
-         +u6UEfr1iLxSjfGGYPLjEdiJEXn4CI8v2rUlnnOS1Ch+Hv5/8LHrnodZpIeQrMLhvrFz
-         E8oSlofaeIDuRVjwh1+42yK05ou8tYRsN9b5kL9s2ok5t6r/UpukW7m1XSN+XQDU/hOB
-         pgZWM2wCw1Fzj7CaIsFVVxhcY+kPdMyJVpJLltWDNUCMX+FjxAWa/6vKna7CY/zmK+GB
-         K96w==
-X-Gm-Message-State: AOAM532Cisv7K96eUeUYXhXpt9qUzvxX8fvnsT7YPw1PnKNxEjytgwLA
-        x9+tW/b63hiH2Rlvf2eedZElDj/4HpXsXBmQ
-X-Google-Smtp-Source: ABdhPJyT3bACNcUIz+gm7bs+mGqq/eAIrs1AeuTGwd5w2ZHy+KLw/QNltIOCUDw2FmsNq3IV6LPrqQ==
-X-Received: by 2002:a5d:6749:: with SMTP id l9mr27528921wrw.395.1608698076991;
-        Tue, 22 Dec 2020 20:34:36 -0800 (PST)
+        bh=hQKKW+dU4a3WmtsXmhKRYuX+tH83jmdgb3mS+hBgz/I=;
+        b=av7PD6N1/uMOh9Dn0vBCxMvc92LlSTXPgVLT3dOvsUUXGpMB/hY1/UYKf2BDZe9l5L
+         Sp6y1sYyL0T9/kYQUPW5YuvAJuvCkm80QN98eWhkzhNbL0AP4ZVP4gYtm8n1lQmT+sJb
+         5tBNsKM0Wgi6ACIQvMUcJ1uv7KOZa7m05YQ/XY6WUQJ4efCnhtzo7IwjVCXEV1gSX9Hg
+         Sb/x84pHEsZg6CcvsE3IXGgj32qMA6R/G1LCnxBR9Quc919Ja9o/SfCS66hfqcjuft2T
+         F90QO8yq4ySk2B5o7s9x6KHeXvH5D21H1gL7ID6sTial3PrPfdAq265yHY9/K9Ze1GIJ
+         rctA==
+X-Gm-Message-State: AOAM533oo313/6YmK2DX2RxgiT0yj7qupwUslXKC1XhHUHCFXLytiA3E
+        fBn/Ms+FUivA8p1dM1nDzeM=
+X-Google-Smtp-Source: ABdhPJyKF9r0cYK5mhxZ7gmBEaKU8Hir2YBRAvu6asZdE8KNGfWdVDx1dhdLum7yS9NJllD7eykGYw==
+X-Received: by 2002:a5d:504b:: with SMTP id h11mr27124343wrt.337.1608698078230;
+        Tue, 22 Dec 2020 20:34:38 -0800 (PST)
 Received: from oberon.vmware.com ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s13sm28909095wmj.28.2020.12.22.20.34.36
+        by smtp.gmail.com with ESMTPSA id s13sm28909095wmj.28.2020.12.22.20.34.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 20:34:36 -0800 (PST)
+        Tue, 22 Dec 2020 20:34:37 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 5/6] trace-cmd library man pages: Manage trace session with multiple trace peers.
-Date:   Wed, 23 Dec 2020 06:34:28 +0200
-Message-Id: <20201223043429.586162-6-tz.stoyanov@gmail.com>
+Subject: [PATCH 6/6] trace-cmd library man pages: Read tracing instances from a trace file.
+Date:   Wed, 23 Dec 2020 06:34:29 +0200
+Message-Id: <20201223043429.586162-7-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201223043429.586162-1-tz.stoyanov@gmail.com>
 References: <20201223043429.586162-1-tz.stoyanov@gmail.com>
@@ -74,31 +74,29 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Documented APIs:
- tracecmd_pair_peer()
- tracecmd_unpair_peer()
- tracecmd_get_traceid()
- tracecmd_get_guest_cpumap()
+ tracecmd_buffer_instances()
+ tracecmd_buffer_instance_name()
+ tracecmd_buffer_instance_handle()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../libtracecmd/libtracecmd-peer.3.txt        | 149 ++++++++++++++++++
- 1 file changed, 149 insertions(+)
- create mode 100644 Documentation/libtracecmd/libtracecmd-peer.3.txt
+ .../libtracecmd/libtracecmd-instances.3.txt   | 129 ++++++++++++++++++
+ 1 file changed, 129 insertions(+)
+ create mode 100644 Documentation/libtracecmd/libtracecmd-instances.3.txt
 
-diff --git a/Documentation/libtracecmd/libtracecmd-peer.3.txt b/Documentation/libtracecmd/libtracecmd-peer.3.txt
+diff --git a/Documentation/libtracecmd/libtracecmd-instances.3.txt b/Documentation/libtracecmd/libtracecmd-instances.3.txt
 new file mode 100644
-index 00000000..af0bf5dc
+index 00000000..eff7e3ec
 --- /dev/null
-+++ b/Documentation/libtracecmd/libtracecmd-peer.3.txt
-@@ -0,0 +1,149 @@
++++ b/Documentation/libtracecmd/libtracecmd-instances.3.txt
+@@ -0,0 +1,129 @@
 +libtracecmd(3)
 +=============
 +
 +NAME
 +----
-+tracecmd_pair_peer, tracecmd_unpair_peer, tracecmd_get_traceid,
-+tracecmd_get_guest_cpumap - Manage trace session with multiple trace peers,
-+recorded in multiple trace files.
++tracecmd_buffer_instances, tracecmd_buffer_instance_name, tracecmd_buffer_instance_handle
++- Read tracing instances from a trace file.
 +
 +SYNOPSIS
 +--------
@@ -106,60 +104,46 @@ index 00000000..af0bf5dc
 +--
 +*#include <trace-cmd.h>*
 +
-+int *tracecmd_pair_peer*(struct tracecmd_input pass:[*]_handle_, struct tracecmd_input pass:[*]_peer_);
-+void *tracecmd_unpair_peer*(struct tracecmd_input pass:[*]_handle_);
-+unsigned long long *tracecmd_get_traceid*(struct tracecmd_input pass:[*]_handle_);
-+int *tracecmd_get_guest_cpumap*(struct tracecmd_input pass:[*]_handle_, unsigned long long _trace_id_, const char pass:[*]pass:[*]_name_, int pass:[*]_vcpu_count_, const int pass:[*]pass:[*]_cpu_pid_);
++int *tracecmd_buffer_instances*(struct tracecmd_input pass:[*]_handle_);
++const char pass:[*]*tracecmd_buffer_instance_name*(struct tracecmd_input pass:[*]_handle_, int _indx_);
++struct tracecmd_input pass:[*]*tracecmd_buffer_instance_handle*(struct tracecmd_input pass:[*]_handle_, int _indx_);
 +--
 +
 +DESCRIPTION
 +-----------
-+This set of APIs can be used to manage trace session with multiple trace
-+peers, like in tracing kernels of host and guests machines. The trace data
-+of each peer from the session is recorded in separate trace file.
-+Information about peers from the session is stored in the metadata of each
-+trace file. These APIs use that information to extract and synchronize
-+the trace data.
++This set of APIs can be used to get information and read tracing data
++from tracing instances stored in a trace file.
 +
-+The _tracecmd_pair_peer()_ function pairs two tracecmd_input handlers,
-+associated with two trace files from same trace session. This API must
-+be called before _tracecmd_init_data()(3)_, as the initialisation of
-+the trace data depends on that. If there is a tracing peer, the event
-+timestamps are recalculated in order to be in the same time space.
++The _tracecmd_buffer_instances()_ function gets the number of tracing
++instances recorded in a trace file. The top instance is not counted.
++The _handle_ is a tracecmd_input handler returned by
++_tracecmd_open_head()_.
 +
-+The _tracecmd_unpair_peer()_ function unpairs a peer from _handle_,
-+previously paired with _tracecmd_pair_peer()_.
++The _tracecmd_buffer_instance_name()_ function gets the name of the
++tracing instance with given index _indx_, recorded in a trace file.
++The _indx_ is a number in the interval [0 .. count -1], where count
++is the number returned by _tracecmd_buffer_instances()_. The _handle_
++is a tracecmd_input handler returned by _tracecmd_open_head()_.
 +
-+The _tracecmd_get_traceid()_ function returns the trace ID stored in
-+trace file metadata, associated with _handle_. Each peer from a trace
-+session has an ID unique for that peer and that trace session only.
-+This ID is used to match multiple trace files recorded in a same trace
-+session.
-+
-+The _tracecmd_get_guest_cpumap()_ function gets the mapping of guest
-+VCPU to the host process, stored in the metadata of the trace file
-+associated with _handle_. This information is gathered during a host-guest
-+trace session and is stored in host trace file. The _trace_id_ parameter is
-+the trace ID of the guest in this particular trace session. If a guest
-+with that ID was part of that session, its VCPU to host process mapping
-+is in the host trace file and the information is returned in _name_,
-+_vcpu_count_ and _cpu_pid_ parameters. In _name_ is returned the name
-+of the guest, in _vcpu_count_ is returned the count of VCPUs of that
-+guest and in _cpu_pid_ array is returned the VCPU to host process mapping.
-+The array is of size _vcpu_count_ where the index is VCPU and the value
-+is PID of the host process, running that VCPU. The _name_, _vcpu_count_
-+and _cpu_pid_ values must *not* be freed.
++The _tracecmd_buffer_instance_handle()_ allocates and initializes a
++tracecmd_input hanlder, associated with trace instance with index
++_indx_ from a trace file.  The _handle_ is a tracecmd_input handler
++returned by _tracecmd_open_head()_. The _indx_ is a number in the
++interval [0 .. count -1], where count is the number returned by
++_tracecmd_buffer_instances()_.
 +
 +RETURN VALUE
 +------------
-+The _tracecmd_pair_peer()_ function returns 1, if a peer is already
-+paired, -1 in case of an error or 0 otherwise.
++The _tracecmd_buffer_instances()_ function returns the number of tracing
++instances recorded in a trace file.
 +
-+The tracecmd_get_traceid() function returns a 64 bit trace ID.
++The _tracecmd_buffer_instance_name()_ function returns a string, the name
++of a tracing instance, or NULL in case of an error The string must *not*
++be freed.
 +
-+The _tracecmd_get_guest_cpumap()_ function returns -1 in case of
-+an error or 0 otherwise. If 0 is returned, in the _name_, _vcpu_count_
-+and _cpu_pid_ parameters is stored requested information.
++The _tracecmd_buffer_instance_handle()_ function returns a pointer to
++newly allocated tracecmd_input handler or NULL in case if an error. The
++returned handler must be closed by _tracecmd_close()(3)_
 +
 +EXAMPLE
 +-------
@@ -167,36 +151,31 @@ index 00000000..af0bf5dc
 +--
 +#include <trace-cmd.h>
 +...
-+struct tracecmd_input *host = tracecmd_open_head("trace.dat");
-+	if (!host) {
-+		/* Failed to open host trace file */
++struct tracecmd_input *handle = tracecmd_open_head("trace.dat");
++	if (!handle) {
++		/* Failed to open trace.dat file */
 +	}
-+	tracecmd_init_data(host);
-+
-+struct tracecmd_input *guest = tracecmd_open_head("trace-Guest.dat");
-+	if (!guest) {
-+		/* Failed to open guest trace file */
-+	}
-+
-+unsigned long long guest_id = tracecmd_get_traceid(guest);
-+int *cpu_pid;
-+char *name;
-+int vcount;
-+
-+	if (!tracecmd_get_guest_cpumap(host, guest_id, &name, &vcount, &cpu_pid)) {
-+		/* The Host and a guest with name was part of the same trace session.
-+		 * Got guest VCPU to host PID mapping.
-+		 */
-+		if (!tracecmd_pair_peer(guest, host)) {
-+			/* Successfully paired host to the guest handler */
-+			tracecmd_init_data(guest);
-+			...
-+			tracecmd_unpair_peer(guest);
-+		}
-+	}
-+
 +...
-+	tracecmd_close(guest);
++int num = tracecmd_buffer_instances(handle);
++
++	while(num) {
++		struct tracecmd_input *h;
++		char *name;
++
++		name = tracecmd_buffer_instance_name(handle, num);
++		if (!name) {
++			/* Failed to get name of instance num */
++		}
++		h = tracecmd_buffer_instance_handle(handle, num);
++		if (!h) {
++			/* Failed to initialize handler for instance num */
++		}
++
++		...
++		tracecmd_close(h);
++		num--;
++	}
++...
 +	tracecmd_close(hadle);
 +
 +--
