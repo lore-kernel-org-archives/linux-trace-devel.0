@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D48D7C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:35:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C3EEC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:35:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A181320936
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:35:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 11B1720936
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:35:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgLWEfP (ORCPT
+        id S1726608AbgLWEfQ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 22 Dec 2020 23:35:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
+        Tue, 22 Dec 2020 23:35:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgLWEfP (ORCPT
+        with ESMTP id S1726282AbgLWEfQ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 22 Dec 2020 23:35:15 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57E4C061793
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:34 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id t16so17342004wra.3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:34 -0800 (PST)
+        Tue, 22 Dec 2020 23:35:16 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0174C061794
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:35 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id 91so17341526wrj.7
+        for <linux-trace-devel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2A3Wc9f8hLtGVJ3l1/ajqu2NiZDBm3z5GCAXR9PgX74=;
-        b=CLNhVz6tIAoxLoUR4lhtJ2D2vcB4NGrguF7NoJqy1k0yy0JtqV6BjjgA26jlBT2HWT
-         Br7qXPbpGF4RL5k+PHT+K8MinDj7eMhAb6Neylnb6vKXwN6erZUeMtikaEpr4Z1lt2wK
-         SZHKF4e7PdUYirSmCoQsrzXLbMiW2BCXUO21+PbZ4foNkaaj8MP3vAKvBWETQtbZ/+t+
-         doyy40JmC8oHhu3ZPCqPHjcYhmVKcqzky2XIBH6Fer69Iyu/MMyBZhsFcccwgyVuyiZn
-         y87ZKjWLlZHtMBWPgjX/P61TFjwQLz4gFTE9E/I7IOoe8COMNag+AaJF+88G+VhEQG31
-         bD/w==
+        bh=G4+1mxLSkD5Jqgk/EFsgqdRCUpuErUS8PeWMv+kyQw4=;
+        b=jBHAMn28GPMz84tMnno3cj8B6DZdg2dfMmcHPoB2PnMxZXzi4cLG0GLt0xtQKwv54F
+         HHEncXDT0FjPXhZUtry06wEXAsrvrZ5jH2xeIstyZWypC0+WR1MUkbxlMfgXjSA+bhC3
+         Cx8L1eXatIfLb+flVu71VdrpMDWXtv22ex8075WN8ukBVQTuoZOiL5KY2x69rJNvVgHS
+         jtz6JPrgU7sIResfBxTNB8mk214jMiLMYtdNuQT3mfZ8HoNjAn6/wxkP2U5bhzp2Q2kt
+         9FKHvftbAft0QdHxAaxKS+yeFPCbu9Jaq8Cb8e1nzgn5CjnJIRJYEn2HvE20GkfJWnUi
+         dfAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2A3Wc9f8hLtGVJ3l1/ajqu2NiZDBm3z5GCAXR9PgX74=;
-        b=U1u6g46BLu5xLn+StjTZqUoKeYFxBnijAjzf3xx81lRFIMpfuBFn/ieyLM+SFClGpi
-         u27jV0hUB83XlzeCxCfYTnGfD8KzhXTUOFZgzO5yZ/odFZ3WkfYA1LGdjaNHL+S8lpZY
-         iYoWHkcv8XnVVCcmecCU51NsJcfulBkS5BuSF4eJHNvYQrZXVoIF27dsCSjHRxtIlmQ3
-         3vAeATr442sG59/h/3vfbGX0fcpQwgpRsDAuQKP/upv4p+hcJs/4WaaVK6cdEz3mb87c
-         saos6bS/nI7CMPLummsZQ5Kju40GAfsor8Ww8sabI2nYV4cyXX3ohZlYl6+nIfGTPWIC
-         q8rA==
-X-Gm-Message-State: AOAM532xJ9KDJFg1rfSJ+BxufD3SvRW+qmGW8pMh8LwgjlmveznCl5CR
-        ujojZjt0NB1jejJbk5wE6qeeHH7+HrN/3EEE
-X-Google-Smtp-Source: ABdhPJxsvp0doEC7DdkgKXtqmVz6i0gYDPBbvXRdIljZAtBjMRABy+qFKRmnWPSnmAuWSCHYgBSjdQ==
-X-Received: by 2002:a05:6000:1d2:: with SMTP id t18mr16526747wrx.412.1608698073237;
-        Tue, 22 Dec 2020 20:34:33 -0800 (PST)
+        bh=G4+1mxLSkD5Jqgk/EFsgqdRCUpuErUS8PeWMv+kyQw4=;
+        b=XFTqtKAUMROhHtRAITZzlkyXf3Eg0GvSonYG1EiiD41gfAG6+zPjGKAWI/uZtR4YRy
+         WVd9IG0MyGBUE/PN+7y3LLkOi4t/TTfYfWushNMur7k5Ek3Ti5cwA0XGqtEm6Tj86H3E
+         UzZzkKs9USxa6TPPnG82c4S6vwM+Uivq+wmr1qdtUCXdlRdPVUNLaKSx6tkVmAgrXp6V
+         tU3YDkDHJwhddw5LJLifaKzXpYQ1dJ/FBPt7J+VSNa9HMfvIA43zk8x3fhooENmj2etw
+         Q9+f+QPFHb9jxg3PHJZFxUF5gLgDg/KJja99CT9EHjFJtGYvUsYgBe2rIx+TqCSc23+7
+         QimA==
+X-Gm-Message-State: AOAM533SN2u0tjW4C/5CQdaHBZ9IpjtBjxIbn4KN0uk4YECDlZvee3Vn
+        AImsAUPKWtOzfcOOuoWMO38mdk2zGg3VB/77
+X-Google-Smtp-Source: ABdhPJx40dkhsSh1kEvvo37dodCWD3BEXbROpa0Tuw5e5uCjXKAuY+/8GSUPEgU9h9ya2optWlcbpQ==
+X-Received: by 2002:a5d:4f90:: with SMTP id d16mr26943581wru.120.1608698074763;
+        Tue, 22 Dec 2020 20:34:34 -0800 (PST)
 Received: from oberon.vmware.com ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s13sm28909095wmj.28.2020.12.22.20.34.32
+        by smtp.gmail.com with ESMTPSA id s13sm28909095wmj.28.2020.12.22.20.34.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 20:34:32 -0800 (PST)
+        Tue, 22 Dec 2020 20:34:33 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/6] trace-cmd: Update the RESOURCES section of the trace-cmd man pages
-Date:   Wed, 23 Dec 2020 06:34:25 +0200
-Message-Id: <20201223043429.586162-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 3/6] trace-cmd library man pages: Read recorded events from a trace file.
+Date:   Wed, 23 Dec 2020 06:34:26 +0200
+Message-Id: <20201223043429.586162-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201223043429.586162-1-tz.stoyanov@gmail.com>
 References: <20201223043429.586162-1-tz.stoyanov@gmail.com>
@@ -73,363 +73,178 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-trace-cmd has a new official repository, the RESOURCES
-section of the man pages should point to it. Updated with
-https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
+Documented APIs:
+ tracecmd_init_data()
+ tracecmd_read_cpu_first()
+ tracecmd_read_data()
+ tracecmd_read_at()
+ tracecmd_free_record()
+ tracecmd_get_tep()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- Documentation/trace-cmd/trace-cmd-check-events.1.txt | 2 +-
- Documentation/trace-cmd/trace-cmd-clear.1.txt        | 2 +-
- Documentation/trace-cmd/trace-cmd-dump.1.txt         | 2 +-
- Documentation/trace-cmd/trace-cmd-extract.1.txt      | 2 +-
- Documentation/trace-cmd/trace-cmd-hist.1.txt         | 2 +-
- Documentation/trace-cmd/trace-cmd-list.1.txt         | 2 +-
- Documentation/trace-cmd/trace-cmd-listen.1.txt       | 2 +-
- Documentation/trace-cmd/trace-cmd-mem.1.txt          | 2 +-
- Documentation/trace-cmd/trace-cmd-options.1.txt      | 2 +-
- Documentation/trace-cmd/trace-cmd-profile.1.txt      | 2 +-
- Documentation/trace-cmd/trace-cmd-record.1.txt       | 2 +-
- Documentation/trace-cmd/trace-cmd-report.1.txt       | 2 +-
- Documentation/trace-cmd/trace-cmd-reset.1.txt        | 2 +-
- Documentation/trace-cmd/trace-cmd-restore.1.txt      | 2 +-
- Documentation/trace-cmd/trace-cmd-set.1.txt          | 2 +-
- Documentation/trace-cmd/trace-cmd-show.1.txt         | 2 +-
- Documentation/trace-cmd/trace-cmd-snapshot.1.txt     | 2 +-
- Documentation/trace-cmd/trace-cmd-split.1.txt        | 2 +-
- Documentation/trace-cmd/trace-cmd-stack.1.txt        | 2 +-
- Documentation/trace-cmd/trace-cmd-start.1.txt        | 2 +-
- Documentation/trace-cmd/trace-cmd-stat.1.txt         | 2 +-
- Documentation/trace-cmd/trace-cmd-stop.1.txt         | 2 +-
- Documentation/trace-cmd/trace-cmd-stream.1.txt       | 2 +-
- Documentation/trace-cmd/trace-cmd.1.txt              | 2 +-
- Documentation/trace-cmd/trace-cmd.dat.5.txt          | 2 +-
- 25 files changed, 25 insertions(+), 25 deletions(-)
+ .../libtracecmd/libtracecmd-record.3.txt      | 152 ++++++++++++++++++
+ 1 file changed, 152 insertions(+)
+ create mode 100644 Documentation/libtracecmd/libtracecmd-record.3.txt
 
-diff --git a/Documentation/trace-cmd/trace-cmd-check-events.1.txt b/Documentation/trace-cmd/trace-cmd-check-events.1.txt
-index 73ec1a8b..c98ff3c6 100644
---- a/Documentation/trace-cmd/trace-cmd-check-events.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-check-events.1.txt
-@@ -36,7 +36,7 @@ Written by Vaibhav Nagarnaik, <vnagarnaik@google.com>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
+diff --git a/Documentation/libtracecmd/libtracecmd-record.3.txt b/Documentation/libtracecmd/libtracecmd-record.3.txt
+new file mode 100644
+index 00000000..194b1670
+--- /dev/null
++++ b/Documentation/libtracecmd/libtracecmd-record.3.txt
+@@ -0,0 +1,152 @@
++libtracecmd(3)
++=============
++
++NAME
++----
++tracecmd_init_data, tracecmd_read_cpu_first, tracecmd_read_data
++tracecmd_read_at, tracecmd_free_record, tracecmd_get_tep
++- Read recorded events from a trace file.
++
++SYNOPSIS
++--------
++[verse]
++--
++*#include <trace-cmd.h>*
++
++int *tracecmd_init_data*(struct tracecmd_input pass:[*]_handle_);
++struct tep_record pass:[*]*tracecmd_read_cpu_first*(struct tracecmd_input pass:[*]_handle_, int _cpu_);
++struct tep_record pass:[*]*tracecmd_read_data*(struct tracecmd_input pass:[*]_handle_, int _cpu_);
++struct tep_record pass:[*]*tracecmd_read_at*(struct tracecmd_input pass:[*]_handle_, unsigned long long _offset_, int pass:[*]_cpu_);
++void *tracecmd_free_record*(struct tep_record pass:[*]_record_);
++struct tep_handle pass:[*]*tracecmd_get_tep*(struct tracecmd_input pass:[*]_handle_);
++--
++
++DESCRIPTION
++-----------
++This set of APIs can be used to read tracing data from a trace file opened
++with _tracecmd_open_head()(3)_
++
++The _tracecmd_init_data()_ function initializes the _handle_ for reading
++trace data from the file associated with it. This API must be called before
++any of the _tracecmd_read__ APIs.
++
++The _tracecmd_read_cpu_first()_ function reads the first trace record
++for a given _cpu_ from a trace file associated with _handle_. The returned
++record must be freed with _tracecmd_free_record()_.
++
++The _tracecmd_read_data()_ function reads the next trace record for
++a given _cpu_ from a trace file associated with _handle_ and increments
++the read location pointer, so that the next call to _tracecmd_read_data()_
++will not read the same record again. The returned record must be freed
++with _tracecmd_free_record()_.
++
++The _tracecmd_read_at()_ function reads a trace record from a specific
++_offset_ within the file associated with _handle_. The CPU on which the
++recorded event occurred is stored in the _cpu_. The function does not
++change the current read location pointer. The returned record must be
++freed with _tracecmd_free_record()_.
++
++The _tracecmd_free_record()_ function frees a _record_ returned by any
++of the _tracecmd_read__ APIs.
++
++The _tracecmd_get_tep()_ function returns a tep context for a given
++_handle_.
++
++RETURN VALUE
++------------
++The _tracecmd_init_data()_ function returns -1 in case of an error or
++0 otherwise.
++
++The _tracecmd_read_cpu_first()_, _tracecmd_read_data()_ and
++_tracecmd_read_at()_ functions return a pointer to struct tep_record or
++NULL in case of an error.The returned record must be freed with
++_tracecmd_free_record()_.
++
++The _tracecmd_get_tep()_ function returns a pointer to tep context or
++NULL if there is no tep context for the given _handle_. The returned
++tep pointer must *not* be freed.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <trace-cmd.h>
++...
++struct tracecmd_input *handle = tracecmd_open_head("trace.dat");
++	if (!handle) {
++		/* Failed to open trace.dat file */
++	}
++...
++unsigned long long offset = 0;
++struct tep_record *rec;
++int cpu = 0;
++
++	if (tracecmd_init_data(handle) < 0) {
++		/* Failed to initialize hadle for reading the trace data */
++	}
++
++	rec = tracecmd_read_cpu_first(handle, cpu);
++	while (rec) {
++		...
++		if ( /* some interesting record noticed */) {
++			/* store the offset of the interesting record */
++			offset = rec->offset;
++		}
++		...
++		tracecmd_free_record(rec);
++		rec = tracecmd_read_data(handle, cpu);
++	}
++	...
++	if (offset) {
++		rec = tracecmd_read_at(handle, offset, &cpu);
++		if (rec) {
++			/* Got record at offset on cpu */
++			...
++			tracecmd_free_record(rec);
++		}
++	}
++
++...
++	tracecmd_close(hadle);
++
++--
++FILES
++-----
++[verse]
++--
++*trace-cmd.h*
++	Header file to include in order to have access to the library APIs.
++*-libtracecmd*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtracefs(3)_,
++_libtraceevent(3)_,
++_trace-cmd(1)_
++_trace-cmd.dat(5)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtracecmd is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
 +https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-clear.1.txt b/Documentation/trace-cmd/trace-cmd-clear.1.txt
-index a0ae36e9..74236960 100644
---- a/Documentation/trace-cmd/trace-cmd-clear.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-clear.1.txt
-@@ -48,4 +48,4 @@ GNU Public License (GPL).
- 
- RESOURCES
- ---------
--https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git
-\ No newline at end of file
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
-\ No newline at end of file
-diff --git a/Documentation/trace-cmd/trace-cmd-dump.1.txt b/Documentation/trace-cmd/trace-cmd-dump.1.txt
-index e29bfe86..71b8e655 100644
---- a/Documentation/trace-cmd/trace-cmd-dump.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-dump.1.txt
-@@ -123,7 +123,7 @@ AUTHOR
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-extract.1.txt b/Documentation/trace-cmd/trace-cmd-extract.1.txt
-index 917a6371..4444733d 100644
---- a/Documentation/trace-cmd/trace-cmd-extract.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-extract.1.txt
-@@ -80,7 +80,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-hist.1.txt b/Documentation/trace-cmd/trace-cmd-hist.1.txt
-index b17936d0..169f8d7b 100644
---- a/Documentation/trace-cmd/trace-cmd-hist.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-hist.1.txt
-@@ -41,7 +41,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-list.1.txt b/Documentation/trace-cmd/trace-cmd-list.1.txt
-index bba45ea4..0ad62643 100644
---- a/Documentation/trace-cmd/trace-cmd-list.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-list.1.txt
-@@ -80,7 +80,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-listen.1.txt b/Documentation/trace-cmd/trace-cmd-listen.1.txt
-index a242c49e..8697328c 100644
---- a/Documentation/trace-cmd/trace-cmd-listen.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-listen.1.txt
-@@ -49,7 +49,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-mem.1.txt b/Documentation/trace-cmd/trace-cmd-mem.1.txt
-index 9e811b91..90e430b8 100644
---- a/Documentation/trace-cmd/trace-cmd-mem.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-mem.1.txt
-@@ -65,7 +65,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-options.1.txt b/Documentation/trace-cmd/trace-cmd-options.1.txt
-index e7faf320..bcdf0533 100644
---- a/Documentation/trace-cmd/trace-cmd-options.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-options.1.txt
-@@ -26,7 +26,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-profile.1.txt b/Documentation/trace-cmd/trace-cmd-profile.1.txt
-index 3ffce86b..0d1dd8e8 100644
---- a/Documentation/trace-cmd/trace-cmd-profile.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-profile.1.txt
-@@ -667,7 +667,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-record.1.txt b/Documentation/trace-cmd/trace-cmd-record.1.txt
-index 99d1a156..643659ad 100644
---- a/Documentation/trace-cmd/trace-cmd-record.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-record.1.txt
-@@ -461,7 +461,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-report.1.txt b/Documentation/trace-cmd/trace-cmd-report.1.txt
-index de616cf4..766c9a57 100644
---- a/Documentation/trace-cmd/trace-cmd-report.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-report.1.txt
-@@ -487,7 +487,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-reset.1.txt b/Documentation/trace-cmd/trace-cmd-reset.1.txt
-index bff45300..eee86751 100644
---- a/Documentation/trace-cmd/trace-cmd-reset.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-reset.1.txt
-@@ -107,7 +107,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-restore.1.txt b/Documentation/trace-cmd/trace-cmd-restore.1.txt
-index 290b0acd..ebcbb1b6 100644
---- a/Documentation/trace-cmd/trace-cmd-restore.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-restore.1.txt
-@@ -96,7 +96,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-set.1.txt b/Documentation/trace-cmd/trace-cmd-set.1.txt
-index 2f95e07f..931d3abd 100644
---- a/Documentation/trace-cmd/trace-cmd-set.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-set.1.txt
-@@ -255,7 +255,7 @@ Written by Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-show.1.txt b/Documentation/trace-cmd/trace-cmd-show.1.txt
-index b17851ef..ea2fda28 100644
---- a/Documentation/trace-cmd/trace-cmd-show.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-show.1.txt
-@@ -91,7 +91,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-snapshot.1.txt b/Documentation/trace-cmd/trace-cmd-snapshot.1.txt
-index 6d94ada0..0a34bcd9 100644
---- a/Documentation/trace-cmd/trace-cmd-snapshot.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-snapshot.1.txt
-@@ -56,7 +56,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-split.1.txt b/Documentation/trace-cmd/trace-cmd-split.1.txt
-index b8308bbc..25385796 100644
---- a/Documentation/trace-cmd/trace-cmd-split.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-split.1.txt
-@@ -98,7 +98,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-stack.1.txt b/Documentation/trace-cmd/trace-cmd-stack.1.txt
-index 6b5f0c08..a00c6900 100644
---- a/Documentation/trace-cmd/trace-cmd-stack.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-stack.1.txt
-@@ -36,7 +36,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-start.1.txt b/Documentation/trace-cmd/trace-cmd-start.1.txt
-index 07f2ed3a..03c5d127 100644
---- a/Documentation/trace-cmd/trace-cmd-start.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-start.1.txt
-@@ -42,7 +42,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-stat.1.txt b/Documentation/trace-cmd/trace-cmd-stat.1.txt
-index 2f1a9c8b..e5fccce9 100644
---- a/Documentation/trace-cmd/trace-cmd-stat.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-stat.1.txt
-@@ -57,7 +57,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-stop.1.txt b/Documentation/trace-cmd/trace-cmd-stop.1.txt
-index 1955fa71..313192c3 100644
---- a/Documentation/trace-cmd/trace-cmd-stop.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-stop.1.txt
-@@ -54,7 +54,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd-stream.1.txt b/Documentation/trace-cmd/trace-cmd-stream.1.txt
-index 10094028..f83652b8 100644
---- a/Documentation/trace-cmd/trace-cmd-stream.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-stream.1.txt
-@@ -41,7 +41,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd.1.txt b/Documentation/trace-cmd/trace-cmd.1.txt
-index 5548ed27..b330b4fe 100644
---- a/Documentation/trace-cmd/trace-cmd.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd.1.txt
-@@ -80,7 +80,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
-diff --git a/Documentation/trace-cmd/trace-cmd.dat.5.txt b/Documentation/trace-cmd/trace-cmd.dat.5.txt
-index d849439b..8d285353 100644
---- a/Documentation/trace-cmd/trace-cmd.dat.5.txt
-+++ b/Documentation/trace-cmd/trace-cmd.dat.5.txt
-@@ -258,7 +258,7 @@ Written by Steven Rostedt, <rostedt@goodmis.org>
- 
- RESOURCES
- ---------
--git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/trace-cmd.git
-+https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- 
- COPYING
- -------
++
++COPYING
++-------
++Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
 -- 
 2.28.0
 
