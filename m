@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 437BAC4332B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 987D9C433E9
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 216A020715
+	by mail.kernel.org (Postfix) with ESMTP id 6C35620770
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbhADRtn (ORCPT
+        id S1727415AbhADRto (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Jan 2021 12:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        Mon, 4 Jan 2021 12:49:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727475AbhADRtm (ORCPT
+        with ESMTP id S1727525AbhADRtn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:49:42 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113AFC061384
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:09 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id q22so37959648eja.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:08 -0800 (PST)
+        Mon, 4 Jan 2021 12:49:43 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5372CC061794
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:22 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id c7so28237134edv.6
+        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=N18nqDVkTO7oT7I2PPf6G5+lJnx0aQoNQBe98h8pNrA=;
-        b=SuQKydeYpLk7bn56pg7/YPjvbnVlKg7OBgXHJ1q6j5a/vu2hfndOMivz5PgWIyEfiD
-         GsdXcLsQFBBzdDXY1El6Pw54e6QsqHzh8fqowu1QQ0NoSKFKOh5OLimCK2J/ovPvV1yM
-         1Jt+Goxx0VCQOc/fVD026Yse3yXM1qTy8A2PTT93KARldQrNkqvjpBRFN+den1AcQfn+
-         tOvXDJBLovpwLA+bpXyq6B4A2lVIi4cieaTRckaEBF1WVeTYaDmpuheA9eif+Wfdu+Fr
-         FslZw6hJf9PfrM5uttTpaEMiZ1mc9A98IlNY5vbaekfaKU1ah1ayLvTgb7lnYi+ObAAb
-         LunQ==
+        bh=jgl455XwHK5OdxmBO7abn5gsz+5Hs22napmQo7sYKTw=;
+        b=H4bpt9NJk0Mtv29c0+eVdub/4/vlrdVbs5Vg26cf2F22GIordb+Wh37r6/SDo8YijF
+         ic5JdCGbcqozSDt62fdO0D3JsjWgBiwY/sctlgWD75/Mk6ccs/SlUz8GwOkoSCwq++cW
+         JFfITGFVg2S3+Tgrqg8c3zEeHF5eCNH0GZGct+smZ6ynC/Iehj3uwSzGCQNhr7jFgCdN
+         Jv+9jt9UDpboLC4xwK/Kk6bgUH54Mr/aAarvSxymB+pDiKj/xuFiUk8rqhW4JiF7Sy2n
+         z5RGPoYA3Tnryx7Yc9IpZlV3DdrE/4bC2y+Owy6Kk96rmh6041GD/09wZXd34Xt1rx5H
+         Jr0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=N18nqDVkTO7oT7I2PPf6G5+lJnx0aQoNQBe98h8pNrA=;
-        b=CKoMgGytJNnio8jQWfQhRZ2u5IOQLpKxe6PD90xT/UL4U4DDwdeq/OczhtSxm/Bp7I
-         BFzrXvZNKFBpmNcc+SVPqk+rF2K6DQYOL81GFwOlytm5KyZXrnpv4lv5Hu7GJIOz8GwQ
-         0hHGA5bcimkcCl/3P/PATEHali11pfUEeRV4cMsOoeXtHX1SnguuE/Mfzx3Vwuj844Xr
-         OWNOiVNg7rBMXm5VgoKv0pdmaUPCT5vhDgMul7QvgoJuy2umzBp4pXJewNAWH+x6Cjdb
-         KAYXND/n+VjLkgQBCA+fJdSEv1sDihH4e4zhWeZZNz00z+ALNcStIPQ3Yy4iaSHmqhNZ
-         0JIA==
-X-Gm-Message-State: AOAM532nSmVhdhDQCdu50m1lh24SkW5aWR0ODCKvTW/eb0PRTTIvO6uL
-        LDeoz+Tr8BXZt8CF+T4xfG8=
-X-Google-Smtp-Source: ABdhPJyU7+qSUfMN8JvSyEMQBu0cpmR1O2TzjImC5U2q0AL1bGrepErsmDu+P61pMw+On2haJ7wjGQ==
-X-Received: by 2002:a17:906:4e46:: with SMTP id g6mr48772668ejw.243.1609782487852;
-        Mon, 04 Jan 2021 09:48:07 -0800 (PST)
+        bh=jgl455XwHK5OdxmBO7abn5gsz+5Hs22napmQo7sYKTw=;
+        b=QqGzIJPQt/2g2XvM6ALdngpaWjaJ8JmE49amrambktEjDiz2RY2PRnjOCxFcvjA8j8
+         u3QHKbxpRIOLF6rN6MeuWjUWbPRCow2Kwj0eVG8Si8ipwfgeyse2GIAPE/mwbjl9bZwQ
+         bWkr42dQxjZOROHm/cdvH/9h0Y5yU94NdUBt0dGt6nuDhGyPDqPE47l3lZVp5b81QXCo
+         eT0hCfD4BLFIOZOX0UOz5wXojdsmdva17BhoN1cjjU8TBCmIhD+xQ5s+irF8jFiZhhHh
+         Kvc7l1H36YhjGAtRDPGGXPDG6YHNlLmWbhw9LsXd6xsXczRH1FjnPQ0K8WbJb7tLffay
+         8cng==
+X-Gm-Message-State: AOAM531PSd5Sw3DnJoAj4kIO/PGytU+wAEfocDPNZIyygX/bDrDscrtx
+        w5ZUw6starf7CUs43guvyZQ=
+X-Google-Smtp-Source: ABdhPJwprN6LxrOCNzpMuEqQHcxWmrBQRqaAY4yJ4Dokb35LN7vr7r23KBTahia/Yv0LzdoD+gX5Ug==
+X-Received: by 2002:a50:ac86:: with SMTP id x6mr20058616edc.197.1609782501057;
+        Mon, 04 Jan 2021 09:48:21 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.07
+        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 09:48:07 -0800 (PST)
+        Mon, 04 Jan 2021 09:48:20 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v8 30/44] kernel-shark: Make GLUT optional dependency
-Date:   Mon,  4 Jan 2021 19:47:10 +0200
-Message-Id: <20210104174724.70404-31-y.karadz@gmail.com>
+Subject: [PATCH v8 44/44] kernel-shark: Add double click interface to PlotObject
+Date:   Mon,  4 Jan 2021 19:47:24 +0200
+Message-Id: <20210104174724.70404-45-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104174724.70404-1-y.karadz@gmail.com>
 References: <20210104174724.70404-1-y.karadz@gmail.com>
@@ -74,141 +74,109 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-GLUT is not needed in order to build the KernelShark GUI. Currently
-it is being used only by the plotting example, so it makes more sense
-to removed it from the list of compulsory third party packages.
-The patch optimizes the way the OpenGL and GLUT headers are included
-and removes some duplicated code.
+The interface consists of two virtual methods that have to be implemented
+by the inheriting classes. The first implements the double-click action
+of the object while the second one calculates the distance between the
+object and the exact position of the mouse click. The second method is
+used by the GUI to decide if the double-click action has to be executed
+or not. The patch contains a simple method for retrieving the geometrical
+center of a Shape. This helper method can be useful when implementing the
+calculation of the distance in the inheriting classes.
 
-Signen-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- build/deff.h.cmake   |  3 +++
- src/CMakeLists.txt   |  4 ++--
- src/libkshark-plot.c | 20 +++++++-------------
- src/libkshark-plot.h | 11 +++++++++++
- 4 files changed, 23 insertions(+), 15 deletions(-)
+ src/KsPlotTools.cpp | 31 +++++++++++++++++++++++++++++++
+ src/KsPlotTools.hpp | 14 ++++++++++++++
+ 2 files changed, 45 insertions(+)
 
-diff --git a/build/deff.h.cmake b/build/deff.h.cmake
-index e398c0c..868ffec 100644
---- a/build/deff.h.cmake
-+++ b/build/deff.h.cmake
-@@ -23,6 +23,9 @@
- /** "pkexec" executable. */
- #cmakedefine DO_AS_ROOT "@DO_AS_ROOT@"
- 
-+/** GLUT has been found. */
-+#cmakedefine GLUT_FOUND
-+
- /** Semicolon-separated list of plugin names. */
- #define KS_BUILTIN_PLUGINS "@PLUGINS@"
- 
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index cf3279e..fe440db 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -38,7 +38,7 @@ install(FILES "${KS_DIR}/src/libkshark.h"
-         DESTINATION ${KS_INCLUDS_DESTINATION}
-             COMPONENT libkshark-devel)
- 
--if (OPENGL_FOUND AND GLUT_FOUND)
-+if (OPENGL_FOUND)
- 
-     message(STATUS "libkshark-plot")
-     add_library(kshark-plot  SHARED  libkshark-plot.c)
-@@ -61,7 +61,7 @@ if (OPENGL_FOUND AND GLUT_FOUND)
-             ARCHIVE DESTINATION    ${_LIBDIR}
-                 COMPONENT              libkshark-devel)
- 
--endif (OPENGL_FOUND AND GLUT_FOUND)
-+endif (OPENGL_FOUND)
- 
- if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
- 
-diff --git a/src/libkshark-plot.c b/src/libkshark-plot.c
-index 1c8ede4..c9a3530 100644
---- a/src/libkshark-plot.c
-+++ b/src/libkshark-plot.c
-@@ -19,10 +19,6 @@
- #include <string.h>
- #include <stdio.h>
- 
--// OpenGL
--#include <GL/freeglut.h>
--#include <GL/gl.h>
--
- // KernelShark
- #include "libkshark-plot.h"
- 
-@@ -37,6 +33,10 @@
- #define STBTT_STATIC
- #include "stb_truetype.h"
- 
-+#ifdef GLUT_FOUND
-+
-+#include <GL/freeglut.h>
-+
- /**
-  * @brief Create an empty scene for drawing.
-  *
-@@ -61,17 +61,11 @@ void ksplot_make_scene(int width, int height)
- 	/* Open the screen window. */
- 	glutCreateWindow("KernelShark Plot");
- 
--	/*
--	 * Set the origin of the coordinate system to be the top left corner.
--	 * The "Y" coordinate is inverted.
--	 */
--	gluOrtho2D(0, width, height, 0);
--	glViewport(0, 0, width, height);
--
--	glMatrixMode(GL_PROJECTION);
--	glLoadIdentity();
-+	ksplot_resize_opengl(width, height);
+diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
+index 8d38009..ac9c5b2 100644
+--- a/src/KsPlotTools.cpp
++++ b/src/KsPlotTools.cpp
+@@ -251,6 +251,21 @@ Color getColor(const ColorTable *colors, int id)
+ 	return {};
  }
  
-+#endif // GLUT_FOUND
++/**
++ * @brief A method to be implemented in the inheriting class. It calculates
++ *	  the distance between the position of the click and the shape. This
++ *	  distance is used by the GUI to decide if the corresponding
++ *	  "Double click" action of the shape must be executed. The default
++ *	  implementation returns infinity.
++ *
++ * @param x: The X coordinate of the click.
++ * @param y: The Y coordinate of the click.
++ */
++double PlotObject::distance(int x, int y) const
++{
++	return std::numeric_limits<double>::max();
++}
 +
  /**
-  * @brief Initialize OpenGL.
-  *
-diff --git a/src/libkshark-plot.h b/src/libkshark-plot.h
-index 0edf5d5..063740d 100644
---- a/src/libkshark-plot.h
-+++ b/src/libkshark-plot.h
-@@ -15,6 +15,10 @@
- // C
- #include <stdbool.h>
+  * @brief Create a default Shape.
+  */
+@@ -298,6 +313,22 @@ Shape::~Shape() {
+ 	delete[] _points;
+ }
  
-+// OpenGL
-+#include <GL/gl.h>
-+#include <GL/glu.h>
++/** @brief Get the coordinates of the geometrical center of this shape. */
++ksplot_point Shape::center() const
++{
++	ksplot_point c = {0, 0};
 +
- /*
-  * STB TrueType (single-file public domain library)
-  * https://github.com/nothings/stb
-@@ -25,6 +29,9 @@
- extern "C" {
- #endif
++	for (size_t i = 0; i < _nPoints; ++i) {
++		c.x += _points[i].x;
++		c.y += _points[i].y;
++	}
++
++	c.x /= _nPoints;
++	c.y /= _nPoints;
++
++	return c;
++}
++
+ /** Assignment operator. */
+ void Shape::operator=(const Shape &s)
+ {
+diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
+index b9b93f3..c993181 100644
+--- a/src/KsPlotTools.hpp
++++ b/src/KsPlotTools.hpp
+@@ -103,6 +103,16 @@ public:
+ 			_draw(_color, _size);
+ 	}
  
-+// KernelShark
-+#include "KsCmakeDef.hpp"
++	/**
++	 * Generic action to be executed when the objects is double clicked.
++	 */
++	void doubleClick() const {
++		if (_visible)
++			_doubleClick();
++	}
 +
- /** Structure defining a RGB color. */
- struct ksplot_color {
- 	/** The Red component of the color. */
-@@ -46,8 +53,12 @@ struct ksplot_point {
- 	int y;
++	virtual double distance(int x, int y) const;
++
+ 	/** Is this object visible. */
+ 	bool	_visible;
+ 
+@@ -114,6 +124,8 @@ public:
+ 
+ private:
+ 	virtual void _draw(const Color &col, float s) const = 0;
++
++	virtual void _doubleClick() const {}
  };
  
-+#ifdef GLUT_FOUND
-+
- void ksplot_make_scene(int width, int height);
+ /** List of graphical element. */
+@@ -135,6 +147,8 @@ public:
+ 	/* Keep this destructor virtual. */
+ 	virtual ~Shape();
  
-+#endif // GLUT_FOUND
++	ksplot_point center() const;
 +
- void ksplot_init_opengl(int dpr);
+ 	void operator=(const Shape &s);
  
- void ksplot_resize_opengl(int width, int height);
+ 	void setPoint(size_t i, int x, int y);
 -- 
 2.25.1
 
