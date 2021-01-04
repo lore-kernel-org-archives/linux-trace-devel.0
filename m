@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61FDCC4332D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14348C43381
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 43AF9206B2
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E66D3206B2
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbhADRtf (ORCPT
+        id S1727182AbhADRte (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Jan 2021 12:49:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
+        Mon, 4 Jan 2021 12:49:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727310AbhADRte (ORCPT
+        with ESMTP id S1727091AbhADRte (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 4 Jan 2021 12:49:34 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674C1C061342
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:21 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id q22so37960323eja.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:21 -0800 (PST)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93536C061793
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:19 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id h16so28204785edt.7
+        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZmP1cMwJams9Qph5p5JmU94mt6kQfjBZBdjETGroLAw=;
-        b=TOnwION65do4Lfzc507R671yOfo1LWEELVayH4KC75UvC1ZLswsEWDG7mqtiefSh6t
-         x+Xw2a2uB6gMleAl2mAExpq+458ET52udWDsmz4iOZWdhLAK3BrcePSdLrlErZmW0FQv
-         xeyY2G2/F8An+cYUGV4qcJTvkYafnWdTY0As7X1TUcfusJ+ulQShdfL6A26qdn+eazv1
-         RB7qAP5be0rK11/R3ujEXMnHoaDGiT8r05L8Xn8KXkOVnTvG8IIEwfwVyGPBEIe35MpM
-         kgObyEmqaPT0PJ+YeIUgOVFr8TN6SKfYntAUB1Tl0sMMYdJxk1qk0d/KgmAX+F5bPbOY
-         SoOA==
+        bh=vMtoru4ysgIyI4OZqBtUfzLnZQxv1b5TDuVhnuc4b6I=;
+        b=eCkJFwhyohhn2pXYgz2qzYQRUeDMvO141Bmf3/2hNWLj268LZqRvhwJNpXjiuuhf29
+         F366NDibXcdiG1annnrsDoHvD8VA+Z3blELRWb+pdcZZ70VDj+iMoskoaFvKvLNGy6tM
+         pn/X53vsSv/fQdTszsPAK/OOVbos2BnY5Ryo76AzB2MKboSjv360aMZeBQJoIU9eqSDo
+         kTZ8atpu0gANLfhHlNcd2U8uaZO/a0nJCJC9SRbr5Gj4KVmV/u1M3GN008Chj8Euzbni
+         ktS1Y1smiHQIAfsBAp9kkDJ3UDO6wqe8EqGiEtS4P5ZLH+czbDTSfgwEvppTCeMe9Kcc
+         zPoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZmP1cMwJams9Qph5p5JmU94mt6kQfjBZBdjETGroLAw=;
-        b=D0nLke4/SaNtL5/RjYD4wAg5ZE7u5+BE2slGUdOqXxb26unQ3kEbD8/hIzYNUuRr7t
-         ZuLSZm4NDV4HXb1Vgy00OZWpIG8I3IVk6+ABd9Va9YHVn8jT8cFhCoWmuK8ICRKKS37L
-         3LbDgUhIO4o0hfnA5BansJMz46Nz3psdqscJ0j+wx8IhcdsXk5n5KfkHO53X3eMY7bsc
-         Mdrl7t3Nefkz4jpPX2C34TBGUC3pjo+U7Fqr6St/HIiTic6gMBWlDU9+85X8WMvQgLWN
-         P4gjXVis51zwUIjFqvY7nbnZCOFNR9vYgCSZO5GRbPlxPZQwymzKNTrp5xzqQjDAbQGF
-         +LFg==
-X-Gm-Message-State: AOAM5318X2ta9VkRlaC9UUsxkc6iWF2xlDIzMB8DWQ9FdP0fULrw4VhP
-        n1Z+bxhLoXB+PtowL5fVT/M=
-X-Google-Smtp-Source: ABdhPJwz+l4B4Hr9LUqphY9CnXe+twdJrclh7GXnweTvca/ejtPffXrSBrarv/HneAvzaTGcSUXhsg==
-X-Received: by 2002:a17:906:8255:: with SMTP id f21mr66514370ejx.265.1609782500215;
-        Mon, 04 Jan 2021 09:48:20 -0800 (PST)
+        bh=vMtoru4ysgIyI4OZqBtUfzLnZQxv1b5TDuVhnuc4b6I=;
+        b=amrFX1dJuN+AvpkMVei0SS42IcQizcbC2tubOHZaDbeZ3SYz4Qk3RKlJWKr9NgLFaJ
+         neoUiYPID9CksXo6I7fldHNRyIj/+SHYIVSoUd86JEHdt0d9gsPauguKnnV9xHAhm3dV
+         vuB6lus3wq0iahAq4+myxlerFA8i5b6q+l5ONnGEvflMd0NrlfdjHwLDpHh8aoHwXuow
+         878/oDZjXC3rwP5qZWPbBUkQOGVQ2/uX3MOvhrgYYSlcI5lrKP1NmwCp46d0xNorw6xa
+         kIEF3trcfvxqOMPJ3c/QRI1PfSm6vo6H9kDTxCb+tJDbEF9W71Xq4hUZ8b7F5qNTBRrK
+         88Vw==
+X-Gm-Message-State: AOAM531fnPLAp2IAj5v0Yc/WVbEJYCZVi15p/oJ//JmCASS4n3f0ph+4
+        0NnQ7ggvV5g/5j7vaGrqq/JxL3fKBD0bVw==
+X-Google-Smtp-Source: ABdhPJzm4CDRg2v0LHYUWAfBY2CiwxFMwLb/lcmClHa0FgvNdr46jiSTpxjWcbkU+ECIGBua2pRiqQ==
+X-Received: by 2002:a05:6402:1045:: with SMTP id e5mr72478437edu.40.1609782498335;
+        Mon, 04 Jan 2021 09:48:18 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.19
+        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 09:48:19 -0800 (PST)
+        Mon, 04 Jan 2021 09:48:17 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v8 43/44] kernel-shark: Add VirtBridge and VirtGap classes
-Date:   Mon,  4 Jan 2021 19:47:23 +0200
-Message-Id: <20210104174724.70404-44-y.karadz@gmail.com>
+Subject: [PATCH v8 41/44] kernel-shark: Remove the hard-coded Idle PID
+Date:   Mon,  4 Jan 2021 19:47:21 +0200
+Message-Id: <20210104174724.70404-42-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104174724.70404-1-y.karadz@gmail.com>
 References: <20210104174724.70404-1-y.karadz@gmail.com>
@@ -74,104 +74,174 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The two simple plotting classes will be used to visualise the
-guest->host data correlations.
+KernelShark plots differently all events coming from Idle tasks.
+This is done in order to provide more intuitive visualization of
+the Idleness of the system. So far the process Id of the Idle task
+was assumed to be Zero. However this is true only for Linux systems.
+In this patch we make the PID of the Idle task configurable.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/KsPlotTools.cpp | 22 +++++++++++++++++++++
- src/KsPlotTools.hpp | 47 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 69 insertions(+)
+ src/KsPlotTools.cpp | 48 +++++++++++++++++++++++++++++++++------------
+ src/KsPlotTools.hpp | 22 +++++++++------------
+ 2 files changed, 44 insertions(+), 26 deletions(-)
 
 diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
-index 9f98386..8d38009 100644
+index d952f5e..529f737 100644
 --- a/src/KsPlotTools.cpp
 +++ b/src/KsPlotTools.cpp
-@@ -1460,4 +1460,26 @@ void Graph::draw(float size)
+@@ -755,12 +755,13 @@ Graph::Graph()
+ : _histoPtr(nullptr),
+   _bins(nullptr),
+   _size(0),
+-  _hMargin(30),
+   _collectionPtr(nullptr),
+   _binColors(nullptr),
+   _ensembleColors(nullptr),
+   _label(),
+-  _zeroSuppress(false)
++  _idleSuppress(false),
++  _idlePid(0),
++  _drawBase(true)
+ {}
+ 
+ /**
+@@ -774,12 +775,13 @@ Graph::Graph(kshark_trace_histo *histo, KsPlot::ColorTable *bct, KsPlot::ColorTa
+ : _histoPtr(histo),
+   _bins(new(std::nothrow) Bin[histo->n_bins]),
+   _size(histo->n_bins),
+-  _hMargin(30),
+   _collectionPtr(nullptr),
+   _binColors(bct),
+   _ensembleColors(ect),
+   _label(),
+-  _zeroSuppress(false)
++  _idleSuppress(false),
++  _idlePid(0),
++  _drawBase(true)
+ {
+ 	if (!_bins) {
+ 		_size = 0;
+@@ -904,6 +906,20 @@ void Graph::setLabelAppearance(ksplot_font *f, Color col, int lSize, int hMargin
  	}
  }
  
-+void VirtGap::_draw(const Color &col, float size) const
++/**
++ * @brief Set Idle Suppression. If True, the bins containing Idle task records
++ *	  are not grouped together.
++ *
++ * @param is: If True, Idle is suppressed.
++ * @param ip: The process Id of the Idle task. If Idle is not suppressed, this
++ *	      value has no effect.
++ */
++void Graph::setIdleSuppressed(bool is, int ip)
 +{
-+	if (_entryPoint.x() - _exitPoint.x() < 4)
-+		return;
-+
-+	Point p0(_exitPoint.x() + _size, _exitPoint.y());
-+	Point p1(_exitPoint.x() + _size, _exitPoint.y() - _height);
-+	Point p2(_entryPoint.x() - _size , _entryPoint.y());
-+	Point p3(_entryPoint.x() - _size , _entryPoint.y() - _height);
-+
-+	Rectangle g;
-+
-+	g.setPoint(0, p0);
-+	g.setPoint(1, p1);
-+	g.setPoint(2, p2);
-+	g.setPoint(3, p3);
-+
-+	g._color = {255, 255, 255}; // The virt. gap is always white.
-+	g.setFill(false);
-+	g.draw();
++	_idleSuppress = is;
++	_idlePid = ip;
 +}
 +
- } // KsPlot
+ /**
+  * @brief Set the value of a given bin.
+  *
+@@ -916,7 +932,7 @@ void Graph::setBinValue(int bin, int val)
+ }
+ 
+ /**
+- * @brief Set the Process Id (Front and Back) a given bin.
++ * @brief Set the Process Id (Front and Back) of a given bin.
+  *
+  * @param bin: Bin Id.
+  * @param pidF: The Process Id detected at the from (first in time) edge of
+@@ -1328,22 +1344,28 @@ void Graph::draw(float size)
+ 
+ 	_label.draw();
+ 
+-	/*
+-	 * Start by drawing a line between the base points of the first and
+-	 * the last bin.
+-	 */
+-	drawLine(_bins[0]._base, _bins[_size - 1]._base, {}, size);
++	if (_drawBase) {
++		/*
++		 * Start by drawing a line between the base points of the first and
++		 * the last bin.
++		 */
++		drawLine(_bins[0]._base, _bins[_size - 1]._base, {}, size);
++	}
+ 
+ 	/* Draw as vartical lines all bins containing data. */
+ 	for (int i = 0; i < _size; ++i)
+-		if (_bins[i]._idFront >= 0 || _bins[i]._idBack >= 0)
++		if (_bins[i]._idFront >= 0 || _bins[i]._idBack >= 0 ||
++		    _bins[i]._idFront == _idlePid || _bins[i]._idBack ==_idlePid)
+ 			if (_bins[i]._visMask & KS_EVENT_VIEW_FILTER_MASK) {
+ 				_bins[i]._size = size;
+ 				_bins[i].draw();
+ 			}
+ 
+ 	auto lamCheckEnsblVal = [this] (int v) {
+-		return v > 0 || (v == 0 && !this->_zeroSuppress);
++		if (_idleSuppress && v == _idlePid)
++			return false;
++
++		return v >= 0;
+ 	};
+ 
+ 	/*
+@@ -1424,4 +1446,4 @@ void Graph::draw(float size)
+ 	}
+ }
+ 
+-}; // KsPlot
++} // KsPlot
 diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
-index 4a7ca0a..b9b93f3 100644
+index 8f530b0..5ce8f6f 100644
 --- a/src/KsPlotTools.hpp
 +++ b/src/KsPlotTools.hpp
-@@ -578,6 +578,53 @@ private:
- 	int	_firstBinOffset();
- };
+@@ -449,7 +449,7 @@ public:
+ 	 */
+ 	Graph(const Graph &) = delete;
  
-+/**
-+ * This class represents the graphical element visualizing how the execution
-+ * goes from the host to the guest and back.
-+ */
-+class VirtBridge : public Polyline {
-+public:
-+	/** Create a default VirtBridge. */
-+	VirtBridge() : Polyline(4) {}
-+
-+	/* Keep this destructor virtual. */
-+	virtual ~VirtBridge() {}
-+
-+	/** Set the coordinates of the EntryHost point of the VirtBridge. */
-+	void setEntryHost(int x, int y) {setPoint(0, x, y);}
-+
-+	/** Set the coordinates of the EntryGuest point of the VirtBridge. */
-+	void setEntryGuest(int x, int y) {setPoint(1, x, y);}
-+
-+	/** Set the coordinates of the ExitGuest point of the VirtBridge. */
-+	void setExitGuest(int x, int y) {setPoint(2, x, y);}
-+
-+	/** Set the coordinates of the ExitHost point of the VirtBridge. */
-+	void setExitHost(int x, int y) {setPoint(3, x, y);}
-+};
-+
-+/**
-+ * This class represents the graphical element visualizing the time interval
-+ * in the guest during which the execution has been returned to the host.
-+ */
-+class VirtGap : public Shape {
-+public:
-+	/** Create a VirtGap with height "h". */
-+	VirtGap(int h) :_height(h) {}
-+
-+	/**  The point where the execution exits the VM. */
-+	Point _exitPoint;
-+
-+	/** The point where the execution enters the VM. */
-+	Point _entryPoint;
-+
-+private:
-+	/** The vertical size (height) of the graphical element. */
-+	int _height;
-+
-+	void _draw(const Color &col, float size) const;
-+};
-+
- }; // KsPlot
+-	/* Disable moving. Same as copying.*/
++	/* Disable moving. Same as copying. */
+ 	Graph(Graph &&) = delete;
  
- #endif  /* _KS_PLOT_TOOLS_H */
+ 	Graph(kshark_trace_histo *histo, KsPlot::ColorTable *bct,
+@@ -512,18 +512,10 @@ public:
+ 	void setLabelAppearance(ksplot_font *f, Color col,
+ 				int lSize, int hMargin);
+ 
+-	/**
+-	 * Check if this graph is Zero Suppressed. Zero Suppressed means that
+-	 * bins having Id value = 0 (Idle task records) are not grouped
+-	 * together.
+-	 */
+-	bool zeroSuppressed(bool zs) {return _zeroSuppress;}
++	void setIdleSuppressed(bool is, int ip = 0);
+ 
+-	/**
+-	 * Set Zero Suppression. If True, the bins having Id value = 0 (Idle
+-	 * task records) are not grouped together.
+-	 */
+-	void setZeroSuppressed(bool zs) {_zeroSuppress = zs;}
++	/** Draw the base line of the graph or not. */
++	void setDrawBase(bool b) {_drawBase = b;}
+ 
+ protected:
+ 	/** Pointer to the model descriptor object. */
+@@ -559,7 +551,11 @@ protected:
+ private:
+ 	TextBox		_label;
+ 
+-	bool			_zeroSuppress;
++	bool	_idleSuppress;
++
++	int	_idlePid;
++
++	bool	_drawBase;
+ 
+ 	void	_initBins();
+ 
 -- 
 2.25.1
 
