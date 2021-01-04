@@ -2,178 +2,123 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-14.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 934C9C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 09:10:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10A8EC433E9
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:04:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4E20321D79
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 09:10:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D713522482
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:04:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726021AbhADJKZ (ORCPT
+        id S1727718AbhADREg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Jan 2021 04:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
+        Mon, 4 Jan 2021 12:04:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbhADJKZ (ORCPT
+        with ESMTP id S1727711AbhADREg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Jan 2021 04:10:25 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1F9C061574
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 01:09:45 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id q75so18599691wme.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 01:09:45 -0800 (PST)
+        Mon, 4 Jan 2021 12:04:36 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEBCC061574
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:03:56 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id g20so37772573ejb.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:03:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d1Vk3mUV3OWgnFdb6gZh3ZNHopBMWJQC9YWHNQev5eY=;
-        b=JDABWYUx5yZLLbXZbpFSMdN5cM/rY3ochheLJ5Wx0NMRsjQVGTJ4KSGpwvRYHxofsC
-         864hTQSe8jC6AnXPWdEfD3Jdjmb/4bnYYpRKoQHmiW4WuF7ICU2eACR3vdHX10QVm6zr
-         q6FOB18JvcaIw/vYM717Tbe0jihMgPuZZ40XqIxoEQxneWJyBqeC/30Z9Hvvua1prZNl
-         XU36WfIMCdngNlOBc6oDQ0srjYKO9ze3thhk70CYx2n3BnAPzaJ0kX79h+GeN8N4LPCR
-         +BcThaf+JHDg37s0hpl31w4WKxinHbE6S1b7455kY3v+OtQmwnsxabUcGh5bCbR5O2nr
-         4aEQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QrR7mU/foSGt5OsqExiI6qO8+q+bkAqN6Cbmg2WRcek=;
+        b=tM1nktGdDDMKAh8Yt56p2PIIptmo3vmZG9+pvqcj1PNCnUItks0BNPW819VbOvXlB7
+         gtcWkexCd4GVQZQt0u7iGfUnePkKYkBOyGt3aZ71HjFfdDiVuGt2PUBz0n8XBy1pPUxs
+         U7UtULa0bkfhhHrF8E5yPFIA5lf53JSgNfBkls8rAaYf1w9IHwh7DMpEuMDbkEgNEI/U
+         9q3i7GkhTUn5bCo0rzVCkPtLxIcbrE50F0pIkJcb0OqGRyfAE13YSjOyna9KXEbnOyt1
+         V5I+Wn8Vgyuvleq3GABQ7/D7umtNkL2/etEv4qmq6yKtCiCeWy/gIuOtlJpktwUJJcFS
+         dzBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=d1Vk3mUV3OWgnFdb6gZh3ZNHopBMWJQC9YWHNQev5eY=;
-        b=I55ApmOS20FkSP5LZlKh8PAENcKk1nW5BQ64uB/QFvoP2YumC9JYJFgvot6Inry87H
-         83GR/psX8P/u99O+DT23piIK9x4oeEA4W8/8/jh56IaeqBZx4NoL/SNIfUEWHu9iX2MQ
-         0fIJntt/VGvTFaCB95DKCBO8qoM5bqDP4YF+BO0bXGpv2ZqlRGoXac7A7VDBr67+q3/k
-         cSobMHANf9donURfDwRnCPUsfLowpC99tnphH9ovBYHFwR4lSDTY9V0atG9fMpmGryN6
-         Yl4GP1ZdTY/uhfhx+7xiIxsD4qcrhzvq40qTOnwj5GyaL0KyoELVMxi4zfrEY+iILock
-         k8HA==
-X-Gm-Message-State: AOAM532Zvr456Jga9Hx7pLd1GfqP0Oo/dlTCfMa0q+CrvN0I9iTo/VtG
-        OGJXLqklc2QcJrrSP0whvU0=
-X-Google-Smtp-Source: ABdhPJxy8kQyAxt4ycgBsekah3pSNYRjokqnh23Lgl1oaMHnQIrrTndexQFAxSmFPi5Q5hvXsRn+cQ==
-X-Received: by 2002:a1c:2155:: with SMTP id h82mr25722387wmh.132.1609751383929;
-        Mon, 04 Jan 2021 01:09:43 -0800 (PST)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id 138sm35041840wma.41.2021.01.04.01.09.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 01:09:43 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     sudipm.mukherjee@gmail.com, linux-trace-devel@vger.kernel.org
-Subject: [PATCH] libtracefs: Fix Documentation Makefile
-Date:   Mon,  4 Jan 2021 11:09:41 +0200
-Message-Id: <20210104090941.424254-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        bh=QrR7mU/foSGt5OsqExiI6qO8+q+bkAqN6Cbmg2WRcek=;
+        b=MjaL9X5tIdshFGeGAKsBH4QeWhcy7TyIlVWJPX/xzCoXPLQu2+AOOfL9HZmGsBakNj
+         caCQx579wTT8GxFej+CjwAzGh6PyzPkHZ44P6A3FKt9YQ1Q399dZkXEb34juMnK144Tx
+         d3X7lIC+CHJfZpP2GcW+kv0zcwtPXzhF67xB6oFfSpcnIRWkIs25LCMN/3HFwzHtPno3
+         FqDg0Z5c/7Cdqig+wQJfhqlGlReZb8QJliwMcTxqpUD1Rr0P6kPwIEC5kwjIwuAV9OWm
+         jTlfm8TtKSEXq+FLj2gMjS4agPJU/GdUyVJRjA6fUZIPh8AOK71EnAqc2wlUgG8QcN0x
+         z3MQ==
+X-Gm-Message-State: AOAM530xERyL92P2YixcZtrQzrpExRtB70qkF6DvJdsi8OGfBex4BEiL
+        uSqgwLdHqIUaKt6fKTKkdnRYz3nBMLiJQA==
+X-Google-Smtp-Source: ABdhPJy5Nh1EYne8m7lfvroLvvEwmdwyJ+c/5q33PefP0Gc/YG6If/RL7PuUY5R0Hohvqg2iu6Dtqw==
+X-Received: by 2002:a17:906:705:: with SMTP id y5mr65242539ejb.428.1609779834837;
+        Mon, 04 Jan 2021 09:03:54 -0800 (PST)
+Received: from [192.168.0.108] ([95.87.199.238])
+        by smtp.gmail.com with ESMTPSA id e19sm44653454edr.61.2021.01.04.09.03.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jan 2021 09:03:54 -0800 (PST)
+Subject: Re: [PATCH] kernelshark: Rename tracefs_get_tracing_dir() to the new
+ tracefs_tracing_dir()
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
+References: <20201221142458.5d5607c6@gandalf.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <3d3e4601-6a0c-8e91-9e7d-9cc02d61b07f@gmail.com>
+Date:   Mon, 4 Jan 2021 19:03:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201221142458.5d5607c6@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The libtracefs documentation install failes due to missing functions
-used in the Makefile. It was coppied from libtraceevent/Documentation,
-but not all of the required functions exist in the tracefs build
-scripts.
 
-Reported-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- Documentation/Makefile | 39 +++++++++++++++------------------------
- 1 file changed, 15 insertions(+), 24 deletions(-)
 
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index e9212df..72b6939 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -45,19 +45,16 @@ ASCIIDOC_EXTRA += -a mansource="libtracefs" -a manmanual="libtracefs Manual"
- ASCIIDOC_HTML = xhtml5
- endif
- 
--XMLTO=xmlto
--
--_tmp_tool_path := $(call get-executable,$(ASCIIDOC))
--ifeq ($(_tmp_tool_path),)
--	missing_tools = $(ASCIIDOC)
-+ASCIIDOC_INSTALLED := $(shell command -v $(ASCIIDOC) 2> /dev/null)
-+ifndef ASCIIDOC_INSTALLED
-+	missing_tools += $(ASCIIDOC)
- endif
- 
--ifndef USE_ASCIIDOCTOR
--_tmp_tool_path := $(call get-executable,$(XMLTO))
--ifeq ($(_tmp_tool_path),)
-+XMLTO=xmlto
-+XMLTO_INSTALLED := $(shell command -v $(XMLTO) 2> /dev/null)
-+ifndef XMLTO_INSTALLED
- 	missing_tools += $(XMLTO)
- endif
--endif
- 
- #
- # For asciidoc ...
-@@ -132,7 +129,7 @@ ifneq ($(V),1)
- endif
- endif
- 
--all: html man
-+all: check-man-tools html man
- 
- man: man3
- man3: $(DOC_MAN3)
-@@ -141,7 +138,7 @@ html: $(MAN_HTML)
- 
- $(MAN_HTML) $(DOC_MAN3): asciidoc.conf
- 
--install: install-man install-html
-+install: check-man-tools install-man install-html
- 
- check-man-tools:
- ifdef missing_tools
-@@ -149,28 +146,22 @@ ifdef missing_tools
- endif
- 
- do-install-man: man
--	$(call QUIET_INSTALL, Documentation-man) \
--		$(INSTALL) -d -m 755 $(DESTDIR)$(man3dir); \
--		$(INSTALL) -m 644 $(OUTPUT)*.3 $(DESTDIR)$(man3dir);
-+	$(Q)$(call do_install,$(OUTPUT)*.3,$(DESTDIR)$(man3dir),644);
- 
--install-man: check-man-tools man do-install-man
-+install-man: man do-install-man
- 
- do-install-html: html
--	$(call QUIET_INSTALL, Documentation-html) \
--		$(INSTALL) -d -m 755 $(DESTDIR)$(htmldir); \
--		$(INSTALL) -m 644 $(OUTPUT)*.html $(DESTDIR)$(htmldir);
-+	$(Q)$(call do_install,$(OUTPUT)*.html,$(DESTDIR)$(htmldir),644);
- 
--install-html: check-man-tools html do-install-html
-+install-html: html do-install-html
- 
- uninstall: uninstall-man uninstall-html
- 
- uninstall-man:
--	$(call QUIET_UNINST, Documentation-man) \
--		$(Q)$(RM) $(addprefix $(DESTDIR)$(man3dir)/,$(DOC_MAN3))
-+	$(Q)$(RM) $(addprefix $(DESTDIR)$(man3dir)/,$(DOC_MAN3))
- 
- uninstall-html:
--	$(call QUIET_UNINST, Documentation-html) \
--		$(Q)$(RM) $(addprefix $(DESTDIR)$(htmldir)/,$(MAN_HTML))
-+	$(Q)$(RM) $(addprefix $(DESTDIR)$(htmldir)/,$(MAN_HTML))
- 
- ifdef missing_tools
-   DO_INSTALL_MAN = $(warning Please install $(missing_tools) to have the man pages installed)
-@@ -184,7 +175,7 @@ CLEAN_FILES =					\
- 	$(DOC_MAN3) *.3
- 
- clean:
--	$(call QUIET_CLEAN, Documentation) $(RM) $(CLEAN_FILES)
-+	$(Q) $(RM) $(CLEAN_FILES)
- 
- ifdef USE_ASCIIDOCTOR
- $(OUTPUT)%.3 : $(OUTPUT)%.txt
--- 
-2.29.2
+On 21.12.20 г. 21:24 ч., Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> libtracefs is renaming tracefs_get_tracing_dir() to tracefs_tracing_dir() as
+> there is no "tracefs_put_tracing_dir()" for this function. Since libtracefs
+> has not been officially released, it is fine to break API, as it is with
+> kernelshark v2.0 has not yet been official released that uses the old API.
+> 
+> Signen-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>   src/KsCaptureDialog.cpp | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/src/KsCaptureDialog.cpp b/src/KsCaptureDialog.cpp
+> index 63fd5d6..7253ab6 100644
+> --- a/src/KsCaptureDialog.cpp
+> +++ b/src/KsCaptureDialog.cpp
+> @@ -26,7 +26,7 @@ extern "C" {
+>   
+>   static inline tep_handle *local_events()
+>   {
+> -	return tracefs_local_events(tracefs_get_tracing_dir());
+> +	return tracefs_local_events(tracefs_tracing_dir());
+>   }
+>   
+>   /**
+> @@ -204,7 +204,7 @@ QStringList KsCaptureControl::_getPlugins()
+>   	QStringList pluginList;
+>   	char **all_plugins;
+>   
+> -	all_plugins = tracefs_tracers(tracefs_get_tracing_dir());
+> +	all_plugins = tracefs_tracers(tracefs_tracing_dir());
+>   
+>   	if (!all_plugins)
+>   		return pluginList;
+> 
 
+Thanks Steven!
+I applied this one on my side before all KS 2.0 patches.
+
+Reviewed-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
