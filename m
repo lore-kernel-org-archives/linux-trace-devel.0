@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B49AC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5077C43381
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 75B2820770
+	by mail.kernel.org (Postfix) with ESMTP id 9B045206B2
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbhADRtT (ORCPT
+        id S1726655AbhADRtT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 4 Jan 2021 12:49:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726655AbhADRtS (ORCPT
+        with ESMTP id S1726497AbhADRtR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:49:18 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E338C061386
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:10 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id ce23so37888869ejb.8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:10 -0800 (PST)
+        Mon, 4 Jan 2021 12:49:17 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8414EC0617BE
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:03 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id b9so37958557ejy.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zKDG/9XZbnGW4hCDetg6B4UM+/yqlFKJwoWhpahy2EM=;
-        b=CrgSuc7i0aePli35g6A+EOBip51HFsyA0gf2thI9CqPsddRH6mWeskG8gOe9Q+lDCe
-         3ia4BairaZkcE1FHnYwHkt9dse2FJxe/JFoot2OYVKREe7TQX3LPabiGCmQUgt3zTYym
-         0V8LzdWx/NYa4t6KJ1i9UsgLTtkTz2d1qdXcqbwziK0sTmueSM79CTc919Vger65tB5D
-         RfLZOgy8i3yomVKWLLpA1jOQgV61bkWV4MhCn5sLlgRIJ8jhJYpwxMvJrXRv9nfS2XCT
-         BUUMVwi71tgdsAcdysVApbNJIk1Y+sYSjZ1/+idOIN1jFHy8+na6qvAygmRacg6LjnSM
-         Azzg==
+        bh=m9lQFJuvJrwOAGItYL0Yq0F1uOB4F66QAhKkaIHI7D8=;
+        b=q3GcNjkBRF+0mZ+cYlr5AlismvFZRLPhWa6LotBRObndNAI7U982u9X8Ck+9CHeu93
+         gphCXdgkkze0yJGihY/6DGbdoph9pzz88IiIVVubS7NWuAZNP/PgCnvA2AVaisTdOiAM
+         vBvfWSkbem2ueT8vyH26XWD4PpwlG9jHtZcnCh4iPuo+VFnN+Pgi+EC4g/h/yRCVRQgj
+         m7gKc/O4dRqLLQv3dPOzVOMHCqwlrjrbhPi2urkDOoKBEVvXsUL8Tz390jPUu1R7nTHI
+         j6G95+SZd52O2ccjVegvqMPe6CPoa4VOoEcc1xdqiXZisxewJOTKjN1CpqNQGg82DZtU
+         bY2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zKDG/9XZbnGW4hCDetg6B4UM+/yqlFKJwoWhpahy2EM=;
-        b=NOUigK1NLEBwWU6q/xqWqHXo1v5kYy6HyYxi+tl9l7HXTBWFdo2TcME+G3UsK59DH5
-         xRAvrokCXxLzpLKXMlsZ8dansOegiblF5GvPy2X9vYuKh3YFxYJ0/VrSAzy/q9CY8N5t
-         wCNXRxDwI1/rlHh3IzQXpgJtSHsTxTZkWud/RazABmeh+MZj0C8EyCCJstH4ul5t0DR7
-         t9LUekCL5vVX7ol2RlnvmMD1akdG1z+0mp2ytQAVAzSyndxaQaTw0VylD6VBSVwMZqH7
-         Gytx/NgK7wpNuN+AeBh1z2Xjhc++B3SB1BcZGH60ho9guv9wv/ZUXfwvUU2wnuYSQ2nu
-         AgTw==
-X-Gm-Message-State: AOAM530EkHLej3Afnnydcv4kXAHT43yJLc8dd703+WTqMUG5C3hw8bEN
-        GahZ44CMllhGQf0t/fWPI70=
-X-Google-Smtp-Source: ABdhPJzVZAMK6qnegBjH7WQkOr7a2qHy6ZwhzLuWL4OpMgMiaUnMecA82yaUunEMLPJBAgg7G6YW9A==
-X-Received: by 2002:a17:906:4050:: with SMTP id y16mr65557260ejj.537.1609782488984;
-        Mon, 04 Jan 2021 09:48:08 -0800 (PST)
+        bh=m9lQFJuvJrwOAGItYL0Yq0F1uOB4F66QAhKkaIHI7D8=;
+        b=VBb0Bq8+FaKs9GZt64B2jmTgVa8mxVKK3QePXd7vWA1YYjuMsmnOTwCupaV7fv44sn
+         cYUeph4yxT75uQQhzVbTUDKUt7+o43z8fA+0IK2aryQgid5QM5b1AbsVg7lrtsbA/IKT
+         nP7iVFi2yiEx03wLBwiG54xGfqen7jsMiRfw2vS32oIxQYJvYXtksh3BchhcsZQiBlnJ
+         LpSFlqZNNRpclS3wUaOeKWNMTB4A8+kCyXjOSgQBkF3hnG6Rz8cVdBtlDxEBH20/b3oo
+         siBo1gW1bHpffzTeHN7O/50CcTx6C2OKFESI3X2rroOrvPWFX1HngpqQKPkqbXdmj4Dw
+         uq+g==
+X-Gm-Message-State: AOAM530AY5jS5SN3wXxCftNJVxVmxZqXyPykn3PoP9nKiCQH1ldMb4UM
+        SI8Z+tgcX60TDuVrgQSDmIo=
+X-Google-Smtp-Source: ABdhPJwvEtcMrFVzUoQIfsPd+GNeH4YCCjvRQ0DSwfbo8gCpPjld5hQ/hEtzEQVMDybxEoxrQeYb6A==
+X-Received: by 2002:a17:906:5293:: with SMTP id c19mr68464483ejm.72.1609782482293;
+        Mon, 04 Jan 2021 09:48:02 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.07
+        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 09:48:08 -0800 (PST)
+        Mon, 04 Jan 2021 09:48:01 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v8 31/44] kernel-shark: Add ksplot_draw_polyline()
-Date:   Mon,  4 Jan 2021 19:47:11 +0200
-Message-Id: <20210104174724.70404-32-y.karadz@gmail.com>
+Subject: [PATCH v8 25/44] kernel-shark: Add ksmodel_get_bin()
+Date:   Mon,  4 Jan 2021 19:47:05 +0200
+Message-Id: <20210104174724.70404-26-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104174724.70404-1-y.karadz@gmail.com>
 References: <20210104174724.70404-1-y.karadz@gmail.com>
@@ -74,81 +74,64 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The method draws continuous line between an ordered array of
-points (poly-line).
+The method retrieves the Id of the bin of the model that contains
+given entry.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark-plot.c | 32 ++++++++++++++++++++++++++------
- src/libkshark-plot.h |  5 +++++
- 2 files changed, 31 insertions(+), 6 deletions(-)
+ src/libkshark-model.c | 27 +++++++++++++++++++++++++++
+ src/libkshark-model.h |  3 +++
+ 2 files changed, 30 insertions(+)
 
-diff --git a/src/libkshark-plot.c b/src/libkshark-plot.c
-index c9a3530..597e5c2 100644
---- a/src/libkshark-plot.c
-+++ b/src/libkshark-plot.c
-@@ -151,6 +151,30 @@ void ksplot_draw_line(const struct ksplot_point *a,
- 	glEnd();
+diff --git a/src/libkshark-model.c b/src/libkshark-model.c
+index f3864bf..2301b06 100644
+--- a/src/libkshark-model.c
++++ b/src/libkshark-model.c
+@@ -1325,3 +1325,30 @@ ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
+ 				       match_pid_missed_events, sd, &pid,
+ 				       col, index);
+ }
++
++/**
++ * @brief Find the bin Id of a give entry.
++ *
++ * @param histo: Input location for the model descriptor.
++ * @param entry: Input location for entry.
++ *
++ * @returns If the timestamp of the entry is inside the range of the model the
++ * 	    function returns the Id of the bin it belongs to.
++ * 	    If the timestamp of the entry is outside of the range of the model
++ * 	    the function returns UPPER_OVERFLOW_BIN or LOWER_OVERFLOW_BIN
++ * 	    (negative values).
++ */
++int ksmodel_get_bin(struct kshark_trace_histo *histo,
++		    const struct kshark_entry *entry)
++{
++	if (entry->ts < histo->min)
++		return UPPER_OVERFLOW_BIN;
++
++	if (entry->ts > histo->max)
++		return LOWER_OVERFLOW_BIN;
++
++	if (entry->ts == histo->max)
++		return histo->n_bins - 1;
++
++	return  (entry->ts - histo->min) / histo->bin_size;
++}
+diff --git a/src/libkshark-model.h b/src/libkshark-model.h
+index b862480..8989ee0 100644
+--- a/src/libkshark-model.h
++++ b/src/libkshark-model.h
+@@ -175,6 +175,9 @@ static inline double ksmodel_bin_time(struct kshark_trace_histo *histo,
+ 	return ksmodel_bin_ts(histo, bin) * 1e-9;
  }
  
-+/**
-+ * @brief Draw the a polyline.
-+ *
-+ * @param points: Input location for the array of points defining the polyline.
-+ * @param n_points: The size of the array of points.
-+ * @param col: The color of the polyline.
-+ * @param size: The size of the polyline.
-+ */
-+void ksplot_draw_polyline(const struct ksplot_point *points,
-+			  size_t n_points,
-+			  const struct ksplot_color *col,
-+			  float size)
-+{
-+	if (!points || !n_points || !col || size < .5f)
-+		return;
++int ksmodel_get_bin(struct kshark_trace_histo *histo,
++		    const struct kshark_entry *entry);
 +
-+	/* Loop over the points of the polygon and draw connecting lines. */
-+	for(size_t i = 1; i < n_points; ++i)
-+		ksplot_draw_line(&points[i - 1],
-+				 &points[i],
-+				 col,
-+				 size);
-+}
-+
- /**
-  * @brief Draw a polygon.
-  *
-@@ -212,12 +236,8 @@ void ksplot_draw_polygon_contour(const struct ksplot_point *points,
- 	if (!points || !n_points || !col || size < .5f)
- 		return;
- 
--	/* Loop over the points of the polygon and draw connecting lines. */
--	for(size_t i = 1; i < n_points; ++i)
--		ksplot_draw_line(&points[i - 1],
--				 &points[i],
--				 col,
--				 size);
-+	/* Loop over the points of the polygon and draw a polyline. */
-+	ksplot_draw_polyline(points, n_points, col, size);
- 
- 	/* Close the contour. */
- 	ksplot_draw_line(&points[0],
-diff --git a/src/libkshark-plot.h b/src/libkshark-plot.h
-index 063740d..d881b20 100644
---- a/src/libkshark-plot.h
-+++ b/src/libkshark-plot.h
-@@ -72,6 +72,11 @@ void ksplot_draw_line(const struct ksplot_point *a,
- 		      const struct ksplot_color *col,
- 		      float size);
- 
-+void ksplot_draw_polyline(const struct ksplot_point *points,
-+			  size_t n_points,
-+			  const struct ksplot_color *col,
-+			  float size);
-+
- void ksplot_draw_polygon(const struct ksplot_point *points,
- 			 size_t n_points,
- 			 const struct ksplot_color *col,
+ #ifdef __cplusplus
+ }
+ #endif // __cplusplus
 -- 
 2.25.1
 
