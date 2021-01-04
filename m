@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A096FC433E0
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 437BAC4332B
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7E90920715
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 216A020715
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727357AbhADRtn (ORCPT
+        id S1727530AbhADRtn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 4 Jan 2021 12:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34496 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727406AbhADRtm (ORCPT
+        with ESMTP id S1727475AbhADRtm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 4 Jan 2021 12:49:42 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3B7C061382
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:05 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id ga15so5774097ejb.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:05 -0800 (PST)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113AFC061384
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:09 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id q22so37959648eja.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6pblZ2szoZIMM38OYzSL6FEtzabm902Qt/+Z3+JswsQ=;
-        b=E5qkPdPVvUwR4U05ynJmNcVZEGFAG8gNGfBCG5e2Zt63cIZzBokEhGBLERWNdzxK0R
-         TBi5XhV4N2ypkIlHGozc17nMO0zeCLXVTG2MwXKM2uVrc1NIZEL7Hs3Qy0wGX6jBgGCJ
-         O9MIJ5G8DCSiBHXpl79RdHnvPqQ//pp2CP94wqkqDi+fTz6arlab2+/Fz0awhZ7NfBST
-         4Z8UstElvbOMNjaHHaNbDN5CIkcwNNUCBIuup2r5DrjRNXe+fcJYqH3C7qGmBPetfmx+
-         Fm8hxZLZ/Sz671XxAuptowUnktef9fmP7VYsN5JmHZCWCLkl6z6DwKo9b0A3+3GkixlN
-         5Jvw==
+        bh=N18nqDVkTO7oT7I2PPf6G5+lJnx0aQoNQBe98h8pNrA=;
+        b=SuQKydeYpLk7bn56pg7/YPjvbnVlKg7OBgXHJ1q6j5a/vu2hfndOMivz5PgWIyEfiD
+         GsdXcLsQFBBzdDXY1El6Pw54e6QsqHzh8fqowu1QQ0NoSKFKOh5OLimCK2J/ovPvV1yM
+         1Jt+Goxx0VCQOc/fVD026Yse3yXM1qTy8A2PTT93KARldQrNkqvjpBRFN+den1AcQfn+
+         tOvXDJBLovpwLA+bpXyq6B4A2lVIi4cieaTRckaEBF1WVeTYaDmpuheA9eif+Wfdu+Fr
+         FslZw6hJf9PfrM5uttTpaEMiZ1mc9A98IlNY5vbaekfaKU1ah1ayLvTgb7lnYi+ObAAb
+         LunQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6pblZ2szoZIMM38OYzSL6FEtzabm902Qt/+Z3+JswsQ=;
-        b=dBZ/3RakXW+q0y8TeN8A9AOvM+M6b+c0akNUwB/A8X1KJtSKiClwHww6bi4C9oKCnF
-         OAj4MiqS+S2rvxK/ewfXrmL13sYDQw0y5N21wFakCsPu7BGjGxnw3ygyP53b5n6KkjjS
-         3aANpVgS3F57m+FnHm+ShPnsXKivS0fLlL3gAXGZJ94+/p9DrDoVKE5fqNi+quB5wRxM
-         R5KudtyoLLaoY/hUg/9xZReVHEzkUhoUsWbKDI5+apxGuoTeZI7fd2dWK/RzuvfA0F2n
-         in90JaI2a5+6iMD16rv9GESaHTwpmJe8mkPs87k5IvLgBpxpEVBJ5fy6OYLUAe+lQZA6
-         +/1g==
-X-Gm-Message-State: AOAM530S4wEUvUJo1QTKC+8hs3oK2ZxZ3yiYoL96+Wn7JLm9ZdIIkktI
-        Z4W7GDZ4pQHInRSEJmCOQaI=
-X-Google-Smtp-Source: ABdhPJwMiUgl3fdw4ZSGyFqcG7txJnigAyvcPVYkBVEjsJSCMQDfPr2zPXQQi5tayUTRxeMmBcLv8Q==
-X-Received: by 2002:a17:906:add7:: with SMTP id lb23mr71060756ejb.352.1609782484208;
-        Mon, 04 Jan 2021 09:48:04 -0800 (PST)
+        bh=N18nqDVkTO7oT7I2PPf6G5+lJnx0aQoNQBe98h8pNrA=;
+        b=CKoMgGytJNnio8jQWfQhRZ2u5IOQLpKxe6PD90xT/UL4U4DDwdeq/OczhtSxm/Bp7I
+         BFzrXvZNKFBpmNcc+SVPqk+rF2K6DQYOL81GFwOlytm5KyZXrnpv4lv5Hu7GJIOz8GwQ
+         0hHGA5bcimkcCl/3P/PATEHali11pfUEeRV4cMsOoeXtHX1SnguuE/Mfzx3Vwuj844Xr
+         OWNOiVNg7rBMXm5VgoKv0pdmaUPCT5vhDgMul7QvgoJuy2umzBp4pXJewNAWH+x6Cjdb
+         KAYXND/n+VjLkgQBCA+fJdSEv1sDihH4e4zhWeZZNz00z+ALNcStIPQ3Yy4iaSHmqhNZ
+         0JIA==
+X-Gm-Message-State: AOAM532nSmVhdhDQCdu50m1lh24SkW5aWR0ODCKvTW/eb0PRTTIvO6uL
+        LDeoz+Tr8BXZt8CF+T4xfG8=
+X-Google-Smtp-Source: ABdhPJyU7+qSUfMN8JvSyEMQBu0cpmR1O2TzjImC5U2q0AL1bGrepErsmDu+P61pMw+On2haJ7wjGQ==
+X-Received: by 2002:a17:906:4e46:: with SMTP id g6mr48772668ejw.243.1609782487852;
+        Mon, 04 Jan 2021 09:48:07 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.03
+        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 09:48:03 -0800 (PST)
+        Mon, 04 Jan 2021 09:48:07 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v8 27/44] kernel-shark: Add methods for time calibration
-Date:   Mon,  4 Jan 2021 19:47:07 +0200
-Message-Id: <20210104174724.70404-28-y.karadz@gmail.com>
+Subject: [PATCH v8 30/44] kernel-shark: Make GLUT optional dependency
+Date:   Mon,  4 Jan 2021 19:47:10 +0200
+Message-Id: <20210104174724.70404-31-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104174724.70404-1-y.karadz@gmail.com>
 References: <20210104174724.70404-1-y.karadz@gmail.com>
@@ -74,241 +74,141 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-We add an infrastructure for correcting the timestamps of the entries.
-This is needed in order to correlate Data streams that have been
-recorded using non-synchronized clocks. The infrastructure can handle
-an arbitrary timestamps correction formula, however for the moment we
-only provide calibration that adds a constant offset.
+GLUT is not needed in order to build the KernelShark GUI. Currently
+it is being used only by the plotting example, so it makes more sense
+to removed it from the list of compulsory third party packages.
+The patch optimizes the way the OpenGL and GLUT headers are included
+and removes some duplicated code.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Signen-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark-tepdata.c | 13 +++++-
- src/libkshark.c         | 99 +++++++++++++++++++++++++++++++++++++++++
- src/libkshark.h         | 27 +++++++++++
- 3 files changed, 138 insertions(+), 1 deletion(-)
+ build/deff.h.cmake   |  3 +++
+ src/CMakeLists.txt   |  4 ++--
+ src/libkshark-plot.c | 20 +++++++-------------
+ src/libkshark-plot.h | 11 +++++++++++
+ 4 files changed, 23 insertions(+), 15 deletions(-)
 
-diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
-index f2482f9..064393d 100644
---- a/src/libkshark-tepdata.c
-+++ b/src/libkshark-tepdata.c
-@@ -338,6 +338,9 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
- 					entry = &temp_rec->entry;
- 					missed_events_action(stream, rec, entry);
+diff --git a/build/deff.h.cmake b/build/deff.h.cmake
+index e398c0c..868ffec 100644
+--- a/build/deff.h.cmake
++++ b/build/deff.h.cmake
+@@ -23,6 +23,9 @@
+ /** "pkexec" executable. */
+ #cmakedefine DO_AS_ROOT "@DO_AS_ROOT@"
  
-+					/* Apply time calibration. */
-+					kshark_postprocess_entry(stream, rec, entry);
++/** GLUT has been found. */
++#cmakedefine GLUT_FOUND
 +
- 					entry->stream_id = stream->stream_id;
+ /** Semicolon-separated list of plugin names. */
+ #define KS_BUILTIN_PLUGINS "@PLUGINS@"
  
- 					temp_next = &temp_rec->next;
-@@ -360,6 +363,12 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index cf3279e..fe440db 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -38,7 +38,7 @@ install(FILES "${KS_DIR}/src/libkshark.h"
+         DESTINATION ${KS_INCLUDS_DESTINATION}
+             COMPONENT libkshark-devel)
  
- 				entry->stream_id = stream->stream_id;
+-if (OPENGL_FOUND AND GLUT_FOUND)
++if (OPENGL_FOUND)
  
-+				/*
-+				 * Post-process the content of the entry. This includes
-+				 * time calibration and event-specific plugin actions.
-+				 */
-+				kshark_postprocess_entry(stream, rec, entry);
+     message(STATUS "libkshark-plot")
+     add_library(kshark-plot  SHARED  libkshark-plot.c)
+@@ -61,7 +61,7 @@ if (OPENGL_FOUND AND GLUT_FOUND)
+             ARCHIVE DESTINATION    ${_LIBDIR}
+                 COMPONENT              libkshark-devel)
+ 
+-endif (OPENGL_FOUND AND GLUT_FOUND)
++endif (OPENGL_FOUND)
+ 
+ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+ 
+diff --git a/src/libkshark-plot.c b/src/libkshark-plot.c
+index 1c8ede4..c9a3530 100644
+--- a/src/libkshark-plot.c
++++ b/src/libkshark-plot.c
+@@ -19,10 +19,6 @@
+ #include <string.h>
+ #include <stdio.h>
+ 
+-// OpenGL
+-#include <GL/freeglut.h>
+-#include <GL/gl.h>
+-
+ // KernelShark
+ #include "libkshark-plot.h"
+ 
+@@ -37,6 +33,10 @@
+ #define STBTT_STATIC
+ #include "stb_truetype.h"
+ 
++#ifdef GLUT_FOUND
 +
- 				pid = entry->pid;
++#include <GL/freeglut.h>
++
+ /**
+  * @brief Create an empty scene for drawing.
+  *
+@@ -61,17 +61,11 @@ void ksplot_make_scene(int width, int height)
+ 	/* Open the screen window. */
+ 	glutCreateWindow("KernelShark Plot");
  
- 				/* Apply Id filtering. */
-@@ -527,8 +536,10 @@ static ssize_t tepdata_load_matrix(struct kshark_data_stream *stream,
- 			if (cpu_array)
- 				(*cpu_array)[count] = e->cpu;
- 
--			if (ts_array)
-+			if (ts_array) {
-+				kshark_calib_entry(stream, e);
- 				(*ts_array)[count] = e->ts;
-+			}
- 
- 			if (pid_array)
- 				(*pid_array)[count] = e->pid;
-diff --git a/src/libkshark.c b/src/libkshark.c
-index cc8bd93..315c24f 100644
---- a/src/libkshark.c
-+++ b/src/libkshark.c
-@@ -131,6 +131,7 @@ static void kshark_stream_free(struct kshark_data_stream *stream)
- 
- 	kshark_hash_id_free(stream->tasks);
- 
-+	free(stream->calib_array);
- 	free(stream->file);
- 	free(stream->name);
- 	free(stream->interface);
-@@ -1367,6 +1368,37 @@ void kshark_plugin_actions(struct kshark_data_stream *stream,
- 	}
+-	/*
+-	 * Set the origin of the coordinate system to be the top left corner.
+-	 * The "Y" coordinate is inverted.
+-	 */
+-	gluOrtho2D(0, width, height, 0);
+-	glViewport(0, 0, width, height);
+-
+-	glMatrixMode(GL_PROJECTION);
+-	glLoadIdentity();
++	ksplot_resize_opengl(width, height);
  }
  
-+/**
-+ * @brief Time calibration of the timestamp of the entry.
-+ *
-+ * @param stream: Input location for a Trace data stream pointer.
-+ * @param entry: Output location for entry.
-+ */
-+void kshark_calib_entry(struct kshark_data_stream *stream,
-+			struct kshark_entry *entry)
-+{
-+	if (stream->calib && stream->calib_array) {
-+		/* Calibrate the timestamp of the entry. */
-+		stream->calib(&entry->ts, stream->calib_array);
-+	}
-+}
++#endif // GLUT_FOUND
 +
-+/**
-+ * @brief Post-process the content of the entry. This includes time calibration
-+ *	  and all registered event-specific plugin actions.
-+ *
-+ * @param stream: Input location for a Trace data stream pointer.
-+ * @param record: Input location for the trace record.
-+ * @param entry: Output location for entry.
-+ */
-+void kshark_postprocess_entry(struct kshark_data_stream *stream,
-+			      void *record, struct kshark_entry *entry)
-+{
-+	kshark_calib_entry(stream, entry);
-+
-+	kshark_plugin_actions(stream, record, entry);
-+}
-+
- static inline void free_ptr(void *ptr)
- {
- 	if (ptr)
-@@ -1764,6 +1796,73 @@ kshark_get_entry_back(const struct kshark_entry_request *req,
- 	return get_entry(req, data, index, req->first, end, -1);
- }
+ /**
+  * @brief Initialize OpenGL.
+  *
+diff --git a/src/libkshark-plot.h b/src/libkshark-plot.h
+index 0edf5d5..063740d 100644
+--- a/src/libkshark-plot.h
++++ b/src/libkshark-plot.h
+@@ -15,6 +15,10 @@
+ // C
+ #include <stdbool.h>
  
-+static int compare_time(const void* a, const void* b)
-+{
-+	const struct kshark_entry *entry_a, *entry_b;
++// OpenGL
++#include <GL/gl.h>
++#include <GL/glu.h>
 +
-+	entry_a = *(const struct kshark_entry **) a;
-+	entry_b = *(const struct kshark_entry **) b;
-+
-+	if (entry_a->ts > entry_b->ts)
-+		return 1;
-+
-+	if (entry_a->ts < entry_b->ts)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static void kshark_data_qsort(struct kshark_entry **entries, size_t size)
-+{
-+	qsort(entries, size, sizeof(struct kshark_entry *), compare_time);
-+}
-+
-+/**
-+ * Add constant offset to the timestamp of the entry. To be used by the sream
-+ * object as a System clock calibration callback function.
-+ */
-+void kshark_offset_calib(int64_t *ts, int64_t *argv)
-+{
-+	*ts += argv[0];
-+}
-+
-+/**
-+ * @brief Apply constant offset to the timestamps of all entries from a given
-+ *	  Data stream.
-+ *
-+ * @param kshark_ctx: Input location for the session context pointer.
-+ * @param entries: Input location for the trace data.
-+ * @param size: The size of the trace data.
-+ * @param sd: Data stream identifier.
-+ * @param offset: The constant offset to be added (in nanosecond).
-+ */
-+void kshark_set_clock_offset(struct kshark_context *kshark_ctx,
-+			     struct kshark_entry **entries, size_t size,
-+			     int sd, int64_t offset)
-+{
-+	struct kshark_data_stream *stream;
-+	int64_t correction;
-+
-+	stream = kshark_get_data_stream(kshark_ctx, sd);
-+	if (!stream)
-+		return;
-+
-+	if (!stream->calib_array) {
-+		stream->calib = kshark_offset_calib;
-+		stream->calib_array = calloc(1, sizeof(*stream->calib_array));
-+		stream->calib_array_size = 1;
-+	}
-+
-+	correction = offset - stream->calib_array[0];
-+	stream->calib_array[0] = offset;
-+
-+	for (size_t i = 0; i < size; ++i)
-+		if (entries[i]->stream_id == sd)
-+			entries[i]->ts += correction;
-+
-+	kshark_data_qsort(entries, size);
-+}
-+
- static int first_in_time_entry(struct kshark_entry_data_set *buffer, int n_buffers, size_t *count)
- {
- 	int64_t t_min = INT64_MAX;
-diff --git a/src/libkshark.h b/src/libkshark.h
-index edf3dcf..dce3dd2 100644
---- a/src/libkshark.h
-+++ b/src/libkshark.h
-@@ -129,6 +129,12 @@ static const char top_name[] = { 0x1b, 0x00 }; // Non printable character
-  */
- #define KS_UNNAMED	(char *) &top_name
+ /*
+  * STB TrueType (single-file public domain library)
+  * https://github.com/nothings/stb
+@@ -25,6 +29,9 @@
+ extern "C" {
+ #endif
  
-+/**
-+ * Timestamp calibration function type. To be user for system clock
-+ * calibration.
-+ */
-+typedef void (*time_calib_func) (int64_t *, int64_t *);
++// KernelShark
++#include "KsCmakeDef.hpp"
 +
- struct kshark_data_stream;
+ /** Structure defining a RGB color. */
+ struct ksplot_color {
+ 	/** The Red component of the color. */
+@@ -46,8 +53,12 @@ struct ksplot_point {
+ 	int y;
+ };
  
- /** A function type to be used by the method interface of the data stream. */
-@@ -327,6 +333,15 @@ struct kshark_data_stream {
- 	/** The number of plugins registered for this stream.*/
- 	int			n_plugins;
++#ifdef GLUT_FOUND
++
+ void ksplot_make_scene(int width, int height);
  
-+	/** System clock calibration function. */
-+	time_calib_func		calib;
++#endif // GLUT_FOUND
 +
-+	/** An array of time calibration constants. */
-+	int64_t			*calib_array;
-+
-+	/** The size of the array of time calibration constants. */
-+	size_t			calib_array_size;
-+
- 	/** List of Plugin's Event handlers. */
- 	struct kshark_event_proc_handler	*event_handlers;
+ void ksplot_init_opengl(int dpr);
  
-@@ -590,6 +605,12 @@ void kshark_clear_all_filters(struct kshark_context *kshark_ctx,
- void kshark_plugin_actions(struct kshark_data_stream *stream,
- 			   void *record, struct kshark_entry *entry);
- 
-+void kshark_calib_entry(struct kshark_data_stream *stream,
-+			struct kshark_entry *entry);
-+
-+void kshark_postprocess_entry(struct kshark_data_stream *stream,
-+			      void *record, struct kshark_entry *entry);
-+
- /** Search failed identifiers. */
- enum kshark_search_failed {
- 	/** All entries have greater timestamps. */
-@@ -980,6 +1001,12 @@ struct kshark_config_doc *kshark_open_config_file(const char *file_name,
- 
- struct kshark_config_doc *kshark_json_to_conf(struct json_object *jobj);
- 
-+void kshark_offset_calib(int64_t *ts, int64_t *atgv);
-+
-+void kshark_set_clock_offset(struct kshark_context *kshark_ctx,
-+			     struct kshark_entry **entries, size_t size,
-+			     int sd, int64_t offset);
-+
- /** Structure representing a data set made of KernelShark entries. */
- struct kshark_entry_data_set {
- 	/** Array of entries pointers. */
+ void ksplot_resize_opengl(int width, int height);
 -- 
 2.25.1
 
