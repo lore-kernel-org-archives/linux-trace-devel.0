@@ -2,68 +2,69 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E01FFC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FE30C433E6
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AE19D20700
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 56B7220700
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbhADRtR (ORCPT
+        id S1726616AbhADRtT (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Jan 2021 12:49:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
+        Mon, 4 Jan 2021 12:49:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S1726246AbhADRtR (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 4 Jan 2021 12:49:17 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4057C0617BB
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:01 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id g20so37953079ejb.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:01 -0800 (PST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54484C0617BF
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:04 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id b9so37958611ejy.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9+wcnKdFrT794q67uDcBNPS86AFrxTdbz7okn8AafxU=;
-        b=OOVOawTdCw1W6p4Nmm74toFV/wOtNdC0V5dC1woYe+Xd9EbE1fcuNEu50nkiWgKPqY
-         jqLuac5ybO/jYy4axA9ISDAm4an1ih1Wemt+zn6B3qWhF5szL5rOOg0sfQIHHu4lpPdP
-         xjGzx0bBEuAyTfcRJFQFQx7xlsfE8cN2Ypb6cV5CwJMNYk6EUMzhKY1d3gL5MqDqr2jQ
-         JQJL9CxWSgfkQqe32IiWQwKbkYjmAsnrqfQcSJB3RikSpompEgV2YiGlSXuEfAvIMG4v
-         63W3SxbnRyPa7Ue0nh7IlzYOqXN4FiIEfsLgufGcWULtQ3S2S5QUdu65LTBb7ll6SGOd
-         IXTQ==
+        bh=XKKQKSyh11GV8jmzTAm3bhr1xnYyypCdbLzIBowMB7U=;
+        b=vgsBe0eqXrd6EiWuzb8Z4K5HnP4CvoBFXOtHJlZ5K0rhfhP+bDaE0tHby+FnICq4RD
+         /dRJmX9DQ8dqRUoD1wqSArsn5G9CzRqhmy0Mcv4wvuagbhqq4n+/NQnADXn6WXLAVLUx
+         O4jtJGvjS6FlklSiLcC2ZCdY4HZSnQf8yshlF9Vuh3lnpMmoVlpNVfZcPSKLcKS6d8vv
+         ScmjcvoOYmfCxbHpFFMRsv3LgnbpTKftgtzk5BRL4Z6SHCcK3e9Ff7wGH7fyaJQ9cxb+
+         PCwS26JGi9u+54afPsks34yvdPP8ob93Ajlyu1UxoMZcic/RG7kA/7fd3IlwgmARcbXE
+         1Xjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9+wcnKdFrT794q67uDcBNPS86AFrxTdbz7okn8AafxU=;
-        b=M0scShU/hmtEL+nM5vJ698yg9/WHspSxwdccvor9qtnSdP9r6KBIrWpzZz2eMmIcTz
-         rwbas8M5ZfKR6LhTmueOIHiORFyodNY4skaF58OmvekdrKPBq99JcQ+OXMwgAh1YryAv
-         /JPXEYFEnk6MY9MFSWhuNWsVTZOsMdMe5FbomTHgkRvx9oEWwYMKPEMf9rnXG7eu4mJx
-         i88Hnu2J3LzVx9ZD+hwNg7z+9UQMUfKFnBblDMFEAZ4GR1lHShpdtmra5YEtAtUhzYsk
-         iP7cLt/Qh2bXhBLDW7/9BfKj9vW1fYdLdDvqRqsw8U1AQJtk2BKSUtq7NOLPn4sb6y9P
-         PNFA==
-X-Gm-Message-State: AOAM533f9rJ/yfq0gAfyGzNn2/4MzL24Ne2M4HjXMTUDS9blfFX6+Kfa
-        HaWiBvUpAnF4VP+RvotD/s0=
-X-Google-Smtp-Source: ABdhPJwu93MJKOigQ5miY+VXCTFGCyySrmNx6SgNS0r/wPOWUMcML7iwN0W9G4C1L+x/A56RnX3EtA==
-X-Received: by 2002:a17:906:8301:: with SMTP id j1mr10578238ejx.397.1609782480420;
-        Mon, 04 Jan 2021 09:48:00 -0800 (PST)
+        bh=XKKQKSyh11GV8jmzTAm3bhr1xnYyypCdbLzIBowMB7U=;
+        b=f67BiaeEfKF4jkK3FW4i9SjUHMYWLQZ/AauK01SRjjPwIs4HLEPqisqUxKI1W6cXCR
+         lSN5+SnLckZt8hfApX6bhPQJuJoP7niFrk1a0qvfviIjYb5EeeHEmSohYugS3y9wDYTO
+         oo5ACy4ulBCSpRiVk/pprtqa+ntNUanhUUF0lsjsjVlEuFucPfsz/hfzUcTQML+wNnKR
+         L3CSVAYv24eyVNYjw0h3KVlBnledOZrVO3tM7YHuQKReF8YPLtnPzrawfbQabsKIz1Iu
+         tP8P6UnLX2uBrm9nHUCKJS89yb+Re0w53TgQoBIEZduJ2gUHxefHBTR4moWaTmnTlYS4
+         AHWw==
+X-Gm-Message-State: AOAM531Eh6il4hYcb86sgrKl3X0jnj7odzs+a1CY/w8W8GLMdxl/aERh
+        v62wWjwQ5qFk+w8+NpV2xtk=
+X-Google-Smtp-Source: ABdhPJzSEfabpSnkn/fIBPXMFNUvct+1dWK/r8VSVnpZqhGopuDjdoSuL/OtdZ13x9F/XW98qRbWkw==
+X-Received: by 2002:a17:906:7f83:: with SMTP id f3mr56443269ejr.282.1609782483163;
+        Mon, 04 Jan 2021 09:48:03 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.47.59
+        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 09:47:59 -0800 (PST)
+        Mon, 04 Jan 2021 09:48:02 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v8 23/44] kernel-shark: Integrate the stream definitions with data model
-Date:   Mon,  4 Jan 2021 19:47:03 +0200
-Message-Id: <20210104174724.70404-24-y.karadz@gmail.com>
+Subject: [PATCH v8 26/44] kernel-shark: Protect ksmodel_set_in_range_bining()
+Date:   Mon,  4 Jan 2021 19:47:06 +0200
+Message-Id: <20210104174724.70404-27-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104174724.70404-1-y.karadz@gmail.com>
 References: <20210104174724.70404-1-y.karadz@gmail.com>
@@ -73,696 +74,38 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The visualization model is adapted in order to be able to distinguish
-the entries belonging to different Data streams.
-We re-enable the visualization model example as well.
+Handle the case when the number of bins is zero or negative.
 
-Signen-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- examples/CMakeLists.txt |   8 ++--
- examples/datahisto.c    |  38 +++++++--------
- src/CMakeLists.txt      |   2 +-
- src/libkshark-model.c   | 102 ++++++++++++++++++++++++----------------
- src/libkshark-model.h   |  34 +++++++-------
- 5 files changed, 102 insertions(+), 82 deletions(-)
+ src/libkshark-model.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
-index 831eee2..2f6acea 100644
---- a/examples/CMakeLists.txt
-+++ b/examples/CMakeLists.txt
-@@ -12,10 +12,10 @@ message(STATUS "multibufferload")
- add_executable(mbload          multibufferload.c)
- target_link_libraries(mbload   kshark)
- 
--# message(STATUS "datahisto")
--# add_executable(dhisto          datahisto.c)
--# target_link_libraries(dhisto   kshark)
--#
-+message(STATUS "datahisto")
-+add_executable(dhisto          datahisto.c)
-+target_link_libraries(dhisto   kshark)
-+
- # message(STATUS "confogio")
- # add_executable(confio          configio.c)
- # target_link_libraries(confio   kshark)
-diff --git a/examples/datahisto.c b/examples/datahisto.c
-index b177b08..568072d 100644
---- a/examples/datahisto.c
-+++ b/examples/datahisto.c
-@@ -7,6 +7,7 @@
- // C
- #include <stdio.h>
- #include <stdlib.h>
-+#include <string.h>
- 
- // KernelShark
- #include "libkshark.h"
-@@ -16,7 +17,7 @@
- 
- const char *default_file = "trace.dat";
- 
--void dump_bin(struct kshark_trace_histo *histo, int bin,
-+void dump_bin(struct kshark_trace_histo *histo, int bin, int sd,
- 	      const char *type, int val)
- {
- 	const struct kshark_entry *e_front, *e_back;
-@@ -26,22 +27,22 @@ void dump_bin(struct kshark_trace_histo *histo, int bin,
- 	printf("bin %i {\n", bin);
- 	if (strcmp(type, "cpu") == 0) {
- 		e_front = ksmodel_get_entry_front(histo, bin, true,
--						  kshark_match_cpu, val,
-+						  kshark_match_cpu, sd, &val,
- 						  NULL,
- 						  &i_front);
- 
- 		e_back = ksmodel_get_entry_back(histo, bin, true,
--						kshark_match_cpu, val,
-+						kshark_match_cpu, sd, &val,
- 						NULL,
- 						&i_back);
- 	} else if (strcmp(type, "task") == 0) {
- 		e_front = ksmodel_get_entry_front(histo, bin, true,
--						  kshark_match_pid, val,
-+						  kshark_match_pid, sd, &val,
- 						  NULL,
- 						  &i_front);
- 
- 		e_back = ksmodel_get_entry_back(histo, bin, true,
--						kshark_match_pid, val,
-+						kshark_match_pid, sd, &val,
- 						NULL,
- 						&i_back);
- 	} else {
-@@ -67,12 +68,12 @@ void dump_bin(struct kshark_trace_histo *histo, int bin,
- 	puts("}\n");
- }
- 
--void dump_histo(struct kshark_trace_histo *histo, const char *type, int val)
-+void dump_histo(struct kshark_trace_histo *histo, int sd, const char *type, int val)
- {
- 	size_t bin;
- 
- 	for (bin = 0; bin < histo->n_bins; ++bin)
--		dump_bin(histo, bin, type, val);
-+		dump_bin(histo, bin, sd, type, val);
- }
- 
- int main(int argc, char **argv)
-@@ -81,8 +82,7 @@ int main(int argc, char **argv)
- 	struct kshark_entry **data = NULL;
- 	struct kshark_trace_histo histo;
- 	ssize_t i, n_rows, n_tasks;
--	bool status;
--	int *pids;
-+	int sd, *pids;
- 
- 	/* Create a new kshark session. */
- 	kshark_ctx = NULL;
-@@ -91,24 +91,24 @@ int main(int argc, char **argv)
- 
- 	/* Open a trace data file produced by trace-cmd. */
- 	if (argc > 1)
--		status = kshark_open(kshark_ctx, argv[1]);
-+		sd = kshark_open(kshark_ctx, argv[1]);
- 	else
--		status = kshark_open(kshark_ctx, default_file);
-+		sd = kshark_open(kshark_ctx, default_file);
- 
--	if (!status) {
-+	if (sd < 0) {
- 		kshark_free(kshark_ctx);
- 		return 1;
- 	}
- 
- 	/* Load the content of the file into an array of entries. */
--	n_rows = kshark_load_data_entries(kshark_ctx, &data);
-+	n_rows = kshark_load_entries(kshark_ctx, sd, &data);
- 	if (n_rows < 1) {
- 		kshark_free(kshark_ctx);
- 		return 1;
- 	}
- 
- 	/* Get a list of all tasks. */
--	n_tasks = kshark_get_task_pids(kshark_ctx, &pids);
-+	n_tasks = kshark_get_task_pids(kshark_ctx, sd, &pids);
- 
- 	/* Initialize the Visualization Model. */
- 	ksmodel_init(&histo);
-@@ -119,7 +119,7 @@ int main(int argc, char **argv)
- 	ksmodel_fill(&histo, data, n_rows);
- 
- 	/* Dump the raw bins. */
--	dump_histo(&histo, "", 0);
-+	dump_histo(&histo, sd, "", 0);
- 
- 	puts("\n...\n\n");
- 
-@@ -127,13 +127,13 @@ int main(int argc, char **argv)
- 	 * Change the state of the model. Do 50% Zoom-In and dump only CPU 0.
- 	 */
- 	ksmodel_zoom_in(&histo, .50, -1);
--	dump_histo(&histo, "cpu", 0);
-+	dump_histo(&histo, sd, "cpu", 0);
- 
- 	puts("\n...\n\n");
- 
- 	/* Shift forward by two bins and this time dump only CPU 1. */
- 	ksmodel_shift_forward(&histo, 2);
--	dump_histo(&histo, "cpu", 1);
-+	dump_histo(&histo, sd, "cpu", 1);
- 
- 	puts("\n...\n\n");
- 
-@@ -142,7 +142,7 @@ int main(int argc, char **argv)
- 	 * Task.
- 	 */
- 	ksmodel_zoom_out(&histo, .10, N_BINS - 1);
--	dump_histo(&histo, "task", pids[n_tasks - 1]);
-+	dump_histo(&histo, sd, "task", pids[n_tasks - 1]);
- 
- 	/* Reset (clear) the model. */
- 	ksmodel_clear(&histo);
-@@ -154,7 +154,7 @@ int main(int argc, char **argv)
- 	free(data);
- 
- 	/* Close the file. */
--	kshark_close(kshark_ctx);
-+	kshark_close(kshark_ctx, sd);
- 
- 	/* Close the session. */
- 	kshark_free(kshark_ctx);
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 1e6ff44..da5448c 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -5,7 +5,7 @@ set(KS_INCLUDS_DESTINATION "${_INSTALL_PREFIX}/include/${KS_APP_NAME}")
- message(STATUS "libkshark")
- add_library(kshark SHARED libkshark.c
-                           libkshark-hash.c
--#                           libkshark-model.c
-+                          libkshark-model.c
-                           libkshark-plugin.c
-                           libkshark-tepdata.c
- #                           libkshark-configio.c
 diff --git a/src/libkshark-model.c b/src/libkshark-model.c
-index babac2a..97cff31 100644
+index 2301b06..44f829d 100644
 --- a/src/libkshark-model.c
 +++ b/src/libkshark-model.c
-@@ -1,17 +1,19 @@
- // SPDX-License-Identifier: LGPL-2.1
+@@ -97,8 +97,19 @@ static void ksmodel_set_in_range_bining(struct kshark_trace_histo *histo,
+ 	int64_t corrected_range, delta_range, range = max - min;
+ 	struct kshark_entry *last;
  
- /*
-- * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-  */
- 
-- /**
--  *  @file    libkshark-model.c
--  *  @brief   Visualization model for FTRACE (trace-cmd) data.
--  */
-+/**
-+ *  @file    libkshark-model.c
-+ *  @brief   Time series visualization model for tracing data.
-+ */
- 
- // C
- #include <stdlib.h>
- #include <assert.h>
-+#include <string.h>
-+#include <stdio.h>
- 
- // KernelShark
- #include "libkshark-model.h"
-@@ -782,7 +784,8 @@ static bool ksmodel_is_visible(struct kshark_entry *e)
- static struct kshark_entry_request *
- ksmodel_entry_front_request_alloc(struct kshark_trace_histo *histo,
- 				  int bin, bool vis_only,
--				  matching_condition_func func, int val)
-+				  matching_condition_func func,
-+				  int sd, int *values)
- {
- 	size_t first, n;
- 
-@@ -794,14 +797,15 @@ ksmodel_entry_front_request_alloc(struct kshark_trace_histo *histo,
- 	first = ksmodel_first_index_at_bin(histo, bin);
- 
- 	return kshark_entry_request_alloc(first, n,
--					  func, val,
-+					  func, sd, values,
- 					  vis_only, KS_GRAPH_VIEW_FILTER_MASK);
- }
- 
- static struct kshark_entry_request *
- ksmodel_entry_back_request_alloc(struct kshark_trace_histo *histo,
- 				 int bin, bool vis_only,
--				 matching_condition_func func, int val)
-+				 matching_condition_func func,
-+				 int sd, int *values)
- {
- 	size_t first, n;
- 
-@@ -813,7 +817,7 @@ ksmodel_entry_back_request_alloc(struct kshark_trace_histo *histo,
- 	first = ksmodel_last_index_at_bin(histo, bin);
- 
- 	return kshark_entry_request_alloc(first, n,
--					  func, val,
-+					  func, sd, values,
- 					  vis_only, KS_GRAPH_VIEW_FILTER_MASK);
- }
- 
-@@ -822,12 +826,13 @@ ksmodel_entry_back_request_alloc(struct kshark_trace_histo *histo,
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param cpu: Cpu Id.
-  *
-  * @returns Index of the first entry from a given Cpu in this bin.
-  */
- ssize_t ksmodel_first_index_at_cpu(struct kshark_trace_histo *histo,
--				   int bin, int cpu)
-+				   int bin, int sd, int cpu)
- {
- 	size_t i, n, first, not_found = KS_EMPTY_BIN;
- 
-@@ -838,7 +843,8 @@ ssize_t ksmodel_first_index_at_cpu(struct kshark_trace_histo *histo,
- 	first = ksmodel_first_index_at_bin(histo, bin);
- 
- 	for (i = first; i < first + n; ++i) {
--		if (histo->data[i]->cpu == cpu) {
-+		if (histo->data[i]->cpu == cpu &&
-+		    histo->data[i]->stream_id == sd) {
- 			if (ksmodel_is_visible(histo->data[i]))
- 				return i;
- 			else
-@@ -854,12 +860,13 @@ ssize_t ksmodel_first_index_at_cpu(struct kshark_trace_histo *histo,
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param pid: Process Id of a task.
-  *
-  * @returns Index of the first entry from a given Task in this bin.
-  */
- ssize_t ksmodel_first_index_at_pid(struct kshark_trace_histo *histo,
--				   int bin, int pid)
-+				   int bin, int sd, int pid)
- {
- 	size_t i, n, first, not_found = KS_EMPTY_BIN;
- 
-@@ -870,7 +877,8 @@ ssize_t ksmodel_first_index_at_pid(struct kshark_trace_histo *histo,
- 	first = ksmodel_first_index_at_bin(histo, bin);
- 
- 	for (i = first; i < first + n; ++i) {
--		if (histo->data[i]->pid == pid) {
-+		if (histo->data[i]->pid == pid &&
-+		    histo->data[i]->stream_id == sd) {
- 			if (ksmodel_is_visible(histo->data[i]))
- 				return i;
- 			else
-@@ -890,8 +898,9 @@ ssize_t ksmodel_first_index_at_pid(struct kshark_trace_histo *histo,
-  * @param bin: Bin id.
-  * @param vis_only: If true, a visible entry is requested.
-  * @param func: Matching condition function.
-- * @param val: Matching condition value, used by the Matching condition
-- *	       function.
-+ * @param sd: Data stream identifier.
-+ * @param values: Matching condition values, used by the Matching condition
-+ *                function.
-  * @param col: Optional input location for Data collection.
-  * @param index: Optional output location for the index of the requested
-  *		 entry inside the array.
-@@ -901,7 +910,7 @@ ssize_t ksmodel_first_index_at_pid(struct kshark_trace_histo *histo,
- const struct kshark_entry *
- ksmodel_get_entry_front(struct kshark_trace_histo *histo,
- 			int bin, bool vis_only,
--			matching_condition_func func, int val,
-+			matching_condition_func func, int sd, int *values,
- 			struct kshark_entry_collection *col,
- 			ssize_t *index)
- {
-@@ -913,7 +922,7 @@ ksmodel_get_entry_front(struct kshark_trace_histo *histo,
- 
- 	/* Set the position at the beginning of the bin and go forward. */
- 	req = ksmodel_entry_front_request_alloc(histo, bin, vis_only,
--							    func, val);
-+						func, sd, values);
- 	if (!req)
- 		return NULL;
- 
-@@ -937,8 +946,9 @@ ksmodel_get_entry_front(struct kshark_trace_histo *histo,
-  * @param bin: Bin id.
-  * @param vis_only: If true, a visible entry is requested.
-  * @param func: Matching condition function.
-- * @param val: Matching condition value, used by the Matching condition
-- *	       function.
-+ * @param sd: Data stream identifier.
-+ * @param values: Matching condition values, used by the Matching condition
-+ *                function.
-  * @param col: Optional input location for Data collection.
-  * @param index: Optional output location for the index of the requested
-  *		 entry inside the array.
-@@ -948,7 +958,7 @@ ksmodel_get_entry_front(struct kshark_trace_histo *histo,
- const struct kshark_entry *
- ksmodel_get_entry_back(struct kshark_trace_histo *histo,
- 		       int bin, bool vis_only,
--		       matching_condition_func func, int val,
-+		       matching_condition_func func, int sd, int *values,
- 		       struct kshark_entry_collection *col,
- 		       ssize_t *index)
- {
-@@ -960,7 +970,7 @@ ksmodel_get_entry_back(struct kshark_trace_histo *histo,
- 
- 	/* Set the position at the end of the bin and go backwards. */
- 	req = ksmodel_entry_back_request_alloc(histo, bin, vis_only,
--							   func, val);
-+					       func, sd, values);
- 	if (!req)
- 		return NULL;
- 
-@@ -998,6 +1008,7 @@ static int ksmodel_get_entry_pid(const struct kshark_entry *entry)
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param cpu: CPU Id.
-  * @param vis_only: If true, a visible entry is requested.
-  * @param col: Optional input location for Data collection.
-@@ -1008,7 +1019,7 @@ static int ksmodel_get_entry_pid(const struct kshark_entry *entry)
-  *	    Identifier (KS_EMPTY_BIN or KS_FILTERED_BIN).
-  */
- int ksmodel_get_pid_front(struct kshark_trace_histo *histo,
--			  int bin, int cpu, bool vis_only,
-+			  int bin, int sd, int cpu, bool vis_only,
- 			  struct kshark_entry_collection *col,
- 			  ssize_t *index)
- {
-@@ -1018,7 +1029,7 @@ int ksmodel_get_pid_front(struct kshark_trace_histo *histo,
- 		return KS_EMPTY_BIN;
- 
- 	entry = ksmodel_get_entry_front(histo, bin, vis_only,
--					       kshark_match_cpu, cpu,
-+					       kshark_match_cpu, sd, &cpu,
- 					       col, index);
- 
- 	return ksmodel_get_entry_pid(entry);
-@@ -1031,6 +1042,7 @@ int ksmodel_get_pid_front(struct kshark_trace_histo *histo,
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param cpu: CPU Id.
-  * @param vis_only: If true, a visible entry is requested.
-  * @param col: Optional input location for Data collection.
-@@ -1041,7 +1053,7 @@ int ksmodel_get_pid_front(struct kshark_trace_histo *histo,
-  *	    Identifier (KS_EMPTY_BIN or KS_FILTERED_BIN).
-  */
- int ksmodel_get_pid_back(struct kshark_trace_histo *histo,
--			 int bin, int cpu, bool vis_only,
-+			 int bin, int sd, int cpu, bool vis_only,
- 			 struct kshark_entry_collection *col,
- 			 ssize_t *index)
- {
-@@ -1051,7 +1063,7 @@ int ksmodel_get_pid_back(struct kshark_trace_histo *histo,
- 		return KS_EMPTY_BIN;
- 
- 	entry = ksmodel_get_entry_back(histo, bin, vis_only,
--					      kshark_match_cpu, cpu,
-+					      kshark_match_cpu, sd, &cpu,
- 					      col, index);
- 
- 	return ksmodel_get_entry_pid(entry);
-@@ -1080,6 +1092,7 @@ static int ksmodel_get_entry_cpu(const struct kshark_entry *entry)
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param pid: Process Id.
-  * @param vis_only: If true, a visible entry is requested.
-  * @param col: Optional input location for Data collection.
-@@ -1090,7 +1103,7 @@ static int ksmodel_get_entry_cpu(const struct kshark_entry *entry)
-  *	    Identifier (KS_EMPTY_BIN or KS_FILTERED_BIN).
-  */
- int ksmodel_get_cpu_front(struct kshark_trace_histo *histo,
--			  int bin, int pid, bool vis_only,
-+			  int bin, int sd, int pid, bool vis_only,
- 			  struct kshark_entry_collection *col,
- 			  ssize_t *index)
- {
-@@ -1100,7 +1113,7 @@ int ksmodel_get_cpu_front(struct kshark_trace_histo *histo,
- 		return KS_EMPTY_BIN;
- 
- 	entry = ksmodel_get_entry_front(histo, bin, vis_only,
--					       kshark_match_pid, pid,
-+					       kshark_match_pid, sd, &pid,
- 					       col,
- 					       index);
- 	return ksmodel_get_entry_cpu(entry);
-@@ -1113,6 +1126,7 @@ int ksmodel_get_cpu_front(struct kshark_trace_histo *histo,
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param pid: Process Id.
-  * @param vis_only: If true, a visible entry is requested.
-  * @param col: Optional input location for Data collection.
-@@ -1123,7 +1137,7 @@ int ksmodel_get_cpu_front(struct kshark_trace_histo *histo,
-  *	    Identifier (KS_EMPTY_BIN or KS_FILTERED_BIN).
-  */
- int ksmodel_get_cpu_back(struct kshark_trace_histo *histo,
--			 int bin, int pid, bool vis_only,
-+			 int bin, int sd, int pid, bool vis_only,
- 			 struct kshark_entry_collection *col,
- 			 ssize_t *index)
- {
-@@ -1133,7 +1147,7 @@ int ksmodel_get_cpu_back(struct kshark_trace_histo *histo,
- 		return KS_EMPTY_BIN;
- 
- 	entry = ksmodel_get_entry_back(histo, bin, vis_only,
--					      kshark_match_pid, pid,
-+					      kshark_match_pid, sd, &pid,
- 					      col,
- 					      index);
- 
-@@ -1145,6 +1159,7 @@ int ksmodel_get_cpu_back(struct kshark_trace_histo *histo,
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param cpu: Cpu Id.
-  * @param col: Optional input location for Data collection.
-  * @param index: Optional output location for the index of the requested
-@@ -1153,7 +1168,7 @@ int ksmodel_get_cpu_back(struct kshark_trace_histo *histo,
-  * @returns True, if a visible entry exists in this bin. Else false.
-  */
- bool ksmodel_cpu_visible_event_exist(struct kshark_trace_histo *histo,
--				     int bin, int cpu,
-+				     int bin, int sd, int cpu,
- 				     struct kshark_entry_collection *col,
- 				     ssize_t *index)
- {
-@@ -1166,7 +1181,7 @@ bool ksmodel_cpu_visible_event_exist(struct kshark_trace_histo *histo,
- 	/* Set the position at the beginning of the bin and go forward. */
- 	req = ksmodel_entry_front_request_alloc(histo,
- 						bin, true,
--						kshark_match_cpu, cpu);
-+						kshark_match_cpu, sd, &cpu);
- 	if (!req)
- 		return false;
- 
-@@ -1198,6 +1213,7 @@ bool ksmodel_cpu_visible_event_exist(struct kshark_trace_histo *histo,
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param pid: Process Id of the task.
-  * @param col: Optional input location for Data collection.
-  * @param index: Optional output location for the index of the requested
-@@ -1206,7 +1222,7 @@ bool ksmodel_cpu_visible_event_exist(struct kshark_trace_histo *histo,
-  * @returns True, if a visible entry exists in this bin. Else false.
-  */
- bool ksmodel_task_visible_event_exist(struct kshark_trace_histo *histo,
--				      int bin, int pid,
-+				      int bin, int sd, int pid,
- 				      struct kshark_entry_collection *col,
- 				      ssize_t *index)
- {
-@@ -1219,7 +1235,7 @@ bool ksmodel_task_visible_event_exist(struct kshark_trace_histo *histo,
- 	/* Set the position at the beginning of the bin and go forward. */
- 	req = ksmodel_entry_front_request_alloc(histo,
- 						bin, true,
--						kshark_match_pid, pid);
-+						kshark_match_pid, sd, &pid);
- 	if (!req)
- 		return false;
- 
-@@ -1247,15 +1263,17 @@ bool ksmodel_task_visible_event_exist(struct kshark_trace_histo *histo,
- }
- 
- static bool match_cpu_missed_events(struct kshark_context *kshark_ctx,
--				    struct kshark_entry *e, int cpu)
-+				    struct kshark_entry *e, int sd, int *cpu)
- {
--	return e->event_id == -EOVERFLOW && e->cpu == cpu;
-+	return e->event_id == KS_EVENT_OVERFLOW &&
-+	       e->cpu == *cpu && e->stream_id == sd;
- }
- 
- static bool match_pid_missed_events(struct kshark_context *kshark_ctx,
--				    struct kshark_entry *e, int pid)
-+				    struct kshark_entry *e, int sd, int *pid)
- {
--	return e->event_id == -EOVERFLOW && e->pid == pid;
-+	return e->event_id == KS_EVENT_OVERFLOW &&
-+	       e->pid == *pid && e->stream_id == sd;
- }
- 
- /**
-@@ -1264,6 +1282,7 @@ static bool match_pid_missed_events(struct kshark_context *kshark_ctx,
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param cpu: CPU Id.
-  * @param col: Optional input location for Data collection.
-  * @param index: Optional output location for the index of the requested
-@@ -1273,12 +1292,12 @@ static bool match_pid_missed_events(struct kshark_context *kshark_ctx,
-  */
- const struct kshark_entry *
- ksmodel_get_cpu_missed_events(struct kshark_trace_histo *histo,
--			      int bin, int cpu,
-+			      int bin, int sd, int cpu,
- 			      struct kshark_entry_collection *col,
- 			      ssize_t *index)
- {
- 	return ksmodel_get_entry_front(histo, bin, true,
--				       match_cpu_missed_events, cpu,
-+				       match_cpu_missed_events, sd, &cpu,
- 				       col, index);
- }
- 
-@@ -1288,6 +1307,7 @@ ksmodel_get_cpu_missed_events(struct kshark_trace_histo *histo,
-  *
-  * @param histo: Input location for the model descriptor.
-  * @param bin: Bin id.
-+ * @param sd: Data stream identifier.
-  * @param pid: Process Id of the task.
-  * @param col: Optional input location for Data collection.
-  * @param index: Optional output location for the index of the requested
-@@ -1297,11 +1317,11 @@ ksmodel_get_cpu_missed_events(struct kshark_trace_histo *histo,
-  */
- const struct kshark_entry *
- ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
--			       int bin, int pid,
-+			       int bin, int sd, int pid,
- 			       struct kshark_entry_collection *col,
- 			       ssize_t *index)
- {
- 	return ksmodel_get_entry_front(histo, bin, true,
--				       match_pid_missed_events, pid,
-+				       match_pid_missed_events, sd, &pid,
- 				       col, index);
- }
-diff --git a/src/libkshark-model.h b/src/libkshark-model.h
-index 47793b1..87e252e 100644
---- a/src/libkshark-model.h
-+++ b/src/libkshark-model.h
-@@ -1,13 +1,13 @@
- /* SPDX-License-Identifier: LGPL-2.1 */
- 
- /*
-- * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
-+ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-  */
- 
-- /**
--  *  @file    libkshark-model.h
--  *  @brief   Visualization model for FTRACE (trace-cmd) data.
--  */
-+/**
-+ *  @file    libkshark-model.h
-+ *  @brief   Time series visualization model for tracing data.
-+ */
- 
- #ifndef _LIB_KSHARK_MODEL_H
- #define _LIB_KSHARK_MODEL_H
-@@ -102,64 +102,64 @@ ssize_t ksmodel_first_index_at_bin(struct kshark_trace_histo *histo, int bin);
- ssize_t ksmodel_last_index_at_bin(struct kshark_trace_histo *histo, int bin);
- 
- ssize_t ksmodel_first_index_at_cpu(struct kshark_trace_histo *histo,
--				   int bin, int cpu);
-+				   int bin, int sd, int cpu);
- 
- ssize_t ksmodel_first_index_at_pid(struct kshark_trace_histo *histo,
--				   int bin, int pid);
-+				   int bin, int sd, int pid);
- 
- const struct kshark_entry *
- ksmodel_get_entry_front(struct kshark_trace_histo *histo,
- 			int bin, bool vis_only,
--			matching_condition_func func, int val,
-+			matching_condition_func func, int sd, int *values,
- 			struct kshark_entry_collection *col,
- 			ssize_t *index);
- 
- const struct kshark_entry *
- ksmodel_get_entry_back(struct kshark_trace_histo *histo,
- 		       int bin, bool vis_only,
--		       matching_condition_func func, int val,
-+		       matching_condition_func func, int sd, int *values,
- 		       struct kshark_entry_collection *col,
- 		       ssize_t *index);
- 
- int ksmodel_get_pid_front(struct kshark_trace_histo *histo,
--			  int bin, int cpu, bool vis_only,
-+			  int bin, int sd, int cpu, bool vis_only,
- 			  struct kshark_entry_collection *col,
- 			  ssize_t *index);
- 
- int ksmodel_get_pid_back(struct kshark_trace_histo *histo,
--			 int bin, int cpu, bool vis_only,
-+			 int bin, int sd, int cpu, bool vis_only,
- 			 struct kshark_entry_collection *col,
- 			 ssize_t *index);
- 
- int ksmodel_get_cpu_front(struct kshark_trace_histo *histo,
--			  int bin, int pid, bool vis_only,
-+			  int bin, int sd, int pid, bool vis_only,
- 			  struct kshark_entry_collection *col,
- 			  ssize_t *index);
- 
- int ksmodel_get_cpu_back(struct kshark_trace_histo *histo,
--			 int bin, int pid, bool vis_only,
-+			 int bin, int sd, int pid, bool vis_only,
- 			 struct kshark_entry_collection *col,
- 			 ssize_t *index);
- 
- bool ksmodel_cpu_visible_event_exist(struct kshark_trace_histo *histo,
--				     int bin, int cpu,
-+				     int bin, int sd, int cpu,
- 				     struct kshark_entry_collection *col,
- 				     ssize_t *index);
- 
- bool ksmodel_task_visible_event_exist(struct kshark_trace_histo *histo,
--				      int bin, int pid,
-+				      int bin, int sd, int pid,
- 				      struct kshark_entry_collection *col,
- 				      ssize_t *index);
- 
- const struct kshark_entry *
- ksmodel_get_cpu_missed_events(struct kshark_trace_histo *histo,
--			      int bin, int cpu,
-+			      int bin, int sd, int cpu,
- 			      struct kshark_entry_collection *col,
- 			      ssize_t *index);
- 
- const struct kshark_entry *
- ksmodel_get_task_missed_events(struct kshark_trace_histo *histo,
--			       int bin, int pid,
-+			       int bin, int sd, int pid,
- 			       struct kshark_entry_collection *col,
- 			       ssize_t *index);
- 
++	if (n <= 0) {
++		histo->n_bins = histo->bin_size = 0;
++		histo->min = min;
++		histo->max = max;
++
++		free(histo->bin_count);
++		free(histo->map);
++
++		return;
++	}
++
+ 	/* The size of the bin must be >= 1, hence the range must be >= n. */
+-	if (n == 0 || range < n) {
++	if (range < n) {
+ 		range = n;
+ 		max = min + n;
+ 	}
 -- 
 2.25.1
 
