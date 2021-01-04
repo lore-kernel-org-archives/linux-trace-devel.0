@@ -5,66 +5,66 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77FACC433E0
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:48:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B604FC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:48:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 53928206CB
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:48:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7CE2C206E4
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:48:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbhADRsT (ORCPT
+        id S1726072AbhADRsW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 4 Jan 2021 12:48:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
+        Mon, 4 Jan 2021 12:48:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbhADRsS (ORCPT
+        with ESMTP id S1725889AbhADRsU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:48:18 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B640C061793
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:47:38 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id r5so28191902eda.12
-        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:47:38 -0800 (PST)
+        Mon, 4 Jan 2021 12:48:20 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B31EC061794
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:47:39 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id h16so28202448edt.7
+        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:47:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ctl/1hc1CjgpqETA+YlX+MS6l+shLWrhVEkHHBmBygY=;
-        b=dTrLrVAuOEe1Y3zT+63siD5MWNgksQ++tBgn2buEuWMxMqKKVzFVrjKe38iT4PVfqf
-         RkuFvQD0XeUeTa1vKc701bs9//gdR5qRcPDif8UjcrSLDhUEpOpod9uBtyfbJhjA9fqa
-         UvJ+sOHaNOrA0Bz4vML2Tyfqaj6US9gN5eP4U1O/3tCe4VvpZd8jJLjfRL1/bhPJ67Kr
-         aEztcGDCvpeqI7DH4OIwA1qshX5faHmcHPfGuIsLdN8N83rl6CsrbPQPyKQTvgxfGXHv
-         jQM/Ry1juI/i/etetCqkuE7MsjP672/FZtAbWnshQW9eficKk68SNknEBMRD5itl0mIS
-         N1ew==
+        bh=/MssCVWttlOSkk+O7dcpV0ElxXwUugI/eWzTY461130=;
+        b=dp0dXJ++WkHZ97smGi7rR5HlexmVad5AEXYQfa9G8v0UH0cgBMQi30WBJGyLvgTmd7
+         QsydfEauCe4DuhtYp/e7H9jLG0e/BJ3mSaNX4r7XwadWnARWMS3pF/y3i8q6FSr2Lig+
+         i1QpBv0hJ8sd3Nt+eKH2uokMoAFB+8GSzXrpqZ5ZGYPNu2+KcVSEFYFftRUjJL/tzQjA
+         jQ8/7OopPHT9nEEyxQ7Il867hZH1O1xIG922FIv8tG6RjgrwR3l3f+rLj3SXasoazvnx
+         HwK+NNMd9kywAHArsYC2C54MzVYnAIDvjIAbKCGVqQhUn4thazmvm5C465yjjW62XoW4
+         jebA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ctl/1hc1CjgpqETA+YlX+MS6l+shLWrhVEkHHBmBygY=;
-        b=NWLhhxIcP4sUQT4pv/u4MxGmbzzTZr+KqiItQhD0r26RxhLUNA86VFkhl3qUawZ73p
-         GjKyS77PkGro+3fZGv5AM/eto+FQIM0Q8sT9efSDRvdUFf5OqVQe3GpD3oUjaGRQ9psz
-         Pb5MmOfonAW+11pGmaxVEWkj0mf7a7f0yphrjL4Imk93cU80IXXFeoFZugc3W/4jIrSb
-         E7rMEnGB98jX/0GPzFaaCGb4l5k0B4LCLvfUDUxmTnZ14qHzCyzkbkOrf/mu1cDg0Lya
-         xSGNS4bh9Swy4ddUxenSSQVgxkPcMuB1GP670eOxlPVb2af0ZziqCj2Hc/RWicbbw7z5
-         bOYA==
-X-Gm-Message-State: AOAM531GWb8yeSkojtjfprx7QSDwL5tYtFORR/ymBIb6FBGyw1CLewGx
-        qEtVsscoZxD5bCUpaxYMqYfnE0QDRpWADQ==
-X-Google-Smtp-Source: ABdhPJyIoBlDV/4siZj6gKtCGSkihg09BvyjRtGmtmoNVqheRNMXqQatwDiIMxEDL292lvXqM8+u2Q==
-X-Received: by 2002:aa7:cb49:: with SMTP id w9mr74215709edt.357.1609782457226;
-        Mon, 04 Jan 2021 09:47:37 -0800 (PST)
+        bh=/MssCVWttlOSkk+O7dcpV0ElxXwUugI/eWzTY461130=;
+        b=D2SDjQCKAmhoGWpQrPR6LQ6IQfkKJpORiSzYe7CwjBhZ6PUXQQKV5D9MBfuF9U76UA
+         FWWw+erh2bRs0Ur10mtrtHXh82Ba2L98WNPqp0fhNnTwLlS5h+++5fKYxbofeFbwSt50
+         vB62q2dbQGXftXUbLdtWoe+atu2TY+OvxxyZWCRXSkTYaraHQBTuCaUjfsxJbdy1qBo6
+         DJmN30TkHzgEOqKjVD2G62zUSBz6gyxvudL2HfJtgfhbo1L1kacs9CSAIjUHHddVK/vS
+         S56Kg+bJDAy6DGK6FXTccA6mVD52WU2hT3EPXSDeBz6Od8v+4mINwpIshkZuHzrIvj/U
+         JHBA==
+X-Gm-Message-State: AOAM533UCO9lHOlbw51NO1B8ZZJteGbg3+x+GB8YH12X/u0TeHJvuHU8
+        sUpXmJ/CET+4yo45aFBtmEE=
+X-Google-Smtp-Source: ABdhPJx8kLA/ad9NjS9WNkbAWPHpF97xd9RGChhWlJg6TOsWw8YK3N7+RdPqwmILbrJgfTC9hIyJlg==
+X-Received: by 2002:a05:6402:b9a:: with SMTP id cf26mr70866588edb.372.1609782458286;
+        Mon, 04 Jan 2021 09:47:38 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.47.36
+        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.47.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 09:47:36 -0800 (PST)
+        Mon, 04 Jan 2021 09:47:37 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v8 01/44] kernel-shark: Adopt trace-cmd API changes
-Date:   Mon,  4 Jan 2021 19:46:41 +0200
-Message-Id: <20210104174724.70404-2-y.karadz@gmail.com>
+Subject: [PATCH v8 02/44] kernel-shark: Use libtraceevent and libtracefs
+Date:   Mon,  4 Jan 2021 19:46:42 +0200
+Message-Id: <20210104174724.70404-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104174724.70404-1-y.karadz@gmail.com>
 References: <20210104174724.70404-1-y.karadz@gmail.com>
@@ -74,134 +74,537 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Use the new names of the methods
-
-free_record() -> tracecmd_free_record()
-tracecmd_get_pevent() -> tracecmd_get_tep()
-
-follow the tracecmd library naming convention.
+libtraceevent and libtracefs are now stand-alone libraries, independent
+form trace-cmd. Start building and linking KernelShark against those
+independent libraries. All 3 libraries (libtraceevent, libtracefs and
+libtracecmd) are being detected by using pkg-config. Since
+trace-filter-hash.h is no longer distributed as a public header by the
+libtracecmd, we are adding a copy of it. This is a temporary solution.
+In the folowing patches we will introduce a new implementation of the
+hash table provided by trace-filter-hash.h and the header itself will
+be removed once it is no longer needed.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark.c            | 20 ++++++++++----------
- src/plugins/sched_events.c |  4 ++--
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ CMakeLists.txt             |   9 ++-
+ build/FindTraceCmd.cmake   | 138 +++++++++++++++----------------------
+ build/FindTraceEvent.cmake |  76 ++++++++++++++++++++
+ build/FindTraceFS.cmake    |  76 ++++++++++++++++++++
+ src/CMakeLists.txt         |   6 +-
+ src/libkshark.c            |  10 +--
+ src/libkshark.h            |   2 +-
+ src/trace-filter-hash.h    |  64 +++++++++++++++++
+ 8 files changed, 286 insertions(+), 95 deletions(-)
+ create mode 100644 build/FindTraceEvent.cmake
+ create mode 100644 build/FindTraceFS.cmake
+ create mode 100644 src/trace-filter-hash.h
 
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c95249e..3ea40f0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -21,7 +21,11 @@ if (NOT _LIBDIR)
+     set(_LIBDIR "${_INSTALL_PREFIX}/lib")
+ endif (NOT _LIBDIR)
+ 
+-include(${KS_DIR}/build/FindTraceCmd.cmake)
++set(CMAKE_MODULE_PATH "${KS_DIR}/build")
++find_package(TraceEvent REQUIRED)
++find_package(TraceFS    REQUIRED)
++find_package(TraceCmd   REQUIRED)
++
+ include(${KS_DIR}/build/FindJSONC.cmake)
+ 
+ find_package(Doxygen)
+@@ -80,8 +84,7 @@ endif (CMAKE_BUILD_TYPE MATCHES Package)
+ include_directories(${KS_DIR}/src/
+                     ${KS_DIR}/build/src/
+                     ${JSONC_INCLUDE_DIR}
+-                    ${TRACECMD_INCLUDE_DIR}
+-                    ${TRACEFS_INCLUDE_DIR})
++                    ${TRACECMD_INCLUDE_DIR})
+ 
+ message("")
+ message(STATUS "C flags      : " ${CMAKE_C_FLAGS})
+diff --git a/build/FindTraceCmd.cmake b/build/FindTraceCmd.cmake
+index 02f4529..23eefed 100644
+--- a/build/FindTraceCmd.cmake
++++ b/build/FindTraceCmd.cmake
+@@ -1,106 +1,78 @@
+-# Find traceevent and trace-cmd
+-# This module finds an installed trace-cmd package.
+-#
+-# It sets the following variables:
+-#  TRACEEVENT_LIBRARY, traceevent the library.
+-#  TRACEEVENT_FOUND, If false, do not try to use traceevent.
+-#
+-#  TRACECMD_INCLUDE_DIR, where to find trace-cmd header.
+-#  TRACEFS_INCLUDE_DIR, where to find tracefs header.
+-#  TRACEFS_LIBRARY, the tracefs library.
+-#  TRACECMD_LIBRARY, the trace-cmd library.
+-#  TRACECMD_FOUND, If false, do not try to use trace-cmd.
++# SPDX-License-Identifier: LGPL-2.1
+ 
+-# MESSAGE(" Looking for trace-cmd ...")
++#[=======================================================================[.rst:
++FindTraceCmd
++-------
+ 
+-# First search in the user provided paths.
+-if (CMAKE_BUILD_TYPE MATCHES Debug)
++Finds the tracecmd library.
+ 
+-  find_program(TRACECMD_EXECUTABLE   NAMES  trace-cmd
+-                                     PATHS  $ENV{TRACE_CMD}/tracecmd/
+-                                     NO_DEFAULT_PATH)
++Imported Targets
++^^^^^^^^^^^^^^^^
+ 
+-endif (CMAKE_BUILD_TYPE MATCHES Debug)
++This module defines the :prop_tgt:`IMPORTED` targets:
+ 
+-if (NOT TRACECMD_EXECUTABLE)
++``trace::cmd``
++ Defined if the system has libtracecmd.
+ 
+-  set(TRACECMD_EXECUTABLE "${_INSTALL_PREFIX}/bin/trace-cmd")
++Result Variables
++^^^^^^^^^^^^^^^^
+ 
+-endif (NOT TRACECMD_EXECUTABLE)
++``TraceCmd_FOUND``
++  True if the system has the libtracecmd library.
++``TraceCmd_VERSION``
++  The version of the libtracecmd library which was found.
++``TraceCmd_INCLUDE_DIRS``
++  Include directories needed to use libtracecmd.
++``TraceCmd_LIBRARIES``
++  Libraries needed to link to libtracecmd.
+ 
+-find_path(TRACECMD_INCLUDE_DIR  NAMES  trace-cmd/trace-cmd.h
+-                                PATHS  $ENV{TRACE_CMD}/include/
+-                                NO_DEFAULT_PATH)
++Cache Variables
++^^^^^^^^^^^^^^^
+ 
+-find_path(TRACEFS_INCLUDE_DIR   NAMES  tracefs/tracefs.h
+-                                PATHS  $ENV{TRACE_CMD}/include/
+-                                NO_DEFAULT_PATH)
++``TraceCmd_INCLUDE_DIR``
++  The directory containing ``trace-cmd.h``.
++``TraceCmd_LIBRARY``
++  The path to the tracecmd library.
+ 
+-find_library(TRACECMD_LIBRARY   NAMES  trace-cmd/libtracecmd.a
+-                                PATHS  $ENV{TRACE_CMD}/lib/
+-                                NO_DEFAULT_PATH)
++#]=======================================================================]
+ 
+-find_library(TRACEFS_LIBRARY    NAMES  tracefs/libtracefs.a
+-                                PATHS  $ENV{TRACE_CMD}/lib/
+-                                NO_DEFAULT_PATH)
++find_package(PkgConfig QUIET)
++pkg_check_modules(PC_TraceCmd QUIET libtracecmd)
+ 
+-find_library(TRACEEVENT_LIBRARY NAMES  traceevent/libtraceevent.a
+-                                PATHS  $ENV{TRACE_CMD}/lib/
+-                                NO_DEFAULT_PATH)
++set(TraceCmd_VERSION     ${PC_TraceCmd_VERSION})
++set(TraceCmd_DEFINITIONS ${PC_TraceCmd_CFLAGS_OTHER})
+ 
+-# If not found, search in the default system paths. Note that if the previous
+-# search was successful "find_path" will do nothing this time.
+-find_program(TRACECMD_EXECUTABLE   NAMES  trace-cmd)
+-find_path(TRACECMD_INCLUDE_DIR  NAMES  trace-cmd/trace-cmd.h)
+-find_path(TRACEFS_INCLUDE_DIR   NAMES  tracefs/tracefs.h)
+-find_library(TRACECMD_LIBRARY   NAMES  trace-cmd/libtracecmd.so)
+-find_library(TRACEFS_LIBRARY    NAMES  tracefs/libtracefs.so)
+-find_library(TRACEEVENT_LIBRARY NAMES  traceevent/libtraceevent.so)
++find_path(TraceCmd_INCLUDE_DIR NAMES trace-cmd/trace-cmd.h
++                               HINTS ${PC_TraceCmd_INCLUDE_DIRS}
++                                     ${PC_TraceCmd_INCLUDEDIR})
+ 
+-IF (TRACECMD_INCLUDE_DIR AND TRACECMD_LIBRARY)
++find_library(TraceCmd_LIBRARY  NAMES tracecmd libtracecmd
++                               HINTS ${PC_TraceCmd_LIBDIR}
++                                     ${PC_TraceCmdLIBRARY_DIRS})
+ 
+-  SET(TRACECMD_FOUND TRUE)
++mark_as_advanced(TraceCmd_INCLUDE_DIR TraceCmd_LIBRARY)
+ 
+-ENDIF (TRACECMD_INCLUDE_DIR AND TRACECMD_LIBRARY)
++include(FindPackageHandleStandardArgs)
+ 
+-IF (TRACECMD_FOUND)
++find_package_handle_standard_args(TraceCmd DEFAULT_MSG
++                                  TraceCmd_LIBRARY TraceCmd_INCLUDE_DIR)
+ 
+-  MESSAGE(STATUS "Found trace-cmd: ${TRACECMD_LIBRARY}")
++if(TraceCmd_FOUND)
+ 
+-ELSE (TRACECMD_FOUND)
++  set(TraceCmd_LIBRARIES    ${TraceCmd_LIBRARY})
++  set(TraceCmd_INCLUDE_DIRS ${TraceCmd_INCLUDE_DIR})
+ 
+-  MESSAGE(FATAL_ERROR "\nCould not find trace-cmd!\n")
++  if(NOT TARGET trace::cmd)
++    add_library(trace::cmd UNKNOWN IMPORTED)
+ 
+-ENDIF (TRACECMD_FOUND)
++    set_target_properties(trace::cmd
++                          PROPERTIES
++                            INTERFACE_INCLUDE_DIRECTORIES "${TraceCmd_INCLUDE_DIRS}"
++                            INTERFACE_COMPILE_DEFINITIONS "${TraceCmd_DEFINITIONS}"
++                            IMPORTED_LINK_INTERFACE_LANGUAGES "C"
++                            IMPORTED_LOCATION "${TraceCmd_LIBRARIES}")
++  endif()
+ 
+-IF (TRACEFS_INCLUDE_DIR AND TRACEFS_LIBRARY)
++endif()
+ 
+-  SET(TRACEFS_FOUND TRUE)
+-
+-ENDIF (TRACEFS_INCLUDE_DIR AND TRACEFS_LIBRARY)
+-
+-IF (TRACEFS_FOUND)
+-
+-  MESSAGE(STATUS "Found tracefs: ${TRACEFS_LIBRARY}")
+-
+-ELSE (TRACEFS_FOUND)
+-
+-  MESSAGE(FATAL_ERROR "\nCould not find tracefs!\n")
+-
+-ENDIF (TRACEFS_FOUND)
+-
+-IF (TRACEEVENT_LIBRARY)
+-
+-  SET(TRACEEVENT_FOUND TRUE)
+-
+-ENDIF (TRACEEVENT_LIBRARY)
+-
+-IF (TRACEEVENT_FOUND)
+-
+-  MESSAGE(STATUS "Found traceevent: ${TRACEEVENT_LIBRARY}")
+-
+-ELSE (TRACEEVENT_FOUND)
+-
+-  MESSAGE(FATAL_ERROR "\nCould not find libtraceevent!\n")
+-
+-ENDIF (TRACEEVENT_FOUND)
++find_program(TRACECMD_EXECUTABLE NAMES trace-cmd)
+diff --git a/build/FindTraceEvent.cmake b/build/FindTraceEvent.cmake
+new file mode 100644
+index 0000000..ae391b6
+--- /dev/null
++++ b/build/FindTraceEvent.cmake
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: LGPL-2.1
++
++#[=======================================================================[.rst:
++FindTraceevent
++-------
++
++Finds the traceevent library.
++
++Imported Targets
++^^^^^^^^^^^^^^^^
++
++This module defines the :prop_tgt:`IMPORTED` targets:
++
++``trace::event``
++ Defined if the system has libtraceevent.
++
++Result Variables
++^^^^^^^^^^^^^^^^
++
++``TraceEvent_FOUND``
++  True if the system has the libtraceevent library.
++``TraceEvent_VERSION``
++  The version of the libtraceevent library which was found.
++``TraceEvent_INCLUDE_DIRS``
++  Include directories needed to use libtraceevent.
++``TraceEvent_LIBRARIES``
++  Libraries needed to link to libtraceevent.
++
++Cache Variables
++^^^^^^^^^^^^^^^
++
++``TraceEvent_INCLUDE_DIR``
++  The directory containing ``event-parse.h``.
++``TraceEvent_LIBRARY``
++  The path to the traceevent library.
++
++#]=======================================================================]
++
++find_package(PkgConfig QUIET)
++pkg_check_modules(PC_TraceEvent QUIET libtraceevent)
++
++set(TraceEvent_VERSION     ${PC_TraceEvent_VERSION})
++set(TraceEvent_DEFINITIONS ${PC_TraceEvent_CFLAGS_OTHER})
++
++find_path(TraceEvent_INCLUDE_DIR  NAMES traceevent/event-parse.h
++                                  HINTS ${PC_TraceEvent_INCLUDE_DIRS}
++                                        ${PC_TraceEvent_INCLUDEDIR})
++
++find_library(TraceEvent_LIBRARY   NAMES traceevent libtraceevent
++                                  HINTS ${PC_TraceEvent_LIBDIR}
++                                        ${PC_TraceEventLIBRARY_DIRS})
++
++mark_as_advanced(TraceEvent_INCLUDE_DIR TraceEvent_LIBRARY)
++
++include(FindPackageHandleStandardArgs)
++
++find_package_handle_standard_args(TraceEvent DEFAULT_MSG
++                                  TraceEvent_LIBRARY TraceEvent_INCLUDE_DIR)
++
++if(TraceEvent_FOUND)
++
++  set(TraceEvent_LIBRARIES    ${TraceEvent_LIBRARY})
++  set(TraceEvent_INCLUDE_DIRS ${TraceEvent_INCLUDE_DIR})
++
++  if(NOT TARGET trace::event)
++    add_library(trace::event UNKNOWN IMPORTED)
++
++    set_target_properties(trace::event
++                          PROPERTIES
++                            INTERFACE_INCLUDE_DIRECTORIES "${TraceEvent_INCLUDE_DIRS}"
++                            INTERFACE_COMPILE_DEFINITIONS "${TraceEvent_DEFINITIONS}"
++                            IMPORTED_LINK_INTERFACE_LANGUAGES "C"
++                            IMPORTED_LOCATION "${TraceEvent_LIBRARIES}")
++  endif()
++
++endif()
+diff --git a/build/FindTraceFS.cmake b/build/FindTraceFS.cmake
+new file mode 100644
+index 0000000..82fa012
+--- /dev/null
++++ b/build/FindTraceFS.cmake
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: LGPL-2.1
++
++#[=======================================================================[.rst:
++FindTraceFS
++-------
++
++Finds the tracefs library.
++
++Imported Targets
++^^^^^^^^^^^^^^^^
++
++This module defines the :prop_tgt:`IMPORTED` targets:
++
++``trace::fs``
++ Defined if the system has libtracefs.
++
++Result Variables
++^^^^^^^^^^^^^^^^
++
++``TraceFS_FOUND``
++  True if the system has the libtracefs library.
++``TraceFS_VERSION``
++  The version of the libtracefs library which was found.
++``TraceFS_INCLUDE_DIRS``
++  Include directories needed to use libtracefs.
++``TraceFS_LIBRARIES``
++  Libraries needed to link to libtracefs.
++
++Cache Variables
++^^^^^^^^^^^^^^^
++
++``TraceFS_INCLUDE_DIR``
++  The directory containing ``tracefs.h``.
++``TraceFS_LIBRARY``
++  The path to the tracefs library.
++
++#]=======================================================================]
++
++find_package(PkgConfig QUIET)
++pkg_check_modules(PC_TraceFS QUIET libtracefs)
++
++set(TraceFS_VERSION     ${PC_TraceFS_VERSION})
++set(TraceFS_DEFINITIONS ${PC_TraceFS_CFLAGS_OTHER})
++
++find_path(TraceFS_INCLUDE_DIR  NAMES tracefs/tracefs.h
++                               HINTS ${PC_TraceFS_INCLUDE_DIRS}
++                                     ${PC_TraceFS_INCLUDEDIR})
++
++find_library(TraceFS_LIBRARY   NAMES tracefs libtracefs
++                               HINTS ${PC_TraceFS_LIBDIR}
++                                     ${PC_TraceFSLIBRARY_DIRS})
++
++mark_as_advanced(TraceFS_INCLUDE_DIR TraceFS_LIBRARY)
++
++include(FindPackageHandleStandardArgs)
++
++find_package_handle_standard_args(TraceFS DEFAULT_MSG
++                                  TraceFS_LIBRARY TraceFS_INCLUDE_DIR)
++
++if(TraceFS_FOUND)
++
++  set(TraceFS_LIBRARIES    ${TraceFS_LIBRARY})
++  set(TraceFS_INCLUDE_DIRS ${TraceFS_INCLUDE_DIR})
++
++  if(NOT TARGET trace::fs)
++    add_library(trace::fs UNKNOWN IMPORTED)
++
++    set_target_properties(trace::fs
++                          PROPERTIES
++                            INTERFACE_INCLUDE_DIRECTORIES "${TraceFS_INCLUDE_DIRS}"
++                            INTERFACE_COMPILE_DEFINITIONS "${TraceFS_DEFINITIONS}"
++                            IMPORTED_LINK_INTERFACE_LANGUAGES "C"
++                            IMPORTED_LOCATION "${TraceFS_LIBRARIES}")
++  endif()
++
++endif()
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 457c100..7663d44 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -7,9 +7,9 @@ add_library(kshark SHARED libkshark.c
+                           libkshark-configio.c
+                           libkshark-collection.c)
+ 
+-target_link_libraries(kshark ${TRACECMD_LIBRARY}
+-                             ${TRACEFS_LIBRARY}
+-                             ${TRACEEVENT_LIBRARY}
++target_link_libraries(kshark trace::cmd
++                             trace::fs
++                             trace::event
+                              ${JSONC_LIBRARY}
+                              ${CMAKE_DL_LIBS})
+ 
 diff --git a/src/libkshark.c b/src/libkshark.c
-index 52aacd3..42dc08c 100644
+index 42dc08c..a540da2 100644
 --- a/src/libkshark.c
 +++ b/src/libkshark.c
-@@ -151,7 +151,7 @@ bool kshark_open(struct kshark_context *kshark_ctx, const char *file)
- 	}
+@@ -141,7 +141,7 @@ bool kshark_open(struct kshark_context *kshark_ctx, const char *file)
  
- 	kshark_ctx->handle = handle;
--	kshark_ctx->pevent = tracecmd_get_pevent(handle);
-+	kshark_ctx->pevent =  tracecmd_get_tep(handle);
+ 	kshark_free_task_list(kshark_ctx);
  
- 	kshark_ctx->advanced_event_filter =
- 		tep_filter_alloc(kshark_ctx->pevent);
-@@ -674,7 +674,7 @@ static void free_rec_list(struct rec_list **rec_list, int n_cpus,
- 			temp_rec = rec_list[cpu];
- 			rec_list[cpu] = temp_rec->next;
- 			if (type == REC_RECORD)
--				free_record(temp_rec->rec);
-+				tracecmd_free_record(temp_rec->rec);
- 			free(temp_rec);
- 		}
- 	}
-@@ -774,14 +774,14 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
- 				if (!kshark_show_task(kshark_ctx, entry->pid)) {
- 					entry->visible &= ~kshark_ctx->filter_mask;
- 				}
--				free_record(rec);
-+				tracecmd_free_record(rec);
- 				break;
- 			} /* REC_ENTRY */
- 			}
+-	handle = tracecmd_open(file);
++	handle = tracecmd_open_head(file);
+ 	if (!handle)
+ 		return false;
  
- 			task = kshark_add_task(kshark_ctx, pid);
- 			if (!task) {
--				free_record(rec);
-+				tracecmd_free_record(rec);
- 				goto fail;
- 			}
+@@ -696,7 +696,7 @@ static ssize_t get_records(struct kshark_context *kshark_ctx,
+ 	int pid;
+ 	int cpu;
  
-@@ -902,7 +902,7 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
-  *	  to all fields of the record.
-  *
-  * @param kshark_ctx: Input location for the session context pointer.
-- * @param data_rows: Output location for the trace data. Use free_record()
-+ * @param data_rows: Output location for the trace data. Use tracecmd_free_record()
-  *	 	     to free the elements of the outputted array.
-  *
-  * @returns The size of the outputted data in the case of success, or a
-@@ -1167,7 +1167,7 @@ int kshark_get_pid_easy(struct kshark_entry *entry)
- 		data = tracecmd_read_at(kshark_ctx->handle, entry->offset,
- 					NULL);
- 		pid = tep_data_pid(kshark_ctx->pevent, data);
--		free_record(data);
-+		tracecmd_free_record(data);
+-	n_cpus = tracecmd_cpus(kshark_ctx->handle);
++	n_cpus = tep_get_cpus(kshark_ctx->pevent);
+ 	cpu_list = calloc(n_cpus, sizeof(*cpu_list));
+ 	if (!cpu_list)
+ 		return -ENOMEM;
+@@ -867,7 +867,7 @@ ssize_t kshark_load_data_entries(struct kshark_context *kshark_ctx,
+ 	if (total < 0)
+ 		goto fail;
  
- 		pthread_mutex_unlock(&kshark_ctx->input_mutex);
- 	}
-@@ -1234,7 +1234,7 @@ const char *kshark_get_latency_easy(struct kshark_entry *entry)
+-	n_cpus = tracecmd_cpus(kshark_ctx->handle);
++	n_cpus = tep_get_cpus(kshark_ctx->pevent);
  
- 	data = tracecmd_read_at(kshark_ctx->handle, entry->offset, NULL);
- 	lat = kshark_get_latency(kshark_ctx->pevent, data);
--	free_record(data);
-+	tracecmd_free_record(data);
+ 	rows = calloc(total, sizeof(struct kshark_entry *));
+ 	if (!rows)
+@@ -923,7 +923,7 @@ ssize_t kshark_load_data_records(struct kshark_context *kshark_ctx,
+ 	if (total < 0)
+ 		goto fail;
  
- 	pthread_mutex_unlock(&kshark_ctx->input_mutex);
+-	n_cpus = tracecmd_cpus(kshark_ctx->handle);
++	n_cpus = tep_get_cpus(kshark_ctx->pevent);
  
-@@ -1279,7 +1279,7 @@ int kshark_get_event_id_easy(struct kshark_entry *entry)
- 		data = tracecmd_read_at(kshark_ctx->handle, entry->offset,
- 					NULL);
- 		event_id = tep_data_type(kshark_ctx->pevent, data);
--		free_record(data);
-+		tracecmd_free_record(data);
+ 	rows = calloc(total, sizeof(struct tep_record *));
+ 	if (!rows)
+@@ -1047,7 +1047,7 @@ size_t kshark_load_data_matrix(struct kshark_context *kshark_ctx,
+ 	if (total < 0)
+ 		goto fail;
  
- 		pthread_mutex_unlock(&kshark_ctx->input_mutex);
- 	}
-@@ -1378,7 +1378,7 @@ const char *kshark_get_info_easy(struct kshark_entry *entry)
- 	if (event)
- 		info = kshark_get_info(kshark_ctx->pevent, data, event);
+-	n_cpus = tracecmd_cpus(kshark_ctx->handle);
++	n_cpus = tep_get_cpus(kshark_ctx->pevent);
  
--	free_record(data);
-+	tracecmd_free_record(data);
+ 	status = data_matrix_alloc(total, offset_array,
+ 					  cpu_array,
+diff --git a/src/libkshark.h b/src/libkshark.h
+index 0d6c50d..a44f46e 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -26,7 +26,7 @@ extern "C" {
  
- 	pthread_mutex_unlock(&kshark_ctx->input_mutex);
+ // trace-cmd
+ #include "trace-cmd/trace-cmd.h"
+-#include "trace-cmd/trace-filter-hash.h"
++#include "trace-filter-hash.h"
+ #include "traceevent/event-parse.h"
+ #include "tracefs/tracefs.h"
  
-@@ -1492,7 +1492,7 @@ char* kshark_dump_entry(const struct kshark_entry *entry)
- 			free(temp_str);
- 		}
- 
--		free_record(data);
-+		tracecmd_free_record(data);
- 		if (size < 1)
- 			entry_str = NULL;
- 	} else {
-diff --git a/src/plugins/sched_events.c b/src/plugins/sched_events.c
-index d0fd15e..4b671f1 100644
---- a/src/plugins/sched_events.c
-+++ b/src/plugins/sched_events.c
-@@ -160,7 +160,7 @@ static int find_wakeup_pid(struct kshark_context *kshark_ctx, struct kshark_entr
- 
- 	record = tracecmd_read_at(kshark_ctx->handle, e->offset, NULL);
- 	ret = tep_read_number_field(pid_field, record->data, &val);
--	free_record(record);
-+	tracecmd_free_record(record);
- 
- 	if (ret)
- 		return -1;
-@@ -252,7 +252,7 @@ bool plugin_switch_match_rec_pid(struct kshark_context *kshark_ctx,
- 		if (ret == 0 && !(val & 0x7f))
- 			switch_pid = tep_data_pid(plugin_ctx->pevent, record);
- 
--		free_record(record);
-+		tracecmd_free_record(record);
- 	}
- 
- 	if (switch_pid >= 0 && switch_pid == pid)
+diff --git a/src/trace-filter-hash.h b/src/trace-filter-hash.h
+new file mode 100644
+index 0000000..4111c41
+--- /dev/null
++++ b/src/trace-filter-hash.h
+@@ -0,0 +1,64 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++/*
++ * Copyright (C) 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
++ * Copyright (C) 2018 VMware Inc, Steven Rostedt <rostedt@goodmis.org>
++ *
++ */
++#ifndef _TRACE_FILTER_HASH_H
++#define _TRACE_FILTER_HASH_H
++
++#include <stdint.h>
++
++struct tracecmd_filter_id_item {
++	struct tracecmd_filter_id_item	*next;
++	int				id;
++};
++
++struct tracecmd_filter_id {
++	struct tracecmd_filter_id_item **hash;
++	int				count;
++};
++
++/**
++ * tracecmd_quick_hash - A quick (non secured) hash alogirthm
++ * @val: The value to perform the hash on
++ * @bits: The size in bits you need to return
++ *
++ * This is a quick hashing function adapted from Donald E. Knuth's 32
++ * bit multiplicative hash.  See The Art of Computer Programming (TAOCP).
++ * Multiplication by the Prime number, closest to the golden ratio of
++ * 2^32.
++ *
++ * @bits is used to max the result for use cases that require
++ * a power of 2 return value that is less than 32 bits. Any value
++ * of @bits greater than 31 (or zero), will simply return the full hash on @val.
++ */
++static inline uint32_t tracecmd_quick_hash(uint32_t val, unsigned int bits)
++{
++	val *= UINT32_C(2654435761);
++
++	if (!bits || bits > 31)
++		return val;
++
++	return val & ((1 << bits) - 1);
++}
++
++struct tracecmd_filter_id_item *
++  tracecmd_filter_id_find(struct tracecmd_filter_id *hash, int id);
++void tracecmd_filter_id_add(struct tracecmd_filter_id *hash, int id);
++void tracecmd_filter_id_remove(struct tracecmd_filter_id *hash, int id);
++void tracecmd_filter_id_clear(struct tracecmd_filter_id *hash);
++struct tracecmd_filter_id *tracecmd_filter_id_hash_alloc(void);
++void tracecmd_filter_id_hash_free(struct tracecmd_filter_id *hash);
++struct tracecmd_filter_id *
++  tracecmd_filter_id_hash_copy(struct tracecmd_filter_id *hash);
++int *tracecmd_filter_ids(struct tracecmd_filter_id *hash);
++int tracecmd_filter_id_compare(struct tracecmd_filter_id *hash1,
++			       struct tracecmd_filter_id *hash2);
++
++static inline int tracecmd_filter_task_count(struct tracecmd_filter_id *hash)
++{
++	return hash->count;
++}
++
++#endif /* _TRACE_FILTER_HASH_H */
 -- 
 2.25.1
 
