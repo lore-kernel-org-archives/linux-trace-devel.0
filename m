@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1D3CC433E9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E21E5C433E6
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 93033206B2
+	by mail.kernel.org (Postfix) with ESMTP id C101E20700
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  4 Jan 2021 17:49:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727318AbhADRte (ORCPT
+        id S1727086AbhADRte (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 4 Jan 2021 12:49:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727086AbhADRtd (ORCPT
+        with ESMTP id S1727182AbhADRte (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 4 Jan 2021 12:49:33 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61764C06138E
-        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:17 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id cw27so28239873edb.5
-        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:17 -0800 (PST)
+        Mon, 4 Jan 2021 12:49:34 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9D2C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon,  4 Jan 2021 09:48:18 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id b2so28272712edm.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 04 Jan 2021 09:48:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0JvNJho6nmQ6wRAwlTsWSUBLgvX8jyU10P1W/zdKzQs=;
-        b=aXBmoeLVpNIu0BL2o3ahXfnGymdpqHbglgM6j5OFBseYzoPY1TjhfZbsgOtEl1rsGe
-         zwMc364bdCq+4dFmpHgdl3cBQrbHOHpoxRnb0VM4eUe0ZfQMNwwjAb6grC4gd3a3dqny
-         CoF7qN0ZBSmGeSQA2EvBLK3p8xFADkONfq8bNgIy92j/VBmpAY/RBVI3eed9LJWV2RXQ
-         4i6K0Xsom7ak31X7TzVQOWJjuZICioGUpsk769W8hMEJLffdVG6aNAk6lX0tjFDn7y9q
-         r5QZx8W6DtiTceOZYuwfpIWdTgH+puGVmE8tK5Jchb5t7QSsOCDbxEsMk7x4RGCiKI8G
-         lGRw==
+        bh=zX3Jx/rqMTuIRQADtuT1k2P3h10g6nJEdPWVUEWe854=;
+        b=tVmzTa0KHGnGTfUxfVrROkucxIC3LWHuidckooxoTY2KD1EL+J3t6Q8+rqDyqhOMXR
+         TQdvFlQY3cAjv/7bqgUbGLbFNtOATxQ2UzUzPxMz5IYAHJrQAN2Eu8+mNePjD5ELwknS
+         lVl10tKVpGECEG7hjLzcoP+w+jikKUsJQYYzm3rq106gOTyrFuW+4K5H17RqWyn0t1oI
+         fyqR4m+ySCK4Ed2M5fLqb4fSbpkqKvXXJaFuDpYhWSbl7ELTA9rEpkd4uAejAjF8IhC3
+         VK5hipvwEWqP+Veplsa+bSzBaNQ0x+FKkP3YAU3DO2tmGIFQOFfGIow6k02Np1XUaPQn
+         6wvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0JvNJho6nmQ6wRAwlTsWSUBLgvX8jyU10P1W/zdKzQs=;
-        b=VoKQfzbskf44v/UgxndEcmGNp6tnmrvHXsa3Mb56Vax6IToW35A8EANlA3upywAiLy
-         lfXp/XeyayfVFzs+9nxNpP3HAJzf8v3Q8yN06c26yYJEnVmvRMpmXN+oAQICERN5DtXm
-         zyRR1NHyDV8bM2pohXCldA1WS56OVk0DjoBxxWEEr5Ocw5hLuyMra8ad7JLj3OtknRm9
-         66XAqYOIOZ/YxJPjqXY4vCNIzDpnG5vxuhtukicZktOOjC7vQGl4zRORW45SVUZOwhch
-         HAA61pCdAmdKHkzSpUqwEdYOm/RTAcS0xG0hKFQilWDFEs6DUMtV2YyR4Bl/iwv15ia3
-         Y52A==
-X-Gm-Message-State: AOAM532VZpvrCsmO/Ek/N9NzWRKR31LZcRt/cONKaB3bEgAP4HpsjAJa
-        /1i+BFcXb1EY1zcjoBzURSdkTxqvMbIJtA==
-X-Google-Smtp-Source: ABdhPJxsng9O9EDakoyqAr8hA6j3rFR37+HWmtiydv47oJgy0F8n1zt/7T0/FYyd5PpLl4bVV7/LUQ==
-X-Received: by 2002:a05:6402:22e1:: with SMTP id dn1mr73301304edb.347.1609782496150;
-        Mon, 04 Jan 2021 09:48:16 -0800 (PST)
+        bh=zX3Jx/rqMTuIRQADtuT1k2P3h10g6nJEdPWVUEWe854=;
+        b=iJ09bzp71h+toBPdTLG+LHq+kPqRpSRvJ0Hp2pc/plU7h5zCSy4e0g+itKUYkfZYRy
+         yKyQR6403AL75Mrc9Zqi/P0lOIlRCvFiD83A9hhXd0aN4HTcSDYCkkqqI0IIiEQqbui7
+         //C4DyI3cpXjamN0h0NA11HlbAhqi930Byfer2QOWp176HRxRRNmzcuJ9wVhykPrRrTw
+         rjoZVDMP4FJBApdfDM5pObWfgv/HxHskX2K/RQvES9WZ8O7x2R/8zAXBvum38F8BVXIV
+         0zvJ6cZ8cLQzpTMxXOSklYYYibuweqDZJM6SznGQK57HkPMPT7xSIk2xvJoKD4SiUlf8
+         Mhug==
+X-Gm-Message-State: AOAM532laoOsR68z4uD+BDkButzojfnoM4wJESkclHrTSxNUGc7sincm
+        jgt/LZcs+SBACrdO+KiUp8A=
+X-Google-Smtp-Source: ABdhPJzNbfT7uo9S7UB3oIDl7SuUukpRg8PWeJVBkntLuuNWtaPnei78AP0AzRQB035tay2f0zdPzw==
+X-Received: by 2002:aa7:dcd0:: with SMTP id w16mr72439201edu.229.1609782497187;
+        Mon, 04 Jan 2021 09:48:17 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.15
+        by smtp.gmail.com with ESMTPSA id l14sm44107750edq.35.2021.01.04.09.48.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 09:48:15 -0800 (PST)
+        Mon, 04 Jan 2021 09:48:16 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v8 39/44] kernel-shark: Consistent method naming in KsPlotTools
-Date:   Mon,  4 Jan 2021 19:47:19 +0200
-Message-Id: <20210104174724.70404-40-y.karadz@gmail.com>
+Subject: [PATCH v8 40/44] kernel-shark: Make the label part of the graph
+Date:   Mon,  4 Jan 2021 19:47:20 +0200
+Message-Id: <20210104174724.70404-41-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210104174724.70404-1-y.karadz@gmail.com>
 References: <20210104174724.70404-1-y.karadz@gmail.com>
@@ -74,246 +74,163 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Remove "get" from the name of the methods used to retrieve data fields
-in KsPlotTools. This makes the naming consistent with the style used by
-Qt.
+The capability to draw text with OpenGL is used. With this
+functionality we will no longer need to create special Qt widgets
+containing the text of the labels and carefully align those widgets
+next to the OpenGL plotting area. This will greatly simplify the
+internel structure of the TraceGraph widget.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/KsPlotTools.cpp | 30 +++++++++++++++---------------
- src/KsPlotTools.hpp | 34 +++++++++++++++++-----------------
- 2 files changed, 32 insertions(+), 32 deletions(-)
+ src/KsPlotTools.cpp | 34 +++++++++++++++++++++++++---------
+ src/KsPlotTools.hpp | 18 +++++++++++++++---
+ 2 files changed, 40 insertions(+), 12 deletions(-)
 
 diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
-index ef15cde..4bf08ef 100644
+index 4bf08ef..d952f5e 100644
 --- a/src/KsPlotTools.cpp
 +++ b/src/KsPlotTools.cpp
-@@ -120,7 +120,7 @@ void Color::blend(float alpha)
-  *
-  * @returns ColorTable instance.
-  */
--ColorTable getTaskColorTable()
-+ColorTable taskColorTable()
- {
- 	struct kshark_context *kshark_ctx(nullptr);
- 	int nTasks(0), pid, *pids, i(0), *streamIds;
-@@ -173,7 +173,7 @@ ColorTable getTaskColorTable()
-  *
-  * @returns ColorTable instance.
-  */
--ColorTable getCPUColorTable()
-+ColorTable CPUColorTable()
- {
- 	kshark_context *kshark_ctx(nullptr);
- 	int nCPUs, nCPUMax(0), *streamIds;
-@@ -205,7 +205,7 @@ ColorTable getCPUColorTable()
-  *
-  * @returns ColorTable instance.
-  */
--ColorTable getStreamColorTable()
-+ColorTable streamColorTable()
- {
- 	kshark_context *kshark_ctx(nullptr);
- 	ColorTable colors;
-@@ -360,7 +360,7 @@ void Shape::setPoint(size_t i, const Point &p)
-  * @brief Get the point "i". If the point does not exist, the function returns
-  *	  nullptr.
-  */
--const ksplot_point *Shape::getPoint(size_t i) const
-+const ksplot_point *Shape::point(size_t i) const
- {
- 	if (i < _nPoints)
- 		return &_points[i];
-@@ -394,7 +394,7 @@ void Shape::setPointY(size_t i, int y) {
-  * @brief Get the horizontal coordinate of the point "i". If the point does
-  * 	  not exist, the function returns 0.
-  */
--int Shape::getPointX(size_t i) const {
-+int Shape::pointX(size_t i) const {
- 	if (i < _nPoints)
- 		return _points[i].x;
+@@ -759,6 +759,7 @@ Graph::Graph()
+   _collectionPtr(nullptr),
+   _binColors(nullptr),
+   _ensembleColors(nullptr),
++  _label(),
+   _zeroSuppress(false)
+ {}
  
-@@ -405,7 +405,7 @@ int Shape::getPointX(size_t i) const {
-  * @brief Get the vertical coordinate of the point "i". If the point does
-  * 	  not exist, the function returns 0.
-  */
--int Shape::getPointY(size_t i) const {
-+int Shape::pointY(size_t i) const {
- 	if (i < _nPoints)
- 		return _points[i].y;
- 
-@@ -599,9 +599,9 @@ void TextBox::setBoxAppearance(const Color &col, int l, int h)
- 	if (h <= 0 && _font)
- 		h = _font->height;
- 
--	_box.setPoint(1, _box.getPointX(0),	_box.getPointY(0) - h);
--	_box.setPoint(2, _box.getPointX(0) + l,	_box.getPointY(0) - h);
--	_box.setPoint(3, _box.getPointX(0) + l,	_box.getPointY(0));
-+	_box.setPoint(1, _box.pointX(0),	_box.pointY(0) - h);
-+	_box.setPoint(2, _box.pointX(0) + l,	_box.pointY(0) - h);
-+	_box.setPoint(3, _box.pointX(0) + l,	_box.pointY(0));
+@@ -777,6 +778,7 @@ Graph::Graph(kshark_trace_histo *histo, KsPlot::ColorTable *bct, KsPlot::ColorTa
+   _collectionPtr(nullptr),
+   _binColors(bct),
+   _ensembleColors(ect),
++  _label(),
+   _zeroSuppress(false)
+ {
+ 	if (!_bins) {
+@@ -795,10 +797,15 @@ Graph::~Graph()
+ 	delete[] _bins;
  }
  
- void TextBox::_draw(const Color &col, float size) const
-@@ -611,15 +611,15 @@ void TextBox::_draw(const Color &col, float size) const
++int Graph::_firstBinOffset()
++{
++	return _labelSize + 2 * _hMargin;
++}
++
+ void Graph::_initBins()
+ {
+ 	for (int i = 0; i < _size; ++i) {
+-		_bins[i]._base.setX(i + _hMargin);
++		_bins[i]._base.setX(i + _firstBinOffset());
+ 		_bins[i]._base.setY(0);
+ 		_bins[i]._val.setX(_bins[i]._base.x());
+ 		_bins[i]._val.setY(_bins[i]._base.y());
+@@ -852,6 +859,8 @@ void Graph::setBase(int b)
+ 	if (b == _bins[0]._base.y()) // Nothing to do.
  		return;
  
- 	if (_box._visible ) {
--		int bShift = (_box.getPointY(0) - _box.getPointY(1) - _font->height) / 2;
-+		int bShift = (_box.pointY(0) - _box.pointY(1) - _font->height) / 2;
- 		ksplot_print_text(_font, NULL,
--				  _box.getPointX(0) + _font->height / 4,
--				  _box.getPointY(0) - _font->base - bShift,
-+				  _box.pointX(0) + _font->height / 4,
-+				  _box.pointY(0) - _font->base - bShift,
- 				  _text.c_str());
- 	} else {
- 		ksplot_print_text(_font, col.color_c_ptr(),
--				  _box.getPointX(0) + _font->height / 4,
--				  _box.getPointY(0) - _font->base,
-+				  _box.pointX(0) + _font->height / 4,
-+				  _box.pointY(0) - _font->base,
- 				  _text.c_str());
- 	}
++	_label.setBoxAppearance(_label._color, _labelSize, height());
++
+ 	for (int i = 0; i < _size; ++i) {
+ 		mod = _bins[i].mod();
+ 		_bins[i]._base.setY(b);
+@@ -870,24 +879,29 @@ void Graph::setHeight(int h)
  }
-@@ -808,7 +808,7 @@ void Graph::_initBins()
+ 
  /**
-  *  Get the number of bins.
+- * @brief Set the size of the white space added on both sides of the Graph.
++ * @brief Set the color and the dimensions of the graph's label.
+  *
+- * @param hMargin: the size of the white space in pixels.
++ * @param f: The font to be used to draw the labels.
++ * @param col: The color of the ComboGraph's label.
++ * @param lSize: the size of the graph's label in pixels.
++ * @param hMargin: the size of the white margine space in pixels.
   */
--int Graph::size()
-+int Graph::size() const
+-void Graph::setHMargin(int hMargin)
++void Graph::setLabelAppearance(ksplot_font *f, Color col, int lSize, int hMargin)
  {
- 	return _size;
+ 	if (!_size)
+ 		return;
+ 
+-	if (hMargin == _bins[0]._base.x()) // Nothing to do.
+-		return;
++	_labelSize = lSize;
++	_hMargin = hMargin;
++
++	_label.setPos({_hMargin, base()});
++	_label.setFont(f);
++	_label.setBoxAppearance(col, lSize, height());
+ 
+ 	for (int i = 0; i < _size; ++i) {
+-		_bins[i]._base.setX(i + hMargin);
++		_bins[i]._base.setX(i + _firstBinOffset());
+ 		_bins[i]._val.setX(_bins[i]._base.x());
+ 	}
+-
+-	_hMargin = hMargin;
  }
+ 
+ /**
+@@ -1312,6 +1326,8 @@ void Graph::draw(float size)
+ 	int lastPid(-1), b(0), boxH(_height * .3);
+ 	Rectangle taskBox;
+ 
++	_label.draw();
++
+ 	/*
+ 	 * Start by drawing a line between the base points of the first and
+ 	 * the last bin.
 diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
-index b270a56..287e0fb 100644
+index 287e0fb..8f530b0 100644
 --- a/src/KsPlotTools.hpp
 +++ b/src/KsPlotTools.hpp
-@@ -64,7 +64,7 @@ public:
- 	 * @brief Get the frequency value used to generate the Rainbow
- 	 * palette.
- 	 */
--	static float getRainbowFrequency() {return _frequency;}
-+	static float rainbowFrequency() {return _frequency;}
- 
- private:
- 	ksplot_color _col_c;
-@@ -76,11 +76,11 @@ private:
- /** Hash table of colors. */
- typedef std::unordered_map<int, KsPlot::Color> ColorTable;
- 
--ColorTable getTaskColorTable();
-+ColorTable taskColorTable();
- 
--ColorTable getCPUColorTable();
-+ColorTable CPUColorTable();
- 
--ColorTable getStreamColorTable();
-+ColorTable streamColorTable();
- 
- Color getColor(const ColorTable *colors, int id);
- 
-@@ -143,15 +143,15 @@ public:
- 
- 	void setPoint(size_t i, const Point &p);
- 
--	const ksplot_point *getPoint(size_t i) const;
-+	const ksplot_point *point(size_t i) const;
- 
- 	void setPointX(size_t i, int x);
- 
- 	void setPointY(size_t i, int y);
- 
--	int getPointX(size_t i) const;
-+	int pointX(size_t i) const;
- 
--	int getPointY(size_t i) const;
-+	int pointY(size_t i) const;
- 
- 	/**
- 	 * @brief Get the number of point used to define the polygon.
-@@ -179,10 +179,10 @@ public:
- 	virtual ~Point() {}
- 
- 	/** @brief Get the horizontal coordinate of the point. */
--	int x() const {return getPointX(0);}
-+	int x() const {return pointX(0);}
- 
- 	/** @brief Get the vertical coordinate of the point. */
--	int y() const {return getPointY(0);}
-+	int y() const {return pointY(0);}
- 
- 	/** @brief Set the horizontal coordinate of the point. */
- 	void setX(int x) {setPointX(0, x);}
-@@ -201,7 +201,7 @@ public:
- 	/**
- 	 * @brief Get the C struct defining the point.
- 	 */
--	const ksplot_point *point_c_ptr() const {return getPoint(0);}
-+	const ksplot_point *point_c_ptr() const {return point(0);}
- 
- private:
- 	void _draw(const Color &col, float size = 1.) const override;
-@@ -235,7 +235,7 @@ public:
- 	void setA(int x, int y) { setPoint(0, x, y);}
- 
- 	/** @brief Get the first finishing point of the line. */
--	const ksplot_point *getA() const {return getPoint(0);}
-+	const ksplot_point *a() const {return point(0);}
- 
- 	/**
- 	 * @brief Set the coordinats of the second finishing point of the
-@@ -247,7 +247,7 @@ public:
- 	void setB(int x, int y) {setPoint(1, x, y);}
- 
- 	/** @brief Get the second finishing point of the line. */
--	const ksplot_point *getB() const {return getPoint(1);}
-+	const ksplot_point *b() const {return point(1);}
- 
- private:
- 	void _draw(const Color &col, float size = 1.) const override;
-@@ -408,7 +408,7 @@ public:
- 	void drawVal(float size = 2.);
- 
- 	/** Get the height (module) of the line, representing the Bin. */
--	int mod() {return _val.y() - _base.y();}
-+	int mod() const {return _val.y() - _base.y();}
- 
- 	/** @brief Set the vertical coordinate of the "val" Point. */
- 	void setVal(int v) {_val.setY(_base.y() - v); }
-@@ -458,7 +458,7 @@ public:
- 	/* Keep this destructor virtual. */
- 	virtual ~Graph();
- 
--	int size();
-+	int size() const;
- 
- 	void setModelPtr(kshark_trace_histo *histo);
- 
-@@ -485,12 +485,12 @@ public:
- 	void setBase(int b);
- 
- 	/** @brief Get the vertical coordinate of the Graph's base. */
--	int getBase() const {return _bins[0]._base.y();}
-+	int base() const {return _bins[0]._base.y();}
- 
- 	void setHeight(int h);
- 
- 	/** @brief Get the vertical size (height) of the Graph. */
--	int getHeight() const {return _height;}
-+	int height() const {return _height;}
- 
- 	void setBinValue(int bin, int val);
- 
-@@ -504,7 +504,7 @@ public:
- 		    const Color &col, uint8_t m);
- 
+@@ -506,7 +506,11 @@ public:
  	/** @brief Get a particular bin. */
--	const Bin &getBin(int bin) const {return _bins[bin];}
-+	const Bin &bin(int bin) const {return _bins[bin];}
+ 	const Bin &bin(int bin) const {return _bins[bin];}
  
- 	void setHMargin(int hMargin);
+-	void setHMargin(int hMargin);
++	/** Set the text of the graph's label. */
++	void setLabelText(std::string text) {_label.setText(text);}
++
++	void setLabelAppearance(ksplot_font *f, Color col,
++				int lSize, int hMargin);
  
+ 	/**
+ 	 * Check if this graph is Zero Suppressed. Zero Suppressed means that
+@@ -521,7 +525,7 @@ public:
+ 	 */
+ 	void setZeroSuppressed(bool zs) {_zeroSuppress = zs;}
+ 
+-private:
++protected:
+ 	/** Pointer to the model descriptor object. */
+ 	kshark_trace_histo	*_histoPtr;
+ 
+@@ -537,6 +541,9 @@ private:
+ 	 */
+ 	int			_hMargin;
+ 
++	/** The horizontal size of the Graph's label. */
++	int			_labelSize;
++
+ 	/** The vertical size (height) of the Graph. */
+ 	int			_height;
+ 
+@@ -549,9 +556,14 @@ private:
+ 	/** Hash table of ensemble's colors. */
+ 	ColorTable		*_ensembleColors;
+ 
++private:
++	TextBox		_label;
++
+ 	bool			_zeroSuppress;
+ 
+-	void _initBins();
++	void	_initBins();
++
++	int	_firstBinOffset();
+ };
+ 
+ }; // KsPlot
 -- 
 2.25.1
 
