@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1322C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:33:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BAE2C433E6
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:33:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 640C120738
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:33:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5683F20738
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:33:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbhAGIdh (ORCPT
+        id S1726338AbhAGIdi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Jan 2021 03:33:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
+        Thu, 7 Jan 2021 03:33:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbhAGIdg (ORCPT
+        with ESMTP id S1725900AbhAGIdh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:33:36 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386ECC0612F8
-        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Jan 2021 00:32:56 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id g185so4777492wmf.3
-        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Jan 2021 00:32:56 -0800 (PST)
+        Thu, 7 Jan 2021 03:33:37 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A6BC0612F9
+        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Jan 2021 00:32:57 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id y17so4735439wrr.10
+        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Jan 2021 00:32:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TWpP65YDCc1mQUdLFjkYo9gs89cZKkr/iPV7lbXlSyE=;
-        b=ZjJ8+wE7ADzPRYor1BkGq1Wq/ELn+SU88CG4Bt1DvasW0pdCs8P6VlS1MyAlGEyr7k
-         L9daOfOdG9HqHTzD2zgeRf9QlhPRhyMtzkO8XxsrmGC+PBuD9zmSpk+KEpfttIlO5IRg
-         IrJauSmSnorUCgZxnV1ePs0hfWJkvhbGYQqMHQhYoQFM3AsyP7U+2JRmRrxHcC/FjO1t
-         R4c06sO8nKBHE7ONsiGjDJynkJ8gsTN85y2cQAQDRFRu51uqCwGsLU7qokynhwfaqP0P
-         /ORLAn4/VKBNbI0b7Y62ardAIfDdCmAKKhnicOcEykV4tbqkDK0v2fL21N5xTc5t1Fjh
-         8mIw==
+        bh=haKTlhRBvQnAoCt7ye6uAWGXu2XyjhNIGokztycdGfI=;
+        b=DUPLG9dVeHK/15o/vAmHV6fmDYF7oYh6cxxGpTbh3BNLLzUFIqAjEv8TER+vaZUeaO
+         k2x4jRQ60LKShJK2RsMjHQJ+EMMDMPMRxCDORMGakkWNd+XZ9Uyz14Ee0rqTqeE4WvYK
+         /7awd09IRqIi7ugzZBJNcdj1qtlg/TbcdbftcIiXRcTjDBx2xX3bjqZL0nM4P6dKBoJB
+         O0sy8X14HU9eJPReR3drxCRBaFQ0kPanuiJRS2jTMCYkp2AojULpRcuwiBWhiHbVLt+z
+         SAPX/UsWtZsux3UafR+nIxLYzzTe63rKmfSkzzYf5cy+8J6TLxe5A2b0UhSQELqRSuH7
+         88nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TWpP65YDCc1mQUdLFjkYo9gs89cZKkr/iPV7lbXlSyE=;
-        b=m8FVL0yHVuD1839uv5NcsT05Yzn1VGn7EijZ2tc1QXOnhNsUN/pOHDfMHMd22yN82f
-         CHRFx08Xhbp60jYa1L9pVG4vZ1rnF074QxEC2gKGGRBYu5uqVYo2IiNO3egkqgU3eMtv
-         FBko12in+oMjs0iP8T5100MC959LDH7V9W8mNSTAIMEM/XGJTUROZg21Dsxh2kWVo4W/
-         cnMSjHy1EB2Qn6F9g6UNygjx+d5iM+g8FSH1hi6UMMQkk2rJxWOn0vSW2qV1JcdNvXUS
-         e/DGFKlLuv/SqiX0eeZ9qf73+BQwLmOM8O1Y3nwBlBNEO8MQ0BiXuHCgLf6cxMHmz+eV
-         SkSA==
-X-Gm-Message-State: AOAM533jqkfauGKCBZz9R9Rg3XC2Ba1aAsuINww5RcrZrWkq/xpl2jX2
-        Ayu9v9cvO/047+Cmpva16Mv1NoZEOkHw96rK
-X-Google-Smtp-Source: ABdhPJzZ+VK3dXb5+9fu612ksIlbXVz9azaxgbLHKzgoyF9341g6Xp4y/ku8Coz2Z2adsCaCg8iKfg==
-X-Received: by 2002:a1c:e142:: with SMTP id y63mr7228593wmg.28.1610008375023;
-        Thu, 07 Jan 2021 00:32:55 -0800 (PST)
+        bh=haKTlhRBvQnAoCt7ye6uAWGXu2XyjhNIGokztycdGfI=;
+        b=ebNY5UMw2UKTfme8lHk21UK4vH5fGOe7Ya2k6AHaj2zfs2uVfjWCsjn5bW6TgPUVxr
+         AW1FZhCQFWvwX/QyuyTfQ+Egz8nW8v+YAjbeCVz3MG98dzNst6R6D500x3XhINkhL3r3
+         KCd1e8aea61HPD5ZDH1TDkJQ/BoENfvJu8BxQs2bP6Zb/If/sfB3q9jw7v2VJdEsKvhF
+         W3W4hJwJa2mnNzTXbMm9Brai7gC1XI/t0kLKploaJ9C66bOIOAzpO6DpnosIj+ozQ8ss
+         FYzW3Hf9/oK99PFypa9Inn+ZfOvVdlhI+mgb7gMbdxZgpmXeSqnAMDdNjZ54Hn/mcgVw
+         3B1A==
+X-Gm-Message-State: AOAM531z3qbAfxRkHGYy9sk346+DS4mtqHvqv2ow4h3zcK/OFae2Ky2+
+        do5hmNtOWM2oOuk4yKk988p11tbvg8ppHbi6
+X-Google-Smtp-Source: ABdhPJzltPSPyJPu2RrFhJvEJOh7PdQhu6+/fPbkFhMVJwUYuu83OhWVp2SriSuHMORrRO6lUf0ETQ==
+X-Received: by 2002:adf:eec6:: with SMTP id a6mr7750334wrp.239.1610008376150;
+        Thu, 07 Jan 2021 00:32:56 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id v20sm7293867wra.19.2021.01.07.00.32.53
+        by smtp.gmail.com with ESMTPSA id v20sm7293867wra.19.2021.01.07.00.32.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 00:32:54 -0800 (PST)
+        Thu, 07 Jan 2021 00:32:55 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/6] libtracefs: New APIs for enable / disable tracing
-Date:   Thu,  7 Jan 2021 10:32:46 +0200
-Message-Id: <20210107083250.16295-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 3/6] libtracefs: Documentation for the new APIs for opening and reading ftrace files
+Date:   Thu,  7 Jan 2021 10:32:47 +0200
+Message-Id: <20210107083250.16295-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210107083250.16295-1-tz.stoyanov@gmail.com>
 References: <20210107083250.16295-1-tz.stoyanov@gmail.com>
@@ -73,180 +73,114 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-These new APIs can be used to enable / disable tracing in given ftrace
-instance:
-  tracefs_trace_is_on();
-  tracefs_trace_on();
-  tracefs_trace_off();
-  tracefs_trace_on_fd();
-  tracefs_trace_off_fd();
+Man pages updated with documentation about:
+  tracefs_instance_file_open();
+  tracefs_instance_file_read_int();
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/tracefs.h   |   6 +++
- src/Makefile        |   1 +
- src/tracefs-tools.c | 123 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 130 insertions(+)
- create mode 100644 src/tracefs-tools.c
+ Documentation/libtracefs-instances-files.txt | 47 ++++++++++++++++++--
+ 1 file changed, 43 insertions(+), 4 deletions(-)
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 460fa4c..bc799c7 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -40,6 +40,12 @@ bool tracefs_instance_exists(const char *name);
- bool tracefs_file_exists(struct tracefs_instance *instance, char *name);
- bool tracefs_dir_exists(struct tracefs_instance *instance, char *name);
+diff --git a/Documentation/libtracefs-instances-files.txt b/Documentation/libtracefs-instances-files.txt
+index 9b18b73..d3aaef2 100644
+--- a/Documentation/libtracefs-instances-files.txt
++++ b/Documentation/libtracefs-instances-files.txt
+@@ -4,8 +4,8 @@ libtracefs(3)
+ NAME
+ ----
+ tracefs_file_exists, tracefs_dir_exists, tracefs_instance_get_file,
+-tracefs_instance_get_dir, tracefs_instance_file_write,
+-tracefs_instance_file_read - Work with files in tracing instances.
++tracefs_instance_get_dir, tracefs_instance_file_open, tracefs_instance_file_write,
++tracefs_instance_file_read, tracefs_instance_file_read_int - Work with files in tracing instances.
  
-+int tracefs_trace_is_on(struct tracefs_instance *instance);
-+int tracefs_trace_on(struct tracefs_instance *instance);
-+int tracefs_trace_off(struct tracefs_instance *instance);
-+int tracefs_trace_on_fd(int fd);
-+int tracefs_trace_off_fd(int fd);
-+
- /* events */
- void tracefs_list_free(char **list);
- char **tracefs_event_systems(const char *tracing_dir);
-diff --git a/src/Makefile b/src/Makefile
-index 3f64905..dabdbb4 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -6,6 +6,7 @@ OBJS =
- OBJS += tracefs-utils.o
- OBJS += tracefs-instance.o
- OBJS += tracefs-events.o
-+OBJS += tracefs-tools.o
+ SYNOPSIS
+ --------
+@@ -17,8 +17,10 @@ bool *tracefs_file_exists*(struct tracefs_instance pass:[*]_instance_, char pass
+ bool *tracefs_dir_exists*(struct tracefs_instance pass:[*]_instance_, char pass:[*]_name_);
+ char pass:[*]*tracefs_instance_get_file*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_);
+ char pass:[*]*tracefs_instance_get_dir*(struct tracefs_instance pass:[*]_instance_);
++int *tracefs_instance_file_open*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, int _mode_);
+ int *tracefs_instance_file_write*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, const char pass:[*]_str_);
+-char pass:[*]*tracefs_instance_file_read*(struct tracefs_instance pass:[*]_instance_, char pass:[*]_file_, int pass:[*]_psize_);
++char pass:[*]*tracefs_instance_file_read*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, int pass:[*]_psize_);
++int *tracefs_instance_file_read_int*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_file_, long long int pass:[*]_res_);
  
- OBJS := $(OBJS:%.o=$(bdir)/%.o)
- DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
-diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-new file mode 100644
-index 0000000..89e2d6d
---- /dev/null
-+++ b/src/tracefs-tools.c
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+/*
-+ * Copyright (C) 2008, 2009, 2010 Red Hat Inc, Steven Rostedt <srostedt@redhat.com>
-+ *
-+ * Updates:
-+ * Copyright (C) 2021, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-+ *
-+ */
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <fcntl.h>
+ --
+ 
+@@ -41,12 +43,19 @@ The _tracefs_instance_get_dir()_ function  returns the full path of the director
+ with given _name_ in _instance_. Note, it does not check if the directory exists
+ in the instance.
+ 
++The _tracefs_instance_file_open()_ function opens trace _file_ from given _instance_ and returns
++a file descriptor to it. The file access _mode_ can be specified, see *open*(3) for more details.
++If -1 is passed as _mode_, default O_RDWR is used.
 +
-+#include "tracefs.h"
-+#include "tracefs-local.h"
+ The _tracefs_instance_file_write()_ function writes a string _str_ in a _file_ from
+ the given _instance_, without the terminating NULL character.
+ 
+-The _tracefs_instance_file_read()_ function reads the content of a _file_  from
++The _tracefs_instance_file_read()_ function reads the content of a _file_ from
+ the given _instance_.
+ 
++The _tracefs_instance_file_read_int()_ function reads the content of a _file_ from
++the given _instance_ and converts it to a long long integer, which is stored in _res_.
 +
-+#define TRACE_CTRL	"tracing_on"
+ RETURN VALUE
+ ------------
+ The _tracefs_file_exists()_ and  _tracefs_dir_exists()_ functions return true if the
+@@ -56,6 +65,9 @@ The _tracefs_instance_get_file()_ and _tracefs_instance_get_dir()_ functions ret
+ a string or NULL in case of an error. The returned string must be freed with
+ _tracefs_put_tracing_file()_.
+ 
++The _tracefs_instance_file_open()_ function returns a file descriptor to the opened file. It must be
++closed with *close*(3). In case of an error, -1 is returned.
 +
-+static int trace_on_off(int fd, bool on)
-+{
-+	int ret;
+ The _tracefs_instance_file_write()_ function returns the number of written bytes,
+ or -1 in case of an error.
+ 
+@@ -63,6 +75,9 @@ The _tracefs_instance_file_read()_ function returns a pointer to a NULL terminat
+ string, read from the file, or NULL in case of an error. The returned string must
+ be freed with free().
+ 
++The _tracefs_instance_file_read_int()_ function returns 0 if a valid integer is read from the file
++and stored in _res_ or -1 in case of an error.
 +
-+	if (on)
-+		ret = write(fd, "1", 1);
-+	else
-+		ret = write(fd, "0", 1);
+ EXAMPLE
+ -------
+ [source,c]
+@@ -123,6 +138,30 @@ struct tracefs_instance *inst = tracefs_instance_create("foo");
+ 		tracefs_instance_destroy(inst);
+ 	else
+ 		tracefs_instance_free(inst);
++	...
 +
-+	if (ret == 1)
-+		return 0;
-+
-+	return -1;
-+}
-+
-+static int trace_on_off_file(struct tracefs_instance *instance, bool on)
-+{
-+	int ret;
-+	int fd;
-+
-+	fd = tracefs_instance_file_open(instance, TRACE_CTRL, O_WRONLY);
-+	if (fd < 0)
-+		return -1;
-+	ret = trace_on_off(fd, on);
-+	close(fd);
-+
-+	return ret;
-+}
-+
-+/**
-+ * tracefs_trace_is_on - Check if writing traces to the ring buffer is enabled
-+ * @instance: ftrace instance, can be NULL for the top instance
-+ *
-+ * Returns -1 in case of an error, 0 if tracing is disable or 1 if tracing
-+ * is enabled.
-+ */
-+int tracefs_trace_is_on(struct tracefs_instance *instance)
-+{
-+	char buf[10];
-+	int ret;
-+	int fd;
-+
-+	fd = tracefs_instance_file_open(instance, TRACE_CTRL, O_RDONLY);
-+	if (fd < 0)
-+		return -1;
-+	ret = read(fd, buf, 10);
-+	if (ret > 0) {
-+		buf[9] = 0;
-+		ret = atoi(buf);
++	long long int res;
++	if (tracefs_instance_file_read_int(NULL, "tracing_on", &res) == 0) {
++		if (res == 0) {
++			/* tracing is disabled in the top instance */
++		} else if (res == 1) {
++			/* tracing is enabled in the top instance */
++		} else {
++			/* Unknown tracing state of the top instance */
++		}
 +	} else {
-+		ret = -1;
++		/* Failed to read integer from tracing_on file */
 +	}
-+	close(fd);
 +
-+	return ret;
-+}
++	...
 +
-+/**
-+ * tracefs_trace_on - Enable writing traces to the ring buffer of the given instance
-+ * @instance: ftrace instance, can be NULL for the top instance
-+ *
-+ * Returns -1 in case of an error or 0 otherwise
-+ */
-+int tracefs_trace_on(struct tracefs_instance *instance)
-+{
-+	return trace_on_off_file(instance, true);
-+}
-+
-+/**
-+ * tracefs_trace_off - Disable writing traces to the ring buffer of the given instance
-+ * @instance: ftrace instance, can be NULL for the top instance
-+ *
-+ * Returns -1 in case of an error or 0 otherwise
-+ */
-+int tracefs_trace_off(struct tracefs_instance *instance)
-+{
-+	return trace_on_off_file(instance, false);
-+}
-+
-+/**
-+ * tracefs_trace_on_fd - Enable writing traces to the ring buffer
-+ * @fd: File descriptor to ftrace tracing_on file, previously opened for reading
-+ *	with tracefs_instance_file_open()
-+ *
-+ * Returns -1 in case of an error or 0 otherwise
-+ */
-+int tracefs_trace_on_fd(int fd)
-+{
-+	if (fd < 0)
-+		return -1;
-+	return trace_on_off(fd, true);
-+}
-+
-+/**
-+ * tracefs_trace_off_fd - Disable writing traces to the ring buffer
-+ * @fd: File descriptor to ftrace tracing_on file, previously opened for reading
-+ *	with tracefs_instance_file_open()
-+ *
-+ * Returns -1 in case of an error or 0 otherwise
-+ */
-+int tracefs_trace_off_fd(int fd)
-+{
-+	if (fd < 0)
-+		return -1;
-+	return trace_on_off(fd, false);
-+}
++	int fd;
++	fd = tracefs_instance_file_open(NULL, "tracing_on", O_WRONLY);
++	if (fd >= 0) {
++		/* Got file descriptor to the tracing_on file from the top instance for writing */
++		...
++		close(fd);
++	}
+ --
+ FILES
+ -----
 -- 
 2.29.2
 
