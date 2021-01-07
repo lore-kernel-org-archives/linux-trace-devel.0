@@ -2,95 +2,183 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 665DBC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7659C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 15:59:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3462023137
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:34:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8BBED23118
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 15:59:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbhAGIeO (ORCPT
+        id S1726165AbhAGP7f (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Jan 2021 03:34:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbhAGIeO (ORCPT
+        Thu, 7 Jan 2021 10:59:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725965AbhAGP7f (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:34:14 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C4DC0612F6
-        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Jan 2021 00:33:31 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id c133so4425595wme.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Jan 2021 00:33:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IxgwmrWBHTI3Ao7awMI69aKUri97nJbVPpMGpnKG7FM=;
-        b=cfOzv6SFzywmq7uXhH3doyhk+thjjYLZRpCu5kMfPFtrtcpeSGwwR/du48zA0Q262O
-         OF7K3KVg0zgjawiybIrL0c2pZELRDf8f7oYU9M8DrQS4h+O50KcfVFzJ7hJgtXuWsqiT
-         zbavvJm6k69UF9jf7U0eAK5WLCCFiGKTNT7U68rcnK4Wb3nZnn5Oo4yyCbFlzBJJAmzH
-         lgaG7NtucDi/YX6h0NV9pmOKu8MVzvcrlfUMsCOQcSkczEcXj62lOVLff5K0FB1MUM6U
-         5jauSLez6DHxdCTjU1N3DwzzRAgigjBa/tbnKf7d8QJVRaszaaeyhaHI8cMHuwkjAHg5
-         AI6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IxgwmrWBHTI3Ao7awMI69aKUri97nJbVPpMGpnKG7FM=;
-        b=XX2uMj/PQwm1Bp9Arg6qbhNiIUACMQJQjAs+tOx05Av+SzhFFUtA9UlpLWwV9fdfeA
-         +F2rlpkBPs/587hr3q+BTrdXX+GDtSk3NkEarDraqBBqv7oOV37QMNGQbiut214XSE/x
-         9QSDb46ZlDHqFayxS459qCF1DsU5EZ7FhBHZEgVoiBvDZ9T7YD3v09Q+Jdn7W6DUklKD
-         Qwpp4fetFqPbYLdbIUkYfNmd04Azet6Hzl0WERyswtbef/fnWZt1JGXgVU4lfvwatpH3
-         untkeZhj6Dva53rZCbR3QRFlxz2O8I9C+Cv7UiuP3g3E3uu2NXm7+4lGlwIcj4iYYse7
-         MGMQ==
-X-Gm-Message-State: AOAM532jAH71OGeMGp0DlUXJORxK09UxVRi1442Jn0xVo4+W8w/gGN5V
-        NR0bXxREpiJbwXnYjG+m3FU=
-X-Google-Smtp-Source: ABdhPJxj2bTFF3tomyKLl0E/nt7giGyAha8/eyXIVWXmZjP2zLnwbIukQ4C5k5vCeUeEEMMCTb5gig==
-X-Received: by 2002:a1c:a9c8:: with SMTP id s191mr7026773wme.89.1610008410258;
-        Thu, 07 Jan 2021 00:33:30 -0800 (PST)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id s1sm6725182wrv.97.2021.01.07.00.33.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 00:33:29 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
+        Thu, 7 Jan 2021 10:59:35 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34C0023118;
+        Thu,  7 Jan 2021 15:58:54 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 10:58:52 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] libtraceevent: Set correct libtraceevent version in the HTML documentation
-Date:   Thu,  7 Jan 2021 10:33:28 +0200
-Message-Id: <20210107083328.16492-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.29.2
+Subject: Re: [PATCH 1/6] libtracefs: New APIs for opening and reading ftrace
+ files
+Message-ID: <20210107105852.649b1d44@gandalf.local.home>
+In-Reply-To: <20210107083250.16295-2-tz.stoyanov@gmail.com>
+References: <20210107083250.16295-1-tz.stoyanov@gmail.com>
+        <20210107083250.16295-2-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The libtraceevent documentation building structure was gotten from perf.
-The variable, used when generating HTML documentation, was not updated
-and the libtraceevent version is not passed correctly.
+On Thu,  7 Jan 2021 10:32:45 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- Documentation/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> These new APIs can be used to read integer from frtace file and to open
+> ftrace file:
+>   tracefs_instance_file_read_int();
+>   tracefs_instance_file_open();
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+>  include/tracefs.h      |  6 ++++-
+>  src/tracefs-instance.c | 59 ++++++++++++++++++++++++++++++++++++++++--
+>  2 files changed, 62 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/tracefs.h b/include/tracefs.h
+> index 3d70aca..460fa4c 100644
+> --- a/include/tracefs.h
+> +++ b/include/tracefs.h
+> @@ -29,7 +29,11 @@ char *tracefs_instance_get_dir(struct tracefs_instance *instance);
+>  int tracefs_instance_file_write(struct tracefs_instance *instance,
+>  				const char *file, const char *str);
+>  char *tracefs_instance_file_read(struct tracefs_instance *instance,
+> -				 char *file, int *psize);
+> +				 const char *file, int *psize);
+> +int tracefs_instance_file_read_int(struct tracefs_instance *instance,
+> +				   const char *file, long long *res);
+> +int tracefs_instance_file_open(struct tracefs_instance *instance,
+> +			       const char *file, int mode);
+>  int tracefs_instances_walk(int (*callback)(const char *, void *), void *context);
+>  
+>  bool tracefs_instance_exists(const char *name);
+> diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
+> index bf3de7c..27b9e99 100644
+> --- a/src/tracefs-instance.c
+> +++ b/src/tracefs-instance.c
+> @@ -14,7 +14,7 @@
+>  #include <sys/stat.h>
+>  #include <fcntl.h>
+>  #include <dirent.h>
+> -#include <linux/limits.h>
+> +#include <limits.h>
+>  #include "tracefs.h"
+>  #include "tracefs-local.h"
+>  
+> @@ -282,7 +282,7 @@ int tracefs_instance_file_write(struct tracefs_instance *instance,
+>   * The return string must be freed by free()
+>   */
+>  char *tracefs_instance_file_read(struct tracefs_instance *instance,
+> -				  char *file, int *psize)
+> +				 const char *file, int *psize)
 
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index 2dba73c..21bcd5e 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -213,5 +213,5 @@ $(OUTPUT)%.xml : %.txt
- $(MAN_HTML): $(OUTPUT)%.html : %.txt
- 	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
- 	$(ASCIIDOC) -b $(ASCIIDOC_HTML) -d manpage \
--		$(ASCIIDOC_EXTRA) -aperf_version=$(EVENT_PARSE_VERSION) -o $@+ $< && \
-+		$(ASCIIDOC_EXTRA) -alibtraceevent_version=$(EVENT_PARSE_VERSION) -o $@+ $< && \
- 	mv $@+ $@
--- 
-2.29.2
+The above is more of a clean up and should be a separate patch.
+
+>  {
+>  	char *buf = NULL;
+>  	int size = 0;
+> @@ -301,6 +301,61 @@ char *tracefs_instance_file_read(struct tracefs_instance *instance,
+>  	return buf;
+>  }
+>  
+> +/**
+> + * tracefs_instance_file_read_int - Read an integer from a trace file.
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + * @file: name of the file
+> + * @res: The integer from the file.
+> + *
+> + * Returns 0 if the reading is successful and the result is stored in res, -1
+> + * in case of an error.
+> + */
+> +int tracefs_instance_file_read_int(struct tracefs_instance *instance,
+> +				   const char *file, long long *res)
+
+Let's call this "tracefs_instance_file_number()" as "int" may be confusing
+as it really returns "long long".
+
+> +{
+> +	long long ret = LLONG_MAX;
+> +	int size = 0;
+> +	char *str;
+> +
+> +	str = tracefs_instance_file_read(instance, file, &size);
+> +	if (size && str)
+> +		ret = strtoll(str, NULL, 0);
+> +	free(str);
+> +
+> +	if (LLONG_MIN == ret || LLONG_MAX == ret)
+> +		return -1;
+
+As it is possible that the file could read LLONG_MIN or LLONG_MAX, we
+should follow the man page and use errno to detect an error:
+
+	if (!size || !str)
+		return -1;
+
+	errno = 0;
+	ret = strtoll(str, NULL, 0);
+	if (errno)
+		return -1;
+
+
+-- Steve
+
+> +	*res = ret;
+> +	return 0;
+> +}
+> +
+> +/**
+> + * tracefs_instance_file_open - Open a trace file for reading and writing
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + * @file: name of the file
+> + * @mode: file open flags, -1 for default O_RDWR
+> + *
+> + * Returns -1 in case of an error, or a valid file descriptor otherwise.
+> + * The returned FD must be closed with close()
+> + */
+> +int tracefs_instance_file_open(struct tracefs_instance *instance,
+> +			       const char *file, int mode)
+> +{
+> +	int flags = O_RDWR;
+> +	int fd = -1;
+> +	char *path;
+> +
+> +	path = tracefs_instance_get_file(instance, file);
+> +	if (!path)
+> +		return -1;
+> +
+> +	if (mode >= 0)
+> +		flags = mode;
+> +	fd = open(path, flags);
+> +	tracefs_put_tracing_file(path);
+> +
+> +	return fd;
+> +}
+> +
+>  static bool check_file_exists(struct tracefs_instance *instance,
+>  			     char *name, bool dir)
+>  {
 
