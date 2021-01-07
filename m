@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01DD3C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF106C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:33:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C3D2623133
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:32:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 68C8920738
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 08:33:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbhAGIcw (ORCPT
+        id S1726795AbhAGIdH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Jan 2021 03:32:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        Thu, 7 Jan 2021 03:33:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbhAGIcw (ORCPT
+        with ESMTP id S1725900AbhAGIdG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:32:52 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C634CC0612F5
-        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Jan 2021 00:32:11 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id t30so4783137wrb.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Jan 2021 00:32:11 -0800 (PST)
+        Thu, 7 Jan 2021 03:33:06 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34DDC0612F6
+        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Jan 2021 00:32:25 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id i9so4776594wrc.4
+        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Jan 2021 00:32:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ve4ITcPVGMm+0bopq52Vxm6jLYjrwASM4D6uETB/3es=;
-        b=lJT5fcWVegiMSpcA9oSyG0Az1l64o+xpEReahfq1ZoPtHNknNyQI9+LAoWjp2pZ4yC
-         IKpbp0ZP4wc/PVZo/1HQUed3itLgdbRsC4TEFO7W/DhLerUTS713FcmiBfOTz4tjZ5Pu
-         gvzBq49361RBItaEyvW3x5qkJ6Ek/2Avh2Wt1NUnl2xOm0tqaZm9pGhJnCm1nRJDBvBL
-         swCMfzUQMwj58m+2zfY0a9YR1T2WGa1BszuGehHsE8Vu11UizcTvhTzcbM7V1hvWc3Dg
-         2Tl46OD1Dsyz2SP7xcEalXgnbt1viGBxuf2YX9coxMYCFvC66fU3NCkZb9lVajrf56Es
-         hBPQ==
+        bh=IGarlQPbXfVZDJaxNejSuQzV/l1iYd8V3XQAV3zsbhU=;
+        b=rMq+gJ0asV6kJ/02rvCtwBYI+4sdESSSQkI0ni4jeJnJZLS5AuqkkHIqDJnrNfpMVf
+         JyhuJVwfBTHYr/eSsL9y1HdDWfzT4nIBeTgN3JVf1DGgJofQbeUAdcTGntoLtqe4q1G3
+         9FMGUSgiUz1TAffy1c+ZJNZn30lwpYxI3NzZX5UvmMh76j0QbQNO2V8BhFQmBLWqIJwl
+         DRp0fgi/Fhl1C0iPOncZm/A2tD67IwCyidR+c4OifGEIeik/ySA20HQNMpUXzr3fP8Ky
+         4CQdUlkttNvJd5vBmS8wiTcJdYPYSL/RS2iYryPkQniUrHJCaGVcSaip1v+pTLacRqwB
+         QHag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ve4ITcPVGMm+0bopq52Vxm6jLYjrwASM4D6uETB/3es=;
-        b=f1q+5m4OPB7blBA6/lom5OEyvyAv98CYgtu5MBv/1FPX2xRx1XEs7qDtUzhz3vg8YE
-         HkqxZZVIg0LapRBNrIiGKL2RxyUZNrZFcWNMUH8XmbCcsjmXJ8DNWBYbwQ0KMsZ80Qjk
-         5IGvYttUKQaMFcprdTK+T8bF1uP4YIgto+Q/TUfYu8f/samYjWVYYpdLdLZpsLHZXVTU
-         NaL/GzZqdXVhS1ZwIN2RkJDKHIi+i3xh7kz/w9nd915s1UKhW8gW7UNQBPVBotEdI6O/
-         KcNiIAp9V36uPVReoj6LUIthbolB7iNq18Ne4p2cB+DzjfY5GACrPehertIostIJAIkW
-         svtA==
-X-Gm-Message-State: AOAM530sJeiAxYX2+a0IAYEPWDSvSfOYTLLKyJGL1W/4bbC3rZ0hSMBq
-        nIhtvqgquLXuE8LA7d9/dVuDEy2w1y3p6ajk
-X-Google-Smtp-Source: ABdhPJzVAm9tyZN5Ph3h5UdDAy6FTbyWl7WVKwUsRavTZsGs+FfLlQwWyF1E/+6fUOI56OFJKfT2DA==
-X-Received: by 2002:a5d:5913:: with SMTP id v19mr7851475wrd.207.1610008330601;
-        Thu, 07 Jan 2021 00:32:10 -0800 (PST)
+        bh=IGarlQPbXfVZDJaxNejSuQzV/l1iYd8V3XQAV3zsbhU=;
+        b=AKN2UkLVcXzB+R4tVHLKCCOEFcq3SWF5RsM1ToI1GCv5oIjTzEtkQNKucxkfQAPvJB
+         7lIsdbzkZ5ZLlIYO9OtYYB0MmzPzbWiBDNoULDMJQPondneJETKuYDzipeu0WvOtU5uX
+         9XKMK2cZ0LlefdMLkSoLByqffV4j3tFT5U282Gp7DKnuW5Vmd0qDLYetd41l17Qjy3RD
+         QYTJWvsJN5WB7f3fskIBJZoMoLMg9b4QWR2DnsBKMLE13Hr8iu/aXAOZ9bOxbCNgqjx9
+         M9W/+KjCUlAhZlKVKIRqtO/houlQDR9GIlSKFPMQo+MmMxcyydlO6fMNYo4hG0ruY7eV
+         dApw==
+X-Gm-Message-State: AOAM531I4QPz33eoJg5gMdPsIxgJVYRWOhZCw74A0M/rXiuI2GzBNSZ9
+        Gncf6IZeaOZ29L/T73egOJJtGcCLuzHRZZ2N
+X-Google-Smtp-Source: ABdhPJy2Bx+KLdQaFB1cqrxxmdfp8oHj2nsAR1DftmJ8wQhGQnnQrNaXa9oPu1oxy+la/wx6AMozKA==
+X-Received: by 2002:adf:e80d:: with SMTP id o13mr7875606wrm.293.1610008344757;
+        Thu, 07 Jan 2021 00:32:24 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id t10sm6607484wrp.39.2021.01.07.00.32.09
+        by smtp.gmail.com with ESMTPSA id j59sm7237525wrj.13.2021.01.07.00.32.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 00:32:09 -0800 (PST)
+        Thu, 07 Jan 2021 00:32:24 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] libtracefs: Link unit test to use static local library
-Date:   Thu,  7 Jan 2021 10:32:08 +0200
-Message-Id: <20210107083208.15967-1-tz.stoyanov@gmail.com>
+Subject: [PATCH] libtracefs: Set correct library name and version in the documentation
+Date:   Thu,  7 Jan 2021 10:32:23 +0200
+Message-Id: <20210107083223.16091-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,27 +71,60 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Unit test must test the library located in the sorce tree, instead the
-one installed in the system.
+The libtracefs documentation building structure was gotten from
+libtraceevent. Some variables were not updated and the libtracefs
+name and version are not passed correctly.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- utest/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/Makefile      | 6 +++---
+ Documentation/asciidoc.conf | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/utest/Makefile b/utest/Makefile
-index 403540a..6e9c760 100644
---- a/utest/Makefile
-+++ b/utest/Makefile
-@@ -12,7 +12,7 @@ OBJS += tracefs-utest.o
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+index 54526e2..badd80e 100644
+--- a/Documentation/Makefile
++++ b/Documentation/Makefile
+@@ -181,7 +181,7 @@ ifdef USE_ASCIIDOCTOR
+ $(OUTPUT)%.3 : $(OUTPUT)%.txt
+ 	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
+ 	$(ASCIIDOC) -b manpage -d manpage \
+-		$(ASCIIDOC_EXTRA) -alibtraceevent_version=$(EVENT_PARSE_VERSION) -o $@+ $< && \
++		$(ASCIIDOC_EXTRA) -alibtracefs_version=$(TRACEFS_VERSION) -o $@+ $< && \
+ 	mv $@+ $@
+ endif
  
- LIBS += -lcunit				\
- 	-ldl				\
--	-L$(obj)/lib/tracefs -ltracefs
-+	-L$(obj)/lib/tracefs -l:libtracefs.a
+@@ -192,11 +192,11 @@ $(OUTPUT)%.3 : $(OUTPUT)%.xml
+ $(OUTPUT)%.xml : %.txt
+ 	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
+ 	$(ASCIIDOC) -b docbook -d manpage \
+-		$(ASCIIDOC_EXTRA) -alibtraceevent_version=$(EVENT_PARSE_VERSION) -o $@+ $< && \
++		$(ASCIIDOC_EXTRA) -alibtracefs_version=$(TRACEFS_VERSION) -o $@+ $< && \
+ 	mv $@+ $@
  
- OBJS := $(OBJS:%.o=$(bdir)/%.o)
- DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
+ $(MAN_HTML): $(OUTPUT)%.html : %.txt
+ 	$(QUIET_ASCIIDOC)$(RM) $@+ $@ && \
+ 	$(ASCIIDOC) -b $(ASCIIDOC_HTML) -d manpage \
+-		$(ASCIIDOC_EXTRA) -aperf_version=$(EVENT_PARSE_VERSION) -o $@+ $< && \
++		$(ASCIIDOC_EXTRA) -alibtracefs_version=$(TRACEFS_VERSION) -o $@+ $< && \
+ 	mv $@+ $@
+diff --git a/Documentation/asciidoc.conf b/Documentation/asciidoc.conf
+index 0759571..c15aa13 100644
+--- a/Documentation/asciidoc.conf
++++ b/Documentation/asciidoc.conf
+@@ -74,9 +74,9 @@ template::[header-declarations]
+ <refmeta>
+ <refentrytitle>{mantitle}</refentrytitle>
+ <manvolnum>{manvolnum}</manvolnum>
+-<refmiscinfo class="source">libtraceevent</refmiscinfo>
+-<refmiscinfo class="version">{libtraceevent_version}</refmiscinfo>
+-<refmiscinfo class="manual">libtraceevent Manual</refmiscinfo>
++<refmiscinfo class="source">libtracefs</refmiscinfo>
++<refmiscinfo class="version">{libtracefs_version}</refmiscinfo>
++<refmiscinfo class="manual">libtracefs Manual</refmiscinfo>
+ </refmeta>
+ <refnamediv>
+   <refname>{manname1}</refname>
 -- 
 2.29.2
 
