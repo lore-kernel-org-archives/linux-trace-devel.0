@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77A7FC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A86FC433DB
 	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 16:17:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D93C23428
+	by mail.kernel.org (Postfix) with ESMTP id 122C723118
 	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 16:17:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbhAGQRZ (ORCPT
+        id S1728130AbhAGQRY (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Jan 2021 11:17:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
+        Thu, 7 Jan 2021 11:17:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbhAGQRY (ORCPT
+        with ESMTP id S1728112AbhAGQRY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 7 Jan 2021 11:17:24 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB619C0612FA
-        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Jan 2021 08:16:09 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id r5so8211366eda.12
-        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Jan 2021 08:16:09 -0800 (PST)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DA5C0612FB
+        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Jan 2021 08:16:10 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id i24so8247558edj.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Jan 2021 08:16:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xGd/Y7DJSDuSVCgPE4Mf12P9D9WMnhPsjFd8eKdwpe4=;
-        b=OifyYe2pijcNLbKLeo8v+/dNDJ8w4lCowbT8ayZHvY1ooC/sPdD3t8BC51U85rqZrP
-         OZV9LZ4QR1feXxHq5BQFtcrAsDf5Kx2eeUl9mV6sRjJOZIeCN70z7NyDKMOFWasLXjP8
-         fuP4a33tstQUkVRhDpPOn6J5mkM/y5bTvPwDPWLiFVtoHXMElIVS1zFmiDlocVIyQWj0
-         lD2Z/Pkb+FVKZ0JNX3dwsTUxIVf09rdBoKX0G3CflyYe8A+rlPQHIteuF+HrPRYe4ZHA
-         T6UcApA0gVb8YnIt8XhT6ABxHduyXbmc5FDWnqSVGH2a8BMgh5RoZ1MlaENKe2aMRK6P
-         E7Mg==
+        bh=l+pnpTuSPoHD23d+V3lh4bAJ6Y6ptXfyA94q6daMcaM=;
+        b=ezVPcLK8hhN5WaqdqrobQoQsJRRRkvZ8f0vVYvxb1IEZ7QW0VmeGshZevL8lM/ijaf
+         u5wyYNpmp/pZTlvxM5fbcmxZfGO3Q3fY6L6pgQ0weg4nwrDjYm5WhfSKPNWPpIPA3/UN
+         95p/y0bsB9tpqnpIG9t/4wfwjY8v4XHoreQoj8db1sEXrfN+WL2MN8NhehFUyRkuXTQ7
+         tfGtR4yRFC4VwoJ6pD6g8ZcOpNBySdYKIEXfmz3GCsfbH1XCik+THuYkvNuijfMOTleQ
+         E/dDOndTbuZ7KQWW7Eq2P4DMkMZqzpbip5PxsUd18C45GQsQHUlSgBI5hLdbQZhD2Yrn
+         aNiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xGd/Y7DJSDuSVCgPE4Mf12P9D9WMnhPsjFd8eKdwpe4=;
-        b=tw0fUnd0/6nog7H1y7sFvIfmTLAXq/hgdPzSdY9i74K988NxPIFZhv+9zsk2CQeDyy
-         Nl5awiT2jKEkCWrc+m7u6cynWBk+XWT41FeYz1mJFj8I86LO2Ypt5tOo0XRS6sE6AgpG
-         swUHXqflFx94d9dzKRUw6xrwnrQ1BpIY8AuiMFb37Qwr1nFq2YBWYPuEASaGGu1tl49h
-         OuPvEUTbaUt1HuZ0xqHPbZSmSquuSIeq50JYtlA3f4CqL8yAB7kOv3B5MfvsReZ+gH+A
-         Fk3J6uZvc9QOo5/s0KyPrBDWsrIgKkaTwUgXuSdZwM2rcEEjn7cjLaTlzOpquYAJKl6o
-         aNkQ==
-X-Gm-Message-State: AOAM531NQ/ur4o5KmR+VHwD80EzEt97OIJlEegTxsaMpp+eIac+tnD0I
-        0MPKHHF7G6axXUYdkEIgp2NSCN4udnZRxA==
-X-Google-Smtp-Source: ABdhPJz7rDBR9pG63AIcbx3Seaqh6x4DBi6WQTKEdI95j2BzIIUgOEBxwxUNoFhGQot62Xhr85cSVg==
-X-Received: by 2002:a50:d888:: with SMTP id p8mr2228563edj.147.1610036168534;
-        Thu, 07 Jan 2021 08:16:08 -0800 (PST)
+        bh=l+pnpTuSPoHD23d+V3lh4bAJ6Y6ptXfyA94q6daMcaM=;
+        b=LeQTe6vlowrjM/2hD9zFdgd6TanDsiDJ9+ewDjempiwaRS8m/3KUXz8JhGyROGsmTR
+         TpNQpRtiZS6TLN/iUb6yMfsJBssu1fYjNy5WPmQSALCPe4Qx8QzqO64N0T23gB0EpXCb
+         wwPNRPW/pGx89rBS22hMNQMdgTCiWsOgX4r7mUUmjcXc73sNoPXQc0AYeuAMAZ5dpAfL
+         p7D/hC8ksAk18x+ltt/X6gWcrNnkUG9UVLFEe+CheO8BjSBF0RtwhKvLTfN3bgy27mea
+         uVL+M4UjfH6s6yb+rqf4paOpovxsMRF0NkA1JmvCwwMl1uUuv0qe6d6B9KCQJvlobD4x
+         0z6Q==
+X-Gm-Message-State: AOAM530ny4CY6PQfgFX9sEZOlvu2Qyrpb1OVBwgZMRlLbxptHpx0Q4r1
+        cScHiDNvi8m/qsIYZx4c41M=
+X-Google-Smtp-Source: ABdhPJyDGyDFH884Dr6qmmIy23Z+r8KURF+SDwWL8v5Xdf+x65x/CkjcP+qf5L0pYpttm4PgL1576Q==
+X-Received: by 2002:a50:8e19:: with SMTP id 25mr2177147edw.263.1610036169382;
+        Thu, 07 Jan 2021 08:16:09 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id j23sm2846212edv.45.2021.01.07.08.16.07
+        by smtp.gmail.com with ESMTPSA id j23sm2846212edv.45.2021.01.07.08.16.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 07 Jan 2021 08:16:08 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 5/6] kernel-shark: Add plotting methods to KsPlugins
-Date:   Thu,  7 Jan 2021 18:15:46 +0200
-Message-Id: <20210107161547.207270-6-y.karadz@gmail.com>
+Subject: [PATCH v2 6/6] kernel-shark: Speed-up the sched_events plugin
+Date:   Thu,  7 Jan 2021 18:15:47 +0200
+Message-Id: <20210107161547.207270-7-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210107161547.207270-1-y.karadz@gmail.com>
 References: <20210107161547.207270-1-y.karadz@gmail.com>
@@ -74,520 +74,1096 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-We add generic methods for visualizing the value of a given trace
-event field or the relation between two given trace event field.
-Those methods are taking advantage of the stored values of the event
-fields in kshark_data_container objects and allow the visualization
-plugin to process the data orders of magnitude faster.
+General revision of the sched_events plugin that achieves much faster
+processing of the wake-up latency, by using the new generic methods
+for visualization of event's data field.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/CMakeLists.txt |   3 +-
- src/KsPlugins.cpp  | 416 +++++++++++++++++++++++++++++++++++++++++++++
- src/KsPlugins.hpp  |  48 ++++++
- 3 files changed, 466 insertions(+), 1 deletion(-)
- create mode 100644 src/KsPlugins.cpp
+ src/CMakeLists.txt          |   2 +-
+ src/libkshark-plugin.h      |   1 +
+ src/libkshark-tepdata.c     |  34 ++++
+ src/libkshark-tepdata.h     |   7 +
+ src/plugins/CMakeLists.txt  |  11 +-
+ src/plugins/SchedEvents.cpp | 310 +++++++---------------------
+ src/plugins/sched_events.c  | 393 +++++++++++-------------------------
+ src/plugins/sched_events.h  |  50 ++---
+ 8 files changed, 260 insertions(+), 548 deletions(-)
 
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index e35b436..588cccd 100644
+index 588cccd..980e802 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -41,7 +41,8 @@ if (OPENGL_FOUND)
+@@ -135,7 +135,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
  
-     message(STATUS "libkshark-plot")
-     add_library(kshark-plot  SHARED  libkshark-plot.c
--                                     KsPlotTools.cpp)
-+                                     KsPlotTools.cpp
-+                                     KsPlugins.cpp)
+ endif (Qt5Widgets_FOUND AND Qt5Network_FOUND)
  
-     target_link_libraries(kshark-plot  kshark
-                                        ${GLUT_LIBRARY}
-diff --git a/src/KsPlugins.cpp b/src/KsPlugins.cpp
-new file mode 100644
-index 0000000..ad9f478
---- /dev/null
-+++ b/src/KsPlugins.cpp
-@@ -0,0 +1,416 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+
-+/*
-+ * Copyright (C) 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+ */
-+
-+/**
-+  *  @file    KsPlugins.cpp
-+  *  @brief   KernelShark C++ plugin declarations.
-+  */
-+
-+// C++
-+#include<iostream>
-+
-+// KernelShark
-+#include "KsPlugins.hpp"
-+
-+using namespace KsPlot;
-+
-+/**
-+ * A pair of Bin Id and a trace event data field in this bin, that needs to be
-+ * plotted.
-+ */
-+typedef std::forward_list<std::pair<int, kshark_data_field_int64 *>> PlotPointList;
-+
-+//! @cond Doxygen_Suppress
-+
-+typedef std::function<void(int, kshark_data_container *, ssize_t,
-+			   PlotPointList *)> pushFunc;
-+
-+typedef std::function<void(kshark_data_container *, ssize_t,
-+			   PlotPointList *)> resolveFunc;
-+
-+//! @endcond
-+
-+static void pointPlot(KsCppArgV *argvCpp, IsApplicableFunc isApplicable,
-+		      pluginShapeFunc makeShape, Color col, float size)
-+{
-+	int nBins = argvCpp->_graph->size();
-+
-+	for (int bin = 0; bin < nBins; ++bin)
-+		if (isApplicable(nullptr, bin))
-+			argvCpp->_shapes->push_front(makeShape({argvCpp->_graph},
-+							       {bin}, {},
-+							       col, size));
-+}
-+
-+static std::pair<ssize_t, ssize_t>
-+getRange(kshark_trace_histo *histo, kshark_data_container *data)
-+{
-+	ssize_t firstEntry, lastEntry;
-+	std::pair<ssize_t, ssize_t> err(-1, -2);
-+
-+	firstEntry = kshark_find_entry_field_by_time(histo->min,
-+						     data->data,
-+						     0,
-+						     data->size - 1);
-+
-+	if (firstEntry == BSEARCH_ALL_SMALLER)
-+		return err;
-+
-+	if (firstEntry == BSEARCH_ALL_GREATER)
-+		firstEntry = 0;
-+
-+	lastEntry = kshark_find_entry_field_by_time(histo->max,
-+						    data->data,
-+						    firstEntry,
-+						    data->size - 1);
-+
-+	if (lastEntry == BSEARCH_ALL_GREATER)
-+		return err;
-+
-+	if (lastEntry == BSEARCH_ALL_SMALLER)
-+		lastEntry = data->size - 1;
-+
-+	return {firstEntry, lastEntry};
-+}
-+
-+static PlotPointList
-+getInBinEvents(kshark_trace_histo *histo,
-+	       kshark_data_container *data,
-+	       IsApplicableFunc isApplicable,
-+	       pushFunc push,
-+	       resolveFunc resolve)
-+{
-+	int bin, lastBin(-1);
-+	PlotPointList buffer;
-+
-+	auto lamIsOverflow = [] (int bin) {
-+		return (bin == UPPER_OVERFLOW_BIN ||
-+			bin == LOWER_OVERFLOW_BIN) ? true : false;
-+	};
-+
-+	auto range = getRange(histo, data);
-+
-+	for (ssize_t i = range.second; i >= range.first; --i) {
-+		if (isApplicable(data, i)) {
-+			bin = ksmodel_get_bin(histo, data->data[i]->entry);
-+			if (lamIsOverflow(bin))
-+				continue;
-+
-+			if (bin != lastBin) {
-+				push(bin, data, i, &buffer);
-+				lastBin = bin;
-+			} else {
-+				resolve(data, i, &buffer);
-+			}
-+		}
-+	}
-+
-+	return buffer;
-+}
-+
-+static PlotPointList
-+getLastInBinEvents(kshark_trace_histo *histo, kshark_data_container *data,
-+		   IsApplicableFunc isApplicable)
-+{
-+	pushFunc push = [] (int bin, kshark_data_container *data, ssize_t i,
-+			    PlotPointList *list) {
-+		list->push_front({bin, data->data[i]});
-+	};
-+
-+	/*
-+	 * Do not resolve. This means that only the very last (in time)
-+	 * appearance of the event in the bin will be visualized.
-+	 */
-+	resolveFunc resolve = [] (kshark_data_container *data, ssize_t i,
-+				  PlotPointList *list) {};
-+
-+	return getInBinEvents(histo, data, isApplicable, push, resolve);
-+}
-+
-+static PlotPointList
-+getMaxInBinEvents(kshark_trace_histo *histo, kshark_data_container *data,
-+		 IsApplicableFunc isApplicable)
-+{
-+	pushFunc push = [] (int bin, kshark_data_container *data, ssize_t i,
-+			    PlotPointList *list) {
-+		list->push_front({bin, data->data[i]});
-+	};
-+
-+	/* Overwrite if bigger. */
-+	resolveFunc resolve = [] (kshark_data_container *data, ssize_t i,
-+				  PlotPointList *list) {
-+		if (list->front().second < data->data[i])
-+			list->front().second = data->data[i];
-+	};
-+
-+	return getInBinEvents(histo, data, isApplicable, push, resolve);
-+}
-+
-+
-+static PlotPointList
-+getMinInBinEvents(kshark_trace_histo *histo, kshark_data_container *data,
-+		 IsApplicableFunc isApplicable)
-+{
-+	pushFunc push = [] (int bin, kshark_data_container *data, ssize_t i,
-+			    PlotPointList *list) {
-+		list->push_front({bin, data->data[i]});
-+	};
-+
-+	/* Overwrite if smaller. */
-+	resolveFunc resolve = [] (kshark_data_container *data, ssize_t i,
-+				  PlotPointList *list) {
-+		if (list->front().second > data->data[i])
-+			list->front().second = data->data[i];
-+	};
-+
-+	return getInBinEvents(histo, data, isApplicable, push, resolve);
-+}
-+
-+//! @cond Doxygen_Suppress
-+
-+#define PLUGIN_MIN_BOX_SIZE 4
-+
-+//! @endcond
-+
-+static void intervalPlot(kshark_trace_histo *histo,
-+			 kshark_data_container *dataEvtA,
-+			 IsApplicableFunc checkFieldA,
-+			 kshark_data_container *dataEvtB,
-+			 IsApplicableFunc checkFieldB,
-+			 Graph *graph,
-+			 PlotObjList *shapes,
-+			 pluginShapeFunc makeShape,
-+			 Color col,
-+			 float size)
-+{
-+	kshark_data_field_int64 *dataA, *dataB;
-+	PlotPointList bufferA, bufferB;
-+	int binA, binB;
-+	int64_t tsB;
-+
-+	auto lamGetBin = [] (auto it) {return (*it).first;};
-+
-+	auto lamGetTime = [] (auto it) {return (*it).second->entry->ts;};
-+
-+	auto lamGetData = [] (auto it) {return (*it).second;};
-+
-+	bufferA = getLastInBinEvents(histo,
-+				     dataEvtA,
-+				     checkFieldA);
-+
-+	bufferB = getLastInBinEvents(histo,
-+				     dataEvtB,
-+				     checkFieldB);
-+
-+	if (bufferA.empty() || bufferB.empty())
-+		return;
-+
-+	auto itA = bufferA.cbegin();
-+	auto itB = bufferB.cbegin();
-+	while (itA != bufferA.cend() && itB != bufferB.cend()) {
-+		binA = lamGetBin(itA);
-+		dataA = lamGetData(itA);
-+
-+		/*
-+		 * We will draw a shape between "Event A" and "Event B".
-+		 * Because the shape starts with "Event A", we will skip all
-+		 * "Event B" entries before the "Event A" entry.
-+		 */
-+		do {
-+			dataB = lamGetData(itB);
-+			tsB = lamGetTime(itB);
-+			binB = lamGetBin(itB);
-+			itB++;
-+		} while (itB != bufferB.cend() && tsB < lamGetTime(itA));
-+
-+		/*
-+		 * The shape ends with "Event B" and we already have this
-+		 * event. However, we have to make sure that we will start the
-+		 * shape from the very last "Event A" entry, which is rigth
-+		 * before the "Event B" entry, which we already selected.
-+		 */
-+		while (itA != bufferA.cend() && lamGetTime(itA) < tsB) {
-+			dataA = lamGetData(itA);
-+			binA = lamGetBin(itA);
-+			itA++;
-+		}
-+
-+		if (binB - binA >= PLUGIN_MIN_BOX_SIZE)
-+			shapes->push_front(makeShape({graph},
-+						     {binA, binB},
-+						     {dataA, dataB},
-+						     col, size));
-+	}
-+}
-+
-+/**
-+ * @brief Generic plotting method for plugins. To be used for visualizing
-+ *	  a trace events.
-+ *
-+ * @param argvCpp: The C++ arguments of the drawing function of the plugin.
-+ * @param isApplicable: Check function used to select events from data
-+ *		       container A.
-+ * @param makeShape: Input location for a function pointer used to generate
-+ *		     the shape to be plotted.
-+ * @param col: The color of the shape to be plotted.
-+ * @param size: The size of the shape to be plotted.
-+ */
-+void eventPlot(KsCppArgV *argvCpp,
-+	       IsApplicableFunc isApplicable,
-+	       pluginShapeFunc makeShape,
-+	       Color col,
-+	       float size)
-+{
-+	try {
-+		pointPlot(argvCpp, isApplicable, makeShape, col, size);
-+	} catch (const std::exception &exc) {
-+		std::cerr << "Exception in eventPlot\n"
-+			  << exc.what() << std::endl;
-+	}
-+}
-+
-+//! @cond Doxygen_Suppress
-+
-+enum class PlotWath {
-+	Maximum,
-+	Minimum,
-+};
-+
-+//! @endcond
-+
-+static void eventFieldPlot(KsCppArgV *argvCpp,
-+		    kshark_data_container *dataEvt,
-+		    IsApplicableFunc checkField,
-+		    PlotWath s,
-+		    pluginShapeFunc makeShape,
-+		    KsPlot::Color col,
-+		    float size)
-+{
-+	PlotPointList buffer;
-+
-+	if (dataEvt->size == 0)
-+		return;
-+
-+	if (!dataEvt->sorted)
-+		kshark_data_container_sort(dataEvt);
-+
-+	try {
-+		if (s == PlotWath::Maximum)
-+			buffer = getMaxInBinEvents(argvCpp->_histo,
-+						   dataEvt, checkField);
-+
-+		if  (s == PlotWath::Minimum)
-+			buffer = getMinInBinEvents(argvCpp->_histo,
-+						   dataEvt, checkField);
-+
-+		for (auto const &i: buffer) {
-+			argvCpp->_shapes->push_front(makeShape({argvCpp->_graph},
-+							       {i.first},
-+							       {i.second},
-+							       col, size));
-+		}
-+	} catch (const std::exception &exc) {
-+		std::cerr << "Exception in eventFieldPlot\n"
-+			  << exc.what() << std::endl;
-+	}
-+}
-+
-+/**
-+ * @brief Generic plotting method for plugins. To be used for visualizing
-+ *	  the value of a data fiels trace events.
-+ *
-+ * @param argvCpp: The C++ arguments of the drawing function of the plugin.
-+ * @param dataEvt: Input location for the container of the Evant's data.
-+ * @param checkField: Check function used to select events from data
-+ *		       container.
-+ * @param makeShape: Input location for a function pointer used to generate
-+ *		     the shape to be plotted.
-+ * @param col: The color of the shape to be plotted.
-+ * @param size: The size of the shape to be plotted.
-+ */
-+void eventFieldPlotMax(KsCppArgV *argvCpp,
-+		       kshark_data_container *dataEvt,
-+		       IsApplicableFunc checkField,
-+		       pluginShapeFunc makeShape,
-+		       KsPlot::Color col,
-+		       float size)
-+{
-+	eventFieldPlot(argvCpp, dataEvt, checkField,
-+		       PlotWath::Maximum,
-+		       makeShape, col, size);
-+}
-+
-+/**
-+ * @brief Generic plotting method for plugins. To be used for visualizing
-+ *	  the value of a data fiels trace events.
-+ *
-+ * @param argvCpp: The C++ arguments of the drawing function of the plugin.
-+ * @param dataEvt: Input location for the container of the Evant's data.
-+ * @param checkField: check function used to select events from data
-+ *		       container.
-+ * @param makeShape: Input location for a function pointer used to generate
-+ *		     the shape to be plotted.
-+ * @param col: The color of the shape to be plotted.
-+ * @param size: The size of the shape to be plotted.
-+ */
-+void eventFieldPlotMin(KsCppArgV *argvCpp,
-+		       kshark_data_container *dataEvt,
-+		       IsApplicableFunc checkField,
-+		       pluginShapeFunc makeShape,
-+		       KsPlot::Color col,
-+		       float size)
-+{
-+	eventFieldPlot(argvCpp, dataEvt, checkField,
-+		       PlotWath::Minimum,
-+		       makeShape, col, size);
-+}
-+
-+/**
-+ * @brief Generic plotting method for plugins. To be used for visualizing
-+ *	  the correlation between two trace events.
-+ *
-+ * @param argvCpp: The C++ arguments of the drawing function of the plugin.
-+ * @param dataEvtA: Input location for the container of the Evant A data.
-+ * @param checkFieldA: Check function used to select events from data
-+ *		       container A.
-+ * @param dataEvtB: Input location for the container of the Evant B data.
-+ * @param checkFieldB: Check function used to select events from data
-+ *		       container B.
-+ * @param makeShape: Input location for a function pointer used to generate
-+ *		     the shape to be plotted.
-+ * @param col: The color of the shape to be plotted.
-+ * @param size: The size of the shape to be plotted.
-+ */
-+void eventFieldIntervalPlot(KsCppArgV *argvCpp,
-+			    kshark_data_container *dataEvtA,
-+			    IsApplicableFunc checkFieldA,
-+			    kshark_data_container *dataEvtB,
-+			    IsApplicableFunc checkFieldB,
-+			    pluginShapeFunc makeShape,
-+			    KsPlot::Color col,
-+			    float size)
-+{
-+	if (dataEvtA->size == 0 || dataEvtB->size == 0)
-+		return;
-+
-+	if (!dataEvtA->sorted)
-+		kshark_data_container_sort(dataEvtA);
-+
-+	if (!dataEvtB->sorted)
-+		kshark_data_container_sort(dataEvtB);
-+
-+	try {
-+		intervalPlot(argvCpp->_histo,
-+			     dataEvtA, checkFieldA,
-+			     dataEvtB, checkFieldB,
-+			     argvCpp->_graph,
-+			     argvCpp->_shapes,
-+			     makeShape, col, size);
-+	} catch (const std::exception &exc) {
-+		std::cerr << "Exception in eventFieldIntervalPlot\n"
-+			  << exc.what() << std::endl;
-+	}
-+}
-diff --git a/src/KsPlugins.hpp b/src/KsPlugins.hpp
-index 3955cdf..a19bb9d 100644
---- a/src/KsPlugins.hpp
-+++ b/src/KsPlugins.hpp
-@@ -12,6 +12,9 @@
- #ifndef _KS_PLUGINS_H
- #define _KS_PLUGINS_H
+-# add_subdirectory(plugins)
++add_subdirectory(plugins)
  
-+// C++
-+#include <functional>
-+
- // KernelShark
- #include "libkshark-model.h"
- #include "KsPlotTools.hpp"
-@@ -48,4 +51,49 @@ struct KsCppArgV {
-  */
- #define KS_ARGV_TO_CPP(a) (reinterpret_cast<KsCppArgV *>(a))
+ find_program(DO_AS_ROOT pkexec)
  
-+/**
-+ * Function of this type has to be implemented by the user in order to use
-+ * some of the Generic plotting method. The returned shape will be plotted
-+ * by KernelShark on top of the existing Graph generated by the model.
-+ */
-+typedef std::function<KsPlot::PlotObject *(std::vector<const KsPlot::Graph *> graph,
-+					   std::vector<int> bin,
-+					   std::vector<kshark_data_field_int64 *> data,
-+					   KsPlot::Color col,
-+					   float size)> pluginShapeFunc;
+diff --git a/src/libkshark-plugin.h b/src/libkshark-plugin.h
+index c62086f..c110616 100644
+--- a/src/libkshark-plugin.h
++++ b/src/libkshark-plugin.h
+@@ -19,6 +19,7 @@ extern "C" {
+ // C
+ #include <stdint.h>
+ #include <stdbool.h>
++#include <assert.h>
+ 
+ /* Quiet warnings over documenting simple structures */
+ //! @cond Doxygen_Suppress
+diff --git a/src/libkshark-tepdata.c b/src/libkshark-tepdata.c
+index 724cff2..d4be052 100644
+--- a/src/libkshark-tepdata.c
++++ b/src/libkshark-tepdata.c
+@@ -1912,3 +1912,37 @@ int kshark_tep_find_top_stream(struct kshark_context *kshark_ctx,
+ 
+ 	return top_stream->stream_id;
+ }
++
++static bool find_wakeup_event(struct tep_handle *tep, const char *wakeup_name,
++			      struct tep_event **waking_event_ptr)
++{
++	*waking_event_ptr = tep_find_event_by_name(tep, "sched", wakeup_name);
++
++	return (*waking_event_ptr)? true : false;
++}
 +
 +/**
-+ * Function of this type has to be implemented by the user in order to use
-+ * some of the Generic plotting method. The user must implement a logic
-+ * deciding if the record, having a given index inside the data container has
-+ * to be visualized.
++ * @brief Search the available trace events and retrieve a definition of
++ *	  a waking_event.
++ *
++ * @param tep: Input location for the the Page event object.
++ * @param waking_event_ptr: Output location for the the waking_event object.
++ *
++ * @returns True on success, otherwise False.
 + */
-+typedef std::function<bool(kshark_data_container *, ssize_t)> IsApplicableFunc;
++bool define_wakeup_event(struct tep_handle *tep,
++			 struct tep_event **waking_event_ptr)
++{
++	bool wakeup_found;
 +
-+void eventPlot(KsCppArgV *argvCpp, IsApplicableFunc isApplicable,
-+	       pluginShapeFunc makeShape, KsPlot::Color col, float size);
++	wakeup_found = find_wakeup_event(tep, "sched_wakeup",
++					 waking_event_ptr);
 +
-+void eventFieldPlotMax(KsCppArgV *argvCpp,
-+		       kshark_data_container *dataEvt,
-+		       IsApplicableFunc checkField,
-+		       pluginShapeFunc makeShape,
-+		       KsPlot::Color col,
-+		       float size);
++	wakeup_found |= find_wakeup_event(tep, "sched_wakeup_new",
++					  waking_event_ptr);
 +
-+void eventFieldPlotMin(KsCppArgV *argvCpp,
-+		       kshark_data_container *dataEvt,
-+		       IsApplicableFunc checkField,
-+		       pluginShapeFunc makeShape,
-+		       KsPlot::Color col,
-+		       float size);
++	wakeup_found |= find_wakeup_event(tep, "sched_waking",
++					  waking_event_ptr);
 +
-+void eventFieldIntervalPlot(KsCppArgV *argvCpp,
-+			    kshark_data_container *dataEvtA,
-+			    IsApplicableFunc checkFieldA,
-+			    kshark_data_container *dataEvtB,
-+			    IsApplicableFunc checkFieldB,
-+			    pluginShapeFunc makeShape,
-+			    KsPlot::Color col,
-+			    float size);
++	return wakeup_found;
++}
+diff --git a/src/libkshark-tepdata.h b/src/libkshark-tepdata.h
+index 46b18c8..1b955be 100644
+--- a/src/libkshark-tepdata.h
++++ b/src/libkshark-tepdata.h
+@@ -105,6 +105,13 @@ int kshark_tep_find_top_stream(struct kshark_context *kshark_ctx,
+ 
+ bool kshark_tep_is_top_stream(struct kshark_data_stream *stream);
+ 
++struct tep_event;
 +
++struct tep_format_field;
++
++bool define_wakeup_event(struct tep_handle *tep,
++			 struct tep_event **wakeup_event);
++
+ #ifdef __cplusplus
+ }
  #endif
+diff --git a/src/plugins/CMakeLists.txt b/src/plugins/CMakeLists.txt
+index 2da73f8..108bc5f 100644
+--- a/src/plugins/CMakeLists.txt
++++ b/src/plugins/CMakeLists.txt
+@@ -20,14 +20,13 @@ endfunction()
+ set(PLUGIN_LIST "")
+ BUILD_PLUGIN(NAME sched_events
+              SOURCE sched_events.c SchedEvents.cpp)
+-list(APPEND PLUGIN_LIST "sched_events default") # This plugin will be loaded by default
+-# list(APPEND PLUGIN_LIST "sched_events") # This plugin isn't loaded by default
++list(APPEND PLUGIN_LIST "sched_events")
+ 
+-BUILD_PLUGIN(NAME missed_events
+-             SOURCE missed_events.c MissedEvents.cpp)
+-list(APPEND PLUGIN_LIST "missed_events default") # This plugin will be loaded by default
++# BUILD_PLUGIN(NAME missed_events
++#              SOURCE missed_events.c MissedEvents.cpp)
++# list(APPEND PLUGIN_LIST "missed_events")
+ 
+-install(TARGETS sched_events missed_events
++install(TARGETS ${PLUGIN_LIST}
+         LIBRARY DESTINATION ${KS_PLUGIN_INSTALL_PREFIX}
+         COMPONENT kernelshark)
+ 
+diff --git a/src/plugins/SchedEvents.cpp b/src/plugins/SchedEvents.cpp
+index 8408657..c85a059 100644
+--- a/src/plugins/SchedEvents.cpp
++++ b/src/plugins/SchedEvents.cpp
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: LGPL-2.1
+ 
+ /*
+- * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+  */
+ 
+ /**
+@@ -12,180 +12,39 @@
+  */
+ 
+ // C++
+-#include<iostream>
+-
+-// C++ 11
+-#include<functional>
+-#include<unordered_set>
++#include <vector>
+ 
+ // KernelShark
+ #include "libkshark.h"
++#include "libkshark-plugin.h"
+ #include "plugins/sched_events.h"
+ #include "KsPlotTools.hpp"
+ #include "KsPlugins.hpp"
+ 
+-//! @cond Doxygen_Suppress
+-
+-#define PLUGIN_MIN_BOX_SIZE 4
+-
+-#define KS_TASK_COLLECTION_MARGIN 25
+-
+-//! @endcond
+-
+-extern struct plugin_sched_context *plugin_sched_context_handler;
+-
+-/** Sched Event identifier. */
+-enum class SchedEvent {
+-	/** Sched Switch Event. */
+-	Switch,
++using namespace KsPlot;
+ 
+-	/** Sched Wakeup Event. */
+-	Wakeup,
+-};
+-
+-static void pluginDraw(plugin_sched_context *plugin_ctx,
+-		       kshark_context *kshark_ctx,
+-		       kshark_trace_histo *histo,
+-		       kshark_entry_collection *col,
+-		       SchedEvent e,
+-		       int pid,
+-		       KsPlot::Graph *graph,
+-		       KsPlot::PlotObjList *shapes)
++static PlotObject *makeShape(std::vector<const Graph *> graph,
++			     std::vector<int> bins,
++			     std::vector<kshark_data_field_int64 *>,
++			     Color col, float size)
+ {
+-	const kshark_entry *entryClose, *entryOpen, *entryME;
+-	ssize_t indexClose(0), indexOpen(0), indexME(0);
+-	std::function<void(int)> ifSchedBack;
+-	KsPlot::Rectangle *rec = nullptr;
+-	int height = graph->getHeight() * .3;
+-
+-	auto openBox = [&] (const KsPlot::Point &p)
+-	{
+-		/*
+-		 * First check if we already have an open box. If we don't
+-		 * have, open a new one.
+-		 */
+-		if (!rec)
+-			rec = new KsPlot::Rectangle;
+-
+-		if (e == SchedEvent::Switch) {
+-			/* Red box. */
+-			rec->_color = KsPlot::Color(255, 0, 0);
+-		} else {
+-			/* Green box. */
+-			rec->_color = KsPlot::Color(0, 255, 0);
+-		}
+-
+-		rec->setFill(false);
+-
+-		rec->setPoint(0, p.x() - 1, p.y() - height);
+-		rec->setPoint(1, p.x() - 1, p.y() - 1);
+-	};
+-
+-	auto closeBox = [&] (const KsPlot::Point &p)
+-	{
+-		if (rec == nullptr)
+-			return;
+-
+-		int boxSize = p.x() - rec->getPoint(0)->x;
+-		if (boxSize < PLUGIN_MIN_BOX_SIZE) {
+-			/* This box is too small. Don't try to plot it. */
+-			delete rec;
+-			rec = nullptr;
+-			return;
+-		}
+-
+-		rec->setPoint(3, p.x() - 1, p.y() - height);
+-		rec->setPoint(2, p.x() - 1, p.y() - 1);
+-
+-		shapes->push_front(rec);
+-		rec = nullptr;
+-	};
+-
+-	for (int bin = 0; bin < graph->size(); ++bin) {
+-		/*
+-		 * Starting from the first element in this bin, go forward
+-		 * in time until you find a trace entry that satisfies the
+-		 * condition defined by kshark_match_pid.
+-		 */
+-		entryClose = ksmodel_get_entry_back(histo, bin, false,
+-						 plugin_switch_match_entry_pid,
+-						 pid, col, &indexClose);
+-
+-		entryME = ksmodel_get_task_missed_events(histo,
+-							 bin, pid,
+-							 col,
+-							 &indexME);
+-
+-		if (e == SchedEvent::Switch) {
+-			/*
+-			 * Starting from the last element in this bin, go backward
+-			 * in time until you find a trace entry that satisfies the
+-			 * condition defined by plugin_switch_match_rec_pid.
+-			 */
+-			entryOpen =
+-				ksmodel_get_entry_back(histo, bin, false,
+-						       plugin_switch_match_rec_pid,
+-						       pid, col, &indexOpen);
++	Rectangle *rec = new KsPlot::Rectangle;
++	Point p0 = graph[0]->bin(bins[0])._base;
++	Point p1 = graph[0]->bin(bins[1])._base;
++	int height = graph[0]->height() * .3;
+ 
+-		} else {
+-			/*
+-			 * Starting from the last element in this bin, go backward
+-			 * in time until you find a trace entry that satisfies the
+-			 * condition defined by plugin_wakeup_match_rec_pid.
+-			 */
+-			entryOpen =
+-				ksmodel_get_entry_back(histo, bin, false,
+-						       plugin_wakeup_match_rec_pid,
+-						       pid,
+-						       col,
+-						       &indexOpen);
++	rec->setFill(false);
++	rec->setPoint(0, p0.x() - 1, p0.y() - height);
++	rec->setPoint(1, p0.x() - 1, p0.y() - 1);
+ 
+-			if (entryOpen) {
+-				int cpu = ksmodel_get_cpu_back(histo, bin,
+-								      pid,
+-								      false,
+-								      col,
+-								      nullptr);
+-				if (cpu >= 0) {
+-					/*
+-					 * The task is already running. Ignore
+-					 * this wakeup event.
+-					 */
+-					entryOpen = nullptr;
+-				}
+-			}
+-		}
+-
+-		if (rec) {
+-			if (entryME || entryClose) {
+-				/* Close the box in this bin. */
+-				closeBox(graph->getBin(bin)._base);
+-				if (entryOpen &&
+-				    indexME < indexOpen &&
+-				    indexClose < indexOpen) {
+-					/*
+-					 * We have a Sched switch entry that
+-					 * comes after (in time) the closure of
+-					 * the previous box. We have to open a
+-					 * new box in this bin.
+-					 */
+-					openBox(graph->getBin(bin)._base);
+-				}
+-			}
+-		} else {
+-			if (entryOpen &&
+-			    (!entryClose || indexClose < indexOpen)) {
+-				/* Open a new box in this bin. */
+-				openBox(graph->getBin(bin)._base);
+-			}
+-		}
+-	}
++	rec->setPoint(3, p1.x() - 1, p1.y() - height);
++	rec->setPoint(2, p1.x() - 1, p1.y() - 1);
+ 
+-	if (rec)
+-		delete rec;
++	rec->_size = size;
++	rec->_color = col;
+ 
+-	return;
+-}
++	return rec;
++};
+ 
+ /*
+  * Ideally, the sched_switch has to be the last trace event recorded before the
+@@ -199,49 +58,32 @@ static void pluginDraw(plugin_sched_context *plugin_ctx,
+  * of the entry (this field is set during the first pass) to search for trailing
+  * events after the "sched_switch".
+  */
+-static void secondPass(kshark_entry **data,
+-		       kshark_entry_collection *col,
+-		       int pid)
++static void secondPass(plugin_sched_context *plugin_ctx)
+ {
+-	if (!col)
+-		return;
+-
+-	const kshark_entry *e;
+-	kshark_entry *last;
+-	int first, n;
+-	ssize_t index;
+-
+-	/* Loop over the intervals of the data collection. */
+-	for (size_t i = 0; i < col->size; ++i) {
+-		first = col->break_points[i];
+-		n = first - col->resume_points[i];
+-
+-		kshark_entry_request *req =
+-			kshark_entry_request_alloc(first, n,
+-						   plugin_switch_match_rec_pid,
+-						   pid,
+-						   false,
+-						   KS_GRAPH_VIEW_FILTER_MASK);
+-
+-		e = kshark_get_entry_back(req, data, &index);
+-		free(req);
+-
+-		if (!e || index < 0) {
+-			/* No sched_switch event in this interval. */
++	kshark_data_container *cSS;
++	kshark_entry *e;
++	int pid_rec;
++
++	cSS = plugin_ctx->ss_data;
++	for (ssize_t i = 0; i < cSS->size; ++i) {
++		pid_rec = plugin_sched_get_pid(cSS->data[i]->field);
++		e = cSS->data[i]->entry;
++		if (!e->next || e->pid == 0 ||
++		    e->event_id == e->next->event_id ||
++		    pid_rec != e->next->pid)
+ 			continue;
+-		}
+ 
+ 		/* Find the very last trailing event. */
+-		for (last = data[index]; last->next; last = last->next) {
+-			if (last->next->pid != pid) {
++		for (; e->next; e = e->next) {
++			if (e->next->pid != plugin_sched_get_pid(cSS->data[i]->field)) {
+ 				/*
+ 				 * This is the last trailing event. Change the
+ 				 * "pid" to be equal to the "next pid" of the
+ 				 * sched_switch event and leave a sign that you
+ 				 * edited this entry.
+ 				 */
+-				last->pid = data[index]->pid;
+-				last->visible &= ~KS_PLUGIN_UNTOUCHED_MASK;
++				e->pid = cSS->data[i]->entry->pid;
++				e->visible &= ~KS_PLUGIN_UNTOUCHED_MASK;
+ 				break;
+ 			}
+ 		}
+@@ -252,62 +94,56 @@ static void secondPass(kshark_entry **data,
+  * @brief Plugin's draw function.
+  *
+  * @param argv_c: A C pointer to be converted to KsCppArgV (C++ struct).
++ * @param sd: Data stream identifier.
+  * @param pid: Process Id.
+  * @param draw_action: Draw action identifier.
+  */
+-void plugin_draw(kshark_cpp_argv *argv_c, int pid, int draw_action)
++void plugin_draw(kshark_cpp_argv *argv_c, int sd, int pid, int draw_action)
+ {
+ 	plugin_sched_context *plugin_ctx;
+-	kshark_context *kshark_ctx(NULL);
+-	kshark_entry_collection *col;
+ 
+-	if (draw_action != KSHARK_PLUGIN_TASK_DRAW || pid == 0)
++	if (!(draw_action & KSHARK_TASK_DRAW) || pid == 0)
+ 		return;
+ 
+-	plugin_ctx = plugin_sched_context_handler;
+-	if (!plugin_ctx || !kshark_instance(&kshark_ctx))
++	plugin_ctx = __get_context(sd);
++	if (!plugin_ctx)
+ 		return;
+ 
+ 	KsCppArgV *argvCpp = KS_ARGV_TO_CPP(argv_c);
+ 
+-	/*
+-	 * Try to find a collections for this task. It is OK if
+-	 * coll = NULL.
+-	 */
+-	col = kshark_find_data_collection(plugin_ctx->collections,
+-					  plugin_match_pid, pid);
+-	if (!col) {
+-		/*
+-		 * If a data collection for this task does not exist,
+-		 * register a new one.
+-		 */
+-		kshark_entry **data = argvCpp->_histo->data;
+-		int size = argvCpp->_histo->data_size;
+-
+-		col = kshark_add_collection_to_list(kshark_ctx,
+-						    &plugin_ctx->collections,
+-						    data, size,
+-						    plugin_match_pid, pid,
+-						    KS_TASK_COLLECTION_MARGIN);
++	if (!plugin_ctx->second_pass_done) {
++		/* The second pass is not done yet. */
++		secondPass(plugin_ctx);
++		plugin_ctx->second_pass_done = true;
+ 	}
+ 
+-	if (!tracecmd_filter_id_find(plugin_ctx->second_pass_hash, pid)) {
+-		/* The second pass for this task is not done yet. */
+-		secondPass(argvCpp->_histo->data, col, pid);
+-		tracecmd_filter_id_add(plugin_ctx->second_pass_hash, pid);
+-	}
++	IsApplicableFunc checkFieldSW = [=] (kshark_data_container *d,
++					     ssize_t i) {
++		return d->data[i]->field == pid;
++	};
+ 
+-	try {
+-		pluginDraw(plugin_ctx, kshark_ctx,
+-			   argvCpp->_histo, col,
+-			   SchedEvent::Wakeup, pid,
+-			   argvCpp->_graph, argvCpp->_shapes);
++	IsApplicableFunc checkFieldSS = [=] (kshark_data_container *d,
++					     ssize_t i) {
++		return !(plugin_sched_get_prev_state(d->data[i]->field) & 0x7f) &&
++		       plugin_sched_get_pid(d->data[i]->field) == pid;
++	};
+ 
+-		pluginDraw(plugin_ctx, kshark_ctx,
+-			   argvCpp->_histo, col,
+-			   SchedEvent::Switch, pid,
+-			   argvCpp->_graph, argvCpp->_shapes);
+-	} catch (const std::exception &exc) {
+-		std::cerr << "Exception in SchedEvents\n" << exc.what();
+-	}
++	IsApplicableFunc checkEntryPid = [=] (kshark_data_container *d,
++					      ssize_t i) {
++		return d->data[i]->entry->pid == pid;
++	};
++
++	eventFieldIntervalPlot(argvCpp,
++			       plugin_ctx->sw_data, checkFieldSW,
++			       plugin_ctx->ss_data, checkEntryPid,
++			       makeShape,
++			       {0, 255, 0}, // Green
++			       -1);         // Default size
++
++	eventFieldIntervalPlot(argvCpp,
++			       plugin_ctx->ss_data, checkFieldSS,
++			       plugin_ctx->ss_data, checkEntryPid,
++			       makeShape,
++			       {255, 0, 0}, // Red
++			       -1);         // Default size
+ }
+diff --git a/src/plugins/sched_events.c b/src/plugins/sched_events.c
+index d0fd15e..1596880 100644
+--- a/src/plugins/sched_events.c
++++ b/src/plugins/sched_events.c
+@@ -1,85 +1,92 @@
+ // SPDX-License-Identifier: LGPL-2.1
+ 
+ /*
+- * Copyright (C) 2018 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ * Copyright (C) 2018 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+  */
+ 
+ /**
+  *  @file    sched_events.c
+- *  @brief   Defines a callback function for Sched events used to registers the
+- *	     "next" task (if not registered already) and to changes the value
+- *	     of the "pid" field of the "sched_switch" entries such that, it
+- *	     will be ploted as part of the "next" task.
++ *  @brief
+  */
+ 
+ // C
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <assert.h>
++
++// trace-cmd
++#include "trace-cmd/trace-cmd.h"
+ 
+ // KernelShark
+ #include "plugins/sched_events.h"
++#include "libkshark-tepdata.h"
+ 
+ /** Plugin context instance. */
+-struct plugin_sched_context *plugin_sched_context_handler = NULL;
+ 
+-static bool define_wakeup_event(struct tep_handle *tep, const char *wakeup_name,
+-				struct tep_event **wakeup_event,
+-				struct tep_format_field **pid_field)
+-{
+-	struct tep_event *event;
++//! @cond Doxygen_Suppress
+ 
+-	event = tep_find_event_by_name(tep, "sched", wakeup_name);
+-	if (!event)
+-		return false;
++typedef unsigned long long tep_num_field_t;
+ 
+-	*wakeup_event = event;
+-	*pid_field = tep_find_any_field(event, "pid");
++#define PREV_STATE_SHIFT	((int) ((sizeof(ks_num_field_t) - 1) * 8))
+ 
+-	return true;
++#define PREV_STATE_MASK		(((ks_num_field_t) 1 << 8) - 1)
++
++#define PID_MASK		(((ks_num_field_t) 1 << PREV_STATE_SHIFT) - 1)
++
++//! @endcond
++
++static void plugin_sched_set_pid(ks_num_field_t *field,
++				 tep_num_field_t pid)
++{
++	*field &= ~PID_MASK;
++	*field = pid & PID_MASK;
+ }
+ 
+-static void plugin_free_context(struct plugin_sched_context *plugin_ctx)
++/**
++ * @brief Retrieve the PID value from the data field stored in the
++ *	  kshark_data_container object.
++ *
++ * @param field: Input location for the data field.
++ */
++int plugin_sched_get_pid(ks_num_field_t field)
+ {
+-	if (!plugin_ctx)
+-		return;
++	return field & PID_MASK;
++}
+ 
+-	tracecmd_filter_id_hash_free(plugin_ctx->second_pass_hash);
+-	kshark_free_collection_list(plugin_ctx->collections);
++/* Use the most significant byte to store the value of "prev_state". */
++static void plugin_sched_set_prev_state(ks_num_field_t *field,
++					tep_num_field_t prev_state)
++{
++	tep_num_field_t mask = PREV_STATE_MASK << PREV_STATE_SHIFT;
++	*field &= ~mask;
++	*field |= (prev_state & PREV_STATE_MASK) << PREV_STATE_SHIFT;
++}
+ 
+-	free(plugin_ctx);
++/**
++ * @brief Retrieve the "prev_state" value from the data field stored in the
++ *	  kshark_data_container object.
++ *
++ * @param field: Input location for the data field.
++ */
++int plugin_sched_get_prev_state(ks_num_field_t field)
++{
++	tep_num_field_t mask = PREV_STATE_MASK << PREV_STATE_SHIFT;
++	return (field & mask) >> PREV_STATE_SHIFT;
+ }
+ 
+-static bool plugin_sched_init_context(struct kshark_context *kshark_ctx)
++static bool plugin_sched_init_context(struct kshark_data_stream *stream,
++				      struct plugin_sched_context *plugin_ctx)
+ {
+-	struct plugin_sched_context *plugin_ctx;
+ 	struct tep_event *event;
+ 	bool wakeup_found;
+ 
+-	/* No context should exist when we initialize the plugin. */
+-	assert(plugin_sched_context_handler == NULL);
+-
+-	plugin_sched_context_handler =
+-		calloc(1, sizeof(*plugin_sched_context_handler));
+-	if (!plugin_sched_context_handler) {
+-		fprintf(stderr,
+-			"Failed to allocate memory for plugin_sched_context.\n");
++	if (!kshark_is_tep(stream))
+ 		return false;
+-	}
+ 
+-	plugin_ctx = plugin_sched_context_handler;
+-	plugin_ctx->handle = kshark_ctx->handle;
+-	plugin_ctx->pevent = kshark_ctx->pevent;
+-	plugin_ctx->collections = NULL;
+-
+-	event = tep_find_event_by_name(plugin_ctx->pevent,
++	plugin_ctx->tep = kshark_get_tep(stream);
++	event = tep_find_event_by_name(plugin_ctx->tep,
+ 				       "sched", "sched_switch");
+-	if (!event) {
+-		plugin_free_context(plugin_ctx);
+-		plugin_sched_context_handler = NULL;
+-
++	if (!event)
+ 		return false;
+-	}
+ 
+ 	plugin_ctx->sched_switch_event = event;
+ 	plugin_ctx->sched_switch_next_field =
+@@ -91,277 +98,121 @@ static bool plugin_sched_init_context(struct kshark_context *kshark_ctx)
+ 	plugin_ctx->sched_switch_prev_state_field =
+ 		tep_find_field(event, "prev_state");
+ 
++	wakeup_found = define_wakeup_event(plugin_ctx->tep,
++					   &plugin_ctx->sched_waking_event);
+ 
+-	wakeup_found = define_wakeup_event(kshark_ctx->pevent, "sched_wakeup",
+-					   &plugin_ctx->sched_wakeup_event,
+-					   &plugin_ctx->sched_wakeup_pid_field);
+-
+-	wakeup_found |= define_wakeup_event(kshark_ctx->pevent, "sched_wakeup_new",
+-					   &plugin_ctx->sched_wakeup_new_event,
+-					   &plugin_ctx->sched_wakeup_new_pid_field);
++	if (wakeup_found) {
++		plugin_ctx->sched_waking_pid_field =
++			tep_find_any_field(plugin_ctx->sched_waking_event, "pid");
++	}
+ 
+-	wakeup_found |= define_wakeup_event(kshark_ctx->pevent, "sched_waking",
+-					   &plugin_ctx->sched_waking_event,
+-					   &plugin_ctx->sched_waking_pid_field);
++	plugin_ctx->second_pass_done = false;
+ 
+-	plugin_ctx->second_pass_hash = tracecmd_filter_id_hash_alloc();
++	plugin_ctx->ss_data = kshark_init_data_container();
++	plugin_ctx->sw_data = kshark_init_data_container();
++	if (!plugin_ctx->ss_data ||
++	    !plugin_ctx->sw_data)
++		return false;
+ 
+ 	return true;
+ }
+ 
+-/**
+- * @brief Get the Process Id of the next scheduled task.
+- *
+- * @param record: Input location for a sched_switch record.
+- */
+-int plugin_get_next_pid(struct tep_record *record)
++static void plugin_sched_swith_action(struct kshark_data_stream *stream,
++				      void *rec, struct kshark_entry *entry)
+ {
+-	struct plugin_sched_context *plugin_ctx =
+-		plugin_sched_context_handler;
+-	unsigned long long val;
++	struct tep_record *record = (struct tep_record *) rec;
++	struct plugin_sched_context *plugin_ctx;
++	unsigned long long next_pid, prev_state;
++	ks_num_field_t ks_field;
+ 	int ret;
+ 
+-	ret = tep_read_number_field(plugin_ctx->sched_switch_next_field,
+-				    record->data, &val);
+-
+-	return ret ? : val;
+-}
+-
+-static void plugin_register_command(struct kshark_context *kshark_ctx,
+-				    struct tep_record *record,
+-				    int pid)
+-{
+-	struct plugin_sched_context *plugin_ctx =
+-		plugin_sched_context_handler;
+-	const char *comm;
+-
+-	if (!plugin_ctx->sched_switch_comm_field)
++	plugin_ctx = __get_context(stream->stream_id);
++	if (!plugin_ctx)
+ 		return;
+ 
+-	comm = record->data + plugin_ctx->sched_switch_comm_field->offset;
+-	/*
+-	 * TODO: The retrieve of the name of the command above needs to be
+-	 * implemented as a wrapper function in libtracevent.
+-	 */
+-
+-	if (!tep_is_pid_registered(kshark_ctx->pevent, pid))
+-			tep_register_comm(kshark_ctx->pevent, comm, pid);
+-}
+-
+-static int find_wakeup_pid(struct kshark_context *kshark_ctx, struct kshark_entry *e,
+-		    struct tep_event *wakeup_event, struct tep_format_field *pid_field)
+-{
+-	struct tep_record *record;
+-	unsigned long long val;
+-	int ret;
+-
+-	if (!wakeup_event || e->event_id != wakeup_event->id)
+-		return -1;
++	ret = tep_read_number_field(plugin_ctx->sched_switch_next_field,
++				    record->data, &next_pid);
+ 
+-	record = tracecmd_read_at(kshark_ctx->handle, e->offset, NULL);
+-	ret = tep_read_number_field(pid_field, record->data, &val);
+-	free_record(record);
++	if (ret == 0 && next_pid >= 0) {
++		plugin_sched_set_pid(&ks_field, entry->pid);
+ 
+-	if (ret)
+-		return -1;
++		ret = tep_read_number_field(plugin_ctx->sched_switch_prev_state_field,
++					    record->data, &prev_state);
+ 
+-	return val;
+-}
++		if (ret == 0)
++			plugin_sched_set_prev_state(&ks_field, prev_state);
+ 
+-static bool wakeup_match_rec_pid(struct plugin_sched_context *plugin_ctx,
+-				 struct kshark_context *kshark_ctx,
+-				 struct kshark_entry *e,
+-				 int pid)
+-{
+-	struct tep_event *wakeup_events[] = {
+-		plugin_ctx->sched_waking_event,
+-		plugin_ctx->sched_wakeup_event,
+-		plugin_ctx->sched_wakeup_new_event,
+-	};
+-	struct tep_format_field *wakeup_fields[] = {
+-		plugin_ctx->sched_waking_pid_field,
+-		plugin_ctx->sched_wakeup_pid_field,
+-		plugin_ctx->sched_wakeup_new_pid_field,
+-	};
+-	int i, wakeup_pid = -1;
+-
+-	for (i = 0; i < sizeof(wakeup_events) / sizeof(wakeup_events[0]); i++) {
+-		wakeup_pid = find_wakeup_pid(kshark_ctx, e, wakeup_events[i], wakeup_fields[i]);
+-		if (wakeup_pid >= 0)
+-			break;
++		kshark_data_container_append(plugin_ctx->ss_data, entry, ks_field);
++		entry->pid = next_pid;
+ 	}
+-
+-	if (wakeup_pid >= 0 && wakeup_pid == pid)
+-		return true;
+-
+-	return false;
+-}
+-
+-/**
+- * @brief Process Id matching function adapted for sched_wakeup and
+- *	  sched_wakeup_new events.
+- *
+- * @param kshark_ctx: Input location for the session context pointer.
+- * @param e: kshark_entry to be checked.
+- * @param pid: Matching condition value.
+- *
+- * @returns True if the Pid of the record matches the value of "pid".
+- *	    Otherwise false.
+- */
+-bool plugin_wakeup_match_rec_pid(struct kshark_context *kshark_ctx,
+-				 struct kshark_entry *e,
+-				 int pid)
+-{
+-	struct plugin_sched_context *plugin_ctx;
+-
+-	plugin_ctx = plugin_sched_context_handler;
+-	if (!plugin_ctx)
+-		return false;
+-
+-	return wakeup_match_rec_pid(plugin_ctx, kshark_ctx, e, pid);
+ }
+ 
+-/**
+- * @brief Process Id matching function adapted for sched_switch events.
+- *
+- * @param kshark_ctx: Input location for the session context pointer.
+- * @param e: kshark_entry to be checked.
+- * @param pid: Matching condition value.
+- *
+- * @returns True if the Pid of the record matches the value of "pid".
+- *	    Otherwise false.
+- */
+-bool plugin_switch_match_rec_pid(struct kshark_context *kshark_ctx,
+-				 struct kshark_entry *e,
+-				 int pid)
++static void plugin_sched_wakeup_action(struct kshark_data_stream *stream,
++				       void *rec, struct kshark_entry *entry)
+ {
++	struct tep_record *record = (struct tep_record *) rec;
+ 	struct plugin_sched_context *plugin_ctx;
+ 	unsigned long long val;
+-	int ret, switch_pid = -1;
+-
+-	plugin_ctx = plugin_sched_context_handler;
+-
+-	if (plugin_ctx->sched_switch_event &&
+-	    e->event_id == plugin_ctx->sched_switch_event->id) {
+-		struct tep_record *record;
+-
+-		record = tracecmd_read_at(kshark_ctx->handle, e->offset, NULL);
+-		ret = tep_read_number_field(plugin_ctx->sched_switch_prev_state_field,
+-					    record->data, &val);
+-
+-		if (ret == 0 && !(val & 0x7f))
+-			switch_pid = tep_data_pid(plugin_ctx->pevent, record);
++	int ret;
+ 
+-		free_record(record);
+-	}
++	plugin_ctx = __get_context(stream->stream_id);
++	if (!plugin_ctx)
++		return;
+ 
+-	if (switch_pid >= 0 && switch_pid == pid)
+-		return true;
++	ret = tep_read_number_field(plugin_ctx->sched_waking_pid_field,
++				    record->data, &val);
+ 
+-	return false;
++	if (ret == 0)
++		kshark_data_container_append(plugin_ctx->sw_data, entry, val);
+ }
+ 
+-/**
+- * @brief Process Id matching function adapted for sched_switch events.
+- *
+- * @param kshark_ctx: Input location for the session context pointer.
+- * @param e: kshark_entry to be checked.
+- * @param pid: Matching condition value.
+- *
+- * @returns True if the Pid of the entry matches the value of "pid".
+- *	    Otherwise false.
+- */
+-bool plugin_switch_match_entry_pid(struct kshark_context *kshark_ctx,
+-				   struct kshark_entry *e,
+-				   int pid)
++/** Load this plugin. */
++int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
+ {
++	printf("--> sched init %i\n", stream->stream_id);
+ 	struct plugin_sched_context *plugin_ctx;
+ 
+-	plugin_ctx = plugin_sched_context_handler;
+-
+-	if (plugin_ctx->sched_switch_event &&
+-	    e->event_id == plugin_ctx->sched_switch_event->id &&
+-	    e->pid == pid)
+-		return true;
+-
+-	return false;
+-}
+-
+-/**
+- * @brief A match function to be used to process a data collections for
+- *	  the Sched events plugin.
+- *
+- * @param kshark_ctx: Input location for the session context pointer.
+- * @param e: kshark_entry to be checked.
+- * @param pid: Matching condition value.
+- *
+- * @returns True if the entry is relevant for the Sched events plugin.
+- *	    Otherwise false.
+- */
+-bool plugin_match_pid(struct kshark_context *kshark_ctx,
+-		      struct kshark_entry *e, int pid)
+-{
+-	return plugin_switch_match_entry_pid(kshark_ctx, e, pid) ||
+-	       plugin_switch_match_rec_pid(kshark_ctx, e, pid) ||
+-	       plugin_wakeup_match_rec_pid(kshark_ctx, e, pid);
+-}
+-
+-static void plugin_sched_action(struct kshark_context *kshark_ctx,
+-				struct tep_record *rec,
+-				struct kshark_entry *entry)
+-{
+-	int pid = plugin_get_next_pid(rec);
+-	if (pid >= 0) {
+-		entry->pid = pid;
+-		plugin_register_command(kshark_ctx, rec, entry->pid);
++	plugin_ctx = __init(stream->stream_id);
++	if (!plugin_ctx || !plugin_sched_init_context(stream, plugin_ctx)) {
++		__close(stream->stream_id);
++		return 0;
+ 	}
+-}
+-
+-static int plugin_sched_init(struct kshark_context *kshark_ctx)
+-{
+-	struct plugin_sched_context *plugin_ctx;
+ 
+-	if (!plugin_sched_init_context(kshark_ctx))
+-		return 0;
++	kshark_register_event_handler(stream,
++				      plugin_ctx->sched_switch_event->id,
++				      plugin_sched_swith_action);
+ 
+-	plugin_ctx = plugin_sched_context_handler;
++	kshark_register_event_handler(stream,
++				      plugin_ctx->sched_waking_event->id,
++				      plugin_sched_wakeup_action);
+ 
+-	kshark_register_event_handler(&kshark_ctx->event_handlers,
+-				      plugin_ctx->sched_switch_event->id,
+-				      plugin_sched_action,
+-				      plugin_draw);
++	kshark_register_draw_handler(stream, plugin_draw);
+ 
+ 	return 1;
+ }
+ 
+-static int plugin_sched_close(struct kshark_context *kshark_ctx)
++/** Unload this plugin. */
++int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
+ {
++	printf("<-- sched close %i\n", stream->stream_id);
+ 	struct plugin_sched_context *plugin_ctx;
++	int sd = stream->stream_id;
+ 
+-	if (!plugin_sched_context_handler)
++	plugin_ctx = __get_context(sd);
++	if (!plugin_ctx)
+ 		return 0;
+ 
+-	plugin_ctx = plugin_sched_context_handler;
+-
+-	kshark_unregister_event_handler(&kshark_ctx->event_handlers,
++	kshark_unregister_event_handler(stream,
+ 					plugin_ctx->sched_switch_event->id,
+-					plugin_sched_action,
+-					plugin_draw);
++					plugin_sched_swith_action);
+ 
+-	plugin_free_context(plugin_ctx);
+-	plugin_sched_context_handler = NULL;
++	kshark_unregister_event_handler(stream,
++					plugin_ctx->sched_waking_event->id,
++					plugin_sched_wakeup_action);
+ 
+-	return 1;
+-}
++	kshark_unregister_draw_handler(stream, plugin_draw);
+ 
+-/** Load this plugin. */
+-int KSHARK_PLUGIN_INITIALIZER(struct kshark_context *kshark_ctx)
+-{
+-	return plugin_sched_init(kshark_ctx);
+-}
++	__close(sd);
+ 
+-/** Unload this plugin. */
+-int KSHARK_PLUGIN_DEINITIALIZER(struct kshark_context *kshark_ctx)
+-{
+-	return plugin_sched_close(kshark_ctx);
++	return 1;
+ }
+diff --git a/src/plugins/sched_events.h b/src/plugins/sched_events.h
+index dbc9963..4c57606 100644
+--- a/src/plugins/sched_events.h
++++ b/src/plugins/sched_events.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: LGPL-2.1 */
+ 
+ /*
+- * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+  */
+ 
+ /**
+@@ -14,6 +14,7 @@
+ 
+ // KernelShark
+ #include "libkshark.h"
++#include "libkshark-plugin.h"
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -21,11 +22,8 @@ extern "C" {
+ 
+ /** Structure representing a plugin-specific context. */
+ struct plugin_sched_context {
+-	/** Input handle for the trace data file. */
+-	struct tracecmd_input	*handle;
+-
+ 	/** Page event used to parse the page. */
+-	struct tep_handle	*pevent;
++	struct tep_handle	*tep;
+ 
+ 	/** Pointer to the sched_switch_event object. */
+ 	struct tep_event	*sched_switch_event;
+@@ -39,47 +37,33 @@ struct plugin_sched_context {
+ 	/** Pointer to the sched_switch_prev_state_field format descriptor. */
+ 	struct tep_format_field	*sched_switch_prev_state_field;
+ 
+-	/** Pointer to the sched_wakeup_event object. */
+-	struct tep_event	*sched_wakeup_event;
+-
+-	/** Pointer to the sched_wakeup_pid_field format descriptor. */
+-	struct tep_format_field	*sched_wakeup_pid_field;
+-
+-	/** Pointer to the sched_wakeup_new_event object. */
+-	struct tep_event	*sched_wakeup_new_event;
+-
+-	/** Pointer to the sched_wakeup_new_pid_field format descriptor. */
+-	struct tep_format_field	*sched_wakeup_new_pid_field;
+-
+ 	/** Pointer to the sched_waking_event object. */
+ 	struct tep_event        *sched_waking_event;
+ 
+ 	/** Pointer to the sched_waking_pid_field format descriptor. */
+ 	struct tep_format_field *sched_waking_pid_field;
+ 
+-	/** List of Data collections used by this plugin. */
+-	struct kshark_entry_collection	*collections;
++	/** True if the second pass is already done. */
++	bool	second_pass_done;
+ 
+-	/** Hash of the tasks for which the second pass is already done. */
+-	struct tracecmd_filter_id	*second_pass_hash;
+-};
++	/** Data container for sched_switch data. */
++	struct kshark_data_container	*ss_data;
+ 
+-int plugin_get_next_pid(struct tep_record *record);
++	/** Data container for sched_waking data. */
++	struct kshark_data_container	*sw_data;
++};
+ 
+-bool plugin_wakeup_match_rec_pid(struct kshark_context *kshark_ctx,
+-				 struct kshark_entry *e, int pid);
++KS_DEFINE_PLUGIN_CONTEXT(struct plugin_sched_context);
+ 
+-bool plugin_switch_match_rec_pid(struct kshark_context *kshark_ctx,
+-				 struct kshark_entry *e, int pid);
++/** The type of the data field stored in the kshark_data_container object. */
++typedef int64_t ks_num_field_t;
+ 
+-bool plugin_switch_match_entry_pid(struct kshark_context *kshark_ctx,
+-				   struct kshark_entry *e,
+-				   int pid);
++int plugin_sched_get_pid(ks_num_field_t field);
+ 
+-bool plugin_match_pid(struct kshark_context *kshark_ctx,
+-		      struct kshark_entry *e, int pid);
++int plugin_sched_get_prev_state(ks_num_field_t field);
+ 
+-void plugin_draw(struct kshark_cpp_argv *argv, int pid, int draw_action);
++void plugin_draw(struct kshark_cpp_argv *argv, int sd, int pid,
++		 int draw_action);
+ 
+ #ifdef __cplusplus
+ }
 -- 
 2.25.1
 
