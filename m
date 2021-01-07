@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EBABC433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 16:16:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E87CC433E6
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 16:16:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 070E423118
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 16:16:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 368C123118
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  7 Jan 2021 16:16:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbhAGQQp (ORCPT
+        id S1728246AbhAGQQr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 7 Jan 2021 11:16:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
+        Thu, 7 Jan 2021 11:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727327AbhAGQQp (ORCPT
+        with ESMTP id S1727327AbhAGQQq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:16:45 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E278DC0612F5
-        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Jan 2021 08:16:04 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id cw27so8288400edb.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Jan 2021 08:16:04 -0800 (PST)
+        Thu, 7 Jan 2021 11:16:46 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D36C0612F6
+        for <linux-trace-devel@vger.kernel.org>; Thu,  7 Jan 2021 08:16:06 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id 6so10461872ejz.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 07 Jan 2021 08:16:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PMw4L2ve2WxqUYu8kFltnlB64JiUbb7s0LJmU4h7gPk=;
-        b=Nom3bQSraGJR+y1ktvSMAEeBTpXAWP0c66TQJR8O/PZF1/By8+uuF0xjDHHNbBFo2W
-         WIr/znP6N27sBBXeRQ6Y/Pai7ogc9rPwEcrkQt3xW1ScV4Zn6WMuFlFdAx2IIF+foSJ9
-         3RhZaY7V7HYHG9i8y6yuWpwCWR33K/eBnEBZhtqvtVXVhUpwNY9B/dPZMuPw35InCKxj
-         61kJx9LrLzLQpUpRDvrBDB8bI3/6OuTbNkoEHyWn9ZwwdNVpmVNFbUAhsBh4nP/rQMXQ
-         1l3VAma7eCQybDKpOtMZvb1bjejXxIe5uPn4lO2gJ2v7wmNNiGfguPoDKw6UFuR08LyV
-         WwcQ==
+        bh=bpYByy6xxf6EZQ35P6Jo81Zh0mOC5DoQ7VSTCF7bKok=;
+        b=ARp0tLRABwsI3Wg30CuWlqzx/a50E4WOdjmW3Kxj25/Id+sW0d+8BjTICUeEAhvqlU
+         OP1HxWEQfZmxbWdUwj0w4b6uH/szqDzQkhn9SGR9fkYGjhITcYlDVex4pE7Qv0uF02/G
+         QW0R8m7I3zXgDiQJ2QcmmTlklrbhJEPjZowkjd66oRDRUgdJEHYDopHZ4PWerNL3Ec4B
+         4qV2JToZOHOwiF3eJ0OKPO8b8jFeb9QwubZdOI7dn15Pfw1tC4M51EgLFkpl/2Bf8mI4
+         IZDe3ZzgBCioua73EutCpTdZRW7GJ7B1dQrhbrWHnuNDdKEzBGuYygLoX39ZIWUMqgeP
+         TX7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PMw4L2ve2WxqUYu8kFltnlB64JiUbb7s0LJmU4h7gPk=;
-        b=HUaoESgq13fYTE8UlPiumMQ5EJj8A+c/CWthocDnojdruA5LXfbemGEeibIM+FFGkJ
-         g6PLO3LNT3Rm/B4kRf6uLKxxikfCnFIYoNrWnl6CNPDkMTFoDryryDHE1gL8bL6zlOJ+
-         TlMESQX/lo0pLlGFdk27bpcGUAsEm82GzJ6mid0+V2yYH21bsfXv+8hZ+tZHqbkEY+Kr
-         6pV5xJMDcZOtTA5JapY5aOqg80YdAmSHZY8TFHm3KgNNVONu6Tc52C2+Dn2ZJsDkzv9H
-         U01PrfRWGEgnjTOgUFWIP+LRTDSr9Mp/DKzpHbF4Z5ferZjeME0d2PqrzrsCLPll2y0D
-         tJhw==
-X-Gm-Message-State: AOAM532wj+/Cc4hDgOvzNy95GMCLSyDFyHP0+6gUM6pa+rQp2dzg6Izs
-        0Gogah4Lu7UD5lAtHzGCyZah0lKlayIaTg==
-X-Google-Smtp-Source: ABdhPJz3ylAF8w5pEsLdkME9BPi/dpEClCa0F3W0UX2OPCCWRQYUftgQMnxaJkXoHCEiUVBXFQFugQ==
-X-Received: by 2002:a05:6402:17cb:: with SMTP id s11mr2130147edy.119.1610036163672;
-        Thu, 07 Jan 2021 08:16:03 -0800 (PST)
+        bh=bpYByy6xxf6EZQ35P6Jo81Zh0mOC5DoQ7VSTCF7bKok=;
+        b=sdyLM1cGS+eM0OLJ9xYN6Mw8Jl2uHY6jB5LqWGkvw9nXoBRnv85IqMMQmxuMNhD3wL
+         rSqNCMaK7AA4dDWk4EFMVY3puZnCCkgDMfOFWR4/0fKDVzAjO4MTvlwAubNZUYEDJ1No
+         Nl9zkQMV5glwjeA3WHaBf25m5ajS8L+64Mmsol0QkGMU35y12HIjEoorVicRj89KBfRC
+         vJzSRkLHk2W1p7iRxl98BKtPU+388f6gUY8uo1Sj1jxZXH3M3HMgGtokddQDYokURunB
+         CxO5kiXdihF6Po7mcbKzD6R24B1ARsNw2MfMYbAXmNG4SxQVrKBnKVcvsyOIGJoo/71P
+         rTUg==
+X-Gm-Message-State: AOAM533nYd60i1hzURmMJ9AGUIGmx07qAhyrUpV+/Icmm3R0pNyNkEAh
+        aJI3MP6icQjSGaJwzBpiH8E=
+X-Google-Smtp-Source: ABdhPJzjjybgXECGY3rBtGnUDjmpoqMMHurDKPsHl2o5tMXDT+ElffyKKzodsOTy4CoaY0HWxyJGlA==
+X-Received: by 2002:a17:906:55d0:: with SMTP id z16mr6759782ejp.466.1610036164882;
+        Thu, 07 Jan 2021 08:16:04 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id j23sm2846212edv.45.2021.01.07.08.16.02
+        by smtp.gmail.com with ESMTPSA id j23sm2846212edv.45.2021.01.07.08.16.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 08:16:03 -0800 (PST)
+        Thu, 07 Jan 2021 08:16:04 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 1/6] kernel-shark: Add KS_DOUBLE_SIZE macro
-Date:   Thu,  7 Jan 2021 18:15:42 +0200
-Message-Id: <20210107161547.207270-2-y.karadz@gmail.com>
+Subject: [PATCH v2 2/6] kernel-shark: Add kshark_data_container to libkshark
+Date:   Thu,  7 Jan 2021 18:15:43 +0200
+Message-Id: <20210107161547.207270-3-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210107161547.207270-1-y.karadz@gmail.com>
 References: <20210107161547.207270-1-y.karadz@gmail.com>
@@ -74,96 +74,272 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The macro is useful for resizing of dynamic arrays. It is currently
-used to resize the Data stream descriptor array, owned by the session
-context. We will later use the macro with the arrays of data fields and
-plugin contexts.
+We add an infrastructure for recording the data from a particular trace
+event field during data loading. The goal is to avoid the use of the
+expensive "read_event_field" operation in the case when the value of the
+field is needed during the visualization processing (in plugins for
+example).
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/libkshark-plugin.h    | 17 +++++++++++++++++
- src/libkshark.c           | 11 ++---------
- tests/libkshark-tests.cpp | 20 ++++++++++++++++++++
- 3 files changed, 39 insertions(+), 9 deletions(-)
+ src/libkshark.c           | 147 ++++++++++++++++++++++++++++++++++++++
+ src/libkshark.h           |  43 +++++++++++
+ tests/libkshark-tests.cpp |  37 ++++++++++
+ 3 files changed, 227 insertions(+)
 
-diff --git a/src/libkshark-plugin.h b/src/libkshark-plugin.h
-index 1a642ad..4104357 100644
---- a/src/libkshark-plugin.h
-+++ b/src/libkshark-plugin.h
-@@ -346,6 +346,23 @@ int kshark_handle_dpi(struct kshark_data_stream *stream,
- int kshark_handle_all_dpis(struct kshark_data_stream *stream,
- 			   enum kshark_plugin_actions  task_id);
+diff --git a/src/libkshark.c b/src/libkshark.c
+index 0e2ce7a..f73e1da 100644
+--- a/src/libkshark.c
++++ b/src/libkshark.c
+@@ -2110,3 +2110,150 @@ kshark_merge_data_matrices(struct kshark_matrix_data_set *buffers, int n_buffers
+  end:
+ 	return merged_data;
+ }
++
++/** @brief Allocate memory for kshark_data_container. */
++struct kshark_data_container *kshark_init_data_container()
++{
++	struct kshark_data_container *container;
++
++	container = calloc(1, sizeof(*container));
++	if (!container)
++		goto fail;
++
++	container->data = calloc(KS_CONTAINER_DEFAULT_SIZE,
++				  sizeof(*container->data));
++
++	if (!container->data)
++		goto fail;
++
++	container->capacity = KS_CONTAINER_DEFAULT_SIZE;
++	container->sorted = false;
++
++	return container;
++
++ fail:
++	fprintf(stderr, "Failed to allocate memory for data container.\n");
++	kshark_free_data_container(container);
++	return NULL;
++}
++
++/**
++ * @brief Free the memory allocated for a kshark_data_container
++ * @param container: Intput location for the kshark_data_container object.
++ */
++void kshark_free_data_container(struct kshark_data_container *container)
++{
++	if (!container)
++		return;
++
++	for (ssize_t i = 0; i < container->size; ++i)
++		free(container->data[i]);
++
++	free(container->data);
++	free(container);
++}
++
++/**
++ * @brief Append data field value to a kshark_data_container
++ * @param container: Input location for the kshark_data_container object.
++ * @param entry: The entry that needs addition data field value.
++ * @param field: The value of data field to be added.
++ *
++ * @returns The size of the container after the addition.
++ */
++ssize_t kshark_data_container_append(struct kshark_data_container *container,
++				     struct kshark_entry *entry, int64_t field)
++{
++	struct kshark_data_field_int64 *data_field;
++
++	if (container->capacity == container->size) {
++		if (!KS_DOUBLE_SIZE(container->data,
++				    container->capacity))
++			return -ENOMEM;
++	}
++
++	data_field = malloc(sizeof(*data_field));
++	data_field->entry = entry;
++	data_field->field = field;
++	container->data[container->size++] = data_field;
++
++	return container->size;
++}
++
++static int compare_time_dc(const void* a, const void* b)
++{
++	const struct kshark_data_field_int64 *field_a, *field_b;
++
++	field_a = *(const struct kshark_data_field_int64 **) a;
++	field_b = *(const struct kshark_data_field_int64 **) b;
++
++	if (field_a->entry->ts > field_b->entry->ts)
++		return 1;
++
++	if (field_a->entry->ts < field_b->entry->ts)
++		return -1;
++
++	return 0;
++}
++
++/**
++ * @brief Sort in time the records in kshark_data_container. The container is
++ *	  resized in order to free the unused memory capacity.
++ *
++ * @param container: Intput location for the kshark_data_container object.
++ */
++void kshark_data_container_sort(struct kshark_data_container *container)
++{
++	struct kshark_data_field_int64	**data_tmp;
++
++	qsort(container->data, container->size,
++	      sizeof(struct kshark_data_field_int64 *),
++	      compare_time_dc);
++
++	container->sorted = true;
++
++	data_tmp = realloc(container->data,
++			   container->size * sizeof(*container->data));
++
++	if (!data_tmp)
++		return;
++
++	container->data = data_tmp;
++	container->capacity = container->size;
++}
++
++/**
++ * @brief Binary search inside a time-sorted array of kshark_data_field_int64.
++ *
++ * @param time: The value of time to search for.
++ * @param data: Input location for the data.
++ * @param l: Array index specifying the lower edge of the range to search in.
++ * @param h: Array index specifying the upper edge of the range to search in.
++ *
++ * @returns On success, the index of the first kshark_data_field_int64 inside
++ *	    the range, having a timestamp equal or bigger than "time".
++ *	    If all fields inside the range have timestamps greater than "time"
++ *	    the function returns BSEARCH_ALL_GREATER (negative value).
++ *	    If all fields inside the range have timestamps smaller than "time"
++ *	    the function returns BSEARCH_ALL_SMALLER (negative value).
++ */
++ssize_t kshark_find_entry_field_by_time(int64_t time,
++					struct kshark_data_field_int64 **data,
++					size_t l, size_t h)
++{
++	size_t mid;
++
++	if (data[l]->entry->ts > time)
++		return BSEARCH_ALL_GREATER;
++
++	if (data[h]->entry->ts < time)
++		return BSEARCH_ALL_SMALLER;
++
++	/*
++	 * After executing the BSEARCH macro, "l" will be the index of the last
++	 * entry having timestamp < time and "h" will be the index of the first
++	 * entry having timestamp >= time.
++	 */
++	BSEARCH(h, l, data[mid]->entry->ts < time);
++	return h;
++}
+diff --git a/src/libkshark.h b/src/libkshark.h
+index dd4f2b7..aa4b3ca 100644
+--- a/src/libkshark.h
++++ b/src/libkshark.h
+@@ -1105,6 +1105,49 @@ struct kshark_matrix_data_set
+ kshark_merge_data_matrices(struct kshark_matrix_data_set *buffers,
+ 			   int n_buffers);
  
-+/** General purpose macro for resizing dynamic arrays. */
-+#define KS_DOUBLE_SIZE(array, size)					\
-+({									\
-+	ssize_t __n = size;						\
-+	bool __ok = false;						\
-+	__typeof__(array) __tmp =					\
-+		(__typeof__(array)) realloc(array,			\
-+					    2 * __n * sizeof(*__tmp));	\
-+	if (__tmp) {							\
-+		memset(__tmp + __n, 0, __n * sizeof(*__tmp));		\
-+		size = 2 * __n;						\
-+		array = __tmp;						\
-+		__ok = true;						\
-+	}								\
-+	__ok;								\
-+})									\
++/**
++ * Structure used to store the data of a kshark_entry plus one additional
++ * 64 bit integer data field.
++ */
++struct kshark_data_field_int64 {
++	/** The entry object holding the basic data of the trace record. */
++	struct kshark_entry	*entry;
++
++	/** Additional 64 bit integer data field. */
++	int64_t			field;
++};
++
++/** The capacity of the kshark_data_container object after initialization. */
++#define KS_CONTAINER_DEFAULT_SIZE	1024
++
++/** Structure used to store an array of entries and data fields. */
++struct kshark_data_container {
++	/** An array of kshark_data_field_int64 objects. */
++	struct kshark_data_field_int64	**data;
++
++	/** The total number of kshark_data_field_int64 objects stored. */
++	ssize_t		size;
++
++	/** The memory capacity of the container. */
++	ssize_t		capacity;
++
++	/** Is sorted in time. */
++	bool		sorted;
++};
++
++struct kshark_data_container *kshark_init_data_container();
++
++void kshark_free_data_container(struct kshark_data_container *container);
++
++ssize_t kshark_data_container_append(struct kshark_data_container *container,
++				     struct kshark_entry *entry, int64_t field);
++
++void kshark_data_container_sort(struct kshark_data_container *container);
++
++ssize_t kshark_find_entry_field_by_time(int64_t time,
++					struct kshark_data_field_int64 **data,
++					size_t l, size_t h);
 +
  #ifdef __cplusplus
  }
- #endif // __cplusplus
-diff --git a/src/libkshark.c b/src/libkshark.c
-index 315c24f..0e2ce7a 100644
---- a/src/libkshark.c
-+++ b/src/libkshark.c
-@@ -234,16 +234,9 @@ int kshark_add_stream(struct kshark_context *kshark_ctx)
- 
- 	if (kshark_ctx->stream_info.next_free_stream_id ==
- 	    kshark_ctx->stream_info.array_size) {
--		size_t new_size = 2 * kshark_ctx->stream_info.array_size;
--		struct kshark_data_stream **streams_tmp;
--
--		streams_tmp = realloc(kshark_ctx->stream,
--				      new_size * sizeof(*kshark_ctx->stream));
--		if (!streams_tmp)
-+		if (!KS_DOUBLE_SIZE(kshark_ctx->stream,
-+				    kshark_ctx->stream_info.array_size))
- 			return -ENOMEM;
--
--		kshark_ctx->stream = streams_tmp;
--		kshark_ctx->stream_info.array_size = new_size;
- 	}
- 
- 	stream = kshark_stream_alloc();
+ #endif
 diff --git a/tests/libkshark-tests.cpp b/tests/libkshark-tests.cpp
-index 27c1171..d0a3594 100644
+index d0a3594..8a5dcf1 100644
 --- a/tests/libkshark-tests.cpp
 +++ b/tests/libkshark-tests.cpp
-@@ -46,3 +46,23 @@ BOOST_AUTO_TEST_CASE(add_remove_streams)
- 
- 	kshark_close_all(kshark_ctx);
+@@ -66,3 +66,40 @@ BOOST_AUTO_TEST_CASE(doule_size_macro)
+ 	for (; i < n; ++i)
+ 		BOOST_CHECK_EQUAL(arr[i], 0);
  }
 +
-+#define ARRAY_DEFAULT_SIZE	1000
-+BOOST_AUTO_TEST_CASE(doule_size_macro)
++#define N_VALUES	2 * KS_CONTAINER_DEFAULT_SIZE + 1
++#define MAX_TS		100000
++BOOST_AUTO_TEST_CASE(fill_data_container)
 +{
-+	int i, n = ARRAY_DEFAULT_SIZE;
-+	int *arr = (int *) malloc(n * sizeof(*arr));
-+	bool ok;
++	struct kshark_data_container *data = kshark_init_data_container();
++	struct kshark_entry entries[N_VALUES];
++	int64_t i, ts_last(0);
 +
-+	for (i = 0; i < n; ++i)
-+		arr[i] = i;
++	BOOST_CHECK_EQUAL(data->capacity, KS_CONTAINER_DEFAULT_SIZE);
 +
-+	ok = KS_DOUBLE_SIZE(arr, n);
-+	BOOST_CHECK_EQUAL(ok, true);
-+	BOOST_CHECK_EQUAL(n, ARRAY_DEFAULT_SIZE * 2);
++	for (i = 0; i < N_VALUES; ++i) {
++		entries[i].ts = rand() % MAX_TS;
++		kshark_data_container_append(data, &entries[i], 10 - entries[i].ts);
++	}
 +
-+	for (i = 0; i < ARRAY_DEFAULT_SIZE; ++i)
-+		BOOST_CHECK_EQUAL(arr[i], i);
-+	for (; i < n; ++i)
-+		BOOST_CHECK_EQUAL(arr[i], 0);
++	BOOST_CHECK_EQUAL(data->size, N_VALUES);
++	BOOST_CHECK_EQUAL(data->capacity, 4 * KS_CONTAINER_DEFAULT_SIZE);
++
++	kshark_data_container_sort(data);
++	BOOST_CHECK_EQUAL(data->capacity, N_VALUES);
++	for (i = 0; i < N_VALUES; ++i) {
++		BOOST_REQUIRE(data->data[i]->entry->ts >= ts_last);
++		BOOST_CHECK_EQUAL(data->data[i]->entry->ts,
++				  10 - data->data[i]->field);
++
++		ts_last = data->data[i]->entry->ts;
++	}
++
++	i = kshark_find_entry_field_by_time(MAX_TS / 2, data->data,
++					    0, N_VALUES - 1);
++
++	BOOST_REQUIRE(data->data[i - 1]->entry->ts < MAX_TS / 2);
++	BOOST_REQUIRE(data->data[i]->entry->ts >= MAX_TS / 2);
++
++	kshark_free_data_container(data);
 +}
 -- 
 2.25.1
