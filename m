@@ -2,115 +2,169 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BD50C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Jan 2021 14:32:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BF00C433E6
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Jan 2021 14:32:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6F706238A1
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Jan 2021 14:32:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0DA9C238A1
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  8 Jan 2021 14:32:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727228AbhAHOcf (ORCPT
+        id S1727242AbhAHOcg (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 8 Jan 2021 09:32:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
+        Fri, 8 Jan 2021 09:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbhAHOcf (ORCPT
+        with ESMTP id S1726476AbhAHOcg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:32:35 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95F2C061380
-        for <linux-trace-devel@vger.kernel.org>; Fri,  8 Jan 2021 06:31:54 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id d17so14737243ejy.9
-        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Jan 2021 06:31:54 -0800 (PST)
+        Fri, 8 Jan 2021 09:32:36 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10212C061381
+        for <linux-trace-devel@vger.kernel.org>; Fri,  8 Jan 2021 06:31:56 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id w1so14665328ejf.11
+        for <linux-trace-devel@vger.kernel.org>; Fri, 08 Jan 2021 06:31:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5OhECiRs4mpidTBclddOD2BGrRUKCQMSVN4Z7FhylPY=;
-        b=eDlGKkix3XqhZlIvvLLEVQe2bKhTxWUMAwflcUxW42rK0vo13Dn+sOZuskZ87fuNVT
-         Vlk1etofq/hDMCvXkrmAKh4Q1/5GuWpvKJbt4snvUT1Hl8D0OvYC6RZyd4MAiZ0aHK1e
-         qL0sH0+rY58NvUKeTVyzvIZQAKjPr8HGLXAxsguEihwhRRQjicAybSz6QS2QkdOhPrvW
-         rx8OajrwBfatE+blValXCW5ITXWCALsoSFnkOMtYnEHXJUsbHZNHVQdZtw/MwFZGUKMd
-         Wr/Dgf/N1uLZP4L73/kr51sz6eB1np+4ah8T6s8TmMmSM41rZ2AOdUqAy3u1WgEX43tB
-         3SOw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PMw4L2ve2WxqUYu8kFltnlB64JiUbb7s0LJmU4h7gPk=;
+        b=ium9RnzF9mAjGSsdhhVB0NggOeRlvQ45ZdvB10rIv69siIhSnZF/MdEd1hI0sM+DDs
+         zDfnx2Uoro7vH6umLdldipXHpm9q3HfMQl9M75KugVf6JVnlNjfCxdI1YxpUvlibqc7L
+         SNUWOp0V4CxF4NHZJ0Q6A52NKjJzKr+pV5s6P5LW2gWUF4yhm5MSiebAPAi9AaDShSg7
+         gweNlFvfanH3zJ/3u5AVxIf52pfAA371T93FwuQx07hJ5fcSRFr5/vYqzq3xkiIfXfkH
+         kLIpUzaxYzB8hqszkYXmvsehdY4reX3FtKzUdfl6Wcjq37BIboK+/LEEJkrktxQy/lIK
+         KS0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5OhECiRs4mpidTBclddOD2BGrRUKCQMSVN4Z7FhylPY=;
-        b=NdpuVlGsgVIdclR2c4kzmT0UjTCcflxFkZAVb5VlkDO8iGzwY3eVW3NLYW3bKkxzm2
-         dL4hkN9p3dfU/B1Iw/04XO3C6HwTZGCoV4A2iHsbpEp4Y3CjLm0XssQuXQbKT1aTRIiZ
-         HCwG6ySjQYeqMbejx1ub1xLEHCFk6Cfcc2rqOf/6eviKLL+X4O6rLjmyes6wihqSZ6MK
-         vui1ouoM1V1bGvWPVGF8by/u2uej8QPsMECstkZDteOyvVSXwVaS3FM2SjvZQLG5DT90
-         EYqJ9DWZCECGci+bOP7n+X1kSNWkxt+w6TNFJVdhUNuG9QYeUZnddCb3ykVwR3Hm1S89
-         eyNw==
-X-Gm-Message-State: AOAM5339zVWdnd8RRdOebe5trtK77El+Uh4Y6Xa1nw33qLTgFs4xKUN6
-        gdDiY13J52xJGTqhU3sT/AM=
-X-Google-Smtp-Source: ABdhPJyG/N7IfKOKHrLhOb86rpV417YpKJsfyKPVNsTI6ejaCzw5Hr/FalelSgfRhn3FnJvg//pBwQ==
-X-Received: by 2002:a17:906:810:: with SMTP id e16mr2929727ejd.34.1610116313619;
-        Fri, 08 Jan 2021 06:31:53 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PMw4L2ve2WxqUYu8kFltnlB64JiUbb7s0LJmU4h7gPk=;
+        b=QrWbeNJ8qQTMaJsCC0hLSvtIqOXZwPoRWfDRG0nkYOXxrKVebVAzYtdsuyyuOKONGI
+         YlEGRUJsgVsPXpWM+JQLID6YBwzt82MiV4qjdAt8iA/iz0yh7pKQ0qHZaA8GODdfoEMv
+         py2iJ7rnHaoZZTlwAaXs5/0/zIFrzqiacrQ8G5vlRodmbov3Nicy/wW1AXRlc+bLkcHb
+         3kvIuVz5IX9TM6Sh0MoDrXaji+Z1ywf/kSST5MzJXGk94cL/ncrTvkYd77OwFzbLS2VQ
+         +lS7hTl2AmOUMo35KEvPsNEaKTPtIrjAGdAWhqF9c1KZKD7Og8BmQgPaK1L/YjEGUdl4
+         5jFg==
+X-Gm-Message-State: AOAM530xiadADonTILT8Y6HQXt8P42/JwoY5JlbO1LGlRZhQ0SHPSMRn
+        kYJMMMsTqSdKdoypYMFkw3Q=
+X-Google-Smtp-Source: ABdhPJztcPyyMp0Jrpzm1S9LRioeBR2vEN4LFktyXd9Jymo0LQhkq0NfVhIP8tZOpdZfPyErQc8Zww==
+X-Received: by 2002:a17:906:b2da:: with SMTP id cf26mr2918000ejb.176.1610116314785;
+        Fri, 08 Jan 2021 06:31:54 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.238])
-        by smtp.gmail.com with ESMTPSA id d13sm3588120ejc.44.2021.01.08.06.31.52
+        by smtp.gmail.com with ESMTPSA id d13sm3588120ejc.44.2021.01.08.06.31.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 06:31:52 -0800 (PST)
+        Fri, 08 Jan 2021 06:31:54 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3 0/6] kernel-shark: Visualization plugin tools
-Date:   Fri,  8 Jan 2021 16:31:34 +0200
-Message-Id: <20210108143140.285037-1-y.karadz@gmail.com>
+Subject: [PATCH v3 1/6] kernel-shark: Add KS_DOUBLE_SIZE macro
+Date:   Fri,  8 Jan 2021 16:31:35 +0200
+Message-Id: <20210108143140.285037-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210108143140.285037-1-y.karadz@gmail.com>
+References: <20210108143140.285037-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-We implement a general purpose instruments, that can be used to
-implement efficient (fast) visualization plugins. We also use
-the new instrumentation to optimize the sched_events plugin.
+The macro is useful for resizing of dynamic arrays. It is currently
+used to resize the Data stream descriptor array, owned by the session
+context. We will later use the macro with the arrays of data fields and
+plugin contexts.
 
-Changes in v3:
- * Typo fixes in [patch 2]
- * The missing signed-off-by of [patch 3] is restored.
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ src/libkshark-plugin.h    | 17 +++++++++++++++++
+ src/libkshark.c           | 11 ++---------
+ tests/libkshark-tests.cpp | 20 ++++++++++++++++++++
+ 3 files changed, 39 insertions(+), 9 deletions(-)
 
-Changes in v2:
- * KS_DOUBLE_SIZE macro was simplified, based on the suggestion made by
-   Steven in his review. A dedicated test case for the macro has been added.
- * Bug fix in kshark_free_data_container().
- * Bug fix in kshark_data_container_append().
-
-
-Yordan Karadzhov (VMware) (6):
-  kernel-shark: Add KS_DOUBLE_SIZE macro
-  kernel-shark: Add kshark_data_container to libkshark
-  kernel-shark: Add KS_DEFINE_PLUGIN_CONTEXT macro
-  kernel-shark: Start using C++17
-  kernel-shark: Add plotting methods to KsPlugins
-  kernel-shark: Speed-up the sched_events plugin
-
- CMakeLists.txt              |   8 +-
- src/CMakeLists.txt          |   5 +-
- src/KsPlugins.cpp           | 416 ++++++++++++++++++++++++++++++++++++
- src/KsPlugins.hpp           |  48 +++++
- src/libkshark-plugin.h      |  59 +++++
- src/libkshark-tepdata.c     |  34 +++
- src/libkshark-tepdata.h     |   7 +
- src/libkshark.c             | 158 +++++++++++++-
- src/libkshark.h             |  43 ++++
- src/plugins/CMakeLists.txt  |  11 +-
- src/plugins/SchedEvents.cpp | 310 +++++++--------------------
- src/plugins/sched_events.c  | 393 +++++++++++-----------------------
- src/plugins/sched_events.h  |  50 ++---
- tests/libkshark-tests.cpp   |  89 ++++++++
- 14 files changed, 1071 insertions(+), 560 deletions(-)
- create mode 100644 src/KsPlugins.cpp
-
+diff --git a/src/libkshark-plugin.h b/src/libkshark-plugin.h
+index 1a642ad..4104357 100644
+--- a/src/libkshark-plugin.h
++++ b/src/libkshark-plugin.h
+@@ -346,6 +346,23 @@ int kshark_handle_dpi(struct kshark_data_stream *stream,
+ int kshark_handle_all_dpis(struct kshark_data_stream *stream,
+ 			   enum kshark_plugin_actions  task_id);
+ 
++/** General purpose macro for resizing dynamic arrays. */
++#define KS_DOUBLE_SIZE(array, size)					\
++({									\
++	ssize_t __n = size;						\
++	bool __ok = false;						\
++	__typeof__(array) __tmp =					\
++		(__typeof__(array)) realloc(array,			\
++					    2 * __n * sizeof(*__tmp));	\
++	if (__tmp) {							\
++		memset(__tmp + __n, 0, __n * sizeof(*__tmp));		\
++		size = 2 * __n;						\
++		array = __tmp;						\
++		__ok = true;						\
++	}								\
++	__ok;								\
++})									\
++
+ #ifdef __cplusplus
+ }
+ #endif // __cplusplus
+diff --git a/src/libkshark.c b/src/libkshark.c
+index 315c24f..0e2ce7a 100644
+--- a/src/libkshark.c
++++ b/src/libkshark.c
+@@ -234,16 +234,9 @@ int kshark_add_stream(struct kshark_context *kshark_ctx)
+ 
+ 	if (kshark_ctx->stream_info.next_free_stream_id ==
+ 	    kshark_ctx->stream_info.array_size) {
+-		size_t new_size = 2 * kshark_ctx->stream_info.array_size;
+-		struct kshark_data_stream **streams_tmp;
+-
+-		streams_tmp = realloc(kshark_ctx->stream,
+-				      new_size * sizeof(*kshark_ctx->stream));
+-		if (!streams_tmp)
++		if (!KS_DOUBLE_SIZE(kshark_ctx->stream,
++				    kshark_ctx->stream_info.array_size))
+ 			return -ENOMEM;
+-
+-		kshark_ctx->stream = streams_tmp;
+-		kshark_ctx->stream_info.array_size = new_size;
+ 	}
+ 
+ 	stream = kshark_stream_alloc();
+diff --git a/tests/libkshark-tests.cpp b/tests/libkshark-tests.cpp
+index 27c1171..d0a3594 100644
+--- a/tests/libkshark-tests.cpp
++++ b/tests/libkshark-tests.cpp
+@@ -46,3 +46,23 @@ BOOST_AUTO_TEST_CASE(add_remove_streams)
+ 
+ 	kshark_close_all(kshark_ctx);
+ }
++
++#define ARRAY_DEFAULT_SIZE	1000
++BOOST_AUTO_TEST_CASE(doule_size_macro)
++{
++	int i, n = ARRAY_DEFAULT_SIZE;
++	int *arr = (int *) malloc(n * sizeof(*arr));
++	bool ok;
++
++	for (i = 0; i < n; ++i)
++		arr[i] = i;
++
++	ok = KS_DOUBLE_SIZE(arr, n);
++	BOOST_CHECK_EQUAL(ok, true);
++	BOOST_CHECK_EQUAL(n, ARRAY_DEFAULT_SIZE * 2);
++
++	for (i = 0; i < ARRAY_DEFAULT_SIZE; ++i)
++		BOOST_CHECK_EQUAL(arr[i], i);
++	for (; i < n; ++i)
++		BOOST_CHECK_EQUAL(arr[i], 0);
++}
 -- 
 2.25.1
 
