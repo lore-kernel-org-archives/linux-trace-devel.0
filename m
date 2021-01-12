@@ -2,101 +2,113 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DATE_IN_FUTURE_03_06,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CACBFC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jan 2021 02:02:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CBF5C433DB
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jan 2021 09:21:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9124723715
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jan 2021 02:02:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B421722E03
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jan 2021 09:21:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732263AbhALCCb (ORCPT
+        id S2390266AbhALJVJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 11 Jan 2021 21:02:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
+        Tue, 12 Jan 2021 04:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726846AbhALCCb (ORCPT
+        with ESMTP id S2390583AbhALJVJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:02:31 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8829C061575
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Jan 2021 18:01:50 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id o11so865552ote.4
-        for <linux-trace-devel@vger.kernel.org>; Mon, 11 Jan 2021 18:01:50 -0800 (PST)
+        Tue, 12 Jan 2021 04:21:09 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C9DC061786
+        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Jan 2021 01:20:28 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id t16so2428704ejf.13
+        for <linux-trace-devel@vger.kernel.org>; Tue, 12 Jan 2021 01:20:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=sSu7K3T+Is+tDF9RKxNFrnM5Ps7pns1eb1u7wrpDKkI=;
-        b=mi/pDa/fkh7mIIoZT/JmDRC085wBfveTkskhoaKed/apGQ6FAQIYoEjo7JO2L/1GCy
-         0cfq8hngp4HSp55WqjGGt5YuiBXHPotdRm26nFPV9o91HpYbXsUzYmRf5++5JtKCJgoX
-         muuc7i024XipusGACsC+3jh5uBxzpj9ESdP8IJUB/K2UwPYZSIQfEqhESdQgOut7ziw9
-         bYsg0LPQ6xl4zVHXgWkBkBpKL1QeqD2FwL/GtbV/xwNecnDYzo4zdQ3L8Cy44fszarPA
-         DjvVg355Ng3LU/nwK4xu3d1/IWiKrUyINZ2fi/j7H1RhbegA7UUu/VOpTfpeaDNa80qL
-         7EgA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W8Secle2yeigFS/ZYnsO78bP6d9eRjf2xewENBCjsr0=;
+        b=hXIgtshn5IDhVXAC7GqWLLukAgLzP7brzlsebkznfMsgbfuG6+OeWtTZsaODzbwLzb
+         OblD/KWMC9cA2IkuDPD/jPHp8Ia0ORX5GNYZYhNWhW5GArJkr3iTPTkxPOyS6UfbkY4Z
+         n6CWUkB4qFz1rWEWmBEIniNCg9VRhmOGMQHvMXJawwni5AD32dovEoAjgRajrISIh2ss
+         +d3pM/m+vpHXvcObMbAujqERjXMgqcymPF69t3Vy2Kfmt7SKU+Ky0NnVvEMvesWml6Qz
+         xFFAmHgIpx8KCqtHq6+1NeXzKRebYhg0+WVC1VvWYs5RumCRCqh6KDfdBKBrc2NvZj/J
+         U2wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=sSu7K3T+Is+tDF9RKxNFrnM5Ps7pns1eb1u7wrpDKkI=;
-        b=L9VFjYQMakeesEzFbRQRQi6SZWF6HSIZ9NN0wCbsJq+0lwS3vBDL7auPsU7Wuntb27
-         WLk77UUFQiR3rDoBxlDu4B/NqbjH04Ar+AEXGkPzcKhKZs8EoXXJ09jNSe9j6v36035a
-         X2XWoo8eHC2dli5NQesOszXYn55W97qn2gwizgUSi2qbo9J1rfO0aACEucqyPrhpSicx
-         rTL7+fUS3uOHtl/wqURtHj3TzQJlYQStWydT4joXHi0+HjL44uEOjak27cuM5ALV3thy
-         OPAAbPblXizc+dSUbHLk8f//Wm3H6GgXjoYomN+eEa9nLcNC+cCZno1TvynW4z37opVh
-         Kmlg==
-X-Gm-Message-State: AOAM531JxQpJpkvb3PsZ7eQsLK3FnN994SzbaQvoiJFl24PH7ysr44vm
-        DUP5tuuBkQzgCfPXLuAKUtjV+XbMiU/1be/LlS92NI2chnA=
-X-Google-Smtp-Source: ABdhPJzeMZY/fP3CMvQ1fl46DOJ6H0uUbgi6Bn2tdkYP7TRNozIp4t3NPTqqrR3CqKwZsG0/H31w6lHE0aQzB1G7Jgs=
-X-Received: by 2002:a05:6830:b:: with SMTP id c11mr1375316otp.138.1610416909964;
- Mon, 11 Jan 2021 18:01:49 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W8Secle2yeigFS/ZYnsO78bP6d9eRjf2xewENBCjsr0=;
+        b=Iaopbizvd6tzHwkZbtoA5cZOkd0AmsZKwdok9+A9tg6sVGxq5SAtgdQJOhR8SKheKD
+         ZJLe4rcmd3+vlNWYGmBu70nzRb9rGfn49g3xTB0GkgeV+AUCADLDiNRi8udyWKRSFMGV
+         8u92Mb7vPjwcFocy/WE7KOpRqpF3BUhRuoXkTkcvb08X5f6buUu4YBS3sx5gYuClx9sm
+         Pnnx/E+98T2hUgotdRSekRlKIYa3kPq9cMziGVs8auYnvmfUWHMjB5zMgNWeJXMFK/Y+
+         GBD9tTRd4eFomJ4sA0LndyZoikHRySEUjK3q+tkJFi9+zh2mr/U8Sgy8zA4j+xpGO10C
+         KMkw==
+X-Gm-Message-State: AOAM533rxVWIDRJRNIcJhuJmqDNs1HwARp/hHlVDYvaJTIpzeebvRgEc
+        NUVWePpY5OEYz4+/e2Z60B/+ZU62nxHBN5uZ
+X-Google-Smtp-Source: ABdhPJwQfHHuMpjS0nTcNuoqCqa4bF0uWAVFwpSV5M3GjRSLKNhWa1cEtPfV03qDDisyJDi5JMOd+Q==
+X-Received: by 2002:a17:906:7f0b:: with SMTP id d11mr2575320ejr.7.1610443227015;
+        Tue, 12 Jan 2021 01:20:27 -0800 (PST)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id rl7sm929187ejb.107.2021.01.12.01.20.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 01:20:26 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2 0/7] New libtracefs APIs
+Date:   Tue, 12 Jan 2021 11:20:17 +0200
+Message-Id: <20210112092024.605705-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-From:   Sameeruddin Shaik <sameeruddin.shaik8@gmail.com>
-Date:   Tue, 12 Jan 2021 13:01:20 +0530
-Message-ID: <CAK7tX=bWn89VxofeyK0hfb4_dQz3tKG2Y2+_47WnaYiWN5UN2w@mail.gmail.com>
-Subject: [PATCH] trace-cmd: Fix lib audit warning message
-To:     linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-statically updated the warning message which we will get, when
-compiling trace-cmd without the libaudit library.
+Added new APIs to tracefs library and updated man pages and unit tests:
+  tracefs_instance_file_read_number();
+  tracefs_instance_file_open();
+  tracefs_trace_is_on();
+  tracefs_trace_on();
+  tracefs_trace_off();
+  tracefs_trace_on_get_fd()p;
+  tracefs_trace_on_fd();
+  tracefs_trace_off_fd();
 
-Following are the the messages which will pop out when compiling
+v2 changes:
+ - Renamed tracefs_instance_file_read_int() to tracefs_instance_file_read_number().
+ - Added new tracefs_trace_on_get_fd() API.
+ - Better error checking of tracefs_instance_file_read_number() API.
+ - A few code clean-ups, suggested by Steven.
 
-Before:
--------
-trace-profile.c:23:3: warning: #warning "lib audit not found, using
-raw syscalls " "(install libaudit-devel and try again)"
+Tzvetomir Stoyanov (VMware) (7):
+  libtracefs: tracefs_instance_file_read() get a const file name
+  libtracefs: New APIs for opening and reading ftrace files
+  libtracefs: New APIs for enable / disable tracing
+  libtracefs: Documentation for the new APIs for opening and reading
+    ftrace files
+  libtracefs: Documentation for enable / disable tracing APIs
+  libtracefs: Unit tests for the new APIs for opening and reading ftrace
+    files
+  libtracefs: Unit tests for enable / disable tracing APIs
 
-After:
--------
-trace-profile.c:23:3: warning: #warning "lib audit not found, using
-raw syscalls " "(install libaudit-devel(for fedora) or
-libaudit-dev(for debian/ubuntu) and try again)"
+ Documentation/libtracefs-instances-files.txt |  47 +++++-
+ Documentation/libtracefs-traceon.txt         | 151 +++++++++++++++++++
+ Documentation/libtracefs.txt                 |  10 +-
+ include/tracefs.h                            |  24 ++-
+ src/Makefile                                 |   1 +
+ src/tracefs-instance.c                       |  62 +++++++-
+ src/tracefs-tools.c                          | 109 +++++++++++++
+ utest/tracefs-utest.c                        | 137 ++++++++++++++++-
+ 8 files changed, 532 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/libtracefs-traceon.txt
+ create mode 100644 src/tracefs-tools.c
 
-Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
----
- tracecmd/trace-profile.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tracecmd/trace-profile.c b/tracecmd/trace-profile.c
-index cfae2a2..4e5d68d 100644
---- a/tracecmd/trace-profile.c
-+++ b/tracecmd/trace-profile.c
-@@ -21,7 +21,8 @@
-
- #ifdef WARN_NO_AUDIT
- # warning "lib audit not found, using raw syscalls "    \
--    "(install libaudit-devel and try again)"
-+    "(install libaudit-devel(for fedora) or libaudit-dev(for \
-+debian/ubuntu) and try again)"
- #endif
-
- #define TASK_STATE_TO_CHAR_STR "RSDTtXZxKWP"
 -- 
-2.7.4
+2.29.2
+
