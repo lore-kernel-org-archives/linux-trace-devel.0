@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 062C0C433E9
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jan 2021 17:29:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C8BCC4332E
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jan 2021 21:42:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C2FDF2311D
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jan 2021 17:29:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D4DB23122
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 12 Jan 2021 21:42:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392288AbhALR3t (ORCPT
+        id S2390963AbhALVhd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 12 Jan 2021 12:29:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33324 "EHLO mail.kernel.org"
+        Tue, 12 Jan 2021 16:37:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387733AbhALR3t (ORCPT
+        id S2437164AbhALVdI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:29:49 -0500
+        Tue, 12 Jan 2021 16:33:08 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5350D22285;
-        Tue, 12 Jan 2021 17:29:08 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 12:29:06 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 0EF442311F;
+        Tue, 12 Jan 2021 21:32:27 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 16:32:26 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sameeruddin Shaik <sameeruddin.shaik8@gmail.com>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] trace-cmd: Fix lib audit warning message
-Message-ID: <20210112122906.33c959f2@gandalf.local.home>
-In-Reply-To: <CAK7tX=bWn89VxofeyK0hfb4_dQz3tKG2Y2+_47WnaYiWN5UN2w@mail.gmail.com>
-References: <CAK7tX=bWn89VxofeyK0hfb4_dQz3tKG2Y2+_47WnaYiWN5UN2w@mail.gmail.com>
+Subject: Re: [PATCH] libtracefs: Link unit test to use static local library
+Message-ID: <20210112163226.53a4db07@gandalf.local.home>
+In-Reply-To: <20210107083208.15967-1-tz.stoyanov@gmail.com>
+References: <20210107083208.15967-1-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,59 +42,74 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 12 Jan 2021 13:01:20 +0530
-Sameeruddin Shaik <sameeruddin.shaik8@gmail.com> wrote:
+On Thu,  7 Jan 2021 10:32:08 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-Hi Sameer,
+> Unit test must test the library located in the sorce tree, instead the
+> one installed in the system.
 
-> statically updated the warning message which we will get, when
-> compiling trace-cmd without the libaudit library.
+I don't think this does what you want it to do.
+
 > 
-> Following are the the messages which will pop out when compiling
-> 
-> Before:
-> -------
-> trace-profile.c:23:3: warning: #warning "lib audit not found, using
-> raw syscalls " "(install libaudit-devel and try again)"
-> 
-> After:
-> -------
-> trace-profile.c:23:3: warning: #warning "lib audit not found, using
-> raw syscalls " "(install libaudit-devel(for fedora) or
-> libaudit-dev(for debian/ubuntu) and try again)"
-> 
-> Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->  tracecmd/trace-profile.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  utest/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/tracecmd/trace-profile.c b/tracecmd/trace-profile.c
-> index cfae2a2..4e5d68d 100644
-> --- a/tracecmd/trace-profile.c
-> +++ b/tracecmd/trace-profile.c
-> @@ -21,7 +21,8 @@
-> 
->  #ifdef WARN_NO_AUDIT
->  # warning "lib audit not found, using raw syscalls "    \
+> diff --git a/utest/Makefile b/utest/Makefile
+> index 403540a..6e9c760 100644
+> --- a/utest/Makefile
+> +++ b/utest/Makefile
+> @@ -12,7 +12,7 @@ OBJS += tracefs-utest.o
+>  
+>  LIBS += -lcunit				\
+>  	-ldl				\
+> -	-L$(obj)/lib/tracefs -ltracefs
+> +	-L$(obj)/lib/tracefs -l:libtracefs.a
+>  
+>  OBJS := $(OBJS:%.o=$(bdir)/%.o)
+>  DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
 
-Your mail client turned tabs into spaces and this doesn't apply properly.
-Are you able to fix that?
+OK, I added to src/tracefs_events.c:
 
-> -    "(install libaudit-devel and try again)"
-> +    "(install libaudit-devel(for fedora) or libaudit-dev(for \
-> +debian/ubuntu) and try again)"
-
-Also, the above can stay on one line. Yes, it breaks the 80 char limit, but
-that's more of a guideline and not a requirement ;-)
+void tracefs_hello(void)
+{
+	printf("hello world!\n");
+}
 
 
-Care to send a v2?
+And then to utest/trace-utest.c in main():
 
-Thanks!
+	void tracefs_hello(void);
+	tracefs_hello();
+
+And try building. It caused this:
+
+/usr/bin/ld: /work/git/libtracefs.git/utest/trace-utest.o: in function `main':
+/work/git/libtracefs.git/utest/trace-utest.c:38: undefined reference to `tracefs_hello'
+collect2: error: ld returned 1 exit status
+
+That's because I have libtracefs.a installed as well as libtracefs.so, and
+it is using the system libtracefs.a and not the local one.
+
+But by making the following change:
+
+diff --git a/utest/Makefile b/utest/Makefile
+index 6e9c760..4899365 100644
+--- a/utest/Makefile
++++ b/utest/Makefile
+@@ -12,7 +12,7 @@ OBJS += tracefs-utest.o
+ 
+ LIBS += -lcunit				\
+ 	-ldl				\
+-	-L$(obj)/lib/tracefs -l:libtracefs.a
++	$(obj)/lib/tracefs/libtracefs.a
+ 
+ OBJS := $(OBJS:%.o=$(bdir)/%.o)
+ DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
+
+It builds.
+
+I just use the full path to the library, instead of using the linker option.
 
 -- Steve
-
->  #endif
-> 
->  #define TASK_STATE_TO_CHAR_STR "RSDTtXZxKWP"
-
