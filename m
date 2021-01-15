@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6835C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:05:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41E95C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:05:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8F7B023772
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:05:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0E28023772
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:05:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729833AbhAOFFC (ORCPT
+        id S1731575AbhAOFFO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 15 Jan 2021 00:05:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
+        Fri, 15 Jan 2021 00:05:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726361AbhAOFFB (ORCPT
+        with ESMTP id S1726361AbhAOFFO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 15 Jan 2021 00:05:01 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4264BC0613D6
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Jan 2021 21:04:17 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id by1so5156944ejc.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Jan 2021 21:04:17 -0800 (PST)
+        Fri, 15 Jan 2021 00:05:14 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3B5C061786
+        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Jan 2021 21:04:18 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id w1so11507226ejf.11
+        for <linux-trace-devel@vger.kernel.org>; Thu, 14 Jan 2021 21:04:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DEipbYOY0q/m9MWeFZQuPDdlQiJOwq1nZTmlB+nMhI0=;
-        b=b7xsEaClTUM01Sd3zuugzI4s7+tb7hIDY+pFBvfN0y9tSOu/Ved99blXdokTLkj9gK
-         woBUMAZ3BbBVAatXv2lLpmZRMxoA3Yeie+tf7NC8PU5MjzAPodhIqFzB+uunLTEX8ryd
-         GYQRveTvbxYwkyLBJAxsG2vR1EQdnCKQxQ/C0LQaI+EKl1BSepyjgFKtsotIm2NiL5Z/
-         6tjGqVUmxJ7/nNnlwzdHcI5MTctqwcE+7GxjkNpk4TYFf+XqhKzuLdmMH7WniUv8f4Pd
-         raR9yUBInNkqf9Pr54m3HzixnhZKm2WVsbUFWEh9QiCz2dlSrskji8WOeIjSVDqQU3YM
-         Yl1w==
+        bh=ptMlY7gFRD7MomV3w62QcfI2MNa6nf68S716lDFDzZ0=;
+        b=eCcJPO2G9aL5FXM+PbcyNGm7qXb3J8VvP2E4NUZ/WcobXO+NE/RKsbqZUpPqkIVKjf
+         jsXf9ioFm3XTZwjdUm4d+2FVd5/otOz9Hf0ObEfjpwX7GNlqcPdsim4REaq2U0Qrahdn
+         J1PDpb7ZR37S+8YEY33ckORTockYc0nvc3JkMXNOYWmgcQWQWjFGQluQSW6r/bPR1qUc
+         EgKYaagfR1s1mF+hEbMTgCwCZ9LI9jE3x1VEvD/SDzjGcx651BBhfz3rPQMUsZ5yJdkk
+         PIUZ41XVkiMjDGsyEftW7KLw7lox1Z+yIGw8E8qm5t88EgCZLzdrG0OLdJQ55P5DSJaY
+         XMjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DEipbYOY0q/m9MWeFZQuPDdlQiJOwq1nZTmlB+nMhI0=;
-        b=I+Th/hvYX/ZSYEfSmUdKUNR5x8IvM2ZS/Fp1oWTNAO48MFQd+foRrFFTOREx04EjFn
-         +MFl2PXgB8bl1Ll6HYcAZ5l29KUUnpWNdVJ2EqD58a24TGJ02Xp1gd30e6Tw333jd/Kl
-         CJL40DAidWfHBAyUjrzZc8D9fF2qjY3OyM3c5zfx9bxq1xmkYPQkidFWY46pAePUb2v0
-         xXo7GYSRY90WiRejz/rkV5v3rudhygCaQ4yyrcZPl8gTHm3Eo9/siX8f+mzANdTmqUch
-         R8ASWGim6xIPPnsuvkZwypdWW01SPV5owVIt6lUpO+8SZ3mofdixH7F7bkxhoF4hRlQw
-         RuQA==
-X-Gm-Message-State: AOAM530e8q0GmrYbnYjpzJdsADm+QB5fFIxH6vYNA2HEEZNvvscK8fQl
-        aTHEyPogBgGugIWlzGNsjv4MlzHwvcqJ7MFz
-X-Google-Smtp-Source: ABdhPJy+mIby8xaHSwoZ8/YEXGSFV/yOSHuPVizSw6dQDKiM5F12sPoi3mZppqAI6zUdZZJeBNv65w==
-X-Received: by 2002:a17:907:d25:: with SMTP id gn37mr7373790ejc.381.1610687056047;
-        Thu, 14 Jan 2021 21:04:16 -0800 (PST)
+        bh=ptMlY7gFRD7MomV3w62QcfI2MNa6nf68S716lDFDzZ0=;
+        b=JMxplaJrPf4JEIEgUbOmY472pJDWOuQU3/Z2pNonculm1G30GLfK14uDKNAdbFYgFy
+         0YZHXhvDDxfbB/5iuxL7q2Zp7sSygzHzrwXeJ5HS94r/v/vS6cfZQJXtC64nmPrVIvm6
+         ffdcVPk7jedIjfLpe2srfdJgwNCExySQPmrQn9opABYBSMRp/wU0xL7LZ+ykpLB8OhCi
+         Q9btTJyUJXFSpTuxqHEF8sV8fXzluJqCIGK+vwRw2mTgylEazXmlGilMjA/smfwUSF1J
+         wzOe+a8PG4wqiWaLXKRSoMsktO7Plrjnc0lS3yTArEN+D060p05aTc7hd8aUU4K9qtZv
+         uebw==
+X-Gm-Message-State: AOAM532Vf7vq0auzw0UbhLZMyM98B7/n4wNtsi2Agf/QnsRZjvZqSq51
+        BA0fE+0lT6xdPwzh/IoOO8I=
+X-Google-Smtp-Source: ABdhPJyEUGt5hhFaR29l5znvPXsh4dREstHEWHjmgNPyyxVuXzi9Vt8cRTkCu5cy0pI33DEqeXKpVg==
+X-Received: by 2002:a17:906:ae42:: with SMTP id lf2mr7304045ejb.487.1610687057070;
+        Thu, 14 Jan 2021 21:04:17 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id d4sm3055670edq.36.2021.01.14.21.04.14
+        by smtp.gmail.com with ESMTPSA id d4sm3055670edq.36.2021.01.14.21.04.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 21:04:15 -0800 (PST)
+        Thu, 14 Jan 2021 21:04:16 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/5] libtracefs: Add information about top tracing directory in instance structure
-Date:   Fri, 15 Jan 2021 07:04:08 +0200
-Message-Id: <20210115050410.1194011-4-tz.stoyanov@gmail.com>
+Subject: [PATCH 4/5] libtracefs: New APIs for getting existing trace instance
+Date:   Fri, 15 Jan 2021 07:04:09 +0200
+Message-Id: <20210115050410.1194011-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210115050410.1194011-1-tz.stoyanov@gmail.com>
 References: <20210115050410.1194011-1-tz.stoyanov@gmail.com>
@@ -73,163 +73,119 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-There are use cases, where the library could be used with non default
-system trace directory - for example a partial copy of a system trace
-directory from another machine. More flexibility is added to the tracefs
-library, to handle these use cases. The full path to the system trace
-directory is added in the instance structure and is used to get trace
-files from that instance.
+The new API allocates an instance structure for existing trace instance.
+It has an optional tracing_dir parameter, which allows to get instances
+from non default trace directory. If the instance with the given name does
+not exist, the API fails. If no name is given, the structure for the top
+instance in the given trace directory is allocated and returned.
+
+struct tracefs_instance *tracefs_instance_get(const char *tracing_dir,
+					      const char *name);
+
+This helper API is added also, to get the tracing directory where the
+instance is configured. In most cases this should be the default system
+trace directroy mount point.
+
+const char *tracefs_instance_get_trace_dir(struct tracefs_instance *instance);
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- src/tracefs-instance.c | 80 ++++++++++++++++++++++++++----------------
- 1 file changed, 49 insertions(+), 31 deletions(-)
+ include/tracefs.h      |  3 +++
+ src/tracefs-instance.c | 57 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 60 insertions(+)
 
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 1f10a00..20aa995 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -20,9 +20,12 @@ struct tracefs_instance;
+ 
+ void tracefs_instance_free(struct tracefs_instance *instance);
+ struct tracefs_instance *tracefs_instance_create(const char *name);
++struct tracefs_instance *tracefs_instance_get(const char *tracing_dir,
++					      const char *name);
+ int tracefs_instance_destroy(struct tracefs_instance *instance);
+ bool tracefs_instance_is_new(struct tracefs_instance *instance);
+ const char *tracefs_instance_get_name(struct tracefs_instance *instance);
++const char *tracefs_instance_get_trace_dir(struct tracefs_instance *instance);
+ char *
+ tracefs_instance_get_file(struct tracefs_instance *instance, const char *file);
+ char *tracefs_instance_get_dir(struct tracefs_instance *instance);
 diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index b5f8298..468da1b 100644
+index 468da1b..112e237 100644
 --- a/src/tracefs-instance.c
 +++ b/src/tracefs-instance.c
-@@ -20,30 +20,43 @@
- 
- #define FLAG_INSTANCE_NEWLY_CREATED	(1 << 0)
- struct tracefs_instance {
-+	char	*trace_dir;
- 	char	*name;
- 	int	flags;
- };
- 
- /**
-  * instance_alloc - allocate a new ftrace instance
-+ * @trace_dir - Full path to the tracing directory, where the instance is
-  * @name: The name of the instance (instance will point to this)
-  *
-  * Returns a newly allocated instance, or NULL in case of an error.
-  */
--static struct tracefs_instance *instance_alloc(const char *name)
-+static struct tracefs_instance *instance_alloc(const char *trace_dir, const char *name)
- {
- 	struct tracefs_instance *instance;
- 
- 	instance = calloc(1, sizeof(*instance));
--	if (instance && name) {
-+	if (!instance)
-+		goto error;
-+	instance->trace_dir = strdup(trace_dir);
-+	if (!instance->trace_dir)
-+		goto error;
-+	if (name) {
- 		instance->name = strdup(name);
--		if (!instance->name) {
--			free(instance);
--			instance = NULL;
--		}
-+		if (!instance->name)
-+			goto error;
- 	}
- 
- 	return instance;
-+
-+error:
-+	if (instance) {
-+		free(instance->name);
-+		free(instance->trace_dir);
-+		free(instance);
-+	}
-+	return NULL;
+@@ -151,6 +151,49 @@ error:
+ 	return NULL;
  }
  
- /**
-@@ -56,6 +69,7 @@ void tracefs_instance_free(struct tracefs_instance *instance)
- {
- 	if (!instance)
- 		return;
-+	free(instance->trace_dir);
- 	free(instance->name);
- 	free(instance);
- }
-@@ -105,12 +119,16 @@ bool tracefs_instance_is_new(struct tracefs_instance *instance)
- struct tracefs_instance *tracefs_instance_create(const char *name)
- {
- 	struct tracefs_instance *inst = NULL;
-+	char *path = NULL;
++/**
++ * tracefs_instance_get - Allocate an instance structure for existing trace instance
++ * @tracing_dir: full path to the system trace directory, where the new instance is
++ *		 if NULL, the default top tracing directory is used.
++ * @name: Name of the instance.
++ *
++ * Allocates and initializes a new instance structure. If the instance does not
++ * exist, do not create it and exit with error.
++ * Returns a pointer to a newly allocated instance, or NULL in case of an error
++ * or the requested instance does not exists.
++ * The returned instance must be freed by tracefs_instance_free().
++ */
++struct tracefs_instance *tracefs_instance_get(const char *tracing_dir,
++					      const char *name)
++{
++	struct tracefs_instance *inst = NULL;
++	char file[PATH_MAX];
 +	const char *tdir;
- 	struct stat st;
- 	mode_t mode;
--	char *path;
- 	int ret;
- 
--	inst = instance_alloc(name);
-+	tdir = tracefs_tracing_dir();
++	struct stat st;
++	int ret;
++
++	if (tracing_dir) {
++		ret = stat(tracing_dir, &st);
++		if (ret < 0 || !S_ISDIR(st.st_mode))
++			return NULL;
++		tdir = tracing_dir;
++
++	} else
++		tdir = tracefs_tracing_dir();
 +	if (!tdir)
 +		return NULL;
-+	inst = instance_alloc(tdir, name);
- 	if (!inst)
- 		return NULL;
- 
-@@ -170,18 +188,18 @@ int tracefs_instance_destroy(struct tracefs_instance *instance)
- char *
- tracefs_instance_get_file(struct tracefs_instance *instance, const char *file)
- {
--	char *path;
--	char *buf;
-+	char *path = NULL;
- 	int ret;
- 
--	if (instance && instance->name) {
--		ret = asprintf(&buf, "instances/%s/%s", instance->name, file);
--		if (ret < 0)
--			return NULL;
--		path = tracefs_get_tracing_file(buf);
--		free(buf);
--	} else
--		path = tracefs_get_tracing_file(file);
-+	if (!instance)
-+		return tracefs_get_tracing_file(file);
-+	if (!instance->name)
-+		ret = asprintf(&path, "%s/%s", instance->trace_dir, file);
-+	else
-+		ret = asprintf(&path, "%s/instances/%s/%s",
-+			       instance->trace_dir, instance->name, file);
-+	if (ret < 0)
-+		return NULL;
- 
- 	return path;
- }
-@@ -196,21 +214,21 @@ tracefs_instance_get_file(struct tracefs_instance *instance, const char *file)
-  */
- char *tracefs_instance_get_dir(struct tracefs_instance *instance)
- {
--	char *buf;
--	char *path;
-+	char *path = NULL;
- 	int ret;
- 
--	if (instance && instance->name) {
--		ret = asprintf(&buf, "instances/%s", instance->name);
--		if (ret < 0) {
--			warning("Failed to allocate path for instance %s",
--				 instance->name);
--			return NULL;
--		}
--		path = tracefs_get_tracing_file(buf);
--		free(buf);
--	} else
--		path = trace_find_tracing_dir();
-+	if (!instance) /* Top instance of default system trace directory */
-+		return trace_find_tracing_dir();
 +
-+	if (!instance->name)
-+		return strdup(instance->trace_dir);
-+
-+	ret = asprintf(&path, "%s/instances/%s", instance->trace_dir, instance->name);
-+	if (ret < 0) {
-+		warning("Failed to allocate path for instance %s",
-+			 instance->name);
-+		return NULL;
++	if (name) {
++		sprintf(file, "%s/instances/%s", tdir, name);
++		ret = stat(file, &st);
++		if (ret < 0 || !S_ISDIR(st.st_mode))
++			return NULL;
 +	}
- 
- 	return path;
++	inst = instance_alloc(tdir, name);
++
++	return inst;
++}
++
+ /**
+  * tracefs_instance_destroy - Remove a ftrace instance
+  * @instance: Pointer to the instance to be removed
+@@ -247,6 +290,20 @@ const char *tracefs_instance_get_name(struct tracefs_instance *instance)
+ 	return NULL;
  }
+ 
++/**
++ * tracefs_instance_get_trace_dir - return the top trace directory, where the instance is confuigred
++ * @instance: ftrace instance
++ *
++ * Returns the top trace directory where the given @instance is configured.
++ * The returned string must *not* be freed.
++ */
++const char *tracefs_instance_get_trace_dir(struct tracefs_instance *instance)
++{
++	if (instance)
++		return instance->trace_dir;
++	return NULL;
++}
++
+ static int write_file(const char *file, const char *str)
+ {
+ 	int ret;
 -- 
 2.29.2
 
