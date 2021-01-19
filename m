@@ -2,129 +2,487 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6346AC282D4
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Jan 2021 18:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A037CC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Jan 2021 21:16:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3674F22CAD
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Jan 2021 18:29:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5D5CC22D08
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 19 Jan 2021 21:16:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389491AbhASRxQ convert rfc822-to-8bit (ORCPT
+        id S1727566AbhASVPa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 19 Jan 2021 12:53:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45580 "EHLO mail.kernel.org"
+        Tue, 19 Jan 2021 16:15:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728980AbhASPAY (ORCPT
+        id S2391991AbhASVM4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:00:24 -0500
+        Tue, 19 Jan 2021 16:12:56 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89615207C4;
-        Tue, 19 Jan 2021 14:59:41 +0000 (UTC)
-Date:   Tue, 19 Jan 2021 09:59:39 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 9187A22D08;
+        Tue, 19 Jan 2021 21:12:13 +0000 (UTC)
+Date:   Tue, 19 Jan 2021 16:12:12 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tstoyanov@vmware.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Move "load_plugins" out of the opening code
-Message-ID: <20210119095939.6f307c4d@gandalf.local.home>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 1/5] libtracefs: New APIs for trace options
+Message-ID: <20210119161212.4f9f2d35@gandalf.local.home>
+In-Reply-To: <20210115050410.1194011-2-tz.stoyanov@gmail.com>
+References: <20210115050410.1194011-1-tz.stoyanov@gmail.com>
+        <20210115050410.1194011-2-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Tzvetomir,
+On Fri, 15 Jan 2021 07:04:06 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-From bugzilla:
+> These new APIs can be used to check and set various trace options
+> 
+> tracefs_options_get_supported();
+> tracefs_option_is_supported();
+> tracefs_options_get_enabled();
+> tracefs_option_is_enabled();
+> tracefs_options_set();
+> tracefs_options_clear();
+> tracefs_option_string();
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+>  include/tracefs.h   |  54 ++++++++++
+>  src/tracefs-tools.c | 251 ++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 305 insertions(+)
+> 
+> diff --git a/include/tracefs.h b/include/tracefs.h
+> index 85a776e..1f10a00 100644
+> --- a/include/tracefs.h
+> +++ b/include/tracefs.h
+> @@ -80,4 +80,58 @@ int tracefs_fill_local_events(const char *tracing_dir,
+>  
+>  char *tracefs_get_clock(struct tracefs_instance *instance);
+>  
+> +#define		TRACEFS_OPTION_ANNOTATE		((unsigned long long)1 << 0)
+> +#define		TRACEFS_OPTION_BIN		((unsigned long long)1 << 1)
+> +#define		TRACEFS_OPTION_BLK_CGNAME	((unsigned long long)1 << 2)
+> +#define		TRACEFS_OPTION_BLK_CGROUP	((unsigned long long)1 << 3)
+> +#define		TRACEFS_OPTION_BLK_CLASSIC	((unsigned long long)1 << 4)
+> +#define		TRACEFS_OPTION_BLOCK		((unsigned long long)1 << 5)
+> +#define		TRACEFS_OPTION_CONTEXT_INFO	((unsigned long long)1 << 6)
+> +#define		TRACEFS_OPTION_DISABLE_ON_FREE	((unsigned long long)1 << 7)
+> +#define		TRACEFS_OPTION_DISPLAY_GRAPH	((unsigned long long)1 << 8)
+> +#define		TRACEFS_OPTION_EVENT_FORK	((unsigned long long)1 << 9)
+> +#define		TRACEFS_OPTION_FGRAPH_ABSTIME	((unsigned long long)1 << 10)
+> +#define		TRACEFS_OPTION_FGRAPH_CPU	((unsigned long long)1 << 11)
+> +#define		TRACEFS_OPTION_FGRAPH_DURATION	((unsigned long long)1 << 12)
+> +#define		TRACEFS_OPTION_FGRAPH_IRQS	((unsigned long long)1 << 13)
+> +#define		TRACEFS_OPTION_FGRAPH_OVERHEAD	((unsigned long long)1 << 14)
+> +#define		TRACEFS_OPTION_FGRAPH_OVERRUN	((unsigned long long)1 << 15)
+> +#define		TRACEFS_OPTION_FGRAPH_PROC	((unsigned long long)1 << 16)
+> +#define		TRACEFS_OPTION_FGRAPH_TAIL	((unsigned long long)1 << 17)
+> +#define		TRACEFS_OPTION_FUNC_STACKTRACE	((unsigned long long)1 << 18)
+> +#define		TRACEFS_OPTION_FUNCTION_FORK	((unsigned long long)1 << 19)
+> +#define		TRACEFS_OPTION_FUNCTION_TRACE	((unsigned long long)1 << 20)
+> +#define		TRACEFS_OPTION_GRAPH_TIME	((unsigned long long)1 << 21)
+> +#define		TRACEFS_OPTION_HEX		((unsigned long long)1 << 22)
+> +#define		TRACEFS_OPTION_IRQ_INFO		((unsigned long long)1 << 23)
+> +#define		TRACEFS_OPTION_LATENCY_FORMAT	((unsigned long long)1 << 24)
+> +#define		TRACEFS_OPTION_MARKERS		((unsigned long long)1 << 25)
+> +#define		TRACEFS_OPTION_OVERWRITE	((unsigned long long)1 << 26)
+> +#define		TRACEFS_OPTION_PAUSE_ON_TRACE	((unsigned long long)1 << 27)
+> +#define		TRACEFS_OPTION_PRINTK_MSG_ONLY	((unsigned long long)1 << 28)
+> +#define		TRACEFS_OPTION_PRINT_PARENT	((unsigned long long)1 << 29)
+> +#define		TRACEFS_OPTION_RAW		((unsigned long long)1 << 30)
+> +#define		TRACEFS_OPTION_RECORD_CMD	((unsigned long long)1 << 31)
+> +#define		TRACEFS_OPTION_RECORD_TGID	((unsigned long long)1 << 32)
+> +#define		TRACEFS_OPTION_SLEEP_TIME	((unsigned long long)1 << 33)
+> +#define		TRACEFS_OPTION_STACKTRACE	((unsigned long long)1 << 34)
+> +#define		TRACEFS_OPTION_SYM_ADDR		((unsigned long long)1 << 35)
+> +#define		TRACEFS_OPTION_SYM_OFFSET	((unsigned long long)1 << 36)
+> +#define		TRACEFS_OPTION_SYM_USEROBJ	((unsigned long long)1 << 37)
+> +#define		TRACEFS_OPTION_TEST_NOP_ACCEPT	((unsigned long long)1 << 38)
+> +#define		TRACEFS_OPTION_TEST_NOP_REFUSE	((unsigned long long)1 << 39)
+> +#define		TRACEFS_OPTION_TRACE_PRINTK	((unsigned long long)1 << 40)
+> +#define		TRACEFS_OPTION_USERSTACKTRACE	((unsigned long long)1 << 41)
+> +#define		TRACEFS_OPTION_VERBOSE		((unsigned long long)1 << 42)
+> +
+> +#define		TRACEFS_OPTION_INVALID		((unsigned long long)1 << 43)
 
-  https://bugzilla.kernel.org/show_bug.cgi?id=211255
+I really think that we should define "TRACEFS_OPTION_INVALID" as zero.
 
-It was reported that:
+Especially since we may grow this list, and we don't want INVALID to be in
+the middle of valid options. And it should be treated as special. As the
+above is a bit mask, a NULL bitmask is "invalid" or "unkown".
 
-$ trace-cmd report -N -r funcgraph_exit trace.dat 2>/dev/null | grep funcgraph_exit | wc -l
-11645
+Anyway, I would redo the above as bit numbers instead of a bit mask. And we
+could abstract out the bitmask in case these options grow beyond 64.
 
-$ trace-cmd report -N -F funcgraph_exit -r funcgraph_exit trace.dat 2>/dev/null | grep funcgraph_exit | wc -l
-24826
+enum tracefs_option_bits {
+ TRACEFS_OPTION_ANNOTATE,
+ TRACEFS_OPTION_BIN,
+ TRACEFS_OPTION_CGNAME,
+ [..]
+ TRACEFS_OPTION_VERBOSE,
+};
 
-Where the first should have been as big as the second. The problem with the
-above is really that "-N" does not stop the ftrace function event plugins
-from being loaded.
+#define TRACEFS_OPTION_CURRENT_MAX TRACEFS_OPTION_VERBOSE
+#define TRACEFS_OPTION_UNKNOWN		0
 
-Looking at this further, I think it's a mistake to have the plugins loaded
-at opening time.
+struct tracefs_option {
+	unsigned long long	mask;
+};
 
-We should have a new function for the library:
+typedef struct tracefs_option tracefs_option_t
 
-int tracecmd_load_plugins(struct tracecmd_handle *handle, int flags);
+And encourage people to use accessor functions to use it.
 
-And this should be called after read_trace_header() in trace-read.c.
+static inline bool tracefs_option_is_set(tracefs_option_t option, int bit)
+{
+	return option.mask & (1 << bit);
+}
 
-We can still have tracecmd_open_head() call this, as the "open_head" is
-basically a "do everything" function.
+static inline void tracefs_option_set(tracefs_option_t *option, int bit)
+{
+	option->mask |= 1ULL << bit;
+}
 
-This will allow us to remove the global "tracecmd_disable_plugins" and
-"tracecmd_disable_sys_plugins" variables and use the flags input instead.
-With the '-N' option, we should probably just skip calling it regardless.
+static inline void tracefs_option_clear(tracefs_option_t *option, int bit)
+{
+	option->mask &= ~(1ULL << bit);
+}
 
-The below patch was just a POC, to see if there was any side-effects for
-this. But it didn't have a return value or flags, which should be added for
-the final version.
+Then replace all the "unsigned long long" with tracefs_option_t.
+
+> +
+> +unsigned long long tracefs_options_get_supported(struct tracefs_instance *instance);
+> +bool tracefs_option_is_supported(struct tracefs_instance *instance, unsigned long long id);
+> +unsigned long long tracefs_options_get_enabled(struct tracefs_instance *instance);
+> +bool tracefs_option_is_enabled(struct tracefs_instance *instance, unsigned long long id);
+> +int tracefs_options_set(struct tracefs_instance *instance, unsigned long long options);
+> +int tracefs_options_clear(struct tracefs_instance *instance, unsigned long long options);
+> +const char *tracefs_option_string(unsigned long long id);
+> +
+>  #endif /* _TRACE_FS_H */
+> diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
+> index 101f389..0505552 100644
+> --- a/src/tracefs-tools.c
+> +++ b/src/tracefs-tools.c
+> @@ -9,12 +9,66 @@
+>  #include <stdlib.h>
+>  #include <unistd.h>
+>  #include <fcntl.h>
+> +#include <sys/types.h>
+> +#include <dirent.h>
+> +#include <limits.h>
+> +#include <errno.h>
+>  
+>  #include "tracefs.h"
+>  #include "tracefs-local.h"
+>  
+>  #define TRACE_CTRL	"tracing_on"
+>  
+> +struct options_map {
+> +	unsigned long long id;
+> +	char *name;
+> +} options_map[] = {
+
+By using bits instead of the mask, we could make "id" == the index of the
+array, and make this map just a array of strings. That is:
+
+const char * const *options_map[] =
+  { "annotate", "bin", ... };
+
+Then, options_map[TRACEFS_OPTION_ANNOTATE] would be "annotate".
+
+
+> +	{ TRACEFS_OPTION_ANNOTATE,		"annotate" },
+> +	{ TRACEFS_OPTION_BIN,			"bin" },
+> +	{ TRACEFS_OPTION_BLK_CGNAME,		"blk_cgname" },
+> +	{ TRACEFS_OPTION_BLK_CGROUP,		"blk_cgroup" },
+> +	{ TRACEFS_OPTION_BLK_CLASSIC,		"blk_classic" },
+> +	{ TRACEFS_OPTION_BLOCK,			"block" },
+> +	{ TRACEFS_OPTION_CONTEXT_INFO,		"context-info" },
+> +	{ TRACEFS_OPTION_DISABLE_ON_FREE,	"disable_on_free" },
+> +	{ TRACEFS_OPTION_DISPLAY_GRAPH,		"display-graph" },
+> +	{ TRACEFS_OPTION_EVENT_FORK,		"event-fork" },
+> +	{ TRACEFS_OPTION_FGRAPH_ABSTIME,	"funcgraph-abstime" },
+> +	{ TRACEFS_OPTION_FGRAPH_CPU,		"funcgraph-cpu" },
+> +	{ TRACEFS_OPTION_FGRAPH_DURATION,	"funcgraph-duration" },
+> +	{ TRACEFS_OPTION_FGRAPH_IRQS,		"funcgraph-irqs" },
+> +	{ TRACEFS_OPTION_FGRAPH_OVERHEAD,	"funcgraph-overhead" },
+> +	{ TRACEFS_OPTION_FGRAPH_OVERRUN,	"funcgraph-overrun" },
+> +	{ TRACEFS_OPTION_FGRAPH_PROC,		"funcgraph-proc" },
+> +	{ TRACEFS_OPTION_FGRAPH_TAIL,		"funcgraph-tail" },
+> +	{ TRACEFS_OPTION_FUNC_STACKTRACE,	"func_stack_trace" },
+> +	{ TRACEFS_OPTION_FUNCTION_FORK,		"function-fork" },
+> +	{ TRACEFS_OPTION_FUNCTION_TRACE,	"function-trace" },
+> +	{ TRACEFS_OPTION_GRAPH_TIME,		"graph-time" },
+> +	{ TRACEFS_OPTION_HEX,			"hex" },
+> +	{ TRACEFS_OPTION_IRQ_INFO,		"irq-info" },
+> +	{ TRACEFS_OPTION_LATENCY_FORMAT,	"latency-format" },
+> +	{ TRACEFS_OPTION_MARKERS,		"markers" },
+> +	{ TRACEFS_OPTION_OVERWRITE,		"overwrite" },
+> +	{ TRACEFS_OPTION_PAUSE_ON_TRACE,	"pause-on-trace" },
+> +	{ TRACEFS_OPTION_PRINTK_MSG_ONLY,	"printk-msg-only" },
+> +	{ TRACEFS_OPTION_PRINT_PARENT,		"print-parent" },
+> +	{ TRACEFS_OPTION_RAW,			"raw" },
+> +	{ TRACEFS_OPTION_RECORD_CMD,		"record-cmd" },
+> +	{ TRACEFS_OPTION_RECORD_TGID,		"record-tgid" },
+> +	{ TRACEFS_OPTION_SLEEP_TIME,		"sleep-time" },
+> +	{ TRACEFS_OPTION_STACKTRACE,		"stacktrace" },
+> +	{ TRACEFS_OPTION_SYM_ADDR,		"sym-addr" },
+> +	{ TRACEFS_OPTION_SYM_OFFSET,		"sym-offset" },
+> +	{ TRACEFS_OPTION_SYM_USEROBJ,		"sym-userobj" },
+> +	{ TRACEFS_OPTION_TEST_NOP_ACCEPT,	"test_nop_accept" },
+> +	{ TRACEFS_OPTION_TEST_NOP_REFUSE,	"test_nop_refuse" },
+> +	{ TRACEFS_OPTION_TRACE_PRINTK,		"trace_printk" },
+> +	{ TRACEFS_OPTION_USERSTACKTRACE,	"userstacktrace" },
+> +	{ TRACEFS_OPTION_VERBOSE,		"verbose" },
+> +	{ TRACEFS_OPTION_INVALID,		"unknown" },
+> +};
+> +
+>  static int trace_on_off(int fd, bool on)
+>  {
+>  	const char *val = on ? "1" : "0";
+> @@ -107,3 +161,200 @@ int tracefs_trace_off_fd(int fd)
+>  		return -1;
+>  	return trace_on_off(fd, false);
+>  }
+> +
+> +/**
+> + * tracefs_option_string - Get trace option name from ID
+> + * @id: trace option ID
+> + *
+> + * Returns string with option name, or "unknown" in case of not known option ID
+> + */
+> +const char *tracefs_option_string(unsigned long long id)
+> +{
+> +	int size = sizeof(options_map) / sizeof(struct options_map);
+> +	int i;
+
+If we just had the options as a bit number and not a mask, this would
+simply be:
+
+	if (id < size)
+		return options_map[id].name;
+	return "unknown";
+
+> +
+> +	for (i = 0; i < size; i++) {
+> +		if (options_map[i].id == id)
+> +			return options_map[i].name;
+> +	}
+> +
+> +	return options_map[size - 1].name;
+> +}
+> +
+> +/**
+> + * tracefs_option_id - Get trace option ID from name
+> + * @name: trace option name
+> + *
+> + * Returns trace option ID or TRACEFS_OPTION_INVALID in case of an error or
+> + * unknown option name.
+> + */
+> +unsigned long long tracefs_option_id(char *name)
+> +{
+> +	int size = sizeof(options_map) / sizeof(struct options_map);
+> +	int i;
+> +
+> +	if (!name)
+> +		return TRACEFS_OPTION_INVALID;
+> +
+> +	for (i = 0; i < size; i++) {
+> +		if (strlen(name) == strlen(options_map[i].name) &&
+> +		    !strcmp(options_map[i].name, name))
+
+This would just be:
+			return i;
+
+> +			return options_map[i].id;
+> +	}
+> +
+> +	return TRACEFS_OPTION_INVALID;
+> +}
+> +
+> +static unsigned long long trace_get_options(struct tracefs_instance *instance,
+> +					    bool enabled)
+> +{
+> +	unsigned long long options = 0;
+> +	unsigned long long id;
+> +	char file[PATH_MAX];
+> +	struct dirent *dent;
+> +	char *dname = NULL;
+> +	DIR *dir = NULL;
+> +	long long val;
+> +
+> +	dname = tracefs_instance_get_file(instance, "options");
+> +	if (!dname)
+> +		goto error;
+> +	dir = opendir(dname);
+> +	if (!dir)
+> +		goto error;
+> +
+> +	while ((dent = readdir(dir))) {
+> +		if (*dent->d_name == '.')
+> +			continue;
+> +		if (enabled) {
+> +			snprintf(file, PATH_MAX, "options/%s", dent->d_name);
+> +			if (tracefs_instance_file_read_number(instance, file, &val) != 0 ||
+> +			    val != 1)
+> +				continue;
+> +		}
+> +		id = tracefs_option_id(dent->d_name);
+> +		if (id != TRACEFS_OPTION_INVALID)
+> +			options |= id;
+
+Here we would have options be of type tracefs_options_t, and it would be:
+
+			options.mask |= 1 << id;
+
+> +	}
+> +	closedir(dir);
+> +	tracefs_put_tracing_file(dname);
+> +
+> +	return options;
+> +
+> +error:
+> +	if (dir)
+> +		closedir(dir);
+> +	tracefs_put_tracing_file(dname);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * tracefs_options_get_supported - Get all supported trace options in given instance
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + *
+> + * Returns bitmask of all trace options, supported in given instance
+> + */
+> +unsigned long long tracefs_options_get_supported(struct tracefs_instance *instance)
+> +{
+> +	return trace_get_options(instance, false);
+> +}
+> +
+> +/**
+> + * tracefs_options_get_enabled - Get all currently enabled trace options in given instance
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + *
+> + * Returns bitmask of all trace options, that are currently set in given instance
+> + */
+> +unsigned long long tracefs_options_get_enabled(struct tracefs_instance *instance)
+> +{
+> +	return trace_get_options(instance, true);
+> +}
+> +
+> +static int trace_config_options(struct tracefs_instance *instance,
+> +				unsigned long long options, bool set)
+
+options should be of type tracefs_options_t, and the user could set them
+with the helper functions above.
+
+> +{
+> +	int size = sizeof(options_map) / sizeof(struct options_map);
+> +	char *set_str = set ? "1" : "0";
+> +	int str_size = strlen(set_str);
+
+Hmm, since set_str can only be "1" or "0" why the strlen? It will always be
+1.
+
+Yeah, I think we really need to abstract out the options mask, as it would
+break once we have more than 64 different options. Which is a real
+possibility. When we do get there, we can make tracefs_options_t, be a
+structure of two words, or create an extended version.
 
 -- Steve
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 3e67dd61..11bf8e5d 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -3247,11 +3247,6 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd)
- 	if (!handle->pevent)
- 		goto failed_read;
- 
--	/* register default ftrace functions first */
--	tracecmd_ftrace_overrides(handle, &handle->finfo);
--
--	handle->plugin_list = trace_load_plugins(handle->pevent);
--
- 	tep_set_file_bigendian(handle->pevent, buf[0]);
- 	tep_set_local_bigendian(handle->pevent, tracecmd_host_bigendian());
- 
-@@ -3344,6 +3339,13 @@ struct tracecmd_input *tracecmd_open(const char *file)
- 	return tracecmd_open_fd(fd);
- }
- 
-+void tracecmd_load_plugins(struct tracecmd_input *handle)
-+{
-+	/* register default ftrace functions first */
-+	tracecmd_ftrace_overrides(handle, &handle->finfo);
-+	handle->plugin_list = trace_load_plugins(handle->pevent);
-+}
-+
- /**
-  * tracecmd_open_head - create a tracecmd_handle from a given file, read
-  *			and parse only the trace headers from the file
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index d07f4efe..a79bf0aa 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -1768,10 +1768,14 @@ void trace_report (int argc, char **argv)
- 		die("Wakeup tracing can only be done on a single input file");
- 
- 	list_for_each_entry(inputs, &input_files, list) {
-+		void tracecmd_load_plugins(struct tracecmd_input *handle);
- 		handle = read_trace_header(inputs->file);
- 		if (!handle)
- 			die("error reading header for %s", inputs->file);
- 
-+		if (!tracecmd_disable_plugins)
-+			tracecmd_load_plugins(handle);
-+
- 		/* If used with instances, top instance will have no tag */
- 		add_handle(handle, multi_inputs ? inputs->file : NULL);
- 
+> +	char file[PATH_MAX];
+> +	long long i;
+> +
+> +	for (i = 0; i < size && options; i++) {
+> +		if (!(options & options_map[i].id))
+> +			continue;
+> +		options &= ~options_map[i].id;
+> +		snprintf(file, PATH_MAX, "options/%s", options_map[i].name);
+> +		if (str_size != tracefs_instance_file_write(instance, file, set_str))
+> +			break;
+> +	}
+> +
+> +	if (options)
+> +		return -1;
+> +	return 0;
+> +}
+> +
+> +/**
+> + * tracefs_options_set - Enable trace options
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + * @options: bitmask of trace options that will be enabled
+> + *
+> + * Returns -1 in case of an error or 0 otherwise
+> + */
+> +int tracefs_options_set(struct tracefs_instance *instance, unsigned long long options)
+> +{
+> +	return trace_config_options(instance, options, true);
+> +}
+> +
+> +/**
+> + * tracefs_options_clear - Disable trace options
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + * @options: bitmask of trace options that will be disabled
+> + *
+> + * Returns -1 in case of an error or 0 otherwise
+> + */
+> +int tracefs_options_clear(struct tracefs_instance *instance, unsigned long long options)
+> +{
+> +	return trace_config_options(instance, options, false);
+> +}
+> +
+> +/**
+> + * tracefs_option_is_supported - Check if an option is supported
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + * @id: option id
+> + *
+> + * Returns true if an option with given id is supported by the system, false if
+> + * it is not supported.
+> + */
+> +bool tracefs_option_is_supported(struct tracefs_instance *instance, unsigned long long id)
+> +{
+> +	char file[PATH_MAX];
+> +	const char *oname = tracefs_option_string(id);
+> +
+> +	if (!oname)
+> +		return false;
+> +	snprintf(file, PATH_MAX, "options/%s", oname);
+> +	return tracefs_file_exists(instance, (char *)file);
+> +}
+> +
+> +/**
+> + * tracefs_option_is_enabled - Check if an option is enabled in given instance
+> + * @instance: ftrace instance, can be NULL for the top instance
+> + * @id: option id
+> + *
+> + * Returns true if an option with given id is enabled in the given instance,
+> + * false if it is not enabled.
+> + */
+> +bool tracefs_option_is_enabled(struct tracefs_instance *instance, unsigned long long id)
+> +{
+> +	const char *oname = tracefs_option_string(id);
+> +	char file[PATH_MAX];
+> +	long long res;
+> +
+> +	if (!oname)
+> +		return false;
+> +	snprintf(file, PATH_MAX, "options/%s", oname);
+> +	if (!tracefs_instance_file_read_number(instance, file, &res) && res)
+> +		return true;
+> +
+> +	return false;
+> +}
+
