@@ -2,230 +2,165 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 948B5C433E6
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jan 2021 07:47:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4EB7C433DB
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jan 2021 10:37:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5094E2396F
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jan 2021 07:47:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7EA52233EA
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jan 2021 10:37:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727470AbhAUHri (ORCPT
+        id S1729292AbhAUKhK (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 21 Jan 2021 02:47:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        Thu, 21 Jan 2021 05:37:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727754AbhAUHrB (ORCPT
+        with ESMTP id S1729650AbhAUKg4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:47:01 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733A8C06179C
-        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Jan 2021 23:45:16 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id a9so735089wrt.5
-        for <linux-trace-devel@vger.kernel.org>; Wed, 20 Jan 2021 23:45:16 -0800 (PST)
+        Thu, 21 Jan 2021 05:36:56 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B71C061793
+        for <linux-trace-devel@vger.kernel.org>; Thu, 21 Jan 2021 02:36:12 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id l12so1220209wry.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 21 Jan 2021 02:36:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IenKFzFG83xtDGf9KkCaQpGW0t9/z9lSzSq7mZfH8BY=;
-        b=WMBAEVXX7Z6PUKMw2X3pI0y8rbH7qG5JB12Y0pedjt7lrl8MGyj0IQDC4L13MR2vyb
-         7iJ94C15sI5LyS4eCSZV4KXQ8RjPgG2sai3Qp/lNusa6wyYIlwYre1tFlJej2WkJ2TvF
-         LLKB+0GEceqsp80RZVf05fQ5bcExRt4mjkA8kfuZAncsi4tl4tehPygnJx9Fo0YqH6aU
-         Iw7d8ktZLpKyP4RMlmn6+P/08Ca/U7qyxqUbv5Xg4PyxNx0NoP58OTdsoLz+S4vzqNtx
-         Hv015O7TG42Wg1py9tMgNcR/mXJQ18sUHcLnSqBPxvcIJ20rURxG/bmFu5HwFwrRL8df
-         RzuA==
+        bh=45zabsS/ucuivpVh2hX1/UprI4Hh21/Ixb2hCzME/38=;
+        b=XQ1t9nuDWKulTPV72OKkdias0upBg4A/zouj8lNopHt4xjFsYVHqvnX7q2pC1oBhhb
+         SSL3trUNPnMOEd4LNlYk3gUT5u5RG96CCKL/uD/YIlUAom85edRYUxCCT+Rjkp/wDvQp
+         iXkBxbu7wPGBxS9aVYOyDh/dTlgr6rL5UnlO46yQ1CBTZvtBYJtLJ3iheq6EpahNYh5u
+         RKBZRidFq7goB70mwDx7TV6irctI0rOi0HH5Oknru/WB27JBxfnAHaqEtJTNa+9gcyK6
+         osAGasZ+T4uyw5MRsUt/82QHm/hqxvpYqy7nsL/ygz3nMTYVWA8Lh1LohT9WZ2HNQ8XA
+         7r/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IenKFzFG83xtDGf9KkCaQpGW0t9/z9lSzSq7mZfH8BY=;
-        b=I0f/T5YepCc0pYgwzlgVYHtsHaBlMH8DOG4YVdNRaLC76k53z3CvcMMC0SqUxaU+JY
-         Cit3hU63mNCIwzTGcK86lQuLAjHlN9GjKZ4a26anoOEl7dp2ywHNF1GTNiikX2o1ueoz
-         VhLUwyHIUCAWIq+eyUGKCBINJmofmLkxPYKayohN1Mt0tCMh9UUY8dZlSqTA5N8lbDKm
-         10NaPzagkeuXDbqfBRb0CbB9wD1aD6e9LT/TcCC4YdrzrVuARtMg88/l9jxzGHXjg3h3
-         OZSLT+5PcxzSxO3qJBdBSXUvSplXnGIJRenG9/EoBggGgmP1DWv9UKEV1ZVbJKu7U5rg
-         ST1g==
-X-Gm-Message-State: AOAM532DlECBx2Hq04FZpTe0qYOC/WSGIT1Lk0brqqg8LnTAibR8fufa
-        dGWcMO0Zb4E2ljCgAeGVcTY=
-X-Google-Smtp-Source: ABdhPJwD0r3y9dPJIzAcTkgWQi3WSVAHdNM4pQcVbe6vkoahnjNXsOSauNs7/HTTkysc341Z3zJ1Vw==
-X-Received: by 2002:adf:decb:: with SMTP id i11mr12926567wrn.26.1611215115256;
-        Wed, 20 Jan 2021 23:45:15 -0800 (PST)
+        bh=45zabsS/ucuivpVh2hX1/UprI4Hh21/Ixb2hCzME/38=;
+        b=lXSTZ0YF+FzHknk9fZKrxrkEWzwSEuKaVnypUeJt/VW81lJ9xRrZuEngRgGZDRqMEw
+         N+1YIX8Az5B8FALLZ5O1sLB50rpjNva7gyt37Bt/3P1uPNbzhBjjAyXIYmp4mAjTOIVM
+         nPd1LX+buMM7SX8q6LofJuEcQFXcC3jmKhn/ZTV4l0LEGn4XI0gLSE8O//lr4sWZa5yD
+         5pewFS/08U64NxuA6XU4gSlCDsEjmrfssWPlG5MytPNtcN+u+q7R3202Nx9UjuV/mQvy
+         4iEpkb+JX6YDdaRqB0eCfgqfpz/ql7DmvOyFjaBwKrS+nUfptT7Yhkaw2ZUfaI0XgY0k
+         htoQ==
+X-Gm-Message-State: AOAM533jIHYRvESwlu+7UHhDWTdhkdJhqWPcYA5YpEhAso+xQbuI7UF/
+        +rWHjeFLEWadHDyuohsrPvQ=
+X-Google-Smtp-Source: ABdhPJxYLTtPYBWA/b7qqQ95RbyA3nUyg+xxVn7fh1rnyx2W+cf4F5l8fbBNwGVhb8gI+s5nwED9Xg==
+X-Received: by 2002:adf:f512:: with SMTP id q18mr2178393wro.55.1611225371693;
+        Thu, 21 Jan 2021 02:36:11 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id q6sm6788474wmj.32.2021.01.20.23.45.14
+        by smtp.gmail.com with ESMTPSA id l18sm7294123wme.37.2021.01.21.02.36.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 23:45:14 -0800 (PST)
+        Thu, 21 Jan 2021 02:36:11 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v26 14/15] trace-cmd: Debug scripts for PTP-like algorithm for host - guest timestamp synchronization
-Date:   Thu, 21 Jan 2021 09:44:55 +0200
-Message-Id: <20210121074456.157658-15-tz.stoyanov@gmail.com>
+Subject: [PATCH 4/4] trace-cmd library man pages: Extend the examples of reading host-guest trace data
+Date:   Thu, 21 Jan 2021 12:36:05 +0200
+Message-Id: <20210121103605.224108-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210121074456.157658-1-tz.stoyanov@gmail.com>
-References: <20210121074456.157658-1-tz.stoyanov@gmail.com>
+In-Reply-To: <20210121103605.224108-1-tz.stoyanov@gmail.com>
+References: <20210121103605.224108-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-These scripts can be used to visualise debug files, written when the PTP-like algorithm
-is compiled with TSYNC_DEBUG defined. The files are located in the guest machine:
-    s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
-    res-cid*.txt - For each tracing session: all calculated clock offsets.
-
-tsync_hist.py plots a histogram, using data from a s-cid*.txt file:
-	"python tsync_hist.py s-cid2_1.txt"
-tsync_res.py plots a line, using data from res-cid*.txt file:
-	"python tsync_res.py res-cid2.txt"
+The trace-cmd library supports reading trace data from a host and
+multiple guest machines as a single trace session, if they are recorded
+at the same time. Added more relevant example in the man page, showing
+that use case.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- scripts/debug/tsync_hist.py | 57 +++++++++++++++++++++++++++++++++++++
- scripts/debug/tsync_readme  | 12 ++++++++
- scripts/debug/tsync_res.py  | 46 ++++++++++++++++++++++++++++++
- 3 files changed, 115 insertions(+)
- create mode 100644 scripts/debug/tsync_hist.py
- create mode 100644 scripts/debug/tsync_readme
- create mode 100644 scripts/debug/tsync_res.py
+ .../libtracecmd/libtracecmd-peer.3.txt        | 56 ++++++++++++-------
+ 1 file changed, 37 insertions(+), 19 deletions(-)
 
-diff --git a/scripts/debug/tsync_hist.py b/scripts/debug/tsync_hist.py
-new file mode 100644
-index 00000000..819d1e8f
---- /dev/null
-+++ b/scripts/debug/tsync_hist.py
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2019, VMware Inc, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-+# Copyright (C) 2019, VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
-+
-+
-+import matplotlib.pyplot as plt
-+import matplotlib.lines as mlines
-+import numpy as np
-+import sys
-+
-+def newline(p1, p2):
-+    ax = plt.gca()
-+    xmin, xmax = ax.get_xbound()
-+
-+    if(p2[0] == p1[0]):
-+        xmin = xmax = p1[0]
-+        ymin, ymax = ax.get_ybound()
-+    else:
-+        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
-+        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
-+
-+    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color='red')
-+    ax.add_line(l)
-+    return l
-+
-+
-+data = np.loadtxt(fname = sys.argv[1])
-+selected_ts  = data[-1, 1]
-+selected_ofs = data[-1, 0]
-+data = data[:-1,:]
-+
-+x = data[:, 1] - data[:, 0]
-+
-+mean = x.mean()
-+std = x.std()
-+
-+num_bins = 500
-+min = x.min() #+ .4 * (x.max() - x.min())
-+max = x.max() #- .4 * (x.max() - x.min())
-+bins = np.linspace(min, max, num_bins, endpoint = False, dtype=int)
-+
-+fig, ax = plt.subplots()
-+
-+# the histogram of the data
-+n, bins, patches = ax.hist(x, bins, histtype=u'step');
-+
-+ax.set_xlabel('clock offset [$\mu$s]')
-+ax.set_ylabel('entries')
-+ax.set_title("$\sigma$=%i" % std)
-+
-+x1, y1 = [selected_ofs, min], [selected_ofs, max]
-+newline(x1, y1)
-+
-+# Tweak spacing to prevent clipping of ylabel
-+fig.tight_layout()
-+plt.show()
-diff --git a/scripts/debug/tsync_readme b/scripts/debug/tsync_readme
-new file mode 100644
-index 00000000..f3ebb25d
---- /dev/null
-+++ b/scripts/debug/tsync_readme
-@@ -0,0 +1,12 @@
-+PTP-like algorithm debug
-+========================
-+
-+tsync_*.py scripts can be used to visualise debug files, written when the PTP-like algorithm
-+is compiled with TSYNC_DEBUG defined. The files are located in the guest machine:
-+    s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
-+    res-cid*.txt - For each tracing session: all calculated clock offsets.
-+
-+tsync_hist.py plots a histogram, using data from a s-cid*.txt file:
-+	"python tsync_hist.py s-cid2_1.txt"
-+tsync_res.py plots a line, using data from res-cid*.txt file:
-+	"python tsync_res.py res-cid2.txt"
-diff --git a/scripts/debug/tsync_res.py b/scripts/debug/tsync_res.py
-new file mode 100644
-index 00000000..7d109863
---- /dev/null
-+++ b/scripts/debug/tsync_res.py
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2019, VMware Inc, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-+# Copyright (C) 2019, VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
-+
-+
-+import matplotlib.pyplot as plt
-+import matplotlib.lines as mlines
-+import numpy as np
-+import sys
-+
-+def newline(p1, p2):
-+    ax = plt.gca()
-+    xmin, xmax = ax.get_xbound()
-+
-+    if(p2[0] == p1[0]):
-+        xmin = xmax = p1[0]
-+        ymin, ymax = ax.get_ybound()
-+    else:
-+        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
-+        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
-+
-+    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color='red')
-+    ax.add_line(l)
-+    return l
-+
-+data = np.loadtxt(fname = sys.argv[1])
-+x = data[:, 0]
-+y = data[:, 1]
-+
-+fig, ax = plt.subplots()
-+
-+ax.set_xlabel('samples (t)')
-+ax.set_ylabel('clock offset')
-+ax.set_title("$\delta$=%i ns" % (max(y) - min(y)))
-+
-+l = mlines.Line2D(x, y)
-+ax.add_line(l)
-+ax.set_xlim(min(x), max(x))
-+ax.set_ylim(min(y), max(y) )
-+
-+print(min(y), max(y), max(y) - min(y))
-+
-+# Tweak spacing to prevent clipping of ylabel
-+fig.tight_layout()
-+plt.show()
+diff --git a/Documentation/libtracecmd/libtracecmd-peer.3.txt b/Documentation/libtracecmd/libtracecmd-peer.3.txt
+index 5cb0c4fa..6cf34f9b 100644
+--- a/Documentation/libtracecmd/libtracecmd-peer.3.txt
++++ b/Documentation/libtracecmd/libtracecmd-peer.3.txt
+@@ -74,36 +74,54 @@ EXAMPLE
+ --
+ #include <trace-cmd.h>
+ ...
+-struct tracecmd_input *host = tracecmd_open_head("trace.dat");
++struct tracecmd_input *host = tracecmd_open("trace.dat");
+ 	if (!host) {
+ 		/* Failed to open host trace file */
+ 	}
+-	tracecmd_init_data(host);
+ 
+-struct tracecmd_input *guest = tracecmd_open_head("trace-Guest.dat");
+-	if (!guest) {
+-		/* Failed to open guest trace file */
++struct tracecmd_input *guest1 = tracecmd_open_head("trace-Guest1.dat");
++	if (!guest1) {
++		/* Failed to open guest1 trace file */
++	}
++struct tracecmd_input *guest2 = tracecmd_open_head("trace-Guest2.dat");
++	if (!guest2) {
++		/* Failed to open guest2 trace file */
+ 	}
+ 
+-unsigned long long guest_id = tracecmd_get_traceid(guest);
+-int *cpu_pid;
+-char *name;
+-int vcount;
++unsigned long long guest_id_1 = tracecmd_get_traceid(guest1);
++unsigned long long guest_id_2 = tracecmd_get_traceid(guest2);
++bool g1 = false, g2 = false;
++int *cpu_pid_1, *cpu_pid_2;
++int vcount_1, vcount_2;
++char *name_1, *name_2;
+ 
+-	if (!tracecmd_get_guest_cpumap(host, guest_id, &name, &vcount, &cpu_pid)) {
+-		/* The Host and a guest with name was part of the same trace session.
+-		 * Got guest VCPU to host PID mapping.
++	if (!tracecmd_get_guest_cpumap(host, guest_id_1, &name_1, &vcount_1, &cpu_pid_1)) {
++		/* The Host and a guest1 with name_1 are part of the same trace session.
++		 * Got guest1 VCPU to host PID mapping.
+ 		 */
+-		if (!tracecmd_pair_peer(guest, host)) {
+-			/* Successfully paired host to the guest handler */
+-			tracecmd_init_data(guest);
+-			...
+-			tracecmd_unpair_peer(guest);
++		if (!tracecmd_pair_peer(guest1, host)) {
++			/* Successfully paired guest1 to the host handler */
++			tracecmd_init_data(guest1);
++			g1 = true;
++		}
++	}
++	if (!tracecmd_get_guest_cpumap(host, guest_id_2, &name_2, &vcount_2, &cpu_pid_2)) {
++		/* The Host and a guest2 with name_2 are part of the same trace session.
++		 * Got guest2 VCPU to host PID mapping.
++		 */
++		if (!tracecmd_pair_peer(guest2, host)) {
++			/* Successfully paired guest2 to the host handler */
++			tracecmd_init_data(guest2);
++			g2 = true;
+ 		}
+ 	}
+-
+ ...
+-	tracecmd_close(guest);
++	if (g1)
++		tracecmd_unpair_peer(guest1);
++	if (g2)
++		tracecmd_unpair_peer(guest2);
++	tracecmd_close(guest1);
++	tracecmd_close(guest2);
+ 	tracecmd_close(handle);
+ 
+ --
 -- 
 2.29.2
 
