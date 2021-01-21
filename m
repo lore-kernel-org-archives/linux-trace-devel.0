@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18D06C433E6
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jan 2021 10:37:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EC48C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jan 2021 10:38:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C5F5123602
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jan 2021 10:37:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE653233EA
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 21 Jan 2021 10:38:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727420AbhAUKhg (ORCPT
+        id S1729681AbhAUKhx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 21 Jan 2021 05:37:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        Thu, 21 Jan 2021 05:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729648AbhAUKgv (ORCPT
+        with ESMTP id S1729644AbhAUKgu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:36:51 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC514C0613ED
-        for <linux-trace-devel@vger.kernel.org>; Thu, 21 Jan 2021 02:36:10 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id m4so1199378wrx.9
-        for <linux-trace-devel@vger.kernel.org>; Thu, 21 Jan 2021 02:36:10 -0800 (PST)
+        Thu, 21 Jan 2021 05:36:50 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF01C061757
+        for <linux-trace-devel@vger.kernel.org>; Thu, 21 Jan 2021 02:36:09 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id o10so4709488wmc.1
+        for <linux-trace-devel@vger.kernel.org>; Thu, 21 Jan 2021 02:36:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6q1vqmMd2aw0ijuJYtA6/wtk/4CvIcSgnR1uzdgbudg=;
-        b=hZW49DkLEx7+qo7T2bHNYZsJM7r0ozoYURFesU7mq6wDaO9LHc+GJJ+0+Pyc8z3ThO
-         lI3KgoIP0r/JkZPg1PmccMsA4imXSGaCvJ7IuUJ+bIKdksEoKJNc8d6/o4WwRH6ptMmN
-         XkELYgtQLD9vI6rUrNidGwPURK/GMWD3kxdrx2hIbJ79UlxI8eAeBc6s+sSYUW0jD5uz
-         Mnjjyqa4k6oELVTUQp0+R6TNkwdvVAP3181I5sJQv7FK6nyv18Gd1jtBLvyaQ80WAngu
-         7ZP2oTWI5JR9/kIhTpm6zwZoZ7h1MQ5QfPHfms8V/oAcqScdqEvuNOG0KtrdnpMBI8Qf
-         aWYA==
+        bh=vD04eZK71m4XkC+i07/YIm11gw/ywYpNzrjDT8awvvQ=;
+        b=EIXCMcsXBklDHisyiDwahYV5bz7EHF57iVSAGP3AUFD9s82V72OEdqk1pAr256pPiU
+         uclEfWQ3WSsQ7n9r13k2ikd58VMXkZDA5900+MSo9uZemysoBlrlM6K2fxH5Gbn1bMI9
+         Myc/rAyNyzQaSrKi3N9cX9kCRxXdSQizClteb11VM8Lu2cIaNqY8MFo3z/pxOukMXKE4
+         PAdzp2XtRm2/LEFjgegDOUm4drzrLYD59XRe/va9v+JnsD+KT0RQ1giJzAsJMdiyOyJ7
+         YaU8Jl8lfHoZRniExHPQhmAhmAgPp53p2oTExuep6y5zj+jQradxMqMf4nb405/2mqgu
+         OD0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6q1vqmMd2aw0ijuJYtA6/wtk/4CvIcSgnR1uzdgbudg=;
-        b=SsvXCOkXRrs1Xb9J+JytQkbTX/EcAe4/RPIUM9WfI/HPGtnDtGUkP+gkMLlbk/tKbf
-         0XL0+WQaIU9+HOIZVRgsTq9B72b/mGo4WrkPZ7Ooz8ROEQr/cup17QhGT870pDfVaFbw
-         riIb5+0Yv26VjwupNcHGdEht0rxdTdBlqTA01k9zP4Cy6FEqpexCplCwRanUNMHDB192
-         7mvvpPlrHMU/26a9C8FM39c5p64DlRMY3CtWU90IV2//dU2hALXeGoDDzAjoqsj2+b0f
-         Omdaju6Sz8misalP48yTqeywYoEY2Etuih/IeeHN47g/bINDjEcUzndEKtRvvNslE3qO
-         YMdQ==
-X-Gm-Message-State: AOAM5329nP5O5L8qi5hq8D7DnSY4z/fn022ae3sYamOPaWTO6UIZSG+3
-        Ons4uNushHF9+nApKZ8Blg0=
-X-Google-Smtp-Source: ABdhPJyOMdQPfnHnDmFBhLe0VD9/kLuwJ+MBN468C1jHfkRwNKqaawwuFp2jhwM+xCbtK2v+V5YmHA==
-X-Received: by 2002:adf:d206:: with SMTP id j6mr5997636wrh.427.1611225369660;
-        Thu, 21 Jan 2021 02:36:09 -0800 (PST)
+        bh=vD04eZK71m4XkC+i07/YIm11gw/ywYpNzrjDT8awvvQ=;
+        b=bWQvRcBS/XnOrHwghq/gzrlT0oP/LfK4mgGkPLpZ/FyULBIbPkIiciF764FO+Imueg
+         aJ+etGfmTtOY8AVL10GoFCt8RuuDVONzO8uBOFDzsoiDxnnXOrbyQ9bNI8+J/7K7aYE8
+         XL4dwHRTUr97745yaEpc+U9KSUZP2Xswz6QGO1KZ+3xY/juDhp2H9i/AMHqmKcRQcFg+
+         EGzLyOuSm4lPwTBTz08ROZmFtlSeV5KeUDTkuoC831n26H9xMmo9r8dFKlOd3VbnFpDU
+         G7O1J+efKS/Qmqj7lqC9U0ELAxfeIdY40clk1g5oSKbFlz5i+D7bSS3EidUSgNnINmwE
+         0s7w==
+X-Gm-Message-State: AOAM530IX9mJ1ebRq2SbLCgN7SkDi1phW4XIFMm+cFMLMWtwFrrzXsvs
+        zaomq4HlhHfXKNLXe3+0hR3rdUUbvYQ3suaI
+X-Google-Smtp-Source: ABdhPJxHc06Qb25I70gWTOEvvZIjcimYmod3fsC4+tq8tGG4GiW7s9xcSjo9mOF0NnJ8/I0KjsvXtw==
+X-Received: by 2002:a7b:c5d6:: with SMTP id n22mr8083981wmk.70.1611225368558;
+        Thu, 21 Jan 2021 02:36:08 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id l18sm7294123wme.37.2021.01.21.02.36.08
+        by smtp.gmail.com with ESMTPSA id l18sm7294123wme.37.2021.01.21.02.36.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 02:36:09 -0800 (PST)
+        Thu, 21 Jan 2021 02:36:07 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/4] trace-cmd: Remove tracecmd_unpair_peer() from internal header
-Date:   Thu, 21 Jan 2021 12:36:03 +0200
-Message-Id: <20210121103605.224108-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 1/4] trace-cmd library: Export 2 APIs for opening trace file
+Date:   Thu, 21 Jan 2021 12:36:02 +0200
+Message-Id: <20210121103605.224108-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210121103605.224108-1-tz.stoyanov@gmail.com>
 References: <20210121103605.224108-1-tz.stoyanov@gmail.com>
@@ -73,27 +73,44 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The tracecmd_unpair_peer() is an official API of trace-cmd library,
-declared in trace-cmd.h. The declaration should not be duplicated in
-trace-cmd internal header.
+Two additional internal functions are exported as trace-cmd library APIs
+for opening a trace file:
+  tracecmd_open();
+  tracecmd_open_fd();
+These new APIs complement the existing tracecmd_open_head() API.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h | 1 -
- 1 file changed, 1 deletion(-)
+ include/trace-cmd/trace-cmd.h                     | 2 ++
+ lib/trace-cmd/include/private/trace-cmd-private.h | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 7dc88cb0..5a1ba6ba 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -12,6 +12,8 @@
+ struct tracecmd_input;
+ 
+ struct tracecmd_input *tracecmd_open_head(const char *file);
++struct tracecmd_input *tracecmd_open(const char *file);
++struct tracecmd_input *tracecmd_open_fd(int fd);
+ void tracecmd_close(struct tracecmd_input *handle);
+ int tracecmd_pair_peer(struct tracecmd_input *handle,
+ 		       struct tracecmd_input *peer);
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 22e20b66..012ddba8 100644
+index 64945815..22e20b66 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -143,7 +143,6 @@ typedef void (*tracecmd_handle_init_func)(struct tracecmd_input *handle,
+@@ -143,8 +143,6 @@ typedef void (*tracecmd_handle_init_func)(struct tracecmd_input *handle,
  
  struct tracecmd_input *tracecmd_alloc(const char *file);
  struct tracecmd_input *tracecmd_alloc_fd(int fd);
--void tracecmd_unpair_peer(struct tracecmd_input *handle);
+-struct tracecmd_input *tracecmd_open(const char *file);
+-struct tracecmd_input *tracecmd_open_fd(int fd);
+ void tracecmd_unpair_peer(struct tracecmd_input *handle);
  void tracecmd_ref(struct tracecmd_input *handle);
  int tracecmd_read_headers(struct tracecmd_input *handle);
- int tracecmd_get_parsing_failures(struct tracecmd_input *handle);
 -- 
 2.29.2
 
