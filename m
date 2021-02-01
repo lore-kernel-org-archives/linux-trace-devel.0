@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F4016C433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3A67C433DB
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Feb 2021 17:26:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B906B64EA9
+	by mail.kernel.org (Postfix) with ESMTP id 9409264E8F
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Feb 2021 17:26:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhBAR00 (ORCPT
+        id S231237AbhBAR00 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 1 Feb 2021 12:26:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbhBAR0Z (ORCPT
+        with ESMTP id S231269AbhBAR0T (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:26:25 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCEBC06121C
-        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Feb 2021 09:24:38 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id c6so19819290ede.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Feb 2021 09:24:38 -0800 (PST)
+        Mon, 1 Feb 2021 12:26:19 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E755C061352
+        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Feb 2021 09:24:31 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id df22so3836189edb.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Feb 2021 09:24:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kR+y9XBolf2uKxjrop4eTTdx9fwxjJy7j/QO0D/zDdY=;
-        b=h3khJBviu6ZkMOpn5mnf8iUtLdNK8+Ye3JHSx6dwme4eAV0M+iSRxaZHXyKSi/5P51
-         ilwedu9JZIantabwQB4KYcGThqzuyayRYNYRiuoag6wqehSkVoL0Q/WV9DYMXP3sNHVU
-         XK0ZagmfKh1t31nhJXbFssWozdLFid62badM2TgB/dFZxcx2xzKMlPFAK0Hf8Z7xNuLz
-         0deYKaVgobXVCmrVfieMkvxBxRoCt4gaQ4Vr90QubUNIdJT452cpmXIgFUiwN862EjKH
-         oZkbYO8O4JUi9R0Ni1L0ylHlLxYOd9z9C7Q2C9cV35txMPfx9+6Zt4vGLneYetc3kKQV
-         eEuQ==
+        bh=+gB2ykFChR518SYjaWPHdcz2CeIKMUt4KsXVzBrUMjA=;
+        b=T34IqYXHk41y7YakA1jn2BUewAyyJm23TsB/3b4Wtxlr9MvCL82jy5rDWn9hyL0Nup
+         xLBvQYDpbKhKXgawBX1ldUzgwaxIavn4J1t8dZ4Unq4VvNowey64XUVLVCBPVIWVrYKv
+         olTO347X74o/wMNaFcJaPdSJ0Scpmtxr5EWvn9xlLEydkSr+Ux3lJod8igxUI6SigI50
+         Ky309p6HNT1B5WwnNapX71KbMdYR3djZajddFNFf6umvp6FQHKntzpMNPbCyDR6ahNki
+         mDZkUh2v2pvuvd0TQ71hkEVFM/vVX5CcvsYlzvEO/kWCbSrmr8mMLksd5VRCfv9w2q4G
+         Cetg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kR+y9XBolf2uKxjrop4eTTdx9fwxjJy7j/QO0D/zDdY=;
-        b=W7GsoIo5JZ07VsUHi5V1mi/lHn4C13hG7FX7+KzKCtYS3hr5wKDAb8Khj2Yv+QK06+
-         Xpqnm9fNS0JJCoUJakLIVQiLtIv1hSO8U8xNf8dWYmdYAj8DB7HmF3x3nYZCvkNNQJRR
-         eFD/Go19MpIHlDQ1B6s5PfprwuRRHNfrb0Fd4mQhbFoPqrmswnzhB42yAEnwo0SN2TKg
-         R/+SUVjoQYrnPIuLvJR6lNw0lar1kuGaADZtx/lfonIxgU5kWSP0hXbu4H3gn+o5YiKs
-         dq8IlfctbfCuF8XwBYWDFv5mYLSy9aiALXGnxF4FkTXs2lg34CRiQMNn2Ncd3K1AFd4h
-         32uA==
-X-Gm-Message-State: AOAM530qy68qY25rCEJagANni2gjM1/jBpojYk59kwYywEUGQ01+zosq
-        jvxcQTviNPfoHn4W154gVcw=
-X-Google-Smtp-Source: ABdhPJxbaqyeruVjuuSqC5DZbtm+gycHkneLWHc3Usw/lXGbmrd0dhFEYJtMKCcw2hyKPFpXBqChVQ==
-X-Received: by 2002:aa7:c0cd:: with SMTP id j13mr1016556edp.156.1612200277341;
-        Mon, 01 Feb 2021 09:24:37 -0800 (PST)
+        bh=+gB2ykFChR518SYjaWPHdcz2CeIKMUt4KsXVzBrUMjA=;
+        b=hGpyrXYG5R57yevOjPcksU+hxr/p5dEgtLegiDYptQaKvgd04HYK/73wH0KcUQvD/f
+         8nUIJmkCRITXrhi9vKhX24YRmcUa2ERTTtnn/eNlTllq7vUxvQCPoqEuXcVWeAVwhBMp
+         gSdbcMTCtGuTiAF/Lk9Rau0E9tVTait8lFwkzLinYcjTZG2P0O1M8GCiGbHjo1gld0Ls
+         VvZ3ZoOosTlz4Sg+4ENhiUXo/ournrE21d0WSmJuXLQMpObQmcx2jIe7FwLLPDL8dpAY
+         6cXaIbOEA6YirfVg65JzGsevaQiXW3n1QIC1Fp5kXbnbEnZjErocxcscLCycQhx0S5Y/
+         jISw==
+X-Gm-Message-State: AOAM533oQ/h1RxD2IcLilu7643LOwHhxhymdMH4whFa/P3cr6G3Y93nm
+        r632qAhRRQ495SWusWHgddA=
+X-Google-Smtp-Source: ABdhPJz6w1MNdpOP7W2aYpYcJOf/SFd6WNlHM7z62YOW/+aXnGNL0yZcQeB7UD9PQNn5qXCknmUuww==
+X-Received: by 2002:a50:ec06:: with SMTP id g6mr11006588edr.12.1612200270192;
+        Mon, 01 Feb 2021 09:24:30 -0800 (PST)
 Received: from localhost.localdomain ([95.87.199.218])
-        by smtp.gmail.com with ESMTPSA id bm9sm8312446ejb.14.2021.02.01.09.24.36
+        by smtp.gmail.com with ESMTPSA id bm9sm8312446ejb.14.2021.02.01.09.24.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 09:24:36 -0800 (PST)
+        Mon, 01 Feb 2021 09:24:29 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 24/24] kernel-shark: Show Task plots from command lime
-Date:   Mon,  1 Feb 2021 19:23:58 +0200
-Message-Id: <20210201172358.175407-25-y.karadz@gmail.com>
+Subject: [PATCH 18/24] kernel-shark: Update KsAdvFilteringDialog
+Date:   Mon,  1 Feb 2021 19:23:52 +0200
+Message-Id: <20210201172358.175407-19-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210201172358.175407-1-y.karadz@gmail.com>
 References: <20210201172358.175407-1-y.karadz@gmail.com>
@@ -74,164 +74,409 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-We add a new command line option for starting KernelShark that allows
-the user to select Task plots to be shown. The new option is similar
-to "--pid" but the tasks can be specified by name.
+The compilation ofKsAdvFilteringDialog .cpp is re-enabled and all
+functionalities are made compatible with the new version of the
+C API of libkshark (KernelShark 2.0).
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/KsUtils.cpp               | 32 ++++++++++++++++++++++++++++++++
- src/KsUtils.hpp               |  2 ++
- src/kernelshark.cpp           | 17 +++++++++++++----
- tests/libkshark-gui-tests.cpp | 25 +++++++++++++++++++++++++
- 4 files changed, 72 insertions(+), 4 deletions(-)
+ src/CMakeLists.txt           |   8 +-
+ src/KsAdvFilteringDialog.cpp | 200 ++++++++++++++++++++++-------------
+ src/KsAdvFilteringDialog.hpp |  16 ++-
+ 3 files changed, 144 insertions(+), 80 deletions(-)
 
-diff --git a/src/KsUtils.cpp b/src/KsUtils.cpp
-index 27cda55..ec53267 100644
---- a/src/KsUtils.cpp
-+++ b/src/KsUtils.cpp
-@@ -548,6 +548,38 @@ QVector<int> parseIdList(QString v_str)
- 	return v;
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 209c57c..c1d98d8 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -76,8 +76,8 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+                         KsTraceViewer.hpp
+ #                         KsMainWindow.hpp
+ #                         KsCaptureDialog.hpp
+-                        KsQuickContextMenu.hpp)
+-#                         KsAdvFilteringDialog.hpp)
++                        KsQuickContextMenu.hpp
++                        KsAdvFilteringDialog.hpp)
+ 
+     QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
+ 
+@@ -92,8 +92,8 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND)
+                                                             KsTraceViewer.cpp
+ #                                                             KsMainWindow.cpp
+ #                                                             KsCaptureDialog.cpp
+-                                                            KsQuickContextMenu.cpp)
+-#                                                             KsAdvFilteringDialog.cpp)
++                                                            KsQuickContextMenu.cpp
++                                                            KsAdvFilteringDialog.cpp)
+ 
+     target_link_libraries(kshark-gui kshark-plot
+                                      Qt5::Widgets
+diff --git a/src/KsAdvFilteringDialog.cpp b/src/KsAdvFilteringDialog.cpp
+index 8dc53bb..2fdb624 100644
+--- a/src/KsAdvFilteringDialog.cpp
++++ b/src/KsAdvFilteringDialog.cpp
+@@ -9,10 +9,16 @@
+  *  @brief   GUI Dialog for Advanced filtering settings.
+  */
+ 
++// trace-cmd
++#include "trace-cmd/trace-cmd.h"
++
+ // KernelShark
+-#include "KsAdvFilteringDialog.hpp"
+ #include "libkshark.h"
++#include "libkshark-tepdata.h"
+ #include "KsUtils.hpp"
++#include "KsAdvFilteringDialog.hpp"
++
++using namespace KsWidgetsLib;
+ 
+ /** Create dialog for Advanced Filtering. */
+ KsAdvFilteringDialog::KsAdvFilteringDialog(QWidget *parent)
+@@ -71,6 +77,9 @@ KsAdvFilteringDialog::KsAdvFilteringDialog(QWidget *parent)
+ 
+ 	lamAddLine();
+ 
++	_topLayout.addWidget(&_streamComboBox);
++	_getFtraceStreams(kshark_ctx);
++
+ 	_getFilters(kshark_ctx);
+ 
+ 	if (_filters.count()) {
+@@ -149,23 +158,38 @@ KsAdvFilteringDialog::KsAdvFilteringDialog(QWidget *parent)
+ 		this,			&QWidget::close);
  }
  
-+/**
-+ * @brief Convert a string containing task names into a list of PID numbers.
-+ */
-+QMap<int, QVector<int>> parseTaskList(QString v_str)
-+{
-+	QStringList taskList = v_str.split(",", QString::SkipEmptyParts);
-+	QVector<int> streamIds, allPids;
-+	kshark_context *kshark_ctx(nullptr);
-+	QMap<int, QVector<int>> ret;
-+	QString name;
+-void KsAdvFilteringDialog::_setSystemCombo(struct kshark_context *kshark_ctx)
++kshark_data_stream *
++KsAdvFilteringDialog::_getCurrentStream(kshark_context *kshark_ctx)
+ {
++	int sd = _streamComboBox.currentData().toInt();
 +
++	return kshark_get_data_stream(kshark_ctx, sd);
++}
++
++void KsAdvFilteringDialog::_setSystemCombo(kshark_context *kshark_ctx)
++{
++	kshark_data_stream *stream;
++	QVector<int> eventIds;
+ 	QStringList sysList;
+-	tep_event **events;
+-	int i(0), nEvts(0);
++	int i(0);
+ 
+-	if (kshark_ctx->pevent) {
+-		nEvts = tep_get_events_count(kshark_ctx->pevent);
+-		events = tep_list_events(kshark_ctx->pevent,
+-					 TEP_EVENT_SORT_SYSTEM);
+-	}
++	stream = _getCurrentStream(kshark_ctx);
++	if (!stream || !kshark_is_tep(stream))
++		return;
++
++	eventIds = KsUtils::getEventIdList(stream->stream_id);
++
++	auto lamGetSysName = [&stream] (int eventId) {
++		QStringList name = KsUtils::getTepEvtName(stream->stream_id,
++							  eventId);
++		return name[0];
++	};
+ 
+-	while (i < nEvts) {
+-		QString sysName(events[i]->system);
++	while (i < stream->n_events) {
++		QString sysName = lamGetSysName(eventIds[i]);
+ 		sysList << sysName;
+-		while (sysName == events[i]->system) {
+-			if (++i == nEvts)
++		while (sysName == lamGetSysName(eventIds[i])) {
++			if (++i == stream->n_events)
+ 				break;
+ 		}
+ 	}
+@@ -202,24 +226,48 @@ QStringList KsAdvFilteringDialog::_operators()
+ 	return OpsList;
+ }
+ 
+-void KsAdvFilteringDialog::_getFilters(struct kshark_context *kshark_ctx)
++void KsAdvFilteringDialog::_getFtraceStreams(kshark_context *kshark_ctx)
+ {
+-	tep_event **events;
+-	char *str;
++	kshark_data_stream *stream;
++	QVector<int> streamIds;
++
++	_streamComboBox.clear();
++	streamIds = KsUtils::getStreamIdList(kshark_ctx);
++	for (auto const &sd: streamIds) {
++		stream = kshark_ctx->stream[sd];
++		if (kshark_is_tep(stream))
++			_streamComboBox.addItem(KsUtils::streamDescription(stream), sd);
++	}
+ 
+-	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
++	if (!_streamComboBox.count())
++		_streamComboBox.addItem("No FTRACE data loaded", -1);
++}
+ 
+-	for (int i = 0; events[i]; i++) {
+-		str = tep_filter_make_string(kshark_ctx->advanced_event_filter,
+-					     events[i]->id);
+-		if (!str)
++void KsAdvFilteringDialog::_getFilters(kshark_context *kshark_ctx)
++{
++	kshark_data_stream *stream;
++	QVector<int> eventIds;
++	QStringList eventName;
++	char *filterStr;
++
++	stream = _getCurrentStream(kshark_ctx);
++	if (!stream || !kshark_is_tep(stream))
++		return;
++
++	eventIds = KsUtils::getEventIdList(stream->stream_id);
++	for (int i = 0; i < stream->n_events; ++i) {
++		eventName = KsUtils::getTepEvtName(stream->stream_id, eventIds[i]);
++		filterStr = kshark_tep_filter_make_string(stream, eventIds[i]);
++		if (!filterStr)
+ 			continue;
+ 
+-		_filters.insert(events[i]->id,
+-				QString("%1/%2:%3").arg(events[i]->system,
+-							  events[i]->name, str));
++		_filters.insert(eventIds[i],
++				QString("%1:%2/%3:%4").arg(QString::number(stream->stream_id),
++							   eventName[0],
++							   eventName[1],
++							   filterStr));
+ 
+-		free(str);
++		free(filterStr);
+ 	}
+ }
+ 
+@@ -232,7 +280,7 @@ void KsAdvFilteringDialog::_makeFilterTable(struct kshark_context *kshark_ctx)
+ 
+ 	_table = new KsCheckBoxTable(this);
+ 	_table->setSelectionMode(QAbstractItemView::SingleSelection);
+-	headers << "Delete" << "Event" << " Id" << "Filter";
++	headers << "Delete" << "Stream" << "Event" << " Id" << "Filter";
+ 	_table->init(headers, _filters.count());
+ 
+ 	for(auto f : _filters.keys()) {
+@@ -241,11 +289,14 @@ void KsAdvFilteringDialog::_makeFilterTable(struct kshark_context *kshark_ctx)
+ 		i1 = new QTableWidgetItem(thisFilter[0]);
+ 		_table->setItem(count, 1, i1);
+ 
++		i1 = new QTableWidgetItem(thisFilter[1]);
++		_table->setItem(count, 2, i1);
++
+ 		i2 = new QTableWidgetItem(tr("%1").arg(f));
+-		_table->setItem(count, 2, i2);
++		_table->setItem(count, 3, i2);
+ 
+-		i3 = new QTableWidgetItem(thisFilter[1]);
+-		_table->setItem(count, 3, i3);
++		i3 = new QTableWidgetItem(thisFilter[2]);
++		_table->setItem(count, 4, i3);
+ 
+ 		++count;
+ 	}
+@@ -275,20 +326,25 @@ void KsAdvFilteringDialog::_help()
+ void KsAdvFilteringDialog::_systemChanged(const QString &sysName)
+ {
+ 	kshark_context *kshark_ctx(NULL);
+-	QStringList evtsList;
+-	tep_event **events;
+-	int i, nEvts;
++	kshark_data_stream *stream;
++	QStringList evtsList, name;
++	QVector<int> eventIds;
++	int i;
+ 
+-	_eventComboBox.clear();
+-	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->pevent)
++	if (!kshark_instance(&kshark_ctx))
+ 		return;
+ 
+-	nEvts = tep_get_events_count(kshark_ctx->pevent);
+-	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
++	_eventComboBox.clear();
++
++	stream = _getCurrentStream(kshark_ctx);
++	if (!stream || !kshark_is_tep(stream))
++		return;
+ 
+-	for (i = 0; i < nEvts; ++i) {
+-		if (sysName == events[i]->system)
+-			evtsList << events[i]->name;
++	eventIds = KsUtils::getEventIdList(stream->stream_id);
++	for (i = 0; i < stream->n_events; ++i) {
++		name = KsUtils::getTepEvtName(stream->stream_id, eventIds[i]);
++		if (sysName == name[0])
++			evtsList << name[1];
+ 	}
+ 
+ 	std::sort(evtsList.begin(), evtsList.end());
+@@ -300,15 +356,20 @@ void KsAdvFilteringDialog::_systemChanged(const QString &sysName)
+ }
+ 
+ QStringList
+-KsAdvFilteringDialog::_getEventFormatFields(struct tep_event *event)
++KsAdvFilteringDialog::_getEventFields(int eventId)
+ {
+-	tep_format_field *field, **fields = tep_event_fields(event);
++	kshark_context *kshark_ctx(NULL);
++	kshark_data_stream *stream;
+ 	QStringList fieldList;
+ 
+-	for (field = *fields; field; field = field->next)
+-		fieldList << field->name;
 +	if (!kshark_instance(&kshark_ctx))
 +		return {};
 +
-+	streamIds = getStreamIdList(kshark_ctx);
-+	for (auto const sd: streamIds) {
-+		allPids = getPidList(sd);
-+		for (auto const pid: allPids) {
-+			name = kshark_comm_from_pid(sd, pid);
-+			if (name.isEmpty())
-+				continue;
++	stream = _getCurrentStream(kshark_ctx);
++	if (!stream || !kshark_is_tep(stream))
++		return {};
+ 
+-	free(fields);
++	fieldList = KsUtils::getEventFieldsList(stream->stream_id, eventId);
+ 
+ 	std::sort(fieldList.begin(), fieldList.end());
+ 	return fieldList;
+@@ -317,22 +378,24 @@ KsAdvFilteringDialog::_getEventFormatFields(struct tep_event *event)
+ void KsAdvFilteringDialog::_eventChanged(const QString &evtName)
+ {
+ 	QString sysName = _systemComboBox.currentText();
++	QStringList fieldList, eventName;
+ 	kshark_context *kshark_ctx(NULL);
+-	QStringList fieldList;
+-	tep_event **events;
+-	int nEvts;
++	kshark_data_stream *stream;
++	QVector<int> eventIds;
+ 
+ 	_fieldComboBox.clear();
+-	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->pevent)
++	if (!kshark_instance(&kshark_ctx))
+ 		return;
+ 
+-	nEvts = tep_get_events_count(kshark_ctx->pevent);
+-	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
++	stream = _getCurrentStream(kshark_ctx);
++	if (!stream || !kshark_is_tep(stream))
++		return;
+ 
+-	for (int i = 0; i < nEvts; ++i) {
+-		if (evtName == events[i]->name &&
+-		    sysName == events[i]->system) {
+-			fieldList = _getEventFormatFields(events[i]);
++	eventIds = KsUtils::getEventIdList(stream->stream_id);
++	for (int i = 0; i < stream->n_events; ++i) {
++		eventName = KsUtils::getTepEvtName(stream->stream_id, eventIds[i]);
++		if (sysName == eventName[0] && evtName == eventName[1]) {
++			fieldList = _getEventFields(eventIds[i]);
+ 			_fieldComboBox.addItems(fieldList);
+ 
+ 			return;
+@@ -384,20 +447,28 @@ void KsAdvFilteringDialog::_applyPress()
+ {
+ 	QMapIterator<int, QString> f(_filters);
+ 	kshark_context *kshark_ctx(NULL);
++	kshark_data_stream *stream;
+ 	const char *text;
+-	tep_errno ret;
+ 	char *filter;
+ 	int i(0);
+ 
+ 	if (!kshark_instance(&kshark_ctx))
+ 		return;
+ 
++	stream = _getCurrentStream(kshark_ctx);
++	if (!stream || !kshark_is_tep(stream))
++		return;
 +
-+			for (auto const task: taskList) {
-+				if(name == task)
-+					ret[sd].append(pid);
-+			}
-+		}
-+	}
+ 	while (f.hasNext()) {
+ 		f.next();
+ 		if (_table->_cb[i]->checkState() == Qt::Checked) {
+-			tep_filter_remove_event(kshark_ctx->advanced_event_filter,
+-						f.key());
++			kshark_data_stream *filter_stream;
++			int sd = f.value().split(":").at(0).toInt();
 +
-+	return ret;
-+}
++			filter_stream = kshark_get_data_stream(kshark_ctx, sd);
++			kshark_tep_filter_remove_event(filter_stream, f.key());
+ 		}
 +
- /**
-  * @brief Split the ststem name from the actual name of the event itself.
-  *
-diff --git a/src/KsUtils.hpp b/src/KsUtils.hpp
-index 0d2c9c3..cf209bc 100644
---- a/src/KsUtils.hpp
-+++ b/src/KsUtils.hpp
-@@ -161,6 +161,8 @@ QStringList splitArguments(QString cmd);
- 
- QVector<int> parseIdList(QString v_str);
- 
-+QMap<int, QVector<int>> parseTaskList(QString v_str);
-+
- QStringList getTepEvtName(int sd, int eventId);
- 
- /** Get a string to be used as a standard name of a CPU graph. */
-diff --git a/src/kernelshark.cpp b/src/kernelshark.cpp
-index 41ffbe7..8ed4948 100644
---- a/src/kernelshark.cpp
-+++ b/src/kernelshark.cpp
-@@ -32,7 +32,8 @@ void usage(const char *prog)
- 	printf("  -s	import a session\n");
- 	printf("  -l	import the last session\n");
- 	puts(" --cpu	show plots for CPU cores, default is \"show all\"");
--	puts(" --pid	show plots for tasks, default is \"do not show\"");
-+	puts(" --pid	show plots for tasks (by PID), default is \"do not show\"");
-+	puts(" --task	show plots for tasks (by name), default is \"do not show\"");
- 	puts("\n example:");
- 	puts("  kernelshark -i mytrace.dat --cpu 1,4-7 --pid 11 -p path/to/my/plugin/myplugin.so\n");
- }
-@@ -42,6 +43,7 @@ static option longOptions[] = {
- 	{"help", no_argument, nullptr, 'h'},
- 	{"pid", required_argument, nullptr, KS_LONG_OPTS},
- 	{"cpu", required_argument, nullptr, KS_LONG_OPTS},
-+	{"task", required_argument, nullptr, KS_LONG_OPTS},
- 	{nullptr, 0, nullptr, 0}
- };
- 
-@@ -50,6 +52,7 @@ int main(int argc, char **argv)
- 	QVector<int> cpuPlots, taskPlots;
- 	bool fromSession = false;
- 	int optionIndex = 0;
-+	QString taskList;
- 	int c;
- 
- 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-@@ -67,7 +70,8 @@ int main(int argc, char **argv)
- 				cpuPlots.append(KsUtils::parseIdList(QString(optarg)));
- 			else if (strcmp(longOptions[optionIndex].name, "pid") == 0)
- 				taskPlots.append(KsUtils::parseIdList(QString(optarg)));
--
-+			else if (strcmp(longOptions[optionIndex].name, "task") == 0)
-+				taskList = QString(optarg);
- 			break;
- 
- 		case 'h':
-@@ -136,9 +140,14 @@ int main(int argc, char **argv)
- 		return ids;
- 	};
- 
--	if (cpuPlots.count() || taskPlots.count()) {
-+	if (cpuPlots.count() || taskPlots.count() || taskList.size()) {
- 		ks.setCPUPlots(0, lamOrderIds(cpuPlots));
--		ks.setTaskPlots(0, lamOrderIds(taskPlots));
-+
-+		auto pidMap = KsUtils::parseTaskList(taskList);
-+		pidMap[0].append(taskPlots);
-+		for (auto it = pidMap.begin(); it != pidMap.end(); ++it) {
-+			ks.setTaskPlots(it.key(), lamOrderIds(it.value()));
-+		}
+ 		++i;
  	}
  
- 	ks.raise();
-diff --git a/tests/libkshark-gui-tests.cpp b/tests/libkshark-gui-tests.cpp
-index 5a0ca01..bc49194 100644
---- a/tests/libkshark-gui-tests.cpp
-+++ b/tests/libkshark-gui-tests.cpp
-@@ -286,3 +286,28 @@ BOOST_AUTO_TEST_CASE(GraphModel)
- 	model.reset();
- 	BOOST_CHECK_EQUAL(model.rowCount({}), 0);
- }
+@@ -419,20 +490,7 @@ void KsAdvFilteringDialog::_applyPress()
+ 	filter = (char*) malloc(strlen(text) + 1);
+ 	strcpy(filter, text);
+ 
+-	ret = tep_filter_add_filter_str(kshark_ctx->advanced_event_filter,
+-					   filter);
+-
+-	if (ret < 0) {
+-		char error_str[200];
+-
+-		tep_strerror(kshark_ctx->pevent, ret, error_str,
+-						       sizeof(error_str));
+-
+-		fprintf(stderr, "filter failed due to: %s\n", error_str);
+-		free(filter);
+-
+-		return;
+-	}
++	kshark_tep_add_filter_str(stream, filter);
+ 
+ 	free(filter);
+ 
+diff --git a/src/KsAdvFilteringDialog.hpp b/src/KsAdvFilteringDialog.hpp
+index 2a534d0..a1db90b 100644
+--- a/src/KsAdvFilteringDialog.hpp
++++ b/src/KsAdvFilteringDialog.hpp
+@@ -36,7 +36,7 @@ private:
+ 
+ 	QMap<int, QString>	_filters;
+ 
+-	KsCheckBoxTable		*_table;
++	KsWidgetsLib::KsCheckBoxTable	*_table;
+ 
+ 	QVBoxLayout	_topLayout;
+ 
+@@ -46,6 +46,8 @@ private:
+ 
+ 	QLabel		_descrLabel, _sysEvLabel, _opsLabel, _fieldLabel;
+ 
++	QComboBox	_streamComboBox;
 +
-+BOOST_AUTO_TEST_CASE(KsUtils_parseTasks)
-+{
-+	QVector<int> pids{28121, 28137, 28141, 28199, 28201, 205666, 267481};
-+	kshark_context *kshark_ctx{nullptr};
-+	kshark_entry **data{nullptr};
-+	std::string file(KS_TEST_DIR);
-+	ssize_t n_rows;
-+	int sd;
+ 	QComboBox	_systemComboBox, _eventComboBox;
+ 
+ 	QComboBox	_opsComboBox, _fieldComboBox;
+@@ -74,13 +76,17 @@ private:
+ 
+ 	QStringList _operators();
+ 
+-	void _getFilters(struct kshark_context *kshark_ctx);
++	void _getFtraceStreams(kshark_context *kshark_ctx);
 +
-+	kshark_instance(&kshark_ctx);
-+	file += "/trace_test1.dat";
-+	sd = kshark_open(kshark_ctx, file.c_str());
-+	n_rows = kshark_load_entries(kshark_ctx, sd, &data);
++	void _getFilters(kshark_context *kshark_ctx);
 +
-+	auto pids_test = parseTaskList("zoom,sleep");
-+	BOOST_CHECK(pids == pids_test[0]);
-+
-+	for (ssize_t r = 0; r < n_rows; ++r)
-+		free(data[r]);
-+	free(data);
-+
-+	kshark_close(kshark_ctx, sd);
-+	kshark_free(kshark_ctx);
-+}
++	void _makeFilterTable(kshark_context *kshark_ctx);
+ 
+-	void _makeFilterTable(struct kshark_context *kshark_ctx);
++	QStringList _getEventFields(int eventId);
+ 
+-	QStringList _getEventFormatFields(struct tep_event *event);
++	void _setSystemCombo(kshark_context *kshark_ctx);
+ 
+-	void _setSystemCombo(struct kshark_context *kshark_ctx);
++	kshark_data_stream *_getCurrentStream(kshark_context *kshark_ctx);
+ 
+ private slots:
+ 	void _systemChanged(const QString&);
 -- 
 2.25.1
 
