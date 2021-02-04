@@ -7,176 +7,113 @@ X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA44BC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Feb 2021 11:05:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90FF6C433DB
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Feb 2021 12:32:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8772564F5E
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Feb 2021 11:05:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 50AC664F3F
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Feb 2021 12:32:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235460AbhBDLFA (ORCPT
+        id S235891AbhBDMcl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 4 Feb 2021 06:05:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
+        Thu, 4 Feb 2021 07:32:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235386AbhBDLE7 (ORCPT
+        with ESMTP id S235819AbhBDMcl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:04:59 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546DBC0613D6
-        for <linux-trace-devel@vger.kernel.org>; Thu,  4 Feb 2021 03:04:19 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id g15so1581970pjd.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 04 Feb 2021 03:04:19 -0800 (PST)
+        Thu, 4 Feb 2021 07:32:41 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179B0C061573
+        for <linux-trace-devel@vger.kernel.org>; Thu,  4 Feb 2021 04:32:01 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id c132so1995637pga.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 04 Feb 2021 04:32:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SjsTH/Hl9ca3wIK7RwCXO4y0hdn5AjvceX3ysTArI5g=;
-        b=X4nFbFmZ7El/7xxXQbm0HjndErU0CNycxKVPKrfOtqG6NjUMxD4zJiwuaNzxLQy0pq
-         kZfT05rpi9COH4mo6+hGpYbosHpPyXiZGxsfYsRS8VyEJjc9D2gVDTVKO/hmZJzIBPCF
-         8eP3vQyznsMRcrf9eqWRmz8sW2czBZUo+woA7hiE+B2CagqaRwe+rYds7097R7kV5tUU
-         XglvyfuPM7CrxC3Khn/QdVFm94BIJRZX/F3QEj7qE/yA9upq596aMQOABm+kdTxE+BHs
-         jTbhB8yXXHgoaAmFCGANF+T3wlHiB9f5ZrKz8eZFR44vJJ38MzfIOO/ieuTACDQt9gmF
-         SSTA==
+        bh=QzfUU2emTPnO2gJ4deEdnxx462zssgx2pVuu/J8YNT4=;
+        b=E/wZ9LLjq++1bB2Jw918n+jiIB2617Keuw9AqV9nJSn65mNzqLdp/wGR9iUHO5Fkg4
+         WeWTbnat3EzHde4loTq8pNvNhvmo9dLBxxIR14PKjtObdTSX2kbF8U5UbJep0fiho5+y
+         6lt8EffzGjh9KQ9+okY9NlcGNu+/AST9IuCB6uwjrXusx12SOmKzftd/dpy8YDegTk3A
+         oX+4lbmV1oIGv1LmUB7zBWVpcZ+HZtJP2WIrkqD8t+PJusqZDcRZq13QrhNA7dA5R+9K
+         9frbhLRWfp546ylLBUvbJk3/IsxYcOTWFTHYQqvU96+kxCPkOymGocZR8K93cE5GX6oh
+         jSrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SjsTH/Hl9ca3wIK7RwCXO4y0hdn5AjvceX3ysTArI5g=;
-        b=rFoIerSaXDXIVRFCmmh2NLb1YQ1yvG4ofPmdzEPfbh2WbociWEYuxCk29UG8/Pi5CI
-         IESTdRkTmiPkM+YSmJ8EtSll5ddQ5Pm1WdGaHnYDL/a1KRdXUgWAJ7PbImnHjPFkSX3k
-         zv+LwXmDbX3FkS6V4SnhWoYaV+3kjiSF9piorHYww3SfK5qdypViYj6W1oHKjVpllf5j
-         GvzvgsGiTwvgrCTpkkLR/HI/L0DE6PAUv+JvuSin6/V2RG6vt0LMk2bhWzqRU8FeziUq
-         AfOAD7hzsy9YYUZ3PIAkI54FrVwV3kcLEJayNxswZY0Gh+E323+z1DUOUqka7OwOJN9a
-         rO8g==
-X-Gm-Message-State: AOAM530tiNAQy6VeDK7I15fCJtCEYuskICR5DWeYVM0CuyTgyjn6z06J
-        iYHOqEC42ZMt+4TFYl7/ZrgeIkU3IPxUURpgayM=
-X-Google-Smtp-Source: ABdhPJwCz9nyB1KhPOdItRMvY0s6MtHPRPSxayT7tCAIGqs49nVWxEKsQ9OG0vyVA6u8m3n5e7I+lPPCOiJ1uCxb1B8=
-X-Received: by 2002:a17:902:ee04:b029:e1:7256:fa18 with SMTP id
- z4-20020a170902ee04b02900e17256fa18mr7457879plb.58.1612436658798; Thu, 04 Feb
- 2021 03:04:18 -0800 (PST)
+        bh=QzfUU2emTPnO2gJ4deEdnxx462zssgx2pVuu/J8YNT4=;
+        b=FiTToFqhFllvAKp1jAMDTZF05XKcEdhJAkgB8qUmzrSQGrEuHlhG4GRasY8Q0zZ8Qv
+         lnIJKPbJQRYO1x0fBntxtyE52fhaNoI+aoHloH9cD4Jj1AxbRMsCp8gVIJoNS9rxImmK
+         yd1RJxDrh8tmR+LwiQKJ82GiNVx5SeauahCCzCuq+XPmHhzcCufXGzhRl5zI+jWoNNrm
+         XRNOtx12kxzSsJ/Mav6sQTbM+lGAgFku6HB5VaKPzow4CE2ah+158zoshSi5ovwIHrVC
+         +OnxA97d7tZNgbNYKT+xUOkH4PsyNelEQb/UjxgluXrzX/9ouiEZfO5En3eLi9BIuj/+
+         nNKw==
+X-Gm-Message-State: AOAM533pGNorfvKSRhSyqAldb/eQ6sjfLi4LYJGjf0280QxkTGrXDKV4
+        Qn6PPiB8ixqHQrGpcC9cX7qWQ73I0crfUYD/BzSH8Afiu8M=
+X-Google-Smtp-Source: ABdhPJz38NdXrONJw9a5NP41Ayn20VieAzSgJKm+kA5ulkGKXS7miNCwghIuikNTUAd/29OL/UhWPhb1dqspTRaxzFs=
+X-Received: by 2002:a63:6d5:: with SMTP id 204mr6204472pgg.44.1612441920653;
+ Thu, 04 Feb 2021 04:32:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119095939.6f307c4d@gandalf.local.home>
-In-Reply-To: <20210119095939.6f307c4d@gandalf.local.home>
+References: <20210201160339.506562-1-tz.stoyanov@gmail.com>
+ <20210201160339.506562-2-tz.stoyanov@gmail.com> <20210203152013.21560b32@gandalf.local.home>
+In-Reply-To: <20210203152013.21560b32@gandalf.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 4 Feb 2021 13:04:01 +0200
-Message-ID: <CAPpZLN4D4zDfErUVpXfdaY3iciV0k+nW+uJsBeu79XtaVjxatw@mail.gmail.com>
-Subject: Re: Move "load_plugins" out of the opening code
+Date:   Thu, 4 Feb 2021 14:31:44 +0200
+Message-ID: <CAPpZLN5GK1mz=r_iu9PcLqz+_j_KffYf8e-y+KUzg6fHgCO8Eg@mail.gmail.com>
+Subject: Re: [PATCH v27 1/5] trace-cmd: Add timestamp synchronization per vCPU
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 7:57 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, Feb 3, 2021 at 10:20 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> Tzvetomir,
+> On Mon,  1 Feb 2021 18:03:35 +0200
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 >
-> From bugzilla:
+> > --- a/lib/trace-cmd/trace-timesync.c
+> > +++ b/lib/trace-cmd/trace-timesync.c
+> > @@ -22,6 +22,8 @@
+> >  #include "event-utils.h"
+> >  #include "trace-tsync-local.h"
+> >
+> > +typedef __be16 be16;
 >
->   https://bugzilla.kernel.org/show_bug.cgi?id=211255
+> I'm curious to why you added this, because I have a machine that doesn't
+> define __be16. I'm guessing it comes from "#include <linux/limits.h>", was
+> there a reason to use that?
 >
-> It was reported that:
->
-> $ trace-cmd report -N -r funcgraph_exit trace.dat 2>/dev/null | grep funcgraph_exit | wc -l
-> 11645
->
-> $ trace-cmd report -N -F funcgraph_exit -r funcgraph_exit trace.dat 2>/dev/null | grep funcgraph_exit | wc -l
-> 24826
->
-> Where the first should have been as big as the second. The problem with the
-> above is really that "-N" does not stop the ftrace function event plugins
-> from being loaded.
->
-> Looking at this further, I think it's a mistake to have the plugins loaded
-> at opening time.
->
-> We should have a new function for the library:
->
-> int tracecmd_load_plugins(struct tracecmd_handle *handle, int flags);
->
-> And this should be called after read_trace_header() in trace-read.c.
->
-> We can still have tracecmd_open_head() call this, as the "open_head" is
-> basically a "do everything" function.
->
-> This will allow us to remove the global "tracecmd_disable_plugins" and
-> "tracecmd_disable_sys_plugins" variables and use the flags input instead.
-> With the '-N' option, we should probably just skip calling it regardless.
->
-> The below patch was just a POC, to see if there was any side-effects for
-> this. But it didn't have a return value or flags, which should be added for
-> the final version.
->
+I added it to be consistent with the other messages, defined in trace-msg.c -
+for signed / unsigned 32bit and 64bit fields. The other reason is that I used
+to define packet's structure in that way in my previous job - to be
+clear exactly
+how many bits are exchanged over the network.
+I agree that that is useless here and will replace it with an unsigned short.
 
-Hi Steven,
-I sent a patch with a different implementation of this fix. I decided to
-reimplement it because of two reasons:
- - There is already a function tracecmd_load_plugins(), which is supposed
-   to load trace-cmd specific plugins. As there are no such plugins for now,
-   this function is a dead code and is not called. However, it is
-still part of the
-   libtracecmd.
- - Moving that logic out of tracecmd_alloc_fd() will break these APIs:
-    tracecmd_open()
-    tracecmd_open_fd()
-    tracecmd_open_head()
- KernelShark relies on them for reading trace.dat files.  We can think of
- moving plugins loading in a separate API, which must be called at the
- library initialisation phase, but this will require changes in the current
-library users (KernelShark?).
-
+> I really don't see the difference between __be16 and unsigned short. I
+> think it's mostly used for static parsers. Perhaps its best to use __u16,
+> or "unsigned short" to make sure it compiles on older systems.
+>
 > -- Steve
 >
-> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index 3e67dd61..11bf8e5d 100644
-> --- a/lib/trace-cmd/trace-input.c
-> +++ b/lib/trace-cmd/trace-input.c
-> @@ -3247,11 +3247,6 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd)
->         if (!handle->pevent)
->                 goto failed_read;
 >
-> -       /* register default ftrace functions first */
-> -       tracecmd_ftrace_overrides(handle, &handle->finfo);
-> -
-> -       handle->plugin_list = trace_load_plugins(handle->pevent);
-> -
->         tep_set_file_bigendian(handle->pevent, buf[0]);
->         tep_set_local_bigendian(handle->pevent, tracecmd_host_bigendian());
->
-> @@ -3344,6 +3339,13 @@ struct tracecmd_input *tracecmd_open(const char *file)
->         return tracecmd_open_fd(fd);
->  }
->
-> +void tracecmd_load_plugins(struct tracecmd_input *handle)
-> +{
-> +       /* register default ftrace functions first */
-> +       tracecmd_ftrace_overrides(handle, &handle->finfo);
-> +       handle->plugin_list = trace_load_plugins(handle->pevent);
-> +}
-> +
->  /**
->   * tracecmd_open_head - create a tracecmd_handle from a given file, read
->   *                     and parse only the trace headers from the file
-> diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-> index d07f4efe..a79bf0aa 100644
-> --- a/tracecmd/trace-read.c
-> +++ b/tracecmd/trace-read.c
-> @@ -1768,10 +1768,14 @@ void trace_report (int argc, char **argv)
->                 die("Wakeup tracing can only be done on a single input file");
->
->         list_for_each_entry(inputs, &input_files, list) {
-> +               void tracecmd_load_plugins(struct tracecmd_input *handle);
->                 handle = read_trace_header(inputs->file);
->                 if (!handle)
->                         die("error reading header for %s", inputs->file);
->
-> +               if (!tracecmd_disable_plugins)
-> +                       tracecmd_load_plugins(handle);
-> +
->                 /* If used with instances, top instance will have no tag */
->                 add_handle(handle, multi_inputs ? inputs->file : NULL);
+> > +
+> >  struct tsync_proto {
+> >       struct tsync_proto *next;
+> >       char proto_name[TRACECMD_TSYNC_PNAME_LENGTH];
+> > @@ -34,9 +36,13 @@ struct tsync_proto {
+> >       int (*clock_sync_free)(struct tracecmd_time_sync *clock_context);
+> >       int (*clock_sync_calc)(struct tracecmd_time_sync *clock_context,
+> >                              long long *offset, long long *scaling,
+> > -                            long long *timestamp);
+> > +                            long long *timestamp, unsigned int cpu);
+> >  };
+> >
+> > +struct tsync_probe_request_msg {
+> > +     be16    cpu;
+> > +} __packed;
 >
 
 
