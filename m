@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93EEDC433E6
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Feb 2021 06:18:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDC7BC4332B
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Feb 2021 06:18:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5C45E64E59
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Feb 2021 06:18:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9BE7164E59
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Feb 2021 06:18:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhBHGSf (ORCPT
+        id S229716AbhBHGSl (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 8 Feb 2021 01:18:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
+        Mon, 8 Feb 2021 01:18:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhBHGSe (ORCPT
+        with ESMTP id S229691AbhBHGSk (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 8 Feb 2021 01:18:34 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB10C06178B
-        for <linux-trace-devel@vger.kernel.org>; Sun,  7 Feb 2021 22:17:52 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id l25so5474271eja.9
-        for <linux-trace-devel@vger.kernel.org>; Sun, 07 Feb 2021 22:17:52 -0800 (PST)
+        Mon, 8 Feb 2021 01:18:40 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB76C061756
+        for <linux-trace-devel@vger.kernel.org>; Sun,  7 Feb 2021 22:17:54 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id y9so22719949ejp.10
+        for <linux-trace-devel@vger.kernel.org>; Sun, 07 Feb 2021 22:17:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZxQKytp1O+WX+MFBeCcujLCAGzL6iIOfe+UPe4Qe8J0=;
-        b=oFV9apd16kmMa5utB6bL4cywgDm9ZlcG+WPYgqo4kbq17EwfwQQUJjvu+sTfnbWHdp
-         vIwWUkfX3tgYw5Z+nyJOn8p5v1yegKHwWhxWfG1rYNBrqn7IR+UfLq53KzBZqK2Yr85p
-         ljvM7g109yJ/u9s4DuBj7hDfbojFrZXU7danxpgh6LE0LoGtOMtIw+XXPqlqfQrGM6rq
-         y+UWE9lMzU5E34lI+Lo/8B0ZZ8xihX3+vIWlyiHgIPxGiqX+MRzspYjP4el7YfGFD9sY
-         QSo8XAMi0+5I6CRc9zyCk+C8SuTtGsK7f7/wquCZ70x+WsgLpJ2LAcxA6wsJq9gX6lA/
-         qGRA==
+        bh=2i9HKc0rG7Ku6yBwucemoj5F9GSAxZRnARu8swhdHS4=;
+        b=Tr04Ec4jLBMif0oz5TIHKnqqRQe3Ege+piN14CPJ8AFvWNX9x1A1c5gL62BUZPK/z5
+         rl7+F74tbQHXbwDeZG7al9Fgw19gNSYM5zE5ALLfmcVTqRgyBCkImI3fqwzBZ2HHZgO4
+         HBaF58UvVLcjfjgzKEP7FLbrQoayvt4zIBHLVO2THI3mUP6CUEdZml4JSq0FEYInaf0X
+         gprVY35/Eo7yTjgAehh8JHUb18nbOk30wSonCgvLX/60040flV1wnGQiPEiGKWwarRLD
+         dUgMmhvAt171isUgpZNr0aEz4LB5xSIclIakPXWUu60r+g2VF8hdDM+d9vWPShoZEgx8
+         SmjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZxQKytp1O+WX+MFBeCcujLCAGzL6iIOfe+UPe4Qe8J0=;
-        b=dE8gKxbnDUcEB0EaH4637wAK2BKbqc9EcX8pA8qxijf8ouYv0YkLinZnKSkWmilk8L
-         leaGs/AuEn+fEMBs/YUsPiieDL68XMKZyF8myyvguIGtf+IUISJKoaPeQKVQB441dowH
-         MsO+Freip/gbNezNw2nvhxpmP8S+Nx7OYZ3cP6dhv0tKnuSMClh5p7z6deR16kHNoXHJ
-         w7SLeyWOHtVzTUylZ/PvqiWRl7sPZZDOyHINs+rePXpa/XORiFZpujVdDWJgaezLo/KW
-         NGdFJh+ats+CIUcrFMj9NRvc5bMWbqKOHFjRRCABi1wfG3oeTgdTeLpS7V8YN9vahkYx
-         yQ8g==
-X-Gm-Message-State: AOAM532xOF/xHh/JBWTF97ubCRvIlPxW6ukjIQpbxvF3ZNSWwWeXKqW1
-        0T5YNzKQ8rUjaWOmosyPgLY=
-X-Google-Smtp-Source: ABdhPJyZT3O9GzoAiRruE079iKHRAvIcGsoq64yRSvARHPYqJvZhLea9z50Ov9BrQXDuNCmfV60tqg==
-X-Received: by 2002:a17:907:2a85:: with SMTP id fl5mr15238763ejc.554.1612765071134;
-        Sun, 07 Feb 2021 22:17:51 -0800 (PST)
+        bh=2i9HKc0rG7Ku6yBwucemoj5F9GSAxZRnARu8swhdHS4=;
+        b=LZQvUDH9j5Jb24lUKh5vNFo6LFep1ofP0V/15H/57lwnt8DtnYe7RPI+M1udJAB5hQ
+         ELpIbl09YTBn90wys1FA9VoYwBmtRgB1fg98qgl0nR7Ueq5laYnMvU5QTQb04iaajZmD
+         XYnYPjf8B7MUpgt9GMeoPgSvGwk/y7i8GHPKEijipYzZJ/3stMmhIyE/BVGHb6RaDmGo
+         p4RHS1Oqa3uq0QDEglbB0SV+XlW4Hy0foVb8wFnqwIQ88FJnRwIeaTSUZWJFphsX99el
+         kUtNNGvruaJgTbrUHsxuu7BNP7TXDYl5N/Dza4UhVFnARagjqKLDNUtU1os7ZNg61Xfm
+         I5sw==
+X-Gm-Message-State: AOAM530ifACjKBQ80wuD+gMgHWAez/wp3pChfEAmGMIUw9WzkuJVbr1U
+        Ac4Xv5E/giB7vBwMVizTRRc=
+X-Google-Smtp-Source: ABdhPJzRPM9XW6L35b72CxuL0pVqhM+2ePx1N9VKt6149bskztqQklgovtzrYSbWan9NBX9e+IxoJg==
+X-Received: by 2002:a17:907:7289:: with SMTP id dt9mr15435566ejc.446.1612765073694;
+        Sun, 07 Feb 2021 22:17:53 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id 35sm135618edp.85.2021.02.07.22.17.49
+        by smtp.gmail.com with ESMTPSA id 35sm135618edp.85.2021.02.07.22.17.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 22:17:50 -0800 (PST)
+        Sun, 07 Feb 2021 22:17:53 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v28 3/8] trace-cmd: Removed unused s64 define
-Date:   Mon,  8 Feb 2021 08:17:38 +0200
-Message-Id: <20210208061743.510964-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v28 5/8] trace-cmd: Add dummy function to initialize timestamp sync logic
+Date:   Mon,  8 Feb 2021 08:17:40 +0200
+Message-Id: <20210208061743.510964-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210208061743.510964-1-tz.stoyanov@gmail.com>
 References: <20210208061743.510964-1-tz.stoyanov@gmail.com>
@@ -73,25 +73,118 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Removed a s64 define, not used currently in trace packets.
+A dummy empty function is added, will be used to initialize timestamp
+synchronization logic:
+  tracecmd_tsync_init()
+When this code is implemented as real plugins, this function will be
+removed. Then the initializion will be triggered at plugin load time.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-msg.c | 1 -
- 1 file changed, 1 deletion(-)
+ lib/trace-cmd/trace-timesync.c |  8 ++++++++
+ tracecmd/trace-agent.c         |  2 ++
+ tracecmd/trace-record.c        | 23 +++++++++++++++--------
+ 3 files changed, 25 insertions(+), 8 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
-index 611af2c1..c4943165 100644
---- a/lib/trace-cmd/trace-msg.c
-+++ b/lib/trace-cmd/trace-msg.c
-@@ -30,7 +30,6 @@
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index 2581363f..8c1586c7 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -57,6 +57,14 @@ static struct tsync_proto *tsync_proto_find(const char *proto_name)
+ 	return NULL;
+ }
  
- typedef __u32 u32;
- typedef __be32 be32;
--typedef __s64 s64;
++/**
++ * tracecmd_tsync_init - Initialize the global, per task, time sync data.
++ */
++void tracecmd_tsync_init(void)
++{
++
++}
++
+ int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int roles,
+ 				  int supported_clocks, unsigned int flags,
+ 				  int (*init)(struct tracecmd_time_sync *),
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index ff4a4e11..36444d32 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -248,6 +248,8 @@ static void agent_serve(unsigned int port)
+ 	if (sd < 0)
+ 		die("Failed to open vsocket");
  
- static inline void dprint(const char *fmt, ...)
++	tracecmd_tsync_init();
++
+ 	if (!get_local_cid(&cid))
+ 		printf("listening on @%u:%u\n", cid, port);
+ 
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index efd96d27..cc870124 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -6218,10 +6218,6 @@ static bool has_local_instances(void)
+ 	return false;
+ }
+ 
+-/*
+- * This function contains common code for the following commands:
+- * record, start, stream, profile.
+- */
+ static void record_trace(int argc, char **argv,
+ 			 struct common_record_context *ctx)
  {
+@@ -6379,12 +6375,23 @@ static void record_trace(int argc, char **argv,
+ 	finalize_record_trace(ctx);
+ }
+ 
++/*
++ * This function contains common code for the following commands:
++ * record, start, stream, profile.
++ */
++static void record_trace_command(int argc, char **argv,
++				 struct common_record_context *ctx)
++{
++	tracecmd_tsync_init();
++	record_trace(argc, argv, ctx);
++}
++
+ void trace_start(int argc, char **argv)
+ {
+ 	struct common_record_context ctx;
+ 
+ 	parse_record_options(argc, argv, CMD_start, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
+ }
+ 
+@@ -6476,7 +6483,7 @@ void trace_stream(int argc, char **argv)
+ 	struct common_record_context ctx;
+ 
+ 	parse_record_options(argc, argv, CMD_stream, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
+ }
+ 
+@@ -6495,7 +6502,7 @@ void trace_profile(int argc, char **argv)
+ 	if (!buffer_instances)
+ 		top_instance.flags |= BUFFER_FL_PROFILE;
+ 
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	do_trace_profile();
+ 	exit(0);
+ }
+@@ -6505,7 +6512,7 @@ void trace_record(int argc, char **argv)
+ 	struct common_record_context ctx;
+ 
+ 	parse_record_options(argc, argv, CMD_record, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
+ }
+ 
 -- 
 2.29.2
 
