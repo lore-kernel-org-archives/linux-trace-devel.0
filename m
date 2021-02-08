@@ -2,591 +2,116 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E54BBC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Feb 2021 06:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08CCFC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Feb 2021 10:39:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 913F864E66
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Feb 2021 06:19:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A8EED64E59
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  8 Feb 2021 10:39:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhBHGTL (ORCPT
+        id S230339AbhBHKiv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 8 Feb 2021 01:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
+        Mon, 8 Feb 2021 05:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhBHGTJ (ORCPT
+        with ESMTP id S231860AbhBHKfq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 8 Feb 2021 01:19:09 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F49C061797
-        for <linux-trace-devel@vger.kernel.org>; Sun,  7 Feb 2021 22:17:59 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id s11so16764614edd.5
-        for <linux-trace-devel@vger.kernel.org>; Sun, 07 Feb 2021 22:17:59 -0800 (PST)
+        Mon, 8 Feb 2021 05:35:46 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F523C061793
+        for <linux-trace-devel@vger.kernel.org>; Mon,  8 Feb 2021 02:34:45 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id r21so202459wrr.9
+        for <linux-trace-devel@vger.kernel.org>; Mon, 08 Feb 2021 02:34:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/U5+26oHSU+LetnZ0JRJ8wcaHfEj5vHcpq/uoJRZTZM=;
-        b=ORxuLtK3NBTmRT8ylyM0U8P5ZzghkKFQYh9qZMlQIwLsAu0ZGo2BsVOr3sMfX6nHvK
-         209Xt1yUva3K28IDFCfuS228W0h/DIU+klD21xSuj/qkrdHEREh5IAoBL54jYt90aYY4
-         hGasfGaUt5OWem9cqRuVq2MJgAUnuHYzrHFB2o8Q/UIO5NjDiZZPkBdzaohWubXFgRey
-         sL0+fCNiREZlBUUxaau6umAzjUpVzAXTPRTLJk9gBdWfGHOunwy1jz7MsyASwx0At7kR
-         4VI4Kf8705DnZrFGOZWQpBzsF+PUfCRM9IaV/Ut2osVPcswfT8LvBHRG56ZCUQ2A7Eqc
-         yp/A==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cIQ+baAqSLZVhpjLs0NS/cxH/HSOIEHqyzmtaaWJVSQ=;
+        b=HCN34SW06jZ7opZxv/zZO5wnvVv4qyq898HMaduj4FmURSoJKdoyi06syUCg5Zu7o6
+         lJn/CvA2Kw1LsAdfsl3oI5yD8ZhiH50FDtAII/kli+ie6bFz05kTM3PxPLKZWTmH0rp0
+         yHrQlR2FqkLAPveEMR4Os1NnqGHtOjoz513zcNbmF/6V7mf5+GPfbPLQFxQQWw/3gnpl
+         vOfYcMgjGEgA9jLak1wuR1aDYY9+Ttg0pFlm0kpe1tCZJ1Xd7lfJHEoPpHe5fi5RgVs3
+         /Aif+4xEZ+ylL8ye04EJO79tqqQyxg2dhxIAM+6/sWYDIa1kpTTQSPSfJqsvyIJivDEH
+         2lww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/U5+26oHSU+LetnZ0JRJ8wcaHfEj5vHcpq/uoJRZTZM=;
-        b=UAQwaUoeIQqt8tyYoh8+XR3bWlcJRBRZ6DgLIDt89JKDbvzOy8YKjJJF3TWmFIKToc
-         epqgsEGcmuH0IGxiYaPpHkzKh/CYQnRVoRt8hdcxqGKhNPHZJJ0Zyk8UBmVLFzIYC5Pf
-         kxLNjgYme5ptvxYIAdZMGPmaRnQUZtZiz30DwR6g0f+Pd/FM82EHo55sLqerYMIPjdDk
-         BKEdKUILH0qB6TwfUy/TX8LfOOZzIc9uLJ2W36o3D9ljsiG9tier/PzD0tUhNmrZKZyl
-         LE7C+k0686v3JND94cmjGAoGyBqs4dYX1862E5YV8krH3XAbDWveKozcEdqHpAp3V9Oo
-         nQBA==
-X-Gm-Message-State: AOAM5339PTNvoIkJO6pV2tDwBMl3BHeXopzITAqC02Cxz4PvOtFUsm4G
-        Hv1y8Zzv/8vDcSPbn/paufU=
-X-Google-Smtp-Source: ABdhPJxyBprwaqsF+M14b1NxfHgFfJbxxFHoSxrM9/6eHiuYZpPrfan6OHcwz4M8Qn7lUpGmGbluRA==
-X-Received: by 2002:a05:6402:40c4:: with SMTP id z4mr15698244edb.233.1612765077841;
-        Sun, 07 Feb 2021 22:17:57 -0800 (PST)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id 35sm135618edp.85.2021.02.07.22.17.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 22:17:57 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cIQ+baAqSLZVhpjLs0NS/cxH/HSOIEHqyzmtaaWJVSQ=;
+        b=S4p768fhye3Uk5ZDUKdSwhgKgCcdJty3s838JhvKdtYfgPeQk1/Jhkq+yyR6ypPbni
+         jKd1+2AUGiOiJaGfHDdQk+6tqlTwswweXmW0XsWcRqzv7MhPais6GC612gyc4oSsxiRb
+         FbJla+ua0813fEcRfXP1zXBEpuD1U2vWHaa1VQGYWr8c271Knm5lTuSuAfBmX8tD3Tz2
+         pRJkkY2EDH7aX1/ZtYHmUA8T2w9oSw+kwujWwevASkpWHRpfXQuRsjakS9lExKk2YRe+
+         J8HYmeq1HsFaGmPn+gkMd2qBveusX2IA7UJVQPylMNBMTijBXLwOonQ1Cvhcqdd/2Uhc
+         hVjw==
+X-Gm-Message-State: AOAM532euv9UrdWQqF7rB8QNYFH3cQX2fVESjUxCMGPgCoQyxh/nbeTJ
+        O4Bgthr5RRHvyzB9m7JVgklhjc1hpMs=
+X-Google-Smtp-Source: ABdhPJwQf3RPPWYlzyO3RGvGpcBQiPqSQ3yOpA99Ds5OgE7RzjhyL6k3PYCbt54t5W1ix8VVRLyLyA==
+X-Received: by 2002:a05:6000:1565:: with SMTP id 5mr19607867wrz.109.1612780483654;
+        Mon, 08 Feb 2021 02:34:43 -0800 (PST)
+Received: from [192.168.0.108] ([95.87.199.218])
+        by smtp.gmail.com with ESMTPSA id n15sm27430438wrx.2.2021.02.08.02.34.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 02:34:42 -0800 (PST)
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_kernel-shark=3a_Fix_compile_error=3a_?=
+ =?UTF-8?B?4oCYc3RyaW5n4oCZIGluIG5hbWVzcGFjZSDigJhzdGTigJkgZG9lcyBub3QgbmFt?=
+ =?UTF-8?Q?e_a_type?=
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v28 8/8] trace-cmd [POC]: Add KVM timestamp synchronization plugin
-Date:   Mon,  8 Feb 2021 08:17:43 +0200
-Message-Id: <20210208061743.510964-9-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210208061743.510964-1-tz.stoyanov@gmail.com>
-References: <20210208061743.510964-1-tz.stoyanov@gmail.com>
+References: <20210205111242.57557-1-tz.stoyanov@gmail.com>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <358f4904-ace1-97d6-a325-9a257d36875d@gmail.com>
+Date:   Mon, 8 Feb 2021 12:34:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210205111242.57557-1-tz.stoyanov@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added new timestamp synchronization plugin for KVM hosts. It reads the
-clock offsets directly from the KVM debug filesystem, if available.
-The plugin works only with x86-tsc ftrace clock.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- lib/trace-cmd/Makefile                    |   1 +
- lib/trace-cmd/include/trace-tsync-local.h |   1 +
- lib/trace-cmd/trace-timesync-kvm.c        | 460 ++++++++++++++++++++++
- lib/trace-cmd/trace-timesync.c            |   1 +
- 4 files changed, 463 insertions(+)
- create mode 100644 lib/trace-cmd/trace-timesync-kvm.c
 
-diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
-index f41feef8..e8d2dae9 100644
---- a/lib/trace-cmd/Makefile
-+++ b/lib/trace-cmd/Makefile
-@@ -20,6 +20,7 @@ OBJS += trace-plugin.o
- ifeq ($(VSOCK_DEFINED), 1)
- OBJS += trace-timesync.o
- OBJS += trace-timesync-ptp.o
-+OBJS += trace-timesync-kvm.o
- endif
- 
- # Additional util objects
-diff --git a/lib/trace-cmd/include/trace-tsync-local.h b/lib/trace-cmd/include/trace-tsync-local.h
-index d4281469..fe91e2e3 100644
---- a/lib/trace-cmd/include/trace-tsync-local.h
-+++ b/lib/trace-cmd/include/trace-tsync-local.h
-@@ -49,5 +49,6 @@ int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int role
- int tracecmd_tsync_proto_unregister(char *proto_name);
- 
- int ptp_clock_sync_register(void);
-+int kvm_clock_sync_register(void);
- 
- #endif /* _TRACE_TSYNC_LOCAL_H */
-diff --git a/lib/trace-cmd/trace-timesync-kvm.c b/lib/trace-cmd/trace-timesync-kvm.c
-new file mode 100644
-index 00000000..03a4fd73
---- /dev/null
-+++ b/lib/trace-cmd/trace-timesync-kvm.c
-@@ -0,0 +1,460 @@
-+// SPDX-License-Identifier: LGPL-2.1
-+/*
-+ * Copyright (C) 2020, VMware, Tzvetomir Stoyanov tz.stoyanov@gmail.com>
-+ *
-+ */
-+
-+#include <fcntl.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <sys/stat.h>
-+#include <dirent.h>
-+
-+#include "trace-cmd.h"
-+#include "trace-cmd-private.h"
-+#include "tracefs.h"
-+#include "trace-tsync-local.h"
-+
-+#define KVM_DEBUG_FS "/sys/kernel/debug/kvm"
-+#define KVM_DEBUG_OFFSET_FILE	"tsc-offset"
-+#define KVM_DEBUG_SCALING_FILE	"tsc-scaling-ratio"
-+#define KVM_DEBUG_VCPU_DIR	"vcpu"
-+
-+#define KVM_SYNC_PKT_REQUEST	1
-+#define KVM_SYNC_PKT_RESPONSE	2
-+
-+typedef __s64 s64;
-+
-+// equal to /sys/kernel/debug/kvm/<VM ID>/vcpu0/tsc-offset
-+#define KVM_ACCURACY	0
-+#define KVM_NAME	"kvm"
-+
-+struct kvm_clock_sync {
-+	int vcpu_count;
-+	char **vcpu_offsets;
-+	char **vcpu_scalings;
-+	int marker_fd;
-+	struct tep_handle *tep;
-+	int raw_id;
-+	unsigned long long ts;
-+};
-+
-+struct kvm_clock_offset_msg {
-+	s64	ts;
-+	s64	offset;
-+	s64	scaling;
-+};
-+
-+static bool kvm_support_check(bool guest)
-+{
-+	struct stat st;
-+	int ret;
-+
-+	if (guest)
-+		return true;
-+
-+	ret = stat(KVM_DEBUG_FS, &st);
-+	if (ret < 0)
-+		return false;
-+
-+	if (!S_ISDIR(st.st_mode))
-+		return false;
-+	return true;
-+}
-+
-+static int kvm_open_vcpu_dir(struct kvm_clock_sync *kvm, int cpu, char *dir_str)
-+{
-+	struct dirent *entry;
-+	char path[PATH_MAX];
-+	DIR *dir;
-+
-+	dir = opendir(dir_str);
-+	if (!dir)
-+		goto error;
-+	while ((entry = readdir(dir))) {
-+		if (entry->d_type != DT_DIR) {
-+			if (!strncmp(entry->d_name, KVM_DEBUG_OFFSET_FILE,
-+				     strlen(KVM_DEBUG_OFFSET_FILE))) {
-+				snprintf(path, sizeof(path), "%s/%s",
-+					 dir_str, entry->d_name);
-+				kvm->vcpu_offsets[cpu] = strdup(path);
-+			}
-+			if (!strncmp(entry->d_name, KVM_DEBUG_SCALING_FILE,
-+				     strlen(KVM_DEBUG_SCALING_FILE))) {
-+				snprintf(path, sizeof(path), "%s/%s",
-+					 dir_str, entry->d_name);
-+				kvm->vcpu_scalings[cpu] = strdup(path);
-+			}
-+		}
-+	}
-+	if (!kvm->vcpu_offsets[cpu])
-+		goto error;
-+	closedir(dir);
-+	return 0;
-+
-+error:
-+	if (dir)
-+		closedir(dir);
-+	free(kvm->vcpu_offsets[cpu]);
-+	kvm->vcpu_offsets[cpu] = NULL;
-+	free(kvm->vcpu_scalings[cpu]);
-+	kvm->vcpu_scalings[cpu] = NULL;
-+	return -1;
-+}
-+
-+static int kvm_open_debug_files(struct kvm_clock_sync *kvm, int pid)
-+{
-+	char *vm_dir_str = NULL;
-+	struct dirent *entry;
-+	char *pid_str = NULL;
-+	char path[PATH_MAX];
-+	long vcpu;
-+	DIR *dir;
-+	int i;
-+
-+	dir = opendir(KVM_DEBUG_FS);
-+	if (!dir)
-+		goto error;
-+	if (asprintf(&pid_str, "%d-", pid) <= 0)
-+		goto error;
-+	while ((entry = readdir(dir))) {
-+		if (!(entry->d_type == DT_DIR &&
-+		    !strncmp(entry->d_name, pid_str, strlen(pid_str))))
-+			continue;
-+		asprintf(&vm_dir_str, "%s/%s", KVM_DEBUG_FS, entry->d_name);
-+		break;
-+	}
-+	closedir(dir);
-+	dir = NULL;
-+	if (!vm_dir_str)
-+		goto error;
-+	dir = opendir(vm_dir_str);
-+	if (!dir)
-+		goto error;
-+	while ((entry = readdir(dir))) {
-+		if (!(entry->d_type == DT_DIR &&
-+		    !strncmp(entry->d_name, KVM_DEBUG_VCPU_DIR, strlen(KVM_DEBUG_VCPU_DIR))))
-+			continue;
-+		vcpu =  strtol(entry->d_name + strlen(KVM_DEBUG_VCPU_DIR), NULL, 10);
-+		if (vcpu < 0 || vcpu >= kvm->vcpu_count)
-+			continue;
-+		snprintf(path, sizeof(path), "%s/%s", vm_dir_str, entry->d_name);
-+		if (kvm_open_vcpu_dir(kvm, vcpu, path) < 0)
-+			goto error;
-+	}
-+	for (i = 0; i < kvm->vcpu_count; i++) {
-+		if (!kvm->vcpu_offsets[i])
-+			goto error;
-+	}
-+	closedir(dir);
-+	free(pid_str);
-+	free(vm_dir_str);
-+	return 0;
-+error:
-+	free(pid_str);
-+	free(vm_dir_str);
-+	if (dir)
-+		closedir(dir);
-+	return -1;
-+}
-+
-+static int kvm_clock_sync_init_host(struct tracecmd_time_sync *tsync,
-+				    struct kvm_clock_sync *kvm)
-+{
-+	kvm->vcpu_count = tsync->vcpu_count;
-+	kvm->vcpu_offsets = calloc(kvm->vcpu_count, sizeof(char *));
-+	kvm->vcpu_scalings = calloc(kvm->vcpu_count, sizeof(char *));
-+	if (!kvm->vcpu_offsets || !kvm->vcpu_scalings)
-+		goto error;
-+	if (kvm_open_debug_files(kvm, tsync->guest_pid) < 0)
-+		goto error;
-+	return 0;
-+
-+error:
-+	free(kvm->vcpu_offsets);
-+	free(kvm->vcpu_scalings);
-+	return -1;
-+}
-+
-+static int kvm_clock_sync_init_guest(struct tracecmd_time_sync *tsync,
-+				     struct kvm_clock_sync *kvm)
-+{
-+	const char *systems[] = {"ftrace", NULL};
-+	struct clock_sync_context *clock_context;
-+	struct tep_event *raw;
-+	char *path;
-+
-+	clock_context = (struct clock_sync_context *)tsync->context;
-+	path = tracefs_instance_get_dir(clock_context->instance);
-+	if (!path)
-+		goto error;
-+	kvm->tep = tracefs_local_events_system(path, systems);
-+	tracefs_put_tracing_file(path);
-+	if (!kvm->tep)
-+		goto error;
-+	raw = tep_find_event_by_name(kvm->tep, "ftrace", "raw_data");
-+	if (!raw)
-+		goto error;
-+
-+	kvm->raw_id = raw->id;
-+	tep_set_file_bigendian(kvm->tep, tracecmd_host_bigendian());
-+	tep_set_local_bigendian(kvm->tep, tracecmd_host_bigendian());
-+
-+	path = tracefs_instance_get_file(clock_context->instance, "trace_marker_raw");
-+	if (!path)
-+		goto error;
-+	kvm->marker_fd = open(path, O_WRONLY);
-+	tracefs_put_tracing_file(path);
-+
-+	return 0;
-+
-+error:
-+	if (kvm->tep)
-+		tep_free(kvm->tep);
-+	if (kvm->marker_fd >= 0)
-+		close(kvm->marker_fd);
-+
-+	return -1;
-+}
-+
-+static int kvm_clock_sync_init(struct tracecmd_time_sync *tsync)
-+{
-+	struct clock_sync_context *clock_context;
-+	struct kvm_clock_sync *kvm;
-+	int ret;
-+
-+	if (!tsync || !tsync->context)
-+		return -1;
-+	clock_context = (struct clock_sync_context *)tsync->context;
-+
-+	if (!kvm_support_check(clock_context->is_guest))
-+		return -1;
-+	kvm = calloc(1, sizeof(struct kvm_clock_sync));
-+	if (!kvm)
-+		return -1;
-+	kvm->marker_fd = -1;
-+	if (clock_context->is_guest)
-+		ret = kvm_clock_sync_init_guest(tsync, kvm);
-+	else
-+		ret = kvm_clock_sync_init_host(tsync, kvm);
-+	if (ret < 0)
-+		goto error;
-+
-+	clock_context->proto_data = kvm;
-+	return 0;
-+
-+error:
-+	free(kvm);
-+	return -1;
-+}
-+
-+static int kvm_clock_sync_free(struct tracecmd_time_sync *tsync)
-+{
-+	struct clock_sync_context *clock_context;
-+	struct kvm_clock_sync *kvm = NULL;
-+	int i;
-+
-+	clock_context = (struct clock_sync_context *)tsync->context;
-+	if (clock_context)
-+		kvm = (struct kvm_clock_sync *)clock_context->proto_data;
-+	if (kvm) {
-+		for (i = 0; i < kvm->vcpu_count; i++) {
-+			free(kvm->vcpu_offsets[i]);
-+			kvm->vcpu_offsets[i] = NULL;
-+			free(kvm->vcpu_scalings[i]);
-+			kvm->vcpu_scalings[i] = NULL;
-+		}
-+		if (kvm->tep)
-+			tep_free(kvm->tep);
-+		if (kvm->marker_fd >= 0)
-+			close(kvm->marker_fd);
-+		free(kvm);
-+	}
-+	return -1;
-+}
-+
-+static int read_ll_form_file(char *file, long long *res)
-+{
-+	char buf[32];
-+	int ret;
-+	int fd;
-+
-+	if (!file)
-+		return -1;
-+	fd = open(file, O_RDONLY | O_NONBLOCK);
-+	if (fd < 0)
-+		return -1;
-+	ret = read(fd, buf, 32);
-+	close(fd);
-+	if (ret <= 0)
-+		return -1;
-+
-+	*res = strtoll(buf, NULL, 10);
-+
-+	return 0;
-+}
-+
-+static int kvm_clock_host(struct tracecmd_time_sync *tsync,
-+			  long long *offset, long long *scaling,
-+			  long long *timestamp, unsigned int cpu)
-+{
-+	char sync_proto[TRACECMD_TSYNC_PNAME_LENGTH];
-+	struct clock_sync_context *clock_context;
-+	struct kvm_clock_offset_msg packet;
-+	struct kvm_clock_sync *kvm = NULL;
-+	long long kvm_scaling = 1;
-+	unsigned int sync_msg;
-+	long long kvm_offset;
-+	unsigned int size;
-+	char *msg;
-+	int ret;
-+
-+	clock_context = (struct clock_sync_context *)tsync->context;
-+	if (clock_context)
-+		kvm = (struct kvm_clock_sync *)clock_context->proto_data;
-+	if (!kvm || !kvm->vcpu_offsets || !kvm->vcpu_offsets[0])
-+		return -1;
-+	if (cpu >= kvm->vcpu_count)
-+		return -1;
-+	ret = read_ll_form_file(kvm->vcpu_offsets[cpu], &kvm_offset);
-+	if (ret < 0)
-+		return -1;
-+	if (kvm->vcpu_scalings && kvm->vcpu_scalings[cpu])
-+		read_ll_form_file(kvm->vcpu_scalings[cpu], &kvm_scaling);
-+	msg = (char *)&packet;
-+	size = sizeof(packet);
-+	ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
-+					  sync_proto, &sync_msg,
-+					  &size, &msg);
-+	if (ret || strncmp(sync_proto, KVM_NAME, TRACECMD_TSYNC_PNAME_LENGTH) ||
-+	    sync_msg != KVM_SYNC_PKT_REQUEST)
-+		return -1;
-+
-+	packet.offset = -kvm_offset;
-+	packet.scaling = kvm_scaling;
-+	ret = tracecmd_msg_send_time_sync(tsync->msg_handle, KVM_NAME,
-+					  KVM_SYNC_PKT_RESPONSE, sizeof(packet),
-+					  (char *)&packet);
-+	if (ret)
-+		return -1;
-+
-+	*scaling = packet.scaling;
-+	*offset = packet.offset;
-+	*timestamp = packet.ts;
-+
-+	return 0;
-+}
-+
-+#define KVM_EVENT_MARKER	"kvm sync event"
-+static int kvm_marker_find(struct tep_event *event, struct tep_record *record,
-+			   int cpu, void *context)
-+{
-+	struct kvm_clock_sync *kvm = (struct kvm_clock_sync *)context;
-+	struct tep_format_field *field;
-+	struct tep_format_field *id;
-+	char *marker;
-+
-+	/* Make sure this is our event */
-+	if (event->id != kvm->raw_id)
-+		return 0;
-+	id = tep_find_field(event, "id");
-+	field = tep_find_field(event, "buf");
-+	if (field && id &&
-+	    record->size >= (id->offset + strlen(KVM_EVENT_MARKER) + 1)) {
-+		marker = (char *)(record->data + id->offset);
-+		if (!strcmp(marker, KVM_EVENT_MARKER)) {
-+			kvm->ts = record->ts;
-+			return 1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+
-+static int kvm_clock_guest(struct tracecmd_time_sync *tsync,
-+			   long long *offset,
-+			   long long *scaling,
-+			   long long *timestamp)
-+{
-+	char sync_proto[TRACECMD_TSYNC_PNAME_LENGTH];
-+	struct clock_sync_context *clock_context;
-+	struct kvm_clock_offset_msg packet;
-+	struct kvm_clock_sync *kvm = NULL;
-+	unsigned int sync_msg;
-+	unsigned int size;
-+	char *msg;
-+	int ret;
-+
-+	clock_context = (struct clock_sync_context *)tsync->context;
-+	if (clock_context)
-+		kvm = (struct kvm_clock_sync *)clock_context->proto_data;
-+	if (!kvm)
-+		return -1;
-+	kvm->ts = 0;
-+	memset(&packet, 0, sizeof(packet));
-+	tracefs_instance_file_write(clock_context->instance, "trace", "\0");
-+	write(kvm->marker_fd, KVM_EVENT_MARKER, strlen(KVM_EVENT_MARKER) + 1);
-+	kvm->ts = 0;
-+	tracefs_iterate_raw_events(kvm->tep, clock_context->instance,
-+				   NULL, 0, kvm_marker_find, kvm);
-+	packet.ts = kvm->ts;
-+	ret = tracecmd_msg_send_time_sync(tsync->msg_handle, KVM_NAME,
-+					  KVM_SYNC_PKT_REQUEST, sizeof(packet),
-+					  (char *)&packet);
-+	if (ret)
-+		return -1;
-+	msg = (char *)&packet;
-+	size = sizeof(packet);
-+	ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
-+					  sync_proto, &sync_msg,
-+					  &size, &msg);
-+	if (ret || strncmp(sync_proto, KVM_NAME, TRACECMD_TSYNC_PNAME_LENGTH) ||
-+	    sync_msg != KVM_SYNC_PKT_RESPONSE)
-+		return -1;
-+
-+	*scaling = packet.scaling;
-+	*offset = packet.offset;
-+	*timestamp = packet.ts;
-+	return 0;
-+}
-+
-+static int kvm_clock_sync_calc(struct tracecmd_time_sync *tsync,
-+			       long long *offset, long long *scaling,
-+			       long long *timestamp, unsigned int cpu)
-+{
-+	struct clock_sync_context *clock_context;
-+	int ret;
-+
-+	if (!tsync || !tsync->context)
-+		return -1;
-+
-+	clock_context = (struct clock_sync_context *)tsync->context;
-+
-+	if (clock_context->is_guest)
-+		ret = kvm_clock_guest(tsync, offset, scaling, timestamp);
-+	else
-+		ret = kvm_clock_host(tsync, offset, scaling, timestamp, cpu);
-+	return ret;
-+}
-+
-+int kvm_clock_sync_register(void)
-+{
-+	int role = TRACECMD_TIME_SYNC_ROLE_GUEST;
-+	int clock = 0;
-+
-+	if (kvm_support_check(false)) {
-+		role |= TRACECMD_TIME_SYNC_ROLE_HOST;
-+		clock = TRACECMD_CLOCK_X86_TSC;
-+	}
-+	return tracecmd_tsync_proto_register(KVM_NAME, KVM_ACCURACY,
-+					     role, clock, 0,
-+					     kvm_clock_sync_init,
-+					     kvm_clock_sync_free,
-+					     kvm_clock_sync_calc);
-+}
-+
-+int kvm_clock_sync_unregister(void)
-+{
-+	return tracecmd_tsync_proto_unregister(KVM_NAME);
-+}
-diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
-index fb18075b..2a95512f 100644
---- a/lib/trace-cmd/trace-timesync.c
-+++ b/lib/trace-cmd/trace-timesync.c
-@@ -63,6 +63,7 @@ static struct tsync_proto *tsync_proto_find(const char *proto_name)
- void tracecmd_tsync_init(void)
- {
- 	ptp_clock_sync_register();
-+	kvm_clock_sync_register();
- }
- 
- int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int roles,
--- 
-2.29.2
+On 5.02.21 г. 13:12 ч., Tzvetomir Stoyanov (VMware) wrote:
+> From: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
+> 
+> There is a compilation error when compiling KernelShark on Fedora 33
+> with c++ (GCC) 10.2.1:
+> 
+>    src/KsPlotTools.hpp:349:37: error: ‘string’ in namespace ‘std’ does not name a type
+> 
+> "string" should be included in that header file, as it is a direct
+> dependency.
+> 
+> Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
+> ---
+>   src/KsPlotTools.hpp | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
+> index 1725926..68bd6f7 100644
+> --- a/src/KsPlotTools.hpp
+> +++ b/src/KsPlotTools.hpp
+> @@ -15,6 +15,7 @@
+>   // C++
+>   #include <forward_list>
+>   #include <unordered_map>
+> +#include <string>
+>   
+>   // KernelShark
+>   #include "libkshark.h"
+> 
 
+Thanks Ceco!
+
+Reviewed-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
