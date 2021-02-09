@@ -7,47 +7,39 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10CA0C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 07:29:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F67CC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 10:50:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CDC5D64EB4
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 07:29:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4DD1364DAE
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 10:50:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhBIH3l (ORCPT
+        id S231966AbhBIKuv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Feb 2021 02:29:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57660 "EHLO mx2.suse.de"
+        Tue, 9 Feb 2021 05:50:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52140 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229562AbhBIH3j (ORCPT
+        id S232077AbhBIKsu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:29:39 -0500
+        Tue, 9 Feb 2021 05:48:50 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612855732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MF3tn2UT9ksgJ+Qf7GWVLAbEPN1E5KhgJDPuY5r2MbA=;
-        b=kfvQ3n+S275y1jDoo1kErkfh2UG5+EepWuhY/tCbNDfxwVlvE0jMhQPvEat15RI27FIyxK
-        hxGbL4h1PpMoX2LP8zFkeFoGiwNTs43VL8GoUAljiGgcNfvGHJo612UYD41X3NTFq4RXdm
-        tvYUbrktr7pHDUGsmHd9og0k88vCPJg=
+        t=1612867683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=NIq7yoKtFzWd7VQzawdH2FFxERfkZ0jcnjX+8NoXvYU=;
+        b=R+Ur/N8KsESci5VkR1F3sMJzdElwfO/MWN3o1PynxGgx9mXH43jplctGOyTAuTj6ONzGwD
+        PuBWMdPnDCBGayKU/rsKgns+nsWXbiGNDZckZrYLGGR9BwCpJGYSPHsiGB1hvwMjLNOkZB
+        at2SIhIUCK/Ibe5n4EpQZLohHHLAqSE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1DAABB018;
-        Tue,  9 Feb 2021 07:28:52 +0000 (UTC)
-Message-ID: <f6a169322dde8038832371fa1d5856f74e2ab308.camel@suse.com>
-Subject: Re: [PATCH v28 0/8] Timestamp synchronization of host - guest
- tracing session
+        by mx2.suse.de (Postfix) with ESMTP id 99A60AF26;
+        Tue,  9 Feb 2021 10:48:03 +0000 (UTC)
+Message-ID: <89dbef38a1050c31390ce263d51fff1f72a42164.camel@suse.com>
+Subject: Kernelshark v2 all-black plots area
 From:   Dario Faggioli <dfaggioli@suse.com>
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Date:   Tue, 09 Feb 2021 08:28:51 +0100
-In-Reply-To: <CAPpZLN7boZK+9921zJ+OvZ-yhT6DdAkWkj9+fgswV_g4PxsROg@mail.gmail.com>
-References: <20210208061743.510964-1-tz.stoyanov@gmail.com>
-         <bb09f02e5d1e14cf835c85c97ae7902976bdb408.camel@suse.com>
-         <CAPpZLN5SQu=XwQ+XodbVWrXUb-qtcLjH-U79R6NBDJ4jwQSvsw@mail.gmail.com>
-         <CAPpZLN7boZK+9921zJ+OvZ-yhT6DdAkWkj9+fgswV_g4PxsROg@mail.gmail.com>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Date:   Tue, 09 Feb 2021 11:48:02 +0100
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-xaPUalb6KAGmxxQGK9/s"
+        protocol="application/pgp-signature"; boundary="=-fGBSAxNK3DXlz4Se+geN"
 User-Agent: Evolution 3.38.3 (by Flathub.org) 
 MIME-Version: 1.0
 Precedence: bulk
@@ -55,34 +47,37 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 
---=-xaPUalb6KAGmxxQGK9/s
+--=-fGBSAxNK3DXlz4Se+geN
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2021-02-09 at 08:08 +0200, Tzvetomir Stoyanov wrote:
->=20
-> Also, please note that there are two patches that should be applied
-> also,
-> not part of v28 version of the patchset:
->
-Aha!
+Heya, me again! :-)
 
-> =C2=A0 "trace-cmd: Fix plist allocation check in trace-msg.c"
-> =C2=A0=C2=A0 =20
-> https://patchwork.kernel.org/project/linux-trace-devel/patch/202102031654=
-31.792152a4@gandalf.local.home/
-> =C2=A0"trace-cmd: Fix SEGFAULT when no tsync_protos are supplied"
-> =C2=A0=C2=A0 =20
-> https://patchwork.kernel.org/project/linux-trace-devel/patch/202102031710=
-18.5b82a0a7@gandalf.local.home/
->=20
-I just applied both, and it now seems that things work!
+So, I'm not playing with trace-cmd only, I'm also giving a try to
+kernelshark-v2.
 
-Or at least, host and guest talk, and I see this: "Negotiated kvm time
-sync protocol with guest (null)" (is that "(null)" ok/intentional? I
-guess I can check the code... :-))
+I can build it fine, and it even starts, but the plots area looks
+almost all black. The events and the tasks occurring on the "last CPU"
+(i.e., on CPU7 if I have 8 CPUs) are more or less fine, it seems
+(although still hard to work with, given the background).
 
-Thanks a lot. :-)
+Actually, it's the last plot that "works". In fact, if I add a task
+plot, I do see what that one is supposed to show, but the events of
+CPU7 disappear.
+
+Others are there, because the marker moves if I click on the entries in
+the trace area... but they're kind of behind the black cover.
+
+A screenshot can be found here:
+http://xenbits.xen.org/people/dariof/kernelshark-v2-black.png
+
+Am I the only one? Can it be related to my configuration or build
+environment?
+
+I'm happy to help with more info or try some debugging, if you think it
+could be useful.
+
+Thanks and Regards
 --=20
 Dario Faggioli, Ph.D
 http://about.me/dario.faggioli
@@ -91,27 +86,27 @@ SUSE Labs, SUSE https://www.suse.com/
 -------------------------------------------------------------------
 <<This happens because _I_ choose it to happen!>> (Raistlin Majere)
 
---=-xaPUalb6KAGmxxQGK9/s
+--=-fGBSAxNK3DXlz4Se+geN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmAiObMACgkQFkJ4iaW4
-c+5Z1Q/+L+Zdf0tnbO9GPys5+iytAtQbnW1PDXH1mihnuitnIpAtNGP7Jke13Y2d
-L69D/5M2wZ971RdhWyclFotcqxsoRKQxWcSqW9rm7vDY7xdkNMY6mP+lR7LzET8l
-dZrTIiuCU0xVYZXCaTKEgCDU3YFU+XVrdNBqYSTE44+uEDhYEgW0XXzTK7/UPFdj
-6yiSya/L0pZE3snTX1ky5546UqelKZVNPPZPiMmblhWkdCPIemDAIV0ctNzBbAFx
-S08Y/rUbfu2slS1UPtT0Vi4Lz687+KK0AALxeZrps14chdbA/xMcGjZywsWDNxbX
-XPKKB+GY4IAPmWslbeyW4ijCFrajfYDQaNm+MOp9ZQW8juQZHo051bCD5xWIe8xz
-JKWrFx0ZWylq6+YamuToAyIZhsqCzW9DzFCgIYFcbKX6zQbIookFu/yg1XSxrgCS
-P2ORqrjq+qg5/I9kZE9HY80RXJ4PTN7SpXy++sYzUOd64ABwgkS7nCbDxOSsZaoa
-6z7u5tmcikGKHzPmXn2Lugo1chci7d8zakUdaKcuQDFnMH2DYRYsrxwIMD4tlx1c
-xVw0Za7qkU9s0oBVulsKhSw9pRlOhiuAFeOrW/fMTeve/JaJEkp02Tw+nxi8yHnH
-YTSgDlNmx4aGnRaLX5UVMOikB6JRGTGvcNvyPCN6+W8OBc9HPwo=
-=Vu3C
+iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmAiaGIACgkQFkJ4iaW4
+c+4pUA//V1HYE+ps4qe6PZuWV/FAcydXDzCLvMvlpOjam5o6OXPzECCoGyTEWrEf
+r4TnHxHyOjpUDb0ie9RtdlxqW1SML8JK51JA/IL0A7CzBZ7cnkguuc6mgmMX2o/I
+l92l5sMX4kzbuuW2bt4cRz/XWuT5MKAWDcaSi83jsGrL9QtmOHSNMBSn+ZelWr1A
+dNHorCPT05B8q4N8QgkATvDHQXmpbSQC1GzCP/59sBVlRsbylfB2RF0XTgbH6ogP
+8rFBKgPLQyz0J1MLY/smsIHuvHfr0hiPVidFAy7icWZoUgolX2bUQNe1cSnId1vO
+d/96wxzaYlXaOzTAdJgivuug83Nbek7uJDU8abvo0Zazi4Yj+RfdA8HmOCEyBltR
+zrIfkx3ZuhgBzokTYyGirlpiyXwpvfBnp18MYx+i6zzAcAOkchAw2hbkddPN9VvT
+rgLexzGhYZIIoxqXWuO5gHU8LXtm92kComYPXnd/3+x79+URqniB0HI8+gTm3skk
+5DszciAo1UG1aicRNtWOSUDN+ZrPbhW+wxmH3l0xtgaWC+aAMADEBwpu0rNcuSk2
+bSpV5splAsqO7kqJoEccoedduKwlXWEuM0PiqRkwrzSuB037zc9WK0DyQQsZwTPX
+Hq8YbLKG6w6m/IDrE6LPMWrD5Vc6fPjJFUNu47xWIdOWhNH7ryk=
+=P9CW
 -----END PGP SIGNATURE-----
 
---=-xaPUalb6KAGmxxQGK9/s--
+--=-fGBSAxNK3DXlz4Se+geN--
 
