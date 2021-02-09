@@ -2,111 +2,115 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F67CC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 10:50:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A51C1C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 11:48:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DD1364DAE
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 10:50:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B20F64E10
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 11:48:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhBIKuv (ORCPT
+        id S229770AbhBILsG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Feb 2021 05:50:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52140 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232077AbhBIKsu (ORCPT
+        Tue, 9 Feb 2021 06:48:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230486AbhBILpi (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:48:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612867683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=NIq7yoKtFzWd7VQzawdH2FFxERfkZ0jcnjX+8NoXvYU=;
-        b=R+Ur/N8KsESci5VkR1F3sMJzdElwfO/MWN3o1PynxGgx9mXH43jplctGOyTAuTj6ONzGwD
-        PuBWMdPnDCBGayKU/rsKgns+nsWXbiGNDZckZrYLGGR9BwCpJGYSPHsiGB1hvwMjLNOkZB
-        at2SIhIUCK/Ibe5n4EpQZLohHHLAqSE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 99A60AF26;
-        Tue,  9 Feb 2021 10:48:03 +0000 (UTC)
-Message-ID: <89dbef38a1050c31390ce263d51fff1f72a42164.camel@suse.com>
-Subject: Kernelshark v2 all-black plots area
-From:   Dario Faggioli <dfaggioli@suse.com>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Date:   Tue, 09 Feb 2021 11:48:02 +0100
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-fGBSAxNK3DXlz4Se+geN"
-User-Agent: Evolution 3.38.3 (by Flathub.org) 
+        Tue, 9 Feb 2021 06:45:38 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC2BC061793
+        for <linux-trace-devel@vger.kernel.org>; Tue,  9 Feb 2021 03:44:58 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id nm1so1407818pjb.3
+        for <linux-trace-devel@vger.kernel.org>; Tue, 09 Feb 2021 03:44:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m5icVyHSzXNyDeuYQDyYUjhI+/d9LTfPgs/VqFREg+c=;
+        b=itvgOJtLeOfocd8nYmEo+3UGoeckamcK39CTAF9u1X8m00TkplITwwnTi8ueXGIkK/
+         PsvY8ZpJgAOOrRwaRRYiv8fAC3koGZaFLgJ9eSMdoxlSaNAE3KSzxUm7nvxvgbvKCJoG
+         wj2V37IC8RJ1gTN9ldsUptDj3q4PlO5CaeRNsnr0ajuLbDZClKpqC7mUXv4Z2ZQjNh4E
+         ZProLWeaPMXlrXzBWCgpv+9RoZ/cAbw82rWo9ByN9djmOFinfaXD1erug1gRMnqk/8zx
+         rxvPo+DpZIwKA3gkdBuwCEPl4Y7wChK3zCBbHovYWSHXvka0g7dg0gANjTODLegEVxn6
+         Kanw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m5icVyHSzXNyDeuYQDyYUjhI+/d9LTfPgs/VqFREg+c=;
+        b=F1fHaoV64g+aQhAo6CAkWzuAx+miw5xG+cErHa0e/uCgBDcmdD+lViA6JTSGuN8/kl
+         yfkhgN3dYIvGV50nWqmiD+vEJII63RexzB8RNoOu1+06bRMNZle5YVbmIhmRPea61AK1
+         T6HKpDbSdMchc9xDs+ceb8kBh95MDrpqIknAf6BCs3KcDskKXO1nWDGsAcRFFnYudVWG
+         NTdNLdSm7a50b0qkLSo27fGAl+1oXLvfHXfhGQvyortprF2AQ7gvsT2mlORaikC0bnek
+         ljO0HcXOX98NA2hEjj6jUAXmmSnhmUkEHMUhcKK9c/AyaWg4f56uETbNsvgmqtEosxMn
+         W8Tw==
+X-Gm-Message-State: AOAM532sGtUYAi5KfdelmcL/p+hGil+l1jk+VS7BskPzAbs14gbOESMO
+        TxBuxd+heR2RQh+PmbsHOCITeVGxvypNPWpYj5ihCjc1Ajw=
+X-Google-Smtp-Source: ABdhPJz5PT2aNUsP86MF6smy/Mn5Ofw0rUQetASkW6VRyEGeWAj26ndhaE4bBDaU9C3xBLHgbaW5d9Dyz8Vt+AMHfX4=
+X-Received: by 2002:a17:90b:3886:: with SMTP id mu6mr3556366pjb.153.1612871098191;
+ Tue, 09 Feb 2021 03:44:58 -0800 (PST)
 MIME-Version: 1.0
+References: <20210208061743.510964-1-tz.stoyanov@gmail.com>
+ <bb09f02e5d1e14cf835c85c97ae7902976bdb408.camel@suse.com> <CAPpZLN5SQu=XwQ+XodbVWrXUb-qtcLjH-U79R6NBDJ4jwQSvsw@mail.gmail.com>
+ <CAPpZLN7boZK+9921zJ+OvZ-yhT6DdAkWkj9+fgswV_g4PxsROg@mail.gmail.com> <f6a169322dde8038832371fa1d5856f74e2ab308.camel@suse.com>
+In-Reply-To: <f6a169322dde8038832371fa1d5856f74e2ab308.camel@suse.com>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Tue, 9 Feb 2021 13:44:41 +0200
+Message-ID: <CAPpZLN6wUD4wFLLODFL3529vz_khKgvK-PkHspOzA5zEwPeHjQ@mail.gmail.com>
+Subject: Re: [PATCH v28 0/8] Timestamp synchronization of host - guest tracing session
+To:     Dario Faggioli <dfaggioli@suse.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+Hi Dario,
 
---=-fGBSAxNK3DXlz4Se+geN
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 9, 2021 at 9:28 AM Dario Faggioli <dfaggioli@suse.com> wrote:
+>
+> On Tue, 2021-02-09 at 08:08 +0200, Tzvetomir Stoyanov wrote:
+> >
+> > Also, please note that there are two patches that should be applied
+> > also,
+> > not part of v28 version of the patchset:
+> >
+> Aha!
+>
+> >   "trace-cmd: Fix plist allocation check in trace-msg.c"
+> >
+> > https://patchwork.kernel.org/project/linux-trace-devel/patch/20210203165431.792152a4@gandalf.local.home/
+> >  "trace-cmd: Fix SEGFAULT when no tsync_protos are supplied"
+> >
+> > https://patchwork.kernel.org/project/linux-trace-devel/patch/20210203171018.5b82a0a7@gandalf.local.home/
+> >
+> I just applied both, and it now seems that things work!
+>
+> Or at least, host and guest talk, and I see this: "Negotiated kvm time
+> sync protocol with guest (null)" (is that "(null)" ok/intentional? I
+> guess I can check the code... :-))
 
-Heya, me again! :-)
+That null looks like an error, the name of the guest VM should be printed there.
+Thanks for testing these patches, I hope the code will be stabilized
+and merged soon.
 
-So, I'm not playing with trace-cmd only, I'm also giving a try to
-kernelshark-v2.
+>
+> Thanks a lot. :-)
+> --
+> Dario Faggioli, Ph.D
+> http://about.me/dario.faggioli
+> Virtualization Software Engineer
+> SUSE Labs, SUSE https://www.suse.com/
+> -------------------------------------------------------------------
+> <<This happens because _I_ choose it to happen!>> (Raistlin Majere)
 
-I can build it fine, and it even starts, but the plots area looks
-almost all black. The events and the tasks occurring on the "last CPU"
-(i.e., on CPU7 if I have 8 CPUs) are more or less fine, it seems
-(although still hard to work with, given the background).
 
-Actually, it's the last plot that "works". In fact, if I add a task
-plot, I do see what that one is supposed to show, but the events of
-CPU7 disappear.
 
-Others are there, because the marker moves if I click on the entries in
-the trace area... but they're kind of behind the black cover.
-
-A screenshot can be found here:
-http://xenbits.xen.org/people/dariof/kernelshark-v2-black.png
-
-Am I the only one? Can it be related to my configuration or build
-environment?
-
-I'm happy to help with more info or try some debugging, if you think it
-could be useful.
-
-Thanks and Regards
---=20
-Dario Faggioli, Ph.D
-http://about.me/dario.faggioli
-Virtualization Software Engineer
-SUSE Labs, SUSE https://www.suse.com/
--------------------------------------------------------------------
-<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
-
---=-fGBSAxNK3DXlz4Se+geN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmAiaGIACgkQFkJ4iaW4
-c+4pUA//V1HYE+ps4qe6PZuWV/FAcydXDzCLvMvlpOjam5o6OXPzECCoGyTEWrEf
-r4TnHxHyOjpUDb0ie9RtdlxqW1SML8JK51JA/IL0A7CzBZ7cnkguuc6mgmMX2o/I
-l92l5sMX4kzbuuW2bt4cRz/XWuT5MKAWDcaSi83jsGrL9QtmOHSNMBSn+ZelWr1A
-dNHorCPT05B8q4N8QgkATvDHQXmpbSQC1GzCP/59sBVlRsbylfB2RF0XTgbH6ogP
-8rFBKgPLQyz0J1MLY/smsIHuvHfr0hiPVidFAy7icWZoUgolX2bUQNe1cSnId1vO
-d/96wxzaYlXaOzTAdJgivuug83Nbek7uJDU8abvo0Zazi4Yj+RfdA8HmOCEyBltR
-zrIfkx3ZuhgBzokTYyGirlpiyXwpvfBnp18MYx+i6zzAcAOkchAw2hbkddPN9VvT
-rgLexzGhYZIIoxqXWuO5gHU8LXtm92kComYPXnd/3+x79+URqniB0HI8+gTm3skk
-5DszciAo1UG1aicRNtWOSUDN+ZrPbhW+wxmH3l0xtgaWC+aAMADEBwpu0rNcuSk2
-bSpV5splAsqO7kqJoEccoedduKwlXWEuM0PiqRkwrzSuB037zc9WK0DyQQsZwTPX
-Hq8YbLKG6w6m/IDrE6LPMWrD5Vc6fPjJFUNu47xWIdOWhNH7ryk=
-=P9CW
------END PGP SIGNATURE-----
-
---=-fGBSAxNK3DXlz4Se+geN--
-
+-- 
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
