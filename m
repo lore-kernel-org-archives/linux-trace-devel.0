@@ -2,142 +2,258 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E040C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 16:14:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7632C433DB
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 17:00:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0617464EAA
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 16:14:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 645F964EB4
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 17:00:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbhBIQOB (ORCPT
+        id S232799AbhBIQ7x (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Feb 2021 11:14:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47990 "EHLO mx2.suse.de"
+        Tue, 9 Feb 2021 11:59:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232605AbhBIQN5 (ORCPT
+        id S232561AbhBIQ7l (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:13:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612887190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B3tEVI0BEHgBxQU0oxvAYamy9tLRqqyK4XaYm8KQI0s=;
-        b=NPKunZjSL92yZ65uOk6RcZ9476738Aoe8r7iXJbSWIfQwUvk2IM/aH7VAWXG13mZ3rbD01
-        vAxKKl+UY+4jgbMxQcezjx1LFe2oDZKjSH5nyb0BkvKmPfgwwW6symGTMPFdUGVJFmwV3J
-        3TmQdc+JnQ50/+KWsW7YuONRw7S9NTc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A86A4AF0E;
-        Tue,  9 Feb 2021 16:13:10 +0000 (UTC)
-Message-ID: <e07be2e367576882d0cf84c33834ecafaba38136.camel@suse.com>
-Subject: Re: Kernelshark v2 all-black plots area
-From:   Dario Faggioli <dfaggioli@suse.com>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
+        Tue, 9 Feb 2021 11:59:41 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33FBB60230;
+        Tue,  9 Feb 2021 16:58:57 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 11:58:55 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc:     Sameeruddin Shaik <sameeruddin.shaik8@gmail.com>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Date:   Tue, 09 Feb 2021 17:13:09 +0100
-In-Reply-To: <ce06b82f-6335-4653-0d27-e48a37ffb5aa@gmail.com>
-References: <89dbef38a1050c31390ce263d51fff1f72a42164.camel@suse.com>
-         <ce06b82f-6335-4653-0d27-e48a37ffb5aa@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-Tlz3SgJNV+zq+QL2IjFS"
-User-Agent: Evolution 3.38.3 (by Flathub.org) 
+Subject: Re: [PATCH][WIP]libtracefs:New API to enable the filtering of
+ functions
+Message-ID: <20210209115855.37826f7f@gandalf.local.home>
+In-Reply-To: <CAPpZLN7ysUKXLXwCbkfq+-OMhzUOXtDam+937gquDX4uT_nTHQ@mail.gmail.com>
+References: <CAK7tX=angRdxNdg2yNnss-NuBm+i-Y3unyT6BaeY0Quj-QB+UA@mail.gmail.com>
+        <CAPpZLN7ysUKXLXwCbkfq+-OMhzUOXtDam+937gquDX4uT_nTHQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Tue, 9 Feb 2021 07:52:20 +0200
+Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
 
---=-Tlz3SgJNV+zq+QL2IjFS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> Hi Sammer,
+> 
+> On Mon, Feb 8, 2021 at 3:17 AM Sameeruddin Shaik
+> <sameeruddin.shaik8@gmail.com> wrote:
+> >
+> > Hi steve,
+> > This is my progress so far on Adding API's to set the filtering of
+> > functions https://bugzilla.kernel.org/show_bug.cgi?id=210643. I have
+> > few doubts here , based on my assumptions, i have implemented the below
+> > API. API function:
+> >
+> > int tracefs_function_filter(struct tracefs_instance *instance, const
+> > char *filter);
+> >
+> > please give me some inputs on the below questions
+> >
+> > 1.Here filter is only one string or multiple strings followed by space?
+> >  
+> It is up to us to decide if the API will accept only one function at
+> each call, or a list of functions.
+> I think the logic should be simple, only one function per call.
 
-On Tue, 2021-02-09 at 15:06 +0200, Yordan Karadzhov (VMware) wrote:
-> Ciao Dario,
->=20
-Ciao! :-)
+I was thinking about this some more. If we have one function per call, it
+would require opening up the set_ftrace_filter file each time, which I
+think is unnecessary. This also brings up how we update the filter. If you
+open the file with O_TRUNC set, it will clear the existing filter,
+otherwise it appends to it.
 
-> There is a bug in one of the patches from the last patch-set I sent.=20
-> This bug was reported by Tzvetomir. My guess is that you are hitting
-> the=20
-> same issue. If this is the case you must also have an error message=20
-> saying "Unable to find FreeSans font".
->=20
-Yep, I was seeing that too. And, TBH, for a while I installed font
-packages like mad, thinking it was related to something like that. :-P
+Perhaps instead of passing a "const char *filter", we should pass an array,
+"const char * const *filters", that is a n array of const char *
+functions, and the last one being NULL.
 
-> You can manually do the fix suggested by Tzvetomir (see his reply to=20
-> [PATCH 15/24] kernel-shark: Update KsDualMarker and KsGLWidget) or
-> just=20
-> get a corrected (rebased) version of the code from
-> https://github.com/yordan-karadzhov/kernel-shark-v2.beta
->=20
-Ah, great! I updated (rebase included), and now plots are back.
+We should also add a reset boolean value. Which if true, it opens the file
+with O_TRUNC causing the file to be reset before we add the new values.
 
-> Please let me know if this fixes your issue.
->
-Indeed it does, thanks a lot again.
+int tracefs_function_filter(struct tracefs_instance *instance,
+		const char * const *filter, bool reset);
 
-Now, if I try "KVM Combo Plot":
-- I still see super weird results if I use the KVM clock from last
-  patch in Tzvetomir series (but I guess I'll report it there).
-- If I use PTP, that kind of works.
+> >
+> > diff --git a/include/tracefs.h b/include/tracefs.h
+> > index 8b11d35..29aee66 100644
+> > --- a/include/tracefs.h
+> > +++ b/include/tracefs.h
+> > @@ -47,6 +47,7 @@ int tracefs_trace_on(struct tracefs_instance
+> > *instance); int tracefs_trace_off(struct tracefs_instance *instance);
+> >  int tracefs_trace_on_fd(int fd);
+> >  int tracefs_trace_off_fd(int fd);
+> > +int tracefs_function_filter(struct tracefs_instance *instance, const
+> > char *filter);
+> >
+> >  /**
+> >   * tracefs_trace_on_get_fd - Get a file descriptor of "tracing_on" in
+> > given instance diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
+> > index 101f389..cb0bc51 100644
+> > --- a/src/tracefs-tools.c
+> > +++ b/src/tracefs-tools.c
+> > @@ -14,6 +14,7 @@
+> >  #include "tracefs-local.h"
+> >
+> >  #define TRACE_CTRL "tracing_on"
+> > +#define TRACE_FLTR      "set_ftrace_filter"
 
-If I trace a `sleep 1` on the host, the result is like this:
+I'd rather have the above be "TRACE_FILTER", making things too cryptic adds
+more unnecessary confusion. The TRACE_CTRL is cryptic enough ;-)
 
-http://xenbits.xen.org/people/dariof/kernelshark-v2-ptp.png
+> >
+> >  static int trace_on_off(int fd, bool on)
+> >  {
+> > @@ -107,3 +108,84 @@ int tracefs_trace_off_fd(int fd)
+> >   return -1;
+> >   return trace_on_off(fd, false);
+> >  }
+> > +
+> > +int tracefs_function_filter(struct tracefs_instance *instance, const
+> > char *filter) +{
+> > + bool res = 0;;  
+> One extra semicolon.
+> 
+> > + int ret= 0;
+> > + char *available_filter_functions;
+> > + char *buf, *saveptr, *str;
+> > + char *final_filter;
+> > + struct stat st;
+> > + size_t len;
+> > + char *function_name;
+> > + char *saveptr1, *str1;
+> > + char *each_filter;
+> > + char *fun_sub_name;
+> > + char *tmp = NULL;  
+> Small hint on coding style. Please, arrange the variables by length -
+> longest first, shortest last.
+> We are trying to use this coding style rule, at least for the new code.
 
-So, there is ~ 1 sec of data from the guest, coming from trace-cmd
-agent. The host, however, went on and traced a little bit longer, even
-after closing the connection. It's not too terrible, I'm just curious
-whether this is known or it's something weird and it's only me seeing
-it.
+Yes, we call it upside down x-mas tree style. it looks like an upside down
+x-mas tree and is much easier to read. Although, its best if you try to
+keep the same types bunched together.
 
-Evaluating the correctness and the accuracy of the synchronization is a
-little bit of a challenge, especially for me that I'm not used to it.
-And, at least in part, because I still don't have this change in the
-kernel I'm using right now, so some kvm_entry trace points are not
-recorded, which means it's tricky pairing VMEntries and VMExits:
+> 
+> > +
+> > + if (!filter)
+> > + return -1;
+> > + len = strlen(filter);
+> > +
+> > + final_filter = (char *)malloc(sizeof(char) * len);
 
-https://lore.kernel.org/lkml/160873470698.11652.13483635328769030605.stgit@=
-Wayrath/
+Unnecessary typecast. Also, sizeof(char) is always one.
 
-It should come with 5.11, but I think I'll quickly apply it to the 5.10
-that I'm running, to try to understand better hat's going on.
+	final_filter = malloc(len);
 
-Thanks and Regards
---=20
-Dario Faggioli, Ph.D
-http://about.me/dario.faggioli
-Virtualization Software Engineer
-SUSE Labs, SUSE https://www.suse.com/
--------------------------------------------------------------------
-<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
+is prefectly fine.
 
---=-Tlz3SgJNV+zq+QL2IjFS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+> > +
+> > + if (!final_filter)
+> > + goto gracefully_free;
+> > + memset(final_filter, '\0', len);
 
------BEGIN PGP SIGNATURE-----
+If you are going to zero it out, its best to use calloc instead of malloc:
 
-iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmAitJUACgkQFkJ4iaW4
-c+5yXQ/+NJt+9KxwfW2brA79w18BeICru6+MLjw23xJFDX/e+day7rBZpVJhECW5
-ci89mJey/T84hZouGR1nbLHBndHrYfiWKU32AqvAMdW2OsMN+0YF7f1xQzlNPUHg
-ysyX87GKkicj7n0vffpupukrTlnzdzBHFWBwqX3NDLfudI33/JTPNkrNOFMzW8/f
-Z2OmkwiJQ9AEFxT31VU872m11XSVkJGp05x1U1VhacaZTyh+EO/vrS8/FG3hUT8d
-NQeGRnFtYL2r3ArFSTH+8/EDktr2S2dQvlhPtJva+1URsCbfKTTAw4UGAuM8akWo
-Bifv1DxdrCQzWPGp577kOXjMlDty53l8KmdCrw6KEmR69IT8Czzsc8VsorSaxgA0
-+LjLC2lgS8B4PCANpaCE2Cs+25M6NTN/3+d+dtCMygF22M/OU1hubJCCHKIynGdS
-1ZM0+f4Yy+Ope/PV1k7fcH7PofOhxN/0emoyo02y4KYJ8tSK+ruTJlxtz7Z2s/CY
-NxwtXWmOFFP4sUJFIAirSk3Y+x5T9nTiMrufB75wJvkyRnLH9+rGVJnG35DxGAib
-rihh0/lIR2JIxPg0X2ByNg/PLnKl++Kso1EBdo9tnzRCOvcbMZ/Zu3dSgNcsrOqJ
-DgRtGLRIVF0VGB+AiZZ6C1g3BDHrKaLHrFhbIAm44wlkQ4LTaxQ=
-=FqY9
------END PGP SIGNATURE-----
+	final_filter = calloc(1, len);
 
---=-Tlz3SgJNV+zq+QL2IjFS--
+Which will zero out the memory that you allocate for you.
+
+> > +
+> > + available_filter_functions = tracefs_instance_get_file(NULL,
+> > "available_\ +filter_functions");  
+> It is better to have it on a single line. This coding style rule could
+> not be followed
+> strictly in all cases, sometimes the code is more readable in one line.
+> 
+> > + ret = stat(available_filter_functions, &st);
+> > + if (ret < 0)
+> > + goto gracefully_free;
+> > + /*Reading the available_filter_functions file*/
+> > + len = str_read_file(available_filter_functions, &buf);
+> > + if (len <= 0)
+> > + goto gracefully_free;
+> > + /* Match each function passed in filter against the
+> > available_filter_fucntions*/  
+> I think verifying the requested filter functions using
+> available_filter_functions could be
+> omitted. There is such validation in the kernel, so let's use it.
+> Writing invalid strings into
+> set_ftrace_filter should return an error, and we can pass that error
+> to the API caller.
+> Note that set_ftrace_filter supports wildcards also, you can filter
+> "sched_*" for example.
+> That makes the validation more complex.
+> I would recommend to verify if a const char *filter is a valid string
+> only and to rely on
+> the kernel verification for valid function filter.
+> 
+> 
+> > + for (str1 = filter; ; str1 = NULL) {
+> > + each_filter = strtok_r(str1, " ", &saveptr1);
+> > + if (!each_filter)
+> > + break;
+> > + tmp = (char *)malloc(sizeof(char) * len);
+> > + if (!tmp)
+> > + goto gracefully_free;
+> > + if (memcpy(tmp, buf, len) == NULL)
+> > + goto gracefully_free;
+
+At the beginning of the loop, you should use regex to define the filters
+(thus, people can use regex or the glob kernel parsing).
+
+See: man 3 regex.
+
+Create one regex_t for each filter passed in. Then you can go down and run
+regexec() against the available filter names to find the matches.
+
+Also since 5.1 (so we need to test this out to see if it errors or not),
+you can pass in numbers to set_ftrace_filter that will set the
+corresponding record in available_filter_functions (starting with 1).
+
+That is:
+
+ # cd /sys/kernel/tracing
+ # head available_filter_functions
+__traceiter_initcall_level
+__traceiter_initcall_start
+__traceiter_initcall_finish
+trace_initcall_finish_cb
+initcall_blacklisted
+do_one_initcall
+do_one_initcall
+match_dev_by_label
+match_dev_by_uuid
+rootfs_init_fs_context
+
+ # echo 5 > set_ftrace_filter
+ # cat set_ftrace_filter
+initcall_blacklisted
+
+Where "initcall_blacklisted" is the fifth element in
+available_filter_functions. It's much quicker to pass in numbers than it is
+names, as it removes the searches.
+
+Thus, if you can find all the names in available filter functions and
+create an array of their index (remember it starts with 1 not zero), and
+pass in those numbers, it will be much quicker!
+
+But if a number fails (errors on write), then you have to default back to
+the names (as kernels before 5.1 don't have this feature).
+
+Who knew such a "simple" API would be so complex ;-)
+
+Thanks!
+
+-- Steve
 
