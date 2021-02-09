@@ -7,46 +7,47 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAF57C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 07:20:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10CA0C433DB
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 07:29:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8EE0464E7A
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 07:20:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CDC5D64EB4
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 07:29:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhBIHTS (ORCPT
+        id S229753AbhBIH3l (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Feb 2021 02:19:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50858 "EHLO mx2.suse.de"
+        Tue, 9 Feb 2021 02:29:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57660 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230052AbhBIHTO (ORCPT
+        id S229562AbhBIH3j (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:19:14 -0500
+        Tue, 9 Feb 2021 02:29:39 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612855105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1612855732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=4bx/CaJ9dKByChpDVcit3DB5j3ixPSNTAvEI3tfvdsQ=;
-        b=HYrWZmX1+vSS8VJJ7zexjka2iTPDOUmW0n+K+8S5ED+32v5dG5FXN1d42nlfQuVcZhBk/D
-        V0b6ngbvsOSAk/plExY1mjBn7+a1+bt+wAoeZPhJ/RCjfhrKEy2G05FxzR+fIP+zZWEcnJ
-        LcEAt4RlEt21mvSU6eoPjVVXlQ0sgqg=
+        bh=MF3tn2UT9ksgJ+Qf7GWVLAbEPN1E5KhgJDPuY5r2MbA=;
+        b=kfvQ3n+S275y1jDoo1kErkfh2UG5+EepWuhY/tCbNDfxwVlvE0jMhQPvEat15RI27FIyxK
+        hxGbL4h1PpMoX2LP8zFkeFoGiwNTs43VL8GoUAljiGgcNfvGHJo612UYD41X3NTFq4RXdm
+        tvYUbrktr7pHDUGsmHd9og0k88vCPJg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A82C2AB71;
-        Tue,  9 Feb 2021 07:18:25 +0000 (UTC)
-Message-ID: <36b92f82fa13ab5f36b50ba6aff852d66a55f9f3.camel@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id 1DAABB018;
+        Tue,  9 Feb 2021 07:28:52 +0000 (UTC)
+Message-ID: <f6a169322dde8038832371fa1d5856f74e2ab308.camel@suse.com>
 Subject: Re: [PATCH v28 0/8] Timestamp synchronization of host - guest
  tracing session
 From:   Dario Faggioli <dfaggioli@suse.com>
 To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Date:   Tue, 09 Feb 2021 08:18:24 +0100
-In-Reply-To: <CAPpZLN5SQu=XwQ+XodbVWrXUb-qtcLjH-U79R6NBDJ4jwQSvsw@mail.gmail.com>
+Date:   Tue, 09 Feb 2021 08:28:51 +0100
+In-Reply-To: <CAPpZLN7boZK+9921zJ+OvZ-yhT6DdAkWkj9+fgswV_g4PxsROg@mail.gmail.com>
 References: <20210208061743.510964-1-tz.stoyanov@gmail.com>
          <bb09f02e5d1e14cf835c85c97ae7902976bdb408.camel@suse.com>
          <CAPpZLN5SQu=XwQ+XodbVWrXUb-qtcLjH-U79R6NBDJ4jwQSvsw@mail.gmail.com>
+         <CAPpZLN7boZK+9921zJ+OvZ-yhT6DdAkWkj9+fgswV_g4PxsROg@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-n8rW0w4Y7TjLX/hAt4iz"
+        protocol="application/pgp-signature"; boundary="=-xaPUalb6KAGmxxQGK9/s"
 User-Agent: Evolution 3.38.3 (by Flathub.org) 
 MIME-Version: 1.0
 Precedence: bulk
@@ -54,45 +55,34 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 
---=-n8rW0w4Y7TjLX/hAt4iz
+--=-xaPUalb6KAGmxxQGK9/s
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2021-02-09 at 08:03 +0200, Tzvetomir Stoyanov wrote:
-> Hi Dario,
+On Tue, 2021-02-09 at 08:08 +0200, Tzvetomir Stoyanov wrote:
 >=20
-Hi!
+> Also, please note that there are two patches that should be applied
+> also,
+> not part of v28 version of the patchset:
+>
+Aha!
 
-> On Tue, Feb 9, 2021 at 7:32 AM Dario Faggioli <dfaggioli@suse.com>
-> wrote:
-> >=20
-> > If necessary, I can provide more info about my setup, or do more
-> > tests.
+> =C2=A0 "trace-cmd: Fix plist allocation check in trace-msg.c"
+> =C2=A0=C2=A0 =20
+> https://patchwork.kernel.org/project/linux-trace-devel/patch/202102031654=
+31.792152a4@gandalf.local.home/
+> =C2=A0"trace-cmd: Fix SEGFAULT when no tsync_protos are supplied"
+> =C2=A0=C2=A0 =20
+> https://patchwork.kernel.org/project/linux-trace-devel/patch/202102031710=
+18.5b82a0a7@gandalf.local.home/
 >=20
-> There are a few limitations that we are working to address:
-> =C2=A01. Ensure that vhost_vsock module is loaded on the host.
-> =C2=A02. You should add a vsock device manually to your VM config, I use
-> "virsh edit <vm name>" to add:
-> =C2=A0=C2=A0 <vsock model=3D'virtio'>
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <cid auto=3D'yes'/>
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <address type=3D'pci' domain=3D'0x0000' bu=
-s=3D'0x00' slot=3D'0x09'
-> function=3D'0x0'/>
-> =C2=A0=C2=A0=C2=A0 </vsock>
-> somewhere in the <devices> </devices> section.
->=20
-Yep, these are both fine. In fact, I tested host<-->guest communication
-via vsock independently, and it works, so it does not seem a vsock
-issue...
+I just applied both, and it now seems that things work!
 
-I also try without the series applied (but keeping patch 2) and it
-still fails in the same way.
+Or at least, host and guest talk, and I see this: "Negotiated kvm time
+sync protocol with guest (null)" (is that "(null)" ok/intentional? I
+guess I can check the code... :-))
 
-FTR, in the past, I've used trace-cmd from git with an earlier version
-of this series applied (the "KVM clock" wasn't there yet) on the same
-environment I'm using now, and it worked.
-
-Regards
+Thanks a lot. :-)
 --=20
 Dario Faggioli, Ph.D
 http://about.me/dario.faggioli
@@ -101,27 +91,27 @@ SUSE Labs, SUSE https://www.suse.com/
 -------------------------------------------------------------------
 <<This happens because _I_ choose it to happen!>> (Raistlin Majere)
 
---=-n8rW0w4Y7TjLX/hAt4iz
+--=-xaPUalb6KAGmxxQGK9/s
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmAiN0AACgkQFkJ4iaW4
-c+7dWRAAheCG8rAVHquak+DfmXqAI+FAaqDxmSf3iu+M5xbhXIQrEEORCt4oSR82
-Fzx9mPDDyqNHw16oLnJ2pRxyUCsC7aJz63NKIDPTeuLyuKtQmLIdE0/par904baK
-p66skWTyam2dcyl/u40ay4KdmPQuNwZ+0GeoX9aM02tbdKAskxuDNhIAuJ7pKobP
-wfZRp2pxdfj4/opHbQ+yDwARc9tQmmK878MucvNUED6D+d5fKECYY300mdR5Ocie
-YmBQPrA1jYW4Ynwox6Zf5xik3gR2d/1TdNE5ENdeBZqtyPmtuLR60/sm03W+OR82
-UOsBpL8WgmTEhFEhT3zj34xrquff3yi5HLtzqBSnLXhiQBdZOIUWU8TZEH+11qzu
-vHDEQ22uBIWh5yKJ6Tg+2/iLRyycu4RxLf5R+6xJS0wjq5FoAqddE6omM0MVKU4k
-G3rZyxS8F45TnNb/w89TUXlefVKx+RtVcJg154xvwEZpmTpn8Q/otkUBrNHXwAYk
-Sz6LUTTqqHQvHyEkMz6rkbiCeUIyd+LWaRe+5xaxs3o7GyF6drKxGMTjdra03cZB
-SlqJAQwHSYxAuGv20gjJPFL5XnQ/q7IkfyKfBMqAKmB+cwsXgp1KqWjOzwfdw/c8
-y+HqI7vVgxbXK+pHGxGSZ8+eZkq+sWY3lAdkwePS9ZodiaezCcI=
-=XSVY
+iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmAiObMACgkQFkJ4iaW4
+c+5Z1Q/+L+Zdf0tnbO9GPys5+iytAtQbnW1PDXH1mihnuitnIpAtNGP7Jke13Y2d
+L69D/5M2wZ971RdhWyclFotcqxsoRKQxWcSqW9rm7vDY7xdkNMY6mP+lR7LzET8l
+dZrTIiuCU0xVYZXCaTKEgCDU3YFU+XVrdNBqYSTE44+uEDhYEgW0XXzTK7/UPFdj
+6yiSya/L0pZE3snTX1ky5546UqelKZVNPPZPiMmblhWkdCPIemDAIV0ctNzBbAFx
+S08Y/rUbfu2slS1UPtT0Vi4Lz687+KK0AALxeZrps14chdbA/xMcGjZywsWDNxbX
+XPKKB+GY4IAPmWslbeyW4ijCFrajfYDQaNm+MOp9ZQW8juQZHo051bCD5xWIe8xz
+JKWrFx0ZWylq6+YamuToAyIZhsqCzW9DzFCgIYFcbKX6zQbIookFu/yg1XSxrgCS
+P2ORqrjq+qg5/I9kZE9HY80RXJ4PTN7SpXy++sYzUOd64ABwgkS7nCbDxOSsZaoa
+6z7u5tmcikGKHzPmXn2Lugo1chci7d8zakUdaKcuQDFnMH2DYRYsrxwIMD4tlx1c
+xVw0Za7qkU9s0oBVulsKhSw9pRlOhiuAFeOrW/fMTeve/JaJEkp02Tw+nxi8yHnH
+YTSgDlNmx4aGnRaLX5UVMOikB6JRGTGvcNvyPCN6+W8OBc9HPwo=
+=Vu3C
 -----END PGP SIGNATURE-----
 
---=-n8rW0w4Y7TjLX/hAt4iz--
+--=-xaPUalb6KAGmxxQGK9/s--
 
