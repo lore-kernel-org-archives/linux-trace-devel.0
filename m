@@ -2,67 +2,67 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA38AC433E0
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 06:10:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B846EC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 06:40:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C4BCF64EBC
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 06:10:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C01D64EB6
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Feb 2021 06:40:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhBIGJt (ORCPT
+        id S229941AbhBIGk0 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 9 Feb 2021 01:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46872 "EHLO
+        Tue, 9 Feb 2021 01:40:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhBIGJr (ORCPT
+        with ESMTP id S229691AbhBIGjy (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 9 Feb 2021 01:09:47 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D24C061786
-        for <linux-trace-devel@vger.kernel.org>; Mon,  8 Feb 2021 22:09:07 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id my11so978907pjb.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 08 Feb 2021 22:09:07 -0800 (PST)
+        Tue, 9 Feb 2021 01:39:54 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE46C06178C
+        for <linux-trace-devel@vger.kernel.org>; Mon,  8 Feb 2021 22:38:58 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id r75so4756406oie.11
+        for <linux-trace-devel@vger.kernel.org>; Mon, 08 Feb 2021 22:38:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g73D9RkdtTVfgVRvKm3V+PJcKjpeHBPi2R5FJ/sk+/Q=;
-        b=nlcZ0cxhISJpxco1Ycc6ZX0NoClzQ12TXJ42EQbQwbh5ZEXjsfi/OK5lqIRbFuTesG
-         +Q6gl0PLJoE2IPvb8qQYIR9nbNZZASkz9w1vmogGt2u8Rh7PCMXeY24lKP8hhaLdo96l
-         OuPQkw51T0xpaK5/SyLen26N1zk4TZb5dnpKja5IygWjeLSkz9tsjNCevxjPOXn12StC
-         f5PWTPOITMrZbcFNzPZ/4FCVaZfAWaUAbeLC8OvABHQHu+cT5fT8eoypS2jHfl4KYcc7
-         //Cos458HFw9wde154WMBQ930KRIUcgJ4ZCYkjDl2TLjxYWn43B+ygCFqlRQxX/ZeVlF
-         3wuw==
+        bh=eSOb14mHXluAJY+VCm+6mCfkh0Ys+aUEShHRzrugCzY=;
+        b=mCFixBHTM0PXqOyOlvQlLbZymTPl6Ct5E7373ZJIk6OF7wijaUriIjmXDv154fO+Pj
+         Z3oG5fuof1HJKpaMOxOg/vesYVCsWpoBrvycSOIdR/hCmD367Z6YlEz5ZdThjCcca3Nt
+         TovxMnANfLAMLbGnZsV577ByyS9DWvpNvCzOgPe1aa9zzhFNwLKGgf2xFoVFeRD/zYlj
+         melSsj330XP1Fk3a9l/q1Uv2HzMmxIsZvaRff/2tiFWD1Jjkxz1djEQjl6JHAPZUTloL
+         ihQw3V3Gz0vzEP5oTEJLkdriDjlPEcUo+fc2Tibsr6sVS2kRC4cejVpUhRDVcYkAFdHq
+         7vBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g73D9RkdtTVfgVRvKm3V+PJcKjpeHBPi2R5FJ/sk+/Q=;
-        b=Pv1OFNUxMd/R/VMK+hFq/2cOo3vj3Qy3ZPqZxgV76Qz8XRPiB9VwIEyK2k+kaMQG/S
-         emO5CX4kE6hBNV3skruBGKe6rugVzidxDtOXWZ2u+gaYe73vgDdlScsMfVVzcA6AHC/Q
-         vXX8j/2AI5/+EczlW2ryHvOfQigUQ+L5JZ1OvJxm40WmdBQ1/q+paqbz5hEIBSu4LIiD
-         uFtSieWDDquxOtKUgufwJglNr05RCdHJAGnq7bfHKqmHUkTiiB8wK0mzycSaWyJ/WqTz
-         TVNLjafqdELczVwlPH/tp3NONmqRD+9vi77mt6d1w4A+iowg5SIfY9UTv1RvAI2saZ2r
-         9z7Q==
-X-Gm-Message-State: AOAM530JEEe1MsP1OvwUp3h3ooAwIBxpcyTgRiPLm1Pty+4YU/2eztbd
-        7V/LkHlZoCe/654fuJTIRk66GNqJnOydWew6FUyMEp4wwyxrqw==
-X-Google-Smtp-Source: ABdhPJyM9B1M4VvKk8sUM3/wBJhk83ceAgDL6/E+b9jysRX6QPN8yIFoNa45oPqS0f+sNrRukQeI5iy56LHHYTy8Dj8=
-X-Received: by 2002:a17:903:22c2:b029:de:45c0:69f2 with SMTP id
- y2-20020a17090322c2b02900de45c069f2mr19898891plg.26.1612850946755; Mon, 08
- Feb 2021 22:09:06 -0800 (PST)
+        bh=eSOb14mHXluAJY+VCm+6mCfkh0Ys+aUEShHRzrugCzY=;
+        b=jewds7zoH17yOvqEPGHrbVeg+t/yREgnTqtC3v9avZUwralOWDfWXFcIJ7k5ZzNp0L
+         HGy80C1SlaxblDWDpmsC3P2nf63VMuJG3VFU78TGBIrtzuebRfDw8jkSSlCasXhMOxEv
+         PmzZAkUVrskde8rCZLsII3vG1myHc2epkLnLUYYzkC9TvfpK1cda/pczN3kzGZWauBbu
+         a8s4dTDDTFnR6OHYg84bzIqnaIXKH5S3iYxvb/h3cky3KNX7gSwFJlMFkPW1bc0Uiriz
+         ajpIWlr8TMjtfCe4nq5LJHZ4DZqKxj+xD2pdFJ0A0cnwDlcXfUukdfVDdUK3CdQMhn8i
+         Fe7A==
+X-Gm-Message-State: AOAM530LpgLxAz1lMvfVid/dRC77rIekdcsT96b3oOl/ahxlDVKDLZMq
+        F6f1/ajUnDKCuiL6aT5PSDFL3I9n7NGY8T863Gh6/06dV1hMXQ==
+X-Google-Smtp-Source: ABdhPJxNb7UcQWDLyjBmpP3Iyl54Eq55AH/+zPcPjRkl3aY7b7Znvx9U72DRLjT4IctleE2frDhm62k/Imis39K3eXs=
+X-Received: by 2002:aca:3354:: with SMTP id z81mr1500583oiz.2.1612852738105;
+ Mon, 08 Feb 2021 22:38:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20210208061743.510964-1-tz.stoyanov@gmail.com>
- <bb09f02e5d1e14cf835c85c97ae7902976bdb408.camel@suse.com> <CAPpZLN5SQu=XwQ+XodbVWrXUb-qtcLjH-U79R6NBDJ4jwQSvsw@mail.gmail.com>
-In-Reply-To: <CAPpZLN5SQu=XwQ+XodbVWrXUb-qtcLjH-U79R6NBDJ4jwQSvsw@mail.gmail.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Tue, 9 Feb 2021 08:08:50 +0200
-Message-ID: <CAPpZLN7boZK+9921zJ+OvZ-yhT6DdAkWkj9+fgswV_g4PxsROg@mail.gmail.com>
-Subject: Re: [PATCH v28 0/8] Timestamp synchronization of host - guest tracing session
-To:     Dario Faggioli <dfaggioli@suse.com>
+References: <CAK7tX=angRdxNdg2yNnss-NuBm+i-Y3unyT6BaeY0Quj-QB+UA@mail.gmail.com>
+ <CAPpZLN7ysUKXLXwCbkfq+-OMhzUOXtDam+937gquDX4uT_nTHQ@mail.gmail.com>
+In-Reply-To: <CAPpZLN7ysUKXLXwCbkfq+-OMhzUOXtDam+937gquDX4uT_nTHQ@mail.gmail.com>
+From:   Sameeruddin Shaik <sameeruddin.shaik8@gmail.com>
+Date:   Tue, 9 Feb 2021 12:08:46 +0530
+Message-ID: <CAK7tX=YPkgJWwKvqKwnz4eVasdogi_zoteeUken-G4-VQc_cAA@mail.gmail.com>
+Subject: Re: [PATCH][WIP]libtracefs:New API to enable the filtering of functions
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -70,111 +70,195 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 8:03 AM Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
->
-> Hi Dario,
->
-> On Tue, Feb 9, 2021 at 7:32 AM Dario Faggioli <dfaggioli@suse.com> wrote:
-> >
-> > Hello,
-> >
-> > On Mon, 2021-02-08 at 08:17 +0200, Tzvetomir Stoyanov (VMware) wrote:
-> > > Basic infrastructure for host - guest timestamp synchronization and a
-> > > PoC implementation of PTP-like and KVM algorithms.
-> > >
-> > I'm trying to play with trace-cmd agent & clock syncronization, so I
-> > applied this series.
-> >
-> > However, when I try to connect to a VM where I have the agent running,
-> > I'm seeing this (on the host):
-> >
-> > # ./tracecmd/trace-cmd record --debug -p nop -e sched:* -e kvm:* -e timer:hrtimer* -A tumbleweed-jeos:8888 -e all sleep 1
-> > trace-cmd: No such file or directory
-> >   Failed to receive trace response -107
-> >
-> > I tried to do a strace, still on the host, and this is what I see (the
-> > last part of the output):
-> >
-> > rt_sigaction(SIGINT, {sa_handler=0x4116a5, sa_mask=[INT], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f29f1b55b70}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-> > openat(AT_FDCWD, "/var/lib/trace-cmd/virt/(null)/trace-pipe-cpu0.out", O_RDONLY|O_NONBLOCK) = -1 ENOENT (No such file or directory)
-> > socket(AF_VSOCK, SOCK_STREAM, 0)        = 4
-> > connect(4, {sa_family=AF_VSOCK, sa_data="\0\0\270\"\0\0\3\0\0\0\0\0\0\0"}, 16) = 0
-> > openat(AT_FDCWD, "/sys/kernel/debug/tracing/trace_clock", O_RDONLY) = 6
-> > read(6, "local global counter uptime perf"..., 8192) = 62
-> > read(6, "", 8192)                       = 0
-> > close(6)                                = 0
-> > write(4, "\0\0\0<\0\0\0\6\0\0\0\20\0\0\0\0\0\0\0\0\347\366+n\204\271\35\334", 28) = 28
-> > write(4, "\0\0\0\0\0\0\0\v\0\0\0\2-e\0all\0\0\0\0\1\0\0\0\5ptp\0\0", 32) = 32
-> > read(4, "", 12)                         = 0
-> > dup(2)                                  = 6
-> > fcntl(6, F_GETFL)                       = 0x402 (flags O_RDWR|O_APPEND)
-> > fstat(6, {st_mode=S_IFCHR|0620, st_rdev=makedev(0x88, 0x9), ...}) = 0
-> > write(6, "trace-cmd: No such file or direc"..., 37trace-cmd: No such file or directory
-> > ) = 37
-> > close(6)                                = 0
-> > write(2, "  ", 2  )                       = 2
-> > write(2, "Failed to receive trace response"..., 37Failed to receive trace response -107) = 37
-> > write(2, "\n", 1
-> > )                       = 1
-> > exit_group(2)                           = ?
-> > +++ exited with 2 +++
-> >
-> > Finally, if I use `--debug` both on the host and in the VM, here's what
-> > I get.
-> >
-> > Guest:
-> > # ./tracecmd/trace-cmd agent -p 8888 --debug
-> > listening on @3:8888
-> > msg received: 6 (TRACE_REQ) [60]
-> > Segmentation fault
-> >
-> > Host:
-> > # ./tracecmd/trace-cmd record --debug -p nop -e sched:* -e kvm:* -e timer:hrtimer* -A tumbleweed-jeos:8888 -e all sleep 1
-> > msg send: 6 (TRACE_REQ) [60]
-> > trace-cmd: No such file or directory
-> >   Failed to receive trace response -107
-> >
-> > Am I doing something wrong? :-)
-> >
-> > If necessary, I can provide more info about my setup, or do more tests.
->
-> There are a few limitations that we are working to address:
->  1. Ensure that vhost_vsock module is loaded on the host.
->  2. You should add a vsock device manually to your VM config, I use
-> "virsh edit <vm name>" to add:
->    <vsock model='virtio'>
->       <cid auto='yes'/>
->       <address type='pci' domain='0x0000' bus='0x00' slot='0x09'
-> function='0x0'/>
->     </vsock>
-> somewhere in the <devices> </devices> section.
->
-Also, please note that there are two patches that should be applied also,
-not part of v28 version of the patchset:
-  "trace-cmd: Fix plist allocation check in trace-msg.c"
-   https://patchwork.kernel.org/project/linux-trace-devel/patch/20210203165431.792152a4@gandalf.local.home/
- "trace-cmd: Fix SEGFAULT when no tsync_protos are supplied"
-   https://patchwork.kernel.org/project/linux-trace-devel/patch/20210203171018.5b82a0a7@gandalf.local.home/
+Tzvetomir,
+Thanks for Your review, will try to modify the code as you suggested
+and will give a new patch.
+Thanks,
+sameer shaik.
 
 
+On Tue, Feb 9, 2021 at 11:22 AM Tzvetomir Stoyanov
+<tz.stoyanov@gmail.com> wrote:
+>
+> Hi Sammer,
+>
+> On Mon, Feb 8, 2021 at 3:17 AM Sameeruddin Shaik
+> <sameeruddin.shaik8@gmail.com> wrote:
 > >
-> > Thanks and Regards
-> > --
-> > Dario Faggioli, Ph.D
-> > http://about.me/dario.faggioli
-> > Virtualization Software Engineer
-> > SUSE Labs, SUSE https://www.suse.com/
-> > -------------------------------------------------------------------
-> > <<This happens because _I_ choose it to happen!>> (Raistlin Majere)
+> > Hi steve,
+> > This is my progress so far on Adding API's to set the filtering of functions https://bugzilla.kernel.org/show_bug.cgi?id=210643. I have few doubts here , based on my assumptions, i have implemented the below API.
+> > API function:
+> >
+> > int tracefs_function_filter(struct tracefs_instance *instance, const char *filter);
+> >
+> > please give me some inputs on the below questions
+> >
+> > 1.Here filter is only one string or multiple strings followed by space?
+> It is up to us to decide if the API will accept only one function at
+> each call, or a list of functions.
+> I think the logic should be simple, only one function per call.
+>
+> >
+> > 2.I have used some internal API's to write to the set_ftrace_filter file, but with those API's
+> >
+> > we can be able to write only one string to the file, can i add my own write functionality in this
+> >
+> > function?
+> Yes, please do. You can modify internal functions in order to reuse
+> functionality. Please, be
+> sure that all external APIs that use those internal functions are not broken.
+>
+> >
+> > Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+> >
+> > diff --git a/include/tracefs.h b/include/tracefs.h
+> > index 8b11d35..29aee66 100644
+> > --- a/include/tracefs.h
+> > +++ b/include/tracefs.h
+> > @@ -47,6 +47,7 @@ int tracefs_trace_on(struct tracefs_instance *instance);
+> >  int tracefs_trace_off(struct tracefs_instance *instance);
+> >  int tracefs_trace_on_fd(int fd);
+> >  int tracefs_trace_off_fd(int fd);
+> > +int tracefs_function_filter(struct tracefs_instance *instance, const char *filter);
+> >
+> >  /**
+> >   * tracefs_trace_on_get_fd - Get a file descriptor of "tracing_on" in given instance
+> > diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
+> > index 101f389..cb0bc51 100644
+> > --- a/src/tracefs-tools.c
+> > +++ b/src/tracefs-tools.c
+> > @@ -14,6 +14,7 @@
+> >  #include "tracefs-local.h"
+> >
+> >  #define TRACE_CTRL "tracing_on"
+> > +#define TRACE_FLTR      "set_ftrace_filter"
+> >
+> >  static int trace_on_off(int fd, bool on)
+> >  {
+> > @@ -107,3 +108,84 @@ int tracefs_trace_off_fd(int fd)
+> >   return -1;
+> >   return trace_on_off(fd, false);
+> >  }
+> > +
+> > +int tracefs_function_filter(struct tracefs_instance *instance, const char *filter)
+> > +{
+> > + bool res = 0;;
+> One extra semicolon.
+>
+> > + int ret= 0;
+> > + char *available_filter_functions;
+> > + char *buf, *saveptr, *str;
+> > + char *final_filter;
+> > + struct stat st;
+> > + size_t len;
+> > + char *function_name;
+> > + char *saveptr1, *str1;
+> > + char *each_filter;
+> > + char *fun_sub_name;
+> > + char *tmp = NULL;
+> Small hint on coding style. Please, arrange the variables by length -
+> longest first, shortest last.
+> We are trying to use this coding style rule, at least for the new code.
+>
+> > +
+> > + if (!filter)
+> > + return -1;
+> > + len = strlen(filter);
+> > +
+> > + final_filter = (char *)malloc(sizeof(char) * len);
+> > +
+> > + if (!final_filter)
+> > + goto gracefully_free;
+> > + memset(final_filter, '\0', len);
+> > +
+> > + available_filter_functions = tracefs_instance_get_file(NULL, "available_\
+> > +filter_functions");
+> It is better to have it on a single line. This coding style rule could
+> not be followed
+> strictly in all cases, sometimes the code is more readable in one line.
+>
+> > + ret = stat(available_filter_functions, &st);
+> > + if (ret < 0)
+> > + goto gracefully_free;
+> > + /*Reading the available_filter_functions file*/
+> > + len = str_read_file(available_filter_functions, &buf);
+> > + if (len <= 0)
+> > + goto gracefully_free;
+> > + /* Match each function passed in filter against the available_filter_fucntions*/
+> I think verifying the requested filter functions using
+> available_filter_functions could be
+> omitted. There is such validation in the kernel, so let's use it.
+> Writing invalid strings into
+> set_ftrace_filter should return an error, and we can pass that error
+> to the API caller.
+> Note that set_ftrace_filter supports wildcards also, you can filter
+> "sched_*" for example.
+> That makes the validation more complex.
+> I would recommend to verify if a const char *filter is a valid string
+> only and to rely on
+> the kernel verification for valid function filter.
 >
 >
+> > + for (str1 = filter; ; str1 = NULL) {
+> > + each_filter = strtok_r(str1, " ", &saveptr1);
+> > + if (!each_filter)
+> > + break;
+> > + tmp = (char *)malloc(sizeof(char) * len);
+> > + if (!tmp)
+> > + goto gracefully_free;
+> > + if (memcpy(tmp, buf, len) == NULL)
+> > + goto gracefully_free;
+> > + for (str = tmp; ; str = NULL) {
+> > + function_name = strtok_r(str, "\n", &saveptr);
+> > + if (!function_name)
+> > + break;
+> > + /*Matching the fucntion names like chunk_err [brtfs]*/
+> > + if (strchr(function_name, '[') != NULL) {
+> > + fun_sub_name = strtok(function_name, " [");
+> > + if (strcmp(fun_sub_name, each_filter) == 0){
+> > + strncat(final_filter, each_filter, strlen(each_filter));
+> > + strcat(final_filter, " ");
+> > + res = 1;
+> > + break;
+> > + }
+> > + }
+> > + if (strcmp(function_name, each_filter) == 0) {
+> > + strncat(final_filter, each_filter, strlen(each_filter));
+> > + strcat(final_filter, " ");
+> > + res = 1;
+> > + break;
+> > + }
+> > +
+> > + }
+> > + }
+> > + free(buf);
+> > + strcat(final_filter, "\n");
+> > + if (res)
+> > + ret = tracefs_instance_file_write(instance, TRACE_FLTR, final_filter);
+> Note that using this API will truncate the file, instead we should
+> append the new filter.
+>
+> > + else
+> > + return -1;
+> > +
+> > + gracefully_free:
+> > + free(available_filter_functions);
+> > + free(tmp);
+> > + free(final_filter);
+> > + return ret;
+> > +}
+> >
+> > Thanks,
+> >
+> > sameer.
+>
+> You can find documentation for ftrace function filtering in kernel tree,
+> in Documentation/trace/ftrace.rst. Please, look at it and - there are
+> some filter commands, that set_ftrace_filter supports. This new libtracefs
+> API should handle them.
+>
+> Thanks for working on libtracefs :)
 >
 > --
 > Tzvetomir (Ceco) Stoyanov
 > VMware Open Source Technology Center
-
-
-
--- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
