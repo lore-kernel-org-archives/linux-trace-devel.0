@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6BD1C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:38:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AA84C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:38:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9709964E95
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:38:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C928064E95
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:38:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhBKKhw (ORCPT
+        id S230365AbhBKKh4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Feb 2021 05:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
+        Thu, 11 Feb 2021 05:37:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbhBKKfo (ORCPT
+        with ESMTP id S230155AbhBKKfp (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:35:44 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D34C0617AA
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:34 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id q2so6424158edi.4
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:34 -0800 (PST)
+        Thu, 11 Feb 2021 05:35:45 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C78FC061356
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:36 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id y8so6400868ede.6
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=m4+jUQ3tJ43/c+ftesBve5vHRlWZboe+bBaAh67cMdM=;
-        b=nasoYyC47KNBNY9nWHPKvAQwq7iTmNKjDyDcf6HgeJa1mBXIxDCNFvg2OKpHMtSGdZ
-         wGPdMCbxUI8By5WXU2z6GvGa6v5ypUUFyCiF7vH9lbRMvYBUMGblve9eRbRPYSELBeG6
-         7gxpVVM6slRCjhmP+d0ejC5F/rrbvEZDtfF4/xJx+WBD3kgAZkMpOoyFJsNRaVT3+61W
-         TOPlowCIH8esoiViOHmjS//Szosnoh4J5LpI80ssn9eH3fb2oTjQ+DxazCmFU1nAA56X
-         AZFxN2ZS1+YlJ39Uj47Gb9GLGzO6pFhgiTWrqpGuUsph8MGrA7b7dc+oLjbWx2ISw5oU
-         J3dA==
+        bh=mk7RKVqltUL8uHv6iXoM+w2VJPqVIq3/xp5TZZFUx4Y=;
+        b=ZCV6gJVVhRR9iD4Bd5DEVOsvNOIB8pUPhlJJhy1Ie0KrE650lfICKNPzd6wzHHZWcL
+         nUO6lFtQeB1qfizVyTMevLBG6/JwHC5TxwKtqpHszHEuInab/8ciAlpJS4SXhqWMX88+
+         9NwjSr/RM0Oeb9BWb3Ce14b+zQxVSOeQ3ebNbavwEHCN+7ED8LKlPhNbHWnz9ND58b/+
+         ebnDIsM0JNgag3a7qu+nGvzefyXQ1glQd8snxOfKEXTyBDQsu0vJpMB7sqNhcElGugyQ
+         O+QjMNhDpfUTEyRTZtJ7BEP1zxIAv2pDOpNGMI3VS1OimTWwpSEr5uu8tIjhGJnxBmNN
+         P6+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=m4+jUQ3tJ43/c+ftesBve5vHRlWZboe+bBaAh67cMdM=;
-        b=cNpqDdvFbp/NKUiiuhmuvv4Ur+wQzC1RNpy8GTy26fxTMKlD1adxzlN7xAes/Y6f1O
-         P5pyRXGs12x+FslHzu873Njp9vGB0Nd1lTNTldsQLqC6SamEkqSprcfANwnEINhWTQyt
-         gTHv2M8HfSCXs0L+3jvkUb6u+ctH2FeguhddOUWJ9zoDg679u3yhfyPyhVbqxO2ZGlXc
-         KIDExKEXbTMhuACFAyWeHbvwTeYI/9xx2yDItTLrJTRakme73TZs5QfIqQxT8XwQ8yJ/
-         Pak67VQkhbOZ8rLaoHQ5Uoe/Di1FajmCdnCV/rbCwBowkeSlfWLv6R615n5pkgGcvHLI
-         FFLg==
-X-Gm-Message-State: AOAM530YOJ+LU2rkvqX/hLgRkZxUXQnKhOcYzxUuw33HNJUEPQYrcX6p
-        6khGR8h0U0BkkPFtHSALwGA=
-X-Google-Smtp-Source: ABdhPJzmTDa+JvKkV53NAw3Jlwkq/eXVy7bIq4PANIp+DxCqhAktGjkbZhWDOwa8i49ReNhBIA/byQ==
-X-Received: by 2002:a50:8a90:: with SMTP id j16mr7624796edj.334.1613039553173;
-        Thu, 11 Feb 2021 02:32:33 -0800 (PST)
+        bh=mk7RKVqltUL8uHv6iXoM+w2VJPqVIq3/xp5TZZFUx4Y=;
+        b=Xe8B1BbAlDxpVTKE8AXFLVQ+oaYxXB6OGnOrwh6BN0KWl6np8cxB996yPITTjBkIh5
+         s8Kr/MLo+BNN9vOhMphpG7tJuDu1oUQG0HTK3ClAw6Jo1FcYn9RQ5dlxTYJBJJr9XVWK
+         c8FzO0rr0J8m/XiMzxJ6V+IDecdJ/MUUtqVaNbLYqB7aKMhXUCK23W1lcRr8mMWMocKG
+         whcG99RYCO53NQGAyQ7IezoiI5BEAa1+aUxf/rznpuA4UanCNcHN4bhy/0nCHQjC7T+C
+         jJxFkaqG223KdB+ozrjEhCNwmZOHbNp0XlMHyURmmM2H5QBJf7xXhI7BxykKZJv6EXI1
+         WiRg==
+X-Gm-Message-State: AOAM530sRqKGqi+NbN4UmBp1Q8aon61eafRWEBn8je0PMeAdgnPKmrvM
+        ykz7jY3GeqZAv7G6DOO38sY=
+X-Google-Smtp-Source: ABdhPJyP7LYGgw1VRvtb853EVpSyc9O4wY8qTI9ofSTyLEjpFc60AeeI5U58WzDT1VJF5vESk6b18Q==
+X-Received: by 2002:aa7:d692:: with SMTP id d18mr7829208edr.327.1613039554963;
+        Thu, 11 Feb 2021 02:32:34 -0800 (PST)
 Received: from localhost.localdomain (212-39-89-223.ip.btc-net.bg. [212.39.89.223])
-        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.32
+        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 02:32:32 -0800 (PST)
+        Thu, 11 Feb 2021 02:32:34 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 12/27] kernel-shark: Add combo point to Mark
-Date:   Thu, 11 Feb 2021 12:31:50 +0200
-Message-Id: <20210211103205.418588-13-y.karadz@gmail.com>
+Subject: [PATCH v2 14/27] kernel-shark: Update the plotting example
+Date:   Thu, 11 Feb 2021 12:31:52 +0200
+Message-Id: <20210211103205.418588-15-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210211103205.418588-1-y.karadz@gmail.com>
 References: <20210211103205.418588-1-y.karadz@gmail.com>
@@ -74,98 +74,245 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-KsPlot::Mark uses colored point to highlight the selected trace event
-on CPU and Task plots. Here we add a combo point that will highlight
-the selected event in Combo plots, like "Virtual Combo" for example.
-Those Combo plots will be introduced at the level of the GUI code in
-successive patches.
+The compilation of the plotting example is re-enabled and it is
+made compatible with the new version of the C API of libkshark
+(KernelShark 2.0).
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/KsPlotTools.cpp | 23 ++++++++++++++++++++++-
- src/KsPlotTools.hpp | 15 ++++++++++++++-
- 2 files changed, 36 insertions(+), 2 deletions(-)
+ examples/CMakeLists.txt |  6 +--
+ examples/dataplot.cpp   | 88 ++++++++++++++++++++++++++++-------------
+ 2 files changed, 63 insertions(+), 31 deletions(-)
 
-diff --git a/src/KsPlotTools.cpp b/src/KsPlotTools.cpp
-index ac9c5b2..225dc34 100644
---- a/src/KsPlotTools.cpp
-+++ b/src/KsPlotTools.cpp
-@@ -701,7 +701,7 @@ void Mark::_draw(const Color &col, float size) const
- void Mark::setDPR(int dpr)
+diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
+index 8360841..e6af5f2 100644
+--- a/examples/CMakeLists.txt
++++ b/examples/CMakeLists.txt
+@@ -20,9 +20,9 @@ message(STATUS "confogio")
+ add_executable(confio          configio.c)
+ target_link_libraries(confio   kshark)
+ 
+-# message(STATUS "dataplot")
+-# add_executable(dplot          dataplot.cpp)
+-# target_link_libraries(dplot   kshark-plot)
++message(STATUS "dataplot")
++add_executable(dplot          dataplot.cpp)
++target_link_libraries(dplot   kshark-plot)
+ 
+ if (Qt5Widgets_FOUND)
+ 
+diff --git a/examples/dataplot.cpp b/examples/dataplot.cpp
+index 94841e7..b3ff29f 100644
+--- a/examples/dataplot.cpp
++++ b/examples/dataplot.cpp
+@@ -10,6 +10,7 @@
+ // C++
+ #include <vector>
+ #include <iostream>
++#include <sstream>
+ 
+ // OpenGL
+ #include <GL/freeglut.h>
+@@ -20,25 +21,29 @@
+ 
+ using namespace std;
+ 
+-#define GRAPH_HEIGHT	40   // width of the graph in pixels
+-#define GRAPH_H_MARGIN	50   // size of the white space surrounding the graph
+-#define WINDOW_WIDTH	800  // width of the screen window in pixels
+-#define WINDOW_HEIGHT	480  // height of the scrren window in pixels
++#define GRAPH_HEIGHT		40   // width of the graph in pixels
++#define GRAPH_H_MARGIN		15   // size of the white space surrounding
++				     // the graph
++#define GRAPH_LABEL_WIDTH	80   // width of the graph's label in pixels
++#define WINDOW_WIDTH		800  // width of the screen window in pixels
++#define WINDOW_HEIGHT		480  // height of the scrren window in pixels
+ 
+ #define default_file (char*)"trace.dat"
+ 
+ struct kshark_trace_histo	histo;
+ vector<KsPlot::Graph *>		graphs;
++struct ksplot_font		font;
++int stream_id;
+ 
+ void usage(const char *prog)
  {
- 	_size = 1.5 * dpr;
--	_task._size = _cpu._size = 1.5 + 4.0 * dpr;
-+	_task._size = _cpu._size = _combo._size = 1.5 + 4.0 * dpr;
+ 	cout << "Usage: " << prog << endl;
+-	cout << "  -h	Display this help message\n";
++	cout << "  -h	Display this help message.\n";
+ 	cout << "  -s	Draw shapes. This demonstrates how to draw simple "
+ 	     << "geom. shapes.\n";
+ 	cout << "  -i	<file>	Input file and draw animated graphs.\n";
+ 	cout << "  No args.	Import " << default_file
+-	     << "and draw animated graphs.\n";
++	     << " and draw animated graphs.\n";
  }
  
- /**
-@@ -715,6 +715,7 @@ void Mark::setX(int x)
- 	_b.setX(x);
- 	_cpu.setX(x);
- 	_task.setX(x);
-+	_combo.setX(x);
- }
+ /* An example function drawing something. */
+@@ -57,6 +62,11 @@ void drawShapes()
+ 	t._color = {100, 200, 50};
+ 	t.draw();
  
- /**
-@@ -769,6 +770,26 @@ void Mark::setTaskVisible(bool v)
- 	_task._visible = v;
- }
++	/* Print/draw "Hello Kernel!". */
++	KsPlot::Color col = {50, 150, 255};
++	KsPlot::TextBox tb(&font, "Hello Kernel!", col, {250, 70}, 250);
++	tb.draw();
++
+ 	KsPlot::Rectangle r;
+ 	KsPlot::Point d(400, 200), e(400, 300), f(500, 300), g(500, 200);
+ 	r.setPoint(0, d);
+@@ -78,13 +88,14 @@ void drawShapes()
+ /* An example function demonstrating Zoom In and Zoom Out. */
+ void play()
+ {
+-	KsPlot::ColorTable taskColors = KsPlot::getTaskColorTable();
+-	KsPlot::ColorTable cpuColors = KsPlot::getCPUColorTable();
++	KsPlot::ColorTable taskColors = KsPlot::taskColorTable();
++	KsPlot::ColorTable cpuColors = KsPlot::CPUColorTable();
+ 	vector<KsPlot::Graph *>::iterator it;
++	KsPlot::Graph *graph;
+ 	vector<int> CPUs, Tasks;
+ 	bool zoomIn(true);
+ 	int base;
+-	size_t i;
++	size_t i(1);
  
-+/**
-+ * @brief Set the visiblity of the Mark's Combo point.
-+ *
-+ * @param v: If True, the Task point will be visible.
-+ */
-+void Mark::setComboVisible(bool v)
-+{
-+	_combo._visible = v;
-+}
-+
-+/**
-+ * @brief Set the Y coordinates (vertical) of the Mark's Combo points.
-+ *
-+ * @param yCombo: Y coordinate of the Mark's Task point.
-+ */
-+void Mark::setComboY(int yCombo)
-+{
-+	_combo.setY(yCombo);
-+}
-+
- /**
-  * @brief Create a default Bin.
-  */
-diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
-index c993181..a9a5ba8 100644
---- a/src/KsPlotTools.hpp
-+++ b/src/KsPlotTools.hpp
-@@ -406,6 +406,16 @@ public:
- 	/** If True, the Mark will be plotted as a dashed line. */
- 	void setDashed(bool d) {_dashed = d;}
+ 	CPUs = {3, 4, 6};
+ 	Tasks = {}; // Add valid pids here, if you want task plots.
+@@ -92,35 +103,47 @@ void play()
+ 	auto lamAddGraph = [&] (KsPlot::Graph *g) {
+ 		/* Set the dimensions of the Graph. */
+ 		g->setHeight(GRAPH_HEIGHT);
+-		g->setHMargin(GRAPH_H_MARGIN);
  
-+	/** Get the Y coordinate of the Mark's Combo point. */
-+	int comboY() const {return _combo.y();}
-+
-+	void setComboY(int yCombo);
-+
-+	/** Is the Combo point visible. */
-+	bool comboIsVisible() const {return _combo._visible;}
-+
-+	void setComboVisible(bool v);
-+
- private:
- 	void _draw(const Color &col, float size = 1.) const override;
+ 		/*
+ 		 * Set the Y coordinate of the Graph's base.
+ 		 * Remember that the "Y" coordinate is inverted.
+ 		 */
+-		base = 1.7 * GRAPH_HEIGHT * (i + 1);
++		base = 1.7 * GRAPH_HEIGHT * (i++);
+ 		g->setBase(base);
  
-@@ -421,7 +431,10 @@ private:
- 	/** A point indicating the position of the Mark in a Task graph. */
- 	Point _task;
- 
--	/* If True, plot the Mark as a dashed line. */
-+	/** A point indicating the position of the Mark in a Combo graph. */
-+	Point _combo;
++		g->setLabelAppearance(&font, {160, 255, 255}, GRAPH_LABEL_WIDTH,
++							      GRAPH_H_MARGIN);
 +
-+	/** If True, plot the Mark as a dashed line. */
- 	bool _dashed;
- };
+ 		/* Add the Graph. */
+ 		graphs.push_back(g);
+ 	};
+ 
+-	for (i = 0; i < CPUs.size(); ++i)
+-		lamAddGraph(new KsPlot::Graph(&histo, &taskColors,
+-						      &taskColors));
++	for (auto const &cpu: CPUs) {
++		std::stringstream ss;
++		ss << "CPU " << cpu;
++
++		graph = new KsPlot::Graph(&histo, &taskColors, &taskColors);
++		graph->setLabelText(ss.str());
++		lamAddGraph(graph);
++	}
++
++	for (auto const &pid: Tasks) {
++		std::stringstream ss;
++		ss << "PID " << pid;
+ 
+-	for (;i < CPUs.size() + Tasks.size(); ++i)
+-		lamAddGraph(new KsPlot::Graph(&histo, &taskColors,
+-						      &cpuColors));
++		graph = new KsPlot::Graph(&histo, &taskColors, &cpuColors);
++		graph->setLabelText(ss.str());
++		lamAddGraph(graph);
++	}
+ 
+ 	for (i = 1; i < 1000; ++i) {
+ 		it = graphs.begin();
+ 
+ 		for (int const &cpu: CPUs)
+-			(*it++)->fillCPUGraph(cpu);
++			(*it++)->fillCPUGraph(stream_id, cpu);
+ 
+ 		for (int const &pid: Tasks)
+-			(*it++)->fillTaskGraph(pid);
++			(*it++)->fillTaskGraph(stream_id, pid);
+ 
+ 		/* Clear the screen. */
+ 		glClear(GL_COLOR_BUFFER_BIT);
+@@ -146,7 +169,8 @@ int main(int argc, char **argv)
+ 	struct kshark_context *kshark_ctx(nullptr);
+ 	struct kshark_entry **data(nullptr);
+ 	static char *input_file(nullptr);
+-	bool status, shapes(false);
++	bool shapes(false);
++	char *font_file;
+ 	size_t r, nRows;
+ 	int c, nBins;
+ 
+@@ -166,11 +190,20 @@ int main(int argc, char **argv)
+ 		}
+ 	}
+ 
++	font_file = ksplot_find_font_file("FreeMono", "FreeMonoBold");
++	if (!font_file)
++		return 1;
++
+ 	auto lamDraw = [&] (void (*func)(void)) {
+-		/* Initialize OpenGL/Glut. */
++		/* Initialize Glut. */
+ 		glutInit(&argc, argv);
+ 		ksplot_make_scene(WINDOW_WIDTH, WINDOW_HEIGHT);
++
++		/* Initialize OpenGL. */
+ 		ksplot_init_opengl(1);
++		ksplot_resize_opengl(WINDOW_WIDTH, WINDOW_HEIGHT);
++
++		ksplot_init_font(&font, 18, font_file);
+ 
+ 		/* Display something. */
+ 		glutDisplayFunc(func);
+@@ -191,8 +224,8 @@ int main(int argc, char **argv)
+ 	if (!input_file)
+ 		input_file = default_file;
+ 
+-	status = kshark_open(kshark_ctx, input_file);
+-	if (!status) {
++	stream_id = kshark_open(kshark_ctx, input_file);
++	if (stream_id < 0) {
+ 		kshark_free(kshark_ctx);
+ 		usage(argv[0]);
+ 		cerr << "\nFailed to open file " << input_file << endl;
+@@ -201,12 +234,12 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	/* Load the content of the file into an array of entries. */
+-	nRows = kshark_load_data_entries(kshark_ctx, &data);
++	nRows = kshark_load_entries(kshark_ctx, stream_id, &data);
+ 
+ 	/* Initialize the Visualization Model. */
+ 	ksmodel_init(&histo);
+ 
+-	nBins = WINDOW_WIDTH - 2 * GRAPH_HEIGHT;
++	nBins = WINDOW_WIDTH - GRAPH_LABEL_WIDTH - 3 * GRAPH_H_MARGIN;
+ 	ksmodel_set_bining(&histo, nBins, data[0]->ts,
+ 					  data[nRows - 1]->ts);
+ 
+@@ -216,6 +249,8 @@ int main(int argc, char **argv)
+ 	/* Play animated Graph. */
+ 	lamDraw(play);
+ 
++	free(font_file);
++
+ 	/* Free the memory. */
+ 	for (auto &g: graphs)
+ 		delete g;
+@@ -227,9 +262,6 @@ int main(int argc, char **argv)
+ 	/* Reset (clear) the model. */
+ 	ksmodel_clear(&histo);
+ 
+-	/* Close the file. */
+-	kshark_close(kshark_ctx);
+-
+ 	/* Close the session. */
+ 	kshark_free(kshark_ctx);
  
 -- 
 2.25.1
