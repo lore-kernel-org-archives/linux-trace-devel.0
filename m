@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AFA7C433E6
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:39:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43793C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:39:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0761D64E9A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:39:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 06E9864E95
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:39:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhBKKit (ORCPT
+        id S230034AbhBKKi7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Feb 2021 05:38:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        Thu, 11 Feb 2021 05:38:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhBKKfs (ORCPT
+        with ESMTP id S230228AbhBKKfv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:35:48 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7C4C061221
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:41 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id v7so6371367eds.10
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:41 -0800 (PST)
+        Thu, 11 Feb 2021 05:35:51 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C99AC061223
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:43 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id f14so9257560ejc.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0qe5EANYiV0g2mhPh7z4awjgB9+F2mKtrWrK20/JraI=;
-        b=gRGhi3QQ+XCH9yJ5EJguGq3sF4G45sgTrRgLhi52nL17I1mGDgNlOqnO/YjqfQ3Omt
-         Ro5OrbHKioPBDfVPkkA7beqf7XHhw/HBWHCOgNG4zXeuHutc+bcXABLpjZU+71+cW2Uo
-         gKLgIzZ25ertKSp0RhSp8v/ZKeV8i+IOxKaa58NC9nf8lDxa09zFSdsuIBJzzvVkUbmP
-         3Exz1a2z4fIkuAbUXbFXe+Zvowqgl/tAULGm52xg53jDAiPDEaK+I6lim2U8GUNE7zfQ
-         E5pykEbGLlWlGqEwsQ/p96VBy7QV4NONxRbFDLHBdBgn0aZRVdm3MOguaz9TbuatCuWk
-         a1Pw==
+        bh=7Ri1xXSmL1vhifAG+FG67oYdnXRt4tXmTmiE9SRHhws=;
+        b=mEKSZJCS07nD3iFFo3VFAo3d8GLLovpY/MrC39I9ham3Bb0iebYyOvzkURG1Q3Zue0
+         IzhYe4WDisVj4ru/YpYH+JKVyDHuTsZlubOOMokuCGWEfEN/OEzVHWz6SyQF3HzbXrAS
+         FYAPAjYj6UqwUAzTNvxjZxRUUF4XQsqpN9g7U7SwN6VxfamvRCvX0OQlwzarCfuhMbdq
+         PBjfD7Ha7ezQCfjPgHMxtR1bLXzQuB+ftPhHrEVJDXNozNbp1Lje8GC1byUetygtwNsD
+         riKxMfEsEIbRtZqrXuPSYz6m2I7nBgsF7hHQaWoPXfm0zcw99/Rp2ILXASbAx8khRdr8
+         klrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0qe5EANYiV0g2mhPh7z4awjgB9+F2mKtrWrK20/JraI=;
-        b=DG/5kz7mr16Sd/zMQl+SU2ewhtA6QZA/gdYi84XmAmrC7UmHw8LWwZLzMw4MI3fC1s
-         Oi2G3tIohu7108JKzN2OGAqGzTu6yQu2BhYVAI6km2f9A4+Lv8M+qiJFSHvKk7y/wGe/
-         4oohVGHF33oJAdlVfmRrJJAmnskc2SAbCUFg+2E3ewQS7AGqkOM0sefHB0JRcEP+Smud
-         JMCyyZygR/Le4bWXIdxsZ6/rN7xK/ideC1HG4KhNe1/IYaulJrOVA25VS3XqF5d/EEaL
-         EAW23dsF0PKxYe94wvT/32fJsisU2Ksg7oCEc8wi81Ral1aGuJhZSFwkuHxkEE4cofE6
-         wUWw==
-X-Gm-Message-State: AOAM532hh3zbZ9xDdZq+ag++pMP6DR56aserT3gTQmb+6t57ffBGaJG2
-        L4WOeSxX4faZm9hDChqp7Rg=
-X-Google-Smtp-Source: ABdhPJzVDEBwrAs8swYHH3Fkbm4p6mHkXDg44I2nFWIyjcRXA0tfZWtG2klyeh9/Asxi+CGfJ00irQ==
-X-Received: by 2002:aa7:de82:: with SMTP id j2mr7731059edv.313.1613039559955;
-        Thu, 11 Feb 2021 02:32:39 -0800 (PST)
+        bh=7Ri1xXSmL1vhifAG+FG67oYdnXRt4tXmTmiE9SRHhws=;
+        b=FCK4FD9R1qgDdxF2bdyNM/lKTV9WF0K69ejy6Daanc+JqTFK7BdNtRA3i8niNPOjxP
+         3dGGQ0ELLMGZrXPDxewS+K0CvarxvGWeIfep++r+2uqlFYe1xi5VK4pr8xWJyItLPtw0
+         bmq/IBu40QeMbJQZ6FWO/mMJ1DkpVtG/oKh/KUGCuZ0Jd5lKH4ATGC8DHndoi6Cxo2Wk
+         KAqZ/Bqpn3knaspVN2mYUCNoHBY0E/wZQ4oKVkAwh2zIPbLedAl+w0P9dseF68zPkTbP
+         HAA+/HriYflOzzrktc0o0NiJKjGBN/UYy8yxOmD12aQ1yBYsQOVQfYTN7BFoN2XyygM3
+         /wNQ==
+X-Gm-Message-State: AOAM532h0VeTpd/6Dh7iXOFtdi6TUl8NcRdKt8Gy7cAyZ7DkZHvZfCpB
+        6VG03N4EaO5jWCN3S6y7ZTw=
+X-Google-Smtp-Source: ABdhPJzRAgZAwRsiCvAEl5KnCFlHK+wMf97xHI298dLYFnFJMA0epYn4YrpWSeWYacHGukleCVAgVg==
+X-Received: by 2002:a17:906:f259:: with SMTP id gy25mr2352805ejb.330.1613039561878;
+        Thu, 11 Feb 2021 02:32:41 -0800 (PST)
 Received: from localhost.localdomain (212-39-89-223.ip.btc-net.bg. [212.39.89.223])
-        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.39
+        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 02:32:39 -0800 (PST)
+        Thu, 11 Feb 2021 02:32:41 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 19/27] kernel-shark: Update KsAdvFilteringDialog
-Date:   Thu, 11 Feb 2021 12:31:57 +0200
-Message-Id: <20210211103205.418588-20-y.karadz@gmail.com>
+Subject: [PATCH v2 21/27] kernel-shark: Update KsSession
+Date:   Thu, 11 Feb 2021 12:31:59 +0200
+Message-Id: <20210211103205.418588-22-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210211103205.418588-1-y.karadz@gmail.com>
 References: <20210211103205.418588-1-y.karadz@gmail.com>
@@ -74,409 +74,704 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The compilation ofKsAdvFilteringDialog .cpp is re-enabled and all
-functionalities are made compatible with the new version of the
-C API of libkshark (KernelShark 2.0).
+The compilation KsSession.cpp is re-enabled and all functionalities
+are made compatible with the new version of the C API of libkshark
+(KernelShark 2.0).
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/CMakeLists.txt           |   8 +-
- src/KsAdvFilteringDialog.cpp | 200 ++++++++++++++++++++++-------------
- src/KsAdvFilteringDialog.hpp |  16 ++-
- 3 files changed, 144 insertions(+), 80 deletions(-)
+ src/CMakeLists.txt |   2 +-
+ src/KsSession.cpp  | 415 +++++++++++++++++++++++++++------------------
+ src/KsSession.hpp  |  37 ++--
+ 3 files changed, 269 insertions(+), 185 deletions(-)
 
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index e09deb7..6bb94d6 100644
+index 28f44fe..5ea34ed 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -76,8 +76,8 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
-                         KsTraceViewer.hpp
- #                         KsMainWindow.hpp
- #                         KsCaptureDialog.hpp
--                        KsQuickContextMenu.hpp)
--#                         KsAdvFilteringDialog.hpp)
-+                        KsQuickContextMenu.hpp
-+                        KsAdvFilteringDialog.hpp)
+@@ -83,7 +83,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
  
-     QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
+     add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp
+                                                             KsModels.cpp
+-#                                                             KsSession.cpp
++                                                            KsSession.cpp
+                                                             KsGLWidget.cpp
+                                                             KsSearchFSM.cpp
+                                                             KsDualMarker.cpp
+diff --git a/src/KsSession.cpp b/src/KsSession.cpp
+index a581bbf..786aa3e 100644
+--- a/src/KsSession.cpp
++++ b/src/KsSession.cpp
+@@ -11,14 +11,13 @@
  
-@@ -92,8 +92,8 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
-                                                             KsTraceViewer.cpp
- #                                                             KsMainWindow.cpp
- #                                                             KsCaptureDialog.cpp
--                                                            KsQuickContextMenu.cpp)
--#                                                             KsAdvFilteringDialog.cpp)
-+                                                            KsQuickContextMenu.cpp
-+                                                            KsAdvFilteringDialog.cpp)
- 
-     target_link_libraries(kshark-gui kshark-plot
-                                      Qt5::Widgets
-diff --git a/src/KsAdvFilteringDialog.cpp b/src/KsAdvFilteringDialog.cpp
-index 8dc53bb..2fdb624 100644
---- a/src/KsAdvFilteringDialog.cpp
-+++ b/src/KsAdvFilteringDialog.cpp
-@@ -9,10 +9,16 @@
-  *  @brief   GUI Dialog for Advanced filtering settings.
-  */
- 
-+// trace-cmd
-+#include "trace-cmd/trace-cmd.h"
-+
  // KernelShark
--#include "KsAdvFilteringDialog.hpp"
  #include "libkshark.h"
 +#include "libkshark-tepdata.h"
- #include "KsUtils.hpp"
-+#include "KsAdvFilteringDialog.hpp"
-+
-+using namespace KsWidgetsLib;
+ #include "KsSession.hpp"
+-#include "KsMainWindow.hpp"
  
- /** Create dialog for Advanced Filtering. */
- KsAdvFilteringDialog::KsAdvFilteringDialog(QWidget *parent)
-@@ -71,6 +77,9 @@ KsAdvFilteringDialog::KsAdvFilteringDialog(QWidget *parent)
- 
- 	lamAddLine();
- 
-+	_topLayout.addWidget(&_streamComboBox);
-+	_getFtraceStreams(kshark_ctx);
-+
- 	_getFilters(kshark_ctx);
- 
- 	if (_filters.count()) {
-@@ -149,23 +158,38 @@ KsAdvFilteringDialog::KsAdvFilteringDialog(QWidget *parent)
- 		this,			&QWidget::close);
+ /** Create a KsSession object. */
+ KsSession::KsSession()
+ {
+-	_config = kshark_config_new("kshark.config.session",
+-				      KS_CONFIG_JSON);
++	_config = kshark_session_config_new(KS_CONFIG_JSON);
  }
  
--void KsAdvFilteringDialog::_setSystemCombo(struct kshark_context *kshark_ctx)
-+kshark_data_stream *
-+KsAdvFilteringDialog::_getCurrentStream(kshark_context *kshark_ctx)
- {
-+	int sd = _streamComboBox.currentData().toInt();
-+
-+	return kshark_get_data_stream(kshark_ctx, sd);
-+}
-+
-+void KsAdvFilteringDialog::_setSystemCombo(kshark_context *kshark_ctx)
-+{
-+	kshark_data_stream *stream;
-+	QVector<int> eventIds;
- 	QStringList sysList;
--	tep_event **events;
--	int i(0), nEvts(0);
-+	int i(0);
+ /** Destroy a KsSession object. */
+@@ -79,10 +78,11 @@ void KsSession::loadVisModel(KsGraphModel *model)
+ }
  
--	if (kshark_ctx->pevent) {
--		nEvts = tep_get_events_count(kshark_ctx->pevent);
--		events = tep_list_events(kshark_ctx->pevent,
--					 TEP_EVENT_SORT_SYSTEM);
--	}
-+	stream = _getCurrentStream(kshark_ctx);
-+	if (!stream || !kshark_is_tep(stream))
+ /** Save the trace data file. */
+-void KsSession::saveDataFile(QString fileName)
++void KsSession::saveDataFile(QString fileName, QString dataSetName)
+ {
+ 	kshark_config_doc *file =
+ 		kshark_export_trace_file(fileName.toStdString().c_str(),
++					 dataSetName.toStdString().c_str(),
+ 					 KS_CONFIG_JSON);
+ 
+ 	kshark_config_doc_add(_config, "Data", file);
+@@ -92,54 +92,51 @@ void KsSession::saveDataFile(QString fileName)
+ QString KsSession::getDataFile(kshark_context *kshark_ctx)
+ {
+ 	kshark_config_doc *file = kshark_config_alloc(KS_CONFIG_JSON);
+-	const char *file_str;
++	int sd;
+ 
+ 	if (!kshark_config_doc_get(_config, "Data", file))
+ 		return QString();
+ 
+-	file_str = kshark_import_trace_file(kshark_ctx, file);
+-	if (file_str)
+-		return QString(file_str);
++	sd = kshark_import_trace_file(kshark_ctx, file);
++	if (sd)
++		return QString(kshark_ctx->stream[sd]->file);
+ 
+ 	return QString();
+ }
+ 
+ /**
+- * @brief Save the configuration of the filters.
++ * @brief Save the configuration information for all load Data streams.
+  *
+  * @param kshark_ctx: Input location for context pointer.
+  */
+-void KsSession::saveFilters(kshark_context *kshark_ctx)
++void KsSession::saveDataStreams(kshark_context *kshark_ctx)
+ {
+-	kshark_config_doc *filters =
+-		kshark_export_all_filters(kshark_ctx, KS_CONFIG_JSON);
+-
+-	kshark_config_doc_add(_config, "Filters", filters);
++	kshark_export_all_dstreams(kshark_ctx, &_config);
+ }
+ 
+ /**
+- * @brief Load the configuration of the filters and filter the data.
++ * @brief Load Data streams.
+  *
+  * @param kshark_ctx: Input location for context pointer.
+- * @param data: Input location for KsDataStore object;
++ * @param data:  Input location for KsDataStore object;
+  */
+-void KsSession::loadFilters(kshark_context *kshark_ctx, KsDataStore *data)
++void KsSession::loadDataStreams(kshark_context *kshark_ctx,
++				KsDataStore *data)
+ {
+-	kshark_config_doc *filters = kshark_config_alloc(KS_CONFIG_JSON);
+-
+-	if (!kshark_config_doc_get(_config, "Filters", filters))
+-		return;
++	ssize_t dataSize;
+ 
+-	kshark_import_all_filters(kshark_ctx, filters);
++	data->unregisterCPUCollections();
+ 
+-	if (kshark_ctx->advanced_event_filter->filters)
+-		data->reload();
+-	else
+-		kshark_filter_entries(kshark_ctx, data->rows(), data->size());
++	dataSize = kshark_import_all_dstreams(kshark_ctx,
++					      _config,
++					      data->rows_r());
++	if (dataSize < 0) {
++		data->clear();
 +		return;
-+
-+	eventIds = KsUtils::getEventIdList(stream->stream_id);
-+
-+	auto lamGetSysName = [&stream] (int eventId) {
-+		QStringList name = KsUtils::getTepEvtName(stream->stream_id,
-+							  eventId);
-+		return name[0];
-+	};
- 
--	while (i < nEvts) {
--		QString sysName(events[i]->system);
-+	while (i < stream->n_events) {
-+		QString sysName = lamGetSysName(eventIds[i]);
- 		sysList << sysName;
--		while (sysName == events[i]->system) {
--			if (++i == nEvts)
-+		while (sysName == lamGetSysName(eventIds[i])) {
-+			if (++i == stream->n_events)
- 				break;
- 		}
- 	}
-@@ -202,24 +226,48 @@ QStringList KsAdvFilteringDialog::_operators()
- 	return OpsList;
- }
- 
--void KsAdvFilteringDialog::_getFilters(struct kshark_context *kshark_ctx)
-+void KsAdvFilteringDialog::_getFtraceStreams(kshark_context *kshark_ctx)
- {
--	tep_event **events;
--	char *str;
-+	kshark_data_stream *stream;
-+	QVector<int> streamIds;
-+
-+	_streamComboBox.clear();
-+	streamIds = KsUtils::getStreamIdList(kshark_ctx);
-+	for (auto const &sd: streamIds) {
-+		stream = kshark_ctx->stream[sd];
-+		if (kshark_is_tep(stream))
-+			_streamComboBox.addItem(KsUtils::streamDescription(stream), sd);
 +	}
  
--	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
-+	if (!_streamComboBox.count())
-+		_streamComboBox.addItem("No FTRACE data loaded", -1);
++	data->setSize(dataSize);
+ 	data->registerCPUCollections();
+-
+-	emit data->updateWidgets(data);
+ }
+ 
+ /**
+@@ -152,7 +149,7 @@ void KsSession::saveTable(const KsTraceViewer &view) {
+ 	int64_t r = view.getTopRow();
+ 
+ 	topRow->conf_doc = json_object_new_int64(r);
+-	kshark_config_doc_add(_config, "ViewTop",topRow);
++	kshark_config_doc_add(_config, "ViewTop", topRow);
+ }
+ 
+ /**
+@@ -196,39 +193,6 @@ void KsSession::saveMainWindowSize(const QMainWindow &window)
+ 	kshark_config_doc_add(_config, "MainWindow", windowConf);
+ }
+ 
+-/**
+- * @brief Load the KernelShark Main window size.
+- *
+- * @param window: Input location for the KsMainWindow widget.
+- */
+-void KsSession::loadMainWindowSize(KsMainWindow *window)
+-{
+-	kshark_config_doc *windowConf = kshark_config_alloc(KS_CONFIG_JSON);
+-	json_object *jwindow, *jwidth, *jheight;
+-	int width, height;
+-
+-	if (!kshark_config_doc_get(_config, "MainWindow", windowConf))
+-		return;
+-
+-	if (_config->format == KS_CONFIG_JSON) {
+-		jwindow = KS_JSON_CAST(windowConf->conf_doc);
+-		if (json_object_get_type(jwindow) == json_type_string &&
+-		    QString(json_object_get_string(jwindow)) == "FullScreen") {
+-			window->setFullScreenMode(true);
+-			return;
+-		}
+-
+-		jwidth = json_object_array_get_idx(jwindow, 0);
+-		jheight = json_object_array_get_idx(jwindow, 1);
+-
+-		width = json_object_get_int(jwidth);
+-		height = json_object_get_int(jheight);
+-
+-		window->setFullScreenMode(false);
+-		window->resize(width, height);
+-	}
+-}
+-
+ /**
+  * @brief Save the state of the Main window spliter.
+  *
+@@ -269,6 +233,7 @@ void KsSession::loadSplitterSize(QSplitter *splitter)
+ 
+ 		graphSize = json_object_get_int(jgraphsize);
+ 		viewSize = json_object_get_int(jviewsize);
++
+ 		if (graphSize == 0 && viewSize == 0) {
+ 			/* 0/0 spliter ratio is undefined. Make it 1/1. */
+ 			viewSize = graphSize = 1;
+@@ -282,7 +247,7 @@ void KsSession::loadSplitterSize(QSplitter *splitter)
+ /** @brief Save the Color scheme used. */
+ void KsSession::saveColorScheme() {
+ 	kshark_config_doc *colSch = kshark_config_alloc(KS_CONFIG_JSON);
+-	double s = KsPlot::Color::getRainbowFrequency();
++	double s = KsPlot::Color::rainbowFrequency();
+ 
+ 	colSch->conf_doc = json_object_new_double(s);
+ 	kshark_config_doc_add(_config, "ColorScheme", colSch);
+@@ -307,97 +272,235 @@ float KsSession::getColorScheme() {
+ /**
+  * @brief Save the list of the graphs plotted.
+  *
+- * @param glw: Input location for the KsGLWidget widget.
++ * @param kshark_ctx: Input location for context pointer.
++ * @param graphs: Input location for the KsTraceGraph widget..
+  */
+-void KsSession::saveGraphs(const KsGLWidget &glw)
++void KsSession::saveGraphs(kshark_context *kshark_ctx,
++			   KsTraceGraph &graphs)
+ {
+-	_saveCPUPlots(glw._cpuList);
+-	_saveTaskPlots(glw._taskList);
++	QVector<int> streamIds = KsUtils::getStreamIdList(kshark_ctx);
++	for (auto const &sd: streamIds) {
++		_saveCPUPlots(sd, graphs.glPtr());
++		_saveTaskPlots(sd, graphs.glPtr());
++	}
++
++	_saveComboPlots(graphs.glPtr());
+ }
+ 
+ /**
+  * @brief Load the list of the graphs and plot.
+  *
++ * @param kshark_ctx: Input location for context pointer.
+  * @param graphs: Input location for the KsTraceGraph widget.
+  */
+-void KsSession::loadGraphs(KsTraceGraph *graphs)
++void KsSession::loadGraphs(kshark_context *kshark_ctx,
++			   KsTraceGraph &graphs)
+ {
+-	graphs->cpuReDraw(_getCPUPlots());
+-	graphs->taskReDraw(_getTaskPlots());
++	QVector<int> combos, streamIds;
++	int nCombos;
++
++	streamIds = KsUtils::getStreamIdList(kshark_ctx);
++	for (auto const &sd: streamIds) {
++		graphs.cpuReDraw(sd, _getCPUPlots(sd));
++		graphs.taskReDraw(sd, _getTaskPlots(sd));
++	}
++
++	combos = _getComboPlots(&nCombos);
++	if (nCombos > 0)
++		graphs.comboReDraw(nCombos, combos);
+ }
+ 
+-void KsSession::_saveCPUPlots(const QVector<int> &cpus)
++void KsSession::_savePlots(int sd, KsGLWidget *glw, bool cpu)
+ {
+-	kshark_config_doc *cpuPlts = kshark_config_alloc(KS_CONFIG_JSON);
+-	json_object *jcpus = json_object_new_array();
++	kshark_config_doc *streamsConf = kshark_config_alloc(KS_CONFIG_JSON);
++	json_object *jallStreams, *jstream, *jstreamId, *jplots;
++	QVector<int> plotIds;
++	int nStreams;
+ 
+-	for (int i = 0; i < cpus.count(); ++i) {
+-		json_object *jcpu = json_object_new_int(cpus[i]);
+-		json_object_array_put_idx(jcpus, i, jcpu);
++	if (cpu) {
++		plotIds = glw->_streamPlots[sd]._cpuList;
++	} else {
++		plotIds = glw->_streamPlots[sd]._taskList;
+ 	}
+ 
+-	cpuPlts->conf_doc = jcpus;
+-	kshark_config_doc_add(_config, "CPUPlots", cpuPlts);
++	if (!kshark_config_doc_get(_config, "data streams", streamsConf) ||
++	    streamsConf->format != KS_CONFIG_JSON)
++		return;
++
++	jallStreams = KS_JSON_CAST(streamsConf->conf_doc);
++	if (json_object_get_type(jallStreams) != json_type_array)
++		return;
++
++	nStreams = json_object_array_length(jallStreams);
++	for (int i = 0; i < nStreams; ++i) {
++		jstream = json_object_array_get_idx(jallStreams, i);
++		if (json_object_object_get_ex(jstream, "stream id", &jstreamId) &&
++		    json_object_get_int(jstreamId) == sd)
++			break;
++
++		jstream = nullptr;
++	}
++
++	free(streamsConf);
++	if (!jstream)
++		return;
++
++	jplots = json_object_new_array();
++	for (int i = 0; i < plotIds.count(); ++i) {
++		json_object *jcpu = json_object_new_int(plotIds[i]);
++		json_object_array_put_idx(jplots, i, jcpu);
++	}
++
++	if (cpu)
++		json_object_object_add(jstream, "CPUPlots", jplots);
++	else
++		json_object_object_add(jstream, "TaskPlots", jplots);
+ }
+ 
+-QVector<int> KsSession::_getCPUPlots()
++void KsSession::_saveCPUPlots(int sd, KsGLWidget *glw)
+ {
+-	kshark_config_doc *cpuPlts = kshark_config_alloc(KS_CONFIG_JSON);
+-	json_object *jcpus;
+-	QVector<int> cpus;
+-	size_t length;
++	_savePlots(sd, glw, true);
 +}
  
--	for (int i = 0; events[i]; i++) {
--		str = tep_filter_make_string(kshark_ctx->advanced_event_filter,
--					     events[i]->id);
--		if (!str)
-+void KsAdvFilteringDialog::_getFilters(kshark_context *kshark_ctx)
+-	if (!kshark_config_doc_get(_config, "CPUPlots", cpuPlts))
+-		return cpus;
++void KsSession::_saveTaskPlots(int sd, KsGLWidget *glw)
 +{
-+	kshark_data_stream *stream;
-+	QVector<int> eventIds;
-+	QStringList eventName;
-+	char *filterStr;
++	_savePlots(sd, glw, false);
++}
+ 
+-	if (_config->format == KS_CONFIG_JSON) {
+-		jcpus = KS_JSON_CAST(cpuPlts->conf_doc);
+-		length = json_object_array_length(jcpus);
+-		for (size_t i = 0; i < length; ++i) {
+-			int cpu = json_object_get_int(json_object_array_get_idx(jcpus,
+-										i));
+-			cpus.append(cpu);
++void KsSession::_saveComboPlots(KsGLWidget *glw)
++{
++	kshark_config_doc *combos = kshark_config_alloc(KS_CONFIG_JSON);
++	json_object *jcombos, *jplots, *jplt;
++	int var;
 +
-+	stream = _getCurrentStream(kshark_ctx);
-+	if (!stream || !kshark_is_tep(stream))
-+		return;
++	jcombos = json_object_new_array();
++	for (auto const &c: glw->_comboPlots) {
++		jplots = json_object_new_array();
++		for (auto const &p: c) {
++			jplt = json_object_new_array();
++			var = p._streamId;
++			json_object_array_put_idx(jplt, 0,
++						  json_object_new_int(var));
 +
-+	eventIds = KsUtils::getEventIdList(stream->stream_id);
-+	for (int i = 0; i < stream->n_events; ++i) {
-+		eventName = KsUtils::getTepEvtName(stream->stream_id, eventIds[i]);
-+		filterStr = kshark_tep_filter_make_string(stream, eventIds[i]);
-+		if (!filterStr)
- 			continue;
- 
--		_filters.insert(events[i]->id,
--				QString("%1/%2:%3").arg(events[i]->system,
--							  events[i]->name, str));
-+		_filters.insert(eventIds[i],
-+				QString("%1:%2/%3:%4").arg(QString::number(stream->stream_id),
-+							   eventName[0],
-+							   eventName[1],
-+							   filterStr));
- 
--		free(str);
-+		free(filterStr);
- 	}
- }
- 
-@@ -232,7 +280,7 @@ void KsAdvFilteringDialog::_makeFilterTable(struct kshark_context *kshark_ctx)
- 
- 	_table = new KsCheckBoxTable(this);
- 	_table->setSelectionMode(QAbstractItemView::SingleSelection);
--	headers << "Delete" << "Event" << " Id" << "Filter";
-+	headers << "Delete" << "Stream" << "Event" << " Id" << "Filter";
- 	_table->init(headers, _filters.count());
- 
- 	for(auto f : _filters.keys()) {
-@@ -241,11 +289,14 @@ void KsAdvFilteringDialog::_makeFilterTable(struct kshark_context *kshark_ctx)
- 		i1 = new QTableWidgetItem(thisFilter[0]);
- 		_table->setItem(count, 1, i1);
- 
-+		i1 = new QTableWidgetItem(thisFilter[1]);
-+		_table->setItem(count, 2, i1);
++			var = p._type;
++			json_object_array_put_idx(jplt, 1,
++						  json_object_new_int(var));
 +
- 		i2 = new QTableWidgetItem(tr("%1").arg(f));
--		_table->setItem(count, 2, i2);
-+		_table->setItem(count, 3, i2);
- 
--		i3 = new QTableWidgetItem(thisFilter[1]);
--		_table->setItem(count, 3, i3);
-+		i3 = new QTableWidgetItem(thisFilter[2]);
-+		_table->setItem(count, 4, i3);
- 
- 		++count;
- 	}
-@@ -275,20 +326,25 @@ void KsAdvFilteringDialog::_help()
- void KsAdvFilteringDialog::_systemChanged(const QString &sysName)
- {
- 	kshark_context *kshark_ctx(NULL);
--	QStringList evtsList;
--	tep_event **events;
--	int i, nEvts;
-+	kshark_data_stream *stream;
-+	QStringList evtsList, name;
-+	QVector<int> eventIds;
-+	int i;
- 
--	_eventComboBox.clear();
--	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->pevent)
-+	if (!kshark_instance(&kshark_ctx))
- 		return;
- 
--	nEvts = tep_get_events_count(kshark_ctx->pevent);
--	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
-+	_eventComboBox.clear();
++			var = p._id;
++			json_object_array_put_idx(jplt, 2,
++						  json_object_new_int(var));
 +
-+	stream = _getCurrentStream(kshark_ctx);
-+	if (!stream || !kshark_is_tep(stream))
-+		return;
- 
--	for (i = 0; i < nEvts; ++i) {
--		if (sysName == events[i]->system)
--			evtsList << events[i]->name;
-+	eventIds = KsUtils::getEventIdList(stream->stream_id);
-+	for (i = 0; i < stream->n_events; ++i) {
-+		name = KsUtils::getTepEvtName(stream->stream_id, eventIds[i]);
-+		if (sysName == name[0])
-+			evtsList << name[1];
- 	}
- 
- 	std::sort(evtsList.begin(), evtsList.end());
-@@ -300,15 +356,20 @@ void KsAdvFilteringDialog::_systemChanged(const QString &sysName)
- }
- 
- QStringList
--KsAdvFilteringDialog::_getEventFormatFields(struct tep_event *event)
-+KsAdvFilteringDialog::_getEventFields(int eventId)
- {
--	tep_format_field *field, **fields = tep_event_fields(event);
-+	kshark_context *kshark_ctx(NULL);
-+	kshark_data_stream *stream;
- 	QStringList fieldList;
- 
--	for (field = *fields; field; field = field->next)
--		fieldList << field->name;
-+	if (!kshark_instance(&kshark_ctx))
-+		return {};
-+
-+	stream = _getCurrentStream(kshark_ctx);
-+	if (!stream || !kshark_is_tep(stream))
-+		return {};
- 
--	free(fields);
-+	fieldList = KsUtils::getEventFieldsList(stream->stream_id, eventId);
- 
- 	std::sort(fieldList.begin(), fieldList.end());
- 	return fieldList;
-@@ -317,22 +378,24 @@ KsAdvFilteringDialog::_getEventFormatFields(struct tep_event *event)
- void KsAdvFilteringDialog::_eventChanged(const QString &evtName)
- {
- 	QString sysName = _systemComboBox.currentText();
-+	QStringList fieldList, eventName;
- 	kshark_context *kshark_ctx(NULL);
--	QStringList fieldList;
--	tep_event **events;
--	int nEvts;
-+	kshark_data_stream *stream;
-+	QVector<int> eventIds;
- 
- 	_fieldComboBox.clear();
--	if (!kshark_instance(&kshark_ctx) || !kshark_ctx->pevent)
-+	if (!kshark_instance(&kshark_ctx))
- 		return;
- 
--	nEvts = tep_get_events_count(kshark_ctx->pevent);
--	events = tep_list_events(kshark_ctx->pevent, TEP_EVENT_SORT_SYSTEM);
-+	stream = _getCurrentStream(kshark_ctx);
-+	if (!stream || !kshark_is_tep(stream))
-+		return;
- 
--	for (int i = 0; i < nEvts; ++i) {
--		if (evtName == events[i]->name &&
--		    sysName == events[i]->system) {
--			fieldList = _getEventFormatFields(events[i]);
-+	eventIds = KsUtils::getEventIdList(stream->stream_id);
-+	for (int i = 0; i < stream->n_events; ++i) {
-+		eventName = KsUtils::getTepEvtName(stream->stream_id, eventIds[i]);
-+		if (sysName == eventName[0] && evtName == eventName[1]) {
-+			fieldList = _getEventFields(eventIds[i]);
- 			_fieldComboBox.addItems(fieldList);
- 
- 			return;
-@@ -384,20 +447,28 @@ void KsAdvFilteringDialog::_applyPress()
- {
- 	QMapIterator<int, QString> f(_filters);
- 	kshark_context *kshark_ctx(NULL);
-+	kshark_data_stream *stream;
- 	const char *text;
--	tep_errno ret;
- 	char *filter;
- 	int i(0);
- 
- 	if (!kshark_instance(&kshark_ctx))
- 		return;
- 
-+	stream = _getCurrentStream(kshark_ctx);
-+	if (!stream || !kshark_is_tep(stream))
-+		return;
-+
- 	while (f.hasNext()) {
- 		f.next();
- 		if (_table->_cb[i]->checkState() == Qt::Checked) {
--			tep_filter_remove_event(kshark_ctx->advanced_event_filter,
--						f.key());
-+			kshark_data_stream *filter_stream;
-+			int sd = f.value().split(":").at(0).toInt();
-+
-+			filter_stream = kshark_get_data_stream(kshark_ctx, sd);
-+			kshark_tep_filter_remove_event(filter_stream, f.key());
++			json_object_array_add(jplots, jplt);
  		}
 +
- 		++i;
++		json_object_array_add(jcombos, jplots);
  	}
  
-@@ -419,20 +490,7 @@ void KsAdvFilteringDialog::_applyPress()
- 	filter = (char*) malloc(strlen(text) + 1);
- 	strcpy(filter, text);
+-	return cpus;
++	combos->conf_doc = jcombos;
++	kshark_config_doc_add(_config, "ComboPlots", combos);
+ }
  
--	ret = tep_filter_add_filter_str(kshark_ctx->advanced_event_filter,
--					   filter);
+-void KsSession::_saveTaskPlots(const QVector<int> &tasks)
++QVector<int> KsSession::_getPlots(int sd, bool cpu)
+ {
+-	kshark_config_doc *taskPlts = kshark_config_alloc(KS_CONFIG_JSON);
+-	json_object *jtasks = json_object_new_array();
++	kshark_config_doc *streamsConf = kshark_config_alloc(KS_CONFIG_JSON);
++	json_object *jallStreams, *jstream, *jstreamId, *jplots;
++	int nStreams, nPlots, id;
++	const char *plotKey;
++	QVector<int> plots;
++
++	if (!kshark_config_doc_get(_config, "data streams", streamsConf) ||
++	    streamsConf->format != KS_CONFIG_JSON)
++		return plots;
++
++	jallStreams = KS_JSON_CAST(streamsConf->conf_doc);
++	if (json_object_get_type(jallStreams) != json_type_array)
++		return plots;
++
++	nStreams = json_object_array_length(jallStreams);
++	for (int i = 0; i < nStreams; ++i) {
++		jstream = json_object_array_get_idx(jallStreams, i);
++		if (json_object_object_get_ex(jstream, "stream id", &jstreamId) &&
++		    json_object_get_int(jstreamId) == sd)
++			break;
++
++		jstream = nullptr;
++	}
++
++	if (!jstream)
++		return plots;
++
++	if (cpu)
++		plotKey = "CPUPlots";
++	else
++		plotKey = "TaskPlots";
+ 
+-	for (int i = 0; i < tasks.count(); ++i) {
+-		json_object *jtask = json_object_new_int(tasks[i]);
+-		json_object_array_put_idx(jtasks, i, jtask);
++	if (!json_object_object_get_ex(jstream, plotKey, &jplots) ||
++	    json_object_get_type(jplots) != json_type_array)
++		return plots;
++
++	nPlots = json_object_array_length(jplots);
++	for (int i = 0; i < nPlots; ++i) {
++		id = json_object_get_int(json_object_array_get_idx(jplots, i));
++		plots.append(id);
+ 	}
+ 
+-	taskPlts->conf_doc = jtasks;
+-	kshark_config_doc_add(_config, "TaskPlots", taskPlts);
++	return plots;
++}
++
++QVector<int> KsSession::_getCPUPlots(int sd)
++{
++	return _getPlots(sd, true);
++}
++
++QVector<int> KsSession::_getTaskPlots(int sd)
++{
++	return _getPlots(sd, false);
+ }
+ 
+-QVector<int> KsSession::_getTaskPlots()
++QVector<int> KsSession::_getComboPlots(int *n)
+ {
+-	kshark_config_doc *taskPlts = kshark_config_alloc(KS_CONFIG_JSON);
+-	json_object *jtasks;
+-	QVector<int> tasks;
+-	size_t length;
++	kshark_config_doc *combos = kshark_config_alloc(KS_CONFIG_JSON);
++	int nCombos, nPlots, sd, type, id;
++	json_object *jcombos, *jplots, *jplt, *jvar;
++	QVector<int> vec;
+ 
+-	if (!kshark_config_doc_get(_config, "TaskPlots", taskPlts))
+-		return tasks;
++	*n = 0;
++	if (!kshark_config_doc_get(_config, "ComboPlots", combos))
++		return {};
+ 
+ 	if (_config->format == KS_CONFIG_JSON) {
+-		jtasks = KS_JSON_CAST(taskPlts->conf_doc);
+-		length = json_object_array_length(jtasks);
+-		for (size_t i = 0; i < length; ++i) {
+-			int pid = json_object_get_int(json_object_array_get_idx(jtasks,
+-										i));
+-			tasks.append(pid);
++		jcombos = KS_JSON_CAST(combos->conf_doc);
++		if (json_object_get_type(jcombos) != json_type_array)
++			return {};
++
++		*n = nCombos = json_object_array_length(jcombos);
++		for (int i = 0; i < nCombos; ++i) {
++			jplots = json_object_array_get_idx(jcombos, i);
++			if (json_object_get_type(jplots) != json_type_array)
++				return {};
++
++			nPlots =  json_object_array_length(jplots);
++			vec.append(nPlots);
++			for (int j = 0; j < nPlots; ++j) {
++				jplt = json_object_array_get_idx(jplots, j);
++				if (json_object_get_type(jplt) != json_type_array)
++					return {};
++
++				jvar = json_object_array_get_idx(jplt, 0);
++				sd = json_object_get_int(jvar);
++
++				jvar = json_object_array_get_idx(jplt, 1);
++				type = json_object_get_int(jvar);
++
++				jvar = json_object_array_get_idx(jplt, 2);
++				id = json_object_get_int(jvar);
++
++				vec.append({sd, type, id});
++			}
+ 		}
+ 	}
+ 
+-	return tasks;
++	return vec;
+ }
+ 
+ /**
+@@ -407,7 +510,7 @@ QVector<int> KsSession::_getTaskPlots()
+  */
+ void KsSession::saveDualMarker(KsDualMarkerSM *dm)
+ {
+-	struct kshark_config_doc *markers =
++	kshark_config_doc *markers =
+ 		kshark_config_new("kshark.config.markers", KS_CONFIG_JSON);
+ 	json_object *jd_mark = KS_JSON_CAST(markers->conf_doc);
+ 
+@@ -450,7 +553,7 @@ void KsSession::saveDualMarker(KsDualMarkerSM *dm)
+  */
+ void KsSession::loadDualMarker(KsDualMarkerSM *dm, KsTraceGraph *graphs)
+ {
+-	size_t pos;
++	uint64_t pos;
+ 
+ 	dm->reset();
+ 	dm->setState(DualMarkerState::A);
+@@ -476,7 +579,7 @@ void KsSession::loadDualMarker(KsDualMarkerSM *dm, KsTraceGraph *graphs)
+ 
+ json_object *KsSession::_getMarkerJson()
+ {
+-	struct kshark_config_doc *markers =
++	kshark_config_doc *markers =
+ 		kshark_config_alloc(KS_CONFIG_JSON);
+ 
+ 	if (!kshark_config_doc_get(_config, "Markers", markers) ||
+@@ -529,33 +632,23 @@ DualMarkerState KsSession::_getMarkerState()
+  *
+  * @param pm: Input location for the KsPluginManager object.
+  */
+-void KsSession::savePlugins(const KsPluginManager &pm)
++void KsSession::saveUserPlugins(const KsPluginManager &pm)
+ {
+-	struct kshark_config_doc *plugins =
++	kshark_config_doc *plugins =
+ 		kshark_config_new("kshark.config.plugins", KS_CONFIG_JSON);
+ 	json_object *jplugins = KS_JSON_CAST(plugins->conf_doc);
+-	const QVector<bool> &registeredPlugins = pm._registeredKsPlugins;
+-	const QStringList &pluginList = pm._ksPluginList;
+-	int nPlugins = pluginList.length();
+-	json_object *jlist, *jpl;
+-	QByteArray array;
+-	char* buffer;
+-	bool active;
 -
--	if (ret < 0) {
--		char error_str[200];
+-	jlist = json_object_new_array();
+-	for (int i = 0; i < nPlugins; ++i) {
+-		array = pluginList[i].toLocal8Bit();
+-		buffer = array.data();
+-		jpl = json_object_new_array();
+-		json_object_array_put_idx(jpl, 0, json_object_new_string(buffer));
 -
--		tep_strerror(kshark_ctx->pevent, ret, error_str,
--						       sizeof(error_str));
+-		active = registeredPlugins[i];
+-		json_object_array_put_idx(jpl, 1, json_object_new_boolean(active));
+-		json_object_array_put_idx(jlist, i, jpl);
++	json_object *jplg, *jlist = json_object_new_array();
++
++	for (auto const p: pm.getUserPlugins()) {
++		kshark_config_doc *lib =
++			kshark_export_plugin_file(p, KS_CONFIG_JSON);
++		jplg = KS_JSON_CAST(lib->conf_doc);
++		json_object_array_add(jlist, jplg);
++		free(lib);
+ 	}
+ 
+-	json_object_object_add(jplugins, "Plugin List", jlist);
+-	kshark_config_doc_add(_config, "Plugins", plugins);
++	json_object_object_add(jplugins, "obj. files", jlist);
++	kshark_config_doc_add(_config, "User Plugins", plugins);
+ }
+ 
+ /**
+@@ -564,37 +657,21 @@ void KsSession::savePlugins(const KsPluginManager &pm)
+  * @param kshark_ctx: Input location for context pointer.
+  * @param pm: Input location for the KsPluginManager object.
+  */
+-void KsSession::loadPlugins(kshark_context *kshark_ctx, KsPluginManager *pm)
++void KsSession::loadUserPlugins(kshark_context *kshark_ctx, KsPluginManager *pm)
+ {
+-	kshark_config_doc *plugins = kshark_config_alloc(KS_CONFIG_JSON);
+-	json_object *jplugins, *jlist, *jpl;
+-	const char *pluginName;
+-	QVector<int> pluginIds;
+-	int length, index;
+-	bool loaded;
 -
--		fprintf(stderr, "filter failed due to: %s\n", error_str);
--		free(filter);
+-	if (!kshark_config_doc_get(_config, "Plugins", plugins) ||
+-	    !kshark_type_check(plugins, "kshark.config.plugins"))
++	kshark_config_doc *plugins =
++		kshark_config_alloc(KS_CONFIG_JSON);
++	kshark_plugin_list *list, **last;
++
++	if (!kshark_config_doc_get(_config, "User Plugins", plugins))
+ 		return;
+ 
+-	if (plugins->format == KS_CONFIG_JSON) {
+-		jplugins = KS_JSON_CAST(plugins->conf_doc);
+-		json_object_object_get_ex(jplugins, "Plugin List", &jlist);
+-		if (!jlist ||
+-	            json_object_get_type(jlist) != json_type_array ||
+-		    !json_object_array_length(jlist))
+-			return;
 -
--		return;
+-		length = json_object_array_length(jlist);
+-		for (int i = 0; i < length; ++i) {
+-			jpl = json_object_array_get_idx(jlist, i);
+-			pluginName = json_object_get_string(json_object_array_get_idx(jpl, 0));
+-			index = pm->_ksPluginList.indexOf(pluginName);
+-			loaded = json_object_get_boolean(json_object_array_get_idx(jpl, 1));
+-			if (index >= 0 && loaded)
+-				pluginIds.append(index);
+-		}
 -	}
-+	kshark_tep_add_filter_str(stream, filter);
- 
- 	free(filter);
- 
-diff --git a/src/KsAdvFilteringDialog.hpp b/src/KsAdvFilteringDialog.hpp
-index 2a534d0..a1db90b 100644
---- a/src/KsAdvFilteringDialog.hpp
-+++ b/src/KsAdvFilteringDialog.hpp
-@@ -36,7 +36,7 @@ private:
- 
- 	QMap<int, QString>	_filters;
- 
--	KsCheckBoxTable		*_table;
-+	KsWidgetsLib::KsCheckBoxTable	*_table;
- 
- 	QVBoxLayout	_topLayout;
- 
-@@ -46,6 +46,8 @@ private:
- 
- 	QLabel		_descrLabel, _sysEvLabel, _opsLabel, _fieldLabel;
- 
-+	QComboBox	_streamComboBox;
++	/* Get the list of already loaded plugins. */
++	list = kshark_ctx->plugins;
 +
- 	QComboBox	_systemComboBox, _eventComboBox;
++	kshark_import_all_plugins(kshark_ctx, plugins);
  
- 	QComboBox	_opsComboBox, _fieldComboBox;
-@@ -74,13 +76,17 @@ private:
+-	pm->updatePlugins(pluginIds);
++	/* Loop until the beginning of the old list. */
++	for (last = &kshark_ctx->plugins; *last != list; last = &(*last)->next)
++		pm->addUserPluginToList(*last);
+ }
+diff --git a/src/KsSession.hpp b/src/KsSession.hpp
+index b07c810..e1b7fd4 100644
+--- a/src/KsSession.hpp
++++ b/src/KsSession.hpp
+@@ -20,8 +20,6 @@
+ #include "KsTraceGraph.hpp"
+ #include "KsTraceViewer.hpp"
  
- 	QStringList _operators();
+-class KsMainWindow;
+-
+ /**
+  * The KsSession class provides instruments for importing/exporting the state
+  * of the different components of the GUI from/to Json documents. These
+@@ -41,7 +39,7 @@ public:
  
--	void _getFilters(struct kshark_context *kshark_ctx);
-+	void _getFtraceStreams(kshark_context *kshark_ctx);
+ 	void exportToFile(QString jfileName);
+ 
+-	void saveDataFile(QString fileName);
++	void saveDataFile(QString fileName, QString dataSetName);
+ 
+ 	QString getDataFile(kshark_context *kshark_ctx);
+ 
+@@ -49,18 +47,19 @@ public:
+ 
+ 	void loadVisModel(KsGraphModel *model);
+ 
+-	void saveGraphs(const KsGLWidget &glw);
++	void saveGraphs(kshark_context *kshark_ctx,
++			KsTraceGraph &graphs);
+ 
+-	void loadGraphs(KsTraceGraph *graphs);
++	void loadGraphs(kshark_context *kshark_ctx,
++			KsTraceGraph &graphs);
+ 
+-	void saveFilters(kshark_context *kshark_ctx);
++	void saveDataStreams(kshark_context *kshark_ctx);
+ 
+-	void loadFilters(kshark_context *kshark_ctx, KsDataStore *data);
++	void loadDataStreams(kshark_context *kshark_ctx,
++			     KsDataStore *data);
+ 
+ 	void saveMainWindowSize(const QMainWindow &window);
+ 
+-	void loadMainWindowSize(KsMainWindow *window);
+-
+ 	void saveSplitterSize(const QSplitter &splitter);
+ 
+ 	void loadSplitterSize(QSplitter *splitter);
+@@ -69,9 +68,9 @@ public:
+ 
+ 	void loadDualMarker(KsDualMarkerSM *dmm, KsTraceGraph *graphs);
+ 
+-	void savePlugins(const KsPluginManager &pm);
++	void saveUserPlugins(const KsPluginManager &pm);
+ 
+-	void loadPlugins(kshark_context *kshark_ctx, KsPluginManager *pm);
++	void loadUserPlugins(kshark_context *kshark_ctx, KsPluginManager *pm);
+ 
+ 	void saveTable(const KsTraceViewer &view);
+ 
+@@ -86,13 +85,21 @@ private:
+ 
+ 	json_object *_getMarkerJson();
+ 
+-	void _saveCPUPlots(const QVector<int> &cpus);
++	void _savePlots(int sd, KsGLWidget *glw, bool cpu);
 +
-+	void _getFilters(kshark_context *kshark_ctx);
++	QVector<int> _getPlots(int sd, bool cpu);
 +
-+	void _makeFilterTable(kshark_context *kshark_ctx);
++	void _saveCPUPlots(int sd, KsGLWidget *glw);
++
++	QVector<int> _getCPUPlots(int sd);
++
++	void _saveTaskPlots(int sd, KsGLWidget *glw);
  
--	void _makeFilterTable(struct kshark_context *kshark_ctx);
-+	QStringList _getEventFields(int eventId);
+-	QVector<int> _getCPUPlots();
++	QVector<int> _getTaskPlots(int sd);
  
--	QStringList _getEventFormatFields(struct tep_event *event);
-+	void _setSystemCombo(kshark_context *kshark_ctx);
+-	void _saveTaskPlots(const QVector<int> &tasks);
++	void _saveComboPlots(KsGLWidget *glw);
  
--	void _setSystemCombo(struct kshark_context *kshark_ctx);
-+	kshark_data_stream *_getCurrentStream(kshark_context *kshark_ctx);
+-	QVector<int> _getTaskPlots();
++	QVector<int> _getComboPlots(int *nCombos);
  
- private slots:
- 	void _systemChanged(const QString&);
+ 	bool _getMarker(const char* name, size_t *pos);
+ 
 -- 
 2.25.1
 
