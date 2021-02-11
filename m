@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACA80C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:39:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D68C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:39:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 776E764E95
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:39:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3BE0364E95
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:39:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhBKKjH (ORCPT
+        id S230228AbhBKKjL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Feb 2021 05:39:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        Thu, 11 Feb 2021 05:39:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhBKKfv (ORCPT
+        with ESMTP id S230232AbhBKKfv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 11 Feb 2021 05:35:51 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB71C061222
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:42 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id f14so9257486ejc.8
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:42 -0800 (PST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD57C061224
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:44 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id f14so9257634ejc.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GEWdWhfigjURshT9Ltb3Sznhioj3zu5UHyKnmx94g8E=;
-        b=GhNL5Yn76/C3InCTSxcdkqRHxhx/KFfVmFViQjGTXqoddPjk2ct3pW2yuj6f7otUq7
-         hhiGZJrBFj4oF97s7uijPTAItx1J6mU59SeY2oEcP4KjpshyYkJUYqrJVIYiDIp0CxXt
-         W6IAFBoOVokvo5WjU6U0ijfL7YcZ29yYQJy3olNR9iDpDwFmgEuxloZ4OQed7TLW4A22
-         U7X5h1pIxJ+tNBZfOfDiOtqSLHkAlOvuLn8j1rqI5AlkY/XLvuFljAR6nuhp2AkYF9q2
-         i533e6eF0cU9qQa7MlCx+pwzeDzA+s2busLGUbWBv5fci1t5e96G56kbFPwgFcsEX3Mt
-         Iqqg==
+        bh=UjZajoxQn2imqdEFUY/RNy6CMLza2kPjVs4uI9lZQCI=;
+        b=TWOnNW3N9oAmFpmL36B49jskFI+X0mLRp9nmsSf6uwKxMcA1Oa/sp4Pc2+hywupI9P
+         3esDBabqWsgfYwoClIS/3J7hnlr1VPXMn9oE4YpfrP8yYoiRE3UepIJCg5WXIQiIqRxD
+         a+xAvSfNGSSRwLuBUf8OXba48P6XXegVxVaLuNg4tm4AH0Lu+F3IhBf2u2SKS1YKy2V/
+         kFAyEv/ypCAinvOe7VHIPdJpCG5kuLLgjDDQRUKEAiFQENrDse5v2t66jzmqz5gB0kFT
+         xA7+nrP3sB9JM9HLjj/oPTbssNWU0yuNtCXZHDGZeiZZJ1OoT9UTj9m0G8ldGmdk/VDX
+         J90w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GEWdWhfigjURshT9Ltb3Sznhioj3zu5UHyKnmx94g8E=;
-        b=IIRpV2o+u6iQO83i09AS1yXZi1k5WzwuG2MuVOV6sYVjdBZ4Q3havE/nkr0NpZFl0j
-         LyPThqKKy41/pg+oiNrAj8TNHoMIDWsoYvCAmdl/q2afRbX80Q9vS2wqOxAdPNZkbFU7
-         Oj8252pEXsOqgsUnBz/cw02KFDH/hKe7qm7yW9qXknc05ta34Wr0j/vaXWLvNbRrhCb0
-         iC1FRpfwuqcdaNc9fkdGhLK5SudPHSeQLACGGyx9haYNtGUoPuJsTTAN5JCH7bJ9YckZ
-         ew4Do7dtY2WfPcMC0cTow7dUDw5Ffnq9LT7+NQcXPfLMWZD6asdLa8Qd1SB+cw0NQVVH
-         M62A==
-X-Gm-Message-State: AOAM5306SOJ4VdN1Vl+hT246iHyMLhYv7excaVktRlnLqvUmUKfW3CuJ
-        cuabuEXKoRI14fylEI0WNrE=
-X-Google-Smtp-Source: ABdhPJxTJKHJFY72gO0FC4+Xr/fA76q17w/iU8qsUr9HvlCep2v1xlGluR/IQdgxHKcuK7576TmQZA==
-X-Received: by 2002:a17:906:6b1b:: with SMTP id q27mr7580880ejr.508.1613039560861;
-        Thu, 11 Feb 2021 02:32:40 -0800 (PST)
+        bh=UjZajoxQn2imqdEFUY/RNy6CMLza2kPjVs4uI9lZQCI=;
+        b=gkmkfG89w6ddtT9HxvkQrdjx03+Qv84RchubMNz7RiL6Du/TQnepm6FaOGoNLMDPEY
+         9PGg65BEk0T2g8ees+5Tn4GHJir+OSXtgCnIE6+uIwqUiaWhuZb2/qqZQGHzHliSP2/F
+         rxRqck08NfygLvES6z8QeKIJvg4Ozv5zx4+HSUjn6D01uJAHGGRW7abaMLsm3YzFz8ve
+         nsQJiFxeXqTUbB8qSPSGHNG6zUyO/RNAx37nE7N8DHPHZmL1B2+ktoLg3WvcOv2PcCWP
+         n2uuLHXPaLN2i6ipBVUG9fgUyDAHgxoWn6bGuaUVqBd+8xhwUkYnoj7peoayKA1hQpas
+         r9iA==
+X-Gm-Message-State: AOAM533qye8IQR8ArCPY4hqNB7+bEjyqkmQ0ZPKVV4EldNyeDFygXfGD
+        XhX8F3DAuQrxuIay+tU5mlI=
+X-Google-Smtp-Source: ABdhPJyLC2OWUc4KnpJe1EznKCiwRMrZ4RruSp5Uiq4RjmezaxH9f0gsDckZLlM29ayelAXGC8Ac4g==
+X-Received: by 2002:a17:906:3603:: with SMTP id q3mr7440299ejb.201.1613039562816;
+        Thu, 11 Feb 2021 02:32:42 -0800 (PST)
 Received: from localhost.localdomain (212-39-89-223.ip.btc-net.bg. [212.39.89.223])
-        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.40
+        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 02:32:40 -0800 (PST)
+        Thu, 11 Feb 2021 02:32:42 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 20/27] kernel-shark: Update KsCaptureDialog
-Date:   Thu, 11 Feb 2021 12:31:58 +0200
-Message-Id: <20210211103205.418588-21-y.karadz@gmail.com>
+Subject: [PATCH v2 22/27] kernel-shark: Update MissedEvents plugin
+Date:   Thu, 11 Feb 2021 12:32:00 +0200
+Message-Id: <20210211103205.418588-23-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210211103205.418588-1-y.karadz@gmail.com>
 References: <20210211103205.418588-1-y.karadz@gmail.com>
@@ -74,265 +74,269 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The compilation of KsCaptureDialog.cpp and kshark-record.cpp is
-re-enabled and all functionalities are made compatible with the new
-version of the C API of libkshark (KernelShark 2.0).
+General revision of the MissedEvents plugin that uses
+the new generic methods for visualization of trace event.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/CMakeLists.txt      | 10 ++---
- src/KsCaptureDialog.cpp | 90 ++++++++++++++++++++++-------------------
- src/KsCaptureDialog.hpp |  4 +-
- 3 files changed, 56 insertions(+), 48 deletions(-)
+ src/plugins/CMakeLists.txt    |   6 +-
+ src/plugins/MissedEvents.cpp  | 105 ++++++++++++++--------------------
+ src/plugins/missed_events.c   |  25 ++++----
+ src/plugins/missed_events.h   |   4 +-
+ tests/libkshark-gui-tests.cpp |   4 +-
+ 5 files changed, 62 insertions(+), 82 deletions(-)
 
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 6bb94d6..28f44fe 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -75,7 +75,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
-                         KsTraceGraph.hpp
-                         KsTraceViewer.hpp
- #                         KsMainWindow.hpp
--#                         KsCaptureDialog.hpp
-+                        KsCaptureDialog.hpp
-                         KsQuickContextMenu.hpp
-                         KsAdvFilteringDialog.hpp)
+diff --git a/src/plugins/CMakeLists.txt b/src/plugins/CMakeLists.txt
+index 108bc5f..dc0c320 100644
+--- a/src/plugins/CMakeLists.txt
++++ b/src/plugins/CMakeLists.txt
+@@ -22,9 +22,9 @@ BUILD_PLUGIN(NAME sched_events
+              SOURCE sched_events.c SchedEvents.cpp)
+ list(APPEND PLUGIN_LIST "sched_events")
  
-@@ -91,7 +91,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
-                                                             KsTraceGraph.cpp
-                                                             KsTraceViewer.cpp
- #                                                             KsMainWindow.cpp
--#                                                             KsCaptureDialog.cpp
-+                                                            KsCaptureDialog.cpp
-                                                             KsQuickContextMenu.cpp
-                                                             KsAdvFilteringDialog.cpp)
+-# BUILD_PLUGIN(NAME missed_events
+-#              SOURCE missed_events.c MissedEvents.cpp)
+-# list(APPEND PLUGIN_LIST "missed_events")
++BUILD_PLUGIN(NAME missed_events
++             SOURCE missed_events.c MissedEvents.cpp)
++list(APPEND PLUGIN_LIST "missed_events")
  
-@@ -106,9 +106,9 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
- #     add_executable(${KS_APP_NAME}          kernelshark.cpp)
- #     target_link_libraries(${KS_APP_NAME}   kshark-gui)
+ install(TARGETS ${PLUGIN_LIST}
+         LIBRARY DESTINATION ${KS_PLUGIN_INSTALL_PREFIX}
+diff --git a/src/plugins/MissedEvents.cpp b/src/plugins/MissedEvents.cpp
+index 05dfcb5..cf0ed34 100644
+--- a/src/plugins/MissedEvents.cpp
++++ b/src/plugins/MissedEvents.cpp
+@@ -26,12 +26,8 @@ using namespace KsPlot;
+  */
+ class MissedEventsMark : public PlotObject {
+ public:
+-	/** Create a default Missed events marker. */
+-	MissedEventsMark() : _base(0, 0), _height(0)
+-	{
+-		_color = {0, 0, 255};
+-		_size = 2;
+-	}
++	/** No default constructor. */
++	MissedEventsMark() = delete;
  
--#     message(STATUS "kshark-record")
--#     add_executable(kshark-record        kshark-record.cpp)
--#     target_link_libraries(kshark-record kshark-gui)
-+    message(STATUS "kshark-record")
-+    add_executable(kshark-record        kshark-record.cpp)
-+    target_link_libraries(kshark-record kshark-gui)
+ 	/**
+ 	 * @brief Create and position a Missed events marker.
+@@ -40,17 +36,7 @@ public:
+ 	 * @param h: vertical size (height) of the marker.
+ 	 */
+ 	MissedEventsMark(const Point &p, int h)
+-	: _base(p.x(), p.y()), _height(h)
+-	{
+-		_color = {0, 0, 255};
+-		_size = 2;
+-	}
+-
+-	/** Set the Base point of the marker. */
+-	void setBase(const Point &p) {_base.set(p.x(), p.y());}
+-
+-	/** Set the vertical size (height) point of the marker. */
+-	void setHeight(int h) {_height = h;}
++	: _base(p.x(), p.y()), _height(h) {}
  
- #     install(TARGETS ${KS_APP_NAME} kshark-record kshark-gui
- #             RUNTIME DESTINATION       ${_INSTALL_PREFIX}/bin/
-diff --git a/src/KsCaptureDialog.cpp b/src/KsCaptureDialog.cpp
-index 7253ab6..ca4c2bc 100644
---- a/src/KsCaptureDialog.cpp
-+++ b/src/KsCaptureDialog.cpp
-@@ -14,6 +14,7 @@
- 
- // KernelShark
- #include "libkshark.h"
-+#include "libkshark-tepdata.h"
- #include "KsUtils.hpp"
- #include "KsCmakeDef.hpp"
- #include "KsCaptureDialog.hpp"
-@@ -24,11 +25,6 @@ extern "C" {
-   #include <sys/types.h>
+ private:
+ 	/** Base point of the Mark's line. */
+@@ -76,61 +62,38 @@ void MissedEventsMark::_draw(const Color &col, float size) const
+ 	rec.draw();
  }
  
--static inline tep_handle *local_events()
++static PlotObject *makeShape(std::vector<const Graph *> graph,
++			     std::vector<int> bin,
++			     std::vector<kshark_data_field_int64 *>,
++			     Color col, float size)
++{
++	MissedEventsMark *mark = new MissedEventsMark(graph[0]->bin(bin[0])._base,
++						      graph[0]->height());
++	mark->_size = size;
++	mark->_color = col;
++
++	return mark;
++}
++
+ //! @cond Doxygen_Suppress
+ 
+ #define PLUGIN_MAX_ENTRIES		10000
+ 
+-#define KS_TASK_COLLECTION_MARGIN	25
+-
+ //! @endcond
+ 
+-static void pluginDraw(kshark_context *kshark_ctx,
+-		       KsCppArgV *argvCpp,
+-		       int val, int draw_action)
 -{
--	return tracefs_local_events(tracefs_tracing_dir());
+-	int height = argvCpp->_graph->getHeight();
+-	const kshark_entry *entry(nullptr);
+-	MissedEventsMark *mark;
+-	ssize_t index;
+-
+-	int nBins = argvCpp->_graph->size();
+-	for (int bin = 0; bin < nBins; ++bin) {
+-		if (draw_action == KSHARK_PLUGIN_TASK_DRAW)
+-			entry = ksmodel_get_task_missed_events(argvCpp->_histo,
+-							       bin, val,
+-							       nullptr,
+-							       &index);
+-		if (draw_action == KSHARK_PLUGIN_CPU_DRAW)
+-			entry = ksmodel_get_cpu_missed_events(argvCpp->_histo,
+-							      bin, val,
+-							      nullptr,
+-							      &index);
+-
+-		if (entry) {
+-			mark = new MissedEventsMark(argvCpp->_graph->getBin(bin)._base,
+-						    height);
+-
+-			argvCpp->_shapes->push_front(mark);
+-		}
+-	}
 -}
 -
  /**
-  * @brief Create KsCommandLineEdit.
+  * @brief Plugin's draw function.
   *
-@@ -48,11 +44,28 @@ QSize KsCommandLineEdit::sizeHint() const
- 	return {FONT_WIDTH * 30, FONT_HEIGHT * 3};
- }
- 
-+static kshark_data_stream *_initLocalStream()
-+{
-+	kshark_context *kshark_ctx(nullptr);
-+	kshark_data_stream *stream;
-+	int sd;
-+
-+	if (!kshark_instance(&kshark_ctx))
-+		return nullptr;
-+
-+	sd = kshark_add_stream(kshark_ctx);
-+	stream = kshark_ctx->stream[sd];
-+
-+	kshark_tep_init_local(stream);
-+
-+	return stream;
-+}
-+
- /** @brief Create KsCaptureControl widget. */
- KsCaptureControl::KsCaptureControl(QWidget *parent)
- : QWidget(parent),
--  _localTEP(local_events()),
--  _eventsWidget(_localTEP, this),
-+  _stream(_initLocalStream()),
-+  _eventsWidget(_stream),
-   _pluginsLabel("Plugin: ", this),
-   _outputLabel("Output file: ", this),
-   _commandLabel("Command: ", this),
-@@ -80,7 +93,7 @@ KsCaptureControl::KsCaptureControl(QWidget *parent)
- 		_topLayout.addWidget(line);
- 	};
- 
--	if (pluginList.count() == 0 || !_localTEP) {
-+	if (pluginList.count() == 0 || !kshark_get_tep(_stream)) {
- 		/*
- 		 * No plugins or events have been found. Most likely this is
- 		 * because the process has no Root privileges or because
-@@ -88,7 +101,7 @@ KsCaptureControl::KsCaptureControl(QWidget *parent)
- 		 */
- 		QString message("Error: No events or plugins found.\n");
- 
--		if (!_localTEP)
-+		if (!kshark_get_tep(_stream))
- 			message += "Cannot find or mount tracing directory.\n";
- 
- 		// geteuid() returns 0 if running as effective id of root
-@@ -202,23 +215,19 @@ QStringList KsCaptureControl::getArgs()
- QStringList KsCaptureControl::_getPlugins()
+  * @param argv_c: A C pointer to be converted to KsCppArgV (C++ struct).
++ * @param sd: Data stream identifier.
+  * @param val: Process or CPU Id value.
+  * @param draw_action: Draw action identifier.
+  */
+ void draw_missed_events(kshark_cpp_argv *argv_c,
+-			int val, int draw_action)
++			int sd, int val, int draw_action)
  {
- 	QStringList pluginList;
--	char **all_plugins;
-+	char **all_tracers;
- 
--	all_plugins = tracefs_tracers(tracefs_tracing_dir());
-+	all_tracers = kshark_tracecmd_local_plugins();
- 
--	if (!all_plugins)
-+	if (!all_tracers)
- 		return pluginList;
- 
--	for (int i = 0; all_plugins[i]; ++i) {
--		/*
--		 * TODO plugin selection here.
--		 * printf("plugin %i %s\n", i, all_plugins[i]);
--		 */
--		pluginList << all_plugins[i];
--		free(all_plugins[i]);
-+	for (int i = 0; all_tracers[i]; ++i) {
-+		pluginList << all_tracers[i];
-+		free(all_tracers[i]);
- 	}
- 
--	free (all_plugins);
-+	free(all_tracers);
- 	std::sort(pluginList.begin(), pluginList.end());
- 
- 	return pluginList;
-@@ -226,20 +235,17 @@ QStringList KsCaptureControl::_getPlugins()
- 
- void KsCaptureControl::_importSettings()
- {
--	int nEvts = tep_get_events_count(_localTEP), nIds;
-+	QVector<int> event_ids = _eventsWidget.getIds();
-+	QVector<int> status(_stream->n_events, 0);
- 	kshark_config_doc *conf, *jevents, *temp;
--	QVector<bool> v(nEvts, false);
--	tracecmd_filter_id *eventHash;
--	QVector<int> eventIds;
-+	kshark_hash_id *eventHash;
- 	QString fileName;
-+	int nIds;
- 
- 	auto lamImportError = [this] () {
- 		emit print("ERROR: Unable to load the configuration file.\n");
- 	};
- 
--	/** Get all available events. */
--	eventIds = KsUtils::getEventIdList(TEP_EVENT_SORT_SYSTEM);
+-	kshark_context *kshark_ctx(NULL);
 -
- 	/* Get the configuration document. */
- 	fileName = KsUtils::getFile(this, "Import from Filter",
- 				    "Kernel Shark Config files (*.json);;",
-@@ -267,8 +273,9 @@ void KsCaptureControl::_importSettings()
- 		return;
- 	}
- 
--	eventHash = tracecmd_filter_id_hash_alloc();
--	nIds = kshark_import_event_filter(_localTEP, eventHash, "Events", jevents);
-+	eventHash = kshark_get_filter(_stream, KS_SHOW_EVENT_FILTER);
-+	nIds = kshark_import_event_filter(_stream, KS_SHOW_EVENT_FILTER,
-+					  "Events", jevents);
- 	if (nIds < 0) {
- 		QString err("WARNING: ");
- 		err += "Some of the imported events are not available on this system.\n";
-@@ -276,13 +283,12 @@ void KsCaptureControl::_importSettings()
- 		emit print(err);
- 	}
- 
--	for (int i = 0; i < nEvts; ++i) {
--		if (tracecmd_filter_id_find(eventHash, eventIds[i]))
--			v[i] = true;
-+	for (int i = 0; i < _stream->n_events; ++i) {
-+		if (kshark_hash_id_find(eventHash, event_ids[i]))
-+			status[i] = true;
- 	}
- 
--	_eventsWidget.set(v);
--	tracecmd_filter_id_hash_free(eventHash);
-+	_eventsWidget.set(status);
- 
- 	/** Get all available plugins. */
- 	temp = kshark_string_config_alloc();
-@@ -294,9 +300,9 @@ void KsCaptureControl::_importSettings()
- 		if (pluginIndex >= 0) {
- 			_pluginsComboBox.setCurrentText(KS_C_STR_CAST(temp->conf_doc));
- 		} else {
--			QString err("WARNING: The traceer plugin \"");
-+			QString err("WARNING: The tracer plugin \"");
- 			err += plugin;
--			err += "\" is not available on this machine\n";
-+			err += "\" is not available on this machine!\n";
- 			emit print(err);
- 		}
- 	}
-@@ -329,18 +335,20 @@ void KsCaptureControl::_exportSettings()
- 	events = kshark_filter_config_new(KS_CONFIG_JSON);
+-	if (!kshark_instance(&kshark_ctx))
+-		return;
+-
+ 	KsCppArgV *argvCpp = KS_ARGV_TO_CPP(argv_c);
++	IsApplicableFunc checkEntry;
  
  	/*
--	 * Use the tracecmd_filter_id to save all selected events in the
-+	 * Use the kshark_hash_id to save all selected events in the
- 	 * configuration file.
- 	 */
- 	ids = _eventsWidget.getCheckedIds();
--	tracecmd_filter_id *eventHash = tracecmd_filter_id_hash_alloc();
-+	kshark_hash_id *eventHash = kshark_get_filter(_stream,
-+						      KS_SHOW_EVENT_FILTER);
+ 	 * Plotting the "Missed events" makes sense only in the case of a deep
+@@ -141,9 +104,29 @@ void draw_missed_events(kshark_cpp_argv *argv_c,
+ 	if (argvCpp->_histo->tot_count > PLUGIN_MAX_ENTRIES)
+ 		return;
+ 
+-	try {
+-		pluginDraw(kshark_ctx, argvCpp, val, draw_action);
+-	} catch (const std::exception &exc) {
+-		std::cerr << "Exception in MissedEvents\n" << exc.what();
+-	}
++	if (!(draw_action & KSHARK_CPU_DRAW) &&
++	    !(draw_action & KSHARK_TASK_DRAW))
++		return;
 +
- 	for (auto const &id: ids)
--		tracecmd_filter_id_add(eventHash, id);
-+		kshark_hash_id_add(eventHash, id);
++	if (draw_action & KSHARK_CPU_DRAW)
++		checkEntry = [=] (kshark_data_container *, ssize_t bin) {
++			return !!ksmodel_get_cpu_missed_events(argvCpp->_histo,
++							       bin, sd, val,
++							       nullptr,
++							       nullptr);
++		};
++
++	else if (draw_action & KSHARK_TASK_DRAW)
++		checkEntry = [=] (kshark_data_container *, ssize_t bin) {
++			return !!ksmodel_get_task_missed_events(argvCpp->_histo,
++								bin, sd, val,
++								nullptr,
++								nullptr);
++		};
++
++	eventPlot(argvCpp,
++		  checkEntry,
++		  makeShape,
++		  {0, 0, 255}, // Blue
++		  -1);         // Default size
+ }
+diff --git a/src/plugins/missed_events.c b/src/plugins/missed_events.c
+index cf652bf..8fe9780 100644
+--- a/src/plugins/missed_events.c
++++ b/src/plugins/missed_events.c
+@@ -10,32 +10,27 @@
+  *	     ring buffer.
+  */
  
--	kshark_export_event_filter(_localTEP, eventHash, "Events", events);
-+	kshark_export_event_filter(_stream, KS_SHOW_EVENT_FILTER, "Events", events);
- 	kshark_config_doc_add(conf, "Events", events);
++// C
++#include <stdio.h>
++
+ // KernelShark
++#include "libkshark.h"
+ #include "plugins/missed_events.h"
  
--	tracecmd_filter_id_hash_free(eventHash);
-+	kshark_hash_id_free(eventHash);
+-static void nop_action(struct kshark_context *kshark_ctx,
+-				struct tep_record *record,
+-				struct kshark_entry *entry)
+-{}
+-
+ /** Load this plugin. */
+-int KSHARK_PLUGIN_INITIALIZER(struct kshark_context *kshark_ctx)
++int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
+ {
+-	kshark_register_event_handler(&kshark_ctx->event_handlers,
+-				      KS_EVENT_OVERFLOW,
+-				      nop_action,
+-				      draw_missed_events);
++	printf("--> missed_events init %i\n", stream->stream_id);
++	kshark_register_draw_handler(stream, draw_missed_events);
  
- 	/* Save the plugin. */
- 	plugin = _pluginsComboBox.currentText();
-diff --git a/src/KsCaptureDialog.hpp b/src/KsCaptureDialog.hpp
-index 3fd3d8d..0c85101 100644
---- a/src/KsCaptureDialog.hpp
-+++ b/src/KsCaptureDialog.hpp
-@@ -61,9 +61,9 @@ signals:
- 	void print(const QString &message);
+ 	return 1;
+ }
  
- private:
--	tep_handle		*_localTEP;
-+	kshark_data_stream	*_stream;
+ /** Unload this plugin. */
+-int KSHARK_PLUGIN_DEINITIALIZER(struct kshark_context *kshark_ctx)
++int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
+ {
+-	kshark_unregister_event_handler(&kshark_ctx->event_handlers,
+-					KS_EVENT_OVERFLOW,
+-					nop_action,
+-					draw_missed_events);
++	printf("<-- missed_events close %i\n", stream->stream_id);
++	kshark_unregister_draw_handler(stream, draw_missed_events);
  
--	KsEventsCheckBoxWidget	_eventsWidget;
-+	KsWidgetsLib::KsEventsCheckBoxWidget	_eventsWidget;
+ 	return 1;
+ }
+diff --git a/src/plugins/missed_events.h b/src/plugins/missed_events.h
+index e05d79a..10bc549 100644
+--- a/src/plugins/missed_events.h
++++ b/src/plugins/missed_events.h
+@@ -14,14 +14,14 @@
+ #define _KS_PLUGIN_M_EVTS_H
  
- 	QVBoxLayout	_topLayout;
+ // KernelShark
+-#include "libkshark.h"
++#include "libkshark-plugin.h"
  
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+ 
+ void draw_missed_events(struct kshark_cpp_argv *argv,
+-			int pid, int draw_action);
++			int sd, int pid, int draw_action);
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/tests/libkshark-gui-tests.cpp b/tests/libkshark-gui-tests.cpp
+index dedd69f..5a0ca01 100644
+--- a/tests/libkshark-gui-tests.cpp
++++ b/tests/libkshark-gui-tests.cpp
+@@ -146,7 +146,9 @@ BOOST_AUTO_TEST_CASE(KsUtils_KsDataStore)
+ 
+ BOOST_AUTO_TEST_CASE(KsUtils_getPluginList)
+ {
+-	QStringList plugins{"sched_events"};
++	QStringList plugins{"sched_events",
++			    "missed_events"
++	};
+ 
+ 	BOOST_CHECK(getPluginList() == plugins);
+ }
 -- 
 2.25.1
 
