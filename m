@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39907C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:38:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 490F4C433DB
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:38:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0593864E95
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:38:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E61DB64E95
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:38:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbhBKKiY (ORCPT
+        id S230281AbhBKKic (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Feb 2021 05:38:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
+        Thu, 11 Feb 2021 05:38:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhBKKfo (ORCPT
+        with ESMTP id S230209AbhBKKfs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:35:44 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDE1C0617AB
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:35 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id v7so6371109eds.10
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:35 -0800 (PST)
+        Thu, 11 Feb 2021 05:35:48 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37355C06121F
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:40 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id b9so9214553ejy.12
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=77/C7IL9bwjDIfN6W1HD95rM7DeBqtf9m1fmX4fHhKw=;
-        b=kUn8BrAQ0do04hXIawa2VF4gl/Ft/XL6ycMD/Uy30P5FLZg8GVkt3aTSc9tTDCAFim
-         4REymHDFhQKklc2s8Rr0oGf7kooxp/37R5COPZ42K5EKiP7qNfctyNPAgaOzGU8dyg54
-         JEZehIdHlmm5gD3y/Gl+kNEh+1XgHcTFXkpDz+uX6QUvbLlGo/DgUDPaym2Y9M4v6SO2
-         mne8JM6EBcQPvnQK+goGFBN2eo/11nobNcmvDjFq3XrsxmEcLMghOaZYDLTw/7JfINsC
-         egqFwtPfAHjHI89TEMflqN6AguEIZoux1Rb6va7O2kiFc/Awt9nwRLfUg+xLr1pHHgNl
-         dj4w==
+        bh=WBhagRs6pIZGEyxRjdwErefVL8BSm6/FZN1XY85vENw=;
+        b=CIYjETQCVPB2aNax62h2VMUkM4GCIuSx0kRMmB4he3Scj/4de9qeLILm04Nk7zekI5
+         uwhshn1iHw+Hb1zwv3hLKrVeYo2rTmxD7r5K+sqIl7L6r/mD49Tl8Y3eGczuHS3meitn
+         GhO/xHIPOEoCcMIQhPQqrNySmZx6/sEMMuA5YlR9ZBsln9SgnLtTq7XLNyDpKXjonGnl
+         k1Bl+vJt79PBK3g6npOZosXS0qySGIdXy9J2YvzUcPcXhNDuS96OdpS/Mh1L4/v6Jykt
+         VVAkXSdM61sizKrf7VmUgGeUHaq6hF7NzSp76H5bu/apDGqWo7PJSPG9yojCWhGph/n1
+         G+uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=77/C7IL9bwjDIfN6W1HD95rM7DeBqtf9m1fmX4fHhKw=;
-        b=A8oND7WL/UwBLXYCJ78TZ3lDmjXHbD9nT4Iwg+tJNSnjjqfsvUQmZ7HHZAeSHahZ5M
-         DhE1uHvbfF9NBs2yIJsLvOyGhzG6KoEULUCmyLrmHzEjXJErNhOD/Bsv5YNHxykrDeM7
-         ysdInqf1EVdRpqcu6rN3z753YQYi0WxODPJlzLCxf2aWMOwJGxwPNXw1b8EKStS602/M
-         S4E6hwEU0s5uP9J3pWyY/YwK6iC2cj48i++GZ2G9Tzo0ZrzWuqxj1fQDkM6oU7Kp42/t
-         LV3QqrKDbzjWu39BKwIOb6AcAmxkVeIKt6PnjKH4qK5OcNIEhz2ApQ346Ltp8VVbqBxY
-         Zztg==
-X-Gm-Message-State: AOAM5336HYgIUTGo89er1yJz8WQ1HmvEMKDni6d6HfcqOHlQBU79N0pq
-        Oqwyy/cZuzBNslkV9gDrFLo=
-X-Google-Smtp-Source: ABdhPJyVoJZ+oY+U0rF/PSszKJnbHiMqeR108mRcYDoP5Qqq1MdQa/trRGwHxGvWTFkXn8PK66ybIQ==
-X-Received: by 2002:a05:6402:1152:: with SMTP id g18mr7874839edw.18.1613039554193;
-        Thu, 11 Feb 2021 02:32:34 -0800 (PST)
+        bh=WBhagRs6pIZGEyxRjdwErefVL8BSm6/FZN1XY85vENw=;
+        b=U9dyliKKxe5EVN+WYpF8dtdOYZAaBWS1Fa7Npw5wsvDxcwlyoEQb7ZzoITHaTnzYWs
+         Zt6UQFR/5DSNSNRjlokR8d0wTl06G6ZkWYLpD5ftDJNq28rBppygbPdI3vC9JN+/ULG5
+         QscdtDUtCgfBPB+MsWt+3+h/7YRWL3c2mjrYTAVizuhDMtUim0OAM/B3T05mmquCBhQl
+         /iQEjzRF4Jiyol62R4B8qRQyToOaaj4fkbldwtd+UFbk0UF3c27/n/ocZh7TYJeGR17m
+         D1TfUqp1HRGKq3ag9gx8ixe/qrcQh52flNyqRsPdsYit39CmWaK9NY3BXHTSH63BDKpG
+         F6cQ==
+X-Gm-Message-State: AOAM531Xtt8XIuPpGgcNcvOs0Pt2cF1q6m75biCwqU20RSPjqNyKvuAO
+        8wdBKS3nxvXkEzYQHXMQ9jg=
+X-Google-Smtp-Source: ABdhPJzS4kLABEfCprPdPQpyVqHauCf86WIxbX39D8B+4/DsH8UHjdEXOS5LAQPf3kTug09pe6CViw==
+X-Received: by 2002:a17:906:1447:: with SMTP id q7mr8168354ejc.27.1613039558936;
+        Thu, 11 Feb 2021 02:32:38 -0800 (PST)
 Received: from localhost.localdomain (212-39-89-223.ip.btc-net.bg. [212.39.89.223])
-        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.33
+        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 02:32:33 -0800 (PST)
+        Thu, 11 Feb 2021 02:32:38 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 13/27] kernel-shark: Add new methods to KsPlot::Mark
-Date:   Thu, 11 Feb 2021 12:31:51 +0200
-Message-Id: <20210211103205.418588-14-y.karadz@gmail.com>
+Subject: [PATCH v2 18/27] kernel-shark: Update KsTraceViewer
+Date:   Thu, 11 Feb 2021 12:31:56 +0200
+Message-Id: <20210211103205.418588-19-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210211103205.418588-1-y.karadz@gmail.com>
 References: <20210211103205.418588-1-y.karadz@gmail.com>
@@ -74,42 +74,289 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The new "get" methods are needed by the logic of the GUI.
+The compilation of KsTraceViewer.cpp is re-enabled and all
+functionalities are made compatible with the new version of
+the C API of libkshark (KernelShark 2.0).
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/KsPlotTools.hpp | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ src/CMakeLists.txt    |  4 +--
+ src/KsTraceGraph.hpp  |  5 +++-
+ src/KsTraceViewer.cpp | 57 +++++++++++++++++++++++++++++--------------
+ src/KsTraceViewer.hpp | 13 +++++++---
+ 4 files changed, 54 insertions(+), 25 deletions(-)
 
-diff --git a/src/KsPlotTools.hpp b/src/KsPlotTools.hpp
-index a9a5ba8..1725926 100644
---- a/src/KsPlotTools.hpp
-+++ b/src/KsPlotTools.hpp
-@@ -395,12 +395,24 @@ public:
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index ab74d5a..e09deb7 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -73,7 +73,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
+                         KsDualMarker.hpp
+                         KsWidgetsLib.hpp
+                         KsTraceGraph.hpp
+-#                         KsTraceViewer.hpp
++                        KsTraceViewer.hpp
+ #                         KsMainWindow.hpp
+ #                         KsCaptureDialog.hpp
+                         KsQuickContextMenu.hpp)
+@@ -89,7 +89,7 @@ if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
+                                                             KsDualMarker.cpp
+                                                             KsWidgetsLib.cpp
+                                                             KsTraceGraph.cpp
+-#                                                             KsTraceViewer.cpp
++                                                            KsTraceViewer.cpp
+ #                                                             KsMainWindow.cpp
+ #                                                             KsCaptureDialog.cpp
+                                                             KsQuickContextMenu.cpp)
+diff --git a/src/KsTraceGraph.hpp b/src/KsTraceGraph.hpp
+index 0e31b88..6e83f21 100644
+--- a/src/KsTraceGraph.hpp
++++ b/src/KsTraceGraph.hpp
+@@ -29,7 +29,10 @@ public:
+ 	 * Reimplemented handler for mouse wheel events. All mouse wheel
+ 	 * events will be ignored.
+ 	 */
+-	void wheelEvent(QWheelEvent *evt) {evt->ignore();}
++	void wheelEvent(QWheelEvent *evt) {
++		if (QApplication::keyboardModifiers() != Qt::ControlModifier)
++			QScrollArea::wheelEvent(evt);
++	}
+ };
  
- 	void setY(int yA, int yB);
+ /**
+diff --git a/src/KsTraceViewer.cpp b/src/KsTraceViewer.cpp
+index 0e0e3d4..afd5a85 100644
+--- a/src/KsTraceViewer.cpp
++++ b/src/KsTraceViewer.cpp
+@@ -9,7 +9,7 @@
+  *  @brief   KernelShark Trace Viewer widget.
+  */
  
-+	/** Get the Y coordinate of the Mark's CPU point. */
-+	int cpuY() const {return _cpu.y();}
+-// C++11
++// C++
+ #include <thread>
+ #include <future>
+ #include <queue>
+@@ -50,11 +50,10 @@ void KsTableView::scrollTo(const QModelIndex &index, ScrollHint hint)
+ 
+ /** Create a default (empty) Trace viewer widget. */
+ KsTraceViewer::KsTraceViewer(QWidget *parent)
+-: QWidget(parent),
++: KsWidgetsLib::KsDataWidget(parent),
+   _view(this),
+   _model(this),
+   _proxyModel(this),
+-  _tableHeader(_model.header()),
+   _toolbar(this),
+   _labelSearch("Search: Column", this),
+   _labelGrFollows("Graph follows  ", this),
+@@ -72,7 +71,7 @@ KsTraceViewer::KsTraceViewer(QWidget *parent)
+ 
+ 	/* On the toolbar make two Combo boxes for the search settings. */
+ 	_toolbar.addWidget(&_labelSearch);
+-	_searchFSM._columnComboBox.addItems(_tableHeader);
++	_searchFSM._columnComboBox.addItems(_model.header());
+ 
+ 	/*
+ 	 * Using the old Signal-Slot syntax because
+@@ -163,6 +162,9 @@ void KsTraceViewer::loadData(KsDataStore *data)
+ 	_model.fill(data);
+ 	this->_resizeToContents();
+ 
++	_searchFSM._columnComboBox.clear();
++	_searchFSM._columnComboBox.addItems(_model.header());
 +
- 	void setCPUY(int yCPU);
+ 	this->setMinimumHeight(SCREEN_HEIGHT / 5);
+ }
  
-+	/** Is the CPU point visible. */
-+	bool cpuIsVisible() const {return _cpu._visible;}
+@@ -172,8 +174,8 @@ void KsTraceViewer::setMarkerSM(KsDualMarkerSM *m)
+ 	QString styleSheetA, styleSheetB;
+ 
+ 	_mState = m;
+-	_model.setColors(_mState->markerA()._color,
+-			 _mState->markerB()._color);
++	_model.setMarkerColors(_mState->markerA()._color,
++			       _mState->markerB()._color);
+ 
+ 	/*
+ 	 * Assign a property to State A of the Dual marker state machine. When
+@@ -234,6 +236,7 @@ void KsTraceViewer::update(KsDataStore *data)
+ 	_data = data;
+ 	if (_mState->activeMarker()._isSet)
+ 		showRow(_mState->activeMarker()._pos, true);
++	_resizeToContents();
+ }
+ 
+ void KsTraceViewer::_onCustomContextMenu(const QPoint &point)
+@@ -246,7 +249,7 @@ void KsTraceViewer::_onCustomContextMenu(const QPoint &point)
+ 		 * of the row number in the source model.
+ 		 */
+ 		size_t row = _proxyModel.mapRowFromSource(i.row());
+-		KsQuickContextMenu menu(_data, row, _mState, this);
++		KsQuickContextMenu menu(_mState, _data, row, this);
+ 
+ 		/*
+ 		 * Note that this slot was connected to the
+@@ -290,7 +293,7 @@ void KsTraceViewer::_graphFollowsChanged(int state)
+ 
+ 	_graphFollows = (bool) state;
+ 	if (_graphFollows && row != KS_NO_ROW_SELECTED)
+-		emit select(row); // Send a signal to the Graph widget.
++		emit select(*_it); // Send a signal to the Graph widget.
+ }
+ 
+ void KsTraceViewer::_search()
+@@ -459,7 +462,7 @@ void KsTraceViewer::clearSelection()
+ /** Switch the Dual marker. */
+ void KsTraceViewer::markSwitch()
+ {
+-	int row;
++	ssize_t row;
+ 
+ 	/* The state of the Dual marker has changed. Get the new active marker. */
+ 	DualMarkerState state = _mState->getState();
+@@ -490,7 +493,7 @@ void KsTraceViewer::markSwitch()
+ 		 * The index in the source model is used to retrieve the value
+ 		 * of the row number in the proxy model.
+ 		 */
+-		size_t row =_mState->getMarker(state)._pos;
++		row =_mState->getMarker(state)._pos;
+ 
+ 		QModelIndex index =
+ 			_proxyModel.mapFromSource(_model.index(row, 0));
+@@ -525,7 +528,7 @@ void KsTraceViewer::markSwitch()
+  */
+ void KsTraceViewer::resizeEvent(QResizeEvent* event)
+ {
+-	int nColumns = _tableHeader.count();
++	int nColumns = _model.header().count();
+ 	int tableSize(0), viewSize, freeSpace;
+ 
+ 	_resizeToContents();
+@@ -564,7 +567,7 @@ void KsTraceViewer::keyReleaseEvent(QKeyEvent *event)
+ 
+ void KsTraceViewer::_resizeToContents()
+ {
+-	int rows, columnSize, markRow = selectedRow();
++	int col, rows, columnSize, markRow = selectedRow();
+ 
+ 	_view.setVisible(false);
+ 	_view.resizeColumnsToContents();
+@@ -579,13 +582,22 @@ void KsTraceViewer::_resizeToContents()
+ 		_view.clearSelection();
+ 
+ 	/*
+-	 * Because of some unknown reason the first column doesn't get
++	 * Because of some unknown reason some of the columns doesn't get
+ 	 * resized properly by the code above. We will resize this
+ 	 * column by hand.
+ 	 */
++	col = KsViewModel::TRACE_VIEW_COL_STREAM;
++	columnSize = STRING_WIDTH(_model.header()[col]) + FONT_WIDTH;
++	_view.setColumnWidth(col, columnSize);
 +
- 	void setCPUVisible(bool v);
- 
-+	/** Get the Y coordinate of the Mark's Task point. */
-+	int taskY() const {return _task.y();}
++	col = KsViewModel::TRACE_VIEW_COL_CPU;
++	columnSize = STRING_WIDTH(_model.header()[col]) + FONT_WIDTH * 2;
++	_view.setColumnWidth(col, columnSize);
 +
- 	void setTaskY(int yTask);
++	col = KsViewModel::TRACE_VIEW_COL_INDEX;
+ 	rows = _model.rowCount({});
+ 	columnSize = STRING_WIDTH(QString("%1").arg(rows)) + FONT_WIDTH;
+-	_view.setColumnWidth(0, columnSize);
++	_view.setColumnWidth(col, columnSize);
+ }
  
-+	/** Is the Task point visible. */
-+	bool taskIsVisible() const {return _task._visible;}
+ //! @cond Doxygen_Suppress
+@@ -598,7 +610,16 @@ size_t KsTraceViewer::_searchItems()
+ {
+ 	int column = _searchFSM._columnComboBox.currentIndex();
+ 	QString searchText = _searchFSM._searchLineEdit.text();
+-	int count, dataRow;
++	int count, dataRow, columnIndex = column;
 +
- 	void setTaskVisible(bool v);
++	if (_model.singleStream()) {
++		/*
++		 * If only one Data stream (file) is loaded, the first column
++		 * (TRACE_VIEW_COL_STREAM) is not shown. The column index has
++		 * to be corrected.
++		 */
++		++columnIndex;
++	}
  
- 	/** If True, the Mark will be plotted as a dashed line. */
+ 	if (searchText.isEmpty()) {
+ 		/*
+@@ -620,8 +641,8 @@ size_t KsTraceViewer::_searchItems()
+ 	} else {
+ 		_searchFSM.handleInput(sm_input_t::Start);
+ 
+-		if (column == KsViewModel::TRACE_VIEW_COL_INFO ||
+-		    column == KsViewModel::TRACE_VIEW_COL_LAT)
++		if (columnIndex == KsViewModel::TRACE_VIEW_COL_INFO ||
++		    columnIndex == KsViewModel::TRACE_VIEW_COL_AUX)
+ 			_searchItemsST();
+ 		else
+ 			_searchItemsMT();
+@@ -761,7 +782,7 @@ void KsTraceViewer::_searchItemsMT()
+ 		};
+ 
+ 		for (int i = 0; i < mapList.size(); ++i)
+-			if ( mapList[i].count()) {
++			if (mapList[i].count()) {
+ 				queue.push(std::make_pair(i, mapList[i].front()));
+ 				mapList[i].pop_front();
+ 			}
+diff --git a/src/KsTraceViewer.hpp b/src/KsTraceViewer.hpp
+index 6080d0d..f3979a6 100644
+--- a/src/KsTraceViewer.hpp
++++ b/src/KsTraceViewer.hpp
+@@ -20,6 +20,7 @@
+ #include "KsModels.hpp"
+ #include "KsSearchFSM.hpp"
+ #include "KsDualMarker.hpp"
++#include "KsWidgetsLib.hpp"
+ 
+ /**
+  * Table View class, needed in order to reimplemented the handler for mouse
+@@ -42,7 +43,7 @@ public:
+  * The KsTraceViewer class provides a widget for browsing in the trace data
+  * shown in a text form.
+  */
+-class KsTraceViewer : public QWidget
++class KsTraceViewer : public KsWidgetsLib::KsDataWidget
+ {
+ 	Q_OBJECT
+ public:
+@@ -74,6 +75,12 @@ public:
+ 
+ 	void update(KsDataStore *data);
+ 
++	/** Update the color scheme used by the model. */
++	void loadColors()
++	{
++		_model.loadColors();
++	}
++
+ signals:
+ 	/** Signal emitted when new row is selected. */
+ 	void select(size_t);
+@@ -82,7 +89,7 @@ signals:
+ 	 * This signal is used to re-emitted the addTaskPlot signal of the
+ 	 * KsQuickContextMenu.
+ 	 */
+-	void addTaskPlot(int pid);
++	void addTaskPlot(int sd, int pid);
+ 
+ 	/**
+ 	 * This signal is used to re-emitted the deselect signal of the
+@@ -99,8 +106,6 @@ private:
+ 
+ 	KsFilterProxyModel	_proxyModel;
+ 
+-	QStringList	_tableHeader;
+-
+ 	QToolBar	_toolbar;
+ 
+ 	QLabel		_labelSearch, _labelGrFollows;
 -- 
 2.25.1
 
