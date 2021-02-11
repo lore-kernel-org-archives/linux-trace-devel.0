@@ -5,104 +5,183 @@ X-Spam-Level:
 X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DA65C433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50DD6C433E6
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:36:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 03F0E64E9A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:36:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1B11964E9C
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Feb 2021 10:36:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhBKKfl (ORCPT
+        id S230026AbhBKKfo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Feb 2021 05:35:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
+        Thu, 11 Feb 2021 05:35:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhBKKdI (ORCPT
+        with ESMTP id S229821AbhBKKdC (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:33:08 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BC3C06178B
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:26 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id w1so9219684ejf.11
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:26 -0800 (PST)
+        Thu, 11 Feb 2021 05:33:02 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34F5C061574
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:21 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id bl23so9273852ejb.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Feb 2021 02:32:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tge4VpWhNZLplgeS0avc+7KTpwHzqvBlhwQ81Ehq4Uk=;
-        b=Hb2HIhmgCjcpzPr+AczL+hDTWorKD0IwDuh3/L7vHcgbKH/K632QxhbYQgQ5GjNDwf
-         cVvTrfIK/N0zas/6UdczsmmpvDmMOk5DTmGAT3jDTqo6uwB0q4DWHdpzLNEIk1b+nO0x
-         hVqoXKJwnyTCsK7Xf96eHkOJywlsRte28LFYsCFr4PtKTsOU0N0jOwoK28hEOlvtVaA6
-         YEV/9DBRFM2RXMa5GImmdHwqfZNpQbASBJVRB3IKdKNDEJi+ryt+rR2QRDOS9rN54wnA
-         0nCMhwfJoINf5yI2OgJU7qEaDjfsY8HmF+Zdfybl/B4XnpWUEQyEUL+7BlLk8f4HlBJD
-         +Axg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/z7RqVNueZzf5q8v7nnP207xyOTTao+kxr8gAAWKduI=;
+        b=QPZhEOPTUEmK7EM4hClJ/SvSGJqsgSgoVP73Xym03uBQ2UrVTtO+n8p7ndpXth5qSk
+         0rnchBf0H9hazOxyDj5iUojEN7w5mrFnj2e442hYSTU3xTYUM+cZ+ICy7+M9V+Ol17V1
+         mCkXzA7Xiih4T9wWU09fKotcsAPP2oWYqKmNcQTYhhIQZ/XbGzzFz5Fd2fE+l0wct1YO
+         d8ZKVn4kd8MRAjVpEMn8sCrdeaVyhwQnOj5ZgrZtxjs2ks/rPTrcFC8dx++QdqEuES0L
+         mu+mTv5j5wx7JBrQ9D2w4dWYlfqoDxMaryXyP3R3zfWTdA+ecTLWf2lVX+M4rPi8aFnJ
+         eEeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tge4VpWhNZLplgeS0avc+7KTpwHzqvBlhwQ81Ehq4Uk=;
-        b=XU1OaoHqNQw6VKlRph6T9sOmA8nG4ruxulT5zTaYWDNkM75gbmlRrIr8MRCTqVz4PM
-         O/rC2eR3heLOfphZwHP+0kzuBT+vHZuUrOVR73NgjqmTl7H21ccHOa+G5rHy0uJMghuz
-         ThyHpXFEQDHA59u7Fstk1LNxTN+Ea7hUnWRomI2Q/d/NRK+wGAb2n63pKr0ps0BLZ2wE
-         A/dt8gsUd4JyXm22D8FABB4d2a5rmquOlgukwsNlzUdCu0PRvnjY6r4v/cLCFJyL8GHw
-         +dGtFaEwe1nT+nwl9IKWfQplF/XhOUhbJ+lO8iWe9ofdLft1qLS8CsTlOOK+Qb3+rl8e
-         lUIg==
-X-Gm-Message-State: AOAM531j/2BtYBluMiyBmL4qghjSqUWH9BHfQqa3exhU0PUtlP+nQfXN
-        2QcbjLuNtfBHKKnTrLJJe6E=
-X-Google-Smtp-Source: ABdhPJy/WfWrLZ4ZdhE+qaSgN6bExGGhO9oAMD2z+ke57meKHOF7sRx8d2SnBAKgat2P5Fpqw8S1BA==
-X-Received: by 2002:a17:906:17c3:: with SMTP id u3mr7714587eje.304.1613039545585;
-        Thu, 11 Feb 2021 02:32:25 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/z7RqVNueZzf5q8v7nnP207xyOTTao+kxr8gAAWKduI=;
+        b=LIGi1GC3ebTtM4VTmn7k/9WVYH6M01HrZpJw9Cjq2SNGdXPB4Pps+MKxvbwhWx+glx
+         WR5jCLG5zKEWHUYxfWzpc0NYQf7bqC0/A9uaFLhsHFCXDexb7Sh92uRUUIxYB2Cscs9c
+         24MrePG9s7MsHUUos6IQXP9mc51bndo/WKM/wTd/CMQo8PJ5edp9Tdeyd+w2TM93XALb
+         PW+7CibMEb9V+0o//nsKN9YCs5Y0SonNCxbrShWKVrOvU53wLhqjGbFBljNwOcIydxuK
+         4q3GeEOs+Q4TEnL2OUbJKvW0FuAA2m8ElLOFuWUAhSjxTegqHvTitKqk0hhhW3vYsbe/
+         NNFQ==
+X-Gm-Message-State: AOAM530fs6kNf0CDV1b+8+xlG0Tp3TwGneSJZwvwpvABLKB3epbo0Xdi
+        ZC+WzrVOaaIyjiBZOrmdExbL8HddwGs=
+X-Google-Smtp-Source: ABdhPJzCkcH9lLeEGFRJNw5IJjOsz84mf82GHQVxwfY5lT+P6J9uWASlmkoM0LDzMhIf9umV4+0MBQ==
+X-Received: by 2002:a17:906:2bce:: with SMTP id n14mr7571710ejg.171.1613039540489;
+        Thu, 11 Feb 2021 02:32:20 -0800 (PST)
 Received: from localhost.localdomain (212-39-89-223.ip.btc-net.bg. [212.39.89.223])
-        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.24
+        by smtp.gmail.com with ESMTPSA id bd27sm3514031edb.37.2021.02.11.02.32.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 02:32:25 -0800 (PST)
+        Thu, 11 Feb 2021 02:32:19 -0800 (PST)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 05/27] kernel-shark: Count the number of readout interfaces
-Date:   Thu, 11 Feb 2021 12:31:43 +0200
-Message-Id: <20210211103205.418588-6-y.karadz@gmail.com>
+Subject: [PATCH v2 00/27] Complete the KernelShark v2 transformation
+Date:   Thu, 11 Feb 2021 12:31:38 +0200
+Message-Id: <20210211103205.418588-1-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210211103205.418588-1-y.karadz@gmail.com>
-References: <20210211103205.418588-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The number of readout interfaces, successfully registered by
-the plugins is supposed to be counted and stored in the session
-context object. Although this is not used by the GUI, we want
-the API to support this feature.
+With this patch-set we complete the destructive part of the transformation
+of KernelShark towards v2 and the GUI is finally fully functional again.
 
-Sgned-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- src/libkshark-plugin.c | 2 ++
- 1 file changed, 2 insertions(+)
+v2 changes:
+  * Fixing the bug in patch
+    "kernel-shark: Update KsDualMarker and KsGLWidget",
+    causing the error "Unable to find FreeSans font".
 
-diff --git a/src/libkshark-plugin.c b/src/libkshark-plugin.c
-index bc68186..ebd2579 100644
---- a/src/libkshark-plugin.c
-+++ b/src/libkshark-plugin.c
-@@ -457,6 +457,7 @@ kshark_register_input(struct kshark_context *kshark_ctx,
- 	input->interface = plugin;
- 	input->next = kshark_ctx->inputs;
- 	kshark_ctx->inputs = input;
-+	kshark_ctx->n_inputs++;
- 	return input;
- 
-  conflict:
-@@ -489,6 +490,7 @@ void kshark_unregister_input(struct kshark_context *kshark_ctx,
- 			*last = this_input->next;
- 
- 			free(this_input);
-+			kshark_ctx->n_inputs--;
- 
- 			return;
- 		}
+  * New patches:
+    - kernel-shark: Search for font with Cmake at pre-build
+    - kernel-shark: Add pkg-config configuration for libkshark
+    - kernel-shark: Install libkshark-tepdata.h
+
+
+Yordan Karadzhov (VMware) (27):
+  kernel-shark: Add get_stream_object()
+  kernel-shark: Do proper reset in kshark_close_all()
+  kernel-shark: Restore the counting of event handlers
+  kernel-shark: Fix a misleading comment
+  kernel-shark: Count the number of readout interfaces
+  kernel-shark: Update KsUtils
+  kernel-shark: Update KsModels and KsSearchFSM
+  kernel-shark: Add trace data files for CI testing
+  kernel-shark: Add plugin tests
+  kernel-shark: Add model tests
+  kernel-shark: Update KsWidgetsLib
+  kernel-shark: Add combo point to Mark
+  kernel-shark: Add new methods to KsPlot::Mark
+  kernel-shark: Update the plotting example
+  kernel-shark: Search for font with Cmake at pre-build
+  kernel-shark: Update KsDualMarker and KsGLWidget
+  kernel-shark: Update KsTraceGraph and KsQuickContextMenu
+  kernel-shark: Update KsTraceViewer
+  kernel-shark: Update KsAdvFilteringDialog
+  kernel-shark: Update KsCaptureDialog
+  kernel-shark: Update KsSession
+  kernel-shark: Update MissedEvents plugin
+  kernel-shark: Update KsMainWindow and kernelshark.cpp
+  kernel-shark: Clickable sched_event plugin shapes
+  kernel-shark: Show Task plots from command lime
+  kernel-shark: Add pkg-config configuration for libkshark
+  kernel-shark: Install libkshark-tepdata.h
+
+ .github/workflows/main.yml    |    9 +
+ CMakeLists.txt                |   41 +-
+ README                        |    1 +
+ build/cmake_clean.sh          |    4 +-
+ build/deff.h.cmake            |    9 +
+ build/libkshark.pc.cmake      |   10 +
+ examples/CMakeLists.txt       |   30 +-
+ examples/dataplot.cpp         |   88 ++-
+ examples/widgetdemo.cpp       |   65 +-
+ src/CMakeLists.txt            |   15 +-
+ src/KsAdvFilteringDialog.cpp  |  200 ++++--
+ src/KsAdvFilteringDialog.hpp  |   16 +-
+ src/KsCaptureDialog.cpp       |   90 +--
+ src/KsCaptureDialog.hpp       |    4 +-
+ src/KsDualMarker.cpp          |   23 +-
+ src/KsDualMarker.hpp          |   16 +-
+ src/KsGLWidget.cpp            |  696 +++++++++++++-------
+ src/KsGLWidget.hpp            |  187 ++++--
+ src/KsMainWindow.cpp          |  786 ++++++++++++++--------
+ src/KsMainWindow.hpp          |  108 ++-
+ src/KsModels.cpp              |  112 +++-
+ src/KsModels.hpp              |   28 +-
+ src/KsPlotTools.cpp           |   23 +-
+ src/KsPlotTools.hpp           |   27 +-
+ src/KsPlugins.hpp             |    5 +
+ src/KsQuickContextMenu.cpp    |  151 +++--
+ src/KsQuickContextMenu.hpp    |   26 +-
+ src/KsSearchFSM.cpp           |   12 +-
+ src/KsSession.cpp             |  379 +++++++----
+ src/KsSession.hpp             |   33 +-
+ src/KsTraceGraph.cpp          |  426 ++++++------
+ src/KsTraceGraph.hpp          |   48 +-
+ src/KsTraceViewer.cpp         |   57 +-
+ src/KsTraceViewer.hpp         |   13 +-
+ src/KsUtils.cpp               | 1157 +++++++++++++++++++++++----------
+ src/KsUtils.hpp               |  183 ++++--
+ src/KsWidgetsLib.cpp          |  695 +++++++++++++++++---
+ src/KsWidgetsLib.hpp          |  331 +++++++++-
+ src/kernelshark.cpp           |   64 +-
+ src/libkshark-plugin.c        |   25 +-
+ src/libkshark.c               |   28 +-
+ src/plugins/CMakeLists.txt    |   36 +-
+ src/plugins/MissedEvents.cpp  |  105 ++-
+ src/plugins/SchedEvents.cpp   |   58 +-
+ src/plugins/missed_events.c   |   25 +-
+ src/plugins/missed_events.h   |    4 +-
+ src/plugins/sched_events.c    |    7 +
+ src/plugins/sched_events.h    |    3 +
+ tests/CMakeLists.txt          |   42 +-
+ tests/get_test_data.sh        |   21 +
+ tests/libkshark-gui-tests.cpp |  313 +++++++++
+ tests/libkshark-tests.cpp     |  317 ++++++++-
+ tests/test-input.c            |  134 ++++
+ tests/test-input_ctrl.c       |  140 ++++
+ tests/test-plugin_dpi.c       |   26 +
+ tests/test-plugin_dpi_ctrl.c  |   32 +
+ tests/test-plugin_dpi_err.c   |   26 +
+ 57 files changed, 5608 insertions(+), 1902 deletions(-)
+ create mode 100644 build/libkshark.pc.cmake
+ create mode 100755 tests/get_test_data.sh
+ create mode 100644 tests/libkshark-gui-tests.cpp
+ create mode 100644 tests/test-input.c
+ create mode 100644 tests/test-input_ctrl.c
+ create mode 100644 tests/test-plugin_dpi.c
+ create mode 100644 tests/test-plugin_dpi_ctrl.c
+ create mode 100644 tests/test-plugin_dpi_err.c
+
 -- 
 2.25.1
 
