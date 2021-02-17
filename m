@@ -3,35 +3,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 508E2C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Feb 2021 20:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62CD6C433DB
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Feb 2021 20:56:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1440C64E6C
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Feb 2021 20:51:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2CA8864E76
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 17 Feb 2021 20:56:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbhBQUvR (ORCPT
+        id S233125AbhBQU4b (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 17 Feb 2021 15:51:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44740 "EHLO mail.kernel.org"
+        Wed, 17 Feb 2021 15:56:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232050AbhBQUvR (ORCPT
+        id S233048AbhBQU42 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 17 Feb 2021 15:51:17 -0500
+        Wed, 17 Feb 2021 15:56:28 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E90A64E2E
-        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Feb 2021 20:50:36 +0000 (UTC)
-Date:   Wed, 17 Feb 2021 15:50:34 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id D1B8264E45;
+        Wed, 17 Feb 2021 20:55:47 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 15:55:46 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd/timesync: Remove double check of finding the
- protocol
-Message-ID: <20210217155034.04f6891f@gandalf.local.home>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v28 1/8] trace-cmd: Save command lines in VM agent
+Message-ID: <20210217155546.0c97775f@gandalf.local.home>
+In-Reply-To: <20210208061743.510964-2-tz.stoyanov@gmail.com>
+References: <20210208061743.510964-1-tz.stoyanov@gmail.com>
+        <20210208061743.510964-2-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,78 +43,25 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Mon,  8 Feb 2021 08:17:36 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-In the two locations that call clock_context_init(), the protocol is
-searched for via tsync_proto_find() to test if it has clock_sync_calc set.
-clock_context_init() then does another tsync_proto_find(). Instead of having
-this duplicate search, have clock_context_init() do the search and check if
-clock_sync_calc is set, and return the protocol back to the caller on
-success.
+> Command lines were not saved in the guest tracing file, due to bug
+> inrtoduced by commit:
+> https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/commit/?id=1eea02a4bef10507d157489a1ee97f273db7b319
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- lib/trace-cmd/trace-timesync.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+I already pulled this in (not really noticing this link), but for next
+time, the proper way of doing this is to add a "Fixes:" tag.
 
-diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
-index 9cbed775..8d01c0bc 100644
---- a/lib/trace-cmd/trace-timesync.c
-+++ b/lib/trace-cmd/trace-timesync.c
-@@ -327,7 +327,8 @@ clock_synch_delete_instance(struct tracefs_instance *inst)
- 	tracefs_instance_free(inst);
- }
- 
--static int clock_context_init(struct tracecmd_time_sync *tsync, bool guest)
-+static int clock_context_init(struct tracecmd_time_sync *tsync,
-+			      struct tsync_proto **proto, bool guest)
- {
- 	struct clock_sync_context *clock = NULL;
- 	struct tsync_proto *protocol;
-@@ -336,7 +337,7 @@ static int clock_context_init(struct tracecmd_time_sync *tsync, bool guest)
- 		return 0;
- 
- 	protocol = tsync_proto_find(tsync->proto_name);
--	if (!protocol)
-+	if (!protocol || !protocol->clock_sync_calc)
- 		return -1;
- 
- 	clock = calloc(1, sizeof(struct clock_sync_context));
-@@ -359,6 +360,8 @@ static int clock_context_init(struct tracecmd_time_sync *tsync, bool guest)
- 	if (protocol->clock_sync_init && protocol->clock_sync_init(tsync) < 0)
- 		goto error;
- 
-+	*proto = protocol;
-+
- 	return 0;
- error:
- 	tsync->context = NULL;
-@@ -432,11 +435,7 @@ void tracecmd_tsync_with_host(struct tracecmd_time_sync *tsync)
- 	unsigned int command;
- 	int ret;
- 
--	proto = tsync_proto_find(tsync->proto_name);
--	if (!proto || !proto->clock_sync_calc)
--		return;
--
--	clock_context_init(tsync, true);
-+	clock_context_init(tsync, &proto, true);
- 	if (!tsync->context)
- 		return;
- 
-@@ -534,11 +533,7 @@ void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
- 	bool end = false;
- 	int ret;
- 
--	proto = tsync_proto_find(tsync->proto_name);
--	if (!proto || !proto->clock_sync_calc)
--		return;
--
--	clock_context_init(tsync, false);
-+	clock_context_init(tsync, &proto, false);
- 	if (!tsync->context)
- 		return;
- 
--- 
-2.25.4
+Fixes: 1eea02a4bef ("trace-cmd: Add missing APIs to libtracecmd main man page")
 
+This way, we can easily add a search to the git history looking for fixes
+that should be backported to a previous release.
+
+-- Steve
+
+
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+> 
