@@ -2,70 +2,93 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B4D3C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Feb 2021 03:54:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B3C4C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Feb 2021 05:32:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AE9E664EDA
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Feb 2021 03:54:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB57C64EB8
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Feb 2021 05:32:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbhBSDx6 (ORCPT
+        id S229527AbhBSFcm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 18 Feb 2021 22:53:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhBSDx5 (ORCPT
+        Fri, 19 Feb 2021 00:32:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhBSFcl (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 18 Feb 2021 22:53:57 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7382464ED9;
-        Fri, 19 Feb 2021 03:53:16 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 22:53:14 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+        Fri, 19 Feb 2021 00:32:41 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB80CC061574
+        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Feb 2021 21:32:00 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id bl23so10127505ejb.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Feb 2021 21:32:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KNJKyHZsz0glLv9IaZkUFV6PtngS2VtPFCYHort/lhw=;
+        b=t7whxy/gWgnDM23ibdJBxLY0OWyCh2ZMFQoB+l+ESZoRZtCZoVS9OXEuQniWZgqJS8
+         BSLw7eOCPkPMAxHaTOQDcsiiD2TYNBTVM43u8Itri5mrIse6BTQyYfRCMpDWQK3GgYMS
+         A4GgtBgjxSQ+K+3JnZG7xlJEYLSPnKf+iHubNQdoqO9ul8VziCvXy/qhPuQClZmEDfmn
+         e5Sbg9N8GjBzq3YjXuH+QXuka6B08wOc1IR2XD6z3nwCmbyYUy5ownehUuhVFdHpFY7P
+         tVjTIjDwpiof4phanzYxDNGzIEqGmG1tLTBoIUVTlFHETgX6kvNdWVh5ZF7ffzjaJXir
+         v2sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KNJKyHZsz0glLv9IaZkUFV6PtngS2VtPFCYHort/lhw=;
+        b=m+5jKHcrJWlif3WQoBZCXfc9M6yfQVnGbzw7ayffek6mYlnXywdZmtfjkpyegLB8uV
+         9J40KJMMTTiANvcjpAFCvM8J6irEZ6nUEHm/I47zFFYUV9cvsrIA2PlOB7zf9WBArOEA
+         t34xuxXXu5OdPn1POoBCNAyXN5hVHqV5+sDI9G9i5IFBXYsQ3Ic5Tq1My78jRCWzEZCd
+         RU9HQZtW6KaBOJ9jxZgQSIU3lGZ7s9XPjj1Z9f/t+yuIU3+M5dwxD8U02TlUvXvsM2v/
+         Jj4ybGKAOU9QeEc40/wkRO+tMGEorjhrFtq8C/dSyaE0P2HjZNHmWZarnkckW/uMk/vM
+         I9yw==
+X-Gm-Message-State: AOAM5316IhTw3ctY+N6b5Q6xnt1Ajb5hftfEYswDwf7uwz9Aft7BKj7Y
+        mpuqEqNXZU/yULG6GsYoSvKHo91rrSknlw==
+X-Google-Smtp-Source: ABdhPJxBVTNICHJwJLodeoNWhia+Ul09767I1By151N700uPzLTKCPVlxuMPTI3+uorCbBVnq+wVDw==
+X-Received: by 2002:a17:907:12d0:: with SMTP id vp16mr1231758ejb.232.1613712719633;
+        Thu, 18 Feb 2021 21:31:59 -0800 (PST)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id bm2sm3752883ejb.87.2021.02.18.21.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 21:31:58 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 5/5] [WIP] trace-cmd: Add new subcomand "trace-cmd perf"
-Message-ID: <20210218225314.76166422@oasis.local.home>
-In-Reply-To: <20210218210352.61470b93@oasis.local.home>
-References: <20201203060226.476475-1-tz.stoyanov@gmail.com>
-        <20201203060226.476475-6-tz.stoyanov@gmail.com>
-        <20210218210352.61470b93@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Subject: [PATCH v2 0/2] Fix listener and add trace file validation
+Date:   Fri, 19 Feb 2021 07:31:54 +0200
+Message-Id: <20210219053156.2235035-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 18 Feb 2021 21:03:52 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Added checks for trace file consistency when reading and writing it.
+Fixed broken tarce-cmd listener.
 
-> Hence, we can use x86-tsc as the clock for both the host and guest, and
-> then using perf find out how to convert that to what the 'local' clock
-> would produce. At least the multiplier and the shfit.
+v2 changes:
+ - Converted file states from bitmask to enum
+ - Added return value of collect_metadata_from_client() to track any errors
 
-I just tried this out:
+Tzvetomir Stoyanov (VMware) (2):
+  trace-cmd: Add validation for reading and writing trace.dat files
+  trace-cmd: Fix broken listener and add error checks
 
- http://rostedt.org/private/perf-trace.c
+ .../include/private/trace-cmd-private.h       |  23 ++-
+ lib/trace-cmd/trace-input.c                   |  27 +++-
+ lib/trace-cmd/trace-output.c                  | 138 +++++++++++++++---
+ tracecmd/trace-listen.c                       |  30 ++--
+ tracecmd/trace-record.c                       |  33 ++++-
+ tracecmd/trace-split.c                        |   2 +-
+ 6 files changed, 201 insertions(+), 52 deletions(-)
 
-Where I did:
+-- 
+2.29.2
 
- # trace-cmd record -M 1 -C local -e irq -e sched taskset -c 0 ./perf-trace
-time_shift=31
-time_mult=633046315
-time_offset=-125757047487632
- # trace-cmd report |grep print         taskset-34857 [000] 125742.260276: print:                tracing_mark_write: [426606557411358] [125757.283123254] - <idle>-0 [0] softirq_raise: vec=9 [action=RCU]
-         taskset-34857 [000] 125742.260283: print:                tracing_mark_write: [426606557431758] [125757.283129268] - <idle>-0 [0] softirq_entry: vec=9 [action=RCU]
-         taskset-34857 [000] 125742.260289: print:                tracing_mark_write: [426606557580560] [125757.283173133] - <idle>-0 [0] softirq_exit: vec=9 [action=RCU]
-         taskset-34857 [000] 125742.260295: print:                tracing_mark_write: [426606560784758] [125757.284117683] - <idle>-0 [0] softirq_raise: vec=7 [action=SCHED]
-
-The time offset is slightly different, but we don't care. We only want
-to convert the cycles into nanoseconds, and this appears to do the job!
-
--- Steve
