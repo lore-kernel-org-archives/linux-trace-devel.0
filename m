@@ -2,38 +2,40 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1205AC43381
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Feb 2021 14:27:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17E7BC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Feb 2021 14:37:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C7FC964DDA
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Feb 2021 14:27:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CE5CB64EB3
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Feb 2021 14:37:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhBSO1l (ORCPT
+        id S231163AbhBSOhU (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 19 Feb 2021 09:27:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58850 "EHLO mail.kernel.org"
+        Fri, 19 Feb 2021 09:37:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230462AbhBSO1Z (ORCPT
+        id S231268AbhBSOhG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:27:25 -0500
+        Fri, 19 Feb 2021 09:37:06 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4981B64E46;
-        Fri, 19 Feb 2021 14:26:44 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 09:26:42 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id CE88E64D9A;
+        Fri, 19 Feb 2021 14:36:24 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 09:36:23 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] libtracefs: Add new API for open trace marker file
-Message-ID: <20210219092642.0f496a19@gandalf.local.home>
-In-Reply-To: <20210219055353.2244340-1-tz.stoyanov@gmail.com>
-References: <20210219055353.2244340-1-tz.stoyanov@gmail.com>
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] [WIP] trace-cmd: Add new subcomand "trace-cmd perf"
+Message-ID: <20210219093623.6965e487@gandalf.local.home>
+In-Reply-To: <CAPpZLN6nPbJoDBHe0Fm8+BECfXHdpNjQFt9gK9mHGAQriiGjEw@mail.gmail.com>
+References: <20201203060226.476475-1-tz.stoyanov@gmail.com>
+        <20201203060226.476475-6-tz.stoyanov@gmail.com>
+        <20210218210352.61470b93@oasis.local.home>
+        <CAPpZLN6nPbJoDBHe0Fm8+BECfXHdpNjQFt9gK9mHGAQriiGjEw@mail.gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,53 +44,102 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 19 Feb 2021 07:53:53 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+On Fri, 19 Feb 2021 09:16:26 +0200
+Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
 
-> Added new API for opening trace_marker file of given instance:
->    tracefs_trace_marker_get_fd();
+> Hi Steven,
 > 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->
+> On Fri, Feb 19, 2021 at 4:03 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Thu,  3 Dec 2020 08:02:26 +0200
+> > "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+> >  
+> > > +static int perf_mmap(struct perf_cpu *perf)
+> > > +{
+> > > +     mmap_mask = NUM_PAGES * getpagesize() - 1;
+> > > +
+> > > +     /* associate a buffer with the file */
+> > > +     perf->mpage = mmap(NULL, (NUM_PAGES + 1) * getpagesize(),
+> > > +                     PROT_READ | PROT_WRITE, MAP_SHARED, perf->perf_fd, 0);
+> > > +     if (perf->mpage == MAP_FAILED)
+> > > +             return -1;
+> > > +     return 0;
+> > > +}  
+> >
+> > BTW, I found that the above holds the conversions we need for the local
+> > clock!
+> >
+> >         printf("time_shift=%d\n", perf->mpage->time_shift);
+> >         printf("time_mult=%d\n", perf->mpage->time_mult);
+> >         printf("time_offset=%lld\n", perf->mpage->time_offset);
+> >
+> > Which gives me:
+> >
+> > time_shift=31
+> > time_mult=633046315
+> > time_offset=-115773323084683
+> >
+> > [ one for each CPU ]  
+> 
+> This will give us time shift/mult/offset for each host CPU, right ? Is
+> the local trace clock
+> different for each CPU ? 
 
-As I wrote the perf-trace.c program, I was thinking what we really should
-have is the following API. We can keep this API, but what would be nice is:
+It can be. Note, the above offset is basically useless. That injects the
+current time into the value and we can't rely on it. But the shift and mult
+is needed.
+
+But, usually, the shift and offset are identical on most systems across
+CPUs, but there's no guarantee that it will always be the case.
+
+>Currently, the time offset is calculated per
+> VCPU, assuming
+> that the host CPU on which this VCPU runs has no impact on the
+> timestamp synchronization.
+> If the local clock depends on the CPU, then we should calculate the
+> time offset of each guest
+> event individually, depending on host CPU and VCPU the event happened
+> - as the host task which runs
+> the VCPU can migrate between CPUs at any time. So, we need to:
+>   1. Add timesync information for each host CPU in the trace.dat file.
+>   2. Track the migration between CPUs of each task that runs VCPU and
+> save that information
+>     in the trace.dat file.
+
+I was thinking about this too. And perhaps we can hold off until we find
+systems that have different values for mult and shift.
+
+That said, we can easily add this information by recording the sched_switch
+events in a separate buffer. And I've been thinking about doing this by
+default anyway. More below.
+
+>   2. When calculating the new timestamp of each guest event
+> (individually) - somehow find out on
+>      which host CPU that guest event happened ?
+> 
+> Points 1 and 2 are doable, but will break the current trace.dat file
+> option that holds the timesync information.
+
+I don't think we need to have it in the timesync option. I think we can
+create another option to hold guest event data.
+
+> Point 3 is not clear to me, how we can get such information before the
+> host and guest events are synchronised ?
+> 
 
 
-	int tracefs_print_init(struct tracefs_instance *instance);
+My thoughts about this is. When we enable tracing of a guest (-A), we then
+create an instance on the host that records only kvm enter / exit events as
+well as sched switch events. Basically, enable all the events that we need
+to synchronize and show entering and exiting of the guest.
 
-	int tracefs_print(struct tracefs_instance *instance,
-			 const char *fmt, ...);
+The synchronization logic already shows us what host thread controls each
+guest VCPU. If we record the kvm enter/exit and sched_switch events in a
+separate buffer, we can see when a host thread that runs a guest VCPU
+migrates to another CPU. Since the timestamps of those events are recorded
+in the meta events themselves (sched_switch), we know exactly where we need
+to use the new mult and shift values for the guest events.
 
-	int tracefs_vprint(struct tracefs_instance *instance,
-			   const char *fmt, va_list ap);
-
-	void tracefs_print_reset(struct tracefs_instance *instance);
-
-Where tracefs_print_init() will open the trace_marker for that instance
-(NULL being the top level), and storing it in the instance structure.
-
-tracefs_print() and tracefs_vprint() will check if the trace_marker file
-has already been opened (tracefs_print_init() was previously called), and
-if not, it will open it and keep it open. Then it will write to the
-trace_marker file the passed in print data after formatting it (see my
-trace_print in perf-trace.c).
-
-The tracefs_print_reset() will simply close the trace_marker file if it was
-previously opened, note, so will any of the destructors of the instance.
-
-We could also have:
-
-	int tracefs_raw_print_init(struct tracefs_instance *instance);
-
-	int tracefs_raw_print(struct tracefs_instance *instance,
-			  void *data, int len);
-
-	void tracefs_raw_print_reset(struct tracefs_instance *instance);
-
-
-That is the same, but instead of writing string data to the trace_marker,
-it would write in memory into trace_marker_raw.
+Make sense?
 
 -- Steve
