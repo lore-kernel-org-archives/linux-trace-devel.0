@@ -2,39 +2,39 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CC00C433E9
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Feb 2021 21:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A42DC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Feb 2021 21:37:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D408964E60
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Feb 2021 21:00:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 535A964E3F
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Feb 2021 21:37:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhBWVAp (ORCPT
+        id S231865AbhBWVhP (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Feb 2021 16:00:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49772 "EHLO mail.kernel.org"
+        Tue, 23 Feb 2021 16:37:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232290AbhBWU7u (ORCPT
+        id S231837AbhBWVhP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:59:50 -0500
+        Tue, 23 Feb 2021 16:37:15 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15AF864E7A;
-        Tue, 23 Feb 2021 20:59:01 +0000 (UTC)
-Date:   Tue, 23 Feb 2021 15:59:00 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BE0A64E83;
+        Tue, 23 Feb 2021 21:36:33 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 16:36:32 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sameeruddin Shaik <sameeruddin.shaik8@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [Bug 210643] libtracefs: Add ways to set the filtering of
- function tracing
-Message-ID: <20210223155900.500b2556@gandalf.local.home>
-In-Reply-To: <20210223120130.280e7838@gandalf.local.home>
-References: <20210223120130.280e7838@gandalf.local.home>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v29 5/5] trace-cmd [POC]: Add KVM timestamp
+ synchronization plugin
+Message-ID: <20210223163632.438071c7@gandalf.local.home>
+In-Reply-To: <20210219101457.2345089-6-tz.stoyanov@gmail.com>
+References: <20210219101457.2345089-1-tz.stoyanov@gmail.com>
+        <20210219101457.2345089-6-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,105 +43,141 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Fri, 19 Feb 2021 12:14:57 +0200
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-Hi Sameer,
+> diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+> index fb18075b..aa3e3fc1 100644
+> --- a/lib/trace-cmd/trace-timesync.c
+> +++ b/lib/trace-cmd/trace-timesync.c
+> @@ -63,6 +63,7 @@ static struct tsync_proto *tsync_proto_find(const char *proto_name)
+>  void tracecmd_tsync_init(void)
+>  {
+>  	ptp_clock_sync_register();
+> +	kvm_clock_sync_register();
+>  }
+>  
+>  int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int roles,
+> @@ -433,6 +434,7 @@ void tracecmd_tsync_free(struct tracecmd_time_sync *tsync)
+>  	}
+>  	pthread_mutex_destroy(&tsync->lock);
+>  	pthread_cond_destroy(&tsync->cond);
+> +	pthread_barrier_destroy(&tsync->first_sync);
 
-I forgot to include you on the Cc for this email. Talking with Tzvetomir,
-he suggested that I create a more detailed requirement list of what I
-expect from the tracefs_function_filter() API. Thinking about how I plan on
-using it, I modified it a little. Namely, I added the "module" parameter.
+I'm guessing that this was suppose to be added as a separate patch? If not,
+it should be.
 
-Below is the requirements for the function. If you have any questions, feel
-free to email Tzvetomir and myself.
 
-Thanks,
+>  	free(tsync->clock_str);
+>  }
+>  
+> @@ -630,23 +632,24 @@ static inline void get_ts_loop_delay(struct timespec *timeout, int delay_ms)
+>   * It loops infinite, until the timesync semaphore is released
+>   *
+>   */
+> -void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
+> +int tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
+>  {
+>  	struct tsync_probe_request_msg probe;
+>  	int ts_array_size = CLOCK_TS_ARRAY;
+>  	struct tsync_proto *proto;
+>  	struct timespec timeout;
+> +	bool first = true;
+>  	bool end = false;
+>  	int ret;
+>  	int i;
+>  
+>  	proto = tsync_proto_find(tsync->proto_name);
+>  	if (!proto || !proto->clock_sync_calc)
+> -		return;
+> +		return -1;
+>  
+>  	clock_context_init(tsync, false);
+>  	if (!tsync->context)
+> -		return;
+> +		return -1;
+>  
+>  	if (tsync->loop_interval > 0 &&
+>  	    tsync->loop_interval < (CLOCK_TS_ARRAY * 1000))
+> @@ -664,6 +667,10 @@ void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
+>  			if (ret)
+>  				break;
+>  		}
+> +		if (first) {
+> +			first = false;
+> +			pthread_barrier_wait(&tsync->first_sync);
+
+As pthread_barrier_wait() and pthread_barrier_destroy() are used here, this
+should not be in the library code. It should be in the trace-cmd code, or
+the trace-cmd code should be in the library.
+
+A pthread_barrier_wait() is dangerous and needs to be tightly coupled with
+all use cases. Otherwise, you could end with a thread stuck in the barrier
+and nothing wakes it up.
+
+> +		}
+>  		if (end || i < tsync->vcpu_count)
+>  			break;
+>  		if (tsync->loop_interval > 0) {
+> @@ -685,4 +692,5 @@ void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
+>  				    TRACECMD_TSYNC_PROTO_NONE,
+>  				    TRACECMD_TIME_SYNC_CMD_STOP,
+>  				    0, NULL);
+> +	return 0;
+>  }
+> diff --git a/tracecmd/trace-tsync.c b/tracecmd/trace-tsync.c
+> index d7de8298..ec4b2d86 100644
+> --- a/tracecmd/trace-tsync.c
+> +++ b/tracecmd/trace-tsync.c
+> @@ -61,14 +61,19 @@ error:
+>  static void *tsync_host_thread(void *data)
+>  {
+>  	struct tracecmd_time_sync *tsync = NULL;
+> +	int ret;
+>  
+>  	tsync = (struct tracecmd_time_sync *)data;
+>  
+> -	tracecmd_tsync_with_guest(tsync);
+> +	ret = tracecmd_tsync_with_guest(tsync);
+>  
+>  	tracecmd_msg_handle_close(tsync->msg_handle);
+>  	tsync->msg_handle = NULL;
+>  
+> +	/* tsync with guest failed, release the barrier */
+> +	if (ret)
+> +		pthread_barrier_wait(&tsync->first_sync);
+
+This being needed here shows that the barrier logic needs to be separated
+out. As this is in the trace-cmd proper, and its releasing the guest, and
+this is exposing the internal logic of the lib/trace-cmd code, which is not
+acceptable.
+
+We probably want the guest logic moved here?
+
+Either way, we need to make sure there's no path that could cause the guest
+(or host) to get stuck in the barrier.
 
 -- Steve
 
 
-On Tue, 23 Feb 2021 12:01:30 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> Forwarding this to the mailing list, as well. Any discussions on this may
-> be easier to discuss here than on the bugzilla.
-> 
-> -- Steve
-> 
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=210643
-> 
-> --- Comment #7 from Steven Rostedt (rostedt@goodmis.org) ---
-> After some discussions on the mailing lists, I found that it is important to
-> establish the requirements that I expect of this API. I'm doing it in the
-> bugzilla instead of the mailing list (but will also forward this to the
-> mailing list), as this is more about the feature request and not about the
-> development of it.
-> 
-> The prototype should be:
-> 
->  int tracefs_function_filter(struct tracefs_instance *instance,
->                              const char * const *filters,
->                              const char *module,
->                              boolean reset);
-> 
-> If @instance is NULL, the filter for the top level tracing directory is
-> used. Otherwise the filter is for the given instance.
-> 
-> The @filters is an array of strings that holds one or more filters, and the
-> array ends with a NULL pointer.
-> 
-> If @module is set, only apply the filter to functions for a given module.
-> This is ignored if NULL is passed in. I added this to the interface because
-> it is commonly used, and the set_ftrace_filter has a special way to handle
-> it (see more below).
-> 
-> If @reset is set, the function filter for the given instance (or toplevel if
-> @instance is NULL), is cleared before applying the new filter functions.
-> Otherwise, the function filters are appended.
-> 
-> Note on reset being set: This is an important implementation detail. The
-> reset must be done by opening the file with O_WRONLY|O_TRUNC set. And the
-> file is not closed until all the new filters are added. It must not clear
-> the file and close it before setting the new filters. The reason is, if it
-> does, then all functions will start to be traced!
-> 
-> If the function filter has some functions in set_ftrace_filter, and the
-> function tracer is active, then it is only tracing those functions in
-> set_ftrace_filter. If you want to change that set of functions to a new set,
-> you open the set_ftrace_filter file with O_WRONLY|O_TRUNC and add your new
-> functions. On closing the file, the change takes place. The old functions
-> being filtered will no longer be traced, and the new functions being filter
-> will start to be traced.
-> 
-> If the set_ftrace_filter is truncated and closed without setting the new
-> functions, then the function tracer will start tracing *all* functions!
-> That is not what this API should do. This is why it is important that you
-> write the new filters after opening with O_TRUNC and before closing the
-> file descriptor. This is another reason to use an array of filters instead
-> of having the application call this function multiple times with different
-> filters strings.
-> 
-> Now when writing the filters, the following should be done for each filter.
-> Write the filter to set_ftrace_filter file, and if it succeeds, then
-> continue to the next filter. If it does not succeed, then check if it is a
-> regex. If so, then add all the functions that match the regex that are in
-> available_filter_functions.
-> 
-> Note, if @module is not NULL, then before writing the filter strings for the
-> non regex write, append ":mod:@module" to each filter string. That is, if
-> @module is "bridge" and the filter is "br_*", then what should be written
-> into the set_ftrace_filter file is: "br_*:mod:bridge", and the kernel will
-> only apply the "br_*" to the module "bridge". Implementation detail, you
-> can simply write the filter unmodified, then write ":mod:" then write
-> "bridge", before writing any spaces to separate the filters. The kernel
-> will process that as one string "br_*:mod:bridge". This way the function
-> does not need to worry about allocating extra memory and copying the string
-> to append the ":mod:bridge" before writing.
-> 
-> If a regex is used, then the search of available_filter_functions should
-> only look for function names that have the module name behind it. That is,
-> if @module is "bridge" and the filter is ".*switchdev_\\(port\\|fdb\\).*",
-> and @module is set, then the search over available_filter_functions should
-> run the regex only on functions that have a matching module name "[bridge]".
-> 
+> +
+>  	pthread_exit(0);
+>  }
+>  
+> @@ -106,6 +111,7 @@ int tracecmd_host_tsync(struct buffer_instance *instance,
+>  		instance->tsync.clock_str = strdup(top_instance.clock);
+>  	pthread_mutex_init(&instance->tsync.lock, NULL);
+>  	pthread_cond_init(&instance->tsync.cond, NULL);
+> +	pthread_barrier_init(&instance->tsync.first_sync, NULL, 2);
+>  
+>  	pthread_attr_init(&attrib);
+>  	pthread_attr_setdetachstate(&attrib, PTHREAD_CREATE_JOINABLE);
+> @@ -117,6 +123,7 @@ int tracecmd_host_tsync(struct buffer_instance *instance,
+>  		if (!get_first_cpu(&pin_mask, &mask_size))
+>  			pthread_setaffinity_np(instance->tsync_thread, mask_size, pin_mask);
+>  		instance->tsync_thread_running = true;
+> +		pthread_barrier_wait(&instance->tsync.first_sync);
+>  	}
+>  
+>  	if (pin_mask)
 
