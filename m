@@ -2,222 +2,177 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B640C433E6
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 06:23:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C289BC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:40:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB44F60201
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 06:23:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 67FBB64ED1
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:40:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhBXGXk (ORCPT
+        id S232420AbhBXHkr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Feb 2021 01:23:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        Wed, 24 Feb 2021 02:40:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbhBXGXj (ORCPT
+        with ESMTP id S232394AbhBXHkq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Feb 2021 01:23:39 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8FDC061574
-        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Feb 2021 22:22:59 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id ba1so599154plb.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Feb 2021 22:22:59 -0800 (PST)
+        Wed, 24 Feb 2021 02:40:46 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBC3C061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Feb 2021 23:40:06 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id z7so682391plk.7
+        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Feb 2021 23:40:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0d9gzggUmH1i63ekZxDjNdSu7i7hgqkkhFL2hlArbEE=;
-        b=Z3esSf+QpcYQecleX7rAFISGn3XIdIH8ytKZ0M5AlZUJboEoTt/mr6WPU4OLHhxbBc
-         lMOs3QYUbKXa9FMRpDvTKXaTkNhWuktTz/huZDhQTCUrNaJ+q4TCogsuAU5SHXJP7cil
-         50u/OLUyapANPUtPXD3tUr3PgQndS83RnVOF7f6QfMuruz8EqnCH4WUXIdaTjt/QJG8J
-         5wmoIOy5J2hHmoQ+kLd+AuASuTsiX9pKd9zzqG2sxIkBQhEvJrX7IrosG90Ce2tuGFAO
-         gAJPJilEucTSdaClN7eqUcvtg5MVuTAHOw4bGrHhKBmutmCluW28eMeqyAuhPZl8K/y6
-         EYXA==
+        bh=TL1bVqst89YIrRU61+jXB2LptmjUDNjwuDdZ6Klc61o=;
+        b=XXMR1PzVnrlkKUAtR/gyBSN8Bg25t/++fPm6O1/bPdLX9B1BxGMLOYhX0Ia1FlEgjg
+         6DaIzGjBDcE2Dd2P5JXd5f9hBJ470O+9Awdu1izxgqU9T04T1QDqvwBFr6vmWK4Jbd7H
+         dibxUHHaH3Fn5RY0YHa4uTPDLY/twDScQf6VjCQ1JdC1BvyZQqS/DrzgVp+clT2wTt/G
+         HNkG+bt5lsg8bYUpDgKfpMM2VxUAZENh3fr1/91n9rJ2QDFwpJk62pQIqH6SEGKLTOf8
+         QLi8WW/VWe49cUgBJd8nEmzkdWUH2JUxTBVNl2Sn33U4Kav36N+XIS+7HPxuFBMl63/g
+         WBOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0d9gzggUmH1i63ekZxDjNdSu7i7hgqkkhFL2hlArbEE=;
-        b=jnzlmGMV7AXuoaEu0eKI+DLrlxulZEkrY97t5lgks5hZb7tfSnVEjTWcQrLeJIJVD/
-         FPf76xELwl1VxtHbtVuMoi8RoA8rdsx1IHz163zz5+cHRa95iz2m/Zl0ctvHwZtrUnlB
-         RVf2MuPQ44xHD2Ue3uDEZ3t08A286fKY5b2JHruAKacsZVMIPdqcoJ5QcKLIn2uPl+v4
-         Ddvoq1LIkefeViTXKTc2SKDXa9fTH7gdBmgQ1vISO7xlTuVwcZX0BO5s6Qio+B5TjuLE
-         15Xx6sVHWW7Ns7AUJuoRg/Ndct4pxtSZVjFgfFInL7e8Wgln6ZnzPln23fJuO7u641sz
-         xmvw==
-X-Gm-Message-State: AOAM53059+e5Ottc+7Nv0y1akpmDGqkt8Xm0RVVOD8N5FfcIB/w0syEY
-        wXAM1yDDxvJZf0yUgxr4PcLbtEKkLtZ8CsQZjzS3d95585Miow==
-X-Google-Smtp-Source: ABdhPJzRnM/mZ4E5JOObjGNhfJ+xXfG16/KZ0m5EjaMBgx+S7AZXtmEGDH+7x8HZ8W5k9+IxZeq9WfQQx8kMp9X44Q4=
+        bh=TL1bVqst89YIrRU61+jXB2LptmjUDNjwuDdZ6Klc61o=;
+        b=t/N7CLcCn94m+UfhLecp45wsQwye42ZCL8hgRPtDX1Gv21uGpIFUBZ2k/0DRarYtZ7
+         kEQMoGegdPygVk00aae2ZCBqHUIFr2pTscumHMx1rYNsbAVEg0islJgJszAm4o8toRXO
+         EedM/wbXg5NxAZlwZXlTokiPVl5w7QK9DpG9cFm2rG7PiqVIC0H9MR1q9PjiJMQxZ105
+         xwLunL+IkHdyvMNZRoky5lkGkJdhADDhOndqVLe16e+kC1EzovwPlgePclrnxf6WBsLg
+         ECL1216Xl7WNExrlcjITSagIOs6+mcCWVmeeD1qPJLl633YRtl6bWSpXo+4y39axAw7Y
+         aAlg==
+X-Gm-Message-State: AOAM530Ti57G4e+Ix48uLVJYDvNSAE/V3FAQdab8+lqKgggD0l0YG9wq
+        gw8/pBADnsT1g1rxRSUkrhkPaKF6qlqFXjIth571/kpgZ3bcPQ==
+X-Google-Smtp-Source: ABdhPJx54Q29pPRlvuN5/rG2dHpw92TVbr8Vke83O/gQ7d0AtDiD24AtEFqsCH9X6OdLKGaL3KDA2kkYmdasXUdFQyQ=
 X-Received: by 2002:a17:902:d20d:b029:e4:51e:df40 with SMTP id
- t13-20020a170902d20db02900e4051edf40mr6140239ply.58.1614147778866; Tue, 23
- Feb 2021 22:22:58 -0800 (PST)
+ t13-20020a170902d20db02900e4051edf40mr6409491ply.58.1614152406063; Tue, 23
+ Feb 2021 23:40:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20210219101457.2345089-1-tz.stoyanov@gmail.com>
- <20210219101457.2345089-6-tz.stoyanov@gmail.com> <20210223163632.438071c7@gandalf.local.home>
-In-Reply-To: <20210223163632.438071c7@gandalf.local.home>
+References: <20210223120130.280e7838@gandalf.local.home>
+In-Reply-To: <20210223120130.280e7838@gandalf.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Wed, 24 Feb 2021 08:22:42 +0200
-Message-ID: <CAPpZLN4QvCFgqbSf8xb4LZrdSXY+g8CDpw72SeSpUqgaj64ayA@mail.gmail.com>
-Subject: Re: [PATCH v29 5/5] trace-cmd [POC]: Add KVM timestamp
- synchronization plugin
-To:     Steven Rostedt <rostedt@goodmis.org>
+Date:   Wed, 24 Feb 2021 09:39:49 +0200
+Message-ID: <CAPpZLN7tsF8=o1RQJc2rMAdbrFgmFvZmKWK9avbCPCa42U_iDw@mail.gmail.com>
+Subject: Re: Fw: [Bug 210643] libtracefs: Add ways to set the filtering of
+ function tracing
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Sameeruddin Shaik <sameeruddin.shaik8@gmail.com>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steven,
-
-On Tue, Feb 23, 2021 at 11:36 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Fri, 19 Feb 2021 12:14:57 +0200
-> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
->
-> > diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
-> > index fb18075b..aa3e3fc1 100644
-> > --- a/lib/trace-cmd/trace-timesync.c
-> > +++ b/lib/trace-cmd/trace-timesync.c
-> > @@ -63,6 +63,7 @@ static struct tsync_proto *tsync_proto_find(const char *proto_name)
-> >  void tracecmd_tsync_init(void)
-> >  {
-> >       ptp_clock_sync_register();
-> > +     kvm_clock_sync_register();
-> >  }
-> >
-> >  int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int roles,
-> > @@ -433,6 +434,7 @@ void tracecmd_tsync_free(struct tracecmd_time_sync *tsync)
-> >       }
-> >       pthread_mutex_destroy(&tsync->lock);
-> >       pthread_cond_destroy(&tsync->cond);
-> > +     pthread_barrier_destroy(&tsync->first_sync);
->
-> I'm guessing that this was suppose to be added as a separate patch? If not,
-> it should be.
+On Tue, Feb 23, 2021 at 7:07 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
 >
-> >       free(tsync->clock_str);
-> >  }
-> >
-> > @@ -630,23 +632,24 @@ static inline void get_ts_loop_delay(struct timespec *timeout, int delay_ms)
-> >   * It loops infinite, until the timesync semaphore is released
-> >   *
-> >   */
-> > -void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
-> > +int tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
-> >  {
-> >       struct tsync_probe_request_msg probe;
-> >       int ts_array_size = CLOCK_TS_ARRAY;
-> >       struct tsync_proto *proto;
-> >       struct timespec timeout;
-> > +     bool first = true;
-> >       bool end = false;
-> >       int ret;
-> >       int i;
-> >
-> >       proto = tsync_proto_find(tsync->proto_name);
-> >       if (!proto || !proto->clock_sync_calc)
-> > -             return;
-> > +             return -1;
-> >
-> >       clock_context_init(tsync, false);
-> >       if (!tsync->context)
-> > -             return;
-> > +             return -1;
-> >
-> >       if (tsync->loop_interval > 0 &&
-> >           tsync->loop_interval < (CLOCK_TS_ARRAY * 1000))
-> > @@ -664,6 +667,10 @@ void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
-> >                       if (ret)
-> >                               break;
-> >               }
-> > +             if (first) {
-> > +                     first = false;
-> > +                     pthread_barrier_wait(&tsync->first_sync);
->
-> As pthread_barrier_wait() and pthread_barrier_destroy() are used here, this
-> should not be in the library code. It should be in the trace-cmd code, or
-> the trace-cmd code should be in the library.
->
-> A pthread_barrier_wait() is dangerous and needs to be tightly coupled with
-> all use cases. Otherwise, you could end with a thread stuck in the barrier
-> and nothing wakes it up.
->
-> > +             }
-> >               if (end || i < tsync->vcpu_count)
-> >                       break;
-> >               if (tsync->loop_interval > 0) {
-> > @@ -685,4 +692,5 @@ void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
-> >                                   TRACECMD_TSYNC_PROTO_NONE,
-> >                                   TRACECMD_TIME_SYNC_CMD_STOP,
-> >                                   0, NULL);
-> > +     return 0;
-> >  }
-> > diff --git a/tracecmd/trace-tsync.c b/tracecmd/trace-tsync.c
-> > index d7de8298..ec4b2d86 100644
-> > --- a/tracecmd/trace-tsync.c
-> > +++ b/tracecmd/trace-tsync.c
-> > @@ -61,14 +61,19 @@ error:
-> >  static void *tsync_host_thread(void *data)
-> >  {
-> >       struct tracecmd_time_sync *tsync = NULL;
-> > +     int ret;
-> >
-> >       tsync = (struct tracecmd_time_sync *)data;
-> >
-> > -     tracecmd_tsync_with_guest(tsync);
-> > +     ret = tracecmd_tsync_with_guest(tsync);
-> >
-> >       tracecmd_msg_handle_close(tsync->msg_handle);
-> >       tsync->msg_handle = NULL;
-> >
-> > +     /* tsync with guest failed, release the barrier */
-> > +     if (ret)
-> > +             pthread_barrier_wait(&tsync->first_sync);
->
-> This being needed here shows that the barrier logic needs to be separated
-> out. As this is in the trace-cmd proper, and its releasing the guest, and
-> this is exposing the internal logic of the lib/trace-cmd code, which is not
-> acceptable.
->
-> We probably want the guest logic moved here?
->
-> Either way, we need to make sure there's no path that could cause the guest
-> (or host) to get stuck in the barrier.
-
-I think it is better to move the whole logic in the library - running
-the ptheads and
-synchronizing with mutex and barrier. The API caller (trace-cmd) will receive
-only a pthread_t id of the running thread, created by the library.
-
+> Forwarding this to the mailing list, as well. Any discussions on this may
+> be easier to discuss here than on the bugzilla.
 >
 > -- Steve
 >
 >
-> > +
-> >       pthread_exit(0);
-> >  }
-> >
-> > @@ -106,6 +111,7 @@ int tracecmd_host_tsync(struct buffer_instance *instance,
-> >               instance->tsync.clock_str = strdup(top_instance.clock);
-> >       pthread_mutex_init(&instance->tsync.lock, NULL);
-> >       pthread_cond_init(&instance->tsync.cond, NULL);
-> > +     pthread_barrier_init(&instance->tsync.first_sync, NULL, 2);
-> >
-> >       pthread_attr_init(&attrib);
-> >       pthread_attr_setdetachstate(&attrib, PTHREAD_CREATE_JOINABLE);
-> > @@ -117,6 +123,7 @@ int tracecmd_host_tsync(struct buffer_instance *instance,
-> >               if (!get_first_cpu(&pin_mask, &mask_size))
-> >                       pthread_setaffinity_np(instance->tsync_thread, mask_size, pin_mask);
-> >               instance->tsync_thread_running = true;
-> > +             pthread_barrier_wait(&instance->tsync.first_sync);
-> >       }
-> >
-> >       if (pin_mask)
+> https://bugzilla.kernel.org/show_bug.cgi?id=210643
 >
+> --- Comment #7 from Steven Rostedt (rostedt@goodmis.org) ---
+> After some discussions on the mailing lists, I found that it is important to
+> establish the requirements that I expect of this API. I'm doing it in the
+> bugzilla instead of the mailing list (but will also forward this to the
+> mailing list), as this is more about the feature request and not about the
+> development of it.
+>
+> The prototype should be:
+>
+>  int tracefs_function_filter(struct tracefs_instance *instance,
+>                              const char * const *filters,
+>                              const char *module,
+>                              boolean reset);
+
+I think there should be a complementary API for deleting the filters,
+may be something like
+  int tracefs_function_filter_remove(struct tracefs_instance *instance,
+                                                        const char *
+const *filters,
+                                                        const char *module)
+It should be able to remove the filters, configured by the first API
+with the same "filters, module" input parameters.
+
+>
+> If @instance is NULL, the filter for the top level tracing directory is
+> used. Otherwise the filter is for the given instance.
+>
+> The @filters is an array of strings that holds one or more filters, and the
+> array ends with a NULL pointer.
+>
+> If @module is set, only apply the filter to functions for a given module.
+> This is ignored if NULL is passed in. I added this to the interface because
+> it is commonly used, and the set_ftrace_filter has a special way to handle
+> it (see more below).
+>
+> If @reset is set, the function filter for the given instance (or toplevel if
+> @instance is NULL), is cleared before applying the new filter functions.
+> Otherwise, the function filters are appended.
+>
+> Note on reset being set: This is an important implementation detail. The
+> reset must be done by opening the file with O_WRONLY|O_TRUNC set. And the
+> file is not closed until all the new filters are added. It must not clear
+> the file and close it before setting the new filters. The reason is, if it
+> does, then all functions will start to be traced!
+>
+> If the function filter has some functions in set_ftrace_filter, and the
+> function tracer is active, then it is only tracing those functions in
+> set_ftrace_filter. If you want to change that set of functions to a new set,
+> you open the set_ftrace_filter file with O_WRONLY|O_TRUNC and add your new
+> functions. On closing the file, the change takes place. The old functions
+> being filtered will no longer be traced, and the new functions being filter
+> will start to be traced.
+>
+> If the set_ftrace_filter is truncated and closed without setting the new
+> functions, then the function tracer will start tracing *all* functions!
+> That is not what this API should do. This is why it is important that you
+> write the new filters after opening with O_TRUNC and before closing the
+> file descriptor. This is another reason to use an array of filters instead
+> of having the application call this function multiple times with different
+> filters strings.
+>
+> Now when writing the filters, the following should be done for each filter.
+> Write the filter to set_ftrace_filter file, and if it succeeds, then
+> continue to the next filter. If it does not succeed, then check if it is a
+> regex. If so, then add all the functions that match the regex that are in
+> available_filter_functions.
+>
+> Note, if @module is not NULL, then before writing the filter strings for the
+> non regex write, append ":mod:@module" to each filter string. That is, if
+> @module is "bridge" and the filter is "br_*", then what should be written
+> into the set_ftrace_filter file is: "br_*:mod:bridge", and the kernel will
+> only apply the "br_*" to the module "bridge". Implementation detail, you
+> can simply write the filter unmodified, then write ":mod:" then write
+> "bridge", before writing any spaces to separate the filters. The kernel
+> will process that as one string "br_*:mod:bridge". This way the function
+> does not need to worry about allocating extra memory and copying the string
+> to append the ":mod:bridge" before writing.
+>
+> If a regex is used, then the search of available_filter_functions should
+> only look for function names that have the module name behind it. That is,
+> if @module is "bridge" and the filter is ".*switchdev_\\(port\\|fdb\\).*",
+> and @module is set, then the search over available_filter_functions should
+> run the regex only on functions that have a matching module name "[bridge]".
+>
+> --
+> You may reply to this email to add a comment.
+>
+> You are receiving this mail because:
+> You reported the bug.
+> You are watching the assignee of the bug.
+> You are watching the reporter of the bug.
+
 
 
 -- 
