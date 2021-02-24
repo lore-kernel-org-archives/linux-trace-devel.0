@@ -4,63 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DC7DC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 05:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B640C433E6
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 06:23:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D052764EB6
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 05:36:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DB44F60201
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 06:23:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbhBXFg2 (ORCPT
+        id S229769AbhBXGXk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Feb 2021 00:36:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
+        Wed, 24 Feb 2021 01:23:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhBXFg2 (ORCPT
+        with ESMTP id S231584AbhBXGXj (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Feb 2021 00:36:28 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80364C06174A
-        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Feb 2021 21:35:47 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d16so539024plg.0
-        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Feb 2021 21:35:47 -0800 (PST)
+        Wed, 24 Feb 2021 01:23:39 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8FDC061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Feb 2021 22:22:59 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id ba1so599154plb.1
+        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Feb 2021 22:22:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TM+BK7IfXkD6kJr5D/w//cw3vw8omE1Q6nBdhOfV++0=;
-        b=vG0sbHiMA/0edJJ25NVwCOSBTKyp3c2PFj41kHrI1KRx789263zUVEXjWeFX8zxWuG
-         Twq0k+cpz1QC6W02CEzKJNIXNyvg08kn1w7/zYdmTzBTQBQUvQX19sgLrudQtOXb0//C
-         v5tCiCBtbiLKQuM6altztqVN3tRzXcuWJUn/huykA/dMvZwVNUXJfdmd7V+dK6NfheqA
-         aC2I7Vz9mXO2gxQxiJsng/qkBK2FS8s4O11+xzZz6P3dQLzAsQeFLdoSf/rS8KRNcrOs
-         aYqzSISWds/0KroG2dHBLCQDVzMDTi8hWy4jLziDsvCAhYHT0aWdUdd/FgsEy0PJWFLO
-         8rGw==
+        bh=0d9gzggUmH1i63ekZxDjNdSu7i7hgqkkhFL2hlArbEE=;
+        b=Z3esSf+QpcYQecleX7rAFISGn3XIdIH8ytKZ0M5AlZUJboEoTt/mr6WPU4OLHhxbBc
+         lMOs3QYUbKXa9FMRpDvTKXaTkNhWuktTz/huZDhQTCUrNaJ+q4TCogsuAU5SHXJP7cil
+         50u/OLUyapANPUtPXD3tUr3PgQndS83RnVOF7f6QfMuruz8EqnCH4WUXIdaTjt/QJG8J
+         5wmoIOy5J2hHmoQ+kLd+AuASuTsiX9pKd9zzqG2sxIkBQhEvJrX7IrosG90Ce2tuGFAO
+         gAJPJilEucTSdaClN7eqUcvtg5MVuTAHOw4bGrHhKBmutmCluW28eMeqyAuhPZl8K/y6
+         EYXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TM+BK7IfXkD6kJr5D/w//cw3vw8omE1Q6nBdhOfV++0=;
-        b=g3mEmLAfMjhyZFhL5vSgPZNH6SNbQGeQLld76CofiQzDIPRE4ofRnm+rH3DEGS3TJX
-         ishtj00cuY4xpRAZpQFh46NxYGdR+WVjAxXsPsoQ6Kl0ZGRGJxs1xDM4PjzLAIaXlqmp
-         jhx4WU/FTZ/sPi3Vo6L3EqJXtamZ5WBG+v/huuN/Wga4dSalujq5bXvqttNhjcJp23id
-         Nv4Vps8IBa4+UpcJt+Drrj8EHaa37mtjJsJas1O7ZVDCijBCiAFLBtbwZH4c/Tc0DG5l
-         +UOXvASfCED4GK0d7DTgHJJyyL6ZJyz3kTyDn0MQ27UU983979OdDbLBkVgykGGlRKEd
-         thhQ==
-X-Gm-Message-State: AOAM532l526EItkqhb5ItWMCZM5J6he9JMF5U2u/k6Rl5RKnc+CFb3RJ
-        fCeYfmTJ4jIynXifI6azAMWXJ6UqCnqiB3iLwVy/8ISrYOsXRQ==
-X-Google-Smtp-Source: ABdhPJx5dNYvvmnt8xJeW46yvzX3tk4f62P43a3Lik6wH25ZQdbXosGnK1lc2BhgPkTYdR1WwfspfJv/K7BSWHhLkg8=
-X-Received: by 2002:a17:90a:6589:: with SMTP id k9mr2629686pjj.100.1614144947037;
- Tue, 23 Feb 2021 21:35:47 -0800 (PST)
+        bh=0d9gzggUmH1i63ekZxDjNdSu7i7hgqkkhFL2hlArbEE=;
+        b=jnzlmGMV7AXuoaEu0eKI+DLrlxulZEkrY97t5lgks5hZb7tfSnVEjTWcQrLeJIJVD/
+         FPf76xELwl1VxtHbtVuMoi8RoA8rdsx1IHz163zz5+cHRa95iz2m/Zl0ctvHwZtrUnlB
+         RVf2MuPQ44xHD2Ue3uDEZ3t08A286fKY5b2JHruAKacsZVMIPdqcoJ5QcKLIn2uPl+v4
+         Ddvoq1LIkefeViTXKTc2SKDXa9fTH7gdBmgQ1vISO7xlTuVwcZX0BO5s6Qio+B5TjuLE
+         15Xx6sVHWW7Ns7AUJuoRg/Ndct4pxtSZVjFgfFInL7e8Wgln6ZnzPln23fJuO7u641sz
+         xmvw==
+X-Gm-Message-State: AOAM53059+e5Ottc+7Nv0y1akpmDGqkt8Xm0RVVOD8N5FfcIB/w0syEY
+        wXAM1yDDxvJZf0yUgxr4PcLbtEKkLtZ8CsQZjzS3d95585Miow==
+X-Google-Smtp-Source: ABdhPJzRnM/mZ4E5JOObjGNhfJ+xXfG16/KZ0m5EjaMBgx+S7AZXtmEGDH+7x8HZ8W5k9+IxZeq9WfQQx8kMp9X44Q4=
+X-Received: by 2002:a17:902:d20d:b029:e4:51e:df40 with SMTP id
+ t13-20020a170902d20db02900e4051edf40mr6140239ply.58.1614147778866; Tue, 23
+ Feb 2021 22:22:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20210219055353.2244340-1-tz.stoyanov@gmail.com> <20210219092642.0f496a19@gandalf.local.home>
-In-Reply-To: <20210219092642.0f496a19@gandalf.local.home>
+References: <20210219101457.2345089-1-tz.stoyanov@gmail.com>
+ <20210219101457.2345089-6-tz.stoyanov@gmail.com> <20210223163632.438071c7@gandalf.local.home>
+In-Reply-To: <20210223163632.438071c7@gandalf.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Wed, 24 Feb 2021 07:35:30 +0200
-Message-ID: <CAPpZLN7GS1WOxrs6-b3brUbx93ZWyUDMregp4xFXUskqSUMWsw@mail.gmail.com>
-Subject: Re: [PATCH] libtracefs: Add new API for open trace marker file
+Date:   Wed, 24 Feb 2021 08:22:42 +0200
+Message-ID: <CAPpZLN4QvCFgqbSf8xb4LZrdSXY+g8CDpw72SeSpUqgaj64ayA@mail.gmail.com>
+Subject: Re: [PATCH v29 5/5] trace-cmd [POC]: Add KVM timestamp
+ synchronization plugin
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -70,73 +72,152 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 Hi Steven,
 
-On Fri, Feb 19, 2021 at 4:26 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Feb 23, 2021 at 11:36 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On Fri, 19 Feb 2021 07:53:53 +0200
+> On Fri, 19 Feb 2021 12:14:57 +0200
 > "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 >
-> > Added new API for opening trace_marker file of given instance:
-> >    tracefs_trace_marker_get_fd();
+> > diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+> > index fb18075b..aa3e3fc1 100644
+> > --- a/lib/trace-cmd/trace-timesync.c
+> > +++ b/lib/trace-cmd/trace-timesync.c
+> > @@ -63,6 +63,7 @@ static struct tsync_proto *tsync_proto_find(const char *proto_name)
+> >  void tracecmd_tsync_init(void)
+> >  {
+> >       ptp_clock_sync_register();
+> > +     kvm_clock_sync_register();
+> >  }
 > >
-> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> > ---
+> >  int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int roles,
+> > @@ -433,6 +434,7 @@ void tracecmd_tsync_free(struct tracecmd_time_sync *tsync)
+> >       }
+> >       pthread_mutex_destroy(&tsync->lock);
+> >       pthread_cond_destroy(&tsync->cond);
+> > +     pthread_barrier_destroy(&tsync->first_sync);
+>
+> I'm guessing that this was suppose to be added as a separate patch? If not,
+> it should be.
+>
+>
+> >       free(tsync->clock_str);
+> >  }
 > >
+> > @@ -630,23 +632,24 @@ static inline void get_ts_loop_delay(struct timespec *timeout, int delay_ms)
+> >   * It loops infinite, until the timesync semaphore is released
+> >   *
+> >   */
+> > -void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
+> > +int tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
+> >  {
+> >       struct tsync_probe_request_msg probe;
+> >       int ts_array_size = CLOCK_TS_ARRAY;
+> >       struct tsync_proto *proto;
+> >       struct timespec timeout;
+> > +     bool first = true;
+> >       bool end = false;
+> >       int ret;
+> >       int i;
+> >
+> >       proto = tsync_proto_find(tsync->proto_name);
+> >       if (!proto || !proto->clock_sync_calc)
+> > -             return;
+> > +             return -1;
+> >
+> >       clock_context_init(tsync, false);
+> >       if (!tsync->context)
+> > -             return;
+> > +             return -1;
+> >
+> >       if (tsync->loop_interval > 0 &&
+> >           tsync->loop_interval < (CLOCK_TS_ARRAY * 1000))
+> > @@ -664,6 +667,10 @@ void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
+> >                       if (ret)
+> >                               break;
+> >               }
+> > +             if (first) {
+> > +                     first = false;
+> > +                     pthread_barrier_wait(&tsync->first_sync);
 >
-> As I wrote the perf-trace.c program, I was thinking what we really should
-> have is the following API. We can keep this API, but what would be nice is:
+> As pthread_barrier_wait() and pthread_barrier_destroy() are used here, this
+> should not be in the library code. It should be in the trace-cmd code, or
+> the trace-cmd code should be in the library.
 >
+> A pthread_barrier_wait() is dangerous and needs to be tightly coupled with
+> all use cases. Otherwise, you could end with a thread stuck in the barrier
+> and nothing wakes it up.
 >
->         int tracefs_print_init(struct tracefs_instance *instance);
+> > +             }
+> >               if (end || i < tsync->vcpu_count)
+> >                       break;
+> >               if (tsync->loop_interval > 0) {
+> > @@ -685,4 +692,5 @@ void tracecmd_tsync_with_guest(struct tracecmd_time_sync *tsync)
+> >                                   TRACECMD_TSYNC_PROTO_NONE,
+> >                                   TRACECMD_TIME_SYNC_CMD_STOP,
+> >                                   0, NULL);
+> > +     return 0;
+> >  }
+> > diff --git a/tracecmd/trace-tsync.c b/tracecmd/trace-tsync.c
+> > index d7de8298..ec4b2d86 100644
+> > --- a/tracecmd/trace-tsync.c
+> > +++ b/tracecmd/trace-tsync.c
+> > @@ -61,14 +61,19 @@ error:
+> >  static void *tsync_host_thread(void *data)
+> >  {
+> >       struct tracecmd_time_sync *tsync = NULL;
+> > +     int ret;
+> >
+> >       tsync = (struct tracecmd_time_sync *)data;
+> >
+> > -     tracecmd_tsync_with_guest(tsync);
+> > +     ret = tracecmd_tsync_with_guest(tsync);
+> >
+> >       tracecmd_msg_handle_close(tsync->msg_handle);
+> >       tsync->msg_handle = NULL;
+> >
+> > +     /* tsync with guest failed, release the barrier */
+> > +     if (ret)
+> > +             pthread_barrier_wait(&tsync->first_sync);
 >
->         int tracefs_print(struct tracefs_instance *instance,
->                          const char *fmt, ...);
+> This being needed here shows that the barrier logic needs to be separated
+> out. As this is in the trace-cmd proper, and its releasing the guest, and
+> this is exposing the internal logic of the lib/trace-cmd code, which is not
+> acceptable.
 >
->         int tracefs_vprint(struct tracefs_instance *instance,
->                            const char *fmt, va_list ap);
+> We probably want the guest logic moved here?
 >
->         void tracefs_print_reset(struct tracefs_instance *instance);
->
-> Where tracefs_print_init() will open the trace_marker for that instance
-> (NULL being the top level), and storing it in the instance structure.
+> Either way, we need to make sure there's no path that could cause the guest
+> (or host) to get stuck in the barrier.
 
-You mean to hold the marker fd in the tracefs_instance structure ?
-I like such approach, to hold some library specific context in that
-structure, internally and not visible from the user. In that case we do
-not need tracefs_print_init() at all, the first call to some tracefs_print
-API will open the file. But that will make the APIs not thread safe, is
-it OK marker fd to be used from multiple threads at the same time ?
-
->
-> tracefs_print() and tracefs_vprint() will check if the trace_marker file
-> has already been opened (tracefs_print_init() was previously called), and
-> if not, it will open it and keep it open. Then it will write to the
-> trace_marker file the passed in print data after formatting it (see my
-> trace_print in perf-trace.c).
->
-> The tracefs_print_reset() will simply close the trace_marker file if it was
-> previously opened, note, so will any of the destructors of the instance.
->
-> We could also have:
->
->         int tracefs_raw_print_init(struct tracefs_instance *instance);
->
->         int tracefs_raw_print(struct tracefs_instance *instance,
->                           void *data, int len);
->
->         void tracefs_raw_print_reset(struct tracefs_instance *instance);
->
->
-> That is the same, but instead of writing string data to the trace_marker,
-> it would write in memory into trace_marker_raw.
-
-I'm afraid that having too many APIs with sort of overlapping functionality
-could make the library hard to use ? Actually the proposed new API by this
-patch, tracefs_trace_marker_get_fd(), already duplicates the existing
-tracefs_instance_file_open() API.
+I think it is better to move the whole logic in the library - running
+the ptheads and
+synchronizing with mutex and barrier. The API caller (trace-cmd) will receive
+only a pthread_t id of the running thread, created by the library.
 
 >
 > -- Steve
-
+>
+>
+> > +
+> >       pthread_exit(0);
+> >  }
+> >
+> > @@ -106,6 +111,7 @@ int tracecmd_host_tsync(struct buffer_instance *instance,
+> >               instance->tsync.clock_str = strdup(top_instance.clock);
+> >       pthread_mutex_init(&instance->tsync.lock, NULL);
+> >       pthread_cond_init(&instance->tsync.cond, NULL);
+> > +     pthread_barrier_init(&instance->tsync.first_sync, NULL, 2);
+> >
+> >       pthread_attr_init(&attrib);
+> >       pthread_attr_setdetachstate(&attrib, PTHREAD_CREATE_JOINABLE);
+> > @@ -117,6 +123,7 @@ int tracecmd_host_tsync(struct buffer_instance *instance,
+> >               if (!get_first_cpu(&pin_mask, &mask_size))
+> >                       pthread_setaffinity_np(instance->tsync_thread, mask_size, pin_mask);
+> >               instance->tsync_thread_running = true;
+> > +             pthread_barrier_wait(&instance->tsync.first_sync);
+> >       }
+> >
+> >       if (pin_mask)
+>
 
 
 -- 
