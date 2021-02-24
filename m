@@ -2,36 +2,36 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8716AC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 16:55:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7D82C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 18:03:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4CF1764F07
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 16:55:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 726A964F0D
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Feb 2021 18:03:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhBXQz5 (ORCPT
+        id S230386AbhBXSD7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Feb 2021 11:55:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45644 "EHLO mail.kernel.org"
+        Wed, 24 Feb 2021 13:03:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235778AbhBXQyw (ORCPT
+        id S232103AbhBXSD5 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:54:52 -0500
+        Wed, 24 Feb 2021 13:03:57 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1ADF264F03;
-        Wed, 24 Feb 2021 16:54:10 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 11:54:08 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id 798EC64ECE;
+        Wed, 24 Feb 2021 18:03:16 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 13:03:14 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Adding latency tracking to trace-cmd
-Message-ID: <20210224115408.1c76ee3f@gandalf.local.home>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
+Subject: [PATCH] trace-cmd record: Disable all tracing after recording data
+Message-ID: <20210224130314.2a515592@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,45 +40,49 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Viktor,
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-While doing some tests to trace-cmd, I found that the trace-cmd record was
-broken for latency tracers, and has been for some time. That's probably
-because nobody has been using it for such.
+The latency tracers (preemptirqsoff, wakeup_rt, etc) just take a snapshot at
+the end of the tracing, and this is done in the record_data() function. But
+if "keep" is not set, tracecmd_disable_all_tracing() is called before then.
+That function will clear the trace output and with it, the snapshot that
+should be recorded for the latency tracers.
 
-That is, trace-cmd record is mostly used for "flyrecord" which is the
-constant recording of tracing. But if the user records one of the latency
-tracers (preemptirqsoff, wakeup_rt, etc), then it switches to "latency"
-mode and only takes a snapshot at the end of the recording. This is what I
-found to be broken, because it reset the tracing before taking the
-snapshot and lost whatever it was recording. Nobody seemed to complain
-about it, so I guess nobody cared.
+As writing to the trace buffer is already disabled by the call to
+tracecmd_disable_tracing() above the tracecmd_disable_all_tracing(), there's
+no reason to disable all tracing before the record_data() is called. Simply
+move the disable tracing after that, and then the information about the
+latency tracers snapshot will be stored in the trace.dat file.
 
-The fix is simple, and I was about to do so, but then I thought about your
-latency-collector tool, and thought that should be exactly what trace-cmd
-should do for such tracers. That is, instead of just taking a snapshot of
-the latency at the end of the recording (which it was suppose to do now),
-it should act like your latency-collector tool, and take snapshots
-every time there's a new latency.
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ tracecmd/trace-record.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-My question to you is, would you like to work on adding that feature to
-trace-cmd?
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index efd96d27..f1a48045 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -6363,9 +6363,6 @@ static void record_trace(int argc, char **argv,
+ 
+ 	record_stats();
+ 
+-	if (!keep)
+-		tracecmd_disable_all_tracing(0);
+-
+ 	if (!latency)
+ 		wait_threads();
+ 
+@@ -6375,6 +6372,9 @@ static void record_trace(int argc, char **argv,
+ 	} else
+ 		print_stats();
+ 
++	if (!keep)
++		tracecmd_disable_all_tracing(0);
++
+ 	destroy_stats();
+ 	finalize_record_trace(ctx);
+ }
+-- 
+2.25.4
 
-  git://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git
-
-(which requires the libtracefs and libtracevent libraries).
-
-I'm thinking if someone were to do:
-
- trace-cmd record -p wakeup_rt 
-
-It would then act just like the latency-collector and record every new
-instance of a latency into the trace.dat file, where:
-
- trace-cmd report
-
-would then nicely format that data for the user.
-
-Thoughts?
-
--- Steve
