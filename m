@@ -2,68 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E609BC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Feb 2021 16:26:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D0A2C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Feb 2021 16:26:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B8B2964F1B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Feb 2021 16:26:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1B0BA64F1B
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Feb 2021 16:26:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhBYQ0N (ORCPT
+        id S233207AbhBYQ0O (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Feb 2021 11:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50320 "EHLO
+        Thu, 25 Feb 2021 11:26:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbhBYQ0M (ORCPT
+        with ESMTP id S233067AbhBYQ0M (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 25 Feb 2021 11:26:12 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DE1C06178B
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Feb 2021 08:24:52 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id mm21so9565882ejb.12
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Feb 2021 08:24:52 -0800 (PST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A707BC06178A
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Feb 2021 08:24:51 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id lr13so9827448ejb.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Feb 2021 08:24:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IenKFzFG83xtDGf9KkCaQpGW0t9/z9lSzSq7mZfH8BY=;
-        b=QwEin7qExd0heKExHxhFg1yNeVyfFjmnOETJz5PKHd1ruq+WyWcBRWx2ADXjhpoMGK
-         GYVBUc3AVsp9W6SNL+C2LoaavRsE9AsP3wP8BIt+U7A2rfXxQzk8RpC/9KMxm9JZyAxC
-         whr3Vz3gb5+pBbfO7WgnWXlRtYt7og1Dwc7onh76Os/wnE/P2K1cbqXn9ANfT1JhOTGA
-         8M/LjjFZHVQc+pIGLgetpMTuwF6SjxH+wVwfMP66Jkc9sitM+ZgUfFk1j0KKWBLYmrGl
-         D+xLxLMqN7hLZdLU9BFb73VilF9AeIn/QxE8TnjY9EVINa6COEJYZmG9dkLZmUDWoJrk
-         cUtA==
+        bh=eIhwU6/lXs3epbTMCYsXYPl8hvwg6uT8p+k9Q2LmtrY=;
+        b=DH9UuqAS1bJwxnVN65PUiJn0rVSFUMdxchcJSuXjhH1FmIfGAohX2LJKG4gDdNhSSk
+         CX5k5q6Hh0SYA/9Bfze/zPrOF/7js95tM2S1miomaWOq6ynE+bu8WbhlbamSpT3CBikF
+         BzZdiE3n55uql0/iyG46uIaSbgMLzscJTA8yrJcYbdhAo4G4r2LYyHvq10XlAcn6jR8/
+         NFAebasryVeTSImfEp41XLWJ8XSywGdricJEEbLG/NyJ53damI/qipEf5LqQi/FWfSI+
+         Zva6b9LUJP7hmTXvRZuEOiKRYprSDkugbULd1cbdwW7iesyB3Pf49m5Lin3XorrKJR64
+         1gfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IenKFzFG83xtDGf9KkCaQpGW0t9/z9lSzSq7mZfH8BY=;
-        b=QavYJ4dZh3mHZqcqKrapkIrTu8DKTkkGw1SDUmh7I6O5Lxpf05URzkUdXT5E81TzIm
-         AnaJOVcr7eGQ9RYTmnY/a8g3KJHu1h2ISVUvMVXHvlfvVHPlnPEOYQKLAgrKLHbswp4u
-         JF380OpZBQ7BZG40x4/+a/KllnnkBmEr959PWEfSmsBlNeVNm4YVE66f0Wj+APV4n5As
-         DWdbCCUeN5nDBGHN/gggBYJ38EXBHFoIqaky/5j/7/W4AiFjiNRsgqXe460DaQxhrB2r
-         XE7lWF4GWtOhtjlKZYgsiGPykIXQIZcH5gsOwTah7CwN/9jDk/YI7fCpvQPnudIglETA
-         rjeg==
-X-Gm-Message-State: AOAM532xj9MRzXFaF8Jc9Vnu4ADq+FjRI2ZYdh2WTs+dktN00mAVstaW
-        GWYjND+YRuQ1uNKZMQBXWHI9CQQXUG7OQA==
-X-Google-Smtp-Source: ABdhPJxtIHjCp2lR/wf57gev5jXT5lTT1ppcZtYQMD38on7F5/thFKYs6+zfAC7uWBHKSh21YGkIlw==
-X-Received: by 2002:a17:906:3a13:: with SMTP id z19mr3473836eje.317.1614270291259;
-        Thu, 25 Feb 2021 08:24:51 -0800 (PST)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id qn24sm3096339ejb.104.2021.02.25.08.24.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=eIhwU6/lXs3epbTMCYsXYPl8hvwg6uT8p+k9Q2LmtrY=;
+        b=Y5aQWxVZqriXr/L8X/2pBm/yzQ5750mnig6VFGO4f+MuYexEYCeQ2e3VTnEh4G95n6
+         b7AoQPBxY21LayDfzyFVTTmqtFWL0wfyPPWdhlWIG47Gjp0Zi61MeA1IviyaPPHmb6NA
+         exjHcUjtmtYvWQnsBJWjgGC1KlDhWvg1X9fSNddjSPeG+BJ1TwNL/k8AzqnAYrLwomTO
+         WgKzxiHJlbv6iKf03g6iaMi6bDHDwwwWc4eLBZGDrNi+2CFdBOMfMjrCe2acFmopwbV+
+         mSsBF4BvHb1wmfK1/XwFkyM59bGbjCKs6xmpoW0ePRVjedh3PFwiEINhEHXSaHIhyUid
+         Ql0A==
+X-Gm-Message-State: AOAM533plfjqdTVgQ9STZQe9S/ivc6OOeSwwvhHoVOLTBvk69zmUwrnV
+        jAkPa/eKwBadq3pdwKaAwlgU8GsnycwhLA==
+X-Google-Smtp-Source: ABdhPJyub3g9zlM4CARi3bGwWGZxPSkjFBiuq+7cKFJNOQBTD4pAeysEB6myC0drqvJiKbtfgBf2jA==
+X-Received: by 2002:a17:906:6b1b:: with SMTP id q27mr3251431ejr.508.1614270290350;
         Thu, 25 Feb 2021 08:24:50 -0800 (PST)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id qn24sm3096339ejb.104.2021.02.25.08.24.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 08:24:49 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v30 6/7] trace-cmd: Debug scripts for PTP-like algorithm for host - guest timestamp synchronization
-Date:   Thu, 25 Feb 2021 18:24:41 +0200
-Message-Id: <20210225162442.173759-7-tz.stoyanov@gmail.com>
+Subject: [PATCH v30 5/7] trace-cmd: [POC] PTP-like algorithm for host - guest timestamp synchronization
+Date:   Thu, 25 Feb 2021 18:24:40 +0200
+Message-Id: <20210225162442.173759-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210225162442.173759-1-tz.stoyanov@gmail.com>
 References: <20210225162442.173759-1-tz.stoyanov@gmail.com>
@@ -73,159 +73,782 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-These scripts can be used to visualise debug files, written when the PTP-like algorithm
-is compiled with TSYNC_DEBUG defined. The files are located in the guest machine:
-    s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
-    res-cid*.txt - For each tracing session: all calculated clock offsets.
+PTP protocol is designed for synchronizing clocks of machines in a local network.
+The same approach can be used for host - guest timestamp synchronization.
+This implementation uses ftrace raw markers to track trace timestamps of PTP events.
+The patch is a POC, two different algorithms for PTP calculations are proposed:
+  - Choosing the sample with the fastest response time for calculating the clocks offset.
+  - Calculating the clocks offset using the average of all PTP samples.
 
-tsync_hist.py plots a histogram, using data from a s-cid*.txt file:
-	"python tsync_hist.py s-cid2_1.txt"
-tsync_res.py plots a line, using data from res-cid*.txt file:
-	"python tsync_res.py res-cid2.txt"
+The implementation can be tuned using those parameters:
+ - #define FASTEST_RESPONSE - is defined, the sample with the fastest response time
+    is used for calculating the clocks offset. Otherwise the histogram of all samples is used.
+ - #define PTP_SYNC_LOOP 340 - defines the number of samples, used for one calculation.
+ - --tsync-interval - a trace-cmd argument, choose the intervals between offset calculations,
+	performed continuously during the trace.
+ - #define TSYNC_DEBUG - if defined, a debug information is collected and stored in files,
+   in the guest machine:
+     s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
+     res-cid*.txt - For each tracing session: all calculated clock offsets.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- scripts/debug/tsync_hist.py | 57 +++++++++++++++++++++++++++++++++++++
- scripts/debug/tsync_readme  | 12 ++++++++
- scripts/debug/tsync_res.py  | 46 ++++++++++++++++++++++++++++++
- 3 files changed, 115 insertions(+)
- create mode 100644 scripts/debug/tsync_hist.py
- create mode 100644 scripts/debug/tsync_readme
- create mode 100644 scripts/debug/tsync_res.py
+ lib/trace-cmd/Makefile             |   3 +
+ lib/trace-cmd/trace-timesync-ptp.c | 715 +++++++++++++++++++++++++++++
+ lib/trace-cmd/trace-timesync.c     |   4 +-
+ 3 files changed, 721 insertions(+), 1 deletion(-)
+ create mode 100644 lib/trace-cmd/trace-timesync-ptp.c
 
-diff --git a/scripts/debug/tsync_hist.py b/scripts/debug/tsync_hist.py
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index 2f553ed5..e66c7b5f 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -18,6 +18,9 @@ OBJS += trace-filter-hash.o
+ OBJS += trace-msg.o
+ OBJS += trace-plugin.o
+ OBJS += trace-timesync.o
++ifeq ($(VSOCK_DEFINED), 1)
++OBJS += trace-timesync-ptp.o
++endif
+ 
+ # Additional util objects
+ OBJS += trace-blk-hack.o
+diff --git a/lib/trace-cmd/trace-timesync-ptp.c b/lib/trace-cmd/trace-timesync-ptp.c
 new file mode 100644
-index 00000000..819d1e8f
+index 00000000..b05f1cd0
 --- /dev/null
-+++ b/scripts/debug/tsync_hist.py
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2019, VMware Inc, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-+# Copyright (C) 2019, VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
++++ b/lib/trace-cmd/trace-timesync-ptp.c
+@@ -0,0 +1,715 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2019, VMware, Tzvetomir Stoyanov tz.stoyanov@gmail.com>
++ *
++ */
++
++#include <fcntl.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <arpa/inet.h>
++#include <linux/vm_sockets.h>
++#include <sys/types.h>
++#include <linux/types.h>
++#include <time.h>
++#include <sched.h>
++#include <limits.h>
++
++#include "trace-cmd.h"
++#include "trace-cmd-private.h"
++#include "tracefs.h"
++#include "trace-tsync-local.h"
++#include "trace-msg.h"
++#include "trace-cmd-local.h"
++
++typedef __be32 be32;
++typedef __u64 u64;
++typedef __s64 s64;
++
++#define PTP_SYNC_LOOP	339
++
++#define PTP_SYNC_PKT_START	1
++#define PTP_SYNC_PKT_PROBE	2
++#define PTP_SYNC_PKT_PROBES	3
++#define PTP_SYNC_PKT_OFFSET	4
++#define PTP_SYNC_PKT_END	5
++
++/* print time sync debug messages */
++#define TSYNC_DEBUG
++
++struct ptp_clock_sync {
++	struct tep_handle	*tep;
++	struct tep_format_field	*id;
++	int			raw_id;
++	int			marker_fd;
++	int			series_id;
++	int			flags;
++	int			debug_fd;
++};
++
++enum {
++/*
++ * Consider only the probe with fastest response time,
++ * otherwise make a histogram from all probes.
++ */
++	PTP_FLAG_FASTEST_RESPONSE		= (1 << 0),
++/*
++ * Use trace marker to get the clock,
++ * otherwise use the system clock directly.
++ */
++	PTP_FLAG_USE_MARKER			= (1 << 1),
++};
++static int ptp_flags = PTP_FLAG_FASTEST_RESPONSE | PTP_FLAG_USE_MARKER;
++
++/*
++ * Calculated using formula [CPU rate]*[calculated offset deviation]
++ * tested on 3GHz CPU, with x86-tsc trace clock and compare the calculated
++ * offset with /sys/kernel/debug/kvm/<VM ID>/vcpu0/tsc-offset
++ * measured 2000ns deviation
++ * using PTP flags PTP_FLAG_FASTEST_RESPONSE | PTP_FLAG_USE_MARKER
++ */
++#define PTP_ACCURACY	6000
++#define PTP_NAME	"ptp"
++
++struct ptp_clock_start_msg {
++	be32	series_id;
++	be32	flags;
++} __packed;
++
++struct ptp_clock_sample {
++	s64		ts;
++	be32		id;
++} __packed;
++
++struct ptp_clock_result_msg {
++	be32			series_id;
++	be32			count;
++	struct ptp_clock_sample	samples[2*PTP_SYNC_LOOP];
++} __packed;
++
++struct ptp_clock_offset_msg {
++	s64	ts;
++	s64	offset;
++};
++
++struct ptp_markers_context {
++	struct clock_sync_context	*clock;
++	struct ptp_clock_sync		*ptp;
++	struct ptp_clock_result_msg	msg;
++	int				size;
++};
++
++struct ptp_marker_buf {
++	int local_cid;
++	int remote_cid;
++	int count;
++	int packet_id;
++} __packed;
++
++struct ptp_marker {
++	int series_id;
++	struct ptp_marker_buf data;
++} __packed;
++
++static int ptp_clock_sync_init(struct tracecmd_time_sync *tsync)
++{
++	const char *systems[] = {"ftrace", NULL};
++	struct clock_sync_context *clock_context;
++	struct ptp_clock_sync *ptp;
++	struct tep_event *raw;
++	char *path;
++
++	if (!tsync || !tsync->context)
++		return -1;
++	clock_context = (struct clock_sync_context *)tsync->context;
++	if (clock_context->proto_data)
++		return 0;
++
++	ptp = calloc(1, sizeof(struct ptp_clock_sync));
++	if (!ptp)
++		return -1;
++
++	ptp->marker_fd = -1;
++	ptp->debug_fd = -1;
++
++	path = tracefs_instance_get_dir(clock_context->instance);
++	if (!path)
++		goto error;
++	ptp->tep = tracefs_local_events_system(path, systems);
++	tracefs_put_tracing_file(path);
++	if (!ptp->tep)
++		goto error;
++	raw = tep_find_event_by_name(ptp->tep, "ftrace", "raw_data");
++	if (!raw)
++		goto error;
++	ptp->id = tep_find_field(raw, "id");
++	if (!ptp->id)
++		goto error;
++	ptp->raw_id = raw->id;
++
++	tep_set_file_bigendian(ptp->tep, tracecmd_host_bigendian());
++	tep_set_local_bigendian(ptp->tep, tracecmd_host_bigendian());
++
++	path = tracefs_instance_get_file(clock_context->instance, "trace_marker_raw");
++	if (!path)
++		goto error;
++	ptp->marker_fd = open(path, O_WRONLY);
++	tracefs_put_tracing_file(path);
++
++	clock_context->proto_data = ptp;
++
++#ifdef TSYNC_DEBUG
++	if (clock_context->is_server) {
++		char buff[256];
++		int res_fd;
++
++		sprintf(buff, "res-cid%d.txt", clock_context->remote_cid);
++
++		res_fd = open(buff, O_CREAT|O_WRONLY|O_TRUNC, 0644);
++		if (res_fd > 0)
++			close(res_fd);
++	}
++#endif
++
++	return 0;
++
++error:
++	if (ptp) {
++		tep_free(ptp->tep);
++		if (ptp->marker_fd >= 0)
++			close(ptp->marker_fd);
++	}
++	free(ptp);
++	return -1;
++}
++
++static int ptp_clock_sync_free(struct tracecmd_time_sync *tsync)
++{
++	struct clock_sync_context *clock_context;
++	struct ptp_clock_sync *ptp;
++
++	if (!tsync || !tsync->context)
++		return -1;
++	clock_context = (struct clock_sync_context *)tsync->context;
++
++	if (clock_context && clock_context->proto_data) {
++		ptp = (struct ptp_clock_sync *)clock_context->proto_data;
++		tep_free(ptp->tep);
++		if (ptp->marker_fd >= 0)
++			close(ptp->marker_fd);
++		if (ptp->debug_fd >= 0)
++			close(ptp->debug_fd);
++		free(clock_context->proto_data);
++		clock_context->proto_data = NULL;
++	}
++	return 0;
++}
++
++/* Save the timestamps of sent ('s') and returned ('r') probes in the
++ * ctx->msg.samples[] array. Depending of the context (server or client), there
++ * may be only returned probes, or both sent and returned probes. The returned
++ * probes are saved first in the array, after them are the sent probes.
++ * Depending of the context, the array can be with size:
++ *  [0 .. max data.count] - holds only returned probes
++ *  [0 .. 2 * max data.count] - holds both returned and sent probes
++ */
++static void ptp_probe_store(struct ptp_markers_context *ctx,
++			    struct ptp_marker *marker,
++			    unsigned long long ts)
++{
++	int index = -1;
++
++	if (marker->data.packet_id == 'r' &&
++	    marker->data.count <= ctx->size) {
++		index = marker->data.count - 1;
++	} else if (marker->data.packet_id == 's' &&
++		  marker->data.count * 2 <= ctx->size){
++		index = ctx->size / 2 + marker->data.count - 1;
++	}
++
++	if (index >= 0) {
++		ctx->msg.samples[index].id = marker->data.count;
++		ctx->msg.samples[index].ts = ts;
++		ctx->msg.count++;
++	}
++}
++
++static int ptp_marker_find(struct tep_event *event, struct tep_record *record,
++			   int cpu, void *context)
++{
++	struct ptp_markers_context *ctx;
++	struct ptp_marker *marker;
++
++	ctx = (struct ptp_markers_context *)context;
++
++	/* Make sure this is our event */
++	if (event->id != ctx->ptp->raw_id || !ctx->ptp->id)
++		return 0;
++	if (record->size >= (ctx->ptp->id->offset + sizeof(struct ptp_marker))) {
++		marker = (struct ptp_marker *)(record->data + ctx->ptp->id->offset);
++		if (marker->data.local_cid == ctx->clock->local_cid &&
++		    marker->data.remote_cid == ctx->clock->remote_cid &&
++		    marker->series_id == ctx->ptp->series_id &&
++		    marker->data.count)
++			ptp_probe_store(ctx, marker, record->ts);
++	}
++
++	return 0;
++}
++
++static inline bool good_probe(struct ptp_clock_sample *server_sample,
++			      struct ptp_clock_sample *send_sample,
++			      struct ptp_clock_sample *client_sample,
++			      int *bad_probes)
++{
++	if (server_sample->ts && send_sample->ts && client_sample->ts &&
++	    server_sample->id == send_sample->id &&
++	    server_sample->id == client_sample->id)
++		return true;
++	(*bad_probes)++;
++	return false;
++}
++
++static int ptp_calc_offset_fastest(struct clock_sync_context *clock,
++			   struct ptp_clock_result_msg *server,
++			   struct ptp_clock_result_msg *client,
++			   long long *offset_ret, long long *ts_ret,
++			   int *bad_probes)
++{
++	struct ptp_clock_sample *sample_send;
++	long long delta_min = LLONG_MAX;
++	long long offset = 0;
++	long long delta = 0;
++	long long ts = 0;
++	int max_i;
++	int i;
++
++	*bad_probes = 0;
++	sample_send = server->samples + (server->count / 2);
++	max_i = server->count / 2 < client->count ?
++		server->count / 2 : client->count;
++	for (i = 0; i < max_i; i++) {
++		if (!good_probe(&server->samples[i], &sample_send[i],
++		    &client->samples[i], bad_probes))
++			continue;
++		ts = (sample_send[i].ts + server->samples[i].ts) / 2;
++		offset = client->samples[i].ts - ts;
++
++		delta = server->samples[i].ts - sample_send[i].ts;
++		if (delta_min > delta) {
++			delta_min = delta;
++			*offset_ret = offset;
++			*ts_ret = ts;
++		}
++#ifdef TSYNC_DEBUG
++		{
++			struct ptp_clock_sync *ptp;
++
++			ptp = (struct ptp_clock_sync *)clock->proto_data;
++			if (ptp && ptp->debug_fd > 0) {
++				char buff[256];
++
++				sprintf(buff, "%lld %lld %lld\n",
++					ts, client->samples[i].ts, offset);
++				write(ptp->debug_fd, buff, strlen(buff));
++			}
++		}
++#endif
++	}
++
++	return 0;
++}
++
++static int ptp_calc_offset_hist(struct clock_sync_context *clock,
++			   struct ptp_clock_result_msg *server,
++			   struct ptp_clock_result_msg *client,
++			   long long *offset_ret, long long *ts_ret,
++			   int *bad_probes)
++{
++	struct ptp_clock_sample *sample_send;
++	long long timestamps[PTP_SYNC_LOOP];
++	long long offsets[PTP_SYNC_LOOP];
++	long long offset_min = LLONG_MAX;
++	long long offset_max = 0;
++	int hist[PTP_SYNC_LOOP];
++	int ind, max = 0;
++	long long bin;
++	int i, k = 0;
++
++	*bad_probes = 0;
++	memset(hist, 0, sizeof(int) * PTP_SYNC_LOOP);
++	sample_send = server->samples + (server->count / 2);
++	for (i = 0; i * 2 < server->count && i < client->count; i++) {
++		if (!good_probe(&server->samples[i], &sample_send[i],
++		    &client->samples[i], bad_probes))
++			continue;
++		timestamps[k] = (sample_send[i].ts + server->samples[i].ts) / 2;
++		offsets[k] = client->samples[i].ts - timestamps[k];
++		if (offset_max < llabs(offsets[k]))
++			offset_max = llabs(offsets[k]);
++		if (offset_min > llabs(offsets[k]))
++			offset_min = llabs(offsets[k]);
++#ifdef TSYNC_DEBUG
++		{
++			struct ptp_clock_sync *ptp;
++
++			ptp = (struct ptp_clock_sync *)clock->proto_data;
++
++			if (ptp && ptp->debug_fd > 0) {
++				char buff[256];
++
++				sprintf(buff, "%lld %lld %lld\n",
++					timestamps[k],
++					client->samples[i].ts, offsets[k]);
++				write(ptp->debug_fd, buff, strlen(buff));
++			}
++		}
++#endif
++		k++;
++	}
++
++	bin = (offset_max - offset_min) / PTP_SYNC_LOOP;
++	for (i = 0; i < k; i++) {
++		ind = (llabs(offsets[i]) - offset_min) / bin;
++		if (ind < PTP_SYNC_LOOP) {
++			hist[ind]++;
++			if (max < hist[ind]) {
++				max = hist[ind];
++				*offset_ret = offsets[i];
++				*ts_ret = timestamps[i];
++			}
++		}
++	}
++
++	return 0;
++}
++
++static void ntoh_ptp_results(struct ptp_clock_result_msg *msg)
++{
++	int i;
++
++	msg->count = ntohl(msg->count);
++	for (i = 0; i < msg->count; i++) {
++		msg->samples[i].id = ntohl(msg->samples[i].id);
++		msg->samples[i].ts = ntohll(msg->samples[i].ts);
++	}
++	msg->series_id = ntohl(msg->series_id);
++}
 +
 +
-+import matplotlib.pyplot as plt
-+import matplotlib.lines as mlines
-+import numpy as np
-+import sys
++static void hton_ptp_results(struct ptp_clock_result_msg *msg)
++{
++	int i;
 +
-+def newline(p1, p2):
-+    ax = plt.gca()
-+    xmin, xmax = ax.get_xbound()
++	for (i = 0; i < msg->count; i++) {
++		msg->samples[i].id = htonl(msg->samples[i].id);
++		msg->samples[i].ts = htonll(msg->samples[i].ts);
++	}
++	msg->series_id = htonl(msg->series_id);
++	msg->count = htonl(msg->count);
++}
 +
-+    if(p2[0] == p1[0]):
-+        xmin = xmax = p1[0]
-+        ymin, ymax = ax.get_ybound()
-+    else:
-+        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
-+        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
++static inline void ptp_track_clock(struct ptp_markers_context *ctx,
++				   struct ptp_marker *marker)
++{
++	if (ctx->ptp->flags & PTP_FLAG_USE_MARKER) {
++		write(ctx->ptp->marker_fd, marker, sizeof(struct ptp_marker));
++	} else {
++		struct timespec clock;
++		unsigned long long ts;
 +
-+    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color='red')
-+    ax.add_line(l)
-+    return l
++		clock_gettime(CLOCK_MONOTONIC_RAW, &clock);
++		ts = clock.tv_sec * 1000000000LL;
++		ts += clock.tv_nsec;
++		ptp_probe_store(ctx, marker, ts);
++	}
++}
++
++static int ptp_clock_client(struct tracecmd_time_sync *tsync,
++			    long long *offset, long long *timestamp)
++{
++	char sync_proto[TRACECMD_TSYNC_PNAME_LENGTH];
++	struct clock_sync_context *clock_context;
++	struct ptp_clock_offset_msg res_offset;
++	struct ptp_clock_start_msg start;
++	struct ptp_markers_context ctx;
++	struct ptp_clock_sync *ptp;
++	struct ptp_marker marker;
++	unsigned int sync_msg;
++	unsigned int size;
++	char *msg;
++	int count;
++	int ret;
++
++	if (!tsync || !tsync->context || !tsync->msg_handle)
++		return -1;
++
++	clock_context = (struct clock_sync_context *)tsync->context;
++	if (clock_context->proto_data == NULL)
++		return -1;
++
++	ptp = (struct ptp_clock_sync *)clock_context->proto_data;
++	size = sizeof(start);
++	msg = (char *)&start;
++	ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++					  sync_proto, &sync_msg,
++					  &size, &msg);
++	if (ret || strncmp(sync_proto, PTP_NAME, TRACECMD_TSYNC_PNAME_LENGTH) ||
++	    sync_msg != PTP_SYNC_PKT_START)
++		return -1;
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle, PTP_NAME,
++					  PTP_SYNC_PKT_START, sizeof(start),
++					  (char *)&start);
++	marker.data.local_cid = clock_context->local_cid;
++	marker.data.remote_cid = clock_context->remote_cid;
++	marker.series_id = ntohl(start.series_id);
++	marker.data.packet_id = 'r';
++	ptp->series_id = marker.series_id;
++	ptp->flags = ntohl(start.flags);
++	msg = (char *)&count;
++	size = sizeof(count);
++	ctx.msg.count = 0;
++	ctx.size = PTP_SYNC_LOOP;
++	ctx.ptp = ptp;
++	ctx.clock = clock_context;
++	ctx.msg.series_id = ptp->series_id;
++	while (true) {
++		count = 0;
++		ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++						  sync_proto, &sync_msg,
++						  &size, &msg);
++		if (ret || strncmp(sync_proto, PTP_NAME, TRACECMD_TSYNC_PNAME_LENGTH) ||
++		    sync_msg != PTP_SYNC_PKT_PROBE || !ntohl(count))
++			break;
++		marker.data.count = ntohl(count);
++		ptp_track_clock(&ctx, &marker);
++		ret = tracecmd_msg_send_time_sync(tsync->msg_handle, PTP_NAME,
++						  PTP_SYNC_PKT_PROBE,
++						  sizeof(count), (char *)&count);
++		if (ret)
++			break;
++	}
++
++	if (strncmp(sync_proto, PTP_NAME, TRACECMD_TSYNC_PNAME_LENGTH) ||
++	    sync_msg != PTP_SYNC_PKT_END)
++		return -1;
++
++	if (ptp->flags & PTP_FLAG_USE_MARKER)
++		tracefs_iterate_raw_events(ptp->tep, clock_context->instance,
++					   NULL, 0, ptp_marker_find, &ctx);
++
++	hton_ptp_results(&ctx.msg);
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle, PTP_NAME,
++					  PTP_SYNC_PKT_PROBES,
++					  sizeof(ctx.msg), (char *)&ctx.msg);
++
++	msg = (char *)&res_offset;
++	size = sizeof(res_offset);
++	ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++					  sync_proto, &sync_msg,
++					  &size, (char **)&msg);
++	if (ret || strncmp(sync_proto, PTP_NAME, TRACECMD_TSYNC_PNAME_LENGTH) ||
++	    sync_msg != PTP_SYNC_PKT_OFFSET)
++		return -1;
++
++	*offset = ntohll(res_offset.offset);
++	*timestamp = ntohll(res_offset.ts);
++
++	return 0;
++}
 +
 +
-+data = np.loadtxt(fname = sys.argv[1])
-+selected_ts  = data[-1, 1]
-+selected_ofs = data[-1, 0]
-+data = data[:-1,:]
++static int ptp_clock_server(struct tracecmd_time_sync *tsync,
++			    long long *offset, long long *timestamp)
++{
++	char sync_proto[TRACECMD_TSYNC_PNAME_LENGTH];
++	struct ptp_clock_result_msg *results = NULL;
++	struct clock_sync_context *clock_context;
++	struct ptp_clock_offset_msg res_offset;
++	struct ptp_clock_start_msg start;
++	struct ptp_markers_context ctx;
++	int sync_loop = PTP_SYNC_LOOP;
++	struct ptp_clock_sync *ptp;
++	struct ptp_marker marker;
++	unsigned int sync_msg;
++	unsigned int size;
++	int bad_probes;
++	int count = 1;
++	int msg_count;
++	int msg_ret;
++	char *msg;
++	int ret;
 +
-+x = data[:, 1] - data[:, 0]
++	if (!tsync || !tsync->context || !tsync->msg_handle)
++		return -1;
 +
-+mean = x.mean()
-+std = x.std()
++	clock_context = (struct clock_sync_context *)tsync->context;
++	if (clock_context->proto_data == NULL)
++		return -1;
 +
-+num_bins = 500
-+min = x.min() #+ .4 * (x.max() - x.min())
-+max = x.max() #- .4 * (x.max() - x.min())
-+bins = np.linspace(min, max, num_bins, endpoint = False, dtype=int)
++	ptp = (struct ptp_clock_sync *)clock_context->proto_data;
++	ptp->flags = ptp_flags;
++	memset(&start, 0, sizeof(start));
++	start.series_id = htonl(ptp->series_id + 1);
++	start.flags = htonl(ptp->flags);
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle, PTP_NAME,
++					 PTP_SYNC_PKT_START, sizeof(start),
++					 (char *)&start);
++	if (!ret)
++		ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++						  sync_proto, &sync_msg,
++						  NULL, NULL);
++	if (ret || strncmp(sync_proto, PTP_NAME, TRACECMD_TSYNC_PNAME_LENGTH) ||
++	    sync_msg != PTP_SYNC_PKT_START)
++		return -1;
 +
-+fig, ax = plt.subplots()
++	tracefs_instance_file_write(clock_context->instance, "trace", "\0");
 +
-+# the histogram of the data
-+n, bins, patches = ax.hist(x, bins, histtype=u'step');
++	ptp->series_id++;
++	marker.data.local_cid = clock_context->local_cid;
++	marker.data.remote_cid = clock_context->remote_cid;
++	marker.series_id = ptp->series_id;
++	msg = (char *)&msg_ret;
++	size = sizeof(msg_ret);
++	ctx.size = 2*PTP_SYNC_LOOP;
++	ctx.ptp = ptp;
++	ctx.clock = clock_context;
++	ctx.msg.count = 0;
++	ctx.msg.series_id = ptp->series_id;
++	do {
++		marker.data.count = count++;
++		marker.data.packet_id = 's';
++		msg_count = htonl(marker.data.count);
++		ptp_track_clock(&ctx, &marker);
++		ret = tracecmd_msg_send_time_sync(tsync->msg_handle, PTP_NAME,
++						 PTP_SYNC_PKT_PROBE,
++						 sizeof(msg_count),
++						 (char *)&msg_count);
++		if (!ret)
++			ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++							  sync_proto, &sync_msg,
++							  &size, &msg);
 +
-+ax.set_xlabel('clock offset [$\mu$s]')
-+ax.set_ylabel('entries')
-+ax.set_title("$\sigma$=%i" % std)
++		marker.data.packet_id = 'r';
++		ptp_track_clock(&ctx, &marker);
++		if (ret || strncmp(sync_proto, PTP_NAME, TRACECMD_TSYNC_PNAME_LENGTH) ||
++		    sync_msg != PTP_SYNC_PKT_PROBE ||
++		    ntohl(msg_ret) != marker.data.count)
++			break;
++	} while (--sync_loop);
 +
-+x1, y1 = [selected_ofs, min], [selected_ofs, max]
-+newline(x1, y1)
++	if (sync_loop)
++		return -1;
 +
-+# Tweak spacing to prevent clipping of ylabel
-+fig.tight_layout()
-+plt.show()
-diff --git a/scripts/debug/tsync_readme b/scripts/debug/tsync_readme
-new file mode 100644
-index 00000000..f3ebb25d
---- /dev/null
-+++ b/scripts/debug/tsync_readme
-@@ -0,0 +1,12 @@
-+PTP-like algorithm debug
-+========================
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle, PTP_NAME,
++					  PTP_SYNC_PKT_END, 0, NULL);
 +
-+tsync_*.py scripts can be used to visualise debug files, written when the PTP-like algorithm
-+is compiled with TSYNC_DEBUG defined. The files are located in the guest machine:
-+    s-cid*.txt - For each offset calculation: host and guest clocks and calculated offset.
-+    res-cid*.txt - For each tracing session: all calculated clock offsets.
++	size = 0;
++	ret = tracecmd_msg_recv_time_sync(tsync->msg_handle,
++					  sync_proto, &sync_msg,
++					  &size, (char **)&results);
++	if (ret || strncmp(sync_proto, PTP_NAME, TRACECMD_TSYNC_PNAME_LENGTH) ||
++	    sync_msg != PTP_SYNC_PKT_PROBES || size == 0 || results == NULL)
++		return -1;
 +
-+tsync_hist.py plots a histogram, using data from a s-cid*.txt file:
-+	"python tsync_hist.py s-cid2_1.txt"
-+tsync_res.py plots a line, using data from res-cid*.txt file:
-+	"python tsync_res.py res-cid2.txt"
-diff --git a/scripts/debug/tsync_res.py b/scripts/debug/tsync_res.py
-new file mode 100644
-index 00000000..7d109863
---- /dev/null
-+++ b/scripts/debug/tsync_res.py
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2019, VMware Inc, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-+# Copyright (C) 2019, VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
++	ntoh_ptp_results(results);
++	if (ptp->flags & PTP_FLAG_USE_MARKER)
++		tracefs_iterate_raw_events(ptp->tep, clock_context->instance,
++					   NULL, 0, ptp_marker_find, &ctx);
++	if (ptp->flags & PTP_FLAG_FASTEST_RESPONSE)
++		ptp_calc_offset_fastest(clock_context, &ctx.msg, results, offset,
++					timestamp, &bad_probes);
++	else
++		ptp_calc_offset_hist(clock_context, &ctx.msg, results, offset,
++				     timestamp, &bad_probes);
++#ifdef TSYNC_DEBUG
++	{
++		char buff[256];
++		int res_fd;
 +
++		sprintf(buff, "res-cid%d.txt", clock_context->remote_cid);
 +
-+import matplotlib.pyplot as plt
-+import matplotlib.lines as mlines
-+import numpy as np
-+import sys
++		res_fd = open(buff, O_WRONLY|O_APPEND, 0644);
++		if (res_fd > 0) {
++			if (*offset && *timestamp) {
++				sprintf(buff, "%d %lld %lld\n",
++					ptp->series_id, *offset, *timestamp);
++				write(res_fd, buff, strlen(buff));
++			}
++			close(res_fd);
++		}
 +
-+def newline(p1, p2):
-+    ax = plt.gca()
-+    xmin, xmax = ax.get_xbound()
++		printf("\n calculated offset %d: %lld, %d probes, filtered out %d, PTP flags 0x%X\n\r",
++			ptp->series_id, *offset, results->count, bad_probes, ptp->flags);
++		if (ptp && ptp->debug_fd > 0) {
++			sprintf(buff, "%lld %lld 0\n", *offset, *timestamp);
++			write(ptp->debug_fd, buff, strlen(buff));
++			close(ptp->debug_fd);
++			ptp->debug_fd = -1;
++		}
 +
-+    if(p2[0] == p1[0]):
-+        xmin = xmax = p1[0]
-+        ymin, ymax = ax.get_ybound()
-+    else:
-+        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
-+        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
++	}
++#endif
 +
-+    l = mlines.Line2D([xmin,xmax], [ymin,ymax], color='red')
-+    ax.add_line(l)
-+    return l
++	res_offset.offset = htonll(*offset);
++	res_offset.ts = htonll(*timestamp);
++	ret = tracecmd_msg_send_time_sync(tsync->msg_handle, PTP_NAME,
++					  PTP_SYNC_PKT_OFFSET,
++					  sizeof(res_offset),
++					  (char *)&res_offset);
 +
-+data = np.loadtxt(fname = sys.argv[1])
-+x = data[:, 0]
-+y = data[:, 1]
++	free(results);
++	return 0;
++}
 +
-+fig, ax = plt.subplots()
++static int ptp_clock_sync_calc(struct tracecmd_time_sync *tsync,
++			       long long *offset, long long *scaling,
++			       long long *timestamp, unsigned int cpu)
++{
++	struct clock_sync_context *clock_context;
++	int ret;
 +
-+ax.set_xlabel('samples (t)')
-+ax.set_ylabel('clock offset')
-+ax.set_title("$\delta$=%i ns" % (max(y) - min(y)))
++	if (!tsync || !tsync->context)
++		return -1;
++	clock_context = (struct clock_sync_context *)tsync->context;
 +
-+l = mlines.Line2D(x, y)
-+ax.add_line(l)
-+ax.set_xlim(min(x), max(x))
-+ax.set_ylim(min(y), max(y) )
++#ifdef TSYNC_DEBUG
++	if (clock_context->is_server) {
++		struct ptp_clock_sync *ptp;
++		char buff[256];
 +
-+print(min(y), max(y), max(y) - min(y))
++		ptp = (struct ptp_clock_sync *)clock_context->proto_data;
++		if (ptp->debug_fd > 0)
++			close(ptp->debug_fd);
++		sprintf(buff, "s-cid%d_%d.txt",
++				clock_context->remote_cid, ptp->series_id+1);
++		ptp->debug_fd = open(buff, O_CREAT|O_WRONLY|O_TRUNC, 0644);
++	}
++#endif
 +
-+# Tweak spacing to prevent clipping of ylabel
-+fig.tight_layout()
-+plt.show()
++	if (scaling)
++		*scaling = 1;
++	if (clock_context->is_server)
++		ret = ptp_clock_server(tsync, offset, timestamp);
++	else
++		ret = ptp_clock_client(tsync, offset, timestamp);
++
++	return ret;
++}
++
++int ptp_clock_sync_register(void)
++{
++	return tracecmd_tsync_proto_register(PTP_NAME, PTP_ACCURACY,
++					     TRACECMD_TIME_SYNC_ROLE_GUEST |
++					     TRACECMD_TIME_SYNC_ROLE_HOST,
++					     0, TRACECMD_TSYNC_FLAG_INTERPOLATE,
++					     ptp_clock_sync_init,
++					     ptp_clock_sync_free,
++					     ptp_clock_sync_calc);
++
++}
++
++int ptp_clock_sync_unregister(void)
++{
++	return tracecmd_tsync_proto_unregister(PTP_NAME);
++}
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index 1e8ba509..f939d34b 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -64,7 +64,9 @@ static struct tsync_proto *tsync_proto_find(const char *proto_name)
+  */
+ void tracecmd_tsync_init(void)
+ {
+-
++#ifdef VSOCK
++	ptp_clock_sync_register();
++#endif
+ }
+ 
+ int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int roles,
 -- 
 2.29.2
 
