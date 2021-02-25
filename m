@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4624C433E9
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Feb 2021 16:25:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A8D8C43381
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Feb 2021 16:25:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C9C364F1D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Feb 2021 16:25:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CDAE364F1C
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Feb 2021 16:25:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhBYQZf (ORCPT
+        id S233571AbhBYQZi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Feb 2021 11:25:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
+        Thu, 25 Feb 2021 11:25:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233234AbhBYQZ3 (ORCPT
+        with ESMTP id S233443AbhBYQZb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:25:29 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA79C061756
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Feb 2021 08:24:48 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id w1so9844587ejf.11
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Feb 2021 08:24:48 -0800 (PST)
+        Thu, 25 Feb 2021 11:25:31 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362E8C061788
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Feb 2021 08:24:50 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id c23so1212128edr.13
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Feb 2021 08:24:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NDWE9Dc0GAvodM1b0J0NfichO1GKQ8xZYos0leqsUQg=;
-        b=hWUkCwE1mSDvIstglNOKH5qpkrPn7IiJFnqbFIyKgkldrWiaX/5qYkp9X9Zofvv5T3
-         4OlY3m/5Zox8cNcT1j6u6+tuBIJjDyhTclLe+IQuzHS3EWoYqsPT9KXsANEeZmBUDQsB
-         9XIBMyXV7yzCiVZaCvR55UkX214KwsR2jbkPadBeFaPRbh1wQ33DPyf7uxk7eYC9EctW
-         NpDG/DGfNzd4m2EXlxN+aLY1GSH71FtjBeGe9OzLFxj+mqO7EB1owJAt7ILvX6UbQcTU
-         45yWwkylPxAstOoJIw059vgsCF80Z/G0+wCnTdZKs22jBZCYp+bE2lCAzzabNmqcK6va
-         kgFg==
+        bh=995If0yn/GvAjPK8BEWKuXaVZs/c2n3wjtKJKEMASog=;
+        b=c4+EJqGelDSNug2wge4SI23E8mAWg9epDoeDFsHHSQqJUc1iy29x5lXl2keCnjLpLY
+         DURb1wS3cmcNoy51JiV+DKGtCi/c27nSYYH1aQjRoPTPRFX0ToiB2XQY9a3qXZGuZZWw
+         VulHjZRhZlN5CogaSQTuPpO9eIOCelivMZ3bOQ6RtvZGHlyWRSnUdMIWm6qp2Vnnx8o9
+         F/pO4XBeFMp+e2Iwc3Korf8qpu7V1EbJT8nDJYAgvZ9PhDs/rFQu0hVtg32mUYXUgD6U
+         x5rmXNFj2G9Xoqfu1GHT75rFXS27yeIs9U91u+gmeYS+dP09/RAo/iyS+Q8uYEjrynvU
+         TdhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NDWE9Dc0GAvodM1b0J0NfichO1GKQ8xZYos0leqsUQg=;
-        b=PGvMa4PrMRZVtMqqsSBCsrldzGxTA4puplNHr8weT7ruqgM/jCGc5VhZmAUi2UetH6
-         668fMSbh9I8+7bOes0WiNU4fMvrcG8t4Hmbwp/g+4B6MAvYQEGgs28RjQ+SfilQ3dmQX
-         IDaNdxw1iPNMo8m7XNYK2N77khG40u2dBdHW9DKuvdr6xcR9egj+qSwTS0t3ZbPEmfP4
-         xyEJYMcwWqYPCukCX+aYvPjYUb8Fo1zJy3Q/n2bGFDXTM7qOjSrnnnYL7agvcmEAUk/H
-         8e2JvCp1bBFw5rTRJk/t28/hUDaE8LWlRQostSSJnzlhYwe1EqfWyxte1egSoBKYYpMf
-         8wyQ==
-X-Gm-Message-State: AOAM533ZE41CbY8fPqv7Q3jsIR66gt41rkmtY1X1Uirsmsggr7aMrVzb
-        xS0h5bOxXTQfV6N3HLUBn7E=
-X-Google-Smtp-Source: ABdhPJw2ztYkWWms4xSOdjsV5rvnPHUyF9+ylReuog1lZNzemisydMKJrk6s7MegEwCEoezewezOjw==
-X-Received: by 2002:a17:907:3fa6:: with SMTP id hr38mr3470999ejc.24.1614270286873;
-        Thu, 25 Feb 2021 08:24:46 -0800 (PST)
+        bh=995If0yn/GvAjPK8BEWKuXaVZs/c2n3wjtKJKEMASog=;
+        b=sI2o3XvulGOaAhWx2tSwciREa+DlRIGfR9743AlfhKfc91CY1yIwutsZIOXbn4UZQD
+         VXwPJ9xOYPKb/DCeXejpUSEfL7JUsmq+VPQMuMsN5frONRjd1HFyPJo4JYidek1M8Nqu
+         6psiHNnOmz1gPGXIkCIzXUsd9pJW3zfLY0V8NDQ25VCbk9cQFBWucCEQ0bcbZ344UfFL
+         D5uyQ3xocqZ6R9Wl6hKiVqviGZ06brYyA57C59TKpMXqpc/2hCiQPOmE2HxrzEFytTQ2
+         r/TgIuPvm1825++Tscm5EL+7NRto4kxHpEexYfle9nHy6aCTtNwKW3PSeSJSybqVH7U8
+         K/1A==
+X-Gm-Message-State: AOAM53353lKanbCoSTr997kYyMWSK0ELoKNlG83Cg0oN1k83FNGQFMp9
+        /zZnCvH0+qiEr+SgJaOTKIc4Qg6/d/M/cw==
+X-Google-Smtp-Source: ABdhPJxuAslE99zW4XabjZIiu+x/BjW6ylwHbTCAbSPn2mHOlNjRay6hxJUWy2bTcOrahG22foPRrA==
+X-Received: by 2002:aa7:da4b:: with SMTP id w11mr3841098eds.66.1614270289049;
+        Thu, 25 Feb 2021 08:24:49 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id qn24sm3096339ejb.104.2021.02.25.08.24.45
+        by smtp.gmail.com with ESMTPSA id qn24sm3096339ejb.104.2021.02.25.08.24.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 08:24:45 -0800 (PST)
+        Thu, 25 Feb 2021 08:24:48 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v30 2/7] trace-cmd: Add dummy function to initialize timestamp sync logic
-Date:   Thu, 25 Feb 2021 18:24:37 +0200
-Message-Id: <20210225162442.173759-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v30 4/7] trace-cmd: Wait for first time sync before the trace
+Date:   Thu, 25 Feb 2021 18:24:39 +0200
+Message-Id: <20210225162442.173759-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210225162442.173759-1-tz.stoyanov@gmail.com>
 References: <20210225162442.173759-1-tz.stoyanov@gmail.com>
@@ -73,118 +73,80 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A dummy empty function is added, will be used to initialize timestamp
-synchronization logic:
-  tracecmd_tsync_init()
-When this code is implemented as real plugins, this function will be
-removed. Then the initializion will be triggered at plugin load time.
+Added a barrier in time synchronization threads to ensure the first time
+synchronization passed before to start the trace.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-timesync.c |  8 ++++++++
- tracecmd/trace-agent.c         |  2 ++
- tracecmd/trace-record.c        | 23 +++++++++++++++--------
- 3 files changed, 25 insertions(+), 8 deletions(-)
+ lib/trace-cmd/trace-timesync.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
-index 7c11ee1b..f49eafdd 100644
+index d38ee975..1e8ba509 100644
 --- a/lib/trace-cmd/trace-timesync.c
 +++ b/lib/trace-cmd/trace-timesync.c
-@@ -57,6 +57,14 @@ static struct tsync_proto *tsync_proto_find(const char *proto_name)
- 	return NULL;
- }
- 
-+/**
-+ * tracecmd_tsync_init - Initialize the global, per task, time sync data.
-+ */
-+void tracecmd_tsync_init(void)
-+{
-+
-+}
-+
- int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int roles,
- 				  int supported_clocks, unsigned int flags,
- 				  int (*init)(struct tracecmd_time_sync *),
-diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
-index ff4a4e11..36444d32 100644
---- a/tracecmd/trace-agent.c
-+++ b/tracecmd/trace-agent.c
-@@ -248,6 +248,8 @@ static void agent_serve(unsigned int port)
- 	if (sd < 0)
- 		die("Failed to open vsocket");
- 
-+	tracecmd_tsync_init();
-+
- 	if (!get_local_cid(&cid))
- 		printf("listening on @%u:%u\n", cid, port);
- 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index efd96d27..cc870124 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -6218,10 +6218,6 @@ static bool has_local_instances(void)
- 	return false;
- }
- 
--/*
-- * This function contains common code for the following commands:
-- * record, start, stream, profile.
-- */
- static void record_trace(int argc, char **argv,
- 			 struct common_record_context *ctx)
+@@ -571,6 +571,7 @@ void tracecmd_tsync_free(struct tracecmd_time_sync *tsync)
+ 	}
+ 	pthread_mutex_destroy(&tsync->lock);
+ 	pthread_cond_destroy(&tsync->cond);
++	pthread_barrier_destroy(&tsync->first_sync);
+ 	free(tsync->clock_str);
+ 	free(tsync->proto_name);
+ 	free(tsync);
+@@ -753,6 +754,7 @@ static int tsync_with_guest(struct tracecmd_time_sync *tsync)
+ 	int ts_array_size = CLOCK_TS_ARRAY;
+ 	struct tsync_proto *proto;
+ 	struct timespec timeout;
++	bool first = true;
+ 	bool end = false;
+ 	int ret;
+ 	int i;
+@@ -777,6 +779,10 @@ static int tsync_with_guest(struct tracecmd_time_sync *tsync)
+ 			if (ret)
+ 				break;
+ 		}
++		if (first) {
++			first = false;
++			pthread_barrier_wait(&tsync->first_sync);
++		}
+ 		if (end || i < tsync->vcpu_count)
+ 			break;
+ 		if (tsync->loop_interval > 0) {
+@@ -804,12 +810,17 @@ static int tsync_with_guest(struct tracecmd_time_sync *tsync)
+ static void *tsync_host_thread(void *data)
  {
-@@ -6379,12 +6375,23 @@ static void record_trace(int argc, char **argv,
- 	finalize_record_trace(ctx);
- }
+ 	struct tracecmd_time_sync *tsync = NULL;
++	int ret;
  
-+/*
-+ * This function contains common code for the following commands:
-+ * record, start, stream, profile.
-+ */
-+static void record_trace_command(int argc, char **argv,
-+				 struct common_record_context *ctx)
-+{
-+	tracecmd_tsync_init();
-+	record_trace(argc, argv, ctx);
-+}
+ 	tsync = (struct tracecmd_time_sync *)data;
+-	tsync_with_guest(tsync);
++	ret = tsync_with_guest(tsync);
+ 	tracecmd_msg_handle_close(tsync->msg_handle);
+ 	tsync->msg_handle = NULL;
+ 
++	/* tsync with guest failed, release the barrier */
++	if (ret)
++		pthread_barrier_wait(&tsync->first_sync);
 +
- void trace_start(int argc, char **argv)
- {
- 	struct common_record_context ctx;
- 
- 	parse_record_options(argc, argv, CMD_start, &ctx);
--	record_trace(argc, argv, &ctx);
-+	record_trace_command(argc, argv, &ctx);
- 	exit(0);
+ 	pthread_exit(0);
  }
  
-@@ -6476,7 +6483,7 @@ void trace_stream(int argc, char **argv)
- 	struct common_record_context ctx;
+@@ -868,6 +879,7 @@ tracecmd_tsync_with_guest(unsigned long long trace_id, int loop_interval,
+ 		tsync->clock_str = strdup(clock);
+ 	pthread_mutex_init(&tsync->lock, NULL);
+ 	pthread_cond_init(&tsync->cond, NULL);
++	pthread_barrier_init(&tsync->first_sync, NULL, 2);
+ 	pthread_attr_init(&attrib);
+ 	pthread_attr_setdetachstate(&attrib, PTHREAD_CREATE_JOINABLE);
  
- 	parse_record_options(argc, argv, CMD_stream, &ctx);
--	record_trace(argc, argv, &ctx);
-+	record_trace_command(argc, argv, &ctx);
- 	exit(0);
- }
+@@ -878,6 +890,7 @@ tracecmd_tsync_with_guest(unsigned long long trace_id, int loop_interval,
  
-@@ -6495,7 +6502,7 @@ void trace_profile(int argc, char **argv)
- 	if (!buffer_instances)
- 		top_instance.flags |= BUFFER_FL_PROFILE;
+ 	if (!get_first_cpu(&pin_mask, &mask_size))
+ 		pthread_setaffinity_np(tsync->thread, mask_size, pin_mask);
++	pthread_barrier_wait(&tsync->first_sync);
  
--	record_trace(argc, argv, &ctx);
-+	record_trace_command(argc, argv, &ctx);
- 	do_trace_profile();
- 	exit(0);
- }
-@@ -6505,7 +6512,7 @@ void trace_record(int argc, char **argv)
- 	struct common_record_context ctx;
- 
- 	parse_record_options(argc, argv, CMD_record, &ctx);
--	record_trace(argc, argv, &ctx);
-+	record_trace_command(argc, argv, &ctx);
- 	exit(0);
- }
- 
+ 	if (pin_mask)
+ 		CPU_FREE(pin_mask);
 -- 
 2.29.2
 
