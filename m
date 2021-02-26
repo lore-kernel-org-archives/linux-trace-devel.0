@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B404FC43331
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 12:14:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E1D1C433DB
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 12:14:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 839C164F1A
+	by mail.kernel.org (Postfix) with ESMTP id C3C1C64EEE
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 12:14:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhBZMN5 (ORCPT
+        id S230209AbhBZMN7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 26 Feb 2021 07:13:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
+        Fri, 26 Feb 2021 07:13:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhBZMNv (ORCPT
+        with ESMTP id S230178AbhBZMNw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:13:51 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2A6C061756
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:11 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id l12so10674069edt.3
+        Fri, 26 Feb 2021 07:13:52 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4A9C061786
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:12 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id h10so10647096edl.6
         for <linux-trace-devel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BeUL1QLGD7gXLBL1C5c7qtl12Gu5xCBC/LrlzRdIh2E=;
-        b=p836aorRwF49RR7LmiZoBE2+EYm6MJZZfwnAK8rn3LNH7tUT5bjpGKOTDRLWH+inMw
-         57r3iFOrkGXlu3QLr9o/Sqx8HLMgBdzK0Jrxv8cZKNXxLFJok9RBnAJJ51IcXTEQjKTG
-         DB6tGOMMIP+thIzSGgcXQTwKNVKh0cfnFSye3o9VC2CppAfs13iuoqsOwR7wWUzZL5jj
-         J1nhmK7F0eUlLYyyrosp02NYeJssdMsMIDXRD4UnkypXyRTaoXJbFX6uOQOa77Y9iYGz
-         PyStcAf1B3JVILq36nx25y343dPfA0uP5/RFtsU/YPWoDgBo9LQBFWGY1ksMmKNWDeZZ
-         Xqjg==
+        bh=JC8VCuGUrXIqpOlYclXrHjQRJT3leND0pE/WdnqdN44=;
+        b=DSq9t12nFyOAhwjBS5RsqDPLRZJyFNpyzvUbAnHfeYKOH9248hGlupo3VXCog6g4Hu
+         LDcYM28HobL6llBm8QXtKhgQYGRKba83gu31JN39TmmUBR1vTAxgafBIp7eGyobM8k7K
+         jI0U4Ne+6ww3QhcnsmL71hAoch/gx8pG5RqUA4jPaVzTQ3T5JMbVczWs6DIC70w1AewG
+         h2lWhi/LM14lf2FqvwZi1dCBcLIitzhxYpjq7k/LeMbsXZsOVQKuIx4wWFvYxEVzorDH
+         lvhtX31EFLle1hBtY0uWKheQC9MznlkercBS3VibNlaKNKXnWlbAIgHoLHGQ1+5lzVGj
+         XVeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BeUL1QLGD7gXLBL1C5c7qtl12Gu5xCBC/LrlzRdIh2E=;
-        b=cShvu3k1kLvg6rsOPR6pgVFNofq7nWEqARCw6R4Zd+LLZjIH1N7WIFmxDexeP0HbNS
-         vAk04UQpjAi6l1fphEflSbY4p6KiO5rhXikYAQZVtcymmFeCvrx40zOufH26ml6qFkQ8
-         u9Exkt+0WNYwLydGM6h9x2RwlYCzl9psE6A/e4/sdVzWnx/DenYo8TwigXmoKMJH+w9K
-         5ykuzbhoKcWMgJLfP/CSA8Rff7EYaVOO3NPA5ROGRCbW3anHTuSER7++HWm3Hsi6uFbu
-         cXXKcZ0RnS9e+rReBsKpEYVRJHV5DCyZWidfB/pc6XEV6qgalL/cP8AabARZOkCJzxRJ
-         Wx4w==
-X-Gm-Message-State: AOAM5339tyxsD4SMLNWWM0mG8ErahXvfKDRj49Om979NlBdNoOyiU1rH
-        3yDMlDDEao1EZLtE+WFJIw0=
-X-Google-Smtp-Source: ABdhPJwBwP2+g8QFWEfYXDEPVt/14d/KK0GX8KrXzgUy8odnYC6rUuwooXDXEBSnEX1eQs8QgntBkQ==
-X-Received: by 2002:a05:6402:1155:: with SMTP id g21mr2919882edw.279.1614341589883;
-        Fri, 26 Feb 2021 04:13:09 -0800 (PST)
+        bh=JC8VCuGUrXIqpOlYclXrHjQRJT3leND0pE/WdnqdN44=;
+        b=ot/XANEsGykYNf6Dafpkb2gqYGO7CJRLAaDTvZoxmV5x6w2WPJguis1DnTEz9okOaP
+         ZI/iKSdsAikGDn/aPc3SxB8/EgSd4Gz/lpE0IB9prScOV4AmIRYUjhVX7CoUZWYHYIza
+         MsdlrHIwYmmFonQJv+MqhjEDrKR/bIgaBrN2GII9Uv5oKB9YC2mGfa3Y7c2AepEiI7my
+         nsGq2PPnzFV07YJg2vkO6cN/uLYL9tcCOJD7m45D+Iu7EHsRUOLq/oVaKIclObhdgG0K
+         A8x8T+h3eXpoiA2kKy19e/2BajuLBPrXYQ6WzOW8fvYd/n4hkbsa6oJ/FCqAjfev0hfQ
+         dNdw==
+X-Gm-Message-State: AOAM532bWUJk7zxyTSTVjVt4EInByaKWFP3aWK+NkVofcGMb0kCRr4ho
+        Sk5jeMMujpkDUCo7T17SL+8=
+X-Google-Smtp-Source: ABdhPJyAHBA9IHzSF58LFNgr5JRCrrkByPROtY7algC+nbQ+o0EjitoWQyO13VEArks4st6OZr2YEA==
+X-Received: by 2002:a05:6402:4391:: with SMTP id o17mr2955655edc.196.1614341590840;
+        Fri, 26 Feb 2021 04:13:10 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n2sm5266773ejl.1.2021.02.26.04.13.08
+        by smtp.gmail.com with ESMTPSA id n2sm5266773ejl.1.2021.02.26.04.13.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 04:13:09 -0800 (PST)
+        Fri, 26 Feb 2021 04:13:10 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 2/5] trace-cmd: Update long size in the tep handler right after it is read from the trace file
-Date:   Fri, 26 Feb 2021 14:13:03 +0200
-Message-Id: <20210226121306.216757-3-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 3/5] trace-cmd: Do not use trace plugins when reading partial trace files
+Date:   Fri, 26 Feb 2021 14:13:04 +0200
+Message-Id: <20210226121306.216757-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210226121306.216757-1-tz.stoyanov@gmail.com>
 References: <20210226121306.216757-1-tz.stoyanov@gmail.com>
@@ -73,38 +73,28 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The tracecmd_read_headers() API reads available headers from a trace
-file. When a header is successfully read, the information gathered from it
-should be applied in the internal structures, before continuing with the
-next header. This will hek not to loose the information, in case not all
-of the headers are in the file. This is useful for reading partial trace
-file, used in trace-cmd listener and agent logic.
+The tracecmd_get_output_handle_fd() is used to open an output handler
+to partially written trace files, in most cases with no tracing data
+yet. Loading trace plugins when opening such files is useless, as
+we are interested only on the file headers, not on the trace data.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ lib/trace-cmd/trace-output.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 76bcb215..2004114d 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -782,6 +782,7 @@ int tracecmd_read_headers(struct tracecmd_input *handle)
- 	ret = read_header_files(handle);
- 	if (ret < 0)
- 		return -1;
-+	tep_set_long_size(handle->pevent, handle->long_size);
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index b087f5fa..e1571814 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -1422,7 +1422,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 		return NULL;
  
- 	ret = read_ftrace_files(handle, NULL);
- 	if (ret < 0)
-@@ -808,8 +809,6 @@ int tracecmd_read_headers(struct tracecmd_input *handle)
- 	if (read_options_type(handle) < 0)
- 		return -1;
- 
--	tep_set_long_size(handle->pevent, handle->long_size);
--
- 	return 0;
- }
+ 	/* get a input handle from this */
+-	ihandle = tracecmd_alloc_fd(fd2, 0);
++	ihandle = tracecmd_alloc_fd(fd2, TRACECMD_FL_LOAD_NO_PLUGINS);
+ 	if (!ihandle)
+ 		return NULL;
  
 -- 
 2.29.2
