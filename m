@@ -2,247 +2,103 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0EEEC433E0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 05:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C38ECC43381
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 12:14:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9036364DE8
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 05:03:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B38A64F0D
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 12:14:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbhBZFDN (ORCPT
+        id S229545AbhBZMNy (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 26 Feb 2021 00:03:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229745AbhBZFDN (ORCPT
+        Fri, 26 Feb 2021 07:13:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhBZMNt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 26 Feb 2021 00:03:13 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 742CF64DE8;
-        Fri, 26 Feb 2021 05:02:31 +0000 (UTC)
-Date:   Fri, 26 Feb 2021 00:02:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] trace-cmd: Add validation for reading and
- writing trace.dat files
-Message-ID: <20210226000229.6df090a0@oasis.local.home>
-In-Reply-To: <CAPpZLN4y_zvPJ0qDzAVqBhNo9aOPLzubN6BXtxKdSNgZys8Uxw@mail.gmail.com>
-References: <20210219053156.2235035-1-tz.stoyanov@gmail.com>
-        <20210219053156.2235035-2-tz.stoyanov@gmail.com>
-        <20210224181814.3de4e4ca@gandalf.local.home>
-        <CAPpZLN4y_zvPJ0qDzAVqBhNo9aOPLzubN6BXtxKdSNgZys8Uxw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 26 Feb 2021 07:13:49 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD6AC061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:09 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id d13so5651601edp.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oYL3YpPMLESPBoIMza67CnCifj6Kr4kFJ/lhVPVJL2w=;
+        b=f1xGdHgJVY2mYyBoxg/BhF/tjbIRtIsWNh8FBm9J30knwMT+nLk7V+1PX9GgUuhxJf
+         pgsJyZGl/7XMdm9Jf9Y47cMxFLFB1coFu9zTFFq+tUgoO8C9BZfi1dkR3+3u9Fq6iiiA
+         7et0ZdSd/Rrwk1/Pv0WHUcLb7/jQFtHex3biWuWdtx7mY3hz8P1rybvrXrJ4NrcfZ13W
+         smH4uCMoMItnm29nXavqrMhi2K3QkwSzyqya3zGMPPN26SVcKZXjpz3X58JnEXNGNNre
+         2T7lwyBErOn+xWYz6pyG1njJtwxxxmQFFyjqlnBT3w5t9LPLPgvltrQJ4z4MnVjDM6PP
+         My5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oYL3YpPMLESPBoIMza67CnCifj6Kr4kFJ/lhVPVJL2w=;
+        b=YgVLcpMalJFO89WVVgdXhf2g1Jewj18WWQzGfLU+I83K+Nc5amzSOy4l7+tbm3jCGU
+         2smzXBonWYrUyCOEwg+914emGzi2lfpsyMgoOkU6DRg4n9+my5xjYxpBa9jHRySXP317
+         HFXXSgB7198kNOyc8jaMZnmmlc+E5MTmRlOEnB0uOd1JsjoK597xoVzmgY5SqF4zSvtI
+         7BHQNiY2jqVYqSwQEbLEHUGFAqhfmY+ZgxXxF6I8AQrbxTOLbY/F87xAJ36gpiva2jdg
+         eWtC+4NyUfiLxQRUAd86RV4L7OaIHyLLK/oFbCYadQeSZVDsNJ+SOzRHwVRfaKO/JP+K
+         X21g==
+X-Gm-Message-State: AOAM532SIL+bWwcifvxf55ztr26PxhCjVPlOcRnAEa5LQAizSvSYHxHH
+        MyRkg/5q6xYekNVDRNbvtMeUGK5TNaJY1Q==
+X-Google-Smtp-Source: ABdhPJzq6wFqjlHvNKscgfdbInESIUKyO79Pt2co7TRtN/XeR4Mv+HDtlsKaDv8h+wyMYFTuX1yi5A==
+X-Received: by 2002:aa7:cf02:: with SMTP id a2mr1450965edy.59.1614341587902;
+        Fri, 26 Feb 2021 04:13:07 -0800 (PST)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id n2sm5266773ejl.1.2021.02.26.04.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 04:13:07 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v4 0/5] Fix listener and add trace file validation
+Date:   Fri, 26 Feb 2021 14:13:01 +0200
+Message-Id: <20210226121306.216757-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 26 Feb 2021 06:02:17 +0200
-Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
+Added checks for trace file consistency when reading and writing it.
+Fixed broken trace-cmd listener.
 
-> Hi Steven,
-> 
-> On Thu, Feb 25, 2021 at 1:18 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Fri, 19 Feb 2021 07:31:55 +0200
-> > "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-> >  
-> > > diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-> > > index eddfd9eb..fc968cc9 100644
-> > > --- a/lib/trace-cmd/include/private/trace-cmd-private.h
-> > > +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-> > > @@ -95,6 +95,20 @@ static inline int tracecmd_host_bigendian(void)
-> > >
-> > >  /* --- Opening and Reading the trace.dat file --- */
-> > >
-> > > +enum  {
-> > > +     TRACECMD_FILE_INIT,
-> > > +     TRACECMD_FILE_HEADERS,
-> > > +     TRACECMD_FILE_FTRACE_EVENTS,
-> > > +     TRACECMD_FILE_ALL_EVENTS,
-> > > +     TRACECMD_FILE_KALLSYMS,
-> > > +     TRACECMD_FILE_PRINTK,
-> > > +     TRACECMD_FILE_CMD_LINES,
-> > > +     TRACECMD_FILE_CPU_COUNT,
-> > > +     TRACECMD_FILE_OPTIONS,
-> > > +     TRACECMD_FILE_CPU_LATENCY,
-> > > +     TRACECMD_FILE_CPU_FLYRECORD,
-> > > +};
-> > > +
-> > >  enum {
-> > >       TRACECMD_OPTION_DONE,
-> > >       TRACECMD_OPTION_DATE,
-> > > @@ -115,9 +129,7 @@ enum {
-> > >  enum {
-> > >       TRACECMD_FL_IGNORE_DATE         = (1 << 0),
-> > >       TRACECMD_FL_BUFFER_INSTANCE     = (1 << 1),
-> > > -     TRACECMD_FL_LATENCY             = (1 << 2),
-> > > -     TRACECMD_FL_IN_USECS            = (1 << 3),
-> > > -     TRACECMD_FL_FLYRECORD           = (1 << 4),
-> > > +     TRACECMD_FL_IN_USECS            = (1 << 2),
-> > >  };
-> > >
-> > >  struct tracecmd_ftrace {
-> > > @@ -150,6 +162,7 @@ int tracecmd_copy_headers(struct tracecmd_input *handle, int fd);
-> > >  void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
-> > >  void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
-> > >  unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
-> > > +unsigned long tracecmd_get_file_state(struct tracecmd_input *handle);
-> > >  unsigned long long tracecmd_get_tsync_peer(struct tracecmd_input *handle);
-> > >  int tracecmd_enable_tsync(struct tracecmd_input *handle, bool enable);
-> > >
-> > > @@ -273,6 +286,7 @@ struct tracecmd_option *tracecmd_add_buffer_option(struct tracecmd_output *handl
-> > >                                                  const char *name, int cpus);
-> > >
-> > >  int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus);
-> > > +int tracecmd_write_cmdlines(struct tracecmd_output *handle);
-> > >  int tracecmd_write_options(struct tracecmd_output *handle);
-> > >  int tracecmd_append_options(struct tracecmd_output *handle);
-> > >  int tracecmd_update_option(struct tracecmd_output *handle,
-> > > @@ -500,7 +514,4 @@ void *tracecmd_record_page(struct tracecmd_input *handle,
-> > >  void *tracecmd_record_offset(struct tracecmd_input *handle,
-> > >                            struct tep_record *record);
-> > >
-> > > -int save_tracing_file_data(struct tracecmd_output *handle,
-> > > -                        const char *filename);  
-> >
-> > This turning into a static function looks unrelated to this patch, and
-> > should be a separate clean up patch.  
-> 
-> I think it is logically from this patch. The only usage of this function
-> outside of its file is for fixing the forgotten "saved_cmdlines" in
-> the trace-cmd agent. This patches introduces a new API for that,
-> tracecmd_write_cmdlines(), that should be used for saving the
-> cmdlines as it has additional validations. I replaced the old way
-> of saving the cmdlines with the new API in the whole code, which
-> makes no sense to have save_tracing_file_data() non static.
-
-It can be logically from this patch, but read the change log and look
-at the change. Remember, commits should do "one thing". If I do a git
-blame, and come up with this patch for this update, would the change
-log make sense to me? Probably not. If anything, the creation of the
-"tracecmd_write_cmdlines()" looks like it should be a separate patch
-(before this one), and include the static function change.
-
-> > > @@ -782,34 +788,40 @@ int tracecmd_read_headers(struct tracecmd_input *handle)
-> > >       ret = read_header_files(handle);
-> > >       if (ret < 0)
-> > >               return -1;
-> > > +     handle->file_state = TRACECMD_FILE_HEADERS;
-> > > +     tep_set_long_size(handle->pevent, handle->long_size);  
-> >
-> > The moving of setting long size also looks to be unrelated to (or perhaps
-> > it's just a dependency of) this patch. That change should also be in a
-> > separate patch.  
-> 
-> It is related. This patch changes the behaviour of reading and
-
-Related is fine, but is it part of the "do one thing" of a commit?
-
-It looks like it can easily be broken out as its own stand alone patch,
-and it changes the logic outside of what the change log is stating.
-
-> parsing the trace.dat file headers in case of partially written file,
-> the use case of listener and agent.  As the long size information
-> is already available at that moment, when the
-> TRACECMD_FILE_HEADERS state is reached, it should be applied.
-> Otherwise it could be lost, in case some of the headers after that are
-> still not present in the file - which may be a valid and expected situation.
-> When the tracecmd_get_output_handle_fd() is used to read a partially
-> written file, there is one important change - tracecmd_read_headers()
-> is called, to get the state of that partial file. Without the above
-> "set long size"
-> change, the tep hanlder used in tracecmd_get_output_handle_fd() could be
-> with invalid long size, even though the long size is in the file.
-
-I'm saying, make this change a separate patch before this patch, and
-state why it is being made. Again, I read the change log, and I don't
-associate what is in there with this change.
+v4 changes:
+ - Split the changes in more patches.
+v3 changes:
+ - Fixed a comment to be in the Linux style.
+ - Moved the optimization for disabling trace plugins in its own patch.
+v2 changes:
+ - Converted file states from bitmask to enum
+ - Added return value of collect_metadata_from_client() to track any errors
 
 
+Tzvetomir Stoyanov (VMware) (5):
+  trace-cmd Add API to save command lines in trace file
+  trace-cmd: Update long size in the tep handler right after it is read
+    from the trace file
+  trace-cmd: Do not use trace plugins when reading partial trace files
+  trace-cmd: Add validation for reading and writing trace.dat files
+  trace-cmd: Fix broken listener and add error checks
 
-> > > @@ -1048,10 +1097,17 @@ int tracecmd_write_options(struct tracecmd_output *handle)
-> > >       unsigned short option;
-> > >       unsigned short endian2;
-> > >       unsigned int endian4;
-> > > +     int ret;
-> > >
-> > >       /* If already written, ignore */
-> > > -     if (handle->options_written)
-> > > +     if (handle->file_state == TRACECMD_FILE_OPTIONS)
-> > >               return 0;
-> > > +     ret = check_out_state(handle, TRACECMD_FILE_OPTIONS);
-> > > +     if (ret < 0) {  
-> >
-> > I wonder if we should keep the old logic, which using states is the
-> > equivalent of:
-> >
-> >         if (handle->file_state >= TRACECMD_FILE_OPTIONS)
-> >                 return 0;
-> >
-> > And not even bother with the check, as the old logic would not error nor
-> > warn if this was called in a later state after options.  
-> 
-> We should not use the old logic here. This patch changes the way partially
-> written trace.dat files are processed. Handlers to such files are created by
-> tracecmd_get_output_handle_fd(), which now tracks the state of the partial
-> file - what headers are already written. In the old logic, options_written is
-> always false for partial files, even though the options could already be in
-> the file. That just worked because tracecmd_write_options() is never called
-> in such cases, where options are already in the file. But with the new logic,
-> the state of the partial file reflects its content, this should be
-> taken into account.
+ .../include/private/trace-cmd-private.h       |  23 ++-
+ lib/trace-cmd/trace-input.c                   |  27 +++-
+ lib/trace-cmd/trace-output.c                  | 139 +++++++++++++++---
+ tracecmd/trace-listen.c                       |  30 ++--
+ tracecmd/trace-record.c                       |  33 ++++-
+ tracecmd/trace-split.c                        |   2 +-
+ 6 files changed, 202 insertions(+), 52 deletions(-)
 
-Hmm, have you tested all the trace-cmd commands (like split, restore,
-etc) to make sure they still work? There might be some dependencies on
-these, and those commands are critical, but rarely tested.
+-- 
+2.29.2
 
-> > > index efd96d27..9396042d 100644
-> > > --- a/tracecmd/trace-record.c
-> > > +++ b/tracecmd/trace-record.c
-> > > @@ -3770,7 +3770,7 @@ static void setup_agent(struct buffer_instance *instance,
-> > >       network_handle = tracecmd_create_init_fd_msg(instance->msg_handle,
-> > >                                                    listed_events);
-> > >       add_options(network_handle, ctx);
-> > > -     save_tracing_file_data(network_handle, "saved_cmdlines");
-> > > +     tracecmd_write_cmdlines(network_handle);  
-> >
-> > Yeah, I think the above change should be a separate patch.  
-> 
-> I think it should be part of this patch, as using the new
-> tracecmd_write_cmdlines() API is an important part of
-> the file validation.
-
-What you just said, is "this change is required for the file
-validation", which is correct, but I don't see it as part of the
-validation code. It's not validating anything. It's a needed change for
-the validation, but not part of the validation. See what I'm trying to
-say.
-
-Every change should be associated with what is described in the change
-log. If it is something that is needed to accomplish what is in the
-change log, then it should be a separate patch ahead of this change.
-
-I see three things being done in this patch. All to achieve a common
-purpose, but still three changes.
-
-1) The tracecmd_write_cmdlines() update
-2) The moving of the tep_set_long_size()
-3) The validation logic.
-
-The three together accomplish the goal, but they are three different
-steps that can be made.
-
-In the kernel you will be asked to separate things like this out as
-well.
-
--- Steve
