@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E1D1C433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D95BC43381
 	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 12:14:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C3C1C64EEE
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 12:14:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 46F6364EEE
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 26 Feb 2021 12:14:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhBZMN7 (ORCPT
+        id S230212AbhBZMOB (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 26 Feb 2021 07:13:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
+        Fri, 26 Feb 2021 07:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhBZMNw (ORCPT
+        with ESMTP id S230147AbhBZMNx (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:13:52 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4A9C061786
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:12 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id h10so10647096edl.6
-        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:11 -0800 (PST)
+        Fri, 26 Feb 2021 07:13:53 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29734C061788
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:13 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id n20so14458539ejb.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JC8VCuGUrXIqpOlYclXrHjQRJT3leND0pE/WdnqdN44=;
-        b=DSq9t12nFyOAhwjBS5RsqDPLRZJyFNpyzvUbAnHfeYKOH9248hGlupo3VXCog6g4Hu
-         LDcYM28HobL6llBm8QXtKhgQYGRKba83gu31JN39TmmUBR1vTAxgafBIp7eGyobM8k7K
-         jI0U4Ne+6ww3QhcnsmL71hAoch/gx8pG5RqUA4jPaVzTQ3T5JMbVczWs6DIC70w1AewG
-         h2lWhi/LM14lf2FqvwZi1dCBcLIitzhxYpjq7k/LeMbsXZsOVQKuIx4wWFvYxEVzorDH
-         lvhtX31EFLle1hBtY0uWKheQC9MznlkercBS3VibNlaKNKXnWlbAIgHoLHGQ1+5lzVGj
-         XVeA==
+        bh=VvG9eB0X+JFSp/c4INRg3sH+82wMNRrgzM7EWb1/R2I=;
+        b=PWCHnrRgRJg3ckzgJeOd9r4N8Z8yOHZJa/SQbbo2jDa82tnz3st+ebsQf0Yz3cxW8w
+         bNARTJ3eR0eZy0tR239SAfE+i71tsBTeWAo78Lb+imCHup6IC9kDZQcn1lCUU28uJt8z
+         Ef1M5pshPAxjLrIhgDLDqG9N3S0oBPsq/Pb54TV4eLR6QIaMnYergJeaMRoRcKGqNAyu
+         c/ZqVNgHoRy7pdvyTSwP08GYHQ52q+KBWiP9RP52cNitK8j9SddcgaGF9kRBeCHwJarL
+         IavbejP0ibFqQmc/ZTvSjWqA6fNZZHXLkA38YDjS4liR17D7dkN2EDtoOHbfRhWP/2wv
+         C1tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JC8VCuGUrXIqpOlYclXrHjQRJT3leND0pE/WdnqdN44=;
-        b=ot/XANEsGykYNf6Dafpkb2gqYGO7CJRLAaDTvZoxmV5x6w2WPJguis1DnTEz9okOaP
-         ZI/iKSdsAikGDn/aPc3SxB8/EgSd4Gz/lpE0IB9prScOV4AmIRYUjhVX7CoUZWYHYIza
-         MsdlrHIwYmmFonQJv+MqhjEDrKR/bIgaBrN2GII9Uv5oKB9YC2mGfa3Y7c2AepEiI7my
-         nsGq2PPnzFV07YJg2vkO6cN/uLYL9tcCOJD7m45D+Iu7EHsRUOLq/oVaKIclObhdgG0K
-         A8x8T+h3eXpoiA2kKy19e/2BajuLBPrXYQ6WzOW8fvYd/n4hkbsa6oJ/FCqAjfev0hfQ
-         dNdw==
-X-Gm-Message-State: AOAM532bWUJk7zxyTSTVjVt4EInByaKWFP3aWK+NkVofcGMb0kCRr4ho
-        Sk5jeMMujpkDUCo7T17SL+8=
-X-Google-Smtp-Source: ABdhPJyAHBA9IHzSF58LFNgr5JRCrrkByPROtY7algC+nbQ+o0EjitoWQyO13VEArks4st6OZr2YEA==
-X-Received: by 2002:a05:6402:4391:: with SMTP id o17mr2955655edc.196.1614341590840;
-        Fri, 26 Feb 2021 04:13:10 -0800 (PST)
+        bh=VvG9eB0X+JFSp/c4INRg3sH+82wMNRrgzM7EWb1/R2I=;
+        b=DIIObj70kSrqFt/IpLohZYNKrnTOjumA4Zp2j+z/2soJP2h3dXHT37C5GUSevuQW7r
+         A6FjZm2BWE2PaTx28RiU9qK+3OfZZo0uyiSId5cc6SufslK/fhr0e/Zmhp66Xpbd/cCY
+         WXFWYbpmSVyEIBpwbLzNzEqQi9RglhKqHJHeMds7Tggca5TdN8dfit+KxRBKpS0w3BCh
+         ICOYtPVbOPjPI6JJtkMaef7KIaVL87y7J0IjF4L5h2WIZLpIEEV9eFXW7LddG/VdK1oI
+         OWdNIRvXm7GtjpyTAc6sYmViwNazL8w8fM3dfM52cMcRpUeQYuXuEM+zBTm/E3cgWP1N
+         KSxQ==
+X-Gm-Message-State: AOAM532ANLgsligzIDE45q8jBecirf23jniLdUdDK6yJttWGaQaseRmR
+        ADeZJfSEoqRLXvffUU7dV7s=
+X-Google-Smtp-Source: ABdhPJxAPuc8hhKmHeCzu064pIzmFUmg0GOjU73yFTCJOPQ+cRiNTFPlrxm2H5yeLuplCgxZy4WXQQ==
+X-Received: by 2002:a17:906:6096:: with SMTP id t22mr3122512ejj.34.1614341591850;
+        Fri, 26 Feb 2021 04:13:11 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n2sm5266773ejl.1.2021.02.26.04.13.09
+        by smtp.gmail.com with ESMTPSA id n2sm5266773ejl.1.2021.02.26.04.13.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 04:13:10 -0800 (PST)
+        Fri, 26 Feb 2021 04:13:11 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 3/5] trace-cmd: Do not use trace plugins when reading partial trace files
-Date:   Fri, 26 Feb 2021 14:13:04 +0200
-Message-Id: <20210226121306.216757-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 4/5] trace-cmd: Add validation for reading and writing trace.dat files
+Date:   Fri, 26 Feb 2021 14:13:05 +0200
+Message-Id: <20210226121306.216757-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210226121306.216757-1-tz.stoyanov@gmail.com>
 References: <20210226121306.216757-1-tz.stoyanov@gmail.com>
@@ -73,29 +73,469 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The tracecmd_get_output_handle_fd() is used to open an output handler
-to partially written trace files, in most cases with no tracing data
-yet. Loading trace plugins when opening such files is useless, as
-we are interested only on the file headers, not on the trace data.
+trace.dat files have multiple sections, which must be in strict order. A
+new logic is implemented, which checks the order of all mandatory
+sections when reading and writing trace files. This validation is
+useful when the file is constructed in different machines -
+host / guest or listener tracing. In those use cases, part of the file
+is generated in the client machine and is transferred to the server as
+a sequence of bytes. The server should validate the format of the received
+portion of the file and the order of the sections in it.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-output.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../include/private/trace-cmd-private.h       |  19 ++-
+ lib/trace-cmd/trace-input.c                   |  24 +++-
+ lib/trace-cmd/trace-output.c                  | 126 +++++++++++++++---
+ tracecmd/trace-split.c                        |   2 +-
+ 4 files changed, 144 insertions(+), 27 deletions(-)
 
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index f0f06491..fc968cc9 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -95,6 +95,20 @@ static inline int tracecmd_host_bigendian(void)
+ 
+ /* --- Opening and Reading the trace.dat file --- */
+ 
++enum  {
++	TRACECMD_FILE_INIT,
++	TRACECMD_FILE_HEADERS,
++	TRACECMD_FILE_FTRACE_EVENTS,
++	TRACECMD_FILE_ALL_EVENTS,
++	TRACECMD_FILE_KALLSYMS,
++	TRACECMD_FILE_PRINTK,
++	TRACECMD_FILE_CMD_LINES,
++	TRACECMD_FILE_CPU_COUNT,
++	TRACECMD_FILE_OPTIONS,
++	TRACECMD_FILE_CPU_LATENCY,
++	TRACECMD_FILE_CPU_FLYRECORD,
++};
++
+ enum {
+ 	TRACECMD_OPTION_DONE,
+ 	TRACECMD_OPTION_DATE,
+@@ -115,9 +129,7 @@ enum {
+ enum {
+ 	TRACECMD_FL_IGNORE_DATE		= (1 << 0),
+ 	TRACECMD_FL_BUFFER_INSTANCE	= (1 << 1),
+-	TRACECMD_FL_LATENCY		= (1 << 2),
+-	TRACECMD_FL_IN_USECS		= (1 << 3),
+-	TRACECMD_FL_FLYRECORD		= (1 << 4),
++	TRACECMD_FL_IN_USECS		= (1 << 2),
+ };
+ 
+ struct tracecmd_ftrace {
+@@ -150,6 +162,7 @@ int tracecmd_copy_headers(struct tracecmd_input *handle, int fd);
+ void tracecmd_set_flag(struct tracecmd_input *handle, int flag);
+ void tracecmd_clear_flag(struct tracecmd_input *handle, int flag);
+ unsigned long tracecmd_get_flags(struct tracecmd_input *handle);
++unsigned long tracecmd_get_file_state(struct tracecmd_input *handle);
+ unsigned long long tracecmd_get_tsync_peer(struct tracecmd_input *handle);
+ int tracecmd_enable_tsync(struct tracecmd_input *handle, bool enable);
+ 
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 2004114d..9ef7b9f1 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -102,6 +102,7 @@ struct host_trace_info {
+ 
+ struct tracecmd_input {
+ 	struct tep_handle	*pevent;
++	unsigned long		file_state;
+ 	struct tep_plugin_list	*plugin_list;
+ 	struct tracecmd_input	*parent;
+ 	unsigned long		flags;
+@@ -161,6 +162,11 @@ unsigned long tracecmd_get_flags(struct tracecmd_input *handle)
+ 	return handle->flags;
+ }
+ 
++unsigned long tracecmd_get_file_state(struct tracecmd_input *handle)
++{
++	return handle->file_state;
++}
++
+ #if DEBUG_RECORD
+ static void remove_record(struct page *page, struct tep_record *record)
+ {
+@@ -782,29 +788,36 @@ int tracecmd_read_headers(struct tracecmd_input *handle)
+ 	ret = read_header_files(handle);
+ 	if (ret < 0)
+ 		return -1;
++	handle->file_state = TRACECMD_FILE_HEADERS;
+ 	tep_set_long_size(handle->pevent, handle->long_size);
+ 
+ 	ret = read_ftrace_files(handle, NULL);
+ 	if (ret < 0)
+ 		return -1;
++	handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
+ 
+ 	ret = read_event_files(handle, NULL);
+ 	if (ret < 0)
+ 		return -1;
++	handle->file_state = TRACECMD_FILE_ALL_EVENTS;
+ 
+ 	ret = read_proc_kallsyms(handle);
+ 	if (ret < 0)
+ 		return -1;
++	handle->file_state = TRACECMD_FILE_KALLSYMS;
+ 
+ 	ret = read_ftrace_printk(handle);
+ 	if (ret < 0)
+ 		return -1;
++	handle->file_state = TRACECMD_FILE_PRINTK;
+ 
+ 	if (read_and_parse_cmdlines(handle) < 0)
+ 		return -1;
++	handle->file_state = TRACECMD_FILE_CMD_LINES;
+ 
+ 	if (read_cpus(handle) < 0)
+ 		return -1;
++	handle->file_state = TRACECMD_FILE_CPU_COUNT;
+ 
+ 	if (read_options_type(handle) < 0)
+ 		return -1;
+@@ -2656,6 +2669,7 @@ static int read_options_type(struct tracecmd_input *handle)
+ 	if (strncmp(buf, "options", 7) == 0) {
+ 		if (handle_options(handle) < 0)
+ 			return -1;
++		handle->file_state = TRACECMD_FILE_OPTIONS;
+ 		if (do_read_check(handle, buf, 10))
+ 			return -1;
+ 	}
+@@ -2664,9 +2678,9 @@ static int read_options_type(struct tracecmd_input *handle)
+ 	 * Check if this is a latency report or flyrecord.
+ 	 */
+ 	if (strncmp(buf, "latency", 7) == 0)
+-		handle->flags |= TRACECMD_FL_LATENCY;
++		handle->file_state = TRACECMD_FILE_CPU_LATENCY;
+ 	else if (strncmp(buf, "flyrecord", 9) == 0)
+-		handle->flags |= TRACECMD_FL_FLYRECORD;
++		handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
+ 	else
+ 		return -1;
+ 
+@@ -2687,11 +2701,11 @@ static int read_cpu_data(struct tracecmd_input *handle)
+ 	/*
+ 	 * Check if this is a latency report or not.
+ 	 */
+-	if (handle->flags & TRACECMD_FL_LATENCY)
++	if (handle->file_state == TRACECMD_FILE_CPU_LATENCY)
+ 		return 1;
+ 
+ 	/* We expect this to be flyrecord */
+-	if (!(handle->flags & TRACECMD_FL_FLYRECORD))
++	if (handle->file_state != TRACECMD_FILE_CPU_FLYRECORD)
+ 		return -1;
+ 
+ 	cpus = handle->cpus;
+@@ -3152,6 +3166,8 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 	handle->header_files_start =
+ 		lseek64(handle->fd, handle->header_files_start, SEEK_SET);
+ 
++	handle->file_state = TRACECMD_FILE_INIT;
++
+ 	return handle;
+ 
+  failed_read:
 diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index b087f5fa..e1571814 100644
+index e1571814..c8f8a106 100644
 --- a/lib/trace-cmd/trace-output.c
 +++ b/lib/trace-cmd/trace-output.c
-@@ -1422,7 +1422,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+@@ -54,10 +54,10 @@ struct tracecmd_output {
+ 	int			cpus;
+ 	struct tep_handle	*pevent;
+ 	char			*tracing_dir;
+-	int			options_written;
+ 	int			nr_options;
+ 	bool			quiet;
+-	struct list_head 	options;
++	unsigned long		file_state;
++	struct list_head	options;
+ 	struct tracecmd_msg_handle *msg_handle;
+ };
+ 
+@@ -836,6 +836,33 @@ out_free:
+ 	return ret;
+ }
+ 
++static int check_out_state(struct tracecmd_output *handle, int new_state)
++{
++	if (!handle)
++		return -1;
++
++	switch (new_state) {
++	case TRACECMD_FILE_HEADERS:
++	case TRACECMD_FILE_FTRACE_EVENTS:
++	case TRACECMD_FILE_ALL_EVENTS:
++	case TRACECMD_FILE_KALLSYMS:
++	case TRACECMD_FILE_PRINTK:
++	case TRACECMD_FILE_CMD_LINES:
++	case TRACECMD_FILE_CPU_COUNT:
++	case TRACECMD_FILE_OPTIONS:
++		if (handle->file_state == (new_state - 1))
++			return 0;
++		break;
++	case TRACECMD_FILE_CPU_LATENCY:
++	case TRACECMD_FILE_CPU_FLYRECORD:
++		if (handle->file_state == TRACECMD_FILE_OPTIONS)
++			return 0;
++		break;
++	}
++
++	return -1;
++}
++
+ static struct tracecmd_output *
+ create_file_fd(int fd, struct tracecmd_input *ihandle,
+ 	       const char *tracing_dir,
+@@ -905,20 +932,30 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
+ 	endian4 = convert_endian_4(handle, handle->page_size);
+ 	if (do_write_check(handle, &endian4, 4))
+ 		goto out_free;
++	handle->file_state = TRACECMD_FILE_INIT;
+ 
+ 	if (ihandle)
+ 		return handle;
+ 
+ 	if (read_header_files(handle))
+ 		goto out_free;
++	handle->file_state = TRACECMD_FILE_HEADERS;
++
+ 	if (read_ftrace_files(handle))
+ 		goto out_free;
++	handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
++
+ 	if (read_event_files(handle, list))
+ 		goto out_free;
++	handle->file_state = TRACECMD_FILE_ALL_EVENTS;
++
+ 	if (read_proc_kallsyms(handle, kallsyms))
+ 		goto out_free;
++	handle->file_state = TRACECMD_FILE_KALLSYMS;
++
+ 	if (read_ftrace_printk(handle))
+ 		goto out_free;
++	handle->file_state = TRACECMD_FILE_PRINTK;
+ 
+ 	return handle;
+ 
+@@ -973,10 +1010,10 @@ tracecmd_add_option_v(struct tracecmd_output *handle,
+ 	int i, size = 0;
+ 
+ 	/*
+-	 * We can only add options before they were written.
++	 * We can only add options before tracing data were written.
+ 	 * This may change in the future.
+ 	 */
+-	if (handle->options_written)
++	if (handle->file_state > TRACECMD_FILE_OPTIONS)
  		return NULL;
  
- 	/* get a input handle from this */
--	ihandle = tracecmd_alloc_fd(fd2, 0);
-+	ihandle = tracecmd_alloc_fd(fd2, TRACECMD_FL_LOAD_NO_PLUGINS);
+ 	for (i = 0; i < count; i++)
+@@ -1038,8 +1075,20 @@ tracecmd_add_option(struct tracecmd_output *handle,
+ 
+ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
+ {
++	int ret;
++
++	ret = check_out_state(handle, TRACECMD_FILE_CPU_COUNT);
++	if (ret < 0) {
++		warning("Cannot write CPU count into the file, unexpected state 0x%X",
++			handle->file_state);
++		return ret;
++	}
+ 	cpus = convert_endian_4(handle, cpus);
+-	return do_write_check(handle, &cpus, 4);
++	ret = do_write_check(handle, &cpus, 4);
++	if (ret < 0)
++		return ret;
++	handle->file_state = TRACECMD_FILE_CPU_COUNT;
++	return 0;
+ }
+ 
+ int tracecmd_write_options(struct tracecmd_output *handle)
+@@ -1048,10 +1097,17 @@ int tracecmd_write_options(struct tracecmd_output *handle)
+ 	unsigned short option;
+ 	unsigned short endian2;
+ 	unsigned int endian4;
++	int ret;
+ 
+ 	/* If already written, ignore */
+-	if (handle->options_written)
++	if (handle->file_state == TRACECMD_FILE_OPTIONS)
+ 		return 0;
++	ret = check_out_state(handle, TRACECMD_FILE_OPTIONS);
++	if (ret < 0) {
++		warning("Cannot write options into the file, unexpected state 0x%X",
++			handle->file_state);
++		return ret;
++	}
+ 
+ 	if (do_write_check(handle, "options  ", 10))
+ 		return -1;
+@@ -1078,7 +1134,7 @@ int tracecmd_write_options(struct tracecmd_output *handle)
+ 	if (do_write_check(handle, &option, 2))
+ 		return -1;
+ 
+-	handle->options_written = 1;
++	handle->file_state = TRACECMD_FILE_OPTIONS;
+ 
+ 	return 0;
+ }
+@@ -1092,9 +1148,12 @@ int tracecmd_append_options(struct tracecmd_output *handle)
+ 	off_t offset;
+ 	int r;
+ 
+-	/* If already written, ignore */
+-	if (handle->options_written)
+-		return 0;
++	/*
++	 * We can append only if options are already written and tracing data
++	 * is not yet written
++	 */
++	if (handle->file_state != TRACECMD_FILE_OPTIONS)
++		return -1;
+ 
+ 	if (lseek64(handle->fd, 0, SEEK_END) == (off_t)-1)
+ 		return -1;
+@@ -1128,8 +1187,6 @@ int tracecmd_append_options(struct tracecmd_output *handle)
+ 	if (do_write_check(handle, &option, 2))
+ 		return -1;
+ 
+-	handle->options_written = 1;
+-
+ 	return 0;
+ }
+ 
+@@ -1145,7 +1202,7 @@ int tracecmd_update_option(struct tracecmd_output *handle,
+ 		return -1;
+ 	}
+ 
+-	if (!handle->options_written) {
++	if (handle->file_state < TRACECMD_FILE_OPTIONS) {
+ 		/* Hasn't been written yet. Just update current pointer */
+ 		option->size = size;
+ 		memcpy(option->data, data, size);
+@@ -1205,13 +1262,26 @@ tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name,
+ 
+ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
+ {
+-	return save_tracing_file_data(handle, "saved_cmdlines");
++	int ret;
++
++	ret = check_out_state(handle, TRACECMD_FILE_CMD_LINES);
++	if (ret < 0) {
++		warning("Cannot write command lines into the file, unexpected state 0x%X",
++			handle->file_state);
++		return ret;
++	}
++	ret = save_tracing_file_data(handle, "saved_cmdlines");
++	if (ret < 0)
++		return ret;
++	handle->file_state = TRACECMD_FILE_CMD_LINES;
++	return 0;
+ }
+ 
+ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, int cpus)
+ {
+ 	struct tracecmd_output *handle;
+ 	char *path;
++	int ret;
+ 
+ 	handle = create_file(output_file, NULL, NULL, NULL, &all_event_list);
+ 	if (!handle)
+@@ -1229,6 +1299,13 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 	if (tracecmd_write_options(handle) < 0)
+ 		goto out_free;
+ 
++	ret = check_out_state(handle, TRACECMD_FILE_CPU_LATENCY);
++	if (ret < 0) {
++		warning("Cannot write latency data into the file, unexpected state 0x%X",
++			handle->file_state);
++		goto out_free;
++	}
++
+ 	if (do_write_check(handle, "latency  ", 10))
+ 		goto out_free;
+ 
+@@ -1240,6 +1317,8 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 
+ 	put_tracing_file(path);
+ 
++	handle->file_state = TRACECMD_FILE_CPU_LATENCY;
++
+ 	return handle;
+ 
+ out_free:
+@@ -1260,6 +1339,13 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 	int ret;
+ 	int i;
+ 
++	ret = check_out_state(handle, TRACECMD_FILE_CPU_FLYRECORD);
++	if (ret < 0) {
++		warning("Cannot write trace data into the file, unexpected state 0x%X",
++			handle->file_state);
++		goto out_free;
++	}
++
+ 	if (do_write_check(handle, "flyrecord", 10))
+ 		goto out_free;
+ 
+@@ -1345,6 +1431,8 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 	free(offsets);
+ 	free(sizes);
+ 
++	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
++
+ 	return 0;
+ 
+  out_free:
+@@ -1409,7 +1497,6 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ {
+ 	struct tracecmd_output *handle = NULL;
+ 	struct tracecmd_input *ihandle;
+-	struct tep_handle *pevent;
+ 	int fd2;
+ 
+ 	/* Move the file descriptor to the beginning */
+@@ -1425,6 +1512,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 	ihandle = tracecmd_alloc_fd(fd2, TRACECMD_FL_LOAD_NO_PLUGINS);
  	if (!ihandle)
  		return NULL;
++	tracecmd_read_headers(ihandle);
  
+ 	/* move the file descriptor to the end */
+ 	if (lseek(fd, 0, SEEK_END) == (off_t)-1)
+@@ -1437,11 +1525,11 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 
+ 	handle->fd = fd;
+ 
+-	/* get endian and page size */
+-	pevent = tracecmd_get_tep(ihandle);
+-	/* Use the pevent of the ihandle for later writes */
++	/* get tep, state, endian and page size */
++	handle->file_state = tracecmd_get_file_state(ihandle);
++	/* Use the tep of the ihandle for later writes */
+ 	handle->pevent = tracecmd_get_tep(ihandle);
+-	tep_ref(pevent);
++	tep_ref(handle->pevent);
+ 	handle->page_size = tracecmd_page_size(ihandle);
+ 	list_head_init(&handle->options);
+ 
+diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
+index c707a5d5..8366d128 100644
+--- a/tracecmd/trace-split.c
++++ b/tracecmd/trace-split.c
+@@ -510,7 +510,7 @@ void trace_split (int argc, char **argv)
+ 	if (!handle)
+ 		die("error reading %s", input_file);
+ 
+-	if (tracecmd_get_flags(handle) & TRACECMD_FL_LATENCY)
++	if (tracecmd_get_file_state(handle) == TRACECMD_FILE_CPU_LATENCY)
+ 		die("trace-cmd split does not work with latency traces\n");
+ 
+ 	page_size = tracecmd_page_size(handle);
 -- 
 2.29.2
 
