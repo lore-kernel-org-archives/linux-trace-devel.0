@@ -7,36 +7,35 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 176B8C433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44276C4332B
 	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:40:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E45F464DF1
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:40:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 23EAB64DBA
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:40:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234389AbhCAOkW (ORCPT
+        id S235441AbhCAOkX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 1 Mar 2021 09:40:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60632 "EHLO mail.kernel.org"
+        Mon, 1 Mar 2021 09:40:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234920AbhCAOkV (ORCPT
+        id S236449AbhCAOkW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:40:21 -0500
+        Mon, 1 Mar 2021 09:40:22 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8883F64E12;
+        by mail.kernel.org (Postfix) with ESMTPSA id EFEA564E31;
         Mon,  1 Mar 2021 14:38:58 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lGjhJ-001Ptm-Gj; Mon, 01 Mar 2021 09:38:57 -0500
-Message-ID: <20210301143857.396768544@goodmis.org>
+        id 1lGjhJ-001PvE-VD; Mon, 01 Mar 2021 09:38:57 -0500
+Message-ID: <20210301143857.841258346@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 01 Mar 2021 09:37:29 -0500
+Date:   Mon, 01 Mar 2021 09:37:32 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 5/8] trace-cmd: Move the input state updates into the functions that
- change the state
+Subject: [PATCH 8/8] trace-cmd input: Add validation updates to the copy of a handle
 References: <20210301143724.540985351@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,32 +45,49 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-It makes more sense to have the functions that change the state of the
-descriptor to change the value that stores the state. This makes it more
-robust in case these functions are called by something other than
-tracecmd_read_headers(). That way the state changes with the update, and this
-removes the dependency on create_file_fd with the state changes.
+When copying the input handle the file descriptor is changed. Change its
+state along with that.
+
+Currently the tracecmd_copy_headers() restores the original state, but does
+not restore the file descriptor. That may need to change.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- lib/trace-cmd/trace-input.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ lib/trace-cmd/trace-input.c | 52 +++++++++++++++++++++++--------------
+ 1 file changed, 33 insertions(+), 19 deletions(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 9e1a44540201..9a4b1f4e118a 100644
+index 53c2722f46e7..15d6d2b3ca43 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -395,6 +395,8 @@ static int read_header_files(struct tracecmd_input *handle)
- 	handle->ftrace_files_start =
- 		lseek64(handle->fd, 0, SEEK_CUR);
+@@ -3491,12 +3491,14 @@ static int copy_header_files(struct tracecmd_input *handle, int fd)
+ {
+ 	unsigned long long size;
  
+-	/* The input handle has to have at least read the headers */
+ 	if (handle->file_state < TRACECMD_FILE_HEADERS)
+ 		return -1;
+ 
+ 	lseek64(handle->fd, handle->header_files_start, SEEK_SET);
+ 
++	/* Now that the file handle has moved, change its state */
 +	handle->file_state = TRACECMD_FILE_HEADERS;
 +
- 	return 0;
+ 	/* "header_page"  */
+ 	if (read_copy_data(handle, 12, fd) < 0)
+ 		return -1;
+@@ -3526,8 +3528,7 @@ static int copy_ftrace_files(struct tracecmd_input *handle, int fd)
+ 	unsigned int count;
+ 	unsigned int i;
  
-  failed_read:
-@@ -596,6 +598,8 @@ static int read_ftrace_files(struct tracecmd_input *handle, const char *regex)
- 		regfree(ereg);
+-	/* The input handle has to have at least read the ftrace events */
+-	if (handle->file_state < TRACECMD_FILE_FTRACE_EVENTS)
++	if (handle->file_state != TRACECMD_FILE_FTRACE_EVENTS - 1)
+ 		return -1;
+ 
+ 	if (read_copy_size4(handle, fd, &count) < 0)
+@@ -3542,6 +3543,8 @@ static int copy_ftrace_files(struct tracecmd_input *handle, int fd)
+ 			return -1;
  	}
  
 +	handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
@@ -79,78 +95,129 @@ index 9e1a44540201..9a4b1f4e118a 100644
  	return 0;
  }
  
-@@ -678,6 +682,8 @@ static int read_event_files(struct tracecmd_input *handle, const char *regex)
- 		regfree(ereg);
+@@ -3553,8 +3556,7 @@ static int copy_event_files(struct tracecmd_input *handle, int fd)
+ 	unsigned int count;
+ 	unsigned int i,x;
+ 
+-	/* The input handle has to have at least read all its events */
+-	if (handle->file_state < TRACECMD_FILE_ALL_EVENTS)
++	if (handle->file_state != TRACECMD_FILE_ALL_EVENTS - 1)
+ 		return -1;
+ 
+ 	if (read_copy_size4(handle, fd, &systems) < 0)
+@@ -3582,6 +3584,8 @@ static int copy_event_files(struct tracecmd_input *handle, int fd)
+ 		}
  	}
  
 +	handle->file_state = TRACECMD_FILE_ALL_EVENTS;
 +
  	return 0;
+ }
  
-  failed:
-@@ -713,6 +719,9 @@ static int read_proc_kallsyms(struct tracecmd_input *handle)
- 	tracecmd_parse_proc_kallsyms(pevent, buf, size);
+@@ -3589,8 +3593,7 @@ static int copy_proc_kallsyms(struct tracecmd_input *handle, int fd)
+ {
+ 	unsigned int size;
  
- 	free(buf);
-+
+-	/* The input handle has to have at least has kallsyms */
+-	if (handle->file_state < TRACECMD_FILE_KALLSYMS)
++	if (handle->file_state != TRACECMD_FILE_KALLSYMS - 1)
+ 		return -1;
+ 
+ 	if (read_copy_size4(handle, fd, &size) < 0)
+@@ -3601,6 +3604,8 @@ static int copy_proc_kallsyms(struct tracecmd_input *handle, int fd)
+ 	if (read_copy_data(handle, size, fd) < 0)
+ 		return -1;
+ 
 +	handle->file_state = TRACECMD_FILE_KALLSYMS;
 +
  	return 0;
  }
  
-@@ -740,6 +749,8 @@ static int read_ftrace_printk(struct tracecmd_input *handle)
+@@ -3608,8 +3613,7 @@ static int copy_ftrace_printk(struct tracecmd_input *handle, int fd)
+ {
+ 	unsigned int size;
  
- 	free(buf);
+-	/* The input handle has to have at least has printk stored */
+-	if (handle->file_state < TRACECMD_FILE_PRINTK)
++	if (handle->file_state != TRACECMD_FILE_PRINTK - 1)
+ 		return -1;
+ 
+ 	if (read_copy_size4(handle, fd, &size) < 0)
+@@ -3620,6 +3624,8 @@ static int copy_ftrace_printk(struct tracecmd_input *handle, int fd)
+ 	if (read_copy_data(handle, size, fd) < 0)
+ 		return -1;
  
 +	handle->file_state = TRACECMD_FILE_PRINTK;
 +
  	return 0;
  }
  
-@@ -791,32 +802,27 @@ int tracecmd_read_pre_headers(struct tracecmd_input *handle)
- 	ret = read_header_files(handle);
- 	if (ret < 0)
- 		return -1;
--	handle->file_state = TRACECMD_FILE_HEADERS;
-+
- 	tep_set_long_size(handle->pevent, handle->long_size);
+@@ -3627,8 +3633,7 @@ static int copy_command_lines(struct tracecmd_input *handle, int fd)
+ {
+ 	unsigned long long size;
  
- 	ret = read_ftrace_files(handle, NULL);
- 	if (ret < 0)
+-	/* The input handle has to have at least read the cmdlines */
+-	if (handle->file_state < TRACECMD_FILE_CMD_LINES)
++	if (handle->file_state != TRACECMD_FILE_CMD_LINES - 1)
  		return -1;
--	handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
  
- 	ret = read_event_files(handle, NULL);
- 	if (ret < 0)
+ 	if (read_copy_size8(handle, fd, &size) < 0)
+@@ -3639,38 +3644,47 @@ static int copy_command_lines(struct tracecmd_input *handle, int fd)
+ 	if (read_copy_data(handle, size, fd) < 0)
  		return -1;
--	handle->file_state = TRACECMD_FILE_ALL_EVENTS;
  
- 	ret = read_proc_kallsyms(handle);
- 	if (ret < 0)
- 		return -1;
--	handle->file_state = TRACECMD_FILE_KALLSYMS;
- 
- 	ret = read_ftrace_printk(handle);
- 	if (ret < 0)
- 		return -1;
--	handle->file_state = TRACECMD_FILE_PRINTK;
- 
- 	if (read_and_parse_cmdlines(handle) < 0)
- 		return -1;
--	handle->file_state = TRACECMD_FILE_CMD_LINES;
- 
- 	return 0;
- }
-@@ -2848,6 +2854,9 @@ static int read_and_parse_cmdlines(struct tracecmd_input *handle)
- 	cmdlines[size] = 0;
- 	tracecmd_parse_cmdlines(pevent, cmdlines, size);
- 	free(cmdlines);
-+
 +	handle->file_state = TRACECMD_FILE_CMD_LINES;
 +
  	return 0;
  }
  
+ int tracecmd_copy_headers(struct tracecmd_input *handle, int fd)
+ {
++	int save_state = handle->file_state;
+ 	int ret;
+ 
++	/* Make sure that the input handle is up to cmd lines */
++	if (handle->file_state < TRACECMD_FILE_CMD_LINES)
++		return -1;
++
+ 	ret = copy_header_files(handle, fd);
+ 	if (ret < 0)
+-		return -1;
++		goto out;
+ 
+ 	ret = copy_ftrace_files(handle, fd);
+ 	if (ret < 0)
+-		return -1;
++		goto out;
+ 
+ 	ret = copy_event_files(handle, fd);
+ 	if (ret < 0)
+-		return -1;
++		goto out;
+ 
+ 	ret = copy_proc_kallsyms(handle, fd);
+ 	if (ret < 0)
+-		return -1;
++		goto out;
+ 
+ 	ret = copy_ftrace_printk(handle, fd);
+ 	if (ret < 0)
+-		return -1;
++		goto out;
+ 
+ 	ret = copy_command_lines(handle, fd);
+-	if (ret < 0)
+-		return -1;
+ 
+-	return 0;
++ out:
++	/* Restore the handle back to its original state */
++	handle->file_state = save_state;
++
++	return ret < 0 ? -1 : 0;
+ }
+ 
+ /**
 -- 
 2.30.0
 
