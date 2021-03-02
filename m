@@ -2,188 +2,167 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64D16C433E9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E25FFC4332E
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2187264FC4
+	by mail.kernel.org (Postfix) with ESMTP id B41EE64F16
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  3 Mar 2021 00:12:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbhCBX5a (ORCPT
+        id S234695AbhCBX6C (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 2 Mar 2021 18:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54670 "EHLO
+        Tue, 2 Mar 2021 18:58:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835218AbhCBEuP (ORCPT
+        with ESMTP id S240100AbhCBFPH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:50:15 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12745C06178B
-        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Mar 2021 20:49:35 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id e9so1095524pjs.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Mar 2021 20:49:35 -0800 (PST)
+        Tue, 2 Mar 2021 00:15:07 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AB5C061794
+        for <linux-trace-devel@vger.kernel.org>; Mon,  1 Mar 2021 21:14:27 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id m25so7757571oie.12
+        for <linux-trace-devel@vger.kernel.org>; Mon, 01 Mar 2021 21:14:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P86KPrj/4T2pUogxL3baD0l6NFUzQAx62jMqFUOjrLg=;
-        b=cp0CSNMI7CYg7dsLeCZCXQ5XeXeP1P9bvb7eP3uTJqo32xdj2ZkFvJdSSNalBwC/v2
-         GJQq/wRKIRpSiZsyvOWy1m14gfub35neJX+la6wMIFlnnDo+WiMH9eglslzfY8XCRtB9
-         5FRTxTzknbmlCyO6JmwjLwWtxlV8gRx7LNtQZkif3EJAzB1TAjkm/9tqVAFekl5DA6ra
-         6InhOOUaKsZ7rSe6UmchmpjKxgtifwv6YaLZwIOkPgPr+CNMyw9Syrq5lGVo9liLx+KD
-         7WZzKEZXvxey6dUtGHaZepAM0sAsNYHY91lPsBdJ76pOaEuAzhGv6XJy42QlgPKALaXk
-         XnuQ==
+        bh=6wpBNQveksYZLlrFMLpl34jZmEw5Ia/AfFoWG1QtEqE=;
+        b=Ey5KI1gzHeonrQKmsfAMOslssR+Ebmi9dZfmro5ttjnus2WM/E+qHiR5l5y4cxjhaV
+         fFhCSNDsfo6+lbIb0h0TxZxFg26gaQv17uApCkYhOvZeeYvtK3JMNIM4ShZZcoR3GWfJ
+         xCnE913uZatzevce5VqzAwkGq5+jPGnNBCiP6VGeWuMSVMJZdpWeJhWV88QK008OSSNF
+         1t6LQ12XNwZ88CLDUWEPw5R4J1+Hnwi/h6k6rxUv/TymYBiZHHhF6onhG+WS7FIBxcMI
+         c30QGba5chOdQr2yAY7EGZZH8blcz4BWWbQPe1YAziHsJL/Ebg2TeWvNCt7Z20Ll8mY1
+         dXGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P86KPrj/4T2pUogxL3baD0l6NFUzQAx62jMqFUOjrLg=;
-        b=llHse+nm9waXRPgrOWSz1YPUTYxhHhbDmSx+ky+0ScT92VdIBGaKivpAcIJ7O6CQTF
-         9j10hrB2L9Jd1vrELzBp9lhwQ6F+mKwSaKO+fTPJlG+28KU09lDNeoWAl2Kg9QjsExft
-         gPLtbmKaEH1WdkoIQbhrkhuvpAQil/BLUKkXop9RjRzFvxkynjR2xBvw8ABvll+Zr2pU
-         5FJANxdlXVXUVoSBzIKNXukiVnI4vkCu5bO/lsSwxbZXd//+V2vfqtnu6Ws/WQGCbe/0
-         J+TZgF1zv5a8rUCuRE0QcG4j0pAstxQvOMbUmNUGbIeOUAQZXLQni1q8iPF3Tkn/J3pJ
-         FrAQ==
-X-Gm-Message-State: AOAM532+sY18Wwh+g7vct6nUl7ERkQfieBFqW1BmZlgnNqrumEJ48OQ8
-        RomOCDeQjqW90KEPk1keIgx3BynFQOWuNQ3UAfo1mk4qDfkfuQ==
-X-Google-Smtp-Source: ABdhPJyMhWoI1TUq4J9En3aXJ9JoGtlG4MeOq7RMzdV03RrNPxkqjHDMKjVVa1NX2XvOW66cok+8GUt1HoeDQhgUTnY=
-X-Received: by 2002:a17:90a:e2cb:: with SMTP id fr11mr2501194pjb.2.1614660574443;
- Mon, 01 Mar 2021 20:49:34 -0800 (PST)
+        bh=6wpBNQveksYZLlrFMLpl34jZmEw5Ia/AfFoWG1QtEqE=;
+        b=OzNR65dzZvUCxLxJHQi9ZzXgrFkaFjm93hS0I21bjBSUknSG4ZnAXx8AjD04QVxOp/
+         YHtg4W5ZKxheOyFi+ONVUfF60CE6m05naaJNYhMOqzV4d+t6NL2+p5s7byrDJ3yP8gIB
+         ej+cgB3LwQwx+y78iVYu8VboQCzRmRabUi7gLb0/RLewobZRYDs8toAYhGzvcbC3QJHt
+         ATuMgtkIlGKg/PdXCguKdPzP6Vt1E5ZosPDzVZoxqMYsELiwuVsuR70en7ryHI8qbTAF
+         qZlK2xUVcHXO5q8Iljz18d0CZtpBXwWrje3L8io2GOnuUtUu1B1qFatjqJexMg/dn9pc
+         GAbg==
+X-Gm-Message-State: AOAM533Rh2Z7ztXCTdgvsn59VS5feFxK07Lwf2ahkv9EzFokQmz3hwqp
+        b6D0WJ9R4u9xSGEjezat0nPJKImw/VX3JeVmavc=
+X-Google-Smtp-Source: ABdhPJxy+sfI5q3FZLfGCVrSKKoSA75Jhkj1rcciElBQWgwH0V02NOT8kHqZAvLB4VNYHpPUuEdWR0QZfTIRX87jO+s=
+X-Received: by 2002:a54:4794:: with SMTP id o20mr2029260oic.51.1614662066262;
+ Mon, 01 Mar 2021 21:14:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20210301143724.540985351@goodmis.org> <20210301143856.948525416@goodmis.org>
-In-Reply-To: <20210301143856.948525416@goodmis.org>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Tue, 2 Mar 2021 06:49:18 +0200
-Message-ID: <CAPpZLN5fdY+rb6s=X6bNykiqrjuTprvZxay9iDSEQxJXHURh3A@mail.gmail.com>
-Subject: Re: [PATCH 2/8] trace-cmd: Create API tracecmd_read_pre_headers()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+References: <1614705310-5887-1-git-send-email-sameeruddin.shaik8@gmail.com>
+ <20210301131754.11f0be38@gandalf.local.home> <CAPpZLN7XLeOqTqBZZDetyL9Wc32dDNd0Gd8yBcET7Pd3qUYRcw@mail.gmail.com>
+In-Reply-To: <CAPpZLN7XLeOqTqBZZDetyL9Wc32dDNd0Gd8yBcET7Pd3qUYRcw@mail.gmail.com>
+From:   Sameeruddin Shaik <sameeruddin.shaik8@gmail.com>
+Date:   Tue, 2 Mar 2021 10:44:14 +0530
+Message-ID: <CAK7tX=Zn-pj2-+6Y_JwCgUraiVCVz7uc28WYP27wJuKURhYsuQ@mail.gmail.com>
+Subject: Re: [PATCH] libtracefs: An API to set the filtering of functions
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Steven,
+> Let's fix the number of parameters to this function:)
 
-On Mon, Mar 1, 2021 at 4:38 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
->
-> The trace-cmd restore operation can create a partial header to read the
-> trace event formats and kallsyms and other data into a stand alone header
-> before it has access to the cpu data. Then it will also read this header to
-> put together a broken trace, and it reads the header that does not have the
-> cpu data attached to it.
->
-> In order to handle this case, it needs a way to read the headers but stop
-> short of reading the CPU information. That requires breaking up
-> tracecmd_read_headers() with just stopping short of adding the cpu data.
+>> Not sure what you mean by that.
+Actually i meant this ""int tracefs_function_filter(struct
+tracefs_instance *instance,
+                                    const char * const * filters,
+                                    const char * module, bool reset,
+                                    const char * const ** errs);""
+For every patch, a parameter is increasing in this API.
 
-While looking at these changes, I think it could be more flexible instead of
-introducing a new API, to enhance the existing tracecmd_read_headers().
-We can add an additional (optional) parameter to point out what headers
-to be read, i.e. the desired new state of reading the file. Something like that:
-   int tracecmd_read_headers(struct tracecmd_input *handle, int state);
-It will read the file from its current file_state to the desired state.
-The API could be called multiple times, to progress the reading of the
-file, header by header if needed, or a bunch of headers.
+> let's return the number of bytes written, also we will calculate the
+> complete filters length and return it, if there is difference,
+> we will loop into the integer array and print the erroneous filters
+
+>>Not sure how that is helpful. How would you use the number of bytes
+>>written?
+
+We will return the number of bytes written and we also store the total
+length of strings
+in filters array, in one pointer variable, we will check the
+difference between bytes written
+and the total length of the strings, if there is difference we will
+print failed filters otherwise
+we will not print anything.
+
+>It is very useful to have a way to report back the failed filters.
+>Using an array
+>of strings will work for this API, but I was thinking somehow to leverage the
+>error_log file by the ftrace itself. Currently it does not report any
+>error, just
+>returns EINVAL. In more complex filters it would be useful to log
+>more detailed description of the problem in the error_log file.
+
+This error_log is also a good idea.
+
+If possible let's have a live discussion on this API,so that we can
+discuss the corner cases in the design
+more efficiently and we can close it ASAP.
+
+Thanks,
+sameer shaik.
+
+Thanks,
+sameer shaik
 
 
-
+On Tue, Mar 2, 2021 at 9:52 AM Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
 >
-> A new API is added called tracecmd_read_pre_headers() that does exactly that.
+> On Mon, Mar 1, 2021 at 10:40 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Tue,  2 Mar 2021 22:45:10 +0530
+> > Sameeruddin shaik <sameeruddin.shaik8@gmail.com> wrote:
+> >
+> > > This new API will write the function filters into the
+> > > set_ftrace_filter file, it will write only string as of now, it can't
+> > > handle kernel glob or regular expressions.
+> >
+> > The limitation of no glob or regular expressions is fine. We can add that
+> > in future patches.
+> >
+> > >
+> > > tracefs_function_filter()
+> > >
+> > > https://bugzilla.kernel.org/show_bug.cgi?id=210643
+> > >
+> > > Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+> > >
+> [ ... ]
+> >
+> > > +                     free(each_str);
+> > > +                     continue;
+> > > +             }
+> > > +             size += write(fd, each_str, write_size);
+> >
+> > Need to check errors here, and we need a way to report that an error
+> > happened for a string. Perhaps the API also needs to have an error message
+> > pointer that is passed in? Or a bitmask that lets the user know which
+> > filter failed?
+> >
+> > Tzvetomir, have any ideas on how to report back to the caller which filter
+> > failed? Could just send back an array of strings of the filters that failed.
 >
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  .../include/private/trace-cmd-private.h       |  1 +
->  lib/trace-cmd/trace-input.c                   | 25 ++++++++++++++++---
->  tracecmd/trace-restore.c                      |  2 +-
->  3 files changed, 24 insertions(+), 4 deletions(-)
+> It is very useful to have a way to report back the failed filters.
+> Using an array
+> of strings will work for this API, but I was thinking somehow to leverage the
+> error_log file by the ftrace itself. Currently it does not report any
+> error, just
+> returns EINVAL. In more complex filters it would be useful to log
+> more detailed description of the problem in the error_log file.
 >
-> diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-> index fc968cc9efe1..c7ef3af7c8f7 100644
-> --- a/lib/trace-cmd/include/private/trace-cmd-private.h
-> +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-> @@ -153,6 +153,7 @@ typedef void (*tracecmd_handle_init_func)(struct tracecmd_input *handle,
->  struct tracecmd_input *tracecmd_alloc(const char *file, int flags);
->  struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags);
->  void tracecmd_ref(struct tracecmd_input *handle);
-> +int tracecmd_read_pre_headers(struct tracecmd_input *handle);
->  int tracecmd_read_headers(struct tracecmd_input *handle);
->  int tracecmd_get_parsing_failures(struct tracecmd_input *handle);
->  int tracecmd_long_size(struct tracecmd_input *handle);
-> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index 9ef7b9f16951..9e1a44540201 100644
-> --- a/lib/trace-cmd/trace-input.c
-> +++ b/lib/trace-cmd/trace-input.c
-> @@ -772,14 +772,17 @@ static int read_cpus(struct tracecmd_input *handle)
->  }
+> [ ... ]
 >
->  /**
-> - * tracecmd_read_headers - read the header information from trace.dat
-> + * tracecmd_read_pre_headers - read the header information from trace.dat
->   * @handle: input handle for the trace.dat file
->   *
->   * This reads the trace.dat file for various information. Like the
->   * format of the ring buffer, event formats, ftrace formats, kallsyms
-> - * and printk.
-> + * and printk, but stops before reading cpu and options.
-> + *
-> + * This is needed by the restore operation where the header does not
-> + * have the CPU information yet.
->   */
-> -int tracecmd_read_headers(struct tracecmd_input *handle)
-> +int tracecmd_read_pre_headers(struct tracecmd_input *handle)
->  {
->         int ret;
 >
-> @@ -815,6 +818,22 @@ int tracecmd_read_headers(struct tracecmd_input *handle)
->                 return -1;
->         handle->file_state = TRACECMD_FILE_CMD_LINES;
->
-> +       return 0;
-> +}
-> +
-> +/**
-> + * tracecmd_read_headers - read the header information from trace.dat
-> + * @handle: input handle for the trace.dat file
-> + *
-> + * This reads the trace.dat file for various information. Like the
-> + * format of the ring buffer, event formats, ftrace formats, kallsyms
-> + * and printk.
-> + */
-> +int tracecmd_read_headers(struct tracecmd_input *handle)
-> +{
-> +       if (tracecmd_read_pre_headers(handle))
-> +               return -1;
-> +
->         if (read_cpus(handle) < 0)
->                 return -1;
->         handle->file_state = TRACECMD_FILE_CPU_COUNT;
-> diff --git a/tracecmd/trace-restore.c b/tracecmd/trace-restore.c
-> index 13f803053582..bf6940991178 100644
-> --- a/tracecmd/trace-restore.c
-> +++ b/tracecmd/trace-restore.c
-> @@ -122,7 +122,7 @@ void trace_restore (int argc, char **argv)
->                 if (!ihandle)
->                         die("error reading file %s", input);
->                 /* make sure headers are ok */
-> -               if (tracecmd_read_headers(ihandle) < 0)
-> +               if (tracecmd_read_pre_headers(ihandle) < 0)
->                         die("error reading file %s headers", input);
->
->                 handle = tracecmd_copy(ihandle, output);
 > --
-> 2.30.0
->
->
-
-
---
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+> Tzvetomir (Ceco) Stoyanov
+> VMware Open Source Technology Center
