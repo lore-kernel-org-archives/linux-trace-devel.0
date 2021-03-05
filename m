@@ -1,161 +1,184 @@
-Return-Path: <linux-trace-devel-owner@kernel.org>
+Return-Path: <SRS0=uRrw=ID=vger.kernel.org=linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FD3AC433E6
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Mar 2021 13:51:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7E2FC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Mar 2021 14:40:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DECBE6501E
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Mar 2021 13:51:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8B66264FD2
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Mar 2021 14:40:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhCENuw (ORCPT
+        id S230202AbhCEOkG (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 5 Mar 2021 08:50:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhCENuh (ORCPT
+        Fri, 5 Mar 2021 09:40:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231283AbhCEOjs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:50:37 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E278CC061574
-        for <linux-trace-devel@vger.kernel.org>; Fri,  5 Mar 2021 05:50:36 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id ba1so1465593plb.1
-        for <linux-trace-devel@vger.kernel.org>; Fri, 05 Mar 2021 05:50:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uY2hoJoi4PFt5AxTkqR+ms0EVKrzMUQ2lTIetSsCBBk=;
-        b=j0nQ17p/538H6ttYeyFGEiterUojpyQmMTfEb8PCdlcyOBdexf3KmeAnKCCt3iPTOz
-         HqdvpSociViGD/XpF5EI74QiQo4oyvVfB8D4yUUi3D4JoJDnBOLZNpD/xjcPD99+G4Hp
-         HL6bx/GpJ8yFozFOhL97zM1PEL2iUQAWlRtwuW0TkrpBBE9I4fBvhP4HDLRsecJ9pGv7
-         0bIMesdfGHJTyb9eCu40RIX2dmvVv+EB/M8O4XnfIg67ZM9/UXZofP51NbaGC2RMmY11
-         kMb32Qzo+Zfo5kQMZ65hj6rRIu/NJB90NX+b9JdJgnA7rQXKOIMR7Neoup/W9T3QR424
-         5v+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uY2hoJoi4PFt5AxTkqR+ms0EVKrzMUQ2lTIetSsCBBk=;
-        b=oVj9ksy4FxterDL7JTvU+beOoSx1SOVIuhgCRm3IVaDg+BVnIg5qEm1hkbUHwpQpfH
-         2SH6/ff4MMbHq6WmkkPEJrnKsVO08jVo8hhujehJnOLqVRtjB7h+NcMjCxpL9K8lQUQV
-         8gHf34KhsJ/O9jnhUHbJ0WL5yqf9t9by7/wwos27/LWagyFRc4YVwRsMvzAfXneG258O
-         eaCN82KNhNxjZZsOdFNK0o2HjxJ/BsMD4L1K5F5vtAOdfiuRvbLsmxgs8MyrRr9jEZQC
-         CgBI0544+Guc/F6/QtcB4vpbSUljnXjsYQ7JAlOKtf2DGMmPMaC6Yon7jes8tnYepiXM
-         /+IA==
-X-Gm-Message-State: AOAM531LGmxZfIRjg8mQsUOdpnCcqz1miNR592zIL5Z1ep4JqiFMRKgu
-        +OUTWLG/3rkytSZwxYVJsmV672nXEz9TbflFL/o=
-X-Google-Smtp-Source: ABdhPJzAWL/6zUuMLO0gmdheYqRLBgBgo5XuDMvMSL5E/gpdIkx7dICzxxmmIowDVbupz/ZIWitYwsVYXK8OzVD1ZLM=
-X-Received: by 2002:a17:90b:3886:: with SMTP id mu6mr10186655pjb.153.1614952236508;
- Fri, 05 Mar 2021 05:50:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20210305062807.2734-1-stefano.devenuto99@gmail.com>
-In-Reply-To: <20210305062807.2734-1-stefano.devenuto99@gmail.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Fri, 5 Mar 2021 15:50:20 +0200
-Message-ID: <CAPpZLN4iz6cEPBYGwk-hQwB+=XrZ=qXosZyZp6i+BFKp8gF04Q@mail.gmail.com>
-Subject: Re: [RFC] Open multiple trace files and, if possible, pair them
-To:     Stefano De Venuto <stefano.devenuto99@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Fri, 5 Mar 2021 09:39:48 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AD0264F34;
+        Fri,  5 Mar 2021 14:39:48 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 09:39:46 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] libtracefs: An API to set the filtering of functions
+Message-ID: <20210305093946.1c3f4ad7@gandalf.local.home>
+In-Reply-To: <CAPpZLN6A+5pmCnOCJfg-eV1+1UR_MbwgvzhW-bd-ZZJ1F-dC=A@mail.gmail.com>
+References: <1615029625-9749-1-git-send-email-sameeruddin.shaik8@gmail.com>
+        <CAPpZLN6A+5pmCnOCJfg-eV1+1UR_MbwgvzhW-bd-ZZJ1F-dC=A@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Stefano,
+On Fri, 5 Mar 2021 14:20:15 +0200
+Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
 
-On Fri, Mar 5, 2021 at 8:28 AM Stefano De Venuto
-<stefano.devenuto99@gmail.com> wrote:
->
-> The goal of this patch is to teach to trace-cmd how to open multiple
-> files and, if they are generated by an host and some guests, pair and
-> synchronize them.
->
-> We do that by checking, for every input file, whether or not
-> it has a corresponding peer, and if that's the case pairs them.
->
-> We know that the code must be changed following the new API, but we
-> would like to have an opinion on the work done so far.
+> > +               if (module)
+> > +                       write_size = snprintf(each_str, slen, "%s:mod:%s ", filters[i], module);
+> > +               else
+> > +                       write_size = snprintf(each_str, slen, "%s ", filters[i]);
+> > +
+> > +               size = write(fd, each_str, write_size);
+> > +               /* compare written bytes and also compare the written bytes with difference of added 5 bytes to string for ":mod:"*/
+> > +               if ((size < write_size) && (size < (write_size - 5))) {  
+> 
+> The second comparison is not needed, the size must be equal to
+> write_size in case of success.
+> 
+> > +                       errs[j++] = filters[i];  
+> 
+> The errs must be (re)allocated here, to hold additional pointer
+> to string. The user does not know in advance the number of
+> failed filters and it is not expected to provide an already
+> allocated array. So it should be a triple pointer.
+> 
+> It is OK to assign directly failed input string to the error array,
+> but this should be written in the API description, i.e. the user
+> should not free the strings from the @errs array as it is a subset
+> of the @filters array, or something like that. But note, the user
+> still must free the @errs itself.
 
-Thanks for sending this patch!
-This was exactly the missing functionality
-in order to display host-guest trace files using the not-so-old trace-cmd
-logic. I have only a few minor coding style comments and may be some
-optimizations, but the patch looks good to me in general. If we haven't
-decided to change the default behaviour of applying these TS corrections,
-your fixes would be merged upstream.
+A check to see if "errs" is NULL is needed too. If the user doesn't care
+about the errors, they can pass in NULL to errs, in which case, they should
+be ignored.
 
->
-> Signed-off-by: Stefano De Venuto <stefano.devenuto99@gmail.com>
-> ---
->  tracecmd/trace-read.c | 35 +++++++++++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
->
-> diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-> index ce07b6b..734c2e7 100644
-> --- a/tracecmd/trace-read.c
-> +++ b/tracecmd/trace-read.c
-> @@ -1191,6 +1191,39 @@ enum output_type {
->         OUTPUT_VERSION_ONLY,
->  };
->
-> +static void pair_host_guest(struct list_head *handle_list,
-> +                               struct tracecmd_input *peer_handle)
-> +{
-> +       unsigned long long current_trace_id;
-> +       unsigned long long peer_trace_id;
-> +       struct handle_list *handles;
-> +
-> +       peer_trace_id = tracecmd_get_traceid(peer_handle);
-> +
-> +       list_for_each_entry(handles, handle_list, list) {
-> +
-> +               current_trace_id = tracecmd_get_traceid(handles->handle);
-> +
-> +               /* If the current handle represents a Host */
-> +               if (tracecmd_get_guest_cpumap(handles->handle, peer_trace_id,
-> +                                               NULL, NULL, NULL) != -1) {
-> +
-> +                       current_trace_id = tracecmd_get_traceid(handles->handle);
-> +                       if (tracecmd_get_tsync_peer(peer_handle) == current_trace_id)
-> +                               tracecmd_pair_peer(peer_handle, handles->handle);
-> +
-> +               /* If the current handle represents a Guest */
-> +               } else if (tracecmd_get_tsync_peer(handles->handle) == peer_trace_id) {
-> +
-> +                       current_trace_id = tracecmd_get_traceid(handles->handle);
-> +                       if (tracecmd_get_guest_cpumap(peer_handle, current_trace_id,
-> +                                                       NULL, NULL, NULL) != -1)
-> +                               tracecmd_pair_peer(handles->handle, peer_handle);
-> +
-> +               }
-> +       }
-> +}
-> +
->  static void read_data_info(struct list_head *handle_list, enum output_type otype,
->                            int global)
->  {
-> @@ -1837,6 +1870,8 @@ void trace_report (int argc, char **argv)
->                                 return;
->                 }
->
-> +               pair_host_guest(&handle_list, handle);
-> +
->                 if (show_funcs) {
->                         tep_print_funcs(pevent);
->                         return;
-> --
-> 2.30.0
->
+> 
+> > +                       ret -= 1;
+> > +               }
+> > +               free(each_str);
+> > +       }
+> > +       errs[j] = NULL;
+> > +       close(fd);
+> > +       return ret;
+> > +}
+> > +
+> > +/**
+> > + * tracefs_function_filter - write to set_ftrace_filter file to trace particular functions
+> > + * @instance: ftrace instance, can be NULL for top tracing instance
+> > + * @filters: An array of function names ending with a NULL pointer
+> > + * @module: Module to be traced
+> > + * @reset: set to true to reset the file before applying the filter
+> > + * @errs: An Array of failed function names ending with a NULL pointer
+
+Thus the description for @errs should be:
+
+ @errs: A pointer to an array of const strings that will be allocated on
+        a negative return of this function, pointing to the filters that
+        failed. May be NULL, in which case this field will be ignored.
+
+> > + *
+> > + * The @filters is an array of strings, where each string will be used to set
+> > + * a function or functions to be traced.
+> > + *
+> > + * If @reset is true, then all functions in the filter are cleared before
+> > + * adding functions from @filter. Otherwise, the functions set by @filter
+> > + * will be appended to the filter file
+> > + *
+> > + * The @errs is an array of strings, where each string is a failed function
+> > + * name
+> > + *
+> > + * returns -x (where x is number of failed filter srtings or it can be
+> > + * 1 for general errors), or 0 if there are no errors.
+> > + */
+> > +int tracefs_function_filter(struct tracefs_instance *instance, const char **filters, const char *module, bool reset, const char **errs)
+
+Note, @filters should be of type: const char * const * filters,  as not
+only is filters pointing to constant strings, the array itself will not be
+modified. And errs, should be of type: const char ***errs. Where it will be
+allocated.
+
+Since a triple pointer is difficult to manage in the code, you could have:
+
+	const char **e = NULL;
+
+	
+		if (errs) {
+			e = realloc(sizeof(*e), j + 1);
+			e[j++] = filters[i];
+		}
+
+Then at the end:
+
+	if (errs)
+		*errs = e;
 
 
--- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+> > +{
+> > +       char *ftrace_filter_path;
+> > +       int ret = 0;  
+> 
+> This should be initialised to the error return code, to ensure that
+> every "goto out" will return error.
+> 
+> > +
+> > +       if (!filters)
+> > +               return -1;  
+> 
+> Should return 1, according to the API description.
+> 
+> > +
+> > +       ftrace_filter_path = tracefs_instance_get_file(instance, TRACE_FILTER);
+> > +       if (!ftrace_filter_path)
+> > +               goto out;  
+> 
+> "ret" is 0 here, so success will be returned, which is not the desired
+> behaviour.
+> "ftrace_filter_path" is NULL and the tracefs_put_tracing_file()
+> will be called with NULL, but this is OK, should not be a problem.
+
+It shouldn't be a problem, but it is also fine to return directly here.
+
+	if (!ftrace_filter_path)
+		return 1;
+
+Thanks!
+
+-- Steve
+
+> 
+> > +
+> > +       ret = controlled_write(ftrace_filter_path, filters, module, reset, errs);
+> > + out:
+> > +       tracefs_put_tracing_file(ftrace_filter_path);
+> > +       return ret;
+> > +}
+> > --
+> > 2.7.4
+> >  
+> 
+> It is a good starting point, thanks for sending this patch Sameer!
+> 
+
