@@ -2,64 +2,144 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3F40C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Mar 2021 22:31:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3115EC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Mar 2021 06:28:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A0A0B64FF4
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  4 Mar 2021 22:31:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0329664E74
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  5 Mar 2021 06:28:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhCDWbc (ORCPT
+        id S229458AbhCEG2Z (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 4 Mar 2021 17:31:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229674AbhCDWbb (ORCPT
+        Fri, 5 Mar 2021 01:28:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhCEG2Z (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:31:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1133164FEB;
-        Thu,  4 Mar 2021 22:31:30 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 17:31:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Dario Faggioli <dfaggioli@suse.com>
-Cc:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Yordan Karadzhov <y.karadz@gmail.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Fri, 5 Mar 2021 01:28:25 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F64AC061574
+        for <linux-trace-devel@vger.kernel.org>; Thu,  4 Mar 2021 22:28:25 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id h7so424480wmf.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 04 Mar 2021 22:28:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=buwzTirmXHGY2GUpwuqoHvp0Oi4UI+ukRATtGkBss0Q=;
+        b=FR4iKs3cYTsJb0bL00ngpPKDFn+cnH2YacFDVQ0RCD6bAdAsoslbvyR8XWU86IrygD
+         zmAN9lUi7N68nKXnngwdUe9uzzphe9DvPjyKQRRUpKQ7Kog33uG1PQ5mL+zZ5q+dHXMa
+         wo3RhVu9nP797bKr8dbBK/BNg8N4aeYObdnb5myExtqkrX7JaC9PKYqDZkLrSwDfbxc2
+         PWE98wqSxMqt/80C7LYNrV66kaDOjV+Y/EQ3K+265IJtozzTejEsHRvrfvxnGM9zklBH
+         jTJrMc3wsjX8k4A3IADsb+AFGyEaN8Zxy5p0eA3kesoGIPZUZG79NWLhjMY2Cb5KXWU0
+         6Ydg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=buwzTirmXHGY2GUpwuqoHvp0Oi4UI+ukRATtGkBss0Q=;
+        b=kPMAZNDEfWuS6xf4+kSYJJnZ1iVR8Xmu63pBq9kL/jD/xCDjfCjG4dnzctk1bglnOB
+         ClavmSmhDiJf8RWfQWO3bVisHRBJmm1ANxuY7pJfuzaCVRzoCn4Hxq1a/RuZUmJwRD6P
+         FDqZn4p3ZgPCgzGVGvomHdYSjl8pK+pDMN/PX1peZVkR8QCt9YKvfvP6Vkfj21tP1FIl
+         Q9samloyqNJ3RQWKc0CWo9KO86/pLvep70MaQnw/6YZu42PXMxJQXJCEIMu3i0UeWe5K
+         bPeeDeF2WhTVKDM5YoHGthct08EswWCJKrZs3dSULd51newLjS8hVYfHMnfE+4JjB2wC
+         qoXg==
+X-Gm-Message-State: AOAM533snJPJhYMnWWrzKad4EqPxfV0Ktp2AGomIPwJOz9LgS/NDOQ62
+        9w7GqjV0KsKkdiIfcyZv/kA=
+X-Google-Smtp-Source: ABdhPJw5g5+sDtYwSFXupleHcpOwfFJnOz1sidSUB9ICSe34JgvxfIkj6M+H9RyMxmxY0DNA0SUoYQ==
+X-Received: by 2002:a1c:c906:: with SMTP id f6mr7010098wmb.128.1614925703906;
+        Thu, 04 Mar 2021 22:28:23 -0800 (PST)
+Received: from DESKTOP-140QBK5.Home ([151.32.124.136])
+        by smtp.gmail.com with ESMTPSA id c128sm3036155wma.37.2021.03.04.22.28.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 22:28:23 -0800 (PST)
+From:   Stefano De Venuto <stefano.devenuto99@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
         Stefano De Venuto <stefano.devenuto99@gmail.com>
-Subject: Re: trace-cmd and host-guest tracing
-Message-ID: <20210304173129.76fc3484@gandalf.local.home>
-In-Reply-To: <1686fb51dbdee78d102796c68826a4837536db97.camel@suse.com>
-References: <CAPpZLN4mySHF=z03gqGv1ZEa_a5Q4su6aP1F_MsG22e=GATyHQ@mail.gmail.com>
-        <1686fb51dbdee78d102796c68826a4837536db97.camel@suse.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Subject: [RFC] Open multiple trace files and, if possible, pair them
+Date:   Fri,  5 Mar 2021 07:28:07 +0100
+Message-Id: <20210305062807.2734-1-stefano.devenuto99@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 04 Mar 2021 23:06:26 +0100
-Dario Faggioli <dfaggioli@suse.com> wrote:
+The goal of this patch is to teach to trace-cmd how to open multiple
+files and, if they are generated by an host and some guests, pair and
+synchronize them.
 
-> If you don't mind, though, we'd still like to submit the patches he was
-> working on, as RFC. Surely, the part of the code using the removed API
-> would have to be ignored... But there's a couple of other things in
-> those patches too, which we'd like, if possible, to have your feedback
-> about. Let us know if this could be a problem...
+We do that by checking, for every input file, whether or not
+it has a corresponding peer, and if that's the case pairs them.
 
-As you said, "happens all the time in Open Source development", which is
-true here as well.
+We know that the code must be changed following the new API, but we
+would like to have an opinion on the work done so far.
 
-No problem sending RFCs based on the old APIs. It may give us a better idea
-of what you expect of this code as well.
+Signed-off-by: Stefano De Venuto <stefano.devenuto99@gmail.com>
+---
+ tracecmd/trace-read.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-Thanks,
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index ce07b6b..734c2e7 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1191,6 +1191,39 @@ enum output_type {
+ 	OUTPUT_VERSION_ONLY,
+ };
+ 
++static void pair_host_guest(struct list_head *handle_list,
++				struct tracecmd_input *peer_handle)
++{
++	unsigned long long current_trace_id;
++	unsigned long long peer_trace_id;
++	struct handle_list *handles;
++
++	peer_trace_id = tracecmd_get_traceid(peer_handle);
++
++	list_for_each_entry(handles, handle_list, list) {
++
++		current_trace_id = tracecmd_get_traceid(handles->handle);
++
++		/* If the current handle represents a Host */
++		if (tracecmd_get_guest_cpumap(handles->handle, peer_trace_id,
++						NULL, NULL, NULL) != -1) {
++
++			current_trace_id = tracecmd_get_traceid(handles->handle);
++			if (tracecmd_get_tsync_peer(peer_handle) == current_trace_id)
++				tracecmd_pair_peer(peer_handle, handles->handle);
++
++		/* If the current handle represents a Guest */
++		} else if (tracecmd_get_tsync_peer(handles->handle) == peer_trace_id) {
++
++			current_trace_id = tracecmd_get_traceid(handles->handle);
++			if (tracecmd_get_guest_cpumap(peer_handle, current_trace_id,
++							NULL, NULL, NULL) != -1)
++				tracecmd_pair_peer(handles->handle, peer_handle);
++
++		}
++	}
++}
++
+ static void read_data_info(struct list_head *handle_list, enum output_type otype,
+ 			   int global)
+ {
+@@ -1837,6 +1870,8 @@ void trace_report (int argc, char **argv)
+ 				return;
+ 		}
+ 
++		pair_host_guest(&handle_list, handle);
++
+ 		if (show_funcs) {
+ 			tep_print_funcs(pevent);
+ 			return;
+-- 
+2.30.0
 
--- Steve
