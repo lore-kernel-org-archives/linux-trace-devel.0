@@ -1,150 +1,203 @@
-Return-Path: <SRS0=k9R7=IF=vger.kernel.org=linux-trace-devel-owner@kernel.org>
+Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.4 required=3.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,
+	DATE_IN_FUTURE_12_24,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B08D7C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  7 Mar 2021 23:53:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77C64C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Mar 2021 16:22:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 78EE3650FD
-	for <linux-trace-devel@archiver.kernel.org>; Sun,  7 Mar 2021 23:53:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3CAC264FE3
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  9 Mar 2021 16:22:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhCGXw5 (ORCPT
+        id S231245AbhCIQVq (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sun, 7 Mar 2021 18:52:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
+        Tue, 9 Mar 2021 11:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233314AbhCGXwZ (ORCPT
+        with ESMTP id S231699AbhCIQVm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sun, 7 Mar 2021 18:52:25 -0500
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1805FC06174A
-        for <linux-trace-devel@vger.kernel.org>; Sun,  7 Mar 2021 15:52:25 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id s23so1804948oot.12
-        for <linux-trace-devel@vger.kernel.org>; Sun, 07 Mar 2021 15:52:25 -0800 (PST)
+        Tue, 9 Mar 2021 11:21:42 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BC6C06174A
+        for <linux-trace-devel@vger.kernel.org>; Tue,  9 Mar 2021 08:21:42 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id c16so6842434ply.0
+        for <linux-trace-devel@vger.kernel.org>; Tue, 09 Mar 2021 08:21:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YoSIcqx4HsdqpkazzryRtYN2Vnh3yirPQ88LOwAHKO0=;
-        b=cRrSLvDuEAJiJZNhvQlNY0QKJ9EKqWKETijdcCYyLX5bHBROrydqPw8lXzm5GlN174
-         l0tDyRRLV3jeDYA1j8Q4de/9+JqfCq47tC0uqnXWM7td3IaOU4H6+0O5KfO1F6stBCWD
-         5QPzSNTQ6pCWENcg9aMhqNFDjJyb25FV7I3vm3BEekyFnc2/82/G/qHBoKDvDEnrJiY2
-         IsoLIJ0YKZ7FbT62rWrAEwof9sq/TIOhB0+xgGxrJdd9gB26xxSO86KiEj1GEkCgvwJy
-         s4EoiZ4pcenXag1l7Sh8PMA9IZVcPNDWW7DyM/KgtEqLhpqZTlj21yKGG8RXXCLqU5EF
-         c0vQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=dtUE813ri06LBN4pF3K0ZutYKQhxK88OqNrnB5imSdg=;
+        b=u3LyxOlVwp08k48jUbibMI/fqc1xeJg2y++nx4/VpVxhKc3Y8dbHIqqZtBFOETgaSE
+         JreMnvRqiivup+/oHMBjHGRsX5qarhveiI5jh0imOs8KhkvznS/DOYn4y27QcMID3RN3
+         TkaExRw941s6nvHz76WEGmYK8jsrjVgFmOGI6eOfxV75irHAL6Gcse3sSk0HGF/93If5
+         vxJcz5EBja9AVFnD2Qn6DyQuWI3CRXgh3X6K4pcsOhXiTnGeEoIBBVf+EfLGCL7vyFO3
+         SvUuCh145nqDxCbDLzEnz7KqKHg8Qxxyjf+5d/4PQ3Ra1BIQtqVFVHD4N4wTdPuKRjlq
+         BWYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YoSIcqx4HsdqpkazzryRtYN2Vnh3yirPQ88LOwAHKO0=;
-        b=HPCTf9UarmWpmdF/IJC4JGSs3Y7VaLcCRNVoMd9hoV+EQF9OxFctoN52JYwNB/4Xqs
-         w+LezdfpGg7s9whsJZkzYvZSFb0OQEkJ7nDCC6Sr1m7hyofRY6xIbuVu9expvxIVbm+O
-         zhIHTC7zhIhi7KdQwu3/QeuCo35Kr5yx3Efsqa619fBCOqfOBBAqm1YC0OfP1iHFM6BU
-         khxj0627wu/byykb4w+d9Jgs0g97+GmDRaWeq/vV/qL6ofxEu4N6PInPoBGigLka9yAj
-         Kt9xb+patEkt0lTCysq981SG2Q80wRhTgpy7w4C0QqeOBGQvbRjDqM6kJNek1aHJXg1P
-         CWrA==
-X-Gm-Message-State: AOAM533n1R7kuphsfWsoXLbE5h9nrLygIZl2KuHHy0t6c/I8ojhCB2zu
-        Oa8CK+8tIyi7wEsyzhiKgi9nPa1TsVhlxOZBmEg=
-X-Google-Smtp-Source: ABdhPJy5xuR+TTWSZ7D+twm6RUOZQkIjvETIlke0rMaBBq1s26Mm9izayZjb8KZaxzQPXxBDo5QXU74AtGfRaB/6faA=
-X-Received: by 2002:a4a:b987:: with SMTP id e7mr16558342oop.92.1615161143609;
- Sun, 07 Mar 2021 15:52:23 -0800 (PST)
-MIME-Version: 1.0
-References: <1615029625-9749-1-git-send-email-sameeruddin.shaik8@gmail.com>
- <CAPpZLN6A+5pmCnOCJfg-eV1+1UR_MbwgvzhW-bd-ZZJ1F-dC=A@mail.gmail.com>
- <20210305093946.1c3f4ad7@gandalf.local.home> <20210305095439.10321303@gandalf.local.home>
- <CAK7tX=aASGnr+zyAc+Y_oeqPwOdkwkstJUvypUS=yqNmenCy_Q@mail.gmail.com> <20210306100525.5818bde6@oasis.local.home>
-In-Reply-To: <20210306100525.5818bde6@oasis.local.home>
-From:   Sameeruddin Shaik <sameeruddin.shaik8@gmail.com>
-Date:   Tue, 9 Mar 2021 05:23:00 +0530
-Message-ID: <CAK7tX=ZKTRfcDs=TRTdo7dX5H7EeFeOVitX0hOPDMVYrAyP6hw@mail.gmail.com>
-Subject: Re: [PATCH] libtracefs: An API to set the filtering of functions
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dtUE813ri06LBN4pF3K0ZutYKQhxK88OqNrnB5imSdg=;
+        b=Z+UiSwxBDIwtD+2g0eo5wo64pzPXulBBjjhf1qhW/+fEht+5ZeHHkLNUU7wXry5iM7
+         By7l4Fm+XiWS1Tg+prU+wbNFhPyWw4Jtg9w0Ajbi0zig67FIJSmbIg47JNe9aamGVSgr
+         A94izRTE7VZ3qOZdp5YzIQ76lwSZgkOEQTZkMzacpCmxaZs4YD36CbEuOcBQo54ys62h
+         N/E1QaK/HLLVzilrI/d9zYbxNvgojrFpmaV0lmeE+sVsC7t+HNU/6azeihoXZ778sgsN
+         tF/UPIDy/rDcP43erJom+eMtOybJAXr2gCJL09RC0KU7mhiy7awMS56Ovp2ZmlCyeUU4
+         oXkQ==
+X-Gm-Message-State: AOAM533WxCRqBgqLh47GFJKMkb63e2VJZ0RxICsqBJICw06F2f9zAj+T
+        EjE4CNPVmZOUBOKh7LNl5UI=
+X-Google-Smtp-Source: ABdhPJxovtG1D0Fot4E8Ew3GMkcLEccAn63mgGRJukQKSDrr3HmzGB9YyasYq1faWHa1UCmdrEzPog==
+X-Received: by 2002:a17:90a:a4cb:: with SMTP id l11mr5354691pjw.144.1615306901813;
+        Tue, 09 Mar 2021 08:21:41 -0800 (PST)
+Received: from localhost.localdomain ([60.243.212.85])
+        by smtp.gmail.com with ESMTPSA id 21sm9345958pgf.69.2021.03.09.08.21.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Mar 2021 08:21:40 -0800 (PST)
+From:   Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+Subject: [PATCH] libtracefs: An API to set the filtering of functions
+Date:   Wed, 10 Mar 2021 21:51:27 +0530
+Message-Id: <1615393287-12344-1-git-send-email-sameeruddin.shaik8@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
->We are happy to have you working with us.
->
->I asked because the API you happened to pick is probably the most
->complex one to implement compared to some of the other APIs listed in the
->bugzilla, which is why I asked if you planned on doing anything with it, as
->it is also one of the more crucial APIs to get right.
+This new API will write the function filters into the
+set_ftrace_filter file.
 
-At first I thought, my work will be done, if I write to that file, but
-complexity
-increased gradually, but let me try, since i have started i will finish this.
+tracefs_function_filter()
 
->So yes, let's go with "const char **" as we want to show that the
->strings will not be modified, and have "const char ***" for errs.
+https://bugzilla.kernel.org/show_bug.cgi?id=210643
 
-okay then i will change the errors declaration alone.
+Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
 
-Thanks
-sameer.
+diff --git a/include/tracefs.h b/include/tracefs.h
+index f3eec62..a2249d0 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -50,6 +50,7 @@ int tracefs_trace_on(struct tracefs_instance *instance);
+ int tracefs_trace_off(struct tracefs_instance *instance);
+ int tracefs_trace_on_fd(int fd);
+ int tracefs_trace_off_fd(int fd);
++int tracefs_function_filter(struct tracefs_instance *instance, const char **filters, const char *module, bool reset, const char ***errs);
+ 
+ /**
+  * tracefs_trace_on_get_fd - Get a file descriptor of "tracing_on" in given instance
+diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
+index e2dfc7b..4e168df 100644
+--- a/src/tracefs-tools.c
++++ b/src/tracefs-tools.c
+@@ -18,6 +18,7 @@
+ #include "tracefs-local.h"
+ 
+ #define TRACE_CTRL	"tracing_on"
++#define TRACE_FILTER      "set_ftrace_filter"
+ 
+ static const char * const options_map[] = {
+ 	"unknown",
+@@ -387,3 +388,96 @@ void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_opt
+ 	if (options && id > TRACEFS_OPTION_INVALID)
+ 		options->mask &= ~(1ULL << (id - 1));
+ }
++
++static int controlled_write(const char *filter_path, const char **filters, const char *module, bool reset, const char ***errs)
++{
++	int flags = reset ? O_TRUNC : O_APPEND;
++	int write_size;
++	char *each_str;
++	int ret = 0;
++	int j = 0;
++	int size;
++	int slen;
++	int fd;
++	int i;
++
++	fd = open(filter_path, O_WRONLY | flags);
++	if (fd < 0)
++		return 1;
++
++	for (i = 0; filters[i]; i++) {
++		slen = strlen(filters[i]);
++		if (!slen)
++			continue;
++
++		if (module)
++			/* Adding 5 extra bytes for ":mod:"*/
++			slen += strlen(module) + 5;
++
++		/* Adding 2 extra byte for the space and '\0' at the end*/
++		slen += 2;
++		each_str = calloc(1, slen);
++		if (!each_str)
++			return 1;
++		if (module)
++			write_size = snprintf(each_str, slen, "%s:mod:%s ", filters[i], module);
++		else
++			write_size = snprintf(each_str, slen, "%s ", filters[i]);
++
++		size = write(fd, each_str, write_size);
++		/* compare written bytes*/
++		if (size < write_size) {
++			if (errs) {
++				errs[j++] = &filters[i];
++				ret -= 1;
++			}
++		}
++		free(each_str);
++	}
++	errs[j] = NULL;
++	close(fd);
++	return ret;
++}
++
++/**
++ * tracefs_function_filter - write to set_ftrace_filter file to trace particular functions
++ * @instance: ftrace instance, can be NULL for top tracing instance
++ * @filters: An array of function names ending with a NULL pointer
++ * @module: Module to be traced
++ * @reset: set to true to reset the file before applying the filter
++ * @errs: A pointer to array of constant strings that will be allocated
++ * on negative return of this function, pointing to the filters that failed.
++ * May be NULL, in which case this field will be ignored.
++ *
++ * The @filters is an array of strings, where each string will be used to set
++ * a function or functions to be traced.
++ *
++ * If @reset is true, then all functions in the filter are cleared before
++ * adding functions from @filters. Otherwise, the functions set by @filters
++ * will be appended to the filter file
++ *
++ * returns -x on filter errors (where x is number of failed filter srtings)
++ * and if @errs is not NULL will be an allocated string array pointing to the
++ * strings in @filters that failed and must be freed with free().
++ *
++ * returns 1 on general errors not realted to setting the filter.
++ * @errs is not set even if supplied.
++ *
++ * return 0 on success and @errs is not set.
++ */
++int tracefs_function_filter(struct tracefs_instance *instance, const char **filters, const char *module, bool reset, const char ***errs)
++{
++	char *ftrace_filter_path;
++	int ret = 0;
++
++	if (!filters)
++		return 1;
++
++	ftrace_filter_path = tracefs_instance_get_file(instance, TRACE_FILTER);
++	if (!ftrace_filter_path)
++		return 1;
++
++	ret = controlled_write(ftrace_filter_path, filters, module, reset, errs);
++	tracefs_put_tracing_file(ftrace_filter_path);
++	return ret;
++}
+-- 
+2.7.4
 
-On Sat, Mar 6, 2021 at 8:35 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Sat, 6 Mar 2021 07:25:18 +0530
-> Sameeruddin Shaik <sameeruddin.shaik8@gmail.com> wrote:
->
-> > i have one doubt.
-> > >Note, @filters should be of type: const char * const * filters,  as not
-> > >only is filters pointing to constant strings, the array itself will not be
-> > >modified.
-> >
-> > what If the user wants to capture the filters at run time like below ?
-> > let's say
-> >
-> >   filters = malloc(sizeof(char *));
-> >         if (!filters)
-> >                 return 1;
-> >         printf("please enter the input filters count\n");
-> >         scanf("%d", &fil_count);
-> >         while(i < fil_count) {
-> >                 scanf("%s", buf);
-> >                 slen = strlen(buf);
-> >                 if (!slen)
-> >                         return 1;
-> >                 filters[i] = calloc(1, slen);
-> >                 strncpy(filters[i++], buf, slen);
-> >         }
-> > at that time, this declaration will be problematic right?, because we
-> > are trying to modify
-> > the read-only memory. Are we expecting the user to supply filters at
-> > compile time like below?
-> > const char * const *filters = {"kvm_pmu_reset", "kvm_pmu_init",
-> > "dir_item_err", NULL};
->
-> OK, my apologies, I see the issue that you are having, and you are
-> correct.
->
-> Because newer compiles will warn if you pass "char **" to a
-> "const char * const *" parameter. Because it assumes that the two types
-> are different, even when they shouldn't be. I'm not sure why the
-> compiler wont let you pass in a char ** to a const char * const *, but
-> it does indeed make them different.
->
-> Even though there's ways to always pass strings via this logic, (you
-> can create a "const char **" array and assign it to the dynamic one,
-> and pass that in just fine). I looked at other prototypes, and see that
-> the common method is.
->
->  const char **
->
-> A couple do the "const char * const *" but they look to be special
-> cases.
->
-> So yes, let's go with "const char **" as we want to show that the
-> strings will not be modified, and have "const char ***" for errs.
->
-> Thanks!
->
-> -- Steve
