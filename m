@@ -2,121 +2,207 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EE25C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Mar 2021 14:16:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20854C433E6
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Mar 2021 14:44:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3BCDA64FF2
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Mar 2021 14:16:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C320C64FEB
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Mar 2021 14:44:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhCKOQ0 (ORCPT
+        id S233878AbhCKOoO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Mar 2021 09:16:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233522AbhCKOQC (ORCPT
+        Thu, 11 Mar 2021 09:44:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233684AbhCKOoE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:16:02 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23713C061574
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Mar 2021 06:16:02 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id mj10so46498952ejb.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Mar 2021 06:16:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1gpgS6euXNIYPRL3jo6ffWEdSULacT1k0Qqy3hrRFLE=;
-        b=GkwY2jWAI+dOaz82Tr5LRD3lgkkGw5/dlqYXko93cvXtrVWlChoANud6arlD55361D
-         WYLrshdbx2sW64qb+gs2mVCj9a/HcG9o8o12Vz+sYOpRWBeSQr1vJ0GElQP+cop45UJ+
-         F4F0vada0gFJXlv8GXVn7BwUSQsQ3AagVtCtZLqRyIXGO5BLOS6HbXIJXEvu1yQH6hsY
-         OO5r6k/QYyEoD8vkBfUXh64K0r3/JCF6BFK17YfxJmaitxq/aPa8VT8qld17ThW+Q+eu
-         P/vI6trsfEJHKp3N9Yaj6tjJBat4ZHVs+QHNUMuYZc7rdNT+QW85a4eKIZk5dLv266+o
-         miKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1gpgS6euXNIYPRL3jo6ffWEdSULacT1k0Qqy3hrRFLE=;
-        b=N3x55wQEfN3WmB6J2aGu4Y+38BEfNsvuBtUprZ31bu9X1FkA6C5vBi9qKIegTG7jAt
-         5oav1pLYaU6MyB1ljdYysN5XcX0Q3ln26Ow9SxgPZPGyi120BBYiV+jCuMdYUapAe0pv
-         hTmWc0Qvxos7uLJCz/B/II3m1W1yoq5XRnFSkf3CzRB5J+x6aIlOZCD6ZgOZfyj8Z+YY
-         941naWNOelFEhd48dJzMRSjoPeYvd9eZOL/HVDNdaYHUAxNIU9GPM5SVcB8/QMYQ7osR
-         ZxR51wG2vuLaNidDxu2jq+IyVBDY9BE8eqxrjrp3lrmCC51y4gPW1p/TY/nwdSeZu9YC
-         M1Eg==
-X-Gm-Message-State: AOAM5320kevic8VM2IsbGUDG7luJFhzpWSRHDpnLeUMx577YCT/euGnW
-        zamqJ+aTBlswc3Amx3Jgn62onUtelRTVpg==
-X-Google-Smtp-Source: ABdhPJynNsDV3aNoUGucLXf5YwlXO8WSGnMl5TZXeqPIEbtttiBjR/qHYd65Itw0zhJvRtC6FPIN2g==
-X-Received: by 2002:a17:906:3295:: with SMTP id 21mr3287996ejw.88.1615472160656;
-        Thu, 11 Mar 2021 06:16:00 -0800 (PST)
-Received: from [192.168.0.109] ([84.40.73.174])
-        by smtp.gmail.com with ESMTPSA id p19sm1398274edr.57.2021.03.11.06.16.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 06:16:00 -0800 (PST)
-Subject: Re: [PATCH] kernel-shark v2: Change the logic for opening trace-cmd
- files
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-References: <20210310121135.1620453-1-tz.stoyanov@gmail.com>
- <20210310164839.475d10be@gandalf.local.home>
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <42d08f5e-d681-715b-9f40-5763c4332394@gmail.com>
-Date:   Thu, 11 Mar 2021 16:15:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 11 Mar 2021 09:44:04 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CA2E64E55;
+        Thu, 11 Mar 2021 14:44:03 +0000 (UTC)
+Date:   Thu, 11 Mar 2021 09:44:01 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Dario Faggioli <dfaggioli@suse.com>
+Subject: Clock sync priorities
+Message-ID: <20210311094401.7c6bf259@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210310164839.475d10be@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+Hi Tzvetomir,
+
+I took a look at the following options:
+
+  trace-cmd record : --date , --ts-offset
+
+  trace-cmd report : --ts-offset , --ts2secs
+
+And thought about how this will be affected by the the new host-guest
+sync, and the tsc2nsecs.
+
+Note, all of this is if the user does not specify -C on the record command
+line. If the user specifies a clock, then only the host-guest in this is
+done, but the tsc2nsecs is *not* performed.
+
+1) trace-cmd record --date
+
+man page:
+
+  --date
+           With the --date option, "trace-cmd" will write timestamps into
+           the trace buffer after it has finished recording. It will then
+           map the timestamp to gettimeofday which will allow wall time
+           output from the timestamps reading the created trace.dat file.
+
+My thought is this:
+
+  raw time stamp (what is recorded in each event)
+
+  + host-guest sync (for guest trace.dat files)
+
+  + tsc2nsecs
+
+  + conversion to wall time.
+
+That is, the --date will work on the raw time stamp plus the conversion to
+host and then to nanoseconds, and then convert that to wall time.
+
+2) trace-cmd record --ts-offset
 
 
-On 10.03.21 г. 23:48, Steven Rostedt wrote:
-> On Wed, 10 Mar 2021 14:11:35 +0200
-> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-> 
->> From: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
->>
->> The logic for opening a trace file by trace-cmd library has changed.
->> Any timestamp corrections, found in the trace file metadata are applied
->> automatically. The old APIs, used by KernelShark for pairing trace files
->> from the same host-guest traceing session and adjusting timestamps are
-> 
->   s/traceing/tracing/
-> 
->> now obsolete and should not be used.
->>
->> Signed-off-by: Tzvetomir (VMware)  Stoyanov <tz.stoyanov@gmail.com>
-> 
-> The from and SOB should be Tzvetomir Stoyanov (VMware), unless you changed
-> your middle name to (VMware) ;-)
-> 
-> As for the rest of the patch.
-> 
-> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+man page:
 
-Hi Steven,
+  --ts-offset offset
+           Add an offset for the timestamp in the trace.dat file. This will
+           add a offset option into the trace.dat file such that a
+           trace-cmd report will offset all the timestamps of the events by
+           the given offset. The offset is in raw units. That is, if the
+           event timestamps are in nanoseconds the offset will also be in
+           nanoseconds even if the displayed units are in microseconds.
 
-Thanks a lot for the review!
+I think we can do the same thing as with the --date.
 
-Have you tested that this works with the Timestamp synchronization 
-patches that are not upstreamed yet?
+  raw time stamp (what is recorded in each event)
+
+  + host-guest sync (for guest trace.dat files)
+
+  + tsc2nsecs (only if -C is not specified)
+
+  + add offset.
+
+
+3) trace-cmd report --ts-offset
+
+man page:
+
+  --ts-offset offset
+           Add (or subtract if negative) an offset for all timestamps of
+           the previous data file specified with -i. This is useful to
+           merge sort multiple trace.dat files where the difference in the
+           timestamp is known. For example if a trace is done on a virtual
+           guest, and another trace is done on the host. If the host
+           timestamp is 1000 units ahead of the guest, the following can be
+           done:
+
+               trace-cmd report -i host.dat --ts-offset -1000 -i guest.dat
+
+               This will subtract 1000 timestamp units from all the host events as it merges
+               with the guest.dat events. Note, the units is for the raw units recorded in
+               the trace. If the units are nanoseconds, the addition (or subtraction) from
+               the offset will be nanoseconds even if the displayed units are microseconds.
+
+
+Again, I think we can do the following:
+
+  raw time stamp (what is recorded in each event)
+
+  + host-guest sync (for guest trace.dat files)
+
+  + tsc2nsecs (only if in trace.dat files)
+
+  + add offset (in nano seconds if -C was not specified in record)
+
+
+The rationale is that is that we should be processing what the user sees.
+If they see nanoseconds (regardless if its truncated to microseconds) then
+the --ts-offset should be in nanoseconds.
+
+4) trace-cmd report --ts2secs
+
+man page:
+
+  --ts2secs HZ
+           Convert the current clock source into a second (nanosecond
+           resolution) output. When using clocks like x86-tsc, if the
+           frequency is known, by passing in the clock frequency, this will
+           convert the time to seconds.
+
+               This option affects any trace.dat file given with *-i* proceeding it.
+               If this option comes before any *-i* option, then that value becomes
+               the default conversion for all other trace.dat files. If another
+               --ts2secs option appears after a *-i* trace.dat file, than that option
+               will override the default value.
+
+               Example: On a 3.4 GHz machine
+
+               trace-cmd record -p function -C x86-tsc
+
+               trace-cmd report --ts2ns 3400000000
+
+               The report will convert the cycles timestamps into a readable second
+               display. The default display resolution is microseconds, unless *-t*
+               is used.
+
+               The value of --ts-offset must still be in the raw timestamp units, even
+               with this option. The offset will be converted as well.
+
+
+This is the one exception, and done differently. But I think we should
+still process the host-guest conversion first. But when this specified,
+then it overrides the tsc2nsecs in the trace.dat file.
+
+  raw time stamp (what is recorded in each event)
+
+  + host-guest sync (for guest trace.dat files)
+
+  + use --ts2secs instead of tsc2nsecs
+
+
+5) trace-cmd report --ts2secs --ts-offset
+
+Now if someone were to add both --ts2secs and --ts-offset, we should do the
+same as --ts-offset and replace the tsc2nsecs with what is in the --ts2secs.
+
+  raw time stamp (what is recorded in each event)
+
+  + host-guest sync (for guest trace.dat files)
+
+  + use --ts2secs instead of tsc2nsecs
+
+  + add offset (in nano seconds if -C was not specified in record)
+
+
+Does this make sense?
+
+Dario, feel free to comment on this as well. The host-guest is the
+information stored in each guest file that tells it how its TSC matches the
+host (if -C is not used in the record). The ts2nsecs is done on the host
+where it reads the perf data to find out how the kernels converts the TSC
+to nanoseconds, and this information is stored in each trace.dat file (host
+and guest). This email is about how those will affect the current options
+listed above.
 
 Thanks!
-Yordan
 
-
-> 
-> -- Steve
-> 
+-- Steve
