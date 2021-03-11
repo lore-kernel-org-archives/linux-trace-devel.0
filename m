@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B47FC4332E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C05EC43331
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Mar 2021 08:49:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1A6F464FC4
+	by mail.kernel.org (Postfix) with ESMTP id 60F0664FBB
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 11 Mar 2021 08:49:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhCKIts (ORCPT
+        id S231571AbhCKItt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 11 Mar 2021 03:49:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
+        Thu, 11 Mar 2021 03:49:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231700AbhCKItT (ORCPT
+        with ESMTP id S231755AbhCKItX (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:49:19 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F101C061574
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Mar 2021 00:49:19 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id p8so44503179ejb.10
-        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Mar 2021 00:49:19 -0800 (PST)
+        Thu, 11 Mar 2021 03:49:23 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D8FC061574
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Mar 2021 00:49:23 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id dm8so1527553edb.2
+        for <linux-trace-devel@vger.kernel.org>; Thu, 11 Mar 2021 00:49:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lz7i5CVQ8hJ13/3J0CL0Vw1ZQNOv4KoXY5o1XgGysU0=;
-        b=vgSaoKbD7A9EvcZO0J4QEslNM+AeDwHzCtBvQLdgpswfOUBhvaarNllDoFrsTpK9G6
-         c0V3JpMt2s9tc3dlKnN6XhzWEmDOIWKejaG5COihnbqeeV1X5S+o8P8Lw79U5E5uXF4Q
-         pkDMzwYfGjoFAev1Kz2fzyBjrKD0X2IlPB0CLbH4YD10jm4afElODcRi2n+zNgYmPS3e
-         IWD36QsBRSVUHGZ2ieYDe101n7guO+4FGzbjR3N5DccgpzRAxhdgi6FNJeVK1u31ByEk
-         297ULGfyVONgVtvkszqbXKpkqaWtD/1p7e12Lqne57pOOWyVBKlxnthP37LAfrQn+SvS
-         mjRw==
+        bh=RICwZa/SJTEbfo0d3e5OR2tYOHLkAgRWMHeH7N1IA2Q=;
+        b=DbYAeNB+19zFBs/9HDvdZlAn6NFEkfMj8RRZZvpSg90PKXkRnLgT8oSZkkVM3g7T8v
+         cDbyJSirjl7/YenyRS2ujHxAgpVTRtEoAWyfpjzyOEECpEnmzujhJ0E5vYNgXH7baNR0
+         CiF9FFig2a4ngYQ3U9Tq387VCg5OtbXEAHqm3jAMjJLGLSfwlGFvDUE9fWjVio52zGJJ
+         Hc4qOHBF6nWfccsQkJ3S6ubGr8cUc0FV7FWd//XciE+PzehhtUXc/gN0nPCC9rbGo67j
+         Dz1ekRvAswMcqpA0jhMEyICfJtqAW3GHpoav95Isd2ecNMnbm/2V1B9dpJ509tGkNavY
+         bDrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lz7i5CVQ8hJ13/3J0CL0Vw1ZQNOv4KoXY5o1XgGysU0=;
-        b=PgrgkAfjWYXhdjZrRO3jyKymyIlw8JrJiT8uW0xJcvDKIFf0vgjFi7BbujT4/Msj9R
-         JXxlLSnLR8YeNK0zTatE2WcDTez5UuaCV9fiAdsaDfanafSD4LY57GF2Gg5MJsQTWIH1
-         Wks/lIBwvCEiIikGw/M4gOb6ynavj+Msc5xSpC9hxQsB/Lvuz6OikEZ7V2laEK2pPzp5
-         wxeaPcVGrfrygBtnJAB6ki49FRLAR6GDKyxRpnDirLfmRnTOQrZoctZHn3hoek9zOOBD
-         ehge2qX/DvH2rJpGz3sfOTmSi7HPFfYfb5tUkz+KwyCcTv6/tGJ6U0IAUooXtKL7UPl+
-         6jwg==
-X-Gm-Message-State: AOAM532IgTnFt4Bajw27ElfpAZrdpyBIl3K3rgALrbWPytrUjhoaA3jp
-        Go3rAERgWz1zoRbk46uLCz8=
-X-Google-Smtp-Source: ABdhPJxxsWwK2beoQMu1cgK8ITHSweYdhx/xFSnfXOgO7zTu6AJbmub3RPv9WQPOaKb1TG7al3FT2w==
-X-Received: by 2002:a17:906:c24b:: with SMTP id bl11mr2118032ejb.80.1615452558312;
-        Thu, 11 Mar 2021 00:49:18 -0800 (PST)
+        bh=RICwZa/SJTEbfo0d3e5OR2tYOHLkAgRWMHeH7N1IA2Q=;
+        b=PMCIzX/ERrbrYAFtlJUe2rOynEg3l8JZRjF7omBkApVBJOYrkUBkvgbh/aPjJS8riB
+         oGlZi3IZ32nTFHi5vWLli4+R9i4bOZIY9ipZ+v9GjTEhTzQ+dAPpqL75/TnrnWw7C+9N
+         diete8WeohoqWG0y5CJZNb+bf7+/8bH1fxiBvTEoc5wWYQTIkaLITbj0ABf288Rh/6A1
+         ohtDTiSBpKbjrq76T8x/eUMLA2yUTMaOn3zwfUhH4qjhUnWdxW1qCZnyF9eAVJbnhLgu
+         X9X6XKaPQSBgmSwnLp2RghiAzqGL6OStNhKOC1m9VvOlMrYftHeRUZ6EQKa9I+xoRsjy
+         7O+A==
+X-Gm-Message-State: AOAM533PT4pNpT7L/679oy/npsUoXcKrSY7N2R0Kx8+5g1C3N8wLYRrD
+        RQgLp3/HGiQuOHhxMA6cQFqrjcvQZRVp1Q==
+X-Google-Smtp-Source: ABdhPJwPVNIMVAf3KpXdIMdE/etyETbgmK5nam01CdIlrzuEicVKwx9hBeUl+pyGNXvBFeAVL4pmCA==
+X-Received: by 2002:a05:6402:51cd:: with SMTP id r13mr7513082edd.116.1615452562236;
+        Thu, 11 Mar 2021 00:49:22 -0800 (PST)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id fi11sm901647ejb.73.2021.03.11.00.49.17
+        by smtp.gmail.com with ESMTPSA id fi11sm901647ejb.73.2021.03.11.00.49.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 00:49:17 -0800 (PST)
+        Thu, 11 Mar 2021 00:49:21 -0800 (PST)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v31 12/16] trace-cmd: Save information for tsc to nanoseconds conversion in trace file
-Date:   Thu, 11 Mar 2021 10:48:53 +0200
-Message-Id: <20210311084857.1919805-13-tz.stoyanov@gmail.com>
+Subject: [PATCH v31 16/16] trace-cmd: Convert tsc timestamps to nanosecods when reading trace data from a file
+Date:   Thu, 11 Mar 2021 10:48:57 +0200
+Message-Id: <20210311084857.1919805-17-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210311084857.1919805-1-tz.stoyanov@gmail.com>
 References: <20210311084857.1919805-1-tz.stoyanov@gmail.com>
@@ -73,69 +73,60 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Store multiplier and shift, required for TSC clock to nanosecond
-conversion in the metadata of the trace file.
+If there is information for TSC to nanoseconds conversion in the trace
+file metadata, use it to recalculate the timestamps of all events.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ lib/trace-cmd/trace-input.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 15521d0d..1313af03 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -666,6 +666,17 @@ static void delete_thread_data(void)
- 	}
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 60a59873..66483cc8 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -1287,17 +1287,37 @@ static unsigned long long timestamp_correct(unsigned long long ts, int cpu,
+ 					 &tsync->ts_samples[mid+1]);
  }
  
-+static void
-+add_tsc2nsec(struct tracecmd_output *handle, struct buffer_instance *instance)
++static unsigned long long mul_u64_u32_shr(unsigned long long a,
++					  unsigned long long mul, unsigned int shift)
 +{
-+	int array[] = { instance->tsc2nsec.mult,
-+			instance->tsc2nsec.shift,
-+			instance->tsc2nsec.offset};
++	unsigned int ah, al;
++	unsigned long long ret;
 +
-+	tracecmd_add_option(handle, TRACECMD_OPTION_TSC2NSEC,
-+			    sizeof(array), array);
++	al = a;
++	ah = a >> 32;
++
++	ret = (al * mul) >> shift;
++	if (ah)
++		ret += (ah * mul) << (32 - shift);
++
++	return ret;
 +}
 +
- static void host_tsync_complete(struct buffer_instance *instance)
+ static unsigned long long timestamp_calc(unsigned long long ts, int cpu,
+ 					 struct tracecmd_input *handle)
  {
- 	struct tracecmd_output *handle = NULL;
-@@ -680,6 +691,16 @@ static void host_tsync_complete(struct buffer_instance *instance)
- 		handle = tracecmd_get_output_handle_fd(fd);
- 		if (!handle)
- 			die("cannot create output handle");
-+
-+		/*
-+		 * If  TSC is used as current trace clock and there is
-+		 * information for tsc to nanosecond conversion, store it
-+		 * in the trace file
-+		 */
-+		if (instance->tsc2nsec.mult && instance->clock &&
-+		    !strncmp(top_instance.clock, TSC_CLOCK, strlen(TSC_CLOCK)))
-+			add_tsc2nsec(handle, instance);
-+
- 		tracecmd_write_guest_time_shift(handle, instance->tsync);
- 		tracecmd_append_options(handle);
- 		tracecmd_output_close(handle);
-@@ -4269,6 +4290,15 @@ static void record_data(struct common_record_context *ctx)
- 				add_guest_info(handle, instance);
- 		}
+-	unsigned long long tstamp;
++	unsigned long long t;
  
-+		/*
-+		 * If  TSC is used as current trace clock and there is
-+		 * information for tsc to nanosecond conversion, store it
-+		 * in the trace file
-+		 */
-+		if (top_instance.tsc2nsec.mult && top_instance.clock &&
-+		    !strncmp(top_instance.clock, TSC_CLOCK, strlen(TSC_CLOCK)))
-+			add_tsc2nsec(handle, &top_instance);
-+
- 		if (tracecmd_write_cmdlines(handle))
- 			die("Writing cmdlines");
+-	tstamp = timestamp_correct(ts, cpu, handle);
++	t = timestamp_correct(ts, cpu, handle);
  
+ 	if (handle->ts2secs)
+-		tstamp *= handle->ts2secs;
++		t *= handle->ts2secs;
++	else if (handle->tsc_calc.mult) {
++		t = mul_u64_u32_shr(t, handle->tsc_calc.mult, handle->tsc_calc.shift);
++		t += handle->tsc_calc.offset;
++	}
+ 
+-	return tstamp;
++	return t;
+ }
+ 
+ /*
 -- 
 2.29.2
 
