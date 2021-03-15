@@ -2,153 +2,116 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8F20C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Mar 2021 13:04:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 198FEC433E6
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Mar 2021 06:19:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8F10E64FF5
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 12 Mar 2021 13:04:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E315264E46
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 15 Mar 2021 06:19:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbhCLNDg (ORCPT
+        id S229679AbhCOGS6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 12 Mar 2021 08:03:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        Mon, 15 Mar 2021 02:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbhCLNDF (ORCPT
+        with ESMTP id S229807AbhCOGSh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:03:05 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32CAC061574
-        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Mar 2021 05:03:04 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id c10so53114635ejx.9
-        for <linux-trace-devel@vger.kernel.org>; Fri, 12 Mar 2021 05:03:04 -0800 (PST)
+        Mon, 15 Mar 2021 02:18:37 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8AF5C061574
+        for <linux-trace-devel@vger.kernel.org>; Sun, 14 Mar 2021 23:18:36 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id ci14so64047743ejc.7
+        for <linux-trace-devel@vger.kernel.org>; Sun, 14 Mar 2021 23:18:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GIj+NHB5cl/XvVneyOHUIM8LUy4woLPBC/u8KdOhflQ=;
-        b=BuNQyXuAvwgdO2Z3tjtbBIbPyRWzp+Cdfp3i6yqDXPQ6StE830fiRGBJ+KrfqbjrmG
-         Bft5PNkYoRgbXourizcvnL/rUtch9v1eZA7iAvcv5BSUl97bAHYVOaQ2ZrE7ry9eqy/5
-         GxEBkwwWwuGqvZme/URmDsmUIS7FvZh8Evyw0BdNZvArI+KAnfPnDtK6yz3rqUxareW3
-         PZ1se4yuyzgkXs5Aa4ptYejiolJ99GxNfsm2cZU3qfKTxxnWqucAKzQQ0wl7ih9zNg2Q
-         KhtGz9dqap2lrfs+96K7vDQA18neV62QJIcelk2X4hfUTeR+Pmk0hESeUjKH5/xUJu6H
-         Roow==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7LjZKMCNAOLyrEL9+3T30f39dgJ5/eW+1mlRZOvw+Fo=;
+        b=lkP5tW5PMr76IqJtc1wbgRasfp4DKejroGQzk6SM8mFeJZDsl8SDfW1zABe5ShUlYH
+         uNRX4MKekpgdU3+IsEeCBoOc2BAO3lAp5p+/rzMc9NwYYWK2SwQThLxl8K01qjTK2e/6
+         OyRQmxFVy5S2rxrkJWkTamublsGEqsAU0Imm0rWgfcFpD7oJfIThmdLV1DI9GnxYSJ7P
+         1jRgR7bCmstqcX0QW+aAow6LSI+nMNHwbjIYWrYRnXFn3VsLdODhdZtjWIGwG3eEU7IJ
+         91bReA9LBs4cfwMVyjDdT2NLKE6aLNJdPm8Md0wW46UqEs/tscjcDdm+x80GA+KEGqLi
+         /PrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=GIj+NHB5cl/XvVneyOHUIM8LUy4woLPBC/u8KdOhflQ=;
-        b=hTtT01JjN1tUbodOr0iFapYkfyRjfBVtLD2zvQ2VgQ86x9xcvDzN+Y+5XBUjVAVwVT
-         QMXg5rUmRvFALHc1Owab0v09UhHEuyUGN/XpDCjrbCuzVSEugm7AT+gHSgqBKWx9w3H7
-         CL1apPXWSHrYSCCSnHPIK6aEx5H4vhVk+FJoSHp/AgUeLd9UHy3Q84U6OvmY6eD4IEp/
-         5ZE2XPGFNIzf+CIY1lrFuG6P+Pb9+N7CBFUEfn8mDsTfJQAI4WuE2ZKd7przyV3F/k0y
-         f4F0ReBPZYzgL8d7xoAsmssi0VAEFnIatNynYIipqrtGuFS3TDnYEeDW5TRLLVf9Lg4t
-         0/Eg==
-X-Gm-Message-State: AOAM5331bbOQn31HuajczE97iwIcBvMr0FObtSfjitXGDc/Kv2r8zioa
-        kWB8Bw/RKxQu/ojNxDJdLqrQh//Yor4dag==
-X-Google-Smtp-Source: ABdhPJyhygCEZYDtu1iU+oyMJHZqsOZnu4Y2DQIpXwTUdHaf2fMdWYrUarckIeuyjhqDJiErCT3lyA==
-X-Received: by 2002:a17:907:7651:: with SMTP id kj17mr8485909ejc.127.1615554183192;
-        Fri, 12 Mar 2021 05:03:03 -0800 (PST)
-Received: from [192.168.0.108] ([84.40.73.174])
-        by smtp.gmail.com with ESMTPSA id o1sm2876794eds.26.2021.03.12.05.03.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Mar 2021 05:03:02 -0800 (PST)
-Subject: Re: [PATCH v2] kernel-shark: Do not hardcode /usr prefix for polkit
- policies
-To:     Dario Faggioli <dfaggioli@suse.com>,
-        Michal Sojka <michal.sojka@cvut.cz>,
-        Steven Rostedt <rostedt@goodmis.org>
+        bh=7LjZKMCNAOLyrEL9+3T30f39dgJ5/eW+1mlRZOvw+Fo=;
+        b=hVa22HKJJeMjC1JpervJNcr0CSVcf5QRoxebNzKKjYwlz4awHIypa6yZNQbcoCYMLi
+         24gBlObyoPGDAl1/XJF241WzU+a1SWJMqe6em7wNEzQFd9OFwmwzHpqkd40aV4GvkjBm
+         4pqHEhso2mnF+wcvVW/JZc0zzEyyl9u3msbHnBkj768fct6PDfxeeZyWgS8OmM6AblXn
+         QZpfJ1Jj/V/66+lTaGVZjGfXpBC1d9WHk0hF9wldpB9fVQCtv1kvH3tt8Ht5PCkFH6zY
+         7dmn1mKYXXOAxtYbD2Vu3m9IXMStOBXR5TjIjMPwv5xpgrc8uoEQr2P0VSx3LyD+XG9E
+         Yr/g==
+X-Gm-Message-State: AOAM5316YQkMXK1gK98oFqYOU745+sBo8CmAN5KQYENE3BpgmCKpDzYK
+        1esNJa7f/us6LQZwE034Zgg=
+X-Google-Smtp-Source: ABdhPJw0GS8qySEBPYJkUIXspbTHguYKonRnm9/qeF1pRVJQa7gjB1R9qBoiDUqDZfNb7MB5qbELqA==
+X-Received: by 2002:a17:906:5849:: with SMTP id h9mr22068516ejs.551.1615789115476;
+        Sun, 14 Mar 2021 23:18:35 -0700 (PDT)
+Received: from localhost.localdomain ([130.185.229.134])
+        by smtp.gmail.com with ESMTPSA id t6sm7468478edq.48.2021.03.14.23.18.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 23:18:35 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-References: <87mtv97nlj.fsf@steelpick.2x.cz>
- <20210311145059.27147-1-michal.sojka@cvut.cz>
- <cf3243d3-65e0-18cd-0a20-81739552c105@gmail.com>
- <87k0qd7evn.fsf@steelpick.2x.cz>
- <1aaeb84b-2820-0818-4ab6-fcfd7b5fa52c@gmail.com>
- <58b5888bfe22ee3825362492fab34fe3d0d493d9.camel@suse.com>
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Message-ID: <f0289bb7-1c80-bb6a-9f66-6cb08563ffa7@gmail.com>
-Date:   Fri, 12 Mar 2021 15:02:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Subject: [PATCH 00/12] TSC trace clock to nanosecond conversion
+Date:   Mon, 15 Mar 2021 08:18:20 +0200
+Message-Id: <20210315061832.168495-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <58b5888bfe22ee3825362492fab34fe3d0d493d9.camel@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Dario and Michal,
+Added new logic for converting TSC event's timestamps to nanoseconds. This
+trace clock is used by default in host-guest tracing session in combination
+with KVM time sync plugin. The parameters for conversion are retrieved by
+the perf kernel interface.
+New option is added to "trace-cmd report" command to force displaying raw
+time stamps from the trace file, without any corrections to the time stamps.
 
-On 12.03.21 г. 13:47, Dario Faggioli wrote:
-> On Fri, 2021-03-12 at 08:46 +0200, Yordan Karadzhov (VMware) wrote:
->> Hi Michal,
->>
-> Hey Michal! Nice to see you here too... well, it's a small world, I
-> guess? :-P
-> 
->> On 11.03.21 г. 19:57, Michal Sojka wrote:
->>> You're right. I looked at polkit sources and it really seems that
->>> only
->>> one location is supported. It is determined at configuration time
->>> so on
->>> some systems it may be different from /usr/share/... I'm talking
->>> specifically about NixOS, but it already has the patch I sent.
->>>
->>> So I leave it up to you whether to apply the patch or not. I think
->>> that
->>> supporting seamless installation into $HOME is useful if one wants
->>> to
->>> quickly use a newer version not available in their distribution.
->>
->> Building, installing as root and testing the latest version shouldn't
->> cause any problems/conflicts on your system. Note that there is a
->> script
->> in kernel-shark/build called "cmake_uninstall.sh". It is guaranteed
->> that
->> this script removes every single file that has been installed.
->>
-> Not completely sure, but since NixOS is being mentioned, I think at
-> least part of the point here is  making sure that a development/testing
-> version of KS can be installed in those "special" systems that have
-> read-only filesystems (or similar configurations).
-> 
-> In such a system, even if you are root, if the makefile tries to put
-> stuff in a part of the fs which is not writable, it's pretty much
-> game-over.
-> 
-> In fact, I don't know much about NixOS, but I'm on one of those
-> "immutable" systems myself (openSUSE MicroOS, FTR) so I can relate. :-)
+These changes depend on "Refactoring and improvements of time sync logic"
+patch set.
 
-OK, now I see your problem. Please excuse my ignorance.
+Tzvetomir Stoyanov (VMware) (12):
+  trace-cmd: Add initial perf interface in trace-cmd library
+  trace-cmd: Add logic for TSC to nanosecond conversion
+  trace-cmd: Append new options into guest trace file at the end of the
+    tracing session
+  trace-cmd: Add a new option in trace file metadata for tsc2nsec
+    conversion
+  trace-cmd: Save information for tsc to nanoseconds conversion in trace
+    file
+  trace-cmd: Read information for tsc to nanoseconds conversion from
+    trace file
+  trace-cmd: Remove unneeded multiply in events timestamp reading
+  trace-cmd: Perform all timestamp corrections in a single function
+  trace-cmd: Convert tsc timestamps to nanosecods when reading trace
+    data from a file
+  trace-cmd: Set order and priorities when applying timestamp
+    corrections
+  trace-cmd: Add a new flag to disable any timestamp corrections
+  trace-cmd: Add new parameter "--raw-ts" to "trace-cmd report" command
 
-Here's the deal. What you want can be achieved with an almost trivial 
-patch in kernelshark 2. Have a look here:
+ lib/trace-cmd/Makefile                        |   1 +
+ .../include/private/trace-cmd-private.h       |  16 ++
+ lib/trace-cmd/trace-input.c                   |  96 ++++++++---
+ lib/trace-cmd/trace-perf.c                    | 105 ++++++++++++
+ lib/trace-cmd/trace-timesync.c                |   1 -
+ tracecmd/include/trace-local.h                |   7 +
+ tracecmd/trace-dump.c                         |  18 ++
+ tracecmd/trace-read.c                         |   9 +-
+ tracecmd/trace-record.c                       | 155 +++++++++++++++---
+ 9 files changed, 358 insertions(+), 50 deletions(-)
+ create mode 100644 lib/trace-cmd/trace-perf.c
 
-https://git.kernel.org/pub/scm/utils/trace-cmd/kernel-shark.git/tree/src/CMakeLists.txt#n129
+-- 
+2.29.2
 
-and make the installation of the policy file to be a separate component.
-Make the installation of "kshark-su-record" part of the new component as 
-well since it relies on the policy file. I guess "kernelshark.desktop" 
-must be there as well.
-
-Then you can edit the helper script "install_gui.sh" and make it install 
-your new component as well. You can also add another helper script that 
-install only the part you want. Send me a patch and I will take it.
-
-Thanks!
-Yordan
-
-> So, although it's definitely a niche use-case (for now!! :-P), I think
-> that either this patch, or at least not making the above issue fatal
-> (as you're saying yourself) would make the life of some users easier.
-> 
-> Regards
-> 
