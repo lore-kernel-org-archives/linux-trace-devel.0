@@ -2,210 +2,264 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3031C433E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Mar 2021 03:44:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F752C433E0
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Mar 2021 04:24:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 668D464F06
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Mar 2021 03:44:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AEC8B64EED
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Mar 2021 04:24:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhCRDnP (ORCPT
+        id S229512AbhCREXX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 17 Mar 2021 23:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
+        Thu, 18 Mar 2021 00:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhCRDnE (ORCPT
+        with ESMTP id S229454AbhCREXW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 17 Mar 2021 23:43:04 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502BFC06174A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Mar 2021 20:43:04 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id n11so551766pgm.12
-        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Mar 2021 20:43:04 -0700 (PDT)
+        Thu, 18 Mar 2021 00:23:22 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F02BC06174A
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Mar 2021 21:23:22 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id v23so635285ple.9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 17 Mar 2021 21:23:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9R8onw6XU9dOMWO6NJkboopqgYsy0ZkmdRBHamddHLo=;
-        b=kyfB73M03LRRzDuwbCcChM4f/idGcrzvXmKwTiHX7gYLI8qNX8L2XQOFlV48LwsEAJ
-         aTQT22AKvkZ+ZQVHkiW/meig88xIXiRrZUMFUUM5EBdNL1JaiLjHCKUe41MmAdS5ZOY1
-         nCXO+EnUC11BhBWcQ6DJJdL/mYtI5zwZB1SBQ6CbhH7A+4dfvuVuYeKZknf+DXsoH/Mz
-         2/PczaUQ1MMFREcy0E8UNJjGDb5ppeCTCVTd9vMHNa/aBDLVjSAOiUswAnUmdz9AKQc+
-         sT9yWPTQXirtGPODtlEAHZ4WMXElnFXyv67/p7DpEN7F+yq7DapXwtAFK5tnZOSDGbBH
-         6kSQ==
+        bh=Wopp2cKAV7GrQA0t7RhUxS57XuzBy/y8w+7FWqmbrl8=;
+        b=EmzWbaoLPx/GeOBxGeP74bhbMlJWfKDEK11VFB0RnIdBnjqUIYBL4yJv2Phv4yw5z5
+         95W75wOgAc0/rVdzLvoQ4P9ruoBZOYbRCfTMANGVfUMl95ZH3L+TUqF2hiMa6WgkWjHZ
+         hPnXLzzDS0e1cfqO4Ob5PEfunBBDR9XP6uboAOiISLGpURKqZMSToJoyu5FeUvHKH4YZ
+         jdQZ4fQvQD0EEHisJp+YNYYZecl1IpHT/SYF3ZncI4Bp5RzNf3nC8+xDxbqxRZ2LVtP+
+         TZYagbfeD9at8r7hX3Xk3kmXEwHkgfySehuTUmGT9jpvenBEblr/Wxa1Y3GiKM9hPHmZ
+         3BWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9R8onw6XU9dOMWO6NJkboopqgYsy0ZkmdRBHamddHLo=;
-        b=kCM1k4czBY3nnPUeTmfhqLuOgbXNUBjIwU7ffmjK8geAcbDpRuSsALBgfY9tEDOaW4
-         gzlgnNAxDHfNYC8dx8fHs7iH10BBgGrZ+eVAsgLCHUtz6bpBTRaRu8PoKq4fncBZ/+zd
-         a2CBERVKyjeFlS+U6jF3VcUNn81SUOHphwYGZ/2n4NtNf0BnGBrEtNlFI6//23eV+7KJ
-         DlFYXsdqFkz2n73CACFdMqRRFYHXDWCvYtnA6yeRxL6lVjV0KLHd2GTOhIYRh2XWZukI
-         5b9HVV3FLRN0iqvawT35Rf+qMr9Zz5i6NCvIa9EaberlZ07i6XQCDgFHs75bVZNTiQL6
-         pDtw==
-X-Gm-Message-State: AOAM531rkT+ANDPxV9XZIsA0IqbfC2uJJ6yJbqi1otZq1Zm5gEcgGBvz
-        i73nKpa0GDbHrXygT0/QecvAKEqdm5XiLwyO/HM37m0SIrQ=
-X-Google-Smtp-Source: ABdhPJyjdy7AZ6t5ONy++8g+TopkgH84sNRw3ImdEtkaA36R3NWcGGgr9nEYLCeX1AbhDNL9Vi/msWDkPexUEVRdOis=
-X-Received: by 2002:aa7:9394:0:b029:1f4:2b30:4cdb with SMTP id
- t20-20020aa793940000b02901f42b304cdbmr2142684pfe.50.1616038983700; Wed, 17
- Mar 2021 20:43:03 -0700 (PDT)
+        bh=Wopp2cKAV7GrQA0t7RhUxS57XuzBy/y8w+7FWqmbrl8=;
+        b=b6FtJfzYJwY0nWun4pr7DlixRCXzkuFe2tqhBGRSiju57HO1MJ25Rk/j0HE7Y6zOdN
+         D6rGr+OxWP6mkhcZK3kSKS3ftdrDCvIqLY4EfbXiqLuqWT/0V5jQUhk0Pegw5UzPoKuO
+         LnEQnQGIkKW0lB/8Oyu9zGsxjeVzz2sVSqqBPfTI+iuicPgCf56bz0YOKrLL/uS6T+qx
+         nxldeXHzwnm8VijM0nOpEBoijhzjNWgvxpDI/gSLfpuIUwxd4ZjJ0OF7v2Qe4ySzNmfo
+         hNCMK3RpRYW5MrZ2/ZPKALmSpWj4kHPOvam3BwBEi48+6m7hK3zyV7AKdXBGXUsiqb0T
+         P2Ew==
+X-Gm-Message-State: AOAM532DIU698jmgAduHlQCLAMZIpcEr5NzlOpcbPKzS2HBw0T3otkB7
+        L5LhdH5wuIHRn+GnQtMgDBujb+b7YJ1UraC2en4=
+X-Google-Smtp-Source: ABdhPJzEC5388VspIhrs4a7QYvK2VnsQ+bwBWtjDv/P/hi0+H4hqwlbXnGjGWoITsK3YvvG+assYrDzRysS6iPZbuGY=
+X-Received: by 2002:a17:902:dcd4:b029:e6:5398:609f with SMTP id
+ t20-20020a170902dcd4b02900e65398609fmr7646266pll.58.1616041401727; Wed, 17
+ Mar 2021 21:23:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210315061832.168495-1-tz.stoyanov@gmail.com>
- <20210315061832.168495-3-tz.stoyanov@gmail.com> <20210316171749.105af2e7@gandalf.local.home>
- <CAPpZLN7cx_RswVorUCt+9xOG2C2JbS=SDrrgwMbuZBkrdK+ACQ@mail.gmail.com> <20210317174948.42d1ae3f@gandalf.local.home>
-In-Reply-To: <20210317174948.42d1ae3f@gandalf.local.home>
+References: <1616081417-4107-1-git-send-email-sameeruddin.shaik8@gmail.com>
+In-Reply-To: <1616081417-4107-1-git-send-email-sameeruddin.shaik8@gmail.com>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 18 Mar 2021 05:42:47 +0200
-Message-ID: <CAPpZLN5aKmS8Jss=UzgwtcWHNTpw30hP1Bg75U1VMUfGYjwiEA@mail.gmail.com>
-Subject: Re: [PATCH 02/12] trace-cmd: Add logic for TSC to nanosecond conversion
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Date:   Thu, 18 Mar 2021 06:23:05 +0200
+Message-ID: <CAPpZLN6MFmDar-7gvtb7Ke3=NrxWo==2BZQcKc7961ew8YXd7w@mail.gmail.com>
+Subject: Re: [PATCH v2] libtracefs: An API to set the filtering of functions
+To:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:49 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 17 Mar 2021 11:57:31 +0200
-> Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
->
-> > > I would break this up into two patches. One that adds the perf mult shift
-> > > logic, and even allow users to use it! As TSC clocks are still faster than
-> > > the local clock (as the local clock needs to do the multiplier and shift at
-> > > every event while recording). It would be a feature to have this:
-> > >
-> > >  trace-cmd record --tsc2nsec ...
-> >
-> > As the tracing clock is per instance, does it mean this flag should
-> > also be per instance ? I think the below commands should be valid:
-> >    trace-cmd record --tsc2nsec -B foo -C mono  <-- use tsc-x86 clock +
-> > tsc2nsec for the top instance and mono clock for instance foo
-> >    trace-cmd record -C mono -B foo --tsc2nsec  <-- use mono clock for
-> > the top instance and tsc-x86 clock + tsc2nsec clock for instance foo
-> > or even more confusing:
-> >    trace-cmd record -C x86-tsc -B foo --tsc2nsec  <-- use tsc-x86
-> > clock for the top instance and tsc-x86 clock + tsc2nsec clock for
-> > instance foo
->
-> I just remembered that I previously discussed making the "tsc2nsec" into a
-> clock type from the perspective of the user (not the trace file). That is,
-> not to have --tsc2nsec, but instead to have:
->
->  trace-cmd record -C tsc2nsec
->
-> And see if there's a tsc clock and the perf interface is available with the
-> multiplier and shift, and if not, it would return an error just like if you
-> said "-C foo". I also remember saying that we should have trace-cmd list
-> show it as well if it is available.
->
->  # trace-cmd list -C
-> [local] global counter uptime perf mono mono_raw boot x86-tsc tsc2nsec
->
-> That is, tack on at the end " tsc2nsec" if we find that it is available.
->
-> > This will require changes in the trace.dat file format. The problem is
-> > that tsc2nsec multiplier, shift and offset are stored as an option in
-> > the trace.dat file. Options are global, not per instance. When reading
-> > the file, how to determine events in which instance should be affected
-> > by this option ? We should either add options per instance, or somehow
-> > encode the instance scope of each option.
->
-> Your right. And I just tried this:
->
->  # trace-cmd record -C x86-tsc -e sched -B foo -C local -e sched sleep 1
->
-> And it appears to ignore the -C local. Which I think is the right thing to
-> do ;-)
+Hi Sameer,
+I have only one comment on this version:
 
-According to the code, trace-cmd supports clock per instance. And it
-works, I tried this:
+On Wed, Mar 17, 2021 at 6:02 PM Sameeruddin shaik
+<sameeruddin.shaik8@gmail.com> wrote:
+>
+> This new API will write the function filters into the
+> set_ftrace_filter file.
+>
+> tracefs_function_filter()
+>
+> https://bugzilla.kernel.org/show_bug.cgi?id=210643
+>
+> Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+> ---
+> Error handling is addressed as per the comments
+> if filters[i] is not NULL, then only we are going inside for loop, at the asprintf i think it won't be necessary to check the filters[i] is NULL or not again, when it throws error, if i am wrong please correct me.
+>
+> diff --git a/include/tracefs.h b/include/tracefs.h
+> index f3eec62..c1f07b0 100644
+> --- a/include/tracefs.h
+> +++ b/include/tracefs.h
+> @@ -145,5 +145,6 @@ bool tracefs_option_is_enabled(struct tracefs_instance *instance, enum tracefs_o
+>  int tracefs_option_enable(struct tracefs_instance *instance, enum tracefs_option_id id);
+>  int tracefs_option_diasble(struct tracefs_instance *instance, enum tracefs_option_id id);
+>  const char *tracefs_option_name(enum tracefs_option_id id);
+> -
+> +int tracefs_function_filter(struct tracefs_instance *instance, const char **filters,
+> +                           const char *module, bool reset, const char ***errs);
+>  #endif /* _TRACE_FS_H */
+> diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
+> index e2dfc7b..ca6077b 100644
+> --- a/src/tracefs-tools.c
+> +++ b/src/tracefs-tools.c
+> @@ -18,6 +18,7 @@
+>  #include "tracefs-local.h"
+>
+>  #define TRACE_CTRL     "tracing_on"
+> +#define TRACE_FILTER   "set_ftrace_filter"
+>
+>  static const char * const options_map[] = {
+>         "unknown",
+> @@ -387,3 +388,108 @@ void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_opt
+>         if (options && id > TRACEFS_OPTION_INVALID)
+>                 options->mask &= ~(1ULL << (id - 1));
+>  }
+> +
+> +static int controlled_write(const char *filter_path, const char **filters,
+> +                           const char *module, bool reset, const char ***errs)
+> +{
+> +       int flags = reset ? O_TRUNC : O_APPEND;
+> +       const char **e = NULL;
+> +       char *each_str = NULL;
+> +       int write_size = 0;
+> +       int size = 0;
+> +       int fd = -1;
+> +       int ret = 0;
+> +       int j = 0;
+> +       int i;
+> +
+> +       fd = open(filter_path, O_WRONLY | flags);
+> +       if (fd < 0)
+> +               return 1;
+> +
+> +       for (i = 0; filters[i]; i++) {
+> +               if (module)
+> +                       write_size = asprintf(&each_str, "%s:mod:%s ", filters[i], module);
+> +               else
+> +                       write_size = asprintf(&each_str, "%s ", filters[i]);
+> +               if (write_size < 0) {
+> +                       ret = 1;
+> +                       goto error;
+> +               }
+> +               size = write(fd, each_str, write_size);
+> +               /* compare written bytes*/
+> +               if (size < write_size) {
+> +                       if (errs) {
+> +                               e = realloc(e, (j + 1) * (sizeof(char *)));
+> +                               if (!e) {
 
-#trace-cmd record -C x86-tsc -e irq -B foo -C local -e sched sleep 1
-
-and got different clocks:
-             <...>-290676 [006]1956659520918: softirq_exit:        ....
-foo:       zoom-10894 [004]112198623756671: sched_switch:  ....
-
-although I cannot imagine a use case for this. It will be weird to
-visualise this by KerneShark.
-
-I think that we should introduce options per instance now,  as "-C
-tsc2nsec" cannot be implemented without it.
-I see two possible ways to implement it:
- 1. Break the current trace.dat file format by adding metadata for
-each instance.
- 2. Keep the current format and use nested options -  that's it, just
-another option "OPTION_INSTANCE". It will hold instance name and all
-options, specific for that instance, using the current options format.
-
-But there is one question, valid for both ways: What should be the
-scope for the global options ? Apply them only on the top instance, or
-they should be common for all instances ?
-
->
-> Yeah, we should only support one clock for all instances. And keep this as
-> a global option. We may in the future have instance options, but that will
-> come as a separate "option" :-)
->
->
-> > > > +static void set_vsync_clock(void)
-> > > > +{
-> > > > +     const char *clock = top_instance.clock;
-> > > > +     struct buffer_instance *instance;
-> > > > +     bool tsc2nsec = false;
-> > > > +     int shift, mult, offset;
-> > > > +
-> > > > +     /*
-> > > > +      * If no clock is specified for the top trace instance AND
-> > > > +      * KVM time sync protocol is available AND
-> > > > +      * TSC to nsec multiplier and shift are available:
-> > > > +      * force using the x86-tsc clock for this host-guest tracing session
-> > > > +      * and store TSC to nsec multiplier and shift.
-> > > > +      */
-> > > > +     if (!clock && tsync_proto_is_supported("kvm") &&
-> > > > +         !get_tsc_nsec(&shift, &mult, &offset) && mult) {
-> > > > +             top_instance.clock = strdup(TSC_CLOCK);
-> > > > +             if (!top_instance.clock)
-> > > > +                     die("Could not allocate top instance clock");
-> > > > +             clock = top_instance.clock;
-> > >
-> > > Why is this using the top_instance? What if the user had done:
-> > >
-> > >  # trace-cmd record -B host -e kvm -e sched -A guest -e sched
-> >
-> > You are right, that command is valid. The problem is that guest
-> > timestamps can be synchronized with one clock only. If there are two
-> > instances on the host, each with a different clock, the
-> > synchronization will not work. That's why I look at the top instance
-> > clock only, which is wrong. I'll change that logic to take the first
-> > configured host trace clock, i.e. in case of multiple host instances
-> > with multiple trace clocks, the first wins.
-> >
->
->
-> The code should just use the first instance available. Not about being
-> global, but because I want trace-cmd to not interfere with the top instance
-> if it is not specified on the command line. That way we can have this:
->
->  # trace-cmd record -e all
->
-> in one window, and in another window:
->
->  # trace-cmd record -B guest -e kvm -A guest -e all
->
-> and that recorder not do anything to bother the first one. That is, we
-> should only touch the top instance if it is explicitly specified.
->
->
-> -- Steve
+The commonly used pattern when working with realloc is to use a
+temporary pointer for the return value. The problem when using the
+same pointer is that in case of a realloc() error, it will return NULL
+which will overwrite our original pointer and we will lose it. The old
+memory is still valid, realloc() does not free it in case of an error,
+but we cannot access it as the old pointer is overwritten with that
+NULL. So, I would suggest something like that:
+                              e_new = realloc(e, (j + 1) * (sizeof(char *)));
+                              if (!e_new) {
+                                       free(e);
+                                       ret = 1;
+                                       goto error;
+                               } else
+                                     e = e_new;
 
 
+> +                                       ret = 1;
+> +                                       goto error;
+> +                               }
+> +                               e[j++] = filters[i];
+> +                               ret -= 1;
+> +                       }
+> +               }
+> +               free(each_str);
+> +               each_str = NULL;
+> +       }
+> +       if (errs) {
+> +               e = realloc(e, (j + 1) * (sizeof(char *)));
+> +               if (!e) {
+> +                       free(e);
+
+The same comment as above. Here "e" is already NULL. Calling
+free(NULL) will not crash, but will not free the old memory.
+
+> +                       ret = 1;
+> +                       goto error;
+> +               }
+> +               e[j] = NULL;
+> +               *errs = e;
+> +       }
+> + error:
+> +       if (each_str)
+> +               free(each_str);
+> +       close(fd);
+> +       return ret;
+> +}
+> +
+> +/**
+> + * tracefs_function_filter - write to set_ftrace_filter file to trace
+> + * particular functions
+> + * @instance: ftrace instance, can be NULL for top tracing instance
+> + * @filters: An array of function names ending with a NULL pointer
+> + * @module: Module to be traced
+> + * @reset: set to true to reset the file before applying the filter
+> + * @errs: A pointer to array of constant strings that will be allocated
+> + * on negative return of this function, pointing to the filters that
+> + * failed.May be NULL, in which case this field will be ignored.
+> + *
+> + * The @filters is an array of strings, where each string will be used
+> + * to set a function or functions to be traced.
+> + *
+> + * If @reset is true, then all functions in the filter are cleared
+> + * before adding functions from @filters. Otherwise, the functions set
+> + * by @filters will be appended to the filter file
+> + *
+> + * returns -x on filter errors (where x is number of failed filter
+> + * srtings) and if @errs is not NULL will be an allocated string array
+> + * pointing to the strings in @filters that failed and must be freed
+> + * with free().
+> + *
+> + * returns 1 on general errors not realted to setting the filter.
+> + * @errs is not set even if supplied.
+> + *
+> + * return 0 on success and @errs is not set.
+> + */
+> +int tracefs_function_filter(struct tracefs_instance *instance, const char **filters,
+> +                           const char *module, bool reset, const char ***errs)
+> +{
+> +       char *ftrace_filter_path;
+> +       int ret = 0;
+> +
+> +       if (!filters)
+> +               return 1;
+> +
+> +       ftrace_filter_path = tracefs_instance_get_file(instance, TRACE_FILTER);
+> +       if (!ftrace_filter_path)
+> +               return 1;
+> +
+> +       ret = controlled_write(ftrace_filter_path, filters, module, reset, errs);
+> +       tracefs_put_tracing_file(ftrace_filter_path);
+> +       return ret;
+> +}
+> --
+> 2.7.4
+>
+
+Thanks for sending this version, Sameer!
+I think we can merge it,  when you fix that realloc() error checking.
+I consider this patch as a good foundation for the API, but we should
+work on some optimizations on top of it, in separate patches. What
+else should be added, when this patch is merged:
+ 1. A unit test of the API
+ 2. Man page of the API
+ 3. Optimizations: new kernels support writing indexes instead of
+strings into the "set_ftrace_filter" file. This is faster, as there is
+no string comparison in the kernel context. The function index can be
+retrieved from "available_filter_functions" files - the first function
+is with index 0, the next is 1 ... and so forth. So, the possible
+optimization of the API is to check - if the kernel supports indexes,
+use it, or fail back to the legacy logic with strings.
 
 -- 
 Tzvetomir (Ceco) Stoyanov
