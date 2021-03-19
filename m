@@ -2,232 +2,155 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ED2CC433E6
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Mar 2021 17:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BCC4C433E6
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Mar 2021 10:09:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6730464EF2
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 18 Mar 2021 17:23:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B09764E45
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Mar 2021 10:09:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhCRRWw (ORCPT
+        id S229864AbhCSKI5 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 18 Mar 2021 13:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
+        Fri, 19 Mar 2021 06:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhCRRWn (ORCPT
+        with ESMTP id S229900AbhCSKIs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:22:43 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDF2C06174A
-        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Mar 2021 10:22:43 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id e14so1639071plj.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 18 Mar 2021 10:22:43 -0700 (PDT)
+        Fri, 19 Mar 2021 06:08:48 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246AFC06174A
+        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Mar 2021 03:08:48 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id u9so8746587ejj.7
+        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Mar 2021 03:08:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YpYp4i0fCFWxwg0DKngp4cAngxq1SJti8wiqBKnLD4A=;
-        b=thYPFGJNPy8Jtg1CI2bm8JPahwKgYa6DGzxw103/+ajgUB65UvJ8280nsFG8k0d3ng
-         CztFEYJIwVvtNDHjawx2RroRHE1f5Xr59dXCTlY23sjh6hRXP1fXaxuPEPyc+vLyXJIZ
-         nmA0LDiuwkZjMXqziJuKuqxE6IY9AJgSphhnnLxWayzHyi7oYDthLarfWOgwm3vNKibZ
-         LlFX4rQH2Ld46GqN7cUWjKP3f0uAqmu2Gr8uI2OsykJAqrWU3RRI2uwntqSXukPJbS4D
-         8JSdn2SKDcnBCeZwAtRUiHJmIDC9W/Yf+68m/fi4VGZIfnB2HGX2VPMjpI4Fkn/ymtUh
-         EEKQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=FWbhmHtako5sDuRjsgS7KvChBXOqx1yzV8NUPhnS59Q=;
+        b=gMF1Nm+IIM1eEQ2dOk123w2FfHqB9QFQuEJTa1Lns9sUJIzNN7/qodfBj84aeqfnAO
+         omgAnuZP02okhZfgBPiVGb3Ws7WleFH5DViqT2LSe4rSkqnjav846mkzW9VqBOtiWlWL
+         R7FqhOp0gALZSOSsi9C2gfgNqHbq6YXffCKHljzrA67BZxlL0cB7u07+GQ1/SGQbT5Ym
+         Cb0tAQ71w2Ch0cfP1ygFkGAsWv3NEPLjBWde5sz6RffktwClMOrEDOO/qrC6LoR9iW57
+         680EGBiu4NEINOTfyTF/E5uQWxisAEIREA98+BA+sgTf7WRVLMRVkrhie96d0fEwrOW5
+         h1TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YpYp4i0fCFWxwg0DKngp4cAngxq1SJti8wiqBKnLD4A=;
-        b=UEUATjbDyrS5feRW5zR1ChWiUABD/Jnxkfm73jOqVVCp1W/HrE3OcPDFOYdIMj1cqc
-         P7De1Di6b1TN7aQsXMEqY6sZoZFFvbJ1CO2tjd9GuThual2/tyPQTKKa1FnbGh4mcYXk
-         +hMrbq8WospEVZEaAW/GP/4j8En+apuECIvL38w2EYqBJjP0kERpSYvuJX2brnN+BxQd
-         kgCfCUbJ50Kpdip3R4VWOHgF0sDErZ4VtJgEy4D2fUAmZ9/Cq7UZ+x9vzBNhazguNlPn
-         lH7AhMvDwFJuEs1VXWWH6GKli1Q52mBmmjWtGXa+QLRhseiM40k9h3F4shtpaabURpT9
-         lMzQ==
-X-Gm-Message-State: AOAM532E0NPyhhGUyFSKsWZeC7htMlYbkAFpzxVQ7WXWsP222HQeh2lY
-        ss+jkV1pkEJvVGLVHdMX1PdfHOU3hsikfkiWMjleGHa+tGk=
-X-Google-Smtp-Source: ABdhPJzVGnYKD2GGd25BtiYW/NjEelhSvwgrqBRfa7BVvBQS4JrW3a716Rx+9lu2d6XW5CUVz6weu1f6aVZ0buR3r3E=
-X-Received: by 2002:a17:90a:e2cb:: with SMTP id fr11mr5561659pjb.2.1616088162962;
- Thu, 18 Mar 2021 10:22:42 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=FWbhmHtako5sDuRjsgS7KvChBXOqx1yzV8NUPhnS59Q=;
+        b=K7hxV2WmDJ88pgHKeXE34bKu2x8GCIb6xf+8swP3WV3f3MgObzK0bi1aPbuvPqhDIh
+         20vV9A211JS9HM03KcifZbT2t/hn13IKG35O0H3hTxJRcYJIe2peUaqzIGi/6ua5I2d6
+         PdVUxhJJZ44hDLpn8P8KKiDenTeEazwibWHJ2uWaZ48hH7ydLGENWhXIwd5Sq65rZz6C
+         3FlrQxS3Y1fuDXsHAPICVzFjDJkJhzDfvbPi/cgtE7+R00H9IKv3jm+umMIJWLL3W2sM
+         ZaYXl2WgCnDGZaQDM7iyucRKVNycCAuEeeL1mw0z3PIWSkbuyrp3itDZSeUM+ffc+q/O
+         b7Zg==
+X-Gm-Message-State: AOAM5315F1ymFB+DC1ZWst214MeFmMZomG50PIQQZN/ep6AwZklK8pjR
+        4W0+22rEYx9mFO8Jilhujrc=
+X-Google-Smtp-Source: ABdhPJwdXrfDKoZtd3bjedEWF/V3574NazWXQPbX+tuOZW0kHKpHUYyclHQmMCruh1fnYpamrFnE7g==
+X-Received: by 2002:a17:906:cb0a:: with SMTP id lk10mr3335613ejb.479.1616148526889;
+        Fri, 19 Mar 2021 03:08:46 -0700 (PDT)
+Received: from [192.168.1.9] ([151.32.218.153])
+        by smtp.gmail.com with ESMTPSA id g26sm3375285ejz.70.2021.03.19.03.08.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 03:08:46 -0700 (PDT)
+Subject: Re: [PATCH v32 0/5]Timestamp synchronization of host - guest tracing
+ session
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org,
+        Dario Faggioli <dfaggioli@suse.com>
+References: <20210315061857.168570-1-tz.stoyanov@gmail.com>
+From:   Stefano De Venuto <stefano.devenuto99@gmail.com>
+Message-ID: <6796a75b-6a59-767f-08ec-ee0cbfd8c825@gmail.com>
+Date:   Fri, 19 Mar 2021 11:08:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <1616171938-18914-1-git-send-email-sameeruddin.shaik8@gmail.com>
-In-Reply-To: <1616171938-18914-1-git-send-email-sameeruddin.shaik8@gmail.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 18 Mar 2021 19:22:26 +0200
-Message-ID: <CAPpZLN5SSxa2ZwnE1G3iuk2uuvm0JaP_N92esJKqL=zSDwCruQ@mail.gmail.com>
-Subject: Re: [PATCH v3] libtracefs: An API to set the filtering of functions
-To:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210315061857.168570-1-tz.stoyanov@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 6:38 PM Sameeruddin shaik
-<sameeruddin.shaik8@gmail.com> wrote:
->
-> This new API will write the function filters into the
-> set_ftrace_filter file.
->
-> tracefs_function_filter()
->
-> https://bugzilla.kernel.org/show_bug.cgi?id=210643
->
-> Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
-> ---
-> Addressed the realloc comments
-> diff --git a/include/tracefs.h b/include/tracefs.h
-> index f3eec62..c1f07b0 100644
-> --- a/include/tracefs.h
-> +++ b/include/tracefs.h
-> @@ -145,5 +145,6 @@ bool tracefs_option_is_enabled(struct tracefs_instance *instance, enum tracefs_o
->  int tracefs_option_enable(struct tracefs_instance *instance, enum tracefs_option_id id);
->  int tracefs_option_diasble(struct tracefs_instance *instance, enum tracefs_option_id id);
->  const char *tracefs_option_name(enum tracefs_option_id id);
-> -
-> +int tracefs_function_filter(struct tracefs_instance *instance, const char **filters,
-> +                           const char *module, bool reset, const char ***errs);
->  #endif /* _TRACE_FS_H */
-> diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-> index e2dfc7b..4f8bcdc 100644
-> --- a/src/tracefs-tools.c
-> +++ b/src/tracefs-tools.c
-> @@ -18,6 +18,7 @@
->  #include "tracefs-local.h"
->
->  #define TRACE_CTRL     "tracing_on"
-> +#define TRACE_FILTER   "set_ftrace_filter"
->
->  static const char * const options_map[] = {
->         "unknown",
-> @@ -387,3 +388,113 @@ void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_opt
->         if (options && id > TRACEFS_OPTION_INVALID)
->                 options->mask &= ~(1ULL << (id - 1));
->  }
-> +
-> +static int controlled_write(const char *filter_path, const char **filters,
-> +                           const char *module, bool reset, const char ***errs)
-> +{
-> +       int flags = reset ? O_TRUNC : O_APPEND;
-> +       const char **temp = NULL;
-> +       const char **e = NULL;
-> +       char *each_str = NULL;
-> +       int write_size = 0;
-> +       int size = 0;
-> +       int fd = -1;
-> +       int ret = 0;
-> +       int j = 0;
-> +       int i;
-> +
-> +       fd = open(filter_path, O_WRONLY | flags);
-> +       if (fd < 0)
-> +               return 1;
-> +
-> +       for (i = 0; filters[i]; i++) {
-> +               if (module)
-> +                       write_size = asprintf(&each_str, "%s:mod:%s ", filters[i], module);
-> +               else
-> +                       write_size = asprintf(&each_str, "%s ", filters[i]);
-> +               if (write_size < 0) {
-> +                       ret = 1;
-> +                       goto error;
-> +               }
-> +               size = write(fd, each_str, write_size);
-> +               /* compare written bytes*/
-> +               if (size < write_size) {
-> +                       if (errs) {
-> +                               temp = realloc(e, (j + 1) * (sizeof(char *)));
-> +                               if (!temp) {
-> +                                       free(e);
-> +                                       ret = 1;
-> +                                       goto error;
-> +                               } else
-> +                                       e = temp;
-> +
-> +                               e[j++] = filters[i];
-> +                               ret -= 1;
-> +                       }
-> +               }
-> +               free(each_str);
-> +               each_str = NULL;
-> +       }
-> +       if (errs) {
-> +               temp = realloc(e, (j + 1) * (sizeof(char *)));
-> +               if (!temp) {
-> +                       free(e);
-> +                       ret = 1;
-> +                       goto error;
-> +               } else
-> +                       e = temp;
-> +               e[j] = NULL;
-> +               *errs = e;
-> +       }
-> + error:
-> +       if (each_str)
-> +               free(each_str);
-> +       close(fd);
-> +       return ret;
-> +}
-> +
-> +/**
-> + * tracefs_function_filter - write to set_ftrace_filter file to trace
-> + * particular functions
-> + * @instance: ftrace instance, can be NULL for top tracing instance
-> + * @filters: An array of function names ending with a NULL pointer
-> + * @module: Module to be traced
-> + * @reset: set to true to reset the file before applying the filter
-> + * @errs: A pointer to array of constant strings that will be allocated
-> + * on negative return of this function, pointing to the filters that
-> + * failed.May be NULL, in which case this field will be ignored.
-> + *
-> + * The @filters is an array of strings, where each string will be used
-> + * to set a function or functions to be traced.
-> + *
-> + * If @reset is true, then all functions in the filter are cleared
-> + * before adding functions from @filters. Otherwise, the functions set
-> + * by @filters will be appended to the filter file
-> + *
-> + * returns -x on filter errors (where x is number of failed filter
-> + * srtings) and if @errs is not NULL will be an allocated string array
-> + * pointing to the strings in @filters that failed and must be freed
-> + * with free().
-> + *
-> + * returns 1 on general errors not realted to setting the filter.
-> + * @errs is not set even if supplied.
-> + *
-> + * return 0 on success and @errs is not set.
-> + */
-> +int tracefs_function_filter(struct tracefs_instance *instance, const char **filters,
-> +                           const char *module, bool reset, const char ***errs)
-> +{
-> +       char *ftrace_filter_path;
-> +       int ret = 0;
-> +
-> +       if (!filters)
-> +               return 1;
-> +
-> +       ftrace_filter_path = tracefs_instance_get_file(instance, TRACE_FILTER);
-> +       if (!ftrace_filter_path)
-> +               return 1;
-> +
-> +       ret = controlled_write(ftrace_filter_path, filters, module, reset, errs);
-> +       tracefs_put_tracing_file(ftrace_filter_path);
-> +       return ret;
-> +}
-> --
-> 2.7.4
->
+Hello,
 
-Looks good to me.
-Thanks Sameer!
-Acked-by: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+On 3/15/21 7:18 AM, Tzvetomir Stoyanov (VMware) wrote:
+> Basic infrastructure for host - guest timestamp synchronization and a
+> PoC implementation of PTP-like and KVM algorithms. 
+I'm trying to make some analysis on traces generated by host and guest,
+so I applied this series and the related dependencies.
+
+However, when the KVM algorithm is used, the merging process
+of the two traces doesn't seem to happen properly.
+
+The output of `trace-cmd report -i trace.dat -i trace-tumbleweed.dat` is:
+
+           trace.dat: cpus=4
+trace-tumbleweed.dat: cpus=1
+           trace.dat:            sleep-23948 [002]61124758463654:
+write_msr:            c0000100, value 7f35092875c0
+           trace.dat:           <idle>-0     [000]61124760841508:
+write_msr:            c0000100, value 7f6136b75640
+           trace.dat:        CPU 0/KVM-1640  [000]61124760851620:
+write_msr:            c0011020, value 40000000000000
+           trace.dat:        CPU 0/KVM-1640  [000]61124760861778:
+read_msr:             c0000101, value ffff9b1b76c00000
+           trace.dat:        CPU 0/KVM-1640  [000]61124760862832:
+read_msr:             c0000081, value 23001000000000
+           trace.dat:        CPU 0/KVM-1640  [000]61124760864347:
+read_msr:             c0000082, value ffffffffb5400010
+           trace.dat:        CPU 0/KVM-1640  [000]61124760865225:
+read_msr:             c0000083, value ffffffffb5401670
+           .
+           .
+           .
+trace-tumbleweed.dat:   IPC I/O Parent-4313 [000]8446232460209009653:
+write_msr:            c0000100, value 7f94535c7640
+trace-tumbleweed.dat:    IPC I/O Child-4503 [000]8446348845232796661:
+write_msr:            c001011f, value 4
+trace-tumbleweed.dat:    IPC I/O Child-4503 [000]8447532508154803189:
+write_msr:            c0000100, value 7f945e8d5780
+trace-tumbleweed.dat:           <idle>-0    [000]8452336523564659701:
+write_msr:            c001011f, value 0
+trace-tumbleweed.dat:           <idle>-0    [000]8452515224268944373:
+write_msr:            6e0, value 731478a3bf62
+trace-tumbleweed.dat:           <idle>-0    [000]8452610851715789813:
+write_msr:            6e0, value 731478968f37
+trace-tumbleweed.dat:           <idle>-0    [000]8555757214338495477:
+write_msr:            6e0, value 731478853ec1
+trace-tumbleweed.dat:           <idle>-0    [000]8555904475882173429:
+write_msr:            6e0, value 7314778a60e8
+trace-tumbleweed.dat:      kworker/0:1-7351 [000]8556355589182174197:
+write_msr:            c0000100, value 7f8373573740
+
+The TimeShift information is inside the guest trace file,
+so I think this is not a transfer problem.
+
+I also tried to remove the last patch, the one related to the KVM clock,
+in order to use PTP and the two traces are merged correctly.
+
+The commands used to record are:
+
+Host:
+# trace-cmd record -C x86-tsc -e kvm:* -e msr:* -A tumbleweed:823 -e
+msr:* -C x86-tsc sleep 1
+
+Guest:
+# echo x86-tsc > /sys/kernel/tracing/trace_clock
+# trace-cmd agent
+
+Am I doing something wrong?
+
+If necessary, I can provide more info about my setup, or do more tests.
 
 
--- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+Thanks and Regards,
+
+Stefano
