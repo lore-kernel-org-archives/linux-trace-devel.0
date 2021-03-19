@@ -2,174 +2,127 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 262B3C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Mar 2021 11:56:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEC0BC433C1
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Mar 2021 17:45:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D1CC864F6E
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Mar 2021 11:56:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BA4256197F
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 19 Mar 2021 17:45:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbhCSLzg (ORCPT
+        id S229974AbhCSRpL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 19 Mar 2021 07:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        Fri, 19 Mar 2021 13:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhCSLzb (ORCPT
+        with ESMTP id S230057AbhCSRoz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 19 Mar 2021 07:55:31 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB2BC06174A
-        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Mar 2021 04:55:31 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id j25so5721567pfe.2
-        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Mar 2021 04:55:31 -0700 (PDT)
+        Fri, 19 Mar 2021 13:44:55 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2D4C06174A
+        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Mar 2021 10:44:54 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id u9so11052374ejj.7
+        for <linux-trace-devel@vger.kernel.org>; Fri, 19 Mar 2021 10:44:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mOoIz1/ZJKBbsTOcVPrYRpnLg8mFDEZxCXkTJkCh1gc=;
-        b=WhxWxV+Oxr7g6FM77v/qzMFO77P/h9zZDGPsqaq97cRRJTzyuIh1/SHXqa8pfZCeEH
-         wi4IDZit5LUEsZqJN3V6QSrVcXaNloWtoQVR7n1r9OWtEOo9/CelrGEzNo65F5WTMbQw
-         U4w6NLGhhEdrMoPMGD+Ldd5LF004ypM7HAqQ2maTfrGeOncRi0cyViQEjh4V3Mr/E/z1
-         DVICdj05Tyf/nOTPjMhbnv3vA28+QdwBkvF4dpJ1P5iOi3RTR8sKKkO7scewXzLOYr8d
-         EzrkgNt0My2w4bDigaPhkfW1F8Q4psheo11shP503a9krnXnpdYQCz9gn4zisW2W2T99
-         IKdQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Z0RfzgURa88ZTXb9rH4KuJjbgbMFAY1MjWAtgzU09u8=;
+        b=agnqePuoRu5uX2RxPB55ssd+yBmXhs0mMFrhMfw4dMMr86bWSwBhF6m65wZsp3BO6I
+         Xkphi1/QQqGbvJ2i0NX6bu8n7JTXiPhrJrBF3+fvjx8bTsaW6x/91d/7j3GtcRL7do7O
+         J//NsG1ciLrVC3xhKx+oPVXrPBvrbH6dEUADZEF0mXAnSPkwRHM0N1oY1kT85nKGhlb2
+         BD+suvUbIoV5TnSbxF6iqm6DK4RmeHbqE3+t4QcieUk7nyxk4d26yXBFZngSP0VExpUk
+         xgeDhvxNCfWyap/XiX0DuMcfskqj+G8ZYc1H4/LAFlcgOSIYvPUfNtCNsjcVQRS91Vkp
+         SDWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mOoIz1/ZJKBbsTOcVPrYRpnLg8mFDEZxCXkTJkCh1gc=;
-        b=iyb0v0/VgzdxXtQNlEhqENq9KjsC2QGNV1dtvauyZHXfqHyR06vMYGuChc9PUF8bWl
-         jwUW0EFNYsrV/AXORFmVmTl8cTJwQQriX/9f5hd6VJibvxBxBr6GPAhGBaLnFXmKlpRm
-         A7aBOrfd0qNL8tU//HNrmgDwvSMtqPZFSFgKhn6tqNM0Livz37WcD2i6NwqNkvYRfc9Y
-         6mtSdNsam6GsRpArPCSahBNPt8kZUVupAWdF0OUNqBNoIQjD558OH2FkZbVdMJd9itbo
-         U1p9DdBBZqx1BacrCQ6j7KfjHOlixfq6FH23My/8eLvMnKiI6G9mmjLHHgOC9ixlbkSS
-         F/Dw==
-X-Gm-Message-State: AOAM530SyOodiMq/mmcNMF3XZwZn+LWMNTTpym+f1KLQSqB+21t+Emff
-        L4iIPwKRxXXuxk0D/dItNydA13Jpdk3Mjqsx76M=
-X-Google-Smtp-Source: ABdhPJzcGfwGPKMJ2EqLOp2BeaLX/xNUclSGju/ktOSFJyTGc1+MuV7dUcQRB8ru+ztSHQcYBu9tNNWdz7l+DiwwBgI=
-X-Received: by 2002:a63:c143:: with SMTP id p3mr2345799pgi.44.1616154931273;
- Fri, 19 Mar 2021 04:55:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210315061857.168570-1-tz.stoyanov@gmail.com> <6796a75b-6a59-767f-08ec-ee0cbfd8c825@gmail.com>
-In-Reply-To: <6796a75b-6a59-767f-08ec-ee0cbfd8c825@gmail.com>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Fri, 19 Mar 2021 13:55:14 +0200
-Message-ID: <CAPpZLN6LJWV_=BB5FgQOkN+SZt3dOeYjzqZVZ-FC4JTva8zn_Q@mail.gmail.com>
-Subject: Re: [PATCH v32 0/5]Timestamp synchronization of host - guest tracing session
-To:     Stefano De Venuto <stefano.devenuto99@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Z0RfzgURa88ZTXb9rH4KuJjbgbMFAY1MjWAtgzU09u8=;
+        b=mdzXv8WU6QFA54vtzD8ZYLMBBDVP5fbKgy5SdGceZxyWabbMqe6ZyHiKooQKtgtxVD
+         mLPqYwqE69dFTNcONj3iKYApUXBGNGcQtOKroBrVUSeQ98G9vvklc0tbJM5IoiC7zotz
+         ubKsnRAef4AJihGKDbFa8vamPp9YBZ6vRTh3XWiidXT1wnofirqlNTT4cLSkE7NN0MvZ
+         nTn1SSI5xUPhaloJJwuxLodZtPltnA8P6yK2zXFhjZENRq+XFOA2MpxYzZPfb8IGvD6s
+         jbLDQDcojwOu7nqTrymIJ2vZ4Uc3u+KXyNCV6mjZRs5NAZwXPvIiBK5xddV2jn8CsCEF
+         jqvA==
+X-Gm-Message-State: AOAM5332SkSpXk2f+clya1J3vNK4KWCKloF6sQrlm1XL0jTd8fSJkNCH
+        yUsEEjUFjD4Q5tFjB3C8ydc=
+X-Google-Smtp-Source: ABdhPJwfwQiMVYwl3aEEwotELmYpYqlpUDUgP1hxeHyoNviVFQ6kqhi0LQ+TEmtuBkI/Y5qaJOgrOg==
+X-Received: by 2002:a17:906:948d:: with SMTP id t13mr5576069ejx.402.1616175893605;
+        Fri, 19 Mar 2021 10:44:53 -0700 (PDT)
+Received: from localhost.localdomain ([151.32.44.55])
+        by smtp.gmail.com with ESMTPSA id cw14sm4596408edb.8.2021.03.19.10.44.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 10:44:53 -0700 (PDT)
+Subject: Re: [PATCH v32 0/5]Timestamp synchronization of host - guest tracing
+ session
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
         Dario Faggioli <dfaggioli@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210315061857.168570-1-tz.stoyanov@gmail.com>
+ <6796a75b-6a59-767f-08ec-ee0cbfd8c825@gmail.com>
+ <CAPpZLN6LJWV_=BB5FgQOkN+SZt3dOeYjzqZVZ-FC4JTva8zn_Q@mail.gmail.com>
+From:   Stefano De Venuto <stefano.devenuto99@gmail.com>
+Message-ID: <80486620-fe8f-49a5-cdac-05bb2b969984@gmail.com>
+Date:   Fri, 19 Mar 2021 18:44:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <CAPpZLN6LJWV_=BB5FgQOkN+SZt3dOeYjzqZVZ-FC4JTva8zn_Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Stefano,
 
-On Fri, Mar 19, 2021 at 12:08 PM Stefano De Venuto
-<stefano.devenuto99@gmail.com> wrote:
+
+On 3/19/21 12:55 PM, Tzvetomir Stoyanov wrote:
+> Hi Stefano,
 >
-> Hello,
->
-> On 3/15/21 7:18 AM, Tzvetomir Stoyanov (VMware) wrote:
-> > Basic infrastructure for host - guest timestamp synchronization and a
-> > PoC implementation of PTP-like and KVM algorithms.
-> I'm trying to make some analysis on traces generated by host and guest,
-> so I applied this series and the related dependencies.
->
-> However, when the KVM algorithm is used, the merging process
-> of the two traces doesn't seem to happen properly.
->
-> The output of `trace-cmd report -i trace.dat -i trace-tumbleweed.dat` is:
->
->            trace.dat: cpus=4
-> trace-tumbleweed.dat: cpus=1
->            trace.dat:            sleep-23948 [002]61124758463654:
-> write_msr:            c0000100, value 7f35092875c0
->            trace.dat:           <idle>-0     [000]61124760841508:
-> write_msr:            c0000100, value 7f6136b75640
->            trace.dat:        CPU 0/KVM-1640  [000]61124760851620:
-> write_msr:            c0011020, value 40000000000000
->            trace.dat:        CPU 0/KVM-1640  [000]61124760861778:
-> read_msr:             c0000101, value ffff9b1b76c00000
->            trace.dat:        CPU 0/KVM-1640  [000]61124760862832:
-> read_msr:             c0000081, value 23001000000000
->            trace.dat:        CPU 0/KVM-1640  [000]61124760864347:
-> read_msr:             c0000082, value ffffffffb5400010
->            trace.dat:        CPU 0/KVM-1640  [000]61124760865225:
-> read_msr:             c0000083, value ffffffffb5401670
->            .
->            .
->            .
-> trace-tumbleweed.dat:   IPC I/O Parent-4313 [000]8446232460209009653:
-> write_msr:            c0000100, value 7f94535c7640
-> trace-tumbleweed.dat:    IPC I/O Child-4503 [000]8446348845232796661:
-> write_msr:            c001011f, value 4
-> trace-tumbleweed.dat:    IPC I/O Child-4503 [000]8447532508154803189:
-> write_msr:            c0000100, value 7f945e8d5780
-> trace-tumbleweed.dat:           <idle>-0    [000]8452336523564659701:
-> write_msr:            c001011f, value 0
-> trace-tumbleweed.dat:           <idle>-0    [000]8452515224268944373:
-> write_msr:            6e0, value 731478a3bf62
-> trace-tumbleweed.dat:           <idle>-0    [000]8452610851715789813:
-> write_msr:            6e0, value 731478968f37
-> trace-tumbleweed.dat:           <idle>-0    [000]8555757214338495477:
-> write_msr:            6e0, value 731478853ec1
-> trace-tumbleweed.dat:           <idle>-0    [000]8555904475882173429:
-> write_msr:            6e0, value 7314778a60e8
-> trace-tumbleweed.dat:      kworker/0:1-7351 [000]8556355589182174197:
-> write_msr:            c0000100, value 7f8373573740
->
-> The TimeShift information is inside the guest trace file,
-> so I think this is not a transfer problem.
->
-> I also tried to remove the last patch, the one related to the KVM clock,
-> in order to use PTP and the two traces are merged correctly.
->
-> The commands used to record are:
->
-> Host:
+> On Fri, Mar 19, 2021 at 12:08 PM Stefano De Venuto
+> <stefano.devenuto99@gmail.com> wrote:
+Hi!
+>> The commands used to record are:
+>>
+>> Host:
+>> # trace-cmd record -C x86-tsc -e kvm:* -e msr:* -A tumbleweed:823 -e
+>> msr:* -C x86-tsc sleep 1
+> The guest trace clock is set automatically as the host, so this
+> command should be enough:
 > # trace-cmd record -C x86-tsc -e kvm:* -e msr:* -A tumbleweed:823 -e
-> msr:* -C x86-tsc sleep 1
-
-The guest trace clock is set automatically as the host, so this
-command should be enough:
-# trace-cmd record -C x86-tsc -e kvm:* -e msr:* -A tumbleweed:823 -e
-msr:*  sleep 1
-
+> msr:*  sleep 1
 >
-> Guest:
-> # echo x86-tsc > /sys/kernel/tracing/trace_clock
-
-There is no need to set manually the guest clock, it will be
-overwritten by trace-cmd agent.
-
-> # trace-cmd agent
+>> Guest:
+>> # echo x86-tsc > /sys/kernel/tracing/trace_clock
+> There is no need to set manually the guest clock, it will be
+> overwritten by trace-cmd agent.
 >
-> Am I doing something wrong?
+Thanks so much for the proper way to do it, really appreciated.
+>> If necessary, I can provide more info about my setup, or do more tests.
+> Yes, please can you send me both host and guest trace files ?
+Here are the trace files, host and guest respectively:
 
-All your commands and workflow look good, nothing wrong.
+- http://xenbits.xen.org/people/dariof/tracing-examples/kvm/sync-kvmclock/trace.dat
+- http://xenbits.xen.org/people/dariof/tracing-examples/kvm/sync-kvmclock/trace-tumbleweed.dat
 
+> Also, it will be useful to send me the content of the KVM debug files:
+>     /sys/kernel/debug/kvm/<guest ID>/vcpu<*>/tsc-offset
+The guest has one vcpu (vcpu0) and the content of the file is:
+
+255647917761327
+>>
+>> Thanks and Regards,
+>>
+>> Stefano
+> Thanks for testing this code!
 >
-> If necessary, I can provide more info about my setup, or do more tests.
+Thanks for your time,
 
-Yes, please can you send me both host and guest trace files ?
-Also, it will be useful to send me the content of the KVM debug files:
-    /sys/kernel/debug/kvm/<guest ID>/vcpu<*>/tsc-offset
-
->
->
-> Thanks and Regards,
->
-> Stefano
-
-Thanks for testing this code!
-
--- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+Stefano
