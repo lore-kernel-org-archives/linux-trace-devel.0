@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 559B3C433E6
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 10:01:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5EC2C433E4
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 10:01:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1636D6198D
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 10:01:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F99E6198E
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 10:01:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhCVKAd (ORCPT
+        id S229591AbhCVKA3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 22 Mar 2021 06:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
+        Mon, 22 Mar 2021 06:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhCVKAC (ORCPT
+        with ESMTP id S229972AbhCVJ76 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:00:02 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF12C061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 03:00:01 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id ce10so20170910ejb.6
-        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 03:00:01 -0700 (PDT)
+        Mon, 22 Mar 2021 05:59:58 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EFEC061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 02:59:57 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id w18so18568246edc.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 02:59:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a4BiW5YoUz5ufk3n1fjMIzWlYK86+qzPaMiKwA8JOn0=;
-        b=VDCfZjrKxhUFWnWHJwTb9Yz6td7d3pxYIvl/CUoAsNSoNwu4yQ2w/pV+caDyYSbHga
-         0otVYh+jLFG5gcPx4czwJmumeAQRQSPgnGKii6LEph4Xrf9ZxCuzymGIrAnMhbE1syUB
-         pUrQbBKMptAZlZNdH1CVxdqMjyqJ1s1K9sIESd/2cUnGN19P9yzR0xf0hRdD/bBoQOdi
-         vFXwA4POyaKB+toPkrT5dvJxur6kcs+5H4sCZTEfybPMsDOg9OAbN8tw7WGxcs1euVTh
-         JB9Ugh8KJZwJvNO43x1CuCa2aaCe6Jn5Zopr6cZjZJVtBEm5aUeuNUmdZA3edOEMQF+w
-         RD1g==
+        bh=oMjD439qNlAB7PqKNkhqf7Z0VI4YUDEnQeZeV/0WHzA=;
+        b=b8PH62CyLIIr2Udgg2r/QsoREOO4sXdJcORlgEmC3QyduMBlYXJH8z39oMm7TgS6Rg
+         CDzJjE/b5z0MPnG+bxDJBLuZLY0wRI/KS0+WtBsM33zphFqJ63FVrqHfhGlJCC4v/j49
+         tn5TrS28Oc1kJsts4Cv7SdU1HkLkfdwKtRsbJR5SDIxbe4iDg+STv10BBmjuYJevcnVF
+         jQeReaiNMVoZ8vXaXra+owGZga2Ipvcdb3H0Qgt6MrKek01DvLhSE4RK5QP34eCenuVo
+         c4pE7fe1EYEYYdx3sz/1Zzhu6UvzY1aO1Zz5OR8uS/BQ0DwxHfEdipLnmjfIkjopPfk2
+         dkgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a4BiW5YoUz5ufk3n1fjMIzWlYK86+qzPaMiKwA8JOn0=;
-        b=dIQJHwJkmZ0Y7Yv+a02Tgm7njexpi5Q8Js3VBZVDPrtYYTyYiKoIM6vt85B1T8lVNt
-         SQF25qoz0AEQVLvabMLBsNmEQXBcIxGtvCIDci+uLcvSqYwHhc9RGw+ZBDF7SpVbC5MA
-         A9FySABVd7PXbkqvsfedm6AbUETGhiHkyzSTrX354n7g2l7Oax3iMilUQgVKeyzjcN16
-         g3EDq2llxxYDhL9A6yn741k6OnxkK2TooLUu7548V8xcBAijQpDAt8ohYGUECb2aT9Lm
-         bUNVJfeiePbXy9LYNJSHOQtp5g6fQj+/fSBZ5/fRdpGUzRkWMA2yVc2oVcl0aGhuE/bS
-         XtXg==
-X-Gm-Message-State: AOAM530bQNRMzQ64xoLIr6EZrjFxYT+5/giy1tf99pBaThB+intndUFb
-        ZoldFl9Q/sWKqtGlBOJsEZ6jFe7A5Lx1Sg==
-X-Google-Smtp-Source: ABdhPJwqJEGwRksaetqiqeuxZHqeSOPQ4MTAsLBRmLzVkxeuPv0YnffODIt1YSmJAfBzUOJxwXqjew==
-X-Received: by 2002:a17:906:c143:: with SMTP id dp3mr16556435ejc.499.1616407200460;
-        Mon, 22 Mar 2021 03:00:00 -0700 (PDT)
+        bh=oMjD439qNlAB7PqKNkhqf7Z0VI4YUDEnQeZeV/0WHzA=;
+        b=mQe/mM/0msMw9efCc/ZLYstLsxZeEYQFevIicWgCPDbfAT9fguPnJK9pBhP7EpwTbl
+         h9gguXqLCgXhtPEi4HHWJftoguHOiIXXWSf0Wd4avHFLuS4Cl/5oVEO3n6X6Zqh6ncc/
+         tVGDuaFcwJ3yllKklUW3CIQvsAM5cwuigI8+lBhE57ZQYahW5N9vhfwM5QsHm85tdk4n
+         Fad4wYLV0LeU6Tmj/1mGVFZbKe4BK2Y+HCQW1VSKAkc/d0EKJTnUTV4D3KhCjVuqAgvi
+         hE0Qfhxqyyo0F5ewRaPPAum4EB4rZPOtUmbSaMWPS1quAN0EPIqFFF/8vMlh1fxT/EnA
+         o4ZA==
+X-Gm-Message-State: AOAM5321oY45es4k9JFtFKMWc6nKMT82g77WrWLWzPk0Sghtn5jZYo08
+        OI2tdKHEfzlfE1uQHGtNQd/1EUlI/BDGrA==
+X-Google-Smtp-Source: ABdhPJw5TNPZHvfT4SGWcbZTPk0/dbhZ2Kekdtw0NP/7nI3Vffeu61jpnHWxwv8GL+7HR/bvhsVYYw==
+X-Received: by 2002:aa7:c907:: with SMTP id b7mr25000180edt.37.1616407196743;
+        Mon, 22 Mar 2021 02:59:56 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id g26sm9288424ejz.70.2021.03.22.02.59.59
+        by smtp.gmail.com with ESMTPSA id g26sm9288424ejz.70.2021.03.22.02.59.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 03:00:00 -0700 (PDT)
+        Mon, 22 Mar 2021 02:59:56 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 14/18] trace-cmd: Add a new flag to disable any timestamp corrections
-Date:   Mon, 22 Mar 2021 11:59:41 +0200
-Message-Id: <20210322095945.259300-15-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 10/18] trace-cmd: Remove unneeded multiply in events timestamp reading
+Date:   Mon, 22 Mar 2021 11:59:37 +0200
+Message-Id: <20210322095945.259300-11-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210322095945.259300-1-tz.stoyanov@gmail.com>
 References: <20210322095945.259300-1-tz.stoyanov@gmail.com>
@@ -73,83 +73,32 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A new flag is added in the trace-cmd library for controlling events
-timestamp corrections while reading a trace file. If the flag is set,
-all timestamps are displayed as-is from the trace file.
-   TRACECMD_FL_RAW_TS
-The flag can be modified with these APIs:
-  tracecmd_set_flag()
-  tracecmd_clear_flag()
+When the event timestamp is converted to seconds, the local variable
+that holds this timestamp is converted to seconds also. As this
+variable is not used in the function later, this conversion in not
+needed.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h |  1 +
- lib/trace-cmd/trace-input.c                       | 12 ++++++++----
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ lib/trace-cmd/trace-input.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index c33d067a..fdca7494 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -134,6 +134,7 @@ enum {
- 	TRACECMD_FL_IGNORE_DATE		= (1 << 0),
- 	TRACECMD_FL_BUFFER_INSTANCE	= (1 << 1),
- 	TRACECMD_FL_IN_USECS		= (1 << 2),
-+	TRACECMD_FL_RAW_TS		= (1 << 3),
- };
- 
- struct tracecmd_ftrace {
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 5d03cd00..88007cde 100644
+index 67915f25..be8a7919 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -1289,6 +1289,9 @@ static unsigned long long timestamp_calc(unsigned long long ts,
- {
- 	unsigned long long t = ts;
+@@ -1932,10 +1932,8 @@ read_again:
  
-+	/* do not modify raw timestamps */
-+	if (handle->flags & TRACECMD_FL_RAW_TS)
-+		return ts;
+ 	handle->cpu_data[cpu].timestamp = timestamp_correct(ts, handle);
  
- 	/* Guest trace file, sync with host timestamps */
- 	if (handle->host.sync_enable)
-@@ -2604,7 +2607,8 @@ static int handle_options(struct tracecmd_input *handle)
- 			 * gtod. It is stored as ASCII with '0x'
- 			 * appended.
- 			 */
--			if (handle->flags & TRACECMD_FL_IGNORE_DATE)
-+			if ((handle->flags & TRACECMD_FL_IGNORE_DATE) ||
-+			    (handle->flags & TRACECMD_FL_RAW_TS))
- 				break;
- 			offset = strtoll(buf, NULL, 0);
- 			/* Convert from micro to nano */
-@@ -2616,7 +2620,7 @@ static int handle_options(struct tracecmd_input *handle)
- 			 * Similar to date option, but just adds an
- 			 * offset to the timestamp.
- 			 */
--			if (handle->flags & TRACECMD_FL_IGNORE_DATE)
-+			if (handle->flags & TRACECMD_FL_RAW_TS)
- 				break;
- 			offset = strtoll(buf, NULL, 0);
- 			handle->ts_offset += offset;
-@@ -2631,7 +2635,7 @@ static int handle_options(struct tracecmd_input *handle)
- 			 * long long array of size [count] of timestamp offsets.
- 			 * long long array of size [count] of timestamp scaling ratios.*
- 			 */
--			if (size < 16 || handle->flags & TRACECMD_FL_IGNORE_DATE)
-+			if (size < 16 || (handle->flags & TRACECMD_FL_RAW_TS))
- 				break;
- 			handle->host.peer_trace_id = tep_read_number(handle->pevent,
- 								     buf, 8);
-@@ -2710,7 +2714,7 @@ static int handle_options(struct tracecmd_input *handle)
- 			trace_guest_load(handle, buf, size);
- 			break;
- 		case TRACECMD_OPTION_TSC2NSEC:
--			if (size < 16)
-+			if (size < 16 || (handle->flags & TRACECMD_FL_RAW_TS))
- 				break;
- 			handle->tsc_calc.mult = tep_read_number(handle->pevent,
- 								buf, 4);
+-	if (handle->ts2secs) {
++	if (handle->ts2secs)
+ 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
+-		ts *= handle->ts2secs;
+-	}
+ 
+ 	index = kbuffer_curr_offset(kbuf);
+ 
 -- 
 2.30.2
 
