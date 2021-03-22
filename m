@@ -2,244 +2,132 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCE4BC433C1
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 21 Mar 2021 00:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2559CC433C1
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 10:00:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 79F1F61924
-	for <linux-trace-devel@archiver.kernel.org>; Sun, 21 Mar 2021 00:35:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D048661969
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 10:00:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhCUAfO (ORCPT
+        id S229472AbhCVJ7y (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 20 Mar 2021 20:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41412 "EHLO
+        Mon, 22 Mar 2021 05:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhCUAfO (ORCPT
+        with ESMTP id S229953AbhCVJ7t (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 20 Mar 2021 20:35:14 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4ACC061574
-        for <linux-trace-devel@vger.kernel.org>; Sat, 20 Mar 2021 17:35:13 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so12279550otn.1
-        for <linux-trace-devel@vger.kernel.org>; Sat, 20 Mar 2021 17:35:13 -0700 (PDT)
+        Mon, 22 Mar 2021 05:59:49 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67DEC061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 02:59:48 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id bx7so18499176edb.12
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 02:59:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wXSAtG3fLthr+jTj1460kvy9TdgHfJBM27vjFsqSlmw=;
-        b=HkbmJoir7rBjsUdsGGQBnpQkfHaHmmJlj8XHAD+yPhsBbhwT4KjLpNG1PLFJO+s5GS
-         WQtKqidmXY6hdq/ttbcqAe6Y8/aVZE7cKKFfzSmNsQkNqIjB83KardscFhFoy+2Kv50t
-         aVEaXKQWj31JxTH7GIkhaEcQBDl3er3eGRD0y8ThW/CNq1msWgSd8eJ4oFkuRXk25YH2
-         OH17iyf8OgKdEBY7JzE6dOCNyL2A8/khf1tk6+euVnBsvagFGVTv7hbyeDbSGsP042HZ
-         n6Gre0q/9tvqbrh+31pl85SstmGS2x2Y06U74jkkkCV5rkGPWeqpnd3oSlaMNpcl/YJZ
-         qMtQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I+9Yc4CHGGuZTd85gR1y4noFfb1SfPK8z47ZN/RI9kQ=;
+        b=uxQzyZiovVwEYMc3sf52TIL7s524af26iEm91Z9nc7Ce8gY8/FASyqfIUFpmeKoHI5
+         4ufZP6wN4QDIZkO2ZcXzKGKoUjxcIqXqRfJ5/2h4/lNa380hx4siQXalykqJjZGDMXd+
+         Umwgg1vfHTyL/O0PXG9AAdtsK6/gFesjq2ETTl/T9RSf0d7jEPgMnx+9YMdH3NRocWRn
+         1Jk9b9IBJ1d44FapuLhXyF2I+0YMatywM4NjAbvGjtQW3uyzg/RFIObcMNS4XsCu6MuT
+         yfeVWtvEYWG1dBc8C4LxRo7JQGDiB17Ho72xXXT9u495Cn6vVcC18YboP58uSD4CQTY4
+         J3rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wXSAtG3fLthr+jTj1460kvy9TdgHfJBM27vjFsqSlmw=;
-        b=AL1IhSTRzv3AB0XvYGONu9UFHUOPAVHPz+GGiF4OAXifdnq8ruJrCnC+C6FggNETCF
-         uZbKxoOC9zC+osVBi24E+cjgqu1PZk4vXxNVl7FSSLkoc732L8So3ziipGYlKxMNbx96
-         Z+g7j20fKewQCAD2MY5kpPC3NJNlzoG2MlUeNxfuhTfYwWFJVqTb1xajNlOUlMppDY3+
-         HhINo0qHkennwWddOy8OYahjlfliR0G0VUnz+LaKQR6D5Bau2sQyLJJAowAOYUXjXVPp
-         KzovYImDK9PiKyEFHcPFT/EgmqvJpXvUWHFn7iozxAqMnPlouWRwG34MYaAQoUiQeK5o
-         1P/w==
-X-Gm-Message-State: AOAM532/IRoR4Iq/voUZ0FV76wFVwUVGXl42nGCJFQ/10UuEx9hC56lU
-        Jvo87M/eaJjC8odrmnehoamsqbyOLJywNyhL6tXt5cBSR6M=
-X-Google-Smtp-Source: ABdhPJxTWmQ81r0DnpL5tjodZH4HIVr78PTzlW3fLGU/meVCq5eb8VU9JZgpzosQqJQ4rDgCZGeguNiNLbZqhFYIcsk=
-X-Received: by 2002:a05:6830:348f:: with SMTP id c15mr6584027otu.138.1616286912790;
- Sat, 20 Mar 2021 17:35:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I+9Yc4CHGGuZTd85gR1y4noFfb1SfPK8z47ZN/RI9kQ=;
+        b=W6zMUiNCl88Xo1rc0IHg4JKgswW3LspXMKJQ5eO5nzr6JTTjMgv/vczMUQyrY2Bc+3
+         +HKt/6mqaXrbmEI36jWkzCrP7s92FpacoAhSEp5vlLLwrAs8nwKXShw5/XYU804QaFOA
+         sd/AR8WARQW4KJOH/Mt3W01xM1gezv59AD7syH3mXq2yOz0nacW55sDlFEkfsdiQxtRI
+         R5TGcYucCdMDn/+c24Iubdpx22FIdkegCV3Xib2x9hvhHYHecAesfik4OQ/XD7imDcWb
+         rkYWfofeb3K5y4+gmOoNDPHm0wrnVokZPCT5LgSElyHgwhRrPU+7FgN43t5OfVj3AaF7
+         Mcmg==
+X-Gm-Message-State: AOAM5306mG4m6/DjZjkP+KhIX9tlC7T2OIT/qiea5XWSqv3vheYVUW+b
+        oy1ScCePLZUz1962WSrJT/EfNuTJcOWQrQ==
+X-Google-Smtp-Source: ABdhPJwqkzwVkC0DFBaRlix6zE6QxsgkQ5xObfD3iBlCfmpm4HNlQuaXfrwN71d7+CdV9iL1SbDeVA==
+X-Received: by 2002:a05:6402:1d39:: with SMTP id dh25mr25173268edb.282.1616407187554;
+        Mon, 22 Mar 2021 02:59:47 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id g26sm9288424ejz.70.2021.03.22.02.59.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 02:59:46 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2 00/18]  TSC trace clock to nanosecond conversion
+Date:   Mon, 22 Mar 2021 11:59:27 +0200
+Message-Id: <20210322095945.259300-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <1616171938-18914-1-git-send-email-sameeruddin.shaik8@gmail.com> <CAPpZLN5SSxa2ZwnE1G3iuk2uuvm0JaP_N92esJKqL=zSDwCruQ@mail.gmail.com>
-In-Reply-To: <CAPpZLN5SSxa2ZwnE1G3iuk2uuvm0JaP_N92esJKqL=zSDwCruQ@mail.gmail.com>
-From:   Sameeruddin Shaik <sameeruddin.shaik8@gmail.com>
-Date:   Sun, 21 Mar 2021 06:05:01 +0530
-Message-ID: <CAK7tX=YLs7W1Va5nwaaEQ9q1mmm6hun97Vbe+bMoAegmKFnyJw@mail.gmail.com>
-Subject: Re: [PATCH v3] libtracefs: An API to set the filtering of functions
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-hi steve / tzvetomir,
-If there are any dependencies for merging this patch, please let me
-know. If not, please merge this
-patch. will give the man page and test code in separate patches, as
-suggested by  tzvetmoir.
-Thanks,
-sameer
+Added new logic for converting TSC event's timestamps to nanoseconds. This
+trace clock is used by default in host-guest tracing session in combination
+with KVM time sync plugin. The parameters for conversion are retrieved by
+the perf kernel interface.
+New option is added to "trace-cmd report" command to force displaying raw
+time stamps from the trace file, without any corrections to the time stamps.
 
+These changes depend on "Refactoring and improvements of time sync logic"
+patch set.
 
-On Thu, Mar 18, 2021 at 10:52 PM Tzvetomir Stoyanov
-<tz.stoyanov@gmail.com> wrote:
->
-> On Thu, Mar 18, 2021 at 6:38 PM Sameeruddin shaik
-> <sameeruddin.shaik8@gmail.com> wrote:
-> >
-> > This new API will write the function filters into the
-> > set_ftrace_filter file.
-> >
-> > tracefs_function_filter()
-> >
-> > https://bugzilla.kernel.org/show_bug.cgi?id=210643
-> >
-> > Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
-> > ---
-> > Addressed the realloc comments
-> > diff --git a/include/tracefs.h b/include/tracefs.h
-> > index f3eec62..c1f07b0 100644
-> > --- a/include/tracefs.h
-> > +++ b/include/tracefs.h
-> > @@ -145,5 +145,6 @@ bool tracefs_option_is_enabled(struct tracefs_instance *instance, enum tracefs_o
-> >  int tracefs_option_enable(struct tracefs_instance *instance, enum tracefs_option_id id);
-> >  int tracefs_option_diasble(struct tracefs_instance *instance, enum tracefs_option_id id);
-> >  const char *tracefs_option_name(enum tracefs_option_id id);
-> > -
-> > +int tracefs_function_filter(struct tracefs_instance *instance, const char **filters,
-> > +                           const char *module, bool reset, const char ***errs);
-> >  #endif /* _TRACE_FS_H */
-> > diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-> > index e2dfc7b..4f8bcdc 100644
-> > --- a/src/tracefs-tools.c
-> > +++ b/src/tracefs-tools.c
-> > @@ -18,6 +18,7 @@
-> >  #include "tracefs-local.h"
-> >
-> >  #define TRACE_CTRL     "tracing_on"
-> > +#define TRACE_FILTER   "set_ftrace_filter"
-> >
-> >  static const char * const options_map[] = {
-> >         "unknown",
-> > @@ -387,3 +388,113 @@ void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_opt
-> >         if (options && id > TRACEFS_OPTION_INVALID)
-> >                 options->mask &= ~(1ULL << (id - 1));
-> >  }
-> > +
-> > +static int controlled_write(const char *filter_path, const char **filters,
-> > +                           const char *module, bool reset, const char ***errs)
-> > +{
-> > +       int flags = reset ? O_TRUNC : O_APPEND;
-> > +       const char **temp = NULL;
-> > +       const char **e = NULL;
-> > +       char *each_str = NULL;
-> > +       int write_size = 0;
-> > +       int size = 0;
-> > +       int fd = -1;
-> > +       int ret = 0;
-> > +       int j = 0;
-> > +       int i;
-> > +
-> > +       fd = open(filter_path, O_WRONLY | flags);
-> > +       if (fd < 0)
-> > +               return 1;
-> > +
-> > +       for (i = 0; filters[i]; i++) {
-> > +               if (module)
-> > +                       write_size = asprintf(&each_str, "%s:mod:%s ", filters[i], module);
-> > +               else
-> > +                       write_size = asprintf(&each_str, "%s ", filters[i]);
-> > +               if (write_size < 0) {
-> > +                       ret = 1;
-> > +                       goto error;
-> > +               }
-> > +               size = write(fd, each_str, write_size);
-> > +               /* compare written bytes*/
-> > +               if (size < write_size) {
-> > +                       if (errs) {
-> > +                               temp = realloc(e, (j + 1) * (sizeof(char *)));
-> > +                               if (!temp) {
-> > +                                       free(e);
-> > +                                       ret = 1;
-> > +                                       goto error;
-> > +                               } else
-> > +                                       e = temp;
-> > +
-> > +                               e[j++] = filters[i];
-> > +                               ret -= 1;
-> > +                       }
-> > +               }
-> > +               free(each_str);
-> > +               each_str = NULL;
-> > +       }
-> > +       if (errs) {
-> > +               temp = realloc(e, (j + 1) * (sizeof(char *)));
-> > +               if (!temp) {
-> > +                       free(e);
-> > +                       ret = 1;
-> > +                       goto error;
-> > +               } else
-> > +                       e = temp;
-> > +               e[j] = NULL;
-> > +               *errs = e;
-> > +       }
-> > + error:
-> > +       if (each_str)
-> > +               free(each_str);
-> > +       close(fd);
-> > +       return ret;
-> > +}
-> > +
-> > +/**
-> > + * tracefs_function_filter - write to set_ftrace_filter file to trace
-> > + * particular functions
-> > + * @instance: ftrace instance, can be NULL for top tracing instance
-> > + * @filters: An array of function names ending with a NULL pointer
-> > + * @module: Module to be traced
-> > + * @reset: set to true to reset the file before applying the filter
-> > + * @errs: A pointer to array of constant strings that will be allocated
-> > + * on negative return of this function, pointing to the filters that
-> > + * failed.May be NULL, in which case this field will be ignored.
-> > + *
-> > + * The @filters is an array of strings, where each string will be used
-> > + * to set a function or functions to be traced.
-> > + *
-> > + * If @reset is true, then all functions in the filter are cleared
-> > + * before adding functions from @filters. Otherwise, the functions set
-> > + * by @filters will be appended to the filter file
-> > + *
-> > + * returns -x on filter errors (where x is number of failed filter
-> > + * srtings) and if @errs is not NULL will be an allocated string array
-> > + * pointing to the strings in @filters that failed and must be freed
-> > + * with free().
-> > + *
-> > + * returns 1 on general errors not realted to setting the filter.
-> > + * @errs is not set even if supplied.
-> > + *
-> > + * return 0 on success and @errs is not set.
-> > + */
-> > +int tracefs_function_filter(struct tracefs_instance *instance, const char **filters,
-> > +                           const char *module, bool reset, const char ***errs)
-> > +{
-> > +       char *ftrace_filter_path;
-> > +       int ret = 0;
-> > +
-> > +       if (!filters)
-> > +               return 1;
-> > +
-> > +       ftrace_filter_path = tracefs_instance_get_file(instance, TRACE_FILTER);
-> > +       if (!ftrace_filter_path)
-> > +               return 1;
-> > +
-> > +       ret = controlled_write(ftrace_filter_path, filters, module, reset, errs);
-> > +       tracefs_put_tracing_file(ftrace_filter_path);
-> > +       return ret;
-> > +}
-> > --
-> > 2.7.4
-> >
->
-> Looks good to me.
-> Thanks Sameer!
-> Acked-by: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
->
->
-> --
-> Tzvetomir (Ceco) Stoyanov
-> VMware Open Source Technology Center
+v2 changes:
+ - Added new trace clock "-C tsc2nsec", which does not depend on host-guest
+   tracing use case.
+ - A few minor improvements and fixes. 
+
+Tzvetomir Stoyanov (VMware) (18):
+  trace-cmd: Add initial perf interface in trace-cmd library
+  trace-cmd: Extend trace-cmd dump subcommand to display the clock
+  trace-cmd: Save only the selected clock in the trace.dat file
+  trace-cmd: Add new trace-cmd clock tsc2nsec
+  trace-cmd: Add a new option in trace file metadata for tsc2nsec
+    conversion
+  trace-cmd: Save information for tsc to nanoseconds conversion in trace
+    file
+  trace-cmd: Read information for tsc to nanoseconds conversion from
+    trace file
+  trace-cmd: Save tsc2nsec clock in trace.dat file
+  trace-cmd: Append new options into guest trace file at the end of the
+    tracing session
+  trace-cmd: Remove unneeded multiply in events timestamp reading
+  trace-cmd: Perform all timestamp corrections in a single function
+  trace-cmd: Convert tsc timestamps to nanosecods when reading trace
+    data from a file
+  trace-cmd: Set order and priorities when applying timestamp
+    corrections
+  trace-cmd: Add a new flag to disable any timestamp corrections
+  trace-cmd: Add new parameter "--raw-ts" to "trace-cmd report" command
+  trace-cmd: Print times in TimeShift options as unsigned in trace-cmd
+    dump
+  trace-cmd: Use tsc clock for host-guest tracing, if available
+  trace-cmd: Get current clock for host-guest tracing session
+
+ Documentation/trace-cmd/trace-cmd-dump.1.txt  |   2 +
+ Makefile                                      |   6 +
+ lib/trace-cmd/Makefile                        |   3 +
+ .../include/private/trace-cmd-private.h       |  22 ++
+ lib/trace-cmd/trace-input.c                   | 103 +++--
+ lib/trace-cmd/trace-output.c                  |  65 ++-
+ lib/trace-cmd/trace-perf.c                    | 105 +++++
+ lib/trace-cmd/trace-timesync.c                |   1 -
+ tracecmd/include/trace-local.h                |   7 +
+ tracecmd/trace-dump.c                         |  55 ++-
+ tracecmd/trace-read.c                         |   9 +-
+ tracecmd/trace-record.c                       | 372 +++++++++++++++---
+ tracecmd/trace-usage.c                        |   1 +
+ 13 files changed, 649 insertions(+), 102 deletions(-)
+ create mode 100644 lib/trace-cmd/trace-perf.c
+
+-- 
+2.30.2
+
