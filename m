@@ -2,132 +2,219 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2559CC433C1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 347A0C433E0
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 10:00:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D048661969
+	by mail.kernel.org (Postfix) with ESMTP id E9E726192A
 	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 10:00:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229472AbhCVJ7y (ORCPT
+        id S229548AbhCVJ74 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 22 Mar 2021 05:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        Mon, 22 Mar 2021 05:59:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhCVJ7t (ORCPT
+        with ESMTP id S230012AbhCVJ7v (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:59:49 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67DEC061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 02:59:48 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id bx7so18499176edb.12
-        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 02:59:48 -0700 (PDT)
+        Mon, 22 Mar 2021 05:59:51 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F0EC061762
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 02:59:50 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id jy13so20164591ejc.2
+        for <linux-trace-devel@vger.kernel.org>; Mon, 22 Mar 2021 02:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I+9Yc4CHGGuZTd85gR1y4noFfb1SfPK8z47ZN/RI9kQ=;
-        b=uxQzyZiovVwEYMc3sf52TIL7s524af26iEm91Z9nc7Ce8gY8/FASyqfIUFpmeKoHI5
-         4ufZP6wN4QDIZkO2ZcXzKGKoUjxcIqXqRfJ5/2h4/lNa380hx4siQXalykqJjZGDMXd+
-         Umwgg1vfHTyL/O0PXG9AAdtsK6/gFesjq2ETTl/T9RSf0d7jEPgMnx+9YMdH3NRocWRn
-         1Jk9b9IBJ1d44FapuLhXyF2I+0YMatywM4NjAbvGjtQW3uyzg/RFIObcMNS4XsCu6MuT
-         yfeVWtvEYWG1dBc8C4LxRo7JQGDiB17Ho72xXXT9u495Cn6vVcC18YboP58uSD4CQTY4
-         J3rw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bkMemzN07X64imp97CYxdrPc7SsdcDc77EC0gds/d2Q=;
+        b=ITEFWlq2VgLg9NoCVNsSe704Kmivs6i79hruJm4ksMZAoMAnBbTHPgaJ0S2poW68i3
+         N5Sdz+c32tMFGTYqlXKBNTbvseD+IV8qyDKcpP9PYKgtvJO2cmnd5wx8IDj3LRoPRLcS
+         F9CZ7vXv2zc5ZA6IatcqChcigusWnqyGQ0kT5L14DjOQn57OgFZdZo8Lfl1KzWRr0/uT
+         VxBJ3aabrA4zReqbjwP170QBWe45Z1lllTFIdHNm0etLOtad98n5xnpHZa7ZS6AoKPK6
+         KyycGu7sZdzWkxPnE0cMvfhnc1LDUSmD9AAk8f45jab4taEa6eu4nAew/Fo63MAwNWC2
+         yq0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I+9Yc4CHGGuZTd85gR1y4noFfb1SfPK8z47ZN/RI9kQ=;
-        b=W6zMUiNCl88Xo1rc0IHg4JKgswW3LspXMKJQ5eO5nzr6JTTjMgv/vczMUQyrY2Bc+3
-         +HKt/6mqaXrbmEI36jWkzCrP7s92FpacoAhSEp5vlLLwrAs8nwKXShw5/XYU804QaFOA
-         sd/AR8WARQW4KJOH/Mt3W01xM1gezv59AD7syH3mXq2yOz0nacW55sDlFEkfsdiQxtRI
-         R5TGcYucCdMDn/+c24Iubdpx22FIdkegCV3Xib2x9hvhHYHecAesfik4OQ/XD7imDcWb
-         rkYWfofeb3K5y4+gmOoNDPHm0wrnVokZPCT5LgSElyHgwhRrPU+7FgN43t5OfVj3AaF7
-         Mcmg==
-X-Gm-Message-State: AOAM5306mG4m6/DjZjkP+KhIX9tlC7T2OIT/qiea5XWSqv3vheYVUW+b
-        oy1ScCePLZUz1962WSrJT/EfNuTJcOWQrQ==
-X-Google-Smtp-Source: ABdhPJwqkzwVkC0DFBaRlix6zE6QxsgkQ5xObfD3iBlCfmpm4HNlQuaXfrwN71d7+CdV9iL1SbDeVA==
-X-Received: by 2002:a05:6402:1d39:: with SMTP id dh25mr25173268edb.282.1616407187554;
-        Mon, 22 Mar 2021 02:59:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bkMemzN07X64imp97CYxdrPc7SsdcDc77EC0gds/d2Q=;
+        b=WPGCn9ODlTYIJW0ARws3SRLttAdtzdNtSmO9VPhK9vEHyG45ejSxTqIxrladEHlJQT
+         R0NXsxlNgH6UdVRA+oO33O2WP37OY/dWgKwHPb/FKBEHcmnI5qlyE36tSUHFhzCorskK
+         njVxPvW0FaKFJmSrLectenwdg82vYu80fqY0b5PgF5mDpHCd6BRoulqEt+/2zM549wIP
+         Bd8S8gfZuOvWefs7vxwiVKM9QBiD4Qe35krV/Z7IvLs5Hqt/7WK00tES4l9flkRQquI2
+         ZgPvkpHc2XuMemWZm9LcZdeNGNO51k/VIRRa/W8vn62vOAdMkn8x9ZRs5RZB51SYgoIj
+         rdqg==
+X-Gm-Message-State: AOAM531sWWOTETixI/8anPMr7TtaY8QnqpzXHhHqD3RGpRTPqVLGmvHq
+        TO08qJRSh6fGZr4LSj7GwdA=
+X-Google-Smtp-Source: ABdhPJyMVLSKglqstxAwJKJ/gaW1sYuDiuLh9rJa9jyYxvOYF7LJLQY6tCKp8qfO7Gc9iN/Wz9xjHw==
+X-Received: by 2002:a17:906:7102:: with SMTP id x2mr18579527ejj.355.1616407189306;
+        Mon, 22 Mar 2021 02:59:49 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id g26sm9288424ejz.70.2021.03.22.02.59.46
+        by smtp.gmail.com with ESMTPSA id g26sm9288424ejz.70.2021.03.22.02.59.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 02:59:46 -0700 (PDT)
+        Mon, 22 Mar 2021 02:59:48 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 00/18]  TSC trace clock to nanosecond conversion
-Date:   Mon, 22 Mar 2021 11:59:27 +0200
-Message-Id: <20210322095945.259300-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 02/18] trace-cmd: Extend trace-cmd dump subcommand to display the clock
+Date:   Mon, 22 Mar 2021 11:59:29 +0200
+Message-Id: <20210322095945.259300-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210322095945.259300-1-tz.stoyanov@gmail.com>
+References: <20210322095945.259300-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Added new logic for converting TSC event's timestamps to nanoseconds. This
-trace clock is used by default in host-guest tracing session in combination
-with KVM time sync plugin. The parameters for conversion are retrieved by
-the perf kernel interface.
-New option is added to "trace-cmd report" command to force displaying raw
-time stamps from the trace file, without any corrections to the time stamps.
+Trace clock, used to record the tracing data is saved in the trace.dat
+file. As "trace-cmd dump" command shows the metadata content of the
+file, it should display the trace clock also.
+Added a new parameter
+  "trace-cmd dump --clock"
+which shows the clock saved in the file. The clock can be displayed
+also with
+ "trace-cmd dump --all"
 
-These changes depend on "Refactoring and improvements of time sync logic"
-patch set.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ Documentation/trace-cmd/trace-cmd-dump.1.txt |  2 ++
+ tracecmd/trace-dump.c                        | 34 +++++++++++++++++++-
+ tracecmd/trace-usage.c                       |  1 +
+ 3 files changed, 36 insertions(+), 1 deletion(-)
 
-v2 changes:
- - Added new trace clock "-C tsc2nsec", which does not depend on host-guest
-   tracing use case.
- - A few minor improvements and fixes. 
-
-Tzvetomir Stoyanov (VMware) (18):
-  trace-cmd: Add initial perf interface in trace-cmd library
-  trace-cmd: Extend trace-cmd dump subcommand to display the clock
-  trace-cmd: Save only the selected clock in the trace.dat file
-  trace-cmd: Add new trace-cmd clock tsc2nsec
-  trace-cmd: Add a new option in trace file metadata for tsc2nsec
-    conversion
-  trace-cmd: Save information for tsc to nanoseconds conversion in trace
-    file
-  trace-cmd: Read information for tsc to nanoseconds conversion from
-    trace file
-  trace-cmd: Save tsc2nsec clock in trace.dat file
-  trace-cmd: Append new options into guest trace file at the end of the
-    tracing session
-  trace-cmd: Remove unneeded multiply in events timestamp reading
-  trace-cmd: Perform all timestamp corrections in a single function
-  trace-cmd: Convert tsc timestamps to nanosecods when reading trace
-    data from a file
-  trace-cmd: Set order and priorities when applying timestamp
-    corrections
-  trace-cmd: Add a new flag to disable any timestamp corrections
-  trace-cmd: Add new parameter "--raw-ts" to "trace-cmd report" command
-  trace-cmd: Print times in TimeShift options as unsigned in trace-cmd
-    dump
-  trace-cmd: Use tsc clock for host-guest tracing, if available
-  trace-cmd: Get current clock for host-guest tracing session
-
- Documentation/trace-cmd/trace-cmd-dump.1.txt  |   2 +
- Makefile                                      |   6 +
- lib/trace-cmd/Makefile                        |   3 +
- .../include/private/trace-cmd-private.h       |  22 ++
- lib/trace-cmd/trace-input.c                   | 103 +++--
- lib/trace-cmd/trace-output.c                  |  65 ++-
- lib/trace-cmd/trace-perf.c                    | 105 +++++
- lib/trace-cmd/trace-timesync.c                |   1 -
- tracecmd/include/trace-local.h                |   7 +
- tracecmd/trace-dump.c                         |  55 ++-
- tracecmd/trace-read.c                         |   9 +-
- tracecmd/trace-record.c                       | 372 +++++++++++++++---
- tracecmd/trace-usage.c                        |   1 +
- 13 files changed, 649 insertions(+), 102 deletions(-)
- create mode 100644 lib/trace-cmd/trace-perf.c
-
+diff --git a/Documentation/trace-cmd/trace-cmd-dump.1.txt b/Documentation/trace-cmd/trace-cmd-dump.1.txt
+index 71b8e655..0f8626fa 100644
+--- a/Documentation/trace-cmd/trace-cmd-dump.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-dump.1.txt
+@@ -46,6 +46,8 @@ OPTIONS
+     Print all options, stored in the file.
+ *--flyrecord*::
+     Print the offset and the size of tracing data per each CPU.
++*--clock*::
++    Print the trace clock, used for timestamp of the tracing events, stored in the file.
+ *--all*::
+     Print all meta data from the file.
+ *--help*::
+diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
+index 6172231e..4bdfd53f 100644
+--- a/tracecmd/trace-dump.c
++++ b/tracecmd/trace-dump.c
+@@ -24,6 +24,7 @@
+ 
+ static struct tep_handle *tep;
+ static unsigned int trace_cpus;
++static int has_clock;
+ 
+ enum dump_items {
+ 	SUMMARY		= (1 << 0),
+@@ -37,6 +38,7 @@ enum dump_items {
+ 	CMDLINES	= (1 << 8),
+ 	OPTIONS		= (1 << 9),
+ 	FLYRECORD	= (1 << 10),
++	CLOCK		= (1 << 11),
+ };
+ 
+ enum dump_items verbosity;
+@@ -496,7 +498,7 @@ static void dump_options(int fd)
+ 			die("cannot read the option size");
+ 
+ 		count++;
+-		if (!DUMP_CHECK(OPTIONS)) {
++		if (!DUMP_CHECK(OPTIONS) && !DUMP_CHECK(CLOCK)) {
+ 			lseek64(fd, size, SEEK_CUR);
+ 			continue;
+ 		}
+@@ -512,6 +514,7 @@ static void dump_options(int fd)
+ 			break;
+ 		case TRACECMD_OPTION_TRACECLOCK:
+ 			dump_option_string(fd, size, "TRACECLOCK");
++			has_clock = 1;
+ 			break;
+ 		case TRACECMD_OPTION_UNAME:
+ 			dump_option_string(fd, size, "UNAME");
+@@ -556,6 +559,29 @@ static void dump_latency(int fd)
+ 	do_print(SUMMARY, "\t[Latency tracing data]\n");
+ }
+ 
++static void dump_clock(int fd)
++{
++	long long size;
++	char *clock;
++
++	do_print((SUMMARY | CLOCK), "\t[Tracing clock]\n");
++	if (!has_clock) {
++		do_print((SUMMARY | CLOCK), "\t\t No tracing clock saved in the file\n");
++		return;
++	}
++	if (read_file_number(fd, &size, 8))
++		die("cannot read clock size");
++	clock = calloc(1, size);
++	if (!clock)
++		die("cannot allocate clock %d bytes", size);
++
++	if (read_file_bytes(fd, clock, size))
++		die("cannot read clock %d bytes", size);
++	clock[size] = 0;
++	do_print((SUMMARY | CLOCK), "\t\t%s\n", clock);
++	free(clock);
++}
++
+ static void dump_flyrecord(int fd)
+ {
+ 	long long cpu_offset;
+@@ -572,6 +598,7 @@ static void dump_flyrecord(int fd)
+ 		do_print(FLYRECORD, "\t\t %lld %lld\t[offset, size of cpu %d]\n",
+ 			 cpu_offset, cpu_size, i);
+ 	}
++	dump_clock(fd);
+ }
+ 
+ static void dump_therest(int fd)
+@@ -626,6 +653,7 @@ static void dump_file(const char *file)
+ }
+ 
+ enum {
++	OPT_clock	= 243,
+ 	OPT_all		= 244,
+ 	OPT_summary	= 245,
+ 	OPT_flyrecord	= 246,
+@@ -666,6 +694,7 @@ void trace_dump(int argc, char **argv)
+ 			{"cmd-lines", no_argument, NULL, OPT_cmd_lines},
+ 			{"options", no_argument, NULL, OPT_options},
+ 			{"flyrecord", no_argument, NULL, OPT_flyrecord},
++			{"clock", no_argument, NULL, OPT_clock},
+ 			{"validate", no_argument, NULL, 'v'},
+ 			{"help", no_argument, NULL, '?'},
+ 			{NULL, 0, NULL, 0}
+@@ -721,6 +750,9 @@ void trace_dump(int argc, char **argv)
+ 		case OPT_head_page:
+ 			verbosity |= HEAD_PAGE;
+ 			break;
++		case OPT_clock:
++			verbosity |= CLOCK;
++			break;
+ 		default:
+ 			usage(argv);
+ 		}
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 1a7abd58..22537d20 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -377,6 +377,7 @@ static struct usage_help usage_help[] = {
+ 		"          --cmd-lines print information mapping a PID to a process name\n"
+ 		"          --options print options\n"
+ 		"          --flyrecord information of offset and count of recorded events per CPU\n"
++		"          --clock trace clock, saved in the file\n"
+ 		"          -h, --help show usage information\n"
+ 	},
+ 	{
 -- 
 2.30.2
 
