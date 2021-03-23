@@ -2,132 +2,117 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED83DC433DB
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Mar 2021 12:53:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B92FCC433E0
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Mar 2021 12:58:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 978BC619B8
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Mar 2021 12:53:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 83AB5619B6
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Mar 2021 12:58:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhCWMwz (ORCPT
+        id S229836AbhCWM6S (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Mar 2021 08:52:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231367AbhCWMwX (ORCPT
+        Tue, 23 Mar 2021 08:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231231AbhCWM6M (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:52:23 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A143F619B8;
-        Tue, 23 Mar 2021 12:52:22 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 08:52:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
-Subject: Re: [PATCH 0/7] libtracfes: Add tracefs_function_filter()
-Message-ID: <20210323085220.6e20d125@gandalf.local.home>
-In-Reply-To: <20210323012755.155237800@goodmis.org>
-References: <20210323012755.155237800@goodmis.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 23 Mar 2021 08:58:12 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC4CC061574
+        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Mar 2021 05:58:12 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id j3so23287348edp.11
+        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Mar 2021 05:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nD2L22oMALh6zctufE3y5c8NqU+hdVTbks3ruW68ANU=;
+        b=AldqkxkKMkKwY8CJklnyoD80u8zR20tGABcCd+/uAD4KEtE+0hEIHUcq8V1txaP75+
+         qBwyxZfiApZgNVQJiiEpvw1C91WS44Vp5xLB6WlDD/rD6ZZ+TZImSjMXTIu99A3JchnI
+         m7q5bvXDs6NsnIkwFA3U3oRZ8z/OKFiDMH/lhKDoZC7yL2NqWlDeEgdeH9KtA/n2GtcS
+         W7bFDY3Aw3TO9PgVlkuRMy/UnDLeeSX1tn/f9J7r5iOSPEjTMJrFJq6xkRdkmcE+B0oJ
+         fPG7dYNSDnn562PrSyTumnTTfNzCLMGtS3Bvr2VfBoslImDfUwCAAUvKLlkAMV5yeDXR
+         l9sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nD2L22oMALh6zctufE3y5c8NqU+hdVTbks3ruW68ANU=;
+        b=ml1aryLUBTYs2MXsIyBRCrf8wftsW2fWVPKAgirPn1W2/yY4wXnDiaHPjY5XkT2Wpc
+         DrPNLhtK3QLahmcd9IZi5QvJEhD6rT/96jeEecQw5PRJ4tRYJL8gbx/DqzorzO16C1PC
+         kzKTsBMS83tyuSbNexBR4b5vgPeeI1UcS12pFmN/RmuB1rFRK42sqKJg0XBEjlsVE2kk
+         tzk//8+UgS4X7HheBND8yUWUnr3nTCrVl7PzgJjZsA5FZaTBHFKR7wilVPaadpTruJnk
+         O8wtCwn4GxVQDN9Y+UlWroiyNTD3Pz51iIEWf9pwb+9TyHlukjEb1a0SUPEMqthYWJBi
+         XbWw==
+X-Gm-Message-State: AOAM532O6vKWJR3U0jD8w4XH/IczFndRZ8pZkwY3Qb9yyvW6gDhsa7Yt
+        OnpfKpGlrEqUwPRrap/jYCPYRgVh/bAeZw==
+X-Google-Smtp-Source: ABdhPJzi/OXofzTobWE5VeqeBOSvoH6TywJ1W6ZjbG0c9Pu7CP/ZbYM49hcYuqoUjsB2EaTrJzCHnA==
+X-Received: by 2002:a05:6402:1115:: with SMTP id u21mr4377681edv.383.1616504290734;
+        Tue, 23 Mar 2021 05:58:10 -0700 (PDT)
+Received: from [192.168.0.108] ([95.87.199.133])
+        by smtp.gmail.com with ESMTPSA id i2sm12677426edy.72.2021.03.23.05.58.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 05:58:10 -0700 (PDT)
+Subject: Re: [PATCH] libtracefs: Prefer using const pointer arguments
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org
+References: <20210322142912.26521-1-y.karadz@gmail.com>
+ <20210322114721.118c83ae@gandalf.local.home>
+ <64861357-e2ef-e2aa-239c-9b8a96a5bf9b@gmail.com>
+ <20210322182917.622f6126@gandalf.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <c414dd4b-60c3-bdfb-0e23-ee9c307a3518@gmail.com>
+Date:   Tue, 23 Mar 2021 14:58:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210322182917.622f6126@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 22 Mar 2021 21:27:55 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> This adds a new API tracefs_function_filter() as described in:
+
+On 23.03.21 г. 0:29, Steven Rostedt wrote:
+> On Mon, 22 Mar 2021 18:59:42 +0200
+> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 > 
->  https://bugzilla.kernel.org/show_bug.cgi?id=210643
+>> I understand your preference to keep the flexibility of those API,
+>> however generally spiking those are "getter" functions and they are not
+>> supposed to modify the encapsulated object. If we allow the "getters" of
+>> the API to modify the encapsulated object (tracefs_instancein this case)
+>> this will be a bit of hacking stile of programing. At least for me,
+>> having a firm and intuitive design of the API is more valuable than the
+>> inconvenience that this reduced flexibility can potentially bring.
 > 
-> It will use regular expressions against available_filter_functions (or even
-> the kernel glob expression) to enable the function by the index method if it
-> is supported. If it is not supported, it will go back to the writing of the
-> filter strings directly into the set_ftrace_filter file.
+> Is there an immediate need for this change? I.e. python complains about it,
+> or some other reason.
+
+Hi Steven,
+
+I really need to change all "char *" arguments to "const char *". 
+Changing "tracefs_instance *" to "const tracefs_instance *" is more a 
+style preference.
+
+Thanks a lot!
+Y.
+
 > 
+> I'd like to hold off on changing this. This shouldn't break APIs, as the
+> code should still link fine if we decide to change it later.
 > 
-
-Playing with the interface some more, I feel it's not quite adequate.
-
-The returning the negative number of filters that failed, isn't very
-useful. Having the errs array that points to those filters gives us that
-information.
-
-Also, because of the way that file works in the kernel, we need to be able
-to call this function several times without closing the file. That's
-because the actions take place when the file is closed, *not* when a write
-is made. Having the interface return errors without closing the file would
-allow the user to fix the failed filters and try again.
-
-I plan on committing this patch series, so any new changes will be done on
-top of them. But here's what I think needs to be done to make the interface
-more usable.
-
- - Create a tracefs_function_filter_commit(instance) API that will close
-   the file and commit the changes.
-
- - Have the tracefs_function_filter() open the set_ftrace_filter file if it
-   is not already opened. This will allow for the function to be called
-   multiple times. The file descriptor will be part of the instance
-   descriptor or a global variable for the top level instance. The opening
-   of the files will need to be protected by a pthread mutex.
-   Note, the "reset" parameter is only applicable if the file is not
-   already opened.
-
- - On success, return 0 and tracefs_function_filter_commit() must be called.
-
- - If the file descriptor is opened and an error happens, return 1, and the
-   tracefs_function_filter_commit() still needs to be called, but the user
-   can call tracefs_function_filter() again to try to fix the problem.
-
- - If an error is found before the file descriptor is opened, then
-   tracefs_function_filter_commit() does not need to be called.
-
-That is:
-
-	ret = tracefs_function_filter(...);
-	if (ret >= 0)
-		tracefs_function_filter_commit();
-
- - Now for errs, it will be allocated if a problem happened on a filter,
-   and may be set if the return value is non zero (1 or -1). The user can
-   use it to know if the problem happened on a filter as well as find out
-   which filter had the problem.
-
- - We can have a tracefs_read_function_filter() that returns an array of
-   strings which ends with a NULL pointer (and needs to be freed with
-   tracefs_list_free(), and have this:
-
-   save_filters = tracefs_read_function_filter(instance);
-
-   ret = tracefs_function_filter(instance, filters, NULL, true, &errs);
-   if (ret > 0 && errs) {
-	/* Modified but failed */
-	int i, j;
-	for (i = 0; filters[i]; i++)
-		;
-	for (j = 0; errs[i]; j++)
-		;
-	if (i == j)
-		/* all filters failed! Put back the original */
-		tracefs_function_filter(instance, save_filters, NULL, false, NULL);
-   }
-   if (ret >= 0)
-	tracefs_function_filter_commit(instance);
-
-Another reason to have it not close the file is because we only support
-passing in one module at a time. If the user wants to enable functions in
-two modules, they would need to call this twice, and we want them to be
-able to do so and have both changes take affect at the same time.
-
-Thoughts?
-
--- Steve
+> I looked at various other libraries to see if they use const pointers for
+> "getter" functions. It's somewhat inconsistent. I'll look at more
+> libraries, and see how they are done. I'm more interested in keeping with
+> precedent here. C does some things differently that C++.
+> 
+> -- Steve
+> 
