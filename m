@@ -2,67 +2,154 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EBC9C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 22:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1311BC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Mar 2021 01:33:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB32C619A3
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 22 Mar 2021 22:30:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C9C52619AE
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Mar 2021 01:33:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhCVW3c (ORCPT
+        id S231409AbhCWBdE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 22 Mar 2021 18:29:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42666 "EHLO mail.kernel.org"
+        Mon, 22 Mar 2021 21:33:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhCVW3T (ORCPT
+        id S231551AbhCWBc1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:29:19 -0400
+        Mon, 22 Mar 2021 21:32:27 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78202619A3;
-        Mon, 22 Mar 2021 22:29:18 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 18:29:17 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 2021D619A9;
+        Tue, 23 Mar 2021 01:32:26 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1lOVuD-001cNo-4K; Mon, 22 Mar 2021 21:32:25 -0400
+Message-ID: <20210323013225.012918584@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Mon, 22 Mar 2021 21:27:58 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] libtracefs: Prefer using const pointer arguments
-Message-ID: <20210322182917.622f6126@gandalf.local.home>
-In-Reply-To: <64861357-e2ef-e2aa-239c-9b8a96a5bf9b@gmail.com>
-References: <20210322142912.26521-1-y.karadz@gmail.com>
-        <20210322114721.118c83ae@gandalf.local.home>
-        <64861357-e2ef-e2aa-239c-9b8a96a5bf9b@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     linux-trace-devel@vger.kernel.org
+Cc:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+Subject: [PATCH 3/7] libtracefs: Add add_errors() helper function for control_write()
+References: <20210323012755.155237800@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 22 Mar 2021 18:59:42 +0200
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-> I understand your preference to keep the flexibility of those API, 
-> however generally spiking those are "getter" functions and they are not 
-> supposed to modify the encapsulated object. If we allow the "getters" of 
-> the API to modify the encapsulated object (tracefs_instancein this case) 
-> this will be a bit of hacking stile of programing. At least for me, 
-> having a firm and intuitive design of the API is more valuable than the 
-> inconvenience that this reduced flexibility can potentially bring.
+Move the code that manages errors out of control_write() as this will be
+used by other methods in setting the filters.
 
-Is there an immediate need for this change? I.e. python complains about it,
-or some other reason.
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ src/tracefs-tools.c | 61 ++++++++++++++++++++++++---------------------
+ 1 file changed, 33 insertions(+), 28 deletions(-)
 
-I'd like to hold off on changing this. This shouldn't break APIs, as the
-code should still link fine if we decide to change it later.
+diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
+index 02e43168a810..1348542a3419 100644
+--- a/src/tracefs-tools.c
++++ b/src/tracefs-tools.c
+@@ -389,16 +389,40 @@ void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_opt
+ 		options->mask &= ~(1ULL << (id - 1));
+ }
+ 
++static void add_errors(const char ***errs, const char *filter, int ret)
++{
++	const char **e;
++
++	if (!errs)
++		return;
++
++	/* Negative is passed in */
++	ret = -ret;
++	e = *errs;
++
++	/* If this previously failed to allocate stop processing */
++	if (!e && ret)
++		return;
++
++	/* Add 2, one for the new entry, and one for NULL */
++	e = realloc(e, sizeof(*e) * (ret + 2));
++	if (!e) {
++		free(*errs);
++		*errs = NULL;
++		return;
++	}
++	e[ret] = filter;
++	e[ret + 1] = NULL;
++	*errs = e;
++}
++
+ static int controlled_write(int fd, const char **filters,
+ 			    const char *module, const char ***errs)
+ {
+-	const char **temp = NULL;
+-	const char **e = NULL;
+ 	char *each_str = NULL;
+ 	int write_size = 0;
+ 	int size = 0;
+ 	int ret = 0;
+-	int j = 0;
+ 	int i;
+ 
+ 	for (i = 0; filters[i]; i++) {
+@@ -412,34 +436,11 @@ static int controlled_write(int fd, const char **filters,
+ 		}
+ 		size = write(fd, each_str, write_size);
+ 		/* compare written bytes*/
+-		if (size < write_size) {
+-			if (errs) {
+-				temp = realloc(e, (j + 1) * (sizeof(char *)));
+-				if (!temp) {
+-					free(e);
+-					ret = 1;
+-					goto error;
+-				} else
+-					e = temp;
+-
+-				e[j++] = filters[i];
+-				ret -= 1;
+-			}
+-		}
++		if (size < write_size)
++			add_errors(errs, filters[i], ret--);
+ 		free(each_str);
+ 		each_str = NULL;
+ 	}
+-	if (errs) {
+-		temp = realloc(e, (j + 1) * (sizeof(char *)));
+-		if (!temp) {
+-			free(e);
+-			ret = 1;
+-			goto error;
+-		} else
+-			e = temp;
+-		e[j] = NULL;
+-		*errs = e;
+-	}
+  error:
+ 	if (each_str)
+ 		free(each_str);
+@@ -496,6 +497,10 @@ int tracefs_function_filter(struct tracefs_instance *instance, const char **filt
+ 	if (fd < 0)
+ 		return 1;
+ 
++	/* Make sure errs is NULL to start with, realloc() depends on it. */
++	if (errs)
++		*errs = NULL;
++
+ 	ret = controlled_write(fd, filters, module, errs);
+ 
+ 	close(fd);
+-- 
+2.30.1
 
-I looked at various other libraries to see if they use const pointers for
-"getter" functions. It's somewhat inconsistent. I'll look at more
-libraries, and see how they are done. I'm more interested in keeping with
-precedent here. C does some things differently that C++.
 
--- Steve
