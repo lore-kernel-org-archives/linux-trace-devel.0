@@ -7,35 +7,36 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1311BC433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C943C433C1
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Mar 2021 01:33:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C9C52619AE
+	by mail.kernel.org (Postfix) with ESMTP id E776A619AF
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 23 Mar 2021 01:33:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhCWBdE (ORCPT
+        id S231441AbhCWBdE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Mon, 22 Mar 2021 21:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44352 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231551AbhCWBc1 (ORCPT
+        id S231434AbhCWBc1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 22 Mar 2021 21:32:27 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2021D619A9;
-        Tue, 23 Mar 2021 01:32:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDAEB61990;
+        Tue, 23 Mar 2021 01:32:25 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lOVuD-001cNo-4K; Mon, 22 Mar 2021 21:32:25 -0400
-Message-ID: <20210323013225.012918584@goodmis.org>
+        id 1lOVuC-001cMk-RN; Mon, 22 Mar 2021 21:32:24 -0400
+Message-ID: <20210323013224.729594322@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 22 Mar 2021 21:27:58 -0400
+Date:   Mon, 22 Mar 2021 21:27:56 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
-Cc:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
-Subject: [PATCH 3/7] libtracefs: Add add_errors() helper function for control_write()
+Cc:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>,
+        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Subject: [PATCH 1/7] libtracefs: An API to set the filtering of functions
 References: <20210323012755.155237800@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,112 +44,163 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
 
-Move the code that manages errors out of control_write() as this will be
-used by other methods in setting the filters.
+This new API will write the function filters into the
+set_ftrace_filter file.
 
+tracefs_function_filter()
+
+https://bugzilla.kernel.org/show_bug.cgi?id=210643
+
+Link: https://lore.kernel.org/linux-trace-devel/1616171938-18914-1-git-send-email-sameeruddin.shaik8@gmail.com
+
+Acked-by: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/tracefs-tools.c | 61 ++++++++++++++++++++++++---------------------
- 1 file changed, 33 insertions(+), 28 deletions(-)
+ include/tracefs.h   |   3 +-
+ src/tracefs-tools.c | 111 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 113 insertions(+), 1 deletion(-)
 
+diff --git a/include/tracefs.h b/include/tracefs.h
+index f3eec62025f5..c1f07b0914f0 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -145,5 +145,6 @@ bool tracefs_option_is_enabled(struct tracefs_instance *instance, enum tracefs_o
+ int tracefs_option_enable(struct tracefs_instance *instance, enum tracefs_option_id id);
+ int tracefs_option_diasble(struct tracefs_instance *instance, enum tracefs_option_id id);
+ const char *tracefs_option_name(enum tracefs_option_id id);
+-
++int tracefs_function_filter(struct tracefs_instance *instance, const char **filters,
++			    const char *module, bool reset, const char ***errs);
+ #endif /* _TRACE_FS_H */
 diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-index 02e43168a810..1348542a3419 100644
+index e2dfc7b8acff..4f8bcdc299df 100644
 --- a/src/tracefs-tools.c
 +++ b/src/tracefs-tools.c
-@@ -389,16 +389,40 @@ void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_opt
+@@ -18,6 +18,7 @@
+ #include "tracefs-local.h"
+ 
+ #define TRACE_CTRL	"tracing_on"
++#define TRACE_FILTER	"set_ftrace_filter"
+ 
+ static const char * const options_map[] = {
+ 	"unknown",
+@@ -387,3 +388,113 @@ void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_opt
+ 	if (options && id > TRACEFS_OPTION_INVALID)
  		options->mask &= ~(1ULL << (id - 1));
  }
- 
-+static void add_errors(const char ***errs, const char *filter, int ret)
++
++static int controlled_write(const char *filter_path, const char **filters,
++			    const char *module, bool reset, const char ***errs)
 +{
-+	const char **e;
++	int flags = reset ? O_TRUNC : O_APPEND;
++	const char **temp = NULL;
++	const char **e = NULL;
++	char *each_str = NULL;
++	int write_size = 0;
++	int size = 0;
++	int fd = -1;
++	int ret = 0;
++	int j = 0;
++	int i;
 +
-+	if (!errs)
-+		return;
++	fd = open(filter_path, O_WRONLY | flags);
++	if (fd < 0)
++		return 1;
 +
-+	/* Negative is passed in */
-+	ret = -ret;
-+	e = *errs;
++	for (i = 0; filters[i]; i++) {
++		if (module)
++			write_size = asprintf(&each_str, "%s:mod:%s ", filters[i], module);
++		else
++			write_size = asprintf(&each_str, "%s ", filters[i]);
++		if (write_size < 0) {
++			ret = 1;
++			goto error;
++		}
++		size = write(fd, each_str, write_size);
++		/* compare written bytes*/
++		if (size < write_size) {
++			if (errs) {
++				temp = realloc(e, (j + 1) * (sizeof(char *)));
++				if (!temp) {
++					free(e);
++					ret = 1;
++					goto error;
++				} else
++					e = temp;
 +
-+	/* If this previously failed to allocate stop processing */
-+	if (!e && ret)
-+		return;
-+
-+	/* Add 2, one for the new entry, and one for NULL */
-+	e = realloc(e, sizeof(*e) * (ret + 2));
-+	if (!e) {
-+		free(*errs);
-+		*errs = NULL;
-+		return;
++				e[j++] = filters[i];
++				ret -= 1;
++			}
++		}
++		free(each_str);
++		each_str = NULL;
 +	}
-+	e[ret] = filter;
-+	e[ret + 1] = NULL;
-+	*errs = e;
++	if (errs) {
++		temp = realloc(e, (j + 1) * (sizeof(char *)));
++		if (!temp) {
++			free(e);
++			ret = 1;
++			goto error;
++		} else
++			e = temp;
++		e[j] = NULL;
++		*errs = e;
++	}
++ error:
++	if (each_str)
++		free(each_str);
++	close(fd);
++	return ret;
 +}
 +
- static int controlled_write(int fd, const char **filters,
- 			    const char *module, const char ***errs)
- {
--	const char **temp = NULL;
--	const char **e = NULL;
- 	char *each_str = NULL;
- 	int write_size = 0;
- 	int size = 0;
- 	int ret = 0;
--	int j = 0;
- 	int i;
- 
- 	for (i = 0; filters[i]; i++) {
-@@ -412,34 +436,11 @@ static int controlled_write(int fd, const char **filters,
- 		}
- 		size = write(fd, each_str, write_size);
- 		/* compare written bytes*/
--		if (size < write_size) {
--			if (errs) {
--				temp = realloc(e, (j + 1) * (sizeof(char *)));
--				if (!temp) {
--					free(e);
--					ret = 1;
--					goto error;
--				} else
--					e = temp;
--
--				e[j++] = filters[i];
--				ret -= 1;
--			}
--		}
-+		if (size < write_size)
-+			add_errors(errs, filters[i], ret--);
- 		free(each_str);
- 		each_str = NULL;
- 	}
--	if (errs) {
--		temp = realloc(e, (j + 1) * (sizeof(char *)));
--		if (!temp) {
--			free(e);
--			ret = 1;
--			goto error;
--		} else
--			e = temp;
--		e[j] = NULL;
--		*errs = e;
--	}
-  error:
- 	if (each_str)
- 		free(each_str);
-@@ -496,6 +497,10 @@ int tracefs_function_filter(struct tracefs_instance *instance, const char **filt
- 	if (fd < 0)
- 		return 1;
- 
-+	/* Make sure errs is NULL to start with, realloc() depends on it. */
-+	if (errs)
-+		*errs = NULL;
++/**
++ * tracefs_function_filter - write to set_ftrace_filter file to trace
++ * particular functions
++ * @instance: ftrace instance, can be NULL for top tracing instance
++ * @filters: An array of function names ending with a NULL pointer
++ * @module: Module to be traced
++ * @reset: set to true to reset the file before applying the filter
++ * @errs: A pointer to array of constant strings that will be allocated
++ * on negative return of this function, pointing to the filters that
++ * failed.May be NULL, in which case this field will be ignored.
++ *
++ * The @filters is an array of strings, where each string will be used
++ * to set a function or functions to be traced.
++ *
++ * If @reset is true, then all functions in the filter are cleared
++ * before adding functions from @filters. Otherwise, the functions set
++ * by @filters will be appended to the filter file
++ *
++ * returns -x on filter errors (where x is number of failed filter
++ * srtings) and if @errs is not NULL will be an allocated string array
++ * pointing to the strings in @filters that failed and must be freed
++ * with free().
++ *
++ * returns 1 on general errors not realted to setting the filter.
++ * @errs is not set even if supplied.
++ *
++ * return 0 on success and @errs is not set.
++ */
++int tracefs_function_filter(struct tracefs_instance *instance, const char **filters,
++			    const char *module, bool reset, const char ***errs)
++{
++	char *ftrace_filter_path;
++	int ret = 0;
 +
- 	ret = controlled_write(fd, filters, module, errs);
- 
- 	close(fd);
++	if (!filters)
++		return 1;
++
++	ftrace_filter_path = tracefs_instance_get_file(instance, TRACE_FILTER);
++	if (!ftrace_filter_path)
++		return 1;
++
++	ret = controlled_write(ftrace_filter_path, filters, module, reset, errs);
++	tracefs_put_tracing_file(ftrace_filter_path);
++	return ret;
++}
 -- 
 2.30.1
 
