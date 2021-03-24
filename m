@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0CBFC433E0
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 21:16:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 130B2C433C1
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 21:25:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8A9A561574
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 21:16:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D307C61A1E
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 21:25:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236811AbhCXVQC (ORCPT
+        id S238337AbhCXVY4 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Mar 2021 17:16:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59752 "EHLO mail.kernel.org"
+        Wed, 24 Mar 2021 17:24:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233583AbhCXVP6 (ORCPT
+        id S238354AbhCXVYs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:15:58 -0400
+        Wed, 24 Mar 2021 17:24:48 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA47261574;
-        Wed, 24 Mar 2021 21:15:57 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 17:15:56 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A43261A1E;
+        Wed, 24 Mar 2021 21:24:48 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 17:24:46 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v3 21/23] trace-cmd: Get current clock for host-guest
- tracing session
-Message-ID: <20210324171556.47b8065f@gandalf.local.home>
-In-Reply-To: <20210324130418.436206-22-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v3 22/23] trace-cmd: Save the trace clocks in TRACECLOCK
+ option
+Message-ID: <20210324172446.611276a4@gandalf.local.home>
+In-Reply-To: <20210324130418.436206-23-tz.stoyanov@gmail.com>
 References: <20210324130418.436206-1-tz.stoyanov@gmail.com>
-        <20210324130418.436206-22-tz.stoyanov@gmail.com>
+        <20210324130418.436206-23-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,110 +44,80 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 24 Mar 2021 15:04:16 +0200
+On Wed, 24 Mar 2021 15:04:17 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> In host-guest tracing session, all peers should use the same tracing
-> clock. If there is no user configured trace clock, the current logic
-> assumes "local" clock for the session. This could be wrong, as other
-> clock than "local" could be already configured on the host, before
-> running trace-cmd. The default clock for host-guest tracing session
-> should be rertieved from the host's "trace_clock" file.
-
-Actually this is wrong. If clock is not specified, you should check the
-first instance, because if the user does:
-
- # trace-cmd start -B foo -p nop -C myclock
-
- # trace-cmd record -B foo -e kvm -e sched -A Guest -e all
-
-It should not use the clock from the top instance, but instead the first
-instance.
-
-I'm trying to make sure tha trace-cmd does not affect or even use the top
-instance if it is not part of the command line.
-
+> Save the content of the trace_clock file in the TRACECLOCK option in
+> the trace.dat file. The clocks can be printed with "trace-cmd dump
+> --options" command.
+> These clocks were saved right before the tracing data in the file, but
+> this patch set changed that logic. Now only the selected clock is saved
+> in the file before the tracing data.
+> Having all supported trace clocks in the file is useful for debug
+> purposes. Adding clocks in the existing TRACECLOCK option is save and
+> will not break the older versions of trace-cmd.
 > 
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->  tracecmd/trace-record.c | 40 ++++++++++++++++++++++++++++++----------
->  1 file changed, 30 insertions(+), 10 deletions(-)
+>  tracecmd/trace-record.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
 > diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index f90fdbe4..2fc6723a 100644
+> index 2fc6723a..f4c27ef1 100644
 > --- a/tracecmd/trace-record.c
 > +++ b/tracecmd/trace-record.c
-> @@ -6455,11 +6455,12 @@ static void get_tsc_offset(struct common_record_context *ctx)
->  
->  static void set_tsync_params(struct common_record_context *ctx)
+> @@ -4138,6 +4138,7 @@ enum {
+>  static void add_options(struct tracecmd_output *handle, struct common_record_context *ctx)
 >  {
-> -	const char *clock = ctx->clock;
->  	struct buffer_instance *instance;
->  	int shift, mult;
->  	bool force_tsc = false;
-> +	char *clock = NULL;
+>  	int type = 0;
+> +	char *clocks;
 >  
-> +	if (!ctx->clock) {
->  	/*
->  	 * If no clock is configured &&
->  	 * KVM time sync protocol is available &&
-> @@ -6468,18 +6469,35 @@ static void set_tsync_params(struct common_record_context *ctx)
->  	 * force using the x86-tsc clock for this host-guest tracing session
->  	 * and store TSC to nsec multiplier and shift.
->  	 */
-> -	if (!clock && tsync_proto_is_supported("kvm") &&
-> -	    clock_is_supported(NULL, TSC_CLOCK) &&
-> -	    !get_tsc_nsec(&shift, &mult) && mult) {
-> -		clock = TSC_CLOCK;
-> -		ctx->tsc2nsec.mult = mult;
-> -		ctx->tsc2nsec.shift = shift;
-> -		ctx->tsc2nsec.offset = get_clock_now(TSC_CLOCK);
-> -		force_tsc = true;
-> +		if (tsync_proto_is_supported("kvm") &&
-> +		    clock_is_supported(NULL, TSC_CLOCK) &&
+>  	if (ctx->date2ts) {
+>  		if (ctx->data_flags & DATA_FL_DATE)
+> @@ -4149,12 +4150,15 @@ static void add_options(struct tracecmd_output *handle, struct common_record_con
+>  	if (type)
+>  		tracecmd_add_option(handle, type, strlen(ctx->date2ts)+1, ctx->date2ts);
+>  
+> -	tracecmd_add_option(handle, TRACECMD_OPTION_TRACECLOCK, 0, NULL);
+> +	clocks = tracefs_instance_file_read(NULL, "trace_clock", NULL);
+> +	tracecmd_add_option(handle, TRACECMD_OPTION_TRACECLOCK,
+> +			    clocks ? strlen(clocks)+1 : 0, clocks);
 
-So we want to test the first instance, not the top one.
+Strange. Even after applying this patch, I still get:
+
+# ./tracecmd/trace-cmd dump
+
+ Tracing meta data in file trace.dat:
+        [Initial format]
+                6       [Version]
+                0       [Little endian]
+                8       [Bytes in a long]
+                4096    [Page size, bytes]
+        [Header page, 205 bytes]
+        [Header event, 205 bytes]
+        [Ftrace format, 15 events]
+        [Events format, 104 systems]
+        [Kallsyms, 6978379 bytes]
+        [Trace printk, 4997 bytes]
+        [Saved command lines, 1987 bytes]
+        8 [CPUs with tracing data]
+        [13 options]
+        [Flyrecord tracing data]
+        [Tracing clock]
+                 No tracing clock saved in the file
+
+
+Seems to be that it skips over the options unless you explicitly ask for it.
 
 -- Steve
 
-> +		    !get_tsc_nsec(&shift, &mult) && mult) {
-> +			clock = strdup(TSC_CLOCK);
-> +			if (!clock)
-> +				die("Cannot not allocate clock");
-> +			ctx->tsc2nsec.mult = mult;
-> +			ctx->tsc2nsec.shift = shift;
-> +			ctx->tsc2nsec.offset = get_clock_now(TSC_CLOCK);
-> +			force_tsc = true;
-> +		} else {
-> +		/*
-> +		 * Else, use the current clock of the first host instance
-> +		 */
-> +			for_all_instances(instance) {
-> +				if (is_guest(instance))
-> +					continue;
-> +				clock = tracefs_get_clock(instance->tracefs);
-> +				break;
-> +			}
-> +		}
-> +	} else {
-> +		clock = strdup(ctx->clock);
-> +		if (!clock)
-> +			die("Cannot not allocate clock");
->  	}
->  
->  	if (!clock && !ctx->tsync_loop_interval)
-> -		return;
-> +		goto out;
->  	for_all_instances(instance) {
->  		if (clock && !(instance->flags & BUFFER_FL_HAS_CLOCK)) {
->  			/* use the same clock in all tracing peers */
-> @@ -6501,6 +6519,8 @@ static void set_tsync_params(struct common_record_context *ctx)
->  		}
->  		instance->tsync_loop_interval = ctx->tsync_loop_interval;
->  	}
-> +out:
-> +	free(clock);
+>  	add_option_hooks(handle);
+>  	add_uname(handle);
+>  	add_version(handle);
+>  	if (!no_top_instance())
+>  		add_trace_id(handle, &top_instance);
+> +	free(clocks);
 >  }
 >  
->  /*
+>  static void write_guest_file(struct buffer_instance *instance)
 
