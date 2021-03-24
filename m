@@ -6,35 +6,34 @@ X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C04BC433C1
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 14:25:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2AEDC433C1
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:06:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6AF59619F3
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 14:25:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B5B2261A0F
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:06:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236060AbhCXOYs (ORCPT
+        id S236470AbhCXPGO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Mar 2021 10:24:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34782 "EHLO mail.kernel.org"
+        Wed, 24 Mar 2021 11:06:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235984AbhCXOY0 (ORCPT
+        id S236471AbhCXPFr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:24:26 -0400
+        Wed, 24 Mar 2021 11:05:47 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D28E461580;
-        Wed, 24 Mar 2021 14:24:25 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 10:24:24 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DE6D619A4;
+        Wed, 24 Mar 2021 15:05:47 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 11:05:45 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v3 16/23] trace-cmd: Add a new flag to disable any
- timestamp corrections
-Message-ID: <20210324102424.17b34779@gandalf.local.home>
-In-Reply-To: <20210324130418.436206-17-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v3 06/23] trace-cmd: Add new trace-cmd clock tsc2nsec
+Message-ID: <20210324110545.633d8fcd@gandalf.local.home>
+In-Reply-To: <20210324130418.436206-7-tz.stoyanov@gmail.com>
 References: <20210324130418.436206-1-tz.stoyanov@gmail.com>
-        <20210324130418.436206-17-tz.stoyanov@gmail.com>
+        <20210324130418.436206-7-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,25 +42,39 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 24 Mar 2021 15:04:11 +0200
+On Wed, 24 Mar 2021 15:04:01 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> @@ -2601,7 +2605,8 @@ static int handle_options(struct tracecmd_input *handle)
->  			 * gtod. It is stored as ASCII with '0x'
->  			 * appended.
->  			 */
-> -			if (handle->flags & TRACECMD_FL_IGNORE_DATE)
-> +			if (handle->flags &
-> +			    (TRACECMD_FL_IGNORE_DATE || TRACECMD_FL_RAW_TS))
+> @@ -5904,7 +5965,15 @@ static void parse_record_options(int argc,
+>  			break;
+>  		case 'C':
+>  			check_instance_die(ctx->instance, "-C");
+> -			ctx->instance->clock = optarg;
+> +			if (!strncmp(optarg, TSCNSEC_CLOCK, strlen(TSCNSEC_CLOCK))) {
+> +				ret = get_tsc_nsec(&ctx->tsc2nsec.shift,
+> +						   &ctx->tsc2nsec.mult);
+> +				if (ret || !clock_is_supported(NULL, TSC_CLOCK))
+> +					die("Clock %s is not supported", optarg);
+> +				ctx->instance->flags |= BUFFER_FL_TSC2NSEC;
+> +				ctx->instance->clock = strdup(TSC_CLOCK);
+> +			} else
+> +				ctx->instance->clock = optarg;
+>  			ctx->instance->flags |= BUFFER_FL_HAS_CLOCK;
+>  			if (is_top_instance(ctx->instance))
 
-Needs to be a binary 'or' "|", not a logical 'or' "||", as the above is the
-same as:  if (handle->flags & 1)
 
-If I don't find anything else wrong in this series, I'll fix this myself.
+I actually expected in the previous patch to have:
+
+	case 'C':
+		if (!clock_is_supported(optarg))
+			die("Clock %s is not supported", optarg);
+
+Then in this patch, change it to:
+
+		} else if (!clock_is_supported(optarg)) {
+			die("Clock %s is not supported", optarg);
+		} else {
+			ctx->instance->clock = optarg;
+		}
 
 -- Steve
-
-
->  				break;
->  			offset = strtoll(buf, NULL, 0);
->  			/* Convert from micro to nano */
