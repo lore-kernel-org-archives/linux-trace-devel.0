@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B89C433E3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D430C433E1
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 13:05:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 25608619E5
+	by mail.kernel.org (Postfix) with ESMTP id 133C461A13
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 13:05:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbhCXNEd (ORCPT
+        id S233395AbhCXNEc (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Mar 2021 09:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        Wed, 24 Mar 2021 09:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234065AbhCXNE0 (ORCPT
+        with ESMTP id S233906AbhCXNEY (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:04:26 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF44C061763
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 06:04:26 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id k128so10462525wmk.4
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 06:04:26 -0700 (PDT)
+        Wed, 24 Mar 2021 09:04:24 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B8AC061763
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 06:04:24 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so1143396wmj.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 06:04:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WDq4JxpNtg/mIRxKEMjeZkSbCUogjXW4ab8x4Wk8n5Q=;
-        b=HqlE7zQJA+kWp+ILpbIMGQ1xFJYhZmheDV34zy9FNuxF+t1R37uEKH0F4ZKXh6TGGM
-         TZNv7K85k/f01rcvEv7FUdK4a1rMQ1p/9r9xH1gmg5P1+y59R38BoQlfnmRAdtYqorbr
-         Ku5l5f8nRU6sn0SKkVZEvQShh+P7SIc4oK1cLZjP34Jf/AsEuIy1H8xAYeoxjmogmete
-         OMsWuYItVFIAmGWEBX9WvsuO9HOrqLzsk4kdYylrjRX2l/Bt0ApZRqmfmwiDYQYxhLFK
-         nhIsaMd4lB5eJrfDKdxujE/7SH0rs2p2cHVPuXjBJxHYT/HWR3IZaHFAFb3dBYOyjmhg
-         3M5Q==
+        bh=bkMemzN07X64imp97CYxdrPc7SsdcDc77EC0gds/d2Q=;
+        b=YLSZRHJ15BgheYH12K6bf4mztvdaLm+ZIUhTTetY+g0qprYkP7rMfstUN7AIWosHGW
+         e8yGEGTxgWSPuOhj+k0gdKTeJsIW6bfS38tAz0Ca6U7mzXlczXrKl48gx0vaRy9Yfbj+
+         4Rkb5mDqYR9axgCJrDxtkpEfoKZaxFekeRShvlr8R6NM7JIp+6JFgRUtxHJLsGtd+O5E
+         bDPPzsyUjq0ebqMHUvkwjbQGaxOsp3X6JIoowuCxl3hU0oF7aISpi6pKhHShEbYGQ1/6
+         gEG8Pn776DBVTPZaNHmZTyDvgT1Gto501cRI6HLmHxL3/MzKenCUAbW3lKvw5sNFicdL
+         94IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WDq4JxpNtg/mIRxKEMjeZkSbCUogjXW4ab8x4Wk8n5Q=;
-        b=UTUfNqAFdRqxN1EC04dcnoJVGYKnp8D3LS00Fj3m/ZFdKwDH2DoSwrYw/z5XLr+7Iq
-         bPvAzkbTX1LdHEU9N5dq8sVjVi9WC/i9aDjLWvpCdD/QlZXwv+HeJurxgf2m8vpoi5Ci
-         QUfhEamcSEM2ExhJP+BfhNXV3xC0Bfbts/sr/tS4GoWt8qKSmQoMgBcZwv2EhOvxIzrR
-         omDoCN6/78pK8X3vM8WGfMHH9aC0/Cnk7bbFcccmTY5Bt10vaP50I+w2gYkWcp9m3eVP
-         FK93lsCQVtBoXFDJfvnUquSvXgnWI+RIKX1nAgHw0MJXAOCy1wBbzR2RiMYXDbuMK7kh
-         AldA==
-X-Gm-Message-State: AOAM533y2hE/C/W+Fdn/f0bggaAiqLrPDWV8Gk/1zF92mcRfp/9txVTe
-        K2EmANFpTn4vyDMLhY67hhPz8WLEjPAtCg==
-X-Google-Smtp-Source: ABdhPJzBRGy0qXDGY0ANpfm98k4ZVAT7btIQ+Pz73CThsNxVswUUEssfGEPObl/BW3/E4GtM5ycHkA==
-X-Received: by 2002:a1c:400b:: with SMTP id n11mr2792264wma.167.1616591064696;
-        Wed, 24 Mar 2021 06:04:24 -0700 (PDT)
+        bh=bkMemzN07X64imp97CYxdrPc7SsdcDc77EC0gds/d2Q=;
+        b=anfSSgmmqj8eoLy+5BhARu7cN0m7on9x4YNp5rp10VbaQTcJw0MUWZ7IWETnrtIBFv
+         okgMTdwS9CMh7P3F9hlhw2hNS0sOLZaBVVYrxmGwovvd8bRs00M6KCM+TDY4ArfaoeKI
+         xSWjULAZTbMLGWKlLeR2NKOs9jVSPGqMsOOI3UtVtu5KvQpwcONPjHdM6F89NnuKbnfB
+         3shH/ZPNbtfZwdMb++y0YINO5BZiG/lUk2fPPML65BXvIw6o53I39dvA/6Lu8MunFSKR
+         fNn27JlBxKJ6SrGMBBph9/ET4ldhhPNCboyUJA8E2sLnPjFHbKaShV2guDmlys8ApEY9
+         HjGw==
+X-Gm-Message-State: AOAM531utuo982hBDoQ2Yr8aKEfIchOVRJANq260fvcodLgTu8jrYyaM
+        ng+y/+h9hKGsy8wdX5GvnLIiXldxysgbxw==
+X-Google-Smtp-Source: ABdhPJwwLu0YlfC+lVAR505BWHsdSBDdCtM6gDmZ4T9Q4KOzTKXtz/5utGWfMguZeYfIQREOWpptMg==
+X-Received: by 2002:a05:600c:210a:: with SMTP id u10mr2872671wml.147.1616591062265;
+        Wed, 24 Mar 2021 06:04:22 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w11sm3034919wrv.88.2021.03.24.06.04.23
+        by smtp.gmail.com with ESMTPSA id w11sm3034919wrv.88.2021.03.24.06.04.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 06:04:24 -0700 (PDT)
+        Wed, 24 Mar 2021 06:04:21 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 04/23] trace-cmd: Internal refactoring, move logic for local tep handler in its own function
-Date:   Wed, 24 Mar 2021 15:03:59 +0200
-Message-Id: <20210324130418.436206-5-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 02/23] trace-cmd: Extend trace-cmd dump subcommand to display the clock
+Date:   Wed, 24 Mar 2021 15:03:57 +0200
+Message-Id: <20210324130418.436206-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210324130418.436206-1-tz.stoyanov@gmail.com>
 References: <20210324130418.436206-1-tz.stoyanov@gmail.com>
@@ -73,102 +73,148 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Moved the logic for initializing a tep handler for ftrace events from
-get_date_to_ts() to its own local funciotn, get_ftrace_tep(). That way
-the code can be reused in the scope of trace-record.c file.
+Trace clock, used to record the tracing data is saved in the trace.dat
+file. As "trace-cmd dump" command shows the metadata content of the
+file, it should display the trace clock also.
+Added a new parameter
+  "trace-cmd dump --clock"
+which shows the clock saved in the file. The clock can be displayed
+also with
+ "trace-cmd dump --all"
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 53 +++++++++++++++++++++++------------------
- 1 file changed, 30 insertions(+), 23 deletions(-)
+ Documentation/trace-cmd/trace-cmd-dump.1.txt |  2 ++
+ tracecmd/trace-dump.c                        | 34 +++++++++++++++++++-
+ tracecmd/trace-usage.c                       |  1 +
+ 3 files changed, 36 insertions(+), 1 deletion(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index a0eb0385..635897e1 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -4459,52 +4459,59 @@ static char *read_top_file(char *file, int *psize)
- 	return tracefs_instance_file_read(top_instance.tracefs, file, psize);
+diff --git a/Documentation/trace-cmd/trace-cmd-dump.1.txt b/Documentation/trace-cmd/trace-cmd-dump.1.txt
+index 71b8e655..0f8626fa 100644
+--- a/Documentation/trace-cmd/trace-cmd-dump.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-dump.1.txt
+@@ -46,6 +46,8 @@ OPTIONS
+     Print all options, stored in the file.
+ *--flyrecord*::
+     Print the offset and the size of tracing data per each CPU.
++*--clock*::
++    Print the trace clock, used for timestamp of the tracing events, stored in the file.
+ *--all*::
+     Print all meta data from the file.
+ *--help*::
+diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
+index 6172231e..4bdfd53f 100644
+--- a/tracecmd/trace-dump.c
++++ b/tracecmd/trace-dump.c
+@@ -24,6 +24,7 @@
+ 
+ static struct tep_handle *tep;
+ static unsigned int trace_cpus;
++static int has_clock;
+ 
+ enum dump_items {
+ 	SUMMARY		= (1 << 0),
+@@ -37,6 +38,7 @@ enum dump_items {
+ 	CMDLINES	= (1 << 8),
+ 	OPTIONS		= (1 << 9),
+ 	FLYRECORD	= (1 << 10),
++	CLOCK		= (1 << 11),
+ };
+ 
+ enum dump_items verbosity;
+@@ -496,7 +498,7 @@ static void dump_options(int fd)
+ 			die("cannot read the option size");
+ 
+ 		count++;
+-		if (!DUMP_CHECK(OPTIONS)) {
++		if (!DUMP_CHECK(OPTIONS) && !DUMP_CHECK(CLOCK)) {
+ 			lseek64(fd, size, SEEK_CUR);
+ 			continue;
+ 		}
+@@ -512,6 +514,7 @@ static void dump_options(int fd)
+ 			break;
+ 		case TRACECMD_OPTION_TRACECLOCK:
+ 			dump_option_string(fd, size, "TRACECLOCK");
++			has_clock = 1;
+ 			break;
+ 		case TRACECMD_OPTION_UNAME:
+ 			dump_option_string(fd, size, "UNAME");
+@@ -556,6 +559,29 @@ static void dump_latency(int fd)
+ 	do_print(SUMMARY, "\t[Latency tracing data]\n");
  }
  
-+static struct tep_handle *get_ftrace_tep(void)
++static void dump_clock(int fd)
 +{
-+	const char *systems[] = {"ftrace", NULL};
-+	struct tep_handle *tep;
-+	char *buf;
-+	int size;
-+	int ret;
++	long long size;
++	char *clock;
 +
-+	tep = tracefs_local_events_system(NULL, systems);
-+	if (!tep)
-+		return NULL;
-+	tep_set_file_bigendian(tep, tracecmd_host_bigendian());
-+	buf = read_top_file("events/header_page", &size);
-+	if (!buf)
-+		goto error;
-+	ret = tep_parse_header_page(tep, buf, size, sizeof(unsigned long));
-+	free(buf);
-+	if (ret < 0)
-+		goto error;
++	do_print((SUMMARY | CLOCK), "\t[Tracing clock]\n");
++	if (!has_clock) {
++		do_print((SUMMARY | CLOCK), "\t\t No tracing clock saved in the file\n");
++		return;
++	}
++	if (read_file_number(fd, &size, 8))
++		die("cannot read clock size");
++	clock = calloc(1, size);
++	if (!clock)
++		die("cannot allocate clock %d bytes", size);
 +
-+	return tep;
-+
-+error:
-+	tep_free(tep);
-+	return NULL;
++	if (read_file_bytes(fd, clock, size))
++		die("cannot read clock %d bytes", size);
++	clock[size] = 0;
++	do_print((SUMMARY | CLOCK), "\t\t%s\n", clock);
++	free(clock);
 +}
 +
- /*
-  * Try to write the date into the ftrace buffer and then
-  * read it back, mapping the timestamp to the date.
-  */
- static char *get_date_to_ts(void)
+ static void dump_flyrecord(int fd)
  {
--	const char *systems[] = {"ftrace", NULL};
-+	struct tep_handle *tep;
- 	unsigned long long min = -1ULL;
- 	unsigned long long diff;
- 	unsigned long long stamp;
- 	unsigned long long min_stamp;
- 	unsigned long long min_ts;
- 	unsigned long long ts;
--	struct tep_handle *tep;
- 	struct timespec start;
- 	struct timespec end;
- 	char *date2ts = NULL;
--	char *path;
--	char *buf;
--	int size;
- 	int tfd;
--	int ret;
- 	int i;
- 
- 	/* Set up a tep to read the raw format */
--	tep = tracefs_local_events_system(NULL, systems);
-+	tep = get_ftrace_tep();
- 	if (!tep) {
- 		warning("failed to alloc tep, --date ignored");
- 		return NULL;
+ 	long long cpu_offset;
+@@ -572,6 +598,7 @@ static void dump_flyrecord(int fd)
+ 		do_print(FLYRECORD, "\t\t %lld %lld\t[offset, size of cpu %d]\n",
+ 			 cpu_offset, cpu_size, i);
  	}
--
--	tep_set_file_bigendian(tep, tracecmd_host_bigendian());
--
--	buf = read_top_file("events/header_page", &size);
--	if (!buf)
--		goto out_pevent;
--	ret = tep_parse_header_page(tep, buf, size, sizeof(unsigned long));
--	free(buf);
--	if (ret < 0) {
--		warning("Can't parse header page, --date ignored");
--		goto out_pevent;
--	}
--
--	path = tracefs_get_tracing_file("trace_marker");
--	tfd = open(path, O_WRONLY);
--	tracefs_put_tracing_file(path);
-+	tfd = tracefs_instance_file_open(NULL, "trace_marker", O_WRONLY);
- 	if (tfd < 0) {
- 		warning("Can not open 'trace_marker', --date ignored");
- 		goto out_pevent;
++	dump_clock(fd);
+ }
+ 
+ static void dump_therest(int fd)
+@@ -626,6 +653,7 @@ static void dump_file(const char *file)
+ }
+ 
+ enum {
++	OPT_clock	= 243,
+ 	OPT_all		= 244,
+ 	OPT_summary	= 245,
+ 	OPT_flyrecord	= 246,
+@@ -666,6 +694,7 @@ void trace_dump(int argc, char **argv)
+ 			{"cmd-lines", no_argument, NULL, OPT_cmd_lines},
+ 			{"options", no_argument, NULL, OPT_options},
+ 			{"flyrecord", no_argument, NULL, OPT_flyrecord},
++			{"clock", no_argument, NULL, OPT_clock},
+ 			{"validate", no_argument, NULL, 'v'},
+ 			{"help", no_argument, NULL, '?'},
+ 			{NULL, 0, NULL, 0}
+@@ -721,6 +750,9 @@ void trace_dump(int argc, char **argv)
+ 		case OPT_head_page:
+ 			verbosity |= HEAD_PAGE;
+ 			break;
++		case OPT_clock:
++			verbosity |= CLOCK;
++			break;
+ 		default:
+ 			usage(argv);
+ 		}
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 1a7abd58..22537d20 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -377,6 +377,7 @@ static struct usage_help usage_help[] = {
+ 		"          --cmd-lines print information mapping a PID to a process name\n"
+ 		"          --options print options\n"
+ 		"          --flyrecord information of offset and count of recorded events per CPU\n"
++		"          --clock trace clock, saved in the file\n"
+ 		"          -h, --help show usage information\n"
+ 	},
+ 	{
 -- 
 2.30.2
 
