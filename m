@@ -2,40 +2,38 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 130B2C433C1
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 21:25:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E239AC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 21:40:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D307C61A1E
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 21:25:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B8B8161A05
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 21:40:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238337AbhCXVY4 (ORCPT
+        id S229931AbhCXVkR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Mar 2021 17:24:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60794 "EHLO mail.kernel.org"
+        Wed, 24 Mar 2021 17:40:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238354AbhCXVYs (ORCPT
+        id S229574AbhCXVkK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:24:48 -0400
+        Wed, 24 Mar 2021 17:40:10 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A43261A1E;
-        Wed, 24 Mar 2021 21:24:48 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 17:24:46 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 58B4A61A02;
+        Wed, 24 Mar 2021 21:40:09 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 17:40:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v3 22/23] trace-cmd: Save the trace clocks in TRACECLOCK
- option
-Message-ID: <20210324172446.611276a4@gandalf.local.home>
-In-Reply-To: <20210324130418.436206-23-tz.stoyanov@gmail.com>
-References: <20210324130418.436206-1-tz.stoyanov@gmail.com>
-        <20210324130418.436206-23-tz.stoyanov@gmail.com>
+To:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com
+Subject: Re: [PATCH] libtracefs: Document function_filter API
+Message-ID: <20210324174007.1de9b157@gandalf.local.home>
+In-Reply-To: <1616689890-18853-1-git-send-email-sameeruddin.shaik8@gmail.com>
+References: <1616689890-18853-1-git-send-email-sameeruddin.shaik8@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -44,80 +42,184 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Wed, 24 Mar 2021 15:04:17 +0200
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+Hi Sameer!
 
-> Save the content of the trace_clock file in the TRACECLOCK option in
-> the trace.dat file. The clocks can be printed with "trace-cmd dump
-> --options" command.
-> These clocks were saved right before the tracing data in the file, but
-> this patch set changed that logic. Now only the selected clock is saved
-> in the file before the tracing data.
-> Having all supported trace clocks in the file is useful for debug
-> purposes. Adding clocks in the existing TRACECLOCK option is save and
-> will not break the older versions of trace-cmd.
+On Thu, 25 Mar 2021 22:01:30 +0530
+Sameeruddin shaik <sameeruddin.shaik8@gmail.com> wrote:
+
+> Added documentation for the below API:
+> tracefs_function_filter()
 > 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
->  tracecmd/trace-record.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
 > 
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 2fc6723a..f4c27ef1 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -4138,6 +4138,7 @@ enum {
->  static void add_options(struct tracecmd_output *handle, struct common_record_context *ctx)
->  {
->  	int type = 0;
-> +	char *clocks;
->  
->  	if (ctx->date2ts) {
->  		if (ctx->data_flags & DATA_FL_DATE)
-> @@ -4149,12 +4150,15 @@ static void add_options(struct tracecmd_output *handle, struct common_record_con
->  	if (type)
->  		tracecmd_add_option(handle, type, strlen(ctx->date2ts)+1, ctx->date2ts);
->  
-> -	tracecmd_add_option(handle, TRACECMD_OPTION_TRACECLOCK, 0, NULL);
-> +	clocks = tracefs_instance_file_read(NULL, "trace_clock", NULL);
-> +	tracecmd_add_option(handle, TRACECMD_OPTION_TRACECLOCK,
-> +			    clocks ? strlen(clocks)+1 : 0, clocks);
+> diff --git a/Documentation/libtracefs-function-filter.txt b/Documentation/libtracefs-function-filter.txt
+> new file mode 100644
+> index 0000000..08eece7
+> --- /dev/null
+> +++ b/Documentation/libtracefs-function-filter.txt
+> @@ -0,0 +1,116 @@
+> +libtracefs(3)
+> +=============
+> +
+> +NAME
+> +----
+> +tracefs_function_filter -  Function to write to set_ftrace_filter
+> +file of specific instance or top tracing instance
 
-Strange. Even after applying this patch, I still get:
+Since we are abstracting out tracefs, I'd like to avoid the implementation
+details, and keep it more about its functionality.
 
-# ./tracecmd/trace-cmd dump
+ - Function to limit kernel functions that are traced
 
- Tracing meta data in file trace.dat:
-        [Initial format]
-                6       [Version]
-                0       [Little endian]
-                8       [Bytes in a long]
-                4096    [Page size, bytes]
-        [Header page, 205 bytes]
-        [Header event, 205 bytes]
-        [Ftrace format, 15 events]
-        [Events format, 104 systems]
-        [Kallsyms, 6978379 bytes]
-        [Trace printk, 4997 bytes]
-        [Saved command lines, 1987 bytes]
-        8 [CPUs with tracing data]
-        [13 options]
-        [Flyrecord tracing data]
-        [Tracing clock]
-                 No tracing clock saved in the file
+> +
+> +SYNOPSIS
+> +--------
+> +[verse]
+> +--
+> +*#include <tracefs.h>*
+> +
+> +int tracefs_function_filter(struct tracefs_instance *instance, const char **filters, const char *module, bool reset, const char ***errs);
+> +--
+> +
+> +DESCRIPTION
+> +-----------
+> +This Function can be used to write to set_ftrace_file in the trace
+> +filesystem, which will limit the trace to only those functions,
+> +which were written in the file.
+
+To avoid stating the implementation:
+
+"This function can be used to limit the Linux kernel functions that is
+traced by the function and function-graph tracers."
 
 
-Seems to be that it skips over the options unless you explicitly ask for it.
+> +
+> +It will take take _instance_argument, that can be NULL for the
+> +top level tracing, _filters_, which is nothing but the array of the
+
+No need to say "nothing"
+
+"which is an array of strings that represent a list of filters that should
+be applied to define what functions are to be traced. The array must end
+with a NULL pointer."
+
+> +strings to write into the set_ftrace_filter file ,_module_ , name of the
+> +module to be traced, _reset_, to reset or append the filters to file
+
+"_reset_ if set will clear the current set of filters and then apply the
+filter list, otherwise the list of filters are added to the current set of
+filters."
+
+> + and _errs_ which is again an array of failed filters, which can be NULL
+
+"and _errs_ is a pointer an array of strings, which will be allocated if
+any of filters fail to any available function. If _errs_ is NULL, it will
+be ignored."
+
+> + if failed filters are not of concern, and  returns 0  on successful write,
+> + 1 or -x (where x is an integer) on error.
+
+I mentioned in a previous email that I think we need to change the return
+value, but for now this is fine.
+
+> +
+> +RETURN VALUE
+> +------------
+> +tracefs_function_filter will return 0 on successful write to file, if there
+
+Just need to say ".. return 0 on success."
+
+> +is error, it will return 1 for general errors or negative number -x(x denotes
+> +number of failed filters), if there are any failed filters.
+
+Again, I think the error return may be changed, so we can leave this for
+now.
+
+> +
+> +In case of negative return value, errs have to be checked and must be freed
+> +using the free()
+> +
+> +EXAMPLE
+> +-------
+> +[source,c]
+> +--
+> +#include <tracefs.h>
+> +
+> +#define INST "dummy"
+> +
+> +const char *filters[] = { "run_init_process", "try_to_run_init_process", "dummy1", NULL };
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	struct tracefs_instance *inst = tracefs_instance_create(INST);
+> +	const char **errs = NULL;
+> +	bool reset = 1;
+> +	int ret;
+> +	int i = 0;
+> +
+> +	if (!inst) {
+> +	   /* Error creating new trace instance*/
+> +	   }
+> +
+> +	ret = tracefs_function_filter(inst, filters, NULL, reset, &errs);
+> +
+> +	if (ret < 0 && errs) {
+> +	   	while (errs[i])
+> +		      printf("%s\n", errs[i++]);
+> +	      }
+> +
+> +	tracefs_instance_free(inst);
+> +	tracefs_instance_destroy(inst);
+> +	free(errs);
+> +	return 0;
+
+This looks fine.
+
+Thanks!
 
 -- Steve
 
->  	add_option_hooks(handle);
->  	add_uname(handle);
->  	add_version(handle);
->  	if (!no_top_instance())
->  		add_trace_id(handle, &top_instance);
-> +	free(clocks);
->  }
->  
->  static void write_guest_file(struct buffer_instance *instance)
+> +}
+> +--
+> +
+> +FILES
+> +-----
+> +[verse]
+> +--
+> +*tracefs.h*
+> +	Header file to include in order to have access to the library APIs.
+> +*-ltracefs*
+> +	Linker switch to add when building a program that uses the library.
+> +--
+> +
+> +SEE ALSO
+> +--------
+> +_libtracefs(3)_,
+> +_libtraceevent(3)_,
+> +_trace-cmd(1)_
+> +
+> +AUTHOR
+> +------
+> +[verse]
+> +--
+> +*Steven Rostedt* <rostedt@goodmis.org>
+> +*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
+> +*sameeruddin shaik* <sameeruddin.shaik8@gmail.com>
+> +--
+> +REPORTING BUGS
+> +--------------
+> +Report bugs to  <linux-trace-devel@vger.kernel.org>
+> +
+> +LICENSE
+> +-------
+> +libtracefs is Free Software licensed under the GNU LGPL 2.1
+> +
+> +RESOURCES
+> +---------
+> +https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
+> +
+> +COPYING
+> +-------
+> +Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
+> +the terms of the GNU Public License (GPL).
 
