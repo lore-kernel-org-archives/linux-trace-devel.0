@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A116DC433F7
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 13:05:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4946C433EA
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 13:05:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 64BDB61A0D
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 13:05:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 95B6861A1D
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 13:05:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhCXNFe (ORCPT
+        id S234474AbhCXNFd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 24 Mar 2021 09:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        Wed, 24 Mar 2021 09:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234506AbhCXNEy (ORCPT
+        with ESMTP id S234500AbhCXNEr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:04:54 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAAFC061763
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 06:04:53 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so1146750wmj.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 06:04:53 -0700 (PDT)
+        Wed, 24 Mar 2021 09:04:47 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA0EC061763
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 06:04:46 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id v11so24357867wro.7
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 06:04:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=W3unDQUXPtkGXHvMUpsn8lod8Lwq/jv3Y3fL2UtAX0g=;
-        b=AxUGtiXynHBxmqnzE61cZGoVD+9KyYUzwqplXB1Syb9cUtiE1SZOL7vPruUSVXFja2
-         MEkCQj9x8HYFHV3PeVzucGAE9s4nQHUHFQHlTQQm648BxxEqSE6b3Ih+64uXBvSAhEiH
-         rZ6R/vUC3hCUCKDBp0IU1/El7pW8c1xKbnRkYPvKWgvof0TR6+ESIUe8yv4W0FDaYnPM
-         DypEdssTGqQrPbVgKeIx8qU6CcDGFmjEO1z54TCoaQMOYyG0joEtmQR6n6/g9NK/GQqT
-         J6QdQSk3W4u48hzALHCRfNuK9NY1SowKF3M2tG4rPsi9inO5u5zcoPTm5nojZe7HMBkv
-         EMqg==
+        bh=JV7AAIqGr1HS87/CTo6xLRmr6EAxMQRsqqk5ekMFjWs=;
+        b=fIBZ+gsa0LWtFR1mzkPfq54wBOehzwwg8/OBepxPeXD5GXQjscA2RMpRrefSLEKTcd
+         vXp6I4i5p5fzpCjE1pVB9CDjm6e0ptXcg6YCmpKxvyAI7AqX8/wm3wZuPxqqIgwxpT1M
+         EkRMDqOCcLA422d8Kcbcu/F8Tsi+64sD37v1v+xqMDk7iwfkq1OmR+X3UMl3BexqsZzf
+         7dooEsb5biHvyM6/F+ph2BqBpzJgnM1G0leiAlANd62xV5r6jda883tcAIDU2Av+a+vx
+         WZgTSHOpC4c6tG26dbYfBf3t0H11TEOOkM6rteF4O7W8gQFfDZysNHM4m9eW/DlWn2BB
+         dHpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=W3unDQUXPtkGXHvMUpsn8lod8Lwq/jv3Y3fL2UtAX0g=;
-        b=bxygqqXDqvx9n81NCCu0YsehP+rgBnYRnoZ2okCGkzXiD8h7OhvSpD+WIs/ziLJ6w/
-         LZ71YUNKqy/cZljjBdx2HAzgRTLriJ/da1bAi5aWZ5QBdnkQ59DCI1o0CprqdUJXK9HV
-         2SaWso31EVoJrh05/40l09sFB/DfjM28KxDn0w2JpEHLUE8S8XKpmeLqgaNaiEuDTsCR
-         tJmkKbwHrGOa8PEo28gEQatM07JlcaL9wzx8rNw0DrlNA9Y3329ztgiQanFvRL9xs4e3
-         MXrWkKs3WVn+MKnGvrSUelNAmjLLIW8FaIc0/EdnW2UrfgJmrviiHJjWB3zZUmHp4S/B
-         sc/g==
-X-Gm-Message-State: AOAM533+689+Tg9YIulDsOd2vTw3zfmucogKgZWK+g03V3M6eW3K/x0r
-        dAzC3pAj+kGbv8w/tGVsdtcno7QVInkWqg==
-X-Google-Smtp-Source: ABdhPJyk6WxlBUWJ2s32BvPxkE+nQLUjwLfpSHie3WOZGxnolvAxY4qA08c2/JybKtPmxia3rCY48g==
-X-Received: by 2002:a05:600c:224e:: with SMTP id a14mr2838942wmm.57.1616591092389;
-        Wed, 24 Mar 2021 06:04:52 -0700 (PDT)
+        bh=JV7AAIqGr1HS87/CTo6xLRmr6EAxMQRsqqk5ekMFjWs=;
+        b=JuT6yn1GdgbSqVa5zgxYK6iItLmcLYshiOOF0kuLAjgNTUswsfb/PQN9MYYep6AQb+
+         uvQqpGnmdQuiyfrOv5NSQW1dZrnUbiVDBNLikw6ie/UTE3igNEyO/vmrjLJYo4OZR/v7
+         6oiimQJabC/uupGXxlNeOuu47Hqzcat2lMMS2L1eeRqB7YWrfjxSTW51e8GsUQUaxymC
+         iPjwWK+SMm0GXNCaN9J6hNIX3RP1Yf5YD/thaapS63DDYFDF4iBXVA6CNLo+Ep6ffebA
+         2knZ4yfFLuKRUZQKr6Ro5okDvNymVxP90+GcfHgaa7lIcXcAGvO4VsPDLFKa0C6cyDmA
+         LTmQ==
+X-Gm-Message-State: AOAM530qY+Z/MtUrId68LjGKf2W2ntV6kOiuAe1XaqxvL6Oy6Qkc4ZkN
+        92FbwZUeoSlb141hbk6+eOK3WalRpuoXZA==
+X-Google-Smtp-Source: ABdhPJwPqMIcybxaLhZQWmrnN2G4r21M4C83cZM/CHqU/HnCrZCRCEmz6BDhV1d6cSMyLtzzcAZuIQ==
+X-Received: by 2002:adf:c587:: with SMTP id m7mr3331250wrg.369.1616591085713;
+        Wed, 24 Mar 2021 06:04:45 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id w11sm3034919wrv.88.2021.03.24.06.04.50
+        by smtp.gmail.com with ESMTPSA id w11sm3034919wrv.88.2021.03.24.06.04.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 06:04:50 -0700 (PDT)
+        Wed, 24 Mar 2021 06:04:45 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3 23/23] trace-cmd: Read at least 8 bytes trace-id option
-Date:   Wed, 24 Mar 2021 15:04:18 +0200
-Message-Id: <20210324130418.436206-24-tz.stoyanov@gmail.com>
+Subject: [PATCH v3 18/23] trace-cmd: Add new parameter "--raw-ts" to "trace-cmd report" command
+Date:   Wed, 24 Mar 2021 15:04:13 +0200
+Message-Id: <20210324130418.436206-19-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210324130418.436206-1-tz.stoyanov@gmail.com>
 References: <20210324130418.436206-1-tz.stoyanov@gmail.com>
@@ -73,29 +73,78 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When reading the trace-id option from trace.dat file, check if the size
-is at least 8 bytes. If the size is greater, use the first 8 bytes only
-and ignore the rest. That way we can safely extend this option in the
-future, without breaking the legacy logic.
+"trace-cmd report --raw-ts" disables all corrections of event timestamps
+from the trace file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/trace-cmd/trace-input.c | 4 ++++
+ tracecmd/trace-read.c       | 9 ++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 0f5ed684..5ec12ed9 100644
+index 9b4f8cca..0f5ed684 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -2703,7 +2703,7 @@ static int handle_options(struct tracecmd_input *handle)
- 				trace_pid_map_load(handle, buf);
+@@ -2932,6 +2932,10 @@ static void extract_trace_clock(struct tracecmd_input *handle, char *line)
+ 	if (!clock)
+ 		return;
+ 
++	/* Clear usecs if raw timestamps are requested */
++	if (handle->flags & TRACECMD_FL_RAW_TS)
++		handle->flags &= ~TRACECMD_FL_IN_USECS;
++
+ 	/* Clear usecs if not one of the specified clocks */
+ 	if (strcmp(clock, "local") && strcmp(clock, "global") &&
+ 	    strcmp(clock, "uptime") && strcmp(clock, "perf") &&
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 22e8635c..1b99db1d 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1484,6 +1484,7 @@ static void add_hook(const char *arg)
+ }
+ 
+ enum {
++	OPT_raw_ts	= 236,
+ 	OPT_version	= 237,
+ 	OPT_tscheck	= 238,
+ 	OPT_tsdiff	= 239,
+@@ -1533,6 +1534,7 @@ void trace_report (int argc, char **argv)
+ 	int print_events = 0;
+ 	int nanosec = 0;
+ 	int no_date = 0;
++	int raw_ts = 0;
+ 	int global = 0;
+ 	int neg = 0;
+ 	int ret = 0;
+@@ -1574,6 +1576,7 @@ void trace_report (int argc, char **argv)
+ 			{"ts2secs", required_argument, NULL, OPT_ts2secs},
+ 			{"ts-diff", no_argument, NULL, OPT_tsdiff},
+ 			{"ts-check", no_argument, NULL, OPT_tscheck},
++			{"raw-ts", no_argument, NULL, OPT_raw_ts},
+ 			{"help", no_argument, NULL, '?'},
+ 			{NULL, 0, NULL, 0}
+ 		};
+@@ -1746,6 +1749,9 @@ void trace_report (int argc, char **argv)
+ 		case OPT_tscheck:
+ 			tscheck = 1;
  			break;
- 		case TRACECMD_OPTION_TRACEID:
--			if (size != 8)
-+			if (size < 8)
- 				break;
- 			handle->trace_id = tep_read_number(handle->pevent,
- 							   buf, 8);
++		case OPT_raw_ts:
++			raw_ts = 1;
++			break;
+ 		default:
+ 			usage(argv);
+ 		}
+@@ -1777,7 +1783,8 @@ void trace_report (int argc, char **argv)
+ 
+ 		if (no_date)
+ 			tracecmd_set_flag(handle, TRACECMD_FL_IGNORE_DATE);
+-
++		if (raw_ts)
++			tracecmd_set_flag(handle, TRACECMD_FL_RAW_TS);
+ 		page_size = tracecmd_page_size(handle);
+ 
+ 		if (show_page_size) {
 -- 
 2.30.2
 
