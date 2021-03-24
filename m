@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DFB1C433C1
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 00:48:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1EA6C433DB
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 00:53:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1D73C619E7
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 00:48:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 85944619E8
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 24 Mar 2021 00:53:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbhCXAra (ORCPT
+        id S233533AbhCXAwh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 23 Mar 2021 20:47:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53598 "EHLO mail.kernel.org"
+        Tue, 23 Mar 2021 20:52:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233932AbhCXArO (ORCPT
+        id S233460AbhCXAwI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 23 Mar 2021 20:47:14 -0400
+        Tue, 23 Mar 2021 20:52:08 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78D3A619E5;
-        Wed, 24 Mar 2021 00:47:11 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 20:47:09 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id D20F2619E5;
+        Wed, 24 Mar 2021 00:52:07 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 20:52:05 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 01/18] trace-cmd: Add initial perf interface in
- trace-cmd library
-Message-ID: <20210323204709.675d18ca@oasis.local.home>
-In-Reply-To: <20210322095945.259300-2-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v2 03/18] trace-cmd: Save only the selected clock in the
+ trace.dat file
+Message-ID: <20210323205205.192e62ae@oasis.local.home>
+In-Reply-To: <20210322095945.259300-4-tz.stoyanov@gmail.com>
 References: <20210322095945.259300-1-tz.stoyanov@gmail.com>
-        <20210322095945.259300-2-tz.stoyanov@gmail.com>
+        <20210322095945.259300-4-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,51 +43,26 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 22 Mar 2021 11:59:28 +0200
+On Mon, 22 Mar 2021 11:59:30 +0200
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> +void trace_perf_close(struct trace_perf *perf)
-> +{
-> +	if (perf->fd >= 0)
-> +		close(perf->fd);
-> +	perf->fd = -1;
-> +	if (perf->mmap)
+> Trace clock, used for curent trace sessions is saved in the trace.dat
+> file. This information is used when displaying timestamps of the events.
+> However, only the selected clock is needed.
+> A new API is added:
+>  tracecmd_set_out_clock();
+> that can be used to set the trace clock on the output handle.
+> 
 
-The above should be:
+There's no reason not to have the other clocks in the file. I would
+rather keep them as it doesn't hurt to have them right?
 
-	if (perf->mmap && perf->mmap != MAP_FAILED)
+The reason for keeping them is when a customer sends you a trace.dat
+file (from commands you ask them to run), you can use the trace.dat
+file to see what other clocks they have configured in case you want to
+have them try another clock in their next recording.
+
+Extra data about the system the trace.dat file was run on is always a
+plus.
 
 -- Steve
-
-> +		munmap(perf->mmap, (perf->pages + 1) * getpagesize());
-> +	perf->mmap = NULL;
-> +}
-> +
-> +/**
-> + * trace_perf_open - Open perf session
-> + *
-> + * @perf: structure, representing perf context that will be opened. It must be
-> + *	  initialized with trace_perf_init().
-> + *
-> + * Returns 0 on success, or -1 in case of an error. In case of success, the
-> + * session must be closed with trace_perf_close()
-> + */
-> +int trace_perf_open(struct trace_perf *perf)
-> +{
-> +	perf->fd = syscall(__NR_perf_event_open, &perf->pe, perf->pid, perf->cpu, -1, 0);
-> +	if (perf->fd < 0)
-> +		return -1;
-> +	fcntl(perf->fd, F_SETFL, O_NONBLOCK);
-> +
-> +	perf->mmap = mmap(NULL, (perf->pages + 1) * getpagesize(),
-> +			  PROT_READ | PROT_WRITE, MAP_SHARED, perf->fd, 0);
-> +	if (perf->mmap == MAP_FAILED)
-> +		goto error;
-> +
-> +	return 0;
-> +
-> +error:
-> +	trace_perf_close(perf);
-> +	return -1;
-> +}
-
