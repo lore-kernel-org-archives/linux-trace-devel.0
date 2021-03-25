@@ -2,68 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2C6DC433E8
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 049B4C433F1
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 87B3561A23
+	by mail.kernel.org (Postfix) with ESMTP id E649961A13
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhCYGli (ORCPT
+        id S230008AbhCYGlj (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Mar 2021 02:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34046 "EHLO
+        Thu, 25 Mar 2021 02:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhCYGlI (ORCPT
+        with ESMTP id S230011AbhCYGlO (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:41:08 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7622DC06174A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:08 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id o16so1158535wrn.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:08 -0700 (PDT)
+        Thu, 25 Mar 2021 02:41:14 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCF4C06174A
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:14 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id d191so526113wmd.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=maircGKBgsmJQJ6smWACwE9U5aIc3Gre0Jp/o7zMKlQ=;
-        b=Kp2jnLu+klOulH2H1TRsVmH/xeQjKpt0OZdLVhyiVUrYTem16uqDnN9gyJb9d24Qoh
-         7pR8K6PnvqRCU/g1FIKUEOM78XP1m1BSCE7NGy+Gng8I/rQTMRluvhkDleLgy2D4ZU6t
-         o69At4sfm8uetOa5bk4VihbuvEbapqrx6ddr4KNrNRyRjJCqRpdd5dJT4w20yv3MATFO
-         tgnl4reYNA+JoiIsrRcov8ZQ4/dN+1mhe01YyH2erSyUB8TNjUr/LI+kdJS5tVGyH1Ib
-         TE5Qn0lPbbm0hKjknQH8asA/T+h3qEz7cs87z6cGLfJg+A1p4dZU3KDrsT+sfHQXGTNl
-         TVSg==
+        bh=RSmGXWfU+slAXusEwQl0TevAthvkl1itTESgTOaoVz8=;
+        b=CiK4S/DO6RalkcAXaXMjqIl8w74ByjgZ7K15YvcviOnhc/pX3cM39x1IVL9NTGjANM
+         ju4UY3ngBFocdmp0E15aEwoEaxYVsf4ITgVbQ+B10Vx5U03xLXRjYfbmuHr5zCyL1qOm
+         JIGbtnqPZlVyp30jHNuzOjSWljPPCxdY9BrZYtpWW40AQprDThvid/LgD4dz/bNEo0ZI
+         YYwnGHDhd+wvEomfzFWE5oXMyR+vsZEr8v7UmlKHcpCRwCTtdym/Bea7867VPO/Rw7Pc
+         DsmfTo/Q9MzPd1ZZ7N7eUpI0WVoTBwZGQSLltFBexL2k9BrYAYxTRBIwMZ5iIk+1xTym
+         tSRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=maircGKBgsmJQJ6smWACwE9U5aIc3Gre0Jp/o7zMKlQ=;
-        b=bDstvaeguxXF4gCb3Hc/IBmWfrJSFPsGeHj6tZCYSnd2pbXvdq8KyJ+154Jzso+yzH
-         zqa7heUQYKbff2mcvq/zhmXV0XqNokkr5QpOuuzyJ4TzHpNOhSExJCWJZi8+ZEttaWNz
-         gluV6qqtsCCLaYIZriRs9HpiBsCfVSvtSeqHVmPpy40Z1OdFjp/4lkngbiJHOGDF8cFG
-         tfmiDh+mKHsYig418hjZY5VHwUIxee9lSrLdoFsyWNJu1IaWf+2/pWTIZD9lja4oF9S0
-         KTC8cA57JzLhZnvjKRe3+n11h8wtL3dp84HWwrh0n79Z/be9eh2ZLGJq7/pwNXXuuEJJ
-         v4LA==
-X-Gm-Message-State: AOAM532/hdZQOUVFImbBVQXE3Jdmt5CY7Gp4uvQrt0rcFPhIN/DHmrNV
-        O4ytMcWYuqt8yXu35lyyJ8fWh/QI/86HQg==
-X-Google-Smtp-Source: ABdhPJy1tp7+P02txI3d17DqGCcTOuOp7UE3s2aG0ForXqRRh2EfO7CUitk6U7D2/bkeOV8gX/J/rw==
-X-Received: by 2002:a5d:4884:: with SMTP id g4mr7047730wrq.191.1616654467158;
-        Wed, 24 Mar 2021 23:41:07 -0700 (PDT)
+        bh=RSmGXWfU+slAXusEwQl0TevAthvkl1itTESgTOaoVz8=;
+        b=ErZ4qhiPvNWluQ6m9oDVf6rHazlEcnDmKWYYr3SSRqHJWquJvW8TAXWwkJ+EeaZ7rp
+         pmtzvDif3ARU1WBUZWKcdMdcmOe0Tkt+Fi6m7Xz7dmdlHSOPh9SN1rE6AJqzEJ1U/K9N
+         jyMbgHhGMJ4J3AarsGCQxNmkZ/W+geDbTTLh1nmvVIEfw7taAHSVGHctgQ+JGvmzAgIZ
+         9yHuCxrowaocLAf48amq1il4JeovP/zfMKVgYXWVDReS5dT8NWuITnVsSg237/Hmv+HN
+         EnMRmvjG7NSdCue1IAnbW4Uuh2Et6fYmBjA4Nca8yac5LtrvjYTDBdeOiSJoIC6vS3f7
+         1LPw==
+X-Gm-Message-State: AOAM533ua6hZ9Sdo+wcOFa1ENMhdeGTheZMFSepa5+QmloOaCK+QJzyy
+        OOyIFItrh3taIjKD/GpHCLo=
+X-Google-Smtp-Source: ABdhPJzkA2V4LAFZlYZqlCSwnsK/pZU1qppdj5M6MEsA+CjBNVMAFeiUpOGThyyP17FnSgo0Z8uwTw==
+X-Received: by 2002:a1c:a745:: with SMTP id q66mr6254698wme.21.1616654472837;
+        Wed, 24 Mar 2021 23:41:12 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id e17sm6403259wra.65.2021.03.24.23.41.06
+        by smtp.gmail.com with ESMTPSA id e17sm6403259wra.65.2021.03.24.23.41.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 23:41:06 -0700 (PDT)
+        Wed, 24 Mar 2021 23:41:12 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 10/23] trace-cmd: Save tsc2nsec clock in trace.dat file
-Date:   Thu, 25 Mar 2021 08:40:42 +0200
-Message-Id: <20210325064055.539554-11-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 16/23] trace-cmd: Add a new flag to disable any timestamp corrections
+Date:   Thu, 25 Mar 2021 08:40:48 +0200
+Message-Id: <20210325064055.539554-17-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210325064055.539554-1-tz.stoyanov@gmail.com>
 References: <20210325064055.539554-1-tz.stoyanov@gmail.com>
@@ -73,78 +73,66 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When tsc2nsec clock is used, save it as selected clock in the trace.dat
-file. When reading the file, in case of tsc2nsec clock show timestamps
-in usec / nsec.
+A new flag is added in the trace-cmd library for controlling events
+timestamp corrections while reading a trace file. If the flag is set,
+all timestamps are displayed as-is from the trace file.
+   TRACECMD_FL_RAW_TS
+The flag can be modified with these APIs:
+  tracecmd_set_flag()
+  tracecmd_clear_flag()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/private/trace-cmd-private.h | 2 ++
- lib/trace-cmd/trace-input.c                       | 2 +-
- tracecmd/trace-record.c                           | 9 +++++----
- 3 files changed, 8 insertions(+), 5 deletions(-)
+ lib/trace-cmd/include/private/trace-cmd-private.h | 1 +
+ lib/trace-cmd/trace-input.c                       | 9 +++++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index ce3d8dc0..c33d067a 100644
+index c33d067a..fdca7494 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -22,6 +22,8 @@
- #define TRACECMD_ERROR(ret)	((void *)((unsigned long)(ret) | TRACECMD_ERR_MSK))
- #define TRACECMD_PTR2ERR(ptr)	((unisgned long)(ptr) & ~TRACECMD_ERR_MSK)
+@@ -134,6 +134,7 @@ enum {
+ 	TRACECMD_FL_IGNORE_DATE		= (1 << 0),
+ 	TRACECMD_FL_BUFFER_INSTANCE	= (1 << 1),
+ 	TRACECMD_FL_IN_USECS		= (1 << 2),
++	TRACECMD_FL_RAW_TS		= (1 << 3),
+ };
  
-+#define TSCNSEC_CLOCK	"tsc2nsec"
-+
- void tracecmd_parse_cmdlines(struct tep_handle *pevent, char *file, int size);
- void tracecmd_parse_proc_kallsyms(struct tep_handle *pevent, char *file, unsigned int size);
- void tracecmd_parse_ftrace_printk(struct tep_handle *pevent, char *file, unsigned int size);
+ struct tracecmd_ftrace {
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index ebc28f7b..67915f25 100644
+index 696e7bd8..ef2f9678 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -2906,7 +2906,7 @@ static void extract_trace_clock(struct tracecmd_input *handle, char *line)
- 	/* Clear usecs if not one of the specified clocks */
- 	if (strcmp(clock, "local") && strcmp(clock, "global") &&
- 	    strcmp(clock, "uptime") && strcmp(clock, "perf") &&
--	    strncmp(clock, "mono", 4))
-+	    strncmp(clock, "mono", 4) && strcmp(clock, TSCNSEC_CLOCK))
- 		handle->flags &= ~TRACECMD_FL_IN_USECS;
- }
- 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 9f8c4943..b7f6f438 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -58,7 +58,6 @@
- #define STAMP		"stamp"
- #define FUNC_STACK_TRACE "func_stack_trace"
- #define TSC_CLOCK	"x86-tsc"
--#define TSCNSEC_CLOCK	"tsc2nsec"
- 
- enum trace_type {
- 	TRACE_TYPE_RECORD	= 1,
-@@ -4168,7 +4167,8 @@ static void write_guest_file(struct buffer_instance *instance)
- 	handle = tracecmd_get_output_handle_fd(fd);
- 	if (!handle)
- 		die("error writing to %s", file);
--
-+	if (instance->flags & BUFFER_FL_TSC2NSEC)
-+		tracecmd_set_out_clock(handle, TSCNSEC_CLOCK);
- 	temp_files = malloc(sizeof(*temp_files) * cpu_count);
- 	if (!temp_files)
- 		die("failed to allocate temp_files for %d cpus",
-@@ -4290,9 +4290,10 @@ static void record_data(struct common_record_context *ctx)
- 				add_guest_info(handle, instance);
- 		}
- 
--		if (ctx->tsc2nsec.mult)
-+		if (ctx->tsc2nsec.mult) {
- 			add_tsc2nsec(handle, &ctx->tsc2nsec);
--
-+			tracecmd_set_out_clock(handle, TSCNSEC_CLOCK);
-+		}
- 		if (tracecmd_write_cmdlines(handle))
- 			die("Writing cmdlines");
- 
+@@ -1287,6 +1287,10 @@ static unsigned long long timestamp_host_sync(unsigned long long ts,
+ static unsigned long long timestamp_calc(unsigned long long ts,
+ 					 struct tracecmd_input *handle)
+ {
++	/* do not modify raw timestamps */
++	if (handle->flags & TRACECMD_FL_RAW_TS)
++		return ts;
++
+ 	/* Guest trace file, sync with host timestamps */
+ 	if (handle->host.sync_enable)
+ 		ts = timestamp_host_sync(ts, handle);
+@@ -2601,7 +2605,8 @@ static int handle_options(struct tracecmd_input *handle)
+ 			 * gtod. It is stored as ASCII with '0x'
+ 			 * appended.
+ 			 */
+-			if (handle->flags & TRACECMD_FL_IGNORE_DATE)
++			if (handle->flags &
++			    (TRACECMD_FL_IGNORE_DATE | TRACECMD_FL_RAW_TS))
+ 				break;
+ 			offset = strtoll(buf, NULL, 0);
+ 			/* Convert from micro to nano */
+@@ -2707,7 +2712,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 			trace_guest_load(handle, buf, size);
+ 			break;
+ 		case TRACECMD_OPTION_TSC2NSEC:
+-			if (size < 16)
++			if (size < 16 || (handle->flags & TRACECMD_FL_RAW_TS))
+ 				break;
+ 			handle->tsc_calc.mult = tep_read_number(handle->pevent,
+ 								buf, 4);
 -- 
 2.30.2
 
