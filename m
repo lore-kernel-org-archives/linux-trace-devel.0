@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7380EC433F8
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CAD7C433FB
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5050461A27
+	by mail.kernel.org (Postfix) with ESMTP id 3FD0961A23
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhCYGlk (ORCPT
+        id S230005AbhCYGli (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Mar 2021 02:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
+        Thu, 25 Mar 2021 02:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhCYGlT (ORCPT
+        with ESMTP id S230003AbhCYGlK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:41:19 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12E4C06174A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:18 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id d191so526199wmd.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:18 -0700 (PDT)
+        Thu, 25 Mar 2021 02:41:10 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B644C06174A
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:10 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id x16so1109077wrn.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xDsomzgCbP0yJx9Jw3t5GvX1UHU45XtloLwQV6bcNQs=;
-        b=oq0mhN9Ciz5Xb0GvBoozEXLk4c7QkzZVOEw83cQdF5UHlD68YR1A/Wxe/CJq73qkb9
-         vQUijcDTLTLOZFs8ylej3wGeK/XxMkcXdnUDoS+jVXi6xr7j/ZP1AzXKbIvEBqqrrKer
-         uwzjHsW8u3yxEcQUtq0V9uo1uRfxpxwFf2BOHlerpMKlAyONfPAhyG5QKl1Hma7Os4yE
-         P29xKQx6lnvFRO9evSfizABH5CZ+uiYCgFRtpYdLPU1lZZcfv6Zws9E2FMFZLkAeDYgM
-         ezoemEs55wPnxUuKy5R2xYLVjRnEvMEffegefHmyycGHizy0Fuj4lI2f+QpEJTsPK+ae
-         Bk6g==
+        bh=oMjD439qNlAB7PqKNkhqf7Z0VI4YUDEnQeZeV/0WHzA=;
+        b=AJbGqIIMjLeG7JzlqR2aRE6fUziKOUtAP5E2nmdJS+RyoQ9t/c22WJguMEfGgaCW6J
+         2HUy5XcxWgTH2UdBGIPmTKaVCaimndjg9Vp03Kgw6C9Eai7LjVUKVxI9vm03IVff3CP5
+         t5xeWVOooXVKK0uxzkW8HAfGtJMJ3hPfF/kadpsDtyObCUZfoMCvNbrKuYlnfzvpg23p
+         ksKCy0Hbs5GHueV2Gm44+ASkD25Pn4U6zsBP2VhVSLyhb4R9ycXwKlLcmWg5i69/snDD
+         GgKFGSXiZtTz3YHh0B5aHfJp3uy2HXPKmGqMfPZ7OsIodpmDXlMiqxzRj1WStGZ4k33l
+         d3hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xDsomzgCbP0yJx9Jw3t5GvX1UHU45XtloLwQV6bcNQs=;
-        b=BRFiYO8wCEwJc1+oB5BUwYjgm+u1dAPcAKUBPj/y8IkL6ZSrm79nKQeTNf7nveTNo5
-         x3/gLqo2sCUg/Ypo/faMOxX6lf7rL7cGjH+YA9xfUs7MSA7lb0SlgJSWOwkgPQ0KHn1/
-         lptjKWVxalqaqrZmZmNej3tBAuJ2xGMV9V/b8lDhw6i3a3Wd4BsipsUqvWDCF5er9FXi
-         DYjsmb11oAjHAdDulq1+7gRk5PrVXvp+PtIjAKlNajsUV1U9bjqEioLycopCG9h/BJfd
-         ZtEXXPeDsWR10f54qj6y9snxlIgUt+oVi4mE7mQX6nUiHKnbWQT1MqhkI9jyh7nBF83c
-         NOig==
-X-Gm-Message-State: AOAM532hZoIbIqggEXA20WeyMuJN1c+mR2vuse9eeW3EqFxGAuqJ2zl5
-        0ZUabTp7pc7qFdkFgVuHt7367ap9OfcBUw==
-X-Google-Smtp-Source: ABdhPJwMKjaw3Mpqd1RYYsOBiS3+RpCJ1dykk1H1hJVRwp/FR99pqLGcllt9lpsO+fRvde9IhBBvLQ==
-X-Received: by 2002:a7b:cb89:: with SMTP id m9mr6253233wmi.27.1616654477436;
-        Wed, 24 Mar 2021 23:41:17 -0700 (PDT)
+        bh=oMjD439qNlAB7PqKNkhqf7Z0VI4YUDEnQeZeV/0WHzA=;
+        b=j12uVynwgxu3gLdLdUmpd7clygFSpJOT5Cp1VAUDQ4i29vMom+O5yNiP47bDOAekt7
+         g6MDCk5IJcXl5k1j2bO9fe8I683ZN33sVysOjyDujyAeLi1AuvEW0Zs6+Irg+6mfYfRC
+         qfDFVJqrl3KvFyGLsKtNZECUHArr/P8aOtRneQk0Y3bvEMylTyZFEwqtTChmdnOeniGp
+         OkARs+nrCXUuYhijmjrTfQqrYg46UL4F4oa8fhcV4pJLmaaLPLEuy9PuY4m20oClSnx8
+         nyXvdaR+uFIrDUH3V40R8roM39gQUYs8CfllXHtcFuA8/cXQgx600pLsmyjBt3OnOG86
+         GtPw==
+X-Gm-Message-State: AOAM531wkH45oCMuYNgn91/nf/q78QE05apWMAvGcu2YJQdf4Oey4wLe
+        JDCmMqCnSXE1302ehuC85oY=
+X-Google-Smtp-Source: ABdhPJx1C0s8TRQXAvL5nV9yCZcORRT8/YjnIMxwv8crYSIQD0h/7mQFG9WUa6F9+NlTrLgILWDMaw==
+X-Received: by 2002:a5d:6cab:: with SMTP id a11mr7143401wra.419.1616654469069;
+        Wed, 24 Mar 2021 23:41:09 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id e17sm6403259wra.65.2021.03.24.23.41.16
+        by smtp.gmail.com with ESMTPSA id e17sm6403259wra.65.2021.03.24.23.41.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 23:41:17 -0700 (PDT)
+        Wed, 24 Mar 2021 23:41:08 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 21/23] trace-cmd: Get current clock for host-guest tracing session
-Date:   Thu, 25 Mar 2021 08:40:53 +0200
-Message-Id: <20210325064055.539554-22-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 12/23] trace-cmd: Remove unneeded multiply in events timestamp reading
+Date:   Thu, 25 Mar 2021 08:40:44 +0200
+Message-Id: <20210325064055.539554-13-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210325064055.539554-1-tz.stoyanov@gmail.com>
 References: <20210325064055.539554-1-tz.stoyanov@gmail.com>
@@ -73,107 +73,32 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In host-guest tracing session, all peers should use the same tracing
-clock. If there is no user configured trace clock, the current logic
-assumes "local" clock for the session. This could be wrong, as other
-clock than "local" could be already configured on the host, before
-running trace-cmd. The default clock for host-guest tracing session
-should be rertieved from the "trace_clock" file of the first host trace
-instance, used in the tracing session.
+When the event timestamp is converted to seconds, the local variable
+that holds this timestamp is converted to seconds also. As this
+variable is not used in the function later, this conversion in not
+needed.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 49 ++++++++++++++++++++++++++++++++---------
- 1 file changed, 39 insertions(+), 10 deletions(-)
+ lib/trace-cmd/trace-input.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index d794f1af..4f412e8d 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -4128,6 +4128,23 @@ static void print_stat(struct buffer_instance *instance)
- 		trace_seq_do_printf(&instance->s_print[cpu]);
- }
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 67915f25..be8a7919 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -1932,10 +1932,8 @@ read_again:
  
-+static char *get_trace_clock(bool selected)
-+{
-+	struct buffer_instance *instance;
-+
-+	for_all_instances(instance) {
-+		if (is_guest(instance))
-+			continue;
-+		break;
-+	}
-+
-+	if (selected)
-+		return tracefs_get_clock(instance ? instance->tracefs : NULL);
-+	else
-+		return tracefs_instance_file_read(instance ? instance->tracefs : NULL,
-+						  "trace_clock", NULL);
-+}
-+
- enum {
- 	DATA_FL_NONE		= 0,
- 	DATA_FL_DATE		= 1,
-@@ -6460,11 +6477,12 @@ static void get_tsc_offset(struct common_record_context *ctx)
+ 	handle->cpu_data[cpu].timestamp = timestamp_correct(ts, handle);
  
- static void set_tsync_params(struct common_record_context *ctx)
- {
--	const char *clock = ctx->clock;
- 	struct buffer_instance *instance;
- 	int shift, mult;
- 	bool force_tsc = false;
-+	char *clock = NULL;
+-	if (handle->ts2secs) {
++	if (handle->ts2secs)
+ 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
+-		ts *= handle->ts2secs;
+-	}
  
-+	if (!ctx->clock) {
- 	/*
- 	 * If no clock is configured &&
- 	 * KVM time sync protocol is available &&
-@@ -6473,18 +6491,27 @@ static void set_tsync_params(struct common_record_context *ctx)
- 	 * force using the x86-tsc clock for this host-guest tracing session
- 	 * and store TSC to nsec multiplier and shift.
- 	 */
--	if (!clock && tsync_proto_is_supported("kvm") &&
--	    clock_is_supported(NULL, TSC_CLOCK) &&
--	    !get_tsc_nsec(&shift, &mult) && mult) {
--		clock = TSC_CLOCK;
--		ctx->tsc2nsec.mult = mult;
--		ctx->tsc2nsec.shift = shift;
--		ctx->tsc2nsec.offset = get_clock_now(TSC_CLOCK);
--		force_tsc = true;
-+		if (tsync_proto_is_supported("kvm") &&
-+		    clock_is_supported(NULL, TSC_CLOCK) &&
-+		    !get_tsc_nsec(&shift, &mult) && mult) {
-+			clock = strdup(TSC_CLOCK);
-+			if (!clock)
-+				die("Cannot not allocate clock");
-+			ctx->tsc2nsec.mult = mult;
-+			ctx->tsc2nsec.shift = shift;
-+			ctx->tsc2nsec.offset = get_clock_now(TSC_CLOCK);
-+			force_tsc = true;
-+		} else { /* Use the current clock of the first host instance */
-+			clock = get_trace_clock(true);
-+		}
-+	} else {
-+		clock = strdup(ctx->clock);
-+		if (!clock)
-+			die("Cannot not allocate clock");
- 	}
+ 	index = kbuffer_curr_offset(kbuf);
  
- 	if (!clock && !ctx->tsync_loop_interval)
--		return;
-+		goto out;
- 	for_all_instances(instance) {
- 		if (clock && !(instance->flags & BUFFER_FL_HAS_CLOCK)) {
- 			/* use the same clock in all tracing peers */
-@@ -6506,6 +6533,8 @@ static void set_tsync_params(struct common_record_context *ctx)
- 		}
- 		instance->tsync_loop_interval = ctx->tsync_loop_interval;
- 	}
-+out:
-+	free(clock);
- }
- 
- /*
 -- 
 2.30.2
 
