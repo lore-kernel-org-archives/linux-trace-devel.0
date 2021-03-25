@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CAD7C433FB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B885C433C1
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3FD0961A23
+	by mail.kernel.org (Postfix) with ESMTP id 8DED961A13
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhCYGli (ORCPT
+        id S230022AbhCYGlk (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Mar 2021 02:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
+        Thu, 25 Mar 2021 02:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhCYGlK (ORCPT
+        with ESMTP id S230026AbhCYGlU (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:41:10 -0400
+        Thu, 25 Mar 2021 02:41:20 -0400
 Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B644C06174A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:10 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x16so1109077wrn.4
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B69C06175F
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:20 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id c8so1078669wrq.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oMjD439qNlAB7PqKNkhqf7Z0VI4YUDEnQeZeV/0WHzA=;
-        b=AJbGqIIMjLeG7JzlqR2aRE6fUziKOUtAP5E2nmdJS+RyoQ9t/c22WJguMEfGgaCW6J
-         2HUy5XcxWgTH2UdBGIPmTKaVCaimndjg9Vp03Kgw6C9Eai7LjVUKVxI9vm03IVff3CP5
-         t5xeWVOooXVKK0uxzkW8HAfGtJMJ3hPfF/kadpsDtyObCUZfoMCvNbrKuYlnfzvpg23p
-         ksKCy0Hbs5GHueV2Gm44+ASkD25Pn4U6zsBP2VhVSLyhb4R9ycXwKlLcmWg5i69/snDD
-         GgKFGSXiZtTz3YHh0B5aHfJp3uy2HXPKmGqMfPZ7OsIodpmDXlMiqxzRj1WStGZ4k33l
-         d3hg==
+        bh=A4LvwnxyzRE/EtAFtpTGnD7SDW9+pNTORWFgylvctSQ=;
+        b=GlDFFaFSRQ1NgoA2pG4JU38rhkFB8rILYihmfE4JIF93r75iLbQfGSG6bTsBa8d8zP
+         jBonS2ptUyfKefpKokVAw9nkocBLAatRL7FpYaIcYMj4WHHMZLL73dK+pDQq7o2XBCXv
+         tWpYGO2hdEcoC9jGxiOQ4xznmMVif0oKUdZvYEH3lyZvpKqLRakfbQXbiCtnRpK+zkJZ
+         kJtWSp1KFJWzlUjyDojIiDIQJ2axBLvBlTEKla1F87B4aWB0lrUH3ToHiOn69qT8N5mn
+         0+DEoJ6S1H0LsgA8GBtclYkOZOV1jbd9xWz+V52HW2IEZ+QccvOJXJxUz0bp98kvyZb2
+         7YRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oMjD439qNlAB7PqKNkhqf7Z0VI4YUDEnQeZeV/0WHzA=;
-        b=j12uVynwgxu3gLdLdUmpd7clygFSpJOT5Cp1VAUDQ4i29vMom+O5yNiP47bDOAekt7
-         g6MDCk5IJcXl5k1j2bO9fe8I683ZN33sVysOjyDujyAeLi1AuvEW0Zs6+Irg+6mfYfRC
-         qfDFVJqrl3KvFyGLsKtNZECUHArr/P8aOtRneQk0Y3bvEMylTyZFEwqtTChmdnOeniGp
-         OkARs+nrCXUuYhijmjrTfQqrYg46UL4F4oa8fhcV4pJLmaaLPLEuy9PuY4m20oClSnx8
-         nyXvdaR+uFIrDUH3V40R8roM39gQUYs8CfllXHtcFuA8/cXQgx600pLsmyjBt3OnOG86
-         GtPw==
-X-Gm-Message-State: AOAM531wkH45oCMuYNgn91/nf/q78QE05apWMAvGcu2YJQdf4Oey4wLe
-        JDCmMqCnSXE1302ehuC85oY=
-X-Google-Smtp-Source: ABdhPJx1C0s8TRQXAvL5nV9yCZcORRT8/YjnIMxwv8crYSIQD0h/7mQFG9WUa6F9+NlTrLgILWDMaw==
-X-Received: by 2002:a5d:6cab:: with SMTP id a11mr7143401wra.419.1616654469069;
-        Wed, 24 Mar 2021 23:41:09 -0700 (PDT)
+        bh=A4LvwnxyzRE/EtAFtpTGnD7SDW9+pNTORWFgylvctSQ=;
+        b=SSyym+QxLEqHS/akXEm1FXTr7SKPu5enu2+M3FanQSuRiUVfjOIGotadR8bnktahqx
+         Lzv+PM4DfL5T/W4lJUvT5ipX/ba+jYtg85PRNxII6lJGbc2u6mQ5F9gUfSU3frzCrWP4
+         gEsoDaBkNSDM+cwEJviLt/7nBGyLF8WfjHryTxdMLF3Kwz1qb/NWDZi/nC3XqNX2vBMl
+         PNi+I13YI8JH2JgBYxMNLBeeui1+Br4qTrrXXR7iTN6oiOMTwHbiOuZ8RrF7orLiWyUK
+         syCS4LyrH2VG4YGFYHek5gF5HrRmfoDGIJSrQmPErmG5GqVGCobkuwcSeGr0G15FCdZk
+         KRkA==
+X-Gm-Message-State: AOAM532/3vaKnJ/LdMMpX0on98y8R+IA6OP9SmW9ORUIh/8ZYwndoM+9
+        NPhZF4+3aTSWLnMUN9kDd/JGvRaq4bxuxQ==
+X-Google-Smtp-Source: ABdhPJxdmanJyUKyPGqtFNQvUhMXgmj9bDZZ6svavawghkZPzRqskEYBL6PO1gjMloGOaXxKqAHuPA==
+X-Received: by 2002:adf:dc4e:: with SMTP id m14mr7353862wrj.248.1616654479172;
+        Wed, 24 Mar 2021 23:41:19 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id e17sm6403259wra.65.2021.03.24.23.41.08
+        by smtp.gmail.com with ESMTPSA id e17sm6403259wra.65.2021.03.24.23.41.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 23:41:08 -0700 (PDT)
+        Wed, 24 Mar 2021 23:41:18 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 12/23] trace-cmd: Remove unneeded multiply in events timestamp reading
-Date:   Thu, 25 Mar 2021 08:40:44 +0200
-Message-Id: <20210325064055.539554-13-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 23/23] trace-cmd: Read at least 8 bytes trace-id option
+Date:   Thu, 25 Mar 2021 08:40:55 +0200
+Message-Id: <20210325064055.539554-24-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210325064055.539554-1-tz.stoyanov@gmail.com>
 References: <20210325064055.539554-1-tz.stoyanov@gmail.com>
@@ -73,32 +73,29 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When the event timestamp is converted to seconds, the local variable
-that holds this timestamp is converted to seconds also. As this
-variable is not used in the function later, this conversion in not
-needed.
+When reading the trace-id option from trace.dat file, check if the size
+is at least 8 bytes. If the size is greater, use the first 8 bytes only
+and ignore the rest. That way we can safely extend this option in the
+future, without breaking the legacy logic.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ lib/trace-cmd/trace-input.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 67915f25..be8a7919 100644
+index 513f6cc3..c0b47345 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -1932,10 +1932,8 @@ read_again:
- 
- 	handle->cpu_data[cpu].timestamp = timestamp_correct(ts, handle);
- 
--	if (handle->ts2secs) {
-+	if (handle->ts2secs)
- 		handle->cpu_data[cpu].timestamp *= handle->ts2secs;
--		ts *= handle->ts2secs;
--	}
- 
- 	index = kbuffer_curr_offset(kbuf);
- 
+@@ -2703,7 +2703,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 				trace_pid_map_load(handle, buf);
+ 			break;
+ 		case TRACECMD_OPTION_TRACEID:
+-			if (size != 8)
++			if (size < 8)
+ 				break;
+ 			handle->trace_id = tep_read_number(handle->pevent,
+ 							   buf, 8);
 -- 
 2.30.2
 
