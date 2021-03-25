@@ -2,176 +2,160 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27D66C433DB
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:21:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA75FC433C1
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:51:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F3D9C61A1A
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:21:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6B01B61A25
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:51:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhCYHVG (ORCPT
+        id S229758AbhCYHuz (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Mar 2021 03:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
+        Thu, 25 Mar 2021 03:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbhCYHUf (ORCPT
+        with ESMTP id S229957AbhCYHub (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:20:35 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529ADC06174A
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 00:20:35 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id x26so1160186pfn.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 00:20:35 -0700 (PDT)
+        Thu, 25 Mar 2021 03:50:31 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A9AC06174A
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 00:50:31 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id h3so1154919pfr.12
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 00:50:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7kpJIKQz1C8+VDMfZKeBH/MMbuMLtuO8WUM+nkFghvc=;
-        b=pjP1OMaQmppNUNaSk0Eq0BYwh61CditRblkU6j7fM3a5+9kJp8qPzLyOBHHcgrfnFe
-         wrfSiOlvXWvQzrIr6XNam7u0DogexLmJD60WAlnHhO5VuveysWRzGlJNDCRhMP6CBJDZ
-         YVwPdtWq2iRnIzB7XGCXg4aRex7y0m2PeJHfX89lIKKpTkDZJK1NmuU0hgzN/qAwSFlF
-         RlsdwC7mblA88SPymmnXzOptN3itY7PDRdGOFFV+FU2FER7edjaOznnJzfPAhrgGfZC5
-         E7xaiCGcR6oF7HnpmRA0ds8x5zsGbwFJ1XHjl7yq+UHgYmWRF5uza7VEMOQw7Z/Z465y
-         lZxg==
+        bh=KCv0w7clNNpX5XmbC9ShZXOL14/ky5E8DTyuZ7JagpI=;
+        b=inokGcAx5GrnrUiY2HzpOkYVSYoCfe9LpnHJ8jWM8yz8LkZBohO5hEF7+1ffZFgJ3R
+         dJYI0MDcvT3QbtUlrLo0aWZt+YWyOjXBeup2fZegNVg1gDRU5Iwts6iPuaKu22UrL5hu
+         /Jkfnd1/v2w4Hroa2b8QHGM9zRJlzkLnSZM7jOn0Vsga4a8zsLMKuCy3TvP5kezHI9k3
+         xCH6YjibT448UcMqWIGXhItM/xVH20QDCUabo7nGibsTyCrmz3eSJ9/Fm+0GgV4gyCCP
+         +723VgHuoYrL0Q3ww10gt0J7rfOZrnEKHdfQ8QUH2mTFoujpWfI/SK4Ok1eno4exb1er
+         kjWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7kpJIKQz1C8+VDMfZKeBH/MMbuMLtuO8WUM+nkFghvc=;
-        b=et76AUvVA2PSxxGXf0da3GCw1zwB3zJFQ+dH8WZjA5fQFDxFaLTDp+uaZt/zO6D22X
-         Pj2W630XxRxCbZ4RdtlEQJQS03qtu9aomB/ebNKUrhzhZdLD4x4aHOHEcQvJYRpX9OwO
-         TgLrXTnzYf3gzHdBeT/ryeuBMCCTOAv656qZAaZG3lWdEsbxlANnqOWJAhRSdx32Mbov
-         0DYsf5HnopuozThqk50CQ2jIYqnHd1JZI0jzcmuXwxgeSeDJM7juOPUJoWaPrITSwELL
-         rQ+fSw+MgZunhXMUc/+qo7bG5VI0XP7NTmB4MdSiaxFCZwpuBXQERbpkBZzqmONN2wUt
-         L02w==
-X-Gm-Message-State: AOAM532qxaH6zN4DhKp/ygRZhqtyrypRMQo29ugiALfPRqc13AiboWC1
-        +bLepkCg6Y61zvWTLGNaJFJZ6z+USJ+HNGsQnTM=
-X-Google-Smtp-Source: ABdhPJyLoew+jQrdyEkCk713W4eS6NWeTxAFeRIlbMko/XCAWczcLo10DY4JfW8hFL3TtDYYayuRDqvcU1OSmSDwJSw=
-X-Received: by 2002:aa7:8488:0:b029:1fc:f312:b24e with SMTP id
- u8-20020aa784880000b02901fcf312b24emr6396679pfn.55.1616656834692; Thu, 25 Mar
- 2021 00:20:34 -0700 (PDT)
+        bh=KCv0w7clNNpX5XmbC9ShZXOL14/ky5E8DTyuZ7JagpI=;
+        b=PSJNKLAMOa4SEW+aH6bmQBfhFEow0r9a2zfGjxhuoX0axCbGluNyViCJCRApgxsA1C
+         VrFB1XkjvOeE3cYGS7811M6wRs6q48EMCuHcHGAH7DPWqULK8A1rBML+iQ7r4rbFSqHc
+         Aqrjth0Is3G2txQvUlyDOadOjZ4Q+eWddL63iYr2G9uT/wtk8QTW/RZ1heVZ1V72Qyvq
+         wf683ViRByj1mrLK+ysi2pAArMMQVghHN0204yzgkySUhKzSd+PXH4yFVkAL+iN0M9LZ
+         Db/qFWgbuwLz6/Kur/PI9k8psDLv22M2zC1CZeDovoW+9CxHh7h1EXy96sWfX9XQinKp
+         rzDA==
+X-Gm-Message-State: AOAM531QrtdlAnLvlBxM2BNg/45jFU6gluvlRqC8dnHe8Zu4NSJwbF6y
+        LdsogiFuTa7xAI19LyTO3SDRbdFWSSVmzY4IO7MJPQndHXGUYw==
+X-Google-Smtp-Source: ABdhPJxOSr1XdgTG48uhhbu0q/Bkqh59+y2tISgHH1YK2EfXcu6mThKIWl4MN9KFZpS2sTIqXowywkcyfdIp/gh5GIk=
+X-Received: by 2002:a65:6209:: with SMTP id d9mr6546405pgv.206.1616658630954;
+ Thu, 25 Mar 2021 00:50:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210315061857.168570-1-tz.stoyanov@gmail.com>
- <6796a75b-6a59-767f-08ec-ee0cbfd8c825@gmail.com> <CAPpZLN6LJWV_=BB5FgQOkN+SZt3dOeYjzqZVZ-FC4JTva8zn_Q@mail.gmail.com>
- <80486620-fe8f-49a5-cdac-05bb2b969984@gmail.com> <CAPpZLN4yn2qn7uqNLqkxdnHfM_5SdtkjPY41atY5m-FPG3rudA@mail.gmail.com>
- <0f6e158c-43a3-4117-2a17-5a13cd6a7970@gmail.com>
-In-Reply-To: <0f6e158c-43a3-4117-2a17-5a13cd6a7970@gmail.com>
+References: <20210324135143.445443-1-tz.stoyanov@gmail.com> <20210324175309.4e154757@gandalf.local.home>
+In-Reply-To: <20210324175309.4e154757@gandalf.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 25 Mar 2021 09:20:18 +0200
-Message-ID: <CAPpZLN5HcuFnN9_gMnS=JKeu3p9dEUWHmF6iwoh-mLPz=6WaiQ@mail.gmail.com>
-Subject: Re: [PATCH v32 0/5]Timestamp synchronization of host - guest tracing session
-To:     Stefano De Venuto <stefano.devenuto99@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Dario Faggioli <dfaggioli@suse.com>
+Date:   Thu, 25 Mar 2021 09:50:14 +0200
+Message-ID: <CAPpZLN4CWSZoPkezk7QYNSDLGm4vjNOYHE2gv4Jx=xhJbAdeow@mail.gmail.com>
+Subject: Re: [PATCH v2] trace-cmd: Remove all die()s from trace-cmd library
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Stefano,
+On Wed, Mar 24, 2021 at 11:53 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Wed, 24 Mar 2021 15:51:43 +0200
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+>
+> > @@ -366,36 +366,32 @@ void __noreturn __vdie(const char *fmt, va_list ap)
+> >       vfprintf(stderr, fmt, ap);
+> >
+> >       fprintf(stderr, "\n");
+> > -     exit(ret);
+> > +     return ret;
+> >  }
+> >
+> > -void __noreturn __die(const char *fmt, ...)
+> > +#ifdef LIB_DIE
+>
+> I wonder if it would be more useful not to have it as a compile time
+> define, but instead a global variable:
+>
+> static bool lib_die;
+>
+> void tracecmd_die_on_error(void)
+> {
+>         lib_die = true;
+> }
+>
 
-On Sat, Mar 20, 2021 at 6:17 PM Stefano De Venuto
-<stefano.devenuto99@gmail.com> wrote:
->
->
->
-> On 3/20/21 7:25 AM, Tzvetomir Stoyanov wrote:
-> > Hi Stefano,
-> >
-> > On Fri, Mar 19, 2021 at 7:44 PM Stefano De Venuto
-> > <stefano.devenuto99@gmail.com> wrote:
-> >>
-> >>
-> >> On 3/19/21 12:55 PM, Tzvetomir Stoyanov wrote:
-> >>> Hi Stefano,
-> >>>
-> >>> On Fri, Mar 19, 2021 at 12:08 PM Stefano De Venuto
-> >>> <stefano.devenuto99@gmail.com> wrote:
-> >> Hi!
-> >>>> The commands used to record are:
-> >>>>
-> >>>> Host:
-> >>>> # trace-cmd record -C x86-tsc -e kvm:* -e msr:* -A tumbleweed:823 -e
-> >>>> msr:* -C x86-tsc sleep 1
-> >>> The guest trace clock is set automatically as the host, so this
-> >>> command should be enough:
-> >>> # trace-cmd record -C x86-tsc -e kvm:* -e msr:* -A tumbleweed:823 -e
-> >>> msr:*  sleep 1
-> >>>
-> >>>> Guest:
-> >>>> # echo x86-tsc > /sys/kernel/tracing/trace_clock
-> >>> There is no need to set manually the guest clock, it will be
-> >>> overwritten by trace-cmd agent.
-> >>>
-> >> Thanks so much for the proper way to do it, really appreciated.
-> >>>> If necessary, I can provide more info about my setup, or do more tests.
-> >>> Yes, please can you send me both host and guest trace files ?
-> >> Here are the trace files, host and guest respectively:
-> >>
-> >> - http://xenbits.xen.org/people/dariof/tracing-examples/kvm/sync-kvmclock/trace.dat
-> >> - http://xenbits.xen.org/people/dariof/tracing-examples/kvm/sync-kvmclock/trace-tumbleweed.dat
-> >>
-> >>> Also, it will be useful to send me the content of the KVM debug files:
-> >>>     /sys/kernel/debug/kvm/<guest ID>/vcpu<*>/tsc-offset
-> >> The guest has one vcpu (vcpu0) and the content of the file is:
-> >>
-> >> 255647917761327
-> > Looks like there is a scaling between host and guest clocks in your
-> > setup, not just a simple offset. We did not test yet our
-> > implementation with scaling, although both offset and scaling are part
-> > of the calculations. That makes your use case very valuable for us, as
-> > we have an opportunity to test it now. And yes, looks like we have a
-> > bug here.
-> > Please, when you have time, can you repeat again the tracing session
-> > and send again both trace files + the content of the KVM debug files:
-> >      /sys/kernel/debug/kvm/<guest ID>/vcpu0/tsc-offset
-> >      /sys/kernel/debug/kvm/<guest ID>/vcpu0/tsc-scaling-ratio
-> > I'm asking to do a new trace, as most probably these offset and
-> > scaling could be different now.
-> Yes, the trace files are attached to this mail.
->
-> The content of tsc-offset is:
-> 453568564244284
->
-> The content of tsc-scaling-ratio is:
-> 4294967296
->
-Just submitted the v33 of the patch set, added a check for a
-non-default KVM scaling. Now it should work on your setup, as the KVM
-scaling there looks to be the default. I didn't test it, as we have no
-machine which supports KVM scaling. This is just a workaround, we have
-to implement support to KVM scaling in our algorithm.
-Please, can you test if it is OK ? Note, you have to apply  these
-patch sets also, as there are dependencies:
-   v2 Refactoring and improvements of time sync logic
-   v4 TSC trace clock to nanosecond conversion
+There is tracecmd_set_debug() API already, It can be used to trigger
+that die() logic. It makes sense for the library to do a real die()
+when running in debug mode, if a fatal error is encountered.
 
-Thanks for testing this code!
+> Make the "die()" functions into static variables here.
+>
+> void __hidden _lib_fatal(const char *fmt, ...)
+> {
+>         va_list ap;
+>
+>         va_start(ap, fmt);
+>         if (lib_die)
+>                 __vdie(fmt, ap);
+>         else
+>                 __vwarning(fmt, ap);
+>         va_end(ap);
+> }
+>
+> That way if we run trace-cmd with the --debug option, it could then call
+> the tracecmd_die_on_error() function, and it will crash on any "fatal"
+> places.
+>
+> -- Steve
+>
+>
+> > +
+> > +void __noreturn _lib_fatal(const char *fmt, ...)
+> >  {
+> >       va_list ap;
+> > +     int ret;
+> >
+> >       va_start(ap, fmt);
+> > -     __vdie(fmt, ap);
+> > +     ret = __vlib_fatal(fmt, ap);
+> >       va_end(ap);
+> > +     exit(ret);
+> >  }
+> >
+> > -void __weak __noreturn die(const char *fmt, ...)
+> > +#else
+> > +void _lib_fatal(const char *fmt, ...)
+> >  {
+> >       va_list ap;
+> >
+> >       va_start(ap, fmt);
+> > -     __vdie(fmt, ap);
+> > +     __vlib_fatal(fmt, ap);
+> >       va_end(ap);
+> >  }
+> > -
+> > -void __weak *malloc_or_die(unsigned int size)
+> > -{
+> > -     void *data;
+> > -
+> > -     data = malloc(size);
+> > -     if (!data)
+> > -             die("malloc");
+> > -     return data;
+> > -}
+> > +#endif
+> >
 
->
-> Thanks and Regards,
->
-> Stefano
->
-> >
-> > Thanks!
-> >
-> >>>> Thanks and Regards,
-> >>>>
-> >>>> Stefano
-> >>> Thanks for testing this code!
-> >>>
-> >> Thanks for your time,
-> >>
-> >> Stefano
-> >
-> >
->
 
 
 -- 
