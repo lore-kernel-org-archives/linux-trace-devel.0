@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 141EFC433ED
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E78E0C433EC
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 00E5461A10
+	by mail.kernel.org (Postfix) with ESMTP id C4BD361A10
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhCYGlj (ORCPT
+        id S230001AbhCYGlh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Mar 2021 02:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
+        Thu, 25 Mar 2021 02:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhCYGlP (ORCPT
+        with ESMTP id S229991AbhCYGlG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:41:15 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2109DC06174A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:15 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so3768282wma.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:15 -0700 (PDT)
+        Thu, 25 Mar 2021 02:41:06 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D285C06174A
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:06 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id x16so1108946wrn.4
+        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hI0EV2GPDxR7VVKXt4QZMSRqrlxjlh1hduRz4xlbz8g=;
-        b=cWmIBqtUD6np9ONFF2hgQEp8fYZQh7G1LM2jortfBmTn0ccWJveNyAi7I6bty7Gg0T
-         OPfwKxmk4bh4NgXJDJqaM6RAqcA9B4/uK+qdCqkZ+XWSakHrl9geKhmCiyN1qE1bQmrn
-         amVlrvKnEneRHrSDiBup5L3w+e2c2DY0bPujR8BPg2LsdUiubEOy/VvXC1hBLBI8pjGX
-         8TrMgB3WZGHls2+8wSpDHRcNaVkiGeYpZniJWl5PeElhb9qACFYgiJZhmaY7lK9dAW3B
-         c/w8K1a7+YuCd7bW0vv5wFL336Uj+esZ5LI/0dtsercyqcIcV8Nfk8Dmvkpp0k+hvtJ9
-         eeAg==
+        bh=fvmmPxOjkja9jyejZt6YMZ6zzu/myY++7FFg2p/Kgvs=;
+        b=WtGKG03up6cnOG2n5lkpvsTCMjP8HekfepOtlGycySiDTG4YUr8vkjMmUnlcKhmfbe
+         7cruVgQuPPwa4+Jjx/GMbA6yRIMJ8hLdeljYQbR9Ln5kwMj596dh5TWwktiPxB83yJzh
+         gd5kPZaFWMp5UsBgAwQtxb5H6rVJ7IquropGluJiN6v1X+50OjkCvY2p6Fuf+o0JKi5n
+         pBrs0HJ/tk0qat8WIt6Pcu9XOd4ALKp6AutNG7i7Fv4gLxpQlMS4uCeQii6i6SxZ5Z6k
+         w55wobWRKi55LL16cr53rqlXThC4CPtVPXHna3oqHKxwLyn1vaLWUGAGtlNpfwUm1S0Z
+         MmsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hI0EV2GPDxR7VVKXt4QZMSRqrlxjlh1hduRz4xlbz8g=;
-        b=D+Xor0qENslMtVR0P5TU4/vi8ZF7HRLwnwECEOFHtCpsRwyFEZxfoF/cC03AkQsWsK
-         7W8bWlQECqUsEN+NXIaxwS6RzQq08MRLNk8XQQFwRoxVAR6hYRnHQnz9Rx/9XQ5UgIYl
-         /MXy6KYa7bZylcw1WNhCyowGGk0T3sHhnlMuoA0ZUQ8zQCrPMK4WYcZNba0iYmpzjUU9
-         QqLBSAxlFUcrwfwAR4DJbQMBHnxfaBwSTyCsNRKgNEBDjYClXOiEpK/+Xo9Bu5PZCvIz
-         TWFU2sJtjl1rl9oQArZQP1dXlilJmo4Rs+0voXFgX5Z4ppyak2nz9Hx+LNZe/D/Zi+bZ
-         S60w==
-X-Gm-Message-State: AOAM533Zyt1vYkqKLizSO1rIONZB+Jyb3r3AC5LQHYIIXsWzlrIABep2
-        TtiNJ7xrzgkxiv04WPtscJ8=
-X-Google-Smtp-Source: ABdhPJzYF9lpHdAduyhsaQVwaFV4P7BwvikSETi7nQo2lnln1LRV7z6UA6TIxzMfC+POYh52jFnUkQ==
-X-Received: by 2002:a1c:4b11:: with SMTP id y17mr6040333wma.171.1616654473890;
-        Wed, 24 Mar 2021 23:41:13 -0700 (PDT)
+        bh=fvmmPxOjkja9jyejZt6YMZ6zzu/myY++7FFg2p/Kgvs=;
+        b=tgylcKelA3PnccqCj7kztJ8uBpmO658UolAO/QKt+srQ9ETzweCCjRtf45O3RtFEDf
+         iQis4840F1f0Sg+72sUxFvbCoWCJ4tqzcZ0LHzXtYbDQojEoZoOGrL33AcemPcquLzy0
+         14AzHlKb5uuDuqqHjd5uqi2im65egKU70NfhYj4j8ZB5BPXmQXfBSTDkTfYG0guiGA28
+         2+BPUaSS99gXXYvD/9PzTxx3KRM0hC2xcUNbulJL3425UADI6ouc1X6Fb5Tv1pQ51Y5z
+         vnFdCg9o9y103KXA5iKSkutcPFKkKQu2VBv8of4kJN8CFllOrRsuEZqc0++Nz0H1mGpn
+         22tw==
+X-Gm-Message-State: AOAM532h8bKBphzDKmxZn9RdIpbWaiCQ4HJPVtpBbn/3qwLMtb4LmqFh
+        yKMuIuUvueYpj2+jJTDR64kYlKGKl9MtoQ==
+X-Google-Smtp-Source: ABdhPJxqi8PP/Ek4XaPCzzvw9ClQJB15tHULy0iAIFgsf/vDG3puTuG/qZvXVXGi7gLo8Zn8argYBA==
+X-Received: by 2002:a5d:5270:: with SMTP id l16mr2438452wrc.317.1616654465193;
+        Wed, 24 Mar 2021 23:41:05 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id e17sm6403259wra.65.2021.03.24.23.41.12
+        by smtp.gmail.com with ESMTPSA id e17sm6403259wra.65.2021.03.24.23.41.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 23:41:13 -0700 (PDT)
+        Wed, 24 Mar 2021 23:41:04 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 17/23] trace-cmd: Change "--nodate" option to affect "--date" option only
-Date:   Thu, 25 Mar 2021 08:40:49 +0200
-Message-Id: <20210325064055.539554-18-tz.stoyanov@gmail.com>
+Subject: [PATCH v4 08/23] trace-cmd: Save information for tsc to nanoseconds conversion in trace file
+Date:   Thu, 25 Mar 2021 08:40:40 +0200
+Message-Id: <20210325064055.539554-9-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210325064055.539554-1-tz.stoyanov@gmail.com>
 References: <20210325064055.539554-1-tz.stoyanov@gmail.com>
@@ -73,43 +73,92 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When displaying a trace.dat file, the option "--nodate" disables all
-corrections on the events timestamps. It was originally designed to
-suppress the "timestamp to date" translation, triggered by the "--date"
-record option. When more timestamp corrections have been implemented,
-the same option "--nodate" was used for all of them.
-Now there is a new flag RAW_TS and new option "--raw-ts", that is used
-to show raw event timestamps, without any correction. The "--nodate" is
-changed to suppress the "--date" option only, and the new "--raw-ts"
-affects all timestamps corrections.
+Store multiplier and shift, required for TSC clock to nanosecond
+conversion in the metadata of the trace file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-input.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tracecmd/trace-record.c | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index ef2f9678..d9a2b6df 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -2618,7 +2618,7 @@ static int handle_options(struct tracecmd_input *handle)
- 			 * Similar to date option, but just adds an
- 			 * offset to the timestamp.
- 			 */
--			if (handle->flags & TRACECMD_FL_IGNORE_DATE)
-+			if (handle->flags & TRACECMD_FL_RAW_TS)
- 				break;
- 			offset = strtoll(buf, NULL, 0);
- 			handle->ts_offset += offset;
-@@ -2633,7 +2633,7 @@ static int handle_options(struct tracecmd_input *handle)
- 			 * long long array of size [count] of timestamp offsets.
- 			 * long long array of size [count] of timestamp scaling ratios.*
- 			 */
--			if (size < 16 || handle->flags & TRACECMD_FL_IGNORE_DATE)
-+			if (size < 16 || (handle->flags & TRACECMD_FL_RAW_TS))
- 				break;
- 			handle->host.peer_trace_id = tep_read_number(handle->pevent,
- 								     buf, 8);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 49fa46d9..9f8c4943 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -668,7 +668,24 @@ static void delete_thread_data(void)
+ 	}
+ }
+ 
+-static void host_tsync_complete(struct buffer_instance *instance)
++static void
++add_tsc2nsec(struct tracecmd_output *handle, struct tsc_nsec *tsc2nsec)
++{
++	/* multiplier, shift, offset */
++	struct iovec vector[3];
++
++	vector[0].iov_len = 4;
++	vector[0].iov_base = &tsc2nsec->mult;
++	vector[1].iov_len = 4;
++	vector[1].iov_base = &tsc2nsec->shift;
++	vector[2].iov_len = 8;
++	vector[2].iov_base = &tsc2nsec->offset;
++
++	tracecmd_add_option_v(handle, TRACECMD_OPTION_TSC2NSEC, vector, 3);
++}
++
++static void host_tsync_complete(struct common_record_context *ctx,
++				struct buffer_instance *instance)
+ {
+ 	struct tracecmd_output *handle = NULL;
+ 	int fd = -1;
+@@ -682,6 +699,10 @@ static void host_tsync_complete(struct buffer_instance *instance)
+ 		handle = tracecmd_get_output_handle_fd(fd);
+ 		if (!handle)
+ 			die("cannot create output handle");
++
++		if (ctx->tsc2nsec.mult)
++			add_tsc2nsec(handle, &ctx->tsc2nsec);
++
+ 		tracecmd_write_guest_time_shift(handle, instance->tsync);
+ 		tracecmd_output_close(handle);
+ 	}
+@@ -690,7 +711,7 @@ static void host_tsync_complete(struct buffer_instance *instance)
+ 	instance->tsync = NULL;
+ }
+ 
+-static void tell_guests_to_stop(void)
++static void tell_guests_to_stop(struct common_record_context *ctx)
+ {
+ 	struct buffer_instance *instance;
+ 
+@@ -702,7 +723,7 @@ static void tell_guests_to_stop(void)
+ 
+ 	for_all_instances(instance) {
+ 		if (is_guest(instance))
+-			host_tsync_complete(instance);
++			host_tsync_complete(ctx, instance);
+ 	}
+ 
+ 	/* Wait for guests to acknowledge */
+@@ -4269,6 +4290,9 @@ static void record_data(struct common_record_context *ctx)
+ 				add_guest_info(handle, instance);
+ 		}
+ 
++		if (ctx->tsc2nsec.mult)
++			add_tsc2nsec(handle, &ctx->tsc2nsec);
++
+ 		if (tracecmd_write_cmdlines(handle))
+ 			die("Writing cmdlines");
+ 
+@@ -6589,7 +6613,7 @@ static void record_trace(int argc, char **argv,
+ 			trace_or_sleep(type, pwait);
+ 	}
+ 
+-	tell_guests_to_stop();
++	tell_guests_to_stop(ctx);
+ 	tracecmd_disable_tracing();
+ 	if (!latency)
+ 		stop_threads(type);
 -- 
 2.30.2
 
