@@ -8,262 +8,125 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DDEFC433C1
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 08:40:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24B1BC433C1
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 12:30:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E01F4619FC
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 08:40:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E91C961582
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 12:30:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhCYIjz (ORCPT
+        id S230250AbhCYM3e (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Mar 2021 04:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
+        Thu, 25 Mar 2021 08:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhCYIjg (ORCPT
+        with ESMTP id S230076AbhCYM3V (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:39:36 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014B0C06174A
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 01:39:36 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id g25so699272wmh.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 01:39:35 -0700 (PDT)
+        Thu, 25 Mar 2021 08:29:21 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6E0C06175F
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 05:29:20 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id l4so2566508ejc.10
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 05:29:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Cmpl/V2R0S9FGk6cwFAUDPt0YtmvFBLBCusp3+15Tn0=;
-        b=sKbRwfaej7PK/8d7l83H3fHt9KizUoDrknlx0d3YySQK1izGtd3otcfYtL84hExyXi
-         u0qw5hP/mnbZZoR8pGNK3pyIs6Fg6jlzLxGFwYr/HxS9NfntWK5k5C1d+eI4F48l7byV
-         rzvUehTU9oMlFHCSWDcFRnVG0vT9L6EWNUFl6mJXHBDYqzKprbAKUY/X25cWG+it5D/o
-         jwQe7by6ehV7Ajyn4/gjCAFBeuGC7c4LhRWIT6V0Sni7Sq43eQTsOjGk7E7duGMZKB8q
-         x7syWRC9z/NVtSqaOZU61ChNGeil0VsQN8h/MeT6xijIivLf3RrlEkdufVy19eDW+Ayh
-         FqMQ==
+        bh=ueUyM9Dk8CRUH9+ECJQNtCM3EhIQXbKhiTMYpEgrKrM=;
+        b=KQlGsmz/SXwYWG11C5dZvV6Du/rjvJXDzTtcHc7IAS9KLyLAr23oJiqGpZKi8Ui/Vg
+         dLDuDD/yZ3iOSL/uDQoYBGqB8D3POeTtSSwltoIQTBp7jCE0NkfbQvzr638KfGxQX2Cf
+         V5ra4y+b3zcUJEngeEDUdLBFTHkFeS8XB90TlvvcRN7I4zOo4L6EFRk892/JxjNmPCaE
+         oX6em6nuljSKPfkIOl97UCzhX5QbBduiqU257aDvIdwq66RwebuBAKP8ZPksGGEYuyKj
+         QEGjG63ZkJjTqk/0OhMD/Ua1w7i5mAURA528yVNty3HgNX9UQQbpJwZ7aTuflIp5WJ6M
+         bsgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Cmpl/V2R0S9FGk6cwFAUDPt0YtmvFBLBCusp3+15Tn0=;
-        b=KVSMXY3vS2kLeIldxe9sTP16bxCP7rV1vNWK72sc+LJedttt0900qu70yvQm1M4b90
-         meK/VG/gn/9BXTPS4Q13KMsaAU8Or5gEavD3GiHTm1/ojDci3+AuYCxiA3ObEOIbSmqk
-         AkhqJgLHgnEcllWH/VJX0oE3BGYaa0I9H2iDLwNTfmcVzhv2sIt4+ICxrn3gmRGL04lp
-         GyV0TEQ5bfVn9A4IqkT/AqqJRD6jlFllh2FQrClET8ditnP6nzeMAKpcEkzHzYkezZtH
-         gBzVi3ROdOUmEZs1mg9wHZaDtM8MyrlssQEgCmOuuQPYND3/zygN8eqAFg0D6lM+QxiB
-         CgsQ==
-X-Gm-Message-State: AOAM5308A2Rns9/hTqzlKuU6hoKc3RCRQ/r4NsfA07W+TFoDSFOtfNo+
-        2QExcAerAnfPjuGfQhDTq40=
-X-Google-Smtp-Source: ABdhPJykmLNr8v3d1PP9d7RvTdBupFz2RZrUHGjlGON3pgSMbmrj5DuTTmxzL6CZ2R7TdvrrE+uk5w==
-X-Received: by 2002:a1c:e4d4:: with SMTP id b203mr6399660wmh.105.1616661574230;
-        Thu, 25 Mar 2021 01:39:34 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id u23sm5682321wmn.26.2021.03.25.01.39.33
+        bh=ueUyM9Dk8CRUH9+ECJQNtCM3EhIQXbKhiTMYpEgrKrM=;
+        b=RyuAifOUeuShCx6nQ2JTu94HMM9l8IfySJcEIX6S17ryKge5v1LMjVuOEet9QFQGsl
+         H6zWlR2PvxZQNbKmN1DMjYRAAz0k+znmlNFI1xfmBXrI6Fdc4jAexhtyZEj+wF+mEXwq
+         XZJ215JuoSJ6aySlF7Mc++o9KIpCKc6Hh4dpp8dXNJf9X1JCcRIMo1doyvFt/6tHxp3a
+         paAuQiCMZ2tZjrBvm2yDq3bO5GK+d0ztccbkHqau0NqU33P8F2va/PrHuTE1i0b9BzFK
+         fXsSXlXV6k7wTM328+XJDnQVaMMgraisQK7geJeFH8/YA/l31HA37FGSN7+P5+oCZR8e
+         hS9g==
+X-Gm-Message-State: AOAM533m0DrgxyQ1HsYOy9Zxrb1yd/lYe1DKjv+4kS5dLTSO9YX7ZQ68
+        /OX4GI5+OX7HJtEcfq98fzk=
+X-Google-Smtp-Source: ABdhPJyDm6JL68obiWUhA27z6bZdSSoq1MmK2pIWIj47gGbo8cWUQFxAgj69qCdDdyIYoRGD8JawCQ==
+X-Received: by 2002:a17:906:f891:: with SMTP id lg17mr9192629ejb.69.1616675359319;
+        Thu, 25 Mar 2021 05:29:19 -0700 (PDT)
+Received: from localhost.localdomain ([95.87.199.133])
+        by smtp.gmail.com with ESMTPSA id ho11sm2262573ejc.112.2021.03.25.05.29.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 01:39:33 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+        Thu, 25 Mar 2021 05:29:18 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v3] trace-cmd: Remove all die()s from trace-cmd library
-Date:   Thu, 25 Mar 2021 10:39:32 +0200
-Message-Id: <20210325083932.553120-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.30.2
+Cc:     linux-trace-devel@vger.kernel.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v2] libtracefs: Prefer using "const char *" arguments
+Date:   Thu, 25 Mar 2021 14:29:06 +0200
+Message-Id: <20210325122906.28109-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The die() call is used for a fatal error. It terminates the current
-program with exit(). The program should not be terminated from a library
-routine, the die() call should not be used in the trace-cmd library
-context.
+All functions should receive const string arguments, except in the
+cases when the argument string itself needs to be modified.
 
-But as all these logs indicate a fatal error in the library, it is
-useful to have them. The die() call is replaced with _lib_fatal()
-library internal function, which prints the error message. By default,
-the application is not terminated when a fatal error is encountered in
-the library. If the library runs in debug mode, the _lib_fatal() call
-behaves like die() - calls exit() to terminate the application.
-The library debug mode can be switched using tracecmd_set_debug() API.
-
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
-v3 changes:
- - If the library runs in debug mode, call exit() in _lib_fatal().  
-v2 changes:
- - Replaced die() with _lib_fatal().
+ include/tracefs.h      | 4 ++--
+ src/tracefs-instance.c | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
- lib/trace-cmd/include/trace-cmd-local.h |  2 ++
- lib/trace-cmd/trace-input.c             | 29 +++++++++++++-------
- lib/trace-cmd/trace-util.c              | 35 +++++++------------------
- 3 files changed, 31 insertions(+), 35 deletions(-)
-
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index d265e4c8..da9d8d58 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -12,6 +12,8 @@
- /* Can be overridden */
- void warning(const char *fmt, ...);
+diff --git a/include/tracefs.h b/include/tracefs.h
+index f3eec62..05bd0ef 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -42,8 +42,8 @@ int tracefs_instance_file_open(struct tracefs_instance *instance,
+ int tracefs_instances_walk(int (*callback)(const char *, void *), void *context);
  
-+void _lib_fatal(const char *fmt, ...);
-+
- #define __packed __attribute__((packed))
+ bool tracefs_instance_exists(const char *name);
+-bool tracefs_file_exists(struct tracefs_instance *instance, char *name);
+-bool tracefs_dir_exists(struct tracefs_instance *instance, char *name);
++bool tracefs_file_exists(struct tracefs_instance *instance, const char *name);
++bool tracefs_dir_exists(struct tracefs_instance *instance, const char *name);
  
- /* trace.dat file format version */
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 2093a3dc..3687de09 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -16,6 +16,7 @@
- #include <linux/time64.h>
- 
- #include "trace-write-local.h"
-+#include "trace-cmd-local.h"
- #include "trace-local.h"
- #include "kbuffer.h"
- #include "list.h"
-@@ -1087,8 +1088,10 @@ static void __free_page(struct tracecmd_input *handle, struct page *page)
- 	struct page **pages;
- 	int index;
- 
--	if (!page->ref_count)
--		die("Page ref count is zero!\n");
-+	if (!page->ref_count) {
-+		_lib_fatal("Page ref count is zero!\n");
-+		return;
-+	}
- 
- 	page->ref_count--;
- 	if (page->ref_count)
-@@ -1146,16 +1149,20 @@ void tracecmd_free_record(struct tep_record *record)
- 	if (!record)
- 		return;
- 
--	if (!record->ref_count)
--		die("record ref count is zero!");
-+	if (!record->ref_count) {
-+		_lib_fatal("record ref count is zero!");
-+		return;
-+	}
- 
- 	record->ref_count--;
- 
- 	if (record->ref_count)
- 		return;
- 
--	if (record->locked)
--		die("freeing record when it is locked!");
-+	if (record->locked) {
-+		_lib_fatal("freeing record when it is locked!");
-+		return;
-+	}
- 
- 	record->data = NULL;
- 
-@@ -1318,7 +1325,7 @@ static int get_page(struct tracecmd_input *handle, int cpu,
- 
- 	if (offset & (handle->page_size - 1)) {
- 		errno = -EINVAL;
--		die("bad page offset %llx", offset);
-+		_lib_fatal("bad page offset %llx", offset);
- 		return -1;
- 	}
- 
-@@ -1326,7 +1333,7 @@ static int get_page(struct tracecmd_input *handle, int cpu,
- 	    offset > handle->cpu_data[cpu].file_offset +
- 	    handle->cpu_data[cpu].file_size) {
- 		errno = -EINVAL;
--		die("bad page offset %llx", offset);
-+		_lib_fatal("bad page offset %llx", offset);
- 		return -1;
- 	}
- 
-@@ -1891,8 +1898,10 @@ tracecmd_peek_data(struct tracecmd_input *handle, int cpu)
- 	if (handle->cpu_data[cpu].next) {
- 
- 		record = handle->cpu_data[cpu].next;
--		if (!record->data)
--			die("Something freed the record");
-+		if (!record->data) {
-+			_lib_fatal("Something freed the record");
-+			return NULL;
-+		}
- 
- 		if (handle->cpu_data[cpu].timestamp == record->ts)
- 			return record;
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 538adbc2..cb397452 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -353,12 +353,12 @@ trace_load_plugins(struct tep_handle *tep, int flags)
- 	return list;
+ int tracefs_trace_is_on(struct tracefs_instance *instance);
+ int tracefs_trace_on(struct tracefs_instance *instance);
+diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
+index 0df4e13..0df313c 100644
+--- a/src/tracefs-instance.c
++++ b/src/tracefs-instance.c
+@@ -436,7 +436,7 @@ int tracefs_instance_file_open(struct tracefs_instance *instance,
  }
  
--void __noreturn __vdie(const char *fmt, va_list ap)
-+void __vlib_fatal(const char *fmt, va_list ap)
+ static bool check_file_exists(struct tracefs_instance *instance,
+-			     char *name, bool dir)
++			      const char *name, bool dir)
  {
- 	int ret = errno;
- 
- 	if (errno)
--		perror("trace-cmd");
-+		perror("libtracecmd");
- 	else
- 		ret = -1;
- 
-@@ -366,37 +366,20 @@ void __noreturn __vdie(const char *fmt, va_list ap)
- 	vfprintf(stderr, fmt, ap);
- 
- 	fprintf(stderr, "\n");
--	exit(ret);
--}
--
--void __noreturn __die(const char *fmt, ...)
--{
--	va_list ap;
- 
--	va_start(ap, fmt);
--	__vdie(fmt, ap);
--	va_end(ap);
-+	if (debug)
-+		exit(ret);
+ 	char file[PATH_MAX];
+ 	struct stat st;
+@@ -482,7 +482,7 @@ bool tracefs_instance_exists(const char *name)
+  *
+  * If a directory with the given name exists, false is returned.
+  */
+-bool tracefs_file_exists(struct tracefs_instance *instance, char *name)
++bool tracefs_file_exists(struct tracefs_instance *instance, const char *name)
+ {
+ 	return check_file_exists(instance, name, false);
  }
- 
--void __weak __noreturn die(const char *fmt, ...)
-+void _lib_fatal(const char *fmt, ...)
+@@ -494,7 +494,7 @@ bool tracefs_file_exists(struct tracefs_instance *instance, char *name)
+  *
+  * Returns true if the directory exists, false otherwise
+  */
+-bool tracefs_dir_exists(struct tracefs_instance *instance, char *name)
++bool tracefs_dir_exists(struct tracefs_instance *instance, const char *name)
  {
- 	va_list ap;
- 
- 	va_start(ap, fmt);
--	__vdie(fmt, ap);
-+	__vlib_fatal(fmt, ap);
- 	va_end(ap);
+ 	return check_file_exists(instance, name, true);
  }
- 
--void __weak *malloc_or_die(unsigned int size)
--{
--	void *data;
--
--	data = malloc(size);
--	if (!data)
--		die("malloc");
--	return data;
--}
--
- #define LOG_BUF_SIZE 1024
- static void __plog(const char *prefix, const char *fmt, va_list ap, FILE *fp)
- {
-@@ -546,8 +529,10 @@ int tracecmd_count_cpus(void)
- 	pbuf = buf;
- 
- 	fp = fopen("/proc/cpuinfo", "r");
--	if (!fp)
--		die("Can not read cpuinfo");
-+	if (!fp) {
-+		_lib_fatal("Can not read cpuinfo");
-+		return 0;
-+	}
- 
- 	while ((r = getline(&pbuf, pn, fp)) >= 0) {
- 		char *p;
 -- 
-2.30.2
+2.27.0
 
