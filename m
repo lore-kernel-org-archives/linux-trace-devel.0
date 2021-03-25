@@ -8,282 +8,191 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79F18C433FC
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D89EC433DB
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:15:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6069A61A28
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 06:42:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 30F8961A26
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:15:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhCYGlk (ORCPT
+        id S229574AbhCYHOe (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 25 Mar 2021 02:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
+        Thu, 25 Mar 2021 03:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhCYGlS (ORCPT
+        with ESMTP id S229590AbhCYHOS (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:41:18 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33DEC06174A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:17 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id j18so1125532wra.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 24 Mar 2021 23:41:17 -0700 (PDT)
+        Thu, 25 Mar 2021 03:14:18 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAF1C06174A
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 00:14:18 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id b9so1158139wrt.8
+        for <linux-trace-devel@vger.kernel.org>; Thu, 25 Mar 2021 00:14:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nNSwgCWuMgOgj9roqKuvWrIb08sQVoQ8atUL8Pp8HDc=;
-        b=TSNMacAN8ynwBgGKK2Er7DmzqnFBoCMA9M9BfiN52rYPa7zi20YgrPs/cRiCdIrin5
-         yfoUpjps6SAkinBfNBYxP+vVv6t6vPMsXXPqCwQ7SxoJJ07mNgMnFhtwLn2IEbJ8rqGy
-         tGFKXiNu+IZfL1X0J4VHaUI2/H7ra39dfQ5zZIgn4MCxywfMJ1YFyhEkwyu3szXDbAgg
-         MP9zVE/A1esHxKD65gW4d3S8DZ1h1wcHGvzExPGPU+SYV/wPM8kCBU+Srjk/BhP2hX8u
-         6QvJrRXjBmAHgoFjlquTdR71w9WgBjj+dGjCJrN95I/Vzpf88EKBjGw43vexLX8pvt0k
-         fCAA==
+        bh=n/PcC3vShOs0tOTVX2TYRBKGhpAnKTLL0S2OF2+kdrc=;
+        b=hYROnmDwxHa8Izone0UIqfa99cOOKlUmJ2RD47mETbMUS14/QlsBUSFYTRkQOgjjv7
+         42IgzqWl8pm9thDSz7owffnkHR8JVEHHfl8lG1VHamq0dO71ypUvtSRg0YpQKIcjOAp4
+         5sx3StowtdTRBechQfc//4AXgguKc1fib8MlxwUS/WhOm3XsD4GNfUIDqxGi2b8Rqu9W
+         IuVvGrnOTMkDqxGguLItJRKmmGEyjh/UQTHJ3ij4u0fptUq/QODHd9g7UmY/Vhh1NZkE
+         yei2YpXRdWIYkMGrkYbr2hswJduip7b5EthiiVKWC6JwE/k6h+smMB3G2z4dr4oSeD/g
+         6iUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nNSwgCWuMgOgj9roqKuvWrIb08sQVoQ8atUL8Pp8HDc=;
-        b=fGMTVmR7NLXQc39YEMiazeBVpL7Pyjeyvl/OdJ81+wP65rRkRjOlqD5IrtesG8MgmI
-         p8dKTHzdS6BaViwbDZ6qp40ZiuPujrbnXKQnrK/JPfCF+0Zw9N0ddW/9JScYO/Z1/vaK
-         B8yEVjP7XsEx+yUIL3d5TmtFEJ1kIvtcFqD5eVYYiLoHYdlzJtiz3tF9li99btxQ/r/x
-         HlBoWwinRxowVVLb1xjTYSwZNufIUSyXQ2iMfjbYx+OHjYAw/u1EsXWCD2KG9/ZMmoEO
-         mzr+Ei2xcUw3c98CGXVmixR7n9zX9mBjVd7HoPbwi7YWpwi+KuUxMIxbrXT6rXO3KIQk
-         8iZw==
-X-Gm-Message-State: AOAM532xkA2Az4IgR/fGS2PxBBpHsojqaOkssCnVdV32g0GxPZ7DbsFH
-        6LzZPH/czJVjc8f4gWpc/Ao=
-X-Google-Smtp-Source: ABdhPJztsV6dGtRMY3yIEBcSMQke6fnijKyrITU2bdhiKKYmSGkg7Y1qiVynWTLEBEvKtExBUj5a5w==
-X-Received: by 2002:adf:edc3:: with SMTP id v3mr6870442wro.79.1616654476585;
-        Wed, 24 Mar 2021 23:41:16 -0700 (PDT)
+        bh=n/PcC3vShOs0tOTVX2TYRBKGhpAnKTLL0S2OF2+kdrc=;
+        b=akr/L8rPh4YoTBmKMQRDJBwKKBeA0jl0RTtf2VE22VUM73Ssbln5pGsuHmFBZx6wCU
+         tqOybHhtEw2g+UMedATMtAjvsiSvv018vwzcBNl4zUudxa5Xo8auVYqQT2ZENwtARsdh
+         RmzhpAC+a5AZ2Pl8uAlfbVcAz+ZGUTwkJsGg5NPCdxxGWjvRKROf9JpAtw9fn3VjodHw
+         aF5rsZ7hnxUecMWOUaUHcupv/9fV9FFeQ/3HOaayvn6iIkfgY4cnnGWBtwAKvafCsSk0
+         fgamgPVR+KusXgZLKlC9QGSZSKewu3rc+D+XNfSgmAnFp6WtHoeLSm3Fso2/hswPBxJj
+         mT9g==
+X-Gm-Message-State: AOAM532RlNN4/cpW/yq/qwkQ4+r7rbzC9IfP1FhF/6xeTfQbKzh7Pi3P
+        RKlFMSAJPjMahfCcdDZbVBg=
+X-Google-Smtp-Source: ABdhPJwuugIaOxfXgRGLj8Hp+U4/MpLQOZ2vI05RiIlgRfogSQTHaZ0kX7vEmhw/PGdeBQMS6Ci4iA==
+X-Received: by 2002:a5d:628c:: with SMTP id k12mr7158189wru.316.1616656456867;
+        Thu, 25 Mar 2021 00:14:16 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id e17sm6403259wra.65.2021.03.24.23.41.15
+        by smtp.gmail.com with ESMTPSA id q4sm5177487wma.20.2021.03.25.00.14.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 23:41:16 -0700 (PDT)
+        Thu, 25 Mar 2021 00:14:16 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4 20/23] trace-cmd: Use tsc clock for host-guest tracing, if available
-Date:   Thu, 25 Mar 2021 08:40:52 +0200
-Message-Id: <20210325064055.539554-21-tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org, stefano.devenuto99@gmail.com
+Subject: [PATCH v33 1/5] trace-cmd: Add dummy function to initialize timestamp sync logic
+Date:   Thu, 25 Mar 2021 09:14:09 +0200
+Message-Id: <20210325071413.543640-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210325064055.539554-1-tz.stoyanov@gmail.com>
-References: <20210325064055.539554-1-tz.stoyanov@gmail.com>
+In-Reply-To: <20210325071413.543640-1-tz.stoyanov@gmail.com>
+References: <20210325071413.543640-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-In a host-guest tracing session, if there is no user configured tracing
-clock, use TSC by default if following conditions are met:
-  - tsc-x86 trace clock is available on the host
-  - params for tsc to nanosecond conversion can be retrieved using
-    perf interface of the Liunx kernel - miltiplier and shift
+A dummy empty function is added, will be used to initialize timestamp
+synchronization logic:
+  tracecmd_tsync_init()
+When this code is implemented as real plugins, this function will be
+removed. Then the initializion will be triggered at plugin load time.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-record.c | 97 ++++++++++++++++++++++++++++-------------
- 1 file changed, 67 insertions(+), 30 deletions(-)
+ lib/trace-cmd/trace-timesync.c |  8 ++++++++
+ tracecmd/trace-agent.c         |  1 +
+ tracecmd/trace-record.c        | 25 ++++++++++++++++---------
+ 3 files changed, 25 insertions(+), 9 deletions(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 4e4ad127..d794f1af 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -198,8 +198,10 @@ struct common_record_context {
- 	const char *output;
- 	char *date2ts;
- 	char *user;
-+	const char *clock;
- 	struct tsc_nsec tsc2nsec;
- 	int data_flags;
-+	int tsync_loop_interval;
- 
- 	int record_all;
- 	int total_disable;
-@@ -3708,7 +3710,8 @@ static int open_guest_fifos(const char *guest, int **fds)
- 	return i;
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index 0097ce15..62f5dc1e 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -55,6 +55,14 @@ static struct tsync_proto *tsync_proto_find(const char *proto_name)
+ 	return NULL;
  }
  
--static int host_tsync(struct buffer_instance *instance,
-+static int host_tsync(struct common_record_context *ctx,
-+		      struct buffer_instance *instance,
- 		      unsigned int tsync_port, char *proto)
- {
- 	struct trace_guest *guest;
-@@ -3723,14 +3726,15 @@ static int host_tsync(struct buffer_instance *instance,
- 						    instance->tsync_loop_interval,
- 						    instance->cid, tsync_port,
- 						    guest->pid, guest->cpu_max,
--						    proto, top_instance.clock);
-+						    proto, ctx->clock);
- 	if (!instance->tsync)
- 		return -1;
- 
- 	return 0;
- }
- 
--static void connect_to_agent(struct buffer_instance *instance)
-+static void connect_to_agent(struct common_record_context *ctx,
-+			     struct buffer_instance *instance)
- {
- 	struct tracecmd_tsync_protos *protos = NULL;
- 	int sd, ret, nr_fifos, nr_cpus, page_size;
-@@ -3783,7 +3787,7 @@ static void connect_to_agent(struct buffer_instance *instance)
- 			printf("Negotiated %s time sync protocol with guest %s\n",
- 				tsync_protos_reply,
- 				instance->name);
--			host_tsync(instance, tsync_port, tsync_protos_reply);
-+			host_tsync(ctx, instance, tsync_port, tsync_protos_reply);
- 		} else
- 			warning("Failed to negotiate timestamps synchronization with the guest");
- 	}
-@@ -3862,7 +3866,7 @@ void start_threads(enum trace_type type, struct common_record_context *ctx)
- 	for_all_instances(instance) {
- 		/* Start the connection now to find out how many CPUs we need */
- 		if (is_guest(instance))
--			connect_to_agent(instance);
-+			connect_to_agent(ctx, instance);
- 		total_cpu_count += instance->cpu_count;
- 	}
- 
-@@ -4128,6 +4132,7 @@ enum {
- 	DATA_FL_NONE		= 0,
- 	DATA_FL_DATE		= 1,
- 	DATA_FL_OFFSET		= 2,
-+	DATA_FL_GUEST		= 4,
- };
- 
- static void add_options(struct tracecmd_output *handle, struct common_record_context *ctx)
-@@ -5812,7 +5817,6 @@ static void parse_record_options(int argc,
- 	int name_counter = 0;
- 	int negative = 0;
- 	struct buffer_instance *instance, *del_list = NULL;
--	bool guest_sync_set = false;
- 	int do_children = 0;
- 	int fpids_count = 0;
- 
-@@ -5947,6 +5951,7 @@ static void parse_record_options(int argc,
- 			ctx->instance->port = port;
- 			ctx->instance->name = name;
- 			add_instance(ctx->instance, 0);
-+			ctx->data_flags |= DATA_FL_GUEST;
- 			break;
- 		}
- 		case 'F':
-@@ -6008,8 +6013,8 @@ static void parse_record_options(int argc,
- 			if (!ctx->instance->clock)
- 				die("Failed allocation");
- 			ctx->instance->flags |= BUFFER_FL_HAS_CLOCK;
--			if (is_top_instance(ctx->instance))
--				guest_sync_set = true;
-+			if (!ctx->clock && !is_guest(ctx->instance))
-+				ctx->clock = ctx->instance->clock;
- 			break;
- 		case 'v':
- 			negative = 1;
-@@ -6253,8 +6258,7 @@ static void parse_record_options(int argc,
- 			break;
- 		case OPT_tsyncinterval:
- 			cmd_check_die(ctx, CMD_set, *(argv+1), "--tsync-interval");
--			top_instance.tsync_loop_interval = atoi(optarg);
--			guest_sync_set = true;
-+			ctx->tsync_loop_interval = atoi(optarg);
- 			break;
- 		case OPT_fork:
- 			if (!IS_START(ctx))
-@@ -6288,26 +6292,6 @@ static void parse_record_options(int argc,
- 				add_argv(instance, "--date", true);
- 		}
- 	}
--	if (guest_sync_set) {
--	/* If -C is specified, prepend clock to all guest VM flags */
--		for_all_instances(instance) {
--			if (top_instance.clock) {
--				if (is_guest(instance) &&
--				    !(instance->flags & BUFFER_FL_HAS_CLOCK)) {
--					add_argv(instance,
--						 (char *)top_instance.clock,
--						 true);
--					add_argv(instance, "-C", true);
--					if (!instance->clock) {
--						instance->clock = strdup((char *)top_instance.clock);
--						if (!instance->clock)
--							die("Could not allocate instance clock");
--					}
--				}
--			}
--			instance->tsync_loop_interval = top_instance.tsync_loop_interval;
--		}
--	}
- 
- 	if (!ctx->filtered && ctx->instance->filter_mod)
- 		add_func(&ctx->instance->filter_funcs,
-@@ -6474,6 +6458,56 @@ static void get_tsc_offset(struct common_record_context *ctx)
- 	ctx->tsc2nsec.offset = get_clock_now(NULL);
- }
- 
-+static void set_tsync_params(struct common_record_context *ctx)
++/**
++ * tracecmd_tsync_init - Initialize the global, per task, time sync data.
++ */
++void tracecmd_tsync_init(void)
 +{
-+	const char *clock = ctx->clock;
-+	struct buffer_instance *instance;
-+	int shift, mult;
-+	bool force_tsc = false;
 +
-+	/*
-+	 * If no clock is configured &&
-+	 * KVM time sync protocol is available &&
-+	 * tsc-x86 clock is supported &&
-+	 * TSC to nsec multiplier and shift are available:
-+	 * force using the x86-tsc clock for this host-guest tracing session
-+	 * and store TSC to nsec multiplier and shift.
-+	 */
-+	if (!clock && tsync_proto_is_supported("kvm") &&
-+	    clock_is_supported(NULL, TSC_CLOCK) &&
-+	    !get_tsc_nsec(&shift, &mult) && mult) {
-+		clock = TSC_CLOCK;
-+		ctx->tsc2nsec.mult = mult;
-+		ctx->tsc2nsec.shift = shift;
-+		ctx->tsc2nsec.offset = get_clock_now(TSC_CLOCK);
-+		force_tsc = true;
-+	}
-+
-+	if (!clock && !ctx->tsync_loop_interval)
-+		return;
-+	for_all_instances(instance) {
-+		if (clock && !(instance->flags & BUFFER_FL_HAS_CLOCK)) {
-+			/* use the same clock in all tracing peers */
-+			if (is_guest(instance)) {
-+				if (!instance->clock) {
-+					instance->clock = strdup(clock);
-+					if (!instance->clock)
-+						die("Can not allocate instance clock");
-+				}
-+				add_argv(instance, (char *)instance->clock, true);
-+				add_argv(instance, "-C", true);
-+				if (ctx->tsc2nsec.mult)
-+					instance->flags |= BUFFER_FL_TSC2NSEC;
-+			} else if (force_tsc && !instance->clock) {
-+				instance->clock = strdup(clock);
-+				if (!instance->clock)
-+					die("Can not allocate instance clock");
-+			}
-+		}
-+		instance->tsync_loop_interval = ctx->tsync_loop_interval;
-+	}
 +}
 +
- /*
-  * This function contains common code for the following commands:
-  * record, start, stream, profile.
-@@ -6503,6 +6537,9 @@ static void record_trace(int argc, char **argv,
- 	if (!ctx->output)
- 		ctx->output = DEFAULT_INPUT_FILE;
+ int tracecmd_tsync_proto_register(const char *proto_name, int accuracy, int roles,
+ 				  int supported_clocks, unsigned int flags,
+ 				  int (*init)(struct tracecmd_time_sync *),
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index 49f6dd8c..1f7d9461 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -250,6 +250,7 @@ static void agent_serve(unsigned int port)
+ 	sd = trace_make_vsock(port);
+ 	if (sd < 0)
+ 		die("Failed to open vsocket");
++	tracecmd_tsync_init();
  
-+	if (ctx->data_flags & DATA_FL_GUEST)
-+		set_tsync_params(ctx);
+ 	if (!get_local_cid(&cid))
+ 		printf("listening on @%u:%u\n", cid, port);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 946bcb4d..6e579c22 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -6541,10 +6541,6 @@ out:
+ 	free(clock);
+ }
+ 
+-/*
+- * This function contains common code for the following commands:
+- * record, start, stream, profile.
+- */
+ static void record_trace(int argc, char **argv,
+ 			 struct common_record_context *ctx)
+ {
+@@ -6708,12 +6704,23 @@ static void record_trace(int argc, char **argv,
+ 	finalize_record_trace(ctx);
+ }
+ 
++/*
++ * This function contains common code for the following commands:
++ * record, start, stream, profile.
++ */
++static void record_trace_command(int argc, char **argv,
++				 struct common_record_context *ctx)
++{
++	tracecmd_tsync_init();
++	record_trace(argc, argv, ctx);
++}
 +
- 	make_instances();
+ void trace_start(int argc, char **argv)
+ {
+ 	struct common_record_context ctx;
  
- 	/* Save the state of tracing_on before starting */
+ 	parse_record_options(argc, argv, CMD_start, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
+ }
+ 
+@@ -6722,7 +6729,7 @@ void trace_set(int argc, char **argv)
+ 	struct common_record_context ctx;
+ 
+ 	parse_record_options(argc, argv, CMD_set, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
+ }
+ 
+@@ -6805,7 +6812,7 @@ void trace_stream(int argc, char **argv)
+ 	struct common_record_context ctx;
+ 
+ 	parse_record_options(argc, argv, CMD_stream, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
+ }
+ 
+@@ -6824,7 +6831,7 @@ void trace_profile(int argc, char **argv)
+ 	if (!buffer_instances)
+ 		top_instance.flags |= BUFFER_FL_PROFILE;
+ 
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	do_trace_profile();
+ 	exit(0);
+ }
+@@ -6834,7 +6841,7 @@ void trace_record(int argc, char **argv)
+ 	struct common_record_context ctx;
+ 
+ 	parse_record_options(argc, argv, CMD_record, &ctx);
+-	record_trace(argc, argv, &ctx);
++	record_trace_command(argc, argv, &ctx);
+ 	exit(0);
+ }
+ 
 -- 
 2.30.2
 
