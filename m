@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E21AC433E1
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Mar 2021 12:59:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89D8EC433C1
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Mar 2021 12:59:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2A3D361934
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Mar 2021 12:59:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A1DF61969
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 29 Mar 2021 12:59:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhC2M62 (ORCPT
+        id S230331AbhC2M67 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 29 Mar 2021 08:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        Mon, 29 Mar 2021 08:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhC2M60 (ORCPT
+        with ESMTP id S231144AbhC2M61 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:58:26 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF39EC061574
-        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Mar 2021 05:58:25 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id z1so14112971edb.8
-        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Mar 2021 05:58:25 -0700 (PDT)
+        Mon, 29 Mar 2021 08:58:27 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17BAC061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Mar 2021 05:58:26 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id u9so19279300ejj.7
+        for <linux-trace-devel@vger.kernel.org>; Mon, 29 Mar 2021 05:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6oDcldO8a5L3WVns4mVarPPy/ZK33nxnZ8qbXfnLcAo=;
-        b=gmu/YzY8uDXgHx1SjVYmoME+AcoYiBrWHV9tRgCTIxLZ/P4Omv6PW1MFEL0gZodIIR
-         uv13cmGu6T7x0SqyKlQMjlRPA+h0YGnsOl+bjjeixG5LlE6p+gb+QCexllEhMP9fyReK
-         iDXfEyBwviOMKgLkETe5CAVac8YBgb5Yv2Y3XKWfH8e8WdWVHsvLVwHid8YS/a04u59G
-         aZ+ejxkExcivfgD833e2arJLyELeU93Pwhjn7PKDKgSv8p8n7qLPh22VAEPH3ogC0igM
-         axltx0RPoz854gVhY0j01QMnlXbuw8BqNvSNFq51VSaLVw9NbVDCj3r4wXtU52B+8kr9
-         gL8w==
+        bh=//FH1qVrcYeLLm3XIcmJVkTw6NkOe5FR+5vFfzDuYGQ=;
+        b=rBKLYFu/Df0E0FIudH9jllsBAoOUGf8RaC5JSuT0HSJIRYSUAzhVmEWgvBZ5tswaq8
+         Gc/7o4MVab1NyLlT3pfLpNmJF5eZ8TGy+wMjZYOE9Q5cd+oSbPRzLKG5Zsx6dwlnlOBg
+         TE89fZfZ2dHlHSfyppzD4TZcsGz3y50cBo29BTTsCjC5WJYBSnYdHGRcWXuFZCjq/NbZ
+         HfUnXe/Qf8SOihzvUwgTtOJenCFqD/wHW7bcc4/puiWApz3N8BmlB6LochaTJyKd1oGc
+         l9rIDc0HOp8Ch9Jdgz0+0nH+5At3VeLNBddOgQgfgpKbgxjzt2FEPM6qMztv3w73Cf0S
+         I44A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6oDcldO8a5L3WVns4mVarPPy/ZK33nxnZ8qbXfnLcAo=;
-        b=cuaTSQckUvxZ/tzQ2yjYUdO1A3DpKzPSFP5g5wNQztCOmshtUDtAc1/RbKjc+8RbM+
-         uahuhutZ5N8kjxZXSWPFRZl81ZYg5qKtlKNOQFYWgQpwwk7ryvfPr22U6DBhJ7lBgkLa
-         2np6OOcuf2+UIAorE3o3RTf1OLOrQl0KL8I78+mkDNsugQWhqWYhNkljOhdXVLA7jFCA
-         xRDjmJ8Q+BBmnWzcmo9uyKcvPkLQZHB5nSe/rVYtbAbnQuVnPHPxQiog1Ad2DGLq+8qe
-         kQwZi0MRXxDgYN5dFPjOHK86FrFsLWuJUbTIeQwWxTw6Cr4orHKMLK1NILNblXF4K03O
-         qxhw==
-X-Gm-Message-State: AOAM532sKmA9ZpgF3B8ttGhb3Ymleafp1LEvgBv7XmAjJRM618+/T85D
-        QvqKX0UuJhK9DjXWFCbpS/AigHg2UeK7nw==
-X-Google-Smtp-Source: ABdhPJy1Uh7d+w+A4uiqEkP7vYkHYQSg77QeoZhu3+NfEiYBJR+KyvosmovRxEPfscvOIjnARK2liw==
-X-Received: by 2002:aa7:c654:: with SMTP id z20mr28246612edr.377.1617022704560;
-        Mon, 29 Mar 2021 05:58:24 -0700 (PDT)
+        bh=//FH1qVrcYeLLm3XIcmJVkTw6NkOe5FR+5vFfzDuYGQ=;
+        b=O0ES0R4ass6ju33vJyadLBtvO0Q2tyt8dsoDxmYMedETvqX+Zfd9sjE389kwtn1pEY
+         5Ut1zhtOgxGoRvzzEWI5ypiTDcs/qpZ/X90H3BfHhjdY69OeXwRTOpHUMzmDFW3dAA3O
+         nYox7hcrdFPU4CKpG9Y2++MG5sdWfAcFesjdnkmwmkA6gNKAGDPymQIAau7g5oJ67lQw
+         bP5CtUuKBzyzl+uHZ7mRjvHE+f5JyVoduzcMdIxE83klTGs5K/YKYKW1QZSFeTV0KidH
+         RRaupSl2DsnnzjHl4aifUsgUT4At6CQtLOHn1XIAYaunsLVCxJmP+TySZsEzk5i8sQSO
+         XccQ==
+X-Gm-Message-State: AOAM531TdKVCpOylS1sc/eXqzg5AVBnqu+sckEs1Te2YpIvPMfH2EkAU
+        EC5GXo/Cw00prPQwp2p/prB1d3BhrTq3DA==
+X-Google-Smtp-Source: ABdhPJyvUFWSZnT5Q+B8yMVW3MDuwA6q/A1qsV+SgYFqLQY8VskmjldkNpqwNSAwjgjJ+X3Hep6PPA==
+X-Received: by 2002:a17:906:5e01:: with SMTP id n1mr28515632eju.359.1617022705743;
+        Mon, 29 Mar 2021 05:58:25 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id d19sm8909075edr.45.2021.03.29.05.58.23
+        by smtp.gmail.com with ESMTPSA id d19sm8909075edr.45.2021.03.29.05.58.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 05:58:24 -0700 (PDT)
+        Mon, 29 Mar 2021 05:58:25 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 1/4] trace-cmd: Add internal API to check if tsc2nsec is supported
-Date:   Mon, 29 Mar 2021 15:58:18 +0300
-Message-Id: <20210329125821.97496-2-tz.stoyanov@gmail.com>
+Subject: [PATCH 2/4] trace-cmd: Add tsc2nsec clock to "list -C" command
+Date:   Mon, 29 Mar 2021 15:58:19 +0300
+Message-Id: <20210329125821.97496-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210329125821.97496-1-tz.stoyanov@gmail.com>
 References: <20210329125821.97496-1-tz.stoyanov@gmail.com>
@@ -73,43 +73,41 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-A new internal API is added to check is tsc to nanoseconds conversion is
-supported:
- bool trace_tsc2nsec_is_supported(void);
+Extended the "trace-cmd list -C" command to show tsc2nsec clock, if
+supported.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/include/trace-local.h | 2 ++
- tracecmd/trace-record.c        | 5 +++++
- 2 files changed, 7 insertions(+)
+ tracecmd/trace-list.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 7773e9fc..6a4c5f51 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -341,4 +341,6 @@ static inline bool is_digits(const char *s)
- 	return true;
+diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
+index f017c938..63216b43 100644
+--- a/tracecmd/trace-list.c
++++ b/tracecmd/trace-list.c
+@@ -264,7 +264,21 @@ static void show_options(void)
+ 
+ static void show_clocks(void)
+ {
+-	show_file("trace_clock");
++	char *clocks;
++	int size;
++
++	clocks = tracefs_instance_file_read(NULL, "trace_clock", &size);
++	if (!clocks)
++		die("getting clocks");
++	if (clocks[size - 1] == '\n')
++		clocks[size - 1] = 0;
++
++	if (trace_tsc2nsec_is_supported())
++		printf("%s %s\n", clocks, TSCNSEC_CLOCK);
++	else
++		printf("%s\n", clocks);
++
++	free(clocks);
  }
  
-+bool trace_tsc2nsec_is_supported(void);
-+
- #endif /* __TRACE_LOCAL_H */
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 5e69cf48..5c9d800f 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -5827,6 +5827,11 @@ static int get_tsc_nsec(int *shift, int *mult)
- }
- #endif
  
-+bool trace_tsc2nsec_is_supported(void)
-+{
-+	return (get_tsc_nsec(NULL, NULL) == 0);
-+}
-+
- static void parse_record_options(int argc,
- 				 char **argv,
- 				 enum trace_cmd curr_cmd,
 -- 
 2.30.2
 
