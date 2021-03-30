@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2464C433C1
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 Mar 2021 18:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C3B8C433E1
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 Mar 2021 18:44:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9C8D361924
+	by mail.kernel.org (Postfix) with ESMTP id BE12B61985
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 Mar 2021 18:44:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhC3Sns (ORCPT
+        id S232879AbhC3Snt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 30 Mar 2021 14:43:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46680 "EHLO mail.kernel.org"
+        Tue, 30 Mar 2021 14:43:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232874AbhC3Sno (ORCPT
+        id S232893AbhC3Sno (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 30 Mar 2021 14:43:44 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A7C1619D6;
+        by mail.kernel.org (Postfix) with ESMTPSA id 373F161924;
         Tue, 30 Mar 2021 18:35:47 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lRJDO-003YXO-Ey; Tue, 30 Mar 2021 14:35:46 -0400
-Message-ID: <20210330183546.351496716@goodmis.org>
+        id 1lRJDO-003YVv-0v; Tue, 30 Mar 2021 14:35:46 -0400
+Message-ID: <20210330183545.906539717@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 30 Mar 2021 14:33:28 -0400
+Date:   Tue, 30 Mar 2021 14:33:25 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
-Subject: [PATCH 4/4] libtracefs: Add TRACEFS_FL_FUTURE flag for future module filtering
+Subject: [PATCH 1/4] libtracefs: Only allow RESET flag if file is not already opened
 References: <20210330183324.709017776@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,191 +45,128 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Starting in Linux v4.13, it is possible to load filters of a function for
-a module before it is loaded. That is:
+Only allow the flags to have TRACEFS_FL_RESET set in
+tracefs_function_filter() if the previous call with the same instance did
+not have the TRACEFS_FL_CONTINUE set.
 
- # echo '*:mod:rfkill' > set_ftrace_filter
- # echo function > current_tracer
- # modprobe rfkill
+The RESET flag means to reset the filter, and since it can only do that
+when the file is opened, it does not make sense to have it set. It also is
+dangerous to simply close (and commit previous changes) if it is set and
+the file is already opened. The only rational solution is to fail the
+call in this case.
 
-And the above will enable all functions for the rfkill module to be traced
-before it starts to run.
-
-Add a TRACEFS_FL_FUTURE flag to be able to accomplish the same thing.
+Link: https://lore.kernel.org/linux-trace-devel/20210330105250.0a7105a1@gandalf.local.home/
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-function-filter.txt |  9 ++++
- include/tracefs.h                            |  3 ++
- src/tracefs-tools.c                          | 53 +++++++++++++++++---
- 3 files changed, 58 insertions(+), 7 deletions(-)
+ Documentation/libtracefs-function-filter.txt | 24 ++++++++++++--------
+ src/tracefs-tools.c                          | 13 ++++++++---
+ 2 files changed, 25 insertions(+), 12 deletions(-)
 
 diff --git a/Documentation/libtracefs-function-filter.txt b/Documentation/libtracefs-function-filter.txt
-index fa0f0de6f567..ccf20e9671c6 100644
+index 5631ff75d54e..a022a2196b75 100644
 --- a/Documentation/libtracefs-function-filter.txt
 +++ b/Documentation/libtracefs-function-filter.txt
-@@ -71,6 +71,15 @@ the *TRACEFS_FL_CONTINUE* flag set for the same instance will fail if
- *TRACEFS_FL_RESET* flag is set, as the reset flag is only applicable for the
- first filter to be added before committing.
+@@ -45,9 +45,10 @@ The _flags_ parameter may have the following set, or be zero.
+ *TRACEFS_FL_RESET* :
+ If _flags_ contains *TRACEFS_FL_RESET*, then it will clear the filters that
+ are currently set before applying _filter_. Otherwise, _filter_ is added to
+-the current set of filters already enabled. This flag is ignored if a
++the current set of filters already enabled. If this flag is set and the
+ previous call to tracefs_function_filter() had the same _instance_ and the
+-*TRACEFS_FL_CONTINUE* flag was set.
++*TRACEFS_FL_CONTINUE* flag was set, then the function will fail with a
++return of -1 and errno set to EBUSY.
  
-+*TRACEFS_FL_FUTURE* :
-+If _flags_ contains *TRACEFS_FL_FUTURE* and _module_ holds a string of a module,
-+then if the module is not loaded it will attemp to write the filter with the module
-+in the filter file. Starting in Linux v4.13 module functions could be added to the
-+filter before they are loaded. The filter will be cached, and when the module is
-+loaded, the filter will be set before the module executes, allowing to trace
-+init functions of a module. This will only work if the _filter_ is not a
-+regular expression.
-+
+ *TRACEFS_FL_CONTINUE* :
+ If _flags_ contains *TRACEFS_FL_CONTINUE*, then _filter_ will not take
+@@ -58,9 +59,9 @@ commit all the filters.
+ It can be called multiple times to add more filters. A call without this
+ flag set will commit the changes before returning (if the _filter_ passed in
+ successfully matched). A tracefs_function_filter() call after one that had
+-the *TRACEFS_FL_CONTINUE* flag set for the same instance will ignore the
+-*TRACEFS_FL_RESET* flag, as the reset flag is only applicable for the first
+-filters to be added before committing.
++the *TRACEFS_FL_CONTINUE* flag set for the same instance will fail if
++*TRACEFS_FL_RESET* flag is set, as the reset flag is only applicable for the
++first filter to be added before committing.
+ 
  RETURN VALUE
  ------------
- Returns 0 on success. If the there is an error but the filtering was not
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 0d98c10ef325..befcc48d265d 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -149,10 +149,13 @@ const char *tracefs_option_name(enum tracefs_option_id id);
- /*
-  * RESET	- Reset on opening filter file (O_TRUNC)
-  * CONTINUE	- Do not close filter file on return.
-+ * FUTURE	- For kernels that support this feature, enable filters for
-+ *		  a module that has yet to be loaded.
-  */
- enum {
- 	TRACEFS_FL_RESET	= (1 << 0),
- 	TRACEFS_FL_CONTINUE	= (1 << 1),
-+	TRACEFS_FL_FUTURE	= (1 << 2),
- };
+@@ -79,6 +80,10 @@ ERRORS
  
- int tracefs_function_filter(struct tracefs_instance *instance, const char *filter,
+ *EINVAL* The filter is invalid or did not match any functions.
+ 
++*EBUSY* The previous call of *tracefs_function_filter*() was called
++with the same instance and *TRACEFS_FL_CONTINUE* set and the current call
++had *TRACEFS_FL_RESET* set.
++
+ Other errors may also happen caused by internal system calls.
+ 
+ EXAMPLE
+@@ -97,6 +102,7 @@ int main(int argc, char *argv[])
+ {
+ 	struct tracefs_instance *inst = tracefs_instance_create(INST);
+ 	int ret;
++	int reset = TRACEFS_FL_RESET;
+ 	int i;
+ 
+ 	if (!inst) {
+@@ -105,12 +111,11 @@ int main(int argc, char *argv[])
+ 
+ 	for (i = 0; filters[i]; i++) {
+ 		/*
+-		 * Note, only the first call does something
+-		 * with TRACEFS_FL_RESET. It is ignored in the following
+-		 * calls.
++		 * Only the first call can have TRACEFS_FL_RESET set
++		 * while TRACEFS_FL_CONTINUE is set.
+ 		 */
+ 		ret = tracefs_function_filter(inst, filters[i], NULL,
+-				      TRACEFS_FL_RESET | TRACEFS_FL_CONTINUE);
++				      reset | TRACEFS_FL_CONTINUE);
+ 
+ 		if (ret) {
+ 			if (errno == EINVAL)
+@@ -118,6 +123,7 @@ int main(int argc, char *argv[])
+ 			else
+ 				printf("Failed writing %s\n", filters[i]);
+ 		}
++		reset = 0;
+ 	}
+ 
+ 	ret = tracefs_function_filter(inst, "*", "ext4", 0);
 diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-index 82809fae3e6d..cb07b6fc1e3a 100644
+index 165a9dbd8a02..5719ddf66982 100644
 --- a/src/tracefs-tools.c
 +++ b/src/tracefs-tools.c
-@@ -553,14 +553,18 @@ static void free_func_list(struct func_list *func_list)
- }
- 
- enum match_type {
--	FILTER_CHECK,
--	FILTER_WRITE,
-+	FILTER_CHECK	= (1 << 0),
-+	FILTER_WRITE	= (1 << 1),
-+	FILTER_FUTURE	= (1 << 2),
- };
- 
- static int match_filters(int fd, struct func_filter *func_filter,
- 			 const char *module, struct func_list **func_list,
--			 enum match_type type)
-+			 int flags)
- {
-+	enum match_type type = flags & (FILTER_CHECK | FILTER_WRITE);
-+	bool future = flags & FILTER_FUTURE;
-+	bool mod_match = false;
- 	char *line = NULL;
- 	size_t size = 0;
- 	char *path;
-@@ -602,6 +606,8 @@ static int match_filters(int fd, struct func_filter *func_filter,
- 			if ((strncmp(mtok + 1, module, mlen) != 0) ||
- 			    (mtok[mlen + 1] != ']'))
- 				goto next;
-+			if (future)
-+				mod_match = true;
- 		}
- 		switch (type) {
- 		case FILTER_CHECK:
-@@ -620,6 +626,11 @@ static int match_filters(int fd, struct func_filter *func_filter,
- 					goto out;
- 			}
- 			break;
-+		default:
-+			/* Should never happen */
-+			ret = -1;
-+			goto out;
-+
- 		}
- 	next:
- 		free(line);
-@@ -630,14 +641,21 @@ static int match_filters(int fd, struct func_filter *func_filter,
- 	free(line);
- 	fclose(fp);
- 
-+	/* If there was no matches and future was set, this is a success */
-+	if (future && !mod_match)
-+		ret = 0;
-+
- 	return ret;
- }
- 
- static int check_available_filters(struct func_filter *func_filter,
- 				   const char *module,
--				   struct func_list **func_list)
-+				   struct func_list **func_list,
-+				   bool future)
- {
--	return match_filters(-1, func_filter, module, func_list, FILTER_CHECK);
-+	int flags = FILTER_CHECK | (future ? FILTER_FUTURE : 0);
-+
-+	return match_filters(-1, func_filter, module, func_list, flags);
- }
- 
- static int set_regex_filter(int fd, struct func_filter *func_filter,
-@@ -748,6 +766,13 @@ static int write_func_list(int fd, struct func_list *list)
-  *          may be added before they take effect. The last call of this
-  *          function must be called without this flag for the filter
-  *          to take effect.
-+ *   TRACEFS_FL_FUTURE - only applicable if "module" is set. If no match
-+ *          is made, and the module is not yet loaded, it will still attempt
-+ *          to write the filter plus the module; "<filter>:mod:<module>"
-+ *          to the filter file. Starting with Linux kernels 4.13, it is possible
-+ *          to load the filter file with module functions for a module that
-+ *          is not yet loaded, and when the module is loaded, it will then
-+ *          activate the module.
+@@ -739,9 +739,9 @@ static int write_func_list(int fd, struct func_list *list)
   *
-  * Returns 0 on success, 1 if there was an error but the filtering has not
-  *  yet started, -1 if there was an error but the filtering has started.
-@@ -763,10 +788,17 @@ int tracefs_function_filter(struct tracefs_instance *instance, const char *filte
- 	char *ftrace_filter_path;
- 	bool reset = flags & TRACEFS_FL_RESET;
- 	bool cont = flags & TRACEFS_FL_CONTINUE;
-+	bool future = flags & TRACEFS_FL_FUTURE;
- 	int open_flags;
- 	int ret = 1;
- 	int *fd;
+  * @flags:
+  *   TRACEFS_FL_RESET - will clear the functions in the filter file
+- *          before applying the @filter. This flag is ignored
+- *          if this function is called again when the previous
+- *          call had TRACEFS_FL_CONTINUE set.
++ *          before applying the @filter. This will error with -1
++ *          and errno of EBUSY if this flag is set and a previous
++ *          call had the same instance and TRACEFS_FL_CONTINUE set.
+  *   TRACEFS_FL_CONTINUE - will keep the filter file open on return.
+  *          The filter is updated on closing of the filter file.
+  *          With this flag set, the file is not closed, and more filters
+@@ -773,6 +773,13 @@ int tracefs_function_filter(struct tracefs_instance *instance, const char *filte
+ 	else
+ 		fd = &ftrace_filter_fd;
  
-+	/* future flag is only applicable to modules */
-+	if (future && !module) {
-+		errno = EINVAL;
-+		return 1;
++	/* RESET is only allowed if the file is not opened yet */
++	if (reset && *fd >= 0) {
++		errno = EBUSY;
++		ret = -1;
++		goto out;
 +	}
 +
- 	pthread_mutex_lock(&filter_lock);
- 	if (instance)
- 		fd = &instance->ftrace_filter_fd;
-@@ -808,7 +840,7 @@ int tracefs_function_filter(struct tracefs_instance *instance, const char *filte
- 	if (init_func_filter(&func_filter, filter) < 0)
- 		goto out;
- 
--	ret = check_available_filters(&func_filter, module, &func_list);
-+	ret = check_available_filters(&func_filter, module, &func_list, future);
- 	if (ret)
- 		goto out_free;
- 
-@@ -831,7 +863,14 @@ int tracefs_function_filter(struct tracefs_instance *instance, const char *filte
- 	ret = 0;
- 
- 	if (filter) {
--		ret = write_func_list(*fd, func_list);
-+		/*
-+		 * If future is set, and no functions were found, then
-+		 * set it directly.
-+		 */
-+		if (func_list)
-+			ret = write_func_list(*fd, func_list);
-+		else
-+			ret = 1;
- 		if (ret > 0)
- 			ret = controlled_write(*fd, &func_filter, module);
- 	}
+ 	/*
+ 	 * Set EINVAL on no matching filter. But errno may still be modified
+ 	 * on another type of failure (allocation or opening a file).
 -- 
 2.30.1
 
