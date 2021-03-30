@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B1BEC433EA
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68E53C433ED
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 Mar 2021 00:53:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2FE2D6044F
+	by mail.kernel.org (Postfix) with ESMTP id 4A47D60C3E
 	for <linux-trace-devel@archiver.kernel.org>; Tue, 30 Mar 2021 00:53:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhC3AxP (ORCPT
+        id S229842AbhC3AxO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 29 Mar 2021 20:53:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57764 "EHLO mail.kernel.org"
+        Mon, 29 Mar 2021 20:53:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhC3Awu (ORCPT
+        id S229763AbhC3Awt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 29 Mar 2021 20:52:50 -0400
+        Mon, 29 Mar 2021 20:52:49 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 443876024A;
-        Tue, 30 Mar 2021 00:52:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EC636024A;
+        Tue, 30 Mar 2021 00:52:49 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lR2cj-003TjJ-7h; Mon, 29 Mar 2021 20:52:49 -0400
-Message-ID: <20210330005249.118764252@goodmis.org>
+        id 1lR2ci-003Tgr-GN; Mon, 29 Mar 2021 20:52:48 -0400
+Message-ID: <20210330005248.391852830@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 29 Mar 2021 20:51:36 -0400
+Date:   Mon, 29 Mar 2021 20:51:31 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
-Subject: [PATCH 13/13 v2] libtracefs: Add CONTINUE to tracefs_function_filter()
+Subject: [PATCH 08/13 v2] libtracefs: Allow for setting filters with regex expressions
 References: <20210330005123.151740983@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,224 +45,280 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add the TRACEFS_FL_CONTINUE flag to the tracefs_function_filter() API that
-will allow it to return without closing the set_ftrace_filter file. When
-the set_ftrace_filter file is closed, all the changes to it take place,
-but not before hand. In the case that multiple modules need to be set in
-one activation, the tracefs_function_filter() would need to be called
-multiple times without closing the file descriptor.
+All for full "regex(3)" processing of setting functions in the
+set_ftrace_filter file. Check if the filter passed in is just a glob
+expression that the kernel can process, or if it is a regex that should look
+at the available_filter_functions list instead.
 
-Note, the next call to tracefs_function_filter() after it was called with
-the CONTINUE flag set, the RESET flag is ignored, as the RESET flag only
-takes effect on opening the file. The next call to
-tracefs_function_filter() after it was called with the CONTINUE flag (on
-the same instance) does not reopen the file, and thus will not reset the
-file.
+If it is a regex, it will read the available_filter_functions and write in
+each function as it finds it.
 
-If the file is opened, calling tracefs_function_filter() with no filters
-and the continue flag not set, will simply close the set_ftrace_filter
-file.
+Link: https://lore.kernel.org/linux-trace-devel/20210323013225.451281989@goodmis.org
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-function-filter.txt | 32 +++++++++++++---
- include/tracefs-local.h                      |  1 +
- include/tracefs.h                            |  2 +
- src/tracefs-instance.c                       |  2 +
- src/tracefs-tools.c                          | 39 ++++++++++++++++----
- 5 files changed, 64 insertions(+), 12 deletions(-)
+ Documentation/libtracefs-function-filter.txt |  10 ++
+ src/tracefs-tools.c                          | 139 ++++++++++++++++---
+ 2 files changed, 128 insertions(+), 21 deletions(-)
 
 diff --git a/Documentation/libtracefs-function-filter.txt b/Documentation/libtracefs-function-filter.txt
-index 5b55a72727c8..1ac8a06961bf 100644
+index c0c89f372c21..88aa3b923d54 100644
 --- a/Documentation/libtracefs-function-filter.txt
 +++ b/Documentation/libtracefs-function-filter.txt
-@@ -52,7 +52,20 @@ The _flags_ parameter may have the following set, or be zero.
- If _flags_ contains *TRACEFS_FL_RESET*, then it will clear the filters that
- are currently set before applying the list of filters from _filters_. Otherwise,
- the list of filters from _filters_ will be added to the current set of filters
--already enabled.
-+already enabled. This flag is ignored if a previous call to
-+tracefs_function_filter() had the same _instance_ and the
-+*TRACEFS_FL_CONTINUE* flag was set.
+@@ -32,6 +32,16 @@ _errs_, is a pointer to an array of strings, which will be allocated if
+ any of filters fail to match any available function, If _errs_ is NULL, it will
+ be ignored.
+ 
++A filter in the array of _filters_ may be either a straight match of a
++function, a glob or regex(3). a glob is where '*' matches zero or more
++characters, '?' will match zero or one character, and '.' only matches a
++period. If the filter is determined to be a regex (where it contains
++anything other than alpha numeric characters, or '.', '*', '?') the filter
++will be processed as a regex(3) following the rules of regex(3), and '.' is
++not a period, but will match any one character. To force a regular
++expression, either prefix the filter with a '^' or append it with a '$' as
++all filters will act as complete matches of functions anyway.
 +
-+*TRACEFS_FL_CONTINUE* :
-+If _flags_ contains *TRACEFS_FL_CONTINUE*, then the filters will not take
-+effect after a successful call to tracefs_function_filter(). This allows for
-+multiple calls to tracefs_function_filter() to update the filter function.
-+It can be called multiple times and add more filters. A call without this
-+flag set will commit the changes before returning (if the filters passed in
-+successfully matched). A tracefs_function_filter() call after one that had
-+the *TRACEFS_FL_CONTINUE* flag set for the same instance will ignore the
-+*TRACEFS_FL_RESET* flag, as the reset flag is only applicable for the first
-+filters to be added before committing.
+ returns 0  on success, 1 or -x (where x is an integer) on error.
  
  RETURN VALUE
- ------------
-@@ -70,13 +83,13 @@ EXAMPLE
- 
- #define INST "dummy"
- 
--const char *filters[] = { "run_init_process", "try_to_run_init_process", "dummy1", NULL };
-+static const char *filters[] = { "run_init_process", "try_to_run_init_process", "dummy1", NULL };
-+static const char *all[] = { "*", NULL };
- 
- int main(int argc, char *argv[])
- {
- 	struct tracefs_instance *inst = tracefs_instance_create(INST);
- 	const char **errs = NULL;
--	int flags = TRACEFS_FL_RESET;
- 	int ret;
- 	int i = 0;
- 
-@@ -84,15 +97,24 @@ int main(int argc, char *argv[])
- 		/* Error creating new trace instance */
- 	}
- 
--	ret = tracefs_function_filter(inst, filters, NULL, flags, &errs);
-+	ret = tracefs_function_filter(inst, filters, NULL,
-+				      TRACEFS_FL_RESET | TRACEF_FL_CONTINUE,
-+				      &errs);
- 
- 	if (ret < 0 && errs) {
- 		while (errs[i])
- 			printf("%s\n", errs[i++]);
- 	}
-+	free(errs);
-+
-+	ret = tracefs_function_filter(inst, all, "ext4", 0, &errs);
-+	if (ret < 0) {
-+		printf("Failed to set filters for ext4\n");
-+		/* Force the function to commit previous filters */
-+		tracefs_function_filter(inst, NULL, NULL, 0, &errs);
-+	}
- 
- 	tracefs_instance_destroy(inst);
--	free(errs);
- 	return 0;
- }
- --
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index 9c18218cd916..73ec113fdb20 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -18,6 +18,7 @@ struct tracefs_instance {
- 	char	*trace_dir;
- 	char	*name;
- 	int	flags;
-+	int	ftrace_filter_fd;
- };
- 
- /* Can be overridden */
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 5193d46f41f5..f4775e938f69 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -148,9 +148,11 @@ const char *tracefs_option_name(enum tracefs_option_id id);
- 
- /*
-  * RESET	- Reset on opening filter file (O_TRUNC)
-+ * CONTINUE	- Do not close filter file on return.
-  */
- enum {
- 	TRACEFS_FL_RESET	= (1 << 0),
-+	TRACEFS_FL_CONTINUE	= (1 << 1),
- };
- 
- int tracefs_function_filter(struct tracefs_instance *instance, const char **filters,
-diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index a02c839f2079..bf2fabf111ea 100644
---- a/src/tracefs-instance.c
-+++ b/src/tracefs-instance.c
-@@ -43,6 +43,8 @@ static struct tracefs_instance *instance_alloc(const char *trace_dir, const char
- 			goto error;
- 	}
- 
-+	instance->ftrace_filter_fd = -1;
-+
- 	return instance;
- 
- error:
 diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-index 7e191e207867..862db5caa20e 100644
+index 470502b07f7d..d1a448459c6f 100644
 --- a/src/tracefs-tools.c
 +++ b/src/tracefs-tools.c
-@@ -23,6 +23,8 @@
- #define TRACE_FILTER		"set_ftrace_filter"
- #define TRACE_FILTER_LIST	"available_filter_functions"
+@@ -18,8 +18,9 @@
+ #include "tracefs.h"
+ #include "tracefs-local.h"
  
-+/* File descriptor for Top level set_ftrace_filter  */
-+static int ftrace_filter_fd = -1;
- static pthread_mutex_t filter_lock = PTHREAD_MUTEX_INITIALIZER;
+-#define TRACE_CTRL	"tracing_on"
+-#define TRACE_FILTER	"set_ftrace_filter"
++#define TRACE_CTRL		"tracing_on"
++#define TRACE_FILTER		"set_ftrace_filter"
++#define TRACE_FILTER_LIST	"available_filter_functions"
  
  static const char * const options_map[] = {
-@@ -851,6 +853,12 @@ static int write_func_list(int fd, struct func_list *list)
-  *          before applying the @filters. This flag is ignored
-  *          if this function is called again when the previous
-  *          call had TRACEFS_FL_CONTINUE set.
-+ *   TRACEFS_FL_CONTINUE - will keep the filter file open on return.
-+ *          The filter is updated on closing of the filter file.
-+ *          With this flag set, the file is not closed, and more filters
-+ *          may be added before they take effect. The last call of this
-+ *          function must be called without this flag for the filter
-+ *          to take effect.
-  *
-  * returns -x on filter errors (where x is number of failed filter
-  * srtings) and if @errs is not NULL will be an allocated string array
-@@ -869,13 +877,26 @@ int tracefs_function_filter(struct tracefs_instance *instance, const char **filt
- 	struct func_list *func_list = NULL;
- 	char *ftrace_filter_path;
- 	bool reset = flags & TRACEFS_FL_RESET;
-+	bool cont = flags & TRACEFS_FL_CONTINUE;
- 	int open_flags;
- 	int ret = 1;
--	int fd;
-+	int *fd;
+ 	"unknown",
+@@ -421,8 +422,53 @@ struct func_filter {
+ 	const char		*filter;
+ 	regex_t			re;
+ 	bool			set;
++	bool			is_regex;
+ };
  
- 	pthread_mutex_lock(&filter_lock);
--	if (!filters)
-+	if (instance)
-+		fd = &instance->ftrace_filter_fd;
-+	else
-+		fd = &ftrace_filter_fd;
++static bool is_regex(const char *str)
++{
++	int i;
 +
-+	if (!filters) {
-+		/* OK to call without filters if this is closing the opened file */
-+		if (!cont && *fd >= 0) {
-+			ret = 0;
-+			close(*fd);
-+			*fd = -1;
++	for (i = 0; str[i]; i++) {
++		switch (str[i]) {
++		case 'a' ... 'z':
++		case 'A'...'Z':
++		case '_':
++		case '0'...'9':
++		case '*':
++		case '.':
++			/* Dots can be part of a function name */
++		case '?':
++			continue;
++		default:
++			return true;
 +		}
- 		goto out;
 +	}
++	return false;
++}
++
++static char *update_regex(const char *reg)
++{
++	int len = strlen(reg);
++	char *str;
++
++	if (reg[0] == '^' && reg[len - 1] == '$')
++		return strdup(reg);
++
++	str = malloc(len + 3);
++	if (reg[0] == '^') {
++		strcpy(str, reg);
++	} else {
++		str[0] = '^';
++		strcpy(str + 1, reg);
++		len++; /* add ^ */
++	}
++	if (str[len - 1] != '$')
++		str[len++]= '$';
++	str[len] = '\0';
++	return str;
++}
++
+ /*
+  * Convert a glob into a regular expression.
+  */
+@@ -488,8 +534,13 @@ static int write_filter(int fd, const char *filter, const char *module)
+ 	return 0;
+ }
  
- 	func_filters = make_func_filters(filters);
- 	if (!func_filters)
-@@ -896,16 +917,20 @@ int tracefs_function_filter(struct tracefs_instance *instance, const char **filt
+-static int check_available_filters(struct func_filter *func_filters,
+-				   const char *module, const char ***errs)
++enum match_type {
++	FILTER_CHECK,
++	FILTER_WRITE,
++};
++
++static int match_filters(int fd, struct func_filter *func_filters,
++			 const char *module, enum match_type type)
+ {
+ 	char *line = NULL;
+ 	size_t size = 0;
+@@ -499,7 +550,7 @@ static int check_available_filters(struct func_filter *func_filters,
+ 	int mlen;
+ 	int i;
  
- 	open_flags = reset ? O_TRUNC : O_APPEND;
+-	path = tracefs_get_tracing_file("available_filter_functions");
++	path = tracefs_get_tracing_file(TRACE_FILTER_LIST);
+ 	if (!path)
+ 		return 1;
  
--	fd = open(ftrace_filter_path, O_WRONLY | open_flags);
-+	if (*fd < 0)
-+		*fd = open(ftrace_filter_path, O_WRONLY | open_flags);
+@@ -530,39 +581,76 @@ static int check_available_filters(struct func_filter *func_filters,
+ 			    (mtok[mlen + 1] != ']'))
+ 				goto next;
+ 		}
+-		for (i = 0; func_filters[i].filter; i++) {
+-			if (match(tok, &func_filters[i]))
+-				func_filters[i].set = true;
++		switch (type) {
++		case FILTER_CHECK:
++			/* Check, checks a list of filters */
++			for (i = 0; func_filters[i].filter; i++) {
++				if (match(tok, &func_filters[i]))
++					func_filters[i].set = true;
++			}
++			break;
++		case FILTER_WRITE:
++			/* Writes only have one filter */
++			if (match(tok, func_filters)) {
++				ret = write_filter(fd, tok, module);
++				if (ret)
++					goto out;
++			}
++			break;
+ 		}
+ 	next:
+ 		free(line);
+ 		line = NULL;
+ 		len = 0;
+ 	}
++ out:
++	free(line);
+ 	fclose(fp);
+ 
++	return ret;
++}
++
++static int check_available_filters(struct func_filter *func_filters,
++				   const char *module, const char ***errs)
++{
++	int ret;
++	int i;
++
++	ret = match_filters(-1, func_filters, module, FILTER_CHECK);
++	/* Return here if success or non filter error */
++	if (ret >= 0)
++		return ret;
++
++	/* Failed on filter, set the errors */
+ 	ret = 0;
+ 	for (i = 0; func_filters[i].filter; i++) {
+ 		if (!func_filters[i].set)
+ 			add_errors(errs, func_filters[i].filter, ret--);
+ 	}
+-
+ 	return ret;
+ }
+ 
+-static int controlled_write(int fd, const char **filters,
++static int set_regex_filter(int fd, struct func_filter *func_filter,
++			    const char *module)
++{
++	return match_filters(fd, func_filter, module, FILTER_WRITE);
++}
++
++static int controlled_write(int fd, struct func_filter *func_filters,
+ 			    const char *module, const char ***errs)
+ {
+ 	int ret = 0;
+ 	int i;
+ 
+-	for (i = 0; filters[i]; i++) {
++	for (i = 0; func_filters[i].filter; i++) {
++		const char *filter = func_filters[i].filter;
+ 		int r;
+ 
+-		r = write_filter(fd, filters[i], module);
+-		if (r < 0) {
+-			add_errors(errs, filters[i], ret--);
+-		} else if (r > 0) {
++		if (func_filters[i].is_regex)
++			r = set_regex_filter(fd, &func_filters[i], module);
++		else
++			r = write_filter(fd, filter, module);
++		if (r > 0) {
+ 			/* Not filter error */
+ 			if (errs) {
+ 				free(*errs);
+@@ -570,6 +658,8 @@ static int controlled_write(int fd, const char **filters,
+ 			}
+ 			return 1;
+ 		}
++		if (r < 0)
++			add_errors(errs, filter, ret--);
+ 	}
+ 	return ret;
+ }
+@@ -579,7 +669,11 @@ static int init_func_filter(struct func_filter *func_filter, const char *filter)
+ 	char *str;
+ 	int ret;
+ 
+-	str = make_regex(filter);
++	if (!(func_filter->is_regex = is_regex(filter)))
++		str = make_regex(filter);
++	else
++		str = update_regex(filter);
++
+ 	if (!str)
+ 		return -1;
+ 
+@@ -679,24 +773,27 @@ int tracefs_function_filter(struct tracefs_instance *instance, const char **filt
+ 		*errs = NULL;
+ 
+ 	ret = check_available_filters(func_filters, module, errs);
+-	free_func_filters(func_filters);
+ 	if (ret)
+-		return ret;
++		goto out_free;
+ 
++	ret = 1;
+ 	ftrace_filter_path = tracefs_instance_get_file(instance, TRACE_FILTER);
+ 	if (!ftrace_filter_path)
+-		return 1;
++		goto out_free;
+ 
+ 	flags = reset ? O_TRUNC : O_APPEND;
+ 
+ 	fd = open(ftrace_filter_path, O_WRONLY | flags);
  	tracefs_put_tracing_file(ftrace_filter_path);
--	if (fd < 0)
-+	if (*fd < 0)
- 		goto out_free;
+ 	if (fd < 0)
+-		return 1;
++		goto out_free;
  
--	ret = write_func_list(fd, func_list);
-+	ret = write_func_list(*fd, func_list);
- 	if (ret > 0)
--		ret = controlled_write(fd, func_filters, module, errs);
-+		ret = controlled_write(*fd, func_filters, module, errs);
+-	ret = controlled_write(fd, filters, module, errs);
++	ret = controlled_write(fd, func_filters, module, errs);
  
--	close(fd);
-+	if (!cont) {
-+		close(*fd);
-+		*fd = -1;
-+	}
+ 	close(fd);
  
-  out_free:
- 	free_func_list(func_list);
++ out_free:
++	free_func_filters(func_filters);
++
+ 	return ret;
+ }
 -- 
 2.30.1
 
