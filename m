@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92A98C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 721D4C43462
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6883B610FC
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4AF4161103
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhDBNUH (ORCPT
+        id S235204AbhDBNUI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 2 Apr 2021 09:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
+        Fri, 2 Apr 2021 09:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235204AbhDBNUG (ORCPT
+        with ESMTP id S234628AbhDBNUI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Apr 2021 09:20:06 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE2FC0613E6
-        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Apr 2021 06:20:05 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id h13so407217eji.6
-        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Apr 2021 06:20:05 -0700 (PDT)
+        Fri, 2 Apr 2021 09:20:08 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F90C061788
+        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Apr 2021 06:20:07 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id l4so7392105ejc.10
+        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Apr 2021 06:20:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=G1ZquU7vO/goaoK6gzyVFkmCg37oKGKH+OeSpNiV27w=;
-        b=jogMwCb2uqcau+/IRDjY6CRrQZbNWy1vpbQiyRO9XcZ2GUM1JyaPOkXwhGHOVzZwri
-         wfqqslz6x35rb3xFe2iW4jBWWWYhZh5uQfqiYU7OSs8LDenXXAswDxeWkowPp3SIwAv8
-         krERKTFXcSB8tNWo5ppyKxB22p1N16Jv9qWuN7Ruym4nwqbe/EywAD/9iOdcgG12lK2n
-         DtLMAgFMXzxcItQXHIw9DsZ/0JTY3KSsLIDx/mBPjX9qNbtUtbT86h+NV0mzup1odiHt
-         iFQN1ThCzEzU1hRnIvO6kKW+BKWtiUtAu4fVrdUYEisJ6zF7kgkrI5D+LCU92W4zW+J0
-         bstA==
+        bh=way23HTlDFl1I+zj39yE/jKSjDkwDVOGnVSs5PzWLd8=;
+        b=Iam+Q3nb8wmuT0SFOANXPWZDd3fAkJASo8Don2LIOk5ueWv6pHt1DrOcV3bJL13hLC
+         Ch3kPHoCDmQuLpSyi+pREQRB8FMC4zxF3uvYGmz5DXhcSdup/HpfEBffbzv5aFfG4Lbo
+         nokNL/Fc5iZjpsiYuUjPNNqo4HGtUzkhR79yvwoZKFRjQqgyO/z8OGziPFNxHrvv+Qgx
+         64WmFwMIhkDqt6w0nwjpZxZCX0q19ayk39sxXp9k/tUagYTMeKoyTgqjwTR/O3DkpCS1
+         7GtxInzxMsq1ucHpPe8axm+ZehmlvjaQ5FVIg6XrqdgHUmtpiuCsq6bkPtRA9UrmZBsy
+         VMsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=G1ZquU7vO/goaoK6gzyVFkmCg37oKGKH+OeSpNiV27w=;
-        b=N1TCoDJHIG6S0TcuJnfiDb6AUgg/1ty6+D1komKpVHHojWREczGu/VC1j2I3gY6zSh
-         j5cxAOcUpbZ07TLqhjvaSuI5jOFLipbM4TYcAePp/xDFT34FBRWWzo4v0dvL6MUckpSk
-         UbrBygd0j+FGBxPxTOhqHSpqDdg9aJkWXFVowzuMvGq9WOt0D9lM0w33K/Qa636AgYAc
-         n+7Ed6e4ESoocMBWCoEsQ7Jb/yDfyFW9rx3xgzbleD2qSgypU28Up+82wTNP41PF3NLj
-         RFNJxq8Jfd1JiFuseFjKTuWnp5XJIPS8Fek1eKlEZ9l0dgTM692sw9Ehkr2tnYNWJxQy
-         ZWOw==
-X-Gm-Message-State: AOAM5326rAUoVa9kwv1koYBaQadSk4VnJeQSs4bLtHGk/eUwty7eV1Te
-        zwZvTJd5UkjRri9KXo+pMWk=
-X-Google-Smtp-Source: ABdhPJyQTZjCDzauxRIWTxtXsRh9q94p3yFBidR+906mtl2Y6U7Q0hLClW4s79BCS8jwfUPyzCc/uQ==
-X-Received: by 2002:a17:906:7a50:: with SMTP id i16mr832282ejo.29.1617369604067;
-        Fri, 02 Apr 2021 06:20:04 -0700 (PDT)
+        bh=way23HTlDFl1I+zj39yE/jKSjDkwDVOGnVSs5PzWLd8=;
+        b=A62fLTYnJYcTaoN6M8z/WFehX5V73/dhjZqTKMNWJ6pHlC60buAYyL0LXgNt3X5PMK
+         Cb6FXogGvP6vJmihMl69gj9L6KYwWinT0mAbsOdQtIKYjL8AxOitmiUqiY3zPvt1UNw6
+         28TQXANpZNGVnhdUpe0/OMbZ7AqkacoMAYyeiaKT/RYBkVhGDloRR5DnVJZT3spQUKye
+         /4YwKYqrg7zkd6773OOoBEilGGB2r9VqTvqfVeMfmSrLVU3TUCDm7vjYlSjvlzH/D8Ir
+         Dbjyw/F2xwUsKGEBJYy7OSZ5zqMjTJPyBQ94qgKDEd8icWkE+D/K3VUt82yO7a+/ihSt
+         G1Ww==
+X-Gm-Message-State: AOAM531zxWc6GS8BA4ndB7Bmena+bX2aRY6zOlmqgWXW+CVlgzZUfxSq
+        1OJ1auoBONmV1Uh6ej7HC1Y=
+X-Google-Smtp-Source: ABdhPJyr0hyPXr8TjLVxn9ryLY94JsRQgC30isYkp2AVMbiWJKqU9G+pBETQV3JbuwUdMZy07AszMw==
+X-Received: by 2002:a17:906:7806:: with SMTP id u6mr13115603ejm.130.1617369605861;
+        Fri, 02 Apr 2021 06:20:05 -0700 (PDT)
 Received: from localhost.localdomain ([95.87.199.133])
-        by smtp.gmail.com with ESMTPSA id n3sm4120476ejj.113.2021.04.02.06.20.03
+        by smtp.gmail.com with ESMTPSA id n3sm4120476ejj.113.2021.04.02.06.20.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 06:20:03 -0700 (PDT)
+        Fri, 02 Apr 2021 06:20:05 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 3/6] libtracefs: Encapsulate "struct tracefs_options_mask"
-Date:   Fri,  2 Apr 2021 16:19:44 +0300
-Message-Id: <20210402131947.346235-4-y.karadz@gmail.com>
+Subject: [PATCH 5/6] libtracefs: Option's bit masks to be owned by the instance
+Date:   Fri,  2 Apr 2021 16:19:46 +0300
+Message-Id: <20210402131947.346235-6-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210402131947.346235-1-y.karadz@gmail.com>
 References: <20210402131947.346235-1-y.karadz@gmail.com>
@@ -74,91 +74,145 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The definition of the mask gets hidden from the user. This way we will
-be able to modify this definition in the future, without breaking the
-API. Such a modification will be compulsory, if too many new tracing
-options are added in the future. Note that encapsulating the mask
-definition, requires two API methods to be eliminated, however those
-methods have no particular use-cases for the moment.
+If the instance owns two mask objects, we no longer need to
+dynamically allocate memory in tracefs_options_get_supported() and
+tracefs_options_get_enabled(). This will simplify the code on the
+caller side, since the user is no longer responsible for freeing
+those masks.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- include/tracefs.h   |  6 +-----
- src/tracefs-tools.c | 33 +++++++++++----------------------
- 2 files changed, 12 insertions(+), 27 deletions(-)
+ Documentation/libtracefs-option-get.txt |  4 +---
+ include/tracefs.h                       |  6 +++---
+ src/tracefs-instance.c                  | 24 ++++++++++++------------
+ 3 files changed, 16 insertions(+), 18 deletions(-)
 
+diff --git a/Documentation/libtracefs-option-get.txt b/Documentation/libtracefs-option-get.txt
+index 9b3cb56..3290f24 100644
+--- a/Documentation/libtracefs-option-get.txt
++++ b/Documentation/libtracefs-option-get.txt
+@@ -52,14 +52,13 @@ EXAMPLE
+ --
+ #include <tracefs.h>
+ ...
+-struct tracefs_options_mask *options;
++const struct tracefs_options_mask *options;
+ ...
+ options = tracefs_options_get_supported(NULL);
+ if (!options) {
+ 	/* Failed to get supported options */
+ } else {
+ 	...
+-	free(options);
+ }
+ ...
+ options = tracefs_options_get_enabled(NULL);
+@@ -67,7 +66,6 @@ if (!options) {
+ 	/* Failed to get options, enabled in the top instance */
+ } else {
+ 	...
+-	free(options);
+ }
+ ...
+ 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 5c4e50d..0665e8d 100644
+index 0665e8d..9efa91a 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -131,11 +131,7 @@ enum tracefs_option_id {
- };
+@@ -132,11 +132,11 @@ enum tracefs_option_id {
  #define TRACEFS_OPTION_MAX (TRACEFS_OPTION_VERBOSE + 1)
  
--struct tracefs_options_mask {
--	unsigned long long	mask;
--};
--void tracefs_option_set(struct tracefs_options_mask *options, enum tracefs_option_id id);
--void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_option_id id);
-+struct tracefs_options_mask;
- bool tracefs_option_is_set(struct tracefs_options_mask *options,
+ struct tracefs_options_mask;
+-bool tracefs_option_is_set(struct tracefs_options_mask *options,
++bool tracefs_option_is_set(const struct tracefs_options_mask *options,
  			   enum tracefs_option_id id);
- struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instance *instance);
-diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-index 3b5f773..11a4c8c 100644
---- a/src/tracefs-tools.c
-+++ b/src/tracefs-tools.c
-@@ -19,6 +19,10 @@
+-struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instance *instance);
++const struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instance *instance);
+ bool tracefs_option_is_supported(struct tracefs_instance *instance, enum tracefs_option_id id);
+-struct tracefs_options_mask *tracefs_options_get_enabled(struct tracefs_instance *instance);
++const struct tracefs_options_mask *tracefs_options_get_enabled(struct tracefs_instance *instance);
+ bool tracefs_option_is_enabled(struct tracefs_instance *instance, enum tracefs_option_id id);
+ int tracefs_option_enable(struct tracefs_instance *instance, enum tracefs_option_id id);
+ int tracefs_option_diasble(struct tracefs_instance *instance, enum tracefs_option_id id);
+diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
+index 49645eb..9cb4b6d 100644
+--- a/src/tracefs-instance.c
++++ b/src/tracefs-instance.c
+@@ -27,6 +27,8 @@ struct tracefs_instance {
+ 	char	*trace_dir;
+ 	char	*name;
+ 	int	flags;
++	struct tracefs_options_mask	supported_opts;
++	struct tracefs_options_mask	enabled_opts;
+ };
  
- #define TRACE_CTRL	"tracing_on"
+ /**
+@@ -695,9 +697,8 @@ static struct tracefs_options_mask *trace_get_options(struct tracefs_instance *i
+ 	DIR *dir = NULL;
+ 	long long val;
  
-+struct tracefs_options_mask {
-+	unsigned long long	mask;
-+};
+-	bitmask = calloc(1, sizeof(struct tracefs_options_mask));
+-	if (!bitmask)
+-		return NULL;
++	bitmask = enabled? &instance->enabled_opts : &instance->supported_opts;
 +
- static const char * const options_map[] = {
- 	"unknown",
- 	"annotate",
-@@ -197,6 +201,13 @@ enum tracefs_option_id tracefs_option_id(const char *name)
- 	return TRACEFS_OPTION_INVALID;
+ 	dname = tracefs_instance_get_file(instance, "options");
+ 	if (!dname)
+ 		goto error;
+@@ -727,7 +728,6 @@ error:
+ 	if (dir)
+ 		closedir(dir);
+ 	tracefs_put_tracing_file(dname);
+-	free(bitmask);
+ 	return NULL;
  }
  
-+static void tracefs_option_set(struct tracefs_options_mask *options,
-+			       enum tracefs_option_id id)
-+{
-+	if (options && id > TRACEFS_OPTION_INVALID)
-+		options->mask |= (1ULL << (id - 1));
-+}
-+
- static struct tracefs_options_mask *trace_get_options(struct tracefs_instance *instance,
- 						      bool enabled)
+@@ -735,10 +735,10 @@ error:
+  * tracefs_options_get_supported - Get all supported trace options in given instance
+  * @instance: ftrace instance, can be NULL for the top instance
+  *
+- * Returns allocated bitmask structure with all trace options, supported in given
+- * instance, or NULL in case of an error. The returned structure must be freed with free()
++ * Returns bitmask structure with all trace options, supported in given instance,
++ * or NULL in case of an error.
+  */
+-struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instance *instance)
++const struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instance *instance)
  {
-@@ -366,25 +377,3 @@ bool tracefs_option_is_set(struct tracefs_options_mask *options,
- 		return options->mask & (1ULL << (id - 1));
- 	return false;
+ 	return trace_get_options(instance, false);
  }
--
--/**
-- * tracefs_option_set - Set option in options bitmask
-- * @options: Pointer to a bitmask with options
-- * @id: trace option id
-- */
--void tracefs_option_set(struct tracefs_options_mask *options, enum tracefs_option_id id)
--{
--	if (options && id > TRACEFS_OPTION_INVALID)
--		options->mask |= (1ULL << (id - 1));
--}
--
--/**
-- * tracefs_option_clear - Clear option from options bitmask
-- * @options: Pointer to a bitmask with options
-- * @id: trace option id
-- */
--void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_option_id id)
--{
--	if (options && id > TRACEFS_OPTION_INVALID)
--		options->mask &= ~(1ULL << (id - 1));
--}
+@@ -747,10 +747,10 @@ struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instan
+  * tracefs_options_get_enabled - Get all currently enabled trace options in given instance
+  * @instance: ftrace instance, can be NULL for the top instance
+  *
+- * Returns allocated bitmask structure with all trace options, enabled in given
+- * instance, or NULL in case of an error. The returned structure must be freed with free()
++ * Returns allocated bitmask structure with all trace options, enabled in given instance,
++ * or NULL in case of an error.
+  */
+-struct tracefs_options_mask *tracefs_options_get_enabled(struct tracefs_instance *instance)
++const struct tracefs_options_mask *tracefs_options_get_enabled(struct tracefs_instance *instance)
+ {
+ 	return trace_get_options(instance, true);
+ }
+@@ -758,7 +758,7 @@ struct tracefs_options_mask *tracefs_options_get_enabled(struct tracefs_instance
+ static int trace_config_option(struct tracefs_instance *instance,
+ 			       enum tracefs_option_id id, bool set)
+ {
+-	char *set_str = set ? "1" : "0";
++	const char *set_str = set ? "1" : "0";
+ 	char file[PATH_MAX];
+ 	const char *name;
+ 
+@@ -846,7 +846,7 @@ bool tracefs_option_is_enabled(struct tracefs_instance *instance, enum tracefs_o
+  * Returns true if an option with given id is set in the bitmask,
+  * false if it is not set.
+  */
+-bool tracefs_option_is_set(struct tracefs_options_mask *options,
++bool tracefs_option_is_set(const struct tracefs_options_mask *options,
+ 			   enum tracefs_option_id id)
+ {
+ 	if (id > TRACEFS_OPTION_INVALID)
 -- 
 2.27.0
 
