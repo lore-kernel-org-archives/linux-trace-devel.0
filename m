@@ -8,63 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDF39C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92A98C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A1C9D61105
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6883B610FC
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbhDBNUG (ORCPT
+        id S229932AbhDBNUH (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 2 Apr 2021 09:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
+        Fri, 2 Apr 2021 09:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhDBNUF (ORCPT
+        with ESMTP id S235204AbhDBNUG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 2 Apr 2021 09:20:05 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC07C0613E6
-        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Apr 2021 06:20:04 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a7so7425499ejs.3
-        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Apr 2021 06:20:04 -0700 (PDT)
+        Fri, 2 Apr 2021 09:20:06 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE2FC0613E6
+        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Apr 2021 06:20:05 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id h13so407217eji.6
+        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Apr 2021 06:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=i2bpfUmF+YwnlreGA7yi828PWj2M/BNGHaLXVcBvWW4=;
-        b=REF/nlwNwfIZXeL6rbJwNkdlxtJ8LQYFZ7N3ii6BjQiDnnDL4Zyu84DEUJB7+NwOdv
-         EgNtzS9pYF5F6Z5zSf0L+NDGrMUJtHdRa5QkdJrEf6SuBXdTgK1qw7MpNpYTvEeVKgxj
-         cx3p4yd4uaM3O9UiHoyBFo/WSDhzRZ3Mf6N1+ML0zv/JBVHGxrdcmvqmcg9KS0cI5QX+
-         jQIzUA67rc1ukDU0kpOBh0BCJrL3wwxgp+dZ4w9dtlFa3SLLKtLW6fuEX3LpugwwTuY5
-         Zr2MoX4zQmN0/xSOgJE9YSHoLT6RFdLGaNjjD9ila2YcKNOBUftr7Y5jE4MEf0oTnj3P
-         rcYA==
+        bh=G1ZquU7vO/goaoK6gzyVFkmCg37oKGKH+OeSpNiV27w=;
+        b=jogMwCb2uqcau+/IRDjY6CRrQZbNWy1vpbQiyRO9XcZ2GUM1JyaPOkXwhGHOVzZwri
+         wfqqslz6x35rb3xFe2iW4jBWWWYhZh5uQfqiYU7OSs8LDenXXAswDxeWkowPp3SIwAv8
+         krERKTFXcSB8tNWo5ppyKxB22p1N16Jv9qWuN7Ruym4nwqbe/EywAD/9iOdcgG12lK2n
+         DtLMAgFMXzxcItQXHIw9DsZ/0JTY3KSsLIDx/mBPjX9qNbtUtbT86h+NV0mzup1odiHt
+         iFQN1ThCzEzU1hRnIvO6kKW+BKWtiUtAu4fVrdUYEisJ6zF7kgkrI5D+LCU92W4zW+J0
+         bstA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=i2bpfUmF+YwnlreGA7yi828PWj2M/BNGHaLXVcBvWW4=;
-        b=PPrdc+AXDX4lsGr1yMxXQ1CAEsrXv2jfi4+gB2hqvuHXQ0WmH/11gNruOxb+ncAOLQ
-         3sfMiMd0++D7QEk2I5Mnz/WQlgopx8xwcAPZP/2t9VSA0+LusxeSwcx9QSKw23q35gqt
-         bTZiqxnmxbdkZve95cH3KTnhkomCPRfJL3QC2Hi5T0y9+63f66Tl0U7l9lS5MhN52m2P
-         WBC+a20xyIv1tcQmVb0bT37veBgZn5SNtn/j2fWn0QffhoD6vNPBx6ZTpJtOC+QnjzS7
-         bb5X7M2Lbl0RxcuzeK68j0zMRScr59mRBUR7Jum00rglsiTCNefbwiEL1phWYaNH+xmn
-         yU4w==
-X-Gm-Message-State: AOAM531ZHVFS+MfxT7kheVT7bgqGxc6FatnmrPdXALC3HvWt+gSvinYH
-        a9DztLQpwKRSEmQOxD6xM9Y=
-X-Google-Smtp-Source: ABdhPJysBYzjTyUyim8oNEEtWwol3hgkzi9aZtrWnCeltrVbIND3ldRkmmE5Qj/92r0Ek0SLvr7nVg==
-X-Received: by 2002:a17:906:94d6:: with SMTP id d22mr912713ejy.424.1617369603290;
-        Fri, 02 Apr 2021 06:20:03 -0700 (PDT)
+        bh=G1ZquU7vO/goaoK6gzyVFkmCg37oKGKH+OeSpNiV27w=;
+        b=N1TCoDJHIG6S0TcuJnfiDb6AUgg/1ty6+D1komKpVHHojWREczGu/VC1j2I3gY6zSh
+         j5cxAOcUpbZ07TLqhjvaSuI5jOFLipbM4TYcAePp/xDFT34FBRWWzo4v0dvL6MUckpSk
+         UbrBygd0j+FGBxPxTOhqHSpqDdg9aJkWXFVowzuMvGq9WOt0D9lM0w33K/Qa636AgYAc
+         n+7Ed6e4ESoocMBWCoEsQ7Jb/yDfyFW9rx3xgzbleD2qSgypU28Up+82wTNP41PF3NLj
+         RFNJxq8Jfd1JiFuseFjKTuWnp5XJIPS8Fek1eKlEZ9l0dgTM692sw9Ehkr2tnYNWJxQy
+         ZWOw==
+X-Gm-Message-State: AOAM5326rAUoVa9kwv1koYBaQadSk4VnJeQSs4bLtHGk/eUwty7eV1Te
+        zwZvTJd5UkjRri9KXo+pMWk=
+X-Google-Smtp-Source: ABdhPJyQTZjCDzauxRIWTxtXsRh9q94p3yFBidR+906mtl2Y6U7Q0hLClW4s79BCS8jwfUPyzCc/uQ==
+X-Received: by 2002:a17:906:7a50:: with SMTP id i16mr832282ejo.29.1617369604067;
+        Fri, 02 Apr 2021 06:20:04 -0700 (PDT)
 Received: from localhost.localdomain ([95.87.199.133])
-        by smtp.gmail.com with ESMTPSA id n3sm4120476ejj.113.2021.04.02.06.20.02
+        by smtp.gmail.com with ESMTPSA id n3sm4120476ejj.113.2021.04.02.06.20.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 06:20:02 -0700 (PDT)
+        Fri, 02 Apr 2021 06:20:03 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/6] libtracefs: Modify the arguments of tracefs_option_is_set()
-Date:   Fri,  2 Apr 2021 16:19:43 +0300
-Message-Id: <20210402131947.346235-3-y.karadz@gmail.com>
+Subject: [PATCH 3/6] libtracefs: Encapsulate "struct tracefs_options_mask"
+Date:   Fri,  2 Apr 2021 16:19:44 +0300
+Message-Id: <20210402131947.346235-4-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210402131947.346235-1-y.karadz@gmail.com>
 References: <20210402131947.346235-1-y.karadz@gmail.com>
@@ -74,49 +74,91 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This function is supposed to take as argument a mask returned by
-"tracefs_options_get_supported()" or "tracefs_options_get_enabled()",
-hence this argument must be a pointer.
+The definition of the mask gets hidden from the user. This way we will
+be able to modify this definition in the future, without breaking the
+API. Such a modification will be compulsory, if too many new tracing
+options are added in the future. Note that encapsulating the mask
+definition, requires two API methods to be eliminated, however those
+methods have no particular use-cases for the moment.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- include/tracefs.h   | 4 ++--
- src/tracefs-tools.c | 5 +++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ include/tracefs.h   |  6 +-----
+ src/tracefs-tools.c | 33 +++++++++++----------------------
+ 2 files changed, 12 insertions(+), 27 deletions(-)
 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index fbd7db5..5c4e50d 100644
+index 5c4e50d..0665e8d 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -136,8 +136,8 @@ struct tracefs_options_mask {
+@@ -131,11 +131,7 @@ enum tracefs_option_id {
  };
- void tracefs_option_set(struct tracefs_options_mask *options, enum tracefs_option_id id);
- void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_option_id id);
--bool tracefs_option_is_set(struct tracefs_options_mask options, enum tracefs_option_id id);
--
-+bool tracefs_option_is_set(struct tracefs_options_mask *options,
-+			   enum tracefs_option_id id);
+ #define TRACEFS_OPTION_MAX (TRACEFS_OPTION_VERBOSE + 1)
+ 
+-struct tracefs_options_mask {
+-	unsigned long long	mask;
+-};
+-void tracefs_option_set(struct tracefs_options_mask *options, enum tracefs_option_id id);
+-void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_option_id id);
++struct tracefs_options_mask;
+ bool tracefs_option_is_set(struct tracefs_options_mask *options,
+ 			   enum tracefs_option_id id);
  struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instance *instance);
- bool tracefs_option_is_supported(struct tracefs_instance *instance, enum tracefs_option_id id);
- struct tracefs_options_mask *tracefs_options_get_enabled(struct tracefs_instance *instance);
 diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-index 51a7971..3b5f773 100644
+index 3b5f773..11a4c8c 100644
 --- a/src/tracefs-tools.c
 +++ b/src/tracefs-tools.c
-@@ -359,10 +359,11 @@ bool tracefs_option_is_enabled(struct tracefs_instance *instance, enum tracefs_o
-  * Returns true if an option with given id is set in the bitmask,
-  * false if it is not set.
-  */
--bool tracefs_option_is_set(struct tracefs_options_mask options, enum tracefs_option_id id)
-+bool tracefs_option_is_set(struct tracefs_options_mask *options,
-+			   enum tracefs_option_id id)
- {
- 	if (id > TRACEFS_OPTION_INVALID)
--		return options.mask & (1ULL << (id - 1));
-+		return options->mask & (1ULL << (id - 1));
- 	return false;
+@@ -19,6 +19,10 @@
+ 
+ #define TRACE_CTRL	"tracing_on"
+ 
++struct tracefs_options_mask {
++	unsigned long long	mask;
++};
++
+ static const char * const options_map[] = {
+ 	"unknown",
+ 	"annotate",
+@@ -197,6 +201,13 @@ enum tracefs_option_id tracefs_option_id(const char *name)
+ 	return TRACEFS_OPTION_INVALID;
  }
  
++static void tracefs_option_set(struct tracefs_options_mask *options,
++			       enum tracefs_option_id id)
++{
++	if (options && id > TRACEFS_OPTION_INVALID)
++		options->mask |= (1ULL << (id - 1));
++}
++
+ static struct tracefs_options_mask *trace_get_options(struct tracefs_instance *instance,
+ 						      bool enabled)
+ {
+@@ -366,25 +377,3 @@ bool tracefs_option_is_set(struct tracefs_options_mask *options,
+ 		return options->mask & (1ULL << (id - 1));
+ 	return false;
+ }
+-
+-/**
+- * tracefs_option_set - Set option in options bitmask
+- * @options: Pointer to a bitmask with options
+- * @id: trace option id
+- */
+-void tracefs_option_set(struct tracefs_options_mask *options, enum tracefs_option_id id)
+-{
+-	if (options && id > TRACEFS_OPTION_INVALID)
+-		options->mask |= (1ULL << (id - 1));
+-}
+-
+-/**
+- * tracefs_option_clear - Clear option from options bitmask
+- * @options: Pointer to a bitmask with options
+- * @id: trace option id
+- */
+-void tracefs_option_clear(struct tracefs_options_mask *options, enum tracefs_option_id id)
+-{
+-	if (options && id > TRACEFS_OPTION_INVALID)
+-		options->mask &= ~(1ULL << (id - 1));
+-}
 -- 
 2.27.0
 
