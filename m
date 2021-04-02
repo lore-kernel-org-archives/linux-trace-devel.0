@@ -2,176 +2,112 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DATE_IN_FUTURE_24_48,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C73B0C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 02:00:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A38EC433B4
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A3788610FC
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 02:00:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6217D610D1
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 13:20:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhDBCAv (ORCPT
+        id S229599AbhDBNUE (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 1 Apr 2021 22:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
+        Fri, 2 Apr 2021 09:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231179AbhDBCAv (ORCPT
+        with ESMTP id S229932AbhDBNUE (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 1 Apr 2021 22:00:51 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41F7C0613E6
-        for <linux-trace-devel@vger.kernel.org>; Thu,  1 Apr 2021 19:00:50 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id j7so2934277qtx.5
-        for <linux-trace-devel@vger.kernel.org>; Thu, 01 Apr 2021 19:00:50 -0700 (PDT)
+        Fri, 2 Apr 2021 09:20:04 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A652C061788
+        for <linux-trace-devel@vger.kernel.org>; Fri,  2 Apr 2021 06:20:03 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id u17so1136937ejk.2
+        for <linux-trace-devel@vger.kernel.org>; Fri, 02 Apr 2021 06:20:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=MmGCHfXsxnfSJwX63M9CDgyEIcicaoaGyErUExBMfcw=;
-        b=nQFYr5y3J/44NQ6R7E3vNvxdaCwtulH//XfUlx7m0xyosprP4PXrEcI+k/vcCw6BZB
-         x7ZxSCzLkb3vSHmROuxX/CUn6+BSUEXyJlM99b9SiRebbW5Y8StCnvV83lvmkXNt1py+
-         MoFBRjm8lHWhTKLbN/p2jDczlrS5udlVlAjyS3N4xAETloaDHWXonCFZ3TikA7FnP8OH
-         GNLvVsQppxbSFciFVwrOaV5W64H7ezwH+AvyE3px5xlSzCzYVOszt8IiG/VVPXhlyyMe
-         wDJEJwPrqgeDpZJiGe1Gfg7TsgFtMn2ZdXW3C3XnzcwnWGgP47m23hvuNvUzr+lFC6EB
-         W4qg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bx0IwbYTflDi7XjK37L93nsygl+2jWgYd7hRljVpQOk=;
+        b=p+FpM/MFgn99kgNxIGkFbTfkXkxbx5wcycx9o6fNmlOfA/dUc2aMFXCwXUQttmOmYH
+         uawVNnKQmqV7H/gM3vWKpf8VqnuDLB83UJxd+TTilqKxcxEjcmy97+uv6S366bYHQIli
+         1AMbUGGxOR9Dludi2mwS7DyyPP/9Yg9aa/JTFYtqQPUqQXu0K08HpWOdwcn7cO6MhMV8
+         xoEhjnh4vz8/pVmAGYypb4tqTDIUPvyX9OypQZrpTI25YihFsn7HPXGZfluFyIHRmkk9
+         puM20wbWggA5yR1B/SpKWZE+DQphESN8SnrAfEpkSLrixSOE03SmWQvl+KMvwRZucngG
+         mH7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=MmGCHfXsxnfSJwX63M9CDgyEIcicaoaGyErUExBMfcw=;
-        b=MGMTXEeu+LtQReZJTnIBnxOnqo8fOOefqvsHLrYi+RS3WJjHMFZJdR1k4kpih+u601
-         jcpuJc+s4xiQSEycCR/sqDI93+0o1knNsli/1PfOvIE3ikPfh0K1YqdJTHNKBEfW2NUJ
-         1Ve71NLC/NkDDCPp4LyQQjjwJ/CT8cUGWhX+iPTTQA9PEH1vbPexEctHJiWYrZ3ZFzAA
-         UhDg6hSXWR6FoFH4Y4Qi3HXZhzAXDmrwyMaCk5p+0uSGVJ4sHIzm2YCiiak+h09uzNb3
-         eVbuHdaw2EPmvpcTqnN+pZmb1O77POoK1XTC2yMGyjZYU0iKdgIjXUafakaegkhsO0ro
-         R25A==
-X-Gm-Message-State: AOAM532SRs/mUiLjKz6gGVk3kbqlzS9gDk8YLrugTe0P4OBiGLN3ehOE
-        PI34hDBioTtyVXtLZqkGFVlEbCObCYZ4LQ==
-X-Google-Smtp-Source: ABdhPJwL5pkMGiMI26zKBnQXAnN8H8OsdmyzCfwOeNUQLGi1asyfkUbwvq0jr5VnekO/OTR0vn5CLA==
-X-Received: by 2002:ac8:4b6d:: with SMTP id g13mr9802628qts.369.1617328849990;
-        Thu, 01 Apr 2021 19:00:49 -0700 (PDT)
-Received: from localhost.localdomain ([115.98.176.68])
-        by smtp.gmail.com with ESMTPSA id d14sm6197935qkg.33.2021.04.01.19.00.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Apr 2021 19:00:49 -0700 (PDT)
-From:   Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bx0IwbYTflDi7XjK37L93nsygl+2jWgYd7hRljVpQOk=;
+        b=T4GiDqafC+ndRo/NL8KAO1BdSR+nzxAwVs91LDTXfkCtL3G2aWwn/eQS41Nae6EHPo
+         NfbIj/HVG6T3z1y/7foHcVLvmL+3CABBXhWIUSS3tjXaH9Yr7soNCrpc7FRdSvjTrlCs
+         RvNUl1pUFDq6YJEQ319IfTVzneNZkY8tiKLUv8RKYBweufhQmIb/YACY4FOxt3RtwC1f
+         xb6tHg/TpvviRqIMuAwnyPBnvjX1+eTA9eqSwrUmvMm8FUS3ML/gXsapm/CoxtCdaDEO
+         bzypYu5XwL8aRUSjYVwUhFwpGO7HK4PAwQ8h3Ezv/KY642SmsHFGvvO6+fiL3hGReSh0
+         IxaA==
+X-Gm-Message-State: AOAM5337/LlaUsnxj8ojfIdRpOjRdSoAHh5W4fePr9ZttrdIvDtEae3O
+        gXlm+T+cuWWXzdPTyeqtpD4=
+X-Google-Smtp-Source: ABdhPJyvJuxH4d4OJqkeFJ0OmQcXrr8jzHrNv3q/bbgwDhimGwTwSFlmEEl/IBvBwJYZlRTrmItT1A==
+X-Received: by 2002:a17:906:7d48:: with SMTP id l8mr13850788ejp.108.1617369602028;
+        Fri, 02 Apr 2021 06:20:02 -0700 (PDT)
+Received: from localhost.localdomain ([95.87.199.133])
+        by smtp.gmail.com with ESMTPSA id n3sm4120476ejj.113.2021.04.02.06.20.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 06:20:01 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com,
-        Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
-Subject: [PATCH] libtracefs: Unit test for the tracing filter API
-Date:   Sat,  3 Apr 2021 07:31:00 +0530
-Message-Id: <1617415260-19795-1-git-send-email-sameeruddin.shaik8@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 1/6] libtracefs: Fix issues with tracefs_option_id()
+Date:   Fri,  2 Apr 2021 16:19:42 +0300
+Message-Id: <20210402131947.346235-2-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210402131947.346235-1-y.karadz@gmail.com>
+References: <20210402131947.346235-1-y.karadz@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-tracefs_function_filter();
+Few mistakes have been made when introducing this API function.
+First of all, its declaration is missing from the header file.
+In addition to this the argument type is missing "const".
 
-Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ include/tracefs.h   | 1 +
+ src/tracefs-tools.c | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index ed2693b..09e564f 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -11,6 +11,7 @@
- #include <time.h>
- #include <dirent.h>
- #include <ftw.h>
-+#include <errno.h>
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 05bd0ef..fbd7db5 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -145,5 +145,6 @@ bool tracefs_option_is_enabled(struct tracefs_instance *instance, enum tracefs_o
+ int tracefs_option_enable(struct tracefs_instance *instance, enum tracefs_option_id id);
+ int tracefs_option_diasble(struct tracefs_instance *instance, enum tracefs_option_id id);
+ const char *tracefs_option_name(enum tracefs_option_id id);
++enum tracefs_option_id tracefs_option_id(const char *name);
  
- #include <CUnit/CUnit.h>
- #include <CUnit/Basic.h>
-@@ -1020,6 +1021,80 @@ static void test_custom_trace_dir(void)
- 	free(dname);
- }
- 
-+static int test_instance_filter(struct tracefs_instance *instance,
-+				const char **filters, const char *module,
-+				int flags)
-+{
-+	int ret;
-+	int i;
-+
-+	if (filters) {
-+		for (i = 0; filters[i]; i++) {
-+			ret = tracefs_function_filter(instance, filters[i],
-+						      module, flags);
-+			if (ret) {
-+				if (errno == EINVAL)
-+					printf("Filter %s did not match\n",
-+					       filters[i]);
-+				else
-+					printf("Failed writing %s\n",
-+					       filters[i]);
-+			}
-+		}
-+	} else {
-+		ret = tracefs_function_filter(instance, NULL, module, flags);
-+	}
-+	return ret;
-+}
-+
-+static void test_tracefs_function_filter(void)
-+{
-+	const char *filter[] = {"run_init_process", "ufs*", "^ext4.*$", NULL};
-+	const char *future_filter[] = {"write_dummy", "read_dummy", NULL};
-+	const char *future_module = "dummy";
-+	struct tracefs_instance *instance;
-+	const char *module = "btrtl";
-+	int ret;
-+
-+	instance = tracefs_instance_create(TEST_INSTANCE_NAME);
-+	CU_TEST(instance != NULL);
-+
-+	ret = tracefs_function_filter(instance, NULL, NULL,
-+				      TRACEFS_FL_RESET | TRACEFS_FL_CONTINUE);
-+	if (ret) {
-+		printf("Failed to reset the filter\n");
-+		if (ret < 0)
-+			tracefs_function_filter(instance, NULL, NULL, 0);
-+	}
-+	/* Test string, kernel glob and regex for specific_instance*/
-+	ret = test_instance_filter(instance, filter, NULL, TRACEFS_FL_CONTINUE);
-+	CU_ASSERT(ret == 0);
-+	/* Test Module only with no filters*/
-+	ret = test_instance_filter(instance, NULL, module, TRACEFS_FL_CONTINUE);
-+	CU_ASSERT(ret == 0);
-+	ret = test_instance_filter(instance, future_filter, future_module,
-+				   TRACEFS_FL_CONTINUE | TRACEFS_FL_FUTURE);
-+	CU_ASSERT(ret == 0);
-+	tracefs_function_filter(instance, NULL, NULL, 0);
-+
-+	ret = tracefs_function_filter(NULL, NULL, NULL,
-+				      TRACEFS_FL_RESET | TRACEFS_FL_CONTINUE);
-+	if (ret) {
-+		printf("Failed to reset the filter\n");
-+		if (ret < 0)
-+			tracefs_function_filter(instance, NULL, NULL, 0);
-+	}
-+	/* Test top instance*/
-+	ret = test_instance_filter(NULL, filter, NULL, TRACEFS_FL_CONTINUE);
-+	CU_ASSERT(ret == 0);
-+	ret = test_instance_filter(NULL, NULL, module, TRACEFS_FL_CONTINUE);
-+	CU_ASSERT(ret == 0);
-+	ret = test_instance_filter(NULL, future_filter, future_module,
-+				   TRACEFS_FL_CONTINUE | TRACEFS_FL_FUTURE);
-+	CU_ASSERT(ret == 0);
-+	tracefs_function_filter(NULL, NULL, NULL, 0);
-+}
-+
- static int test_suite_destroy(void)
+ #endif /* _TRACE_FS_H */
+diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
+index e2dfc7b..51a7971 100644
+--- a/src/tracefs-tools.c
++++ b/src/tracefs-tools.c
+@@ -181,7 +181,7 @@ const char *tracefs_option_name(enum tracefs_option_id id)
+  * Returns trace option ID or TRACEFS_OPTION_INVALID in case of an error or
+  * unknown option name.
+  */
+-enum tracefs_option_id tracefs_option_id(char *name)
++enum tracefs_option_id tracefs_option_id(const char *name)
  {
- 	tracefs_instance_destroy(test_instance);
-@@ -1075,4 +1150,6 @@ void test_tracefs_lib(void)
- 		    test_tracing_options);
- 	CU_add_test(suite, "custom system directory",
- 		    test_custom_trace_dir);
-+	CU_add_test(suite, "Set Filter API",
-+		    test_tracefs_function_filter);
- }
+ 	int i;
+ 
 -- 
-2.7.4
+2.27.0
 
