@@ -2,221 +2,176 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DATE_IN_FUTURE_24_48,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDAD6C43460
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  1 Apr 2021 17:48:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C73B0C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 02:00:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B838261008
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  1 Apr 2021 17:48:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A3788610FC
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  2 Apr 2021 02:00:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234377AbhDARsM (ORCPT
+        id S234081AbhDBCAv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 1 Apr 2021 13:48:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236461AbhDARpC (ORCPT
+        Thu, 1 Apr 2021 22:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231179AbhDBCAv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:45:02 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C70936137F
-        for <linux-trace-devel@vger.kernel.org>; Thu,  1 Apr 2021 16:23:30 +0000 (UTC)
-Date:   Thu, 1 Apr 2021 12:23:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracecmd: Hide all non API global functions
-Message-ID: <20210401122327.5b39df93@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Thu, 1 Apr 2021 22:00:51 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41F7C0613E6
+        for <linux-trace-devel@vger.kernel.org>; Thu,  1 Apr 2021 19:00:50 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id j7so2934277qtx.5
+        for <linux-trace-devel@vger.kernel.org>; Thu, 01 Apr 2021 19:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=MmGCHfXsxnfSJwX63M9CDgyEIcicaoaGyErUExBMfcw=;
+        b=nQFYr5y3J/44NQ6R7E3vNvxdaCwtulH//XfUlx7m0xyosprP4PXrEcI+k/vcCw6BZB
+         x7ZxSCzLkb3vSHmROuxX/CUn6+BSUEXyJlM99b9SiRebbW5Y8StCnvV83lvmkXNt1py+
+         MoFBRjm8lHWhTKLbN/p2jDczlrS5udlVlAjyS3N4xAETloaDHWXonCFZ3TikA7FnP8OH
+         GNLvVsQppxbSFciFVwrOaV5W64H7ezwH+AvyE3px5xlSzCzYVOszt8IiG/VVPXhlyyMe
+         wDJEJwPrqgeDpZJiGe1Gfg7TsgFtMn2ZdXW3C3XnzcwnWGgP47m23hvuNvUzr+lFC6EB
+         W4qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MmGCHfXsxnfSJwX63M9CDgyEIcicaoaGyErUExBMfcw=;
+        b=MGMTXEeu+LtQReZJTnIBnxOnqo8fOOefqvsHLrYi+RS3WJjHMFZJdR1k4kpih+u601
+         jcpuJc+s4xiQSEycCR/sqDI93+0o1knNsli/1PfOvIE3ikPfh0K1YqdJTHNKBEfW2NUJ
+         1Ve71NLC/NkDDCPp4LyQQjjwJ/CT8cUGWhX+iPTTQA9PEH1vbPexEctHJiWYrZ3ZFzAA
+         UhDg6hSXWR6FoFH4Y4Qi3HXZhzAXDmrwyMaCk5p+0uSGVJ4sHIzm2YCiiak+h09uzNb3
+         eVbuHdaw2EPmvpcTqnN+pZmb1O77POoK1XTC2yMGyjZYU0iKdgIjXUafakaegkhsO0ro
+         R25A==
+X-Gm-Message-State: AOAM532SRs/mUiLjKz6gGVk3kbqlzS9gDk8YLrugTe0P4OBiGLN3ehOE
+        PI34hDBioTtyVXtLZqkGFVlEbCObCYZ4LQ==
+X-Google-Smtp-Source: ABdhPJwL5pkMGiMI26zKBnQXAnN8H8OsdmyzCfwOeNUQLGi1asyfkUbwvq0jr5VnekO/OTR0vn5CLA==
+X-Received: by 2002:ac8:4b6d:: with SMTP id g13mr9802628qts.369.1617328849990;
+        Thu, 01 Apr 2021 19:00:49 -0700 (PDT)
+Received: from localhost.localdomain ([115.98.176.68])
+        by smtp.gmail.com with ESMTPSA id d14sm6197935qkg.33.2021.04.01.19.00.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Apr 2021 19:00:49 -0700 (PDT)
+From:   Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com,
+        Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+Subject: [PATCH] libtracefs: Unit test for the tracing filter API
+Date:   Sat,  3 Apr 2021 07:31:00 +0530
+Message-Id: <1617415260-19795-1-git-send-email-sameeruddin.shaik8@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+tracefs_function_filter();
 
-There's several internal functions that are global to the library that
-should not be visible as an API. Define the annotation "__hidden" to be
-the visibility attribute to hide functions from the API. Also move the
-defines of both "__hidden" and "__packed__" to trace-cmd-private.h as that
-file is included in more places that trace-cmd-local.h.
+Signed-off-by: Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- lib/trace-cmd/include/private/trace-cmd-private.h |  3 +++
- lib/trace-cmd/include/trace-cmd-local.h           |  2 --
- lib/trace-cmd/trace-hash.c                        | 11 ++++++-----
- lib/trace-cmd/trace-perf.c                        |  6 +++---
- lib/trace-cmd/trace-timesync.c                    |  4 ++--
- lib/trace-cmd/trace-util.c                        |  6 +++---
- 6 files changed, 17 insertions(+), 15 deletions(-)
-
-diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index fdca7494..3a6ca3f7 100644
---- a/lib/trace-cmd/include/private/trace-cmd-private.h
-+++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -11,6 +11,9 @@
- #include "traceevent/event-parse.h"
- #include "trace-cmd/trace-cmd.h"
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index ed2693b..09e564f 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -11,6 +11,7 @@
+ #include <time.h>
+ #include <dirent.h>
+ #include <ftw.h>
++#include <errno.h>
  
-+#define __packed __attribute__((packed))
-+#define __hidden __attribute__((visibility ("hidden")))
+ #include <CUnit/CUnit.h>
+ #include <CUnit/Basic.h>
+@@ -1020,6 +1021,80 @@ static void test_custom_trace_dir(void)
+ 	free(dname);
+ }
+ 
++static int test_instance_filter(struct tracefs_instance *instance,
++				const char **filters, const char *module,
++				int flags)
++{
++	int ret;
++	int i;
 +
- #define TRACECMD_MAGIC { 23, 8, 68 }
- 
- #define ARRAY_SIZE(_a) (sizeof(_a) / sizeof((_a)[0]))
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index d265e4c8..0cd27441 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -12,8 +12,6 @@
- /* Can be overridden */
- void warning(const char *fmt, ...);
- 
--#define __packed __attribute__((packed))
--
- /* trace.dat file format version */
- #define FILE_VERSION 6
- 
-diff --git a/lib/trace-cmd/trace-hash.c b/lib/trace-cmd/trace-hash.c
-index 47703153..bed97323 100644
---- a/lib/trace-cmd/trace-hash.c
-+++ b/lib/trace-cmd/trace-hash.c
-@@ -9,9 +9,10 @@
- #include <stdarg.h>
- #include <errno.h>
- 
-+#include "trace-cmd-private.h"
- #include "trace-hash.h"
- 
--int trace_hash_init(struct trace_hash *hash, int buckets)
-+int __hidden trace_hash_init(struct trace_hash *hash, int buckets)
++	if (filters) {
++		for (i = 0; filters[i]; i++) {
++			ret = tracefs_function_filter(instance, filters[i],
++						      module, flags);
++			if (ret) {
++				if (errno == EINVAL)
++					printf("Filter %s did not match\n",
++					       filters[i]);
++				else
++					printf("Failed writing %s\n",
++					       filters[i]);
++			}
++		}
++	} else {
++		ret = tracefs_function_filter(instance, NULL, module, flags);
++	}
++	return ret;
++}
++
++static void test_tracefs_function_filter(void)
++{
++	const char *filter[] = {"run_init_process", "ufs*", "^ext4.*$", NULL};
++	const char *future_filter[] = {"write_dummy", "read_dummy", NULL};
++	const char *future_module = "dummy";
++	struct tracefs_instance *instance;
++	const char *module = "btrtl";
++	int ret;
++
++	instance = tracefs_instance_create(TEST_INSTANCE_NAME);
++	CU_TEST(instance != NULL);
++
++	ret = tracefs_function_filter(instance, NULL, NULL,
++				      TRACEFS_FL_RESET | TRACEFS_FL_CONTINUE);
++	if (ret) {
++		printf("Failed to reset the filter\n");
++		if (ret < 0)
++			tracefs_function_filter(instance, NULL, NULL, 0);
++	}
++	/* Test string, kernel glob and regex for specific_instance*/
++	ret = test_instance_filter(instance, filter, NULL, TRACEFS_FL_CONTINUE);
++	CU_ASSERT(ret == 0);
++	/* Test Module only with no filters*/
++	ret = test_instance_filter(instance, NULL, module, TRACEFS_FL_CONTINUE);
++	CU_ASSERT(ret == 0);
++	ret = test_instance_filter(instance, future_filter, future_module,
++				   TRACEFS_FL_CONTINUE | TRACEFS_FL_FUTURE);
++	CU_ASSERT(ret == 0);
++	tracefs_function_filter(instance, NULL, NULL, 0);
++
++	ret = tracefs_function_filter(NULL, NULL, NULL,
++				      TRACEFS_FL_RESET | TRACEFS_FL_CONTINUE);
++	if (ret) {
++		printf("Failed to reset the filter\n");
++		if (ret < 0)
++			tracefs_function_filter(instance, NULL, NULL, 0);
++	}
++	/* Test top instance*/
++	ret = test_instance_filter(NULL, filter, NULL, TRACEFS_FL_CONTINUE);
++	CU_ASSERT(ret == 0);
++	ret = test_instance_filter(NULL, NULL, module, TRACEFS_FL_CONTINUE);
++	CU_ASSERT(ret == 0);
++	ret = test_instance_filter(NULL, future_filter, future_module,
++				   TRACEFS_FL_CONTINUE | TRACEFS_FL_FUTURE);
++	CU_ASSERT(ret == 0);
++	tracefs_function_filter(NULL, NULL, NULL, 0);
++}
++
+ static int test_suite_destroy(void)
  {
- 	memset(hash, 0, sizeof(*hash));
- 
-@@ -27,12 +28,12 @@ int trace_hash_init(struct trace_hash *hash, int buckets)
- 	return 0;
+ 	tracefs_instance_destroy(test_instance);
+@@ -1075,4 +1150,6 @@ void test_tracefs_lib(void)
+ 		    test_tracing_options);
+ 	CU_add_test(suite, "custom system directory",
+ 		    test_custom_trace_dir);
++	CU_add_test(suite, "Set Filter API",
++		    test_tracefs_function_filter);
  }
- 
--void trace_hash_free(struct trace_hash *hash)
-+void __hidden trace_hash_free(struct trace_hash *hash)
- {
- 	free(hash->buckets);
- }
- 
--int trace_hash_empty(struct trace_hash *hash)
-+int __hidden trace_hash_empty(struct trace_hash *hash)
- {
- 	struct trace_hash_item **bucket;
- 
-@@ -42,7 +43,7 @@ int trace_hash_empty(struct trace_hash *hash)
- 	return 1;
- }
- 
--int trace_hash_add(struct trace_hash *hash, struct trace_hash_item *item)
-+int __hidden trace_hash_add(struct trace_hash *hash, struct trace_hash_item *item)
- {
- 	struct trace_hash_item *next;
- 	int bucket = hash->power ? item->key & hash->power :
-@@ -62,7 +63,7 @@ int trace_hash_add(struct trace_hash *hash, struct trace_hash_item *item)
- 	return 1;
- }
- 
--struct trace_hash_item *
-+ __hidden struct trace_hash_item *
- trace_hash_find(struct trace_hash *hash, unsigned long long key,
- 		trace_hash_func match, void *data)
- {
-diff --git a/lib/trace-cmd/trace-perf.c b/lib/trace-cmd/trace-perf.c
-index 2a24a244..a10da55d 100644
---- a/lib/trace-cmd/trace-perf.c
-+++ b/lib/trace-cmd/trace-perf.c
-@@ -44,7 +44,7 @@ static void default_perf_init_pe(struct perf_event_attr *pe)
-  * Returns 0 on success, or -1 in case of an error.
-  *
-  */
--int trace_perf_init(struct trace_perf *perf, int pages, int cpu, int pid)
-+int __hidden trace_perf_init(struct trace_perf *perf, int pages, int cpu, int pid)
- {
- 	if (!perf)
- 		return -1;
-@@ -66,7 +66,7 @@ int trace_perf_init(struct trace_perf *perf, int pages, int cpu, int pid)
-  *	  with trace_perf_open()
-  *
-  */
--void trace_perf_close(struct trace_perf *perf)
-+void __hidden trace_perf_close(struct trace_perf *perf)
- {
- 	if (perf->fd >= 0)
- 		close(perf->fd);
-@@ -85,7 +85,7 @@ void trace_perf_close(struct trace_perf *perf)
-  * Returns 0 on success, or -1 in case of an error. In case of success, the
-  * session must be closed with trace_perf_close()
-  */
--int trace_perf_open(struct trace_perf *perf)
-+int __hidden trace_perf_open(struct trace_perf *perf)
- {
- 	perf->fd = syscall(__NR_perf_event_open, &perf->pe, perf->pid, perf->cpu, -1, 0);
- 	if (perf->fd < 0)
-diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
-index ba877f70..a0b07f40 100644
---- a/lib/trace-cmd/trace-timesync.c
-+++ b/lib/trace-cmd/trace-timesync.c
-@@ -103,7 +103,7 @@ int tracecmd_tsync_proto_unregister(char *proto_name)
- 	return -1;
- }
- 
--bool tsync_proto_is_supported(const char *proto_name)
-+bool __hidden tsync_proto_is_supported(const char *proto_name)
- {
- 	if (tsync_proto_find(proto_name))
- 		return true;
-@@ -364,7 +364,7 @@ static int vsock_make(void)
- 	return sd;
- }
- 
--int vsock_get_port(int sd, unsigned int *port)
-+int __hidden vsock_get_port(int sd, unsigned int *port)
- {
- 	struct sockaddr_vm addr;
- 	socklen_t addr_len = sizeof(addr);
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 538adbc2..9e37b371 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -277,7 +277,7 @@ static void add_plugin_file(struct tep_handle *pevent, const char *path,
-  *
-  * Use trace_util_free_plugin_files() to free the result.
-  */
--char **trace_util_find_plugin_files(const char *suffix)
-+__hidden char **trace_util_find_plugin_files(const char *suffix)
- {
- 	struct add_plugin_data pdata;
- 
-@@ -297,7 +297,7 @@ char **trace_util_find_plugin_files(const char *suffix)
-  *
-  * Frees the contents that were allocated by trace_util_find_plugin_files().
-  */
--void trace_util_free_plugin_files(char **files)
-+void __hidden trace_util_free_plugin_files(char **files)
- {
- 	int i;
- 
-@@ -332,7 +332,7 @@ static char *get_source_plugins_dir(void)
- 	return strdup(path);
- }
- 
--struct tep_plugin_list*
-+__hidden struct tep_plugin_list *
- trace_load_plugins(struct tep_handle *tep, int flags)
- {
- 	struct tep_plugin_list *list;
 -- 
-2.29.2
+2.7.4
 
