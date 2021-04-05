@@ -8,57 +8,57 @@ X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BAC7C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Apr 2021 15:01:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58832C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Apr 2021 15:03:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 38D96613B7
-	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Apr 2021 15:01:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 27975613B1
+	for <linux-trace-devel@archiver.kernel.org>; Mon,  5 Apr 2021 15:03:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237824AbhDEPBv (ORCPT
+        id S241383AbhDEPDa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 5 Apr 2021 11:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
+        Mon, 5 Apr 2021 11:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237631AbhDEPBv (ORCPT
+        with ESMTP id S237631AbhDEPDa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 5 Apr 2021 11:01:51 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29C5C061756
-        for <linux-trace-devel@vger.kernel.org>; Mon,  5 Apr 2021 08:01:44 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id n2so10970085ejy.7
-        for <linux-trace-devel@vger.kernel.org>; Mon, 05 Apr 2021 08:01:44 -0700 (PDT)
+        Mon, 5 Apr 2021 11:03:30 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004D3C061756
+        for <linux-trace-devel@vger.kernel.org>; Mon,  5 Apr 2021 08:03:23 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id e14so17203933ejz.11
+        for <linux-trace-devel@vger.kernel.org>; Mon, 05 Apr 2021 08:03:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=sO62Nuep1Zz/leBkuwPWtMSPuUIOEiOB0VZRtVSK04M=;
-        b=uc11UsiPiaFWEQp3mllTp+Mq9egMfszJ63vco+phE9BLxgyqv/fZbeKmCfvjKSMI8g
-         XarPLcRfzqvc8ZyEjMLzYT162/cOpLKFOyIeeSV5S72QoO5H1AB7L3jq0ctCRISl7QiV
-         Sbcl0FymD2ENmcem8vrkzzb+gtVsdNFjqhz7fwKR/wYGyitNmKqBBXqnNg3j7R5oKqwk
-         ojvd41lWOwO5nGE5JhN8hs+pt0YiaB5U2J7+uHIwcvfQCJGEEmV/tLWsqe3VD9BL8tsk
-         /QnB+9Bx4Jue+03GDaxjl8KDRo3fZ9Zfn4ybq3CvirXIym6jFR/4myzcS10C36vJxiyE
-         htkw==
+        bh=yE4m4nWxT0dTcPTpQeWgeLYg52F0fWp7VS8NLhmm1pw=;
+        b=bmTer/bI76qReyqlFulQIyh9joYbAHLYucoyRhT6uqkuUNsta485MhpU0vmN+UgmW0
+         M9Wa1p2WLy3yxTt614t6zdiwpXSdd/1CHr0lMl8gBiqS733RK6tqX4dMu5mETeRk75z6
+         heXibX+SOGpi/ftl1bvfM57st9mddP06c8kQmihI9/VPm40/+vYCi4PkSB4T663SfqDR
+         muL6xP6Q8eT8kpoX1b3Bet31MshpfEjN0emdb2raUiWMwE95r8vAZgjghsaCQuQizOae
+         4O6c3rzwxqVA9TzVC8enDAbgRNDLLO1uchmtMwI879OJWQI2/eNQuPiEnwvdlcwEgO7S
+         EzQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=sO62Nuep1Zz/leBkuwPWtMSPuUIOEiOB0VZRtVSK04M=;
-        b=WCgvrYmpgRrf7nlaSKq5dj7ZY6A7+lG872EYAGRsu0DO4MhhOPjJrzx929BFZ2oVLo
-         3snmL1vDoXnmaKHuiWt7Ivp/yT2h/p5362NevyjXJbJfYXef7UwVu1efpgXWzLQJcUo0
-         0CSkWiCfFg44drlrrBMS5JqLj4gEVzX0ZY96bGKFNfPfpcR0rsJpFcvhFA6oVwaOiaFx
-         /DlnqANehnY4AaNZgcaphfymdzrYWQrNnZ5CPJvH8sxpucWlojcy/ZpOI/RO17aHkHIq
-         fVkbjKUV/wE04qeX2bj0YxskBAkalFERmNyJMDRMXhBAXgtBrQHBuV1InMJH3zc5AAdT
-         i3Lw==
-X-Gm-Message-State: AOAM533QkTkZKZT4bl+Qdtq3W7USt/vwWKkqNWvqrX2X69kEAv25XqPe
-        iL93SIlv5MHhf8Fc31ahMgWS/V6Y2VRyAg==
-X-Google-Smtp-Source: ABdhPJyHJUeKN6EvHAzPHNk1qSR45b4l5vLUCH+Oo94YZf/wSoLZDAkAdpn5yN9b/Dq/92UdsQLsRg==
-X-Received: by 2002:a17:907:761c:: with SMTP id jx28mr29305475ejc.417.1617634903321;
-        Mon, 05 Apr 2021 08:01:43 -0700 (PDT)
+        bh=yE4m4nWxT0dTcPTpQeWgeLYg52F0fWp7VS8NLhmm1pw=;
+        b=iySTpqcPwyGW00BjdBj+58qnWY+O1g2w8A/O9p8SkYRZ0AJ7w5Tx0HM4qufD+USOsE
+         PkAW0R7qyGRmseS0cFZSRxvo1WDxm/Vmv+EPk9SP3d61V2cwLJOEONv+RyMzmk9CfAIo
+         erirHE/Uf5Mx+hi/fGzkXgzyySn61s8wpb+mV4aCizz43YNyQwjn3yWjEkZPPZ9ZMTsm
+         IbLsZikiK7C08LUVtZFtzY0U+fTVI+wYp4vOnGf7ROkDrTjDzUsAjuMEOxwjlHQwaO8s
+         cjDf1jXYEXqzrs7I4DXj27/DfR0tbrzp4/RjA8QmeI+FFo4PHu9RzWin4Q2VeSWkMpzZ
+         yKCQ==
+X-Gm-Message-State: AOAM533EZdigQ+b+ZAfIegE0vNQCXVffUK8grGnbj0+IF466gRhGZc1k
+        6hHp71ApgszXl1/XnmPxoxm3SfgT5obGNA==
+X-Google-Smtp-Source: ABdhPJzILnR5UzMqh3LNr+6EgEdLrsBOEs1sqGNGNq7RQuWzzg6xUGQefJNQR7uLBH5jTVnw6SeTrw==
+X-Received: by 2002:a17:906:7db:: with SMTP id m27mr29130584ejc.484.1617635002476;
+        Mon, 05 Apr 2021 08:03:22 -0700 (PDT)
 Received: from [192.168.0.106] ([95.87.199.133])
-        by smtp.gmail.com with ESMTPSA id k12sm11361145edr.60.2021.04.05.08.01.42
+        by smtp.gmail.com with ESMTPSA id d8sm3311913edy.83.2021.04.05.08.03.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 08:01:42 -0700 (PDT)
+        Mon, 05 Apr 2021 08:03:22 -0700 (PDT)
 Subject: Re: [PATCH 5/6] libtracefs: Option's bit masks to be owned by the
  instance
 To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
@@ -66,14 +66,14 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 References: <20210402131947.346235-1-y.karadz@gmail.com>
  <20210402131947.346235-6-y.karadz@gmail.com>
- <CAPpZLN5rj-O+fzxf=AR1NbUUDtyjJUXw5Kn5O8nSuZiK554p4g@mail.gmail.com>
+ <CAPpZLN5J7GM00DsqEiaq7yK+7fd2UENWH54xwKUWaYoYyRN30Q@mail.gmail.com>
 From:   Yordan Karadzhov <y.karadz@gmail.com>
-Message-ID: <8b7346e2-2ce3-0d8b-caab-dd873f00dde6@gmail.com>
-Date:   Mon, 5 Apr 2021 18:01:41 +0300
+Message-ID: <e88cdde6-65b2-fdbb-99aa-ba649277b2f8@gmail.com>
+Date:   Mon, 5 Apr 2021 18:03:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAPpZLN5rj-O+fzxf=AR1NbUUDtyjJUXw5Kn5O8nSuZiK554p4g@mail.gmail.com>
+In-Reply-To: <CAPpZLN5J7GM00DsqEiaq7yK+7fd2UENWH54xwKUWaYoYyRN30Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -82,7 +82,7 @@ List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 
-On 5.04.21 г. 13:50, Tzvetomir Stoyanov wrote:
+On 5.04.21 г. 13:56, Tzvetomir Stoyanov wrote:
 > On Fri, Apr 2, 2021 at 4:20 PM Yordan Karadzhov (VMware)
 > <y.karadz@gmail.com> wrote:
 >> If the instance owns two mask objects, we no longer need to
@@ -116,11 +116,7 @@ On 5.04.21 г. 13:50, Tzvetomir Stoyanov wrote:
 >>          ...
 >> -       free(options);
 >>   }
->>   ..
-> The description of the return value of tracefs_options_get_supported()
-> and tracefs_options_get_enabled() should be changed also, as it
-> suggests to free the return value;
->
+>>   ...
 >>   options = tracefs_options_get_enabled(NULL);
 >> @@ -67,7 +66,6 @@ if (!options) {
 >>          /* Failed to get options, enabled in the top instance */
@@ -170,95 +166,20 @@ On 5.04.21 г. 13:50, Tzvetomir Stoyanov wrote:
 >> -       if (!bitmask)
 >> -               return NULL;
 >> +       bitmask = enabled? &instance->enabled_opts : &instance->supported_opts;
-> This makes the API not thread safe. There should be no problem with
-> supported options, as they cannot be changed at runtime. I think it is
-> OK to limit the APIs , as I see no use case to call them from multiple
-> threads on the same instance, but this should be described in the
-> documentation.
+> The "instance" argument can be NULL, for the top instance. There
+> should be global enabled_opts and supported_opts, to be used in that
+> case.
 
-Discussing is this API is thread safe or not is not really relevant. 
-Even if you make tracefs_options_get_enabled() thread safe, this does 
-not change anything since the options can be already changed by the time 
-when you examine the bits of the mask.
+Yes, this is a bug and I have it in v2 as well. Seems like I will need 
+to send v3.
+
+Thanks a lot!
+
+Y.
 
 
->
->> +
->>          dname = tracefs_instance_get_file(instance, "options");
->>          if (!dname)
->>                  goto error;
->> @@ -727,7 +728,6 @@ error:
->>          if (dir)
->>                  closedir(dir);
->>          tracefs_put_tracing_file(dname);
->> -       free(bitmask);
->>          return NULL;
->>   }
->>
->> @@ -735,10 +735,10 @@ error:
->>    * tracefs_options_get_supported - Get all supported trace options in given instance
->>    * @instance: ftrace instance, can be NULL for the top instance
->>    *
->> - * Returns allocated bitmask structure with all trace options, supported in given
->> - * instance, or NULL in case of an error. The returned structure must be freed with free()
->> + * Returns bitmask structure with all trace options, supported in given instance,
->> + * or NULL in case of an error.
->>    */
->> -struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instance *instance)
->> +const struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instance *instance)
->>   {
->>          return trace_get_options(instance, false);
-> As supported options cannot be changed at runtime, they can be read
-> only once. The next calls can return the already initialised bitmask
-> with supported options.
-
-If you already have the mask, you do not need to call this function 
-second time.
-
-May be if the user intentionally calls the function again, we should 
-allow him to regenerate the mask.
-
-What do you think?
-
-Thanks!
-
-Yordan
 
 >
->>   }
->> @@ -747,10 +747,10 @@ struct tracefs_options_mask *tracefs_options_get_supported(struct tracefs_instan
->>    * tracefs_options_get_enabled - Get all currently enabled trace options in given instance
->>    * @instance: ftrace instance, can be NULL for the top instance
->>    *
->> - * Returns allocated bitmask structure with all trace options, enabled in given
->> - * instance, or NULL in case of an error. The returned structure must be freed with free()
->> + * Returns allocated bitmask structure with all trace options, enabled in given instance,
->> + * or NULL in case of an error.
->>    */
->> -struct tracefs_options_mask *tracefs_options_get_enabled(struct tracefs_instance *instance)
->> +const struct tracefs_options_mask *tracefs_options_get_enabled(struct tracefs_instance *instance)
->>   {
->>          return trace_get_options(instance, true);
->>   }
->> @@ -758,7 +758,7 @@ struct tracefs_options_mask *tracefs_options_get_enabled(struct tracefs_instance
->>   static int trace_config_option(struct tracefs_instance *instance,
->>                                 enum tracefs_option_id id, bool set)
->>   {
->> -       char *set_str = set ? "1" : "0";
->> +       const char *set_str = set ? "1" : "0";
->>          char file[PATH_MAX];
->>          const char *name;
->>
->> @@ -846,7 +846,7 @@ bool tracefs_option_is_enabled(struct tracefs_instance *instance, enum tracefs_o
->>    * Returns true if an option with given id is set in the bitmask,
->>    * false if it is not set.
->>    */
->> -bool tracefs_option_is_set(struct tracefs_options_mask *options,
->> +bool tracefs_option_is_set(const struct tracefs_options_mask *options,
->>                             enum tracefs_option_id id)
->>   {
->>          if (id > TRACEFS_OPTION_INVALID)
->> --
->> 2.27.0
->>
+> [..]
+>
 >
