@@ -2,39 +2,36 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70AA4C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Apr 2021 12:47:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 732D3C43460
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Apr 2021 15:38:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 243906124C
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Apr 2021 12:47:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 28E83613B8
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Apr 2021 15:38:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344186AbhDFMr3 (ORCPT
+        id S1345780AbhDFPi2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 6 Apr 2021 08:47:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47976 "EHLO mail.kernel.org"
+        Tue, 6 Apr 2021 11:38:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238988AbhDFMr3 (ORCPT
+        id S243939AbhDFPiH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:47:29 -0400
+        Tue, 6 Apr 2021 11:38:07 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2276361279;
-        Tue,  6 Apr 2021 12:47:21 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 08:47:19 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id B8A65613A3;
+        Tue,  6 Apr 2021 15:37:59 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 11:37:58 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
-Subject: Re: [PATCH] trace-cmd: Add CODING_STYLE and CONTRIBUTE documents
-Message-ID: <20210406084719.47d19fe6@gandalf.local.home>
-In-Reply-To: <CAPpZLN63wz4XoMWmZd=e7jOSXHjgVh9=HhP0PEGKF8yMtDDUzA@mail.gmail.com>
-References: <20210405151959.1d6901b2@gandalf.local.home>
-        <CAPpZLN63wz4XoMWmZd=e7jOSXHjgVh9=HhP0PEGKF8yMtDDUzA@mail.gmail.com>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>
+Subject: [PATCH v2] trace-cmd: Add CODING_STYLE and CONTRIBUTE documents
+Message-ID: <20210406113758.765a0aef@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,255 +40,422 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 6 Apr 2021 12:37:28 +0300
-Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-> > +
-> > +Max line width
-> > +==============  
-> 
-> The desirable max line width should be written here, should we stick
-> with the 100 char limit, recently introduced in the Linux kernel ?
+Add a CODING_STYLE document that describes the expected style of the code
+as well as a CONTRIBUTE document that explains how a new comer can
+contribute to the project.
 
-Fair point. I actually thought I did mention it. Probably got distracted
-and forgot about it.
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ CODING_STYLE | 287 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ CONTRIBUTE   | 103 ++++++++++++++++++
+ 2 files changed, 390 insertions(+)
+ create mode 100644 CODING_STYLE
+ create mode 100644 CONTRIBUTE
 
-> 
-> > +
-> > +This is a guide, as readability is more important than breaking lines up into a
-> > +hard limit. Ideally, strings should never be broken up except for where a new
-> > +line is added.
-> > +
-> > +       printf("This is a line that may continue for a very long string.\n"
-> > +              "This is another line, but after a new line\n");
-> > +
-> > +But line breaks should not be:
-> > +
-> > +       printf("This is a line that may continue for a very"
-> > +              "long string.\n This is another line,"
-> > +              "but after a new line\n");
-> > +
-> > +Not only is the above not as readable as the first version, it is not
-> > +even equivalent, because it is missing spaces between the line breaks.
-> > +For this reason, finish the string on the same line.
-> > +
-> > +Brackets and baces  
-> 
-> a typo, should be "braces".
-
-Yep.
-
-> 
-> > +==================
-> > +
-> > +For all conditionals, the braces start on the same line:
-> > +
-> > +       if (cond) {
-> > +       }  
-> 
-> That extra space before the opening brace should be mentioned in this
-> paragraph. As this is something usual for the Linux kernel developers,
-> I think it is not widely used by user space C developers.
-
-Ah, like the Linux kernel document that I link to, there's a section alone
-on spaces. I left it out thinking that people could read that document, but
-perhaps I should add the "Spaces" section as well.
-
-I also forgot to mention when not to use braces:
-
-	if (x)
-		y = x;
-	else
-		y = 1;
-
-	for (i = 0; i < 10; i++)
-		foo(i);
-
-Is fine to leave off.
-
-But if there's more than one line, even if it C still allows it, then it
-must have braces. And the else part must also match the if part.
-
- Do not do:
-
-	if (!x)
-		for (i = 0; i < 10; i++)
-			foo(i);
-	else
-		foo(x);
-
-
- Should be:
-
-	if (!x) {
-		for (i = 0; i < 10; i++)
-			foo(i);
-	} else {
-		foo(x);
-	}
-
-
-
-> 
-> > +
-> > +And the ending brace is at the same indentation as the conditional.
-> > +
-> > +       while (cond) {
-> > +       }
-> > +
-> > +       do {
-> > +       } while (cond);
-> > +
-> > +       for (i = 0; i < 10; i++) {
-> > +       }
-> > +
-> > +The same is true for structures:
-> > +
-> > +       struct my_struct {
-> > +               int field;
-> > +       };
-> > +
-> > +But for functions, the baces should start on the following line:
-> > +
-> > +       void my_function(void)
-> > +       {
-> > +       }
-> > +
-> > +
-> > +Variable declarations
-> > +=====================
-> > +
-> > +The order of variables that are declared, should first keep the same types
-> > +together, but also should be ordered by their length such that the variables
-> > +are ordered in an "upside-down Christmas tree" fashion where the length gets
-> > +smaller.
-> > +
-> > +       int tracecmd_count_cpus(void)
-> > +       {
-> > +               static int once;
-> > +               char buf[1024];
-> > +               int cpus = 0;
-> > +               char *pbuf;
-> > +               size_t *pn;
-> > +               FILE *fp;
-> > +               size_t n;
-> > +               int r;
-> > +
-> > +The above shows that the order is done by length, and in the above example it
-> > +also shows that "int cpu = 0;" is not grouped next to "int r;". As this is more
-> > +of a guideline and made to be more aesthetic to the eye of the reader, both the
-> > +above and is acceptable as below.
-> > +
-> > +       int tracecmd_count_cpus(void)
-> > +       {
-> > +               static int once;
-> > +               char buf[1024];
-> > +               char *pbuf;
-> > +               size_t *pn;
-> > +               FILE *fp;
-> > +               size_t n;
-> > +               int cpus = 0;
-> > +               int r;
-> > +
-> > +
-> > +Unless variables are tightly related, it is expected that each variable be on
-> > +its own line and not grouped by type. That is,
-> > +
-> > +               int r, cpus = 0;
-> > +
-> > +is to be discouraged, as the two variables are not related to each other.
-> > +But if you had a bunch of counters:
-> > +
-> > +               int i, j, k;
-> > +
-> > +That would be fine, as the variables are all related as they are all for the
-> > +same purpose (arbitrary counters). The same may go with pointers;
-> > +
-> > +
-> > +       char *begin, *end;
-> > +  
-> 
-> One extra paragraph for arranging the members of a struct will be very
-> useful. I still wonder sometimes how to arrange them so the memory
-> will be used in a most optimal way.
-
-Although this isn't coding style, its actual programming. But perhaps we
-can add a section on that. At least mention using tabs for fields.
-
-	struct {
-		int		x;
-		int		y;
-		unsigned long	z;
-	};
-
-> 
-> > +Comments
-> > +========
-> > +
-> > +Comments will use the "/* */" format and the C++ "//" style is discouraged.
-> > +If a comment is on one line, keep the "/*" and "*/" on the same line:
-> > +
-> > +       /* This is a single line comment. */
-> > +
-> > +If a comment spans more than one line, then have the "/*" on a separate line
-> > +before the comment and the "*/" on a separate line at the end of the comment,
-> > +and each line starts with a "*" where all the "*" line up with each other.
-> > +
-> > +       /*
-> > +        * This is a multi line comment, where all the '*'
-> > +        * will line up, and the text is on a separate line
-> > +        * as the start and end markers.
-> > +        */
-> > +
-> > +
-> > +Function documentation
-> > +======================
-> > +
-> > +All global functions (and especially any APIs) should have a function
-> > +description in the form of "kernel doc":
-> > +
-> > +  https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html
-> > +
-> > +The form is:
-> > +
-> > +  /**
-> > +   * function_name() - Brief description of function.
-> > +   * @arg1: Describe the first argument.
-> > +   * @arg2: Describe the second argument.
-> > +   *        One can provide multiple line descriptions
-> > +   *        for arguments.
-> > +   *
-> > +   * A longer description, with more discussion of the function function_name()
-> > +   * that might be useful to those using or modifying it. Begins with an
-> > +   * empty comment line, and may include additional embedded empty
-> > +   * comment lines.
-> > +   *
-> > +   * The longer description may have multiple paragraphs.
-> > +   *
-> > +   * Context: Describes whether the function can sleep, what locks it takes,
-> > +   *          releases, or expects to be held. It can extend over multiple
-> > +   *          lines.
-> > +   * Return: Describe the return value of function_name.
-> > +   *
-> > +   * The return value description can also have multiple paragraphs, and should
-> > +   * be placed at the end of the comment block.
-> > +   */
-> > +
-> > +General
-> > +=======
-> > +
-> > +As stated, this is a guide and may not be strictly enforced. The goal is to
-> > +have consistent and readable code. In general, try to have the coding style
-> > +match the surrounding code.  
-> 
-> I agree with Sameer, we should encourage people to use the
-> checkpatch.pl script from the kernel tree, before submitting the
-> patch. I find this script very useful, should be mentioned here or in
-> the CONTRIBUTE file.
-
-I can mention it here, but as I told Sameer, think of both this guide and
-checkpatch as just a guide, and not hard requirements. If the fixes from
-checkpatch make the code look uglier, it is probably wrong ;-)
-
--- Steve
+diff --git a/CODING_STYLE b/CODING_STYLE
+new file mode 100644
+index 00000000..24fb10ec
+--- /dev/null
++++ b/CODING_STYLE
+@@ -0,0 +1,287 @@
++
++trace-cmd coding-style
++======================
++
++The coding style of trace-cmd and the tracing libraries (libtracefs and
++libtraceevent) are very similar to the Linux kernel coding style:
++
++  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst
++
++Indentation
++===========
++
++Tabs are used for the start of indentation (the '\t' character), and should be
++set to 8 characters. Spaces may be used at the end for continued lines where
++having the start of text line up to braces in the previous line is not
++divisible by 8.
++
++Max line width
++==============
++
++All lines should not be more than 100 characters in length.
++
++This is a guide, as readability is more important than breaking lines up into a
++hard limit. Ideally, strings should never be broken up except for where a new
++line is added.
++
++	printf("This is a line that may continue for a very long string.\n"
++	       "This is another line, but after a new line\n");
++
++But line breaks should not be:
++
++	printf("This is a line that may continue for a very"
++	       "long string.\n This is another line,"
++	       "but after a new line\n");
++
++Not only is the above not as readable as the first version, it is not
++even equivalent, because it is missing spaces between the line breaks.
++For this reason, finish the string on the same line, even if that string
++breaks the 100 character limit.
++
++Brackets and braces
++===================
++
++For all conditionals, the braces start on the same line:
++
++	if (cond) {
++	}
++
++And the ending brace is at the same indentation as the conditional.
++
++	while (cond) {
++	}
++
++	do {
++	} while (cond);
++
++	for (i = 0; i < 10; i++) {
++	}
++
++The same is true for structures:
++
++	struct my_struct {
++		int field;
++	};
++
++But for functions, the braces should start on the following line:
++
++	void my_function(void)
++	{
++	}
++
++
++It is also fine to not use braces for simple conditionals and loops.
++
++	if (!x)
++		y = x;
++	else
++		y = 1;
++
++	for (i = 0; i < 10; i++)
++		foo(i);
++
++	while (getline(&line, &size, fp) > 0)
++		printf("%s", line);
++
++But any complex or multiline conditional or loop should have braces even if it
++is allowed not to by the C language.
++
++	if (x) {
++		for (i = 0; i < 10; i++)
++			foo(i);
++	} else {
++		foo(1);
++	}
++
++Notice above that even though the else portion is simple, it too has braces as
++the else and if blocks should match. If one is required to have braces, they
++both should have braces.
++
++
++Spaces
++======
++
++A single space should be used between C commands and their starting
++parenthesis.
++
++	if (x)
++	for (i = 0; i < 10; i++)
++	while (getline(&line, &size, fp) > 0)
++
++There should be no space between function or macros and the starting
++parenthesis.
++
++	foo(x)
++	IS_VALID(y)
++
++This includes prototypes and declarations.
++
++	void foo(int x)
++
++A space should be before and after assignment, comparison and algorithmic
++signs.
++
++	i = 0;
++	if (i < 10)
++	if (i == 5)
++
++	y = i + 10;
++
++	i += 5;
++
++For structures, use tabs to make all the fields line up nicely.
++
++	struct {
++		int			foo;
++		int			bar;
++		unsigned long long	time;
++	};
++
++Variable declarations
++=====================
++
++The order of variables that are declared, should first keep the same types
++together, but also should be ordered by their length such that the variables
++are ordered in an "upside-down Christmas tree" fashion where the length gets
++smaller.
++
++	int tracecmd_count_cpus(void)
++	{
++		static int once;
++		char buf[1024];
++		int cpus = 0;
++		char *pbuf;
++		size_t *pn;
++		FILE *fp;
++		size_t n;
++		int r;
++
++The above shows that the order is done by length, and in the above example it
++also shows that "int cpu = 0;" is not grouped next to "int r;". As this is more
++of a guideline and made to be more aesthetic to the eye of the reader, both the
++above and is acceptable as below.
++
++	int tracecmd_count_cpus(void)
++	{
++		static int once;
++		char buf[1024];
++		char *pbuf;
++		size_t *pn;
++		FILE *fp;
++		size_t n;
++		int cpus = 0;
++		int r;
++
++
++Unless variables are tightly related, it is expected that each variable be on
++its own line and not grouped by type. That is,
++
++		int r, cpus = 0;
++
++is to be discouraged, as the two variables are not related to each other.
++But if you had a bunch of counters:
++
++		int i, j, k;
++
++That would be fine, as the variables are all related as they are all for the
++same purpose (arbitrary counters). The same may go with pointers;
++
++
++	char *begin, *end;
++
++Comments
++========
++
++Comments will use the "/* */" format and the C++ "//" style is discouraged.
++If a comment is on one line, keep the "/*" and "*/" on the same line:
++
++	/* This is a single line comment. */
++
++If a comment spans more than one line, then have the "/*" on a separate line
++before the comment and the "*/" on a separate line at the end of the comment,
++and each line starts with a "*" where all the "*" line up with each other.
++
++	/*
++	 * This is a multi line comment, where all the '*'
++	 * will line up, and the text is on a separate line
++	 * as the start and end markers.
++	 */
++
++
++Function documentation
++======================
++
++All global functions (and especially any APIs) should have a function
++description in the form of "kernel doc":
++
++  https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html
++
++The form is:
++
++  /**
++   * function_name() - Brief description of function.
++   * @arg1: Describe the first argument.
++   * @arg2: Describe the second argument.
++   *        One can provide multiple line descriptions
++   *        for arguments.
++   *
++   * A longer description, with more discussion of the function function_name()
++   * that might be useful to those using or modifying it. Begins with an
++   * empty comment line, and may include additional embedded empty
++   * comment lines.
++   *
++   * The longer description may have multiple paragraphs.
++   *
++   * Context: Describes whether the function can sleep, what locks it takes,
++   *          releases, or expects to be held. It can extend over multiple
++   *          lines.
++   * Return: Describe the return value of function_name.
++   *
++   * The return value description can also have multiple paragraphs, and should
++   * be placed at the end of the comment block.
++   */
++
++Structure layout
++================
++
++This is more about compaction than coding style. When creating structures, be
++aware that if the fields are placed together without being sized by alignment,
++that the compiler will create "holes" in them.
++
++	struct {
++		int			x;
++		char			y;
++		unsigned long long	f;
++	};
++
++As int is 4 bytes in length, char is one byte, and unsigned long long is 8
++bytes. The compiler will try to naturally align them by their size, and will
++include padding (holes) inside the structure to do so. The above is equivalent
++to:
++
++	struct {
++		int			x;
++		char			y;
++		char			padding[3];
++		unsigned long long	f;
++	};
++
++It is best to try to organize the structure where there are no holes within
++them.
++
++	struct {
++		unsigned long long	f;
++		int			x;
++		char			y;
++	};
++
++The above is better formatting, even if there may be padding outside the
++structure, but the compiler will still have more flexibility to utilize the
++space outside the structure than what it can do within it.
++
++General
++=======
++
++As stated, this is a guide and may not be strictly enforced. The goal is to
++have consistent and readable code. In general, try to have the coding style
++match the surrounding code.
+diff --git a/CONTRIBUTE b/CONTRIBUTE
+new file mode 100644
+index 00000000..aed78110
+--- /dev/null
++++ b/CONTRIBUTE
+@@ -0,0 +1,103 @@
++If you like to become part of the community and submit patches, here's how
++to do so for trace-cmd.
++
++If you only want to report a bug, or suggest an enhancement, you may do
++so at:
++
++  https://bugzilla.kernel.org/buglist.cgi?component=Trace-cmd%2FKernelshark
++
++All development is done via a mailing list:
++
++   http://vger.kernel.org/vger-lists.html#linux-trace-devel
++
++Patches should be sent to linux-trace-devel@vger.kernel.org
++
++Start by cloning the official repository:
++
++  git clone git://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git
++
++Make your changes. When you are satisfied with them, commit them into git.
++Here's some helpful hints for your git commits.
++
++1) When making changes, please follow the coding style defined by the file
++   called CODING_STYLE in this directory.
++
++2) Every commit should only do one thing.
++   That is, if your work requires some cleaning up of code, do that
++   clean up as a separate commit and not with your functional changes.
++   Find ways to take "steps" in modifying code. If you can break up
++   your changes in a series of steps, do so.
++
++3) The commit log should start with a title. Like the below
++
++      trace-cmd: Add CONTRIBUTE file
++
++   Even though this repo is for trace-cmd, start the topic with
++   "trace-cmd:" because the commits will end up as patches to a mailing
++   list that handles other tracing repos, differentiating them with the subject
++   is useful. You can be more specific as well. If the change only affects the
++   "record" command, you may start the title with "trace-cmd record:".
++
++4) The body of the commit (with a blank line from the title), should be self
++   contained, and explain why you are making the change. The title should hold
++   the "what" is changing, but the body contains the rationale for the change.
++   It should be a stand alone, and not state things like "See the next patch",
++   because when it is in git history, there's no knowing what the next patch
++   is.  You can make statements like "This is needed for a <future-feature>
++   that will come later". Where "<future-feature>" is something that you are
++   working on and the current commit is one of the steps required to get there.
++
++5) Add your Developer Certificate of Origin (DCO) at the bottom of the commit
++   log. That is "Signed-off-by: Full Name <email>" where your full name is your
++   real name (no pseudonyms). Optionally, if you are making the change on
++   behalf of your company, you may also add your company name, if you are not
++   using your company's email. "Signed-off-by: Full Name (Company) <email>".
++   Please note, the DCO is your statement that you have the legal right to
++   make these changes for the project you are submitting to.
++
++You can use the Linux kernel "checkpatch.pl" script to help verify the formatting
++of your patch:
++
++  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/checkpatch.pl
++
++Please note that checkpatch.pl is a guide and not a hard rule. If it reports a
++fix that makes the code harder to read, that fix can probably be ignored.
++
++  git format-patch --stdout HEAD~1..HEAD | ./checkpatch.pl
++
++Finally, you can use the git "send-email" functionality:
++
++  git --send-email --from='<your-email> --to='linux-trace-devel@vger.kernel.org' HEAD~1..HEAD
++
++If you are sending one patch, if you are adding more than one patch, also include
++a cover letter:
++
++  git --send-email --cover-letter --annotate --from='<your-email> --to='linux-trace-devel@vger.kernel.org' <first-commit>~1..HEAD
++
++If you receive feedback on your patches, and plan on sending another version,
++please use the '-v' option to mark your patches that they are a new version.
++For example, if you add "-v2" to the above commands, instead of having:
++"[PATCH]" in the subject, it will have "[PATCH v2]", letting the reviewers know
++that this is a new version. If you send another version, use "-v3" and so on.
++
++For more information about git --send-email:
++
++  https://git-scm.com/docs/git-send-email
++
++To keep track of the status of patches that have been submitted, check out:
++
++  https://patchwork.kernel.org/project/linux-trace-devel/list/
++
++If you would like to apply patches from the mailing list, you can use
++the "b4" utility.
++
++ $ pip install b4
++
++Then from the mailing list archive, find a message id from a patch or patch
++series. For example, to get the patch from:
++
++  https://lore.kernel.org/linux-trace-devel/20210205173713.132051-1-tz.stoyanov@gmail.com/
++
++ $ b4 am -o - 20210205173713.132051-1-tz.stoyanov@gmail.com > /tmp/p.mbox
++ $ git am /tmp/p.mbox
++
+-- 
+2.29.2
 
