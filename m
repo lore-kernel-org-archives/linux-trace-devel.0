@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D956C43460
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Apr 2021 03:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C39AAC43461
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Apr 2021 03:48:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DFCCD6139E
+	by mail.kernel.org (Postfix) with ESMTP id 9CF876139E
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Apr 2021 03:48:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344553AbhDGDsj (ORCPT
+        id S1344473AbhDGDsi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 6 Apr 2021 23:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48124 "EHLO
+        Tue, 6 Apr 2021 23:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348435AbhDGDsh (ORCPT
+        with ESMTP id S1344553AbhDGDsh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Tue, 6 Apr 2021 23:48:37 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B22C061760
-        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Apr 2021 20:48:28 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id b9so8436049wrs.1
-        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Apr 2021 20:48:28 -0700 (PDT)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95790C06175F
+        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Apr 2021 20:48:27 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id a12so6547240wrq.13
+        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Apr 2021 20:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uIyNlIOtluNrnYmSi6DquZO21hCTzvwo0SUqb4QYjNg=;
-        b=kVQuW3JK3tMZ108N8DyAeo7u9TkI9DupWeKv2PTCJkmHmBNym3IYif+F9a5i1QgATD
-         PIwcvjOiMCQMzcEAlrAJZM0gyTT4HugZGuED01tvMjqaKHa9PAXzw1rVtGb3NWDRfXeA
-         cfXzzDFVs2RVv0FHR3sdg7xTVNyb4dYSWLP5svnyI/+/HdvDb8qUKnHEXsb2Flmqvgj7
-         dLYVCq2bz7Z3oaDP0mMWSzlQiRiKRLXQyPf3l+wy7c8Bp52aBKOzuQcU97A3kD11AVM9
-         hrAgoOUuaZ/q7NbX0YCF9vTpERC8NeXrewUtMHEIWthuueCQM5B/QZvqcZ+2WzYxOXXy
-         sqlg==
+        bh=jKf1WZ85dsSSiPEXRaAsFO5Kg/MZ0gSQmPkou2CkCVk=;
+        b=EhI27iOK9eQv80Q7+v0l3nbFVhRBU433M+xAoZr1blngEvkqNvZIK8sIqSB3R/ia42
+         gRG2RTltcaNuuROQTlT9WWI5fE3CcX94QIE5/qbn/XX2+i+GChUHJX55aY8DP8TmbDzf
+         5VJznAnaetVET0WMqVvNJloVyiZyeH1XP7lY4aqs4gZJliI8J74nssXLWhoEGu6UyzZh
+         L9CiHpA2ZqbL1s6eARYIEZi0zPys/iiHq8vWwVEmbf3ITH5S1DUnSmB72cOQS/fUTNfR
+         ssCycitq3ORRkuBOjUnhGW0QtchnzdAmbaplzud3Vj05ADx8Z4ObwaIC1AqWd5Fbe2XT
+         yxnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uIyNlIOtluNrnYmSi6DquZO21hCTzvwo0SUqb4QYjNg=;
-        b=BTgAgBrKa1fKvgG3vwXVCXVEbi8VOmxAghJQxL2wgLCUmhn5QrqdGNH/e/bOv62c/8
-         pRyzZgbPTD7Vzv+cVEH3q1vdLs1nnH4maA0Ex8Pzc9f8nLyzFix8bTLM8e2cQZonsHIV
-         EUD2wpLmqeEtz/jr5TD70PadVtEu8Cn41hiCKryCpJwtWutMkGnTgo+WqNWIDV3BE3Gx
-         3kneje4qBNRFVY3Ce+uCTbuXCc+FqQO8+Fa2E7NS/Ps+YiYooooCHjkFOGRJz+R2D33N
-         ZlYywCFxshJbMPPQtvNdVeWQ00dOWA2gWVgmTBpYeLsxsBGQPYfFhtfCWfgH12E2pgOX
-         TAgg==
-X-Gm-Message-State: AOAM530qvMZb6vzFP3R+6F/NENAgTYxeY3NzXxn81EaC5dVdUrHadVle
-        sTrli+p576/Ba2t1OnhiW2+Z6dmxqRaSeA==
-X-Google-Smtp-Source: ABdhPJx0WawKKtNaVoxZET9Obbd+ZPOtGD6Sff20W41Om4uYX4nV4m2xHopO4mFIBAk008hpzfJxiw==
-X-Received: by 2002:a5d:654a:: with SMTP id z10mr1613595wrv.335.1617767307453;
-        Tue, 06 Apr 2021 20:48:27 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id l21sm5684973wmg.41.2021.04.06.20.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=jKf1WZ85dsSSiPEXRaAsFO5Kg/MZ0gSQmPkou2CkCVk=;
+        b=Ot/QJdqFbACOM/AB3uFtrd/hQThkZisikYynZmlCADrPkQVhNXMGYKu6KPzqcQP/H2
+         uHLd9le7vJ1CjOPR36/cPOZ+Y3w51yojGGRRBO/ueZi5o90DQgTK8tGrZug5OTJiKygB
+         5ucUa2273I3O58xv7TubXyJ+UR4le1gCtt+4CdwVdmi0ZPTQdBRTQo5KPYp72J21Ex0b
+         5GDBSlTHgtDydUwkphg4mKjIoFJELIxKhzrgHjo/VR62defBrNzFn7aqn8QiE+hU3Kf8
+         Lc3WJKsVcL53yhdCOsOwxVknTyZWxyOfkTi8OiK4bzzrAnoI7tGCJPbwA2xmjAL1CfqJ
+         uMxQ==
+X-Gm-Message-State: AOAM530sM9MuwvL5Ll4yV8MlwJFCFiEXP7eNlphS4N/o5VTFLiOtaPAs
+        ogspxbLfEg+Slj3vfvx9qn8J3O1/kDFDMA==
+X-Google-Smtp-Source: ABdhPJzexohgslTNN3G8nqjdGW2yZBkDBOvsqXU42e6W6Yb3fe0qanhcNQnji8hjL0Noux2H3p7/ug==
+X-Received: by 2002:adf:8292:: with SMTP id 18mr1628750wrc.160.1617767306358;
         Tue, 06 Apr 2021 20:48:26 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id l21sm5684973wmg.41.2021.04.06.20.48.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 20:48:25 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 3/4] libtracefs: Unit test for iterate over raw events in selected CPUs
-Date:   Wed,  7 Apr 2021 06:48:21 +0300
-Message-Id: <20210407034822.2373958-4-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 2/4] libtracefs: Unit test for iterate over raw events in sorted order
+Date:   Wed,  7 Apr 2021 06:48:20 +0300
+Message-Id: <20210407034822.2373958-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210407034822.2373958-1-tz.stoyanov@gmail.com>
 References: <20210407034822.2373958-1-tz.stoyanov@gmail.com>
@@ -73,73 +73,58 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Enhanced the unit test of tracefs_iterate_raw_events() API to walk
-through the selected CPUs only. Added some forgotten calls to CPU_FREE()
-for freeing used CPU sets.
+Enhanced the unit test of tracefs_iterate_raw_events() API to check if
+events are iterated in sorted order: latest first. Added a check for the
+correct CPU number in the record, passed to the callback.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- utest/tracefs-utest.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ utest/tracefs-utest.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index fea4e1f..f9441af 100644
+index ed2693b..fea4e1f 100644
 --- a/utest/tracefs-utest.c
 +++ b/utest/tracefs-utest.c
-@@ -49,8 +49,9 @@ static int test_callback(struct tep_event *event, struct tep_record *record,
- 	CU_TEST(last_ts <= record->ts);
- 	last_ts = record->ts;
+@@ -20,7 +20,7 @@
+ #define TRACEFS_SUITE		"trasefs library"
+ #define TEST_INSTANCE_NAME	"cunit_test_iter"
+ #define TEST_TRACE_DIR		"/tmp/trace_utest.XXXXXX"
+-#define TEST_ARRAY_SIZE		500
++#define TEST_ARRAY_SIZE		5000
  
--	if (cpu_test && *cpu_test >= 0 && *cpu_test != cpu)
--		return 0;
-+	if (cpu_test && *cpu_test >= 0) {
-+		CU_TEST(*cpu_test == cpu);
-+	}
- 	CU_TEST(cpu == record->cpu);
+ #define ALL_TRACERS	"available_tracers"
+ #define CUR_TRACER	"current_tracer"
+@@ -36,6 +36,7 @@ struct test_sample {
+ };
+ static struct test_sample test_array[TEST_ARRAY_SIZE];
+ static int test_found;
++static unsigned long long last_ts;
  
- 	field = tep_find_field(event, "buf");
-@@ -105,18 +106,30 @@ static void test_iter_write(struct tracefs_instance *instance)
- 
- 	sched_setaffinity(0, cpu_size, cpusave);
- 	close(fd);
-+	CPU_FREE(cpuset);
-+	CPU_FREE(cpusave);
- }
- 
- 
- static void iter_raw_events_on_cpu(struct tracefs_instance *instance, int cpu)
- {
-+	int cpus = sysconf(_SC_NPROCESSORS_CONF);
-+	cpu_set_t *cpuset = NULL;
-+	int cpu_size = 0;
- 	int check = 0;
- 	int ret;
+ static int test_callback(struct tep_event *event, struct tep_record *record,
+ 			  int cpu, void *context)
+@@ -45,8 +46,13 @@ static int test_callback(struct tep_event *event, struct tep_record *record,
+ 	int *cpu_test = (int *)context;
  	int i;
  
-+	if (cpu >= 0) {
-+		cpuset = CPU_ALLOC(cpus);
-+		cpu_size = CPU_ALLOC_SIZE(cpus);
-+		CPU_ZERO_S(cpu_size, cpuset);
-+		CPU_SET(cpu, cpuset);
-+	}
- 	test_found = 0;
-+	last_ts = 0;
- 	test_iter_write(instance);
--	ret = tracefs_iterate_raw_events(test_tep, instance, NULL, 0,
-+	ret = tracefs_iterate_raw_events(test_tep, instance, cpuset, cpu_size,
- 					 test_callback, &cpu);
- 	CU_TEST(ret == 0);
- 	if (cpu < 0) {
-@@ -132,6 +145,9 @@ static void iter_raw_events_on_cpu(struct tracefs_instance *instance, int cpu)
- 		}
- 		CU_TEST(test_found == check);
- 	}
++	CU_TEST(last_ts <= record->ts);
++	last_ts = record->ts;
 +
-+	if (cpuset)
-+		CPU_FREE(cpuset);
- }
+ 	if (cpu_test && *cpu_test >= 0 && *cpu_test != cpu)
+ 		return 0;
++	CU_TEST(cpu == record->cpu);
++
+ 	field = tep_find_field(event, "buf");
+ 	if (field) {
+ 		sample = ((struct test_sample *)(record->data + field->offset));
+@@ -136,6 +142,7 @@ static void test_instance_iter_raw_events(struct tracefs_instance *instance)
  
- static void test_instance_iter_raw_events(struct tracefs_instance *instance)
+ 	ret = tracefs_iterate_raw_events(NULL, instance, NULL, 0, test_callback, NULL);
+ 	CU_TEST(ret < 0);
++	last_ts = 0;
+ 	ret = tracefs_iterate_raw_events(test_tep, NULL, NULL, 0, test_callback, NULL);
+ 	CU_TEST(ret == 0);
+ 	ret = tracefs_iterate_raw_events(test_tep, instance, NULL, 0, NULL, NULL);
 -- 
 2.30.2
 
