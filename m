@@ -2,118 +2,93 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82CE8C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Apr 2021 20:42:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B538C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Apr 2021 03:48:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5CEF9613D5
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  6 Apr 2021 20:42:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4272360C3D
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Apr 2021 03:48:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245534AbhDFUmz (ORCPT
+        id S1348436AbhDGDsi (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 6 Apr 2021 16:42:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235692AbhDFUmy (ORCPT
+        Tue, 6 Apr 2021 23:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344405AbhDGDsg (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 6 Apr 2021 16:42:54 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61A2461369;
-        Tue,  6 Apr 2021 20:42:46 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 16:42:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     <Viktor.Rosendahl@bmw.de>
-Cc:     <linux-trace-devel@vger.kernel.org>
-Subject: Re: Adding latency tracking to trace-cmd
-Message-ID: <20210406164244.602df538@gandalf.local.home>
-In-Reply-To: <c85bd8239b17619cac002c3d4d820ec0d46a2362.camel@bmw.de>
-References: <20210224115408.1c76ee3f@gandalf.local.home>
-        <e1c4952249578eea44817d092bffe27fd0e47645.camel@bmw.de>
-        <20210406133806.0f3ab414@gandalf.local.home>
-        <c85bd8239b17619cac002c3d4d820ec0d46a2362.camel@bmw.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 6 Apr 2021 23:48:36 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09C0C06174A
+        for <linux-trace-devel@vger.kernel.org>; Tue,  6 Apr 2021 20:48:25 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id a6so10316313wrw.8
+        for <linux-trace-devel@vger.kernel.org>; Tue, 06 Apr 2021 20:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w+5pGQYb8dUco1zzxlNa8KEOKzpznge8An/shu36+J0=;
+        b=hznGCS2C3PRWw5qPIeqq9SwzMp9A3TobZfdHLwaiClAQbwdNIpEs8Hoqok0m9K5bTk
+         e8yGrgR2rM/wR1tlpd9CW+HTknesg6WIt8cGRjVtCJijVnxqqtSVNFWJjc7NIVLW1BG1
+         UPau3rQxIpO6PSvRb4Nz9M5TvBcPB/PToiCeSKcKhz1Os49hlJ+LTVch0QUt9Twf2reF
+         8gjV7lxrhc6btXP8AvykKppRQV6GelOXs5gjLjFq1cjNneZBAaHIgW87n8kebnNX0ugW
+         IYq4JfGn1WJCwNtGngA55PZxVTIIrg7dC1QTg5LSRRA7QVo5zdJftpcO1ImiULpDsR4W
+         Re+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w+5pGQYb8dUco1zzxlNa8KEOKzpznge8An/shu36+J0=;
+        b=YfTQv3fI3cSl3DlvOQjwHjsiiEbRT80RvK3G4aDoqOfNTEDOmhk4KLZCD0DXHOfElW
+         PNRrMwoAcBBmt1OaFkHxilvxdM5AQ8ieujQfYBK6L55b3DmT4bSBm79VwoLBdc5arAsn
+         sWEh+Rlu3pCWZcYSBDNlpbFevmJQ6PMzXZDdOfL/h0kCSwL/ySNudSGNzsXucVO5djZb
+         LJz/gEXjo6JReeDOgZovs22xJfra7NgvaOn2jc0hpQVsUdWeBiz3SIb8VwWqXi5Trl7T
+         4sh2KI2svbseiLU4Xrj6BepbpOfE9Ca22dCqYIoTDDZJXKMZZio5qPBb3sDAHik6svPO
+         dcyg==
+X-Gm-Message-State: AOAM531+ZdzdmTdz2a23GfdyCGEHanlPuAMPAA5v5AjtrHJPdA7zUqIb
+        ZKbDxB/xU+FQBcGBzQjycheBJLYvbe3fkw==
+X-Google-Smtp-Source: ABdhPJze/MXckSrmPN9CmFpM1mJ4e+B1935wOi0jC8WX3pkEK5JXnkU/Ta9FG6E5LN4XOM9fXPQcSg==
+X-Received: by 2002:adf:db42:: with SMTP id f2mr1618138wrj.359.1617767304550;
+        Tue, 06 Apr 2021 20:48:24 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id l21sm5684973wmg.41.2021.04.06.20.48.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 20:48:23 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2 0/4] Iterate over raw events in sorted order
+Date:   Wed,  7 Apr 2021 06:48:18 +0300
+Message-Id: <20210407034822.2373958-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 6 Apr 2021 20:03:46 +0000
-<Viktor.Rosendahl@bmw.de> wrote:
+tracefs_iterate_raw_events(): read oldest events first.
+Updated the unit tests and documentation according to the new logic of
+the function.
 
-> Hi Steve,
-> 
-> The management was agreeable to it but I haven't had any spare time to work on
-> it. 
+v2 changes:
+ - Conding style fixes.
+ - Fixed typo in function name.
 
-Awesome.
+Tzvetomir Stoyanov (VMware) (4):
+  libtracefs: Iterate over raw events in sorted order
+  libtracefs: Unit test for iterate over raw events in sorted order
+  libtracefs: Unit test for iterate over raw events in selected CPUs
+  libtracefs: tracefs_iterate_raw_events() documentation update
 
-> 
-> To be honest, I could have worked on it during my Easter holidays but I just
-> happened to busy myself with other private interests :)
+ Documentation/libtracefs-events.txt |  14 +-
+ src/tracefs-events.c                | 247 ++++++++++++++++++----------
+ utest/tracefs-utest.c               |  31 +++-
+ 3 files changed, 190 insertions(+), 102 deletions(-)
 
-I wouldn't expect you to use your Easter holidays on this anyway ;-)
+-- 
+2.30.2
 
-I was just clearing out my INBOX and noticed that it's been a while, and
-decided to ping you so we don't forget.
-
->> > > 
-> > > Would you allow the hackish random algorithm to be used in trace-cmd?
-> > > I mean the "--random" option in latency-collector.
-> > >   
-> > 
-> > If you feel it is useful, sure. Although a definition of what it exactly
-> > does needs to be a bit more explained. I'm not really sure what use the
-> > --random option is for the latency tracer.
-> >   
-> 
-> The usefulness lies in the case where you have latencies that systematically
-> occur very close to each other.
-
-[..]
-
-> 
-> Without the --random option, I would at this point need to start another test
-> campaign, only then would I start seeing the longer latencies from bar().
-> 
-> On the other hand, if I use the --random option with the latency-collector, then
-> what will happen is that sometimes the latency-collector will open the trace
-> file immediately and other times it will sleep and wait for up to one second
-> before doing so. If it opens the file immediately, we will get the first
-> latency. If based on that random toin coss function decides to sleep, then we
-> will get the second.
-> 
-> If a long test camaping is exectuted, and foobar() is called several times
-> during that campaign, then there is a good probability that we will capture both
-> the latency from foo() and the one from bar().
-> Now --random is a bit more complicated because it actually tosses the coin again
-> if another latency occurs when it is sleeping before opening the file. The
-> probability of that coin toss function are chosen so that if we assume that
-> there is a maximum of N closely occuring latencies, we will get each of them
-> with probability 1/N. If the latency-collector detects a situation were it
-> actually has detected N closely occuring latencies, it will automatically
-> increase N to N + 1 and update the probablities of the coin toss accordingly.
-> 
-> So basically the idea is that by acting randomly, we will not systematically
-> lose a particular latency. It will also not make matters worse if we never get
-> latencies that occur close to each other; the only drawback is that we sometimes
-> wait for one second before opening the trace file and that doesn't really matter
-> if there aren't any closely occuring latencies.
-
-
-Hmm, sounds more like "--various" would be better than "--random". Just
-because it appears you wont to try different timings. Having a --random
-option just doesn't sound like it's what you expect it to be.
-
-There's already a "-s" option that takes a sleep interval between wakeups,
-which sounds similar to what you have. Perhaps we can make "-1" a special
-value to do the "random" wakeup thing. "0" is already special to make it
-wake up when it detects data in the buffer.
-
--- Steve
