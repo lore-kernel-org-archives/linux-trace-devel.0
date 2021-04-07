@@ -2,169 +2,82 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6387C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Apr 2021 20:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CBC9C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Apr 2021 20:37:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9E33C6108B
-	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Apr 2021 20:36:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A3646108B
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  7 Apr 2021 20:37:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235298AbhDGUhA (ORCPT
+        id S235806AbhDGUhO (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 7 Apr 2021 16:37:00 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:46603 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234141AbhDGUg5 (ORCPT
+        Wed, 7 Apr 2021 16:37:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233083AbhDGUhN (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 7 Apr 2021 16:36:57 -0400
-Received: from sc9-mailhost1.vmware.com (10.113.161.71) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Wed, 7 Apr 2021 13:21:34 -0700
-Received: from vypre.com (unknown [10.21.255.158])
-        by sc9-mailhost1.vmware.com (Postfix) with ESMTP id 2D74C211A7;
-        Wed,  7 Apr 2021 13:21:37 -0700 (PDT)
+        Wed, 7 Apr 2021 16:37:13 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4ED99611EE
+        for <linux-trace-devel@vger.kernel.org>; Wed,  7 Apr 2021 20:37:03 +0000 (UTC)
+Date:   Wed, 7 Apr 2021 16:37:01 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     <linux-trace-devel@vger.kernel.org>
-CC:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 3/3] libtracefs: Add a pthread_mutex per instance
-Date:   Wed, 7 Apr 2021 16:21:26 -0400
-Message-ID: <20210407202126.1870994-4-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210407202126.1870994-1-rostedt@goodmis.org>
-References: <20210407202126.1870994-1-rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd: Fix CONTRITUBE file, its git send-email not git
+ --send-email
+Message-ID: <20210407163701.36b872d2@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: rostedt@goodmis.org does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add a pthread_mutex per instance such that modifications being done on
-specific instances do not interfere with each other. This also includes a
-new "toplevel_lock" that is to be used when modifying the toplevel
-instance.
-
-Convert the filter_mutex over to the toplevel/instance locking.
+There's two hyphens in the CONTRIBUTE file before send-email, which do not
+belong. Get rid of them.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs-local.h | 13 ++++++++-----
- src/tracefs-instance.c  |  5 +++++
- src/tracefs-tools.c     |  8 +++++---
- 3 files changed, 18 insertions(+), 8 deletions(-)
+ CONTRIBUTE | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index 060de7e..6865611 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -15,13 +15,16 @@
- 	do { if (!(1/!(cond))) { } } while (0)
+diff --git a/CONTRIBUTE b/CONTRIBUTE
+index aed78110..0440b186 100644
+--- a/CONTRIBUTE
++++ b/CONTRIBUTE
+@@ -67,12 +67,12 @@ fix that makes the code harder to read, that fix can probably be ignored.
  
- struct tracefs_instance {
--	char	*trace_dir;
--	char	*name;
--	int	flags;
--	int	ftrace_filter_fd;
--	int	ftrace_notrace_fd;
-+	char			*trace_dir;
-+	char			*name;
-+	pthread_mutex_t		lock;
-+	int			flags;
-+	int			ftrace_filter_fd;
-+	int			ftrace_notrace_fd;
- };
+ Finally, you can use the git "send-email" functionality:
  
-+extern pthread_mutex_t toplevel_lock;
-+
- /* Can be overridden */
- void warning(const char *fmt, ...);
+-  git --send-email --from='<your-email> --to='linux-trace-devel@vger.kernel.org' HEAD~1..HEAD
++  git send-email --from='<your-email> --to='linux-trace-devel@vger.kernel.org' HEAD~1..HEAD
  
-diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index 9f45624..599c3a7 100644
---- a/src/tracefs-instance.c
-+++ b/src/tracefs-instance.c
-@@ -15,6 +15,7 @@
- #include <fcntl.h>
- #include <dirent.h>
- #include <limits.h>
-+#include <pthread.h>
- #include "tracefs.h"
- #include "tracefs-local.h"
+ If you are sending one patch, if you are adding more than one patch, also include
+ a cover letter:
  
-@@ -43,6 +44,9 @@ static struct tracefs_instance *instance_alloc(const char *trace_dir, const char
- 			goto error;
- 	}
+-  git --send-email --cover-letter --annotate --from='<your-email> --to='linux-trace-devel@vger.kernel.org' <first-commit>~1..HEAD
++  git send-email --cover-letter --annotate --from='<your-email> --to='linux-trace-devel@vger.kernel.org' <first-commit>~1..HEAD
  
-+	if (pthread_mutex_init(&instance->lock, NULL) < 0)
-+		goto error;
-+
- 	instance->ftrace_filter_fd = -1;
- 	instance->ftrace_notrace_fd = -1;
+ If you receive feedback on your patches, and plan on sending another version,
+ please use the '-v' option to mark your patches that they are a new version.
+@@ -80,7 +80,7 @@ For example, if you add "-v2" to the above commands, instead of having:
+ "[PATCH]" in the subject, it will have "[PATCH v2]", letting the reviewers know
+ that this is a new version. If you send another version, use "-v3" and so on.
  
-@@ -69,6 +73,7 @@ void tracefs_instance_free(struct tracefs_instance *instance)
- 		return;
- 	free(instance->trace_dir);
- 	free(instance->name);
-+	pthread_mutex_destroy(&instance->lock);
- 	free(instance);
- }
+-For more information about git --send-email:
++For more information about git send-email:
  
-diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-index b41806b..d48062c 100644
---- a/src/tracefs-tools.c
-+++ b/src/tracefs-tools.c
-@@ -19,6 +19,8 @@
- #include "tracefs.h"
- #include "tracefs-local.h"
+   https://git-scm.com/docs/git-send-email
  
-+__hidden pthread_mutex_t toplevel_lock = PTHREAD_MUTEX_INITIALIZER;
-+
- #define TRACE_CTRL		"tracing_on"
- #define TRACE_FILTER		"set_ftrace_filter"
- #define TRACE_NOTRACE		"set_ftrace_notrace"
-@@ -27,7 +29,6 @@
- /* File descriptor for Top level set_ftrace_filter  */
- static int ftrace_filter_fd = -1;
- static int ftrace_notrace_fd = -1;
--static pthread_mutex_t filter_lock = PTHREAD_MUTEX_INITIALIZER;
- 
- static const char * const options_map[] = {
- 	"unknown",
-@@ -755,6 +756,7 @@ static int update_filter(const char *filter_path, int *fd,
- 	bool reset = flags & TRACEFS_FL_RESET;
- 	bool cont = flags & TRACEFS_FL_CONTINUE;
- 	bool future = flags & TRACEFS_FL_FUTURE;
-+	pthread_mutex_t *lock = instance ? &instance->lock : &toplevel_lock;
- 	int open_flags;
- 	int ret = 1;
- 
-@@ -764,7 +766,7 @@ static int update_filter(const char *filter_path, int *fd,
- 		return 1;
- 	}
- 
--	pthread_mutex_lock(&filter_lock);
-+	pthread_mutex_lock(lock);
- 
- 	/* RESET is only allowed if the file is not opened yet */
- 	if (reset && *fd >= 0) {
-@@ -839,7 +841,7 @@ static int update_filter(const char *filter_path, int *fd,
-  out_free:
- 	free_func_list(func_list);
-  out:
--	pthread_mutex_unlock(&filter_lock);
-+	pthread_mutex_unlock(lock);
- 
- 	return ret;
- }
 -- 
 2.29.2
 
