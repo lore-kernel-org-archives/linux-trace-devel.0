@@ -2,219 +2,224 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1461DC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Apr 2021 21:25:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F44EC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Apr 2021 21:38:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DFE7161181
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Apr 2021 21:25:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 28BC761132
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Apr 2021 21:38:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhDHVZT (ORCPT
+        id S232605AbhDHViL (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 8 Apr 2021 17:25:19 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:20431 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231862AbhDHVZT (ORCPT
+        Thu, 8 Apr 2021 17:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232560AbhDHViK (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 8 Apr 2021 17:25:19 -0400
-Received: from sc9-mailhost1.vmware.com (10.113.161.71) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Thu, 8 Apr 2021 14:25:03 -0700
-Received: from vypre.com (unknown [10.21.244.31])
-        by sc9-mailhost1.vmware.com (Postfix) with ESMTP id F114E212B1;
-        Thu,  8 Apr 2021 14:25:06 -0700 (PDT)
+        Thu, 8 Apr 2021 17:38:10 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 785E861132
+        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Apr 2021 21:37:58 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 17:37:56 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     <linux-trace-devel@vger.kernel.org>
-CC:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v2 5/5] libtraceevent: Add the API tep_parse_printk_formats()
-Date:   Thu, 8 Apr 2021 17:25:00 -0400
-Message-ID: <20210408212500.2058159-6-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210408212500.2058159-1-rostedt@goodmis.org>
-References: <20210408212500.2058159-1-rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd: Use libtraceevent for parsing tracefs files
+Message-ID: <20210408173756.765be387@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: rostedt@goodmis.org does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Currently, trace-cmd has a tracecmd_parse_ftrace_printk() function that
-reads a string that holds the content of printk_formats from the tracefs
-file system, and then passes the address of the printk strings mappings
-to the tep handler.
-
-There's no reason for this to be specific to trace-cmd as other
-applications can easily read the printk_formats with the tracefs API and
-then pass it to the tep handler.
-
-Add the same functionality to libtraceevent as tep_parse_printk_formats().
+Now that libtraceevent has the functionality to parse and load the
+mappings of kallsyms, saved_cmdlines and printk_formats, use them instead
+of having the functionality in libtracecmd.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/libtraceevent-parse-files.txt | 30 +++++++++++-
- src/event-parse.c                           | 51 +++++++++++++++++++++
- src/event-parse.h                           |  1 +
- 3 files changed, 80 insertions(+), 2 deletions(-)
+ .../include/private/trace-cmd-private.h       |  3 -
+ lib/trace-cmd/trace-input.c                   |  6 +-
+ lib/trace-cmd/trace-util.c                    | 91 -------------------
+ tracecmd/trace-read.c                         |  5 +-
+ 4 files changed, 6 insertions(+), 99 deletions(-)
 
-diff --git a/Documentation/libtraceevent-parse-files.txt b/Documentation/libtraceevent-parse-files.txt
-index 594cef2..211f4f4 100644
---- a/Documentation/libtraceevent-parse-files.txt
-+++ b/Documentation/libtraceevent-parse-files.txt
-@@ -3,7 +3,7 @@ libtraceevent(3)
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 2673990a..42e739fa 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -27,9 +27,6 @@
  
- NAME
- ----
--tep_parse_saved_cmdlines, tep_parse_kallsyms
-+tep_parse_saved_cmdlines, tep_parse_printk_formats, tep_parse_kallsyms
- - Parsing functions to load mappings
+ #define TSCNSEC_CLOCK	"tsc2nsec"
  
- SYNOPSIS
-@@ -13,6 +13,7 @@ SYNOPSIS
- *#include <event-parse.h>*
+-void tracecmd_parse_cmdlines(struct tep_handle *pevent, char *file, int size);
+-void tracecmd_parse_proc_kallsyms(struct tep_handle *pevent, char *file, unsigned int size);
+-void tracecmd_parse_ftrace_printk(struct tep_handle *pevent, char *file, unsigned int size);
+ struct tep_plugin_list *trace_load_plugins(struct tep_handle *tep, int flags);
  
- int *tep_parse_saved_cmdlines*(struct tep_handle pass:[*]_tep_, const char pass:[*]_buf_);
-+int *tep_parse_printk_formats*(struct tep_handle pass:[*]_tep_, const char pass:[*]_buf_);
- int *tep_parse_kallsyms*(struct tep_handle pass:[*]_tep_, const char pass:[*]_buf_);
- --
- 
-@@ -25,6 +26,14 @@ _tep_ handler. The events store the pid and this is used to be able to show the
- process names associated to those process ids. It parses the string _buf_ that
- holds the content of saved_cmdlines and ends with a nul character ('\0').
- 
-+*tep_parse_printk_formats* is a helper function to parse content in the tracefs
-+file system of the "printk_formats" file (stored in a string buffer passed in by _buf_)
-+and loads the mapping of addresses of strings that may be referenced by events.
-+Events only store the address of constant strings in the kernel, and the mapping
-+of their address to the string is exported to user space in the printk_formats
-+file. It parses the string _buf_ that holds the content of printk_formats and
-+ends with a nul character ('\0').
-+
- *tep_parse_kallsyms* is a helper function to parse the Linux kernel /proc/kallsyms format
- (stored in a string buffer passed in by _buf_) and load the functions into the
- _tep_ handler such that function IP addresses can be mapped to their name when
-@@ -36,6 +45,9 @@ RETURN VALUE
- The *tep_parse_saved_cmdlines*() function returns 0 in case of success, or -1
- in case of an error.
- 
-+The *tep_parse_printk_formats*() function returns 0 in case of success, or -1
-+in case of an error.
-+
- The *tep_parse_kallsyms*() function returns 0 in case of success, or -1
- in case of an error.
- 
-@@ -61,6 +73,19 @@ int load_cmdlines(struct tep_handle *tep)
-         return r;
- }
- 
-+int load_print_strings(struct tep_handle *tep)
-+{
-+        char *buf = NULL;
-+        int r;
-+
-+        buf = tracefs_instance_file_read(NULL, "printk_formats", NULL);
-+        if (!buf)
-+                return -1;
-+        r = tep_parse_printk_formats(tep, buf);
-+        free(buf);
-+        return r;
-+}
-+
- int load_kallsyms(struct tep_handle *tep)
- {
-         char *line = NULL;
-@@ -101,7 +126,8 @@ FILES
- 
- SEE ALSO
- --------
--_libtraceevent(3)_, _trace-cmd(1)_, _tep_register_comm(3)_, _tep_register_function(3)_
-+_libtraceevent(3)_, _trace-cmd(1)_, _tep_register_comm(3)_, _tep_register_function(3)_,
-+_tep_register_print_string_(3)
- 
- AUTHOR
- ------
-diff --git a/src/event-parse.c b/src/event-parse.c
-index 0d12ec4..cec4ad1 100644
---- a/src/event-parse.c
-+++ b/src/event-parse.c
-@@ -913,6 +913,57 @@ void tep_print_printk(struct tep_handle *tep)
+ int *tracecmd_add_id(int *list, int id, int len);
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 7b25e92c..f36793e8 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -743,7 +743,7 @@ static int read_proc_kallsyms(struct tracecmd_input *handle)
  	}
+ 	buf[size] = 0;
+ 
+-	tracecmd_parse_proc_kallsyms(pevent, buf, size);
++	tep_parse_kallsyms(pevent, buf);
+ 
+ 	free(buf);
+ 
+@@ -775,7 +775,7 @@ static int read_ftrace_printk(struct tracecmd_input *handle)
+ 
+ 	buf[size] = 0;
+ 
+-	tracecmd_parse_ftrace_printk(handle->pevent, buf, size);
++	tep_parse_printk_formats(handle->pevent, buf);
+ 
+ 	free(buf);
+ 
+@@ -2970,7 +2970,7 @@ static int read_and_parse_cmdlines(struct tracecmd_input *handle)
+ 	if (read_data_and_size(handle, &cmdlines, &size) < 0)
+ 		return -1;
+ 	cmdlines[size] = 0;
+-	tracecmd_parse_cmdlines(pevent, cmdlines, size);
++	tep_parse_saved_cmdlines(pevent, cmdlines);
+ 	free(cmdlines);
+ 
+ 	handle->file_state = TRACECMD_FILE_CMD_LINES;
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index db7bead6..d7bfe2d6 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -103,97 +103,6 @@ bool tracecmd_get_debug(void)
+ 	return debug;
  }
  
-+/**
-+ * tep_parse_printk_formats - Parse the address to strings
-+ * @tep: a handle to the trace event parser
-+ * @buf: A string buffer that holds the content of printk_formats and ends with '\0'
-+ *
-+ * This is a helper function to parse the address to printk formats in
-+ * the kernel. Some events use %s to a kernel address that holds a constant
-+ * string. The printk_formats file has a mapping of these addresses to the
-+ * strings that are in the kernel. This parses the content of that file
-+ * and registers those strings and their addresses so that the parsing of
-+ * events can display the string as the event only has the address of the string.
-+ *
-+ * Returns 0 on success, and -1 on error.
-+ */
-+int tep_parse_printk_formats(struct tep_handle *tep, const char *buf)
-+{
-+	unsigned long long addr;
-+	char *copy;
-+	char *printk;
-+	char *line;
-+	char *next = NULL;
-+	char *addr_str;
-+	char *fmt;
-+	int ret = -1;
-+
-+	copy = strdup(buf);
-+	if (!copy)
-+		return -1;
-+
-+	line = strtok_r(copy, "\n", &next);
-+	while (line) {
-+		addr_str = strtok_r(line, ":", &fmt);
-+		if (!addr_str) {
-+			tep_warning("printk format with empty entry");
-+			break;
-+		}
-+		addr = strtoull(addr_str, NULL, 16);
-+		/* fmt still has a space, skip it */
-+		printk = strdup(fmt+1);
-+		if (!printk)
-+			goto out;
-+		line = strtok_r(NULL, "\n", &next);
-+		tep_register_print_string(tep, printk, addr);
-+		free(printk);
-+	}
-+	ret = 0;
-+ out:
-+	free(copy);
-+	return ret;
-+}
-+
- static struct tep_event *alloc_event(void)
- {
- 	return calloc(1, sizeof(struct tep_event));
-diff --git a/src/event-parse.h b/src/event-parse.h
-index 078b202..05b156b 100644
---- a/src/event-parse.h
-+++ b/src/event-parse.h
-@@ -443,6 +443,7 @@ int tep_parse_saved_cmdlines(struct tep_handle *tep, const char *buf);
- int tep_parse_kallsyms(struct tep_handle *tep, const char *kallsyms);
- int tep_register_function(struct tep_handle *tep, char *name,
- 			  unsigned long long addr, char *mod);
-+int tep_parse_printk_formats(struct tep_handle *tep, const char *buf);
- int tep_register_print_string(struct tep_handle *tep, const char *fmt,
- 			      unsigned long long addr);
- bool tep_is_pid_registered(struct tep_handle *tep, int pid);
+-void tracecmd_parse_cmdlines(struct tep_handle *pevent,
+-			     char *file, int size __maybe_unused)
+-{
+-	char *comm;
+-	char *line;
+-	char *next = NULL;
+-	int pid;
+-
+-	line = strtok_r(file, "\n", &next);
+-	while (line) {
+-		sscanf(line, "%d %m[^\n]s", &pid, &comm);
+-		tep_register_comm(pevent, comm, pid);
+-		free(comm);
+-		line = strtok_r(NULL, "\n", &next);
+-	}
+-}
+-
+-void tracecmd_parse_proc_kallsyms(struct tep_handle *pevent,
+-			 char *file, unsigned int size __maybe_unused)
+-{
+-	unsigned long long addr;
+-	char *func;
+-	char *line;
+-	char *next = NULL;
+-	char *mod;
+-	char ch;
+-
+-	line = strtok_r(file, "\n", &next);
+-	while (line) {
+-		int func_start, func_end = 0;
+-		int mod_start, mod_end = 0;
+-		int n;
+-
+-		mod = NULL;
+-		errno = 0;
+-		n = sscanf(line, "%16llx %c %n%*s%n%*1[\t][%n%*s%n",
+-			   &addr, &ch, &func_start, &func_end, &mod_start, &mod_end);
+-		if (errno) {
+-			perror("sscanf");
+-			return;
+-		}
+-
+-		if (n != 2 || !func_end)
+-			return;
+-
+-		func = line + func_start;
+-		/*
+-		 * Hacks for
+-		 *  - arm arch that adds a lot of bogus '$a' functions
+-		 *  - x86-64 that reports per-cpu variable offsets as absolute
+-		 */
+-		if (func[0] != '$' && ch != 'A' && ch != 'a') {
+-			line[func_end] = 0;
+-			if (mod_end) {
+-				mod = line + mod_start;
+-				/* truncate the extra ']' */
+-				line[mod_end - 1] = 0;
+-			}
+-			tep_register_function(pevent, func, addr, mod);
+-		}
+-
+-		line = strtok_r(NULL, "\n", &next);
+-	}
+-}
+-
+-void tracecmd_parse_ftrace_printk(struct tep_handle *pevent,
+-			 char *file, unsigned int size __maybe_unused)
+-{
+-	unsigned long long addr;
+-	char *printk;
+-	char *line;
+-	char *next = NULL;
+-	char *addr_str;
+-	char *fmt;
+-
+-	line = strtok_r(file, "\n", &next);
+-	while (line) {
+-		addr_str = strtok_r(line, ":", &fmt);
+-		if (!addr_str) {
+-			warning("printk format with empty entry");
+-			break;
+-		}
+-		addr = strtoull(addr_str, NULL, 16);
+-		/* fmt still has a space, skip it */
+-		printk = strdup(fmt+1);
+-		line = strtok_r(NULL, "\n", &next);
+-		tep_register_print_string(pevent, printk, addr);
+-		free(printk);
+-	}
+-}
+-
+ /**
+  * tracecmd_add_id - add an int to the event id list
+  * @list: list to add the id to
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 1b99db1d..d962b671 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1413,12 +1413,13 @@ static void add_functions(struct tep_handle *pevent, const char *file)
+ 	if (ret < 0)
+ 		die("Can't stat file %s", file);
+ 
+-	buf = malloc(st.st_size);
++	buf = malloc(st.st_size + 1);
+ 	if (!buf)
+ 		die("Failed to allocate for function buffer");
+ 	read_file_fd(fd, buf, st.st_size);
++	buf[st.st_size] = '\0';
+ 	close(fd);
+-	tracecmd_parse_proc_kallsyms(pevent, buf, st.st_size);
++	tep_parse_kallsyms(pevent, buf);
+ 	free(buf);
+ }
+ 
 -- 
 2.29.2
 
