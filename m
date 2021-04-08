@@ -2,119 +2,73 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37D50C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Apr 2021 13:22:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F7C7C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Apr 2021 13:34:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F2671610CA
-	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Apr 2021 13:22:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7A5F061001
+	for <linux-trace-devel@archiver.kernel.org>; Thu,  8 Apr 2021 13:34:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhDHNWV (ORCPT
+        id S231718AbhDHNfD (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 8 Apr 2021 09:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhDHNWU (ORCPT
+        Thu, 8 Apr 2021 09:35:03 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:43103 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231723AbhDHNe4 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:22:20 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBC3C061760
-        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Apr 2021 06:22:09 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id q10so1406120pgj.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 08 Apr 2021 06:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4qzE2/6ZMPLABueC2fU4vctTpcJ81xWO/QGtkZTc3nc=;
-        b=lpe3P7pZ/UZ4jopcgC0NE2Yifw2uegrwr/onsM/ha3wUyNGZCaFAX7sQoNR6SvQssx
-         Sj3lLWx4UY/We8aPTFAJnpS1eskgomMAQznPK/xwpUQYbwewHTJjUDiByOYD2Hv+1w+U
-         HyXCMqjtT5ohcbvqnnaHFUpkMiVQi+cVAsxvoEVcjWiga5JCcbQAffhGfun+sUmPkklk
-         0hSFej2hcKvGPs8+xM+SGBC1plHZXr4kKLM/TL6WRlSWGP+rUweraTFZx9o80jHNysIV
-         jLL2uAHaEZKbb/AxC+IdIlFvd9meThVRII2bL8nTu9XDLsiltlNae1IcoxX7Qz+6yrdb
-         /qJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4qzE2/6ZMPLABueC2fU4vctTpcJ81xWO/QGtkZTc3nc=;
-        b=QkLVUS/BiSn3iUldfj6gesDa/X7zO+Iw4d6l2ihSNRBvtspzEzkRAJ72ww9Z+TOVUd
-         6Uh2Mb55u13kbGZK0Po5i4p62C7c+gmQ7YiIVmtbxaV5SJ/jdLkSTJKw0ZB68zY9nVrS
-         Ul1YwvG12MN8Eog9H5QCd36f4fqiTmvRu+727L9kngXncwpzPtAg/rxkMhLO2Gg8MCyA
-         HaLn9p1JGXrqaZlHUxKFj5MkMUlsrln/8h3xHM5TW03l+U+zukRUMUBw5ko3X1DVDk4R
-         iyyod92FyLSMjdKrsxbx05tNs6vyTOBMk5I0cHlnKUteUmd3rHheSwXh4glwIG43OiqS
-         uiVA==
-X-Gm-Message-State: AOAM532cxetaGUvRur0L6AksP1mT6s6yWm5YbZASKzWsaHgoC8mJDvTc
-        jn6ZaoQJGopJasnDGJHZ4q1E6DYwasbpEns2n/3vvJNHHZbnFQ==
-X-Google-Smtp-Source: ABdhPJxmfqaGJIxSuwI6OIt5kILhqbnbF/FTDa5HcELgN6X/YuKQ5616Jk9UPlq276nUZcXRSHfhV4WOYPkNjt4CT4c=
-X-Received: by 2002:a65:47ca:: with SMTP id f10mr8167379pgs.206.1617888129265;
- Thu, 08 Apr 2021 06:22:09 -0700 (PDT)
+        Thu, 8 Apr 2021 09:34:56 -0400
+Received: from sc9-mailhost1.vmware.com (10.113.161.71) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 8 Apr 2021 06:34:41 -0700
+Received: from vypre.com (unknown [10.21.244.31])
+        by sc9-mailhost1.vmware.com (Postfix) with ESMTP id 1F79C20C0E;
+        Thu,  8 Apr 2021 06:34:44 -0700 (PDT)
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     <linux-trace-devel@vger.kernel.org>
+CC:     Sameeruddin shaik <sameeruddin.shaik8@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH v2 0/5] libtracefs: Update filtering functions
+Date:   Thu, 8 Apr 2021 09:34:26 -0400
+Message-ID: <20210408133431.2023697-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210408080821.3129896-1-tz.stoyanov@gmail.com> <20210408085935.77e2fd4e@gandalf.local.home>
-In-Reply-To: <20210408085935.77e2fd4e@gandalf.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 8 Apr 2021 16:21:52 +0300
-Message-ID: <CAPpZLN7-H536pJxU1ovn6L_wGzmFOzXtVngdWrcSwH+LQvRVdw@mail.gmail.com>
-Subject: Re: [PATCH v2] libtracefs: Add new API for open trace marker file
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: rostedt@goodmis.org does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 3:59 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu,  8 Apr 2021 11:08:21 +0300
-> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
->
-> > Added new APIs for opening trace_marker file of given instance:
-> >    tracefs_marker_init()
-> >    tracefs_marker_write()
-> >    tracefs_marker_vprint()
-> >    tracefs_marker_print()
-> >    tracefs_marker_close()
->
-> I really don't like the name as it's more about the tracefs implementation
-> and not what it's used for. I much rather have:
->
->         tracefs_print_init();
->         tracefs_printf();
->         tracefs_vprintf();
->         tracefs_print_close();
->
-> And you should never write binary into the trace_marker file, as it always
-> expects ascii strings. That's the trace_marker_raw file. In which case we
-> could have:
->
->         tracefs_binary_init();
->         tracefs_binary_write();
->         tracefs_binary_close();
->
-> For binary writes.
->
-I find "tracefs_print_" a little bit confusing, like printing
-something on console. I think the name should stress that a user
-string/data is written in the trace buffer. I would like to combine
-string and binary APIs into one set, something like:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
- tracefs_user_trace_init();  /* open both trace_marker and
-trace_marker_raw files, or have flags to specify what file to open,
-string or data*/
- tracefs_user_trace_printf(); /* write to  trace_marker */
- tracefs_user_trace_vprintf(); /* write to  trace_marker */
- tracefs_user_trace_binary(); /* write to  trace_marker_raw */
- tracefs_user_trace_init(); /* close both string and data fd, if open */
+Add tracefs_function_notrace() to set the functions not to trace.
+Create a per instance pthread mutex lock.
+
+Changes since v1:
+
+ - Close the file descriptors on freeing of the instance
+ - Close the file descriptors on exec.
 
 
-> -- Steve
+Steven Rostedt (VMware) (5):
+  libtracefs: Close filter file descriptor on freeing of instance
+  libtracefs: Close the filter file descriptor on exec()
+  libtracefs: Move most functionality into helper function for
+    tracefs_function_filter()
+  libtracefs: Add tracefs_function_notrace() API
+  libtracefs: Add a pthread_mutex per instance
 
-
+ Documentation/libtracefs-function-filter.txt |  19 ++-
+ include/tracefs-local.h                      |  12 +-
+ include/tracefs.h                            |   3 +
+ src/tracefs-instance.c                       |  13 ++
+ src/tracefs-tools.c                          | 152 ++++++++++++-------
+ 5 files changed, 138 insertions(+), 61 deletions(-)
 
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.29.2
+
