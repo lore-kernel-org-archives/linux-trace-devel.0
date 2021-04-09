@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF8B8C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C49FC433B4
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:19:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 77772610D0
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:06:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DD56961165
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:19:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbhDIWGh (ORCPT
+        id S234976AbhDIWUA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Apr 2021 18:06:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51298 "EHLO mail.kernel.org"
+        Fri, 9 Apr 2021 18:20:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234517AbhDIWGh (ORCPT
+        id S234517AbhDIWUA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Apr 2021 18:06:37 -0400
+        Fri, 9 Apr 2021 18:20:00 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48292610CF
-        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Apr 2021 22:06:23 +0000 (UTC)
-Date:   Fri, 9 Apr 2021 18:06:21 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CDF561106
+        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Apr 2021 22:19:47 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 18:19:45 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2] libtracefs: Update libtracefs.pc when version changes
-Message-ID: <20210409180621.62f8c90c@gandalf.local.home>
+Subject: [PATCH] libtracecmd: Update libtracecmd.pc when version changes
+Message-ID: <20210409181945.76b073dd@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -41,39 +41,38 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-When the libtracefs version changes, the libtracefs.pc needs to be updated,
-otherwise it may install the wrong version number.
+When the libtracecmd version changes, the libtracecmd.pc needs to be
+updated, otherwise it may install the wrong version number.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
-Changes since v1:
-  - Fixed version define calculation
-  - Fixed alignment of updating tfs_version.h
-  - Remove tfs_version.h in make clean
-
  .gitignore |  1 +
- Makefile   | 31 ++++++++++++++++++++++++++++++-
- 2 files changed, 31 insertions(+), 1 deletion(-)
+ Makefile   | 32 ++++++++++++++++++++++++++++++--
+ 2 files changed, 31 insertions(+), 2 deletions(-)
 
 diff --git a/.gitignore b/.gitignore
-index d2d39fb..ff3e014 100644
+index af9bf6c0..f0719c5e 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -8,3 +8,4 @@ lib/
- patches/
+@@ -27,3 +27,4 @@ libtracecmd.pc
  build_prefix
- build_uninstall
-+tfs_version.h
+ build_install
+ build_libs_install
++ltc_version.h
 diff --git a/Makefile b/Makefile
-index 9de3217..a3ae0b8 100644
+index 6e330e47..48d45809 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -203,10 +203,12 @@ endef
+@@ -20,6 +20,8 @@ export LIBTC_PATCHLEVEL
+ export LIBTC_EXTRAVERSION
+ export LIBTRACECMD_VERSION
  
- BUILD_PREFIX := $(BUILD_OUTPUT)/build_prefix
- 
-+VERSION_FILE = tfs_version.h
++VERSION_FILE = ltc_version.h
 +
+ LIBTRACEEVENT_MIN_VERSION = 1.1
+ LIBTRACEFS_MIN_VERSION = 1.1
+ 
+@@ -371,7 +373,7 @@ BUILD_PREFIX := $(BUILD_OUTPUT)/build_prefix
  $(BUILD_PREFIX): force
  	$(Q)$(call build_prefix,$(prefix))
  
@@ -81,14 +80,14 @@ index 9de3217..a3ae0b8 100644
 +$(PKG_CONFIG_FILE) : ${PKG_CONFIG_SOURCE_FILE}.template $(BUILD_PREFIX) $(VERSION_FILE)
  	$(Q) $(call do_make_pkgconfig_file,$(prefix))
  
- tags:	force
-@@ -310,6 +312,32 @@ all: $(DEFAULT_TARGET)
- $(bdir):
- 	@mkdir -p $(bdir)
+ $(kshark-dir)/build/Makefile: $(kshark-dir)/CMakeLists.txt
+@@ -392,6 +394,32 @@ libtracecmd.so: $(LIBTRACECMD_SHARED)
  
-+VERSION = $(TFS_VERSION)
-+PATCHLEVEL = $(TFS_PATCHLEVEL)
-+EXTRAVERSION = $(TFS_EXTRAVERSION)
+ libs: $(LIBTRACECMD_SHARED) $(PKG_CONFIG_FILE)
+ 
++VERSION = $(LIBTC_VERSION)
++PATCHLEVEL = $(LIBTC_PATCHLEVEL)
++EXTRAVERSION = $(LIBTC_EXTRAVERSION)
 +
 +define make_version.h
 +  (echo '/* This file is automatically generated. Do not modify. */';		\
@@ -104,7 +103,7 @@ index 9de3217..a3ae0b8 100644
 +    if [ -r $@ ] && cmp -s $@ $@.tmp; then	\
 +      rm -f $@.tmp;				\
 +    else					\
-+      echo '  UPDATE             $@';		\
++      echo '  UPDATE                 $@';	\
 +      mv -f $@.tmp $@;				\
 +    fi);
 +endef
@@ -112,16 +111,18 @@ index 9de3217..a3ae0b8 100644
 +$(VERSION_FILE): force
 +	$(Q)$(call update_version.h)
 +
- $(LIBTRACEFS_STATIC): force
- 	$(Q)mkdir -p $(bdir)
- 	$(Q)$(MAKE) -C $(src)/src $@
-@@ -323,5 +351,6 @@ clean:
- 	$(MAKE) -C $(src)/src clean
- 	$(RM) $(TARGETS) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.so.* $(bdir)/*.o $(bdir)/.*.d
- 	$(RM) $(PKG_CONFIG_FILE)
-+	$(RM) $(VERSION_FILE)
+ gui: force $(CMD_TARGETS)
+ 	$(MAKE) $(kshark-dir)/build/Makefile
+ 	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build
+@@ -490,7 +518,7 @@ install_doc_gui:
  
- .PHONY: clean
+ clean:
+ 	$(RM) *.o *~ *.a *.so .*.d
+-	$(RM) tags TAGS cscope* $(PKG_CONFIG_SOURCE_FILE)
++	$(RM) tags TAGS cscope* $(PKG_CONFIG_SOURCE_FILE) $(VERSION_FILE)
+ 	$(MAKE) -C $(src)/lib/trace-cmd clean
+ 	$(MAKE) -C $(src)/lib/trace-cmd/plugins clean
+ 	$(MAKE) -C $(src)/utest clean
 -- 
 2.29.2
 
