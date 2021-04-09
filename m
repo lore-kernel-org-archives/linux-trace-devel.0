@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E32DCC433ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 21:57:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF8B8C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:06:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B5CA9610CF
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 21:57:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 77772610D0
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:06:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234517AbhDIV5x (ORCPT
+        id S234838AbhDIWGh (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Apr 2021 17:57:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47654 "EHLO mail.kernel.org"
+        Fri, 9 Apr 2021 18:06:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234079AbhDIV5x (ORCPT
+        id S234517AbhDIWGh (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Apr 2021 17:57:53 -0400
+        Fri, 9 Apr 2021 18:06:37 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA960610CC
-        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Apr 2021 21:57:39 +0000 (UTC)
-Date:   Fri, 9 Apr 2021 17:57:38 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 48292610CF
+        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Apr 2021 22:06:23 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 18:06:21 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracefs: Update libtracefs.pc when version changes
-Message-ID: <20210409175738.101366dd@gandalf.local.home>
+Subject: [PATCH v2] libtracefs: Update libtracefs.pc when version changes
+Message-ID: <20210409180621.62f8c90c@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -46,9 +46,14 @@ otherwise it may install the wrong version number.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
+Changes since v1:
+  - Fixed version define calculation
+  - Fixed alignment of updating tfs_version.h
+  - Remove tfs_version.h in make clean
+
  .gitignore |  1 +
- Makefile   | 30 +++++++++++++++++++++++++++++-
- 2 files changed, 30 insertions(+), 1 deletion(-)
+ Makefile   | 31 ++++++++++++++++++++++++++++++-
+ 2 files changed, 31 insertions(+), 1 deletion(-)
 
 diff --git a/.gitignore b/.gitignore
 index d2d39fb..ff3e014 100644
@@ -60,7 +65,7 @@ index d2d39fb..ff3e014 100644
  build_uninstall
 +tfs_version.h
 diff --git a/Makefile b/Makefile
-index 9de3217..4f8b16d 100644
+index 9de3217..a3ae0b8 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -203,10 +203,12 @@ endef
@@ -81,8 +86,8 @@ index 9de3217..4f8b16d 100644
  $(bdir):
  	@mkdir -p $(bdir)
  
-+VERSION = $(TRACEFS_VERSION)
-+PATCHLEVEL = $(TRACEFS_PATCHLEVEL)
++VERSION = $(TFS_VERSION)
++PATCHLEVEL = $(TFS_PATCHLEVEL)
 +EXTRAVERSION = $(TFS_EXTRAVERSION)
 +
 +define make_version.h
@@ -99,7 +104,7 @@ index 9de3217..4f8b16d 100644
 +    if [ -r $@ ] && cmp -s $@ $@.tmp; then	\
 +      rm -f $@.tmp;				\
 +    else					\
-+      echo '  UPDATE                 $@';	\
++      echo '  UPDATE             $@';		\
 +      mv -f $@.tmp $@;				\
 +    fi);
 +endef
@@ -110,6 +115,13 @@ index 9de3217..4f8b16d 100644
  $(LIBTRACEFS_STATIC): force
  	$(Q)mkdir -p $(bdir)
  	$(Q)$(MAKE) -C $(src)/src $@
+@@ -323,5 +351,6 @@ clean:
+ 	$(MAKE) -C $(src)/src clean
+ 	$(RM) $(TARGETS) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.so.* $(bdir)/*.o $(bdir)/.*.d
+ 	$(RM) $(PKG_CONFIG_FILE)
++	$(RM) $(VERSION_FILE)
+ 
+ .PHONY: clean
 -- 
 2.29.2
 
