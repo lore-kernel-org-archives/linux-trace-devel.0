@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CDBDC433ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 00:55:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 069CFC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 01:10:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 15130601FC
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 00:55:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CA8D0610F7
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 01:10:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhDIAz1 (ORCPT
+        id S233159AbhDIBK7 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 8 Apr 2021 20:55:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46460 "EHLO mail.kernel.org"
+        Thu, 8 Apr 2021 21:10:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232426AbhDIAz0 (ORCPT
+        id S233149AbhDIBK6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 8 Apr 2021 20:55:26 -0400
+        Thu, 8 Apr 2021 21:10:58 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01B8F601FC
-        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Apr 2021 00:55:13 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 20:55:12 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id AC24F610C7
+        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Apr 2021 01:10:46 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 21:10:44 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "linux-trace-devel@vger.kernel.org" 
         <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracefs: Add -lpthread to build
-Message-ID: <20210408205512.52c385d0@oasis.local.home>
+Subject: [PATCH] libtracecmd: Fix make install_libs updating of ldconfig
+Message-ID: <20210408211044.6b3200df@oasis.local.home>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,29 +42,51 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-In order to use pthread functions, include -lpthread to the linked
-libraries to make sure that applications that include -ltracefs do not
-require to have -lpthread as well, if the application is not using
-pthreads.
+The ldconfig file /etc/ld.conf.d/trace.conf was being updated when it did
+not need to be, and should not be updated if ldconfig is not in the patch
+when installing.
+
+Add a check to see if ldconfig can successfully run before testing if conf
+file should be updated. Also fix the grep of the conf file that looks for
+the path such that the output is not displayed to the console.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/trace-cmd/Makefile | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index ff1a3a6..b7f7f76 100644
---- a/Makefile
-+++ b/Makefile
-@@ -138,7 +138,7 @@ LIBTRACEFS_SHARED = $(bdir)/libtracefs.so.$(TRACEFS_VERSION)
- PKG_CONFIG_SOURCE_FILE = libtracefs.pc
- PKG_CONFIG_FILE := $(addprefix $(obj)/,$(PKG_CONFIG_SOURCE_FILE))
- 
--LIBS = $(LIBTRACEEVENT_LIBS)
-+LIBS = $(LIBTRACEEVENT_LIBS) -lpthread
- 
- export LIBS
- export LIBTRACEFS_STATIC LIBTRACEFS_SHARED
+diff --git a/lib/trace-cmd/Makefile b/lib/trace-cmd/Makefile
+index 9bba5a21..17600318 100644
+--- a/lib/trace-cmd/Makefile
++++ b/lib/trace-cmd/Makefile
+@@ -70,16 +70,18 @@ ifeq ("$(DESTDIR)", "")
+ # and running ldconfig, if the library is visible by ld.so.
+ # If not, add the path to /etc/ld.so.conf.d/trace.conf and run ldconfig again.
+ define install_ld_config
+-	$(LDCONFIG); \
+-	if ! grep "^$(libdir)$$" $(LD_SO_CONF_PATH)/* &> /dev/null ; then \
+-		$(CC) -o $(bdir)/test $(ldir)/test.c -I $(includedir_SQ) \
+-			-L $(libdir_SQ) -ltracecmd > /dev/null; \
+-		if ! $(bdir)/test &> /dev/null; then \
+-			$(call print_install,trace.conf,$(LD_SO_CONF_PATH)) \
+-			echo $(libdir_SQ) >> $(LD_SO_CONF_PATH)/trace.conf; \
+-			$(LDCONFIG); \
++	if $(LDCONFIG); then \
++		if ! grep -q "^$(libdir)$$" $(LD_SO_CONF_PATH)/* ; then \
++			echo here;\
++			$(CC) -o $(bdir)/test $(ldir)/test.c -I $(includedir_SQ) \
++				-L $(libdir_SQ) -ltracecmd &> /dev/null; \
++			if ! $(bdir)/test &> /dev/null; then \
++				$(call print_install,trace.conf,$(LD_SO_CONF_PATH)) \
++				echo $(libdir_SQ) >> $(LD_SO_CONF_PATH)/trace.conf; \
++				$(LDCONFIG); \
++			fi; \
++			$(RM) $(bdir)/test; \
+ 		fi; \
+-		$(RM) $(bdir)/test; \
+ 	fi
+ endef
+ else
 -- 
 2.29.2
 
