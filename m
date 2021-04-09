@@ -2,898 +2,365 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8411C43470
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 05:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AF0FC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 13:12:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 65D4161181
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 05:09:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 03D1D6113A
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 13:12:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhDIFJ3 (ORCPT
+        id S231621AbhDINMa (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Apr 2021 01:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233303AbhDIFJT (ORCPT
+        Fri, 9 Apr 2021 09:12:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231127AbhDINMa (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:09:19 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9BEC061761
-        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Apr 2021 22:08:33 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id bx20so3863842edb.12
-        for <linux-trace-devel@vger.kernel.org>; Thu, 08 Apr 2021 22:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PWUJ6VXFRper5vc9iT/Xm60L2GIpMl1cnMmeeqgUNIE=;
-        b=iqjNQr6YtTl/A/2ZS2Jo1uAHQy/iuYaL0wRQwcHVTifK7vTRYAozB2U86W5hAZosHI
-         OQFYpu7yh7jRAdUBoFIm/dFR+BMwZOkqzuxb52cQ6vXrhzq9I+rSPpA6xm3JoNznyMxQ
-         +agPiAo7OAaZxRyoJsA/8McoevjrLG3ihAyrYbxN+hg51KxSVGwthKAyQjzEK+Gx4YQG
-         m0xcl5wzezzBFTR7yv4XitieQhZ4KsCrVIlX5yKB5eLmR0DQ7ay73gY2PaizeXV8esEa
-         ZDZDKeYiyhiurrMDHvfX74blP5WmlhGTpdckJexmlQxcjz9bwi7Iy08qv1jAEd+F1cjj
-         1kbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PWUJ6VXFRper5vc9iT/Xm60L2GIpMl1cnMmeeqgUNIE=;
-        b=I9snCeR1VLVFEGYluL5vN/sWNx8YBgxp5YAnuR/D9w6/rDXDQK3XTBmIXQzlzSPpkb
-         iSr4COoviuARu+bbL9665nuHBj+xp8/faY7IgKvfMaeF13nnDRZD8JqqF4FHi9gZGx9R
-         +SuTz2jX3Q1lqqrOf1BkKUKkHwxsXWWDIMiISUbKwWwpSt0evPvAEDWbh1oFBf4b7C2t
-         69B2g14mHgqtJknKrSpnuUX9YQgJZo9gl6v8CCkvwxYiDld5E6FInZAghn0PEtw772Fi
-         4dTxqVyStaq/AVhv74ElZW36i1rskKcqOtfiAxVDIpQYNb+u3dU4yjLtXTd15TDxZSlP
-         MQHg==
-X-Gm-Message-State: AOAM530L5uT8RIlxtbRZmHMy4CBXydKv3UtbcryOVvc9sXoqT9JBwUWo
-        SKjyS/v+QMaZvzUl/AAAcdHCEXBnU4BFng==
-X-Google-Smtp-Source: ABdhPJyfyyyePba71g/Kvgcu8ka3G1oL3CylNNaAkax0b+4k5V33OtNHGXVKfYg+lJ0hKnit1fZyJQ==
-X-Received: by 2002:aa7:df99:: with SMTP id b25mr13166272edy.190.1617944911686;
-        Thu, 08 Apr 2021 22:08:31 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id j6sm723300edw.73.2021.04.08.22.08.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 22:08:31 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
+        Fri, 9 Apr 2021 09:12:30 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 096E8610FB;
+        Fri,  9 Apr 2021 13:12:16 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 09:12:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v4] trace-cmd: Implement warning() in the library
-Date:   Fri,  9 Apr 2021 08:08:30 +0300
-Message-Id: <20210409050830.3185431-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.30.2
+Subject: Re: [PATCH v3] libtracefs: Add new API for open trace marker file
+Message-ID: <20210409091215.03ceca3d@gandalf.local.home>
+In-Reply-To: <20210409042739.3179257-1-tz.stoyanov@gmail.com>
+References: <20210409042739.3179257-1-tz.stoyanov@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The warning() function is used in a lot of places in the trace-cmd
-library, but there is no implementation. The function is implemented in
-the trace-cmd application. There is also a weak implementation in
-traceevent library, which is specific to that library.
-Implemented a new tracecmd_warning(), specific to the trace-cmd
-library and replaced all warning() calls with the new function in the
-library. The new function is implemented as weak, so it can be
-overridden by the application.
-The tracecm_warning() uses tep_vwarning() from libtraceevent for
-printing the warning, which is also a weak function and can be
-overridden by the application.
+On Fri,  9 Apr 2021 07:27:39 +0300
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- Depends on "[PATCH v2] libtraceevent: Add tep_warning()"
- https://lore.kernel.org/linux-trace-devel/20210408042623.3112002-1-tz.stoyanov@gmail.com/
- 
- v4 changes:
-  - Renamed tracecmd_lib_warning() to tracecmd_warning().
- v3 changes:
-  - Use tep_vwarning() for printing the warning message.
+> Added new APIs for working with trace marker files of given instance.
+> Write strings in the trace_marker file:
+>  tracefs_print_init();
+>  tracefs_printf();
+>  tracefs_vprintf();
+>  tracefs_print_close();
+> Write binary data in trace_marker_raw file:
+>  tracefs_binary_init();
+>  tracefs_binary_write();
+>  tracefs_binary_close();
+
+Thanks Tzvetomir, this looks exactly like what I wanted.
+
+A few nits with the code, but I may take this series as is and then add
+these changes on top, since I want to get this library done this week. Let
+me know if you have any issues with what I plan on changing, or just let me
+know if you are OK with it.
 
 
- lib/trace-cmd/include/trace-cmd-local.h |  2 +-
- lib/trace-cmd/trace-hooks.c             |  5 +-
- lib/trace-cmd/trace-input.c             | 37 +++++-----
- lib/trace-cmd/trace-msg.c               | 13 ++--
- lib/trace-cmd/trace-output.c            | 93 ++++++++++++-------------
- lib/trace-cmd/trace-plugin.c            | 14 ++--
- lib/trace-cmd/trace-recorder.c          |  9 +--
- lib/trace-cmd/trace-timesync.c          |  3 +-
- lib/trace-cmd/trace-util.c              | 25 +++----
- python/ctracecmd.i                      |  2 +-
- tracecmd/include/trace-local.h          |  2 +
- 11 files changed, 101 insertions(+), 104 deletions(-)
+> 
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+> v3 changes:
+>  - Split the APIs in two groups - printing formated strings and writing binary data
+> v2 changes:
+>  - Added set of new APIs, instead of the previously proposed API for just
+>    opening the file.
+> 
+>  include/tracefs-local.h |   2 +
+>  include/tracefs.h       |  11 +++
+>  src/Makefile            |   1 +
+>  src/tracefs-instance.c  |   6 ++
+>  src/tracefs-marker.c    | 175 ++++++++++++++++++++++++++++++++++++++++
+>  5 files changed, 195 insertions(+)
+>  create mode 100644 src/tracefs-marker.c
+> 
+> diff --git a/include/tracefs-local.h b/include/tracefs-local.h
+> index 5a69ef7..d9bbf6e 100644
+> --- a/include/tracefs-local.h
+> +++ b/include/tracefs-local.h
+> @@ -20,6 +20,8 @@ struct tracefs_instance {
+>  	char	*name;
+>  	int	flags;
+>  	int	ftrace_filter_fd;
+> +	int	ftrace_marker_fd;
+> +	int	ftrace_marker_raw_fd;
+>  };
+>  
+>  /* Can be overridden */
+> diff --git a/include/tracefs.h b/include/tracefs.h
+> index befcc48..7181b75 100644
+> --- a/include/tracefs.h
+> +++ b/include/tracefs.h
+> @@ -63,6 +63,17 @@ static inline int tracefs_trace_on_get_fd(struct tracefs_instance *instance)
+>  	return tracefs_instance_file_open(instance, "tracing_on", O_RDWR);
+>  }
+>  
+> +/* trace print string*/
+> +int tracefs_print_init(struct tracefs_instance *instance);
+> +int tracefs_printf(struct tracefs_instance *instance, const char *fmt, ...);
+> +int tracefs_vprintf(struct tracefs_instance *instance, const char *fmt, va_list ap);
+> +void tracefs_print_close(struct tracefs_instance *instance);
+> +
+> +/* trace write binary data*/
+> +int tracefs_binary_init(struct tracefs_instance *instance);
+> +int tracefs_binary_write(struct tracefs_instance *instance, void *data, int len);
+> +void tracefs_binary_close(struct tracefs_instance *instance);
+> +
+>  /* events */
+>  void tracefs_list_free(char **list);
+>  char **tracefs_event_systems(const char *tracing_dir);
+> diff --git a/src/Makefile b/src/Makefile
+> index dabdbb4..b4cff07 100644
+> --- a/src/Makefile
+> +++ b/src/Makefile
+> @@ -7,6 +7,7 @@ OBJS += tracefs-utils.o
+>  OBJS += tracefs-instance.o
+>  OBJS += tracefs-events.o
+>  OBJS += tracefs-tools.o
+> +OBJS += tracefs-marker.o
+>  
+>  OBJS := $(OBJS:%.o=$(bdir)/%.o)
+>  DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
+> diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
+> index e87b360..bedf000 100644
+> --- a/src/tracefs-instance.c
+> +++ b/src/tracefs-instance.c
+> @@ -44,6 +44,8 @@ static struct tracefs_instance *instance_alloc(const char *trace_dir, const char
+>  	}
+>  
+>  	instance->ftrace_filter_fd = -1;
+> +	instance->ftrace_marker_fd = -1;
+> +	instance->ftrace_marker_raw_fd = -1;
+>  
+>  	return instance;
+>  
+> @@ -68,6 +70,10 @@ void tracefs_instance_free(struct tracefs_instance *instance)
+>  		return;
+>  	free(instance->trace_dir);
+>  	free(instance->name);
+> +	if (instance->ftrace_marker_fd >= 0)
+> +		close(instance->ftrace_marker_fd);
+> +	if (instance->ftrace_marker_raw_fd >= 0)
+> +		close(instance->ftrace_marker_raw_fd);
+>  	free(instance);
+>  }
+>  
+> diff --git a/src/tracefs-marker.c b/src/tracefs-marker.c
+> new file mode 100644
+> index 0000000..0dc72f6
+> --- /dev/null
+> +++ b/src/tracefs-marker.c
+> @@ -0,0 +1,175 @@
+> +// SPDX-License-Identifier: LGPL-2.1
+> +/*
+> + * Copyright (C) 2021, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+> + *
+> + */
+> +
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <stdio.h>
+> +
+> +#include "tracefs.h"
+> +#include "tracefs-local.h"
+> +
+> +/* File descriptors for Top level trace markers */
+> +static int ftrace_marker_fd = -1;
+> +static int ftrace_marker_raw_fd = -1;
+> +
+> +static inline int *get_marker_fd(struct tracefs_instance *instance, bool raw)
+> +{
+> +	if (raw)
+> +		return instance ? &instance->ftrace_marker_raw_fd : &ftrace_marker_raw_fd;
+> +	return instance ? &instance->ftrace_marker_fd : &ftrace_marker_fd;
+> +}
+> +
+> +static int marker_init(struct tracefs_instance *instance, bool raw)
+> +{
+> +	int *fd = get_marker_fd(instance, raw);
+> +
+> +	if (*fd >= 0)
+> +		return 0;
+> +	if (raw)
+> +		*fd = tracefs_instance_file_open(instance, "trace_marker_raw", O_WRONLY | O_CLOEXEC);
+> +	else
+> +		*fd = tracefs_instance_file_open(instance, "trace_marker", O_WRONLY | O_CLOEXEC);
 
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index 21515288..e8533b22 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -10,7 +10,7 @@
- #include "trace-cmd-private.h"
- 
- /* Can be overridden */
--void warning(const char *fmt, ...);
-+void tracecmd_warning(const char *fmt, ...);
- void tracecmd_fatal(const char *fmt, ...);
- 
- /* trace.dat file format version */
-diff --git a/lib/trace-cmd/trace-hooks.c b/lib/trace-cmd/trace-hooks.c
-index 2dadf616..e92ffc3a 100644
---- a/lib/trace-cmd/trace-hooks.c
-+++ b/lib/trace-cmd/trace-hooks.c
-@@ -9,6 +9,7 @@
- #include <ctype.h>
- 
- #include "trace-cmd-private.h"
-+#include "trace-cmd-local.h"
- #include "event-utils.h"
- 
- struct hook_list *tracecmd_create_event_hook(const char *arg)
-@@ -132,7 +133,7 @@ struct hook_list *tracecmd_create_event_hook(const char *arg)
- 				hook->stack = 1;
- 				break;
- 			default:
--				warning("unknown flag %c\n", flags[i]);
-+				tracecmd_warning("unknown flag %c\n", flags[i]);
- 			}
- 		}
- 	}
-@@ -149,7 +150,7 @@ struct hook_list *tracecmd_create_event_hook(const char *arg)
- 	return hook;
- 
- invalid_tok:
--	warning("Invalid hook format '%s'", arg);
-+	tracecmd_warning("Invalid hook format '%s'", arg);
- 	return NULL;
- }
- 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 64825bfd..3deb995e 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -430,7 +430,7 @@ static int regex_event_buf(const char *file, int size, regex_t *epreg)
- 
- 	buf = malloc(size + 1);
- 	if (!buf) {
--		warning("Insufficient memory");
-+		tracecmd_warning("Insufficient memory");
- 		return 0;
- 	}
- 
-@@ -440,7 +440,7 @@ static int regex_event_buf(const char *file, int size, regex_t *epreg)
- 	/* get the name from the first line */
- 	line = strtok(buf, "\n");
- 	if (!line) {
--		warning("No newline found in '%s'", buf);
-+		tracecmd_warning("No newline found in '%s'", buf);
- 		return 0;
- 	}
- 	/* skip name if it is there */
-@@ -543,13 +543,13 @@ static int make_preg_files(const char *regex, regex_t *system,
- 
- 	ret = regcomp(system, sstr, REG_ICASE|REG_NOSUB);
- 	if (ret) {
--		warning("Bad regular expression '%s'", sstr);
-+		tracecmd_warning("Bad regular expression '%s'", sstr);
- 		goto out;
- 	}
- 
- 	ret = regcomp(event, estr, REG_ICASE|REG_NOSUB);
- 	if (ret) {
--		warning("Bad regular expression '%s'", estr);
-+		tracecmd_warning("Bad regular expression '%s'", estr);
- 		goto out;
- 	}
- 
-@@ -1340,14 +1340,13 @@ static int update_page_info(struct tracecmd_input *handle, int cpu)
- 
- 	/* FIXME: handle header page */
- 	if (tep_get_header_timestamp_size(pevent) != 8) {
--		warning("expected a long long type for timestamp");
-+		tracecmd_warning("expected a long long type for timestamp");
- 		return -1;
- 	}
- 
- 	kbuffer_load_subbuffer(kbuf, ptr);
- 	if (kbuffer_subbuffer_size(kbuf) > handle->page_size) {
--		warning("bad page read, with size of %d",
--		    kbuffer_subbuffer_size(kbuf));
-+		tracecmd_warning("bad page read, with size of %d", kbuffer_subbuffer_size(kbuf));
- 		return -1;
- 	}
- 	handle->cpu_data[cpu].timestamp = timestamp_calc(kbuffer_timestamp(kbuf),
-@@ -2782,7 +2781,7 @@ static int handle_options(struct tracecmd_input *handle)
- 								  buf + 8, 8);
- 			break;
- 		default:
--			warning("unknown option %d", option);
-+			tracecmd_warning("unknown option %d", option);
- 			break;
- 		}
- 
-@@ -2925,7 +2924,7 @@ static int read_cpu_data(struct tracecmd_input *handle)
- 		read8(handle, &ignore); /* size */
- 		if (ignore != 0) {
- 			if (!once) {
--				warning("ignored CPU data not zero size");
-+				tracecmd_warning("ignored CPU data not zero size");
- 				once++;
- 			}
- 		}
-@@ -3057,7 +3056,7 @@ int tracecmd_init_data(struct tracecmd_input *handle)
- 		 */
- 		if (read_and_parse_trace_clock(handle, pevent) < 0) {
- 			char clock[] = "[local]";
--			warning("File has trace_clock bug, using local clock");
-+			tracecmd_warning("File has trace_clock bug, using local clock");
- 			tracecmd_parse_trace_clock(handle, clock, 8);
- 		}
- 	}
-@@ -3455,7 +3454,7 @@ void tracecmd_close(struct tracecmd_input *handle)
- 		return;
- 
- 	if (handle->ref <= 0) {
--		warning("tracecmd: bad ref count on handle\n");
-+		tracecmd_warning("tracecmd: bad ref count on handle\n");
- 		return;
- 	}
- 
-@@ -3472,10 +3471,10 @@ void tracecmd_close(struct tracecmd_input *handle)
- 				free_page_map(handle->cpu_data[cpu].page_map);
- 
- 			if (handle->cpu_data[cpu].page_cnt)
--				warning("%d pages still allocated on cpu %d%s",
--					handle->cpu_data[cpu].page_cnt,
--					cpu, show_records(handle->cpu_data[cpu].pages,
--							  handle->cpu_data[cpu].nr_pages));
-+				tracecmd_warning("%d pages still allocated on cpu %d%s",
-+						 handle->cpu_data[cpu].page_cnt, cpu,
-+						 show_records(handle->cpu_data[cpu].pages,
-+							      handle->cpu_data[cpu].nr_pages));
- 			free(handle->cpu_data[cpu].pages);
- 		}
- 	}
-@@ -3953,8 +3952,8 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
- 
- 	ret = lseek64(handle->fd, buffer->offset, SEEK_SET);
- 	if (ret < 0) {
--		warning("could not seek to buffer %s offset %ld\n",
--			buffer->name, buffer->offset);
-+		tracecmd_warning("could not seek to buffer %s offset %ld\n",
-+				  buffer->name, buffer->offset);
- 		goto error;
- 	}
- 
-@@ -3967,13 +3966,13 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
- 	if (!ret)
- 		ret = read_cpu_data(new_handle);
- 	if (ret < 0) {
--		warning("failed to read sub buffer %s\n", buffer->name);
-+		tracecmd_warning("failed to read sub buffer %s\n", buffer->name);
- 		goto error;
- 	}
- 
- 	ret = lseek64(handle->fd, offset, SEEK_SET);
- 	if (ret < 0) {
--		warning("could not seek to back to offset %ld\n", offset);
-+		tracecmd_warning("could not seek to back to offset %ld\n", offset);
- 		goto error;
- 	}
- 
-diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
-index bd8b4843..6667028e 100644
---- a/lib/trace-cmd/trace-msg.c
-+++ b/lib/trace-cmd/trace-msg.c
-@@ -408,8 +408,7 @@ void tracecmd_msg_set_done(struct tracecmd_msg_handle *msg_handle)
- 
- static void error_operation(struct tracecmd_msg *msg)
- {
--	warning("Message: cmd=%d size=%d\n",
--		ntohl(msg->hdr.cmd), ntohl(msg->hdr.size));
-+	tracecmd_warning("Message: cmd=%d size=%d\n", ntohl(msg->hdr.cmd), ntohl(msg->hdr.size));
- }
- 
- /*
-@@ -439,7 +438,7 @@ static int tracecmd_msg_wait_for_msg(int fd, struct tracecmd_msg *msg)
- 	ret = tracecmd_msg_recv_wait(fd, msg);
- 	if (ret < 0) {
- 		if (ret == -ETIMEDOUT)
--			warning("Connection timed out\n");
-+			tracecmd_warning("Connection timed out\n");
- 		return ret;
- 	}
- 
-@@ -590,7 +589,7 @@ int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle)
- 	ret = tracecmd_msg_recv_wait(msg_handle->fd, &msg);
- 	if (ret < 0) {
- 		if (ret == -ETIMEDOUT)
--			warning("Connection timed out\n");
-+			tracecmd_warning("Connection timed out\n");
- 		return ret;
- 	}
- 
-@@ -754,9 +753,9 @@ int tracecmd_msg_read_data(struct tracecmd_msg_handle *msg_handle, int ofd)
- 		ret = tracecmd_msg_recv_wait(msg_handle->fd, &msg);
- 		if (ret < 0) {
- 			if (ret == -ETIMEDOUT)
--				warning("Connection timed out\n");
-+				tracecmd_warning("Connection timed out\n");
- 			else
--				warning("reading client");
-+				tracecmd_warning("reading client");
- 			return ret;
- 		}
- 
-@@ -779,7 +778,7 @@ int tracecmd_msg_read_data(struct tracecmd_msg_handle *msg_handle, int ofd)
- 			if (s < 0) {
- 				if (errno == EINTR)
- 					continue;
--				warning("writing to file");
-+				tracecmd_warning("writing to file");
- 				ret = -errno;
- 				goto error;
- 			}
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index ea6d1ba3..a4a1eecc 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -197,7 +197,7 @@ static unsigned long get_size(const char *file)
- 
- 	fd = open(file, O_RDONLY);
- 	if (fd < 0) {
--		warning("Can't read '%s'", file);
-+		tracecmd_warning("Can't read '%s'", file);
- 		return 0; /* Caller will fail with zero */
- 	}
- 	size = get_size_fd(fd);
-@@ -232,7 +232,7 @@ static tsize_t copy_file(struct tracecmd_output *handle,
- 
- 	fd = open(file, O_RDONLY);
- 	if (fd < 0) {
--		warning("Can't read '%s'", file);
-+		tracecmd_warning("Can't read '%s'", file);
- 		return 0;
- 	}
- 	size = copy_file_fd(handle, fd);
-@@ -293,7 +293,7 @@ int tracecmd_ftrace_enable(int set)
- 
- 	fd = open(path, O_WRONLY);
- 	if (fd < 0) {
--		warning("Can't %s ftrace", set ? "enable" : "disable");
-+		tracecmd_warning("Can't %s ftrace", set ? "enable" : "disable");
- 		return EIO;
- 	}
- 
-@@ -340,8 +340,8 @@ static int read_header_files(struct tracecmd_output *handle)
- 	int ret;
- 
- 	if (check_out_state(handle, TRACECMD_FILE_HEADERS) < 0) {
--		warning("Cannot read header files, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot read header files, unexpected state 0x%X",
-+				 handle->file_state);
- 		return -1;
- 	}
- 
-@@ -367,7 +367,7 @@ static int read_header_files(struct tracecmd_output *handle)
- 
- 	fd = open(path, O_RDONLY);
- 	if (fd < 0) {
--		warning("can't read '%s'", path);
-+		tracecmd_warning("can't read '%s'", path);
- 		return -1;
- 	}
- 
-@@ -382,8 +382,7 @@ static int read_header_files(struct tracecmd_output *handle)
- 	check_size = copy_file_fd(handle, fd);
- 	close(fd);
- 	if (size != check_size) {
--		warning("wrong size for '%s' size=%lld read=%lld",
--			path, size, check_size);
-+		tracecmd_warning("wrong size for '%s' size=%lld read=%lld", path, size, check_size);
- 		errno = EINVAL;
- 		return -1;
- 	}
-@@ -395,7 +394,7 @@ static int read_header_files(struct tracecmd_output *handle)
- 
- 	fd = open(path, O_RDONLY);
- 	if (fd < 0) {
--		warning("can't read '%s'", path);
-+		tracecmd_warning("can't read '%s'", path);
- 		return -1;
- 	}
- 
-@@ -409,7 +408,7 @@ static int read_header_files(struct tracecmd_output *handle)
- 	check_size = copy_file_fd(handle, fd);
- 	close(fd);
- 	if (size != check_size) {
--		warning("wrong size for '%s'", path);
-+		tracecmd_warning("wrong size for '%s'", path);
- 		return -1;
- 	}
- 	put_tracing_file(path);
-@@ -453,7 +452,7 @@ static int copy_event_system(struct tracecmd_output *handle,
- 				return -1;
- 			check_size = copy_file(handle, format);
- 			if (size != check_size) {
--				warning("error in size of file '%s'", format);
-+				tracecmd_warning("error in size of file '%s'", format);
- 				return -1;
- 			}
- 		}
-@@ -509,7 +508,7 @@ static void add_list_event_system(struct list_event_system **systems,
- 	}
- 	return;
-  err_mem:
--	warning("Insufficient memory");
-+	 tracecmd_warning("Insufficient memory");
- }
- 
- static void free_list_events(struct list_event_system *list)
-@@ -643,7 +642,7 @@ create_event_list_item(struct tracecmd_output *handle,
- 	free(str);
- 	return;
-  err_mem:
--	warning("Insufficient memory");
-+	 tracecmd_warning("Insufficient memory");
- }
- 
- static int read_ftrace_files(struct tracecmd_output *handle)
-@@ -653,8 +652,8 @@ static int read_ftrace_files(struct tracecmd_output *handle)
- 	int ret;
- 
- 	if (check_out_state(handle, TRACECMD_FILE_FTRACE_EVENTS) < 0) {
--		warning("Cannot read ftrace files, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot read ftrace files, unexpected state 0x%X",
-+				 handle->file_state);
- 		return -1;
- 	}
- 
-@@ -694,8 +693,8 @@ static int read_event_files(struct tracecmd_output *handle,
- 	int ret;
- 
- 	if (check_out_state(handle, TRACECMD_FILE_ALL_EVENTS) < 0) {
--		warning("Cannot read event files, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot read event files, unexpected state 0x%X",
-+				 handle->file_state);
- 		return -1;
- 	}
- 	/*
-@@ -774,7 +773,7 @@ err:
- 	if (fd > 0)
- 		close(fd);
- 	if (ret)
--		warning("can't set kptr_restrict");
-+		tracecmd_warning("can't set kptr_restrict");
- }
- 
- static int read_proc_kallsyms(struct tracecmd_output *handle,
-@@ -786,8 +785,8 @@ static int read_proc_kallsyms(struct tracecmd_output *handle,
- 	int ret;
- 
- 	if (check_out_state(handle, TRACECMD_FILE_KALLSYMS) < 0) {
--		warning("Cannot read kallsyms, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot read kallsyms, unexpected state 0x%X",
-+				 handle->file_state);
- 		return -1;
- 	}
- 
-@@ -812,7 +811,7 @@ static int read_proc_kallsyms(struct tracecmd_output *handle,
- 	check_size = copy_file(handle, path);
- 	if (size != check_size) {
- 		errno = EINVAL;
--		warning("error in size of file '%s'", path);
-+		tracecmd_warning("error in size of file '%s'", path);
- 		set_proc_kptr_restrict(1);
- 		return -1;
- 	}
-@@ -831,8 +830,8 @@ static int read_ftrace_printk(struct tracecmd_output *handle)
- 	int ret;
- 
- 	if (check_out_state(handle, TRACECMD_FILE_PRINTK) < 0) {
--		warning("Cannot read printk, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot read printk, unexpected state 0x%X",
-+				 handle->file_state);
- 		return -1;
- 	}
- 
-@@ -856,7 +855,7 @@ static int read_ftrace_printk(struct tracecmd_output *handle)
- 	check_size = copy_file(handle, path);
- 	if (size != check_size) {
- 		errno = EINVAL;
--		warning("error in size of file '%s'", path);
-+		tracecmd_warning("error in size of file '%s'", path);
- 		goto fail;
- 	}
- 
-@@ -892,7 +891,7 @@ static int save_tracing_file_data(struct tracecmd_output *handle,
- 		check_size = copy_file(handle, file);
- 		if (size != check_size) {
- 			errno = EINVAL;
--			warning("error in size of file '%s'", file);
-+			tracecmd_warning("error in size of file '%s'", file);
- 			goto out_free;
- 		}
- 	} else {
-@@ -1062,14 +1061,14 @@ tracecmd_add_option_v(struct tracecmd_output *handle,
- 	if (size) {
- 		data = malloc(size);
- 		if (!data) {
--			warning("Insufficient memory");
-+			tracecmd_warning("Insufficient memory");
- 			return NULL;
- 		}
- 	}
- 
- 	option = malloc(sizeof(*option));
- 	if (!option) {
--		warning("Could not allocate space for option");
-+		tracecmd_warning("Could not allocate space for option");
- 		free(data);
- 		return NULL;
- 	}
-@@ -1119,8 +1118,8 @@ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
- 
- 	ret = check_out_state(handle, TRACECMD_FILE_CPU_COUNT);
- 	if (ret < 0) {
--		warning("Cannot write CPU count into the file, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot write CPU count into the file, unexpected state 0x%X",
-+				 handle->file_state);
- 		return ret;
- 	}
- 	cpus = convert_endian_4(handle, cpus);
-@@ -1144,8 +1143,8 @@ int tracecmd_write_options(struct tracecmd_output *handle)
- 		return 0;
- 	ret = check_out_state(handle, TRACECMD_FILE_OPTIONS);
- 	if (ret < 0) {
--		warning("Cannot write options into the file, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot write options into the file, unexpected state 0x%X",
-+				 handle->file_state);
- 		return ret;
- 	}
- 
-@@ -1238,7 +1237,7 @@ int tracecmd_update_option(struct tracecmd_output *handle,
- 	stsize_t ret;
- 
- 	if (size > option->size) {
--		warning("Can't update option with more data than allocated");
-+		tracecmd_warning("Can't update option with more data than allocated");
- 		return -1;
- 	}
- 
-@@ -1254,7 +1253,7 @@ int tracecmd_update_option(struct tracecmd_output *handle,
- 
- 	ret = lseek64(handle->fd, option->offset, SEEK_SET);
- 	if (ret == (off64_t)-1) {
--		warning("could not seek to %lld\n", option->offset);
-+		tracecmd_warning("could not seek to %lld\n", option->offset);
- 		return -1;
- 	}
- 
-@@ -1263,7 +1262,7 @@ int tracecmd_update_option(struct tracecmd_output *handle,
- 
- 	ret = lseek64(handle->fd, offset, SEEK_SET);
- 	if (ret == (off64_t)-1) {
--		warning("could not seek to %lld\n", offset);
-+		tracecmd_warning("could not seek to %lld\n", offset);
- 		return -1;
- 	}
- 
-@@ -1280,7 +1279,7 @@ tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name,
- 
- 	buf = malloc(size);
- 	if (!buf) {
--		warning("Failed to malloc buffer");
-+		tracecmd_warning("Failed to malloc buffer");
- 		return NULL;
- 	}
- 	*(tsize_t *)buf = 0;
-@@ -1306,8 +1305,8 @@ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
- 
- 	ret = check_out_state(handle, TRACECMD_FILE_CMD_LINES);
- 	if (ret < 0) {
--		warning("Cannot write command lines into the file, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot write command lines into the file, unexpected state 0x%X",
-+				 handle->file_state);
- 		return ret;
- 	}
- 	ret = save_tracing_file_data(handle, "saved_cmdlines");
-@@ -1341,8 +1340,8 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
- 
- 	ret = check_out_state(handle, TRACECMD_FILE_CPU_LATENCY);
- 	if (ret < 0) {
--		warning("Cannot write latency data into the file, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot write latency data into the file, unexpected state 0x%X",
-+				 handle->file_state);
- 		goto out_free;
- 	}
- 
-@@ -1424,8 +1423,8 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
- 	ret = handle->file_state == TRACECMD_FILE_CPU_FLYRECORD ? 0 :
- 		check_out_state(handle, TRACECMD_FILE_CPU_FLYRECORD);
- 	if (ret < 0) {
--		warning("Cannot write trace data into the file, unexpected state 0x%X",
--			handle->file_state);
-+		tracecmd_warning("Cannot write trace data into the file, unexpected state 0x%X",
-+				 handle->file_state);
- 		goto out_free;
- 	}
- 
-@@ -1467,7 +1466,7 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
- 		file = cpu_data_files[i];
- 		ret = stat(file, &st);
- 		if (ret < 0) {
--			warning("can not stat '%s'", file);
-+			tracecmd_warning("can not stat '%s'", file);
- 			goto out_free;
- 		}
- 		offsets[i] = offset;
-@@ -1492,14 +1491,14 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
- 				i, (unsigned long long) offsets[i]);
- 		offset = lseek64(handle->fd, offsets[i], SEEK_SET);
- 		if (offset == (off64_t)-1) {
--			warning("could not seek to %lld\n", offsets[i]);
-+			tracecmd_warning("could not seek to %lld\n", offsets[i]);
- 			goto out_free;
- 		}
- 		check_size = copy_file(handle, cpu_data_files[i]);
- 		if (check_size != sizes[i]) {
- 			errno = EINVAL;
--			warning("did not match size of %lld to %lld",
--			    check_size, sizes[i]);
-+			tracecmd_warning("did not match size of %lld to %lld",
-+					 check_size, sizes[i]);
- 			goto out_free;
- 		}
- 		if (!tracecmd_get_quiet(handle))
-@@ -1548,7 +1547,7 @@ int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
- 	/* Go to the option data, where will write the offest */
- 	ret = lseek64(handle->fd, option->offset, SEEK_SET);
- 	if (ret == (off64_t)-1) {
--		warning("could not seek to %lld\n", option->offset);
-+		tracecmd_warning("could not seek to %lld\n", option->offset);
- 		return -1;
- 	}
- 
-@@ -1558,7 +1557,7 @@ int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
- 	/* Go back to end of file */
- 	ret = lseek64(handle->fd, offset, SEEK_SET);
- 	if (ret == (off64_t)-1) {
--		warning("could not seek to %lld\n", offset);
-+		tracecmd_warning("could not seek to %lld\n", offset);
- 		return -1;
- 	}
- 
-diff --git a/lib/trace-cmd/trace-plugin.c b/lib/trace-cmd/trace-plugin.c
-index 92f9edf3..ca7cadae 100644
---- a/lib/trace-cmd/trace-plugin.c
-+++ b/lib/trace-cmd/trace-plugin.c
-@@ -10,6 +10,7 @@
- #include <libgen.h>
- #include "trace-cmd.h"
- #include "trace-local.h"
-+#include "trace-cmd-local.h"
- 
- #define LOCAL_PLUGIN_DIR ".local/lib/trace-cmd/plugins/"
- 
-@@ -107,14 +108,13 @@ load_plugin(struct trace_plugin_context *trace, const char *path,
- 
- 	ret = asprintf(&plugin, "%s/%s", path, file);
- 	if (ret < 0) {
--		warning("could not allocate plugin memory\n");
-+		tracecmd_warning("could not allocate plugin memory\n");
- 		return;
- 	}
- 
- 	handle = dlopen(plugin, RTLD_NOW | RTLD_GLOBAL);
- 	if (!handle) {
--		warning("could not load plugin '%s'\n%s\n",
--			plugin, dlerror());
-+		tracecmd_warning("could not load plugin '%s'\n%s\n", plugin, dlerror());
- 		goto out_free;
- 	}
- 
-@@ -124,14 +124,14 @@ load_plugin(struct trace_plugin_context *trace, const char *path,
- 
- 	func = dlsym(handle, TRACECMD_PLUGIN_LOADER_NAME);
- 	if (!func) {
--		warning("could not find func '%s' in plugin '%s'\n%s\n",
--			TRACECMD_PLUGIN_LOADER_NAME, plugin, dlerror());
-+		tracecmd_warning("could not find func '%s' in plugin '%s'\n%s\n",
-+				 TRACECMD_PLUGIN_LOADER_NAME, plugin, dlerror());
- 		goto out_free;
- 	}
- 
- 	list = malloc(sizeof(*list));
- 	if (!list) {
--		warning("could not allocate plugin memory\n");
-+		tracecmd_warning("could not allocate plugin memory\n");
- 		goto out_free;
- 	}
- 
-@@ -256,7 +256,7 @@ load_plugins_hook(struct trace_plugin_context *trace, const char *suffix,
- 
- 	ret = asprintf(&path, "%s/%s", home, LOCAL_PLUGIN_DIR);
- 	if (ret < 0) {
--		warning("could not allocate plugin memory\n");
-+		tracecmd_warning("could not allocate plugin memory\n");
- 		return;
- 	}
- 
-diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
-index c811028a..0caa124b 100644
---- a/lib/trace-cmd/trace-recorder.c
-+++ b/lib/trace-cmd/trace-recorder.c
-@@ -14,6 +14,7 @@
- 
- #include "tracefs.h"
- #include "trace-cmd-private.h"
-+#include "trace-cmd-local.h"
- #include "event-utils.h"
- 
- /* F_GETPIPE_SZ was introduced in 2.6.35, older systems don't have it */
-@@ -393,7 +394,7 @@ static long splice_data(struct tracecmd_recorder *recorder)
- 		if (errno == EAGAIN || errno == EINTR || errno == ENOTCONN)
- 			return 0;
- 
--		warning("recorder error in splice input");
-+		tracecmd_warning("recorder error in splice input");
- 		return -1;
- 	} else if (read == 0)
- 		return 0;
-@@ -403,7 +404,7 @@ static long splice_data(struct tracecmd_recorder *recorder)
- 		     read, recorder->fd_flags);
- 	if (ret < 0) {
- 		if (errno != EAGAIN && errno != EINTR) {
--			warning("recorder error in splice output");
-+			tracecmd_warning("recorder error in splice output");
- 			return -1;
- 		}
- 		return total_read;
-@@ -451,7 +452,7 @@ static long direct_splice_data(struct tracecmd_recorder *recorder)
- 		if (errno == EAGAIN || errno == EINTR || errno == ENOTCONN)
- 			return 0;
- 
--		warning("recorder error in splice input");
-+		tracecmd_warning("recorder error in splice input");
- 		return -1;
- 	}
- 
-@@ -473,7 +474,7 @@ static long read_data(struct tracecmd_recorder *recorder)
- 		if (errno == EAGAIN || errno == EINTR || errno == ENOTCONN)
- 			return 0;
- 
--		warning("recorder error in read input");
-+		tracecmd_warning("recorder error in read input");
- 		return -1;
- 	}
- 
-diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
-index 242f0cef..19ca19d7 100644
---- a/lib/trace-cmd/trace-timesync.c
-+++ b/lib/trace-cmd/trace-timesync.c
-@@ -20,6 +20,7 @@
- #include <pthread.h>
- 
- #include "trace-cmd-private.h"
-+#include "trace-cmd-local.h"
- #include "tracefs.h"
- #include "event-utils.h"
- #include "trace-tsync-local.h"
-@@ -729,7 +730,7 @@ static int tsync_get_sample(struct tracecmd_time_sync *tsync, unsigned int cpu,
- 
- 	ret = proto->clock_sync_calc(tsync, &offset, &scaling, &timestamp, cpu);
- 	if (ret) {
--		warning("Failed to synchronize timestamps with guest");
-+		tracecmd_warning("Failed to synchronize timestamps with guest");
- 		return -1;
- 	}
- 	if (!offset || !timestamp || !scaling)
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 85e28403..2d3bc741 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -20,9 +20,10 @@
- #include <sys/stat.h>
- #include <sys/sysinfo.h>
- #include <time.h>
-+#include <traceevent/event-utils.h>
- 
- #include "trace-cmd-private.h"
--#include "event-utils.h"
-+#include "trace-cmd-local.h"
- 
- #define LOCAL_PLUGIN_DIR ".trace-cmd/plugins"
- #define PROC_STACK_FILE "/proc/sys/kernel/stack_tracer_enabled"
-@@ -182,7 +183,7 @@ void tracecmd_parse_ftrace_printk(struct tep_handle *pevent,
- 	while (line) {
- 		addr_str = strtok_r(line, ":", &fmt);
- 		if (!addr_str) {
--			warning("printk format with empty entry");
-+			tracecmd_warning("printk format with empty entry");
- 			break;
- 		}
- 		addr = strtoull(addr_str, NULL, 16);
-@@ -353,19 +354,13 @@ trace_load_plugins(struct tep_handle *tep, int flags)
- 	return list;
- }
- 
--static int __vlib_warning(const char *fmt, va_list ap)
-+void __weak tracecmd_warning(const char *fmt, ...)
- {
--	int ret = errno;
--
--	if (errno)
--		perror("libtracecmd");
--
--	fprintf(stderr, "  ");
--	vfprintf(stderr, fmt, ap);
--
--	fprintf(stderr, "\n");
-+	va_list ap;
- 
--	return ret;
-+	va_start(ap, fmt);
-+	tep_vwarning("libtracecmd", fmt, ap);
-+	va_end(ap);
- }
- 
- void __weak tracecmd_fatal(const char *fmt, ...)
-@@ -374,7 +369,7 @@ void __weak tracecmd_fatal(const char *fmt, ...)
- 	va_list ap;
- 
- 	va_start(ap, fmt);
--	ret = __vlib_warning(fmt, ap);
-+	ret = tep_vwarning("libtracecmd", fmt, ap);
- 	va_end(ap);
- 
- 	if (debug) {
-@@ -524,7 +519,7 @@ int tracecmd_count_cpus(void)
- 
- 	if (!once) {
- 		once++;
--		warning("sysconf could not determine number of CPUS");
-+		tracecmd_warning("sysconf could not determine number of CPUS");
- 	}
- 
- 	/* Do the hack to figure out # of CPUS */
-diff --git a/python/ctracecmd.i b/python/ctracecmd.i
-index 5f7181c7..26aee991 100644
---- a/python/ctracecmd.i
-+++ b/python/ctracecmd.i
-@@ -63,7 +63,7 @@ void warning(const char *fmt, ...)
- 		return;
- 
- 	va_start(ap, fmt);
--	__vwarning(fmt, ap);
-+	tep_vwarning("tracecmd", fmt, ap);
- 	va_end(ap);
- }
- 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 6a4c5f51..1218de12 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -27,6 +27,8 @@ typedef unsigned long long u64;
- 
- struct buffer_instance;
- 
-+void warning(const char *fmt, ...);
-+
- /* for local shared information with trace-cmd executable */
- 
- void usage(char **argv);
--- 
-2.30.2
+I like to keep functionality out of if statements like the above if there's
+a way to do so, and there is, with the following:
 
+static int marker_init(struct tracefs_instance *instance, bool raw)
+{
+	const char *file = raw ? "trace_marker_raw" : "trace_marker";
+	int *fd = get_marker_fd(instance, raw);
+
+	if (*fd >= 0)
+		return 0;
+	*fd = tracefs_instance_file_open(instance, file, O_WRONLY | O_CLOEXEC);
+> +
+> +	return *fd < 0 ? -1 : 0;
+> +}
+> +
+> +static void marker_close(struct tracefs_instance *instance, bool raw)
+> +{
+> +	int *fd = get_marker_fd(instance, raw);
+> +
+> +	if (*fd < 0)
+> +		return;
+> +	close(*fd);
+> +	*fd = -1;
+
+Both of the functions will need a mutex around them. But I can add that.
+
+> +}
+> +
+> +static int marker_write(struct tracefs_instance *instance, bool raw, void *data, int len)
+> +{
+> +	int *fd = get_marker_fd(instance, raw);
+> +	int ret;
+> +
+> +	if (!data || len < 1)
+> +		return -1;
+> +	if (*fd < 0) {
+> +		ret = marker_init(instance, raw);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	ret = write(*fd, data, len);
+
+I would say that we don't use a mutex around the above, because writes tend
+to be crucial, and even though a mutex uses futex, where it does no system
+call if there's no contention, I would just document that this could be
+racy if one thread calls the close function while others are still using
+it. But that's true with normal file handlers as well. The mutex is only
+needed to keep this code from opening the file more than once.
+
+> +
+> +	return ret == len ? 0 : -1;
+> +}
+> +
+> +/**
+> + * tracefs_print_init - Open trace marker of selected instance for writing
+> + * @instance: ftrace instance, can be NULL for top tracing instance.
+> + *
+> + * Returns 0 if the trace marker is opened successfully, or -1 in case of an error
+> + */
+> +int tracefs_print_init(struct tracefs_instance *instance)
+> +{
+> +	return marker_init(instance, false);
+> +}
+> +
+> +/**
+> + * tracefs_vprintf - Write a formatted string in the trace marker
+> + * @instance: ftrace instance, can be NULL for top tracing instance.
+> + * @fmt: pritnf formatted string
+> + * @ap: list of arguments for the formatted string
+> + *
+> + * If the trace marker of the desired instance is not open already,
+> + * this API will open it for writing. It will stay open until
+> + * tracefs_print_close() is called.
+> + *
+> + * Returns 0 if the string is written correctly, or -1 in case of an error
+> + */
+> +int tracefs_vprintf(struct tracefs_instance *instance, const char *fmt, va_list ap)
+> +{
+> +	char *str = NULL;
+> +	int ret;
+> +
+> +	ret = vasprintf(&str, fmt, ap);
+> +	if (ret < 0)
+> +		return ret;
+> +	ret = marker_write(instance, false, str, strlen(str) + 1);
+
+No need for the "+1", the kernel doesn't care about the nul (\0) character
+being written. It will add one itself.
+
+> +	free(str);
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+> + * tracefs_printf - Write a formatted string in the trace marker
+> + * @instance: ftrace instance, can be NULL for top tracing instance.
+> + * @fmt: pritnf formatted string with variable arguments ...
+> + *
+> + * If the trace marker of the desired instance is not open already,
+> + * this API will open it for writing. It will stay open until
+> + * tracefs_print_close() is called.
+> + *
+> + * Returns 0 if the string is written correctly, or -1 in case of an error
+> + */
+> +int tracefs_printf(struct tracefs_instance *instance, const char *fmt, ...)
+> +{
+> +	va_list ap;
+> +	int ret;
+> +
+> +	va_start(ap, fmt);
+> +	ret = tracefs_vprintf(instance, fmt, ap);
+> +	va_end(ap);
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+> + * tracefs_print_close - Close trace marker of selected instance
+> + * @instance: ftrace instance, can be NULL for top tracing instance.
+> + *
+> + * Closes the trace marker, previously opened with any of the other tracefs_print APIs
+> + */
+> +void tracefs_print_close(struct tracefs_instance *instance)
+> +{
+> +	marker_close(instance, false);
+> +}
+> +
+> +/**
+> + * tracefs_binary_init - Open raw trace marker of selected instance for writing
+> + * @instance: ftrace instance, can be NULL for top tracing instance.
+> + *
+> + * Returns 0 if the raw trace marker is opened successfully, or -1 in case of an error
+> + */
+> +int tracefs_binary_init(struct tracefs_instance *instance)
+> +{
+> +	return marker_init(instance, true);
+> +}
+> +
+> +/**
+> + * tracefs_binary_write - Write binary data in the raw trace marker
+> + * @instance: ftrace instance, can be NULL for top tracing instance.
+> + * @data: binary data, that is going to be written in the trace marker
+> + * @len: length of the @data
+> + *
+> + * If the raw trace marker of the desired instance is not open already,
+> + * this API will open it for writing. It will stay open until
+> + * tracefs_binary_close() is called.
+> + *
+> + * Returns 0 if the data is written correctly, or -1 in case of an error
+> + */
+> +int tracefs_binary_write(struct tracefs_instance *instance, void *data, int len)
+> +{
+> +	return marker_write(instance, true, data, len);
+> +}
+> +
+> +/**
+> + * tracefs_binary_close - Close raw trace marker of selected instance
+> + * @instance: ftrace instance, can be NULL for top tracing instance.
+> + *
+> + * Closes the raw trace marker, previously opened with any of the other tracefs_binary APIs
+> + */
+> +void tracefs_binary_close(struct tracefs_instance *instance)
+> +{
+> +	marker_close(instance, true);
+> +}
+
+The rest looks great!
+
+-- Steve
