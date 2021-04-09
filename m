@@ -6,26 +6,26 @@ X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B4B7C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 18:26:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E221CC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 18:26:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 374FD610D1
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 18:26:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B2365610E7
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 18:26:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbhDIS03 (ORCPT
+        id S234418AbhDIS0j (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Apr 2021 14:26:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41238 "EHLO mail.kernel.org"
+        Fri, 9 Apr 2021 14:26:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234508AbhDIS03 (ORCPT
+        id S234307AbhDIS0i (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:26:29 -0400
+        Fri, 9 Apr 2021 14:26:38 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCE18610E5;
-        Fri,  9 Apr 2021 18:26:15 +0000 (UTC)
-Date:   Fri, 9 Apr 2021 14:26:14 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id BECE6610D1;
+        Fri,  9 Apr 2021 18:26:24 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 14:26:23 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com
@@ -40,6 +40,7 @@ Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
+Message-ID: <20210409182623.Z3Iz98__BH7iZTbAs1MY9wZ3X-Xqw9MDg5uDDqtZieo@z>
 
 On Fri,  9 Apr 2021 21:04:18 +0300
 "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
@@ -61,7 +62,8 @@ On Fri,  9 Apr 2021 21:04:18 +0300
 >  7 files changed, 81 insertions(+), 89 deletions(-)
 > 
 
-Bah, I just noticed this patch series after sending out my own.
+Bah, I just noticed this patch series after sending out my own updates to
+the last one.
 
 OK, I'll use this one and see if it covers everything.
 
