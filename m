@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2DB9C43461
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 05:09:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8411C43470
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 05:09:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 86B9A61185
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 05:09:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 65D4161181
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 05:09:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhDIFJZ (ORCPT
+        id S231491AbhDIFJ3 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Apr 2021 01:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
+        Fri, 9 Apr 2021 01:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233267AbhDIFIl (ORCPT
+        with ESMTP id S233303AbhDIFJT (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:08:41 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3373C061760
-        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Apr 2021 22:08:23 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a25so6677171ejk.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 08 Apr 2021 22:08:23 -0700 (PDT)
+        Fri, 9 Apr 2021 01:09:19 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9BEC061761
+        for <linux-trace-devel@vger.kernel.org>; Thu,  8 Apr 2021 22:08:33 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id bx20so3863842edb.12
+        for <linux-trace-devel@vger.kernel.org>; Thu, 08 Apr 2021 22:08:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=SCWC7YroSTpj14YrvIJHbgI7/yclZGUri7mmp64Psn0=;
-        b=kCe52jD8MxBmJjKOTPDqaHMb6DR9aaxm+jaiMjklodVTVA61zMzRWBPTIjVwieElBi
-         0Onbe9lUQQGJ0nqS/suS72s681JJi7obZ9kwvPYnZJ2Pj02DPHQ5epQ+nPHykCKKXmTH
-         2tRo3twUwOjkoJEKpCYgKAdNMQ/+cnMqGwRPEb5XNCoC80lPyhVSEJRDEQOHRe5IdlXl
-         7Az+XAnj2gCUo3wPg4s7+RCoM6jl2Z3BgKS+4jsXiqUqf1+DYJiiEF/GvQIdZ8oPTPZF
-         6SOr4+OsmuCh3OJIxDpu10Zb5rI/IU6jb8fIAXEaZjUGaeRtD5PhVPc0d+y6WiS/JU4T
-         U89A==
+        bh=PWUJ6VXFRper5vc9iT/Xm60L2GIpMl1cnMmeeqgUNIE=;
+        b=iqjNQr6YtTl/A/2ZS2Jo1uAHQy/iuYaL0wRQwcHVTifK7vTRYAozB2U86W5hAZosHI
+         OQFYpu7yh7jRAdUBoFIm/dFR+BMwZOkqzuxb52cQ6vXrhzq9I+rSPpA6xm3JoNznyMxQ
+         +agPiAo7OAaZxRyoJsA/8McoevjrLG3ihAyrYbxN+hg51KxSVGwthKAyQjzEK+Gx4YQG
+         m0xcl5wzezzBFTR7yv4XitieQhZ4KsCrVIlX5yKB5eLmR0DQ7ay73gY2PaizeXV8esEa
+         ZDZDKeYiyhiurrMDHvfX74blP5WmlhGTpdckJexmlQxcjz9bwi7Iy08qv1jAEd+F1cjj
+         1kbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=SCWC7YroSTpj14YrvIJHbgI7/yclZGUri7mmp64Psn0=;
-        b=nPqvvHFQczTabco+QqRcOZTa+UlQ//799V7625dpqvGwfFshpwI4t7UnVz0VuSIhwN
-         bD+WZgPlttaykQ62ifIb/jrTJumcYzW15RANw63n8P/MhAkcqdPutmY+QZMezkr/Y1Z/
-         21Jr1tLhDh8iGUahXYJREjxdLDRCgaS3S1zHrk4lyRCuqdchDt6ZNuPrFgfKuo9WwMZA
-         IESL6+gSD0MdkTJTnRgFyRzszfWjRxG420v9u4Sc2yK+FPmmnJQ4joL4uhWr+hmlhtob
-         8hTOXV6ZWXaoWAEICOrrMYyLMf0ok4ANbfP7DcFAfG3REekw6zdm+uSYLW/uo08uJ4wx
-         ceWw==
-X-Gm-Message-State: AOAM533XNsCe/3LzNvpJjq7Ld8p7hnMMD5qe5SwbLEd8tYs+KxNBSoeK
-        7cwBc2Ga/qH4vycSs9YEupgx4qYceSBykw==
-X-Google-Smtp-Source: ABdhPJyiXVAcigISlJbvI/zesR60glwlxggSrYUtME5ISrjAlvFjw/SowF+rTyeLXDKVNSwa6Dw2jw==
-X-Received: by 2002:a17:906:1784:: with SMTP id t4mr12038172eje.167.1617944902550;
-        Thu, 08 Apr 2021 22:08:22 -0700 (PDT)
+        bh=PWUJ6VXFRper5vc9iT/Xm60L2GIpMl1cnMmeeqgUNIE=;
+        b=I9snCeR1VLVFEGYluL5vN/sWNx8YBgxp5YAnuR/D9w6/rDXDQK3XTBmIXQzlzSPpkb
+         iSr4COoviuARu+bbL9665nuHBj+xp8/faY7IgKvfMaeF13nnDRZD8JqqF4FHi9gZGx9R
+         +SuTz2jX3Q1lqqrOf1BkKUKkHwxsXWWDIMiISUbKwWwpSt0evPvAEDWbh1oFBf4b7C2t
+         69B2g14mHgqtJknKrSpnuUX9YQgJZo9gl6v8CCkvwxYiDld5E6FInZAghn0PEtw772Fi
+         4dTxqVyStaq/AVhv74ElZW36i1rskKcqOtfiAxVDIpQYNb+u3dU4yjLtXTd15TDxZSlP
+         MQHg==
+X-Gm-Message-State: AOAM530L5uT8RIlxtbRZmHMy4CBXydKv3UtbcryOVvc9sXoqT9JBwUWo
+        SKjyS/v+QMaZvzUl/AAAcdHCEXBnU4BFng==
+X-Google-Smtp-Source: ABdhPJyfyyyePba71g/Kvgcu8ka3G1oL3CylNNaAkax0b+4k5V33OtNHGXVKfYg+lJ0hKnit1fZyJQ==
+X-Received: by 2002:aa7:df99:: with SMTP id b25mr13166272edy.190.1617944911686;
+        Thu, 08 Apr 2021 22:08:31 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id q25sm734922edt.51.2021.04.08.22.08.21
+        by smtp.gmail.com with ESMTPSA id j6sm723300edw.73.2021.04.08.22.08.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 22:08:22 -0700 (PDT)
+        Thu, 08 Apr 2021 22:08:31 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Renamed tracecmd_lib_fatal() to tracecmd_fatal()
-Date:   Fri,  9 Apr 2021 08:08:20 +0300
-Message-Id: <20210409050820.3185347-1-tz.stoyanov@gmail.com>
+Subject: [PATCH v4] trace-cmd: Implement warning() in the library
+Date:   Fri,  9 Apr 2021 08:08:30 +0300
+Message-Id: <20210409050830.3185431-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,110 +71,829 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-To be consistent with the prefix, used by the trace-cmd library, the
-functon for printing fatal library error is renamed from
-tracecmd_lib_fatal() to tracecmd_fatal().
+The warning() function is used in a lot of places in the trace-cmd
+library, but there is no implementation. The function is implemented in
+the trace-cmd application. There is also a weak implementation in
+traceevent library, which is specific to that library.
+Implemented a new tracecmd_warning(), specific to the trace-cmd
+library and replaced all warning() calls with the new function in the
+library. The new function is implemented as weak, so it can be
+overridden by the application.
+The tracecm_warning() uses tep_vwarning() from libtraceevent for
+printing the warning, which is also a weak function and can be
+overridden by the application.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
+ Depends on "[PATCH v2] libtraceevent: Add tep_warning()"
+ https://lore.kernel.org/linux-trace-devel/20210408042623.3112002-1-tz.stoyanov@gmail.com/
+ 
+ v4 changes:
+  - Renamed tracecmd_lib_warning() to tracecmd_warning().
+ v3 changes:
+  - Use tep_vwarning() for printing the warning message.
+
+
  lib/trace-cmd/include/trace-cmd-local.h |  2 +-
- lib/trace-cmd/trace-input.c             | 12 ++++++------
- lib/trace-cmd/trace-util.c              |  4 ++--
- 3 files changed, 9 insertions(+), 9 deletions(-)
+ lib/trace-cmd/trace-hooks.c             |  5 +-
+ lib/trace-cmd/trace-input.c             | 37 +++++-----
+ lib/trace-cmd/trace-msg.c               | 13 ++--
+ lib/trace-cmd/trace-output.c            | 93 ++++++++++++-------------
+ lib/trace-cmd/trace-plugin.c            | 14 ++--
+ lib/trace-cmd/trace-recorder.c          |  9 +--
+ lib/trace-cmd/trace-timesync.c          |  3 +-
+ lib/trace-cmd/trace-util.c              | 25 +++----
+ python/ctracecmd.i                      |  2 +-
+ tracecmd/include/trace-local.h          |  2 +
+ 11 files changed, 101 insertions(+), 104 deletions(-)
 
 diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index 376aff11..21515288 100644
+index 21515288..e8533b22 100644
 --- a/lib/trace-cmd/include/trace-cmd-local.h
 +++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -11,7 +11,7 @@
+@@ -10,7 +10,7 @@
+ #include "trace-cmd-private.h"
  
  /* Can be overridden */
- void warning(const char *fmt, ...);
--void tracecmd_lib_fatal(const char *fmt, ...);
-+void tracecmd_fatal(const char *fmt, ...);
+-void warning(const char *fmt, ...);
++void tracecmd_warning(const char *fmt, ...);
+ void tracecmd_fatal(const char *fmt, ...);
  
  /* trace.dat file format version */
- #define FILE_VERSION 6
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 7b25e92c..64825bfd 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -1104,7 +1104,7 @@ static void __free_page(struct tracecmd_input *handle, struct page *page)
- 	int index;
+diff --git a/lib/trace-cmd/trace-hooks.c b/lib/trace-cmd/trace-hooks.c
+index 2dadf616..e92ffc3a 100644
+--- a/lib/trace-cmd/trace-hooks.c
++++ b/lib/trace-cmd/trace-hooks.c
+@@ -9,6 +9,7 @@
+ #include <ctype.h>
  
- 	if (!page->ref_count) {
--		tracecmd_lib_fatal("Page ref count is zero!\n");
-+		tracecmd_fatal("Page ref count is zero!\n");
- 		return;
- 	}
+ #include "trace-cmd-private.h"
++#include "trace-cmd-local.h"
+ #include "event-utils.h"
  
-@@ -1165,7 +1165,7 @@ void tracecmd_free_record(struct tep_record *record)
- 		return;
- 
- 	if (!record->ref_count) {
--		tracecmd_lib_fatal("record ref count is zero!");
-+		tracecmd_fatal("record ref count is zero!");
- 		return;
- 	}
- 
-@@ -1175,7 +1175,7 @@ void tracecmd_free_record(struct tep_record *record)
- 		return;
- 
- 	if (record->locked) {
--		tracecmd_lib_fatal("freeing record when it is locked!");
-+		tracecmd_fatal("freeing record when it is locked!");
- 		return;
- 	}
- 
-@@ -1377,7 +1377,7 @@ static int get_page(struct tracecmd_input *handle, int cpu,
- 
- 	if (offset & (handle->page_size - 1)) {
- 		errno = -EINVAL;
--		tracecmd_lib_fatal("bad page offset %llx", offset);
-+		tracecmd_fatal("bad page offset %llx", offset);
- 		return -1;
- 	}
- 
-@@ -1385,7 +1385,7 @@ static int get_page(struct tracecmd_input *handle, int cpu,
- 	    offset > handle->cpu_data[cpu].file_offset +
- 	    handle->cpu_data[cpu].file_size) {
- 		errno = -EINVAL;
--		tracecmd_lib_fatal("bad page offset %llx", offset);
-+		tracecmd_fatal("bad page offset %llx", offset);
- 		return -1;
- 	}
- 
-@@ -1951,7 +1951,7 @@ tracecmd_peek_data(struct tracecmd_input *handle, int cpu)
- 
- 		record = handle->cpu_data[cpu].next;
- 		if (!record->data) {
--			tracecmd_lib_fatal("Something freed the record");
-+			tracecmd_fatal("Something freed the record");
- 			return NULL;
+ struct hook_list *tracecmd_create_event_hook(const char *arg)
+@@ -132,7 +133,7 @@ struct hook_list *tracecmd_create_event_hook(const char *arg)
+ 				hook->stack = 1;
+ 				break;
+ 			default:
+-				warning("unknown flag %c\n", flags[i]);
++				tracecmd_warning("unknown flag %c\n", flags[i]);
+ 			}
  		}
+ 	}
+@@ -149,7 +150,7 @@ struct hook_list *tracecmd_create_event_hook(const char *arg)
+ 	return hook;
  
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index db7bead6..85e28403 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -368,7 +368,7 @@ static int __vlib_warning(const char *fmt, va_list ap)
- 	return ret;
+ invalid_tok:
+-	warning("Invalid hook format '%s'", arg);
++	tracecmd_warning("Invalid hook format '%s'", arg);
+ 	return NULL;
  }
  
--void __weak tracecmd_lib_fatal(const char *fmt, ...)
-+void __weak tracecmd_fatal(const char *fmt, ...)
- {
- 	int ret;
- 	va_list ap;
-@@ -534,7 +534,7 @@ int tracecmd_count_cpus(void)
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 64825bfd..3deb995e 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -430,7 +430,7 @@ static int regex_event_buf(const char *file, int size, regex_t *epreg)
  
- 	fp = fopen("/proc/cpuinfo", "r");
- 	if (!fp) {
--		tracecmd_lib_fatal("Can not read cpuinfo");
-+		tracecmd_fatal("Can not read cpuinfo");
+ 	buf = malloc(size + 1);
+ 	if (!buf) {
+-		warning("Insufficient memory");
++		tracecmd_warning("Insufficient memory");
  		return 0;
  	}
  
+@@ -440,7 +440,7 @@ static int regex_event_buf(const char *file, int size, regex_t *epreg)
+ 	/* get the name from the first line */
+ 	line = strtok(buf, "\n");
+ 	if (!line) {
+-		warning("No newline found in '%s'", buf);
++		tracecmd_warning("No newline found in '%s'", buf);
+ 		return 0;
+ 	}
+ 	/* skip name if it is there */
+@@ -543,13 +543,13 @@ static int make_preg_files(const char *regex, regex_t *system,
+ 
+ 	ret = regcomp(system, sstr, REG_ICASE|REG_NOSUB);
+ 	if (ret) {
+-		warning("Bad regular expression '%s'", sstr);
++		tracecmd_warning("Bad regular expression '%s'", sstr);
+ 		goto out;
+ 	}
+ 
+ 	ret = regcomp(event, estr, REG_ICASE|REG_NOSUB);
+ 	if (ret) {
+-		warning("Bad regular expression '%s'", estr);
++		tracecmd_warning("Bad regular expression '%s'", estr);
+ 		goto out;
+ 	}
+ 
+@@ -1340,14 +1340,13 @@ static int update_page_info(struct tracecmd_input *handle, int cpu)
+ 
+ 	/* FIXME: handle header page */
+ 	if (tep_get_header_timestamp_size(pevent) != 8) {
+-		warning("expected a long long type for timestamp");
++		tracecmd_warning("expected a long long type for timestamp");
+ 		return -1;
+ 	}
+ 
+ 	kbuffer_load_subbuffer(kbuf, ptr);
+ 	if (kbuffer_subbuffer_size(kbuf) > handle->page_size) {
+-		warning("bad page read, with size of %d",
+-		    kbuffer_subbuffer_size(kbuf));
++		tracecmd_warning("bad page read, with size of %d", kbuffer_subbuffer_size(kbuf));
+ 		return -1;
+ 	}
+ 	handle->cpu_data[cpu].timestamp = timestamp_calc(kbuffer_timestamp(kbuf),
+@@ -2782,7 +2781,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 								  buf + 8, 8);
+ 			break;
+ 		default:
+-			warning("unknown option %d", option);
++			tracecmd_warning("unknown option %d", option);
+ 			break;
+ 		}
+ 
+@@ -2925,7 +2924,7 @@ static int read_cpu_data(struct tracecmd_input *handle)
+ 		read8(handle, &ignore); /* size */
+ 		if (ignore != 0) {
+ 			if (!once) {
+-				warning("ignored CPU data not zero size");
++				tracecmd_warning("ignored CPU data not zero size");
+ 				once++;
+ 			}
+ 		}
+@@ -3057,7 +3056,7 @@ int tracecmd_init_data(struct tracecmd_input *handle)
+ 		 */
+ 		if (read_and_parse_trace_clock(handle, pevent) < 0) {
+ 			char clock[] = "[local]";
+-			warning("File has trace_clock bug, using local clock");
++			tracecmd_warning("File has trace_clock bug, using local clock");
+ 			tracecmd_parse_trace_clock(handle, clock, 8);
+ 		}
+ 	}
+@@ -3455,7 +3454,7 @@ void tracecmd_close(struct tracecmd_input *handle)
+ 		return;
+ 
+ 	if (handle->ref <= 0) {
+-		warning("tracecmd: bad ref count on handle\n");
++		tracecmd_warning("tracecmd: bad ref count on handle\n");
+ 		return;
+ 	}
+ 
+@@ -3472,10 +3471,10 @@ void tracecmd_close(struct tracecmd_input *handle)
+ 				free_page_map(handle->cpu_data[cpu].page_map);
+ 
+ 			if (handle->cpu_data[cpu].page_cnt)
+-				warning("%d pages still allocated on cpu %d%s",
+-					handle->cpu_data[cpu].page_cnt,
+-					cpu, show_records(handle->cpu_data[cpu].pages,
+-							  handle->cpu_data[cpu].nr_pages));
++				tracecmd_warning("%d pages still allocated on cpu %d%s",
++						 handle->cpu_data[cpu].page_cnt, cpu,
++						 show_records(handle->cpu_data[cpu].pages,
++							      handle->cpu_data[cpu].nr_pages));
+ 			free(handle->cpu_data[cpu].pages);
+ 		}
+ 	}
+@@ -3953,8 +3952,8 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
+ 
+ 	ret = lseek64(handle->fd, buffer->offset, SEEK_SET);
+ 	if (ret < 0) {
+-		warning("could not seek to buffer %s offset %ld\n",
+-			buffer->name, buffer->offset);
++		tracecmd_warning("could not seek to buffer %s offset %ld\n",
++				  buffer->name, buffer->offset);
+ 		goto error;
+ 	}
+ 
+@@ -3967,13 +3966,13 @@ tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx)
+ 	if (!ret)
+ 		ret = read_cpu_data(new_handle);
+ 	if (ret < 0) {
+-		warning("failed to read sub buffer %s\n", buffer->name);
++		tracecmd_warning("failed to read sub buffer %s\n", buffer->name);
+ 		goto error;
+ 	}
+ 
+ 	ret = lseek64(handle->fd, offset, SEEK_SET);
+ 	if (ret < 0) {
+-		warning("could not seek to back to offset %ld\n", offset);
++		tracecmd_warning("could not seek to back to offset %ld\n", offset);
+ 		goto error;
+ 	}
+ 
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index bd8b4843..6667028e 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -408,8 +408,7 @@ void tracecmd_msg_set_done(struct tracecmd_msg_handle *msg_handle)
+ 
+ static void error_operation(struct tracecmd_msg *msg)
+ {
+-	warning("Message: cmd=%d size=%d\n",
+-		ntohl(msg->hdr.cmd), ntohl(msg->hdr.size));
++	tracecmd_warning("Message: cmd=%d size=%d\n", ntohl(msg->hdr.cmd), ntohl(msg->hdr.size));
+ }
+ 
+ /*
+@@ -439,7 +438,7 @@ static int tracecmd_msg_wait_for_msg(int fd, struct tracecmd_msg *msg)
+ 	ret = tracecmd_msg_recv_wait(fd, msg);
+ 	if (ret < 0) {
+ 		if (ret == -ETIMEDOUT)
+-			warning("Connection timed out\n");
++			tracecmd_warning("Connection timed out\n");
+ 		return ret;
+ 	}
+ 
+@@ -590,7 +589,7 @@ int tracecmd_msg_initial_setting(struct tracecmd_msg_handle *msg_handle)
+ 	ret = tracecmd_msg_recv_wait(msg_handle->fd, &msg);
+ 	if (ret < 0) {
+ 		if (ret == -ETIMEDOUT)
+-			warning("Connection timed out\n");
++			tracecmd_warning("Connection timed out\n");
+ 		return ret;
+ 	}
+ 
+@@ -754,9 +753,9 @@ int tracecmd_msg_read_data(struct tracecmd_msg_handle *msg_handle, int ofd)
+ 		ret = tracecmd_msg_recv_wait(msg_handle->fd, &msg);
+ 		if (ret < 0) {
+ 			if (ret == -ETIMEDOUT)
+-				warning("Connection timed out\n");
++				tracecmd_warning("Connection timed out\n");
+ 			else
+-				warning("reading client");
++				tracecmd_warning("reading client");
+ 			return ret;
+ 		}
+ 
+@@ -779,7 +778,7 @@ int tracecmd_msg_read_data(struct tracecmd_msg_handle *msg_handle, int ofd)
+ 			if (s < 0) {
+ 				if (errno == EINTR)
+ 					continue;
+-				warning("writing to file");
++				tracecmd_warning("writing to file");
+ 				ret = -errno;
+ 				goto error;
+ 			}
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index ea6d1ba3..a4a1eecc 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -197,7 +197,7 @@ static unsigned long get_size(const char *file)
+ 
+ 	fd = open(file, O_RDONLY);
+ 	if (fd < 0) {
+-		warning("Can't read '%s'", file);
++		tracecmd_warning("Can't read '%s'", file);
+ 		return 0; /* Caller will fail with zero */
+ 	}
+ 	size = get_size_fd(fd);
+@@ -232,7 +232,7 @@ static tsize_t copy_file(struct tracecmd_output *handle,
+ 
+ 	fd = open(file, O_RDONLY);
+ 	if (fd < 0) {
+-		warning("Can't read '%s'", file);
++		tracecmd_warning("Can't read '%s'", file);
+ 		return 0;
+ 	}
+ 	size = copy_file_fd(handle, fd);
+@@ -293,7 +293,7 @@ int tracecmd_ftrace_enable(int set)
+ 
+ 	fd = open(path, O_WRONLY);
+ 	if (fd < 0) {
+-		warning("Can't %s ftrace", set ? "enable" : "disable");
++		tracecmd_warning("Can't %s ftrace", set ? "enable" : "disable");
+ 		return EIO;
+ 	}
+ 
+@@ -340,8 +340,8 @@ static int read_header_files(struct tracecmd_output *handle)
+ 	int ret;
+ 
+ 	if (check_out_state(handle, TRACECMD_FILE_HEADERS) < 0) {
+-		warning("Cannot read header files, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot read header files, unexpected state 0x%X",
++				 handle->file_state);
+ 		return -1;
+ 	}
+ 
+@@ -367,7 +367,7 @@ static int read_header_files(struct tracecmd_output *handle)
+ 
+ 	fd = open(path, O_RDONLY);
+ 	if (fd < 0) {
+-		warning("can't read '%s'", path);
++		tracecmd_warning("can't read '%s'", path);
+ 		return -1;
+ 	}
+ 
+@@ -382,8 +382,7 @@ static int read_header_files(struct tracecmd_output *handle)
+ 	check_size = copy_file_fd(handle, fd);
+ 	close(fd);
+ 	if (size != check_size) {
+-		warning("wrong size for '%s' size=%lld read=%lld",
+-			path, size, check_size);
++		tracecmd_warning("wrong size for '%s' size=%lld read=%lld", path, size, check_size);
+ 		errno = EINVAL;
+ 		return -1;
+ 	}
+@@ -395,7 +394,7 @@ static int read_header_files(struct tracecmd_output *handle)
+ 
+ 	fd = open(path, O_RDONLY);
+ 	if (fd < 0) {
+-		warning("can't read '%s'", path);
++		tracecmd_warning("can't read '%s'", path);
+ 		return -1;
+ 	}
+ 
+@@ -409,7 +408,7 @@ static int read_header_files(struct tracecmd_output *handle)
+ 	check_size = copy_file_fd(handle, fd);
+ 	close(fd);
+ 	if (size != check_size) {
+-		warning("wrong size for '%s'", path);
++		tracecmd_warning("wrong size for '%s'", path);
+ 		return -1;
+ 	}
+ 	put_tracing_file(path);
+@@ -453,7 +452,7 @@ static int copy_event_system(struct tracecmd_output *handle,
+ 				return -1;
+ 			check_size = copy_file(handle, format);
+ 			if (size != check_size) {
+-				warning("error in size of file '%s'", format);
++				tracecmd_warning("error in size of file '%s'", format);
+ 				return -1;
+ 			}
+ 		}
+@@ -509,7 +508,7 @@ static void add_list_event_system(struct list_event_system **systems,
+ 	}
+ 	return;
+  err_mem:
+-	warning("Insufficient memory");
++	 tracecmd_warning("Insufficient memory");
+ }
+ 
+ static void free_list_events(struct list_event_system *list)
+@@ -643,7 +642,7 @@ create_event_list_item(struct tracecmd_output *handle,
+ 	free(str);
+ 	return;
+  err_mem:
+-	warning("Insufficient memory");
++	 tracecmd_warning("Insufficient memory");
+ }
+ 
+ static int read_ftrace_files(struct tracecmd_output *handle)
+@@ -653,8 +652,8 @@ static int read_ftrace_files(struct tracecmd_output *handle)
+ 	int ret;
+ 
+ 	if (check_out_state(handle, TRACECMD_FILE_FTRACE_EVENTS) < 0) {
+-		warning("Cannot read ftrace files, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot read ftrace files, unexpected state 0x%X",
++				 handle->file_state);
+ 		return -1;
+ 	}
+ 
+@@ -694,8 +693,8 @@ static int read_event_files(struct tracecmd_output *handle,
+ 	int ret;
+ 
+ 	if (check_out_state(handle, TRACECMD_FILE_ALL_EVENTS) < 0) {
+-		warning("Cannot read event files, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot read event files, unexpected state 0x%X",
++				 handle->file_state);
+ 		return -1;
+ 	}
+ 	/*
+@@ -774,7 +773,7 @@ err:
+ 	if (fd > 0)
+ 		close(fd);
+ 	if (ret)
+-		warning("can't set kptr_restrict");
++		tracecmd_warning("can't set kptr_restrict");
+ }
+ 
+ static int read_proc_kallsyms(struct tracecmd_output *handle,
+@@ -786,8 +785,8 @@ static int read_proc_kallsyms(struct tracecmd_output *handle,
+ 	int ret;
+ 
+ 	if (check_out_state(handle, TRACECMD_FILE_KALLSYMS) < 0) {
+-		warning("Cannot read kallsyms, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot read kallsyms, unexpected state 0x%X",
++				 handle->file_state);
+ 		return -1;
+ 	}
+ 
+@@ -812,7 +811,7 @@ static int read_proc_kallsyms(struct tracecmd_output *handle,
+ 	check_size = copy_file(handle, path);
+ 	if (size != check_size) {
+ 		errno = EINVAL;
+-		warning("error in size of file '%s'", path);
++		tracecmd_warning("error in size of file '%s'", path);
+ 		set_proc_kptr_restrict(1);
+ 		return -1;
+ 	}
+@@ -831,8 +830,8 @@ static int read_ftrace_printk(struct tracecmd_output *handle)
+ 	int ret;
+ 
+ 	if (check_out_state(handle, TRACECMD_FILE_PRINTK) < 0) {
+-		warning("Cannot read printk, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot read printk, unexpected state 0x%X",
++				 handle->file_state);
+ 		return -1;
+ 	}
+ 
+@@ -856,7 +855,7 @@ static int read_ftrace_printk(struct tracecmd_output *handle)
+ 	check_size = copy_file(handle, path);
+ 	if (size != check_size) {
+ 		errno = EINVAL;
+-		warning("error in size of file '%s'", path);
++		tracecmd_warning("error in size of file '%s'", path);
+ 		goto fail;
+ 	}
+ 
+@@ -892,7 +891,7 @@ static int save_tracing_file_data(struct tracecmd_output *handle,
+ 		check_size = copy_file(handle, file);
+ 		if (size != check_size) {
+ 			errno = EINVAL;
+-			warning("error in size of file '%s'", file);
++			tracecmd_warning("error in size of file '%s'", file);
+ 			goto out_free;
+ 		}
+ 	} else {
+@@ -1062,14 +1061,14 @@ tracecmd_add_option_v(struct tracecmd_output *handle,
+ 	if (size) {
+ 		data = malloc(size);
+ 		if (!data) {
+-			warning("Insufficient memory");
++			tracecmd_warning("Insufficient memory");
+ 			return NULL;
+ 		}
+ 	}
+ 
+ 	option = malloc(sizeof(*option));
+ 	if (!option) {
+-		warning("Could not allocate space for option");
++		tracecmd_warning("Could not allocate space for option");
+ 		free(data);
+ 		return NULL;
+ 	}
+@@ -1119,8 +1118,8 @@ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
+ 
+ 	ret = check_out_state(handle, TRACECMD_FILE_CPU_COUNT);
+ 	if (ret < 0) {
+-		warning("Cannot write CPU count into the file, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot write CPU count into the file, unexpected state 0x%X",
++				 handle->file_state);
+ 		return ret;
+ 	}
+ 	cpus = convert_endian_4(handle, cpus);
+@@ -1144,8 +1143,8 @@ int tracecmd_write_options(struct tracecmd_output *handle)
+ 		return 0;
+ 	ret = check_out_state(handle, TRACECMD_FILE_OPTIONS);
+ 	if (ret < 0) {
+-		warning("Cannot write options into the file, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot write options into the file, unexpected state 0x%X",
++				 handle->file_state);
+ 		return ret;
+ 	}
+ 
+@@ -1238,7 +1237,7 @@ int tracecmd_update_option(struct tracecmd_output *handle,
+ 	stsize_t ret;
+ 
+ 	if (size > option->size) {
+-		warning("Can't update option with more data than allocated");
++		tracecmd_warning("Can't update option with more data than allocated");
+ 		return -1;
+ 	}
+ 
+@@ -1254,7 +1253,7 @@ int tracecmd_update_option(struct tracecmd_output *handle,
+ 
+ 	ret = lseek64(handle->fd, option->offset, SEEK_SET);
+ 	if (ret == (off64_t)-1) {
+-		warning("could not seek to %lld\n", option->offset);
++		tracecmd_warning("could not seek to %lld\n", option->offset);
+ 		return -1;
+ 	}
+ 
+@@ -1263,7 +1262,7 @@ int tracecmd_update_option(struct tracecmd_output *handle,
+ 
+ 	ret = lseek64(handle->fd, offset, SEEK_SET);
+ 	if (ret == (off64_t)-1) {
+-		warning("could not seek to %lld\n", offset);
++		tracecmd_warning("could not seek to %lld\n", offset);
+ 		return -1;
+ 	}
+ 
+@@ -1280,7 +1279,7 @@ tracecmd_add_buffer_option(struct tracecmd_output *handle, const char *name,
+ 
+ 	buf = malloc(size);
+ 	if (!buf) {
+-		warning("Failed to malloc buffer");
++		tracecmd_warning("Failed to malloc buffer");
+ 		return NULL;
+ 	}
+ 	*(tsize_t *)buf = 0;
+@@ -1306,8 +1305,8 @@ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
+ 
+ 	ret = check_out_state(handle, TRACECMD_FILE_CMD_LINES);
+ 	if (ret < 0) {
+-		warning("Cannot write command lines into the file, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot write command lines into the file, unexpected state 0x%X",
++				 handle->file_state);
+ 		return ret;
+ 	}
+ 	ret = save_tracing_file_data(handle, "saved_cmdlines");
+@@ -1341,8 +1340,8 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 
+ 	ret = check_out_state(handle, TRACECMD_FILE_CPU_LATENCY);
+ 	if (ret < 0) {
+-		warning("Cannot write latency data into the file, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot write latency data into the file, unexpected state 0x%X",
++				 handle->file_state);
+ 		goto out_free;
+ 	}
+ 
+@@ -1424,8 +1423,8 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 	ret = handle->file_state == TRACECMD_FILE_CPU_FLYRECORD ? 0 :
+ 		check_out_state(handle, TRACECMD_FILE_CPU_FLYRECORD);
+ 	if (ret < 0) {
+-		warning("Cannot write trace data into the file, unexpected state 0x%X",
+-			handle->file_state);
++		tracecmd_warning("Cannot write trace data into the file, unexpected state 0x%X",
++				 handle->file_state);
+ 		goto out_free;
+ 	}
+ 
+@@ -1467,7 +1466,7 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 		file = cpu_data_files[i];
+ 		ret = stat(file, &st);
+ 		if (ret < 0) {
+-			warning("can not stat '%s'", file);
++			tracecmd_warning("can not stat '%s'", file);
+ 			goto out_free;
+ 		}
+ 		offsets[i] = offset;
+@@ -1492,14 +1491,14 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 				i, (unsigned long long) offsets[i]);
+ 		offset = lseek64(handle->fd, offsets[i], SEEK_SET);
+ 		if (offset == (off64_t)-1) {
+-			warning("could not seek to %lld\n", offsets[i]);
++			tracecmd_warning("could not seek to %lld\n", offsets[i]);
+ 			goto out_free;
+ 		}
+ 		check_size = copy_file(handle, cpu_data_files[i]);
+ 		if (check_size != sizes[i]) {
+ 			errno = EINVAL;
+-			warning("did not match size of %lld to %lld",
+-			    check_size, sizes[i]);
++			tracecmd_warning("did not match size of %lld to %lld",
++					 check_size, sizes[i]);
+ 			goto out_free;
+ 		}
+ 		if (!tracecmd_get_quiet(handle))
+@@ -1548,7 +1547,7 @@ int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
+ 	/* Go to the option data, where will write the offest */
+ 	ret = lseek64(handle->fd, option->offset, SEEK_SET);
+ 	if (ret == (off64_t)-1) {
+-		warning("could not seek to %lld\n", option->offset);
++		tracecmd_warning("could not seek to %lld\n", option->offset);
+ 		return -1;
+ 	}
+ 
+@@ -1558,7 +1557,7 @@ int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
+ 	/* Go back to end of file */
+ 	ret = lseek64(handle->fd, offset, SEEK_SET);
+ 	if (ret == (off64_t)-1) {
+-		warning("could not seek to %lld\n", offset);
++		tracecmd_warning("could not seek to %lld\n", offset);
+ 		return -1;
+ 	}
+ 
+diff --git a/lib/trace-cmd/trace-plugin.c b/lib/trace-cmd/trace-plugin.c
+index 92f9edf3..ca7cadae 100644
+--- a/lib/trace-cmd/trace-plugin.c
++++ b/lib/trace-cmd/trace-plugin.c
+@@ -10,6 +10,7 @@
+ #include <libgen.h>
+ #include "trace-cmd.h"
+ #include "trace-local.h"
++#include "trace-cmd-local.h"
+ 
+ #define LOCAL_PLUGIN_DIR ".local/lib/trace-cmd/plugins/"
+ 
+@@ -107,14 +108,13 @@ load_plugin(struct trace_plugin_context *trace, const char *path,
+ 
+ 	ret = asprintf(&plugin, "%s/%s", path, file);
+ 	if (ret < 0) {
+-		warning("could not allocate plugin memory\n");
++		tracecmd_warning("could not allocate plugin memory\n");
+ 		return;
+ 	}
+ 
+ 	handle = dlopen(plugin, RTLD_NOW | RTLD_GLOBAL);
+ 	if (!handle) {
+-		warning("could not load plugin '%s'\n%s\n",
+-			plugin, dlerror());
++		tracecmd_warning("could not load plugin '%s'\n%s\n", plugin, dlerror());
+ 		goto out_free;
+ 	}
+ 
+@@ -124,14 +124,14 @@ load_plugin(struct trace_plugin_context *trace, const char *path,
+ 
+ 	func = dlsym(handle, TRACECMD_PLUGIN_LOADER_NAME);
+ 	if (!func) {
+-		warning("could not find func '%s' in plugin '%s'\n%s\n",
+-			TRACECMD_PLUGIN_LOADER_NAME, plugin, dlerror());
++		tracecmd_warning("could not find func '%s' in plugin '%s'\n%s\n",
++				 TRACECMD_PLUGIN_LOADER_NAME, plugin, dlerror());
+ 		goto out_free;
+ 	}
+ 
+ 	list = malloc(sizeof(*list));
+ 	if (!list) {
+-		warning("could not allocate plugin memory\n");
++		tracecmd_warning("could not allocate plugin memory\n");
+ 		goto out_free;
+ 	}
+ 
+@@ -256,7 +256,7 @@ load_plugins_hook(struct trace_plugin_context *trace, const char *suffix,
+ 
+ 	ret = asprintf(&path, "%s/%s", home, LOCAL_PLUGIN_DIR);
+ 	if (ret < 0) {
+-		warning("could not allocate plugin memory\n");
++		tracecmd_warning("could not allocate plugin memory\n");
+ 		return;
+ 	}
+ 
+diff --git a/lib/trace-cmd/trace-recorder.c b/lib/trace-cmd/trace-recorder.c
+index c811028a..0caa124b 100644
+--- a/lib/trace-cmd/trace-recorder.c
++++ b/lib/trace-cmd/trace-recorder.c
+@@ -14,6 +14,7 @@
+ 
+ #include "tracefs.h"
+ #include "trace-cmd-private.h"
++#include "trace-cmd-local.h"
+ #include "event-utils.h"
+ 
+ /* F_GETPIPE_SZ was introduced in 2.6.35, older systems don't have it */
+@@ -393,7 +394,7 @@ static long splice_data(struct tracecmd_recorder *recorder)
+ 		if (errno == EAGAIN || errno == EINTR || errno == ENOTCONN)
+ 			return 0;
+ 
+-		warning("recorder error in splice input");
++		tracecmd_warning("recorder error in splice input");
+ 		return -1;
+ 	} else if (read == 0)
+ 		return 0;
+@@ -403,7 +404,7 @@ static long splice_data(struct tracecmd_recorder *recorder)
+ 		     read, recorder->fd_flags);
+ 	if (ret < 0) {
+ 		if (errno != EAGAIN && errno != EINTR) {
+-			warning("recorder error in splice output");
++			tracecmd_warning("recorder error in splice output");
+ 			return -1;
+ 		}
+ 		return total_read;
+@@ -451,7 +452,7 @@ static long direct_splice_data(struct tracecmd_recorder *recorder)
+ 		if (errno == EAGAIN || errno == EINTR || errno == ENOTCONN)
+ 			return 0;
+ 
+-		warning("recorder error in splice input");
++		tracecmd_warning("recorder error in splice input");
+ 		return -1;
+ 	}
+ 
+@@ -473,7 +474,7 @@ static long read_data(struct tracecmd_recorder *recorder)
+ 		if (errno == EAGAIN || errno == EINTR || errno == ENOTCONN)
+ 			return 0;
+ 
+-		warning("recorder error in read input");
++		tracecmd_warning("recorder error in read input");
+ 		return -1;
+ 	}
+ 
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index 242f0cef..19ca19d7 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -20,6 +20,7 @@
+ #include <pthread.h>
+ 
+ #include "trace-cmd-private.h"
++#include "trace-cmd-local.h"
+ #include "tracefs.h"
+ #include "event-utils.h"
+ #include "trace-tsync-local.h"
+@@ -729,7 +730,7 @@ static int tsync_get_sample(struct tracecmd_time_sync *tsync, unsigned int cpu,
+ 
+ 	ret = proto->clock_sync_calc(tsync, &offset, &scaling, &timestamp, cpu);
+ 	if (ret) {
+-		warning("Failed to synchronize timestamps with guest");
++		tracecmd_warning("Failed to synchronize timestamps with guest");
+ 		return -1;
+ 	}
+ 	if (!offset || !timestamp || !scaling)
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index 85e28403..2d3bc741 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -20,9 +20,10 @@
+ #include <sys/stat.h>
+ #include <sys/sysinfo.h>
+ #include <time.h>
++#include <traceevent/event-utils.h>
+ 
+ #include "trace-cmd-private.h"
+-#include "event-utils.h"
++#include "trace-cmd-local.h"
+ 
+ #define LOCAL_PLUGIN_DIR ".trace-cmd/plugins"
+ #define PROC_STACK_FILE "/proc/sys/kernel/stack_tracer_enabled"
+@@ -182,7 +183,7 @@ void tracecmd_parse_ftrace_printk(struct tep_handle *pevent,
+ 	while (line) {
+ 		addr_str = strtok_r(line, ":", &fmt);
+ 		if (!addr_str) {
+-			warning("printk format with empty entry");
++			tracecmd_warning("printk format with empty entry");
+ 			break;
+ 		}
+ 		addr = strtoull(addr_str, NULL, 16);
+@@ -353,19 +354,13 @@ trace_load_plugins(struct tep_handle *tep, int flags)
+ 	return list;
+ }
+ 
+-static int __vlib_warning(const char *fmt, va_list ap)
++void __weak tracecmd_warning(const char *fmt, ...)
+ {
+-	int ret = errno;
+-
+-	if (errno)
+-		perror("libtracecmd");
+-
+-	fprintf(stderr, "  ");
+-	vfprintf(stderr, fmt, ap);
+-
+-	fprintf(stderr, "\n");
++	va_list ap;
+ 
+-	return ret;
++	va_start(ap, fmt);
++	tep_vwarning("libtracecmd", fmt, ap);
++	va_end(ap);
+ }
+ 
+ void __weak tracecmd_fatal(const char *fmt, ...)
+@@ -374,7 +369,7 @@ void __weak tracecmd_fatal(const char *fmt, ...)
+ 	va_list ap;
+ 
+ 	va_start(ap, fmt);
+-	ret = __vlib_warning(fmt, ap);
++	ret = tep_vwarning("libtracecmd", fmt, ap);
+ 	va_end(ap);
+ 
+ 	if (debug) {
+@@ -524,7 +519,7 @@ int tracecmd_count_cpus(void)
+ 
+ 	if (!once) {
+ 		once++;
+-		warning("sysconf could not determine number of CPUS");
++		tracecmd_warning("sysconf could not determine number of CPUS");
+ 	}
+ 
+ 	/* Do the hack to figure out # of CPUS */
+diff --git a/python/ctracecmd.i b/python/ctracecmd.i
+index 5f7181c7..26aee991 100644
+--- a/python/ctracecmd.i
++++ b/python/ctracecmd.i
+@@ -63,7 +63,7 @@ void warning(const char *fmt, ...)
+ 		return;
+ 
+ 	va_start(ap, fmt);
+-	__vwarning(fmt, ap);
++	tep_vwarning("tracecmd", fmt, ap);
+ 	va_end(ap);
+ }
+ 
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 6a4c5f51..1218de12 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -27,6 +27,8 @@ typedef unsigned long long u64;
+ 
+ struct buffer_instance;
+ 
++void warning(const char *fmt, ...);
++
+ /* for local shared information with trace-cmd executable */
+ 
+ void usage(char **argv);
 -- 
 2.30.2
 
