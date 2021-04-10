@@ -7,26 +7,26 @@ X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88BA1C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 10 Apr 2021 13:40:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A98ABC433B4
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 10 Apr 2021 13:54:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5B18561185
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 10 Apr 2021 13:40:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6994F611CA
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 10 Apr 2021 13:54:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234392AbhDJNlI (ORCPT
+        id S234708AbhDJNyw (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 10 Apr 2021 09:41:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41078 "EHLO mail.kernel.org"
+        Sat, 10 Apr 2021 09:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234180AbhDJNlH (ORCPT
+        id S234376AbhDJNyv (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:41:07 -0400
+        Sat, 10 Apr 2021 09:54:51 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 775BC6044F;
-        Sat, 10 Apr 2021 13:40:49 +0000 (UTC)
-Date:   Sat, 10 Apr 2021 09:40:46 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 9678F611AE;
+        Sat, 10 Apr 2021 13:54:33 +0000 (UTC)
+Date:   Sat, 10 Apr 2021 09:54:31 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     LKML <linux-kernel@vger.kernel.org>,
         "linux-trace-devel@vger.kernel.org" 
@@ -45,8 +45,8 @@ Cc:     Zamir SUN <sztsian@gmail.com>,
         Al Stone <ahs3@debian.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Jes Sorensen <jes.sorensen@gmail.com>
-Subject: [ANNOUNCE] libtracefs 1.1.0
-Message-ID: <20210410094046.0a23f960@oasis.local.home>
+Subject: [ANNOUNCE] libtracececmd 1.0.0
+Message-ID: <20210410095431.2935816f@oasis.local.home>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -55,85 +55,56 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-I'm pleased to announce the new version of libtracefs library has been
-released:
+This is the initial official release of libtracecmd 1.0.0. This is
+needed by KernelShark in order to be in a stand alone repository:
 
-  libtracefs: 1.1.0
+  https://git.kernel.org/pub/scm/utils/trace-cmd/kernel-shark.git/
 
+All new development for KernelShark now takes place in the above
+repository, which will depend on this library. The code that exists
+currently in the trace-cmd.git repository for KernelShark will be
+removed.
 
- https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/snapshot/libtracefs-1.1.0.tar.gz
- https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
+This library lives (and will always live) with the trace-cmd repository.
 
+  https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/snapshot/trace-cmd-libtracecmd-1.1.0.tar.gz
+  https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
 
-Changes since 1.0.2:
+The purpose of his library is to be able to create and read the
+trace.dat file that trace-cmd produces. It may also include
+functionality to start trace recordings and other features provided by
+trace-cmd itself. But for this release, it only contains the bare
+necessities that a stand alone KernelShark requires.
 
- - Depends on libtraceevent 1.2.0 or later
+The current API for this release are:
 
- - New APIs for opening and reading ftrace files
-    tracefs_instance_file_read_number()
-    tracefs_instance_file_open()
+ - APIs to open and close a trace.dat file
+    tracecmd_open()
+    tracecmd_open_head()
+    tracecmd_open_fd()
+    tracecmd_close()
 
- - New APIs for enable / disable tracing
-    tracefs_trace_is_on()
-    tracefs_trace_on()
-    tracefs_trace_off()
-    tracefs_trace_on_get_fd()
-    tracefs_trace_on_fd()
-    tracefs_trace_off_fd()
+ - APIs to initialize and read tracing records from a trace.dat file
+    tracecmd_init_data()
+    tracecmd_read_cpu_first()
+    tracecmd_read_data()
+    tracecmd_read_at()
+    tracecmd_free_record()
 
- - New APIs for trace options
-    tracefs_option_set()
-    tracefs_option_clear()
-    tracefs_option_is_set()
-    tracefs_options_get_supported()
-    tracefs_option_is_supported()
-    tracefs_options_get_enabled()
-    tracefs_option_is_enabled()
-    tracefs_option_enable()
-    tracefs_option_diasble()
-    tracefs_option_name()
-    tracefs_option_id()
-    tarcefs_option_mask_is_set()
+ - APIs to retrieve the libtracevent tep handler
+    tracecmd_get_tep()
 
- - New APIs for getting existing trace instance
-    tracefs_instance_alloc()
-    tracefs_instance_get_trace_dir()
+ - APIs to manage host and guest data mappings
+    tracecmd_get_traceid()
+    tracecmd_get_guest_cpumap()
 
- - New APIs to set the filtering of functions
-    tracefs_function_filter()
-    tracefs_function_notrace()
+ - APIs to manage the different instances existing in a trace.dat file
+    tracecmd_buffer_instances()
+    tracecmd_buffer_instance_name()
+    tracecmd_buffer_instance_handle()
 
- - New APIs to writing strings into the tracing buffer
-    tracefs_print_init()
-    tracefs_printf()
-    tracefs_vprintf()
-    tracefs_print_close()
+Many more APIs will come in later releases.
 
- - New APIs to writing binary data into the tracing buffer
-    tracefs_binary_init()
-    tracefs_binary_write()
-    tracefs_binary_close()
-
- - tracefs_iterate_raw_events() now calls the callbacks in
-   time stamp sorted order (instead of calling all events in
-   a CPU buffer, then the next CPU buffer). Also fixed record->cpu
-   to match the CPU that's also passed to the callback, instead
-   of always being zero.
-
- - Loading of events with tracefs_local_events(),
-   tracefs_local_event_system() and tracefs_fill_local_events()
-   now pull in kallsyms, saved_cmdlines, and printk_format mappings
-   into the tep handler.
-
- - New API to reload the saved_cmdlines
-    tracefs_load_cmdlines()
-
- - Warnings now can be overwritten with tracefs_warning() and no
-   longer the too generic name warning()
-
- - All files opened in the library now are done so with O_CLOEXEC
-
- - Cleaner building and installation.
-
+Enjoy!
 
 -- Steve
