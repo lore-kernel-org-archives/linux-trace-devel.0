@@ -2,127 +2,67 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C49FC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:19:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62EEEC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 10 Apr 2021 00:37:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DD56961165
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:19:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2FB6261108
+	for <linux-trace-devel@archiver.kernel.org>; Sat, 10 Apr 2021 00:37:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234976AbhDIWUA (ORCPT
+        id S235292AbhDJAhr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 9 Apr 2021 18:20:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234517AbhDIWUA (ORCPT
+        Fri, 9 Apr 2021 20:37:47 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:14812 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235215AbhDJAhq (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 9 Apr 2021 18:20:00 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CDF561106
-        for <linux-trace-devel@vger.kernel.org>; Fri,  9 Apr 2021 22:19:47 +0000 (UTC)
-Date:   Fri, 9 Apr 2021 18:19:45 -0400
+        Fri, 9 Apr 2021 20:37:46 -0400
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Fri, 9 Apr 2021 17:37:24 -0700
+Received: from vypre.com (unknown [10.21.244.131])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 20AF721458;
+        Fri,  9 Apr 2021 17:37:29 -0700 (PDT)
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] libtracecmd: Update libtracecmd.pc when version changes
-Message-ID: <20210409181945.76b073dd@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     <linux-trace-devel@vger.kernel.org>
+CC:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 0/3] libtracefs: Map kallsyms, saved_cmdlines and printk_formats
+Date:   Fri, 9 Apr 2021 20:37:24 -0400
+Message-ID: <20210410003727.2288762-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: rostedt@goodmis.org does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-When the libtracecmd version changes, the libtracecmd.pc needs to be
-updated, otherwise it may install the wrong version number.
+Now that libtraceevent 1.2 has a way to easily load kallsyms,
+saved_cmdlines, and printk_formats into the tep handler, have this
+happen by default when loading the events.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- .gitignore |  1 +
- Makefile   | 32 ++++++++++++++++++++++++++++++--
- 2 files changed, 31 insertions(+), 2 deletions(-)
+This will make the reading of events have better output as there will be
+more information to parse the events correctly.
 
-diff --git a/.gitignore b/.gitignore
-index af9bf6c0..f0719c5e 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -27,3 +27,4 @@ libtracecmd.pc
- build_prefix
- build_install
- build_libs_install
-+ltc_version.h
-diff --git a/Makefile b/Makefile
-index 6e330e47..48d45809 100644
---- a/Makefile
-+++ b/Makefile
-@@ -20,6 +20,8 @@ export LIBTC_PATCHLEVEL
- export LIBTC_EXTRAVERSION
- export LIBTRACECMD_VERSION
- 
-+VERSION_FILE = ltc_version.h
-+
- LIBTRACEEVENT_MIN_VERSION = 1.1
- LIBTRACEFS_MIN_VERSION = 1.1
- 
-@@ -371,7 +373,7 @@ BUILD_PREFIX := $(BUILD_OUTPUT)/build_prefix
- $(BUILD_PREFIX): force
- 	$(Q)$(call build_prefix,$(prefix))
- 
--$(PKG_CONFIG_FILE) : ${PKG_CONFIG_SOURCE_FILE}.template $(BUILD_PREFIX)
-+$(PKG_CONFIG_FILE) : ${PKG_CONFIG_SOURCE_FILE}.template $(BUILD_PREFIX) $(VERSION_FILE)
- 	$(Q) $(call do_make_pkgconfig_file,$(prefix))
- 
- $(kshark-dir)/build/Makefile: $(kshark-dir)/CMakeLists.txt
-@@ -392,6 +394,32 @@ libtracecmd.so: $(LIBTRACECMD_SHARED)
- 
- libs: $(LIBTRACECMD_SHARED) $(PKG_CONFIG_FILE)
- 
-+VERSION = $(LIBTC_VERSION)
-+PATCHLEVEL = $(LIBTC_PATCHLEVEL)
-+EXTRAVERSION = $(LIBTC_EXTRAVERSION)
-+
-+define make_version.h
-+  (echo '/* This file is automatically generated. Do not modify. */';		\
-+   echo \#define VERSION_CODE $(shell						\
-+   expr $(VERSION) \* 256 + $(PATCHLEVEL));					\
-+   echo '#define EXTRAVERSION ' $(EXTRAVERSION);				\
-+   echo '#define VERSION_STRING "'$(VERSION).$(PATCHLEVEL).$(EXTRAVERSION)'"';	\
-+  ) > $1
-+endef
-+
-+define update_version.h
-+  ($(call make_version.h, $@.tmp);		\
-+    if [ -r $@ ] && cmp -s $@ $@.tmp; then	\
-+      rm -f $@.tmp;				\
-+    else					\
-+      echo '  UPDATE                 $@';	\
-+      mv -f $@.tmp $@;				\
-+    fi);
-+endef
-+
-+$(VERSION_FILE): force
-+	$(Q)$(call update_version.h)
-+
- gui: force $(CMD_TARGETS)
- 	$(MAKE) $(kshark-dir)/build/Makefile
- 	$(Q)$(MAKE) $(S) -C $(kshark-dir)/build
-@@ -490,7 +518,7 @@ install_doc_gui:
- 
- clean:
- 	$(RM) *.o *~ *.a *.so .*.d
--	$(RM) tags TAGS cscope* $(PKG_CONFIG_SOURCE_FILE)
-+	$(RM) tags TAGS cscope* $(PKG_CONFIG_SOURCE_FILE) $(VERSION_FILE)
- 	$(MAKE) -C $(src)/lib/trace-cmd clean
- 	$(MAKE) -C $(src)/lib/trace-cmd/plugins clean
- 	$(MAKE) -C $(src)/utest clean
+Steven Rostedt (VMware) (3):
+  libtracefs: Make libtraceevent 1.2 the minimum version
+  libtracefs: Add parameter to turn off warnings in str_read_file()
+  libtracefs: Add loading of mappings in fill_local_events_system()
+
+ Makefile                |  2 +-
+ include/tracefs-local.h |  2 +-
+ src/tracefs-events.c    | 72 +++++++++++++++++++++++++++++++++++++++--
+ src/tracefs-instance.c  |  2 +-
+ src/tracefs-utils.c     |  8 +++--
+ 5 files changed, 77 insertions(+), 9 deletions(-)
+
 -- 
 2.29.2
 
