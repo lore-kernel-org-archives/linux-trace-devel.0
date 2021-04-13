@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42117C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 13 Apr 2021 21:14:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3156C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 13 Apr 2021 21:30:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 20B49611AD
-	for <linux-trace-devel@archiver.kernel.org>; Tue, 13 Apr 2021 21:14:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 769BD61246
+	for <linux-trace-devel@archiver.kernel.org>; Tue, 13 Apr 2021 21:30:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344575AbhDMVOr (ORCPT
+        id S230090AbhDMVaX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 13 Apr 2021 17:14:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37206 "EHLO mail.kernel.org"
+        Tue, 13 Apr 2021 17:30:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244727AbhDMVOr (ORCPT
+        id S229892AbhDMVaW (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:14:47 -0400
+        Tue, 13 Apr 2021 17:30:22 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C740A61176;
-        Tue, 13 Apr 2021 21:14:26 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 17:14:25 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 52F0E61242;
+        Tue, 13 Apr 2021 21:30:02 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 17:30:00 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Cc:     Yordan Karadzhov <y.karadz@gmail.com>
-Subject: trace-cmd report: Update tep_func_repeat_format to match ts
-Message-ID: <20210413171425.5879f8c5@gandalf.local.home>
+Subject: [PATCH] trace-cmd report: Update tep_func_repeat_format to match ts
+Message-ID: <20210413173000.3e377bcc@gandalf.local.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -57,6 +57,8 @@ that do not yet have this support.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
+This time with "[PATCH]" in the subject :-p
+
 diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
 index d962b671..b2c473d1 100644
 --- a/tracecmd/trace-read.c
@@ -83,7 +85,8 @@ index d962b671..b2c473d1 100644
 +	if (tracecmd_get_flags(handle) & TRACECMD_FL_RAW_TS) {
 +		tep_func_repeat_format = "%d";
 +	} else if (tracecmd_get_flags(handle) & TRACECMD_FL_IN_USECS) {
-+		if (tep_test_flag(tracecmd_get_tep(handle), TEP_NSEC_OUTPUT))
++		if (tep_test_flag(tracecmd_get_tep(handle),
+TEP_NSEC_OUTPUT))
 +			tep_func_repeat_format = "%9.1d";
 +		else
 +			tep_func_repeat_format = "%6.1000d";
