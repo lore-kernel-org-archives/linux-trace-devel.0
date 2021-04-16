@@ -2,223 +2,243 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 067B1C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 17:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75429C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:17:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D248B613B0
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 17:47:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 527456023C
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:17:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243597AbhDPRsC (ORCPT
+        id S244572AbhDPSRt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 16 Apr 2021 13:48:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46282 "EHLO mx2.suse.de"
+        Fri, 16 Apr 2021 14:17:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235563AbhDPRsC (ORCPT
+        id S236112AbhDPSRr (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:48:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618595256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4pWIhciCpH9wJeWRXxRsXGPZHxTUF+kwViUsGkwhcRQ=;
-        b=DG3B7YHX/uRcfOEaIFsbOIRP/vXabBvQmWTDawuD8xWCBg4OnsywW7FL93tIddz9dDNdie
-        UiID6Tu5gXVam88NzyxdM9bwDUrEAf66FVvrXhECfEg4jbro/PyrrVHTTj37P5egiXbq/5
-        1IXxD9xjkNfzGTpjNkzkAHRbXOGkZao=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1E4E9ADDB;
-        Fri, 16 Apr 2021 17:47:36 +0000 (UTC)
-Message-ID: <70d698ef3074a50576da48587aaf4ce2eea9585f.camel@suse.com>
-Subject: Re: [RFC] Simple tool for VMEnters/VMExits matching and trace
- validation
-From:   Dario Faggioli <dfaggioli@suse.com>
-To:     Stefano De Venuto <stefano.devenuto99@gmail.com>,
-        rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Date:   Fri, 16 Apr 2021 19:47:34 +0200
-In-Reply-To: <20210416164653.2949-1-stefano.devenuto99@gmail.com>
-References: <20210416164653.2949-1-stefano.devenuto99@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-yTfy3k9wu37V6sn06XU+"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        Fri, 16 Apr 2021 14:17:47 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C3EA611AB
+        for <linux-trace-devel@vger.kernel.org>; Fri, 16 Apr 2021 18:17:22 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 14:17:20 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd list: Add --full to show print fmt of an event
+Message-ID: <20210416141720.57a7963d@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
---=-yTfy3k9wu37V6sn06XU+
-Content-Type: multipart/mixed; boundary="=-oC0tB1YivuIQ3798Bhme"
+There's several times I want to see the print fmt from the event's format
+file, and there's no way to do that with trace-cmd list -e. Add a --full
+option to display the entire format file of an event, including the print
+fmt, which can be useful as well.
 
-
---=-oC0tB1YivuIQ3798Bhme
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2021-04-16 at 18:46 +0200, Stefano De Venuto wrote:
-> Add a tool in examples/ that scans a merged host + guest trace and
-> search for host events that are inside a vmentry/vmexit block (and
-> vice-versa for guest events ouside the block) and report the found
-> ones.
->=20
-> It can be useful as a starting point for identifying issues of for
-> checking the effectiveness of host/guest traces synchronization, or
-> even for improving the placing of the tracepoints in the kernel.
->=20
-> Signed-off-by: Stefano De Venuto <stefano.devenuto99@gmail.com>
->
-Just as an example, by using this tool we noticed that there are a
-bunch of host events that, despite happening before a VMEnter (and
-after a VMExit) were shown in the trace inside of a kvm_enter -
-kvm_exit "block".
-
-Stefano, do you still have an example of how the trace looks like? Can
-you paste it here?
-
-Stefano has also already developed the attached kernel patch. Which we
-plan to submit upstream as soon as we've tested properly on Intel
-hardware as well. But that's another story (although, feel free to
-provide any feedback already, if interested).
-
-Thanks and Regards
---=20
-Dario Faggioli, Ph.D
-http://about.me/dario.faggioli
-Virtualization Software Engineer
-SUSE Labs, SUSE https://www.suse.com/
--------------------------------------------------------------------
-<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
-
---=-oC0tB1YivuIQ3798Bhme
-Content-Disposition: attachment; filename="0001-Moved-kvm_entry-and-kvm_exit-tracepoints.patch"
-Content-Type: text/x-patch; name="0001-Moved-kvm_entry-and-kvm_exit-tracepoints.patch";
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-=46rom 4a93ecd7f8354bbfa724dec6af357c23596dea64 Mon Sep 17 00:00:00 2001
-From: Stefano De Venuto <stefano.devenuto99@gmail.com>
-Date: Fri, 16 Apr 2021 08:58:15 +0200
-Subject: [PATCH] Moved kvm_entry and kvm_exit tracepoints
-
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- arch/x86/kvm/svm/svm.c |  8 ++++----
- arch/x86/kvm/vmx/vmx.c | 10 +++++-----
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ Documentation/trace-cmd/trace-cmd-list.1.txt |  5 ++-
+ tracecmd/trace-list.c                        | 39 ++++++++++++--------
+ tracecmd/trace-usage.c                       |  1 +
+ 3 files changed, 28 insertions(+), 17 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 3442d44ca53b..84c268ea3a31 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3262,8 +3262,6 @@ static int handle_exit(struct kvm_vcpu *vcpu, fastpat=
-h_t exit_fastpath)
- 	struct kvm_run *kvm_run =3D vcpu->run;
- 	u32 exit_code =3D svm->vmcb->control.exit_code;
-=20
--	trace_kvm_exit(exit_code, vcpu, KVM_ISA_SVM);
--
- 	/* SEV-ES guests must use the CR write traps to track CR registers. */
- 	if (!sev_es_guest(vcpu->kvm)) {
- 		if (!svm_is_intercept(svm, INTERCEPT_CR0_WRITE))
-@@ -3744,8 +3742,6 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_=
-vcpu *vcpu)
+diff --git a/Documentation/trace-cmd/trace-cmd-list.1.txt b/Documentation/trace-cmd/trace-cmd-list.1.txt
+index 0ad62643..a5c6b16c 100644
+--- a/Documentation/trace-cmd/trace-cmd-list.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-list.1.txt
+@@ -26,7 +26,10 @@ OPTIONS
+     trace-cmd list -e '^sys.*'
+ 
+ *-F*::
+-    Used with *-e* 'regex' to show those events formats.
++    Used with *-e* 'regex' to show the fields of the event.
++
++*--full*::
++    Used with *-F* which will show the "print fmt" of the event along with the fields.
+ 
+ *-l*::
+     Used with *-e* 'regex' to show those events filters.
+diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
+index 4615b322..e292664e 100644
+--- a/tracecmd/trace-list.c
++++ b/tracecmd/trace-list.c
+@@ -44,6 +44,7 @@ enum {
+ 	SHOW_EVENT_FORMAT		= 1 << 0,
+ 	SHOW_EVENT_FILTER		= 1 << 1,
+ 	SHOW_EVENT_TRIGGER		= 1 << 2,
++	SHOW_EVENT_FULL			= 1 << 3,
+ };
+ 
+ 
+@@ -56,10 +57,10 @@ void show_file(const char *name)
+ 	tracefs_put_tracing_file(path);
+ }
+ 
+-typedef int (*process_file_func)(char *buf, int len);
++typedef int (*process_file_func)(char *buf, int len, int flags);
+ 
+ static void process_file_re(process_file_func func,
+-			    const char *name, const char *re)
++			    const char *name, const char *re, int flags)
  {
- 	struct vcpu_svm *svm =3D to_svm(vcpu);
-=20
--	trace_kvm_entry(vcpu);
+ 	regex_t reg;
+ 	char *path;
+@@ -84,7 +85,7 @@ static void process_file_re(process_file_func func,
+ 		strcpy(&str[l-1], "\n*$");
+ 
+ 	if (regcomp(&reg, str, REG_ICASE|REG_NOSUB))
+-		die("invalid function regex '%s'", re);
++		die("invalid function regex '%s'", re, flags);
+ 
+ 	free(str);
+ 
+@@ -97,7 +98,7 @@ static void process_file_re(process_file_func func,
+ 	do {
+ 		n = getline(&buf, &l, fp);
+ 		if (n > 0 && regexec(&reg, buf, 0, NULL, 0) == 0)
+-			func(buf, n);
++			func(buf, n, flags);
+ 	} while (n > 0);
+ 	free(buf);
+ 	fclose(fp);
+@@ -105,14 +106,14 @@ static void process_file_re(process_file_func func,
+ 	regfree(&reg);
+ }
+ 
+-static int show_file_write(char *buf, int len)
++static int show_file_write(char *buf, int len, int flags)
+ {
+ 	return fwrite(buf, 1, len, stdout);
+ }
+ 
+ static void show_file_re(const char *name, const char *re)
+ {
+-	process_file_re(show_file_write, name, re);
++	process_file_re(show_file_write, name, re, 0);
+ }
+ 
+ static char *get_event_file(const char *type, char *buf, int len)
+@@ -144,7 +145,7 @@ static char *get_event_file(const char *type, char *buf, int len)
+ 	return file;
+ }
+ 
+-static int event_filter_write(char *buf, int len)
++static int event_filter_write(char *buf, int len, int flags)
+ {
+ 	char *file;
+ 
+@@ -161,7 +162,7 @@ static int event_filter_write(char *buf, int len)
+ 	return 0;
+ }
+ 
+-static int event_trigger_write(char *buf, int len)
++static int event_trigger_write(char *buf, int len, int flags)
+ {
+ 	char *file;
+ 
+@@ -178,14 +179,17 @@ static int event_trigger_write(char *buf, int len)
+ 	return 0;
+ }
+ 
+-static int event_format_write(char *fbuf, int len)
++static int event_format_write(char *fbuf, int len, int flags)
+ {
+ 	char *file = get_event_file("format", fbuf, len);
+ 	char *buf = NULL;
+ 	size_t l;
+ 	FILE *fp;
++	bool full;
+ 	int n;
+ 
++	full = flags & SHOW_EVENT_FULL;
++
+ 	/* The get_event_file() crops system in fbuf */
+ 	printf("system: %s\n", fbuf);
+ 
+@@ -198,7 +202,7 @@ static int event_format_write(char *fbuf, int len)
+ 	do {
+ 		n = getline(&buf, &l, fp);
+ 		if (n > 0) {
+-			if (strncmp(buf, "print fmt", 9) == 0)
++			if (!full && strncmp(buf, "print fmt", 9) == 0)
+ 				break;
+ 			fwrite(buf, 1, n, stdout);
+ 		}
+@@ -213,19 +217,19 @@ static int event_format_write(char *fbuf, int len)
+ 
+ static void show_event_filter_re(const char *re)
+ {
+-	process_file_re(event_filter_write, "available_events", re);
++	process_file_re(event_filter_write, "available_events", re, 0);
+ }
+ 
+ 
+ static void show_event_trigger_re(const char *re)
+ {
+-	process_file_re(event_trigger_write, "available_events", re);
++	process_file_re(event_trigger_write, "available_events", re, 0);
+ }
+ 
+ 
+-static void show_event_format_re(const char *re)
++static void show_event_format_re(const char *re, int flags)
+ {
+-	process_file_re(event_format_write, "available_events", re);
++	process_file_re(event_format_write, "available_events", re, flags);
+ }
+ 
+ 
+@@ -236,7 +240,7 @@ static void show_events(const char *eventre, int flags)
+ 
+ 	if (eventre) {
+ 		if (flags & SHOW_EVENT_FORMAT)
+-			show_event_format_re(eventre);
++			show_event_format_re(eventre, flags);
+ 
+ 		else if (flags & SHOW_EVENT_FILTER)
+ 			show_event_filter_re(eventre);
+@@ -453,7 +457,6 @@ static void show_plugins(void)
+ 	tep_free(pevent);
+ }
+ 
 -
- 	svm->vmcb->save.rax =3D vcpu->arch.regs[VCPU_REGS_RAX];
- 	svm->vmcb->save.rsp =3D vcpu->arch.regs[VCPU_REGS_RSP];
- 	svm->vmcb->save.rip =3D vcpu->arch.regs[VCPU_REGS_RIP];
-@@ -3798,8 +3794,12 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm=
-_vcpu *vcpu)
- 	 */
- 	x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
-=20
-+	trace_kvm_entry(vcpu);
-+
- 	svm_vcpu_enter_exit(vcpu, svm);
-=20
-+	trace_kvm_exit(svm->vmcb->control.exit_code, vcpu, KVM_ISA_SVM);
-+
- 	/*
- 	 * We do not use IBRS in the kernel. If this vCPU has used the
- 	 * SPEC_CTRL MSR it may have left it on; save the value and
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index eb69fef57485..d0ca562999b6 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6653,8 +6653,6 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
- 	if (vmx->emulation_required)
- 		return EXIT_FASTPATH_NONE;
-=20
--	trace_kvm_entry(vcpu);
--
- 	if (vmx->ple_window_dirty) {
- 		vmx->ple_window_dirty =3D false;
- 		vmcs_write32(PLE_WINDOW, vmx->ple_window);
-@@ -6710,9 +6708,14 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu=
-)
- 	 */
- 	x86_spec_ctrl_set_guest(vmx->spec_ctrl, 0);
-=20
-+	trace_kvm_entry(vcpu);
-+
- 	/* The actual VMENTER/EXIT is in the .noinstr.text section. */
- 	vmx_vcpu_enter_exit(vcpu, vmx);
-=20
-+	vmx->exit_reason =3D vmcs_read32(VM_EXIT_REASON);
-+	trace_kvm_exit(vmx->exit_reason, vcpu, KVM_ISA_VMX);
-+
- 	/*
- 	 * We do not use IBRS in the kernel. If this vCPU has used the
- 	 * SPEC_CTRL MSR it may have left it on; save the value and
-@@ -6772,12 +6775,9 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu=
-)
- 		return EXIT_FASTPATH_NONE;
- 	}
-=20
--	vmx->exit_reason =3D vmcs_read32(VM_EXIT_REASON);
- 	if (unlikely((u16)vmx->exit_reason =3D=3D EXIT_REASON_MCE_DURING_VMENTRY)=
-)
- 		kvm_machine_check();
-=20
--	trace_kvm_exit(vmx->exit_reason, vcpu, KVM_ISA_VMX);
--
- 	if (unlikely(vmx->exit_reason & VMX_EXIT_REASONS_FAILED_VMENTRY))
- 		return EXIT_FASTPATH_NONE;
-=20
---=20
-2.30.2
-
-=0D
---=-oC0tB1YivuIQ3798Bhme--
-
---=-yTfy3k9wu37V6sn06XU+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmB5zbYACgkQFkJ4iaW4
-c+7I6BAAsXSGub+5+KBW6iD79yEENhzlUKvrCr6jKmaIm9qv8dAnwT2cKCB8SVl/
-iB9MVGQGIDmVjrWbNvxPPzpG4q8s+5MNThu9/XNNhu4/JZgZyOYrw8A5K84/C75S
-KVMza5xDJwEHUWiPDQvgBqQmMkubeLhomhaL9GNEvvCAMjlsYaXuHpdNRO+I4f9X
-5DmDZ56wfscPUQR+jb967n9d+bXt/Awu8CgZEwfdPQ/P+fObrx86AlgzTt3SHnil
-ATuRJHR+QheciNJd20Tz+8sJqm75YWZu0KoZQVRxhbFtQ8Zn0FXaU+0OqGtm/48r
-fHEPOt0FhdWxnPMtz2IgkmjlAkBSF8khNN0oee9dRH3Qq+UqyrusOIxGRH6C8REH
-6pNGvPfRBq9W37FrmHO2E8T6VPMykKHiU30JcoFwnSPg3pDi5ZS8Uco8IVdESw+e
-BZzkMfVhEnr/2ZmVaezL4/NRyCT4nl7w96Ul+tI9gw5YaXIf6/4DJhuV499AQ61J
-T3Ugh46fe9rZX5kFqN3dvcwD8c3/evl+bLw92l+lIrT0ZypSKuff5fMNZgalKlnp
-QzAJMEVkDEaz28pkMRn+l6kD4iPuEk6Ee3s0Qh7lUHLV6dPmcdJ4lOepvWd+YpHm
-gZ2Ju0fLV03k8F9jvbHyqYs9xq1EZ6t9a4ypjgmQok6MxPX3K18=
-=Dcpq
------END PGP SIGNATURE-----
-
---=-yTfy3k9wu37V6sn06XU+--
+ void trace_list(int argc, char **argv)
+ {
+ 	int events = 0;
+@@ -536,6 +539,10 @@ void trace_list(int argc, char **argv)
+ 					tracecmd_set_debug(true);
+ 					break;
+ 				}
++				if (strcmp(argv[i], "--full") == 0) {
++					flags |= SHOW_EVENT_FULL;
++					break;
++				}
+ 				fprintf(stderr, "list: invalid option -- '%s'\n",
+ 					argv[i]);
+ 			default:
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 3faa287b..567a91cb 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -322,6 +322,7 @@ static struct usage_help usage_help[] = {
+ 		" %s list [-e [regex]][-t][-o][-f [regex]]\n"
+ 		"          -e list available events\n"
+ 		"            -F show event format\n"
++		"            --full show the print fmt with -F\n"
+ 		"            -R show event triggers\n"
+ 		"            -l show event filters\n"
+ 		"          -t list available tracers\n"
+-- 
+2.29.2
 
