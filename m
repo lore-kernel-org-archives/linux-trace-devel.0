@@ -7,33 +7,35 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E9E7C43619
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 19:40:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0692BC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 20:12:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3F6E861002
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 19:40:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B5AE86124B
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 20:12:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236021AbhDPTlH (ORCPT
+        id S236488AbhDPUMt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 16 Apr 2021 15:41:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35588 "EHLO mail.kernel.org"
+        Fri, 16 Apr 2021 16:12:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243989AbhDPTlG (ORCPT
+        id S235769AbhDPUMs (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:41:06 -0400
+        Fri, 16 Apr 2021 16:12:48 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 883E661002;
-        Fri, 16 Apr 2021 19:40:40 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 15:40:38 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 71BF9601FC;
+        Fri, 16 Apr 2021 20:12:23 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 16:12:21 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] trace-cmd: Check if file version is supported
-Message-ID: <20210416154038.5ae9a6ba@gandalf.local.home>
-In-Reply-To: <20210416133110.47044-1-tz.stoyanov@gmail.com>
-References: <20210416133110.47044-1-tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v2 2/3] trace-cmd library: Add check before applying
+ tsc2nsec offset
+Message-ID: <20210416161221.031d1f5d@gandalf.local.home>
+In-Reply-To: <20210416103409.24597-3-tz.stoyanov@gmail.com>
+References: <20210416103409.24597-1-tz.stoyanov@gmail.com>
+        <20210416103409.24597-3-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,165 +44,156 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 16 Apr 2021 16:31:10 +0300
+On Fri, 16 Apr 2021 13:34:08 +0300
 "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> When reading a trace file, version of the file is ignored. This could
-> case problems when bumping the version number because of changes in
-> in the structure of the file. The old code should detect unsupported
-> file version and should not try to read it.
-> A new trace-cmd library API is added to check if version is supported:
->  tracecmd_is_version_supported()
-> Checks are added in the code to ensure not trying to read trace file
-> with unsupported version.
+> When converting TSC timestamps to nanoseconds, an offset is used. That
+> offset is subtracted from each TSC timestamp, before the conversion.
+> However, if the timestamp is lower that the offset this causes an
+> overflow, as both timestamp and offset are unsigned long integers. A
+> check is added to verify the subtraction will not cause an overflow. In
+> case of an overflow, the timestamp is set to 0 and a warning message is
+> printed.
 > 
 > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 > ---
->  lib/trace-cmd/include/private/trace-cmd-private.h |  2 ++
->  lib/trace-cmd/trace-input.c                       | 10 ++++++++++
->  lib/trace-cmd/trace-util.c                        |  8 ++++++++
->  tracecmd/trace-dump.c                             |  7 +++++++
->  4 files changed, 27 insertions(+)
+>  lib/trace-cmd/trace-input.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 > 
-> diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-> index 56f82244..f7c1fa10 100644
-> --- a/lib/trace-cmd/include/private/trace-cmd-private.h
-> +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-> @@ -42,6 +42,8 @@ void tracecmd_record_ref(struct tep_record *record);
->  void tracecmd_set_debug(bool set_debug);
->  bool tracecmd_get_debug(void);
->  
-> +bool tracecmd_is_version_supported(unsigned int version);
-> +
->  struct tracecmd_output;
->  struct tracecmd_recorder;
->  struct hook_list;
 > diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index 991abd5f..9007c44e 100644
+> index 974879e8..991abd5f 100644
 > --- a/lib/trace-cmd/trace-input.c
 > +++ b/lib/trace-cmd/trace-input.c
-> @@ -117,6 +117,7 @@ struct tracecmd_input {
->  	bool			use_trace_clock;
->  	bool			read_page;
->  	bool			use_pipe;
-> +	int			file_version;
->  	struct cpu_data 	*cpu_data;
->  	long long		ts_offset;
->  	struct tsc2nsec		tsc_calc;
-> @@ -3175,6 +3176,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
->  	unsigned int page_size;
->  	char *version;
->  	char buf[BUFSIZ];
-> +	long ver;
+> @@ -1230,8 +1230,14 @@ static unsigned long long timestamp_calc(unsigned long long ts, int cpu,
+>  		ts *= handle->ts2secs;
+>  	} else if (handle->tsc_calc.mult) {
+>  		/* auto calculated TSC clock frequency */
+> -		ts -= handle->tsc_calc.offset;
+> -		ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
+> +		if (ts > handle->tsc_calc.offset) {
+> +			ts -= handle->tsc_calc.offset;
+> +			ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
+> +		} else {
+> +			tracecmd_warning("Timestamp $llu is before the initial offset %llu, set it to 0",
 
-If we make this a unsigned long, we don't need all the checks.
+   $llu  ??
 
->  
->  	handle = malloc(sizeof(*handle));
->  	if (!handle)
-> @@ -3199,6 +3201,14 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
->  	if (!version)
->  		goto failed_read;
->  	pr_stat("version = %s\n", version);
-> +	ver = strtol(version, NULL, 10);
-> +	if (ver > INT_MAX || ver < INT_MIN || (!ver && errno))
-
-if it is unsigned, then we don't need to worry about negative numbers, and
-you could just have:
-
-	if (!ver && errno)
+Are you testing these? The bad trace files that I supplied triggers this.
 
 
-> +		goto failed_read;
-> +	if (!tracecmd_is_version_supported(ver)) {
+> +					 ts, handle->tsc_calc.offset);
+> +			ts = 0;
 
-And have this take an unsigned long as well.
+We should turn off the offset and not just zero out the timestamps,
+otherwise we just have useless data:
 
-> +		tracecmd_warning("Unsupported file version %d", ver);
+  Timestamp $llu is before the initial offset 20094822433105, set it to 0
+  Timestamp $llu is before the initial offset 20094822433105, set it to 0
+  Timestamp $llu is before the initial offset 20094822460994, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094822961507, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094822967292, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094823302351, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094823306954, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094824963751, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094824965723, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094824972124, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094824972697, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094828868305, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094828871264, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094828881104, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094828882014, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094831874377, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094831876734, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094831881252, set it to 0
+[..]
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094832060068, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094835262757, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094835265223, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094835270122, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094835273058, set it to 0
+libtracecmd: File exists
+  Timestamp $llu is before the initial offset 20094835273614, set it to 0
+cpus=2
+       trace-cmd-3196  [000]     0.000000: sched_stat_runtime:   comm=trace-cmd pid=3196 runtime=85576 [ns] vruntime=12853032342 [ns]
+       trace-cmd-3196  [000]     0.000000: sched_switch:         trace-cmd:3196 [120] S ==> trace-cmd:3199 [120]
+       trace-cmd-3199  [000]     0.000000: sched_stat_runtime:   comm=trace-cmd pid=3199 runtime=156103 [ns] vruntime=12857102867 [ns]
+       trace-cmd-3199  [000]     0.000000: sched_switch:         trace-cmd:3199 [120] S ==> trace-cmd:3198 [120]
+       trace-cmd-3198  [000]     0.000000: sched_stat_runtime:   comm=trace-cmd pid=3198 runtime=100540 [ns] vruntime=12858890364 [ns]
+       trace-cmd-3198  [000]     0.000000: sched_switch:         trace-cmd:3198 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [000]     0.000000: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
+          <idle>-0     [000]     0.000000: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444054745103 function=tick_sched_timer/0x0
+          <idle>-0     [000]     0.000000: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
+          <idle>-0     [000]     0.000000: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444055726117 softexpires=1444055726117
+          <idle>-0     [000]     0.000000: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
+          <idle>-0     [000]     0.000000: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444055895819 function=tick_sched_timer/0x0
+          <idle>-0     [000]     0.000000: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
+          <idle>-0     [000]     0.000000: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444056726117 softexpires=1444056726117
+          <idle>-0     [000]     0.000000: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
+          <idle>-0     [000]     0.000000: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444056782207 function=tick_sched_timer/0x0
+          <idle>-0     [000]     0.000000: softirq_raise:        vec=1 [action=TIMER]
+          <idle>-0     [000]     0.000000: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
+          <idle>-0     [000]     0.000000: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444057726117 softexpires=1444057726117
+          <idle>-0     [000]     0.000000: softirq_entry:        vec=1 [action=TIMER]
+          <idle>-0     [000]     0.000000: timer_cancel:         timer=0xffffa61a0006be40
+          <idle>-0     [000]     0.000000: timer_expire_entry:   timer=0xffffa61a0006be40 function=process_timeout now=4296111312 baseclk=4296111312
+          <idle>-0     [000]     0.000000: sched_waking:         comm=rcu_sched pid=12 prio=120 target_cpu=000
 
-If ver is unsigned long, it should be: %lu instead of %d.
+We don't want all timestamps zero. We want to disable the starting event.
 
-> +		goto failed_read;
-> +	}
-> +	handle->file_version = ver;
->  	free(version);
->  
->  	if (do_read_check(handle, buf, 1))
-> diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-> index 2d3bc741..bacc47d1 100644
-> --- a/lib/trace-cmd/trace-util.c
-> +++ b/lib/trace-cmd/trace-util.c
-> @@ -582,3 +582,11 @@ unsigned long long tracecmd_generate_traceid(void)
->  	free(str);
->  	return hash;
->  }
-> +
-> +bool tracecmd_is_version_supported(unsigned int version)
+By having this instead:
 
-Have the above be unsigned long to match versions. Who knows, maybe some
-day this will need to handle a file version greater than 4 billion :-)
+		} else {
+			tracecmd_warning("Timestamp %llu is before the initial offset %llu\n"
+					 "\tSetting offset to 0",
+					 ts, handle->tsc_calc.offset);
+			handle->tsc_calc.offset = 0;
+			ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
+		}
 
-And by then, there would be no more 32 bit machines.
+We get this as output:
 
+  Timestamp 20094822433105 is before the initial offset 20159736262966
+        Setting offset to 0
+cpus=2
+       trace-cmd-3196  [000]  5923.651995: sched_stat_runtime:   comm=trace-cmd pid=3196 runtime=85576 [ns] vruntime=12853032342 [ns]
+       trace-cmd-3196  [000]  5923.652004: sched_switch:         trace-cmd:3196 [120] S ==> trace-cmd:3199 [120]
+       trace-cmd-3199  [000]  5923.652151: sched_stat_runtime:   comm=trace-cmd pid=3199 runtime=156103 [ns] vruntime=12857102867 [ns]
+       trace-cmd-3199  [000]  5923.652153: sched_switch:         trace-cmd:3199 [120] S ==> trace-cmd:3198 [120]
+       trace-cmd-3198  [000]  5923.652252: sched_stat_runtime:   comm=trace-cmd pid=3198 runtime=100540 [ns] vruntime=12858890364 [ns]
+       trace-cmd-3198  [000]  5923.652253: sched_switch:         trace-cmd:3198 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [000]  5923.652741: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
+          <idle>-0     [000]  5923.652742: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444054745103 function=tick_sched_timer/0x0
+          <idle>-0     [000]  5923.652744: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
+          <idle>-0     [000]  5923.652744: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444055726117 softexpires=1444055726117
+          <idle>-0     [000]  5923.653892: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
 
-> +{
-> +	if (version < FILE_VERSION)
-
-I think you want "<=" as with this patch I have:
-
-trace-cmd report
-  Unsupported file version 6
-  error reading header for trace.dat
-
-Better yet, just make it:
-
-	return version <= FILE_VERSION;
-
-
-
-> +		return true;
-> +	return false;
-> +}
-> +
-
-Extra whitespace at the end of the file. git complains about it.
-
-> diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
-> index 3f56f65a..8e74d8f5 100644
-> --- a/tracecmd/trace-dump.c
-> +++ b/tracecmd/trace-dump.c
-> @@ -10,6 +10,7 @@
->  #include <getopt.h>
->  #include <sys/stat.h>
->  #include <fcntl.h>
-> +#include <errno.h>
->  
->  #include "trace-local.h"
->  
-> @@ -145,6 +146,7 @@ static void dump_initial_format(int fd)
->  	char magic[] = TRACECMD_MAGIC;
->  	char buf[DUMP_SIZE];
->  	int val4;
-> +	long ver;
->  
->  	do_print(SUMMARY, "\t[Initial format]\n");
->  
-> @@ -166,6 +168,11 @@ static void dump_initial_format(int fd)
->  		die("no version string");
->  
->  	do_print(SUMMARY, "\t\t%s\t[Version]\n", buf);
-> +	ver = strtol(buf, NULL, 10);
-> +	if (ver > INT_MAX || ver < INT_MIN || (!ver && errno))
-
-Again, make it unsigned long and you wont need all these INT_MAX INT_MIN
-checks. If it's > INT_MAX, then the versioning would fail.
-
-> +		die("Invalid file version string");
-> +	if (!tracecmd_is_version_supported(ver))
-> +		die("Unsupported file version %d", ver);
->  
->  	/* get file endianness*/
->  	if (read_file_bytes(fd, buf, 1))
-
+Much more usable.
 
 -- Steve
+
+
+> +		}
+>  	}
+>  
+>  	/* User specified time offset with --ts-offset or --date options */
+
