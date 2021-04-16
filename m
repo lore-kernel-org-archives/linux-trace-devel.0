@@ -2,66 +2,64 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 250F7C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 04:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2349C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 10:14:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3605610CD
-	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 04:41:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 938BF61166
+	for <linux-trace-devel@archiver.kernel.org>; Fri, 16 Apr 2021 10:14:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhDPEmV (ORCPT
+        id S240026AbhDPKOn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 16 Apr 2021 00:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
+        Fri, 16 Apr 2021 06:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhDPEmV (ORCPT
+        with ESMTP id S235124AbhDPKOm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 16 Apr 2021 00:42:21 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0125CC061574
-        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Apr 2021 21:41:56 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id n10so2166644plc.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 15 Apr 2021 21:41:56 -0700 (PDT)
+        Fri, 16 Apr 2021 06:14:42 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38D8C061574
+        for <linux-trace-devel@vger.kernel.org>; Fri, 16 Apr 2021 03:14:17 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id cu16so11722416pjb.4
+        for <linux-trace-devel@vger.kernel.org>; Fri, 16 Apr 2021 03:14:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4x3hRnjOv6JqOFNAr1z+fOxzxL0VrCPR+CI69kmIvT4=;
-        b=eHxFJjBGznS1dqf/Kjo9v8glNF5tK2L1bxr4O4LfvS9tX3iRFheEScjkZd2rILdiP2
-         mAVM7KlO/XAEtpZ2v5a25tpXmZvydr05KkXqGJpqPngCDE/cdmH6CULb5Jh3uMEypFfh
-         VB0JUjjJH49iIqo7ju/Tm7jtl2wWb3HPIPRNrL6skPNMrB15kkbRD0ALN9hqs01x4+DM
-         3Pc0h7eg9txa/cNHy8wnrAp4ol22CqLel7EIK9yJmVeT+giqavzTCoOIC65FSlv99XWq
-         z3GytIh9ZisN/bdrUQqhOSO5y3rkwOxUMQx5Mj99xvgULqTIhfRdZSpiyyf4mXGQguFf
-         xVgQ==
+        bh=WfCYpwvMEykn6LiWvWn5iaUnh37KqvgU2+gxazIrgBc=;
+        b=GnUKIOb+OKsQ6nFVVqEV0hOGQwQofySYTi8VmvQOA9y7+g71UfBLvFV+CKblM1JCQ6
+         SvXk2nihHHVcrBEa93D8MQXbTy0uxFuqZvfGNi8VgAG4aMXS2R5FFzC25kbhMGk4OLTQ
+         s7Mrt5xmBo9drlbL9Daek7qhIHLnJbZun9dHeXksYbMMirFnZmiY6TTY5klNayaXrqCu
+         jBYneHCT+BR2yQaT/JOcHUOS3TBNhboL4X/u7h9sG73n7VSfCBkHhANg4Kdd3re5Mskt
+         a6SpVCvNPgYz7IwUBDP6BgPyMP+rR9X1Q2S5rhLDG+woM9TIpo7A9eoLAvy6WOYe4yqX
+         Bu5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4x3hRnjOv6JqOFNAr1z+fOxzxL0VrCPR+CI69kmIvT4=;
-        b=V7qZ2CS0522T5hgpu0TiNaxicBxY8iXZqa2RI24trXU9YZXB1CgGGYzg25zPqOiGUQ
-         3i0WdplvJFA4s2yyRRoQPKdVcF2f+TR1a7pSeAoCZxOb405oyRLc2+jlcgrfr7HGoh/n
-         Jy6QTuiqtPe9M4jOkNLRneXYKagxvEQs5pLyqSxN63Kv0fa9IgEtaXMborJerZcAY3io
-         Z9Nol4ATig15c6sxKFgkB9HKdy/+rWaKvIOcN3F6N+0DYtVy0jA6FDejMp6yTm+QGqFy
-         83pM7QSv2BazMp3gTqnuHxYCfl706QVjUfwKzrFEdj1LeJN0rkaT5LQBRVX/7dwm2Khs
-         bh+w==
-X-Gm-Message-State: AOAM530r1bcQ0qsZjpfi7/+ZllZ2glLxhb9O22nhTIr9z/QOdKYOJw9r
-        R2ucLFpsVppCBu2JEUxmIphPxShvb2YtHq/nyId7FXyd4sWjMA==
-X-Google-Smtp-Source: ABdhPJySbF0s2scZAMB9huUittQsr1iWbsuLSofLzSle7l34rWAHhqL0tlfEzL7Mp+mN/AQAvWXTGitPqdRUaHukyis=
-X-Received: by 2002:a17:90a:fa84:: with SMTP id cu4mr7745156pjb.2.1618548116362;
- Thu, 15 Apr 2021 21:41:56 -0700 (PDT)
+        bh=WfCYpwvMEykn6LiWvWn5iaUnh37KqvgU2+gxazIrgBc=;
+        b=T4eAqYKUKuqH7dWxTi4yiOwkM9UwyJuWuihxj8gK0pKKDR1oQ++N4iqiJW8WXLnw3d
+         tESMBWa7hsY28KRae0BRxLOnYHejvYvAwpRWlxrVrnS8JlNss/HKTSRd8mYRvXozxbJv
+         wkKncF+zVmVMyZyKu/6ynQ2Xwi6BTHR5mrL/HNyGcmdM+NRX2p55wAknX0UmI+EpVEWD
+         EL4fbdQUdSzNNZXIusfeUzZJxSvRt64sL058XAPuMGPCXyT6BYufJU6V1TySSU9Pqboa
+         C3IhlUyI3KXhOUZn1skcP5WTb95qfNpllGlJexBs1Rrqf416cDbowMD/gfmsOUw0XXbd
+         tWyQ==
+X-Gm-Message-State: AOAM533N8NolBO+Al28KzR3CA5NvEiDCOKpGXHuHHniMcg1QowvMSxAT
+        xT86oMAF1E+UAUTzAAQq0tgXCItG1357AtNplZSLhjv65bWGnA==
+X-Google-Smtp-Source: ABdhPJxMZs3TTlZxFVAUEWkVKNjrIpww9ibkWuR9zfJ5pQu6mNkOvbhmPaY3cAyo2m9y3SsRJvFwmZalyD9IHrpjqvs=
+X-Received: by 2002:a17:90a:fa84:: with SMTP id cu4mr9068430pjb.2.1618568057197;
+ Fri, 16 Apr 2021 03:14:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210415081527.3483835-1-tz.stoyanov@gmail.com>
- <20210415081527.3483835-5-tz.stoyanov@gmail.com> <20210415171845.3e6ee0d8@gandalf.local.home>
-In-Reply-To: <20210415171845.3e6ee0d8@gandalf.local.home>
+References: <20210415080316.3482986-1-tz.stoyanov@gmail.com> <20210415093428.1a3a1678@gandalf.local.home>
+In-Reply-To: <20210415093428.1a3a1678@gandalf.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Fri, 16 Apr 2021 07:41:40 +0300
-Message-ID: <CAPpZLN4m5bPj=Di-UA98dKKpLrL3d4eFiRMQpSSsJ2nnjVJcTg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] trace-cmd: Get the timestamp of the first recorded
- event as TSC offset
+Date:   Fri, 16 Apr 2021 13:14:01 +0300
+Message-ID: <CAPpZLN7ZvgSKoNVek+msCHarKY7F-dYUhKSuoKt_DF2qaE_rwg@mail.gmail.com>
+Subject: Re: [PATCH] trace-cmd: Suppress trace library warnings
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -69,45 +67,45 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 12:18 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Apr 15, 2021 at 4:34 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-[...]
-> >  static void record_data(struct common_record_context *ctx)
-> > @@ -4231,9 +4306,18 @@ static void record_data(struct common_record_context *ctx)
-> >       char **temp_files;
-> >       int i;
-> >
-> > +     if (ctx->tsc2nsec.mult) {
-> > +             for_all_instances(instance) {
-> > +                     get_first_ts_instance(instance);
+> On Thu, 15 Apr 2021 11:03:16 +0300
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 >
-> Should check the return code, and at least warn if it fails. As it is done
-> after the recording, we don't want to die. But at least let the user know
-> something went wrong.
+> > Suppress all warnings from libtraceevent, libtracefs and libtracecmd if
+> > the trace-cmd application does not run in debug mode.
 >
+> Actually, don't we have a -q option to turn off warnings from trace-cmd?
+>
+> From the man page:
+>
+>        -q
+>            Quiet non critical warnings.
+>
+> Which I see, currently doesn't work, but should. Not being able to parse
+> events is something we should keep displaying by default, but it should
+> not be displayed if -q is on the command line.
+>
+
+I can fix "-q" to suppress warnings from all trace libraries, but the
+problem is that "-q" is not set by default. These "Not being able to
+parse" messages could be very annoying in some cases and as I
+understood they are not critical ? The other problem is that not all
+trace-cmd commands have the "-q" option, but almost all of them need a
+tep handler that could cause printing of these messages.
+Yodan found one more issue, the pr_stat() libtraceevent function is
+not affected by tep_vwarning() redefine. It prints statistics on
+KernelShark startup. I think we should add some kind of priorities of
+all those library messages and decide which of them when will be
+printed.  It makes sense only for fatal library messages to be printed
+by default, if the "-q" option is not set. All others should be
+visible only if trace-cmd runs in debug mode.
+
 > -- Steve
 >
-> > +                     if (instance->first_ts &&
-
-I'll add return code and will check it instead of that
-"instance->first_ts". Failing to get the first ts could be a normal
-case, if there are no events recorded in that instance.
-
-> > +                         (!ctx->tsc2nsec.offset || ctx->tsc2nsec.offset > instance->first_ts))
-> > +                             ctx->tsc2nsec.offset = instance->first_ts;
-> > +             }
-> > +     }
-> > +
-> >       for_all_instances(instance) {
-> >               if (is_guest(instance))
-> > -                     write_guest_file(instance);
-> > +                     write_guest_file(ctx, instance);
-> >               else if (host && instance->msg_handle)
-> >                       finish_network(instance->msg_handle);
-> >               else
->
+[...]
 
 
--- 
+--
 Tzvetomir (Ceco) Stoyanov
 VMware Open Source Technology Center
