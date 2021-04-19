@@ -8,60 +8,61 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C8EFC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 05:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05148C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 08:10:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C52961090
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 05:11:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B5C0B61159
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 08:10:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhDSFLn (ORCPT
+        id S229630AbhDSIKr (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 19 Apr 2021 01:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35852 "EHLO
+        Mon, 19 Apr 2021 04:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhDSFLn (ORCPT
+        with ESMTP id S237477AbhDSIIu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Apr 2021 01:11:43 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63478C06174A
-        for <linux-trace-devel@vger.kernel.org>; Sun, 18 Apr 2021 22:11:14 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id c17so22391942pfn.6
-        for <linux-trace-devel@vger.kernel.org>; Sun, 18 Apr 2021 22:11:14 -0700 (PDT)
+        Mon, 19 Apr 2021 04:08:50 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87052C06174A
+        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 01:08:21 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id u11so13788822pjr.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 01:08:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FhkA6B0I8pV/PkPBRODmMq9taw77IqP6aW0PhbddiE8=;
-        b=NsNGMhZrGiW4RezMcg/chBnu8sYc1xDtL2aCnxs+0vKPpORW3Hmd6wuA3I4bIoroAx
-         qNcR6QCQORDgC7hapYu+brloWLxKwiSfa1aavgNXUSCO9gmb0Vn7nD3PVjw1o9bgKuOB
-         cnh5ZZgiEwQqHu7PEfkwc51fQ9V8KxzaVlq0rj9cQyh1IbiEQdYU99Qos/w5j84+BfO6
-         upMW5gSvJlSQqfcw2BqDcFM3rMHI2i8tM5o37hmReAkfZz/hh+PAIcpCSFXdzJzGOgBa
-         +5upZo1JbKG0EoNSUPyeG0RPbbtGkCLpiq7gOovqMlKMN44KJoP4QZv47LbEkMBeWZn8
-         md/g==
+        bh=4Qac1JTu20U0H8SBfgZX0RezxZ/4s7UEzFKPwrqLjcM=;
+        b=HSY2x51niI5qNG/aXVgfuDYmJ1TRVzKGXXCjh5GLwlIqJlrxv8WBwj4wQI2DvH4HCF
+         kaTfqQ4Rtjfvd1D7fPwY67SPyejNvTXhv3dtCd4JQRQh//aY1LjRMWjzEgnB+RgiHIbp
+         41HSHHCIDkGUYLO/ciXENTTU5bxkRHg2qEx78LVEUi5btOVwfCBJ9KAjvGloVG40DRpb
+         DE6LnBO6NSPN+Tx3Ud34tPUyDGBn8z3LbY6EOZ/3N1kuBBvErKMDcghwCoXvEuxwua+d
+         +FyUVRWlAY+9/H/qE3ESFflLPFueuu6Yu3zfHW50zc8wxyCw4B8JiVHa6bXTlmhHrxVF
+         b9Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FhkA6B0I8pV/PkPBRODmMq9taw77IqP6aW0PhbddiE8=;
-        b=LEBc1aQz9uq/b5IYppcmVL+Qv3Vo/1su2wz2xiC6MOUIQZkVdx/ySY3pyKaxoun0Nz
-         toPQLw8z2sZ5f1V8+YYqyyxqGEdUUr0INZTh/nToiXY0pHrh91YipuSSaBWTZGuXLYkU
-         rJkCCi6cDYfslwD2KtlwQC36krQ/ckhZWcZFcS+XaUSzd++BV0ulob50NjzYyr6nfzjX
-         HLM8qVsKKVZo6YFazMrV/jnlaYt3viyRRdH4ThNR6gedRYECV7+ttSlXsonV0XDGtvZJ
-         cVpQfBjsOiXO61B3RBNsKiNRApZd2dHsGCuE00IRGPxf+eR9v4wsFEPmQZfx7F/twOap
-         MVMA==
-X-Gm-Message-State: AOAM530zSfAIheaD+/ksIVMcwMMW4ujcUKtfexioV3JoBIZwf1QhHoze
-        hEcWURmrjOYHvetH/ezPL+W5iBdHsdcQMXevPkcr41J7
-X-Google-Smtp-Source: ABdhPJxc0F4zTJfgX/zukrJjjA6sk7vFKgbax+hgy92nNbxyqLtjdi55hhaExgeae48M1GO2l5zrZOnnKnz0OB8guEc=
-X-Received: by 2002:aa7:9d81:0:b029:248:c39c:3f26 with SMTP id
- f1-20020aa79d810000b0290248c39c3f26mr17640346pfq.55.1618809073884; Sun, 18
- Apr 2021 22:11:13 -0700 (PDT)
+        bh=4Qac1JTu20U0H8SBfgZX0RezxZ/4s7UEzFKPwrqLjcM=;
+        b=g2dY0aFGVqHdogyeQxCBPXSsg+bJ2yP5lK3eOVl0Z6UL+tcnHcDZOC+JNjLGR7SfuY
+         4HiW04mx5ZdEJFsJRO0E+ax94iJHlyBT4nVinU6cnG9QSrymGcDAeS/EwJpkkKEp0f97
+         DOu4Z1vcVk+1g9JzCCqtp+tnP9lqvjF4KSePVQEG/NeOb8JkvgfBayej+genvwvYcgAj
+         ryiTwKgwNh+CECCBQXJ4j1QiG+DdRGyS3stHKBQCpizw2M4QAmO7jF2GpUkdSFF1MDxm
+         r+moI57wAuoatJC8uTuHhNoheeKYSODHOhPkcvnN34DPHC4bs1Un6gzqviwJS6TIpTJ/
+         PtcQ==
+X-Gm-Message-State: AOAM531F+7flbzBV2RRrBpx4WUUDCMvUzcZOOaWXIDU73ZOS2J22Fbx4
+        RtxtpQ5o6v3WDdcMaR1nZH3xWCp/zPXWDhcSLtXRzgxXg9Q=
+X-Google-Smtp-Source: ABdhPJy8eaZR4Og4T27wjs31iehqsnalEpMYUIGQDKbM/vKthxn/hK77E8YN46mZyYlz9rwDZeO307C2C+F7kOGp6AY=
+X-Received: by 2002:a17:90b:3b43:: with SMTP id ot3mr23042920pjb.100.1618819701000;
+ Mon, 19 Apr 2021 01:08:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416213018.3890036-1-rostedt@goodmis.org> <20210416213018.3890036-2-rostedt@goodmis.org>
-In-Reply-To: <20210416213018.3890036-2-rostedt@goodmis.org>
+References: <20210416103409.24597-1-tz.stoyanov@gmail.com> <20210416103409.24597-3-tz.stoyanov@gmail.com>
+ <20210416161221.031d1f5d@gandalf.local.home>
+In-Reply-To: <20210416161221.031d1f5d@gandalf.local.home>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 19 Apr 2021 08:10:57 +0300
-Message-ID: <CAPpZLN6_NjZYmhDMfskxtKOaVrVm+6pa2ic-LrvoKGBN+h=QhQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] trace-cmd list: Use tracefs to help find events for -e
+Date:   Mon, 19 Apr 2021 11:08:04 +0300
+Message-ID: <CAPpZLN4K6H8p1zNuqHQd0LGDHatAgR+8SHRH1jTP8=Jb_bMZUw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] trace-cmd library: Add check before applying
+ tsc2nsec offset
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -69,222 +70,176 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 1:08 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, Apr 16, 2021 at 11:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> On Fri, 16 Apr 2021 13:34:08 +0300
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 >
-> When the user specifies -e and wants to search for events, use the tracefs
-> helper functions tracefs_event_systems() and tracefs_system_events() to
-> find the matching events.
+> > When converting TSC timestamps to nanoseconds, an offset is used. That
+> > offset is subtracted from each TSC timestamp, before the conversion.
+> > However, if the timestamp is lower that the offset this causes an
+> > overflow, as both timestamp and offset are unsigned long integers. A
+> > check is added to verify the subtraction will not cause an overflow. In
+> > case of an overflow, the timestamp is set to 0 and a warning message is
+> > printed.
+> >
+> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> > ---
+> >  lib/trace-cmd/trace-input.c | 10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+> > index 974879e8..991abd5f 100644
+> > --- a/lib/trace-cmd/trace-input.c
+> > +++ b/lib/trace-cmd/trace-input.c
+> > @@ -1230,8 +1230,14 @@ static unsigned long long timestamp_calc(unsigned long long ts, int cpu,
+> >               ts *= handle->ts2secs;
+> >       } else if (handle->tsc_calc.mult) {
+> >               /* auto calculated TSC clock frequency */
+> > -             ts -= handle->tsc_calc.offset;
+> > -             ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
+> > +             if (ts > handle->tsc_calc.offset) {
+> > +                     ts -= handle->tsc_calc.offset;
+> > +                     ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
+> > +             } else {
+> > +                     tracecmd_warning("Timestamp $llu is before the initial offset %llu, set it to 0",
 >
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  lib/trace-cmd/trace-input.c |   6 +-
->  tracecmd/trace-list.c       | 136 ++++++++++++++++++++++++++++++++++--
->  2 files changed, 135 insertions(+), 7 deletions(-)
+>    $llu  ??
 >
-> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index 991abd5f..a540ab24 100644
-> --- a/lib/trace-cmd/trace-input.c
-> +++ b/lib/trace-cmd/trace-input.c
-> @@ -1234,9 +1234,11 @@ static unsigned long long timestamp_calc(unsigned long long ts, int cpu,
->                         ts -= handle->tsc_calc.offset;
->                         ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
+> Are you testing these? The bad trace files that I supplied triggers this.
+>
+>
+> > +                                      ts, handle->tsc_calc.offset);
+> > +                     ts = 0;
+>
+> We should turn off the offset and not just zero out the timestamps,
+> otherwise we just have useless data:
+>
+>   Timestamp $llu is before the initial offset 20094822433105, set it to 0
+>   Timestamp $llu is before the initial offset 20094822433105, set it to 0
+>   Timestamp $llu is before the initial offset 20094822460994, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094822961507, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094822967292, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094823302351, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094823306954, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094824963751, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094824965723, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094824972124, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094824972697, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094828868305, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094828871264, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094828881104, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094828882014, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094831874377, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094831876734, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094831881252, set it to 0
+> [..]
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094832060068, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094835262757, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094835265223, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094835270122, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094835273058, set it to 0
+> libtracecmd: File exists
+>   Timestamp $llu is before the initial offset 20094835273614, set it to 0
+> cpus=2
+>        trace-cmd-3196  [000]     0.000000: sched_stat_runtime:   comm=trace-cmd pid=3196 runtime=85576 [ns] vruntime=12853032342 [ns]
+>        trace-cmd-3196  [000]     0.000000: sched_switch:         trace-cmd:3196 [120] S ==> trace-cmd:3199 [120]
+>        trace-cmd-3199  [000]     0.000000: sched_stat_runtime:   comm=trace-cmd pid=3199 runtime=156103 [ns] vruntime=12857102867 [ns]
+>        trace-cmd-3199  [000]     0.000000: sched_switch:         trace-cmd:3199 [120] S ==> trace-cmd:3198 [120]
+>        trace-cmd-3198  [000]     0.000000: sched_stat_runtime:   comm=trace-cmd pid=3198 runtime=100540 [ns] vruntime=12858890364 [ns]
+>        trace-cmd-3198  [000]     0.000000: sched_switch:         trace-cmd:3198 [120] S ==> swapper/0:0 [120]
+>           <idle>-0     [000]     0.000000: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
+>           <idle>-0     [000]     0.000000: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444054745103 function=tick_sched_timer/0x0
+>           <idle>-0     [000]     0.000000: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
+>           <idle>-0     [000]     0.000000: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444055726117 softexpires=1444055726117
+>           <idle>-0     [000]     0.000000: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
+>           <idle>-0     [000]     0.000000: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444055895819 function=tick_sched_timer/0x0
+>           <idle>-0     [000]     0.000000: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
+>           <idle>-0     [000]     0.000000: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444056726117 softexpires=1444056726117
+>           <idle>-0     [000]     0.000000: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
+>           <idle>-0     [000]     0.000000: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444056782207 function=tick_sched_timer/0x0
+>           <idle>-0     [000]     0.000000: softirq_raise:        vec=1 [action=TIMER]
+>           <idle>-0     [000]     0.000000: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
+>           <idle>-0     [000]     0.000000: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444057726117 softexpires=1444057726117
+>           <idle>-0     [000]     0.000000: softirq_entry:        vec=1 [action=TIMER]
+>           <idle>-0     [000]     0.000000: timer_cancel:         timer=0xffffa61a0006be40
+>           <idle>-0     [000]     0.000000: timer_expire_entry:   timer=0xffffa61a0006be40 function=process_timeout now=4296111312 baseclk=4296111312
+>           <idle>-0     [000]     0.000000: sched_waking:         comm=rcu_sched pid=12 prio=120 target_cpu=000
+>
+> We don't want all timestamps zero. We want to disable the starting event.
+>
+> By having this instead:
+>
 >                 } else {
-> -                       tracecmd_warning("Timestamp $llu is before the initial offset %llu, set it to 0",
-> +                       tracecmd_warning("Timestamp %llu is before the initial offset %llu\n"
-> +                                        "\tSetting offset to 0",
+>                         tracecmd_warning("Timestamp %llu is before the initial offset %llu\n"
+>                                          "\tSetting offset to 0",
 >                                          ts, handle->tsc_calc.offset);
-> -                       ts = 0;
-> +                       handle->tsc_calc.offset = 0;
-> +                       ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
-
-That looks like from a different patch? I'll send v3 from my patch set
-with these fixes.
-
+>                         handle->tsc_calc.offset = 0;
+>                         ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
 >                 }
->         }
 >
-> diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
-> index 63216b43..84ee573b 100644
-> --- a/tracecmd/trace-list.c
-> +++ b/tracecmd/trace-list.c
-> @@ -105,6 +105,122 @@ static void process_file_re(process_file_func func,
->         regfree(&reg);
->  }
+
+This will set the guest offset to 0, will not change the offsets of
+the other files. The result is that the files will not be displayed in
+sync, because of these few broken events. As this is only a sanity
+check, and should not happen if the patch "trace-cmd: Get the
+timestamp of the first recorded event as TSC offset" is applied, I
+would suggest to zero the broken timestamps and to advise the user to
+use "--raw-ts" option instead:
+ "Timestamp %llu is before the initial offset %llu, set it to 0.
+Display the files with --raw-ts option to see the original
+timestamps.\n"
+
+
+> We get this as output:
 >
-> +static void show_event(process_file_func func, const char *system, const char *event)
-> +{
-> +       char *buf;
-> +       int ret;
-> +
-> +       ret = asprintf(&buf, "%s:%s", system, event);
-> +       if (ret < 0)
-> +               die("Can not allocate event");
-> +       func(buf, strlen(buf));
-> +       free(buf);
-> +}
-> +
-> +static void show_system(process_file_func func, const char *system)
-> +{
-> +       char **events;
-> +       int e;
-> +
-> +       events = tracefs_system_events(NULL, system);
-> +       if (!events) /* die? */
-> +               return;
-> +
-> +       for (e = 0; events[e]; e++)
-> +               show_event(func, system, events[e]);
-> +}
-> +
-> +static void show_event_systems(process_file_func func, char **systems)
-> +{
-> +       int s;
-> +
-> +       for (s = 0; systems[s]; s++)
-> +               show_system(func, systems[s]);
-> +}
-> +
-> +
-> +static void process_events(process_file_func func, const char *re)
-> +{
-> +       regex_t system_reg;
-> +       regex_t event_reg;
-> +       char *str;
-> +       size_t l = strlen(re);
-> +       bool just_systems = true;
-> +       char **systems;
-> +       char **events;
-> +       char *system;
-> +       char *event;
-> +       int s, e;
-> +
-> +       systems = tracefs_event_systems(NULL);
-> +       if (!systems)
-> +               return process_file_re(func, "available_events", re);
-> +
-> +       if (!re || l == 0) {
-> +               show_event_systems(func, systems);
-> +               return;
-> +       }
-> +
-> +       str = strdup(re);
-> +       if (!str)
-> +               die("Can not allocate momory for regex");
-> +
-> +       system = strtok(str, ":");
-> +       event = strtok(NULL, "");
-> +
-> +       if (regcomp(&system_reg, system, REG_ICASE|REG_NOSUB))
-> +               die("invalid regex '%s'", system);
-> +
-> +       if (event) {
-> +               if (regcomp(&event_reg, event, REG_ICASE|REG_NOSUB))
-> +                       die("invalid regex '%s'", event);
-> +       } else {
-> +               /*
-> +                * If the regex ends with ":", then event would be null,
-> +                * but we do not want to match events.
-> +                */
-> +               if (re[l-1] != ':')
-> +                       just_systems = false;
-> +       }
-> +       free(str);
-> +
-> +       for (s = 0; systems[s]; s++) {
-> +
-> +               if (regexec(&system_reg, systems[s], 0, NULL, 0) == 0) {
-> +                       if (!event) {
-> +                               show_system(func, systems[s]);
-> +                               continue;
-> +                       }
-> +                       events = tracefs_system_events(NULL, systems[s]);
-> +                       if (!events) /* die? */
-> +                               continue;
-> +                       for (e = 0; events[e]; e++) {
-> +                               if (regexec(&event_reg, events[e], 0, NULL, 0) == 0)
-> +                                       show_event(func, systems[s], events[e]);
-> +                       }
-> +                       tracefs_list_free(events);
-> +                       continue;
-> +               }
-> +               if (just_systems)
-> +                       continue;
-> +
-> +               events = tracefs_system_events(NULL, systems[s]);
-> +               if (!events) /* die? */
-> +                       continue;
-> +
-> +               for (e = 0; events[e]; e++) {
-> +                       if (regexec(&system_reg, events[e], 0, NULL, 0) == 0)
-> +                               show_event(func, systems[s], events[e]);
-> +               }
-> +               tracefs_list_free(events);
-> +       }
-> +       tracefs_list_free(systems);
-> +
-> +       regfree(&system_reg);
-> +       if (event)
-> +               regfree(&event_reg);
-> +}
-> +
->  static int show_file_write(char *buf, int len)
->  {
->         return fwrite(buf, 1, len, stdout);
-> @@ -210,24 +326,34 @@ static int event_format_write(char *fbuf, int len)
->         return 0;
->  }
+>   Timestamp 20094822433105 is before the initial offset 20159736262966
+>         Setting offset to 0
+> cpus=2
+>        trace-cmd-3196  [000]  5923.651995: sched_stat_runtime:   comm=trace-cmd pid=3196 runtime=85576 [ns] vruntime=12853032342 [ns]
+>        trace-cmd-3196  [000]  5923.652004: sched_switch:         trace-cmd:3196 [120] S ==> trace-cmd:3199 [120]
+>        trace-cmd-3199  [000]  5923.652151: sched_stat_runtime:   comm=trace-cmd pid=3199 runtime=156103 [ns] vruntime=12857102867 [ns]
+>        trace-cmd-3199  [000]  5923.652153: sched_switch:         trace-cmd:3199 [120] S ==> trace-cmd:3198 [120]
+>        trace-cmd-3198  [000]  5923.652252: sched_stat_runtime:   comm=trace-cmd pid=3198 runtime=100540 [ns] vruntime=12858890364 [ns]
+>        trace-cmd-3198  [000]  5923.652253: sched_switch:         trace-cmd:3198 [120] S ==> swapper/0:0 [120]
+>           <idle>-0     [000]  5923.652741: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
+>           <idle>-0     [000]  5923.652742: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444054745103 function=tick_sched_timer/0x0
+>           <idle>-0     [000]  5923.652744: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
+>           <idle>-0     [000]  5923.652744: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444055726117 softexpires=1444055726117
+>           <idle>-0     [000]  5923.653892: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
 >
-> +static int event_name(char *buf, int len)
-> +{
-> +       printf("%s\n", buf);
-> +
-> +       return 0;
-> +}
-> +
+> Much more usable.
 >
->  static void show_event_filter_re(const char *re)
->  {
-> -       process_file_re(event_filter_write, "available_events", re);
-> +       process_events(event_filter_write, re);
->  }
+> -- Steve
 >
 >
->  static void show_event_trigger_re(const char *re)
->  {
-> -       process_file_re(event_trigger_write, "available_events", re);
-> +       process_events(event_trigger_write, re);
->  }
->
-> -
->  static void show_event_format_re(const char *re)
->  {
-> -       process_file_re(event_format_write, "available_events", re);
-> +       process_events(event_format_write, re);
->  }
->
-> +static void show_event_names_re(const char *re)
-> +{
-> +       process_events(event_name, re);
-> +}
->
->  static void show_events(const char *eventre, int flags)
->  {
-> @@ -244,7 +370,7 @@ static void show_events(const char *eventre, int flags)
->                 else if (flags & SHOW_EVENT_TRIGGER)
->                         show_event_trigger_re(eventre);
->                 else
-> -                       show_file_re("available_events", eventre);
-> +                       show_event_names_re(eventre);
->         } else
->                 show_file("available_events");
->  }
-> --
-> 2.29.2
+> > +             }
+> >       }
+> >
+> >       /* User specified time offset with --ts-offset or --date options */
 >
 
 
---
+-- 
 Tzvetomir (Ceco) Stoyanov
 VMware Open Source Technology Center
