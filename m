@@ -2,166 +2,2055 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74F75C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 13:01:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F900C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 13:02:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4BD5A611F0
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 13:01:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E52DA611F0
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 13:02:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237570AbhDSNCZ (ORCPT
+        id S232302AbhDSNC1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 19 Apr 2021 09:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
+        Mon, 19 Apr 2021 09:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239320AbhDSNCX (ORCPT
+        with ESMTP id S239297AbhDSNC0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:02:23 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1051C06138D
-        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 06:01:53 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id w4so30229207wrt.5
-        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 06:01:53 -0700 (PDT)
+        Mon, 19 Apr 2021 09:02:26 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A58C06174A
+        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 06:01:56 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id d200-20020a1c1dd10000b02901384767d4a5so2026296wmd.3
+        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 06:01:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wiJhvvs17Chn0iL5y6G0v0NCek0L0sOCj9orJ/0kgWI=;
-        b=V4u4avlpGV6FhMXqXnvTbsjTZaWyf0F2ozm8Hm3vftl4f3mX+ULf/9RUMI1IB7hha+
-         gSrL24zkS423ET9Ni2zvUNaPIvj7ioItSk6F9o0SbNQuoBex0hJzV/8IMyArP1b6izLQ
-         ysl8dgpYHmIi/DI/rSwy3cr4YKRBpl0QwrhKDwINEvYv9S63PGyloY4+3iN2chhTua8b
-         r0OkFjZOkaqtcaLBdu0P2AA+W874iE5ZAJhmpsSd2eLiDG1DE0LtDBteowmkCFeKJ/9Q
-         uQtNHa4XzaBEOnEo4ljbS3bdoFg+enSUAA4Ybx/X48MiBinZQnDtDt4v+EYlZ9WiId2N
-         n0VA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ewCX6nmNbhiRGJmc7BmEiiFtcISeYzz0ToqUpOiXGYs=;
+        b=PrGGfiYml1Hwmk88IS+OG5bxGVgQoOSrGsudqu6vUHhQt9plLKar0FpLfH1HhJe2Jv
+         Qp6VRMDvWQaI8TwBLiUVSPa9thX2xYL3sjyyh1uExW44KuThYwzXNwcCziLEYDluLaIo
+         aCFFkl4NtjHEX1WiP6qUKGWjb8y6FU+lSHw+gTsPfpJUw/ClMVmnMO/LCehLyryCA2vr
+         bQujanLuPA0F6aUFzNMhw/cLMSwWM9geECC9NNMnmpbkLOeT0LgO1ha2uRv4rZVu29jg
+         3rc43iKH6WDZdDQl4vlcUlcfCV9Di7ZXu5mK5FNZYGR0Lq9p2M1pu6jgKryPUzrcPQpv
+         RV/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wiJhvvs17Chn0iL5y6G0v0NCek0L0sOCj9orJ/0kgWI=;
-        b=KyxTZdlNw/PLxslCTDaXR4PmttH7+C9cHXU7K60njZGFCzqG0OUdYdSVRqCsQWadDD
-         YKnKxqBjXPwqQAcmiKxr99pXFhmzr030v5lQvJh+cHmzyuBNOsN25PzwPcMSPDuLihqL
-         zaFi8b3a/4kK3F0BCs4j/SJhE3Jhe4ZmE9/o5p6B5yrwvGfk4A8a/jhRb7q4TuWg+cft
-         CigIVGgDylGGQUFdqBX95wmB5km79lD7ZtXf2QVycQ26BCMqZlbAlV6C21Odv1X9sYrd
-         6ut25ccIsA35jsYElbwxZ9iF9ZF5YclkOttifxMvs/iqNJJ5dnYSrMOnI9hDdA/9Wvwp
-         1Uxg==
-X-Gm-Message-State: AOAM532ZXEYnpaVG7+vUubkv3en57saZyZ8yiVpfVBo127cfFhma69ln
-        AOjrd49A77FLScnyMhGfvPdF63H23U8=
-X-Google-Smtp-Source: ABdhPJybyH8RJ+UISBGR3Aj+qDSbTq4s+oPigXCvNMZRKtUC+45kMU6r2OHmrCpSsuz7y0LqC8ch+g==
-X-Received: by 2002:a5d:4fc7:: with SMTP id h7mr14442102wrw.23.1618837312421;
-        Mon, 19 Apr 2021 06:01:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ewCX6nmNbhiRGJmc7BmEiiFtcISeYzz0ToqUpOiXGYs=;
+        b=Yf0NZx07T6q5Zs8dp1XwFuqvt7oIZ+n6OwOee/Kxpongy0QBNDAJoFsXC9R1T5Ba8K
+         tIlMwNbAIdUUm8RBrJU7/jW6IGlApnI2gzi7zRDFer/T86ZYCzFk3xmbtHFeLOpHt/58
+         SW9JbIQIvU9j1DuMMfr3iG0w19u8vEJsc41TBBk11/dtDpqhhJkHQYEuDGPLO4vxtLVN
+         xd8uQTguvtYprAnUomzUs3ubEDTlOFGNTwrA0OwngH8Mu4Zc/bWvJ/yuidj9O6/Em3Mm
+         /5FY4KQYBP4SJBcBMRaRv1JYTpmwOnI1gadA4xzpLiwYwyGM9HHwIeBYTdobU9/8Lv/z
+         QmnQ==
+X-Gm-Message-State: AOAM530EFH/fcFZ/iLDKVfiKEHlHUV1pK1K7wwSLPOgV6GyVcpNNGjo3
+        KkUNJY95Telysf9s9W5tK3J415AdjGQ=
+X-Google-Smtp-Source: ABdhPJydZBYb6aiaSXV8PTeb+G5Smzl0Q41x2xTp/tfuVpXP6/bLNra5ER44fF3Iv5d3/+3zApEH5A==
+X-Received: by 2002:a7b:c3c1:: with SMTP id t1mr21749523wmj.184.1618837313738;
+        Mon, 19 Apr 2021 06:01:53 -0700 (PDT)
 Received: from bucy.vmware.com ([84.40.93.28])
-        by smtp.gmail.com with ESMTPSA id v7sm23164196wrs.2.2021.04.19.06.01.51
+        by smtp.gmail.com with ESMTPSA id v7sm23164196wrs.2.2021.04.19.06.01.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 06:01:51 -0700 (PDT)
+        Mon, 19 Apr 2021 06:01:53 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 0/9] Build trace-cruncher as Python pakage
-Date:   Mon, 19 Apr 2021 16:01:31 +0300
-Message-Id: <20210419130140.59140-1-y.karadz@gmail.com>
+Subject: [PATCH 1/9] trace-cruncher: Refactor the part that wraps ftrace
+Date:   Mon, 19 Apr 2021 16:01:32 +0300
+Message-Id: <20210419130140.59140-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210419130140.59140-1-y.karadz@gmail.com>
+References: <20210419130140.59140-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-This patch-set restructures the project and makes it build as a native
-Python package. Although it looks like a complete rewrite, this is
-essentially just a switching from using Cython to using directly the C API
-of Python. Cython is still being used but only for the implementation
-of the NumPy data wrapper. The functionalities that are wrapping Ftrace
-are extended substantially. This is possible due to switching to use of
-the recently released libraries: libtraceevent and libtracefs. 
+This is the first patch from a patch-set that aims to refactor
+trace-cruncher completely. The goal it to be able to build the
+project as a native Python package, which contains several
+sub-packages implemented as C extensions via the Python's C API.
+In this patch the part of the interface that relies on libtracefs,
+libtraceevent (and libtracecmd in the future) gets re-implemented
+as an extension called "tracecruncher.ftracepy". Note that this
+new extension has a stand-alone build that is completely decoupled
+from the existing build system used by trace-cruncher.
 
-Yordan Karadzhov (VMware) (9):
-  trace-cruncher: Refactor the part that wraps ftrace
-  trace-cruncher: Refactor the part that wraps libkshark
-  trace-cruncher: Add "utils"
-  trace-cruncher: Refactor the examples
-  trace-cruncher: Add Makefile
-  trace-cruncher: Update README.md
-  trace-cruncher: Remove all leftover files.
-  trace-cruncher: Add testing
-  trace-cruncher: Add github workflow for CI testing
-
- .github/workflows/main.yml                    |   58 +
- 0001-kernel-shark-Add-_DEVEL-build-flag.patch |   90 --
- 0002-kernel-shark-Add-reg_pid-plugin.patch    |  231 ---
- Makefile                                      |   33 +
- README.md                                     |   84 +-
- clean.sh                                      |    6 -
- examples/gpareto_fit.py                       |  328 ----
- examples/ksharksetup.py                       |   24 -
- examples/page_faults.py                       |  120 --
- examples/sched_wakeup.py                      |   70 +-
- libkshark-py.c                                |  224 ---
- libkshark_wrapper.pyx                         |  361 -----
- np_setup.py                                   |   90 --
- setup.py                                      |   81 +
- src/common.h                                  |  100 ++
- src/ftracepy-utils.c                          | 1367 +++++++++++++++++
- src/ftracepy-utils.h                          |  127 ++
- src/ftracepy.c                                |  262 ++++
- src/ksharkpy-utils.c                          |  411 +++++
- src/ksharkpy-utils.h                          |   41 +
- src/ksharkpy.c                                |   94 ++
- src/npdatawrapper.pyx                         |  203 +++
- src/trace2matrix.c                            |   40 +
- tests/0_get_data/__init__.py                  |    0
- tests/0_get_data/test_get_data.py             |   26 +
- tests/1_unit/__init__.py                      |    0
- tests/1_unit/test_01_ftracepy_unit.py         |  454 ++++++
- tests/1_unit/test_02_datawrapper_unit.py      |   41 +
- tests/1_unit/test_03_ksharkpy_unit.py         |   72 +
- tests/2_integration/__init__.py               |    0
- .../test_01_ftracepy_integration.py           |  113 ++
- .../test_03_ksharkpy_integration.py           |   25 +
- tests/__init__.py                             |    0
- tracecruncher/__init__.py                     |    0
- tracecruncher/ft_utils.py                     |   28 +
- tracecruncher/ks_utils.py                     |  227 +++
- 36 files changed, 3887 insertions(+), 1544 deletions(-)
- create mode 100644 .github/workflows/main.yml
- delete mode 100644 0001-kernel-shark-Add-_DEVEL-build-flag.patch
- delete mode 100644 0002-kernel-shark-Add-reg_pid-plugin.patch
- create mode 100644 Makefile
- delete mode 100755 clean.sh
- delete mode 100755 examples/gpareto_fit.py
- delete mode 100644 examples/ksharksetup.py
- delete mode 100755 examples/page_faults.py
- delete mode 100644 libkshark-py.c
- delete mode 100644 libkshark_wrapper.pyx
- delete mode 100755 np_setup.py
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ setup.py             |   68 +++
+ src/common.h         |  100 +++
+ src/ftracepy-utils.c | 1367 ++++++++++++++++++++++++++++++++++++++++++
+ src/ftracepy-utils.h |  127 ++++
+ src/ftracepy.c       |  262 ++++++++
+ 5 files changed, 1924 insertions(+)
  create mode 100644 setup.py
  create mode 100644 src/common.h
  create mode 100644 src/ftracepy-utils.c
  create mode 100644 src/ftracepy-utils.h
  create mode 100644 src/ftracepy.c
- create mode 100644 src/ksharkpy-utils.c
- create mode 100644 src/ksharkpy-utils.h
- create mode 100644 src/ksharkpy.c
- create mode 100644 src/npdatawrapper.pyx
- create mode 100644 src/trace2matrix.c
- create mode 100644 tests/0_get_data/__init__.py
- create mode 100755 tests/0_get_data/test_get_data.py
- create mode 100644 tests/1_unit/__init__.py
- create mode 100644 tests/1_unit/test_01_ftracepy_unit.py
- create mode 100755 tests/1_unit/test_02_datawrapper_unit.py
- create mode 100755 tests/1_unit/test_03_ksharkpy_unit.py
- create mode 100644 tests/2_integration/__init__.py
- create mode 100755 tests/2_integration/test_01_ftracepy_integration.py
- create mode 100755 tests/2_integration/test_03_ksharkpy_integration.py
- create mode 100644 tests/__init__.py
- create mode 100644 tracecruncher/__init__.py
- create mode 100644 tracecruncher/ft_utils.py
- create mode 100644 tracecruncher/ks_utils.py
 
+diff --git a/setup.py b/setup.py
+new file mode 100644
+index 0000000..450f043
+--- /dev/null
++++ b/setup.py
+@@ -0,0 +1,68 @@
++#!/usr/bin/env python3
++
++"""
++SPDX-License-Identifier: LGPL-2.1
++
++Copyright 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
++"""
++
++from setuptools import setup, find_packages
++from distutils.core import Extension
++from Cython.Build import cythonize
++
++import pkgconfig as pkg
++
++
++def third_party_paths():
++    pkg_traceevent = pkg.parse('libtraceevent')
++    pkg_ftracepy = pkg.parse('libtracefs')
++    pkg_tracecmd = pkg.parse('libtracecmd')
++
++    include_dirs = []
++    include_dirs.extend(pkg_traceevent['include_dirs'])
++    include_dirs.extend(pkg_ftracepy['include_dirs'])
++    include_dirs.extend(pkg_tracecmd['include_dirs'])
++
++    library_dirs = []
++    library_dirs.extend(pkg_traceevent['library_dirs'])
++    library_dirs.extend(pkg_ftracepy['library_dirs'])
++    library_dirs.extend(pkg_tracecmd['library_dirs'])
++    library_dirs = list(set(library_dirs))
++
++    return include_dirs, library_dirs
++
++include_dirs, library_dirs = third_party_paths()
++
++def extension(name, sources, libraries):
++    runtime_library_dirs = library_dirs
++    runtime_library_dirs.extend('$ORIGIN')
++    return Extension(name, sources=sources,
++                           include_dirs=include_dirs,
++                           library_dirs=library_dirs,
++                           runtime_library_dirs=runtime_library_dirs,
++                           libraries=libraries,
++                           )
++
++def main():
++    module_ft  = extension(name='tracecruncher.ftracepy',
++                            sources=['src/ftracepy.c', 'src/ftracepy-utils.c'],
++                            libraries=['traceevent', 'tracefs'])
++
++    setup(name='tracecruncher',
++          version='0.1.0',
++          description='NumPy based interface for accessing tracing data in Python.',
++          author='Yordan Karadzhov (VMware)',
++          author_email='y.karadz@gmail.com',
++          url='https://github.com/vmware/trace-cruncher',
++          license='LGPL-2.1',
++          packages=find_packages(),
++          ext_modules=[module_ft],
++          classifiers=[
++              'Development Status :: 3 - Alpha',
++              'Programming Language :: Python :: 3',
++              ]
++          )
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/src/common.h b/src/common.h
+new file mode 100644
+index 0000000..71ba3fd
+--- /dev/null
++++ b/src/common.h
+@@ -0,0 +1,100 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++
++/*
++ * Copyright (C) 2017 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ */
++
++#ifndef _TC_COMMON_H
++#define _TC_COMMON_H
++
++// C
++#include <stdbool.h>
++#include <string.h>
++
++#define TRACECRUNCHER_ERROR	tracecruncher_error
++#define KSHARK_ERROR		kshark_error
++#define TEP_ERROR		tep_error
++#define TFS_ERROR		tfs_error
++
++#define KS_INIT_ERROR \
++	PyErr_SetString(KSHARK_ERROR, "libshark failed to initialize");
++
++#define MEM_ERROR \
++	PyErr_SetString(TRACECRUNCHER_ERROR, "failed to allocate memory");
++
++#define NO_ARG	"none"
++
++static inline bool is_all(const char *arg)
++{
++	return strcmp(arg, "all") == 0 ||
++	       strcmp(arg, "All") == 0 ||
++	       strcmp(arg, "ALL") == 0;
++}
++
++static inline bool is_no_arg(const char *arg)
++{
++	return arg[0] == '\0' || strcmp(arg, NO_ARG) == 0;
++}
++
++static inline bool is_set(const char *arg)
++{
++	return !(is_all(arg) || is_no_arg(arg));
++}
++
++static inline void no_free()
++{
++}
++
++#define NO_FREE		no_free
++
++#define STR(x) #x
++
++#define MAKE_TYPE_STR(x) STR(traceevent.x)
++
++#define MAKE_DIC_STR(x) STR(libtraceevent x object)
++
++#define C_OBJECT_WRAPPER_DECLARE(c_type, py_type)				\
++	typedef struct {							\
++	PyObject_HEAD								\
++	struct c_type *ptrObj;							\
++} py_type;									\
++PyObject *py_type##_New(struct c_type *evt_ptr);				\
++bool py_type##TypeInit();							\
++
++#define  C_OBJECT_WRAPPER(c_type, py_type, ptr_free)				\
++static PyTypeObject py_type##Type = {						\
++	PyVarObject_HEAD_INIT(NULL, 0) MAKE_TYPE_STR(c_type)			\
++};										\
++PyObject *py_type##_New(struct c_type *evt_ptr)					\
++{										\
++	py_type *newObject;							\
++	newObject = PyObject_New(py_type, &py_type##Type);			\
++	newObject->ptrObj = evt_ptr;						\
++	return (PyObject *) newObject;						\
++}										\
++static int py_type##_init(py_type *self, PyObject *args, PyObject *kwargs)	\
++{										\
++	self->ptrObj = NULL;							\
++	return 0;								\
++}										\
++static void py_type##_dealloc(py_type *self)					\
++{										\
++	ptr_free(self->ptrObj);							\
++	Py_TYPE(self)->tp_free(self);						\
++}										\
++bool py_type##TypeInit()							\
++{										\
++	py_type##Type.tp_new = PyType_GenericNew;				\
++	py_type##Type.tp_basicsize = sizeof(py_type);				\
++	py_type##Type.tp_init = (initproc) py_type##_init;			\
++	py_type##Type.tp_dealloc = (destructor) py_type##_dealloc;		\
++	py_type##Type.tp_flags = Py_TPFLAGS_DEFAULT;				\
++	py_type##Type.tp_doc = MAKE_DIC_STR(c_type);				\
++	py_type##Type.tp_methods = py_type##_methods;				\
++	if (PyType_Ready(&py_type##Type) < 0)					\
++		return false;							\
++	Py_INCREF(&py_type##Type);						\
++	return true;								\
++}										\
++
++#endif
+diff --git a/src/ftracepy-utils.c b/src/ftracepy-utils.c
+new file mode 100644
+index 0000000..d026688
+--- /dev/null
++++ b/src/ftracepy-utils.c
+@@ -0,0 +1,1367 @@
++// SPDX-License-Identifier: LGPL-2.1
++
++/*
++ * Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
++ */
++
++#ifndef _GNU_SOURCE
++/** Use GNU C Library. */
++#define _GNU_SOURCE
++#endif // _GNU_SOURCE
++
++// C
++#include <search.h>
++#include <string.h>
++#include <sys/wait.h>
++
++// trace-cruncher
++#include "ftracepy-utils.h"
++
++int tep_vwarning(const char *name, const char *fmt, va_list ap)
++{
++	return 0;
++}
++
++static void *instance_root = NULL;
++PyObject *TFS_ERROR = NULL;
++PyObject *TEP_ERROR = NULL;
++PyObject *TRACECRUNCHER_ERROR = NULL;
++
++PyObject *PyTepRecord_time(PyTepRecord* self)
++{
++	return PyLong_FromLongLong(self->ptrObj->ts);
++}
++
++PyObject *PyTepRecord_cpu(PyTepRecord* self)
++{
++	return PyLong_FromLong(self->ptrObj->cpu);
++}
++
++PyObject *PyTepEvent_name(PyTepEvent* self)
++{
++	return PyUnicode_FromString(self->ptrObj->name);
++}
++
++PyObject *PyTepEvent_id(PyTepEvent* self)
++{
++	return PyLong_FromLong(self->ptrObj->id);
++}
++
++PyObject *PyTepEvent_field_names(PyTepEvent* self)
++{
++	struct tep_format_field *field, **fields;
++	struct tep_event *event = self->ptrObj;
++	int i = 0, nr_fields;
++	PyObject *list;
++
++	nr_fields= event->format.nr_fields + event->format.nr_common;
++	list = PyList_New(nr_fields);
++
++	/* Get all common fields. */
++	fields = tep_event_common_fields(event);
++	if (!fields) {
++		PyErr_Format(TEP_ERROR,
++			     "Failed to get common fields for event \'%s\'",
++			     self->ptrObj->name);
++		return NULL;
++	}
++
++	for (field = *fields; field; field = field->next)
++		PyList_SET_ITEM(list, i++, PyUnicode_FromString(field->name));
++	free(fields);
++
++	/* Add all unique fields. */
++	fields = tep_event_fields(event);
++	if (!fields) {
++		PyErr_Format(TEP_ERROR,
++			     "Failed to get fields for event \'%s\'",
++			     self->ptrObj->name);
++		return NULL;
++	}
++
++	for (field = *fields; field; field = field->next)
++		PyList_SET_ITEM(list, i++, PyUnicode_FromString(field->name));
++	free(fields);
++
++	return list;
++}
++
++PyObject *PyTepEvent_parse_record_field(PyTepEvent* self, PyObject *args,
++							  PyObject *kwargs)
++{
++	int mumber_field_mask = TEP_FIELD_IS_SIGNED |
++				TEP_FIELD_IS_LONG |
++				TEP_FIELD_IS_FLAG;
++	struct tep_format_field *field;
++	const char *field_name;
++	PyTepRecord *record;
++
++	static char *kwlist[] = {"record", "field", NULL};
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"Os",
++					kwlist,
++					&record,
++					&field_name)) {
++		return NULL;
++	}
++
++	field = tep_find_field(self->ptrObj, field_name);
++	if (!field)
++		field = tep_find_common_field(self->ptrObj, field_name);
++
++	if (!field) {
++		PyErr_Format(TEP_ERROR,
++			     "Failed to find field \'%s\' in event \'%s\'",
++			     field_name, self->ptrObj->name);
++		return NULL;
++	}
++
++	if (field->flags & TEP_FIELD_IS_STRING) {
++		char *val = record->ptrObj->data + field->offset;
++
++		return PyUnicode_FromString(val);
++	} else if (field->flags & mumber_field_mask) {
++		unsigned long long val;
++
++		tep_read_number_field(field, record->ptrObj->data, &val);
++		return PyLong_FromLong(val);
++	}
++
++	PyErr_Format(TEP_ERROR,
++		     "Unsupported field format \"%li\" (TODO: implement this)",
++		     field->flags);
++	return NULL;
++}
++
++PyObject *PyTepEvent_get_pid(PyTepEvent* self, PyObject *args,
++					       PyObject *kwargs)
++{
++	static char *kwlist[] = {"record", NULL};
++	const char *field_name = "common_pid";
++	struct tep_format_field *field;
++	unsigned long long val = 0;
++	PyTepRecord *record;
++
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"O",
++					kwlist,
++					&record)) {
++		return NULL;
++	}
++
++	field = tep_find_common_field(self->ptrObj, field_name);
++	if (!field) {
++		PyErr_Format(TEP_ERROR,
++			     "Failed to find field \'s\' in event \'%s\'",
++			     field_name, self->ptrObj->name);
++		return NULL;
++	}
++
++	tep_read_number_field(field, record->ptrObj->data, &val);
++
++	return PyLong_FromLong(val);
++}
++
++static const char **get_arg_list(PyObject *py_list)
++{
++	const char **argv = NULL;
++	PyObject *arg_py;
++	int i, n;
++
++	if (!PyList_CheckExact(py_list))
++		goto fail;
++
++	n = PyList_Size(py_list);
++	argv = calloc(n + 1, sizeof(*argv));
++	for (i = 0; i < n; ++i) {
++		arg_py = PyList_GetItem(py_list, i);
++		if (!PyUnicode_Check(arg_py))
++			goto fail;
++
++		argv[i] = PyUnicode_DATA(arg_py);
++	}
++
++	return argv;
++
++ fail:
++	PyErr_SetString(TRACECRUNCHER_ERROR,
++			"Failed to parse argument list.");
++	free(argv);
++	return NULL;
++}
++
++PyObject *PyTep_init_local(PyTep *self, PyObject *args,
++					PyObject *kwargs)
++{
++	static char *kwlist[] = {"dir", "systems", NULL};
++	struct tep_handle *tep = NULL;
++	PyObject *system_list = NULL;
++	const char *dir_str;
++
++	if (!PyArg_ParseTupleAndKeywords(args,
++					 kwargs,
++					 "s|O",
++					 kwlist,
++					 &dir_str,
++					 &system_list)) {
++		return NULL;
++	}
++
++	if (system_list) {
++		const char **sys_names = get_arg_list(system_list);
++
++		if (sys_names) {
++			tep = tracefs_local_events_system(dir_str, sys_names);
++			free(sys_names);
++		}
++	} else {
++		tep = tracefs_local_events(dir_str);
++	}
++
++	if (!tep) {
++		PyErr_Format(TFS_ERROR,
++			     "Failed to get local events from \'%s\'.",
++			     dir_str);
++		return NULL;
++	}
++
++	tep_free(self->ptrObj);
++	self->ptrObj = tep;
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyTep_get_event(PyTep *self, PyObject *args,
++				       PyObject *kwargs)
++{
++	static char *kwlist[] = {"system", "name", NULL};
++	const char *system, *event_name;
++	struct tep_event *event;
++
++	if (!PyArg_ParseTupleAndKeywords(args,
++					 kwargs,
++					 "ss",
++					 kwlist,
++					 &system,
++					 &event_name)) {
++		return NULL;
++	}
++
++	event = tep_find_event_by_name(self->ptrObj, system, event_name);
++
++	return PyTepEvent_New(event);
++}
++
++static bool check_file(struct tracefs_instance *instance, const char *file)
++{
++	if (!tracefs_file_exists(instance, file)) {
++		PyErr_Format(TFS_ERROR, "File %s does not exist.", file);
++		return false;
++	}
++
++	return true;
++}
++
++static bool check_dir(struct tracefs_instance *instance, const char *dir)
++{
++	if (!tracefs_dir_exists(instance, dir)) {
++		PyErr_Format(TFS_ERROR, "Directory %s does not exist.", dir);
++		return false;
++	}
++
++	return true;
++}
++
++static int write_to_file(struct tracefs_instance *instance,
++			 const char *file,
++			 const char *val)
++{
++	int size;
++
++	if (!check_file(instance, file))
++		return -1;
++
++	size = tracefs_instance_file_write(instance, file, val);
++	if (size <= 0)
++		PyErr_Format(TFS_ERROR, "Can not write to file %s", file);
++
++	return size;
++}
++
++static int read_from_file(struct tracefs_instance *instance,
++			  const char *file,
++			  char **val)
++{
++	int size;
++
++	if (!check_file(instance, file))
++		return -1;
++
++	*val = tracefs_instance_file_read(instance, file, &size);
++	if (size <= 0)
++		PyErr_Format(TFS_ERROR, "Can not read from file %s", file);
++
++	return size;
++}
++
++static inline void trim_new_line(char *val)
++{
++	val[strlen(val) - 1] = '\0';
++}
++
++static bool write_to_file_and_chack(struct tracefs_instance *instance,
++				    const char *file,
++				    const char *val)
++{
++	char *read_val;
++	int ret;
++
++	if (write_to_file(instance, file, val) <= 0)
++		return false;
++
++	if (read_from_file(instance, file, &read_val) <= 0)
++		return false;
++
++	trim_new_line(read_val);
++	ret = strcmp(read_val, val);
++	free(read_val);
++
++	return ret == 0 ? true : false;
++}
++
++static PyObject *tfs_list2py_list(char **list)
++{
++	PyObject *py_list = PyList_New(0);
++	int i;
++
++	for (i = 0; list && list[i]; i++)
++		PyList_Append(py_list, PyUnicode_FromString(list[i]));
++
++	tracefs_list_free(list);
++
++	return py_list;
++}
++
++struct instance_wrapper {
++	struct tracefs_instance *ptr;
++	const char *name;
++};
++
++const char *instance_wrapper_get_name(const struct instance_wrapper *iw)
++{
++	if (!iw->ptr)
++		return iw->name;
++
++	return tracefs_instance_get_name(iw->ptr);
++}
++
++static int instance_compare(const void *a, const void *b)
++{
++	const struct instance_wrapper *iwa, *iwb;
++
++	iwa = (const struct instance_wrapper *) a;
++	iwb = (const struct instance_wrapper *) b;
++
++	return strcmp(instance_wrapper_get_name(iwa),
++		      instance_wrapper_get_name(iwb));
++}
++
++void instance_wrapper_free(void *ptr)
++{
++	struct instance_wrapper *iw;
++	if (!ptr)
++		return;
++
++	iw = ptr;
++	if (iw->ptr)
++		tracefs_instance_destroy(iw->ptr);
++
++	free(ptr);
++}
++
++static void destroy_all_instances(void)
++{
++	tdestroy(instance_root, instance_wrapper_free);
++	instance_root = NULL;
++}
++
++static struct tracefs_instance *find_instance(const char *name)
++{
++	struct instance_wrapper iw, **iw_ptr;
++	if (!is_set(name))
++		return NULL;
++
++	if (!tracefs_instance_exists(name)) {
++		PyErr_Format(TFS_ERROR, "Trace instance \'%s\' does not exist.",
++			     name);
++		return NULL;
++	}
++
++	iw.ptr = NULL;
++	iw.name = name;
++	iw_ptr = tfind(&iw, &instance_root, instance_compare);
++	if (!iw_ptr || !(*iw_ptr) || !(*iw_ptr)->ptr ||
++	    strcmp(tracefs_instance_get_name((*iw_ptr)->ptr), name) != 0) {
++		PyErr_Format(TFS_ERROR, "Unable to find trace instances \'%s\'.",
++			     name);
++		return NULL;
++	}
++
++	return (*iw_ptr)->ptr;
++}
++
++bool get_optional_instance(const char *instance_name,
++			   struct tracefs_instance **instance)
++{
++	*instance = NULL;
++	if (is_set(instance_name)) {
++		*instance = find_instance(instance_name);
++		if (!instance) {
++			PyErr_Format(TFS_ERROR,
++				     "Failed to find instance \'%s\'.",
++				     instance_name);
++			return false;
++		}
++	}
++
++	return true;
++}
++
++bool get_instance_from_arg(PyObject *args, PyObject *kwargs,
++			   struct tracefs_instance **instance)
++{
++	const char *instance_name;
++
++	static char *kwlist[] = {"instance", NULL};
++	instance_name = NO_ARG;
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"|s",
++					kwlist,
++					&instance_name)) {
++		return false;
++	}
++
++	if (!get_optional_instance(instance_name, instance))
++		return false;
++
++	return true;
++}
++
++PyObject *PyFtrace_dir(PyObject *self)
++{
++	return PyUnicode_FromString(tracefs_tracing_dir());
++}
++
++PyObject *PyFtrace_create_instance(PyObject *self, PyObject *args,
++						   PyObject *kwargs)
++{
++	struct instance_wrapper *iw, **iw_ptr;
++	struct tracefs_instance *instance;
++	char *name = NO_ARG;
++
++	static char *kwlist[] = {"name", NULL};
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"s",
++					kwlist,
++					&name)) {
++		return NULL;
++	}
++
++	if (!is_set(name)) {
++		PyErr_Format(TFS_ERROR,
++			     "\'%s\' is not a valid name for trace instance.",
++			     name);
++		return NULL;
++	}
++
++	instance = tracefs_instance_create(name);
++	if (!instance ||
++	    !tracefs_instance_exists(name) ||
++	    !tracefs_instance_is_new(instance)) {
++		PyErr_Format(TFS_ERROR,
++			     "Failed to create new trace instance \'%s\'.",
++			     name);
++		return NULL;
++	}
++
++	iw = malloc(sizeof(*iw));
++	iw->ptr = instance;
++	iw_ptr = tsearch(iw, &instance_root, instance_compare);
++	if (!iw_ptr || !(*iw_ptr) || !(*iw_ptr)->ptr ||
++	    strcmp(tracefs_instance_get_name((*iw_ptr)->ptr), name) != 0) {
++		PyErr_Format(TFS_ERROR,
++			     "Failed to store new trace instance \'%s\'.",
++			     name);
++		tracefs_instance_destroy(instance);
++		tracefs_instance_free(instance);
++		return NULL;
++	}
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyFtrace_destroy_instance(PyObject *self, PyObject *args,
++						    PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++	struct instance_wrapper iw;
++	char *name;
++
++	static char *kwlist[] = {"name", NULL};
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"s",
++					kwlist,
++					&name)) {
++		return NULL;
++	}
++
++	if (is_all(name)) {
++		destroy_all_instances();
++		Py_RETURN_NONE;
++	}
++
++	instance = find_instance(name);
++	if (!instance) {
++		PyErr_Format(TFS_ERROR,
++			     "Unable to destroy trace instances \'%s\'.",
++			     name);
++		return NULL;
++	}
++
++	iw.ptr = NULL;
++	iw.name = name;
++	tdelete(&iw, &instance_root, instance_compare);
++
++	tracefs_instance_destroy(instance);
++	tracefs_instance_free(instance);
++
++	Py_RETURN_NONE;
++}
++
++PyObject *instance_list;
++
++static void instance_action(const void *nodep, VISIT which, int depth)
++{
++	struct instance_wrapper *iw = *( struct instance_wrapper **) nodep;
++	const char *name;
++
++	switch(which) {
++	case preorder:
++	case endorder:
++		break;
++
++	case postorder:
++	case leaf:
++		name = tracefs_instance_get_name(iw->ptr);
++		PyList_Append(instance_list, PyUnicode_FromString(name));
++		break;
++	}
++}
++
++PyObject *PyFtrace_get_all_instances(PyObject *self)
++{
++	instance_list = PyList_New(0);
++	twalk(instance_root, instance_action);
++
++	return instance_list;
++}
++
++PyObject *PyFtrace_destroy_all_instances(PyObject *self)
++{
++	destroy_all_instances();
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyFtrace_instance_dir(PyObject *self, PyObject *args,
++						PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	return PyUnicode_FromString(tracefs_instance_get_dir(instance));
++}
++
++PyObject *PyFtrace_available_tracers(PyObject *self, PyObject *args,
++						     PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++	char **list;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	list = tracefs_tracers(tracefs_instance_get_dir(instance));
++	if (!list)
++		return NULL;
++
++	return tfs_list2py_list(list);
++}
++
++PyObject *PyFtrace_set_current_tracer(PyObject *self, PyObject *args,
++						      PyObject *kwargs)
++{
++	const char *file = "current_tracer", *tracer, *instance_name;
++	struct tracefs_instance *instance;
++
++	static char *kwlist[] = {"tracer", "instance", NULL};
++	tracer = instance_name = NO_ARG;
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"|ss",
++					kwlist,
++					&tracer,
++					&instance_name)) {
++		return NULL;
++	}
++
++	if (!get_optional_instance(instance_name, &instance))
++		return NULL;
++
++	if (is_set(tracer) &&
++	    strcmp(tracer, "nop") != 0) {
++		char **all_tracers =
++			tracefs_tracers(tracefs_instance_get_dir(instance));
++		int i;
++
++		for (i = 0; all_tracers && all_tracers[i]; i++) {
++			if (!strcmp(all_tracers[i], tracer))
++				break;
++		}
++
++		if (!all_tracers || !all_tracers[i]) {
++			PyErr_Format(TFS_ERROR,
++				     "Tracer \'%s\' is not available.",
++				     tracer);
++			return NULL;
++		}
++	} else if (!is_set(tracer)) {
++		tracer = "nop";
++	}
++
++	if (!write_to_file_and_chack(instance, file, tracer)) {
++		PyErr_Format(TFS_ERROR, "Failed to enable tracer \'%s\'",
++			     tracer);
++		return NULL;
++	}
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyFtrace_get_current_tracer(PyObject *self, PyObject *args,
++						      PyObject *kwargs)
++{
++	const char *file = "current_tracer";
++	struct tracefs_instance *instance;
++	PyObject *ret;
++	char *tracer;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	if (read_from_file(instance, file, &tracer) <= 0)
++		return NULL;
++
++	trim_new_line(tracer);
++	ret = PyUnicode_FromString(tracer);
++	free(tracer);
++
++	return ret;
++}
++
++PyObject *PyFtrace_available_event_systems(PyObject *self, PyObject *args,
++							   PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++	char **list;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	list = tracefs_event_systems(tracefs_instance_get_dir(instance));
++	if (!list)
++		return NULL;
++
++	return tfs_list2py_list(list);
++}
++
++PyObject *PyFtrace_available_system_events(PyObject *self, PyObject *args,
++							   PyObject *kwargs)
++{
++	static char *kwlist[] = {"system", "instance", NULL};
++	const char *instance_name = NO_ARG, *system;
++	struct tracefs_instance *instance;
++	char **list;
++
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"s|s",
++					kwlist,
++					&system,
++					&instance_name)) {
++		return NULL;
++	}
++
++	if (!get_optional_instance(instance_name, &instance))
++		return NULL;
++
++	list = tracefs_system_events(tracefs_instance_get_dir(instance),
++				     system);
++	if (!list)
++		return NULL;
++
++	return tfs_list2py_list(list);
++}
++
++bool get_event_enable_file(struct tracefs_instance *instance,
++			   const char *system, const char *event,
++			   char **path)
++{
++	char *buff = calloc(PATH_MAX, 1);
++	const char *instance_name;
++
++	if ((is_all(system) && is_all(event)) ||
++	    (is_all(system) && is_no_arg(event)) ||
++	    (is_no_arg(system) && is_all(event))) {
++		strcpy(buff, "events/enable");
++
++		*path = buff;
++	} else if (is_set(system)) {
++		strcpy(buff, "events/");
++		strcat(buff, system);
++		if (!check_dir(instance, buff))
++			goto fail;
++
++		if (is_set(event)) {
++			strcat(buff, "/");
++			strcat(buff, event);
++			if (!check_dir(instance, buff))
++				goto fail;
++
++			strcat(buff, "/enable");
++		} else {
++			strcat(buff, "/enable");
++		}
++
++		*path = buff;
++	} else {
++		goto fail;
++	}
++
++	return true;
++
++ fail:
++	instance_name =
++		instance ? tracefs_instance_get_name(instance) : "top";
++	PyErr_Format(TFS_ERROR,
++		     "Failed to locate event:\n Instance: %s  System: %s  Event: %s",
++		     instance_name, system, event);
++	free(buff);
++	*path = NULL;
++	return false;
++}
++
++static bool enable_event(PyObject *self, PyObject *args, PyObject *kwargs,
++			 const char *val)
++{
++	struct tracefs_instance *instance;
++	char *file;
++	int ret;
++	static char *kwlist[] = {"instance", "system", "event", NULL};
++	const char *instance_name, *system, *event;
++
++	instance_name = system = event = NO_ARG;
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"|sss",
++					kwlist,
++					&instance_name,
++					&system,
++					&event)) {
++		return false;
++	}
++
++	if (!get_optional_instance(instance_name, &instance))
++		return false;
++
++	if (!get_event_enable_file(instance, system, event, &file))
++		return false;
++
++	ret = write_to_file_and_chack(instance, file, val);
++	free(file);
++
++	return ret < 0 ? false : true;
++}
++
++#define ON	"1"
++#define OFF	"0"
++
++PyObject *PyFtrace_enable_event(PyObject *self, PyObject *args,
++						PyObject *kwargs)
++{
++	if (!enable_event(self, args, kwargs, ON))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyFtrace_disable_event(PyObject *self, PyObject *args,
++						 PyObject *kwargs)
++{
++	if (!enable_event(self, args, kwargs, OFF))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
++static bool enable_events(PyObject *self, PyObject *args, PyObject *kwargs,
++			  const char *val)
++{
++	static char *kwlist[] = {"instance", "systems", "events", NULL};
++	PyObject *system_list = NULL, *event_list = NULL, *system_event_list;
++	const char **systems = NULL, **events = NULL;
++	struct tracefs_instance *instance;
++	const char *instance_name;
++	char *file = NULL;
++	int ret;
++
++	instance_name = NO_ARG;
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"|sOO",
++					kwlist,
++					&instance_name,
++					&system_list,
++					&event_list)) {
++		return false;
++	}
++
++	if (!get_optional_instance(instance_name, &instance))
++		return false;
++
++	if (!system_list && !event_list) {
++		ret = write_to_file_and_chack(instance, "events/enable", val);
++		return ret < 0 ? false : true;
++	}
++
++	if (!system_list && event_list) {
++		if (PyUnicode_Check(event_list) &&
++		    is_all(PyUnicode_DATA(event_list))) {
++			ret = write_to_file_and_chack(instance,
++						      "events/enable",
++						      val);
++			return ret < 0 ? false : true;
++		} else {
++			PyErr_SetString(TFS_ERROR,
++					"Failed to enable events for unspecified system");
++			return false;
++		}
++	}
++
++	systems = get_arg_list(system_list);
++
++	if (!event_list) {
++		for (int s = 0; systems[s]; ++s) {
++			asprintf(&file, "events/%s/enable", systems[s]);
++			ret = write_to_file_and_chack(instance, file, val);
++			free(file);
++			if (ret < 0)
++				return false;
++		}
++
++		return true;
++	}
++
++	if (!PyList_CheckExact(event_list))
++		goto fail_with_err;
++
++	for (int s = 0; systems[s]; ++s) {
++		system_event_list = PyList_GetItem(event_list, s);
++		if (!system_event_list || !PyList_CheckExact(system_event_list))
++			goto fail_with_err;
++
++		events = get_arg_list(system_event_list);
++		for (int e = 0; events[e]; ++e) {
++			if (!get_event_enable_file(instance,
++						   systems[s], events[e],
++						   &file))
++				goto fail;
++
++			if (!write_to_file(instance, file, val))
++				goto fail;
++
++			free(file);
++			file = NULL;
++		}
++
++		free(events);
++		events = NULL;
++	}
++
++	free(systems);
++
++	return true;
++
++ fail_with_err:
++	PyErr_SetString(TFS_ERROR, "Inconsistent \"events\" argument. ");
++
++ fail:
++	free(systems);
++	free(events);
++	free(file);
++
++	return false;
++}
++
++PyObject *PyFtrace_enable_events(PyObject *self, PyObject *args,
++						 PyObject *kwargs)
++{
++	if (!enable_events(self, args, kwargs, ON))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyFtrace_disable_events(PyObject *self, PyObject *args,
++						  PyObject *kwargs)
++{
++	if (!enable_events(self, args, kwargs, OFF))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyFtrace_event_is_enabled(PyObject *self, PyObject *args,
++						    PyObject *kwargs)
++{
++	static char *kwlist[] = {"instance", "system", "event", NULL};
++	const char *instance_name, *system, *event;
++	struct tracefs_instance *instance;
++	char *file, *val;
++	PyObject *ret;
++
++	instance_name = system = event = NO_ARG;
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"|sss",
++					kwlist,
++					&instance_name,
++					&system,
++					&event)) {
++		return false;
++	}
++
++	if (!get_optional_instance(instance_name, &instance))
++		return false;
++
++	if (!get_event_enable_file(instance, system, event, &file))
++		return NULL;
++
++	if (read_from_file(instance, file, &val) <= 0)
++		return NULL;
++
++	trim_new_line(val);
++	ret = PyUnicode_FromString(val);
++
++	free(file);
++	free(val);
++
++	return ret;
++}
++
++static bool tracing_ON(struct tracefs_instance *instance)
++{
++	int ret = tracefs_trace_on(instance);
++
++	if (ret < 0 ||
++	    tracefs_trace_is_on(instance) != 1) {
++		const char *instance_name =
++			instance ? tracefs_instance_get_name(instance) : "top";
++
++		PyErr_Format(TFS_ERROR,
++			     "Failed to start tracing (Instance: %s)",
++			     instance_name);
++		return false;
++	}
++
++	return true;
++}
++
++PyObject *PyFtrace_tracing_ON(PyObject *self, PyObject *args,
++					      PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	if (!tracing_ON(instance))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
++static bool tracing_OFF(struct tracefs_instance *instance)
++{
++	int ret = tracefs_trace_off(instance);
++
++	if (ret < 0 ||
++	    tracefs_trace_is_on(instance) != 0) {
++		const char *instance_name =
++			instance ? tracefs_instance_get_name(instance) : "top";
++
++		PyErr_Format(TFS_ERROR,
++			     "Failed to stop tracing (Instance: %s)",
++			     instance_name);
++		return false;
++	}
++
++	return true;
++}
++
++PyObject *PyFtrace_tracing_OFF(PyObject *self, PyObject *args,
++					       PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	if (!tracing_OFF(instance))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyFtrace_is_tracing_ON(PyObject *self, PyObject *args,
++						 PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++	int ret;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	ret = tracefs_trace_is_on(instance);
++	if (ret < 0) {
++		const char *instance_name =
++			instance ? tracefs_instance_get_name(instance) : "top";
++
++		PyErr_Format(TFS_ERROR,
++			     "Failed to check if tracing is ON (Instance: %s)",
++			     instance_name);
++		return NULL;
++	}
++
++	if (ret == 0)
++		Py_RETURN_FALSE;
++
++	Py_RETURN_TRUE;
++}
++
++static bool set_pid(struct tracefs_instance *instance,
++			   const char *file, pid_t pid)
++{
++	char pid_str[100];
++
++	if (sprintf(pid_str, "%d", pid) <= 0 ||
++	    !write_to_file_and_chack(instance, file, pid_str)) {
++		PyErr_Format(TFS_ERROR, "Failed to set PID %i for \"%s\"",
++			     pid, file);
++		return false;
++	}
++
++	return true;
++}
++
++PyObject *PyFtrace_set_event_pid(PyObject *self, PyObject *args,
++						 PyObject *kwargs)
++{
++	const char *instance_name = NO_ARG;
++	struct tracefs_instance *instance;
++	int pid;
++
++	static char *kwlist[] = {"pid", "instance", NULL};
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"i|s",
++					kwlist,
++					&pid,
++					&instance_name)) {
++		return NULL;
++	}
++
++	if (!get_optional_instance(instance_name, &instance))
++		return NULL;
++
++	if (!set_pid(instance, "set_event_pid", pid))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyFtrace_set_ftrace_pid(PyObject *self, PyObject *args,
++						  PyObject *kwargs)
++{
++	const char *instance_name = NO_ARG;
++	struct tracefs_instance *instance;
++	int pid;
++
++	static char *kwlist[] = {"pid", "instance", NULL};
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"i|s",
++					kwlist,
++					&pid,
++					&instance_name)) {
++		return NULL;
++	}
++
++	if (!get_optional_instance(instance_name, &instance))
++		return NULL;
++
++	if (!set_pid(instance, "set_ftrace_pid", pid))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
++static bool set_opt(struct tracefs_instance *instance,
++		    const char *opt, const char *val)
++{
++	char file[PATH_MAX];
++
++	if (sprintf(file, "options/%s", opt) <= 0 ||
++	    !write_to_file_and_chack(instance, file, val)) {
++		PyErr_Format(TFS_ERROR, "Failed to set option \"%s\"", opt);
++		return false;
++	}
++
++	return true;
++}
++
++static PyObject *set_option_py_args(PyObject *args, PyObject *kwargs,
++				   const char *val)
++{
++	const char *instance_name = NO_ARG, *opt;
++	struct tracefs_instance *instance;
++
++	static char *kwlist[] = {"option", "instance", NULL};
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"s|s",
++					kwlist,
++					&opt,
++					&instance_name)) {
++		return NULL;
++	}
++
++	if (!get_optional_instance(instance_name, &instance))
++		return NULL;
++
++	if (!set_opt(instance, opt, val))
++		return NULL;
++
++	Py_RETURN_NONE;
++}
++
++PyObject *PyFtrace_enable_option(PyObject *self, PyObject *args,
++						 PyObject *kwargs)
++{
++	return set_option_py_args(args, kwargs, ON);
++}
++
++PyObject *PyFtrace_disable_option(PyObject *self, PyObject *args,
++						  PyObject *kwargs)
++{
++	return set_option_py_args(args, kwargs, OFF);
++}
++
++PyObject *PyFtrace_option_is_set(PyObject *self, PyObject *args,
++						 PyObject *kwargs)
++{
++	const char *instance_name = NO_ARG, *opt;
++	struct tracefs_instance *instance;
++	enum tracefs_option_id opt_id;
++
++	static char *kwlist[] = {"option", "instance", NULL};
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"s|s",
++					kwlist,
++					&opt,
++					&instance_name)) {
++		return NULL;
++	}
++
++	if (!get_optional_instance(instance_name, &instance))
++		return NULL;
++
++	opt_id = tracefs_option_id(opt);
++	if (tracefs_option_is_enabled(instance, opt_id))
++		Py_RETURN_TRUE;
++
++	Py_RETURN_FALSE;
++}
++
++static PyObject *get_option_list(struct tracefs_instance *instance,
++				 bool enabled)
++{
++	const struct tracefs_options_mask *mask;
++	PyObject *list = PyList_New(0);
++	int i;
++
++	mask = enabled ? tracefs_options_get_enabled(instance) :
++			 tracefs_options_get_supported(instance);
++
++	for (i = 0; i < TRACEFS_OPTION_MAX; ++i)
++		if (tracefs_option_mask_is_set(mask, i)) {
++			const char *opt = tracefs_option_name(i);
++			PyList_Append(list, PyUnicode_FromString(opt));
++		}
++
++	return list;
++}
++
++PyObject *PyFtrace_enabled_options(PyObject *self, PyObject *args,
++						   PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	return get_option_list(instance, true);
++}
++
++PyObject *PyFtrace_supported_options(PyObject *self, PyObject *args,
++						     PyObject *kwargs)
++{
++	struct tracefs_instance *instance;
++
++	if (!get_instance_from_arg(args, kwargs, &instance))
++		return NULL;
++
++	return get_option_list(instance, false);
++}
++
++static PyObject *get_callback_func(const char *plugin_name, const char * py_callback)
++{
++	PyObject *py_name, *py_module, *py_func;
++
++	py_name = PyUnicode_FromString(plugin_name);
++	py_module = PyImport_Import(py_name);
++	if (!py_module) {
++		PyErr_Format(TFS_ERROR, "Failed to import plugin \'%s\'",
++			     plugin_name);
++		return NULL;
++	}
++
++	py_func = PyObject_GetAttrString(py_module, py_callback);
++	if (!py_func || !PyCallable_Check(py_func)) {
++		PyErr_Format(TFS_ERROR,
++			     "Failed to import callback from plugin \'%s\'",
++			     plugin_name);
++		return NULL;
++	}
++
++	return py_func;
++}
++
++static void start_tracing(struct tracefs_instance *instance,
++			  char **argv, char **env)
++{
++	if(tracefs_option_enable(instance, TRACEFS_OPTION_EVENT_FORK) < 0 ||
++	   tracefs_option_enable(instance, TRACEFS_OPTION_FUNCTION_FORK) < 0 ||
++	   !set_pid(instance, "set_ftrace_pid", getpid()) ||
++	   !set_pid(instance, "set_event_pid", getpid()))
++		exit(1);
++
++	tracing_ON(instance);
++	if (execve(argv[0], argv, env) < 0) {
++		PyErr_Format(TFS_ERROR, "Failed to exec \'%s\'",
++			     argv[0]);
++	}
++
++	exit(1);
++}
++
++static int callback(struct tep_event *event, struct tep_record *record,
++		    int cpu, void *py_func)
++{
++	record->cpu = cpu; // Remove when the bug in libtracefs is fixed.
++
++	PyObject *py_tep_event = PyTepEvent_New(event);
++	PyObject *py_tep_record = PyTepRecord_New(record);
++
++	PyObject *arglist = PyTuple_New(2);
++	PyTuple_SetItem(arglist, 0, py_tep_event);
++	PyTuple_SetItem(arglist, 1, py_tep_record);
++
++	PyObject_CallObject((PyObject *) py_func, arglist);
++
++	return 0;
++}
++
++PyObject *PyFtrace_trace_shell_process(PyObject *self, PyObject *args,
++						       PyObject *kwargs)
++{
++	const char *plugin = "__main__", *py_callback = "callback";
++	char *process, *instance_name;
++	struct tracefs_instance *instance;
++	static char *kwlist[] = {"process", "plugin", "callback", "instance", NULL};
++	struct tep_handle *tep;
++	PyObject *py_func;
++	pid_t pid;
++
++	instance_name = NO_ARG;
++	if(!PyArg_ParseTupleAndKeywords(args,
++					kwargs,
++					"s|sss",
++					kwlist,
++					&process,
++					&plugin,
++					&py_callback,
++					&instance_name)) {
++		return NULL;
++	}
++
++	py_func = get_callback_func(plugin, py_callback);
++	if (!py_func)
++		return NULL;
++
++	if (!get_optional_instance(instance_name, &instance))
++		return NULL;
++
++	tep = tracefs_local_events(tracefs_instance_get_dir(instance));
++
++	char *argv[] = {getenv("SHELL"), "-c", process, NULL};
++	char *env[] = {NULL};
++
++	pid = fork();
++	if (pid < 0) {
++		PyErr_SetString(TFS_ERROR, "Failed to fork");
++		return NULL;
++	}
++
++	if (pid == 0)
++		start_tracing(instance, argv, env);
++
++	do {
++		tracefs_iterate_raw_events(tep, instance, NULL, 0, callback, py_func);
++	} while (waitpid(pid, NULL, WNOHANG) != pid);
++
++	Py_RETURN_NONE;
++}
++
++void PyFtrace_at_exit(void)
++{
++	destroy_all_instances();
++}
+diff --git a/src/ftracepy-utils.h b/src/ftracepy-utils.h
+new file mode 100644
+index 0000000..2faa4a6
+--- /dev/null
++++ b/src/ftracepy-utils.h
+@@ -0,0 +1,127 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
++
++/*
++ * Copyright (C) 2021 VMware Inc, Yordan Karadzhov <y.karadz@gmail.com>
++ */
++
++#ifndef _TC_FTRACE_PY_UTILS
++#define _TC_FTRACE_PY_UTILS
++
++// Python
++#include <Python.h>
++
++// libtracefs
++#include "tracefs.h"
++
++// trace-cruncher
++#include "common.h"
++
++C_OBJECT_WRAPPER_DECLARE(tep_record, PyTepRecord)
++
++C_OBJECT_WRAPPER_DECLARE(tep_event, PyTepEvent)
++
++C_OBJECT_WRAPPER_DECLARE(tep_handle, PyTep)
++
++PyObject *PyTepRecord_time(PyTepRecord* self);
++
++PyObject *PyTepRecord_cpu(PyTepRecord* self);
++
++PyObject *PyTepEvent_name(PyTepEvent* self);
++
++PyObject *PyTepEvent_id(PyTepEvent* self);
++
++PyObject *PyTepEvent_field_names(PyTepEvent* self);
++
++PyObject *PyTepEvent_parse_record_field(PyTepEvent* self, PyObject *args,
++							  PyObject *kwargs);
++
++PyObject *PyTepEvent_get_pid(PyTepEvent* self, PyObject *args,
++					       PyObject *kwargs);
++
++PyObject *PyTep_init_local(PyTep *self, PyObject *args,
++					PyObject *kwargs);
++
++PyObject *PyTep_get_event(PyTep *self, PyObject *args,
++				       PyObject *kwargs);
++
++PyObject *PyFtrace_dir(PyObject *self);
++
++PyObject *PyFtrace_create_instance(PyObject *self, PyObject *args,
++						   PyObject *kwargs);
++
++PyObject *PyFtrace_destroy_instance(PyObject *self, PyObject *args,
++						    PyObject *kwargs);
++
++PyObject *PyFtrace_get_all_instances(PyObject *self);
++
++PyObject *PyFtrace_destroy_all_instances(PyObject *self);
++
++PyObject *PyFtrace_instance_dir(PyObject *self, PyObject *args,
++						PyObject *kwargs);
++
++PyObject *PyFtrace_available_tracers(PyObject *self, PyObject *args,
++						     PyObject *kwargs);
++
++PyObject *PyFtrace_set_current_tracer(PyObject *self, PyObject *args,
++						      PyObject *kwargs);
++
++PyObject *PyFtrace_get_current_tracer(PyObject *self, PyObject *args,
++						      PyObject *kwargs);
++
++PyObject *PyFtrace_available_event_systems(PyObject *self, PyObject *args,
++							   PyObject *kwargs);
++
++PyObject *PyFtrace_available_system_events(PyObject *self, PyObject *args,
++							   PyObject *kwargs);
++
++PyObject *PyFtrace_enable_event(PyObject *self, PyObject *args,
++						PyObject *kwargs);
++
++PyObject *PyFtrace_disable_event(PyObject *self, PyObject *args,
++						 PyObject *kwargs);
++
++PyObject *PyFtrace_enable_events(PyObject *self, PyObject *args,
++						 PyObject *kwargs);
++
++PyObject *PyFtrace_disable_events(PyObject *self, PyObject *args,
++						  PyObject *kwargs);
++
++PyObject *PyFtrace_event_is_enabled(PyObject *self, PyObject *args,
++						    PyObject *kwargs);
++
++PyObject *PyFtrace_tracing_ON(PyObject *self, PyObject *args,
++					      PyObject *kwargs);
++
++PyObject *PyFtrace_tracing_OFF(PyObject *self, PyObject *args,
++					       PyObject *kwargs);
++
++PyObject *PyFtrace_is_tracing_ON(PyObject *self, PyObject *args,
++						 PyObject *kwargs);
++
++PyObject *PyFtrace_set_event_pid(PyObject *self, PyObject *args,
++						 PyObject *kwargs);
++
++PyObject *PyFtrace_set_ftrace_pid(PyObject *self, PyObject *args,
++						  PyObject *kwargs);
++
++PyObject *PyFtrace_enable_option(PyObject *self, PyObject *args,
++						 PyObject *kwargs);
++
++PyObject *PyFtrace_disable_option(PyObject *self, PyObject *args,
++						  PyObject *kwargs);
++
++PyObject *PyFtrace_option_is_set(PyObject *self, PyObject *args,
++						 PyObject *kwargs);
++
++PyObject *PyFtrace_supported_options(PyObject *self, PyObject *args,
++						     PyObject *kwargs);
++
++PyObject *PyFtrace_enabled_options(PyObject *self, PyObject *args,
++						   PyObject *kwargs);
++
++PyObject *PyFtrace_trace_shell_process(PyObject *self, PyObject *args,
++						       PyObject *kwargs);
++
++void PyFtrace_at_exit(void);
++
++#endif
+diff --git a/src/ftracepy.c b/src/ftracepy.c
+new file mode 100644
+index 0000000..6aa5359
+--- /dev/null
++++ b/src/ftracepy.c
+@@ -0,0 +1,262 @@
++// SPDX-License-Identifier: LGPL-2.1
++
++/*
++ * Copyright (C) 2021 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
++ */
++
++// trace-cruncher
++#include "ftracepy-utils.h"
++
++extern PyObject *TFS_ERROR;
++extern PyObject *TEP_ERROR;
++extern PyObject *TRACECRUNCHER_ERROR;
++
++static PyMethodDef PyTepRecord_methods[] = {
++	{"time",
++	 (PyCFunction) PyTepRecord_time,
++	 METH_NOARGS,
++	 "Get the time of the record."
++	},
++	{"CPU",
++	 (PyCFunction) PyTepRecord_cpu,
++	 METH_NOARGS,
++	 "Get the CPU Id of the record."
++	},
++	{NULL}
++};
++
++C_OBJECT_WRAPPER(tep_record, PyTepRecord, NO_FREE)
++
++static PyMethodDef PyTepEvent_methods[] = {
++	{"name",
++	 (PyCFunction) PyTepEvent_name,
++	 METH_NOARGS,
++	 "Get the name of the event."
++	},
++	{"id",
++	 (PyCFunction) PyTepEvent_id,
++	 METH_NOARGS,
++	 "Get the unique identifier of the event."
++	},
++	{"field_names",
++	 (PyCFunction) PyTepEvent_field_names,
++	 METH_NOARGS,
++	 "Get the names of all fields."
++	},
++	{"parse_record_field",
++	 (PyCFunction) PyTepEvent_parse_record_field,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Get the content of a record field."
++	},
++	{"get_pid",
++	 (PyCFunction) PyTepEvent_get_pid,
++	 METH_VARARGS | METH_KEYWORDS,
++	},
++	{NULL}
++};
++
++C_OBJECT_WRAPPER(tep_event, PyTepEvent, NO_FREE)
++
++static PyMethodDef PyTep_methods[] = {
++	{"init_local",
++	 (PyCFunction) PyTep_init_local,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Initialize from local instance."
++	},
++	{"get_event",
++	 (PyCFunction) PyTep_get_event,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Get a PyTepEvent object."
++	},
++	{NULL}
++};
++
++C_OBJECT_WRAPPER(tep_handle, PyTep, tep_free)
++
++static PyMethodDef ftracepy_methods[] = {
++	{"dir",
++	 (PyCFunction) PyFtrace_dir,
++	 METH_NOARGS,
++	 "Get the absolute path to the tracefs directory."
++	},
++	{"create_instance",
++	 (PyCFunction) PyFtrace_create_instance,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Create new tracefs instance."
++	},
++	{"get_all_instances",
++	 (PyCFunction) PyFtrace_get_all_instances,
++	 METH_NOARGS,
++	 "Get all existing tracefs instances."
++	},
++	{"destroy_instance",
++	 (PyCFunction) PyFtrace_destroy_instance,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Destroy existing tracefs instance."
++	},
++	{"destroy_all_instances",
++	 (PyCFunction) PyFtrace_destroy_all_instances,
++	 METH_NOARGS,
++	 "Destroy all existing tracefs instances."
++	},
++	{"instance_dir",
++	 (PyCFunction) PyFtrace_instance_dir,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Get the absolute path to the instance directory."
++	},
++	{"available_tracers",
++	 (PyCFunction) PyFtrace_available_tracers,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Get a list of available tracers."
++	},
++	{"set_current_tracer",
++	 (PyCFunction) PyFtrace_set_current_tracer,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Enable a tracer."
++	},
++	{"get_current_tracer",
++	 (PyCFunction) PyFtrace_get_current_tracer,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Check the enabled tracer."
++	},
++	{"available_event_systems",
++	 (PyCFunction) PyFtrace_available_event_systems,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Get a list of available trace event systems."
++	},
++	{"available_system_events",
++	 (PyCFunction) PyFtrace_available_system_events,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Get a list of available trace event for a given system."
++	},
++	{"enable_event",
++	 (PyCFunction) PyFtrace_enable_event,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Enable trece event."
++	},
++	{"disable_event",
++	 (PyCFunction) PyFtrace_disable_event,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Disable trece event."
++	},
++	{"enable_events",
++	 (PyCFunction) PyFtrace_enable_events,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Enable multiple trece event."
++	},
++	{"disable_events",
++	 (PyCFunction) PyFtrace_disable_events,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Disable multiple trece event."
++	},
++	{"event_is_enabled",
++	 (PyCFunction) PyFtrace_event_is_enabled,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Check if event is enabled."
++	},
++	{"tracing_ON",
++	 (PyCFunction) PyFtrace_tracing_ON,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Start tracing."
++	},
++	{"tracing_OFF",
++	 (PyCFunction) PyFtrace_tracing_OFF,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Stop tracing."
++	},
++	{"is_tracing_ON",
++	 (PyCFunction) PyFtrace_is_tracing_ON,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Check if tracing is ON."
++	},
++	{"set_event_pid",
++	 (PyCFunction) PyFtrace_set_event_pid,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "."
++	},
++	{"set_ftrace_pid",
++	 (PyCFunction) PyFtrace_set_ftrace_pid,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "."
++	},
++	{"enable_option",
++	 (PyCFunction) PyFtrace_enable_option,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Enable trece option."
++	},
++	{"disable_option",
++	 (PyCFunction) PyFtrace_disable_option,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Disable trece option."
++	},
++	{"option_is_set",
++	 (PyCFunction) PyFtrace_option_is_set,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Check if trece option is enabled."
++	},
++	{"supported_options",
++	 (PyCFunction) PyFtrace_supported_options,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Gat a list of all supported options."
++	},
++	{"enabled_options",
++	 (PyCFunction) PyFtrace_enabled_options,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Gat a list of all supported options."
++	},
++	{"trace_shell_process",
++	 (PyCFunction) PyFtrace_trace_shell_process,
++	 METH_VARARGS | METH_KEYWORDS,
++	 "Trace a shell process."
++	},
++	{NULL, NULL, 0, NULL}
++};
++
++static struct PyModuleDef ftracepy_module = {
++	PyModuleDef_HEAD_INIT,
++	"ftracepy",
++	"Python interface for Ftrace.",
++	-1,
++	ftracepy_methods
++};
++
++PyMODINIT_FUNC PyInit_ftracepy(void)
++{
++	if (!PyTepTypeInit())
++		return NULL;
++
++	if (!PyTepEventTypeInit())
++		return NULL;
++
++	if (!PyTepRecordTypeInit())
++		return NULL;
++
++	TFS_ERROR = PyErr_NewException("tracecruncher.ftracepy.tfs_error",
++				       NULL, NULL);
++
++	TEP_ERROR = PyErr_NewException("tracecruncher.ftracepy.tep_error",
++				       NULL, NULL);
++
++	TRACECRUNCHER_ERROR = PyErr_NewException("tracecruncher.tc_error",
++						 NULL, NULL);
++
++	PyObject *module =  PyModule_Create(&ftracepy_module);
++
++	PyModule_AddObject(module, "tep_handle", (PyObject *) &PyTepType);
++	PyModule_AddObject(module, "tep_event", (PyObject *) &PyTepEventType);
++	PyModule_AddObject(module, "tep_record", (PyObject *) &PyTepRecordType);
++
++	PyModule_AddObject(module, "tfs_error", TFS_ERROR);
++	PyModule_AddObject(module, "tep_error", TEP_ERROR);
++	PyModule_AddObject(module, "tc_error", TRACECRUNCHER_ERROR);
++
++	if (geteuid() != 0) {
++		PyErr_SetString(TFS_ERROR,
++				"Permission denied. Root privileges are required.");
++		return NULL;
++	}
++
++	Py_AtExit(PyFtrace_at_exit);
++
++	return module;
++}
 -- 
 2.27.0
 
