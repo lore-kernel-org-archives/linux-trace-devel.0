@@ -8,60 +8,60 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23FCBC433ED
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 04:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C8EFC433B4
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 05:11:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E908561090
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 04:51:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4C52961090
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 05:11:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhDSEwA (ORCPT
+        id S229952AbhDSFLn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 19 Apr 2021 00:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
+        Mon, 19 Apr 2021 01:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhDSEvz (ORCPT
+        with ESMTP id S229473AbhDSFLn (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Apr 2021 00:51:55 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46610C06174A
-        for <linux-trace-devel@vger.kernel.org>; Sun, 18 Apr 2021 21:50:19 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id m12so2675766pgr.9
-        for <linux-trace-devel@vger.kernel.org>; Sun, 18 Apr 2021 21:50:19 -0700 (PDT)
+        Mon, 19 Apr 2021 01:11:43 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63478C06174A
+        for <linux-trace-devel@vger.kernel.org>; Sun, 18 Apr 2021 22:11:14 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c17so22391942pfn.6
+        for <linux-trace-devel@vger.kernel.org>; Sun, 18 Apr 2021 22:11:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qCGDfzHwy+nRl9Wk93v23EqCpfkXlP9D8rkUTOrNCUs=;
-        b=X04u21NAAhgTm0ip4zJ/8y1PS9HaxiaKYx0KOkqx38g1g6opPuYlZIcNKJp3yaaf8K
-         KmF6gtI4UDfWYT+bvKDoS9P46xdZjn9QDfw6Re4osesLpJa4IwIeKBdDAj3LOmzI+Fhp
-         1dfWT6Ne0g+s5t9Uf8MjgZB+Mc0oA+vkwQYvQAhe6JWNfVpHca7lgPGNadWD9mr2p6w3
-         90prWEe/sxJphphD95TFkiMmLJc6Kz/22tw39m4N40G0MxOWIvPsVahkpH1p8GuC+l2+
-         4XSOCFSioib57o+vS8kPWk6/VHwc2unBlgHYLyl0l0Zs0DY5w5uhz34ihbenocfD6aZk
-         FRrA==
+        bh=FhkA6B0I8pV/PkPBRODmMq9taw77IqP6aW0PhbddiE8=;
+        b=NsNGMhZrGiW4RezMcg/chBnu8sYc1xDtL2aCnxs+0vKPpORW3Hmd6wuA3I4bIoroAx
+         qNcR6QCQORDgC7hapYu+brloWLxKwiSfa1aavgNXUSCO9gmb0Vn7nD3PVjw1o9bgKuOB
+         cnh5ZZgiEwQqHu7PEfkwc51fQ9V8KxzaVlq0rj9cQyh1IbiEQdYU99Qos/w5j84+BfO6
+         upMW5gSvJlSQqfcw2BqDcFM3rMHI2i8tM5o37hmReAkfZz/hh+PAIcpCSFXdzJzGOgBa
+         +5upZo1JbKG0EoNSUPyeG0RPbbtGkCLpiq7gOovqMlKMN44KJoP4QZv47LbEkMBeWZn8
+         md/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qCGDfzHwy+nRl9Wk93v23EqCpfkXlP9D8rkUTOrNCUs=;
-        b=nFcTtBxZUYTj+5yPJaMF/tl1yPyByUjl6pbIEfPSh/c18ijEZT+fLYbdR05Tfz4UfU
-         bVBe9QsOZgPap91olPzVBDuBdwSuS64rt1c3at/Mu88tY/bBJ5BNp8lqXfwP5NHhVJGo
-         bjVmDdbYLOChpujzM7yIk3o4e1fgNZUwio+YeZmdbDwim+Bu5Od31rfqfz4PohgbunFn
-         DTPBqfB2zQCcSEMjp2U4Nx8XrLqh6YiAX0qSfFOvTIkS/VTKUw6JnZ+FC56AE1KSu6gH
-         O2LzwzlBsTtX08/H/2iWUkWhtmYb1sGdgJiREVGRnntAGZn5yR075HoAEYzebCoCuPHF
-         Q9fw==
-X-Gm-Message-State: AOAM531fiUxG5xcrWe344AFcQ9NNEsQac0UddjAtJF3dsb3Tusjif/Pf
-        QDaetNM6EVdO5DTjSY3BWBBsi4zt7hNFE9lW3290cbDNxp8=
-X-Google-Smtp-Source: ABdhPJybaQ4ry+YkWnWpGDy2pqrqJVhAq9AXXWSlMEBy7wOOf0Zmh+D4KrNGM3317lEWe10sQVryY3BPZH2v7Tfvn9M=
-X-Received: by 2002:a65:418a:: with SMTP id a10mr9893477pgq.307.1618807818812;
- Sun, 18 Apr 2021 21:50:18 -0700 (PDT)
+        bh=FhkA6B0I8pV/PkPBRODmMq9taw77IqP6aW0PhbddiE8=;
+        b=LEBc1aQz9uq/b5IYppcmVL+Qv3Vo/1su2wz2xiC6MOUIQZkVdx/ySY3pyKaxoun0Nz
+         toPQLw8z2sZ5f1V8+YYqyyxqGEdUUr0INZTh/nToiXY0pHrh91YipuSSaBWTZGuXLYkU
+         rJkCCi6cDYfslwD2KtlwQC36krQ/ckhZWcZFcS+XaUSzd++BV0ulob50NjzYyr6nfzjX
+         HLM8qVsKKVZo6YFazMrV/jnlaYt3viyRRdH4ThNR6gedRYECV7+ttSlXsonV0XDGtvZJ
+         cVpQfBjsOiXO61B3RBNsKiNRApZd2dHsGCuE00IRGPxf+eR9v4wsFEPmQZfx7F/twOap
+         MVMA==
+X-Gm-Message-State: AOAM530zSfAIheaD+/ksIVMcwMMW4ujcUKtfexioV3JoBIZwf1QhHoze
+        hEcWURmrjOYHvetH/ezPL+W5iBdHsdcQMXevPkcr41J7
+X-Google-Smtp-Source: ABdhPJxc0F4zTJfgX/zukrJjjA6sk7vFKgbax+hgy92nNbxyqLtjdi55hhaExgeae48M1GO2l5zrZOnnKnz0OB8guEc=
+X-Received: by 2002:aa7:9d81:0:b029:248:c39c:3f26 with SMTP id
+ f1-20020aa79d810000b0290248c39c3f26mr17640346pfq.55.1618809073884; Sun, 18
+ Apr 2021 22:11:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416172331.3870833-1-rostedt@goodmis.org> <20210416172331.3870833-2-rostedt@goodmis.org>
-In-Reply-To: <20210416172331.3870833-2-rostedt@goodmis.org>
+References: <20210416213018.3890036-1-rostedt@goodmis.org> <20210416213018.3890036-2-rostedt@goodmis.org>
+In-Reply-To: <20210416213018.3890036-2-rostedt@goodmis.org>
 From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 19 Apr 2021 07:50:02 +0300
-Message-ID: <CAPpZLN7MJUQS0xbDJSK2F+T6LdsLn3q_f4+jRTgiV+ODa+1uAg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] trace-cmd list: Have -o read the options directory
- instead of file
+Date:   Mon, 19 Apr 2021 08:10:57 +0300
+Message-ID: <CAPpZLN6_NjZYmhDMfskxtKOaVrVm+6pa2ic-LrvoKGBN+h=QhQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] trace-cmd list: Use tracefs to help find events for -e
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -69,110 +69,222 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 9:55 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Sat, Apr 17, 2021 at 1:08 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
 > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 >
-> The trace_options file only shows the options that are available when a
-> tracer is set. This is annoying as one needs to enable the tracer in order
-> to see all the options that are available.
->
-> Starting with Linux v4.4, all tracers options are displayed in the options
-> directory. Walk through the options directory instead of simply reading
-> the trace_options file.
+> When the user specifies -e and wants to search for events, use the tracefs
+> helper functions tracefs_event_systems() and tracefs_system_events() to
+> find the matching events.
 >
 > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > ---
->  tracecmd/trace-list.c | 48 +++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 46 insertions(+), 2 deletions(-)
+>  lib/trace-cmd/trace-input.c |   6 +-
+>  tracecmd/trace-list.c       | 136 ++++++++++++++++++++++++++++++++++--
+>  2 files changed, 135 insertions(+), 7 deletions(-)
+>
+> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+> index 991abd5f..a540ab24 100644
+> --- a/lib/trace-cmd/trace-input.c
+> +++ b/lib/trace-cmd/trace-input.c
+> @@ -1234,9 +1234,11 @@ static unsigned long long timestamp_calc(unsigned long long ts, int cpu,
+>                         ts -= handle->tsc_calc.offset;
+>                         ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
+>                 } else {
+> -                       tracecmd_warning("Timestamp $llu is before the initial offset %llu, set it to 0",
+> +                       tracecmd_warning("Timestamp %llu is before the initial offset %llu\n"
+> +                                        "\tSetting offset to 0",
+>                                          ts, handle->tsc_calc.offset);
+> -                       ts = 0;
+> +                       handle->tsc_calc.offset = 0;
+> +                       ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
+
+That looks like from a different patch? I'll send v3 from my patch set
+with these fixes.
+
+>                 }
+>         }
 >
 > diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
-> index 63216b43..0ba49853 100644
+> index 63216b43..84ee573b 100644
 > --- a/tracecmd/trace-list.c
 > +++ b/tracecmd/trace-list.c
-> @@ -255,13 +255,57 @@ static void show_tracers(void)
->         show_file("available_tracers");
+> @@ -105,6 +105,122 @@ static void process_file_re(process_file_func func,
+>         regfree(&reg);
 >  }
 >
-> -
->  static void show_options(void)
->  {
-> +       struct dirent *dent;
-> +       struct stat st;
-> +       char *path;
-> +       DIR *dir;
+> +static void show_event(process_file_func func, const char *system, const char *event)
+> +{
+> +       char *buf;
+> +       int ret;
 > +
-> +       path = tracefs_get_tracing_file("options");
-> +       if (!path)
-> +               goto show_file;
-> +       if (stat(path, &st) < 0)
-> +               goto show_file;
+> +       ret = asprintf(&buf, "%s:%s", system, event);
+> +       if (ret < 0)
+> +               die("Can not allocate event");
+> +       func(buf, strlen(buf));
+> +       free(buf);
+> +}
 > +
-> +       if ((st.st_mode & S_IFMT) != S_IFDIR)
-> +               goto show_file;
+> +static void show_system(process_file_func func, const char *system)
+> +{
+> +       char **events;
+> +       int e;
 > +
-> +       dir = opendir(path);
-> +       if (!dir)
-> +               die("Can not read instance directory");
+> +       events = tracefs_system_events(NULL, system);
+> +       if (!events) /* die? */
+> +               return;
 > +
-> +       while ((dent = readdir(dir))) {
-> +               const char *name = dent->d_name;
-> +               long long val;
-> +               char *file;
-> +               int ret;
+> +       for (e = 0; events[e]; e++)
+> +               show_event(func, system, events[e]);
+> +}
 > +
-> +               if (strcmp(name, ".") == 0 ||
-> +                   strcmp(name, "..") == 0)
+> +static void show_event_systems(process_file_func func, char **systems)
+> +{
+> +       int s;
+> +
+> +       for (s = 0; systems[s]; s++)
+> +               show_system(func, systems[s]);
+> +}
+> +
+> +
+> +static void process_events(process_file_func func, const char *re)
+> +{
+> +       regex_t system_reg;
+> +       regex_t event_reg;
+> +       char *str;
+> +       size_t l = strlen(re);
+> +       bool just_systems = true;
+> +       char **systems;
+> +       char **events;
+> +       char *system;
+> +       char *event;
+> +       int s, e;
+> +
+> +       systems = tracefs_event_systems(NULL);
+> +       if (!systems)
+> +               return process_file_re(func, "available_events", re);
+> +
+> +       if (!re || l == 0) {
+> +               show_event_systems(func, systems);
+> +               return;
+> +       }
+> +
+> +       str = strdup(re);
+> +       if (!str)
+> +               die("Can not allocate momory for regex");
+> +
+> +       system = strtok(str, ":");
+> +       event = strtok(NULL, "");
+> +
+> +       if (regcomp(&system_reg, system, REG_ICASE|REG_NOSUB))
+> +               die("invalid regex '%s'", system);
+> +
+> +       if (event) {
+> +               if (regcomp(&event_reg, event, REG_ICASE|REG_NOSUB))
+> +                       die("invalid regex '%s'", event);
+> +       } else {
+> +               /*
+> +                * If the regex ends with ":", then event would be null,
+> +                * but we do not want to match events.
+> +                */
+> +               if (re[l-1] != ':')
+> +                       just_systems = false;
+> +       }
+> +       free(str);
+> +
+> +       for (s = 0; systems[s]; s++) {
+> +
+> +               if (regexec(&system_reg, systems[s], 0, NULL, 0) == 0) {
+> +                       if (!event) {
+> +                               show_system(func, systems[s]);
+> +                               continue;
+> +                       }
+> +                       events = tracefs_system_events(NULL, systems[s]);
+> +                       if (!events) /* die? */
+> +                               continue;
+> +                       for (e = 0; events[e]; e++) {
+> +                               if (regexec(&event_reg, events[e], 0, NULL, 0) == 0)
+> +                                       show_event(func, systems[s], events[e]);
+> +                       }
+> +                       tracefs_list_free(events);
+> +                       continue;
+> +               }
+> +               if (just_systems)
 > +                       continue;
 > +
-> +               ret = asprintf(&file, "options/%s", name);
-> +               if (ret < 0)
-> +                       die("Failed to allocate file name");
-> +               ret = tracefs_instance_file_read_number(NULL, file, &val);
-> +               if (!ret) {
-> +                       if (val)
-> +                               printf("%s\n", name);
-> +                       else
-> +                               printf("no%s\n", name);
-> +               }
-> +               free(file);
-> +       }
-> +       closedir(dir);
-> +       tracefs_put_tracing_file(path);
-> +       return;
+> +               events = tracefs_system_events(NULL, systems[s]);
+> +               if (!events) /* die? */
+> +                       continue;
 > +
-> + show_file:
-> +       tracefs_put_tracing_file(path);
->         show_file("trace_options");
+> +               for (e = 0; events[e]; e++) {
+> +                       if (regexec(&system_reg, events[e], 0, NULL, 0) == 0)
+> +                               show_event(func, systems[s], events[e]);
+> +               }
+> +               tracefs_list_free(events);
+> +       }
+> +       tracefs_list_free(systems);
+> +
+> +       regfree(&system_reg);
+> +       if (event)
+> +               regfree(&event_reg);
+> +}
+> +
+>  static int show_file_write(char *buf, int len)
+>  {
+>         return fwrite(buf, 1, len, stdout);
+> @@ -210,24 +326,34 @@ static int event_format_write(char *fbuf, int len)
+>         return 0;
 >  }
-
-The libtracefs options APIs can be used, instead of walking through
-the directory:
-
-struct tracefs_options_mask *all = tracefs_options_get_supported(NULL);
-struct tracefs_options_mask *enabled = tracefs_options_get_enabled(NULL);
-char *name;
-
-for (int i = 1; i < TRACEFS_OPTION_MAX; i++) {
-        if (!tracefs_option_mask_is_set(all, i))
-                continue;
-        name = tracefs_option_name(i);
-        if (!tracefs_option_mask_is_set(enabled, i))
-                printf("%s\n", name);
-        else
-                printf("no%s\n", name);
-}
-
+>
+> +static int event_name(char *buf, int len)
+> +{
+> +       printf("%s\n", buf);
+> +
+> +       return 0;
+> +}
+> +
+>
+>  static void show_event_filter_re(const char *re)
+>  {
+> -       process_file_re(event_filter_write, "available_events", re);
+> +       process_events(event_filter_write, re);
+>  }
+>
+>
+>  static void show_event_trigger_re(const char *re)
+>  {
+> -       process_file_re(event_trigger_write, "available_events", re);
+> +       process_events(event_trigger_write, re);
+>  }
 >
 > -
->  static void show_clocks(void)
+>  static void show_event_format_re(const char *re)
 >  {
->         char *clocks;
+> -       process_file_re(event_format_write, "available_events", re);
+> +       process_events(event_format_write, re);
+>  }
+>
+> +static void show_event_names_re(const char *re)
+> +{
+> +       process_events(event_name, re);
+> +}
+>
+>  static void show_events(const char *eventre, int flags)
+>  {
+> @@ -244,7 +370,7 @@ static void show_events(const char *eventre, int flags)
+>                 else if (flags & SHOW_EVENT_TRIGGER)
+>                         show_event_trigger_re(eventre);
+>                 else
+> -                       show_file_re("available_events", eventre);
+> +                       show_event_names_re(eventre);
+>         } else
+>                 show_file("available_events");
+>  }
 > --
 > 2.29.2
 >
 
 
--- 
+--
 Tzvetomir (Ceco) Stoyanov
 VMware Open Source Technology Center
