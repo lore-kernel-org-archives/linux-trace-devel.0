@@ -2,176 +2,177 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 222EDC433ED
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 17 Apr 2021 06:43:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23FCBC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 04:51:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EE6116113D
-	for <linux-trace-devel@archiver.kernel.org>; Sat, 17 Apr 2021 06:43:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E908561090
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 04:51:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhDQGng (ORCPT
+        id S230114AbhDSEwA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 17 Apr 2021 02:43:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43060 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229629AbhDQGnf (ORCPT
+        Mon, 19 Apr 2021 00:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230179AbhDSEvz (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 17 Apr 2021 02:43:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618641788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BEDcvX07CqIwUKwk0VNTKRgJdWemYMz+MjFIHVFQRbM=;
-        b=gWyEq2D0ZhZlCHJBi2wbdDmlpoQms+GS/bSus0tWk1tY0b9GgNwDoiNf0SGZeZLjq0sB04
-        COa9f8MNrZrN2cEJRfifX8Pke7oLAwx6lBh/N5fZ7JwGoN9+4r+ZFaW/NnvVlY+cZwo71Y
-        XQbEbd9j2x6Ym3HcpINS3z7KPV6F63k=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B0796B062;
-        Sat, 17 Apr 2021 06:43:08 +0000 (UTC)
-Message-ID: <8cd07e86b6e728bc7b74b39d52833715cecdc24c.camel@suse.com>
-Subject: Re: [RFC] Simple tool for VMEnters/VMExits matching and trace
- validation
-From:   Dario Faggioli <dfaggioli@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Stefano De Venuto <stefano.devenuto99@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Date:   Sat, 17 Apr 2021 08:43:07 +0200
-In-Reply-To: <20210416173235.11b0d1c0@gandalf.local.home>
-References: <20210416164653.2949-1-stefano.devenuto99@gmail.com>
-         <70d698ef3074a50576da48587aaf4ce2eea9585f.camel@suse.com>
-         <756cd31c-9dff-5f18-8daf-5fae5e62f947@gmail.com>
-         <20210416173235.11b0d1c0@gandalf.local.home>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-7g8M82h7hbNIKaBbyQuv"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        Mon, 19 Apr 2021 00:51:55 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46610C06174A
+        for <linux-trace-devel@vger.kernel.org>; Sun, 18 Apr 2021 21:50:19 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id m12so2675766pgr.9
+        for <linux-trace-devel@vger.kernel.org>; Sun, 18 Apr 2021 21:50:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qCGDfzHwy+nRl9Wk93v23EqCpfkXlP9D8rkUTOrNCUs=;
+        b=X04u21NAAhgTm0ip4zJ/8y1PS9HaxiaKYx0KOkqx38g1g6opPuYlZIcNKJp3yaaf8K
+         KmF6gtI4UDfWYT+bvKDoS9P46xdZjn9QDfw6Re4osesLpJa4IwIeKBdDAj3LOmzI+Fhp
+         1dfWT6Ne0g+s5t9Uf8MjgZB+Mc0oA+vkwQYvQAhe6JWNfVpHca7lgPGNadWD9mr2p6w3
+         90prWEe/sxJphphD95TFkiMmLJc6Kz/22tw39m4N40G0MxOWIvPsVahkpH1p8GuC+l2+
+         4XSOCFSioib57o+vS8kPWk6/VHwc2unBlgHYLyl0l0Zs0DY5w5uhz34ihbenocfD6aZk
+         FRrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qCGDfzHwy+nRl9Wk93v23EqCpfkXlP9D8rkUTOrNCUs=;
+        b=nFcTtBxZUYTj+5yPJaMF/tl1yPyByUjl6pbIEfPSh/c18ijEZT+fLYbdR05Tfz4UfU
+         bVBe9QsOZgPap91olPzVBDuBdwSuS64rt1c3at/Mu88tY/bBJ5BNp8lqXfwP5NHhVJGo
+         bjVmDdbYLOChpujzM7yIk3o4e1fgNZUwio+YeZmdbDwim+Bu5Od31rfqfz4PohgbunFn
+         DTPBqfB2zQCcSEMjp2U4Nx8XrLqh6YiAX0qSfFOvTIkS/VTKUw6JnZ+FC56AE1KSu6gH
+         O2LzwzlBsTtX08/H/2iWUkWhtmYb1sGdgJiREVGRnntAGZn5yR075HoAEYzebCoCuPHF
+         Q9fw==
+X-Gm-Message-State: AOAM531fiUxG5xcrWe344AFcQ9NNEsQac0UddjAtJF3dsb3Tusjif/Pf
+        QDaetNM6EVdO5DTjSY3BWBBsi4zt7hNFE9lW3290cbDNxp8=
+X-Google-Smtp-Source: ABdhPJybaQ4ry+YkWnWpGDy2pqrqJVhAq9AXXWSlMEBy7wOOf0Zmh+D4KrNGM3317lEWe10sQVryY3BPZH2v7Tfvn9M=
+X-Received: by 2002:a65:418a:: with SMTP id a10mr9893477pgq.307.1618807818812;
+ Sun, 18 Apr 2021 21:50:18 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210416172331.3870833-1-rostedt@goodmis.org> <20210416172331.3870833-2-rostedt@goodmis.org>
+In-Reply-To: <20210416172331.3870833-2-rostedt@goodmis.org>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Mon, 19 Apr 2021 07:50:02 +0300
+Message-ID: <CAPpZLN7MJUQS0xbDJSK2F+T6LdsLn3q_f4+jRTgiV+ODa+1uAg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] trace-cmd list: Have -o read the options directory
+ instead of file
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Fri, Apr 16, 2021 at 9:55 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+>
+> The trace_options file only shows the options that are available when a
+> tracer is set. This is annoying as one needs to enable the tracer in order
+> to see all the options that are available.
+>
+> Starting with Linux v4.4, all tracers options are displayed in the options
+> directory. Walk through the options directory instead of simply reading
+> the trace_options file.
+>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  tracecmd/trace-list.c | 48 +++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 46 insertions(+), 2 deletions(-)
+>
+> diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
+> index 63216b43..0ba49853 100644
+> --- a/tracecmd/trace-list.c
+> +++ b/tracecmd/trace-list.c
+> @@ -255,13 +255,57 @@ static void show_tracers(void)
+>         show_file("available_tracers");
+>  }
+>
+> -
+>  static void show_options(void)
+>  {
+> +       struct dirent *dent;
+> +       struct stat st;
+> +       char *path;
+> +       DIR *dir;
+> +
+> +       path = tracefs_get_tracing_file("options");
+> +       if (!path)
+> +               goto show_file;
+> +       if (stat(path, &st) < 0)
+> +               goto show_file;
+> +
+> +       if ((st.st_mode & S_IFMT) != S_IFDIR)
+> +               goto show_file;
+> +
+> +       dir = opendir(path);
+> +       if (!dir)
+> +               die("Can not read instance directory");
+> +
+> +       while ((dent = readdir(dir))) {
+> +               const char *name = dent->d_name;
+> +               long long val;
+> +               char *file;
+> +               int ret;
+> +
+> +               if (strcmp(name, ".") == 0 ||
+> +                   strcmp(name, "..") == 0)
+> +                       continue;
+> +
+> +               ret = asprintf(&file, "options/%s", name);
+> +               if (ret < 0)
+> +                       die("Failed to allocate file name");
+> +               ret = tracefs_instance_file_read_number(NULL, file, &val);
+> +               if (!ret) {
+> +                       if (val)
+> +                               printf("%s\n", name);
+> +                       else
+> +                               printf("no%s\n", name);
+> +               }
+> +               free(file);
+> +       }
+> +       closedir(dir);
+> +       tracefs_put_tracing_file(path);
+> +       return;
+> +
+> + show_file:
+> +       tracefs_put_tracing_file(path);
+>         show_file("trace_options");
+>  }
 
---=-7g8M82h7hbNIKaBbyQuv
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The libtracefs options APIs can be used, instead of walking through
+the directory:
 
-On Fri, 2021-04-16 at 17:32 -0400, Steven Rostedt wrote:
-> On Fri, 16 Apr 2021 22:48:38 +0200
-> Stefano De Venuto <stefano.devenuto99@gmail.com> wrote:
-> >=20
-> > Yes. An example of those events is visible in this trace:
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trace.dat:=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU 0/KVM-1567=C2=A0 [001]143201=
-75367012:
-> > kvm_entry:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 vcpu 0, rip 0xffffffff84a792b6
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trace.dat:=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU 0/KVM-1567=C2=A0 [001]143201=
-75253942:
-> > write_msr:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 c0011020, value 0
-> > trace-tumbleweed.dat:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 <idle>-0=C2=A0=C2=A0=C2=A0=C2=A0 [000]14320175283462:
-> > hrtimer_cancel:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hrtimer=3D0xffff900=
-2fdc21a00
-> > trace-tumbleweed.dat:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 <idle>-0=C2=A0=C2=A0=C2=A0=C2=A0 [000]14320175291336:
-> > hrtimer_expire_entry: hrtimer=3D0xffff9002fdc21a00
-> > function=3Dtick_sched_timer now=3D3601121397289
-> > trace-tumbleweed.dat:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 <idle>-0=C2=A0=C2=A0=C2=A0=C2=A0 [000]14320175317345:
-> > hrtimer_expire_exit:=C2=A0 hrtimer=3D0xffff9002fdc21a00
-> > trace-tumbleweed.dat:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 <idle>-0=C2=A0=C2=A0=C2=A0=C2=A0 [000]14320175319329:
-> > hrtimer_start:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hrtimer=3D0xff=
-ff9002fdc21a00
-> > function=3Dtick_sched_timer expires=3D3601125253926
-> > softexpires=3D3601125253926 mode=3D0x0
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trace.dat:=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU 0/KVM-1567=C2=A0 [001]143201=
-75331517:
-> > write_msr:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 c0011020, value 40000000000000
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trace.dat:=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU 0/KVM-1567=C2=A0 [001]143201=
-75338548:
-> > kvm_wait_lapic_expire: vcpu 0: delta 534432 (late)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trace.dat:=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU 0/KVM-1567=C2=A0 [001]143201=
-75341750:
-> > kvm_eoi:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 apicid 0 vector 236
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trace.dat:=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU 0/KVM-1567=C2=A0 [001]143201=
-75343465:
-> > kvm_pv_eoi:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- apicid 0 vector 236
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trace.dat:=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU 0/KVM-1567=C2=A0 [001]143201=
-75345704:
-> > kvm_exit:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 vcpu 0 reason msr rip 0xffffffff84a792b4
-> > info1 0x0000000000000001 info2 0x0000000000000000 intr_info
-> > 0x00000000 error_code 0x00000000
->=20
-> Is the above with the time negotiations working fine?
->=20
-Yes. I think this is still with PTP.
+struct tracefs_options_mask *all = tracefs_options_get_supported(NULL);
+struct tracefs_options_mask *enabled = tracefs_options_get_enabled(NULL);
+char *name;
 
-But this time, this is actually all about the host.
+for (int i = 1; i < TRACEFS_OPTION_MAX; i++) {
+        if (!tracefs_option_mask_is_set(all, i))
+                continue;
+        name = tracefs_option_name(i);
+        if (!tracefs_option_mask_is_set(enabled, i))
+                printf("%s\n", name);
+        else
+                printf("no%s\n", name);
+}
 
-> We do not yet support the guest shift, as we found that it was broken
-> (I
-> believe you reported that) and we do not have a machine available to
-> that
-> has that feature :-/
->=20
-Sure, but the problem here is that write_msr, kvm_wait_lapic_expire,
-kvm_eoi, kvm_pv_eoi in trace.dat (which is the host trace), despite
-happening after the VMExit, are shown before kvm_exit.
+>
+> -
+>  static void show_clocks(void)
+>  {
+>         char *clocks;
+> --
+> 2.29.2
+>
 
-This, we think, has to do to where the call to trace_kvm_exit() is in
-the kernel, and that's why we said we'll send a patch to move it.
 
-It was just an example of what and how one can use the simple little
-tool that Stefano has made on top of libkshark, as it was what helped
-us spot this problem. :-)
-
-Regards
---=20
-Dario Faggioli, Ph.D
-http://about.me/dario.faggioli
-Virtualization Software Engineer
-SUSE Labs, SUSE https://www.suse.com/
--------------------------------------------------------------------
-<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
-
---=-7g8M82h7hbNIKaBbyQuv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmB6g3sACgkQFkJ4iaW4
-c+75Jw//ZWQuH8uplU81+lsnspOm/FyPAU1/1YKS0jLkUXjOCNFNJ6qEw44c2Y2p
-IN7CBo8/cJmHokdYH6GqGYdpuzKAXU+2L5Jj44xlW3RmJHM5xVFoSseiWHdKdM5l
-pKmroq1agQZM/DgK81dsFvmUBOFNFXAHLDsLwD20033DQiN2S2KjdJVQ24j3jCSy
-HNdblvbpjK6mbUHblmyEE4sMp+fX0sHnGBzamcghghWkZro3c62JY7KjEO+6b2JC
-IOHDlDtw6TFmsry7qj3N5IIqLqeDYtqB8gBuSrtvUnt6+H7HnoQW7OiqwhWK6o1p
-Xt8faEGo3ShD4Omzyp3fX/bCSXtGcyd4eP00xVFafiqIDm5/jsHo9xI4G1vW4gCp
-0yq8GKl7wLshG2D35RyId86wh/z4Bj/FRgJWLt5wd3fl/VTMFgvnTTCEn1gUiZAs
-sGCsr14NckipsJ7+qXgCXXKC50783gi7sG7sUFKSrLDkrG+xQSZVIARlgbBKl30K
-NfXW8M3juO66TYfSel49lneVG0szx0Ro12hq/a7sZPs7Sdm4J0iRNUDrClVPfGE8
-ktf9AV9h6x5mEf8szU2VmXBgGPEsHCLOd3NeMngOyg4Ulr8R/8//XjQ34Nsiouo7
-IkbMcrwkzVHvrvU0aqFh6tbJaSosY8DknkhOBbWJVn+xqy7XWF4=
-=RMTg
------END PGP SIGNATURE-----
-
---=-7g8M82h7hbNIKaBbyQuv--
-
+-- 
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
