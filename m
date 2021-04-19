@@ -2,244 +2,192 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05148C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 08:10:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1FFAC433B4
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 09:32:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B5C0B61159
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 08:10:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 688586101D
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 09:32:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhDSIKr (ORCPT
+        id S237852AbhDSJca (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 19 Apr 2021 04:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
+        Mon, 19 Apr 2021 05:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237477AbhDSIIu (ORCPT
+        with ESMTP id S235578AbhDSJc3 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:08:50 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87052C06174A
-        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 01:08:21 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id u11so13788822pjr.0
-        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 01:08:21 -0700 (PDT)
+        Mon, 19 Apr 2021 05:32:29 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D832C06174A
+        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 02:32:00 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id bx20so38675818edb.12
+        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 02:32:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4Qac1JTu20U0H8SBfgZX0RezxZ/4s7UEzFKPwrqLjcM=;
-        b=HSY2x51niI5qNG/aXVgfuDYmJ1TRVzKGXXCjh5GLwlIqJlrxv8WBwj4wQI2DvH4HCF
-         kaTfqQ4Rtjfvd1D7fPwY67SPyejNvTXhv3dtCd4JQRQh//aY1LjRMWjzEgnB+RgiHIbp
-         41HSHHCIDkGUYLO/ciXENTTU5bxkRHg2qEx78LVEUi5btOVwfCBJ9KAjvGloVG40DRpb
-         DE6LnBO6NSPN+Tx3Ud34tPUyDGBn8z3LbY6EOZ/3N1kuBBvErKMDcghwCoXvEuxwua+d
-         +FyUVRWlAY+9/H/qE3ESFflLPFueuu6Yu3zfHW50zc8wxyCw4B8JiVHa6bXTlmhHrxVF
-         b9Tw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5d+QZNnFoSVslOFct/uRkPquLmyGPzUwFMniqOWhN0M=;
+        b=ahtyvnB9CwVPZl3ManQocRh4rrof/Gs60+L29Db5fxwFXClpmSk/6G+MXtdEP7CnGf
+         G9/EwpCh9P9sjkuScDjq4ZGRJRtSp0T8TOM0XpW/2fU9MXptFB/CDb178yMIUd3rr3Y5
+         8GEdWuUX+LYFNiqgWDJBZfXhqyv9gzGpf6oD6B55cwfqLpXbhxQ6GIWsHpZ8ST7yjIJb
+         U3sqHFFdecT+6BFzPUkl2b0aHQNZTOjpYDl1/sf7MPhkSH9yYLQPSCYmaiInf2v4YRt4
+         rqRjkfCM6+CXgGALC/1+1YYKOTZquscu/D4Ah+7Mu6eEotoQ2y8wEJ/6pA79VpKKdQ8G
+         sYig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Qac1JTu20U0H8SBfgZX0RezxZ/4s7UEzFKPwrqLjcM=;
-        b=g2dY0aFGVqHdogyeQxCBPXSsg+bJ2yP5lK3eOVl0Z6UL+tcnHcDZOC+JNjLGR7SfuY
-         4HiW04mx5ZdEJFsJRO0E+ax94iJHlyBT4nVinU6cnG9QSrymGcDAeS/EwJpkkKEp0f97
-         DOu4Z1vcVk+1g9JzCCqtp+tnP9lqvjF4KSePVQEG/NeOb8JkvgfBayej+genvwvYcgAj
-         ryiTwKgwNh+CECCBQXJ4j1QiG+DdRGyS3stHKBQCpizw2M4QAmO7jF2GpUkdSFF1MDxm
-         r+moI57wAuoatJC8uTuHhNoheeKYSODHOhPkcvnN34DPHC4bs1Un6gzqviwJS6TIpTJ/
-         PtcQ==
-X-Gm-Message-State: AOAM531F+7flbzBV2RRrBpx4WUUDCMvUzcZOOaWXIDU73ZOS2J22Fbx4
-        RtxtpQ5o6v3WDdcMaR1nZH3xWCp/zPXWDhcSLtXRzgxXg9Q=
-X-Google-Smtp-Source: ABdhPJy8eaZR4Og4T27wjs31iehqsnalEpMYUIGQDKbM/vKthxn/hK77E8YN46mZyYlz9rwDZeO307C2C+F7kOGp6AY=
-X-Received: by 2002:a17:90b:3b43:: with SMTP id ot3mr23042920pjb.100.1618819701000;
- Mon, 19 Apr 2021 01:08:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5d+QZNnFoSVslOFct/uRkPquLmyGPzUwFMniqOWhN0M=;
+        b=lsnT2bTJc5HFsaNhp6nJLVRX+dyBVRHFtXA7xVA8J1v2MdXjUQYHZzc3HRCSJXPC16
+         sNQ6l8doQeHhFDkoCR3ED1xv0ZA4Hft9g0/dN52NaElBdrwCT32SUCwq/RW3x/P8nrPE
+         ZeelDhBPbSRhgbVrwX5jePqaM3AX0/T1KYc0WCEzlwfbenGpg+UeVnXyznr8eub1lD65
+         5SZbiHObo+fhx0G3owsuZ5W3ErQ4FkxMJbJKxvk06RuJbcWUJTbxqgf0eCULTuVV1mQ8
+         Nq7WC9n9mmxKLBc3kVER2ssWrcdwQPm4R0j9n9THfA0uZhvbQjxnv4sL4RJNVE5FnqJD
+         cXyQ==
+X-Gm-Message-State: AOAM532kbqtuTC+lQ8Giy1odQUlZZJ5urA8aFwEQwCx5NEZuW3bmiduQ
+        LntZTBeUUDgcmGWudCyIqSN/umdJ0/Q=
+X-Google-Smtp-Source: ABdhPJwvJTYQhbWKjlJGjtabIgHYsC3+N7IZmYlpdMD9zODwUa61nVrcZN7K3vJK2t4Q87OKnw/gDw==
+X-Received: by 2002:aa7:da18:: with SMTP id r24mr23587979eds.198.1618824719095;
+        Mon, 19 Apr 2021 02:31:59 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id d15sm5327900edu.86.2021.04.19.02.31.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 02:31:58 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2] trace-cmd: Check if file version is supported
+Date:   Mon, 19 Apr 2021 12:31:56 +0300
+Message-Id: <20210419093156.200099-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210416103409.24597-1-tz.stoyanov@gmail.com> <20210416103409.24597-3-tz.stoyanov@gmail.com>
- <20210416161221.031d1f5d@gandalf.local.home>
-In-Reply-To: <20210416161221.031d1f5d@gandalf.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Mon, 19 Apr 2021 11:08:04 +0300
-Message-ID: <CAPpZLN4K6H8p1zNuqHQd0LGDHatAgR+8SHRH1jTP8=Jb_bMZUw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] trace-cmd library: Add check before applying
- tsc2nsec offset
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 11:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Fri, 16 Apr 2021 13:34:08 +0300
-> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
->
-> > When converting TSC timestamps to nanoseconds, an offset is used. That
-> > offset is subtracted from each TSC timestamp, before the conversion.
-> > However, if the timestamp is lower that the offset this causes an
-> > overflow, as both timestamp and offset are unsigned long integers. A
-> > check is added to verify the subtraction will not cause an overflow. In
-> > case of an overflow, the timestamp is set to 0 and a warning message is
-> > printed.
-> >
-> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> > ---
-> >  lib/trace-cmd/trace-input.c | 10 ++++++++--
-> >  1 file changed, 8 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> > index 974879e8..991abd5f 100644
-> > --- a/lib/trace-cmd/trace-input.c
-> > +++ b/lib/trace-cmd/trace-input.c
-> > @@ -1230,8 +1230,14 @@ static unsigned long long timestamp_calc(unsigned long long ts, int cpu,
-> >               ts *= handle->ts2secs;
-> >       } else if (handle->tsc_calc.mult) {
-> >               /* auto calculated TSC clock frequency */
-> > -             ts -= handle->tsc_calc.offset;
-> > -             ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
-> > +             if (ts > handle->tsc_calc.offset) {
-> > +                     ts -= handle->tsc_calc.offset;
-> > +                     ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
-> > +             } else {
-> > +                     tracecmd_warning("Timestamp $llu is before the initial offset %llu, set it to 0",
->
->    $llu  ??
->
-> Are you testing these? The bad trace files that I supplied triggers this.
->
->
-> > +                                      ts, handle->tsc_calc.offset);
-> > +                     ts = 0;
->
-> We should turn off the offset and not just zero out the timestamps,
-> otherwise we just have useless data:
->
->   Timestamp $llu is before the initial offset 20094822433105, set it to 0
->   Timestamp $llu is before the initial offset 20094822433105, set it to 0
->   Timestamp $llu is before the initial offset 20094822460994, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094822961507, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094822967292, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094823302351, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094823306954, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094824963751, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094824965723, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094824972124, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094824972697, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094828868305, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094828871264, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094828881104, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094828882014, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094831874377, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094831876734, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094831881252, set it to 0
-> [..]
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094832060068, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094835262757, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094835265223, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094835270122, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094835273058, set it to 0
-> libtracecmd: File exists
->   Timestamp $llu is before the initial offset 20094835273614, set it to 0
-> cpus=2
->        trace-cmd-3196  [000]     0.000000: sched_stat_runtime:   comm=trace-cmd pid=3196 runtime=85576 [ns] vruntime=12853032342 [ns]
->        trace-cmd-3196  [000]     0.000000: sched_switch:         trace-cmd:3196 [120] S ==> trace-cmd:3199 [120]
->        trace-cmd-3199  [000]     0.000000: sched_stat_runtime:   comm=trace-cmd pid=3199 runtime=156103 [ns] vruntime=12857102867 [ns]
->        trace-cmd-3199  [000]     0.000000: sched_switch:         trace-cmd:3199 [120] S ==> trace-cmd:3198 [120]
->        trace-cmd-3198  [000]     0.000000: sched_stat_runtime:   comm=trace-cmd pid=3198 runtime=100540 [ns] vruntime=12858890364 [ns]
->        trace-cmd-3198  [000]     0.000000: sched_switch:         trace-cmd:3198 [120] S ==> swapper/0:0 [120]
->           <idle>-0     [000]     0.000000: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
->           <idle>-0     [000]     0.000000: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444054745103 function=tick_sched_timer/0x0
->           <idle>-0     [000]     0.000000: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
->           <idle>-0     [000]     0.000000: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444055726117 softexpires=1444055726117
->           <idle>-0     [000]     0.000000: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
->           <idle>-0     [000]     0.000000: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444055895819 function=tick_sched_timer/0x0
->           <idle>-0     [000]     0.000000: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
->           <idle>-0     [000]     0.000000: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444056726117 softexpires=1444056726117
->           <idle>-0     [000]     0.000000: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
->           <idle>-0     [000]     0.000000: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444056782207 function=tick_sched_timer/0x0
->           <idle>-0     [000]     0.000000: softirq_raise:        vec=1 [action=TIMER]
->           <idle>-0     [000]     0.000000: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
->           <idle>-0     [000]     0.000000: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444057726117 softexpires=1444057726117
->           <idle>-0     [000]     0.000000: softirq_entry:        vec=1 [action=TIMER]
->           <idle>-0     [000]     0.000000: timer_cancel:         timer=0xffffa61a0006be40
->           <idle>-0     [000]     0.000000: timer_expire_entry:   timer=0xffffa61a0006be40 function=process_timeout now=4296111312 baseclk=4296111312
->           <idle>-0     [000]     0.000000: sched_waking:         comm=rcu_sched pid=12 prio=120 target_cpu=000
->
-> We don't want all timestamps zero. We want to disable the starting event.
->
-> By having this instead:
->
->                 } else {
->                         tracecmd_warning("Timestamp %llu is before the initial offset %llu\n"
->                                          "\tSetting offset to 0",
->                                          ts, handle->tsc_calc.offset);
->                         handle->tsc_calc.offset = 0;
->                         ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
->                 }
->
+When reading a trace file, version of the file is ignored. This could
+case problems when bumping the version number because of changes in
+in the structure of the file. The old code should detect unsupported
+file version and should not try to read it.
+A new trace-cmd library API is added to check if version is supported:
+ tracecmd_is_version_supported()
+Checks are added in the code to ensure not trying to read trace file
+with unsupported version.
 
-This will set the guest offset to 0, will not change the offsets of
-the other files. The result is that the files will not be displayed in
-sync, because of these few broken events. As this is only a sanity
-check, and should not happen if the patch "trace-cmd: Get the
-timestamp of the first recorded event as TSC offset" is applied, I
-would suggest to zero the broken timestamps and to advise the user to
-use "--raw-ts" option instead:
- "Timestamp %llu is before the initial offset %llu, set it to 0.
-Display the files with --raw-ts option to see the original
-timestamps.\n"
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+v2 changes:
+ - Fix the comparison of the version, to include the current version number.
+ - Make the version variable unsigned.
+ - Coding style fixes.
 
+ lib/trace-cmd/include/private/trace-cmd-private.h |  2 ++
+ lib/trace-cmd/trace-input.c                       | 10 ++++++++++
+ lib/trace-cmd/trace-util.c                        |  7 +++++++
+ tracecmd/trace-dump.c                             |  7 +++++++
+ 4 files changed, 26 insertions(+)
 
-> We get this as output:
->
->   Timestamp 20094822433105 is before the initial offset 20159736262966
->         Setting offset to 0
-> cpus=2
->        trace-cmd-3196  [000]  5923.651995: sched_stat_runtime:   comm=trace-cmd pid=3196 runtime=85576 [ns] vruntime=12853032342 [ns]
->        trace-cmd-3196  [000]  5923.652004: sched_switch:         trace-cmd:3196 [120] S ==> trace-cmd:3199 [120]
->        trace-cmd-3199  [000]  5923.652151: sched_stat_runtime:   comm=trace-cmd pid=3199 runtime=156103 [ns] vruntime=12857102867 [ns]
->        trace-cmd-3199  [000]  5923.652153: sched_switch:         trace-cmd:3199 [120] S ==> trace-cmd:3198 [120]
->        trace-cmd-3198  [000]  5923.652252: sched_stat_runtime:   comm=trace-cmd pid=3198 runtime=100540 [ns] vruntime=12858890364 [ns]
->        trace-cmd-3198  [000]  5923.652253: sched_switch:         trace-cmd:3198 [120] S ==> swapper/0:0 [120]
->           <idle>-0     [000]  5923.652741: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
->           <idle>-0     [000]  5923.652742: hrtimer_expire_entry: hrtimer=0xffff8cc5bd41f780 now=1444054745103 function=tick_sched_timer/0x0
->           <idle>-0     [000]  5923.652744: hrtimer_expire_exit:  hrtimer=0xffff8cc5bd41f780
->           <idle>-0     [000]  5923.652744: hrtimer_start:        hrtimer=0xffff8cc5bd41f780 function=tick_sched_timer/0x0 expires=1444055726117 softexpires=1444055726117
->           <idle>-0     [000]  5923.653892: hrtimer_cancel:       hrtimer=0xffff8cc5bd41f780
->
-> Much more usable.
->
-> -- Steve
->
->
-> > +             }
-> >       }
-> >
-> >       /* User specified time offset with --ts-offset or --date options */
->
-
-
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 56f82244..f7c1fa10 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -42,6 +42,8 @@ void tracecmd_record_ref(struct tep_record *record);
+ void tracecmd_set_debug(bool set_debug);
+ bool tracecmd_get_debug(void);
+ 
++bool tracecmd_is_version_supported(unsigned int version);
++
+ struct tracecmd_output;
+ struct tracecmd_recorder;
+ struct hook_list;
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 991abd5f..0de651a2 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -117,6 +117,7 @@ struct tracecmd_input {
+ 	bool			use_trace_clock;
+ 	bool			read_page;
+ 	bool			use_pipe;
++	int			file_version;
+ 	struct cpu_data 	*cpu_data;
+ 	long long		ts_offset;
+ 	struct tsc2nsec		tsc_calc;
+@@ -3175,6 +3176,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 	unsigned int page_size;
+ 	char *version;
+ 	char buf[BUFSIZ];
++	unsigned long ver;
+ 
+ 	handle = malloc(sizeof(*handle));
+ 	if (!handle)
+@@ -3199,6 +3201,14 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 	if (!version)
+ 		goto failed_read;
+ 	pr_stat("version = %s\n", version);
++	ver = strtol(version, NULL, 10);
++	if (!ver && errno)
++		goto failed_read;
++	if (!tracecmd_is_version_supported(ver)) {
++		tracecmd_warning("Unsupported file version %lu", ver);
++		goto failed_read;
++	}
++	handle->file_version = ver;
+ 	free(version);
+ 
+ 	if (do_read_check(handle, buf, 1))
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index 2d3bc741..a6fc64c8 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -582,3 +582,10 @@ unsigned long long tracecmd_generate_traceid(void)
+ 	free(str);
+ 	return hash;
+ }
++
++bool tracecmd_is_version_supported(unsigned int version)
++{
++	if (version <= FILE_VERSION)
++		return true;
++	return false;
++}
+diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
+index 3f56f65a..aa48eaad 100644
+--- a/tracecmd/trace-dump.c
++++ b/tracecmd/trace-dump.c
+@@ -10,6 +10,7 @@
+ #include <getopt.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
++#include <errno.h>
+ 
+ #include "trace-local.h"
+ 
+@@ -145,6 +146,7 @@ static void dump_initial_format(int fd)
+ 	char magic[] = TRACECMD_MAGIC;
+ 	char buf[DUMP_SIZE];
+ 	int val4;
++	unsigned long ver;
+ 
+ 	do_print(SUMMARY, "\t[Initial format]\n");
+ 
+@@ -166,6 +168,11 @@ static void dump_initial_format(int fd)
+ 		die("no version string");
+ 
+ 	do_print(SUMMARY, "\t\t%s\t[Version]\n", buf);
++	ver = strtol(buf, NULL, 10);
++	if (!ver && errno)
++		die("Invalid file version string %s", buf);
++	if (!tracecmd_is_version_supported(ver))
++		die("Unsupported file version %lu", ver);
+ 
+ 	/* get file endianness*/
+ 	if (read_file_bytes(fd, buf, 1))
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.30.2
+
