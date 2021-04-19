@@ -2,68 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0121FC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 13:02:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A92FAC43460
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 13:02:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C2CA861107
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 13:02:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7E1F561221
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 19 Apr 2021 13:02:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239353AbhDSNCc (ORCPT
+        id S239333AbhDSNCd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 19 Apr 2021 09:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
+        Mon, 19 Apr 2021 09:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239349AbhDSNC2 (ORCPT
+        with ESMTP id S237923AbhDSNC2 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Mon, 19 Apr 2021 09:02:28 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD3BC06174A
-        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 06:01:57 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id o9-20020a1c41090000b029012c8dac9d47so11129438wma.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 06:01:57 -0700 (PDT)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F4EC061761
+        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 06:01:58 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id n10-20020a05600c4f8ab0290130f0d3cba3so4910128wmq.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 19 Apr 2021 06:01:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eH7SA48qCyeRzhStQca5HuvsVbQH6zltweLF7QI7bhI=;
-        b=jt9Swlq3m4FfunZhI39hvjfnrav8+QemH+xQrlRHoeZ3w2GHQH1mLjNnDXYCY9F7Ff
-         g2A2J37duT0bZsi9oORKepiQzjoC1llk6gPkLlc6IazYtKxDzZnCBoU48yW5hJF+pQbI
-         buAbxaq5ydxAZR3EKhNV9vExVqmHM8p0KC6MatDoLPutjP990BLjqOWqe3w0eQgE6yNN
-         teiKArjWaGnbkv0TRw7Ftvuh7/kKpZNunMcTDTkdIRXfiG1YDh/ZKjyNttaDedR5LngW
-         IwSvxZoCRvAiFnC4efBSZsdGThixUwNr28/RWPNCi7SrXGHwa7R3yE3LvY2lb2fSI/K/
-         ggwQ==
+        bh=bdek54BxHStxo8oNaW3unHhknbTsCDJUVuc0kaxw3IY=;
+        b=jzTlflzgFbafYJ/TMyHZNrWUkmCDxMfuH3uz1ZyhVrK9NVF6CQClK0Tdc8ipRfw24d
+         Gwleq0+NmPxM+pcqJ+UUP+xU2fLzwAoaWMT89X4sgYNoIeZZEdhx49vTmIkpDq/jXLjx
+         1MJwJXtu2g213joKQ+xhB7F02ePYyYcJ1+WxyzNVUXW8Fb3InEgxT+Aqr8ZKd46SXz6k
+         g3GiDGYropf+ch1oTxob1Yhexy8rMebha07OWunhr4Cz8SHFVyuYGXVLHAZGJwkhPkde
+         /BYRDEdWtxdbT0Y9qFtVO7YxthhO64BJ7uq8exARcgTsydeS4aDsoraOgVpzizqoUC1Q
+         gHRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eH7SA48qCyeRzhStQca5HuvsVbQH6zltweLF7QI7bhI=;
-        b=JcaD8oRY98hv54rlmqQyq83uhZPtzR8EnfnAq9mM0uMf3GLMs+0Ke0dwSQDduRh+Nm
-         QHGVJx+rn+OQUTMcOJSDtxiXWcvCqXazIERctvVFT2Tdd54myYRuYMA0Mlr8X0Nnkeke
-         H+tBjdVle8WiMPlMqMTAaSI+8MX6LncUYJa4vql65oKQpstA4Zv6Vif+9d4n1OuyS2VN
-         r7XvKTZOIxI1Prkdlp6FQI+5t5amgbS2ci+10GWVikMnXfyb0qWTHohDJ8b2uRVF/67c
-         M0dgApKlmOQh4F5hGJg4ttGWJNtKViodSv1wyogSJUUfbjBgd1a6y/zuaH2CsSWKEN/Q
-         yjoA==
-X-Gm-Message-State: AOAM530DpRwIXbaMjqDykplTSaDj86xfpuJxQXD0wz5RismB2O/0fZM7
-        HLIBcHDWY3waMG3yEVAjRNkLKahRyws=
-X-Google-Smtp-Source: ABdhPJx+zun2sG/hbxNrQ1pfOBmHragm9RhU57VcahheygjLhmHPG1MO3B4fNTrpkSoX6IvzTaQiqg==
-X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr7123455wmq.111.1618837315974;
-        Mon, 19 Apr 2021 06:01:55 -0700 (PDT)
+        bh=bdek54BxHStxo8oNaW3unHhknbTsCDJUVuc0kaxw3IY=;
+        b=lzmCvqVOzK0UBgWbM5JIzOaE3BC9BUttcdkvcp9pdzQ2EbzS5HZLeVRLIvU0zoc837
+         Wklk1GF3mpPNA+P6NVyfWrEp1sX/N0Cux6fQSLud2Q6+zLnAE+slZq4OCI7mndbzUO0v
+         SoRbwikNBe9owu+JB6tvdxokv60RnWoATvriGtLrHlP5DYLs0HsruRZWV4OXu7Qu+gMt
+         oTd1zFturOBbuJKmJ81ZTEe2GAP8LiM+/PhmWCU0kMg+ZbtpXBZ3vMgv8ehV2f4/kZTL
+         /qZRqfVKhwFsImEEqEyYXDjYNja1ch+dMVMKiW3Xv1cdBD4fzMIz+LXy4IFw/d+DLnO9
+         LNKQ==
+X-Gm-Message-State: AOAM530N7Yo5aW2ZbaL+1VWBLIFFSEV4OTxiMhgCmhi9/g3/DAxJet6f
+        PBZMUi9PRDi2GyxrZPNIzxi0rRA8aTM=
+X-Google-Smtp-Source: ABdhPJzZfnl0urhtUims8woF7hlDzepAwpM2OMrWKyTBqiJSJJqc2YZ5XyKP1ZtqJ5OIku5MDwyu/w==
+X-Received: by 2002:a7b:c097:: with SMTP id r23mr20953596wmh.40.1618837316662;
+        Mon, 19 Apr 2021 06:01:56 -0700 (PDT)
 Received: from bucy.vmware.com ([84.40.93.28])
-        by smtp.gmail.com with ESMTPSA id v7sm23164196wrs.2.2021.04.19.06.01.54
+        by smtp.gmail.com with ESMTPSA id v7sm23164196wrs.2.2021.04.19.06.01.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 06:01:55 -0700 (PDT)
+        Mon, 19 Apr 2021 06:01:56 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 3/9] trace-cruncher: Add "utils"
-Date:   Mon, 19 Apr 2021 16:01:34 +0300
-Message-Id: <20210419130140.59140-4-y.karadz@gmail.com>
+Subject: [PATCH 4/9] trace-cruncher: Refactor the examples
+Date:   Mon, 19 Apr 2021 16:01:35 +0300
+Message-Id: <20210419130140.59140-5-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210419130140.59140-1-y.karadz@gmail.com>
 References: <20210419130140.59140-1-y.karadz@gmail.com>
@@ -73,289 +73,628 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Place all the code, that is pure Python, in
-tracecrunche/ks_utils.py and tracecrunche/ft_utils.py
+For the moment we will keep only one example that is "sched_wakeup.py".
+"gpareto_fit.py" gets removed because it doesn't really demonstrate
+anything conceptually different compared to "sched_wakeup.py". The
+difference comes from the more advanced statistical analysis of the data,
+however this goes beyond the scope of trace-cruncher. "page_faults.py"
+gets removed only temporally, because it requires some functionalities
+that are not yet implemented in the ftrace libraries. Once those
+functionalities are made available, the example will be added to
+trace-cruncher again.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- tracecruncher/__init__.py |   0
- tracecruncher/ft_utils.py |  28 +++++
- tracecruncher/ks_utils.py | 227 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 255 insertions(+)
- create mode 100644 tracecruncher/__init__.py
- create mode 100644 tracecruncher/ft_utils.py
- create mode 100644 tracecruncher/ks_utils.py
+ examples/gpareto_fit.py  | 328 ---------------------------------------
+ examples/page_faults.py  | 120 --------------
+ examples/sched_wakeup.py |  70 ++++-----
+ 3 files changed, 30 insertions(+), 488 deletions(-)
+ delete mode 100755 examples/gpareto_fit.py
+ delete mode 100755 examples/page_faults.py
 
-diff --git a/tracecruncher/__init__.py b/tracecruncher/__init__.py
-new file mode 100644
-index 0000000..e69de29
-diff --git a/tracecruncher/ft_utils.py b/tracecruncher/ft_utils.py
-new file mode 100644
-index 0000000..4e99547
---- /dev/null
-+++ b/tracecruncher/ft_utils.py
-@@ -0,0 +1,28 @@
-+"""
-+SPDX-License-Identifier: LGPL-2.1
-+
-+Copyright 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+"""
-+
-+import sys
-+import time
-+import hashlib
-+
-+from . import ftracepy as ft
-+
-+
-+def find_event_id(system, event):
-+    """ Get the unique identifier of a trace event.
-+    """
-+    tep = ft.tep_handle();
-+    tep.init_local(dir=ft.dir(), systems=[system]);
-+
-+    return tep.get_event(system=system, name=event).id()
-+
-+def instance_autoname():
-+    """ Generates a quasi-random (unique) name for a trace instance.
-+    """
-+    unique = ''.join(sys.argv) + str(time.time())
-+    hash = hashlib.sha1()
-+    hash.update(unique.encode('utf-8'))
-+    return hash.hexdigest()
-diff --git a/tracecruncher/ks_utils.py b/tracecruncher/ks_utils.py
-new file mode 100644
-index 0000000..15c7835
---- /dev/null
-+++ b/tracecruncher/ks_utils.py
-@@ -0,0 +1,227 @@
-+"""
-+SPDX-License-Identifier: LGPL-2.1
-+
-+Copyright 2019 VMware Inc, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-+"""
-+
-+import os
-+import json
-+
-+from . import npdatawrapper as dw
-+from . import ksharkpy as ks
-+
-+
-+def size(data):
-+    """ Get the number of trace records.
-+    """
-+    for key in dw.data_column_types:
-+        if data[key] is not None:
-+            return data[key].size
-+
-+    raise Exception('Data size is unknown.')
-+
-+
-+class trace_file_stream:
-+    def __init__(self, file_name='', buffer_name='top'):
-+        """ Constructor.
-+        """
-+        self.file_name = file_name
-+        self.buffer_name = buffer_name
-+        self.stream_id = -1
-+
-+        if file_name:
-+            self.open(file_name)
-+
-+    def open(self, file_name):
-+        """ Open a trace file for reading.
-+        """
-+        self.file_name = file_name
-+        self.stream_id = ks.open(self.file_name)
-+
-+    def open_buffer(self, file_name, buffer_name):
-+        """ Open a aprticular buffer in a trace file for reading.
-+        """
-+        self.file_name = file_name
-+        self.buffer_name = buffer_name
-+        self.stream_id = ks.open_buffer(self.file_name, buffer_name)
-+
-+    def close(self):
-+        """ Close this trace data stream.
-+        """
-+        if self.stream_id >= 0:
-+            ks.close(self.stream_id)
-+            self.stream_id = -1
-+
-+    def set_clock_offset(self, offset):
-+        """ Set the clock offset to be append to the timestamps of this trace
-+            data stream.
-+        """
-+        ks.set_clock_offset(stream_id=self.stream_id, offset=offset)
-+
-+    def load(self, cpu_data=True, pid_data=True, evt_data=True,
-+             ofst_data=True, ts_data=True):
-+        """ Load the trace data.
-+        """
-+        return dw.load(stream_id=self.stream_id,
-+                       ofst_data=ofst_data,
-+                       cpu_data=cpu_data,
-+                       ts_data=ts_data,
-+                       pid_data=pid_data,
-+                       evt_data=evt_data)
-+
-+    def get_tasks(self):
-+        """ Get a dictionary (name and PID) of all tasks presented in the
-+            tracing data.
-+        """
-+        return ks.get_tasks(stream_id=self.stream_id)
-+
-+    def event_id(self, name):
-+        """ Retrieve the unique ID of the event from its name.
-+        """
-+        return ks.event_id(stream_id=self.stream_id, name=name)
-+
-+    def event_name(self, event_id):
-+        """ Retrieve the name of the event from its unique ID.
-+        """
-+        return ks.event_name(stream_id=self.stream_id, event_id=event_id)
-+
-+    def read_event_field(self, offset, event_id, field):
-+        """ Retrieve the value of a trace event field.
-+        """
-+        return ks.read_event_field(stream_id=self.stream_id,
-+                                   offset=offset,
-+                                   event_id=event_id,
-+                                   field=field)
-+
-+    def __enter__(self):
-+        """
-+        """
-+        self.open(self.file_name)
-+        return self
-+
-+    def __exit__(self,
-+                 exception_type,
-+                 exception_value,
-+                 traceback):
-+        """
-+        """
-+        self.close()
-+
-+    def __del__(self):
-+        """
-+        """
-+        self.close()
-+
-+
-+class ks_session:
-+    def __init__(self, session_name):
-+        """ Constructor.
-+        """
-+        self.gui_session(session_name)
-+
-+    def gui_session(self, session_name):
-+        """ Generate a default KernelShark session description
-+            file (JSON).
-+        """
-+        self.name, extension = os.path.splitext(session_name)
-+        json_file = session_name
-+        if extension != '.json':
-+            json_file += '.json'
-+
-+        ks.new_session_file(session_file=json_file)
-+
-+        self.session_file = open(json_file, 'r+')
-+        self.session_doc = json.load(self.session_file)
-+
-+        self.session_doc['Splitter'] = [1, 1]
-+        self.session_doc['MainWindow'] = [1200, 800]
-+        self.session_doc['ViewTop'] = 0
-+        self.session_doc['ColorScheme'] = 0.75
-+        self.session_doc['Model']['bins'] = 1000
-+
-+        self.session_doc['Markers']['markA'] = {}
-+        self.session_doc['Markers']['markA']['isSet'] = False
-+        self.session_doc['Markers']['markB'] = {}
-+        self.session_doc['Markers']['markB']['isSet'] = False
-+        self.session_doc['Markers']['Active'] = 'A'
-+
-+        for stream_doc in self.session_doc["data streams"]:
-+            stream_doc['CPUPlots'] = []
-+            stream_doc['TaskPlots'] = []
-+
-+        self.session_doc['ComboPlots'] = []
-+
-+    def set_cpu_plots(self, stream, plots):
-+        """ Add a list of CPU plots to the KernelShark session description
-+            file.
-+        """
-+        for stream_doc in self.session_doc['data streams']:
-+            if stream_doc['stream id'] == stream.stream_id:
-+                stream_doc['CPUPlots'] = list(map(int, plots))
-+
-+    def set_task_plots(self, stream, plots):
-+        """ Add a list of Task plots to the KernelShark session description
-+            file.
-+        """
-+        for stream_doc in self.session_doc['data streams']:
-+            if stream_doc['stream id'] == stream.stream_id:
-+                stream_doc['TaskPlots'] = list(map(int, plots))
-+
-+    def set_time_range(self, tmin, tmax):
-+        """ Set the time range of the KernelShark visualization model.
-+        """
-+        self.session_doc['Model']['range'] = [int(tmin), int(tmax)]
-+
-+    def set_marker_a(self, row):
-+        """ Set the position of Marker A.
-+        """
-+        self.session_doc['Markers']['markA']['isSet'] = True
-+        self.session_doc['Markers']['markA']['row'] = int(row)
-+
-+    def set_marker_b(self, row):
-+        """ Set the position of Marker B.
-+        """
-+        self.session_doc['Markers']['markB']['isSet'] = True
-+        self.session_doc['Markers']['markB']['row'] = int(row)
-+
-+    def set_first_visible_row(self, row):
-+        """ Set the number of the first visible row in the text data viewer.
-+        """
-+        self.session_doc['ViewTop'] = int(row)
-+
-+    def add_plugin(self, stream, plugin):
-+        """ In the KernelShark session description file, add a plugin to be
-+            registered to a given trace data stream.
-+        """
-+        for stream_doc in self.session_doc["data streams"]:
-+            if stream_doc['stream id'] == stream.stream_id:
-+                stream_doc['plugins']['registered'].append([plugin, True])
-+
-+    def add_event_filter(self, stream, events):
-+        """ In the KernelShark session description file, add a list of
-+            event IDs to be filtered out.
-+        """
-+        for stream_doc in self.session_doc["data streams"]:
-+            if stream_doc['stream id'] == stream.stream_id:
-+                stream_doc['filters']['hide event filter'] = events
-+
-+    def save(self):
-+        """ Save a KernelShark session description of a JSON file.
-+        """
-+        self.session_file.seek(0)
-+        json.dump(self.session_doc, self.session_file, indent=4)
-+        self.session_file.truncate()
-+
-+
-+def open_file(file_name):
-+    """ Open a trace file for reading.
-+    """
-+    return trace_file_stream(file_name)
-+
-+
-+def open_buffer(file_name, buffer_name):
-+    """ Open a aprticular buffer in a trace file for reading.
-+    """
-+    s = trace_file_stream()
-+    s.open_buffer(file_name, buffer_name)
-+    return s
+diff --git a/examples/gpareto_fit.py b/examples/gpareto_fit.py
+deleted file mode 100755
+index 4a2bb2a..0000000
+--- a/examples/gpareto_fit.py
++++ /dev/null
+@@ -1,328 +0,0 @@
+-#!/usr/bin/env python3
+-
+-"""
+-SPDX-License-Identifier: LGPL-2.1
+-
+-Copyright 2019 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
+-"""
+-
+-import sys
+-import json
+-
+-import matplotlib.pyplot as plt
+-import scipy.stats as st
+-import numpy as np
+-
+-from scipy.stats import genpareto as gpareto
+-from scipy.optimize import curve_fit as cfit
+-
+-from ksharksetup import setup
+-# Always call setup() before importing ksharkpy!!!
+-setup()
+-
+-import ksharkpy as ks
+-
+-def chi2_test(hist, n_bins, c, loc, scale, norm):
+-    """ Simple Chi^2 test for the goodness of the fit.
+-    """
+-    chi2 = n_empty_bins = 0
+-    for i in range(len(hist[0])):
+-        if hist[0][i] == 0:
+-            # Ignore this empty bin.
+-            n_empty_bins += 1
+-            continue
+-
+-        # Get the center of bin i.
+-        x = (hist[1][i] + hist[1][i + 1]) / 2
+-        fit_val = gpareto.pdf(x, c=c, loc=loc, scale=scale)
+-        chi = (fit_val - hist[0][i]) / np.sqrt(hist[0][i])
+-        chi2 += chi**2
+-
+-    return  norm * chi2 / (n_bins - n_empty_bins)
+-
+-def quantile(p, P, c, loc, scale):
+-    """ The quantile function of the Generalized Pareto distribution.
+-    """
+-    return loc + scale / c * ((P / p)**(c) - 1)
+-
+-
+-def dq_dscale(p, P, c, scale):
+-    """ Partial derivative of the quantile function.
+-    """
+-    return ((P / p)**c - 1) / c
+-
+-
+-def dq_dc(p, P, c, scale):
+-    """ Partial derivative of the quantile function.
+-    """
+-    return (scale * (np.log(P / p) * (P / p)**c ) / c
+-          - scale * ((P / p)**c - 1) / (c**2))
+-
+-
+-def dq_dP(p, P, c, scale):
+-    """ Partial derivative of the quantile function.
+-    """
+-    return scale / P * (P / p)**c
+-
+-
+-def error_P(n, N):
+-    return np.sqrt(n) / N
+-
+-
+-def error(p, P, c, scale, err_P, err_c, err_scale):
+-    return np.sqrt((dq_dP(p, P, c, scale) * err_P)**2
+-                 + (dq_dc(p, P, c, scale) * err_c)**2
+-                 + (dq_dscale(p, P, c, scale) * err_scale)**2)
+-
+-
+-def quantile_conf_bound(p, P, n, c, loc, scale, err_P, err_c, err_scale):
+-    return (quantile(p=p, P=P, c=c, loc=loc, scale=scale)
+-          + n * error(p=p, P=P, c=c, scale=scale,
+-                      err_P=err_P, err_c=err_c, err_scale=err_scale));
+-
+-
+-def get_latency(t0, t1):
+-    """ Get the value of the latency in microseconds
+-    """
+-    return (t1 - t0) / 1000 - 1000
+-
+-
+-def get_cpu_data(data, task_pid, start_id, stop_id, threshold):
+-    """ Loop over the tracing data for a given CPU and find all latencies bigger
+-        than the specified threshold.
+-    """
+-    # Get the size of the data.
+-    size = ks.data_size(data)
+-    #print("data size:", size)
+-
+-    time_start = -1
+-    dt_ot = []
+-    tot = 0
+-    i = 0
+-    i_start = 0;
+-
+-    while i < size:
+-        if data["pid"][i] == task_pid and data['event'][i] == start_id:
+-            time_start = data['time'][i]
+-            i_start = i;
+-            i = i + 1
+-
+-            while i < size:
+-                if data["pid"][i] == task_pid and data['event'][i] == stop_id:
+-                    delta = get_latency(time_start, data['time'][i])
+-
+-                    if delta > threshold and tot != 0:
+-                        print('lat. over threshold: ', delta, i_start, i)
+-                        dt_ot.append([delta, i_start, i])               
+-
+-                    tot = tot + 1
+-                    break
+-
+-                i = i + 1
+-        i = i + 1
+-
+-    print(task_pid, 'tot:', len(dt_ot), '/', tot)
+-    return dt_ot, tot
+-
+-
+-def make_ks_session(fname, data, start, stop):
+-    """ Save a KernelShark session descriptor file (Json).
+-        The sessions is zooming around the maximum observed latency.
+-    """
+-    sname = 'max_lat.json'
+-    ks.new_session(fname, sname)
+-    i_start = int(start)
+-    i_stop = int(stop)
+-
+-    with open(sname, 'r+') as s:
+-        session = json.load(s)
+-        session['TaskPlots'] = [int(data['pid'][i_start])]
+-        session['CPUPlots'] = [int(data['cpu'][i_start])]
+-
+-        delta = data['time'][i_stop] - data['time'][i_start]
+-        tmin = int(data['time'][i_start] - delta)
+-        tmax = int(data['time'][i_stop] + delta)
+-        session['Model']['range'] = [tmin, tmax]
+-
+-        session['Markers']['markA']['isSet'] = True
+-        session['Markers']['markA']['row'] = i_start)
+-
+-        session['Markers']['markB']['isSet'] = True
+-        session['Markers']['markB']['row'] = i_stop)
+-
+-        session['ViewTop'] = i_start) - 5
+-
+-        ks.save_session(session, s)
+-
+-
+-fname = str(sys.argv[1])
+-status = ks.open_file(fname)
+-if not status:
+-    print ("Failed to open file ", fname)
+-    sys.exit()
+-
+-ks.register_plugin('reg_pid')
+-data = ks.load_data()
+-
+-# Get the Event Ids of the hrtimer_start and print events.
+-start_id = ks.event_id('timer', 'hrtimer_start')
+-stop_id = ks.event_id('ftrace', 'print')
+-print("start_id", start_id)
+-print("stop_id", stop_id)
+-
+-tasks = ks.get_tasks()
+-jdb_pids = tasks['jitterdebugger']
+-print('jitterdeburrer pids:', jdb_pids)
+-jdb_pids.pop(0)
+-
+-threshold = 10
+-data_ot = []
+-tot = 0
+-
+-for task_pid in jdb_pids:
+-    cpu_data, cpu_tot = get_cpu_data(data=data,
+-                                     task_pid=task_pid,
+-                                     start_id=start_id,
+-                                     stop_id=stop_id,
+-                                     threshold=threshold)
+-
+-    data_ot.extend(cpu_data)
+-    tot += cpu_tot
+-
+-ks.close()
+-
+-dt_ot = np.array(data_ot)
+-np.savetxt('peak_over_threshold_loaded.txt', dt_ot)
+-
+-make_ks_session(fname=fname, data=data, i_start=int(dt_ot[i_max_lat][1]),
+-                                        i_stop=int(dt_ot[i_max_lat][2]))
+-
+-P = len(dt_ot) / tot
+-err_P = error_P(n=len(dt_ot), N=tot)
+-print('tot:', tot, ' P =', P)
+-
+-lat = dt_ot[:,0]
+-#print(lat)
+-i_max_lat = lat.argmax()
+-print('imax:', i_max_lat, int(dt_ot[i_max_lat][1]))
+-
+-print('max', np.amax(dt_ot))
+-
+-start = threshold
+-stop = 31
+-n_bins = (stop - start) * 2
+-
+-bin_size = (stop - start) / n_bins
+-
+-x = np.linspace(start=start + bin_size / 2,
+-                stop=stop - bin_size / 2,
+-                num=n_bins)
+-
+-bins_ot = np.linspace(start=start, stop=stop, num=n_bins + 1)
+-#print(bins_ot)
+-
+-fig, ax = plt.subplots(nrows=2, ncols=2)
+-fig.tight_layout()
+-ax[-1, -1].axis('off')
+-
+-hist_ot = ax[0][0].hist(x=lat, bins=bins_ot, histtype='stepfilled', alpha=0.3)
+-ax[0][0].set_xlabel('latency [\u03BCs]', fontsize=8)
+-ax[0][0].set_yscale('log')
+-#print(hist_ot[0])
+-
+-hist_ot_norm = ax[1][0].hist(x=lat, bins=bins_ot,
+-                             density=True, histtype='stepfilled', alpha=0.3)
+-
+-# Fit using the fitter of the genpareto class (shown in red).
+-ret = gpareto.fit(lat, loc=threshold)
+-ax[1][0].plot(x, gpareto.pdf(x, c=ret[0],  loc=ret[1],  scale=ret[2]),
+-              'r-', lw=1, color='red',  alpha=0.8)
+-
+-ax[1][0].set_xlabel('latency [\u03BCs]', fontsize=8)
+-print(ret)
+-print('\ngoodness-of-fit: ' + '{:03.3f}'.format(chi2_test(hist_ot_norm,
+-                                                          n_bins=n_bins,
+-                                                          c=ret[0],
+-                                                          loc=ret[1],
+-                                                          scale=ret[2],
+-                                                          norm=len(lat))))
+-
+-print("\n curve_fit:")
+-# Fit using the curve_fit fitter. Fix the value of the "loc" parameter.
+-popt, pcov = cfit(lambda x, c, scale: gpareto.pdf(x, c=c, loc=threshold, scale=scale),
+-                  x, hist_ot_norm[0],
+-                  p0=[ret[0], ret[2]])
+-
+-print(popt)
+-print(pcov)
+-
+-ax[1][0].plot(x, gpareto.pdf(x, c=popt[0], loc=threshold, scale=popt[1]),
+-              'r-', lw=1, color='blue', alpha=0.8)
+-
+-fit_legend = str('\u03BE = ' + '{:05.3f}'.format(popt[0]) +
+-                 ' +- ' + '{:05.3f}'.format(pcov[0][0]**0.5) +
+-                 ' (' + '{:03.2f}'.format(pcov[0][0]**0.5 / abs(popt[0]) * 100) + '%)')
+-
+-fit_legend += str('\n\u03C3 = ' + '{:05.3f}'.format(popt[1]) +
+-                  ' +- ' + '{:05.3f}'.format(pcov[1][1]**0.5) +
+-                  ' (' + '{:03.2f}'.format(pcov[1][1]**0.5 / abs(popt[1]) * 100) + '%)')
+-
+-fit_legend += '\n\u03BC = ' + str(threshold) + ' (const)'
+-
+-fit_legend += '\ngoodness-of-fit: ' + '{:03.3f}'.format(chi2_test(hist_ot_norm,
+-                                                        n_bins=n_bins,
+-                                                        c=popt[0],
+-                                                        loc=threshold,
+-                                                        scale=popt[1],
+-                                                        norm=len(lat)))
+-print(fit_legend)
+-
+-ax[0][1].set_xscale('log')
+-##ax[0][1].set_yscale('log')
+-ax[0][1].set_xlabel('Return period', fontsize=8)
+-ax[0][1].set_ylabel('Return level [\u03BCs]', fontsize=6)
+-ax[0][1].grid(True, linestyle=":", which="both")
+-
+-y = np.linspace(200000, 5000000, 400)
+-ax[0][1].plot(y,
+-              quantile(1 / y,
+-                       P=P,
+-                       c=popt[0],
+-                       loc=threshold,
+-                       scale=popt[1]),
+-              'r-', lw=1, color='blue', alpha=0.8)
+-
+-ax[0][1].plot(y,
+-              quantile_conf_bound(1 / y,
+-                                  P=P,
+-                                  n=+1, 
+-                                  c=popt[0],
+-                                  loc=threshold,
+-                                  scale=popt[1],
+-                                  err_P=err_P,
+-                                  err_c= pcov[0][0]**0.5,
+-                                  err_scale=pcov[1][1]**0.5),
+-              'r-', lw=1, color='green', alpha=0.8)
+-
+-ax[0][1].plot(y,
+-              quantile_conf_bound(1 / y,
+-                                  P=P,
+-                                  n=-1, 
+-                                  c=popt[0],
+-                                  loc=threshold,
+-                                  scale=popt[1],
+-                                  err_P=err_P,
+-                                  err_c= pcov[0][0]**0.5,
+-                                  err_scale=pcov[1][1]**0.5),
+-              'r-', lw=1, color='green', alpha=0.8)
+-
+-props = dict(boxstyle='round', color='black', alpha=0.05)
+-
+-ax[1][1].text(0.05, 0.85,
+-              fit_legend,
+-              fontsize=9,
+-              verticalalignment='top',
+-              bbox=props)
+-
+-plt.savefig('figfit-all-loaded.png')
+-#plt.show()
+diff --git a/examples/page_faults.py b/examples/page_faults.py
+deleted file mode 100755
+index 446b12d..0000000
+--- a/examples/page_faults.py
++++ /dev/null
+@@ -1,120 +0,0 @@
+-#!/usr/bin/env python3
+-
+-"""
+-SPDX-License-Identifier: LGPL-2.1
+-
+-Copyright 2019 VMware Inc, Yordan Karadzhov <ykaradzhov@vmware.com>
+-"""
+-
+-import os
+-import sys
+-import subprocess as sp
+-import json
+-
+-import pprint as pr
+-import matplotlib.pyplot as plt
+-import scipy.stats as st
+-import numpy as np
+-from collections import Counter
+-from tabulate import tabulate
+-
+-from ksharksetup import setup
+-# Always call setup() before importing ksharkpy!!!
+-setup()
+-
+-import ksharkpy as ks
+-
+-def gdb_decode_address(obj_file, obj_address):
+-    """ Use gdb to examine the contents of the memory at this
+-        address.
+-    """
+-    result = sp.run(['gdb',
+-                     '--batch',
+-                     '-ex',
+-                     'x/i ' + str(obj_address),
+-                     obj_file],
+-                    stdout=sp.PIPE)
+-
+-    symbol = result.stdout.decode("utf-8").splitlines()
+-
+-    if symbol:
+-        func = [symbol[0].split(':')[0], symbol[0].split(':')[1]]
+-    else:
+-        func = [obj_address]
+-
+-    func.append(obj_file)
+-
+-    return func
+-
+-# Get the name of the tracing data file.
+-fname = str(sys.argv[1])
+-
+-ks.open_file(fname)
+-ks.register_plugin('reg_pid')
+-
+-data = ks.load_data()
+-tasks = ks.get_tasks()
+-#pr.pprint(tasks)
+-
+-# Get the Event Ids of the page_fault_user or page_fault_kernel events.
+-pf_eid = ks.event_id('exceptions', 'page_fault_user')
+-
+-# Gey the size of the data.
+-d_size = ks.data_size(data)
+-
+-# Get the name of the user program.
+-prog_name = str(sys.argv[2])
+-
+-table_headers = ['N p.f.', 'function', 'value', 'obj. file']
+-table_list = []
+-
+-# Loop over all tasks associated with the user program.
+-for j in range(len(tasks[prog_name])):
+-    count = Counter()
+-    task_pid = tasks[prog_name][j]
+-    for i in range(0, d_size):
+-        if data['event'][i] == pf_eid and data['pid'][i] == task_pid:
+-            address = ks.read_event_field(offset=data['offset'][i],
+-                                          event_id=pf_eid,
+-                                          field='address')
+-            ip = ks.read_event_field(offset=data['offset'][i],
+-                                     event_id=pf_eid,
+-                                     field='ip')
+-            count[ip] += 1
+-
+-    pf_list = count.items()
+-
+-    # Sort the counters of the page fault instruction pointers. The most
+-    # frequent will be on top.
+-    pf_list = sorted(pf_list, key=lambda cnt: cnt[1], reverse=True)
+-
+-    i_max = 25
+-    if i_max > len(pf_list):
+-        i_max = len(pf_list)
+-
+-    for i in range(0, i_max):
+-        func = ks.get_function(pf_list[i][0])
+-        func_info = [func]
+-        if func.startswith('0x'):
+-            # The name of the function cannot be determined. We have an
+-            # instruction pointer instead. Most probably this is a user-space
+-            # function.
+-            address = int(func, 0)
+-            instruction = ks.map_instruction_address(task_pid, address)
+-
+-            if instruction['obj_file'] != 'UNKNOWN':
+-                func_info = gdb_decode_address(instruction['obj_file'],
+-                                               instruction['address'])
+-            else:
+-                func_info += ['', instruction['obj_file']]
+-
+-        else:
+-            func_info = [func]
+-
+-        table_list.append([pf_list[i][1]] + func_info)
+-
+-ks.close()
+-
+-print("\n", tabulate(table_list,
+-                     headers=table_headers,
+-                     tablefmt='simple'))
+diff --git a/examples/sched_wakeup.py b/examples/sched_wakeup.py
+index 52f2688..acf3682 100755
+--- a/examples/sched_wakeup.py
++++ b/examples/sched_wakeup.py
+@@ -15,28 +15,20 @@ import matplotlib.pyplot as plt
+ import scipy.stats as st
+ import numpy as np
+ 
+-from ksharksetup import setup
+-# Always call setup() before importing ksharkpy!!!
+-setup()
++import tracecruncher.ks_utils as tc
+ 
+-import ksharkpy as ks
+ # Get the name of the user program.
+ if len(sys.argv) >= 2:
+     fname = str(sys.argv[1])
+ else:
+     fname = input('choose a trace file: ')
+ 
+-status = ks.open_file(fname)
+-if not status:
+-    print ("Failed to open file ", fname)
+-    sys.exit()
+-
+-ks.register_plugin('reg_pid')
++f = tc.open_file(file_name=fname)
+ 
+ # We do not need the Process Ids of the records.
+ # Do not load the "pid" data.
+-data = ks.load_data(pid_data=False)
+-tasks = ks.get_tasks()
++data = f.load(pid_data=False)
++tasks = f.get_tasks()
+ 
+ # Get the name of the user program.
+ if len(sys.argv) >= 3:
+@@ -48,11 +40,11 @@ else:
+ task_pid = tasks[prog_name][0]
+ 
+ # Get the Event Ids of the sched_switch and sched_waking events.
+-ss_eid = ks.event_id('sched', 'sched_switch')
+-w_eid = ks.event_id('sched', 'sched_waking')
++ss_eid = f.event_id(name='sched/sched_switch')
++w_eid = f.event_id(name='sched/sched_waking')
+ 
+ # Gey the size of the data.
+-i = data['offset'].size
++i = tc.size(data)
+ 
+ dt = []
+ delta_max = i_ss_max = i_sw_max = 0
+@@ -60,7 +52,7 @@ delta_max = i_ss_max = i_sw_max = 0
+ while i > 0:
+     i = i - 1
+     if data['event'][i] == ss_eid:
+-        next_pid = ks.read_event_field(offset=data['offset'][i],
++        next_pid = f.read_event_field(offset=data['offset'][i],
+                                        event_id=ss_eid,
+                                        field='next_pid')
+ 
+@@ -73,13 +65,13 @@ while i > 0:
+                 i = i - 1
+ 
+                 if data['event'][i] < 0 and cpu_ss == data['cpu'][i]:
+-			# Ring buffer overflow. Ignore this case and continue.
++                        # Ring buffer overflow. Ignore this case and continue.
+                         break
+ 
+                 if data['event'][i] == ss_eid:
+-                    next_pid = ks.read_event_field(offset=data['offset'][i],
+-                                       event_id=ss_eid,
+-                                       field='next_pid')
++                    next_pid = f.read_event_field(offset=data['offset'][i],
++                                                  event_id=ss_eid,
++                                                  field='next_pid')
+                     if next_pid == task_pid:
+                         # Second sched_switch for the same task. ?
+                         time_ss = data['time'][i]
+@@ -89,7 +81,7 @@ while i > 0:
+                     continue
+ 
+                 if (data['event'][i] == w_eid):
+-                    waking_pid = ks.read_event_field(offset=data['offset'][i],
++                    waking_pid = f.read_event_field(offset=data['offset'][i],
+                                                      event_id=w_eid,
+                                                      field='pid')
+ 
+@@ -107,6 +99,7 @@ while i > 0:
+ desc = st.describe(np.array(dt))
+ print(desc)
+ 
++# Plot the latency distribution.
+ fig, ax = plt.subplots(nrows=1, ncols=1)
+ fig.set_figheight(6)
+ fig.set_figwidth(7)
+@@ -119,30 +112,27 @@ ax.set_xlabel('latency [$\mu$s]')
+ ax.hist(dt, bins=(100), histtype='step')
+ plt.show()
+ 
+-sname = 'sched.json'
+-ks.new_session(fname, sname)
++# Prepare a session description for KernelShark.
++s = tc.ks_session('sched')
+ 
+-with open(sname, 'r+') as s:
+-    session = json.load(s)
+-    session['TaskPlots'] = [task_pid]
+-    session['CPUPlots'] = [int(data['cpu'][i_sw_max])]
++delta = data['time'][i_ss_max] - data['time'][i_sw_max]
++tmin = data['time'][i_sw_max] - delta
++tmax = data['time'][i_ss_max] + delta
+ 
+-    if data['cpu'][i_ss_max] != data['cpu'][i_sw_max]:
+-        session['CPUPlots'].append(int(data['cpu'][i_ss_max]))
++s.set_time_range(tmin=tmin, tmax=tmax)
+ 
+-    delta = data['time'][i_ss_max] - data['time'][i_sw_max]
+-    tmin = int(data['time'][i_sw_max] - delta)
+-    tmax = int(data['time'][i_ss_max] + delta)
+-    session['Model']['range'] = [tmin, tmax]
++cpu_plots = [data['cpu'][i_sw_max]]
++if data['cpu'][i_ss_max] != data['cpu'][i_sw_max]:
++    cpu_plots.append(data['cpu'][i_ss_max])
+ 
+-    session['Markers']['markA']['isSet'] = True
+-    session['Markers']['markA']['row'] = int(i_sw_max)
++s.set_cpu_plots(f, cpu_plots)
++s.set_task_plots(f, [task_pid])
+ 
+-    session['Markers']['markB']['isSet'] = True
+-    session['Markers']['markB']['row'] = int(i_ss_max)
++s.set_marker_a(i_sw_max)
++s.set_marker_b(i_ss_max)
+ 
+-    session['ViewTop'] = int(i_sw_max) - 5
++s.set_first_visible_row(i_sw_max - 5)
+ 
+-    ks.save_session(session, s)
++s.add_plugin(stream=f, plugin='sched_events')
+ 
+-ks.close()
++s.save()
 -- 
 2.27.0
 
