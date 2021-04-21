@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58E86C43461
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7DA9C433B4
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 21 Apr 2021 14:52:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 06071613B6
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 21 Apr 2021 14:52:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7EB92613FA
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 21 Apr 2021 14:52:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243684AbhDUOwd (ORCPT
+        id S234550AbhDUOwd (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 21 Apr 2021 10:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234550AbhDUOwa (ORCPT
+        with ESMTP id S243688AbhDUOwb (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:52:30 -0400
+        Wed, 21 Apr 2021 10:52:31 -0400
 Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1E8C06174A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 21 Apr 2021 07:51:55 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id r9so63923016ejj.3
-        for <linux-trace-devel@vger.kernel.org>; Wed, 21 Apr 2021 07:51:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07227C06138B
+        for <linux-trace-devel@vger.kernel.org>; Wed, 21 Apr 2021 07:51:57 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id u21so63956587ejo.13
+        for <linux-trace-devel@vger.kernel.org>; Wed, 21 Apr 2021 07:51:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AROYmnxUZ9EY17rKWAysWnjCIfUD+2dYjEhuGq092Ms=;
-        b=QCp/qk8g47o0Km9ZCEpKdMZnb10ATpNkZW7t97LMUABUfpkN71vqefLmOXmUMs1uiB
-         iXmNuvGQHVdIJXIm7hlsARQ8nz00KuW4GpIRbRvCYFT7dTLMARfpJ7UDboMxFLF8W5GY
-         0WK4dlmBwAD31CEZrSmlv9rulJxXwqpLYaW1Y8JIWwGwf0MZoXolBI9vvfH7vDC4YxuI
-         55U5wxgACsF0SsESesmWQNKtMxFqzU/vnOjjpMiqFWl7kU4hTal02ei0Ferkj9mB8hqQ
-         OLzA2qXEHOsHzY+hIQUbzGmpBVXqcz6AJeOB+TlzJUPjUb4EHDmlzXcKPl3ZRUY++XWf
-         Om5Q==
+        bh=yO134/fyrzsf7ZdtA335MY5WxIHpH5Hodqs2eItOlhU=;
+        b=cHBphYbUs+BA8ItkNL3nbjdHwMQ8sIGxLNWtdTce3sELT6EStxHzqBQc9a/6hdBsO+
+         iAieff6UuDWdZG/By7HW4s2XC/tVZvE9X6NztR4RZnSSzznOs8d6cJY3kYS7spb4sj0H
+         o0nSkToER7OR9GdncM1F68ae7TIHJwxjbJfK3wduM+HMv72q2KktKRuqxwXVyrUa3JMU
+         s+MQ8gg9UfXcICAMMLI5PMF4beSidur0tmHZxLLPZn4B58rpz5TNrGw2PoDeU4vmfJa/
+         Dfkc3vpaehbu5mIzE9Va99QEpkKubChUz4QD9bOOl2xpriM+oW9+yai6h6vTrsRYCIf2
+         qVCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AROYmnxUZ9EY17rKWAysWnjCIfUD+2dYjEhuGq092Ms=;
-        b=HUma0uG/UxW8/KtmlP0aqg/NzJOzx0MDo0LMJSGE8GZNhk90fZfl4LHtQhDsXlHGNe
-         EQh8qKUr2d5z9MkZboC5PZOZHgNPjGRYT7v4Eg+5qPVikTG0RJhIHXdkHPlByfrHNqfY
-         ZD11sASzvJ3J5c3GhgUKbOmCh5RZ1bME1acedmG5mEDMs3O1fv4pA9Urx2w25ESVUUBA
-         Kgl3xx5FvM0crhPe0/UA8XdCTLw3+HO3NdzDIt8HlbAGcGTjDVsCr+mPIDpaj4CMRQAJ
-         bs/jOdKxM46gKH5WFhJsILNb1lMIc+jpwXcRXtEiz7YekZld/ha312iUGnc5ijBvphV1
-         IQng==
-X-Gm-Message-State: AOAM5303yvSKFX+qcfp6jM2sI1LJ95ZDl5C74+DA+C7YioDlMU3SSesd
-        DfGLeTMa4fwp1kYwmQyX2t9nEjlRXxw=
-X-Google-Smtp-Source: ABdhPJxLq0CaHCYtnJySxK2+G31CXuD0k5fjySvj6Vb3yLwzuSPZEg9gIkfe1W7ILFpPzytraCnfaQ==
-X-Received: by 2002:a17:906:1114:: with SMTP id h20mr34182291eja.453.1619016713886;
-        Wed, 21 Apr 2021 07:51:53 -0700 (PDT)
+        bh=yO134/fyrzsf7ZdtA335MY5WxIHpH5Hodqs2eItOlhU=;
+        b=mBhMu9mqFhUE6c6uLw4DpT3chaIQbi1BolqR4dWRoreo9Vb5WDD4DHqK2VDRGXsmoR
+         WWIJdO/MOcDSnBXIfvoAAqCNOm4EE+SWn9ESFMCfAwKzT/mu3Dau3S8Yp8TfpbaQ2Ga+
+         CM1JQqx0ylJWqtGzDKL+ht6B7ohowZu0XcE+WZt+I5viww7ZcTOWvkPoSbMnlBhuMhS9
+         +TLdLwyMuZESAo3cFVryK04HrCEBpvjog2VD0tJ5PrVBdMa2RJIZu74wBKbN6wER/xcb
+         WONOrmIseLvByMh7d1Z0rtdsvOyw0MVGzIZepreA+gz+kSxZz/+JNwxr3RpF1f1qoput
+         TJuQ==
+X-Gm-Message-State: AOAM531OQjzBSDu6bk/nSpjbrJr+un+8dqRXI87jni1MEuOj49MVyv91
+        X8vfz/uoZwdvRz1CCMMfVBz/WI9Rl4U=
+X-Google-Smtp-Source: ABdhPJwQmwCg4FlrxBjZa2QDw0UwPN+Uk/3DQITptsZ76CsOjXp531krk9rbO6M64ovzmk4ZjtKWgw==
+X-Received: by 2002:a17:906:6d15:: with SMTP id m21mr15479309ejr.34.1619016715544;
+        Wed, 21 Apr 2021 07:51:55 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.93.28])
-        by smtp.gmail.com with ESMTPSA id ke14sm2730325ejc.1.2021.04.21.07.51.53
+        by smtp.gmail.com with ESMTPSA id ke14sm2730325ejc.1.2021.04.21.07.51.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 07:51:53 -0700 (PDT)
+        Wed, 21 Apr 2021 07:51:55 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH 2/4] kernel-shark: Polish the README file
-Date:   Wed, 21 Apr 2021 17:51:38 +0300
-Message-Id: <20210421145140.95517-3-y.karadz@gmail.com>
+Subject: [PATCH 4/4] kernel-shark: Integrate install_libkshark-devel.sh
+Date:   Wed, 21 Apr 2021 17:51:40 +0300
+Message-Id: <20210421145140.95517-5-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210421145140.95517-1-y.karadz@gmail.com>
 References: <20210421145140.95517-1-y.karadz@gmail.com>
@@ -73,105 +73,54 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Fixing some typos and making it easier to read.
+So far "install_libkshark-devel.sh" was an unofficial script that
+was used to help installing the "libkshark-devel" component. It was
+introduced, because the CMake syntax for doing this is quite hard to
+memorize. Here we make this script an integrated part of the build
+system. The message output is made consistent with the messages
+printed by "install_gui.sh". The usage of the script is explained
+in README.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- README | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ README                           | 12 +++++++++++-
+ build/install_libkshark-devel.sh |  6 +++++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/README b/README
-index f5035f9..b1934c3 100644
+index b1934c3..652891c 100644
 --- a/README
 +++ b/README
-@@ -7,7 +7,8 @@ The official repository is here:
- Third Party Software:
- ------------------------------------------------------------
- KernelShark has the following external dependencies:
--  Cmake, Json-C, OpenGL/Glut, Qt5Base, libtraceevent, libtracefs, trace-cmd.
-+  Cmake, Json-C, OpenGL/Glut, Qt5Base, libtraceevent, libtracefs, trace-cmd
-+  and FreeSans font.
+@@ -88,7 +88,17 @@ compiled objects and all files generated by CMake.
+ 1.6 By default, installation prefix is "/usr/local". It can be changed using
+ -D_INSTALL_PREFIX= as a CMake Command-Line option (see the example below).
  
- 1. In order to install the packages on Ubuntu do the following:
-     sudo apt-get install build-essential git cmake libjson-c-dev -y
-@@ -15,7 +16,7 @@ KernelShark has the following external dependencies:
-     sudo apt-get install fonts-freefont-ttf
-     sudo apt-get install qtbase5-dev -y
- 
--1.1 I you want to be able to generate Doxygen documentation:
-+1.1 If you want to be able to generate Doxygen documentation:
-     sudo apt-get install graphviz doxygen-gui -y
- 
- 
-@@ -24,7 +25,7 @@ KernelShark has the following external dependencies:
-     dnf install freeglut-devel redhat-rpm-config -y
-     dnf install qt5-qtbase-devel -y
- 
--2.1 I you want to be able to generate Doxygen documentation:
-+2.1 If you want to be able to generate Doxygen documentation:
-     dnf install graphviz doxygen -y
- 
- 
-@@ -46,26 +47,27 @@ KernelShark has the following external dependencies:
- 
- Building:
- ------------------------------------------------------------
--2. Building KernelShark:
-+1. Building and install KernelShark GUI:
- 
-     cd kernel-shark/build
-     cmake ../
-     make
-     sudo ./install_gui.sh
- 
--2.1 In order to create a Doxygen documentation add -D_DOXYGEN_DOC=1
--as a CMake Command-Line option.
-+1.1 In order to create a Doxygen documentation add -D_DOXYGEN_DOC=1
-+as a CMake Command-Line option (see the example below).
- 
--2.2 KernelShark has multiple build types. By default, the build type is
-+1.2 KernelShark has multiple build types. By default, the build type is
- RelWithDebInfo, which will build a release candidate with debug information.
--To change the type, pass in the option CMAKE_BUILD_TYPE=<type>.
-+To change the type, pass in the option CMAKE_BUILD_TYPE=<type> (see the
-+example below).
- 
-     cmake -DCMAKE_BUILD_TYPE=Debug           - for "-g" option
-     cmake -DCMAKE_BUILD_TYPE=Release         - for "-O3" option
-     cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo  - for "-g -O2" option (default)
-     cmake -DCMAKE_BUILD_TYPE=MinSizeRel      - for "-Os" option
- 
--2.3 In addition to the standard CMake build types (Debug, Release,
-+1.3 In addition to the standard CMake build types (Debug, Release,
- RelWithDebInfo, MinSizeRel) KernelShark supports a "Package" build type.
- By default this build type adds the "-O3" compiler flag. Package maintainers
- can chose their own compiler flags by providing the corresponding
-@@ -74,19 +76,19 @@ CMAKE_XXXX_FLAGS_PACKAGE Command-Line options (see the example below).
- -- Note that when built as a "Package" the RPATH-s of the executables are
- set directly to _INSTALL_PREFIX/lib/kernelshark/
- 
--2.4 After building the code "kernel-shark/lib" will contain all libraries
-+1.4 After building the code "kernel-shark/lib" will contain all libraries
- and "kernel-shark/bin" will contain all executables.
- 
--2.5 Use the script "cmake_clean.sh" if you want to delete all already
-+1.5 Use the script "cmake_clean.sh" if you want to delete all already
- compiled objects and all files generated by CMake.
- 
-     cd kernel-shark/build
--    ./cmake-clean.sh
-+    ./cmake_clean.sh
- 
--2.6 By default, installation prefix is "/usr/local". It can be changed using
---D_INSTALL_PREFIX= as a CMake Command-Line option.
-+1.6 By default, installation prefix is "/usr/local". It can be changed using
-+-D_INSTALL_PREFIX= as a CMake Command-Line option (see the example below).
- 
--2.7 In order to uninstall KernelShark do:
-+1.7 In order to uninstall KernelShark do:
+-1.7 In order to uninstall KernelShark do:
++2. To install libkshark-devel do:
++    sudo ./install_libkshark-devel.sh
++
++    This will install all components needed in order to use "libkshark".
++    Note that if you just use:
++
++    sudo make install
++
++    this will install both the GUI and libkshark-devel.
++
++3.  In order to uninstall KernelShark (no matter what has been installed) do:
      cd kernel-shark/build
      ./cmake_uninstall.sh
  
+diff --git a/build/install_libkshark-devel.sh b/build/install_libkshark-devel.sh
+index a7e420d..b20fca0 100755
+--- a/build/install_libkshark-devel.sh
++++ b/build/install_libkshark-devel.sh
+@@ -1 +1,5 @@
+-sudo cmake -DCOMPONENT=libkshark-devel -P cmake_install.cmake
++if cmake -DCOMPONENT=libkshark-devel -P cmake_install.cmake; then
++    echo "libkshark-devel installed correctly"
++else
++        exit 1
++fi
 -- 
 2.27.0
 
