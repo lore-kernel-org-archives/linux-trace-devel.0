@@ -2,72 +2,77 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76324C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 21:14:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09552C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 21:18:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2E8C3613E0
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 21:14:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BF237613E6
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 21:18:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236915AbhDVVPU (ORCPT
+        id S237047AbhDVVSn (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 22 Apr 2021 17:15:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236851AbhDVVPU (ORCPT
+        Thu, 22 Apr 2021 17:18:43 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:51679 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236877AbhDVVSm (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:15:20 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F69F61264;
-        Thu, 22 Apr 2021 21:14:45 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 17:14:43 -0400
+        Thu, 22 Apr 2021 17:18:42 -0400
+Received: from sc9-mailhost1.vmware.com (10.113.161.71) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 22 Apr 2021 14:18:03 -0700
+Received: from vypre.com (unknown [10.21.244.251])
+        by sc9-mailhost1.vmware.com (Postfix) with ESMTP id 84310203F0;
+        Thu, 22 Apr 2021 14:18:06 -0700 (PDT)
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] trace-cmd list: Use tracefs to help find events for
- -e
-Message-ID: <20210422171443.2d9521b2@gandalf.local.home>
-In-Reply-To: <CAPpZLN6_NjZYmhDMfskxtKOaVrVm+6pa2ic-LrvoKGBN+h=QhQ@mail.gmail.com>
-References: <20210416213018.3890036-1-rostedt@goodmis.org>
-        <20210416213018.3890036-2-rostedt@goodmis.org>
-        <CAPpZLN6_NjZYmhDMfskxtKOaVrVm+6pa2ic-LrvoKGBN+h=QhQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     <linux-trace-devel@vger.kernel.org>
+CC:     Nicolas Sterchele <nicolas@sterchelen.net>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH v2 0/3] trace-cmd: Add more ways to view options
+Date:   Thu, 22 Apr 2021 17:18:00 -0400
+Message-ID: <20210422211803.862397-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: rostedt@goodmis.org does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 19 Apr 2021 08:10:57 +0300
-Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-> > --- a/lib/trace-cmd/trace-input.c
-> > +++ b/lib/trace-cmd/trace-input.c
-> > @@ -1234,9 +1234,11 @@ static unsigned long long timestamp_calc(unsigned long long ts, int cpu,
-> >                         ts -= handle->tsc_calc.offset;
-> >                         ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);
-> >                 } else {
-> > -                       tracecmd_warning("Timestamp $llu is before the initial offset %llu, set it to 0",
-> > +                       tracecmd_warning("Timestamp %llu is before the initial offset %llu\n"
-> > +                                        "\tSetting offset to 0",
-> >                                          ts, handle->tsc_calc.offset);
-> > -                       ts = 0;
-> > +                       handle->tsc_calc.offset = 0;
-> > +                       ts = mul_u64_u32_shr(ts, handle->tsc_calc.mult, handle->tsc_calc.shift);  
-> 
-> That looks like from a different patch? I'll send v3 from my patch set
-> with these fixes.
-> 
-> >                 }
-> >         }
+When testing the func-norepeats patch series from Yordan, I wanted a way
+to see what options were enabled for all tracers without having to
+enable a tracer first.
 
-Yes, that was leftover from another change that accidentally got committed
-into this one. Thanks for noticing. I'll be sending out a v2.
+Change trace-cmd list to look at the options in the options directory
+instead of the trace_options file, as the trace_options file only shows
+the options for the current tracer and global options. The options
+directory shows all options since Linux 4.4.
 
--- Steve
+Add -o to stat to display the options, as stat lets you see instances
+where as list does not.
+
+Changes since v1:
+
+ - Included the --full patch, to remove flags from a die() call.
+ - Removed extra changes that did not belong to this patch series.
+ - Rebased on top of the --full patch.
+
+Steven Rostedt (VMware) (3):
+  trace-cmd list: Add --full to show print fmt of an event
+  trace-cmd list: Use tracefs to help find events for -e
+  trace-cmd list: Add ftrace events to listing of events
+
+ Documentation/trace-cmd/trace-cmd-list.1.txt |   5 +-
+ tracecmd/trace-list.c                        | 179 +++++++++++++++++--
+ tracecmd/trace-usage.c                       |   1 +
+ 3 files changed, 168 insertions(+), 17 deletions(-)
+
+-- 
+2.29.2
+
