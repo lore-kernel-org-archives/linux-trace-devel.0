@@ -2,111 +2,67 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D1DC43460
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 14:55:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 517A3C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 20:25:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 11DE66144D
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 14:55:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1415D60C3E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 20:25:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236487AbhDVOzw (ORCPT
+        id S236974AbhDVU0E (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 22 Apr 2021 10:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236476AbhDVOzw (ORCPT
+        Thu, 22 Apr 2021 16:26:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236969AbhDVU0C (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:55:52 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9037C06174A;
-        Thu, 22 Apr 2021 07:55:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:Cc:To:From;
-        bh=ApBLGdb3srp23UKzOn+9GIUCj37fwCzBovp3Qog0JZE=; b=Wazm+xLNx+jQkpZCJJA2yhmrlf
-        EJmV4jeWw9mlPtv894B5AZgmmaJyVpUvhJtJRC0l9nbSFU0fYAMGICZOuzO2rghClGPQ6CkdFQD90
-        2I79SPqLnTptmWkk+XNz3ZEDHqDuY2Nsda+QPl26LudLhNN6hdVJaoSnLzNdikDsStHWoDRx2JlSO
-        M6UmKaIE7yvVQPCm3EUV0Ovx3BGmrE8ykfF3tvSX1raQJRtzHME/oShAHiPsJt4iyyNEwfkfG87dK
-        7kuRIh9176iIbg2y1YfbvFE0JKGSWPk/OpgwzqdSWVSKQMbfPLEpuIDm11QWjunBNjp/ln+Mxn3hN
-        WUJG7pq5SgG7BPPwcZmjnN3O5xAmJoAOVUfpeuCadl4eBz0d68UXrZShM/Wh3zQbNNfb6kSwEskXg
-        0Vajjg9zPhgyHx5HryIltw5Tl8QoIBCQOhqUEp/PIPgQshAblq/lh43/O5QWO6wYpJbZCxnoA1M3s
-        FhnOMpHqr8/NjJtY2ZgybCoB;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1lZajX-0000sy-UN; Thu, 22 Apr 2021 14:55:12 +0000
-Subject: Re: Tracing busy processes/threads freezes/stalls the whole machine
-From:   Stefan Metzmacher <metze@samba.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-trace-devel@vger.kernel.org,
-        io-uring <io-uring@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-References: <293cfb1d-8a53-21e1-83c1-cdb6e2f32c65@samba.org>
-Message-ID: <9f1e123b-dc5a-7ab4-2daa-e1d7dbfe7042@samba.org>
-Date:   Thu, 22 Apr 2021 16:55:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 22 Apr 2021 16:26:02 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4CEB61405;
+        Thu, 22 Apr 2021 20:25:26 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 16:25:25 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] trace-cmd: Suppress trace library warnings
+Message-ID: <20210422162525.495e2d17@gandalf.local.home>
+In-Reply-To: <20210416100118.585d3865@gandalf.local.home>
+References: <20210415080316.3482986-1-tz.stoyanov@gmail.com>
+        <20210415093428.1a3a1678@gandalf.local.home>
+        <CAPpZLN7ZvgSKoNVek+msCHarKY7F-dYUhKSuoKt_DF2qaE_rwg@mail.gmail.com>
+        <20210416095908.258d4c96@gandalf.local.home>
+        <20210416100118.585d3865@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <293cfb1d-8a53-21e1-83c1-cdb6e2f32c65@samba.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Hi Jens,
+On Fri, 16 Apr 2021 10:01:18 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-maybe not strictly related, but maybe it is...
-
-> I recently tried to analyze the performance of Samba using io-uring.
+> On Fri, 16 Apr 2021 09:59:08 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> I was using ubuntu 20.04 with the 5.10.0-1023-oem kernel, which is based on v5.10.25, see:
-> https://kernel.ubuntu.com/git/kernel-ppa/mirror/ubuntu-oem-5.10-focal.git/log/?h=oem-5.10-prep
-> trace-cmd is at version 2.8.3-4build1.
+> > 
+> > As for pr_stat(), I think we should rename it to tep_info() and tep_vinfo()
+> > that acts just like tep_warning(), except it is for informational output
+> > (stdout instead of stderr). This is similar to what the kernel has.
+> > 
+> > Since tep_vwarning() takes a name, so can tep_vinfo(), and I was thinking
+> > that we should expose this string to the application.
+> >   
 > 
-> In order to find the bottleneck I tried to use (trace-cmd is at version 2.8.3-4build1):
-> 
->   trace-cmd -e all -P ${pid_of_io_uring_worker}
-> 
-> As a result the server was completely dead immediately.
-> 
-> I tried to reproduce this in a virtual machine (inside virtualbox).
-> 
-> I used a modified 'io_uring-cp' that loops forever, see:
-> https://github.com/metze-samba/liburing/commit/5e98efed053baf03521692e786c1c55690b04d8e
-> 
-> When I run './io_uring-cp-forever link-cp.c file',
-> I see a 'io_wq_manager' and a 'io_wqe_worker-0' kernel thread,
-> while './io_uring-cp-forever link-cp.c file' as well as 'io_wqe_worker-0'
-> consume about 25% cpu each.
+> Oh, and we could add a tep_critical() and tep_vcritical() which means that
+> the error is something really bad happened, (like failed to allocate).
 
+Any thoughts on this?
 
-While doing the tests with 5.12-rc8, I somehow triggered
-a backtrace on the VM console:
-
-it contains:
-
-...
-io_issue_seq...
-...
-io_wq_submit_work
-io_worker_handle_work
-io_wqe_worker
-...
-io_worker_handle_work
-...
-
-RIP: 0100:trace_event_buffer_reserve+0xe5/0x150
-
-Here's a screenshot of it:https://www.samba.org/~metze/io_issue_sqe_trace_event_buffer_reserve-5.12-rc8-backtrace.png
-
-I don't know what the last action was, that I did before it happened.
-
-metze
-
-
+-- Steve
