@@ -2,79 +2,62 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66065C433ED
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 20:51:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 923D8C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 21:07:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 29DAD6113B
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 20:51:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 52F5B613E6
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 22 Apr 2021 21:07:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236851AbhDVUw0 (ORCPT
+        id S236896AbhDVVIJ (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 22 Apr 2021 16:52:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239406AbhDVUw0 (ORCPT
+        Thu, 22 Apr 2021 17:08:09 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:20411 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236851AbhDVVIJ (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:52:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89FEF6141C;
-        Thu, 22 Apr 2021 20:51:50 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 16:51:48 -0400
+        Thu, 22 Apr 2021 17:08:09 -0400
+Received: from sc9-mailhost1.vmware.com (10.113.161.71) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 22 Apr 2021 14:07:29 -0700
+Received: from vypre.com (unknown [10.21.244.251])
+        by sc9-mailhost1.vmware.com (Postfix) with ESMTP id 416E32046C;
+        Thu, 22 Apr 2021 14:07:33 -0700 (PDT)
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Nicolas Sterchele <nicolas@sterchelen.net>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH] trace-cmd list: Add --full to show print fmt of an
- event
-Message-ID: <20210422165148.6d0ea90e@gandalf.local.home>
-In-Reply-To: <YIHfki40RQf+J8/Y@hercule>
-References: <20210416141720.57a7963d@gandalf.local.home>
-        <YIHfki40RQf+J8/Y@hercule>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To:     <linux-trace-devel@vger.kernel.org>
+CC:     Nicolas Sterchele <nicolas@sterchelen.net>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 0/2] trace-cmd: Add gcc printf format specifier
+Date:   Thu, 22 Apr 2021 17:07:28 -0400
+Message-ID: <20210422210730.857958-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: rostedt@goodmis.org does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 22 Apr 2021 22:41:54 +0200
-Nicolas Sterchele <nicolas@sterchelen.net> wrote:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-> >@@ -84,7 +85,7 @@ static void process_file_re(process_file_func func,
-> > 		strcpy(&str[l-1], "\n*$");
-> >
-> > 	if (regcomp(&reg, str, REG_ICASE|REG_NOSUB))
-> >-		die("invalid function regex '%s'", re);
-> >+		die("invalid function regex '%s'", re, flags);  
-> 
-> Shouldn't we add `flags` inside the fmt string?:
-> 		die("invalid function regex '%s' with '%d' as flags", re, flags);
+To keep from having bad warning() or die() formats with repect to their
+args, add the gcc printf format specifier that will have gcc check the
+formatting of the strings used.
 
-Nice catch, but no, flags just needs to be dropped.
+Steven Rostedt (VMware) (2):
+  trace-cmd: Add printf format attribute to die() and warning()
+  trace-cmd: Fix up the die() formats
 
-The "flags" was added in a different patch, and as I was writing updates in
-individual patches (and not a series), I found that in some places that I
-had conflicts. And the patch that added "flags" all over the place I had to
-update accordingly.
+ tracecmd/include/trace-local.h |  5 +++++
+ tracecmd/trace-dump.c          | 14 +++++++-------
+ tracecmd/trace-record.c        |  2 +-
+ 3 files changed, 13 insertions(+), 8 deletions(-)
 
-This is simply a case of me adding ", flags" to the wrong function
-(*embarrassed*)!
+-- 
+2.29.2
 
-It doesn't need to be printed, but it shouldn't be passed to die either.
-
-One way I could have caught this was by adding the printf attribute to the
-die() header, where things like this will cause warnings.
-
-Thanks for the report. I'll fix it.
-
--- Steve
-
-
-> 
-> > 	free(str);
