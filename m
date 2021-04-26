@@ -2,153 +2,116 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D8F1C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Apr 2021 13:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83799C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Apr 2021 13:35:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3FF8561107
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Apr 2021 13:26:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5069961157
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 26 Apr 2021 13:35:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhDZN0y (ORCPT
+        id S233501AbhDZNfx (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 26 Apr 2021 09:26:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54690 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233739AbhDZNYw (ORCPT
+        Mon, 26 Apr 2021 09:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhDZNfw (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 26 Apr 2021 09:24:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619443449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KY3YlGObSOOB5+/27rx+BUO9qwXOrmRHEMFnAC0lzR4=;
-        b=XnjiM5ar+TPY2adRFmpTBtptZZ1G5NnY3Zm8ak/XJ038pR6hVt/BoW+PTyfgNzkmrFJ6JJ
-        rdW79NWQdJzHnzTztRTG1fcq9Q1bTGHCk5ktD7Bdsok+q8DhX71lNSQJcllSty59WzOek3
-        e0hBBhA3M4eTNMRlF2xZGbs7uVPJVqM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4B72AABED;
-        Mon, 26 Apr 2021 13:24:09 +0000 (UTC)
-Message-ID: <d19c679218fcb43179a711740186781f3c29265a.camel@suse.com>
-Subject: Re: Instructions for clock sync for tracing host/guest
-From:   Dario Faggioli <dfaggioli@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Cc:     Joel Fernandes <joelaf@google.com>,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Date:   Mon, 26 Apr 2021 15:24:01 +0200
-In-Reply-To: <20210426085654.5a47e7e5@gandalf.local.home>
-References: <CAJWu+opJEtyXyhYnKL1iNzhfSCYRZN4PD50igckVvQV8416HEQ@mail.gmail.com>
-         <CAJWu+orm+tm3C=MSF=p9eC1qgfE_pXzA2B0CiXgVXFemVRiVtA@mail.gmail.com>
-         <CAJWu+opzT20OprG-8L_Lvv2DaJzF-ROaKnEWX8wjrbagPpwVzA@mail.gmail.com>
-         <CAJWu+oqJk+BE2q=CjtAZJko-kJCS0Kyqwor_FVM3fu-X-rRRkg@mail.gmail.com>
-         <20210422153845.3e6e9304@gandalf.local.home>
-         <CAJWu+ooTVfprhd49__0H_61Fz_rSQA53n-VM6e1eEr8cTZ5aYQ@mail.gmail.com>
-         <20210422154830.52f3e4f5@gandalf.local.home>
-         <CAJWu+oqYWv5OHTLrC+oa7Y+LOe7AHumhtyVP8TC2LkK2=_JjPA@mail.gmail.com>
-         <20210422160313.2eee1f77@gandalf.local.home>
-         <CAJWu+ooZ9UptDBdii7dj=ui7dhiseOqZJE1CqMhP-Zy98QueXA@mail.gmail.com>
-         <CAJWu+opsWVBDA8R-wVhhn2G_6h1LsMwzRDE=gMruZpFG+AH5zQ@mail.gmail.com>
-         <CAJWu+oo8W9TVexZhhOs4P-DW1bH5DSjAzuV8QZMxvt9XHbRnJg@mail.gmail.com>
-         <CAPpZLN5J8OYy2e87ns5tbxhd_O6Sh-r3_JJiX72iimEHn_dzrg@mail.gmail.com>
-         <20210425142935.52078301@rorschach.local.home>
-         <CAPpZLN7hhypY6+s5R+JX1u2e9Typ-1O1yC9mDoEcRYKLHYGFNw@mail.gmail.com>
-         <20210426085654.5a47e7e5@gandalf.local.home>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-NKuz1kSOr2mWVBg/gVkp"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        Mon, 26 Apr 2021 09:35:52 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80280C061574
+        for <linux-trace-devel@vger.kernel.org>; Mon, 26 Apr 2021 06:35:11 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id t22so4806631pgu.0
+        for <linux-trace-devel@vger.kernel.org>; Mon, 26 Apr 2021 06:35:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nZV+iijfOU5e1q7RiC6a+y+J7UI/VUvVbkxqUA91D2o=;
+        b=N//y/Vszug6+8HzCtgtBPUyfrZyGB7GJ9l4sXs5j/2fJiQens7heT/r/sIlk5wV/7O
+         mdvE0+pFX1jHXPkh6IabsGRwODiDhHOUPQXzmwmLhiSqbJCs+ul0WtUQhcUZcw5vwcFA
+         n31aztRbfZKhPPxlZj4/WjMYQ3iByZpM/SZTQduwjJve8R+ynBJ2OizzejW/YI+ZSeLG
+         uWJHCmRrXYehVmolhopBzRo9Ux3OFzHgtY4BWaxDrW6nQGYGUa7AWg3iRCJuUWgbnQJk
+         6hU87ik5u7sPN4KN0xO+e4BW06D/ZTZ7ydIZxw9sPayy1OEWU0CXjAPjvT/qK+MNGqX/
+         vIQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nZV+iijfOU5e1q7RiC6a+y+J7UI/VUvVbkxqUA91D2o=;
+        b=ivZW13IhwoF+3zqiWkMzsczlapeyARZYJIKnwTGyhTj/JBAMEuk1R/Orb/OdABiMXi
+         Jos9uxbVmVMxSIrAcSTae2gENH8g/QIYVw9V6a+mJlJHwME3ayCXVPfPHzaBwRcTEPeo
+         B79Jtw9v7v7eXIoPn/zv+L+5Z8Ttj3p+Y4G9Y0upbTxR1h4n1qEUv8FozNE2ZErXZHhl
+         3IaLzjP0tBZMU+LAUlwWBzp2UZzvuWgNQFzkwgzjOSPPxQ/ewDKhFFUZ9m7I3au0PCH1
+         ot7ScavAImaqdN6AMYBrvnobBkdV5SZ0Nu5S4BllO/+QbaOA0LVYtjh/yXSoDltFojK7
+         yTVw==
+X-Gm-Message-State: AOAM530i76DeyN5w8ubhdZAQjLwDz/vfYKYVkAD7Pen/EcBQJN38ytym
+        PMjTpS85745ldDAkaXF0J0Ho4T0FM6Y9o+27+DEukZmb8yRhgg==
+X-Google-Smtp-Source: ABdhPJw+xm7Q0RvjfaZrEP+XRndB9PKOsQhafBYQNi9NpdeEJ22faXumqbp4lmyM42AilyOM7YltERmFkCuvOZvAs0Y=
+X-Received: by 2002:aa7:8051:0:b029:272:7b9c:cde1 with SMTP id
+ y17-20020aa780510000b02902727b9ccde1mr10533408pfm.55.1619444111077; Mon, 26
+ Apr 2021 06:35:11 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210423232648.1197063-1-sudipm.mukherjee@gmail.com>
+In-Reply-To: <20210423232648.1197063-1-sudipm.mukherjee@gmail.com>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Mon, 26 Apr 2021 16:34:54 +0300
+Message-ID: <CAPpZLN5CNmN-g2wOGYAOEK0V1etk8bxe1QcN=LQ3wmnkVO_7yw@mail.gmail.com>
+Subject: Re: [PATCH] libtracefs: use mode with open()
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
+On Sat, Apr 24, 2021 at 2:27 AM Sudip Mukherjee
+<sudipm.mukherjee@gmail.com> wrote:
+>
+> If -D_FORTIFY_SOURCE=3D2 is mentioned as a buildflag then the build fails
+> with the error:
+> In function =E2=80=98open=E2=80=99,
+>     inlined from =E2=80=98copy_trace_file=E2=80=99 at tracefs-utest.c:103=
+2:10:
+> error: call to =E2=80=98__open_missing_mode=E2=80=99 declared with attrib=
+ute error:
+>   open with O_CREAT or O_TMPFILE in second argument needs 3 arguments
+>
+> Mention the permission with open() when O_CREAT is mentioned.
+>
+> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
---=-NKuz1kSOr2mWVBg/gVkp
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Thanks Sudip!
+Acked-by: Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
 
-On Mon, 2021-04-26 at 08:56 -0400, Steven Rostedt wrote:
-> On Mon, 26 Apr 2021 13:39:32 +0300
-> Tzvetomir Stoyanov <tz.stoyanov@gmail.com> wrote:
-> > >=20
-> > > There, I see the guest vcpu 0 is controlled by the host thread
-> > > with pid
-> > > 129042 and vcpu 1 is controlled by host thread pid 129043.=C2=A0=20
-> >=20
-> > It works only in case of one VM, if there are more than one -
-> > cannot
-> > map kvm_entry event to specific VM.
->=20
-> =C2=A0# trace-cmd record -e sched_wakeup -e kvm_entry
->=20
-> And have this:
->=20
-> =C2=A0=C2=A0=C2=A0 vsock-client-159876 [000]1346877108580652: sched_wakeu=
-p:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> vhost-128994:129046 [120] success=3D1 CPU:006
->=20
-> =C2=A0=C2=A0=C2=A0 vhost-128994-129046 [006]1346877108678708: sched_wakeu=
-p:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> CPU 0/KVM:129042 [120] success=3D1 CPU:007
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU 0/KVM-129042 [007]13468771092900=
-44: kvm_entry:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0
-> vcpu 0
->=20
-Mmm... This is quite interesting. But there's something I don't think
-I'm understanding.
-
-
-> Instead of looking at vsock-client, look at the current pid and see
-> what
-> "vhost" it wakes up, then see what what thread it wakes up, and then
-> see if
-> it calls kvm_entry. we don't even need to know if it is a vhost. Just
-> trace
-> everything that our current thread wakes up and what those wake up
-> until
-> something calls kvm_entry.
->=20
-So, what's the mapping (like, mapping between what and what) that we
-are interested in here, and what kind of into trick with vsock-client
-is helping us gather, that we don't already have by "just" looking at
-the kvm_entry events?
-
-Regards
---=20
-Dario Faggioli, Ph.D
-http://about.me/dario.faggioli
-Virtualization Software Engineer
-SUSE Labs, SUSE https://www.suse.com/
--------------------------------------------------------------------
-<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
-
---=-NKuz1kSOr2mWVBg/gVkp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmCGvvEACgkQFkJ4iaW4
-c+5fTg//X3VX7F/+Hu6NNTwWk0y+k07/fpuJ2OhLS5BZG5MIvOBT3yqYjyQ1CnkO
-q72HNCkOoYyDWbjp4RzQlF1+jw/a22LpzwIjQqRGR1/w+ap+sRj/rx1N/ePjDDdl
-5hA8GLc9ZwQ0Z9NqHw3PQ+HX+mUMKLFWOA7Xwf+wYkBzV7AUM+JzR1xdvHQMMCFL
-q8UrlELpnl+vGUXfc76nG0ykFVxRB49X0cEjbYgeaeGl8ZYXMiM3q4uGfsc6YIh1
-1Qt6C6YsoGOS/1cxnutaK9q1FLuPwUnhAgooquHTN3CadUSN2KGmlqgIYO0+Fc7P
-eDnJzi8LnTeDIi6ydQIUSU6Ow6/h7XSN8abfCZMi6kVtkpBqmgY342wN9LE8hpzs
-m2xO3mYtv/Ox/XHXrDzqCurr5mFM6bf+aSL1Iz2Yf+TsCvVupm87k7Gtz4kCI8yG
-0SXmnjt+yM+Cb+/RWTBhzkRqT6S5gMPG/GqMPMLSBlC0Ag+YMDgLqui2JNxV+rLY
-D/zX7vNCIJuQFxSSA1ZTvO9UKfH/mv0r/xe3VMJbR8hFITM6066/sgjMBgeIeM/l
-IakZYsU8tQpLVz3leOwRTHxBhng/+ReNSgSEdPboehZA9VRfQSIYria+5iintOqj
-zI6sj/2PACrRC1ffriIGVs0IMLUgfl1c5H17RrwIN6D63TJrD6g=
-=8MhE
------END PGP SIGNATURE-----
-
---=-NKuz1kSOr2mWVBg/gVkp--
-
+> ---
+>  utest/tracefs-utest.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+> index edb3a3d..0965363 100644
+> --- a/utest/tracefs-utest.c
+> +++ b/utest/tracefs-utest.c
+> @@ -1061,7 +1061,7 @@ static void copy_trace_file(const char *from, char =
+*to)
+>         fd_from =3D open(from, O_RDONLY);
+>         if (fd_from < 0)
+>                 goto out;
+> -       fd_to =3D open(to, O_WRONLY | O_TRUNC | O_CREAT);
+> +       fd_to =3D open(to, O_WRONLY | O_TRUNC | O_CREAT, S_IRWXU | S_IRWX=
+G);
+>         if (fd_to < 0)
+>                 goto out;
+>
+> --
+> 2.30.2
+>
+--
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
