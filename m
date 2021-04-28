@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 938EEC43460
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73498C43461
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:46:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5DE5E606A5
+	by mail.kernel.org (Postfix) with ESMTP id 3DB3061007
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:46:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236453AbhD1HrX (ORCPT
+        id S236448AbhD1HrX (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 28 Apr 2021 03:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236805AbhD1HrV (ORCPT
+        with ESMTP id S236453AbhD1HrV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Wed, 28 Apr 2021 03:47:21 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A104AC06138C
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:46:36 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id t4so9892023ejo.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:46:36 -0700 (PDT)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964FBC06138B
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:46:35 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id u3so14496767eja.12
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7G682/KnhlYStPg0ZV0KAKS4OzGXjPQxgHk3OUPpD48=;
-        b=TKBT79w/tjqn/ZAwBkFQTnnEvS68tYmrkyM6T9ytN8+nRU3As3Y8Rd4KFP56xcgLzq
-         D/YIKX6w5w2Xw1AnShuZh6sDaLHolVy7q8AP48PTQ1vknCZw7O9U/zjBN2IdEOM99eyc
-         VqKDBOLeqMnI0shYNb4YNUmSYUTMANWiQnYR1b/wI1OLkMAt5zicgY4LszowAHoGxMcF
-         i3/ivvwhb597RYD8o/Fi36Am1H3cHWOEIUMs5YOWP9A2m9m6Zdh2uYWK2MwuZWokJg88
-         WhgoYFP5u2pDcvPWhHNmB51kaKiUcZvQ34GOH3DtXdds//HyLFkl3etX1nFu7nGQRw/v
-         Hvtg==
+        bh=fEY6azDhSHEkA5JF2UCVmiNnDGP7VpSjU9sOlCrATlQ=;
+        b=vYQsVbhSspW9HGfcTkOihdTDbgW/v8BraoVTr4orGqDoBrHGxn1UkqUqKhtJBDp3Oi
+         xfUqfQ06QrsrE/ZRa3I7afQfGtPJ9GHVYTkgSQ4/9EzvORI+Vmey/RGWTK6CnyNTe5De
+         e50i7PbIaNI75Qb75giQn8GhAMgnbdKxBfJO/B+5KaTxybzpEe8p7DxkJY1ZmINjejRw
+         lxFC7i369rijDOqsQS7w2uokNguo4uiNKeW9GGeermdUj7PQTXjP6TA4GTLaemLRYtxm
+         o636xe24O2hQFvbHKLhgjig6x60FA8YDLHyi9fJCi5GHTNDTOqg5/FE3y3eYVz9ENBG3
+         km4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7G682/KnhlYStPg0ZV0KAKS4OzGXjPQxgHk3OUPpD48=;
-        b=fwUhg9+Aw9JmIXo0NiWmKwxzIg+U+FKNLUIfg6K4r3QXmMUyj1MdseSyKxblmLgwYK
-         xm8Dsq4wow9aeZkW2LJJDZwNA3H6iFglCF9H8yAxkAjqpqgFifVfQ1a9Q4GqsdgAJCAP
-         u+gfd6Lj6nMkZLb4vBjPkIm1oNozbo+iMSWlhmEyxVqxz2+4IFiPYrZXZJ5VQSHF9zDQ
-         O30rG2UdyO3fKWkTtAFL2y9fGWEGyMMMcJ2QVk5ASSqn0nkBF2fLy75s9xmAa8XeaFAa
-         gN6gST+7UKk8/n5p7x1ardS/NMM1DES0ouqD1FsvO6Dh2qtjo/uF+BwmstVj0VHnlA6I
-         Ldzw==
-X-Gm-Message-State: AOAM530xI7d0ho5IDyXGaQiSWEzClY1bChcavsC/1dGI6Ag2ch0n/+xD
-        t58+pbHZxScblrN7Gof75Ds=
-X-Google-Smtp-Source: ABdhPJw9cVFj2NgSII3G8dpONpsBychxnzvJODpicYxTK3BH3A0TU/tmwIOuF7pUd81gEFzgW+oljw==
-X-Received: by 2002:a17:906:2287:: with SMTP id p7mr20521931eja.377.1619595995395;
-        Wed, 28 Apr 2021 00:46:35 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id lc1sm1412556ejb.39.2021.04.28.00.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=fEY6azDhSHEkA5JF2UCVmiNnDGP7VpSjU9sOlCrATlQ=;
+        b=TGW0gDEr0DBBsssqZx7jUIrKz5IW62fEeZ2Jli83sbyDYgKnLOWKNOX7o+ZwdOLBcj
+         7xpja6dfrC7GuA1/bB9FdCUNMotnJc6ASjV5FfSL2NKXtf1VtdVFLi4nupwmlskVTXyT
+         /QJEg2zC/5QoJsh1Q3PfGLK7uNEYDlHgmYlIIX9V4NUCZKjzU3cm+YOmLsMW3uungD3w
+         sWNI5uJ1fy7dfIYMeRWY7167aJjtuMGuCoJhR+c1+rnGxNekqO/o8tdfqcssdVmI8nXZ
+         E6qbdrIDbn9JAABXCV4F7wsTOzbk+NJukx0Yh2eqmzANfx2Te7ZG2f5GkMN4bsj75nY5
+         YDiQ==
+X-Gm-Message-State: AOAM532zKeEhGOejYTBXVo7kn9S3Ptf9pI6VRmlP299l4t693zQVB8DF
+        E5Fg7syiZxce+r3cCdoTOthSLUSr4sTAUA==
+X-Google-Smtp-Source: ABdhPJyqBrmxOb6al3OIu9CeF/91HzaaiAbhiO0jiSGR2gmmhbKuiZr07ChLJoKpkpxuyguP9Yjw1A==
+X-Received: by 2002:a17:906:4d02:: with SMTP id r2mr15764455eju.464.1619595994428;
         Wed, 28 Apr 2021 00:46:34 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id lc1sm1412556ejb.39.2021.04.28.00.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 00:46:33 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/7] trace-cmd check-events: Add --verbose
-Date:   Wed, 28 Apr 2021 10:46:26 +0300
-Message-Id: <20210428074630.757694-4-tz.stoyanov@gmail.com>
+Subject: [PATCH 2/7] trace-cmd agent: Add --verbose
+Date:   Wed, 28 Apr 2021 10:46:25 +0300
+Message-Id: <20210428074630.757694-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210428074630.757694-1-tz.stoyanov@gmail.com>
 References: <20210428074630.757694-1-tz.stoyanov@gmail.com>
@@ -73,90 +73,58 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Add new "trace-cmd check-events --verbose" argument for setting the desired
+Add new "trace-cmd agent --verbose" argument for setting the desired
 log level.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- .../trace-cmd/trace-cmd-check-events.1.txt       |  9 +++++++++
- tracecmd/trace-check-events.c                    | 16 +++++++++++++++-
- tracecmd/trace-usage.c                           |  1 +
- 3 files changed, 25 insertions(+), 1 deletion(-)
+ tracecmd/trace-agent.c | 6 ++++++
+ tracecmd/trace-usage.c | 1 +
+ 2 files changed, 7 insertions(+)
 
-diff --git a/Documentation/trace-cmd/trace-cmd-check-events.1.txt b/Documentation/trace-cmd/trace-cmd-check-events.1.txt
-index c98ff3c6..40c3c8cd 100644
---- a/Documentation/trace-cmd/trace-cmd-check-events.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-check-events.1.txt
-@@ -24,6 +24,15 @@ OPTIONS
- -------
- *-N* - Don't load plugins
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index 1f7d9461..0dc339b4 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -281,6 +281,7 @@ busy:
+ }
  
-+*--verbose* 'level'::
-+     Set the log level. Supported log levels are "none", "critical", "error", "warning",
-+     "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
-+     level to specific value enables all logs from that and all previous levels.
-+
-+     Example: enable all critical, error and warning logs
-+
-+      trace-cmd check-events --verbose warning
-+
- SEE ALSO
- --------
- trace-cmd(1), trace-cmd-record(1), trace-cmd-report(1), trace-cmd-stop(1),
-diff --git a/tracecmd/trace-check-events.c b/tracecmd/trace-check-events.c
-index bd19feca..cf34912a 100644
---- a/tracecmd/trace-check-events.c
-+++ b/tracecmd/trace-check-events.c
-@@ -10,6 +10,10 @@
- #include "tracefs.h"
- #include "trace-local.h"
+ enum {
++	OPT_verbose	= 254,
+ 	DO_DEBUG	= 255
+ };
  
-+enum {
-+	OPT_verbose	= 255,
-+};
-+
- void trace_check_events(int argc, char **argv)
- {
- 	const char *tracing;
-@@ -18,8 +22,14 @@ void trace_check_events(int argc, char **argv)
- 	struct tep_handle *pevent = NULL;
- 	struct tep_plugin_list *list = NULL;
- 	int open_flags = 0;
-+	int option_index = 0;
-+	static struct option long_options[] = {
-+		{"verbose", required_argument, NULL, OPT_verbose},
-+		{NULL, 0, NULL, 0}
-+	};
-+
+@@ -301,6 +302,7 @@ void trace_agent(int argc, char **argv)
+ 			{"port", required_argument, NULL, 'p'},
+ 			{"help", no_argument, NULL, '?'},
+ 			{"debug", no_argument, NULL, DO_DEBUG},
++			{"verbose", required_argument, NULL, OPT_verbose},
+ 			{NULL, 0, NULL, 0}
+ 		};
  
--	while ((c = getopt(argc-1, argv+1, "+hN")) >= 0) {
-+	while ((c = getopt_long(argc-1, argv+1, "+hN", long_options, &option_index)) >= 0) {
- 		switch (c) {
- 		case 'h':
- 		default:
-@@ -28,6 +38,10 @@ void trace_check_events(int argc, char **argv)
- 		case 'N':
- 			open_flags |= TRACECMD_FL_LOAD_NO_PLUGINS;
+@@ -321,6 +323,10 @@ void trace_agent(int argc, char **argv)
+ 		case DO_DEBUG:
+ 			tracecmd_set_debug(true);
  			break;
 +		case OPT_verbose:
 +			if (trace_set_verbose(optarg) < 0)
 +				die("invalid verbose level %s", optarg);
 +			break;
+ 		default:
+ 			usage(argv);
  		}
- 	}
- 	tracing = tracefs_tracing_dir();
 diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 7019ab97..cacec3c5 100644
+index edc43ba9..7019ab97 100644
 --- a/tracecmd/trace-usage.c
 +++ b/tracecmd/trace-usage.c
-@@ -363,6 +363,7 @@ static struct usage_help usage_help[] = {
- 		"parse trace event formats",
- 		" %s check-events [-N]\n"
- 		"          -N do not load any plugins\n"
+@@ -303,6 +303,7 @@ static struct usage_help usage_help[] = {
+ 		"          Creates a vsocket to listen for clients.\n"
+ 		"          -p port number to listen on.\n"
+ 		"          -D run in daemon mode.\n"
 +		"          --verbose 'level' Set the desired log level\n"
  	},
  	{
- 		"dump",
+ 		"setup-guest",
 -- 
 2.30.2
 
