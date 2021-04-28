@@ -8,147 +8,144 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E672BC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:42:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49FDBC433B4
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:46:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B137D61407
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:42:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1446961407
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:46:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237010AbhD1Hmu (ORCPT
+        id S229643AbhD1HrW (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Apr 2021 03:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        Wed, 28 Apr 2021 03:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236343AbhD1Hmt (ORCPT
+        with ESMTP id S236448AbhD1HrV (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:42:49 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55493C06138A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:42:01 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id n25so897712edr.5
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:42:01 -0700 (PDT)
+        Wed, 28 Apr 2021 03:47:21 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C281C06138A
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:46:34 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id q6so13740247edr.3
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MTz7XU6grsmUvJW3IYxouFKkQ7mInncv6WxuWL8XCig=;
-        b=L9mmS+xYTMsGRnuSbHoEM3CsaOHGKbEJjbUCuULYJdzibo/wpCXcmhFgZrZFspEEP6
-         nyW9vERLHU1H0qPORiG+gEBeR0wcgWu2AIrE0/ASaxRf0cmlHG1bae942qv/H3d7s6fV
-         mEK/Q17YnEIThexpmJpG0z+QRcYza1Hty5czGS392PKtuCUH1Z7uZBcV6vSabsBpXrcH
-         fbcqWZf/s6jT2s6ALt8/4g+3xCF7TEcIYs+xQpP2P4HxI9PXJasucFqAfgxyHWwuavtf
-         cNLb9NDJixfU9oc0nOrclKWBfe4+HdKz7cx6vCvkCvO5WRGAS8hbaYnFor/WHXNVQw47
-         UVbA==
+        bh=MA7bV11KcfWFc08/JTkIxuPxVWjkBol++WE3NtkDah4=;
+        b=T/Kr0vHCgHVlXWcWgloLbkop34LRdlZBbZ2sYyjJ78GQMmAvU1f6ThtbggEXc7K2JQ
+         nau9sCdzG73YzMd0mlnDAT8yOzQ6Sxz2dWIDqxXjfgXNeu15mrAXnYH/1pgAd+zf38Ss
+         b9XxGvG0K2bV2rW4xzbHq7I6aj60xMEBFea79nl6ZsmFBn0+HClf6YZvFc0JTPGt4Qdw
+         NNfpNCOVGIjjkWd8Zw3Baqy+2GnCkS2iVih2lMK3C3Hy689yJm/KB8e+PJ9mqsLfbUcw
+         NZHzM5fMDAVti46SaWMadojcL8Rh3uqUMijhZ8LgWc0JTktHbMDHpTUIpw4guE/up1HV
+         /J2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MTz7XU6grsmUvJW3IYxouFKkQ7mInncv6WxuWL8XCig=;
-        b=bpBLAHfWnLg1O9Dxo9ASZBC6Miqg0/oPbIJE3ClKtLHR+IM/HrOG3pAWYKtN/Dwsra
-         W/5qzyFXqBvAUubUnDmA8QdaLds1ooX65yumqy9tHGR8EqUhOQrdofTKFKlwPi8BBqk/
-         h6yptLy8qZsVkvDEevfCs6wVb0zz6eWE1WOCA78xd7ae/7Em5tRJbyADiqqiGLa8g8nO
-         mXA4UtVMwEGGQ1JlxEvZq71rjZHigfd6/BwCowfu8P31jgBQD0YE7IhAQ5AEWuv6aSxc
-         bcQvYB6kOzLJzcD1OjMTkGzCdIyEOqLBMr+pWdSmVx/lpnaXwU2K+hENNxc7P0nMX9ML
-         k56A==
-X-Gm-Message-State: AOAM533pT51EfQS0o3AfvAZVljcHJl6d+BvqYIsEnM/8MkPSbH4l5X1H
-        sagpiemEY9Bu5ZShp2WadWxAodqS+W2WOw==
-X-Google-Smtp-Source: ABdhPJx39akE4CCizWdceL6iDeqBYBk8hCk3ybyUXvhn71bwcDs8OwrNWx0LuX+O2r9rZNoCbOs7hQ==
-X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr9392726eds.166.1619595720157;
-        Wed, 28 Apr 2021 00:42:00 -0700 (PDT)
+        bh=MA7bV11KcfWFc08/JTkIxuPxVWjkBol++WE3NtkDah4=;
+        b=h10G9ubSMA5k3HqzKunEzghXLD+T+ZJ7isaNbuCKa7ayZTXfXF1l0b3h5qtZTMwSYg
+         ENxjnc6LsQ7yrwfPKqPEyF+StERs4nQhhrnpGrFKn+ImfbTlYq1QoJT8Yatkl3pxidm+
+         83zxdZH0yAyQ13ms0y1UthYKYvZWCwd0rDYVZ52OsjwspDyFXZYxyWJU31RQL9Yqwnfr
+         UvQ3eSXTxM7jBd8AKwz3e2Np/qPR42JlFWYEC4UKoDxvESD1Wy+ihFN/qQka4cqrLtos
+         fUMPtvIZcH8HgaFgrjSu4Ord03NIDLChZ4VsZsgVMRjMDyZRSXGLtzh4hWEWtVo0uDsD
+         qglg==
+X-Gm-Message-State: AOAM533JYlzQ7wrrr7VmxsiiN0chaqujjuZPq8uEEcQrB3078DpJbcha
+        duxNZ714bb/fxaWEqdl0Qi3NifYk+nOnRQ==
+X-Google-Smtp-Source: ABdhPJwNho55WFdKm0GwPcxM09+jtDQtw6LAtQtTrJx1sxYOuUuS1PVjspmqb5ogV5Pu270MkGisuQ==
+X-Received: by 2002:a05:6402:4388:: with SMTP id o8mr9184888edc.262.1619595993381;
+        Wed, 28 Apr 2021 00:46:33 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id k5sm4530504edk.46.2021.04.28.00.41.59
+        by smtp.gmail.com with ESMTPSA id lc1sm1412556ejb.39.2021.04.28.00.46.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 00:41:59 -0700 (PDT)
+        Wed, 28 Apr 2021 00:46:32 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 8/8] trace-cmd: Add new function to set log level
-Date:   Wed, 28 Apr 2021 10:41:49 +0300
-Message-Id: <20210428074149.757163-9-tz.stoyanov@gmail.com>
+Subject: [PATCH 1/7] trace-cmd report: Add --verbose
+Date:   Wed, 28 Apr 2021 10:46:24 +0300
+Message-Id: <20210428074630.757694-2-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210428074149.757163-1-tz.stoyanov@gmail.com>
-References: <20210428074149.757163-1-tz.stoyanov@gmail.com>
+In-Reply-To: <20210428074630.757694-1-tz.stoyanov@gmail.com>
+References: <20210428074630.757694-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Introduce a new trace-cmd internal function to set the application log
-level.
- trace_set_verbose()
-The log level can be set using string with log id or log name.
+Add new "trace-cmd report --verbose" argument for setting the desired
+log level.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/include/trace-local.h |  2 ++
- tracecmd/trace-cmd.c           | 41 ++++++++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+)
+ Documentation/trace-cmd/trace-cmd-report.1.txt | 9 +++++++++
+ tracecmd/trace-read.c                          | 6 ++++++
+ tracecmd/trace-usage.c                         | 1 +
+ 3 files changed, 16 insertions(+)
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 1218de12..cb929be4 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -36,6 +36,8 @@ void usage(char **argv);
- extern int silence_warnings;
- extern int show_status;
+diff --git a/Documentation/trace-cmd/trace-cmd-report.1.txt b/Documentation/trace-cmd/trace-cmd-report.1.txt
+index 72b47065..e444e8c0 100644
+--- a/Documentation/trace-cmd/trace-cmd-report.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-report.1.txt
+@@ -312,6 +312,15 @@ OPTIONS
+ *--raw-ts*::
+      Display raw timestamps, without any corrections.
  
-+int trace_set_verbose(char *level);
++*--verbose* 'level'::
++     Set the log level. Supported log levels are "none", "critical", "error", "warning",
++     "info", "debug", "all" or their identifiers "0", "1", "2", "3", "4", "5", "6". Setting the log
++     level to specific value enables all logs from that and all previous levels.
 +
- struct pid_record_data {
- 	int			pid;
- 	int			brass[2];
-diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-index 60cd3ea1..4e4a73af 100644
---- a/tracecmd/trace-cmd.c
-+++ b/tracecmd/trace-cmd.c
-@@ -45,6 +45,47 @@ void *malloc_or_die(unsigned int size)
- 	return data;
++     Example: enable all critical, error and warning logs
++
++      trace-cmd report --verbose warning
++
+ EXAMPLES
+ --------
+ 
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index aad57dae..146fdb3c 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1485,6 +1485,7 @@ static void add_hook(const char *arg)
  }
  
-+static struct trace_log_severity {
-+	int		id;
-+	const char	*name;
-+} log_severtity[] = {
-+	{ .id = TEP_LOG_NONE, .name = "none" },
-+	{ .id = TEP_LOG_CRITICAL, .name = "crit" },
-+	{ .id = TEP_LOG_ERROR, .name = "err" },
-+	{ .id = TEP_LOG_WARNING, .name = "warn" },
-+	{ .id = TEP_LOG_INFO, .name = "info" },
-+	{ .id = TEP_LOG_DEBUG, .name = "debug" },
-+	{ .id = TEP_LOG_ALL, .name = "all" },
-+};
-+
-+int trace_set_verbose(char *level)
-+{
-+	int id;
-+
-+	if (!level)
-+		return -1;
-+
-+	if (isdigit(level[0])) {
-+		id = atoi(level);
-+		if (id >= TEP_LOG_NONE && id <= TEP_LOG_ALL) {
-+			tracecmd_set_loglevel(id);
-+			return 0;
-+		}
-+	} else {
-+		int size = sizeof(log_severtity) / sizeof(log_severtity[0]);
-+		int i;
-+
-+		for (i = 0; i < size; i++) {
-+			if (strlen(level) >= strlen(log_severtity[i].name) &&
-+			    !strncmp(level, log_severtity[i].name, strlen(log_severtity[i].name))) {
-+				tracecmd_set_loglevel(log_severtity[i].id);
-+				return 0;
-+			}
-+		}
-+	}
-+
-+	return -1;
-+}
- 
- /**
-  * struct command
+ enum {
++	OPT_verbose	= 235,
+ 	OPT_raw_ts	= 236,
+ 	OPT_version	= 237,
+ 	OPT_tscheck	= 238,
+@@ -1578,6 +1579,7 @@ void trace_report (int argc, char **argv)
+ 			{"ts-diff", no_argument, NULL, OPT_tsdiff},
+ 			{"ts-check", no_argument, NULL, OPT_tscheck},
+ 			{"raw-ts", no_argument, NULL, OPT_raw_ts},
++			{"verbose", required_argument, NULL, OPT_verbose},
+ 			{"help", no_argument, NULL, '?'},
+ 			{NULL, 0, NULL, 0}
+ 		};
+@@ -1755,6 +1757,10 @@ void trace_report (int argc, char **argv)
+ 		case OPT_raw_ts:
+ 			raw_ts = 1;
+ 			break;
++		case OPT_verbose:
++			if (trace_set_verbose(optarg) < 0)
++				die("invalid verbose level %s", optarg);
++			break;
+ 		default:
+ 			usage(argv);
+ 		}
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 98247074..edc43ba9 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -234,6 +234,7 @@ static struct usage_help usage_help[] = {
+ 		"          --ts-diff Show the delta timestamp between events.\n"
+ 		"          --ts-check Check to make sure no time stamp on any CPU goes backwards.\n"
+ 		"          --raw-ts Display raw timestamps, without any corrections.\n"
++		"          --verbose 'level' Set the desired log level\n"
+ 	},
+ 	{
+ 		"stream",
 -- 
 2.30.2
 
