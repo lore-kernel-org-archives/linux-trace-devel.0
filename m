@@ -2,68 +2,68 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 271ACC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94B1BC433B4
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:41:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E8921613FA
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:41:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 60B99613FA
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:41:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236805AbhD1Hmj (ORCPT
+        id S235862AbhD1Hmm (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Apr 2021 03:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
+        Wed, 28 Apr 2021 03:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhD1Hmj (ORCPT
+        with ESMTP id S236816AbhD1Hml (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:42:39 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E666C06138A
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:41:55 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id l4so93126496ejc.10
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:41:54 -0700 (PDT)
+        Wed, 28 Apr 2021 03:42:41 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281C1C06138A
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:41:57 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id c22so9343502edn.7
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=w3zcNpacLQP5lvV0GVbXqc8L88nrr0NpbUPzQQqJApM=;
-        b=gyzeOJwalzpOsov+raeBIzaFF4BIf7SvsQ9NN8dwYvgJcVTeE+DsHMUcVKB41I+btI
-         c4NFtKkWw9lhYaPourb0Vw2fSXX0UjyVg63ojTZZXiMF2W+8cvI1D0wmLix7u43uAoCY
-         NI4BCDlFrnZvBOEJGGJPJtZNVBdgwFPbI5BehojGTamxaRXjm9p2NOEHajgW+1DS5f6B
-         gb844Zor+pqenF/h1FSEK5bnJ4gqkH4cXfhSL1N/55/TvK2s6Z3RwodBpC/pQlSw2K/I
-         HRYiI9IfGckIGul5s5A3naKAlWVMOMTKRcX/rdDIDMHh5By/tKsj7t84NTBpvjirc55g
-         a6qw==
+        bh=CRwQl1RkWZDQSE4aQ6fUQgbS1AnPlATPnJ7XQuODs1Q=;
+        b=QzJuFXAAcNpNrqVFugqIpGy7r2SDoUQ67IjSAhZIYS18R/ln4uDUjtm5pGvtyV3sFm
+         +bmJylVPI3lim9oZ7x1FwRILuS6DN3w4+uj9woXTB3rlnOi3pZoZx2Jp0YpAty+Epvyj
+         UuvmRwxxWJAfI64TDBtN0eVIS57VTF2LofRJUjqCSqnd5aHh0GZszAOrsNhXGPNR8WR+
+         0BASaY7EBhNUt7hFUDQYSZRETdG5mkH0im0ArOrCQmzFUjgqtD7zt2YayDzckrRerZ7V
+         bMfhD/dZLHkZwbDzFJ9kyDrGLKPi3VUh9EvguYqxdylWyIneY9c81hKQeBF4S/wszGn1
+         6HAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=w3zcNpacLQP5lvV0GVbXqc8L88nrr0NpbUPzQQqJApM=;
-        b=ZeSZu93/Kc5G8KdYiij5Hj9prQjdsEOiTR2gXG0sb62hhlJKb250GhtNF9xajlm1Ps
-         GG5xcaZjOrOdGTYtc5zqSQGegNbaYqk5aCi9kybMPxAd0MpD7UeO7bAkxG5NAJt7NoBf
-         huR+47eZDwX55I7Lef6tnWTc8wY2XdoFhvN9WHtyNLXfZ/OjRl6NBUVOQj/CB2pksvyO
-         Ur9cOH2DZfHEvdtOnxgQFwIcHQKFlQcPpajKln0ouTsDr/qsGDd789fdn9fn9fzEBYi+
-         qifMcEsh30VF7zVwMcDET0UH1G1hT8lWnwbcXKWqLlui0AVqOosZ8BvA86u9jBYk77Z+
-         OhAg==
-X-Gm-Message-State: AOAM530q1ydLd500ItuZA4GWDjgYC0slDDt2guRv1DXdDaxlkEpnVFRJ
-        cn4GqNdAO94pBEgexMe04/gisNqHMa2Lxg==
-X-Google-Smtp-Source: ABdhPJybotw/Gy6xYdie/92zsJq/czr2Nnu9nblb4or1GKbsKNd8zp/BLiMG9TuyzmhWWLU0WRw/Bw==
-X-Received: by 2002:a17:906:cec2:: with SMTP id si2mr28128474ejb.234.1619595713796;
-        Wed, 28 Apr 2021 00:41:53 -0700 (PDT)
+        bh=CRwQl1RkWZDQSE4aQ6fUQgbS1AnPlATPnJ7XQuODs1Q=;
+        b=h2aCLs9aE27eRDcnZMGvFEmod82iEEZRdKlLzH7ySBL3bMxBW15HgzEYRgDCi5I/2h
+         cw4bcwGqrWBK/L54wsWNf1atLiqrb+rSjHm2k/wuSwaqOdAXFsAeY3UVLT21uq66VL+x
+         eIqDpNJ0n0gsnjNirRJagL6whj6nUZ/snn9JsbN3ygGOi5ZUEBXdnUJW/v7NTp3Mo3QQ
+         mgD/TAsCSXqtmdokaabmOP9bfsN6jGQS6aXmuOjP5SZrRVp7wedq/cTkYY3tqza+xSfK
+         o+TGUD5FOdiZq0wDHudF7EZcpugeguU3J365HXXp+fXgmPh/EwCPsYJAVW16rXzaTjaj
+         aF2w==
+X-Gm-Message-State: AOAM532OFVpuQ2JeGuLyAahTkdcXb1jD5j1S0ri7OnibZpgd2kWsfy9H
+        xMHSz2Ge+3A+6oJp3EK6GiQBZzbgmBHjtA==
+X-Google-Smtp-Source: ABdhPJxW3zyOZb3DGTqOAHyV4HCvMrDzxYhWZjZLxPLW0Cgi5NjT+CdQ5+ft7yQuhxgtevPn241vPQ==
+X-Received: by 2002:aa7:cdcc:: with SMTP id h12mr9352018edw.273.1619595715950;
+        Wed, 28 Apr 2021 00:41:55 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id k5sm4530504edk.46.2021.04.28.00.41.52
+        by smtp.gmail.com with ESMTPSA id k5sm4530504edk.46.2021.04.28.00.41.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 00:41:53 -0700 (PDT)
+        Wed, 28 Apr 2021 00:41:55 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/8] trace-cmd library: Add tracecmd_info() log function
-Date:   Wed, 28 Apr 2021 10:41:43 +0300
-Message-Id: <20210428074149.757163-3-tz.stoyanov@gmail.com>
+Subject: [PATCH 4/8] trace-cmd library: Document the API for log levels
+Date:   Wed, 28 Apr 2021 10:41:45 +0300
+Message-Id: <20210428074149.757163-5-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210428074149.757163-1-tz.stoyanov@gmail.com>
 References: <20210428074149.757163-1-tz.stoyanov@gmail.com>
@@ -73,155 +73,115 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-The pr_stat() function is removed from the traceevent library. This function
-was used by trace-cmd to print statistics. Introduce tracecmd_info() log
-function and replace pr_stat() with it in the trace-cmd library.
-However, pr_stat() is used also in the trace-cmd application. In order no
-to change the existing behaviour, add a static pr_stat() implementation for
-that usage.
+Updated trace-cmd library man pages with description of the API for
+setting the library log levels:
+ tracecmd_set_loglevel()
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/include/trace-cmd-local.h |  1 +
- lib/trace-cmd/trace-input.c             |  2 +-
- lib/trace-cmd/trace-plugin.c            |  2 +-
- lib/trace-cmd/trace-util.c              | 10 ++++++++++
- python/ctracecmd.i                      | 11 -----------
- tracecmd/trace-cmd.c                    | 14 --------------
- tracecmd/trace-record.c                 | 14 ++++++++++++++
- 7 files changed, 27 insertions(+), 27 deletions(-)
+ Documentation/libtracecmd/libtracecmd-log.txt | 78 +++++++++++++++++++
+ Documentation/libtracecmd/libtracecmd.txt     |  3 +
+ 2 files changed, 81 insertions(+)
+ create mode 100644 Documentation/libtracecmd/libtracecmd-log.txt
 
-diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
-index e8533b22..cd868f60 100644
---- a/lib/trace-cmd/include/trace-cmd-local.h
-+++ b/lib/trace-cmd/include/trace-cmd-local.h
-@@ -12,6 +12,7 @@
- /* Can be overridden */
- void tracecmd_warning(const char *fmt, ...);
- void tracecmd_fatal(const char *fmt, ...);
-+void tracecmd_info(const char *fmt, ...);
- 
- /* trace.dat file format version */
- #define FILE_VERSION 6
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index b17b36e0..733e1858 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -3280,7 +3280,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 	version = read_string(handle);
- 	if (!version)
- 		goto failed_read;
--	pr_stat("version = %s\n", version);
-+	tracecmd_info("version = %s\n", version);
- 	free(version);
- 
- 	if (do_read_check(handle, buf, 1))
-diff --git a/lib/trace-cmd/trace-plugin.c b/lib/trace-cmd/trace-plugin.c
-index ca7cadae..50c800c2 100644
---- a/lib/trace-cmd/trace-plugin.c
-+++ b/lib/trace-cmd/trace-plugin.c
-@@ -140,7 +140,7 @@ load_plugin(struct trace_plugin_context *trace, const char *path,
- 	list->name = plugin;
- 	*plugin_list = list;
- 
--	pr_stat("registering plugin: %s", plugin);
-+	tracecmd_info("registering plugin: %s", plugin);
- 	func(trace);
- 	return;
- 
-diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
-index 4228b055..77259357 100644
---- a/lib/trace-cmd/trace-util.c
-+++ b/lib/trace-cmd/trace-util.c
-@@ -364,6 +364,16 @@ void __weak tracecmd_warning(const char *fmt, ...)
- 	va_end(ap);
- }
- 
-+void tracecmd_info(const char *fmt, ...)
-+{
-+	va_list ap;
+diff --git a/Documentation/libtracecmd/libtracecmd-log.txt b/Documentation/libtracecmd/libtracecmd-log.txt
+new file mode 100644
+index 00000000..de5c2776
+--- /dev/null
++++ b/Documentation/libtracecmd/libtracecmd-log.txt
+@@ -0,0 +1,78 @@
++libtracecmd(3)
++=============
 +
-+	va_start(ap, fmt);
-+	tep_vprint("libtracecmd", TEP_LOG_INFO, fmt, ap);
-+	va_end(ap);
-+}
++NAME
++----
++tracecmd_set_loglevel - Set log level of the library
 +
++SYNOPSIS
++--------
++[verse]
++--
++*#include <trace-cmd.h>*
 +
- void __weak tracecmd_fatal(const char *fmt, ...)
- {
- 	int ret;
-diff --git a/python/ctracecmd.i b/python/ctracecmd.i
-index fa942215..229b54f3 100644
---- a/python/ctracecmd.i
-+++ b/python/ctracecmd.i
-@@ -44,17 +44,6 @@ static void py_supress_trace_output(void)
- 	skip_output = 1;
- }
++int *tracecmd_set_loglevel*(enum tep_loglevel _level_);
++--
++
++DESCRIPTION
++-----------
++The _tracecmd_set_loglevel()_ function sets the level of the library logs that will be printed on
++the console. See _libtraceevent(3)_ for detailed desciription of the log levels. Setting the log
++level to specific value means that logs from the previous levels will be printed too. For example
++_TEP_LOG_WARNING_ will print any logs with severity _TEP_LOG_WARNING_, _TEP_LOG_ERROR_ and
++_TEP_LOG_CRITICAL_. The default log level is _TEP_LOG_CRITICAL_.  When a new level is set, it is
++also propagated to the libtracefs and libtraceevent.
++
++EXAMPLE
++-------
++[source,c]
++--
++#include <trace-cmd.h>
++...
++tracecmd_set_loglevel(TEP_LOG_ALL);
++...
++/* call libtracecmd, libtracefs or libtraceevent APIs and observe any logs they produce */
++...
++tracecmd_set_loglevel(TEP_LOG_CRITICAL);
++--
++
++FILES
++-----
++[verse]
++--
++*trace-cmd.h*
++	Header file to include in order to have access to the library APIs.
++*-ltracecmd*
++	Linker switch to add when building a program that uses the library.
++--
++
++SEE ALSO
++--------
++_libtracefs(3)_,
++_libtraceevent(3)_,
++_trace-cmd(1)_
++_trace-cmd.dat(5)_
++
++AUTHOR
++------
++[verse]
++--
++*Steven Rostedt* <rostedt@goodmis.org>
++*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>
++--
++REPORTING BUGS
++--------------
++Report bugs to  <linux-trace-devel@vger.kernel.org>
++
++LICENSE
++-------
++libtracecmd is Free Software licensed under the GNU LGPL 2.1
++
++RESOURCES
++---------
++https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
++
++COPYING
++-------
++Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
++the terms of the GNU Public License (GPL).
+diff --git a/Documentation/libtracecmd/libtracecmd.txt b/Documentation/libtracecmd/libtracecmd.txt
+index adc9321c..dc528ce0 100644
+--- a/Documentation/libtracecmd/libtracecmd.txt
++++ b/Documentation/libtracecmd/libtracecmd.txt
+@@ -33,6 +33,9 @@ Read tracing instances from a trace file:
+ Get traceing peer information from a trace file:
+ 	unsigned long long *tracecmd_get_traceid*(struct tracecmd_input pass:[*]_handle_);
+ 	int *tracecmd_get_guest_cpumap*(struct tracecmd_input pass:[*]_handle_, unsigned long long _trace_id_, const char pass:[*]pass:[*]_name_, int pass:[*]_vcpu_count_, const int pass:[*]pass:[*]_cpu_pid_);
++
++Control library logs:
++	int *tracecmd_set_loglevel*(enum tep_loglevel _level_);
+ --
  
--void pr_stat(const char *fmt, ...)
--{
--        va_list ap;
--
--	if (skip_output)
--		return;
--	va_start(ap, fmt);
--	__vpr_stat(fmt, ap);
--	va_end(ap);
--}
--
- void warning(const char *fmt, ...)
- {
- 	va_list ap;
-diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-index 7376c5a5..60cd3ea1 100644
---- a/tracecmd/trace-cmd.c
-+++ b/tracecmd/trace-cmd.c
-@@ -35,20 +35,6 @@ void warning(const char *fmt, ...)
- 	fprintf(stderr, "\n");
- }
- 
--void pr_stat(const char *fmt, ...)
--{
--	va_list ap;
--
--	if (!show_status)
--		return;
--
--	va_start(ap, fmt);
--	vprintf(fmt, ap);
--	va_end(ap);
--
--	printf("\n");
--}
--
- void *malloc_or_die(unsigned int size)
- {
- 	void *data;
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index fd03a605..8805b10e 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -2934,6 +2934,20 @@ static void test_event(struct event_list *event, const char *path,
- 
- 	*save = event;
- }
-+static void pr_stat(const char *fmt, ...)
-+{
-+	va_list ap;
-+
-+	if (!show_status)
-+		return;
-+
-+	va_start(ap, fmt);
-+	vprintf(fmt, ap);
-+	va_end(ap);
-+
-+	printf("\n");
-+}
-+
- 
- static int expand_event_files(struct buffer_instance *instance,
- 			      const char *file, struct event_list *old_event)
+ DESCRIPTION
 -- 
 2.30.2
 
