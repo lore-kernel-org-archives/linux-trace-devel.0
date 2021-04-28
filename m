@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 333E2C43460
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 12:28:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1C0EC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 12:28:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 042C76141E
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 12:28:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 72D2A61158
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 12:28:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235833AbhD1M3b (ORCPT
+        id S236510AbhD1M3d (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Apr 2021 08:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        Wed, 28 Apr 2021 08:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236337AbhD1M3a (ORCPT
+        with ESMTP id S236440AbhD1M3c (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Apr 2021 08:29:30 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD93C061574
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 05:28:46 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id g14so14284307edy.6
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 05:28:45 -0700 (PDT)
+        Wed, 28 Apr 2021 08:29:32 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28103C061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 05:28:48 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id l4so94310226ejc.10
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 05:28:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RoHJW8v1IN+0e0bayeOW7SbjCJ8zaHs6/DcIJkhnGXw=;
-        b=lhNCthXlAhPcJ2n2UdBEGyqJhOeTuVOBT9uBc8zdUKI5wfDsbtsBgz6QpGh4d6KBXJ
-         m2Tn9V294bihpH3XFbwp8z7pH42WDebZvZyfrDcyuYuQBuiG8n9UkZDEbP+ozLPyXtuf
-         JxLD4ek9Pv1D7FhslT/SLpffI+zwi0uaPTW6sFNhmqCBW6yr8bFfSIgpvVTphVLzX1Du
-         XajtjLwhPSRG8/sbxOCe4MN7hhL3iQKAP5njD51zwkUnLKQIXKl+xA+My5ohx5e1eFDj
-         iddMNHcpFuu9ZF8WDQiYkVHzscnIXFhlYa1+8j5fonVCqogdhtlnZzNx7J01F0u9CD4G
-         5Lxw==
+        bh=E3/GLc9HOJghtk+5bbfMzNmXgDl+RfCWLyXeCvn0fco=;
+        b=ttiKoRP5AYz9Zz53LyyVqj2PmeTIoGMKMSidLoGBmHo5j6coA8H9CdPI6222l8kp8t
+         0cAIgxmjkntOph6lIfpCgQFC83MqpgU8qqOwCYFffwULgUKZqKE3NuOwT8f0ET6vwAg8
+         baT0cnA+I/Vr8jZ41N/DVHHZyc4TSDo0IAHt3t5Pwrm9svQ5b5IHm5NYlqexdrbE5yCY
+         1dHxkN0KF7dTioumEZh6ONg3gHK9R8Pz+dcy9y7dWbkaQFc4c8nm2DzHGjPKE8gyKBZq
+         wlpOW+hXxB6z90rGzbEMQCPYmrCL/5lnjBUf8iZAZOvLdnY8hhaCfTs166P1GNQxzQp8
+         79wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RoHJW8v1IN+0e0bayeOW7SbjCJ8zaHs6/DcIJkhnGXw=;
-        b=J84DM76gBlXTXNLwB58qpmOCk6Ab/HSa+/YfD7J28iVBctZBR440iiwNYCugbhgBJI
-         AkWGBxOCLBnmgQZx9s7hpLhlpEP4kepnxsj4wHmLBk4qM46L14PZRf4N4hFhUH1OMtcv
-         Y2xkJKYT7GdtPjq/zhDynsgioTFiKtfyqZbqHD7IxDWzqbrgOiK/JfpPp9SKlcc/J0aE
-         DsizOK+LcR/nB4HBfGT42Rh0tlGcSBZlMlJjFhwNmdj+tWVkUVWANrWrXjCRmvoxlpzs
-         Jvd5oEBDRpVfR3CH4renXu6SI+rc0MNS4neWfF4HxegDIKncvjlyy418XGPD/5ALOe/2
-         ro2A==
-X-Gm-Message-State: AOAM532Dts7JGkuPzedAEhFlQ2uXr7Qt3mb5DE7Oe9OL5a3gvrzRZ/GO
-        76TiQUpTFzt8wMEzMtYD8ftlSJifJY9E3g==
-X-Google-Smtp-Source: ABdhPJxyr6QVk95AdO5Z3OaG+T3mDpdALismX/R6yvkxem+nPufz+SrEQTb+sqVC/XnNKNdrv1nurQ==
-X-Received: by 2002:aa7:d543:: with SMTP id u3mr10892043edr.26.1619612924860;
-        Wed, 28 Apr 2021 05:28:44 -0700 (PDT)
+        bh=E3/GLc9HOJghtk+5bbfMzNmXgDl+RfCWLyXeCvn0fco=;
+        b=KAWmki6jtnrJotiQSB8R0w67NJGIKbVOU/nmHWuALmj4oBTaFCs5nPfbb8SAYyfVBh
+         tTWxesEPtQLpD3J6Yb+YKrin9nAT39r56GuYXilFdFb8MBnBfSmHNj3nm+o6fYQGHscQ
+         Q/9yniSfDDY1VPGbEVM/f3isf9Ics3fllzDOClUoSKW3OJ8vMxnLVcTqvfneNA0Zkz8Z
+         LYde7hHy0kimr09F4Vabnvx6RqjZED1YXzMG55492KgFipCEjfcCuuSddN6kQuiYyv4k
+         LGJZwv4b7XE9XXu7YUVnY+ZrHCFvZKcXZxTUst8JzfghpbDUeMtGKKQOYMbW6zZULUbW
+         xp1Q==
+X-Gm-Message-State: AOAM531bvbl7Vf1BGcaHFMiRdJLFGNkKopWfQXSFHuHbsE0aCByGi0aJ
+        ZZz6y2/OaCng2+7KyTSBWpU=
+X-Google-Smtp-Source: ABdhPJxr94SHnneJvdh4DjMqdGmprKRuRnyhAmmcEAuRtgNvSbj5q/acpfB8ankadwex/N8D963yrg==
+X-Received: by 2002:a17:907:7283:: with SMTP id dt3mr28580973ejc.47.1619612926911;
+        Wed, 28 Apr 2021 05:28:46 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id n10sm1846546ejg.124.2021.04.28.05.28.43
+        by smtp.gmail.com with ESMTPSA id n10sm1846546ejg.124.2021.04.28.05.28.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 05:28:44 -0700 (PDT)
+        Wed, 28 Apr 2021 05:28:46 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 3/5] trace-cmd library: Store the timestamp of the first event when reading a trace file
-Date:   Wed, 28 Apr 2021 15:28:37 +0300
-Message-Id: <20210428122839.805296-4-tz.stoyanov@gmail.com>
+Subject: [PATCH 5/5] trace-cmd report: New option --align-ts
+Date:   Wed, 28 Apr 2021 15:28:39 +0300
+Message-Id: <20210428122839.805296-6-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210428122839.805296-1-tz.stoyanov@gmail.com>
 References: <20210428122839.805296-1-tz.stoyanov@gmail.com>
@@ -73,79 +73,120 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When reading a trace file, detect and store the timestamp of the first
-recorded event. A new API is introduced to get the first ts from an input
-handler:
- tracecmd_get_first_ts()
-The first ts can be used by the library users to align timestamps of the
-events, when displaying them.
+A new option is added:
+ trace-cmd report --align-ts
+It shows timestamps aligned to the first recorded event.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- include/trace-cmd/trace-cmd.h |  1 +
- lib/trace-cmd/trace-input.c   | 23 +++++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+ tracecmd/trace-read.c  | 25 ++++++++++++++++++++++---
+ tracecmd/trace-usage.c |  1 +
+ 2 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
-index 162cd318..022720b0 100644
---- a/include/trace-cmd/trace-cmd.h
-+++ b/include/trace-cmd/trace-cmd.h
-@@ -37,6 +37,7 @@ int tracecmd_get_guest_cpumap(struct tracecmd_input *handle,
- 			      unsigned long long trace_id,
- 			      const char **name,
- 			      int *vcpu_count, const int **cpu_pid);
-+unsigned long long tracecmd_get_first_ts(struct tracecmd_input *handle);
- int tracecmd_buffer_instances(struct tracecmd_input *handle);
- const char *tracecmd_buffer_instance_name(struct tracecmd_input *handle, int indx);
- struct tracecmd_input *tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx);
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index bacf9ccf..284f25e8 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -61,6 +61,7 @@ struct cpu_data {
- 	unsigned long long	offset;
- 	unsigned long long	size;
- 	unsigned long long	timestamp;
-+	unsigned long long	first_ts;
- 	struct list_head	page_maps;
- 	struct page_map		*page_map;
- 	struct page		**pages;
-@@ -2273,6 +2274,7 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index d962b671..4a7bdb9c 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -1192,14 +1192,16 @@ enum output_type {
+ };
  
- 	if (update_page_info(handle, cpu))
- 		goto fail;
-+	cpu_data->first_ts = cpu_data->timestamp;
+ static void read_data_info(struct list_head *handle_list, enum output_type otype,
+-			   int global)
++			   int global, int align_ts)
+ {
++	unsigned long long ts, first_ts;
+ 	struct handle_list *handles;
+ 	struct handle_list *last_handle;
+ 	struct tep_record *record;
+ 	struct tep_record *last_record;
+ 	struct tep_handle *pevent;
+ 	struct tep_event *event;
++	int first = 1;
+ 	int ret;
  
- 	return 0;
-  fail:
-@@ -4072,6 +4074,27 @@ unsigned long long tracecmd_get_traceid(struct tracecmd_input *handle)
- 	return handle->trace_id;
- }
+ 	list_for_each_entry(handles, handle_list, list) {
+@@ -1218,7 +1220,12 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
+ 		ret = tracecmd_init_data(handles->handle);
+ 		if (ret < 0)
+ 			die("failed to init data");
+-
++		if (align_ts) {
++			ts = tracecmd_get_first_ts(handles->handle);
++			if (first || first_ts > ts)
++				first_ts = ts;
++			first = 0;
++		}
+ 		print_handle_file(handles);
+ 		printf("cpus=%d\n", cpus);
  
-+/**
-+ * tracecmd_get_first_ts - get the timestamp of the first recorded event
-+ * @handle: input handle for the trace.dat file
-+ *
-+ * Returns the timestamp of the first recorded event
-+ */
-+unsigned long long tracecmd_get_first_ts(struct tracecmd_input *handle)
-+{
-+	unsigned long long ts = 0;
-+	bool first = true;
-+	int i;
-+
-+	for (i = 0; i < handle->cpus; i++) {
-+		if (first || ts > handle->cpu_data[i].first_ts)
-+			ts = handle->cpu_data[i].first_ts;
-+		first = false;
+@@ -1286,6 +1293,12 @@ static void read_data_info(struct list_head *handle_list, enum output_type otype
+ 	if (otype != OUTPUT_NORMAL)
+ 		return;
+ 
++	if (align_ts) {
++		list_for_each_entry(handles, handle_list, list) {
++			tracecmd_add_ts_offset(handles->handle, -first_ts);
++		}
 +	}
 +
-+	return ts;
-+}
-+
- /**
-  * tracecmd_get_guest_cpumap - get the mapping of guest VCPU to host process
-  * @handle: input handle for the trace.dat file
+ 	do {
+ 		last_handle = NULL;
+ 		last_record = NULL;
+@@ -1485,6 +1498,7 @@ static void add_hook(const char *arg)
+ }
+ 
+ enum {
++	OPT_align_ts	= 235,
+ 	OPT_raw_ts	= 236,
+ 	OPT_version	= 237,
+ 	OPT_tscheck	= 238,
+@@ -1536,6 +1550,7 @@ void trace_report (int argc, char **argv)
+ 	int nanosec = 0;
+ 	int no_date = 0;
+ 	int raw_ts = 0;
++	int align_ts = 0;
+ 	int global = 0;
+ 	int neg = 0;
+ 	int ret = 0;
+@@ -1578,6 +1593,7 @@ void trace_report (int argc, char **argv)
+ 			{"ts-diff", no_argument, NULL, OPT_tsdiff},
+ 			{"ts-check", no_argument, NULL, OPT_tscheck},
+ 			{"raw-ts", no_argument, NULL, OPT_raw_ts},
++			{"align-ts", no_argument, NULL, OPT_align_ts},
+ 			{"help", no_argument, NULL, '?'},
+ 			{NULL, 0, NULL, 0}
+ 		};
+@@ -1753,6 +1769,9 @@ void trace_report (int argc, char **argv)
+ 		case OPT_raw_ts:
+ 			raw_ts = 1;
+ 			break;
++		case OPT_align_ts:
++			align_ts = 1;
++			break;
+ 		default:
+ 			usage(argv);
+ 		}
+@@ -1883,7 +1902,7 @@ void trace_report (int argc, char **argv)
+ 	/* and version overrides uname! */
+ 	if (show_version)
+ 		otype = OUTPUT_VERSION_ONLY;
+-	read_data_info(&handle_list, otype, global);
++	read_data_info(&handle_list, otype, global, align_ts);
+ 
+ 	list_for_each_entry(handles, &handle_list, list) {
+ 		tracecmd_close(handles->handle);
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 98247074..97b3aec0 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -234,6 +234,7 @@ static struct usage_help usage_help[] = {
+ 		"          --ts-diff Show the delta timestamp between events.\n"
+ 		"          --ts-check Check to make sure no time stamp on any CPU goes backwards.\n"
+ 		"          --raw-ts Display raw timestamps, without any corrections.\n"
++		"          --align-ts Display timestamps aligned to the first event.\n"
+ 	},
+ 	{
+ 		"stream",
 -- 
 2.30.2
 
