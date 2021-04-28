@@ -2,196 +2,90 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A0F2C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:30:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58DF2C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:32:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2829C600D4
-	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:30:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 17F0761007
+	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 07:32:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236522AbhD1Haz (ORCPT
+        id S230504AbhD1HdA (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Apr 2021 03:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
+        Wed, 28 Apr 2021 03:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236440AbhD1Hay (ORCPT
+        with ESMTP id S230317AbhD1HdA (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Apr 2021 03:30:54 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C2AC061574
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:30:09 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id t4so9825568ejo.0
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:30:09 -0700 (PDT)
+        Wed, 28 Apr 2021 03:33:00 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D934AC061574
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:32:15 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id ja3so17233955ejc.9
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 00:32:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uwHG1/E4cyKYhRZxQpMx11UGXb1xtbdGpICLmcf3lag=;
-        b=qrq/oVnpDwtQGbleFE54PozE9Fdsg9ugdVTX7NwnsnPQFLRJQ6sw3ehTCQnIziIlSB
-         c0gbqW1ElGcKPEKLOCwj46pHaHqsq7vzI+45fXHW7QwF7ZhR3YCFthE5arBHtOcbfbHy
-         jXjrdD2wweL7BJ15pTbfHp0O54ZuX2pUdIZepghcMUWu1H79Mcy7LWXoUrMJcmwr8Sos
-         kC9onIV5g4RG8+x/HEmjelF1x2aP9/EfmHaWSjNpsTKmQot+QtPukk37e8ZceesbA7Xg
-         05z0yr4y3peZQ6dqLSS5Aa4BZjtqZWznufmpcvKB/cvE+edvq70lLRep6KrKC0C93ySt
-         vojA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=auXP1lvrrbkL2I2Ga1zKd7erCs0T10dfK+dGnBYXLkw=;
+        b=bpC91NTXi8BJNheo/VbRgYeQfobspqSnB/yQgZ5zdKWa0w1Sp3ewSnJ++6A8Dm2r9q
+         EcngZ2nfmM23Y788mYwf6I1Gs75jq5MKrUMjTqfwNLn4tar2+qJFIoV7ftQwBKBCDtJS
+         P7Ad9F0l0nIvmR0S96iPmQoqizhWIgDjzellvx2mZn5uMzT/Jo2PeOW+av8Napyc4PQm
+         HvVGedmMAEZYPTz6G82mgicneYQpdlZ4eqZWbbv8x0tRAb53ETfd31AcZWgh3m8kFjCW
+         DFX712FFeCMobVDmsgk1XrhmT6AdXz8EobISUjF9oLW+VBJMBfqDLtejKGVMCuygUQ6n
+         vuAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uwHG1/E4cyKYhRZxQpMx11UGXb1xtbdGpICLmcf3lag=;
-        b=PfimR+BCchyeGuhV3n9c8aGXeY120BaPFIvyw7p3NB6edyPnvyBerq8eK10Vrd2vUv
-         Bp4vgSUjhWjU5kae5ASSj53YqYWqBLB5JV3zYMqDII90EsMHeaT6TXzgQaXjmTK2GdET
-         uK73Kq2ogIJ06cB8uL+zzycVtVT9qVuI+8J5A0Jyf2s8wSz8e679xA8D6XfHrB/FdpQs
-         /w53+KySrdrk+LzaD1ygINh0f+RVrjC6qn48b8mjBCciaQEDIjd4PCBO9z2UTc5z6XCp
-         yUjJCD5QkQ9325E4Kc2XPkPmTH0+gJGBSakQHwLYBEa+LjQ6tnqAOjeJ1/dSwP5GJ7Hd
-         h/UQ==
-X-Gm-Message-State: AOAM5337I/IsC+KpsmgYJFVbpD79kcyjrwQakbPYLjlZZOwd9lzvJWmD
-        zHkdryeuEICSAfvDXOc4Rso=
-X-Google-Smtp-Source: ABdhPJz38+/LF6Jsa23xqtP+95Uw4p5h9NjdBAb4ZXSTtvZD2mJCMzqi8b9EPcIniD2DRYsTeNfdZg==
-X-Received: by 2002:a17:906:c04:: with SMTP id s4mr6741639ejf.170.1619595007795;
-        Wed, 28 Apr 2021 00:30:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=auXP1lvrrbkL2I2Ga1zKd7erCs0T10dfK+dGnBYXLkw=;
+        b=AYof0AKCgFiy0mwSfzIt/LGYj4boh1z+tDdjt3Sf8Drwz42+hkvjXqQC2MsBs/RR+G
+         bZ+SDugrtKezHfH6I+340Fd1SbBlx99bE3iLZZNwg1WSxJzFGAMqqCpSPznrjObpkKUs
+         WFi7psiAnt4H4Af992FlakaFia810RiRa29f9zhoh6WxOvCWK2gSLNTEAYJnG7auYayr
+         bDExhtE1xKvb0mY9xB7YJwH4MbWyDOWqDhzZcPrBxyoUJktj5Ww9FelXN+MkekIf2e0Q
+         4agappgNSrGNoW1hSj/gJgryOkFK0DBIHAs2kCu4OBUtWu9PSnelXMRmd6/h3WdygqwZ
+         yjJQ==
+X-Gm-Message-State: AOAM530ZVngp8tCfY9Ri1+KPbSZh2NElN8sRFz5UtLfHXiMEBj7j5Cmm
+        vi693pG2goVxfFGzmSXDKjLCnIECfTDluQ==
+X-Google-Smtp-Source: ABdhPJyNxgUqufdHS+PTgmu4ssNwn4K+9is6A5VOgssi0Mi7rnjBYtQmg7zOAelup6tg0yJayosnjg==
+X-Received: by 2002:a17:907:3589:: with SMTP id ao9mr5480291ejc.171.1619595134645;
+        Wed, 28 Apr 2021 00:32:14 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id dh6sm4274292edb.63.2021.04.28.00.30.06
+        by smtp.gmail.com with ESMTPSA id z26sm1363646ejd.52.2021.04.28.00.32.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 00:30:07 -0700 (PDT)
+        Wed, 28 Apr 2021 00:32:14 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH 4/4] libtraceevent: Document new log functionality
-Date:   Wed, 28 Apr 2021 10:30:01 +0300
-Message-Id: <20210428073001.755905-5-tz.stoyanov@gmail.com>
+Subject: [PATCH 0/2] Add API to set severity to tracefs library logs
+Date:   Wed, 28 Apr 2021 10:32:10 +0300
+Message-Id: <20210428073212.756329-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210428073001.755905-1-tz.stoyanov@gmail.com>
-References: <20210428073001.755905-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Updated man pages with the new log API and log levels.
+A new API to set the desired log level of the library.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
----
- Documentation/libtraceevent-log.txt | 90 +++++++++++++++++++++++++++++
- Documentation/libtraceevent.txt     |  3 +
- 2 files changed, 93 insertions(+)
- create mode 100644 Documentation/libtraceevent-log.txt
+These changes depend on "[PATCH 0/4] Add severity to library logs"
+https://lore.kernel.org/linux-trace-devel/20210428073001.755905-1-tz.stoyanov@gmail.com/
 
-diff --git a/Documentation/libtraceevent-log.txt b/Documentation/libtraceevent-log.txt
-new file mode 100644
-index 0000000..0aee21d
---- /dev/null
-+++ b/Documentation/libtraceevent-log.txt
-@@ -0,0 +1,90 @@
-+libtraceevent(3)
-+================
-+
-+NAME
-+----
-+tep_set_loglevel - Set log level of the library
-+
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <event-parse.h>*
-+
-+enum *tep_loglevel* {
-+	TEP_LOG_NONE = 0,
-+	TEP_LOG_CRITICAL,
-+	TEP_LOG_ERROR,
-+	TEP_LOG_WARNING,
-+	TEP_LOG_INFO,
-+	TEP_LOG_DEBUG,
-+	TEP_LOG_ALL
-+};
-+
-+int *tep_set_loglevel*(enum tep_loglevel _level_);
-+
-+--
-+DESCRIPTION
-+-----------
-+The _tep_set_loglevel()_ function sets the level of the library logs that will be printed
-+on the console. Library log levels are:
-+[verse]
-+--
-+	_TEP_LOG_NONE_ - Do not print any logs.
-+	_TEP_LOG_CRITICAL_ - Print critical logs, problem that may case a crash.
-+	_TEP_LOG_ERROR_ - Print error logs, problem that could break the main logic of an API.
-+	_TEP_LOG_WARNING_ - Print warnings, problem that could limit the result of an API.
-+	_TEP_LOG_INFO_ - Print information about normal execution of an API.
-+	_TEP_LOG_DEBUG_ - Print debug information.
-+	_TEP_LOG_ALL_ - Print logs from all levels.
-+--
-+Setting the log level to specific value means that logs from the previous levels will be printed
-+too. For example _TEP_LOG_WARNING_ will print any logs with severity _TEP_LOG_WARNING_,
-+_TEP_LOG_ERROR_ and _TEP_LOG_CRITICAL_. The default log level is _TEP_LOG_CRITICAL_.
-+
-+
-+EXAMPLE
-+-------
-+[source,c]
-+--
-+#include <event-parse.h>
-+
-+tep_set_loglevel(TEP_LOG_ALL);
-+...
-+/* call libtraceevent APIs and observe any logs they produce */
-+...
-+tep_set_loglevel(TEP_LOG_CRITICAL);
-+--
-+
-+FILES
-+-----
-+[verse]
-+--
-+*event-parse.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltraceevent*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+_libtraceevent(3)_, _trace-cmd(1)_
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-+*Tzvetomir Stoyanov* <tz.stoyanov@gmail.com>, author of this man page.
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtraceevent is Free Software licensed under the GNU LGPL 2.1
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
-diff --git a/Documentation/libtraceevent.txt b/Documentation/libtraceevent.txt
-index 3365455..d42b5c9 100644
---- a/Documentation/libtraceevent.txt
-+++ b/Documentation/libtraceevent.txt
-@@ -127,6 +127,9 @@ Endian related APIs:
- 	bool *tep_is_local_bigendian*(struct tep_handle pass:[*]_tep_);
- 	void *tep_set_local_bigendian*(struct tep_handle pass:[*]_tep_, enum tep_endian _endian_);
- 
-+Control library logs:
-+	int *tep_set_loglevel*(enum tep_loglevel _level_);
-+
- Trace sequences:
- *#include <trace-seq.h>*
- 	void *trace_seq_init*(struct trace_seq pass:[*]_s_);
+Tzvetomir Stoyanov (VMware) (2):
+  libtracefs: Add API to set the log level
+  libtracefs: Document new log functionality
+
+ Documentation/libtracefs-log.txt | 76 ++++++++++++++++++++++++++++++++
+ Documentation/libtracefs.txt     |  2 +
+ include/tracefs.h                |  4 ++
+ src/tracefs-utils.c              | 18 +++++++-
+ 4 files changed, 99 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/libtracefs-log.txt
+
 -- 
 2.30.2
 
