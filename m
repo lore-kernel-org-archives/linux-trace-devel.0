@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF379C433B4
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F608C433ED
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 13:47:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 763096143A
+	by mail.kernel.org (Postfix) with ESMTP id 4331661158
 	for <linux-trace-devel@archiver.kernel.org>; Wed, 28 Apr 2021 13:47:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhD1Nsf (ORCPT
+        id S239917AbhD1Nsf (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 28 Apr 2021 09:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234535AbhD1Nse (ORCPT
+        with ESMTP id S229891AbhD1Nsd (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:48:34 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10290C061574
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 06:47:49 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g10so6355578edb.0
+        Wed, 28 Apr 2021 09:48:33 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6404AC06138B
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 06:47:48 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id d14so10478430edc.12
         for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 06:47:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3r8eNFkztcMlCX8qzMWGg+VALgmQ4KRwk/KbIF3CT6A=;
-        b=shs+gEzBtaWmM21h8xFh8RKT8Bao192VPcWUkKSJPWKOZKLfSeSVG8YNzWjXqDJ+4L
-         d61J5/lIUzdtFkV5+dQVAL6ONK6HuUs820D6Euq3yaWsf+SEF47jG4G9/YZXywwWU584
-         lK0wOoeUAwrIJ8TiM/AmWiDp9dsomW6JatpaCk4xbMpiqVuN3PG3pwp5BMLt/iEzcjI/
-         agnDGXtDSQKmmuCMis6rTORDFwEhLJnDmO/f1E3xd43FCghXPEaHdeOi9qt1UbqJI8sf
-         vMiiZ9j13aFDXOrUmcCubaltSvTiEXkVXhqiUgojzSb5sJQT7jVsc9+01MAEGrMjbrxf
-         JaMQ==
+        bh=0z89Or18S3fMIPn49h/dWPO7Hpy/HGngH6D0T3cQQYc=;
+        b=F67XPhRb4ElMbk0grxXfkkfyhT2iR6iBkpZRTASOaUUkDLh2iXnKmnlKYU88yUQy9W
+         nLry0eyuBEGU+J9Myce58vmREUoeDljl7dg/+cdoWBz7EiAl7MTJ9dk8rCUpNHKd9JgW
+         xfOcAn7/sfFzS30KHaA6qgZL5PEbR76uijLKWQ8aQvVZq8CxYE06fu3rK3OOtVnXamah
+         UO0kIJ232rc1uNfXP9NpqW4QqnY2+xUQvGRoB0axmDNRfWwlKyT885dwRH0+hzKlYGmc
+         V2Hmo/gkpkRFzmOXa36XiOe8nXdtRTIIT5DLZnc7tZb234Ohfd/Dl6sUjcAXli3zhOe7
+         XDSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3r8eNFkztcMlCX8qzMWGg+VALgmQ4KRwk/KbIF3CT6A=;
-        b=r1MPxSmyo+4fwfR2bGbae0pdivMLxci7RYMSAHdB1WlFUFRbthuxPVJ8mrejUlkmDI
-         /LgJ2p4fCB395vWvJnkFoMSYkkf9rQ5FtxS+r1EIsxK53tGymb/qskLj4ADvOv4Q2d9f
-         84llPliYzqQGWFLlXqJCPvKYjusKvz66UgvfnV1DUJz3ODlguyJ5U7MmZFignZPPzSPP
-         fZhKeWhfTUYDmkCc0MYTZDUEyc+QT0x2/RC72OUcuVZhFFCRVhnvIgOgwbMT0nJEknAu
-         Me1zrQkNOVgrzuPhdwsazjni924rMtDNJwERF3jir990dJhgHNiaWk3ClGjR8rUSJgz1
-         Y3FQ==
-X-Gm-Message-State: AOAM533GJnfX5pCcVyyCu6+o7h2/BRdWJqsVGQjWavS8RPn98Wtlcb5h
-        FGvfCpWw25P+yhLdNXPIca6Q4mu7taA=
-X-Google-Smtp-Source: ABdhPJyZ5gMEL7Ppt3ty4ZQvfL5eWbJ2m7Ch3qZyenT8QhxDuSY+sNYGcf8at6q2l4JvDwm1HOq1Ag==
-X-Received: by 2002:aa7:d594:: with SMTP id r20mr2988311edq.242.1619617667681;
+        bh=0z89Or18S3fMIPn49h/dWPO7Hpy/HGngH6D0T3cQQYc=;
+        b=UIFqxwVgAMiUt+csvGse3s/mVY7RpTMnyTHwvcHok24JEpJOmjOX9bY4jSuWD04pxI
+         xMJevOkEsCGOahIJ7jN+cfgL+bB2L8zlfs9lYqhTuEhdLr4ES8q3a+YhhTqTrshT+gH1
+         DivZCH7ruM/o8qda1PNm76cbAXJ+UcKBy6gtnEyWrYiWDWup+yR/r0H+F2LJsDF63x7c
+         VoWTI3csA9NkrNDlQE3R61BcP3TOOXSOz1p+hFeFVDbckzTuiRy1az2On1s3IxoyH+iN
+         0IJ+hbMvV2dulIAZkewl6GGJZUNvV36A6r2xEBqYXRqHULMwbsnoWQ/62VUE/JnJySYx
+         xUEg==
+X-Gm-Message-State: AOAM5334JRvwKDXMR7ee4DR3egOfseK8TS2Jf1aeSNdoTdHrHbM99bzp
+        JhPiIYrkDwxAKEfMZZoQyYYrhguAQWM=
+X-Google-Smtp-Source: ABdhPJytTVy6i8EJQstW1SezvCNnB1Qnaz8R3x/UKhWYRFdtygLTSqBb80uc8dndHXffMtKqwTM8Bw==
+X-Received: by 2002:aa7:c2cc:: with SMTP id m12mr11338624edp.1.1619617667005;
         Wed, 28 Apr 2021 06:47:47 -0700 (PDT)
 Received: from localhost.localdomain ([84.40.73.176])
-        by smtp.gmail.com with ESMTPSA id y6sm4755952edc.26.2021.04.28.06.47.47
+        by smtp.gmail.com with ESMTPSA id y6sm4755952edc.26.2021.04.28.06.47.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 06:47:47 -0700 (PDT)
+        Wed, 28 Apr 2021 06:47:46 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 9/9] kernel-shark: Hide all plugin internals
-Date:   Wed, 28 Apr 2021 16:47:30 +0300
-Message-Id: <20210428134730.187533-10-y.karadz@gmail.com>
+Subject: [PATCH v2 8/9] kernel-shark: Remove debugging print out from plugins
+Date:   Wed, 28 Apr 2021 16:47:29 +0300
+Message-Id: <20210428134730.187533-9-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210428134730.187533-1-y.karadz@gmail.com>
 References: <20210428134730.187533-1-y.karadz@gmail.com>
@@ -73,73 +73,62 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Nothing except the plugin's interface must be visible outside.
+We remove the print out that indicates when the "sched events" and
+"missed events" plugins are initialized and closed.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- src/plugins/MissedEvents.cpp | 2 +-
- src/plugins/SchedEvents.cpp  | 5 +++--
- src/plugins/sched_events.c   | 4 ++--
- 3 files changed, 6 insertions(+), 5 deletions(-)
+ src/plugins/missed_events.c | 2 --
+ src/plugins/sched_events.c  | 3 ---
+ 2 files changed, 5 deletions(-)
 
-diff --git a/src/plugins/MissedEvents.cpp b/src/plugins/MissedEvents.cpp
-index cf0ed34..fdd47c8 100644
---- a/src/plugins/MissedEvents.cpp
-+++ b/src/plugins/MissedEvents.cpp
-@@ -89,7 +89,7 @@ static PlotObject *makeShape(std::vector<const Graph *> graph,
-  * @param val: Process or CPU Id value.
-  * @param draw_action: Draw action identifier.
-  */
--void draw_missed_events(kshark_cpp_argv *argv_c,
-+__hidden void draw_missed_events(kshark_cpp_argv *argv_c,
- 			int sd, int val, int draw_action)
+diff --git a/src/plugins/missed_events.c b/src/plugins/missed_events.c
+index 8fe9780..8109eb8 100644
+--- a/src/plugins/missed_events.c
++++ b/src/plugins/missed_events.c
+@@ -20,7 +20,6 @@
+ /** Load this plugin. */
+ int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
  {
- 	KsCppArgV *argvCpp = KS_ARGV_TO_CPP(argv_c);
-diff --git a/src/plugins/SchedEvents.cpp b/src/plugins/SchedEvents.cpp
-index a81182e..b73e45f 100644
---- a/src/plugins/SchedEvents.cpp
-+++ b/src/plugins/SchedEvents.cpp
-@@ -30,7 +30,7 @@ static KsMainWindow *ks_ptr;
-  * @brief Provide the plugin with a pointer to the KsMainWindow object (the GUI
-  * itself) such that the plugin can manipulate the GUI.
-  */
--void *plugin_set_gui_ptr(void *gui_ptr)
-+__hidden void *plugin_set_gui_ptr(void *gui_ptr)
- {
- 	ks_ptr = static_cast<KsMainWindow *>(gui_ptr);
- 	return nullptr;
-@@ -152,7 +152,8 @@ static void secondPass(plugin_sched_context *plugin_ctx)
-  * @param pid: Process Id.
-  * @param draw_action: Draw action identifier.
-  */
--void plugin_draw(kshark_cpp_argv *argv_c, int sd, int pid, int draw_action)
-+__hidden void plugin_draw(kshark_cpp_argv *argv_c,
-+			  int sd, int pid, int draw_action)
- {
- 	plugin_sched_context *plugin_ctx;
+-	printf("--> missed_events init %i\n", stream->stream_id);
+ 	kshark_register_draw_handler(stream, draw_missed_events);
  
+ 	return 1;
+@@ -29,7 +28,6 @@ int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
+ /** Unload this plugin. */
+ int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
+ {
+-	printf("<-- missed_events close %i\n", stream->stream_id);
+ 	kshark_unregister_draw_handler(stream, draw_missed_events);
+ 
+ 	return 1;
 diff --git a/src/plugins/sched_events.c b/src/plugins/sched_events.c
-index 64dff8d..659ecc3 100644
+index e151a70..64dff8d 100644
 --- a/src/plugins/sched_events.c
 +++ b/src/plugins/sched_events.c
-@@ -47,7 +47,7 @@ static void plugin_sched_set_pid(ks_num_field_t *field,
-  *
-  * @param field: Input location for the data field.
-  */
--int plugin_sched_get_pid(ks_num_field_t field)
-+__hidden int plugin_sched_get_pid(ks_num_field_t field)
+@@ -181,7 +181,6 @@ static void plugin_sched_wakeup_action(struct kshark_data_stream *stream,
+ /** Load this plugin. */
+ int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
  {
- 	return field & PID_MASK;
+-	printf("--> sched init %i\n", stream->stream_id);
+ 	struct plugin_sched_context *plugin_ctx;
+ 
+ 	plugin_ctx = __init(stream->stream_id);
+@@ -206,7 +205,6 @@ int KSHARK_PLOT_PLUGIN_INITIALIZER(struct kshark_data_stream *stream)
+ /** Unload this plugin. */
+ int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
+ {
+-	printf("<-- sched close %i\n", stream->stream_id);
+ 	struct plugin_sched_context *plugin_ctx = __get_context(stream->stream_id);
+ 	int ret = 0;
+ 
+@@ -232,6 +230,5 @@ int KSHARK_PLOT_PLUGIN_DEINITIALIZER(struct kshark_data_stream *stream)
+ /** Initialize the control interface of the plugin. */
+ void *KSHARK_MENU_PLUGIN_INITIALIZER(void *gui_ptr)
+ {
+-	printf("--> sched init menu\n");
+ 	return plugin_set_gui_ptr(gui_ptr);
  }
-@@ -67,7 +67,7 @@ static void plugin_sched_set_prev_state(ks_num_field_t *field,
-  *
-  * @param field: Input location for the data field.
-  */
--int plugin_sched_get_prev_state(ks_num_field_t field)
-+__hidden int plugin_sched_get_prev_state(ks_num_field_t field)
- {
- 	tep_num_field_t mask = PREV_STATE_MASK << PREV_STATE_SHIFT;
- 	return (field & mask) >> PREV_STATE_SHIFT;
 -- 
 2.27.0
 
