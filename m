@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 975FCC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 04:01:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 059ADC43461
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 04:01:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 79C0861450
+	by mail.kernel.org (Postfix) with ESMTP id D2CE261446
 	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 04:01:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhD2ECQ (ORCPT
+        id S231356AbhD2ECR (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Apr 2021 00:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
+        Thu, 29 Apr 2021 00:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbhD2ECP (ORCPT
+        with ESMTP id S231405AbhD2ECP (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 29 Apr 2021 00:02:15 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C91C06138B
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 21:01:27 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id j28so12828102edy.9
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 21:01:27 -0700 (PDT)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19BFC06138C
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 21:01:29 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id z5so40352371edr.11
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 21:01:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jh94CVkyZ80NZk00QNKScK1pMRGjLPh+Cdp2ACcN1r0=;
-        b=MFzxsQZsBTMUQPcjB02Fl7T6nmacLo2qwWByACh7fYUZOUM13LdJssCsy1b7Y9DaQY
-         2vPJJjJQV7MZBrBvUYKSJqp4AN2TshNS7YWo1JL3DeC/lCdGOy7x8RQYmfIOLRXS4Hfq
-         wCbNQ7w6cVpop3rm1oODKRQD8sHLAjEkzvqShlNchM0FoG/QH1bPI1cBeAOp1OgWyNJO
-         2wZD8jv93/NKjrPs0uZ4gGQt8mYuD+OhFjkOW7zOr+HcUDy/I3yhHI1qONwFpxesuKZ6
-         9pnDU6+ZQl9h2/coHitgpDwcfz1WiNzVLkZJKNj4YAAJrS7PXCh9UfxQf9KQesv83e6V
-         1oyg==
+        bh=RLVirN8WZI8eB6p02Dt457R0Zc3l+ePoOZUR/rBIvJY=;
+        b=SYpltgChO291U5pbrtmR/4unw6qmF8H8ZsbF0r/NGI+4Sf5jvSjL4hmTcDNCHlHSzI
+         V4W68Z1L7dkJGiB/SjGyYxJjkFO482v32stVD7SdkxMW5mV9faa1s6MUMl1WHINamJBb
+         GSKx8dCD/KO4UUYyywUyY9xAXQyiptFdiqxHah+uXvTtRkcwEyvHv48Tqr4gGNWHIzm0
+         BSTw1WMZB6wc6YWJ4oEpmNONTL3JFFAdVDcpf0yKG8GgS73FNi+aGGbfk01+pu0FgIUH
+         5oOuqDxWoLcCSczr936u991yNrK1XIJ6sKqpx0/fDbr1k5wDXIp4ev8SnoRPohkpIB6+
+         XsKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jh94CVkyZ80NZk00QNKScK1pMRGjLPh+Cdp2ACcN1r0=;
-        b=HwH1bSlAsS7tOR/oIf/kZ3wQcaBzDENYihOoUTfq7EtiOSK/doYAw7CTDJJXyuxnnf
-         47i4AG9D/WjwMK6A2Zt/x8WTFHkG+RQBliiyX7T7wV4xbfJJ/0HsoLTtR46bPmUbtYMq
-         pE+bodKvK4FBKSUHR2d3h2s28xuKDceZxx42UtO7qpEo7nE5xuvQzO9xqGiHowl3fqqh
-         LHPLg9GN3w+2dsqnEjfkYN30S2VbQfREbvZWKRlArr2gWLhiHm+d8mUgosxEMISelOX4
-         JInmwPPB2eIaRZEcRfwpjXGYbqlQH3dahz8bCVvtxJFMMTS8u5H72TGhhJhFe8QnTkLT
-         SejA==
-X-Gm-Message-State: AOAM5324MnfuCp5G+yBnFPd6vH/4D6i+RM4HX7pqcrf3F0yQGU+YG/VE
-        IBuL108sod08m2xtB5PprMQ=
-X-Google-Smtp-Source: ABdhPJwyvMF7Uk11eP8AnNC3AQwxnB24t5BkVmu/ERJtW+Q21RJfgnYKKYVRrluagqfEvSuI/AhFmg==
-X-Received: by 2002:aa7:df0b:: with SMTP id c11mr15143362edy.288.1619668886535;
-        Wed, 28 Apr 2021 21:01:26 -0700 (PDT)
+        bh=RLVirN8WZI8eB6p02Dt457R0Zc3l+ePoOZUR/rBIvJY=;
+        b=Or5LjaC3IPzV3GH4Ln4UY0EW7eHOrajo1ziGTk8/JYaeaIIhH1kTAqUd7aR3e96oA7
+         RFJrYAG9Eff6nfFGvSPG73hIghSJwfReQ/eGt2pURVejxulTAW52k7YSmiRoBEDpTUdI
+         Rt4eif6nMXv27jtSt9cs5DqVaU3SRBuc1xS/SyjuolOryaPSAn5g03N1KW0vjzZZKM1k
+         s0cUZNbP7p6VDealOqmxoUkLkakT3RMgy04wQN3eRAKajUL1MTkFOBp6gVCZkKMZUlXI
+         k44MrJo2Ui5N8FbB7ZkGC9H3VlRZX0XMlmdqZ9WVeyzyzDqOKQ/sLQDEE4r4/9T/cOzn
+         4wag==
+X-Gm-Message-State: AOAM531HWurm+meW4goCaFgqFdIb/qk/PnMTtFfoTZTDAO/W6nCGH9jX
+        wvKS9Dk6OBBav/8GQGR1TuFc2/08EYHF0g==
+X-Google-Smtp-Source: ABdhPJz6+0zLRqtZO51fTiGRblVEdJg/M5Rf03DSs/RleB2RLNvj6pSfam839qxIbOLheHOexwYziA==
+X-Received: by 2002:aa7:dd96:: with SMTP id g22mr3603818edv.222.1619668888463;
+        Wed, 28 Apr 2021 21:01:28 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z26sm1040740ejl.38.2021.04.28.21.01.25
+        by smtp.gmail.com with ESMTPSA id z26sm1040740ejl.38.2021.04.28.21.01.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 21:01:26 -0700 (PDT)
+        Wed, 28 Apr 2021 21:01:28 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 5/7] trace-cmd library: Select the file version when writing trace file
-Date:   Thu, 29 Apr 2021 07:01:17 +0300
-Message-Id: <20210429040119.843617-6-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 7/7] trace-cmd record: Add new parameter --file-version
+Date:   Thu, 29 Apr 2021 07:01:19 +0300
+Message-Id: <20210429040119.843617-8-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210429040119.843617-1-tz.stoyanov@gmail.com>
 References: <20210429040119.843617-1-tz.stoyanov@gmail.com>
@@ -73,73 +73,117 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When a new output handler to trace file is allocated, select the proper
-file version. If this output handler is based on an existing input trace
-file handler, inherit the trace file version.
+Added a new optional parameter to "trace-cmd record", can be used to
+select the desired file version of the trace output file.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-output.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ tracecmd/trace-record.c | 23 ++++++++++++++++++-----
+ tracecmd/trace-usage.c  |  1 +
+ 2 files changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index 9231c319..f36718f1 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -57,6 +57,7 @@ struct tracecmd_output {
- 	int			nr_options;
- 	bool			quiet;
- 	unsigned long		file_state;
-+	unsigned long		file_version;
- 	struct list_head	options;
- 	struct tracecmd_msg_handle *msg_handle;
- 	char			*trace_clock;
-@@ -907,6 +908,17 @@ out_free:
- 	return ret;
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 6775338b..f95db0e4 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -199,6 +199,7 @@ struct common_record_context {
+ 	char *date2ts;
+ 	char *user;
+ 	const char *clock;
++	unsigned long file_version;
+ 	struct tsc_nsec tsc2nsec;
+ 	int data_flags;
+ 	int tsync_loop_interval;
+@@ -3645,7 +3646,8 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
+ 
+ 	/* Now create the handle through this socket */
+ 	if (msg_handle->version == V3_PROTOCOL) {
+-		network_handle = tracecmd_create_init_fd_msg(msg_handle, listed_events, 0);
++		network_handle = tracecmd_create_init_fd_msg(msg_handle, listed_events,
++							     ctx->file_version);
+ 		if (!network_handle)
+ 			goto error;
+ 		tracecmd_set_quiet(network_handle, quiet);
+@@ -3663,7 +3665,8 @@ setup_connection(struct buffer_instance *instance, struct common_record_context
+ 		if (ret)
+ 			goto error;
+ 	} else {
+-		network_handle = tracecmd_create_init_fd_glob(msg_handle->fd, listed_events, 0);
++		network_handle = tracecmd_create_init_fd_glob(msg_handle->fd, listed_events,
++							      ctx->file_version);
+ 		if (!network_handle)
+ 			goto error;
+ 		tracecmd_set_quiet(network_handle, quiet);
+@@ -3850,7 +3853,8 @@ static void setup_agent(struct buffer_instance *instance,
+ {
+ 	struct tracecmd_output *network_handle;
+ 
+-	network_handle = tracecmd_create_init_fd_msg(instance->msg_handle, listed_events, 0);
++	network_handle = tracecmd_create_init_fd_msg(instance->msg_handle, listed_events,
++						     ctx->file_version);
+ 	add_options(network_handle, ctx);
+ 	tracecmd_write_cmdlines(network_handle);
+ 	tracecmd_write_cpus(network_handle, instance->cpu_count);
+@@ -4242,7 +4246,8 @@ static void record_data(struct common_record_context *ctx)
+ 		return;
+ 
+ 	if (latency) {
+-		handle = tracecmd_create_file_latency(ctx->output, local_cpu_count, 0);
++		handle = tracecmd_create_file_latency(ctx->output, local_cpu_count,
++						      ctx->file_version);
+ 		tracecmd_set_quiet(handle, quiet);
+ 	} else {
+ 		if (!local_cpu_count)
+@@ -4273,7 +4278,8 @@ static void record_data(struct common_record_context *ctx)
+ 				touch_file(temp_files[i]);
+ 		}
+ 
+-		handle = tracecmd_create_init_file_glob(ctx->output, listed_events, 0);
++		handle = tracecmd_create_init_file_glob(ctx->output, listed_events,
++							ctx->file_version);
+ 		if (!handle)
+ 			die("Error creating output file");
+ 		tracecmd_set_quiet(handle, quiet);
+@@ -5499,6 +5505,7 @@ void init_top_instance(void)
  }
  
-+static int select_file_version(struct tracecmd_output *handle,
-+				struct tracecmd_input *ihandle)
-+{
-+	if (ihandle)
-+		handle->file_version = tracecmd_get_file_version(ihandle);
-+	else
-+		handle->file_version = FILE_VERSION;
-+
-+	return 0;
-+}
-+
- static struct tracecmd_output *
- create_file_fd(int fd, struct tracecmd_input *ihandle,
- 	       const char *tracing_dir,
-@@ -933,6 +945,9 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
+ enum {
++	OPT_file_version	= 239,
+ 	OPT_tsc2nsec		= 240,
+ 	OPT_fork		= 241,
+ 	OPT_tsyncinterval	= 242,
+@@ -5933,6 +5940,7 @@ static void parse_record_options(int argc,
+ 			{"tsync-interval", required_argument, NULL, OPT_tsyncinterval},
+ 			{"fork", no_argument, NULL, OPT_fork},
+ 			{"tsc2nsec", no_argument, NULL, OPT_tsc2nsec},
++			{"file-version", required_argument, NULL, OPT_file_version},
+ 			{NULL, 0, NULL, 0}
+ 		};
  
- 	handle->msg_handle = msg_handle;
- 
-+	if (select_file_version(handle, ihandle))
-+		goto out_free;
-+
- 	list_head_init(&handle->options);
- 
- 	buf[0] = 23;
-@@ -943,7 +958,8 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
- 	if (do_write_check(handle, buf, 10))
- 		goto out_free;
- 
--	if (do_write_check(handle, FILE_VERSION_STRING, strlen(FILE_VERSION_STRING) + 1))
-+	sprintf(buf, "%lu", handle->file_version);
-+	if (do_write_check(handle, buf, strlen(buf) + 1))
- 		goto out_free;
- 
- 	/* get endian and page size */
-@@ -1602,6 +1618,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- 	handle->pevent = tracecmd_get_tep(ihandle);
- 	tep_ref(handle->pevent);
- 	handle->page_size = tracecmd_page_size(ihandle);
-+	handle->file_version = tracecmd_get_file_version(ihandle);
- 	list_head_init(&handle->options);
- 
- 	tracecmd_close(ihandle);
+@@ -6354,6 +6362,11 @@ static void parse_record_options(int argc,
+ 				die("TSC to nanosecond is not supported");
+ 			ctx->instance->flags |= BUFFER_FL_TSC2NSEC;
+ 			break;
++		case OPT_file_version:
++			ctx->file_version = atoi(optarg);
++			if (!tracecmd_is_version_supported(ctx->file_version))
++				die("File version %d is not supported", ctx->file_version);
++			break;
+ 		case OPT_quiet:
+ 		case 'q':
+ 			quiet = true;
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 98247074..e5b54114 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -68,6 +68,7 @@ static struct usage_help usage_help[] = {
+ 		"               If a negative number is specified, timestamps synchronization is disabled"
+ 		"               If 0 is specified, no loop is performed - timestamps offset is calculated only twice,"
+ 		"                                                         at the beginnig and at the end of the trace\n"
++		"          --file-version select the desired version of the trace output file\n"
+ 	},
+ 	{
+ 		"set",
 -- 
 2.30.2
 
