@@ -2,161 +2,104 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CE7EC433ED
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 03:52:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 991DDC433B4
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 04:01:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D906E613CC
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 03:52:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 769376144E
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 04:01:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238032AbhD2DxD (ORCPT
+        id S229746AbhD2ECI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Wed, 28 Apr 2021 23:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
+        Thu, 29 Apr 2021 00:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237508AbhD2DxD (ORCPT
+        with ESMTP id S229452AbhD2ECI (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 28 Apr 2021 23:53:03 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7108AC06138B
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 20:52:16 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so10173205pjh.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 20:52:16 -0700 (PDT)
+        Thu, 29 Apr 2021 00:02:08 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A949C06138B
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 21:01:22 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id n2so97767755ejy.7
+        for <linux-trace-devel@vger.kernel.org>; Wed, 28 Apr 2021 21:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z6qWfQVr8rc02/F1XiCKJu5Lus1pPEmJMulWtMrOeSY=;
-        b=ml80iTCpn6pzObESAyL3YHB3PGE1DCglGxNLfxvAWGE71Q1rGeVZxPh4f2FfXtvARO
-         gZImconsR1/4jDoVe+ZBXL/QMYtmKETmVJ4F4fK39z5OK9wWfGUfOviqYzI6dnj4laEO
-         VFCc+Z9tri7yXqPyEfqU/ZWm3noVj3Zixi/WPIq/XjrOezk2r7yxK59v5T92DzIKS+3N
-         6c+oWZKMz4N4xiwjJmf6NeoKvtvNhn3jLcTbOR9RHPCrh771poBoYA1YcDrkU/Tijukc
-         2ZGI49lcCYBytUMekyjlrApFtl9pwOU/9USAOEARQoKY8QPzRmNVdNmj7UHHtEmfLQ6D
-         fapg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xY9TfZo5rTk+8RKe2yCKNh37HoDfqxS5Uo+TAcmcziQ=;
+        b=crs4/a+QMnmPoxyRExEWPMDTVmRCte4scMr0IRJPxn2FGfdJsJG1o8Q/8XU2S31nS9
+         lrQdS6rGj1bcS1VArpuMdb6sUGPo3ECZrHW2SY1Bd/dIOPKWOXBvFSElbxVgXgw9MWQw
+         dNbRXLj/418Gik2iQD8LDY1O4+QWjugNuTo1+Mm36oW53pot1njCWIadsfqTH+sKABo/
+         Dy7s2A3QqlFwtT8K6yPrDlzDMKIvONONhXyZZj1xptKKqkhOBi9HP98YYc4yr3khc9fQ
+         IqG6FYB9mAa39bUpDqEr3s1Q3nl4+kZ3V4I5c1eSOQ3pYOB9oe2JxX5JvpakjQfzSoCt
+         GX8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z6qWfQVr8rc02/F1XiCKJu5Lus1pPEmJMulWtMrOeSY=;
-        b=ELCRgDIv9z2S2GGF+zuc6ZbEI8sx5Zebwj8RXa1p26CRTqK+8K1F+lddsBvuY05PoN
-         jfhDh3WT1EF68uQOHdYZV/9E6MDAJ/b6kdgpmoGyRh2P0P+5CpaQP2Z6yWL/SkCXxJ3k
-         GoTrH0z0cqYsHIordFVwMey7xc/T1lepWcIBeT0Z2mJgpP38I7O/QUAkgZS0Jva2xkcM
-         llnHBlt6G3gJ2JDX6X+Booyc7K/GnI+qs/ubjBl1ymwcnoX89fnrk4epD9CpIjZILJur
-         STXX/DznvC8B+27UqR0HaAfX+vyYdzIIIbxPsIIQEOGYTirCOsyJF/QFIkq+Mv2VkylA
-         cq/g==
-X-Gm-Message-State: AOAM533bwAH68wd0iJ5rqIcVPG+oNiZUjzL5bdN8zNJVVwSiX/uUrPws
-        ZlWKvtFV+/22lGQ6Jn+JD/dF+adv4FGBwKeqCTSfvAtLS5OH/w==
-X-Google-Smtp-Source: ABdhPJx5wkw6dHMkiradr2WbwLfTtV29KtM+7NwVmATEL6TXG9hqvgvPEF1VudGS2RmhJlOCuIaPKo7S483cekMKQ3k=
-X-Received: by 2002:a17:90b:3b43:: with SMTP id ot3mr35739953pjb.100.1619668335991;
- Wed, 28 Apr 2021 20:52:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xY9TfZo5rTk+8RKe2yCKNh37HoDfqxS5Uo+TAcmcziQ=;
+        b=D7jRqJhR/3WAsj4M0MjtFk38ueUMitDVaiV4FXtXlYZ3qaNdDZv1B1pbMjwBAu9y5v
+         xHjCI3FaFinV5Qxk7NG2JVi7ZnhIC8rU7cHn1D0EdtBN+J3W1JJI7Umdkn+B4R8age2j
+         CXDHCzGUmPoL0MiaF79gnqGwaD6wZ05WFGLVNsTMhRmgPNRFsILwSFiRX+aNBnIu0B5S
+         kG/OmMEks6khcNE1XNZZoFJ1o0kWCRMS9Uw8CH2H5oWq54UwRfS5CeCHqNS6hq3Vp3tK
+         XxLy7LU399PM9H5MiS5TsiVLQVeM9fLofxxqPNNkA5ST/Z1qJqD58IMiDERg1+68Nxmq
+         jxaw==
+X-Gm-Message-State: AOAM533d4cLM2UXKExe/ty6Vyrjl5u3ePl9v6IJw4IG2+xBWuMoF5uWI
+        trxTTi9oE/nFtGeWWUF/4iJdYIzohKXlKA==
+X-Google-Smtp-Source: ABdhPJxCk5TY1IA/0Q8FE6JlczCZw1K0+SWVcVuyp/W27qMc9+G4abJNz7ZKY5N5m9c0gkCUtDIyDg==
+X-Received: by 2002:a17:907:765b:: with SMTP id kj27mr17132308ejc.537.1619668881152;
+        Wed, 28 Apr 2021 21:01:21 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id z26sm1040740ejl.38.2021.04.28.21.01.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 21:01:20 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2 0/7] Bump trace file version
+Date:   Thu, 29 Apr 2021 07:01:12 +0300
+Message-Id: <20210429040119.843617-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210422073902.484953-1-tz.stoyanov@gmail.com> <20210428213506.7791db62@oasis.local.home>
-In-Reply-To: <20210428213506.7791db62@oasis.local.home>
-From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 29 Apr 2021 06:51:59 +0300
-Message-ID: <CAPpZLN78vkjhiOOUx0gFjm+5NtPqGGtXJ3ECh_BP7V7rJYB0+w@mail.gmail.com>
-Subject: Re: [POC PATCH 00/10] Add trace file compression
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 4:35 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu, 22 Apr 2021 10:38:52 +0300
-> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
->
-> > A new PoC implementation for adding a compression to trace file version 7.
-> > A basic infrastructure for compression support is added into the trace-cmd
-> > library. The zlib is used for compression, but more libraries and algorithms
-> > can be added. Only part of the trace file metadata is compressed:
-> >  - ftrace events format
-> >  - format of recorded events
-> >  - information about the mapping of function addresses to the function names
-> >  - trace_printk() format strings
-> >  - information of the mapping a PID to a process name
-> >
-> > Note: not all trace-cmd commands are tested with these changes. These are
-> > verified to work with compressed trace files:
-> >  trace-cmd record
-> >  trace-cmd report
-> >  trace-cmd dump
-> >
-> > Todo list, in order to have complete trace file compression:
-> >  - Compress trace file options.
-> >  - Compress trace data.
-> >  - Add support for more compression libraries.
-> >  - Add new trace-cmd command to convert trace files from version 6 to
-> >    version 7 and vise versa.
-> >  - Add compression support to all trace-cmd commands.
-> >  - Update trace-cmd documentation.
-> >
-> > This patch set depends on "[PATCH 0/6] Bump trace file version"
-> > and should be applied on top of it.
-> > https://lore.kernel.org/linux-trace-devel/20210422071718.483383-1-tz.stoyanov@gmail.com/
-> >
-> > Tzvetomir Stoyanov (VMware) (10):
-> >   trace-cmd: Add APIs for library initialization and free
-> >   trace-cmd library: Add support for compression algorithms
-> >   trace-cmd library: Compress part of the trace file
-> >   trace-cmd library: Read compressed trace file
-> >   trace-cmd library: Add new API to get compression of input handler
-> >   trace-cmd library: Inherit compression algorithm from input file
-> >   trace-cmd library: Extend the create file APIs to support different
-> >     compression
-> >   trace-cmd record: Add new parameter --compression
-> >   trace-cmd dump: Add support for trace files version 7
-> >   trace-cmd library: Add support for zlib compression library
->
-> I'm not able to apply these patches as I'm getting conflicts from your
-> previous series that bumps the version number, as if what you sent to
-> the mailing list was not what you have in your git repo.
->
-> Can you please resend the version update patch series.
+Changed the trace file version to 7 and added support for choosing 
+the desired file version.
 
-The order of applying the changes should be:
-1. [PATCH v2] trace-cmd: Check if file version is supported
-  https://lore.kernel.org/linux-trace-devel/20210419093156.200099-1-tz.stoyanov@gmail.com/
-2. [PATCH 0/6] Bump trace file version
- https://lore.kernel.org/linux-trace-devel/20210422071718.483383-1-tz.stoyanov@gmail.com/
-3. [POC PATCH 00/10] Add trace file compression
- https://lore.kernel.org/linux-trace-devel/20210422073902.484953-1-tz.stoyanov@gmail.com/
+v2 changes:
+ - Include "Check if file version is supported" patch in the set, as other
+   patches depend on it.
+ - Reorganized the order of the patches, put the clean up patch "Remove
+   unused private APIs for creating trace files" first.
 
-I wrote these dependencies in the cover-letters.  BTW, I do not see
-(2) in patchwork, only in the mailing list.
-I'll send v2 of "Bump trace file version" including (1) in the patchset.
+Tzvetomir Stoyanov (VMware) (7):
+  trace-cmd library: Remove unused private APIs for creating trace files
+  trace-cmd: Check if file version is supported
+  trace-cmd library: Bump the trace file version to 7
+  trace-cmd library: Add new API to get file version of input handler
+  trace-cmd library: Select the file version when writing trace file
+  trace-cmd library: Extend the create file APIs to support different
+    file version
+  trace-cmd record: Add new parameter --file-version
 
->
-> -- Steve
->
->
-> >
-> >  lib/trace-cmd/Makefile                        |  11 +
-> >  .../include/private/trace-cmd-private.h       |  42 ++-
-> >  lib/trace-cmd/include/trace-cmd-local.h       |   7 +
-> >  lib/trace-cmd/trace-compress-zlib.c           | 172 ++++++++++
-> >  lib/trace-cmd/trace-compress.c                | 289 +++++++++++++++++
-> >  lib/trace-cmd/trace-input.c                   | 304 +++++++++++++-----
-> >  lib/trace-cmd/trace-output.c                  | 268 ++++++++++++---
-> >  lib/trace-cmd/trace-util.c                    |  12 +
-> >  tracecmd/trace-cmd.c                          |  11 +-
-> >  tracecmd/trace-dump.c                         | 164 ++++++++--
-> >  tracecmd/trace-record.c                       |  18 +-
-> >  tracecmd/trace-restore.c                      |   4 +-
-> >  tracecmd/trace-usage.c                        |   1 +
-> >  13 files changed, 1152 insertions(+), 151 deletions(-)
-> >  create mode 100644 lib/trace-cmd/trace-compress-zlib.c
-> >  create mode 100644 lib/trace-cmd/trace-compress.c
-> >
->
-
+ .../include/private/trace-cmd-private.h       | 29 +++---
+ lib/trace-cmd/include/trace-cmd-local.h       |  2 +-
+ lib/trace-cmd/trace-input.c                   | 19 ++++
+ lib/trace-cmd/trace-output.c                  | 98 ++++++++++---------
+ lib/trace-cmd/trace-util.c                    |  7 ++
+ tracecmd/trace-dump.c                         |  7 ++
+ tracecmd/trace-record.c                       | 25 +++--
+ tracecmd/trace-restore.c                      |  4 +-
+ tracecmd/trace-usage.c                        |  1 +
+ 9 files changed, 121 insertions(+), 71 deletions(-)
 
 -- 
-Tzvetomir (Ceco) Stoyanov
-VMware Open Source Technology Center
+2.30.2
+
