@@ -2,67 +2,105 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 912A2C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 13:54:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CAE1C433B4
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 15:44:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5880161407
-	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 13:54:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 066F961185
+	for <linux-trace-devel@archiver.kernel.org>; Thu, 29 Apr 2021 15:44:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237367AbhD2Ny7 (ORCPT
+        id S237130AbhD2Pp2 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Thu, 29 Apr 2021 09:54:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233862AbhD2Ny6 (ORCPT
+        Thu, 29 Apr 2021 11:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233451AbhD2Pp1 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:54:58 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB27C61407;
-        Thu, 29 Apr 2021 13:54:11 +0000 (UTC)
-Date:   Thu, 29 Apr 2021 09:54:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2 7/7] trace-cmd record: Add new parameter
- --file-version
-Message-ID: <20210429095410.48963b4e@gandalf.local.home>
-In-Reply-To: <20210429040119.843617-8-tz.stoyanov@gmail.com>
-References: <20210429040119.843617-1-tz.stoyanov@gmail.com>
-        <20210429040119.843617-8-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 29 Apr 2021 11:45:27 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3055FC06138B
+        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Apr 2021 08:44:40 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id c22so15483889edn.7
+        for <linux-trace-devel@vger.kernel.org>; Thu, 29 Apr 2021 08:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lg8dR48qEgHA9/bQ2E3t+oobJ5MaPHRFqNqCOrzHK34=;
+        b=npFumJgy0WAeOGvG4yuzXowRm1H2e0KVk4pePvb09tEA+kgHGLVdvBmVzjVsE3y9oC
+         91X/oIS2Z6NW00E9Zc2AiCeS5VTqB/BdyDicYTrHiqMXYqSSkHY1zvVH1QyT7kJsl/Cs
+         JnuJgOzlKVH0DORqIqmWtgdfKp9pi11xRgF0dlqNnxvNWwwe1b5GCBLIWnxHgvvWyRU4
+         ixgwAVvmQLUKbhDVznFWyXEFdOHc2jVrJLtI8+RS8wHF0wcWNbZjakZo8N7AK1n3iArc
+         1j5qQ8w45VqPO72e3jJ5+om3tWkjBGWnqV0H0+Du4SFZmgsJLknZdmjUxnJZzlYcuUBa
+         NviA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lg8dR48qEgHA9/bQ2E3t+oobJ5MaPHRFqNqCOrzHK34=;
+        b=k6kFodFhF7PzTNzSKAEug77RStcKquMYEUqkw5xseznGf8au7OFQJAxO8Jihq6MbPx
+         6KjpbSWTej5eljFmAyezinmlkRo5Sb8ROHp5uaFLmPganYkq2EtgCuENIL69juIyGyyL
+         TVMizTd60PwJn4+Wjmgytf4F+s+cqVWRuGdynaNUvkqCWPoQBYSyCT7k4GzpgwXpxEkv
+         UNnQ7dfQjxEJPPNpbq10a3GP9tZ8ZkAmspM37wcwSIXy7zg/MN0XjvCrA8HjiscbEjov
+         9+GiJzVTOj9K6CiSrIAM6ow2y9j9mp7GDF54DQkJDJH2qG5y6ko92urd9hPeY+MHFB2q
+         WenA==
+X-Gm-Message-State: AOAM533CVTse2bYFwHeb1SQpwXEieVnScYsHrqVBKbUql7yLU1eBgvfM
+        LF8bclFx5DYMFnBwsxguD7o2OLTVmyc=
+X-Google-Smtp-Source: ABdhPJwOUjRqDBLBW5pGDtIXLX5dxIU5qvWwfM7I9EgeUgGSM+zinBMXJaxLSYEIsts/CvKbxxJRDQ==
+X-Received: by 2002:aa7:d14e:: with SMTP id r14mr189627edo.119.1619711078689;
+        Thu, 29 Apr 2021 08:44:38 -0700 (PDT)
+Received: from localhost.localdomain ([84.40.73.176])
+        by smtp.gmail.com with ESMTPSA id t15sm2650602edr.55.2021.04.29.08.44.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 08:44:38 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH 0/2] New plugins for KS 2.0
+Date:   Thu, 29 Apr 2021 18:44:19 +0300
+Message-Id: <20210429154421.255872-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Thu, 29 Apr 2021 07:01:19 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+This patch applies on top of the
+"(Not so) Minor fixes toward KS 2.0" v2 patch-set.
 
-> Added a new optional parameter to "trace-cmd record", can be used to
-> select the desired file version of the trace output file.
+Yordan Karadzhov (VMware) (2):
+  kernel-shark: Add EventFieldPlot plugin
+  kernel-shark: Add LatencyPlot plugin
 
-I'm not sure record should be where a version is specified. Let the user
-decide if they can disable a feature that requires a higher version of the
-file. That is, if the user does "--no-compression" or whatever we call it,
-then it will just save as version 6.
+ src/plugins/CMakeLists.txt        |  10 +
+ src/plugins/EventFieldDialog.cpp  | 183 ++++++++++++++++++
+ src/plugins/EventFieldDialog.hpp  |  60 ++++++
+ src/plugins/EventFieldPlot.cpp    | 109 +++++++++++
+ src/plugins/LatencyPlot.cpp       | 305 ++++++++++++++++++++++++++++++
+ src/plugins/LatencyPlotDialog.cpp | 184 ++++++++++++++++++
+ src/plugins/LatencyPlotDialog.hpp |  59 ++++++
+ src/plugins/event_field_plot.c    | 125 ++++++++++++
+ src/plugins/event_field_plot.h    |  64 +++++++
+ src/plugins/latency_plot.c        | 168 ++++++++++++++++
+ src/plugins/latency_plot.h        |  62 ++++++
+ tests/libkshark-gui-tests.cpp     |   2 +
+ 12 files changed, 1331 insertions(+)
+ create mode 100644 src/plugins/EventFieldDialog.cpp
+ create mode 100644 src/plugins/EventFieldDialog.hpp
+ create mode 100644 src/plugins/EventFieldPlot.cpp
+ create mode 100644 src/plugins/LatencyPlot.cpp
+ create mode 100644 src/plugins/LatencyPlotDialog.cpp
+ create mode 100644 src/plugins/LatencyPlotDialog.hpp
+ create mode 100644 src/plugins/event_field_plot.c
+ create mode 100644 src/plugins/event_field_plot.h
+ create mode 100644 src/plugins/latency_plot.c
+ create mode 100644 src/plugins/latency_plot.h
 
-Now what we should do, is to have a conversion command.
+-- 
+2.27.0
 
- trace-cmd convert <version> <input.dat> <output.dat>
-
- $ trace-cmd convert 6 trace-7.dat trace-6.dat
-
-
-We'll just have to document (probably in the convert man page) what
-features are added to which version, and how to set up the record to have
-it go to a lower version).
-
--- Steve
