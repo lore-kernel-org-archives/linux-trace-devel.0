@@ -6,68 +6,67 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AC80C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  4 May 2021 13:35:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82A9DC433B4
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  4 May 2021 20:00:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2AB7C613C6
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  4 May 2021 13:35:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5A8EE613B3
+	for <linux-trace-devel@archiver.kernel.org>; Tue,  4 May 2021 20:00:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhEDNgr (ORCPT
+        id S232615AbhEDUBH convert rfc822-to-8bit (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 4 May 2021 09:36:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60310 "EHLO mail.kernel.org"
+        Tue, 4 May 2021 16:01:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231159AbhEDNgq (ORCPT
+        id S232627AbhEDUBG (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 4 May 2021 09:36:46 -0400
+        Tue, 4 May 2021 16:01:06 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8029610A7;
-        Tue,  4 May 2021 13:35:51 +0000 (UTC)
-Date:   Tue, 4 May 2021 09:35:50 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D31C613B3;
+        Tue,  4 May 2021 20:00:10 +0000 (UTC)
+Date:   Tue, 4 May 2021 16:00:08 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Stefan Metzmacher <metze@samba.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, linux-trace-devel@vger.kernel.org,
-        io-uring <io-uring@vger.kernel.org>
-Subject: Re: Tracing busy processes/threads freezes/stalls the whole machine
-Message-ID: <20210504093550.5719d4bd@gandalf.local.home>
-In-Reply-To: <f590b26d-c027-cc5a-bcbd-1dc734f72e7e@samba.org>
-References: <293cfb1d-8a53-21e1-83c1-cdb6e2f32c65@samba.org>
-        <20210504092404.6b12aba4@gandalf.local.home>
-        <f590b26d-c027-cc5a-bcbd-1dc734f72e7e@samba.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 2/4] libtraceevent: Add logs with severity info
+Message-ID: <20210504160008.3f6f2e01@gandalf.local.home>
+In-Reply-To: <20210428073001.755905-3-tz.stoyanov@gmail.com>
+References: <20210428073001.755905-1-tz.stoyanov@gmail.com>
+        <20210428073001.755905-3-tz.stoyanov@gmail.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Tue, 4 May 2021 15:28:12 +0200
-Stefan Metzmacher <metze@samba.org> wrote:
+On Wed, 28 Apr 2021 10:29:59 +0300
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
-> Am 04.05.21 um 15:24 schrieb Steven Rostedt:
-> > On Thu, 22 Apr 2021 16:26:57 +0200
-> > Stefan Metzmacher <metze@samba.org> wrote:
-> >   
-> >> Hi Steven, hi Ingo,
-> >>  
-> > 
-> > Sorry, somehow I missed this.
-> >   
-> >> # But
-> >> # trace-cmd record -e all -P 7  
+> Renamed existing pr_stat() internal function to tep_info() and limit it
 
-Perhaps you could try something like this:
+Unfortunately they are also not internal functions :-(
 
- # trace-cmd list -s |
-    while read e ; do
-      echo "testing $e";
-      trace-cmd record -P 7 -e $e sleep 1;
-    done
+> to print only when the log level is TEP_LOG_INFO. Removed duplicated and
+> unused functions:
+>  vpr_stat()
+>  __pr_stat()
+>  __vpr_stat()
 
-Which will enable each system at a time, and see if we can pin point what
-is causing the lock up. Narrow it down to a tracing system.
+trace-record.c: In function ‘expand_event_files’:
+trace-record.c:2971:3: warning: implicit declaration of function ‘pr_stat’; did you mean ‘lstat’? [-Wimplicit-function-declaration]
+ 2971 |   pr_stat("%s\n", path);
+      |   ^~~~~~~
+      |   lstat
+
+
+ctracecmd_wrap.c: In function ‘pr_stat’:
+ctracecmd_wrap.c:2779:2: warning: implicit declaration of function ‘__vpr_stat’; did you mean ‘pr_stat’? [-Wimplicit-function-declaration]
+ 2779 |  __vpr_stat(fmt, ap);
+      |  ^~~~~~~~~~
+      |  pr_stat
+
 
 -- Steve
