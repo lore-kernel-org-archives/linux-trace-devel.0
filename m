@@ -2,77 +2,113 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C11DCC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  4 May 2021 21:23:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1963FC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  5 May 2021 04:46:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A330C613DB
-	for <linux-trace-devel@archiver.kernel.org>; Tue,  4 May 2021 21:23:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D349861185
+	for <linux-trace-devel@archiver.kernel.org>; Wed,  5 May 2021 04:46:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbhEDVYI (ORCPT
+        id S231213AbhEEEq6 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Tue, 4 May 2021 17:24:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232782AbhEDVYH (ORCPT
+        Wed, 5 May 2021 00:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229895AbhEEEq6 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Tue, 4 May 2021 17:24:07 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 444C9613CB;
-        Tue,  4 May 2021 21:23:12 +0000 (UTC)
-Date:   Tue, 4 May 2021 17:23:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     linux-trace-devel@vger.kernel.org, joelaf@google.com
-Subject: Re: [PATCH] trace-cmd: Add support for non-qemu VMs
-Message-ID: <20210504172310.5a510ec9@gandalf.local.home>
-In-Reply-To: <20210426103528.634418-1-tz.stoyanov@gmail.com>
-References: <20210426103528.634418-1-tz.stoyanov@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 5 May 2021 00:46:58 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F23DC061574
+        for <linux-trace-devel@vger.kernel.org>; Tue,  4 May 2021 21:46:01 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id v13so466270ple.9
+        for <linux-trace-devel@vger.kernel.org>; Tue, 04 May 2021 21:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xh2Dei6RlvM9/xBsqEB0pvLHHYJvcW1i1vycPhrQ6oc=;
+        b=iFvfXF/kWRllEGaF8nKhwQzLfwdC63pwJWEUswQeKPpdcGoNByqKaC9buoROBScdFn
+         hZZ7cO9ztxCbWUU1AYydUwdc50pSeUHzTZWKWYbtJvb/RpP+86ii6iZWcJ6h/Axngx9B
+         Wn2qipSkihv1bIKoifFkjQqAI2mlajSfomdPQMlZwENpYEBWryPqWFY/yLGBr9PlzQ1p
+         ZiC4IQs65cHh6uDQ8Q5cc7pcGPIF2FgQv13E89Df6nc1CA7XiCDpouBHVTedsC4ydNeQ
+         JGwjboJPu31dMtljUfzH44OEJnDY03x+g7mhBdmE4bnbU8eG1Wfvx87CBWFJauEPoRHU
+         pFCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xh2Dei6RlvM9/xBsqEB0pvLHHYJvcW1i1vycPhrQ6oc=;
+        b=giGDcO8OJM6CJkqdB43ZjFn2vkY3fPT2LdzjZnc1GtujFPUx+ARWe167drfMN8nHCI
+         SCfN8Uop0MvFOBCtJHohcwfA8kNcZrKDA1bAZbyjPDW9M59WLTKSCGE6GMejfnmPYe54
+         Yv2hQntaYF9UBKzpopX85GkpNZIwFb1lnhkR6k7SIEIHA/dDZIM2lx8LBf4fQoRu/kJS
+         gLpeOVLCGT/QSybMHPrnjB5lfqS//W/z9ERQTDXGl+R2/rCgOv6m4weCi3zqF6lJxN88
+         hP/NwG1116Ak0GwzPSKWKPSzdwQdwe5zthF/XPV0strlzV9V0CWDq51jBVjZDGDwTyTS
+         LNyg==
+X-Gm-Message-State: AOAM5332X/WwtrN/f/V7nKHJNUcN6Zy/61QbzAYRfmC5oj2zwtUDO7T2
+        N+MSVDux27QmuSZx/onppIMJ7qJ/flb68lR1aJySt3KGB5i82w==
+X-Google-Smtp-Source: ABdhPJxebdvGU8hd2VL+reKNG2eMY2gAjj79lJHyBFa+WOxlPAOuFMTxThjyz+sHzGXKI+ImwK6NS36C5NDWoU7tTp0=
+X-Received: by 2002:a17:902:d681:b029:ed:6877:376 with SMTP id
+ v1-20020a170902d681b02900ed68770376mr28838046ply.58.1620189961073; Tue, 04
+ May 2021 21:46:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210428073001.755905-1-tz.stoyanov@gmail.com>
+ <20210428073001.755905-3-tz.stoyanov@gmail.com> <20210504162425.5cced88c@gandalf.local.home>
+In-Reply-To: <20210504162425.5cced88c@gandalf.local.home>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Wed, 5 May 2021 07:45:44 +0300
+Message-ID: <CAPpZLN4opBm_OQm2HYH73PmpBOmV9VMaV1vt+Wx_EzjOOAPWcw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] libtraceevent: Add logs with severity info
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Mon, 26 Apr 2021 13:35:28 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+On Tue, May 4, 2021 at 11:24 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Wed, 28 Apr 2021 10:29:59 +0300
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+>
+> >  void tep_info(const char *fmt, ...)
+> >  {
+> >       va_list ap;
+> >
+> >       if (log_level < TEP_LOG_INFO)
+> >               return;
+> >
+> >       va_start(ap, fmt);
+> >       tep_vprint("libtraceevent", TEP_LOG_INFO fmt, ap);
+> >       va_end(ap);
+> >  }
+>
+> The above should just be:
+>
+> void tep_info(const char *fmt, ...)
+> {
+>         va_list ap;
+>
+>         va_start(ap, fmt);
+>         tep_vprint("libtraceevent", TEP_LOG_INFO fmt, ap);
+>         va_end(ap);
+> }
+>
+> And let the tep_vprint() decide to print it or not.
 
-> Current host-guest tracing implementation assumes that qemu runs the VMs
-> and uses qemu specific logic to collect various information:
->  - PID of the process, running the guest VM. In case of KVM, this PID
->    is used  to get the KVM guest TSC clock parameters, needed for better
->    host and guest trace timestamps synchronization.
->  - PIDs of each thread, running a guest virtual CPU. This is used for
->    better trace visualisation. It helps to map the host task to a vCPU
->    and to visualise them together.
-> In case qemu is not used to run the VMs, host-guest tracing fails. As
-> that information is not mandatory, we can easily support non-qemu VMs.
-> Changes, proposed by the patch:
->  - if PID of the process, running the guest VM, is not available - fail
->    back to a PTP-like algorithm for trace timestamps synchronization.
->  - if PIDs of the threads, running guest virtual CPUs, are not available
->    write -1 in the trace file metadata.
-> 
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> ---
+The tep_vprint() is used also by libtacecmd and libtracefs for
+printing logs. Each library has its own log_level local variable,
+that's why I check the log level in the library specific log
+functions.
 
-We need to fix this for qemu as well. I just upgraded my test box to
-Fedora-33 and it renamed qemu from qemu-system-x86 to qemu-kvm, and I hit
-the same issue that Joel did with his code. And this patch just removes the
-use of KVM synchronization for my box.
+>
+> -- Steve
 
-I'll try to find other ways to get this information than the hack we
-currently have. Relying on the application name is not robust at all. But
-unfortunately, there's currently no way that I can find that exports the
-CID of tasks. Perhaps this is going to require a kernel change. To have a
-netstat functionality for vsockets.
 
--- Steve
+
+-- 
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
