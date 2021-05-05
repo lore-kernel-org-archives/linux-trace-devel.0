@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 854F1C433ED
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC6F5C43461
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  5 May 2021 13:42:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4512E611EE
+	by mail.kernel.org (Postfix) with ESMTP id B6244611EE
 	for <linux-trace-devel@archiver.kernel.org>; Wed,  5 May 2021 13:42:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhEENnt (ORCPT
+        id S231959AbhEENnt (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Wed, 5 May 2021 09:43:49 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:58276 "EHLO
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:31333 "EHLO
         EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231959AbhEENns (ORCPT
+        by vger.kernel.org with ESMTP id S230172AbhEENnt (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Wed, 5 May 2021 09:43:48 -0400
+        Wed, 5 May 2021 09:43:49 -0400
 Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
  EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
  15.0.1156.6; Wed, 5 May 2021 06:42:50 -0700
 Received: from vypre.com (unknown [10.21.244.11])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 0095C2049E;
-        Wed,  5 May 2021 06:42:51 -0700 (PDT)
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id B1B7320483;
+        Wed,  5 May 2021 06:42:52 -0700 (PDT)
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     <linux-trace-devel@vger.kernel.org>
 CC:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 1/2] libtracefs: Add tracefs_event_enable/disable() API
-Date:   Wed, 5 May 2021 09:42:47 -0400
-Message-ID: <20210505134248.3583391-2-rostedt@goodmis.org>
+Subject: [PATCH 2/2] libtracefs: Update the man page for tracefs_event_enable/disable() APIs
+Date:   Wed, 5 May 2021 09:42:48 -0400
+Message-ID: <20210505134248.3583391-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210505134248.3583391-1-rostedt@goodmis.org>
 References: <20210505134248.3583391-1-rostedt@goodmis.org>
@@ -47,188 +47,89 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add the API of the following functions:
+Include descriptions for
 
  tracefs_event_enable()
  tracefs_event_disable()
 
-That takes a system string and an event string and enables the events that
-match. Where a NULL system means (all systems) and a NULL event means all
-events in the system.
+in the tracefs events man page.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h    |   3 +
- src/tracefs-events.c | 145 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 148 insertions(+)
+ Documentation/libtracefs-events.txt | 36 +++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 551c37c..73ee42b 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -55,6 +55,9 @@ int tracefs_trace_off(struct tracefs_instance *instance);
- int tracefs_trace_on_fd(int fd);
- int tracefs_trace_off_fd(int fd);
+diff --git a/Documentation/libtracefs-events.txt b/Documentation/libtracefs-events.txt
+index 78c9834..3fe9199 100644
+--- a/Documentation/libtracefs-events.txt
++++ b/Documentation/libtracefs-events.txt
+@@ -14,6 +14,8 @@ SYNOPSIS
  
-+int tracefs_event_enable(struct tracefs_instance *instance, const char *system, const char *event);
-+int tracefs_event_disable(struct tracefs_instance *instance, const char *system, const char *event);
+ char pass:[*]pass:[*]*tracefs_event_systems*(const char pass:[*]_tracing_dir_);
+ char pass:[*]pass:[*]*tracefs_system_events*(const char pass:[*]_tracing_dir_, const char pass:[*]_system_);
++int *tracefs_event_enable*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_system_, const char pass:[*]_event_);
++int *tracefs_event_disable*(struct tracefs_instance pass:[*]_instance_, const char pass:[*]_system_, const char pass:[*]_event_);
+ int *tracefs_iterate_raw_events*(struct tep_handle pass:[*]_tep_, struct tracefs_instance pass:[*]_instance_, cpu_set_t pass:[*]_cpus_, int _cpu_size_, int (pass:[*]_callback_)(struct tep_event pass:[*], struct tep_record pass:[*], int, void pass:[*]), void pass:[*]_callback_context_);
+ 
+ --
+@@ -37,6 +39,22 @@ local machine, or it may be a path to a copy of the tracefs directory
+ from another machine. The last entry in the array as a NULL pointer.
+ The array must be freed with _tracefs_list_free()_ API.
+ 
++The _tracefs_event_enable()_ function enables a given event based on
++the _system_ and _event_ passed in for the given _instance_. If _instance_
++is NULL, then the top level tracing directory is used. If _system_
++and _event_ are both NULL, then all events are enabled for the  _instance_.
++If _event_ is NULL then all events within the _system_ are enabled.
++If _system_ is NULL, then all systems are searched and any event within
++a system that matches _event_ is enabled. Both _system_ and _event_ may
++be regular expressions as defined by *regex*(3).
 +
- /**
-  * tracefs_trace_on_get_fd - Get a file descriptor of "tracing_on" in given instance
-  * @instance: ftrace instance, can be NULL for the top instance
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 2343fc1..d02a555 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -777,3 +777,148 @@ int tracefs_fill_local_events(const char *tracing_dir,
- 	return fill_local_events_system(tracing_dir, tep,
- 					NULL, parsing_failures);
- }
++The _tracefs_event_disable()_ function disables the events that match
++the _system_ and _event_ parameters for the given _instance_. What events
++are disable follow the same rules as _tracefs_event_enable()_ for matching
++events. That is, if _instance_ is NULL, then the top level tracing directory
++is used. If both _system_ and _event_ are NULL then all events are disabled
++for the given _instance_, and so on.
 +
-+static bool match(const char *str, regex_t *re)
-+{
-+	return regexec(re, str, 0, NULL, 0) == 0;
-+}
+ The _tracefs_iterate_raw_events()_ function will read the tracefs raw
+ data buffers and call the specified _callback_ function for every event it
+ encounters. Events are iterated in sorted order: oldest first. An initialized
+@@ -59,6 +77,14 @@ The _tracefs_event_systems()_ and __tracefs_system_events()_ functions return
+ an array of strings. The last element in that array is a NULL pointer. The array
+ must be freed with _tracefs_list_free()_ API. In case of an error, NULL is returned.
+ 
++Both _tracefs_event_enable()_ and _tracefs_event_disable()_ return 0 if they found
++any matching events (Note it does not check the previous status of the event. If
++_tracefs_event_enable()_ finds an event that is already enabled, and there are no
++other errors, then it will return 0). If an error occurs, even if other events were
++found, it will return -1 and errno will be set. If no errors occur, but no events
++are found that match the _system_ and _event_ parameters, then -1 is returned
++and errno is not set.
 +
-+static int enable_disable_event(struct tracefs_instance *instance,
-+				const char *system, const char *event,
-+				bool enable)
-+{
-+	const char *str = enable ? "1" : "0";
-+	char *system_event;
-+	int ret;
+ The _tracefs_iterate_raw_events()_ function returns -1 in case of an error or
+ 0 otherwise.
+ 
+@@ -102,9 +128,19 @@ struct tep_event *tep = tracefs_local_events(NULL);
+ 		/* Failed to initialise tep handler with local events */
+ 		...
+ 	}
 +
-+	ret = asprintf(&system_event, "events/%s/%s/enable", system, event);
-+	if (ret < 0)
-+		return ret;
++	errno = 0;
++	ret = tracefs_event_enable(NULL, "sched", NULL);
++	if (ret < 0 && !errno)
++		printf("Could not find 'sched' events\n");
++	tracefs_event_enable(NULL, "irq", "irq_handler_\(enter\|exit\)");
 +
-+	ret = tracefs_instance_file_write(instance, system_event, str);
-+	free(system_event);
+ 	if (tracefs_iterate_raw_events(tep, NULL, NULL, 0, records_walk, NULL) < 0) {
+ 		/* Error walking through the recorded raw events */
+ 	}
 +
-+	return ret;
-+}
-+
-+static int enable_disable_system(struct tracefs_instance *instance,
-+				 const char *system, bool enable)
-+{
-+	const char *str = enable ? "1" : "0";
-+	char *system_path;
-+	int ret;
-+
-+	ret = asprintf(&system_path, "events/%s/enable", system);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = tracefs_instance_file_write(instance, system_path, str);
-+	free(system_path);
-+
-+	return ret;
-+}
-+
-+static int enable_disable_all(struct tracefs_instance *instance,
-+			      bool enable)
-+{
-+	const char *str = enable ? "1" : "0";
-+
-+	return tracefs_instance_file_write(instance, "events/enable", str);
-+}
-+
-+static int event_enable_disable(struct tracefs_instance *instance,
-+				const char *system, const char *event,
-+				bool enable)
-+{
-+	regex_t system_re, event_re;
-+	char **systems;
-+	char **events = NULL;
-+	int ret = -1;
-+	int s, e;
-+
-+	/* Handle all events first */
-+	if (!system && !event)
-+		return enable_disable_all(instance, enable);
-+
-+	systems = tracefs_event_systems(NULL);
-+	if (!systems)
-+		goto out_free;
-+
-+	if (system) {
-+		ret = regcomp(&system_re, system, REG_ICASE|REG_NOSUB);
-+		if (ret < 0)
-+			goto out_free;
-+	}
-+	if (event) {
-+		ret = regcomp(&event_re, event, REG_ICASE|REG_NOSUB);
-+		if (ret < 0) {
-+			if (system)
-+				regfree(&system_re);
-+			goto out_free;
-+		}
-+	}
-+
-+	for (s = 0; systems[s]; s++) {
-+		if (system && !match(systems[s], &system_re))
-+			continue;
-+
-+		/* Check for the short cut first */
-+		if (!event) {
-+			ret = enable_disable_system(instance, systems[s], enable);
-+			if (ret < 0)
-+				break;
-+			ret = 0;
-+			continue;
-+		}
-+
-+		events = tracefs_system_events(NULL, systems[s]);
-+		if (!events)
-+			continue; /* Error? */
-+
-+		for (e = 0; events[e]; e++) {
-+			if (!match(events[e], &event_re))
-+				continue;
-+			ret = enable_disable_event(instance, systems[s],
-+						   events[e], enable);
-+			if (ret < 0)
-+				break;
-+			ret = 0;
-+		}
-+		tracefs_list_free(events);
-+		events = NULL;
-+	}
-+
-+ out_free:
-+	tracefs_list_free(systems);
-+	tracefs_list_free(events);
-+	return ret;
-+}
-+
-+/**
-+ * tracefs_event_enable - enable specified events
-+ * @instance: ftrace instance, can be NULL for the top instance
-+ * @system: A regex of a system (NULL to match all systems)
-+ * @event: A regex of the event in the system (NULL to match all events)
-+ *
-+ * This will enable events that match the @system and @event.
-+ * If both @system and @event are NULL, then it will enable all events.
-+ * If @system is NULL, it will look at all systems for matching events
-+ * to @event.
-+ * If @event is NULL, then it will enable all events in the systems
-+ * that match @system.
-+ *
-+ * Returns 0 on success, and -1 if it encountered an error,
-+ * or if no events matched. If no events matched, then -1 is set
-+ * but errno will not be.
-+ */
-+int tracefs_event_enable(struct tracefs_instance *instance,
-+			 const char *system, const char *event)
-+{
-+	return event_enable_disable(instance, system, event, true);
-+}
-+
-+int tracefs_event_disable(struct tracefs_instance *instance,
-+			  const char *system, const char *event)
-+{
-+	return event_enable_disable(instance, system, event, false);
-+}
++	/* Disable all events */
++	tracefs_event_disable(NULL, NULL, NULL);
+ 	tep_free(tep);
+ --
+ FILES
 -- 
 2.29.2
 
