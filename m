@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0BCAC43461
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAFB2C433ED
 	for <linux-trace-devel@archiver.kernel.org>; Thu,  6 May 2021 16:52:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9D83761177
+	by mail.kernel.org (Postfix) with ESMTP id BE7BE611AE
 	for <linux-trace-devel@archiver.kernel.org>; Thu,  6 May 2021 16:52:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236037AbhEFQxI (ORCPT
+        id S236083AbhEFQxI (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Thu, 6 May 2021 12:53:08 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:5919 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236083AbhEFQxH (ORCPT
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:2559 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236089AbhEFQxH (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
         Thu, 6 May 2021 12:53:07 -0400
 Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Thu, 6 May 2021 09:52:04 -0700
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 6 May 2021 09:52:06 -0700
 Received: from vypre.com (unknown [10.21.244.124])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 777A9202EB;
-        Thu,  6 May 2021 09:52:07 -0700 (PDT)
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id DC5212028F;
+        Thu,  6 May 2021 09:52:08 -0700 (PDT)
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     <linux-trace-devel@vger.kernel.org>
 CC:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v3 2/4] trace-cmd list: Use tracefs to help find events for -e
-Date:   Thu, 6 May 2021 12:52:01 -0400
-Message-ID: <20210506165203.3889058-3-rostedt@goodmis.org>
+Subject: [PATCH v3 4/4] trace-cmd list: Add ftrace events to listing of events
+Date:   Thu, 6 May 2021 12:52:03 -0400
+Message-ID: <20210506165203.3889058-5-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210506165203.3889058-1-rostedt@goodmis.org>
 References: <20210506165203.3889058-1-rostedt@goodmis.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: rostedt@goodmis.org does not
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: rostedt@goodmis.org does not
  designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
@@ -47,190 +47,50 @@ X-Mailing-List: linux-trace-devel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-When the user specifies -e and wants to search for events, use the tracefs
-helper functions tracefs_event_systems() and tracefs_system_events() to
-find the matching events.
+If a search of events is done with trace-cmd list -e, check if any matches
+the ftrace events. This is useful to get the fields and print fmt of the
+events under the ftrace system.
+
+Note, just "trace-cmd list -e" will still not list ftrace events by
+default.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tracecmd/trace-list.c | 135 ++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 131 insertions(+), 4 deletions(-)
+ tracecmd/trace-list.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
-index fb62b754..a0d743fb 100644
+index 1b32af17..d060c810 100644
 --- a/tracecmd/trace-list.c
 +++ b/tracecmd/trace-list.c
-@@ -106,6 +106,123 @@ static void process_file_re(process_file_func func,
- 	regfree(&reg);
- }
+@@ -158,6 +158,7 @@ static void match_system_events(process_file_func func, const char *system,
  
-+static void show_event(process_file_func func, const char *system,
-+		       const char *event, int flags)
-+{
-+	char *buf;
-+	int ret;
-+
-+	ret = asprintf(&buf, "%s:%s", system, event);
-+	if (ret < 0)
-+		die("Can not allocate event");
-+	func(buf, strlen(buf), flags);
-+	free(buf);
-+}
-+
-+static void show_system(process_file_func func, const char *system, int flags)
-+{
-+	char **events;
-+	int e;
-+
-+	events = tracefs_system_events(NULL, system);
-+	if (!events) /* die? */
-+		return;
-+
-+	for (e = 0; events[e]; e++)
-+		show_event(func, system, events[e], flags);
-+}
-+
-+static void show_event_systems(process_file_func func, char **systems, int flags)
-+{
-+	int s;
-+
-+	for (s = 0; systems[s]; s++)
-+		show_system(func, systems[s], flags);
-+}
-+
-+
-+static void process_events(process_file_func func, const char *re, int flags)
-+{
-+	regex_t system_reg;
-+	regex_t event_reg;
-+	char *str;
-+	size_t l = strlen(re);
-+	bool just_systems = true;
-+	char **systems;
-+	char **events;
-+	char *system;
-+	char *event;
-+	int s, e;
-+
-+	systems = tracefs_event_systems(NULL);
-+	if (!systems)
-+		return process_file_re(func, "available_events", re, flags);
-+
-+	if (!re || l == 0) {
-+		show_event_systems(func, systems, flags);
-+		return;
+ static void process_events(process_file_func func, const char *re, int flags)
+ {
++	const char *ftrace = "ftrace";
+ 	regex_t system_reg;
+ 	regex_t event_reg;
+ 	char *str;
+@@ -200,6 +201,19 @@ static void process_events(process_file_func func, const char *re, int flags)
+ 	}
+ 	free(str);
+ 
++	/*
++	 * See if this matches the special ftrace system, as ftrace is not included
++	 * in the systems list, but can get events from tracefs_system_events().
++	 */
++	if (regexec(&system_reg, ftrace, 0, NULL, 0) == 0) {
++		if (!event)
++			show_system(func, ftrace, flags);
++		else
++			match_system_events(func, ftrace, &event_reg, flags);
++	} else if (!just_systems) {
++		match_system_events(func, ftrace, &system_reg, flags);
 +	}
 +
-+	str = strdup(re);
-+	if (!str)
-+		die("Can not allocate momory for regex");
-+
-+	system = strtok(str, ":");
-+	event = strtok(NULL, "");
-+
-+	if (regcomp(&system_reg, system, REG_ICASE|REG_NOSUB))
-+		die("invalid regex '%s'", system);
-+
-+	if (event) {
-+		if (regcomp(&event_reg, event, REG_ICASE|REG_NOSUB))
-+			die("invalid regex '%s'", event);
-+	} else {
-+		/*
-+		 * If the regex ends with ":", then event would be null,
-+		 * but we do not want to match events.
-+		 */
-+		if (re[l-1] != ':')
-+			just_systems = false;
-+	}
-+	free(str);
-+
-+	for (s = 0; systems[s]; s++) {
-+
-+		if (regexec(&system_reg, systems[s], 0, NULL, 0) == 0) {
-+			if (!event) {
-+				show_system(func, systems[s], flags);
-+				continue;
-+			}
-+			events = tracefs_system_events(NULL, systems[s]);
-+			if (!events) /* die? */
-+				continue;
-+			for (e = 0; events[e]; e++) {
-+				if (regexec(&event_reg, events[e], 0, NULL, 0) == 0)
-+					show_event(func, systems[s], events[e], flags);
-+			}
-+			tracefs_list_free(events);
-+			continue;
-+		}
-+		if (just_systems)
-+			continue;
-+
-+		events = tracefs_system_events(NULL, systems[s]);
-+		if (!events) /* die? */
-+			continue;
-+
-+		for (e = 0; events[e]; e++) {
-+			if (regexec(&system_reg, events[e], 0, NULL, 0) == 0)
-+				show_event(func, systems[s], events[e], flags);
-+		}
-+		tracefs_list_free(events);
-+	}
-+	tracefs_list_free(systems);
-+
-+	regfree(&system_reg);
-+	if (event)
-+		regfree(&event_reg);
-+}
-+
- static int show_file_write(char *buf, int len, int flags)
- {
- 	return fwrite(buf, 1, len, stdout);
-@@ -214,24 +331,34 @@ static int event_format_write(char *fbuf, int len, int flags)
- 	return 0;
- }
+ 	for (s = 0; systems[s]; s++) {
  
-+static int event_name(char *buf, int len, int flags)
-+{
-+	printf("%s\n", buf);
-+
-+	return 0;
-+}
- 
- static void show_event_filter_re(const char *re)
- {
--	process_file_re(event_filter_write, "available_events", re, 0);
-+	process_events(event_filter_write, re, 0);
- }
- 
- 
- static void show_event_trigger_re(const char *re)
- {
--	process_file_re(event_trigger_write, "available_events", re, 0);
-+	process_events(event_trigger_write, re, 0);
- }
- 
- 
- static void show_event_format_re(const char *re, int flags)
- {
--	process_file_re(event_format_write, "available_events", re, flags);
-+	process_events(event_format_write, re, flags);
- }
- 
-+static void show_event_names_re(const char *re)
-+{
-+	process_events(event_name, re, 0);
-+}
- 
- static void show_events(const char *eventre, int flags)
- {
-@@ -248,7 +375,7 @@ static void show_events(const char *eventre, int flags)
- 		else if (flags & SHOW_EVENT_TRIGGER)
- 			show_event_trigger_re(eventre);
- 		else
--			show_file_re("available_events", eventre);
-+			show_event_names_re(eventre);
- 	} else
- 		show_file("available_events");
- }
+ 		if (regexec(&system_reg, systems[s], 0, NULL, 0) == 0) {
 -- 
 2.29.2
 
