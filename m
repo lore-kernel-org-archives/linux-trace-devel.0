@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2EDBC433B4
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 09:53:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DC28C43461
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 09:53:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B8039613D6
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 09:53:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 55DE1613D6
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 09:53:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236867AbhEGJyo (ORCPT
+        id S236599AbhEGJyo (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
         Fri, 7 May 2021 05:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236599AbhEGJym (ORCPT
+        with ESMTP id S236866AbhEGJyo (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 7 May 2021 05:54:42 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7563FC061574
-        for <linux-trace-devel@vger.kernel.org>; Fri,  7 May 2021 02:53:42 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id f24so12675471ejc.6
-        for <linux-trace-devel@vger.kernel.org>; Fri, 07 May 2021 02:53:42 -0700 (PDT)
+        Fri, 7 May 2021 05:54:44 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8221BC061761
+        for <linux-trace-devel@vger.kernel.org>; Fri,  7 May 2021 02:53:43 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id n15so4888436edw.8
+        for <linux-trace-devel@vger.kernel.org>; Fri, 07 May 2021 02:53:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z0LcYKshq465WgeE8dPD2Nn0zo3Dp6s7Ui2Y7fj6Jpk=;
-        b=s4RYRCE0LPwhEck40T3dYENjz4UrTm2LzWLxGv8rRIBK5t9BA3ktFPyzxYUFVQKswI
-         BFQgVDYg04k17KLrNbikoUeztWE5yw0tQSRKh1L7bUVroJ6mot6nBn46Q4Oq1kSm31ic
-         UyVIwHiOgLAd4w1WUao9nHepvSf4DuRk8B2BFXigVGF4EnyJ/YfhfniTplSc0+nB3/Hf
-         DdZ7tO+BCMNRIyik6uGChCNhHfpij9cQGjRe7LD6bTwNmbqXCq0y1l2qEga1uVveyIXb
-         NOU6XEaEk3YmnmoaO+t5ZMIxEFfRfQK4EKLjKuHfflvnlhNdBEEp+pQBaj3zO/AnAyi+
-         W43Q==
+        bh=atjZ/yiZiHgCaYm70jJ4k62FlJxalnCDG6n7ncN5BNU=;
+        b=Yp+QBNEHNO17uLSts81/rgUmC+yJEuwNc2O639fWW83Y/5NXkE+1BtsX7p+MJxLIHC
+         0otOFYkmIqgbqkjOMWXL2p2/euoWKUqlgOG07Fv2oUbPArTgeZVIUHGkh2YyUMiiKMY9
+         f8Fj6Z9uwcl67GccnCoIAK4C9wzmAqEW4/coIGkmmDKN+eBRw7AVSw4GUG0Tk3fR/oES
+         sw0yM5a6n4/Ukhs348jJjri575Zc4b0ZkPc5oFsMwXUX84EPElGdUQLRnYHNi3+UNhJX
+         sreuH3QDeZXNmFV0dv+gGExrZ77dGD67To9FhK/X1WudxvnfRKyG6+szH142ZNSRrLpO
+         Vf6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z0LcYKshq465WgeE8dPD2Nn0zo3Dp6s7Ui2Y7fj6Jpk=;
-        b=FpYVPRTCmpg7Kd/fKuClxzy7S7Xh39J2NVHOXz17cpjzzunaB766bbWz654i/QQLYD
-         LYC0/EdM10LlOBC8TNHbLUlmkXERbDBOBSIw5nInAGRiNZKbucrkZekafuk/8mBfVLIX
-         FJk99KsvBU8W3LonW98G7TnIS0+FHeS7MD9U4wuAbj7ZUNyjeFYJVNNdXW6PIlYmTT2t
-         eu1cgdB9twDYTsFJvKFEJeEQzVmtnCH8mgzOEcWWl6aVkVdPix7q/3yUF654Ag1H9XqQ
-         alwYKJRYMjni7cB1LrK2Gz6LUPRvH43wNFpDl1aMLV9IWO4mtvA5w+RrkTENxOmVj6Cm
-         ku1g==
-X-Gm-Message-State: AOAM530oknKCYDwMtSe0epP0U/1jGj1Qpxc8Er9sdjrdwfNnyNOU+iRV
-        CqCmdXxYMyxbiIYQk9EO3PkCH1CT+3hm9A==
-X-Google-Smtp-Source: ABdhPJw77PetzbymOZ49MKp62E5xotCN06x7tmUN1UMyJvzrxa6M6Mtqaes8RIjQ8Z4UgOC4s32WnQ==
-X-Received: by 2002:a17:906:58d1:: with SMTP id e17mr9253504ejs.179.1620381221259;
-        Fri, 07 May 2021 02:53:41 -0700 (PDT)
+        bh=atjZ/yiZiHgCaYm70jJ4k62FlJxalnCDG6n7ncN5BNU=;
+        b=KK68iuyBBrlgNn5sDUC3m4qIB4/trmZ0gW8DdwMtT2iLW9h9uJYG6ykJtsv50IJaki
+         udHzkVxQYBcnitxXjlQNXmXp3Fx8uRpiGdd+nyTjho344qt3BluR8DczAt8OUydpRpfV
+         Zaq4gp/8W8JoIa7A/wEl3ZTp6KGZJp0wlliV8g9307DCwtY8f1XgdZ4+KomhkEsC4jXZ
+         wPnYW1CJQbGkSQ7bIfitf/DNQp3xAxQtu+IXRYRIAhLP3WmxkPcZPA+deJwHR4rrXdYk
+         n64TrJBeHUd0mZx1LTcn7/SWTX5lu76bC9hc0/261JJVj3feebMGZx2wB4avmUIu6EJK
+         pt/Q==
+X-Gm-Message-State: AOAM532xAMkUJ0uqCKtaE2JzPCbPP0ohx9ZVDWlZLLhiWko8amTTCW6w
+        HJrQnROe28hW+7C+OqC+CkA=
+X-Google-Smtp-Source: ABdhPJxqP19TdAyg3Y6TRJQYGkvPHPgiahq7Nfd+DhV8Ks4NPn3hWS6VR3g9HFztwbc+SF1qfzju2A==
+X-Received: by 2002:a05:6402:26ce:: with SMTP id x14mr10184768edd.216.1620381217404;
+        Fri, 07 May 2021 02:53:37 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id cr21sm3105812ejc.2.2021.05.07.02.53.40
+        by smtp.gmail.com with ESMTPSA id cr21sm3105812ejc.2.2021.05.07.02.53.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 02:53:40 -0700 (PDT)
+        Fri, 07 May 2021 02:53:37 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 7/8] trace-cmd report: Set the log level with -V and -q options
-Date:   Fri,  7 May 2021 12:53:32 +0300
-Message-Id: <20210507095333.1080910-8-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 3/8] trace-cmd library: Add log levels
+Date:   Fri,  7 May 2021 12:53:28 +0300
+Message-Id: <20210507095333.1080910-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210507095333.1080910-1-tz.stoyanov@gmail.com>
 References: <20210507095333.1080910-1-tz.stoyanov@gmail.com>
@@ -73,30 +73,109 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When "trace-cmd report -V" is specified, set the log level to INFO.
-When "trace-cmd report -q" is specified, set the log level to NONE.
+Add levels to library logs and introduce a new API to set the desired
+log severity:
+ tracecmd_set_loglevel()
+When a new trace-cmd library log level is set, propagate it to tracefs
+and traceevent libraries as well.
+Removed the "weak" definition of the library log functions. Setting
+the desired log level can be used to silence the library logs, instead
+of overwriting the log functions.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/trace-read.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/trace-cmd/trace-cmd.h           |  2 ++
+ lib/trace-cmd/include/trace-cmd-local.h |  1 -
+ lib/trace-cmd/trace-util.c              | 26 ++++++++++++++++++++++---
+ 3 files changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
-index b315283e..0cf6e773 100644
---- a/tracecmd/trace-read.c
-+++ b/tracecmd/trace-read.c
-@@ -1703,9 +1703,11 @@ void trace_report (int argc, char **argv)
- 			break;
- 		case 'V':
- 			show_status = 1;
-+			tracecmd_set_loglevel(TEP_LOG_INFO);
- 			break;
- 		case 'q':
- 			silence_warnings = 1;
-+			tracecmd_set_loglevel(TEP_LOG_NONE);
- 			break;
- 		case OPT_cpu:
- 			parse_cpulist(optarg);
+diff --git a/include/trace-cmd/trace-cmd.h b/include/trace-cmd/trace-cmd.h
+index 7305487c..6984db86 100644
+--- a/include/trace-cmd/trace-cmd.h
++++ b/include/trace-cmd/trace-cmd.h
+@@ -43,4 +43,6 @@ int tracecmd_buffer_instances(struct tracecmd_input *handle);
+ const char *tracecmd_buffer_instance_name(struct tracecmd_input *handle, int indx);
+ struct tracecmd_input *tracecmd_buffer_instance_handle(struct tracecmd_input *handle, int indx);
+ 
++void tracecmd_set_loglevel(enum tep_loglevel level);
++
+ #endif /* _TRACE_CMD_H */
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index cd868f60..76179148 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -9,7 +9,6 @@
+ #include <byteswap.h>
+ #include "trace-cmd-private.h"
+ 
+-/* Can be overridden */
+ void tracecmd_warning(const char *fmt, ...);
+ void tracecmd_fatal(const char *fmt, ...);
+ void tracecmd_info(const char *fmt, ...);
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index 049fe049..b3f1b075 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -30,7 +30,7 @@
+ #define PROC_STACK_FILE "/proc/sys/kernel/stack_tracer_enabled"
+ 
+ static bool debug;
+-
++static int log_level = TEP_LOG_CRITICAL;
+ static FILE *logfp;
+ 
+ const static struct {
+@@ -355,10 +355,24 @@ trace_load_plugins(struct tep_handle *tep, int flags)
+ 	return list;
+ }
+ 
+-void __weak tracecmd_warning(const char *fmt, ...)
++/**
++ * tracecmd_set_loglevel - set log level of the library
++ * @level: desired level of the library messages
++ */
++void tracecmd_set_loglevel(enum tep_loglevel level)
++{
++	log_level = level;
++	tracefs_set_loglevel(level);
++	tep_set_loglevel(level);
++}
++
++void tracecmd_warning(const char *fmt, ...)
+ {
+ 	va_list ap;
+ 
++	if (log_level < TEP_LOG_WARNING)
++		return;
++
+ 	va_start(ap, fmt);
+ 	tep_vprint("libtracecmd", TEP_LOG_WARNING, true, fmt, ap);
+ 	va_end(ap);
+@@ -368,17 +382,23 @@ void tracecmd_info(const char *fmt, ...)
+ {
+ 	va_list ap;
+ 
++	if (log_level < TEP_LOG_INFO)
++		return;
++
+ 	va_start(ap, fmt);
+ 	tep_vprint("libtracecmd", TEP_LOG_INFO, false, fmt, ap);
+ 	va_end(ap);
+ }
+ 
+ 
+-void __weak tracecmd_fatal(const char *fmt, ...)
++void tracecmd_fatal(const char *fmt, ...)
+ {
+ 	int ret;
+ 	va_list ap;
+ 
++	if (log_level < TEP_LOG_CRITICAL)
++		return;
++
+ 	va_start(ap, fmt);
+ 	ret = tep_vprint("libtracecmd", TEP_LOG_CRITICAL, true, fmt, ap);
+ 	va_end(ap);
 -- 
 2.31.1
 
