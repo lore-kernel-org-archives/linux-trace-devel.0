@@ -8,147 +8,91 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B101DC43462
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 09:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 779EFC43460
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 10:20:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8A85C6145E
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 09:53:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A5CB6143F
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 10:20:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236866AbhEGJyp (ORCPT
+        id S233599AbhEGKV1 (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 7 May 2021 05:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51928 "EHLO
+        Fri, 7 May 2021 06:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236636AbhEGJyo (ORCPT
+        with ESMTP id S230232AbhEGKV0 (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 7 May 2021 05:54:44 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C40C061574
-        for <linux-trace-devel@vger.kernel.org>; Fri,  7 May 2021 02:53:43 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id zg3so12693571ejb.8
-        for <linux-trace-devel@vger.kernel.org>; Fri, 07 May 2021 02:53:43 -0700 (PDT)
+        Fri, 7 May 2021 06:21:26 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09739C061574
+        for <linux-trace-devel@vger.kernel.org>; Fri,  7 May 2021 03:20:26 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id b25so12789789eju.5
+        for <linux-trace-devel@vger.kernel.org>; Fri, 07 May 2021 03:20:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g0vdklY04kD2npqSKc0g6BwKJeXmFQKNuUMCw4azhOE=;
-        b=auzf7pi7v/6Z0cQIcMOxxYzDjknQ0WnfjHam6J2geIcMFiZwXAKKHllxn3YIGWKhpr
-         jOxrL9X3d4vaXlrfR6CAyk7fU4BXJN2N+NYH8sFyzYCVIqj6cYlOWJNMdFRW/AV/DmSG
-         HlcEpz1RGCGFsbTdB8mDsbx3kVITUz9DyAc9h0EaDWKOhz24ZKzO+fP/atlcM9rpJKze
-         5IcySwZ3C+qbfF72el72jvxQnAQGEDJ12e4PnppuV7BjOef3UCfMudkds0GmoUqA5V0d
-         Zhxdfk9dw8i0RGf1Ed8PKKtkhkq/UeuewGnSLDfG5VQaO2Q651xDaYOgFcV1pgq7uv2g
-         utGg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N64kpl+7XOTf/eBwPHwl+gC/eQZ6LF+23llhXv9ZhWA=;
+        b=E+AzBFNikvdVtyz+0eVyhXux6LX4/FtiiUmtYKRTTGM0AdPs6Ue5L4Xfc/3r9tDHPJ
+         sk5M9c6zK1COcndldQqlCCu5h9Tv2KbUODj7bPxGgIBctEds5PDUBFhFABjf7FO8LlLh
+         fIAk+HVSZi0jvnqvLCQP+/EaAAKjO422rz7KKIPZJck8pKKdz8tOEGXi2aYnPmWA4k4O
+         HRR9e1mc4ScDZWS3D/y2RGF/6b1hPle2GG+OYInPOT+u1m0I6JKL1MzyicZpR9kTukn9
+         tYxGUVO0JXaOCxm/1h69TYi3VdJqAKSCFWVNCvA8W1FHfVvUmuxiSxZN8nbtZvjRJv4s
+         jGAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g0vdklY04kD2npqSKc0g6BwKJeXmFQKNuUMCw4azhOE=;
-        b=nBE6TLDbQR+ODcx9yV1QHvnpLA+ro25gtqGwtjebUFlWGEde0fQykzN1cxFVGtU+UW
-         h1Pmfc9U4fKIhAvwcgUHs8GVcCnl5AQneN3zquWJGPGsW1PtZPMFaDdL+bM7tTz/pPwe
-         blSwt4UmczpN7qgFFRjjEBa9PYbGxfmG5VVEiRlYITWVidJhchacRvI+uaB0sWB0HW+Y
-         1EKgc3ekeHjt/zKlckwlC4i8Kxp8OJlIi9eXviFrseex8b4oMlendTXGrvlCY74BvPDU
-         oQGNA7vs9pGVrzYfgP7iDr/1HX/hetRv94VlAipADdJ6AJcu6bOe4CN4ziQxu3iSWN56
-         FHOg==
-X-Gm-Message-State: AOAM531xy1BYiV3Aa7G/3pKycEnMJ+1w/DNbC41FP95iKsAe8fnCkSoN
-        +n2Xb7dtKZN8iaDjK9SxRlc=
-X-Google-Smtp-Source: ABdhPJwtAZefgOZm1zCMM1KOgmuzFyq+Eu6oJqasEWi5VZzXoZPnBAcrLO3xAfvIKmFgDVaHQKuuIQ==
-X-Received: by 2002:a17:906:5791:: with SMTP id k17mr8871331ejq.296.1620381222683;
-        Fri, 07 May 2021 02:53:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N64kpl+7XOTf/eBwPHwl+gC/eQZ6LF+23llhXv9ZhWA=;
+        b=TQ9h/swAn1Zohmxa98bkxAYY8TFvqaFZ8iSSZmMSlLkoCNq48D/34sMsMdrFR3FfF2
+         3W7GmkK34UD2e35N2SHDQ5mVD3pRPedcJaFQ0kyn58HYFTP2uJA7pcdbvI3Ci0Yjsjj/
+         1Tj3F4dCIeOX1VmodXAXwP3JBPD5fYTm52iIo1gSPw4cKIERqFCsVJjXF88Z7KfjdCaC
+         21LHugaOUXXNYeQyt/3J1GHF8qipOPd+PN8JUxLwo9Gn4HQY+e71EghwTpglKua1Q6rT
+         ZYxZmTHX4Tgq4rlrW7NT0mvXfNAT/vHxpEAIA39YjMMXFi2nGBAsw68LMqfqpN+6d5aY
+         CuaQ==
+X-Gm-Message-State: AOAM532YD6M6TO8QeZf+UDJimFHwAwuXekpv9FTUZuket4/rRrYp77Qn
+        Q953f9aeYvbqf/yUmOigAnNwRWrvQVL06A==
+X-Google-Smtp-Source: ABdhPJx6oThED6Fg7gYmeWUCJux9MDphY8oG8yKVFXx0Lopt6XmiJKV0qsdDrOG4bT1GscUoTK7R3Q==
+X-Received: by 2002:a17:906:1e0b:: with SMTP id g11mr9081444ejj.291.1620382824827;
+        Fri, 07 May 2021 03:20:24 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id cr21sm3105812ejc.2.2021.05.07.02.53.41
+        by smtp.gmail.com with ESMTPSA id f30sm3258595ejl.62.2021.05.07.03.20.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 02:53:41 -0700 (PDT)
+        Fri, 07 May 2021 03:20:24 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 8/8] trace-cmd: Add new function to set log level
-Date:   Fri,  7 May 2021 12:53:33 +0300
-Message-Id: <20210507095333.1080910-9-tz.stoyanov@gmail.com>
+Subject: [PATCH] trace-cmd report: Document --align-ts option
+Date:   Fri,  7 May 2021 13:20:23 +0300
+Message-Id: <20210507102023.1092265-1-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210507095333.1080910-1-tz.stoyanov@gmail.com>
-References: <20210507095333.1080910-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-Introduce a new trace-cmd internal function to set the application log
-level.
- trace_set_verbose()
-The log level can be set using string with log id or log name.
+Updated the "trace-cmd report" man page with description of the new
+"--align-ts" option.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- tracecmd/include/trace-local.h |  2 ++
- tracecmd/trace-cmd.c           | 41 ++++++++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+)
+ Documentation/trace-cmd/trace-cmd-report.1.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index b3997d00..8da07c83 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -39,6 +39,8 @@ void usage(char **argv);
- extern int silence_warnings;
- extern int show_status;
+diff --git a/Documentation/trace-cmd/trace-cmd-report.1.txt b/Documentation/trace-cmd/trace-cmd-report.1.txt
+index 72b47065..55c2371f 100644
+--- a/Documentation/trace-cmd/trace-cmd-report.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-report.1.txt
+@@ -312,6 +312,9 @@ OPTIONS
+ *--raw-ts*::
+      Display raw timestamps, without any corrections.
  
-+int trace_set_verbose(char *level);
++*--align-ts*::
++     Display timestamps aligned to the first event.
 +
- struct pid_record_data {
- 	int			pid;
- 	int			brass[2];
-diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
-index 60cd3ea1..4e4a73af 100644
---- a/tracecmd/trace-cmd.c
-+++ b/tracecmd/trace-cmd.c
-@@ -45,6 +45,47 @@ void *malloc_or_die(unsigned int size)
- 	return data;
- }
+ EXAMPLES
+ --------
  
-+static struct trace_log_severity {
-+	int		id;
-+	const char	*name;
-+} log_severtity[] = {
-+	{ .id = TEP_LOG_NONE, .name = "none" },
-+	{ .id = TEP_LOG_CRITICAL, .name = "crit" },
-+	{ .id = TEP_LOG_ERROR, .name = "err" },
-+	{ .id = TEP_LOG_WARNING, .name = "warn" },
-+	{ .id = TEP_LOG_INFO, .name = "info" },
-+	{ .id = TEP_LOG_DEBUG, .name = "debug" },
-+	{ .id = TEP_LOG_ALL, .name = "all" },
-+};
-+
-+int trace_set_verbose(char *level)
-+{
-+	int id;
-+
-+	if (!level)
-+		return -1;
-+
-+	if (isdigit(level[0])) {
-+		id = atoi(level);
-+		if (id >= TEP_LOG_NONE && id <= TEP_LOG_ALL) {
-+			tracecmd_set_loglevel(id);
-+			return 0;
-+		}
-+	} else {
-+		int size = sizeof(log_severtity) / sizeof(log_severtity[0]);
-+		int i;
-+
-+		for (i = 0; i < size; i++) {
-+			if (strlen(level) >= strlen(log_severtity[i].name) &&
-+			    !strncmp(level, log_severtity[i].name, strlen(log_severtity[i].name))) {
-+				tracecmd_set_loglevel(log_severtity[i].id);
-+				return 0;
-+			}
-+		}
-+	}
-+
-+	return -1;
-+}
- 
- /**
-  * struct command
 -- 
 2.31.1
 
