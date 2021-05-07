@@ -2,125 +2,131 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81166C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 16:09:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C2BCC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 17:26:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 36E13613ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 16:09:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 02474613ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 17:26:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238064AbhEGQKp (ORCPT
+        id S234400AbhEGR1H (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 7 May 2021 12:10:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235662AbhEGQKp (ORCPT
+        Fri, 7 May 2021 13:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234167AbhEGR1G (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 7 May 2021 12:10:45 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4DDF61377;
-        Fri,  7 May 2021 16:09:43 +0000 (UTC)
-Date:   Fri, 7 May 2021 12:09:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Joel Fernandes <joelaf@google.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [RFC][PATCH] vhost/vsock: Add vsock_list file to map cid with
- vhost tasks
-Message-ID: <20210507120942.0b06655e@gandalf.local.home>
-In-Reply-To: <20210507154332.hiblsd6ot5wzwkdj@steredhat>
-References: <20210505163855.32dad8e7@gandalf.local.home>
-        <20210507141120.ot6xztl4h5zyav2c@steredhat>
-        <20210507104036.711b0b10@gandalf.local.home>
-        <20210507154332.hiblsd6ot5wzwkdj@steredhat>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 7 May 2021 13:27:06 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B24C061574
+        for <linux-trace-devel@vger.kernel.org>; Fri,  7 May 2021 10:26:05 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id t4so14825167ejo.0
+        for <linux-trace-devel@vger.kernel.org>; Fri, 07 May 2021 10:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nt2lw69otq/SNzG5AuO9vP14ebGpehR5Sgq5ppERp/A=;
+        b=OIh+GaWcQjs8qXqcQlprP21cutz93/N+6ebjrEXciu0bxUWAAVsZ71s0EFzb44iuvn
+         fP/jgPRGNJa2TytBBSM8kzCk6IE/PIppzFr+lat/zMY8XQHx86Oo6GrMRY7cR2eLW34L
+         1wtBFQEmvqq5O2l+x9432brSxTkFVsqein+bjyUT6udfkfbtQeOLjEbtLy1XyCnucPGb
+         R95ohSuAqsytsgDWrqLqKvS2hH7Tkf+pMjvBfTmThxpk8xS8Kp41Cfc2DOiFPtLHLbke
+         VaIkpPf/guoC4+ulSbvZy2b5sL01JkQxNkx37ONbgeaY1GZ9JLHG6u9Uh+sdpiyzBk4h
+         iehQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nt2lw69otq/SNzG5AuO9vP14ebGpehR5Sgq5ppERp/A=;
+        b=d5lbdJkagVelJyXeCYGwgtC82kmAD3XyyFFWyZ0h4ZtbtgeSvS8vBTyxEj2YiMn62c
+         LAf+fhUM5HTMGUMxxsG36fZh5QcwFRXH1EZr3keokppBIdJqOrPb03m5lyOrQ5DHx7px
+         BEacyyUdZWTUMVJ6y0VgTfDUk/5iUFc6laggo5ChjFOJPxF0URfUoXXTUnOWhM5/RVnl
+         RjSrhdwYkDA6jcmIsv8o5ru55GmW8PYu1KPbTz9EP3sSCXuGgmkn0xWfeIn7r1iMr/Z2
+         MPi6UUfKSQaD732dfeRq6tZ5CerTx1KajWf5R54Dcd4a6QQsj3wNZA/RE7qtafjIO6wG
+         oh1w==
+X-Gm-Message-State: AOAM5325sZzYGmNTYZMSznAlzX1mQRufpQDuD4HOaIIHUTHd4lXU540v
+        sBnRH/95WEvpxGjVRyJKkW/EHGgP+kqtZw==
+X-Google-Smtp-Source: ABdhPJxdedQk/8u9JYFAQd3X9HA9G6nZO/K5GAXsp2t+LTuDsaY54utEhVByv2ARXeig/+rHMWm0pg==
+X-Received: by 2002:a17:907:3f28:: with SMTP id hq40mr11054674ejc.283.1620408364459;
+        Fri, 07 May 2021 10:26:04 -0700 (PDT)
+Received: from oberon.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id z12sm4521391edr.17.2021.05.07.10.26.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 10:26:03 -0700 (PDT)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-trace-devel@vger.kernel.org
+Subject: [PATCH] trace-cmd: Set user specified clock to all trace instances
+Date:   Fri,  7 May 2021 20:26:02 +0300
+Message-Id: <20210507172602.1253305-1-tz.stoyanov@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On Fri, 7 May 2021 17:43:32 +0200
-Stefano Garzarella <sgarzare@redhat.com> wrote:
+If there is a user specified clock with "-C" option, apply it to all
+trace instances, if there is no user clock for the instance. This
+ensures that by default, all trace instances use the same trace clock.
 
-> >The start/stop of a seq_file() is made for taking locks. I do this with all
-> >my code in ftrace. Yeah, there's a while loop between the two, but that's
-> >just to fill the buffer. It's not that long and it never goes to userspace
-> >between the two. You can even use this for spin locks (but I wouldn't
-> >recommend doing it for raw ones).  
-> 
-> Ah okay, thanks for the clarification!
-> 
-> I was worried because building with `make C=2` I had these warnings:
-> 
-> ../drivers/vhost/vsock.c:944:13: warning: context imbalance in 'vsock_start' - wrong count at exit
-> ../drivers/vhost/vsock.c:963:13: warning: context imbalance in 'vsock_stop' - unexpected unlock
-> 
-> Maybe we need to annotate the functions somehow.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ tracecmd/trace-record.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-Yep, I it should have been.
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 5dd8be4a..3014f560 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -2766,8 +2766,9 @@ void tracecmd_enable_events(void)
+ 	enable_events(first_instance);
+ }
+ 
+-static void set_clock(struct buffer_instance *instance)
++static void set_clock(struct common_record_context *ctx, struct buffer_instance *instance)
+ {
++	const char *clock;
+ 	char *path;
+ 	char *content;
+ 	char *str;
+@@ -2775,7 +2776,12 @@ static void set_clock(struct buffer_instance *instance)
+ 	if (is_guest(instance))
+ 		return;
+ 
+-	if (!instance->clock)
++	if (instance->clock)
++		clock = instance->clock;
++	else
++		clock = ctx->clock;
++
++	if (!clock)
+ 		return;
+ 
+ 	/* The current clock is in brackets, reset it when we are done */
+@@ -2798,7 +2804,7 @@ static void set_clock(struct buffer_instance *instance)
+ 	tracefs_put_tracing_file(path);
+ 
+ 	tracefs_instance_file_write(instance->tracefs,
+-				    "trace_clock", instance->clock);
++				    "trace_clock", clock);
+ }
+ 
+ static void set_max_graph_depth(struct buffer_instance *instance, char *max_graph_depth)
+@@ -6633,7 +6639,7 @@ static void record_trace(int argc, char **argv,
+ 		tracecmd_disable_all_tracing(1);
+ 
+ 	for_all_instances(instance)
+-		set_clock(instance);
++		set_clock(ctx, instance);
+ 
+ 
+ 	/* Record records the date first */
+-- 
+2.31.1
 
-static void *vsock_start(struct seq_file *m, loff_t *pos)
-	__acquires(rcu)
-{
-	[...]
-
-}
-
-static void vsock_stop(struct seq_file *m, void *p)
-	__releases(rcu)
-{
-	[...]
-}
-
-static int vsock_show(struct seq_file *m, void *v)
-	__must_hold(rcu)
-{
-	[...]
-}
-
-
-And guess what? I just copied those annotations from sock_hash_seq_start(),
-sock_hash_seq_show() and sock_hash_seq_stop() from net/core/sock_map.c
-which is doing exactly the same thing ;-)
-
-So there's definitely precedence for this.
-
-> 
-> >  
-> >>  
-> >> >+
-> >> >+	iter->index = -1;
-> >> >+	iter->node = NULL;
-> >> >+	t = vsock_next(m, iter, NULL);
-> >> >+
-> >> >+	for (; iter->index < HASH_SIZE(vhost_vsock_hash) && l < *pos;
-> >> >+	     t = vsock_next(m, iter, &l))
-> >> >+		;  
-> >>
-> >> A while() maybe was more readable...  
-> >
-> >Again, I just cut and pasted from my other code.
-> >
-> >If you have a good idea on how to implement this with netlink (something
-> >that ss or netstat can dislpay), I think that's the best way to go.  
-> 
-> Okay, I'll take a look and get back to you.
-> If it's too complicated, we can go ahead with this patch.
-
-Awesome, thanks!
-
--- Steve
