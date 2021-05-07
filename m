@@ -2,131 +2,311 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C2BCC433ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 17:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A87E8C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 17:56:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 02474613ED
-	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 17:26:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6AE8461458
+	for <linux-trace-devel@archiver.kernel.org>; Fri,  7 May 2021 17:56:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234400AbhEGR1H (ORCPT
+        id S229473AbhEGR5S (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Fri, 7 May 2021 13:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234167AbhEGR1G (ORCPT
+        Fri, 7 May 2021 13:57:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhEGR5R (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Fri, 7 May 2021 13:27:06 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B24C061574
-        for <linux-trace-devel@vger.kernel.org>; Fri,  7 May 2021 10:26:05 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id t4so14825167ejo.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 07 May 2021 10:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nt2lw69otq/SNzG5AuO9vP14ebGpehR5Sgq5ppERp/A=;
-        b=OIh+GaWcQjs8qXqcQlprP21cutz93/N+6ebjrEXciu0bxUWAAVsZ71s0EFzb44iuvn
-         fP/jgPRGNJa2TytBBSM8kzCk6IE/PIppzFr+lat/zMY8XQHx86Oo6GrMRY7cR2eLW34L
-         1wtBFQEmvqq5O2l+x9432brSxTkFVsqein+bjyUT6udfkfbtQeOLjEbtLy1XyCnucPGb
-         R95ohSuAqsytsgDWrqLqKvS2hH7Tkf+pMjvBfTmThxpk8xS8Kp41Cfc2DOiFPtLHLbke
-         VaIkpPf/guoC4+ulSbvZy2b5sL01JkQxNkx37ONbgeaY1GZ9JLHG6u9Uh+sdpiyzBk4h
-         iehQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nt2lw69otq/SNzG5AuO9vP14ebGpehR5Sgq5ppERp/A=;
-        b=d5lbdJkagVelJyXeCYGwgtC82kmAD3XyyFFWyZ0h4ZtbtgeSvS8vBTyxEj2YiMn62c
-         LAf+fhUM5HTMGUMxxsG36fZh5QcwFRXH1EZr3keokppBIdJqOrPb03m5lyOrQ5DHx7px
-         BEacyyUdZWTUMVJ6y0VgTfDUk/5iUFc6laggo5ChjFOJPxF0URfUoXXTUnOWhM5/RVnl
-         RjSrhdwYkDA6jcmIsv8o5ru55GmW8PYu1KPbTz9EP3sSCXuGgmkn0xWfeIn7r1iMr/Z2
-         MPi6UUfKSQaD732dfeRq6tZ5CerTx1KajWf5R54Dcd4a6QQsj3wNZA/RE7qtafjIO6wG
-         oh1w==
-X-Gm-Message-State: AOAM5325sZzYGmNTYZMSznAlzX1mQRufpQDuD4HOaIIHUTHd4lXU540v
-        sBnRH/95WEvpxGjVRyJKkW/EHGgP+kqtZw==
-X-Google-Smtp-Source: ABdhPJxdedQk/8u9JYFAQd3X9HA9G6nZO/K5GAXsp2t+LTuDsaY54utEhVByv2ARXeig/+rHMWm0pg==
-X-Received: by 2002:a17:907:3f28:: with SMTP id hq40mr11054674ejc.283.1620408364459;
-        Fri, 07 May 2021 10:26:04 -0700 (PDT)
-Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id z12sm4521391edr.17.2021.05.07.10.26.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 10:26:03 -0700 (PDT)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH] trace-cmd: Set user specified clock to all trace instances
-Date:   Fri,  7 May 2021 20:26:02 +0300
-Message-Id: <20210507172602.1253305-1-tz.stoyanov@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 7 May 2021 13:57:17 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C42461458
+        for <linux-trace-devel@vger.kernel.org>; Fri,  7 May 2021 17:56:17 +0000 (UTC)
+Date:   Fri, 7 May 2021 13:56:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd: Trace timesync to find pids that map vCPUs
+Message-ID: <20210507135615.033a6121@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-If there is a user specified clock with "-C" option, apply it to all
-trace instances, if there is no user clock for the instance. This
-ensures that by default, all trace instances use the same trace clock.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+If qemu is not found, then there's no mapping between the vCPUs of the
+guest and the threads that run them. As the time sync has the agent run on
+all the guest's CPUs, trace it, looking for all kvm_entry, which state
+which vCPU the host thread is entering on the guest, and then use that to
+create the mapping for the data files.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tracecmd/trace-record.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ tracecmd/include/trace-local.h |   2 +
+ tracecmd/trace-record.c        | 196 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 197 insertions(+), 1 deletion(-)
 
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index b3997d00..4c5669c9 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -298,11 +298,13 @@ void update_first_instance(struct buffer_instance *instance, int topt);
+ void show_instance_file(struct buffer_instance *instance, const char *name);
+ 
+ struct trace_guest {
++	struct tracefs_instance *instance;
+ 	char *name;
+ 	int cid;
+ 	int pid;
+ 	int cpu_max;
+ 	int *cpu_pid;
++	int *task_pids;
+ };
+ struct trace_guest *trace_get_guest(unsigned int cid, const char *name);
+ bool trace_have_guests_pid(void);
 diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 5dd8be4a..3014f560 100644
+index 5dd8be4a..143ece6a 100644
 --- a/tracecmd/trace-record.c
 +++ b/tracecmd/trace-record.c
-@@ -2766,8 +2766,9 @@ void tracecmd_enable_events(void)
- 	enable_events(first_instance);
+@@ -3230,6 +3230,38 @@ static int do_accept(int sd)
+ 	return -1;
  }
  
--static void set_clock(struct buffer_instance *instance)
-+static void set_clock(struct common_record_context *ctx, struct buffer_instance *instance)
- {
-+	const char *clock;
- 	char *path;
- 	char *content;
- 	char *str;
-@@ -2775,7 +2776,12 @@ static void set_clock(struct buffer_instance *instance)
- 	if (is_guest(instance))
- 		return;
- 
--	if (!instance->clock)
-+	if (instance->clock)
-+		clock = instance->clock;
-+	else
-+		clock = ctx->clock;
++/* Find all the tasks associated with the guest pid */
++static void find_tasks(struct trace_guest *guest)
++{
++	struct dirent *dent;
++	char *path;
++	DIR *dir;
++	int ret;
++	int tasks = 0;
 +
-+	if (!clock)
- 		return;
++	ret = asprintf(&path, "/proc/%d/task", guest->pid);
++	if (ret < 0)
++		return;
++
++	dir = opendir(path);
++	free(path);
++	if (!dir)
++		return;
++
++	while ((dent = readdir(dir))) {
++		int *pids;
++		if (!(dent->d_type == DT_DIR && is_digits(dent->d_name)))
++			continue;
++		pids = realloc(guest->task_pids, sizeof(int) * (tasks + 2));
++		if (!pids)
++			break;
++		pids[tasks++] = strtol(dent->d_name, NULL, 0);
++		pids[tasks] = -1;
++		guest->task_pids = pids;
++	}
++	closedir(dir);
++}
++
+ static char *parse_guest_name(char *gname, int *cid, int *port)
+ {
+ 	struct trace_guest *guest;
+@@ -3250,10 +3282,12 @@ static char *parse_guest_name(char *gname, int *cid, int *port)
+ 	} else if (is_digits(gname))
+ 		*cid = atoi(gname);
  
- 	/* The current clock is in brackets, reset it when we are done */
-@@ -2798,7 +2804,7 @@ static void set_clock(struct buffer_instance *instance)
- 	tracefs_put_tracing_file(path);
+-	read_qemu_guests();
+ 	guest = trace_get_guest(*cid, gname);
+ 	if (guest) {
+ 		*cid = guest->cid;
++		/* Mapping not found, search for them */
++		if (!guest->cpu_pid)
++			find_tasks(guest);
+ 		return guest->name;
+ 	}
  
- 	tracefs_instance_file_write(instance->tracefs,
--				    "trace_clock", instance->clock);
-+				    "trace_clock", clock);
+@@ -3712,6 +3746,162 @@ static int open_guest_fifos(const char *guest, int **fds)
+ 	return i;
  }
  
- static void set_max_graph_depth(struct buffer_instance *instance, char *max_graph_depth)
-@@ -6633,7 +6639,7 @@ static void record_trace(int argc, char **argv,
- 		tracecmd_disable_all_tracing(1);
++struct trace_mapping {
++	struct tep_event		*kvm_entry;
++	struct tep_format_field		*vcpu_id;
++	struct tep_format_field		*common_pid;
++	int				*pids;
++	int				*map;
++	int				max_cpus;
++};
++
++static void start_mapping_vcpus(struct trace_guest *guest)
++{
++	char *pids = NULL;
++	char *t;
++	int len = 0;
++	int s;
++	int i;
++
++	if (!guest->task_pids)
++		return;
++
++	guest->instance = tracefs_instance_create("map_guest_pids");
++	if (!guest->instance)
++		return;
++
++	for (i = 0; guest->task_pids[i] >= 0; i++) {
++		s = snprintf(NULL, 0, "%d ", guest->task_pids[i]);
++		t = realloc(pids, len + s + 1);
++		if (!t) {
++			free(pids);
++			pids = NULL;
++			break;
++		}
++		pids = t;
++		sprintf(pids + len, "%d ", guest->task_pids[i]);
++		len += s;
++	}
++	if (pids) {
++		tracefs_instance_file_write(guest->instance, "set_event_pid", pids);
++		free(pids);
++	}
++	tracefs_instance_file_write(guest->instance, "events/kvm/kvm_entry/enable", "1");
++}
++
++static int map_vcpus(struct tep_event *event, struct tep_record *record,
++		     int cpu, void *context)
++{
++	struct trace_mapping *tmap = context;
++	unsigned long long val;
++	int type;
++	int pid;
++	int ret;
++	int i;
++
++	/* Do we have junk in the buffer? */
++	type = tep_data_type(event->tep, record);
++	if (type != tmap->kvm_entry->id)
++		return 0;
++
++	ret = tep_read_number_field(tmap->common_pid, record->data, &val);
++	if (ret < 0)
++		return 0;
++	pid = (int)val;
++
++	for (i = 0; tmap->pids[i] >= 0; i++) {
++		if (pid == tmap->pids[i])
++			break;
++	}
++	/* Is this thread one we care about ? */
++	if (tmap->pids[i] < 0)
++		return 0;
++
++	ret = tep_read_number_field(tmap->vcpu_id, record->data, &val);
++	if (ret < 0)
++		return 0;
++
++	cpu = (int)val;
++
++	/* Sanity check, warn? */
++	if (cpu >= tmap->max_cpus)
++		return 0;
++
++	/* Already have this one? Should we check if it is the same? */
++	if (tmap->map[cpu] >= 0)
++		return 0;
++
++	tmap->map[cpu] = pid;
++
++	/* Did we get them all */
++	for (i = 0; i < tmap->max_cpus; i++) {
++		if (tmap->map[i] < 0)
++			break;
++	}
++
++	return i == tmap->max_cpus;
++}
++
++static void stop_mapping_vcpus(struct buffer_instance *instance,
++			       struct trace_guest *guest)
++{
++	struct trace_mapping tmap = { };
++	struct tep_handle *tep;
++	const char *systems[] = { "kvm", NULL };
++	int i;
++
++	if (!guest->instance)
++		return;
++
++	tmap.pids = guest->task_pids;
++	tmap.max_cpus = instance->cpu_count;
++
++	tmap.map = malloc(sizeof(*tmap.map) * tmap.max_cpus);
++	if (!tmap.map)
++		return;
++
++	for (i = 0; i < tmap.max_cpus; i++)
++		tmap.map[i] = -1;
++
++	tracefs_instance_file_write(guest->instance, "events/kvm/kvm_entry/enable", "0");
++
++	tep = tracefs_local_events_system(NULL, systems);
++	if (!tep)
++		goto out;
++
++	tmap.kvm_entry = tep_find_event_by_name(tep, "kvm", "kvm_entry");
++	if (!tmap.kvm_entry)
++		goto out_free;
++
++	tmap.vcpu_id = tep_find_field(tmap.kvm_entry, "vcpu_id");
++	if (!tmap.vcpu_id)
++		goto out_free;
++
++	tmap.common_pid = tep_find_any_field(tmap.kvm_entry, "common_pid");
++	if (!tmap.common_pid)
++		goto out_free;
++
++	tracefs_iterate_raw_events(tep, guest->instance, NULL, 0, map_vcpus, &tmap);
++
++	for (i = 0; i < tmap.max_cpus; i++) {
++		if (tmap.map[i] < 0)
++			break;
++	}
++	/* We found all the mapped CPUs */
++	if (i == tmap.max_cpus) {
++		guest->cpu_pid = tmap.map;
++		guest->cpu_max = tmap.max_cpus;
++		tmap.map = NULL;
++	}
++
++ out_free:
++	tep_free(tep);
++ out:
++	free(tmap.map);
++	tracefs_instance_destroy(guest->instance);
++	tracefs_instance_free(guest->instance);
++}
++
+ static int host_tsync(struct common_record_context *ctx,
+ 		      struct buffer_instance *instance,
+ 		      unsigned int tsync_port, char *proto)
+@@ -3724,11 +3914,15 @@ static int host_tsync(struct common_record_context *ctx,
+ 	if (guest == NULL)
+ 		return -1;
  
- 	for_all_instances(instance)
--		set_clock(instance);
-+		set_clock(ctx, instance);
++	start_mapping_vcpus(guest);
++
+ 	instance->tsync = tracecmd_tsync_with_guest(top_instance.trace_id,
+ 						    instance->tsync_loop_interval,
+ 						    instance->cid, tsync_port,
+ 						    guest->pid, instance->cpu_count,
+ 						    proto, ctx->clock);
++	stop_mapping_vcpus(instance, guest);
++
+ 	if (!instance->tsync)
+ 		return -1;
  
- 
- 	/* Record records the date first */
 -- 
-2.31.1
+2.29.2
 
