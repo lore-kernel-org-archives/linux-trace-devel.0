@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F6D7C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 06:16:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A1B4C433ED
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 06:16:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 406D7610CB
-	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 06:16:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51CA5610CB
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 06:16:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhEJGRt (ORCPT
+        id S230029AbhEJGRv (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Mon, 10 May 2021 02:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
+        Mon, 10 May 2021 02:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhEJGRt (ORCPT
+        with ESMTP id S229863AbhEJGRu (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Mon, 10 May 2021 02:17:49 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A786C061574
-        for <linux-trace-devel@vger.kernel.org>; Sun,  9 May 2021 23:16:44 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id v5so6251294edc.8
-        for <linux-trace-devel@vger.kernel.org>; Sun, 09 May 2021 23:16:44 -0700 (PDT)
+        Mon, 10 May 2021 02:17:50 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF5CC061573
+        for <linux-trace-devel@vger.kernel.org>; Sun,  9 May 2021 23:16:45 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id zg3so22730102ejb.8
+        for <linux-trace-devel@vger.kernel.org>; Sun, 09 May 2021 23:16:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9HuGT59fpnbaV/Ei2fhVY2rS3y5IDn6cNc88pcWTIj8=;
-        b=CQCtuTpmYf/VMlO8xkXOM3Le6dyhBQYyixAed9pHiiBP1X20xo/aPh4d9I97XEwHHc
-         zsbzPtlfYLMRkW+PWedIrTO/q54n8tsr3sIUwYYO3Lbn84jZpLXo7je/fcqBwPZH8hOc
-         z+k5UZ4iRBmblxoQb0LS6K+/Dq0adZ4m7MrEOQkCh/MLiqbKxIHmJdIVR1onJfTNFk0g
-         fWiFRWfiUivGIJ2KV04CZRSbjmrGpV1z6n06dwQtUEwkudwuO7KkEWJtG5QOR3KL9J5h
-         lzVtMPUHjmzXWgdJL8SAIToL5amXZWV9MF6l4tnOiGEsGBQ2swhGy3r/RjSmqwOuXXfq
-         Ov9w==
+        bh=TgrEkpK0n5ohS6Kr+I4Byc4/t1KCKAcwzKJLo6TD8vA=;
+        b=Fnz1wFaWMzCOanLn5KMXpNEG3MG1V2+gpOub+efjhUnDi+J7boa/W6f3AgZNBnN3Vo
+         0IbB08M1jN18TIifz59kNH4axRc8fGETssrFMveJeFMZRDFVLuy4PRWvqRB4RKV3i9JI
+         ALhM9j6iznggJwofMla941ldQYtNfdLCrj3RTw92lgw7QECpbwuPMNM/nybT0bMmki6Q
+         /U6MTx0LGrvtHLu8ZldY3OTBJ+wBZeHUu4KzStWgZszotqyeyD3rlLY18VBOylfyx6d/
+         C8NnzM9yGucPyhxeXATcSH83wdBa9gHqwXFbG9Rc/LqCyHOdRShVm64VS0pTmXn3qWOr
+         uZqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9HuGT59fpnbaV/Ei2fhVY2rS3y5IDn6cNc88pcWTIj8=;
-        b=cCw92dv1SD7FxFha533cpooQBy4stWcDA5/k1U7gKLADbBNFN5s2Rcb+u10uY5/LSq
-         TPceKwZpUO9PgkwF33c6s++ckMbADNKdLNBE+Y3OWv7IZX/u2fGcVwIhzDIUmiEkiEfK
-         fGDiYKKQ4q2663mFfVypC9uR6Az4H2+hX+9M8EAQJktJuZcU6kR5Yt/AZJV6jzoScmrv
-         hJKdTMqqwh8aw9KRSpvMTLYAy+9OMB9b3Kimnh4trUtpxhFSyMDJ7yQf0LfoHW2POLFs
-         eGKxkxxzFChGkRT3S1hqrredjOBPaY2QzeMKqJ6VXSY0fc35n0OknkR6QJcL0pnPYtoi
-         i+Wg==
-X-Gm-Message-State: AOAM530vA0H+mn/8FJHRI7JLdL3kOOebQfoR6HAXm23o0M3a+JN4JGH/
-        y3uG3PiFOOETMCKnF9xeizI=
-X-Google-Smtp-Source: ABdhPJwhicb+tldZGR3VCMa46ViboX0BUMsCEIxBxk4X6TeNmaVlLsaLqLROBDH29TRG81atM3zyHQ==
-X-Received: by 2002:a05:6402:2050:: with SMTP id bc16mr27353774edb.179.1620627403176;
-        Sun, 09 May 2021 23:16:43 -0700 (PDT)
+        bh=TgrEkpK0n5ohS6Kr+I4Byc4/t1KCKAcwzKJLo6TD8vA=;
+        b=leMJPTn/c1UEVsz0OgxHWZbdDP4p+6qC21qSyA9YEAMNIXCX39qfAPIRo3voFIepF+
+         AVF3UGZC+H5XkGPmBFv1RjuMFyswsSmpsZ9qNP8fJ+F7m/6QjV+4Sn4rKeW5LkRVUdcU
+         f7RjfPdU/xcFrxmcLRueDWQNH404pqAtbBPidKYwP+o9jBFo6YxH8AeUt905D11jDB//
+         1J+a+20+75SQ+xYW+eXgkm4x8H/e0OS+p8gh5/h+MsPOojWrrf7sbcOU8XmxOhRyAdwf
+         zMXqqGLMvCTwen+2r++IE1tg/Qf5uIWNTlTaBpTh+c/nSTxJxAD8GIyDKVpwWX+M82zE
+         EZXA==
+X-Gm-Message-State: AOAM533tSkJTEA4/38UYUDqq3qbJnVpV1SH8GEOcWxNBBkNCJ007xxSp
+        pvM9KUWiET39/3i60kMCozkfN1czkwuTkQ==
+X-Google-Smtp-Source: ABdhPJzO5FsAkFjH7pj804WAIB5ooeKpDwdY2gFnqd5trnASq3eHHUnr9oEImEaDwe8RKnUT0XVi3Q==
+X-Received: by 2002:a17:907:7882:: with SMTP id ku2mr23699467ejc.346.1620627404130;
+        Sun, 09 May 2021 23:16:44 -0700 (PDT)
 Received: from oberon.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id u3sm5055205eja.25.2021.05.09.23.16.42
+        by smtp.gmail.com with ESMTPSA id u3sm5055205eja.25.2021.05.09.23.16.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 23:16:42 -0700 (PDT)
+        Sun, 09 May 2021 23:16:43 -0700 (PDT)
 From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
 To:     rostedt@goodmis.org
 Cc:     linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2 05/21] trace-cmd library: Select the file version when writing trace file
-Date:   Mon, 10 May 2021 09:16:20 +0300
-Message-Id: <20210510061636.1794357-6-tz.stoyanov@gmail.com>
+Subject: [PATCH v2 06/21] trace-cmd: Add APIs for library initialization and free
+Date:   Mon, 10 May 2021 09:16:21 +0300
+Message-Id: <20210510061636.1794357-7-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510061636.1794357-1-tz.stoyanov@gmail.com>
 References: <20210510061636.1794357-1-tz.stoyanov@gmail.com>
@@ -73,73 +73,78 @@ Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-When a new output handler to trace file is allocated, select the proper
-file version. If this output handler is based on an existing input trace
-file handler, inherit the trace file version.
+The trace-cmd library has no APIs for initialization and free of the
+whole library. Added these new APIs:
+ tracecmd_lib_init()
+ tracecmd_lib_free()
+and call them in trace-cmd main function.
 
 Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- lib/trace-cmd/trace-output.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ lib/trace-cmd/include/private/trace-cmd-private.h |  3 +++
+ lib/trace-cmd/trace-util.c                        |  9 +++++++++
+ tracecmd/trace-cmd.c                              | 11 ++++++++---
+ 3 files changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index c0aa58cf..3c30edc1 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -57,6 +57,7 @@ struct tracecmd_output {
- 	int			nr_options;
- 	bool			quiet;
- 	unsigned long		file_state;
-+	unsigned long		file_version;
- 	struct list_head	options;
- 	struct tracecmd_msg_handle *msg_handle;
- 	char			*trace_clock;
-@@ -907,6 +908,17 @@ out_free:
- 	return ret;
- }
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index 6a211333..e410a6f1 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -29,6 +29,9 @@
  
-+static int select_file_version(struct tracecmd_output *handle,
-+				struct tracecmd_input *ihandle)
-+{
-+	if (ihandle)
-+		handle->file_version = tracecmd_get_file_version(ihandle);
-+	else
-+		handle->file_version = FILE_VERSION;
+ struct tep_plugin_list *trace_load_plugins(struct tep_handle *tep, int flags);
+ 
++int tracecmd_lib_init(void);
++void tracecmd_lib_free(void);
 +
+ int *tracecmd_add_id(int *list, int id, int len);
+ 
+ enum {
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index a6fc64c8..3ef10eae 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -589,3 +589,12 @@ bool tracecmd_is_version_supported(unsigned int version)
+ 		return true;
+ 	return false;
+ }
++
++int tracecmd_lib_init(void)
++{
 +	return 0;
 +}
 +
- static struct tracecmd_output *
- create_file_fd(int fd, struct tracecmd_input *ihandle,
- 	       const char *tracing_dir,
-@@ -933,6 +945,9 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
++void tracecmd_lib_free(void)
++{
++}
+diff --git a/tracecmd/trace-cmd.c b/tracecmd/trace-cmd.c
+index 7376c5a5..aad8e0a7 100644
+--- a/tracecmd/trace-cmd.c
++++ b/tracecmd/trace-cmd.c
+@@ -116,15 +116,20 @@ int main (int argc, char **argv)
+ 	if (argc < 2)
+ 		trace_usage(argc, argv);
  
- 	handle->msg_handle = msg_handle;
- 
-+	if (select_file_version(handle, ihandle))
-+		goto out_free;
++	tracecmd_lib_init();
 +
- 	list_head_init(&handle->options);
+ 	for (i = 0; i < ARRAY_SIZE(commands); ++i) {
+ 		if (strcmp(argv[1], commands[i].name) == 0 ){
+ 			commands[i].run(argc, argv);
+-			goto out;
++			break;
+ 		}
+ 	}
  
- 	buf[0] = 23;
-@@ -943,7 +958,8 @@ create_file_fd(int fd, struct tracecmd_input *ihandle,
- 	if (do_write_check(handle, buf, 10))
- 		goto out_free;
- 
--	if (do_write_check(handle, FILE_VERSION_STRING, strlen(FILE_VERSION_STRING) + 1))
-+	sprintf(buf, "%lu", handle->file_version);
-+	if (do_write_check(handle, buf, strlen(buf) + 1))
- 		goto out_free;
- 
- 	/* get endian and page size */
-@@ -1562,6 +1578,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
- 	handle->pevent = tracecmd_get_tep(ihandle);
- 	tep_ref(handle->pevent);
- 	handle->page_size = tracecmd_page_size(ihandle);
-+	handle->file_version = tracecmd_get_file_version(ihandle);
- 	list_head_init(&handle->options);
- 
- 	tracecmd_close(ihandle);
++	tracecmd_lib_free();
++
+ 	/* No valid command found, show help */
+-	trace_usage(argc, argv);
+-out:
++	if (i == ARRAY_SIZE(commands))
++		trace_usage(argc, argv);
++
+ 	exit(0);
+ }
 -- 
 2.31.1
 
