@@ -2,220 +2,168 @@ Return-Path: <linux-trace-devel-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAE81C433B4
-	for <linux-trace-devel@archiver.kernel.org>; Sat,  8 May 2021 18:33:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C6CAC433ED
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 03:24:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B57F0611CE
-	for <linux-trace-devel@archiver.kernel.org>; Sat,  8 May 2021 18:33:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CA91B610A7
+	for <linux-trace-devel@archiver.kernel.org>; Mon, 10 May 2021 03:24:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhEHSe0 (ORCPT
+        id S230129AbhEJDZM (ORCPT
         <rfc822;linux-trace-devel@archiver.kernel.org>);
-        Sat, 8 May 2021 14:34:26 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:37210 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhEHSeX (ORCPT
+        Sun, 9 May 2021 23:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230126AbhEJDZM (ORCPT
         <rfc822;linux-trace-devel@vger.kernel.org>);
-        Sat, 8 May 2021 14:34:23 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 148IU4KK046455;
-        Sat, 8 May 2021 18:32:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=L85oM6gpwWx0bE0I+Gh/Z7LdyxK2L50viS3EzBc7EpY=;
- b=mjTriBBH31SwcELACQJkavKtRmbi1RFUIcO7VyDXixXNQn/JjnbbgT9jf1dAwayH/PAW
- o8NFn1VAcdA/QMmnQFJJivUcHgzQTaIiOof3/aZRvlfBUi7nYey/HccD4lJGjRSjH2hT
- xrVwd5AfmWfeSUAjbMbT5XVNa0PPZQPSnDIQXifdSzFQDuCgHiA+4nfSipNJkakdfc+6
- ZFx+068JHpODCVGRihQ5Nzt0ny6M11fcjCLu24YpxHYCBYrCscqgQ4CiNRSN4+6Kfjdb
- ugkWfaf3z8CYmQ53zkzeqYPHdS9avR9hWDi9deLj+GQJjb7hAWV4qrKZDdVDnsLAFvR7 uw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 38dj2r0p5b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 May 2021 18:32:43 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 148IUSjE113921;
-        Sat, 8 May 2021 18:32:42 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2047.outbound.protection.outlook.com [104.47.56.47])
-        by aserp3020.oracle.com with ESMTP id 38djf1qmuu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 May 2021 18:32:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HtG2ZwVTUjQOCUcYluHllYS6+kl+pck58YiUTNAbiKcCecxdCwfG3zin5KmY+Esy+pdEw5wHv2YaTPX5VGgp20Bz12d4OhSH8TfmEYPuOR0SDv0mUeOqRxRHfao+QPXyfKQ2u/fOtN5fKieHiSrKaRFckrJB62q8jwWlSmgxw/+pmNrii8sKHndO4b+IJN2SUtO/pXRXLDv3bekclRlfz1Gyl9Mysvd1hzyk7xvSD2FgBjJ+qDjH39Jd8DlTb3BBktIEhVNOiRu9fpgZGk16STBorgszqSial29gbIVhOchweA2+DRDYXqxyFUAfZ7GQGx61BX+Arsg49TUzYwLF2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L85oM6gpwWx0bE0I+Gh/Z7LdyxK2L50viS3EzBc7EpY=;
- b=lNxr6ExdqflinZf3zGTI4Um7QOohNB1XoGr32Ck70zMYqrhE+pubmPwM4ft3A1GNGx8GjmUiampAOrccQkIw13+k8PDVgF7qtg9P3xIZHXEeEIaGWXQbAzTUyf714wq0C1QyXcjssL7iOFDSTppJyeO4lyDwcvkp9AClufH2DaUb+wGNCA1US8R8zp+oi84TgdKhZdBIWDbRkuGeSTW7hc5zV1DKVnb/FTqVk7o0vfJHcYwZdXLyfcgQO8MQ6dtR4kEQQ6PXcY4I2x/rYTsOS2jmaFdlCcKMJfnF3L8uCDiK0WMCXdTMcDWq8YXQFXG6vcYgbkBeBDf8yUaIjE3QnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Sun, 9 May 2021 23:25:12 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868F3C061573
+        for <linux-trace-devel@vger.kernel.org>; Sun,  9 May 2021 20:24:08 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id gc22-20020a17090b3116b02901558435aec1so9464969pjb.4
+        for <linux-trace-devel@vger.kernel.org>; Sun, 09 May 2021 20:24:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L85oM6gpwWx0bE0I+Gh/Z7LdyxK2L50viS3EzBc7EpY=;
- b=RUvwObmBZ1IiEtjcgMOdphqSPWLU8pWYh97qO+iA16PeyloeUaJP0xp7d4eQwW7FEFiBOYqcTpa/S2/t9ByBqfcqcyX8H09ELuPV88Xm4kSuCBr9BNy13QR70UKN3oigf8NMZXa02hwLJb8QFAE+JFKGof6ICff1ZEu+qoOzDdY=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com (20.179.63.32) by
- BY5PR10MB3938.namprd10.prod.outlook.com (52.133.255.89) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4108.24; Sat, 8 May 2021 18:32:39 +0000
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::50bb:7b66:35ee:4a4]) by BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::50bb:7b66:35ee:4a4%7]) with mapi id 15.20.4108.030; Sat, 8 May 2021
- 18:32:39 +0000
-Subject: Re: [RFC][PATCH] vhost/vsock: Add vsock_list file to map cid with
- vhost tasks
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Joel Fernandes <joelaf@google.com>, kvm@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210505163855.32dad8e7@gandalf.local.home>
-From:   Mike Christie <michael.christie@oracle.com>
-Message-ID: <b21a00f5-b3fc-ba01-0660-a1decadaff6f@oracle.com>
-Date:   Sat, 8 May 2021 13:32:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-In-Reply-To: <20210505163855.32dad8e7@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [73.88.28.6]
-X-ClientProxiedBy: DM5PR19CA0062.namprd19.prod.outlook.com
- (2603:10b6:3:116::24) To BYAPR10MB3573.namprd10.prod.outlook.com
- (2603:10b6:a03:11e::32)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2NFUenPTzEaYXI6GFz4ZMnnIEn9Zd3WvJaQWYF60R+c=;
+        b=VKL5deNH7jXUJIYjQHdY15ZFqzYd+nF3HzJNs1/ppJ5X9FnPe7k0dUeJknK7omUqWl
+         nXyL6bSb7ykr1OV7QZPFr3rP+3VhouxjbI+Ua0ftZ+pW5Kzde9fS3HUjbY6PiMluDhUM
+         vXAa6740eM3Wh3xpuFGCzmGh9ED0mFwayfMhPpQSZCfRS6ApmEUodjCJvgFR70PZX1bC
+         S/ZbsiyAL96/3X+IPTuUWiz6YWSuUvPraAmnaMoqL9u6fa33Si3fKWcAWNkHaWZJOazC
+         k9PR0tuUvBBOm8T8RCrl63D06C9ddC09wHnXoxTApJCbSZTdVnJNpK9+DwW0ssd0zfPX
+         l/nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2NFUenPTzEaYXI6GFz4ZMnnIEn9Zd3WvJaQWYF60R+c=;
+        b=unb3CM1X9sO9Mb/7rbZHTJVbED9h8cXTC0LasJE6zLJ7uDwY66aWRbQryZFenU5YMs
+         cxmj5yGKoMkUlMXIiCIzHyoA0EPuODuBi3P7GrY2jaulFzQeZvC2IGWMBwEMABlY80lT
+         h3hlFbzasHYu2t9Qh8cCHUQu374WjBqvlPNWDo5qxWKJZ3bq/wCmlYKNg7dyHk0Jm9QP
+         RFo6mQsXJYaVPis8yprc2u4U9nNOggmWmTpLNd2+LtRisbSuVfZ9V0f8V0C/Ssnxgx6/
+         0P4SWoV5qGlztwSmHx4O1mC4rbfuPABvyPwrHlTZfbBr4WU1OCB787/chA6+/hs5RvK3
+         viuQ==
+X-Gm-Message-State: AOAM5311yaiJnFZ33RPsI3+yAHMBNYbZVSGkvvbAm3BAIlIzeKhCk2Ix
+        GNX/2Ie1toPCF9NBBofvKRacT0dWvNQWG00gHr5GmHiCzf8=
+X-Google-Smtp-Source: ABdhPJwJxNNDnAfVrf9lIwboJk0t5wQV5uR/gtRow7Ohez9jgfh7qRiyITu7pZ1Fle7xtEZT4XcR+BjIvJMityXW1Sk=
+X-Received: by 2002:a17:902:d491:b029:ee:5aa3:7d57 with SMTP id
+ c17-20020a170902d491b02900ee5aa37d57mr22600930plg.26.1620617048080; Sun, 09
+ May 2021 20:24:08 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [20.15.0.204] (73.88.28.6) by DM5PR19CA0062.namprd19.prod.outlook.com (2603:10b6:3:116::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Sat, 8 May 2021 18:32:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e83f908b-015f-49b8-3f5b-08d9124fa89c
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3938:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3938A3824A69955EC9EC9BE9F1569@BY5PR10MB3938.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ftv731o7rVyG+R82/a0XosZvFLm+k6x7M2SuCsjqUtrCqpgW3XV0DRZAjNiTagoPPWACqwwBvN54wo8wPEbX0N/BaPndrIruHHdDkhRDhYiQa8cV8tI8ZbGmjeHX4BERy1rnR3zbNqopgwpnWPQYN/0rxdwzCUsKdtevoMu+br9pjmAF16HRt3iWIpsXsd1YTleIpxfYmaS1Ij9SYnzSAUwEjHM479376E6caDEs971H37a65arOai+7Ee3NYLc4aNxMk+KIACJ9dW3z+nTBkrJteMF+OiSpBl5COjtXTraLLW3FTKUMNfqE61JeGwULOUzYH0zEsMMwFWdI1GDIyfzcdyOBEmOPgGyMImkVqYcGWNs1Cp0kWtC16uuaVtFoKR2F4hXK9gNrtnb+602nX3lrV+6NsRde9wvflRTjcIcb7S5hR78DeLX3L7/F1cyOiqSu7n7DpaKXZJidE4zYTLYcXZKoCseMJbwhJa5UoeDUFHrMWd6I5oMtlRtWpVu4m+O4xNiesME5eLrLTBshdLJRmcaD5r7BGxzmTi+aaZCGk1gaQ73nJIAdjQS2E2HRBeXs0ZLgCAWyzeOnEHJoD1I6yydqphBz3a4cYxh+CY4/KDwaXcCZzwwCm7KLJ78iPwWijxb9FCvIJVl4azJJwtRs1R9en/06+W5SnVg8OZnmFi8hPGGiSSgbfCtbpdGQp28DL646+QJAoz3G5EtOjvJfzzPo6CDtBNfIMgzWtnfZGEr6ABXvhTqhNI2K4UFN6neL9PGVMWc/OdqD9guFWy/rcMfXB5Z1ot5CP5mjTi8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39850400004)(136003)(376002)(346002)(66556008)(4326008)(66476007)(8676002)(16526019)(36756003)(7416002)(16576012)(6486002)(186003)(53546011)(86362001)(2616005)(956004)(8936002)(31686004)(26005)(66946007)(6706004)(316002)(54906003)(2906002)(478600001)(83380400001)(31696002)(966005)(110136005)(5660300002)(38100700002)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?djNrSGlEeTZhNlBsQW9IQ29jQk5JdGhMM1piOHpFQ0lrT3hjN1hVS2g3RUJx?=
- =?utf-8?B?emJ3MVRmVHZyZzdLU0NoVXA3dnBxdkRuL1hxMTFneUdPQ3VITll0dkU0SklX?=
- =?utf-8?B?UWNSSDlZd3ZES2NzSUptaVF3YlQ3UnNyekdKNndDQlJMdWxZWnczZ0hFbWtT?=
- =?utf-8?B?aW0wVDhmM3RmRzRpSzhkUUlmVEk1OTJyNEcrbXY1ODR2OFNkVkZabHY2NEo3?=
- =?utf-8?B?bVhLMkJub2d0dXAvNytobTBQZ0t0SWgxYzVZWTJXVEx1WGRObFdJa2RrTDNP?=
- =?utf-8?B?TG4wRzJ1Mk5lTVIyM2RuYjdMNDRIdHd1L3R4UkRDT28vRjRrWERaYk5DMTNZ?=
- =?utf-8?B?QkVXMnBVSm5zem1hTXVPMTA4ZXRpK0NCaXlhVDRxK2IzRkFmWTR2QlFXNndI?=
- =?utf-8?B?TU9yeUgrbVFMVERndFpqMjFQbkdCK0dYYWtEWDhJM2tDOXdDL0VVSEM5L212?=
- =?utf-8?B?VFNJWGtKZDdGSnRNOUpuRklnNEtGR0g0dEpsTnZ4b1RMUkxRWHZYdlVSMHgw?=
- =?utf-8?B?NkJ5c1MvVUc3a2Y2T2NGbW5FQXV5MXIrM0ZaVWJxTkV4N0tCY0RFdkQrUXV1?=
- =?utf-8?B?SUpsY2hBN25jSWZYd0RpYnR2RlBYMmtuKzVaZmdWc1lOc3MwcXpNNkhuQUR6?=
- =?utf-8?B?M1kzNzZMSDNZY0M2YlZ5Z3hmT2FTcEhaVWoxYWtzNHhNanNYOEhxZkI5WDRD?=
- =?utf-8?B?b0ZLSEEwVm5LbzA0WmF4TVZ5WXhYSk5Da1Zvb2JIOVR2WDVYWUtLOUNYd29J?=
- =?utf-8?B?bGYyRmVMajArOUZ4Wnp0aWVBeDdjYWxveW5lNm9BZ1dLejF6YzlQLzNaUzBn?=
- =?utf-8?B?ZGRZblNrUUZaSlVJajBQZTFCRWdqem9ueDB2VHdodFUwdUhHZTFGVzh2QjRT?=
- =?utf-8?B?VEt0T0FXbHUrRkV5YlQ0dmI2RE03eEVYVVViV1laS3lrSHNwZFNQV0UwVUxv?=
- =?utf-8?B?bXRDUW41S1BZWk1YZ0Z4OExabnJNWDAvODFiQnFYWEs1V2wzRm5GbXRsSFBq?=
- =?utf-8?B?TFJ5eDMvUFFnUGNhekFpZTVySWJLb2VhbzFPUjNBZlo1Y1c2Z2NZcWtDN0Uw?=
- =?utf-8?B?V0RwQjdGTmc5SDVKbjVUcUd4TVk2V0hPOUt5Sm5lTVlwN2xmRHZ2cXpFaHN2?=
- =?utf-8?B?K2k1QXRPUDZUcGRmb2FnUVNkMGxIRm9PZzRaMGpKQzE4REwzQTRKM0JXdkxE?=
- =?utf-8?B?WGlOVUVOazl5NFZoRTBOT3VFZnZwNEtIczNESjl5cmFZdEJldGMwbU42NkUy?=
- =?utf-8?B?TVQ1WGdIT0c0ejMwSTM5SFlaSHByRTFYSkNCekhXaGVxNjViN3Y5QXlpa01x?=
- =?utf-8?B?QU1TOEk2T3FJM3lCSVEvWUcvb0w5QUhxcHI4Tm9uWUZlaXdiOHJLL1dBWmFw?=
- =?utf-8?B?VHpXQUNmTlVmaWpmclU0Z0o2dlBWVG5DaUsxUWhQMXVVR0M1S1VaOEQzMVVi?=
- =?utf-8?B?NUNuQU91MWU4M1VCZUYvT2dPakRFNTVrVWZnR2FLbk14UlI2SS9iMlVyb1Z0?=
- =?utf-8?B?WGdjUm5lNmJUNEZMYUxUYTh2RXFXZkRlVTdmYlBYMWI3d1pIMzAxMk5DOXNI?=
- =?utf-8?B?N1RpU3lxbWl4eHNOYmtlYVlSVThhNlg1U2VCL0RtVm1UN1lHakFsTGRXVjFs?=
- =?utf-8?B?aDBveVl3aVFvempJc2k1bVQ3NjJFdHhUYXhHd1lBR1NRYzhFZjFDeTJDakJB?=
- =?utf-8?B?amZVQ3M5MUdUVFpKR3JJUVRhbFlUdFJ6a1M5dFlnTlA0RTRjdjVpTGduRkFo?=
- =?utf-8?Q?K92fs2w2B2TuUEh2PDPfzKsMThP+lI1MkL5e4wZ?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e83f908b-015f-49b8-3f5b-08d9124fa89c
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2021 18:32:39.3922
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iAIKS95sep2VU0o/8zBO7JwMuCUQzluK3cT6Gfr3eU7xpIw5CHgG/aVUohVMCPOzu91AR2sy4Na7dklwIZFlTy+J01YO6xaItQmqbrOE+iQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3938
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9978 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105080149
-X-Proofpoint-ORIG-GUID: 5DyZPCaJIgg-OECBLVJGLIBwr7M_4oMu
-X-Proofpoint-GUID: 5DyZPCaJIgg-OECBLVJGLIBwr7M_4oMu
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9978 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 spamscore=0
- suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
- adultscore=0 impostorscore=0 priorityscore=1501 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105080149
+References: <20210507135615.033a6121@gandalf.local.home>
+In-Reply-To: <20210507135615.033a6121@gandalf.local.home>
+From:   Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Date:   Mon, 10 May 2021 06:23:51 +0300
+Message-ID: <CAPpZLN4wnkEdvAC37p-7c94axRz6bvsvO=9dXJAQfFZ7LtLDEg@mail.gmail.com>
+Subject: Re: [PATCH] trace-cmd: Trace timesync to find pids that map vCPUs
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-trace-devel.vger.kernel.org>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 
-On 5/5/21 3:38 PM, Steven Rostedt wrote:
-> The new trace-cmd 3.0 (which is almost ready to be released) allows for
-> tracing between host and guests with timestamp synchronization such that
-> the events on the host and the guest can be interleaved in the proper order
-> that they occur. KernelShark now has a plugin that visualizes this
-> interaction.
-> 
-> The implementation requires that the guest has a vsock CID assigned, and on
-> the guest a "trace-cmd agent" is running, that will listen on a port for
-> the CID. The on the host a "trace-cmd record -A guest@cid:port -e events"
-> can be called and the host will connect to the guest agent through the
-> cid/port pair and have the agent enable tracing on behalf of the host and
-> send the trace data back down to it.
-> 
-> The problem is that there is no sure fire way to find the CID for a guest.
-> Currently, the user must know the cid, or we have a hack that looks for the
-> qemu process and parses the --guest-cid parameter from it. But this is
-> prone to error and does not work on other implementation (was told that
-> crosvm does not use qemu).
-> 
-> As I can not find a way to discover CIDs assigned to guests via any kernel
-> interface, I decided to create this one. Note, I'm not attached to it. If
-> there's a better way to do this, I would love to have it. But since I'm not
-> an expert in the networking layer nor virtio, I decided to stick to what I
-> know and add a debugfs interface that simply lists all the registered CIDs
-> and the worker task that they are associated with. The worker task at
-> least has the PID of the task it represents.
-> 
-> Now I can find the cid / host process in charge of the guest pair:
-> 
->   # cat /sys/kernel/debug/vsock_list
->   3	vhost-1954:2002
-> 
+On Fri, May 7, 2021 at 8:56 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+>
+> If qemu is not found, then there's no mapping between the vCPUs of the
+> guest and the threads that run them. As the time sync has the agent run on
+> all the guest's CPUs, trace it, looking for all kvm_entry, which state
+> which vCPU the host thread is entering on the guest, and then use that to
+> create the mapping for the data files.
+>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  tracecmd/include/trace-local.h |   2 +
+>  tracecmd/trace-record.c        | 196 ++++++++++++++++++++++++++++++++-
+>  2 files changed, 197 insertions(+), 1 deletion(-)
+>
+> diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+> index b3997d00..4c5669c9 100644
+> --- a/tracecmd/include/trace-local.h
+> +++ b/tracecmd/include/trace-local.h
+> @@ -298,11 +298,13 @@ void update_first_instance(struct buffer_instance *instance, int topt);
+>  void show_instance_file(struct buffer_instance *instance, const char *name);
+>
+>  struct trace_guest {
+> +       struct tracefs_instance *instance;
+>         char *name;
+>         int cid;
+>         int pid;
+>         int cpu_max;
+>         int *cpu_pid;
+> +       int *task_pids;
+>  };
+>  struct trace_guest *trace_get_guest(unsigned int cid, const char *name);
+>  bool trace_have_guests_pid(void);
+> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+> index 5dd8be4a..143ece6a 100644
+> --- a/tracecmd/trace-record.c
+> +++ b/tracecmd/trace-record.c
+> @@ -3230,6 +3230,38 @@ static int do_accept(int sd)
+>         return -1;
+>  }
+>
+> +/* Find all the tasks associated with the guest pid */
+> +static void find_tasks(struct trace_guest *guest)
+> +{
+> +       struct dirent *dent;
+> +       char *path;
+> +       DIR *dir;
+> +       int ret;
+> +       int tasks = 0;
+> +
+> +       ret = asprintf(&path, "/proc/%d/task", guest->pid);
+> +       if (ret < 0)
+> +               return;
+> +
+> +       dir = opendir(path);
+> +       free(path);
+> +       if (!dir)
+> +               return;
+> +
+> +       while ((dent = readdir(dir))) {
+> +               int *pids;
+> +               if (!(dent->d_type == DT_DIR && is_digits(dent->d_name)))
+> +                       continue;
+> +               pids = realloc(guest->task_pids, sizeof(int) * (tasks + 2));
+> +               if (!pids)
+> +                       break;
+> +               pids[tasks++] = strtol(dent->d_name, NULL, 0);
+> +               pids[tasks] = -1;
+> +               guest->task_pids = pids;
+> +       }
+> +       closedir(dir);
+> +}
+> +
+>  static char *parse_guest_name(char *gname, int *cid, int *port)
+>  {
+>         struct trace_guest *guest;
+> @@ -3250,10 +3282,12 @@ static char *parse_guest_name(char *gname, int *cid, int *port)
+>         } else if (is_digits(gname))
+>                 *cid = atoi(gname);
+>
+> -       read_qemu_guests();
 
-I think I need the same thing for vhost-scsi. We want to know a vhost-scsi
-devs worker thread's pid. If we use multiple vhost-devs in one VM then we
-wanted to be able to know which thread goes with which dev.
+I would suggest to leave the legacy logic for reading existing qemu
+VMs. We can reimplement it - instead of parsing the qemu command line,
+virhs can be used to get that information, as Stefano Garzarella
+suggested in other thread. We can even implement similar auto
+discovery logics for other VM emulators. The VMs auto discovery will
+be a best effort, if the user passes "-A <guest>" to the command line,
+and a guest with that name is not known - trace-cmd will die,
+suggesting  to use the more robust "-A <guest>@cid:port" method.
 
-For the vhost thread patches I added an ioctl:
+[...]
 
-https://lists.linuxfoundation.org/pipermail/virtualization/2021-April/054014.html
 
-but I had originally implemented it in sysfs. For sysfs we can add a struct
-device in the vhost_dev and struct deice in the vhost_virtqueue. We then
-have a 2 new classes /sys/class/vhost_device and vhost_virtqueue with the
-vhost_device device the parent of vhost_virtqueue device.
-
-The nice thing is that it's a common interface and works for every vhost_dev
-and all their virtqueues. It works for non libvirt users.
-
-The drawback is adding in refcounts/releases and that type of code for the
-vhost_dev and vhost_virtqueue. Also I'm not sure about security.
-
-Note that I'm not tied to sysfs. netlink would be fine. I just need any
-interface.
+--
+Tzvetomir (Ceco) Stoyanov
+VMware Open Source Technology Center
